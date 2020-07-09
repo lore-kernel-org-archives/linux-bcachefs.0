@@ -7,147 +7,95 @@ X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55DEBC433DF
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  9 Jul 2020 13:20:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0097DC433DF
+	for <linux-bcachefs@archiver.kernel.org>; Thu,  9 Jul 2020 16:08:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1EB03206A1
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  9 Jul 2020 13:20:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CFAFD20767
+	for <linux-bcachefs@archiver.kernel.org>; Thu,  9 Jul 2020 16:08:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="BsZCyYa3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hnozVTMX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727796AbgGINUR (ORCPT
+        id S1727853AbgGIQIL (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 9 Jul 2020 09:20:17 -0400
-Received: from mout.gmx.net ([212.227.17.21]:43919 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726896AbgGINUR (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 9 Jul 2020 09:20:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1594300815;
-        bh=DWBPYzCQ1Dijkr68XLD0vVXVmeEdczM3njsbU2c0X0c=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=BsZCyYa3XlSlN01RPA7zmSc8bOeMGFYjbNO2T+d8rXcOClXmrM7gkzvsPraHT+ZDX
-         iuZ9TcddaEmXntqSqvFkLQKZS1BUPM2+Ened/42wpDKJiNFnc+4WMDxb2A7bfKk23y
-         7FkFDDNRKpbRdaarM6mD7qhDSdleU70cKlrfyCwg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from t460-skr.localnet ([194.94.225.9]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M59C8-1jsQXb1nka-0017jg; Thu, 09
- Jul 2020 15:20:15 +0200
-From:   Stefan K <shadow_7@gmx.net>
-To:     kent.overstreet@gmail.com
+        Thu, 9 Jul 2020 12:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726357AbgGIQIL (ORCPT
+        <rfc822;linux-bcachefs@vger.kernel.org>);
+        Thu, 9 Jul 2020 12:08:11 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576CCC08C5CE;
+        Thu,  9 Jul 2020 09:08:11 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id t7so1173858qvl.8;
+        Thu, 09 Jul 2020 09:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RL3laJwxnPjhE7RAJOQbdD6GPteuo9y8Lqjv1D5+rVA=;
+        b=hnozVTMXIyrC863i8JgpVVm+XidXd3YYtkAFtjqDrTnZ63IyDRtXwRJwFjzCJFYSjw
+         7joIyvWqTMfglJVKR82nWbC/FeyzfykAfY6gPhlewjbCxDh/1oroBZlhf72wgvp4PX83
+         cifPUGUMeEiJ0TnKyCd4q0hmqQWy0b5EfM+7FUZHwJSaqVtcGOC24IrCMkW0DOiIWNUy
+         pBbDxIOA84A6BL6jTB41fbxZO6RwNpbYXFehor7rkJ/ZYkI/NsKjq0QwsGwEkp3gG23E
+         JNn19zJ5UZVr6KoVej7Hqp3R6irXeBBnAGzJ+OaAjuUHKcBhqxzItgy+YFPO+G3Zs9x4
+         i7TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RL3laJwxnPjhE7RAJOQbdD6GPteuo9y8Lqjv1D5+rVA=;
+        b=kYniQsrRGuKaT8q0VM1SJ6T/ipkC9g1xXT2yv1k8www1Abs6BuCFmmpWQ5rxQMGHez
+         XUK6fxg6FEXss+74sEoiAb7298L4uKWCudysUcYUY8AvfRz42pnwEihS8+Y5J/3BPLtP
+         riYjq8FVpXkyy8wcCc+TjV3hLOLzh34neY5AtaoymltesYNiUWe1LxG4/hOHOGqYAZuj
+         mWXolyxQWR/XCSF8U7ccUnEgWeMDoW+J0ovq4FhaAiHK4mHPul0+LDzSmXCR1QrH8rjg
+         LaN0ZTNyVMp4RhuyPHYdykPlv4zqaIvFUBqOZ1gEPkqgR9WXnGWGmFbOAVGIrjoXmkyn
+         ZhuQ==
+X-Gm-Message-State: AOAM531RnEyijZz3GpypqOa8FOOCzELQDrvgOQ0brXgUTtVJP4gAFdCm
+        5Ch2ZlfBD6TgcSolboyS7A==
+X-Google-Smtp-Source: ABdhPJwXB0H/6I7CjlZt17EB23xuy0cFSVFUnB7q3TsYi/rcxzLylhrgu2ibKUJK0JiWhEfOfAGsIA==
+X-Received: by 2002:a0c:dc8e:: with SMTP id n14mr13074462qvk.136.1594310890534;
+        Thu, 09 Jul 2020 09:08:10 -0700 (PDT)
+Received: from zaphod.evilpiepirate.org ([2601:19b:c500:a1:56b:8096:bb6:ca58])
+        by smtp.gmail.com with ESMTPSA id p25sm4440914qtk.67.2020.07.09.09.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 09:08:10 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 12:08:05 -0400
+From:   kent.overstreet@gmail.com
+To:     Stefan K <shadow_7@gmx.net>
 Cc:     linux-bcache@vger.kernel.org, linux-bcachefs@vger.kernel.org
 Subject: Re: how does the caching works in bcachefs
-Date:   Thu, 09 Jul 2020 15:20:14 +0200
-Message-ID: <2900215.XKtEbqh0OK@t460-skr>
-In-Reply-To: <20200708220220.GA109921@zaphod.evilpiepirate.org>
-References: <2308642.L3yuttUQlX@t460-skr> <20200708220220.GA109921@zaphod.evilpiepirate.org>
+Message-ID: <20200709160805.GA158619@zaphod.evilpiepirate.org>
+References: <2308642.L3yuttUQlX@t460-skr>
+ <20200708220220.GA109921@zaphod.evilpiepirate.org>
+ <2900215.XKtEbqh0OK@t460-skr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="us-ascii"
-X-Provags-ID: V03:K1:JKvV8twuq1oH59OVsIir+OsJMP1+WWUpt8QCRlerYtTcmZSfz7t
- /pQIZdw3t+8glfL6wd52zh+Elae4z5ya0u+rjGA4HEC/b6GXCXohrBbD/MJes+GTsXyR5et
- UUhHZSQDH8SJ0Vs9jcHqEcYnW7gtK0Kr0YyW0hlNuo9iSD/Yim6fbTo0X3HxtYKOAvxHm+Z
- gQoacEyZmpPiHHCZRT72g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qGpyHOj0nIc=:EyfEQGHYeC4+VXIQVC9+dH
- RjBhpvM7TwttSCHdIzY4fByu42yvxstoN+JPWF0snY5uQRIrfFANt2Zg1z+hwDlP8vVHuaM9L
- uqX6N6RVcOO+xI0ZNUPEu/rgzNNacxOpPSFy7bZ9GMH0TrrmM2BFnetqpy0cQl/jIX0FM5yCG
- TXu+1X/3Hn+0oKXuqB9pa+LZwE+Zj5rDwslaYh+TNG9uvNX1ZHYbCDWRAVAxjenCd4h8ovCVg
- d3t0R5f1YLeWnf7Lw4fjLQ7kVwvkXeHYj6FIVlTIJwSaC+Yv/0OJRUUVBLCcW8qeqE7Llgizj
- zgiXEJxtEmX0itZ3JexT0U0FjXnFyFeIJgBk9RyTwZDGODQ9TshbH6py3DNbFL5ZUe+CeK2Q0
- Wk4aQw77GC/VEAVq1/K+KqPRljGS8PlTjqLR9ZP6M9jT3pZg5QlU0NAMA7g3OcTLZsSTjdZ3R
- aqTH+7STwBoHD4g18zsz3P5R1Gcb46qBRZlolbo89skDRho0oNqnVrTUhqEtwyEGusDTcQphe
- 4enXblX3AGrCrFE9PQxz+5W4Q/g1hNIjQcuNRNY+b9zE7upeaCgC9QpSGnas8D/qg1ExpbWAe
- fTv/2PclApbFDOY2MEJqRTkaSMgnJq6Qmx5JfNHWRv8mo5NNTB7fckBr/XxGnHnBTSVivwPMj
- gIpQFvYdgUkI+ygpl8VXW6/zimV8A4h2OM1OxWqaQAteoFBREkwIlgOo4Mu13sZQOVRHqOlZ0
- v0spl7r07jETbVQJYh5dO++fXXO3U7btD/lgChSJPuRfTdbSFatuCzwbHp0icrRF+GBHGHWU7
- 7PHOwokbkukkOI0KszLDpWAbq3gwsuPJyTnHlm+BH1r4DJLL/0C/HBiy+Ua4OGXr6SfY9yGkh
- i9jAAPmXyluHcLPdaX2ypgqdnuaEmPaTZdZSdOLZspjR9nQfrHIppyRWTFHHq8SzMoHSm8otp
- AVcin46W3gB7ccc/pXuGQxU8+/e1a4fLYpvoMKJseLmwf/L8/qokTP6D6vWJqEvxofaDJ4Gp0
- LwSnaQpst4W3ksokVVGPeW3W2furL/oiYP+NgLzORzd7yllUOCdANO3NRdNOuv4VHH8HZB6at
- eiI6RFET3d46AF7SmNtlWJlSDWc+L3x1cnIpR5iMYl+w2+DdEhA//1S8Uwam2VCadI4/MeEai
- gRaWbr9iL9kZ4YWWMQHHV8ALS7stidd6JqDOt5d68xQBJNfkwJ8F6NBJWyym+tveZtlzXku0p
- XUS70F2ma8Aq3SB0f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2900215.XKtEbqh0OK@t460-skr>
 Sender: linux-bcachefs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi and thanks!
+On Thu, Jul 09, 2020 at 03:20:14PM +0200, Stefan K wrote:
+> Hi and thanks!
+> 
+> > LRU, same as bcache.
+> do you plan to change this , since LRU is not very efficient (in comparison to
+> other), maybe 2Q or ARC[1-4]
 
-> LRU, same as bcache.
-do you plan to change this , since LRU is not very efficient (in compariso=
-n to other), maybe 2Q or ARC[1-4]
+No, but I'd be happy to help if someone else wanted to implement a new caching
+algorithm :)
 
-> [...]
-> And you can pin specific files/folders to a device, by setting foregroun=
-d target
-> to that device and setting background target and promote target to nothi=
-ng.
-ok thank you very much! That must be documented somewhere ;-)
+In real world mixed workloads LRU is fine, it's not that much of a difference
+vs. the more sophisticated algorithms. More important is the stuff like
+sequential_bypass or some other kind of knob to ensure your backup process
+doesn't blow away the entire cache.
 
+> 
+> > [...]
+> > And you can pin specific files/folders to a device, by setting foreground target
+> > to that device and setting background target and promote target to nothing.
+> ok thank you very much! That must be documented somewhere ;-)
 
-[1] https://en.ru.is/media/skjol-td/cache_comparison.pdf
-[2] https://dbs.uni-leipzig.de/file/ARC.pdf
-[3] http://people.cs.vt.edu/~butta/docs/sigmetrics05_kernelPrefetch.pdf
-[4] http://www.vldb.org/conf/1994/P439.PDF
-
-On Thursday, July 9, 2020 12:37:29 AM CEST kent.overstreet@gmail.com wrote=
-:
-> On Wed, Jul 08, 2020 at 11:46:00PM +0200, Stefan K wrote:
-> > Hello,
-> >
-> > short question: how does the caching works with bcachefs? Is it like  =
-"first
-> > in first out" or is it more complex like the ARC system in zfs?
->
-> LRU, same as bcache.
->
-> > The same with the write-cache,  will be everything written to the SSD/=
-NVMe
-> > (Cache) and then to the HDD? When will will the filesystem say "its wr=
-itten to
-> > disk"? And what happens with the data on the write cache if we have a
-> > powerfail?
->
-> Disks that are used as caches are treated no differently from other disk=
-s by the
-> filesystem. If you want bcachefs to not rely on a specific disk, you can=
- set its
-> durability to 0, and then it'll basically only be used as a writethrough=
- cache.
->
-> >
-> > And can I say have this file/folder always in the cache, while it work=
-s "normal" ?
->
-> Yes.
->
-> So caching is configured differently, specifically so that it can be con=
-figured
-> on a per file/directory basis. Instead of having a notion of "cache devi=
-ce",
-> there are options for
->  - foregroud target: which device or group of devices are used for foreg=
-round
->    writes
->  - background target: if enabled, the rebalance thread will in the backg=
-round
->    move data to this target in the background, leaving a cached copy on =
-the
->    foreground target
->  - promote target: if enabled, when data is read and it doesn't exist in=
- this
->    target, a cached copy will be added there
->
-> So these options can be set to get you writeback mode, by setting foregr=
-ound
-> target and promote target to your SSD and background target to your HDD.
->
-> And you can pin specific files/folders to a device, by setting foregroun=
-d target
-> to that device and setting background target and promote target to nothi=
-ng.
->
-
-
-
+I just write code, not documentation :)
