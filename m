@@ -3,35 +3,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D48F4C433DF
-	for <linux-bcachefs@archiver.kernel.org>; Sun, 16 Aug 2020 09:46:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96618C433DF
+	for <linux-bcachefs@archiver.kernel.org>; Sun, 16 Aug 2020 09:50:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AF31F20674
-	for <linux-bcachefs@archiver.kernel.org>; Sun, 16 Aug 2020 09:46:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 767D420716
+	for <linux-bcachefs@archiver.kernel.org>; Sun, 16 Aug 2020 09:50:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728677AbgHPJq1 (ORCPT
+        id S1726458AbgHPJuy (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 16 Aug 2020 05:46:27 -0400
-Received: from relay-b01.edpnet.be ([212.71.1.221]:38488 "EHLO
+        Sun, 16 Aug 2020 05:50:54 -0400
+Received: from relay-b01.edpnet.be ([212.71.1.221]:39424 "EHLO
         relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728467AbgHPJqZ (ORCPT
+        with ESMTP id S1726092AbgHPJux (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 16 Aug 2020 05:46:25 -0400
-X-Greylist: delayed 674 seconds by postgrey-1.27 at vger.kernel.org; Sun, 16 Aug 2020 05:46:21 EDT
-X-ASG-Debug-ID: 1597571180-0a7ff52e9b345ea0001-qsCQDO
-Received: from [192.168.177.100] (213.219.167.75.bro01.dyn.edpnet.net [213.219.167.75]) by relay-b01.edpnet.be with ESMTP id lLce9Ia53BLEzj3A for <linux-bcachefs@vger.kernel.org>; Sun, 16 Aug 2020 11:46:20 +0200 (CEST)
+        Sun, 16 Aug 2020 05:50:53 -0400
+X-ASG-Debug-ID: 1597570505-0a7ff52e9c342d30001-qsCQDO
+Received: from [192.168.177.100] (213.219.167.75.bro01.dyn.edpnet.net [213.219.167.75]) by relay-b01.edpnet.be with ESMTP id XXb1Qurn0udh3mTZ for <linux-bcachefs@vger.kernel.org>; Sun, 16 Aug 2020 11:35:05 +0200 (CEST)
 X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
 X-Barracuda-Effective-Source-IP: 213.219.167.75.bro01.dyn.edpnet.net[213.219.167.75]
 X-Barracuda-Apparent-Source-IP: 213.219.167.75
-Subject: Re: [PATCH][2/2] adjustments for 5.8
-From:   Janpieter Sollie <janpieter.sollie@kabelmail.de>
-X-ASG-Orig-Subj: Re: [PATCH][2/2] adjustments for 5.8
 To:     linux-bcachefs@vger.kernel.org
-References: <6dcb185b-807b-ded8-3fad-245ce9fd2e13@kabelmail.de>
+From:   Janpieter Sollie <janpieter.sollie@kabelmail.de>
+Subject: [PATCH] adjustments for 5.8
 Autocrypt: addr=janpieter.sollie@kabelmail.de; prefer-encrypt=mutual; keydata=
  mQENBFhRXM0BCADnifwYnfbhQtJso1eeT+fjEDJh8OY5rwfvAbOhHyy003MJ82svXPmM/hUS
  C6hZjkE4kR7k2O2r+Ev6abRSlM6s6rJ/ZftmwOA7E8vdSkrFDNqRYL7P18+Iq/jM/t/6lsZv
@@ -57,25 +53,25 @@ Autocrypt: addr=janpieter.sollie@kabelmail.de; prefer-encrypt=mutual; keydata=
  tLGawTPCuIbG+5E1kHO42wS92DOQXSRMvicyEf+iU8VbX5/ZjSQDdoBrVnKPMeyANQFIrK/f
  kwlHE8uQsrgj/kOKw1+N/KAT+C9KH4iyz5mq1mFjNH2gDqSaDushBod5U04HAWyaQeZcOYfl
  t4ImyAHqHDGJABRo5o4=
-Message-ID: <8365d24a-e3ca-ebf9-be61-79b2205cded0@kabelmail.de>
-Date:   Sun, 16 Aug 2020 11:46:30 +0200
+X-ASG-Orig-Subj: [PATCH] adjustments for 5.8
+Message-ID: <6dcb185b-807b-ded8-3fad-245ce9fd2e13@kabelmail.de>
+Date:   Sun, 16 Aug 2020 11:35:16 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <6dcb185b-807b-ded8-3fad-245ce9fd2e13@kabelmail.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Content-Language: en-US
 X-Barracuda-Connect: 213.219.167.75.bro01.dyn.edpnet.net[213.219.167.75]
-X-Barracuda-Start-Time: 1597571180
+X-Barracuda-Start-Time: 1597570505
 X-Barracuda-URL: https://212.71.1.221:443/cgi-mod/mark.cgi
 X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 7572
+X-Barracuda-Scan-Msg-Size: 4954
 X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.5189 1.0000 0.7500
-X-Barracuda-Spam-Score: 1.25
-X-Barracuda-Spam-Status: No, SCORE=1.25 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=BSF_RULE7568M
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.83934
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.7689 1.0000 1.9376
+X-Barracuda-Spam-Score: 2.44
+X-Barracuda-Spam-Status: No, SCORE=2.44 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=BSF_RULE7568M
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.83933
         Rule breakdown below
          pts rule name              description
         ---- ---------------------- --------------------------------------------------
@@ -85,190 +81,95 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-in order to restore functionality of the add_to_page_cache_vec in file mm/filemap.c, the follow
-patch should also be applied:
-
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index d39a3f28d6a9..d58e1bc46d3b 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -903,8 +904,8 @@ static int add_to_page_cache_vec(struct page **pages, unsigned nr_pages,
-                VM_BUG_ON_PAGE(PageSwapCache(page), page);
- 
-                if (!PageHuge(page)) {
--                       error = mem_cgroup_try_charge(page, current->mm,
--                                                     gfp_mask, &memcg, false);
-+                       error = mem_cgroup_charge(page, current->mm,
-+                                                     gfp_mask);
-                        if (error) {
-                                if (!i)
-                                        return error;
-@@ -928,10 +929,6 @@ static int add_to_page_cache_vec(struct page **pages, unsigned nr_pages,
- 
-        for (i = 0; i < nr_added; i++) {
-                struct page *page = pages[i];
--
--               if (!PageHuge(page))
--                       mem_cgroup_commit_charge(page, memcg, false, false);
--
-                trace_mm_filemap_add_to_page_cache(page);
-        }
- 
-@@ -939,7 +936,7 @@ static int add_to_page_cache_vec(struct page **pages, unsigned nr_pages,
-                struct page *page = pages[i];
- 
-                if (!PageHuge(page))
--                       mem_cgroup_cancel_charge(page, memcg, false);
-+                       mem_cgroup_uncharge(page);
- 
-                /* Leave page->index set: truncation relies upon it */
-                page->mapping = NULL;
-
-
-Op 2020-08-16 om 11:35 schreef Janpieter Sollie:
-> Hi,
->
->
-> Hereby some patches for review of the implementation of v5.8
->
-> I explicitly included the KERNEL_VERSION header (which is probably not needed, since it's an
-> in-tree driver) as the current version is 5.7, so once the 5.8 bump has been applied, the
-> KERNEL_VERSION statement should be removed.
->
->
-> Janpieter
->
->
-> diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
-> index a0d570f3adf0..cdc85423826c 100644
-> --- a/fs/bcachefs/btree_cache.c
-> +++ b/fs/bcachefs/btree_cache.c
-> @@ -7,6 +7,7 @@
->  #include "btree_locking.h"
->  #include "debug.h"
->  
-> +#include <linux/version.h>
->  #include <linux/prefetch.h>
->  #include <linux/sched/mm.h>
->  #include <trace/events/bcachefs.h>
-> @@ -85,8 +86,12 @@ static int btree_node_data_alloc(struct bch_fs *c, struct btree *b, gfp_t gfp)
->         if (!b->data)
->                 return -ENOMEM;
->  
-> +#if (LINUX_VERSION_CODE < KERNEL_VERSION(5,8,0))
->         b->aux_data = __vmalloc(btree_aux_data_bytes(b), gfp,
->                                 PAGE_KERNEL_EXEC);
-> +#else
-> +       b->aux_data = __vmalloc(btree_aux_data_bytes(b), gfp);
-> +#endif
->         if (!b->aux_data) {
->                 kvpfree(b->data, btree_bytes(c));
->                 b->data = NULL;
-> diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
-> index d73cc8ddadac..8b4bb75344ba 100644
-> --- a/fs/bcachefs/btree_key_cache.c
-> +++ b/fs/bcachefs/btree_key_cache.c
-> @@ -10,6 +10,7 @@
->  #include "journal_reclaim.h"
->  
->  #include <trace/events/bcachefs.h>
-> +#include <linux/version.h>
->  
->  static int bch2_btree_key_cache_cmp_fn(struct rhashtable_compare_arg *arg,
->                                        const void *obj)
-> @@ -391,7 +392,11 @@ static void btree_key_cache_journal_flush(struct journal *j,
->         struct btree_trans trans;
->  
->         six_lock_read(&ck->c.lock, NULL, NULL);
-> +#if (LINUX_VERSION_CODE < KERNEL_VERSION(5,8,0))
->         key = READ_ONCE(ck->key);
-> +#else
-> +       key = __READ_ONCE(ck->key);
-> +#endif
->  
->         if (ck->journal.seq != seq ||
->             !test_bit(BKEY_CACHED_DIRTY, &ck->flags)) {
-> diff --git a/fs/bcachefs/fs-io.c b/fs/bcachefs/fs-io.c
-> index 951a436195ee..b4f73d9e74ea 100644
-> --- a/fs/bcachefs/fs-io.c
-> +++ b/fs/bcachefs/fs-io.c
-> @@ -20,11 +20,15 @@
->  #include "quota.h"
->  #include "reflink.h"
->  
-> +#include <linux/version.h>
->  #include <linux/aio.h>
->  #include <linux/backing-dev.h>
->  #include <linux/falloc.h>
->  #include <linux/migrate.h>
->  #include <linux/mmu_context.h>
-> +#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,8,0))
-> +#include <linux/kthread.h>
-> +#endif
->  #include <linux/pagevec.h>
->  #include <linux/sched/signal.h>
->  #include <linux/task_io_accounting_ops.h>
-> @@ -1819,7 +1823,11 @@ static long bch2_dio_write_loop(struct dio_write *dio)
->  
->         while (1) {
->                 if (kthread)
-> +#if (LINUX_VERSION_CODE < KERNEL_VERSION(5,8,0))
->                         use_mm(dio->mm);
-> +#else
-> +                       kthread_use_mm(dio->mm);
-> +#endif
->                 BUG_ON(current->faults_disabled_mapping);
->                 current->faults_disabled_mapping = mapping;
->  
-> @@ -1827,8 +1835,11 @@ static long bch2_dio_write_loop(struct dio_write *dio)
->  
->                 current->faults_disabled_mapping = NULL;
->                 if (kthread)
-> +#if (LINUX_VERSION_CODE < KERNEL_VERSION(5,8,0))
->                         unuse_mm(dio->mm);
-> -
-> +#else
-> +                       kthread_unuse_mm(dio->mm);
-> +#endif
->                 if (unlikely(ret < 0))
->                         goto err;
->  
-> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> index a47923d67f7a..865619d0d2f0 100644
-> --- a/fs/bcachefs/fs.c
-> +++ b/fs/bcachefs/fs.c
-> @@ -22,6 +22,7 @@
->  #include "super.h"
->  #include "xattr.h"
->  
-> +#include <linux/fiemap.h>
->  #include <linux/aio.h>
->  #include <linux/backing-dev.h>
->  #include <linux/exportfs.h>
-> diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
-> index 4dcd28456e00..4ae1d2a82ea6 100644
-> --- a/fs/bcachefs/util.h
-> +++ b/fs/bcachefs/util.h
-> @@ -2,6 +2,7 @@
->  #ifndef _BCACHEFS_UTIL_H
->  #define _BCACHEFS_UTIL_H
->  
-> +#include <linux/version.h>
->  #include <linux/bio.h>
->  #include <linux/blkdev.h>
->  #include <linux/closure.h>
-> @@ -99,7 +100,11 @@ static inline void *vpmalloc(size_t size, gfp_t gfp_mask)
->  {
->         return (void *) __get_free_pages(gfp_mask|__GFP_NOWARN,
->                                          get_order(size)) ?:
-> +#if (LINUX_VERSION_CODE < KERNEL_VERSION(5,8,0))
->                 __vmalloc(size, gfp_mask, PAGE_KERNEL);
-> +#else
-> +               __vmalloc(size, gfp_mask);
-> +#endif
->  }
->  
->  static inline void kvpfree(void *p, size_t size)
->
-
+SGksCgoKSGVyZWJ5IHNvbWUgcGF0Y2hlcyBmb3IgcmV2aWV3IG9mIHRoZSBpbXBsZW1lbnRh
+dGlvbiBvZiB2NS44CgpJIGV4cGxpY2l0bHkgaW5jbHVkZWQgdGhlIEtFUk5FTF9WRVJTSU9O
+IGhlYWRlciAod2hpY2ggaXMgcHJvYmFibHkgbm90IG5lZWRlZCwgc2luY2UgaXQncyBhbgpp
+bi10cmVlIGRyaXZlcikgYXMgdGhlIGN1cnJlbnQgdmVyc2lvbiBpcyA1LjcsIHNvIG9uY2Ug
+dGhlIDUuOCBidW1wIGhhcyBiZWVuIGFwcGxpZWQsIHRoZQpLRVJORUxfVkVSU0lPTiBzdGF0
+ZW1lbnQgc2hvdWxkIGJlIHJlbW92ZWQuCgoKSmFucGlldGVyCgoKZGlmZiAtLWdpdCBhL2Zz
+L2JjYWNoZWZzL2J0cmVlX2NhY2hlLmMgYi9mcy9iY2FjaGVmcy9idHJlZV9jYWNoZS5jCmlu
+ZGV4IGEwZDU3MGYzYWRmMC4uY2RjODU0MjM4MjZjIDEwMDY0NAotLS0gYS9mcy9iY2FjaGVm
+cy9idHJlZV9jYWNoZS5jCisrKyBiL2ZzL2JjYWNoZWZzL2J0cmVlX2NhY2hlLmMKQEAgLTcs
+NiArNyw3IEBACsKgI2luY2x1ZGUgImJ0cmVlX2xvY2tpbmcuaCIKwqAjaW5jbHVkZSAiZGVi
+dWcuaCIKwqAKKyNpbmNsdWRlIDxsaW51eC92ZXJzaW9uLmg+CsKgI2luY2x1ZGUgPGxpbnV4
+L3ByZWZldGNoLmg+CsKgI2luY2x1ZGUgPGxpbnV4L3NjaGVkL21tLmg+CsKgI2luY2x1ZGUg
+PHRyYWNlL2V2ZW50cy9iY2FjaGVmcy5oPgpAQCAtODUsOCArODYsMTIgQEAgc3RhdGljIGlu
+dCBidHJlZV9ub2RlX2RhdGFfYWxsb2Moc3RydWN0IGJjaF9mcyAqYywgc3RydWN0IGJ0cmVl
+ICpiLCBnZnBfdCBnZnApCsKgwqDCoMKgwqDCoMKgIGlmICghYi0+ZGF0YSkKwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiAtRU5PTUVNOwrCoAorI2lmIChMSU5VWF9W
+RVJTSU9OX0NPREUgPCBLRVJORUxfVkVSU0lPTig1LDgsMCkpCsKgwqDCoMKgwqDCoMKgIGIt
+PmF1eF9kYXRhID0gX192bWFsbG9jKGJ0cmVlX2F1eF9kYXRhX2J5dGVzKGIpLCBnZnAsCsKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIFBBR0VfS0VSTkVMX0VYRUMpOworI2Vsc2UKK8KgwqDCoMKgwqDCoCBiLT5hdXhf
+ZGF0YSA9IF9fdm1hbGxvYyhidHJlZV9hdXhfZGF0YV9ieXRlcyhiKSwgZ2ZwKTsKKyNlbmRp
+ZgrCoMKgwqDCoMKgwqDCoCBpZiAoIWItPmF1eF9kYXRhKSB7CsKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBrdnBmcmVlKGItPmRhdGEsIGJ0cmVlX2J5dGVzKGMpKTsKwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGItPmRhdGEgPSBOVUxMOwpkaWZmIC0tZ2l0IGEv
+ZnMvYmNhY2hlZnMvYnRyZWVfa2V5X2NhY2hlLmMgYi9mcy9iY2FjaGVmcy9idHJlZV9rZXlf
+Y2FjaGUuYwppbmRleCBkNzNjYzhkZGFkYWMuLjhiNGJiNzUzNDRiYSAxMDA2NDQKLS0tIGEv
+ZnMvYmNhY2hlZnMvYnRyZWVfa2V5X2NhY2hlLmMKKysrIGIvZnMvYmNhY2hlZnMvYnRyZWVf
+a2V5X2NhY2hlLmMKQEAgLTEwLDYgKzEwLDcgQEAKwqAjaW5jbHVkZSAiam91cm5hbF9yZWNs
+YWltLmgiCsKgCsKgI2luY2x1ZGUgPHRyYWNlL2V2ZW50cy9iY2FjaGVmcy5oPgorI2luY2x1
+ZGUgPGxpbnV4L3ZlcnNpb24uaD4KwqAKwqBzdGF0aWMgaW50IGJjaDJfYnRyZWVfa2V5X2Nh
+Y2hlX2NtcF9mbihzdHJ1Y3Qgcmhhc2h0YWJsZV9jb21wYXJlX2FyZyAqYXJnLArCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGNvbnN0IHZvaWQgKm9iaikKQEAgLTM5MSw3ICszOTIsMTEgQEAg
+c3RhdGljIHZvaWQgYnRyZWVfa2V5X2NhY2hlX2pvdXJuYWxfZmx1c2goc3RydWN0IGpvdXJu
+YWwgKmosCsKgwqDCoMKgwqDCoMKgIHN0cnVjdCBidHJlZV90cmFucyB0cmFuczsKwqAKwqDC
+oMKgwqDCoMKgwqAgc2l4X2xvY2tfcmVhZCgmY2stPmMubG9jaywgTlVMTCwgTlVMTCk7Cisj
+aWYgKExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDUsOCwwKSkKwqDCoMKg
+wqDCoMKgwqAga2V5ID0gUkVBRF9PTkNFKGNrLT5rZXkpOworI2Vsc2UKK8KgwqDCoMKgwqDC
+oCBrZXkgPSBfX1JFQURfT05DRShjay0+a2V5KTsKKyNlbmRpZgrCoArCoMKgwqDCoMKgwqDC
+oCBpZiAoY2stPmpvdXJuYWwuc2VxICE9IHNlcSB8fArCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ICF0ZXN0X2JpdChCS0VZX0NBQ0hFRF9ESVJUWSwgJmNrLT5mbGFncykpIHsKZGlmZiAtLWdp
+dCBhL2ZzL2JjYWNoZWZzL2ZzLWlvLmMgYi9mcy9iY2FjaGVmcy9mcy1pby5jCmluZGV4IDk1
+MWE0MzYxOTVlZS4uYjRmNzNkOWU3NGVhIDEwMDY0NAotLS0gYS9mcy9iY2FjaGVmcy9mcy1p
+by5jCisrKyBiL2ZzL2JjYWNoZWZzL2ZzLWlvLmMKQEAgLTIwLDExICsyMCwxNSBAQArCoCNp
+bmNsdWRlICJxdW90YS5oIgrCoCNpbmNsdWRlICJyZWZsaW5rLmgiCsKgCisjaW5jbHVkZSA8
+bGludXgvdmVyc2lvbi5oPgrCoCNpbmNsdWRlIDxsaW51eC9haW8uaD4KwqAjaW5jbHVkZSA8
+bGludXgvYmFja2luZy1kZXYuaD4KwqAjaW5jbHVkZSA8bGludXgvZmFsbG9jLmg+CsKgI2lu
+Y2x1ZGUgPGxpbnV4L21pZ3JhdGUuaD4KwqAjaW5jbHVkZSA8bGludXgvbW11X2NvbnRleHQu
+aD4KKyNpZiAoTElOVVhfVkVSU0lPTl9DT0RFID49IEtFUk5FTF9WRVJTSU9OKDUsOCwwKSkK
+KyNpbmNsdWRlIDxsaW51eC9rdGhyZWFkLmg+CisjZW5kaWYKwqAjaW5jbHVkZSA8bGludXgv
+cGFnZXZlYy5oPgrCoCNpbmNsdWRlIDxsaW51eC9zY2hlZC9zaWduYWwuaD4KwqAjaW5jbHVk
+ZSA8bGludXgvdGFza19pb19hY2NvdW50aW5nX29wcy5oPgpAQCAtMTgxOSw3ICsxODIzLDEx
+IEBAIHN0YXRpYyBsb25nIGJjaDJfZGlvX3dyaXRlX2xvb3Aoc3RydWN0IGRpb193cml0ZSAq
+ZGlvKQrCoArCoMKgwqDCoMKgwqDCoCB3aGlsZSAoMSkgewrCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgaWYgKGt0aHJlYWQpCisjaWYgKExJTlVYX1ZFUlNJT05fQ09ERSA8IEtF
+Uk5FTF9WRVJTSU9OKDUsOCwwKSkKwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCB1c2VfbW0oZGlvLT5tbSk7CisjZWxzZQorwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAga3RocmVhZF91c2VfbW0oZGlvLT5tbSk7
+CisjZW5kaWYKwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJVR19PTihjdXJyZW50
+LT5mYXVsdHNfZGlzYWJsZWRfbWFwcGluZyk7CsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBjdXJyZW50LT5mYXVsdHNfZGlzYWJsZWRfbWFwcGluZyA9IG1hcHBpbmc7CsKgCkBA
+IC0xODI3LDggKzE4MzUsMTEgQEAgc3RhdGljIGxvbmcgYmNoMl9kaW9fd3JpdGVfbG9vcChz
+dHJ1Y3QgZGlvX3dyaXRlICpkaW8pCsKgCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBjdXJyZW50LT5mYXVsdHNfZGlzYWJsZWRfbWFwcGluZyA9IE5VTEw7CsKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoa3RocmVhZCkKKyNpZiAoTElOVVhfVkVSU0lPTl9D
+T0RFIDwgS0VSTkVMX1ZFUlNJT04oNSw4LDApKQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHVudXNlX21tKGRpby0+bW0pOwotCisjZWxzZQorwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAga3RocmVhZF91bnVz
+ZV9tbShkaW8tPm1tKTsKKyNlbmRpZgrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+aWYgKHVubGlrZWx5KHJldCA8IDApKQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGdvdG8gZXJyOwrCoApkaWZmIC0tZ2l0IGEvZnMvYmNhY2hlZnMv
+ZnMuYyBiL2ZzL2JjYWNoZWZzL2ZzLmMKaW5kZXggYTQ3OTIzZDY3ZjdhLi44NjU2MTlkMGQy
+ZjAgMTAwNjQ0Ci0tLSBhL2ZzL2JjYWNoZWZzL2ZzLmMKKysrIGIvZnMvYmNhY2hlZnMvZnMu
+YwpAQCAtMjIsNiArMjIsNyBAQArCoCNpbmNsdWRlICJzdXBlci5oIgrCoCNpbmNsdWRlICJ4
+YXR0ci5oIgrCoAorI2luY2x1ZGUgPGxpbnV4L2ZpZW1hcC5oPgrCoCNpbmNsdWRlIDxsaW51
+eC9haW8uaD4KwqAjaW5jbHVkZSA8bGludXgvYmFja2luZy1kZXYuaD4KwqAjaW5jbHVkZSA8
+bGludXgvZXhwb3J0ZnMuaD4KZGlmZiAtLWdpdCBhL2ZzL2JjYWNoZWZzL3V0aWwuaCBiL2Zz
+L2JjYWNoZWZzL3V0aWwuaAppbmRleCA0ZGNkMjg0NTZlMDAuLjRhZTFkMmE4MmVhNiAxMDA2
+NDQKLS0tIGEvZnMvYmNhY2hlZnMvdXRpbC5oCisrKyBiL2ZzL2JjYWNoZWZzL3V0aWwuaApA
+QCAtMiw2ICsyLDcgQEAKwqAjaWZuZGVmIF9CQ0FDSEVGU19VVElMX0gKwqAjZGVmaW5lIF9C
+Q0FDSEVGU19VVElMX0gKwqAKKyNpbmNsdWRlIDxsaW51eC92ZXJzaW9uLmg+CsKgI2luY2x1
+ZGUgPGxpbnV4L2Jpby5oPgrCoCNpbmNsdWRlIDxsaW51eC9ibGtkZXYuaD4KwqAjaW5jbHVk
+ZSA8bGludXgvY2xvc3VyZS5oPgpAQCAtOTksNyArMTAwLDExIEBAIHN0YXRpYyBpbmxpbmUg
+dm9pZCAqdnBtYWxsb2Moc2l6ZV90IHNpemUsIGdmcF90IGdmcF9tYXNrKQrCoHsKwqDCoMKg
+wqDCoMKgwqAgcmV0dXJuICh2b2lkICopIF9fZ2V0X2ZyZWVfcGFnZXMoZ2ZwX21hc2t8X19H
+RlBfTk9XQVJOLArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBnZXRfb3JkZXIoc2l6ZSkp
+ID86CisjaWYgKExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDUsOCwwKSkK
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF9fdm1hbGxvYyhzaXplLCBnZnBfbWFz
+aywgUEFHRV9LRVJORUwpOworI2Vsc2UKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+X192bWFsbG9jKHNpemUsIGdmcF9tYXNrKTsKKyNlbmRpZgrCoH0KwqAKwqBzdGF0aWMgaW5s
+aW5lIHZvaWQga3ZwZnJlZSh2b2lkICpwLCBzaXplX3Qgc2l6ZSkKCg==
