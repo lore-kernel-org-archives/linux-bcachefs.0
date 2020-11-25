@@ -1,4 +1,4 @@
-Return-Path: <SRS0=HjF4=EB=vger.kernel.org=linux-bcachefs-owner@kernel.org>
+Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,73 +7,73 @@ X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC043C2D0A3
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 26 Oct 2020 09:02:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A55CFC56202
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 25 Nov 2020 12:35:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8426622242
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 26 Oct 2020 09:02:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2E57B206E5
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 25 Nov 2020 12:35:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="DtG/rNFU"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="Fj8oVw0A"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772504AbgJZJCt (ORCPT
+        id S1729088AbgKYMfb (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 26 Oct 2020 05:02:49 -0400
-Received: from mout.gmx.net ([212.227.17.21]:44069 "EHLO mout.gmx.net"
+        Wed, 25 Nov 2020 07:35:31 -0500
+Received: from mout.gmx.net ([212.227.15.18]:37067 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772481AbgJZJCt (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:02:49 -0400
+        id S1728326AbgKYMfb (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:35:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603702967;
-        bh=Ky/qty1I8m2zBGVxWWBoezbgNTwSDDAB89RcxTIxJ34=;
-        h=X-UI-Sender-Class:From:To:Subject:Date;
-        b=DtG/rNFUEs6cFzsPmjTXDBoObhhc81OYI7sNhZZzBGmUYTmh0OeZkLrChswQYxMX5
-         t1RmC3KiUfTsjLausbPYZyh5kOHMhK5wVp45CBSMRSZQTwUHGOepq0eW8v7jEtsL5O
-         dsAi1xxqowqQTylj3fl9CP1q3rzRt4+dSGm0JE0s=
+        s=badeba3b8450; t=1606307730;
+        bh=aE09HQo5JGx9moRjSa0UQ1X0mj4HF6qoNS8tu4ZShpE=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Fj8oVw0A0gxooTGSQ8NIYnY5Si4TejCdmCXcMFXOc9eX1bGeDdENZMi0qWbSXqSzP
+         TUiJ367TNp2jbjxbK9X456gQhndtJBcbHR7inU36QnmShkjkxjgpQ3DvyiWwWocJDe
+         NB9Fg4XK3legy5j1RzxNJt1RCx1PI9MswZuyEnDk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from t460-skr.localnet ([194.94.224.254]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MkYXm-1k72Ij1H5y-00m62K for
- <linux-bcachefs@vger.kernel.org>; Mon, 26 Oct 2020 10:02:47 +0100
+Received: from t460-skr.localnet ([92.214.189.46]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MHoRA-1kT6BD3guM-00ExSc; Wed, 25
+ Nov 2020 13:35:29 +0100
 From:   Stefan K <shadow_7@gmx.net>
 To:     linux-bcachefs@vger.kernel.org
-Subject: Status update - erasure coding
-Date:   Mon, 26 Oct 2020 10:02:46 +0100
-Message-ID: <16038636.kxRvFxecPm@t460-skr>
+Cc:     linux-bcache@vger.kernel.org
+Subject: Status of merging bcachefs into mainline
+Date:   Wed, 25 Nov 2020 13:35:29 +0100
+Message-ID: <3738693.ng0IJAnuUy@t460-skr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
-X-Provags-ID: V03:K1:lG40v9Lhbn+vRwlKSWIRKz5fm0ffmg1Zaofrj367h0+xgadN0k5
- 7p8jiFlTDdVvBPRe1xJsRfi07rqrS7xyrpwv9Ofa70VytLHaJ7V2KGSG20OWJt0cpp6onGk
- x9/inNliI2PuOZkwgsdlAo0bODF/65oc4P5tzumHmeQ1YsxDmgSa6KUEoFVqFQ3gb9sGjfb
- Vq6+QCWra1SwLVZBJom9A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+G94bGK52Qg=:O+yo81NMWGdGxcfaJKsAp0
- 1gWvgsf+8s2ojxCDkAOgvSGhESaQjrubFqrMcSDQSbvq+Jp2zAzUUAnoZMGsQGAsf6r42kyli
- Mt9DZfya+AaSoCk+DN9Ns9ZAUHbe5ByLGM8EZS7YJfmW1jZ+LKJES3lYAwr2ICIIxyu+0MQqs
- KRMzPbCv7SmTdSwRZLXNUHllSRARWnUOCLpeYSDDM4auBI1AWSeAuGHUUd6nHAKvWC7tQWiD4
- II9YzcXmehuWOWdiuv0/XxEjKciwdsWRc7i4peY4m9CdqUGA9N81d+0if3mKlDKHKDzWI+nxS
- 5CX6AMNr3ITEsvltCrqS/uRo5Frr61IQY+DoDxnzykXG7viuUKli2csuEGwZ/U6iqnTk4F2rS
- roaEc/OxPUA0hHdLmUntQtqjtAEp0oUW7eS68PEXvQK8jU0+R7ykNwBs4GZyAO22bn6Th7L89
- hUKsVfTn4sRjVANTIQQ9qKjqyJFmcFpN3Cll4zy7aWVaZFOXr//ddlJKnVBk05H9wqlfmZZfq
- kA/tT71DHkY2A1On9qch3MS1i3/AhIAHQ7NzY8re902RN/+H2XgylRHgW6zmGTzGGtUgHtdOo
- 47l1n0P6Bg81wLy38bZ7lPTnU6FxT9GYjldVWwhRmwJehpbXGFSRK9ahodZgueCfWpqM/cWYu
- QBHlOGLHeC6hKR+xSr9sfNNg1kbwYD1ELz5MBjmRkF1axmUDul1OYAc9xjdincMt7KELJl+NO
- N8pOpVDTXVTK498Dx5KLOPOl2hT4N0YOtowlMAqXxsUryDMBeEjyriWdvvBtLjU1MEr8bXkND
- 82hJhy6HmUhk1CnZChtv8dslLPOjephlcQrSZ7Lz1Mg0bSAQBUmRhVGjHOtsP5/bEbI9gxQ2I
- 5HNnXnYzEXeVZ2XfZhdg==
+X-Provags-ID: V03:K1:sWQxj7/whobUwluOjXJBXiN5lTyVU2NA/iDurTh+9XbWTKZvSgQ
+ IrcdLX0xSCBBTOPQ4Sy80+yBLSbc0R6hcqN1xk3+d6TiQ/12K31SaLSSYRso8fOKFuWYQFr
+ rU2YTQYMBFvpXayLQsdwNfM7AneK8lC+ASQJ4k8fzmd+g3BeEpnZkxWir408dkumlZRnDhC
+ +YxKpn2OB2QsND5124rfA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LtoQ1mIKQuQ=:QcgFZ2P3Dsu369MF+DyBC8
+ 6Dv+VM+6yFfzPe2KrvaRhnFVhBKEXWNiu5D3UCR+M6YfEfZOK7Ot/feVDNtNFA0/A3d5Xb4R5
+ 0xFJT/dc1eCOeR+QxNU3LIbfxD8LAQLSj4VMezNYDP1LLTkfXAVwD7PIrcV8lPaliSljySQE8
+ Fb7bgKYOZgCagh7oonRWgP0pjz8ddZqFIgbCT0P8NuRDBYNjlQdcsmhFEHJnqsltOSiKBMgD1
+ YVYqHxYfnQXTBKejMI8aD59Gbm68JXeWxRk16nTf646/UvTKwy3CMwc4C6BnjX+O88SigApe5
+ E1icGByGNr5Z1H663Yx/QlGByUfYhE6GujUtfrcLeBA87lUEJsGQ8XCtKEeVUTA3XciGM+bM6
+ PF1cH2F0niUAyeFxpOyeT63X034hlQzw5JAl7lP/w6e7cz/aR4YPHHED9aShNhqLM/GHD/GMl
+ +Iv5zztmA1+9ghDnFCrQb1UyZ6qAKJxD/7qY5z5As25754cWAY2Ds5M0/4+K8sY0skKZdup//
+ iJPgHsVQDqntKH8aMIPouthwc4PBgYWx0U15Kjx3seg88xctiLc0diNiiQxsGM3j++YVe54kr
+ hDdVGvwlYptq+krVFt0ul1d4EE5WYx2mspSdlnsi6PclpCEH4TAwGXdzWcmfCiAnD7shxH3xL
+ MNixfWSvHBz0XOiFJU4ALOe1Zlsxc5TqBfsVQq6/IilL3tmhGrRBJA8eBGB9wH7N2vnUKlDjt
+ Dm9f5AweaXZIYaWtwC9VIpB439H6qjUD4Yu/xMAR0ymcFDPXzAbevtkbXWYbMWrY8MEmsGglc
+ WwuOs5Q1jvGJky0SboQKpI3Jxi4PCK3IBor9hTg0KhkoPSC7JMnYFtwxew+ufKupY90l5HnBF
+ L+h9dMC+Fvqvnjq6eZNg==
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 Hello,
 
-some news about bcachefs, I quote from patreon[1]
+I saw that Kent ask for review for bcachefs[1], also the latest patreon post of "upcoming changes"[2]. But how is the status to get bcachefs into the mainline kernel?
+I don't see 'usefull' answers on the mailinglist, does Kent get answers directly?
+It would be very nice if we (the bcachefs community), get more details here.
 
-"Erasure coding is ready for wider testing!
-I just finished reworking disk space accounting for parity blocks - they're broken out from user data now, so bcachefs fs usage will show you that overhead. And I've been fixing bugs; there shouldn't be any gaping holes, and I don't expect it to catch on fire or eat data at this point. But there will definitely bugs and performance issues to find and fix.
-That's the main news, aside from a whole bunch of bug fixing. Xfstests runs are looking cleaner and cleaner, and the bug reports I've been getting are less and less serious - things are looking good!"
+[1] https://lkml.org/lkml/2020/10/27/3684
+[2] https://www.patreon.com/posts/upcoming-changes-44125345
 
 best regards
 Stefan
-
-[1] https://www.patreon.com/posts/status-update-43089832
 
 
