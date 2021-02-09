@@ -2,78 +2,75 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A55CFC56202
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 25 Nov 2020 12:35:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D3FAC433DB
+	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 Feb 2021 10:14:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2E57B206E5
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 25 Nov 2020 12:35:32 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="Fj8oVw0A"
+	by mail.kernel.org (Postfix) with ESMTP id 2859064E6C
+	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 Feb 2021 10:14:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729088AbgKYMfb (ORCPT
+        id S231259AbhBIKOl convert rfc822-to-8bit (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 25 Nov 2020 07:35:31 -0500
-Received: from mout.gmx.net ([212.227.15.18]:37067 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728326AbgKYMfb (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:35:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606307730;
-        bh=aE09HQo5JGx9moRjSa0UQ1X0mj4HF6qoNS8tu4ZShpE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=Fj8oVw0A0gxooTGSQ8NIYnY5Si4TejCdmCXcMFXOc9eX1bGeDdENZMi0qWbSXqSzP
-         TUiJ367TNp2jbjxbK9X456gQhndtJBcbHR7inU36QnmShkjkxjgpQ3DvyiWwWocJDe
-         NB9Fg4XK3legy5j1RzxNJt1RCx1PI9MswZuyEnDk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from t460-skr.localnet ([92.214.189.46]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MHoRA-1kT6BD3guM-00ExSc; Wed, 25
- Nov 2020 13:35:29 +0100
-From:   Stefan K <shadow_7@gmx.net>
+        Tue, 9 Feb 2021 05:14:41 -0500
+Received: from relay-b01.edpnet.be ([212.71.1.221]:47602 "EHLO
+        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231260AbhBIKGz (ORCPT
+        <rfc822;linux-bcachefs@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:06:55 -0500
+X-Greylist: delayed 912 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Feb 2021 05:06:54 EST
+X-ASG-Debug-ID: 1612864252-15c4343996d2ff0001-qsCQDO
+Received: from [192.168.177.53] (94.105.113.28.dyn.edpnet.net [94.105.113.28]) by relay-b01.edpnet.be with ESMTP id sbOVIV62kQr9de2M for <linux-bcachefs@vger.kernel.org>; Tue, 09 Feb 2021 10:50:53 +0100 (CET)
+X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
+X-Barracuda-Effective-Source-IP: 94.105.113.28.dyn.edpnet.net[94.105.113.28]
+X-Barracuda-Apparent-Source-IP: 94.105.113.28
 To:     linux-bcachefs@vger.kernel.org
-Cc:     linux-bcache@vger.kernel.org
-Subject: Status of merging bcachefs into mainline
-Date:   Wed, 25 Nov 2020 13:35:29 +0100
-Message-ID: <3738693.ng0IJAnuUy@t460-skr>
+From:   Janpieter Sollie <janpieter.sollie@kabelmail.de>
+Subject: debugging: how long do I need to keep data for other devs?
+Message-ID: <cda37b74-eca0-4589-bc75-9e4bc7f181df@kabelmail.de>
+X-ASG-Orig-Subj: debugging: how long do I need to keep data for other devs?
+Date:   Tue, 9 Feb 2021 10:51:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Provags-ID: V03:K1:sWQxj7/whobUwluOjXJBXiN5lTyVU2NA/iDurTh+9XbWTKZvSgQ
- IrcdLX0xSCBBTOPQ4Sy80+yBLSbc0R6hcqN1xk3+d6TiQ/12K31SaLSSYRso8fOKFuWYQFr
- rU2YTQYMBFvpXayLQsdwNfM7AneK8lC+ASQJ4k8fzmd+g3BeEpnZkxWir408dkumlZRnDhC
- +YxKpn2OB2QsND5124rfA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LtoQ1mIKQuQ=:QcgFZ2P3Dsu369MF+DyBC8
- 6Dv+VM+6yFfzPe2KrvaRhnFVhBKEXWNiu5D3UCR+M6YfEfZOK7Ot/feVDNtNFA0/A3d5Xb4R5
- 0xFJT/dc1eCOeR+QxNU3LIbfxD8LAQLSj4VMezNYDP1LLTkfXAVwD7PIrcV8lPaliSljySQE8
- Fb7bgKYOZgCagh7oonRWgP0pjz8ddZqFIgbCT0P8NuRDBYNjlQdcsmhFEHJnqsltOSiKBMgD1
- YVYqHxYfnQXTBKejMI8aD59Gbm68JXeWxRk16nTf646/UvTKwy3CMwc4C6BnjX+O88SigApe5
- E1icGByGNr5Z1H663Yx/QlGByUfYhE6GujUtfrcLeBA87lUEJsGQ8XCtKEeVUTA3XciGM+bM6
- PF1cH2F0niUAyeFxpOyeT63X034hlQzw5JAl7lP/w6e7cz/aR4YPHHED9aShNhqLM/GHD/GMl
- +Iv5zztmA1+9ghDnFCrQb1UyZ6qAKJxD/7qY5z5As25754cWAY2Ds5M0/4+K8sY0skKZdup//
- iJPgHsVQDqntKH8aMIPouthwc4PBgYWx0U15Kjx3seg88xctiLc0diNiiQxsGM3j++YVe54kr
- hDdVGvwlYptq+krVFt0ul1d4EE5WYx2mspSdlnsi6PclpCEH4TAwGXdzWcmfCiAnD7shxH3xL
- MNixfWSvHBz0XOiFJU4ALOe1Zlsxc5TqBfsVQq6/IilL3tmhGrRBJA8eBGB9wH7N2vnUKlDjt
- Dm9f5AweaXZIYaWtwC9VIpB439H6qjUD4Yu/xMAR0ymcFDPXzAbevtkbXWYbMWrY8MEmsGglc
- WwuOs5Q1jvGJky0SboQKpI3Jxi4PCK3IBor9hTg0KhkoPSC7JMnYFtwxew+ufKupY90l5HnBF
- L+h9dMC+Fvqvnjq6eZNg==
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
+X-Barracuda-Connect: 94.105.113.28.dyn.edpnet.net[94.105.113.28]
+X-Barracuda-Start-Time: 1612864253
+X-Barracuda-URL: https://212.71.1.221:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at edpnet.be
+X-Barracuda-Scan-Msg-Size: 635
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Spam-Score: 0.00
+X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.87858
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hello,
+Hi,
 
-I saw that Kent ask for review for bcachefs[1], also the latest patreon post of "upcoming changes"[2]. But how is the status to get bcachefs into the mainline kernel?
-I don't see 'usefull' answers on the mailinglist, does Kent get answers directly?
-It would be very nice if we (the bcachefs community), get more details here.
+I am involved in 2 bcachefs bugs on github: #189 and #190.
+Both errors make the data unreadable.
+I have 3 bcachefs filesystems,
+1 not moved to alloc_v2 and all devices present,
+1 never moved to alloc_v2 but 1 foreground/promote device missing
+1 moved to alloc_v2 and 1 foreground/promote device missing
+Like any good IT guy, I create backups of my data.
+but, for how long is it useful to keep the "broken" filesystem for repair? When can I simply
+reformat the fs and revert to backup?
 
-[1] https://lkml.org/lkml/2020/10/27/3684
-[2] https://www.patreon.com/posts/upcoming-changes-44125345
+I know I could do it immediately - but this erases the faulty setup which needs to be examined
 
-best regards
-Stefan
+kind regards,
+
+
+Janpieter
 
 
