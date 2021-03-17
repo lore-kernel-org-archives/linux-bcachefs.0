@@ -2,184 +2,293 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3E4AC433E0
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  3 Mar 2021 06:51:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6349C433E9
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 17 Mar 2021 07:30:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 45F7464E75
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  3 Mar 2021 06:51:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8B2A264F77
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 17 Mar 2021 07:30:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376418AbhCCGkM (ORCPT
+        id S229944AbhCQH3h (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 3 Mar 2021 01:40:12 -0500
-Received: from relay-b01.edpnet.be ([212.71.1.221]:48620 "EHLO
-        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449235AbhCBQQ4 (ORCPT
+        Wed, 17 Mar 2021 03:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhCQH3h (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:16:56 -0500
-X-ASG-Debug-ID: 1614700832-15c43405f66c9400001-qsCQDO
-Received: from [192.168.177.53] (213.219.166.252.adsl.dyn.edpnet.net [213.219.166.252]) by relay-b01.edpnet.be with ESMTP id sUpQNrqediQJlMzw for <linux-bcachefs@vger.kernel.org>; Tue, 02 Mar 2021 17:00:32 +0100 (CET)
-X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
-X-Barracuda-Effective-Source-IP: 213.219.166.252.adsl.dyn.edpnet.net[213.219.166.252]
-X-Barracuda-Apparent-Source-IP: 213.219.166.252
-To:     linux-bcachefs@vger.kernel.org
-From:   Janpieter Sollie <janpieter.sollie@kabelmail.de>
-Subject: patch for upgrading to 5.11
-Message-ID: <c3d2a014-f8ae-e0a5-9a9e-4b78f1e53f7b@kabelmail.de>
-X-ASG-Orig-Subj: patch for upgrading to 5.11
-Date:   Tue, 2 Mar 2021 17:00:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 17 Mar 2021 03:29:37 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED762C06174A;
+        Wed, 17 Mar 2021 00:29:36 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id b130so37935786qkc.10;
+        Wed, 17 Mar 2021 00:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=tMAcgoJJTJhR6LVY3stgnaxqqNZ4jxByErqOoVujxrM=;
+        b=N9W8KhP8VFNmiag4gQnUgEASPTwh9oSFQ/mJub4EIfxdnR7/c+EboZEyzZS9Dp+2Ql
+         d+dGjYFlMDIqkrV7ZaZb2Ilm8DnWyNSfb83NqZ2qbjm/z8FIpLnJLRGykVqmJgZzN7Wr
+         NwT5MFDQDwxNzI3+AP3QxsIMb2rKcsyl8WJv0pnIAllb59dyuSj72t4Izkq6PAxZLfXM
+         qdU6Dc6NHHYwXAzOSj++08KJG10cr4J5pFUI2DcWECSI/oq4axwbSUlR3WBgWNqmFHAf
+         BlCfyWfBwxpB5DLa6bPW9iX765yFIq9/cOjE+8FIf/ba1HGQDzXLzBraM2I9UL826E17
+         mQcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=tMAcgoJJTJhR6LVY3stgnaxqqNZ4jxByErqOoVujxrM=;
+        b=ZV1wJP5OPNXcyt2ynRgenUmclBXmRdKiL6X+JInPd2DjGKvCX5wkv9QD7cdsCd4l/M
+         pPeYlxgoic/CwaV28BLMXm5hGyra/HPrlm8vn4gV+33aRLrIXevBpjXJ6U78Jo2y7IGr
+         me+1vP2xrOT0zXy48gGW7XRKEzADvBWnnYZsk41eYRNaP6DZ3KZGKp7eYDsf6mHSGFgW
+         uGKB8VR0i4iYqWPNsIb5TaUTs6QJqVCu6LxcKnKTOkX+aqKpCYzfYaDnf1TG4mTyPGuI
+         YxSinx8kJta23b+DroYBLghI9TngBVGz/K2q2JexQFJC8f6mEpqMFbNau8C0oYcjR0R8
+         i2JQ==
+X-Gm-Message-State: AOAM530pXtV30ReoyaNtrnYS8RpEF2DXgS5L/vA267JzMcvpc2NgIiLK
+        GtPHZ1MsMuFIj5QeTUfA1Yl1jEFMyBlb
+X-Google-Smtp-Source: ABdhPJzUq1JcA2D4rtBVNwni7zBZxvtZhALjJXdgK7kbZzVW4iAMnhI6YfzAJym5Fz5Mb64jny9b3Q==
+X-Received: by 2002:a37:a390:: with SMTP id m138mr3215155qke.59.1615966175576;
+        Wed, 17 Mar 2021 00:29:35 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id 18sm17687146qkr.90.2021.03.17.00.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 00:29:35 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 03:29:30 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: bcachefs snapshots design doc - RFC
+Message-ID: <YFGv2oSQXNbwMZ21@moria.home.lan>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------F94A1DAD0DC29DF8DF13F8F9"
-Content-Language: en-US
-X-Barracuda-Connect: 213.219.166.252.adsl.dyn.edpnet.net[213.219.166.252]
-X-Barracuda-Start-Time: 1614700832
-X-Barracuda-URL: https://212.71.1.221:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 477
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.50
-X-Barracuda-Spam-Status: No, SCORE=0.50 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=BSF_RULE7568M
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.88267
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-        0.50 BSF_RULE7568M          Custom Rule 7568M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------F94A1DAD0DC29DF8DF13F8F9
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Snapshots for bcaches are well under way, and I've written a design doc for
+them. I'd love to get feedback on anything I might have missed, especially from
+the btrfs people.
 
-This patch is a "hack", not a proper solution:
+The current version of this document lives at
+  https://bcachefs.org/Snapshots/
 
-- It contains some things I'm not proud about (eg passing NULL to a function call)
+and the in-progress code lives at
+  https://evilpiepirate.org/git/bcachefs.git/log/?h=snapshots
 
-- It contians things I'm not sure of (eg: does fopen need a exclusive lock n the device? or is
-read/write sufficient?
+thanks for reading!
 
-Still, it allows me to patch to 5.11 kernel, and so far, everything is OK
+Snapshots & subvolumes:
+=======================
 
+The short version:
 
-Thank you Kent Overstreet for developing this FS!
+bcachefs snapshots are a different approach - we're not using COW btrees.
+Instead, they're based on extending the key filesystem items (inodes, dirents,
+xattrs, extents) with a version number - a snapshot id - for the low bits.
 
+Snapshot IDs form a tree, which will be recorded in the snapshots btree. The
+root snapshot ID is `U32_MAX`, and we allocate new snapshot IDs growing down so
+that the parent of a given snapshot ID is always larger than that ID.
 
-Kind regards,
+To create a new writeable snapshot, we allocate two new snapshot IDs. We update
+the existing subvolume with one of the new snapshot IDs, and assign the other
+snapshot ID to the new snapshot.
 
+When we do a lookup for a filesystem item, we have to check if the snapshot ID
+of the key we found is an ancestor of the snapshot ID we're searching for, and
+filter out items that aren't.
 
-Janpieter Sollie
+Subvolumes:
+===========
 
+Subvolumes are needed for two reasons:
 
---------------F94A1DAD0DC29DF8DF13F8F9
-Content-Type: text/x-patch; charset=UTF-8;
- name="move_to_5.11.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="move_to_5.11.patch"
+* They're the mechanism for accessing snapshots
 
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 2b6a300edf1d..1fa87def871e 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -1303,13 +1303,16 @@ static int bch2_sync_fs(struct super_block *sb, int wait)
- 	return bch2_journal_flush(&c->journal);
- }
- 
--static struct bch_fs *bch2_path_to_fs(const char *dev)
-+static struct bch_fs *bch2_path_to_fs(const char *devpath)
- {
- 	struct bch_fs *c;
--	struct block_device *bdev = lookup_bdev(dev);
-+        struct block_device *bdev;
-+        dev_t dev;
-+	int err = lookup_bdev(devpath, &dev);
-+        bdev = blkdev_get_by_dev(dev, FMODE_READ | FMODE_WRITE, NULL);
- 
--	if (IS_ERR(bdev))
--		return ERR_CAST(bdev);
-+	if (err)
-+		return ERR_PTR(-ENOENT);
- 
- 	c = bch2_bdev_to_fs(bdev);
- 	bdput(bdev);
-diff --git a/fs/bcachefs/str_hash.h b/fs/bcachefs/str_hash.h
-index 9f0bd4405199..b07294df6a2d 100644
---- a/fs/bcachefs/str_hash.h
-+++ b/fs/bcachefs/str_hash.h
-@@ -12,7 +12,8 @@
- 
- #include <linux/crc32c.h>
- #include <crypto/hash.h>
--#include <crypto/sha.h>
-+#include <crypto/sha1.h>
-+#include <crypto/sha2.h>
- 
- static inline enum bch_str_hash_type
- bch2_str_hash_opt_to_type(struct bch_fs *c, enum bch_str_hash_opts opt)
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index eee7d6c011b6..663ed5e15c51 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -541,9 +541,8 @@ void __bch2_fs_stop(struct bch_fs *c)
- 	for_each_member_device(ca, c, i)
- 		if (ca->kobj.state_in_sysfs &&
- 		    ca->disk_sb.bdev)
--			sysfs_remove_link(&part_to_dev(ca->disk_sb.bdev->bd_part)->kobj,
-+			sysfs_remove_link(&(ca->disk_sb.bdev->bd_device.kobj),
- 					  "bcachefs");
--
- 	if (c->kobj.state_in_sysfs)
- 		kobject_del(&c->kobj);
- 
-@@ -1005,7 +1004,7 @@ static void bch2_dev_free(struct bch_dev *ca)
- 
- 	if (ca->kobj.state_in_sysfs &&
- 	    ca->disk_sb.bdev)
--		sysfs_remove_link(&part_to_dev(ca->disk_sb.bdev->bd_part)->kobj,
-+		sysfs_remove_link(&(ca->disk_sb.bdev->bd_device.kobj),
- 				  "bcachefs");
- 
- 	if (ca->kobj.state_in_sysfs)
-@@ -1043,7 +1042,7 @@ static void __bch2_dev_offline(struct bch_fs *c, struct bch_dev *ca)
- 
- 	if (ca->kobj.state_in_sysfs) {
- 		struct kobject *block =
--			&part_to_dev(ca->disk_sb.bdev->bd_part)->kobj;
-+			&(ca->disk_sb.bdev->bd_device.kobj);
- 
- 		sysfs_remove_link(block, "bcachefs");
- 		sysfs_remove_link(&ca->kobj, "block");
-@@ -1083,7 +1082,7 @@ static int bch2_dev_sysfs_online(struct bch_fs *c, struct bch_dev *ca)
- 
- 	if (ca->disk_sb.bdev) {
- 		struct kobject *block =
--			&part_to_dev(ca->disk_sb.bdev->bd_part)->kobj;
-+			&(ca->disk_sb.bdev->bd_device.kobj);
- 
- 		ret = sysfs_create_link(block, &ca->kobj, "bcachefs");
- 		if (ret)
-@@ -1817,10 +1816,12 @@ int bch2_dev_resize(struct bch_fs *c, struct bch_dev *ca, u64 nbuckets)
- /* return with ref on ca->ref: */
- struct bch_dev *bch2_dev_lookup(struct bch_fs *c, const char *path)
- {
--	struct block_device *bdev = lookup_bdev(path);
-+	struct block_device *bdev;
-+	dev_t dev;
- 	struct bch_dev *ca;
- 	unsigned i;
--
-+	int err = lookup_bdev(path, &dev);
-+	bdev = blkdev_get_by_dev(dev, FMODE_READ | FMODE_WRITE, NULL);
- 	if (IS_ERR(bdev))
- 		return ERR_CAST(bdev);
- 
+* Also, they're a way of isolating different parts of the filesystem hierarchy
+  from snapshots, or taking snapshots that aren't global. I.e. you'd create a
+  subvolume for your database so that filesystem snapshots don't COW it, or
+  create subvolumes for each home directory so that users can snapshot their
+  own home directories.
 
---------------F94A1DAD0DC29DF8DF13F8F9--
+The functionality and userspace interface for snapshots and subvolumes are
+roughly modelled after btrfs, but simplified.
+
+Subvolumes in bcachefs are just fancy directories. We introduce internally a new
+dirent type that can point to subvolumes, instead of inodes, and the subvolume
+has a pointer to the root inode. Subvolumes get their own table (btree), and
+subvolume keys have fields for root inode number and snapshot ID.
+
+Subvolumes have no name outside of the filesystem heirarchy. This means that, in
+order to enumerate and list subvolumes, we need to be able to reconstruct their
+path.
+
+To reconstruct paths, we're adding inode backpointers - two new inode fields for
+the inode number of the directory they're in, and the dirent offset. We're only
+adding fields for a single backpointer, i.e. we're not handling hardlinks yet -
+we set an inode flag indicating the backpointer fields are untrusted whenever we
+create a hardlink. If we do ever want to add multiple backpointers for files
+with hardlinks, we'll need to add another btree where each backpointer gets its
+own key. This should be good enough for now.
+
+Subvolume root inodes have two more fields: one for the subvolume ID, and
+another for the parent subvolume ID. The subvolume ID field is only set for
+subvolume roots because otherwise taking a snapshot would require updating every
+inode in that subvolume. With these fields and inode backpointers, we'll be able
+to reconstruct a path to any directory, or any file that hasn't been hardlinked.
+
+Snapshots:
+==========
+
+We're also adding another table (btree) for snapshot keys. Snapshot keys form a
+tree where each node is just a u32. The btree iterator code that filters by
+snapshot ID assumes that a parent IDs are always larger than child IDs, so the
+root starts at `U32_MAX`. And, there will be multiple trees - creating a new
+empty subvolume will allocate a new snapshot ID that has no parent node.
+
+Any filesystem operation that's within a subvolume starts by looking up the key
+for that subvolume to get the current snapshot ID, to be used for both lookups
+and updates. This means we have to remember what subvolume we're in, in the in
+memory `bch_inode_info` - as mentioned previously only subvolume root inodes
+have this field in the btree.
+
+The btree iterator code is getting two new flags - `BTREE_ITER_ALL_SNAPSHOTS`
+and `BTREE_ITER_FILTER_SNAPSHOTS`, that controls how iteration handles the
+snapshot field of the key. One of these flags should be specified for iterators
+for a btree that uses the snapshots field. `BTREE_ITER_ALL_SNAPSHOTS` means
+don't handle the snapshot field specially: it returns every key, and
+advancing/rewinding the iterator position increments/decrements the snapshot
+field. `BTREE_ITER_FILTER_SNAPSHOTS` means incrementing/decrementing the
+iterator position does not include the snapshot field - there's only one
+iterator position for each inode number:offset - and we return the key that
+matches the specified snapshot ID, or the first ancestor if not found.
+
+The update path, `bch2_trans_commit()` now has more work to do:
+
+* When deleting, we have to check if there's another key at the same position
+  in an ancestor snapshot that would become visible - if so, we need to insert
+  a whiteout instead.
+
+* When there was a key at the current position in an ancestor snapshot ID
+  that's being overwritten (i.e. it will no longer be visible in the current
+  snapshot) - we should also check if it's visible in any other snapshots, and
+  if not, delete it.
+
+Extents turn out to not require much special handling: extent handling has
+already been moved out of the core btree code, and there's now a pass at the top
+of `bch2_trans_commit()` for extents that walks the list of updates and compares
+them to what's being overwritten, and for extents being partially overwritten
+generates more updates for the existing extents. This all does basically what we
+want for snapshots and won't have to change much.
+
+There are implications for splitting and merging of existing extents. If we have
+to split an existing extent (i.e. when copygc is moving around existing data and
+the write path had to fragment it) - for each child snapshot ID of the extent's
+snapshot ID, if the extent is not visible in that snapshot emit a whiteout for
+the fragment.
+
+Conversely, existing extents may not be merged if one of them is visible in a
+child snapshot and the other is not.
+
+Snapshot deletion:
+==================
+
+In the current design, deleting a snapshot will require walking every btree that
+has snapshots (extents, inodes, dirents and xattrs) to find and delete keys with
+the given snapshot ID.
+
+We could improve on this if we had a mechanism for "areas of interest" of the
+btree - perhaps bloom filter based, and other parts of bcachefs might be able to
+benefit as well - e.g. rebalance.
+
+Other performance considerations:
+=================================
+
+Snapshots seem to exist in one of those design spaces where there's inherent
+tradeoffs and it's almost impossible to design something that doesn't have
+pathological performance issues in any use case scenario. E.g. btrfs snapshots
+are known for being inefficient with sparse snapshots.
+
+bcachefs snapshots should perform beautifully when taking frequent periodic (and
+thus mostly fairly sparse) snapshots. The one thing we may have to watch out for
+is part of the keyspace becoming too dense with keys from unrelated snapshots -
+e.g. if we start with a 1 GB file, snapshot it 100 or 1000 times, and then have
+fio fully overwrite the file with 4k random writes in every snapshot - that
+would not be good, reading that file sequentially will require more or less
+sequentially scanning through all the extents from every snapshot.
+
+I expect this to be a fairly uncommon issue though, because when we allocate new
+inode numbers we'll be picking an inode number that's unused in any snapshot -
+most files in a filesystem are created, written to once, and then some time
+later a new version is created and then renamed over the old file. The only way
+to trigger this issue is by doing steady random writes to a large existing file
+that's never recreated - which is mostly just databases and virtual machine
+images. For virtual machine images people would be better off using reflink,
+which we already support and won't have this issue at all.
+
+But, if this does turn out to be a real issue for people (and if someone's
+willing to fund this area), it should be perfectly solvable: we first need to
+track number of keys for a given inode (extents/dirents/xattrs) in a given
+snapshot, and in all snapshots. When that ratio crosses some threshhold, we'll
+allocate a new inode and move all the keys for that inode number and snapshot ID
+to the new inode, and mark the original inode to redirect to the new inode so
+that the user visible inode number doesn't change. A bit tedious to implement,
+but straightforward enough.
+
+Locking overhead:
+=================
+
+Every btree transaction that operates within a subvolume (every filesystem level
+operation) will need to start by looking up the subvolume in the btree key cache
+and taking a read lock on it. Cacheline contention for those locks will
+certainly be an issue, so we'll need to add an optional mode to SIX locks that
+use percpu counters for taking read locks. Interior btree node locks will also
+be able to benefit from this mode.
+
+The btree key cache uses the rhashtable code for indexing items: those hash
+table lookups are expected to show up in profiles and be worth optimizing. We
+can probably switch to using a flat array to index btree key cache items for the
+subvolume btree.
+
+Permissions:
+============
+
+Creating a new empty subvolume can be done by untrusted users anywhere they
+could call mkdir().
+
+Creating a snapshot will also be an untrusted operation - the only additional
+requirement being that untrusted users must own the root of the subvolume being
+snapshotted.
+
+Disk space accounting:
+======================
+
+We definitely want per snapshot/subvolume disk space accounting. The disk space
+accounting code is going to need some major changes in order to make this
+happen, though: currently, accounting information only lives in the journal
+(it's included in each journal entry), and we'll need to change it to live in
+keys in the btree first. This is going to take a major rewrite as the disk space
+accounting code uses an intricate system of percpu counters that are flushed
+just prior to journal writes, but we should be able to extend the btree key
+cache code to accommodate this.
+
+Recursive snapshots:
+====================
+
+Taking recursive snapshots atomically should be fairly easy, with the caveat
+that right now there's a limit on the number of btree iterators that can be used
+simultaneously (64) which will limit the number of subvolumes we can snapshot at
+once. Lifting this limit would be useful for other reasons though, so will
+probably happen eventually.
+
+Fsck:
+=====
+
+The fsck code is going to have to be reworked to use `BTREE_ITER_ALL_SNAPSHOTS`
+and check keys in all snapshots all at once, in order to have acceptable
+performance. This has not been started on yet, and is expected to be the
+trickiest and most complicated part.
