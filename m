@@ -2,97 +2,89 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 319D6C433ED
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 27 Apr 2021 16:44:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 345CEC433B4
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 27 Apr 2021 17:03:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F1A4561077
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 27 Apr 2021 16:44:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 08F4B60240
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 27 Apr 2021 17:03:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237685AbhD0QpQ (ORCPT
+        id S235735AbhD0REf (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 27 Apr 2021 12:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237539AbhD0QpN (ORCPT
+        Tue, 27 Apr 2021 13:04:35 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:28454 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235647AbhD0REe (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:45:13 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33668C06175F;
-        Tue, 27 Apr 2021 09:44:28 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id 1so44609235qtb.0;
-        Tue, 27 Apr 2021 09:44:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cCJHZajTitfvWhCX4/05gQJ9vbwlcHbuEcINXwgBWqg=;
-        b=iqVn6s5xnbr12JOYlX387A+v/QNkcRlbikJs/1bl5uOACTBc+Z+GowFr8t5tZDpP02
-         AhkBKawZTybIrUhaF1gg7OBap7JP8TcbooFukmKo2EO0mGMlFDJJcDaf+uN45aJQmgHO
-         fHcy5L6bm6GvxljMyU4GSN0c8WHetkNIgbfkXZHYqbpdaeynd7ZChd4888Ve7ulMTwsm
-         itiqjx9WJddZSrkzcPK2UJe1xqB1GAvfDpFyJC9WFR2qEkHEGXz2DE8xy2lJ8nlmEXV0
-         QY1lIwGP/bQHXdgToBZCH6TBOkHPuDURFIQf9SOpFoclt7o/uu7SdLC09yNljNzkyxUs
-         vGSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cCJHZajTitfvWhCX4/05gQJ9vbwlcHbuEcINXwgBWqg=;
-        b=IjvXj1TObh3TsB61nCQK+jUn/V9GoezjXmZdBDhqYpDgyQJIXqye1Aw68Mf7YiobY7
-         C2RN9RtnFfXl/niUNnZdEITTRt94rLC/Y/EnKHJpoHCvXsk6UDTKmScTWjFjJJh9jaPO
-         BQjYtDIHkz0gNyCs1mWnLowekEaQoUyIom6Biadajgj7zs4hEglxqI7vN/0pnNAU3eYT
-         bAm/xXFoOKqwCO0GxtLXJoWyCplZpEqgFHwLotvwUcR61W326T7CKgNT1w7nc4etuk9A
-         Gh+4RajamR1vUNzYHcHWCLcyjcU7rFb2lQNIVCklMNLdWvZbJTQewYRG7LqmkGZJ/i1s
-         LaOw==
-X-Gm-Message-State: AOAM530LovfCEsKCNi5JZhydZBejVDDRQRp7/ZXFkzTB1TRQOVS+0i4P
-        DU6LKAWku8TNG728TsuptGPvdG3LPDqr
-X-Google-Smtp-Source: ABdhPJzw0Dt08K0ehcYpLrJDhIW+6F3NCXZq8QC3TZsDcIf3v4AZhyMupSiV7/jIhYYYZTiiAaNCLA==
-X-Received: by 2002:ac8:7b41:: with SMTP id m1mr22038154qtu.25.1619541867328;
-        Tue, 27 Apr 2021 09:44:27 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id l71sm3149163qke.27.2021.04.27.09.44.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 09:44:27 -0700 (PDT)
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     fstests@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Tue, 27 Apr 2021 13:04:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UX.IUxB_1619543019;
+Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0UX.IUxB_1619543019)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 28 Apr 2021 01:03:39 +0800
+Date:   Wed, 28 Apr 2021 01:03:39 +0800
+From:   Eryu Guan <eguan@linux.alibaba.com>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     fstests@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [PATCH 2/3] Improved .gitignore
-Date:   Tue, 27 Apr 2021 12:44:18 -0400
-Message-Id: <20210427164419.3729180-3-kent.overstreet@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210427164419.3729180-1-kent.overstreet@gmail.com>
+Subject: Re: [PATCH 3/3] Use --yes option to lvcreate
+Message-ID: <20210427170339.GA9611@e18g06458.et15sqa>
 References: <20210427164419.3729180-1-kent.overstreet@gmail.com>
+ <20210427164419.3729180-4-kent.overstreet@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427164419.3729180-4-kent.overstreet@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
----
- .gitignore | 3 +++
- 1 file changed, 3 insertions(+)
+On Tue, Apr 27, 2021 at 12:44:19PM -0400, Kent Overstreet wrote:
+> This fixes spurious test failures caused by broken pipe messages.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+> ---
+>  tests/generic/081 | 2 +-
+>  tests/generic/108 | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tests/generic/081 b/tests/generic/081
+> index 5dff079852..26702007ab 100755
+> --- a/tests/generic/081
+> +++ b/tests/generic/081
+> @@ -70,7 +70,7 @@ _scratch_mkfs_sized $((300 * 1024 * 1024)) >>$seqres.full 2>&1
+>  $LVM_PROG vgcreate -f $vgname $SCRATCH_DEV >>$seqres.full 2>&1
+>  # We use yes pipe instead of 'lvcreate --yes' because old version of lvm
+>  # (like 2.02.95 in RHEL6) don't support --yes option
+> -yes | $LVM_PROG lvcreate -L 256M -n $lvname $vgname >>$seqres.full 2>&1
+> +$LVM_PROG lvcreate --yes -L 256M -n $lvname $vgname >>$seqres.full 2>&1
 
-diff --git a/.gitignore b/.gitignore
-index 4cc9c80724..5a0e5206da 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -4,6 +4,9 @@
- .dep
- .libs
- .ltdep
-+.*
-+cscope.*
-+tags
- 
- /local.config
- /results
--- 
-2.31.1
+Please see above comments, we use yes pipe intentionally. I don't see
+how this would result in broken pipe. Would you please provide more
+details? And let's see if we could fix the broken pipe issue.
 
+Thanks,
+Eryu
+
+>  # wait for lvcreation to fully complete
+>  $UDEV_SETTLE_PROG >>$seqres.full 2>&1
+>  
+> diff --git a/tests/generic/108 b/tests/generic/108
+> index 6fb194f43c..74945fdf3c 100755
+> --- a/tests/generic/108
+> +++ b/tests/generic/108
+> @@ -56,7 +56,7 @@ $LVM_PROG pvcreate -f $SCSI_DEBUG_DEV $SCRATCH_DEV >>$seqres.full 2>&1
+>  $LVM_PROG vgcreate -f $vgname $SCSI_DEBUG_DEV $SCRATCH_DEV >>$seqres.full 2>&1
+>  # We use yes pipe instead of 'lvcreate --yes' because old version of lvm
+>  # (like 2.02.95 in RHEL6) don't support --yes option
+> -yes | $LVM_PROG lvcreate -i 2 -I 4m -L 275m -n $lvname $vgname \
+> +$LVM_PROG lvcreate --yes -i 2 -I 4m -L 275m -n $lvname $vgname \
+>  	>>$seqres.full 2>&1
+>  # wait for lv creation to fully complete
+>  $UDEV_SETTLE_PROG >>$seqres.full 2>&1
+> -- 
+> 2.31.1
