@@ -2,120 +2,132 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FORGED_MUA_MOZILLA,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A1F7C433ED
-	for <linux-bcachefs@archiver.kernel.org>; Sun, 16 May 2021 13:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57A68C433ED
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 17 May 2021 15:22:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ECBAE610FC
-	for <linux-bcachefs@archiver.kernel.org>; Sun, 16 May 2021 13:54:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3F90760FF3
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 17 May 2021 15:22:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233861AbhEPNz6 (ORCPT
+        id S243083AbhEQPXi (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 16 May 2021 09:55:58 -0400
-Received: from out20-26.mail.aliyun.com ([115.124.20.26]:39061 "EHLO
-        out20-26.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233811AbhEPNz5 (ORCPT
+        Mon, 17 May 2021 11:23:38 -0400
+Received: from e246-3.smtp-out.eu-west-3.amazonses.com ([23.251.246.3]:47853
+        "EHLO e246-3.smtp-out.eu-west-3.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244296AbhEQPUA (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 16 May 2021 09:55:57 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08295409|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.199057-0.0256767-0.775266;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=guan@eryu.me;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.KED8zEg_1621173280;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.KED8zEg_1621173280)
-          by smtp.aliyun-inc.com(10.147.40.2);
-          Sun, 16 May 2021 21:54:40 +0800
-Date:   Sun, 16 May 2021 21:54:39 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        fstests@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 0/3] bcachefs support
-Message-ID: <YKEkH/a4GdKrq4fU@desktop>
-References: <20210427164419.3729180-1-kent.overstreet@gmail.com>
- <YJfvtvBCqA4zU0xf@desktop>
- <20210510231446.GO1872259@dread.disaster.area>
- <20210511012645.GD8558@magnolia>
+        Mon, 17 May 2021 11:20:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=axzmos4la3w74ngtxsngrtzf6xjixqeg; d=brouillet.org; t=1621264723;
+        h=Subject:From:To:References:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=E830yuVxXsH53SRHXjq2N/sH+CZttV6vKUuNOgP3Agc=;
+        b=fZ6Og9Y8r+tLEZFYB9KUFCGZgX6hb9hE2i4GvcsGxjc6JAG7j9rInxQyQnFb6BfF
+        OmwSZSOHqvoFbAEwxizOHuXwvjaEkNo/ZrCu2XldqtDAqIE0GCYu2quVIWtffi6SGSP
+        yl4TkwnNszPAN5szz0uxTtDTE9fS9xxxM1Zcntqc=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=2xmcwjqtfc53o6h4t73lgyi3w3u43rzi; d=amazonses.com; t=1621264723;
+        h=Subject:From:To:References:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+        bh=E830yuVxXsH53SRHXjq2N/sH+CZttV6vKUuNOgP3Agc=;
+        b=f3duue/DXYGVKhWdOA2MTYf96JiWsOdnEXs7ivHsAmI3iGmwavOIWbtYfcMUl903
+        LFHGpnhMZFclo7OcY9JIcvOStUMCh96yud6be0+Be/PXP1Rh+xSidzNE6wjDi6ZArUM
+        JnfA8N2D9Mdv+n7Tv26mMJ/N+hpJaRKwQtfG/hwo=
+Subject: Re: Bcachefs interest. Good or not for my use case ? documentation ?
+From:   Marcel Brouillet <marcel@brouillet.org>
+To:     linux-bcachefs@vger.kernel.org
+References: <92af6695-2a6a-a1cc-6f31-2a481d9c516e@brouillet.org>
+Message-ID: <011301797ae86c1d-5f2d0260-174b-4966-8aca-871cc0856a8d-000000@eu-west-3.amazonses.com>
+Date:   Mon, 17 May 2021 15:18:42 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511012645.GD8558@magnolia>
+In-Reply-To: <92af6695-2a6a-a1cc-6f31-2a481d9c516e@brouillet.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Feedback-ID: 1.eu-west-3.q74FiVNfnmtxEeagwsOORWMbwqlfbKRSWCmVFkPqYFw=:AmazonSES
+X-SES-Outgoing: 2021.05.17-23.251.246.3
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Mon, May 10, 2021 at 06:26:45PM -0700, Darrick J. Wong wrote:
-> On Tue, May 11, 2021 at 09:14:46AM +1000, Dave Chinner wrote:
-> > On Sun, May 09, 2021 at 10:20:38PM +0800, Eryu Guan wrote:
-> > > On Tue, Apr 27, 2021 at 12:44:16PM -0400, Kent Overstreet wrote:
-> > > > A small patch adding bcachefs support, and two other patches for consideration:
-> > > 
-> > > As bcachefs is not upstream yet, I think we should re-visit bcachefs
-> > > support after it's in upstream.
-> > 
-> > I disagree completely. I've been waiting for this to land for some
-> > time so I can actually run fstests against bcachefs easily to
-> > evaluate it's current state of stability and support.  The plans are
-> > to get bcachefs merged upstream, and so having support already in
-> > fstests makes it much easier for reviewers and developers to
-> > actually run tests and find problems prior to merging.
-> > 
-> > As an upstream developer and someone who will be reviewing bcachefs
-> > when it is next proposed for merge,  I would much prefer to see
-> > extensive and long term fstests coverage *before* the code is even
-> > merged upstream. Given that filesystems take years to develop to the
-> > point where they are stable and ready for merge, saying "can't
-> > enable the test environment until it is merged upstream" is not very
-> > helpful.
-> > 
-> > As a general principle, we want developers of new filesystems to
-> > start using fstests early in the development process of their
-> > filesystem. We should be encouraging new filesystems to be added to
-> > fstests, not saying "we only support upstream filesystems". If the
-> > filesystem plans to be merged upstream, then fstests support for
-> > that filesystem should be there long before the filesytsem is even
-> > proposed for merge.  We need to help people get new filesystems
-> > upstream, not place arbitrary "not upstream so not supported"
-> > catch-22s in their way...
+Hello,
 
-OK, that makes sense. Actually, I should have made my "upstream first"
-more clear. I'd love to merge non-upstream features/new fs supports if
-the proposed new feature/new filesystem has been developmented actively
-and the community has generally made the agreement that will merge the
-new feature/filesystem when it's in a good shape. IOW, it's not some
-random new features/filesystems, which are very likely to be dropped in
-the half way.
+I realize that my mailbox was overquota at the times I sent this email. 
+I feel terribly sorry if someone spent time answering and I didn't 
+receive the answer. I looked for a kernel.org mailinglist archive and 
+didn't find any. If there was an answer, would anyone be so kind to 
+forward it again to me ?
 
-And providing such info in the patch is very helpful to reviewers.
+Thank you. And thank you for coding. I'm sure it makes a difference, if 
+not for me, for the community.
 
-> > 
-> > Hence I ask that you merge bcachefs support to help the process of
-> > getting bcachefs suport upstream.
+Marcel.
 
-Sure, bcachefs looks promising to me now :)
-
-> 
-> /me notes that both Eryu and Dave have been willing to merge
-> surprisingly large quantities of code for XFS reflink and online fsck
-> long before either of those features landed in mainline, so I think it's
-
-Because I know you and the xfs commnity will work on it continuously and
-very unlikely make the new tests dead code :)
-
-Thanks,
-Eryu
-
-> perfectly fine to merge Kent's relatively small changes to enable
-> 'FSTYP=bcachefs'.
-> 
-> (With all of Eryu's review comments fixed, obviously...)
-> 
-> --D
-> 
-> > Cheers,
-> > 
-> > Dave.
-> > -- 
-> > Dave Chinner
-> > david@fromorbit.com
+On 26/04/2021 10:55, Marcel Brouillet wrote:
+> Hello,
+>
+> I'm trying this email list, and I hope this isn't considered rude 
+> posting here.
+>
+> ==> I am interested in Bcachefs for personal use. I have found (and 
+> sponsor) the Patreon page. I am having a hard time understanding if 
+> this is for me, or if I should stick with FS types that are shipped 
+> with Ubuntu. It's hard to understand what all it's features are and if 
+> they are adequate for my usage.
+>
+> The documentation that I found so far is https://bcachefs.org/ and 
+> https://www.patreon.com/bcachefs but it's not easy for me to grasp the 
+> benefits over the hassle of experimental.
+>
+> ==>_My usage is : for personal use, build a raid storage space for all 
+> my media (pictures, sound) and files (administration, legal, scans), 
+> on the following hardware:
+>
+> - two 5Tb 2.5" HDD Sata
+> - one 1Tb SSD
+> - some external USB3 5Tb HDD and/or cloud storage (I plan on using 
+> rsync or similar, possibly storing md5sum of each file in xattr)
+>
+> ==> My understanding is that using Bcachefs
+>
+>    + I become one additional tester of the software. Do you need that?
+>
+>    + I can dedicate a partition of the SSD to cache R/W to the HDD
+>    RAID. Will I see the difference for 5Mb pictures rarely accessed (at
+>    CPU-timescale)? I'm not running a high I/O server, it's for desktop 
+> use…
+>
+>    - It will be a pain for me to compile it in the kernel. I'm running
+>    vanilla Ubuntu. I found this :
+>    https://www.rwardrup.com/bcachefs-on-ubuntu-20-04/. I noticed
+>    automount doesn't work.
+>
+>     - physical storage format is not finalized. Is there a risk I loose
+>    everything, do I need to compile updates regularly? what happens
+>    when physical format changes?…
+>
+>     - if anything goes wrong, I can't just plug the HDDs on another 
+> system.
+>
+>     - isn't there a strain of the SSD that, at some point, will kill it?
+>    If it dies, and my system is on it (on an ext4 partition) I loose
+>    access to my data until I rebuild a system with Bcachefs kernel 
+> support.
+>
+>     - would it make sense to have the external HDD be part of the RAID,
+>    so to automate syncing on the backup drive ?
+>
+>
+> I'm also fine with vanilla ext4 with software Raid-1 and rsync. What 
+> would you recommend ? Irrespective of me using it or not, I like to 
+> continue sponsoring the development, with my modest income.
+>
+>
+> Best,
+>
+> Marcel (Paris, France)
+>
