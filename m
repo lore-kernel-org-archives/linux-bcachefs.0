@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F7C0C47088
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C276FC4708B
 	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 May 2021 22:20:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2F51C61408
+	by mail.kernel.org (Postfix) with ESMTP id A80526140B
 	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 May 2021 22:20:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbhEYWVm (ORCPT
+        id S233557AbhEYWVn (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 25 May 2021 18:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
+        Tue, 25 May 2021 18:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhEYWVj (ORCPT
+        with ESMTP id S233543AbhEYWVm (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 25 May 2021 18:21:39 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CF0C061574;
-        Tue, 25 May 2021 15:20:09 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id v8so32153537qkv.1;
-        Tue, 25 May 2021 15:20:09 -0700 (PDT)
+        Tue, 25 May 2021 18:21:42 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF03C061760;
+        Tue, 25 May 2021 15:20:10 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id z1so16905819qvo.4;
+        Tue, 25 May 2021 15:20:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=u2BiTeXky6V2PqfyD5Afd5g5sd0MTSBoPrFa0V/c9TY=;
-        b=XDDdI/tmmPiBe1s6BJdU8WoP6nL5yBfxckIVeKsKNADHrLC/GW6KoGe28IJMeRi6Ks
-         kORYkFrQRQNxT1sBYgs46FVNl/UPuOhJ8tblbI0PYwS9OkAsKF0Ek0h04M2ukAe9lp75
-         1uLez5xRyzW7AYH3l6/7HJRhwj2s8BMV5Q69dnNTIAxQa+rUQNmraAsH5mPL/0TIXgE5
-         6KFfSvrnzrc1VhkiNoNdynK8nUJ8qG4gxBcTCdF7J7apHxxHGL4bPMxv/hVJGBN/lkJy
-         C1F+++6NQW0dXyn4nOBFQM7WB3PgH4izuJ333pMh+l7opz9hXu6TDClirH5iyuqqFyTH
-         XlEQ==
+        bh=9JiBQCwU7hV4K3nb6UTd0Cu6Uln8EMlvZ5BxClGNXEY=;
+        b=DuRr6kY0NbHkUSqsW9RLMRyDxHJkP8ZF7n745y/SzAsvvtNXE/O0tmSpLivl2FCmkq
+         9gm6oGLqAKXk0Cdzpc23wJpT/RtVKigmn82iKZtD8AKNbcrGI9nMo4gDtEjqSpb8Dpdh
+         KEs1NZQD090JOFQkmAECnjgZk1Pwie+U9x4rXTPWGhKbDyhV6fJf+Xu3xmrnZ6HBEamD
+         tn3nU+HL270CCHQvw8Mh1D7hosrfpnmrgXba+dNwyQB4cJJsEgfFaSuLB0H3onHaqXvG
+         CPB/cj/JwWPCpEtcTCcqRJPci7pUgduozPZ1wFe9kbgvJgoOy4XsQJbBb1JF+Z4fZ4ic
+         fVPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=u2BiTeXky6V2PqfyD5Afd5g5sd0MTSBoPrFa0V/c9TY=;
-        b=q/kLOyjdc+/whjSdPYibFl3aJGfZTo1XJLo6oLNjWmTF3otmbcMjAhBmSpzGVssj2T
-         ysGqBOpbUkHD1Lid0SuEuBCAsH2HUV8c0YEDTWY/3rkkYPW8SxPSLxPyJ9XgmEqBSBu3
-         ZDqDw0H63ofxGzH8mAsQMlyO0JaWRX3HCrxkfw+Rs+FX5/mG1kweqMfDaF24i+1gk81x
-         HLbyJaxDFwkaVoIN7f69ouxZArSBKtRimysQqGVV/jvCsz4kCV0sPRpV1GbRReXuBF2e
-         rWRxWgXPGv6PuDCGt46CVrskKjkCGITp+mNef35AyaNx19vTZ6YdnwvOkfB3k1sbfOTj
-         i6kw==
-X-Gm-Message-State: AOAM530OJ661ciN/mmEsJNjP9hP+Vmj+gynVlaEEr2/CU86RLuRJCiRH
-        3m/bzhRk+UHjAkocnRe95zqZQL4NI5Tr
-X-Google-Smtp-Source: ABdhPJxkYFRTbpaOuGCEgVMbR4OCvU0K+1Sz+BtAyltugFbI0lAL+aKLx0kfxJKoWNqjsCtVHk/gow==
-X-Received: by 2002:a37:9d12:: with SMTP id g18mr36405846qke.199.1621981207721;
-        Tue, 25 May 2021 15:20:07 -0700 (PDT)
+        bh=9JiBQCwU7hV4K3nb6UTd0Cu6Uln8EMlvZ5BxClGNXEY=;
+        b=Za0AmsukjLMBzbOv5E99TlXj0x6/7uK5qHgoI8gZIrxtcmJPXmftKMCirSlt3ru54l
+         EYkCod6ahQWLwG3YmZJaaHp7xDtN65aV6+zG0zD06zQlmLOc9qBNh6vF01+vXtoRDed2
+         YRz9C5hycBtWSbcjNz2/0WUVc+o4fpjf0gN6cLt+vgCGJ+/iACRd8xGiX+y4X5QmzDoU
+         yiyYIUoTutFwGaAuL8YeY57L/i/GEsBODNEkKHXBH8oxiVyk+TRGu18GkB73A2sLpHIx
+         pFqXTtHNK0M9PCjA/Pb7JSNQgwvouMvfDSzsbI8DWPvLjIrVtcwngdGm8Qe62X4N9xnR
+         WBpA==
+X-Gm-Message-State: AOAM532goBQwQpbG+qENXrIfiJWqJNjzKrzrjoAKtwDnBYKvV3f2OVNA
+        i/lRdzCBas0TIC6l2xHBPgM2eOHRxHWI
+X-Google-Smtp-Source: ABdhPJyS9ann5Z1dsbL2H7XgQwxsVM2yktt+Bfy5tKTU/wC2tX9jDFKzg8WOtsSS+eixVSUfh2T56A==
+X-Received: by 2002:a05:6214:902:: with SMTP id dj2mr39982536qvb.11.1621981209845;
+        Tue, 25 May 2021 15:20:09 -0700 (PDT)
 Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id m10sm333445qkk.113.2021.05.25.15.20.06
+        by smtp.gmail.com with ESMTPSA id m10sm333445qkk.113.2021.05.25.15.20.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 15:20:07 -0700 (PDT)
+        Tue, 25 May 2021 15:20:09 -0700 (PDT)
 From:   Kent Overstreet <kent.overstreet@gmail.com>
 To:     fstests@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org
 Cc:     Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [PATCH v2 2/4] Initial bcachefs support
-Date:   Tue, 25 May 2021 18:19:53 -0400
-Message-Id: <20210525221955.265524-6-kent.overstreet@gmail.com>
+Subject: [PATCH v2 4/4] generic/269: add _check_scratch_fs
+Date:   Tue, 25 May 2021 18:19:55 -0400
+Message-Id: <20210525221955.265524-8-kent.overstreet@gmail.com>
 X-Mailer: git-send-email 2.32.0.rc0
 In-Reply-To: <20210525221955.265524-1-kent.overstreet@gmail.com>
 References: <20210525221955.265524-1-kent.overstreet@gmail.com>
@@ -74,157 +74,25 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-To get started, you'll need to get bcachefs from the kernel repository
-  https://evilpiepirate.org/git/bcachefs.git/
-
-and tools from
-  https://evilpiepirate.org/git/bcache-tools.git/
-
-Build kernel as normal, enabling CONFIG_BCACHEFS_FS (and probably
-CONFIG_BCACHEFS_DEBUG), and build and install tools. Then running
-fstests is exactly the same as other local filesystems - just set
-FSTYP=bcachefs
-
-Also see https://evilpiepirate.org/git/ktest.git/ for a tool for
-conveniently building kernel and running fstests inside a qemu VM.
-
-This patch also updates generic/441 to run the more thorough test on
-bcachefs, and generic/425 to not run on bcachefs (since bcachefs does
-not store xattrs in blocks)
+This probably should be in every test that uses the scratch device.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
 ---
- common/attr       |  6 ++++++
- common/config     |  3 +++
- common/quota      |  4 ++--
- common/rc         | 11 +++++++++++
- tests/generic/425 |  3 +++
- tests/generic/441 |  2 +-
- 6 files changed, 26 insertions(+), 3 deletions(-)
+ tests/generic/269 | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/common/attr b/common/attr
-index 669909d600..42ceab9233 100644
---- a/common/attr
-+++ b/common/attr
-@@ -33,6 +33,9 @@ _acl_get_max()
- 			echo 506
- 		fi
- 		;;
-+	bcachefs)
-+		echo 251
-+		;;
- 	*)
- 		echo 0
- 		;;
-@@ -273,6 +276,9 @@ pvfs2)
- 9p|ceph|nfs)
- 	MAX_ATTRVAL_SIZE=65536
- 	;;
-+bcachefs)
-+	MAX_ATTRVAL_SIZE=1024
-+	;;
- *)
- 	# Assume max ~1 block of attrs
- 	BLOCK_SIZE=`_get_block_size $TEST_DIR`
-diff --git a/common/config b/common/config
-index 1a26934985..ad1c9eb092 100644
---- a/common/config
-+++ b/common/config
-@@ -416,6 +416,9 @@ _mkfs_opts()
- 	btrfs)
- 		export MKFS_OPTIONS="$BTRFS_MKFS_OPTIONS"
- 		;;
-+	bcachefs)
-+		export MKFS_OPTIONS=$BCACHEFS_MKFS_OPTIONS
-+		;;
- 	*)
- 		;;
- 	esac
-diff --git a/common/quota b/common/quota
-index 32a9a55593..883a28a20d 100644
---- a/common/quota
-+++ b/common/quota
-@@ -17,7 +17,7 @@ _require_quota()
- 	    _notrun "Installed kernel does not support quotas"
- 	fi
- 	;;
--    gfs2|ocfs2)
-+    gfs2|ocfs2|bcachefs)
- 	;;
-     xfs)
- 	if [ ! -f /proc/fs/xfs/xqmstat ]; then
-@@ -278,7 +278,7 @@ _check_quota_usage()
- 
- 	VFS_QUOTA=0
- 	case $FSTYP in
--	ext2|ext3|ext4|ext4dev|f2fs|reiserfs|gfs2)
-+	ext2|ext3|ext4|ext4dev|f2fs|reiserfs|gfs2|bcachefs)
- 		VFS_QUOTA=1
- 		quotaon -f -u -g $SCRATCH_MNT 2>/dev/null
- 		;;
-diff --git a/common/rc b/common/rc
-index b18cf61e8a..a0aa7300dc 100644
---- a/common/rc
-+++ b/common/rc
-@@ -1065,6 +1065,9 @@ _scratch_mkfs_sized()
- 		fi
- 		export MOUNT_OPTIONS="-o size=$fssize $TMPFS_MOUNT_OPTIONS"
- 		;;
-+	bcachefs)
-+		$MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS --fs_size=$fssize --block_size=$blocksize $SCRATCH_DEV
-+		;;
- 	*)
- 		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized"
- 		;;
-@@ -1133,6 +1136,9 @@ _scratch_mkfs_blocksized()
-     ocfs2)
- 	yes | ${MKFS_PROG} -t $FSTYP -F $MKFS_OPTIONS -b $blocksize -C $blocksize $SCRATCH_DEV
- 	;;
-+    bcachefs)
-+	${MKFS_PROG} -t $FSTYP $MKFS_OPTIONS --block_size=$blocksize $SCRATCH_DEV
-+	;;
-     *)
- 	_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_blocksized"
- 	;;
-@@ -1179,6 +1185,11 @@ _repair_scratch_fs()
- 	fi
- 	return $res
-         ;;
-+    bcachefs)
-+	# With bcachefs, if fsck detects any errors we consider it a bug and we
-+	# want the test to fail:
-+	_check_scratch_fs
-+	;;
-     *)
- 	local dev=$SCRATCH_DEV
- 	local fstyp=$FSTYP
-diff --git a/tests/generic/425 b/tests/generic/425
-index 51cbe1c67d..be2bc1b02e 100755
---- a/tests/generic/425
-+++ b/tests/generic/425
-@@ -30,6 +30,9 @@ _cleanup()
- 
- # real QA test starts here
- _supported_fs generic
+diff --git a/tests/generic/269 b/tests/generic/269
+index aec573c06a..484a26f89f 100755
+--- a/tests/generic/269
++++ b/tests/generic/269
+@@ -63,5 +63,7 @@ if ! _scratch_unmount; then
+ 	status=1
+ 	exit
+ fi
 +
-+[ $FSTYP = bcachefs ] && _notrun "bcachefs does not store xattrs in blocks"
-+
- _require_scratch
- _require_attrs
- _require_xfs_io_command "fiemap" "-a"
-diff --git a/tests/generic/441 b/tests/generic/441
-index bedbcb0817..814387b2a9 100755
---- a/tests/generic/441
-+++ b/tests/generic/441
-@@ -40,7 +40,7 @@ case $FSTYP in
- 	btrfs)
- 		_notrun "btrfs has a specialized test for this"
- 		;;
--	ext3|ext4|xfs)
-+	ext3|ext4|xfs|bcachefs)
- 		# Do the more thorough test if we have a logdev
- 		_has_logdev && sflag=''
- 		;;
++_check_scratch_fs
+ status=0
+ exit
 -- 
 2.32.0.rc0
 
