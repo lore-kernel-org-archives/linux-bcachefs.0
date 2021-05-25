@@ -2,92 +2,97 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC8FBC04FF3
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 24 May 2021 04:48:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73016C4707F
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 May 2021 22:20:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C4196044F
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 24 May 2021 04:48:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4589661408
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 May 2021 22:20:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhEXEuZ (ORCPT
+        id S230159AbhEYWVg (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 24 May 2021 00:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43002 "EHLO
+        Tue, 25 May 2021 18:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhEXEuY (ORCPT
+        with ESMTP id S230103AbhEYWVf (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 24 May 2021 00:50:24 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1C8C061574;
-        Sun, 23 May 2021 21:48:55 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id q6so13597536qvb.2;
-        Sun, 23 May 2021 21:48:55 -0700 (PDT)
+        Tue, 25 May 2021 18:21:35 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE0DC061574;
+        Tue, 25 May 2021 15:20:04 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id v4so24326227qtp.1;
+        Tue, 25 May 2021 15:20:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nwnxFWfaR3PSysocZZLALDptS/nHIUftVJcuf7DMZxk=;
-        b=hslOdvLyAchoNjqr+Ir2Z9jn9eijDSPKCzMR5IVuerWKlnjcvElToxCxD2euCTuQ0A
-         FIMxnvfJkJQ+3S/afJ8Dh9rPaNoXVVEt11Mgr2CYT451/BbGVevtWxtQMWCnDBOOh7tK
-         3FaMRolmhphrCKZxaBkKrzsAvzUxlHtKkfE38vLrnCXQnWTO0KS/1PgPTM/sTqF03fFD
-         GfW8MPcZDQYFwzXupzzN1ThEX+9KOfubQ/Owb37aesf+MUAvmXIOODn/qiuaddJaLbeW
-         q0dkgnuv4e1Ep3HLZWCzmqidWtzXXpKUQGFVGHm9f8SW2jlZ1gCfPTlt45UANdbWJ7Zx
-         VBaQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mn8Q53wlifLTa0WvkY7Jksh0Xjl0mA8Gm4pP8e3OZQI=;
+        b=kv954D00tM6ek/CV5hyl++Pe3kYvM31zUGDlgw+djtqQqz5GqWSwUthM42LfzJ6PCK
+         dsjXhYSeWFOvSf9npa0hf1ZwGsCiiHa+7+asH66OUEdq3df23UC7usxIjzw9L2pNExmy
+         WVm1C7ZyDYzdlOwoNyWHW2myj2FIosn0Y7vQsOz6S5nu9qkb0LpoM7OSzjA9qct7GiJH
+         e1xMPQ29JHBIUUZD/s9K3zSw3ZA49mw1AR4a3dD3H3UiYUoCAaomcMExIqVWhW7yDUbf
+         GrSRZvv8/l2flynbwNWpEzkCHAheGcZYFDTLzGkOQlQaErD2zeejJyxXAzmSvLEqoRjt
+         C57A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nwnxFWfaR3PSysocZZLALDptS/nHIUftVJcuf7DMZxk=;
-        b=QJfmu+O9hXo1bibAK52g176qmwzKpznB+VRHIgWglI79Qi5VrEGdtuQf899LQuJv87
-         cIEg9YgLNCzBuAkHJJSX/6hknLgj67s6dUw5PKPVtIn5t8STqrHqkByoZW8cREgXPdsT
-         g1UxLJLmwIt62Zgn3kQcyjOmLhLDTNJMM2QGLB9QgKQftfljioQOhRRY/JTub2JBYOz0
-         Ubz2+krK95pYOPXm7CncyUkMTnz/8qamloSFSOeJw+dczca/BNcJNC9LwRBhjdBbOVrx
-         jXQ/zW/jk9Mm++fuETLlYpgV7JheWZ1J+gJxx9FOIDEnnJ1eNSNrUUoX3gTSsU8LqVxy
-         CJnQ==
-X-Gm-Message-State: AOAM530K2tFqASp6xEEvYvuoJlq5GoZvDzlhLVKbfGGvgfy5j0K/m186
-        iHJa/+cEB/C0BY5jW/+k2I5bMD8U73mo
-X-Google-Smtp-Source: ABdhPJwvVTRS+l8JUQar0MuyDHmsxf7bkIqZRl0FvhT7nikJc7elwnZtVnK8RDJvtumkr2Bx+cFnag==
-X-Received: by 2002:a0c:e1cb:: with SMTP id v11mr28443725qvl.52.1621831735040;
-        Sun, 23 May 2021 21:48:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mn8Q53wlifLTa0WvkY7Jksh0Xjl0mA8Gm4pP8e3OZQI=;
+        b=C80wSqiImR8Batl82E3hYBXWrJRn+lstURQWkzppz8GN2n6o6+1m23GDFdrGcXctDT
+         s9qEJQzxFcDg30P+iNp4u8FL6IxshRMOu+9LVBvcCjoAx2Frd6Pf3PygNVYmUpnvx/mg
+         jYYSMvcnZk0ZwGJmhc9kAthuKV/p1Le3URi6TD5IyX4wLCzfvkS22ulsV3j9xi2ODzuw
+         2WkkWHy6TE+CrhcyWX9LCPl4THAe71AUX6qvJ+09zQPVS2r1ohZcpBMRyjKpDeeztt0s
+         0R4RyrKzHKWDaGtpwwZq408pOU/mCsPtVVyVQDGZVhrOBTdkLx81JUd2XkkU5jvUwwlu
+         ofLg==
+X-Gm-Message-State: AOAM532LIfHqYOHoqai7qOyQQjMnAbpX5Fx6/o+v7BV9mJG/tRT1V9Yz
+        oGHCOxt8ESZ0xTLJPhd4/VyU6wlkCwP7
+X-Google-Smtp-Source: ABdhPJwSTTViOlyf6jZmOmnl7d9rxE6TwqKX1N89bydicuBo7MMOOrlJlXCgaOputn3BvZwrH4c2cQ==
+X-Received: by 2002:ac8:7ed2:: with SMTP id x18mr33538716qtj.26.1621981203430;
+        Tue, 25 May 2021 15:20:03 -0700 (PDT)
 Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id 127sm9411814qkl.116.2021.05.23.21.48.54
+        by smtp.gmail.com with ESMTPSA id m10sm333445qkk.113.2021.05.25.15.20.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 21:48:54 -0700 (PDT)
-Date:   Mon, 24 May 2021 00:48:53 -0400
+        Tue, 25 May 2021 15:20:03 -0700 (PDT)
 From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Eryu Guan <eguan@linux.alibaba.com>
-Cc:     Eryu Guan <guan@eryu.me>, fstests@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kmo@daterainc.com>
-Subject: Re: [PATCH 1/3] Initial bcachefs support
-Message-ID: <YKswNcbS2DhaeEOS@moria.home.lan>
-References: <20210427164419.3729180-1-kent.overstreet@gmail.com>
- <20210427164419.3729180-2-kent.overstreet@gmail.com>
- <YJfzVSGu2BbE4oMY@desktop>
- <YKrchSzj8Zo4CnDs@moria.home.lan>
- <20210524035604.GD60846@e18g06458.et15sqa>
- <YKsl0ORHo/mhuUBx@moria.home.lan>
- <20210524042253.GE60846@e18g06458.et15sqa>
+To:     fstests@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>
+Subject: [PATCH 1/4] Improved .gitignore
+Date:   Tue, 25 May 2021 18:19:48 -0400
+Message-Id: <20210525221955.265524-1-kent.overstreet@gmail.com>
+X-Mailer: git-send-email 2.32.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524042253.GE60846@e18g06458.et15sqa>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Mon, May 24, 2021 at 12:22:53PM +0800, Eryu Guan wrote:
-> Oh, I noticed that "with bcachefs fsck finding errors _always_ indicates
-> a bug" now.. Then I think using fsck -n is fine here, but better with
-> comments to describe why this is ok for bcachefs.
-> 
-> Also, we could just use _check_scratch_fs here instead of the open-coded
-> fsck command. As _check_scratch_fs calls _check_generic_filesystem()
-> which calls fsck -n internally, and handles mount/umount device
-> correctly and prints pretty log if there's any errors.
+Ignore dotfiles, tags, and verifier state.
 
-That should work.
+Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+---
+ .gitignore | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index 4cc9c80724..64e4ed253f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -4,6 +4,9 @@
+ .dep
+ .libs
+ .ltdep
++.*
++*.state
++tags
+ 
+ /local.config
+ /results
+-- 
+2.32.0.rc0
+
