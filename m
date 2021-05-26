@@ -2,97 +2,79 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C276FC4708B
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 May 2021 22:20:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76246C47088
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 26 May 2021 01:34:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A80526140B
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 May 2021 22:20:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 37A8861429
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 26 May 2021 01:34:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbhEYWVn (ORCPT
+        id S232198AbhEZBft (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 25 May 2021 18:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233543AbhEYWVm (ORCPT
-        <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 25 May 2021 18:21:42 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF03C061760;
-        Tue, 25 May 2021 15:20:10 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id z1so16905819qvo.4;
-        Tue, 25 May 2021 15:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9JiBQCwU7hV4K3nb6UTd0Cu6Uln8EMlvZ5BxClGNXEY=;
-        b=DuRr6kY0NbHkUSqsW9RLMRyDxHJkP8ZF7n745y/SzAsvvtNXE/O0tmSpLivl2FCmkq
-         9gm6oGLqAKXk0Cdzpc23wJpT/RtVKigmn82iKZtD8AKNbcrGI9nMo4gDtEjqSpb8Dpdh
-         KEs1NZQD090JOFQkmAECnjgZk1Pwie+U9x4rXTPWGhKbDyhV6fJf+Xu3xmrnZ6HBEamD
-         tn3nU+HL270CCHQvw8Mh1D7hosrfpnmrgXba+dNwyQB4cJJsEgfFaSuLB0H3onHaqXvG
-         CPB/cj/JwWPCpEtcTCcqRJPci7pUgduozPZ1wFe9kbgvJgoOy4XsQJbBb1JF+Z4fZ4ic
-         fVPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9JiBQCwU7hV4K3nb6UTd0Cu6Uln8EMlvZ5BxClGNXEY=;
-        b=Za0AmsukjLMBzbOv5E99TlXj0x6/7uK5qHgoI8gZIrxtcmJPXmftKMCirSlt3ru54l
-         EYkCod6ahQWLwG3YmZJaaHp7xDtN65aV6+zG0zD06zQlmLOc9qBNh6vF01+vXtoRDed2
-         YRz9C5hycBtWSbcjNz2/0WUVc+o4fpjf0gN6cLt+vgCGJ+/iACRd8xGiX+y4X5QmzDoU
-         yiyYIUoTutFwGaAuL8YeY57L/i/GEsBODNEkKHXBH8oxiVyk+TRGu18GkB73A2sLpHIx
-         pFqXTtHNK0M9PCjA/Pb7JSNQgwvouMvfDSzsbI8DWPvLjIrVtcwngdGm8Qe62X4N9xnR
-         WBpA==
-X-Gm-Message-State: AOAM532goBQwQpbG+qENXrIfiJWqJNjzKrzrjoAKtwDnBYKvV3f2OVNA
-        i/lRdzCBas0TIC6l2xHBPgM2eOHRxHWI
-X-Google-Smtp-Source: ABdhPJyS9ann5Z1dsbL2H7XgQwxsVM2yktt+Bfy5tKTU/wC2tX9jDFKzg8WOtsSS+eixVSUfh2T56A==
-X-Received: by 2002:a05:6214:902:: with SMTP id dj2mr39982536qvb.11.1621981209845;
-        Tue, 25 May 2021 15:20:09 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id m10sm333445qkk.113.2021.05.25.15.20.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 15:20:09 -0700 (PDT)
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     fstests@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Tue, 25 May 2021 21:35:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230306AbhEZBft (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
+        Tue, 25 May 2021 21:35:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AED7A61284;
+        Wed, 26 May 2021 01:34:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621992858;
+        bh=BMqhUn3QBTF7UF5p71DOXEhX1Qk67aVQmnnbST+XitQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IJrt95JJ7ujgteD7s21qN9v3nI9dtqZRLeXYOrGU2R4n6FqWaDMHMxdRtEYFa8lEG
+         YdSs6j1SLHYc26ckuFRDVMOn5ps75hS/MFwpaWGDpr3gOHSyYIDLamghX265rbuLEc
+         VEDEscl4Psc/ff7aSg+FCMjbefgBoE191Rf/WMVaNpergQslR1/9veVmaSbxNohy7l
+         lQSXcgPAX8otgdnVTtlYRjo2XsjjvirmHTR4kPXB/pn2Gi0LxqK5Tx6Tk560byaEl5
+         ioJDK2CUsT+jEtS2vXsiKDEOqaf+HFEngWZ9UCjdh47+Ixqb8lEY6PWOAory3EdM2R
+         ixnTVT4bFWQoA==
+Date:   Tue, 25 May 2021 18:34:18 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     fstests@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [PATCH v2 4/4] generic/269: add _check_scratch_fs
-Date:   Tue, 25 May 2021 18:19:55 -0400
-Message-Id: <20210525221955.265524-8-kent.overstreet@gmail.com>
-X-Mailer: git-send-email 2.32.0.rc0
-In-Reply-To: <20210525221955.265524-1-kent.overstreet@gmail.com>
+Subject: Re: [PATCH v2 4/4] generic/269: add _check_scratch_fs
+Message-ID: <20210526013418.GK202095@locust>
 References: <20210525221955.265524-1-kent.overstreet@gmail.com>
+ <20210525221955.265524-8-kent.overstreet@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525221955.265524-8-kent.overstreet@gmail.com>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-This probably should be in every test that uses the scratch device.
+On Tue, May 25, 2021 at 06:19:55PM -0400, Kent Overstreet wrote:
+> This probably should be in every test that uses the scratch device.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
----
- tests/generic/269 | 2 ++
- 1 file changed, 2 insertions(+)
+Um, it is -- ./check runs fsck on the test and scratch devices if you
+_require_test or _require_scratch'd them (which this test does).  What
+weird output did you see?
 
-diff --git a/tests/generic/269 b/tests/generic/269
-index aec573c06a..484a26f89f 100755
---- a/tests/generic/269
-+++ b/tests/generic/269
-@@ -63,5 +63,7 @@ if ! _scratch_unmount; then
- 	status=1
- 	exit
- fi
-+
-+_check_scratch_fs
- status=0
- exit
--- 
-2.32.0.rc0
+--D
 
+> Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+> ---
+>  tests/generic/269 | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tests/generic/269 b/tests/generic/269
+> index aec573c06a..484a26f89f 100755
+> --- a/tests/generic/269
+> +++ b/tests/generic/269
+> @@ -63,5 +63,7 @@ if ! _scratch_unmount; then
+>  	status=1
+>  	exit
+>  fi
+> +
+> +_check_scratch_fs
+>  status=0
+>  exit
+> -- 
+> 2.32.0.rc0
+> 
