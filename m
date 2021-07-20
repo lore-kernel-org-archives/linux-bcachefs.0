@@ -2,100 +2,66 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7270AC11F65
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 30 Jun 2021 18:44:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26DFCC07E95
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 20 Jul 2021 01:38:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4B3B961426
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 30 Jun 2021 18:44:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0E65661166
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 20 Jul 2021 01:38:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbhF3Sqa (ORCPT
+        id S232022AbhGTAzO (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 30 Jun 2021 14:46:30 -0400
-Received: from sender4-op-o14.zoho.com ([136.143.188.14]:17485 "EHLO
-        sender4-op-o14.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232745AbhF3Sq3 (ORCPT
-        <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:46:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1625078637; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=Wy+4g0wLKmmjjpZfdyNsSDLqP2H0Hxfzq+0KVJzka23oVEc8wZIZRtW/S4NuvRAM8QzqgRWUc6XQxEcEOewB6Z+RqydX4K1WFLJfO1E/gcEvd0f7dRCTzqPCaMmXKzO5n4DF/GXb9MRVDej158y4ejmrB2hMtZ3lyg8sRlauzxY=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1625078637; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=6x1NkxpRZsiaFxx7Ph5K9AF96LxiYqWgnR2JhyGMcFI=; 
-        b=HXaw/0OCRKumHq/YCnQtx+zUHurTkw0G/ujUisSajgZRbmCbGHunwTyw5MbOZevNqkQSchRc409fMkAorRpge7SPgItx1TpmnmNpckeGC9SsbWWXBGkP3ZZpuDZPMXaioh5324KguzND4MH3IvvJxosU8F648mELEw0DTGk5rck=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        spf=pass  smtp.mailfrom=dan@dlrobertson.com;
-        dmarc=pass header.from=<dan@dlrobertson.com>
-Received: from dlrobertson.com (pool-108-51-207-71.washdc.fios.verizon.net [108.51.207.71]) by mx.zohomail.com
-        with SMTPS id 1625078635564291.4883579327469; Wed, 30 Jun 2021 11:43:55 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 18:18:14 +0000
-From:   Dan Robertson <dan@dlrobertson.com>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] bcachefs
-Message-ID: <YNy1Zhm+W6rODPBq@dlrobertson.com>
-References: <YLgPSZ9LB/LErNw2@moria.home.lan>
+        Mon, 19 Jul 2021 20:55:14 -0400
+Received: from mx.ewheeler.net ([173.205.220.69]:46544 "EHLO mail.ewheeler.net"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233852AbhGTAyo (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
+        Mon, 19 Jul 2021 20:54:44 -0400
+X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Jul 2021 20:54:37 EDT
+Received: from mx.ewheeler.net (mx.ewheeler.net [173.205.220.69])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.ewheeler.net (Postfix) with ESMTPSA id 7D8BD1A;
+        Tue, 20 Jul 2021 01:28:36 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ewheeler.net 7D8BD1A
+Authentication-Results: mail.ewheeler.net; dkim=none
+Date:   Tue, 20 Jul 2021 01:28:33 +0000 (UTC)
+From:   Eric Wheeler <bcache@lists.ewheeler.net>
+X-X-Sender: lists@pop.dreamhost.com
+To:     kent.overstreet@gmail.com
+cc:     linux-bcache@vger.kernel.org, linux-bcachefs@vger.kernel.org
+Subject: bcachefs snapshots
+Message-ID: <alpine.LRH.2.21.2107200122520.27704@pop.dreamhost.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="p9/18pF7m2xJ3a9h"
-Content-Disposition: inline
-In-Reply-To: <YLgPSZ9LB/LErNw2@moria.home.lan>
-X-Zoho-Virus-Status: 1
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
+Hi Kent,
 
---p9/18pF7m2xJ3a9h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I read your bcachefs snapshots doc recently, it looks like you've put a 
+lot of thought into it.  Is it ready for testing?  
 
-On Wed, Jun 02, 2021 at 07:07:53PM -0400, Kent Overstreet wrote:
-> bcachefs is coming along nicely :) I'd like to give a talk about where things
-> are at, and get comments and feedback on the roadmap.
->
-> The short of it is, things are stabilizing nicely and snapshots are right around
-> the corner - snapshots are largely complete and from initial
-> testing/benchmarking it's looking really nice, better than I anticipated, and
-> I'm hoping to (finally!) merge bcachefs upstream sometime after snapshots are
-> merged.
->
-> I've recently been working on the roadmap, it goes into some detail about work
-> that still needs to be done:
->
-> https://bcachefs.org/Roadmap/
+We use a lot of btrfs snapshots of VM images but the performance is pretty 
+poor and I'm looking forward to trying out bcachefs snapshots when it is 
+ready to try out.
 
-As someone still new to the bcachefs code, I'd be very interested in this topic.
-I'd be really interested in the testing roadmap as well as the feature roadmap.
+We also have many dm-thin deployments backed by /dev/bcache0 volumes that 
+work quite well, but dm-thin meta is always an ongoing maintenance issue.
+(Don't run out of dm-thin meta space or *boom*!)
+
+If bcachefs can replace dm-thin with loopback files (or even better, 
+native bcachefs devices!) then I look forward to getting beyond
+dm-thin into something more scalable.
 
 Cheers,
 
- - Dan
+-Eric
 
---p9/18pF7m2xJ3a9h
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEF5dO2RaKc5C+SCJ9RcSmUsR+QqUFAmDctWYACgkQRcSmUsR+
-QqUt5w//fujl6Z6TrpHtVyxcxYLWdBVGTtWcYIm6/5+0eABsJH1gEtnvfC8KEr8u
-R+SfH8+LCYJsyebn+UxCQYpWGtEg/3dDFqH2se+AIWgBdCF5YB7+nhygNEYqBX1F
-93ZOajY0iSDxbEEd0s7DtMTGJVh0pxmOoQMTQhfaP1cQ7jy6fE0m0wT5BgpwmBjv
-wtipm56gmU/RaRRmJNVDiJvJXQX/iQixuRJ492o9Fawzk1Yw+9yotgkr8HkWgDjl
-McFo6+lFg1QeZtfu0KngdHO9WgczqkqOk+RG//UE4JOCgULrDcLExBQ1aTaT90G0
-nSMU5TnHV1SjVVb6hgLDhsbhoyZMvAeQfOO3xE4UEs029P1Eilo3KzWS7KL0ujRu
-SG4l3PJtTn95OlktDFB8561dqMClKc0FJH3d1Hl4AcAyps7yz9/uuufZkzwS+ixc
-BxZgWZcvDe0OwhG2a1LRe+/rsT3/0uhzqdoVh6MMZdMSeRS2HkdtVQbPsHKexVd1
-DYhZYxt8MsxsStFT+buv7LvxGcNyyw/BVus1+9tHV4mmhUGPVPa5hRQufwXDqIsU
-VLBFzWvdg+7bZ+8vDKQhGxLqUFZpGktyQYEGOrmBtgmBPFQp3ahR58aPF5WrqlmN
-XWWsRdhofiqCQtmgdniNR7CVpRz6Zsvor68KZTd0IybpotWA9dA=
-=nlG9
------END PGP SIGNATURE-----
-
---p9/18pF7m2xJ3a9h--
+--
+Eric Wheeler
