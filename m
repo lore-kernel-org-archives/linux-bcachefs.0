@@ -2,102 +2,106 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D06D8C433F5
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 27 Sep 2021 01:49:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5141C433EF
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 27 Sep 2021 13:06:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9DFA2610A2
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 27 Sep 2021 01:49:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CEFF960EC0
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 27 Sep 2021 13:06:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhI0But (ORCPT
+        id S234445AbhI0NI0 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 26 Sep 2021 21:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbhI0But (ORCPT
+        Mon, 27 Sep 2021 09:08:26 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:55091 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230089AbhI0NI0 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 26 Sep 2021 21:50:49 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB1EC061570;
-        Sun, 26 Sep 2021 18:49:12 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id cv2so4163404qvb.5;
-        Sun, 26 Sep 2021 18:49:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=ygEFtDYZxT9vrjkErAYv8Q0mwvXb7MdrTep5bixORxg=;
-        b=FT2jkQ4UFhn/ygqm6BeHtVvO06xiH/nGq++DBQBpVJLPfYmmPG5A3BnV7mBCced2Ih
-         +6+YSt6k0WHPQJWKq8FKaQE5JaLI+G72JHZOZPnVOyKrnrINuP2pFeoYsuau5y7wSY62
-         4GZ8aX1DWpd8f6K3X3iuhFmpyPXi0foAcE52ygBlyDgz356syItUMOY4wO8/fM2y/xfz
-         aZQc3uCVHYhPeKmw9iQKD0YBTodycG1SNJgi///6il7dDE9z69dZB2Ee48bW6iketLpZ
-         +ELy8vkrpaWqJPScWfqx4HrBAz102Xkob8f0Y34RKwe/v5wUTVPURNiZ8O91g13g816W
-         kang==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=ygEFtDYZxT9vrjkErAYv8Q0mwvXb7MdrTep5bixORxg=;
-        b=KFpRLNPg3bGRI9hbv8YfbA3YyuM5slotEMJMvMXu7C3fg1hCvpv9DkrVwtCjgQNojZ
-         TCar9d7VC7pieO38ZDdwbvxX8OqSwtBuMy7p9+PmRenZCblo7pMYhHFwkGS5s+VZ6kVu
-         eBIvM18OXSv1+XWi2pqdBw3c4+m60zQURCGY7h0sgKe8crc77iwV+2UH3mavZLHiFmBM
-         XxliZpEsUxmfBCRg1GcHSzn+tx2xmEBr9xXcpC+nZj1Tg7Mry69AHVWWRoH3mTTtiE46
-         IY0QD+N9FhMa/+urQ6UwILDz96twi9OYAsSiqlXUR6adFulMFE81nJRHF6ztWzxR6y6a
-         ixfA==
-X-Gm-Message-State: AOAM533dycWQysxOivAwlmPk1/UNb2lNiD/WlAVT/M8rJy8th7Df7kF/
-        xzSiDRsAlOESaT3vxgIrrrOBVBVrSw==
-X-Google-Smtp-Source: ABdhPJyI9oRizxJsb5pUccZaHs6QrGxS7CXzT9l767IlIawi0c8tQkHVicOyK0OVkTP2PLXpwl6hMQ==
-X-Received: by 2002:a0c:f3c6:: with SMTP id f6mr21341819qvm.33.1632707350122;
-        Sun, 26 Sep 2021 18:49:10 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id n20sm11522054qkk.135.2021.09.26.18.49.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 18:49:09 -0700 (PDT)
-Date:   Sun, 26 Sep 2021 21:49:07 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        Mon, 27 Sep 2021 09:08:26 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id CCD4E3200BF9;
+        Mon, 27 Sep 2021 09:06:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 27 Sep 2021 09:06:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=/
+        GKVm9aT1QMpB/PByfoVomF5FC+99BMfJqPbdonFHp4=; b=YS1kiQTMUOFzQSTzT
+        Kfv2rv7W/w1qHoGhCyLgmR7ixr5gyB3NmITvwsC9YmAhiS3omMnq75e5+Z1Yw7rY
+        BkJ+aHrBO0RTxtFNaVHs4FN7vBKy18hd4BrIjnHz0Fl3lm7JQ0YRVrm4rvI44IaY
+        BK/HkB5FJgwkv9uNRchLwjpsyh0uWLbhbUCftEAK81sdtthaxmOyumNGwp1u4fek
+        l4yppv7tjT+Ep4PI8kShCuTD0A6IeM83o+x6+vFSF0Y0FNNRY5ygNH6mGAJUp6um
+        9p5TqXIxtBNCislqinmGEqqj0VoSaPXLHBpgChg4SE4TqyX4W7DYm2XMr7u0fvHL
+        2OpNA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=/GKVm9aT1QMpB/PByfoVomF5FC+99BMfJqPbdonFH
+        p4=; b=K25pBMePdTG4j5ulgG0Vgs0SXd5RIo28O7/AK+XLgMlHWqVJSJrBK0J3a
+        Y+9sedgG2LQE+gTFTaNcapB31/3S2BOkXpw8UPeaLI+8BJpsrZXSsxg4FSrgrAsp
+        +nc4Pu1aDMaZjkMRb0zQ+q0GlxEDo6PhQbeZIGaELsTxhaAQ+vp+fCkaeYzb30lI
+        D2sNpCm4aVPH0dPjmKOQ08cVI9Ev7Df7p/udHMo+quw/AN1EhoHu6ozhokW++w39
+        em4dCu4wQECwdl6vPJEIqR0rtNct1k75LzdWU0ln5eR9VDJlxFkw7sGgzFC73FRk
+        C6pLrJ0/WT/nbhFLP77R2YyeWlZZQ==
+X-ME-Sender: <xms:58FRYax23m1wBEGwFvzO_19kjjp-mMoJ7UFnqSjLV4YoBSXQwaPi4w>
+    <xme:58FRYWQr3Xyjur_pRLpT7VnveLXUj4qL2pyCZBPGxGYQmCnpphXz9tiLAfr59wkZi
+    EB1SOp45AsFsuvY>
+X-ME-Received: <xmr:58FRYcWpt47LZa6xz3tXPUtXW5zdMilMwdBf6bf8YQvByAi9hhBieNLxVtCZ1uLtbVM1Z3xmfWwWzFTjPU3-k8BEWuPhSdQXEIQVM6J1hOfTlLgdkqUw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejkedgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepuegvrhhn
+    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
+    drfhhmqeenucggtffrrghtthgvrhhnpeduhfdvuefgieejueekjefhieeuffeigfdtvedu
+    ledutdejtdehueegfedugeduueenucffohhmrghinhepsggtrggthhgvfhhsrdhorhhgne
+    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsggvrhhn
+    ugdrshgthhhusggvrhhtsehfrghsthhmrghilhdrfhhm
+X-ME-Proxy: <xmx:58FRYQizOWPCrsi2RmJN95TDBUzHhXcxqZorO0gBkLvPQVXeSp4VwQ>
+    <xmx:58FRYcAuDk58yfqeuG408CxWEfCt6dFJgvl5455BHEKGiF6pqHXLtw>
+    <xmx:58FRYRIE8RO5CFJhkk-1ijRBcRVTBqgSqDl11fAZgaqfq1H0m6uAJw>
+    <xmx:58FRYfNTaJ3w07NlPUFx2cP3KA6HWdjo_myz4onw1wVO6uaZ8hEc7A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 27 Sep 2021 09:06:46 -0400 (EDT)
+Subject: Re: bcachefs - snapshots
+To:     Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
-Subject: bcachefs - snapshots
-Message-ID: <YVEjEwCiqje7yDyV@moria.home.lan>
+References: <YVEjEwCiqje7yDyV@moria.home.lan>
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+Message-ID: <dbe56ac2-22bd-74d5-ab5d-9f6673884212@fastmail.fm>
+Date:   Mon, 27 Sep 2021 15:06:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <YVEjEwCiqje7yDyV@moria.home.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Snapshots have been merged! 9 months of work and 3k lines of new code, finally
-released. Some highlights:
 
- - btrfs style subvolumes & snapshots interface
- - snapshots are writeable
- - highly scalable: number of snapshots is limited only by your disk space
- - highly space efficient: no internal fragmentation issues
 
-Design doc here: https://bcachefs.org/Snapshots/
+On 9/27/21 3:49 AM, Kent Overstreet wrote:
+> Snapshots have been merged! 9 months of work and 3k lines of new code, finally
+> released. Some highlights:
+> 
+>  - btrfs style subvolumes & snapshots interface
+>  - snapshots are writeable
+>  - highly scalable: number of snapshots is limited only by your disk space
+>  - highly space efficient: no internal fragmentation issues
+> 
+> Design doc here: https://bcachefs.org/Snapshots/
+> 
+> The core functionality is complete - snapshot creation and deletion works, fsck
+> changes are done (most of the complexity was in making fsck work without
+> O(number of snapshots) performance - tricky). Everything else is a todo item:
+> 
+>  - still need to export different st_dev for files in different subvolumes
+>    (we'll never allocate a new inode with an inode number that collides with an
+>    inode inother subvolume - but snapshots will naturally result in colliding
+>    inode numbers)
 
-The core functionality is complete - snapshot creation and deletion works, fsck
-changes are done (most of the complexity was in making fsck work without
-O(number of snapshots) performance - tricky). Everything else is a todo item:
-
- - still need to export different st_dev for files in different subvolumes
-   (we'll never allocate a new inode with an inode number that collides with an
-   inode inother subvolume - but snapshots will naturally result in colliding
-   inode numbers)
-
- - need to hide dirents that point to snapshots when inside snapshots...
-
- - snapshot creation is not atomic w.r.t. page cache, we do sync_fs() but don't
-   block buffered writes
-
- - other niggling page cache stuff - need to walk page cache and mark blocks as
-   no longer reserved on snapshot creation
-
- - we no longer have quota support, since old style quotas interact badly with
-   snapshots
-
- - we need per subvolume disk space accounting before i can implement btrfs
-   style subvolume quotas
-
- - all the things I neglected to think of yet, and all the bugs I haven't found
-   yet
-
-Go wild, please try and break it.
+With my limited high level view on it - shouldn't you discuss with Neil
+about a solution and to avoid going the btrfs route for colliding inode
+numbers?
