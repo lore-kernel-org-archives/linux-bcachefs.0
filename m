@@ -1,94 +1,103 @@
 Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5225AC07E9B
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 20 Jul 2021 21:16:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D06D8C433F5
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 27 Sep 2021 01:49:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3F6F1610A7
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 20 Jul 2021 21:16:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9DFA2610A2
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 27 Sep 2021 01:49:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbhGTUf5 (ORCPT
+        id S232329AbhI0But (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 20 Jul 2021 16:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        Sun, 26 Sep 2021 21:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235238AbhGTU3F (ORCPT
+        with ESMTP id S232289AbhI0But (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 20 Jul 2021 16:29:05 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C83C061767;
-        Tue, 20 Jul 2021 14:09:40 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id w2so10774380qvh.13;
-        Tue, 20 Jul 2021 14:09:40 -0700 (PDT)
+        Sun, 26 Sep 2021 21:50:49 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB1EC061570;
+        Sun, 26 Sep 2021 18:49:12 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id cv2so4163404qvb.5;
+        Sun, 26 Sep 2021 18:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xAR3CTRKfX4JIGDK45soYaGIQy2kUk2KowfF/DLMbpk=;
-        b=KUGvBKe3rD2Y5OgxqLkKudt79Vaw4+fQRksrrjy1vjAS+3FMWIH7efHlPpH1BUTcYY
-         fLbWEYc2DHp5+Yn/jCHDREjoSS/n6C5sClfH0cQd3zjqzehRZE/Ziom2aR3d4/fd9nIA
-         Vsvdq9CTn/Euig8jv1XJB563PEmhtLEF8iP8kRxRyOv+5m70BDkvBUzMcwYGZDR3Az4G
-         /m47g4nmY1UC480D8UE2Tq03pYLQ67662WyYM/qf9sbFchhnIwS85dNTw1Lg8f8UIz8B
-         iDSaesnWbzbrSosw70r/kubKyotZHYmyE2w1ByuvjgxHT5bPltgGl8dP9pf68ZrxYj1G
-         i+/g==
+        d=gmail.com; s=20210112;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=ygEFtDYZxT9vrjkErAYv8Q0mwvXb7MdrTep5bixORxg=;
+        b=FT2jkQ4UFhn/ygqm6BeHtVvO06xiH/nGq++DBQBpVJLPfYmmPG5A3BnV7mBCced2Ih
+         +6+YSt6k0WHPQJWKq8FKaQE5JaLI+G72JHZOZPnVOyKrnrINuP2pFeoYsuau5y7wSY62
+         4GZ8aX1DWpd8f6K3X3iuhFmpyPXi0foAcE52ygBlyDgz356syItUMOY4wO8/fM2y/xfz
+         aZQc3uCVHYhPeKmw9iQKD0YBTodycG1SNJgi///6il7dDE9z69dZB2Ee48bW6iketLpZ
+         +ELy8vkrpaWqJPScWfqx4HrBAz102Xkob8f0Y34RKwe/v5wUTVPURNiZ8O91g13g816W
+         kang==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xAR3CTRKfX4JIGDK45soYaGIQy2kUk2KowfF/DLMbpk=;
-        b=YXm6c/iV8wTE07IHSu3J1IK/Aj+FUKeTyJreF/8urHPWsbfw7xBj27fc5LeYUnRxav
-         b0qYYNzfPdX+/ZqeJ7EEx5wIEZwlkxQsPSPqU4vrE+tSA9s7UvPqxSWGgORZ4s9ICIMB
-         2XJDbHZdcRK4NZBogWxpwOOS2iIqfEVKyh+Y50tF3VjY0YqgAypTQo7FYE16pbNC8Ehf
-         xpdQwl096BPColqaM4lNU8O5TUuEoRkPe+/I5OWbx6mhoPAlGEKe4oTNMfLhZxwlHXku
-         iQNCYgY+11/hZBq16rT0RSJ3VVVnh3DcBS773R6C/TjCdNt7Qjs8Yy/YTcTfLrnLqtj7
-         8GHA==
-X-Gm-Message-State: AOAM532Dh6cUT9TYxvb5FD9fDHTHJUpm3CGkuCcbHmXhXN4VVae3MV4Z
-        Y9mxWVxpsRv3hBNJP/djoUjrv1wHn8jg
-X-Google-Smtp-Source: ABdhPJxrmetxGfx0Zh49bNjydeDdB5AUjMFV+eTdAwXlfDXqbbGyKI0rx6Wur1NSXcQPh0wu+2jdJg==
-X-Received: by 2002:ad4:56e4:: with SMTP id cr4mr32501653qvb.54.1626815379609;
-        Tue, 20 Jul 2021 14:09:39 -0700 (PDT)
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=ygEFtDYZxT9vrjkErAYv8Q0mwvXb7MdrTep5bixORxg=;
+        b=KFpRLNPg3bGRI9hbv8YfbA3YyuM5slotEMJMvMXu7C3fg1hCvpv9DkrVwtCjgQNojZ
+         TCar9d7VC7pieO38ZDdwbvxX8OqSwtBuMy7p9+PmRenZCblo7pMYhHFwkGS5s+VZ6kVu
+         eBIvM18OXSv1+XWi2pqdBw3c4+m60zQURCGY7h0sgKe8crc77iwV+2UH3mavZLHiFmBM
+         XxliZpEsUxmfBCRg1GcHSzn+tx2xmEBr9xXcpC+nZj1Tg7Mry69AHVWWRoH3mTTtiE46
+         IY0QD+N9FhMa/+urQ6UwILDz96twi9OYAsSiqlXUR6adFulMFE81nJRHF6ztWzxR6y6a
+         ixfA==
+X-Gm-Message-State: AOAM533dycWQysxOivAwlmPk1/UNb2lNiD/WlAVT/M8rJy8th7Df7kF/
+        xzSiDRsAlOESaT3vxgIrrrOBVBVrSw==
+X-Google-Smtp-Source: ABdhPJyI9oRizxJsb5pUccZaHs6QrGxS7CXzT9l767IlIawi0c8tQkHVicOyK0OVkTP2PLXpwl6hMQ==
+X-Received: by 2002:a0c:f3c6:: with SMTP id f6mr21341819qvm.33.1632707350122;
+        Sun, 26 Sep 2021 18:49:10 -0700 (PDT)
 Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id j7sm10284938qkd.21.2021.07.20.14.09.38
+        by smtp.gmail.com with ESMTPSA id n20sm11522054qkk.135.2021.09.26.18.49.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 14:09:38 -0700 (PDT)
-Date:   Tue, 20 Jul 2021 17:09:35 -0400
+        Sun, 26 Sep 2021 18:49:09 -0700 (PDT)
+Date:   Sun, 26 Sep 2021 21:49:07 -0400
 From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Eric Wheeler <bcache@lists.ewheeler.net>
-Cc:     linux-bcache@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: bcachefs snapshots
-Message-ID: <YPc7j2tW+ZkfBAeH@moria.home.lan>
-References: <alpine.LRH.2.21.2107200122520.27704@pop.dreamhost.com>
+To:     linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: bcachefs - snapshots
+Message-ID: <YVEjEwCiqje7yDyV@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.21.2107200122520.27704@pop.dreamhost.com>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 01:28:33AM +0000, Eric Wheeler wrote:
-> Hi Kent,
-> 
-> I read your bcachefs snapshots doc recently, it looks like you've put a 
-> lot of thought into it.  Is it ready for testing?  
-> 
-> We use a lot of btrfs snapshots of VM images but the performance is pretty 
-> poor and I'm looking forward to trying out bcachefs snapshots when it is 
-> ready to try out.
-> 
-> We also have many dm-thin deployments backed by /dev/bcache0 volumes that 
-> work quite well, but dm-thin meta is always an ongoing maintenance issue.
-> (Don't run out of dm-thin meta space or *boom*!)
-> 
-> If bcachefs can replace dm-thin with loopback files (or even better, 
-> native bcachefs devices!) then I look forward to getting beyond
-> dm-thin into something more scalable.
+Snapshots have been merged! 9 months of work and 3k lines of new code, finally
+released. Some highlights:
 
-It's not ready just yet - but the initial performance numbers are _extremely_
-encouraging, I'll be posting more soon!
+ - btrfs style subvolumes & snapshots interface
+ - snapshots are writeable
+ - highly scalable: number of snapshots is limited only by your disk space
+ - highly space efficient: no internal fragmentation issues
+
+Design doc here: https://bcachefs.org/Snapshots/
+
+The core functionality is complete - snapshot creation and deletion works, fsck
+changes are done (most of the complexity was in making fsck work without
+O(number of snapshots) performance - tricky). Everything else is a todo item:
+
+ - still need to export different st_dev for files in different subvolumes
+   (we'll never allocate a new inode with an inode number that collides with an
+   inode inother subvolume - but snapshots will naturally result in colliding
+   inode numbers)
+
+ - need to hide dirents that point to snapshots when inside snapshots...
+
+ - snapshot creation is not atomic w.r.t. page cache, we do sync_fs() but don't
+   block buffered writes
+
+ - other niggling page cache stuff - need to walk page cache and mark blocks as
+   no longer reserved on snapshot creation
+
+ - we no longer have quota support, since old style quotas interact badly with
+   snapshots
+
+ - we need per subvolume disk space accounting before i can implement btrfs
+   style subvolume quotas
+
+ - all the things I neglected to think of yet, and all the bugs I haven't found
+   yet
+
+Go wild, please try and break it.
