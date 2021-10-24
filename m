@@ -2,28 +2,28 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A911BC433EF
-	for <linux-bcachefs@archiver.kernel.org>; Sat, 23 Oct 2021 15:49:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7495C433EF
+	for <linux-bcachefs@archiver.kernel.org>; Sun, 24 Oct 2021 11:15:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7B55560FE8
-	for <linux-bcachefs@archiver.kernel.org>; Sat, 23 Oct 2021 15:49:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 931F66103C
+	for <linux-bcachefs@archiver.kernel.org>; Sun, 24 Oct 2021 11:15:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhJWPvq (ORCPT
+        id S231400AbhJXLSK (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sat, 23 Oct 2021 11:51:46 -0400
-Received: from cdw.me.uk ([91.203.57.136]:57827 "EHLO cdw.me.uk"
+        Sun, 24 Oct 2021 07:18:10 -0400
+Received: from cdw.me.uk ([91.203.57.136]:41739 "EHLO cdw.me.uk"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229954AbhJWPvq (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sat, 23 Oct 2021 11:51:46 -0400
+        id S231394AbhJXLSJ (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
+        Sun, 24 Oct 2021 07:18:09 -0400
 Received: from chris by delta.arachsys.com with local (Exim 4.80)
         (envelope-from <chris@arachsys.com>)
-        id 1meJGv-0000vx-67; Sat, 23 Oct 2021 16:49:25 +0100
-Date:   Sat, 23 Oct 2021 16:49:25 +0100
+        id 1mebTf-0004fc-A0; Sun, 24 Oct 2021 12:15:47 +0100
+Date:   Sun, 24 Oct 2021 12:15:47 +0100
 From:   Chris Webb <chris@arachsys.com>
-To:     Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcachefs@vger.kernel.org
-Subject: [PATCH v2] [bcachefs-tools] Use scrypt from libsodium
-Message-ID: <20211023154925.GF11670@arachsys.com>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     linux-bcachefs@vger.kernel.org
+Subject: Metadata usage following device add
+Message-ID: <20211024111547.GG11670@arachsys.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -32,186 +32,45 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-bcachefs-tools has both libscrypt and libsodium as build dependencies,
-but libsodium already includes the same scrypt implementation as libscrypt,
-originally written by Colin Percival.
+Kent Overstreet <kent.overstreet@gmail.com> wrote:
 
-Use the libsodium copy, dropping the extra libscrypt dependency.
+> On Wed, Oct 13, 2021 at 05:52:40PM +0100, Chris Webb wrote:
+> > looks like sb and journal are still zero on the newly added device even
+> > following the data rereplicate operation.
+>
+> That's a separate (known) bug - adding a new device doesn't account for
+> sb/journal on the new device correctly. I should revisit that one...
 
-Explicitly adopt the default scrypt N, r and p values from libscrypt to
-avoid unintended changes in the default work parameters for bcachefs.
+Hi Kent. Sorry for this slow follow-up, but I took a look at what's going on
+to see if it was easy to fix. After a bit of printk() abuse, I think I
+understand why this happens:
 
-Signed-off-by: Chris Webb <chris@arachsys.com>
----
+bch2_dev_add calls __bch2_mark_metadata_bucket via bch2_mark_dev_superblock
+before the device is attached to the fs, so it can't yet use
+bch2_dev_usage_update.
 
-Notes:
-    v1: Generated to apply against 3f7b0b0 (2021-10-05)
-    v2: Updated to apply against f9f5778 (2021-10-21)
+Later, after the device is attached, we call bch2_trans_mark_dev_sb which
+diligently goes through re-marking buckets and updating the usage. However,
+the old and new bucket types and dirty_sectors values match, so
+bch2_dev_usage_update ends up repeatedly subtracting and then re-adding the
+sizes of all the BCH_DATA_sb and BCH_DATA_journal buckets from the usage
+data, leaving the usage unchanged.
 
- .travis.yml                   |  1 -
- INSTALL                       |  7 +++----
- Makefile                      |  2 +-
- crypto.c                      | 21 +++++++++++----------
- debian/control                |  2 +-
- default.nix                   |  2 --
- packaging/bcachefs-tools.spec |  2 --
- 7 files changed, 16 insertions(+), 21 deletions(-)
+In a comment in bch2_dev_add, you suggest "we have to mark, allocate the
+journal, reset all the marks, then remark after we attach" but unless I'm
+misunderstanding, I don't think I see anything that resets the marks in
+between the two metadata-marking operations?
 
-diff --git a/.travis.yml b/.travis.yml
-index 947997b..e66f0c2 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -19,7 +19,6 @@ addons:
-             - libblkid-dev
-             - libkeyutils-dev
-             - liblz4-dev
--            - libscrypt-dev
-             - libsodium-dev
-             - liburcu-dev
-             - libzstd-dev
-diff --git a/INSTALL b/INSTALL
-index f1d3877..b4d60bf 100644
---- a/INSTALL
-+++ b/INSTALL
-@@ -6,7 +6,6 @@ Dependencies:
-  * libblkid
-  * libkeyutils
-  * liblz4
-- * libscrypt
-  * libsodium
-  * liburcu
-  * libuuid
-@@ -17,7 +16,7 @@ Dependencies:
- 
- Debian (Bullseye or later) and Ubuntu (20.04 or later): you can install these with
-     apt install -y pkg-config libaio-dev libblkid-dev libkeyutils-dev \
--        liblz4-dev libscrypt-dev libsodium-dev liburcu-dev libzstd-dev \
-+        liblz4-dev libsodium-dev liburcu-dev libzstd-dev \
-         uuid-dev zlib1g-dev valgrind libudev-dev git build-essential \
-         python3 python3-docutils
- 
-@@ -25,10 +24,10 @@ Fedora: install the "Development tools" group along with:
-     dnf install -y libaio-devel libsodium-devel \
-         libblkid-devel libzstd-devel zlib-devel userspace-rcu-devel \
-         lz4-devel libuuid-devel valgrind-devel keyutils-libs-devel \
--        libscrypt-devel findutils
-+        findutils
- 
- Arch: install bcachefs-tools-git from the AUR.
--Or to build from source, install libscrypt from the AUR along with,
-+Or to build from source, install build dependencies with
-     pacman -S base-devel libaio keyutils libsodium liburcu zstd valgrind
- 
- Then, just make && make install
-diff --git a/Makefile b/Makefile
-index e4f6820..e94419f 100644
---- a/Makefile
-+++ b/Makefile
-@@ -73,7 +73,7 @@ endif
- 
- CFLAGS+=$(PKGCONFIG_CFLAGS)
- LDLIBS+=$(PKGCONFIG_LDLIBS)
--LDLIBS+=-lm -lpthread -lrt -lscrypt -lkeyutils -laio -ldl
-+LDLIBS+=-lm -lpthread -lrt -lkeyutils -laio -ldl
- LDLIBS+=$(EXTRA_LDLIBS)
- 
- ifeq ($(PREFIX),/usr)
-diff --git a/crypto.c b/crypto.c
-index 7f7fbd5..43753a3 100644
---- a/crypto.c
-+++ b/crypto.c
-@@ -12,7 +12,7 @@
- 
- #include <keyutils.h>
- #include <linux/random.h>
--#include <libscrypt.h>
-+#include <sodium/crypto_pwhash_scryptsalsa208sha256.h>
- #include <uuid/uuid.h>
- 
- #include "libbcachefs/checksum.h"
-@@ -84,12 +84,13 @@ struct bch_key derive_passphrase(struct bch_sb_field_crypt *crypt,
- 
- 	switch (BCH_CRYPT_KDF_TYPE(crypt)) {
- 	case BCH_KDF_SCRYPT:
--		ret = libscrypt_scrypt((void *) passphrase, strlen(passphrase),
--				       salt, sizeof(salt),
--				       1ULL << BCH_KDF_SCRYPT_N(crypt),
--				       1ULL << BCH_KDF_SCRYPT_R(crypt),
--				       1ULL << BCH_KDF_SCRYPT_P(crypt),
--				       (void *) &key, sizeof(key));
-+		ret = crypto_pwhash_scryptsalsa208sha256_ll(
-+			(void *) passphrase, strlen(passphrase),
-+			salt, sizeof(salt),
-+			1ULL << BCH_KDF_SCRYPT_N(crypt),
-+			1ULL << BCH_KDF_SCRYPT_R(crypt),
-+			1ULL << BCH_KDF_SCRYPT_P(crypt),
-+			(void *) &key, sizeof(key));
- 		if (ret)
- 			die("scrypt error: %i", ret);
- 		break;
-@@ -170,9 +171,9 @@ void bch_sb_crypt_init(struct bch_sb *sb,
- 	if (passphrase) {
- 
- 		SET_BCH_CRYPT_KDF_TYPE(crypt, BCH_KDF_SCRYPT);
--		SET_BCH_KDF_SCRYPT_N(crypt, ilog2(SCRYPT_N));
--		SET_BCH_KDF_SCRYPT_R(crypt, ilog2(SCRYPT_r));
--		SET_BCH_KDF_SCRYPT_P(crypt, ilog2(SCRYPT_p));
-+		SET_BCH_KDF_SCRYPT_N(crypt, ilog2(16384));
-+		SET_BCH_KDF_SCRYPT_R(crypt, ilog2(8));
-+		SET_BCH_KDF_SCRYPT_P(crypt, ilog2(16));
- 
- 		struct bch_key passphrase_key = derive_passphrase(crypt, passphrase);
- 
-diff --git a/debian/control b/debian/control
-index f8752bb..091161d 100644
---- a/debian/control
-+++ b/debian/control
-@@ -4,7 +4,7 @@ Section: utils
- Priority: optional
- Standards-Version: 3.9.5
- Build-Depends: debhelper (>= 9), pkg-config, libaio-dev, libblkid-dev,
--	libkeyutils-dev, liblz4-dev, libscrypt-dev, libsodium-dev, liburcu-dev,
-+	libkeyutils-dev, liblz4-dev, libsodium-dev, liburcu-dev,
- 	libzstd-dev, uuid-dev, zlib1g-dev, python3, python3-docutils
- Homepage: https://bcachefs.org/
- 
-diff --git a/default.nix b/default.nix
-index eee7300..48f2aa9 100644
---- a/default.nix
-+++ b/default.nix
-@@ -5,7 +5,6 @@
- , pkg-config
- , attr
- , libuuid
--, libscrypt
- , libsodium
- , keyutils
- 
-@@ -71,7 +70,6 @@ stdenv.mkDerivation {
- 		keyutils # libkeyutils
- 		lz4 # liblz4
- 		
--		libscrypt
- 		libsodium
- 		liburcu
- 		libuuid
-diff --git a/packaging/bcachefs-tools.spec b/packaging/bcachefs-tools.spec
-index 4946cef..00d0fbb 100644
---- a/packaging/bcachefs-tools.spec
-+++ b/packaging/bcachefs-tools.spec
-@@ -15,7 +15,6 @@ BuildRequires:  keyutils-libs-devel
- BuildRequires:  libaio-devel
- BuildRequires:  libattr-devel
- BuildRequires:  libblkid-devel
--BuildRequires:  libscrypt-devel
- BuildRequires:  libsodium-devel
- BuildRequires:  libtool-ltdl-devel
- BuildRequires:  libuuid-devel
-@@ -32,7 +31,6 @@ Requires:   keyutils-libs
- Requires:   libaio
- Requires:   libattr
- Requires:   libblkid
--Requires:   libscrypt
- Requires:   libsodium
- Requires:   libtool-ltdl
- Requires:   libuuid
+If it's hard to do that right, I did wonder if an alternative approach would
+be to somehow flag the bucket as 'not yet accounted for' when !c in
+__bch2_mark_metadata_bucket, so that bch2_dev_usage_update could spot this
+during the later bch2_trans_mark_dev_sb operation, and not subtract the
+unaccounted-for old.dirty_sectors.
+
+But I thought I'd better ask first, and make sure I've understood what's
+going on correctly, before getting any further out of my depth in the
+innards of your filesystem! :)
+
+Best wishes,
+
+Chris.
