@@ -2,68 +2,141 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86704C433EF
-	for <linux-bcachefs@archiver.kernel.org>; Sun, 24 Oct 2021 21:36:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9386AC433EF
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 29 Oct 2021 06:15:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5EFBD60F12
-	for <linux-bcachefs@archiver.kernel.org>; Sun, 24 Oct 2021 21:36:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7567B60FF2
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 29 Oct 2021 06:15:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhJXViq (ORCPT
+        id S231806AbhJ2GRl (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 24 Oct 2021 17:38:46 -0400
-Received: from cdw.me.uk ([91.203.57.136]:35635 "EHLO cdw.me.uk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhJXViq (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 24 Oct 2021 17:38:46 -0400
-Received: from chris by delta.arachsys.com with local (Exim 4.80)
-        (envelope-from <chris@arachsys.com>)
-        id 1melAF-0006c7-9k; Sun, 24 Oct 2021 22:36:23 +0100
-Date:   Sun, 24 Oct 2021 22:36:23 +0100
-From:   Chris Webb <chris@arachsys.com>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     linux-bcachefs@vger.kernel.org
-Subject: Re: Metadata usage following device add
-Message-ID: <20211024213623.GJ11670@arachsys.com>
-References: <20211024111547.GG11670@arachsys.com>
- <YXWML9QLQKCsRgdh@moria.home.lan>
+        Fri, 29 Oct 2021 02:17:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39004 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231774AbhJ2GRl (ORCPT
+        <rfc822;linux-bcachefs@vger.kernel.org>);
+        Fri, 29 Oct 2021 02:17:41 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2CA2721968;
+        Fri, 29 Oct 2021 06:15:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635488112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E919aeXK8dC3N34MDRziiU6STn2FmtpVBAk+ecOLJjo=;
+        b=rHi5YhKLU0rlCRHyPeKnauDRrrKyNolq7E6F6dDcjkjrYygp8K9iGOEHJj1sMmsNmnFoqm
+        JXUgJyq68i9P1XXycPxZOj9RRmHZ61CddjBbgHSqzeBEgXTEn3O/eT1/pGQOrrjanxFKqN
+        Ws1Xa0M9ZepgclsMvVLPpSC9aP/pzDs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635488112;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E919aeXK8dC3N34MDRziiU6STn2FmtpVBAk+ecOLJjo=;
+        b=S6CjmYqZCZ0yYeJGy3BiUS6TxG8jiMGcenKddoe10AYo6bdOAQvrpluZxu5uvYpr7RJ4EU
+        3KaNhyzDb7UqKtAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 55C5313AF5;
+        Fri, 29 Oct 2021 06:15:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Ah71CW2Re2HXXAAAMHmgww
+        (envelope-from <colyli@suse.de>); Fri, 29 Oct 2021 06:15:09 +0000
+Message-ID: <b11bb34b-8fdf-b6ed-b305-e7145f2a7ab2@suse.de>
+Date:   Fri, 29 Oct 2021 14:15:07 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXWML9QLQKCsRgdh@moria.home.lan>
-User-Agent: Mutt/1.5.20 (2009-06-14)
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: Readahead for compressed data
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+        linux-bcache@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>
+References: <YXHK5HrQpJu9oy8w@casper.infradead.org>
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <YXHK5HrQpJu9oy8w@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Kent Overstreet <kent.overstreet@gmail.com> writes:
+On 10/22/21 4:17 AM, Matthew Wilcox wrote:
+> As far as I can tell, the following filesystems support compressed data:
+>
+> bcachefs, btrfs, erofs, ntfs, squashfs, zisofs
 
-> Good catch! I completely forgot about that comment and didn't think to
-> fix it that way, the last time I was looking at that I was looking at the
-> device accounting code in buckets.c. I've just pushed a fix, can you tell
-> me if you see anything I missed?
+Hi Matthew,
 
-Thanks! I've played with it and tried everything I can think of to break it,
-but I didn't find a way to get it out of sync or inconsistent.
+There is a new bcachefs mailing list linux-bcachefs@vger.kernel.org for 
+bcachefs. I add it in Cc in this reply email.
 
-> This is a good opportunity to talk about the disk space accounting code.
+Just FYI for you and other receivers.
 
-That was a really interesting write-up of your planned transition to move
-the accounting into btree keys, thanks! Makes a lot of sense as you describe
-it. (I saw you mention hitting 1M snapshots on a filesystem the other day,
-which is good motivation for a scalable place to put accounting info!)
+Thanks.
 
-I need to spend a bit of time reading the code and getting a better sense of
-how the allocation system more generally works. It's still one of the more
-mysterious bits of the filesystem to me.
+Coly Li
 
-Am I right that in the current implementation, buckets only get discarded
-when the allocator thread is woken because we've run out of free buckets for
-a new allocation and need to reclaim - so they're discarded and quickly
-reused? I wonder if waking the allocator thread periodically (or from a
-userspace ioctl?) to reclaim and discard buckets earlier might be better for
-SSD health, kind of like a fancy version of a manual fstrim on ext4?
 
-Best wishes,
-
-Chris.
+>
+> I'd like to make it easier and more efficient for filesystems to
+> implement compressed data.  There are a lot of approaches in use today,
+> but none of them seem quite right to me.  I'm going to lay out a few
+> design considerations next and then propose a solution.  Feel free to
+> tell me I've got the constraints wrong, or suggest alternative solutions.
+>
+> When we call ->readahead from the VFS, the VFS has decided which pages
+> are going to be the most useful to bring in, but it doesn't know how
+> pages are bundled together into blocks.  As I've learned from talking to
+> Gao Xiang, sometimes the filesystem doesn't know either, so this isn't
+> something we can teach the VFS.
+>
+> We (David) added readahead_expand() recently to let the filesystem
+> opportunistically add pages to the page cache "around" the area requested
+> by the VFS.  That reduces the number of times the filesystem has to
+> decompress the same block.  But it can fail (due to memory allocation
+> failures or pages already being present in the cache).  So filesystems
+> still have to implement some kind of fallback.
+>
+> For many (all?) compression algorithms (all?) the data must be mapped at
+> all times.  Calling kmap() and kunmap() would be an intolerable overhead.
+> At the same time, we cannot write to a page in the page cache which is
+> marked Uptodate.  It might be mapped into userspace, or a read() be in
+> progress against it.  For writable filesystems, it might even be dirty!
+> As far as I know, no compression algorithm supports "holes", implying
+> that we must allocate memory which is then discarded.
+>
+> To me, this calls for a vmap() based approach.  So I'm thinking
+> something like ...
+>
+> void *readahead_get_block(struct readahead_control *ractl, loff_t start,
+> 			size_t len);
+> void readahead_put_block(struct readahead_control *ractl, void *addr,
+> 			bool success);
+>
+> Once you've figured out which bytes this encrypted block expands to, you
+> call readahead_get_block(), specifying the offset in the file and length
+> and get back a pointer.  When you're done decompressing that block of
+> the file, you get rid of it again.
+>
+> It's the job of readahead_get_block() to allocate additional pages
+> into the page cache or temporary pages.  readahead_put_block() will
+> mark page cache pages as Uptodate if 'success' is true, and unlock
+> them.  It'll free any temporary pages.
+>
+> Thoughts?  Anyone want to be the guinea pig?  ;-)
 
