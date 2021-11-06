@@ -2,109 +2,92 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8346DC433EF
-	for <linux-bcachefs@archiver.kernel.org>; Sat,  6 Nov 2021 17:11:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06997C433EF
+	for <linux-bcachefs@archiver.kernel.org>; Sat,  6 Nov 2021 19:37:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5F75A6128E
-	for <linux-bcachefs@archiver.kernel.org>; Sat,  6 Nov 2021 17:11:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CE29B6023B
+	for <linux-bcachefs@archiver.kernel.org>; Sat,  6 Nov 2021 19:37:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234651AbhKFROj (ORCPT
+        id S234275AbhKFTkb (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sat, 6 Nov 2021 13:14:39 -0400
-Received: from cdw.me.uk ([91.203.57.136]:36679 "EHLO cdw.me.uk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234649AbhKFROi (ORCPT <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sat, 6 Nov 2021 13:14:38 -0400
-Received: from chris by delta.arachsys.com with local (Exim 4.80)
-        (envelope-from <chris@arachsys.com>)
-        id 1mjPES-0001TY-Hg; Sat, 06 Nov 2021 17:11:56 +0000
-Date:   Sat, 6 Nov 2021 17:11:56 +0000
-From:   Chris Webb <chris@arachsys.com>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
+        Sat, 6 Nov 2021 15:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233622AbhKFTkb (ORCPT
+        <rfc822;linux-bcachefs@vger.kernel.org>);
+        Sat, 6 Nov 2021 15:40:31 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE87C061570
+        for <linux-bcachefs@vger.kernel.org>; Sat,  6 Nov 2021 12:37:49 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id bl12so11865509qkb.13
+        for <linux-bcachefs@vger.kernel.org>; Sat, 06 Nov 2021 12:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/vKtCqULl5h77q0C1TrtBSgOSH77Mt3SnY1GhkOaxFs=;
+        b=Pq9yW+x1EncrEMWPAOPR+kfBr5T55CkTxPKnKmZo2ycXTE9bCTDKuNrI12UDrrnJug
+         awpUQLoDvDKx1lDaKnnlsx3Rqx4Q2F5iIZYMoSo8eBjYJz1FSFIu+dVJnSy/gERsaDEh
+         WXAHrmIcZ2oUS5nMFoTqWD0PkuxRYDsxVYyQP0bA4kSAVFRUJDQ77O1fzlUjdCeS5N2C
+         N508rPawCbKd9MPyOXCebVRo2MQ6OWbRmcSS6+4etLrUatVorYkz4KPwWnNkUQdPnXN9
+         63/aGHir8Y384xev+UNKQJWjA9U/bh00g6hW3+DJtzYSiolUDvZSkj6XnS6zCF27plVo
+         YCYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/vKtCqULl5h77q0C1TrtBSgOSH77Mt3SnY1GhkOaxFs=;
+        b=OK9J1oh2o9bR2oxGNNYdPIg7Na1GpM89NF7G3+qQj+8IdyHUgAraix1W4kf7uKW21K
+         NK6A4WCmYhjUjL019aP8PDT8ZYD5klkfZAfDKIxMjSCHvlt4eDPum+rH1byxUHH+8aLB
+         tDkdfQLgy5cFHFh3vyPt8Z79/42T2hLbjaNP7fsLFsUq91nV3itwSZRilmUkKWKWFVKB
+         gon4aGKVhFLMmyhrdQVByvTa/Yj10L2RgrdhW8AVRHJy2OQvRoC66nFqbldE5TMFdWbb
+         VwJdv8TVhJzX9P8u2/g+LhLFXss0JdR+ZXvkZ40J2TNM98UL/WJ2UZ52dq8Rh81gn0pS
+         PlwA==
+X-Gm-Message-State: AOAM531JVtB1giB9y0njLgjhZsBFMPm0554eLbZR32Vw8OveNjq082ur
+        WTIUesjVvgu8D11KwU3YtL2H0NT19A==
+X-Google-Smtp-Source: ABdhPJzc1P/CJR2dTF+6YNkX1Narefm3aHUJ1tFWiEZbGiHz0NVeTuuMcmYht+yeP6StsW61GFX0dw==
+X-Received: by 2002:a37:b385:: with SMTP id c127mr53959824qkf.206.1636227468755;
+        Sat, 06 Nov 2021 12:37:48 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id b2sm7710661qtg.88.2021.11.06.12.37.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Nov 2021 12:37:47 -0700 (PDT)
+Date:   Sat, 6 Nov 2021 15:37:46 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     Chris Webb <chris@arachsys.com>
 Cc:     linux-bcachefs@vger.kernel.org
-Subject: More eager discard behaviour
-Message-ID: <20211106171156.GM11670@arachsys.com>
+Subject: Re: More eager discard behaviour
+Message-ID: <YYbZii7HNJ8lb8FF@moria.home.lan>
+References: <20211106171156.GM11670@arachsys.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.20 (2009-06-14)
+In-Reply-To: <20211106171156.GM11670@arachsys.com>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Discards issued to a loopback device punch holes in the underlying files, so I
-thought they'd be an easy way to check (and maybe ktest) filesystem discard
-behaviour. Here, I make a 1GB filesystem then repeatedly create and delete a
-400MB file in it:
+On Sat, Nov 06, 2021 at 05:11:56PM +0000, Chris Webb wrote:
+> SSDs are happier TRIMmed, but discard is also invaluable for filesystems on
+> thin provisioning systems like dm-thin. (virtio-block can pass discards up
+> from guest to host, so this is a common VM configuration.)
+> 
+> How practical would it be either to more-greedily wake the allocator thread
+> and reclaim buckets, or to detect buckets available to discard earlier in
+> their lifetime?
 
-  # truncate -s 1G /tmp/fs
-  # losetup /dev/loop0 /tmp/fs
-  # bcachefs format -q --discard /dev/loop0
-  initializing new filesystem
-  going read-write
-  mounted with opts: (null)
-  # mkdir -p /tmp/mnt
-  # mount -t bcachefs -o discard /dev/loop0 /tmp/mnt
-  # while true; do
-  >   sync && sleep 1 && du -h /tmp/fs
-  >   dd if=/dev/zero of=/tmp/mnt/file bs=1M count=400 status=none
-  >   sync && sleep 1 && du -h /tmp/fs
-  >   rm /tmp/mnt/file
-  > done
-  1.7M  /tmp/fs
-  404M  /tmp/fs
-  403M  /tmp/fs
-  806M  /tmp/fs
-  806M  /tmp/fs
-  992M  /tmp/fs
-  993M  /tmp/fs
-  992M  /tmp/fs
-  992M  /tmp/fs
-  992M  /tmp/fs
-  [...]
+It's on the todo list, it'll be part of the grand allocator rework I have
+planned - there's a lot that needs to be done.
 
-Although bcachefs does issue discards (double-checked with printk in
-discard_one_bucket), it only does so when the allocator thread wakes to
-reclaim buckets once the entire block device is in use, so the practical
-behaviour is that the whole device is kept full to the brim despite the
-filesystem never being over 40% capacity. (With count=50, you can get the
-same effect with an fs that never goes over 5% capacity.)
+We've got to rework the state transitions, and differentiate between buckets
+with cached data, buckets that need a journal commit before we can write to them
+again, buckets that need discarding, and buckets that are ready for use - and we
+need to start storing all that persistently, as well as build some new data
+structures to get rid of the scanning over every bucket we currently have to do
+in various places.
 
-(Happy to roll the above into a ktest if it's useful, e.g. that capacity
-never goes above x% with repeated deletes?)
+Step one is going to be creating a persistent LRU. It'll be another btree,
+sorted by the order in which we want to reuse buckets - a combination of the
+amount of live data in the bucket and the time since it was last read.
 
-The equivalent test with ext4 shows discard doing the expected thing:
-
-  # truncate -s 1G /tmp/fs
-  # losetup /dev/loop0 /tmp/fs
-  # mkfs.ext4 -q /dev/loop0
-  # mkdir -p /tmp/mnt
-  # mount -t ext4 -o discard /dev/loop0 /tmp/mnt
-  # while true; do
-  >   sync && sleep 1 && du -h /tmp/fs
-  >   dd if=/dev/zero of=/tmp/mnt/file bs=1M count=400 status=none
-  >   sync && sleep 1 && du -h /tmp/fs
-  >   rm /tmp/mnt/file
-  > done
-  33M /tmp/fs
-  433M  /tmp/fs
-  33M /tmp/fs
-  433M  /tmp/fs
-  33M /tmp/fs
-  433M  /tmp/fs
-  33M /tmp/fs
-  433M  /tmp/fs
-  33M /tmp/fs
-  [...]
-
-SSDs are happier TRIMmed, but discard is also invaluable for filesystems on
-thin provisioning systems like dm-thin. (virtio-block can pass discards up
-from guest to host, so this is a common VM configuration.)
-
-How practical would it be either to more-greedily wake the allocator thread
-and reclaim buckets, or to detect buckets available to discard earlier in
-their lifetime?
-
-Best wishes,
-
-Chris.
+If you're interested in tackling this, I can sketch it out for you :)
