@@ -2,77 +2,107 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15A60C433EF
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 19 Apr 2022 18:32:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E28C5C433F5
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 19 Apr 2022 20:42:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353571AbiDSSfM (ORCPT
+        id S1344267AbiDSUph (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 19 Apr 2022 14:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34144 "EHLO
+        Tue, 19 Apr 2022 16:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357234AbiDSSez (ORCPT
+        with ESMTP id S239506AbiDSUpg (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 19 Apr 2022 14:34:55 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526EF3CA4E
-        for <linux-bcachefs@vger.kernel.org>; Tue, 19 Apr 2022 11:26:11 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id d19so6337973qko.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 19 Apr 2022 11:26:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TVrSTiDEKIaKyp3DAJ7q1DL+kynVDQ9riEOq2QZpnuU=;
-        b=dF/VZa1IYe0px7m6I4Pijx+Q2lYrMuZdOzcc3iySe9Q4OyU6f4Ls2WDnsB/ecoLXRq
-         3YlIUId7ZNxaT7hZZR3sPZWMgxDiLgIZSBUlN3o5+2b9YEqsGceNdxlGFojP+V+e8DAT
-         hsI3IMY86/Wn6N8UAmDMzKG3bNeGQjvlrdQIMyy6inXzJlgNbQcp2v0qR1TO4mYN4WMl
-         O+buQ3O7K92FCVukkGoQAlJNSvQx2n/6f91oXvAn/g/FQmz2ww8IMYD8ZtyUPZ7vofuq
-         1RTxYhxo+s359s3nOSi1BEPkV7zxHruvNyZldF2/CvZ0slTd43eQYrD6eEW7VSHZhQY4
-         GSFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TVrSTiDEKIaKyp3DAJ7q1DL+kynVDQ9riEOq2QZpnuU=;
-        b=O2OB+IQqwRRL05yKZ3Yy8Rb5Pd/4/s8yA1ABWYRyVFUXKZ8E2jYmQzW111WrSoHRzR
-         WCMvwN0zaFBjhCkzEi5iQT+x5n8c35/dacUHZrsZcJNk9oYSymnwzdq0HtiQsLOUMQFC
-         ocKMFwX+q9iEXmaxqoEg+aWK7zDFpaH31iWX7ONLjC53/NclggzEnhVs+rMDVN+wYf1N
-         qGIZIPQxADbLaRjuEa9R+lELNt/VX+x3wYBsj/xnZUH/IZTKPgwqKjAKrD1U0j/nhYl4
-         XdrTMBhPfuEEq+R6Is/BXkZZnOznGDh9N9B+09lJDW3l6JSVCA0A9Gb8P0YyCQqDMA39
-         U4xQ==
-X-Gm-Message-State: AOAM532S99fo2O3sp/jbmSUc8oSrzjdSdM+yFeRga4yqvHGOdBZ96gpO
-        iNbAnWVViM0LU/dP/9KBWA==
-X-Google-Smtp-Source: ABdhPJxmZfSktmXTUOJb+ijMCqUubv7AodhdTkvxuV4KzLHixxbs0iOFL/dzw54SVlGLzwR5HWtlEg==
-X-Received: by 2002:a05:620a:28ce:b0:69e:7b84:888e with SMTP id l14-20020a05620a28ce00b0069e7b84888emr9368055qkp.252.1650392770263;
-        Tue, 19 Apr 2022 11:26:10 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id c20-20020a05622a059400b002e1d59e68f3sm466554qtb.48.2022.04.19.11.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Apr 2022 11:26:09 -0700 (PDT)
-Date:   Tue, 19 Apr 2022 14:26:07 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Janpieter Sollie <janpieter.sollie@kabelmail.de>
-Cc:     linux-bcachefs@vger.kernel.org
-Subject: Re: migration to livetree failed: journal corrupt
-Message-ID: <20220419182607.vbuyafvic3j5wj3v@moria.home.lan>
-References: <b3eddb73-abb9-49aa-af43-7c90efd602b7@kabelmail.de>
+        Tue, 19 Apr 2022 16:45:36 -0400
+Received: from mx.ewheeler.net (mx.ewheeler.net [173.205.220.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C596341984
+        for <linux-bcachefs@vger.kernel.org>; Tue, 19 Apr 2022 13:42:52 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mx.ewheeler.net (Postfix) with ESMTP id 7D24441;
+        Tue, 19 Apr 2022 13:42:52 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ewheeler.net
+Received: from mx.ewheeler.net ([127.0.0.1])
+        by localhost (mx.ewheeler.net [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id 7WwUWIGA38Fn; Tue, 19 Apr 2022 13:42:51 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.ewheeler.net (Postfix) with ESMTPSA id 9152A39;
+        Tue, 19 Apr 2022 13:42:51 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx.ewheeler.net 9152A39
+Date:   Tue, 19 Apr 2022 13:42:49 -0700 (PDT)
+From:   Eric Wheeler <bcachefs@lists.ewheeler.net>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+cc:     Demi Marie Obenour <demi@invisiblethingslab.com>,
+        linux-bcachefs@vger.kernel.org
+Subject: Re: bcachefs loop devs
+In-Reply-To: <20220419014140.5jz4hahhkfksulce@moria.home.lan>
+Message-ID: <51a52bd6-b535-e5ac-12a1-2f6dc1a84353@ewheeler.net>
+References: <Yk05Sk4ztxLMpgrt@itl-email> <20220415191140.2xyni3kusht6wear@moria.home.lan> <1f3290c6-535a-a15f-c02f-325099ecc4e0@ewheeler.net> <20220419014140.5jz4hahhkfksulce@moria.home.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b3eddb73-abb9-49aa-af43-7c90efd602b7@kabelmail.de>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, Mar 24, 2022 at 07:27:41AM +0100, Janpieter Sollie wrote:
-> Something failed while moving a large (24tb, 4tb allocated) multi-tiered filesystem to livetree
-> structure,
-> it immediately goes read-only.
-> After doing bcachefs fscheck, it hung at going read-write,
-> so I retried with --realloc-btree.
-> This time, it complained about journal corruption.
-> Is there any way I can safely drop the contents of the journal? The filesystem contents have not
-> changed since its last reboot.
+On Mon, 18 Apr 2022, Kent Overstreet wrote:
+> On Mon, Apr 18, 2022 at 06:16:09PM -0700, Eric Wheeler wrote:
+> > If bcachefs immediately calls .ki_complete() after queueing the IO within 
+> > bcachefs but before it commits to bcachefs's disk, then loop.c will mark 
+> > the IO as complete (blk_mq_complete_request via lo_rw_aio_complete) too 
+> > soon after .write_iter is called, thus breaking the expected ordering in 
+> > the filesystem (eg, xfs) atop of the loop device.
+> 
+> We don't call .ki_complete (in DIO mode) until the write has been complete,
+> including the btree update - this is necessary for read-after-write consistency. 
 
-Bug reports need to include relevant logs - I can't say anything without at
-least that much
+Good, I figured it would and thought I would ask in case that was the 
+issue.  
+ 
+> If your description of the loopback code is correct that does sound suspicious
+> though - queuing every IO to work item shouldn't hurt anything from a
+> correctness POV but it definitely shouldn't be needed or wanted from a
+> performance POV.
+
+REQ_OP_FLUSH just calls vfs_sync (not WQ-queued) and all READ/WRITE IO's
+hit the WQ.  Parallel per-socket WQ's might help performance since block
+layer doesn't care about ordering and filesystems (or at least bcachefs!)
+call ki_complete() after the write finishes so consistency should be ok.
+
+Generally speaking I avoid loop devs for production systems unless
+absolutely necessary.
+
+> What are you seeing?
+
+Nothing real-world.
+
+I was just reviewing loop.c in preparation for leaving bcache+dm-thin
+for bcachefs+loop to see if there are any DIO issues to consider.
+
+IMHO, it would be neat to have native bcachefs block devices and avoid
+the weird loop.c serial WQ (and possibly other issues loop.c has to deal
+with that native bcachefs wouldn't).
+
+This is a possible workflow for native bcachefs devices.  Since bcachefs 
+is awesome - it would provide SSD caching, snapshots, encryption, and raw 
+DIO block devices into VMs:
+
+	]# bcachefs subvolume create /volumes/vol1
+	]# truncate -s 1T /volumes/vol1/data.raw
+	]# bcachefs blkdev register /volumes/vol1/data.raw
+	/dev/bcachefs0
+	]# bcachefs subvolume snapshot /volumes/vol1 /volumes/2022-04-19_vol1
+	]# bcachefs blkdev register /volumes/2022-04-19_vol1/data.raw
+	/dev/bcachefs1
+	]# bcachefs blkdev unregister /dev/bcachefs0
+
+And udev could be made to do something like this:
+	]# ls -l /dev/bcachefs/volumes/vol1/data.raw
+	lrwxrwxrwx 1 root root 7 Apr  9 17:35   data.raw -> /dev/bcachefs0
+
+Which means the VM can have a its disk defined as 
+/dev/bcachefs/volumes/vol1/data.raw in its libvirt config, and thus point 
+at a real block device!
+
+That would make bcachefs the most awesome disk volume manager, ever!
+
+
