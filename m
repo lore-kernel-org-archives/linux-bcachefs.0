@@ -2,110 +2,128 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DBB4C433F5
-	for <linux-bcachefs@archiver.kernel.org>; Sat,  7 May 2022 18:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8FBAC433F5
+	for <linux-bcachefs@archiver.kernel.org>; Sat,  7 May 2022 18:28:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244484AbiEGSNK (ORCPT
+        id S1446822AbiEGSbp (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sat, 7 May 2022 14:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
+        Sat, 7 May 2022 14:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244202AbiEGSNJ (ORCPT
+        with ESMTP id S1386863AbiEGSbo (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sat, 7 May 2022 14:13:09 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F87D2BC4
-        for <linux-bcachefs@vger.kernel.org>; Sat,  7 May 2022 11:09:22 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id o11so8250706qtp.13
-        for <linux-bcachefs@vger.kernel.org>; Sat, 07 May 2022 11:09:22 -0700 (PDT)
+        Sat, 7 May 2022 14:31:44 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEC6237CF
+        for <linux-bcachefs@vger.kernel.org>; Sat,  7 May 2022 11:27:56 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id j9so8149306qkg.1
+        for <linux-bcachefs@vger.kernel.org>; Sat, 07 May 2022 11:27:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z+CcEvVf0FPvq70N+cDldRom8x4fdv3E9Uj9M8Vckw0=;
-        b=kWhzryAEhEkDne7fPxMkwro1KMXV//6I8W6gX87X5VGwOiUhCZIB+QHMF4KGHtW2M4
-         BaOvwh/9UiNIZ9fxtp17ZOTzUvSLbfEWaeO9ePbhThD7FU5YhqPtiTkNjDrRLw4ox4vP
-         L+yNeRGFBP95zCH4ll7+NPD3iyb4WIz2Nlzs1UsSy1Dp3FNTjcPtj4er0KwaFeRw51fH
-         qM5EINmeLIdKQBTGuImGz0qQCxi0I5z2DQ1jdxe6evkaRcUHoXhOelO1aLnCAWZ6uqLb
-         8Tc5Ex9Tu0vcWgU66QCwdsKVGE43bnyOhZJW0VMzcsJTdIw/Edh9kRJsPD/A6WwkaDXW
-         bu5g==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nElYfIWyVOu13ux80uAmyxut7T+aqfiYeHnK51miSkc=;
+        b=D76I8VCVwyie06WOwRJEHoBk1RV9sfwHzHE7EGXpYbzGGgncOqTTS54aKdbSNC1Wq7
+         uOztcnJKv9gWHjEAsnhxlHNv+7VGQ54FECxyAq55W9A+j9pMJhLBRfIsEIRLNu2EbOEO
+         P/+8e6vvS9jFY4dMDuRtLrEIf8ZNwTIrB3JgFTyCjDNpixzfIqIe2gWwh9N9zx/IIW/0
+         BVhIAliGP6rw7OjY8gE68pda/D1hUgdpl7YnwxhHZ/9MeZFGuIBX2G50gMA/H1ugNs4p
+         9CCWc/7qcQ6dd0Enx/+kfYcWwjgx18fkM+bNSGpg/ka3mjOaLQYrjplVgGjOjmallR48
+         WEPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z+CcEvVf0FPvq70N+cDldRom8x4fdv3E9Uj9M8Vckw0=;
-        b=PZTVR1wlVHb3KH+pzokCre6CGfbm7vxcjLsIPpYnjBW//J/ZJmQQ1Q2mkVcFAdG3bt
-         pJwIUjC91vCMYTcfz9qXsMJJ2J8hB6nK43q05mD0u6jBi14Q1AC4yGgYWW3pZjGkO480
-         JjTHA5FwJOMsifMqmsH3od27+XYs6SmiO2EBLLOXdWjAf1KnRnG8OjLHWfyeCffyU7lN
-         VangdwpgYy1gwCYpG7YewtivnKxdxjuRK87ytYFWS9g0ZcqiGCKvWMiJrUEI3/mqgLXZ
-         L1NqaBuLe42l6TClxo0lXPva8DAJWCcQvaNz2RE01FXOhb11SUZTdczS7p3GxZGFQ8pW
-         EPzg==
-X-Gm-Message-State: AOAM5335hPzMIpwaQGEUr3f5fvwYfg1ih4RfMB4Fx3PfPDdMIhFruF1T
-        WPdk9ecQ124Gzxo4fzjum4kOGG8LDA==
-X-Google-Smtp-Source: ABdhPJzvnI9l+YHnzDpFLnZ9XgQ1AwtE3NfFN9WwdHPnKGvaOcNZw4BXLvWo50e5E4p2d2UA8JkKMg==
-X-Received: by 2002:ac8:59cd:0:b0:2f3:c08d:9ffa with SMTP id f13-20020ac859cd000000b002f3c08d9ffamr8358563qtf.564.1651946961022;
-        Sat, 07 May 2022 11:09:21 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nElYfIWyVOu13ux80uAmyxut7T+aqfiYeHnK51miSkc=;
+        b=YouK40Fbacj97Iuf0Fll/emM1UOo+Hqubs/HvnDqiOQ9Kv88RXizALt113wsa6j8pH
+         V7Kp4pQ68ED7XQ6GnrQoSc/p/vAr4+cJEX/6Pf5HLOKiVKIec1lGY3wt/XACnbgTQhRz
+         fM3dBIs/SPSFV3lxHC2QORPaHtyLcmUiFFUifINrPQrYEDqvfnw5Jl/OeCKHcNxVa6Q7
+         rCAScwJzc94IjG68mA2J4X6n1PBbKPjB4fvilQVQOVuHBhxYGuVRADOlLmRQrZAhXzsW
+         IcYGM4iLe+2ZK5E5vMXCc47bZ7OnhjiMVBR3WVrK2vWFCa9Dk+ALYt3/aXXvbBuhHYl5
+         +hpw==
+X-Gm-Message-State: AOAM531UbFc5/OpXRF5aVh2LZktV3qcLAcS8V4/RxFZqSKULg+l7vlfO
+        ePtiVRe/Mm3Kg1YG1qLhaCJiPV11fQ==
+X-Google-Smtp-Source: ABdhPJyXyxFZZ40bzph/fXDRyYYSpLy3w60iBVX66z8ssQN1P/LAr1nE0pqLaaa9ppvSIXZ7yPS6Gw==
+X-Received: by 2002:a05:620a:280d:b0:67d:2480:fdea with SMTP id f13-20020a05620a280d00b0067d2480fdeamr6721796qkp.157.1651948075883;
+        Sat, 07 May 2022 11:27:55 -0700 (PDT)
 Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id t3-20020ac85303000000b002f39b99f6a9sm4549763qtn.67.2022.05.07.11.09.19
+        by smtp.gmail.com with ESMTPSA id y7-20020ac87c87000000b002f39b99f67csm4608862qtv.22.2022.05.07.11.27.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 May 2022 11:09:19 -0700 (PDT)
-Date:   Sat, 7 May 2022 14:09:18 -0400
+        Sat, 07 May 2022 11:27:55 -0700 (PDT)
+Date:   Sat, 7 May 2022 14:27:53 -0400
 From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Wout Mertens <wout.mertens@gmail.com>
+To:     Janpieter Sollie <janpieter.sollie@kabelmail.de>
 Cc:     linux-bcachefs@vger.kernel.org
-Subject: Re: content-addressed storage?
-Message-ID: <20220507180918.62kiggruug4e5cs7@moria.home.lan>
-References: <CAO3V83+SSfYXLj18NvkVzJ68K3LxdPQnG0U-Zhnq+ZQLp5p0wA@mail.gmail.com>
+Subject: Re: bcachefs csum: what about scrubbing with ec?
+Message-ID: <20220507182753.mzxgdygeucgpkekv@moria.home.lan>
+References: <800887d8-7c00-76d0-81af-e0fd08a77847@kabelmail.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAO3V83+SSfYXLj18NvkVzJ68K3LxdPQnG0U-Zhnq+ZQLp5p0wA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <800887d8-7c00-76d0-81af-e0fd08a77847@kabelmail.de>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Mon, Apr 25, 2022 at 07:37:51AM +0200, Wout Mertens wrote:
-> Hi,
+On Sun, Apr 24, 2022 at 03:10:57PM +0200, Janpieter Sollie wrote:
+> Hi everyone,
 > 
-> I'm idly wondering if bcachefs could support lookups and reuse of
-> variable-size chunks based on their hash checksum, thus allowing
-> deduplication.
 > 
-> So, instead of using a user-level storage layer like
-> https://github.com/systemd/casync, it would be a layer deeper, inside
-> bcachefs.
-> 
-> Would that be more optimal in memory/cpu/disk, or would it not make
-> much difference besides comfort?
-> 
-> As a quick overview, casync splits files into chunks. The chunks are
-> variable-sized based on their content using a rolling hash, which
-> makes insertions and deletions change only the affected blocks and not
-> the blocks following them. Then, the chunks are compressed and hashed,
-> and stored under their hash.
-> So files stored this way are lists of variable-size hashed chunks. If
-> two files are similar, they will be sharing a lot of the chunks
-> automatically.
-> 
-> A straightforward implementation would result in a single directory
-> with millions/billions of small files. Is that something bcachefs can
-> handle?
-> 
-> Inside bcachefs I'd instead imagine a btree with all the chunks as
-> extents, keyed by their hash, and files somehow being able to
-> arbitrarily point at those extents.
+> I'm still learning about bcachefs, my experiments are currently mostly targeted at the part of
+> bcachefs-tools ,
+> digging into the whole bcachefs structure is still somewhat advanced.
+> I'm considering implementing bcachefs scrub: During the past months, I had several fs upgrades
+> where the filesystem decided the checksum wasn't correct, whereas the data was fine.  It would
+> be nice to be fixable.
+> However, something I thought about:
+> All non-encryption checksum algorithms are < 64 bits wide, and as such fit in the .lo part of
+> bch_csum.
+> What about using the upper part for ec? possibilities are here:
+> - using another checksum algorihm to check whether a failed checksum isn't an error of the
+> checksum itself.  maybe using bit 4 here of CSUM_TYPES to say: if 0, no 2nd, if 1, use crc32c
+> (as it is mostly hardware accelerated).
 
-We'd need to try implementing it and see how well it works, but I've been
-thinking along the same lines as what you're describing - it could work.
+Not following your idea here? What do you mean by by error of the checksum
+itself?
 
-The thing people have run into with dedup in other filesystems is that doing it
-inline has really high memory overhead - because accesses to your index-by-hash
-btree are in completely random order, so you need to keep the whole thing in
-memory.
+> This would be fast + would tell whether the checksum is corrupt, or the file is.
+> it would however limit future checksums to 3: 1b1000 (a none algorithm can't have a 2nd
+> checksum), 1b1011 and 1b1100 (as those do not have room for a 2nd checksum + it may be unsafe)
 
-But doing it at extent granularity instead of block granularity will help. The
-next question is, what if accesses are misaligned? I've heard of some cool
-rolling window algorithms that might be worth looking into. But maybe you or the
-casync people have some thoughts on this? What affects extent/chunk alignment in
-their system? In bcachefs extent alignment will depend on what the allocator is
-doing, it's not something upper layers can generally rely on.
+> - using reed-solomon as a new algorithm (nr 8).
+> I'm not entirely sure of that, using RS in a situation where there are only 16 bytes for ec in a
+> billion-size data block (many files are > 1GB these days) is mostly useless.
+> But, for what it's worth, it would allow to correct single bit errors on the fly (eg: the user
+> would never notice a bit error in its file, and it could be corrected automatically).
+> would any feature be worth investigating?
+
+Hmm, maybe.
+
+In theory, on modern hardware we really shouldn't be seeing much bitrot, since
+hdds and ssds have not just checksums but strong error correcting codes -
+bitflips should have been caught & fixed by the devices themselves. But maybe
+there's still too much buggy/garbage hardware out there - storing the error
+correcting code in bch_csum is a cool idea for that.
+
+> Technically, an invalid checksum would point at an invalid checksum calculation (in which case
+> the file can be scrubbed), or a damaged file (in which case the file must be marked as dirty).
+> currently, the only scrub way is assuming the data is correct and the checksum isn't
+
+So generally if you get a checksum error you have to assume the data is garbage.
+Technically, all that you know is that there's an error somewhere in (data +
+checksum); but given that our checksums are stored separately and themselves
+checksummed (in btree nodes) a checksum error pretty much always means the data
+was damaged, and the only way to recover is from another replica (that will
+hopefully pass the checksum check!).
+
+Also marking something dirty has a specific meaning in filesystem terminology -
+dirty is a property that cached data may have, and it means that the data in the
+cache has been updated and must be written back. It doesn't really fit here :)
+
+So, using RS for a checksum type is an interesting idea. I think this kind of RS
+has been done before, code might even exist in the kernel for it already (as
+opposed to large block RS, that RAID uses) - we'd have to check how the
+performance is, and make sure it can still catch bitflips.
+
+Could be a fun project :)
