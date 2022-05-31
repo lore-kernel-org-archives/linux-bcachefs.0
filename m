@@ -2,83 +2,76 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE876C433EF
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 25 May 2022 17:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70A80C433EF
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 31 May 2022 19:55:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbiEYRW3 (ORCPT
+        id S1347554AbiEaTzi (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 25 May 2022 13:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        Tue, 31 May 2022 15:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiEYRW2 (ORCPT
+        with ESMTP id S1347502AbiEaTzh (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 25 May 2022 13:22:28 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5F195A34
-        for <linux-bcachefs@vger.kernel.org>; Wed, 25 May 2022 10:22:26 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id s31so2061605qtc.3
-        for <linux-bcachefs@vger.kernel.org>; Wed, 25 May 2022 10:22:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AMh4DjIyCdpooyxZ1k6wKBDJk1dR0Gk9/TJEibnBc3I=;
-        b=LyvvQ/V7q2/V3KgLWbU9danEpM1kcGInVRfRE8bseWqKawrAwHBbU/08Q6D5Vd4dFc
-         V2eH/O2DqF2/JwAq7tg/gLpQhjrUeft4R4wZ2mrsAL1hk2fRNDLHtn6fq8SvdcT4ZT/i
-         cvMAq/yLo7AZ4mJ+kKmeRYUmZvwBul/CFwnoNeNjQE3S3D1phdc1xXZ6n1LjsjaWTgA3
-         TP6p/BKowot2HZ0V58fpdDEcbVB9Nk6A6fK9jH5wlMTqc11uez7FLhrPa0SJoIMvgxWR
-         w10ThGghWn4b89MCcLmrDziUUm1dj2c8LrA2PbspIH4uRcNL7/PucK1wY+YYxs/7H/jq
-         0Wrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AMh4DjIyCdpooyxZ1k6wKBDJk1dR0Gk9/TJEibnBc3I=;
-        b=FT0m+YWCtxUNjyKnfeGimZhAzmzj/e7fZqQ3kwwWGVy6YX9op8gDu9EGw57gIqORqt
-         Pm1vR1jUleeMyHy4ZEM2UAYt7z0jgfiMLd1qLoqW8EH5gDBZm+9l6twNdt1m6dbPMwnz
-         bqTiAVEMDw3Kj3U7d+fHYtkWU5zANbos+4t81GLVaDzBxBLbDt26qWrkzAsOjoyQuis1
-         YH91M+D6ACnDp4NovvOXbl56QKKDupILfuatwmrFG9uF9ITeNDvzmErX4ol9MZo9liOu
-         pyrEaNZXgaBmEb3vUvr6RIvaMMWh3fvKAkNGBjPkfoowdd2wyJnFdU6m3du5iserHuEb
-         pSUA==
-X-Gm-Message-State: AOAM531NbFcb0poVYyvAnxzUwkNWgwD8DlOFRi4J3lMG3faitJEG/tC9
-        yaXtz4x1T2hgyI3b1Pi0iSbnNSnguA==
-X-Google-Smtp-Source: ABdhPJwoVFmRCY/W4Ml6sBkcU33AqVKramwV/pWAwAjrgRfENKmmBwbxchg/OnnUyfvY+91hx8bezA==
-X-Received: by 2002:a05:622a:1448:b0:2fb:6ebd:734b with SMTP id v8-20020a05622a144800b002fb6ebd734bmr2210414qtx.108.1653499346018;
-        Wed, 25 May 2022 10:22:26 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id q8-20020a05620a024800b006a34f6a7840sm1578181qkn.57.2022.05.25.10.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 May 2022 10:22:25 -0700 (PDT)
-Date:   Wed, 25 May 2022 13:22:23 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Generic Plant <cmclfairbairn@gmail.com>
-Cc:     linux-bcachefs@vger.kernel.org
+        Tue, 31 May 2022 15:55:37 -0400
+Received: from mx.ewheeler.net (mx.ewheeler.net [173.205.220.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23008FD5A
+        for <linux-bcachefs@vger.kernel.org>; Tue, 31 May 2022 12:55:36 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mx.ewheeler.net (Postfix) with ESMTP id AAA2939;
+        Tue, 31 May 2022 12:55:36 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ewheeler.net
+Received: from mx.ewheeler.net ([127.0.0.1])
+        by localhost (mx.ewheeler.net [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id L57yEdYsCkNt; Tue, 31 May 2022 12:55:32 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.ewheeler.net (Postfix) with ESMTPSA id 48141B;
+        Tue, 31 May 2022 12:55:32 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx.ewheeler.net 48141B
+Date:   Tue, 31 May 2022 12:55:32 -0700 (PDT)
+From:   Eric Wheeler <bcachefs@lists.ewheeler.net>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+cc:     Generic Plant <cmclfairbairn@gmail.com>,
+        linux-bcachefs@vger.kernel.org
 Subject: Re: Command mistype on bcachefs.org
-Message-ID: <20220525172223.gng6e7nfi5jn7hav@moria.home.lan>
-References: <CAM8=fNeR1rLw2puAtmY+3dTd0ekmUaCMj6Gjzb6MHoMvzNt3OQ@mail.gmail.com>
+In-Reply-To: <20220525172223.gng6e7nfi5jn7hav@moria.home.lan>
+Message-ID: <85aede4-4ca3-738e-6dab-6c5565eb73fb@ewheeler.net>
+References: <CAM8=fNeR1rLw2puAtmY+3dTd0ekmUaCMj6Gjzb6MHoMvzNt3OQ@mail.gmail.com> <20220525172223.gng6e7nfi5jn7hav@moria.home.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM8=fNeR1rLw2puAtmY+3dTd0ekmUaCMj6Gjzb6MHoMvzNt3OQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Sat, May 21, 2022 at 08:19:11PM +0100, Generic Plant wrote:
-> Hi,
+On Wed, 25 May 2022, Kent Overstreet wrote:
+> On Sat, May 21, 2022 at 08:19:11PM +0100, Generic Plant wrote:
+> > Hi,
+> > 
+> > I noticed there was a mistype on https://bcachefs.org/. Specifically the
+> > command:
+> > 
+> > bcachefs format /dev/sd[ab]1 \
+> >     --foreground_target /dev/sda1 \*    --promote-target /dev/sda1 \
+> > *    --background_target /dev/sdb1
+> > mount -t bcachefs /dev/sda1:/dev/sdb1 /mnt
 > 
-> I noticed there was a mistype on https://bcachefs.org/. Specifically the
-> command:
+> Thanks, fixed - the --target options now take sda1, not /dev/sda1
+
+If --target options take the name without /dev, then how are paths like 
+/dev/mapper/foo handled?  
+
+Do you need to specify "dm-7" or whatever the /dev/dm-N path is?
+
+--
+Eric Wheeler
+
+
+
 > 
-> bcachefs format /dev/sd[ab]1 \
->     --foreground_target /dev/sda1 \*    --promote-target /dev/sda1 \
-> *    --background_target /dev/sdb1
-> mount -t bcachefs /dev/sda1:/dev/sdb1 /mnt
-
-Thanks, fixed - the --target options now take sda1, not /dev/sda1
-
-> Also, it's a weird edge case but has anyone attempted a multi device with
-> USB sticks? I've tried to but I can only create a folder then I get a file
-> system is read only error (mounting with -o rw).
-
-What dmesg do you get?
+> > Also, it's a weird edge case but has anyone attempted a multi device with
+> > USB sticks? I've tried to but I can only create a folder then I get a file
+> > system is read only error (mounting with -o rw).
+> 
+> What dmesg do you get?
+> 
