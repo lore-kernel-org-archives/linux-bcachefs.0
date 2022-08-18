@@ -2,28 +2,29 @@ Return-Path: <linux-bcachefs-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64F30C25B08
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 18 Aug 2022 02:07:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDF00C25B08
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 18 Aug 2022 02:13:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239815AbiHRCHU (ORCPT
+        id S239036AbiHRCNk (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 17 Aug 2022 22:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
+        Wed, 17 Aug 2022 22:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236002AbiHRCHS (ORCPT
+        with ESMTP id S234593AbiHRCNh (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 17 Aug 2022 22:07:18 -0400
+        Wed, 17 Aug 2022 22:13:37 -0400
+X-Greylist: delayed 477 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 17 Aug 2022 19:13:35 PDT
 Received: from smtp.carlthompson.net (bifrost.carlthompson.net [45.77.7.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD5E95AF5
-        for <linux-bcachefs@vger.kernel.org>; Wed, 17 Aug 2022 19:07:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8C1356FE
+        for <linux-bcachefs@vger.kernel.org>; Wed, 17 Aug 2022 19:13:33 -0700 (PDT)
 Received: from mail.carlthompson.net (mail.home [10.35.20.252])
         (Authenticated sender: cet@carlthompson.net)
-        by smtp.carlthompson.net (Postfix) with ESMTPSA id C52415E7C
-        for <linux-bcachefs@vger.kernel.org>; Wed, 17 Aug 2022 19:07:17 -0700 (PDT)
-Date:   Wed, 17 Aug 2022 19:07:17 -0700 (PDT)
-From:   "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+        by smtp.carlthompson.net (Postfix) with ESMTPSA id 62DA055412
+        for <linux-bcachefs@vger.kernel.org>; Wed, 17 Aug 2022 19:05:35 -0700 (PDT)
+Date:   Wed, 17 Aug 2022 19:05:35 -0700 (PDT)
+From:   "Carl E. Thompson" <cet@carlthompson.net>
 To:     "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Message-ID: <590771559.530.1660788437769@mail.carlthompson.net>
+Message-ID: <301306826.522.1660788335342@mail.carlthompson.net>
 Subject: Which git to test against? Which branch?
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
