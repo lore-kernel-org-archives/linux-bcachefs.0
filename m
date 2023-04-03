@@ -2,159 +2,88 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5469C6FD1D
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 21 Mar 2023 13:39:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46256C76188
+	for <linux-bcachefs@archiver.kernel.org>; Mon,  3 Apr 2023 15:35:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbjCUNjQ (ORCPT
+        id S232882AbjDCPfS (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 21 Mar 2023 09:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
+        Mon, 3 Apr 2023 11:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjCUNjP (ORCPT
+        with ESMTP id S232858AbjDCPfS (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 21 Mar 2023 09:39:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503DB49C1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 21 Mar 2023 06:38:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679405908;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5srGbwZPrCg3TBxtgR+hIJyYYromyxLjlNlnqJLzggw=;
-        b=FyFFjkikomtbfti+uA/qEF9aKf8rVNW6haFgvx2hZPsn03HGwcL4XJRFzLJUHqY8fZQGyL
-        ONMH0YE1B8YAOjX3UrRDUe3TQTBG03TMROpLpGEFSezX4h8w7fhEIgCkYaMkE2J7uqKDMO
-        tEmvKkB3YMT9Lqs7H6BabpbnEZoFmA4=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-283-VddTN3aDOeGuAQQVAjkcBg-1; Tue, 21 Mar 2023 09:38:27 -0400
-X-MC-Unique: VddTN3aDOeGuAQQVAjkcBg-1
-Received: by mail-qt1-f198.google.com with SMTP id u22-20020a05622a011600b003dfd61e8594so4306828qtw.15
-        for <linux-bcachefs@vger.kernel.org>; Tue, 21 Mar 2023 06:38:27 -0700 (PDT)
+        Mon, 3 Apr 2023 11:35:18 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D422709
+        for <linux-bcachefs@vger.kernel.org>; Mon,  3 Apr 2023 08:35:16 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id bx10so12460659ljb.8
+        for <linux-bcachefs@vger.kernel.org>; Mon, 03 Apr 2023 08:35:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680536114;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2ZVtlt4ZQIQK85LFWjqVDsOVA+CjB3/S9JkwaHqwM7I=;
+        b=UVCKx9NdDiUT3x3J3yhH2u2rz9gx3mXlyvNAuLCup77NMJ+edizwAtTmCfSDAz1HBf
+         cZftihive7Daa44l0CKQJi9zDFsDvlBue9UQFJcNQUD0TGiPtkSVL6xIsGLxKmOF+6na
+         QRH0xxvedaYKK70WN1S1BGd93PoEa90MNfK68zZKxq/YeypGdYAvThaQf/8WWlx4X2wU
+         mCok5G6tMEhcooYooQh3zkSPDnpGZpfEFKPHmtPPuy9W0c4W7E6MLYxUAmfRUBUmdLD+
+         2efpc19QewSYGBftCXurhaKi2Un7AD7NEmOWs7X8sp/Gluq9FU5KlinHC9Wc8T111C79
+         tfZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679405906;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5srGbwZPrCg3TBxtgR+hIJyYYromyxLjlNlnqJLzggw=;
-        b=HL0bNQd6rFAp3RISW0OVbAKajh9VqS495CVijy3PvbEqXn2MJPTZEYMLr6SIxLUMer
-         olGp73HG/HtiVaQNL6d8Oc6VP66DauF6dNnjhhE89YxebiRTislnXQW4OJGNzjEU9zrq
-         O96Y3ZnL/YjOeFxrRgNTwVMRO9YGW74rf5jsbfFf2IYIkaBRkwsoEapzlowyeV0r/gpW
-         ikaLSJ9+qiS49ddrkjMfIwl1UqTXVRBqfiJHKx7KBa4OBFUEI/aV+BXMWfW79UVuNQ6y
-         LIgVr0c79LE76EnCOYrHmEpzedkQ0p75hmN99JaEDj86u7BPtQw6e5Rvx4u8gSAHiaOD
-         SGJw==
-X-Gm-Message-State: AO0yUKV3QWExK7M9HB1UPuhmXM+NG94P2/t5tCy+MH9xVUPUDI6nUWAG
-        ElD58wJcUBpMVacJHpnXlo8dYK6RMDGhiP7Fo+FizbuPSmH/qu4h5XXMlLjobdGfHfyPG7bPY87
-        vqw8AQ8bJ3JyNNz3zVQf2S92qYJ+MYfb3SWKxbF8kq7XMCwoCeeqYBiPzly5QEiwDVM5iWPpy/w
-        VNmq1CfEV7fw==
-X-Received: by 2002:a05:622a:1191:b0:3dc:7fcc:31c7 with SMTP id m17-20020a05622a119100b003dc7fcc31c7mr4307202qtk.2.1679405906400;
-        Tue, 21 Mar 2023 06:38:26 -0700 (PDT)
-X-Google-Smtp-Source: AK7set/op1yu+enLbnJxNFX84hjXHL+Dz2Rz0jbUbA/r8LsUJW03OlL54LLY48SycT8NeXNdDO7ekw==
-X-Received: by 2002:a05:622a:1191:b0:3dc:7fcc:31c7 with SMTP id m17-20020a05622a119100b003dc7fcc31c7mr4307169qtk.2.1679405906041;
-        Tue, 21 Mar 2023 06:38:26 -0700 (PDT)
-Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
-        by smtp.gmail.com with ESMTPSA id x26-20020ac86b5a000000b003bfa2c512e6sm8312159qts.20.2023.03.21.06.38.25
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Mar 2023 06:38:25 -0700 (PDT)
-Date:   Tue, 21 Mar 2023 09:40:10 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 1/5] bcachefs: more aggressive fast path write buffer key
- flushing
-Message-ID: <ZBmzunR3GYZw8Tkl@bfoster>
-References: <20230321132014.1438249-1-bfoster@redhat.com>
- <20230321132014.1438249-2-bfoster@redhat.com>
+        d=1e100.net; s=20210112; t=1680536114;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2ZVtlt4ZQIQK85LFWjqVDsOVA+CjB3/S9JkwaHqwM7I=;
+        b=MthkQAMsfl7qC9GGL4yls/s3Qm05fnCH2y++/bp5cAull9k9XRuXLdAMKdvmhYg7Wo
+         gsEyWjYLh3XCEEf0VKIAToR3m/MYp5ZMMUTGHaeFAEmEoRGlXYcIw7LbbyJn9l8Gu6T8
+         f9kuh4y3XUj0E9QypWq8qI7FWSM+MZlsPJfzqxJIcJgJ2ZqKVhzU7nVls8pzDOY0i/9l
+         VFJk00H8P9NsAWeULp474LsRcwQNECb0/jR2zq5hDh/0co9oy7PqyCWGllFO36USiUD9
+         kY+MPc4Xl3+6+MfRzjkHlFHQYIF1ucur8e5TsxCywfzr8GH70U+oXOKGBCMpgtZCca9z
+         vtlA==
+X-Gm-Message-State: AAQBX9eZXM0TACX38c/GrwnpfR95QLY/M5i4NKiGPMGj5O/xanPUz659
+        WGE9iw4H1Ph6eqxgOBSa3I9EneCV019M7i6Yg6ZiG43gbuo=
+X-Google-Smtp-Source: AKy350Y7UzhumYz4mfLW8RBu41tQjRJvWn9PxL1I4YJd+cUsAI67SokXjt1oqLdZdOOFGU5RFm4mgij3S1KDg1jXfBk=
+X-Received: by 2002:a05:651c:21a:b0:2a5:fa58:cac2 with SMTP id
+ y26-20020a05651c021a00b002a5fa58cac2mr8200770ljn.1.1680536114156; Mon, 03 Apr
+ 2023 08:35:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230321132014.1438249-2-bfoster@redhat.com>
+From:   cee1 <fykcee1@gmail.com>
+Date:   Mon, 3 Apr 2023 23:35:02 +0800
+Message-ID: <CAGXxSxWrf8gy6zTeEGbqGxYSxfA5y9grqouUa9KYgwTuWF05dg@mail.gmail.com>
+Subject: Questions about struct btree
+To:     linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 09:20:10AM -0400, Brian Foster wrote:
-> The btree write buffer flush code is prone to causing journal
-> deadlock due to inefficient use and release of reservation space.
-> Reservation is not pre-reserved for write buffered keys (as is done
-> for key cache keys, for example), because the write buffer flush
-> side uses a fast path that attempts insertion without need for any
-> reservation at all.
-> 
-> The write buffer flush attempts to deal with this by inserting keys
-> using the BTREE_INSERT_JOURNAL_RECLAIM flag to return an error on
-> journal reservations that require blocking. Upon first error, it
-> falls back to a slow path that inserts in journal order and supports
-> moving the associated journal pin forward.
-> 
-> The problem is that under pathological conditions (i.e. smaller log,
-> larger write buffer and journal reservation pressure), we've seen
-> instances where the fast path fails fairly quickly without having
-> completed many insertions, and then the slow path is unable to push
-> the journal pin forward enough to free up the space it needs to
-> completely flush the buffer. This problem is occasionally reproduced
-> by fstest generic/333.
-> 
-> To avoid this problem, update the fast path algorithm to skip key
-> inserts that fail due to inability to acquire needed journal
-> reservation without immediately breaking out of the loop. Instead,
-> insert as many keys as possible, zap the sequence numbers to mark
-> them as processed, and then fall back to the slow path to process
-> the remaining set in journal order. This reduces the amount of
-> journal reservation that might be required to flush the entire
-> buffer and increases the odds that the slow path is able to move the
-> journal pin forward and free up space as keys are processed.
-> 
-> Signed-off-by: Brian Foster <bfoster@redhat.com>
-> ---
->  fs/bcachefs/btree_write_buffer.c | 41 ++++++++++++++++----------------
->  1 file changed, 21 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/bcachefs/btree_write_buffer.c b/fs/bcachefs/btree_write_buffer.c
-> index 80f4b9839bc2..32f20e631de0 100644
-> --- a/fs/bcachefs/btree_write_buffer.c
-> +++ b/fs/bcachefs/btree_write_buffer.c
-...
-> @@ -198,23 +203,19 @@ int __bch2_btree_write_buffer_flush(struct btree_trans *trans, unsigned commit_f
->  slowpath:
->  	trace_write_buffer_flush_slowpath(trans, i - keys, nr);
->  
-> -	dst = keys;
-> -	for (; i < keys + nr; i++) {
-> -		if (i + 1 < keys + nr &&
-> -		    i[0].btree == i[1].btree &&
-> -		    bpos_eq(i[0].k.k.p, i[1].k.k.p))
-> -			continue;
-> -
-> -		*dst = *i;
-> -		dst++;
-> -	}
-> -	nr = dst - keys;
-> -
+Hi all,
 
-This one leaves an unused var warning. I've fixed it locally but will
-wait for any further comments before reposting.
+Curious about the details described by the heading comments of bcachefs.h.
 
-Brian
+Some questions:
+a) struct btree::aux_data
+  a.1) The aux_data is NOT stored on disk. It will be created for each
+bset runtime, am I right?
 
-> +	/*
-> +	 * Now sort the rest by journal seq and bump the journal pin as we go.
-> +	 * The slowpath zapped the seq of keys that were successfully flushed so
-> +	 * we can skip those here.
-> +	 */
->  	sort(keys, nr, sizeof(keys[0]),
->  	     btree_write_buffered_journal_cmp,
->  	     NULL);
->  
->  	for (i = keys; i < keys + nr; i++) {
-> +		if (!i->journal_seq)
-> +			continue;
-> +
->  		if (i->journal_seq > pin.seq) {
->  			struct journal_entry_pin pin2;
->  
-> -- 
-> 2.39.2
-> 
+  a.2) bch2_compile_bkey_format() write some info to aux_data, what
+does that info mean?
 
+
+b) struct btree::set
+How many effective bsets (or btree_node / btree_node_entry) referenced
+by btree::set?
+Two? one for written, one for in-memory?
+
+In other words, a "struct btree" contains at most two effective bsets?
+
+
+c) What are bch_vals ?
+bch_val is BCH_REPLICAS_MAX number pointers, which are offsets --
+pointing to BCH_REPLICAS_MAX number extents, am I right?
+
+
+-- 
+Regards,
+
+- cee1
