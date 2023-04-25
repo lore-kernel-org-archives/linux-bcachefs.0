@@ -2,136 +2,124 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD543C77B61
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 Apr 2023 16:54:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B0D2C77B61
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 Apr 2023 16:58:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234344AbjDYQyf (ORCPT
+        id S234859AbjDYQ6J (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 25 Apr 2023 12:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        Tue, 25 Apr 2023 12:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234014AbjDYQye (ORCPT
+        with ESMTP id S234853AbjDYQ6I (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 25 Apr 2023 12:54:34 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FFFD307
-        for <linux-bcachefs@vger.kernel.org>; Tue, 25 Apr 2023 09:54:33 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1a682eee3baso46679935ad.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 25 Apr 2023 09:54:33 -0700 (PDT)
+        Tue, 25 Apr 2023 12:58:08 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F180C17A1A
+        for <linux-bcachefs@vger.kernel.org>; Tue, 25 Apr 2023 09:57:44 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3003b97fa12so3657117f8f.2
+        for <linux-bcachefs@vger.kernel.org>; Tue, 25 Apr 2023 09:57:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=truongsinh.pro; s=google; t=1682441672; x=1685033672;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=truongsinh.pro; s=google; t=1682441863; x=1685033863;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kDw/GXoYnWeWmmyHmW5386Z/U8iMyILF5LHRgGnEKNU=;
-        b=fwgb2JtgI3ixnTa/jsap/fKwZr6yx3eiw5A152fvuPa0sQY6GKnwFjMCk+z6BuHSQ5
-         H5UVygJM9YjjExUZP7Pn8zTn7a6ZGSx2qspwXdQTV3lDmgqY2hfyVoksDp0wXdqAC8iq
-         fWZV7NNaPmzr3/hWWa1cwYJWsj+KQ65SRVfQ4=
+        bh=YlGcycSuM8B/bKSVsWbKGnGcnH3NdftC3isKkxalppY=;
+        b=d21I66cEfAsIFjZVjLMZICJpQuxnpM0fujTy5LItW0s/x7U/Zpx3N4ydOw3YrukSK+
+         oaA7wzCw1MKBOjxLoKOreedtye1KRQ0C+ba6SDTAruKY5NOE6mJpS3gcEu8WtVX/f0+j
+         yHYGQ/NVOf97CsoBPIxWFZZ+UFPTtFkb4KvAE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682441672; x=1685033672;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1682441863; x=1685033863;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kDw/GXoYnWeWmmyHmW5386Z/U8iMyILF5LHRgGnEKNU=;
-        b=QnX3nrugcpodjP66xpgEcqtEGLt8be/NKtMc9Urxp5JgNlaqGzft5HvQNv9IvosAV/
-         3MXCCAKPNP6G6pwfsZ8ki0szcveCdCvGCis/h60rQinu+QqpRc7GcyYXykArhUfUAZ2z
-         j9BtOGWeu9wAwwJjSb/pW6x5SPyiMffE+Ovps+hutoqab/+JI1MTEEoC571n96LfVql7
-         zZyR1kXuZgUsHSWNHcC0jVZf0gugpcl6/lDNY2/xMkdwdHpLzrGdVu6g7irGBIdmMb9j
-         5aeLVGs9UazJ57ISKgr0vEULhmTrBAJh+gL7Iln5eyQhi4m420dDnreB/DwQ5xvYKbxK
-         2KvQ==
-X-Gm-Message-State: AC+VfDzhK7x2ZRPl6XLNdncRZqItq5ywNJ2joEpIo3U9d+k86SxR1Czt
-        rHiwd1ZCLlvWkSPZ1Is970wvJelTqy2rT78d65LB0Q==
-X-Google-Smtp-Source: ACHHUZ7xkZMvqQ+4lSqyc5h1kOCQb2uLzXzfR3hJxJKhSCEQHjteQ8n8ASx6JjRKfJS+BLMR/EE9pQ==
-X-Received: by 2002:a17:903:1109:b0:1a9:7b5e:14ba with SMTP id n9-20020a170903110900b001a97b5e14bamr7647038plh.29.1682441672078;
-        Tue, 25 Apr 2023 09:54:32 -0700 (PDT)
-Received: from TranNguyensMBP9.lan ([2601:602:9800:7b:35b9:af9:fa1f:ad29])
-        by smtp.gmail.com with ESMTPSA id l9-20020a170902d34900b001a1c721f7f8sm8495497plk.267.2023.04.25.09.54.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Apr 2023 09:54:31 -0700 (PDT)
-From:   TruongSinh Tran-Nguyen <i@truongsinh.pro>
-To:     linux-bcachefs@vger.kernel.org
-Cc:     TruongSinh Tran-Nguyen <i@truongsinh.pro>
-Subject: [PATCH 2/2] feature: allow cmd mount to accept only 1 block device, then mount by UUID
-Date:   Tue, 25 Apr 2023 09:54:06 -0700
-Message-Id: <20230425165406.34056-2-i@truongsinh.pro>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20230425165406.34056-1-i@truongsinh.pro>
-References: <20230425165406.34056-1-i@truongsinh.pro>
+        bh=YlGcycSuM8B/bKSVsWbKGnGcnH3NdftC3isKkxalppY=;
+        b=IC9J5ughjBsCHmHiZzz7t5IdsMK/uMe8UHAumOsXAcIDz9q0teHN9ZO0QkOT8w9FC7
+         WdP351x+3XKNozDJiAoLA6V3oFbk5/9e4PUkGese84CNBoy1dio6HOEMJ7g0aJXqf4Fk
+         vz2TztkmIPrGkNyp02Y2jKhwdo3ImoIMJyacnDq8aWfI/X6ERyLSbJXSTygAA774WZui
+         FG5vmqQZJ1RLzGPISLjiTkBGUYCek6N1UhoNGvv2chRp4rmegg1MfJPEkCN8GEBClhhF
+         Njnu65HcQErv+3TnGJhMhJqenk+wSSKnmwtxO/z2XqaeKOpLXhzwtEZTVZn9NZ1+w7+1
+         BmXg==
+X-Gm-Message-State: AAQBX9fyd81F6drMWHnRvIgp8Hg9efV29iEqctYnI8g91XFSsC+jZwvA
+        c3HY8McJpHcL+U5tHGVOLFJd4eqLBBsGVf5spRic5Q==
+X-Google-Smtp-Source: AKy350YdsjKfo3oew2Kwh1TL+PNg2/3rW2Yj1UItigZMEsNWzTJ2VOoG4TkOarwHvzLwUtr3WdexhFT1pQYYG5ty2Go=
+X-Received: by 2002:adf:cd85:0:b0:2f4:55c3:8452 with SMTP id
+ q5-20020adfcd85000000b002f455c38452mr13939934wrj.22.1682441863019; Tue, 25
+ Apr 2023 09:57:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAMy36z4rxgcNUmxrtapBx_LY-ZYuB0_r2pEVSf27REodE4R3Sw@mail.gmail.com>
+ <CAMy36z7GKiv5_u=WmoDpzFMUeRaWPaAme2eFmdgDdDJ+g-sROQ@mail.gmail.com> <ZEfyx+JWCtR3Yl9W@moria.home.lan>
+In-Reply-To: <ZEfyx+JWCtR3Yl9W@moria.home.lan>
+From:   TruongSinh Tran-Nguyen <i@truongsinh.pro>
+Date:   Tue, 25 Apr 2023 09:57:31 -0700
+Message-ID: <CAMy36z5MnjgvCAj0NmPfLo=sAkX8ho0yVG_psq-O-vEV3iRNtQ@mail.gmail.com>
+Subject: Re: PR contribution
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-This allows bcachefs to be mounted by /etc/fstab
----
- rust-src/src/cmd_mount.rs | 45 ++++++++++++++++++++++++++++-----------
- 1 file changed, 33 insertions(+), 12 deletions(-)
+Done, i just send over 2 patches.
 
-diff --git a/rust-src/src/cmd_mount.rs b/rust-src/src/cmd_mount.rs
-index af370ef..da95f80 100644
---- a/rust-src/src/cmd_mount.rs
-+++ b/rust-src/src/cmd_mount.rs
-@@ -161,26 +161,47 @@ struct Cli {
-     verbose:        u8,
- }
- 
-+fn get_devices_and_sbs_by_uuid(uuid: Uuid) -> anyhow::Result<(String, Vec<bch_sb_handle>)> {
-+
-+    let devs_sbs = get_devices_by_uuid(uuid)?;
-+
-+    let devs_strs: Vec<_> = devs_sbs.iter().map(|(dev, _)| dev.clone().into_os_string().into_string().unwrap()).collect();
-+    let devs_str = devs_strs.join(":");
-+    let sbs: Vec<bch_sb_handle> = devs_sbs.iter().map(|(_, sb)| *sb).collect();
-+
-+    Ok((devs_str, sbs))
-+}
-+
- fn cmd_mount_inner(opt: Cli) -> anyhow::Result<()> {
-     let (devs, sbs) = if opt.dev.starts_with("UUID=") {
-         let uuid = opt.dev.replacen("UUID=", "", 1);
-         let uuid = Uuid::parse_str(&uuid)?;
--        let devs_sbs = get_devices_by_uuid(uuid)?;
-+        get_devices_and_sbs_by_uuid(uuid)?
-+    } else {
-+        let sbs: Vec<bch_sb_handle> = opt.dev.split(':').map(|dev| {
-+            let dev = PathBuf::from(dev);
-+            bch_bindgen::rs::read_super(&dev)
-+        }).collect::<Result<Vec<_>, _>>()?;
- 
--        let devs_strs: Vec<_> = devs_sbs.iter().map(|(dev, _)| dev.clone().into_os_string().into_string().unwrap()).collect();
--        let devs_str = devs_strs.join(":");
--        let sbs = devs_sbs.iter().map(|(_, sb)| *sb).collect();
-+        let uuid = sbs[0].sb().uuid();
-+        let sbs_len: u8 = sbs.len().try_into().unwrap();
-+        let nr_devices = sbs[0].sb().nr_devices;
- 
--        (devs_str, sbs)
--    } else {
--        let mut sbs = Vec::new();
-+        info!("{} is the external UUID", uuid);
- 
--        for dev in opt.dev.split(':') {
--            let dev = PathBuf::from(dev);
--            sbs.push(bch_bindgen::rs::read_super(&dev)?);
-+        if sbs_len == nr_devices {
-+            info!("{} device(s) specified from mount command, matching required as specified from first device headers", sbs_len);
-+            // @TODO looping through and check all devices actually have the same external UUID
-+            (opt.dev, sbs)
-+        } else {
-+            warn!("{} device(s) specified from mount command", sbs_len);
-+            warn!("{} device(s) required as specified from first device headers", nr_devices);
-+            warn!("trying to scan all devices with external UUID instead");
-+            let (devs_str, sbs) = get_devices_and_sbs_by_uuid(uuid)?;
-+            info!("{} device(s) found from scanning all devices matching UUID", sbs.len());
-+            // @TODO what if get_devices_and_sbs_by_uuid still cannot get all required?
-+            (devs_str, sbs)
-         }
--
--        (opt.dev, sbs)
-     };
- 
-     if unsafe { bcachefs::bch2_sb_is_encrypted(sbs[0].sb) } {
--- 
-2.33.1
+> not as big of  a fan of github's PR interface
 
+How about Gitlab? See https://stackoverflow.com/a/68238913/1326678
+
+> Consider lowering the barrier to entry by using modern tools such as GitH=
+ub, GitLab, or BitBucket to manage your projects and accept patches, in lie=
+u of emailed patches, email mailing lists, and git send-email. One huge suc=
+cess case of making this transition recently is KiCad. In 2020 they were st=
+ill using emailed git patches. Now, they have migrated fully to GitLab: htt=
+ps://gitlab.com/kicad. Their issue reporting and management, for instance, =
+is sooooo much easier now!: https://gitlab.com/kicad/code/kicad/-/issues.
+
+Kind regards,
+Sinh
+
+TruongSinh Tran-Nguyen, PMI-ACP, PSM III, PSPO III
+
+Tech Visionary, Craftsman, Coach and Investor
+
++1-6127-TR-SINH (+1-6127-87-7464) | @truongsinhtn
+
+Find me on LinkedIn | Twitter | Github | StackOverflow
+
+IBAN: LT76 3250 0264 6898 1177 | BIC: REVOLT21
+
+Currently Reading
+
+Get your own email signature
+
+Kind regards,
+Sinh
+
+TruongSinh Tran-Nguyen, PMI-ACP, PSM III, PSPO III
+
+Tech Visionary, Craftsman, Coach and Investor
+
++1-6127-TR-SINH (+1-6127-87-7464) | @truongsinhtn
+
+Find me on LinkedIn | Twitter | Github | StackOverflow
+
+IBAN: LT76 3250 0264 6898 1177 | BIC: REVOLT21
+
+Currently Reading
+
+Get your own email signature
+
+
+
+
+On Tue, 25 Apr 2023 at 08:33, Kent Overstreet <kent.overstreet@linux.dev> w=
+rote:
+>
+> On Mon, Apr 24, 2023 at 10:05:05AM -0700, TruongSinh Tran-Nguyen wrote:
+> > Hi, I have 2 PRs on GitHub for bcachfs-tools [1] [2], but I don't know
+> > whether it's more likely to be discussed and reviewed on this mailing
+> > list. I can also submit git patch on this mailing list if it is easier
+> > for the maintainer.
+>
+> Yeah we use github for issue tracking but I'm not as big of a fan of
+> github's PR interface. Could you send the patches to the list?
