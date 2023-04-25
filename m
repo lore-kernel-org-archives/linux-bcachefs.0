@@ -2,77 +2,115 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3632AC77B61
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 24 Apr 2023 17:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9929EC77B71
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 Apr 2023 09:26:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbjDXRFV (ORCPT
+        id S233403AbjDYJ0W (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 24 Apr 2023 13:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41872 "EHLO
+        Tue, 25 Apr 2023 05:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjDXRFV (ORCPT
+        with ESMTP id S233169AbjDYJ0V (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 24 Apr 2023 13:05:21 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7D2189
-        for <linux-bcachefs@vger.kernel.org>; Mon, 24 Apr 2023 10:05:19 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-2f9b9aa9d75so2961586f8f.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 24 Apr 2023 10:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=truongsinh.pro; s=google; t=1682355917; x=1684947917;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gkQ9Lk0E+SeUukwFw0jXXufF4ydGJ2KHyH+Q0DcauS8=;
-        b=dmglVoDSOQ986ZMb8sewNfmcUTbsGaPe/fUI/JzNL3hYI/ce7NEzN4uHuaysqAfO9e
-         a5BFn5EPTG4ql1uhfrJHVAUahjuyzxcgotyubbLPZbs7LJYde6e/gRVyKdmI7kLilB+p
-         e7oG6qaRsEvfezKVLj93B8tZZKS7PLq80wmoo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682355917; x=1684947917;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gkQ9Lk0E+SeUukwFw0jXXufF4ydGJ2KHyH+Q0DcauS8=;
-        b=OtyyZKnC+oAjROSfp3CZJSE+EU1hF26h2NxmHL/PvQv1QlKE/a6QQA36sW7CFRmNQq
-         3Q5TWKWrHD/nPMjf6VRqIQ1po1Rq/p+JNsYHIuGEOMwcpXo9M3aVD57dmrJeiTn4wO8s
-         mv9uZZi6TQfFBo2CU4n9qroQAImyodHVJ83XIiEaig6BksjMMuw/bt2U/x/whmi2/zMy
-         oeShu/31fFkhbRBmf2tOGEDC9V8o+QfuzO5sV9SLblrg8ou/IsHLW1FFdoNqWJ7TPcy/
-         vZYl/+JvIRI7NueFePty04csDuxgSk96nE+3jWP5Ho8gvUJNfGJczLX78BbN04uez2oE
-         OcAw==
-X-Gm-Message-State: AAQBX9fpdsG8SeI+re0C62ypa3/BVUFAAINonilYZUGUXBUBOCQFeKCF
-        u6eqAkNR2TIOGhfp0b5yIbh1d+5goIrD8sRunfgfRzruBgVtLag6IBNMJw==
-X-Google-Smtp-Source: AKy350Y4ii9DY2zLTsu7GDLv9i9elG1UmuvvqX9ozpVYOQI35H/yDQf6Hmmp4iyLJ5/pWZOZQFvE2Rm9umHwUVdYpYA=
-X-Received: by 2002:a5d:4385:0:b0:2d2:29a4:4457 with SMTP id
- i5-20020a5d4385000000b002d229a44457mr9593069wrq.13.1682355917082; Mon, 24 Apr
- 2023 10:05:17 -0700 (PDT)
+        Tue, 25 Apr 2023 05:26:21 -0400
+X-Greylist: delayed 1011 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 Apr 2023 02:26:19 PDT
+Received: from relay-b01.edpnet.be (relay-b01.edpnet.be [212.71.1.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07B73A85
+        for <linux-bcachefs@vger.kernel.org>; Tue, 25 Apr 2023 02:26:19 -0700 (PDT)
+X-ASG-Debug-ID: 1682413763-15c4341ed66b0ea0001-qsCQDO
+Received: from [192.168.177.53] (213.219.188.14.adsl.dyn.edpnet.net [213.219.188.14]) by relay-b01.edpnet.be with ESMTP id 3A0pWFYyUpGItTOP for <linux-bcachefs@vger.kernel.org>; Tue, 25 Apr 2023 11:09:23 +0200 (CEST)
+X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
+X-Barracuda-Effective-Source-IP: 213.219.188.14.adsl.dyn.edpnet.net[213.219.188.14]
+X-Barracuda-Apparent-Source-IP: 213.219.188.14
+Message-ID: <09ee430c-9ef3-74cf-1738-3cbf96577af5@kabelmail.de>
+Date:   Tue, 25 Apr 2023 11:08:59 +0200
 MIME-Version: 1.0
-References: <CAMy36z4rxgcNUmxrtapBx_LY-ZYuB0_r2pEVSf27REodE4R3Sw@mail.gmail.com>
-In-Reply-To: <CAMy36z4rxgcNUmxrtapBx_LY-ZYuB0_r2pEVSf27REodE4R3Sw@mail.gmail.com>
-From:   TruongSinh Tran-Nguyen <i@truongsinh.pro>
-Date:   Mon, 24 Apr 2023 10:05:05 -0700
-Message-ID: <CAMy36z7GKiv5_u=WmoDpzFMUeRaWPaAme2eFmdgDdDJ+g-sROQ@mail.gmail.com>
-Subject: Re: PR contribution
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Content-Language: en-US, nl-BE
 To:     linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+From:   Janpieter Sollie <janpieter.sollie@kabelmail.de>
+Subject: [PATCH] add --data_types for bcachefs device add
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ASG-Orig-Subj: [PATCH] add --data_types for bcachefs device add
+Content-Transfer-Encoding: 8bit
+X-Barracuda-Connect: 213.219.188.14.adsl.dyn.edpnet.net[213.219.188.14]
+X-Barracuda-Start-Time: 1682413763
+X-Barracuda-URL: https://212.71.1.221:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at edpnet.be
+X-Barracuda-Scan-Msg-Size: 3328
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Spam-Score: 0.00
+X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.107901
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi, I have 2 PRs on GitHub for bcachfs-tools [1] [2], but I don't know
-whether it's more likely to be discussed and reviewed on this mailing
-list. I can also submit git patch on this mailing list if it is easier
-for the maintainer.
+Hi everyone,
+
+bcachefs format allows to specify data types allowed on a specific device
+(eg: to enforce caching on cheap SSDs while btree info is kept for SSDs with higher TBW),
+but this currently is not available when adding a device with bcachefs format.
+
+The patch below adds this functionality.  It is kept as minimal as possible,
+but in the future maybe the OPTS from bcachefs format can be imported
+instead of the specific opts of device add
 
 Kind regards,
-Sinh
 
-[1] https://github.com/koverstreet/bcachefs-tools/pull/141
-[2] https://github.com/koverstreet/bcachefs-tools/pull/142
+Janpieter Sollie
 
-TruongSinh Tran-Nguyen, PMI-ACP, PSM III, PSPO III
+diff --git a/cmd_device.c b/cmd_device.c
+index c59d370..1e8137b 100644
+--- a/cmd_device.c
++++ b/cmd_device.c
+@@ -41,6 +41,16 @@int device_usage(void)
+        return 0;
+}
 
-Tech Visionary, Craftsman, Coach and Investor
-
-+1-6127-TR-SINH (+1-6127-87-7464) | @truongsinhtn
-
-Find me on LinkedIn | Twitter | Github | StackOverflow
-
-IBAN: LT76 3250 0264 6898 1177 | BIC: REVOLT21
++static u64 read_flag_list_or_die(char *opt, const char * const list[],
++                          const char *msg)
++{
++        u64 v = bch2_read_flag_list(opt, list);
++        if (v == (u64) -1)
++                die("Bad %s %s", msg, opt);
++
++        return v;
++}
++
+static void device_add_usage(void)
+{
+        puts("bcachefs device add - add a device to an existing filesystem\n"
+@@ -51,6 +61,7 @@static void device_add_usage(void)
+             "  -B, --bucket=size           Bucket size\n"
+             "  -D, --discard               Enable discards\n"
+             "  -l, --label=label           Disk label\n"
++     "  -a, --data_allowed=types    allowed data on this device\n"
+             "  -f, --force                 Use device even if it appears to already be 
+formatted\n"
+             "  -h, --help                  Display this help and exit\n"
+             "\n"
+@@ -64,6 +75,7 @@int cmd_device_add(int argc, char *argv[])
+                { "bucket",             required_argument,      NULL, 'B' },
+                { "discard",            no_argument,            NULL, 'D' },
+                { "label",              required_argument,      NULL, 'l' },
++{ "data_allowed",       required_argument,      NULL, 'a' },
+                { "force",              no_argument,            NULL, 'f' },
+                { "help",               no_argument,            NULL, 'h' },
+                { NULL }
+@@ -90,6 +102,11 @@int cmd_device_add(int argc, char *argv[])
+                case 'l':
+                        dev_opts.label = strdup(optarg);
+                        break;
++                case 'a':
++                        dev_opts.data_allowed =
++                                read_flag_list_or_die(optarg,
++                                        bch2_data_types, "data type");
++                        break;
+                case 'f':
+                        force = true;
+                        break;
