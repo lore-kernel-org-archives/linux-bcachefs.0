@@ -2,96 +2,127 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47247C7618E
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 26 Apr 2023 14:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F29CC77B7C
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 26 Apr 2023 14:44:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241451AbjDZOmV (ORCPT
+        id S241482AbjDZOok (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 26 Apr 2023 10:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
+        Wed, 26 Apr 2023 10:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241276AbjDZOmU (ORCPT
+        with ESMTP id S241483AbjDZOog (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 26 Apr 2023 10:42:20 -0400
-X-Greylist: delayed 83428 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Apr 2023 07:42:19 PDT
-Received: from out-12.mta1.migadu.com (out-12.mta1.migadu.com [IPv6:2001:41d0:203:375::c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA072703
-        for <linux-bcachefs@vger.kernel.org>; Wed, 26 Apr 2023 07:42:18 -0700 (PDT)
-Date:   Wed, 26 Apr 2023 10:42:12 -0400
+        Wed, 26 Apr 2023 10:44:36 -0400
+Received: from out-19.mta0.migadu.com (out-19.mta0.migadu.com [91.218.175.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205396EA2
+        for <linux-bcachefs@vger.kernel.org>; Wed, 26 Apr 2023 07:44:34 -0700 (PDT)
+Date:   Wed, 26 Apr 2023 10:44:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1682520137;
+        t=1682520272;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=3QzWdyskdwx/Z8JGYNQPpCk4aoKGVR8e1O/5vETl7Yw=;
-        b=b7ZvwWSV+CfL8AN3OX0WVakbGQobhlUDxpSehexqKNnCkmJ5tg7SzykIaHKj2OhfaUbljS
-        K5NGhTBD7dT+B3KRNvYyQ9AtVXs4qqb7I9faVa9WkHTFxsCRTGi7Zsc9Nyx6HkVOavVpuJ
-        O3QsUF+siYecV/tqIdljDuupQPH/4G0=
+        bh=A5VWxFkdIYemQyFozUN7S3Xv/vdGfHsLR3BVzcGFk0k=;
+        b=dl3sjGBUXP8mzQ6RckvdGkJFcE1bqO8JceSXYvLQ1/znYfc3OfGd7RrH63hI7UrYl6PoN9
+        JS3zms2ABa/hAQthwAWM2Qw9d1jdZllAVTRWiVQu6zzP5r4VEgqJeobhJHw2xnAplhdfiz
+        7fUfXaPBYAT08xt7ePX1dn3h+u9WnyA=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Janpieter Sollie <janpieter.sollie@kabelmail.de>
-Cc:     linux-bcachefs@vger.kernel.org,
-        Janpieter Sollie <janpieter.sollie@edpnet.be>
-Subject: Re: [PATCH] add --data_types for bcachefs device add
-Message-ID: <ZEk4RA1Vwy8ua3JP@moria.home.lan>
-References: <20230426072858.7236-1-janpieter.sollie@kabelmail.de>
+To:     TruongSinh Tran-Nguyen <i@truongsinh.pro>
+Cc:     linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] feat(cmd_mount): Add support for magic keyword
+ `OLD_BLKID_UUID`
+Message-ID: <ZEk4zgwZFLKsHpXU@moria.home.lan>
+References: <20230425224527.21103-1-i@truongsinh.pro>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230426072858.7236-1-janpieter.sollie@kabelmail.de>
+In-Reply-To: <20230425224527.21103-1-i@truongsinh.pro>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 09:28:58AM +0200, Janpieter Sollie wrote:
-> From: Janpieter Sollie <janpieter.sollie@edpnet.be>
-> 
-> bcachefs format allows to specify data types allowed on a specific device
-> but this currently is not available when adding a device with bcachefs format.
-> The patch adds this functionality.  It is kept as minimal as possible,
-> in the future the device specific OPTS from cmd_format should be imported
-> instead of specifying them a 2nd time here
-> 
-> Signed-off-by: Janpieter Sollie <janpieter.sollie@kabelmail.de>
+On Tue, Apr 25, 2023 at 03:45:27PM -0700, TruongSinh Tran-Nguyen wrote:
+> This commit enhances mount by allowing it to accept `OLD_BLKID_UUID=xxx` as the device, enabling whole fs mounting without relying on colon-separated devices. Using colon-separated devices in fstab is discouraged due to potential device reference issues after reboot. Additionally, using `UUID=xxx` in fstab is currently infeasible as it depends on blkid, which prior to v2.39, does not recognize bcachefs. This update enables mounting via fstab using `OLD_BLKID_UUID=xxx` as obtained from `bcachefs show-super` "External UUID".
+
+Let's not delete the UUID= support, make it an additional parameter.
+
+Also, your patches need signed-of-by lines, and you need to 80 character
+wordwrap your commit messages.
+
+Other than that I think it all looks good.
+
 > ---
->  cmd_device.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  rust-src/src/cmd_mount.rs | 33 ++++++++++++++++++++++-----------
+>  1 file changed, 22 insertions(+), 11 deletions(-)
 > 
-> diff --git a/cmd_device.c b/cmd_device.c
-> index c59d370..2da9b87 100644
-> --- a/cmd_device.c
-> +++ b/cmd_device.c
-> @@ -51,6 +51,7 @@ static void device_add_usage(void)
->  	     "  -B, --bucket=size           Bucket size\n"
->  	     "  -D, --discard               Enable discards\n"
->  	     "  -l, --label=label           Disk label\n"
-> +	     "  -a, --data_allowed=types    allowed data on this device\n"
->  	     "  -f, --force                 Use device even if it appears to already be formatted\n"
->  	     "  -h, --help                  Display this help and exit\n"
->  	     "\n"
-> @@ -64,6 +65,7 @@ int cmd_device_add(int argc, char *argv[])
->  		{ "bucket",		required_argument,	NULL, 'B' },
->  		{ "discard",		no_argument,		NULL, 'D' },
->  		{ "label",		required_argument,	NULL, 'l' },
-> +		{ "data_allowed",	required_argument,	NULL, 'a' },
->  		{ "force",		no_argument,		NULL, 'f' },
->  		{ "help",		no_argument,		NULL, 'h' },
->  		{ NULL }
-> @@ -90,6 +92,10 @@ int cmd_device_add(int argc, char *argv[])
->  		case 'l':
->  			dev_opts.label = strdup(optarg);
->  			break;
-
-Wtf!?!?!?
-
-> +                case 'a':
-> +                        dev_opts.data_allowed = bch2_read_flag_list(optarg, bch2_data_types);
-> +                        if(dev_opts.data_allowed == (u64) -1) die("invalid data_allowed types for device - aborting");
-> +                        break;
->  		case 'f':
->  			force = true;
->  			break;
+> diff --git a/rust-src/src/cmd_mount.rs b/rust-src/src/cmd_mount.rs
+> index af370ef..14e6176 100644
+> --- a/rust-src/src/cmd_mount.rs
+> +++ b/rust-src/src/cmd_mount.rs
+> @@ -1,9 +1,8 @@
+>  use atty::Stream;
+>  use bch_bindgen::{bcachefs, bcachefs::bch_sb_handle};
+> -use log::{info, warn, debug, error, trace, LevelFilter};
+> +use log::{info, debug, error, LevelFilter};
+>  use clap::Parser;
+>  use uuid::Uuid;
+> -use std::convert::TryInto;
+>  use std::path::PathBuf;
+>  use crate::key;
+>  use crate::key::KeyLoc;
+> @@ -162,14 +161,17 @@ struct Cli {
+>  }
+>  
+>  fn cmd_mount_inner(opt: Cli) -> anyhow::Result<()> {
+> -    let (devs, sbs) = if opt.dev.starts_with("UUID=") {
+> -        let uuid = opt.dev.replacen("UUID=", "", 1);
+> -        let uuid = Uuid::parse_str(&uuid)?;
+> -        let devs_sbs = get_devices_by_uuid(uuid)?;
+> -
+> -        let devs_strs: Vec<_> = devs_sbs.iter().map(|(dev, _)| dev.clone().into_os_string().into_string().unwrap()).collect();
+> -        let devs_str = devs_strs.join(":");
+> -        let sbs = devs_sbs.iter().map(|(_, sb)| *sb).collect();
+> +    let (devs, sbs) = if opt.dev.starts_with("OLD_BLKID_UUID=") {
+> +        let uuid = opt.dev.replacen("OLD_BLKID_UUID=", "", 1);
+> +        debug!("enumerating devices with UUID {}", uuid);
+> +        let devs_sbs = Uuid::parse_str(&uuid).map(|uuid| get_devices_by_uuid(uuid))??;
+> +
+> +        let devs_str = devs_sbs
+> +            .iter()
+> +            .map(|(dev, _)| dev.to_str().unwrap())
+> +            .collect::<Vec<_>>()
+> +            .join(":");
+> +        let sbs: Vec<bch_sb_handle> = devs_sbs.iter().map(|(_, sb)| *sb).collect();
+>  
+>          (devs_str, sbs)
+>      } else {
+> @@ -183,7 +185,9 @@ fn cmd_mount_inner(opt: Cli) -> anyhow::Result<()> {
+>          (opt.dev, sbs)
+>      };
+>  
+> -    if unsafe { bcachefs::bch2_sb_is_encrypted(sbs[0].sb) } {
+> +    if sbs.len() == 0 {
+> +        Err(anyhow::anyhow!("No device found from specified parameters"))?;
+> +    } else if unsafe { bcachefs::bch2_sb_is_encrypted(sbs[0].sb) } {
+>          let key = opt
+>              .key_location
+>              .0
+> @@ -192,6 +196,13 @@ fn cmd_mount_inner(opt: Cli) -> anyhow::Result<()> {
+>          key::prepare_key(&sbs[0], key)?;
+>      }
+>  
+> +    info!(
+> +        "mounting with params: device: {}, target: {}, options: {}",
+> +        devs,
+> +        &opt.mountpoint.to_string_lossy(),
+> +        &opt.options
+> +    );
+> +
+>      mount(devs, &opt.mountpoint, &opt.options)?;
+>      Ok(())
+>  }
 > -- 
-> 2.39.1
+> 2.33.1
 > 
