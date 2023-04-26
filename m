@@ -2,78 +2,114 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A4C9C77B60
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 26 Apr 2023 11:33:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76C05C77B60
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 26 Apr 2023 12:32:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240343AbjDZLd5 (ORCPT
+        id S240906AbjDZMcm (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 26 Apr 2023 07:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
+        Wed, 26 Apr 2023 08:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240561AbjDZLdx (ORCPT
+        with ESMTP id S240831AbjDZMcl (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 26 Apr 2023 07:33:53 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548A65592
-        for <linux-bcachefs@vger.kernel.org>; Wed, 26 Apr 2023 04:33:50 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1a66b9bd7dfso73156115ad.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 26 Apr 2023 04:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682508829; x=1685100829;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=c81skaEAGcxNRjGtv+vdrJPEFZSewpeVnPWCBInyAdM=;
-        b=HYuVsedkIX3lodMfbk5k2/KhzQNM1HPB7xexbPeZBuw/NhKqn1VCyCpKMGtB9Sw8zW
-         X6+Zj2BzXs4N7JU4y2I5P5dSoLh3PYDovAR8obJlazMZOCNha10sUJsNPZARkKQ+uzi+
-         q3vqOByftl4MRvPrbQkNDptMEJC/MuTVYhUf19WFhsOpla89k/lV0ya64Rqjcm6v5wlQ
-         d5jqlB9Gpf5s3eYcRMqNx05ChpIjvIKF7S5+Cl9VhpqN9woyUsmCaf9MEiRQhPnlMgoM
-         kSoGbKvK7Tpo2StBhvJvzctAoctxcTw0AYSw+lEuDi3ZsdP7zJrdFldYwucORllIs27k
-         +tiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682508829; x=1685100829;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c81skaEAGcxNRjGtv+vdrJPEFZSewpeVnPWCBInyAdM=;
-        b=YiUacZ7xxdMuKIUctbp6BPL1pMKbXCb8t50OAf76B2JvLATtSy8Klz/fm9shBbmhsx
-         Y81+UXWzRjG61inGQxps9x4GYYq6KxcLSSDdYu6Wz7VnnLA7I/doqI5pInjICAgDL9U+
-         gVTX2vbV2zWxN2xQWFz1/VmTGZXPgTfAxECpMhwLmEI5P0VTTuyPjOk9011iAGO+dMGl
-         iRHNOgQ1n98j8OfXKLLGA78MuOUzPNEgY5ZONhM8jq/54Th28MKrvbu2yH3eGX4GhJh4
-         IaUqMWDC1thwiF+cvgTjpV+BaJ0spYgPG3W92E2tpHMV5mKlpgszJT9cifx2k5oRM2v1
-         7NFw==
-X-Gm-Message-State: AAQBX9eBj9cKpWlk7B/sCgjpzBVGpmovvVSDAfgyWfU2S6ZJeTWmoPa6
-        CaJKVOREQIxQo/Akl/OdQcCBKPznUCgOKw==
-X-Google-Smtp-Source: AKy350Ya1Papupe19MHQ5eWavYgOeMQNUWZ/kE49j9yzA51ncc9D1C0FMWvqb26Wc8LmR0Rm0Os0gw==
-X-Received: by 2002:a17:902:ea0e:b0:19a:a520:b203 with SMTP id s14-20020a170902ea0e00b0019aa520b203mr25409532plg.25.1682508829470;
-        Wed, 26 Apr 2023 04:33:49 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id g4-20020a1709026b4400b0019f3cc463absm9858330plt.0.2023.04.26.04.33.47
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Apr 2023 04:33:48 -0700 (PDT)
-From:   Alan Huang <mmpgouride@gmail.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Question: Is it okay to develop and test a filesystem within a
- virtual machine?
-Message-Id: <C1C60796-ED70-4B6F-8491-032DB2BECB87@gmail.com>
-Date:   Wed, 26 Apr 2023 19:33:32 +0800
-To:     linux-bcachefs@vger.kernel.org
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
+        Wed, 26 Apr 2023 08:32:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8ECD619A
+        for <linux-bcachefs@vger.kernel.org>; Wed, 26 Apr 2023 05:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682512281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=HzFNExPmr5OrvEIhsGbKEiR1/8oi9hrMbuVmbis8tpQ=;
+        b=Auu75zeGiACNHndXLeQfRM0Kjg92Syo3NRSCe258STZTheGkGKPbKSU6HMe1+oJBMYhHEt
+        eCqfIInY7PqpMwKXnxrhyKGt6krJ7j56Yb1gxRJ1YJ0Y83HWohEhxJ/31mSo1k7WnUwBGe
+        2O+j8EzQrrcFCkSkezennSEw8Tyq2Xw=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-664-eoP8MyXHMTKaVZgNhMdh9Q-1; Wed, 26 Apr 2023 08:31:20 -0400
+X-MC-Unique: eoP8MyXHMTKaVZgNhMdh9Q-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6D74A281723B;
+        Wed, 26 Apr 2023 12:31:10 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 695F5492B03;
+        Wed, 26 Apr 2023 12:31:10 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 33QCVAGR000983;
+        Wed, 26 Apr 2023 08:31:10 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 33QCVAIS000979;
+        Wed, 26 Apr 2023 08:31:10 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Wed, 26 Apr 2023 08:31:10 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+cc:     linux-bcachefs@vger.kernel.org
+Subject: [PATCH] A small compile fix
+Message-ID: <alpine.LRH.2.21.2304260820020.428@file01.intranet.prod.int.rdu2.redhat.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi,
+Hi
 
-I want to contribute to bcachefs. Is it appropriate to use a virtual =
-machine as a development environment?
+Here I'm sending a small compile fix for bcachefs-tools.
 
-Also, I would like to ask how to learn bcachefs more quickly. Any =
-suggestion?
+Without this patch, I get this error:
 
-Thanks,
-Alan
+cargo  build --release --manifest-path rust-src/Cargo.toml
+   Compiling bch_bindgen v0.1.0 
+(/usr/src/git/bcachefs-tools/rust-src/bch_bindgen)
+error: failed to run custom build command for `bch_bindgen v0.1.0 
+(/usr/src/git/bcachefs-tools/rust-src/bch_bindgen)`
 
+Caused by:
+  process didn't exit successfully: 
+`/usr/src/git/bcachefs-tools/rust-src/target/release/build/bch_bindgen-733e88995ce9eab7/build-script-build` 
+(exit status: 101)
+  --- stderr
+  warning: optimization flag '-fkeep-inline-functions' is not supported 
+[-Wignored-optimization-argument]
+  ../../include/linux/bit_spinlock.h:20:3: error: call to undeclared 
+function 'futex'; ISO C99 and later do not support implicit function 
+declarations [-Wimplicit-function-declaration]
+  ../../include/linux/bit_spinlock.h:28:2: error: call to undeclared 
+function 'futex'; ISO C99 and later do not support implicit function 
+declarations [-Wimplicit-function-declaration]
+  ../../include/linux/bit_spinlock.h:39:2: error: call to undeclared 
+function 'futex'; ISO C99 and later do not support implicit function 
+declarations [-Wimplicit-function-declaration]
+
+
+The futex() function is declared in 
+	/usr/include/x86_64-linux-gnu/urcu/futex.h
+It is not declared in linux/futex.h, so we need to include urcu/futex.h
+
+Mikulas
+
+
+---
+ include/linux/bit_spinlock.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+Index: bcachefs-tools/include/linux/bit_spinlock.h
+===================================================================
+--- bcachefs-tools.orig/include/linux/bit_spinlock.h
++++ bcachefs-tools/include/linux/bit_spinlock.h
+@@ -4,6 +4,7 @@
+ #include <linux/kernel.h>
+ #include <linux/preempt.h>
+ #include <linux/futex.h>
++#include <urcu/futex.h>
+ 
+ static inline void bit_spin_lock(int nr, unsigned long *_addr)
+ {
 
