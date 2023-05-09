@@ -2,104 +2,95 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56720C7EE22
-	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 20:59:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ED88C7EE22
+	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 20:59:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbjEIU67 (ORCPT
+        id S234920AbjEIU73 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 9 May 2023 16:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
+        Tue, 9 May 2023 16:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235067AbjEIU66 (ORCPT
+        with ESMTP id S235326AbjEIU71 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 9 May 2023 16:58:58 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26495592
-        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 13:58:18 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-2fe3fb8e25fso4218112f8f.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 09 May 2023 13:58:18 -0700 (PDT)
+        Tue, 9 May 2023 16:59:27 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95E918C
+        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 13:58:42 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-51f597c975fso5956548a12.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 09 May 2023 13:58:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=truongsinh.pro; s=google; t=1683665837; x=1686257837;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mb9So3otA4hLlWEMptdzwozlRrz9OeZFROhk8yc0hJM=;
-        b=N7zmgFZLgsUCSTkUBJESujfSh/mvDcVtPdy2C77WtIIIT7+w/nQuGkb6WgNUSnu57L
-         n9yEt6tJZ9Ahr/FC1ev/6tclfk6J7CtpS/1Z8UVuqnn5FShgzplRMGL+twwPRKwtV/Z9
-         urb9+Vel1tnT2TV+w2q9bTU8VSGEa1mrMVThc=
+        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1683665879; x=1686257879;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=wGSlyNoNEgum+U70dHQogcXITA/6qezybzU+rcF2jfc=;
+        b=KSsvD321cDPrU3Q6JPqXRZNf4XJtKylCcVay6B3lnHml5xEp3aWu8vMqY9Px5k5TWv
+         sw3Yns4edSoTrkJLiPyfba6ulQ0/3/MwV8gFfulp0aD5MDmKsK9Wthdme6s9Vo1byoVe
+         nkC4mhfRxI1jZnuTXD0K2vLHYC1N2nh/aKse2VXVyzcewHEKngxX81phn3DjN5IFuu4h
+         5tJweuFpAbOlaspXSfGc+n9uMOhii/2g48P06D5nTwrwXzf5Nj1ld3TgSBSEH5wUqSge
+         7RgjTl9lIv98MdubihUcitLbAAGvVPFRGakYxzHfNjvMqRlfzSXIyVBhcPgNhkq4pIyW
+         2WWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683665837; x=1686257837;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mb9So3otA4hLlWEMptdzwozlRrz9OeZFROhk8yc0hJM=;
-        b=QZ1iLchNxOZ9VJfwqWP3RaanOPpXIM2cc1G5GhaGbkTYTe1ULtLZsSkl9bij57LqYe
-         opqiqVSXeXNThY+V5sL5dlXVj2Jl0kGc0CB76aS3BLs4IZuwBYN+ntZ/fASwe5Kr6hNT
-         Ne72+RwY+nBDkQDY8bDxWo6wD1cRqpMIwqq2+2/ORtTqPvDAdqj9untDQnnZvyG/bTRb
-         AHm8gvNcYh8wM/J3pJ9wxCVrNXxKoulVvvhPKc/LygkrYIJZBxuKP0vzv/PLW+/iShdF
-         lSsuMNwv84JNHRrvSEpFBbqWNIZ1WhgEIMBKVP8qJa15o9f9TkqUb706hP3Tkza7gL/d
-         P6XQ==
-X-Gm-Message-State: AC+VfDxYuP+z/S4LvCh6fFAj+2SSAo9ks2532s9hfSK2vrqS5YiJmxMs
-        Z5Nk1LHbC8VM2crlMIz2BPGyXukbxKuVdAZ9teBnIg==
-X-Google-Smtp-Source: ACHHUZ4SxaqWLv9nl6gkBuVDjaZRVBcnZTFhq/L9SzIsg0t0avy297VSPgyxD1/c2RbGavlUcGIireeBntf6dLRrODc=
-X-Received: by 2002:a5d:5286:0:b0:2cf:ee9d:ce2f with SMTP id
- c6-20020a5d5286000000b002cfee9dce2fmr10821278wrv.19.1683665836764; Tue, 09
- May 2023 13:57:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230503065354.19071-1-i@truongsinh.pro> <ZFqHFTMqetbQKtah@moria.home.lan>
+        d=1e100.net; s=20221208; t=1683665879; x=1686257879;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wGSlyNoNEgum+U70dHQogcXITA/6qezybzU+rcF2jfc=;
+        b=Vm2dW/WvhhRgbMk+jrI4C6N/EbiywtQEBTNlosU9X46P0MC1zQcFcpujuwHZGpsIKN
+         3VkEwLlTDnYyQikVbzlpW1rCc2idHYBfGh+ldUgVC/43wQWn/3QmehF4hQx8lvy9Vh+q
+         hoFSTdQG38MpOvOsgqLg8Uu7rMgbWLScyptkCFNdHCVPJeGeIHiUtYYmeH3+dAFp/u9I
+         GFKWd4mIIU6jZf8cGshkj9qVs6n370CJTN/DP6XQ7NYms4OhFo6XYHwwDSTvgz2gbu0j
+         9NmVyXwKfCDZBjuRc0LMM1aTy9fQBlaQ/eh7rLZasIdstV/qMrutQEQmSqOsr2rHi3c2
+         5Xzg==
+X-Gm-Message-State: AC+VfDx0fOf+PjtV94TfjSAHbkvVluARHbj0tr5DNtE92VBcXm49nWIu
+        D0IxCJYQ5rJHz4Zj64ZTpGc3yg==
+X-Google-Smtp-Source: ACHHUZ73+zHi3Seg6S+4EiVpOsxhIS8YI33bLLJxkgjJKOgnOArbquvVNUNfB1Y6L9JlVUyaBURBrQ==
+X-Received: by 2002:a17:902:ce82:b0:1a9:9a18:345c with SMTP id f2-20020a170902ce8200b001a99a18345cmr18784456plg.44.1683665878927;
+        Tue, 09 May 2023 13:57:58 -0700 (PDT)
+Received: from localhost ([72.28.92.215])
+        by smtp.gmail.com with ESMTPSA id s8-20020a170902a50800b001ac8e0ea157sm2049135plq.144.2023.05.09.13.57.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 May 2023 13:57:58 -0700 (PDT)
+References: <20230503065354.19071-1-i@truongsinh.pro>
+ <ZFqHFTMqetbQKtah@moria.home.lan>
  <CAMy36z75N9obj0WM+OFhhnzXAPxqhg8PVY7_x8X6JbQABFnMQw@mail.gmail.com>
- <ZFqM8HOvlVn61VXs@moria.home.lan> <CANeycqq5xCUcjOeOfGAJCH1Tzd01-ALU3uqVJo-BvVX9HOK9wA@mail.gmail.com>
-In-Reply-To: <CANeycqq5xCUcjOeOfGAJCH1Tzd01-ALU3uqVJo-BvVX9HOK9wA@mail.gmail.com>
-From:   TruongSinh Tran-Nguyen <i@truongsinh.pro>
-Date:   Tue, 9 May 2023 13:57:04 -0700
-Message-ID: <CAMy36z5VP_6atrxdOyXSO6G+R36vA8SuaWCDAui3Om3viogPkQ@mail.gmail.com>
-Subject: Re: [PATCH] chore(util): minimal Rust build example
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>
+User-agent: mu4e 1.10.3; emacs 28.2.50
+From:   Andreas Hindborg <nmi@metaspace.dk>
+To:     TruongSinh Tran-Nguyen <i@truongsinh.pro>
 Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
         linux-bcachefs@vger.kernel.org, rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] chore(util): minimal Rust build example
+Date:   Tue, 09 May 2023 22:52:48 +0200
+In-reply-to: <CAMy36z75N9obj0WM+OFhhnzXAPxqhg8PVY7_x8X6JbQABFnMQw@mail.gmail.com>
+Message-ID: <87mt2dcje2.fsf@metaspace.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Wonderful, thanks!
 
+TruongSinh Tran-Nguyen <i@truongsinh.pro> writes:
 
+> On Tue, 9 May 2023 at 10:47, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+>> We pretty heavily use to_text() functions kernel side; these output to
+>> printbufs, and in Rust they map nicely to the Display trait - do we have
+>> that available in the kernel or is that in std?
+>>
+>
+> https://doc.rust-lang.org/std/fmt/trait.Display.html Display trait is definitely
+> in Rust `std`. As for the alternative from kernel, I am still searching.
+> Worst case, there is nothing right now, Rust-for-linux folks would
+> happy to take PR
+> to include it.
 
-On Tue, 9 May 2023 at 11:42, Wedson Almeida Filho <wedsonaf@gmail.com> wrote:
->
-> On Tue, 9 May 2023 at 15:13, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > On Tue, May 09, 2023 at 10:57:18AM -0700, TruongSinh Tran-Nguyen wrote:
-> > > On Tue, 9 May 2023 at 10:47, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > >
-> > > > We pretty heavily use to_text() functions kernel side; these output to
-> > > > printbufs, and in Rust they map nicely to the Display trait - do we have
-> > > > that available in the kernel or is that in std?
-> > > >
-> > >
-> > > https://doc.rust-lang.org/std/fmt/trait.Display.html Display trait is definitely
-> > > in Rust `std`. As for the alternative from kernel, I am still searching.
-> > > Worst case, there is nothing right now, Rust-for-linux folks would
-> > > happy to take PR
-> > > to include it.
-> >
-> > I included them on the CC, maybe they'll have something to say.
->
-> `Display` is in core: https://doc.rust-lang.org/core/fmt/trait.Display.html
->
-> Here's an example of it being implemented (and used) in the kernel:
-> https://elixir.bootlin.com/linux/v6.4-rc1/source/rust/kernel/sync/arc.rs#L604
->
-> >
-> > >
-> > > > Sounds like that would be a welcome cleanup :)
-> > >
-> > > By clean up, do you mean moving from `uuid_le` to `uuid_t`?
-> > >
-> > > Also, I don't expect this PR to be merge, as it is for demonstration
-> > > purposes only,
-> > > however, what would be a minimum mergeable PR (related to Rust build)
-> > > that you would consider?
-> >
-> > First thing to look at is going to be moving all the code under
-> > bch_bindgen in -tools into the kernel tree...
+Many traits and types in `std` are reexports from `core` or `alloc`.
+To my knowledge, there is no way to see if an item is reexported when
+browsing the documentation. Some ways discover reexports when browsing docs:
+
+ - hit the `source` link at see where it is going
+ - when searching for an item, see if it is present in multiple crates.
+
+Best regards
+Andreas
+
