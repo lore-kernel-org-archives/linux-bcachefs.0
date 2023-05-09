@@ -2,41 +2,42 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD1FCC7EE24
-	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 16:57:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88739C77B75
+	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 16:57:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234663AbjEIQ5T (ORCPT
+        id S234567AbjEIQ5V (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 9 May 2023 12:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        Tue, 9 May 2023 12:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234650AbjEIQ5O (ORCPT
+        with ESMTP id S234697AbjEIQ5R (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 9 May 2023 12:57:14 -0400
-Received: from out-18.mta1.migadu.com (out-18.mta1.migadu.com [IPv6:2001:41d0:203:375::12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69254C13
-        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 09:57:11 -0700 (PDT)
+        Tue, 9 May 2023 12:57:17 -0400
+Received: from out-34.mta1.migadu.com (out-34.mta1.migadu.com [95.215.58.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF961725
+        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 09:57:13 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683651429;
+        t=1683651432;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mk2GM0+dzxVCnTybx12Btfro6vDgTHvnILBWigNj4c8=;
-        b=gvv06Eflh4cSDF3nvay9HJM/D+7UHiIBgSqj7ssD0zLDoqIlYSxw9l1oY17SVUZrK3Vf42
-        LpQMzG48+j/L6sANVmqlFcGlIj8Ig7PqI9jibpFr9xJNtXIt8bjU+VZFJiOgnKqSEWGJ49
-        SPTS/U6/Tr/fe9ohzRHhEAZUr9KkMOU=
+        bh=7HXn4Ai3HCc0Fe34KxBMMS4Cno5NneBVwyeI+DfOSZ4=;
+        b=aTfDXF9VG6rJ5VBr/J1ipGa3nA3Clu74t98FmSTVJUFgFARXPIpxAfp1Ovgk+6ZiaUeFjD
+        bH5CLS4lIqmGRgG9Baix4APh2l4XUo2b6AeytH8ospRhzCz+fIjSQqKysb/odZULWx+TVC
+        bs/XLATI6OhaENIAq7yonjl8pTvBAKc=
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 01/32] Compiler Attributes: add __flatten
-Date:   Tue,  9 May 2023 12:56:26 -0400
-Message-Id: <20230509165657.1735798-2-kent.overstreet@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH 03/32] locking/lockdep: lockdep_set_no_check_recursion()
+Date:   Tue,  9 May 2023 12:56:28 -0400
+Message-Id: <20230509165657.1735798-4-kent.overstreet@linux.dev>
 In-Reply-To: <20230509165657.1735798-1-kent.overstreet@linux.dev>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
@@ -46,33 +47,102 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-From: Kent Overstreet <kent.overstreet@gmail.com>
+This adds a method to tell lockdep not to check lock ordering within a
+lock class - but to still check lock ordering w.r.t. other lock types.
 
-This makes __attribute__((flatten)) available, which is used by
-bcachefs.
+This is for bcachefs, where for btree node locks we have our own
+deadlock avoidance strategy w.r.t. other btree node locks (cycle
+detection), but we still want lockdep to check lock ordering w.r.t.
+other lock types.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
-Cc: Miguel Ojeda <ojeda@kernel.org> (maintainer:COMPILER ATTRIBUTES)
-Cc: Nick Desaulniers <ndesaulniers@google.com> (reviewer:COMPILER ATTRIBUTES)
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
 ---
- include/linux/compiler_attributes.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/linux/lockdep.h       |  6 ++++++
+ include/linux/lockdep_types.h |  2 +-
+ kernel/locking/lockdep.c      | 26 ++++++++++++++++++++++++++
+ 3 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-index e659cb6fde..e56793bc08 100644
---- a/include/linux/compiler_attributes.h
-+++ b/include/linux/compiler_attributes.h
-@@ -366,4 +366,9 @@
-  */
- #define __fix_address noinline __noclone
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index e858c288c7..f6cc8709e2 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -665,4 +665,10 @@ lockdep_rcu_suspicious(const char *file, const int line, const char *s)
+ }
+ #endif
  
-+/*
-+ *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-flatten-function-attribute
-+ */
-+#define __flatten __attribute__((flatten))
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++void lockdep_set_no_check_recursion(struct lockdep_map *map);
++#else
++static inline void lockdep_set_no_check_recursion(struct lockdep_map *map) {}
++#endif
 +
- #endif /* __LINUX_COMPILER_ATTRIBUTES_H */
+ #endif /* __LINUX_LOCKDEP_H */
+diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+index d22430840b..506e769b4a 100644
+--- a/include/linux/lockdep_types.h
++++ b/include/linux/lockdep_types.h
+@@ -128,7 +128,7 @@ struct lock_class {
+ 	u8				wait_type_inner;
+ 	u8				wait_type_outer;
+ 	u8				lock_type;
+-	/* u8				hole; */
++	u8				no_check_recursion;
+ 
+ #ifdef CONFIG_LOCK_STAT
+ 	unsigned long			contention_point[LOCKSTAT_POINTS];
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index e631464070..f022b58dfa 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -3024,6 +3024,9 @@ check_deadlock(struct task_struct *curr, struct held_lock *next)
+ 		if ((next->read == 2) && prev->read)
+ 			continue;
+ 
++		if (hlock_class(next)->no_check_recursion)
++			continue;
++
+ 		/*
+ 		 * We're holding the nest_lock, which serializes this lock's
+ 		 * nesting behaviour.
+@@ -3085,6 +3088,10 @@ check_prev_add(struct task_struct *curr, struct held_lock *prev,
+ 		return 2;
+ 	}
+ 
++	if (hlock_class(prev) == hlock_class(next) &&
++	    hlock_class(prev)->no_check_recursion)
++		return 2;
++
+ 	/*
+ 	 * Prove that the new <prev> -> <next> dependency would not
+ 	 * create a circular dependency in the graph. (We do this by
+@@ -6620,3 +6627,22 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
+ 	warn_rcu_exit(rcu);
+ }
+ EXPORT_SYMBOL_GPL(lockdep_rcu_suspicious);
++
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++void lockdep_set_no_check_recursion(struct lockdep_map *lock)
++{
++	struct lock_class *class = lock->class_cache[0];
++	unsigned long flags;
++
++	raw_local_irq_save(flags);
++	lockdep_recursion_inc();
++
++	if (!class)
++		class = register_lock_class(lock, 0, 0);
++	if (class)
++		class->no_check_recursion = true;
++	lockdep_recursion_finish();
++	raw_local_irq_restore(flags);
++}
++EXPORT_SYMBOL_GPL(lockdep_set_no_check_recursion);
++#endif
 -- 
 2.40.1
 
