@@ -2,73 +2,79 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC6F5C77B75
-	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 17:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CB10C77B7C
+	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 17:07:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235550AbjEIRBK (ORCPT
+        id S235328AbjEIRHs (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 9 May 2023 13:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
+        Tue, 9 May 2023 13:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234952AbjEIRAI (ORCPT
+        with ESMTP id S234911AbjEIRHb (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 9 May 2023 13:00:08 -0400
-Received: from out-27.mta1.migadu.com (out-27.mta1.migadu.com [95.215.58.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3515FD2
-        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 09:58:01 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683651463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xcHhLx9X66ZiP+hkbacjwT2I7KoTF7hsRShtmv0sqzA=;
-        b=biwaHuM/eMP7HCr+Axj3/+gSQknHQmfD/m+5P9FSCxSV1Qo7DgDdKxnIfUnw7Z52iep6WD
-        5RtlZ21/HtbKg2eI2eaHqsksKozLugNUlmXy/eh7CPd/+wwd2fDjXTK5MrowYJjuWCoxcf
-        A3j0RF4EpAMOrAqGuKGPzDWm6rjV1QI=
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 32/32] MAINTAINERS: Add entry for bcachefs
-Date:   Tue,  9 May 2023 12:56:57 -0400
-Message-Id: <20230509165657.1735798-33-kent.overstreet@linux.dev>
-In-Reply-To: <20230509165657.1735798-1-kent.overstreet@linux.dev>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+        Tue, 9 May 2023 13:07:31 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F252983C5;
+        Tue,  9 May 2023 10:05:05 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-b9a7e639656so9296013276.0;
+        Tue, 09 May 2023 10:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683651894; x=1686243894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=owOMixsqPNTyMBJNKUX/FgFLQqeBQlm+1l2rTnwK/fs=;
+        b=JOX0hNsoJ+nxU9HMHvvY9dGTFLfJLh7mmQS+GkpFIK4WwUd39rCAACztJrQ0Lo5Y6/
+         DLAb3z5i6KRx9o2dVXq6X33tjCkcBj1JbVQoYT5+iLz2CPUkSsOSX55MMRZymFDcN220
+         hMqnW1LxW5XKGdygadMgT+2xCLuAdatcQCbKyilp8lenEYfuWsSUSR293yncexEbj6ji
+         LAaV5mhLpwljgj9SKdaWFNLRHFP/5Q85uEVaBHre+UnpFc+0UDA4kvyu6EsJvBDZ5/r4
+         /UEYyBW9zrvTxUi9TX1dMElAgEw/YJ7+x2x+sgJokDV2nU+Ltm86CtwgLbWnDglmtS0n
+         5JlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683651894; x=1686243894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=owOMixsqPNTyMBJNKUX/FgFLQqeBQlm+1l2rTnwK/fs=;
+        b=Z5B970k/68FHZqAks962MF5NxkjrA2hsnC7vXoex2YSHfyFvNDEwKyn2k2jRpV4XDW
+         Xrh/ufBlvorQKWkge10pclpbPgahQmYlhr9QUHyCNTQ+LE74EvHvRHhdfV3RvvQTCwd2
+         xPS4J4KD2KCGXU0JAsPWrAg/61Yf9vQjHTg8aq8aZqNC7O2Ag7Ta4D2SYGn5IrQH1EZH
+         j5wlI4gmMhXJ0kzRoEfZ3oXQzIy24phwPevDNdG9QHsK/P5N2LvC5vrWwMqbdiqVFU/X
+         kSjZN9vQxMegrcoL1KaF/OkDZvfZiAG18rW33k2/+Sx6BKqNJfjmLNexLOhDppEaDYxW
+         L2fw==
+X-Gm-Message-State: AC+VfDzuYc9T95t1dyEYzGFICuFgSNN7R1kbFnCJnrCKZAQghMGYr1jX
+        zZ8mOrPm+yz2kvwR3n8MXCgcP/2fd1dh4/goag4=
+X-Google-Smtp-Source: ACHHUZ4Ap8lrkdUmK6J87mlrt06sBuonBxyNhWV6PrQXF5/y8Czghn3iJSEmbpcJ2d/Ohw8GgN9pM4qcPala3tWkprA=
+X-Received: by 2002:a05:6902:1508:b0:b9e:45e1:3ff with SMTP id
+ q8-20020a056902150800b00b9e45e103ffmr17231824ybu.42.1683651894352; Tue, 09
+ May 2023 10:04:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev> <20230509165657.1735798-2-kent.overstreet@linux.dev>
+In-Reply-To: <20230509165657.1735798-2-kent.overstreet@linux.dev>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 9 May 2023 19:04:43 +0200
+Message-ID: <CANiq72mLmAG1Vus5-r4ynQciyypZbO8ueva2jbiEvaOAQTTzdQ@mail.gmail.com>
+Subject: Re: [PATCH 01/32] Compiler Attributes: add __flatten
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-bcachefs is a new copy-on-write filesystem; add a MAINTAINERS entry for
-it.
+On Tue, May 9, 2023 at 6:57=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> This makes __attribute__((flatten)) available, which is used by
+> bcachefs.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+We already have it in mainline, so I think it is one less patch you
+need to care about! :)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index dbf3c33c31..0ac2b432f0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3509,6 +3509,13 @@ W:	http://bcache.evilpiepirate.org
- C:	irc://irc.oftc.net/bcache
- F:	drivers/md/bcache/
- 
-+BCACHEFS:
-+M:	Kent Overstreet <kent.overstreet@linux.dev>
-+L:	linux-bcachefs@vger.kernel.org
-+S:	Supported
-+C:	irc://irc.oftc.net/bcache
-+F:	fs/bcachefs/
-+
- BDISP ST MEDIA DRIVER
- M:	Fabien Dessenne <fabien.dessenne@foss.st.com>
- L:	linux-media@vger.kernel.org
--- 
-2.40.1
-
+Cheers,
+Miguel
