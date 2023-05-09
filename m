@@ -2,89 +2,99 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56C41C77B75
-	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 21:12:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F601C7EE22
+	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 21:38:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbjEIVMp (ORCPT
+        id S235105AbjEIViy (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 9 May 2023 17:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        Tue, 9 May 2023 17:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbjEIVMo (ORCPT
+        with ESMTP id S235241AbjEIVix (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 9 May 2023 17:12:44 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A6D198A;
-        Tue,  9 May 2023 14:12:43 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-64384274895so4589372b3a.2;
-        Tue, 09 May 2023 14:12:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683666763; x=1686258763;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=svGV0USSt7ecLCHRTXbLuwPhCwC3JPPXKAzLDLNlRjA=;
-        b=UT/piCyqIzYoo+P2gSw+QQSyXT0S06eCT2Xlnjp6RY/huIoizI4Z37OkANO8EOPf0J
-         1FKeGRsDcihqTx55Tz1ahXEmVVP6dzwEjVwlk6WuSFffQ0TACXkSe+9wP8UAjcmARF1b
-         rDAy/rKtPPCRaLJfJte0zBsCo8pGHosvS/Eijb+xnJLKumBuC5cKSGZu6Mz3hw1Wbk9q
-         boLY7gSp3JIuzVYrSGaNiq/uag3s0MLcOIg6J5fO0xdr1qILObJbsId9/hnJcj0mqFHt
-         d0SmEg0kkhd/bKibWC3sGGVnEGXfOh31xRyfsI72weVAST/OE5Oko9LHzeSjwMwH3uJN
-         54bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683666763; x=1686258763;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=svGV0USSt7ecLCHRTXbLuwPhCwC3JPPXKAzLDLNlRjA=;
-        b=TQWWAfI7Xa5pqRxvTU+genEmeA1Qg239t28coexQDoc5oZwoqxI98y1Ekmd1b13VwW
-         GFWpxBTMJRua54X+2HSK/1WzJZRtC6iBTeM29AtewYvDGXfO70tXJRX+3RUDn/v8uAHs
-         RkmUsjeUPgPBs5A2e2MMapdF2I/e/lpqa1T5uE57RkUF0lnAqWgXs85nm0saurPFd4Xs
-         UoInWL3DRLQy3ALXheVKRNwhS+1gP1xXAVqbPSq6RCNzV6l/SfvOWghae8/308OBTxJb
-         zJdalTzGVbSpvALzxYykr/CKc0tj280YUpez1nUTd3yhqIKD8u1Zoi4guGEqkTtMjzWm
-         2C9Q==
-X-Gm-Message-State: AC+VfDy5FuBYWp5X8u7/UZpmW6bk9M0JykaMzRyPBJCeNihdPf6NxvA6
-        NbCKns/wdBqRSo1srY2grQ/QA0BlWoZM2A==
-X-Google-Smtp-Source: ACHHUZ5eWk0NpGNLDCVvDwN9Ku5AnbknilcOnjk0aKEKmCzXWCGhqSQlpGyrMrVu7tHz/auQMy6Vfw==
-X-Received: by 2002:a17:902:ce8d:b0:1aa:fc8c:8f1f with SMTP id f13-20020a170902ce8d00b001aafc8c8f1fmr19261002plg.50.1683666763082;
-        Tue, 09 May 2023 14:12:43 -0700 (PDT)
-Received: from localhost ([2001:4958:15a0:30:3c22:a6a6:f3a4:12ce])
-        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001a800e03cf9sm2050041plk.256.2023.05.09.14.12.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 May 2023 14:12:42 -0700 (PDT)
-Date:   Tue, 9 May 2023 14:12:41 -0700
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <ZFq3SdSBJ_LWsOgd@murray>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-8-kent.overstreet@linux.dev>
- <ZFqxEWqD19eHe353@infradead.org>
+        Tue, 9 May 2023 17:38:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB0E30C3
+        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 14:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683668279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AS+fKVGuPLb0PNBw40EVQclmhLUg9m8EqlylUBoJ6/4=;
+        b=Rdl10Wke5SjylOlokAm3x59l0j3QgKicXwBInyuHGAwCaXAiUwhWN2uj4ywCfFXRSUakz4
+        zoX06pApx/Gi6zKBIJBjvoN+X4IEws1StgJj4VPIPq69gmjMyIEGPyf9iaUcgf84NVmeEL
+        DUAoGslEFxFwvFx3qQ2qM/MDOUXLq9Q=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-540-lCcqVZ60OkWva9VAe79vjw-1; Tue, 09 May 2023 17:37:56 -0400
+X-MC-Unique: lCcqVZ60OkWva9VAe79vjw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E8CCF10115E0;
+        Tue,  9 May 2023 21:37:55 +0000 (UTC)
+Received: from [10.22.16.30] (unknown [10.22.16.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 97775C15BA0;
+        Tue,  9 May 2023 21:37:55 +0000 (UTC)
+Message-ID: <a7fcd53a-7680-49c5-dd93-489d75126c8d@redhat.com>
+Date:   Tue, 9 May 2023 17:37:55 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZFqxEWqD19eHe353@infradead.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 03/32] locking/lockdep: lockdep_set_no_check_recursion()
+Content-Language: en-US
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-4-kent.overstreet@linux.dev>
+ <20230509193147.GC2148518@hirez.programming.kicks-ass.net>
+ <ZFqqsyDpatgb77Vh@moria.home.lan>
+ <d5b65b01-62a9-e483-dea8-5e2bb65be278@redhat.com>
+ <ZFquoxJn1RzWhRiI@moria.home.lan>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZFquoxJn1RzWhRiI@moria.home.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 09, 2023 at 01:46:09PM -0700, Christoph Hellwig wrote:
-> On Tue, May 09, 2023 at 12:56:32PM -0400, Kent Overstreet wrote:
-> > From: Kent Overstreet <kent.overstreet@gmail.com>
-> >
-> > This is needed for bcachefs, which dynamically generates per-btree node
-> > unpack functions.
->
-> No, we will never add back a way for random code allocating executable
-> memory in kernel space.
+On 5/9/23 16:35, Kent Overstreet wrote:
+> On Tue, May 09, 2023 at 04:27:46PM -0400, Waiman Long wrote:
+>> On 5/9/23 16:18, Kent Overstreet wrote:
+>>> On Tue, May 09, 2023 at 09:31:47PM +0200, Peter Zijlstra wrote:
+>>>> On Tue, May 09, 2023 at 12:56:28PM -0400, Kent Overstreet wrote:
+>>>>> This adds a method to tell lockdep not to check lock ordering within a
+>>>>> lock class - but to still check lock ordering w.r.t. other lock types.
+>>>>>
+>>>>> This is for bcachefs, where for btree node locks we have our own
+>>>>> deadlock avoidance strategy w.r.t. other btree node locks (cycle
+>>>>> detection), but we still want lockdep to check lock ordering w.r.t.
+>>>>> other lock types.
+>>>>>
+>>>> ISTR you had a much nicer version of this where you gave a custom order
+>>>> function -- what happend to that?
+>>> Actually, I spoke too soon; this patch and the other series with the
+>>> comparison function solve different problems.
+>>>
+>>> For bcachefs btree node locks, we don't have a defined lock ordering at
+>>> all - we do full runtime cycle detection, so we don't want lockdep
+>>> checking for self deadlock because we're handling that but we _do_ want
+>>> lockdep checking lock ordering of btree node locks w.r.t. other locks in
+>>> the system.
+>> Maybe you can use lock_set_novalidate_class() instead.
+> No, we want that to go away, this is the replacement.
 
-Yeah I think I glossed over this aspect a bit as it looks ostensibly like simply
-reinstating a helper function because the code is now used in more than one
-place (at lsf/mm so a little distracted :)
+OK, you can mention that in the commit log then.
 
-But it being exported is a problem. Perhaps there's another way of acheving the
-same aim without having to do so?
+Cheers,
+Longman
+
