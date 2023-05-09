@@ -2,722 +2,225 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA821C77B7C
-	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 15:04:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ECE1C77B75
+	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 16:57:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235643AbjEIPEo (ORCPT
+        id S234652AbjEIQ5O (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 9 May 2023 11:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        Tue, 9 May 2023 12:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjEIPEn (ORCPT
+        with ESMTP id S234567AbjEIQ5N (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 9 May 2023 11:04:43 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55D32113
-        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 08:04:39 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-3ef588dcf7aso61882851cf.1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 09 May 2023 08:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=temp123.org; s=google; t=1683644679; x=1686236679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4NnRh4icueJmGh7KPFdAhHtHrY/irKJBkjMOE9FEWDA=;
-        b=OJebJGi9M622Ywvac113Fw6265NJhvxh0jfaJn6LkIslyyuuZRHoSp6L7Kn1DpVxaH
-         EilllHw4uCKVn+cXkCl0Nl1f7IYUL3TMI+szDZocm9wXPUuwPYskEOWndL4QWuUK+9Wm
-         lXJ8p8FbwSWqbfjVUAFTqDyPhxWbaH8UFv4jU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683644679; x=1686236679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4NnRh4icueJmGh7KPFdAhHtHrY/irKJBkjMOE9FEWDA=;
-        b=bpWQSx6bbYOZ9AzzbBhY7jYdHDK2aP/1mD2fIvKSLypIH4MFsJVwbJYap3szbr2ldi
-         R9GVwhZ90UQysV3ScZ04tj0/7vSr0N0ZCoitrwwWux2R6f7aUxam1kTMA7gA/5H2mK5G
-         QrzS9YTGm+g9vmcjh6GK6rzU3TDzlrJf58rUB9nSPrsGlAKXnWBeoibhqz41S3L5IKk8
-         6f8hsrLHEGedleykh+WBUsnWpKBCHiNNzaN0jfc1PbqGiDiuUKgoyLmiI/8bFRqS9PHH
-         ZOY+RFdpe3/DuQORu9mMeYSA0UDPL5G7yi6sU6JCqDTzhfdZFRfg8tANJpp/sVtP5PDT
-         XYaA==
-X-Gm-Message-State: AC+VfDxOwPoxDxgJy1Ft/EK46NdKGCpzpfU5nWlo/StTOQYri6Pw2Oks
-        n7Pv8nAYSSrrEUiICaeyCyU/igUtKx0NMJX8lHUTYyGs2IPS806YxHmHXg==
-X-Google-Smtp-Source: ACHHUZ72Di5w+v7rrE0SWLXoLqNHJMxsRkjPBiAsBDSPycyxW3nT+gYjM8i81oi/0wC6Qk2qp+CbxFILK+06U6ZsB5I=
-X-Received: by 2002:ac8:5a85:0:b0:3ef:38a2:9fdb with SMTP id
- c5-20020ac85a85000000b003ef38a29fdbmr19555462qtc.60.1683644678562; Tue, 09
- May 2023 08:04:38 -0700 (PDT)
+        Tue, 9 May 2023 12:57:13 -0400
+Received: from out-40.mta1.migadu.com (out-40.mta1.migadu.com [95.215.58.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC5F468C
+        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 09:57:10 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1683651428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bDdRmpQUHxUwEp25w0/2seMdc64/j9Z/b3eHGlchF3o=;
+        b=TaJMh+ibDwZ76+zvUT6ManuBOa+4NfdawA4yfp4IwNuyxCJPeSx6kSLuIiLFU/AYzVahz9
+        rf/FyP1YvsTQKuFFE19raB/1s/qyS2VrGGpC3H/gPky9ZkmWIlYgcxT9D00qxDwC7GRg6u
+        6VvAb9zEEyDkJvg4QVh3+P/EcPdALq8=
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-mm@kvack.org,
+        linux-bcachefs@vger.kernel.org
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        boqun.feng@gmail.com, brauner@kernel.org, hch@infradead.org,
+        colyli@suse.de, djwong@kernel.org, mingo@redhat.com, jack@suse.cz,
+        axboe@kernel.dk, willy@infradead.org, ojeda@kernel.org,
+        ming.lei@redhat.com, ndesaulniers@google.com, peterz@infradead.org,
+        phillip@squashfs.org.uk, urezki@gmail.com, longman@redhat.com,
+        will@kernel.org
+Subject: [PATCH 00/32] bcachefs - a new COW filesystem
+Date:   Tue,  9 May 2023 12:56:25 -0400
+Message-Id: <20230509165657.1735798-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
-References: <CAKib_wKEnoF4=aFVhA5Sd0Edcyo6=RTs0i81ntADFogFezR=cg@mail.gmail.com>
- <ZFnV6wfafWPeuHDv@moria.home.lan>
-In-Reply-To: <ZFnV6wfafWPeuHDv@moria.home.lan>
-From:   Josh Litherland <josh@temp123.org>
-Date:   Tue, 9 May 2023 11:04:27 -0400
-Message-ID: <CAKib_wLQPr0uFjThRrpzvvPmzKTUGB-H8f5F=3kkd_W2K+NayA@mail.gmail.com>
-Subject: Re: bcachefs fsck out-of-memory
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 9, 2023 at 1:11=E2=80=AFAM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Fri, May 05, 2023 at 09:49:14AM -0400, Josh Litherland wrote:
-> > I have a largeish filesystem (4x16TB + 2x2TB) which was uncleanly shut
-> > down.  I am attempting to do an fsck repair, and consistently hitting
-> > the OOM killer (approximately 64GiB RAM in use) with the userspace
-> > fsck repair tool.  The in-kernel repair runs for a while and
-> > eventually stops doing any IO while the mount command hangs, so I
-> > assume it's hitting the same condition.
-> >
-> > Kernel is 6.3.0-bcachefs-ccc8737427a3.
-> > bcachefs-tools is revision 6b1f79d5df9f2735192ed1a40c711cf131d4f43e.
-> >
-> > Please let me know if there is any information I can provide that
-> > might help to debug this issue, or any other repair techniques I can
-> > try out.  I have a recent backup of the data, and I'm not in a
-> > particular hurry to wipe and reformat the drives.
->
-> In kernel fsck is a bit more resilient to low memory conditions, and a
-> bit easier to debug.
->
-> Could you get stacktraces when it's gotten stuck, and pipe them through
-> decode_stacktrace.sh (kernel source tree)?  'echo w >
-> /proc/sysrq-trigger' should put the right stack traces in the dmesg log.
+I'm submitting the bcachefs filesystem for review and inclusion.
 
-Interestingly, the mount actually did return this time after running
-out of memory.  Here's the parsed stack trace:
+Included in this patch series are all the non fs/bcachefs/ patches. The
+entire tree, based on v6.3, may be found at:
 
---------
+  http://evilpiepirate.org/git/bcachefs.git bcachefs-for-upstream
 
-[328043.931924] mount: vmalloc error: size 16777216, page order 9,
-failed to allocate pages, mode:0xcc2(GFP_KERNEL|__GFP_HIGHMEM),
-nodemask=3D(null),cpuset=3Duser.slice,mems_allowed=3D0
-[328043.931933] CPU: 3 PID: 467832 Comm: mount Tainted: G            E
-     6.3.0-bcachefs-ccc8737427a3 #6
-[328043.931935] Hardware name: Micro-Star International Co., Ltd.
-MS-7B46/Z370 KRAIT GAMING (MS-7B46), BIOS 1.C2 04/21/2021
-[328043.931937] Call Trace:
-[328043.931939]  <TASK>
-[328043.931940] dump_stack_lvl+0x44/0x60
-[328043.931945] warn_alloc+0x138/0x1b0
-[328043.931948] ? __alloc_pages+0x301/0x330
-[328043.931951] __vmalloc_node_range+0x6ae/0x890
-[328043.931953] ? bch2_journal_key_insert_take+0x168/0x380
-[328043.931957] kvmalloc_node+0x9a/0xc0
-[328043.931960] ? bch2_journal_key_insert_take+0x168/0x380
-[328043.931962] bch2_journal_key_insert_take+0x168/0x380
-[328043.931965] bch2_check_fix_ptrs+0x1351/0x1500
-[328043.931969] ? sysvec_x86_platform_ipi+0x20/0xd0
-[328043.931973] ? bch2_gc_mark_key+0x99/0x270
-[328043.931974] bch2_gc_mark_key+0x99/0x270
-[328043.931977] bch2_gc_btree_init_recurse+0x173/0x6e0
-[328043.931981] ? bch2_btree_node_read+0x238/0x4d0
-[328043.931984] ? bch2_btree_node_hash_insert+0x48/0xb0
-[328043.931987] bch2_gc_btree_init_recurse+0x529/0x6e0
-[328043.931993] bch2_gc_btree_init_recurse+0x529/0x6e0
-[328043.931999] bch2_gc_btrees+0x245/0x480
-[328043.932004] ? bch2_gc_mark_key+0xce/0x270
-[328043.932008] bch2_gc+0x381/0x850
-[328043.932011] bch2_fs_recovery+0x1b06/0x21b0
-[328043.932012] ? up_write+0x36/0x60
-[328043.932017] ? idr_alloc_u32+0x8d/0xd0
-[328043.932019] ? idr_alloc_cyclic+0x50/0xb0
-[328043.932022] ? bdev_name.constprop.0+0x3e/0x160
-[328043.932025] ? vsnprintf+0x1fd/0x4f0
-[328043.932027] ? __bch2_sb_field_resize+0x62/0x110
-[328043.932030] bch2_fs_start+0x3d9/0x430
-[328043.932032] bch2_fs_open+0x45a/0x5a0
-[328043.932034] bch2_mount+0x519/0x6e0
-[328043.932040] legacy_get_tree+0x24/0x50
-[328043.932043] vfs_get_tree+0x22/0xd0
-[328043.932045] path_mount+0x488/0xab0
-[328043.932048] __x64_sys_mount+0x107/0x140
-[328043.932051] do_syscall_64+0x38/0x90
-[328043.932054] entry_SYSCALL_64_after_hwframe+0x72/0xdc
-[328043.932056] RIP: 0033:0x7f4fcc35062a
-[328043.932059] Code: 48 8b 0d 69 18 0d 00 f7 d8 64 89 01 48 83 c8 ff
-c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00
-00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 36 18 0d 00 f7 d8 64 89
-01 48
-All code
-=3D=3D=3D=3D=3D=3D=3D=3D
-   0:    48 8b 0d 69 18 0d 00     mov    0xd1869(%rip),%rcx        # 0xd187=
-0
-   7:    f7 d8                    neg    %eax
-   9:    64 89 01                 mov    %eax,%fs:(%rcx)
-   c:    48 83 c8 ff              or     $0xffffffffffffffff,%rax
-  10:    c3                       retq
-  11:    66 2e 0f 1f 84 00 00     nopw   %cs:0x0(%rax,%rax,1)
-  18:    00 00 00
-  1b:    0f 1f 44 00 00           nopl   0x0(%rax,%rax,1)
-  20:    49 89 ca                 mov    %rcx,%r10
-  23:    b8 a5 00 00 00           mov    $0xa5,%eax
-  28:    0f 05                    syscall
-  2a:*    48 3d 01 f0 ff ff        cmp    $0xfffffffffffff001,%rax
-   <-- trapping instruction
-  30:    73 01                    jae    0x33
-  32:    c3                       retq
-  33:    48 8b 0d 36 18 0d 00     mov    0xd1836(%rip),%rcx        # 0xd187=
-0
-  3a:    f7 d8                    neg    %eax
-  3c:    64 89 01                 mov    %eax,%fs:(%rcx)
-  3f:    48                       rex.W
+----------------------------------------------------------------
 
-Code starting with the faulting instruction
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-   0:    48 3d 01 f0 ff ff        cmp    $0xfffffffffffff001,%rax
-   6:    73 01                    jae    0x9
-   8:    c3                       retq
-   9:    48 8b 0d 36 18 0d 00     mov    0xd1836(%rip),%rcx        # 0xd184=
-6
-  10:    f7 d8                    neg    %eax
-  12:    64 89 01                 mov    %eax,%fs:(%rcx)
-  15:    48                       rex.W
-[328043.932060] RSP: 002b:00007fff37e41b48 EFLAGS: 00000246 ORIG_RAX:
-00000000000000a5
-[328043.932062] RAX: ffffffffffffffda RBX: 00007f4fcc484264 RCX:
-00007f4fcc35062a
-[328043.932063] RDX: 000055fc23036c60 RSI: 000055fc23036d10 RDI:
-000055fc23036cc0
-[328043.932064] RBP: 000055fc23036a30 R08: 000055fc23036c80 R09:
-00007f4fcc422be0
-[328043.932065] R10: 0000000000000000 R11: 0000000000000246 R12:
-0000000000000000
-[328043.932066] R13: 000055fc23036cc0 R14: 000055fc23036c60 R15:
-000055fc23036a30
-[328043.932069]  </TASK>
-[328043.932069] Mem-Info:
-[328043.932070] active_anon:4983073 inactive_anon:1879315 isolated_anon:0
-active_file:765675 inactive_file:153193 isolated_file:0
-unevictable:3135 dirty:68 writeback:0
-slab_reclaimable:659699 slab_unreclaimable:490405
-mapped:2859568 shmem:2795969 pagetables:26309
-sec_pagetables:5352 bounce:0
-kernel_misc_reclaimable:0
-free:282575 free_pcp:0 free_cma:0
-[328043.932074] Node 0 active_anon:19932292kB inactive_anon:7517260kB
-active_file:3062700kB inactive_file:612772kB unevictable:12540kB
-isolated(anon):0kB isolated(file):0kB mapped:11438272kB dirty:272kB
-writeback:0kB shmem:11183876kB shmem_thp: 0kB shmem_pmdmapped: 0kB
-anon_thp: 14264320kB writeback_tmp:0kB kernel_stack:22800kB
-pagetables:105236kB sec_pagetables:21408kB all_unreclaimable? no
-[328043.932077] Node 0 DMA free:15360kB boost:0kB min:12kB low:24kB
-high:36kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
-active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB
-present:15984kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB
-local_pcp:0kB free_cma:0kB
-[328043.932081] lowmem_reserve[]: 0 2089 64129 64129 64129
-[328043.932084] Node 0 DMA32 free:267748kB boost:0kB min:2200kB
-low:4336kB high:6472kB reserved_highatomic:16384KB
-active_anon:759888kB inactive_anon:286036kB active_file:22592kB
-inactive_file:3060kB unevictable:0kB writepending:0kB
-present:2262788kB managed:2196980kB mlocked:0kB bounce:0kB
-free_pcp:0kB local_pcp:0kB free_cma:0kB
-[328043.932087] lowmem_reserve[]: 0 0 62040 62040 62040
-[328043.932090] Node 0 Normal free:847192kB boost:0kB min:65364kB
-low:128892kB high:192420kB reserved_highatomic:8192KB
-active_anon:19172404kB inactive_anon:7231224kB active_file:3040244kB
-inactive_file:609772kB unevictable:12540kB writepending:272kB
-present:64733184kB managed:63533120kB mlocked:12416kB bounce:0kB
-free_pcp:0kB local_pcp:0kB free_cma:0kB
-[328043.932093] lowmem_reserve[]: 0 0 0 0 0
-[328043.932096] Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB
-0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) =3D 15360kB
-[328043.932104] Node 0 DMA32: 2869*4kB (UME) 2036*8kB (UME) 1437*16kB
-(UME) 1003*32kB (UME) 513*64kB (UME) 364*128kB (UME) 60*256kB (UME)
-36*512kB (UM) 14*1024kB (UM) 16*2048kB (M) 6*4096kB (UM) =3D 267748kB
-[328043.932115] Node 0 Normal: 58418*4kB (UME) 26114*8kB (UME)
-10689*16kB (UME) 3827*32kB (UME) 1117*64kB (UME) 250*128kB (UME)
-16*256kB (U) 5*512kB (UM) 1*1024kB (U) 0*2048kB 0*4096kB =3D 847240kB
-[328043.932126] Node 0 hugepages_total=3D0 hugepages_free=3D0
-hugepages_surp=3D0 hugepages_size=3D1048576kB
-[328043.932127] Node 0 hugepages_total=3D0 hugepages_free=3D0
-hugepages_surp=3D0 hugepages_size=3D2048kB
-[328043.932128] 3840046 total pagecache pages
-[328043.932129] 122579 pages in swap cache
-[328043.932129] Free swap  =3D 0kB
-[328043.932130] Total swap =3D 1048572kB
-[328043.932131] 16752989 pages RAM
-[328043.932131] 0 pages HighMem/MovableOnly
-[328043.932132] 316624 pages reserved
-[328043.932132] 0 pages hwpoisoned
-[328043.932133] Unreclaimable slab info:
-[328043.932618] kmalloc-96        total: 1.52 GB active: 1.52 GB
-filp              total: 170 MB active: 170 MB
-kmalloc-512       total: 84.5 MB active: 82.3 MB
-kmalloc-256       total: 30.6 MB active: 27.1 MB
-lsm_file_cache    total: 16.0 MB active: 15.9 MB
-kmalloc-192       total: 15.1 MB active: 13.6 MB
-task_struct       total: 9.79 MB active: 9.67 MB
-vm_area_struct    total: 8.28 MB active: 8.09 MB
-vmap_area         total: 7.82 MB active: 7.79 MB
-kernfs_node_cache total: 7.44 MB active: 7.44 MB
-[328043.932620] Shrinkers:
-[328043.932635] 56f18224-fbe1-4704-8a0f-b5486fc6d511/btree_cache
-objects:           91722
-requested to free: 793344
-objects freed:     374472
-nr nodes:        91818
-nr dirty:        0
-cannibalize lock:    0000000000000000
-freed:                374472
-not freed, dirty:        0
-not freed, write in flight:    0
-not freed, read in flight:    0
-not freed, lock intent failed:    0
-not freed, lock write failed:    1
-not freed, access bit:        418871
-not freed, no evict failed:    0
-not freed, write blocked:    0
-not freed, will make reachable:    0
+bcachefs overview, status:
 
-ext4-es:dm-0
-objects:           30432
-requested to free: 611968
-objects freed:     459800
-ext4-es:sde
-objects:           16096
-requested to free: 311748
-objects freed:     221059
-ext4-es:nvme2n1p2
-objects:           12928
-requested to free: 534280
-objects freed:     335713
-sb-ext4
-objects:           4420
-requested to free: 2287783
-objects freed:     1766886
-jbd2-journal:(252:0)
-objects:           768
-requested to free: 0
-objects freed:     0
-sb-ext4
-objects:           95
-requested to free: 595016
-objects freed:     578662
-rcu-kfree
-objects:
-[328265.990427] mount: vmalloc error: size 130023424, page order 9,
-failed to allocate pages, mode:0xcc2(GFP_KERNEL|__GFP_HIGHMEM),
-nodemask=3D(null),cpuset=3Duser.slice,mems_allowed=3D0
-[328265.990453] CPU: 9 PID: 467832 Comm: mount Tainted: G            E
-     6.3.0-bcachefs-ccc8737427a3 #6
-[328265.990455] Hardware name: Micro-Star International Co., Ltd.
-MS-7B46/Z370 KRAIT GAMING (MS-7B46), BIOS 1.C2 04/21/2021
-[328265.990456] Call Trace:
-[328265.990458]  <TASK>
-[328265.990461] dump_stack_lvl+0x44/0x60
-[328265.990466] warn_alloc+0x138/0x1b0
-[328265.990469] ? __alloc_pages+0x301/0x330
-[328265.990471] __vmalloc_node_range+0x6ae/0x890
-[328265.990474] ? bch2_journal_key_insert_take+0x168/0x380
-[328265.990478] kvmalloc_node+0x9a/0xc0
-[328265.990480] ? bch2_journal_key_insert_take+0x168/0x380
-[328265.990482] bch2_journal_key_insert_take+0x168/0x380
-[328265.990485] bch2_check_fix_ptrs+0x1351/0x1500
-[328265.990502] ? sysvec_x86_platform_ipi+0x21/0xd0
-[328265.990506] ? bch2_gc_mark_key+0x99/0x270
-[328265.990507] bch2_gc_mark_key+0x99/0x270
-[328265.990510] bch2_gc_btree_init_recurse+0x173/0x6e0
-[328265.990514] ? bch2_btree_node_read+0x238/0x4d0
-[328265.990516] ? bch2_btree_node_hash_insert+0x48/0xb0
-[328265.990520] bch2_gc_btree_init_recurse+0x529/0x6e0
-[328265.990526] bch2_gc_btree_init_recurse+0x529/0x6e0
-[328265.990532] bch2_gc_btrees+0x245/0x480
-[328265.990536] ? bch2_gc_mark_key+0xce/0x270
-[328265.990540] bch2_gc+0x381/0x850
-[328265.990543] bch2_fs_recovery+0x1b06/0x21b0
-[328265.990544] ? up_write+0x36/0x60
-[328265.990549] ? idr_alloc_u32+0x8d/0xd0
-[328265.990552] ? idr_alloc_cyclic+0x50/0xb0
-[328265.990554] ? bdev_name.constprop.0+0x3e/0x160
-[328265.990557] ? vsnprintf+0x1fd/0x4f0
-[328265.990559] ? __bch2_sb_field_resize+0x62/0x110
-[328265.990562] bch2_fs_start+0x3d9/0x430
-[328265.990564] bch2_fs_open+0x45a/0x5a0
-[328265.990567] bch2_mount+0x519/0x6e0
-[328265.990572] legacy_get_tree+0x24/0x50
-[328265.990575] vfs_get_tree+0x22/0xd0
-[328265.990578] path_mount+0x488/0xab0
-[328265.990581] __x64_sys_mount+0x107/0x140
-[328265.990583] do_syscall_64+0x38/0x90
-[328265.990586] entry_SYSCALL_64_after_hwframe+0x72/0xdc
-[328265.990588] RIP: 0033:0x7f4fcc35062a
-[328265.990591] Code: 48 8b 0d 69 18 0d 00 f7 d8 64 89 01 48 83 c8 ff
-c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00
-00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 36 18 0d 00 f7 d8 64 89
-01 48
-All code
-=3D=3D=3D=3D=3D=3D=3D=3D
-   0:    48 8b 0d 69 18 0d 00     mov    0xd1869(%rip),%rcx        # 0xd187=
-0
-   7:    f7 d8                    neg    %eax
-   9:    64 89 01                 mov    %eax,%fs:(%rcx)
-   c:    48 83 c8 ff              or     $0xffffffffffffffff,%rax
-  10:    c3                       retq
-  11:    66 2e 0f 1f 84 00 00     nopw   %cs:0x0(%rax,%rax,1)
-  18:    00 00 00
-  1b:    0f 1f 44 00 00           nopl   0x0(%rax,%rax,1)
-  20:    49 89 ca                 mov    %rcx,%r10
-  23:    b8 a5 00 00 00           mov    $0xa5,%eax
-  28:    0f 05                    syscall
-  2a:*    48 3d 01 f0 ff ff        cmp    $0xfffffffffffff001,%rax
-   <-- trapping instruction
-  30:    73 01                    jae    0x33
-  32:    c3                       retq
-  33:    48 8b 0d 36 18 0d 00     mov    0xd1836(%rip),%rcx        # 0xd187=
-0
-  3a:    f7 d8                    neg    %eax
-  3c:    64 89 01                 mov    %eax,%fs:(%rcx)
-  3f:    48                       rex.W
+Features:
+ - too many to list
 
-Code starting with the faulting instruction
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-   0:    48 3d 01 f0 ff ff        cmp    $0xfffffffffffff001,%rax
-   6:    73 01                    jae    0x9
-   8:    c3                       retq
-   9:    48 8b 0d 36 18 0d 00     mov    0xd1836(%rip),%rcx        # 0xd184=
-6
-  10:    f7 d8                    neg    %eax
-  12:    64 89 01                 mov    %eax,%fs:(%rcx)
-  15:    48                       rex.W
-[328265.990592] RSP: 002b:00007fff37e41b48 EFLAGS: 00000246 ORIG_RAX:
-00000000000000a5
-[328265.990594] RAX: ffffffffffffffda RBX: 00007f4fcc484264 RCX:
-00007f4fcc35062a
-[328265.990595] RDX: 000055fc23036c60 RSI: 000055fc23036d10 RDI:
-000055fc23036cc0
-[328265.990596] RBP: 000055fc23036a30 R08: 000055fc23036c80 R09:
-00007f4fcc422be0
-[328265.990597] R10: 0000000000000000 R11: 0000000000000246 R12:
-0000000000000000
-[328265.990597] R13: 000055fc23036cc0 R14: 000055fc23036c60 R15:
-000055fc23036a30
-[328265.990600]  </TASK>
-[328265.990601] Mem-Info:
-[328265.990602] active_anon:4983104 inactive_anon:1878542 isolated_anon:0
-active_file:629127 inactive_file:153289 isolated_file:0
-unevictable:3135 dirty:44 writeback:0
-slab_reclaimable:649498 slab_unreclaimable:889902
-mapped:2857333 shmem:2795985 pagetables:26281
-sec_pagetables:5352 bounce:0
-kernel_misc_reclaimable:0
-free:161210 free_pcp:206 free_cma:0
-[328265.990608] Node 0 active_anon:19932416kB inactive_anon:7514168kB
-active_file:2516508kB inactive_file:613156kB unevictable:12540kB
-isolated(anon):0kB isolated(file):0kB mapped:11429332kB dirty:176kB
-writeback:0kB shmem:11183940kB shmem_thp: 0kB shmem_pmdmapped: 0kB
-anon_thp: 14260224kB writeback_tmp:0kB kernel_stack:22784kB
-pagetables:105124kB sec_pagetables:21408kB all_unreclaimable? no
-[328265.990625] Node 0 DMA free:15360kB boost:0kB min:12kB low:24kB
-high:36kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
-active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB
-present:15984kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB
-local_pcp:0kB free_cma:0kB
-[328265.990630] lowmem_reserve[]: 0 2089 64129 64129 64129
-[328265.990633] Node 0 DMA32 free:268180kB boost:0kB min:2200kB
-low:4336kB high:6472kB reserved_highatomic:16384KB
-active_anon:759888kB inactive_anon:286068kB active_file:18620kB
-inactive_file:4216kB unevictable:0kB writepending:0kB
-present:2262788kB managed:2196980kB mlocked:0kB bounce:0kB
-free_pcp:0kB local_pcp:0kB free_cma:0kB
-[328265.990638] lowmem_reserve[]: 0 0 62040 62040 62040
-[328265.990641] Node 0 Normal free:362324kB boost:0kB min:65364kB
-low:128892kB high:192420kB reserved_highatomic:8192KB
-active_anon:19172528kB inactive_anon:7228100kB active_file:2497792kB
-inactive_file:609120kB unevictable:12540kB writepending:176kB
-present:64733184kB managed:63533120kB mlocked:12416kB bounce:0kB
-free_pcp:848kB local_pcp:256kB free_cma:0kB
-[328265.990646] lowmem_reserve[]: 0 0 0 0 0
-[328265.990650] Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB
-0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) =3D 15360kB
-[328265.990662] Node 0 DMA32: 2793*4kB (UME) 1862*8kB (UME) 1048*16kB
-(UME) 636*32kB (UME) 497*64kB (UME) 367*128kB (UME) 91*256kB (UME)
-43*512kB (UM) 27*1024kB (UM) 16*2048kB (M) 5*4096kB (UM) =3D 268180kB
-[328265.990677] Node 0 Normal: 35565*4kB (UME) 11586*8kB (UME)
-2486*16kB (UME) 453*32kB (UME) 104*64kB (UME) 51*128kB (U) 134*256kB
-(UM) 46*512kB (U) 4*1024kB (U) 0*2048kB 0*4096kB =3D 364356kB
-[328265.990693] Node 0 hugepages_total=3D0 hugepages_free=3D0
-hugepages_surp=3D0 hugepages_size=3D1048576kB
-[328265.990695] Node 0 hugepages_total=3D0 hugepages_free=3D0
-hugepages_surp=3D0 hugepages_size=3D2048kB
-[328265.990696] 3703674 total pagecache pages
-[328265.990697] 122579 pages in swap cache
-[328265.990698] Free swap  =3D 0kB
-[328265.990699] Total swap =3D 1048572kB
-[328265.990700] 16752989 pages RAM
-[328265.990701] 0 pages HighMem/MovableOnly
-[328265.990702] 316624 pages reserved
-[328265.990702] 0 pages hwpoisoned
-[328265.990704] Unreclaimable slab info:
-[328265.991221] kmalloc-96        total: 3.13 GB active: 3.13 GB
-filp              total: 170 MB active: 170 MB
-kmalloc-512       total: 84.5 MB active: 80.9 MB
-kmalloc-256       total: 30.4 MB active: 26.9 MB
-lsm_file_cache    total: 16.0 MB active: 15.9 MB
-kmalloc-192       total: 15.0 MB active: 13.5 MB
-task_struct       total: 9.79 MB active: 9.75 MB
-vm_area_struct    total: 8.25 MB active: 7.99 MB
-vmap_area         total: 7.71 MB active: 7.54 MB
-kernfs_node_cache total: 7.44 MB active: 7.44 MB
-[328265.991223] Shrinkers:
-[328265.991247] 56f18224-fbe1-4704-8a0f-b5486fc6d511/btree_cache
-objects:           87774
-requested to free: 852096
-objects freed:     388001
-nr nodes:        87870
-nr dirty:        0
-cannibalize lock:    0000000000000000
-freed:                388111
-not freed, dirty:        0
-not freed, write in flight:    0
-not freed, read in flight:    0
-not freed, lock intent failed:    0
-not freed, lock write failed:    1
-not freed, access bit:        463966
-not freed, no evict failed:    0
-not freed, write blocked:    0
-not freed, will make reachable:    0
+Known bugs:
+ - too many to list
 
-ext4-es:dm-0
-objects:           27872
-requested to free: 614528
-objects freed:     462360
-ext4-es:sde
-objects:           15424
-requested to free: 312516
-objects freed:     221827
-ext4-es:nvme2n1p2
-objects:           12448
-requested to free: 535048
-objects freed:     336152
-sb-ext4
-objects:           4420
-requested to free: 2312359
-objects freed:     1784481
-jbd2-journal:(252:0)
-objects:           768
-requested to free: 0
-objects freed:     0
-sb-ext4
-objects:           95
-requested to free: 601160
-objects freed:     583827
-jbd2-journal:(8:64
-[328669.086982] ------------[ cut here ]------------
-[328669.086985] WARNING: CPU: 3 PID: 467832 at mm/util.c:618
-kvmalloc_node+0xb0/0xc0
-[328669.086990] Modules linked in: dm_crypt(E) uas(E) usb_storage(E)
-tcp_diag(E) inet_diag(E) xt_nat(E) xt_conntrack(E)
-nf_conntrack_netlink(E) xfrm_user(E) xt_addrtype(E) br_netfilter(E)
-overlay(E) msdos(E) dm_mod(E) vhost_net(E) vhost(E) vhost_iotlb(E)
-tap(E) tun(E) veth(E) xt_CHECKSUM(E) nft_chain_nat(E) xt_MASQUERADE(E)
-nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E)
-xt_tcpudp(E) nft_compat(E) nf_tables(E) nfnetlink(E) bridge(E) stp(E)
-llc(E) intel_rapl_msr(E) intel_rapl_common(E) x86_pkg_temp_thermal(E)
-intel_powerclamp(E) coretemp(E) kvm_intel(E) binfmt_misc(E) i915(E)
-drm_buddy(E) kvm(E) snd_pcm(E) irqbypass(E) nls_ascii(E)
-drm_display_helper(E) snd_timer(E) rapl(E) nls_cp437(E) iTCO_wdt(E)
-cec(E) intel_pmc_bxt(E) intel_cstate(E) snd(E) vfat(E)
-iTCO_vendor_support(E) soundcore(E) mei_hdcp(E) ttm(E) fat(E) evdev(E)
-intel_uncore(E) watchdog(E) ee1004(E) mxm_wmi(E) pcspkr(E)
-efi_pstore(E) mei_me(E) sg(E) drm_kms_helper(E) i2c_algo_bit(E) mei(E)
-intel_pmc_core(E) acpi_pad(E) acpi_tad(E) button(E)
-[328669.087031]  ib_iser(E) rdma_cm(E) iw_cm(E) ib_cm(E) nfsd(E)
-ib_core(E) auth_rpcgss(E) nfs_acl(E) iscsi_tcp(E) libiscsi_tcp(E)
-libiscsi(E) lockd(E) grace(E) scsi_transport_iscsi(E) drm(E) fuse(E)
-configfs(E) sunrpc(E) efivarfs(E) ip_tables(E) x_tables(E) autofs4(E)
-raid10(E) raid456(E) async_raid6_recov(E) async_memcpy(E) async_pq(E)
-async_xor(E) async_tx(E) raid1(E) raid0(E) multipath(E) linear(E)
-md_mod(E) bcache(E) hid_generic(E) sd_mod(E) usbhid(E) hid(E)
-crc32_pclmul(E) crc32c_intel(E) ghash_clmulni_intel(E) sha512_ssse3(E)
-sha512_generic(E) nvme(E) ahci(E) libahci(E) aesni_intel(E)
-nvme_core(E) xhci_pci(E) t10_pi(E) ixgbe(E) libaes(E) xfrm_algo(E)
-libata(E) xhci_hcd(E) dca(E) crypto_simd(E) firewire_ohci(E)
-mdio_devres(E) cryptd(E) crc64_rocksoft_generic(E) e1000e(E)
-i2c_i801(E) libphy(E) firewire_core(E) i2c_smbus(E) crc64_rocksoft(E)
-crc_itu_t(E) scsi_mod(E) usbcore(E) crc_t10dif(E) ptp(E)
-crct10dif_generic(E) pps_core(E) scsi_common(E) usb_common(E) mdio(E)
-crct10dif_pclmul(E) crct10dif_common(E) fan(E)
-[328669.087072]  video(E) wmi(E)
-[328669.087074] CPU: 3 PID: 467832 Comm: mount Tainted: G            E
-     6.3.0-bcachefs-ccc8737427a3 #6
-[328669.087076] Hardware name: Micro-Star International Co., Ltd.
-MS-7B46/Z370 KRAIT GAMING (MS-7B46), BIOS 1.C2 04/21/2021
-[328669.087076] RIP: kvmalloc_node+0xb0/0xc0
-[328669.087079] Code: 68 00 04 00 00 4c 23 0d 66 72 97 01 48 01 d1 e8
-d6 42 04 00 48 83 c4 18 5d 41 5c 41 5d c3 cc cc cc cc 81 e5 00 20 00
-00 75 ee <0f> 0b eb ea 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
-90 90
-All code
-=3D=3D=3D=3D=3D=3D=3D=3D
-   0:    68 00 04 00 00           pushq  $0x400
-   5:    4c 23 0d 66 72 97 01     and    0x1977266(%rip),%r9        # 0x197=
-7272
-   c:    48 01 d1                 add    %rdx,%rcx
-   f:    e8 d6 42 04 00           callq  0x442ea
-  14:    48 83 c4 18              add    $0x18,%rsp
-  18:    5d                       pop    %rbp
-  19:    41 5c                    pop    %r12
-  1b:    41 5d                    pop    %r13
-  1d:    c3                       retq
-  1e:    cc                       int3
-  1f:    cc                       int3
-  20:    cc                       int3
-  21:    cc                       int3
-  22:    81 e5 00 20 00 00        and    $0x2000,%ebp
-  28:    75 ee                    jne    0x18
-  2a:*    0f 0b                    ud2            <-- trapping instruction
-  2c:    eb ea                    jmp    0x18
-  2e:    66 66 2e 0f 1f 84 00     data16 nopw %cs:0x0(%rax,%rax,1)
-  35:    00 00 00 00
-  39:    90                       nop
-  3a:    90                       nop
-  3b:    90                       nop
-  3c:    90                       nop
-  3d:    90                       nop
-  3e:    90                       nop
-  3f:    90                       nop
+Status:
+ - Snapshots have been declared stable; one serious bug report
+   outstanding to look into, most users report it working well.
 
-Code starting with the faulting instruction
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-   0:    0f 0b                    ud2
-   2:    eb ea                    jmp    0xffffffffffffffee
-   4:    66 66 2e 0f 1f 84 00     data16 nopw %cs:0x0(%rax,%rax,1)
-   b:    00 00 00 00
-   f:    90                       nop
-  10:    90                       nop
-  11:    90                       nop
-  12:    90                       nop
-  13:    90                       nop
-  14:    90                       nop
-  15:    90                       nop
-[328669.087080] RSP: 0018:ffffb1f78fc4ee00 EFLAGS: 00010246
-[328669.087082] RAX: 0000000000000000 RBX: ffff96969b4c0000 RCX:
-0000000000000013
-[328669.087083] RDX: 0000000000000000 RSI: 0000000000000014 RDI:
-0000000000000000
-[328669.087084] RBP: 0000000000000000 R08: 0000000000000000 R09:
-0000000000000000
-[328669.087085] R10: 0000000000000100 R11: ffff969b00bb2f28 R12:
-00000000c0000000
-[328669.087086] R13: 00000000ffffffff R14: ffff969b00bb2f00 R15:
-0000000000000000
-[328669.087087] FS:  00007f4fcc112840(0000) GS:ffff96a42eac0000(0000)
-knlGS:0000000000000000
-[328669.087088] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[328669.087089] CR2: 00007f53e2c35000 CR3: 00000002dc6e6002 CR4:
-00000000003726e0
-[328669.087090] Call Trace:
-[328669.087092]  <TASK>
-[328669.087094] bch2_journal_key_insert_take+0x168/0x380
-[328669.087099] bch2_check_fix_ptrs+0x1351/0x1500
-[328669.087104] ? __pfx_common_interrupt+0x10/0x10
-[328669.087108] ? bch2_gc_mark_key+0x99/0x270
-[328669.087109] bch2_gc_mark_key+0x99/0x270
-[328669.087112] bch2_gc_btree_init_recurse+0x173/0x6e0
-[328669.087115] ? bch2_btree_node_read+0x238/0x4d0
-[328669.087118] ? bch2_btree_node_hash_insert+0x48/0xb0
-[328669.087121] bch2_gc_btree_init_recurse+0x529/0x6e0
-[328669.087127] bch2_gc_btree_init_recurse+0x529/0x6e0
-[328669.087133] bch2_gc_btrees+0x245/0x480
-[328669.087137] ? bch2_gc_mark_key+0xce/0x270
-[328669.087141] bch2_gc+0x381/0x850
-[328669.087144] bch2_fs_recovery+0x1b06/0x21b0
-[328669.087145] ? up_write+0x36/0x60
-[328669.087150] ? idr_alloc_u32+0x8d/0xd0
-[328669.087153] ? idr_alloc_cyclic+0x50/0xb0
-[328669.087156] ? bdev_name.constprop.0+0x3e/0x160
-[328669.087158] ? vsnprintf+0x1fd/0x4f0
-[328669.087160] ? __bch2_sb_field_resize+0x62/0x110
-[328669.087163] bch2_fs_start+0x3d9/0x430
-[328669.087165] bch2_fs_open+0x45a/0x5a0
-[328669.087168] bch2_mount+0x519/0x6e0
-[328669.087173] legacy_get_tree+0x24/0x50
-[328669.087176] vfs_get_tree+0x22/0xd0
-[328669.087179] path_mount+0x488/0xab0
-[328669.087182] __x64_sys_mount+0x107/0x140
-[328669.087184] do_syscall_64+0x38/0x90
-[328669.087187] entry_SYSCALL_64_after_hwframe+0x72/0xdc
-[328669.087189] RIP: 0033:0x7f4fcc35062a
-[328669.087191] Code: 48 8b 0d 69 18 0d 00 f7 d8 64 89 01 48 83 c8 ff
-c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00
-00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 36 18 0d 00 f7 d8 64 89
-01 48
-All code
-=3D=3D=3D=3D=3D=3D=3D=3D
-   0:    48 8b 0d 69 18 0d 00     mov    0xd1869(%rip),%rcx        # 0xd187=
-0
-   7:    f7 d8                    neg    %eax
-   9:    64 89 01                 mov    %eax,%fs:(%rcx)
-   c:    48 83 c8 ff              or     $0xffffffffffffffff,%rax
-  10:    c3                       retq
-  11:    66 2e 0f 1f 84 00 00     nopw   %cs:0x0(%rax,%rax,1)
-  18:    00 00 00
-  1b:    0f 1f 44 00 00           nopl   0x0(%rax,%rax,1)
-  20:    49 89 ca                 mov    %rcx,%r10
-  23:    b8 a5 00 00 00           mov    $0xa5,%eax
-  28:    0f 05                    syscall
-  2a:*    48 3d 01 f0 ff ff        cmp    $0xfffffffffffff001,%rax
-   <-- trapping instruction
-  30:    73 01                    jae    0x33
-  32:    c3                       retq
-  33:    48 8b 0d 36 18 0d 00     mov    0xd1836(%rip),%rcx        # 0xd187=
-0
-  3a:    f7 d8                    neg    %eax
-  3c:    64 89 01                 mov    %eax,%fs:(%rcx)
-  3f:    48                       rex.W
+   These are RW btrfs-style snapshots, but with far better scalability
+   and no scalability issues with sparse snapshots due to key level
+   versioning.
 
-Code starting with the faulting instruction
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-   0:    48 3d 01 f0 ff ff        cmp    $0xfffffffffffff001,%rax
-   6:    73 01                    jae    0x9
-   8:    c3                       retq
-   9:    48 8b 0d 36 18 0d 00     mov    0xd1836(%rip),%rcx        # 0xd184=
-6
-  10:    f7 d8                    neg    %eax
-  12:    64 89 01                 mov    %eax,%fs:(%rcx)
-  15:    48                       rex.W
-[328669.087193] RSP: 002b:00007fff37e41b48 EFLAGS: 00000246 ORIG_RAX:
-00000000000000a5
-[328669.087195] RAX: ffffffffffffffda RBX: 00007f4fcc484264 RCX:
-00007f4fcc35062a
-[328669.087196] RDX: 000055fc23036c60 RSI: 000055fc23036d10 RDI:
-000055fc23036cc0
-[328669.087196] RBP: 000055fc23036a30 R08: 000055fc23036c80 R09:
-00007f4fcc422be0
-[328669.087197] R10: 0000000000000000 R11: 0000000000000246 R12:
-0000000000000000
-[328669.087198] R13: 000055fc23036cc0 R14: 000055fc23036c60 R15:
-000055fc23036a30
-[328669.087201]  </TASK>
-[328669.087201] ---[ end trace 0000000000000000 ]---
-[328669.087202] bcachefs (56f18224-fbe1-4704-8a0f-b5486fc6d511):
-bch2_journal_key_insert_take: error allocating new key array (size
-134217728)
-[328669.088071] bcachefs (56f18224-fbe1-4704-8a0f-b5486fc6d511): error
-from bch2_gc_mark_key(): ENOMEM_journal_key_insert
-[328669.088505] bcachefs (56f18224-fbe1-4704-8a0f-b5486fc6d511):
-bch2_gc_btree_init_recurse: error from bch2_gc_mark_key:
-ENOMEM_journal_key_insert
-[328669.089394] bcachefs (56f18224-fbe1-4704-8a0f-b5486fc6d511): error
-from bch2_gc_btree_init(): ENOMEM_journal_key_insert
-[328669.089826] bcachefs (56f18224-fbe1-4704-8a0f-b5486fc6d511): error
-from bch2_gc_btrees(): ENOMEM_journal_key_insert
-[328669.164925] bcachefs (56f18224-fbe1-4704-8a0f-b5486fc6d511): Error
-in recovery: error checking allocations (ENOMEM_journal_key_insert)
-[328669.165767] bcachefs (56f18224-fbe1-4704-8a0f-b5486fc6d511): error
-starting filesystem: ENOMEM_journal_key_insert
+ - Erasure coding is getting really close; hope to have it ready for
+   users to beat on it by this summer. This is a novel RAID/erasure
+   coding design with no write hole, and no fragmentation of writes
+   (e.g. RAIDZ).
 
+ - Tons of scalabality work finished over the past year, users are
+   running it on 100 TB filesystems without complaint, waiting for first
+   1 PB user; next thing to address re: scalability is fsck/recovery
+   memory usage.
 
--------- EOF --------
+ - Test infrastructure! Major project milestone, check out our test
+   dashboard at
+     https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs
 
---=20
-Josh Litherland (josh@temp123.org)
+Other project notes:
+
+irc::/irc.oftc.net/bcache is where most activity happens; I'm always
+there, and most code review happens there - I find the conversational
+format more productive.
+
+------------------------------------------------
+
+patches in this series:
+
+Christopher James Halse Rogers (1):
+  stacktrace: Export stack_trace_save_tsk
+
+Daniel Hill (1):
+  lib: add mean and variance module.
+
+Dave Chinner (3):
+  vfs: factor out inode hash head calculation
+  hlist-bl: add hlist_bl_fake()
+  vfs: inode cache conversion to hash-bl
+
+Kent Overstreet (27):
+  Compiler Attributes: add __flatten
+  locking/lockdep: lock_class_is_held()
+  locking/lockdep: lockdep_set_no_check_recursion()
+  locking: SIX locks (shared/intent/exclusive)
+  MAINTAINERS: Add entry for six locks
+  sched: Add task_struct->faults_disabled_mapping
+  mm: Bring back vmalloc_exec
+  fs: factor out d_mark_tmpfile()
+  block: Add some exports for bcachefs
+  block: Allow bio_iov_iter_get_pages() with bio->bi_bdev unset
+  block: Bring back zero_fill_bio_iter
+  block: Rework bio_for_each_segment_all()
+  block: Rework bio_for_each_folio_all()
+  block: Don't block on s_umount from __invalidate_super()
+  bcache: move closures to lib/
+  MAINTAINERS: Add entry for closures
+  closures: closure_wait_event()
+  closures: closure_nr_remaining()
+  closures: Add a missing include
+  iov_iter: copy_folio_from_iter_atomic()
+  MAINTAINERS: Add entry for generic-radix-tree
+  lib/generic-radix-tree.c: Don't overflow in peek()
+  lib/generic-radix-tree.c: Add a missing include
+  lib/generic-radix-tree.c: Add peek_prev()
+  lib/string_helpers: string_get_size() now returns characters wrote
+  lib: Export errname
+  MAINTAINERS: Add entry for bcachefs
+
+ MAINTAINERS                                   |  39 +
+ block/bdev.c                                  |   2 +-
+ block/bio.c                                   |  57 +-
+ block/blk-core.c                              |   1 +
+ block/blk-map.c                               |  38 +-
+ block/blk.h                                   |   1 -
+ block/bounce.c                                |  12 +-
+ drivers/md/bcache/Kconfig                     |  10 +-
+ drivers/md/bcache/Makefile                    |   4 +-
+ drivers/md/bcache/bcache.h                    |   2 +-
+ drivers/md/bcache/btree.c                     |   8 +-
+ drivers/md/bcache/super.c                     |   1 -
+ drivers/md/bcache/util.h                      |   3 +-
+ drivers/md/dm-crypt.c                         |  10 +-
+ drivers/md/raid1.c                            |   4 +-
+ fs/btrfs/disk-io.c                            |   4 +-
+ fs/btrfs/extent_io.c                          |  50 +-
+ fs/btrfs/raid56.c                             |  14 +-
+ fs/crypto/bio.c                               |   9 +-
+ fs/dcache.c                                   |  12 +-
+ fs/erofs/zdata.c                              |   4 +-
+ fs/ext4/page-io.c                             |   8 +-
+ fs/ext4/readpage.c                            |   4 +-
+ fs/f2fs/data.c                                |  20 +-
+ fs/gfs2/lops.c                                |  10 +-
+ fs/gfs2/meta_io.c                             |   8 +-
+ fs/inode.c                                    | 218 +++--
+ fs/iomap/buffered-io.c                        |  14 +-
+ fs/mpage.c                                    |   4 +-
+ fs/squashfs/block.c                           |  48 +-
+ fs/squashfs/lz4_wrapper.c                     |  17 +-
+ fs/squashfs/lzo_wrapper.c                     |  17 +-
+ fs/squashfs/xz_wrapper.c                      |  19 +-
+ fs/squashfs/zlib_wrapper.c                    |  18 +-
+ fs/squashfs/zstd_wrapper.c                    |  19 +-
+ fs/super.c                                    |  40 +-
+ fs/verity/verify.c                            |   9 +-
+ include/linux/bio.h                           | 132 +--
+ include/linux/blkdev.h                        |   1 +
+ include/linux/bvec.h                          |  70 +-
+ .../md/bcache => include/linux}/closure.h     |  46 +-
+ include/linux/compiler_attributes.h           |   5 +
+ include/linux/dcache.h                        |   1 +
+ include/linux/fs.h                            |  10 +-
+ include/linux/generic-radix-tree.h            |  68 +-
+ include/linux/list_bl.h                       |  22 +
+ include/linux/lockdep.h                       |  10 +
+ include/linux/lockdep_types.h                 |   2 +-
+ include/linux/mean_and_variance.h             | 219 +++++
+ include/linux/sched.h                         |   1 +
+ include/linux/six.h                           | 210 +++++
+ include/linux/string_helpers.h                |   4 +-
+ include/linux/uio.h                           |   2 +
+ include/linux/vmalloc.h                       |   1 +
+ init/init_task.c                              |   1 +
+ kernel/Kconfig.locks                          |   3 +
+ kernel/locking/Makefile                       |   1 +
+ kernel/locking/lockdep.c                      |  46 ++
+ kernel/locking/six.c                          | 779 ++++++++++++++++++
+ kernel/module/main.c                          |   4 +-
+ kernel/stacktrace.c                           |   2 +
+ lib/Kconfig                                   |   3 +
+ lib/Kconfig.debug                             |  18 +
+ lib/Makefile                                  |   2 +
+ {drivers/md/bcache => lib}/closure.c          |  36 +-
+ lib/errname.c                                 |   1 +
+ lib/generic-radix-tree.c                      |  76 +-
+ lib/iov_iter.c                                |  53 +-
+ lib/math/Kconfig                              |   3 +
+ lib/math/Makefile                             |   2 +
+ lib/math/mean_and_variance.c                  | 136 +++
+ lib/math/mean_and_variance_test.c             | 155 ++++
+ lib/string_helpers.c                          |   8 +-
+ mm/nommu.c                                    |  18 +
+ mm/vmalloc.c                                  |  21 +
+ 75 files changed, 2485 insertions(+), 445 deletions(-)
+ rename {drivers/md/bcache => include/linux}/closure.h (93%)
+ create mode 100644 include/linux/mean_and_variance.h
+ create mode 100644 include/linux/six.h
+ create mode 100644 kernel/locking/six.c
+ rename {drivers/md/bcache => lib}/closure.c (88%)
+ create mode 100644 lib/math/mean_and_variance.c
+ create mode 100644 lib/math/mean_and_variance_test.c
+
+-- 
+2.40.1
+
