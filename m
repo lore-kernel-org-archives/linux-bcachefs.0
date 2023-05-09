@@ -2,78 +2,60 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68E16C77B75
-	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 20:35:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3185DC77B7C
+	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 20:46:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235025AbjEIUfz (ORCPT
+        id S230166AbjEIUqN (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 9 May 2023 16:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
+        Tue, 9 May 2023 16:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235035AbjEIUfx (ORCPT
+        with ESMTP id S229534AbjEIUqM (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 9 May 2023 16:35:53 -0400
-Received: from out-20.mta0.migadu.com (out-20.mta0.migadu.com [IPv6:2001:41d0:1004:224b::14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0204C3A
-        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 13:35:51 -0700 (PDT)
-Date:   Tue, 9 May 2023 16:35:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683664550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bOLU3sapllcewNBR7FzZE4kRKHtulEGc3tuPC3AF1dw=;
-        b=U8bcUVvotaRPyRRACFPnRTRwvPS3y5ur307IdPdCCWvv/UwWw7OvkRF5cbgs6N3lhpYgze
-        TrAoI+TVLgb0XR9foD0b810kH+b9S30Jf10Gm+3xJnpN8nlqTqJqHhGPlW/pNq0DDTZe9P
-        mUpbKetA3FAX/6MKkBpPLhT0lZ6E1d8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH 03/32] locking/lockdep: lockdep_set_no_check_recursion()
-Message-ID: <ZFquoxJn1RzWhRiI@moria.home.lan>
+        Tue, 9 May 2023 16:46:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813AF2110;
+        Tue,  9 May 2023 13:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kCdk2cX8L2MN43rb5MxNNov65UyV2OH8ru0XyISmXUI=; b=K7upsmYH2eNpceBwZDvkKsjAT+
+        4vmnhZzUe6LJmKL5J95AraOcNy1gmtWq41lmziOVtI7zdlMRTcGcudRW+OikG6taddJ1oNrcCkZpf
+        wIFvqKLs7A8HUbxqxo2Yjhi7LQ0urLBbkeq19KXloG+ON+kDXtBmyXpDRSg+VF/N+UfR1Z3bzQeVZ
+        aofTqZ1uEH/bXHbmaScnXZ2SEsg9jhlj5xpJd2rAnmyU3Wo/tc1hjCNwT919l8VVInPw4qW8uczvd
+        vGu2zKtUDzXa/1WG3N1dNzkflPSN7NggpLf9nJ+XJYMyMQTxajkMhr9TibN6mtP3p0hzjuEu2Zqr2
+        i2ykeQvg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pwUDp-004Div-0e;
+        Tue, 09 May 2023 20:46:09 +0000
+Date:   Tue, 9 May 2023 13:46:09 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org
+Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
+Message-ID: <ZFqxEWqD19eHe353@infradead.org>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-4-kent.overstreet@linux.dev>
- <20230509193147.GC2148518@hirez.programming.kicks-ass.net>
- <ZFqqsyDpatgb77Vh@moria.home.lan>
- <d5b65b01-62a9-e483-dea8-5e2bb65be278@redhat.com>
+ <20230509165657.1735798-8-kent.overstreet@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d5b65b01-62a9-e483-dea8-5e2bb65be278@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230509165657.1735798-8-kent.overstreet@linux.dev>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 09, 2023 at 04:27:46PM -0400, Waiman Long wrote:
+On Tue, May 09, 2023 at 12:56:32PM -0400, Kent Overstreet wrote:
+> From: Kent Overstreet <kent.overstreet@gmail.com>
 > 
-> On 5/9/23 16:18, Kent Overstreet wrote:
-> > On Tue, May 09, 2023 at 09:31:47PM +0200, Peter Zijlstra wrote:
-> > > On Tue, May 09, 2023 at 12:56:28PM -0400, Kent Overstreet wrote:
-> > > > This adds a method to tell lockdep not to check lock ordering within a
-> > > > lock class - but to still check lock ordering w.r.t. other lock types.
-> > > > 
-> > > > This is for bcachefs, where for btree node locks we have our own
-> > > > deadlock avoidance strategy w.r.t. other btree node locks (cycle
-> > > > detection), but we still want lockdep to check lock ordering w.r.t.
-> > > > other lock types.
-> > > > 
-> > > ISTR you had a much nicer version of this where you gave a custom order
-> > > function -- what happend to that?
-> > Actually, I spoke too soon; this patch and the other series with the
-> > comparison function solve different problems.
-> > 
-> > For bcachefs btree node locks, we don't have a defined lock ordering at
-> > all - we do full runtime cycle detection, so we don't want lockdep
-> > checking for self deadlock because we're handling that but we _do_ want
-> > lockdep checking lock ordering of btree node locks w.r.t. other locks in
-> > the system.
-> 
-> Maybe you can use lock_set_novalidate_class() instead.
+> This is needed for bcachefs, which dynamically generates per-btree node
+> unpack functions.
 
-No, we want that to go away, this is the replacement.
+No, we will never add back a way for random code allocating executable
+memory in kernel space.
