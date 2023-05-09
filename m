@@ -2,200 +2,100 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1668C7EE23
-	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 18:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA750C77B7C
+	for <linux-bcachefs@archiver.kernel.org>; Tue,  9 May 2023 18:42:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjEISTm (ORCPT
+        id S233108AbjEISmG (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 9 May 2023 14:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
+        Tue, 9 May 2023 14:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjEISTl (ORCPT
+        with ESMTP id S234771AbjEISmF (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 9 May 2023 14:19:41 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C717E56;
-        Tue,  9 May 2023 11:19:40 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-643990c5319so4369403b3a.2;
-        Tue, 09 May 2023 11:19:40 -0700 (PDT)
+        Tue, 9 May 2023 14:42:05 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54A33C20;
+        Tue,  9 May 2023 11:42:02 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-b9d8730fe5aso8251543276.1;
+        Tue, 09 May 2023 11:42:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683656380; x=1686248380;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yr7aYgFfnebTNe43NSbQgISdpDw8C+mxTxNrTLAJ2Kk=;
-        b=ENRi9U7dHBzfbj5dYi+GdPIUl/OjAXCC4Rwdfcx2K43OeLVCpBVCKuRJX22b9IYZY6
-         5oQFvlMJapMGSNqZLbRGyH1WX6HywEiTl9f5hBZmVyiTC1zshKefrcBeearnH1YY7OZd
-         8G6KsRsMwqHm6uWcrEQcVUkBh3PyXz9+3IC3IehUxfomD2hD7odbZWkYL6OEF3CTYpaW
-         uNjkm7yDdYRsyjR1VLzNivJBRyE3vufUOadgKVtmTKdilP2tvhd2QE6+QbK0pO7XDJjA
-         3CEdkK4YBFBoZM/yhak9LtdlKdSZ4rSwx5wW3k3KQAlhFMFKI2z9+kuem99EYirBiY7Z
-         6Z3w==
+        d=gmail.com; s=20221208; t=1683657722; x=1686249722;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8HastUPGLOFmtjkwswFSuxjmF1966hBsfmctid9rJhg=;
+        b=mhlHga3VYCMCEX1yT5aT3VdySL0YlQ0yKlmD9+c5ZWsMyKZGivcNlm4W2aJwSKt48B
+         mPW6X/bio69ojt83G96lWyYhF4Z1YX0B48tJUbJC8UOLXrkCLnB57EAbk7e8WeJy0cEo
+         oeMrPW+GjHJUjcGqWX+gy3qApO9veO2tChCWWQHNH/mD6b3zOeuS73Km2Gz+ec0Nc470
+         8hKjQ6RH6a+lXes6y/w7gAliS79BDwxK+K4Uc1ut6g8TrYc21zAK+wKvYBJgNmSJOHnX
+         j8fZsm1O2XrLfTm2RuWGiRCgjpMau862eldsoUzlXW03/4lDnoWJ05CazmimhYzMSUSt
+         zmkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683656380; x=1686248380;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yr7aYgFfnebTNe43NSbQgISdpDw8C+mxTxNrTLAJ2Kk=;
-        b=lsODb/HpVwYqQylrUO3EpB728y/CdzDeYRMqdHNgoaQ0h1EQ/cq19DJWl/oydl6BBK
-         HeV38arI1JkweUGKMBbHqGlzI6uZCfNZQ5EM0xK91DgdVAPje1lvOQ5X7k52gtGtuwL6
-         VhKOdISE5CriHmNtyIDgt7bVjDrkd2AXEOoDE7I8ezLT0Pq3blYhD1oED1w/rzXh7Z1m
-         Qf6NZ8c3By79o3fVM1TtlOzTTwlLCXmsDwvOOV+86J51syTyl/4naWX+eSt0r0+i46LD
-         ZA5YrSvCVFWRUzrCl804OfdCzE/G1+8+blOqL7RB4cyfEDo+w4i598tQ4fXo1Yx/Bdry
-         oK1Q==
-X-Gm-Message-State: AC+VfDyuGOY1LQKZ2y+ZZz1f6khkpKVtcrZHul3+/3qOc5Ay8KpMZavR
-        4iQ1iOS83kaEc3VsWZf+9XQ=
-X-Google-Smtp-Source: ACHHUZ41jqjPjF2CraRnJ3hPLebjg5fr6OD0bBojCpKd7hrN5OidIm8BVjgmxkS7Hgbmodb7kk8pXg==
-X-Received: by 2002:a05:6a20:548a:b0:101:a9b4:a4b8 with SMTP id i10-20020a056a20548a00b00101a9b4a4b8mr1279435pzk.57.1683656379762;
-        Tue, 09 May 2023 11:19:39 -0700 (PDT)
-Received: from localhost ([2001:4958:15a0:30:3c22:a6a6:f3a4:12ce])
-        by smtp.gmail.com with ESMTPSA id v6-20020a63d546000000b004fbd91d9716sm1656756pgi.15.2023.05.09.11.19.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 May 2023 11:19:39 -0700 (PDT)
-Date:   Tue, 9 May 2023 11:19:38 -0700
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <ZFqOukfefifbfHMb@murray>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-8-kent.overstreet@linux.dev>
+        d=1e100.net; s=20221208; t=1683657722; x=1686249722;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8HastUPGLOFmtjkwswFSuxjmF1966hBsfmctid9rJhg=;
+        b=Q90OS9MgsQAWYZ3EqjzDKyYhU/XO8YfTWlGLMFiwIDC2Bf9CkZpt2bzFpyfZ3MH4Vt
+         yKU77ZfSlF3psYh4oESW486Z6/EXKVdLDQN5RW11DrJaIjXxiF/8SfNa6JK+9qTXLsUS
+         LBh+IqkMaRNj1Lr2j0rJtEHVr0m4BNpgfl7O889zxoCOASV7CATgpmPrsrL98HKqgBGY
+         FtolueRh9idVlxywNqT8iTEMhJkeISZerjUe0iyHW1FNz/2pwzku6vJ8Ue+fJ6NFF+0T
+         6QeX0GQWeBUZzAOCE8QcB+U5l+/hMqgFlakd1nmu3uUAPn8dTTxEo5aFzrgM62IRrEtu
+         6a1w==
+X-Gm-Message-State: AC+VfDzmJrgzYfSuq7AevES7bHXLrGLuXoWpfPJBR2edkJGQ00YMuNRY
+        SpO0wlNPmgofwoxDuTYyxXNqvvw0hTWfWlo5mmnZyGBxRkK27g==
+X-Google-Smtp-Source: ACHHUZ4Uei0qK/cstulxbN5c8xxPvDRiF+z05PRnMCgiRVwXVB4C6nSqWz17fNdeW/7eHdhiiQIi/fSZ0D+NuhomKZA=
+X-Received: by 2002:a25:e602:0:b0:b9e:7589:62fc with SMTP id
+ d2-20020a25e602000000b00b9e758962fcmr15000204ybh.28.1683657721802; Tue, 09
+ May 2023 11:42:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230509165657.1735798-8-kent.overstreet@linux.dev>
+References: <20230503065354.19071-1-i@truongsinh.pro> <ZFqHFTMqetbQKtah@moria.home.lan>
+ <CAMy36z75N9obj0WM+OFhhnzXAPxqhg8PVY7_x8X6JbQABFnMQw@mail.gmail.com> <ZFqM8HOvlVn61VXs@moria.home.lan>
+In-Reply-To: <ZFqM8HOvlVn61VXs@moria.home.lan>
+From:   Wedson Almeida Filho <wedsonaf@gmail.com>
+Date:   Tue, 9 May 2023 15:41:52 -0300
+Message-ID: <CANeycqq5xCUcjOeOfGAJCH1Tzd01-ALU3uqVJo-BvVX9HOK9wA@mail.gmail.com>
+Subject: Re: [PATCH] chore(util): minimal Rust build example
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     TruongSinh Tran-Nguyen <i@truongsinh.pro>,
+        linux-bcachefs@vger.kernel.org, rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 09, 2023 at 12:56:32PM -0400, Kent Overstreet wrote:
-> From: Kent Overstreet <kent.overstreet@gmail.com>
+On Tue, 9 May 2023 at 15:13, Kent Overstreet <kent.overstreet@linux.dev> wrote:
 >
-> This is needed for bcachefs, which dynamically generates per-btree node
-> unpack functions.
+> On Tue, May 09, 2023 at 10:57:18AM -0700, TruongSinh Tran-Nguyen wrote:
+> > On Tue, 9 May 2023 at 10:47, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > > We pretty heavily use to_text() functions kernel side; these output to
+> > > printbufs, and in Rust they map nicely to the Display trait - do we have
+> > > that available in the kernel or is that in std?
+> > >
+> >
+> > https://doc.rust-lang.org/std/fmt/trait.Display.html Display trait is definitely
+> > in Rust `std`. As for the alternative from kernel, I am still searching.
+> > Worst case, there is nothing right now, Rust-for-linux folks would
+> > happy to take PR
+> > to include it.
+>
+> I included them on the CC, maybe they'll have something to say.
 
-Small nits -
+`Display` is in core: https://doc.rust-lang.org/core/fmt/trait.Display.html
 
-Would be good to refer to the original patch that removed it,
-i.e. 7a0e27b2a0ce ("mm: remove vmalloc_exec") something like 'patch
-... folded vmalloc_exec() into its one user, however bcachefs requires this
-as well so revert'.
-
-Would also be good to mention that you are now exporting the function which
-the original didn't appear to do.
+Here's an example of it being implemented (and used) in the kernel:
+https://elixir.bootlin.com/linux/v6.4-rc1/source/rust/kernel/sync/arc.rs#L604
 
 >
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Uladzislau Rezki <urezki@gmail.com>
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Cc: linux-mm@kvack.org
-
-Another nit: I'm a vmalloc reviewer so would be good to get cc'd too :)
-(forgivable mistake as very recent change!)
-
-> ---
->  include/linux/vmalloc.h |  1 +
->  kernel/module/main.c    |  4 +---
->  mm/nommu.c              | 18 ++++++++++++++++++
->  mm/vmalloc.c            | 21 +++++++++++++++++++++
->  4 files changed, 41 insertions(+), 3 deletions(-)
+> >
+> > > Sounds like that would be a welcome cleanup :)
+> >
+> > By clean up, do you mean moving from `uuid_le` to `uuid_t`?
+> >
+> > Also, I don't expect this PR to be merge, as it is for demonstration
+> > purposes only,
+> > however, what would be a minimum mergeable PR (related to Rust build)
+> > that you would consider?
 >
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index 69250efa03..ff147fe115 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -145,6 +145,7 @@ extern void *vzalloc(unsigned long size) __alloc_size(1);
->  extern void *vmalloc_user(unsigned long size) __alloc_size(1);
->  extern void *vmalloc_node(unsigned long size, int node) __alloc_size(1);
->  extern void *vzalloc_node(unsigned long size, int node) __alloc_size(1);
-> +extern void *vmalloc_exec(unsigned long size, gfp_t gfp_mask) __alloc_size(1);
->  extern void *vmalloc_32(unsigned long size) __alloc_size(1);
->  extern void *vmalloc_32_user(unsigned long size) __alloc_size(1);
->  extern void *__vmalloc(unsigned long size, gfp_t gfp_mask) __alloc_size(1);
-> diff --git a/kernel/module/main.c b/kernel/module/main.c
-> index d3be89de70..9eaa89e84c 100644
-> --- a/kernel/module/main.c
-> +++ b/kernel/module/main.c
-> @@ -1607,9 +1607,7 @@ static void dynamic_debug_remove(struct module *mod, struct _ddebug_info *dyndbg
->
->  void * __weak module_alloc(unsigned long size)
->  {
-> -	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
-> -			GFP_KERNEL, PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS,
-> -			NUMA_NO_NODE, __builtin_return_address(0));
-> +	return vmalloc_exec(size, GFP_KERNEL);
->  }
->
->  bool __weak module_init_section(const char *name)
-> diff --git a/mm/nommu.c b/mm/nommu.c
-> index 57ba243c6a..8d9ab19e39 100644
-> --- a/mm/nommu.c
-> +++ b/mm/nommu.c
-> @@ -280,6 +280,24 @@ void *vzalloc_node(unsigned long size, int node)
->  }
->  EXPORT_SYMBOL(vzalloc_node);
->
-> +/**
-> + *	vmalloc_exec  -  allocate virtually contiguous, executable memory
-> + *	@size:		allocation size
-> + *
-> + *	Kernel-internal function to allocate enough pages to cover @size
-> + *	the page level allocator and map them into contiguous and
-> + *	executable kernel virtual space.
-> + *
-> + *	For tight control over page level allocator and protection flags
-> + *	use __vmalloc() instead.
-> + */
-> +
-> +void *vmalloc_exec(unsigned long size, gfp_t gfp_mask)
-> +{
-> +	return __vmalloc(size, gfp_mask);
-> +}
-> +EXPORT_SYMBOL_GPL(vmalloc_exec);
-> +
->  /**
->   * vmalloc_32  -  allocate virtually contiguous memory (32bit addressable)
->   *	@size:		allocation size
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 31ff782d36..2ebb9ea7f0 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -3401,6 +3401,27 @@ void *vzalloc_node(unsigned long size, int node)
->  }
->  EXPORT_SYMBOL(vzalloc_node);
->
-> +/**
-> + * vmalloc_exec - allocate virtually contiguous, executable memory
-> + * @size:	  allocation size
-> + *
-> + * Kernel-internal function to allocate enough pages to cover @size
-> + * the page level allocator and map them into contiguous and
-> + * executable kernel virtual space.
-> + *
-> + * For tight control over page level allocator and protection flags
-> + * use __vmalloc() instead.
-> + *
-> + * Return: pointer to the allocated memory or %NULL on error
-> + */
-> +void *vmalloc_exec(unsigned long size, gfp_t gfp_mask)
-> +{
-> +	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
-> +			gfp_mask, PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS,
-> +			NUMA_NO_NODE, __builtin_return_address(0));
-> +}
-> +EXPORT_SYMBOL_GPL(vmalloc_exec);
-> +
->  #if defined(CONFIG_64BIT) && defined(CONFIG_ZONE_DMA32)
->  #define GFP_VMALLOC32 (GFP_DMA32 | GFP_KERNEL)
->  #elif defined(CONFIG_64BIT) && defined(CONFIG_ZONE_DMA)
-> --
-> 2.40.1
->
-
-Otherwise lgtm, feel free to add:
-
-Acked-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> First thing to look at is going to be moving all the code under
+> bch_bindgen in -tools into the kernel tree...
