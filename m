@@ -2,103 +2,90 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D23DCC77B7D
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 10 May 2023 06:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DE85C77B7C
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 10 May 2023 08:59:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235992AbjEJGs5 (ORCPT
+        id S236714AbjEJI73 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 10 May 2023 02:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
+        Wed, 10 May 2023 04:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236040AbjEJGsy (ORCPT
+        with ESMTP id S236916AbjEJI7U (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 10 May 2023 02:48:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4564486;
-        Tue,  9 May 2023 23:48:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C83063850;
-        Wed, 10 May 2023 06:48:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ABB8C4339B;
-        Wed, 10 May 2023 06:48:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683701331;
-        bh=QKjgd6OZtwhEvhLfeWWvvsdF4yk6O8j8A4mBRN11HD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lk0VpdvsyWLksbyhs4Z1NrZD4LJ5QdonevQNcOvcM08T8L86PE+W/YSP3gsHMx3Ld
-         w1J7Nd3oXb/24AuzE7CSRHMqV4Vp/rvChYoxweyGfvz3C28Fj0bBOGnYnwPOjobo1u
-         sbpuRlRS/vjD/hdOuVmEHDBuVBJZoEOuucgK9evjOGWdNyu3JfpEGgoSXQe+LgUU2O
-         LRrLbSjXFK+KUi6ayXDB2eE8cfZnJPh6h6Id2KALDryzK6frofDa/Wkm1C6elVCaxi
-         5YMu3r6iAplHyprHXOpc1ZQQe081HNKMLHEZ9m0NVIfwlvAx9aYQCpfu048N+hbljJ
-         LU6+Nyr8QwVeg==
-Date:   Tue, 9 May 2023 23:48:49 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
+        Wed, 10 May 2023 04:59:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E6135A2;
+        Wed, 10 May 2023 01:59:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BhBQbjRKMcpCMdX8A1QJANySCjXl12HK+zd5Mpx2Tvo=; b=dJs4fKGrzLv01UXL5cO86flVF9
+        c84zgMulooq9vdrMaGWri7wll0LaMC+DYX4KhgUNFbe1fgc2ulDHhwwNziKGiTR846La/yUmNigTK
+        wrY+Q49vwfovYHH+IhfClYrqAV4erbJO6GptxQMhz7Nbvidv5m64eivySEVkOXr/b3MBX/u6lHjJl
+        PdQyDpisULA2PC3WUNMEH1nUiwMFCSyuzLluA8RnEUoLM3v8sM8QkjU/Jygmtagd0zFPpHHeMDXlt
+        aYmncabcz8UNKcNkezJ9a1Si/ZLjXctfrGxR4pKXRWaG7cw891Sd/j9fUE4ZKj92OZLbHJrRbbt3H
+        eorLXYWw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pwff8-00G7gt-Iw; Wed, 10 May 2023 08:59:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 54929300338;
+        Wed, 10 May 2023 10:59:05 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3B39320B04BA9; Wed, 10 May 2023 10:59:05 +0200 (CEST)
+Date:   Wed, 10 May 2023 10:59:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <20230510064849.GC1851@quark.localdomain>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH 03/32] locking/lockdep: lockdep_set_no_check_recursion()
+Message-ID: <20230510085905.GJ4253@hirez.programming.kicks-ass.net>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-8-kent.overstreet@linux.dev>
- <ZFqxEWqD19eHe353@infradead.org>
- <ZFq3SdSBJ_LWsOgd@murray>
- <ZFq7JhrhyrMTNfd/@moria.home.lan>
+ <20230509165657.1735798-4-kent.overstreet@linux.dev>
+ <20230509193147.GC2148518@hirez.programming.kicks-ass.net>
+ <ZFqqsyDpatgb77Vh@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZFq7JhrhyrMTNfd/@moria.home.lan>
+In-Reply-To: <ZFqqsyDpatgb77Vh@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 09, 2023 at 05:29:10PM -0400, Kent Overstreet wrote:
-> On Tue, May 09, 2023 at 02:12:41PM -0700, Lorenzo Stoakes wrote:
-> > On Tue, May 09, 2023 at 01:46:09PM -0700, Christoph Hellwig wrote:
-> > > On Tue, May 09, 2023 at 12:56:32PM -0400, Kent Overstreet wrote:
-> > > > From: Kent Overstreet <kent.overstreet@gmail.com>
-> > > >
-> > > > This is needed for bcachefs, which dynamically generates per-btree node
-> > > > unpack functions.
-> > >
-> > > No, we will never add back a way for random code allocating executable
-> > > memory in kernel space.
+On Tue, May 09, 2023 at 04:18:59PM -0400, Kent Overstreet wrote:
+> On Tue, May 09, 2023 at 09:31:47PM +0200, Peter Zijlstra wrote:
+> > On Tue, May 09, 2023 at 12:56:28PM -0400, Kent Overstreet wrote:
+> > > This adds a method to tell lockdep not to check lock ordering within a
+> > > lock class - but to still check lock ordering w.r.t. other lock types.
+> > > 
+> > > This is for bcachefs, where for btree node locks we have our own
+> > > deadlock avoidance strategy w.r.t. other btree node locks (cycle
+> > > detection), but we still want lockdep to check lock ordering w.r.t.
+> > > other lock types.
+> > > 
 > > 
-> > Yeah I think I glossed over this aspect a bit as it looks ostensibly like simply
-> > reinstating a helper function because the code is now used in more than one
-> > place (at lsf/mm so a little distracted :)
-> > 
-> > But it being exported is a problem. Perhaps there's another way of acheving the
-> > same aim without having to do so?
+> > ISTR you had a much nicer version of this where you gave a custom order
+> > function -- what happend to that?
 > 
-> None that I see.
+> Actually, I spoke too soon; this patch and the other series with the
+> comparison function solve different problems.
 > 
-> The background is that bcachefs generates a per btree node unpack
-> function, based on the packed format for that btree node, for unpacking
-> keys within that node. The unpack function is only ~50 bytes, and for
-> locality we want it to be located with the btree node's other in-memory
-> lookup tables so they can be prefetched all at once.
-> 
-> Here's the codegen:
-> 
-> https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/bkey.c#n727
+> For bcachefs btree node locks, we don't have a defined lock ordering at
+> all - we do full runtime cycle detection, so we don't want lockdep
+> checking for self deadlock because we're handling that but we _do_ want
+> lockdep checking lock ordering of btree node locks w.r.t. other locks in
+> the system.
 
-Well, it's a cool trick, but it's not clear that it actually belongs in
-production kernel code.  What else in the kernel actually does dynamic codegen?
-Just BPF, I think?
+Have you read the ww_mutex code? If not, please do so, it does similar
+things.
 
-Among other issues, this is entirely architecture-specific, and it may cause
-interoperability issues with various other features, including security
-features.  Is it really safe to leave a W&X page around, for example?
-
-What seems to be missing is any explanation for what we're actually getting from
-this extremely unusual solution that cannot be gained any other way.  What is
-unique about bcachefs that it really needs something like this?
-
-- Eric
+The way it gets around the self-nesting check is by using the nest_lock
+annotation, the acquire context itself also has a dep_map for this
+purpose.
