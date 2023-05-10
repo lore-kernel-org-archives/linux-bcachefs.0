@@ -2,90 +2,88 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DE85C77B7C
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 10 May 2023 08:59:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B227C7EE22
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 10 May 2023 11:56:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236714AbjEJI73 (ORCPT
+        id S236576AbjEJL4a convert rfc822-to-8bit (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 10 May 2023 04:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50320 "EHLO
+        Wed, 10 May 2023 07:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236916AbjEJI7U (ORCPT
+        with ESMTP id S230031AbjEJL42 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 10 May 2023 04:59:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E6135A2;
-        Wed, 10 May 2023 01:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BhBQbjRKMcpCMdX8A1QJANySCjXl12HK+zd5Mpx2Tvo=; b=dJs4fKGrzLv01UXL5cO86flVF9
-        c84zgMulooq9vdrMaGWri7wll0LaMC+DYX4KhgUNFbe1fgc2ulDHhwwNziKGiTR846La/yUmNigTK
-        wrY+Q49vwfovYHH+IhfClYrqAV4erbJO6GptxQMhz7Nbvidv5m64eivySEVkOXr/b3MBX/u6lHjJl
-        PdQyDpisULA2PC3WUNMEH1nUiwMFCSyuzLluA8RnEUoLM3v8sM8QkjU/Jygmtagd0zFPpHHeMDXlt
-        aYmncabcz8UNKcNkezJ9a1Si/ZLjXctfrGxR4pKXRWaG7cw891Sd/j9fUE4ZKj92OZLbHJrRbbt3H
-        eorLXYWw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pwff8-00G7gt-Iw; Wed, 10 May 2023 08:59:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 54929300338;
-        Wed, 10 May 2023 10:59:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3B39320B04BA9; Wed, 10 May 2023 10:59:05 +0200 (CEST)
-Date:   Wed, 10 May 2023 10:59:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH 03/32] locking/lockdep: lockdep_set_no_check_recursion()
-Message-ID: <20230510085905.GJ4253@hirez.programming.kicks-ass.net>
+        Wed, 10 May 2023 07:56:28 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E1186BC
+        for <linux-bcachefs@vger.kernel.org>; Wed, 10 May 2023 04:56:09 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-266-ezRNJOxiNHGRFTp6EEfw5w-1; Wed, 10 May 2023 12:56:07 +0100
+X-MC-Unique: ezRNJOxiNHGRFTp6EEfw5w-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 10 May
+ 2023 12:56:05 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 10 May 2023 12:56:05 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kent Overstreet' <kent.overstreet@linux.dev>,
+        Lorenzo Stoakes <lstoakes@gmail.com>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: RE: [PATCH 07/32] mm: Bring back vmalloc_exec
+Thread-Topic: [PATCH 07/32] mm: Bring back vmalloc_exec
+Thread-Index: AQHZgr3DOem8UG0tfU+5LSPSF/vac69TZImw
+Date:   Wed, 10 May 2023 11:56:05 +0000
+Message-ID: <aa542818337b4157bfdcf262926b9fe3@AcuMS.aculab.com>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-4-kent.overstreet@linux.dev>
- <20230509193147.GC2148518@hirez.programming.kicks-ass.net>
- <ZFqqsyDpatgb77Vh@moria.home.lan>
+ <20230509165657.1735798-8-kent.overstreet@linux.dev>
+ <ZFqxEWqD19eHe353@infradead.org> <ZFq3SdSBJ_LWsOgd@murray>
+ <ZFq7JhrhyrMTNfd/@moria.home.lan>
+In-Reply-To: <ZFq7JhrhyrMTNfd/@moria.home.lan>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZFqqsyDpatgb77Vh@moria.home.lan>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 09, 2023 at 04:18:59PM -0400, Kent Overstreet wrote:
-> On Tue, May 09, 2023 at 09:31:47PM +0200, Peter Zijlstra wrote:
-> > On Tue, May 09, 2023 at 12:56:28PM -0400, Kent Overstreet wrote:
-> > > This adds a method to tell lockdep not to check lock ordering within a
-> > > lock class - but to still check lock ordering w.r.t. other lock types.
-> > > 
-> > > This is for bcachefs, where for btree node locks we have our own
-> > > deadlock avoidance strategy w.r.t. other btree node locks (cycle
-> > > detection), but we still want lockdep to check lock ordering w.r.t.
-> > > other lock types.
-> > > 
-> > 
-> > ISTR you had a much nicer version of this where you gave a custom order
-> > function -- what happend to that?
-> 
-> Actually, I spoke too soon; this patch and the other series with the
-> comparison function solve different problems.
-> 
-> For bcachefs btree node locks, we don't have a defined lock ordering at
-> all - we do full runtime cycle detection, so we don't want lockdep
-> checking for self deadlock because we're handling that but we _do_ want
-> lockdep checking lock ordering of btree node locks w.r.t. other locks in
-> the system.
+From: Kent Overstreet
+> Sent: 09 May 2023 22:29
+...
+> The background is that bcachefs generates a per btree node unpack
+> function, based on the packed format for that btree node, for unpacking
+> keys within that node. The unpack function is only ~50 bytes, and for
+> locality we want it to be located with the btree node's other in-memory
+> lookup tables so they can be prefetched all at once.
 
-Have you read the ww_mutex code? If not, please do so, it does similar
-things.
+Loading data into the d-cache isn't going to load code into
+the i-cache.
+Indeed you don't want to be mixing code and data in the same
+cache line - because it just wastes space in the cache.
 
-The way it gets around the self-nesting check is by using the nest_lock
-annotation, the acquire context itself also has a dep_map for this
-purpose.
+Looks to me like you could have a few different unpack
+functions and pick the correct one based on the packed format.
+Quite likely the code would be just as fast (if longer)
+when you allow for parallel execution on modern cpu.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
