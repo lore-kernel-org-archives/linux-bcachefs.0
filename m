@@ -2,214 +2,91 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85A21C7EE24
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 10 May 2023 04:46:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12A55C7EE24
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 10 May 2023 04:48:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235535AbjEJEqI (ORCPT
+        id S235608AbjEJEsv (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 10 May 2023 00:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
+        Wed, 10 May 2023 00:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235465AbjEJEqF (ORCPT
+        with ESMTP id S235511AbjEJEs3 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 10 May 2023 00:46:05 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32644230
-        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 21:46:02 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6439b410679so4296521b3a.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 09 May 2023 21:46:02 -0700 (PDT)
+        Wed, 10 May 2023 00:48:29 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73B644AB
+        for <linux-bcachefs@vger.kernel.org>; Tue,  9 May 2023 21:48:27 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-52caed90d17so3824959a12.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 09 May 2023 21:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1683693962; x=1686285962;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1683694107; x=1686286107;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ofB28UJkMdjbKgicTFJuyXfhP+N1OadXwaIb6BnaMTc=;
-        b=c8IYXtdt/nvXPx3aeJJh+iQIuvYlBMqHn28lPL8dwwKzPPUree4mbogv16cwKHCZA/
-         2KlwhwtNtJ/sOAj9NMMk4nrRtBS+Gj2xlpZYMsGP2F7hUHnyP7Wl/ODFFnjG3C7YtbMU
-         mGCaclhyso80BrQZ3ChT4C2IhfUK4reiuD8T6r1xdMgWCOonQtRHVBWNFTfmxd/nkAyx
-         9pYROnnyFfFqpXKEvFChx9kW6Mv3xGhI78p9oT0Dz/KBN2f/syi2V0pNZNHywY4hlOoT
-         yXYhwYnZuTq/CGlG6+zY6qoV9PuZa2eEmNARbqRIwsfJQjYbQxW/3GXfBm4dbKFMorZz
-         5Uvw==
+        bh=WbCygp9Px15SzD0gwBSvyFIkLYldAjH2gcy9VS5qfBA=;
+        b=uu6lxeulBsClafDoba1z7contnPxyTG1azE0iMo1TkJbWonAvbaTxSSqU77lmI7wWT
+         Jph156IIkUs8azw/OCVukwlBzQlXLpvAMhOFSlE0ehSRebZAH/C88rZo5hXHhVYKECH5
+         UyaZOxOLOs5yhly6OZuiPs/Lqf7gX9fo7bQZKcSVhz0jqpnEr0ezGjoV5irN0vAVv9j4
+         I3DhZnRI9d8SgOqq9lCkraqzopceA2mTjfd6Aa5Cdi4ZPuvFXVnaGonXhZUz3jsQhPJz
+         YmJW5BiFrBwNokCxWTFeoujgAj9VJP7+HQxNHENIhxHOTFXnEazYPZwkIq75367w66Hz
+         pOiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683693962; x=1686285962;
+        d=1e100.net; s=20221208; t=1683694107; x=1686286107;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ofB28UJkMdjbKgicTFJuyXfhP+N1OadXwaIb6BnaMTc=;
-        b=lhVN2grO2emrV873086lFAOhezs3NywUvuDgKjQjmOfe3QwljdWC39fY6qnPFpAFKi
-         OK8kqHkyfncb45FJaIkNOXALo8CUEGlX8679/wpfpwRNhIvl36vUnPfLiOKXxwSv5Jdh
-         9d9ca72cFX/f+6xhEdkh19COk5k9i4oKBnHI5eMG4PnVTeiyekAgUMLLUkPbPkqfa+y6
-         zCYS1oHY2+or7nVIgsQpJTV7Mzy17yNwIIvngsTNQ71V3McD+R/E2Kw1ZwCyapNLfcF6
-         vbx46dDq3vx9aOe+Tz6Ao5cctGkgGC42VCvTzUd84Vw21zV0pTCwZK7J9cU4pKUaNyL+
-         hsrQ==
-X-Gm-Message-State: AC+VfDyiL/qjm0Xxoe3dn28kmcf3rdXhby4bX3eWViySifPCtYCm4DGO
-        JgaDa08acMlx9VdexMFLYcKF3g==
-X-Google-Smtp-Source: ACHHUZ5thq7haMb94Aftq6by7PVgqXFot+62KXDs1YkuFqVoYOSeojgqeUskjGrAVEZlOo3/EAZ7ew==
-X-Received: by 2002:a05:6a21:6d8a:b0:101:282c:2b with SMTP id wl10-20020a056a216d8a00b00101282c002bmr6552938pzb.32.1683693961867;
-        Tue, 09 May 2023 21:46:01 -0700 (PDT)
+        bh=WbCygp9Px15SzD0gwBSvyFIkLYldAjH2gcy9VS5qfBA=;
+        b=A22KWdu9YA7SRXBDhv80Ehw+zgMmfvj+yOZ4MPxzzU1fDXKnTSYBd/HERv8qILUb1N
+         iw6KNuE/JRvVcpH5xicSICbDG3e2zDK1QlUATF0ibkNSwHhHRNYDFDFCYFL0jCnyg+4r
+         9ydG6haK4YdIjR41MrB6vR4Fs/TqIF/qY+Gjg43oKAngewenwf4teDbJ0dz5D+T7pKh5
+         H2HzIHOw4fiwrRRIsIqkVnwRvQxXJlDM15hjIMXN09Jp89AD3Nmo/ajARRSG6capQGyt
+         nglRW1zKhvTr1yefALSX3gggJh5UK7sVIoXdBBvZ67nFa6DsrSv0HyIQ6bnA7Pqy3KfK
+         9iWg==
+X-Gm-Message-State: AC+VfDxVAhm7DgwYcJvzPxb23DcZt0viw3EW19YPrEDGhIbe9hHzUvhn
+        GsyMEsn0J/YVk1GBlA2g8YoI+Q==
+X-Google-Smtp-Source: ACHHUZ5FtHw6VRGWfuSyZnM7yVwB2RqJuk4iYxi7e2TddgcXvPXkQJmL2Y02fkXItbGLSqa0mfRjRg==
+X-Received: by 2002:a17:902:dac5:b0:1a5:dfd:d167 with SMTP id q5-20020a170902dac500b001a50dfdd167mr20566017plx.8.1683694107319;
+        Tue, 09 May 2023 21:48:27 -0700 (PDT)
 Received: from dread.disaster.area (pa49-181-88-204.pa.nsw.optusnet.com.au. [49.181.88.204])
-        by smtp.gmail.com with ESMTPSA id e5-20020aa78c45000000b00640defda6d2sm2555461pfd.207.2023.05.09.21.46.00
+        by smtp.gmail.com with ESMTPSA id d1-20020a170902aa8100b001aafb802efbsm2613503plr.12.2023.05.09.21.48.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 May 2023 21:46:01 -0700 (PDT)
+        Tue, 09 May 2023 21:48:26 -0700 (PDT)
 Received: from dave by dread.disaster.area with local (Exim 4.92.3)
         (envelope-from <david@fromorbit.com>)
-        id 1pwbi9-00DUH0-Sc; Wed, 10 May 2023 14:45:57 +1000
-Date:   Wed, 10 May 2023 14:45:57 +1000
+        id 1pwbkW-00DUIx-1t; Wed, 10 May 2023 14:48:24 +1000
+Date:   Wed, 10 May 2023 14:48:24 +1000
 From:   Dave Chinner <david@fromorbit.com>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH 22/32] vfs: inode cache conversion to hash-bl
-Message-ID: <20230510044557.GF2651828@dread.disaster.area>
+        linux-bcachefs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>
+Subject: Re: [PATCH 21/32] hlist-bl: add hlist_bl_fake()
+Message-ID: <20230510044824.GG2651828@dread.disaster.area>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-23-kent.overstreet@linux.dev>
+ <20230509165657.1735798-22-kent.overstreet@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230509165657.1735798-23-kent.overstreet@linux.dev>
+In-Reply-To: <20230509165657.1735798-22-kent.overstreet@linux.dev>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 09, 2023 at 12:56:47PM -0400, Kent Overstreet wrote:
+On Tue, May 09, 2023 at 12:56:46PM -0400, Kent Overstreet wrote:
 > From: Dave Chinner <dchinner@redhat.com>
 > 
-> Because scalability of the global inode_hash_lock really, really
-> sucks.
-> 
-> 32-way concurrent create on a couple of different filesystems
-> before:
-> 
-> -   52.13%     0.04%  [kernel]            [k] ext4_create
->    - 52.09% ext4_create
->       - 41.03% __ext4_new_inode
->          - 29.92% insert_inode_locked
->             - 25.35% _raw_spin_lock
->                - do_raw_spin_lock
->                   - 24.97% __pv_queued_spin_lock_slowpath
-> 
-> -   72.33%     0.02%  [kernel]            [k] do_filp_open
->    - 72.31% do_filp_open
->       - 72.28% path_openat
->          - 57.03% bch2_create
->             - 56.46% __bch2_create
->                - 40.43% inode_insert5
->                   - 36.07% _raw_spin_lock
->                      - do_raw_spin_lock
->                           35.86% __pv_queued_spin_lock_slowpath
->                     4.02% find_inode
-> 
-> Convert the inode hash table to a RCU-aware hash-bl table just like
-> the dentry cache. Note that we need to store a pointer to the
-> hlist_bl_head the inode has been added to in the inode so that when
-> it comes to unhash the inode we know what list to lock. We need to
-> do this because the hash value that is used to hash the inode is
-> generated from the inode itself - filesystems can provide this
-> themselves so we have to either store the hash or the head pointer
-> in the inode to be able to find the right list head for removal...
-> 
-> Same workload after:
-> 
-> Signed-off-by: Dave Chinner <dchinner@redhat.com>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: linux-fsdevel@vger.kernel.org
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> in preparation for switching the VFS inode cache over the hlist_bl
+  In
 
-I have been maintaining this patchset uptodate in my own local trees
-and the code in this patch looks the same. The commit message above,
-however, has been mangled. The full commit message should be:
+> lists, we nee dto be able to fake a list node that looks like it is
+            need to
 
-vfs: inode cache conversion to hash-bl
+> hased for correct operation of filesystems that don't directly use
+  hashed
 
-Because scalability of the global inode_hash_lock really, really
-sucks and prevents me from doing scalability characterisation and
-analysis of bcachefs algorithms.
-
-Profiles of a 32-way concurrent create of 51.2m inodes with fsmark
-on a couple of different filesystems on a 5.10 kernel:
-
--   52.13%     0.04%  [kernel]            [k] ext4_create
-   - 52.09% ext4_create
-      - 41.03% __ext4_new_inode
-         - 29.92% insert_inode_locked
-            - 25.35% _raw_spin_lock
-               - do_raw_spin_lock
-                  - 24.97% __pv_queued_spin_lock_slowpath
-
-
--   72.33%     0.02%  [kernel]            [k] do_filp_open
-   - 72.31% do_filp_open
-      - 72.28% path_openat
-         - 57.03% bch2_create
-            - 56.46% __bch2_create
-               - 40.43% inode_insert5
-                  - 36.07% _raw_spin_lock
-                     - do_raw_spin_lock
-                          35.86% __pv_queued_spin_lock_slowpath
-                    4.02% find_inode
-
-btrfs was tested but it is limited by internal lock contention at
->=2 threads on this workload, so never hammers the inode cache lock
-hard enough for this change to matter to it's performance.
-
-However, both bcachefs and ext4 demonstrate poor scaling at >=8
-threads on concurrent lookup or create workloads.
-
-Hence convert the inode hash table to a RCU-aware hash-bl table just
-like the dentry cache. Note that we need to store a pointer to the
-hlist_bl_head the inode has been added to in the inode so that when
-it comes to unhash the inode we know what list to lock. We need to
-do this because, unlike the dentry cache, the hash value that is
-used to hash the inode is not generated from the inode itself. i.e.
-filesystems can provide this themselves so we have to either store
-the hashval or the hlist head pointer in the inode to be able to
-find the right list head for removal...
-
-Concurrent create with variying thread count (files/s):
-
-                ext4                    bcachefs
-threads         vanilla  patched        vanilla patched
-2               117k     112k            80k     85k
-4               185k     190k           133k    145k
-8               303k     346k           185k    255k
-16              389k     465k           190k    420k
-32              360k     437k           142k    481k
-
-CPU usage for both bcachefs and ext4 at 16 and 32 threads has been
-halved on the patched kernel, while performance has increased
-marginally on ext4 and massively on bcachefs. Internal filesystem
-algorithms now limit performance on these workloads, not the global
-inode_hash_lock.
-
-Profile of the workloads on the patched kernels:
-
--   35.94%     0.07%  [kernel]                  [k] ext4_create
-   - 35.87% ext4_create
-      - 20.45% __ext4_new_inode
-...
-           3.36% insert_inode_locked
-
-   - 78.43% do_filp_open
-      - 78.36% path_openat
-         - 53.95% bch2_create
-            - 47.99% __bch2_create
-....
-              - 7.57% inode_insert5
-                    6.94% find_inode
-
-Spinlock contention is largely gone from the inode hash operations
-and the filesystems are limited by contention in their internal
-algorithms.
-
-Signed-off-by: Dave Chinner <dchinner@redhat.com>
----
-
-Other than that, the diffstat is the same and I don't see any obvious
-differences in the code comapred to what I've been running locally.
+> the VFS indoe cache.
+          inode cache hash index.
 
 -Dave.
+
 -- 
 Dave Chinner
 david@fromorbit.com
