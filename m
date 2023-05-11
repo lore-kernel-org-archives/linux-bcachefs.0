@@ -2,74 +2,109 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60DD0C77B7C
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 17:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFA73C7EE2A
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 22:28:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238640AbjEKRGH (ORCPT
+        id S239403AbjEKW2q (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 11 May 2023 13:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        Thu, 11 May 2023 18:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238837AbjEKRFy (ORCPT
+        with ESMTP id S239206AbjEKW2o (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 11 May 2023 13:05:54 -0400
-Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0FC19AF
-        for <linux-bcachefs@vger.kernel.org>; Thu, 11 May 2023 10:05:52 -0700 (PDT)
-Date:   Thu, 11 May 2023 17:05:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1683824748; x=1684083948;
-        bh=2pI++1GZoqh4mnIPgH4KSlX7cIbDjh/8l9RSVdS9MT8=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=E77nwJn8eSMOIOO8NoGgoTP6c8A+eo3VQB2GuVtWeMfdPuXNMkuV4IEPulWbjEyhI
-         /2XlBCAoEFd3S77W5L3Dph0d5z7jcGTf/RflFUafLd9z+F4FWSS+QxoMbQEkOCniyU
-         /aJ0AG77JsLq7UpLxr77IMN8c0BlQFDQ+ohq02MpNr5spEs+HlnBw+C6ifjoQaC2LX
-         Wmr9wjIcEMAEmi2XQuoe2FNRTatxfBdIWYt+l4iniVEbWsHjDzMskIVaG6faMLlPa3
-         5DcnDIfBqum6XldgFXJ6nuL03Hvvo132v8dALOF16zOD26vY5odM99XX2373kQ3Ciq
-         0srdQxV8fAfKA==
-To:     TruongSinh Tran-Nguyen <i@truongsinh.pro>
-From:   =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>
-Cc:     rust-for-linux@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        linux-bcachefs@vger.kernel.org, Andreas Hindborg <nmi@metaspace.dk>
-Subject: Re: [PATCH] chore(util): minimal Rust build example
-Message-ID: <2rQHLC94NzAwtKaPbGMnzol4xE6cJ5i4FUx_MoK417SYnui2nVsx3ijtx8okVD14AY3SkwF5CEsJuckE1ydZXyXCZBOTECT3osPjb3xAAaQ=@protonmail.com>
-In-Reply-To: <CAMy36z7_UVZT03svBPVQpQyYdhWqFFmVokY7K+iy7MkDtbvAww@mail.gmail.com>
-References: <20230503065354.19071-1-i@truongsinh.pro> <ZFqHFTMqetbQKtah@moria.home.lan> <CAMy36z75N9obj0WM+OFhhnzXAPxqhg8PVY7_x8X6JbQABFnMQw@mail.gmail.com> <ZFqM8HOvlVn61VXs@moria.home.lan> <CANeycqq5xCUcjOeOfGAJCH1Tzd01-ALU3uqVJo-BvVX9HOK9wA@mail.gmail.com> <CAMy36z5VP_6atrxdOyXSO6G+R36vA8SuaWCDAui3Om3viogPkQ@mail.gmail.com> <CAMy36z6+RjgAfEYUxpOhS6vFmTter=cFa2CEorSnKR=qxkft=A@mail.gmail.com> <U4SpqY6MGcSaFOCHP-pTC2oqyrv7dh2BAlR9xubt3iymLknSafueqtUuhj0UzZUw8YGGNjrbti9_G4cUTatBMlbkOuErR5Uxw2pXpvZnZ_g=@protonmail.com> <CAMy36z7_UVZT03svBPVQpQyYdhWqFFmVokY7K+iy7MkDtbvAww@mail.gmail.com>
-Feedback-ID: 27884398:user:proton
+        Thu, 11 May 2023 18:28:44 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C81C273C
+        for <linux-bcachefs@vger.kernel.org>; Thu, 11 May 2023 15:28:42 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-64a9335a8e7so1561981b3a.0
+        for <linux-bcachefs@vger.kernel.org>; Thu, 11 May 2023 15:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1683844122; x=1686436122;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=foguPMzaG5JiKYkGBK5Zqr8oTB+NWVY0GCMBbESmVbo=;
+        b=fE3rVckTldIGJ9X79t1Tocx/fvHS8/EWaaZUWVMfpCQjD6wKu7leVkN9G5nHE7F2LC
+         p4WBsp2m0LR3mee1GBx75i7GQ1hFNp4aJ0AeK9wRgq5DxKNNm6lsnOs+r+KExblYrhxr
+         az+pMa5mQwMDktKT2xO108h0iA2YD2f2nwjW8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683844122; x=1686436122;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=foguPMzaG5JiKYkGBK5Zqr8oTB+NWVY0GCMBbESmVbo=;
+        b=aZz45mmeFWXeAkm5oqNl126gDVSIrNGiwgwOIKurRTZoWAYA3a1vCKLHpCd//WF7Ns
+         ShzcSv5+FurZRTeKW9qpjCFxNI5+UBSdyEQS4jlBM+R8jR8zkirKeZS/yutg8sO0i29M
+         /nFlD2nuyrHCnMO3EyrIL6G8owpUO+ozFE5v1tKjTKGkly5q6FR3zkFeQyRCXIUfPMst
+         oCQl9O/XbRq3l042Ga4hoFve9qaShUPDI7FGp237ZecQKUhzwAJ+2qRk0Y+rjPewxjf6
+         2mI2r/rBvjeWzk/aWyAHz0Gv4Leut6TkE9oe+mjRa09AkPJobM7CXR0hl5GjLHVz/Ahx
+         333w==
+X-Gm-Message-State: AC+VfDwC/zyHjpFeEI6x5VHUagFwbNBRu06rmBaTCPEnny7pX+k5Sdhw
+        rhK6Sa74tJEeJ9+JnizSfYR6nA==
+X-Google-Smtp-Source: ACHHUZ6mEsMPqSDmeIgz0bMbow4zeO58axDoPLJOCw723w8mEoGZDcn2G0FDhPsF6SBJe8srfCjV2Q==
+X-Received: by 2002:a05:6a20:8e14:b0:101:3c60:6794 with SMTP id y20-20020a056a208e1400b001013c606794mr12671176pzj.2.1683844121954;
+        Thu, 11 May 2023 15:28:41 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id p38-20020a631e66000000b0052c766b2f52sm5515338pgm.4.2023.05.11.15.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 May 2023 15:28:41 -0700 (PDT)
+Date:   Thu, 11 May 2023 15:28:40 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
+Message-ID: <202305111525.67001E5C4@keescook>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-8-kent.overstreet@linux.dev>
+ <3508afc0-6f03-a971-e716-999a7373951f@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3508afc0-6f03-a971-e716-999a7373951f@wdc.com>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thursday, May 11th, 2023 at 18:46, TruongSinh Tran-Nguyen <i@truongsinh.=
-pro> wrote:
+On Wed, May 10, 2023 at 03:05:48PM +0000, Johannes Thumshirn wrote:
+> On 09.05.23 18:56, Kent Overstreet wrote:
+> > +/**
+> > + * vmalloc_exec - allocate virtually contiguous, executable memory
+> > + * @size:	  allocation size
+> > + *
+> > + * Kernel-internal function to allocate enough pages to cover @size
+> > + * the page level allocator and map them into contiguous and
+> > + * executable kernel virtual space.
+> > + *
+> > + * For tight control over page level allocator and protection flags
+> > + * use __vmalloc() instead.
+> > + *
+> > + * Return: pointer to the allocated memory or %NULL on error
+> > + */
+> > +void *vmalloc_exec(unsigned long size, gfp_t gfp_mask)
+> > +{
+> > +	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+> > +			gfp_mask, PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS,
+> > +			NUMA_NO_NODE, __builtin_return_address(0));
+> > +}
+> > +EXPORT_SYMBOL_GPL(vmalloc_exec);
+> 
+> Uh W+X memory reagions.
+> The 90s called, they want their shellcode back.
 
-> Hi Bj=C3=B6rn,
->=20
-> Thanks for the help. About bitfields, we might consider using bindgen
-> for now. However, in the future, if we have a rust-only module (no C
-> code), it would no longer be an option. If I understand correctly,
-> there is currently no similar macro like the bitfield crate provides,
+Just to clarify: the kernel must never create W+X memory regions. So,
+no, do not reintroduce vmalloc_exec().
 
-Correct
+Dynamic code areas need to be constructed in a non-executable memory,
+then switched to read-only and verified to still be what was expected,
+and only then made executable.
 
-> and thus one of the other options (if the license permits), is to copy
-> the macros code directly to the module. Is that correct?
-
-I think you will have to vendor the bitfield crate into a separate file and=
- add an SPDX-License-Identifier header with the license of the crate. Given=
- how small this specific crate is, I think it would be ok to add it to the =
-kernel crate. If it was bigger it would likely have to be a separate crate.
-
->=20
-> Kind regards,
-> Sinh
-
-Cheers,
-Bjorn
+-- 
+Kees Cook
