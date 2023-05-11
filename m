@@ -2,94 +2,84 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D8CFC7EE22
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 23:38:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2C24C77B7C
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 23:39:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239198AbjEKXiF (ORCPT
+        id S239465AbjEKXjS (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 11 May 2023 19:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
+        Thu, 11 May 2023 19:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238053AbjEKXiE (ORCPT
+        with ESMTP id S238953AbjEKXjR (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 11 May 2023 19:38:04 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FEA170D;
-        Thu, 11 May 2023 16:37:59 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-b9daef8681fso7973979276.1;
-        Thu, 11 May 2023 16:37:59 -0700 (PDT)
+        Thu, 11 May 2023 19:39:17 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99487B3;
+        Thu, 11 May 2023 16:39:16 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-55c939fb24dso86800967b3.2;
+        Thu, 11 May 2023 16:39:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683848279; x=1686440279;
+        d=gmail.com; s=20221208; t=1683848356; x=1686440356;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/Q2KKeQgU14QxWnFG+IpzqMI5PqMSFCbtm/YyhydxSQ=;
-        b=Rent9btAE2kubLm8DSVbxue3ZRAXQDskz5wTRBSrSulqrY87Zkld5PlmQsi8bq4ecA
-         9GJBuRCBz1e/bcW5iYBM7RRdXx7I6bJh5nWnhLtJvKlN8yY9HLlgqingMgULvmT45Xp5
-         xS60PZGIhMDzfdcE60PJNfsVyvWIE+OhN3McEqOblQavQ5JwPXPBLg30cZotHpsF9+dr
-         nRaHOhQOSOc+YLFP7+MWGW9KVJovktYM/08yoqYY4Vdux2ocKsjlsYTc/kLxRro2+Fe7
-         aPH2IGnINyHses4ZMArNqH6AhCEQFiJxuEkFDNTj7gn34Ba+0pk8s25jwVLVIGgXGLZW
-         pzZA==
+        bh=rEeaQrDU6+P+R6qmxcJotruFw/nOblXhWtI3OV+dYic=;
+        b=dmAEzk7RbUuUDkVzshoLCZO779CbEWlAC33Vce9M7pLiqx21D1Av5QRAlJh/qzwl6e
+         NSDebB+gSkQYwuMOPHa6o5UjAVwlFkQSPJK4iKaD18uyvgOz0e8/pa7OQK4y+zIhfQSV
+         EcDeENEHWnvfIeNN98kbUWBk2/0fnE3K5uFXkMq84Vz/88z6Oku+gvwUH+sJGI+LnRiS
+         MaICS7hDbMVnNQotao5vInC3yC9Vp4aUlO8Ho2ZKTaTu/6zqwtEpruDYsxJ1cT8p8BAa
+         +llYTYExmsUUi/TjwsmSFd9c9vBLcwssShS/2RZ/ZX+0cfsI5hj9HO1iNi75I3FUbcC0
+         AJxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683848279; x=1686440279;
+        d=1e100.net; s=20221208; t=1683848356; x=1686440356;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/Q2KKeQgU14QxWnFG+IpzqMI5PqMSFCbtm/YyhydxSQ=;
-        b=DOdj3NtEV5DR/F+oN8oYFZaDPQaMr6gpQmFdqkb/NVsbN5xfwvSPbt1p7ZR3+AFUHg
-         QysP7oTU+oqWGBAlI7ni0fcp50GVFLeDqo6ch/IEcnpY+2fbI0ll6GkTp5fO3rkiQPTI
-         VFGHTk4TQkc/V9ygsNP7Ii0FTLC597pBwV1a3//Z6VG9+/Op13FiWu2WOFvWnT5f8FEg
-         AUlTLbnJJQvK0vynNz8nphZfMmi/TFXAG7Ws48pG7IGkuThrlNtif5QgPxpkFhkXIkLm
-         eAsHHb8p6LdHXEcwVqkV1M9TpVCvLtRV9pqIG1ljPPTri3D5ML8icqMKQEgoAYelxkLT
-         eNzw==
-X-Gm-Message-State: AC+VfDz568V1/AbRTtJnC7SLjZlfqaT5EYxRk/mWbw6yclrbxjm0DuQi
-        /Y60bcUCDi0EkM0knkYPnYyf/oNBDdF6Xr5gUwQ=
-X-Google-Smtp-Source: ACHHUZ7WSyHy09W42DCYy9g4GPHKgJOBy03eLw9tGPYXeng2ATt0x5OkP3s7jfMOIW/1wPCPo7p14YUyJWRv16swYaY=
-X-Received: by 2002:a25:26cc:0:b0:ba1:e7f2:8369 with SMTP id
- m195-20020a2526cc000000b00ba1e7f28369mr22392666ybm.40.1683848278801; Thu, 11
- May 2023 16:37:58 -0700 (PDT)
+        bh=rEeaQrDU6+P+R6qmxcJotruFw/nOblXhWtI3OV+dYic=;
+        b=KTn8qYEmDCIportl5wkLzEYONlEOuq8+k5K9W18TY0VD5rlULZcTTdAYRkfco2D4Fg
+         JYe0INhcI9/yu26vDb54FzFwBsVtsP3aFLzoRP8XlMhPOrOVEhY66X7FX5BNbhtS0wqf
+         cVHA4Vo5sgAai7ENmASbjk2+ikhwACoWklgCE96Kk2yXE0o1auYAGAUgu4Gw5bQZvnsc
+         gi+vQ5EEIDg0YzIoS0HclnTIBgwW5rSewlli57gVWmwCn9faVsSMB11JAPzZ+OzCcANK
+         Xe9nYYlMvrJyo7JTejQa10jzL7490JbSbW6pbtVONCj2yvv+oYJOy7wYF3i4n2RHHbXt
+         CscQ==
+X-Gm-Message-State: AC+VfDzKLy23w0D0dZNoych8aAgzSanZQQBAnRwr8Nzv9YqOFsAENUio
+        HtIrFNrXaHGdbJU/jv2Zp6aPOTCpHOqXBBOo3pF1rHY685c=
+X-Google-Smtp-Source: ACHHUZ49DWM752iXtGCuH30YDHeMFINHRYFPef2G+EfbsfKIMdZoAHRwwQHeU8DdZ8nYHD4mTdjeNdBUjg8cbL9SOa4=
+X-Received: by 2002:a0d:d4c3:0:b0:55a:9d84:2e4e with SMTP id
+ w186-20020a0dd4c3000000b0055a9d842e4emr23124362ywd.18.1683848355441; Thu, 11
+ May 2023 16:39:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230503065354.19071-1-i@truongsinh.pro> <ZFqHFTMqetbQKtah@moria.home.lan>
- <CANiq72mwHa9coRUQqprGaEhLoac=spX2-2X4CMKYBYrovkQoLA@mail.gmail.com> <ZFvmKk86vBD051n7@moria.home.lan>
-In-Reply-To: <ZFvmKk86vBD051n7@moria.home.lan>
+ <CAMy36z75N9obj0WM+OFhhnzXAPxqhg8PVY7_x8X6JbQABFnMQw@mail.gmail.com>
+ <ZFqM8HOvlVn61VXs@moria.home.lan> <CANeycqq5xCUcjOeOfGAJCH1Tzd01-ALU3uqVJo-BvVX9HOK9wA@mail.gmail.com>
+ <CAMy36z5VP_6atrxdOyXSO6G+R36vA8SuaWCDAui3Om3viogPkQ@mail.gmail.com>
+ <CAMy36z6+RjgAfEYUxpOhS6vFmTter=cFa2CEorSnKR=qxkft=A@mail.gmail.com>
+ <CANiq72nYq5vimbhvfyUj9ejOS487LCQBxkv+7Nt5yYJ2xW_U-A@mail.gmail.com> <ZFvkk9QUpIBTAIWj@moria.home.lan>
+In-Reply-To: <ZFvkk9QUpIBTAIWj@moria.home.lan>
 From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 12 May 2023 01:37:47 +0200
-Message-ID: <CANiq72kqeyUk0-405t6sXZMw17-YPtZjJg_Zqi5v59qqGHAMDQ@mail.gmail.com>
+Date:   Fri, 12 May 2023 01:39:04 +0200
+Message-ID: <CANiq72mFDr6LGXQg+e_VnO23UhmFxQvHHN7JdctrEZbX0fy9cQ@mail.gmail.com>
 Subject: Re: [PATCH] chore(util): minimal Rust build example
 To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     TruongSinh Tran-Nguyen <i@truongsinh.pro>,
-        linux-bcachefs@vger.kernel.org, rust-for-linux@vger.kernel.org
+        rust-for-linux@vger.kernel.org,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        linux-bcachefs@vger.kernel.org, Andreas Hindborg <nmi@metaspace.dk>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, May 10, 2023 at 8:45=E2=80=AFPM Kent Overstreet
+On Wed, May 10, 2023 at 8:38=E2=80=AFPM Kent Overstreet
 <kent.overstreet@linux.dev> wrote:
 >
-> I've been doing the same thing.
->
-> Right now in bcachefs-tools we've got two different crates, one for
-> bcachefs rust code proper and another for bindings, with a build.rs for
-> bindgen.
+> Has cargo vendor been getting discussed?
 
-Sounds great. (I was mentioning it due to the patch above, mostly,
-i.e. I wouldn't recommend reimplementing a single function and writing
-the bindings manually etc. -- the patch also was not follow either the
-C or Rust styles).
-
-> Any pointers to how we'll be interacting with bindgen kernel side? We
-> need to pass it some stuff, see
-> https://evilpiepirate.org/git/bcachefs-tools.git/tree/rust-src/bch_bindge=
-n/build.rs
-
-Currently we put the `#include`s in `rust/bindings/bindings_helper.h`,
-and options if needed (e.g. allows/blocks like you also have) in
-`rust/bindgen_parameters`.
-
-When the `kernel` crate split happens, we may have
-per-crate/per-subsystem/... configuration for this, too.
+If you mean for dynamically fetching things, yeah, that is an option
+(I think we discussed it in Kangrejos?); but the implementation
+specifics are not too important: what we need is getting the agreement
+from kernel maintainers on dynamically fetching them.
 
 Cheers,
 Miguel
