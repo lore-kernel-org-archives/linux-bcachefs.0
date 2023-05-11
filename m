@@ -2,140 +2,121 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71FBAC7EE22
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 02:08:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F917C77B7C
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 05:34:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbjEKCI4 (ORCPT
+        id S230472AbjEKFd7 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 10 May 2023 22:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46000 "EHLO
+        Thu, 11 May 2023 01:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjEKCIz (ORCPT
+        with ESMTP id S230267AbjEKFd6 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 10 May 2023 22:08:55 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C2EDE;
-        Wed, 10 May 2023 19:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683770933; x=1715306933;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RapQlMH/dlsFJalvQXdyhW1B6c6n6VpKA6SrVWpGKTM=;
-  b=URBGvV0heAGc3fZ4H40C7d0IohL5PAKMr8xyLMcs08wwtv9/XJSiF5ZG
-   BxQBHDZEtnN8sz8CW1HiQib17VzHZ5ReLq/DLZn/WO2AocPJS8kgClsdB
-   ey+UmLr6IxGQ+WPuazreC0AvLTkKzWdf2NTxULx3WpBEP4vFTC9g+6dZM
-   fDEl3DIqL11ikN6DWhRHXLCCnosPnGNGvuHibEKg/3Tx9PGW07yXZfjxP
-   CEEvJSF1FKqK6eNhzOY4KrM+a+kcynokwIfRmajsTVg0UmCY11cn1j2FK
-   TeiefojXsPRA6qqjwBxkhnXwpH7cpQhNbruKgexcLFU48hH/R/50FItjE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10706"; a="413691008"
-X-IronPort-AV: E=Sophos;i="5.99,265,1677571200"; 
-   d="scan'208";a="413691008"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2023 19:08:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10706"; a="789180107"
-X-IronPort-AV: E=Sophos;i="5.99,266,1677571200"; 
-   d="scan'208";a="789180107"
-Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 May 2023 19:08:51 -0700
-Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pwvje-0003hq-1J;
-        Thu, 11 May 2023 02:08:50 +0000
-Date:   Thu, 11 May 2023 10:08:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kent Overstreet <kmo@daterainc.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Kent Overstreet <kmo@daterainc.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 23/32] iov_iter: copy_folio_from_iter_atomic()
-Message-ID: <202305110949.RCcHYzkJ-lkp@intel.com>
-References: <20230509165657.1735798-24-kent.overstreet@linux.dev>
+        Thu, 11 May 2023 01:33:58 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A797F19D
+        for <linux-bcachefs@vger.kernel.org>; Wed, 10 May 2023 22:33:56 -0700 (PDT)
+Received: from letrec.thunk.org (h64-141-80-140.bigpipeinc.com [64.141.80.140] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34B5XEbN029523
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 May 2023 01:33:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1683783198; bh=SMmV3TzaqHRTrXH6Q0nofDnJqnbSzTYjFsEZvKZ4z+8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=j0HanOY4jf1J54zi0i0lwYZmgLq0/Ss5ILpuFT7MZBXheoGDM4ZR4KhI9GTbErwmm
+         McYjxSg24VdxTJnvNpHfEOgY7MxjKA3ibaqz/9XLwbTrl/s6PygVJHF9OhxcSz2l+8
+         F4YqJEo2S5W9FnEmozQRSmKmBkYYZpS38T4Axq5yZpBG18V29DOCHbb6X+Hn0z9ZpS
+         muw7Xmf+h2N8tt0ncXZ2V2IWwR8ZMBzFl4SpUAQwZOo5z3xa6FFkkcQE9LbtNuwa5X
+         2NyR3pQFe+1v43HP2jRX4X9XZKOswe2fS4BeCA8H0Nm/kVPADxGSmXjDJf4uhiVHDV
+         Zu7MvmI+YvVHw==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id 478D28C023E; Thu, 11 May 2023 01:33:12 -0400 (EDT)
+Date:   Thu, 11 May 2023 01:33:12 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
+Message-ID: <ZFx+GOjabJIaJWU8@mit.edu>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-8-kent.overstreet@linux.dev>
+ <ZFqxEWqD19eHe353@infradead.org>
+ <ZFq3SdSBJ_LWsOgd@murray>
+ <20230509214319.GA858791@frogsfrogsfrogs>
+ <ZFrBEsjrfseCUzqV@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230509165657.1735798-24-kent.overstreet@linux.dev>
+In-Reply-To: <ZFrBEsjrfseCUzqV@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi Kent,
+On Tue, May 09, 2023 at 05:54:26PM -0400, Kent Overstreet wrote:
+> 
+> I think it'd be much more practical to find some way of making
+> vmalloc_exec() more palatable. What are the exact concerns?
 
-kernel test robot noticed the following build warnings:
+Having a vmalloc_exec() function (whether it is not exported at all,
+or exported as a GPL symbol) makes it *much* easier for an exploit
+writer, since it's a super convenient gadget for use with
+Returned-oriented-programming[1] to create a writeable, executable
+space that could then be filled with arbitrary code of the exploit
+author's arbitrary desire.
 
-[auto build test WARNING on tip/locking/core]
-[cannot apply to axboe-block/for-next akpm-mm/mm-everything kdave/for-next linus/master v6.4-rc1 next-20230510]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[1] https://en.wikipedia.org/wiki/Return-oriented_programming
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kent-Overstreet/Compiler-Attributes-add-__flatten/20230510-010302
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20230509165657.1735798-24-kent.overstreet%40linux.dev
-patch subject: [PATCH 23/32] iov_iter: copy_folio_from_iter_atomic()
-config: powerpc-randconfig-s042-20230509 (https://download.01.org/0day-ci/archive/20230511/202305110949.RCcHYzkJ-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 12.1.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-39-gce1a6720-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/0e5d4229f5e7671dabba56ea36583b1ca20a9a18
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Kent-Overstreet/Compiler-Attributes-add-__flatten/20230510-010302
-        git checkout 0e5d4229f5e7671dabba56ea36583b1ca20a9a18
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=powerpc olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=powerpc SHELL=/bin/bash
+The other thing I'll note from examining the code generator, is that
+it appears that bcachefs *only* has support for x86_64.  This brings
+me back to the days of my youth when all the world was a Vax[2].  :-)
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202305110949.RCcHYzkJ-lkp@intel.com/
+   10.  Thou shalt foreswear, renounce, and abjure the vile heresy
+        which claimeth that ``All the world's a VAX'', and have no commerce
+	with the benighted heathens who cling to this barbarous belief, that
+ 	the days of thy program may be long even though the days of thy
+	current machine be short.
 
-sparse warnings: (new ones prefixed by >>)
->> lib/iov_iter.c:839:30: sparse: sparse: incompatible types in comparison expression (different type sizes):
->> lib/iov_iter.c:839:30: sparse:    unsigned int *
->> lib/iov_iter.c:839:30: sparse:    unsigned long *
+	[ This particular heresy bids fair to be replaced by ``All the
+	world's a Sun'' or ``All the world's a 386'' (this latter
+	being a particularly revolting invention of Satan), but the
+	words apply to all such without limitation. Beware, in
+	particular, of the subtle and terrible ``All the world's a
+	32-bit machine'', which is almost true today but shall cease
+	to be so before thy resume grows too much longer.]
 
-vim +839 lib/iov_iter.c
+[2] The Ten Commandments for C Programmers (Annotated Edition)
+    https://www.lysator.liu.se/c/ten-commandments.html
 
-   825	
-   826	size_t copy_folio_from_iter_atomic(struct folio *folio, size_t offset,
-   827					   size_t bytes, struct iov_iter *i)
-   828	{
-   829		size_t ret = 0;
-   830	
-   831		if (WARN_ON(offset + bytes > folio_size(folio)))
-   832			return 0;
-   833		if (WARN_ON_ONCE(!i->data_source))
-   834			return 0;
-   835	
-   836	#ifdef CONFIG_HIGHMEM
-   837		while (bytes) {
-   838			struct page *page = folio_page(folio, offset >> PAGE_SHIFT);
- > 839			unsigned b = min(bytes, PAGE_SIZE - (offset & PAGE_MASK));
-   840			unsigned r = __copy_page_from_iter_atomic(page, offset, b, i);
-   841	
-   842			offset	+= r;
-   843			bytes	-= r;
-   844			ret	+= r;
-   845	
-   846			if (r != b)
-   847				break;
-   848		}
-   849	#else
-   850		ret = __copy_page_from_iter_atomic(&folio->page, offset, bytes, i);
-   851	#endif
-   852	
-   853		return ret;
-   854	}
-   855	EXPORT_SYMBOL(copy_folio_from_iter_atomic);
-   856	
+Seriously, does this mean that bcachefs won't work on Arm systems
+(arm32 or arm64)?  Or Risc V systems?  Or S/390's?  Or Power
+architectuers?  Or Itanium or PA-RISC systems?  (OK, I really don't
+care all that much about those last two.  :-)
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+
+When people ask me why file systems are so hard to make enterprise
+ready, I tell them to recall the general advice given to people to
+write secure, robust systems: (a) avoid premature optimization, (b)
+avoid fine-grained, multi-threaded programming, as much as possible,
+because locking bugs are a b*tch, and (c) avoid unnecessary global
+state as much as possible.
+
+File systems tend to violate all of these precepts: (a) people chase
+benchmark optimizations to the exclusion of all else, because people
+have an unhealthy obsession with Phornix benchmark articles, (b) file
+systems tend to be inherently multi-threaded, with lots of locks, and
+(c) file systems are all about managing global state in the form of
+files, directories, etc.
+
+However, hiding a miniature architecture-specific compiler inside a
+file system seems to be a rather blatent example of "premature
+optimization".
+
+							- Ted
