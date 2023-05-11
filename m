@@ -2,109 +2,88 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFA73C7EE2A
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 22:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9980C77B7F
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 23:10:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239403AbjEKW2q (ORCPT
+        id S239214AbjEKXKq (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 11 May 2023 18:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
+        Thu, 11 May 2023 19:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239206AbjEKW2o (ORCPT
+        with ESMTP id S239223AbjEKXKo (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 11 May 2023 18:28:44 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C81C273C
-        for <linux-bcachefs@vger.kernel.org>; Thu, 11 May 2023 15:28:42 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-64a9335a8e7so1561981b3a.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 11 May 2023 15:28:42 -0700 (PDT)
+        Thu, 11 May 2023 19:10:44 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760CA40DD
+        for <linux-bcachefs@vger.kernel.org>; Thu, 11 May 2023 16:10:43 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-307664010fdso8529441f8f.0
+        for <linux-bcachefs@vger.kernel.org>; Thu, 11 May 2023 16:10:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1683844122; x=1686436122;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=foguPMzaG5JiKYkGBK5Zqr8oTB+NWVY0GCMBbESmVbo=;
-        b=fE3rVckTldIGJ9X79t1Tocx/fvHS8/EWaaZUWVMfpCQjD6wKu7leVkN9G5nHE7F2LC
-         p4WBsp2m0LR3mee1GBx75i7GQ1hFNp4aJ0AeK9wRgq5DxKNNm6lsnOs+r+KExblYrhxr
-         az+pMa5mQwMDktKT2xO108h0iA2YD2f2nwjW8=
+        d=truongsinh.pro; s=google; t=1683846642; x=1686438642;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WPG4a6X4h+5DWEWYShnnXPeem/HjObGPA6H/eKogG2M=;
+        b=BIOoBIEI149cdBcnCxZTmKR+LlC63ppi6ow1399WRIFRxnPRn8mTMw4vxL+q6QUrXw
+         2I/lWsHwD5xjD0BrDzgBkT37w2Qow3W8V0DqSnu6qTpsuSQff9uygcfoQHQbXSUDnJRL
+         b/4EILJYk0IMSHU9AyXuWzOqfENk9ldxsThM8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683844122; x=1686436122;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=foguPMzaG5JiKYkGBK5Zqr8oTB+NWVY0GCMBbESmVbo=;
-        b=aZz45mmeFWXeAkm5oqNl126gDVSIrNGiwgwOIKurRTZoWAYA3a1vCKLHpCd//WF7Ns
-         ShzcSv5+FurZRTeKW9qpjCFxNI5+UBSdyEQS4jlBM+R8jR8zkirKeZS/yutg8sO0i29M
-         /nFlD2nuyrHCnMO3EyrIL6G8owpUO+ozFE5v1tKjTKGkly5q6FR3zkFeQyRCXIUfPMst
-         oCQl9O/XbRq3l042Ga4hoFve9qaShUPDI7FGp237ZecQKUhzwAJ+2qRk0Y+rjPewxjf6
-         2mI2r/rBvjeWzk/aWyAHz0Gv4Leut6TkE9oe+mjRa09AkPJobM7CXR0hl5GjLHVz/Ahx
-         333w==
-X-Gm-Message-State: AC+VfDwC/zyHjpFeEI6x5VHUagFwbNBRu06rmBaTCPEnny7pX+k5Sdhw
-        rhK6Sa74tJEeJ9+JnizSfYR6nA==
-X-Google-Smtp-Source: ACHHUZ6mEsMPqSDmeIgz0bMbow4zeO58axDoPLJOCw723w8mEoGZDcn2G0FDhPsF6SBJe8srfCjV2Q==
-X-Received: by 2002:a05:6a20:8e14:b0:101:3c60:6794 with SMTP id y20-20020a056a208e1400b001013c606794mr12671176pzj.2.1683844121954;
-        Thu, 11 May 2023 15:28:41 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p38-20020a631e66000000b0052c766b2f52sm5515338pgm.4.2023.05.11.15.28.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 May 2023 15:28:41 -0700 (PDT)
-Date:   Thu, 11 May 2023 15:28:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <202305111525.67001E5C4@keescook>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-8-kent.overstreet@linux.dev>
- <3508afc0-6f03-a971-e716-999a7373951f@wdc.com>
+        d=1e100.net; s=20221208; t=1683846642; x=1686438642;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WPG4a6X4h+5DWEWYShnnXPeem/HjObGPA6H/eKogG2M=;
+        b=PKzEkuWKqe6UzamReuP5fX4SMw/j9Eu6ioPQB7M41dxXJMKtVidAuTCHAke4jdSU3R
+         /mU8qvCTrbgM85ygslBiFY3yVyA40ZThIB55gwJONidsJJkhWM7c3lXpkplsX06W5AZF
+         31bytAF4FcJRNYMW5v/4GaG1UYunQlHFz1Y+aaJFb8ujvabkf+JJ7cDN+vwl6VnzxHjd
+         WHF6omaQtrNax7kdzt1HsP6mTxTRLaxPYWeyrDjKa1vKgZpfi1ElQPbmZh8A2lwr+PbN
+         tqVrRpvuByLu6Vo6RAMQbvIpXpYrZ+2q2MAll+O5Yq9+YiGuozjBUBhOLw448/GFxsWp
+         m+8A==
+X-Gm-Message-State: AC+VfDwv4M7Z7J5nZohCax1JUIzemPAn9Q7xwIg3k4xTqRd7as4DYnjM
+        DMbn2GrJXkuWY+WXnAYsxpdQwskI+60GFePaWwmbdA==
+X-Google-Smtp-Source: ACHHUZ41RLvA9B+2b9D4/cmHDvx+72agJVX1IMB8cSApYesY6e6Vcll5jR06Zk1QTGpH+VFSa0FwWwC286l1X3VTG1Q=
+X-Received: by 2002:a5d:46c7:0:b0:307:a530:573e with SMTP id
+ g7-20020a5d46c7000000b00307a530573emr7308710wrs.71.1683846641779; Thu, 11 May
+ 2023 16:10:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3508afc0-6f03-a971-e716-999a7373951f@wdc.com>
+References: <20230503065354.19071-1-i@truongsinh.pro> <ZFqHFTMqetbQKtah@moria.home.lan>
+ <CAMy36z75N9obj0WM+OFhhnzXAPxqhg8PVY7_x8X6JbQABFnMQw@mail.gmail.com>
+ <ZFqM8HOvlVn61VXs@moria.home.lan> <CANeycqq5xCUcjOeOfGAJCH1Tzd01-ALU3uqVJo-BvVX9HOK9wA@mail.gmail.com>
+ <CAMy36z5VP_6atrxdOyXSO6G+R36vA8SuaWCDAui3Om3viogPkQ@mail.gmail.com>
+ <CAMy36z6+RjgAfEYUxpOhS6vFmTter=cFa2CEorSnKR=qxkft=A@mail.gmail.com>
+ <U4SpqY6MGcSaFOCHP-pTC2oqyrv7dh2BAlR9xubt3iymLknSafueqtUuhj0UzZUw8YGGNjrbti9_G4cUTatBMlbkOuErR5Uxw2pXpvZnZ_g=@protonmail.com>
+ <CAMy36z7_UVZT03svBPVQpQyYdhWqFFmVokY7K+iy7MkDtbvAww@mail.gmail.com> <2rQHLC94NzAwtKaPbGMnzol4xE6cJ5i4FUx_MoK417SYnui2nVsx3ijtx8okVD14AY3SkwF5CEsJuckE1ydZXyXCZBOTECT3osPjb3xAAaQ=@protonmail.com>
+In-Reply-To: <2rQHLC94NzAwtKaPbGMnzol4xE6cJ5i4FUx_MoK417SYnui2nVsx3ijtx8okVD14AY3SkwF5CEsJuckE1ydZXyXCZBOTECT3osPjb3xAAaQ=@protonmail.com>
+From:   TruongSinh Tran-Nguyen <i@truongsinh.pro>
+Date:   Thu, 11 May 2023 16:10:30 -0700
+Message-ID: <CAMy36z46EQYOGj8h0kHkEd8KYKnqZbUePe8JAk+a-0GJRQeK5w@mail.gmail.com>
+Subject: Re: [PATCH] chore(util): minimal Rust build example
+To:     =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>
+Cc:     rust-for-linux@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        linux-bcachefs@vger.kernel.org, Andreas Hindborg <nmi@metaspace.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, May 10, 2023 at 03:05:48PM +0000, Johannes Thumshirn wrote:
-> On 09.05.23 18:56, Kent Overstreet wrote:
-> > +/**
-> > + * vmalloc_exec - allocate virtually contiguous, executable memory
-> > + * @size:	  allocation size
-> > + *
-> > + * Kernel-internal function to allocate enough pages to cover @size
-> > + * the page level allocator and map them into contiguous and
-> > + * executable kernel virtual space.
-> > + *
-> > + * For tight control over page level allocator and protection flags
-> > + * use __vmalloc() instead.
-> > + *
-> > + * Return: pointer to the allocated memory or %NULL on error
-> > + */
-> > +void *vmalloc_exec(unsigned long size, gfp_t gfp_mask)
-> > +{
-> > +	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
-> > +			gfp_mask, PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS,
-> > +			NUMA_NO_NODE, __builtin_return_address(0));
-> > +}
-> > +EXPORT_SYMBOL_GPL(vmalloc_exec);
-> 
-> Uh W+X memory reagions.
-> The 90s called, they want their shellcode back.
+> I think you will have to vendor the bitfield crate into a separate file
+> and add an SPDX-License-Identifier header with the license of the crate
 
-Just to clarify: the kernel must never create W+X memory regions. So,
-no, do not reintroduce vmalloc_exec().
+I just send and patch to rust-for-linux@vger.kernel.org to include
+bitfield macro into kernel crate.
 
-Dynamic code areas need to be constructed in a non-executable memory,
-then switched to read-only and verified to still be what was expected,
-and only then made executable.
+Kind regards,
+Sinh
 
--- 
-Kees Cook
+TruongSinh Tran-Nguyen, PMI-ACP, PSM III, PSPO III
+
+Tech Visionary, Craftsman, Coach and Investor
+
++1-6127-TR-SINH (+1-6127-87-7464) | @truongsinhtn
+
+Find me on LinkedIn | Twitter | Github | StackOverflow
+
+IBAN: LT76 3250 0264 6898 1177 | BIC: REVOLT21
+
+Currently Reading
