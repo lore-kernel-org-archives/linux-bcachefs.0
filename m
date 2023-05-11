@@ -2,104 +2,90 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E856FC77B7F
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 05:44:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B693DC7EE24
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 11 May 2023 08:25:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236499AbjEKFou (ORCPT
+        id S235509AbjEKIZz (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 11 May 2023 01:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
+        Thu, 11 May 2023 04:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237035AbjEKFoZ (ORCPT
+        with ESMTP id S234431AbjEKIZx (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 11 May 2023 01:44:25 -0400
-Received: from out-16.mta0.migadu.com (out-16.mta0.migadu.com [91.218.175.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E81C4EDD
-        for <linux-bcachefs@vger.kernel.org>; Wed, 10 May 2023 22:44:23 -0700 (PDT)
-Date:   Thu, 11 May 2023 01:44:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683783860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0iOiMX6sv+DQehmZI33b0k3P+A/HtVxXVvqqZmBD72U=;
-        b=hmSs4gLAmdr54kJa3buCPbG6CRX+mFcsgPHVdenXCmFW9gT1U5PdBV86nHo8lf/4IJnIrh
-        WHSvFxFv4OLHOHo80TvgsemT19uXyTS5gEpd3uozGpUwxCGRaoAjaiC5wTrDlhVlvgXIkf
-        hGRuujciGhX4BV9JZLntpLgf5lziWFQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <ZFyAr/9L3neIWpF8@moria.home.lan>
+        Thu, 11 May 2023 04:25:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8472510C9;
+        Thu, 11 May 2023 01:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wZpbxpR/RwY9sqwxsSyrWRiWe8/6Lg93oKafl0bZX8E=; b=Qg/LWjpBqHOBF3P7TcpTYxs4F9
+        6JKjmU8x1TYMlI7RYZ0EtAdx6mvXg1xgmS2dk5LJp8cna5pg0yf42UXSMQXQ5481DXZC3qeLtKEXT
+        8KGxZAtU7p3Xf0JtELvcMjxQg2r7aE99P/jpvSa/NNbH6wbUkG94QZcioNtzZdw/KfDh9D8QMOvqv
+        8ICM2QQr84c1Xl5WiMR5jIsWaXA2DNnv4xRZA8u+IxU3E09XUJKihEXSdmKx4tbh47v8MhfjExx3Z
+        /9ff6/2ug8Y3buZuATxa105RCSQaJ1jglJ9NoSvivv29PduL1m6tcCFUgos4BYvqfghkg2J4j/tVE
+        zm7PCaWg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1px1cP-00H1wb-NZ; Thu, 11 May 2023 08:25:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2343C300338;
+        Thu, 11 May 2023 10:25:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 01D10235CC450; Thu, 11 May 2023 10:25:44 +0200 (CEST)
+Date:   Thu, 11 May 2023 10:25:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH 03/32] locking/lockdep: lockdep_set_no_check_recursion()
+Message-ID: <20230511082544.GS4253@hirez.programming.kicks-ass.net>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-8-kent.overstreet@linux.dev>
- <ZFqxEWqD19eHe353@infradead.org>
- <ZFq3SdSBJ_LWsOgd@murray>
- <20230509214319.GA858791@frogsfrogsfrogs>
- <ZFrBEsjrfseCUzqV@moria.home.lan>
- <ZFx+GOjabJIaJWU8@mit.edu>
+ <20230509165657.1735798-4-kent.overstreet@linux.dev>
+ <20230509193147.GC2148518@hirez.programming.kicks-ass.net>
+ <ZFqqsyDpatgb77Vh@moria.home.lan>
+ <20230510085905.GJ4253@hirez.programming.kicks-ass.net>
+ <ZFwAtwIrKyJ9GJ/U@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZFx+GOjabJIaJWU8@mit.edu>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ZFwAtwIrKyJ9GJ/U@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, May 11, 2023 at 01:33:12AM -0400, Theodore Ts'o wrote:
-> Seriously, does this mean that bcachefs won't work on Arm systems
-> (arm32 or arm64)?  Or Risc V systems?  Or S/390's?  Or Power
-> architectuers?  Or Itanium or PA-RISC systems?  (OK, I really don't
-> care all that much about those last two.  :-)
+On Wed, May 10, 2023 at 04:38:15PM -0400, Kent Overstreet wrote:
+> On Wed, May 10, 2023 at 10:59:05AM +0200, Peter Zijlstra wrote:
 
-No :)
-
-My CI servers are arm64 servers. There's a bch2_bkey_unpack_key()
-written in C, that works on any architecture. But specializing for a
-particular format is a not-insignificant performance improvement, so
-writing an arm64 version has been on my todo list.
-
-> When people ask me why file systems are so hard to make enterprise
-> ready, I tell them to recall the general advice given to people to
-> write secure, robust systems: (a) avoid premature optimization, (b)
-> avoid fine-grained, multi-threaded programming, as much as possible,
-> because locking bugs are a b*tch, and (c) avoid unnecessary global
-> state as much as possible.
+> > Have you read the ww_mutex code? If not, please do so, it does similar
+> > things.
+> > 
+> > The way it gets around the self-nesting check is by using the nest_lock
+> > annotation, the acquire context itself also has a dep_map for this
+> > purpose.
 > 
-> File systems tend to violate all of these precepts: (a) people chase
-> benchmark optimizations to the exclusion of all else, because people
-> have an unhealthy obsession with Phornix benchmark articles, (b) file
-> systems tend to be inherently multi-threaded, with lots of locks, and
-> (c) file systems are all about managing global state in the form of
-> files, directories, etc.
+> This might work.
 > 
-> However, hiding a miniature architecture-specific compiler inside a
-> file system seems to be a rather blatent example of "premature
-> optimization".
+> I was confused for a good bit when reading tho code to figure out how
+> it works - nest_lock seems to be a pretty bad name, it's really not a
+> lock. acquire_ctx?
 
-Ted, this project is _15_ years old.
+That's just how ww_mutex uses it, the annotation itself comes from
+mm_take_all_locks() where mm->mmap_lock (the lock formerly known as
+mmap_sem) is used to serialize multi acquisition of vma locks.
 
-I'm getting ready to write a full explanation of what this is for and
-why it's important, I've just been busy with the conference - and I want
-to write something good, that provides all the context.
+That is, no other code takes multiple vma locks (be it i_mmap_rwsem or
+anonvma->root->rwsem) in any order. These locks nest inside mmap_lock
+and therefore by holding mmap_lock you serialize the whole thing and can
+take them in any order you like.
 
-I've also been mulling over fallback options, but I don't see any good
-ones. The unspecialized, C version of unpack has branches (the absolute
-minimum, I took my time when I was writing that code too); the
-specialized versions are branchless and _much_ smaller, and the only way
-to do that specialization is with some form of dynamic codegen.
-
-But I do owe you all a detailed walkthrough of what this is all about,
-so you'll get it in the next day or so.
-
-Cheers,
-Kent
+Perhaps, now, all these many years later another name would've made more
+sense, but I don't think it's worth the hassle of the tree-wide rename
+(there's a few other users since).
