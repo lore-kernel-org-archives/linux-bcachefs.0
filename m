@@ -2,34 +2,29 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B7B6C77B75
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 12 May 2023 20:58:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B0C7C77B75
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 12 May 2023 22:39:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbjELU6l (ORCPT
+        id S238499AbjELWjj (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 12 May 2023 16:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        Fri, 12 May 2023 18:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjELU6l (ORCPT
+        with ESMTP id S231556AbjELWji (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 12 May 2023 16:58:41 -0400
-Received: from out-17.mta0.migadu.com (out-17.mta0.migadu.com [91.218.175.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D0335AD
-        for <linux-bcachefs@vger.kernel.org>; Fri, 12 May 2023 13:58:39 -0700 (PDT)
-Date:   Fri, 12 May 2023 16:58:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683925117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s3XsAale2pLEJviZ0m+jYrI+Fj0fMfY+mvCKD6YJX4A=;
-        b=o0JZgBDUVO05o2TV2PjvcCm6Z2IjhphHnZiekpZFctWBBg+HahHJf1W6NIhprP6jCoRsKM
-        ABbGnIU5/cNUb+QGeDbRAheohdJNRitSlYhUF+VdMTg/8u9N6iH7Wj93RPQeba8ViuoziU
-        UNnv+w4Af2P9bJn8MagslTkrFdHzNtk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Fri, 12 May 2023 18:39:38 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565898E;
+        Fri, 12 May 2023 15:39:36 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 721B958740D62; Sat, 13 May 2023 00:39:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 6FD0960C37E19;
+        Sat, 13 May 2023 00:39:34 +0200 (CEST)
+Date:   Sat, 13 May 2023 00:39:34 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org,
         Kent Overstreet <kent.overstreet@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -37,43 +32,25 @@ Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Waiman Long <longman@redhat.com>,
         Boqun Feng <boqun.feng@gmail.com>
 Subject: Re: [PATCH 04/32] locking: SIX locks (shared/intent/exclusive)
-Message-ID: <ZF6oejsUGUC0gnYx@moria.home.lan>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-5-kent.overstreet@linux.dev>
- <7233p553-861o-9772-n4nr-rr5424prq1r@vanv.qr>
+In-Reply-To: <ZF6oejsUGUC0gnYx@moria.home.lan>
+Message-ID: <o52660s0-3s6s-9n74-8666-84s2p4qpoq6@vanv.qr>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev> <20230509165657.1735798-5-kent.overstreet@linux.dev> <7233p553-861o-9772-n4nr-rr5424prq1r@vanv.qr> <ZF6oejsUGUC0gnYx@moria.home.lan>
+User-Agent: Alpine 2.25 (LSU 592 2021-09-18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7233p553-861o-9772-n4nr-rr5424prq1r@vanv.qr>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, May 11, 2023 at 02:14:08PM +0200, Jan Engelhardt wrote:
-> 
-> On Tuesday 2023-05-09 18:56, Kent Overstreet wrote:
-> >--- /dev/null
-> >+++ b/include/linux/six.h
-> >@@ -0,0 +1,210 @@
-> >+ * There are also operations that take the lock type as a parameter, where the
-> >+ * type is one of SIX_LOCK_read, SIX_LOCK_intent, or SIX_LOCK_write:
-> >+ *
-> >+ *   six_lock_type(lock, type)
-> >+ *   six_unlock_type(lock, type)
-> >+ *   six_relock(lock, type, seq)
-> >+ *   six_trylock_type(lock, type)
-> >+ *   six_trylock_convert(lock, from, to)
-> >+ *
-> >+ * A lock may be held multiple types by the same thread (for read or intent,
-> 
-> "multiple times"
 
-Thanks, fixed
+On Friday 2023-05-12 22:58, Kent Overstreet wrote:
+>On Thu, May 11, 2023 at 02:14:08PM +0200, Jan Engelhardt wrote:
+>> >+// SPDX-License-Identifier: GPL-2.0
+>> 
+>> The currently SPDX list only knows "GPL-2.0-only" or "GPL-2.0-or-later",
+>> please edit.
+>
+>Where is that list?
 
-> >+// SPDX-License-Identifier: GPL-2.0
-> 
-> The currently SPDX list only knows "GPL-2.0-only" or "GPL-2.0-or-later",
-> please edit.
-
-Where is that list?
+I just went to spdx.org and then chose "License List" from the
+horizontal top bar menu.
