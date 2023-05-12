@@ -2,76 +2,146 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44F60C77B7F
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 12 May 2023 14:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D3C9C77B7F
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 12 May 2023 18:36:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241386AbjELO05 (ORCPT
+        id S236394AbjELSg3 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 12 May 2023 10:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
+        Fri, 12 May 2023 14:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240934AbjELO04 (ORCPT
+        with ESMTP id S231501AbjELSg0 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 12 May 2023 10:26:56 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EBA272B
-        for <linux-bcachefs@vger.kernel.org>; Fri, 12 May 2023 07:26:54 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3f435658d23so39416815e9.3
-        for <linux-bcachefs@vger.kernel.org>; Fri, 12 May 2023 07:26:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=truongsinh.pro; s=google; t=1683901612; x=1686493612;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQB0wElDevVXJNBpZm9sKECOn7xUmwKOoJcYMBg00RY=;
-        b=KLlv1zGabTZ7hTwa0EuWt4pCuHLpMRO5sVNA5oQq7AXbdOz8y/YY3bdZHUHRoG8zrI
-         S/ro+HTkdQTrpB99GjGjcfFcDja5LbCmykMbwaT/7wuE38BsSerhKpxb0e0liTKfxdSM
-         I6fbc/rAWZyHKuYCdl3ODJkvUUa2yeq+CIueM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683901612; x=1686493612;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hQB0wElDevVXJNBpZm9sKECOn7xUmwKOoJcYMBg00RY=;
-        b=lAZbtvjfEXIzNQdE+95txcCuEHa6VMku9mHH2e3g/KdNr+WksTqpXjPBq0EXopTlyM
-         lZIdSm2cX8Vg910nn/UJact85dTvvVSSLbCBik3LkPz6rCP7F0JqtrJoBLf3ZgeIiSxU
-         pC6YrWI8iVOiIN7kvAH5Hfg/kCfzYI3jTFvYh0CGtQwxxCMsdoMs1lts64yiTzPi4EqA
-         i5owJO2UEDAtLzaCEqNuNHCJP0XWVN9cSXznuvbVBGsy+AM+gnTqXvfWyA5oA1LdP9qz
-         N+kFAJ2vZ9ZlRBNortzY4+FbRve6LVSLVSTobo3G2TrnXl6t9vchZs893p5N3Istrabm
-         q68g==
-X-Gm-Message-State: AC+VfDzoxBNDAfYavtRYTnXW2jv23ZA6JafvVysU+AVENE5TnFQfGeve
-        KKAPy95zpdKahRXjN6FBdfnWwWwuSoijk+0HX1rzLKT5thhqflp6aYQ=
-X-Google-Smtp-Source: ACHHUZ7U48XunK8GAFAKibn2J3KJN5DJ8OycAT/nVA6rlvqweteFPTLXV3f5fq6savS1V+jOzSoH3K0wV9M8cobPcNY=
-X-Received: by 2002:a7b:c5d6:0:b0:3f1:969f:c9d0 with SMTP id
- n22-20020a7bc5d6000000b003f1969fc9d0mr18612093wmk.4.1683901612483; Fri, 12
- May 2023 07:26:52 -0700 (PDT)
+        Fri, 12 May 2023 14:36:26 -0400
+Received: from out-13.mta0.migadu.com (out-13.mta0.migadu.com [91.218.175.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3714C30F1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 12 May 2023 11:36:20 -0700 (PDT)
+Date:   Fri, 12 May 2023 14:36:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1683916578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T7EDRGNNQxDhy7JG1X1Rb19Q2/wH1f0oPatD+5ixTQ0=;
+        b=xCCG65Bw0cexF9Nd3/QXcOc4QPm5PIm/tJf9tNZJ/su0MlbxUQbD+p6omf5kA3Co7G8nL/
+        iKkpCUP16KIF+s/7KGW5iG29X/AMwQXWGMz1fiwMlg/iC9CpcDYGMn9MxqtwgqNuGFB1Fk
+        YJyZ5UQbufDhClfNgTlxNnft73FPFzM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
+Message-ID: <ZF6HHRDeUWLNtuL7@moria.home.lan>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-8-kent.overstreet@linux.dev>
+ <ZFqxEWqD19eHe353@infradead.org>
+ <ZFq3SdSBJ_LWsOgd@murray>
+ <ZFq7JhrhyrMTNfd/@moria.home.lan>
+ <20230510064849.GC1851@quark.localdomain>
 MIME-Version: 1.0
-References: <CAMy36z5VP_6atrxdOyXSO6G+R36vA8SuaWCDAui3Om3viogPkQ@mail.gmail.com>
- <CAMy36z6+RjgAfEYUxpOhS6vFmTter=cFa2CEorSnKR=qxkft=A@mail.gmail.com>
- <CANiq72nYq5vimbhvfyUj9ejOS487LCQBxkv+7Nt5yYJ2xW_U-A@mail.gmail.com>
- <CAMy36z7iofMAK4GkYaUjW27cSC4sg-QGooj93mTg8SOb0eXxfw@mail.gmail.com>
- <CANiq72kcVS=_07D-KDcb9cVByV886mf50ydqNsMvcrJ1myLOuA@mail.gmail.com>
- <CAMy36z710P4ZVW0z_Y=ZObLkpP3Jc837B0z4sTGoDUXCH+8MRw@mail.gmail.com>
- <ZF2zCUV45mYxSe4e@moria.home.lan> <CAMy36z6fiC4esHKjAiOaOp6=sAOCbiJXpJku+6_h26xGPs8kWA@mail.gmail.com>
- <ZF2+Ah5koJEdq4A1@moria.home.lan> <CAMy36z7-hBv1HVTQaNPZzHXNzB6q-2CS4XzUrWLcwTbn3M1A7A@mail.gmail.com>
- <ZF3PwsqxsGNTVCDv@moria.home.lan>
-In-Reply-To: <ZF3PwsqxsGNTVCDv@moria.home.lan>
-From:   TruongSinh Tran-Nguyen <i@truongsinh.pro>
-Date:   Fri, 12 May 2023 07:26:41 -0700
-Message-ID: <CAMy36z6wAcNh1POmb_Dbay-M8jVH=d0WTmxUMxzv2Ped522sAA@mail.gmail.com>
-Subject: Re: [PATCH] chore(util): minimal Rust build example
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        rust-for-linux@vger.kernel.org,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        linux-bcachefs@vger.kernel.org, Andreas Hindborg <nmi@metaspace.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230510064849.GC1851@quark.localdomain>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-> This seems like something for quite a long ways off, unless I'm
-> misunderstanding what you're trying to do right now?
+On Tue, May 09, 2023 at 11:48:49PM -0700, Eric Biggers wrote:
+> What seems to be missing is any explanation for what we're actually getting from
+> this extremely unusual solution that cannot be gained any other way.  What is
+> unique about bcachefs that it really needs something like this?
 
-Correct, it is not my immediate need (neither for bcachefs nor other
-user-space tools), just want to look out for the future. There is no
-kernel module written fully in Rust yet anyway.
+Ok, as promised:
+
+Background: all metadata in bcachefs is a structured as key/value pairs,
+and there's a common key format for all keys.
+
+struct bkey {
+	/* 3 byte header */
+	u8		u64s;		/* size of k/v in u64s */
+	u8		format;		/* packed/unpacked, needs_whiteout */
+	u8		type;		/* value type */
+	u8		pad;
+
+	/*
+	 * Order of fields below is for little endian, they're in
+	 * reverse order on big endian (and byte swabbed as necessary
+	 * when reading foreign endian metadata)
+	 * 
+	 * Since field order matches byte order, the key can be treated
+	 * as one large multi word integer for doing comparisons:
+	 */
+	u96		version;	/* nonces, send/recv support */
+	u32		size;		/* size of extent keys */
+
+	/* Below are the field used for ordering/comparison: */
+	u32		snapshot;	
+	u64		offset;
+	u64		inode;
+
+	/* Value is stored inline with key */
+	struct bch_val	v;
+};
+
+sizeof(struct bkey) == 40.
+
+An extent value that has one pointer and no checksum is 8 bytes, with
+one pointer and one 32 bit checksum 16 bytes, for 56 bytes total (key
+included).
+
+But for a given btree node, most of the key fields will typically be
+redundandant. An extents leaf node might have extents for all one inode
+number or a small range of inode numbers, snapshots may or may not be in
+use, etc. - clearly some compression is desirable here.
+
+The key observation is that key compression is possible if we have a
+compression function that preserves order, and an order-preserving
+compression function is possible if it's allowed to fail. That means we
+do comparisons on packed keys, which lets us skip _most_ unpack
+operations, for btree node resorts and for lookups within a node.
+
+Packing works by defining a format with an offset and a bit width for
+each field, so e.g. if all keys in a btree node have the same inode
+number the packed format can specify that inode number and then a field
+width of 0 bits for the inode field.
+
+Continuing the arithmetic from before, a packed extent key will
+typically be only 8 or 16 bytes, or 24-32 including the val, which means
+bkey packing cuts our metadata size roughly in half.
+
+(It also makes our key format somewhat self describing and gives us a
+mechanism by which we could add or extend fields in the future).
+
+-----------------------------------------------------
+
+As mentioned before, since packed bkeys are still multi-word integers we
+can do some important operations without unpacking, but to iterate over
+keys, compare packed & unpacked keys in resort, etc. - we'll still need
+to unpack, so we need this operation to be as fast as possible.
+
+bkey.c __bch2_bkey_unpack_key() is the unspecialized version written in
+C, that works on any archictecture. It loops over the fields in a
+bkey_format, pulling them out of the input words and adding back the
+field offsets. It's got the absolute minimum number of branches - one
+per field, when deciding to advance to the next input word - but it
+can't be branchless and it's a whole ton of shifts and bitops.
+
+dynamic codegen lets us produce unpack functions that are fully
+branchless and _much_ smaller. For any given btree node we'll have a
+format where multiple fields have 0 field with - i.e. those fields are
+always constants. That code goes away, and also if the format can be
+byte aligned we can eliminate shifts and bitopts. Code size for the
+dynamically compiled unpack functions is roughly 10% that of the
+unspecialized C version.
+
+I hope that addresses some of the "what is this even for" questions :)
+
+Cheers,
+Kent
