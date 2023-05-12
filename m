@@ -2,146 +2,104 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D3C9C77B7F
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 12 May 2023 18:36:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5078C7EE23
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 12 May 2023 18:42:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236394AbjELSg3 (ORCPT
+        id S239071AbjELSl7 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 12 May 2023 14:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
+        Fri, 12 May 2023 14:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbjELSg0 (ORCPT
+        with ESMTP id S239040AbjELSl6 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 12 May 2023 14:36:26 -0400
-Received: from out-13.mta0.migadu.com (out-13.mta0.migadu.com [91.218.175.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3714C30F1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 12 May 2023 11:36:20 -0700 (PDT)
-Date:   Fri, 12 May 2023 14:36:13 -0400
+        Fri, 12 May 2023 14:41:58 -0400
+Received: from out-30.mta1.migadu.com (out-30.mta1.migadu.com [95.215.58.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3598426BF
+        for <linux-bcachefs@vger.kernel.org>; Fri, 12 May 2023 11:41:54 -0700 (PDT)
+Date:   Fri, 12 May 2023 14:41:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683916578;
+        t=1683916913;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=T7EDRGNNQxDhy7JG1X1Rb19Q2/wH1f0oPatD+5ixTQ0=;
-        b=xCCG65Bw0cexF9Nd3/QXcOc4QPm5PIm/tJf9tNZJ/su0MlbxUQbD+p6omf5kA3Co7G8nL/
-        iKkpCUP16KIF+s/7KGW5iG29X/AMwQXWGMz1fiwMlg/iC9CpcDYGMn9MxqtwgqNuGFB1Fk
-        YJyZ5UQbufDhClfNgTlxNnft73FPFzM=
+        bh=iOnY8c/lkag14SwpbgN3+7P0+KsfhnCfHTsBvfxLgio=;
+        b=cIHho+FfHJMWMTsZ/N4RXcZep7VCfnvUNYdJrQllaDrmrotT2SUDGE/aHck2l6nZoZ0CbH
+        0Fkfdpcl1H8lNKNlg0uD5E1JTq7pzKxPky5aDLIUmKvPKEBSSRmvPWhrdW3Rg9i6PrJYJP
+        T/Rx9juakd3xD/niy4bTd9Uj/lcX2I0=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
         Kent Overstreet <kent.overstreet@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
+        Uladzislau Rezki <urezki@gmail.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
 Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <ZF6HHRDeUWLNtuL7@moria.home.lan>
+Message-ID: <ZF6Ibvi8U9B+mV1d@moria.home.lan>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-8-kent.overstreet@linux.dev>
- <ZFqxEWqD19eHe353@infradead.org>
- <ZFq3SdSBJ_LWsOgd@murray>
- <ZFq7JhrhyrMTNfd/@moria.home.lan>
- <20230510064849.GC1851@quark.localdomain>
+ <3508afc0-6f03-a971-e716-999a7373951f@wdc.com>
+ <202305111525.67001E5C4@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230510064849.GC1851@quark.localdomain>
+In-Reply-To: <202305111525.67001E5C4@keescook>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 09, 2023 at 11:48:49PM -0700, Eric Biggers wrote:
-> What seems to be missing is any explanation for what we're actually getting from
-> this extremely unusual solution that cannot be gained any other way.  What is
-> unique about bcachefs that it really needs something like this?
+On Thu, May 11, 2023 at 03:28:40PM -0700, Kees Cook wrote:
+> On Wed, May 10, 2023 at 03:05:48PM +0000, Johannes Thumshirn wrote:
+> > On 09.05.23 18:56, Kent Overstreet wrote:
+> > > +/**
+> > > + * vmalloc_exec - allocate virtually contiguous, executable memory
+> > > + * @size:	  allocation size
+> > > + *
+> > > + * Kernel-internal function to allocate enough pages to cover @size
+> > > + * the page level allocator and map them into contiguous and
+> > > + * executable kernel virtual space.
+> > > + *
+> > > + * For tight control over page level allocator and protection flags
+> > > + * use __vmalloc() instead.
+> > > + *
+> > > + * Return: pointer to the allocated memory or %NULL on error
+> > > + */
+> > > +void *vmalloc_exec(unsigned long size, gfp_t gfp_mask)
+> > > +{
+> > > +	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+> > > +			gfp_mask, PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS,
+> > > +			NUMA_NO_NODE, __builtin_return_address(0));
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(vmalloc_exec);
+> > 
+> > Uh W+X memory reagions.
+> > The 90s called, they want their shellcode back.
+> 
+> Just to clarify: the kernel must never create W+X memory regions. So,
+> no, do not reintroduce vmalloc_exec().
+> 
+> Dynamic code areas need to be constructed in a non-executable memory,
+> then switched to read-only and verified to still be what was expected,
+> and only then made executable.
 
-Ok, as promised:
+So if we're opening this up to the topic if what an acceptible API would
+look like - how hard is this requirement?
 
-Background: all metadata in bcachefs is a structured as key/value pairs,
-and there's a common key format for all keys.
+The reason is that the functions we're constructing are only ~50 bytes,
+so we don't want to be burning a full page per function (particularly
+for the 64kb page architectures...)
 
-struct bkey {
-	/* 3 byte header */
-	u8		u64s;		/* size of k/v in u64s */
-	u8		format;		/* packed/unpacked, needs_whiteout */
-	u8		type;		/* value type */
-	u8		pad;
+If we were to build an allocator for sub-page dynamically constructed
+code, we'd have to flip the whole page to W+X while copying in the new
+function. But, we could construct it in non executable memory and then
+hand it off to this new allocator to do the copy, which would also do
+the page permission flipping.
 
-	/*
-	 * Order of fields below is for little endian, they're in
-	 * reverse order on big endian (and byte swabbed as necessary
-	 * when reading foreign endian metadata)
-	 * 
-	 * Since field order matches byte order, the key can be treated
-	 * as one large multi word integer for doing comparisons:
-	 */
-	u96		version;	/* nonces, send/recv support */
-	u32		size;		/* size of extent keys */
-
-	/* Below are the field used for ordering/comparison: */
-	u32		snapshot;	
-	u64		offset;
-	u64		inode;
-
-	/* Value is stored inline with key */
-	struct bch_val	v;
-};
-
-sizeof(struct bkey) == 40.
-
-An extent value that has one pointer and no checksum is 8 bytes, with
-one pointer and one 32 bit checksum 16 bytes, for 56 bytes total (key
-included).
-
-But for a given btree node, most of the key fields will typically be
-redundandant. An extents leaf node might have extents for all one inode
-number or a small range of inode numbers, snapshots may or may not be in
-use, etc. - clearly some compression is desirable here.
-
-The key observation is that key compression is possible if we have a
-compression function that preserves order, and an order-preserving
-compression function is possible if it's allowed to fail. That means we
-do comparisons on packed keys, which lets us skip _most_ unpack
-operations, for btree node resorts and for lookups within a node.
-
-Packing works by defining a format with an offset and a bit width for
-each field, so e.g. if all keys in a btree node have the same inode
-number the packed format can specify that inode number and then a field
-width of 0 bits for the inode field.
-
-Continuing the arithmetic from before, a packed extent key will
-typically be only 8 or 16 bytes, or 24-32 including the val, which means
-bkey packing cuts our metadata size roughly in half.
-
-(It also makes our key format somewhat self describing and gives us a
-mechanism by which we could add or extend fields in the future).
-
------------------------------------------------------
-
-As mentioned before, since packed bkeys are still multi-word integers we
-can do some important operations without unpacking, but to iterate over
-keys, compare packed & unpacked keys in resort, etc. - we'll still need
-to unpack, so we need this operation to be as fast as possible.
-
-bkey.c __bch2_bkey_unpack_key() is the unspecialized version written in
-C, that works on any archictecture. It loops over the fields in a
-bkey_format, pulling them out of the input words and adding back the
-field offsets. It's got the absolute minimum number of branches - one
-per field, when deciding to advance to the next input word - but it
-can't be branchless and it's a whole ton of shifts and bitops.
-
-dynamic codegen lets us produce unpack functions that are fully
-branchless and _much_ smaller. For any given btree node we'll have a
-format where multiple fields have 0 field with - i.e. those fields are
-always constants. That code goes away, and also if the format can be
-byte aligned we can eliminate shifts and bitopts. Code size for the
-dynamically compiled unpack functions is roughly 10% that of the
-unspecialized C version.
-
-I hope that addresses some of the "what is this even for" questions :)
-
-Cheers,
-Kent
+It seem like this is something BPF might want eventually too, depending
+on average BPF program size...
