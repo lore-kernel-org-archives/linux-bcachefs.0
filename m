@@ -2,104 +2,100 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5078C7EE23
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 12 May 2023 18:42:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC209C77B75
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 12 May 2023 20:50:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239071AbjELSl7 (ORCPT
+        id S235408AbjELUt7 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 12 May 2023 14:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        Fri, 12 May 2023 16:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239040AbjELSl6 (ORCPT
+        with ESMTP id S229582AbjELUt6 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 12 May 2023 14:41:58 -0400
-Received: from out-30.mta1.migadu.com (out-30.mta1.migadu.com [95.215.58.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3598426BF
-        for <linux-bcachefs@vger.kernel.org>; Fri, 12 May 2023 11:41:54 -0700 (PDT)
-Date:   Fri, 12 May 2023 14:41:50 -0400
+        Fri, 12 May 2023 16:49:58 -0400
+Received: from out-46.mta0.migadu.com (out-46.mta0.migadu.com [91.218.175.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945C72109
+        for <linux-bcachefs@vger.kernel.org>; Fri, 12 May 2023 13:49:57 -0700 (PDT)
+Date:   Fri, 12 May 2023 16:49:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683916913;
+        t=1683924595;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=iOnY8c/lkag14SwpbgN3+7P0+KsfhnCfHTsBvfxLgio=;
-        b=cIHho+FfHJMWMTsZ/N4RXcZep7VCfnvUNYdJrQllaDrmrotT2SUDGE/aHck2l6nZoZ0CbH
-        0Fkfdpcl1H8lNKNlg0uD5E1JTq7pzKxPky5aDLIUmKvPKEBSSRmvPWhrdW3Rg9i6PrJYJP
-        T/Rx9juakd3xD/niy4bTd9Uj/lcX2I0=
+        bh=FMT90UCMn0fWFglADEopgULejFhzB6Tyuu4ibJ17nuA=;
+        b=h2bIEs/YC7cca86id1A0bf5FA55jjfYAwFBk6uWfgO2um8uM0euOLviTbpIEmTHSEDvdOK
+        5vWkQiX6uf5Kh9fB4wb/MtyID916vfvV/VfLBFvQGLdgqxsr4F7mONqYab7f+IMRZVzsuL
+        F6ZZg8gYYEqyvQuEpZnGMAJkq+0miEc=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <ZF6Ibvi8U9B+mV1d@moria.home.lan>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH 03/32] locking/lockdep: lockdep_set_no_check_recursion()
+Message-ID: <ZF6mbxpjN4cSdn/1@moria.home.lan>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-8-kent.overstreet@linux.dev>
- <3508afc0-6f03-a971-e716-999a7373951f@wdc.com>
- <202305111525.67001E5C4@keescook>
+ <20230509165657.1735798-4-kent.overstreet@linux.dev>
+ <20230509193147.GC2148518@hirez.programming.kicks-ass.net>
+ <ZFqqsyDpatgb77Vh@moria.home.lan>
+ <20230510085905.GJ4253@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202305111525.67001E5C4@keescook>
+In-Reply-To: <20230510085905.GJ4253@hirez.programming.kicks-ass.net>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, May 11, 2023 at 03:28:40PM -0700, Kees Cook wrote:
-> On Wed, May 10, 2023 at 03:05:48PM +0000, Johannes Thumshirn wrote:
-> > On 09.05.23 18:56, Kent Overstreet wrote:
-> > > +/**
-> > > + * vmalloc_exec - allocate virtually contiguous, executable memory
-> > > + * @size:	  allocation size
-> > > + *
-> > > + * Kernel-internal function to allocate enough pages to cover @size
-> > > + * the page level allocator and map them into contiguous and
-> > > + * executable kernel virtual space.
-> > > + *
-> > > + * For tight control over page level allocator and protection flags
-> > > + * use __vmalloc() instead.
-> > > + *
-> > > + * Return: pointer to the allocated memory or %NULL on error
-> > > + */
-> > > +void *vmalloc_exec(unsigned long size, gfp_t gfp_mask)
-> > > +{
-> > > +	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
-> > > +			gfp_mask, PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS,
-> > > +			NUMA_NO_NODE, __builtin_return_address(0));
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(vmalloc_exec);
+On Wed, May 10, 2023 at 10:59:05AM +0200, Peter Zijlstra wrote:
+> On Tue, May 09, 2023 at 04:18:59PM -0400, Kent Overstreet wrote:
+> > On Tue, May 09, 2023 at 09:31:47PM +0200, Peter Zijlstra wrote:
+> > > On Tue, May 09, 2023 at 12:56:28PM -0400, Kent Overstreet wrote:
+> > > > This adds a method to tell lockdep not to check lock ordering within a
+> > > > lock class - but to still check lock ordering w.r.t. other lock types.
+> > > > 
+> > > > This is for bcachefs, where for btree node locks we have our own
+> > > > deadlock avoidance strategy w.r.t. other btree node locks (cycle
+> > > > detection), but we still want lockdep to check lock ordering w.r.t.
+> > > > other lock types.
+> > > > 
+> > > 
+> > > ISTR you had a much nicer version of this where you gave a custom order
+> > > function -- what happend to that?
 > > 
-> > Uh W+X memory reagions.
-> > The 90s called, they want their shellcode back.
+> > Actually, I spoke too soon; this patch and the other series with the
+> > comparison function solve different problems.
+> > 
+> > For bcachefs btree node locks, we don't have a defined lock ordering at
+> > all - we do full runtime cycle detection, so we don't want lockdep
+> > checking for self deadlock because we're handling that but we _do_ want
+> > lockdep checking lock ordering of btree node locks w.r.t. other locks in
+> > the system.
 > 
-> Just to clarify: the kernel must never create W+X memory regions. So,
-> no, do not reintroduce vmalloc_exec().
+> Have you read the ww_mutex code? If not, please do so, it does similar
+> things.
 > 
-> Dynamic code areas need to be constructed in a non-executable memory,
-> then switched to read-only and verified to still be what was expected,
-> and only then made executable.
+> The way it gets around the self-nesting check is by using the nest_lock
+> annotation, the acquire context itself also has a dep_map for this
+> purpose.
 
-So if we're opening this up to the topic if what an acceptible API would
-look like - how hard is this requirement?
+So, spent some time plumbing this through the six lock code and seeing
+how it'd work.
 
-The reason is that the functions we're constructing are only ~50 bytes,
-so we don't want to be burning a full page per function (particularly
-for the 64kb page architectures...)
+I like it in theory, it's got the right semantics and it would allow for
+lockdep to check that we're not taking locks with more than one
+btree_trans in the same thread. Unfortunately, we've got code paths that
+are meant to be called from contexts that may or may not have a
+btree_trans - and this is fine right now, because they just use
+trylock(), but having to plumb nest_lock through is going to make a mess
+of things.
 
-If we were to build an allocator for sub-page dynamically constructed
-code, we'd have to flip the whole page to W+X while copying in the new
-function. But, we could construct it in non executable memory and then
-hand it off to this new allocator to do the copy, which would also do
-the page permission flipping.
+(The relevant codepaths include shrinker callbacks, where we definitely
+can not just init a new btree_trans, and also the btree node write path
+which can be kicked off from all sorts of places).
 
-It seem like this is something BPF might want eventually too, depending
-on average BPF program size...
+Can we go with lockdep_set_no_check_recursion() for now? It's a pretty
+small addition to the lockdep code.
