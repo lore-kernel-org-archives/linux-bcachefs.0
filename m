@@ -2,239 +2,102 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2651FC77B75
-	for <linux-bcachefs@archiver.kernel.org>; Sat, 13 May 2023 01:58:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A40C77B7D
+	for <linux-bcachefs@archiver.kernel.org>; Sat, 13 May 2023 13:26:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240493AbjEMB55 (ORCPT
+        id S232564AbjEMN0A (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 12 May 2023 21:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
+        Sat, 13 May 2023 09:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjEMB54 (ORCPT
+        with ESMTP id S232079AbjEMNZ7 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 12 May 2023 21:57:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2678D559F;
-        Fri, 12 May 2023 18:57:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AAF7660C80;
-        Sat, 13 May 2023 01:57:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCC24C433D2;
-        Sat, 13 May 2023 01:57:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683943074;
-        bh=eFikobi7MSbviz1Fp5uL4fBgaRdT+cxkeTjrebawFcU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uUX2uRiISwv4wnF/caLxPD9c7EdINaQrl3AcnTofcVnLITWh141w9BVcbpbYm+ddn
-         TpiEPmdc6m+PTGksGdUvlj5tPm8yreD+O3n2Km2sx/ja1S5FF3HMye2BbqKMPOicZV
-         +adPoQDfAiQOlqTJbWXeRYVQ0K7MJtHlPLBCy6ro3S02hSTwZMBvXGRxc4wIch6ywf
-         wXZGRhYTs61TI7ktCreUiCrLdONf30uLreYNXoZXiuqjyc5LQg7Ux2pTA//+FPrERY
-         yVn+ZfteA4TqWB886MrUtR6RX0nKp9ioei0YyaXaDVRV0NWckZb86GyEyCzPhnWlbm
-         9HuSxxWigYFjg==
-Date:   Fri, 12 May 2023 18:57:52 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
+        Sat, 13 May 2023 09:25:59 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BE9F9;
+        Sat, 13 May 2023 06:25:54 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3f4c6c4b425so26475525e9.2;
+        Sat, 13 May 2023 06:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683984353; x=1686576353;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OZ9suH3ysp93knG+LU0uGT9RZVnxtGwdUs21az4sbeY=;
+        b=LLWWTC34vSI3jpNT/zyl5RqzF/v1bIiGvyiYvrtMN8jjjzdEzIai/eiOraHQrauYam
+         erId9ONSYr708J/L2MRSkt0ge+0hLyJr/N/u8r/cKralLyhjFzlX/6ki7aodxs7m7ZZG
+         3i7L/UK1r63y2DwYaHzCi4MKpkFoGA05F5gX/ji8gZuFn0ROx1bVlAs0foZWqb5BA6wn
+         YvOT7j8Pz/zcfm0KXgYAuZQ81xmQTKOtAsjxWjFC9uH4oOvEhIlu8Hdk87BIfGe090t8
+         CpafDsH+CiRZ56wKFwMCQ+n19YJ0ZMUdYeC2F1Bd8gNmcAyC/gXUvAdIo6mb3m28mz8N
+         KaCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683984353; x=1686576353;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OZ9suH3ysp93knG+LU0uGT9RZVnxtGwdUs21az4sbeY=;
+        b=JTM91b2HZpOlPfOhJDIqW6A41ngglEucfdn3nWhmhC2CNS6eR/Ou6T4bz9TyhQ0AQg
+         qCF0agqL2ZCSWzNAkr0uBmGju3wnIsi7G/6PddDcdmD2pzGgj3W+wqu/103xc4m8Mb1q
+         u05HXvAgS/tQGmoDS2j0yuiNMpfm5g4SfBi2SquOQbL27GeQf3zQT3nbBp/UJnVmKuS7
+         60Rnxe2LZGx/4b0qgc6nos5/UHuF6w8lMm5O79SNfWDKv/4nhs3maedW+NX/PekzhGEf
+         DH47XObylKnxk22MR+6OMqx0s0bSuRP03792wMvnDWFykXC77CONNegDyNeEGTOtiU7f
+         +prg==
+X-Gm-Message-State: AC+VfDzqEzeoIXFrD9+wzli6UBDWLIC8MXrQsso3exCSL+MRwovadiAa
+        Ls5K5pDVvkLXUZTZlhqoJZY=
+X-Google-Smtp-Source: ACHHUZ4Fz/9yo2Vm9Z/ZjMqmZaOp0EPZjKnAs/L7EDiSodi1OfaqFtGjEb2oM/fg3JKfA96SeGDvPQ==
+X-Received: by 2002:a05:600c:c6:b0:3f4:28db:f5ff with SMTP id u6-20020a05600c00c600b003f428dbf5ffmr13378158wmm.35.1683984352479;
+        Sat, 13 May 2023 06:25:52 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id e3-20020a05600c218300b003f421979398sm20316940wme.26.2023.05.13.06.25.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 May 2023 06:25:51 -0700 (PDT)
+Date:   Sat, 13 May 2023 14:25:50 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org,
         Kent Overstreet <kent.overstreet@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
 Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <20230513015752.GC3033@quark.localdomain>
+Message-ID: <8f76b8c2-f59d-43fc-9613-bb094e53fb16@lucifer.local>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-8-kent.overstreet@linux.dev>
  <ZFqxEWqD19eHe353@infradead.org>
  <ZFq3SdSBJ_LWsOgd@murray>
- <ZFq7JhrhyrMTNfd/@moria.home.lan>
- <20230510064849.GC1851@quark.localdomain>
- <ZF6HHRDeUWLNtuL7@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZF6HHRDeUWLNtuL7@moria.home.lan>
+In-Reply-To: <ZFq3SdSBJ_LWsOgd@murray>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi Kent,
+On Tue, May 09, 2023 at 02:12:41PM -0700, Lorenzo Stoakes wrote:
+> On Tue, May 09, 2023 at 01:46:09PM -0700, Christoph Hellwig wrote:
+> > On Tue, May 09, 2023 at 12:56:32PM -0400, Kent Overstreet wrote:
+> > > From: Kent Overstreet <kent.overstreet@gmail.com>
+> > >
+> > > This is needed for bcachefs, which dynamically generates per-btree node
+> > > unpack functions.
+> >
+> > No, we will never add back a way for random code allocating executable
+> > memory in kernel space.
+>
+> Yeah I think I glossed over this aspect a bit as it looks ostensibly like simply
+> reinstating a helper function because the code is now used in more than one
+> place (at lsf/mm so a little distracted :)
+>
+> But it being exported is a problem. Perhaps there's another way of acheving the
+> same aim without having to do so?
 
-On Fri, May 12, 2023 at 02:36:13PM -0400, Kent Overstreet wrote:
-> On Tue, May 09, 2023 at 11:48:49PM -0700, Eric Biggers wrote:
-> > What seems to be missing is any explanation for what we're actually getting from
-> > this extremely unusual solution that cannot be gained any other way.  What is
-> > unique about bcachefs that it really needs something like this?
-> 
-> Ok, as promised:
-> 
-> Background: all metadata in bcachefs is a structured as key/value pairs,
-> and there's a common key format for all keys.
-> 
-> struct bkey {
-> 	/* 3 byte header */
-> 	u8		u64s;		/* size of k/v in u64s */
-> 	u8		format;		/* packed/unpacked, needs_whiteout */
-> 	u8		type;		/* value type */
-> 	u8		pad;
-> 
-> 	/*
-> 	 * Order of fields below is for little endian, they're in
-> 	 * reverse order on big endian (and byte swabbed as necessary
-> 	 * when reading foreign endian metadata)
-> 	 * 
-> 	 * Since field order matches byte order, the key can be treated
-> 	 * as one large multi word integer for doing comparisons:
-> 	 */
-> 	u96		version;	/* nonces, send/recv support */
-> 	u32		size;		/* size of extent keys */
-> 
-> 	/* Below are the field used for ordering/comparison: */
-> 	u32		snapshot;	
-> 	u64		offset;
-> 	u64		inode;
-> 
-> 	/* Value is stored inline with key */
-> 	struct bch_val	v;
-> };
-> 
-> sizeof(struct bkey) == 40.
-> 
-> An extent value that has one pointer and no checksum is 8 bytes, with
-> one pointer and one 32 bit checksum 16 bytes, for 56 bytes total (key
-> included).
-> 
-> But for a given btree node, most of the key fields will typically be
-> redundandant. An extents leaf node might have extents for all one inode
-> number or a small range of inode numbers, snapshots may or may not be in
-> use, etc. - clearly some compression is desirable here.
-> 
-> The key observation is that key compression is possible if we have a
-> compression function that preserves order, and an order-preserving
-> compression function is possible if it's allowed to fail. That means we
-> do comparisons on packed keys, which lets us skip _most_ unpack
-> operations, for btree node resorts and for lookups within a node.
-> 
-> Packing works by defining a format with an offset and a bit width for
-> each field, so e.g. if all keys in a btree node have the same inode
-> number the packed format can specify that inode number and then a field
-> width of 0 bits for the inode field.
-> 
-> Continuing the arithmetic from before, a packed extent key will
-> typically be only 8 or 16 bytes, or 24-32 including the val, which means
-> bkey packing cuts our metadata size roughly in half.
-> 
-> (It also makes our key format somewhat self describing and gives us a
-> mechanism by which we could add or extend fields in the future).
-> 
-> -----------------------------------------------------
-> 
-> As mentioned before, since packed bkeys are still multi-word integers we
-> can do some important operations without unpacking, but to iterate over
-> keys, compare packed & unpacked keys in resort, etc. - we'll still need
-> to unpack, so we need this operation to be as fast as possible.
-> 
-> bkey.c __bch2_bkey_unpack_key() is the unspecialized version written in
-> C, that works on any archictecture. It loops over the fields in a
-> bkey_format, pulling them out of the input words and adding back the
-> field offsets. It's got the absolute minimum number of branches - one
-> per field, when deciding to advance to the next input word - but it
-> can't be branchless and it's a whole ton of shifts and bitops.
-> 
-> dynamic codegen lets us produce unpack functions that are fully
-> branchless and _much_ smaller. For any given btree node we'll have a
-> format where multiple fields have 0 field with - i.e. those fields are
-> always constants. That code goes away, and also if the format can be
-> byte aligned we can eliminate shifts and bitopts. Code size for the
-> dynamically compiled unpack functions is roughly 10% that of the
-> unspecialized C version.
-> 
-> I hope that addresses some of the "what is this even for" questions :)
-> 
-> Cheers,
-> Kent
+Just to be abundantly clear, my original ack was a mistake (I overlooked
+the _exporting_ of the function being as significant as it is and assumed
+in an LSF/MM haze that it was simply a refactoring of _already available_
+functionality rather than newly providing a means to allocate directly
+executable kernel memory).
 
-I don't think this response addresses all the possibilities for optimizing the C
-implementation, so I'd like to bring up a few and make sure that you've explored
-them.
+Exporting this is horrible for the numerous reasons expounded on in this
+thread, we need a different solution.
 
-To summarize, you need to decode 6 fields that are each a variable number of
-bits (not known at compile time), and add an offset (also not known at compile
-time) to each field.
-
-I don't think the offset is particularly interesting.  Adding an offset to each
-field is very cheap and trivially parallelizable by the CPU.
-
-It's really the bit width that's "interesting", as it must be the serialized
-decoding of variable-length fields that slows things down a lot.
-
-First, I wanted to mention that decoding of variable-length fields has been
-extensively studied for decompression algorithms, e.g. for Huffman decoding.
-And it turns out that it can be done branchlessly.  The basic idea is that you
-have a branchless refill step that looks like the following:
-
-#define REFILL_BITS_BRANCHLESS()                    \
-        bitbuf |= get_unaligned_u64(p) << bitsleft; \
-        p += 7 - ((bitsleft >> 3) & 0x7);           \
-        bitsleft |= 56;
-
-That branchlessly ensures that 'bitbuf' contains '56 <= bitsleft <= 63' bits.
-Then, the needed number of bits can be removed and returned:
-
-#define READ_BITS(n)                          \
-        REFILL_BITS_BRANCHLESS();             \
-        tmp = bitbuf & (((u64)1 << (n)) - 1); \
-        bitbuf >>= (n);                       \
-        bitsleft -= (n);                      \
-        tmp
-
-If you're interested, I can give you some references about the above method.
-But, I really just wanted to mention it for completeness, since I think you'd
-actually want to go in a slightly different direction, since (a) you have all
-the field widths available from the beginning, as opposed to being interleaved
-into the bitstream itself (as is the case in Huffman decoding for example), so
-you're not limited to serialized decoding of each field, (b) your fields are up
-to 96 bits, and (c) you've selected a bitstream convention that seems to make it
-such that your stream *must* be read in aligned units of u64, so I don't think
-something like REFILL_BITS_BRANCHLESS() could work for you anyway.
-
-What I would suggest instead is preprocessing the list of 6 field lengths to
-create some information that can be used to extract all 6 fields branchlessly
-with no dependencies between different fields.  (And you clearly *can* add a
-preprocessing step, as you already have one -- the dynamic code generator.)
-
-So, something like the following:
-
-    const struct field_info *info = &format->fields[0];
-
-    field0 = (in->u64s[info->word_idx] >> info->shift1) & info->mask;
-    field0 |= in->u64s[info->word_idx - 1] >> info->shift2;
-
-... but with the code for all 6 fields interleaved.
-
-On modern CPUs, I think that would be faster than your current C code.
-
-You could do better by creating variants that are specialized for specific
-common sets of parameters.  During "preprocessing", you would select a variant
-and set an enum accordingly.  During decoding, you would switch on that enum and
-call the appropriate variant.  (This could also be done with a function pointer,
-of course, but indirect calls are slow these days...)
-
-For example, you mentioned that 8-byte packed keys is a common case.  In that
-case there is only a single u64 to decode from, so you could create a function
-that just handles that case:
-
-    field0 = (word >> info->shift) & info->mask;
-
-You could also create other variants, e.g.:
-
-- 16-byte packed keys (which you mentioned are common)
-- Some specific set of fields have zero width so don't need to be extracted
-  (which it sounds like is common, or is it different fields each time?)
-- All fields having specific lengths (are there any particularly common cases?)
-
-Have you considered any of these ideas?
-
-- Eric
+Nacked-by: Lorenzo Stoakes <lstoakes@gmail.com>
