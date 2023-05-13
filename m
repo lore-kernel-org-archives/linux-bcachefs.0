@@ -2,102 +2,97 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A40C77B7D
-	for <linux-bcachefs@archiver.kernel.org>; Sat, 13 May 2023 13:26:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C4A6C77B7D
+	for <linux-bcachefs@archiver.kernel.org>; Sat, 13 May 2023 19:28:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbjEMN0A (ORCPT
+        id S232501AbjEMT20 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sat, 13 May 2023 09:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        Sat, 13 May 2023 15:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbjEMNZ7 (ORCPT
+        with ESMTP id S229508AbjEMT2Z (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sat, 13 May 2023 09:25:59 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BE9F9;
-        Sat, 13 May 2023 06:25:54 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3f4c6c4b425so26475525e9.2;
-        Sat, 13 May 2023 06:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683984353; x=1686576353;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OZ9suH3ysp93knG+LU0uGT9RZVnxtGwdUs21az4sbeY=;
-        b=LLWWTC34vSI3jpNT/zyl5RqzF/v1bIiGvyiYvrtMN8jjjzdEzIai/eiOraHQrauYam
-         erId9ONSYr708J/L2MRSkt0ge+0hLyJr/N/u8r/cKralLyhjFzlX/6ki7aodxs7m7ZZG
-         3i7L/UK1r63y2DwYaHzCi4MKpkFoGA05F5gX/ji8gZuFn0ROx1bVlAs0foZWqb5BA6wn
-         YvOT7j8Pz/zcfm0KXgYAuZQ81xmQTKOtAsjxWjFC9uH4oOvEhIlu8Hdk87BIfGe090t8
-         CpafDsH+CiRZ56wKFwMCQ+n19YJ0ZMUdYeC2F1Bd8gNmcAyC/gXUvAdIo6mb3m28mz8N
-         KaCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683984353; x=1686576353;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OZ9suH3ysp93knG+LU0uGT9RZVnxtGwdUs21az4sbeY=;
-        b=JTM91b2HZpOlPfOhJDIqW6A41ngglEucfdn3nWhmhC2CNS6eR/Ou6T4bz9TyhQ0AQg
-         qCF0agqL2ZCSWzNAkr0uBmGju3wnIsi7G/6PddDcdmD2pzGgj3W+wqu/103xc4m8Mb1q
-         u05HXvAgS/tQGmoDS2j0yuiNMpfm5g4SfBi2SquOQbL27GeQf3zQT3nbBp/UJnVmKuS7
-         60Rnxe2LZGx/4b0qgc6nos5/UHuF6w8lMm5O79SNfWDKv/4nhs3maedW+NX/PekzhGEf
-         DH47XObylKnxk22MR+6OMqx0s0bSuRP03792wMvnDWFykXC77CONNegDyNeEGTOtiU7f
-         +prg==
-X-Gm-Message-State: AC+VfDzqEzeoIXFrD9+wzli6UBDWLIC8MXrQsso3exCSL+MRwovadiAa
-        Ls5K5pDVvkLXUZTZlhqoJZY=
-X-Google-Smtp-Source: ACHHUZ4Fz/9yo2Vm9Z/ZjMqmZaOp0EPZjKnAs/L7EDiSodi1OfaqFtGjEb2oM/fg3JKfA96SeGDvPQ==
-X-Received: by 2002:a05:600c:c6:b0:3f4:28db:f5ff with SMTP id u6-20020a05600c00c600b003f428dbf5ffmr13378158wmm.35.1683984352479;
-        Sat, 13 May 2023 06:25:52 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id e3-20020a05600c218300b003f421979398sm20316940wme.26.2023.05.13.06.25.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 May 2023 06:25:51 -0700 (PDT)
-Date:   Sat, 13 May 2023 14:25:50 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Sat, 13 May 2023 15:28:25 -0400
+Received: from out-22.mta1.migadu.com (out-22.mta1.migadu.com [IPv6:2001:41d0:203:375::16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E63610CE
+        for <linux-bcachefs@vger.kernel.org>; Sat, 13 May 2023 12:28:24 -0700 (PDT)
+Date:   Sat, 13 May 2023 15:28:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1684006102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pZ3u1CrwwU+GfMaup+iHwAK48qBfxEDVoofnNqrsG9Q=;
+        b=ic7SAyuoFp7zwWIDHRTVlp796UJt9qNLi/31Bt8w/eCvrxJAb8ItdBTWHvxvgXQZJkAdl+
+        FdMITYl/2Ym4nlasoNe8vjuG6KbqiFsHqo5dDLibdpNfqcrjAT+w8d+fZfRUflQOypYJJ8
+        V2GD34J/75ugp2k6hJHTyqYEl5dsKQQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org,
         Kent Overstreet <kent.overstreet@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
 Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <8f76b8c2-f59d-43fc-9613-bb094e53fb16@lucifer.local>
+Message-ID: <ZF/k0Xo76q60uk0M@moria.home.lan>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-8-kent.overstreet@linux.dev>
  <ZFqxEWqD19eHe353@infradead.org>
  <ZFq3SdSBJ_LWsOgd@murray>
+ <ZFq7JhrhyrMTNfd/@moria.home.lan>
+ <20230510064849.GC1851@quark.localdomain>
+ <ZF6HHRDeUWLNtuL7@moria.home.lan>
+ <20230513015752.GC3033@quark.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZFq3SdSBJ_LWsOgd@murray>
+In-Reply-To: <20230513015752.GC3033@quark.localdomain>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 09, 2023 at 02:12:41PM -0700, Lorenzo Stoakes wrote:
-> On Tue, May 09, 2023 at 01:46:09PM -0700, Christoph Hellwig wrote:
-> > On Tue, May 09, 2023 at 12:56:32PM -0400, Kent Overstreet wrote:
-> > > From: Kent Overstreet <kent.overstreet@gmail.com>
-> > >
-> > > This is needed for bcachefs, which dynamically generates per-btree node
-> > > unpack functions.
-> >
-> > No, we will never add back a way for random code allocating executable
-> > memory in kernel space.
->
-> Yeah I think I glossed over this aspect a bit as it looks ostensibly like simply
-> reinstating a helper function because the code is now used in more than one
-> place (at lsf/mm so a little distracted :)
->
-> But it being exported is a problem. Perhaps there's another way of acheving the
-> same aim without having to do so?
+On Fri, May 12, 2023 at 06:57:52PM -0700, Eric Biggers wrote:
+> What I would suggest instead is preprocessing the list of 6 field lengths to
+> create some information that can be used to extract all 6 fields branchlessly
+> with no dependencies between different fields.  (And you clearly *can* add a
+> preprocessing step, as you already have one -- the dynamic code generator.)
+> 
+> So, something like the following:
+> 
+>     const struct field_info *info = &format->fields[0];
+> 
+>     field0 = (in->u64s[info->word_idx] >> info->shift1) & info->mask;
+>     field0 |= in->u64s[info->word_idx - 1] >> info->shift2;
+> 
+> ... but with the code for all 6 fields interleaved.
+> 
+> On modern CPUs, I think that would be faster than your current C code.
+> 
+> You could do better by creating variants that are specialized for specific
+> common sets of parameters.  During "preprocessing", you would select a variant
+> and set an enum accordingly.  During decoding, you would switch on that enum and
+> call the appropriate variant.  (This could also be done with a function pointer,
+> of course, but indirect calls are slow these days...)
+> 
+> For example, you mentioned that 8-byte packed keys is a common case.  In that
+> case there is only a single u64 to decode from, so you could create a function
+> that just handles that case:
+> 
+>     field0 = (word >> info->shift) & info->mask;
+> 
+> You could also create other variants, e.g.:
+> 
+> - 16-byte packed keys (which you mentioned are common)
+> - Some specific set of fields have zero width so don't need to be extracted
+>   (which it sounds like is common, or is it different fields each time?)
+> - All fields having specific lengths (are there any particularly common cases?)
+> 
+> Have you considered any of these ideas?
 
-Just to be abundantly clear, my original ack was a mistake (I overlooked
-the _exporting_ of the function being as significant as it is and assumed
-in an LSF/MM haze that it was simply a refactoring of _already available_
-functionality rather than newly providing a means to allocate directly
-executable kernel memory).
+I like that idea.
 
-Exporting this is horrible for the numerous reasons expounded on in this
-thread, we need a different solution.
-
-Nacked-by: Lorenzo Stoakes <lstoakes@gmail.com>
+Gonna hack some code... :)
