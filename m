@@ -2,30 +2,30 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C4A6C77B7D
-	for <linux-bcachefs@archiver.kernel.org>; Sat, 13 May 2023 19:28:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E556C77B7F
+	for <linux-bcachefs@archiver.kernel.org>; Sun, 14 May 2023 05:45:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbjEMT20 (ORCPT
+        id S231664AbjENFpj (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sat, 13 May 2023 15:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
+        Sun, 14 May 2023 01:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjEMT2Z (ORCPT
+        with ESMTP id S229548AbjENFpi (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sat, 13 May 2023 15:28:25 -0400
-Received: from out-22.mta1.migadu.com (out-22.mta1.migadu.com [IPv6:2001:41d0:203:375::16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E63610CE
-        for <linux-bcachefs@vger.kernel.org>; Sat, 13 May 2023 12:28:24 -0700 (PDT)
-Date:   Sat, 13 May 2023 15:28:17 -0400
+        Sun, 14 May 2023 01:45:38 -0400
+Received: from out-12.mta0.migadu.com (out-12.mta0.migadu.com [91.218.175.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE711FD5
+        for <linux-bcachefs@vger.kernel.org>; Sat, 13 May 2023 22:45:36 -0700 (PDT)
+Date:   Sun, 14 May 2023 01:45:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1684006102;
+        t=1684043134;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=pZ3u1CrwwU+GfMaup+iHwAK48qBfxEDVoofnNqrsG9Q=;
-        b=ic7SAyuoFp7zwWIDHRTVlp796UJt9qNLi/31Bt8w/eCvrxJAb8ItdBTWHvxvgXQZJkAdl+
-        FdMITYl/2Ym4nlasoNe8vjuG6KbqiFsHqo5dDLibdpNfqcrjAT+w8d+fZfRUflQOypYJJ8
-        V2GD34J/75ugp2k6hJHTyqYEl5dsKQQ=
+        bh=Qjw9R07t509s4y9z5LtStC5k9C/e0uq9CvIhkbXJnQc=;
+        b=O+AZ8Mb+2d7xaS2/Gh0spUNLJ9ot0yP8kYnoSU4+o7Lhb7xJ5fQYOv9b7C/5Wfz7SoXD9p
+        YgC1kS5j8+4EAMT6uG7PtwPjb5JHKDnLgZzc0Z11vnbmcNLFHaY0ugHEOF84WYbGz9CnRd
+        6DtNe8XUAt8LpqtqpceWYji9TIp44cU=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     Eric Biggers <ebiggers@kernel.org>
@@ -37,7 +37,7 @@ Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
 Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <ZF/k0Xo76q60uk0M@moria.home.lan>
+Message-ID: <ZGB1eevk/u2ssIBT@moria.home.lan>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-8-kent.overstreet@linux.dev>
  <ZFqxEWqD19eHe353@infradead.org>
@@ -56,6 +56,40 @@ List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 On Fri, May 12, 2023 at 06:57:52PM -0700, Eric Biggers wrote:
+> First, I wanted to mention that decoding of variable-length fields has been
+> extensively studied for decompression algorithms, e.g. for Huffman decoding.
+> And it turns out that it can be done branchlessly.  The basic idea is that you
+> have a branchless refill step that looks like the following:
+> 
+> #define REFILL_BITS_BRANCHLESS()                    \
+>         bitbuf |= get_unaligned_u64(p) << bitsleft; \
+>         p += 7 - ((bitsleft >> 3) & 0x7);           \
+>         bitsleft |= 56;
+> 
+> That branchlessly ensures that 'bitbuf' contains '56 <= bitsleft <= 63' bits.
+> Then, the needed number of bits can be removed and returned:
+> 
+> #define READ_BITS(n)                          \
+>         REFILL_BITS_BRANCHLESS();             \
+>         tmp = bitbuf & (((u64)1 << (n)) - 1); \
+>         bitbuf >>= (n);                       \
+>         bitsleft -= (n);                      \
+>         tmp
+> 
+> If you're interested, I can give you some references about the above method.
+
+I might be interested in those references, new bit tricks and integer
+encodings are always fun :)
+
+> But, I really just wanted to mention it for completeness, since I think you'd
+> actually want to go in a slightly different direction, since (a) you have all
+> the field widths available from the beginning, as opposed to being interleaved
+> into the bitstream itself (as is the case in Huffman decoding for example), so
+> you're not limited to serialized decoding of each field, (b) your fields are up
+> to 96 bits, and (c) you've selected a bitstream convention that seems to make it
+> such that your stream *must* be read in aligned units of u64, so I don't think
+> something like REFILL_BITS_BRANCHLESS() could work for you anyway.
+> 
 > What I would suggest instead is preprocessing the list of 6 field lengths to
 > create some information that can be used to extract all 6 fields branchlessly
 > with no dependencies between different fields.  (And you clearly *can* add a
@@ -77,22 +111,201 @@ On Fri, May 12, 2023 at 06:57:52PM -0700, Eric Biggers wrote:
 > and set an enum accordingly.  During decoding, you would switch on that enum and
 > call the appropriate variant.  (This could also be done with a function pointer,
 > of course, but indirect calls are slow these days...)
-> 
-> For example, you mentioned that 8-byte packed keys is a common case.  In that
-> case there is only a single u64 to decode from, so you could create a function
-> that just handles that case:
-> 
->     field0 = (word >> info->shift) & info->mask;
-> 
-> You could also create other variants, e.g.:
-> 
-> - 16-byte packed keys (which you mentioned are common)
-> - Some specific set of fields have zero width so don't need to be extracted
->   (which it sounds like is common, or is it different fields each time?)
-> - All fields having specific lengths (are there any particularly common cases?)
-> 
-> Have you considered any of these ideas?
 
-I like that idea.
+testing random btree updates:
 
-Gonna hack some code... :)
+dynamically generated unpack:
+rand_insert: 20.0 MiB with 1 threads in    33 sec,  1609 nsec per iter, 607 KiB per sec
+
+old C unpack:
+rand_insert: 20.0 MiB with 1 threads in    35 sec,  1672 nsec per iter, 584 KiB per sec
+
+the Eric Biggers special:
+rand_insert: 20.0 MiB with 1 threads in    35 sec,  1676 nsec per iter, 583 KiB per sec
+
+Tested two versions of your approach, one without a shift value, one
+where we use a shift value to try to avoid unaligned access - second was
+perhaps 1% faster
+
+so it's not looking good. This benchmark doesn't even hit on
+unpack_key() quite as much as I thought, so the difference is
+significant.
+
+diff --git a/fs/bcachefs/bkey.c b/fs/bcachefs/bkey.c
+index 6d3a1c096f..128d96766c 100644
+--- a/fs/bcachefs/bkey.c
++++ b/fs/bcachefs/bkey.c
+@@ -7,6 +7,8 @@
+ #include "bset.h"
+ #include "util.h"
+ 
++#include <asm/unaligned.h>
++
+ #undef EBUG_ON
+ 
+ #ifdef DEBUG_BKEYS
+@@ -19,9 +21,35 @@ const struct bkey_format bch2_bkey_format_current = BKEY_FORMAT_CURRENT;
+ 
+ struct bkey_format_processed bch2_bkey_format_postprocess(const struct bkey_format f)
+ {
+-	return (struct bkey_format_processed) {
+-		.f = f,
+-	};
++	struct bkey_format_processed ret = { .f = f, .aligned = true };
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++	unsigned offset = f.key_u64s * 64;
++#else
++	unsigned offset = KEY_PACKED_BITS_START;
++#endif
++
++	for (unsigned i = 0; i < BKEY_NR_FIELDS; i++) {
++		unsigned bits = f.bits_per_field[i];
++
++		if (bits & 7) {
++			ret.aligned = false;
++			break;
++		}
++
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++		offset -= bits;
++#endif
++
++		ret.shift[i]	= min(offset & 63, 64 - bits);
++		ret.offset[i]	= (offset - ret.shift[i]) / 8;
++		ret.mask[i]	= bits ? ~0ULL >> (64 - bits) : 0;
++
++#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
++		offset += bits;
++#endif
++	}
++
++	return ret;
+ }
+ 
+ void bch2_bkey_packed_to_binary_text(struct printbuf *out,
+@@ -191,6 +219,19 @@ static u64 get_inc_field(struct unpack_state *state, unsigned field)
+ 	return v + offset;
+ }
+ 
++__always_inline
++static u64 get_aligned_field(const struct bkey_format_processed *f,
++			     const struct bkey_packed *in,
++			     unsigned field_idx)
++{
++	u64 v = get_unaligned((u64 *) (((u8 *) in->_data) + f->offset[field_idx]));
++
++	v >>= f->shift[field_idx];
++	v &= f->mask[field_idx];
++
++	return v + le64_to_cpu(f->f.field_offset[field_idx]);
++}
++
+ __always_inline
+ static bool set_inc_field(struct pack_state *state, unsigned field, u64 v)
+ {
+@@ -269,45 +310,57 @@ bool bch2_bkey_transform(const struct bkey_format *out_f,
+ 	return true;
+ }
+ 
+-struct bkey __bch2_bkey_unpack_key(const struct bkey_format_processed *format_p,
++struct bkey __bch2_bkey_unpack_key(const struct bkey_format_processed *format,
+ 				   const struct bkey_packed *in)
+ {
+-	const struct bkey_format *format = &format_p->f;
+-	struct unpack_state state = unpack_state_init(format, in);
+ 	struct bkey out;
+ 
+-	EBUG_ON(format->nr_fields != BKEY_NR_FIELDS);
+-	EBUG_ON(in->u64s < format->key_u64s);
++	EBUG_ON(format->f.nr_fields != BKEY_NR_FIELDS);
++	EBUG_ON(in->u64s < format->f.key_u64s);
+ 	EBUG_ON(in->format != KEY_FORMAT_LOCAL_BTREE);
+-	EBUG_ON(in->u64s - format->key_u64s + BKEY_U64s > U8_MAX);
++	EBUG_ON(in->u64s - format->f.key_u64s + BKEY_U64s > U8_MAX);
+ 
+-	out.u64s	= BKEY_U64s + in->u64s - format->key_u64s;
++	out.u64s	= BKEY_U64s + in->u64s - format->f.key_u64s;
+ 	out.format	= KEY_FORMAT_CURRENT;
+ 	out.needs_whiteout = in->needs_whiteout;
+ 	out.type	= in->type;
+ 	out.pad[0]	= 0;
+ 
++	if (likely(format->aligned)) {
++#define x(id, field)	out.field = get_aligned_field(format, in, id);
++		bkey_fields()
++#undef x
++	} else {
++		struct unpack_state state = unpack_state_init(&format->f, in);
++
+ #define x(id, field)	out.field = get_inc_field(&state, id);
+-	bkey_fields()
++		bkey_fields()
+ #undef x
++	}
+ 
+ 	return out;
+ }
+ 
+-struct bpos __bkey_unpack_pos(const struct bkey_format_processed *format_p,
++struct bpos __bkey_unpack_pos(const struct bkey_format_processed *format,
+ 			      const struct bkey_packed *in)
+ {
+-	const struct bkey_format *format = &format_p->f;
+-	struct unpack_state state = unpack_state_init(format, in);
+ 	struct bpos out;
+ 
+-	EBUG_ON(format->nr_fields != BKEY_NR_FIELDS);
+-	EBUG_ON(in->u64s < format->key_u64s);
++	EBUG_ON(format->f.nr_fields != BKEY_NR_FIELDS);
++	EBUG_ON(in->u64s < format->f.key_u64s);
+ 	EBUG_ON(in->format != KEY_FORMAT_LOCAL_BTREE);
+ 
+-	out.inode	= get_inc_field(&state, BKEY_FIELD_INODE);
+-	out.offset	= get_inc_field(&state, BKEY_FIELD_OFFSET);
+-	out.snapshot	= get_inc_field(&state, BKEY_FIELD_SNAPSHOT);
++	if (likely(format->aligned)) {
++		out.inode	= get_aligned_field(format, in, BKEY_FIELD_INODE);
++		out.offset	= get_aligned_field(format, in, BKEY_FIELD_OFFSET);
++		out.snapshot	= get_aligned_field(format, in, BKEY_FIELD_SNAPSHOT);
++	} else {
++		struct unpack_state state = unpack_state_init(&format->f, in);
++
++		out.inode	= get_inc_field(&state, BKEY_FIELD_INODE);
++		out.offset	= get_inc_field(&state, BKEY_FIELD_OFFSET);
++		out.snapshot	= get_inc_field(&state, BKEY_FIELD_SNAPSHOT);
++	}
+ 
+ 	return out;
+ }
+diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
+index 58ce60c37e..38c3ec6852 100644
+--- a/fs/bcachefs/btree_types.h
++++ b/fs/bcachefs/btree_types.h
+@@ -70,6 +70,10 @@ struct btree_bkey_cached_common {
+ 
+ struct bkey_format_processed {
+ 	struct bkey_format	f;
++	bool			aligned;
++	u8			offset[6];
++	u8			shift[6];
++	u64			mask[6];
+ };
+ 
+ struct btree {
+diff --git a/fs/bcachefs/btree_update_interior.h b/fs/bcachefs/btree_update_interior.h
+index dcfd7ceacc..72aedc1e34 100644
+--- a/fs/bcachefs/btree_update_interior.h
++++ b/fs/bcachefs/btree_update_interior.h
+@@ -181,7 +181,11 @@ static inline void btree_node_reset_sib_u64s(struct btree *b)
+ 
+ static inline void *btree_data_end(struct bch_fs *c, struct btree *b)
+ {
+-	return (void *) b->data + btree_bytes(c);
++	/*
++	 * __bch2_bkey_unpack_key() may read up to 8 bytes past the end of the
++	 * input buffer:
++	 */
++	return (void *) b->data + btree_bytes(c) - 8;
+ }
+ 
+ static inline struct bkey_packed *unwritten_whiteouts_start(struct bch_fs *c,
