@@ -2,86 +2,104 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51FF6C77B75
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 15 May 2023 07:26:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E6F2C77B7D
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 15 May 2023 10:29:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbjEOH04 (ORCPT
+        id S231829AbjEOK30 convert rfc822-to-8bit (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 15 May 2023 03:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45978 "EHLO
+        Mon, 15 May 2023 06:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238702AbjEOH0z (ORCPT
+        with ESMTP id S230186AbjEOK3Z (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 15 May 2023 03:26:55 -0400
-Received: from out-5.mta0.migadu.com (out-5.mta0.migadu.com [IPv6:2001:41d0:1004:224b::5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56028DA
-        for <linux-bcachefs@vger.kernel.org>; Mon, 15 May 2023 00:26:49 -0700 (PDT)
-Date:   Mon, 15 May 2023 03:26:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1684135607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MiMXjQSln0dtBobMFdzPKQ/MVgbhIU/qdMUMXbRpyRs=;
-        b=Yo5HQVlC5T/RlG0F1NWP61AQIcCBYkCdSZHYD/8ksY1fzx4GYr8jAZCkCoFZ9mjij8r5wY
-        yc+vGtVq6FiqqbQ9ko1zj2ZfyajpGWAh9LjNtlTIgeBjnU9rT7JioXlndCvK44yEqWF6DI
-        BpyHKJ5Sa1jkY/phUwXQ4KJRDbYu/wM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
+        Mon, 15 May 2023 06:29:25 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67107E75
+        for <linux-bcachefs@vger.kernel.org>; Mon, 15 May 2023 03:29:22 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-9-fk4fV_TIMaibnjx8Kk2ggA-1; Mon, 15 May 2023 11:29:20 +0100
+X-MC-Unique: fk4fV_TIMaibnjx8Kk2ggA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 15 May
+ 2023 11:29:19 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 15 May 2023 11:29:19 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kent Overstreet' <kent.overstreet@linux.dev>,
+        Eric Biggers <ebiggers@kernel.org>
+CC:     Lorenzo Stoakes <lstoakes@gmail.com>,
         Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
         Kent Overstreet <kent.overstreet@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <ZGHesxEMsCfOewhy@moria.home.lan>
-References: <ZFq7JhrhyrMTNfd/@moria.home.lan>
- <20230510064849.GC1851@quark.localdomain>
- <ZF6HHRDeUWLNtuL7@moria.home.lan>
- <20230513015752.GC3033@quark.localdomain>
+        Uladzislau Rezki <urezki@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: RE: [PATCH 07/32] mm: Bring back vmalloc_exec
+Thread-Topic: [PATCH 07/32] mm: Bring back vmalloc_exec
+Thread-Index: AQHZhidTKdvNQYED30e4lpVLdXSS2q9bIbmQ
+Date:   Mon, 15 May 2023 10:29:18 +0000
+Message-ID: <1f1d88a6a33f4e5db99544fda965c594@AcuMS.aculab.com>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-8-kent.overstreet@linux.dev>
+ <ZFqxEWqD19eHe353@infradead.org> <ZFq3SdSBJ_LWsOgd@murray>
+ <ZFq7JhrhyrMTNfd/@moria.home.lan> <20230510064849.GC1851@quark.localdomain>
+ <ZF6HHRDeUWLNtuL7@moria.home.lan> <20230513015752.GC3033@quark.localdomain>
  <ZGB1eevk/u2ssIBT@moria.home.lan>
- <20230514184325.GB9528@sol.localdomain>
- <ZGHFa4AprPSsEpeq@moria.home.lan>
- <20230515061346.GB15871@sol.localdomain>
- <ZGHOppBFcKEJkzCe@moria.home.lan>
- <20230515071343.GD15871@sol.localdomain>
+In-Reply-To: <ZGB1eevk/u2ssIBT@moria.home.lan>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230515071343.GD15871@sol.localdomain>
-X-Migadu-Flow: FLOW_OUT
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Mon, May 15, 2023 at 12:13:43AM -0700, Eric Biggers wrote:
-> Sure, given that this is an optimization problem with a very small scope
-> (decoding 6 fields from a bitstream), I was hoping for something easier and
-> faster to iterate on than setting up a full kernel + bcachefs test environment
-> and reverse engineering 500 lines of shell script.  But sure, I can look into
-> that when I have a chance.
-
-If you were actually wanting to help, that repository is the tool I use
-for kernel development and testing - it's got documentation.
-
-It builds a kernel, boots a VM and runs a test in about 15 seconds, no
-need for lifting that code out to userspace.
-
-> > Your approach wasn't any faster than the existing C version.
+From: Kent Overstreet
+> Sent: 14 May 2023 06:45
+...
+> dynamically generated unpack:
+> rand_insert: 20.0 MiB with 1 threads in    33 sec,  1609 nsec per iter, 607 KiB per sec
 > 
-> Well, it's your implementation of what you thought was "my approach".  It
-> doesn't quite match what I had suggested.  As I mentioned in my last email, it's
-> also unclear that your new code is ever actually executed, since you made it
-> conditional on all fields being byte-aligned...
+> old C unpack:
+> rand_insert: 20.0 MiB with 1 threads in    35 sec,  1672 nsec per iter, 584 KiB per sec
+> 
+> the Eric Biggers special:
+> rand_insert: 20.0 MiB with 1 threads in    35 sec,  1676 nsec per iter, 583 KiB per sec
+> 
+> Tested two versions of your approach, one without a shift value, one
+> where we use a shift value to try to avoid unaligned access - second was
+> perhaps 1% faster
 
-Eric, I'm not an idiot, that was one of the first things I checked. No
-unaligned bkey formats were generated in my tests.
+You won't notice any effect of avoiding unaligned accesses on x86.
+I think then get split into 64bit accesses and again on 64 byte
+boundaries (that is what I see for uncached access to PCIe).
+The kernel won't be doing >64bit and the 'out of order'
+pipeline will tend to cover the others (especially since you
+get 2 reads/clock).
 
-The latest iteration of your approach that I looked at compiled to ~250
-bytes of code, vs. ~50 bytes for the dynamically generated unpack
-functions. I'm sure it's possible to shave a bit off with some more
-work, but looking at the generated code it's clear it's not going to be
-competitive.
+> so it's not looking good. This benchmark doesn't even hit on
+> unpack_key() quite as much as I thought, so the difference is
+> significant.
+
+Beware: unless you manage to lock the cpu frequency (which is ~impossible
+on some cpu) timings in nanoseconds are pretty useless.
+You can use the performance counter to get accurate cycle times
+(provided there isn't a cpu switch in the middle of a micro-benchmark).
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
