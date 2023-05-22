@@ -2,101 +2,89 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EF57C77B7C
-	for <linux-bcachefs@archiver.kernel.org>; Sun, 21 May 2023 22:04:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50647C7EE29
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 22 May 2023 13:05:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbjEUWEv (ORCPT
+        id S233652AbjEVNFF (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 21 May 2023 18:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        Mon, 22 May 2023 09:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjEUWEt (ORCPT
+        with ESMTP id S234200AbjEVNEx (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 21 May 2023 18:04:49 -0400
-Received: from out-16.mta1.migadu.com (out-16.mta1.migadu.com [95.215.58.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DD0DC
-        for <linux-bcachefs@vger.kernel.org>; Sun, 21 May 2023 15:04:47 -0700 (PDT)
-Date:   Sun, 21 May 2023 18:04:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1684706684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M7SZ4icPM/G1fu0ULdKEsJem1DjVdc2mchXSlwG+/Tc=;
-        b=pNlBxYp89TaGuI/Pja+cAFNusJ6CcLCYMLeXkpWHfk8wp2qS4mvN3aemgC6BSn2VE2PhUE
-        4c7qqnVrgpCoGa7/WcHruX+2OboTSsJTjjG+89QTN7Pdm4pbm7qZXRNQvDq/XquaOAJOms
-        epiuAFYuYMDP+Y5scpiuH3SIv0k3qhk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
+        Mon, 22 May 2023 09:04:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5630495;
+        Mon, 22 May 2023 06:04:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E146C61554;
+        Mon, 22 May 2023 13:04:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 537D5C433D2;
+        Mon, 22 May 2023 13:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1684760691;
+        bh=mFfLhqjncW4OLzUDyLmeZPcjuCp7LsL0ZYwEqeI6upY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MDOTyggWu4xxm0+x1HgMCzIkoWLn7pPelgUikEj/GT4l6ixVnKu47mQ/OF6BW+2dr
+         4T/86huG8affHcPTbR7KBXk6k4ez4EEMrLDs+qlp06AQ4vvn69+X3VyKFZXlnt9gsG
+         gZlHrCFQWdff4CNiRB/21DLex+JtnDOr31jKhBgYZtBefcruNvfhWvIBqEqca5ZhE6
+         SRmqdUKPm5SUSncISh1SvCYNzkOz8g1Ildx3yPXdDvQLk2y6M/5B8bp5vfYXnu1zdB
+         KrHFPZ8+b/o7MfMVy4+kWAjoROvQ7Jtqw6zUSliiKRlgemkP1TQAvAqwKCwH/8bh+V
+         q7fvKZZR3MOYQ==
+Date:   Mon, 22 May 2023 15:04:46 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <ZGqVd9Vx5vjqlEh0@moria.home.lan>
-References: <ZF6HHRDeUWLNtuL7@moria.home.lan>
- <20230513015752.GC3033@quark.localdomain>
- <ZGB1eevk/u2ssIBT@moria.home.lan>
- <20230514184325.GB9528@sol.localdomain>
- <ZGHFa4AprPSsEpeq@moria.home.lan>
- <20230515061346.GB15871@sol.localdomain>
- <ZGHOppBFcKEJkzCe@moria.home.lan>
- <20230515071343.GD15871@sol.localdomain>
- <ZGHesxEMsCfOewhy@moria.home.lan>
- <20230521213334.GA32557@sol.localdomain>
+        linux-bcachefs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 22/32] vfs: inode cache conversion to hash-bl
+Message-ID: <20230522-unlustig-flegel-7a1d0d0adae3@brauner>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-23-kent.overstreet@linux.dev>
+ <20230510044557.GF2651828@dread.disaster.area>
+ <20230516-brand-hocken-a7b5b07e406c@brauner>
+ <ZGOsgI7a68mWYVQH@moria.home.lan>
+ <ZGQOlrcvLplTfZmf@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230521213334.GA32557@sol.localdomain>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ZGQOlrcvLplTfZmf@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Sun, May 21, 2023 at 02:33:34PM -0700, Eric Biggers wrote:
-> FYI, I had a go with your test framework today, but I ran into too many problems
-> to really bother with it.  In case you want to improve it, these are the
-> problems I ran into (so far).  The command I was trying to run, after having run
-> './root_image create' as root as the README says to do, was
-> 'build-test-kernel run -I ~/src/ktest/tests/bcachefs/perf.ktest':
+On Wed, May 17, 2023 at 09:15:34AM +1000, Dave Chinner wrote:
+> On Tue, May 16, 2023 at 12:17:04PM -0400, Kent Overstreet wrote:
+> > On Tue, May 16, 2023 at 05:45:19PM +0200, Christian Brauner wrote:
+> > > On Wed, May 10, 2023 at 02:45:57PM +1000, Dave Chinner wrote:
+> > > There's a bit of a backlog before I get around to looking at this but
+> > > it'd be great if we'd have a few reviewers for this change.
+> > 
+> > It is well tested - it's been in the bcachefs tree for ages with zero
+> > issues. I'm pulling it out of the bcachefs-prerequisites series though
+> > since Dave's still got it in his tree, he's got a newer version with
+> > better commit messages.
+> > 
+> > It's a significant performance boost on metadata heavy workloads for any
+> > non-XFS filesystem, we should definitely get it in.
+> 
+> I've got an up to date vfs-scale tree here (6.4-rc1) but I have not
+> been able to test it effectively right now because my local
+> performance test server is broken. I'll do what I can on the old
+> small machine that I have to validate it when I get time, but that
+> might be a few weeks away....
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/dgc/linux-xfs.git vfs-scale
+> 
+> As it is, the inode hash-bl changes have zero impact on XFS because
+> it has it's own highly scalable lockless, sharded inode cache. So
+> unless I'm explicitly testing ext4 or btrfs scalability (rare) it's
+> not getting a lot of scalability exercise. It is being used by the
+> root filesytsems on all those test VMs, but that's about it...
 
-Thanks for giving it a shot...
-
-> - Error due to ~/src/ktest/tests/bcachefs/bcachefs-tools not existing.  Worked
->   around by cloning the bcachefs-tools repo to this location.  (Note, it's not a
->   git submodule, so updating the git submodules didn't help.)
-
-a require-git line was missing, fixed that...
-
-> - Error due to "Root image not found".  Worked around by recursively chown'ing
->   /var/lib/ktest from root to my user.  (Note, the README says to run
->   'root_image create' as root, which results in root ownership.)
-
-Not sure about this one - root ownership is supposed to be fine because
-qemu opens the root image read only, we use qemu's block device
-in-memory snapshot mode. Was it just not readable by your user?
-
-> - Error due to "cannot set up guest memory 'pc.ram': Cannot allocate memory".
->   Worked around by editing tests/bcachefs/perf.ktest to change config-mem from
->   32G to 16G.  (I have 32G memory total on this computer.)
- 
-I think 32G is excessive for the tests that actually need to be in this
-file, dropping that back to 16G.
-
-> - Error due to "failed to open /dev/vfio/10: No such file or directory".
->   Enabling CONFIG_VFIO and CONFIG_VFIO_PCI in my host kernel didn't help.  It
->   seems the test is hardcoded to expect PCI passthrough to be set up with a
->   specific device.  I'd have expected it to just set up a standard virtual disk.
-
-Some of the tests in that file do need a fast device, but the tests
-we're interested in do not - I'll split that up.
-
-I just pushed fixes for everything except the root_image issue if you
-want to give it another go.
-
-Cheers,
-Kent
+I think there's a bunch of perf tests being run on -next. So we can
+stuff it into a vfs.unstable.* branch and see what -next thinks of this
+performance wise.
