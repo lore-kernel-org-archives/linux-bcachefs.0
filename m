@@ -2,94 +2,137 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 408FAC7EE23
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 23 May 2023 09:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26F29C77B75
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 23 May 2023 13:34:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234889AbjEWJ2r (ORCPT
+        id S233112AbjEWNel (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 23 May 2023 05:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51468 "EHLO
+        Tue, 23 May 2023 09:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230082AbjEWJ2q (ORCPT
+        with ESMTP id S233037AbjEWNel (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 23 May 2023 05:28:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D864E6;
-        Tue, 23 May 2023 02:28:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 23 May 2023 09:34:41 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE75BCA;
+        Tue, 23 May 2023 06:34:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A195614B2;
-        Tue, 23 May 2023 09:28:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA2EC433D2;
-        Tue, 23 May 2023 09:28:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684834124;
-        bh=l6zlO3zrfqNyX7yFpEx6BRzK5yGcYjeoYtH9xlr+994=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HM298nrMQgJkZY147EZroy4PK7mr5PO1OKvTSfI9+RY+oAzcPrhBfxJGv+QtFPmed
-         48Lr8wvAVWllrJRyoY2o/ZZfRNzZma++cSt5/0sb+JoPMoODU5cXuAgxqcA9+xzQPM
-         6BndpH3IdRP5EWrIVVQr7fNn5YalW3kbs5xeLYY0C6BmP2AvrUPSZlrablsQPSfaUj
-         7bwdhbsDaSYMtzxjpOAeNbvemmcDYY/IG4MAG8eBMAb25UBVHzPQsStvWPxUj1cHYJ
-         AdLNaaj9d3KFvldgtPGwAL3TJH3hTm9ocKGCxBLySPlWIifNbTU3OvSXjoV9P92dPb
-         rfzr060cwMPoQ==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Dave Chinner <dchinner@redhat.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
-Date:   Tue, 23 May 2023 11:28:38 +0200
-Message-Id: <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230509165657.1735798-23-kent.overstreet@linux.dev>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev> <20230509165657.1735798-23-kent.overstreet@linux.dev>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6248D222CC;
+        Tue, 23 May 2023 13:34:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1684848875; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xe6yJPZ6RPA0ddH1QOG2qkfGCUr/gLKEvN1ZtXb/JI8=;
+        b=XP37/bRndMC53jggGxEC6euD49IR80aHGZvpZuFSXmXe0vbqOSQMJxBfvsMMdQNzmUix3I
+        lxtlqKHVO+Nt/cTZs6F0YhpjoNlmC5vL+qyJRsbLdUcZl2OKJwry1MBxSkYlOrYw8k+/RR
+        1CJR//ei+eFbNqehI1vHQgoP01UXPN8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1684848875;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xe6yJPZ6RPA0ddH1QOG2qkfGCUr/gLKEvN1ZtXb/JI8=;
+        b=qa8Pp5VzopK/PeD9/dI4u95gxfnTLuxhTK8mhWpv4ivhwrPRzfRgKHgAFptKpeywe7m/nz
+        0JaxMfKO0XFUlQAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 35F8B13A10;
+        Tue, 23 May 2023 13:34:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mYAoDevAbGTfSQAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 23 May 2023 13:34:35 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 98FC1A075D; Tue, 23 May 2023 15:34:31 +0200 (CEST)
+Date:   Tue, 23 May 2023 15:34:31 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, dhowells@redhat.com,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, Bob Peterson <rpeterso@redhat.com>
+Subject: Re: [PATCH 06/32] sched: Add task_struct->faults_disabled_mapping
+Message-ID: <20230523133431.wwrkjtptu6vqqh5e@quack3>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-7-kent.overstreet@linux.dev>
+ <20230510010737.heniyuxazlprrbd6@quack3>
+ <ZFs3RYgdCeKjxYCw@moria.home.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1340; i=brauner@kernel.org; h=from:subject:message-id; bh=l6zlO3zrfqNyX7yFpEx6BRzK5yGcYjeoYtH9xlr+994=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTktNsoO3+5lbI+eNuhP803wtzbZnrxf9y8/bFq4ZNA78kT IqbadpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzE+CDDf79WZo+Q06qzlzYUXg+KPp VnzWx90LlJXYfJSXuprtKhhQz/M6ILLaZlzozr23v4144mneiNcbWfluy+Eui1+bddz4R2NgA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZFs3RYgdCeKjxYCw@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, 09 May 2023 12:56:47 -0400, Kent Overstreet wrote:
-> Because scalability of the global inode_hash_lock really, really
-> sucks.
+On Wed 10-05-23 02:18:45, Kent Overstreet wrote:
+> On Wed, May 10, 2023 at 03:07:37AM +0200, Jan Kara wrote:
+> > On Tue 09-05-23 12:56:31, Kent Overstreet wrote:
+> > > From: Kent Overstreet <kent.overstreet@gmail.com>
+> > > 
+> > > This is used by bcachefs to fix a page cache coherency issue with
+> > > O_DIRECT writes.
+> > > 
+> > > Also relevant: mapping->invalidate_lock, see below.
+> > > 
+> > > O_DIRECT writes (and other filesystem operations that modify file data
+> > > while bypassing the page cache) need to shoot down ranges of the page
+> > > cache - and additionally, need locking to prevent those pages from
+> > > pulled back in.
+> > > 
+> > > But O_DIRECT writes invoke the page fault handler (via get_user_pages),
+> > > and the page fault handler will need to take that same lock - this is a
+> > > classic recursive deadlock if userspace has mmaped the file they're DIO
+> > > writing to and uses those pages for the buffer to write from, and it's a
+> > > lock ordering deadlock in general.
+> > > 
+> > > Thus we need a way to signal from the dio code to the page fault handler
+> > > when we already are holding the pagecache add lock on an address space -
+> > > this patch just adds a member to task_struct for this purpose. For now
+> > > only bcachefs is implementing this locking, though it may be moved out
+> > > of bcachefs and made available to other filesystems in the future.
+> > 
+> > It would be nice to have at least a link to the code that's actually using
+> > the field you are adding.
 > 
-> 32-way concurrent create on a couple of different filesystems
-> before:
+> Bit of a trick to link to a _later_ patch in the series from a commit
+> message, but...
 > 
-> -   52.13%     0.04%  [kernel]            [k] ext4_create
->    - 52.09% ext4_create
->       - 41.03% __ext4_new_inode
->          - 29.92% insert_inode_locked
->             - 25.35% _raw_spin_lock
->                - do_raw_spin_lock
->                   - 24.97% __pv_queued_spin_lock_slowpath
+> https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/fs-io.c#n975
+> https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/fs-io.c#n2454
+
+Thanks and I'm sorry for the delay.
+
+> > Also I think we were already through this discussion [1] and we ended up
+> > agreeing that your scheme actually solves only the AA deadlock but a
+> > malicious userspace can easily create AB BA deadlock by running direct IO
+> > to file A using mapped file B as a buffer *and* direct IO to file B using
+> > mapped file A as a buffer.
 > 
-> [...]
+> No, that's definitely handled (and you can see it in the code I linked),
+> and I wrote a torture test for fstests as well.
 
-This is interesting completely independent of bcachefs so we should give
-it some testing.
+I've checked the code and AFAICT it is all indeed handled. BTW, I've now
+remembered that GFS2 has dealt with the same deadlocks - b01b2d72da25
+("gfs2: Fix mmap + page fault deadlocks for direct I/O") - in a different
+way (by prefaulting pages from the iter before grabbing the problematic
+lock and then disabling page faults for the iomap_dio_rw() call). I guess
+we should somehow unify these schemes so that we don't have two mechanisms
+for avoiding exactly the same deadlock. Adding GFS2 guys to CC.
 
-I updated a few places that had outdated comments.
+Also good that you've written a fstest for this, that is definitely a useful
+addition, although I suspect GFS2 guys added a test for this not so long
+ago when testing their stuff. Maybe they have a pointer handy?
 
----
-
-Applied to the vfs.unstable.inode-hash branch of the vfs/vfs.git tree.
-Patches in the vfs.unstable.inode-hash branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.unstable.inode-hash
-
-[22/32] vfs: inode cache conversion to hash-bl
-        https://git.kernel.org/vfs/vfs/c/e3e92d47e6b1
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
