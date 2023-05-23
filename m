@@ -2,89 +2,80 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50647C7EE29
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 22 May 2023 13:05:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF656C77B75
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 23 May 2023 09:27:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbjEVNFF (ORCPT
+        id S236195AbjEWJ10 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 22 May 2023 09:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33738 "EHLO
+        Tue, 23 May 2023 05:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234200AbjEVNEx (ORCPT
+        with ESMTP id S236156AbjEWJ1Z (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 22 May 2023 09:04:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5630495;
-        Mon, 22 May 2023 06:04:52 -0700 (PDT)
+        Tue, 23 May 2023 05:27:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAA6102;
+        Tue, 23 May 2023 02:27:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E146C61554;
-        Mon, 22 May 2023 13:04:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 537D5C433D2;
-        Mon, 22 May 2023 13:04:49 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AD0DB62EB0;
+        Tue, 23 May 2023 09:27:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69DFCC433EF;
+        Tue, 23 May 2023 09:27:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684760691;
-        bh=mFfLhqjncW4OLzUDyLmeZPcjuCp7LsL0ZYwEqeI6upY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MDOTyggWu4xxm0+x1HgMCzIkoWLn7pPelgUikEj/GT4l6ixVnKu47mQ/OF6BW+2dr
-         4T/86huG8affHcPTbR7KBXk6k4ez4EEMrLDs+qlp06AQ4vvn69+X3VyKFZXlnt9gsG
-         gZlHrCFQWdff4CNiRB/21DLex+JtnDOr31jKhBgYZtBefcruNvfhWvIBqEqca5ZhE6
-         SRmqdUKPm5SUSncISh1SvCYNzkOz8g1Ildx3yPXdDvQLk2y6M/5B8bp5vfYXnu1zdB
-         KrHFPZ8+b/o7MfMVy4+kWAjoROvQ7Jtqw6zUSliiKRlgemkP1TQAvAqwKCwH/8bh+V
-         q7fvKZZR3MOYQ==
-Date:   Mon, 22 May 2023 15:04:46 +0200
+        s=k20201202; t=1684834044;
+        bh=IUrdaNLqIx/2k/BkZ+Swg4n2KP9d9NG4z8/sFcd3UFw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=K9p8/R/2GOLJ+gglD8sAEXiHT3l92ycui7awQIL+0u634XoNaf+VS3sPMuzloNS+D
+         w3KYTh+U+MARjO8FnTnp93zK1rUlP1JC2Wf3GV6iEmQ7tFLxsVA6WNeh4B2gO6A5A9
+         QDqgYxw44mJwg2reUkVgDWAaXGXgpboVLlQ4fgXgW10ZM5kZS9/EbhHiVWjphhUkmK
+         Tcu/d2668TFe8b9fnCqtPBGmBnjVE+TD3bFapyad+d2yU+8PN7L4G9LQi5dqOmIRfP
+         76/08+oJtkGSjpwqyj3OYuw+pKUA3SeFpocQqnaxo1S1Uj0VvaBMef70MLvrP+LiRW
+         4GUJNlQMyKQug==
 From:   Christian Brauner <brauner@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+To:     Dave Chinner <dchinner@redhat.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
         Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 22/32] vfs: inode cache conversion to hash-bl
-Message-ID: <20230522-unlustig-flegel-7a1d0d0adae3@brauner>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-23-kent.overstreet@linux.dev>
- <20230510044557.GF2651828@dread.disaster.area>
- <20230516-brand-hocken-a7b5b07e406c@brauner>
- <ZGOsgI7a68mWYVQH@moria.home.lan>
- <ZGQOlrcvLplTfZmf@dread.disaster.area>
+Subject: Re: (subset) [PATCH 20/32] vfs: factor out inode hash head calculation
+Date:   Tue, 23 May 2023 11:27:06 +0200
+Message-Id: <20230523-plakat-kleeblatt-007077ebabb6@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230509165657.1735798-21-kent.overstreet@linux.dev>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev> <20230509165657.1735798-21-kent.overstreet@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZGQOlrcvLplTfZmf@dread.disaster.area>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=889; i=brauner@kernel.org; h=from:subject:message-id; bh=IUrdaNLqIx/2k/BkZ+Swg4n2KP9d9NG4z8/sFcd3UFw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTktD1MkmSOvBvDGd7YnhPg3nj0/9WP9pd/Pr2ibmqWWGxy zSW3o5SFQYyLQVZMkcWh3SRcbjlPxWajTA2YOaxMIEMYuDgFYCIyuxgZFjxfFJHp7Nf0WHRDtMdCwZ +cWX/tjARO/rs99Re3S47Od4a/Ym8mrPAQ5jybq3/9z+qFXH4W9yoMGPy+Xa1p28i6x+wUOwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, May 17, 2023 at 09:15:34AM +1000, Dave Chinner wrote:
-> On Tue, May 16, 2023 at 12:17:04PM -0400, Kent Overstreet wrote:
-> > On Tue, May 16, 2023 at 05:45:19PM +0200, Christian Brauner wrote:
-> > > On Wed, May 10, 2023 at 02:45:57PM +1000, Dave Chinner wrote:
-> > > There's a bit of a backlog before I get around to looking at this but
-> > > it'd be great if we'd have a few reviewers for this change.
-> > 
-> > It is well tested - it's been in the bcachefs tree for ages with zero
-> > issues. I'm pulling it out of the bcachefs-prerequisites series though
-> > since Dave's still got it in his tree, he's got a newer version with
-> > better commit messages.
-> > 
-> > It's a significant performance boost on metadata heavy workloads for any
-> > non-XFS filesystem, we should definitely get it in.
-> 
-> I've got an up to date vfs-scale tree here (6.4-rc1) but I have not
-> been able to test it effectively right now because my local
-> performance test server is broken. I'll do what I can on the old
-> small machine that I have to validate it when I get time, but that
-> might be a few weeks away....
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dgc/linux-xfs.git vfs-scale
-> 
-> As it is, the inode hash-bl changes have zero impact on XFS because
-> it has it's own highly scalable lockless, sharded inode cache. So
-> unless I'm explicitly testing ext4 or btrfs scalability (rare) it's
-> not getting a lot of scalability exercise. It is being used by the
-> root filesytsems on all those test VMs, but that's about it...
+On Tue, 09 May 2023 12:56:45 -0400, Kent Overstreet wrote:
+> In preparation for changing the inode hash table implementation.
+>
+>
 
-I think there's a bunch of perf tests being run on -next. So we can
-stuff it into a vfs.unstable.* branch and see what -next thinks of this
-performance wise.
+This is interesting completely independent of bcachefs so we should give
+it some testing.
+
+---
+
+Applied to the vfs.unstable.inode-hash branch of the vfs/vfs.git tree.
+Patches in the vfs.unstable.inode-hash branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.unstable.inode-hash
+
+[20/32] vfs: factor out inode hash head calculation
+        https://git.kernel.org/vfs/vfs/c/b54a4516146d
