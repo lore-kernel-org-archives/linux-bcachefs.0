@@ -2,129 +2,73 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5D08C7EE26
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 23 May 2023 22:53:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22E5CC77B7C
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 24 May 2023 06:45:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236304AbjEWWxa (ORCPT
+        id S239571AbjEXGp2 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 23 May 2023 18:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
+        Wed, 24 May 2023 02:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjEWWx2 (ORCPT
+        with ESMTP id S239872AbjEXGo7 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 23 May 2023 18:53:28 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D181BC5
-        for <linux-bcachefs@vger.kernel.org>; Tue, 23 May 2023 15:53:27 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ae4baa77b2so1742705ad.2
-        for <linux-bcachefs@vger.kernel.org>; Tue, 23 May 2023 15:53:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1684882407; x=1687474407;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D4PhmKVouafwl2lkI37bc+Y4HJ74bZ8XIgMqc4mDI8U=;
-        b=ydqarSiJJg8/qlfiybY04O3RO4ik8W1MGJy8LAFW2WWKhnJjVg/kliO9Csr6ezjTxQ
-         CCr+qRpaopVTGsAn0f3l5dbMCo+p2W+aPNeaBhEtfP5bJ9Mjgnc5fTAqVn4RIB2q1YN9
-         T4tabZcuFaOoU/7IsAEwcXQPtLoiHvECcuXyTIfNzB2W2sq5mFSLbAYLnz/KQMv1ljoG
-         wZuSL7Bbl0DjHi49APaxTV/JWMjZM3CCRFDqQhqEu4zJlEZBtHCtHARwqCzUqKDFWYgN
-         xW1Z5cvUGTnV+ZYWY/MRBI4erUVV8hNCo5i56rdI6V8+qX0d2IZFSvvBWq9u+nWEMdhO
-         Wyig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684882407; x=1687474407;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D4PhmKVouafwl2lkI37bc+Y4HJ74bZ8XIgMqc4mDI8U=;
-        b=PeBuKen0laNimB0r53CNjIjfSdLBbHaE8kfLUVUUaSonirh8dDZRxLYW6vz7nglUKQ
-         9UkcYe0ztK6ZVP/+XYimC8g7Wu+QzQCGT6ubfcpsPIWyRwM3FzZefyHqj7500TKnoVXJ
-         aFjC4PFf1uDIPXg91H46wVJE9dZisprOfGda6rrqMGizCQX61JaqQhLwxol5wNYigpZH
-         NEPSZBEKKMyuSouHuwwFF7m+2eFQbcdKhb1dZ4APoE8Q+pODv5Le9SMSdFpLtqsmz/tj
-         f85UyemgICNb8XsvOQyYGjYCOddpf9If14iyHmb9zWbGNeYZL9m8oCi/sloln0bMP1Ym
-         bAhA==
-X-Gm-Message-State: AC+VfDwjkMrxU/UfthyBTVuywKBWgjyzXaevz7kxc9TGEcSlZpm0/JvM
-        aVdnKSazijg/7j38ZLf19C9v3w==
-X-Google-Smtp-Source: ACHHUZ4rf3ZnipqrpeU5LtwMsMVWiU9amtx3ykAwdeSvQFidX6a1jAjFyPwJGzq92rRNbryEDFU+Kg==
-X-Received: by 2002:a17:902:d50e:b0:1ae:6720:8e01 with SMTP id b14-20020a170902d50e00b001ae67208e01mr17699251plg.20.1684882407345;
-        Tue, 23 May 2023 15:53:27 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-0-188.pa.nsw.optusnet.com.au. [49.179.0.188])
-        by smtp.gmail.com with ESMTPSA id u3-20020a170902e80300b001a682a195basm7284710plg.28.2023.05.23.15.53.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 May 2023 15:53:26 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1q1asc-0036XB-37;
-        Wed, 24 May 2023 08:53:22 +1000
-Date:   Wed, 24 May 2023 08:53:22 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Dave Chinner <dchinner@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: (subset) [PATCH 20/32] vfs: factor out inode hash head
- calculation
-Message-ID: <ZG1D4gvpkFjZVMcL@dread.disaster.area>
+        Wed, 24 May 2023 02:44:59 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD191FCA;
+        Tue, 23 May 2023 23:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=x8PYhGTrPAt9NKG8UKKxEtkvRfE8xvv8TBO5S8oegQs=; b=CN4s7kEI5PCARtpXP47dqHFQS/
+        vIt1hQeojTucws3q9J4RyMTGKDZau5CMHFMnIbOx47u7ODqLJK73E39uw/C7Cav+B+9ajUvaFaDJm
+        rJY3rXUQ/gOZCiDAyoHMyrRJzZ4WWkrjpfoiu60Hbvn45XZk7aX7jsQLTRtzpp+axW7G1qzEbYxzQ
+        F9buDGL2mpULh+qnIvHyZkzivfChIZr1eAOUPLPpigx/mk00bl3wWlKpCmBS0vpzEYpqUcOCvRcuW
+        C42sBZHTlt6A9noZYQkz1x7PHJapsJ66UrbJniCKf2ecH677bC+z/HgwZudimJiH7NFrzfxP+qsOK
+        fhNlGAug==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1q1iDc-00CWNR-0L;
+        Wed, 24 May 2023 06:43:32 +0000
+Date:   Tue, 23 May 2023 23:43:32 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+        cluster-devel@redhat.com, "Darrick J . Wong" <djwong@kernel.org>,
+        linux-kernel@vger.kernel.org, dhowells@redhat.com,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: Re: [Cluster-devel] [PATCH 06/32] sched: Add
+ task_struct->faults_disabled_mapping
+Message-ID: <ZG2yFFcpE7w/Glge@infradead.org>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-21-kent.overstreet@linux.dev>
- <20230523-plakat-kleeblatt-007077ebabb6@brauner>
+ <20230509165657.1735798-7-kent.overstreet@linux.dev>
+ <20230510010737.heniyuxazlprrbd6@quack3>
+ <ZFs3RYgdCeKjxYCw@moria.home.lan>
+ <20230523133431.wwrkjtptu6vqqh5e@quack3>
+ <ZGzoJLCRLk+pCKAk@infradead.org>
+ <ZGzrV5j7OUU6rYij@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230523-plakat-kleeblatt-007077ebabb6@brauner>
+In-Reply-To: <ZGzrV5j7OUU6rYij@moria.home.lan>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, May 23, 2023 at 11:27:06AM +0200, Christian Brauner wrote:
-> On Tue, 09 May 2023 12:56:45 -0400, Kent Overstreet wrote:
-> > In preparation for changing the inode hash table implementation.
-> >
-> >
+On Tue, May 23, 2023 at 12:35:35PM -0400, Kent Overstreet wrote:
+> No, this is fundamentally because userspace controls the ordering of
+> locking because the buffer passed to dio can point into any address
+> space. You can't solve this by changing the locking heirarchy.
 > 
-> This is interesting completely independent of bcachefs so we should give
-> it some testing.
-> 
-> ---
-> 
-> Applied to the vfs.unstable.inode-hash branch of the vfs/vfs.git tree.
-> Patches in the vfs.unstable.inode-hash branch should appear in linux-next soon.
-> 
-> Please report any outstanding bugs that were missed during review in a
-> new review to the original patch series allowing us to drop it.
-> 
-> It's encouraged to provide Acked-bys and Reviewed-bys even though the
-> patch has now been applied. If possible patch trailers will be updated.
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-> branch: vfs.unstable.inode-hash
-> 
-> [20/32] vfs: factor out inode hash head calculation
->         https://git.kernel.org/vfs/vfs/c/b54a4516146d
+> If you want to be able to have locking around adding things to the
+> pagecache so that things that bypass the pagecache can prevent
+> inconsistencies (and we do, the big one is fcollapse), and if you want
+> dio to be able to use that same locking (because otherwise dio will also
+> cause page cache inconsistency), this is the way to do it.
 
-Hi Christian - I suspect you should pull the latest version of these
-patches from:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/dgc/linux-xfs.git vfs-scale
-
-The commit messages are more recent and complete, and I've been
-testing the branch in all my test kernels since 6.4-rc1 without
-issues.
-
-There's also the dlist-lock stuff for avoiding s_inode_list_lock
-contention in that branch. Once the global hash lock is removed,
-the s_inode_list_lock is the only global lock in the inode
-instantiation and reclaim paths. It nests inside the hash locks, so
-all the contention is currently taken on the hash locks - remove the
-global hash locks and we just contend on the next global cache
-line and the workload doesn't go any faster.
-
-i.e. to see the full benefit of the inode hash lock contention
-reduction, we also need the sb->s_inode_list_lock contention to be
-fixed....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Well, it seems like you are talking about something else than the
+existing cases in gfs2 and btrfs, that is you want full consistency
+between direct I/O and buffered I/O.  That's something nothing in the
+kernel has ever provided, so I'd be curious why you think you need it
+and want different semantics from everyone else?
