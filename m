@@ -2,44 +2,41 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6CECC77B7E
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 25 May 2023 08:58:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1DB0C77B7A
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 25 May 2023 20:50:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbjEYI6i (ORCPT
+        id S241781AbjEYUuv (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 25 May 2023 04:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
+        Thu, 25 May 2023 16:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233661AbjEYI6g (ORCPT
+        with ESMTP id S231495AbjEYUuu (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 25 May 2023 04:58:36 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696A6E6A;
-        Thu, 25 May 2023 01:58:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kKOFZxQpgSHwqPpOmDSrhdrD3suPNbVE//fKG28eDvM=; b=Wi28jKvm/jdPHVPrfw1vBlrPKz
-        EtHecYXiHt+MOaCUqHVMvBJZov0Pe4UGeRr2z9K8Zk29a3xC558HI3XcoauY/8Wf64OWOEhYORdpU
-        4bOhfbWqeg+hMcb2uXjE6tkbpVqnFJlqMhdLA03uNmSSr7FVATOYrgYqvpn8NmL3pDk4ZTuIA6hqL
-        RRxQt47O6xqc12D4G86r2GKBZ9pSrU8EtMVei5D4u1g/zkEACxEq4xT6Q4i3zj23gBfpFK19SceOL
-        kGUXILvgSD2VZsDUMGqkzpwNIXt0y7n3+s7e7TdvtifwhkmCkvXK5rMaZGF1m1VuV0I0JI/EFSTZ1
-        evki6wKw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1q26nW-00G4TT-06;
-        Thu, 25 May 2023 08:58:14 +0000
-Date:   Thu, 25 May 2023 01:58:13 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        cluster-devel@redhat.com, "Darrick J . Wong" <djwong@kernel.org>,
+        Thu, 25 May 2023 16:50:50 -0400
+Received: from out-61.mta0.migadu.com (out-61.mta0.migadu.com [IPv6:2001:41d0:1004:224b::3d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93399135
+        for <linux-bcachefs@vger.kernel.org>; Thu, 25 May 2023 13:50:48 -0700 (PDT)
+Date:   Thu, 25 May 2023 16:50:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1685047846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WmfPfoS4jj9y7WKgyiPfXOC2ErdWT8XZ/X5AqeuiIvY=;
+        b=EsFQnhWQTrj+rmlpTX4RWnBGc2mpA6pFy2Kn2DCNbDk52KibH1PGP6V1h55k5hv+yRNNDH
+        shyCxzGmJoN16x/T0NKjA9kYwRUP6WV6ZjwpI+q4yD3iCBb6ajvr/aYyEpmYzcizmHIy4A
+        ZQGonNJHSUUv2wJf9DbeQHWLqUswQYM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, cluster-devel@redhat.com,
+        "Darrick J . Wong" <djwong@kernel.org>,
         linux-kernel@vger.kernel.org, dhowells@redhat.com,
         linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Kent Overstreet <kent.overstreet@gmail.com>
 Subject: Re: [Cluster-devel] [PATCH 06/32] sched: Add
  task_struct->faults_disabled_mapping
-Message-ID: <ZG8jJRcwtx3JQf6Q@infradead.org>
+Message-ID: <ZG/KH9cQluA5e30N@moria.home.lan>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-7-kent.overstreet@linux.dev>
  <20230510010737.heniyuxazlprrbd6@quack3>
@@ -49,24 +46,44 @@ References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <ZGzrV5j7OUU6rYij@moria.home.lan>
  <ZG2yFFcpE7w/Glge@infradead.org>
  <ZG3GHoNnJJW4xX2H@moria.home.lan>
+ <ZG8jJRcwtx3JQf6Q@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZG3GHoNnJJW4xX2H@moria.home.lan>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <ZG8jJRcwtx3JQf6Q@infradead.org>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, May 24, 2023 at 04:09:02AM -0400, Kent Overstreet wrote:
-> > Well, it seems like you are talking about something else than the
-> > existing cases in gfs2 and btrfs, that is you want full consistency
-> > between direct I/O and buffered I/O.  That's something nothing in the
-> > kernel has ever provided, so I'd be curious why you think you need it
-> > and want different semantics from everyone else?
+On Thu, May 25, 2023 at 01:58:13AM -0700, Christoph Hellwig wrote:
+> On Wed, May 24, 2023 at 04:09:02AM -0400, Kent Overstreet wrote:
+> > > Well, it seems like you are talking about something else than the
+> > > existing cases in gfs2 and btrfs, that is you want full consistency
+> > > between direct I/O and buffered I/O.  That's something nothing in the
+> > > kernel has ever provided, so I'd be curious why you think you need it
+> > > and want different semantics from everyone else?
+> > 
+> > Because I like code that is correct.
 > 
-> Because I like code that is correct.
+> Well, start with explaining your definition of correctness, why everyone
+> else is "not correct", an how you can help fixing this correctness
+> problem in the existing kernel.  Thanks for your cooperation!
 
-Well, start with explaining your definition of correctness, why everyone
-else is "not correct", an how you can help fixing this correctness
-problem in the existing kernel.  Thanks for your cooperation!
+A cache that isn't actually consistent is a _bug_. You're being
+Obsequious. And any time this has come up in previous discussions
+(including at LSF), that was never up for debate, the only question has
+been whether it was even possible to practically fix it.
+
+The DIO code recognizes cache incoherency as something to be avoided by
+shooting down the page cache both at the beginning of the IO _and again
+at the end_.  That's the kind of obvious hackery for a race condition
+that we would like to avoid.
+
+Regarding the consequences of this kind of bug - stale data exposed to
+userspace, possibly stale data overwriting a write we acked, and worse
+any filesystem state that hangs off the page cache being inconsistent
+with the data on disk.
+
+And look, we've been over all this before, so I don't see what this adds
+to the discussion.
