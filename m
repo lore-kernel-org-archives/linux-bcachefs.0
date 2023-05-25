@@ -2,130 +2,71 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD2D0C77B7E
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 25 May 2023 08:47:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6CECC77B7E
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 25 May 2023 08:58:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239092AbjEYIrf (ORCPT
+        id S234068AbjEYI6i (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 25 May 2023 04:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39148 "EHLO
+        Thu, 25 May 2023 04:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232749AbjEYIre (ORCPT
+        with ESMTP id S233661AbjEYI6g (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 25 May 2023 04:47:34 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD789E;
-        Thu, 25 May 2023 01:47:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C360B21CA3;
-        Thu, 25 May 2023 08:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1685004451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KuhUxhJ4qXqlC8S61jGgkZ/rePw29whTgtvzHY6sSiI=;
-        b=ZrusZYsCefuMnAVLQhgd8aBN2vNvwAyrM1z1cZn9oRunL0M8JfFy92IqTRXhxJg9dyQ+3V
-        Q8yHLX3wYbtbH0HYQWtQlKL9UMpQKxyFX1cHfV97/XUUa9mdp5HlUf7zSKu6aMJI3TC4fN
-        /g6oWielTzMSNQo/9YenUVIHEIU6Zp0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1685004451;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KuhUxhJ4qXqlC8S61jGgkZ/rePw29whTgtvzHY6sSiI=;
-        b=XdzjVSs3+TjUoFyH5X//zoHI1wt48WjIl65701RGoFiCfws+iTsL1D3tjnaB6pIYnjG35e
-        Nerxvu9ESp34vGDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1FAA13356;
-        Thu, 25 May 2023 08:47:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mxRrK6Mgb2TyRAAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 25 May 2023 08:47:31 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 36009A075C; Thu, 25 May 2023 10:47:31 +0200 (CEST)
-Date:   Thu, 25 May 2023 10:47:31 +0200
-From:   Jan Kara <jack@suse.cz>
+        Thu, 25 May 2023 04:58:36 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696A6E6A;
+        Thu, 25 May 2023 01:58:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kKOFZxQpgSHwqPpOmDSrhdrD3suPNbVE//fKG28eDvM=; b=Wi28jKvm/jdPHVPrfw1vBlrPKz
+        EtHecYXiHt+MOaCUqHVMvBJZov0Pe4UGeRr2z9K8Zk29a3xC558HI3XcoauY/8Wf64OWOEhYORdpU
+        4bOhfbWqeg+hMcb2uXjE6tkbpVqnFJlqMhdLA03uNmSSr7FVATOYrgYqvpn8NmL3pDk4ZTuIA6hqL
+        RRxQt47O6xqc12D4G86r2GKBZ9pSrU8EtMVei5D4u1g/zkEACxEq4xT6Q4i3zj23gBfpFK19SceOL
+        kGUXILvgSD2VZsDUMGqkzpwNIXt0y7n3+s7e7TdvtifwhkmCkvXK5rMaZGF1m1VuV0I0JI/EFSTZ1
+        evki6wKw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1q26nW-00G4TT-06;
+        Thu, 25 May 2023 08:58:14 +0000
+Date:   Thu, 25 May 2023 01:58:13 -0700
+From:   Christoph Hellwig <hch@infradead.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, dhowells@redhat.com,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, Bob Peterson <rpeterso@redhat.com>
-Subject: Re: [PATCH 06/32] sched: Add task_struct->faults_disabled_mapping
-Message-ID: <20230525084731.losrlnarpbqtqzil@quack3>
+Cc:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+        cluster-devel@redhat.com, "Darrick J . Wong" <djwong@kernel.org>,
+        linux-kernel@vger.kernel.org, dhowells@redhat.com,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: Re: [Cluster-devel] [PATCH 06/32] sched: Add
+ task_struct->faults_disabled_mapping
+Message-ID: <ZG8jJRcwtx3JQf6Q@infradead.org>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-7-kent.overstreet@linux.dev>
  <20230510010737.heniyuxazlprrbd6@quack3>
  <ZFs3RYgdCeKjxYCw@moria.home.lan>
  <20230523133431.wwrkjtptu6vqqh5e@quack3>
- <ZGzugpw7vgCFxOYL@moria.home.lan>
+ <ZGzoJLCRLk+pCKAk@infradead.org>
+ <ZGzrV5j7OUU6rYij@moria.home.lan>
+ <ZG2yFFcpE7w/Glge@infradead.org>
+ <ZG3GHoNnJJW4xX2H@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZGzugpw7vgCFxOYL@moria.home.lan>
+In-Reply-To: <ZG3GHoNnJJW4xX2H@moria.home.lan>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue 23-05-23 12:49:06, Kent Overstreet wrote:
-> > > No, that's definitely handled (and you can see it in the code I linked),
-> > > and I wrote a torture test for fstests as well.
-> > 
-> > I've checked the code and AFAICT it is all indeed handled. BTW, I've now
-> > remembered that GFS2 has dealt with the same deadlocks - b01b2d72da25
-> > ("gfs2: Fix mmap + page fault deadlocks for direct I/O") - in a different
-> > way (by prefaulting pages from the iter before grabbing the problematic
-> > lock and then disabling page faults for the iomap_dio_rw() call). I guess
-> > we should somehow unify these schemes so that we don't have two mechanisms
-> > for avoiding exactly the same deadlock. Adding GFS2 guys to CC.
+On Wed, May 24, 2023 at 04:09:02AM -0400, Kent Overstreet wrote:
+> > Well, it seems like you are talking about something else than the
+> > existing cases in gfs2 and btrfs, that is you want full consistency
+> > between direct I/O and buffered I/O.  That's something nothing in the
+> > kernel has ever provided, so I'd be curious why you think you need it
+> > and want different semantics from everyone else?
 > 
-> Oof, that sounds a bit sketchy. What happens if the dio call passes in
-> an address from the same address space?
+> Because I like code that is correct.
 
-If we submit direct IO that uses mapped file F at offset O as a buffer for
-direct IO from file F, offset O, it will currently livelock in an
-indefinite retry loop. It should rather return error or fall back to
-buffered IO. But that should be fixable. Andreas?
-
-But if the buffer and direct IO range does not overlap, it will just
-happily work - iomap_dio_rw() invalidates only the range direct IO is done
-to.
-
-> What happens if we race with the pages we faulted in being evicted?
-
-We fault them in again and retry.
-
-> > Also good that you've written a fstest for this, that is definitely a useful
-> > addition, although I suspect GFS2 guys added a test for this not so long
-> > ago when testing their stuff. Maybe they have a pointer handy?
-> 
-> More tests more good.
-> 
-> So if we want to lift this scheme to the VFS layer, we'd start by
-> replacing the lock you added (grepping for it, the name escapes me) with
-> a different type of lock - two_state_shared_lock in my code, it's like a
-> rw lock except writers don't exclude other writers. That way the DIO
-> path can use it without singlethreading writes to a single file.
-
-Yes, I've noticed that you are introducing in bcachefs a lock with very
-similar semantics to mapping->invalidate_lock, just with this special lock
-type. What I'm kind of worried about with two_state_shared_lock as
-implemented in bcachefs is the fairness. AFAICS so far if someone is e.g.
-heavily faulting pages on a file, direct IO to that file can be starved
-indefinitely. That is IMHO not a good thing and I would not like to use
-this type of lock in VFS until this problem is resolved. But it should be
-fixable e.g. by introducing some kind of deadline for a waiter after which
-it will block acquisitions of the other lock state.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Well, start with explaining your definition of correctness, why everyone
+else is "not correct", an how you can help fixing this correctness
+problem in the existing kernel.  Thanks for your cooperation!
