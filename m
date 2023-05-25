@@ -2,79 +2,63 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2934C7EE29
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 25 May 2023 22:46:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68834C77B7A
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 25 May 2023 23:20:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbjEYWqL (ORCPT
+        id S229981AbjEYXU4 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 25 May 2023 18:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
+        Thu, 25 May 2023 19:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjEYWqK (ORCPT
+        with ESMTP id S229727AbjEYXUz (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 25 May 2023 18:46:10 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E189E;
-        Thu, 25 May 2023 15:46:08 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4f3b9c88af8so22660e87.2;
-        Thu, 25 May 2023 15:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685054767; x=1687646767;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/w8kourG8muqgM1V9FJPeJXvMt9bhE45UC3UnTkiIWE=;
-        b=rhJxDpWledyLUcsCRXUfcDSoiNMB74XAdor4Y1RM8XQMWeYu7p0EoitLH7+fDL6Pij
-         JSF8JZibfbgbJEodyC8jDeF/6uzIgA4HZxsGnHnn/LRcBA74eyTp0uWUndgHavuciFrV
-         zv1eeEuIpHouiaSjhbG5qcFlcwSDe6um9+ZFtrobySCMYjOoFPlezRrVKDGD6QkhH1ng
-         3v1F2LPl5wIVz8oHEx3kTgMatJhI4eAhRQ4J0Ab39l5qdAzQR5Hzq4xZv2XbSiRs7Wjr
-         cyDOhaEFv+ygaS3ulzo166W2y2QVqX7/mhDxSc0qdVKxmg9reaqLlkak0Q7LgoICwIPs
-         Q0ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685054767; x=1687646767;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/w8kourG8muqgM1V9FJPeJXvMt9bhE45UC3UnTkiIWE=;
-        b=iDy1hysXXct/GY3bAgZSCHlqeukZ+BoYd9E6YA9LeHd0TF/q3G9yN8SAzZvpKEXit6
-         ZW2D10T/O4yce37BynSHuThZxXHQb7/ie1HuZICVWHXDhFcP4PmB/0G35oB6o5+f7q0c
-         OiZGLGDL5qghCyMk99cuy9/ukvQ/7s9iCbSZjgUXgeTIH8BPmoIXOFPxO9jS6t3yFCX+
-         TB310RVXHo7jAqi7o6QT3SeV4g00K92ORTk1h4OWqcefLFKYTxKqKLsqDx8Pp15ANvNP
-         cdwhNlTkx/QJNiWYL7fLGZ74xdzdlVazAAlwyUMSlvLhh1ZtdttZD8WPCFGhtiwv8kCu
-         IerA==
-X-Gm-Message-State: AC+VfDyrc+OHI5E4oWT6MR2qbZBbtrBgaQcDy4f7y5Kpv7lin4AutjJ6
-        i0/O5AhDkJcFvUF6CxLXB5JfUtbbRkKEW7PHNgo=
-X-Google-Smtp-Source: ACHHUZ4VB2AEvZmEKL/ToOYQHq7bNrYU7r6ytuAfwSAkDgHAxv18Bh8nagqgxi77E7DS39/2qAzMZ2yLDzeqZIfKhy0=
-X-Received: by 2002:a05:6512:25a:b0:4e9:bafc:88d0 with SMTP id
- b26-20020a056512025a00b004e9bafc88d0mr6824592lfo.23.1685054766774; Thu, 25
- May 2023 15:46:06 -0700 (PDT)
-MIME-Version: 1.0
+        Thu, 25 May 2023 19:20:55 -0400
+Received: from out-4.mta1.migadu.com (out-4.mta1.migadu.com [95.215.58.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D21EE
+        for <linux-bcachefs@vger.kernel.org>; Thu, 25 May 2023 16:20:53 -0700 (PDT)
+Date:   Thu, 25 May 2023 19:20:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1685056851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=awHDGDbBCgCx605l2nM3DZRvWVnQwgXG0c2+8QFPH08=;
+        b=afc/C9pQwn3XtiqPNBF4cA1bN259A/OGSakqaqaneKEyfT/qZ+IzTmhTll1eoRS53CjktS
+        5yqEL3omabBC56nM3oxDuPubjFnNq+nkFI2DfCbHeaFdHwyl4jfKNaGWZTmSpROCDL8ACY
+        XxFqe+nKoVuyVihmB1LuNcS+2j/FL10=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
+        <andreas.gruenbacher@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+        cluster-devel@redhat.com, "Darrick J . Wong" <djwong@kernel.org>,
+        linux-kernel@vger.kernel.org, dhowells@redhat.com,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: Re: [Cluster-devel] [PATCH 06/32] sched: Add
+ task_struct->faults_disabled_mapping
+Message-ID: <ZG/tTorh8G2919Jz@moria.home.lan>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-7-kent.overstreet@linux.dev> <20230510010737.heniyuxazlprrbd6@quack3>
- <ZFs3RYgdCeKjxYCw@moria.home.lan> <20230523133431.wwrkjtptu6vqqh5e@quack3>
- <ZGzugpw7vgCFxOYL@moria.home.lan> <20230525084731.losrlnarpbqtqzil@quack3>
-In-Reply-To: <20230525084731.losrlnarpbqtqzil@quack3>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Fri, 26 May 2023 00:45:55 +0200
-Message-ID: <CAHpGcMLzYG9RemHsnigj+5e1x0-_Sobra_k7N-tXLkcvEuoYXw@mail.gmail.com>
-Subject: Re: [PATCH 06/32] sched: Add task_struct->faults_disabled_mapping
-To:     Jan Kara <jack@suse.cz>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, dhowells@redhat.com,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, Bob Peterson <rpeterso@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+ <20230509165657.1735798-7-kent.overstreet@linux.dev>
+ <20230510010737.heniyuxazlprrbd6@quack3>
+ <ZFs3RYgdCeKjxYCw@moria.home.lan>
+ <20230523133431.wwrkjtptu6vqqh5e@quack3>
+ <ZGzoJLCRLk+pCKAk@infradead.org>
+ <CAHpGcML0CZ1RGkOf26iYt_tK0Ux=cfdW8d3bjMVbjXLr91cs+g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHpGcML0CZ1RGkOf26iYt_tK0Ux=cfdW8d3bjMVbjXLr91cs+g@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Am Do., 25. Mai 2023 um 10:56 Uhr schrieb Jan Kara <jack@suse.cz>:
-> On Tue 23-05-23 12:49:06, Kent Overstreet wrote:
-> > > > No, that's definitely handled (and you can see it in the code I linked),
-> > > > and I wrote a torture test for fstests as well.
-> > >
+On Fri, May 26, 2023 at 12:25:31AM +0200, Andreas Grünbacher wrote:
+> Am Di., 23. Mai 2023 um 18:28 Uhr schrieb Christoph Hellwig <hch@infradead.org>:
+> > On Tue, May 23, 2023 at 03:34:31PM +0200, Jan Kara wrote:
 > > > I've checked the code and AFAICT it is all indeed handled. BTW, I've now
 > > > remembered that GFS2 has dealt with the same deadlocks - b01b2d72da25
 > > > ("gfs2: Fix mmap + page fault deadlocks for direct I/O") - in a different
@@ -82,50 +66,44 @@ Am Do., 25. Mai 2023 um 10:56 Uhr schrieb Jan Kara <jack@suse.cz>:
 > > > lock and then disabling page faults for the iomap_dio_rw() call). I guess
 > > > we should somehow unify these schemes so that we don't have two mechanisms
 > > > for avoiding exactly the same deadlock. Adding GFS2 guys to CC.
-> >
-> > Oof, that sounds a bit sketchy. What happens if the dio call passes in
-> > an address from the same address space?
->
-> If we submit direct IO that uses mapped file F at offset O as a buffer for
-> direct IO from file F, offset O, it will currently livelock in an
-> indefinite retry loop. It should rather return error or fall back to
-> buffered IO. But that should be fixable. Andreas?
-
-Yes, I guess. Thanks for the heads-up.
-
-Andreas
-
-> But if the buffer and direct IO range does not overlap, it will just
-> happily work - iomap_dio_rw() invalidates only the range direct IO is done
-> to.
->
-> > What happens if we race with the pages we faulted in being evicted?
->
-> We fault them in again and retry.
->
+> > >
 > > > Also good that you've written a fstest for this, that is definitely a useful
 > > > addition, although I suspect GFS2 guys added a test for this not so long
 > > > ago when testing their stuff. Maybe they have a pointer handy?
 > >
-> > More tests more good.
+> > generic/708 is the btrfs version of this.
 > >
-> > So if we want to lift this scheme to the VFS layer, we'd start by
-> > replacing the lock you added (grepping for it, the name escapes me) with
-> > a different type of lock - two_state_shared_lock in my code, it's like a
-> > rw lock except writers don't exclude other writers. That way the DIO
-> > path can use it without singlethreading writes to a single file.
->
-> Yes, I've noticed that you are introducing in bcachefs a lock with very
-> similar semantics to mapping->invalidate_lock, just with this special lock
-> type. What I'm kind of worried about with two_state_shared_lock as
-> implemented in bcachefs is the fairness. AFAICS so far if someone is e.g.
-> heavily faulting pages on a file, direct IO to that file can be starved
-> indefinitely. That is IMHO not a good thing and I would not like to use
-> this type of lock in VFS until this problem is resolved. But it should be
-> fixable e.g. by introducing some kind of deadline for a waiter after which
-> it will block acquisitions of the other lock state.
->
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> > But I think all of the file systems that have this deadlock are actually
+> > fundamentally broken because they have a mess up locking hierarchy
+> > where page faults take the same lock that is held over the the direct I/
+> > operation.  And the right thing is to fix this.  I have work in progress
+> > for btrfs, and something similar should apply to gfs2, with the added
+> > complication that it probably means a revision to their network
+> > protocol.
+> 
+> We do disable page faults, and there can be deadlocks in page fault
+> handlers while no page faults are allowed.
+> 
+> I'm roughly aware of the locking hierarchy that other filesystems use,
+> and that's something we want to avoid because of two reasons: (1) it
+> would be an incompatible change, and (2) we want to avoid cluster-wide
+> locking operations as much as possible because they are very slow.
+> 
+> These kinds of locking conflicts are so rare in practice that the
+> theoretical inefficiency of having to retry the operation doesn't
+> matter.
+
+Would you be willing to expand on that? I'm wondering if this would
+simplify things for gfs2, but you mention locking heirarchy being an
+incompatible change - how does that work?
+
+> 
+> > I'm absolutely not in favour to add workarounds for thes kind of locking
+> > problems to the core kernel.  I already feel bad for allowing the
+> > small workaround in iomap for btrfs, as just fixing the locking back
+> > then would have avoid massive ratholing.
+> 
+> Please let me know when those btrfs changes are in a presentable shape ...
+
+I would also be curious to know what btrfs needs and what the approach
+is there.
