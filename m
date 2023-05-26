@@ -2,157 +2,153 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7946DC77B7E
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 26 May 2023 00:06:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4397C77B7A
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 26 May 2023 00:39:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234786AbjEZAG1 (ORCPT
+        id S233274AbjEZAjm (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 25 May 2023 20:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
+        Thu, 25 May 2023 20:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbjEZAG0 (ORCPT
+        with ESMTP id S235092AbjEZAjl (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 25 May 2023 20:06:26 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3866C195;
-        Thu, 25 May 2023 17:05:47 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2af316b4515so1365941fa.1;
-        Thu, 25 May 2023 17:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685059538; x=1687651538;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ic3WsKMPF4rIwx8HLozqrwGou1Sinksz8ctxoPlHRzI=;
-        b=r0OAb0fTQ8LnAKl5d0OU6ACOoRHNGak8ZEnNET+efzOJx0y98C2cygU5YM4jutcbfp
-         INN36/VaaIimw9lQoUhC0abC/K3zGOF2FY6rVhco4r1bz5y2q3ZvQ6aqOjzR112o6gNa
-         AaQVYhE2cZPdFJJnlJxocMyn7Iap10OwlHFa+l5cj9a2HbMBhRYZocdFKUatiB0cZxv1
-         xe7QEP6guFSH8YQTYGBaD5vl2l2gZoex8YGLm7g0zG5KVqWJAAJkHWH6wRPP6kjrM/u4
-         RJC4ZupXP3DpkLWv1C05hDo65BtOeN2rXBYY1/YlAneFeji1gDmLLUK/ECTzpXHFuVlF
-         D4LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685059538; x=1687651538;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ic3WsKMPF4rIwx8HLozqrwGou1Sinksz8ctxoPlHRzI=;
-        b=CMRx5ZJAMNlriwDEyPgu1clpvBG+LY2q821FD5ceRuARlWFfK23VLs3VNjIZCGEank
-         Ear7J9q3lAYYm5F79mwN3/WvLtVc5YEnL5KOMTbcrAU4HcJt1z7BIFUsbNuSHFuqX7YF
-         2B3XqsClZAh4U/q33FWl37ZdTzGUBOKPDtEEvM3J9A8YGiKLU9gSmKqXa0mVTZw5JgMy
-         akibH5ksd3mfbgZ0MP/VsvWvTMAC/pVuAMikS9v4ogWqk3NWb6qXQ6YmXB3Ml96B3+LA
-         4vrgoO9/gGqaR9ggl7v50HhhnzSdkUfy0N3fJDqp8wVew2orYNUSi3wzXFafy3s0gqC5
-         rbaA==
-X-Gm-Message-State: AC+VfDwg0Yg10LQemfdc68G8viiJROiwIYK1rg4zpY+LIm8WChhnC9Ke
-        Sc0N3gGmDlzdkhZxCbK6KKaQdMxVnNu0q/8DbmA=
-X-Google-Smtp-Source: ACHHUZ5dyQnqqW3d2AY3VwNHX1NgTJhmX4caiv5qKE0Ob10OKJQ2PB4+pFN90Hr2dqWkK5yTnNafRoVfxUawlRpyKx4=
-X-Received: by 2002:a2e:9557:0:b0:2ad:d6cd:efdd with SMTP id
- t23-20020a2e9557000000b002add6cdefddmr79186ljh.32.1685059537431; Thu, 25 May
- 2023 17:05:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-7-kent.overstreet@linux.dev> <20230510010737.heniyuxazlprrbd6@quack3>
- <ZFs3RYgdCeKjxYCw@moria.home.lan> <20230523133431.wwrkjtptu6vqqh5e@quack3>
- <ZGzoJLCRLk+pCKAk@infradead.org> <CAHpGcML0CZ1RGkOf26iYt_tK0Ux=cfdW8d3bjMVbjXLr91cs+g@mail.gmail.com>
- <ZG/tTorh8G2919Jz@moria.home.lan>
-In-Reply-To: <ZG/tTorh8G2919Jz@moria.home.lan>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Fri, 26 May 2023 02:05:26 +0200
-Message-ID: <CAHpGcMKQke0f5-y6fg3O5dBwcTYX69dEbxZgDiFABgOLCc+zGw@mail.gmail.com>
-Subject: Re: [Cluster-devel] [PATCH 06/32] sched: Add task_struct->faults_disabled_mapping
-To:     Kent Overstreet <kent.overstreet@linux.dev>
+        Thu, 25 May 2023 20:39:41 -0400
+Received: from out-21.mta0.migadu.com (out-21.mta0.migadu.com [IPv6:2001:41d0:1004:224b::15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF79195
+        for <linux-bcachefs@vger.kernel.org>; Thu, 25 May 2023 17:39:39 -0700 (PDT)
+Date:   Thu, 25 May 2023 20:39:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1685061577;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pAij41UNtGpWYUDu6iAwvqbyiSleyjppykUtqBTUdmw=;
+        b=Iq5WwXiffblb+kMf4YgSJILtg49ZkoeBlkvd4Sn6fK4FUaZzfflDGR7GR6nnqzXUEOKfvY
+        xBCxOT1GV52keCCM74XBRB6BqZ8oQ5uRa0ENTb7EnJqM7CE2QYLugDMVdsuyQUKsIftfjw
+        l+3e1I9MTs4wRZPpzoGErmgkvZn07as=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
+        <andreas.gruenbacher@gmail.com>
 Cc:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
         cluster-devel@redhat.com, "Darrick J . Wong" <djwong@kernel.org>,
         linux-kernel@vger.kernel.org, dhowells@redhat.com,
         linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Kent Overstreet <kent.overstreet@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [Cluster-devel] [PATCH 06/32] sched: Add
+ task_struct->faults_disabled_mapping
+Message-ID: <ZG//xK/QSp1Wm72M@moria.home.lan>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-7-kent.overstreet@linux.dev>
+ <20230510010737.heniyuxazlprrbd6@quack3>
+ <ZFs3RYgdCeKjxYCw@moria.home.lan>
+ <20230523133431.wwrkjtptu6vqqh5e@quack3>
+ <ZGzoJLCRLk+pCKAk@infradead.org>
+ <CAHpGcML0CZ1RGkOf26iYt_tK0Ux=cfdW8d3bjMVbjXLr91cs+g@mail.gmail.com>
+ <ZG/tTorh8G2919Jz@moria.home.lan>
+ <CAHpGcMKQke0f5-y6fg3O5dBwcTYX69dEbxZgDiFABgOLCc+zGw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHpGcMKQke0f5-y6fg3O5dBwcTYX69dEbxZgDiFABgOLCc+zGw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Am Fr., 26. Mai 2023 um 01:20 Uhr schrieb Kent Overstreet
-<kent.overstreet@linux.dev>:
-> On Fri, May 26, 2023 at 12:25:31AM +0200, Andreas Gr=C3=BCnbacher wrote:
-> > Am Di., 23. Mai 2023 um 18:28 Uhr schrieb Christoph Hellwig <hch@infrad=
-ead.org>:
-> > > On Tue, May 23, 2023 at 03:34:31PM +0200, Jan Kara wrote:
-> > > > I've checked the code and AFAICT it is all indeed handled. BTW, I'v=
-e now
-> > > > remembered that GFS2 has dealt with the same deadlocks - b01b2d72da=
-25
-> > > > ("gfs2: Fix mmap + page fault deadlocks for direct I/O") - in a dif=
-ferent
-> > > > way (by prefaulting pages from the iter before grabbing the problem=
-atic
-> > > > lock and then disabling page faults for the iomap_dio_rw() call). I=
- guess
-> > > > we should somehow unify these schemes so that we don't have two mec=
-hanisms
-> > > > for avoiding exactly the same deadlock. Adding GFS2 guys to CC.
-> > > >
-> > > > Also good that you've written a fstest for this, that is definitely=
- a useful
-> > > > addition, although I suspect GFS2 guys added a test for this not so=
- long
-> > > > ago when testing their stuff. Maybe they have a pointer handy?
-> > >
-> > > generic/708 is the btrfs version of this.
-> > >
-> > > But I think all of the file systems that have this deadlock are actua=
-lly
-> > > fundamentally broken because they have a mess up locking hierarchy
-> > > where page faults take the same lock that is held over the the direct=
- I/
-> > > operation.  And the right thing is to fix this.  I have work in progr=
-ess
-> > > for btrfs, and something similar should apply to gfs2, with the added
-> > > complication that it probably means a revision to their network
-> > > protocol.
-> >
-> > We do disable page faults, and there can be deadlocks in page fault
-> > handlers while no page faults are allowed.
-> >
-> > I'm roughly aware of the locking hierarchy that other filesystems use,
-> > and that's something we want to avoid because of two reasons: (1) it
-> > would be an incompatible change, and (2) we want to avoid cluster-wide
-> > locking operations as much as possible because they are very slow.
-> >
-> > These kinds of locking conflicts are so rare in practice that the
-> > theoretical inefficiency of having to retry the operation doesn't
-> > matter.
->
-> Would you be willing to expand on that? I'm wondering if this would
-> simplify things for gfs2, but you mention locking heirarchy being an
-> incompatible change - how does that work?
+On Fri, May 26, 2023 at 02:05:26AM +0200, Andreas Grünbacher wrote:
+> Oh, it's just that gfs2 uses one dlm lock per inode to control access
+> to that inode. In the code, this is called the "inode glock" ---
+> glocks being an abstraction above dlm locks --- but it boils down to
+> dlm locks in the end. An additional layer of locking will only work
+> correctly if all cluster nodes use the new locks consistently, so old
+> cluster nodes will become incompatible. Those kinds of changes are
+> hard.
+> 
+> But the additional lock taking would also hurt performance, forever,
+> and I'd really like to avoid taking that hit.
+> 
+> It may not be obvious to everyone, but allowing page faults during
+> reads and writes (i.e., while holding dlm locks) can lead to
+> distributed deadlocks. We cannot just pretend to be a local
+> filesystem.
 
-Oh, it's just that gfs2 uses one dlm lock per inode to control access
-to that inode. In the code, this is called the "inode glock" ---
-glocks being an abstraction above dlm locks --- but it boils down to
-dlm locks in the end. An additional layer of locking will only work
-correctly if all cluster nodes use the new locks consistently, so old
-cluster nodes will become incompatible. Those kinds of changes are
-hard.
+Ah, gotcha. Same basic issue then, dio -> page fault means you're taking
+two DLM locks simulateously, so without lock ordering you get deadlock.
 
-But the additional lock taking would also hurt performance, forever,
-and I'd really like to avoid taking that hit.
+So that means promoting this to the VFS won't be be useful to you
+(because the VFS lock will be a local lock, not your DLM lock).
 
-It may not be obvious to everyone, but allowing page faults during
-reads and writes (i.e., while holding dlm locks) can lead to
-distributed deadlocks. We cannot just pretend to be a local
-filesystem.
+Do you have trylock() and a defined lock ordering you can check for or
+glocks (inode number)? Here's the new and expanded commit message, in
+case my approach is of interest to you:
 
-Thanks,
-Andreas
+commit 32858d0fb90b503c8c39e899ad5155e44639d3b5
+Author: Kent Overstreet <kent.overstreet@gmail.com>
+Date:   Wed Oct 16 15:03:50 2019 -0400
 
-> > > I'm absolutely not in favour to add workarounds for thes kind of lock=
-ing
-> > > problems to the core kernel.  I already feel bad for allowing the
-> > > small workaround in iomap for btrfs, as just fixing the locking back
-> > > then would have avoid massive ratholing.
-> >
-> > Please let me know when those btrfs changes are in a presentable shape =
-...
->
-> I would also be curious to know what btrfs needs and what the approach
-> is there.
+    sched: Add task_struct->faults_disabled_mapping
+    
+    There has been a long standing page cache coherence bug with direct IO.
+    This provides part of a mechanism to fix it, currently just used by
+    bcachefs but potentially worth promoting to the VFS.
+    
+    Direct IO evicts the range of the pagecache being read or written to.
+    
+    For reads, we need dirty pages to be written to disk, so that the read
+    doesn't return stale data. For writes, we need to evict that range of
+    the pagecache so that it's not stale after the write completes.
+    
+    However, without a locking mechanism to prevent those pages from being
+    re-added to the pagecache - by a buffered read or page fault - page
+    cache inconsistency is still possible.
+    
+    This isn't necessarily just an issue for userspace when they're playing
+    games; filesystems may hang arbitrary state off the pagecache, and so
+    page cache inconsistency may cause real filesystem bugs, depending on
+    the filesystem. This is less of an issue for iomap based filesystems,
+    but e.g. buffer heads caches disk block mappings (!) and attaches them
+    to the pagecache, and bcachefs attaches disk reservations to pagecache
+    pages.
+    
+    This issue has been hard to fix, because
+     - we need to add a lock (henceforth calld pagecache_add_lock), which
+       would be held for the duration of the direct IO
+     - page faults add pages to the page cache, thus need to take the same
+       lock
+     - dio -> gup -> page fault thus can deadlock
+    
+    And we cannot enforce a lock ordering with this lock, since userspace
+    will be controlling the lock ordering (via the fd and buffer arguments
+    to direct IOs), so we need a different method of deadlock avoidance.
+    
+    We need to tell the page fault handler that we're already holding a
+    pagecache_add_lock, and since plumbing it through the entire gup() path
+    would be highly impractical this adds a field to task_struct.
+    
+    Then the full method is:
+     - in the dio path, when we take first pagecache_add_lock, note the
+       mapping in task_struct
+     - in the page fault handler, if faults_disabled_mapping is set, we
+       check if it's the same mapping as the one taking a page fault for,
+       and if so return an error.
+    
+       Then we check lock ordering: if there's a lock ordering violation and
+       trylock fails, we'll have to cycle the locks and return an error that
+       tells the DIO path to retry: faults_disabled_mapping is also used for
+       signalling "locks were dropped, please retry".
+    
+    Also relevant to this patch: mapping->invalidate_lock.
+    mapping->invalidate_lock provides most of the required semantics - it's
+    used by truncate/fallocate to block pages being added to the pagecache.
+    However, since it's a rwsem, direct IOs would need to take the write
+    side in order to block page cache adds, and would then be exclusive with
+    each other - we'll need a new type of lock to pair with this approach.
+    
+    Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+    Cc: Jan Kara <jack@suse.cz>
+    Cc: Darrick J. Wong <djwong@kernel.org>
+    Cc: linux-fsdevel@vger.kernel.org
+    Cc: Andreas Grünbacher <andreas.gruenbacher@gmail.com>
