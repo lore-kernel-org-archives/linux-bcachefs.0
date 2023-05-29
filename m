@@ -2,185 +2,130 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB94EC7EE2E
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 29 May 2023 21:44:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CDD0C77B7E
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 29 May 2023 23:12:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbjE2VoF (ORCPT
+        id S229484AbjE2XMu (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 29 May 2023 17:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
+        Mon, 29 May 2023 19:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjE2VoC (ORCPT
+        with ESMTP id S229455AbjE2XMu (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 29 May 2023 17:44:02 -0400
-Received: from out-35.mta0.migadu.com (out-35.mta0.migadu.com [91.218.175.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E9DD9
-        for <linux-bcachefs@vger.kernel.org>; Mon, 29 May 2023 14:43:59 -0700 (PDT)
-Date:   Mon, 29 May 2023 17:43:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1685396637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g9LV2x82sc6A+Ucb7bsrgYQlKFVDBatiYh9r3a/voOU=;
-        b=icbVg3aiJm3WrNrdXGgum3GzwV53yb1ocwOV8Y6vBmnjiy9FibXB9foRC6mHPgNv9jrgES
-        Nwn5No/pNNOaNDhpEABuXs22j2L+NVU/Av5S0XKgeIqIUun0qEEsu4iClZ+W7QNKxK0Nzq
-        AdWAOEkLGFCue6lfLzu2ecN8evc7IIY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     linux-bcachefs@vger.kernel.org, dm-devel@redhat.com,
+        Mon, 29 May 2023 19:12:50 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01048BE
+        for <linux-bcachefs@vger.kernel.org>; Mon, 29 May 2023 16:12:48 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-64d4e45971bso2532205b3a.2
+        for <linux-bcachefs@vger.kernel.org>; Mon, 29 May 2023 16:12:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1685401968; x=1687993968;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CEb/q2oR2f3xfXECLF27YKQHP0Ck5BcAeCfMowWxLOI=;
+        b=SXnysAqeo5Rxm3JiV+6zcZTSUSoVK4qMgntm47CBE+ZEFBLEugelygVkWX+EJWS5rO
+         fzb3pl6PbLDwgdwVdebX+75ZJt53UVAERhmPuEZ4uYHw5roVgtMuKmHYUOc1sNLXEzLu
+         EBXvNxWRMmschp/RnK5ysp+mPHSZXI5LUhHOy2KaSR9ctkwBRvriyeU4KFNyL3KVKCRd
+         RSm7WESovrc7HFHynM9P21zqoS+Q3m8HPKAVLHzb7hrlieu+BI5bA9jK+lTkrKvSxFb7
+         X8fsMrwxlg3cXgn2Vt5GIa6Ush5rFOZwlkQbHkLXTeRkQCCCimSlHyIvPLrikGlZro8t
+         f83g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685401968; x=1687993968;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CEb/q2oR2f3xfXECLF27YKQHP0Ck5BcAeCfMowWxLOI=;
+        b=LvLVB/QJ+vQdO4lzMcyLQPUHWGEK7bion+Wbsi6haWeYQ0IO83ZT+NX9vDWm9NJgII
+         DivXNuOCmrqZn/PrG0adqPZkn/FV2x32RXlSYwfnB8ijV0s3og4PIHju3c7qjk7j7VlP
+         Pv67woUna+2vIKbiCfZDjVhhK+nNbN7P0ctZ3O2UQ+FfEUKV9w4v9jRBFMkAghLVOnfx
+         iTIWXVnnzz4FiJV1lUAX++14h47glKrqiAZjrD0zLUuAq8Koc07UrFp3D+lGEeOjlB+N
+         Bu1c3WBdwJFvZQs3tNN2vfqYmVINzgYhnksDNd0K4iqEWmW5SaWaYxzzD+Z3YJxLEJPH
+         MF1g==
+X-Gm-Message-State: AC+VfDwBmT+i9Bne7Yuz6b9SXwbgvRcfQNnYPR8PfhFEJsZP2/KD4SC3
+        3PVuyA8ymHfIAo8Vfe6Ys2KDWA==
+X-Google-Smtp-Source: ACHHUZ7Q5mP843nhoE0+BC2QT5pCXDuq4Cdhm+ZbTapkVUOV3QG9I8B9Dc17Xb/SzUwDSi8xRONYzg==
+X-Received: by 2002:a05:6a20:a5a8:b0:10e:f1e3:8217 with SMTP id bc40-20020a056a20a5a800b0010ef1e38217mr451730pzb.17.1685401968467;
+        Mon, 29 May 2023 16:12:48 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-0-188.pa.nsw.optusnet.com.au. [49.179.0.188])
+        by smtp.gmail.com with ESMTPSA id j31-20020a63fc1f000000b00502e7115cbdsm7469726pgi.51.2023.05.29.16.12.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 May 2023 16:12:47 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1q3m2e-005UaD-1Z;
+        Tue, 30 May 2023 09:12:44 +1000
+Date:   Tue, 30 May 2023 09:12:44 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-bcachefs@vger.kernel.org, dm-devel@redhat.com,
         linux-fsdevel@vger.kernel.org
 Subject: Re: fuzzing bcachefs with dm-flakey
-Message-ID: <ZHUcmeYrUmtytdDU@moria.home.lan>
+Message-ID: <ZHUxbLh1P9yiq2c9@dread.disaster.area>
 References: <alpine.LRH.2.21.2305260915400.12513@file01.intranet.prod.int.rdu2.redhat.com>
+ <ZHUVy7jut1Ex1IGJ@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.21.2305260915400.12513@file01.intranet.prod.int.rdu2.redhat.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ZHUVy7jut1Ex1IGJ@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Mon, May 29, 2023 at 04:59:40PM -0400, Mikulas Patocka wrote:
-> Hi
+On Mon, May 29, 2023 at 10:14:51PM +0100, Matthew Wilcox wrote:
+> On Mon, May 29, 2023 at 04:59:40PM -0400, Mikulas Patocka wrote:
+> > Hi
+> > 
+> > I improved the dm-flakey device mapper target, so that it can do random 
+> > corruption of read and write bios - I uploaded it here: 
+> > https://people.redhat.com/~mpatocka/testcases/bcachefs/dm-flakey.c
+> > 
+> > I set up dm-flakey, so that it corrupts 10% of read bios and 10% of write 
+> > bios with this command:
+> > dmsetup create flakey --table "0 `blockdev --getsize /dev/ram0` flakey /dev/ram0 0 0 1 4 random_write_corrupt 100000000 random_read_corrupt 100000000"
 > 
-> I improved the dm-flakey device mapper target, so that it can do random 
-> corruption of read and write bios - I uploaded it here: 
-> https://people.redhat.com/~mpatocka/testcases/bcachefs/dm-flakey.c
-> 
-> I set up dm-flakey, so that it corrupts 10% of read bios and 10% of write 
-> bios with this command:
-> dmsetup create flakey --table "0 `blockdev --getsize /dev/ram0` flakey /dev/ram0 0 0 1 4 random_write_corrupt 100000000 random_read_corrupt 100000000"
+> I'm not suggesting that any of the bugs you've found are invalid, but 10%
+> seems really high.  Is it reasonable to expect any filesystem to cope
+> with that level of broken hardware?  Can any of our existing ones cope
+> with that level of flakiness?  I mean, I've got some pretty shoddy USB
+> cables, but ...
 
-I've got some existing ktest tests for error injection:
-https://evilpiepirate.org/git/ktest.git/tree/tests/bcachefs/single_device.ktest#n200
-https://evilpiepirate.org/git/ktest.git/tree/tests/bcachefs/replication.ktest#n491
+It's realistic in that when you have lots of individual storage
+devices, load balanced over all of them, and then one fails
+completely we'll see an IO error rate like this. These are the sorts
+of setups I'd expect to be using erasure coding with bcachefs, so
+the IO failure rate should be able to head towards 20-30% before
+actual loss and/or corruption should start occurring.
 
-I haven't looked at dm-flakey before, I take it you're silently
-corrupting data instead of just failing the IOs like these tests do?
+In this situation, if the failures were isolated to an individual
+device, then I'd want the filesystem to kick that device out of the
+backing pool. Hence all the failures go away and then rebuild of the
+redundancy the erasure coding provides can take place. i.e. an IO
+failure rate this high should be a very short lived incident for a
+filesystem that directly manages individual devices.
 
-Let's add what you're doing to ktest, and see if we can merge it with
-the existing tests.
+But within a single, small device, it's not a particularly realistic
+scenario. If it's really corrupting this much active metadata, then
+the filesystem should be shutting down at the first
+uncorrectable/unrecoverable metadata error and every other IO error
+is then superfluous.
 
-> I created a bcachefs volume on a single disk (metadata and data checksums 
-> were turned off) and mounted it on dm-flakey. I got:
-> 
-> crash: https://people.redhat.com/~mpatocka/testcases/bcachefs/crash1.txt
-> deadlock: https://people.redhat.com/~mpatocka/testcases/bcachefs/crash2.txt
-> infinite loop: https://people.redhat.com/~mpatocka/testcases/bcachefs/crash3.txt
+Of course, bcachefs might be doing just that - cleanly shutting down
+an active filesystem is a very hard problem. XFS still has intricate
+and subtle issues with shutdown of active filesystems that can cause
+hangs and/or crashes, so I wouldn't expect bcachefs to be able to
+handle these scenarios completely cleanly at this stage of it's
+development....
 
-Fun!
+Perhaps it is worthwhile running the same tests on btrfs so we can
+something to compare the bcachefs behaviour to. I suspect that btrfs
+will fair little better on the single device, no checksums
+corruption test....
 
-> Here I uploaded an image that causes infnite loop when we run bcachefs 
-> fsck on it or when we attempt mount it:
-> https://people.redhat.com/~mpatocka/testcases/bcachefs/inf-loop.gz
-> 
-> 
-> I tried to run bcachefs on two block devices and fuzzing just one of them 
-> (checksums and replication were turned on - so bcachefs shold correct the 
-> corrupted data) - in this scenario, bcachefs doesn't return invalid data, 
-> but it sometimes returns errors and sometimes crashes.
-> 
-> This script will trigger an oops on unmount:
-> 	https://people.redhat.com/~mpatocka/testcases/bcachefs/crash4.txt
-> or nonsensical errors returned to userspace:
-> 	rm: cannot remove '/mnt/test/test/cmd_migrate.c': Unknown error 2206
-> or I/O errors returned to userspace:
-> 	diff: /mnt/test/test/rust-src/target/release/.fingerprint/bch_bindgen-f0bad16858ff0019/lib-bch_bindgen.json: Input/output error
-> 
-> #!/bin/sh -ex
-> umount /mnt/test || true
-> dmsetup remove_all || true
-> rmmod brd || true
-> SRC=/usr/src/git/bcachefs-tools
-> while true; do
->         modprobe brd rd_size=1048576
->         bcachefs format --replicas=2 /dev/ram0 /dev/ram1
->         dmsetup create flakey --table "0 `blockdev --getsize /dev/ram0` linear /dev/ram0 0"
->         mount -t bcachefs /dev/mapper/flakey:/dev/ram1 /mnt/test
->         dmsetup load flakey --table "0 `blockdev --getsize /dev/ram0` flakey /dev/ram0 0 0 1 4 random_write_corrupt 100000000 random_read_corrupt 100000000"
->         dmsetup suspend flakey
->         dmsetup resume flakey
->         cp -a "$SRC" /mnt/test/test
->         diff -r "$SRC" /mnt/test/test
->         echo 3 >/proc/sys/vm/drop_caches
->         diff -r "$SRC" /mnt/test/test
->         echo 3 >/proc/sys/vm/drop_caches
->         diff -r "$SRC" /mnt/test/test
->         echo 3 >/proc/sys/vm/drop_caches
->         rm -rf /mnt/test/test
->         echo 3 >/proc/sys/vm/drop_caches
->         cp -a "$SRC" /mnt/test/test
->         echo 3 >/proc/sys/vm/drop_caches
->         diff -r "$SRC" /mnt/test/test
->         umount /mnt/test
->         dmsetup remove flakey
->         rmmod brd
-> done
-> 
-> The oops happens in set_btree_iter_dontneed and it is caused by the fact 
-> that iter->path is NULL. The code in try_alloc_bucket is buggy because it 
-> sets "struct btree_iter iter = { NULL };" and then jumps to the "err" 
-> label that tries to dereference values in "iter".
+Cheers,
 
-Good catches on all of them. Darrick's been on me to get fuzz testing
-going, looks like it's definitely needed :)
-
-However, there's two things I want in place first before I put much
-effort into fuzz testing:
-
- - Code coverage analysis. ktest used to have integrated code coverage
-   analysis, where you'd tell it a subdirectory of the kernel tree
-   (doing code coverage analysis for the entire kernel is impossibly
-   slow) and it would run tests and then give you the lcov output.
-
-   However, several years ago something about kbuild changed, and the
-   method ktest was using for passing in build flags for a specific
-   subdir on the command line stopped working. I would like to track
-   down someone who understands kbuild and get this working again.
-
- - Fault injection
-
-   Years and years ago, when I was still at Google and this was just
-   bcache, we had fault injection that worked like dynamic debug: you
-   could call dynamic_fault("type of fault") anywhere in your code,
-   and it returned a bool indicating whether that fault had been enabled
-   - and faults were controllable at runtime via debugfs, we had tests
-   that iterated over e.g. faults in the initialization path, or memory
-   allocation failures, and flipped them on one by one and ran
-   $test_workload.
-
-   The memory allocation profiling stuff that Suren and I have been
-   working on includes code tagging, which is for (among other things) a
-   new and simplified implementation of dynamic fault injection, which
-   I'm going to push forward again once the memory allocation profiling
-   stuff gets merged.
-
-The reason I want this stuff is because fuzz testing tends to be a
-heavyweight, scattershot approach.
-
-I want to be able to look at the code coverage analysis first to e.g.
-work on a chunk of code at a time and make sure it's tested thoroughly,
-instead of jumping around in the code at random depending on what fuzz
-testing finds, and when we are fuzz testing I want to be able to add
-fault injection points and write unit tests so that we can have much
-more targeted, quicker to run tests going forward.
-
-Can I get you interested in either of those things? I'd really love to
-find someone to hand off or collaborate with on the fault injection
-stuff in particular.
-
-> Bcachefs gives not much usefull error messages, like "Fatal error: Unknown 
-> error 2184" or "Error in recovery: cannot allocate memory" or "mount(2) 
-> system call failed: Unknown error 2186." or "rm: cannot remove 
-> '/mnt/test/xfstests-dev/tools/fs-walk': Unknown error 2206".
-
-Those are mostly missing bch2_err_str()/bch2_err_class() calls:
- - bch2_err_str(), to print error string for our private error code
- - bch2_err_class(), to convert private error code to standard error
-   code before returning it to outside bcachefs code
-
-except error in recovery, cannot allocate memory - that's ancient code
-that still squashes to -ENOMEM
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
