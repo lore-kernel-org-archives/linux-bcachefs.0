@@ -2,93 +2,90 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97553C7EE2E
-	for <linux-bcachefs@archiver.kernel.org>; Fri,  9 Jun 2023 18:57:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD642C7EE2E
+	for <linux-bcachefs@archiver.kernel.org>; Fri,  9 Jun 2023 19:38:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbjFIS50 (ORCPT
+        id S229829AbjFITiz (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 9 Jun 2023 14:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59710 "EHLO
+        Fri, 9 Jun 2023 15:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjFIS5Z (ORCPT
+        with ESMTP id S229517AbjFITiy (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 9 Jun 2023 14:57:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A120435B3
-        for <linux-bcachefs@vger.kernel.org>; Fri,  9 Jun 2023 11:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1686337003;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dgvP+3cfn/JdGFtz/3/sc6XWKCWQswTzTsmhHZdWj30=;
-        b=SGrosThl/QWu+egUmbwAgDQGKJc/kotRt8A1Mw8fdVmIGZfPcLrp94yqCEWx8F/BlC+AGy
-        GN/NN4AkArsBZodK4/1Z27Bi0vC+1h/JTg5gtbA7pxD0jy/WZCQexUQKlpZ53jn4XC643G
-        4V6/JSbZcb93Fo42yIWEi2tu0JYkL8M=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-349-SKIIw_DfPvGS0vW0tUyxKg-1; Fri, 09 Jun 2023 14:56:38 -0400
-X-MC-Unique: SKIIw_DfPvGS0vW0tUyxKg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 9 Jun 2023 15:38:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B37E0;
+        Fri,  9 Jun 2023 12:38:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E0CCB8007D9;
-        Fri,  9 Jun 2023 18:56:37 +0000 (UTC)
-Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D18E810ED7;
-        Fri,  9 Jun 2023 18:56:37 +0000 (UTC)
-Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
-        id C04E930C0502; Fri,  9 Jun 2023 18:56:37 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id BE97D3F7CF;
-        Fri,  9 Jun 2023 20:56:37 +0200 (CEST)
-Date:   Fri, 9 Jun 2023 20:56:37 +0200 (CEST)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A3C460B5E;
+        Fri,  9 Jun 2023 19:38:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8656C433EF;
+        Fri,  9 Jun 2023 19:38:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686339532;
+        bh=KQ+ES1E5wxW23Q6pqFG/rgRMYzDlynrMzW80Gfo0T2s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VfwMswqtVJFTIfibEupHCJvRXnjzMvUKlJoYkcqPQHI6cX5jBk6h9xuZeGD6PRbS2
+         ZNIkBHCV6z6HB5DxvGKQ8bO2m+nDBUme8rZyUmWbvOSs44ARURQWQjNJYLzk0VMLmd
+         C5HzhRJ254sPIDIF9qEEQsPKb3UzFBhgBFzYzVJyaJPAF70FuNoyt+RqbL0j7wZUWf
+         XkLCl4NjV8XwIOJbSFz4vVo12dy4wWk4tNYwx/HPWTVzElY/wMfabPtGs/0P5TP1Rn
+         4w7N5MGdXIeia6BqFh6u88QmZ7L30bBfP2fYgGVX5Bknh2/rEREd3VzWIki/BEFO8d
+         qEHmTcHAMw++g==
+Date:   Fri, 9 Jun 2023 12:38:52 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
         linux-bcachefs@vger.kernel.org, dm-devel@redhat.com,
         linux-fsdevel@vger.kernel.org
 Subject: Re: fuzzing bcachefs with dm-flakey
-In-Reply-To: <20230602011355.GA16848@frogsfrogsfrogs>
-Message-ID: <7bf96e58-7151-a63d-317f-1ddedd4927ad@redhat.com>
-References: <alpine.LRH.2.21.2305260915400.12513@file01.intranet.prod.int.rdu2.redhat.com> <20230602011355.GA16848@frogsfrogsfrogs>
+Message-ID: <20230609193852.GI72224@frogsfrogsfrogs>
+References: <alpine.LRH.2.21.2305260915400.12513@file01.intranet.prod.int.rdu2.redhat.com>
+ <20230602011355.GA16848@frogsfrogsfrogs>
+ <7bf96e58-7151-a63d-317f-1ddedd4927ad@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7bf96e58-7151-a63d-317f-1ddedd4927ad@redhat.com>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-
-
-On Thu, 1 Jun 2023, Darrick J. Wong wrote:
-
-> On Mon, May 29, 2023 at 04:59:40PM -0400, Mikulas Patocka wrote:
->
-> > #!/bin/sh -ex
-> > umount /mnt/test || true
-> > dmsetup remove_all || true
-> > rmmod brd || true
-> > SRC=/usr/src/git/bcachefs-tools
-> > while true; do
-> >         modprobe brd rd_size=1048576
-> >         bcachefs format --replicas=2 /dev/ram0 /dev/ram1
-> >         dmsetup create flakey --table "0 `blockdev --getsize /dev/ram0` linear /dev/ram0 0"
-> >         mount -t bcachefs /dev/mapper/flakey:/dev/ram1 /mnt/test
-> >         dmsetup load flakey --table "0 `blockdev --getsize /dev/ram0` flakey /dev/ram0 0 0 1 4 random_write_corrupt 100000000 random_read_corrupt 100000000"
+On Fri, Jun 09, 2023 at 08:56:37PM +0200, Mikulas Patocka wrote:
 > 
-> Hey, that's really neat!
 > 
-> Any chance you'd be willing to get the dm-flakey changes merged into
-> upstream so that someone can write a recoveryloop fstest to test all the
-> filesystems systematically?
+> On Thu, 1 Jun 2023, Darrick J. Wong wrote:
 > 
-> :D
+> > On Mon, May 29, 2023 at 04:59:40PM -0400, Mikulas Patocka wrote:
+> >
+> > > #!/bin/sh -ex
+> > > umount /mnt/test || true
+> > > dmsetup remove_all || true
+> > > rmmod brd || true
+> > > SRC=/usr/src/git/bcachefs-tools
+> > > while true; do
+> > >         modprobe brd rd_size=1048576
+> > >         bcachefs format --replicas=2 /dev/ram0 /dev/ram1
+> > >         dmsetup create flakey --table "0 `blockdev --getsize /dev/ram0` linear /dev/ram0 0"
+> > >         mount -t bcachefs /dev/mapper/flakey:/dev/ram1 /mnt/test
+> > >         dmsetup load flakey --table "0 `blockdev --getsize /dev/ram0` flakey /dev/ram0 0 0 1 4 random_write_corrupt 100000000 random_read_corrupt 100000000"
+> > 
+> > Hey, that's really neat!
+> > 
+> > Any chance you'd be willing to get the dm-flakey changes merged into
+> > upstream so that someone can write a recoveryloop fstest to test all the
+> > filesystems systematically?
+> > 
+> > :D
+> > 
+> > --D
 > 
-> --D
+> Yes, we will merge improved dm-flakey in the next merge window.
 
-Yes, we will merge improved dm-flakey in the next merge window.
+Thank you!
 
-Mikulas
+--D
 
+> Mikulas
+> 
