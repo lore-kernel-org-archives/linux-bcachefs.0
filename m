@@ -2,48 +2,35 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 316BDEB64DB
-	for <linux-bcachefs@archiver.kernel.org>; Sat, 17 Jun 2023 04:13:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9693EB64DA
+	for <linux-bcachefs@archiver.kernel.org>; Sat, 17 Jun 2023 15:34:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbjFQEN2 (ORCPT
+        id S235576AbjFQPet (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sat, 17 Jun 2023 00:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
+        Sat, 17 Jun 2023 11:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjFQEN0 (ORCPT
+        with ESMTP id S231892AbjFQPes (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sat, 17 Jun 2023 00:13:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9481430F1;
-        Fri, 16 Jun 2023 21:13:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E694961701;
-        Sat, 17 Jun 2023 04:13:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9D6BC433C8;
-        Sat, 17 Jun 2023 04:13:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686975204;
-        bh=O9IhQbkEdVOj/uSoDsWPMJ4oir6I9roRy38/BIcjOhk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=prsSj/MitUcMcJEJJGh9ljH+bbdtrtfA0qq/Vjlz64iphGyMBl/DCSSL5cPlqQSoG
-         QFnIyOmE3Nq+O4LtrfXQ6VUkCKfb27Apf74fQF5VwhK5fujZgfD0WTOCZpfWzvNSx9
-         hi+TV46ghkkdluXRLPaqiUTwgnHGDVxfqzTFPLny8o6QuB6XgRjdzFNTfNY6yUfDrE
-         m2m1wQJ28r/MX9OEDeA096JgwvSYS3df7ZMmtK5XsPy2nHem5s8XfuDU8kTkK+tjLg
-         UIAX881i63f/5ULrhFImQlIKzSY3Gr0SXMJA238X687eDSBzWYVPkU4MQJfo+DWb4H
-         9ShASJVpIMuww==
-Message-ID: <1d249326-e3dd-9c9d-7b53-2fffeb39bfb4@kernel.org>
-Date:   Fri, 16 Jun 2023 21:13:22 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.1
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Content-Language: en-US
-To:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Sat, 17 Jun 2023 11:34:48 -0400
+Received: from out-4.mta0.migadu.com (out-4.mta0.migadu.com [91.218.175.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18781FEC;
+        Sat, 17 Jun 2023 08:34:45 -0700 (PDT)
+Date:   Sat, 17 Jun 2023 11:34:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1687016083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y/n1M3rkIqj2fYlcf86oQKmm6toDjWN0ksVwZeIikJo=;
+        b=dOatmczg4Jywa17R64WDUuNlLFHSl0gHLdFxUjiRip5Y9HERUHlvyqQktBUOYz3C04QOpZ
+        yi8bWqsNiwlZWZ1G/Lf4997PNQLyIwqM+VFcfnJ0l2MuAillQ1X2IWn1/r9IYihlBZtgR0
+        NixVJmtd1KAhXd70CJAq2tCS+y+D2d4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
         "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
@@ -53,113 +40,90 @@ Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
         "hch@infradead.org" <hch@infradead.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
+Message-ID: <ZI3Sh6p8b4FcP0Y2@moria.home.lan>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-8-kent.overstreet@linux.dev>
  <3508afc0-6f03-a971-e716-999a7373951f@wdc.com>
- <202305111525.67001E5C4@keescook> <ZF6Ibvi8U9B+mV1d@moria.home.lan>
- <202305161401.F1E3ACFAC@keescook> <ZGPzocRpSlg+4vgN@moria.home.lan>
-From:   Andy Lutomirski <luto@kernel.org>
-In-Reply-To: <ZGPzocRpSlg+4vgN@moria.home.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <202305111525.67001E5C4@keescook>
+ <ZF6Ibvi8U9B+mV1d@moria.home.lan>
+ <202305161401.F1E3ACFAC@keescook>
+ <ZGPzocRpSlg+4vgN@moria.home.lan>
+ <1d249326-e3dd-9c9d-7b53-2fffeb39bfb4@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d249326-e3dd-9c9d-7b53-2fffeb39bfb4@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On 5/16/23 14:20, Kent Overstreet wrote:
-> On Tue, May 16, 2023 at 02:02:11PM -0700, Kees Cook wrote:
->> For something that small, why not use the text_poke API?
+On Fri, Jun 16, 2023 at 09:13:22PM -0700, Andy Lutomirski wrote:
+> On 5/16/23 14:20, Kent Overstreet wrote:
+> > On Tue, May 16, 2023 at 02:02:11PM -0700, Kees Cook wrote:
+> > > For something that small, why not use the text_poke API?
+> > 
+> > This looks like it's meant for patching existing kernel text, which
+> > isn't what I want - I'm generating new functions on the fly, one per
+> > btree node.
 > 
-> This looks like it's meant for patching existing kernel text, which
-> isn't what I want - I'm generating new functions on the fly, one per
-> btree node.
+> Dynamically generating code is a giant can of worms.
+> 
+> Kees touched on a basic security thing: a linear address mapped W+X is a big
+> no-no.  And that's just scratching the surface -- ideally we would have a
+> strong protocol for generating code: the code is generated in some
+> extra-secure context, then it's made immutable and double-checked, then
+> it becomes live.
 
-Dynamically generating code is a giant can of worms.
+"Double checking" arbitrary code is is fantasy. You can't "prove the
+security" of arbitrary code post compilation.
 
-Kees touched on a basic security thing: a linear address mapped W+X is a big
-no-no.  And that's just scratching the surface -- ideally we would have a
-strong protocol for generating code: the code is generated in some
-extra-secure context, then it's made immutable and double-checked, then
-it becomes live.  (And we would offer this to userspace, some day.)
-Just having a different address for the W and X aliases is pretty weak.
+Rice's theorem states that any nontrivial property of a program is
+either a direct consequence of the syntax, or is undecidable. It's why
+programs in statically typed languages are easier to reason about, and
+it's also why the borrow checker in Rust is a syntactic construct.
 
-(When x86 modifies itself at boot or for static keys, it changes out the
-page tables temporarily.)
+You just have to be able to trust the code that generates the code. Just
+like you have to be able to trust any other code that lives in kernel
+space.
 
-And even beyond security, we have correctness.  x86 is a fairly 
-forgiving architecture.  If you go back in time about 20 years, modify
-some code *at the same linear address at which you intend to execute 
-it*, and jump to it, it works.  It may even work if you do it through
-an alias (the manual is vague).  But it's not 20 years ago, and you have
-multiple cores.  This does *not* work with multiple CPUs -- you need to 
-serialize on the CPU executing the modified code.  On all the but the 
-very newest CPUs, you need to kludge up the serialization, and that's
-sloooooooooooooow.  Very new CPUs have the SERIALIZE instruction, which
-is merely sloooooow.
-
-(The manual is terrible.  It's clear that a way to do this without 
-serializing must exist, because that's what happens when code is paged 
-in from a user program.)
-
-And remember that x86 is the forgiving architecture.  Other 
-architectures have their own rules that may involve all kinds of 
-terrifying cache management.  IIRC ARM (32-bit) is really quite nasty in 
-this regard.  I've seen some references suggesting that RISC-V has a 
-broken design of its cache management and this is a real mess.
-
-x86 low level stuff on Linux gets away with it because the 
-implementation is conservative and very slow, but it's very rarely invoked.
-
-eBPF gets away with it in ways that probably no one really likes, but 
-also no one expects eBPF to load programs particularly quickly.
-
-You are proposing doing this when a btree node is loaded.  You could 
-spend 20 *thousand* cycles, on *each CPU*, the first time you access 
-that node, not to mention the extra branch to decide whether you need to 
-spend those 20k cycles.  Or you could use IPIs.
-
-Or you could just not do this.  I think you should just remove all this 
-dynamic codegen stuff, at least for now.
+This is far safer and easier to reason about than what BPF is doing
+because we're not compiling arbitrary code, the actual codegen part is
+200 loc and the input is just a single table.
 
 > 
-> I'm working up a new allocator - a (very simple) slab allocator where
-> you pass a buffer, and it gives you a copy of that buffer mapped
-> executable, but not writeable.
+> (When x86 modifies itself at boot or for static keys, it changes out the
+> page tables temporarily.)
 > 
-> It looks like we'll be able to convert bpf, kprobes, and ftrace
-> trampolines to it; it'll consolidate a fair amount of code (particularly
-> in bpf), and they won't have to burn a full page per allocation anymore.
-> 
-> bpf has a neat trick where it maps the same page in two different
-> locations, one is the executable location and the other is the writeable
-> location - I'm stealing that.
-> 
-> external api will be:
-> 
-> void *jit_alloc(void *buf, size_t len, gfp_t gfp);
-> void jit_free(void *buf);
-> void jit_update(void *buf, void *new_code, size_t len); /* update an existing allocation */
+> And even beyond security, we have correctness.  x86 is a fairly forgiving
+> architecture.  If you go back in time about 20 years, modify
+> some code *at the same linear address at which you intend to execute it*,
+> and jump to it, it works.  It may even work if you do it through
+> an alias (the manual is vague).  But it's not 20 years ago, and you have
+> multiple cores.  This does *not* work with multiple CPUs -- you need to
+> serialize on the CPU executing the modified code.  On all the but the very
+> newest CPUs, you need to kludge up the serialization, and that's
+> sloooooooooooooow.  Very new CPUs have the SERIALIZE instruction, which
+> is merely sloooooow.
 
-Based on the above, I regret to inform you that jit_update() will either 
-need to sync all cores via IPI or all cores will need to check whether a 
-sync is needed and do it themselves.
+If what you were saying was true, it would be an issue any time we
+mapped in new executable code for userspace - minor page faults would be
+stupidly slow.
 
-That IPI could be, I dunno, 500k cycles?  1M cycles?  Depends on what 
-cores are asleep at the time.  (I have some old Sandy Bridge machines 
-where, if you tick all the boxes wrong, you might spend tens of 
-milliseconds doing this due to power savings gone wrong.)  Or are you 
-planning to implement a fancy mostly-lockless thing to track which cores 
-actually need the IPI so you can avoid waking up sleeping cores?
+This code has been running on thousands of machines for years, and the
+only issues that have come up have been due to the recent introduction
+of indirect branch tracking. x86 doesn't have such broken caches, and
+architectures that do have utterly broken caches (because that's what
+you're describing: you're describing caches that _are not coherent
+across cores_) are not high on my list of things I care about.
 
-Sorry to be a party pooper.
+Also, SERIALIZE is a spectre thing. Not relevant here.
 
---Andy
+> Based on the above, I regret to inform you that jit_update() will either
+> need to sync all cores via IPI or all cores will need to check whether a
+> sync is needed and do it themselves.
 
-P.S. I have given some thought to how to make a JIT API that was 
-actually (somewhat) performant.  It's nontrivial, and it would involve 
-having at least phone calls and possibly actual meetings with people who 
-understand the microarchitecture of various CPUs to get all the details 
-hammered out and documented properly.
+text_poke() doesn't even send IPIs.
 
-I don't think it would be efficient for teeny little functions like 
-bcachefs wants, but maybe?  That would be even more complex and messy.
+I think you've been misled about some things :)
