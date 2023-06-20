@@ -2,79 +2,154 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 975C4EB64DA
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 20 Jun 2023 00:40:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71D45EB64D7
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 20 Jun 2023 17:42:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjFTAkA (ORCPT
+        id S229571AbjFTRm2 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 19 Jun 2023 20:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
+        Tue, 20 Jun 2023 13:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjFTAj7 (ORCPT
+        with ESMTP id S229538AbjFTRm1 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 19 Jun 2023 20:39:59 -0400
-Received: from out-42.mta0.migadu.com (out-42.mta0.migadu.com [91.218.175.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F749E78
-        for <linux-bcachefs@vger.kernel.org>; Mon, 19 Jun 2023 17:39:57 -0700 (PDT)
-Date:   Mon, 19 Jun 2023 20:39:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1687221595;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Zfq6ittE0IV5j42l7ltYn23CXJNIzl2rvAKGvH0VyM=;
-        b=KzSvOqKfcMmVN0w3Me9IkrmC6QouMRyyeBRH9zO6fPglTbdqGSKPREw3qxo0JuMprczB+a
-        gBh1CcjSxjKA3BjoaGZbjBi7W8Crd4fevq+XE9cwgXwlSom7mcz3T+IDoDO/tyZEexRtCl
-        jpWFuxuqDHgVBnAVdPv5to1A6xKl/Zs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Message-ID: <20230620003949.kjs2z524hodwwcnt@moria.home.lan>
+        Tue, 20 Jun 2023 13:42:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B5F10F8;
+        Tue, 20 Jun 2023 10:42:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8464061347;
+        Tue, 20 Jun 2023 17:42:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47344C433C0;
+        Tue, 20 Jun 2023 17:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687282945;
+        bh=HqPSWIaowE4nj5clj2k3JH4V3AbdDov4B8Rb4Patkfo=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=s9339xQyC0XBKYSx0zEQ4dFF/ahukeax3w/RKWqvx7TT7ZJ7GRStLt1BnylGu1Gam
+         Fw4rsznAdu1fiSViLVt+OpO2XHctAYsz1uyYa/cqpHNsuHmtwpz4dxAE/R5Sc6gyF+
+         hZjVpSzhbWQQ/b+f7tOJ/usvDxSj09R99gxfklRToSZPVR3w466sG7kpO7cDKT0QAT
+         SqA41wCiDuXRb1McOCqYoz+2IFjfv5x8AsKFF0Y6oQBLQh4oIXwN6tzhIvHEEi6a8I
+         zAspRdgqXHatVMKHs6T8ISpg90hOsS5aIaqikisTvWksXpKhoeolozwTPp1t3VX49G
+         6EIsTI2sFKAEA==
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 3A59727C0054;
+        Tue, 20 Jun 2023 13:42:24 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute3.internal (MEProxy); Tue, 20 Jun 2023 13:42:24 -0400
+X-ME-Sender: <xms:_-SRZKxsZMGFSxhBm5vRIo2EoKSGS8PpdQ_wugFe3zouweIOzSbx3Q>
+    <xme:_-SRZGTp6i9qiZioW-dK_LNkg8xwsH4bsPCcZSen7ae9TjPmgUPyk9dEULN-D0MI3
+    topYDn6ZtfAalKwFFo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeefhedgleehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdfhuedvtdfhudffhfekkefftefghfeltdelgeffteehueegjeff
+    udehgfetiefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:_-SRZMWPRUyDhdMWDnDD7do9LqcwVDUrkhdEhlplOUG6DzGrAmaeAw>
+    <xmx:_-SRZAihSJ0YPyqsvXgdSSG3PoFHsCfe9Rb_iiYwjJQ6TbJObK0ylw>
+    <xmx:_-SRZMCEPdi2mA8OAEnJ1wUaXGyuTw_TiaHoWkOlDTgQeu6K_zXblA>
+    <xmx:AOWRZMsTaJULl8zgHzhqmEqR8dg-NFprFlff4PCAbRGKO8uNJIFOdQ>
+Feedback-ID: ieff94742:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id B26A831A0063; Tue, 20 Jun 2023 13:42:23 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-499-gf27bbf33e2-fm-20230619.001-gf27bbf33
+Mime-Version: 1.0
+Message-Id: <5ef2246b-9fe5-4206-acf0-0ce1f4469e6c@app.fastmail.com>
+In-Reply-To: <20230619191740.2qmlza3inwycljih@moria.home.lan>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-8-kent.overstreet@linux.dev>
- <3508afc0-6f03-a971-e716-999a7373951f@wdc.com>
- <202305111525.67001E5C4@keescook>
- <ZF6Ibvi8U9B+mV1d@moria.home.lan>
- <202305161401.F1E3ACFAC@keescook>
- <ZGPzocRpSlg+4vgN@moria.home.lan>
- <1d249326-e3dd-9c9d-7b53-2fffeb39bfb4@kernel.org>
- <ZI3Sh6p8b4FcP0Y2@moria.home.lan>
- <202306191228.6A98FD25@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202306191228.6A98FD25@keescook>
-X-Migadu-Flow: FLOW_OUT
+ <ZJAdhBIvwFBOFQU/@FVFF77S0Q05N>
+ <20230619104717.3jvy77y3quou46u3@moria.home.lan>
+ <ZJBOVsFraksigfRF@FVFF77S0Q05N.cambridge.arm.com>
+ <20230619191740.2qmlza3inwycljih@moria.home.lan>
+Date:   Tue, 20 Jun 2023 10:42:02 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Kent Overstreet" <kent.overstreet@linux.dev>,
+        "Mark Rutland" <mark.rutland@arm.com>
+Cc:     "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+        "Kent Overstreet" <kent.overstreet@gmail.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Uladzislau Rezki" <urezki@gmail.com>,
+        "hch@infradead.org" <hch@infradead.org>, linux-mm@kvack.org,
+        "Kees Cook" <keescook@chromium.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Mon, Jun 19, 2023 at 12:45:43PM -0700, Kees Cook wrote:
-> I think there's a misunderstanding here about the threat model I'm
-> interested in protecting against for JITs. While making sure the VM of a
-> JIT is safe in itself, that's separate from what I'm concerned about.
-> 
-> The threat model is about flaws _elsewhere_ in the kernel that can
-> leverage the JIT machinery to convert a "write anything anywhere anytime"
-> exploit primitive into an "execute anything" primitive. Arguments can
-> be made to say "a write anything flaw means the total collapse of the
-> security model so there's no point defending against it", but both that
-> type of flaw and the slippery slope argument don't stand up well to
-> real-world situations.
+On Mon, Jun 19, 2023, at 12:17 PM, Kent Overstreet wrote:
+> On Mon, Jun 19, 2023 at 01:47:18PM +0100, Mark Rutland wrote:
+>> Sorry, but I do have an engineering rationale here: I want to make sure that
+>> this actually works, on architectures that I care about, and will be
+>> maintanable long-term.
+>> 
+>> We've had a bunch of problems with other JITs ranging from JIT-local "we got
+>> the encoding wrong" to major kernel infrastructure changes like tasks RCU rude
+>> synchronization. I'm trying to figure out whether any of those are likely to
+>> apply and/or whether we should be refactoring other infrastructure for use here
+>> (e.g. the factoring the acutal instruction generation from arch code, or
+>> perhaps reusing eBPF so this can be arch-neutral).
+>> 
+>> I appreciate that's not clear from my initial mail, but please don't jump
+>> straight to assuming I'm adversarial here.
+>
+> I know you're not trying to be adversarial, but vague negative feedback
+> _is_ hostile, because productive technical discussions can't happen
+> without specifics and you're putting all the onus on the other person to
+> make that happen.
 
-Hey Kees, thanks for the explanation - I don't think this is a concern
-for what bcachefs is doing, since we're not doing a full jit. The unpack
-functions we generate only write to the 40 bytes pointed to by rsi; not
-terribly useful as an execute anything primitive :)
+I'm sorry, but this isn't how correct code gets written, and this isn't how at least x86 maintenance operates.
+
+Code is either correct, and comes with an explanation as to how it is correct, or it doesn't go in.  Saying that something is like BPF is not an explanation as to how it's correct.  Saying that someone has not come up with the chain of events that causes a mere violation of architecture rules to actual incorrect execution is not an explanation as to how something is correct.
+
+So, without intending any particular hostility:
+
+<puts on maintainer hat>
+
+bcachefs's x86 JIT is:
+Nacked-by: Andy Lutomirski <luto@kernel.org> # for x86
+
+<takes off maintainer hat>
+
+This makes me sad, because I like bcachefs.  But you can get it merged without worrying about my NAK by removing the x86 part.
+
+>
+> When you're raising an issue, try be specific - don't make people dig.
+> If you're unable to be specific, perhaps you're not the right person to
+> be raising the issue.
+>
+> I'm of course happy to answer questions that haven't already been asked.
+>
+> This code is pretty simple as JITs go. With the existing, vmalloc_exec()
+> based code, there aren't any fancy secondary mappings going on, so no
+> crazy cache coherency games, and no crazy syncronization issues to worry
+> about: the jit functions are protected by the per-btree-node locks.
+>
+> vmalloc_exec() isn't being upstreamed however, since people don't want
+> WX mappings.
+>
+> The infrastructure changes we need (and not just for bcachefs) are
+>  - better executable memory allocation API, with support for sub-page
+>    allocations: this is already being worked on, the prototype slab
+>    allocator I posted is probably going to be the basis for part of this
+>
+>  - an arch indepenendent version of text_poke(): we don't want user code
+>    to be flipping page permissions to update text, text_poke() is the
+>    proper API but it's x86 only. No one has volunteered for this yet.
+>
+
+text_poke() by itself is *not* the proper API, as discussed.  It doesn't serialize adequately, even on x86.  We have text_poke_sync() for that.
+
+--Andy
