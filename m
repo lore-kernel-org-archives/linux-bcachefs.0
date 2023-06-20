@@ -2,68 +2,76 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A186EEB64D7
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 20 Jun 2023 22:33:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 365DBEB64D7
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 20 Jun 2023 22:43:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjFTWdJ (ORCPT
+        id S229896AbjFTWnR (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 20 Jun 2023 18:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
+        Tue, 20 Jun 2023 18:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjFTWdJ (ORCPT
+        with ESMTP id S229796AbjFTWnQ (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 20 Jun 2023 18:33:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E91BDD;
-        Tue, 20 Jun 2023 15:33:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AB7E86133B;
-        Tue, 20 Jun 2023 22:33:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71269C433C9;
-        Tue, 20 Jun 2023 22:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687300387;
-        bh=mEiuO2xX0IcJgMZ94z/fc+Jrradl7/CxlLfkUtw2y1E=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=lKDEk2Y+c6w76/rnnZJxjBPNEbQ2s66cBUg8vwf3lcapHCD4geBstpPVu2Ljj2Ktc
-         diiQeqKDHfbFrWDcYcyRvbyaYBdgRJkChQasG68qdkWRQl5uLMSfEOIcvjDbimCtDm
-         nXsGOf2k4J7eV+PysjtjLIKgH535Zls2ZkpLgOS+ahbRMNnURmgzzOxDujX5IdxrHA
-         u/ScYm49YmGkR+N4LVrZLJPURWbgKyTWSP7GJppffBR05q8OgvrTa8W8gzlhdTwrQh
-         sTXBeDHIzZMfGF7moyO+2cjf+gaQ8hL/VFnnC6eI19e9AHAV0XCFCKEn5naYSXXsqy
-         sGXpmmjrFYusA==
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 564CF27C005B;
-        Tue, 20 Jun 2023 18:33:05 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute3.internal (MEProxy); Tue, 20 Jun 2023 18:33:05 -0400
-X-ME-Sender: <xms:ICmSZPR2AiA-SDkdnK2QWRsE3MLcR9cVYbuD7hQ9wXgfpTmH4KiMtw>
-    <xme:ICmSZAz60WC4Wt0Qabp12w_ukwWGHT8n5bwNX7HY8Qphv2v_qTT5dPy-jgFQ_joAb
-    7in41cAu6KUmg3Vs4I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeefiedguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvdevledvueektdeuhfegvedvleeugfetgefggffggeethefhkedt
-    ffekieffteejnecuffhomhgrihhnpehgohgusgholhhtrdhorhhgnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnugihodhmvghsmhhtphgr
-    uhhthhhpvghrshhonhgrlhhithihqdduudeiudekheeifedvqddvieefudeiiedtkedqlh
-    huthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuhigrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:ICmSZE2XfsK3AIbZzP47XHEbw5KJfQ9lyuPrIoGW2dMpLXFykffvyA>
-    <xmx:ICmSZPAFtRHnfa176WZklEX_UqN1nCzkD2R5mJQxCCxLZjfurNqNSQ>
-    <xmx:ICmSZIjr7AIvS4BK2HySgP3zUTA8u6LZlVYKiJ8xQ5T1nh7Jcq8Lzg>
-    <xmx:ISmSZNZvBeJg6g_7R-VqIjUB2juLkheFsHZvWxvGfdwdFIZPLyzG7A>
-Feedback-ID: ieff94742:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id AAE1A31A0063; Tue, 20 Jun 2023 18:33:04 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-499-gf27bbf33e2-fm-20230619.001-gf27bbf33
-Mime-Version: 1.0
-Message-Id: <bf22d1d1-ed6b-422d-9ea8-f778be841d8d@app.fastmail.com>
-In-Reply-To: <ff2006db-cd13-48c4-bc5b-1864f9ec9149@app.fastmail.com>
+        Tue, 20 Jun 2023 18:43:16 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E24010F4;
+        Tue, 20 Jun 2023 15:43:15 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-54fb23ff7d3so2576040a12.0;
+        Tue, 20 Jun 2023 15:43:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687300995; x=1689892995;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eaYNclQnysW8nQnar7C7SNLx+8CEj4DfdAfuicOOpRI=;
+        b=pU1baukBRjTQQYBYuAPLDBi9RVpOsHukczl2Ko8po1D4gQBMI0/cOfoaiNwcnEpfWh
+         bDbuAjk0QZ2Vk76QXFAoH5Tk3W4uLsT9ofwXrbUXeUyStOdqNLgEXtQ5GV/UNz4dxwjk
+         YJjsnZa+UdaznDag0Q8AmQDqOlv+fzYe3M47LPBmBUaNiItAyJLrbbJ47gGJxFMjzMNJ
+         wCzeKf+/KIlPTVos5YnwVnjNAjwdR60eeKUjL5dOr59EJ80yvJF/yECtOlFCJyahyyuc
+         DDHLe8WOkzJshBC6Ci8bo9LR0vrRAfdTDJNEGxuehRtDew27gSVsIyD5Svu+Gy2Cgk9z
+         5Szg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687300995; x=1689892995;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eaYNclQnysW8nQnar7C7SNLx+8CEj4DfdAfuicOOpRI=;
+        b=cANFj38cHFW2kK2nNvI2cgJf+OPmbKeI46Uv94dpkan8BNFzHL7UO7rEKt8BC/5tQf
+         QWZ1rUefm/zsQ7KUPdyBGYtPWR0jVrAyEzsdc12B60Xw/JLppL0fw03X4pa21Y0xS9+S
+         UrCCTTUv98u7eTGRhY9cPgzrHNNyzcSLB2Zic/8G+MJl79Z7jFQYV97qTxJYwFoW6sgZ
+         nWCFSRxooackI0d0Y2iES+F7sZt7TFBOeoTdmFSvSp3JxszY4dFQm2NQgl5qAeClq85a
+         XQC+hcL3CoV7479S4WN2cC1mMutR6tx1yCPkpXuVXvO9bYRPMrIFm/zv37in/HNAsmhN
+         18tg==
+X-Gm-Message-State: AC+VfDx2JPpiyScKpu42+FNCwukTmUrKR3GrkXjDd2LMexDbwjmwSmeu
+        dYEB6d2udEDcbIIKR6XMerk=
+X-Google-Smtp-Source: ACHHUZ6PT3wFSpXI54qDT4ka+RjCbfE7gmAYYq8N9vr80n2sSwbgap4WDNDBvflyXbo3TigjY3kbiQ==
+X-Received: by 2002:a17:90a:d90b:b0:256:dbfb:9b5e with SMTP id c11-20020a17090ad90b00b00256dbfb9b5emr8004910pjv.29.1687300994854;
+        Tue, 20 Jun 2023 15:43:14 -0700 (PDT)
+Received: from smtpclient.apple ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id il8-20020a17090b164800b0025b83c6227asm1956348pjb.3.2023.06.20.15.43.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Jun 2023 15:43:14 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <bf22d1d1-ed6b-422d-9ea8-f778be841d8d@app.fastmail.com>
+Date:   Tue, 20 Jun 2023 15:43:02 -0700
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        linux-mm <linux-mm@kvack.org>, Kees Cook <keescook@chromium.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E6B85BE5-10E8-4532-B599-1ACB83097A62@gmail.com>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-8-kent.overstreet@linux.dev>
  <ZJAdhBIvwFBOFQU/@FVFF77S0Q05N>
@@ -75,147 +83,47 @@ References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <dcf8648b-c367-47a5-a2b6-94fb07a68904@app.fastmail.com>
  <37d2378e-72de-e474-5e25-656b691384ba@intel.com>
  <ff2006db-cd13-48c4-bc5b-1864f9ec9149@app.fastmail.com>
-Date:   Tue, 20 Jun 2023 15:32:44 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Dave Hansen" <dave.hansen@intel.com>,
-        "Kent Overstreet" <kent.overstreet@linux.dev>
-Cc:     "Mark Rutland" <mark.rutland@arm.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-        "Kent Overstreet" <kent.overstreet@gmail.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Uladzislau Rezki" <urezki@gmail.com>,
-        "hch@infradead.org" <hch@infradead.org>, linux-mm@kvack.org,
-        "Kees Cook" <keescook@chromium.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Content-Type: text/plain
+ <bf22d1d1-ed6b-422d-9ea8-f778be841d8d@app.fastmail.com>
+To:     Andy Lutomirski <luto@kernel.org>
+X-Mailer: Apple Mail (2.3731.600.7)
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 
+> On Jun 20, 2023, at 3:32 PM, Andy Lutomirski <luto@kernel.org> wrote:
+>=20
+>> // out needs to be zeroed first
+>> void unpack(struct uncompressed *out, const u64 *in, const struct=20
+>> bitblock *blocks, int nblocks)
+>> {
+>>    u64 *out_as_words =3D (u64*)out;
+>>    for (int i =3D 0; i < nblocks; i++) {
+>>        const struct bitblock *b;
+>>        out_as_words[b->target] |=3D (in[b->source] & b->mask) <<=20
+>> b->shift;
+>>    }
+>> }
+>>=20
+>> void apply_offsets(struct uncompressed *out, const struct =
+uncompressed *offsets)
+>> {
+>>    out->a +=3D offsets->a;
+>>    out->b +=3D offsets->b;
+>>    out->c +=3D offsets->c;
+>>    out->d +=3D offsets->d;
+>>    out->e +=3D offsets->e;
+>>    out->f +=3D offsets->f;
+>> }
+>>=20
+>> Which generates nice code: https://godbolt.org/z/3fEq37hf5
+>=20
+> Thinking about this a bit more, I think the only real performance =
+issue with my code is that it does 12 read-xor-write operations in =
+memory, which all depend on each other in horrible ways.
 
-On Tue, Jun 20, 2023, at 1:42 PM, Andy Lutomirski wrote:
-> Hi all-
->
-> On Tue, Jun 20, 2023, at 11:48 AM, Dave Hansen wrote:
->>>> No, I'm saying your concerns are baseless and too vague to
->>>> address.
->>> If you don't address them, the NAK will stand forever, or at least
->>> until a different group of people take over x86 maintainership.
->>> That's fine with me.
->>
->> I've got a specific concern: I don't see vmalloc_exec() used in this
->> series anywhere.  I also don't see any of the actual assembly that's
->> being generated, or the glue code that's calling into the generated
->> assembly.
->>
->> I grepped around a bit in your git trees, but I also couldn't find it in
->> there.  Any chance you could help a guy out and point us to some of the
->> specifics of this new, tiny JIT?
->>
->
-> So I had a nice discussion with Kent on IRC, and, for the benefit of 
-> everyone else reading along, I *think* the JITted code can be replaced 
-> by a table-driven approach like this:
->
-> typedef unsigned int u32;
-> typedef unsigned long u64;
->
-> struct uncompressed
-> {
->     u32 a;
->     u32 b;
->     u64 c;
->     u64 d;
->     u64 e;
->     u64 f;
-> };
->
-> struct bitblock
-> {
->     u64 source;
->     u64 target;
->     u64 mask;
->     int shift;
-> };
->
-> // out needs to be zeroed first
-> void unpack(struct uncompressed *out, const u64 *in, const struct 
-> bitblock *blocks, int nblocks)
-> {
->     u64 *out_as_words = (u64*)out;
->     for (int i = 0; i < nblocks; i++) {
->         const struct bitblock *b;
->         out_as_words[b->target] |= (in[b->source] & b->mask) << 
-> b->shift;
->     }
-> }
->
-> void apply_offsets(struct uncompressed *out, const struct uncompressed *offsets)
-> {
->     out->a += offsets->a;
->     out->b += offsets->b;
->     out->c += offsets->c;
->     out->d += offsets->d;
->     out->e += offsets->e;
->     out->f += offsets->f;
-> }
->
-> Which generates nice code: https://godbolt.org/z/3fEq37hf5
+If you compare the generated code, just notice that you forgot to =
+initialize b in unpack() in this version.
 
-Thinking about this a bit more, I think the only real performance issue with my code is that it does 12 read-xor-write operations in memory, which all depend on each other in horrible ways.
+I presume you wanted it to say "b =3D &blocks[i]=E2=80=9D.
 
-If it's reversed so the stores are all in order, then this issue would go away.
-
-typedef unsigned int u32;
-typedef unsigned long u64;
-
-struct uncompressed
-{
-    u32 a;
-    u32 b;
-    u64 c;
-    u64 d;
-    u64 e;
-    u64 f;
-};
-
-struct field_piece {
-    int source;
-    int shift;
-    u64 mask;
-};
-
-struct field_pieces {
-    struct field_piece pieces[2];
-    u64 offset;
-};
-
-u64 unpack_one(const u64 *in, const struct field_pieces *pieces)
-{
-    const struct field_piece *p = pieces->pieces;
-    return (((in[p[0].source] & p[0].mask) << p[0].shift) |
-        ((in[p[1].source] & p[1].mask) << p[1].shift)) +
-        pieces->offset;
-}
-
-struct encoding {
-    struct field_pieces a, b, c, d, e, f;
-};
-
-void unpack(struct uncompressed *out, const u64 *in, const struct encoding *encoding)
-{
-    out->a = unpack_one(in, &encoding->a);
-    out->b = unpack_one(in, &encoding->b);
-    out->c = unpack_one(in, &encoding->c);
-    out->d = unpack_one(in, &encoding->d);
-    out->e = unpack_one(in, &encoding->e);
-    out->f = unpack_one(in, &encoding->f);
-}
-
-https://godbolt.org/z/srsfcGK4j
-
-Could be faster.  Probably worth testing.
