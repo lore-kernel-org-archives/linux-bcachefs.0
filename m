@@ -2,141 +2,352 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27C43EB64D8
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 21 Jun 2023 01:27:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB666EB64D7
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 26 Jun 2023 21:47:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbjFUB1a (ORCPT
+        id S230096AbjFZVrL (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 20 Jun 2023 21:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
+        Mon, 26 Jun 2023 17:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbjFUB13 (ORCPT
+        with ESMTP id S229488AbjFZVrJ (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 20 Jun 2023 21:27:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBD110F9;
-        Tue, 20 Jun 2023 18:27:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1803361236;
-        Wed, 21 Jun 2023 01:27:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2637EC433CA;
-        Wed, 21 Jun 2023 01:27:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687310846;
-        bh=1otvnE5+wHePKnvvLsl/wIH5ilQt0tl8E7t6o0z9JvU=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=idkFXeEyGpeDCjbeK9q/lEYwkPL0bPEmfzHxWY8qunk+b6R7WmjsARsmDIwy2fYJE
-         DYsTtIwM3ddhdbgNOFUQH7Ojtrrb/WQ2200GSJUvZauRsV29B85/EOTofs7oXFvNtW
-         iFUFo9RShIk9mZhb2ergNJqVuaISFV4KGBkdSMbbp2ysd9xKW6IQ0YaodC3aUqfimJ
-         NNylsxJhJKADtiHV3PlH8oIfL7f5QUVRBl6lfcTi+mpmiFB/mtGjG/dOrEUIYz+/Fp
-         t7BfECvUu1d4Nlku3sT3DKy7x3Yiqyf6nEEcyKL5loJWGistZj5lYmWKsA6Qa1srY2
-         fTElDlnCHkdmw==
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 035FC27C0054;
-        Tue, 20 Jun 2023 21:27:24 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute3.internal (MEProxy); Tue, 20 Jun 2023 21:27:25 -0400
-X-ME-Sender: <xms:_FGSZPDkrGj6KJ54W-LQ3OcSabGeozUznZ4bL8PsjJHKrGxbvtoQ1g>
-    <xme:_FGSZFg2g1x-YWVhNI9DSGoAGNjDwN2-7yUGI6qtFhwDMT7cm29bSLu1hI0-Dr1Z5
-    sKng8aRDt04u_Ri4FI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeefiedggeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpeelleehueeuudegjefglefftddtieetudduuefgveejhedtgfel
-    leeggfegjeejjeenucffohhmrghinhepghhouggsohhlthdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhguhidomhgvshhmthhp
-    rghuthhhphgvrhhsohhnrghlihhthidqudduiedukeehieefvddqvdeifeduieeitdekqd
-    hluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugidrlhhuthhordhush
-X-ME-Proxy: <xmx:_FGSZKmLMaeis2ZeB6Le_ohOQQxQ9ywaHp-_thH-P31Gb24Lug5JbA>
-    <xmx:_FGSZBy5QUbkUNrShhejJHyRy75hU8KvDS_HhzSL-KIhXK5W6w-2Zw>
-    <xmx:_FGSZES9XiDZH7pop7T6VgY60AwZqoK5RZMXQo7vUpnPPEIwBU4hXA>
-    <xmx:_FGSZIZ67W4YpR0YHK55gXBHRNU1de6feBykXbCGN6s-weJtrcX6jA>
-Feedback-ID: ieff94742:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7A20531A0063; Tue, 20 Jun 2023 21:27:24 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-499-gf27bbf33e2-fm-20230619.001-gf27bbf33
-Mime-Version: 1.0
-Message-Id: <1be708d5-638c-40ff-bd52-b6b88c93d132@app.fastmail.com>
-In-Reply-To: <E6B85BE5-10E8-4532-B599-1ACB83097A62@gmail.com>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-8-kent.overstreet@linux.dev>
- <ZJAdhBIvwFBOFQU/@FVFF77S0Q05N>
- <20230619104717.3jvy77y3quou46u3@moria.home.lan>
- <ZJBOVsFraksigfRF@FVFF77S0Q05N.cambridge.arm.com>
- <20230619191740.2qmlza3inwycljih@moria.home.lan>
- <5ef2246b-9fe5-4206-acf0-0ce1f4469e6c@app.fastmail.com>
- <20230620180839.oodfav5cz234pph7@moria.home.lan>
- <dcf8648b-c367-47a5-a2b6-94fb07a68904@app.fastmail.com>
- <37d2378e-72de-e474-5e25-656b691384ba@intel.com>
- <ff2006db-cd13-48c4-bc5b-1864f9ec9149@app.fastmail.com>
- <bf22d1d1-ed6b-422d-9ea8-f778be841d8d@app.fastmail.com>
- <E6B85BE5-10E8-4532-B599-1ACB83097A62@gmail.com>
-Date:   Tue, 20 Jun 2023 18:27:04 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Nadav Amit" <nadav.amit@gmail.com>
-Cc:     "Dave Hansen" <dave.hansen@intel.com>,
-        "Kent Overstreet" <kent.overstreet@linux.dev>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-        "Kent Overstreet" <kent.overstreet@gmail.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Uladzislau Rezki" <urezki@gmail.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Subject: Re: [PATCH 07/32] mm: Bring back vmalloc_exec
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Mon, 26 Jun 2023 17:47:09 -0400
+Received: from out-52.mta0.migadu.com (out-52.mta0.migadu.com [IPv6:2001:41d0:1004:224b::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E065E6F
+        for <linux-bcachefs@vger.kernel.org>; Mon, 26 Jun 2023 14:47:03 -0700 (PDT)
+Date:   Mon, 26 Jun 2023 17:46:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1687816021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=MAxfXKg0PKApyLQ7TYziVVZjJ+tU0/gL5iIKrOdMGOM=;
+        b=tilhBJRBcGOybWv/j7SvKHe4S75uaiPjgXn5N5udC5gdOaZbvwIzNHo3iLlt0yITEBgknG
+        GJqfoStrXa5DW1HexTt73wvecxzAPuYZvqqLz4LHXN/8L9d8RGdZQnLm+3cBs+r9WTLljX
+        x89F/JGXZoQYA1kVNgfJcGqzrpdKQAA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+Subject: [GIT PULL] bcachefs
+Message-ID: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
+Hi Linus,
 
+Here it is, the bcachefs pull request. For brevity the list of patches
+below is only the initial part of the series, the non-bcachefs prep
+patches and the first bcachefs patch, but the diffstat is for the entire
+series.
 
-On Tue, Jun 20, 2023, at 3:43 PM, Nadav Amit wrote:
->> On Jun 20, 2023, at 3:32 PM, Andy Lutomirski <luto@kernel.org> wrote:
->>=20
->>> // out needs to be zeroed first
->>> void unpack(struct uncompressed *out, const u64 *in, const struct=20
->>> bitblock *blocks, int nblocks)
->>> {
->>>    u64 *out_as_words =3D (u64*)out;
->>>    for (int i =3D 0; i < nblocks; i++) {
->>>        const struct bitblock *b;
->>>        out_as_words[b->target] |=3D (in[b->source] & b->mask) <<=20
->>> b->shift;
->>>    }
->>> }
->>>=20
->>> void apply_offsets(struct uncompressed *out, const struct uncompress=
-ed *offsets)
->>> {
->>>    out->a +=3D offsets->a;
->>>    out->b +=3D offsets->b;
->>>    out->c +=3D offsets->c;
->>>    out->d +=3D offsets->d;
->>>    out->e +=3D offsets->e;
->>>    out->f +=3D offsets->f;
->>> }
->>>=20
->>> Which generates nice code: https://godbolt.org/z/3fEq37hf5
->>=20
->> Thinking about this a bit more, I think the only real performance iss=
-ue with my code is that it does 12 read-xor-write operations in memory, =
-which all depend on each other in horrible ways.
->
-> If you compare the generated code, just notice that you forgot to=20
-> initialize b in unpack() in this version.
->
-> I presume you wanted it to say "b =3D &blocks[i]=E2=80=9D.
+Six locks has all the changes you suggested, text size went down
+significantly. If you'd still like this to see more review from the
+locking people, I'm not against them living in fs/bcachefs/ as an
+interim; perhaps Dave could move them back to kernel/locking when he
+starts using them or when locking people have had time to look at them -
+I'm just hoping for this to not block the merge.
 
-Indeed.  I also didn't notice that -Wall wasn't set.  Oops.
+Recently some people have expressed concerns about "not wanting a repeat
+of ntfs3" - from what I understand the issue there was just severe
+buggyness, so perhaps showing the bcachefs automated test results will
+help with that:
+
+  https://evilpiepirate.org/~testdashboard/ci
+
+The main bcachefs branch runs fstests and my own test suite in several
+varations, including lockdep+kasan, preempt, and gcov (we're at 82% line
+coverage); I'm not currently seeing any lockdep or kasan splats (or
+panics/oopses, for that matter).
+
+(Worth noting the bug causing the most test failures by a wide margin is
+actually an io_uring bug that causes random umount failures in shutdown
+tests. Would be great to get that looked at, it doesn't just affect
+bcachefs).
+
+Regarding feature status - most features are considered stable and ready
+for use, snapshots and erasure coding are both nearly there. But a
+filesystem on this scale is a massive project, adequately conveying the
+status of every feature would take at least a page or two.
+
+We may want to mark it as EXPERIMENTAL for a few releases, I haven't
+done that as yet. (I wouldn't consider single device without snapshots
+to be experimental, but - given that the number of users and bug reports
+is about to shoot up, perhaps I should...).
+
+Cheers,
+Kent
+
+---------
+
+The following changes since commit 6995e2de6891c724bfeb2db33d7b87775f913ad1:
+
+  Linux 6.4 (2023-06-25 16:29:58 -0700)
+
+are available in the Git repository at:
+
+  https://evilpiepirate.org/git/bcachefs.git bcachefs-for-upstream
+
+for you to fetch changes up to 66012992c01af99f07ac696a8c9563ba291c1e7f
+
+  bcachefs: fsck needs BTREE_UPDATE_INTERNAL_SNAPSHOT_NODE
+
+----------------------------------------------------------------
+Christopher James Halse Rogers (1):
+      stacktrace: Export stack_trace_save_tsk
+
+Daniel Hill (1):
+      lib: add mean and variance module.
+
+Kent Overstreet (26):
+      Compiler Attributes: add __flatten
+      locking/lockdep: lock_class_is_held()
+      locking/lockdep: lockdep_set_no_check_recursion()
+      locking: SIX locks (shared/intent/exclusive)
+      MAINTAINERS: Add entry for six locks
+      sched: Add task_struct->faults_disabled_mapping
+      fs: factor out d_mark_tmpfile()
+      block: Add some exports for bcachefs
+      block: Allow bio_iov_iter_get_pages() with bio->bi_bdev unset
+      block: Bring back zero_fill_bio_iter
+      block: Don't block on s_umount from __invalidate_super()
+      bcache: move closures to lib/
+      MAINTAINERS: Add entry for closures
+      closures: closure_wait_event()
+      closures: closure_nr_remaining()
+      closures: Add a missing include
+      iov_iter: copy_folio_from_iter_atomic()
+      MAINTAINERS: Add entry for generic-radix-tree
+      lib/generic-radix-tree.c: Don't overflow in peek()
+      lib/generic-radix-tree.c: Add a missing include
+      lib/generic-radix-tree.c: Add peek_prev()
+      lib/string_helpers: string_get_size() now returns characters wrote
+      lib: Export errname
+      mean_and_variance: Assorted fixes/cleanups
+      MAINTAINERS: Add entry for bcachefs
+      bcachefs: Initial commit
+
+ MAINTAINERS                                     |   39 +
+ block/bdev.c                                    |    2 +-
+ block/bio.c                                     |   18 +-
+ block/blk-core.c                                |    1 +
+ block/blk.h                                     |    1 -
+ drivers/md/bcache/Kconfig                       |   10 +-
+ drivers/md/bcache/Makefile                      |    4 +-
+ drivers/md/bcache/bcache.h                      |    2 +-
+ drivers/md/bcache/super.c                       |    1 -
+ drivers/md/bcache/util.h                        |    3 +-
+ fs/Kconfig                                      |    1 +
+ fs/Makefile                                     |    1 +
+ fs/bcachefs/Kconfig                             |   75 +
+ fs/bcachefs/Makefile                            |   74 +
+ fs/bcachefs/acl.c                               |  414 +++
+ fs/bcachefs/acl.h                               |   58 +
+ fs/bcachefs/alloc_background.c                  | 2212 +++++++++++++
+ fs/bcachefs/alloc_background.h                  |  251 ++
+ fs/bcachefs/alloc_foreground.c                  | 1534 +++++++++
+ fs/bcachefs/alloc_foreground.h                  |  224 ++
+ fs/bcachefs/alloc_types.h                       |  122 +
+ fs/bcachefs/backpointers.c                      |  884 +++++
+ fs/bcachefs/backpointers.h                      |  131 +
+ fs/bcachefs/bbpos.h                             |   48 +
+ fs/bcachefs/bcachefs.h                          | 1139 +++++++
+ fs/bcachefs/bcachefs_format.h                   | 2219 +++++++++++++
+ fs/bcachefs/bcachefs_ioctl.h                    |  368 +++
+ fs/bcachefs/bkey.c                              | 1063 ++++++
+ fs/bcachefs/bkey.h                              |  774 +++++
+ fs/bcachefs/bkey_buf.h                          |   61 +
+ fs/bcachefs/bkey_cmp.h                          |  129 +
+ fs/bcachefs/bkey_methods.c                      |  520 +++
+ fs/bcachefs/bkey_methods.h                      |  169 +
+ fs/bcachefs/bkey_sort.c                         |  201 ++
+ fs/bcachefs/bkey_sort.h                         |   44 +
+ fs/bcachefs/bset.c                              | 1588 +++++++++
+ fs/bcachefs/bset.h                              |  541 ++++
+ fs/bcachefs/btree_cache.c                       | 1213 +++++++
+ fs/bcachefs/btree_cache.h                       |  106 +
+ fs/bcachefs/btree_gc.c                          | 2130 ++++++++++++
+ fs/bcachefs/btree_gc.h                          |  112 +
+ fs/bcachefs/btree_io.c                          | 2261 +++++++++++++
+ fs/bcachefs/btree_io.h                          |  228 ++
+ fs/bcachefs/btree_iter.c                        | 3214 ++++++++++++++++++
+ fs/bcachefs/btree_iter.h                        |  916 ++++++
+ fs/bcachefs/btree_key_cache.c                   | 1075 ++++++
+ fs/bcachefs/btree_key_cache.h                   |   48 +
+ fs/bcachefs/btree_locking.c                     |  804 +++++
+ fs/bcachefs/btree_locking.h                     |  424 +++
+ fs/bcachefs/btree_types.h                       |  731 +++++
+ fs/bcachefs/btree_update.h                      |  358 ++
+ fs/bcachefs/btree_update_interior.c             | 2476 ++++++++++++++
+ fs/bcachefs/btree_update_interior.h             |  327 ++
+ fs/bcachefs/btree_update_leaf.c                 | 2050 ++++++++++++
+ fs/bcachefs/btree_write_buffer.c                |  343 ++
+ fs/bcachefs/btree_write_buffer.h                |   14 +
+ fs/bcachefs/btree_write_buffer_types.h          |   44 +
+ fs/bcachefs/buckets.c                           | 2200 +++++++++++++
+ fs/bcachefs/buckets.h                           |  370 +++
+ fs/bcachefs/buckets_types.h                     |   92 +
+ fs/bcachefs/buckets_waiting_for_journal.c       |  166 +
+ fs/bcachefs/buckets_waiting_for_journal.h       |   15 +
+ fs/bcachefs/buckets_waiting_for_journal_types.h |   23 +
+ fs/bcachefs/chardev.c                           |  769 +++++
+ fs/bcachefs/chardev.h                           |   31 +
+ fs/bcachefs/checksum.c                          |  712 ++++
+ fs/bcachefs/checksum.h                          |  215 ++
+ fs/bcachefs/clock.c                             |  193 ++
+ fs/bcachefs/clock.h                             |   38 +
+ fs/bcachefs/clock_types.h                       |   37 +
+ fs/bcachefs/compress.c                          |  638 ++++
+ fs/bcachefs/compress.h                          |   18 +
+ fs/bcachefs/counters.c                          |  107 +
+ fs/bcachefs/counters.h                          |   17 +
+ fs/bcachefs/darray.h                            |   87 +
+ fs/bcachefs/data_update.c                       |  565 ++++
+ fs/bcachefs/data_update.h                       |   43 +
+ fs/bcachefs/debug.c                             |  957 ++++++
+ fs/bcachefs/debug.h                             |   32 +
+ fs/bcachefs/dirent.c                            |  564 ++++
+ fs/bcachefs/dirent.h                            |   68 +
+ fs/bcachefs/disk_groups.c                       |  548 ++++
+ fs/bcachefs/disk_groups.h                       |  101 +
+ fs/bcachefs/ec.c                                | 1957 +++++++++++
+ fs/bcachefs/ec.h                                |  261 ++
+ fs/bcachefs/ec_types.h                          |   41 +
+ fs/bcachefs/errcode.c                           |   63 +
+ fs/bcachefs/errcode.h                           |  243 ++
+ fs/bcachefs/error.c                             |  297 ++
+ fs/bcachefs/error.h                             |  213 ++
+ fs/bcachefs/extent_update.c                     |  173 +
+ fs/bcachefs/extent_update.h                     |   12 +
+ fs/bcachefs/extents.c                           | 1384 ++++++++
+ fs/bcachefs/extents.h                           |  755 +++++
+ fs/bcachefs/extents_types.h                     |   40 +
+ fs/bcachefs/eytzinger.h                         |  281 ++
+ fs/bcachefs/fifo.h                              |  127 +
+ fs/bcachefs/fs-common.c                         |  501 +++
+ fs/bcachefs/fs-common.h                         |   43 +
+ fs/bcachefs/fs-io.c                             | 3948 +++++++++++++++++++++++
+ fs/bcachefs/fs-io.h                             |   54 +
+ fs/bcachefs/fs-ioctl.c                          |  556 ++++
+ fs/bcachefs/fs-ioctl.h                          |   81 +
+ fs/bcachefs/fs.c                                | 1943 +++++++++++
+ fs/bcachefs/fs.h                                |  206 ++
+ fs/bcachefs/fsck.c                              | 2494 ++++++++++++++
+ fs/bcachefs/fsck.h                              |    8 +
+ fs/bcachefs/inode.c                             |  868 +++++
+ fs/bcachefs/inode.h                             |  192 ++
+ fs/bcachefs/io.c                                | 3056 ++++++++++++++++++
+ fs/bcachefs/io.h                                |  202 ++
+ fs/bcachefs/io_types.h                          |  165 +
+ fs/bcachefs/journal.c                           | 1453 +++++++++
+ fs/bcachefs/journal.h                           |  520 +++
+ fs/bcachefs/journal_io.c                        | 1868 +++++++++++
+ fs/bcachefs/journal_io.h                        |   64 +
+ fs/bcachefs/journal_reclaim.c                   |  863 +++++
+ fs/bcachefs/journal_reclaim.h                   |   86 +
+ fs/bcachefs/journal_sb.c                        |  219 ++
+ fs/bcachefs/journal_sb.h                        |   24 +
+ fs/bcachefs/journal_seq_blacklist.c             |  322 ++
+ fs/bcachefs/journal_seq_blacklist.h             |   22 +
+ fs/bcachefs/journal_types.h                     |  358 ++
+ fs/bcachefs/keylist.c                           |   52 +
+ fs/bcachefs/keylist.h                           |   74 +
+ fs/bcachefs/keylist_types.h                     |   16 +
+ fs/bcachefs/lru.c                               |  178 +
+ fs/bcachefs/lru.h                               |   63 +
+ fs/bcachefs/migrate.c                           |  182 ++
+ fs/bcachefs/migrate.h                           |    7 +
+ fs/bcachefs/move.c                              | 1162 +++++++
+ fs/bcachefs/move.h                              |   96 +
+ fs/bcachefs/move_types.h                        |   36 +
+ fs/bcachefs/movinggc.c                          |  420 +++
+ fs/bcachefs/movinggc.h                          |   12 +
+ fs/bcachefs/nocow_locking.c                     |  123 +
+ fs/bcachefs/nocow_locking.h                     |   49 +
+ fs/bcachefs/nocow_locking_types.h               |   20 +
+ fs/bcachefs/opts.c                              |  555 ++++
+ fs/bcachefs/opts.h                              |  543 ++++
+ fs/bcachefs/printbuf.c                          |  415 +++
+ fs/bcachefs/printbuf.h                          |  284 ++
+ fs/bcachefs/quota.c                             |  980 ++++++
+ fs/bcachefs/quota.h                             |   72 +
+ fs/bcachefs/quota_types.h                       |   43 +
+ fs/bcachefs/rebalance.c                         |  363 +++
+ fs/bcachefs/rebalance.h                         |   28 +
+ fs/bcachefs/rebalance_types.h                   |   26 +
+ fs/bcachefs/recovery.c                          | 1648 ++++++++++
+ fs/bcachefs/recovery.h                          |   58 +
+ fs/bcachefs/reflink.c                           |  388 +++
+ fs/bcachefs/reflink.h                           |   79 +
+ fs/bcachefs/replicas.c                          | 1056 ++++++
+ fs/bcachefs/replicas.h                          |   91 +
+ fs/bcachefs/replicas_types.h                    |   27 +
+ fs/bcachefs/seqmutex.h                          |   48 +
+ fs/bcachefs/siphash.c                           |  173 +
+ fs/bcachefs/siphash.h                           |   87 +
+ fs/bcachefs/str_hash.h                          |  370 +++
+ fs/bcachefs/subvolume.c                         | 1505 +++++++++
+ fs/bcachefs/subvolume.h                         |  167 +
+ fs/bcachefs/subvolume_types.h                   |   22 +
+ fs/bcachefs/super-io.c                          | 1597 +++++++++
+ fs/bcachefs/super-io.h                          |  126 +
+ fs/bcachefs/super.c                             | 1993 ++++++++++++
+ fs/bcachefs/super.h                             |  266 ++
+ fs/bcachefs/super_types.h                       |   51 +
+ fs/bcachefs/sysfs.c                             | 1064 ++++++
+ fs/bcachefs/sysfs.h                             |   48 +
+ fs/bcachefs/tests.c                             |  939 ++++++
+ fs/bcachefs/tests.h                             |   15 +
+ fs/bcachefs/trace.c                             |   16 +
+ fs/bcachefs/trace.h                             | 1247 +++++++
+ fs/bcachefs/two_state_shared_lock.c             |    8 +
+ fs/bcachefs/two_state_shared_lock.h             |   59 +
+ fs/bcachefs/util.c                              | 1137 +++++++
+ fs/bcachefs/util.h                              |  842 +++++
+ fs/bcachefs/varint.c                            |  121 +
+ fs/bcachefs/varint.h                            |   11 +
+ fs/bcachefs/vstructs.h                          |   63 +
+ fs/bcachefs/xattr.c                             |  648 ++++
+ fs/bcachefs/xattr.h                             |   51 +
+ fs/dcache.c                                     |   12 +-
+ fs/super.c                                      |   40 +-
+ include/linux/bio.h                             |    7 +-
+ include/linux/blkdev.h                          |    1 +
+ {drivers/md/bcache => include/linux}/closure.h  |   46 +-
+ include/linux/compiler_attributes.h             |    5 +
+ include/linux/dcache.h                          |    1 +
+ include/linux/exportfs.h                        |    6 +
+ include/linux/fs.h                              |    1 +
+ include/linux/generic-radix-tree.h              |   68 +-
+ include/linux/lockdep.h                         |   10 +
+ include/linux/lockdep_types.h                   |    2 +-
+ include/linux/mean_and_variance.h               |  198 ++
+ include/linux/sched.h                           |    1 +
+ include/linux/six.h                             |  388 +++
+ include/linux/string_helpers.h                  |    4 +-
+ include/linux/uio.h                             |    2 +
+ init/init_task.c                                |    1 +
+ kernel/Kconfig.locks                            |    3 +
+ kernel/locking/Makefile                         |    1 +
+ kernel/locking/lockdep.c                        |   46 +
+ kernel/locking/six.c                            |  893 +++++
+ kernel/stacktrace.c                             |    2 +
+ lib/Kconfig                                     |    3 +
+ lib/Kconfig.debug                               |   18 +
+ lib/Makefile                                    |    2 +
+ {drivers/md/bcache => lib}/closure.c            |   36 +-
+ lib/errname.c                                   |    1 +
+ lib/generic-radix-tree.c                        |   76 +-
+ lib/iov_iter.c                                  |   53 +-
+ lib/math/Kconfig                                |    3 +
+ lib/math/Makefile                               |    2 +
+ lib/math/mean_and_variance.c                    |  158 +
+ lib/math/mean_and_variance_test.c               |  239 ++
+ lib/string_helpers.c                            |    8 +-
+ 217 files changed, 92440 insertions(+), 86 deletions(-)
