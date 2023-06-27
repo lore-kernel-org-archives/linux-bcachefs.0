@@ -2,82 +2,56 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D67DEB64DC
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 27 Jun 2023 03:28:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B12EEB64D9
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 27 Jun 2023 03:52:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjF0D2s (ORCPT
+        id S229792AbjF0Dwn (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 26 Jun 2023 23:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
+        Mon, 26 Jun 2023 23:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbjF0D2M (ORCPT
+        with ESMTP id S229621AbjF0Dwm (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 26 Jun 2023 23:28:12 -0400
-Received: from out-47.mta1.migadu.com (out-47.mta1.migadu.com [95.215.58.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9D912D
-        for <linux-bcachefs@vger.kernel.org>; Mon, 26 Jun 2023 20:22:12 -0700 (PDT)
-Date:   Mon, 26 Jun 2023 23:22:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1687836130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mlefwmcwlBiIz1SL7AHM35ngFtI0vXcN9OG4RXXLfCk=;
-        b=jynnjyA5Iv8xnjGJ5+Hf+1gDzVymjLivJnXkZoKFv8ofDXrG0JuqRs9iB3m2BIOOyQpG7D
-        cN6reE4qZiX1Xb8EoMF1v8vqcw7S2rWDlkzpDxLUqJ0FF41ISIzXSxcv5T634Gq9HvYcR1
-        QQ8yO2h2VOUZqAacCiV5yMypmN+Q5cs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+        Mon, 26 Jun 2023 23:52:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AE9D7;
+        Mon, 26 Jun 2023 20:52:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TKSoOmqj1EAANzs2OdZF0iO6dL5Bi2w/E8Nz8eMSDxo=; b=pyDpY9vbvnNy4Mf/ml1PIK+Ob9
+        1208C2TwuJ5k+FoS68gusP++AuS2XUDA9C8//8M1xAMTsE4wPmDE2tX0E9mGMhQzfaOcjVd4rknLu
+        tva8g915dMgAFUKIM6P72qyq8v99czSss6mdnTMtSeOK9vvpr96GqwcxsShz1aM0Cs/RERCcfBXmF
+        sN0KENyC4imijg6VCwSOBwP+16bOko7gzRHcj3WyZcndzK3lflyUQNN0lrFP5X9j6YouoS2o0KThE
+        YxNhrFJvD9I5rI1+kajuVCrDTm8YF5rkLCuzMriemNK1heyFiX06hmIzjaRZMrWEA5aMwn88whrGe
+        oZUbJB1A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qDzkt-00BdCL-2t;
+        Tue, 27 Jun 2023 03:52:39 +0000
+Date:   Mon, 26 Jun 2023 20:52:39 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230627032207.ix7zj6f7zb6owb3k@moria.home.lan>
+Message-ID: <ZJpdB5dsngEcN7fG@infradead.org>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <aeb2690c-4f0a-003d-ba8b-fe06cd4142d1@kernel.dk>
- <20230627000635.43azxbkd2uf3tu6b@moria.home.lan>
- <91e9064b-84e3-1712-0395-b017c7c4a964@kernel.dk>
- <20230627023337.dordpfdxaad56hdn@moria.home.lan>
- <784c3e6a-75bd-e6ca-535a-43b3e1daf643@kernel.dk>
- <ZJpVRbBGjU7bvKy4@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZJpVRbBGjU7bvKy4@casper.infradead.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Jun 27, 2023 at 04:19:33AM +0100, Matthew Wilcox wrote:
-> On Mon, Jun 26, 2023 at 08:59:44PM -0600, Jens Axboe wrote:
-> > On 6/26/23 8:33?PM, Kent Overstreet wrote:
-> > > On Mon, Jun 26, 2023 at 07:13:54PM -0600, Jens Axboe wrote:
-> > >> fs/bcachefs/alloc_background.c: In function ?bch2_check_alloc_info?:
-> > >> fs/bcachefs/alloc_background.c:1526:1: warning: the frame size of 2640 bytes is larger than 2048 bytes [-Wframe-larger-than=]
-> > >>  1526 | }
-> > >>       | ^
-> > >> fs/bcachefs/reflink.c: In function ?bch2_remap_range?:
-> > >> fs/bcachefs/reflink.c:388:1: warning: the frame size of 2352 bytes is larger than 2048 bytes [-Wframe-larger-than=]
-> > >>   388 | }
-> > >>       | ^
-> > > 
-> > > What version of gcc are you using? I'm not seeing either of those
-> > > warnings - I'm wondering if gcc recently got better about stack usage
-> > > when inlining.
-> > 
-> > Using:
-> > 
-> > gcc (Debian 13.1.0-6) 13.1.0
-> > 
-> > and it's on arm64, fwiw.
-> 
-> OOI what PAGE_SIZE do you have configured?  Sometimes fs data structures
-> are PAGE_SIZE dependent (haven't looked at this particular bcachefs data
-> structure).  We've also had weirdness with various gcc versions on some
-> architectures making different inlining decisions from x86.
 
-There are very few references to PAGE_SIZE in bcachefs, I've killed off
-as much of that as I can because all this code has to work in userspace
-too and depending on PAGE_SIZE is sketchy there
+Nacked-by: Christoph Hellwig <hch@lst.de>
+
+Kent,
+
+you really need to feed your prep patches through the maintainers
+instead of just starting fights everywhere.  And you really need
+someone else than your vouch for the code in the form of a co-maintainer
+or reviewer.
