@@ -2,71 +2,48 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60334EB64D7
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 28 Jun 2023 16:57:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96C65EB64DA
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 28 Jun 2023 17:33:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbjF1Q5K (ORCPT
+        id S230436AbjF1Rdf (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 28 Jun 2023 12:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
+        Wed, 28 Jun 2023 13:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbjF1Q5I (ORCPT
+        with ESMTP id S230379AbjF1Rdf (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 28 Jun 2023 12:57:08 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E15D1713
-        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 09:57:04 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-34577a22c7cso5245585ab.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 09:57:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1687971423; x=1690563423;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OppdXy0w3Vc+UjmlsI4lMkBExnAWB4DyrS+PHEKoceA=;
-        b=kNjUcJWz6/3eNA0QHbffaSQ/2PJIrvcsm/+xdC+zVxYPWoP7EO/wyCrxhXal295cRr
-         sDydonv+8x9QeXkEb3XBXcfrldsTqBCIeDH7NZ3Yek6Pd/05n4rP4sv55/fzzJef2inv
-         RALnk5sSbYIBXBtpDby7kzoNfIrKBoGSFpG+hyHVIdWWjXH6rsdLS9ESAVomK5KTX35J
-         pxnTiTEw6UW1o6pSi3/dA3gJ/gD3pQZDE6mhN3fNtGrWFrpok0wyr398iMXxTIj9J1JC
-         iDbJaXhoMIgSDW3IOHoqNJqg0TMS9w3UU8R3QOSRkrY56/kL4DUZG1geNfwaL0as6//K
-         xMjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687971423; x=1690563423;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OppdXy0w3Vc+UjmlsI4lMkBExnAWB4DyrS+PHEKoceA=;
-        b=N/K7YJ+7ONARHLgBR/frqKNEF6ssZldXoG5WkVzNadLY+wavrBCmt4iMCuycFDCrK3
-         nDCnVoBX/9fDKvYr4qWEGylfXry6a+wCeQvATLa1eRT9Mc89WpM9kX5hKesPNBfXkYz2
-         tYpr20Ii7Hu6wPzVmdr7RgeZXnQbTkofWZgnbETM/Z+43q1JeZm+OLEg7kncMw6AJPcN
-         x9pNQH6mWN6DBqzoRhmRyQndqQ/7hfFzG5pleecIZgYj8RtqwxGBUWkf3XpIzATvZQnm
-         u03p6Lto40fxCV3gG+u3gq1TZuYoJxkcJhkmo6/U+xhcRyZVjz24/6nI5MG+nhujWlyH
-         PNIQ==
-X-Gm-Message-State: AC+VfDziav3AIW2piG4f6zeWFZ33cm1V7ZhhTXRByPz0ZhT5g12/Z4bf
-        5fXz2fj+f0HQ35AvruYNUXmnwA==
-X-Google-Smtp-Source: ACHHUZ616tY6XEvr4y/z3VG1Yzhf6efd1xUGJeUgEvwLJKqWmBM8bFmVW3ZqfT+srPnr9ZxkQm5vBw==
-X-Received: by 2002:a6b:3b06:0:b0:780:cde6:3e22 with SMTP id i6-20020a6b3b06000000b00780cde63e22mr17644062ioa.0.1687971423454;
-        Wed, 28 Jun 2023 09:57:03 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id dq34-20020a0566384d2200b0042566919376sm3173364jab.30.2023.06.28.09.57.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jun 2023 09:57:02 -0700 (PDT)
-Message-ID: <4b863e62-4406-53e4-f96a-f4d1daf098ab@kernel.dk>
-Date:   Wed, 28 Jun 2023 10:57:02 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [GIT PULL] bcachefs
-Content-Language: en-US
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Wed, 28 Jun 2023 13:33:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3E02102;
+        Wed, 28 Jun 2023 10:33:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 93AE76120E;
+        Wed, 28 Jun 2023 17:33:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68DBDC433C0;
+        Wed, 28 Jun 2023 17:33:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687973613;
+        bh=O1MO0FX7r5ETJgeXa3FWAKYrIQbVEKXsUnp7T291ICo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EQcefN3gtbUOatt4oQZ6m6ELSB2icWLaDiniHanCBJ+kAl+be6BLUpBsf3gY5G3DQ
+         CaFDcH2wCrkscgcBSec/NPgdodCRiLOdtbsWP7n1yxK/9rSe8HPFW79PrsWMgZsE40
+         SRg8qVqog442A4wS/3Sv4crws8bmxIV/XE0ArcftKdXZscy2pODQIm3U+Sx+FTH1pX
+         u5E7njr5glPHJJtP0IIoMa5m8dr8gJ+a1YlNMGL4Pe2XgktdzAPnBW9d0JINOkg7eZ
+         4fIJApPZc0TVV/KFrFWjmC0UERaK79P+JXMnWTkabXdPPtRxdVfa2uRfzIg+pP40GV
+         DtQv//b+0aG5w==
+Date:   Wed, 28 Jun 2023 19:33:28 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <brauner@kernel.org>
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <aeb2690c-4f0a-003d-ba8b-fe06cd4142d1@kernel.dk>
- <20230627000635.43azxbkd2uf3tu6b@moria.home.lan>
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230628-global-gewebe-c7491691d780@brauner>
+References: <20230627000635.43azxbkd2uf3tu6b@moria.home.lan>
  <91e9064b-84e3-1712-0395-b017c7c4a964@kernel.dk>
  <20230627020525.2vqnt2pxhtgiddyv@moria.home.lan>
  <b92ea170-d531-00f3-ca7a-613c05dcbf5f@kernel.dk>
@@ -75,74 +52,117 @@ References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <c06a9e0b-8f3e-4e47-53d0-b4854a98cc44@kernel.dk>
  <20230628040114.oz46icbsjpa4egpp@moria.home.lan>
  <b02657af-5bbb-b46b-cea0-ee89f385f3c1@kernel.dk>
-In-Reply-To: <b02657af-5bbb-b46b-cea0-ee89f385f3c1@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <4b863e62-4406-53e4-f96a-f4d1daf098ab@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4b863e62-4406-53e4-f96a-f4d1daf098ab@kernel.dk>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On 6/28/23 8:58?AM, Jens Axboe wrote:
-> On 6/27/23 10:01?PM, Kent Overstreet wrote:
->> On Tue, Jun 27, 2023 at 09:16:31PM -0600, Jens Axboe wrote:
->>> On 6/27/23 2:15?PM, Kent Overstreet wrote:
->>>>> to ktest/tests/xfstests/ and run it with -bcachefs, otherwise it kept
->>>>> failing because it assumed it was XFS.
->>>>>
->>>>> I suspected this was just a timing issue, and it looks like that's
->>>>> exactly what it is. Looking at the test case, it'll randomly kill -9
->>>>> fsstress, and if that happens while we have io_uring IO pending, then we
->>>>> process completions inline (for a PF_EXITING current). This means they
->>>>> get pushed to fallback work, which runs out of line. If we hit that case
->>>>> AND the timing is such that it hasn't been processed yet, we'll still be
->>>>> holding a file reference under the mount point and umount will -EBUSY
->>>>> fail.
->>>>>
->>>>> As far as I can tell, this can happen with aio as well, it's just harder
->>>>> to hit. If the fput happens while the task is exiting, then fput will
->>>>> end up being delayed through a workqueue as well. The test case assumes
->>>>> that once it's reaped the exit of the killed task that all files are
->>>>> released, which isn't necessarily true if they are done out-of-line.
->>>>
->>>> Yeah, I traced it through to the delayed fput code as well.
->>>>
->>>> I'm not sure delayed fput is responsible here; what I learned when I was
->>>> tracking this down has mostly fell out of my brain, so take anything I
->>>> say with a large grain of salt. But I believe I tested with delayed_fput
->>>> completely disabled, and found another thing in io_uring with the same
->>>> effect as delayed_fput that wasn't being flushed.
->>>
->>> I'm not saying it's delayed_fput(), I'm saying it's the delayed putting
->>> io_uring can end up doing. But yes, delayed_fput() is another candidate.
->>
->> Sorry - was just working through my recollections/initial thought
->> process out loud
+On Wed, Jun 28, 2023 at 10:57:02AM -0600, Jens Axboe wrote:
+> On 6/28/23 8:58?AM, Jens Axboe wrote:
+> > On 6/27/23 10:01?PM, Kent Overstreet wrote:
+> >> On Tue, Jun 27, 2023 at 09:16:31PM -0600, Jens Axboe wrote:
+> >>> On 6/27/23 2:15?PM, Kent Overstreet wrote:
+> >>>>> to ktest/tests/xfstests/ and run it with -bcachefs, otherwise it kept
+> >>>>> failing because it assumed it was XFS.
+> >>>>>
+> >>>>> I suspected this was just a timing issue, and it looks like that's
+> >>>>> exactly what it is. Looking at the test case, it'll randomly kill -9
+> >>>>> fsstress, and if that happens while we have io_uring IO pending, then we
+> >>>>> process completions inline (for a PF_EXITING current). This means they
+> >>>>> get pushed to fallback work, which runs out of line. If we hit that case
+> >>>>> AND the timing is such that it hasn't been processed yet, we'll still be
+> >>>>> holding a file reference under the mount point and umount will -EBUSY
+> >>>>> fail.
+> >>>>>
+> >>>>> As far as I can tell, this can happen with aio as well, it's just harder
+> >>>>> to hit. If the fput happens while the task is exiting, then fput will
+> >>>>> end up being delayed through a workqueue as well. The test case assumes
+> >>>>> that once it's reaped the exit of the killed task that all files are
+> >>>>> released, which isn't necessarily true if they are done out-of-line.
+> >>>>
+> >>>> Yeah, I traced it through to the delayed fput code as well.
+> >>>>
+> >>>> I'm not sure delayed fput is responsible here; what I learned when I was
+> >>>> tracking this down has mostly fell out of my brain, so take anything I
+> >>>> say with a large grain of salt. But I believe I tested with delayed_fput
+> >>>> completely disabled, and found another thing in io_uring with the same
+> >>>> effect as delayed_fput that wasn't being flushed.
+> >>>
+> >>> I'm not saying it's delayed_fput(), I'm saying it's the delayed putting
+> >>> io_uring can end up doing. But yes, delayed_fput() is another candidate.
+> >>
+> >> Sorry - was just working through my recollections/initial thought
+> >> process out loud
+> > 
+> > No worries, it might actually be a combination and this is why my
+> > io_uring side patch didn't fully resolve it. Wrote a simple reproducer
+> > and it seems to reliably trigger it, but is fixed with an flush of the
+> > delayed fput list on mount -EBUSY return. Still digging...
 > 
-> No worries, it might actually be a combination and this is why my
-> io_uring side patch didn't fully resolve it. Wrote a simple reproducer
-> and it seems to reliably trigger it, but is fixed with an flush of the
-> delayed fput list on mount -EBUSY return. Still digging...
+> I discussed this with Christian offline. I have a patch that is pretty
+> simple, but it does mean that you'd wait for delayed fput flush off
+> umount. Which seems kind of iffy.
+> 
+> I think we need to back up a bit and consider if the kill && umount
+> really is sane. If you kill a task that has open files, then any fput
+> from that task will end up being delayed. This means that the umount may
+> very well fail.
 
-I discussed this with Christian offline. I have a patch that is pretty
-simple, but it does mean that you'd wait for delayed fput flush off
-umount. Which seems kind of iffy.
+That's why we have MNT_DETACH:
 
-I think we need to back up a bit and consider if the kill && umount
-really is sane. If you kill a task that has open files, then any fput
-from that task will end up being delayed. This means that the umount may
-very well fail.
+umount2("/mnt", MNT_DETACH)
 
-It'd be handy if we could have umount wait for that to finish, but I'm
-not at all confident this is a sane solution for all cases. And as
-discussed, we have no way to even identify which files we'd need to
-flush out of the delayed list.
+will succeed even if fds are still open.
 
-Maybe the test case just needs fixing? Christian suggested lazy/detach
-umount and wait for sb release. There's an fsnotify hook for that,
-fsnotify_sb_delete(). Obviously this is a bit more involved, but seems
-to me that this would be the way to make it more reliable when killing
-of tasks with open files are involved.
+> 
+> It'd be handy if we could have umount wait for that to finish, but I'm
+> not at all confident this is a sane solution for all cases. And as
+> discussed, we have no way to even identify which files we'd need to
+> flush out of the delayed list.
+> 
+> Maybe the test case just needs fixing? Christian suggested lazy/detach
+> umount and wait for sb release. There's an fsnotify hook for that,
+> fsnotify_sb_delete(). Obviously this is a bit more involved, but seems
+> to me that this would be the way to make it more reliable when killing
+> of tasks with open files are involved.
 
--- 
-Jens Axboe
+You can wait on superblock destruction today in multiple ways. Roughly
+from the shell this should work:
 
+        root@wittgenstein:~# cat sb_wait.sh
+        #! /bin/bash
+        
+        echo "WARNING WARNING: I SUCK AT SHELL SCRIPTS"
+        
+        echo "mount fs"
+        sudo mount -t tmpfs tmpfs /mnt
+        touch /mnt/bla
+        
+        echo "pin sb by random file for 5s"
+        sleep 5 > /mnt/bla &
+        
+        echo "establish inotify watch for sb destruction"
+        inotifywait -e unmount /mnt &
+        pid=$!
+        
+        echo "regular umount - will fail..."
+        umount /mnt
+        
+        findmnt | grep "/mnt"
+        
+        echo "lazily umount - will succeed"
+        umount -l /mnt
+        
+        findmnt | grep "/mnt"
+        
+        echo "and now we wait"
+        wait $!
+        
+        echo "done"
+
+Can also use a tiny bpf lsm, fanotify in the future as we plans for
+that.
