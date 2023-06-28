@@ -2,72 +2,41 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EAD0EB64DA
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 28 Jun 2023 21:23:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D497EB64D7
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 28 Jun 2023 22:14:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbjF1VWx (ORCPT
+        id S231956AbjF1WOP (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 28 Jun 2023 17:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
+        Wed, 28 Jun 2023 18:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232323AbjF1VWO (ORCPT
+        with ESMTP id S230119AbjF1WNw (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 28 Jun 2023 17:22:14 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73273A86
-        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 14:17:45 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b7e31154c4so660675ad.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 14:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1687987065; x=1690579065;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aQziuYew91uw/0bw2Pl0Zc1BFg+GVKPj9CR2YVGi5Aw=;
-        b=t0JfEyC4VCwk0TDX5fgFzNA1W/AC0cp+cY4pSXiKLQ5cRkjoC9Auv7zdmpsRdNo9SL
-         Kev05hC8jnTwSuWnzLfDnB6qHIV9Z8QOZXBMldUNiWSTyayPXkFgdyiqjmSkU+G9E42G
-         am0pzlVPpYFnCh8DBcK8JMdjVbD4Ok1bKqAzdvVmlmSfcd1v4kyA6LYjWIV1e6mEW6yL
-         lc6hKXH4wIYu64cAzVsLS+L09TZ6qCT7aWT0XFzXtyEPKybvsimdjobwgPI+BVKSHhJG
-         VGczUOtqgaziUl4AAlB/DnyZZ2Fj3k1LyDhLomXMrDgf2BaaIP5FAkvxa7yd67z+BSMQ
-         pFWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687987065; x=1690579065;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aQziuYew91uw/0bw2Pl0Zc1BFg+GVKPj9CR2YVGi5Aw=;
-        b=gg3MJVvElWDNyJy71EbX6osaK0vPN00TCG3mAZvW1oxrB2mnN2tjXJviynf21hvwq5
-         1ajFQFPZHuXrLATExIr18LwzlhP8roY1kc7pxvA8qO4V6pjSXYpJywMRWZPISSzrLPrg
-         AdvNl439qANixL6Q4xslMzeZYRntn4YYfHrgNZy6LawUcvzCUMuK4Q+DxtgwuBi9cYO3
-         BUfQAvi5HcencrN/DP8/WPgiZcQyrC+PH4IIqvqWjWUIZ8Ajg7D/9iSOyHvBgU1wAfHg
-         1Ojg9RrP7vEzASYYphlmHxhMsZ6tIdQifrrkvoLE/9vtzcjSFd0krTPUhYhClgOyP59A
-         lSSw==
-X-Gm-Message-State: AC+VfDzLWqea/oaMgL5KJ97WWQGYyfGT04vRtWENK+l8YAnX2MwgJVZc
-        1JAydVctGSSqOpfTGvPuZMe/XQ==
-X-Google-Smtp-Source: ACHHUZ7wLqD+FTjJOLVRqthq+lfZRxWqssJ5dC4d2+07nBRUW0cx35fP1Tj7YFExunDGZggSBp2MMQ==
-X-Received: by 2002:a17:903:2051:b0:1b8:2ba0:c9a8 with SMTP id q17-20020a170903205100b001b82ba0c9a8mr4657183pla.2.1687987065278;
-        Wed, 28 Jun 2023 14:17:45 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id az12-20020a170902a58c00b001b0034557afsm8086924plb.15.2023.06.28.14.17.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jun 2023 14:17:44 -0700 (PDT)
-Message-ID: <2e635579-37ba-ddfc-a2ab-e6c080ab4971@kernel.dk>
-Date:   Wed, 28 Jun 2023 15:17:43 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [GIT PULL] bcachefs
-Content-Language: en-US
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
+        Wed, 28 Jun 2023 18:13:52 -0400
+Received: from out-16.mta1.migadu.com (out-16.mta1.migadu.com [IPv6:2001:41d0:203:375::10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1125E211D
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 15:13:50 -0700 (PDT)
+Date:   Wed, 28 Jun 2023 18:13:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1687990428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v8WVoQUFJwrHXrcj8iB/cmADxHGelZ4I+K1br+JoT3I=;
+        b=c2rOpx7HvgGzuU9oykOoqbse4XOSwYZ4wb/OkY+9zmp5xL/0qECfYdcr3bryvf+X8z/3lh
+        ImguE4Rp0ECCFxI6vwJL0XpIV/6ePGsHS591NZPBgP9gATRlDYB0Kq9Kf0dn89xmGFZRBQ
+        hOiS+AQCgaXsXCG+9t2kVRMbBIQieB4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Jens Axboe <axboe@kernel.dk>
 Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
         Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <brauner@kernel.org>
-References: <20230627000635.43azxbkd2uf3tu6b@moria.home.lan>
- <91e9064b-84e3-1712-0395-b017c7c4a964@kernel.dk>
- <20230627020525.2vqnt2pxhtgiddyv@moria.home.lan>
- <b92ea170-d531-00f3-ca7a-613c05dcbf5f@kernel.dk>
+        Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230628221342.4j3gr3zscnsu366p@moria.home.lan>
+References: <b92ea170-d531-00f3-ca7a-613c05dcbf5f@kernel.dk>
  <23922545-917a-06bd-ec92-ff6aa66118e2@kernel.dk>
  <20230627201524.ool73bps2lre2tsz@moria.home.lan>
  <c06a9e0b-8f3e-4e47-53d0-b4854a98cc44@kernel.dk>
@@ -76,95 +45,77 @@ References: <20230627000635.43azxbkd2uf3tu6b@moria.home.lan>
  <4b863e62-4406-53e4-f96a-f4d1daf098ab@kernel.dk>
  <20230628175204.oeek4nnqx7ltlqmg@moria.home.lan>
  <e1570c46-68da-22b7-5322-f34f3c2958d9@kernel.dk>
-In-Reply-To: <e1570c46-68da-22b7-5322-f34f3c2958d9@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <2e635579-37ba-ddfc-a2ab-e6c080ab4971@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e635579-37ba-ddfc-a2ab-e6c080ab4971@kernel.dk>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On 6/28/23 2:44?PM, Jens Axboe wrote:
-> On 6/28/23 11:52?AM, Kent Overstreet wrote:
->> On Wed, Jun 28, 2023 at 10:57:02AM -0600, Jens Axboe wrote:
->>> I discussed this with Christian offline. I have a patch that is pretty
->>> simple, but it does mean that you'd wait for delayed fput flush off
->>> umount. Which seems kind of iffy.
->>>
->>> I think we need to back up a bit and consider if the kill && umount
->>> really is sane. If you kill a task that has open files, then any fput
->>> from that task will end up being delayed. This means that the umount may
->>> very well fail.
->>>
->>> It'd be handy if we could have umount wait for that to finish, but I'm
->>> not at all confident this is a sane solution for all cases. And as
->>> discussed, we have no way to even identify which files we'd need to
->>> flush out of the delayed list.
->>>
->>> Maybe the test case just needs fixing? Christian suggested lazy/detach
->>> umount and wait for sb release. There's an fsnotify hook for that,
->>> fsnotify_sb_delete(). Obviously this is a bit more involved, but seems
->>> to me that this would be the way to make it more reliable when killing
->>> of tasks with open files are involved.
->>
->> No, this is a real breakage. Any time we introduce unexpected
->> asynchrony there's the potential for breakage: case in point, there was
->> a filesystem that made rm asynchronous, then there were scripts out
->> there that deleted until df showed under some threshold.. whoops...
+On Wed, Jun 28, 2023 at 03:17:43PM -0600, Jens Axboe wrote:
+> Case in point, just changed my reproducer to use aio instead of
+> io_uring. Here's the full script:
 > 
-> This is nothing new - any fput done from an exiting task will end up
-> being deferred. The window may be a bit wider now or a bit different,
-> but it's the same window. If an application assumes it can kill && wait
-> on a task and be guaranteed that the files are released as soon as wait
-> returns, it is mistaken. That is NOT the case.
+> #!/bin/bash
+> 
+> DEV=/dev/nvme1n1
+> MNT=/data
+> ITER=0
+> 
+> while true; do
+> 	echo loop $ITER
+> 	sudo mount $DEV $MNT
+> 	fio --name=test --ioengine=aio --iodepth=2 --filename=$MNT/foo --size=1g --buffered=1 --overwrite=0 --numjobs=12 --minimal --rw=randread --output=/dev/null &
+> 	Y=$(($RANDOM % 3))
+> 	X=$(($RANDOM % 10))
+> 	VAL="$Y.$X"
+> 	sleep $VAL
+> 	ps -e | grep fio > /dev/null 2>&1
+> 	while [ $? -eq 0 ]; do
+> 		killall -9 fio > /dev/null 2>&1
+> 		echo will wait
+> 		wait > /dev/null 2>&1
+> 		echo done waiting
+> 		ps -e | grep "fio " > /dev/null 2>&1
+> 	done
+> 	sudo umount /data
+> 	if [ $? -ne 0 ]; then
+> 		break
+> 	fi
+> 	((ITER++))
+> done
+> 
+> and if I run that, fails on the first umount attempt in that loop:
+> 
+> axboe@m1max-kvm ~> bash test2.sh
+> loop 0
+> will wait
+> done waiting
+> umount: /data: target is busy.
+> 
+> So yeah, this is _nothing_ new. I really don't think trying to address
+> this in the kernel is the right approach, it'd be a lot saner to harden
+> the xfstest side to deal with the umount a bit more sanely. There are
+> obviously tons of other ways that a mount could get pinned, which isn't
+> too relevant here since the bdev and mount point are basically exclusive
+> to the test being run. But the kill and delayed fput is enough to make
+> that case imho.
 
-Case in point, just changed my reproducer to use aio instead of
-io_uring. Here's the full script:
+Uh, count me very much not in favor of hacking around bugs elsewhere.
 
-#!/bin/bash
+Al, do you know if this has been considered before? We've got fput()
+being called from aio completion, which often runs out of a worqueue (if
+not a workqueue, a bottom half of some sort - what happens then, I
+wonder) - so the effect is that it goes on the global list, not the task
+work list.
 
-DEV=/dev/nvme1n1
-MNT=/data
-ITER=0
+hence, kill -9ing a process doing aio (or io_uring io, for extra
+reasons) causes umount to fail with -EBUSY.
 
-while true; do
-	echo loop $ITER
-	sudo mount $DEV $MNT
-	fio --name=test --ioengine=aio --iodepth=2 --filename=$MNT/foo --size=1g --buffered=1 --overwrite=0 --numjobs=12 --minimal --rw=randread --output=/dev/null &
-	Y=$(($RANDOM % 3))
-	X=$(($RANDOM % 10))
-	VAL="$Y.$X"
-	sleep $VAL
-	ps -e | grep fio > /dev/null 2>&1
-	while [ $? -eq 0 ]; do
-		killall -9 fio > /dev/null 2>&1
-		echo will wait
-		wait > /dev/null 2>&1
-		echo done waiting
-		ps -e | grep "fio " > /dev/null 2>&1
-	done
-	sudo umount /data
-	if [ $? -ne 0 ]; then
-		break
-	fi
-	((ITER++))
-done
+and since there's no mechanism for userspace to deal with this besides
+sleep and retry, this seems pretty gross.
 
-and if I run that, fails on the first umount attempt in that loop:
-
-axboe@m1max-kvm ~> bash test2.sh
-loop 0
-will wait
-done waiting
-umount: /data: target is busy.
-
-So yeah, this is _nothing_ new. I really don't think trying to address
-this in the kernel is the right approach, it'd be a lot saner to harden
-the xfstest side to deal with the umount a bit more sanely. There are
-obviously tons of other ways that a mount could get pinned, which isn't
-too relevant here since the bdev and mount point are basically exclusive
-to the test being run. But the kill and delayed fput is enough to make
-that case imho.
-
--- 
-Jens Axboe
-
+I'd be willing to tackle this for aio since I know that code...
