@@ -2,68 +2,69 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8F62EB64D7
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 28 Jun 2023 20:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EAD0EB64DA
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 28 Jun 2023 21:23:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbjF1UyS (ORCPT
+        id S232246AbjF1VWx (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 28 Jun 2023 16:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
+        Wed, 28 Jun 2023 17:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbjF1UyK (ORCPT
+        with ESMTP id S232323AbjF1VWO (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 28 Jun 2023 16:54:10 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4546295F
-        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 13:54:08 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-656bc570a05so40548b3a.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 13:54:08 -0700 (PDT)
+        Wed, 28 Jun 2023 17:22:14 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73273A86
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 14:17:45 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b7e31154c4so660675ad.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 14:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1687985648; x=1690577648;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1687987065; x=1690579065;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vhRG05GlU4RJJ7xv+jzoKr3i+fIGPg8MRBPy8snbcU8=;
-        b=Ep3L5wmiVI27ZoKOZNB/CNRyrmDlSSs1LUNZC4Et7lDD5kIZblfuAXFMZvcfQvO8m4
-         py5D82d/6MF6895JhO6m/4N2xRYFz/KbJJsO2pSr4vQShVqe+MVCbCBfyiunK2BYgMKr
-         4fT6cWEh5SnCaL4ngLmOPw3irrgz+V33DbCXR4pCI4Dfq2uzdI7UVXCpydoe7SI11cLH
-         IvlK+G//vTF6edTpEN5ANT5s4CqJo87H1yrE4LHrXi8MmJBW+v99ds9JbAbytwP0mSCB
-         xFd9xB8rMEhpYLdfYCCeDyviTa4a+YwfgPBtUBiFFYGz59jaXq7yAPLdNlaAUzY10tpS
-         WcLA==
+        bh=aQziuYew91uw/0bw2Pl0Zc1BFg+GVKPj9CR2YVGi5Aw=;
+        b=t0JfEyC4VCwk0TDX5fgFzNA1W/AC0cp+cY4pSXiKLQ5cRkjoC9Auv7zdmpsRdNo9SL
+         Kev05hC8jnTwSuWnzLfDnB6qHIV9Z8QOZXBMldUNiWSTyayPXkFgdyiqjmSkU+G9E42G
+         am0pzlVPpYFnCh8DBcK8JMdjVbD4Ok1bKqAzdvVmlmSfcd1v4kyA6LYjWIV1e6mEW6yL
+         lc6hKXH4wIYu64cAzVsLS+L09TZ6qCT7aWT0XFzXtyEPKybvsimdjobwgPI+BVKSHhJG
+         VGczUOtqgaziUl4AAlB/DnyZZ2Fj3k1LyDhLomXMrDgf2BaaIP5FAkvxa7yd67z+BSMQ
+         pFWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687985648; x=1690577648;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=1e100.net; s=20221208; t=1687987065; x=1690579065;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vhRG05GlU4RJJ7xv+jzoKr3i+fIGPg8MRBPy8snbcU8=;
-        b=hRfNPuIwlZWvzsRFjGpGwsHbQJHmBLnhzJh8EVEYGtT9BNxSLcv8Khx77Ny3nxAr3F
-         /kERj8zmPLFlFVU5L65PfVgyrs0uoF5tapUW/Za48Z0rwpeqgMfrBl1RRRDmP6VPxoyp
-         M8e4MNZl/QT52qWc46GmAz/y0gc1nyPLjAsULv602EQ3V/AjBP2ZpniNxia+YXRuhv+f
-         MAX+wM+6siatyzqneW0rikI0a5erkL4RhuBSBwPl+rOerXIRyeOeCXV3ARPvEsu4Ud0Q
-         9iwxO2almjMu2Dxb9lfDRHOgKkPuG+VAnD3nub4cwuf2Fql/YefQFvZp6jD40gAJgYlU
-         uBCg==
-X-Gm-Message-State: AC+VfDxtLPItj2+uMrzQy6WgZPtW/sOJR951mqpvNqoTMTnwSXu6sMWB
-        QGiecYXTZaoklmbWu8abF+yTXA==
-X-Google-Smtp-Source: ACHHUZ4ogsVS0lX3nCPBIG5bc6Q95Br2cbk12Jk/ulWzavPWNHR06zRL4hyqFaBkj7P63x6gP3A8Yw==
-X-Received: by 2002:a05:6a20:8f04:b0:121:b5af:acbc with SMTP id b4-20020a056a208f0400b00121b5afacbcmr38240738pzk.3.1687985648291;
-        Wed, 28 Jun 2023 13:54:08 -0700 (PDT)
+        bh=aQziuYew91uw/0bw2Pl0Zc1BFg+GVKPj9CR2YVGi5Aw=;
+        b=gg3MJVvElWDNyJy71EbX6osaK0vPN00TCG3mAZvW1oxrB2mnN2tjXJviynf21hvwq5
+         1ajFQFPZHuXrLATExIr18LwzlhP8roY1kc7pxvA8qO4V6pjSXYpJywMRWZPISSzrLPrg
+         AdvNl439qANixL6Q4xslMzeZYRntn4YYfHrgNZy6LawUcvzCUMuK4Q+DxtgwuBi9cYO3
+         BUfQAvi5HcencrN/DP8/WPgiZcQyrC+PH4IIqvqWjWUIZ8Ajg7D/9iSOyHvBgU1wAfHg
+         1Ojg9RrP7vEzASYYphlmHxhMsZ6tIdQifrrkvoLE/9vtzcjSFd0krTPUhYhClgOyP59A
+         lSSw==
+X-Gm-Message-State: AC+VfDzLWqea/oaMgL5KJ97WWQGYyfGT04vRtWENK+l8YAnX2MwgJVZc
+        1JAydVctGSSqOpfTGvPuZMe/XQ==
+X-Google-Smtp-Source: ACHHUZ7wLqD+FTjJOLVRqthq+lfZRxWqssJ5dC4d2+07nBRUW0cx35fP1Tj7YFExunDGZggSBp2MMQ==
+X-Received: by 2002:a17:903:2051:b0:1b8:2ba0:c9a8 with SMTP id q17-20020a170903205100b001b82ba0c9a8mr4657183pla.2.1687987065278;
+        Wed, 28 Jun 2023 14:17:45 -0700 (PDT)
 Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id j5-20020a62b605000000b00640f51801e6sm7375748pff.159.2023.06.28.13.54.07
+        by smtp.gmail.com with ESMTPSA id az12-20020a170902a58c00b001b0034557afsm8086924plb.15.2023.06.28.14.17.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jun 2023 13:54:07 -0700 (PDT)
-Message-ID: <4d3efe17-e114-96c1-dca8-a100cc6f7fc6@kernel.dk>
-Date:   Wed, 28 Jun 2023 14:54:06 -0600
+        Wed, 28 Jun 2023 14:17:44 -0700 (PDT)
+Message-ID: <2e635579-37ba-ddfc-a2ab-e6c080ab4971@kernel.dk>
+Date:   Wed, 28 Jun 2023 15:17:43 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
 Subject: Re: [GIT PULL] bcachefs
 Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <aeb2690c-4f0a-003d-ba8b-fe06cd4142d1@kernel.dk>
- <20230627000635.43azxbkd2uf3tu6b@moria.home.lan>
+        Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>
+References: <20230627000635.43azxbkd2uf3tu6b@moria.home.lan>
  <91e9064b-84e3-1712-0395-b017c7c4a964@kernel.dk>
  <20230627020525.2vqnt2pxhtgiddyv@moria.home.lan>
  <b92ea170-d531-00f3-ca7a-613c05dcbf5f@kernel.dk>
@@ -72,104 +73,97 @@ References: <aeb2690c-4f0a-003d-ba8b-fe06cd4142d1@kernel.dk>
  <c06a9e0b-8f3e-4e47-53d0-b4854a98cc44@kernel.dk>
  <20230628040114.oz46icbsjpa4egpp@moria.home.lan>
  <b02657af-5bbb-b46b-cea0-ee89f385f3c1@kernel.dk>
- <20230628175421.funhhfbx5kdvhclx@moria.home.lan>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230628175421.funhhfbx5kdvhclx@moria.home.lan>
+ <4b863e62-4406-53e4-f96a-f4d1daf098ab@kernel.dk>
+ <20230628175204.oeek4nnqx7ltlqmg@moria.home.lan>
+ <e1570c46-68da-22b7-5322-f34f3c2958d9@kernel.dk>
+In-Reply-To: <e1570c46-68da-22b7-5322-f34f3c2958d9@kernel.dk>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On 6/28/23 11:54?AM, Kent Overstreet wrote:
-> On Wed, Jun 28, 2023 at 08:58:45AM -0600, Jens Axboe wrote:
->> On 6/27/23 10:01?PM, Kent Overstreet wrote:
->>> On Tue, Jun 27, 2023 at 09:16:31PM -0600, Jens Axboe wrote:
->>>> On 6/27/23 2:15?PM, Kent Overstreet wrote:
->>>>>> to ktest/tests/xfstests/ and run it with -bcachefs, otherwise it kept
->>>>>> failing because it assumed it was XFS.
->>>>>>
->>>>>> I suspected this was just a timing issue, and it looks like that's
->>>>>> exactly what it is. Looking at the test case, it'll randomly kill -9
->>>>>> fsstress, and if that happens while we have io_uring IO pending, then we
->>>>>> process completions inline (for a PF_EXITING current). This means they
->>>>>> get pushed to fallback work, which runs out of line. If we hit that case
->>>>>> AND the timing is such that it hasn't been processed yet, we'll still be
->>>>>> holding a file reference under the mount point and umount will -EBUSY
->>>>>> fail.
->>>>>>
->>>>>> As far as I can tell, this can happen with aio as well, it's just harder
->>>>>> to hit. If the fput happens while the task is exiting, then fput will
->>>>>> end up being delayed through a workqueue as well. The test case assumes
->>>>>> that once it's reaped the exit of the killed task that all files are
->>>>>> released, which isn't necessarily true if they are done out-of-line.
->>>>>
->>>>> Yeah, I traced it through to the delayed fput code as well.
->>>>>
->>>>> I'm not sure delayed fput is responsible here; what I learned when I was
->>>>> tracking this down has mostly fell out of my brain, so take anything I
->>>>> say with a large grain of salt. But I believe I tested with delayed_fput
->>>>> completely disabled, and found another thing in io_uring with the same
->>>>> effect as delayed_fput that wasn't being flushed.
->>>>
->>>> I'm not saying it's delayed_fput(), I'm saying it's the delayed putting
->>>> io_uring can end up doing. But yes, delayed_fput() is another candidate.
+On 6/28/23 2:44?PM, Jens Axboe wrote:
+> On 6/28/23 11:52?AM, Kent Overstreet wrote:
+>> On Wed, Jun 28, 2023 at 10:57:02AM -0600, Jens Axboe wrote:
+>>> I discussed this with Christian offline. I have a patch that is pretty
+>>> simple, but it does mean that you'd wait for delayed fput flush off
+>>> umount. Which seems kind of iffy.
 >>>
->>> Sorry - was just working through my recollections/initial thought
->>> process out loud
->>
->> No worries, it might actually be a combination and this is why my
->> io_uring side patch didn't fully resolve it. Wrote a simple reproducer
->> and it seems to reliably trigger it, but is fixed with an flush of the
->> delayed fput list on mount -EBUSY return. Still digging...
->>
->>>>>> For io_uring specifically, it may make sense to wait on the fallback
->>>>>> work. The below patch does this, and should fix the issue. But I'm not
->>>>>> fully convinced that this is really needed, as I do think this can
->>>>>> happen without io_uring as well. It just doesn't right now as the test
->>>>>> does buffered IO, and aio will be fully sync with buffered IO. That
->>>>>> means there's either no gap where aio will hit it without O_DIRECT, or
->>>>>> it's just small enough that it hasn't been hit.
->>>>>
->>>>> I just tried your patch and I still have generic/388 failing - it
->>>>> might've taken a bit longer to pop this time.
->>>>
->>>> Yep see the same here. Didn't have time to look into it after sending
->>>> that email today, just took a quick stab at writing a reproducer and
->>>> ended up crashing bcachefs:
+>>> I think we need to back up a bit and consider if the kill && umount
+>>> really is sane. If you kill a task that has open files, then any fput
+>>> from that task will end up being delayed. This means that the umount may
+>>> very well fail.
 >>>
->>> You must have hit an error before we finished initializing the
->>> filesystem, the list head never got initialized. Patch for that will be
->>> in the testing branch momentarily.
+>>> It'd be handy if we could have umount wait for that to finish, but I'm
+>>> not at all confident this is a sane solution for all cases. And as
+>>> discussed, we have no way to even identify which files we'd need to
+>>> flush out of the delayed list.
+>>>
+>>> Maybe the test case just needs fixing? Christian suggested lazy/detach
+>>> umount and wait for sb release. There's an fsnotify hook for that,
+>>> fsnotify_sb_delete(). Obviously this is a bit more involved, but seems
+>>> to me that this would be the way to make it more reliable when killing
+>>> of tasks with open files are involved.
 >>
->> I'll pull that in. In testing just now, I hit a few more leaks:
->>
->> unreferenced object 0xffff0000e55cf200 (size 128):
->>   comm "mount", pid 723, jiffies 4294899134 (age 85.868s)
->>   hex dump (first 32 bytes):
->>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->>   backtrace:
->>     [<000000001d69062c>] slab_post_alloc_hook.isra.0+0xb4/0xbc
->>     [<00000000c503def2>] __kmem_cache_alloc_node+0xd0/0x178
->>     [<00000000cde48528>] __kmalloc+0xac/0xd4
->>     [<000000006cb9446a>] kmalloc_array.constprop.0+0x18/0x20
->>     [<000000008341b32c>] bch2_fs_alloc+0x73c/0xbcc
+>> No, this is a real breakage. Any time we introduce unexpected
+>> asynchrony there's the potential for breakage: case in point, there was
+>> a filesystem that made rm asynchronous, then there were scripts out
+>> there that deleted until df showed under some threshold.. whoops...
 > 
-> Can you faddr2line this? I just did a bunch of kmemleak testing and
-> didn't see it.
+> This is nothing new - any fput done from an exiting task will end up
+> being deferred. The window may be a bit wider now or a bit different,
+> but it's the same window. If an application assumes it can kill && wait
+> on a task and be guaranteed that the files are released as soon as wait
+> returns, it is mistaken. That is NOT the case.
 
-0xffff800008589a20 is in bch2_fs_alloc (fs/bcachefs/super.c:813).
-808		    !(c->online_reserved = alloc_percpu(u64)) ||
-809		    !(c->btree_paths_bufs = alloc_percpu(struct btree_path_buf)) ||
-810		    mempool_init_kvpmalloc_pool(&c->btree_bounce_pool, 1,
-811						btree_bytes(c)) ||
-812		    mempool_init_kmalloc_pool(&c->large_bkey_pool, 1, 2048) ||
-813		    !(c->unused_inode_hints = kcalloc(1U << c->inode_shard_bits,
-814						      sizeof(u64), GFP_KERNEL))) {
-815			ret = -BCH_ERR_ENOMEM_fs_other_alloc;
-816			goto err;
-817		}
+Case in point, just changed my reproducer to use aio instead of
+io_uring. Here's the full script:
+
+#!/bin/bash
+
+DEV=/dev/nvme1n1
+MNT=/data
+ITER=0
+
+while true; do
+	echo loop $ITER
+	sudo mount $DEV $MNT
+	fio --name=test --ioengine=aio --iodepth=2 --filename=$MNT/foo --size=1g --buffered=1 --overwrite=0 --numjobs=12 --minimal --rw=randread --output=/dev/null &
+	Y=$(($RANDOM % 3))
+	X=$(($RANDOM % 10))
+	VAL="$Y.$X"
+	sleep $VAL
+	ps -e | grep fio > /dev/null 2>&1
+	while [ $? -eq 0 ]; do
+		killall -9 fio > /dev/null 2>&1
+		echo will wait
+		wait > /dev/null 2>&1
+		echo done waiting
+		ps -e | grep "fio " > /dev/null 2>&1
+	done
+	sudo umount /data
+	if [ $? -ne 0 ]; then
+		break
+	fi
+	((ITER++))
+done
+
+and if I run that, fails on the first umount attempt in that loop:
+
+axboe@m1max-kvm ~> bash test2.sh
+loop 0
+will wait
+done waiting
+umount: /data: target is busy.
+
+So yeah, this is _nothing_ new. I really don't think trying to address
+this in the kernel is the right approach, it'd be a lot saner to harden
+the xfstest side to deal with the umount a bit more sanely. There are
+obviously tons of other ways that a mount could get pinned, which isn't
+too relevant here since the bdev and mount point are basically exclusive
+to the test being run. But the kill and delayed fput is enough to make
+that case imho.
 
 -- 
 Jens Axboe
