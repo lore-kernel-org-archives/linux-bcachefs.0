@@ -2,35 +2,67 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47854C001B3
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 28 Jun 2023 08:06:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 445AEEB64D7
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 28 Jun 2023 14:40:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbjF1IG1 (ORCPT
+        id S231622AbjF1Okh (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 28 Jun 2023 04:06:27 -0400
-Received: from out-33.mta0.migadu.com ([91.218.175.33]:33302 "EHLO
-        out-33.mta0.migadu.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231428AbjF1H7f (ORCPT
+        Wed, 28 Jun 2023 10:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231582AbjF1Okd (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 28 Jun 2023 03:59:35 -0400
-Date:   Wed, 28 Jun 2023 00:01:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1687924878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3MLw7YcFyHXR1rN5vXFnw1a8aCPs+A9s2/LGEzLo8qM=;
-        b=aj6TIes7oOUyqpykYgyoMBDptalfUM0KTr/OPLio/mbmnynZwD8KXLCDn3MRznzt7sygDX
-        8EIv/2H4MHtchcfITbpjvVtcZZWgjp75sSBSIkI2n989zgtnTcO/7yz86m60ocjM6j2y+a
-        Bc8yv9wy54HOUpQ3+APVfZYcFyI0vYU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Jens Axboe <axboe@kernel.dk>
+        Wed, 28 Jun 2023 10:40:33 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE4F1FF5
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 07:40:31 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-345ac638074so3820465ab.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 07:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1687963230; x=1690555230;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gw+1SzCqOzLBAsCHPofcZWnW/1XnEKR52ONcAb/VwIU=;
+        b=nMvogRKjodPYqMEKzS1+45qiQ1ts6quMm+6EBnJOqhU0hfN8kaUd8jx/fMWbr+GZ52
+         nbR2svkXJ8qCfmRdRfaWCGF+x6DZmh7IFMkcC/xwNTZMov8F0qz0dFJ28i8B076zXjm7
+         JkCBYXsfYhytvZ51G1ch0A84X1/Dw56tQB50WUdQqlZOp42caRwZje9sNVjdDJczbCTb
+         iKHLJzdfg+mrshlTq3DoTtEF1fSOwFGZ/gcD5XWxCUWZpxRKXgMlKfdBW4AUzg79TYqo
+         rs2Wl0BsyQDOQmwp6PkcE+/6ldYlAG6NIG0bA523SM+Hfoo8CIZWfz5iMFOxArBiJPvk
+         7NTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687963230; x=1690555230;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gw+1SzCqOzLBAsCHPofcZWnW/1XnEKR52ONcAb/VwIU=;
+        b=ekxY4bY0zeTjUZ3ML3TlW7C1vHTnsTuSvVPEsuasYMh+LhwkerfodOiSTldDTR/tYA
+         7OYwoAmxw/AfQ8iqagNQB8X+nPAOTwLNvMiAzRnylJMz+9uZjuZqgnw3S1TrQSHkyNuh
+         7CmrrhSnoxnNkBBe6QmMx8DbLALwJpFLv9XTmZy5iQuwXR3X+TxrCJ/2tGoe9x/QLaSy
+         pRhJOmVW8nuzHrhUTTJ2t1Of6w+xsFmOwL/bBH6RbfjRbH9REDwryQ31hOZsrH42v7lg
+         O5kS1bIjRBpwE0xUE9UpDDv+X4goD2QcZQp9Gl/5PUgAyxoliMZmgfMZB3pYR4QAgFuO
+         fObQ==
+X-Gm-Message-State: AC+VfDy4jbkcVbO5YLfyrt3y58i70pXjzVaqRa4+hBYWATYg3sHcER5D
+        qxmnFj9D8v54gZf2vcSK1J9q7g==
+X-Google-Smtp-Source: ACHHUZ4+2SAm8EoLrcc2AtB8NSlinSM93X0+AZ5q0LtuDQS3X5xb6WUFpx//qOrq7G76Q1FXgqMeoQ==
+X-Received: by 2002:a6b:1495:0:b0:780:d65c:d78f with SMTP id 143-20020a6b1495000000b00780d65cd78fmr16017374iou.2.1687963230425;
+        Wed, 28 Jun 2023 07:40:30 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id ed21-20020a056638291500b0042af158d05fsm436706jab.114.2023.06.28.07.40.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jun 2023 07:40:29 -0700 (PDT)
+Message-ID: <3337524d-347c-900a-a1c7-5774cd731af0@kernel.dk>
+Date:   Wed, 28 Jun 2023 08:40:27 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [GIT PULL] bcachefs
+Content-Language: en-US
+To:     Dave Chinner <david@fromorbit.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
         Christoph Hellwig <hch@lst.de>
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230628040114.oz46icbsjpa4egpp@moria.home.lan>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <aeb2690c-4f0a-003d-ba8b-fe06cd4142d1@kernel.dk>
  <20230627000635.43azxbkd2uf3tu6b@moria.home.lan>
@@ -39,82 +71,72 @@ References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <b92ea170-d531-00f3-ca7a-613c05dcbf5f@kernel.dk>
  <23922545-917a-06bd-ec92-ff6aa66118e2@kernel.dk>
  <20230627201524.ool73bps2lre2tsz@moria.home.lan>
- <c06a9e0b-8f3e-4e47-53d0-b4854a98cc44@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c06a9e0b-8f3e-4e47-53d0-b4854a98cc44@kernel.dk>
-X-Migadu-Flow: FLOW_OUT
+ <ZJtdEgbt+Wa8UHij@dread.disaster.area>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <ZJtdEgbt+Wa8UHij@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Jun 27, 2023 at 09:16:31PM -0600, Jens Axboe wrote:
-> On 6/27/23 2:15?PM, Kent Overstreet wrote:
-> >> to ktest/tests/xfstests/ and run it with -bcachefs, otherwise it kept
-> >> failing because it assumed it was XFS.
-> >>
-> >> I suspected this was just a timing issue, and it looks like that's
-> >> exactly what it is. Looking at the test case, it'll randomly kill -9
-> >> fsstress, and if that happens while we have io_uring IO pending, then we
-> >> process completions inline (for a PF_EXITING current). This means they
-> >> get pushed to fallback work, which runs out of line. If we hit that case
-> >> AND the timing is such that it hasn't been processed yet, we'll still be
-> >> holding a file reference under the mount point and umount will -EBUSY
-> >> fail.
-> >>
-> >> As far as I can tell, this can happen with aio as well, it's just harder
-> >> to hit. If the fput happens while the task is exiting, then fput will
-> >> end up being delayed through a workqueue as well. The test case assumes
-> >> that once it's reaped the exit of the killed task that all files are
-> >> released, which isn't necessarily true if they are done out-of-line.
-> > 
-> > Yeah, I traced it through to the delayed fput code as well.
-> > 
-> > I'm not sure delayed fput is responsible here; what I learned when I was
-> > tracking this down has mostly fell out of my brain, so take anything I
-> > say with a large grain of salt. But I believe I tested with delayed_fput
-> > completely disabled, and found another thing in io_uring with the same
-> > effect as delayed_fput that wasn't being flushed.
+On 6/27/23 4:05?PM, Dave Chinner wrote:
+> On Tue, Jun 27, 2023 at 04:15:24PM -0400, Kent Overstreet wrote:
+>> On Tue, Jun 27, 2023 at 11:16:01AM -0600, Jens Axboe wrote:
+>>> On 6/26/23 8:59?PM, Jens Axboe wrote:
+>>>> On 6/26/23 8:05?PM, Kent Overstreet wrote:
+>>>>> On Mon, Jun 26, 2023 at 07:13:54PM -0600, Jens Axboe wrote:
+>>>>>> Doesn't reproduce for me with XFS. The above ktest doesn't work for me
+>>>>>> either:
+>>>>>
+>>>>> It just popped for me on xfs, but it took half an hour or so of looping
+>>>>> vs. 30 seconds on bcachefs.
+>>>>
+>>>> OK, I'll try and leave it running overnight and see if I can get it to
+>>>> trigger.
+>>>
+>>> I did manage to reproduce it, and also managed to get bcachefs to run
+>>> the test. But I had to add:
+>>>
+>>> diff --git a/check b/check
+>>> index 5f9f1a6bec88..6d74bd4933bd 100755
+>>> --- a/check
+>>> +++ b/check
+>>> @@ -283,7 +283,7 @@ while [ $# -gt 0 ]; do
+>>>  	case "$1" in
+>>>  	-\? | -h | --help) usage ;;
+>>>  
+>>> -	-nfs|-afs|-glusterfs|-cifs|-9p|-fuse|-virtiofs|-pvfs2|-tmpfs|-ubifs)
+>>> +	-nfs|-afs|-glusterfs|-cifs|-9p|-fuse|-virtiofs|-pvfs2|-tmpfs|-ubifs|-bcachefs)
+>>>  		FSTYP="${1:1}"
+>>>  		;;
+>>>  	-overlay)
+>>
+>> I wonder if this is due to an upstream fstests change I haven't seen
+>> yet, I'll have a look.
 > 
-> I'm not saying it's delayed_fput(), I'm saying it's the delayed putting
-> io_uring can end up doing. But yes, delayed_fput() is another candidate.
+> Run mkfs.bcachefs on the testdir first. fstests tries to probe the
+> filesystem type to test if $FSTYP is not set. If it doesn't find a
+> filesystem or it is unsupported, it will use the default (i.e. XFS).
 
-Sorry - was just working through my recollections/initial thought
-process out loud
+I did format both test and scratch first with bcachefs, so guessing
+something is going wrong with figuring out what filesystem is on the
+device and then it defaults to XFS. I didn't spend too much time on that
+bit, figured it was easier to just force bcachefs for my purpose.
 
-> >> For io_uring specifically, it may make sense to wait on the fallback
-> >> work. The below patch does this, and should fix the issue. But I'm not
-> >> fully convinced that this is really needed, as I do think this can
-> >> happen without io_uring as well. It just doesn't right now as the test
-> >> does buffered IO, and aio will be fully sync with buffered IO. That
-> >> means there's either no gap where aio will hit it without O_DIRECT, or
-> >> it's just small enough that it hasn't been hit.
-> > 
-> > I just tried your patch and I still have generic/388 failing - it
-> > might've taken a bit longer to pop this time.
+> There should be no reason to need to specify the filesystem type for
+> filesystems that blkid recognises. from common/config:
 > 
-> Yep see the same here. Didn't have time to look into it after sending
-> that email today, just took a quick stab at writing a reproducer and
-> ended up crashing bcachefs:
+>         # Autodetect fs type based on what's on $TEST_DEV unless it's been set
+>         # externally
+>         if [ -z "$FSTYP" ] && [ ! -z "$TEST_DEV" ]; then
+>                 FSTYP=`blkid -c /dev/null -s TYPE -o value $TEST_DEV`
+>         fi
+>         FSTYP=${FSTYP:=xfs}
+>         export FSTYP
 
-You must have hit an error before we finished initializing the
-filesystem, the list head never got initialized. Patch for that will be
-in the testing branch momentarily.
+Gotcha, yep it's because blkid fails to figure it out.
 
-> > I wonder if there might be a better way of solving this though? For aio,
-> > when a process is exiting we just synchronously tear down the ioctx,
-> > including waiting for outstanding iocbs.
-> 
-> aio is pretty trivial, because the only async it supports is O_DIRECT
-> on regular files which always completes in finite time. io_uring has to
-> cancel etc, so we need to do a lot more.
+-- 
+Jens Axboe
 
-ahh yes, buffered IO would complicate things
-
-> But the concept of my patch should be fine, but I think we must be
-> missing a case. Which is why I started writing a small reproducer
-> instead. I'll pick it up again tomorrow and see what is going on here.
-
-Ok. Soon as you've got a patch I'll throw it at my CI, or I can point my
-CI at your branch if you have one.
