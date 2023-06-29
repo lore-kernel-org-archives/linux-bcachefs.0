@@ -2,69 +2,70 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88783EB64D7
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 29 Jun 2023 01:00:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7D0CEB64DD
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 29 Jun 2023 01:29:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbjF2BAm (ORCPT
+        id S231653AbjF2B3k (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 28 Jun 2023 21:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35888 "EHLO
+        Wed, 28 Jun 2023 21:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbjF2BAl (ORCPT
+        with ESMTP id S231421AbjF2B3i (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 28 Jun 2023 21:00:41 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BCE268A
-        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 18:00:40 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b852785a65so921105ad.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 18:00:40 -0700 (PDT)
+        Wed, 28 Jun 2023 21:29:38 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612B626A1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 18:29:36 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b7f42e1dbaso301445ad.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Jun 2023 18:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1688000440; x=1690592440;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YFSh4UQMxigzwwvL8diZTzDsQNOBblrcP22N90L84Vs=;
-        b=kCcBmQYr8egVuJFSES59uunr/I5DWWW/oVY38mczGq9tVtawHM54hG6vXq0XMkcXvw
-         Walcv4qUS5C/tNKmiS0r2O02x49/+QmbVMQZm5lmGrJS6+S8fr3vDTCceDeigPa4wze7
-         wNMdtjOvk6TNdR5NGk95jN8A19ZSo6zHnyLY7VSOBE8Q3fdqQwr+DZ3IZfKncZ87eNKR
-         8fVvodAsY9k+EaQ823GLrU4al1j6bu8T9+NVSHRAaMjRngyvx/6bqNYOQroUGh2F0QWc
-         LMvARJ/xA5WAVQYxU624wwuV3w8GYPQ2TUiiCmyK/f3fVn/u9ZEPXXvdgC6CjYDf6H8Q
-         gerQ==
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1688002176; x=1690594176;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D8kLyZ1+w+5+PCjKyBOmPVGH/ZOinGE085j6jsL1WTU=;
+        b=OZRopHdDUGPBQex3VPOlm/NmRjnCf90aWLNF9FSzQgprXQqF2vLpUGtXSyS6juF1EX
+         8GdGGkQzy5f6kZFKCRW3XFREFplpsOpIG7rBEv7p+uYbxd/mgAa81jyFHRszAa5ZPTwy
+         IDX53XBLApVkMACsjBJ2wWanBrwM8gmTYc6tmXA9S7ASqTr8J/NE9XpER6JAcqZdK6SI
+         1DklFSNWshW8L4+baZzhVriukVMVrSWXSi10WBjf6/OFPWKAEfr4J3gXVbyrdY2jH+zL
+         oXh80huBzrcQequtrlXlTsRGosL+TYZTo/XH4cFNpSGZn1xk5n+3vcZAe9bl7nYfGAoE
+         L9BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688000440; x=1690592440;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YFSh4UQMxigzwwvL8diZTzDsQNOBblrcP22N90L84Vs=;
-        b=kHukuO+efUxRweaAKLrEslcgmL0/exCXjC2M2qbGhtmVgAPEO0TvlKrtiClKLgM8bS
-         jC2F370H4oDP8m0X/JM5xaXKVqqWM8kAceM3uCckL5SyGAeGgh4Vc9N4Q9ElSHsPXeJh
-         LCEv2kDrfFUaaMhWiK1fa8nm1lVl5V2Oew5Hncb/qROFWcJeEpuw/AR7aAS53da+xi2n
-         NTHJ2g9M2oDGP35zDtYqbBi6uKLgL/AJOPkEAogs3w5rGtjpXi6DkEp8RlptY5SCUEkM
-         tS1y9xC1NamPsq+KmprtI4NVqDGEUDJ8MyhU4KLlIRTpuVm9RQqBgnEHTOWks+vHY3wA
-         5r4A==
-X-Gm-Message-State: AC+VfDzxsCpqAeDvAEFAbMgHH8N7kENwD0ugLFfkn/GB6sTp/Vw/z1SX
-        8EwvJxQaV8tQljjsC9NBqqnJZQ==
-X-Google-Smtp-Source: ACHHUZ7qSZvmo9NUERFxGeAPqZFDi+YuhlJdqnu8fHjovL+tHuyu4rUYhLvJ904+Q1hbaS+67nP7ag==
-X-Received: by 2002:a17:902:e551:b0:1b8:3936:7b64 with SMTP id n17-20020a170902e55100b001b839367b64mr4104977plf.1.1688000439787;
-        Wed, 28 Jun 2023 18:00:39 -0700 (PDT)
-Received: from dread.disaster.area (pa49-186-94-37.pa.vic.optusnet.com.au. [49.186.94.37])
-        by smtp.gmail.com with ESMTPSA id t7-20020a1709028c8700b001b03842ab78sm8224744plo.89.2023.06.28.18.00.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jun 2023 18:00:38 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qEg1T-00HR8i-1z;
-        Thu, 29 Jun 2023 11:00:35 +1000
-Date:   Thu, 29 Jun 2023 11:00:35 +1000
-From:   Dave Chinner <david@fromorbit.com>
+        d=1e100.net; s=20221208; t=1688002176; x=1690594176;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D8kLyZ1+w+5+PCjKyBOmPVGH/ZOinGE085j6jsL1WTU=;
+        b=O9rarNfIogDo4kbMTp+4nzsYUYlLoEoppOQMJmeAyY5nGqcTaMigrvKMuVxlninweL
+         l3n3Ek3RRyyN+KayXs4LJes9FsvMJ+yTZKfVHpX+kgZDr4Ly7k/4MgePLmVUR79RU6kb
+         hLTGAanv9LelBrUbiDS9ml2l/ObuOkT+14nxiG72KOyJsLURsNvk96joa/u/PY60n8/S
+         42IEJXIhkWF9YSBvGZpU+JMieUZm1FuT8Qm4PbSFSyOnGpOXDvvesOz8UBATKvY2e6qG
+         f33y+SosVk1LprD79TslMQlrQ7aKXjsh82FjMWH1eaKl76KMCmD8SgJzjgTqVsLhV433
+         fWqw==
+X-Gm-Message-State: AC+VfDy3qdhu6TU6RJHTrbMY+yiq6Za8F2BdEVTz49JsvZV0hPkWq2H7
+        eNczQRw/90SF6ubsMeLfmTYT1g==
+X-Google-Smtp-Source: ACHHUZ6oFMjkpGg3Z5py2n5uUKP5KNrDCFUep2PGo7Un6nXElba8/gyK8xLnukJMUwQI01pTfuwuxA==
+X-Received: by 2002:a17:903:3303:b0:1b8:1591:9f81 with SMTP id jk3-20020a170903330300b001b815919f81mr7969622plb.4.1688002175762;
+        Wed, 28 Jun 2023 18:29:35 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id w23-20020a1709027b9700b001a6d4ea7301sm8211541pll.251.2023.06.28.18.29.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jun 2023 18:29:34 -0700 (PDT)
+Message-ID: <a06a92ed-2b22-94a4-f1df-743303da2f3a@kernel.dk>
+Date:   Wed, 28 Jun 2023 19:29:33 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [GIT PULL] bcachefs
+Content-Language: en-US
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Jens Axboe <axboe@kernel.dk>, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
         Christian Brauner <brauner@kernel.org>,
         Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <ZJzXs6C8G2SL10vq@dread.disaster.area>
-References: <b02657af-5bbb-b46b-cea0-ee89f385f3c1@kernel.dk>
+References: <20230628040114.oz46icbsjpa4egpp@moria.home.lan>
+ <b02657af-5bbb-b46b-cea0-ee89f385f3c1@kernel.dk>
  <4b863e62-4406-53e4-f96a-f4d1daf098ab@kernel.dk>
  <20230628175204.oeek4nnqx7ltlqmg@moria.home.lan>
  <e1570c46-68da-22b7-5322-f34f3c2958d9@kernel.dk>
@@ -74,49 +75,49 @@ References: <b02657af-5bbb-b46b-cea0-ee89f385f3c1@kernel.dk>
  <20230628225514.n3xtlgmjkgapgnrd@moria.home.lan>
  <1e2134f1-f48b-1459-a38e-eac9597cd64a@kernel.dk>
  <20230628235018.ttvtzpfe42fri4yq@moria.home.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From:   Jens Axboe <axboe@kernel.dk>
 In-Reply-To: <20230628235018.ttvtzpfe42fri4yq@moria.home.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 07:50:18PM -0400, Kent Overstreet wrote:
+On 6/28/23 5:50?PM, Kent Overstreet wrote:
 > On Wed, Jun 28, 2023 at 05:14:09PM -0600, Jens Axboe wrote:
-> > On 6/28/23 4:55?PM, Kent Overstreet wrote:
-> > >> But it's not aio (or io_uring or whatever), it's simply the fact that
-> > >> doing an fput() from an exiting task (for example) will end up being
-> > >> done async. And hence waiting for task exits is NOT enough to ensure
-> > >> that all file references have been released.
-> > >>
-> > >> Since there are a variety of other reasons why a mount may be pinned and
-> > >> fail to umount, perhaps it's worth considering that changing this
-> > >> behavior won't buy us that much. Especially since it's been around for
-> > >> more than 10 years:
-> > > 
-> > > Because it seems that before io_uring the race was quite a bit harder to
-> > > hit - I only started seeing it when things started switching over to
-> > > io_uring. generic/388 used to pass reliably for me (pre backpointers),
-> > > now it doesn't.
-> > 
-> > I literally just pasted a script that hits it in one second with aio. So
-> > maybe generic/388 doesn't hit it as easily, but it's surely TRIVIAL to
-> > hit with aio. As demonstrated. The io_uring is not hard to bring into
-> > parity on that front, here's one I posted earlier today for 6.5:
-> > 
-> > https://lore.kernel.org/io-uring/20230628170953.952923-4-axboe@kernel.dk/
-> > 
-> > Doesn't change the fact that you can easily hit this with io_uring or
-> > aio, and probably more things too (didn't look any further). Is it a
-> > realistic thing outside of funky tests? Probably not really, or at least
-> > if those guys hit it they'd probably have the work-around hack in place
-> > in their script already.
-> > 
-> > But the fact is that it's been around for a decade. It's somehow a lot
-> > easier to hit with bcachefs than XFS, which may just be because the
-> > former has a bunch of workers and this may be deferring the delayed fput
-> > work more. Just hand waving.
+>> On 6/28/23 4:55?PM, Kent Overstreet wrote:
+>>>> But it's not aio (or io_uring or whatever), it's simply the fact that
+>>>> doing an fput() from an exiting task (for example) will end up being
+>>>> done async. And hence waiting for task exits is NOT enough to ensure
+>>>> that all file references have been released.
+>>>>
+>>>> Since there are a variety of other reasons why a mount may be pinned and
+>>>> fail to umount, perhaps it's worth considering that changing this
+>>>> behavior won't buy us that much. Especially since it's been around for
+>>>> more than 10 years:
+>>>
+>>> Because it seems that before io_uring the race was quite a bit harder to
+>>> hit - I only started seeing it when things started switching over to
+>>> io_uring. generic/388 used to pass reliably for me (pre backpointers),
+>>> now it doesn't.
+>>
+>> I literally just pasted a script that hits it in one second with aio. So
+>> maybe generic/388 doesn't hit it as easily, but it's surely TRIVIAL to
+>> hit with aio. As demonstrated. The io_uring is not hard to bring into
+>> parity on that front, here's one I posted earlier today for 6.5:
+>>
+>> https://lore.kernel.org/io-uring/20230628170953.952923-4-axboe@kernel.dk/
+>>
+>> Doesn't change the fact that you can easily hit this with io_uring or
+>> aio, and probably more things too (didn't look any further). Is it a
+>> realistic thing outside of funky tests? Probably not really, or at least
+>> if those guys hit it they'd probably have the work-around hack in place
+>> in their script already.
+>>
+>> But the fact is that it's been around for a decade. It's somehow a lot
+>> easier to hit with bcachefs than XFS, which may just be because the
+>> former has a bunch of workers and this may be deferring the delayed fput
+>> work more. Just hand waving.
 > 
 > Not sure what you're arguing here...?
 > 
@@ -125,17 +126,53 @@ On Wed, Jun 28, 2023 at 07:50:18PM -0400, Kent Overstreet wrote:
 > saying is that the existence of that bug previously is not reason to fix
 > it now.
 
-I agree with Kent here  - the kernel bug needs to be fixed
-regardless of how long it has been around. Blaming the messenger
-(userspace, fstests, etc) and saying it should work around a
-spurious, unpredictable, undesirable and user-undebuggable kernel
-behaviour is not an acceptible solution here...
+Not really arguing, just stating that it's not a huge problem as it's
+not something that real world would tend to do and probably why we saw
+it in a test case instead.
 
-I don't care how the kernel bug gets fixed, I just want the spurious
-unmount failures when there are no userspace processes actively
-using the filesytsem to go away forever.
+>>>> then we'd probably want to move that deferred fput list to the
+>>>> task_struct and ensure that it gets run if the task exits rather than
+>>>> have a global deferred list. Currently we have:
+>>>>
+>>>>
+>>>> 1) If kthread or in interrupt
+>>>> 	1a) add to global fput list
+>>>> 2) task_work_add if not. If that fails, goto 1a.
+>>>>
+>>>> which would then become:
+>>>>
+>>>> 1) If kthread or in interrupt
+>>>> 	1a) add to global fput list
+>>>> 2) task_work_add if not. If that fails, we know task is existing. add to
+>>>>    per-task defer list to be run at a convenient time before task has
+>>>>    exited.
+>>>
+>>> no, it becomes:
+>>>  if we're running in a user task, or if we're doing an operation on
+>>>  behalf of a user task, add to the user task's deferred list: otherwise
+>>>  add to global deferred list.
+>>
+>> And how would the "on behalf of a user task" work in terms of being
+>> in_interrupt()?
+> 
+> I don't see any relation to in_interrupt?
 
--Dave.
+Just saying that you'd now need the task passed in.
+
+> We'd have to add a version of fput() that takes an additional
+> task_struct argument, and plumb that through the aio code - kioctx
+> lifetime is tied to mm_struct, not task_struct, so we'd have to add a
+> ref to the task_struct to kiocb.
+> 
+> Which would probably be a good thing tbh, it'd let us e.g. account cpu
+> time back to the original task when kiocb completion has to run out of a
+> workqueue.
+
+Might also introduce some funky dependencies. Probably not an issue it
+tied to the aio_kiocb. If you go ahead with that, just make sure you
+keep the task referencing out of the fput variant for users that don't
+need that.
+
 -- 
-Dave Chinner
-david@fromorbit.com
+Jens Axboe
+
