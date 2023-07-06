@@ -2,89 +2,125 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFD07EB64DC
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  6 Jul 2023 15:21:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71B6FEB64D9
+	for <linux-bcachefs@archiver.kernel.org>; Thu,  6 Jul 2023 15:56:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbjGFPVL (ORCPT
+        id S229734AbjGFP4P (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 6 Jul 2023 11:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
+        Thu, 6 Jul 2023 11:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232174AbjGFPVK (ORCPT
+        with ESMTP id S232809AbjGFP4O (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 6 Jul 2023 11:21:10 -0400
-Received: from out-34.mta0.migadu.com (out-34.mta0.migadu.com [91.218.175.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871E91997
-        for <linux-bcachefs@vger.kernel.org>; Thu,  6 Jul 2023 08:21:07 -0700 (PDT)
-Date:   Thu, 6 Jul 2023 11:20:59 -0400
+        Thu, 6 Jul 2023 11:56:14 -0400
+Received: from out-43.mta1.migadu.com (out-43.mta1.migadu.com [95.215.58.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D343F1BCA
+        for <linux-bcachefs@vger.kernel.org>; Thu,  6 Jul 2023 08:56:11 -0700 (PDT)
+Date:   Thu, 6 Jul 2023 11:56:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1688656865;
+        t=1688658969;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yhAoOQcwd+d4OLL39cP41fnoMThXfUILYjJ33i61aFU=;
-        b=QQmoeKEPL9xuySm8hbfJYwu3y419fER7BZmSfzAqdxmIB0txdzdDY15LCFe/FDNd1lSIVE
-        Q5tHXN+llY0W9YMu9YVO4zj6K4ak8CeYIs2MhtqqnuHv3ExJYR/JUQR42h8qJTnz1LvTVO
-        9znAKCiJI+R2fKeBsRk5IsX2isSOjjM=
+         in-reply-to:in-reply-to; bh=JBjGDA7ydfKolArFlHyoGbaegXA0bjZVgRz3VNxz/Xk=;
+        b=SCusYgRdj8dOs7PArJU2khmgLtU2z17xdTbwxRXF9bWGvdXsJMxXrIvr71ama0A7shFwLo
+        ml/tQuW0nEFdOhQQCvzUJO60SoqXDXllAq7szN03L05GNwuj6gqVlTT8a5YGg+VjfCQmnp
+        RuS9XJc36Nupr2F3e4xmwZ5GXrtaAUg=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Dave Chinner <david@fromorbit.com>,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, djwong@kernel.org,
+        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
+        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
+        jack@suse.cz, andreas.gruenbacher@gmail.com, brauner@kernel.org,
+        peterz@infradead.org, akpm@linux-foundation.org,
+        dhowells@redhat.com
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230706152059.smhy7jdbim4qlr6f@moria.home.lan>
-References: <20230628221342.4j3gr3zscnsu366p@moria.home.lan>
- <d697ec27-8008-2eb6-0950-f612a602dcf5@kernel.dk>
- <20230628225514.n3xtlgmjkgapgnrd@moria.home.lan>
- <1e2134f1-f48b-1459-a38e-eac9597cd64a@kernel.dk>
- <20230628235018.ttvtzpfe42fri4yq@moria.home.lan>
- <ZJzXs6C8G2SL10vq@dread.disaster.area>
- <d6546c44-04db-cbca-1523-a914670a607f@kernel.dk>
- <20230629-fragen-dennoch-fb5265aaba23@brauner>
- <20230629153108.wyn32bvaxmztnakl@moria.home.lan>
- <20230630-aufwiegen-ausrollen-e240052c0aaa@brauner>
+Message-ID: <20230706155602.mnhsylo3pnief2of@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230630-aufwiegen-ausrollen-e240052c0aaa@brauner>
+In-Reply-To: <20230626214656.hcp4puionmtoloat@moria.home.lan>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Fri, Jun 30, 2023 at 11:40:32AM +0200, Christian Brauner wrote:
-> We're all not very impressed with that's going on here. I think everyone
-> has made that pretty clear.
+On Mon, Jun 26, 2023 at 05:47:01PM -0400, Kent Overstreet wrote:
+> Hi Linus,
 > 
-> It's worrying that this reply is so quickly and happily turning to
-> "I'm a real engineer" and "you're confused" tropes and then isn't even
-> making a clear point. Going forward this should stop otherwise I'll
-> cease replying.
->
-> Nothing I said was confused. The discussion was initially trying to fix
-> this in umount and we're not going to fix async aio behavior in umount.
+> Here it is, the bcachefs pull request. For brevity the list of patches
+> below is only the initial part of the series, the non-bcachefs prep
+> patches and the first bcachefs patch, but the diffstat is for the entire
+> series.
+> 
+> Six locks has all the changes you suggested, text size went down
+> significantly. If you'd still like this to see more review from the
+> locking people, I'm not against them living in fs/bcachefs/ as an
+> interim; perhaps Dave could move them back to kernel/locking when he
+> starts using them or when locking people have had time to look at them -
+> I'm just hoping for this to not block the merge.
+> 
+> Recently some people have expressed concerns about "not wanting a repeat
+> of ntfs3" - from what I understand the issue there was just severe
+> buggyness, so perhaps showing the bcachefs automated test results will
+> help with that:
+> 
+>   https://evilpiepirate.org/~testdashboard/ci
+> 
+> The main bcachefs branch runs fstests and my own test suite in several
+> varations, including lockdep+kasan, preempt, and gcov (we're at 82% line
+> coverage); I'm not currently seeing any lockdep or kasan splats (or
+> panics/oopses, for that matter).
+> 
+> (Worth noting the bug causing the most test failures by a wide margin is
+> actually an io_uring bug that causes random umount failures in shutdown
+> tests. Would be great to get that looked at, it doesn't just affect
+> bcachefs).
+> 
+> Regarding feature status - most features are considered stable and ready
+> for use, snapshots and erasure coding are both nearly there. But a
+> filesystem on this scale is a massive project, adequately conveying the
+> status of every feature would take at least a page or two.
+> 
+> We may want to mark it as EXPERIMENTAL for a few releases, I haven't
+> done that as yet. (I wouldn't consider single device without snapshots
+> to be experimental, but - given that the number of users and bug reports
+> is about to shoot up, perhaps I should...).
 
-Christain, why on earth would we be trying to fix this in umount? All
-you posted was a stack trace and something handwavy about how fixing it
-in umount would be hard, and yes it would be! That's crazy!
+Restarting the discussion after the holiday weekend, hoping to get
+something more substantive going:
 
-This is a basic lifetime issue, where we just need to make sure that
-refcounts are getting released at the appropriate place and not being
-delayed for arbitrarily long (i.e. the global delayed fput list, which
-honestly we should probably try to get rid of).
+Hoping to get:
+ - Thoughts from people who have been following bcachefs development,
+   and people who have looked at the code
+ - Continuation of the LSF discussion - maybe some people could repeat
+   here what they said there (re: code review, iomap, etc.)
+ - Any concerns about how this might impact the rest of the kernel, or
+   discussion about what impact merging a new filesystem is likely to
+   have on other people's work
 
-Furthermore, when issues with fput have caused umount to fail in the
-past it's always been considered a bug - see the addition of
-__fput_sync(), if you do some searching you should be able to find
-multiple patches where this has been dealt with.
+AFAIK the only big ask that hasn't happened yet is better documentation:
+David Howells wanted (better) a man page, which is definitely something
+that needs to happen but it'll be some months before I'm back to working
+on documentation - I'm happy to share my current list of priorities if
+that would be helpful.
 
-> My earlier mail clearly said that io_uring can be changed by Jens pretty
-> quickly to not cause such test failures.
+In the meantime, the Latex principles of operation is reasonably up to
+date (and I intend to greatly expand the sections on on disk data
+structures, I think that'll be great reference documentation for
+developers getting up to speed on the code)
 
-Jens posted a fix that didn't actually fix anything, and after that it
-seemed neither of you were interested in actually fixing this. So based
-on that, maybe we need to consider switching fstests back to AIO just so
-we can get work done...
+https://bcachefs.org/bcachefs-principles-of-operation.pdf
+
+I feel that bcachefs is in a pretty mature state at this point, but it's
+also _huge_, which is a bit different than e.g. the btrfs merger; it's
+hard to know where to start to get a meaninful discussion/review process
+going.
+
+Patch bombing the mailing list with 90k loc is clearly not going to be
+productive, which is why I've been trying to talk more about development
+process and status - but all suggestions and feedback are welcome.
+
+Cheers,
+Kent
