@@ -2,33 +2,45 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 046DAEB64DC
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  6 Jul 2023 17:38:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6C56EB64DC
+	for <linux-bcachefs@archiver.kernel.org>; Thu,  6 Jul 2023 19:17:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbjGFRij (ORCPT
+        id S229650AbjGFTRd (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 6 Jul 2023 13:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
+        Thu, 6 Jul 2023 15:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbjGFRih (ORCPT
+        with ESMTP id S229609AbjGFTRc (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 6 Jul 2023 13:38:37 -0400
-Received: from out-34.mta1.migadu.com (out-34.mta1.migadu.com [IPv6:2001:41d0:203:375::22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D0A10EA
-        for <linux-bcachefs@vger.kernel.org>; Thu,  6 Jul 2023 10:38:27 -0700 (PDT)
-Date:   Thu, 6 Jul 2023 13:38:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1688665105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YPOKcZwXrZbw7hcE8OABRQeVGx3tlFUEMhTgtxl1zww=;
-        b=PRkVlUje55bqODzIVgfQeS/9G5yvL6GJDElbJjHLC919HcwjlzfeEpGTTHmvpOzK1ekEDS
-        rBUQ9cZiygK9bizbo46Lhp29YC4c5BfGOFst+sv5hG76L1ckgvMRGLsrZbeMqtwdg3H8z0
-        AcD48bA7myiP7KI+k9KDgEiSokHuS+Q=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Josef Bacik <josef@toxicpanda.com>
+        Thu, 6 Jul 2023 15:17:32 -0400
+Received: from sandeen.net (sandeen.net [63.231.237.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6EEC31BD3;
+        Thu,  6 Jul 2023 12:17:31 -0700 (PDT)
+Received: from [10.0.0.71] (liberator.sandeen.net [10.0.0.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by sandeen.net (Postfix) with ESMTPSA id C1A6E4EA2A8;
+        Thu,  6 Jul 2023 14:17:29 -0500 (CDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 sandeen.net C1A6E4EA2A8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandeen.net;
+        s=default; t=1688671049;
+        bh=v4i+72g7D6iVCKKo2ymKFetMv3GnuiL/PAAAefQkWsM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hiKWH+L6yJHx5fVUwoip0hsaDM6VWhtZYBLYtvtqS0ZSOX2FyU7ByhQebtZP5pL5q
+         woycrGQYJZJcOfinUYEI35vyvvoOj3axUDlTdOZsfQjqFED+6pMJnlmyJplY0Uvdl4
+         liWnkn4XjJyqUgqFmrDNw32iBgrGZANTlAnPLtAY45V3GgvbSvbJw22dlo9IV23x54
+         ZuzrKgIZnEsSKts3AQLUVrM3T0AYTz2cUbabIuvVWI92hN/Cn5hKe6cRB9dclyBKNJ
+         cBhdTs/9n+qxbfLgOFlkcjptd5Q49JrZC0SYZyn7j4YRumIIYXo7ma2pF1ISp2Si99
+         JWrvhqLeigZfg==
+Message-ID: <d2a06111-c8c6-cdb6-c8ac-ae7148742786@sandeen.net>
+Date:   Thu, 6 Jul 2023 14:17:29 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [GIT PULL] bcachefs
+Content-Language: en-US
+To:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Josef Bacik <josef@toxicpanda.com>
 Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
         djwong@kernel.org, dchinner@redhat.com, sandeen@redhat.com,
@@ -36,211 +48,42 @@ Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
         jack@suse.cz, andreas.gruenbacher@gmail.com, brauner@kernel.org,
         peterz@infradead.org, akpm@linux-foundation.org,
         dhowells@redhat.com
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230706173819.36c67pf42ba4gmv4@moria.home.lan>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230706155602.mnhsylo3pnief2of@moria.home.lan>
  <20230706164055.GA2306489@perftesting>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230706164055.GA2306489@perftesting>
-X-Migadu-Flow: FLOW_OUT
+ <20230706173819.36c67pf42ba4gmv4@moria.home.lan>
+From:   Eric Sandeen <sandeen@sandeen.net>
+In-Reply-To: <20230706173819.36c67pf42ba4gmv4@moria.home.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, Jul 06, 2023 at 12:40:55PM -0400, Josef Bacik wrote:
-> I've been watching this from the sidelines sort of busy with other things, but I
-> realize that comments I made at LSFMMBPF have been sort of taken as the gospel
-> truth and I want to clear some of that up.
-> 
-> I said this at LSFMMBPF, and I haven't said it on list before so I'll repeat it
-> here.
-> 
-> I'm of the opinion that me and any other outsider reviewing the bcachefs code in
-> bulk is largely useless.  I could probably do things like check for locking
-> stuff and other generic things.
+On 7/6/23 12:38 PM, Kent Overstreet wrote:
+> Right now what I'm hearing, in particular from Redhat, is that they want
+> it upstream in order to commit more resources. Which, I know, is not
+> what kernel people want to hear, but it's the chicken-and-the-egg
+> situation I'm in.
 
-Yeah, agreed. And the generic things - that's what we've got automated
-testing for; there's a reason I've been putting so much effort into
-automated testing over (especially) the past year.
+I need to temper that a little. Folks in and around filesystems and 
+storage at Red Hat find bcachefs to be quite compelling and interesting, 
+and we've spent some resources in the past several months to 
+investigate, test, benchmark, and even do some bugfixing.
 
-> You have patches that are outside of fs/bcachefs.  Get those merged and then do
-> a pull with just fs/bcachefs, because again posting 90k loc is going to be
-> unwieldy and the quality of review just simply will not make a difference.
->
-> Alternatively rework your code to not have any dependencies outside of
-> fs/bcachefs.  This is what btrfs did.  That merge didn't touch anything outside
-> of fs/btrfs.
+Upstream acceptance is going to be a necessary condition for almost any 
+distro to consider shipping or investing significantly in bcachefs. But 
+it's not a given that once it's upstream we'll immediately commit more 
+resources - I just wanted to clarify that.
 
-We've had other people saying, at multiple times in the past, that
-patches that are only needed for bcachefs should be part of the initial
-pull instead of going in separately.
+It is a tough chicken and egg problem to be sure. That said, I think 
+you're right Kent - landing it upstream will quite likely encourage more 
+interest, users, and hopefully developers.
 
-I've already cut down the non-bcachefs pull quite a bit, even to the
-point of making non-ideal engineering choices, and if I have to cut it
-down more it's going to mean more ugly choices.
+Maybe it'd be reasonable to mark bcachefs as EXPERIMENTAL or similar in 
+Kconfig, documentation, and printks - it'd give us options in case it 
+doesn't attract developers and Kent does get hit by a bus or decide to 
+go start a goat farm instead (i.e. in the worst case, it could be 
+yanked, having set expectations.)
 
-> This merge attempt has gone off the rails, for what appears to be a few common
-> things.
-> 
-> 1) The external dependencies.  There's a reason I was really specific about what
-> I said at LSFMMBPF, both this year and in 2022.  Get these patches merged first,
-> the rest will be easier.  You are burning a lot of good will being combative
-> with people over these dependencies.  This is not the hill to die on.  You want
-> bcachefs in the kernel and to get back to bcachefs things.  Make the changes you
-> need to make to get these dependencies in, or simply drop the need for them and
-> come back to it later after bcachefs is merged.
-
-Look, I'm not at all trying to be combative, I'm just trying to push
-things forward.
-
-The one trainwreck-y thread was regarding vmalloc_exec(), and posting
-that patch needed to happen in order to figure out what was even going
-to happen regarding the dynamic codegen going forward. It's been dropped
-from the initial pull, and dynamic codegen is going to wait on a better
-executable memory allocation API.
-
-(and yes, that thread _was_ a trainwreck; it's not good when you have
-maintainers claiming endlessly that something is broken and making
-arguments to authority but _not able to explain why_. The thread on the
-new executable memory allocator still needs something more concrete on
-the issues with speculative execution from Andy or someone else).
-
-Let me just lay out the non-bcachefs dependencies:
-
- - two lockdep patches: these could technically be dropped from the
-   series, but that would mean dropping lockdep support entirely for
-   btree node locks, and even Linus has said we need to get rid of
-   lockdep_no_validate_class so I'm hoping to avoid that.
-
- - six locks: this shouldn't be blocking, we can move them to
-   fs/bcachefs/ if Linus still feels they need more review - but Dave
-   Chinner was wanting them and the locking people disliked exporting
-   osq_lock so that's why I have them in kernel/locking.
-
- - mean_and_variance: this is some statistics library code that computes
-   mean and standard deviation for time samples, both standard and
-   exponentially weighted. Again, bcachefs is the first user so this
-   pull request is the proper place for this code, and I'm intending to
-   convert bcache to this code as well as use it for other kernel wide
-   latency tracking (which I demod at LSF awhile back; I'll be posting
-   it again once code tagging is upstreamed as part of the memory
-   allocation work Suren and I are doing).
-
- - task_struct->faults_disabled_mapping: this adds a task_struct member
-   that makes it possible to do strict page cache coherency.
-
-   This is something I intend to push into the VFS, but it's going to be
-   a big project - it needs a new type of lock (the one in bcachefs is
-   good enough for an initial implementation, but the real version
-   probably needs priority inheritence and other things). In the
-   meantime, I've thoroughly documented what's going on and what the
-   plan is in the commit message.
-
- - d_mark_tmpfile(): trivial new helper, from pulling out part of
-   d_tmpfile(). We need this because bcachefs handles the nlink count
-   for tmpfiles earlier, in the btree transaction.
-
- - copy_folio_from_iter_atomic(): obvious new helper, other filesystems
-   will want this at some point as part of the ongoing folio conversion
-
- - block layer patches: we have
-
-   - new exports: primarily because bcachefs has its own dio path and
-     does not use iomap, also blk_status_to_str() for better error
-     messages
-
-   - bio_iov_iter_get_pages() with bio->bi_bdev unset: bcachefs builds
-     up bios before we know which block device those bios will be
-     issued to.
-
-     There was something thrown out about "bi_bdev being required" - but
-     that doesn't make a lot of sense here. The direction in the block
-     layer back when I made it sane for stacking block drivers - i.e.
-     enabling efficient splitting/cloning of bios - was towards bios
-     being more just simple iterators over a scatter/gather list, and
-     now we've got iov_iter which can point at a bio/bvec array - moving
-     even more in that direction.
-
-     Regardless, this patch is pretty trivial, it's not something that
-     commits us to one particular approach. bio_iov_iter_get_pages() is
-     here trying to return bios that are aligned to the block device's
-     blocksize, but in our case we just want it aligned to the
-     filesystem's blocksize.
-
-   - bring back zero_fill_bio_iter() - I originally wrote this,
-     Christoph deleted it without checking. It's just a more general
-     version of zero_fill_bio().
- 
-   - Don't block on s_umount from __invalidate_super: this is a bugfix
-     for a deadlock in generic/042 because of how we use sget(), the
-     commit message goes into more detail.
-
-     bcachefs doesn't use sget() for mutual exclusion because a) sget()
-     is insane, what we really want is the _block device_ to be opened
-     exclusively (which we do), and we have our own block device opening
-     path - which we need to, as we're a multi device filesystem.
-
- - generic radix tree fixes: this is just fixes for code I already wrote
-   for bcachefs and upstreamed previously, after converting existing
-   users of flex-array.
-
- - move closures to lib/ - this is also code I wrote, now needs to be
-   shared with bcache
-
- - small stuff:
-   - export stack_trace_save_stack() - this is used for displaying stack
-     traces in debugfs
-   - export errname() - better error messages
-   - string_get_size() - change it to return number of characters written
-   - compiler attributes - add __flatten
-
-If there are objections to any of these patches, please _be specific_.
-Please remember that I am also incorporating feedback previous
-discussions, and a generic "these patches need to go in separately" is
-not something I can do anything with, as explained previously.
-
-> 2) We already have recent examples of merge and disappear.  Yes of course you've
-> been around for a long time, you aren't the NTFS developers.  But as you point
-> out it's 90k of code.  When btrfs was merged there were 3 large contributors,
-> Chris, myself, and Yanzheng.  If Chris got hit by a bus we could still drive the
-> project forward.  Can the same be said for bachefs?  I know others have chimed
-> in and done some stuff, but as it's been stated elsewhere it would be good to
-> have somebody else in the MAINTAINERS file with you.
-
-Yes, the bcachefs project needs to grow in terms of developers. The
-unfortunate reality is that right now is a _hard_ time to growing teams
-and budgets in this area; it's been an uphill battle.
-
-You, the btrfs developers, got started when Linux filesystem teams were
-quite a bit bigger than they are now: I was at Google when Google had a
-bunch of people working on ext4, and that was when ZFS had recently come
-out and there was recognition that Linux needed an answer to ZFS and you
-were able to ride that excitement. It's been a bit harder for me to get
-something equally ambitions going, to be honest.
-
-But years ago when I realized I was onto something, I decided this
-project was only going to fail if I let it fail - so I'm in it for the
-long haul.
-
-Right now what I'm hearing, in particular from Redhat, is that they want
-it upstream in order to commit more resources. Which, I know, is not
-what kernel people want to hear, but it's the chicken-and-the-egg
-situation I'm in.
-
-> I am really, really wanting you to succeed here Kent.  If the general consensus
-> is you need to have some idiot review fs/bcachefs I will happily carve out some
-> time and dig in.
-
-That would be much appreciated - I'll owe you some beers next time I see
-you. But before jumping in, let's see if we can get people who have
-already worked with the code to say something.
-
-Something I've done in the past that might be helpful - instead (or in
-addition to) having people read code in isolation, perhaps we could do a
-group call/meeting where people can ask questions about the code, bring
-up design issues they've seen in other filesystems, etc. - I've also
-found that kind of setup great for identifying places in the code where
-additional documentation would be useful.
+-Eric
