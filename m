@@ -2,170 +2,127 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F9F6EB64D9
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  6 Jul 2023 22:43:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A85AEB64D9
+	for <linux-bcachefs@archiver.kernel.org>; Fri,  7 Jul 2023 02:05:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbjGFWnZ (ORCPT
+        id S229815AbjGGCFX (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 6 Jul 2023 18:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
+        Thu, 6 Jul 2023 22:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbjGFWnY (ORCPT
+        with ESMTP id S229575AbjGGCFW (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 6 Jul 2023 18:43:24 -0400
-Received: from out-13.mta0.migadu.com (out-13.mta0.migadu.com [91.218.175.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DBC1725
-        for <linux-bcachefs@vger.kernel.org>; Thu,  6 Jul 2023 15:43:22 -0700 (PDT)
-Date:   Thu, 6 Jul 2023 18:43:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1688683399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RN9DhyE9hPilrdQzGYbv7H2UYstr1uDyg6AicBcRmHs=;
-        b=NI7RxJ/Wjt0r++lVNTpW/4oQxDjn/+R5hOuM1i1Rry5M79vsUj7ch60FYlhy766cI0Sxcs
-        fwTBrI300jaJVFWFGfS5P2WTcVfqV0yy5WZRwXT5cwRj4/XSh44MxmCTQ2b8bRmM++4FPF
-        LT4P5GlpUgwDx5fPb4TD8Q423NPqBHY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     "Darrick J. Wong" <djwong@kernel.org>
+        Thu, 6 Jul 2023 22:05:22 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C3C19B7
+        for <linux-bcachefs@vger.kernel.org>; Thu,  6 Jul 2023 19:05:20 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-26-156-107.bstnma.fios.verizon.net [108.26.156.107])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36724dQa006186
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 6 Jul 2023 22:04:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1688695484; bh=TsNvuPyUlL4Y8qN5hDRwSDMRTqYJrjD+Crx5PjiM7RE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=llAFptV0qus49wG9N9aii4eNOKcqrXwVjpnI1N2cKbafVw4DSo5wumqZHKa8iwbvP
+         8lxGmujROmsufDc364Ddv7gM9ebx71J+3CemcGOFwhyi2nG00fKxuR3Hye3C+EWcBC
+         8H+Yw9vmC6QMwl2CqpcUrn53eNsjmzfxH8RKMAZcRDWmCOkmHzIBPHgWXoIfHN8817
+         V4JXv5mkGrCt+XZmwui2KGFH3fag1jyDyvrL9kkF2ghRnPg6RuvKIAevSTdJI+AH77
+         Vqx4Z4SILF7Oji89JZDoxRBfGfTsgOUOl/BE3hqLVRx1ycLLx2rymWFuLf1uXNHyhX
+         E1QbjSr2iuvmw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 9914215C0294; Thu,  6 Jul 2023 22:04:39 -0400 (EDT)
+Date:   Thu, 6 Jul 2023 22:04:39 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     Josef Bacik <josef@toxicpanda.com>, torvalds@linux-foundation.org,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
-        sandeen@redhat.com, willy@infradead.org, tytso@mit.edu,
+        linux-bcachefs@vger.kernel.org, djwong@kernel.org,
+        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
         bfoster@redhat.com, jack@suse.cz, andreas.gruenbacher@gmail.com,
         brauner@kernel.org, peterz@infradead.org,
         akpm@linux-foundation.org, dhowells@redhat.com
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230706224314.u5zbeld23uqur2ct@moria.home.lan>
+Message-ID: <20230707020439.GM1178919@mit.edu>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230706155602.mnhsylo3pnief2of@moria.home.lan>
  <20230706164055.GA2306489@perftesting>
  <20230706173819.36c67pf42ba4gmv4@moria.home.lan>
- <20230706211914.GB11476@frogsfrogsfrogs>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230706211914.GB11476@frogsfrogsfrogs>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230706173819.36c67pf42ba4gmv4@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, Jul 06, 2023 at 02:19:14PM -0700, Darrick J. Wong wrote:
-> TBH, so long as bcachefs is the only user of sixlocks and mean/variance,
-> I don't really care what's in them, though they probably ought to live
-> in fs/bcachefs/ until a second user arises.
+On Thu, Jul 06, 2023 at 01:38:19PM -0400, Kent Overstreet wrote:
+> You, the btrfs developers, got started when Linux filesystem teams were
+> quite a bit bigger than they are now: I was at Google when Google had a
+> bunch of people working on ext4, and that was when ZFS had recently come
+> out and there was recognition that Linux needed an answer to ZFS and you
+> were able to ride that excitement. It's been a bit harder for me to get
+> something equally ambitions going, to be honest.
 
-I've been waiting for Linus to weigh in on those (and the rest of the
-merge) since he had opinions a few weeks ago, but I have no real
-objection there. I'd need to add an export for osq_lock, that's all.
+Just to set the historical record straight, I think you're mixing up
+two stories here.
 
-> >  - d_mark_tmpfile(): trivial new helper, from pulling out part of
-> >    d_tmpfile(). We need this because bcachefs handles the nlink count
-> >    for tmpfiles earlier, in the btree transaction.
-> 
-> XFS might want this too, we also handle the nlink count for tmpfiles
-> earlier, in a transaction, and end up playing stupid games with the
-> refcount to fit the vfs function:
-> 
-> 	if (tmpfile) {
-> 		/*
-> 		 * The VFS requires that any inode fed to d_tmpfile must
-> 		 * have nlink == 1 so that it can decrement the nlink in
-> 		 * d_tmpfile.  However, we created the temp file with
-> 		 * nlink == 0 because we're not allowed to put an inode
-> 		 * with nlink > 0 on the unlinked list.  Therefore we
-> 		 * have to set nlink to 1 so that d_tmpfile can
-> 		 * immediately set it back to zero.
-> 		 */
-> 		set_nlink(inode, 1);
-> 		d_tmpfile(tmpfile, inode);
-> 	}
+*Btrfs* was started while I was at the IBM Linux Technology Center,
+and it was because there were folks from more than one companies that
+were concerned that there needed to be an answer to ZFS.  IBM hosted
+that meeting, but ultimately, never did contribute any developers to
+the btrfs effort.  That's because IBM had a fairly cold, hard
+examination of what their enterprise customers really wanted, and
+would be willing to pay $$$, and the decision was made at a corporate
+level (higher up than the Linux Technology Center, although I
+participated in the company-wide investigation) that *none* of OS's
+that IBM supported (AIX, zOS, Linux, etc.) needed ZFS-like features,
+because IBM's customers didn't need them.  The vast majority of what
+paying customers' workloads at the time was to run things like
+Websphere, and Oracle and DB/2, and these did not need fancy
+snapshots.  And things like integrity could be provided at other
+layers of the storage stack.
 
-Yeah, that same game would technically work for bcachefs - but I'm
-hoping we can just do the right thing here :)
+As far as Google was concerned, yes, we had several software engineers
+working on ext4, but it had nothing to do with ZFS.  We had a solid
+business case for how replacing ext2 with ext4 (in nojournal mode,
+since the cluster file system handled data integrity and crash
+recovery) would save the company $XXX millions of dollars in storage
+TCO (total cost of ownership) dollars per year.
 
-> >    - Don't block on s_umount from __invalidate_super: this is a bugfix
-> >      for a deadlock in generic/042 because of how we use sget(), the
-> >      commit message goes into more detail.
-> 
-> If this is in reference to the earlier subthread about some io_uring
-> thing causing unmount to hang -- my impressions of that were that yes,
-> it's a bug, but no, it's not a bug in bcachefs itself.  I also wondered
-> why (a) that hadn't split out as its own thread; and (b) is this really
-> a bcachefs blocker?
+In any case, at neither company was a "sense of excitement" something
+which drove the technical decisions.  It was all about Return on
+Investment (ROI).  As such, that's driven my bias towards ext4
+maintenance.
 
-No, this is completely unrelated. The io_uring thing hits on
-generic/388 (and others) and just causes umount to fail with -EBUSY.
-This one is an actual deadlock and it hits every time in generic/042.
-It's specific to the loopback device and when it emits certain events,
-and it hits every time so I really do need this fix included.
+I view part of my job is finding matches between interesting file
+system features that I would find technically interesting, and which
+would benefit the general ext4 user base, and specific business cases
+that would encourage the investment of several developers on file
+system technologies.
 
-> /me shrugs, been on vacation and in hospitals for the last month or so.
-> 
-> >      bcachefs doesn't use sget() for mutual exclusion because a) sget()
-> >      is insane, what we really want is the _block device_ to be opened
-> >      exclusively (which we do), and we have our own block device opening
-> >      path - which we need to, as we're a multi device filesystem.
-> 
-> ...and isn't jan kara already messing with this anyway?
+Things like case insensitive file names, fscrypt, fsverity, etc.,
+where all started *after* I had found a business case that would
+interest one or more companies or divisions inside Google to put
+people on the project.  Smaller projects can get funded on the
+margins, sure.  But for anything big, that might require the focused
+attention of one or more developers for a quarter or more, I generally
+find the business case first, and often, that will inform the
+requirements for the feature.  In other words, not only am I ext4's
+maintainer, I'm also its product manager.
 
-The blkdev_get_handle() patchset? I like that, but I don't think that's
-related - if there's something more related to sget() I haven't seen it
-yet
+Of course, this is not the only way you can drive technology forward.
+For example, at Sun Microsystems, ZFS was driven just by the techies,
+and initially, they hid the fact that the project was taking place,
+not asking the opinion of the finance and sales teams.  And so ZFS had
+quite a lot of very innovative technologies that pushed the industry
+forward, including inspiring btrfs.  Of course, Sun Microsystems
+didn't do all that well financially, until they were forced to sell
+themselves to the highest bidder.  So perhaps, it might be that this
+particular model is one that other companies, including IBM, Red Hat,
+Microsoft, Oracle, Facebook, etc., might choose to avoid emulating.
 
-> OTOH there's so many layers of tiny helper functions and macros that I
-> have a really hard time making sense of all those pre-bcachefs changes.
-> That's why I haven't weighed in.  Given all the weird problems we've had
-> recently with new code colliding badly with under-documented optimized
-> core code, I'm fearful of touching anything.
+Cheers,
 
-??? not sure what you're referring to here, are there specific patches
-or recent issues you're thinking of?
-
-I don't think any of the non-fs/bcachefs/ patches are remotely tricky
-enough for any of this to be a concern.
-
-> > You, the btrfs developers, got started when Linux filesystem teams were
-> > quite a bit bigger than they are now: I was at Google when Google had a
-> > bunch of people working on ext4, and that was when ZFS had recently come
-> > out and there was recognition that Linux needed an answer to ZFS and you
-> > were able to ride that excitement. It's been a bit harder for me to get
-> > something equally ambitions going, to be honest.
-> > 
-> > But years ago when I realized I was onto something, I decided this
-> > project was only going to fail if I let it fail - so I'm in it for the
-> > long haul.
-> > 
-> > Right now what I'm hearing, in particular from Redhat, is that they want
-> > it upstream in order to commit more resources. Which, I know, is not
-> > what kernel people want to hear, but it's the chicken-and-the-egg
-> > situation I'm in.
-> 
-> /me suspects mainline merging is necessary but not sufficient -- few
-> non-developers want to deal with merging an out of tree filesystem, but
-> that still doesn't mean anyone will commit real engineering resources.
-
-Yeah, no doubt it will continue to be an uphill battle. But it's a
-necessary step in the right direction, for sure.
-
-> > > I am really, really wanting you to succeed here Kent.  If the general consensus
-> > > is you need to have some idiot review fs/bcachefs I will happily carve out some
-> > > time and dig in.
-> > 
-> > That would be much appreciated - I'll owe you some beers next time I see
-> > you. But before jumping in, let's see if we can get people who have
-> > already worked with the code to say something.
-> > 
-> > Something I've done in the past that might be helpful - instead (or in
-> > addition to) having people read code in isolation, perhaps we could do a
-> > group call/meeting where people can ask questions about the code, bring
-> > up design issues they've seen in other filesystems, etc. - I've also
-> > found that kind of setup great for identifying places in the code where
-> > additional documentation would be useful.
-> 
-> "At this point I think Kent's QA efforts are at least as good as XFS's,
-> just merge it and let's move on to the next thing."
-
-high praise :)
+					- Ted
