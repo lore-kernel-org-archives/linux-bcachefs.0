@@ -2,42 +2,34 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2D4AEB64D9
-	for <linux-bcachefs@archiver.kernel.org>; Fri,  7 Jul 2023 08:49:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F254DEB64DA
+	for <linux-bcachefs@archiver.kernel.org>; Fri,  7 Jul 2023 09:18:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbjGGItE (ORCPT
+        id S232691AbjGGJSY (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 7 Jul 2023 04:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36478 "EHLO
+        Fri, 7 Jul 2023 05:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbjGGItD (ORCPT
+        with ESMTP id S232501AbjGGJSX (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 7 Jul 2023 04:49:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDEB01FCE;
-        Fri,  7 Jul 2023 01:49:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7B05861886;
-        Fri,  7 Jul 2023 08:49:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E626C433C7;
-        Fri,  7 Jul 2023 08:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688719741;
-        bh=Bp2gaXLnBG1Um7uLrVB3bxxujt1nzvLgFiFXO/CIaEI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rpsPBAogvfSbhngrpmukMVPwKoK7n+8X7JvrClKP6i0saGW36EMdUA5w6QfP5OS6m
-         xeL73Q+Kde5MB7YwNzh68pild7+eAGGaNUpA03Jx8zP2lcAGuG4NF+R0M95zhoMiZm
-         hd4oB11ck7SeWHlbC7fRdwyTQxn8pp8bTVT8J7JR6oNhEi2d97Wvm882bSqalkgdrr
-         ygCpNvs49SeddLushl1skZTkVemYfw6zMFRZ+iezI1DwDiuIfUJnoi5RkRfcGa/6AN
-         Nuy9Kt/iCxCoDtQcvuz/rN4UunXXi/P4lkr5KvZg+2gIFYji9Fsm/zQyFD7PESKGyq
-         5IFMjd1qotnTQ==
-Date:   Fri, 7 Jul 2023 10:48:55 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Fri, 7 Jul 2023 05:18:23 -0400
+Received: from out-12.mta0.migadu.com (out-12.mta0.migadu.com [91.218.175.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA931FEE
+        for <linux-bcachefs@vger.kernel.org>; Fri,  7 Jul 2023 02:18:20 -0700 (PDT)
+Date:   Fri, 7 Jul 2023 05:18:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1688721498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UBtSAf9M3yHlwuCRGGEsx8Cg1RJFv64iXVl/BM8QpOE=;
+        b=EeTSjl43WDyruqd7JEj/Zj/qAlPNIONzqHAnZR0eyeXoMZsId44d9/5+KsrD1ObzHR5cSl
+        4+5RzTdhNFzB1JZYhBoFbq4e/FoSdzUphgS6BMh9t4exsIw1XKVnzZt8RPEgDgH42geomZ
+        QRRXu12CM7rh2GX8jfuAyq1TPrTRxhI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
         Josef Bacik <josef@toxicpanda.com>,
         torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
@@ -46,38 +38,80 @@ Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
         andreas.gruenbacher@gmail.com, peterz@infradead.org,
         akpm@linux-foundation.org, dhowells@redhat.com
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230707-badeverbot-gekettet-19ce3c238dac@brauner>
+Message-ID: <20230707091810.bamrvzcif7ncng46@moria.home.lan>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230706155602.mnhsylo3pnief2of@moria.home.lan>
  <20230706164055.GA2306489@perftesting>
  <20230706173819.36c67pf42ba4gmv4@moria.home.lan>
  <20230706211914.GB11476@frogsfrogsfrogs>
+ <20230707-badeverbot-gekettet-19ce3c238dac@brauner>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230706211914.GB11476@frogsfrogsfrogs>
+In-Reply-To: <20230707-badeverbot-gekettet-19ce3c238dac@brauner>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-> just merge it and let's move on to the next thing."
+On Fri, Jul 07, 2023 at 10:48:55AM +0200, Christian Brauner wrote:
+> > just merge it and let's move on to the next thing."
+> 
+> "and let the block and vfs maintainers and developers deal with the fallout"
+> 
+> is how that reads to others that deal with 65+ filesystems and counting.
+> 
+> The offlist thread that was started by Kent before this pr was sent has
+> seen people try to outline calmly what problems they currently still
+> have both maintenance wise and upstreaming wise. And it seems there's
+> just no way this can go over calmly but instead requires massive amounts
+> of defensive pushback and grandstanding.
+> 
+> Our main task here is to consider the concerns of people that constantly
+> review and rework massive amounts of generic code. And I can't in good
+> conscience see their concerns dismissed with snappy quotes.
+> 
+> I understand the impatience, I understand the excitement, I really do.
+> But not in this way where core people just drop off because they don't
+> want to deal with this anymore.
+> 
+> I've spent enough time on this thread.
 
-"and let the block and vfs maintainers and developers deal with the fallout"
+Christain, the hostility I'm reading is in your steady passive
+aggressive accusations, and your patronizing attitude. It's not
+professional, and it's not called for.
 
-is how that reads to others that deal with 65+ filesystems and counting.
+Can we please try to stay focused on the code, and the process, and the
+_actual_ concerns?
 
-The offlist thread that was started by Kent before this pr was sent has
-seen people try to outline calmly what problems they currently still
-have both maintenance wise and upstreaming wise. And it seems there's
-just no way this can go over calmly but instead requires massive amounts
-of defensive pushback and grandstanding.
+In that offlist thread, I don't recall much in the way of actual,
+concrete concerns. I do recall Christoph doing his usual schpiel; and to
+be clear, I cut short my interactions with Christoph because in nearly
+15 years of kernel development he's never been anything but hostile to
+anything I've posted, and the criticisms he posts tend to be vague and
+unaware of the surrounding discussion, not anything actionable.
 
-Our main task here is to consider the concerns of people that constantly
-review and rework massive amounts of generic code. And I can't in good
-conscience see their concerns dismissed with snappy quotes.
+The most concrete concern from you in that offlist thread was "we don't
+want a repeat of ntfs", and when I asked you to elaborate you never
+responded.
 
-I understand the impatience, I understand the excitement, I really do.
-But not in this way where core people just drop off because they don't
-want to deal with this anymore.
+Huh.
 
-I've spent enough time on this thread.
+And: this pull request is not some sudden thing, I have been steadily
+feeding prep work patches in and having ongoing discussions with other
+filesystem people, including presenting at LSF to gather feedback, since
+_well_ before you were the VFS maintainer.
+
+If you have anything concrete to share, any concrete concerns you'd like
+addressed - please share them! I'd love to work with you.
+
+I don't want the two of us to have a hostile, adversarial relationship;
+I appreciate the work you've been doing in the vfs, and I've told you
+that in the past.
+
+But it would help things if you would try to work with me, not against
+me, and try to understand that there's been past discussions and
+consensus that was built before you came along.
+
+Cheers,
+Kent
