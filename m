@@ -2,45 +2,52 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D12DEB64DC
-	for <linux-bcachefs@archiver.kernel.org>; Sat,  8 Jul 2023 04:31:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FEB8EB64DA
+	for <linux-bcachefs@archiver.kernel.org>; Sat,  8 Jul 2023 15:03:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbjGHEbr (ORCPT
+        id S231335AbjGHPDk (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sat, 8 Jul 2023 00:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35884 "EHLO
+        Sat, 8 Jul 2023 11:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232181AbjGHEbq (ORCPT
+        with ESMTP id S230040AbjGHPDh (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sat, 8 Jul 2023 00:31:46 -0400
-Received: from out-10.mta1.migadu.com (out-10.mta1.migadu.com [IPv6:2001:41d0:203:375::a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C1C1FEA
-        for <linux-bcachefs@vger.kernel.org>; Fri,  7 Jul 2023 21:31:42 -0700 (PDT)
-Date:   Sat, 8 Jul 2023 00:31:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1688790701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MPVT67gN7ujA4VBNbmeWyGDovqohI1BOlI1/KLrNAYc=;
-        b=AugBxODy4XO+i5cEvKSEgmKRdOkEPAC475o9lFSsYGCgHzFqs5SZZ5xK9iXAItWjtsSJ9m
-        1T/QAzs2ji9X9+JpW9lnEqR9Nxacz0AnWLIze+9Zher2QtyR5MxXLQl2n9kP6cP7HQaZ7w
-        oErGZkxYp7U0dCAobi9K9B8mUxkT8y4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Sat, 8 Jul 2023 11:03:37 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A411FD9
+        for <linux-bcachefs@vger.kernel.org>; Sat,  8 Jul 2023 08:03:34 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-108-20-43-41.bstnma.fios.verizon.net [108.20.43.41])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 368F2oDH012499
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 8 Jul 2023 11:02:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1688828573; bh=s/ufTIvKew3KioKNVyg2UQzBrfALqHUfjES5Kq9/AZI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=b9gouVI84+rzgMfB1n/SAVxyHOS4azQtXTf1FGYOj4HaXIOk4+LD2xqQyF3BytTUi
+         kWlrn8Az+nlm6mfLjKCT11WsVZUmKAUp5PKALZalzCWib6Y5ugymFoIpUX7VwBBmrb
+         5eshRO9DFgc36A0pWpQyoBYNR1WlJG/JKEIqfaIaOCQTOrX6rUAn4dxkTtSslFpLNO
+         oUSkLXeitgD8lMy3p5sZ2y20ljh9URyckAwlZCg0kNwiHVqIfx51f4sNFstVX2AqhS
+         QDUE6rHWkKceQkQADBYmgdxhoXAj1eAjoFceBv52RIMAWmQa7yGhJzcgxE8Ci7c5wh
+         DoTFSaG5MakSg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id E5DCA15C027F; Sat,  8 Jul 2023 11:02:49 -0400 (EDT)
+Date:   Sat, 8 Jul 2023 11:02:49 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
         Christian Brauner <brauner@kernel.org>,
         "Darrick J. Wong" <djwong@kernel.org>,
         Josef Bacik <josef@toxicpanda.com>,
         torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        dchinner@redhat.com, sandeen@redhat.com, tytso@mit.edu,
-        bfoster@redhat.com, jack@suse.cz, andreas.gruenbacher@gmail.com,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        dhowells@redhat.com
+        dchinner@redhat.com, sandeen@redhat.com, bfoster@redhat.com,
+        jack@suse.cz, andreas.gruenbacher@gmail.com, peterz@infradead.org,
+        akpm@linux-foundation.org, dhowells@redhat.com
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230708043136.xj4u7mhklpblomqd@moria.home.lan>
+Message-ID: <20230708150249.GO1178919@mit.edu>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230706155602.mnhsylo3pnief2of@moria.home.lan>
  <20230706164055.GA2306489@perftesting>
@@ -50,55 +57,35 @@ References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230707091810.bamrvzcif7ncng46@moria.home.lan>
  <30661670c55601ff475f2f0698c2be2958e45c38.camel@HansenPartnership.com>
  <ZKjd7nQxvzRDA2tK@casper.infradead.org>
+ <20230708043136.xj4u7mhklpblomqd@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZKjd7nQxvzRDA2tK@casper.infradead.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230708043136.xj4u7mhklpblomqd@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Sat, Jul 08, 2023 at 04:54:22AM +0100, Matthew Wilcox wrote:
-> On Fri, Jul 07, 2023 at 12:26:19PM -0400, James Bottomley wrote:
-> > On Fri, 2023-07-07 at 05:18 -0400, Kent Overstreet wrote:
-> > > Christain, the hostility I'm reading is in your steady passive
-> > > aggressive accusations, and your patronizing attitude. It's not
-> > > professional, and it's not called for.
-> > 
-> > Can you not see that saying this is a huge red flag?  With you every
-> > disagreement becomes, as Josef said, "a hill to die on" and you then
-> > feel entitled to indulge in ad hominem attacks, like this, or be
-> > dismissive or try to bury whoever raised the objection in technical
-> > minutiae in the hope you can demonstrate you have a better grasp of the
-> > details than they do and therefore their observation shouldn't count.
-> > 
-> > One of a maintainer's jobs is to nurture and build a community and
-> > that's especially important at the inclusion of a new feature.  What
-> > we've seen from you implies you'd build a community of little Kents
-> > (basically an echo chamber of people who agree with you) and use them
-> > as a platform to attack any area of the kernel you didn't agree with
-> > technically (which, apparently, would be most of block and vfs with a
-> > bit of mm thrown in), leading to huge divisions and infighting.  Anyone
-> > who had the slightest disagreement with you would be out and would
-> > likely behave in the same way you do now leading to internal community
-> > schisms and more fighting on the lists.
-> > 
-> > We've spent years trying to improve the lists and make the community
-> > welcoming.  However technically brilliant a new feature is, it can't
-> > come with this sort of potential for community and reputational damage.
+On Sat, Jul 08, 2023 at 12:31:36AM -0400, Kent Overstreet wrote:
 > 
-> I don't think the lists are any better, tbh.  Yes, the LF has done a great
-> job of telling people not to use "bad words" any more.  But people are
-> still arseholes to each other.  They're just more subtle about it now.
-> I'm not going to enumerate the ways because that's pointless.
+> I've long thought a more useful CoC would start with "always try to
+> continue the technical conversation in good faith, always try to build
+> off of what other people are saying; don't shut people down".
 
-I've long thought a more useful CoC would start with "always try to
-continue the technical conversation in good faith, always try to build
-off of what other people are saying; don't shut people down".
+Kent, with all due respect, do you not always follow your suggested
+formulation that you've stated above.  That is to say, you do not
+always assume that your conversational partner is trying to raise
+objections in good faith.  You also want to assume that you are the
+smartest person in the room, and if they object, they are Obviously
+Wrong.
 
-The work we do has real consequences. There are consequences for the
-people doing the work, and consequences for the people that use our work
-if we screw things up. Things are bound to get heated at times; that's
-expected, and it's ok - as long as we can remember to keep doing the
-work and pushing forward.
+As a result, it's not pleasant to have a technical conversation with
+you, and as others have said, when someone like Christian Brauner has
+decided that it's too frustating to continue with the thread, given my
+observations of his past interaction with a wide variety of people,
+including some folks who have been traditionally regarded as
+"difficult to work with", it's a real red flag.
+
+Regards,
+
+					- Ted
