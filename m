@@ -2,37 +2,40 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 988AEEB64DC
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBF29C0015E
 	for <linux-bcachefs@archiver.kernel.org>; Sun,  9 Jul 2023 17:16:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjGIRQG (ORCPT
+        id S230059AbjGIRQH (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 9 Jul 2023 13:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
+        Sun, 9 Jul 2023 13:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbjGIRQF (ORCPT
+        with ESMTP id S230164AbjGIRQF (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
         Sun, 9 Jul 2023 13:16:05 -0400
-Received: from out-61.mta0.migadu.com (out-61.mta0.migadu.com [IPv6:2001:41d0:1004:224b::3d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4F1F1
+Received: from out-8.mta0.migadu.com (out-8.mta0.migadu.com [91.218.175.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABAD126
         for <linux-bcachefs@vger.kernel.org>; Sun,  9 Jul 2023 10:16:01 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1688922959;
+        t=1688922960;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vo2NIHEjCdxP40GfjJPA4gK4qKtEHvX85Kd+95c7OG4=;
-        b=UgwHnRab3FAsKG3pnr3I4YYEirQq/o10K1U4lG1pULybhwOMnQqHfeWlihkG+6SSATD6E9
-        dxye16mnBNuZAeU2PcZDKgmRWiA7rRziP5Xslpqy6mzqG/jsA2QnvlJul6qeTn4/wlwli8
-        hDM5Pp+Obf97IXX7oLzZKlxuFC3ITVc=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ehKjqP+Yw877r6G70PMQDXue0TeXuJdQJdRFrHi5onQ=;
+        b=jiu6LgSfEylFKydowMW1mWZ8enAp8UUFgAGGsl06MlfkGKe7iqT9DDvLCtFnp4TZ86pznz
+        Cz2W509Jgv8cqeAOzp4xuQq2T6gPOv29sOd8renPt4mSwVPikFKyl2hRJ2YlVHkJflLT8q
+        OsVzTMgo2btRKy9qP/ELkWnjCEEgRrU=
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     linux-bcachefs@vger.kernel.org
 Cc:     Kent Overstreet <kent.overstreet@linux.dev>, bfoster@redhat.com,
         sandeen@redhat.com
-Subject: [PATCH 00/10] bcachefs - semvar, forward compatibility
-Date:   Sun,  9 Jul 2023 13:15:41 -0400
-Message-Id: <20230709171551.2349961-1-kent.overstreet@linux.dev>
+Subject: [PATCH 01/10] bcachefs: Allow for unknown btree IDs
+Date:   Sun,  9 Jul 2023 13:15:42 -0400
+Message-Id: <20230709171551.2349961-2-kent.overstreet@linux.dev>
+In-Reply-To: <20230709171551.2349961-1-kent.overstreet@linux.dev>
+References: <20230709171551.2349961-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -40,186 +43,414 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-So - in the upstreaming discussion, Brian mentioned code review, so now
-seems like a good time to start making sure bcachefs patches hit the
-list.
+We need to allow filesystems with metadata from newer versions to be
+mountable and usable by older versions.
 
-In the last cabal meeting, we started talking about on disk
-compatibility issues for mainlining. Since (IIRC) the first release,
-we've maintained backwards compatibility (support for very old versions
-has been dropped, but there's always been an upgrade path) - but we
-generally haven't been addressing forwards compatibility yet - we've
-been doing a lot of forced incompatible version upgrades, where the old
-version is no longer able to mount the filesystem after it's been
-mounted by the new version.
+This patch enables us to roll out new btrees without a new major version
+number; we can now handle btree roots for unknown btree types.
 
-Obviously, we can't do that anymore after we're in mainline and out of
-EXPERIMENTAL. There were two main issues to address:
+The unknown btree roots will be retained, and fsck (including
+backpointers) will check them, the same as other btree types.
 
-Major/minor version numbers
----------------------------
+We add a dynamic array for the extra, unknown btree roots, in addition
+to the fixed size btree root array, and add new helpers for looking up
+btree roots.
 
-bcachefs started out with the traditional compatible/incompatible
-feature bits in the superblock, but they are no longer my preferred
-approach.
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/backpointers.c          | 14 ++++++++------
+ fs/bcachefs/bcachefs.h              |  3 ++-
+ fs/bcachefs/btree_cache.c           | 21 +++++++++++++--------
+ fs/bcachefs/btree_cache.h           | 22 +++++++++++++++++++++-
+ fs/bcachefs/btree_gc.c              | 22 ++++++++++++++++++----
+ fs/bcachefs/btree_io.c              |  2 +-
+ fs/bcachefs/btree_iter.c            |  4 ++--
+ fs/bcachefs/btree_update_interior.c | 18 +++++++++---------
+ fs/bcachefs/move.c                  | 10 ++++++++--
+ fs/bcachefs/recovery.c              | 16 ++++++++--------
+ fs/bcachefs/super.c                 |  1 +
+ 11 files changed, 91 insertions(+), 42 deletions(-)
 
-The problem with feature bits is that there was an ordering in which new
-on disk format features were released, and feature bits lose that
-ordering: they make it possible for users to create filesystems where x,
-y, and z modern feature bits are enabled, but not feature bit a from 5
-years ago - and the code was never written to expect that and you
-certainly never tested that configuration, so things break in incredibly
-fun ways.
-
-Assigning every new on disk feature a distinct version number instead of
-a feature bit preserves this ordering and makes it impossible for users
-to create or use filesystems with features selected that historically
-should not have existed. This has been the practice in bcachefs for
-awhile now, and I've been quite happy with it.
-
-The missing bit that this patch series adds is to split the version
-number field into major and minor versions. Incrementing the minor
-version number corresponds to adding a new compat feature flag, if we
-were using feature bits: incrementing the major version number
-corresponds to adding a new incompatible feature bit.
-
-IOW, we'll allow mounting a filesystem with a version number greater
-than the currently supported version as long as the major version number
-is the same. As with compat feature bits, if you do so the filesystem
-will be downgraded to the currently supported version, indicating those
-new on disk structures may now be inconsistent.
-
-Forwards compatibility of on disk structures:
----------------------------------------------
-
-We need to be able to roll out new on disk data structures without
-causing problems for old versions - old versions should just ignore
-metadata they don't understand. This had been planned for in the past
-and most of the work was done, so there wasn't much left.
-
-Specifically, we need to be able to roll out new
- - Superblock sections: already handled, audited and cleaned up a bit
- - Journal entry types: already handled, audited
- - Btrees: addressed by this patchset
- - Bkey types: addressed by this patchset
- - New fields for existing bkeys: addressed by the patch series that
-   introduced "bch2_bkey_get_val_typed()", but this is the trickiest to
-   handle and likely more work will be required
-
-With all this in place, we'll be able to roll out most of the new
-features we want that require new on disk data structures as forwards
-compatible changes, including everything currently in the pipeline. That
-includes
-
- - Snapshot nodes are gaining skiplist entries soon: this will fix O(n)
-   issues with bch2_snapshot_is_ancestor()
-
- - rebalance_work btree: Rebalance is the last operation that happens
-   during normal operation that requires metadata scanning - soon I'll
-   be adding a rebalance_work btree that references extents that
-   rebalance will have work to do on in the future (e.g. for the
-   background_compression or background_target io options). 
-
- - inodes_deleted btree: After unclean shutdown we still have to scan
-   the entire inodes btree for deleted inodes, I'll be adding another
-   bitset btree to address this - and also adding a tmpdir feature as
-   well.
-
-Things that will require incompatible changes:
-
- - New key types that replace existing key types, or in general new data
-   structures that replace existing data structures
-
-   Where we can maintain both the old and new data structures this isn't
-   a problem - e.g. we can roll out a new bch_sb_members_v2 superblock
-   section and just also keep writing out bch_sb_members for old
-   versions to use; but we won't be able to roll out e.g. a new extent
-   key type without an incompatible change.
-
- - New btree node header/journal entry headers - we'd like bigger
-   nonces, so this will need to happen eventually
-
- - New extent_entry types: this one is a bit unfortunate, because
-   extents contain a list of variable size fields (e.g. ptrs, different
-   sized crc entries) and the entries themselves don't specify their
-   size - the code that's reading it has to know how big every extent
-   entry type is.
-
-   This just came up with rebalance_work - rebalance_work needs a new
-   extent entry type, so I rolled that out ahead of time so we can roll
-   out the rest of the functionality as a compatible change.
-
-Forced version upgrades:
-------------------------
-
-Going forward, we will still be doing forced version upgrades for awhile
-- but only to forwards-compatible versions. After the next incompatible
-(version 2.0) release, we likely won't be doing forced version upgrades
-at all anymore.
-
-Currently, version upgrades generally require a fsck. Another thing this
-patchset addresses is enumerating all our recovery (including version
-upgrade and fsck passes); this will let us specify "upgrading to this
-version only requires this pass to run".
-
-Kent Overstreet (10):
-  bcachefs: Allow for unknown btree IDs
-  bcachefs: Allow for unknown key types
-  bcachefs: Refactor bch_sb_field_ops handling
-  bcachefs: Change check for invalid key types
-  bcachefs: BCH_SB_VERSION_UPGRADE_COMPLETE()
-  bcachefs: version_upgrade is now an enum
-  bcachefs: Kill bch2_bucket_gens_read()
-  bcachefs: Stash journal replay params in bch_fs
-  bcachefs: Enumerate recovery passes
-  bcachefs: bcachefs_metadata_version_major_minor
-
- fs/bcachefs/alloc_background.c      | 129 +++++-----
- fs/bcachefs/alloc_background.h      |  18 +-
- fs/bcachefs/alloc_foreground.c      |   9 +-
- fs/bcachefs/backpointers.c          |  23 +-
- fs/bcachefs/backpointers.h          |   2 +-
- fs/bcachefs/bcachefs.h              |  62 ++++-
- fs/bcachefs/bcachefs_format.h       |  63 +++--
- fs/bcachefs/bkey_methods.c          |  81 ++++---
- fs/bcachefs/bkey_methods.h          |  20 +-
- fs/bcachefs/btree_cache.c           |  23 +-
- fs/bcachefs/btree_cache.h           |  22 +-
- fs/bcachefs/btree_gc.c              |  26 +-
- fs/bcachefs/btree_io.c              |   9 +-
- fs/bcachefs/btree_iter.c            |   4 +-
- fs/bcachefs/btree_update_interior.c |  18 +-
- fs/bcachefs/btree_update_leaf.c     |  17 +-
- fs/bcachefs/dirent.c                |   3 +-
- fs/bcachefs/dirent.h                |   4 +-
- fs/bcachefs/ec.c                    |   3 +-
- fs/bcachefs/ec.h                    |   4 +-
- fs/bcachefs/extents.c               |  12 +-
- fs/bcachefs/extents.h               |   9 +-
- fs/bcachefs/fsck.c                  |  77 +-----
- fs/bcachefs/fsck.h                  |  10 +-
- fs/bcachefs/inode.c                 |  12 +-
- fs/bcachefs/inode.h                 |  12 +-
- fs/bcachefs/journal_io.c            |  15 +-
- fs/bcachefs/lru.c                   |   3 +-
- fs/bcachefs/lru.h                   |   3 +-
- fs/bcachefs/move.c                  |  10 +-
- fs/bcachefs/opts.c                  |   5 +
- fs/bcachefs/opts.h                  |   5 +-
- fs/bcachefs/quota.c                 |   3 +-
- fs/bcachefs/quota.h                 |   4 +-
- fs/bcachefs/recovery.c              | 353 ++++++++++++++--------------
- fs/bcachefs/reflink.c               |   9 +-
- fs/bcachefs/reflink.h               |   8 +-
- fs/bcachefs/subvolume.c             |  16 +-
- fs/bcachefs/subvolume.h             |  14 +-
- fs/bcachefs/super-io.c              |  91 +++++--
- fs/bcachefs/super-io.h              |   3 +-
- fs/bcachefs/super.c                 |   1 +
- fs/bcachefs/xattr.c                 |   3 +-
- fs/bcachefs/xattr.h                 |   3 +-
- 44 files changed, 700 insertions(+), 521 deletions(-)
-
+diff --git a/fs/bcachefs/backpointers.c b/fs/bcachefs/backpointers.c
+index 8d0f831550..760c4cc16a 100644
+--- a/fs/bcachefs/backpointers.c
++++ b/fs/bcachefs/backpointers.c
+@@ -272,6 +272,7 @@ struct bkey_s_c bch2_backpointer_get_key(struct btree_trans *trans,
+ 					 unsigned iter_flags)
+ {
+ 	struct bch_fs *c = trans->c;
++	struct btree_root *r = bch2_btree_id_root(c, bp.btree_id);
+ 	struct bpos bucket = bp_pos_to_bucket(c, bp_pos);
+ 	struct bkey_s_c k;
+ 
+@@ -279,7 +280,7 @@ struct bkey_s_c bch2_backpointer_get_key(struct btree_trans *trans,
+ 				  bp.btree_id,
+ 				  bp.pos,
+ 				  0,
+-				  min(bp.level, c->btree_roots[bp.btree_id].level),
++				  min(bp.level, r->level),
+ 				  iter_flags);
+ 	k = bch2_btree_iter_peek_slot(iter);
+ 	if (bkey_err(k)) {
+@@ -287,8 +288,8 @@ struct bkey_s_c bch2_backpointer_get_key(struct btree_trans *trans,
+ 		return k;
+ 	}
+ 
+-	if (bp.level == c->btree_roots[bp.btree_id].level + 1)
+-		k = bkey_i_to_s_c(&c->btree_roots[bp.btree_id].key);
++	if (bp.level == r->level + 1)
++		k = bkey_i_to_s_c(&r->key);
+ 
+ 	if (k.k && extent_matches_bp(c, bp.btree_id, bp.level, k, bucket, bp))
+ 		return k;
+@@ -531,6 +532,7 @@ static int check_btree_root_to_backpointers(struct btree_trans *trans,
+ 					    struct bpos_level *last_flushed)
+ {
+ 	struct bch_fs *c = trans->c;
++	struct btree_root *r = bch2_btree_id_root(c, btree_id);
+ 	struct btree_iter iter;
+ 	struct btree *b;
+ 	struct bkey_s_c k;
+@@ -539,8 +541,7 @@ static int check_btree_root_to_backpointers(struct btree_trans *trans,
+ 	const union bch_extent_entry *entry;
+ 	int ret;
+ 
+-	bch2_trans_node_iter_init(trans, &iter, btree_id, POS_MIN, 0,
+-				  c->btree_roots[btree_id].level, 0);
++	bch2_trans_node_iter_init(trans, &iter, btree_id, POS_MIN, 0, r->level, 0);
+ 	b = bch2_btree_iter_peek_node(&iter);
+ 	ret = PTR_ERR_OR_ZERO(b);
+ 	if (ret)
+@@ -640,12 +641,13 @@ static int bch2_check_extents_to_backpointers_pass(struct btree_trans *trans,
+ 						   struct bpos bucket_start,
+ 						   struct bpos bucket_end)
+ {
++	struct bch_fs *c = trans->c;
+ 	struct btree_iter iter;
+ 	enum btree_id btree_id;
+ 	struct bpos_level last_flushed = { UINT_MAX };
+ 	int ret = 0;
+ 
+-	for (btree_id = 0; btree_id < BTREE_ID_NR; btree_id++) {
++	for (btree_id = 0; btree_id < btree_id_nr_alive(c); btree_id++) {
+ 		unsigned depth = btree_type_has_ptrs(btree_id) ? 0 : 1;
+ 
+ 		bch2_trans_node_iter_init(trans, &iter, btree_id, POS_MIN, 0,
+diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
+index b8d50fe64b..a8488d4e18 100644
+--- a/fs/bcachefs/bcachefs.h
++++ b/fs/bcachefs/bcachefs.h
+@@ -749,7 +749,8 @@ struct bch_fs {
+ 	struct bio_set		btree_bio;
+ 	struct workqueue_struct	*io_complete_wq;
+ 
+-	struct btree_root	btree_roots[BTREE_ID_NR];
++	struct btree_root	btree_roots_known[BTREE_ID_NR];
++	DARRAY(struct btree_root) btree_roots_extra;
+ 	struct mutex		btree_root_lock;
+ 
+ 	struct btree_cache	btree_cache;
+diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+index be4d22d7fc..721e2b43e2 100644
+--- a/fs/bcachefs/btree_cache.c
++++ b/fs/bcachefs/btree_cache.c
+@@ -32,13 +32,15 @@ void bch2_recalc_btree_reserve(struct bch_fs *c)
+ {
+ 	unsigned i, reserve = 16;
+ 
+-	if (!c->btree_roots[0].b)
++	if (!c->btree_roots_known[0].b)
+ 		reserve += 8;
+ 
+-	for (i = 0; i < BTREE_ID_NR; i++)
+-		if (c->btree_roots[i].b)
+-			reserve += min_t(unsigned, 1,
+-					 c->btree_roots[i].b->c.level) * 8;
++	for (i = 0; i < btree_id_nr_alive(c); i++) {
++		struct btree_root *r = bch2_btree_id_root(c, i);
++
++		if (r->b)
++			reserve += min_t(unsigned, 1, r->b->c.level) * 8;
++	}
+ 
+ 	c->btree_cache.reserve = reserve;
+ }
+@@ -457,9 +459,12 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
+ 
+ 	kvpfree(c->verify_ondisk, btree_bytes(c));
+ 
+-	for (i = 0; i < BTREE_ID_NR; i++)
+-		if (c->btree_roots[i].b)
+-			list_add(&c->btree_roots[i].b->list, &bc->live);
++	for (i = 0; i < btree_id_nr_alive(c); i++) {
++		struct btree_root *r = bch2_btree_id_root(c, i);
++
++		if (r->b)
++			list_add(&r->b->list, &bc->live);
++	}
+ 
+ 	list_splice(&bc->freeable, &bc->live);
+ 
+diff --git a/fs/bcachefs/btree_cache.h b/fs/bcachefs/btree_cache.h
+index 608accd1c4..00c9b92183 100644
+--- a/fs/bcachefs/btree_cache.h
++++ b/fs/bcachefs/btree_cache.h
+@@ -101,7 +101,27 @@ static inline unsigned btree_blocks(struct bch_fs *c)
+ 	(BTREE_FOREGROUND_MERGE_THRESHOLD(c) +			\
+ 	 (BTREE_FOREGROUND_MERGE_THRESHOLD(c) >> 2))
+ 
+-#define btree_node_root(_c, _b)	((_c)->btree_roots[(_b)->c.btree_id].b)
++static inline unsigned btree_id_nr_alive(struct bch_fs *c)
++{
++	return BTREE_ID_NR + c->btree_roots_extra.nr;
++}
++
++static inline struct btree_root *bch2_btree_id_root(struct bch_fs *c, unsigned id)
++{
++	if (likely(id < BTREE_ID_NR)) {
++		return &c->btree_roots_known[id];
++	} else {
++		unsigned idx = id - BTREE_ID_NR;
++
++		EBUG_ON(idx >= c->btree_roots_extra.nr);
++		return &c->btree_roots_extra.data[idx];
++	}
++}
++
++static inline struct btree *btree_node_root(struct bch_fs *c, struct btree *b)
++{
++	return bch2_btree_id_root(c, b->c.btree_id)->b;
++}
+ 
+ void bch2_btree_node_to_text(struct printbuf *, struct bch_fs *,
+ 			     const struct btree *);
+diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
+index e64bfbb860..1fc386761d 100644
+--- a/fs/bcachefs/btree_gc.c
++++ b/fs/bcachefs/btree_gc.c
+@@ -529,8 +529,13 @@ static int bch2_repair_topology(struct bch_fs *c)
+ 
+ 	bch2_trans_init(&trans, c, 0, 0);
+ 
+-	for (i = 0; i < BTREE_ID_NR && !ret; i++) {
+-		b = c->btree_roots[i].b;
++	for (i = 0; i < btree_id_nr_alive(c)&& !ret; i++) {
++		struct btree_root *r = bch2_btree_id_root(c, i);
++
++		if (!r->alive)
++			continue;
++
++		b = r->b;
+ 		if (btree_node_fake(b))
+ 			continue;
+ 
+@@ -883,7 +888,7 @@ static int bch2_gc_btree(struct btree_trans *trans, enum btree_id btree_id,
+ 		return ret;
+ 
+ 	mutex_lock(&c->btree_root_lock);
+-	b = c->btree_roots[btree_id].b;
++	b = bch2_btree_id_root(c, btree_id)->b;
+ 	if (!btree_node_fake(b)) {
+ 		struct bkey_s_c k = bkey_i_to_s_c(&b->key);
+ 
+@@ -1006,7 +1011,7 @@ static int bch2_gc_btree_init(struct btree_trans *trans,
+ 	struct printbuf buf = PRINTBUF;
+ 	int ret = 0;
+ 
+-	b = c->btree_roots[btree_id].b;
++	b = bch2_btree_id_root(c, btree_id)->b;
+ 
+ 	if (btree_node_fake(b))
+ 		return 0;
+@@ -1075,6 +1080,15 @@ static int bch2_gc_btrees(struct bch_fs *c, bool initial, bool metadata_only)
+ 			? bch2_gc_btree_init(&trans, ids[i], metadata_only)
+ 			: bch2_gc_btree(&trans, ids[i], initial, metadata_only);
+ 
++	for (i = BTREE_ID_NR; i < btree_id_nr_alive(c) && !ret; i++) {
++		if (!bch2_btree_id_root(c, i)->alive)
++			continue;
++
++		ret = initial
++			? bch2_gc_btree_init(&trans, i, metadata_only)
++			: bch2_gc_btree(&trans, i, initial, metadata_only);
++	}
++
+ 	if (ret < 0)
+ 		bch_err_fn(c, ret);
+ 
+diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+index cb2959bee8..a8197c5008 100644
+--- a/fs/bcachefs/btree_io.c
++++ b/fs/bcachefs/btree_io.c
+@@ -517,7 +517,7 @@ static void btree_pos_to_text(struct printbuf *out, struct bch_fs *c,
+ 	prt_printf(out, "%s level %u/%u\n  ",
+ 	       bch2_btree_ids[b->c.btree_id],
+ 	       b->c.level,
+-	       c->btree_roots[b->c.btree_id].level);
++	       bch2_btree_id_root(c, b->c.btree_id)->level);
+ 	bch2_bkey_val_to_text(out, c, bkey_i_to_s_c(&b->key));
+ }
+ 
+diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
+index bbf8f026ea..e292c5a2a8 100644
+--- a/fs/bcachefs/btree_iter.c
++++ b/fs/bcachefs/btree_iter.c
+@@ -238,7 +238,7 @@ static void bch2_btree_path_verify(struct btree_trans *trans,
+ 	for (i = 0; i < (!path->cached ? BTREE_MAX_DEPTH : 1); i++) {
+ 		if (!path->l[i].b) {
+ 			BUG_ON(!path->cached &&
+-			       c->btree_roots[path->btree_id].b->c.level > i);
++			       bch2_btree_id_root(c, path->btree_id)->b->c.level > i);
+ 			break;
+ 		}
+ 
+@@ -732,7 +732,7 @@ static inline int btree_path_lock_root(struct btree_trans *trans,
+ 				       unsigned long trace_ip)
+ {
+ 	struct bch_fs *c = trans->c;
+-	struct btree *b, **rootp = &c->btree_roots[path->btree_id].b;
++	struct btree *b, **rootp = &bch2_btree_id_root(c, path->btree_id)->b;
+ 	enum six_lock_type lock_type;
+ 	unsigned i;
+ 	int ret;
+diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+index 22cec9a29a..5592feff79 100644
+--- a/fs/bcachefs/btree_update_interior.c
++++ b/fs/bcachefs/btree_update_interior.c
+@@ -1199,7 +1199,7 @@ static void bch2_btree_set_root_inmem(struct bch_fs *c, struct btree *b)
+ 	       (b->c.level < btree_node_root(c, b)->c.level ||
+ 		!btree_node_dying(btree_node_root(c, b))));
+ 
+-	btree_node_root(c, b) = b;
++	bch2_btree_id_root(c, b->c.btree_id)->b = b;
+ 	mutex_unlock(&c->btree_root_lock);
+ 
+ 	bch2_recalc_btree_reserve(c);
+@@ -2402,7 +2402,7 @@ bool bch2_btree_interior_updates_flush(struct bch_fs *c)
+ 
+ void bch2_journal_entry_to_btree_root(struct bch_fs *c, struct jset_entry *entry)
+ {
+-	struct btree_root *r = &c->btree_roots[entry->btree_id];
++	struct btree_root *r = bch2_btree_id_root(c, entry->btree_id);
+ 
+ 	mutex_lock(&c->btree_root_lock);
+ 
+@@ -2428,15 +2428,15 @@ bch2_btree_roots_to_journal_entries(struct bch_fs *c,
+ 
+ 	mutex_lock(&c->btree_root_lock);
+ 
+-	for (i = 0; i < BTREE_ID_NR; i++)
+-		if (c->btree_roots[i].alive && !test_bit(i, &have)) {
+-			journal_entry_set(end,
+-					  BCH_JSET_ENTRY_btree_root,
+-					  i, c->btree_roots[i].level,
+-					  &c->btree_roots[i].key,
+-					  c->btree_roots[i].key.k.u64s);
++	for (i = 0; i < btree_id_nr_alive(c); i++) {
++		struct btree_root *r = bch2_btree_id_root(c, i);
++
++		if (r->alive && !test_bit(i, &have)) {
++			journal_entry_set(end, BCH_JSET_ENTRY_btree_root,
++					  i, r->level, &r->key, r->key.k.u64s);
+ 			end = vstruct_next(end);
+ 		}
++	}
+ 
+ 	mutex_unlock(&c->btree_root_lock);
+ 
+diff --git a/fs/bcachefs/move.c b/fs/bcachefs/move.c
+index 37fb3784a2..0527267390 100644
+--- a/fs/bcachefs/move.c
++++ b/fs/bcachefs/move.c
+@@ -632,7 +632,7 @@ int bch2_move_data(struct bch_fs *c,
+ 	bch2_moving_ctxt_init(&ctxt, c, rate, stats, wp, wait_on_copygc);
+ 
+ 	for (id = start_btree_id;
+-	     id <= min_t(unsigned, end_btree_id, BTREE_ID_NR - 1);
++	     id <= min_t(unsigned, end_btree_id, btree_id_nr_alive(c) - 1);
+ 	     id++) {
+ 		stats->btree_id = id;
+ 
+@@ -640,6 +640,9 @@ int bch2_move_data(struct bch_fs *c,
+ 		    id != BTREE_ID_reflink)
+ 			continue;
+ 
++		if (!bch2_btree_id_root(c, id)->b)
++			continue;
++
+ 		ret = __bch2_move_data(&ctxt,
+ 				       id == start_btree_id ? start_pos : POS_MIN,
+ 				       id == end_btree_id   ? end_pos   : POS_MAX,
+@@ -861,10 +864,13 @@ static int bch2_move_btree(struct bch_fs *c,
+ 	stats->data_type = BCH_DATA_btree;
+ 
+ 	for (id = start_btree_id;
+-	     id <= min_t(unsigned, end_btree_id, BTREE_ID_NR - 1);
++	     id <= min_t(unsigned, end_btree_id, btree_id_nr_alive(c) - 1);
+ 	     id++) {
+ 		stats->btree_id = id;
+ 
++		if (!bch2_btree_id_root(c, id)->b)
++			continue;
++
+ 		bch2_trans_node_iter_init(&trans, &iter, id, POS_MIN, 0, 0,
+ 					  BTREE_ITER_PREFETCH);
+ retry:
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index cf8f5c0e1b..9ea85b097e 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -702,13 +702,13 @@ static int journal_replay_entry_early(struct bch_fs *c,
+ 	case BCH_JSET_ENTRY_btree_root: {
+ 		struct btree_root *r;
+ 
+-		if (entry->btree_id >= BTREE_ID_NR) {
+-			bch_err(c, "filesystem has unknown btree type %u",
+-				entry->btree_id);
+-			return -EINVAL;
++		while (entry->btree_id >= c->btree_roots_extra.nr + BTREE_ID_NR) {
++			ret = darray_push(&c->btree_roots_extra, (struct btree_root) { NULL });
++			if (ret)
++				return ret;
+ 		}
+ 
+-		r = &c->btree_roots[entry->btree_id];
++		r = bch2_btree_id_root(c, entry->btree_id);
+ 
+ 		if (entry->u64s) {
+ 			r->level = entry->level;
+@@ -980,8 +980,8 @@ static int read_btree_roots(struct bch_fs *c)
+ 	unsigned i;
+ 	int ret = 0;
+ 
+-	for (i = 0; i < BTREE_ID_NR; i++) {
+-		struct btree_root *r = &c->btree_roots[i];
++	for (i = 0; i < btree_id_nr_alive(c); i++) {
++		struct btree_root *r = bch2_btree_id_root(c, i);
+ 
+ 		if (!r->alive)
+ 			continue;
+@@ -1014,7 +1014,7 @@ static int read_btree_roots(struct bch_fs *c)
+ 	}
+ 
+ 	for (i = 0; i < BTREE_ID_NR; i++) {
+-		struct btree_root *r = &c->btree_roots[i];
++		struct btree_root *r = bch2_btree_id_root(c, i);
+ 
+ 		if (!r->b) {
+ 			r->alive = false;
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index 4d7380099e..426d2acfca 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -486,6 +486,7 @@ static void __bch2_fs_free(struct bch_fs *c)
+ 		for_each_possible_cpu(cpu)
+ 			kfree(per_cpu_ptr(c->btree_paths_bufs, cpu)->path);
+ 
++	darray_exit(&c->btree_roots_extra);
+ 	free_percpu(c->btree_paths_bufs);
+ 	free_percpu(c->pcpu);
+ 	mempool_exit(&c->large_bkey_pool);
 -- 
 2.40.1
 
