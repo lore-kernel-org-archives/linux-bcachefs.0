@@ -2,84 +2,105 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4177BEB64DA
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 12 Jul 2023 17:11:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87363EB64DA
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 12 Jul 2023 19:48:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbjGLRLJ (ORCPT
+        id S232634AbjGLTsf (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 12 Jul 2023 13:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        Wed, 12 Jul 2023 15:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbjGLRLJ (ORCPT
+        with ESMTP id S232476AbjGLTse (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:11:09 -0400
-Received: from out-9.mta1.migadu.com (out-9.mta1.migadu.com [IPv6:2001:41d0:203:375::9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDB919A7
-        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jul 2023 10:11:06 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 13:10:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689181865;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6O6tF/vfSdHH1FvZdJ1GNRgqv/9a9QUjUIDpZJuVZzE=;
-        b=XoeRGyR/wOhK3CFSwRlesyv4a+hRzJe44Ilm3LIvpFU0+YlgqxwbBCh7wZmv4a67JmA/pq
-        msMtr1hDYOFmbc/+HftHxMvZnD9hbk5FatTRd64sFPv5av2jFrjM/l3z5zEvuszTH9sNT5
-        7d4RxFsp5/bli+DMhgZBd66nccC6H6o=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     linux-bcachefs@vger.kernel.org
-Subject: Re: bcachefs backpointers errors in no write buf mode
-Message-ID: <20230712171057.vp3ullcaravyrtvx@moria.home.lan>
-References: <ZKhMGZBokKMq5p1P@bfoster>
- <20230707175823.3tct7p2blqrzr7wo@moria.home.lan>
- <ZKwJk/JBoZzizU4p@bfoster>
- <20230710145646.3vzxwzvrbbmxc57h@moria.home.lan>
- <ZK7AMu6MBLoLX8vJ@bfoster>
- <20230712154047.hqw7rdwjxasjvsdn@moria.home.lan>
- <ZK7aPhB9QV+56R/J@bfoster>
+        Wed, 12 Jul 2023 15:48:34 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1EF1FE4
+        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jul 2023 12:48:33 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-666ed230c81so6596149b3a.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jul 2023 12:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689191312; x=1691783312;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M4ZDRM5fvQMo9GlwKOHCyQm7Bm/RC8HHEV7PqArueRk=;
+        b=P+qxeFDIOXYrfb8mKf4q2MKsfsAdNORvRZzlqorQhCiYlGDr4HR+fqoRqyaaCSw8qs
+         gqW+0q6vFVb2yZh+NqTkF3pZvEHl6EAsJ5/5S2zGkkS41VQ+jjWhCanZHeMf4krxerwW
+         t0YdCT3qXtqyZGRJ7+TrJBxjvX45zPbkp8JNg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689191312; x=1691783312;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M4ZDRM5fvQMo9GlwKOHCyQm7Bm/RC8HHEV7PqArueRk=;
+        b=PlPtzBvGuztE9f6upkmKvrywYAASyoTTkCMNeScTQOITepVQhFOnNOeDhRRs7yUQUz
+         pR/re2XFfsz+XBkUKmRs6Z3Gr9IhxUssns5hzZ5QGs9Hn3ZQkTePC17VNbGtVR7V+BCV
+         2qQm7DyWeSJ9V5Alq2lvqPmkCwrHh2igTlIed001V5Z5oTi13lr1cyCDS3wmY1IUZeKP
+         mLJLyW3YOLpJukY64SZgbc1SntzI9kd2hI3B35dcdHeEVO0Akmo0rG8oBsiCJRi9jDJP
+         Cr/3eU972QvYbptbLUqrWvGRJ8sgPz3HjEyq3RW50BAMJWUzqD9sMaySmytTc/1BazF1
+         UBpA==
+X-Gm-Message-State: ABy/qLaMGUXTJuEjQZAwQwdUbOT08KGTX815gr81psaA4r57QW2wMlsy
+        0oflZN656Y0D6fEY9e3T1Gusxw==
+X-Google-Smtp-Source: APBJJlHM2vxo8fnmZa5oicXLm6Q8d+5+DCS3hBxF+8rUtbVzNiS44Xe3ydnwgRLPo/qT2TQvgD/JCw==
+X-Received: by 2002:a05:6a20:7353:b0:132:2f7d:29ca with SMTP id v19-20020a056a20735300b001322f7d29camr7630596pzc.24.1689191312528;
+        Wed, 12 Jul 2023 12:48:32 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h3-20020aa786c3000000b00682af82a9desm4082520pfo.98.2023.07.12.12.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 12:48:32 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 12:48:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        djwong@kernel.org, dchinner@redhat.com, sandeen@redhat.com,
+        willy@infradead.org, josef@toxicpanda.com, tytso@mit.edu,
+        bfoster@redhat.com, jack@suse.cz, andreas.gruenbacher@gmail.com,
+        brauner@kernel.org, peterz@infradead.org,
+        akpm@linux-foundation.org, dhowells@redhat.com, snitzer@kernel.org
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <202307121241.8295B924F@keescook>
+References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+ <20230706155602.mnhsylo3pnief2of@moria.home.lan>
+ <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZK7aPhB9QV+56R/J@bfoster>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 12:52:14PM -0400, Brian Foster wrote:
-> On Wed, Jul 12, 2023 at 11:40:47AM -0400, Kent Overstreet wrote:
-> > What if the entry being flushed is already at the tail of the journal,
-> > and journal reclaim is already trying to flush everything at that
-> > sequence number? Since we'll often have multiple write buffer keys per
-> > journal entry, and per btree node, this might lead to btree nodes
-> > getting flushed multiple times redundantly.
-> > 
+On Tue, Jul 11, 2023 at 10:54:59PM -0400, Kent Overstreet wrote:
+>  - Prereq patch series has been pruned down a bit more; also Mike
+>    Snitzer suggested putting those patches in their own branch:
 > 
-> I think I follow what you mean, but isn't this what the fast path is
-> doing already? (Not to say that it isn't a potential issue to be aware
-> of.)
-
-Yes, but when we're low on free space in the journal that's when we
-switch to the slowpath.
-
-> BTW, I haven't dug much into the btree code... If a btree node has a
-> bunch of pins of different sequence numbers for whatever key updates are
-> pending, is the whole set flushed out on the first pin flush (releasing
-> all pins)? Or is it an incremental flush to update keys just up to the
-> specified pin seq?
-
-We write out everything that's dirty for that given btree node (which is
-why a btree node only has to retain a single journal pin to the oldest
-pinned journal entry).
-
-> Indeed. Even if that is an optimization for key cache vs. more of a
-> correctness issue for write buffer, it sounds like quite a bit of
-> functional overlap.
+>    https://evilpiepirate.org/git/bcachefs.git/log/?h=bcachefs-prereqs
 > 
-> Anyways, I'll see if I can prototype something to verify whether this
-> addresses the backpointer issue before getting too far into the weeds.
-> ;) Thanks for the feedback.
+>    "iov_iter: copy_folio_from_iter_atomic()" was dropped and replaced
+>    with willy's "iov_iter: Handle compound highmem pages in
+>    copy_page_from_iter_atomic()"; he said he'd try to send this for -rc4
+>    since it's technically a bug fix; in the meantime, it'll be getting
+>    more testing from my users.
+> 
+>    The two lockdep patches have been dropped for now; the
+>    bcachefs-for-upstream branch is switched back to
+>    lockdep_set_novalidate_class() for btree node locks. 
+> 
+>    six locks, mean and variance have been moved into fs/bcachefs/ for
+>    now; this means there's a new prereq patch to export
+>    osq_(lock|unlock)
+> 
+>    The remaining prereq patches are pretty trivial, with the exception
+>    of "block: Don't block on s_umount from __invalidate_super()". I
+>    would like to get a reviewed-by for that patch, and it wouldn't hurt
+>    for others.
+> 
+>    previously posting:
+>    https://lore.kernel.org/linux-bcachefs/20230509165657.1735798-1-kent.overstreet@linux.dev/T/#m34397a4d39f5988cc0b635e29f70a6170927746f
 
-Sounds good :)
+Can you send these prereqs out again, with maintainers CCed
+appropriately? (I think some feedback from the prior revision needs to
+be addressed first, though. For example, __flatten already exists, etc.)
+
+-- 
+Kees Cook
