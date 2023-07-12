@@ -2,145 +2,117 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C05AC001B0
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 12 Jul 2023 21:11:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2550EB64DD
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 12 Jul 2023 21:12:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbjGLVLo (ORCPT
+        id S232720AbjGLVMA (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 12 Jul 2023 17:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
+        Wed, 12 Jul 2023 17:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232569AbjGLVLj (ORCPT
+        with ESMTP id S232597AbjGLVLk (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 12 Jul 2023 17:11:39 -0400
-Received: from out-28.mta1.migadu.com (out-28.mta1.migadu.com [IPv6:2001:41d0:203:375::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B003A1FF0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jul 2023 14:11:32 -0700 (PDT)
+        Wed, 12 Jul 2023 17:11:40 -0400
+Received: from out-11.mta1.migadu.com (out-11.mta1.migadu.com [IPv6:2001:41d0:203:375::b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5141FFC
+        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jul 2023 14:11:33 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689196290;
+        t=1689196292;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LRjSY9kpVwgW2a61i7EdjuyktV0StcLh7oZx6fNGjZ4=;
-        b=qgNofqLdr5BBXuH8Eyt7wUXxAF8PRNvIR/SEb1CrJKD54or6HkTiHAUbrs054ayDAGg+t9
-        WRkLIGLeI4fHnaEc/atC1J47nVj0bwHMOhVhaky+/ViUJJUo7jAOxPZheDYjiFSv1G1uII
-        IIUADGn1prNv6ipJUzXnh9p3V5ddirM=
+        bh=VDLK1ONggBB+eFfykVjGTBwfVG7SE70wyxw3cDrS9g4=;
+        b=nT353abG+gbYP6wNNp6mG4LtZUQRLG3e0cPhL1rQKv2kf3gbONxLaGbqeV3CzmCE0QZL67
+        VUDWogb/VvrW+h5sxU9GWjtZp5r01ye1GW3+eEZ/HLw2o6WAprjFLVvqgeJaGqyLLKxSSk
+        mMD13c0PBmafrfMPWBAUk6sz4OJS+VY=
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Jan Kara <jack@suse.cz>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        =?UTF-8?q?Andreas=20Gr=C3=BCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Subject: [PATCH 01/20] sched: Add task_struct->faults_disabled_mapping
-Date:   Wed, 12 Jul 2023 17:10:56 -0400
-Message-Id: <20230712211115.2174650-2-kent.overstreet@linux.dev>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 03/20] iov_iter: Handle compound highmem pages in copy_page_from_iter_atomic()
+Date:   Wed, 12 Jul 2023 17:10:58 -0400
+Message-Id: <20230712211115.2174650-4-kent.overstreet@linux.dev>
 In-Reply-To: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-From: Kent Overstreet <kent.overstreet@gmail.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-There has been a long standing page cache coherence bug with direct IO.
-This provides part of a mechanism to fix it, currently just used by
-bcachefs but potentially worth promoting to the VFS.
+copy_page_from_iter_atomic() already handles !highmem compound
+pages correctly, but if we are passed a highmem compound page,
+each base page needs to be mapped & unmapped individually.
 
-Direct IO evicts the range of the pagecache being read or written to.
-
-For reads, we need dirty pages to be written to disk, so that the read
-doesn't return stale data. For writes, we need to evict that range of
-the pagecache so that it's not stale after the write completes.
-
-However, without a locking mechanism to prevent those pages from being
-re-added to the pagecache - by a buffered read or page fault - page
-cache inconsistency is still possible.
-
-This isn't necessarily just an issue for userspace when they're playing
-games; filesystems may hang arbitrary state off the pagecache, and so
-page cache inconsistency may cause real filesystem bugs, depending on
-the filesystem. This is less of an issue for iomap based filesystems,
-but e.g. buffer heads caches disk block mappings (!) and attaches them
-to the pagecache, and bcachefs attaches disk reservations to pagecache
-pages.
-
-This issue has been hard to fix, because
- - we need to add a lock (henceforth calld pagecache_add_lock), which
-   would be held for the duration of the direct IO
- - page faults add pages to the page cache, thus need to take the same
-   lock
- - dio -> gup -> page fault thus can deadlock
-
-And we cannot enforce a lock ordering with this lock, since userspace
-will be controlling the lock ordering (via the fd and buffer arguments
-to direct IOs), so we need a different method of deadlock avoidance.
-
-We need to tell the page fault handler that we're already holding a
-pagecache_add_lock, and since plumbing it through the entire gup() path
-would be highly impractical this adds a field to task_struct.
-
-Then the full method is:
- - in the dio path, when we take first pagecache_add_lock, note the
-   mapping in task_struct
- - in the page fault handler, if faults_disabled_mapping is set, we
-   check if it's the same mapping as the one taking a page fault for,
-   and if so return an error.
-
-   Then we check lock ordering: if there's a lock ordering violation and
-   trylock fails, we'll have to cycle the locks and return an error that
-   tells the DIO path to retry: faults_disabled_mapping is also used for
-   signalling "locks were dropped, please retry".
-
-Also relevant to this patch: mapping->invalidate_lock.
-mapping->invalidate_lock provides most of the required semantics - it's
-used by truncate/fallocate to block pages being added to the pagecache.
-However, since it's a rwsem, direct IOs would need to take the write
-side in order to block page cache adds, and would then be exclusive with
-each other - we'll need a new type of lock to pair with this approach.
-
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Darrick J. Wong <djwong@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: Andreas Grünbacher <andreas.gruenbacher@gmail.com>
 ---
- include/linux/sched.h | 1 +
- init/init_task.c      | 1 +
- 2 files changed, 2 insertions(+)
+ lib/iov_iter.c | 43 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 28 insertions(+), 15 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index eed5d65b8d..bc7b61305c 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -871,6 +871,7 @@ struct task_struct {
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index 960223ed91..f9c4bba272 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -857,24 +857,37 @@ size_t iov_iter_zero(size_t bytes, struct iov_iter *i)
+ }
+ EXPORT_SYMBOL(iov_iter_zero);
  
- 	struct mm_struct		*mm;
- 	struct mm_struct		*active_mm;
-+	struct address_space		*faults_disabled_mapping;
+-size_t copy_page_from_iter_atomic(struct page *page, unsigned offset, size_t bytes,
+-				  struct iov_iter *i)
++size_t copy_page_from_iter_atomic(struct page *page, unsigned offset,
++		size_t bytes, struct iov_iter *i)
+ {
+-	char *kaddr = kmap_atomic(page), *p = kaddr + offset;
+-	if (!page_copy_sane(page, offset, bytes)) {
+-		kunmap_atomic(kaddr);
++	size_t n, copied = 0;
++
++	if (!page_copy_sane(page, offset, bytes))
+ 		return 0;
+-	}
+-	if (WARN_ON_ONCE(!i->data_source)) {
+-		kunmap_atomic(kaddr);
++	if (WARN_ON_ONCE(!i->data_source))
+ 		return 0;
+-	}
+-	iterate_and_advance(i, bytes, base, len, off,
+-		copyin(p + off, base, len),
+-		memcpy_from_iter(i, p + off, base, len)
+-	)
+-	kunmap_atomic(kaddr);
+-	return bytes;
++
++	do {
++		char *p;
++
++		n = bytes - copied;
++		if (PageHighMem(page)) {
++			page += offset / PAGE_SIZE;
++			offset %= PAGE_SIZE;
++			n = min_t(size_t, n, PAGE_SIZE - offset);
++		}
++
++		p = kmap_atomic(page) + offset;
++		iterate_and_advance(i, n, base, len, off,
++			copyin(p + off, base, len),
++			memcpy_from_iter(i, p + off, base, len)
++		)
++		kunmap_atomic(p);
++		copied += n;
++		offset += n;
++	} while (PageHighMem(page) && copied != bytes && n > 0);
++
++	return copied;
+ }
+ EXPORT_SYMBOL(copy_page_from_iter_atomic);
  
- 	int				exit_state;
- 	int				exit_code;
-diff --git a/init/init_task.c b/init/init_task.c
-index ff6c4b9bfe..f703116e05 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -85,6 +85,7 @@ struct task_struct init_task
- 	.nr_cpus_allowed= NR_CPUS,
- 	.mm		= NULL,
- 	.active_mm	= &init_mm,
-+	.faults_disabled_mapping = NULL,
- 	.restart_block	= {
- 		.fn = do_no_restart_syscall,
- 	},
 -- 
 2.40.1
 
