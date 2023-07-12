@@ -2,40 +2,40 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA53CC001E0
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 12 Jul 2023 21:12:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1EAFEB64DD
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 12 Jul 2023 21:12:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbjGLVMF (ORCPT
+        id S232527AbjGLVMG (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 12 Jul 2023 17:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
+        Wed, 12 Jul 2023 17:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232527AbjGLVLn (ORCPT
+        with ESMTP id S232630AbjGLVLn (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
         Wed, 12 Jul 2023 17:11:43 -0400
-Received: from out-45.mta1.migadu.com (out-45.mta1.migadu.com [IPv6:2001:41d0:203:375::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B552115
-        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jul 2023 14:11:35 -0700 (PDT)
+Received: from out-14.mta1.migadu.com (out-14.mta1.migadu.com [IPv6:2001:41d0:203:375::e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DD12117
+        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jul 2023 14:11:36 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689196293;
+        t=1689196295;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1JvFlUnJNg/19MdiHLNUIX73kgMJww+dfgCblmEcu1U=;
-        b=ioo7Hlb05gzTDWYnW+QeyN9R+3fGtpTq8//vnD2VrzbgJKDTQEkVCE4P4f2TYbuiCQhSbu
-        sec4FOu9SqqU17hb0GbaFF3qcgRtj0mZbf7jTv8vr/R9kAlIggYzlRhurx6BhRUWxiUewA
-        qPzUxqlRuNs66nkA93vgzfPg3zuiRmw=
+        bh=0hovXn5ip36DS/VfaxiJk0ApcnzjAAiHK50gEPXD0AU=;
+        b=WcemNL3t7opXlf9AhNpewUVTMjWvJl+V8SwttlLTiaj6COPlMXyPbeCKoU9XJvFnhhNOa9
+        roGp+n2upHMzzwVHvO+a6XfY+n/LuQyLHaxs/1510WsHWDp3rxHTHr7XUAw4xTJ6tWIquM
+        F6FxDnRwkEQJVObpHKdZtYvQYn4pPD0=
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 04/20] block: Add some exports for bcachefs
-Date:   Wed, 12 Jul 2023 17:10:59 -0400
-Message-Id: <20230712211115.2174650-5-kent.overstreet@linux.dev>
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Subject: [PATCH 06/20] block: Bring back zero_fill_bio_iter
+Date:   Wed, 12 Jul 2023 17:11:01 -0400
+Message-Id: <20230712211115.2174650-7-kent.overstreet@linux.dev>
 In-Reply-To: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
@@ -47,78 +47,58 @@ X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 From: Kent Overstreet <kent.overstreet@gmail.com>
 
- - bio_set_pages_dirty(), bio_check_pages_dirty() - dio path
- - blk_status_to_str() - error messages
- - bio_add_folio() - this should definitely be exported for everyone,
-   it's the modern version of bio_add_page()
+This reverts 6f822e1b5d9dda3d20e87365de138046e3baa03a - this helper is
+used by bcachefs.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
-Cc: linux-block@vger.kernel.org
-Cc: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org
 ---
- block/bio.c            | 2 ++
- block/blk-core.c       | 1 +
- block/blk.h            | 1 -
- include/linux/blkdev.h | 1 +
- 4 files changed, 4 insertions(+), 1 deletion(-)
+ block/bio.c         | 6 +++---
+ include/linux/bio.h | 7 ++++++-
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/block/bio.c b/block/bio.c
-index 043944fd46..1e75840d17 100644
+index e74a04ea14..70b5c987bc 100644
 --- a/block/bio.c
 +++ b/block/bio.c
-@@ -1481,6 +1481,7 @@ void bio_set_pages_dirty(struct bio *bio)
- 			set_page_dirty_lock(bvec->bv_page);
- 	}
+@@ -606,15 +606,15 @@ struct bio *bio_kmalloc(unsigned short nr_vecs, gfp_t gfp_mask)
  }
-+EXPORT_SYMBOL_GPL(bio_set_pages_dirty);
+ EXPORT_SYMBOL(bio_kmalloc);
  
- /*
-  * bio_check_pages_dirty() will check that all the BIO's pages are still dirty.
-@@ -1540,6 +1541,7 @@ void bio_check_pages_dirty(struct bio *bio)
- 	spin_unlock_irqrestore(&bio_dirty_lock, flags);
- 	schedule_work(&bio_dirty_work);
- }
-+EXPORT_SYMBOL_GPL(bio_check_pages_dirty);
- 
- static inline bool bio_remaining_done(struct bio *bio)
+-void zero_fill_bio(struct bio *bio)
++void zero_fill_bio_iter(struct bio *bio, struct bvec_iter start)
  {
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 1da77e7d62..b7b0237c36 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -205,6 +205,7 @@ const char *blk_status_to_str(blk_status_t status)
- 		return "<null>";
- 	return blk_errors[idx].name;
+ 	struct bio_vec bv;
+ 	struct bvec_iter iter;
+ 
+-	bio_for_each_segment(bv, bio, iter)
++	__bio_for_each_segment(bv, bio, iter, start)
+ 		memzero_bvec(&bv);
  }
-+EXPORT_SYMBOL_GPL(blk_status_to_str);
+-EXPORT_SYMBOL(zero_fill_bio);
++EXPORT_SYMBOL(zero_fill_bio_iter);
  
  /**
-  * blk_sync_queue - cancel any pending callbacks on a queue
-diff --git a/block/blk.h b/block/blk.h
-index 45547bcf11..f20f9ca03e 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -251,7 +251,6 @@ static inline void bio_integrity_free(struct bio *bio)
+  * bio_truncate - truncate the bio to small size of @new_size
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index b3e7529ff5..f2620f8d18 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -484,7 +484,12 @@ extern void bio_copy_data_iter(struct bio *dst, struct bvec_iter *dst_iter,
+ extern void bio_copy_data(struct bio *dst, struct bio *src);
+ extern void bio_free_pages(struct bio *bio);
+ void guard_bio_eod(struct bio *bio);
+-void zero_fill_bio(struct bio *bio);
++void zero_fill_bio_iter(struct bio *bio, struct bvec_iter iter);
++
++static inline void zero_fill_bio(struct bio *bio)
++{
++	zero_fill_bio_iter(bio, bio->bi_iter);
++}
  
- unsigned long blk_rq_timeout(unsigned long timeout);
- void blk_add_timer(struct request *req);
--const char *blk_status_to_str(blk_status_t status);
- 
- bool blk_attempt_plug_merge(struct request_queue *q, struct bio *bio,
- 		unsigned int nr_segs);
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index c0ffe203a6..7a32dc98e1 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -854,6 +854,7 @@ extern const char *blk_op_str(enum req_op op);
- 
- int blk_status_to_errno(blk_status_t status);
- blk_status_t errno_to_blk_status(int errno);
-+const char *blk_status_to_str(blk_status_t status);
- 
- /* only poll the hardware once, don't continue until a completion was found */
- #define BLK_POLL_ONESHOT		(1 << 0)
+ static inline void bio_release_pages(struct bio *bio, bool mark_dirty)
+ {
 -- 
 2.40.1
 
