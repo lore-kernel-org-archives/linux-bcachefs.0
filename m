@@ -2,119 +2,114 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8A7FC04A94
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 12 Jul 2023 21:12:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D025C001B0
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 12 Jul 2023 21:12:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232671AbjGLVMj (ORCPT
+        id S232554AbjGLVMk (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 12 Jul 2023 17:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
+        Wed, 12 Jul 2023 17:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbjGLVMZ (ORCPT
+        with ESMTP id S232959AbjGLVMZ (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
         Wed, 12 Jul 2023 17:12:25 -0400
-Received: from out-21.mta1.migadu.com (out-21.mta1.migadu.com [IPv6:2001:41d0:203:375::15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7588C2702
+Received: from out-7.mta1.migadu.com (out-7.mta1.migadu.com [IPv6:2001:41d0:203:375::7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84042708
         for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jul 2023 14:11:48 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689196288;
+        t=1689196306;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=u9jA0zpqdPJBbT5wB3LqkWWTOFZva2WMc7PqpBsNmzQ=;
-        b=tSLj/iB1E2XayW0N3mOTONapZTzp/4UfRR0E5j3/6A3V2t4u7ivSoQSbHNb+svKCKD4FCe
-        I8rMoF/S3ae3TCwK/RkwpG8Vqd7x2yTIOckqVCWwGAg+uIL1WvDnBVcA85Ni7O7x8SlDqQ
-        yn6dVoHYjl4guXv28aEzEkCOvrpjdYc=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xn5bEL0Ei0eSLZ8JURgH14o2MvwdOSnzFDfE6+pvE7w=;
+        b=prIbZNwBIuXUnvpfIhn+xwtUcXR88kKXLP66oTPIigPIrhumuCLQrJduYogig9jYymAn14
+        RT5C0Z9Z2fgqzx9D0ZT4psDitB0sZee9ZmXMHULgGxhF2BBhrC6hk7gmEXdRUtpDGmYUD2
+        WSFOGJzvpU809KWy3yH6fTc3Wjs/Yw4=
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 00/20] bcachefs prereqs patch series
-Date:   Wed, 12 Jul 2023 17:10:55 -0400
-Message-Id: <20230712211115.2174650-1-kent.overstreet@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 18/20] lib/generic-radix-tree.c: Don't overflow in peek()
+Date:   Wed, 12 Jul 2023 17:11:13 -0400
+Message-Id: <20230712211115.2174650-19-kent.overstreet@linux.dev>
+In-Reply-To: <20230712211115.2174650-1-kent.overstreet@linux.dev>
+References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Here's the latest iteration of the bcachefs prereqs patch series, now
-hoping to go in for 6.6.
+From: Kent Overstreet <kent.overstreet@gmail.com>
 
-https://lore.kernel.org/linux-bcachefs/20230712195719.y4msidsr7suu55gl@moria.home.lan/T/
+When we started spreading new inode numbers throughout most of the 64
+bit inode space, that triggered some corner case bugs, in particular
+some integer overflows related to the radix tree code. Oops.
 
-This is now slimmed down as much has I can. I've droped the lockdep
-patches, at the cost of dropping lockdep support for btree node locks.
-Six locks and mean_and_variance are now in fs/bcachefs/. My
-copy_folio_from_iter_atomic() patch has been dropped in favor of the
-iov_iter patch from Matthew, which he said he'd likely send for -rc4, so
-will already be in by the time of the actual bcachefs pull request.
+Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ include/linux/generic-radix-tree.h |  6 ++++++
+ lib/generic-radix-tree.c           | 17 ++++++++++++++---
+ 2 files changed, 20 insertions(+), 3 deletions(-)
 
-Christopher James Halse Rogers (1):
-  stacktrace: Export stack_trace_save_tsk
-
-Kent Overstreet (18):
-  sched: Add task_struct->faults_disabled_mapping
-  fs: factor out d_mark_tmpfile()
-  block: Add some exports for bcachefs
-  block: Allow bio_iov_iter_get_pages() with bio->bi_bdev unset
-  block: Bring back zero_fill_bio_iter
-  block: Don't block on s_umount from __invalidate_super()
-  lib/string_helpers: string_get_size() now returns characters wrote
-  lib: Export errname
-  locking/osq: Export osq_(lock|unlock)
-  bcache: move closures to lib/
-  MAINTAINERS: Add entry for closures
-  closures: closure_wait_event()
-  closures: closure_nr_remaining()
-  closures: Add a missing include
-  MAINTAINERS: Add entry for generic-radix-tree
-  lib/generic-radix-tree.c: Don't overflow in peek()
-  lib/generic-radix-tree.c: Add a missing include
-  lib/generic-radix-tree.c: Add peek_prev()
-
-Matthew Wilcox (Oracle) (1):
-  iov_iter: Handle compound highmem pages in
-    copy_page_from_iter_atomic()
-
- MAINTAINERS                                   | 15 ++++
- block/bdev.c                                  |  2 +-
- block/bio.c                                   | 18 +++--
- block/blk-core.c                              |  1 +
- block/blk.h                                   |  1 -
- drivers/md/bcache/Kconfig                     | 10 +--
- drivers/md/bcache/Makefile                    |  4 +-
- drivers/md/bcache/bcache.h                    |  2 +-
- drivers/md/bcache/super.c                     |  1 -
- drivers/md/bcache/util.h                      |  3 +-
- fs/dcache.c                                   | 12 ++-
- fs/super.c                                    | 40 +++++++---
- include/linux/bio.h                           |  7 +-
- include/linux/blkdev.h                        |  1 +
- .../md/bcache => include/linux}/closure.h     | 46 ++++++++---
- include/linux/dcache.h                        |  1 +
- include/linux/fs.h                            |  1 +
- include/linux/generic-radix-tree.h            | 68 ++++++++++++++++-
- include/linux/sched.h                         |  1 +
- include/linux/string_helpers.h                |  4 +-
- init/init_task.c                              |  1 +
- kernel/locking/osq_lock.c                     |  2 +
- kernel/stacktrace.c                           |  2 +
- lib/Kconfig                                   |  3 +
- lib/Kconfig.debug                             |  9 +++
- lib/Makefile                                  |  2 +
- {drivers/md/bcache => lib}/closure.c          | 36 +++++----
- lib/errname.c                                 |  1 +
- lib/generic-radix-tree.c                      | 76 ++++++++++++++++++-
- lib/iov_iter.c                                | 43 +++++++----
- lib/string_helpers.c                          | 10 ++-
- 31 files changed, 333 insertions(+), 90 deletions(-)
- rename {drivers/md/bcache => include/linux}/closure.h (93%)
- rename {drivers/md/bcache => lib}/closure.c (88%)
-
+diff --git a/include/linux/generic-radix-tree.h b/include/linux/generic-radix-tree.h
+index 107613f7d7..63080822dc 100644
+--- a/include/linux/generic-radix-tree.h
++++ b/include/linux/generic-radix-tree.h
+@@ -184,6 +184,12 @@ void *__genradix_iter_peek(struct genradix_iter *, struct __genradix *, size_t);
+ static inline void __genradix_iter_advance(struct genradix_iter *iter,
+ 					   size_t obj_size)
+ {
++	if (iter->offset + obj_size < iter->offset) {
++		iter->offset	= SIZE_MAX;
++		iter->pos	= SIZE_MAX;
++		return;
++	}
++
+ 	iter->offset += obj_size;
+ 
+ 	if (!is_power_of_2(obj_size) &&
+diff --git a/lib/generic-radix-tree.c b/lib/generic-radix-tree.c
+index f25eb111c0..7dfa88282b 100644
+--- a/lib/generic-radix-tree.c
++++ b/lib/generic-radix-tree.c
+@@ -166,6 +166,10 @@ void *__genradix_iter_peek(struct genradix_iter *iter,
+ 	struct genradix_root *r;
+ 	struct genradix_node *n;
+ 	unsigned level, i;
++
++	if (iter->offset == SIZE_MAX)
++		return NULL;
++
+ restart:
+ 	r = READ_ONCE(radix->root);
+ 	if (!r)
+@@ -184,10 +188,17 @@ void *__genradix_iter_peek(struct genradix_iter *iter,
+ 			(GENRADIX_ARY - 1);
+ 
+ 		while (!n->children[i]) {
++			size_t objs_per_ptr = genradix_depth_size(level);
++
++			if (iter->offset + objs_per_ptr < iter->offset) {
++				iter->offset	= SIZE_MAX;
++				iter->pos	= SIZE_MAX;
++				return NULL;
++			}
++
+ 			i++;
+-			iter->offset = round_down(iter->offset +
+-					   genradix_depth_size(level),
+-					   genradix_depth_size(level));
++			iter->offset = round_down(iter->offset + objs_per_ptr,
++						  objs_per_ptr);
+ 			iter->pos = (iter->offset >> PAGE_SHIFT) *
+ 				objs_per_page;
+ 			if (i == GENRADIX_ARY)
 -- 
 2.40.1
 
