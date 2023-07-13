@@ -2,65 +2,61 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 907B4EB64DD
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 13 Jul 2023 03:52:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0233EB64DD
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 13 Jul 2023 07:10:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbjGMDwN (ORCPT
+        id S234113AbjGMHKY (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 12 Jul 2023 23:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        Thu, 13 Jul 2023 03:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbjGMDwM (ORCPT
+        with ESMTP id S230281AbjGMHKX (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 12 Jul 2023 23:52:12 -0400
-Received: from out-3.mta1.migadu.com (out-3.mta1.migadu.com [IPv6:2001:41d0:203:375::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5ABF1BF2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jul 2023 20:52:10 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 23:52:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689220328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vhk+LWYZuFsg6MH/5PRvcr3hByEuKg0581vbBlxGO2s=;
-        b=dQwZB55t2fV59oSEfoIzUoMl+9yFN2LZ/pgaPSjB10ZI5CUQGmF781qe/lVoS4zUfJKmSz
-        VR2uImR/wNmcSvPdGliEBGIuF4V2Ps+AjAAKsVYaVt3FZ11BWKZDmWvzHOekFBR0KGGG5B
-        eXS8Dtce+MDyhb90doooWkusAe+3eAc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Randy Dunlap <rdunlap@infradead.org>
+        Thu, 13 Jul 2023 03:10:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0304C119;
+        Thu, 13 Jul 2023 00:10:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8821261A32;
+        Thu, 13 Jul 2023 07:10:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6A40C433C7;
+        Thu, 13 Jul 2023 07:10:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689232222;
+        bh=CwwZLbf50/yKNG71WtMT6hp+RFL2iUj7PqM9mTItudE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oQTuaLSZAsq+RbpeLBSscKS5PyW9f99Krhj2zlzaibKk8ohn35QslzJeBIYF/Jk/5
+         dPUEYOEluL+f/OPo+xKud4VElR8FQgWa6740UlODGXqR+qBXJLyxnsR/7rtkZ085D6
+         S53BSpBMZ9l0q4HN0JHT8xUVSx/NUiu+PFeCLts3dfyxzuJzCp2oRlyj/bYEX1qhF+
+         0X6w6lwHb1Sv05xl865lRbuZ68ad9dXtL3fmG/zI+yB1CgJezwqFXaj25kxNdKhDu3
+         Nc5vqFO2ynAOTDxTaUK9QQcp1SpTb0yBZQdNZ6s7zeHooxMkuJxnpztnXkB5bb1EGn
+         KirHbVnBNlz0A==
+Date:   Thu, 13 Jul 2023 00:10:20 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Coly Li <colyli@suse.de>
-Subject: Re: [PATCH 12/20] bcache: move closures to lib/
-Message-ID: <20230713035204.xmaddzcdjgj3kqjw@moria.home.lan>
+        Christopher James Halse Rogers <raof@ubuntu.com>
+Subject: Re: [PATCH 10/20] lib: Export errname
+Message-ID: <20230713071020.GC2199@sol.localdomain>
 References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
- <20230712211115.2174650-13-kent.overstreet@linux.dev>
- <670a325f-f066-d146-f738-e5db1ca029ee@infradead.org>
+ <20230712211115.2174650-11-kent.overstreet@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <670a325f-f066-d146-f738-e5db1ca029ee@infradead.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230712211115.2174650-11-kent.overstreet@linux.dev>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 08:21:05PM -0700, Randy Dunlap wrote:
-> > From: Kent Overstreet <kent.overstreet@gmail.com>
-> > +	depends on CLOSURES
-> > +	select DEBUG_FS
-> > +	help
-> > +	Keeps all active closures in a linked list and provides a debugfs
-> > +	interface to list them, which makes it possible to see asynchronous
-> > +	operations that get stuck.
-> 
-> Indent those 3 help text lines with 2 additional spaces, please,
-> as documented and as is done in (most of) the rest of this file.
-> 
-> With those fixed:
-> 
-> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+On Wed, Jul 12, 2023 at 05:11:05PM -0400, Kent Overstreet wrote:
+> errname() returns the name of an errcode; this functionality is
+> otherwise only available for error pointers via %pE - bcachefs uses this
+> for better error messages.
 
-Ack
+Interesting that this exists!  It seems you meant %pe, not %pE, though.
+
+- Eric
