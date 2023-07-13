@@ -2,78 +2,111 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C047EB64DA
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 12 Jul 2023 23:57:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC574EB64DA
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 13 Jul 2023 03:21:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbjGLX5l (ORCPT
+        id S233507AbjGMDVK (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 12 Jul 2023 19:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
+        Wed, 12 Jul 2023 23:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbjGLX5k (ORCPT
+        with ESMTP id S233421AbjGMDVJ (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 12 Jul 2023 19:57:40 -0400
-Received: from out-38.mta0.migadu.com (out-38.mta0.migadu.com [IPv6:2001:41d0:1004:224b::26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843601720;
-        Wed, 12 Jul 2023 16:57:39 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 19:57:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689206257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ntdiH/9sZyPkX/RAlGtOauWZ/h52hcGnhVXlBm1OLYc=;
-        b=FaqRzEurnql+rDFATLUYd/x9WAFOzSdHEuehQScMYfjIAqc3d1FAiOHkdy47VU+Nv5Y0w8
-        kiTq+YqHDxKpNWR26v0707KjUtWeTjYjOBEXpkdds2y0JqiDQhYpNi2qRCmtzCBPpPrctC
-        ws/HVv/J5q+UyVNpXv1b3bYgCRzSFAU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
-        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
-        jack@suse.cz, andreas.gruenbacher@gmail.com, brauner@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        dhowells@redhat.com, snitzer@kernel.org
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230712235731.l47sxuhfeonygciv@moria.home.lan>
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan>
- <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <20230712221012.GA11431@frogsfrogsfrogs>
+        Wed, 12 Jul 2023 23:21:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6059810FC;
+        Wed, 12 Jul 2023 20:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=605YgMfajbHUM8zyPverYiNrP/gL/svBXPBHjEAyzKA=; b=BDiydvVJ4ED4g+lWwgib5QO/7H
+        QE/h5ih5ZbmG0yjhU0PPEXbHnulFBdGPWy/GGmjw9G1rAjAOYZW8kV7/ryaNP+H/Yw0aS5YW+VuBG
+        Dx6iikGUC33E/7DjrAwWYyYoqaCOmsyMg/daZ+KIdMkj4MLNoMNSVrGQVg8bctIhNbZDL2dty1ksW
+        ZyBtcyRrVxk8cumG5VATCfRokvtNqFSAjIA+/V71ACX9LOL1VqsiKkv7swjvjPtkFB85ByoY+KBRi
+        L6YypChaDTu2RDTBhQ9x84gcfgbMD5epaOhIFH+BSimfhR4jiBl3jBkJzkbF1SHW+8OlKN2gymFKq
+        I9EWrwxw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qJmt9-001oD3-2n;
+        Thu, 13 Jul 2023 03:21:07 +0000
+Message-ID: <670a325f-f066-d146-f738-e5db1ca029ee@infradead.org>
+Date:   Wed, 12 Jul 2023 20:21:05 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230712221012.GA11431@frogsfrogsfrogs>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 12/20] bcache: move closures to lib/
+Content-Language: en-US
+To:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Coly Li <colyli@suse.de>
+References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
+ <20230712211115.2174650-13-kent.overstreet@linux.dev>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230712211115.2174650-13-kent.overstreet@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 03:10:12PM -0700, Darrick J. Wong wrote:
-> On Tue, Jul 11, 2023 at 10:54:59PM -0400, Kent Overstreet wrote:
-> >  - Also: not directly related to upstreaming, but relevant for the
-> >    community: we talked about getting together a meeting with some of
-> >    the btrfs people to gather design input, ideas, and lessons learned.
+Hi,
+
+LGTM.
+I have a couple of small nits below...
+
+On 7/12/23 14:11, Kent Overstreet wrote:
+> From: Kent Overstreet <kent.overstreet@gmail.com>
 > 
-> Please invite me too! :)
+> Prep work for bcachefs - being a fork of bcache it also uses closures
 > 
-> Granted XFS doesn't do multi-device support (for large values of
-> 'multi') but now that I've spent 6 years of my life concentrating on
-> repairability for XFS, I might have a few things to say about bcachefs.
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Acked-by: Coly Li <colyli@suse.de>
+> ---
+>  drivers/md/bcache/Kconfig                     | 10 +-----
+>  drivers/md/bcache/Makefile                    |  4 +--
+>  drivers/md/bcache/bcache.h                    |  2 +-
+>  drivers/md/bcache/super.c                     |  1 -
+>  drivers/md/bcache/util.h                      |  3 +-
+>  .../md/bcache => include/linux}/closure.h     | 17 +++++----
+>  lib/Kconfig                                   |  3 ++
+>  lib/Kconfig.debug                             |  9 +++++
+>  lib/Makefile                                  |  2 ++
+>  {drivers/md/bcache => lib}/closure.c          | 35 +++++++++----------
+>  10 files changed, 43 insertions(+), 43 deletions(-)
+>  rename {drivers/md/bcache => include/linux}/closure.h (97%)
+>  rename {drivers/md/bcache => lib}/closure.c (88%)
+> 
 
-Absolutely!
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index ce51d4dc68..3ee25d5dae 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1637,6 +1637,15 @@ config DEBUG_NOTIFIERS
+>  	  This is a relatively cheap check but if you care about maximum
+>  	  performance, say N.
+>  
+> +config DEBUG_CLOSURES
+> +	bool "Debug closures (bcache async widgits)"
 
-Maybe we could start brainstorming ideas to cover now, on the list? I
-honestly know XFS so little (I've read code here and there, but I don't
-know much about the high level structure) that I wouldn't know where to
-start.
+	                                   widgets
 
-Filesystems are such a huge world of "oh, that would've made my life so
-much easier if I'd had that idea at the right time..."
+> +	depends on CLOSURES
+> +	select DEBUG_FS
+> +	help
+> +	Keeps all active closures in a linked list and provides a debugfs
+> +	interface to list them, which makes it possible to see asynchronous
+> +	operations that get stuck.
 
-> That is if I can shake off the torrent of syzbot crap long enough to
-> read anything in bcachefs.git. :(
+Indent those 3 help text lines with 2 additional spaces, please,
+as documented and as is done in (most of) the rest of this file.
 
-:(
+With those fixed:
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+thanks.
+-- 
+~Randy
