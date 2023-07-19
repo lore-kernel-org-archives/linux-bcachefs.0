@@ -2,48 +2,48 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3BF7C001DE
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 19 Jul 2023 12:51:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E203C04A6A
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 19 Jul 2023 12:51:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjGSMvD (ORCPT
+        id S229771AbjGSMvD (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
         Wed, 19 Jul 2023 08:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjGSMvB (ORCPT
+        with ESMTP id S229800AbjGSMvB (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
         Wed, 19 Jul 2023 08:51:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9504F7
-        for <linux-bcachefs@vger.kernel.org>; Wed, 19 Jul 2023 05:50:13 -0700 (PDT)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160901711
+        for <linux-bcachefs@vger.kernel.org>; Wed, 19 Jul 2023 05:50:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1689771012;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sTS8ElWYI2fGmrRa7cag/OgsfUgtNhAwtHq6Plh7BDQ=;
-        b=XOtlpX2kALFZsIO+xrOsfhxxxuvGOcMDppy56tOcHT2JMClL1UkA0hIrGc0d9g/i/6flc0
-        gKB75nLKWi+zk8lZlwQMCQvGPJDe1I4Xf6Zlpf6MTLUfzB4xtwXlHWKjfhC8ukB/bRCmqr
-        TdoRwPmAJ9GKgXEVYfci5ii2tg9kGEo=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-624-4Q9UQSd3P5OpwjYyuADhXg-1; Wed, 19 Jul 2023 08:50:11 -0400
-X-MC-Unique: 4Q9UQSd3P5OpwjYyuADhXg-1
+        bh=w9U6eavRmzwhBUeQHUbpBZ7HVbiJ1XM4UMe3BWdAY80=;
+        b=OGeb3Wy8jVy6UvioWC41EsNkPATzzRUWCdDa2ngUa6FPEuBlHFbRkUbVx7f8WHXDhphpF4
+        gH418CN1Csf5yIWt6h1omRGXgcfTazDajjOX5WAZjQRPs2qvXdMfoWrk8mLMIc7XonjFZs
+        nmFLY1NxsiRbyg/e+eMW1NaRFiS9XfY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-323-GC2bU0pXOK660Qn500b7ow-1; Wed, 19 Jul 2023 08:50:10 -0400
+X-MC-Unique: GC2bU0pXOK660Qn500b7ow-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BA78D29ABA11
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 275C9891F24
         for <linux-bcachefs@vger.kernel.org>; Wed, 19 Jul 2023 12:50:10 +0000 (UTC)
 Received: from bfoster.redhat.com (unknown [10.22.16.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A1053200AD6E
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1080C200AD6E
         for <linux-bcachefs@vger.kernel.org>; Wed, 19 Jul 2023 12:50:10 +0000 (UTC)
 From:   Brian Foster <bfoster@redhat.com>
 To:     linux-bcachefs@vger.kernel.org
-Subject: [PATCH 5/5] bcachefs: use prejournaled key updates for write buffer flushes
-Date:   Wed, 19 Jul 2023 08:53:06 -0400
-Message-Id: <20230719125306.109342-6-bfoster@redhat.com>
+Subject: [PATCH 1/5] bcachefs: remove duplicate code between backpointer update paths
+Date:   Wed, 19 Jul 2023 08:53:02 -0400
+Message-Id: <20230719125306.109342-2-bfoster@redhat.com>
 In-Reply-To: <20230719125306.109342-1-bfoster@redhat.com>
 References: <20230719125306.109342-1-bfoster@redhat.com>
 MIME-Version: 1.0
@@ -54,96 +54,82 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-The write buffer mechanism journals keys twice in certain
-situations. A key is always journaled on write buffer insertion, and
-is potentially journaled again if a write buffer flush falls into
-either of the slow btree insert paths. This has shown to cause
-journal recovery ordering problems in the event of an untimely
-crash.
-
-For example, consider if a key is inserted into index 0 of a write
-buffer, the active write buffer switches to index 1, the key is
-deleted in index 1, and then index 0 is flushed. If the original key
-is rejournaled in the btree update from the index 0 flush, the (now
-deleted) key is journaled in a seq buffer ahead of the latest
-version of key (which was journaled when the key was deleted in
-index 1). If the fs crashes while this is still observable in the
-log, recovery sees the key from the btree update after the delete
-key from the write buffer insert, which is the incorrect order. This
-problem is occasionally reproduced by generic/388 and generally
-manifests as one or more backpointer entry inconsistencies.
-
-To avoid this problem, never rejournal write buffered key updates to
-the associated btree. Instead, use prejournaled key updates to pass
-the journal seq of the write buffer insert down to the btree insert,
-which updates the btree leaf pin to reflect the seq of the key.
-
-Note that tracking the seq is required instead of just using
-NOJOURNAL here because otherwise we lose protection of the write
-buffer pin when the buffer is flushed, which means the key can fall
-off the tail of the on-disk journal before the btree leaf is flushed
-and lead to similar recovery inconsistencies.
-
 Signed-off-by: Brian Foster <bfoster@redhat.com>
 ---
- fs/bcachefs/btree_write_buffer.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ fs/bcachefs/backpointers.c | 18 +-----------------
+ fs/bcachefs/backpointers.h |  8 ++++----
+ 2 files changed, 5 insertions(+), 21 deletions(-)
 
-diff --git a/fs/bcachefs/btree_write_buffer.c b/fs/bcachefs/btree_write_buffer.c
-index 6c30a72e6eee..5f96db539fd7 100644
---- a/fs/bcachefs/btree_write_buffer.c
-+++ b/fs/bcachefs/btree_write_buffer.c
-@@ -75,7 +75,7 @@ static int bch2_btree_write_buffer_flush_one(struct btree_trans *trans,
- 	}
- 	return 0;
- trans_commit:
--	return  bch2_trans_update(trans, iter, &wb->k, 0) ?:
-+	return  bch2_trans_update_seq(trans, wb->journal_seq, iter, &wb->k, 0) ?:
- 		bch2_trans_commit(trans, NULL, NULL,
- 				  commit_flags|
- 				  BTREE_INSERT_NOCHECK_RW|
-@@ -103,6 +103,32 @@ static union btree_write_buffer_state btree_write_buffer_switch(struct btree_wri
- 	return old;
+diff --git a/fs/bcachefs/backpointers.c b/fs/bcachefs/backpointers.c
+index 7c1e6546d054..8747c5e19f99 100644
+--- a/fs/bcachefs/backpointers.c
++++ b/fs/bcachefs/backpointers.c
+@@ -134,31 +134,15 @@ static noinline int backpointer_mod_err(struct btree_trans *trans,
  }
  
-+/*
-+ * Update a btree with a write buffered key using the journal seq of the
-+ * original write buffer insert.
-+ *
-+ * It is not safe to rejournal the key once it has been inserted into the write
-+ * buffer because that may break recovery ordering. For example, the key may
-+ * have already been modified in the active write buffer in a seq that comes
-+ * before the current transaction. If we were to journal this key again and
-+ * crash, recovery would process updates in the wrong order.
-+ */
-+static int
-+btree_write_buffered_insert(struct btree_trans *trans,
-+			  struct btree_write_buffered_key *wb)
-+{
-+	struct btree_iter iter;
-+	int ret;
-+
-+	bch2_trans_iter_init(trans, &iter, wb->btree, bkey_start_pos(&wb->k.k),
-+			     BTREE_ITER_CACHED|BTREE_ITER_INTENT);
-+
-+	ret   = bch2_btree_iter_traverse(&iter) ?:
-+		bch2_trans_update_seq(trans, wb->journal_seq, &iter, &wb->k, 0);
-+	bch2_trans_iter_exit(trans, &iter);
-+	return ret;
-+}
-+
- int __bch2_btree_write_buffer_flush(struct btree_trans *trans, unsigned commit_flags,
- 				    bool locked)
+ int bch2_bucket_backpointer_mod_nowritebuffer(struct btree_trans *trans,
+-				struct bpos bucket,
++				struct bkey_i_backpointer *bp_k,
+ 				struct bch_backpointer bp,
+ 				struct bkey_s_c orig_k,
+ 				bool insert)
  {
-@@ -238,7 +264,7 @@ int __bch2_btree_write_buffer_flush(struct btree_trans *trans, unsigned commit_f
- 				commit_flags|
- 				BTREE_INSERT_NOFAIL|
- 				BTREE_INSERT_JOURNAL_RECLAIM,
--				__bch2_btree_insert(trans, i->btree, &i->k, 0));
-+				btree_write_buffered_insert(trans, i));
- 		if (bch2_fs_fatal_err_on(ret, c, "%s: insert error %s", __func__, bch2_err_str(ret)))
- 			break;
+-	struct bch_fs *c = trans->c;
+-	struct bkey_i_backpointer *bp_k;
+ 	struct btree_iter bp_iter;
+ 	struct bkey_s_c k;
+ 	int ret;
+ 
+-	bp_k = bch2_trans_kmalloc_nomemzero(trans, sizeof(struct bkey_i_backpointer));
+-	ret = PTR_ERR_OR_ZERO(bp_k);
+-	if (ret)
+-		return ret;
+-
+-	bkey_backpointer_init(&bp_k->k_i);
+-	bp_k->k.p = bucket_pos_to_bp(c, bucket, bp.bucket_offset);
+-	bp_k->v = bp;
+-
+-	if (!insert) {
+-		bp_k->k.type = KEY_TYPE_deleted;
+-		set_bkey_val_u64s(&bp_k->k, 0);
+-	}
+-
+ 	k = bch2_bkey_get_iter(trans, &bp_iter, BTREE_ID_backpointers,
+ 			       bp_k->k.p,
+ 			       BTREE_ITER_INTENT|
+diff --git a/fs/bcachefs/backpointers.h b/fs/bcachefs/backpointers.h
+index 87e31aa1975c..547e0617602a 100644
+--- a/fs/bcachefs/backpointers.h
++++ b/fs/bcachefs/backpointers.h
+@@ -54,7 +54,7 @@ static inline struct bpos bucket_pos_to_bp(const struct bch_fs *c,
+ 	return ret;
+ }
+ 
+-int bch2_bucket_backpointer_mod_nowritebuffer(struct btree_trans *, struct bpos,
++int bch2_bucket_backpointer_mod_nowritebuffer(struct btree_trans *, struct bkey_i_backpointer *,
+ 				struct bch_backpointer, struct bkey_s_c, bool);
+ 
+ static inline int bch2_bucket_backpointer_mod(struct btree_trans *trans,
+@@ -67,9 +67,6 @@ static inline int bch2_bucket_backpointer_mod(struct btree_trans *trans,
+ 	struct bkey_i_backpointer *bp_k;
+ 	int ret;
+ 
+-	if (unlikely(bch2_backpointers_no_use_write_buffer))
+-		return bch2_bucket_backpointer_mod_nowritebuffer(trans, bucket, bp, orig_k, insert);
+-
+ 	bp_k = bch2_trans_kmalloc_nomemzero(trans, sizeof(struct bkey_i_backpointer));
+ 	ret = PTR_ERR_OR_ZERO(bp_k);
+ 	if (ret)
+@@ -84,6 +81,9 @@ static inline int bch2_bucket_backpointer_mod(struct btree_trans *trans,
+ 		set_bkey_val_u64s(&bp_k->k, 0);
  	}
+ 
++	if (unlikely(bch2_backpointers_no_use_write_buffer))
++		return bch2_bucket_backpointer_mod_nowritebuffer(trans, bp_k, bp, orig_k, insert);
++
+ 	return bch2_trans_update_buffered(trans, BTREE_ID_backpointers, &bp_k->k_i);
+ }
+ 
 -- 
 2.40.1
 
