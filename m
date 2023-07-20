@@ -2,81 +2,88 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F6AFEB64DA
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 20 Jul 2023 12:58:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 933B9EB64DA
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 20 Jul 2023 21:27:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjGTM63 (ORCPT
+        id S229972AbjGTV1Q (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 20 Jul 2023 08:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
+        Thu, 20 Jul 2023 17:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjGTM62 (ORCPT
+        with ESMTP id S229805AbjGTV1P (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:58:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B12110D2
-        for <linux-bcachefs@vger.kernel.org>; Thu, 20 Jul 2023 05:57:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689857862;
+        Thu, 20 Jul 2023 17:27:15 -0400
+Received: from out-13.mta0.migadu.com (out-13.mta0.migadu.com [91.218.175.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4B0271D
+        for <linux-bcachefs@vger.kernel.org>; Thu, 20 Jul 2023 14:27:03 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 17:26:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1689888421;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BgjU3Z8BJ1HH/hIyFDOYjbgiIpABadDIfH/RKXLj3aA=;
-        b=S53GRCsOpPJ1JGDPjJAZOnDoOrnCS15qBsoY7o8spvk7sDWbECUF1TII+9h6J6d/BTGgys
-        TyOFBVe2nfvtsktCO26rzmblwZzJonqHE2A1OhEDYqJJ3K0rj5WMl5KCe8qk0frKNzhyxX
-        7q9RVijwqbB/A2zVGy335mXbvr7JmOc=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-628-o2aqzmI6PDqBlqgqkE_y7A-1; Thu, 20 Jul 2023 08:57:40 -0400
-X-MC-Unique: o2aqzmI6PDqBlqgqkE_y7A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D601A3852D83;
-        Thu, 20 Jul 2023 12:57:36 +0000 (UTC)
-Received: from bfoster.redhat.com (unknown [10.22.32.199])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B0C991121314;
-        Thu, 20 Jul 2023 12:57:36 +0000 (UTC)
-From:   Brian Foster <bfoster@redhat.com>
-To:     linux-bcachefs@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] MAINTAINERS: add Brian Foster as a reviewer for bcachefs
-Date:   Thu, 20 Jul 2023 09:00:33 -0400
-Message-ID: <20230720130033.5730-1-bfoster@redhat.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=rDJqpSxV2Vo06be+nT0rbnICs5UL+Qu2oyd8D39Yt8A=;
+        b=cGDHWgqkv+qWMqhzYuZiqQIf3pqnkm+HKNadENypeggpd6ryDdODMyhXC+SymQFUc8phDm
+        oP9AitiY6DLuqBdEHHwfmzdh0GODWdiUGbku0S1vlvnnjS9lxqy5FjNLekgpmfkd8unnFX
+        B9YXYM/4bjlAKHjNI9DI28ykMU+2is0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH 5/5] bcachefs: use prejournaled key updates for write
+ buffer flushes
+Message-ID: <20230720212657.tfiootulv3aksq7f@moria.home.lan>
+References: <20230719125306.109342-1-bfoster@redhat.com>
+ <20230719125306.109342-6-bfoster@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719125306.109342-6-bfoster@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Brian has been playing with bcachefs for several months now and has
-offerred to commit time to patch review.
+On Wed, Jul 19, 2023 at 08:53:06AM -0400, Brian Foster wrote:
+> The write buffer mechanism journals keys twice in certain
+> situations. A key is always journaled on write buffer insertion, and
+> is potentially journaled again if a write buffer flush falls into
+> either of the slow btree insert paths. This has shown to cause
+> journal recovery ordering problems in the event of an untimely
+> crash.
+> 
+> For example, consider if a key is inserted into index 0 of a write
+> buffer, the active write buffer switches to index 1, the key is
+> deleted in index 1, and then index 0 is flushed. If the original key
+> is rejournaled in the btree update from the index 0 flush, the (now
+> deleted) key is journaled in a seq buffer ahead of the latest
+> version of key (which was journaled when the key was deleted in
+> index 1). If the fs crashes while this is still observable in the
+> log, recovery sees the key from the btree update after the delete
+> key from the write buffer insert, which is the incorrect order. This
+> problem is occasionally reproduced by generic/388 and generally
+> manifests as one or more backpointer entry inconsistencies.
+> 
+> To avoid this problem, never rejournal write buffered key updates to
+> the associated btree. Instead, use prejournaled key updates to pass
+> the journal seq of the write buffer insert down to the btree insert,
+> which updates the btree leaf pin to reflect the seq of the key.
+> 
+> Note that tracking the seq is required instead of just using
+> NOJOURNAL here because otherwise we lose protection of the write
+> buffer pin when the buffer is flushed, which means the key can fall
+> off the tail of the on-disk journal before the btree leaf is flushed
+> and lead to similar recovery inconsistencies.
 
-Signed-off-by: Brian Foster <bfoster@redhat.com>
----
+Fairly simple, and it looks like this fixes all the backpointers errors
+- nice, applied.
 
-Just not in the next week or so, since I'm heading off on vacation. :)
+So journal replay does something similar, where we're doing a btree
+update for a key that already lives in a particular journal entry and
+the dependency needs to be recorded. Could you have a quick look to see
+if there's any cleanups/unification worth doing there? Or if not, just
+leave a note.
 
-Brian
-
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 48763cc35386..22c57b3bc211 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3524,6 +3524,7 @@ F:	drivers/md/bcache/
- 
- BCACHEFS
- M:	Kent Overstreet <kent.overstreet@linux.dev>
-+R:	Brian Foster <bfoster@redhat.com>
- L:	linux-bcachefs@vger.kernel.org
- S:	Supported
- C:	irc://irc.oftc.net/bcache
--- 
-2.41.0
-
+Also, did you look at adding the tracepoint we talked about, for when
+we're doing btree updates that are already at the end of the journal and
+immediately need to be flushed?
