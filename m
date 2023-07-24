@@ -2,55 +2,65 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 083F2C001DF
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 24 Jul 2023 17:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04805C0015E
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 24 Jul 2023 17:31:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbjGXRM2 (ORCPT
+        id S229509AbjGXRbH (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 24 Jul 2023 13:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
+        Mon, 24 Jul 2023 13:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjGXRM1 (ORCPT
+        with ESMTP id S229485AbjGXRbG (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:12:27 -0400
-Received: from out-22.mta1.migadu.com (out-22.mta1.migadu.com [IPv6:2001:41d0:203:375::16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EEE1B5
-        for <linux-bcachefs@vger.kernel.org>; Mon, 24 Jul 2023 10:12:26 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 13:12:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690218744;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VKSf0oZWYPnjPRt9gJl7F0xlMmr74HTsGzCMo7Ce264=;
-        b=W52ixk3T6SnPvO4uvIgowf9EYtwJoAfgssjcL2sMW7Z5ItaNsTBL7vPhMcU/7k6ZmoyrEI
-        zFMrr2RegQKwKLlz969P7QDrYkj6Z8wLTTAVugfAuM1MRgugRFFTkZ7XW7TfK4nv0zmvFE
-        fzIYZju3l7fzY2K0/rVu//FwqWE/V4o=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [biweekly bcachefs cabal]
-Message-ID: <20230724171219.ok74izghpoxgtfak@moria.home.lan>
-References: <20230710164123.za3fdhb5lozwwq6y@moria.home.lan>
- <20230711-glotz-unmotiviert-83ba8323579c@brauner>
+        Mon, 24 Jul 2023 13:31:06 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB30E1;
+        Mon, 24 Jul 2023 10:31:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FilRVP5bIdReycpGXPo+d2Y8wo2WCLjMqoFkGhMrdKo=; b=aCinILooTQROh4/AvSE4/BWUnI
+        NxeicWVpuH5BySDSP7ADqbclwYVtL2OW9p0XOZEj4uDwzlzuFumO0c6k/GVb1ygAuEGXhiRvHfSYg
+        1YRL8FzXM2X6skCEH+BJmR7VSfdX1hF/f5zsO6Aw8RoxQBZ7Mqv8M761HQTslyk4yxjLqu67ln9Ge
+        vtlf2yjM2or6LfOrpvb2f6w2Dd3zYzALmZbTwlp5hAwt7N/F6tFAIqtVvNpboEso7kTROiG616cOE
+        O6jCUWkbpTZj0ooyHrGbJ46/SKtqKCGckVyufxDleejKft+uxavehekRZ1uAC60511+uGBigZvEXn
+        Z8r5/crg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qNzOj-0053r0-01;
+        Mon, 24 Jul 2023 17:31:05 +0000
+Date:   Mon, 24 Jul 2023 10:31:04 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 04/20] block: Add some exports for bcachefs
+Message-ID: <ZL61WIpYp/tJ6XH1@infradead.org>
+References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
+ <20230712211115.2174650-5-kent.overstreet@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230711-glotz-unmotiviert-83ba8323579c@brauner>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230712211115.2174650-5-kent.overstreet@linux.dev>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 09:30:57AM +0200, Christian Brauner wrote:
-> On Mon, Jul 10, 2023 at 12:41:23PM -0400, Kent Overstreet wrote:
-> > Cabal meeting is tomorrow at 1 pm eastern.
-> > 
-> > We'll be talking about upstreaming, gathering input and deciding what
-> > still needs to be worked on - shoot me an email if you'd like an invite.
+On Wed, Jul 12, 2023 at 05:10:59PM -0400, Kent Overstreet wrote:
+> From: Kent Overstreet <kent.overstreet@gmail.com>
 > 
-> I can't make it tomorrow but I'll attend the next one.
+>  - bio_set_pages_dirty(), bio_check_pages_dirty() - dio path
 
-Hey, checking in - are you coming to the meeting? It's happening right
-now
+Why?  We've so far have been able to get away without file systems
+reinventing their own DIO path.  I'd really like to keep it that way,
+so if you think the iomap dio code should be improved please explain
+why.  And please also cycle the fsdevel list in.
+
+>  - blk_status_to_str() - error messages
+>  - bio_add_folio() - this should definitely be exported for everyone,
+>    it's the modern version of bio_add_page()
+
+These look ok to me to go in when the actual user shows up.
