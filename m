@@ -2,72 +2,68 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7966FC00528
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 24 Jul 2023 17:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76061C0015E
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 24 Jul 2023 17:35:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjGXReW (ORCPT
+        id S230458AbjGXRfv (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 24 Jul 2023 13:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        Mon, 24 Jul 2023 13:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbjGXReV (ORCPT
+        with ESMTP id S230505AbjGXRft (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:34:21 -0400
+        Mon, 24 Jul 2023 13:35:49 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01113188;
-        Mon, 24 Jul 2023 10:34:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0C8D3;
+        Mon, 24 Jul 2023 10:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1RR7SJ5J9bSabO2nn8ri1D3skM02qsCIJVqOYYsqxxM=; b=ObOKjtJ/THa+xqWvy7oYFf9v1F
-        T1jW7wp0gQh1KChroWUqIsXM2WD6qHEjUlVhy1EXQn+y2hxVI8iF1zCbTv5liX9EwkOvfd9uLZ1DE
-        nfqrtlYWV/MYoJGOC4jhjB/XXMW4MCdMEL3h2i0H7Z/ifAXtYbbpLBh9QI24+qa8H0q7Vk8QNRtGS
-        OAYzoUDt/quatb9MyXKQmfXwj7s0rSuPymo08nhQ5qY4AA+hIQIy4VU7sbfUwGrrrxL104Es3d1rR
-        0k3G7Y+VKToa54/y+PSAsQ9Qcw9vZ2rSma6Kpw4etEox2eXO1JuPbFqd6nOhUydeAjpQ7s6TVAz2q
-        AsmhqVuA==;
+        bh=wIB4vt+V8SoWEpCnfmMPCk+fw2G2kkNB8igJzqls7oU=; b=Pzbx30YS2Rg7H7yLPpADxdF85r
+        vsuXhVDHp+K9vmtVADs2Rwp6vLh8qZ1pt6rwTPReURqH9zDC8IJf6ZzjI5hqLuyD95bmsLrk7bUhS
+        T9TRuajPRSeD3nca7V56HUsal8BVu7XyOfKkoT862hdolm73u5wBEmhPD1YVXSlCLfipixJIZa4IP
+        CG/xiLkWs7br2Jd51zong0u9tGNTM58j45TswhILhrJ0Hpkmh0fELtLT0JjU8CkDRDewAws7d8zVh
+        LLH5Uyl0zB7MX/X1sASxmhSx3catmsmBgaKnpzbWfUr100fw7h5pIlVwwnrGlJ+fI8BZ+3SfC/dMe
+        WyH5TThw==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qNzRs-0054IL-2J;
-        Mon, 24 Jul 2023 17:34:20 +0000
-Date:   Mon, 24 Jul 2023 10:34:20 -0700
+        id 1qNzTF-0054TX-0c;
+        Mon, 24 Jul 2023 17:35:45 +0000
+Date:   Mon, 24 Jul 2023 10:35:45 -0700
 From:   Christoph Hellwig <hch@infradead.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH 05/20] block: Allow bio_iov_iter_get_pages() with
- bio->bi_bdev unset
-Message-ID: <ZL62HKrAJapXfcaR@infradead.org>
+        linux-kernel@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Subject: Re: [PATCH 06/20] block: Bring back zero_fill_bio_iter
+Message-ID: <ZL62cVmeI6t7o+G9@infradead.org>
 References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
- <20230712211115.2174650-6-kent.overstreet@linux.dev>
+ <20230712211115.2174650-7-kent.overstreet@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230712211115.2174650-6-kent.overstreet@linux.dev>
+In-Reply-To: <20230712211115.2174650-7-kent.overstreet@linux.dev>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 05:11:00PM -0400, Kent Overstreet wrote:
-> bio_iov_iter_get_pages() trims the IO based on the block size of the
-> block device the IO will be issued to.
+On Wed, Jul 12, 2023 at 05:11:01PM -0400, Kent Overstreet wrote:
+> From: Kent Overstreet <kent.overstreet@gmail.com>
 > 
-> However, bcachefs is a multi device filesystem; when we're creating the
-> bio we don't yet know which block device the bio will be submitted to -
-> we have to handle the alignment checks elsewhere.
+> This reverts 6f822e1b5d9dda3d20e87365de138046e3baa03a - this helper is
+> used by bcachefs.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: linux-block@vger.kernel.org
+> ---
+>  block/bio.c         | 6 +++---
+>  include/linux/bio.h | 7 ++++++-
+>  2 files changed, 9 insertions(+), 4 deletions(-)
 
-So, we've been trying really hard to always make sure to pass a bdev
-to anything that allocates a bio, mostly due due the fact that we
-actually derive information like the blk-cgroup associations from it.
-
-The whole blk-cgroup stuff is actually a problem for non-trivial
-multi-device setups.  XFS gets away fine because each file just
-sits on either the main or RT device and no user I/O goes to the
-log device, and btrfs papers over it in a weird way by always
-associating with the last added device, which is in many ways gross
-and wrong, but at least satisfies the assumptions made in blk-cgroup.
-
-How do you plan to deal with this?  Because I really don't want folks
-just to go ahead and ignore the issues, we need to actually sort this
-out.
+I really don't see any point in offering this in the block layer.  By
+the lack of any other caller it obviously isn't such a generic and
+always used helper, but more importantly it literally is three lines
+of code to implement it.
