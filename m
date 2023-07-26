@@ -2,68 +2,71 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ACE4C001DF
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 25 Jul 2023 08:28:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41D20C001B0
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 26 Jul 2023 13:20:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbjGYI2x (ORCPT
+        id S233810AbjGZNUo (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 25 Jul 2023 04:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
+        Wed, 26 Jul 2023 09:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232992AbjGYI2R (ORCPT
+        with ESMTP id S229605AbjGZNUn (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:28:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D0A10C8;
-        Tue, 25 Jul 2023 01:28:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D91B614BF;
-        Tue, 25 Jul 2023 08:28:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC7FDC433C7;
-        Tue, 25 Jul 2023 08:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690273694;
-        bh=88KLsMWz0HJgJ+PfirFGz8ume57SExj7s7YVmhHajTw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DMf44QlQaBa3FYIxdxL+C3EeocXvkoyPIkSW02naZFG+cm6dEgusyctX4TzzbrXZM
-         WO4Y4oNNYaodv0GZgdbqsW8m5A0RZvcudLbyzjBBNFL05LzokcMynYgqvUPyGxkgWh
-         7l2MmT4Ga/dj5jIj08WunS/BlqUfSgW0uIn1jtOr0ok+A5JJ9JVvow30gJBwgWyG4X
-         ggROF1R/pAoTYzyzi9DtcQilmsw8ooBNiR/SAqEjMxP5dSWJNb9fnvsbN964mwhi/4
-         CD8XLXm+GQx1zx2oUpGffyci6Ay9eV+/koHSxYu64EYfnA3plqa8iWMhbSgTdMxgxx
-         ivym9k1BswYXQ==
-Date:   Tue, 25 Jul 2023 10:28:10 +0200
-From:   Christian Brauner <brauner@kernel.org>
+        Wed, 26 Jul 2023 09:20:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB46128;
+        Wed, 26 Jul 2023 06:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JtKnJq+4OdOCb8ygvaESWFnDZX1W13EfB4+pNIQ8HQw=; b=d1jVnzBunFdUNsVPdzSq7i9TNm
+        X8sn3CpOIXl8dCzWeKyY6EHGLKXp84/h1froaEp/kQbupUdNJsjzV2n/GJjrLAR6ues5s5rWYuT6A
+        kMqNXjlNqTuyseVJS35MkMIBRY2qcaD/2y2N9yu6wZye9ivF9onzX4hr0kese2PljIGyXLw5X15Fk
+        eNe1uubvCOtkhgcKnTjl9E8NX9IXuGy1rH/2bKfsoXMn5ijCLRnO5ZLIF5rEcEE7tzpm9LFhPJxwL
+        JgOdaYFGXgav3Zq38hmPEdpFDvR7IYUYj/UkbVLLVJ4ufUonrCv2ABuuqNrncVEs6ePcZf0B/NKmM
+        O/kSVNSg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qOeRW-00AWGY-0E;
+        Wed, 26 Jul 2023 13:20:42 +0000
+Date:   Wed, 26 Jul 2023 06:20:42 -0700
+From:   Christoph Hellwig <hch@infradead.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [biweekly bcachefs cabal]
-Message-ID: <20230725-indiz-hinlegen-0c99aa14ea2d@brauner>
-References: <20230710164123.za3fdhb5lozwwq6y@moria.home.lan>
- <20230711-glotz-unmotiviert-83ba8323579c@brauner>
- <20230724171219.ok74izghpoxgtfak@moria.home.lan>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 04/20] block: Add some exports for bcachefs
+Message-ID: <ZMEdqvzAUbQPs0io@infradead.org>
+References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
+ <20230712211115.2174650-5-kent.overstreet@linux.dev>
+ <ZL61WIpYp/tJ6XH1@infradead.org>
+ <20230725030037.minycb3oxubajuqw@moria.home.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230724171219.ok74izghpoxgtfak@moria.home.lan>
+In-Reply-To: <20230725030037.minycb3oxubajuqw@moria.home.lan>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 01:12:19PM -0400, Kent Overstreet wrote:
-> On Tue, Jul 11, 2023 at 09:30:57AM +0200, Christian Brauner wrote:
-> > On Mon, Jul 10, 2023 at 12:41:23PM -0400, Kent Overstreet wrote:
-> > > Cabal meeting is tomorrow at 1 pm eastern.
-> > > 
-> > > We'll be talking about upstreaming, gathering input and deciding what
-> > > still needs to be worked on - shoot me an email if you'd like an invite.
-> > 
-> > I can't make it tomorrow but I'll attend the next one.
+On Mon, Jul 24, 2023 at 11:00:37PM -0400, Kent Overstreet wrote:
+> In short, iomap is heavily callback based, the bcachefs io paths are
+> not - we pass around data structures instead. I discussed this with
+> people when iomap was first being written, but iomap ended up being a
+> much more conservative approach, more in line with the old buffer heads
+> code where the generic code calls into the filesystem to obtain
+> mappings.
 > 
-> Hey, checking in - are you coming to the meeting? It's happening right
-> now
+> I'm gradually convincing people of the merits of the bcachefs approach -
+> in particular reducing indirect function calls is getting more attention
+> these days.
 
-I was traveling back from vacation yesterday and worked a bit on the
-road. Sorry about missing this. Can you please resend the invite I can
-accept. But I also somehow thought it was Tuesday.
+FYI, Matthew has had patches that convert iomap to be an iterator,
+and I've massage the first half of them and actuall got them in
+before.  I'd much rather finish off that work (even if only for
+direct I/O initially) than adding another direct I/O code.  But
+even with out that we should be able to easily pass more private
+data, in fact btrfs makes pretty heavy use of that.
