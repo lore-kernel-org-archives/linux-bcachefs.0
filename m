@@ -2,60 +2,66 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E01BC001B0
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 26 Jul 2023 13:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF8F7C001B0
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 26 Jul 2023 13:23:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbjGZNV3 (ORCPT
+        id S234010AbjGZNXK (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 26 Jul 2023 09:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
+        Wed, 26 Jul 2023 09:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233850AbjGZNV2 (ORCPT
+        with ESMTP id S233993AbjGZNXH (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:21:28 -0400
+        Wed, 26 Jul 2023 09:23:07 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7A8128;
-        Wed, 26 Jul 2023 06:21:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E42DE73;
+        Wed, 26 Jul 2023 06:23:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wdNxBNc/XKt1rGWWjT+wp501Ad4YlgkNoKw2dn6/n+k=; b=CsUu6uylvMJsB7M0iog9hiilm+
-        dVXG/HErZSBkZSiokdl6L9dvYeJ2DkORtQYLTXbpgVu/dmtaWOxbZqq7L50TEcvjzWupagZ9Blapj
-        1MZEu5BgGIlBXQxWxH1TjEXx56NRWIlF5Q47s0Nj6z99Bn5EzR5z8wkNUe3Ey6zdJ6kCJ7hYx2+3f
-        6E2OzpZEH2KKiSXuncppwMwsR6WnVotoLFvTniTcqI5ZWy8OY1k0FC6PtSUfxpWaq9iIwS3OgUXVv
-        BPaYqjK+dEgezftX0XMEoIXRV6ANT2TO2Vlr+pXAMPwOc3/f24UxEbxGjqK0DQM3Q11jEH3WH1mrC
-        M2Qa8MnA==;
+        bh=l8DL6FefQRlTO4k+CnDZGvBGUcQeC8CVjDO7YN+sTNE=; b=V8+S35FmfA8iyzobqwijZgpTTU
+        jSHsW2HpA2FzPeJw2x8ly4V0kLbrFJ4FyRt+X6XonF2EkETDzpeoMMC4l9eUEzHNoI8XfDqukvqH6
+        I6Dj1UeaNqSID+62Yr8zTBqACjQHMUUarl/FHVkEM88ejUO3sioZ9RXgfLW1lG/kltxBdGff8hqBP
+        +7vQxbFp0pkzoq5g1JS6K25vtfUKceDUVR1pCuuS9nQXgjQUn7MzW/70E+lmG++Hau6yaiB7lWTKN
+        IiI1LDAQ63xQ8JtGdiCD+mgMZbmKKax7aF5RYp+cQ+oehgADkqCEceAsY0dKIHjQnfj7C4QkZ/i9c
+        tXLK4Meg==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOeSB-00AWJw-2z;
-        Wed, 26 Jul 2023 13:21:23 +0000
-Date:   Wed, 26 Jul 2023 06:21:23 -0700
+        id 1qOeTp-00AWXQ-0K;
+        Wed, 26 Jul 2023 13:23:05 +0000
+Date:   Wed, 26 Jul 2023 06:23:05 -0700
 From:   Christoph Hellwig <hch@infradead.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     Christoph Hellwig <hch@infradead.org>,
         linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
-Subject: Re: [PATCH 06/20] block: Bring back zero_fill_bio_iter
-Message-ID: <ZMEd08XCNFE1SwoU@infradead.org>
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH 05/20] block: Allow bio_iov_iter_get_pages() with
+ bio->bi_bdev unset
+Message-ID: <ZMEeOZZcOu2p0SDP@infradead.org>
 References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
- <20230712211115.2174650-7-kent.overstreet@linux.dev>
- <ZL62cVmeI6t7o+G9@infradead.org>
- <20230725024553.bqwoyz4ywqx6fypb@moria.home.lan>
+ <20230712211115.2174650-6-kent.overstreet@linux.dev>
+ <ZL62HKrAJapXfcaR@infradead.org>
+ <20230725024312.alq7df33ckede2gb@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725024553.bqwoyz4ywqx6fypb@moria.home.lan>
+In-Reply-To: <20230725024312.alq7df33ckede2gb@moria.home.lan>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:45:53PM -0400, Kent Overstreet wrote:
-> And yet, we've had a subtle bug introduced in that code that took quite
-> awhile to be fixed - I'm not pro code duplication in general and I don't
-> think this is a good place to start.
+On Mon, Jul 24, 2023 at 10:43:12PM -0400, Kent Overstreet wrote:
+> Doing the blk-cgroup association at bio alloc time sounds broken to me,
+> because of stacking block devices - why was the association not done at
+> generic_make_request() time?
 
-I'm not sure arguing for adding a helper your can triviall implement
-yourself really helps to streamline your upstreaming process.
+Because blk-cgroup not only works at the lowest level in the stack,
+but also for stackable block devices.  It's not a design decision I
+particularly agree with, but it's been there forever.
+
+So we need to assign it when creating the bio (we used to do it at
+submission time, but the way it was done was horribly ineffcient,
+that's why I moved it to allocation time), and then when hitting a
+stacked device it get reassinged (which still is horribly inefficient).
