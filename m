@@ -2,64 +2,77 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 855BCC41513
-	for <linux-bcachefs@archiver.kernel.org>; Tue,  1 Aug 2023 19:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA914C00528
+	for <linux-bcachefs@archiver.kernel.org>; Wed,  2 Aug 2023 11:47:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbjHATFy (ORCPT
+        id S234297AbjHBLrW (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 1 Aug 2023 15:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
+        Wed, 2 Aug 2023 07:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjHATFu (ORCPT
+        with ESMTP id S231466AbjHBLrV (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:05:50 -0400
-Received: from out-126.mta1.migadu.com (out-126.mta1.migadu.com [IPv6:2001:41d0:203:375::7e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400231BEA
-        for <linux-bcachefs@vger.kernel.org>; Tue,  1 Aug 2023 12:05:48 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 15:05:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690916746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ubgLwd+hMlZdsduA9ofiwuiDejvJ/EDMtYsrpjdDbWc=;
-        b=oN3KEtYF/DC6U/4Z8RF+/oPyqvyX+f7zsgMTBMsYUJk+GH2QeRfY/DfAq0QcK2ll4twaXF
-        1BLP1XSOg1ZsMLtOUMvc4BhpQXbBmJUCJqrpsRqGV8CtiSTxQP3N1pupZ24a5g8hpPdCZU
-        CPP/0kI9X5Ba1Ib7PKmRSE8yf/QtoZg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
-Subject: Re: [PATCH 06/20] block: Bring back zero_fill_bio_iter
-Message-ID: <20230801190541.gaoq45jkffcrm3cp@moria.home.lan>
+        Wed, 2 Aug 2023 07:47:21 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B04213D;
+        Wed,  2 Aug 2023 04:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EXLK/pRlg6GpBRndxugWt2D7Ek+uHN7KXz/ZmRarsw4=; b=mk08BRK+VtOlvuIRUJCoptKPgE
+        DqWudXiToITeYjxGg2Ump/aFV02mKpyS8m/wBGj/2dl0wVVGOHsehSH3r9RR7fKsFY+F5NLuTRngH
+        0LYkrsodrW1YTW3w2Eiw7kWniT34AYp9gjRYrPt+mHE3Y+vcAOB69/lrR7YYyb3rNOMflGNZpus2C
+        RX7UO7TH7rcPQSymYTSNdTFY876US95+ZLhqvt0zY81L+0t9EYGBwrAEqGlXfkUhMPgnSCCiW+22m
+        PysldnIq1CNFql8df9GsQ5ZqpcCELmHgVwbAh0DuWj5avc3N0Y3Wpje5MqGAHbHm9lrxdCWDyN/I9
+        fkaxk/Ww==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qRAJy-004pus-2m;
+        Wed, 02 Aug 2023 11:47:18 +0000
+Date:   Wed, 2 Aug 2023 04:47:18 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH 05/20] block: Allow bio_iov_iter_get_pages() with
+ bio->bi_bdev unset
+Message-ID: <ZMpCRpNyt0EJpg9G@infradead.org>
 References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
- <20230712211115.2174650-7-kent.overstreet@linux.dev>
- <ZL62cVmeI6t7o+G9@infradead.org>
- <20230725024553.bqwoyz4ywqx6fypb@moria.home.lan>
- <ZMEd08XCNFE1SwoU@infradead.org>
+ <20230712211115.2174650-6-kent.overstreet@linux.dev>
+ <ZL62HKrAJapXfcaR@infradead.org>
+ <20230725024312.alq7df33ckede2gb@moria.home.lan>
+ <ZMEeOZZcOu2p0SDP@infradead.org>
+ <20230801190450.3lbr2hjdi7t52anx@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZMEd08XCNFE1SwoU@infradead.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230801190450.3lbr2hjdi7t52anx@moria.home.lan>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 06:21:23AM -0700, Christoph Hellwig wrote:
-> On Mon, Jul 24, 2023 at 10:45:53PM -0400, Kent Overstreet wrote:
-> > And yet, we've had a subtle bug introduced in that code that took quite
-> > awhile to be fixed - I'm not pro code duplication in general and I don't
-> > think this is a good place to start.
+On Tue, Aug 01, 2023 at 03:04:50PM -0400, Kent Overstreet wrote:
+> > Because blk-cgroup not only works at the lowest level in the stack,
+> > but also for stackable block devices.  It's not a design decision I
+> > particularly agree with, but it's been there forever.
 > 
-> I'm not sure arguing for adding a helper your can triviall implement
-> yourself really helps to streamline your upstreaming process.
+> You're setting the association only to the highest block device in the
+> stack - how on earth is it supposed to work with anything lower?
 
-I gave you my engineering reasons, you're the one who's arguing.
+Hey, ask the cgroup folks as they come up with it.  I'm not going to
+defend the logic here.
 
-And to make everything perfectly clear: this is code that I originally
-wrote, and then you started changing without CCing me - your patch that
-deleted zero_fill_bio_iter() never should've gone in.
+> And looking at bio_associate_blkg(), this code looks completely broken.
+> It's checking bio->bi_blkg, but that's just been set to NULL in
+> bio_init().
+
+It's checking bi_blkg because it can also be called from bio_set_dev.
+
+> And this is your code, so I think you need to go over this again.
+
+It's "my code" in the sene of that I did one big round of unwinding
+the even bigger mess that was there.  There is another few rounds needed
+for the code to vaguely make sense.
