@@ -2,33 +2,68 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0F02C04FDF
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 10 Aug 2023 15:55:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6957EC04A6A
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 10 Aug 2023 16:45:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235429AbjHJPzG (ORCPT
+        id S230327AbjHJQpk (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 10 Aug 2023 11:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37284 "EHLO
+        Thu, 10 Aug 2023 12:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235046AbjHJPzF (ORCPT
+        with ESMTP id S230197AbjHJQpj (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:55:05 -0400
-Received: from out-75.mta0.migadu.com (out-75.mta0.migadu.com [IPv6:2001:41d0:1004:224b::4b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795D42703
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 08:55:03 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 11:54:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691682901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AVdMMf3Ez0nvXnUUCcYf/CVTU5jvk8S0rTLkWGsI3Ww=;
-        b=ZaNmm/wUCM4tF2qUB6wyl0PsUehvP6wFsmy+WMMvK96Mqo1CXP/aV6RKOxIaO45T9ri40Y
-        1CJStFarmbHSrFPy8kEfx4XhQXF8/nbQy9FpSwUfRoHLuWLZNP/WBwmtqAeaE2brCBLdTL
-        zQ3Zc3xF50Vg0KQP4RSu4z/GsYf1N6g=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        Thu, 10 Aug 2023 12:45:39 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD66190
+        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 09:45:37 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9ba3d6157so17183931fa.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 09:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1691685936; x=1692290736;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2VFl6oEBSVVW1GcX9JfYK1W8MqF2qqEU7n/dRYGTKOo=;
+        b=cFsuPwr0/K36qvodXoJkrccjGZ1c5nZGpkYSczyKc97VTW7eTL2H4JJS7FHEKqS8oR
+         s7UYWDg4EDrwGmhDrIA1OvueSBriEKw1u0oMK4J1bTTCE2Bh8v4mrfMknQfALMPs2ki5
+         aG7ujYGB0RHJP9aw6NGxXlGPAgvfJ6uQ1QTEM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691685936; x=1692290736;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2VFl6oEBSVVW1GcX9JfYK1W8MqF2qqEU7n/dRYGTKOo=;
+        b=CPIIx2ydRxl+xP5T7xy/DzXKJZn45Kwoaihdk9u93ag6HLCt39VVCjXUt7VyPAkydz
+         FY/YiOmntUqR8+oYdD/yFGPv5ix0dwcbkGr5mACR+ajSuWFE9dFZpzLQg0jbKNynGPSX
+         NYMiH0N7efxUTLm9LR2f+C8h5dectQxGJ/U+bTzvDU+mzTxeEKZUSNRvSr60PVjinJHV
+         bZxI6lvV6erdceRfokzqb7J1h5D+vYj5OWagKHqE9BbL5mjt8Bqs+8Mshwm2fCMIAWnd
+         myaf6sZRXEF/f+Qy+HmBYyTblGPxEoYzVXbkIa2Y0l3GymypdBMW36AfREFDmToWj3nX
+         H52g==
+X-Gm-Message-State: AOJu0Yw6XFqGcJcydpfgjy6nx8xbFadyEjBxgDdM5/INAuPPabYFGWZi
+        nK6RXFe/pRn5KaM388yiFq6PrHvTxCVDa2YHAjIorw==
+X-Google-Smtp-Source: AGHT+IGykFlmQ8SoawlWrBfzi8IGEbJUnz0jJOdu9O7HjzdmH+dMuPCxEvquchRL5CJKfOokLNXDCw==
+X-Received: by 2002:a2e:7e06:0:b0:2b7:344c:a039 with SMTP id z6-20020a2e7e06000000b002b7344ca039mr2486939ljc.33.1691685935669;
+        Thu, 10 Aug 2023 09:45:35 -0700 (PDT)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
+        by smtp.gmail.com with ESMTPSA id rn16-20020a170906d93000b0098cf565d98asm1151922ejb.22.2023.08.10.09.45.35
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 09:45:35 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-523476e868dso1433027a12.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 09:45:35 -0700 (PDT)
+X-Received: by 2002:a17:907:77c4:b0:992:a80e:e5bd with SMTP id
+ kz4-20020a17090777c400b00992a80ee5bdmr2837551ejc.48.1691685626083; Thu, 10
+ Aug 2023 09:40:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+ <20230706155602.mnhsylo3pnief2of@moria.home.lan> <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
+ <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com> <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+In-Reply-To: <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 10 Aug 2023 09:40:08 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wie4U8hwRN+nYRwV4G51qXPJKr0DpjbxO1XSMZnPA_LTw@mail.gmail.com>
+Message-ID: <CAHk-=wie4U8hwRN+nYRwV4G51qXPJKr0DpjbxO1XSMZnPA_LTw@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs
+To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org, djwong@kernel.org,
         dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
@@ -36,235 +71,144 @@ Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         jack@suse.cz, andreas.gruenbacher@gmail.com, brauner@kernel.org,
         peterz@infradead.org, akpm@linux-foundation.org,
         dhowells@redhat.com, snitzer@kernel.org, axboe@kernel.dk
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan>
- <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Adding Jens to the CC:
+On Thu, 10 Aug 2023 at 08:55, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> Heh, I liked the bitfields - I prefer that to open coding structs, which
+> is a major pet peeve of mine. But the text size went down a lot a lot
+> without them (would like to know why the compiler couldn't constant fold
+> all that stuff out, but... not enough to bother).
 
-On Tue, Aug 08, 2023 at 06:27:29PM -0700, Linus Torvalds wrote:
-> [ *Finally* getting back to this, I wanted to start reviewing the
-> changes immediately after the merge window, but something else always
-> kept coming up .. ]
-> 
-> On Tue, 11 Jul 2023 at 19:55, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > So: looks like we missed the merge window. Boo :)
-> 
-> Well, looking at the latest 'bcachefs-for-upstream' state I see, I'm
-> happy to see the pre-requisites outside bcachefs being much smaller.
-> 
-> The six locks are now contained within bcachefs, and I like what I see
-> more now that it doesn't play games with 'u64' and lots of bitfields.
+Bitfields are actually absolutely *horrioble* for many many reasons.
+The bit ordering being undefined is just one of them.
 
-Heh, I liked the bitfields - I prefer that to open coding structs, which
-is a major pet peeve of mine. But the text size went down a lot a lot
-without them (would like to know why the compiler couldn't constant fold
-all that stuff out, but... not enough to bother).
+Yes, they are convenient syntax, but the downsides of them means that
+you should basically only use them for code that has absolutely zero
+subtle issues.
 
-Anyways...
+Avoid them like the plague with any kind of "data transfer issues", so
+in the kernel avoid using them for user interfaces unless you are
+willing to deal with the duplication and horror of
+__LITTLE_ENDIAN_BITFIELD etc.
 
-> I'm still not actually convinced the locks *work* correctly, but I'm
-> not seeing huge red flags. I do suspect there are memory ordering
-> issues in there that would all be hidden on x86, and some of it looks
-> strange, but not necessarily unfixable.
-> 
-> Example of oddity:
-> 
->                 barrier();
->                 w->lock_acquired = true;
-> 
-> which really smells like it should be
-> 
->                 smp_store_release(&w->lock_acquired, true);
-> 
-> (and the reader side in six_lock_slowpath() should be a
-> smp_load_acquire()) because otherwise the preceding __list_del()
-> writes would seem to possibly by re-ordered by the CPU to past the
-> lock_acquired write, causing all kinds of problems.
-> 
-> On x86, you'd never see that as an issue, since all writes are
-> releases, so the 'barrier()' compiler ordering ends up forcing the
-> right magic.
+Also avoid them if there is any chance of "raw format" issues: either
+saving binary data formats, or - as in your original code - using
+unions.
 
-Yep, agreed.
+As I pointed out your code was actively buggy, because you thought it
+was little-endian. That's not even true on little-endian machines (ie
+POWERPC is big-endian in bitfields, even when being little-endian in
+bytes!).
 
-Also, there's a mildly interesting optimization here: the thread doing
-the unlock is taking the lock on behalf of the thread waiting for the
-lock, and signalling via the waitlist entry: this means the thread
-waiting for the lock doesn't have to touch the cacheline the lock is on
-at all. IOW, a better version of the handoff that rwsem/mutex do.
+Finally, as you found out, it also easily generates horrid code. It's
+just _harder_ for compilers to do the right thing, particularly when
+it's not obvious that other parts of the structure may be "don't care"
+because they got initialized earlier (or will be initialized later).
+Together with threading requirements, compilers might do a bad job
+either because of the complexity, or simply because of subtle
+consistency rules.
 
-Been meaning to experiment with dropping osq_lock and instead just
-adding to the waitlist and spinning on w->lock_acquired; this should
-actually simplify the code and be another small optimization (less
-bouncing of the lock cacheline).
+End result: by all means use bitfields for the *simple* cases where
+they are used purely for internal C code with no form of external
+exposure, but be aware that even then the syntax convenience easily
+comes at a cost.
 
-> Some of the other oddity is around the this_cpu ops, but I suspect
-> that is at least partly then because we don't have acquire/release
-> versions of the local cpu ops that the code looks like it would want.
+> > On x86, you'd never see that as an issue, since all writes are
+> > releases, so the 'barrier()' compiler ordering ends up forcing the
+> > right magic.
+>
+> Yep, agreed.
 
-You mean using full barriers where acquire/release would be sufficient?
+But you should realize that on other architectures, I think that
+"barrier() + plain write" is actively buggy. On x86 it's safe, but on
+arm (and in fact pretty much anything but s390), the barrier() does
+nothing in SMP. Yes, it constrains the compiler, but the earlier
+writes to remove the entry from the list may happen *later* as far as
+other CPUs are concerned.
 
-> I did *not* look at any of the internal bcachefs code itself (apart
-> from the locking, obviously). I'm not that much of a low-level
-> filesystem person (outside of the vfs itself), so I just don't care
-> deeply. I care that it's maintained and that people who *are*
-> filesystem people are at least not hugely against it.
-> 
-> That said, I do think that the prerequisites should go in first and
-> independently, and through maintainers.
+Which can be a huge problem if the "struct six_lock_waiter" is on the
+stack - which I assume it is - and the waiter is just spinning on
+w->lock_acquired. The data structure may be re-used as regular stack
+space by the time the list removal code happens.
 
-Matthew was planning on sending the iov_iter patch to you - right around
-now, I believe, as a bugfix, since right now
-copy_page_from_iter_atomic() silently does crazy things if you pass it a
-compound page.
+Debugging things like that is a nightmare. And you'll never see it on
+x86, and it doesn't look possible when looking at the code, and the
+oopses on other architectures will be completely random stack
+corruption some time after it got the lock.
 
-Block layer patches aside, are there any _others_ you really want to go
-via maintainers? Because the consensus in the past when I was feeding in
-prereqs for bcachefs was that patches just for bcachefs should go with
-the bcachefs pull request.
+So this is kind of why I worry about locking. It's really easy to
+write code that works 99.9% of the time, but then breaks when you are
+unlucky. And depending on the pattern, the "when you are unlucky" may
+or may not be possible on x86. It's not like x86 has total memory
+ordering either, it's just stronger than most.
 
-> And there clearly is something very strange going on with superblock
-> handling
+> > Some of the other oddity is around the this_cpu ops, but I suspect
+> > that is at least partly then because we don't have acquire/release
+> > versions of the local cpu ops that the code looks like it would want.
+>
+> You mean using full barriers where acquire/release would be sufficient?
 
-This deserves an explanation because sget() is a bit nutty.
+Yes.
 
-The way sget() is conventionally used for block device filesystems, the
-block device open _isn't actually exclusive_ - sure, FMODE_EXCL is used,
-but the holder is the fs type pointer, so it won't exclude with other
-opens of the same fs type.
+That code looks like it should work, but be hugely less efficient than
+it might be. "smp_mb()" tends to be expensive everywhere, even x86.
 
-That means the only protection from multiple opens scribbling over each
-other is sget() itself - but if the bdev handle ever outlives the
-superblock we're completely screwed; that's a silent data corruption bug
-that we can't easily catch, and if the filesystem teardown path has any
-asynchronous stuff going on (and of course it does) that's not a hard
-mistake to make. I've observed at least one bug that looked suspiciously
-like that, but I don't think I quite pinned it down at the time.
+Of course, I might be missing some other cases. That percpu reader
+queue worries me a bit just because it ends up generating ordering
+based on two different things - the lock word _and_ the percpu word.
 
-It also forces the caller to separate opening of the block devices from
-the rest of filesystem initialization, which is a bit less than ideal.
+And I get very nervous if the final "this gets the lock" isn't some
+obvious "try_cmpxchg_acquire()" or similar, just because we've
+historically had *so* many very subtle bugs in just about every single
+lock we've ever had.
 
-Anyways, bcachefs just wants to be able to do real exclusive opens of
-the block devices, and we do all filesystem bringup with a single
-bch2_fs_open() call. I think this could be made to work with the way
-sget() wants to work, but it'd require reworking the locking in
-sget() - it does everything, including the test() and set() calls, under
-a single spinlock.
+> Matthew was planning on sending the iov_iter patch to you - right around
+> now, I believe, as a bugfix, since right now
+> copy_page_from_iter_atomic() silently does crazy things if you pass it a
+> compound page.
+>
+> Block layer patches aside, are there any _others_ you really want to go
+> via maintainers?
 
-> and the whole crazy discussion about fput being delayed. It
-> is what it is, and the patches I saw in this thread to not delay them
-> were bad.
+It was mainly just the iov and the block layer.
 
-Jens claimed AIO was broken in the same way as io_uring, but it turned
-out that it's not - the test he posted was broken.
+The superblock cases I really don't understand why you insist on just
+being different from everybody else.
 
-And io_uring really is broken here. Look, the tests that are breaking
-because of this are important ones (generic/388 in particular), and
-those tests are no good to us if they're failing because of io_uring
-crap and Jens is throwing up his hands and saying "trainwreck!" when we
-try to get it fixed.
+Your exclusivity arguments make no sense to me. Just open the damn
+thing. No other filesystem has ever had the fundamental problems you
+describe. You can do any exclusivity test you want in the
+"test()/set()" functions passed to sget().
 
-> As to the actual prereqs:
-> 
-> I'm not sure why 'd_mark_tmpfile()' didn't do the d_instantiate() that
-> everybody seems to want, but it looks fine to me. Maybe just because
-> Kent wanted the "mark" semantics for the naming. Fine.
+You say that it's a problem because of a "single spinlock", but it
+hasn't been a problem for anybody else.
 
-Originally, we were doing d_instantiate() separately, in common code,
-and the d_mark_tmpfile() was separate. Looking over the code again that
-would still be a reasonable approach, so I'd keep it that way.
+I don't understand why you are so special. The whole problem seems made-up.
 
-> The bio stuff should preferably go through Jens, or at least at a
-> minimum be acked.
+> More broadly, it would make me really happy if we could get certain
+> people to take a more constructive, "what do we really care about here
+> and how do we move forward" attitude instead of turning every
+> interaction into an opportunity to dig their heels in on process and
+> throw up barriers.
 
-So, the block layer patches have been out on the list and been
-discussed, and they got an "OK" from Jens -
-https://lore.kernel.org/linux-fsdevel/aeb2690c-4f0a-003d-ba8b-fe06cd4142d1@kernel.dk/
+Honestly, I think one huge problem here is that you've been working on
+this for a long time (what - a decade by now?) and you've made all
+these decisions that you explicitly wanted to be done independently
+and intentionally outside the kernel.
 
-But that's a little ambiguous - Jens, what do you want to do with those
-patches? I can re-send them to you now if you want to take them through
-your tree, or an ack would be great.
+And then you feel that "now it's ready to be included", and think that
+all those decisions you made outside of the mainline kernel now *have*
+to be done that way, and basically sent your first pull request as a
+fait-accompli.
 
-> The '.faults_disabled_mapping' thing is a bit odd, but I don't hate
-> it, and I could imagine that other filesystems could possibly use that
-> approach instead of the current 'pagefault_disable/enable' games and
-> ->nofault games to avoid the whole "use mmap to have the source and
-> the destination of a write be the same page" thing.
-> 
-> So as things stand now, the stuff outside bcachefs itself I don't find
-> objectionable.
-> 
-> The stuff _inside_ bcachefs I care about only in the sense that I
-> really *really* would like a locking person to look at the six locks,
-> but at the same time as long as it's purely internal to bcachefs and
-> doesn't possibly affect anything else, I'm not *too* worried about
-> what I see.
-> 
-> The thing that actually bothers me most about this all is the personal
-> arguments I saw.  That I don't know what to do about. I don't actually
-> want to merge this over the objections of Christian, now that we have
-> a responsible vfs maintainer.
+The six-locks showed some of that, but as long as they are
+bcachefs-internal, I don't much care.
 
-I don't want to do that to Christian either, I think highly of the work
-he's been doing and I don't want to be adding to his frustration. So I
-apologize for loosing my cool earlier; a lot of that was frustration
-from other threads spilling over.
+The sget() thing really just smells like "this is how I designed
+things, and that's it".
 
-But: if he's going to be raising objections, I need to know what his
-concerns are if we're going to get anywhere. Raising objections without
-saying what the concerns are shuts down discussion; I don't think it's
-unreasonable to ask people not to do that, and to try and stay focused
-on the code.
-
-He's got an open invite to the bcachefs meeting, and we were scheduled
-to talk Tuesday but he was out sick - anyways, I'm looking forward to
-hearing what he has to say.
-
-More broadly, it would make me really happy if we could get certain
-people to take a more constructive, "what do we really care about here
-and how do we move forward" attitude instead of turning every
-interaction into an opportunity to dig their heels in on process and
-throw up barriers.
-
-That burns people out, fast. And it's getting to be a problem in
--fsdevel land; I've lost count of the times I've heard Eric Sandeen
-complain about how impossible it is to get things merge, and I _really_
-hope people are taking notice about Darrick stepping away from XFS and
-asking themselves what needs to be sorted out. Darrick writes
-meticulous, well documented code; when I think of people who slip by
-hacks other people are going to regret later, he's not one of them. And
-yet, online fsck for XFS has been pushed back repeatedly because of
-petty bullshit.
-
-Scaling laws being what they are, that's a feature we're going to need,
-and more importantly XFS cannot afford to lose more people - especially
-Darrick.
-
-To speak a bit to what's been driving _me_ a bit nuts in these
-discussions, top of my list is that the guy who's been the most
-obstinate and argumentative _to this day_ refuses to CC me when touching
-code I wrote - and as a result we've had some really nasty bugs (memory
-corruption, _silent data corruption_).
-
-So that really needs to change. Let's just please have a little more
-focus on not eating people's data, and being more responsible about
-bugs.
-
-Anyways, I just want to write the best code I can. That's all I care
-about, and I'm always happy to interact with people who share that goal.
-
-Cheers,
-Kent
+                Linus
