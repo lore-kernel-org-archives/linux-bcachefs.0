@@ -2,94 +2,321 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFCA1C001E0
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 10 Aug 2023 18:09:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC50CC41513
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 10 Aug 2023 22:39:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235237AbjHJSJy (ORCPT
+        id S230113AbjHJWjq (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 10 Aug 2023 14:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
+        Thu, 10 Aug 2023 18:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbjHJSJw (ORCPT
+        with ESMTP id S229659AbjHJWjp (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:09:52 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A58E48
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 11:09:52 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99d6d5054bcso153426866b.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 11:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691690990; x=1692295790;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CdVO7LGdqPVywscLfXnXC7vbQR6Oxa8Ot+Ua+mHkMYE=;
-        b=Ea7sNbAxq5l52YuA5/kkvqgTynB0iI2IpGjDlcwSF/cyvMuRZtTmChqyQ42aC5y+5L
-         OsNhk0ed8ezMAkt0fJQdd6K5tooV+fMckUUl1X+dT88VSzioH0agUtlR/T8JFCUdFC12
-         lp4osvVuqf7ZMo45ogvh5p1cNtT9YxtEj+w5Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691690990; x=1692295790;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CdVO7LGdqPVywscLfXnXC7vbQR6Oxa8Ot+Ua+mHkMYE=;
-        b=j8CSYF/Sfe9z0Prj8OnB74uiCFCzoQki1Mly54XZ8E5nUQpeUGSJfDCjVj47S7fAO2
-         PP8N1uO3J6bK6//5t+vpexh+MYnV3nm8uZOF7yz0hsvdQlYQf8Gj9mcmML2+ddMOnf3K
-         KsabIU3gPjDnuTQsr3v72RkY96SU5V5acVBA1fz+//lF0aasHzBGAndF6twn9Up5sZPC
-         0QmWTyzK47v2Df+lymufWzVaYxSelLZdEm/7E+9j5PFPNmZ29kfYFxN3UIbdzKyt6Paj
-         Jp0n962oB8WNSF9hi4pBTn3wxyqkupYfthYHWrLdY6CQUfVetHv/9LpQzxRVUBr4JKd7
-         KJ2Q==
-X-Gm-Message-State: AOJu0Yyw3/fiFMhPB0JJ3/GipUmlZiQaqIJUQCA090PCixA3wHKxtkGt
-        hn22PUxrpaNdsy4RZXIU3v5td7lZumAEC2wrTbr8qo1F
-X-Google-Smtp-Source: AGHT+IGWQae6s+xPehDmhIuGOFRs9ATeBb0GM05QFDJziim/nICyd44G4fJPRUwd7eG/YStGW3n0xg==
-X-Received: by 2002:a17:907:c16:b0:988:d841:7f90 with SMTP id ga22-20020a1709070c1600b00988d8417f90mr3503181ejc.27.1691690990416;
-        Thu, 10 Aug 2023 11:09:50 -0700 (PDT)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id l7-20020a1709066b8700b009737b8d47b6sm1226212ejr.203.2023.08.10.11.09.49
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 11:09:49 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so4791937a12.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 11:09:49 -0700 (PDT)
-X-Received: by 2002:a05:6402:520a:b0:51e:5206:d69e with SMTP id
- s10-20020a056402520a00b0051e5206d69emr3555926edd.10.1691690989521; Thu, 10
- Aug 2023 11:09:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan> <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
- <20230810155453.6xz2k7f632jypqyz@moria.home.lan> <CAHk-=wie4U8hwRN+nYRwV4G51qXPJKr0DpjbxO1XSMZnPA_LTw@mail.gmail.com>
- <20230810180244.cx3vouaqtisklttn@moria.home.lan>
-In-Reply-To: <20230810180244.cx3vouaqtisklttn@moria.home.lan>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Aug 2023 11:09:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh6R1z=6v+qJpe7qAZGNYZK1ZMs1+dhD7FahVywnMr1Uw@mail.gmail.com>
-Message-ID: <CAHk-=wh6R1z=6v+qJpe7qAZGNYZK1ZMs1+dhD7FahVywnMr1Uw@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs
+        Thu, 10 Aug 2023 18:39:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717252D40;
+        Thu, 10 Aug 2023 15:39:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA7706649C;
+        Thu, 10 Aug 2023 22:39:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F4E6C433C8;
+        Thu, 10 Aug 2023 22:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691707183;
+        bh=NnXo9REQIU66FvtojWNWXBLeayDjhDjK23BWn55SNbs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lRrGoK9nbi/pSR5pkoZcY6Ju3cLYmqqxCi6Q241aEjoN8sHm4gCHkZPh0A3CMS603
+         A8lT+r5EjnsNkwjwmiMx3wCkMAmq2AQo32vkP5LTry2QGSGwUFXJ5RbMpzdVblxbZ5
+         NYg4BZ7ZtxwDaw6zq6VjjmE9ArfscGI6X1EexdAFZoMFOfhSmp2doSjEOhwXCyYlfa
+         Loct16TN3J1HJSmZdBWaZ/a5opgPn8UIEsXLUv3f7fwrR2ecE5UyLXf04AwJTN0bA/
+         oKD4MAmDaxe5TVM3zLj/vTmBmIhLG8YHu8etr+F9y8vx4tW7VWhB7AdDT6k4czGV2s
+         Xtnb81tt91XdA==
+Date:   Thu, 10 Aug 2023 15:39:42 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, djwong@kernel.org,
-        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
-        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
-        jack@suse.cz, andreas.gruenbacher@gmail.com, brauner@kernel.org,
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
+        sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
+        tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
+        andreas.gruenbacher@gmail.com, brauner@kernel.org,
         peterz@infradead.org, akpm@linux-foundation.org,
         dhowells@redhat.com, snitzer@kernel.org, axboe@kernel.dk
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230810223942.GG11336@frogsfrogsfrogs>
+References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+ <20230706155602.mnhsylo3pnief2of@moria.home.lan>
+ <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
+ <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
+ <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, 10 Aug 2023 at 11:02, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+On Thu, Aug 10, 2023 at 11:54:53AM -0400, Kent Overstreet wrote:
+> Adding Jens to the CC:
+
+<snip to the parts I care most about>
+
+> > and the whole crazy discussion about fput being delayed. It
+> > is what it is, and the patches I saw in this thread to not delay them
+> > were bad.
+> 
+> Jens claimed AIO was broken in the same way as io_uring, but it turned
+> out that it's not - the test he posted was broken.
+> 
+> And io_uring really is broken here. Look, the tests that are breaking
+> because of this are important ones (generic/388 in particular), and
+> those tests are no good to us if they're failing because of io_uring
+> crap and Jens is throwing up his hands and saying "trainwreck!" when we
+> try to get it fixed.
+
+FWIW I recently fixed all my stupid debian package dependencies so that
+I could actually install liburing again, and rebuilt fstests.  The very
+next morning I noticed a number of new test failures in /exactly/ the
+way that Kent said to expect:
+
+fsstress -d /mnt & <sleep then simulate fs crash>; \
+	umount /mnt; mount /dev/sda /mnt
+
+Here, umount exits before the filesystem is really torn down, and then
+mount fails because it can't get an exclusive lock on the device.  As a
+result, I can't test crash recovery or corrupted metadata shutdowns
+because of this delayed fput thing or whatever.  It all worked before
+(even with libaio in use) I turned on io_uring.
+
+Obviously, I "fixed" this by modifying fsstress to require explicit
+enabling of io_uring operations; everything went back to green after
+that.
+
+I'm not familiar enough with the kernel side of io_uring to know what
+the solution here is; I'm merely here to provide a second data point.
+
+<snip again>
+
+> > The thing that actually bothers me most about this all is the personal
+> > arguments I saw.  That I don't know what to do about. I don't actually
+> > want to merge this over the objections of Christian, now that we have
+> > a responsible vfs maintainer.
+> 
+> I don't want to do that to Christian either, I think highly of the work
+> he's been doing and I don't want to be adding to his frustration. So I
+> apologize for loosing my cool earlier; a lot of that was frustration
+> from other threads spilling over.
+> 
+> But: if he's going to be raising objections, I need to know what his
+> concerns are if we're going to get anywhere. Raising objections without
+> saying what the concerns are shuts down discussion; I don't think it's
+> unreasonable to ask people not to do that, and to try and stay focused
+> on the code.
+
+Yeah, I'm also really happy that we have a new/second VFS maintainer.  I
+figure it's going to take us a while to help Christian to get past his
+fear and horror at the things lurking in fs/ but that's something worth
+doing.
+
+(I'm not presuming to know what Christian feels about the VFS; 'fear and
+horror' is what *I* feel every time I have to go digging down there.
+I'm extrapolating about what I would need, were I a new maintainer, to
+get myself to the point where I would have an open enough mind to engage
+with new or unfamiliar concepts so that a review cycle for something as
+big as bcachefs/online fsck/whatever would be productive.)
+
+> He's got an open invite to the bcachefs meeting, and we were scheduled
+> to talk Tuesday but he was out sick - anyways, I'm looking forward to
+> hearing what he has to say.
 >
-> When using sget() in the conventional way it's not possible for
-> FMODE_EXCL to protect against concurrent opens scribbling over each
-> other because we open the block device before checking if it's already
-> mounted, and we expect that open to succeed.
+> More broadly, it would make me really happy if we could get certain
+> people to take a more constructive, "what do we really care about here
+> and how do we move forward" attitude
 
-So? Read-only operations. Don't write to anything until after you then
-have verified your exclusive status.
+...and "what are all the supporting structures that we need to have in
+place to maximize the chances that we'll accomplish those goals"?
 
-If you think you need to be exclusive to other people opening the
-device for other things, just stop expecting to control the whole
-world.
+> instead of turning every
+> interaction into an opportunity to dig their heels in on process and
+> throw up barriers.
+>
+> That burns people out, fast. And it's getting to be a problem in
+> -fsdevel land;
 
-                Linus
+Past-participle, not present. :/
+
+I've said this previously, and I'll say it again: we're severely
+under-resourced.  Not just XFS, the whole fsdevel community.  As a
+developer and later a maintainer, I've learnt the hard way that there is
+a very large amount of non-coding work is necessary to build a good
+filesystem.  There's enough not-really-coding work for several people.
+Instead, we lean hard on maintainers to do all that work.  That might've
+worked acceptably for the first 20 years, but it doesn't now.
+
+Nowadays we have all these people running bots and AIs throwing a steady
+stream of bug reports and CVE reports at Dave [Chinner] and I.  Most of
+these people *do not* help fix the problems they report.  Once in a
+while there's an actual *user* report about data loss, but those
+(thankfully) aren't the majority of the reports.
+
+However, every one of these reports has to be triaged, analyzed, and
+dealt with.  As soon as we clear one, at least one more rolls in.  You
+know what that means?  Dave and I are both in a permanent state of
+heightened alert, fear, and stress.  We never get to settle back down to
+calm.  Every time someone brings up syzbot, CVEs, or security?  I feel
+my own stress response ramping up.  I can no longer have "rational"
+conversations about syzbot because those discussions push my buttons.
+
+This is not healthy!
+
+Add to that the many demands to backport this and that to dozens of LTS
+kernels and distro kernels.  Why do the participation modes for that
+seem to be (a) take on an immense amount of backporting work that you
+didn't ask for; or (b) let a non-public ML thing pick patches and get
+yelled at when it does the wrong thing?  Nobody ever asked me if I
+thought the XFS community could support such-and-such LTS kernel.
+
+As the final insult, other people pile on by offering useless opinions
+about the maintainers being far behind and unhelpful suggestions that we
+engage in a major codebase rewrite.  None of this is helpful.
+
+Dave and I are both burned out.  I'm not sure Dave ever got past the
+2017 burnout that lead to his resignation.  Remarkably, he's still
+around.  Is this (extended burnout) where I want to be in 2024?  2030?
+Hell no.
+
+I still have enough left that I want to help ourselves adapt our culture
+to solve these problems.  I tried to get the conversation started with
+the maintainer entry profile for XFS that I recently submitted, but that
+alone cannot be the final product:
+https://lore.kernel.org/linux-xfs/169116629797.3243794.7024231508559123519.stgit@frogsfrogsfrogs/T/#m74bac05414cfba214f5cfa24a0b1e940135e0bed
+
+Being maintainer feels like a punishment, and that cannot stand.
+We need help.
+
+People see the kinds of interpersonal interactions going on here and
+decide pursue any other career path.  I know so, some have told me
+themselves.
+
+You know what's really sad?  Most of my friends work for small
+companies, nonprofits, and local governments.  They report the same
+problems with overwork, pervasive fear and anger, and struggle to
+understand and adapt to new ideas that I observe here.  They see the
+direct connection between their org's lack of revenue and the under
+resourcedness.
+
+They /don't/ understand why the hell the same happens to me and my
+workplace proximity associates, when we all work for companies that
+each clear hundreds of billions of dollars in revenue per year.
+
+(Well, they do understand: GREED.  They don't get why we put up with
+this situation, or why we don't advocate louder for making things
+better.)
+
+> I've lost count of the times I've heard Eric Sandeen
+> complain about how impossible it is to get things merge,
+
+A group dynamic that I keep observing around here is that someone tries
+to introduce some unfamiliar (or even slightly new) concept, because
+they want the kernel to do something it didn't do before.  The author
+sends out patches for review, and some of the reviewers who show up
+sound like they're so afraid of ... something ... that they throw out
+vague arguments that something might break.
+
+[I have had people tell me in private that while they don't have any
+specific complaints about online fsck, "something" is wrong and I need
+to stop and consider more thoroughly.  Consider /what/?]
+
+Or, worse, no reviewers show up.  The author merges it, and a month
+later there's a freakout because something somewhere else broke.  Angry
+threads spread around fsdevel because now there's pressure to get it
+fixed before -rc8 (in the good case) or ASAP (because now it's
+released).  Did the author have an incomplete understanding of the code?
+Were there potential reviewers who might've said something but bailed?
+Yes and yes.
+
+What do we need to reduce the amount of fear and anger around here,
+anyway?  20 years ago when I started my career in Linux I found the work
+to be challenging and enjoyable.  Now I see a lot more anger, and I am
+sad, because there /are/ still enjoyable challenges to be undertaken.
+Can we please have that conversation?
+
+People and groups do not do well when they feel like they're under
+constant attack, like they have to brace themselves for whatever
+bullshit is coming next.  That is how I feel most weeks, and I choose
+not to do that anymore.
+
+> and I _really_
+> hope people are taking notice about Darrick stepping away from XFS and
+> asking themselves what needs to be sorted out.
+
+Me too.  Ted expressed similar laments about ext4 after I announced my
+intention to reduce my own commitments to XFS.
+
+> Darrick writes
+> meticulous, well documented code; when I think of people who slip by
+> hacks other people are going to regret later, he's not one of them.
+
+I appreciate the compliment. ;)
+
+From what I can tell (because I lolquit and finally had time to start
+scanning the bcachefs code) I really like the thought that you've put
+into indexing and record iteration in the filesystem.  I appreciate the
+amount of work you've put into making it easy and fast to run QA on
+bcachefs, even if we don't quite agree on whether or not I should rip
+and replace my 20yo Debian crazyquilt.
+
+> And yet, online fsck for XFS has been pushed back repeatedly because
+> of petty bullshit.
+
+A broader dynamic here is that I ask people to review the code so that I
+can merge it; they say they will do it; and then an entire cycle goes by
+without any visible progress.
+
+When I ask these people why they didn't follow through on their
+commitments, the responses I hear are pretty uniform -- they got buried
+in root cause analysis of a real bug report but lol there were no other
+senior people available; their time ended up being spent on backports or
+arguing about backports; or they got caught up in that whole freakout
+thing I described above.
+
+> Scaling laws being what they are, that's a feature we're going to need,
+> and more importantly XFS cannot afford to lose more people - especially
+> Darrick.
+
+While I was maintainer I lobbied managers at Oracle and Google and RH to
+hire new people to grow the size of the XFS community, and they did.
+That was awesome!  It's not so hard to help managers come up with
+business justifications for headcount for critical pieces of their
+products*.
+
+But.
+
+For 2023 XFS is already down 2 people + whatever the hell I was doing
+that isn't "trying to get online fsck merged".  We're still at +1, but
+still who's going to replace us oldtimers?
+
+--D
+
+* But f*** impossible to get that done when it's someone's 20% project
+  causing a lot of friction on the mailing lists.
+
+> To speak a bit to what's been driving _me_ a bit nuts in these
+> discussions, top of my list is that the guy who's been the most
+> obstinate and argumentative _to this day_ refuses to CC me when touching
+> code I wrote - and as a result we've had some really nasty bugs (memory
+> corruption, _silent data corruption_).
+> 
+> So that really needs to change. Let's just please have a little more
+> focus on not eating people's data, and being more responsible about
+> bugs.
+> 
+> Anyways, I just want to write the best code I can. That's all I care
+> about, and I'm always happy to interact with people who share that goal.
+> 
+> Cheers,
+> Kent
