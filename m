@@ -2,59 +2,34 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79648C001E0
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 10 Aug 2023 17:52:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3668DC001B0
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 10 Aug 2023 18:02:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235465AbjHJRwI (ORCPT
+        id S229470AbjHJSCx (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 10 Aug 2023 13:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        Thu, 10 Aug 2023 14:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233922AbjHJRwI (ORCPT
+        with ESMTP id S230240AbjHJSCw (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:52:08 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A63F103;
-        Thu, 10 Aug 2023 10:52:07 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1B0C221868;
-        Thu, 10 Aug 2023 17:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691689926; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 10 Aug 2023 14:02:52 -0400
+Received: from out-96.mta0.migadu.com (out-96.mta0.migadu.com [IPv6:2001:41d0:1004:224b::60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983D22713
+        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 11:02:51 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 14:02:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1691690569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CZ25GytU7V9PgZNVJFOgesoNXDMmwuqCEuLI9Og+gD0=;
-        b=3K6fTy/+6iG/SrmpmBGEQBykxWplX1/caGh8yDZmqsCxPfXZ9Dzvo6bt2J7mj7ror0D9II
-        /NtQ/NPTpXumjtVhH/ByfA07nTaNLtK4Y/+GgVdSMC8G8KNerhGUZIPSBrnv4bSbBSj15D
-        lhlXfYsgJcLvgApKx5zsAZfWC+eCxqE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691689926;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CZ25GytU7V9PgZNVJFOgesoNXDMmwuqCEuLI9Og+gD0=;
-        b=KrZiBwadLWs7KzP/JdR/tDkEM8FIxIo7xZll2oJfT8DKJV8u+KbFPTz+K4Aob7QhULMBau
-        /xPSqNaLaEb1tzDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 03E5C138E2;
-        Thu, 10 Aug 2023 17:52:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7pHnAMYj1WSgWgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 10 Aug 2023 17:52:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 83BE3A076F; Thu, 10 Aug 2023 19:52:05 +0200 (CEST)
-Date:   Thu, 10 Aug 2023 19:52:05 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        bh=8dtvltwxe9GpUk64vNVIpMuGwfyjEXky0AlDC9nQsl0=;
+        b=evMeZLbwLASvgab2eASCSsx0BMJ3x+w8WmFhkv/BkD/Kb3qE86IPqp18nTVQBZ/dE6tTNJ
+        cZumN7IH0wNK9a87gcxHRn3pzm22IwQXRXihkmrzkjPNAW3cRLN6OZl0Y+lGmm14TN+KpF
+        iwT0y4VQAjvOc3JTQxouA66IJBTstwA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org, djwong@kernel.org,
         dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
         josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
@@ -62,59 +37,88 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         peterz@infradead.org, akpm@linux-foundation.org,
         dhowells@redhat.com, snitzer@kernel.org, axboe@kernel.dk
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230810175205.gtlkydeis37xdxuk@quack3>
+Message-ID: <20230810180244.cx3vouaqtisklttn@moria.home.lan>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230706155602.mnhsylo3pnief2of@moria.home.lan>
  <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
  <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
  <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+ <CAHk-=wie4U8hwRN+nYRwV4G51qXPJKr0DpjbxO1XSMZnPA_LTw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+In-Reply-To: <CAHk-=wie4U8hwRN+nYRwV4G51qXPJKr0DpjbxO1XSMZnPA_LTw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu 10-08-23 11:54:53, Kent Overstreet wrote:
-> > And there clearly is something very strange going on with superblock
-> > handling
+On Thu, Aug 10, 2023 at 09:40:08AM -0700, Linus Torvalds wrote:
+> > > Some of the other oddity is around the this_cpu ops, but I suspect
+> > > that is at least partly then because we don't have acquire/release
+> > > versions of the local cpu ops that the code looks like it would want.
+> >
+> > You mean using full barriers where acquire/release would be sufficient?
 > 
-> This deserves an explanation because sget() is a bit nutty.
+> Yes.
 > 
-> The way sget() is conventionally used for block device filesystems, the
-> block device open _isn't actually exclusive_ - sure, FMODE_EXCL is used,
-> but the holder is the fs type pointer, so it won't exclude with other
-> opens of the same fs type.
+> That code looks like it should work, but be hugely less efficient than
+> it might be. "smp_mb()" tends to be expensive everywhere, even x86.
+
+do_six_unlock_type() doesn't need a full barrier, but I'm not sure we
+can avoid the one in __do_six_trylock(), in the percpu reader path.
+
+> Of course, I might be missing some other cases. That percpu reader
+> queue worries me a bit just because it ends up generating ordering
+> based on two different things - the lock word _and_ the percpu word.
 > 
-> That means the only protection from multiple opens scribbling over each
-> other is sget() itself - but if the bdev handle ever outlives the
-> superblock we're completely screwed; that's a silent data corruption bug
-> that we can't easily catch, and if the filesystem teardown path has any
-> asynchronous stuff going on (and of course it does) that's not a hard
-> mistake to make. I've observed at least one bug that looked suspiciously
-> like that, but I don't think I quite pinned it down at the time.
+> And I get very nervous if the final "this gets the lock" isn't some
+> obvious "try_cmpxchg_acquire()" or similar, just because we've
+> historically had *so* many very subtle bugs in just about every single
+> lock we've ever had.
 
-This is just being changed - check Christian's VFS tree. There are patches
-that make sget() use superblock pointer as a bdev holder so the reuse
-you're speaking about isn't a problem anymore.
+kernel/locking/percpu-rwsem.c uses the same idea. The difference is that
+percpu-rwsem avoids the memory barrier on the read side in the fast path
+at the cost of requiring an rcu barrier on the write side... and all the
+crazyness that entails.
 
-> It also forces the caller to separate opening of the block devices from
-> the rest of filesystem initialization, which is a bit less than ideal.
+But __percpu_down_read_trylock() uses the same algorithm I'm using,
+including the same smp_mb(): we need to ensure that the read of the lock
+state happens after the store to the percpu read count, and I don't know
+how to that without a smp_mb() - smp_store_acquire() isn't a thing.
+
+> > Matthew was planning on sending the iov_iter patch to you - right around
+> > now, I believe, as a bugfix, since right now
+> > copy_page_from_iter_atomic() silently does crazy things if you pass it a
+> > compound page.
+> >
+> > Block layer patches aside, are there any _others_ you really want to go
+> > via maintainers?
 > 
-> Anyways, bcachefs just wants to be able to do real exclusive opens of
-> the block devices, and we do all filesystem bringup with a single
-> bch2_fs_open() call. I think this could be made to work with the way
-> sget() wants to work, but it'd require reworking the locking in
-> sget() - it does everything, including the test() and set() calls, under
-> a single spinlock.
+> It was mainly just the iov and the block layer.
+> 
+> The superblock cases I really don't understand why you insist on just
+> being different from everybody else.
+> 
+> Your exclusivity arguments make no sense to me. Just open the damn
+> thing. No other filesystem has ever had the fundamental problems you
+> describe. You can do any exclusivity test you want in the
+> "test()/set()" functions passed to sget().
 
-Yeah. Maybe the current upstream changes aren't enough to make your life
-easier for bcachefs, btrfs does its special thing as well after all because
-mount also involves multiple devices for it. I just wanted to mention that
-the exclusive bdev open thing is changing.
+When using sget() in the conventional way it's not possible for
+FMODE_EXCL to protect against concurrent opens scribbling over each
+other because we open the block device before checking if it's already
+mounted, and we expect that open to succeed.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> You say that it's a problem because of a "single spinlock", but it
+> hasn't been a problem for anybody else.
+
+The spinlock means you can't do the actual open in set(), which is why
+the block device has to be opened in not-really-exclusive mode.
+
+I think it's be possible to change the locking in sget() so that the
+set() callback could do the open, but I haven't looked closely at it.
+
+> and basically sent your first pull request as a fait-accompli.
+
+When did I ever do that?
