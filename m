@@ -2,121 +2,164 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57136C001B0
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 11 Aug 2023 14:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6705C001B0
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 11 Aug 2023 22:56:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbjHKObv (ORCPT
+        id S233757AbjHKW4h (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 11 Aug 2023 10:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
+        Fri, 11 Aug 2023 18:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbjHKObu (ORCPT
+        with ESMTP id S230077AbjHKW4g (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 11 Aug 2023 10:31:50 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAEA273E
-        for <linux-bcachefs@vger.kernel.org>; Fri, 11 Aug 2023 07:31:50 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bbb7c3d0f5so3508235ad.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 11 Aug 2023 07:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691764310; x=1692369110;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6GKhOCnnchifhHLTb0280rbn5Lcbt1RL2SPwHXYKnIM=;
-        b=vXcU6XvKxPEhGz4d9rgaN+cguw0vNFNzb3HLDrP1zKm1tpi5+Nq4oKmt2Wd6y5DG4x
-         ToSqjLm0dyyqDC7EHNbmH9JUYJ4dbQiEaOb2YBfGFx5lAGTWp++6f7Dij0CzLQrGMKTy
-         iidyVsv+NIYLEgV707cMDm9CLfja1V8tKSQnuefLnwoHLT3hUiuX4V5FSGXDide9mLx/
-         +vYTmMcUx2qjM/em5+ZTunMuzdeH08CUQzgU7pcKt5HdfH/qfxQLTDpo8qZd6UbK20My
-         BgrswTEBXFyiBcOk0nbRIQNfZYLltSsBW9fu3DMj/LtsmA29uHeqiJ8Dqd9WH0PwQlfi
-         CFeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691764310; x=1692369110;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6GKhOCnnchifhHLTb0280rbn5Lcbt1RL2SPwHXYKnIM=;
-        b=iYAHeH5fRKLguCAH5tIuAE6i+Iub/y1XA/d2rrW0ebqVAC/E1z54pXvelhyXRR77nz
-         B12kSZMhZph2MiFoMwp6EgRY5nrAdzh/4kB488l0HYYZNYNLi3ZPuTp11+jwl6en8kHt
-         3FDJFYxbO1w4JLyCzD9Em2Gdvc+cAnYH2j21OmppG2+LLzeeLL5orxE6w74v7MeZLoSj
-         ormeNpxHpCXCeVOLdXtmv5o/jlpyOrFibc6JSjjDtSPZ2PV83Qoiu9IPbUJm7xHrIz9n
-         tp3+N/eU+fvjUqyW/8kY7LN9R/pTJACwOmYTkYzRlWIboYk/b0fJlaoO2U+MANIq1ymZ
-         tBNw==
-X-Gm-Message-State: AOJu0YxY2oeMpSyT8w0AcfOcoBqKkvbip3a30RP2HBem3PRkL3U9R5pL
-        NbCcFEOrL2yiFLFfVcIDDUzt0w==
-X-Google-Smtp-Source: AGHT+IFCiEAfjFbH0W9VXBgSjjFn2TQb45Nbv3UPs9HVtHvFo+OqryksH1T+mBClvkF/eUwvjCsVZQ==
-X-Received: by 2002:a17:902:d4ce:b0:1b1:9272:55e2 with SMTP id o14-20020a170902d4ce00b001b1927255e2mr2547329plg.3.1691764309829;
-        Fri, 11 Aug 2023 07:31:49 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id a1-20020a17090abe0100b00268040bbc6asm5319997pjs.4.2023.08.11.07.31.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 07:31:48 -0700 (PDT)
-Message-ID: <18264001-ca5c-465b-bccf-c1b67319b203@kernel.dk>
-Date:   Fri, 11 Aug 2023 08:31:46 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] bcachefs
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Fri, 11 Aug 2023 18:56:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DF31AE;
+        Fri, 11 Aug 2023 15:56:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 665F864B3B;
+        Fri, 11 Aug 2023 22:56:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA2BC433C7;
+        Fri, 11 Aug 2023 22:56:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691794594;
+        bh=HCyq8KPMZZAZvmj1NbTZghVcsieOP3UsAupGoKw9OWk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PlDrCP07xWdo3qHM9CsIU1NEFu5DkbItFwpr4DoEPBOHwfNJcm0B4oNgRTsjRqs+s
+         X6/yrWz5EL+2d5AM3VE/5XuYmjY9I44s4bI2MdUrx4NvgsPpEbjoZRDtFVLfCwGHv7
+         qsoxuhAtgWMfdD8bRMEZ8ymf081+Ai5DoFjjyvB8hJrcGS1kki9uosJmZQQbbflo0S
+         vMJHkyBigpMa00gY2EpfMD5jGubVHNNpV+DPXKSuHao1QTuvkC7jXGw/w+3N07buk7
+         F+nN77aS+9hmNubgPxmPn7WDbHFOPCmSR0StEteS1ApY/Ry5h/NKjFzeRd7uHrVE49
+         J+wTBxzi/X9mQ==
+Date:   Fri, 11 Aug 2023 15:56:34 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
         sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
         tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
-        andreas.gruenbacher@gmail.com, brauner@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        dhowells@redhat.com, snitzer@kernel.org
+        andreas.gruenbacher@gmail.com, peterz@infradead.org,
+        akpm@linux-foundation.org, dhowells@redhat.com, snitzer@kernel.org,
+        axboe@kernel.dk
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230811225634.GI11336@frogsfrogsfrogs>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230706155602.mnhsylo3pnief2of@moria.home.lan>
  <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
  <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
  <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
- <20230810223942.GG11336@frogsfrogsfrogs>
- <CAHk-=wj8RuUosugVZk+iqCAq7x6rs=7C-9sUXcO2heu4dCuOVw@mail.gmail.com>
- <20230811040310.c3q6nml6ukwtw3j5@moria.home.lan>
- <CAHk-=whDuBPONoTMRQn2aX64uYTG5E3QaZ4abJStYRHFMMToyw@mail.gmail.com>
- <20230811052922.h74x6m5xinil6kxa@moria.home.lan>
- <CAHk-=wiJ0xo2_aqVCoJHnO_AYP=cy1E8Pk5Vxb13+nFastAFEQ@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <CAHk-=wiJ0xo2_aqVCoJHnO_AYP=cy1E8Pk5Vxb13+nFastAFEQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <20230811-neigt-baufinanzierung-4c9521b036c6@brauner>
+ <20230811132141.qxppoculzs5amawn@moria.home.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811132141.qxppoculzs5amawn@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On 8/10/23 11:53 PM, Linus Torvalds wrote:
-> On Thu, 10 Aug 2023 at 22:29, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->>
->> On Thu, Aug 10, 2023 at 10:20:22PM -0700, Linus Torvalds wrote:
->>> If it's purely "umount doesnt' succeed because the filesystem is still
->>> busy with cleanups", then things are much better.
->>
->> That's exactly it. We have various tests that kill -9 fio and then
->> umount, and umount spuriously fails.
+On Fri, Aug 11, 2023 at 09:21:41AM -0400, Kent Overstreet wrote:
+> On Fri, Aug 11, 2023 at 12:54:42PM +0200, Christian Brauner wrote:
+> > > I don't want to do that to Christian either, I think highly of the work
+> > > he's been doing and I don't want to be adding to his frustration. So I
+> > > apologize for loosing my cool earlier; a lot of that was frustration
+> > > from other threads spilling over.
+> > > 
+> > > But: if he's going to be raising objections, I need to know what his
+> > > concerns are if we're going to get anywhere. Raising objections without
+> > > saying what the concerns are shuts down discussion; I don't think it's
+> > > unreasonable to ask people not to do that, and to try and stay focused
+> > > on the code.
+> > 
+> > The technical aspects were made clear off-list and I believe multiple
+> > times on-list by now. Any VFS and block related patches are to be
+> > reviewed and accepted before bcachefs gets merged.
 > 
-> Well, it sounds like Jens already has some handle on at least one
-> io_uring shutdown case that didn't wait for completion.
+> Here's the one VFS patch in the series - could we at least get an ack
+> for this? It's a new helper, just breaks the existing d_tmpfile() up
+> into two functions - I hope we can at least agree that this patch
+> shouldn't be controversial?
 > 
-> At the same time, a random -EBUSY is kind of an expected failure in
-> real life, since outside of strictly controlled environments you could
-> easily have just some entirely unrelated thing that just happens to
-> have looked at the filesystem when you tried to unmount it.
+> -->--
+> Subject: [PATCH] fs: factor out d_mark_tmpfile()
 > 
-> So any real-life use tends to use umount in a (limited) loop. It might
-> just make sense for the fsstress test scripts to do the same
-> regardless.
+> New helper for bcachefs - bcachefs doesn't want the
+> inode_dec_link_count() call that d_tmpfile does, it handles i_nlink on
+> its own atomically with other btree updates
 > 
-> There's no actual good reason to think that -EBUSY is a hard error. It
-> very much can be transient.
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: linux-fsdevel@vger.kernel.org
 
-Indeed, any production kind of workload would have some kind of graceful
-handling for that. That doesn't mean we should not fix the delayed fput
-to avoid it if we can, just that it might make sense to have an xfstest
-helper that at least tries X times with a sync in between or something
-like that.
+Yes, we can finally clean up this braindamage in xfs_generic_create:
 
--- 
-Jens Axboe
+	if (tmpfile) {
+		/*
+		 * The VFS requires that any inode fed to d_tmpfile must
+		 * have nlink == 1 so that it can decrement the nlink in
+		 * d_tmpfile.  However, we created the temp file with
+		 * nlink == 0 because we're not allowed to put an inode
+		 * with nlink > 0 on the unlinked list.  Therefore we
+		 * have to set nlink to 1 so that d_tmpfile can
+		 * immediately set it back to zero.
+		 */
+		set_nlink(inode, 1);
+		d_tmpfile(tmpfile, inode);
+	}
 
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> 
+> diff --git a/fs/dcache.c b/fs/dcache.c
+> index 52e6d5fdab..dbdafa2617 100644
+> --- a/fs/dcache.c
+> +++ b/fs/dcache.c
+> @@ -3249,11 +3249,10 @@ void d_genocide(struct dentry *parent)
+>  
+>  EXPORT_SYMBOL(d_genocide);
+>  
+> -void d_tmpfile(struct file *file, struct inode *inode)
+> +void d_mark_tmpfile(struct file *file, struct inode *inode)
+>  {
+>  	struct dentry *dentry = file->f_path.dentry;
+>  
+> -	inode_dec_link_count(inode);
+>  	BUG_ON(dentry->d_name.name != dentry->d_iname ||
+>  		!hlist_unhashed(&dentry->d_u.d_alias) ||
+>  		!d_unlinked(dentry));
+> @@ -3263,6 +3262,15 @@ void d_tmpfile(struct file *file, struct inode *inode)
+>  				(unsigned long long)inode->i_ino);
+>  	spin_unlock(&dentry->d_lock);
+>  	spin_unlock(&dentry->d_parent->d_lock);
+> +}
+> +EXPORT_SYMBOL(d_mark_tmpfile);
+> +
+> +void d_tmpfile(struct file *file, struct inode *inode)
+> +{
+> +	struct dentry *dentry = file->f_path.dentry;
+> +
+> +	inode_dec_link_count(inode);
+> +	d_mark_tmpfile(file, inode);
+>  	d_instantiate(dentry, inode);
+>  }
+>  EXPORT_SYMBOL(d_tmpfile);
+> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+> index 6b351e009f..3da2f0545d 100644
+> --- a/include/linux/dcache.h
+> +++ b/include/linux/dcache.h
+> @@ -251,6 +251,7 @@ extern struct dentry * d_make_root(struct inode *);
+>  /* <clickety>-<click> the ramfs-type tree */
+>  extern void d_genocide(struct dentry *);
+>  
+> +extern void d_mark_tmpfile(struct file *, struct inode *);
+>  extern void d_tmpfile(struct file *, struct inode *);
+>  
+>  extern struct dentry *d_find_alias(struct inode *);
