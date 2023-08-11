@@ -2,112 +2,231 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0CADC001DE
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 11 Aug 2023 02:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4BC5C001DE
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 11 Aug 2023 03:45:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbjHKCrO (ORCPT
+        id S230217AbjHKDpf (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 10 Aug 2023 22:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        Thu, 10 Aug 2023 23:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjHKCrN (ORCPT
+        with ESMTP id S229700AbjHKDpe (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 10 Aug 2023 22:47:13 -0400
-Received: from out-82.mta0.migadu.com (out-82.mta0.migadu.com [91.218.175.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243482D55
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 19:47:11 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 22:47:03 -0400
+        Thu, 10 Aug 2023 23:45:34 -0400
+Received: from out-99.mta0.migadu.com (out-99.mta0.migadu.com [91.218.175.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330B12D57
+        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 20:45:33 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 23:45:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691722030;
+        t=1691725531;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=lvvWPsjit5kb/dsuV6RnfP64pD7m4IXtEuVZ591eJhw=;
-        b=SZL3Fa7GbHEvZINTmBnnO6nhRSJ2Xt/dBZY9LGS0Z7DUL3GQ1aDp4RyX2fC+g9WPSe3EwG
-        aY1V8J5ifOKvMXAdv5GxPIKk4AS/D5UrhjkXO5r5XZCeLRbB5PxKlpu9guqI6ch9i7OjKU
-        /UQ8/LIpYwfeUG2e0uz97+cqJH8+Sak=
+        bh=5KksEpEJrdBUNIt2cuyr71Cn5RvvrON9yUkpmN/LnLY=;
+        b=qh8J++02pQXJYe/neN5u3AAou0afnjguhbrzR2y+ampGTqvK80x5jl8lYpELh1MZoOyMcC
+        TKXCaN00TxJN9GWfkNjWrXNmkQ2YTllxQSypPKL/3BdDpQGj4RaF88yVzbzC1TtiXKPj7c
+        iZCKqE7v42K+mUud8MzaYZOfc13Jnhc=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Jan Kara <jack@suse.cz>
+To:     "Darrick J. Wong" <djwong@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, djwong@kernel.org,
-        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
-        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
+        linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
+        sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
+        tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
         andreas.gruenbacher@gmail.com, brauner@kernel.org,
         peterz@infradead.org, akpm@linux-foundation.org,
         dhowells@redhat.com, snitzer@kernel.org, axboe@kernel.dk
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230811024703.7dhu5rz5ovph7uop@moria.home.lan>
+Message-ID: <20230811034526.itwk7h6ibzje6tfr@moria.home.lan>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230706155602.mnhsylo3pnief2of@moria.home.lan>
  <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
  <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
  <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
- <20230810175205.gtlkydeis37xdxuk@quack3>
+ <20230810223942.GG11336@frogsfrogsfrogs>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230810175205.gtlkydeis37xdxuk@quack3>
+In-Reply-To: <20230810223942.GG11336@frogsfrogsfrogs>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 07:52:05PM +0200, Jan Kara wrote:
-> On Thu 10-08-23 11:54:53, Kent Overstreet wrote:
-> > > And there clearly is something very strange going on with superblock
-> > > handling
-> > 
-> > This deserves an explanation because sget() is a bit nutty.
-> > 
-> > The way sget() is conventionally used for block device filesystems, the
-> > block device open _isn't actually exclusive_ - sure, FMODE_EXCL is used,
-> > but the holder is the fs type pointer, so it won't exclude with other
-> > opens of the same fs type.
-> > 
-> > That means the only protection from multiple opens scribbling over each
-> > other is sget() itself - but if the bdev handle ever outlives the
-> > superblock we're completely screwed; that's a silent data corruption bug
-> > that we can't easily catch, and if the filesystem teardown path has any
-> > asynchronous stuff going on (and of course it does) that's not a hard
-> > mistake to make. I've observed at least one bug that looked suspiciously
-> > like that, but I don't think I quite pinned it down at the time.
+On Thu, Aug 10, 2023 at 03:39:42PM -0700, Darrick J. Wong wrote:
+> I've said this previously, and I'll say it again: we're severely
+> under-resourced.  Not just XFS, the whole fsdevel community.  As a
+> developer and later a maintainer, I've learnt the hard way that there is
+> a very large amount of non-coding work is necessary to build a good
+> filesystem.  There's enough not-really-coding work for several people.
+> Instead, we lean hard on maintainers to do all that work.  That might've
+> worked acceptably for the first 20 years, but it doesn't now.
+
+Yeah, that was my takeaway too when I started doing some more travelling
+last fall to talk to people about bcachefs - the teams are not what they
+were 10 years ago, and a lot of the effort in the filesystem space feels
+a lot more fragmented. It feels like there's a real lack of leadership
+or any kind of a long term plan in the filesystem space, and I think
+that's one of the causes of all the burnout; we don't have a clear set
+of priorities or long term goals.
+
+> Nowadays we have all these people running bots and AIs throwing a steady
+> stream of bug reports and CVE reports at Dave [Chinner] and I.  Most of
+> these people *do not* help fix the problems they report.  Once in a
+> while there's an actual *user* report about data loss, but those
+> (thankfully) aren't the majority of the reports.
 > 
-> This is just being changed - check Christian's VFS tree. There are patches
-> that make sget() use superblock pointer as a bdev holder so the reuse
-> you're speaking about isn't a problem anymore.
-
-So then the question is what do you use for identifying the superblock,
-and you're switching to the dev_t - interesting.
-
-Are we 100% sure that will never break, that a dev_t will always
-identify a unique block_device? Namespacing has been changing things.
-
-> > It also forces the caller to separate opening of the block devices from
-> > the rest of filesystem initialization, which is a bit less than ideal.
-> > 
-> > Anyways, bcachefs just wants to be able to do real exclusive opens of
-> > the block devices, and we do all filesystem bringup with a single
-> > bch2_fs_open() call. I think this could be made to work with the way
-> > sget() wants to work, but it'd require reworking the locking in
-> > sget() - it does everything, including the test() and set() calls, under
-> > a single spinlock.
+> However, every one of these reports has to be triaged, analyzed, and
+> dealt with.  As soon as we clear one, at least one more rolls in.  You
+> know what that means?  Dave and I are both in a permanent state of
+> heightened alert, fear, and stress.  We never get to settle back down to
+> calm.  Every time someone brings up syzbot, CVEs, or security?  I feel
+> my own stress response ramping up.  I can no longer have "rational"
+> conversations about syzbot because those discussions push my buttons.
 > 
-> Yeah. Maybe the current upstream changes aren't enough to make your life
-> easier for bcachefs, btrfs does its special thing as well after all because
-> mount also involves multiple devices for it. I just wanted to mention that
-> the exclusive bdev open thing is changing.
+> This is not healthy!
 
-I like the mount_bdev() approach in your patch a _lot_ better than the
-old code, I think the approach almost works for multi device
-filesystems - at least for bcachefs where we always pass in the full
-list of devices we want to open, there's no kernel side probing like in
-btrfs.
+Yeah, we really need to take a step back and ask ourselves what we're
+trying to do here.
 
-What changes is we'd have to pass a vector of dev_t's to sget(), and
-set() needs to be able to stash them in super_block (not s_fs_info, we
-need that for bch_fs later and that doesn't exist yet). But that's a
-minor detail.
+At this point, I'm not so sure hardening xfs/ext4 in all the ways people
+are wanting them to be hardened is a realistic idea: these are huge, old
+C codebases that are tricky to work on, and they weren't designed from
+the start with these kinds of considerations. Yes, in a perfect world
+all code should be secure and all bugs should be fixed, but is this the
+way to do it?
 
-Yeah, this could work.
+Personally, I think we'd be better served by putting what manpower we
+can spare into starting on an incremental Rust rewrite; at least that's
+my plan for bcachefs, and something I've been studying for awhile (as
+soon as the gcc rust stuff lands I'll be adding Rust code to
+fs/bcachefs, some code already exists). For xfs/ext4, teasing things
+apart and figuring out how to restructure data structures in a way to
+pass the borrow checker may not be realistic, I don't know the codebases
+well enough to say - but clearly the current approach is not working,
+and these codebases are almost definitely still going to be in use 50
+years from now, we need to be coming up with _some_ sort of plan.
+
+And if we had a coherent long term plan, maybe that would help with the
+funding and headcount issues...
+
+> A group dynamic that I keep observing around here is that someone tries
+> to introduce some unfamiliar (or even slightly new) concept, because
+> they want the kernel to do something it didn't do before.  The author
+> sends out patches for review, and some of the reviewers who show up
+> sound like they're so afraid of ... something ... that they throw out
+> vague arguments that something might break.
+> 
+> [I have had people tell me in private that while they don't have any
+> specific complaints about online fsck, "something" is wrong and I need
+> to stop and consider more thoroughly.  Consider /what/?]
+
+Yup, that's just broken. If you're telling someone they're doing it
+wrong and you're not offering up any ideas, maybe _you're_ the problem.
+
+The fear based thing is very real, and _very_ understandable. In the
+filesystem world, we have to live with our mistakes in a way no one else
+in kernel land does. There's no worse feeling than realizing you fucked
+up something in the on disk format, and you didn't realize it until six
+months later, and now you've got incompatibilities that are a nightmare
+to sort out - never mind the more banal "oh fuck, sorry I ate your data"
+stories.
+
+> Or, worse, no reviewers show up.  The author merges it, and a month
+> later there's a freakout because something somewhere else broke.  Angry
+> threads spread around fsdevel because now there's pressure to get it
+> fixed before -rc8 (in the good case) or ASAP (because now it's
+> released).  Did the author have an incomplete understanding of the code?
+> Were there potential reviewers who might've said something but bailed?
+> Yes and yes.
+> 
+> What do we need to reduce the amount of fear and anger around here,
+> anyway?  20 years ago when I started my career in Linux I found the work
+> to be challenging and enjoyable.  Now I see a lot more anger, and I am
+> sad, because there /are/ still enjoyable challenges to be undertaken.
+> Can we please have that conversation?
+
+I've been through the burnout cycle too (many times!), and for me the
+answer was: slow down, and identify the things that really matter, the
+things that will make my life easier in the long run, and focus on
+_that_.
+
+I've been through cycles more than once where I wasn't keeping up with
+bug reports, and I had to tell my users "hang on - this isn't efficient,
+I need to work on the testing automation because stuff is slipping
+through; give me a month".
+
+(And also make sure to leave some time for the things I actually do
+enjoy; right now that means working on the fuse port here and there).
+
+> People and groups do not do well when they feel like they're under
+> constant attack, like they have to brace themselves for whatever
+> bullshit is coming next.  That is how I feel most weeks, and I choose
+> not to do that anymore.
+> 
+> > and I _really_
+> > hope people are taking notice about Darrick stepping away from XFS and
+> > asking themselves what needs to be sorted out.
+> 
+> Me too.  Ted expressed similar laments about ext4 after I announced my
+> intention to reduce my own commitments to XFS.
+
+Oh man, we can't lose Ted.
+
+> > Darrick writes
+> > meticulous, well documented code; when I think of people who slip by
+> > hacks other people are going to regret later, he's not one of them.
+> 
+> I appreciate the compliment. ;)
+> 
+> From what I can tell (because I lolquit and finally had time to start
+> scanning the bcachefs code) I really like the thought that you've put
+> into indexing and record iteration in the filesystem.  I appreciate the
+> amount of work you've put into making it easy and fast to run QA on
+> bcachefs, even if we don't quite agree on whether or not I should rip
+> and replace my 20yo Debian crazyquilt.
+
+Thanks, the database layer is something I've put a _ton_ of work into. I
+feel like we're close to being able to get into some really exciting
+stuff once we get past the "stabilizing a new filesystem with a massive
+featureset" madness - people have been trying to do the
+filesystem-as-a-database thing for years, and I think bcachefs is the
+first to actually seriously pull it off.
+
+And I'm really hoping to make the test infrastructure its own real
+project for the whole fs community, and more. There's a lot of good
+stuff in there I just need to document better and create a proper
+website for.
+
+> > And yet, online fsck for XFS has been pushed back repeatedly because
+> > of petty bullshit.
+> 
+> A broader dynamic here is that I ask people to review the code so that I
+> can merge it; they say they will do it; and then an entire cycle goes by
+> without any visible progress.
+> 
+> When I ask these people why they didn't follow through on their
+> commitments, the responses I hear are pretty uniform -- they got buried
+> in root cause analysis of a real bug report but lol there were no other
+> senior people available; their time ended up being spent on backports or
+> arguing about backports; or they got caught up in that whole freakout
+> thing I described above.
+
+Yeah, that set of priorities makes sense when we're talking about
+patches that modify existing code; if you can't keep up with bug reports
+then you have to slow down on changes, and changes to existing code
+often do need the meticulous review - and hopefully while people are
+waiting on code review they'll be helping out with bug reports.
+
+But for new code that isn't going to upset existing users, if we trust
+the author to not do crazy things then code review is really more about
+making sure someone else understands the code. But if they're putting in
+all the proper effort to document, to organize things well, to do things
+responsibly, does it make sense for that level of code review to be an
+up front requirement? Perhaps we could think a _bit_ more about how we
+enable people to do good work.
+
+I'm sure the XFS people have thought about this more than I have, but
+given how long this has been taking you and the amount of pushback I
+feel it ought to be asked.
