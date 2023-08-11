@@ -2,121 +2,84 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 986CFC001DE
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 11 Aug 2023 05:53:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12EA6EB64DD
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 11 Aug 2023 07:53:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbjHKFxt (ORCPT
+        id S232335AbjHKHxH (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 11 Aug 2023 01:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
+        Fri, 11 Aug 2023 03:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbjHKFxt (ORCPT
+        with ESMTP id S230414AbjHKHxG (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 11 Aug 2023 01:53:49 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B261130
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 22:53:48 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-986d8332f50so229646266b.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 22:53:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691733227; x=1692338027;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yQWnzoDoyL9OA8op4B0emQIgXeKGA2NcTlOBONbgTOU=;
-        b=cRPRYuYZUAhbIJTDlbN+ioRmm5ClKpVsOFyGkBnwLeLn176PKaK1+jhxE1tnaxTbpQ
-         PQdo0Xp/3z25QH1Iv4hkPjqU1pCDklykNMXg+ITcMcqD62y9Rqe5UNf/AYVEbgqUOTiI
-         zcRYjlViRRrlSlQo2qVDoEksPydxhw5OWNdVo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691733227; x=1692338027;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yQWnzoDoyL9OA8op4B0emQIgXeKGA2NcTlOBONbgTOU=;
-        b=Yb1H1YzxaO/Hd9nXxJS7jp+aiDOVSlnTw1zsz8wssEH4aXAVg7VsXWFjYEVwhEFeMa
-         nnn5kPiMu4qGF0+2HvBpZLqNCcuhzMpmM7md1a5qxFM5zFmGNzOD/i11+AV1EHPaOq/y
-         MEQy5vnoDXFm0ovfyBptCvkvthurMugZg3EFwx6rKmoB+wjGcwe/sDGcNfDNOlbNc+Si
-         YELnDVLowE6J1VTjs2XIiBIW7mx7iOBljtfFoiKoiPGkxdcKVzkl+ngywRGhyENEeNSG
-         kD8jOGwhtsKCVoWw4SzDttILrsncDHm0Z/30UrOtBXt0lIrGMZT6LUm5ddKy4ztm+XQ4
-         Q5Hw==
-X-Gm-Message-State: AOJu0YwezCxB12LkSCW9Z8gPx7j5bXyNKZK11BWUFh5LNtGfi+vMkKYf
-        7mCFePdN5fDGUZ6y+DbGvYXPtrHtiK9N9LfMwf0z0hPK
-X-Google-Smtp-Source: AGHT+IF3QrS6etcIvzjHbyuGPRryv6V7rkfh6TIkNNTahB/Rk1NH4je7FJh7BBjFliPQKpo0aMbY5w==
-X-Received: by 2002:a17:907:78d3:b0:99c:e3b6:eafe with SMTP id kv19-20020a17090778d300b0099ce3b6eafemr795690ejc.64.1691733226795;
-        Thu, 10 Aug 2023 22:53:46 -0700 (PDT)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id ck9-20020a170906c44900b00993664a9987sm1796789ejb.103.2023.08.10.22.53.44
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 22:53:44 -0700 (PDT)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-523bf06f7f8so792071a12.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Aug 2023 22:53:44 -0700 (PDT)
-X-Received: by 2002:a05:6402:395:b0:51d:87c6:bf28 with SMTP id
- o21-20020a056402039500b0051d87c6bf28mr810373edv.3.1691733224570; Thu, 10 Aug
- 2023 22:53:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan> <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
- <20230810155453.6xz2k7f632jypqyz@moria.home.lan> <20230810223942.GG11336@frogsfrogsfrogs>
- <CAHk-=wj8RuUosugVZk+iqCAq7x6rs=7C-9sUXcO2heu4dCuOVw@mail.gmail.com>
- <20230811040310.c3q6nml6ukwtw3j5@moria.home.lan> <CAHk-=whDuBPONoTMRQn2aX64uYTG5E3QaZ4abJStYRHFMMToyw@mail.gmail.com>
- <20230811052922.h74x6m5xinil6kxa@moria.home.lan>
-In-Reply-To: <20230811052922.h74x6m5xinil6kxa@moria.home.lan>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Aug 2023 22:53:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiJ0xo2_aqVCoJHnO_AYP=cy1E8Pk5Vxb13+nFastAFEQ@mail.gmail.com>
-Message-ID: <CAHk-=wiJ0xo2_aqVCoJHnO_AYP=cy1E8Pk5Vxb13+nFastAFEQ@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Fri, 11 Aug 2023 03:53:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CA29C;
+        Fri, 11 Aug 2023 00:53:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EBB82639F9;
+        Fri, 11 Aug 2023 07:53:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C28C433C7;
+        Fri, 11 Aug 2023 07:53:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691740385;
+        bh=MTJarVIvr4WRNyvhoo/0slfSO8LXGQpypLwKg1eCCi0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cwgZR5Msj1ZoEutKFBoQXBW3LUkSiSp1+DQCPtl4T8nK48K4RGZm6Cc/mki4Y3LdE
+         E7VpqAUuGNiXzgfE/LTKuDAGif0xRBzm3TQjB48epzHgRdFCXUNxydcvbsjReG5IiR
+         fcyourzsDlHE1wBopf24Oyz2D809MES8azf4VD4ykNjQotIULMsiz+Sg6Mp4pX22jD
+         NDoLfOhEYeKJvhlgTEw8b36rUvb+bH3PzhGL4kP+lYCuqs/5RDQ2ECh2qTGdFwaMnU
+         XvZjzSVX6Ds2LFLeDd0x2LqymqgJQqfHfcX2j5NHrsN7g2KPGJw+fvu5SvoskO24r4
+         +CtLwT9VlMpbw==
+Date:   Fri, 11 Aug 2023 09:52:58 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        "Darrick J. Wong" <djwong@kernel.org>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
         sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
         tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
-        andreas.gruenbacher@gmail.com, brauner@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        dhowells@redhat.com, snitzer@kernel.org, axboe@kernel.dk
-Content-Type: text/plain; charset="UTF-8"
+        andreas.gruenbacher@gmail.com, peterz@infradead.org,
+        akpm@linux-foundation.org, dhowells@redhat.com, snitzer@kernel.org,
+        axboe@kernel.dk
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230811-wandmalerei-denkpause-e9670c291635@brauner>
+References: <20230706155602.mnhsylo3pnief2of@moria.home.lan>
+ <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
+ <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
+ <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+ <20230810223942.GG11336@frogsfrogsfrogs>
+ <CAHk-=wj8RuUosugVZk+iqCAq7x6rs=7C-9sUXcO2heu4dCuOVw@mail.gmail.com>
+ <20230811040310.c3q6nml6ukwtw3j5@moria.home.lan>
+ <CAHk-=whDuBPONoTMRQn2aX64uYTG5E3QaZ4abJStYRHFMMToyw@mail.gmail.com>
+ <20230811052922.h74x6m5xinil6kxa@moria.home.lan>
+ <CAHk-=wiJ0xo2_aqVCoJHnO_AYP=cy1E8Pk5Vxb13+nFastAFEQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiJ0xo2_aqVCoJHnO_AYP=cy1E8Pk5Vxb13+nFastAFEQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, 10 Aug 2023 at 22:29, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> On Thu, Aug 10, 2023 at 10:20:22PM -0700, Linus Torvalds wrote:
-> > If it's purely "umount doesnt' succeed because the filesystem is still
-> > busy with cleanups", then things are much better.
->
-> That's exactly it. We have various tests that kill -9 fio and then
-> umount, and umount spuriously fails.
+> So may I suggest that even if the immediate issue ends up being sorted
+> out, just from a robustness standpoint the "consider EBUSY a hard
+> error" seems to be a mistake.
 
-Well, it sounds like Jens already has some handle on at least one
-io_uring shutdown case that didn't wait for completion.
+Especially from umount. The point I was trying to make in the other
+thread is that this needs fixing in the subsystem that's causing
+_unnecessary_ spurious EBUSY errors and Jens has been at his right
+away. What we don't want is for successful umount to be equated with
+that an immediate mount can never return EBUSY again. I think that's not
+a guarantee that umount should give and with mount namespaces in the mix
+you can get your filesystem pinned implicitly somewhere behind your back
+without you ever noticing it as just one very obvious example.
 
-At the same time, a random -EBUSY is kind of an expected failure in
-real life, since outside of strictly controlled environments you could
-easily have just some entirely unrelated thing that just happens to
-have looked at the filesystem when you tried to unmount it.
+> 
+> Transient failures are pretty much expected
 
-So any real-life use tends to use umount in a (limited) loop. It might
-just make sense for the fsstress test scripts to do the same
-regardless.
-
-There's no actual good reason to think that -EBUSY is a hard error. It
-very much can be transient.
-
-In fact, I have this horrible flash-back memory to some auto-expiry
-scripts that used to do the equivalent of "umount -a -t autofs" every
-minute or so as a horrible model for expiring things, happy and secure
-in the knowledge that if the filesystem was still in active use, it
-would just fail.
-
-So may I suggest that even if the immediate issue ends up being sorted
-out, just from a robustness standpoint the "consider EBUSY a hard
-error" seems to be a mistake.
-
-Transient failures are pretty much expected, and not all of them are
-necessarily kernel-related (ie think "concurrent updatedb run" or any
-number of other possibilities).
-
-          Linus
+Yes, I agree.
