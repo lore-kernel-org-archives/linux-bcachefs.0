@@ -2,138 +2,266 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C89B9C001B0
-	for <linux-bcachefs@archiver.kernel.org>; Sat, 12 Aug 2023 21:26:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B256C41513
+	for <linux-bcachefs@archiver.kernel.org>; Sat, 12 Aug 2023 21:26:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbjHLV0u (ORCPT
+        id S229563AbjHLV0u (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
         Sat, 12 Aug 2023 17:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjHLV0t (ORCPT
+        with ESMTP id S230221AbjHLV0t (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
         Sat, 12 Aug 2023 17:26:49 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C69C10D5
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B7AE50
         for <linux-bcachefs@vger.kernel.org>; Sat, 12 Aug 2023 14:26:52 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31969580797so762470f8f.3
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-317c3ac7339so2662216f8f.0
         for <linux-bcachefs@vger.kernel.org>; Sat, 12 Aug 2023 14:26:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=froggi.es; s=google; t=1691875610; x=1692480410;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bb42mhvfm3cX1t8TaSdwminQLnaM87t8/HfPSlrjNsU=;
-        b=BPrLZmBTDByWEyJ9IHLrfXnJTZ3NkR2ahADfpv9HK36nClt9xCFLyJ4k4f0iySHrM/
-         sIw8i/QxFP1/5bMPgid8COzOsnNYNExhbPBzCxfVHgCruaAkWK9ylBLyfaBFCHr0wDgX
-         jkbBVv1nsEk2M4C4GIN8AIUHt+X3UbMWO9W0CcvWgOmfeLhnIRnYsH3xBXKoKzdqXfWC
-         umKPRknuWK4BFF8Fv5qaP+ApQHNgXXA5SKnMYJtEcAOOhzZgW3q1sEHcqt8jEFKujow2
-         650XD9xO237lmFJnvhZdFe9qutyPiJmiNO5Ghvmz1Cmlu7YMTpBYlziOYIFO4wSLQeVq
-         9grQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sCluMDNGhCeBjSE0Gr8i2lVruPFxd4/yRGwKtjwq4ck=;
+        b=HwvE0l34W/oNTRJNiqyRWizoqaGw56kCY67d3Rdui3kyYmU99BIyZSIRdeEhAHV67i
+         6O3HYd+qDgO8phrZWg8mCTm/zWpGx9yd4BbHJ6xO4gH/Ycl2JasLC/5P8ckboxmh0cGP
+         zuVAtZij6wl59E8iPZ/XCYmR+lgtQ8/6vPoJ34l/43ifAt5IU5XOPqaqd3X+tqkh9zUP
+         qQ1jHMaEKRiJCVV4R/91OWoslrkERQsxTRsriWmGoS+XFQoq9BMG2sf1kEefTPuJ5XWW
+         nq3fLbYm3zHszCv2QqeUBCQQmRtEGJoxAcKy6kIGy313vQbAeS28KkTE3DuwebfvHgrU
+         gkog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1691875610; x=1692480410;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bb42mhvfm3cX1t8TaSdwminQLnaM87t8/HfPSlrjNsU=;
-        b=AGehTZgxi3wD7pErbRrRKQ3uRkcSOtJxIU65/pWI+VrumDbLHCLUObY4TDbVPmCNQV
-         6bj3TL00CHkgkwBYGBW//AxlpcdKf4NOmxeXOTAUbkDtZL5slhoMcjUkntdCltst1YqX
-         djWceVqtPVq8EOJbJ8t1l9NoB/r4//6NH1lPi10V5WSVZ/8sAdxA/hqy36cZM/MiFPE5
-         F9x2kthBf2DvKrOzlWIRzRoamDukySuCsILXx+Zj5avBgFyZcjOEpNtLP+ySyF9TyYL6
-         o5/dVk+DIh4KvXIl+5q8fj+/NX+Qu6CT0cuOCsgbipXgWHciywVQ+oQHHVJuJCtgfhie
-         dZwQ==
-X-Gm-Message-State: AOJu0YzpXjkoYpVIgy1kAQLRPab2622Z/MUrqC/2jC4qXoDeU5ywGnKV
-        iifbZXKIYTtVnygB/hUBTO53r/uYWRTKbif9sfw=
-X-Google-Smtp-Source: AGHT+IFd5zFMFfNCoLDXraRWnWQ0jZG+FtXLafvuZ7q8Nj6D/Rhye+JcuZvYsbl+0Yo2pY7IIgtWHg==
-X-Received: by 2002:adf:e786:0:b0:317:62c3:13a7 with SMTP id n6-20020adfe786000000b0031762c313a7mr3808676wrm.19.1691875610006;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sCluMDNGhCeBjSE0Gr8i2lVruPFxd4/yRGwKtjwq4ck=;
+        b=HrkMPIIF3R3Qxk+LBOKnRFIMxbJC2dDBCHJy+7LoLTEK7pKDiEipTvXfDhciJb9/71
+         GbCmLNksk2t2iS918/d+MIWfDkLmUdGcyqybZb3wDlHNyTk3088bVQcKNLDkJ8J27Fjl
+         w8e+AeYVoM2RHd4ifCX7Ne7HTcbaqs2N6g2uZbSc5F0Olr1xbbMr2BXlU6/qMCN/XnFg
+         8D7Tria32tmzOafcqjjzBG0tP00UkZ6qKAV0QGYRXvzcU+iw2CEEjxPWswxRJXLZyknk
+         zluJVJd6mx43RGgNx4sHRXN9o8+2n9ePJiFwfGYr5E8DAehvnfndb3JEjtD616r/sWU1
+         UcSg==
+X-Gm-Message-State: AOJu0Yy9N9znS46CC8RlTt+opWdoTnsqmJ3GcoiliXhKEt3MtpMjxhXL
+        v/doh50+9+KrFFWNy0aqCybt3oITkQfNjeD1mEk=
+X-Google-Smtp-Source: AGHT+IGRaEj3T4IAuMC3Mj8Jd4TLgw89+mRq3BK5krcDevTHm+SiisuqWB13LQsdI3Q+pMRU7uGBcg==
+X-Received: by 2002:a5d:5347:0:b0:317:e5ec:8767 with SMTP id t7-20020a5d5347000000b00317e5ec8767mr3896356wrv.21.1691875610458;
         Sat, 12 Aug 2023 14:26:50 -0700 (PDT)
 Received: from localhost.localdomain (darl-09-b2-v4wan-165404-cust288.vm5.cable.virginm.net. [86.17.61.33])
-        by smtp.gmail.com with ESMTPSA id p1-20020adfcc81000000b003179b3fd837sm9536481wrj.33.2023.08.12.14.26.49
+        by smtp.gmail.com with ESMTPSA id p1-20020adfcc81000000b003179b3fd837sm9536481wrj.33.2023.08.12.14.26.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 14:26:49 -0700 (PDT)
+        Sat, 12 Aug 2023 14:26:50 -0700 (PDT)
 From:   Joshua Ashton <joshua@froggi.es>
 To:     linux-bcachefs@vger.kernel.org
 Cc:     Joshua Ashton <joshua@froggi.es>
-Subject: [v2 0/3] bcachefs: Casefolding implementation
-Date:   Sat, 12 Aug 2023 22:26:28 +0100
-Message-ID: <20230812212647.490829-1-joshua@froggi.es>
+Subject: [v2 1/3] bcachefs: Introduce bch2_dirent_get_name
+Date:   Sat, 12 Aug 2023 22:26:29 +0100
+Message-ID: <20230812212647.490829-2-joshua@froggi.es>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230812212647.490829-1-joshua@froggi.es>
+References: <20230812212647.490829-1-joshua@froggi.es>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-This implements support for case-insensitive file and directory
-lookups using the regular `chattr +F` (`S_CASEFOLD`, `FS_CASEFOLD_FL`)
-casefolding attributes for bcachefs.
+A nice cleanup that avoids a bunch of open-coding name/string usage
+around dirent usage.
 
-The implementation uses the same UTF-8 lowering and normalization that
-ext4 and f2fs is using currently
+Will be used by casefolding impl in future commits.
 
-The main usecase for casefolding is compatibility with software written
-against other filesystems that rely on casefolded lookups
-(eg. NTFS and Wine/Proton).
-Taking advantage of file-system level casefolding can lead to great
-loading time gains in many applications and games.
+Signed-off-by: Joshua Ashton <joshua@froggi.es>
+---
+ fs/bcachefs/dirent.c | 52 +++++++++++++++++++++++++-------------------
+ fs/bcachefs/dirent.h |  2 +-
+ fs/bcachefs/fs.c     |  8 ++++---
+ 3 files changed, 36 insertions(+), 26 deletions(-)
 
-On the lookup/query side: casefolding is implemented by allocating a new
-string of `BCH_NAME_MAX` length using the `utf8_casefold` function to
-casefold the query string.
-An allocation is required here as `BCH_NAME_MAX` is quite large ~1.9kb
-and would not be safe to put on the stack.
-
-On the dirent side: casefolding is implemented by ensuring the `bkey`'s
-hash is made from the casefolded string.
-If the dirent's regular name and the casefolded name (and lengths) will
-fit in the dirent key, then the casefolded string will be cached there.
-The structures looks like this:
-
-Several designs were considered for this system:
-One was to introduce a dirent_v2, however that would be painful especially as
-the hash system only has support for a single key type. This would also need
-`BCH_NAME_MAX` to change between versions, and a new feature bit.
-
-Another option was to store without the two lengths, and just take the length of
-the regular name and casefolded name contiguously / 2 as the length. This would
-assume that the regular length == casefolded length, but that could potentially
-not be true, if the uppercase unicode glyph had a different UTF-8 encoding than
-the lowercase unicode glyph.
-It would be possible to disregard the casefold cache for those cases, but it was
-decided to simply encode the two string lengths in the key to avoid random
-performance issues if this edgecase was ever hit.
-
-The option settled on was to use a free-bit in d_type to mark a dirent as having
-a casefold cache, and then treat the first 4 bytes the name block as lengths.
-You can see this in the `d_cf_name_block` member of union in `bch_dirent`.
-
-You can see/review the work in my tree here:
-https://github.com/Joshua-Ashton/bcachefs/tree/casefold
-
-v2: Update format to store length in dirent based on flag, add comments, cleanup
-dirent_create_key, other misc. nits from IRC.
-
-Joshua Ashton (3):
-  bcachefs: Introduce bch2_dirent_get_name
-  bcachefs: Optimize bch2_dirent_name_bytes
-  bcachefs: Implement casefolding
-
- .../filesystems/bcachefs/casefolding.rst      |  61 ++++
- fs/bcachefs/bcachefs.h                        |   8 +
- fs/bcachefs/bcachefs_format.h                 |  29 +-
- fs/bcachefs/dirent.c                          | 285 +++++++++++++++---
- fs/bcachefs/dirent.h                          |   8 +-
- fs/bcachefs/fs-common.c                       |   4 +
- fs/bcachefs/fs-ioctl.c                        |  23 ++
- fs/bcachefs/fs-ioctl.h                        |  20 +-
- fs/bcachefs/fs.c                              |   8 +-
- fs/bcachefs/fsck.c                            |   8 +-
- fs/bcachefs/str_hash.h                        |  84 +++++-
- fs/bcachefs/super.c                           |  10 +
- fs/bcachefs/xattr.c                           |   6 +-
- 13 files changed, 478 insertions(+), 76 deletions(-)
- create mode 100644 Documentation/filesystems/bcachefs/casefolding.rst
-
+diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
+index 065ea59ee9fa..a87c4e5f089d 100644
+--- a/fs/bcachefs/dirent.c
++++ b/fs/bcachefs/dirent.c
+@@ -13,7 +13,7 @@
+ 
+ #include <linux/dcache.h>
+ 
+-unsigned bch2_dirent_name_bytes(struct bkey_s_c_dirent d)
++static unsigned bch2_dirent_name_bytes(struct bkey_s_c_dirent d)
+ {
+ 	unsigned len = bkey_val_bytes(d.k) -
+ 		offsetof(struct bch_dirent, d_name);
+@@ -21,6 +21,11 @@ unsigned bch2_dirent_name_bytes(struct bkey_s_c_dirent d)
+ 	return strnlen(d.v->d_name, len);
+ }
+ 
++struct qstr bch2_dirent_get_name(struct bkey_s_c_dirent d)
++{
++	return (struct qstr) QSTR_INIT(d.v->d_name, bch2_dirent_name_bytes(d));
++}
++
+ static u64 bch2_dirent_hash(const struct bch_hash_info *info,
+ 			    const struct qstr *name)
+ {
+@@ -41,7 +46,7 @@ static u64 dirent_hash_key(const struct bch_hash_info *info, const void *key)
+ static u64 dirent_hash_bkey(const struct bch_hash_info *info, struct bkey_s_c k)
+ {
+ 	struct bkey_s_c_dirent d = bkey_s_c_to_dirent(k);
+-	struct qstr name = QSTR_INIT(d.v->d_name, bch2_dirent_name_bytes(d));
++	struct qstr name = bch2_dirent_get_name(d);
+ 
+ 	return bch2_dirent_hash(info, &name);
+ }
+@@ -49,20 +54,20 @@ static u64 dirent_hash_bkey(const struct bch_hash_info *info, struct bkey_s_c k)
+ static bool dirent_cmp_key(struct bkey_s_c _l, const void *_r)
+ {
+ 	struct bkey_s_c_dirent l = bkey_s_c_to_dirent(_l);
+-	int len = bch2_dirent_name_bytes(l);
+-	const struct qstr *r = _r;
++	const struct qstr l_name = bch2_dirent_get_name(l);
++	const struct qstr *r_name = _r;
+ 
+-	return len - r->len ?: memcmp(l.v->d_name, r->name, len);
++	return l_name.len - r_name->len ?: memcmp(l_name.name, r_name->name, l_name.len);
+ }
+ 
+ static bool dirent_cmp_bkey(struct bkey_s_c _l, struct bkey_s_c _r)
+ {
+ 	struct bkey_s_c_dirent l = bkey_s_c_to_dirent(_l);
+ 	struct bkey_s_c_dirent r = bkey_s_c_to_dirent(_r);
+-	int l_len = bch2_dirent_name_bytes(l);
+-	int r_len = bch2_dirent_name_bytes(r);
++	const struct qstr l_name = bch2_dirent_get_name(l);
++	const struct qstr r_name = bch2_dirent_get_name(r);
+ 
+-	return l_len - r_len ?: memcmp(l.v->d_name, r.v->d_name, l_len);
++	return l_name.len - r_name.len ?: memcmp(l_name.name, r_name.name, l_name.len);
+ }
+ 
+ static bool dirent_is_visible(subvol_inum inum, struct bkey_s_c k)
+@@ -89,37 +94,36 @@ int bch2_dirent_invalid(const struct bch_fs *c, struct bkey_s_c k,
+ 			struct printbuf *err)
+ {
+ 	struct bkey_s_c_dirent d = bkey_s_c_to_dirent(k);
+-	unsigned len;
++	struct qstr d_name = bch2_dirent_get_name(d);
+ 
+-	len = bch2_dirent_name_bytes(d);
+-	if (!len) {
++	if (!d_name.len) {
+ 		prt_printf(err, "empty name");
+ 		return -BCH_ERR_invalid_bkey;
+ 	}
+ 
+-	if (bkey_val_u64s(k.k) > dirent_val_u64s(len)) {
++	if (bkey_val_u64s(k.k) > dirent_val_u64s(d_name.len)) {
+ 		prt_printf(err, "value too big (%zu > %u)",
+-		       bkey_val_u64s(k.k), dirent_val_u64s(len));
++		       bkey_val_u64s(k.k), dirent_val_u64s(d_name.len));
+ 		return -BCH_ERR_invalid_bkey;
+ 	}
+ 
+-	if (len > BCH_NAME_MAX) {
++	if (d_name.len > BCH_NAME_MAX) {
+ 		prt_printf(err, "dirent name too big (%u > %u)",
+-		       len, BCH_NAME_MAX);
++		       d_name.len, BCH_NAME_MAX);
+ 		return -BCH_ERR_invalid_bkey;
+ 	}
+ 
+-	if (len == 1 && !memcmp(d.v->d_name, ".", 1)) {
++	if (d_name.len == 1 && !memcmp(d_name.name, ".", 1)) {
+ 		prt_printf(err, "invalid name");
+ 		return -BCH_ERR_invalid_bkey;
+ 	}
+ 
+-	if (len == 2 && !memcmp(d.v->d_name, "..", 2)) {
++	if (d_name.len == 2 && !memcmp(d_name.name, "..", 2)) {
+ 		prt_printf(err, "invalid name");
+ 		return -BCH_ERR_invalid_bkey;
+ 	}
+ 
+-	if (memchr(d.v->d_name, '/', len)) {
++	if (memchr(d_name.name, '/', d_name.len)) {
+ 		prt_printf(err, "invalid name");
+ 		return -BCH_ERR_invalid_bkey;
+ 	}
+@@ -137,10 +141,11 @@ void bch2_dirent_to_text(struct printbuf *out, struct bch_fs *c,
+ 			 struct bkey_s_c k)
+ {
+ 	struct bkey_s_c_dirent d = bkey_s_c_to_dirent(k);
++	struct qstr d_name = bch2_dirent_get_name(d);
+ 
+ 	prt_printf(out, "%.*s -> %llu type %s",
+-	       bch2_dirent_name_bytes(d),
+-	       d.v->d_name,
++	       d_name.len,
++	       d_name.name,
+ 	       d.v->d_type != DT_SUBVOL
+ 	       ? le64_to_cpu(d.v->d_inum)
+ 	       : le32_to_cpu(d.v->d_child_subvol),
+@@ -507,6 +512,7 @@ int bch2_readdir(struct bch_fs *c, subvol_inum inum, struct dir_context *ctx)
+ 	subvol_inum target;
+ 	u32 snapshot;
+ 	struct bkey_buf sk;
++	struct qstr name;
+ 	int ret;
+ 
+ 	bch2_bkey_buf_init(&sk);
+@@ -537,9 +543,11 @@ int bch2_readdir(struct bch_fs *c, subvol_inum inum, struct dir_context *ctx)
+ 		dirent = bkey_i_to_s_c_dirent(sk.k);
+ 		bch2_trans_unlock(&trans);
+ 
++		name = bch2_dirent_get_name(dirent);
++
+ 		ctx->pos = dirent.k->p.offset;
+-		if (!dir_emit(ctx, dirent.v->d_name,
+-			      bch2_dirent_name_bytes(dirent),
++		if (!dir_emit(ctx, name.name,
++			      name.len,
+ 			      target.inum,
+ 			      vfs_d_type(dirent.v->d_type)))
+ 			break;
+diff --git a/fs/bcachefs/dirent.h b/fs/bcachefs/dirent.h
+index b42f4a13bc55..e9fa1df38232 100644
+--- a/fs/bcachefs/dirent.h
++++ b/fs/bcachefs/dirent.h
+@@ -24,7 +24,7 @@ struct bch_fs;
+ struct bch_hash_info;
+ struct bch_inode_info;
+ 
+-unsigned bch2_dirent_name_bytes(struct bkey_s_c_dirent);
++struct qstr bch2_dirent_get_name(struct bkey_s_c_dirent d);
+ 
+ static inline unsigned dirent_val_u64s(unsigned len)
+ {
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index eb5da358871b..d287db908e62 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -1237,7 +1237,8 @@ static int bch2_get_name(struct dentry *parent, char *name, struct dentry *child
+ 	struct bch_inode_unpacked inode_u;
+ 	subvol_inum target;
+ 	u32 snapshot;
+-	unsigned name_len;
++	struct qstr dirent_name;
++	unsigned name_len = 0;
+ 	int ret;
+ 
+ 	if (!S_ISDIR(dir->v.i_mode))
+@@ -1314,9 +1315,10 @@ static int bch2_get_name(struct dentry *parent, char *name, struct dentry *child
+ 	ret = -ENOENT;
+ 	goto err;
+ found:
+-	name_len = min_t(unsigned, bch2_dirent_name_bytes(d), NAME_MAX);
++	dirent_name = bch2_dirent_get_name(d);
+ 
+-	memcpy(name, d.v->d_name, name_len);
++	name_len = min_t(unsigned, dirent_name.len, NAME_MAX);
++	memcpy(name, dirent_name.name, name_len);
+ 	name[name_len] = '\0';
+ err:
+ 	if (bch2_err_matches(ret, BCH_ERR_transaction_restart))
 -- 
 2.41.0
 
