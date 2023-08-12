@@ -2,164 +2,76 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6705C001B0
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 11 Aug 2023 22:56:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2641C0015E
+	for <linux-bcachefs@archiver.kernel.org>; Sat, 12 Aug 2023 03:57:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbjHKW4h (ORCPT
+        id S235037AbjHLD5O (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 11 Aug 2023 18:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
+        Fri, 11 Aug 2023 23:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbjHKW4g (ORCPT
+        with ESMTP id S229475AbjHLD5N (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 11 Aug 2023 18:56:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DF31AE;
-        Fri, 11 Aug 2023 15:56:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 665F864B3B;
-        Fri, 11 Aug 2023 22:56:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA2BC433C7;
-        Fri, 11 Aug 2023 22:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691794594;
-        bh=HCyq8KPMZZAZvmj1NbTZghVcsieOP3UsAupGoKw9OWk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PlDrCP07xWdo3qHM9CsIU1NEFu5DkbItFwpr4DoEPBOHwfNJcm0B4oNgRTsjRqs+s
-         X6/yrWz5EL+2d5AM3VE/5XuYmjY9I44s4bI2MdUrx4NvgsPpEbjoZRDtFVLfCwGHv7
-         qsoxuhAtgWMfdD8bRMEZ8ymf081+Ai5DoFjjyvB8hJrcGS1kki9uosJmZQQbbflo0S
-         vMJHkyBigpMa00gY2EpfMD5jGubVHNNpV+DPXKSuHao1QTuvkC7jXGw/w+3N07buk7
-         F+nN77aS+9hmNubgPxmPn7WDbHFOPCmSR0StEteS1ApY/Ry5h/NKjFzeRd7uHrVE49
-         J+wTBxzi/X9mQ==
-Date:   Fri, 11 Aug 2023 15:56:34 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
-        sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
-        tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
-        andreas.gruenbacher@gmail.com, peterz@infradead.org,
-        akpm@linux-foundation.org, dhowells@redhat.com, snitzer@kernel.org,
-        axboe@kernel.dk
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230811225634.GI11336@frogsfrogsfrogs>
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan>
- <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
- <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
- <20230811-neigt-baufinanzierung-4c9521b036c6@brauner>
- <20230811132141.qxppoculzs5amawn@moria.home.lan>
+        Fri, 11 Aug 2023 23:57:13 -0400
+X-Greylist: delayed 375 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 20:57:13 PDT
+Received: from orion.157878.xyz (orion.157878.xyz [115.70.13.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C465AD
+        for <linux-bcachefs@vger.kernel.org>; Fri, 11 Aug 2023 20:57:13 -0700 (PDT)
+From:   Colin Gillespie <colin@cgillespie.xyz>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cgillespie.xyz;
+        s=2023; t=1691812255;
+        bh=7yDuu0wThiMiSFUj6QlgxwfBbAD1VejS9JG7nv/sytQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RNS2XL5Df5hlvSMbmVFa8TcT8AlxprIIs2gDC22kPoXxs/uR0A1GOaR3gubIVavjG
+         mVap3fx7vkn2gCM9kl6KSnoBRHBOlN9feCJZpZkWGF/SMApYV89BivXkHXafAuE6mk
+         xlTjnJ/zlvtCKycBPEP0tbOhwq1ZUwUgo3WS9aCRa6C0fez6gvOFB5vmvDtCL309Oi
+         WNmeNo5AcNAarS8/8CSGJEc850hgCrjpkCftCTolf70W7gwqMvAag/2c7UqkUVdNZ+
+         fHRJGfeol/qlIY92VqRD5Ue4xE1nV4vvjXjaAD5eJ29eMeQpLAnejwpz5cYdhpi0ha
+         SG5D79S+TLyng==
+To:     linux-bcachefs@vger.kernel.org
+Cc:     Colin Gillespie <colin@cgillespie.xyz>
+Subject: [PATCH] cmd_mount: use the correct keyring key type
+Date:   Sat, 12 Aug 2023 13:50:37 +1000
+Message-ID: <20230812035037.20681-1-colin@cgillespie.xyz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811132141.qxppoculzs5amawn@moria.home.lan>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 09:21:41AM -0400, Kent Overstreet wrote:
-> On Fri, Aug 11, 2023 at 12:54:42PM +0200, Christian Brauner wrote:
-> > > I don't want to do that to Christian either, I think highly of the work
-> > > he's been doing and I don't want to be adding to his frustration. So I
-> > > apologize for loosing my cool earlier; a lot of that was frustration
-> > > from other threads spilling over.
-> > > 
-> > > But: if he's going to be raising objections, I need to know what his
-> > > concerns are if we're going to get anywhere. Raising objections without
-> > > saying what the concerns are shuts down discussion; I don't think it's
-> > > unreasonable to ask people not to do that, and to try and stay focused
-> > > on the code.
-> > 
-> > The technical aspects were made clear off-list and I believe multiple
-> > times on-list by now. Any VFS and block related patches are to be
-> > reviewed and accepted before bcachefs gets merged.
-> 
-> Here's the one VFS patch in the series - could we at least get an ack
-> for this? It's a new helper, just breaks the existing d_tmpfile() up
-> into two functions - I hope we can at least agree that this patch
-> shouldn't be controversial?
-> 
-> -->--
-> Subject: [PATCH] fs: factor out d_mark_tmpfile()
-> 
-> New helper for bcachefs - bcachefs doesn't want the
-> inode_dec_link_count() call that d_tmpfile does, it handles i_nlink on
-> its own atomically with other btree updates
-> 
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: linux-fsdevel@vger.kernel.org
+Mount is checking for and adding encryption keys using the logon key
+type instead of the user key type. This was causing it to not be able to
+unlock volumes on its own, and ask for a passphrase on already unlocked
+volumes.
 
-Yes, we can finally clean up this braindamage in xfs_generic_create:
+Signed-off-by: Colin Gillespie <colin@cgillespie.xyz>
+---
+ rust-src/src/key.rs | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-	if (tmpfile) {
-		/*
-		 * The VFS requires that any inode fed to d_tmpfile must
-		 * have nlink == 1 so that it can decrement the nlink in
-		 * d_tmpfile.  However, we created the temp file with
-		 * nlink == 0 because we're not allowed to put an inode
-		 * with nlink > 0 on the unlinked list.  Therefore we
-		 * have to set nlink to 1 so that d_tmpfile can
-		 * immediately set it back to zero.
-		 */
-		set_nlink(inode, 1);
-		d_tmpfile(tmpfile, inode);
-	}
+diff --git a/rust-src/src/key.rs b/rust-src/src/key.rs
+index 2b4fc45..07292e8 100644
+--- a/rust-src/src/key.rs
++++ b/rust-src/src/key.rs
+@@ -35,7 +35,7 @@ impl std::str::FromStr for KeyLoc {
+ fn check_for_key(key_name: &std::ffi::CStr) -> anyhow::Result<bool> {
+     use bch_bindgen::keyutils::{self, keyctl_search};
+     let key_name = key_name.to_bytes_with_nul().as_ptr() as *const _;
+-    let key_type = c_str!("logon");
++    let key_type = c_str!("user");
+ 
+     let key_id = unsafe { keyctl_search(keyutils::KEY_SPEC_USER_KEYRING, key_type, key_name, 0) };
+     if key_id > 0 {
+@@ -101,7 +101,7 @@ fn ask_for_key(sb: &bch_sb_handle) -> anyhow::Result<()> {
+     } else if key.magic != bch_key_magic {
+         Err(anyhow!("failed to verify the password"))
+     } else {
+-        let key_type = c_str!("logon");
++        let key_type = c_str!("user");
+         let ret = unsafe {
+             bch_bindgen::keyutils::add_key(
+                 key_type,
+-- 
+2.41.0
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> 
-> diff --git a/fs/dcache.c b/fs/dcache.c
-> index 52e6d5fdab..dbdafa2617 100644
-> --- a/fs/dcache.c
-> +++ b/fs/dcache.c
-> @@ -3249,11 +3249,10 @@ void d_genocide(struct dentry *parent)
->  
->  EXPORT_SYMBOL(d_genocide);
->  
-> -void d_tmpfile(struct file *file, struct inode *inode)
-> +void d_mark_tmpfile(struct file *file, struct inode *inode)
->  {
->  	struct dentry *dentry = file->f_path.dentry;
->  
-> -	inode_dec_link_count(inode);
->  	BUG_ON(dentry->d_name.name != dentry->d_iname ||
->  		!hlist_unhashed(&dentry->d_u.d_alias) ||
->  		!d_unlinked(dentry));
-> @@ -3263,6 +3262,15 @@ void d_tmpfile(struct file *file, struct inode *inode)
->  				(unsigned long long)inode->i_ino);
->  	spin_unlock(&dentry->d_lock);
->  	spin_unlock(&dentry->d_parent->d_lock);
-> +}
-> +EXPORT_SYMBOL(d_mark_tmpfile);
-> +
-> +void d_tmpfile(struct file *file, struct inode *inode)
-> +{
-> +	struct dentry *dentry = file->f_path.dentry;
-> +
-> +	inode_dec_link_count(inode);
-> +	d_mark_tmpfile(file, inode);
->  	d_instantiate(dentry, inode);
->  }
->  EXPORT_SYMBOL(d_tmpfile);
-> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-> index 6b351e009f..3da2f0545d 100644
-> --- a/include/linux/dcache.h
-> +++ b/include/linux/dcache.h
-> @@ -251,6 +251,7 @@ extern struct dentry * d_make_root(struct inode *);
->  /* <clickety>-<click> the ramfs-type tree */
->  extern void d_genocide(struct dentry *);
->  
-> +extern void d_mark_tmpfile(struct file *, struct inode *);
->  extern void d_tmpfile(struct file *, struct inode *);
->  
->  extern struct dentry *d_find_alias(struct inode *);
