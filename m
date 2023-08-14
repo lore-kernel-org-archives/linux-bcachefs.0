@@ -2,41 +2,33 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B92CC41513
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 14 Aug 2023 07:27:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC4B7C41513
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 14 Aug 2023 15:24:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbjHNH0e (ORCPT
+        id S232870AbjHNPYO (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Mon, 14 Aug 2023 03:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32924 "EHLO
+        Mon, 14 Aug 2023 11:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbjHNH0C (ORCPT
+        with ESMTP id S232865AbjHNPXo (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:26:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92EEE71;
-        Mon, 14 Aug 2023 00:26:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 574AB60FC0;
-        Mon, 14 Aug 2023 07:26:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1267C433C7;
-        Mon, 14 Aug 2023 07:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691997960;
-        bh=1A9YEnUcu7Eg2vK7JVAjQdZ1UkRIoScgTTuUqnG2Hgs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=msm1TBeBHOOkLoyyh0+znDPBUiBWqSjLhBgX2W3Pb7dlsqEJ0QeFmyoksmOEspCZ5
-         Wq+78v0I52y/i5+RLgQtdgCRZzV6rXL68VOJlfeAGgtuyGjKiz9jTetsKeaSIl0fUz
-         +EYrI7nEJPBJsGth04mzuBR9emf3qpsie1k3bsrSnpgHd8ap0FK+FXrVdmeAUVub6x
-         i9A5Bt8H/0VR21BJ6mE+nSW19ipKnf3vZKtHapACCz6x5EyRowCYtxvylo6/tYFdts
-         JvDAp3uHbq060Be3bQQU6PEmfSfKFtDVmeZBUwy42GNRbE/mrepWvkLAaAakUsBDP+
-         DgNnbtCc6DCCg==
-Date:   Mon, 14 Aug 2023 09:25:54 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
+        Mon, 14 Aug 2023 11:23:44 -0400
+Received: from out-98.mta1.migadu.com (out-98.mta1.migadu.com [95.215.58.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75898E7E
+        for <linux-bcachefs@vger.kernel.org>; Mon, 14 Aug 2023 08:23:43 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 11:23:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692026621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=odVIt/5wqGAJeOs9uVdPC5bYWm2C36UtqikhKqjhgQs=;
+        b=av8xoPF9Wxv45SXZf6WLQK5/Fb+dKBpiRouCaSh6qZkGuACL8mMMX2ostiNTehpbQS4XkV
+        wpzk93WJrZRnVsWYao+xq+CHAlHERowZiwmJtb9da9Cg+KOtv7mLackqHPTAsFGBPpToXc
+        nv6TeaSEaZL8I/AKljssQXQ0t+Hs+7c=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Christian Brauner <brauner@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org, djwong@kernel.org,
@@ -46,7 +38,7 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         akpm@linux-foundation.org, dhowells@redhat.com, snitzer@kernel.org,
         axboe@kernel.dk
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230814-funknetz-dreikampf-196dd2545dd9@brauner>
+Message-ID: <20230814152335.oiroowt2co2kj4xx@moria.home.lan>
 References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230706155602.mnhsylo3pnief2of@moria.home.lan>
  <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
@@ -54,20 +46,55 @@ References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
  <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
  <20230811-neigt-baufinanzierung-4c9521b036c6@brauner>
  <20230811125801.g3uwnouefoleq4nx@moria.home.lan>
+ <20230814-funknetz-dreikampf-196dd2545dd9@brauner>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230811125801.g3uwnouefoleq4nx@moria.home.lan>
+In-Reply-To: <20230814-funknetz-dreikampf-196dd2545dd9@brauner>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 08:58:01AM -0400, Kent Overstreet wrote:
-> I don't see the justification for the delay - every cycle there's some
-> amount of vfs/block layer refactoring that affects filesystems, the
-> super work is no different.
+On Mon, Aug 14, 2023 at 09:25:54AM +0200, Christian Brauner wrote:
+> On Fri, Aug 11, 2023 at 08:58:01AM -0400, Kent Overstreet wrote:
+> > I don't see the justification for the delay - every cycle there's some
+> > amount of vfs/block layer refactoring that affects filesystems, the
+> > super work is no different.
+> 
+> So, the reason is that we're very close to having the super code
+> massaged in a shape where bcachefs should be able to directly make use
+> of the helpers instead of having to pull in custom code at all. But not
+> all that work has made it.
 
-So, the reason is that we're very close to having the super code
-massaged in a shape where bcachefs should be able to directly make use
-of the helpers instead of having to pull in custom code at all. But not
-all that work has made it.
+Well, bcachefs really isn't doing anything terribly unusual here; we're
+using sget() directly, same as btrfs, and we have to because we're both
+multi device filesystems.
+
+Jan's restructing of mount_bdev() got me thinking that it should be
+possible to do a mount_bdevs() that both btrfs and bcachefs could use -
+but we don't need to be blocked on that, sget()'s been a normal exported
+interface since forever.
+
+Somewhat related, I dropped this patch from my tree:
+block: Don't block on s_umount from __invalidate_super()
+https://evilpiepirate.org/git/bcachefs.git/commit/?h=bcachefs-v6.3&id=1dd488901bc025a61e1ce1a0f54999a2b221bd78
+
+and instead, for now we're closing block devices later in the shutdown
+path like other filesystems do (after calling generic_shutdown_super(),
+not in put_super()).
+
+But now I've got some test failures, e.g.
+https://evilpiepirate.org/~testdashboard/c/040e910f7f316ea6273c895dcc026b9f1ad36a8e/xfstests.generic.604/log.br
+
+and since you guys are switching block device opens to use a real
+holder, I suspect you'll be seeing the same issue soon.
+
+The bug is that the mount appears to be gone - generic_shutdown_super()
+is finished - so as far as userspace can tell everything is shutdown and
+we should be able to start using the block device again, but the unmount
+path hasn't actually called blkdev_put() yet.
+
+So that patch I posted is one way to solve the self-deadlock from
+calling blkdev_put() where we really want to be calling it... not the
+prettiest way, but I think this is something we do need to get fixed.
