@@ -2,115 +2,112 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91520EB64DD
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 14 Aug 2023 01:25:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E55DEEB64DD
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 14 Aug 2023 01:25:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbjHNBYs (ORCPT
+        id S231696AbjHNBZT (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 13 Aug 2023 21:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
+        Sun, 13 Aug 2023 21:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbjHNBYq (ORCPT
+        with ESMTP id S232367AbjHNBYr (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 13 Aug 2023 21:24:46 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025F2BD
+        Sun, 13 Aug 2023 21:24:47 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E6A1B5
         for <linux-bcachefs@vger.kernel.org>; Sun, 13 Aug 2023 18:24:46 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3175f17a7baso3217563f8f.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 13 Aug 2023 18:24:45 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3178dd81ac4so3317547f8f.3
+        for <linux-bcachefs@vger.kernel.org>; Sun, 13 Aug 2023 18:24:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=froggi.es; s=google; t=1691976284; x=1692581084;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=B0PUh+i1+xTpL+x7pa5xQDAs6uXCNVeXkKaDhFV4trQ=;
-        b=SlIjoOEEUmSpeOeWsWOsb5QFW/NWu9zqNdoCF76dP5oR4Z++fD3yXkb7u34qW80rqo
-         vl5sRQl3azxF9PIAltpS2WWOe99qfx5/0cw153JbNqKvngDI7D/QrgDs3xir4Hav3cBw
-         D7POSxG2jcdfi43BlvnSVGiRzQcv4OchYUMt56FiCnsOQIeDnur5Ql9IgzM0k0Gt9FXm
-         bozySM2y+6A6QvsC+jZGKemEyXm5EM5P2I827HYuFV7bq+fIEfkNjzVGYYVrNNBH1TpG
-         NIjrSh9uIcfxOxJ9fz2u8xAULoPCSIJu3o7UPy6n77M1wz0MmHNj/rGjNyOaVmeFTexP
-         YyYw==
+        d=froggi.es; s=google; t=1691976285; x=1692581085;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gJaRt0JvANdMtBw+KPrYjeNplrMT9dKdh8bNSiVZtZU=;
+        b=hzeOOSPJB86ZrseGj/1eojer5P7gMaaVmD8PS7fpu33FYP/flGgBkH725xabGVSQOM
+         8AJAMEbjYrrgYHFL+0d+iUJoq+g2TReG28Vp2fCP/oh33jjNtbpd4XvykwI5WuHbKIv5
+         Na2gosX5Xz76YXfn80b8T5+XbSmuhuJitTRaE0TSBuBp1An+AvwRH/U5BnJsbeSYLT57
+         GQj5GeS/8SX2QOxHAOiLfbmgoUDd0g/EH98la8DqE54tEV0CKf/5DQf1LuTLnGZmnDIe
+         g9l7//AoohOLSUflEB7F5OHb0jKn+jEA3Bku/tvTBjNUMU9h0ONjc213/YmFSyeMmpEt
+         vNYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691976284; x=1692581084;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B0PUh+i1+xTpL+x7pa5xQDAs6uXCNVeXkKaDhFV4trQ=;
-        b=bveL7rA6lncyZmkakrgFeQu0vj+OWXKZ+r0H78jnjwPtdRf5iUSD3kooX1F1lEk6+I
-         dnzfajRc0gWBqsLm0I+W2azWm+ilmONi+qLdHR7VQr55OJWqQ2R9BbeWRERomxVY96k8
-         loCPWcSDcLE/T6dhuckWDJoi79re8Pg4SEy+1DCfnNBXWgNiGxGvjrfvHA9jFhhPMoip
-         nTp5eH7KhBgnhs94HEat1QIkLxwrvLUkBKJey6IBj20QDIIcLDS3zeh1CVc42cjmmjeF
-         E7fLxepyh9swXGS1SiQ7cSBkzEV1eLV/OdCX6O86zqInpcm8rlctFk2cGwR+VOnNP1/0
-         FGUA==
-X-Gm-Message-State: AOJu0YynVK5TnskACmCkze1EQ7LFDcNXxMSs91s70QQpMnr/sWEpemUB
-        JLvvn+ZgyNCKq01Ugw+l7f3Fd3U7fcj/2HAYKrM=
-X-Google-Smtp-Source: AGHT+IGl6f4tbDbipGX8y3K30XHetnm1FWovH2Q23BRcvS2yXx6AuNHiZ2zyB+Z9Rj7LxLpjkckA7w==
-X-Received: by 2002:a05:6000:128c:b0:319:72f8:7249 with SMTP id f12-20020a056000128c00b0031972f87249mr2002978wrx.66.1691976284400;
-        Sun, 13 Aug 2023 18:24:44 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691976285; x=1692581085;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gJaRt0JvANdMtBw+KPrYjeNplrMT9dKdh8bNSiVZtZU=;
+        b=jAUA5ka94AukP3qNfDkxaRrMj1nqM2IEOSGbP2d0Iob1WF4LNPjwqnyobo9iFvIqK2
+         5cBMl65Q1/1XvHQxKr9uwyWMiP6ygKhe76XKxW9ylJFvPkbLqTq+Sk4oihWiY8CS4zfA
+         4orZBdCyoQnvrVT5YJdXy/obExnvfCCwS/UhNIozqhTFBabfF9e54hZ1yd5Fxqd298Jk
+         UGbCXwYOlqNHbpE5e5/c/Z6ehVbTeAc/wzo32xouxdqYTSl8I4KpOUDnVx/NxC4cZTA0
+         P2fn+jf49x8UzG1mrjadAI0ivnUaUd9gRE+86kwA+E1UhhAQTAPvEaIF83Jd1E9YbQQ2
+         B90g==
+X-Gm-Message-State: AOJu0Yzqg/3+7M2ADl9xF2iDt2zLzvMy2yItVkbFhzxwQ1635nG30Hig
+        eqo97HB8yPsq9UjtkTBrF0gMvtSNQ1KD14jq2uM=
+X-Google-Smtp-Source: AGHT+IGKILguaA4KrHbl4/H854E6VkuiFm6eU6g88RUIqNDyrusmruINHGG4qJDaf3vkgSD+jWes2g==
+X-Received: by 2002:a5d:4d8d:0:b0:319:6b6c:dd01 with SMTP id b13-20020a5d4d8d000000b003196b6cdd01mr3857818wru.17.1691976285375;
+        Sun, 13 Aug 2023 18:24:45 -0700 (PDT)
 Received: from localhost.localdomain (darl-09-b2-v4wan-165404-cust288.vm5.cable.virginm.net. [86.17.61.33])
-        by smtp.gmail.com with ESMTPSA id a2-20020a5d4d42000000b00317ca89f6c5sm12802076wru.107.2023.08.13.18.24.43
+        by smtp.gmail.com with ESMTPSA id a2-20020a5d4d42000000b00317ca89f6c5sm12802076wru.107.2023.08.13.18.24.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 18:24:44 -0700 (PDT)
+        Sun, 13 Aug 2023 18:24:45 -0700 (PDT)
 From:   Joshua Ashton <joshua@froggi.es>
 To:     linux-bcachefs@vger.kernel.org
 Cc:     Joshua Ashton <joshua@froggi.es>
-Subject: [v4 0/3] bcachefs: Casefolding implementation
-Date:   Mon, 14 Aug 2023 02:24:24 +0100
-Message-ID: <20230814012434.627641-1-joshua@froggi.es>
+Subject: [v4 2/3] bcachefs: Move dirent_val_u64s to dirent.c
+Date:   Mon, 14 Aug 2023 02:24:26 +0100
+Message-ID: <20230814012434.627641-3-joshua@froggi.es>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230814012434.627641-1-joshua@froggi.es>
+References: <20230814012434.627641-1-joshua@froggi.es>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-This implements support for case-insensitive file and directory
-lookups using the regular `chattr +F` (`S_CASEFOLD`, `FS_CASEFOLD_FL`)
-casefolding attributes for bcachefs.
+Not used anywhere else anymore, can become local to dirent.c now.
 
-The implementation uses the same UTF-8 lowering and normalization that
-ext4 and f2fs is using currently
+Signed-off-by: Joshua Ashton <joshua@froggi.es>
+---
+ fs/bcachefs/dirent.c | 6 ++++++
+ fs/bcachefs/dirent.h | 6 ------
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-The main usecase for casefolding is compatibility with software written
-against other filesystems that rely on casefolded lookups
-(eg. NTFS and Wine/Proton).
-Taking advantage of file-system level casefolding can lead to great
-loading time gains in many applications and games.
-
-See more information and rationale in:
-Documentation/filesystems/bcachefs/casefolding.rst
-
-You can see/review the work in my tree here:
-https://github.com/Joshua-Ashton/bcachefs/tree/casefold
-
-v2: Update format to store length in dirent based on flag, add comments, cleanup
-dirent_create_key, other misc. nits from IRC.
-
-v3: Cleanup the dirent code, utilize the fact that BCH_NAME_MAX is smaller now,
-remove fallbacks for too big keys that won't make sense anymore. Improved
-lookup string lowering.
-
-v4: Move cf_name allocation from stack to trans alloc, validated bkey in invalid,
-used length directly, misc. nits.
-
-Joshua Ashton (3):
-  bcachefs: Split out dirent alloc and name initialization
-  bcachefs: Move dirent_val_u64s to dirent.c
-  bcachefs: Implement casefolding
-
- .../filesystems/bcachefs/casefolding.rst      |  73 ++++++
- fs/bcachefs/bcachefs.h                        |   6 +
- fs/bcachefs/bcachefs_format.h                 |  26 ++-
- fs/bcachefs/dirent.c                          | 219 +++++++++++++++---
- fs/bcachefs/dirent.h                          |   6 -
- fs/bcachefs/fs-common.c                       |   4 +
- fs/bcachefs/fs-ioctl.c                        |  22 ++
- fs/bcachefs/fs-ioctl.h                        |  20 +-
- fs/bcachefs/str_hash.h                        |   4 +
- fs/bcachefs/super.c                           |  19 ++
- 10 files changed, 353 insertions(+), 46 deletions(-)
- create mode 100644 Documentation/filesystems/bcachefs/casefolding.rst
-
+diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
+index 85769d5c6b82..6bdcccabd732 100644
+--- a/fs/bcachefs/dirent.c
++++ b/fs/bcachefs/dirent.c
+@@ -13,6 +13,12 @@
+ 
+ #include <linux/dcache.h>
+ 
++static inline unsigned dirent_val_u64s(unsigned len)
++{
++	return DIV_ROUND_UP(offsetof(struct bch_dirent, d_name) + len,
++			    sizeof(u64));
++}
++
+ static unsigned bch2_dirent_name_bytes(struct bkey_s_c_dirent d)
+ {
+ 	unsigned bkey_u64s = bkey_val_u64s(d.k);
+diff --git a/fs/bcachefs/dirent.h b/fs/bcachefs/dirent.h
+index e9fa1df38232..56061ac93ad3 100644
+--- a/fs/bcachefs/dirent.h
++++ b/fs/bcachefs/dirent.h
+@@ -26,12 +26,6 @@ struct bch_inode_info;
+ 
+ struct qstr bch2_dirent_get_name(struct bkey_s_c_dirent d);
+ 
+-static inline unsigned dirent_val_u64s(unsigned len)
+-{
+-	return DIV_ROUND_UP(offsetof(struct bch_dirent, d_name) + len,
+-			    sizeof(u64));
+-}
+-
+ int bch2_dirent_read_target(struct btree_trans *, subvol_inum,
+ 			    struct bkey_s_c_dirent, subvol_inum *);
+ 
 -- 
 2.41.0
 
