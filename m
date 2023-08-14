@@ -2,144 +2,99 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 171F2C04A6A
-	for <linux-bcachefs@archiver.kernel.org>; Mon, 14 Aug 2023 01:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40133C001DB
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 14 Aug 2023 07:22:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbjHNBZT (ORCPT
+        id S229730AbjHNHVl (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 13 Aug 2023 21:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        Mon, 14 Aug 2023 03:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbjHNBYr (ORCPT
+        with ESMTP id S234158AbjHNHVa (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 13 Aug 2023 21:24:47 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3F8F5
-        for <linux-bcachefs@vger.kernel.org>; Sun, 13 Aug 2023 18:24:46 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3159d5e409dso2839212f8f.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 13 Aug 2023 18:24:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=froggi.es; s=google; t=1691976285; x=1692581085;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9w29Os0whbP+QGRAWOByOJrpYHNRbRm4EUfBgz2p0L4=;
-        b=FNGzfQM31iOsb5VvAlE9psR5lwZ5UqSBvc8YlDblqohDcM4p0YkM7Eq/c16tR5bdW/
-         nVGX1AIbBK35UkGDVCtLcuzzaXx6FOhDsPPcSXn1LV/m1V2LCT4XdGoSp03Pe3ga00LO
-         YrawrTZH+pspnHkiap5nKuPidfBQ/DLhRs+JmN/BXklU1LAtPlHFvyi2DKGePuJ/kw/T
-         NRqj3jvouKeBB/d2WTZ3eSBkfTGxwpDXydKR/wItnpfeaOLCVfxwAHP4RWLkirzW9d0S
-         rGSKgvQknc3ObNdLbhlkoZ8MYcALzmFJLk/v5tU++Gv9N8PPC7fTYU4z8+ot6cA7Qj5+
-         v0pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691976285; x=1692581085;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9w29Os0whbP+QGRAWOByOJrpYHNRbRm4EUfBgz2p0L4=;
-        b=agdHTj2cHpGM2VvqfVFxjGELhYVXnyM3qSWS9HyIPRJbXaXsq7ckxZx+Ojl55YJUQz
-         P2/RpVh6C5lNXvtd6NiKm0rUVOB7NgT9vxt51rLfAbHDHmX59OPsrEqA+7x5wXYxIOxq
-         xtZc0BiWah09dWyL6e/uMWBAeUW0ctSGmqRONl0SYnCFxBnnXDUny8GTmMEZWjxfxAKY
-         0RMLdowntZd7a7n55Xo0gYfg/6GNgoXXTBAHKkIN9h76MS9sOyZBSwYUXcWyXZSJdV0X
-         NmEFGPXBD8Ykdebf0vK+cgpL5x6HTHABe2OeCTivTZm4ubUflq4u1N8WXFxJdk7x8lL4
-         ZLPA==
-X-Gm-Message-State: AOJu0Yzfj2FVLoVOLPPaev4o3fwxr+EzrGMyXbz3U/VbxUxE30uKhU+g
-        6+phIpMq7/XPBY82KaE1hd+cDTpbF9AVmdyUQOk=
-X-Google-Smtp-Source: AGHT+IG0DZoTg6D74GvRRe45s1n1cpAqmmkaqMUZFp60HZNV0IgRV6x8aKzgrN7cHYuP07wDfB8UrQ==
-X-Received: by 2002:a5d:4350:0:b0:317:dcdd:3fa2 with SMTP id u16-20020a5d4350000000b00317dcdd3fa2mr5367680wrr.31.1691976284954;
-        Sun, 13 Aug 2023 18:24:44 -0700 (PDT)
-Received: from localhost.localdomain (darl-09-b2-v4wan-165404-cust288.vm5.cable.virginm.net. [86.17.61.33])
-        by smtp.gmail.com with ESMTPSA id a2-20020a5d4d42000000b00317ca89f6c5sm12802076wru.107.2023.08.13.18.24.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 18:24:44 -0700 (PDT)
-From:   Joshua Ashton <joshua@froggi.es>
-To:     linux-bcachefs@vger.kernel.org
-Cc:     Joshua Ashton <joshua@froggi.es>
-Subject: [v4 1/3] bcachefs: Split out dirent alloc and name initialization
-Date:   Mon, 14 Aug 2023 02:24:25 +0100
-Message-ID: <20230814012434.627641-2-joshua@froggi.es>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230814012434.627641-1-joshua@froggi.es>
-References: <20230814012434.627641-1-joshua@froggi.es>
+        Mon, 14 Aug 2023 03:21:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDA5E75;
+        Mon, 14 Aug 2023 00:21:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CD43261178;
+        Mon, 14 Aug 2023 07:21:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE65C433C7;
+        Mon, 14 Aug 2023 07:21:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691997689;
+        bh=IPfVHIU3EHRxOeB4Potpwr18tukfqicP2aJAZxi9gwE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KlCibmQ2SiL40RdGbitFweTr6+EiTRcc3tyvaC5oCaqY79IeUgdzzHQ6t4BLdcLiY
+         LjUF0Z3d4h5U+Ga/RK+3YdDbSECOXj4/V/XBa0HbvMAsn5E/CkvoSbAmuKDlGthrfX
+         35jvGkmeKi7xlokdZ/65ju1EvS93xZiyCPAuYaEXxMbR+A57mpkRRUwrsL9Ycd3cBA
+         GeNQ8eVVpAJ0laNFJP3iQuvGPtwryWePw9i6cyoVoWIIH/Z44ljJuQ7PND0QaHMRg4
+         7t8Owowf9KziNKrSkGBiHE8Cp9Q7qBYjLxFoe1piN1vkrjWlMyVKzN+MIWLcckmoyA
+         HnYMgKfN1Tirg==
+Date:   Mon, 14 Aug 2023 09:21:22 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, djwong@kernel.org,
+        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
+        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
+        jack@suse.cz, andreas.gruenbacher@gmail.com, peterz@infradead.org,
+        akpm@linux-foundation.org, dhowells@redhat.com, snitzer@kernel.org,
+        axboe@kernel.dk
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230814-sekte-asche-5dcf68ec21ba@brauner>
+References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+ <20230706155602.mnhsylo3pnief2of@moria.home.lan>
+ <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
+ <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
+ <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+ <20230811-neigt-baufinanzierung-4c9521b036c6@brauner>
+ <20230811132141.qxppoculzs5amawn@moria.home.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230811132141.qxppoculzs5amawn@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Splits out the code that allocates the dirent and initializes the name
-to make things easier to implement casefolding in a future commit.
+On Fri, Aug 11, 2023 at 09:21:41AM -0400, Kent Overstreet wrote:
+> On Fri, Aug 11, 2023 at 12:54:42PM +0200, Christian Brauner wrote:
+> > > I don't want to do that to Christian either, I think highly of the work
+> > > he's been doing and I don't want to be adding to his frustration. So I
+> > > apologize for loosing my cool earlier; a lot of that was frustration
+> > > from other threads spilling over.
+> > > 
+> > > But: if he's going to be raising objections, I need to know what his
+> > > concerns are if we're going to get anywhere. Raising objections without
+> > > saying what the concerns are shuts down discussion; I don't think it's
+> > > unreasonable to ask people not to do that, and to try and stay focused
+> > > on the code.
+> > 
+> > The technical aspects were made clear off-list and I believe multiple
+> > times on-list by now. Any VFS and block related patches are to be
+> > reviewed and accepted before bcachefs gets merged.
+> 
+> Here's the one VFS patch in the series - could we at least get an ack
+> for this? It's a new helper, just breaks the existing d_tmpfile() up
+> into two functions - I hope we can at least agree that this patch
+> shouldn't be controversial?
+> 
+> -->--
+> Subject: [PATCH] fs: factor out d_mark_tmpfile()
+> 
+> New helper for bcachefs - bcachefs doesn't want the
+> inode_dec_link_count() call that d_tmpfile does, it handles i_nlink on
+> its own atomically with other btree updates
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: linux-fsdevel@vger.kernel.org
 
-Signed-off-by: Joshua Ashton <joshua@froggi.es>
----
- fs/bcachefs/dirent.c | 46 ++++++++++++++++++++++++++++++++------------
- 1 file changed, 34 insertions(+), 12 deletions(-)
-
-diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
-index a7559ab03802..85769d5c6b82 100644
---- a/fs/bcachefs/dirent.c
-+++ b/fs/bcachefs/dirent.c
-@@ -169,15 +169,13 @@ void bch2_dirent_to_text(struct printbuf *out, struct bch_fs *c,
- 	       bch2_d_type_str(d.v->d_type));
- }
- 
--static struct bkey_i_dirent *dirent_create_key(struct btree_trans *trans,
--				subvol_inum dir, u8 type,
--				const struct qstr *name, u64 dst)
-+static struct bkey_i_dirent *dirent_alloc_key(struct btree_trans *trans,
-+				subvol_inum dir,
-+				u8 type,
-+				int name_len, u64 dst)
- {
- 	struct bkey_i_dirent *dirent;
--	unsigned u64s = BKEY_U64s + dirent_val_u64s(name->len);
--
--	if (name->len > BCH_NAME_MAX)
--		return ERR_PTR(-ENAMETOOLONG);
-+	unsigned u64s = BKEY_U64s + dirent_val_u64s(name_len);
- 
- 	BUG_ON(u64s > U8_MAX);
- 
-@@ -197,11 +195,35 @@ static struct bkey_i_dirent *dirent_create_key(struct btree_trans *trans,
- 
- 	dirent->v.d_type = type;
- 
--	memcpy(dirent->v.d_name, name->name, name->len);
--	memset(dirent->v.d_name + name->len, 0,
--	       bkey_val_bytes(&dirent->k) -
--	       offsetof(struct bch_dirent, d_name) -
--	       name->len);
-+	return dirent;
-+}
-+
-+static void dirent_init_regular_name(struct bkey_i_dirent *dirent,
-+				     const struct qstr *name)
-+{
-+	memcpy(&dirent->v.d_name[0], name->name, name->len);
-+	memset(&dirent->v.d_name[name->len], 0,
-+		bkey_val_bytes(&dirent->k) -
-+		offsetof(struct bch_dirent, d_name) -
-+		name->len);
-+}
-+
-+static struct bkey_i_dirent *dirent_create_key(struct btree_trans *trans,
-+				subvol_inum dir,
-+				u8 type,
-+				const struct qstr *name,
-+				u64 dst)
-+{
-+	struct bkey_i_dirent *dirent;
-+
-+	if (name->len > BCH_NAME_MAX)
-+		return ERR_PTR(-ENAMETOOLONG);
-+
-+	dirent = dirent_alloc_key(trans, dir, type, name->len, dst);
-+	if (IS_ERR(dirent))
-+		return dirent;
-+
-+	dirent_init_regular_name(dirent, name);
- 
- 	EBUG_ON(bch2_dirent_name_bytes(dirent_i_to_s_c(dirent)) != name->len);
- 
--- 
-2.41.0
-
+Yep, that looks good,
+Reviewed-by: Christian Brauner <brauner@kernel.org>
