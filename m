@@ -2,441 +2,95 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB24AC3DA6F
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 24 Aug 2023 05:43:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10B87C83F01
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 31 Aug 2023 11:08:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239724AbjHXFnZ (ORCPT
+        id S234038AbjHaLIp (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 24 Aug 2023 01:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
+        Thu, 31 Aug 2023 07:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239926AbjHXFnM (ORCPT
+        with ESMTP id S245215AbjHaLIo (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 24 Aug 2023 01:43:12 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2946FE68
-        for <linux-bcachefs@vger.kernel.org>; Wed, 23 Aug 2023 22:43:09 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9f0b7af65so96678021fa.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 23 Aug 2023 22:43:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=froggi.es; s=google; t=1692855787; x=1693460587;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H4flX/HNK0UnWc3cVXXJ2YYaHbcDov9mqHPyTq8cyFk=;
-        b=ILSSTtaxwHxlRu8SPe5kitQIFMPutB3hFMTvr4/ckJarzg8XfB9dQ9tejZ1jDgAxUU
-         ZKYydSv2ntMcySlMDX8vO9xTlaH0N1paGQ9tJ2/QEkFh9MZ6X+JwNHtLcYlkrD1ty1L0
-         5iJXfnI8R/oni5Fh6DeKThENu3Rxj0P9TcbqFLQUqFUZEHCF4sUiEz+NP+udFodlCJod
-         ILxmQTy8DK9YEAyW/FcbxWeRm+79H+BjN3MxvCWy6zOFq/s5KKAM+1Tc0+5K/TiBdP3N
-         tpUYVxPU4SUgxSPO/x2TDI8+3429ZNpSHNhXSvGMzLk0qF/1c4dYnjt48Y1T8cf2E3Dw
-         SfHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692855787; x=1693460587;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H4flX/HNK0UnWc3cVXXJ2YYaHbcDov9mqHPyTq8cyFk=;
-        b=VEmeIknJVrB+Lto5j+2FH/++AuzqMfUPivd05Gz8JfodxSZw20HGZfFD2RLEnrm9dc
-         89jy6/BXLMUudMEdiOyUw9bOEu0A1V1aWAypawY0qXthlOXGUCPbaUo1CsHqrzJy9L8c
-         CpVrDAUGRYNSQIMBPNxQgPSYNWqxmHUPl1aSO1NZFK2zIVoYb9tlrKVsc7ouhoNlQU9W
-         puqwWGpf1YspbefwksxHZgh6Mcssif9oa5n5l0u8ZFxfEqEX/5db1S2UafQDP3yv33k9
-         Kn2tg30H0tTDt5OTWA9FTqjgtEXtDjYdrGXCDL8qcSxwaD2wa0IvQgjux184+hiF2kAR
-         Fewg==
-X-Gm-Message-State: AOJu0YzD2djfDWhnJyk4pFxa4l5pQPpH0ztFCKHLqsQVJ6p1h8pO0LKH
-        B+gPL7gsAUpVqMxeHf/t1HQcOw==
-X-Google-Smtp-Source: AGHT+IGM4DrsNlJ2gj8a7TYzGYsg2fDKRZcU/D+AfBJBpYZGlhKCIiDbkxyvc1U+m9APuqd/HI6QBg==
-X-Received: by 2002:a2e:7c0e:0:b0:2bc:39f5:ecb4 with SMTP id x14-20020a2e7c0e000000b002bc39f5ecb4mr10797654ljc.25.1692855787119;
-        Wed, 23 Aug 2023 22:43:07 -0700 (PDT)
-Received: from [192.168.0.89] (darl-09-b2-v4wan-165404-cust288.vm5.cable.virginm.net. [86.17.61.33])
-        by smtp.gmail.com with ESMTPSA id n24-20020a7bcbd8000000b003fef6881350sm1489523wmi.25.2023.08.23.22.43.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 22:43:06 -0700 (PDT)
-Message-ID: <b6241aaa-6c9c-4bfe-9198-bb1a7288c8fb@froggi.es>
-Date:   Thu, 24 Aug 2023 06:43:05 +0100
+        Thu, 31 Aug 2023 07:08:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DED1E66
+        for <linux-bcachefs@vger.kernel.org>; Thu, 31 Aug 2023 04:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693480050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aa5xn8qOUyRCiX/9aptwXKDmS8oBNKPPMMj6LtID4+s=;
+        b=OQp0pbsmUxahhpmwOw5bRgDPSFPEKgSyoBpR9KgWAfPvBoiYcxy9V7r0mwt7kvls0Yu1LV
+        qN+aTTiLRBFNryssU16XzZ/bUR5ug+acA/Iq19n0UDv6Pjw/LWIJ+HXleoRobBc4TDyRIH
+        lnanNL5zYX+O4dJpXBFXQ/6Y7ECPjy0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-161-9Owv0NqbM6i1H6AxGuCdVQ-1; Thu, 31 Aug 2023 07:07:27 -0400
+X-MC-Unique: 9Owv0NqbM6i1H6AxGuCdVQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1489F80CC34
+        for <linux-bcachefs@vger.kernel.org>; Thu, 31 Aug 2023 11:07:27 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.16.94])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EF9C240C6F4C
+        for <linux-bcachefs@vger.kernel.org>; Thu, 31 Aug 2023 11:07:26 +0000 (UTC)
+From:   Brian Foster <bfoster@redhat.com>
+To:     linux-bcachefs@vger.kernel.org
+Subject: [PATCH 1/3] bcachefs: restart journal reclaim thread on ro->rw transitions
+Date:   Thu, 31 Aug 2023 07:07:32 -0400
+Message-ID: <20230831110734.787212-2-bfoster@redhat.com>
+In-Reply-To: <20230831110734.787212-1-bfoster@redhat.com>
+References: <20230831110734.787212-1-bfoster@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v4 3/3] bcachefs: Implement casefolding
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     linux-bcachefs@vger.kernel.org,
-        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
-        Gabriel Krisman Bertazi <krisman@suse.de>
-References: <20230814012434.627641-1-joshua@froggi.es>
- <20230814012434.627641-4-joshua@froggi.es> <ZNtxM447DrmJDA3W@bfoster>
-Content-Language: en-US
-From:   Joshua Ashton <joshua@froggi.es>
-In-Reply-To: <ZNtxM447DrmJDA3W@bfoster>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
+Commit c2d5ff36065a4 ("bcachefs: Start journal reclaim thread
+earlier") tweaked reclaim thread management to start a bit earlier
+in the mount sequence by moving the start call from
+__bch2_fs_read_write() to bch2_fs_journal_start(). This has the side
+effect of never starting the reclaim thread on a ro->rw transition,
+which can be observed by monitoring reclaim behavior via the
+journal_reclaim tracepoints. I.e. once an fs has remounted ro->rw,
+we only ever rely on direct reclaim from that point forward.
 
+Since bch2_journal_reclaim_start() properly handles the case where
+the reclaim thread has already been created, restore the start call
+in the read-write helper. This allows the reclaim thread to start
+early when appropriate and also exit/restart on remounts or freeze
+cycles. In the latter case it may be possible to simply allow the
+task to freeze rather than destroy it, but for now just fix the
+immediate bug.
 
-On 8/15/23 13:36, Brian Foster wrote:
-> On Mon, Aug 14, 2023 at 02:24:27AM +0100, Joshua Ashton wrote:
->> This patch implements support for case-insensitive file name lookups
->> in bcachefs.
->>
->> The implementation uses the same UTF-8 lowering and normalization that
->> ext4 and f2fs is using.
->>
->> More information is provided in Documentation/bcachefs/casefolding.rst
->>
->> Signed-off-by: Joshua Ashton <joshua@froggi.es>
->>
->> Cc: André Almeida <andrealmeid@igalia.com>
->> Cc: Gabriel Krisman Bertazi <krisman@suse.de>
->> ---
-> 
-> Hi Joshua,
-> 
-> I'm still grokking the implementation and I see Gabriel has already
-> provided much more substantive feedback, so just a few random comments...
-> 
->>   .../filesystems/bcachefs/casefolding.rst      |  73 ++++++++
->>   fs/bcachefs/bcachefs.h                        |   6 +
->>   fs/bcachefs/bcachefs_format.h                 |  26 ++-
->>   fs/bcachefs/dirent.c                          | 177 +++++++++++++++---
->>   fs/bcachefs/fs-common.c                       |   4 +
->>   fs/bcachefs/fs-ioctl.c                        |  22 +++
->>   fs/bcachefs/fs-ioctl.h                        |  20 +-
->>   fs/bcachefs/str_hash.h                        |   4 +
->>   fs/bcachefs/super.c                           |  19 ++
->>   9 files changed, 318 insertions(+), 33 deletions(-)
->>   create mode 100644 Documentation/filesystems/bcachefs/casefolding.rst
->>
->> diff --git a/Documentation/filesystems/bcachefs/casefolding.rst b/Documentation/filesystems/bcachefs/casefolding.rst
->> new file mode 100644
->> index 000000000000..c8580d892ae8
->> --- /dev/null
->> +++ b/Documentation/filesystems/bcachefs/casefolding.rst
->> @@ -0,0 +1,73 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +Casefolding
->> +===========
->> +
->> +bcachefs has support for case-insensitive file and directory
->> +lookups using the regular `chattr +F` (`S_CASEFOLD`, `FS_CASEFOLD_FL`)
->> +casefolding attributes.
->> +
->> +The main usecase for casefolding is compatibility with software written
->> +against other filesystems that rely on casefolded lookups
->> +(eg. NTFS and Wine/Proton).
->> +Taking advantage of file-system level casefolding can lead to great
->> +loading time gains in many applications and games.
->> +
->> +Casefolding support requires a kernel with the `CONFIG_UNICODE` enabled.
->> +Once a directory has been flagged for casefolding, a feature bit
->> +is enabled on the superblock which marks the filesystem as using
->> +casefolding.
->> +When the feature bit for casefolding is enabled, it is no longer possible
->> +to mount that filesystem on kernels without `CONFIG_UNICODE` enabled.
->> +
->> +On the lookup/query side: casefolding is implemented by allocating a new
->> +string of `BCH_NAME_MAX` length using the `utf8_casefold` function to
->> +casefold the query string.
->> +
->> +On the dirent side: casefolding is implemented by ensuring the `bkey`'s
->> +hash is made from the casefolded string and storing the cached casefolded
->> +name with the regular name in the dirent.
->> +
->> +The structure looks like this:
->> +
->> +Regular:    [dirent data][regular name][nul][nul]...
->> +Casefolded: [dirent data][reg len][cf len][regular name][casefolded name][nul][nul]...
->> +
->> +(Do note, the number of `NUL`s here is merely for illustration, they count can vary
->> + per-key, and they may not even be present if the key is aligned to `sizeof(u64)`.)
->> +
->> +This is efficient as it means that for all file lookups that require casefolding,
->> +it has identical performance to a regular lookup:
->> +a hash comparison and a `memcmp` of the name.
->> +
-> 
-> Thanks for the writeup. This is very helpful.
-> 
->> +Rationale
->> +---------
->> +
->> +Several designs were considered for this system:
->> +One was to introduce a dirent_v2, however that would be painful especially as
->> +the hash system only has support for a single key type. This would also need
->> +`BCH_NAME_MAX` to change between versions, and a new feature bit.
->> +
->> +Another option was to store without the two lengths, and just take the length of
->> +the regular name and casefolded name contiguously / 2 as the length. This would
->> +assume that the regular length == casefolded length, but that could potentially
->> +not be true, if the uppercase unicode glyph had a different UTF-8 encoding than
->> +the lowercase unicode glyph.
->> +It would be possible to disregard the casefold cache for those cases, but it was
->> +decided to simply encode the two string lengths in the key to avoid random
->> +performance issues if this edgecase was ever hit.
->> +
->> +The option settled on was to use a free-bit in d_type to mark a dirent as having
->> +a casefold cache, and then treat the first 4 bytes the name block as lengths.
->> +You can see this in the `d_cf_name_block` member of union in `bch_dirent`.
->> +
->> +The feature bit was used to allow casefolding support to be enabled for the majority
->> +of users, but some allow users who have no need for the feature to still use bcachefs as
->> +`CONFIG_UNICODE` can increase the kernel side a significant amount due to the tables used,
->> +which may be decider between using bcachefs for eg. embedded platforms.
->> +
->> +Other filesystems like ext4 and f2fs have a super-block level option for casefolding
->> +encoding, but bcachefs currently does not provide this. ext4 and f2fs do not expose
->> +any encodings than a single UTF-8 version. When future encodings are desirable,
->> +they will be added trivially using the opts mechanism.
->> +
-> ...
->> diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
->> index 23bae622309c..cc6797422977 100644
->> --- a/fs/bcachefs/bcachefs_format.h
->> +++ b/fs/bcachefs/bcachefs_format.h
-> ...
->> @@ -864,6 +866,7 @@ enum {
->>   #define BCH_INODE_I_SECTORS_DIRTY (1 << __BCH_INODE_I_SECTORS_DIRTY)
->>   #define BCH_INODE_UNLINKED	(1 << __BCH_INODE_UNLINKED)
->>   #define BCH_INODE_BACKPTR_UNTRUSTED (1 << __BCH_INODE_BACKPTR_UNTRUSTED)
->> +#define BCH_INODE_CASEFOLDED	(1 << __BCH_INODE_CASEFOLDED)
->>   
->>   LE32_BITMASK(INODE_STR_HASH,	struct bch_inode, bi_flags, 20, 24);
->>   LE32_BITMASK(INODE_NR_FIELDS,	struct bch_inode, bi_flags, 24, 31);
->> @@ -908,9 +911,25 @@ struct bch_dirent {
->>   	 * Copy of mode bits 12-15 from the target inode - so userspace can get
->>   	 * the filetype without having to do a stat()
->>   	 */
->> -	__u8			d_type;
->> +#if defined(__LITTLE_ENDIAN_BITFIELD)
->> +	__u8			d_type:5,
->> +				d_unused:2,
->> +				d_casefold:1;
->> +#elif defined(__BIG_ENDIAN_BITFIELD)
->> +	__u8			d_casefold:1,
->> +				d_unused:2,
->> +				d_type:5;
->> +#endif
-> 
-> Interesting. I didn't realize that bitfield endianness matched general
-> endianness, so I presume this is required to ensure data is always le on
-> disk.
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
+ fs/bcachefs/super.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Correct.
-
-> 
->>   
->> -	__u8			d_name[];
->> +	union {
->> +	struct {
->> +		__u8		d_pad;
->> +		__le16		d_name_len;
->> +		__le16		d_cf_name_len;
->> +		__u8		d_names[0];
->> +	} d_cf_name_block __packed;
->> +	__u8			d_name[0];
->> +	} __packed;
->>   } __packed __aligned(8);
->>   
->>   #define DT_SUBVOL	16
->> @@ -1841,7 +1860,8 @@ static inline void SET_BCH_SB_BACKGROUND_COMPRESSION_TYPE(struct bch_sb *sb, __u
->>   	x(new_varint,			15)	\
->>   	x(journal_no_flush,		16)	\
->>   	x(alloc_v2,			17)	\
->> -	x(extents_across_btree_nodes,	18)
->> +	x(extents_across_btree_nodes,	18)	\
->> +	x(casefolding,			19)
->>   
->>   #define BCH_SB_FEATURES_ALWAYS				\
->>   	((1ULL << BCH_FEATURE_new_extent_overwrite)|	\
->> diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
->> index 6bdcccabd732..6ac45d7ce6e9 100644
->> --- a/fs/bcachefs/dirent.c
->> +++ b/fs/bcachefs/dirent.c
->> @@ -13,8 +13,39 @@
->>   
->>   #include <linux/dcache.h>
->>   
->> -static inline unsigned dirent_val_u64s(unsigned len)
->> +static inline int bch2_casefold(struct btree_trans *trans, const struct bch_hash_info *info,
->> +				const struct qstr *str, struct qstr *out_cf)
->>   {
->> +#if IS_ENABLED(CONFIG_UNICODE)
->> +	unsigned char *buf = NULL;
->> +	int ret;
->> +
->> +	*out_cf = (struct qstr) QSTR_INIT(NULL, 0);
->> +
->> +	buf = bch2_trans_kmalloc(trans, BCH_NAME_MAX + 1);
->> +	ret = PTR_ERR_OR_ZERO(buf);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = utf8_casefold(info->cf_encoding, str, buf, BCH_NAME_MAX + 1);
-> 
-> Looks like this helper really only needs the encoding pointer rather
-> than the full hash_info..?
-
-Sure, we could do that.
-
-> 
->> +	if (ret <= 0)
->> +		return ret;
->> +
->> +	*out_cf = (struct qstr) QSTR_INIT(buf, ret);
->> +	return 0;
->> +#else
->> +	*out_cf = (struct qstr) QSTR_INIT(NULL, 0);
->> +
->> +	return -EOPNOTSUPP;
->> +#endif
-> 
-> It also looks like the #else could be completely avoided here. For
-> example, lift the local vars out of the ifdef, init out_cf using the
-> NULL buf, init ret to -EOPNOTSUPP and push 'return ret;' out of the end
-> of the ifdef. Hm?
-
-Thanks for the heads up, will experiment with that
-
-> 
->> +}
->> +
->> +static inline unsigned dirent_val_u64s(unsigned len, unsigned cf_len)
->> +{
->> +	if (cf_len > 0) {
->> +		return DIV_ROUND_UP(offsetof(struct bch_dirent, d_cf_name_block.d_names) + len + cf_len,
->> +				    sizeof(u64));
->> +	}
->>   	return DIV_ROUND_UP(offsetof(struct bch_dirent, d_name) + len,
->>   			    sizeof(u64));
-> 
-> FWIW, I think something along the lines of the pattern you use just
-> below makes this a bit more readable. For example, something like:
-> 
->          unsigned name_offset;
->          name_offset = (cf_len > 0) ?
->                          offsetof(struct bch_dirent, d_cf_name_block.d_names) :
->                          offsetof(struct bch_dirent, d_name);
->          return DIV_ROUND_UP(name_offset + len + cf_len, sizeof(u64));
-> 
-> ... but just a thought.
-> 
->>   }
-> ...
->>   /* bcachefs inode flags -> FS_IOC_FSGETXATTR: */
->> diff --git a/fs/bcachefs/str_hash.h b/fs/bcachefs/str_hash.h
->> index ae21a8cca1b4..866cfc145889 100644
->> --- a/fs/bcachefs/str_hash.h
->> +++ b/fs/bcachefs/str_hash.h
->> @@ -34,6 +34,7 @@ bch2_str_hash_opt_to_type(struct bch_fs *c, enum bch_str_hash_opts opt)
->>   
->>   struct bch_hash_info {
->>   	u8			type;
->> +	struct unicode_map 	*cf_encoding;
->>   	/*
->>   	 * For crc32 or crc64 string hashes the first key value of
->>   	 * the siphash_key (k0) is used as the key.
->> @@ -48,6 +49,9 @@ bch2_hash_info_init(struct bch_fs *c, const struct bch_inode_unpacked *bi)
->>   	struct bch_hash_info info = {
->>   		.type = (bi->bi_flags >> INODE_STR_HASH_OFFSET) &
->>   			~(~0U << INODE_STR_HASH_BITS),
->> +#if IS_ENABLED(CONFIG_UNICODE)
->> +		.cf_encoding = !!(bi->bi_flags & BCH_INODE_CASEFOLDED) ? c->cf_encoding : NULL,
->> +#endif
-> 
-> What's the purpose for propagating this pointer via the hash? Is this
-> necessary to (eventually) support per-directory encodings, or something
-> else? If purely the former and that is something to possibly come later,
-> it does seem a little premature to me in that the infrastructure part
-> should probably go along with the feature functionality that takes
-> advantage of it.
-
-Yes, it is for the convenience of being able to do per-directory 
-encodings in the future -- but also it's the easiest way to get the 
-information propagated from the superblock right now also.
-
-If I was to not put it here, it would involve a bunch more work of 
-passing through another pointer which to me makes little sense when we 
-can just include it here.
-
-It is used by the hashing process so it makes sense anyway, but I am 
-happy to rename the struct.
-
-> 
-> BTW on a similar train of thought.. I'm not familiar enough with the
-> feature to have an opinion on Gabriel's feedback wrt to storing the
-> casefolded name on-disk, but I do think there's value in breaking down
-> the feature into smaller logical components, particularly when there are
-> performance vs. complexity tradeoffs. So for example if you wanted to
-> continue to implement the on-disk format change approach, perhaps factor
-> out core functionality along the lines of what ext4 does into a patch 1,
-> then add the on-disk format change support in patch 2 as an (optional?)
-> optimization (then lift off the per-dir bits into later patches that
-> implement the granular approach, etc.).
-
-I explained this in another email but will do again, I really don't want 
-to do that approach because breaking it down like that means we will 
-have to support a path that will never, ever be used forever for no 
-reason. We'd have to make dirent_cmp, dirent_hash, and stuff aware of 
-casefolding and it would just be a bunch of effectively dead code.
-
-On face-value, it makes sense, but when you look closer, it doesn't really.
-
-I also really don't want to bloat those functions that need to remain 
-pretty fast with a bunch of stuff to casefold (in the case of bkey_hash) 
-and use utf8_strncasecmp, etc.
-
-It would all just be dead code that needs to be supported forever when 
-we go to cache names. :/
-
-> 
-> That not only makes this easier to review, but IMO significantly easier
-> to maintain, test, diagnose, etc., such that it's at least worth
-> considering. Just my .02.
-
-I don't really see how adding more code paths makes this easier to 
-review and maintain...
-
-- Joshie 🐸✨
-
-> 
-> Brian
-> 
->>   		.siphash_key = { .k0 = bi->bi_hash_seed }
->>   	};
->>   
->> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
->> index 5c62fcf3afdb..78d19cfb966a 100644
->> --- a/fs/bcachefs/super.c
->> +++ b/fs/bcachefs/super.c
->> @@ -757,6 +757,25 @@ static struct bch_fs *bch2_fs_alloc(struct bch_sb *sb, struct bch_opts opts)
->>   	if (ret)
->>   		goto err;
->>   
->> +#if IS_ENABLED(CONFIG_UNICODE)
->> +	/* Default encoding until we can potentially have more as an option. */
->> +	c->cf_encoding = utf8_load(BCH_FS_DEFAULT_UTF8_ENCODING);
->> +	if (IS_ERR(c->cf_encoding)) {
->> +		printk(KERN_ERR "Cannot load UTF-8 encoding for filesystem. Version: %u.%u.%u",
->> +			unicode_major(BCH_FS_DEFAULT_UTF8_ENCODING),
->> +			unicode_minor(BCH_FS_DEFAULT_UTF8_ENCODING),
->> +			unicode_rev(BCH_FS_DEFAULT_UTF8_ENCODING));
->> +		ret = -EINVAL;
->> +		goto err;
->> +	}
->> +#else
->> +	if (c->sb.features & (1ULL << BCH_FEATURE_casefolding)) {
->> +		printk(KERN_ERR "Cannot mount a filesystem with casefolding on a kernel without CONFIG_UNICODE\n");
->> +		ret = -EINVAL;
->> +		goto err;
->> +	}
->> +#endif
->> +
->>   	pr_uuid(&name, c->sb.user_uuid.b);
->>   	strscpy(c->name, name.buf, sizeof(c->name));
->>   	printbuf_exit(&name);
->> -- 
->> 2.41.0
->>
-> 
-
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index 60424865980d..29cd71445a94 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -421,6 +421,10 @@ static int __bch2_fs_read_write(struct bch_fs *c, bool early)
+ 		return ret;
+ 	}
+ 
++	ret = bch2_journal_reclaim_start(&c->journal);
++	if (ret)
++		goto err;
++
+ 	if (!early) {
+ 		ret = bch2_fs_read_write_late(c);
+ 		if (ret)
+-- 
+2.41.0
 
