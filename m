@@ -2,111 +2,75 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B9DC71153
-	for <linux-bcachefs@archiver.kernel.org>; Mon,  4 Sep 2023 02:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29DE1C71153
+	for <linux-bcachefs@archiver.kernel.org>; Mon,  4 Sep 2023 02:29:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350861AbjIDC0v (ORCPT
+        id S1350910AbjIDC3r (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 3 Sep 2023 22:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
+        Sun, 3 Sep 2023 22:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbjIDC0u (ORCPT
+        with ESMTP id S1350904AbjIDC3r (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 3 Sep 2023 22:26:50 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6E0CA;
-        Sun,  3 Sep 2023 19:26:46 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68becf931bfso453361b3a.0;
-        Sun, 03 Sep 2023 19:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693794406; x=1694399206; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oqAXsZOZJGusCvu1li0lXtZ3vaqzYY4YZubTl2x2e2I=;
-        b=SB73E3LzOH2eCaFz7wXJV2m0En1R6xZEFS7HMKmxEjBKzQ2K2EmTqTDXV3ABKJFYlg
-         qG1JwfWw9CZacRhkeVWrtI25Ng/Zm5wWBQpgpOf56Trp4a0m7ukK5hII/F6Oaugy6/q2
-         zNVzQly9dHeBv13qPcKlxV5Z3rL7RxmQxGXwWOgpvFU+sjXS9b03Mf6eC6/e9iy/r6ZK
-         vCSoouI9MFOx6EF+cvKbx67ipxiCa1FPzP0JMD5bnMP61Z1Fvt1kh+jEGKnmg3M6eEfj
-         +cTuh3WdxhiGsYHb9AYvIp/Ugtja0WKLGOEWdkFLBgzcOK6mZ42DR5LiXGQ9Yg359QX8
-         41jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693794406; x=1694399206;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oqAXsZOZJGusCvu1li0lXtZ3vaqzYY4YZubTl2x2e2I=;
-        b=Whe6KuIAVdtVNJwVxZcEPHMF9TdwSnuB1LU7LDSpAG88sAyxS5sK/3GBZgIPpVyrko
-         xewDT9sFMaI3XszOThBLEFBnoqU+HRRKEeOl+djyTvvkJBL275BrWcRw8Q03OUfL7gZ1
-         beu2fi3PvSkrIif7YLrUeO6ebo4wnMtoR1obHGCa9bYM0vGbFlpHxoIHh7FrzeeWAlB+
-         +Dvwz/4+aw9G/ziwl5sKxv1pgX/VsVkydmpebZZjcdzSOLRPhCsFSZDctzhMzek38x1r
-         VzCk/w00Jx/zrUmqKBYTay2iSom7VEp4oslLQxRn1PCwHVYsKeTYBwigyFoxNmjGY5+T
-         5mDQ==
-X-Gm-Message-State: AOJu0YyQwPDh3yWsG7L/mMMAq9qJEg4l9WjEIQRg9kfo7wdbfEl4sik2
-        b4p+hf5I46OnOVA7t4sqqvY=
-X-Google-Smtp-Source: AGHT+IEhELGDgpYytqGJP7meWXze88TaWW+8qS28m6xviXpXQ3WT4Fx/1xwYJEMxT8XpuYDgprQ0Lg==
-X-Received: by 2002:a05:6a20:1006:b0:14c:ad99:22a9 with SMTP id gs6-20020a056a20100600b0014cad9922a9mr6587216pzc.32.1693794406163;
-        Sun, 03 Sep 2023 19:26:46 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id e6-20020a170902d38600b001ae0a4b1d3fsm6467800pld.153.2023.09.03.19.26.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 19:26:45 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id C49FE8B0C37B; Mon,  4 Sep 2023 09:26:42 +0700 (WIB)
-Date:   Mon, 4 Sep 2023 09:26:42 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Turritopsis Dohrnii Teo En Ming <tdtemccnp@gmail.com>,
-        Linux bcachefs <linux-bcachefs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     ceo@teo-en-ming-corp.com,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Subject: Re: Linus Torvalds calls for calm as bcachefs filesystem doesn't
- make Linux 6.5
-Message-ID: <ZPVAYuIqRWrMmevT@debian.me>
-References: <CAD3upLuL3TWYrLOALoMFbM2QdiL8Va=PH3OYZDHZZTrSpfF-_w@mail.gmail.com>
+        Sun, 3 Sep 2023 22:29:47 -0400
+Received: from out-212.mta1.migadu.com (out-212.mta1.migadu.com [IPv6:2001:41d0:203:375::d4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B0ECA
+        for <linux-bcachefs@vger.kernel.org>; Sun,  3 Sep 2023 19:29:43 -0700 (PDT)
+Date:   Sun, 3 Sep 2023 22:29:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693794581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YVm55DEAM2Y9yA2pupNDYpBInWGc6+1co+yQ2e0gFjw=;
+        b=VstAGtu9NzMAo+ah7UxfA4kR3WctDD/iEpg67XC5jxGA2T5KXiHZM1PGf3PgUV6iYOE/BE
+        XKzrlVlOXbPgKNM5/XXkRM43AQDWgwD3uvwmSn5KQzML4T/rL2LUQKP2GJ63oouPgXx8nx
+        Q97h/52YcaWXlPm4ZpfKlKOfLdGNe6A=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH 3/3] bcachefs: fix race between journal entry close and
+ pin set
+Message-ID: <20230904022928.x64kp2vhtxxzvcal@moria.home.lan>
+References: <20230831110734.787212-1-bfoster@redhat.com>
+ <20230831110734.787212-4-bfoster@redhat.com>
+ <20230903211812.kh7paaa5z25lwbd4@moria.home.lan>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cR9UpDOPz+qHdbKx"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD3upLuL3TWYrLOALoMFbM2QdiL8Va=PH3OYZDHZZTrSpfF-_w@mail.gmail.com>
+In-Reply-To: <20230903211812.kh7paaa5z25lwbd4@moria.home.lan>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
+On Sun, Sep 03, 2023 at 05:18:12PM -0400, Kent Overstreet wrote:
+> On Thu, Aug 31, 2023 at 07:07:34AM -0400, Brian Foster wrote:
+> > bcachefs freeze testing via fstests generic/390 occasionally
+> > reproduces the following BUG from bch2_fs_read_only():
+> > 
+> >   BUG_ON(atomic_long_read(&c->btree_key_cache.nr_dirty));
+>
+> Your fix makes sense, but I wonder if it might be simpler and better to
+> fix this in bch2_journal_reclaim_fast().
 
---cR9UpDOPz+qHdbKx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What do you think of this fix?
 
-[trimming context and obvious *political* stuff]
-
-On Mon, Jul 10, 2023 at 10:12:33PM +0800, Turritopsis Dohrnii Teo En Ming w=
-rote:
-> Article: Linus Torvalds calls for calm as bcachefs filesystem doesn't
-> make Linux 6.5
-> Link: https://www.theregister.com/2023/07/10/linux_6_5_rc1_bcachefs/
->=20
-
-Kent had resent the PR for 6.6 cycle [1]. If it is merged, you can
-test the mainline with bcachefs enabled and report any problems found.
-
-Thanks.
-
-[1]: https://lore.kernel.org/all/20230903032555.np6lu5mouv5tw4ff@moria.home=
-=2Elan/
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---cR9UpDOPz+qHdbKx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZPVAWgAKCRD2uYlJVVFO
-o/ZxAP9g+UG+P2FULEsfVwVdRcCTNDqWGtfKlGh6UZYXLsVB2QEAvyMKHux0lv20
-xNC/ECuzGxZ/SCt87M3SFJmcakNC5A8=
-=T2fq
------END PGP SIGNATURE-----
-
---cR9UpDOPz+qHdbKx--
+diff --git a/fs/bcachefs/journal_reclaim.c b/fs/bcachefs/journal_reclaim.c
+index 10e1860dad..021c56ac67 100644
+--- a/fs/bcachefs/journal_reclaim.c
++++ b/fs/bcachefs/journal_reclaim.c
+@@ -303,6 +303,12 @@ static void bch2_journal_reclaim_fast(struct journal *j)
+ 	 */
+ 	while (!fifo_empty(&j->pin) &&
+ 	       !atomic_read(&fifo_peek_front(&j->pin).count)) {
++		u64 seq = journal_last_seq(j);
++
++		if (seq > j->seq_ondisk &&
++		    journal_state_count(j->reservations, seq & JOURNAL_BUF_MASK))
++			break;
++
+ 		fifo_pop(&j->pin, temp);
+ 		popped = true;
+ 	}
