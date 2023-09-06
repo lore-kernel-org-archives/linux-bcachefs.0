@@ -2,113 +2,141 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 096CAEE14C3
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  6 Sep 2023 20:21:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB2F9EE14C3
+	for <linux-bcachefs@archiver.kernel.org>; Wed,  6 Sep 2023 21:55:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244376AbjIFUVa (ORCPT
+        id S244894AbjIFVzq (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 6 Sep 2023 16:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
+        Wed, 6 Sep 2023 17:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244384AbjIFUV3 (ORCPT
+        with ESMTP id S231368AbjIFVzp (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:21:29 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491801BD3
-        for <linux-bcachefs@vger.kernel.org>; Wed,  6 Sep 2023 13:21:20 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so2925889a12.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 06 Sep 2023 13:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694031678; x=1694636478; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=juvIBN8bH5nfyemIbaYqy2hi6dz3IfTdEON4xkDZyZg=;
-        b=LmO/AEN05xILKYsMLaoZsLbQGdc/6PcgAb5OerutYzUfm49tWSoRfaGS3YrE5+hmW2
-         o4HvizGFnU4GnuycWAduXHmqNQrAY39kDjLmQ4SKC2uqwdk8OpALf5UKxHqXRwPkkU+Z
-         4YnKK5dT2R4E1KsW8GHvtVBQ6plmYXY9r1Zns=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694031678; x=1694636478;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=juvIBN8bH5nfyemIbaYqy2hi6dz3IfTdEON4xkDZyZg=;
-        b=DV47juCOwTa5ABHilSuaevvO9kiJMWNjiKyQfY/zw7AR1EGncJ5S9pfscEM0Z9f7Am
-         abFmUeuhPpMjEYlZk3WaQ4IPAt3W+RhUOT6EV4u7k92r+5eGxoUInTjEeZzovxbY/PEy
-         aU59LAHFVXyAkdRIIJ+uJ04D4V7zmeedbvIkZlfmhaTwL+29wrjZqnUgX0KNaVfX2mEn
-         Zq6RfLbXWxMzxqYPlwaQ2QiITMlJ9mkqE742q75+XXveH5IML6HQ1wyizTqODrrQG141
-         dbhN5LFEiAlPSHJcaGUFglsHVLROCQUJ/akrsCzqyrc4VNvCWAK9NAQPsqn/F+2dyHwn
-         MFjQ==
-X-Gm-Message-State: AOJu0Yw0NnSa8BT4hmScsU/gJJ46E1TU4F3S4Erc5VJmK9BNhtkL7mJj
-        TIGU//NHUU8M1xAIq4/r7ZwYeTbDs5pGYjuqv11IsQ==
-X-Google-Smtp-Source: AGHT+IHWyPCcXn6+2oz3QAfgEHxE3eDcQax4RT+XWhvL4IBb2XcuyKd1sJqz5Ln0bAUYsxhSK5aeMg==
-X-Received: by 2002:a17:907:7855:b0:9a5:a543:2744 with SMTP id lb21-20020a170907785500b009a5a5432744mr982784ejc.33.1694031678463;
-        Wed, 06 Sep 2023 13:21:18 -0700 (PDT)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id s14-20020a17090699ce00b0099bccb03eadsm9300797ejn.205.2023.09.06.13.21.17
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 13:21:17 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so2876557a12.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 06 Sep 2023 13:21:17 -0700 (PDT)
-X-Received: by 2002:a05:6402:50ce:b0:521:ef0f:8ef9 with SMTP id
- h14-20020a05640250ce00b00521ef0f8ef9mr908145edb.19.1694031677181; Wed, 06 Sep
- 2023 13:21:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com> <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 6 Sep 2023 13:20:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
-Message-ID: <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Wed, 6 Sep 2023 17:55:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CA3172E;
+        Wed,  6 Sep 2023 14:55:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6218C433C7;
+        Wed,  6 Sep 2023 21:55:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694037341;
+        bh=S0dSiLl5xZTuBxsoFaJ1P9nZl7K0AtLwTDW92i1gWBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eeg9aV/XP/zUpseBnf6ghy/nfRZUKrDg/rqvQ5fd4UjnA4GBuC4a/oiy76DLWaTw6
+         EKUUmFqsbtxq3Tf5rcQE5pBuRKzXr5nZ+Le0cKgBBHKLyenyZenAe1fAekmD1jJoU8
+         TMedl4hjXfN1is7pZXWOcedyV1UwRE6JhZzfrfdJtaWzNWm/4DIKuj2lZd/07h/dnn
+         Pc7knmX3vyEncAmtqtkqaDwBUuYxC8uhwEr59leMAO82AQCsJTVFcgJ/y6EDXPwM0R
+         PvR2jBN0obLqnFPeIaFDCvPGWoajvpDxT9TTgCfPzIB3iofb3s2LuUGMPOay57ghXV
+         CxhdJhuUBVB0g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id BFF75403F4; Wed,  6 Sep 2023 18:55:38 -0300 (-03)
+Date:   Wed, 6 Sep 2023 18:55:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <ZPj1WuwKKnvVEZnl@kernel.org>
+References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+ <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+ <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
+ <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, 6 Sept 2023 at 13:02, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> And guess what happens when you have (unsigned char)-1? It does *not*
-> cast back to -1.
+Em Wed, Sep 06, 2023 at 01:20:59PM -0700, Linus Torvalds escreveu:
+> On Wed, 6 Sept 2023 at 13:02, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > And guess what happens when you have (unsigned char)-1? It does *not*
+> > cast back to -1.
+> 
+> Side note: again, this may be one of those "it works in practice",
+> because if we have -fshort-enums, I think 'enum
+> btree_node_locked_type' in turn ends up being represented as a 'signed
+> char', because that's the smallest simple type that can fit all those
+> values.
+ 
+> I don't think gcc ever uses less than that (ie while a six_lock_type
+> could fit in two bits, it's still going to be considered at least a
+> 8-bit value in practice).
 
-Side note: again, this may be one of those "it works in practice",
-because if we have -fshort-enums, I think 'enum
-btree_node_locked_type' in turn ends up being represented as a 'signed
-char', because that's the smallest simple type that can fit all those
-values.
+There are some cases where people stuff the enum into a bitfield, but
+no, no simple type.
 
-I don't think gcc ever uses less than that (ie while a six_lock_type
-could fit in two bits, it's still going to be considered at least a
-8-bit value in practice).
+⬢[acme@toolbox perf-tools-next]$ pahole | grep -w enum | grep :
+	enum btrfs_rsv_type        type:8;               /*    28:16  4 */
+	enum btrfs_delayed_item_type type:8;             /*   100: 0  4 */
+	enum kernel_pkey_operation op:8;                 /*    40: 0  4 */
+	enum integrity_status      ima_file_status:4;    /*    96: 0  4 */
+	enum integrity_status      ima_mmap_status:4;    /*    96: 4  4 */
+	enum integrity_status      ima_bprm_status:4;    /*    96: 8  4 */
+	enum integrity_status      ima_read_status:4;    /*    96:12  4 */
+	enum integrity_status      ima_creds_status:4;   /*    96:16  4 */
+	enum integrity_status      evm_status:4;         /*    96:20  4 */
+	enum fs_context_purpose    purpose:8;            /*   152: 0  4 */
+	enum fs_context_phase      phase:8;              /*   152: 8  4 */
+	enum fs_value_type         type:8;               /*     8: 0  4 */
+	enum sgx_page_type         type:16;              /*     8: 8  4 */
+	enum nf_hook_ops_type      hook_ops_type:8;      /*    24: 8  4 */
+		enum resctrl_event_id evtid:8;         /*     0:10  4 */
+		enum _cache_type   type:5;             /*     0: 0  4 */
+⬢[acme@toolbox perf-tools-next]$ pahole _cache_type
+enum _cache_type {
+	CTYPE_NULL    = 0,
+	CTYPE_DATA    = 1,
+	CTYPE_INST    = 2,
+	CTYPE_UNIFIED = 3,
+};
 
-So we may have 'enum six_lock_type' essentially being 'unsigned char',
-and when the code does
+⬢[acme@toolbox perf-tools-next]$ pahole integrity_status
+enum integrity_status {
+	INTEGRITY_PASS           = 0,
+	INTEGRITY_PASS_IMMUTABLE = 1,
+	INTEGRITY_FAIL           = 2,
+	INTEGRITY_FAIL_IMMUTABLE = 3,
+	INTEGRITY_NOLABEL        = 4,
+	INTEGRITY_NOXATTRS       = 5,
+	INTEGRITY_UNKNOWN        = 6,
+};
 
-    mark_btree_node_locked(trans, path, 0, BTREE_NODE_UNLOCKED);
+⬢[acme@toolbox perf-tools-next]
+> 
+> So we may have 'enum six_lock_type' essentially being 'unsigned char',
+> and when the code does
+> 
+>     mark_btree_node_locked(trans, path, 0, BTREE_NODE_UNLOCKED);
+> 
+> that BTREE_NODE_UNLOCKED value might actually be 255.
+> 
+> And then when it's cast to 'enum btree_node_locked_type' in the inline
+> function, the 255 will be cast to 'signed char', and we'll end up
+> compatible with '(enum btree_node_locked_type)-1' again.
+> 
+> So it's one of those things that are seriously wrong to do, but might
+> generate the expected code anyway.
+> 
+> Unless the compiler adds any other sanity checks, like UBSAN or
+> something, that actually uses the exact range of the enums.
+> 
+> It could happen even without UBSAN, if the compiler ends up going "I
+> can see that the original value came from a 'enum six_lock_type', so I
+> know the original value can't be signed, so any comparison with
+> BTREE_NODE_UNLOCKED can never be true.
+> 
+> But again, I suspect that in practice this all just happens to work.
+> That doesn't make it right.
+> 
+>                Linus
 
-that BTREE_NODE_UNLOCKED value might actually be 255.
+-- 
 
-And then when it's cast to 'enum btree_node_locked_type' in the inline
-function, the 255 will be cast to 'signed char', and we'll end up
-compatible with '(enum btree_node_locked_type)-1' again.
-
-So it's one of those things that are seriously wrong to do, but might
-generate the expected code anyway.
-
-Unless the compiler adds any other sanity checks, like UBSAN or
-something, that actually uses the exact range of the enums.
-
-It could happen even without UBSAN, if the compiler ends up going "I
-can see that the original value came from a 'enum six_lock_type', so I
-know the original value can't be signed, so any comparison with
-BTREE_NODE_UNLOCKED can never be true.
-
-But again, I suspect that in practice this all just happens to work.
-That doesn't make it right.
-
-               Linus
+- Arnaldo
