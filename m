@@ -2,94 +2,146 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C5BFEE14AA
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  6 Sep 2023 22:28:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF00DEE14A9
+	for <linux-bcachefs@archiver.kernel.org>; Wed,  6 Sep 2023 23:17:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbjIFW2y (ORCPT
+        id S240439AbjIFXRS (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 6 Sep 2023 18:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
+        Wed, 6 Sep 2023 19:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbjIFW2y (ORCPT
+        with ESMTP id S236458AbjIFXRS (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 6 Sep 2023 18:28:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57BC1724;
-        Wed,  6 Sep 2023 15:28:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB40C433C7;
-        Wed,  6 Sep 2023 22:28:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694039329;
-        bh=oMudE4Rzm4wjPyDC9fGvE9zWkTY3IGWqWV/ATmYeI1k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MMZdbYQbrj3jX90LFcUcE8K/nKqqjJPO/JCaOJIZZleiVcly/pyUSbL4UkIcAX9RN
-         zHOJRL0alA0neBxlUZt0y3o01TAi4+lXFnD+/uus/24sDVGzrGFv7Jtp5wKpjbBhiQ
-         hECuS2wRfJEJ+dSjmBpKUquv3dEJE/ZnXtnkIjuaEf7h+Gp6fz0RwlHsWmhyeHvrhM
-         9oBcUhY/sbSRHdgDaCx28ZR9Mql/kwNlNVMsi2yW/ou64qCMpHiEq2nO1WIly57JEj
-         xGUSKfcelzwtA9j8GKdjpvQ67qxoMQfy00d7bu5bf/C044U7cpNelesy6etM0If82o
-         UdWbgXNpWbKAA==
-Date:   Wed, 6 Sep 2023 15:28:47 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230906222847.GA230622@dev-arch.thelio-3990X>
-References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+        Wed, 6 Sep 2023 19:17:18 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C463A19AE
+        for <linux-bcachefs@vger.kernel.org>; Wed,  6 Sep 2023 16:17:13 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c1d03e124so31458566b.2
+        for <linux-bcachefs@vger.kernel.org>; Wed, 06 Sep 2023 16:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694042232; x=1694647032; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=amaeJ0Fab/jVgSejYsWbzXhmle5m64ntHUW0zCfkNPo=;
+        b=aPEgXuqR2GjFwgfvv7+ENSWuVIlXahEdbPIOvD3wA6UqUAncEeyeKpTYSvGeqwW27g
+         aHz1Ri1vsOAqEgoB3WwCMrhDpkS5JOyaPwIESMhCqIpLKxPDofQjV8iaZtIGrmhzITFF
+         VxKcPbYWdnJSqKC5icqa1HEiZwR6K43DJcPLM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694042232; x=1694647032;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=amaeJ0Fab/jVgSejYsWbzXhmle5m64ntHUW0zCfkNPo=;
+        b=DwG8nBg96wwTBhNIXKTtqyVVJcchJLew48RJl7yn3hin5gXAIpH/1gh3BnVErC1AuN
+         xDuXLPFKihtZB7FQgs5EjGvKPniqmd4LUlRRYmHGcWZoDzETbDYlMJB5UoBSE4jLnVwP
+         jmf1YMqNrjE9dhlpeOdOShOWQQ8CgxVO9l72wuO2pAQay6bz88wJ/iaWw+pXt7Zk2dcp
+         SNBHYfHj5wbmtJzAXhQ5bZteGZkNddN/DQu2FxMC+LJ5PhqFblgo72qsPMNKR1uiOFLP
+         U7+LY7drXbQII4b0uWV4oR/dIlfpfS+tfjStty1dbFA+3PU5oGrDhiWVCFQetCCYBsV+
+         /xAA==
+X-Gm-Message-State: AOJu0YzoBs41ejMX3kBIkpvq33Y6RwY2MvLmBionJIWKBRh9A0yTDd/f
+        m13kcCvJQ9rpqKhCw0bBjD4rYe+nOwZfUrIU+SmzveGH
+X-Google-Smtp-Source: AGHT+IGXtDiXoldWcncWypV80BBY7Lrh5q6o7TAi5nUBmQD8udBG1vyL0WWAQYqBOcci6QvrDMvGwQ==
+X-Received: by 2002:a17:906:214:b0:9a1:ce57:8e47 with SMTP id 20-20020a170906021400b009a1ce578e47mr3687706ejd.68.1694042231986;
+        Wed, 06 Sep 2023 16:17:11 -0700 (PDT)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
+        by smtp.gmail.com with ESMTPSA id g23-20020a170906869700b0099cc1ffd8f5sm9495116ejx.53.2023.09.06.16.17.10
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 16:17:10 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-31c63cd4ec2so384905f8f.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 06 Sep 2023 16:17:10 -0700 (PDT)
+X-Received: by 2002:a05:6000:1cc9:b0:31d:d977:4e3d with SMTP id
+ bf9-20020a0560001cc900b0031dd9774e3dmr3263064wrb.19.1694042229754; Wed, 06
+ Sep 2023 16:17:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+ <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+ <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
+ <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com> <ZPj1WuwKKnvVEZnl@kernel.org>
+In-Reply-To: <ZPj1WuwKKnvVEZnl@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 6 Sep 2023 16:16:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiy=JOAWvSLwPq-jHPBfq8EX5NjVkEoh+RUMZbVn+GuOg@mail.gmail.com>
+Message-ID: <CAHk-=wiy=JOAWvSLwPq-jHPBfq8EX5NjVkEoh+RUMZbVn+GuOg@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi Kent,
+On Wed, 6 Sept 2023 at 14:55, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+> > I don't think gcc ever uses less than that (ie while a six_lock_type
+> > could fit in two bits, it's still going to be considered at least a
+> > 8-bit value in practice).
+>
+> There are some cases where people stuff the enum into a bitfield, but
+> no, no simple type.
 
-On Sat, Sep 02, 2023 at 11:25:55PM -0400, Kent Overstreet wrote:
-> here's the bcachefs pull request, for 6.6. Hopefully everything
-> outstanding from the previous PR thread has been resolved; the block
-> layer prereqs are in now via Jens's tree and the dcache helper has a
-> reviewed-by from Christain.
+Note that I am talking about the types gcc uses natively.
 
-I pulled this into mainline locally and did an LLVM build, which found
-an immediate issue. It appears the bcachefs codes uses zero length
-arrays for flexible arrays instead of the C99 syntax that the kernel is
-moving to, which will cause issues with -fstrict-flex-arrays=3 (clang
-16+, gcc 13+), see commit df8fc4e934c1 ("kbuild: Enable
--fstrict-flex-arrays=3"). Currently, building x86_64 defconfig + the
-bcachefs configs with clang warns (or errors with CONFIG_WERROR):
+To show what I'm talking about, build this (silly) code that has some
+of the same enum types that bcachefs has:
 
-  In file included from fs/bcachefs/replicas.c:6:
-  fs/bcachefs/replicas.h:46:2: error: array index 0 is past the end of the array (that has type '__u8[0]' (aka 'unsigned char[0]')) [-Werror,-Warray-bounds]
-     46 |         e->devs[0]      = dev;
-        |         ^       ~
-  fs/bcachefs/bcachefs_format.h:1392:2: note: array 'devs' declared here
-   1392 |         __u8                    devs[0];
-        |         ^
-  1 error generated.
+    #include <stdio.h>
 
-GCC would warn in the same manner if -Warray-bounds was not disabled for
-it... :(
+    enum enum1 {
+        val1 = 0,
+        val2 = 1,
+        val3 = 2,
+    };
 
-  In file included from fs/bcachefs/buckets.c:22:
-  In function 'bch2_replicas_entry_cached',
-      inlined from 'update_cached_sectors' at fs/bcachefs/buckets.c:409:2,
-      inlined from 'bch2_mark_alloc' at fs/bcachefs/buckets.c:590:9:
-  fs/bcachefs/replicas.h:46:16: error: array subscript 0 is outside array bounds of '__u8[0]' {aka 'unsigned char[]'} [-Werror=array-bounds=]
-     46 |         e->devs[0]      = dev;
-        |         ~~~~~~~^~~
-  In file included from fs/bcachefs/bcachefs.h:206,
-                   from fs/bcachefs/buckets.c:8:
-  fs/bcachefs/bcachefs_format.h: In function 'bch2_mark_alloc':
-  fs/bcachefs/bcachefs_format.h:1392:33: note: while referencing 'devs'
-   1392 |         __u8                    devs[0];
-        |                                 ^~~~
+    enum enum2 {
+        num1 = -1,
+        num2 = 0,
+        num3 = 1,
+        num4 = 2,
+    };
 
-GCC shows many other instances of this problem for the same reason (I
-can send a build log if you'd like), such as 'struct snapshot_table' in
-subvolume_types.h and several other structures in bcachefs_format.h.
+    int main(int argc, char **argv)
+    {
+        printf("%d %d (%zu %zu)\n",
+                (enum enum1) num1,
+                (enum enum1) num1 == num1,
+                sizeof(enum enum1),
+                sizeof(enum enum2));
+        return 0;
+    }
 
-Cheers,
-Nathan
+and run it. On x86 with no special options, you should get something like this:
+
+    -1 1 (4 4)
+
+ie both types have a four-byte size, and casting 'num1' to 'enum
+enum1' will in fact give you back -1, and will then compare equal to
+num1 in the end.
+
+Because both types are in practice just 'int'.
+
+But now do the same with -fshort-enums, and you instead get
+
+    255 0 (1 1)
+
+because both types are just a single byte, and casting 'num1' to 'enum
+enum1' will in fact result in 255 (because it's an _unsigned_ type),
+and then comparing with the original num1 value will no longer compare
+equal.
+
+(But casting it then further back to 'enum enum2' will in fact result
+in -1 again, because you're effectively casting it back to 'signed
+char', and then 255 and -1 are in fact the same in that type).
+
+End result: you can get some really unexpected behavior if you cast
+enums to other types.
+
+Which is, of course, exactly why the compiler is warning about the
+comparison and about passing in the wrong type of enum.
+
+Sadly, the compiler doesn't warn about the cast, so you can hide all
+of this by just adding casts. That doesn't make it *right*, of course.
+
+              Linus
