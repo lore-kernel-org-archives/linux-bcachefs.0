@@ -2,141 +2,94 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB2F9EE14C3
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  6 Sep 2023 21:55:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C5BFEE14AA
+	for <linux-bcachefs@archiver.kernel.org>; Wed,  6 Sep 2023 22:28:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244894AbjIFVzq (ORCPT
+        id S230054AbjIFW2y (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 6 Sep 2023 17:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
+        Wed, 6 Sep 2023 18:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbjIFVzp (ORCPT
+        with ESMTP id S230016AbjIFW2y (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 6 Sep 2023 17:55:45 -0400
+        Wed, 6 Sep 2023 18:28:54 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CA3172E;
-        Wed,  6 Sep 2023 14:55:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6218C433C7;
-        Wed,  6 Sep 2023 21:55:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57BC1724;
+        Wed,  6 Sep 2023 15:28:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB40C433C7;
+        Wed,  6 Sep 2023 22:28:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694037341;
-        bh=S0dSiLl5xZTuBxsoFaJ1P9nZl7K0AtLwTDW92i1gWBw=;
+        s=k20201202; t=1694039329;
+        bh=oMudE4Rzm4wjPyDC9fGvE9zWkTY3IGWqWV/ATmYeI1k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eeg9aV/XP/zUpseBnf6ghy/nfRZUKrDg/rqvQ5fd4UjnA4GBuC4a/oiy76DLWaTw6
-         EKUUmFqsbtxq3Tf5rcQE5pBuRKzXr5nZ+Le0cKgBBHKLyenyZenAe1fAekmD1jJoU8
-         TMedl4hjXfN1is7pZXWOcedyV1UwRE6JhZzfrfdJtaWzNWm/4DIKuj2lZd/07h/dnn
-         Pc7knmX3vyEncAmtqtkqaDwBUuYxC8uhwEr59leMAO82AQCsJTVFcgJ/y6EDXPwM0R
-         PvR2jBN0obLqnFPeIaFDCvPGWoajvpDxT9TTgCfPzIB3iofb3s2LuUGMPOay57ghXV
-         CxhdJhuUBVB0g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BFF75403F4; Wed,  6 Sep 2023 18:55:38 -0300 (-03)
-Date:   Wed, 6 Sep 2023 18:55:38 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
+        b=MMZdbYQbrj3jX90LFcUcE8K/nKqqjJPO/JCaOJIZZleiVcly/pyUSbL4UkIcAX9RN
+         zHOJRL0alA0neBxlUZt0y3o01TAi4+lXFnD+/uus/24sDVGzrGFv7Jtp5wKpjbBhiQ
+         hECuS2wRfJEJ+dSjmBpKUquv3dEJE/ZnXtnkIjuaEf7h+Gp6fz0RwlHsWmhyeHvrhM
+         9oBcUhY/sbSRHdgDaCx28ZR9Mql/kwNlNVMsi2yW/ou64qCMpHiEq2nO1WIly57JEj
+         xGUSKfcelzwtA9j8GKdjpvQ67qxoMQfy00d7bu5bf/C044U7cpNelesy6etM0If82o
+         UdWbgXNpWbKAA==
+Date:   Wed, 6 Sep 2023 15:28:47 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <ZPj1WuwKKnvVEZnl@kernel.org>
+Message-ID: <20230906222847.GA230622@dev-arch.thelio-3990X>
 References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
- <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
- <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Em Wed, Sep 06, 2023 at 01:20:59PM -0700, Linus Torvalds escreveu:
-> On Wed, 6 Sept 2023 at 13:02, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > And guess what happens when you have (unsigned char)-1? It does *not*
-> > cast back to -1.
-> 
-> Side note: again, this may be one of those "it works in practice",
-> because if we have -fshort-enums, I think 'enum
-> btree_node_locked_type' in turn ends up being represented as a 'signed
-> char', because that's the smallest simple type that can fit all those
-> values.
- 
-> I don't think gcc ever uses less than that (ie while a six_lock_type
-> could fit in two bits, it's still going to be considered at least a
-> 8-bit value in practice).
+Hi Kent,
 
-There are some cases where people stuff the enum into a bitfield, but
-no, no simple type.
+On Sat, Sep 02, 2023 at 11:25:55PM -0400, Kent Overstreet wrote:
+> here's the bcachefs pull request, for 6.6. Hopefully everything
+> outstanding from the previous PR thread has been resolved; the block
+> layer prereqs are in now via Jens's tree and the dcache helper has a
+> reviewed-by from Christain.
 
-⬢[acme@toolbox perf-tools-next]$ pahole | grep -w enum | grep :
-	enum btrfs_rsv_type        type:8;               /*    28:16  4 */
-	enum btrfs_delayed_item_type type:8;             /*   100: 0  4 */
-	enum kernel_pkey_operation op:8;                 /*    40: 0  4 */
-	enum integrity_status      ima_file_status:4;    /*    96: 0  4 */
-	enum integrity_status      ima_mmap_status:4;    /*    96: 4  4 */
-	enum integrity_status      ima_bprm_status:4;    /*    96: 8  4 */
-	enum integrity_status      ima_read_status:4;    /*    96:12  4 */
-	enum integrity_status      ima_creds_status:4;   /*    96:16  4 */
-	enum integrity_status      evm_status:4;         /*    96:20  4 */
-	enum fs_context_purpose    purpose:8;            /*   152: 0  4 */
-	enum fs_context_phase      phase:8;              /*   152: 8  4 */
-	enum fs_value_type         type:8;               /*     8: 0  4 */
-	enum sgx_page_type         type:16;              /*     8: 8  4 */
-	enum nf_hook_ops_type      hook_ops_type:8;      /*    24: 8  4 */
-		enum resctrl_event_id evtid:8;         /*     0:10  4 */
-		enum _cache_type   type:5;             /*     0: 0  4 */
-⬢[acme@toolbox perf-tools-next]$ pahole _cache_type
-enum _cache_type {
-	CTYPE_NULL    = 0,
-	CTYPE_DATA    = 1,
-	CTYPE_INST    = 2,
-	CTYPE_UNIFIED = 3,
-};
+I pulled this into mainline locally and did an LLVM build, which found
+an immediate issue. It appears the bcachefs codes uses zero length
+arrays for flexible arrays instead of the C99 syntax that the kernel is
+moving to, which will cause issues with -fstrict-flex-arrays=3 (clang
+16+, gcc 13+), see commit df8fc4e934c1 ("kbuild: Enable
+-fstrict-flex-arrays=3"). Currently, building x86_64 defconfig + the
+bcachefs configs with clang warns (or errors with CONFIG_WERROR):
 
-⬢[acme@toolbox perf-tools-next]$ pahole integrity_status
-enum integrity_status {
-	INTEGRITY_PASS           = 0,
-	INTEGRITY_PASS_IMMUTABLE = 1,
-	INTEGRITY_FAIL           = 2,
-	INTEGRITY_FAIL_IMMUTABLE = 3,
-	INTEGRITY_NOLABEL        = 4,
-	INTEGRITY_NOXATTRS       = 5,
-	INTEGRITY_UNKNOWN        = 6,
-};
+  In file included from fs/bcachefs/replicas.c:6:
+  fs/bcachefs/replicas.h:46:2: error: array index 0 is past the end of the array (that has type '__u8[0]' (aka 'unsigned char[0]')) [-Werror,-Warray-bounds]
+     46 |         e->devs[0]      = dev;
+        |         ^       ~
+  fs/bcachefs/bcachefs_format.h:1392:2: note: array 'devs' declared here
+   1392 |         __u8                    devs[0];
+        |         ^
+  1 error generated.
 
-⬢[acme@toolbox perf-tools-next]
-> 
-> So we may have 'enum six_lock_type' essentially being 'unsigned char',
-> and when the code does
-> 
->     mark_btree_node_locked(trans, path, 0, BTREE_NODE_UNLOCKED);
-> 
-> that BTREE_NODE_UNLOCKED value might actually be 255.
-> 
-> And then when it's cast to 'enum btree_node_locked_type' in the inline
-> function, the 255 will be cast to 'signed char', and we'll end up
-> compatible with '(enum btree_node_locked_type)-1' again.
-> 
-> So it's one of those things that are seriously wrong to do, but might
-> generate the expected code anyway.
-> 
-> Unless the compiler adds any other sanity checks, like UBSAN or
-> something, that actually uses the exact range of the enums.
-> 
-> It could happen even without UBSAN, if the compiler ends up going "I
-> can see that the original value came from a 'enum six_lock_type', so I
-> know the original value can't be signed, so any comparison with
-> BTREE_NODE_UNLOCKED can never be true.
-> 
-> But again, I suspect that in practice this all just happens to work.
-> That doesn't make it right.
-> 
->                Linus
+GCC would warn in the same manner if -Warray-bounds was not disabled for
+it... :(
 
--- 
+  In file included from fs/bcachefs/buckets.c:22:
+  In function 'bch2_replicas_entry_cached',
+      inlined from 'update_cached_sectors' at fs/bcachefs/buckets.c:409:2,
+      inlined from 'bch2_mark_alloc' at fs/bcachefs/buckets.c:590:9:
+  fs/bcachefs/replicas.h:46:16: error: array subscript 0 is outside array bounds of '__u8[0]' {aka 'unsigned char[]'} [-Werror=array-bounds=]
+     46 |         e->devs[0]      = dev;
+        |         ~~~~~~~^~~
+  In file included from fs/bcachefs/bcachefs.h:206,
+                   from fs/bcachefs/buckets.c:8:
+  fs/bcachefs/bcachefs_format.h: In function 'bch2_mark_alloc':
+  fs/bcachefs/bcachefs_format.h:1392:33: note: while referencing 'devs'
+   1392 |         __u8                    devs[0];
+        |                                 ^~~~
 
-- Arnaldo
+GCC shows many other instances of this problem for the same reason (I
+can send a build log if you'd like), such as 'struct snapshot_table' in
+subvolume_types.h and several other structures in bcachefs_format.h.
+
+Cheers,
+Nathan
