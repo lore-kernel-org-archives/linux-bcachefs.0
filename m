@@ -2,88 +2,134 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB57AEC8758
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  7 Sep 2023 20:52:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3045EC8759
+	for <linux-bcachefs@archiver.kernel.org>; Thu,  7 Sep 2023 23:40:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237394AbjIGUwQ (ORCPT
+        id S239422AbjIGXkO (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 7 Sep 2023 16:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
+        Thu, 7 Sep 2023 19:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239155AbjIGUwP (ORCPT
+        with ESMTP id S231601AbjIGXkO (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 7 Sep 2023 16:52:15 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0E61BD5
-        for <linux-bcachefs@vger.kernel.org>; Thu,  7 Sep 2023 13:52:10 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bf1f632b8so176483966b.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 07 Sep 2023 13:52:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694119929; x=1694724729; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=D+L9op70z4Tpmb4XlT5693A5llhh03vxW4gvGPs2i44=;
-        b=AArLCjcbLc2cQGPDtIHz8MDWZwtvD675aYPWuf/aEjpGAmrBsGa1iSXreWEbR0IgJg
-         KGfwWK/+FunAjqoJRXLggPuDbxU9rLDwrds5pR/uCeCYG7jyiOFlQ0pCoMwaZ1cuwS4P
-         MZuAmmVNloi19QGas0WaHZhBfEzD1PQo8RYQ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694119929; x=1694724729;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D+L9op70z4Tpmb4XlT5693A5llhh03vxW4gvGPs2i44=;
-        b=ISFbL/3qIu3mJVYhqr9T/PsSQI9M3HKGRMmkN0MZPWVrrTDkEkCaJWF6tAGBaLHQi1
-         ggVvCl/LFcdxHpcOGj4qS7E05cuGeApYR+TwATHkX8eE6OIgcx984ERumK52xG9l/pU0
-         S6Ie2XVhCkBeO988oa8jQDhsAaWMuVZHCMDPmO6Vkcrn0vjiWkysSMJsJs8akAFo6NBz
-         SmfekWKaHzL26V8QOkVd+2qX1HH9h/Ea23o+trLTcgxcPYp3BCj8aeCzbDadnvHdN03/
-         n4uA6kgXgFRQYR5PDS/buiZZspY1HR1lUaZMpbup1lmqGlNH3tdVOuXz6TUfjZxbWA/n
-         uFTQ==
-X-Gm-Message-State: AOJu0Yy1iFrctwMaWU4WXNJTRvKmcE2rBM6vMClJbttX00Pkj43vc4rC
-        KbAyNMXM0d24HnKB9wsqhSEEAEvGHNuSSvjyJGoi176P
-X-Google-Smtp-Source: AGHT+IE8qznMh9ZKa3NYqxcIMM41ig2msMoXCSRnFWH0/tpBUBw4HSCOHp/QBA/QRgRRi4ByJELtXw==
-X-Received: by 2002:a17:906:738c:b0:99c:b0c9:4ec0 with SMTP id f12-20020a170906738c00b0099cb0c94ec0mr378481ejl.30.1694119929334;
-        Thu, 07 Sep 2023 13:52:09 -0700 (PDT)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
-        by smtp.gmail.com with ESMTPSA id f2-20020a1709064dc200b009a1082f423esm105956ejw.88.2023.09.07.13.52.08
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 13:52:08 -0700 (PDT)
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4cbso1835314a12.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 07 Sep 2023 13:52:08 -0700 (PDT)
-X-Received: by 2002:a05:6402:156:b0:52d:212d:78ee with SMTP id
- s22-20020a056402015600b0052d212d78eemr314041edu.25.1694119928158; Thu, 07 Sep
- 2023 13:52:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com> <20230907203718.upkukiylhbmu5wjh@moria.home.lan>
-In-Reply-To: <20230907203718.upkukiylhbmu5wjh@moria.home.lan>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 7 Sep 2023 13:51:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjnjyOOU+NDcJy5Q7kQrA65UQQJCYUYADbr1Pz7up-8mw@mail.gmail.com>
-Message-ID: <CAHk-=wjnjyOOU+NDcJy5Q7kQrA65UQQJCYUYADbr1Pz7up-8mw@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs
-To:     Kent Overstreet <kent.overstreet@linux.dev>
+        Thu, 7 Sep 2023 19:40:14 -0400
+Received: from out-228.mta0.migadu.com (out-228.mta0.migadu.com [IPv6:2001:41d0:1004:224b::e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D22F1BD3
+        for <linux-bcachefs@vger.kernel.org>; Thu,  7 Sep 2023 16:40:08 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 19:40:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694130005;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RWoDi3uV46oY7SIh3m0rhGAD6sZcLL9xJq9LF0bY/sg=;
+        b=XWMTynq1Bzwny1usLjn4Le2XylzeIFJpbafRMoAau0HyAlZ0bjSgMCYyHv2yE2hPP61svM
+        jM16YJWJSslPWvh2/wNy9fciQOSqw8VchwqBilx7YOqI0GJNvCZXU4o2IEahN7AgZB+7Pz
+        yFuWLDf6zgAk8Tg5sNVu95XrKOX9lHM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230907234001.oe4uypp6anb5vqem@moria.home.lan>
+References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+ <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, 7 Sept 2023 at 13:37, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> Linus, I specifically asked you about linux-next in the offlist pre-pull
-> request thread back in May. It would have been nice if I could've gotten
-> an answer back then; instead, I'm only getting a definitive answer on
-> that now.
+On Wed, Sep 06, 2023 at 12:36:18PM -0700, Linus Torvalds wrote:
+> So I'm starting to look at this because I have most other pull
+> requests done, and while I realize there's no universal support for it
+> I suspect any further changes are better done in-tree. The out-of-tree
+> thing has been done.
+> 
+> However, while I'll continue to look at it in this form, I just
+> realized that it's completely unacceptable for one very obvious
+> reason:
+> 
+> On Sat, 2 Sept 2023 at 20:26, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> >   https://evilpiepirate.org/git/bcachefs.git bcachefs-for-upstream
+> 
+> No way am I pulling that without a signed tag and a pgp key with a
+> chain of trust. You've been around for long enough that having such a
+> key shouldn't be a problem for you, so make it happen.
+> 
+> There are a few other issues that I have with this, and Christoph did
+> mention a big one: it's not been in linux-next. I don't know why I
+> thought it had been, it's just such an obvious thing for any new "I
+> want this merged upstream" tree.
+> 
+> So these kinds of "I'll just ignore _all_ basic rules" kinds of issues
+> do annoy me.
+> 
+> I need to know that you understand that if you actually want this
+> upstream, you need to work with upstream.
+> 
+> That very much means *NOT* continuing this "I'll just do it my way".
+> You need to show that you can work with others, that you can work
+> within the framework of upstream, and that not every single thread you
+> get into becomes an argument.
+> 
+> This, btw, is not negotiable.  If you feel uncomfortable with that
+> basic notion, you had better just continue doing development outside
+> the main kernel tree for another decade.
+> 
+> The fact that I only now notice that you never submitted this to
+> linux-next is obviously on me. My bad.
+> 
+> But at the same time it worries me that it might be a sign of you just
+> thinking that your way is special.
+> 
+>                 Linus
 
-I may not have answered because it was so *obvious*.
+Honestly, though, this process is getting entirely kafkaesque.
 
-Was there really any question about it?
+I've been spending the past month or two working laying the groundwork
+for putting together a team to work on this, because god knows we need
+fresh blood in filesystem land - but that's on hold. Getting blindsided
+by another three month delay hurts, but that's not even the main thing.
 
-Anyway, the fact that the code doesn't even build for me is kind of a
-show-stopper regardless. It's the kind of things linux-next is
-supposed to notice early, so that we aren't in the situation where the
-code has not even been build-tested properly.
+The biggest thing has just been the non stop hostility and accusations -
+everything from "fracturing the community" too "ignoring all the rules"
+and my favorite, "is this the hill Kent wants to die on?" - when I'm
+just trying to get work done.
 
-                   Linus
+I don't generally think of myself as being particularly difficult to
+work with, I get along fine with most of the filesystem developers I
+interact with - regularly sharing ideas back and forth with the XFS
+people - but these review discussions have been entirely dominated by
+the most divisive people in our community, and I'm being told it's
+entirely on me to work with the guy whos one constant in the past 15
+years has been to try and block everything I submit?
+
+I'm just trying to get work done here. I'm not trying to ignore the
+rules. I'm trying to work with people who are willing to have reasonable
+discussions.
+
+-------------------
+
+When I was a teenager, I wanted nothing more than to be a Linux kernel
+programmer. I thought it utterly amazing that this huge group of people
+from around the world were working together over the internet, and that
+anyone could take part if they had the chops.
+
+That was my escape from a shitty family situation and the assholes in my
+life.
+
+But my life is different now; I have new and better people in my life,
+and I have to be thinking about them, and if merging bcachefs means I
+have to spend a lot more time in interactions like this then it's going
+to make me a shitty person to be around; and I don't want to do that to
+myself and I definitely don't want to do that to the people I care
+about.
+
+I'm going to go offline for awhile and think about what I want to do
+next.
