@@ -2,119 +2,102 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18203EC8740
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  7 Sep 2023 16:01:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C8EEEC8759
+	for <linux-bcachefs@archiver.kernel.org>; Thu,  7 Sep 2023 20:37:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236683AbjIGQBH (ORCPT
+        id S237625AbjIGUh3 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 7 Sep 2023 12:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
+        Thu, 7 Sep 2023 16:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243187AbjIGP7g (ORCPT
+        with ESMTP id S230450AbjIGUh2 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:59:36 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48584C0A
-        for <linux-bcachefs@vger.kernel.org>; Thu,  7 Sep 2023 08:49:34 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-500b66f8b27so1888194e87.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 07 Sep 2023 08:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694101695; x=1694706495; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ruWArLsIk/aS9d91i/0L81ue5MlvmUx78+5NC4yfWJk=;
-        b=ickgIL17qTg7OZS4+zvKxgecYpIM//XBuUWTsqJ7eE4VzE+IBXqj9cfDest+5T8VYk
-         60qakWnGXTjhacQwH9R6bQK7nNldnSbIYLC/R9spXr1+HssjGKEdsHGRzZ4iIhbmUElO
-         zJAj5Ys31JorGK0oCkwdkNkin8GWnvxRKr91gqPG6aWRI3CjGmF12k5lASLa3Ogqhkgk
-         G5ieyVfQCg+CMxTFnJfWoUZQ7IhBP1oHKSHwtwwCKWXFx6btsYzxh139uhAmmNiWpcIr
-         rH7kplADaS/nKhf3Y2/XxsMY15EkAh/ZLnvpKmJeu0bMEBa4Wt4+sfQyY6nsjQP90dKg
-         wIRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694101695; x=1694706495;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ruWArLsIk/aS9d91i/0L81ue5MlvmUx78+5NC4yfWJk=;
-        b=EfKpQR/HGZvJy/UOoXYqUbqZD3in6VwxpwB1nSjF6cezjn8Go6pBoBdz+C3SepWbpR
-         ChWeDTehvtnneWh3WXRtLxiLOdgBgp3mVZ3WVe1MR3Jwzgr6k8mcRJAsFxYUw1e0t2xQ
-         1SGVXNYydExlpruymzvivNkxcKVUyy0ZpJK9IEo9sJ2hz2KantudqZE6G4m1tr8pmkm3
-         qQh9wnRA/nuwPr/5kOdx1PMHGLuD2UKsgUpO73fD+7VOY20v8QvS6i13Aehrtk/di3Ht
-         3jrq0FwOl65tsZ3gXBXKc6WALtqnRtNK3FQrBgb4JOgs2m3syLYRp+96xBud5Qs1CqQV
-         lhEQ==
-X-Gm-Message-State: AOJu0YzbUQEaF7he0Qd6kzGb/ucxcq/WUFXg9wPKl/gIVfZ2yt2isI9E
-        ZU4zSlfmEY/BIJ0/lAbVRvKb/4f8tKWL9yK8vipRt4+QM8Y=
-X-Google-Smtp-Source: AGHT+IHGCmHHAoBnOCaPiLAn7TmCUy67q0u0ACP1UgLd2K+G4BA5wHHOE81IAPBIbSAHfs2IrXuLqIstihwbsY3l6Ks=
-X-Received: by 2002:ac2:4da3:0:b0:500:8f64:52d4 with SMTP id
- h3-20020ac24da3000000b005008f6452d4mr4804007lfe.53.1694091136055; Thu, 07 Sep
- 2023 05:52:16 -0700 (PDT)
+        Thu, 7 Sep 2023 16:37:28 -0400
+Received: from out-217.mta1.migadu.com (out-217.mta1.migadu.com [95.215.58.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0C51BCB
+        for <linux-bcachefs@vger.kernel.org>; Thu,  7 Sep 2023 13:37:24 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 16:37:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694119042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GA5nMAiT0G3MNbjKaeMA1EJ5Uv5kOOsTnwa98dAPhfY=;
+        b=c3Ax82zhV4MudXHm4wVsI48RLeKX0lwf3ytp972lSFHu73dAii7XDeTiBCan4Wvf3xTSJu
+        RmF9diKKx8MoXna6TV4EhbGm8afZ8abc7vVNMMy0+RB5Kb8UEec4VjP4tpSC9Bhjl74y7C
+        Yf4Mewaobkp/r8LX6jRpVgBah+KrruA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230907203718.upkukiylhbmu5wjh@moria.home.lan>
+References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+ <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
 MIME-Version: 1.0
-From:   Gabriel de Perthuis <g2p.code@gmail.com>
-Date:   Thu, 7 Sep 2023 14:51:38 +0200
-Message-ID: <CAFEugPc5Qyvdd69NaQKYOyyaSD-0XcUjAg4FBP8z1=7RV6oOAQ@mail.gmail.com>
-Subject: UBSAN: index X is out of range for type 'btree_iter_set [4]'
-To:     linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hello,
-UBSAN reports some errors with bcachefs; it would be worthwhile to
-enable it in the ktest CI.
-I have UBSAN enabled because I started out from an Ubuntu kernel config:
-grep UBSAN .config
-CONFIG_ARCH_HAS_UBSAN_SANITIZE
-_ALL=y
-CONFIG_UBSAN=y
-# CONFIG_UBSAN_TRAP is not set
-CONFIG_CC_HAS_UBSAN_BOUNDS_STRICT=y
-CONFIG_UBSAN_BOUNDS=y
-CONFIG_UBSAN_BOUNDS_STRICT=y
-CONFIG_UBSAN_SHIFT=y
-# CONFIG_UBSAN_DIV_ZERO is not set
-CONFIG_UBSAN_BOOL=y
-CONFIG_UBSAN_ENUM=y
-# CONFIG_UBSAN_ALIGNMENT is not set
-CONFIG_UBSAN_SANITIZE_ALL=y
-# CONFIG_TEST_UBSAN is not set
+On Wed, Sep 06, 2023 at 12:36:18PM -0700, Linus Torvalds wrote:
+> So I'm starting to look at this because I have most other pull
+> requests done, and while I realize there's no universal support for it
+> I suspect any further changes are better done in-tree. The out-of-tree
+> thing has been done.
+> 
+> However, while I'll continue to look at it in this form, I just
+> realized that it's completely unacceptable for one very obvious
+> reason:
+> 
+> On Sat, 2 Sept 2023 at 20:26, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> >   https://evilpiepirate.org/git/bcachefs.git bcachefs-for-upstream
+> 
+> No way am I pulling that without a signed tag and a pgp key with a
+> chain of trust. You've been around for long enough that having such a
+> key shouldn't be a problem for you, so make it happen.
+> 
+> There are a few other issues that I have with this, and Christoph did
+> mention a big one: it's not been in linux-next. I don't know why I
+> thought it had been, it's just such an obvious thing for any new "I
+> want this merged upstream" tree.
+> 
+> So these kinds of "I'll just ignore _all_ basic rules" kinds of issues
+> do annoy me.
+> 
+> I need to know that you understand that if you actually want this
+> upstream, you need to work with upstream.
+> 
+> That very much means *NOT* continuing this "I'll just do it my way".
+> You need to show that you can work with others, that you can work
+> within the framework of upstream, and that not every single thread you
+> get into becomes an argument.
+> 
+> This, btw, is not negotiable.  If you feel uncomfortable with that
+> basic notion, you had better just continue doing development outside
+> the main kernel tree for another decade.
+> 
+> The fact that I only now notice that you never submitted this to
+> linux-next is obviously on me. My bad.
+> 
+> But at the same time it worries me that it might be a sign of you just
+> thinking that your way is special.
 
-Currently it reports the following:
-(bcachefs master (d0fb567ff8e045149050a1e8f6646fa9c61dab7a) + linux 6.5.1)
+Linus, I specifically asked you about linux-next in the offlist pre-pull
+request thread back in May. It would have been nice if I could've gotten
+an answer back then; instead, I'm only getting a definitive answer on
+that now.
 
-journalctl -k --grep UBSAN -ojson --output-fields=MESSAGE |jq -r .MESSAGE |uniq
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/bset.c:1098:3
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/bset.c:1207:3
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/bset.c:1152:4
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/bset.c:1150:4
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/extents.c:291:4
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/extents.c:281:4
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/extents.c:291:4
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/extents.c:36:18
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/extents.c:281:4
-UBSAN: array-index-out-of-bounds in drivers/md/bcache/extents.c:301:5
-UBSAN: array-index-out-of-bounds in fs/bcachefs/bkey_sort.h:29:13
-UBSAN: array-index-out-of-bounds in fs/bcachefs/bkey_sort.c:25:47
-UBSAN: array-index-out-of-bounds in fs/bcachefs/bkey_sort.c:25:30
-UBSAN: array-index-out-of-bounds in fs/bcachefs/bkey_sort.c:27:3
-UBSAN: array-index-out-of-bounds in fs/bcachefs/bkey_sort.c:25:47
-UBSAN: array-index-out-of-bounds in fs/bcachefs/bkey_sort.c:27:3
-UBSAN: array-index-out-of-bounds in fs/bcachefs/bkey_sort.c:25:30
-UBSAN: array-index-out-of-bounds in fs/bcachefs/bkey_sort.c:27:3
+That question has even come up in meetings and no one could give a
+definitive answer; the suggestion was to email you and CC people and
+ask, which is precisely what I did.
 
-This started happening earlier, I have one boot based on 6.5.0
-(bcachefs master 493c276ead0e516ff3eca8d13b820d31afd62524) reporting
-similar errors, whereas the one based on 6.4 (bcachefs master
-117cd823d2d77dd8db1ec35b5819e1668c736b31 merged with stable 6.4.12)
-didn't.
+Sigh.
 
-The errors are of the form (indices vary)
-index 44 is out of range for type 'sort_iter_set [4]'
-index 4 is out of range for type 'btree_iter_set [4]'
-
-Uploaded a fuller log:
-journalctl -k -ojson --output-fields=MESSAGE |jq -r .MESSAGE |grep -B1
--A100 UBSAN |grep -v '^Hardware name:' \
-  |awk '/UBSAN: array-index-out-of-bounds/,/=========/' >
-bcachefs-6.5.1.ubsan.errors
-
-https://pb.envs.net/?399630cde0c62c76#4zUPPizf68bXGVoyxedZawKGVswrX4JaoeTJ5shKLvfJ
+Now I'm wondering what other surprises I'm going to get the next time
+around...
