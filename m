@@ -2,207 +2,101 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99B16EE57E0
-	for <linux-bcachefs@archiver.kernel.org>; Fri,  8 Sep 2023 09:11:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E023AEE57EB
+	for <linux-bcachefs@archiver.kernel.org>; Fri,  8 Sep 2023 09:37:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241328AbjIHJLP (ORCPT
+        id S238801AbjIHJiA (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 8 Sep 2023 05:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+        Fri, 8 Sep 2023 05:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240945AbjIHJLP (ORCPT
+        with ESMTP id S231948AbjIHJiA (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 8 Sep 2023 05:11:15 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEDD1BFF
-        for <linux-bcachefs@vger.kernel.org>; Fri,  8 Sep 2023 02:11:09 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40037db2fe7so19588685e9.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 08 Sep 2023 02:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=froggi.es; s=google; t=1694164268; x=1694769068; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uucPgAlGBQZ8LNzLV0XU3oBxm9XKuhvV3ldf5KCnJas=;
-        b=KFTrR103szWJEVVrwrOh3S5yIePmAzay2NB6PFt/uuy3m7O/JxRVNNdzZkzciTproH
-         3v8xwblhNzTDV1uo0m4/p5wR9GMFix1uGRNY0tjAI8FXgLRMX7FbeSJSwo5TdUwofpft
-         nvztFi9NemEqR16ZeE+wtHJdHE7ceZXDNxXcYtsL5OoFaddDJfbqBc0tSBCe9NW/71mY
-         nVd4VORQIrH72GdWhuu1G4EG11p34BgmGDav8jPY2m2NMFcUOwU3BR+H5bPJNSITQstl
-         j+b373W00j2OxP/ygsSj8XuTaes00BZsqS3aoyq9ZlZtVIdwpFqOAOkfv5rQqXwMo2DA
-         qbRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694164268; x=1694769068;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uucPgAlGBQZ8LNzLV0XU3oBxm9XKuhvV3ldf5KCnJas=;
-        b=e/GoPLwpbjESdETC2A/mqE5wf4EGVdMwe+pXIl0D1Piu/KNC1rAL1MuzYe3hUYGzYh
-         moylvtD2wY5tAIpzjHoYTgxZGsfAovheyxtEihjMSV6BWM0RGB9NjbSfGr7p4mZ6fzYu
-         Ph6WvXZS1y4NfnsoF1C4fSj3EH9xAdKnNjZqJizH9FiiAxr2/dAg2X1nJvBp+t/kiano
-         7xa16fRq8PDkJEuiF03aztxElz6HJtgy95usxIAuXIjK8VFcf0wtkccUlcpwgfPROaF9
-         HZ9vZwTvwYLHkqJeGvu0XdfT3YK4jxLqShA+nIm/px8VdfXGEbO8sWAKom2ECYve7QGj
-         iq2A==
-X-Gm-Message-State: AOJu0YysefBOazvh4bTG1t7E2f7d72vi062k/tlEi+c5KX4Mrt5/19mO
-        WsG6b64klVwNT3ooKEBdwK6vPo2YrHWnOiIQdUI=
-X-Google-Smtp-Source: AGHT+IHXFm0k3Ng9rEIihR13gx7EBn8TISG7UZBX/S9GUomLYkv0qz2Sp94jomnPytBSKb0AniVSKQ==
-X-Received: by 2002:a7b:c01a:0:b0:3fb:d1db:545b with SMTP id c26-20020a7bc01a000000b003fbd1db545bmr1557599wmb.20.1694164267671;
-        Fri, 08 Sep 2023 02:11:07 -0700 (PDT)
-Received: from [192.168.0.89] (darl-09-b2-v4wan-165404-cust288.vm5.cable.virginm.net. [86.17.61.33])
-        by smtp.gmail.com with ESMTPSA id v17-20020a5d6791000000b0031c5ce91ad6sm1535225wru.97.2023.09.08.02.11.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 02:11:07 -0700 (PDT)
-Message-ID: <689a856d-4c4a-4d65-b4f2-a5b11e61d75b@froggi.es>
-Date:   Fri, 8 Sep 2023 10:11:06 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+        Fri, 8 Sep 2023 05:38:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA97111B;
+        Fri,  8 Sep 2023 02:37:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZUx9P8uq0s7KOnBO9cNPnozV8SPbCPIMugH1f4rHk0Q=; b=3Bf/UtmV/ogMHVqzHNrYqqH2Iz
+        2Iunu9/UJa7ir0Xv1wtNqmkcza6q4XK4vHAK12aCpJLki+9InvyjM+88UEo7Vb8FvjOmfx5PEYKST
+        ybvrpESgtaM6T/EhJOV95D6luV8AjOQUyIJu1Gcpe6zHYpaw1U8KH+iBNPqMbQNEauxGblnGohx08
+        D9QQ2YU7mfx23Hnj9FLF9or+Vq4vFMW9cfFeI8xAlkcBz8m/boL+o908ov9ay1gbxzm4g1GeV6sEC
+        Mf9fN75zbNdbrzgOezoqUsMMTIOmVNxPS4US1HT+qeAwRi1F0eVgO+lkBHN2at0Mkox1HKRwqpPgV
+        4lPdkTTw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qeXw2-00DPld-1j;
+        Fri, 08 Sep 2023 09:37:54 +0000
+Date:   Fri, 8 Sep 2023 02:37:54 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>
 Subject: Re: [GIT PULL] bcachefs
-To:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
+Message-ID: <ZPrrcpZgJWFfFfEL@infradead.org>
 References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
- <20230907234001.oe4uypp6anb5vqem@moria.home.lan>
-Content-Language: en-US
-From:   Joshua Ashton <joshua@froggi.es>
-In-Reply-To: <20230907234001.oe4uypp6anb5vqem@moria.home.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ <ZPcsHyWOHGJid82J@infradead.org>
+ <20230906000007.ry5rmk35vt57kppx@moria.home.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230906000007.ry5rmk35vt57kppx@moria.home.lan>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
+On Tue, Sep 05, 2023 at 08:00:07PM -0400, Kent Overstreet wrote:
+> But the reasons bcachefs doesn't use iomap have been discussed at
+> length,
+
+Care to send a pointer?
+
+> that code. You were AWOL on those discussions; you consistently say
+> "bcachefs should use iomap" and then walk away, so those discussions
+> haven't moved forwards.
+
+Well, let's hsave the proper discussion then.  I defintively don't
+think "I just walked away", because that's not what I do.  I did give
+up on quite a few of discussions with your because they turned from
+technical into personal very quick, but I don't even remember that
+for this case.
+
+> To recap, besides being more iterator like (passing data structures
+> around with iterators,
+
+Which is something you can do with iomap, and we're making use of that
+in quite a few places.  Thanks to the work from willy that I helped a
+bit with this has been done years ago.  It might or might not make
+sense to replace iomap_begin/end with a single iter callback that
+can be inlined, but that's not changing anything fundamental.
 
 
-On 9/8/23 00:40, Kent Overstreet wrote:
-> On Wed, Sep 06, 2023 at 12:36:18PM -0700, Linus Torvalds wrote:
->> So I'm starting to look at this because I have most other pull
->> requests done, and while I realize there's no universal support for it
->> I suspect any further changes are better done in-tree. The out-of-tree
->> thing has been done.
->>
->> However, while I'll continue to look at it in this form, I just
->> realized that it's completely unacceptable for one very obvious
->> reason:
->>
->> On Sat, 2 Sept 2023 at 20:26, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->>>
->>>    https://evilpiepirate.org/git/bcachefs.git bcachefs-for-upstream
->>
->> No way am I pulling that without a signed tag and a pgp key with a
->> chain of trust. You've been around for long enough that having such a
->> key shouldn't be a problem for you, so make it happen.
->>
->> There are a few other issues that I have with this, and Christoph did
->> mention a big one: it's not been in linux-next. I don't know why I
->> thought it had been, it's just such an obvious thing for any new "I
->> want this merged upstream" tree.
->>
->> So these kinds of "I'll just ignore _all_ basic rules" kinds of issues
->> do annoy me.
->>
->> I need to know that you understand that if you actually want this
->> upstream, you need to work with upstream.
->>
->> That very much means *NOT* continuing this "I'll just do it my way".
->> You need to show that you can work with others, that you can work
->> within the framework of upstream, and that not every single thread you
->> get into becomes an argument.
->>
->> This, btw, is not negotiable.  If you feel uncomfortable with that
->> basic notion, you had better just continue doing development outside
->> the main kernel tree for another decade.
->>
->> The fact that I only now notice that you never submitted this to
->> linux-next is obviously on me. My bad.
->>
->> But at the same time it worries me that it might be a sign of you just
->> thinking that your way is special.
->>
->>                  Linus
+> bcachefs also hangs a bit more state off the pagecache, due to being
+> multi device and also using the same data structure for tracking disk
+> reservations (because why make the buffered write paths look that up
+> separately?).
+
+I'm not even parsing the sentence.  But as said many times I'm all ear
+if we stick to technical questions.  We've added all kinds of
+improvements to iomap especially for gfs2 and btrfs, and while it
+sometimes took some time we're all better off with that as we're
+converging on a model of doing I/O instead of everytone doing something
+slightly different.
+
 > 
-> Honestly, though, this process is getting entirely kafkaesque.
+> > But without that, and without being in linux-next and the VFS maintainer
+> > ACK required for I think this is a very bad idea.
 > 
-> I've been spending the past month or two working laying the groundwork
-> for putting together a team to work on this, because god knows we need
-> fresh blood in filesystem land - but that's on hold. Getting blindsided
-> by another three month delay hurts, but that's not even the main thing.
-> 
-> The biggest thing has just been the non stop hostility and accusations -
-> everything from "fracturing the community" too "ignoring all the rules"
-> and my favorite, "is this the hill Kent wants to die on?" - when I'm
-> just trying to get work done.
-> 
-> I don't generally think of myself as being particularly difficult to
-> work with, I get along fine with most of the filesystem developers I
-> interact with - regularly sharing ideas back and forth with the XFS
-> people - but these review discussions have been entirely dominated by
-> the most divisive people in our community, and I'm being told it's
-> entirely on me to work with the guy whos one constant in the past 15
-> years has been to try and block everything I submit?
-> 
-> I'm just trying to get work done here. I'm not trying to ignore the
-> rules. I'm trying to work with people who are willing to have reasonable
-> discussions.
-> 
-> -------------------
-> 
-> When I was a teenager, I wanted nothing more than to be a Linux kernel
-> programmer. I thought it utterly amazing that this huge group of people
-> from around the world were working together over the internet, and that
-> anyone could take part if they had the chops.
-> 
-> That was my escape from a shitty family situation and the assholes in my
-> life.
-> 
-> But my life is different now; I have new and better people in my life,
-> and I have to be thinking about them, and if merging bcachefs means I
-> have to spend a lot more time in interactions like this then it's going
-> to make me a shitty person to be around; and I don't want to do that to
-> myself and I definitely don't want to do that to the people I care
-> about.
-> 
-> I'm going to go offline for awhile and think about what I want to do
-> next.
+> Christain gave his reviewed-by for the dcache patch. Since this patchset
+> doesn't change existing code maintained by others aside from that one
+> patch, not sure how linux-next is relevant here...
 
-I've been holding off replying here for a while because I really hoped 
-that this situation would just work itself out. (I apologise for adding 
-more noise in advance)
-
-I agree that it really sucks that sometimes you don't get replies to 
-things sometimes or the review from the people you need it from all the 
-time, or didn't tell you something you needed to know.
-
-But, I think it's really important though to realize that you are 
-talking to other people on the ML and not review machines (unless that 
-person is Dave Airlie on Zink ;P) and very often, other work can come up 
-that would block them being able to spend time reviewing or guiding you 
-on this process.
-
-Everyone on here is another person who has their own huuuge slog of work 
-that is super important for security, stability, shipping a 
-product/feature, keeping their job, etc.
-
-Eg. I proposed several revisions on the casefolding support for 
-bcachefs, but right now I am busy doing some other AMDGPU and 
-Gamescope/Proton + color work so I haven't had a chance to follow up 
-more on that since the last discussion.
-
-You might think that because X takes a while to respond/review or a 
-didn't mention that you actually needed to do Y or missed your meeting; 
-it's because they don't care, but it's probably way more likely that 
-they are just busy and going through their own personal hell.
-
-One of the harsh things about open source is rationalizing that nobody 
-owes you a review or any of their time. If people are willing to review 
-your features and changes in any capacity, then they also have an 
-interest in your project.
-
-If you can understand that, then you are going to have a much better 
-time proposing things upstream.
-
-I also really want to see bcachefs in mainline, and I know you can do 
-it. :-)
-
-Cheers
-- Joshie 🐸✨
+Because file systems really should have a VFS maintainer ACK, just like
+block drivers have a block maintainer ACK, or network drivers have a
+net maintainer ACK.  Doing this differently for the most complex driver
+interface in the kernel doesn't make any sense whatsover. 
