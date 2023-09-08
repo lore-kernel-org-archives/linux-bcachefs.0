@@ -2,101 +2,140 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E023AEE57EB
-	for <linux-bcachefs@archiver.kernel.org>; Fri,  8 Sep 2023 09:37:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26AF9EE57F1
+	for <linux-bcachefs@archiver.kernel.org>; Fri,  8 Sep 2023 10:50:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238801AbjIHJiA (ORCPT
+        id S243069AbjIHKu5 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 8 Sep 2023 05:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
+        Fri, 8 Sep 2023 06:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjIHJiA (ORCPT
+        with ESMTP id S240460AbjIHKu4 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 8 Sep 2023 05:38:00 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA97111B;
-        Fri,  8 Sep 2023 02:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZUx9P8uq0s7KOnBO9cNPnozV8SPbCPIMugH1f4rHk0Q=; b=3Bf/UtmV/ogMHVqzHNrYqqH2Iz
-        2Iunu9/UJa7ir0Xv1wtNqmkcza6q4XK4vHAK12aCpJLki+9InvyjM+88UEo7Vb8FvjOmfx5PEYKST
-        ybvrpESgtaM6T/EhJOV95D6luV8AjOQUyIJu1Gcpe6zHYpaw1U8KH+iBNPqMbQNEauxGblnGohx08
-        D9QQ2YU7mfx23Hnj9FLF9or+Vq4vFMW9cfFeI8xAlkcBz8m/boL+o908ov9ay1gbxzm4g1GeV6sEC
-        Mf9fN75zbNdbrzgOezoqUsMMTIOmVNxPS4US1HT+qeAwRi1F0eVgO+lkBHN2at0Mkox1HKRwqpPgV
-        4lPdkTTw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qeXw2-00DPld-1j;
-        Fri, 08 Sep 2023 09:37:54 +0000
-Date:   Fri, 8 Sep 2023 02:37:54 -0700
-From:   Christoph Hellwig <hch@infradead.org>
+        Fri, 8 Sep 2023 06:50:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D261FE8
+        for <linux-bcachefs@vger.kernel.org>; Fri,  8 Sep 2023 03:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694170207;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7+VMi9AIhBNUiIBj7p6LIsHTOc75fW6SCtZhhU9EiKk=;
+        b=MYCaigRDb4kqw+E7CdJO/5VIjfdk4ozFMEZVjwq08eKN2+JamU6TMaQB6ZjF9hkzqAWMT2
+        TyzcYSCzz4NZFa4pPhbkjXLq9BTKW11prtuH3TEwCQydtjWejG5Gem4TE5FtiK9Js+ISNc
+        7tj9MFIF4ftpiOKC0KDnILsawGiv8qM=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-537-M2BPFQZvNFWVXTokZbkftg-1; Fri, 08 Sep 2023 06:50:06 -0400
+X-MC-Unique: M2BPFQZvNFWVXTokZbkftg-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76e015eb1c9so188425185a.3
+        for <linux-bcachefs@vger.kernel.org>; Fri, 08 Sep 2023 03:50:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694170206; x=1694775006;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7+VMi9AIhBNUiIBj7p6LIsHTOc75fW6SCtZhhU9EiKk=;
+        b=IdpI9KnC3I8KWQtG39PuZnlMfnWgrkj3r56H0/rxGB0phXdqiqwMiAN0WAj8wMzKPH
+         mpHg7RoZGRHfwbqjff6GfgW6skOywM5ae11SGMMO+4P6xrLIUCG9P3O+wJXORa/vwyq/
+         +t1YyMh7wLAVDmwoKmzkEErya7u6TXhGjQRtRNUn6PB6emnXGBMGnD9CZb9XP/neD2sB
+         Qt69Tnvi7J/frWa+XEDG/w+pE8CBzigKskwCDe6pLlUmPrrrXLj/GJu7wAyJ4OGQAvbx
+         EEnGw2jqk2B3vUJ3C++PS/Xww3RzRXc5mumQgXu08zCVAtAci80vzC312OWOLETYHIDP
+         eIsQ==
+X-Gm-Message-State: AOJu0Ywmih12qZHXfin7fRn0lIoTlEMgtBj3EofN1sbJmtlMAlhlr72C
+        oPrXT7BQvNloRLTHuO3DPf2MT5Deuin11BfC8SuPY9fntkW8CXERb5+7fqdT/LpHPyouLI+sib7
+        pRUpOtkkaO9zPDe3Uoj+t2sLjsFk=
+X-Received: by 2002:a0c:ab89:0:b0:647:3083:4575 with SMTP id j9-20020a0cab89000000b0064730834575mr2029164qvb.57.1694170206153;
+        Fri, 08 Sep 2023 03:50:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHowHtg/7qrbTUfBYxyvRbh2OPQB25QBt9WjKZGbCz85nIw1hL9MNtMb7UxlXjOJ57Pf4AT3A==
+X-Received: by 2002:a0c:ab89:0:b0:647:3083:4575 with SMTP id j9-20020a0cab89000000b0064730834575mr2029154qvb.57.1694170205926;
+        Fri, 08 Sep 2023 03:50:05 -0700 (PDT)
+Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
+        by smtp.gmail.com with ESMTPSA id i16-20020a0cf390000000b0064f57d3100asm582030qvk.102.2023.09.08.03.50.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 03:50:05 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 06:50:13 -0400
+From:   Brian Foster <bfoster@redhat.com>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Christoph Hellwig <hch@infradead.org>,
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
         torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        Christian Brauner <christian@brauner.io>
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org
 Subject: Re: [GIT PULL] bcachefs
-Message-ID: <ZPrrcpZgJWFfFfEL@infradead.org>
+Message-ID: <ZPr8ZUsw+/oNzs/p@bfoster>
 References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <ZPcsHyWOHGJid82J@infradead.org>
- <20230906000007.ry5rmk35vt57kppx@moria.home.lan>
+ <20230906222847.GA230622@dev-arch.thelio-3990X>
+ <202309061658.59013483F@keescook>
+ <20230907203946.xbtd2ddp3wztcffz@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230906000007.ry5rmk35vt57kppx@moria.home.lan>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20230907203946.xbtd2ddp3wztcffz@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 08:00:07PM -0400, Kent Overstreet wrote:
-> But the reasons bcachefs doesn't use iomap have been discussed at
-> length,
-
-Care to send a pointer?
-
-> that code. You were AWOL on those discussions; you consistently say
-> "bcachefs should use iomap" and then walk away, so those discussions
-> haven't moved forwards.
-
-Well, let's hsave the proper discussion then.  I defintively don't
-think "I just walked away", because that's not what I do.  I did give
-up on quite a few of discussions with your because they turned from
-technical into personal very quick, but I don't even remember that
-for this case.
-
-> To recap, besides being more iterator like (passing data structures
-> around with iterators,
-
-Which is something you can do with iomap, and we're making use of that
-in quite a few places.  Thanks to the work from willy that I helped a
-bit with this has been done years ago.  It might or might not make
-sense to replace iomap_begin/end with a single iter callback that
-can be inlined, but that's not changing anything fundamental.
-
-
-> bcachefs also hangs a bit more state off the pagecache, due to being
-> multi device and also using the same data structure for tracking disk
-> reservations (because why make the buffered write paths look that up
-> separately?).
-
-I'm not even parsing the sentence.  But as said many times I'm all ear
-if we stick to technical questions.  We've added all kinds of
-improvements to iomap especially for gfs2 and btrfs, and while it
-sometimes took some time we're all better off with that as we're
-converging on a model of doing I/O instead of everytone doing something
-slightly different.
-
+On Thu, Sep 07, 2023 at 04:39:46PM -0400, Kent Overstreet wrote:
+> On Wed, Sep 06, 2023 at 05:03:06PM -0700, Kees Cook wrote:
+> > On Wed, Sep 06, 2023 at 03:28:47PM -0700, Nathan Chancellor wrote:
+> > > Hi Kent,
+> > > 
+> > > On Sat, Sep 02, 2023 at 11:25:55PM -0400, Kent Overstreet wrote:
+> > > > here's the bcachefs pull request, for 6.6. Hopefully everything
+> > > > outstanding from the previous PR thread has been resolved; the block
+> > > > layer prereqs are in now via Jens's tree and the dcache helper has a
+> > > > reviewed-by from Christain.
+> > > 
+> > > I pulled this into mainline locally and did an LLVM build, which found
+> > > an immediate issue. It appears the bcachefs codes uses zero length
+> > 
+> > It looks like this series hasn't been in -next at all? That seems like a
+> > pretty important step.
+> > 
+> > Also, when I look at the PR, it seems to be a branch history going
+> > back _years_. For this kind of a feature, I'd expect a short series of
+> > "here's the code" in incremental additions (e.g. look at the x86 shstk
+> > series), not the development history from it being out of tree -- this
+> > could easily lead to ugly bisection problems, etc.
 > 
-> > But without that, and without being in linux-next and the VFS maintainer
-> > ACK required for I think this is a very bad idea.
+> Chris already commented on this, but - we really want the full history
+> available, that's important context for anyone working on the code going
+> forward. Brian was just mentioning digging through the history for
+> context in the meeting last Tuesday, and I've been going to a lot of
+> effort to make sure every commit builds and runs.
 > 
-> Christain gave his reviewed-by for the dcache patch. Since this patchset
-> doesn't change existing code maintained by others aside from that one
-> patch, not sure how linux-next is relevant here...
 
-Because file systems really should have a VFS maintainer ACK, just like
-block drivers have a block maintainer ACK, or network drivers have a
-net maintainer ACK.  Doing this differently for the most complex driver
-interface in the kernel doesn't make any sense whatsover. 
+Yeah.. IMO the main advantages of a sort of squashed down/sanitized git
+history is to either aid in code review or just clean up a history that
+is aesthetically a mess. For the former, the consensus seems to be that
+no one person is going to sit down and review the entire codebase, but
+rather folks have been digging into peripheral areas they have
+experience in (i.e., locking, pagecache, etc.) to call out any major
+concerns. I believe Kent has also offered to give pointers or just sit
+down with anybody who needs assistance to navigate the codebase for
+review purposes. For the latter, ISTM that bcachefs has pretty much
+followed kernel patch conventions, with it being originally derived from
+another upstream kernel subsystem and whatnot.
+
+The flipside is that losing the history makes it incrementally more
+annoying for developers working on bcachefs going forward. So I can see
+an argument for doing things either way in general just depending on
+context, but it looks like there's precedent for either approach.
+Looking back at btrfs in v2.6.29, that looks like a ~900 or so commit
+history that was pulled in. bcachefs has a larger commit log (~2500+) at
+this point, but if we can do whatever magic Chris referred to to try and
+avoid any logistical issues for the broader kernel community, I think
+that would be ideal.
+
+BTW this is just my .02 of course, but I'm also fairly certain at least
+one or two developers have looked at the git log and expressed the exact
+opposite opinion expressed here: that seeing an upstream-like history is
+appreciated because it reflects a sane/compatible development process.
+That again isn't to say one way or the other is the right approach for a
+merge, just that it seems subjective to some degree and so inevitably
+there will be different opinions..
+
+Brian
+
