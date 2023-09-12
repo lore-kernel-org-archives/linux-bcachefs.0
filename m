@@ -2,70 +2,134 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D209EE3F10
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 19:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC92EEE3F31
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 21:25:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbjILTgw (ORCPT
+        id S232334AbjILVZG (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 12 Sep 2023 15:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
+        Tue, 12 Sep 2023 17:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjILTgw (ORCPT
+        with ESMTP id S229649AbjILVZF (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:36:52 -0400
-Received: from out-223.mta1.migadu.com (out-223.mta1.migadu.com [IPv6:2001:41d0:203:375::df])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675011AE
-        for <linux-bcachefs@vger.kernel.org>; Tue, 12 Sep 2023 12:36:48 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 15:36:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694547406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zNCblYMtY7zlJoqjRoQyxe09ubNPwpC6FeW7lybTK0g=;
-        b=mO8fi2Va4OlZtR+qKA2rT/4aY4TZDjq2SLK3JtORAn6hMauL7cUy+9fsqraknGUMcpNA1m
-        sWcdhz/fzQNLRaRovoW8Cx4KjmS2fqjpWHzxsPBlbsLuwKEXHmm8BqGevTm/Wr58IchTdy
-        a41EuDjn7pHlwhmnLBMXahy4vZjWbho=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     bfoster@redhat.com, linux-bcachefs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        patches@lists.linux.dev
-Subject: Re: [PATCH 0/7] bcachefs compiler warning fixes for 32-bit
-Message-ID: <20230912193642.sdlwon4jta4ob5ac@moria.home.lan>
-References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
+        Tue, 12 Sep 2023 17:25:05 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4409E10CA;
+        Tue, 12 Sep 2023 14:25:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1694553899;
+        bh=NKLXqb0OTt/gDVyckuS9hnUIcdyDYJz4twSlaN6jocE=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=m/fnUywLcsP6wGMnWNl9RMjm0WoTwQUOLqDKFMmas5l9D4SXmRYKaqf2KkQASzQA+
+         7XhQse8OReVidA2BtVl/+2+dR5TbVqmzsxqh+NFnI+YXryMz2vcsf84v8LDSCdO1jD
+         GKmI+LINZOWmnWBCTc0uivYpF5icc7yKGlJEhPLE=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Tue, 12 Sep 2023 23:24:40 +0200
+Subject: [PATCH 1/5] bcachefs: Delete dead code
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230912-bcachefs-cleanup-v1-1-c1f717424e6a@weissschuh.net>
+References: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
+In-Reply-To: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
+To:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Brian Foster <bfoster@redhat.com>
+Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694553898; l=2720;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=NKLXqb0OTt/gDVyckuS9hnUIcdyDYJz4twSlaN6jocE=;
+ b=bkf/0H8Z0N0BPxYCBVfnCv2iymBVc+pJaHcnRTyFKOZGKX2Fikzq32KyRqIZ1P+rz7GSSwV5j
+ ygPTVXj1SXrCUqPMKwFeM8FZZe8Pwq8YpGFuo0DMlOtEyNNwI/rBt8/
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:15:37PM -0700, Nathan Chancellor wrote:
-> Hi all,
-> 
-> This is a series of fixes for warnings that I now see from bcachefs when
-> building my test matrix with LLVM in -next, mostly from 32-bit
-> architectures. Most of the patches should be uncontroversial; the
-> min_t/max_t changes are probably the worst ones.
+It is not used, might as well delete it.
 
-Those patches all look fine, thanks
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ fs/bcachefs/btree_update.c    | 11 -----------
+ fs/bcachefs/btree_update.h    |  1 -
+ fs/bcachefs/fs-io-pagecache.c |  7 -------
+ fs/bcachefs/reflink.c         |  8 --------
+ 4 files changed, 27 deletions(-)
 
-> I still see several instances of -Wframe-larger-than when building for
-> 32-bit ARM (I am sure they will show up on other 32-bit architectures as
-> well), which I am not entirely sure how to tackle. It looks like the
-> majority of the instances are just due to large structures on the stack
-> in combination with some inlining resulting in some spills, so it seems
-> like moving to a heap allocation for some of those would the right fix
-> but I know some maintainers would rather fix them in their own way,
-> hence just the report.
+diff --git a/fs/bcachefs/btree_update.c b/fs/bcachefs/btree_update.c
+index 880ce7431894..3dcb05b51e2d 100644
+--- a/fs/bcachefs/btree_update.c
++++ b/fs/bcachefs/btree_update.c
+@@ -871,17 +871,6 @@ __bch2_fs_log_msg(struct bch_fs *c, unsigned commit_flags, const char *fmt,
+ 	return ret;
+ }
+ 
+-int bch2_fs_log_msg(struct bch_fs *c, const char *fmt, ...)
+-{
+-	va_list args;
+-	int ret;
+-
+-	va_start(args, fmt);
+-	ret = __bch2_fs_log_msg(c, 0, fmt, args);
+-	va_end(args);
+-	return ret;
+-}
+-
+ /*
+  * Use for logging messages during recovery to enable reserved space and avoid
+  * blocking.
+diff --git a/fs/bcachefs/btree_update.h b/fs/bcachefs/btree_update.h
+index 901c42b57c35..c6ab11c76cc3 100644
+--- a/fs/bcachefs/btree_update.h
++++ b/fs/bcachefs/btree_update.h
+@@ -114,7 +114,6 @@ void bch2_trans_commit_hook(struct btree_trans *,
+ 			    struct btree_trans_commit_hook *);
+ int __bch2_trans_commit(struct btree_trans *, unsigned);
+ 
+-int bch2_fs_log_msg(struct bch_fs *, const char *, ...);
+ int bch2_journal_log_msg(struct bch_fs *, const char *, ...);
+ 
+ /**
+diff --git a/fs/bcachefs/fs-io-pagecache.c b/fs/bcachefs/fs-io-pagecache.c
+index 1e60eead2981..c38f002215cd 100644
+--- a/fs/bcachefs/fs-io-pagecache.c
++++ b/fs/bcachefs/fs-io-pagecache.c
+@@ -73,13 +73,6 @@ int bch2_write_invalidate_inode_pages_range(struct address_space *mapping,
+ 	return ret;
+ }
+ 
+-static const char * const bch2_folio_sector_states[] = {
+-#define x(n)	#n,
+-	BCH_FOLIO_SECTOR_STATE()
+-#undef x
+-	NULL
+-};
+-
+ static inline enum bch_folio_sector_state
+ folio_sector_dirty(enum bch_folio_sector_state state)
+ {
+diff --git a/fs/bcachefs/reflink.c b/fs/bcachefs/reflink.c
+index 39f711d5069e..7b20e1267fa8 100644
+--- a/fs/bcachefs/reflink.c
++++ b/fs/bcachefs/reflink.c
+@@ -89,14 +89,6 @@ void bch2_reflink_v_to_text(struct printbuf *out, struct bch_fs *c,
+ 	bch2_bkey_ptrs_to_text(out, c, k);
+ }
+ 
+-bool bch2_reflink_v_merge(struct bch_fs *c, struct bkey_s _l, struct bkey_s_c _r)
+-{
+-	struct bkey_s_reflink_v   l = bkey_s_to_reflink_v(_l);
+-	struct bkey_s_c_reflink_v r = bkey_s_c_to_reflink_v(_r);
+-
+-	return l.v->refcount == r.v->refcount && bch2_extent_merge(c, _l, _r);
+-}
+-
+ int bch2_trans_mark_reflink_v(struct btree_trans *trans,
+ 			      enum btree_id btree_id, unsigned level,
+ 			      struct bkey_s_c old, struct bkey_i *new,
 
-I just started seeing these again as well. The biggest single object
-that most of them have on their stack is btree_trans, but initializing
-that has to do a heap allocation for the btree_paths array - so we might
-as well switch to heap allocating the entire thing.
+-- 
+2.42.0
 
-That will help.
