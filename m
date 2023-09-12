@@ -2,79 +2,65 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D9F6CA0EEB
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 15:04:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34977CA0EEB
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 16:28:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236151AbjILPEZ (ORCPT
+        id S236709AbjILQ2F (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 12 Sep 2023 11:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
+        Tue, 12 Sep 2023 12:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236150AbjILPEY (ORCPT
+        with ESMTP id S236720AbjILQ2E (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:04:24 -0400
-Received: from out-220.mta1.migadu.com (out-220.mta1.migadu.com [95.215.58.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFFFCC7
-        for <linux-bcachefs@vger.kernel.org>; Tue, 12 Sep 2023 08:04:20 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 11:04:14 -0400
+        Tue, 12 Sep 2023 12:28:04 -0400
+Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BAA10EA
+        for <linux-bcachefs@vger.kernel.org>; Tue, 12 Sep 2023 09:28:00 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 12:27:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694531058;
+        t=1694536078;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=KuWSEZptyoIKYbVUjrrCSBbg/IDp1Wjy8rRVOQLAIiA=;
-        b=iF7PavcoJP3MP3UoQNX9FjNdKP7hMUnvG7X1LSuSWx/CPKNB+6E53OMTMSn+XXkgRVCN20
-        sD9LwtpDktc4HM6hwLc/9kvCBX/2UIMTuVZDJtZJSnZzHlrKbJFQZ59VtpvKfcRVlrpu8V
-        YJp+B6pxyf175WZ2P6Bz7LTyc9Z9tjo=
+        bh=xAKCqRDHW+lPEAd+hDQsFbTfpENfjf47jiZ8XYV5zrE=;
+        b=KkZIjbyxLo4mrQcQZ+yfNImzrOmyAmeWTxmkeOtqZ6g1y20pydPw8WtEmB941odcOulUf0
+        RyXYi7uYbc+PyyaQyKpMukySB5KIrS1WkbbqyUos/M0VoV+ps/e1X+8fce90AhFRqHSqsT
+        WYvZk+UostgNdQg1KWcmTHAUFv2TAbs=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     "Colin King (gmail)" <colin.i.king@gmail.com>
+To:     Colin Ian King <colin.i.king@gmail.com>
 Cc:     Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] bcachefs: Fix a handful of spelling mistakes in
- various messages
-Message-ID: <20230912150414.p3fx5ryd77e2ju43@moria.home.lan>
-References: <20230912082527.3913330-1-colin.i.king@gmail.com>
- <ZQBs2yEEupnoa2ZI@bfoster>
- <82d97565-ebb4-806c-70ba-c0fec16d51d5@gmail.com>
+Subject: Re: [PATCH 0/5][next] bcachefs: clean up some redundant assignments
+Message-ID: <20230912162754.jcavjd7ezhsaeycl@moria.home.lan>
+References: <20230912123744.3929609-1-colin.i.king@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <82d97565-ebb4-806c-70ba-c0fec16d51d5@gmail.com>
+In-Reply-To: <20230912123744.3929609-1-colin.i.king@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 04:00:23PM +0100, Colin King (gmail) wrote:
-> On 12/09/2023 14:51, Brian Foster wrote:
-> > On Tue, Sep 12, 2023 at 09:25:27AM +0100, Colin Ian King wrote:
-> > > There are several spelling mistakes in error messages. Fix these.
-> > > 
-> > > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> > > ---
-> > >   fs/bcachefs/alloc_background.c | 2 +-
-> > >   fs/bcachefs/backpointers.c     | 2 +-
-> > >   fs/bcachefs/btree_iter.c       | 2 +-
-> > >   fs/bcachefs/fsck.c             | 2 +-
-> > >   fs/bcachefs/recovery.c         | 2 +-
-> > >   fs/bcachefs/snapshot.c         | 2 +-
-> > >   fs/bcachefs/super-io.c         | 2 +-
-> > >   7 files changed, 7 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
-> > > index 540d94c0cceb..dd9f3cbace1e 100644
-> > > --- a/fs/bcachefs/alloc_background.c
-> > > +++ b/fs/bcachefs/alloc_background.c
-> > > @@ -1247,7 +1247,7 @@ static noinline_for_stack int __bch2_check_discard_freespace_key(struct btree_tr
-> > >   		return ret;
-> > >   	if (fsck_err_on(!bch2_dev_bucket_exists(c, pos), c,
-> > > -			"entry in %s btree for nonexistant dev:bucket %llu:%llu",
-> > > +			"entry in %s btree for non-existent dev:bucket %llu:%llu",
-> > 
-> > "nonexistent" doesn't necessarily need to be hyphenated, right?
+On Tue, Sep 12, 2023 at 01:37:39PM +0100, Colin Ian King wrote:
+> Clean up some redundant assignments and variables based on warnings
+> found by clang scan build static analysis.
 > 
-> either way is valid, but some folk prefer the hyphenated version as it's
-> apparently easier to scan.
+> Colin Ian King (5):
+>   bcachefs: remove redundant initialization of pointer d
+>   bcachefs: remove redundant initialization of pointer dst
+>   bcachefs: remove redundant initializations of variables start_offset
+>     and end_offset
+>   bcachefs: remove duplicated assignment to variable offset_into_extent
+>   bcachefs: remove redundant pointer q
+> 
+>  fs/bcachefs/btree_update_interior.c | 2 +-
+>  fs/bcachefs/buckets.c               | 2 +-
+>  fs/bcachefs/disk_groups.c           | 3 +--
+>  fs/bcachefs/fs-io.c                 | 4 ++--
+>  fs/bcachefs/io.c                    | 1 -
+>  fs/bcachefs/quota.c                 | 3 ---
+>  6 files changed, 5 insertions(+), 10 deletions(-)
 
-Let's stick with the non hyphenated.
+Applied - thanks
