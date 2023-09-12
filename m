@@ -2,88 +2,73 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52963EE3F36
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 21:25:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0532EEE3F38
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 21:25:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbjILVZG (ORCPT
+        id S233332AbjILVZG (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
         Tue, 12 Sep 2023 17:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbjILVZF (ORCPT
+        with ESMTP id S232007AbjILVZF (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
         Tue, 12 Sep 2023 17:25:05 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70ABF10CE;
-        Tue, 12 Sep 2023 14:25:01 -0700 (PDT)
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BB910CA;
+        Tue, 12 Sep 2023 14:25:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
         s=mail; t=1694553899;
-        bh=9RBuwJ4rsGWgWemg5nbnJIHL0qtjBmuyF2BkQ8tuVuI=;
-        h=From:Subject:Date:To:Cc:From;
-        b=QDNIMWqtvpGfrqO41PmolBA5vd7WLu9ITjcID6QBk6dbSHXtqebYybpB+6QUDO6is
-         jq9Tf8lnsE7hU5YPm+CKhXUK3yGHpvGrmjmuRiNt+gdApHX6cS2VVuuuvbodBnmkS4
-         A25vGJuevPyljxe+NDZtynkBx8+DE3EZ1gPEEVe0=
+        bh=lcaIV/ECVCgvfmpOvOHhH9PShQ1WRH/cLwz2eArAXE4=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=ghUe4u4VKEZLM18H9S+zUlfgL1vzoQarlSYzrB9AQzGeco00227DWylXO3Mcpu3Aj
+         dsUHblvTVW3hTHbJH/XMGQmqmMtfpXtEOEk3WFqGt4lxtH1OLUQRCHL1KOhLDER4ay
+         99xs8+bA1oUvYKhvoKzFRnfQW1svtLQPc/D3e6Ak=
 From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH 0/5] bcachefs: Fixes for various compiler warnings
-Date:   Tue, 12 Sep 2023 23:24:39 +0200
-Message-Id: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
+Date:   Tue, 12 Sep 2023 23:24:41 +0200
+Subject: [PATCH 2/5] bcachefs: Mark bch2_snapshot_node_delete() static
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIABfXAGUC/x3MSwqAMAwA0atI1gb6QVCvIi7SmmpAamlRBPHuF
- pdvMfNA4SxcYGweyHxJkSNW6LYBv1FcGWWpBqOMVYM26Dz5jUNBvzPFMyHZYMkNXW+NgpqlzEH
- ufznN7/sBMtQ+WWIAAAA=
+Message-Id: <20230912-bcachefs-cleanup-v1-2-c1f717424e6a@weissschuh.net>
+References: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
+In-Reply-To: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
 To:     Kent Overstreet <kent.overstreet@linux.dev>,
         Brian Foster <bfoster@redhat.com>
 Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
         =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694553898; l=1408;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694553898; l=755;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=9RBuwJ4rsGWgWemg5nbnJIHL0qtjBmuyF2BkQ8tuVuI=;
- b=fpBkoKka6ay4f301ZQylJqfzC9d0dpAaaawW8uFjbpYbmOxbH9TpWmY/J7e9BxusTD4AcMTBn
- 8apdKuDHj88BAw+CNd8QissWryiz+EGcbcFFuNl7geUuhLojtqu+84l
+ bh=lcaIV/ECVCgvfmpOvOHhH9PShQ1WRH/cLwz2eArAXE4=;
+ b=C1az70RMin9nhh865O+G2H+Zias+zDorazwXfRauKsf9FyYfBQCBoCIXKL8BRCrr6512kw+Oi
+ l5ONOXBg3RiBInEyVDrIO2thY1tamVeFhYZCegF3O1AP0I6o+dcfdnx
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Some fixes for warnings found by "make W=1".
-
-Note: This was only compile-tested.
+It is never used outside of snapshot.c.
 
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
-Thomas Weißschuh (5):
-      bcachefs: Delete dead code
-      bcachefs: Mark bch2_snapshot_node_delete() static
-      bcachefs: Delete set but not used variables
-      bcachefs: Add printf function attributes
-      bcachefs: Avoid unused symbol warnings from headers
+ fs/bcachefs/snapshot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- fs/bcachefs/alloc_foreground.c   |  3 --
- fs/bcachefs/backpointers.c       |  3 --
- fs/bcachefs/bcachefs.h           |  3 +-
- fs/bcachefs/bcachefs_format.h    | 15 +++++-----
- fs/bcachefs/btree_io.c           |  4 +--
- fs/bcachefs/btree_trans_commit.c |  4 ---
- fs/bcachefs/btree_types.h        | 63 +++++++++++++++++++++-------------------
- fs/bcachefs/btree_update.c       | 13 ++-------
- fs/bcachefs/btree_update.h       |  4 ++-
- fs/bcachefs/compress.c           |  4 ---
- fs/bcachefs/data_update.c        |  4 ---
- fs/bcachefs/fs-io-pagecache.c    |  7 -----
- fs/bcachefs/fs-ioctl.h           |  8 +++--
- fs/bcachefs/opts.h               |  3 +-
- fs/bcachefs/reflink.c            |  8 -----
- fs/bcachefs/snapshot.c           |  2 +-
- 16 files changed, 58 insertions(+), 90 deletions(-)
----
-base-commit: e7e6c4189f70ab2d7c21eaec5b9e9c34527ef349
-change-id: 20230912-bcachefs-cleanup-a3f3ab958320
+diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
+index 9da09911466e..c69b16010027 100644
+--- a/fs/bcachefs/snapshot.c
++++ b/fs/bcachefs/snapshot.c
+@@ -930,7 +930,7 @@ static inline void normalize_snapshot_child_pointers(struct bch_snapshot *s)
+ 		swap(s->children[0], s->children[1]);
+ }
+ 
+-int bch2_snapshot_node_delete(struct btree_trans *trans, u32 id)
++static int bch2_snapshot_node_delete(struct btree_trans *trans, u32 id)
+ {
+ 	struct bch_fs *c = trans->c;
+ 	struct btree_iter iter, p_iter = (struct btree_iter) { NULL };
 
-Best regards,
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+2.42.0
 
