@@ -2,104 +2,70 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B15DFEE3F12
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 19:16:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D209EE3F10
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 19:36:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237577AbjILTQX (ORCPT
+        id S231691AbjILTgw (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 12 Sep 2023 15:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        Tue, 12 Sep 2023 15:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjILTQJ (ORCPT
+        with ESMTP id S229744AbjILTgw (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:16:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DE71B2;
-        Tue, 12 Sep 2023 12:16:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACFB3C433CD;
-        Tue, 12 Sep 2023 19:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694546165;
-        bh=mr+NsehKtc1BM6Zeb//Yv+u2js+H8NOBbn0lM+STLiQ=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=AH/84kA77EldxqpYgZUOTgWE/L6f+l0bWErarIiliOr5C9rkQ/l4NAu9RJUy4djrF
-         /8qxmyozJjvcZan2n1MtDOF0w/5F6dW5iDf2slA3LbFK4y7ZDYe97+I54ynPK3tks4
-         EU1Ksvzv0GBR+sYTwq3LhgcI2DsCtdDBsJo1LDfRsjopqcs8up1trLemS3kcwYhnNr
-         KHaYos6HAw0aR5qhYOqiY1LiKUpLvlXNf/3Y/dZPUI8K0EXBuFG4iZampU/LzfP/Bi
-         Hj/aR8J/WDAX+PaN1o7eZ6MUKlLtdxMmwVARuiRIfKdlBMf/dFeR+feVpSMfGm+82I
-         N8wdIvCvKNaHw==
-From:   Nathan Chancellor <nathan@kernel.org>
-Date:   Tue, 12 Sep 2023 12:15:44 -0700
-Subject: [PATCH 7/7] bcachefs: Fix -Wcompare-distinct-pointer-types in
- bch2_copygc_get_buckets()
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230912-bcachefs-warning-fixes-v1-7-a1cc83a38836@kernel.org>
-References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
-In-Reply-To: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
-To:     kent.overstreet@linux.dev
+        Tue, 12 Sep 2023 15:36:52 -0400
+Received: from out-223.mta1.migadu.com (out-223.mta1.migadu.com [IPv6:2001:41d0:203:375::df])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675011AE
+        for <linux-bcachefs@vger.kernel.org>; Tue, 12 Sep 2023 12:36:48 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 15:36:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694547406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zNCblYMtY7zlJoqjRoQyxe09ubNPwpC6FeW7lybTK0g=;
+        b=mO8fi2Va4OlZtR+qKA2rT/4aY4TZDjq2SLK3JtORAn6hMauL7cUy+9fsqraknGUMcpNA1m
+        sWcdhz/fzQNLRaRovoW8Cx4KjmS2fqjpWHzxsPBlbsLuwKEXHmm8BqGevTm/Wr58IchTdy
+        a41EuDjn7pHlwhmnLBMXahy4vZjWbho=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Nathan Chancellor <nathan@kernel.org>
 Cc:     bfoster@redhat.com, linux-bcachefs@vger.kernel.org,
         linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        patches@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
-X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2289; i=nathan@kernel.org;
- h=from:subject:message-id; bh=mr+NsehKtc1BM6Zeb//Yv+u2js+H8NOBbn0lM+STLiQ=;
- b=owGbwMvMwCEmm602sfCA1DTG02pJDKkMOz4s5HJeOSmEcY/TU4mXthwf5hqbWnN/dO6+vUjMa
- Wae1tF3HaUsDGIcDLJiiizVj1WPGxrOOct449QkmDmsTCBDGLg4BWAiqzYw/E+Jeldxm7dK02Kq
- +tId+4pkGN+x+6StDN31tcMjUp3jph4jw+45IsYvDMJmb9qafOn8k36LexPVS/8sm9ZX+P5Q4hr
- zVdwA
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+        patches@lists.linux.dev
+Subject: Re: [PATCH 0/7] bcachefs compiler warning fixes for 32-bit
+Message-ID: <20230912193642.sdlwon4jta4ob5ac@moria.home.lan>
+References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-When building bcachefs for 32-bit ARM, there is a warning when using
-max() to compare an expression involving 'size_t' with an 'unsigned
-long' literal:
+On Tue, Sep 12, 2023 at 12:15:37PM -0700, Nathan Chancellor wrote:
+> Hi all,
+> 
+> This is a series of fixes for warnings that I now see from bcachefs when
+> building my test matrix with LLVM in -next, mostly from 32-bit
+> architectures. Most of the patches should be uncontroversial; the
+> min_t/max_t changes are probably the worst ones.
 
-  fs/bcachefs/movinggc.c:159:21: error: comparison of distinct pointer types ('typeof (16UL) *' (aka 'unsigned long *') and 'typeof (buckets_in_flight->nr / 4) *' (aka 'unsigned int *')) [-Werror,-Wcompare-distinct-pointer-types]
-    159 |         size_t nr_to_get = max(16UL, buckets_in_flight->nr / 4);
-        |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  include/linux/minmax.h:76:19: note: expanded from macro 'max'
-     76 | #define max(x, y)       __careful_cmp(x, y, >)
-        |                         ^~~~~~~~~~~~~~~~~~~~~~
-  include/linux/minmax.h:38:24: note: expanded from macro '__careful_cmp'
-     38 |         __builtin_choose_expr(__safe_cmp(x, y), \
-        |                               ^~~~~~~~~~~~~~~~
-  include/linux/minmax.h:28:4: note: expanded from macro '__safe_cmp'
-     28 |                 (__typecheck(x, y) && __no_side_effects(x, y))
-        |                  ^~~~~~~~~~~~~~~~~
-  include/linux/minmax.h:22:28: note: expanded from macro '__typecheck'
-     22 |         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-        |                    ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
-  1 error generated.
+Those patches all look fine, thanks
 
-On 64-bit architectures, size_t is 'unsigned long', so there is no
-warning when comparing these two expressions. Use max_t(size_t, ...) for
-this situation, eliminating the warning.
+> I still see several instances of -Wframe-larger-than when building for
+> 32-bit ARM (I am sure they will show up on other 32-bit architectures as
+> well), which I am not entirely sure how to tackle. It looks like the
+> majority of the instances are just due to large structures on the stack
+> in combination with some inlining resulting in some spills, so it seems
+> like moving to a heap allocation for some of those would the right fix
+> but I know some maintainers would rather fix them in their own way,
+> hence just the report.
 
-Fixes: dd49018737d4 ("bcachefs: Rhashtable based buckets_in_flight for copygc")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- fs/bcachefs/movinggc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I just started seeing these again as well. The biggest single object
+that most of them have on their stack is btree_trans, but initializing
+that has to do a heap allocation for the btree_paths array - so we might
+as well switch to heap allocating the entire thing.
 
-diff --git a/fs/bcachefs/movinggc.c b/fs/bcachefs/movinggc.c
-index 256431a6dc0c..1cb441d90b34 100644
---- a/fs/bcachefs/movinggc.c
-+++ b/fs/bcachefs/movinggc.c
-@@ -156,7 +156,7 @@ static int bch2_copygc_get_buckets(struct btree_trans *trans,
- 	struct bch_fs *c = trans->c;
- 	struct btree_iter iter;
- 	struct bkey_s_c k;
--	size_t nr_to_get = max(16UL, buckets_in_flight->nr / 4);
-+	size_t nr_to_get = max_t(size_t, 16U, buckets_in_flight->nr / 4);
- 	size_t saw = 0, in_flight = 0, not_movable = 0, sectors = 0;
- 	int ret;
- 
-
--- 
-2.42.0
-
+That will help.
