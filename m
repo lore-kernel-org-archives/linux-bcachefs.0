@@ -2,34 +2,34 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87E06EE3F31
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 21:25:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53A39EE3F31
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 21:25:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbjILVZH (ORCPT
+        id S232690AbjILV0A (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 12 Sep 2023 17:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
+        Tue, 12 Sep 2023 17:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbjILVZG (ORCPT
+        with ESMTP id S233650AbjILVZG (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
         Tue, 12 Sep 2023 17:25:06 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C3410CC;
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED48E10CC;
         Tue, 12 Sep 2023 14:25:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1694553899;
-        bh=/kse3qKov8RaUQQ0dAV0eIE8jxAbgGkkA/VnQUeR3Hc=;
+        s=mail; t=1694553900;
+        bh=Wmu1+Z9yrBCAmEnc1DatlQpRMBdDXqfSMezQJyU+ih8=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=YPsHr9Qw4/eBThgV4IkuBIwtLsZbxUFHMYXOogkW4kvBlYhidVlPnDeS/8VnmSRjt
-         2toiwSl/Z9+7vXh/Xlsen9bHFX1RirrWSkKbXRaN7LWl0vccDoVxLrb1wUaXY8xzym
-         Eq620Ztg/cYP6ZW9/EwhQ7Gj4XWuy5ZZhkxoAp7o=
+        b=U9FnZjwVVDq/gFpBj0poKZjyMq+xOqtkKuIxgzMiEEITTDD8kyEy05bjzsadaCi1H
+         R+44xIV44q9At6udAO7CH/Q8pHUUGYHvoLhKACav6DnF5qmMQ9bZwHe7u9ShppoiJm
+         IMpcP97IjxyBzpKw8tGYV8i32TBv9oPqahg95RQg=
 From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Tue, 12 Sep 2023 23:24:42 +0200
-Subject: [PATCH 3/5] bcachefs: Delete set but not used variables
+Date:   Tue, 12 Sep 2023 23:24:44 +0200
+Subject: [PATCH 5/5] bcachefs: Avoid unused symbol warnings from headers
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20230912-bcachefs-cleanup-v1-3-c1f717424e6a@weissschuh.net>
+Message-Id: <20230912-bcachefs-cleanup-v1-5-c1f717424e6a@weissschuh.net>
 References: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
 In-Reply-To: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
 To:     Kent Overstreet <kent.overstreet@linux.dev>,
@@ -37,151 +37,237 @@ To:     Kent Overstreet <kent.overstreet@linux.dev>,
 Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
         =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694553898; l=4953;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694553898; l=7973;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=/kse3qKov8RaUQQ0dAV0eIE8jxAbgGkkA/VnQUeR3Hc=;
- b=Bpqe2tcv8t9Ver8916JkL9fOO3wbJpy1YoLo6UiWo4Z3/s2FXfrch5keooOAwlWNqH4OMthwM
- 2qRV05NhXpaAoIeCMEXVZ3qZ7PXGqWPgVTK80xjV68LZImNtcRxBi56
+ bh=Wmu1+Z9yrBCAmEnc1DatlQpRMBdDXqfSMezQJyU+ih8=;
+ b=6uesjb03g638/ql3k0Md5pUt3lb4dz/4y+OxV5wT8bheOXgdQ4HJVsSg9D4cGnQub5Q+RKDQd
+ 5EgP5mC6dl5BRUAf9YBZ8jB5Xb2G8XLxegiTSIVqflhMwBwnSiRJlCE
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-As the variables are never read back they can be removed.
+Static variables defined in headers generate unused variable compiler
+warnings in CUs that do not use said functions.
+Avoid the warnings by either replacing the variables by enums and by
+explicitly inhibiting the warning.
 
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- fs/bcachefs/alloc_foreground.c   | 3 ---
- fs/bcachefs/backpointers.c       | 3 ---
- fs/bcachefs/btree_io.c           | 3 +--
- fs/bcachefs/btree_trans_commit.c | 4 ----
- fs/bcachefs/compress.c           | 4 ----
- fs/bcachefs/data_update.c        | 4 ----
- 6 files changed, 1 insertion(+), 20 deletions(-)
+ fs/bcachefs/bcachefs.h        |  3 ++-
+ fs/bcachefs/bcachefs_format.h | 15 ++++++-----
+ fs/bcachefs/btree_types.h     | 63 ++++++++++++++++++++++---------------------
+ fs/bcachefs/fs-ioctl.h        |  8 +++---
+ fs/bcachefs/opts.h            |  3 ++-
+ 5 files changed, 50 insertions(+), 42 deletions(-)
 
-diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
-index e02749ddc362..c1c0f92da52e 100644
---- a/fs/bcachefs/alloc_foreground.c
-+++ b/fs/bcachefs/alloc_foreground.c
-@@ -775,7 +775,6 @@ static int bucket_alloc_from_stripe(struct btree_trans *trans,
- 	struct dev_alloc_list devs_sorted;
- 	struct ec_stripe_head *h;
- 	struct open_bucket *ob;
--	struct bch_dev *ca;
- 	unsigned i, ec_idx;
- 	int ret = 0;
+diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
+index 30b3d7b9f9dc..b5a8ea44f9ef 100644
+--- a/fs/bcachefs/bcachefs.h
++++ b/fs/bcachefs/bcachefs.h
+@@ -186,6 +186,7 @@
+ #include <linux/backing-dev-defs.h>
+ #include <linux/bug.h>
+ #include <linux/bio.h>
++#include <linux/compiler.h>
+ #include <linux/closure.h>
+ #include <linux/kobject.h>
+ #include <linux/list.h>
+@@ -371,7 +372,7 @@ BCH_DEBUG_PARAMS()
+ #undef BCH_DEBUG_PARAM
  
-@@ -805,8 +804,6 @@ static int bucket_alloc_from_stripe(struct btree_trans *trans,
- 		}
- 	goto out_put_head;
- got_bucket:
--	ca = bch_dev_bkey_exists(c, ob->dev);
--
- 	ob->ec_idx	= ec_idx;
- 	ob->ec		= h->s;
- 	ec_stripe_new_get(h->s, STRIPE_REF_io);
-diff --git a/fs/bcachefs/backpointers.c b/fs/bcachefs/backpointers.c
-index 8747c5e19f99..a0457b75feb5 100644
---- a/fs/bcachefs/backpointers.c
-+++ b/fs/bcachefs/backpointers.c
-@@ -351,7 +351,6 @@ static int bch2_check_btree_backpointer(struct btree_trans *trans, struct btree_
- {
- 	struct bch_fs *c = trans->c;
- 	struct btree_iter alloc_iter = { NULL };
--	struct bch_dev *ca;
- 	struct bkey_s_c alloc_k;
- 	struct printbuf buf = PRINTBUF;
- 	int ret = 0;
-@@ -363,8 +362,6 @@ static int bch2_check_btree_backpointer(struct btree_trans *trans, struct btree_
- 		goto out;
- 	}
+ #ifndef CONFIG_BCACHEFS_DEBUG
+-#define BCH_DEBUG_PARAM(name, description) static const bool bch2_##name;
++#define BCH_DEBUG_PARAM(name, description) static const __used bool bch2_##name;
+ BCH_DEBUG_PARAMS_DEBUG()
+ #undef BCH_DEBUG_PARAM
+ #endif
+diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+index 1cce2504bca6..a13455dbb32c 100644
+--- a/fs/bcachefs/bcachefs_format.h
++++ b/fs/bcachefs/bcachefs_format.h
+@@ -74,6 +74,7 @@
  
--	ca = bch_dev_bkey_exists(c, k.k->p.inode);
--
- 	alloc_k = bch2_bkey_get_iter(trans, &alloc_iter, BTREE_ID_alloc,
- 				     bp_pos_to_bucket(c, k.k->p), 0);
- 	ret = bkey_err(alloc_k);
-diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
-index 0edbb73a5ec8..8655a07456e6 100644
---- a/fs/bcachefs/btree_io.c
-+++ b/fs/bcachefs/btree_io.c
-@@ -908,7 +908,7 @@ int bch2_btree_node_read_done(struct bch_fs *c, struct bch_dev *ca,
- 	bool updated_range = b->key.k.type == KEY_TYPE_btree_ptr_v2 &&
- 		BTREE_PTR_RANGE_UPDATED(&bkey_i_to_btree_ptr_v2(&b->key)->v);
- 	unsigned u64s;
--	unsigned blacklisted_written, nonblacklisted_written = 0;
-+	unsigned nonblacklisted_written = 0;
- 	unsigned ptr_written = btree_ptr_sectors_written(&b->key);
- 	struct printbuf buf = PRINTBUF;
- 	int ret = 0, retry_read = 0, write = READ;
-@@ -1071,7 +1071,6 @@ int bch2_btree_node_read_done(struct bch_fs *c, struct bch_dev *ca,
- 		 * important that we start writing new bsets after the most recent _non_
- 		 * blacklisted bset:
- 		 */
--		blacklisted_written = b->written;
- 		b->written = nonblacklisted_written;
- 	}
+ #include <asm/types.h>
+ #include <asm/byteorder.h>
++#include <linux/compiler.h>
+ #include <linux/kernel.h>
+ #include <linux/uuid.h>
+ #include "vstructs.h"
+@@ -83,8 +84,8 @@ typedef uuid_t __uuid_t;
+ #endif
  
-diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
-index eafb0388ef82..b19a9400d477 100644
---- a/fs/bcachefs/btree_trans_commit.c
-+++ b/fs/bcachefs/btree_trans_commit.c
-@@ -555,7 +555,6 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
- 	struct btree_write_buffered_key *wb;
- 	struct btree_trans_commit_hook *h;
- 	unsigned u64s = 0;
--	bool marking = false;
- 	int ret;
+ #define BITMASK(name, type, field, offset, end)				\
+-static const unsigned	name##_OFFSET = offset;				\
+-static const unsigned	name##_BITS = (end - offset);			\
++static const __used unsigned	name##_OFFSET = offset;			\
++static const __used unsigned	name##_BITS = (end - offset);		\
+ 									\
+ static inline __u64 name(const type *k)					\
+ {									\
+@@ -98,9 +99,9 @@ static inline void SET_##name(type *k, __u64 v)				\
+ }
  
- 	if (race_fault()) {
-@@ -584,9 +583,6 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
- 			*stopped_at = i;
- 			return ret;
- 		}
--
--		if (btree_node_type_needs_gc(i->bkey_type))
--			marking = true;
- 	}
+ #define LE_BITMASK(_bits, name, type, field, offset, end)		\
+-static const unsigned	name##_OFFSET = offset;				\
+-static const unsigned	name##_BITS = (end - offset);			\
+-static const __u##_bits	name##_MAX = (1ULL << (end - offset)) - 1;	\
++static const __used unsigned	name##_OFFSET = offset;			\
++static const __used unsigned	name##_BITS = (end - offset);		\
++static const __used __u##_bits	name##_MAX = (1ULL << (end - offset)) - 1; \
+ 									\
+ static inline __u64 name(const type *k)					\
+ {									\
+@@ -1639,7 +1640,7 @@ enum bcachefs_metadata_version {
+ 	bcachefs_metadata_version_max
+ };
  
- 	if (trans->nr_wb_updates &&
-diff --git a/fs/bcachefs/compress.c b/fs/bcachefs/compress.c
-index 6b17f7cc5860..4342995b0900 100644
---- a/fs/bcachefs/compress.c
-+++ b/fs/bcachefs/compress.c
-@@ -571,7 +571,6 @@ void bch2_fs_compress_exit(struct bch_fs *c)
- static int __bch2_fs_compress_init(struct bch_fs *c, u64 features)
- {
- 	size_t decompress_workspace_size = 0;
--	bool decompress_workspace_needed;
- 	ZSTD_parameters params = zstd_get_params(zstd_max_clevel(),
- 						 c->opts.encoded_extent_max);
- 	struct {
-@@ -620,9 +619,6 @@ static int __bch2_fs_compress_init(struct bch_fs *c, u64 features)
- 		if (!(features & (1 << i->feature)))
- 			continue;
+-static const unsigned bcachefs_metadata_required_upgrade_below = bcachefs_metadata_version_major_minor;
++static const __used unsigned bcachefs_metadata_required_upgrade_below = bcachefs_metadata_version_major_minor;
  
--		if (i->decompress_workspace)
--			decompress_workspace_needed = true;
--
- 		if (mempool_initialized(&c->compress_workspace[i->type]))
- 			continue;
+ #define bcachefs_metadata_version_current	(bcachefs_metadata_version_max - 1)
  
-diff --git a/fs/bcachefs/data_update.c b/fs/bcachefs/data_update.c
-index 81518f20d37d..09c757fdc448 100644
---- a/fs/bcachefs/data_update.c
-+++ b/fs/bcachefs/data_update.c
-@@ -49,10 +49,6 @@ static void trace_move_extent_fail2(struct data_update *m,
- 	if (insert) {
- 		i = 0;
- 		bkey_for_each_ptr_decode(old.k, bch2_bkey_ptrs_c(old), p, entry) {
--			struct bkey_s new_s;
--			new_s.k = (void *) new.k;
--			new_s.v = (void *) new.v;
--
- 			if (((1U << i) & m->data_opts.rewrite_ptrs) &&
- 			    (ptr = bch2_extent_has_ptr(old, p, bkey_i_to_s(insert))) &&
- 			    !ptr->cached)
+@@ -1946,7 +1947,7 @@ enum bch_csum_type {
+ 	BCH_CSUM_NR
+ };
+ 
+-static const unsigned bch_crc_bytes[] = {
++static const __used unsigned bch_crc_bytes[] = {
+ 	[BCH_CSUM_none]				= 0,
+ 	[BCH_CSUM_crc32c_nonzero]		= 4,
+ 	[BCH_CSUM_crc32c]			= 4,
+diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
+index 70398aaa095e..a9ab52e8f9d9 100644
+--- a/fs/bcachefs/btree_types.h
++++ b/fs/bcachefs/btree_types.h
+@@ -181,36 +181,39 @@ struct btree_node_iter {
+ 	} data[MAX_BSETS];
+ };
+ 
+-/*
+- * Iterate over all possible positions, synthesizing deleted keys for holes:
+- */
+-static const u16 BTREE_ITER_SLOTS		= 1 << 0;
+-static const u16 BTREE_ITER_ALL_LEVELS		= 1 << 1;
+-/*
+- * Indicates that intent locks should be taken on leaf nodes, because we expect
+- * to be doing updates:
+- */
+-static const u16 BTREE_ITER_INTENT		= 1 << 2;
+-/*
+- * Causes the btree iterator code to prefetch additional btree nodes from disk:
+- */
+-static const u16 BTREE_ITER_PREFETCH		= 1 << 3;
+-/*
+- * Used in bch2_btree_iter_traverse(), to indicate whether we're searching for
+- * @pos or the first key strictly greater than @pos
+- */
+-static const u16 BTREE_ITER_IS_EXTENTS		= 1 << 4;
+-static const u16 BTREE_ITER_NOT_EXTENTS		= 1 << 5;
+-static const u16 BTREE_ITER_CACHED		= 1 << 6;
+-static const u16 BTREE_ITER_WITH_KEY_CACHE	= 1 << 7;
+-static const u16 BTREE_ITER_WITH_UPDATES	= 1 << 8;
+-static const u16 BTREE_ITER_WITH_JOURNAL	= 1 << 9;
+-static const u16 __BTREE_ITER_ALL_SNAPSHOTS	= 1 << 10;
+-static const u16 BTREE_ITER_ALL_SNAPSHOTS	= 1 << 11;
+-static const u16 BTREE_ITER_FILTER_SNAPSHOTS	= 1 << 12;
+-static const u16 BTREE_ITER_NOPRESERVE		= 1 << 13;
+-static const u16 BTREE_ITER_CACHED_NOFILL	= 1 << 14;
+-static const u16 BTREE_ITER_KEY_CACHE_FILL	= 1 << 15;
++enum {
++	/*
++	 * Iterate over all possible positions, synthesizing deleted keys for holes:
++	 */
++	BTREE_ITER_SLOTS		= 1 << 0,
++	BTREE_ITER_ALL_LEVELS		= 1 << 1,
++	/*
++	 * Indicates that intent locks should be taken on leaf nodes, because we expect
++	 * to be doing updates:
++	 */
++	BTREE_ITER_INTENT		= 1 << 2,
++	/*
++	 * Causes the btree iterator code to prefetch additional btree nodes from disk:
++	 */
++	BTREE_ITER_PREFETCH		= 1 << 3,
++
++	/*
++	 * Used in bch2_btree_iter_traverse(), to indicate whether we're searching for
++	 * @pos or the first key strictly greater than @pos
++	 */
++	BTREE_ITER_IS_EXTENTS		= 1 << 4,
++	BTREE_ITER_NOT_EXTENTS		= 1 << 5,
++	BTREE_ITER_CACHED		= 1 << 6,
++	BTREE_ITER_WITH_KEY_CACHE	= 1 << 7,
++	BTREE_ITER_WITH_UPDATES		= 1 << 8,
++	BTREE_ITER_WITH_JOURNAL		= 1 << 9,
++	__BTREE_ITER_ALL_SNAPSHOTS	= 1 << 10,
++	BTREE_ITER_ALL_SNAPSHOTS	= 1 << 11,
++	BTREE_ITER_FILTER_SNAPSHOTS	= 1 << 12,
++	BTREE_ITER_NOPRESERVE		= 1 << 13,
++	BTREE_ITER_CACHED_NOFILL	= 1 << 14,
++	BTREE_ITER_KEY_CACHE_FILL	= 1 << 15,
++};
+ #define __BTREE_ITER_FLAGS_END			       16
+ 
+ enum btree_path_uptodate {
+diff --git a/fs/bcachefs/fs-ioctl.h b/fs/bcachefs/fs-ioctl.h
+index f201980ef2c3..0ebf4106ed2f 100644
+--- a/fs/bcachefs/fs-ioctl.h
++++ b/fs/bcachefs/fs-ioctl.h
+@@ -2,10 +2,12 @@
+ #ifndef _BCACHEFS_FS_IOCTL_H
+ #define _BCACHEFS_FS_IOCTL_H
+ 
++#include <linux/compiler.h>
++
+ /* Inode flags: */
+ 
+ /* bcachefs inode flags -> vfs inode flags: */
+-static const unsigned bch_flags_to_vfs[] = {
++static const __used unsigned bch_flags_to_vfs[] = {
+ 	[__BCH_INODE_SYNC]	= S_SYNC,
+ 	[__BCH_INODE_IMMUTABLE]	= S_IMMUTABLE,
+ 	[__BCH_INODE_APPEND]	= S_APPEND,
+@@ -13,7 +15,7 @@ static const unsigned bch_flags_to_vfs[] = {
+ };
+ 
+ /* bcachefs inode flags -> FS_IOC_GETFLAGS: */
+-static const unsigned bch_flags_to_uflags[] = {
++static const __used unsigned bch_flags_to_uflags[] = {
+ 	[__BCH_INODE_SYNC]	= FS_SYNC_FL,
+ 	[__BCH_INODE_IMMUTABLE]	= FS_IMMUTABLE_FL,
+ 	[__BCH_INODE_APPEND]	= FS_APPEND_FL,
+@@ -22,7 +24,7 @@ static const unsigned bch_flags_to_uflags[] = {
+ };
+ 
+ /* bcachefs inode flags -> FS_IOC_FSGETXATTR: */
+-static const unsigned bch_flags_to_xflags[] = {
++static const __used unsigned bch_flags_to_xflags[] = {
+ 	[__BCH_INODE_SYNC]	= FS_XFLAG_SYNC,
+ 	[__BCH_INODE_IMMUTABLE]	= FS_XFLAG_IMMUTABLE,
+ 	[__BCH_INODE_APPEND]	= FS_XFLAG_APPEND,
+diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
+index 8a9db110d64f..35831159e207 100644
+--- a/fs/bcachefs/opts.h
++++ b/fs/bcachefs/opts.h
+@@ -3,6 +3,7 @@
+ #define _BCACHEFS_OPTS_H
+ 
+ #include <linux/bug.h>
++#include <linux/compiler.h>
+ #include <linux/log2.h>
+ #include <linux/string.h>
+ #include <linux/sysfs.h>
+@@ -469,7 +470,7 @@ struct bch_opts {
+ #undef x
+ };
+ 
+-static const struct bch_opts bch2_opts_default = {
++static const __used struct bch_opts bch2_opts_default = {
+ #define x(_name, _bits, _mode, _type, _sb_opt, _default, ...)		\
+ 	._name##_defined = true,					\
+ 	._name = _default,						\
 
 -- 
 2.42.0
