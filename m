@@ -2,126 +2,112 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56857EE020F
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 13 Sep 2023 21:43:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 823F3EE020F
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 13 Sep 2023 21:43:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjIMVnG (ORCPT
+        id S231223AbjIMVnt (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 13 Sep 2023 17:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
+        Wed, 13 Sep 2023 17:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjIMVnG (ORCPT
+        with ESMTP id S230475AbjIMVnt (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:43:06 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110491724
-        for <linux-bcachefs@vger.kernel.org>; Wed, 13 Sep 2023 14:43:02 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7928dc54896so10294739f.3
-        for <linux-bcachefs@vger.kernel.org>; Wed, 13 Sep 2023 14:43:02 -0700 (PDT)
+        Wed, 13 Sep 2023 17:43:49 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F73173A
+        for <linux-bcachefs@vger.kernel.org>; Wed, 13 Sep 2023 14:43:45 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-79266c8617eso10448539f.3
+        for <linux-bcachefs@vger.kernel.org>; Wed, 13 Sep 2023 14:43:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694641381; x=1695246181; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694641424; x=1695246224; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WWw/GgRkO6GSoA0lYdFcK3fV5kiUwH+NqpK5ZJCXdHU=;
-        b=fZRPU2JQXjGIqE6BxLzRuKqifOnMq65jd/CEON042Z5bdNJQyzlvee3KVCpHvveAI5
-         IdSQP+aq9zWdcAPM4i8sTaFWrJ9garZ3K5SPXd+FKcFAmo8ElNSfrqsRraf8MkLV1CKE
-         6gmk4YJfA+vLdmCsGaHfAQ4iKPmErifV62LuBRTZ63BKH2qrcuVo/BCjmV2NHFNJT2zT
-         NiIlk+gkReHUfrv8NmxFkt4oqNJHkMBZZ7BOg++1OIm5xAezQY7KaxAP3Pn4RH6KFj3d
-         YCYEvX21/YHVadGkILkIne4nbqOyCkKTVermjoZOi5ggcSQnA/8AmIwWzeIYuav7zQYs
-         8cdQ==
+        bh=2uTbHoVjqIh4YniElhtNqUimTSs8A7qRExDkzz0sEF0=;
+        b=z9SMGeeCnAahU4w37gRdubNuNIWAlcY0lSpKN9caI91xeuEaFeIImhr607geAvw5uo
+         0M8nGp+hZICMldY3Oczy+oXjbuMKHciPyMxAGjZHSExJPuotCHTCr3Gpl1mO/7Ydj3FV
+         Q7X+kGmbhxgZdHnAyvISD2pHir3ztW0Q/BTESaNrVGYVZE6SZxb+0fLg/s6Tq3odP+6e
+         URNHVdhFaY+G/GOHt6Xn72cHpxHQJodw94mNEA1ozImsQyd/7m5AJu+A0nErEztEK4f9
+         XqQMdssFP62kvlLQ+srZZcSBixJbnMWJd1Z1mojhO6fLs+e/JBC7dCkGi7Y5xJMcA6nt
+         gs3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694641381; x=1695246181;
+        d=1e100.net; s=20230601; t=1694641424; x=1695246224;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WWw/GgRkO6GSoA0lYdFcK3fV5kiUwH+NqpK5ZJCXdHU=;
-        b=C6h9kBpvkeKZhtG3wLJLl6R6lYbYx0OmwTr56Gqmx/dsb3k2sd9PjgKDBeXnw6mn1w
-         TZGtE/JoZxG8d7je/IbGw+5g9I8llEzNotcwIzopO42X3A8HNFDuVOGenqbStjvYH1ZC
-         3lTjWkl+9QIy+TvSxvHP8cHuXH1GzOiBKApBTognsB9cp6j6PBme5eGjFpwi5GyvE8ys
-         z0Btki/zTUttHZO1W7pT+cqoRItDpzBDiV1tLb//IeIsP9SCEzPMVTYuXy6MBkIramgc
-         Sz0+86hsISSTNmC2o3p8PnCeuSc1F1kHydGAX/78N+X4f4rGkuzCXD0G0kmfzylAc1VA
-         ny/w==
-X-Gm-Message-State: AOJu0Yz4YdXKDW8cyyxr5kKZaXu6+XEltlkiezKK5Ewr5i4yohGph+eP
-        bZa0IiwH8feDZbPZAV2jqIc6rf4baVvSOVSqWPiCPg==
-X-Google-Smtp-Source: AGHT+IEW9tSNFuxjhVWsQo//UJue72qdTRJDT7UqhRqtQNQzNxPtNM01ZBxmyCinF0Ee+0CnJZ1m9Q==
-X-Received: by 2002:a05:6e02:1d93:b0:34b:aa34:a5c4 with SMTP id h19-20020a056e021d9300b0034baa34a5c4mr4118911ila.30.1694641381373;
-        Wed, 13 Sep 2023 14:43:01 -0700 (PDT)
+        bh=2uTbHoVjqIh4YniElhtNqUimTSs8A7qRExDkzz0sEF0=;
+        b=UBrS72FaSIqeelcDB6y/tTCyrtrjaD7SczsHt9N5XJyXTsUUWHL0oixgbHobolWZoZ
+         n/g66c+fKfF2+RkSRqhV9FjR2SBXWUILelYYHS6fNV6eLcOWCxMNV0cLAWLngBZlPy24
+         lIEUG69Pom/elsewOTnOqw76eMDukgzX38jCTkGMRqU6ehyr6k7AUQEeRFbPDf3Nyeob
+         VwMS9WR8elOHlh5AEKVKNptH97P6vCLb5VZpQ6LAW4lM9uJK3JzIplUROMp/m6qz1DHK
+         k9q9zDGiJdDk8te2jt1rv0bUmBgIXQI+06HgPTIAF2cCvTsjTuxAwp5Uz/I8XFWLKGGt
+         teVg==
+X-Gm-Message-State: AOJu0Yzi7NEMsNxds83ttJVT7sp/Sb3L6y7ZJ5Y1Oh/Gf++adoNyw5Ht
+        AvJMLAmXOQaKyJd9wbOAGOGitw==
+X-Google-Smtp-Source: AGHT+IFO/zPVL+GskkRXe3VhmvyBnlW+kHMrQL8DvF+HjBFPQoUGhuvzyAvTppC+0h0D/069z/uhyQ==
+X-Received: by 2002:a05:6e02:1a87:b0:34c:cc37:3064 with SMTP id k7-20020a056e021a8700b0034ccc373064mr4518209ilv.15.1694641424661;
+        Wed, 13 Sep 2023 14:43:44 -0700 (PDT)
 Received: from google.com (26.103.132.34.bc.googleusercontent.com. [34.132.103.26])
-        by smtp.gmail.com with ESMTPSA id b11-20020a02a58b000000b0042b09036e5fsm21283jam.175.2023.09.13.14.43.00
+        by smtp.gmail.com with ESMTPSA id e17-20020a056638021100b00431824abeccsm26753jaq.42.2023.09.13.14.43.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 14:43:00 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 21:42:57 +0000
+        Wed, 13 Sep 2023 14:43:44 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 21:43:41 +0000
 From:   Justin Stitt <justinstitt@google.com>
 To:     Nathan Chancellor <nathan@kernel.org>
 Cc:     kent.overstreet@linux.dev, bfoster@redhat.com,
         linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
         llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH 1/7] bcachefs: Fix -Wformat in
- bch2_set_bucket_needs_journal_commit()
-Message-ID: <20230913214257.vsjt5qrpa57sjcg7@google.com>
+Subject: Re: [PATCH 2/7] bcachefs: Fix -Wformat in
+ bch2_btree_key_cache_to_text()
+Message-ID: <20230913214341.7qucftdltsljrzpf@google.com>
 References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
- <20230912-bcachefs-warning-fixes-v1-1-a1cc83a38836@kernel.org>
+ <20230912-bcachefs-warning-fixes-v1-2-a1cc83a38836@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912-bcachefs-warning-fixes-v1-1-a1cc83a38836@kernel.org>
+In-Reply-To: <20230912-bcachefs-warning-fixes-v1-2-a1cc83a38836@kernel.org>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:15:38PM -0700, Nathan Chancellor wrote:
+On Tue, Sep 12, 2023 at 12:15:39PM -0700, Nathan Chancellor wrote:
 > When building bcachefs for 32-bit ARM, there is a compiler warning in
-> bch2_set_bucket_needs_journal_commit() due to a debug print using the
-> wrong specifier:
+> bch2_btree_key_cache_to_text() due to use of an incorrect format
+> specifier:
 >
->   fs/bcachefs/buckets_waiting_for_journal.c:137:30: error: format specifies type 'size_t' (aka 'unsigned int') but the argument has type 'unsigned long' [-Werror,-Wformat]
->     136 |         pr_debug("took %zu rehashes, table at %zu/%zu elements",
->         |                                                   ~~~
->         |                                                   %lu
->     137 |                  nr_rehashes, nr_elements, 1UL << b->t->bits);
->         |                                            ^~~~~~~~~~~~~~~~~
->   include/linux/printk.h:579:26: note: expanded from macro 'pr_debug'
->     579 |         dynamic_pr_debug(fmt, ##__VA_ARGS__)
->         |                          ~~~    ^~~~~~~~~~~
->   include/linux/dynamic_debug.h:270:22: note: expanded from macro 'dynamic_pr_debug'
->     270 |                            pr_fmt(fmt), ##__VA_ARGS__)
->         |                                   ~~~     ^~~~~~~~~~~
->   include/linux/dynamic_debug.h:250:59: note: expanded from macro '_dynamic_func_call'
->     250 |         _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
->         |                                                                  ^~~~~~~~~~~
->   include/linux/dynamic_debug.h:248:65: note: expanded from macro '_dynamic_func_call_cls'
->     248 |         __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
->         |                                                                        ^~~~~~~~~~~
->   include/linux/dynamic_debug.h:224:15: note: expanded from macro '__dynamic_func_call_cls'
->     224 |                 func(&id, ##__VA_ARGS__);                       \
->         |                             ^~~~~~~~~~~
+>   fs/bcachefs/btree_key_cache.c:1060:36: error: format specifies type 'size_t' (aka 'unsigned int') but the argument has type 'long' [-Werror,-Wformat]
+>    1060 |         prt_printf(out, "nr_freed:\t%zu",       atomic_long_read(&c->nr_freed));
+>         |                                     ~~~         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>         |                                     %ld
+>   fs/bcachefs/util.h:223:54: note: expanded from macro 'prt_printf'
+>     223 | #define prt_printf(_out, ...)           bch2_prt_printf(_out, __VA_ARGS__)
+>         |                                                               ^~~~~~~~~~~
 >   1 error generated.
 >
 > On 64-bit architectures, size_t is 'unsigned long', so there is no
 > warning when using %zu but on 32-bit architectures, size_t is
-> 'unsigned int'. Use the correct specifier to resolve the warning.
+> 'unsigned int'. Use '%lu' to match the other format specifiers used in
+> this function for printing values returned from atomic_long_read().
 >
-> Fixes: 7a82e75ddaef ("bcachefs: New data structure for buckets waiting on journal commit")
+> Fixes: 6d799930ce0f ("bcachefs: btree key cache pcpu freedlist")
 > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 Reviewed-by: Justin Stitt <justinstitt@google.com>
-
 > ---
->  fs/bcachefs/buckets_waiting_for_journal.c | 2 +-
+>  fs/bcachefs/btree_key_cache.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/fs/bcachefs/buckets_waiting_for_journal.c b/fs/bcachefs/buckets_waiting_for_journal.c
-> index 81ab685cdef9..ec1b636ef78d 100644
-> --- a/fs/bcachefs/buckets_waiting_for_journal.c
-> +++ b/fs/bcachefs/buckets_waiting_for_journal.c
-> @@ -133,7 +133,7 @@ int bch2_set_bucket_needs_journal_commit(struct buckets_waiting_for_journal *b,
->  	b->t = n;
->  	kvfree(t);
+> diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
+> index 505e7c365ab7..a74ee6d8a7cf 100644
+> --- a/fs/bcachefs/btree_key_cache.c
+> +++ b/fs/bcachefs/btree_key_cache.c
+> @@ -1053,7 +1053,7 @@ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
 >
-> -	pr_debug("took %zu rehashes, table at %zu/%zu elements",
-> +	pr_debug("took %zu rehashes, table at %zu/%lu elements",
->  		 nr_rehashes, nr_elements, 1UL << b->t->bits);
->  out:
->  	mutex_unlock(&b->lock);
+>  void bch2_btree_key_cache_to_text(struct printbuf *out, struct btree_key_cache *c)
+>  {
+> -	prt_printf(out, "nr_freed:\t%zu",	atomic_long_read(&c->nr_freed));
+> +	prt_printf(out, "nr_freed:\t%lu",	atomic_long_read(&c->nr_freed));
+>  	prt_newline(out);
+>  	prt_printf(out, "nr_keys:\t%lu",	atomic_long_read(&c->nr_keys));
+>  	prt_newline(out);
 >
 > --
 > 2.42.0
