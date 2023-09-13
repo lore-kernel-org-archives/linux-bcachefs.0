@@ -2,53 +2,93 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF477EE3F3F
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 12 Sep 2023 22:35:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F29EEE3F3F
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 13 Sep 2023 00:58:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236366AbjILWfW (ORCPT
+        id S229680AbjIMA6F (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 12 Sep 2023 18:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
+        Tue, 12 Sep 2023 20:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234813AbjILWfV (ORCPT
+        with ESMTP id S229553AbjIMA6F (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:35:21 -0400
-Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CDF10C8
-        for <linux-bcachefs@vger.kernel.org>; Tue, 12 Sep 2023 15:35:17 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 18:35:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694558116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lVlBUVbNPXjPamFjkreO+xojIX5ElCVy21Zr6XoSbQU=;
-        b=amoRbgM/w6SYiEpv5ns7cdDqHAlT2lLe63efSp/BE9lMBKre+CzdX/vEyY2WYFHL8rBosW
-        oHnFz4o1sIKbL1m2XCpgKGnGJVEb0APEQq0ymOsPjf3DgEtuUnpoBqu+L89h3el0ibEM8O
-        ZsISLDKSva/Dd1yG07gVE4M9CfjU84s=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc:     Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] bcachefs: Fixes for various compiler warnings
-Message-ID: <20230912223510.i4hh3jkrrmyujzuj@moria.home.lan>
-References: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
+        Tue, 12 Sep 2023 20:58:05 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFDC10F6;
+        Tue, 12 Sep 2023 17:58:00 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VryGzmx_1694566677;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VryGzmx_1694566677)
+          by smtp.aliyun-inc.com;
+          Wed, 13 Sep 2023 08:57:58 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     kent.overstreet@linux.dev, bfoster@redhat.com
+Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] bcachefs: Remove unneeded semicolon
+Date:   Wed, 13 Sep 2023 08:57:56 +0800
+Message-Id: <20230913005756.6827-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
-X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 11:24:39PM +0200, Thomas Weißschuh wrote:
-> Some fixes for warnings found by "make W=1".
-> 
-> Note: This was only compile-tested.
+./fs/bcachefs/btree_gc.c:1249:2-3: Unneeded semicolon
+./fs/bcachefs/btree_gc.c:1521:2-3: Unneeded semicolon
+./fs/bcachefs/btree_gc.c:1575:2-3: Unneeded semicolon
+./fs/bcachefs/counters.c:46:2-3: Unneeded semicolon
 
-I've been working on these fixes too, most of them are already in the
-bcachefs-testing branch or about to be.
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/bcachefs/btree_gc.c | 6 +++---
+ fs/bcachefs/counters.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
+index dac2eb76c985..56c671638c43 100644
+--- a/fs/bcachefs/btree_gc.c
++++ b/fs/bcachefs/btree_gc.c
+@@ -1246,7 +1246,7 @@ static int bch2_gc_done(struct bch_fs *c,
+ 			copy_dev_field(d[i].sectors,	"%s sectors", bch2_data_types[i]);
+ 			copy_dev_field(d[i].fragmented,	"%s fragmented", bch2_data_types[i]);
+ 		}
+-	};
++	}
+ 
+ 	{
+ 		unsigned nr = fs_usage_u64s(c);
+@@ -1518,7 +1518,7 @@ static int bch2_gc_alloc_start(struct bch_fs *c, bool metadata_only)
+ 		buckets->first_bucket	= ca->mi.first_bucket;
+ 		buckets->nbuckets	= ca->mi.nbuckets;
+ 		rcu_assign_pointer(ca->buckets_gc, buckets);
+-	};
++	}
+ 
+ 	bch2_trans_init(&trans, c, 0, 0);
+ 
+@@ -1572,7 +1572,7 @@ static void bch2_gc_alloc_reset(struct bch_fs *c, bool metadata_only)
+ 			g->dirty_sectors = 0;
+ 			g->cached_sectors = 0;
+ 		}
+-	};
++	}
+ }
+ 
+ static int bch2_gc_write_reflink_key(struct btree_trans *trans,
+diff --git a/fs/bcachefs/counters.c b/fs/bcachefs/counters.c
+index 442a9b806a3c..26eb3d82b1cb 100644
+--- a/fs/bcachefs/counters.c
++++ b/fs/bcachefs/counters.c
+@@ -43,7 +43,7 @@ static void bch2_sb_counters_to_text(struct printbuf *out, struct bch_sb *sb,
+ 		prt_tab(out);
+ 		prt_printf(out, "%llu", le64_to_cpu(ctrs->d[i]));
+ 		prt_newline(out);
+-	};
++	}
+ };
+ 
+ int bch2_sb_counters_to_cpu(struct bch_fs *c)
+-- 
+2.20.1.7.g153144c
+
