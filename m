@@ -2,33 +2,33 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58E7EEDE99D
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 09:05:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43472EDE99D
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 09:05:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236902AbjINJFy (ORCPT
+        id S236927AbjINJGA (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 14 Sep 2023 05:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
+        Thu, 14 Sep 2023 05:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236906AbjINJFw (ORCPT
+        with ESMTP id S236954AbjINJFx (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:05:52 -0400
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3E71FC6;
-        Thu, 14 Sep 2023 02:05:42 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vs215od_1694682338;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vs215od_1694682338)
+        Thu, 14 Sep 2023 05:05:53 -0400
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34111FE6;
+        Thu, 14 Sep 2023 02:05:46 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vs215r5_1694682342;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vs215r5_1694682342)
           by smtp.aliyun-inc.com;
-          Thu, 14 Sep 2023 17:05:40 +0800
+          Thu, 14 Sep 2023 17:05:44 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 To:     kent.overstreet@linux.dev
 Cc:     bfoster@redhat.com, linux-bcachefs@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
         Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH 6/9] bcachefs: Modify mismatched function name
-Date:   Thu, 14 Sep 2023 17:04:55 +0800
-Message-Id: <20230914090457.32325-7-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH 8/9] bcachefs: Modify mismatched function name
+Date:   Thu, 14 Sep 2023 17:04:57 +0800
+Message-Id: <20230914090457.32325-9-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1.7.g153144c
 In-Reply-To: <20230914090457.32325-1-jiapeng.chong@linux.alibaba.com>
 References: <20230914090457.32325-1-jiapeng.chong@linux.alibaba.com>
@@ -40,28 +40,28 @@ X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 No functional modification involved.
 
-fs/bcachefs/btree_iter.c:2055: warning: expecting prototype for bch2_btree_iter_peek(). Prototype was for bch2_btree_iter_peek_upto() instead.
+fs/bcachefs/btree_cache.c:932: warning: expecting prototype for bch_btree_node_get(). Prototype was for bch2_btree_node_get() instead.
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6581
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6583
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- fs/bcachefs/btree_iter.c | 2 +-
+ fs/bcachefs/btree_cache.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
-index 1dbb4d7dfb45..4151e98ce1ad 100644
---- a/fs/bcachefs/btree_iter.c
-+++ b/fs/bcachefs/btree_iter.c
-@@ -2048,7 +2048,7 @@ static struct bkey_s_c __bch2_btree_iter_peek(struct btree_iter *iter, struct bp
+diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+index d8cd0bbc33cc..661d26da3819 100644
+--- a/fs/bcachefs/btree_cache.c
++++ b/fs/bcachefs/btree_cache.c
+@@ -918,7 +918,7 @@ static struct btree *__bch2_btree_node_get(struct btree_trans *trans, struct btr
  }
  
  /**
-- * bch2_btree_iter_peek: returns first key greater than or equal to iterator's
-+ * bch2_btree_iter_peek_upto: returns first key greater than or equal to iterator's
-  * current position
-  */
- struct bkey_s_c bch2_btree_iter_peek_upto(struct btree_iter *iter, struct bpos end)
+- * bch_btree_node_get - find a btree node in the cache and lock it, reading it
++ * bch2_btree_node_get - find a btree node in the cache and lock it, reading it
+  * in from disk if necessary.
+  *
+  * The btree node will have either a read or a write lock held, depending on
 -- 
 2.20.1.7.g153144c
 
