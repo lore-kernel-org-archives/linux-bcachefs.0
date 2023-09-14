@@ -2,33 +2,33 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC43FEDE99F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58E7EEDE99D
 	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 09:05:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236376AbjINJFz (ORCPT
+        id S236902AbjINJFy (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 14 Sep 2023 05:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
+        Thu, 14 Sep 2023 05:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236923AbjINJFw (ORCPT
+        with ESMTP id S236906AbjINJFw (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
         Thu, 14 Sep 2023 05:05:52 -0400
 Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E9D1FD6;
-        Thu, 14 Sep 2023 02:05:44 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R801e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vs25CZp_1694682340;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vs25CZp_1694682340)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3E71FC6;
+        Thu, 14 Sep 2023 02:05:42 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vs215od_1694682338;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vs215od_1694682338)
           by smtp.aliyun-inc.com;
-          Thu, 14 Sep 2023 17:05:42 +0800
+          Thu, 14 Sep 2023 17:05:40 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 To:     kent.overstreet@linux.dev
 Cc:     bfoster@redhat.com, linux-bcachefs@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
         Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH 7/9] bcachefs: Modify mismatched function name
-Date:   Thu, 14 Sep 2023 17:04:56 +0800
-Message-Id: <20230914090457.32325-8-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH 6/9] bcachefs: Modify mismatched function name
+Date:   Thu, 14 Sep 2023 17:04:55 +0800
+Message-Id: <20230914090457.32325-7-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1.7.g153144c
 In-Reply-To: <20230914090457.32325-1-jiapeng.chong@linux.alibaba.com>
 References: <20230914090457.32325-1-jiapeng.chong@linux.alibaba.com>
@@ -40,28 +40,28 @@ X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 No functional modification involved.
 
-fs/bcachefs/bset.c:1314: warning: expecting prototype for bch_btree_node_iter_init(). Prototype was for bch2_btree_node_iter_init() instead.
+fs/bcachefs/btree_iter.c:2055: warning: expecting prototype for bch2_btree_iter_peek(). Prototype was for bch2_btree_iter_peek_upto() instead.
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6582
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6581
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- fs/bcachefs/bset.c | 2 +-
+ fs/bcachefs/btree_iter.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/bset.c b/fs/bcachefs/bset.c
-index 685792137d2a..2cd3e7562934 100644
---- a/fs/bcachefs/bset.c
-+++ b/fs/bcachefs/bset.c
-@@ -1269,7 +1269,7 @@ static void btree_node_iter_init_pack_failed(struct btree_node_iter *iter,
+diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
+index 1dbb4d7dfb45..4151e98ce1ad 100644
+--- a/fs/bcachefs/btree_iter.c
++++ b/fs/bcachefs/btree_iter.c
+@@ -2048,7 +2048,7 @@ static struct bkey_s_c __bch2_btree_iter_peek(struct btree_iter *iter, struct bp
  }
  
  /**
-- * bch_btree_node_iter_init - initialize a btree node iterator, starting from a
-+ * bch2_btree_node_iter_init - initialize a btree node iterator, starting from a
-  * given position
-  *
-  * Main entry point to the lookup code for individual btree nodes:
+- * bch2_btree_iter_peek: returns first key greater than or equal to iterator's
++ * bch2_btree_iter_peek_upto: returns first key greater than or equal to iterator's
+  * current position
+  */
+ struct bkey_s_c bch2_btree_iter_peek_upto(struct btree_iter *iter, struct bpos end)
 -- 
 2.20.1.7.g153144c
 
