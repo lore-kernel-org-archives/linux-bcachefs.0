@@ -2,166 +2,164 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC8C0CA553C
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 12:57:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D42F4EEAA41
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 13:40:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238337AbjINM5b (ORCPT
+        id S239312AbjINNkO (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 14 Sep 2023 08:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        Thu, 14 Sep 2023 09:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237706AbjINM5a (ORCPT
+        with ESMTP id S239823AbjINNj7 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 14 Sep 2023 08:57:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 832B51FD0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 05:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694696198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yA3SfK08DiRSAbnBE7MQ+ayvXnUm2HtVJvINMu1e4tw=;
-        b=LSTLm4yxbP3/1bEZiLADsiW389zqo2u92YQVmVrCgwnPvVBPiZxlQrrT1y01y9hsLEXDk8
-        Pz+NwVyoZ4AHgZjbtqhjqhBWkeQuN8gNVg9E4NV3CVUKBFkHyBIOkgFEtVXVxqMYZohoAh
-        lzbkLHVwgmvG1Sc0lTL3D2TgB/KMyPo=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-517-6DNQW_srMgetN-cnBMnffA-1; Thu, 14 Sep 2023 08:56:37 -0400
-X-MC-Unique: 6DNQW_srMgetN-cnBMnffA-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-412136f4706so9436941cf.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 05:56:36 -0700 (PDT)
+        Thu, 14 Sep 2023 09:39:59 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41BE4685
+        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 06:38:16 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-401d10e3e54so10165795e9.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 06:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694698695; x=1695303495; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fv6FKFv/jBOjnIf/6uRVzOJkQy722EOM6kgAlH3wVcI=;
+        b=RzgmUlRlkFuFNjRUHxXRwdQYDrFVfAm/cGB5Q4LzLlPhGFw13CqDZORDn3BcO2RBF2
+         y0LGhNS8pLmnYtHhwaXZWlrUQ4sfr1VSieYnuE06OYsSl/OC35hBbpInCqIU7QnYOioK
+         uHr/WIsFMKzoLfpFEUtg8pBmySAzafUxmtKQy1LINYRtMrMrU1W62J4tcgbe0tFAequN
+         3T4vf3k7erUCCceHmo8TSDuRlhkHmD/HOmR08+VndWF90gvVL8Srh+3Vrz6TudpSsC2z
+         W7CP0CeK+MOEujskc5b96+P9vjWHEl0hEvs179GSzDBbYHzpFkUKt5NmiMjjwnn+7BNU
+         9jRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694696196; x=1695300996;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yA3SfK08DiRSAbnBE7MQ+ayvXnUm2HtVJvINMu1e4tw=;
-        b=QVGXckp01hlfZ2vHg6/ar6/ToTAb3I8xGh6+3crjJK39D0rLs9lrDAFU/xZmj98KjO
-         /QKLmNN0qVeI48oARgINpNpyYKrzzaKpNyV8d1L1xS3ofpCdtK2Hh2O4UxvE9Q79PBAx
-         oMzAMA1lGx/lXGsa574XHhJc8DNnNWYmHDBPLUtByBGVOb9ejfF+yANSxmvG2M2EkYll
-         nZb8W763kRmsD4ZKQbxIAZ/bwjnu1CoKsdENhupeXZQu6+sFJOO1CdUDDQA/lxxngIiy
-         48AeDWawqmXqYnvfiaJybvhwJfOttRJfmUJF/IK+F8V/taANAfypE7g4gnslehMZhXOz
-         2Aiw==
-X-Gm-Message-State: AOJu0Yxg8q7kzc/gi1wuTjqxokg3Kp30sN5xYmudVBTbat+9T4bxJdF7
-        Q/5BmPAK1zVdio5HvjUHfnyxrVtoAc/7yFZigsJNaE96c3Gem05evqAXR6NXBu4u0/FP1ABWHHV
-        F67jmm22dm9HH3V1NtNa59WejKwI=
-X-Received: by 2002:a05:622a:60b:b0:412:cd66:f65d with SMTP id z11-20020a05622a060b00b00412cd66f65dmr5638336qta.13.1694696196599;
-        Thu, 14 Sep 2023 05:56:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGVYeRw67tpdb4cHVV9/6aW6HnrU6Ue4kQnhRHfdt9mJsPUAcrvAz/AVxpfWQzQrmOh6TtKxA==
-X-Received: by 2002:a05:622a:60b:b0:412:cd66:f65d with SMTP id z11-20020a05622a060b00b00412cd66f65dmr5638326qta.13.1694696196297;
-        Thu, 14 Sep 2023 05:56:36 -0700 (PDT)
-Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
-        by smtp.gmail.com with ESMTPSA id x20-20020ac85f14000000b00415224d1877sm436769qta.33.2023.09.14.05.56.35
+        d=1e100.net; s=20230601; t=1694698695; x=1695303495;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fv6FKFv/jBOjnIf/6uRVzOJkQy722EOM6kgAlH3wVcI=;
+        b=QC7f2B4MYnVrIFdTfcfhmwYYNDRmDLUaTKKnZDpoC2FSIbc+IlMBAoKWzCI+sRiUFL
+         Vgrk9mKKWBfBSNWI1ZsEsnkqV3HaH7p/FQTQ8HPsPZD/AgyWQt9sv46dPzokdaeL4xaM
+         4e+U/JaE76UPoMhxjlx4blSVM4+37qQn/mMOQ7ImFQ35vEHBqcsTeYXv83BvcoexpeGE
+         g2v88P+YzcPEUcTk4292bssOs6HIogATG5ePRtB+VhXYt9pmX2hsSQMvYJ6ZkaPYFRX3
+         O+sZTPOBng6LiLpp3N3AucMsuwQvNy42+5F9i1caSghUcZpj0BJ0Dwo1Qn7Y4T7IC340
+         mbDw==
+X-Gm-Message-State: AOJu0YwI/MMYC4GSnEO72vaj/G3bohQaN+LMRdI4mhSXNskmiM5ufWiz
+        59EoWfPccImTnS+epwYrnTo2vhZ8tvtbGpaGSBE=
+X-Google-Smtp-Source: AGHT+IFeCkRrb1QV7ffrmIdJHRkoecpLS5YpDYGJyeutn4gLL5i6s8NhdduagxbDBlMLNMbjRQfhtg==
+X-Received: by 2002:a1c:7407:0:b0:401:d803:6241 with SMTP id p7-20020a1c7407000000b00401d8036241mr4697650wmc.21.1694698695250;
+        Thu, 14 Sep 2023 06:38:15 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id y14-20020a5d4ace000000b003176eab8868sm1835558wrs.82.2023.09.14.06.38.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 05:56:35 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 08:56:47 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
+        Thu, 14 Sep 2023 06:38:14 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 16:38:11 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     kent.overstreet@gmail.com
 Cc:     linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Change bucket_lock() to use bit_spin_lock()
-Message-ID: <ZQMDD89w++6vnLP/@bfoster>
-References: <20230914003746.1039787-1-kent.overstreet@linux.dev>
+Subject: [bug report] bcachefs: Kill bch2_fs_usage_scratch_get()
+Message-ID: <b4f209ea-fdf6-412c-98bd-7be52b54447b@moroto.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230914003746.1039787-1-kent.overstreet@linux.dev>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hmm.. seems like something is wrong either with a mailer (yours or mine)
-or the list. I initially thought I replied to this and accidentally
-dropped the list cc, but now that I try again, mutt drops the list on
-reply-to-all. It shows the following for the original mail, so somehow
-this ends up garbled in the cc list for whatever reason.
+Hello Kent Overstreet,
 
-  To: unlisted-recipients: no To-header on input <;
+The patch 502bed819cc3: "bcachefs: Kill bch2_fs_usage_scratch_get()"
+from Apr 3, 2021 (linux-next), leads to the following Smatch static
+checker warning:
 
-Anyways, here's a resend of my previous reply that unintentionally
-dropped the list.
+	fs/bcachefs/buckets.c:1352 bch2_trans_fs_usage_apply()
+	error: we previously assumed 'trans->disk_res' could be null (see line 1302)
 
-On Wed, Sep 13, 2023 at 08:37:46PM -0400, Kent Overstreet wrote:
-> bucket_lock() previously open coded a spinlock, because we need to cram
-> a spinlock into a single byte.
-> 
-> But it turns out not all archs support xchg() on a single byte; since we
-> need struct bucket to be small, this means we have to play fun games
-> with casts and ifdefs for endianness.
-> 
-> This fixes building on 32 bit arm, and likely other architectures.
-> 
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: linux-bcachefs@vger.kernel.org
-> ---
->  fs/bcachefs/buckets.h | 26 +++++++++++++++++++++++---
->  1 file changed, 23 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/bcachefs/buckets.h b/fs/bcachefs/buckets.h
-> index f192809f50cf..e055c1076e63 100644
-> --- a/fs/bcachefs/buckets.h
-> +++ b/fs/bcachefs/buckets.h
-> @@ -40,15 +40,35 @@ static inline size_t sector_to_bucket_and_offset(const struct bch_dev *ca, secto
->  	for (_b = (_buckets)->b + (_buckets)->first_bucket;	\
->  	     _b < (_buckets)->b + (_buckets)->nbuckets; _b++)
->  
-> +/*
-> + * Ugly hack alert:
-> + *
-> + * We need to cram a spinlock in a single byte, because that's what we have left
-> + * in struct bucket, and we care about the size of these - during fsck, we need
-> + * in memory state for every single bucket on every device.
-> + *
-> + * We used to do
-> + *   while (xchg(&b->lock, 1) cpu_relax();
-> + * but, it turns out not all architectures support xchg on a single byte.
-> + *
-> + * So now we use bit_spin_lock(), with fun games since we can't burn a whole
-> + * ulong for this.
-> + */
-> +
+fs/bcachefs/buckets.c
+    1296 int bch2_trans_fs_usage_apply(struct btree_trans *trans,
+    1297                               struct replicas_delta_list *deltas)
+    1298 {
+    1299         struct bch_fs *c = trans->c;
+    1300         static int warned_disk_usage = 0;
+    1301         bool warn = false;
+    1302         unsigned disk_res_sectors = trans->disk_res ? trans->disk_res->sectors : 0;
+                                             ^^^^^^^^^^^^^^^
+This code is quite subtle, but the static checker says that we check
+for NULL here.
 
-Oof. :P Well I think I understand what this is doing, but it would be
-helpful if this last sentence were a little more direct. For example:
+    1303         struct replicas_delta *d = deltas->d, *d2;
+    1304         struct replicas_delta *top = (void *) deltas->d + deltas->used;
+    1305         struct bch_fs_usage *dst;
+    1306         s64 added = 0, should_not_have_added;
+    1307         unsigned i;
+    1308 
+    1309         percpu_down_read(&c->mark_lock);
+    1310         preempt_disable();
+    1311         dst = fs_usage_ptr(c, trans->journal_res.seq, false);
+    1312 
+    1313         for (d = deltas->d; d != top; d = replicas_delta_next(d)) {
+    1314                 switch (d->r.data_type) {
+    1315                 case BCH_DATA_btree:
+    1316                 case BCH_DATA_user:
+    1317                 case BCH_DATA_parity:
+    1318                         added += d->delta;
 
-"So now we use bit_spin_lock(). We can't burn a whole ulong for this, so
-cast and define the lock bit such that it always lands in the b->lock
-byte."
+And we set added to non-zero here so that doesn't seem related.  Or the
+relationship is not obvious.
 
-... but feel free to reword that, of course.
+    1319                 }
+    1320 
+    1321                 if (__update_replicas(c, dst, &d->r, d->delta))
+    1322                         goto need_mark;
+    1323         }
+    1324 
+    1325         dst->nr_inodes += deltas->nr_inodes;
+    1326 
+    1327         for (i = 0; i < BCH_REPLICAS_MAX; i++) {
+    1328                 added                                += deltas->persistent_reserved[i];
+    1329                 dst->reserved                        += deltas->persistent_reserved[i];
+    1330                 dst->persistent_reserved[i]        += deltas->persistent_reserved[i];
+    1331         }
+    1332 
+    1333         /*
+    1334          * Not allowed to reduce sectors_available except by getting a
+    1335          * reservation:
+    1336          */
+    1337         should_not_have_added = added - (s64) disk_res_sectors;
+    1338         if (unlikely(should_not_have_added > 0)) {
+    1339                 u64 old, new, v = atomic64_read(&c->sectors_available);
+    1340 
+    1341                 do {
+    1342                         old = v;
+    1343                         new = max_t(s64, 0, old - should_not_have_added);
+    1344                 } while ((v = atomic64_cmpxchg(&c->sectors_available,
+    1345                                                old, new)) != old);
+    1346 
+    1347                 added -= should_not_have_added;
+    1348                 warn = true;
+    1349         }
+    1350 
+    1351         if (added > 0) {
+--> 1352                 trans->disk_res->sectors -= added;
+                         ^^^^^^^^^^^^^^^^^
+Unchecked dereference.
 
-> +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-> +#define BUCKET_LOCK_BITNR	0
-> +#else
-> +#define BUCKET_LOCK_BITNR	(BITS_PER_LONG - 1)
-> +#endif
-> +
->  static inline void bucket_unlock(struct bucket *b)
->  {
-> -	smp_store_release(&b->lock, 0);
-> +	bit_unspin_lock(BUCKET_LOCK_BITNR, (void *) &b->lock);
+    1353                 this_cpu_sub(*c->online_reserved, added);
+    1354         }
+    1355 
+    1356         preempt_enable();
+    1357         percpu_up_read(&c->mark_lock);
+    1358 
+    1359         if (unlikely(warn) && !xchg(&warned_disk_usage, 1))
+    1360                 bch2_trans_inconsistent(trans,
+    1361                                         "disk usage increased %lli more than %u sectors reserved)",
+    1362                                         should_not_have_added, disk_res_sectors);
+    1363         return 0;
+    1364 need_mark:
+    1365         /* revert changes: */
+    1366         for (d2 = deltas->d; d2 != d; d2 = replicas_delta_next(d2))
+    1367                 BUG_ON(__update_replicas(c, dst, &d2->r, -d2->delta));
+    1368 
+    1369         preempt_enable();
+    1370         percpu_up_read(&c->mark_lock);
+    1371         return -1;
+    1372 }
 
-This doesn't compile.. bit_spin_unlock() I assume.
-
-Also, is there any good way to add a simple debug mode check here just
-to confirm the external code does what we expect on whatever
-obscure/otherwise untested arch somebody might try to use? I.e.
-EBUG_ON(b->lock != 1) or some such after acquiring the lock..?
-
-Brian
-
->  }
->  
->  static inline void bucket_lock(struct bucket *b)
->  {
-> -	while (xchg(&b->lock, 1))
-> -		cpu_relax();
-> +	bit_spin_lock(BUCKET_LOCK_BITNR, (void *) &b->lock);
->  }
->  
->  static inline struct bucket_array *gc_bucket_array(struct bch_dev *ca)
-> -- 
-> 2.40.1
-> 
-
+regards,
+dan carpenter
