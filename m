@@ -2,33 +2,33 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74907EDE99C
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 09:05:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38F1DEDE99E
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 09:05:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236606AbjINJFk (ORCPT
+        id S236752AbjINJFo (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 14 Sep 2023 05:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
+        Thu, 14 Sep 2023 05:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236753AbjINJFj (ORCPT
+        with ESMTP id S236774AbjINJFn (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:05:39 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171331A2;
-        Thu, 14 Sep 2023 02:05:34 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vs20loA_1694682330;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vs20loA_1694682330)
+        Thu, 14 Sep 2023 05:05:43 -0400
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA0C1BF9;
+        Thu, 14 Sep 2023 02:05:38 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vs1nBqG_1694682334;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vs1nBqG_1694682334)
           by smtp.aliyun-inc.com;
-          Thu, 14 Sep 2023 17:05:32 +0800
+          Thu, 14 Sep 2023 17:05:36 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 To:     kent.overstreet@linux.dev
 Cc:     bfoster@redhat.com, linux-bcachefs@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
         Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH 2/9] bcachefs: Modify mismatched function name
-Date:   Thu, 14 Sep 2023 17:04:51 +0800
-Message-Id: <20230914090457.32325-3-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH 4/9] bcachefs: Modify mismatched function name
+Date:   Thu, 14 Sep 2023 17:04:53 +0800
+Message-Id: <20230914090457.32325-5-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1.7.g153144c
 In-Reply-To: <20230914090457.32325-1-jiapeng.chong@linux.alibaba.com>
 References: <20230914090457.32325-1-jiapeng.chong@linux.alibaba.com>
@@ -40,28 +40,58 @@ X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 No functional modification involved.
 
-fs/bcachefs/journal_io.c:1387: warning: expecting prototype for journal_next_bucket(). Prototype was for journal_write_alloc() instead.
+fs/bcachefs/btree_update_interior.c:153: warning: expecting prototype for btree_node_format_fits(). Prototype was for bch2_btree_node_format_fits() instead.
+fs/bcachefs/btree_update_interior.c:1235: warning: expecting prototype for bch_btree_set_root(). Prototype was for bch2_btree_set_root() instead.
+fs/bcachefs/btree_update_interior.c:1678: warning: expecting prototype for bch_btree_insert_node(). Prototype was for bch2_btree_insert_node() instead.
+fs/bcachefs/btree_update_interior.c:1944: warning: expecting prototype for bch_btree_node_rewrite(). Prototype was for bch2_btree_node_rewrite() instead.
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6577
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6579
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- fs/bcachefs/journal_io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/bcachefs/btree_update_interior.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-index 34740dca4b15..b4a4dd411239 100644
---- a/fs/bcachefs/journal_io.c
-+++ b/fs/bcachefs/journal_io.c
-@@ -1380,7 +1380,7 @@ static void __journal_write_alloc(struct journal *j,
+diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+index 73c950d2788e..29f5e6174270 100644
+--- a/fs/bcachefs/btree_update_interior.c
++++ b/fs/bcachefs/btree_update_interior.c
+@@ -143,7 +143,7 @@ static size_t btree_node_u64s_with_format(struct btree *b,
  }
  
  /**
-- * journal_next_bucket - move on to the next journal bucket if possible
-+ * journal_write_alloc - move on to the next journal bucket if possible
+- * btree_node_format_fits - check if we could rewrite node with a new format
++ * bch2_btree_node_format_fits - check if we could rewrite node with a new format
+  *
+  * This assumes all keys can pack with the new format -- it just checks if
+  * the re-packed keys would fit inside the node itself.
+@@ -1217,7 +1217,7 @@ static void bch2_btree_set_root_inmem(struct bch_fs *c, struct btree *b)
+ }
+ 
+ /**
+- * bch_btree_set_root - update the root in memory and on disk
++ * bch2_btree_set_root - update the root in memory and on disk
+  *
+  * To ensure forward progress, the current task must not be holding any
+  * btree node write locks. However, you must hold an intent lock on the
+@@ -1661,7 +1661,7 @@ bch2_btree_insert_keys_interior(struct btree_update *as,
+ }
+ 
+ /**
+- * bch_btree_insert_node - insert bkeys into a given btree node
++ * bch2_btree_insert_node - insert bkeys into a given btree node
+  *
+  * @iter:		btree iterator
+  * @keys:		list of keys to insert
+@@ -1935,7 +1935,7 @@ int __bch2_foreground_maybe_merge(struct btree_trans *trans,
+ }
+ 
+ /**
+- * bch_btree_node_rewrite - Rewrite/move a btree node
++ * bch2_btree_node_rewrite - Rewrite/move a btree node
   */
- static int journal_write_alloc(struct journal *j, struct journal_buf *w,
- 			       unsigned sectors)
+ int bch2_btree_node_rewrite(struct btree_trans *trans,
+ 			    struct btree_iter *iter,
 -- 
 2.20.1.7.g153144c
 
