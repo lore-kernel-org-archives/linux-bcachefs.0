@@ -2,78 +2,61 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAF5DEDE980
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 05:28:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 124B9EDE983
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 06:06:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbjINF2q (ORCPT
+        id S229811AbjINGGK (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 14 Sep 2023 01:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
+        Thu, 14 Sep 2023 02:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbjINF2q (ORCPT
+        with ESMTP id S232171AbjINGGJ (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 14 Sep 2023 01:28:46 -0400
-Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E581CC1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 13 Sep 2023 22:28:41 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id geu7qi3W7064Kgeu7qSmeo; Thu, 14 Sep 2023 07:28:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694669320;
-        bh=e+af5j09RXHijicnoPfch2UIrQzegSr6ZHEjvBLEAIc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=rqPZHfBO5xteKv4Cv1Jt1OblHZxr/1SDkh2R2D7sqGk4eN+eGoTNZ8H5Mkde2bdr4
-         8V61wNhUfzN8/odkeDrZ4aRbQEBTfQ0gI5cg2Doy7YtDVZ0j7zMOaX4jC6svTNWSll
-         8D3YigKNfkYMQLFWYZZPeBxVm/0Jb1Vw2bMRYRYUYjl24DVNH/3eJpQ6SkoXeY+8oo
-         30dVFJxAtzgrKGXoxpGl7ga/+x7gZCY66o9vY0wO1SzbYghS7UdZEn6YJsAXzzg3cr
-         vEi6/SVdvNtLTfirYyM+1/6/ejeJXX5olITJw3xhA42S+n9KHHYDJaVLgdMPI3zgLa
-         Zop3QRBFwv42w==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 14 Sep 2023 07:28:40 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <1d1d83df-c1d1-22b0-72a0-291a68d0c328@wanadoo.fr>
-Date:   Thu, 14 Sep 2023 07:28:39 +0200
+        Thu, 14 Sep 2023 02:06:09 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466D7EB;
+        Wed, 13 Sep 2023 23:06:05 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vs159pw_1694671557;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vs159pw_1694671557)
+          by smtp.aliyun-inc.com;
+          Thu, 14 Sep 2023 14:06:03 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     kent.overstreet@linux.dev
+Cc:     bfoster@redhat.com, linux-bcachefs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] bcachefs: Remove duplicate include
+Date:   Thu, 14 Sep 2023 14:05:54 +0800
+Message-Id: <20230914060554.39823-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] bcachefs: Fix a potential in the error handling path
- of use-after-free inbch2_dev_add()
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Brian Foster <bfoster@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcachefs@vger.kernel.org
-References: <3ab17a294fd2b5fcb180d44955b0d76a28af11cb.1694623395.git.christophe.jaillet@wanadoo.fr>
- <20230913230135.y27i2bx244tdjhvj@moria.home.lan>
-Content-Language: fr
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20230913230135.y27i2bx244tdjhvj@moria.home.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
+./fs/bcachefs/btree_update.h: journal.h is included more than once.
 
-Le 14/09/2023 à 01:01, Kent Overstreet a écrit :
-> On Wed, Sep 13, 2023 at 06:44:08PM +0200, Christophe JAILLET wrote:
->> If __bch2_dev_attach_bdev() fails, bch2_dev_free() is called twice.
->> Once here and another time in the error handling path.
->>
->> This leads to several use-after-free.
->>
->> Remove the redundant call and only rely on the error handling path.
-> Thanks, both applied
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6573
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ fs/bcachefs/btree_update.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-
-
-If not too late, it is more a double-free than a use-after-free.
-
-And I messed up the ordering of the words in the subject.
-
-Sorry about that.
-
-CJ
+diff --git a/fs/bcachefs/btree_update.h b/fs/bcachefs/btree_update.h
+index 901c42b57c35..8f5f0a753797 100644
+--- a/fs/bcachefs/btree_update.h
++++ b/fs/bcachefs/btree_update.h
+@@ -4,7 +4,6 @@
+ 
+ #include "btree_iter.h"
+ #include "journal.h"
+-#include "journal.h"
+ 
+ struct bch_fs;
+ struct btree;
+-- 
+2.20.1.7.g153144c
 
