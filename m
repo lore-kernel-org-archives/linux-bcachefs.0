@@ -2,141 +2,104 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E123CEDE99C
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 10:18:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 003CFEDE9A4
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 14 Sep 2023 11:51:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236902AbjINKTA (ORCPT
+        id S235777AbjINLvG (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 14 Sep 2023 06:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        Thu, 14 Sep 2023 07:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238023AbjINKS7 (ORCPT
+        with ESMTP id S230125AbjINLvF (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:18:59 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600DC1BFB
-        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 03:18:55 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31aeedbb264so684192f8f.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 03:18:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694686734; x=1695291534; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oxorSNcuhc7Rp6RnJ5GVrxZ1MlUyny7z2O6i0HP0JZ4=;
-        b=i6vI3WkeLdx5iUeb4NzXcmeY4UI3kg/vMyasqsEFCQMw4bDZOAAgMWxdkGPDdhhnf5
-         gNtuu3FAHtdus9Ue/j3KAJzdC2mAExkodoSfxbTOUQdQLjRvpYdoMPGmjwIrg/RnYr5m
-         sw0nTw0MiSv/sfJuT4el1u8pFkGoNyzrlcHh/52IgBQJr8KOvliE8RQEtwiwsu3ti+Cj
-         Zp3eCzchNFWH5FmyVSDozgi9B+oCrKGJjk/diLjfyasFctfHWUasHSWYmmQ94e7NBuOs
-         zQaVFi3hd/VVY9o7grfN7Ecqg56nkulsvgG3WDYMe1rRiU9FHsV1fVcRhCcNs148yduH
-         z0zw==
+        Thu, 14 Sep 2023 07:51:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F35EACC3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 04:50:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694692215;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zqlm9iMBtNS1PjmHaJ9GqgopJ/ckxwBCFE8E9Iz3HQc=;
+        b=N2AAPhkr787HuAC61QMbv/RPCiYObym7Z8ODfal7ypk9dX/F81FXvhzwPW+Jgb39b3hNK0
+        wvUxtIW7I/Msg4uJfWsw7Py+YJYtL4wXYRIQNajn8r6JVarSKCD2nzeOHYn+Fvn65BRkV9
+        eJu1Po87h8mTyz9e2nsoDr38nSGTbKI=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-126-YzZDw5XGP4S9MdGQMdVqyg-1; Thu, 14 Sep 2023 07:50:13 -0400
+X-MC-Unique: YzZDw5XGP4S9MdGQMdVqyg-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-412ede7897aso9045761cf.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 04:50:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694686734; x=1695291534;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oxorSNcuhc7Rp6RnJ5GVrxZ1MlUyny7z2O6i0HP0JZ4=;
-        b=ioakrGjDgsnIHx1hq165Q8Czw7frHILEdZdWJTQ9J5wLHCVAKNhxFfEN09jZ2AD1I4
-         N/u48c91C0qn2y0Sr9MNEvEd04hT2Gib6u+NeEh7jbyrGILKWVaI10J3mofXjJt+psdT
-         EetZWCi2bhZfpHu6HFwVh1QOWXnXzYMC2WhMXHEYP8IoGdfmP0LY5WDTWyvAGpWPHPBH
-         q7ckGFioAlwqPnpZ4qBoH4TivIauPjTSyI651lT/4/SJRkPUqzu/N5c1PN5SqEe7kk8f
-         jwrgYgJJ/bDHPXw1AHZZu0eLWIUsrVCrCyUmlb31Ld2XMZMWzs0vWO1+WI27u/CQ8fUT
-         D03Q==
-X-Gm-Message-State: AOJu0Yzbk3KiUJeJkZNBIilyaWkzUmVeMzTs41FBJu7dss3qm09uK7zX
-        b1cr628T8dYqneQYe75hiycUiQ==
-X-Google-Smtp-Source: AGHT+IFQr83jLh4ArO/qWyiZNV78rEkAekAUIoyw9Vm0+1rs2WMJa7ZPQetY3dpLGqcell7l9dVoaw==
-X-Received: by 2002:a5d:560e:0:b0:31d:74f8:fae with SMTP id l14-20020a5d560e000000b0031d74f80faemr3865702wrv.71.1694686733700;
-        Thu, 14 Sep 2023 03:18:53 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id s24-20020a7bc398000000b003feee8d8011sm4444151wmj.41.2023.09.14.03.18.52
+        d=1e100.net; s=20230601; t=1694692213; x=1695297013;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zqlm9iMBtNS1PjmHaJ9GqgopJ/ckxwBCFE8E9Iz3HQc=;
+        b=Vm2rBo9kZF7yBqAkdlAsxK1G1Q/j02AaJMEWS8EOp2mte2YVtjooH39XxJWGp68K/X
+         rcDUPHf0vJjp63f2I7muvz6eNPBo0g7L9GQ95jqNXaDCEzitb2Oy5Als12FPHUy5zAgu
+         NJbKssmLsvWw18FnraUp/ZYe9D6UpMMXSwIY2NneGmuqaz9FKczQZhT8bmvA3AEPKDDr
+         B/NUlnGTBEa6dWRbYy+4yDxMuqjcOr6ZD6JNZgPiV+euPKZoeqH1J+9b7ZtG4qqzIZP2
+         vWTffCirvVT9OPPJhdqIXtRJ/bXzA7rGWsVRXqyFIzcwnUrfzii0U6vxaK81cRquBe6h
+         smnA==
+X-Gm-Message-State: AOJu0YyJbGAPrbLhNoopT9ud0mqilwrioLAbLp/INTHjo+ds0guu+9UD
+        HwM4PdlTETix8x/5+1xB6AveyKHiRZSlc58LNVCnR/fzCyYnW8lhs2qpltWW5+ng4PzCThkyol7
+        3NogMvggbwUVv0qM9fpOq+5+gpLseKTF2U58=
+X-Received: by 2002:a05:622a:1206:b0:400:a2b8:1c97 with SMTP id y6-20020a05622a120600b00400a2b81c97mr6208632qtx.17.1694692213109;
+        Thu, 14 Sep 2023 04:50:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFIST+VWymPtjcyLzlckChTxGcmftCDlv+gr6HzDznFoMA4RzAxmotmJGW3yMqVA+frqaykSw==
+X-Received: by 2002:a05:622a:1206:b0:400:a2b8:1c97 with SMTP id y6-20020a05622a120600b00400a2b81c97mr6208618qtx.17.1694692212804;
+        Thu, 14 Sep 2023 04:50:12 -0700 (PDT)
+Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
+        by smtp.gmail.com with ESMTPSA id h5-20020ac87765000000b0041514d1da65sm400675qtu.20.2023.09.14.04.50.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 03:18:53 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 13:18:49 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     kent.overstreet@gmail.com
-Cc:     linux-bcachefs@vger.kernel.org
-Subject: [bug report] bcachefs: Erasure coding
-Message-ID: <c6eba72b-bf7b-4610-a5b2-df67ab737565@moroto.mountain>
+        Thu, 14 Sep 2023 04:50:12 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 07:50:25 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-bcachefs@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: fix error checking in bch2_fs_alloc()
+Message-ID: <ZQLzgaYY0pWX7y07@bfoster>
+References: <a0032f97-333a-41ec-97b0-62f0b6135d54@moroto.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <a0032f97-333a-41ec-97b0-62f0b6135d54@moroto.mountain>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hello Kent Overstreet,
+On Thu, Sep 14, 2023 at 12:47:44PM +0300, Dan Carpenter wrote:
+> There is a typo here where it uses ";" instead of "?:".  The result is
+> that bch2_fs_fs_io_direct_init() is called unconditionally and the errors
+> from it are not checked.
+> 
+> Fixes: 0060c68159fc ("bcachefs: Split up fs-io.[ch]")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
 
-The patch 2d69588454f4: "bcachefs: Erasure coding" from Nov 1, 2018
-(linux-next), leads to the following Smatch static checker warning:
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 
-	fs/bcachefs/alloc_foreground.c:1056 should_drop_bucket()
-	warn: sleeping in atomic context
+>  fs/bcachefs/super.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+> index 29cd71445a94..4831010c0dfd 100644
+> --- a/fs/bcachefs/super.c
+> +++ b/fs/bcachefs/super.c
+> @@ -856,7 +856,7 @@ static struct bch_fs *bch2_fs_alloc(struct bch_sb *sb, struct bch_opts opts)
+>  	    bch2_fs_compress_init(c) ?:
+>  	    bch2_fs_ec_init(c) ?:
+>  	    bch2_fs_fsio_init(c) ?:
+> -	    bch2_fs_fs_io_buffered_init(c);
+> +	    bch2_fs_fs_io_buffered_init(c) ?:
+>  	    bch2_fs_fs_io_direct_init(c);
+>  	if (ret)
+>  		goto err;
+> -- 
+> 2.39.2
+> 
 
-The call tree is:
-
-    bch2_open_buckets_stop() <- disables preempt
-    -> should_drop_bucket()
-
-fs/bcachefs/alloc_foreground.c
-  1114          spin_lock(&c->freelist_lock);
-
-Preempt disabled
-
-  1115          i = 0;
-  1116          while (i < c->open_buckets_partial_nr) {
-  1117                  struct open_bucket *ob =
-  1118                          c->open_buckets + c->open_buckets_partial[i];
-  1119  
-  1120                  if (should_drop_bucket(ob, c, ca, ec)) {
-
-Called
-
-  1121                          --c->open_buckets_partial_nr;
-  1122                          swap(c->open_buckets_partial[i],
-  1123                               c->open_buckets_partial[c->open_buckets_partial_nr]);
-  1124                          ob->on_partial_list = false;
-  1125                          spin_unlock(&c->freelist_lock);
-  1126                          bch2_open_bucket_put(c, ob);
-  1127                          spin_lock(&c->freelist_lock);
-  1128                  } else {
-  1129                          i++;
-  1130                  }
-  1131          }
-  1132          spin_unlock(&c->freelist_lock);
-
-fs/bcachefs/alloc_foreground.c
-    1043 static bool should_drop_bucket(struct open_bucket *ob, struct bch_fs *c,
-    1044                                struct bch_dev *ca, bool ec)
-    1045 {
-    1046         if (ec) {
-    1047                 return ob->ec != NULL;
-    1048         } else if (ca) {
-    1049                 bool drop = ob->dev == ca->dev_idx;
-    1050                 struct open_bucket *ob2;
-    1051                 unsigned i;
-    1052 
-    1053                 if (!drop && ob->ec) {
-    1054                         unsigned nr_blocks;
-    1055 
---> 1056                         mutex_lock(&ob->ec->lock);
-
-Sleeps.  Do you have CONFIG_DEBUG_ATOMIC_SLEEP enabled in your .config?
-
-    1057                         nr_blocks = bkey_i_to_stripe(&ob->ec->new_stripe.key)->v.nr_blocks;
-    1058 
-    1059                         for (i = 0; i < nr_blocks; i++) {
-    1060                                 if (!ob->ec->blocks[i])
-    1061                                         continue;
-    1062 
-    1063                                 ob2 = c->open_buckets + ob->ec->blocks[i];
-    1064                                 drop |= ob2->dev == ca->dev_idx;
-    1065                         }
-    1066                         mutex_unlock(&ob->ec->lock);
-    1067                 }
-    1068 
-    1069                 return drop;
-    1070         } else {
-    1071                 return true;
-    1072         }
-    1073 }
-
-regards,
-dan carpenter
