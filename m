@@ -2,60 +2,59 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71149EE6457
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 15 Sep 2023 12:57:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86665EE6457
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 15 Sep 2023 12:58:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbjIOM5y (ORCPT
+        id S235023AbjIOM6H (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 15 Sep 2023 08:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43904 "EHLO
+        Fri, 15 Sep 2023 08:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235149AbjIOM5y (ORCPT
+        with ESMTP id S235188AbjIOM6H (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:57:54 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4019C1713
-        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 05:57:49 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31f4a286ae1so1783053f8f.3
-        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 05:57:49 -0700 (PDT)
+        Fri, 15 Sep 2023 08:58:07 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36EA1FE0
+        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 05:58:01 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31ff2ce9d4cso581731f8f.0
+        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 05:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694782667; x=1695387467; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694782680; x=1695387480; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=PH5ux5CZtHwOwmvQfbQSpCxyYHCXurKE6cwz/gMGCsg=;
-        b=razctgum37L8o1zKfCinwpEgeqhsx6L0fDogWnR9qEfC5Ht38R6EISugbiCEKJhEC7
-         lp8QeepgA4gHf3rPgBKIEUpwHy3tUsu+PAYOa6dcMyElFEHBwmiyQ318zO6MGGuJKE90
-         RYalO1Mfi8EPWZ3rAKHHNP4ulDA7q1DGktuqjYvgaJ19124ORml0Zw11WmO5ufIGECWG
-         MPaGRbvaSNdbMXJn45oCkq7TNwPrS2xhcmzkgK3QfGc8czBTnGuBjCdEda9EjoP8ln43
-         E1h9Njso9NDlr0iMs6rXqsTJmgPGsoZA0xKji3AXIG3YT/a70NGFJm6pe1EsTIrxMuOj
-         Llww==
+        bh=j4a9QBXIkkHg4D/a/mcMVFDLel+C4hLxswjF2087j9M=;
+        b=wMhoN4q2r9ADTH1tHWXOaW/kWlwIv5iEmdwG+zXZ+wgMhOALg+J/EZwWo1w0m/scyY
+         PCpS/NnNa+U01pnRCC9WcjXNgayCnnwoG7qH7u+aF85gLQ6RRJ23n3c5898r4Sk5IMZd
+         AWfo4Lymosb/QXH5iKdanZULTH8AgiT+8AWN/GH0MaBUls7iB5kygRD+rk+QYxiyN3EY
+         vslAdAjMdW1H+B+/KRra2v0MlUHSEPMp7wCxkb5rzcmHVRNzjOug4CSxoNzMtM3aGtyA
+         BJE4ueLFb1oo7/RRMES1L+wTde332S7AQ9uI3qiUbgZNKwCH5Yz5M7AMXVTXb7yn+tnm
+         sOsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694782667; x=1695387467;
+        d=1e100.net; s=20230601; t=1694782680; x=1695387480;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PH5ux5CZtHwOwmvQfbQSpCxyYHCXurKE6cwz/gMGCsg=;
-        b=ICOwBKDV27RWVo2f3Mede+yCw74/Xb+pMV7NrGEiDcF1UczJpMDUELIQHZyUIYJ+qE
-         a/dV2h8lBghb0XeCF3sW/dJgb4F30pjLNI22CLj8WADjIExjPbQ7e9NE4y3adISqMRGG
-         qms81POoqVxpw1HeBueOgBPFUtfQY1u3yBZeU0qIDRiPerFW1XT1Ny35qyox5SJywNM3
-         XiqvfWcv46tJwQr+TGTqqFl/ra2Qf5bBB4zM04HxYNGsscejBbWNHW3IyTMOZdnebhiW
-         a/zJqVyCf962oE6Z49YPFsA4ZSRqMCLbhvlZdJZkHn5W0WUUR99Hd3g4Ox8SKdHTvDKz
-         rPyA==
-X-Gm-Message-State: AOJu0YzEf3SaYj33cKKFst9YOEIqbRZrQtC5fC47vty8oBCEwdRxOrcg
-        eFXVHfFhU2u5ZTvKW0RbCkHSug==
-X-Google-Smtp-Source: AGHT+IEiNJTWGKCmpmHIHa23e/cwpo6UECenlRtLjjHHS8ruHv8WEJUneLAe0oaxNiHaJrZSuq7Bfw==
-X-Received: by 2002:a5d:4e4e:0:b0:31f:ecb2:1bf6 with SMTP id r14-20020a5d4e4e000000b0031fecb21bf6mr1369601wrt.8.1694782667739;
-        Fri, 15 Sep 2023 05:57:47 -0700 (PDT)
+        bh=j4a9QBXIkkHg4D/a/mcMVFDLel+C4hLxswjF2087j9M=;
+        b=jtTi8eclPDua/8EhFr/a/WrMKED73Kbd0paB3H45AxBP7Y2DaX+4syPgKHMq/BuM2b
+         G4orKdY6aTot3Uw8NYyf5avoMWMghZVcrfXRCIE7rj9xQ6kHbPdEzgTH/I+Xcse+bHH7
+         e0VB4GQdQ8QVRXfjLYRtTXBBgPHoI9neKu1GbWZ9C4QwTpsB6f7IPrloGDtncL2jMty7
+         Qk5T5fHIJs3HEr4BvJZWVjWS3HjD5Z65+EvEHS+1+vBt/7W4E6fViB1Y5T/PHABugwXu
+         icnqQ0P22cBixsW2wBCoctpMcXgedMVyhEtjiJbHIEzPFyX/EGwfyaCRZV0yx8inOC1a
+         tDxg==
+X-Gm-Message-State: AOJu0YyR8aZV7NSS/GYk5xFOd3ndk2mk5K3STAhAbCiE8AXy7zZFvxMw
+        AlRXoSNn/q4n8QlyNZo2jCt2fYiZ3w2wEfXP3FE=
+X-Google-Smtp-Source: AGHT+IH+U+idwNuE0H3NYH7zVlWUYHaXDmlGzu3kwnwnUnidfjkQNc1Emo9KDCpDqhC+sza/+gc2yg==
+X-Received: by 2002:adf:e7d2:0:b0:317:4cf8:35f9 with SMTP id e18-20020adfe7d2000000b003174cf835f9mr1320379wrn.16.1694782680208;
+        Fri, 15 Sep 2023 05:58:00 -0700 (PDT)
 Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id z8-20020a056000110800b0031f9bdb79dasm4383515wrw.61.2023.09.15.05.57.47
+        by smtp.gmail.com with ESMTPSA id m18-20020a5d4a12000000b0031f65cdd271sm4369162wrq.100.2023.09.15.05.57.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 05:57:47 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 15:57:43 +0300
+        Fri, 15 Sep 2023 05:57:59 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 15:57:56 +0300
 From:   Dan Carpenter <dan.carpenter@linaro.org>
 To:     kent.overstreet@gmail.com
 Cc:     linux-bcachefs@vger.kernel.org
-Subject: [bug report] bcachefs: missing error codes in
- journal_entry_blacklist_v2_validate()
-Message-ID: <3cd4ecca-6002-4722-9f0e-0efc93ccb8d3@moroto.mountain>
+Subject: [bug report] bcachefs: no checking for bch2_seek_pagecache_hole()
+Message-ID: <50693705-a6ea-4cd6-b41b-d0c2324ecfd2@moroto.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -65,48 +64,73 @@ X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 Hello Kent Overstreet,
 
-The patch b3dc2344548f: "bcachefs: reserve space in journal for fs
-usage entries" from Jan 24, 2019 (linux-next), leads to the following
-Smatch static checker warning:
+The patch e0750d947352: "bcachefs: Initial commit" from Mar 16, 2017
+(linux-next), leads to the following Smatch static checker warning:
 
-	fs/bcachefs/journal_io.c:468 journal_entry_blacklist_v2_validate()
-	warn: missing error code here? 'journal_entry_err_on()' failed. 'ret' = '0'
+	fs/bcachefs/fs-io.c:1013 bch2_seek_hole()
+	warn: error code type promoted to positive: 'next_hole'
 
-fs/bcachefs/journal_io.c
-    455 static int journal_entry_blacklist_v2_validate(struct bch_fs *c,
-    456                                 struct jset *jset,
-    457                                 struct jset_entry *entry,
-    458                                 unsigned version, int big_endian,
-    459                                 enum bkey_invalid_flags flags)
-    460 {
-    461         struct jset_entry_blacklist_v2 *bl_entry;
-    462         int ret = 0;
-    463 
-    464         if (journal_entry_err_on(le16_to_cpu(entry->u64s) != 2,
-    465                                  c, version, jset, entry,
-    466                 "invalid journal seq blacklist entry: bad size")) {
-    467                 journal_entry_null_range(entry, vstruct_next(entry));
---> 468                 goto out;
+fs/bcachefs/fs-io.c
+    977 static loff_t bch2_seek_hole(struct file *file, u64 offset)
+    978 {
+    979         struct bch_inode_info *inode = file_bch_inode(file);
+    980         struct bch_fs *c = inode->v.i_sb->s_fs_info;
+    981         struct btree_trans *trans;
+    982         struct btree_iter iter;
+    983         struct bkey_s_c k;
+    984         subvol_inum inum = inode_inum(inode);
+    985         u64 isize, next_hole = MAX_LFS_FILESIZE;
+    986         u32 snapshot;
+    987         int ret;
+    988 
+    989         isize = i_size_read(&inode->v);
+    990         if (offset >= isize)
+    991                 return -ENXIO;
+    992 
+    993         trans = bch2_trans_get(c);
+    994 retry:
+    995         bch2_trans_begin(trans);
+    996 
+    997         ret = bch2_subvolume_get_snapshot(trans, inum.subvol, &snapshot);
+    998         if (ret)
+    999                 goto err;
+    1000 
+    1001         for_each_btree_key_norestart(trans, iter, BTREE_ID_extents,
+    1002                            SPOS(inode->v.i_ino, offset >> 9, snapshot),
+    1003                            BTREE_ITER_SLOTS, k, ret) {
+    1004                 if (k.k->p.inode != inode->v.i_ino) {
+    1005                         next_hole = bch2_seek_pagecache_hole(&inode->v,
+    1006                                         offset, MAX_LFS_FILESIZE, 0, false);
+    1007                         break;
+    1008                 } else if (!bkey_extent_is_data(k.k)) {
+    1009                         next_hole = bch2_seek_pagecache_hole(&inode->v,
+    1010                                         max(offset, bkey_start_offset(k.k) << 9),
+    1011                                         k.k->p.offset << 9, 0, false);
+    1012 
 
-Should these error
+bch2_seek_pagecache_hole returns llof_t.  Negatives on error.  This code
+has no error checking?
 
-    469         }
-    470 
-    471         bl_entry = container_of(entry, struct jset_entry_blacklist_v2, entry);
-    472 
-    473         if (journal_entry_err_on(le64_to_cpu(bl_entry->start) >
-    474                                  le64_to_cpu(bl_entry->end),
-    475                                  c, version, jset, entry,
-    476                 "invalid journal seq blacklist entry: start > end")) {
-    477                 journal_entry_null_range(entry, vstruct_next(entry));
-
-paths set an error code?
-
-    478         }
-    479 out:
-    480 fsck_err:
-    481         return ret;
-    482 }
+--> 1013                         if (next_hole < k.k->p.offset << 9)
+    1014                                 break;
+    1015                 } else {
+    1016                         offset = max(offset, bkey_start_offset(k.k) << 9);
+    1017                 }
+    1018         }
+    1019         bch2_trans_iter_exit(trans, &iter);
+    1020 err:
+    1021         if (bch2_err_matches(ret, BCH_ERR_transaction_restart))
+    1022                 goto retry;
+    1023 
+    1024         bch2_trans_put(trans);
+    1025         if (ret)
+    1026                 return ret;
+    1027 
+    1028         if (next_hole > isize)
+    1029                 next_hole = isize;
+    1030 
+    1031         return vfs_setpos(file, next_hole, MAX_LFS_FILESIZE);
+    1032 }
 
 regards,
 dan carpenter
