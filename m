@@ -2,96 +2,142 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 227AAEE3F2F
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 15 Sep 2023 06:26:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1C03EE6456
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 15 Sep 2023 10:52:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbjIOG1A (ORCPT
+        id S234343AbjIOKwb (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 15 Sep 2023 02:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38578 "EHLO
+        Fri, 15 Sep 2023 06:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbjIOG07 (ORCPT
+        with ESMTP id S234270AbjIOKwT (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 15 Sep 2023 02:26:59 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4932102
-        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 23:26:53 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-403012f276dso19274655e9.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Sep 2023 23:26:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694759212; x=1695364012; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2yCzLWCleGTrH60yMtoTcAtGGH4fS0a6XxniUnrVCyg=;
-        b=uDE9yv3AkcNm7F3xBpHWXKuy94VK4j3UNmoNiMM6AFPv7iD/5fJ+Y8vM7nXZgz4uJp
-         UGjvQgjRMPqQJnx2vLGlTosqNYQoaT7H/P0Agblzns1CBs6932s3qtPB3H+kwxFd25r5
-         GRi/794AHK6LcLAvHi6Exywe7nOiUKfj0uZCQW/QMpYv5nWqLBnHcJB89H0EB4u46Sfi
-         2Z4Na4UgbB+F+otHxbG00tVwdTqVibSDrhkxIXZIUM3aCRk4Go1bZbwEe3Y/wOqpiXKt
-         RYBoeXqq65g6sxOf9rCJnagipD1PaD2Hr8wDeiw5hp4avfm1IOo7D7eL+lTZWRbHEVm1
-         eCcA==
+        Fri, 15 Sep 2023 06:52:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 01B8ACE5
+        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 03:50:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694775053;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WwFGm5TkUVvKFFRQjnBdYrn3J+fNrKov99XejNhvpy4=;
+        b=geMK1j9HTOuPo8EScUvPN+tVxfIbjNc4HAQQoNJxQ2hD1Rxj/x/FJYXLpUuNT7zJFStpzE
+        regUiHLmeVU1t3A6hOQRYd9OYWrwy0okgpewoh7zZC9iWwwWCa6R0HxBfxRkvWfqncddYZ
+        YnS4kNA8bjgB2G4QKIh9HQMgtRtRe6c=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-261-ssywg8yUPb2XvTo9nrYCoA-1; Fri, 15 Sep 2023 06:50:51 -0400
+X-MC-Unique: ssywg8yUPb2XvTo9nrYCoA-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-76dcf1d8905so247951185a.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 03:50:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694759212; x=1695364012;
+        d=1e100.net; s=20230601; t=1694775050; x=1695379850;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2yCzLWCleGTrH60yMtoTcAtGGH4fS0a6XxniUnrVCyg=;
-        b=W0CGqYHleGoqPj3fbeT7sK86rB6q/IHyZu/fMIXGXrlPaUVYpCl+RknjrgVAmwJz3+
-         QfbBGD3qcscjUtwXwTSLICx77jcgOO4AowC3Y8iLvvAvevl8oX6bgW5T/9MHqN9Ilbyw
-         JSx+0TNoACAccfXqmUK+bdlnaYsJRbbAH9JkzQrKtr6moChkMySJ9s/Mn6pUrorxv/PG
-         ekiYMANNJyMgNXhb0jVo/lUJZ1+geHQ0Z0kRIRIKO3mAKAKaw6uLxTsHN6G3Ecj9Iggd
-         /zBiG8XK0rPjYNExun6P4RIObD4KOp/fkFONCJZDQZX+/kDaWd35Tp5p3ZsVQ71dCSbm
-         2gsg==
-X-Gm-Message-State: AOJu0YzmoutE/H2VRMGo2vUdwBYEKJGgal6j6f1pQvOBKdRuRD/y4PYH
-        PXrQ+iOs371rk5Hj3pbBqyohzY/5zVUbeVhoOlg=
-X-Google-Smtp-Source: AGHT+IFDWReF+6kPGekoGZgsON+6DD/KP/aL3jH0gtGbfkBOdEKeWgHNjSczETHZcSeaUSj32oIFmA==
-X-Received: by 2002:adf:d082:0:b0:31a:e728:8682 with SMTP id y2-20020adfd082000000b0031ae7288682mr550499wrh.68.1694759211469;
-        Thu, 14 Sep 2023 23:26:51 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id w4-20020a5d6804000000b003196e992567sm3599584wru.115.2023.09.14.23.26.43
+        bh=WwFGm5TkUVvKFFRQjnBdYrn3J+fNrKov99XejNhvpy4=;
+        b=F0YLyYlqq3JaCnZPgdFtHBr5EeFIUGHlBtFpd9QHLqZboIPtuffwjKW1FQexaKn6mk
+         zu/LDr5Yqcea9AxbWjnpQGi/Urnqucxbhlq8En1YLDYx8a6mWIZZr1TOcPh6r8WRvYkS
+         tPQLl2Fhcu1Y5ECy7mY9xl/KmbCiddj+oJkgXZaoONrKqR/W4dhQLePvwsgqLW/MZV0o
+         7NUZ07VjbjbhXAiRRup/cQOntIk1a61acfGOSBx5DEQ66Z2ebdGBWZtbRZbz1OU1gn8e
+         ThMA87BVXxB0E62LWSDGLjCYFw/Heby/VvUyTBtg8acKCIYBX2dr/me80adSGyBwRiiX
+         ElVw==
+X-Gm-Message-State: AOJu0Yxn4NkijqsaKvvCkT0ya4oiTOoeQpNjL8+fJTGLxhGmtgD4+3Kq
+        TERWK0XDQtkIIJvqb12k4cE9yn7Zt0f1c/27RFCz2Vm9pWiBqCJNJnnrr7ZVtw0Lhg+2iH2Ps/i
+        m8IejfhieqF9irVENc6L6QeD/zyLoXzNZ2Y8=
+X-Received: by 2002:a05:620a:404a:b0:76f:1272:2aa8 with SMTP id i10-20020a05620a404a00b0076f12722aa8mr1069605qko.6.1694775050723;
+        Fri, 15 Sep 2023 03:50:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFHCslrejGj3sCEBOEAD8fsAGLVVM0TLgJASkOpMgv5x/UvGtxUOXzFxP8p91ZTxKClC6p1xw==
+X-Received: by 2002:a05:620a:404a:b0:76f:1272:2aa8 with SMTP id i10-20020a05620a404a00b0076f12722aa8mr1069591qko.6.1694775050463;
+        Fri, 15 Sep 2023 03:50:50 -0700 (PDT)
+Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
+        by smtp.gmail.com with ESMTPSA id i16-20020a05620a145000b00767721aebc0sm1144353qkl.32.2023.09.15.03.50.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 23:26:44 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 09:26:41 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
+        Fri, 15 Sep 2023 03:50:50 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 06:51:02 -0400
+From:   Brian Foster <bfoster@redhat.com>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Brian Foster <bfoster@redhat.com>,
-        linux-bcachefs@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 2/3] bcachefs: chardev: fix NULL vs IS_ERR() checks
-Message-ID: <bb309472-7165-4654-a00d-eb9374338908@kadam.mountain>
-References: <6f3b0d3e-d20e-47fc-a3e5-4ad4c03d58b8@moroto.mountain>
- <043689fd-b686-429f-a4bb-602c37578370@moroto.mountain>
- <20230914195604.vjshvlv76zknbgvu@moria.home.lan>
+Cc:     linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: Change bucket_lock() to use bit_spin_lock()
+Message-ID: <ZQQ3Fo3PWwWphcmz@bfoster>
+References: <20230914003746.1039787-1-kent.overstreet@linux.dev>
+ <ZQMDD89w++6vnLP/@bfoster>
+ <20230914194706.to2wdiipcjxy44v2@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230914195604.vjshvlv76zknbgvu@moria.home.lan>
+In-Reply-To: <20230914194706.to2wdiipcjxy44v2@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 03:56:04PM -0400, Kent Overstreet wrote:
-> On Thu, Sep 14, 2023 at 05:58:48PM +0300, Dan Carpenter wrote:
-> > The strndup_user() function returns error pointers on error.  It never
-> > returns NULL.  Fix the checks including the commented out code.
+On Thu, Sep 14, 2023 at 03:47:06PM -0400, Kent Overstreet wrote:
+> On Thu, Sep 14, 2023 at 08:56:47AM -0400, Brian Foster wrote:
+> > > +/*
+> > > + * Ugly hack alert:
+> > > + *
+> > > + * We need to cram a spinlock in a single byte, because that's what we have left
+> > > + * in struct bucket, and we care about the size of these - during fsck, we need
+> > > + * in memory state for every single bucket on every device.
+> > > + *
+> > > + * We used to do
+> > > + *   while (xchg(&b->lock, 1) cpu_relax();
+> > > + * but, it turns out not all architectures support xchg on a single byte.
+> > > + *
+> > > + * So now we use bit_spin_lock(), with fun games since we can't burn a whole
+> > > + * ulong for this.
+> > > + */
+> > > +
+> > 
+> > Oof. :P Well I think I understand what this is doing, but it would be
+> > helpful if this last sentence were a little more direct. For example:
+> > 
+> > "So now we use bit_spin_lock(). We can't burn a whole ulong for this, so
+> > cast and define the lock bit such that it always lands in the b->lock
+> > byte."
+> > 
+> > ... but feel free to reword that, of course.
 > 
-> My preferred style in bcachefs is
+> yeah, that's good
 > 
-> ret = PTR_ERR_OR_ZERO(p);
-> if (ret)
-> 	return ret;
+> > 
+> > > +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+> > > +#define BUCKET_LOCK_BITNR	0
+> > > +#else
+> > > +#define BUCKET_LOCK_BITNR	(BITS_PER_LONG - 1)
+> > > +#endif
+> > > +
+> > >  static inline void bucket_unlock(struct bucket *b)
+> > >  {
+> > > -	smp_store_release(&b->lock, 0);
+> > > +	bit_unspin_lock(BUCKET_LOCK_BITNR, (void *) &b->lock);
+> > 
+> > This doesn't compile.. bit_spin_unlock() I assume.
 > 
-> It keeps things consistent when we're doing a goto err instead of a
-> return.
+> that's what I get for writing code right before my flight. Now I'm going
+> to have to try to think of a legit usage for unspin_lock() :)
+> 
 
-So you want people to write:
+Heh. :)
 
-	path = strndup_user();
-	ret = PTR_ERR_OR_ZERO(p);
-	if (ret)
-		goto err;
+> > Also, is there any good way to add a simple debug mode check here just
+> > to confirm the external code does what we expect on whatever
+> > obscure/otherwise untested arch somebody might try to use? I.e.
+> > EBUG_ON(b->lock != 1) or some such after acquiring the lock..?
+> 
+> How about:
+> 
+> union ulong_byte_assert {                                                                                                                                                                                                                                                                
+>         ulong   ulong;                                                                                                                                                                                                                                                                   
+>         u8      byte;                                                                                                                                                                                                                                                                    
+> };
+> 
+> BUILD_BUG_ON(!((union ulong_byte_assert) { .ulong = 1UL << BUCKET_LOCK_BITNR }).byte);                                                                                                                                                                                           
+> 
 
-I don't want people to look at the git log and see me writing code like
-that.  :P  You're going to have to do that yourself.  That's yuck.
+Nice idea. I like the build time check much better. Thanks!
 
-regards,
-dan carpenter
+Brian
+
