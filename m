@@ -2,60 +2,62 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5BB2EE645B
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 15 Sep 2023 12:55:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92832EE6457
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 15 Sep 2023 12:55:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235150AbjIOMzf (ORCPT
+        id S235142AbjIOMzw (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 15 Sep 2023 08:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
+        Fri, 15 Sep 2023 08:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235143AbjIOMze (ORCPT
+        with ESMTP id S235034AbjIOMzv (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:55:34 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353DE1FE0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 05:55:29 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-404539209ffso19468435e9.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 05:55:29 -0700 (PDT)
+        Fri, 15 Sep 2023 08:55:51 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DB4173A
+        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 05:55:45 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401da71b85eso22850635e9.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Sep 2023 05:55:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694782527; x=1695387327; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694782544; x=1695387344; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=S7Zk0Gm209+6RrjbQIUExPCmrAt7uj3y+xSnarg23mk=;
-        b=lGL/RO0XpI6Pa6It9mcMLn/5M7Zg0oxLsu+3rnYX/yCsAophBvL4sc3f2W3CRIECPO
-         3skGOoR+y7geHiEi4MhOn98aZKcNIgCAWiluvj23Bj5oPHA5U+eRoM5a0fF9518GkXpM
-         CvUdJ1pmpEBkyr0zFqBa9oR62nRw1O+3DMN8qzNel7jLzvR44nBBSwj+WDWWlJW29vhJ
-         z+qQNXvAc5XY1tC3vJhlNedVt/dCYz/m0ZgO3PYY/QsNZJOkCXc9vsH4YWcvrnxJ1Bis
-         Ley4z42qgRkiZMoGb6b92KHZCSsE7KOeu9ZMwaDNmVa7wKZMKVBTqLfOPvaiXA2FRzmp
-         pCAw==
+        bh=m7EqKPxcYmhqUUSygv21qZ32ZU2BZ3oQxs47F0gcyJg=;
+        b=QPOSQVtkQ4WGiENEJdIkRA5ESI2hotgNjGg76vwqM8yjmNIjgXT6Rz/ZTm8pzKq5/q
+         LYWEkvB3Cu/wl876W7dBzp/7p0kY0AaZYr7PIBVicum3JCHV8dPK0rxos00Mym5YFrk5
+         aeWjQCiiI9+DJxZSCJ2RGdO0/9y3fGxuMl5OE27+N2yAnaygCXTKanG+hPTGx7w2bGqZ
+         PFwYb9mSvIozJMg60Bd4XcZ4OlFdwlec53eMk89riR+q/Q5Bc+xSayE9H6FoqClJ36Lo
+         WGRhazGk4+hVoKEDBUuRqEQ45hv14ogWcDLwt2ecXy3vSeQeGDkhwqPNtp1eGGGbyrES
+         x/AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694782527; x=1695387327;
+        d=1e100.net; s=20230601; t=1694782544; x=1695387344;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S7Zk0Gm209+6RrjbQIUExPCmrAt7uj3y+xSnarg23mk=;
-        b=EX6dXv2dtTKPQ0hJc2F+NSNwVohJf3X+gy3ckb+93/txyneuDS5GyHAkl3yaNaFNj4
-         j+VWuiaTauj/iG25K+cH28Jogb9+l6lAB5IrmW8n8xbNH0pITSwLYMWNOSCvj5vKi1LJ
-         Th79DuqCSmxjMtApnfcvlTN/b5RiFECKU9z5o2zVFtEGagQZ+FFoLsRZbtzu6x7uCHGb
-         YQweuNNC86/dKzWCPKde4Bu+1u14VsigxCLSxPiZMUu4i8AuDPS7SRxfGMA0Ps9Buet7
-         5wj8cmQeOn9MACDAPTWVSbZF7plfoFZHyIknhicHUktRfzoTRPxPU+wLb6muPMwydeyq
-         foWA==
-X-Gm-Message-State: AOJu0YwJPtMEfrkgHITY62WNvDVo4qKUNZpyynNwSChCm3padAqqbrEh
-        SdkcfVs0X+/s6KlqwKfWWyVSpakn3Q0EIeOjyxU=
-X-Google-Smtp-Source: AGHT+IG/tN7gjJvVGYKIy2itP3CefBo8PdIZcNB8sjtzmU6IpMAA16WeDTYKtiiqelAJ01erpHd1wg==
-X-Received: by 2002:a05:600c:225a:b0:401:2ee0:7558 with SMTP id a26-20020a05600c225a00b004012ee07558mr1320284wmm.32.1694782527457;
-        Fri, 15 Sep 2023 05:55:27 -0700 (PDT)
+        bh=m7EqKPxcYmhqUUSygv21qZ32ZU2BZ3oQxs47F0gcyJg=;
+        b=mn+DZBEi2vlhoHcMUKfyMwqrgjrLZE27DtOOiPQ5kDHOQxlWa20oP8hlDMlhg56+QW
+         9mmU8Fu+v3EIM4shNtMRAY53LEgOfqaAsx6qbXSLw+WfAMvhs/WX2RipJZmq1KDc0TbN
+         4wrpcp5YNHlCpTnCtdFXpOMc8n9qnXO68alGQWGRyHGjkSsPlqwWnFv+FnF5Ji74WCXU
+         A4wdxCpKCcXYBLPSO9v9ursGSvnCS1BvOgjps20tUVrufGyKGOrczLtwecHDks1zqfcU
+         BaTy6cYykkU3iASy5WRqyKX967f0qNvtIrNqMz3w+IyCuF1iAcxxZkcsU06qyCDf5F/R
+         mYqA==
+X-Gm-Message-State: AOJu0YxEo55VTn4UPcMelXDn12IvfoUjhqCUFBa1+wUqc7YFIujD9Ahn
+        Pb00AfTKe449L+hEgu+O7/duTg==
+X-Google-Smtp-Source: AGHT+IEto7bO2ll96rxIxYH9bIhRuf0HO3ll8ym/KB6KqDjLJQEEz6UfL9AXbJCbFh2iCQTgp03viQ==
+X-Received: by 2002:a1c:ed19:0:b0:403:bb04:2908 with SMTP id l25-20020a1ced19000000b00403bb042908mr1359308wmh.23.1694782543945;
+        Fri, 15 Sep 2023 05:55:43 -0700 (PDT)
 Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id f13-20020a05600c4e8d00b003fef5e76f2csm3225732wmq.0.2023.09.15.05.55.26
+        by smtp.gmail.com with ESMTPSA id r10-20020adfdc8a000000b0031aeca90e1fsm4408590wrj.70.2023.09.15.05.55.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 05:55:26 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 15:55:23 +0300
+        Fri, 15 Sep 2023 05:55:43 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 15:55:40 +0300
 From:   Dan Carpenter <dan.carpenter@linaro.org>
 To:     Kent Overstreet <kent.overstreet@gmail.com>
 Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-bcachefs@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] bcachefs:  fs-ioctl: Fix copy_to_user() error code
-Message-ID: <90f0388a-ea0d-47d3-bbbd-efb38fd96d2c@moroto.mountain>
+        Brian Foster <bfoster@redhat.com>,
+        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH 1/2] bcachefs: acl: Uninitialized variable in bch2_acl_chmod()
+Message-ID: <ce3a4798-f467-4776-939b-b094c365cc5c@moroto.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -64,31 +66,28 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-The copy_to_user() function returns the number of bytes that it wasn't
-able to copy but we want to return -EFAULT to the user.
+The clean up code at the end of the function uses "acl" so it needs
+to be initialized to NULL.
 
-Fixes: e0750d947352 ("bcachefs: Initial commit")
+Fixes: 53306e096d91 ("bcachefs: Always check for transaction restarts")
 Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- fs/bcachefs/fs-ioctl.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/bcachefs/acl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
-index 141bcced031e..0679b2f79fd6 100644
---- a/fs/bcachefs/fs-ioctl.c
-+++ b/fs/bcachefs/fs-ioctl.c
-@@ -122,7 +122,10 @@ static int bch2_ioc_fsgetxattr(struct bch_inode_info *inode,
+diff --git a/fs/bcachefs/acl.c b/fs/bcachefs/acl.c
+index 9653401957b3..6b1579e96dfe 100644
+--- a/fs/bcachefs/acl.c
++++ b/fs/bcachefs/acl.c
+@@ -417,7 +417,7 @@ int bch2_acl_chmod(struct btree_trans *trans, subvol_inum inum,
+ 	struct btree_iter iter;
+ 	struct bkey_s_c_xattr xattr;
+ 	struct bkey_i_xattr *new;
+-	struct posix_acl *acl;
++	struct posix_acl *acl = NULL;
+ 	struct bkey_s_c k;
+ 	int ret;
  
- 	fa.fsx_projid = inode->ei_qid.q[QTYP_PRJ];
- 
--	return copy_to_user(arg, &fa, sizeof(fa));
-+	if (copy_to_user(arg, &fa, sizeof(fa)))
-+		return -EFAULT;
-+
-+	return 0;
- }
- 
- static int fssetxattr_inode_update_fn(struct btree_trans *trans,
 -- 
 2.39.2
 
