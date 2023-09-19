@@ -2,120 +2,80 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F591CE79A8
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 19 Sep 2023 21:12:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF190CE79A8
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 19 Sep 2023 21:26:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233340AbjISVMU (ORCPT
+        id S232649AbjISV0r (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 19 Sep 2023 17:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48284 "EHLO
+        Tue, 19 Sep 2023 17:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233279AbjISVMT (ORCPT
+        with ESMTP id S229690AbjISV0q (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 19 Sep 2023 17:12:19 -0400
-Received: from out-224.mta1.migadu.com (out-224.mta1.migadu.com [IPv6:2001:41d0:203:375::e0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D70BD;
-        Tue, 19 Sep 2023 14:12:13 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 17:12:09 -0400
+        Tue, 19 Sep 2023 17:26:46 -0400
+Received: from out-225.mta0.migadu.com (out-225.mta0.migadu.com [91.218.175.225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03ADAD
+        for <linux-bcachefs@vger.kernel.org>; Tue, 19 Sep 2023 14:26:40 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 17:26:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695157932;
+        t=1695158799;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=bav2djDV+PM9kbIF64GnzTmiTMErRPGs9jWlEecCNjQ=;
-        b=g03OTHbpAfTpO3anyFgIqLlQfQLr+DVnsJdhCS/txdr8Lz5G4T5F+D1fdbbwYyjQMGAqsC
-        T6igs98VQv8/dTAhCFM79PN3yZWFHTW2XYfDAIy7HQwfLK7e8musnGcbu+Ki2SOmIp9URk
-        Si4GWyYnhE6SBa+vqLJwow1tup8Kf4I=
+        bh=mfVGUVz/CROi4KRS1KnJ6sVBEbP4RCSUtW7cX5HZx5M=;
+        b=CFQnKhzSxyHsARd4/52vVNGVxEmhMUwdjCnFekiUnLKZcFLFVv18/JkboHS+HjNZC8mSSC
+        vwP6GyvOlD9l+kP82wK+s3IfTKbNQfQqX5mc9HV3ID2bXDfGEj7aVrzjn7gvUilHsQq0Q9
+        tGJpjGRK1buPGZ99pB/5qBbpGxnbNhA=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Brian Foster <bfoster@redhat.com>,
-        linux-bcachefs@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: debug: Fix copy_to_user() error code in
- flush_buf()
-Message-ID: <20230919211209.5zc422kjdquql35e@moria.home.lan>
-References: <3036fd4e-5d22-44f2-9f51-6eb137452984@moroto.mountain>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH RFC] bcachefs-tools: fix endian problems between bit
+ spinlocks and futexes
+Message-ID: <20230919212636.nzfbhpcrambibab6@moria.home.lan>
+References: <20230919142611.36445-1-bfoster@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3036fd4e-5d22-44f2-9f51-6eb137452984@moroto.mountain>
+In-Reply-To: <20230919142611.36445-1-bfoster@redhat.com>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 03:56:26PM +0300, Dan Carpenter wrote:
-> The copy_to_user() function returns the number of bytes remaining to
-> be copied but we want to return -EFAULT to the user.
+On Tue, Sep 19, 2023 at 10:26:11AM -0400, Brian Foster wrote:
+> bcachefs format on a big-endian (s390x) machine crashes down in the
+> rhashtable code imported from the kernel. The reason this occurs
+> lies within the rht_lock() -> bit_spin_lock() code, the latter of
+> which casts bitmaps down to 32-bits to satisfy the requirements of
+> the futex interface.
 > 
-> Fixes: e0750d947352 ("bcachefs: Initial commit")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
->  fs/bcachefs/debug.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> The specific problem here is that a 64 -> 32 bit cast doesn't refer
+> to the lower 8 bytes on a big endian machine, which means setting
+> bit number 0 in the 32-bit map actually corresponds to bit 32 in the
+> 64-bit map. The rhashtable code specifically uses bit zero of the
+> bucket pointer for exclusion and uses native bitops elsewhere (i.e.
+> __rht_ptr()) to identify NULL pointers. If bit 32 of the pointer is
+> set by the locking code instead of bit 0, an otherwise NULL pointer
+> looks like a non-NULL value and results in a segfault.
 > 
-> diff --git a/fs/bcachefs/debug.c b/fs/bcachefs/debug.c
-> index 404148bd348a..e65c0ab0c9ad 100644
-> --- a/fs/bcachefs/debug.c
-> +++ b/fs/bcachefs/debug.c
-> @@ -319,10 +319,9 @@ static ssize_t flush_buf(struct dump_iter *i)
->  {
->  	if (i->buf.pos) {
->  		size_t bytes = min_t(size_t, i->buf.pos, i->size);
-> -		int err = copy_to_user(i->ubuf, i->buf.buf, bytes);
->  
-> -		if (err)
-> -			return err;
-> +		if (copy_to_user(i->ubuf, i->buf.buf, bytes))
-> +			return -EFAULT;
->  
->  		i->ret	 += bytes;
->  		i->ubuf	 += bytes;
-> -- 
-> 2.39.2
+> The bit spinlock code imported by the kernel is originally intended
+> to work with unsigned long. The kernel code is able to throttle the
+> cpu directly when under lock contention, while the userspace
+> implementation relies on the futex primitives to emulate reliable
+> blocking. Since the futex interface introduces the 32-bit
+> requirement, isolate the associated userspace hack to that
+> particular code.
 > 
+> Restore the native bitmap behavior of the bit spinlock code to
+> address the rhashtable problem described above. Since this is not
+> compatible with the futex interface, create a futex wrapper
+> specifically to convert the native bitmap type to a 32-bit virtual
+> address and mask value for the purposes of waiting/waking when under
+> lock contention.
+> 
+> Signed-off-by: Brian Foster <bfoster@redhat.com>
 
-Applying this fix instead:
+Good find :)
 
-From 60a714b71846c3ea95ccad6699658890b24969c2 Mon Sep 17 00:00:00 2001
-From: Kent Overstreet <kent.overstreet@linux.dev>
-Date: Tue, 19 Sep 2023 17:09:22 -0400
-Subject: [PATCH] bcachefs: Fix copy_to_user() usage in flush_buf()
-
-copy_to_user() returns the number of bytes successfully copied - not an
-errcode.
-
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-
-diff --git a/fs/bcachefs/debug.c b/fs/bcachefs/debug.c
-index 404148bd348a..2c365bf25aca 100644
---- a/fs/bcachefs/debug.c
-+++ b/fs/bcachefs/debug.c
-@@ -319,16 +319,19 @@ static ssize_t flush_buf(struct dump_iter *i)
- {
- 	if (i->buf.pos) {
- 		size_t bytes = min_t(size_t, i->buf.pos, i->size);
--		int err = copy_to_user(i->ubuf, i->buf.buf, bytes);
-+		int copied = copy_to_user(i->ubuf, i->buf.buf, bytes);
- 
- 		if (err)
- 			return err;
- 
--		i->ret	 += bytes;
--		i->ubuf	 += bytes;
--		i->size	 -= bytes;
--		i->buf.pos -= bytes;
--		memmove(i->buf.buf, i->buf.buf + bytes, i->buf.pos);
-+		i->ret	 += copied;
-+		i->ubuf	 += copied;
-+		i->size	 -= copied;
-+		i->buf.pos -= copied;
-+		memmove(i->buf.buf, i->buf.buf + copied, i->buf.pos);
-+
-+		if (copied != bytes)
-+			return -EFAULT;
- 	}
- 
- 	return i->size ? 0 : i->ret;
+Thanks, applied
