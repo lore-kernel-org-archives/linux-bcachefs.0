@@ -2,136 +2,130 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28206CE79AA
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 19 Sep 2023 18:18:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29DD7CE79A9
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 19 Sep 2023 18:34:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbjISSS6 (ORCPT
+        id S232084AbjISSeJ (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 19 Sep 2023 14:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        Tue, 19 Sep 2023 14:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232036AbjISSS6 (ORCPT
+        with ESMTP id S231906AbjISSeI (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:18:58 -0400
-Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668C59E
-        for <linux-bcachefs@vger.kernel.org>; Tue, 19 Sep 2023 11:18:51 -0700 (PDT)
+        Tue, 19 Sep 2023 14:34:08 -0400
+Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5960B97
+        for <linux-bcachefs@vger.kernel.org>; Tue, 19 Sep 2023 11:34:02 -0700 (PDT)
 Received: from [192.168.1.18] ([86.243.2.178])
         by smtp.orange.fr with ESMTPA
-        id ifJBqJadip9IzifJBqxwF4; Tue, 19 Sep 2023 20:18:49 +0200
+        id ifXsqtgzsBLWLifXsqurP3; Tue, 19 Sep 2023 20:34:00 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1695147529;
-        bh=sQOOjOR6EK78uepakJco6y634UwxpbcVIJU4ZkM1xMw=;
+        s=t20230301; t=1695148440;
+        bh=NX2r/u8WzOv2BoVre7uNYRZIJFKowdY5u4O/mbOCuJM=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=QwWwTSgW9XqXCIQeKkJ5J1hU5ZUS5GDgXWDm1+RaipTzsuwDOcG1YxKsVLx1/W5Ox
-         bvpuYzc8chfQE92kLzbn2OlZIBRsIKZ4dS7fBE7VZD5LvisJ3lF2hJ+XbxVXm4FK1d
-         JO0Lcr0FRwngg6lSzrj39DtkM9lrd3n2cY/NvawhplfhY+RrtCIGq2zOuHA6dI8Lj1
-         IS/XZJfQyUsviAP47NrPWKM24Ox5whJGvjXvOjFhMb44p0AvqH89tVNAMglxq6xSRN
-         1hAvsnBNr3qFhmOK1XMa6/WjqJ84zIKEZCeAWtOkL/0Q0eHtQxDzuntUL29B1F0idD
-         3NgdXGiFWu3KA==
+        b=WGm7uWVin9r4Wna0PwE4ZIC5PTxl5PjyJx35FAqiQJuAgi4DXA21jaMCcrZVILZ4C
+         d8jcJA97sEeTxJBdA/xN0faODkPqyE/iebUfTH5OExfGtekUam6s2U+neQO9kv17Nn
+         jAc2jOclTZYgtu/SA6LmJzks2IcqI348DqsDhtSabESh7YVuETU2MIDlBzbF2nqjl/
+         lydDI4dOmPfssMNUs3mztSBW5bejhBnGgUBh25yiwpZ6px/kVxkyOa1y8rBTWd/gZP
+         yeSF4t+xSNXp8hdN+4S6D46aw9N6qj54mstAHBN3ywzZVC1ez5sJFz5jgVt9pI9fTh
+         ysH7iySBrUYgw==
 X-ME-Helo: [192.168.1.18]
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 19 Sep 2023 20:18:49 +0200
+X-ME-Date: Tue, 19 Sep 2023 20:34:00 +0200
 X-ME-IP: 86.243.2.178
-Message-ID: <490d4bac-3c0f-32f7-6bbf-4bf9418729fc@wanadoo.fr>
-Date:   Tue, 19 Sep 2023 20:18:48 +0200
+Message-ID: <2931c006-d987-2261-1c39-5c41a4b17f75@wanadoo.fr>
+Date:   Tue, 19 Sep 2023 20:34:00 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH] bcachefs: Avoid a potential useless over memory
- allocation in bch2_prt_vprintf()
+Subject: Re: [PATCH] bcachefs: Avoid a potential memory over-allocation in
+ bch2_printbuf_make_room()
+Content-Language: fr, en-US
 To:     Brian Foster <bfoster@redhat.com>
 Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
         linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         linux-bcachefs@vger.kernel.org
-References: <0f40108bed3e084057223bdbe32c4b37f8500ff3.1694845203.git.christophe.jaillet@wanadoo.fr>
- <ZQmfWbIgPM0Oo8Jg@bfoster>
-Content-Language: fr, en-US
+References: <2e6a82a83d0ddd9ce7f36ea889dd7ffc30f5fbc9.1694853900.git.christophe.jaillet@wanadoo.fr>
+ <ZQmfpzxX+qjLtJjm@bfoster>
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <ZQmfWbIgPM0Oo8Jg@bfoster>
+In-Reply-To: <ZQmfpzxX+qjLtJjm@bfoster>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Le 19/09/2023 à 15:17, Brian Foster a écrit :
-> On Sat, Sep 16, 2023 at 08:20:24AM +0200, Christophe JAILLET wrote:
->> printbuf_remaining() returns the number of characters we can print to the
->> output buffer - i.e. excluding the terminating null.
->>
->> vsnprintf() takes the size of the buffer, including the trailing null
->> space.
->> It is truncated if the returned value is greater than or equal to the size
->> of the buffer.
->>
->> Knowing all that, buffer sizes and overflow checks can be fixed in order
->> to potentially avoid a useless memory over-allocation.
+Le 19/09/2023 à 15:18, Brian Foster a écrit :
+> On Sat, Sep 16, 2023 at 10:45:23AM +0200, Christophe JAILLET wrote:
+>> kmalloc() and co. don't always allocate a power of 2 number of bytes.
+>> There are some special handling for 64<n<=96 and 128<n<=192 cases.
 >>
 > 
-> For whatever reason I had a hard time parsing this last sentence.  Do
-> you mean to say there's an off by one here that leads to an unnecessary
-> overallocation?
+> It's not immediately clear to me what you mean by "special handling."
+> Taking a quick look at slabinfo, it looks like what you mean is that
+> slab rounding is a bit more granular than power of two, particularly in
+> these ranges. Is that right? If so, JFYI it would be helpful to describe
+> that more explicitly in the commit log.
 
-An off-by-two in fact, IIUC.
-But yes, that's my point.
+That's what I tried to do with my 2 phrases.
+Sound good and clear to the French speaking man I am :)
 
-We consider that the string is truncated when it may not be (len+1 vs 
-len) and we under-estimate the available space (printbuf_remaining() vs 
-printbuf_remaining()+1 or printbuf_remaining_size())
+Would you mind updating the phrasing yourself?
+A trial and error method about wording with a non native English 
+speaking person can be somewhat a long and boring experience to me.
 
-> 
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->> Un-tested
->> ---
->>   fs/bcachefs/printbuf.c | 10 ++++++----
->>   1 file changed, 6 insertions(+), 4 deletions(-)
->>
->> diff --git a/fs/bcachefs/printbuf.c b/fs/bcachefs/printbuf.c
->> index de41f9a14492..77bee9060bfe 100644
->> --- a/fs/bcachefs/printbuf.c
->> +++ b/fs/bcachefs/printbuf.c
->> @@ -54,8 +54,9 @@ void bch2_prt_vprintf(struct printbuf *out, const char *fmt, va_list args)
->>   		va_list args2;
->>   
->>   		va_copy(args2, args);
->> -		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out), fmt, args2);
->> -	} while (len + 1 >= printbuf_remaining(out) &&
->> +		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out) + 1,
->> +				fmt, args2);
->> +	} while (len >= printbuf_remaining(out) + 1 &&
->>   		 !bch2_printbuf_make_room(out, len + 1));
-> 
-> It's amazing how simple arithmetic can make my eyes cross at times. :) I
-> think I follow the fix after reading the commit log a couple times, but
-> could we use printbuf_remaining_size() appropriately in these places
-> that want to check actual buffer size (i.e. including terminating null)
-> instead of doing the manual size fixup?
+All what I could propose, with the help of google translate, is:
 
-Sure, it would be much better.
-I had not seen this function.
+"
+kmalloc() does not necessarily allocate a number of bytes equal to a 
+power of two. There are special cases for sizes between 65 and 96 and 
+between 129 and 192. In these cases, 96 and 192 bytes are allocated 
+respectively.
+
+So, instead of forcing an allocation always equal to a power of two, it 
+may be interesting to use the same rounding rules as kmalloc(). This 
+helps avoid over-allocating some memory.
+
+Use kmalloc_size_roundup() instead of roundup_pow_of_two().
+"
+
+If this is fine to you I can send a v2 with this wording, otherwise, 
+either tweak it to what sounds good to you, or just ignore this patch.
 
 CJ
 
 > 
-> Brian
+>> So trust kmalloc() algorithm instead of forcing a power of 2 allocation.
+>> This can saves a few bytes of memory and still make use of all the
+>> memory allocated.
+>>
+>> On the other side, it may require an additional realloc() in some cases.
+>>
 > 
+> Well, I feel like this isn't the only place I've seen the power of two
+> buffer size realloc algorithm thing, but in thinking about it this seems
+> fairly harmless and reasonable for printbufs. FWIW:
+> 
+> Reviewed-by: Brian Foster <bfoster@redhat.com>
+> 
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   fs/bcachefs/printbuf.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/bcachefs/printbuf.c b/fs/bcachefs/printbuf.c
+>> index 77bee9060bfe..34527407e950 100644
+>> --- a/fs/bcachefs/printbuf.c
+>> +++ b/fs/bcachefs/printbuf.c
+>> @@ -28,7 +28,7 @@ int bch2_printbuf_make_room(struct printbuf *out, unsigned extra)
+>>   	if (out->pos + extra < out->size)
+>>   		return 0;
 >>   
->>   	len = min_t(size_t, len,
->> @@ -70,9 +71,10 @@ void bch2_prt_printf(struct printbuf *out, const char *fmt, ...)
+>> -	new_size = roundup_pow_of_two(out->size + extra);
+>> +	new_size = kmalloc_size_roundup(out->size + extra);
 >>   
->>   	do {
->>   		va_start(args, fmt);
->> -		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out), fmt, args);
->> +		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out) + 1,
->> +				fmt, args);
->>   		va_end(args);
->> -	} while (len + 1 >= printbuf_remaining(out) &&
->> +	} while (len >= printbuf_remaining(out) + 1 &&
->>   		 !bch2_printbuf_make_room(out, len + 1));
->>   
->>   	len = min_t(size_t, len,
+>>   	/*
+>>   	 * Note: output buffer must be freeable with kfree(), it's not required
 >> -- 
 >> 2.34.1
 >>
