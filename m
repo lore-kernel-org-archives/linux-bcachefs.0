@@ -2,79 +2,50 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17434CE79A8
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 20 Sep 2023 00:38:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C061ECE79A9
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 20 Sep 2023 01:21:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbjITAjA (ORCPT
+        id S229534AbjITBV2 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 19 Sep 2023 20:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
+        Tue, 19 Sep 2023 21:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjITAi7 (ORCPT
+        with ESMTP id S229521AbjITBV2 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 19 Sep 2023 20:38:59 -0400
-Received: from out-220.mta1.migadu.com (out-220.mta1.migadu.com [95.215.58.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEABAB;
-        Tue, 19 Sep 2023 17:38:53 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 20:38:47 -0400
+        Tue, 19 Sep 2023 21:21:28 -0400
+Received: from out-228.mta1.migadu.com (out-228.mta1.migadu.com [95.215.58.228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA869BD
+        for <linux-bcachefs@vger.kernel.org>; Tue, 19 Sep 2023 18:21:21 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 21:21:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695170331;
+        t=1695172879;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kaQ4quY2FOsV6dNr0SfZBxe3SAq2X9fKDNK/mTJUPJo=;
-        b=fcDGTbVMFIQBEQQkC1wwEadLsMgzFYjQD45cjxVUPdUiWnXP7BAGG2BBy9HL98dl1VVqv8
-        MrbxQqzERfO5k8wwlYNRmfFUpUB/liPIKJRtQ+IXJZCPp6TRaP2iiSJG8RAaSd6ifLb7yc
-        vSjQ5g13+izc5myuYNdH/3DYZgCA+AA=
+        bh=r8ynYOcsjwAnnV9McTaLVOen4fw0NAMm+hWl+udnmYY=;
+        b=RBVIYh1b3bHSeZX4IH3lYaiPq3WXhaRW9av0MD4SHKrTv69/5tlElVScPslluLs51UxsIF
+        U42Lc9tKHljGBz9Ijaz7RCB7VQ6R4Q9dI3vyu5O12KhLFAr57XyAjjbAsZv7X7RoBZdiOM
+        6Hpwrp+mYHYbwQ89aWRIL4cxygJA8AU=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Brian Foster <bfoster@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Use snprintf() instead of scnprintf() when
- appropriate
-Message-ID: <20230920003847.nus6l45zqhv5hseb@moria.home.lan>
-References: <9a998be3e2dbedcd3a9eae5f81ae6dcc6c0f98c4.1694849375.git.christophe.jaillet@wanadoo.fr>
- <ZQmfZ/nPMgiJK9eW@bfoster>
- <20230919190234.2k7v75htqlbfqofh@moria.home.lan>
- <011234f5-19f3-21c5-f0cf-8027971397e7@wanadoo.fr>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] bcachefs: initial freeze/unfreeze support
+Message-ID: <20230920012116.pi7nw5ziebrdffkq@moria.home.lan>
+References: <20230915125154.307450-1-bfoster@redhat.com>
+ <20230915125154.307450-5-bfoster@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <011234f5-19f3-21c5-f0cf-8027971397e7@wanadoo.fr>
+In-Reply-To: <20230915125154.307450-5-bfoster@redhat.com>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:23:47PM +0200, Christophe JAILLET wrote:
-> Le 19/09/2023 à 21:02, Kent Overstreet a écrit :
-> > On Tue, Sep 19, 2023 at 09:17:27AM -0400, Brian Foster wrote:
-> > > On Sat, Sep 16, 2023 at 09:30:19AM +0200, Christophe JAILLET wrote:
-> > > > snprintf() and scnprintf() are the same, except for the returned value.
-> > > > When this value is not used, it is more logical to use snprintf() which is
-> > > > slightly simpler.
-> > > > 
-> > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > > ---
-> > > 
-> > > Seems reasonable:
-> > > 
-> > > Reviewed-by: Brian Foster <bfoster@redhat.com>
-> > 
-> > No, let's stay with scnprintf as the default - snprintf should be
-> > deprecated except for when its return value is actually needed, using it
-> > incorrectly has been a source of buffer overruns in the past.
-> > 
-> 
-> Ok, I was not aware of it.
-> 
-> In this case, there are also some s/snprintf/scnprintf/ opportunities in
-> fs/bcachefs
-> 
-> Does it make sense to update them or is it too low value changes?
+Pulled this into the testing branch and then got
 
-Not terribly important - long term, I want to depracate both snprintf
-and scnprintf and convert everything to printbufs.
+https://evilpiepirate.org/~testdashboard/c/de4ea1e2a9ceec5d55fffbc1acab89f0dc8f90b6/xfstests.generic.459/log.br
+
+So I'll likely kick this patch back out for now, let me know when you
+have a fixed version :)
