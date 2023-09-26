@@ -2,121 +2,125 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D346E7E643
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 26 Sep 2023 14:42:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE250E7E63F
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 26 Sep 2023 14:53:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234417AbjIZOmy (ORCPT
+        id S234692AbjIZOxj (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 26 Sep 2023 10:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
+        Tue, 26 Sep 2023 10:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234533AbjIZOmx (ORCPT
+        with ESMTP id S229726AbjIZOxj (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 26 Sep 2023 10:42:53 -0400
+        Tue, 26 Sep 2023 10:53:39 -0400
 Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7897C121
-        for <linux-bcachefs@vger.kernel.org>; Tue, 26 Sep 2023 07:42:46 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-532c66a105bso10341017a12.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 26 Sep 2023 07:42:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CFAE6
+        for <linux-bcachefs@vger.kernel.org>; Tue, 26 Sep 2023 07:53:32 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso3479998a12.3
+        for <linux-bcachefs@vger.kernel.org>; Tue, 26 Sep 2023 07:53:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695739365; x=1696344165; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695740011; x=1696344811; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7xm82wFz4V1bzcbVORQIAoicoXL8HhdPjGxAZwqe1TY=;
-        b=FOyPbAxbfT4THJxizR69zl1W/ha4L2D05dRpp5d8C3UH8YmoAdHMXY1Q9zwC4+4BIE
-         IOk7kn9AKUDEOZO/xC1ptK7YYmxeYLkHZo0k6JRHxOYnqZhP1BZX3vLR4ApkmnkqzEIm
-         hI3peGcNrgxJh6CQM0kT3fXtSYo9ycz+BRPQ7oL16JkleaAsVHAx5Op0NKEHsfAl7Cym
-         3b+cJYoPTRFVobHqHTs7J79BfHLqUN6Y0icDlabficITv7G96hVJsfDvGZ83r7/USUSM
-         VfkHQRCWN+eAlSvTFDQ/P02x8244uGCfMa0tf+xFIhVQ4DUBQIfl0rPiQRsnnVCKduIr
-         OYFA==
+        bh=a7XcufRT/6krzC/xvEcvh3gsNxGo6wGLO2DchJZj+b8=;
+        b=ktAjt5u6ypPng7a8t5/XL8IYhlrLIcSIeVnasjmy7+SblDeOEmXhznGtpggvW6wWab
+         YbD1tuBlCMW/slLer/Y+SgjZE/2GEDW45nxJT0Vd5kdfJYADtPf3M2bzirjCxWgdF/7j
+         Dj5YjPQPptcCBp7a750DjK1Z4sgBMd+8rOsPiAvnkjaMPCOI9V0t3LF1VP7s7HsOtt24
+         jmx/BaZq0jSH8iahLJaCJZQDkVT5kRttZUn8pBdjLexBJRhfan8uR4ACvo4+Meqjo4Kq
+         LFMSIhT8pnvd0gUHN47ufAetaBTArncYHEopAiPXTX8Jtd4QekK8NCLV6IIfdDY6yaTk
+         Aznw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695739365; x=1696344165;
+        d=1e100.net; s=20230601; t=1695740011; x=1696344811;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7xm82wFz4V1bzcbVORQIAoicoXL8HhdPjGxAZwqe1TY=;
-        b=U6vjtCynGAaalBiHpjov32Yda6urr9Vj3bmnrR/epNYqszDizRq8jWZzGWm6pakn1l
-         rcrxJfV2ipwNOuv6jZAcwX/SocGpkqbF5/4HIAwClMio2j4vDVA4+1CiqmhpLSyiEo1v
-         gFBt30ZHfL43/7W1ezc1/d3HpjUx1i/BttoaF97nR9MOUK6x7xHoGFVxLgfcju3iLoSr
-         Ftbq0z7LhLEIz1dZMpCNwlc0NB5JQNikQYa2ek6fEq4MVl3R6y9LFfIkRCvRxYvx54fC
-         cIvpGGPo/PsFeN7O8iC9g6vDLWmbVJMjgVP357znFP3Rhee55/r3Q8kILgAK0Gxej3fk
-         dISA==
-X-Gm-Message-State: AOJu0YzBp29zWMHP90MrWu5Ui5Gck99UzsWqpFGyg3XI+wcwA+4Mkj5/
-        EAqa/75XA79yQMIgD2RsKbUrewnvJWYbEbrpSco=
-X-Google-Smtp-Source: AGHT+IFuz4hWc74IHBCK5PQ3lHZhDjgzz6ojg1CE8IPCRiq9C55Tg8e86Ed+uIXBdo5P30GDdACqLQ==
-X-Received: by 2002:aa7:c542:0:b0:532:e39b:8c05 with SMTP id s2-20020aa7c542000000b00532e39b8c05mr7269617edr.42.1695739364937;
-        Tue, 26 Sep 2023 07:42:44 -0700 (PDT)
+        bh=a7XcufRT/6krzC/xvEcvh3gsNxGo6wGLO2DchJZj+b8=;
+        b=MmjTyRDLBIV/XsqSEc481CEaLyarxpi44Q0SSRKPVvauCkEQCw2yZNyDa3SckY0R1e
+         6fyCsGlK/iGuMWRIJT12XY8jWoJIUJnATUHmAVttNG5QkMOxkqrONTe3DcPkdLYuSaP6
+         +DVgZDxxLJV5ZPcd8bsOY0CZpBdraSO8Oe+x2pDTjGdlFDPzMvyrc5cOH7Vf9g6cNCEB
+         HRFd51kf0WfDK3N6spFD2EIaV9Yskqnav99Aa1AF0EM1/RZdeN6/GHmL2XW+KdPYLBPa
+         3b4NXUvV3KLf5Ts7nffE1lGOGby0lSClWYkSfO4RZF8NxQyvcKRh2zLSPQ0D3Jeozi3J
+         O7qg==
+X-Gm-Message-State: AOJu0YyzXqv3gT7EypE+djU1n24fqSmfYvWg9qVz+Lo3Mgf7t/1zgeNh
+        5kbk0dezeCnvlmqTJY99lNbV+Q==
+X-Google-Smtp-Source: AGHT+IH3mOWgi7O3Y3V6x5wQ0fsn29xCb67WKtJtaW28mYZs3uELvluEmCEXEMJ3H16d6CfEYbk8mQ==
+X-Received: by 2002:a05:6402:4444:b0:533:d81b:36d5 with SMTP id o4-20020a056402444400b00533d81b36d5mr7502410edb.15.1695740011050;
+        Tue, 26 Sep 2023 07:53:31 -0700 (PDT)
 Received: from localhost (h3221.n1.ips.mtn.co.ug. [41.210.178.33])
-        by smtp.gmail.com with ESMTPSA id c19-20020a056402121300b0052e9b50dafdsm6810744edw.33.2023.09.26.07.42.44
+        by smtp.gmail.com with ESMTPSA id d15-20020aa7d68f000000b005333922efb0sm6877621edr.78.2023.09.26.07.53.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 07:42:44 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 17:42:40 +0300
+        Tue, 26 Sep 2023 07:53:30 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 17:53:27 +0300
 From:   Dan Carpenter <dan.carpenter@linaro.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Brian Foster <bfoster@redhat.com>,
-        linux-bcachefs@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: debug: Fix copy_to_user() error code in
- flush_buf()
-Message-ID: <686bdcb4-c872-4d95-82b6-c6813cd56de2@kadam.mountain>
-References: <3036fd4e-5d22-44f2-9f51-6eb137452984@moroto.mountain>
- <20230919211209.5zc422kjdquql35e@moria.home.lan>
+Cc:     kent.overstreet@gmail.com, linux-bcachefs@vger.kernel.org
+Subject: Re: [bug report] bcachefs: no checking for bch2_seek_pagecache_hole()
+Message-ID: <5fb857fc-ccac-4d45-a605-d00699e96fc3@kadam.mountain>
+References: <50693705-a6ea-4cd6-b41b-d0c2324ecfd2@moroto.mountain>
+ <20230920023116.556mhm6qdjtu2crv@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230919211209.5zc422kjdquql35e@moria.home.lan>
+In-Reply-To: <20230920023116.556mhm6qdjtu2crv@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 05:12:09PM -0400, Kent Overstreet wrote:
-> On Fri, Sep 15, 2023 at 03:56:26PM +0300, Dan Carpenter wrote:
-> > The copy_to_user() function returns the number of bytes remaining to
-> > be copied but we want to return -EFAULT to the user.
+On Tue, Sep 19, 2023 at 10:31:16PM -0400, Kent Overstreet wrote:
+> On Fri, Sep 15, 2023 at 03:57:56PM +0300, Dan Carpenter wrote:
+> > Hello Kent Overstreet,
 > > 
-> > Fixes: e0750d947352 ("bcachefs: Initial commit")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > ---
-> >  fs/bcachefs/debug.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > The patch e0750d947352: "bcachefs: Initial commit" from Mar 16, 2017
+> > (linux-next), leads to the following Smatch static checker warning:
 > > 
-> > diff --git a/fs/bcachefs/debug.c b/fs/bcachefs/debug.c
-> > index 404148bd348a..e65c0ab0c9ad 100644
-> > --- a/fs/bcachefs/debug.c
-> > +++ b/fs/bcachefs/debug.c
-> > @@ -319,10 +319,9 @@ static ssize_t flush_buf(struct dump_iter *i)
-> >  {
-> >  	if (i->buf.pos) {
-> >  		size_t bytes = min_t(size_t, i->buf.pos, i->size);
-> > -		int err = copy_to_user(i->ubuf, i->buf.buf, bytes);
-> >  
-> > -		if (err)
-> > -			return err;
-> > +		if (copy_to_user(i->ubuf, i->buf.buf, bytes))
-> > +			return -EFAULT;
-> >  
-> >  		i->ret	 += bytes;
-> >  		i->ubuf	 += bytes;
-> > -- 
-> > 2.39.2
+> > 	fs/bcachefs/fs-io.c:1013 bch2_seek_hole()
+> > 	warn: error code type promoted to positive: 'next_hole'
 > > 
+> > fs/bcachefs/fs-io.c
+> >     977 static loff_t bch2_seek_hole(struct file *file, u64 offset)
+> >     978 {
+> >     979         struct bch_inode_info *inode = file_bch_inode(file);
+> >     980         struct bch_fs *c = inode->v.i_sb->s_fs_info;
+> >     981         struct btree_trans *trans;
+> >     982         struct btree_iter iter;
+> >     983         struct bkey_s_c k;
+> >     984         subvol_inum inum = inode_inum(inode);
+> >     985         u64 isize, next_hole = MAX_LFS_FILESIZE;
+> >     986         u32 snapshot;
+> >     987         int ret;
+> >     988 
+> >     989         isize = i_size_read(&inode->v);
+> >     990         if (offset >= isize)
+> >     991                 return -ENXIO;
+> >     992 
+> >     993         trans = bch2_trans_get(c);
+> >     994 retry:
+> >     995         bch2_trans_begin(trans);
+> >     996 
+> >     997         ret = bch2_subvolume_get_snapshot(trans, inum.subvol, &snapshot);
+> >     998         if (ret)
+> >     999                 goto err;
+> >     1000 
+> >     1001         for_each_btree_key_norestart(trans, iter, BTREE_ID_extents,
+> >     1002                            SPOS(inode->v.i_ino, offset >> 9, snapshot),
+> >     1003                            BTREE_ITER_SLOTS, k, ret) {
+> >     1004                 if (k.k->p.inode != inode->v.i_ino) {
+> >     1005                         next_hole = bch2_seek_pagecache_hole(&inode->v,
+> >     1006                                         offset, MAX_LFS_FILESIZE, 0, false);
+> >     1007                         break;
+> >     1008                 } else if (!bkey_extent_is_data(k.k)) {
+> >     1009                         next_hole = bch2_seek_pagecache_hole(&inode->v,
+> >     1010                                         max(offset, bkey_start_offset(k.k) << 9),
+> >     1011                                         k.k->p.offset << 9, 0, false);
+> >     1012 
+> > 
+> > bch2_seek_pagecache_hole returns llof_t.  Negatives on error.  This code
+> > has no error checking?
 > 
-> Applying this fix instead:
-> 
-> >From 60a714b71846c3ea95ccad6699658890b24969c2 Mon Sep 17 00:00:00 2001
-> From: Kent Overstreet <kent.overstreet@linux.dev>
-> Date: Tue, 19 Sep 2023 17:09:22 -0400
-> Subject: [PATCH] bcachefs: Fix copy_to_user() usage in flush_buf()
-> 
-> copy_to_user() returns the number of bytes successfully copied - not an
-> errcode.
-> 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> 
+> It doesn't return an error.
 
-Perfect.  Thanks!
+It looks to the untrained eye that folio_hole_offset() can return
+-ENOENT.  And __filemap_get_folio() can definitely return -ENOMEM.
 
 regards,
 dan carpenter
-
