@@ -2,22 +2,22 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED531E71D24
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 29 Sep 2023 12:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3325E71D25
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 29 Sep 2023 12:25:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233028AbjI2MZE (ORCPT
+        id S233051AbjI2MZG (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 29 Sep 2023 08:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43856 "EHLO
+        Fri, 29 Sep 2023 08:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233027AbjI2MZB (ORCPT
+        with ESMTP id S233115AbjI2MZE (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:25:01 -0400
+        Fri, 29 Sep 2023 08:25:04 -0400
 Received: from relay-b02.edpnet.be (relay-b02.edpnet.be [212.71.1.222])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2CEBE
-        for <linux-bcachefs@vger.kernel.org>; Fri, 29 Sep 2023 05:24:59 -0700 (PDT)
-X-ASG-Debug-ID: 1695990296-214fdf08dd10a60002-qsCQDO
-Received: from linuxserver.costadelsollie.local (212.71.9.157.dyn.edpnet.net [212.71.9.157]) by relay-b02.edpnet.be with ESMTP id XY7WnkfvtwEL3hGV; Fri, 29 Sep 2023 14:24:56 +0200 (CEST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F301AA
+        for <linux-bcachefs@vger.kernel.org>; Fri, 29 Sep 2023 05:25:02 -0700 (PDT)
+X-ASG-Debug-ID: 1695990296-214fdf08dd10a60007-qsCQDO
+Received: from linuxserver.costadelsollie.local (212.71.9.157.dyn.edpnet.net [212.71.9.157]) by relay-b02.edpnet.be with ESMTP id 4so1d33yNaxbgzka; Fri, 29 Sep 2023 14:24:59 +0200 (CEST)
 X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
 X-Barracuda-Effective-Source-IP: 212.71.9.157.dyn.edpnet.net[212.71.9.157]
 X-Barracuda-Apparent-Source-IP: 212.71.9.157
@@ -25,20 +25,20 @@ From:   Janpieter Sollie <janpieter.sollie@kabelmail.de>
 To:     kent.overstreet@linux.dev, bfoster@redhat.com
 Cc:     linux-bcachefs@vger.kernel.org,
         Janpieter Sollie <janpieter.sollie@edpnet.be>
-Subject: [PATCH 1/7] Increase cross-compile compatibility
-Date:   Fri, 29 Sep 2023 14:20:48 +0200
-X-ASG-Orig-Subj: [PATCH 1/7] Increase cross-compile compatibility
-Message-ID: <20230929122434.21776-2-janpieter.sollie@kabelmail.de>
+Subject: [PATCH 6/7] Enable rust support cross-arch
+Date:   Fri, 29 Sep 2023 14:20:53 +0200
+X-ASG-Orig-Subj: [PATCH 6/7] Enable rust support cross-arch
+Message-ID: <20230929122434.21776-7-janpieter.sollie@kabelmail.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230929122434.21776-1-janpieter.sollie@kabelmail.de>
 References: <20230929122434.21776-1-janpieter.sollie@kabelmail.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Barracuda-Connect: 212.71.9.157.dyn.edpnet.net[212.71.9.157]
-X-Barracuda-Start-Time: 1695990296
+X-Barracuda-Start-Time: 1695990299
 X-Barracuda-URL: https://212.71.1.222:443/cgi-mod/mark.cgi
 X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 3137
+X-Barracuda-Scan-Msg-Size: 3743
 X-Barracuda-BRTS-Status: 1
 X-Barracuda-Spam-Score: 0.00
 X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
@@ -52,116 +52,106 @@ X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 From: Janpieter Sollie <janpieter.sollie@edpnet.be>
 
-Some user distros do not use standard triplets, but instead, the triplet has another name.
-Move the triplet name into a gitignored config file,
-and fix a few trivial error messages breaking a cross-compile build:
-- use headers-generic instead of headers-$arch
-- if ulimit isn't set, don't do it.
+Make the rust compiler instsallable via rustup even though it's not in the vm yet.
+This avoids rust compile errors on emulated CPUs,
+rustup installs for host cpu kernel architecture instead of VM architecture.
 
 Signed-off-by: jpsollie <janpieter.sollie@edpnet.be>
 ---
- .gitignore      |  1 +
- cross.conf      |  8 ++++++++
- lib/common.sh   | 10 +++++++---
- lib/libktest.sh |  2 +-
- root_image      |  2 +-
- 5 files changed, 18 insertions(+), 5 deletions(-)
- create mode 100644 cross.conf
+ lib/common.sh    | 4 ++++
+ lib/testrunner   | 4 +---
+ root_image       | 2 +-
+ tests/kconfig.sh | 3 +--
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/.gitignore b/.gitignore
-index d82a2a5..0e86b51 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -4,6 +4,7 @@ cscope*
- tags
- ktest-out
- *.tags
-+cross.conf
- 
- lib/lwip-connect
- lib/supervisor
-diff --git a/cross.conf b/cross.conf
-new file mode 100644
-index 0000000..2896885
---- /dev/null
-+++ b/cross.conf
-@@ -0,0 +1,8 @@
-+# this file specifies target triplets for cross-compiling
-+# whenever these need to be changed (some distributions prefer ARCHITECTURE-VENDOR-OS-LIBC), 
-+# change the triplet here
-+
-+ARCH_TRIPLE_X86=x86-linux-gnu
-+ARCH_TRIPLE_X86_64=x86_64-linux-gnu
-+ARCH_TRIPLE_ARM64=aarch64-linux-gnu
-+
 diff --git a/lib/common.sh b/lib/common.sh
-index 7786091..078f512 100644
+index d9012aa..8ed82ea 100644
 --- a/lib/common.sh
 +++ b/lib/common.sh
-@@ -3,6 +3,10 @@ set -o nounset
- set -o errtrace
- set -o pipefail
- 
-+[[ -v ktest_dir ]] || ktest_dir=$(dirname ${BASH_SOURCE})/..
-+
-+. "$ktest_dir/cross.conf"
-+
- trap 'echo "Error $? at $BASH_SOURCE $LINENO from: $BASH_COMMAND, exiting"' ERR
- 
- ktest_tmp=${ktest_tmp:-""}
-@@ -85,7 +89,7 @@ parse_arch()
- 	x86|i386)
+@@ -87,6 +87,7 @@ parse_arch()
  	    ktest_arch=x86
  	    DEBIAN_ARCH=i386
--	    ARCH_TRIPLE=x86-linux-gnu
-+	    ARCH_TRIPLE=${ARCH_TRIPLE_X86}
+ 	    ARCH_TRIPLE=${ARCH_TRIPLE_X86}
++	    RUST_TRIPLE=i686-unknown-linux-gnu
  
  	    KERNEL_ARCH=x86
  	    BITS=32
-@@ -96,7 +100,7 @@ parse_arch()
- 	x86_64|amd64)
+@@ -98,6 +99,7 @@ parse_arch()
  	    ktest_arch=x86_64
  	    DEBIAN_ARCH=amd64
--	    ARCH_TRIPLE=x86_64-linux-gnu
-+	    ARCH_TRIPLE=${ARCH_TRIPLE_X86_64}
+ 	    ARCH_TRIPLE=${ARCH_TRIPLE_X86_64}
++	    RUST_TRIPLE=x86_64-unknown-linux-gnu
  
  	    KERNEL_ARCH=x86
  	    BITS=64
-@@ -107,7 +111,7 @@ parse_arch()
- 	aarch64|arm64)
+@@ -109,6 +111,7 @@ parse_arch()
  	    ktest_arch=aarch64
  	    DEBIAN_ARCH=arm64
--	    ARCH_TRIPLE=aarch64-linux-gnu
-+	    ARCH_TRIPLE=${ARCH_TRIPLE_ARM64}
+ 	    ARCH_TRIPLE=${ARCH_TRIPLE_ARM64}
++	    RUST_TRIPLE=aarch64-unknown-linux-gnu
  
  	    KERNEL_ARCH=arm64
  	    BITS=64
-diff --git a/lib/libktest.sh b/lib/libktest.sh
-index 95d4b77..9b4931d 100644
---- a/lib/libktest.sh
-+++ b/lib/libktest.sh
-@@ -438,7 +438,7 @@ start_vm()
- 	qemu_pmem mem-path="$file",size=$size
-     done
+@@ -120,6 +123,7 @@ parse_arch()
+ 	    ktest_arch=arm
+ 	    DEBIAN_ARCH=armhf
+ 	    ARCH_TRIPLE=${ARCH_TRIPLE_ARMV7}
++	    RUST_TRIPLE=armv7-unknown-linux-gnueabihf
  
--    ulimit -n 65535
-+    [ "$(ulimit)" == "unlimited" ] || ulimit -n 65535
-     qemu_cmd+=("${ktest_qemu_append[@]}")
- 
-     set +o errexit
+ 	    KERNEL_ARCH=arm
+ 	    BITS=32
+diff --git a/lib/testrunner b/lib/testrunner
+index a8e8d17..d677d3b 100755
+--- a/lib/testrunner
++++ b/lib/testrunner
+@@ -96,10 +96,8 @@ for i in "${ktest_make_install[@]}"; do
+     if [[ -f configure && ! -f Makefile ]]; then
+ 	run_quiet "configure $(basename $i)" ./configure
+     fi
+-    #this won't make me popular - compiling bcachefs tools with rust support on a emulated machine is too heavy to be useful, so omit it:
+-    rustcompile="" && [[ "$(systemd-detect-virt)" == "qemu" ]] && rustcompile="NO_RUST=1"
+     #bcachefs tools sometimes seems to use compiled files from previous runs, even if other architecture, so clean out:
+-    [ "bcachefs-tools" == "$(basename $i)" ] && [ "$(objdump -f bcachefs.o | grep architecture | cut -d' ' -f 2)" == "$(objdump -f /bin/bash | grep architecture | cut -d' ' -f 2)" ] || make clean
++    [ "bcachefs-tools" == "$(basename $i)" ] && [ "$(objdump -f bcachefs.o | grep architecture | cut -d' ' -f 2)" == "$(objdump -f /bin/bash | grep architecture | cut -d' ' -f 2)" ] || make clean & rm -rf "rust-src/targets/*"
+     run_quiet "building $(basename $i)" make $rustcompile -j $ktest_cpus
+     run_quiet "installing $(basename $i)" make -j $ktest_cpus install
+     popd > /dev/null
 diff --git a/root_image b/root_image
-index ece986a..26c99fe 100755
+index 5d9c767..adc34cd 100755
 --- a/root_image
 +++ b/root_image
-@@ -118,7 +118,7 @@ PACKAGES+=(cryptsetup)
- PACKAGES+=(multipath-tools sg3-utils srptools)
+@@ -240,7 +240,7 @@ update_packages()
+     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > "$MNT"/tmp/rustup.sh
+     chmod 755 "$MNT"/tmp/rustup.sh
  
- # ZFS support
--PACKAGES+=("linux-headers-$DEBIAN_ARCH" dkms zfsutils-linux zfs-dkms)
-+PACKAGES+=("linux-headers-generic" dkms zfsutils-linux zfs-dkms)
+-    _chroot "$MNT" /tmp/rustup.sh -y
++    _chroot "$MNT" /tmp/rustup.sh --default-host $RUST_TRIPLE -y
+     echo 'export PATH="$HOME/.cargo/bin:$PATH"' > $MNT/etc/profile.d/rustup.sh
+ }
  
- # suspend testing:
- # [[ $KERNEL_ARCH = x86 ]] && PACKAGES+=(uswsusp)
+diff --git a/tests/kconfig.sh b/tests/kconfig.sh
+index b259515..2c4f8ea 100644
+--- a/tests/kconfig.sh
++++ b/tests/kconfig.sh
+@@ -55,7 +55,6 @@ case $ktest_arch in
+ 	require-kernel-config RTC_DRV_PL031
+ 
+ 	have_virtio=1
+-	have_kvmguest=1
+ 
+ 	require-kernel-append console=hvc0
+ 	;;
+@@ -63,9 +62,9 @@ case $ktest_arch in
+ 	require-kernel-config PCI_HOST_GENERIC
+ 	require-kernel-config RTC_DRV_PL031
+ 	require-kernel-config COMPAT_32BIT_TIME
++	require-kernel-config IOMMU_SUPPORT
+ 
+ 	have_virtio=1
+-	have_kvmguest=1
+ 
+ 	require-kernel-append console=hvc0
+ 	;;
 -- 
 2.42.0
 
