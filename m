@@ -2,333 +2,149 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B303E71D28
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 29 Sep 2023 12:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9980AE71D3F
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 29 Sep 2023 14:33:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbjI2MZG (ORCPT
+        id S233061AbjI2OdG (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 29 Sep 2023 08:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        Fri, 29 Sep 2023 10:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233136AbjI2MZF (ORCPT
+        with ESMTP id S233676AbjI2OcZ (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:25:05 -0400
-Received: from relay-b02.edpnet.be (relay-b02.edpnet.be [212.71.1.222])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C181AC
-        for <linux-bcachefs@vger.kernel.org>; Fri, 29 Sep 2023 05:25:03 -0700 (PDT)
-X-ASG-Debug-ID: 1695990296-214fdf08dd10a60008-qsCQDO
-Received: from linuxserver.costadelsollie.local (212.71.9.157.dyn.edpnet.net [212.71.9.157]) by relay-b02.edpnet.be with ESMTP id DGB9VEydDh0nLePS; Fri, 29 Sep 2023 14:25:00 +0200 (CEST)
-X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
-X-Barracuda-Effective-Source-IP: 212.71.9.157.dyn.edpnet.net[212.71.9.157]
-X-Barracuda-Apparent-Source-IP: 212.71.9.157
-From:   Janpieter Sollie <janpieter.sollie@kabelmail.de>
-To:     kent.overstreet@linux.dev, bfoster@redhat.com
-Cc:     linux-bcachefs@vger.kernel.org,
-        Janpieter Sollie <janpieter.sollie@edpnet.be>
-Subject: [PATCH 7/7] Ktest: re-introduce foreign unsupported architectures
-Date:   Fri, 29 Sep 2023 14:20:54 +0200
-X-ASG-Orig-Subj: [PATCH 7/7] Ktest: re-introduce foreign unsupported architectures
-Message-ID: <20230929122434.21776-8-janpieter.sollie@kabelmail.de>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230929122434.21776-1-janpieter.sollie@kabelmail.de>
-References: <20230929122434.21776-1-janpieter.sollie@kabelmail.de>
+        Fri, 29 Sep 2023 10:32:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D13CEF
+        for <linux-bcachefs@vger.kernel.org>; Fri, 29 Sep 2023 07:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695997894;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LN68gjvhRE/uK/tgsTkr2JfCXFJPDxl3anui1W37eq8=;
+        b=NbstEghd7y7Z2Vl1OBkQ31YfRB3TWoNw/N74sy2sxm0APkz22p3Ota7CkmDHs7RyTVvz32
+        KnmnAjHicpItMlmwfQlTkRKpNZmZBxzEMwe+B+v6ZxvxIR28IsphMYNDyg62uuEmGb1P61
+        CCJM/SS7Tk9/9zL6BSkJDaquhHy2C64=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-130-ha5GaOvYNGSi4bIxY4k6DQ-1; Fri, 29 Sep 2023 10:31:32 -0400
+X-MC-Unique: ha5GaOvYNGSi4bIxY4k6DQ-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4150f8480c5so234877121cf.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 29 Sep 2023 07:31:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695997892; x=1696602692;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LN68gjvhRE/uK/tgsTkr2JfCXFJPDxl3anui1W37eq8=;
+        b=ZF3w6q7qKD3YXHvo6vbTl79z+17YopQadCx/9jH4T5L5gCbEccPop2Z5nL92H+p4h8
+         3h/aaJD8SJr7S8rn2jNxplXM8ZIygL8pIyXOQbN8Rzi8xlxL8VeKs9YZApz6dWdS66vy
+         gK2ePgED31ZdbUk4aLGkcW/IeMA6Iz3lmVnfT3Gr6tDix6X3/o12Dej5ObPtfgYWYgjw
+         qG8/SjI1KuMUoP4H/UbzPWfZ4mNLbGvdqKDMoyV1+V2sAVxsoswvT+hM9eWVuW8pUjrr
+         hPtAvU8ljohiq9zFfYgO04Y++/9q9Hxp+ja0tqPytKZ6oHmi8GIVsQWZGSSm2n7cATaA
+         rMWw==
+X-Gm-Message-State: AOJu0YyXUFy4ejV51k561Q9LGXYVtjWGXZ7SoGjiioJbU/xJ/0UGs4S7
+        WYmCv71VecJb/wWttQ5ELjxrvKe0558c3ainw79NmXvXivo3HHIPq2WE2y49Sql29qXI8ZH9Fky
+        4bsKNccXkGjc1iX4Dindeq9RsdHPiyNDfuHk=
+X-Received: by 2002:a0c:df08:0:b0:658:4008:e2ba with SMTP id g8-20020a0cdf08000000b006584008e2bamr3684864qvl.63.1695997891681;
+        Fri, 29 Sep 2023 07:31:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEhbR/p9Yho9drcc2rwTlcFxOqf5amo+pifftu9tuTeK3v/6QZlgkoOAXPqcIFcVhZMaljK4g==
+X-Received: by 2002:a0c:df08:0:b0:658:4008:e2ba with SMTP id g8-20020a0cdf08000000b006584008e2bamr3684846qvl.63.1695997891373;
+        Fri, 29 Sep 2023 07:31:31 -0700 (PDT)
+Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
+        by smtp.gmail.com with ESMTPSA id p6-20020a0ce186000000b00656373f9c30sm1451665qvl.75.2023.09.29.07.31.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 07:31:30 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 10:31:46 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@lst.de, djwong@kernel.org
+Subject: Re: [PATCH 2/2] bcachefs: remove writeback bio size limit
+Message-ID: <ZRbf0gMtS6vkGDmN@bfoster>
+References: <20230927112338.262207-1-bfoster@redhat.com>
+ <20230927112338.262207-3-bfoster@redhat.com>
+ <20230927220326.jcu4d4khpfjsn6qd@moria.home.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Barracuda-Connect: 212.71.9.157.dyn.edpnet.net[212.71.9.157]
-X-Barracuda-Start-Time: 1695990299
-X-Barracuda-URL: https://212.71.1.222:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 8744
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.114757
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927220326.jcu4d4khpfjsn6qd@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-From: Janpieter Sollie <janpieter.sollie@edpnet.be>
+On Wed, Sep 27, 2023 at 06:03:26PM -0400, Kent Overstreet wrote:
+> On Wed, Sep 27, 2023 at 07:23:38AM -0400, Brian Foster wrote:
+> > The bcachefs folio writeback code includes a bio full check as well
+> > as a fixed size check when it determines whether to submit the
+> > current write op or continue to add to the current bio. The current
+> > code submits prematurely when the current folio fits exactly in the
+> > remaining space allowed in the current bio, which typically results
+> > in an extent merge that would have otherwise been unnecessary. This
+> > can be observed with a buffered write sized exactly to the current
+> > maximum value (1MB) and with key_merging_disabled=1. The latter
+> > prevents the merge from the second write such that a subsequent
+> > check of the extent list shows a 1020k extent followed by a
+> > contiguous 4k extent.
+> > 
+> > It's not totally clear why the fixed write size check exists.
+> > bio_full() already checks that the bio can accommodate the current
+> > dirty range being processed, so the only other concern is write
+> > latency. Even then, a 1MB cap seems rather small. For reference,
+> > iomap includes a folio batch size (of 4k) to mitigate latency
+> > associated with writeback completion folio processing, but that
+> > restricts writeback bios to somewhere in the range of 16MB-256MB
+> > depending on folio size (i.e. considering 4k to 64k pages). Unless
+> > there is some known reason for it, remove the size limit and rely on
+> > bio_full() to cap the size of the bio.
+> 
+> We definitely need some sort of a cap; otherwise, there's nothing
+> preventing us from building up gigabyte+ bios (multipage bvecs, large
+> folios), and we don't want that.
+> 
 
-Whereas MIPS and MIPS64 are abandoned my manufacturer,
-SPARC and POWER seem to be still alive,
-and upcoming RISCV also deserves some attention,
-so add those to the list of supported architectures.
+Yeah, I forgot about the multipage bvecs case when I was first reading
+through this code.
 
-Signed-off-by: Janpieter Sollie <janpieter.sollie@edpnet.be>
----
- build-test-kernel |  9 +++++---
- cross.conf        |  3 +++
- lib/common.sh     | 56 ++++++++++++-----------------------------------
- lib/libktest.sh   | 12 +++++-----
- root_image        | 37 ++++++++++++++++++++++++-------
- tests/kconfig.sh  | 27 +++++++++++++----------
- 6 files changed, 75 insertions(+), 69 deletions(-)
+> This probably needs to be a sysctl - better would be a hint provided by
+> the filesystem based on the performance characteristics of the
+> device(s), but the writeback code doesn't know which device we're
+> writing to so that'll be tricky to plumb.
+> 
 
-diff --git a/build-test-kernel b/build-test-kernel
-index ea0d56e..4e3c646 100755
---- a/build-test-kernel
-+++ b/build-test-kernel
-@@ -230,11 +230,14 @@ build_kernel()
- 	    ;;
- 	mips)
- 	    install -m0644 "$BOOT/vmlinux.strip"	"$ktest_kernel_binary/vmlinuz"
--	    #install -m0644 "$ktest_kernel_build/vmlinux"	"$ktest_kernel_binary/vmlinuz"
- 	    ;;
- 	default)
--	    echo "Don't know how to install kernel"
--	    exit 1
-+	    if [ -f "$BOOT/Image" ]; then
-+		 install -m0644 "$BOOT/Image"	"$ktest_kernel_binary/vmlinuz"
-+	    else
-+		echo "Don't know how to install kernel"
-+	    	exit 1
-+	    fi
- 	    ;;
-     esac
- 
-diff --git a/cross.conf b/cross.conf
-index d98219e..fdbca3d 100644
---- a/cross.conf
-+++ b/cross.conf
-@@ -6,3 +6,6 @@ ARCH_TRIPLE_X86=x86-linux-gnu
- ARCH_TRIPLE_X86_64=x86_64-linux-gnu
- ARCH_TRIPLE_ARM64=aarch64-linux-gnu
- ARCH_TRIPLE_ARMV7=arm-linux-gnueabihf
-+ARCH_TRIPLE_PPC64=ppc64-linux-gnu
-+ARCH_TRIPLE_SPARC64=sparc64-linux-gnu
-+ARCH_TRIPLE_RISCV64=riscv64-linux-gnu
-diff --git a/lib/common.sh b/lib/common.sh
-index 8ed82ea..0039715 100644
---- a/lib/common.sh
-+++ b/lib/common.sh
-@@ -131,39 +131,21 @@ parse_arch()
- 	    QEMU_PACKAGE=qemu-system-arm
- 	    QEMU_BIN=qemu-system-arm
- 	    ;;
--	mips)
--	    DEBIAN_ARCH=mips
--	    ARCH_TRIPLE=mips-linux-gnu
--
--	    KERNEL_ARCH=mips
--	    BITS=32
--
--	    QEMU_PACKAGE=qemu-system-mips
--	    QEMU_BIN=qemu-system-mips
--	    ;;
--	mips64)
--	    DEBIAN_ARCH=mips
--	    ARCH_TRIPLE=mips-linux-gnu
-+	riscv64)
-+	    DEBIAN_ARCH=riscv64
-+	    ARCH_TRIPLE=${ARCH_TRIPLE_RISCV64}
-+	    MIRROR=http://deb.debian.org/debian-ports
- 
--	    KERNEL_ARCH=mips
-+	    KERNEL_ARCH=riscv
- 	    BITS=64
- 
--	    QEMU_PACKAGE=qemu-system-mips
--	    QEMU_BIN=qemu-system-mips64
--	    ;;
--	sparc)
--	    DEBIAN_ARCH=sparc
--	    ARCH_TRIPLE=sparc64-linux-gnu
--
--	    KERNEL_ARCH=sparc
--	    BITS=32
--
--	    QEMU_PACKAGE=qemu-system-sparc
--	    QEMU_BIN=qemu-system-sparc
-+	    QEMU_PACKAGE=qemu-system-riscv
-+	    QEMU_BIN=qemu-system-riscv64
- 	    ;;
- 	sparc64)
--	    DEBIAN_ARCH=sparc
--	    ARCH_TRIPLE=sparc64-linux-gnu
-+	    DEBIAN_ARCH=sparc64
-+	    ARCH_TRIPLE=${ARCH_TRIPLE_SPARC64}
-+	    MIRROR=http://deb.debian.org/debian-ports
- 
- 	    KERNEL_ARCH=sparc
- 	    BITS=64
-@@ -171,23 +153,13 @@ parse_arch()
- 	    QEMU_PACKAGE=qemu-system-sparc
- 	    QEMU_BIN=qemu-system-sparc64
- 	    ;;
--	ppc|powerpc)
--	    DEBIAN_ARCH=powerpc
--	    MIRROR=http://deb.debian.org/debian-ports
--
--	    ARCH_TRIPLE=powerpc-linux-gnu
--
--	    KERNEL_ARCH=powerpc
--	    BITS=32
--
--	    QEMU_PACKAGE=qemu-system-ppc
--	    QEMU_BIN=qemu-system-ppc
--	    ;;
--	ppc64)
-+	ppc64|powerpc)
-+	    ktest_arch=ppc64
- 	    DEBIAN_ARCH=ppc64
- 	    MIRROR=http://deb.debian.org/debian-ports
- 
--	    ARCH_TRIPLE=powerpc-linux-gnu
-+	    ARCH_TRIPLE=${ARCH_TRIPLE_PPC64}
-+	    RUST_TRIPLE=powerpc64-unknown-linux-gnu
- 
- 	    KERNEL_ARCH=powerpc
- 	    BITS=64
-diff --git a/lib/libktest.sh b/lib/libktest.sh
-index 689f42f..edbbec0 100644
---- a/lib/libktest.sh
-+++ b/lib/libktest.sh
-@@ -317,12 +317,14 @@ start_vm()
- 	aarch64|arm)
- 	    qemu_cmd+=(-cpu $cputype -machine type=virt,gic-version=max,accel=$accel)
- 	    ;;
--	mips)
--	    qemu_cmd+=(-cpu 24Kf -machine malta)
--	    ktest_cpus=1
-+	ppc64)
-+	    qemu_cmd+=(-cpu power9)
- 	    ;;
--	mips64)
--	    qemu_cmd+=(-cpu MIPS64R2-generic -machine malta)
-+	sparc64)
-+	    qemu_cmd+=(-cpu default)
-+	    ;;
-+	riscv64)
-+	    qemu_cmd+=(-cpu any)
- 	    ;;
-     esac
- 
-diff --git a/root_image b/root_image
-index adc34cd..8777d82 100755
---- a/root_image
-+++ b/root_image
-@@ -34,7 +34,7 @@ usage()
-     echo
-     echo "options:"
-     echo "  -h			Display this help and exit"
--    echo "  -a <arch>		Architecture for vm image"
-+    echo "  -a <arch>		Architecture for vm image (x86_64,armhf,i386,aarch64,sparc64,ppc64,riscv64)"
-     echo "  -m <mirror>		Debian mirror"
-     echo '  -i <image>		Image to create/update, defaults to /var/lib/ktest/root.$arch'
- }
-@@ -124,7 +124,7 @@ PACKAGES+=("linux-headers-generic")
- # DKMS needs to cross-compile the module,
- # against a different kernel on a different CPUarchitecture.
- # this has to cause errors
--[ -z ${CROSS_COMPILE:-0} ] || PACKAGES+=(dkms zfsutils-linux zfs-dkms)
-+#[ -z ${CROSS_COMPILE:-0} ] || PACKAGES+=(dkms zfsutils-linux zfs-dkms)
- 
- 
- 
-@@ -232,9 +232,11 @@ update_packages()
-     mkdir -p "$MNT"/run/user/0
-     cp /etc/resolv.conf "$MNT/etc/resolv.conf"
-     _chroot "$MNT" mount -t proc none /proc
--    _chroot "$MNT" apt-get -qq update
--    _chroot "$MNT" apt-get -qq upgrade
--    _chroot "$MNT" apt-get -qq install --no-install-recommends "${PACKAGES[@]}"
-+    [[ $MIRROR == *"debian-ports"* ]] && _chroot "$MNT" apt-get -qq install debian-ports-archive-keyring
-+    _chroot "$MNT" apt-get -qq --allow-unauthenticated --allow-insecure-repositories update --fix-missing
-+    _chroot "$MNT" apt-get -qq --allow-unauthenticated upgrade
-+    _chroot "$MNT" apt-get -qq install -f
-+    _chroot "$MNT" apt-get -qq install -m --allow-unauthenticated --no-install-recommends "${PACKAGES[@]}"
-     rm -f "$MNT/var/cache/apt/archives/*.deb"
- 
-     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > "$MNT"/tmp/rustup.sh
-@@ -300,18 +302,37 @@ cmd_create()
-     mkfs.ext4 -F "$ktest_image"
-     mount "$ktest_image" "$MNT"
- 
-+   local debian_release="trixie" #general release
-+   local keyring=""
-+
-+    if [[ $MIRROR == *"debian-ports"* ]]; then
-+	debian_release="sid" #unofficial ports don't have named releases
-+        wget https://www.ports.debian.org/archive_$(date +%Y).key
-+	gpg --import archive_$(date +%Y).key
-+	rm archive_$(date +%Y).key
-+	echo "WARNING: $ktest_arch is unsupported, using SID release for packages"
-+	echo "*******************************************************************"
-+	echo "PLEASE NOTE: this often has dependency problems between packages, "
-+	echo "and can prevent the install due to a dependency conflict "
-+	echo "If so, contact the debian maintainer for this architecture to fix it:"
-+	echo "${ktest_arch} : ${DEBIAN_ARCH}@buildd.debian.org"
-+	echo "*******************************************************************"
-+	echo ""
-+    fi
-+
-     DEBOOTSTRAP_DIR=$ktest_dir/debootstrap $debootstrap	\
- 	--no-check-gpg					\
- 	--arch="$DEBIAN_ARCH"				\
- 	--exclude=$(join_by , "${EXCLUDE[@]}")		\
-+	$keyring					\
- 	--foreign					\
- 	--components='main,contrib,non-free' \
--	trixie "$MNT" "$MIRROR"
-+	$debian_release "$MNT" "$MIRROR"
- 
--    [ ${CROSS_COMPILE:-0} == 1 ] && cp $(which qemu-${ktest_arch}) ${MNT}$(which qemu-${ktest_arch})
-+    statichelper=$(which qemu-${ktest_arch}) || statichelper=$(which qemu-${ktest_arch}-static)
-+    [ ${CROSS_COMPILE:-0} == 1 ] && cp $statichelper ${MNT}$statichelper
-     _chroot "$MNT" /debootstrap/debootstrap --second-stage
-     _chroot "$MNT" dpkg --configure -a
--
-     update_packages
-     update_files
- 
-diff --git a/tests/kconfig.sh b/tests/kconfig.sh
-index 2c4f8ea..7607e26 100644
---- a/tests/kconfig.sh
-+++ b/tests/kconfig.sh
-@@ -68,24 +68,29 @@ case $ktest_arch in
- 
- 	require-kernel-append console=hvc0
- 	;;
--    powerpc)
--	require-kernel-config ADVANCED_OPTIONS
-+    ppc64)
-+	require-kernel-config PPC64
-+
-+	have_virtio=1
-+
-+	require-kernel-append console=hvc0
-+	;;
-+    sparc64)
-+	require-kernel-config 64BIT
-+	require-kernel-config SMP
-+	require-kernel-config VIRTIO_MENU
-+	require-kernel-config PCI
- 
--	have_kvmguest=1
- 	have_virtio=1
--	have_suspend=1
- 
- 	require-kernel-append console=hvc0
- 	;;
--    mips)
--	require-kernel-config MIPS_MALTA
--	require-kernel-config CPU_MIPS${BITS}_R2
--	require-kernel-config CPU_BIG_ENDIAN=y
--	require-kernel-config CPU_LITTLE_ENDIAN=n
--	require-kernel-config 32BIT
-+    riscv64)
-+	require-kernel-config SOC_VIRT
-+	require-kernel-config VIRTIO_MENU
-+	require-kernel-config PCI
- 
- 	have_virtio=1
--	ktest_storage_bus=piix4-ide
- 
- 	require-kernel-append console=hvc0
- 	;;
--- 
-2.42.0
+Agree, but IIUC it looks like there's more work to do (related to the
+write bounce code) before we can change this limit. I've got a v2 of
+this patch, which I'll post shortly, that retains the limit, fixes up
+the logic wart that originally brought attention to this code, and adds
+some comments. Thanks for the additional context.
+
+Brian
+
+> iomap has IOEND_BATCH_SIZE, which is another hard coded limit; perhaps
+> iomap could use the new sysctl as well.
+> 
+> > 
+> > Signed-off-by: Brian Foster <bfoster@redhat.com>
+> > ---
+> >  fs/bcachefs/fs-io-buffered.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/fs/bcachefs/fs-io-buffered.c b/fs/bcachefs/fs-io-buffered.c
+> > index 58ccc7b91ac7..d438b93a3a30 100644
+> > --- a/fs/bcachefs/fs-io-buffered.c
+> > +++ b/fs/bcachefs/fs-io-buffered.c
+> > @@ -607,8 +607,6 @@ static int __bch2_writepage(struct folio *folio,
+> >  		if (w->io &&
+> >  		    (w->io->op.res.nr_replicas != nr_replicas_this_write ||
+> >  		     bio_full(&w->io->op.wbio.bio, sectors << 9) ||
+> > -		     w->io->op.wbio.bio.bi_iter.bi_size + (sectors << 9) >=
+> > -		     (BIO_MAX_VECS * PAGE_SIZE) ||
+> >  		     bio_end_sector(&w->io->op.wbio.bio) != sector))
+> >  			bch2_writepage_do_io(w);
+> >  
+> > -- 
+> > 2.41.0
+> > 
+> 
 
