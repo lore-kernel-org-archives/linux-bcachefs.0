@@ -2,71 +2,204 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C2D4E7737B
-	for <linux-bcachefs@archiver.kernel.org>; Sat, 30 Sep 2023 17:15:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B07CE748EA
+	for <linux-bcachefs@archiver.kernel.org>; Sat, 30 Sep 2023 21:56:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbjI3RPP (ORCPT
+        id S234052AbjI3V4M (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sat, 30 Sep 2023 13:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        Sat, 30 Sep 2023 17:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234506AbjI3RPO (ORCPT
+        with ESMTP id S233980AbjI3V4L (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sat, 30 Sep 2023 13:15:14 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D543DD
-        for <linux-bcachefs@vger.kernel.org>; Sat, 30 Sep 2023 10:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1696094110; bh=Fe3Qw9G+2iGnIBqTIl2A1ejsMmSLPohiuvnas2Ga0vs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n4im5qMamSSL6MTEo0m9ZEvHxSCQhDxImZnccmnTl05Tl+CNDfhPTbeRT29KE9MNu
-         3z6bcqkcz0G6qwzRxuGC1dC1p2+rpd/CShfYijhJtZTcKgWrbE8eIy/Z2eGKmFJR+W
-         dJ/cAVteFDzbBzf0V0/8O7PgCOdVpcxLhuzwiSEk=
-Date:   Sat, 30 Sep 2023 19:15:09 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+        Sat, 30 Sep 2023 17:56:11 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FF8CA
+        for <linux-bcachefs@vger.kernel.org>; Sat, 30 Sep 2023 14:56:06 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3af5b5d7f16so2978960b6e.0
+        for <linux-bcachefs@vger.kernel.org>; Sat, 30 Sep 2023 14:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696110966; x=1696715766; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1icVX1vipL46lW3iEjwQH9ZT3scIXW/xZq3Wbk91zeo=;
+        b=JYew/IExMjJKEYDEvN9Yaa1UvLBJPPEURCiC28qWIXyo0dZ1avIUfTem2PcEyhW+Wn
+         ss67Rx0IjvdnMbgnz/Ns4RUHaVbeLFcqnRwszby1qwnG4+k44CvTSga/nOl7mjn4BD7S
+         Jw1RUpKtLy/ZlfralpzlKC9NZcwhDo9WHLcJk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696110966; x=1696715766;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1icVX1vipL46lW3iEjwQH9ZT3scIXW/xZq3Wbk91zeo=;
+        b=n0Nqw1pkkv7bi+rpzaYUeOcYm0c+yj2G2wwCHSH8DcGYP/BRSbcNaL1MUau0SuNThI
+         O1Wqma52iEGrQ6i3NxVPjoZtqpCa+RgPx2JZU6Xp92sMeSixMscHOFDXYNlYF8Ullw79
+         Rv3J0JhrKS7NqiIGi7CM2jZmJriYX0QFWnIzcK5dsYVMAByUNmEGoLoMRBsgCFr6ZRZd
+         2v4lQdroYG2PS1K58KG4nXDEfCSgnmscoqMI1TaAOrRYqqAY/8Dmbq58CqoZSBD2LQZV
+         g04y8pvIHD+2NAsrJyihYNpoTaOqZfFAT183h8KFezFlfmn5K9PXXT21EVrfXOeQt0O3
+         gnTw==
+X-Gm-Message-State: AOJu0YzzYz4uKxvzpVzEqHFdg6/ci27sfU8jQKgukaXoUL7dbpYxvaD0
+        mNQ+t+EXeSyrrqa1qfMgcmWY1w==
+X-Google-Smtp-Source: AGHT+IFkI3tRr+/6289gTcMVtjTAWDXeyklSe2Qt3xiCvsM7nQGjkWpzKBhDTJj9OyNhzL6HMfwCSQ==
+X-Received: by 2002:a05:6808:645:b0:3ab:929e:c5e1 with SMTP id z5-20020a056808064500b003ab929ec5e1mr8085723oih.39.1696110965716;
+        Sat, 30 Sep 2023 14:56:05 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001b8c6890623sm19257993plf.7.2023.09.30.14.56.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Sep 2023 14:56:04 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 14:56:01 -0700
+From:   Kees Cook <keescook@chromium.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org
-Subject: Re: bcachefs-tools for members v2
-Message-ID: <14e5d4d2-c3d3-4974-b45f-0955a7e31fba@t-8ch.de>
-References: <063cc43e-0c7f-4bb1-ad8f-7ca05a62c1cf@t-8ch.de>
- <20230929181928.n2tklx624e5mg6gp@moria.home.lan>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Brian Foster <bfoster@redhat.com>,
+        kernel test robot <lkp@intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ df964ce9ef9fea10cf131bf6bad8658fde7956f6
+Message-ID: <202309301403.82201B0A@keescook>
+References: <202309301308.d22sJdaF-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230929181928.n2tklx624e5mg6gp@moria.home.lan>
+In-Reply-To: <202309301308.d22sJdaF-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 Hi Kent,
 
-On 2023-09-29 14:19:28-0400, Kent Overstreet wrote:
-> On Fri, Sep 29, 2023 at 05:17:24PM +0200, Thomas Weißschuh wrote:
-> > I'd like to extend libblkid/util-linux to handle the new members v2
-> > format. We are using the superblock members to calculate the overall
-> > filesystem size and per-device UUIDs.
-> > 
-> > While I found the kernel part, I did not so for the userspace part.
-> > Could you give me a hint?
-> 
-> It'll be landing in -tools shortly.
-> 
-> > Also it would be great to know when the new members v2 layout is
-> > considered stable.
-> 
-> It's stable now.
-> 
-> I don't think you'll actually need to use members_v2 in util-linux
-> though - we'll always be including members_v1 in the superblock for
-> compatibility with older versions, you'll only need to switch to
-> members_v2 if you want to access newer fields in bch_member.
-> 
-> That'll be the new iops fields, and shortly a new sequence number for
-> detecting split brain conditions, possibly some error counters later...
+Andrew pointed this out to me, and it's a FORTIFY issue under a W=1 build:
 
-Great, then we won't have to do anything.
-Thanks for the clarification.
+On Sat, Sep 30, 2023 at 01:25:34PM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> branch HEAD: df964ce9ef9fea10cf131bf6bad8658fde7956f6  Add linux-next specific files for 20230929
+> 
+> Error/Warning reports:
+> 
+> [...]
+> https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com
 
+   fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
+   include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
+      57 | #define __underlying_memcpy     __builtin_memcpy
+         |                                 ^
+   include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
+     648 |         __underlying_##op(p, q, __fortify_size);                        \
+         |         ^~~~~~~~~~~~~
+   include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
+     693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+         |                          ^~~~~~~~~~~~~~~~~~~~
+   fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
+     235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+         |                 ^~~~~~
+   fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
+     287 |                 struct bch_val  v;
+         |                                 ^
 
-Thomas
+The problem here is the struct bch_val is explicitly declared as a
+zero-sized array, so the compiler becomes unhappy. :) Converting bch_val
+to a flexible array will just kick the can down the road, since this is
+going to run into -Wflex-array-member-not-at-end soon too since bch_val
+overlaps with other structures:
+
+struct bch_inode_v3 {
+        struct bch_val          v;
+
+        __le64                  bi_journal_seq;
+...
+};
+
+As a container_of() target, this is fine -- leave it a zero-sized
+array. The problem is using it as a destination for memcpy, etc, since
+the compiler will believe it to be 0 sized. Instead, we need to impart
+a type of some kind so that the compiler can actually unambiguously
+reason about sizes. The memcpy() in the warning is targeting bch_val,
+so I think the best fix is to correctly handle the different types.
+
+So just to have everything in front of me, here's a summary of what I'm
+seeing in the code:
+
+struct bkey {
+        /* Size of combined key and value, in u64s */
+        __u8            u64s;
+...
+};
+
+/* Empty placeholder struct, for container_of() */
+struct bch_val {
+        __u64           __nothing[0];
+};
+
+struct bkey_i {
+        __u64                   _data[0];
+
+        struct bkey     k;
+        struct bch_val  v;
+};
+
+static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr ptr)
+{
+        EBUG_ON(bch2_bkey_has_device(bkey_i_to_s(k), ptr.dev));
+
+        switch (k->k.type) {
+        case KEY_TYPE_btree_ptr:
+        case KEY_TYPE_btree_ptr_v2:
+        case KEY_TYPE_extent:
+                EBUG_ON(bkey_val_u64s(&k->k) >= BKEY_EXTENT_VAL_U64s_MAX);
+
+                ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
+
+                memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+                       &ptr,
+                       sizeof(ptr));
+                k->k.u64s++;
+                break;
+        default:
+                BUG();
+        }
+}
+
+So this is appending u64s into the region that start with bkey_i. Could
+this gain a u64 flexible array?
+
+struct bkey_i {
+        __u64                   _data[0];
+
+        struct bkey     k;
+        struct bch_val  v;
+	__u64		ptrs[];
+};
+
+Then the memcpy() could be just a direct assignment:
+
+		k->ptrs[bkey_val_u64s(&k->k)] = (u64)ptr;
+                k->k.u64s++;
+
+Alternatively, perhaps struct bkey could be the one to grow this flexible
+array, and then it could eventually be tracked with __counted_by (but
+not today since it expects to count the array element count, not a whole
+struct size):
+
+struct bkey {
+        /* Size of combined key and value, in u64s */
+        __u8            u64s;
+...
+	__u64		data[] __counted_by(.u64s - BKEY_U64s);
+};
+
+And bch_val could be dropped...
+
+Then the memcpy becomes:
+
+                k->k.u64s++;
+                k->k.data[bkey_val_u64s(&k->k)] = (u64)ptr;
+
+It just seems like there is a lot of work happening that could really
+just type casting or unions...
+
+What do you think?
+
+-- 
+Kees Cook
