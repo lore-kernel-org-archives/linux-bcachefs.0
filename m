@@ -2,204 +2,112 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B07CE748EA
-	for <linux-bcachefs@archiver.kernel.org>; Sat, 30 Sep 2023 21:56:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1C34E748E9
+	for <linux-bcachefs@archiver.kernel.org>; Sun,  1 Oct 2023 07:14:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbjI3V4M (ORCPT
+        id S234386AbjJAHOM (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sat, 30 Sep 2023 17:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
+        Sun, 1 Oct 2023 03:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233980AbjI3V4L (ORCPT
+        with ESMTP id S234371AbjJAHOL (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sat, 30 Sep 2023 17:56:11 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FF8CA
-        for <linux-bcachefs@vger.kernel.org>; Sat, 30 Sep 2023 14:56:06 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3af5b5d7f16so2978960b6e.0
-        for <linux-bcachefs@vger.kernel.org>; Sat, 30 Sep 2023 14:56:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696110966; x=1696715766; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1icVX1vipL46lW3iEjwQH9ZT3scIXW/xZq3Wbk91zeo=;
-        b=JYew/IExMjJKEYDEvN9Yaa1UvLBJPPEURCiC28qWIXyo0dZ1avIUfTem2PcEyhW+Wn
-         ss67Rx0IjvdnMbgnz/Ns4RUHaVbeLFcqnRwszby1qwnG4+k44CvTSga/nOl7mjn4BD7S
-         Jw1RUpKtLy/ZlfralpzlKC9NZcwhDo9WHLcJk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696110966; x=1696715766;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1icVX1vipL46lW3iEjwQH9ZT3scIXW/xZq3Wbk91zeo=;
-        b=n0Nqw1pkkv7bi+rpzaYUeOcYm0c+yj2G2wwCHSH8DcGYP/BRSbcNaL1MUau0SuNThI
-         O1Wqma52iEGrQ6i3NxVPjoZtqpCa+RgPx2JZU6Xp92sMeSixMscHOFDXYNlYF8Ullw79
-         Rv3J0JhrKS7NqiIGi7CM2jZmJriYX0QFWnIzcK5dsYVMAByUNmEGoLoMRBsgCFr6ZRZd
-         2v4lQdroYG2PS1K58KG4nXDEfCSgnmscoqMI1TaAOrRYqqAY/8Dmbq58CqoZSBD2LQZV
-         g04y8pvIHD+2NAsrJyihYNpoTaOqZfFAT183h8KFezFlfmn5K9PXXT21EVrfXOeQt0O3
-         gnTw==
-X-Gm-Message-State: AOJu0YzzYz4uKxvzpVzEqHFdg6/ci27sfU8jQKgukaXoUL7dbpYxvaD0
-        mNQ+t+EXeSyrrqa1qfMgcmWY1w==
-X-Google-Smtp-Source: AGHT+IFkI3tRr+/6289gTcMVtjTAWDXeyklSe2Qt3xiCvsM7nQGjkWpzKBhDTJj9OyNhzL6HMfwCSQ==
-X-Received: by 2002:a05:6808:645:b0:3ab:929e:c5e1 with SMTP id z5-20020a056808064500b003ab929ec5e1mr8085723oih.39.1696110965716;
-        Sat, 30 Sep 2023 14:56:05 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001b8c6890623sm19257993plf.7.2023.09.30.14.56.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 14:56:04 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 14:56:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Sun, 1 Oct 2023 03:14:11 -0400
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C045BE
+        for <linux-bcachefs@vger.kernel.org>; Sun,  1 Oct 2023 00:14:08 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id mqeRqDkx1FUAImqeRqiyTX; Sun, 01 Oct 2023 09:14:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1696144446;
+        bh=Dz1UeOwZ8D3gWqhd347/K4+hqBwOzPrkQWzzaVtlMzY=;
+        h=From:To:Cc:Subject:Date;
+        b=PQawNpi9kuc2NtZ7RgyVhcDO425+uGUgiUz6D13ulhKLSwmkQA6wWu5hiT3J7Y8jk
+         yNpNrMK0R4GbtAYoC2a2VMHMzWQ9V6tvquetNHnhGvTEs0SQ5gdTplEfBq1YQS9oSo
+         oBXRPQBNWDuHO8Pxj0lh898dN6EUpyq1V36bV1nORSquzqw9j6G7wVlN4byFgd6Gys
+         9x8wYJabPmpFjO6ito9ye6c8yerJR22PSZNtmTNz1TtPlUoEFGRxwtTVa5i7i9JRQG
+         nw37iCpgVbnGPr7+1Su7hBZBnhnCPkGur3OSgLSK22yUrj8Vb20JHP3FN/MZNrebVi
+         Kgr34PBPFnnmg==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 01 Oct 2023 09:14:06 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Kent Overstreet <kent.overstreet@linux.dev>,
         Brian Foster <bfoster@redhat.com>,
-        kernel test robot <lkp@intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [linux-next:master] BUILD REGRESSION
- df964ce9ef9fea10cf131bf6bad8658fde7956f6
-Message-ID: <202309301403.82201B0A@keescook>
-References: <202309301308.d22sJdaF-lkp@intel.com>
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH] bcachefs: Use struct_size()
+Date:   Sun,  1 Oct 2023 09:13:54 +0200
+Message-Id: <120b638f99b088f91d5a4491c800463c554e70b8.1696144401.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202309301308.d22sJdaF-lkp@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi Kent,
+Use struct_size() instead of hand writing it.
+This is less verbose and more robust.
 
-Andrew pointed this out to me, and it's a FORTIFY issue under a W=1 build:
+While at it, prepare for the coming implementation by GCC and Clang of the
+__counted_by attribute. Flexible array members annotated with __counted_by
+can have their accesses bounds-checked at run-time checking via
+CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
+strcpy/memcpy-family functions).
 
-On Sat, Sep 30, 2023 at 01:25:34PM +0800, kernel test robot wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> branch HEAD: df964ce9ef9fea10cf131bf6bad8658fde7956f6  Add linux-next specific files for 20230929
-> 
-> Error/Warning reports:
-> 
-> [...]
-> https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This patch is part of a work done in parallel of what is currently worked
+on by Kees Cook.
 
-   fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
-   include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
-      57 | #define __underlying_memcpy     __builtin_memcpy
-         |                                 ^
-   include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
-     648 |         __underlying_##op(p, q, __fortify_size);                        \
-         |         ^~~~~~~~~~~~~
-   include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
-     693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
-         |                          ^~~~~~~~~~~~~~~~~~~~
-   fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
-     235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-         |                 ^~~~~~
-   fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
-     287 |                 struct bch_val  v;
-         |                                 ^
+My patches are only related to corner cases that do NOT match the
+semantic of his Coccinelle script[1].
 
-The problem here is the struct bch_val is explicitly declared as a
-zero-sized array, so the compiler becomes unhappy. :) Converting bch_val
-to a flexible array will just kick the can down the road, since this is
-going to run into -Wflex-array-member-not-at-end soon too since bch_val
-overlaps with other structures:
+In this case, struct_size() was not used to compute the size needed for the
+structure and its flex array.
 
-struct bch_inode_v3 {
-        struct bch_val          v;
+[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+---
+ fs/bcachefs/disk_groups.c | 3 +--
+ fs/bcachefs/super_types.h | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-        __le64                  bi_journal_seq;
-...
-};
-
-As a container_of() target, this is fine -- leave it a zero-sized
-array. The problem is using it as a destination for memcpy, etc, since
-the compiler will believe it to be 0 sized. Instead, we need to impart
-a type of some kind so that the compiler can actually unambiguously
-reason about sizes. The memcpy() in the warning is targeting bch_val,
-so I think the best fix is to correctly handle the different types.
-
-So just to have everything in front of me, here's a summary of what I'm
-seeing in the code:
-
-struct bkey {
-        /* Size of combined key and value, in u64s */
-        __u8            u64s;
-...
-};
-
-/* Empty placeholder struct, for container_of() */
-struct bch_val {
-        __u64           __nothing[0];
-};
-
-struct bkey_i {
-        __u64                   _data[0];
-
-        struct bkey     k;
-        struct bch_val  v;
-};
-
-static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr ptr)
-{
-        EBUG_ON(bch2_bkey_has_device(bkey_i_to_s(k), ptr.dev));
-
-        switch (k->k.type) {
-        case KEY_TYPE_btree_ptr:
-        case KEY_TYPE_btree_ptr_v2:
-        case KEY_TYPE_extent:
-                EBUG_ON(bkey_val_u64s(&k->k) >= BKEY_EXTENT_VAL_U64s_MAX);
-
-                ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
-
-                memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-                       &ptr,
-                       sizeof(ptr));
-                k->k.u64s++;
-                break;
-        default:
-                BUG();
-        }
-}
-
-So this is appending u64s into the region that start with bkey_i. Could
-this gain a u64 flexible array?
-
-struct bkey_i {
-        __u64                   _data[0];
-
-        struct bkey     k;
-        struct bch_val  v;
-	__u64		ptrs[];
-};
-
-Then the memcpy() could be just a direct assignment:
-
-		k->ptrs[bkey_val_u64s(&k->k)] = (u64)ptr;
-                k->k.u64s++;
-
-Alternatively, perhaps struct bkey could be the one to grow this flexible
-array, and then it could eventually be tracked with __counted_by (but
-not today since it expects to count the array element count, not a whole
-struct size):
-
-struct bkey {
-        /* Size of combined key and value, in u64s */
-        __u8            u64s;
-...
-	__u64		data[] __counted_by(.u64s - BKEY_U64s);
-};
-
-And bch_val could be dropped...
-
-Then the memcpy becomes:
-
-                k->k.u64s++;
-                k->k.data[bkey_val_u64s(&k->k)] = (u64)ptr;
-
-It just seems like there is a lot of work happening that could really
-just type casting or unions...
-
-What do you think?
-
+diff --git a/fs/bcachefs/disk_groups.c b/fs/bcachefs/disk_groups.c
+index b292dbef7992..224efa917427 100644
+--- a/fs/bcachefs/disk_groups.c
++++ b/fs/bcachefs/disk_groups.c
+@@ -166,8 +166,7 @@ int bch2_sb_disk_groups_to_cpu(struct bch_fs *c)
+ 	if (!groups)
+ 		return 0;
+ 
+-	cpu_g = kzalloc(sizeof(*cpu_g) +
+-			sizeof(cpu_g->entries[0]) * nr_groups, GFP_KERNEL);
++	cpu_g = kzalloc(struct_size(cpu_g, entries, nr_groups), GFP_KERNEL);
+ 	if (!cpu_g)
+ 		return -BCH_ERR_ENOMEM_disk_groups_to_cpu;
+ 
+diff --git a/fs/bcachefs/super_types.h b/fs/bcachefs/super_types.h
+index 597a8db73585..78d6138db62d 100644
+--- a/fs/bcachefs/super_types.h
++++ b/fs/bcachefs/super_types.h
+@@ -46,7 +46,7 @@ struct bch_disk_group_cpu {
+ struct bch_disk_groups_cpu {
+ 	struct rcu_head			rcu;
+ 	unsigned			nr;
+-	struct bch_disk_group_cpu	entries[];
++	struct bch_disk_group_cpu	entries[] __counted_by(nr);
+ };
+ 
+ #endif /* _BCACHEFS_SUPER_TYPES_H */
 -- 
-Kees Cook
+2.34.1
+
