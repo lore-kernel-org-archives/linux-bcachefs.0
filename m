@@ -2,164 +2,199 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B712BE748ED
-	for <linux-bcachefs@archiver.kernel.org>; Sun,  1 Oct 2023 09:13:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEE1DE784A6
+	for <linux-bcachefs@archiver.kernel.org>; Mon,  2 Oct 2023 03:22:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234693AbjJAJNk (ORCPT
+        id S235363AbjJBDWu (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 1 Oct 2023 05:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35382 "EHLO
+        Sun, 1 Oct 2023 23:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234680AbjJAJNi (ORCPT
+        with ESMTP id S235212AbjJBDWt (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 1 Oct 2023 05:13:38 -0400
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD85DBD;
-        Sun,  1 Oct 2023 02:13:35 -0700 (PDT)
-Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
-        by cmsmtp with ESMTP
-        id mektqJp77NWIemsW7qthYR; Sun, 01 Oct 2023 09:13:35 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id msW6qMDOEBsZEmsW6qFaZn; Sun, 01 Oct 2023 09:13:34 +0000
-X-Authority-Analysis: v=2.4 cv=bax47cDB c=1 sm=1 tr=0 ts=6519383e
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=NEAV23lmAAAA:8 a=cLZyiMI5l2q1nrJyhZUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=IrcoHngMEI3PscYSp/Yz5U/Odq3VqzylH1QDFm3GoFc=; b=wENTTVexpEzDAK1AaTXmTVTBCH
-        HcQdwyPj1nfMN7BPfWZyzbIGYDJbD4fpVkyOgDZ4uCN/lvfuDJbzj0JXwA7AFa75V0rR5+i8sVxr8
-        q4s7FyxXzwBrSHLPeYKQiaFqNiuLfr8oESTuq2XH8j7rwA3pUS9qf7ois5YmGlbrNJcQI75t64Scb
-        AVmiffu2dRGR2MrLvyyqq82EtDzbQIhx3TV5+vUHane82zJol+mtFN5PJzTTNBdG41t4RsZjzLe92
-        uJn2gdKrbPBCbQj02bhQ/lSDIrV34rosz3Gzhs96y98LxBvN2nOOGxB1LhlV7VPd5RbrBD1OMt3FN
-        tV56v4eA==;
-Received: from [94.239.20.48] (port=43308 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qmqnU-0020ti-1f;
-        Sun, 01 Oct 2023 02:23:24 -0500
-Message-ID: <7ae7737e-e32c-e9e7-880c-cafc240e7c33@embeddedor.com>
-Date:   Sun, 1 Oct 2023 09:23:17 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] bcachefs: Use struct_size()
-Content-Language: en-US
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
+        Sun, 1 Oct 2023 23:22:49 -0400
+Received: from out-192.mta0.migadu.com (out-192.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA4BC6
+        for <linux-bcachefs@vger.kernel.org>; Sun,  1 Oct 2023 20:22:46 -0700 (PDT)
+Date:   Sun, 1 Oct 2023 23:22:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696216963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JklXW6Z7ajflSgg9Kh9ih47eyxtCv9eOtR0Gj32NGWI=;
+        b=fFCaLqAAMWQH/QRpOQ9JxdRKCdWSnR0t7DWuPHFx8mbxDlr7/dAk1mrNvBTjYQM7HMs+FQ
+        Q0Jj7htwUxRj0iB46vCoQPvdomL2lLVdPkoYS2xix3IwFtRDbdbtqNEZco+V+UxChHzKRN
+        a2/2B6psnFUXzoYq6y1jxtvPv25XD58=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Brian Foster <bfoster@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <120b638f99b088f91d5a4491c800463c554e70b8.1696144401.git.christophe.jaillet@wanadoo.fr>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <120b638f99b088f91d5a4491c800463c554e70b8.1696144401.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.239.20.48
-X-Source-L: No
-X-Exim-ID: 1qmqnU-0020ti-1f
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:43308
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfJV7R3hh1LzRfvAnjgMTJBwXQOSvgrtPZWtBNBaUWkODEpkynlZvciSgfBrKfALoIubDUo4K9IaHtYpUurxwyTUP8BRhNc1PzGR4P7PJHacdTRYeoOlp
- uE+X2zUYOMlut8e1hSTQLGgItGS3KhwvIef+pSSiTSOA6hnrHF62NdFOfBfAlnqzQ5u7hqqOtUVe58glwVln/X0MDhYkJLY6Nz8Rizu6GGes+MKzBCHY/oAi
- Q8x8dn/7KUHhVHsk2DISSNJzxvBGJFgZTtQsG//hPoDai9V0d5qXV0Rf7RkssuuOmIBF6KE2QiyXsms6/g4JOQocmhd2XN/BXLIOnebU+ZC/3ZeKiwSiMBWH
- m8Hm7VE+
+        kernel test robot <lkp@intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ df964ce9ef9fea10cf131bf6bad8658fde7956f6
+Message-ID: <20231002032239.t7ghpigbq5jy3ng7@moria.home.lan>
+References: <202309301308.d22sJdaF-lkp@intel.com>
+ <202309301403.82201B0A@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202309301403.82201B0A@keescook>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-
-
-On 10/1/23 09:13, Christophe JAILLET wrote:
-> Use struct_size() instead of hand writing it.
-> This is less verbose and more robust.
+On Sat, Sep 30, 2023 at 02:56:01PM -0700, Kees Cook wrote:
+> Hi Kent,
 > 
-> While at it, prepare for the coming implementation by GCC and Clang of the
-> __counted_by attribute. Flexible array members annotated with __counted_by
-> can have their accesses bounds-checked at run-time checking via
-> CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
-> strcpy/memcpy-family functions).
-
-I would prefer this as two separate patches.
-
+> Andrew pointed this out to me, and it's a FORTIFY issue under a W=1 build:
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-
-In any case:
-
-Reviewed-by: Gustavo A. R. Silva <gustavors@kernel.org>
-
-Thanks
---
-Gustavo
-
-> ---
-> This patch is part of a work done in parallel of what is currently worked
-> on by Kees Cook.
+> On Sat, Sep 30, 2023 at 01:25:34PM +0800, kernel test robot wrote:
+> > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> > branch HEAD: df964ce9ef9fea10cf131bf6bad8658fde7956f6  Add linux-next specific files for 20230929
+> > 
+> > Error/Warning reports:
+> > 
+> > [...]
+> > https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com
 > 
-> My patches are only related to corner cases that do NOT match the
-> semantic of his Coccinelle script[1].
+>    fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
+>    include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
+>       57 | #define __underlying_memcpy     __builtin_memcpy
+>          |                                 ^
+>    include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
+>      648 |         __underlying_##op(p, q, __fortify_size);                        \
+>          |         ^~~~~~~~~~~~~
+>    include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
+>      693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+>          |                          ^~~~~~~~~~~~~~~~~~~~
+>    fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
+>      235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+>          |                 ^~~~~~
+>    fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
+>      287 |                 struct bch_val  v;
+>          |                                 ^
 > 
-> In this case, struct_size() was not used to compute the size needed for the
-> structure and its flex array.
+> The problem here is the struct bch_val is explicitly declared as a
+> zero-sized array, so the compiler becomes unhappy. :) Converting bch_val
+> to a flexible array will just kick the can down the road, since this is
+> going to run into -Wflex-array-member-not-at-end soon too since bch_val
+> overlaps with other structures:
 > 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> ---
->   fs/bcachefs/disk_groups.c | 3 +--
->   fs/bcachefs/super_types.h | 2 +-
->   2 files changed, 2 insertions(+), 3 deletions(-)
+> struct bch_inode_v3 {
+>         struct bch_val          v;
 > 
-> diff --git a/fs/bcachefs/disk_groups.c b/fs/bcachefs/disk_groups.c
-> index b292dbef7992..224efa917427 100644
-> --- a/fs/bcachefs/disk_groups.c
-> +++ b/fs/bcachefs/disk_groups.c
-> @@ -166,8 +166,7 @@ int bch2_sb_disk_groups_to_cpu(struct bch_fs *c)
->   	if (!groups)
->   		return 0;
->   
-> -	cpu_g = kzalloc(sizeof(*cpu_g) +
-> -			sizeof(cpu_g->entries[0]) * nr_groups, GFP_KERNEL);
-> +	cpu_g = kzalloc(struct_size(cpu_g, entries, nr_groups), GFP_KERNEL);
->   	if (!cpu_g)
->   		return -BCH_ERR_ENOMEM_disk_groups_to_cpu;
->   
-> diff --git a/fs/bcachefs/super_types.h b/fs/bcachefs/super_types.h
-> index 597a8db73585..78d6138db62d 100644
-> --- a/fs/bcachefs/super_types.h
-> +++ b/fs/bcachefs/super_types.h
-> @@ -46,7 +46,7 @@ struct bch_disk_group_cpu {
->   struct bch_disk_groups_cpu {
->   	struct rcu_head			rcu;
->   	unsigned			nr;
-> -	struct bch_disk_group_cpu	entries[];
-> +	struct bch_disk_group_cpu	entries[] __counted_by(nr);
->   };
->   
->   #endif /* _BCACHEFS_SUPER_TYPES_H */
+>         __le64                  bi_journal_seq;
+> ...
+> };
+> 
+> As a container_of() target, this is fine -- leave it a zero-sized
+> array. The problem is using it as a destination for memcpy, etc, since
+> the compiler will believe it to be 0 sized. Instead, we need to impart
+> a type of some kind so that the compiler can actually unambiguously
+> reason about sizes. The memcpy() in the warning is targeting bch_val,
+> so I think the best fix is to correctly handle the different types.
+> 
+> So just to have everything in front of me, here's a summary of what I'm
+> seeing in the code:
+> 
+> struct bkey {
+>         /* Size of combined key and value, in u64s */
+>         __u8            u64s;
+> ...
+> };
+> 
+> /* Empty placeholder struct, for container_of() */
+> struct bch_val {
+>         __u64           __nothing[0];
+> };
+> 
+> struct bkey_i {
+>         __u64                   _data[0];
+> 
+>         struct bkey     k;
+>         struct bch_val  v;
+> };
+> 
+> static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr ptr)
+> {
+>         EBUG_ON(bch2_bkey_has_device(bkey_i_to_s(k), ptr.dev));
+> 
+>         switch (k->k.type) {
+>         case KEY_TYPE_btree_ptr:
+>         case KEY_TYPE_btree_ptr_v2:
+>         case KEY_TYPE_extent:
+>                 EBUG_ON(bkey_val_u64s(&k->k) >= BKEY_EXTENT_VAL_U64s_MAX);
+> 
+>                 ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
+> 
+>                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+>                        &ptr,
+>                        sizeof(ptr));
+>                 k->k.u64s++;
+>                 break;
+>         default:
+>                 BUG();
+>         }
+> }
+> 
+> So this is appending u64s into the region that start with bkey_i. Could
+> this gain a u64 flexible array?
+> 
+> struct bkey_i {
+>         __u64                   _data[0];
+> 
+>         struct bkey     k;
+>         struct bch_val  v;
+> 	__u64		ptrs[];
+> };
+> 
+> Then the memcpy() could be just a direct assignment:
+> 
+> 		k->ptrs[bkey_val_u64s(&k->k)] = (u64)ptr;
+>                 k->k.u64s++;
+
+No, that's not going to work. You're adding a field that's specific to
+bch_extent (and not even correct for that) to bkey_i, the generic key;
+there are many other different types of values.
+
+> Alternatively, perhaps struct bkey could be the one to grow this flexible
+> array, and then it could eventually be tracked with __counted_by (but
+> not today since it expects to count the array element count, not a whole
+> struct size):
+> 
+> struct bkey {
+>         /* Size of combined key and value, in u64s */
+>         __u8            u64s;
+> ...
+> 	__u64		data[] __counted_by(.u64s - BKEY_U64s);
+> };
+> 
+> And bch_val could be dropped...
+
+bch_val can't be dropped. bkey_i is different from bkey; bkey_i is a
+bkey with an inline value, we also have bkey_s and bkey_s_c for a bkey
+with a split value (and const variation); bch_val is in bkey_i and not
+bkey because container_of to get to the value is correct for bkey_i, but
+not bkey.
+
+> Then the memcpy becomes:
+> 
+>                 k->k.u64s++;
+>                 k->k.data[bkey_val_u64s(&k->k)] = (u64)ptr;
+> 
+> It just seems like there is a lot of work happening that could really
+> just type casting or unions...
+
+Honestly, I think we really just need an escape hatch. Casting to a void
+pointer clearly isn't it - and this isn't the only issue I'm still
+seeing with all the recent FORTIFY_SOURCE stuff, and honestly it's been
+making me tear my hair out.
+
+I'm not leaping at the chance to reorganize my fundamental data
+structures for this. Can we get such an escape hatch?
