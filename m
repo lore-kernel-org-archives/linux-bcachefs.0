@@ -2,22 +2,22 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF9D4E81E04
-	for <linux-bcachefs@archiver.kernel.org>; Fri,  6 Oct 2023 14:10:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A767E81DFE
+	for <linux-bcachefs@archiver.kernel.org>; Fri,  6 Oct 2023 14:10:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbjJFOK2 (ORCPT
+        id S232392AbjJFOK1 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 6 Oct 2023 10:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbjJFOK1 (ORCPT
-        <rfc822;linux-bcachefs@vger.kernel.org>);
         Fri, 6 Oct 2023 10:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230444AbjJFOKZ (ORCPT
+        <rfc822;linux-bcachefs@vger.kernel.org>);
+        Fri, 6 Oct 2023 10:10:25 -0400
 Received: from relay-b01.edpnet.be (relay-b01.edpnet.be [212.71.1.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68299E
-        for <linux-bcachefs@vger.kernel.org>; Fri,  6 Oct 2023 07:10:25 -0700 (PDT)
-X-ASG-Debug-ID: 1696601416-2392342037a6e10006-qsCQDO
-Received: from linuxserver.costadelsollie.local (212.71.9.157.dyn.edpnet.net [212.71.9.157]) by relay-b01.edpnet.be with ESMTP id Xg4HUCI1bkZAD2dF; Fri, 06 Oct 2023 16:10:19 +0200 (CEST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3321AD
+        for <linux-bcachefs@vger.kernel.org>; Fri,  6 Oct 2023 07:10:22 -0700 (PDT)
+X-ASG-Debug-ID: 1696601416-2392342037a6e10002-qsCQDO
+Received: from linuxserver.costadelsollie.local (212.71.9.157.dyn.edpnet.net [212.71.9.157]) by relay-b01.edpnet.be with ESMTP id xY8B9Abpl8hTONBc; Fri, 06 Oct 2023 16:10:18 +0200 (CEST)
 X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
 X-Barracuda-Effective-Source-IP: 212.71.9.157.dyn.edpnet.net[212.71.9.157]
 X-Barracuda-Apparent-Source-IP: 212.71.9.157
@@ -25,266 +25,143 @@ From:   Janpieter Sollie <janpieter.sollie@kabelmail.de>
 To:     kent.overstreet@linux.dev, bfoster@redhat.com
 Cc:     linux-bcachefs@vger.kernel.org,
         Janpieter Sollie <janpieter.sollie@edpnet.be>
-Subject: [PATCH ktest v2 5/9] enable ARMv7 support
-Date:   Fri,  6 Oct 2023 15:54:28 +0200
-X-ASG-Orig-Subj: [PATCH ktest v2 5/9] enable ARMv7 support
-Message-ID: <20231006140943.41110-6-janpieter.sollie@kabelmail.de>
+Subject: [PATCH ktest v2 1/9] Increase cross-compile compatibility
+Date:   Fri,  6 Oct 2023 15:54:24 +0200
+X-ASG-Orig-Subj: [PATCH ktest v2 1/9] Increase cross-compile compatibility
+Message-ID: <20231006140943.41110-2-janpieter.sollie@kabelmail.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231006140943.41110-1-janpieter.sollie@kabelmail.de>
 References: <20231006140943.41110-1-janpieter.sollie@kabelmail.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Barracuda-Connect: 212.71.9.157.dyn.edpnet.net[212.71.9.157]
-X-Barracuda-Start-Time: 1696601419
+X-Barracuda-Start-Time: 1696601418
 X-Barracuda-URL: https://212.71.1.221:443/cgi-mod/mark.cgi
 X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 6837
+X-Barracuda-Scan-Msg-Size: 3137
 X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.75
-X-Barracuda-Spam-Status: No, SCORE=0.75 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=BSF_RULE_7580E
+X-Barracuda-Spam-Score: 0.00
+X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
 X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.115056
         Rule breakdown below
          pts rule name              description
         ---- ---------------------- --------------------------------------------------
-        0.75 BSF_RULE_7580E         Custom Rule 7580E
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 From: Janpieter Sollie <janpieter.sollie@edpnet.be>
 
-Ktest has now been expanded with cross-binary armv7 (hard float).
-this should allow some testing on more legacy armv7 hardware,
-which may still be present in NAS devices.
-However, due to the nature of the ecosystem, a limit is in place:
-- 3GB ram for 32 bit systems
-- 4 CPUs for 32 bit systems
-I think if you need more, you'd better think of going 64-bit.
-These constraints allow the ARM emulator to run smoothly.
+Some user distros do not use standard triplets, but instead, the triplet has another name.
+Move the triplet name into a gitignored config file,
+and fix a few trivial error messages breaking a cross-compile build:
+- use headers-generic instead of headers-$arch
+- if ulimit isn't set, don't do it.
 
-Signed-off-by:  jpsollie <janpieter.sollie@edpnet.be>
+Signed-off-by: jpsollie <janpieter.sollie@edpnet.be>
 ---
- build-test-kernel | 19 +++++++++++--------
- cross.conf        |  2 +-
- lib/common.sh     | 11 +++++++++++
- lib/libktest.sh   | 11 ++++++++---
- tests/kconfig.sh  | 25 ++++++++++++++++++++++---
- 5 files changed, 53 insertions(+), 15 deletions(-)
+ .gitignore      |  1 +
+ cross.conf      |  8 ++++++++
+ lib/common.sh   | 10 +++++++---
+ lib/libktest.sh |  2 +-
+ root_image      |  2 +-
+ 5 files changed, 18 insertions(+), 5 deletions(-)
+ create mode 100644 cross.conf
 
-diff --git a/build-test-kernel b/build-test-kernel
-index 38cfd25..ea0d56e 100755
---- a/build-test-kernel
-+++ b/build-test-kernel
-@@ -139,7 +139,7 @@ new_config()
-     local config_tool="$ktest_kernel_source/scripts/config"
+diff --git a/.gitignore b/.gitignore
+index d82a2a5..0e86b51 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -4,6 +4,7 @@ cscope*
+ tags
+ ktest-out
+ *.tags
++cross.conf
  
-     if [[ ! -f $kconfig ]]; then
--	do_make allnoconfig
-+	do_make ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-" allnoconfig
- 
- 	# Really undefine everything:
- 	sed -i -e 's/\(CONFIG_.*\)=.*/# \1 is not set/' "$kconfig"
-@@ -186,17 +186,17 @@ build_kernel()
- 	mv "$kconfig" "$kconfig".bak
-     fi
- 
-+    MAKEARGS+=("LOCALVERSION=-ktest" ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-")
-+
-     new_config
- 
-     log_verbose "kernel_config_require: ${ktest_kernel_config_require[@]}"
- 
--    MAKEARGS+=("LOCALVERSION=-ktest" ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-")
--
-     for opt in "${ktest_kernel_config_require[@]}"; do
- 	[[ -n $opt ]] && kernel_opt set "$opt"
-     done
- 
--    do_make olddefconfig
-+    do_make ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-" olddefconfig
- 
-     for opt in "${ktest_kernel_config_require[@]}"; do
- 	[[ -n $opt ]] && kernel_opt check "$opt"
-@@ -209,10 +209,10 @@ build_kernel()
- 
-     case $KERNEL_ARCH in
- 	mips)
--	    do_make -k vmlinuz
-+	    do_make $MAKEARGS -k vmlinuz
- 	    ;;
- 	*)
--	    do_make -k
-+	    do_make $MAKEARGS -k
- 	    ;;
-     esac
- 
-@@ -222,6 +222,9 @@ build_kernel()
- 	x86*)
- 	    install -m0644 "$BOOT/bzImage"	"$ktest_kernel_binary/vmlinuz"
- 	    ;;
-+	arm)
-+	    install -m0644 "$BOOT/zImage"	"$ktest_kernel_binary/vmlinuz"
-+	    ;;
- 	aarch64)
- 	    install -m0644 "$BOOT/Image"	"$ktest_kernel_binary/vmlinuz"
- 	    ;;
-@@ -281,13 +284,13 @@ cmd_boot()
- cmd_oldconfig()
- {
-     new_config
--    do_make oldconfig
-+    do_make ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-" oldconfig
- }
- 
- cmd_config()
- {
-     new_config
--    do_make nconfig
-+    do_make ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-" nconfig
- }
- 
- cmd_faddr2line()
+ lib/lwip-connect
+ lib/supervisor
 diff --git a/cross.conf b/cross.conf
-index 2896885..d98219e 100644
---- a/cross.conf
+new file mode 100644
+index 0000000..2896885
+--- /dev/null
 +++ b/cross.conf
-@@ -5,4 +5,4 @@
- ARCH_TRIPLE_X86=x86-linux-gnu
- ARCH_TRIPLE_X86_64=x86_64-linux-gnu
- ARCH_TRIPLE_ARM64=aarch64-linux-gnu
--
-+ARCH_TRIPLE_ARMV7=arm-linux-gnueabihf
+@@ -0,0 +1,8 @@
++# this file specifies target triplets for cross-compiling
++# whenever these need to be changed (some distributions prefer ARCHITECTURE-VENDOR-OS-LIBC), 
++# change the triplet here
++
++ARCH_TRIPLE_X86=x86-linux-gnu
++ARCH_TRIPLE_X86_64=x86_64-linux-gnu
++ARCH_TRIPLE_ARM64=aarch64-linux-gnu
++
 diff --git a/lib/common.sh b/lib/common.sh
-index 8629e9f..d9012aa 100644
+index 7786091..078f512 100644
 --- a/lib/common.sh
 +++ b/lib/common.sh
-@@ -116,6 +116,17 @@ parse_arch()
- 	    QEMU_PACKAGE=qemu-system-arm
- 	    QEMU_BIN=qemu-system-aarch64
- 	    ;;
-+	armhf|armv7|armv7l|arm)
-+	    ktest_arch=arm
-+	    DEBIAN_ARCH=armhf
-+	    ARCH_TRIPLE=${ARCH_TRIPLE_ARMV7}
+@@ -3,6 +3,10 @@ set -o nounset
+ set -o errtrace
+ set -o pipefail
+ 
++[[ -v ktest_dir ]] || ktest_dir=$(dirname ${BASH_SOURCE})/..
 +
-+	    KERNEL_ARCH=arm
-+	    BITS=32
++. "$ktest_dir/cross.conf"
 +
-+	    QEMU_PACKAGE=qemu-system-arm
-+	    QEMU_BIN=qemu-system-arm
-+	    ;;
- 	mips)
- 	    DEBIAN_ARCH=mips
- 	    ARCH_TRIPLE=mips-linux-gnu
+ trap 'echo "Error $? at $BASH_SOURCE $LINENO from: $BASH_COMMAND, exiting"' ERR
+ 
+ ktest_tmp=${ktest_tmp:-""}
+@@ -85,7 +89,7 @@ parse_arch()
+ 	x86|i386)
+ 	    ktest_arch=x86
+ 	    DEBIAN_ARCH=i386
+-	    ARCH_TRIPLE=x86-linux-gnu
++	    ARCH_TRIPLE=${ARCH_TRIPLE_X86}
+ 
+ 	    KERNEL_ARCH=x86
+ 	    BITS=32
+@@ -96,7 +100,7 @@ parse_arch()
+ 	x86_64|amd64)
+ 	    ktest_arch=x86_64
+ 	    DEBIAN_ARCH=amd64
+-	    ARCH_TRIPLE=x86_64-linux-gnu
++	    ARCH_TRIPLE=${ARCH_TRIPLE_X86_64}
+ 
+ 	    KERNEL_ARCH=x86
+ 	    BITS=64
+@@ -107,7 +111,7 @@ parse_arch()
+ 	aarch64|arm64)
+ 	    ktest_arch=aarch64
+ 	    DEBIAN_ARCH=arm64
+-	    ARCH_TRIPLE=aarch64-linux-gnu
++	    ARCH_TRIPLE=${ARCH_TRIPLE_ARM64}
+ 
+ 	    KERNEL_ARCH=arm64
+ 	    BITS=64
 diff --git a/lib/libktest.sh b/lib/libktest.sh
-index 9e8f4db..689f42f 100644
+index 95d4b77..9b4931d 100644
 --- a/lib/libktest.sh
 +++ b/lib/libktest.sh
-@@ -223,7 +223,7 @@ ktest_kgdb()
+@@ -438,7 +438,7 @@ start_vm()
+ 	qemu_pmem mem-path="$file",size=$size
+     done
  
- ktest_mon()
- {
--    exec socat UNIX-CONNECT:"$ktest_out/vm/on" STDIO
-+    exec socat UNIX-CONNECT:"$ktest_out/vm/mon" STDIO
-     exec nc "$ktest_out/vm/mon"
- }
+-    ulimit -n 65535
++    [ "$(ulimit)" == "unlimited" ] || ulimit -n 65535
+     qemu_cmd+=("${ktest_qemu_append[@]}")
  
-@@ -314,7 +314,7 @@ start_vm()
- 	x86|x86_64)
- 	    qemu_cmd+=(-cpu $cputype -machine type=q35,accel=$accel,nvdimm=on)
- 	    ;;
--	aarch64)
-+	aarch64|arm)
- 	    qemu_cmd+=(-cpu $cputype -machine type=virt,gic-version=max,accel=$accel)
- 	    ;;
- 	mips)
-@@ -327,9 +327,12 @@ start_vm()
-     esac
+     set +o errexit
+diff --git a/root_image b/root_image
+index ece986a..26c99fe 100755
+--- a/root_image
++++ b/root_image
+@@ -118,7 +118,7 @@ PACKAGES+=(cryptsetup)
+ PACKAGES+=(multipath-tools sg3-utils srptools)
  
-     local maxmem=$(awk '/MemTotal/ {printf "%dG\n", $2/1024/1024}' /proc/meminfo 2>/dev/null) || maxmem="1T"
-+    local memconfig="$ktest_mem,slots=8,maxmem=$maxmem"
-+
-+    [ $BITS == 32 ] &&  memconfig="3G" && ktest_cpus=4 #do not be fancy on 32-bit hardware.  if it works, it's fine
+ # ZFS support
+-PACKAGES+=("linux-headers-$DEBIAN_ARCH" dkms zfsutils-linux zfs-dkms)
++PACKAGES+=("linux-headers-generic" dkms zfsutils-linux zfs-dkms)
  
-     qemu_cmd+=(								\
--	-m		"$ktest_mem,slots=8,maxmem=$maxmem"		\
-+	-m		"$memconfig"					\
- 	-smp		"$ktest_cpus"					\
- 	-kernel		"$ktest_kernel_binary/vmlinuz"			\
- 	-append		"$(join_by " " ${kernelargs[@]})"		\
-@@ -343,6 +346,8 @@ start_vm()
- 	-virtfs		local,path=/,mount_tag=host,security_model=none,multidevs=remap	\
-     )
- 
-+
-+
-     if [[ -f $ktest_kernel_binary/initramfs ]]; then
- 	qemu_cmd+=(-initrd 	"$ktest_kernel_binary/initramfs")
-     fi
-diff --git a/tests/kconfig.sh b/tests/kconfig.sh
-index 73e93db..b259515 100644
---- a/tests/kconfig.sh
-+++ b/tests/kconfig.sh
-@@ -12,6 +12,7 @@ case $ktest_arch in
- 	require-kernel-config MCORE2	# optimize for core2
- 	require-kernel-config IO_DELAY_0XED
- 	require-kernel-config 64BIT=n
-+	require-kernel-config COMPAT_32BIT_TIME
- 	require-kernel-config ACPI	# way slower without it, do not know why
- 	require-kernel-config UNWINDER_FRAME_POINTER
- 	require-kernel-config HARDLOCKUP_DETECTOR
-@@ -38,13 +39,33 @@ case $ktest_arch in
- 	have_virtio=1
- 	have_suspend=1
- 
-+	require-kernel-append console=hvc0
-+	;;
-+    arm)
-+	require-kernel-config ARCH_VIRT
-+	require-kernel-config SMP
-+	require-kernel-config VFP
-+	require-kernel-config NEON
-+	require-kernel-config ARM_LPAE
-+	require-kernel-config MMU
-+	require-kernel-config HAVE_PCI
-+	require-kernel-config PCI_HOST_GENERIC
-+	require-kernel-config ARM_AMBA
-+	require-kernel-config COMPAT_32BIT_TIME
-+	require-kernel-config RTC_DRV_PL031
-+
-+	have_virtio=1
-+	have_kvmguest=1
-+
- 	require-kernel-append console=hvc0
- 	;;
-     aarch64)
- 	require-kernel-config PCI_HOST_GENERIC
- 	require-kernel-config RTC_DRV_PL031
-+	require-kernel-config COMPAT_32BIT_TIME
- 
- 	have_virtio=1
-+	have_kvmguest=1
- 
- 	require-kernel-append console=hvc0
- 	;;
-@@ -70,7 +91,7 @@ case $ktest_arch in
- 	require-kernel-append console=hvc0
- 	;;
-     *)
--	echo "Kernel architecture not supported by kconfig.sh"
-+	echo "Kernel architecture $ktest_arch not supported by kconfig.sh"
- 	exit 1
- 	;;
- esac
-@@ -95,8 +116,6 @@ require-kernel-config BINFMT_SCRIPT
- 
- require-kernel-config COMPACTION	# virtfs doesn't do well without it
- 
--require-kernel-config PROC_KCORE	# XXX Needed?
--
- require-kernel-config TTY
- require-kernel-config VT
- 
+ # suspend testing:
+ # [[ $KERNEL_ARCH = x86 ]] && PACKAGES+=(uswsusp)
 -- 
 2.42.0
 
