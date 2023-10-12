@@ -2,152 +2,104 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DBC0CD98CC
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 10 Oct 2023 23:56:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82BFBCDB46E
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 12 Oct 2023 09:43:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344228AbjJJX4W (ORCPT
+        id S235490AbjJLJn4 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 10 Oct 2023 19:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        Thu, 12 Oct 2023 05:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344229AbjJJX4T (ORCPT
+        with ESMTP id S235605AbjJLJnx (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 10 Oct 2023 19:56:19 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D942299
-        for <linux-bcachefs@vger.kernel.org>; Tue, 10 Oct 2023 16:56:16 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-27b22de9b5bso3521443a91.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 10 Oct 2023 16:56:16 -0700 (PDT)
+        Thu, 12 Oct 2023 05:43:53 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F28BA
+        for <linux-bcachefs@vger.kernel.org>; Thu, 12 Oct 2023 02:43:51 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405361bba99so7670045e9.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 12 Oct 2023 02:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696982176; x=1697586976; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SdPr3RKtwxQhWuHnqZTk9V1Z28AKlq2nPJ/l3gwUyjE=;
-        b=m427+hn96EjA9k673xw/YA0i4csQFSbT/Hq8f9wirAjqlOyW7qB17FdXINXZ9nUwq1
-         NYj6f0XnuvwhsidixeHHgvqdNQpaOkpyGrmQsYuuyha15E9j0A7t5KMgRjJDVfkqba+6
-         GX0iFcxYS4yicR2YLmE/TbWHqP1HlIpUkwjYg=
+        d=linaro.org; s=google; t=1697103830; x=1697708630; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=80KQwHZS2L1cgtTUnBG228r6in8Wi1eyN85GmoX3ijA=;
+        b=W213C1KrExZsh85k5F8anPC5bU3NRAdSnrGWb5o59TrFvxDhb/w+qOtOyYOEsZmwJN
+         q3+fm+r/WD2Lo52IUta2rEmNhp4CoYS2rCoFHcoJU1x4Ew2okU3rF/68RpJPxZrA7IDC
+         RaIb5K9O9bVRXYPcKGwfQzrXCi4WH5ZGIWJS8M3RW9K3w8ATngXcuTgfVe9Y7skaJUQi
+         gWXlwsGp7P9bkGuc2DLl7Z+9baSCcd4ZInZwa3CjlF+F6668W31zSJ/c53yLcokl4YIS
+         e458uYlHG/WS5SkTHOgj/REjeqICs6O69rOZyO92wxEJqlNEZjXA5XUleLvzifG64//w
+         jWTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696982176; x=1697586976;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SdPr3RKtwxQhWuHnqZTk9V1Z28AKlq2nPJ/l3gwUyjE=;
-        b=p6w/lRuqN7kZuqlD/tJzOEoPylnEAn2W8U5Yup8781ybioToH3MssyNXZAHS9RiPJz
-         AGlCnfXZckbNeZqXXHjR/yAYWQpWfAUGSAVxG7EjNxLDlvSJQChGtaD1bOEzZw2cTGJg
-         VkKibkjFFbpoS/5kbV5bZx1fsoN6k9WiNwsWhEy9eElqRqh8uW7mOPSOiBvyEh5k9+B9
-         BCM9OR20/zKbYRPIlMh8FzYzJJu3Tr7msabZ8PiAGPu31kaHFb/b4c7Gb2szWD4kAOC/
-         8Kdj3WCu46LCfpHy30UqgIvw5juVT5bJN9T259k9ib1skKfyUaN+DUJcX6juaeNrEwdi
-         oaOA==
-X-Gm-Message-State: AOJu0YzvqkN271qWWWrkPxIVrR8xWdH3GePHQ/aZFUuT8aBoyYHM6j76
-        P1XmZtiVPLlgE1kX+4bQFT/oEAdLAF4yVRx/qTo=
-X-Google-Smtp-Source: AGHT+IH+WJmRWraSjOLt34ZIr86Kq/Dgp8sL08aDaqHDiZLwRxz3/4ptFPF/mx7+YDgup2PbusVYBA==
-X-Received: by 2002:a17:90a:d804:b0:273:efc0:33eb with SMTP id a4-20020a17090ad80400b00273efc033ebmr14987050pjv.14.1696982176352;
-        Tue, 10 Oct 2023 16:56:16 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fa9-20020a17090af0c900b0027360359b70sm12746037pjb.48.2023.10.10.16.56.15
+        d=1e100.net; s=20230601; t=1697103830; x=1697708630;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=80KQwHZS2L1cgtTUnBG228r6in8Wi1eyN85GmoX3ijA=;
+        b=wDzohQa2v9rDZkqUeYdspOZ+b9G9WcnXkC9EBAfHuEP5EL523/5CxAIFDp46p2iw53
+         TF1bHvXTWiJA/daEqOrKcztbNYuXOKvIfGpdDJZnm5q93h3HKqgh6yqXHZsjWt8IAd0A
+         Ry50qz1+9T01TAt496/uJcl2p3VfcG6No11bCE4qJgyll1utl0+ulK6B6gYrZFK2qRaS
+         hzDnvP2fh9bfOOCgnxid3iz2pSa17ZIKaJhnoFSQ2m8FJHLOh4kMxd+z4FwHd2TPadbB
+         ya2HWVGYJkepUe2pee+99THoAEXG/F4aPepjmRiTpdw2Twi+K4gblPak1E7uneRIXDia
+         ywzA==
+X-Gm-Message-State: AOJu0YzdMR7wc0EsqpiZG+zw+5vVAvy2y0gkYu6ULPIY4nSZawGp0vTA
+        WUtrkoyzDeDFfFCIJbaDMGaWgw==
+X-Google-Smtp-Source: AGHT+IGABRdHpUIhZnG7BIkaySzTWLIodpVTha17bZ/kzP2rHcXD+FJrJ0ooacvs7zsVdP74p3/LOg==
+X-Received: by 2002:a7b:c38b:0:b0:405:3559:7c0a with SMTP id s11-20020a7bc38b000000b0040535597c0amr20088375wmj.3.1697103829940;
+        Thu, 12 Oct 2023 02:43:49 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id y19-20020a05600c20d300b004075b3ce03asm5642875wmm.6.2023.10.12.02.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 16:56:15 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Brian Foster <bfoster@redhat.com>,
-        linux-bcachefs@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] bcachefs: Refactor bkey_i to use a flexible array
-Date:   Tue, 10 Oct 2023 16:56:12 -0700
-Message-Id: <20231010235609.work.594-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 12 Oct 2023 02:43:49 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 12:43:46 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     kent.overstreet@gmail.com
+Cc:     linux-bcachefs@vger.kernel.org
+Subject: [bug report] bcachefs: missing error checking in
+ __bch2_btree_root_alloc()
+Message-ID: <14684abe-5652-459d-aae5-278da8cb7b36@moroto.mountain>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3104; i=keescook@chromium.org;
- h=from:subject:message-id; bh=NfdMvLiG7AP1UedLusFnQqnFA5ZiezwfWaxIM+i+tRA=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlJeScSUyz3NZfxL43a/8LlJ7zzNz0b3ul121Gl
- upxtR3bHn2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZSXknAAKCRCJcvTf3G3A
- JoNbD/4whEZUDyONG/LAxsYi0gic1AeiW2Z37d9rJL7Rfib1H9dD+bou+gfPycZoOl1o5d0cZCY
- bCtHhYf5PFfCLaRRmUGRKtfc41Wgc1b3VFfadHluT7vP26PMUnNlvw7NFYJvT4/LDXDBOML20YI
- iYnbwgq/WlTapLBDULe9PutZ67M7Y4f6g56i2801W0pQwW0v1ue08ShxGEvHdCFLwJMYTHjFfJi
- 27ylDaeszwHHC80vtS9UAnrpllO5aXideMB2wAg55qT8J+LoxVqoixEcJ9vwiK9p/7bn78iJjWS
- uYDQV24ERXP/K3lHSAuuqhi3PMGtiCBvyZvI0aUZmV0buzqlcN4AuAEjBhrGlxRoil/KJrPKfbI
- UEj7HsIliQ5cCGXEXwaJPzifXGa10MgWAJSBlOUfpzkUMrwVyMDW7MwRkayQ3M8bOAnhLFYqnq1
- Io+kKq29sLs+DBo9vTApgL4Rod2o+uFrF2EIDI/jrl+6pqBjxojxCzNVgH7AZzixKBFq1VSjw2e
- e9Ff+cEZXZ878o+k81FTz42FxT+DT/zlqiD+/KGPhOnj5J5LLXILogAps2eLpfi2B5fm5Ty4Hbj
- GsfXuU6y0XIX4wDT8xmB+O5SzFTAaDeSvb/Td4xmnQmqhxaVyonefLCpkR+kVcyX6nDGtEo6ZV4
- hPufHRL lXjHsLzg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-The memcpy() in bch2_bkey_append_ptr() is operating on an embedded
-fake flexible array. Instead, make it explicit, and convert the memcpy
-to target the flexible array instead. Fixes the W=1 warning seen for
--Wstringop-overflow:
+Hello Kent Overstreet,
 
-   In file included from include/linux/string.h:254,
-                    from include/linux/bitmap.h:11,
-                    from include/linux/cpumask.h:12,
-                    from include/linux/smp.h:13,
-                    from include/linux/lockdep.h:14,
-                    from include/linux/radix-tree.h:14,
-                    from include/linux/backing-dev-defs.h:6,
-                    from fs/bcachefs/bcachefs.h:182:
-   fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
-   include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
-      57 | #define __underlying_memcpy     __builtin_memcpy
-         |                                 ^
-   include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
-     648 |         __underlying_##op(p, q, __fortify_size);                        \
-         |         ^~~~~~~~~~~~~
-   include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
-     693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
-         |                          ^~~~~~~~~~~~~~~~~~~~
-   fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
-     235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-         |                 ^~~~~~
-   fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
-     287 |                 struct bch_val  v;
-         |                                 ^
+The patch e0750d947352: "bcachefs: Initial commit" from Mar 16, 2017
+(linux-next), leads to the following Smatch static checker warning:
 
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com/
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/bcachefs/bcachefs_format.h | 5 ++++-
- fs/bcachefs/extents.h         | 2 +-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+	fs/bcachefs/btree_update_interior.c:2336 __bch2_btree_root_alloc()
+	error: 'b' dereferencing possible ERR_PTR()
 
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index f0d130440baa..f5e8cb43697b 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -300,7 +300,10 @@ struct bkey_i {
- 	__u64			_data[0];
- 
- 	struct bkey	k;
--	struct bch_val	v;
-+	union {
-+		struct bch_val	v;
-+		DECLARE_FLEX_ARRAY(__u8, bytes);
-+	};
- };
- 
- #define KEY(_inode, _offset, _size)					\
-diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
-index 7ee8d031bb6c..6248e17bbac5 100644
---- a/fs/bcachefs/extents.h
-+++ b/fs/bcachefs/extents.h
-@@ -642,7 +642,7 @@ static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr
- 
- 		ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
- 
--		memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-+		memcpy(&k->bytes[bkey_val_bytes(&k->k)],
- 		       &ptr,
- 		       sizeof(ptr));
- 		k->k.u64s++;
--- 
-2.34.1
+fs/bcachefs/btree_update_interior.c
+    2319 static int __bch2_btree_root_alloc(struct btree_trans *trans, enum btree_id id)
+    2320 {
+    2321         struct bch_fs *c = trans->c;
+    2322         struct closure cl;
+    2323         struct btree *b;
+    2324         int ret;
+    2325 
+    2326         closure_init_stack(&cl);
+    2327 
+    2328         do {
+    2329                 ret = bch2_btree_cache_cannibalize_lock(c, &cl);
+    2330                 closure_sync(&cl);
+    2331         } while (ret);
+    2332 
+    2333         b = bch2_btree_node_mem_alloc(trans, false);
 
+Smatch complains that bch2_btree_node_mem_alloc() can fail
+
+    2334         bch2_btree_cache_cannibalize_unlock(c);
+    2335 
+--> 2336         set_btree_node_fake(b);
+                                     ^
+Leading to a crash.
+
+    2337         set_btree_node_need_rewrite(b);
+    2338         b->c.level        = 0;
+    2339         b->c.btree_id        = id;
+    2340 
+
+regards,
+dan carpenter
