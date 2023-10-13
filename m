@@ -2,635 +2,161 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AA25CDB483
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 13 Oct 2023 11:07:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F662CDB482
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 13 Oct 2023 11:26:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbjJMLH0 (ORCPT
+        id S230357AbjJML0j (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 13 Oct 2023 07:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
+        Fri, 13 Oct 2023 07:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJMLHZ (ORCPT
+        with ESMTP id S229903AbjJML0i (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:07:25 -0400
+        Fri, 13 Oct 2023 07:26:38 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620BFB7
-        for <linux-bcachefs@vger.kernel.org>; Fri, 13 Oct 2023 04:06:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286C491
+        for <linux-bcachefs@vger.kernel.org>; Fri, 13 Oct 2023 04:25:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697195194;
+        s=mimecast20190719; t=1697196350;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=q+G4otSAOWEnStfuIokfKuOFZD9TkZlo5mmk4pijprg=;
-        b=Mnix6PpXosaOW14JIcaDmZ97czkWiS9Ojc/mVeZvzDQ8utf4qrLjba1S6fONcuxVfGW3CZ
-        5eHxylB78qWZXRU8R5/hZJVVM6IP5TehXpCpNxCCFXY6X2+A2cKHicH88r04jwaWJBsDOX
-        0rqix3mElUv86zBDIJfSB+cZDhOEmC0=
-Received: from mail-vk1-f197.google.com (mail-vk1-f197.google.com
- [209.85.221.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=oETjfSu3gjSmeaayJgiKomX22px4/QpcSAQkJsgT+CY=;
+        b=Zk7OdtCWojk5J9aoPwnRrpRS3wOrVDIPVY6XKDqw1jVC7ccCEDBxRBK5sYxDxxxtcyQiOC
+        EFZlz1EnxJK/CXp8Fl17eaDUHCkTwTJSKCXNsXSNW1AggqywxndECiLy5jVSL56/PUSUpw
+        qrp5Qo3VDqkEJZaxAW6ieS3occPLOPc=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-296-6yiA9peLOhC_Mquvq5RFmQ-1; Fri, 13 Oct 2023 07:06:32 -0400
-X-MC-Unique: 6yiA9peLOhC_Mquvq5RFmQ-1
-Received: by mail-vk1-f197.google.com with SMTP id 71dfb90a1353d-49abc635533so726940e0c.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 13 Oct 2023 04:06:32 -0700 (PDT)
+ us-mta-510-to1DsUMoPw6vkb-uFcxFZw-1; Fri, 13 Oct 2023 07:25:49 -0400
+X-MC-Unique: to1DsUMoPw6vkb-uFcxFZw-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-66d155fc53eso18697416d6.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 13 Oct 2023 04:25:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697195192; x=1697799992;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q+G4otSAOWEnStfuIokfKuOFZD9TkZlo5mmk4pijprg=;
-        b=oLENUMqPKsDw3d/S8iDViNflF/IjrZkvQoeW/3LyQQ+a3B4bpA/jopYg/JnvjGE2sB
-         7PqoLUfJCh4pVofD/XInoN33WntHdrgugIEkbVpsCz+yIGGAmo+5sLRYCzyHGqRZIsMw
-         cxLiViXDOKnwT+7eBdO6z9lqNs+YcZ0cmfQ8sEEYd4nmWv3BoHZxNlX0sBSQLwgyTRy7
-         8dXp1ac2JsAmSbp/VhAYKuE6ahV69Q+HFS+tK9JY+pU2MjyE030L/L01/Ia5d1Vy9rol
-         uKtPUC4ot0CxA+p376ofBoLYwOr3Vbmw02o349V4GsZEdmt0M2pJwc3o4TWO15ZDNauo
-         iYEA==
-X-Gm-Message-State: AOJu0YyX9qCItttfKmzfXdS0ZFCVKroE/CynkAi9fi+K24+sPTFLdhJq
-        j96D3OVHxvuo2REfYNnruXM6pobidr8ajmfiiMVPrYfmBC6VDXpXhMII2ImIrgrJZ4WGXg6Jihs
-        7B07AQF/FIe19DfrQdTZwu1R+15w=
-X-Received: by 2002:a1f:df01:0:b0:486:e696:c69a with SMTP id w1-20020a1fdf01000000b00486e696c69amr22033064vkg.16.1697195191595;
-        Fri, 13 Oct 2023 04:06:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFrefVt7d9xepm00QtTfpFJ4iLPnbI4M3+zFd5lpEB4oqoxuYNbCeDWjMpPYQxOOYr8FATFBQ==
-X-Received: by 2002:a1f:df01:0:b0:486:e696:c69a with SMTP id w1-20020a1fdf01000000b00486e696c69amr22033028vkg.16.1697195190939;
-        Fri, 13 Oct 2023 04:06:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697196348; x=1697801148;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oETjfSu3gjSmeaayJgiKomX22px4/QpcSAQkJsgT+CY=;
+        b=WNdj0VI0WNAKAskdjlgGOXkV7D1L1yFB+GHcPvpTV8plgO6HcIqh7CsdIR4segzJMU
+         9cGf5xJ9eSATzj0IhgdYw4DUbNeEzzov+96oD8rUrd1GNWs0zhRfoJB5v9jj1rpwERbq
+         WDqUdtcZfIZqRNpAZkr1oldpiupdpe4uj4wtng9/+XgJs1JdCERrJPCXAckIUfrVUGeU
+         pIvdE/PhgRQhQ1Gyt5gKtl8A2AYMDQLDEdpQL1Hq72tAlWkcvh1DHsVrcLSOdvf9NUqB
+         PCESXnyXZ8es7/xlaKJPazUWaBSj94gRRyJpw2vHVB2/Ir72hR4tVLBu0WCFFOT+ABjz
+         eX8w==
+X-Gm-Message-State: AOJu0YzrSKU9ckgtxGLN78yAjWw2QG+H3b87Ci2x0SXGH1UPDMCqU6kx
+        EdwzmLCxu0Jqa3BWuv9IWIYIf4lrL69y9X4Eue7OUuVWLKYi7oxHQpNhXIR37w73sHKD51KqcCy
+        iND2f7q6gyvPeHKFUT4qkgWXGyLE=
+X-Received: by 2002:a05:6214:2e49:b0:656:3407:f45a with SMTP id my9-20020a0562142e4900b006563407f45amr28545149qvb.43.1697196348758;
+        Fri, 13 Oct 2023 04:25:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGLmRjrd0qLWu+HtByfYjY1jQcjwD2r7wPgexHNnbw6khk2VZUqmKPEM7i/QmQo0hoPHeXwIA==
+X-Received: by 2002:a05:6214:2e49:b0:656:3407:f45a with SMTP id my9-20020a0562142e4900b006563407f45amr28545142qvb.43.1697196348558;
+        Fri, 13 Oct 2023 04:25:48 -0700 (PDT)
 Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
-        by smtp.gmail.com with ESMTPSA id k2-20020ac81402000000b004198f248e8dsm508486qtj.76.2023.10.13.04.06.30
+        by smtp.gmail.com with ESMTPSA id v20-20020a05620a123400b0076f1d8b1c2dsm544841qkj.12.2023.10.13.04.25.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 04:06:30 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 07:06:57 -0400
+        Fri, 13 Oct 2023 04:25:47 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 07:26:11 -0400
 From:   Brian Foster <bfoster@redhat.com>
-To:     Coly Li <colyli@suse.de>
-Cc:     linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Daniel J Blueman <daniel@quora.org>
-Subject: Re: trans path overflow during metadata replication with lockdep
-Message-ID: <ZSkk0W9Dk5q5hUge@bfoster>
-References: <CAMVG2sun2sqFXt=H-0cVWnATGMMFpe-0ksRWy3uhUZXbA5m1qA@mail.gmail.com>
- <72438765-AD46-4C8A-975F-982223CE7A40@suse.de>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-bcachefs@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: Refactor bkey_i to use a flexible array
+Message-ID: <ZSkpU0vdrCTfTxuZ@bfoster>
+References: <20231010235609.work.594-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <72438765-AD46-4C8A-975F-982223CE7A40@suse.de>
+In-Reply-To: <20231010235609.work.594-kees@kernel.org>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 11:20:59PM +0800, Coly Li wrote:
-> Forward it to linux-bcachefs@vger.kenrel.org <mailto:linux-bcachefs@vger.kenrel.org> 
+On Tue, Oct 10, 2023 at 04:56:12PM -0700, Kees Cook wrote:
+> The memcpy() in bch2_bkey_append_ptr() is operating on an embedded
+> fake flexible array. Instead, make it explicit, and convert the memcpy
+> to target the flexible array instead. Fixes the W=1 warning seen for
+> -Wstringop-overflow:
 > 
-> > 2023年10月10日 07:43，Daniel J Blueman <daniel@quora.org> 写道：
-> > 
-> > Firstly, bcachefs introduces a new era of in-tree filesystems with
-> > some monumental features (sorry, ZFS); hats off to Kent for landing
-> > this!
-> > 
-> > My testing finds it is in great shape; far better than BTRFS was when
-> > it landed. Testing on linux next-20231005 with additional debug checks
-> > atop the Ubuntu 23.04 kernel generic config [1], I was able to provoke
-> > a btree trans path overflow cornercase [2].
-> > 
+>    In file included from include/linux/string.h:254,
+>                     from include/linux/bitmap.h:11,
+>                     from include/linux/cpumask.h:12,
+>                     from include/linux/smp.h:13,
+>                     from include/linux/lockdep.h:14,
+>                     from include/linux/radix-tree.h:14,
+>                     from include/linux/backing-dev-defs.h:6,
+>                     from fs/bcachefs/bcachefs.h:182:
+>    fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
+>    include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
+>       57 | #define __underlying_memcpy     __builtin_memcpy
+>          |                                 ^
+>    include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
+>      648 |         __underlying_##op(p, q, __fortify_size);                        \
+>          |         ^~~~~~~~~~~~~
+>    include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
+>      693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+>          |                          ^~~~~~~~~~~~~~~~~~~~
+>    fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
+>      235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+>          |                 ^~~~~~
+>    fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
+>      287 |                 struct bch_val  v;
+>          |                                 ^
+> 
+> Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Brian Foster <bfoster@redhat.com>
+> Cc: linux-bcachefs@vger.kernel.org
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com/
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  fs/bcachefs/bcachefs_format.h | 5 ++++-
+>  fs/bcachefs/extents.h         | 2 +-
+>  2 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+> index f0d130440baa..f5e8cb43697b 100644
+> --- a/fs/bcachefs/bcachefs_format.h
+> +++ b/fs/bcachefs/bcachefs_format.h
+> @@ -300,7 +300,10 @@ struct bkey_i {
+>  	__u64			_data[0];
+>  
+>  	struct bkey	k;
+> -	struct bch_val	v;
+> +	union {
+> +		struct bch_val	v;
+> +		DECLARE_FLEX_ARRAY(__u8, bytes);
+> +	};
+>  };
 
-Thanks for testing and for the bug report. I'm curious what kind of
-testing you've been doing in general and perhaps if you have any more
-interesting results to share? ;)
+Hi Kees,
 
-> > The minimal reproducer is:
-> > # modprobe brd rd_nr=2 rd_size=1048576
-> > # bcachefs format --metadata_replicas=2 --label=tier1.1 /dev/ram0
-> > --label=tier1.2 /dev/ram1
-> > # mount -t bcachefs /dev/ram0:/dev/ram1 /mnt
-> > # dd if=/dev/zero of=/mnt/test bs=128M
-> > 
-> > The issue doesn't reproduce with metadata_replicas=1 or a single block device.
-> > 
-
-My naive assumption would be that the higher replica count increases the
-size of some of these transactions due to having to update multiple
-devices, but this is not an area I've dug into in depth tbh. I've not
-seen this yet myself, but I think most of the multi device testing I've
-done so far has still been with replicas=1.
-
-> > At debug entry, I couldn't determine why BTREE_ITER_MAX must be 64
-> > rather than 32 when CONFIG_LOCKDEP is set, however the panic doesn't
-> > occur without CONFIG_LOCKDEP, so it appears related; keeping it at
-> > value 32 with CONFIG_LOCKDEP doesn't prevent the panic also.
-> > 
-> > @Kent/anyone?
-
-Hmm, that is interesting. I'm not sure why lockdep would be a factor
-here. Where did you come up with the notion that ITER_MAX could be 32
-(and the idea to test it) with CONFIG_LOCKDEP=y? It looks like it's
-hardcoded to 64, but perhaps I'm missing something.
-
-We'll see if Kent can make more sense of the crash signature whenever
-he's back around. Otherwise I'll make a note to try and reproduce it
-once I work through some other things...
+I'm curious if this is something that could be buried in bch_val given
+it's already kind of a fake structure..? If not, my only nitty comment
+is that memcpy(k->bytes[], ...) makes it kind of read like we're copying
+in opaque key data rather than value data, so perhaps a slightly more
+descriptive field name would be helpful. But regardless I'd wait until
+Kent has a chance to comment before changing anything..
 
 Brian
 
-> > 
-> > Thanks,
-> >  Daniel
-> > 
-> > -- [1] https://quora.org/linux-next-20231005.config
-> > 
-> > -- [2]
-> > 
-> > [  493.761988] path: idx  4 ref 1:1 P S btree=alloc l=0 pos 0:98:0
-> > locks 2 flush_new_cached_update+0x9f/0x390
-> > [  493.762036] path: idx  7 ref 1:1 P S btree=alloc l=0 pos 0:300:0
-> > locks 2 flush_new_cached_update+0x9f/0x390
-> > [  493.762049] path: idx 11 ref 1:1 P S btree=alloc l=0 pos 0:581:0
-> > locks 2 flush_new_cached_update+0x9f/0x390
-> > [  493.762062] path: idx  5 ref 1:1 P S btree=alloc l=0 pos 1:98:0
-> > locks 2 flush_new_cached_update+0x9f/0x390
-> > [  493.762075] path: idx  9 ref 1:1 P S btree=alloc l=0 pos 1:300:0
-> > locks 2 flush_new_cached_update+0x9f/0x390
-> > [  493.762087] path: idx 13 ref 1:1 P S bt] path: idx  3 ref 1:1 P S
-> > btree=alloc l=0 pos 0:98:0 locks 2
-> > bch2_trans_start_alloc_update+0xf2/0x320
-> > [  493.762125] path: idx  6 ref 1:1 P S btree=alloc l=0 pos 0:300:0
-> > locks 2 bch2_trans_start_alloc_update+0xf2/0x320
-> > [  493.762138] path: idx 10 ref 1:1 P S btree=alloc l=0 pos 0:581:0
-> > locks 2 bch2_trans_start_alloc_update+0xf2/0x320
-> > [  493.762151] path: idx  2 ref 1:1 P S btree=alloc l=0 pos 1:96:0
-> > locks 2 bch2_trans_start_alloc_update+0xf2/0x320
-> > [  493.762163] path: idx  1 ref 1:1 P S btree=alloc l=0 pos 1:98:0
-> > locks 2 bch2_trans_start_alloc_update+0xf2/0x320
-> > [  493.762176] path: idx  8 ref 1:1 P S btree=alloc l=0 pos 1:300:0
-> > locks 2 bch2_trans_start_alloc_update+0xf2/0x320
-> > [  493.762189] path: idx 12 ref 1:1 P S btree=alloc l=0 pos 1:581:0
-> > locks 2 bch2_trans_start_alloc_update+0xf2/0x320
-> > [  493.762201] path: idx 18 ref 0:0 P S btree=freespace l=0 pos 0:98:0
-> > locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762214] path: idx 31 ref 1:1   S btree=freespace l=0 pos 0:99:0
-> > locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762227] path: idx 19 ref 0:0     btree=freespace l=0 pos 0:99:0
-> > locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762239] path: idx 20 ref 0:0     btree=freespace l=0 pos
-> > 0:300:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762252] path: idx 21 ref 0:0     btree=freespace l=0 pos
-> > 0:301:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762264] path: idx 22 ref 0:0     btree=freespace l=0 pos
-> > 0:581:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762277] path: idx 24 ref 0:0     btree=freespace l=0 pos
-> > 0:582:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762290] path: idx 29 ref 0:0     btree=freespace l=0 pos
-> > 0:589:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762302] path: idx 23 ref 0:0     btree=freespace l=0 pos 1:98:0
-> > locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762315] path: idx 25 ref 0:0     btree=freespace l=0 pos 1:99:0
-> > locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762328] path: idx 26 ref 0:0     btree=freespace l=0 pos
-> > 1:300:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762340] path: idx 27 ref 0:0     btree=freespace l=0 pos
-> > 1:301:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762353] path: idx 28 ref 0:0     btree=freespace l=0 pos
-> > 1:581:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762365] path: idx 30 ref 0:0     btree=freespace l=0 pos
-> > 1:582:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762378] path: idx 14 ref 1:1 P S btree=need_discard l=0 pos
-> > 0:96:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762391] path: idx 16 ref 1:1 P S btree=need_discard l=0 pos
-> > 1:96:0 locks 2 bch2_bucket_do_index+0x429/0x770
-> > [  493.762403] path: idx 15 ref 1:1 P S btree=bucket_gens l=0 pos
-> > POS_MIN locks 2 bch2_bucket_gen_update+0x19e/0x540
-> > [  493.762416] path: idx 17 ref 1:1 P S btree=bucket_gens l=0 pos
-> > 1:0:0 locks 2 bch2_bucket_gen_update+0x19e/0x540
-> > [  493.762429] transaction updates for btree_update_nodes_written journal seq 0
-> > [  493.762441]   update: btree=alloc cached=0
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.762453]     old u64s 5 type deleted 0:98:0 len 0 ver 0
-> > [  493.762464]     new u64s 12 type alloc_v4 0:98:0 len 0 ver 0:
-> > [  493.762476]     gen 0 oldest_gen 0 data_type btree
-> > [  493.762487]     journal_seq       0
-> > [  493.762498]     need_discard      1
-> > [  493.762509]     need_inc_gen      1
-> > [  493.762521]     dirty_sectors     256
-> > [  493.762532]     cached_sectors    0
-> > [  493.762543]     stripe            0
-> > [  493.762554]     stripe_redundancy 0
-> > [  493.762565]     io_time[READ]     1
-> > [  493.762576]     io_time[WRITE]    259160
-> > [  493.762587]     fragmentation     0
-> > [  493.762598]     bp_start          7
-> > [  493.762609]
-> > [  493.762619]   update: btree=alloc cached=0
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.762632]     old u64s 5 type deleted 0:300:0 len 0 ver 0
-> > [  493.762643]     new u64s 12 type alloc_v4 0:300:0 len 0 ver 0:
-> > [  493.762655]     gen 0 oldest_gen 0 data_type btree
-> > [  493.762666]     journal_seq       0
-> > [  493.762677]     need_discard      0
-> > [  493.762688]     need_inc_gen      0
-> > [  493.762699]     dirty_sectors     256
-> > [  493.762710]     cached_sectors    0
-> > [  493.762721]     stripe            0
-> > [  493.762733]     stripe_redundancy 0
-> > [  493.762744]     io_time[READ]     0
-> > [  493.762755]     io_time[WRITE]    0
-> > [  493.762766]     fragmentation     0
-> > [  493.762777]     bp_start          7
-> > [  493.762788]
-> > [  493.762798]   update: btree=alloc cached=0
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.762810]     old u64s 5 type deleted 0:581:0 len 0 ver 0
-> > [  493.762822]     new u64s 12 type alloc_v4 0:581:0 len 0 ver 0:
-> > [  493.762834]     gen 0 oldest_gen 0 data_type btree
-> > [  493.762845]     journal_seq       0
-> > [  493.762856]     need_discard      0
-> > [  493.762867]     need_inc_gen      0
-> > [  493.762878]     dirty_sectors     256
-> > [  493.762889]     cached_sectors    0
-> > [  493.762900]     stripe            0
-> > [  493.762911]     stripe_redundancy 0
-> > [  493.762922]     io_time[READ]     0
-> > [  493.762933]     io_time[WRITE]    0
-> > [  493.762944]     fragmentation     0
-> > [  493.762955]     bp_start          7
-> > [  493.762966]
-> > [  493.762977]   update: btree=alloc cached=0
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.762989]     old u64s 5 type deleted 1:98:0 len 0 ver 0
-> > [  493.763001]     new u64s 12 type alloc_v4 1:98:0 len 0 ver 0:
-> > [  493.763012]     gen 0 oldest_gen 0 data_type btree
-> > [  493.763024]     journal_seq       0
-> > [  493.763035]     need_discard      0
-> > [  493.763046]     need_inc_gen      0
-> > [  493.763057]     dirty_sectors     256
-> > [  493.763068]     cached_sectors    0
-> > [  493.763079]     stripe            0
-> > [  493.763090]     stripe_redundancy 0
-> > [  493.763101]     io_time[READ]     0
-> > [  493.763112]     io_time[WRITE]    0
-> > [  493.763123]     fragmentation     0
-> > [  493.763134]     bp_start          7
-> > [  493.763145]
-> > [  493.763156]   update: btree=alloc cached=0
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.763168]     old u64s 5 type deleted 1:300:0 len 0 ver 0
-> > [  493.763179]     new u64s 12 type alloc_v4 1:300:0 len 0 ver 0:
-> > [  493.763191]     gen 0 oldest_gen 0 data_type btree
-> > [  493.763202]     journal_seq       0
-> > [  493.763214]     need_discard      0
-> > [  493.763225]     need_inc_gen      0
-> > [  493.763236]     dirty_sectors     256
-> > [  493.763247]     cached_sectors    0
-> > [  493.763258]     stripe            0
-> > [  493.763269]     stripe_redundancy 0
-> > [  493.763280]     io_time[READ]     0
-> > [  493.763291]     io_time[WRITE]    0
-> > [  493.763302]     fragmentation     0
-> > [  493.763313]     bp_start          7
-> > [  493.763324]
-> > [  493.763334]   update: btree=alloc cached=0
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.763347]     old u64s 5 type deleted 1:581:0 len 0 ver 0
-> > [  493.763358]     new u64s 12 type alloc_v4 1:581:0 len 0 ver 0:
-> > [  493.763370]     gen 0 oldest_gen 0 data_type btree
-> > [  493.763381]     journal_seq       0
-> > [  493.763392]     need_discard      0
-> > [  493.763403]     need_inc_gen      0
-> > [  493.763414]     dirty_sectors     256
-> > [  493.763425]     cached_sectors    0
-> > [  493.763436]     stripe            0
-> > [  493.763447]     stripe_redundancy 0
-> > [  493.763458]     io_time[READ]     0
-> > [  493.763469]     io_time[WRITE]    0
-> > [  493.763480]     fragmentation     0
-> > [  493.763492]     bp_start          7
-> > [  493.763503]
-> > [  493.763513]   update: btree=alloc cached=1
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.763525]     old u64s 12 type alloc_v4 0:96:0 len 0 ver 0:
-> > [  493.763537]     gen 0 oldest_gen 0 data_type btree
-> > [  493.763548]     journal_seq       5
-> > [  493.763559]     need_discard      1
-> > [  493.763570]     need_inc_gen      1
-> > [  493.763581]     dirty_sectors     256
-> > [  493.763593]     cached_sectors    0
-> > [  493.763604]     stripe            0
-> > [  493.763615]     stripe_redundancy 0
-> > [  493.763626]     io_time[READ]     1
-> > [  493.763637]     io_time[WRITE]    8424
-> > [  493.763648]     fragmentation     0
-> > [  493.763659]     bp_start          7
-> > [  493.763670]
-> > [  493.763680]     new u64s 12 type alloc_v4 0:96:0 len 0 ver 0:
-> > [  493.763692]     gen 1 oldest_gen 0 data_type need_discard
-> > [  493.763703]     journal_seq       5
-> > [  493.763714]     need_discard      1
-> > [  493.763726]     need_inc_gen      0
-> > [  493.763737]     dirty_sectors     0
-> > [  493.763748]     cached_sectors    0
-> > [  493.763759]     stripe            0
-> > [  493.763770]     stripe_redundancy 0
-> > [  493.763781]     io_time[READ]     1
-> > [  493.763792]     io_time[WRITE]    8424
-> > [  493.763803]     fragmentation     0
-> > [  493.763814]     bp_start          7
-> > [  493.763825]
-> > [  493.763835]   update: btree=alloc cached=1
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.763848]     old u64s 5 type deleted 0:98:0 len 0 ver 0
-> > [  493.763859]     new u64s 12 type alloc_v4 0:98:0 len 0 ver 0:
-> > [  493.763871]     gen 0 oldest_gen 0 data_type btree
-> > [  493.763882]     journal_seq       0
-> > [  493.763893]     need_discard      1
-> > [  493.763904]     need_inc_gen      1
-> > [  493.763915]     dirty_sectors     256
-> > [  493.763926]     cached_sectors    0
-> > [  493.763937]     stripe            0
-> > [  493.763948]     stripe_redundancy 0
-> > [  493.763959]     io_time[READ]     1
-> > [  493.763970]     io_time[WRITE]    259160
-> > [  493.763982]     fragmentation     0
-> > [  493.763993]     bp_start          7
-> > [  493.764004]
-> > [  493.764014]   update: btree=alloc cached=1
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.764026]     old u64s 5 type deleted 0:300:0 len 0 ver 0
-> > [  493.764038]     new u64s 12 type alloc_v4 0:300:0 len 0 ver 0:
-> > [  493.764050]     gen 0 oldest_gen 0 data_type btree
-> > [  493.764061]     journal_seq       0
-> > [  493.764072]     need_discard      0
-> > [  493.764083]     need_inc_gen      0
-> > [  493.764094]     dirty_sectors     256
-> > [  493.764105]     cached_sectors    0
-> > [  493.764116]     stripe            0
-> > [  493.764127]     stripe_redundancy 0
-> > [  493.764138]     io_time[READ]     0
-> > [  493.764149]     io_time[WRITE]    0
-> > [  493.764160]     fragmentation     0
-> > [  493.764171]     bp_start          7
-> > [  493.764182]
-> > [  493.764193]   update: btree=alloc cached=1
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.764205]     old u64s 5 type deleted 0:581:0 len 0 ver 0
-> > [  493.764217]     new u64s 12 type alloc_v4 0:581:0 len 0 ver 0:
-> > [  493.764228]     gen 0 oldest_gen 0 data_type btree
-> > [  493.764240]     journal_seq       0
-> > [  493.764251]     need_discard      0
-> > [  493.764262]     need_inc_gen      0
-> > [  493.764273]     dirty_sectors     256
-> > [  493.764284]     cached_sectors    0
-> > [  493.764295]     stripe            0
-> > [  493.764306]     stripe_redundancy 0
-> > [  493.764317]     io_time[READ]     0
-> > [  493.764328]     io_time[WRITE]    0
-> > [  493.764339]     fragmentation     0
-> > [  493.764350]     bp_start          7
-> > [  493.764361]
-> > [  493.764371]   update: btree=alloc cached=1
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.764384]     old u64s 12 type alloc_v4 1:96:0 len 0 ver 0:
-> > [  493.764395]     gen 0 oldest_gen 0 data_type btree
-> > [  493.764407]     journal_seq       5
-> > [  493.764418]     need_discard      1
-> > [  493.764429]     need_inc_gen      1
-> > [  493.764440]     dirty_sectors     256
-> > [  493.764451]     cached_sectors    0
-> > [  493.764462]     stripe            0
-> > [  493.764473]     stripe_redundancy 0
-> > [  493.764484]     io_time[READ]     1
-> > [  493.764495]     io_time[WRITE]    8424
-> > [  493.764506]     fragmentation     0
-> > [  493.764517]     bp_start          7
-> > [  493.764528]
-> > [  493.764539]     new u64s 12 type alloc_v4 1:96:0 len 0 ver 0:
-> > [  493.764550]     gen 1 oldest_gen 0 data_type need_discard
-> > [  493.764562]     journal_seq       5
-> > [  493.764573]     need_discard      1
-> > [  493.764584]     need_inc_gen      0
-> > [  493.764595]     dirty_sectors     0
-> > [  493.764606]     cached_sectors    0
-> > [  493.764617]     stripe            0
-> > [  493.764628]     stripe_redundancy 0
-> > [  493.764639]     io_time[READ]     1
-> > [  493.764650]     io_time[WRITE]    8424
-> > [  493.764661]     fragmentation     0
-> > [  493.764672]     bp_start          7
-> > [  493.764683]
-> > [  493.764694]   update: btree=alloc cached=1
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.764706]     old u64s 5 type deleted 1:98:0 len 0 ver 0
-> > [  493.764717]     new u64s 12 type alloc_v4 1:98:0 len 0 ver 0:
-> > [  493.764729]     gen 0 oldest_gen 0 data_type btree
-> > [  493.764740]     journal_seq       0
-> > [  493.764804]     need_discard      0
-> > [  493.764815]     need_inc_gen      0
-> > [  493.764827]     dirty_sectors     256
-> > [  493.764838]     cached_sectors    0
-> > [  493.764849]     stripe            0
-> > [  493.764860]     stripe_redundancy 0
-> > [  493.764871]     io_time[READ]     0
-> > [  493.764882]     io_time[WRITE]    0
-> > [  493.764893]     fragmentation     0
-> > [  493.764904]     bp_start          7
-> > [  493.764915]
-> > [  493.764925]   update: btree=alloc cached=1
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.764938]     old u64s 5 type deleted 1:300:0 len 0 ver 0
-> > [  493.764949]     new u64s 12 type alloc_v4 1:300:0 len 0 ver 0:
-> > [  493.764961]     gen 0 oldest_gen 0 data_type btree
-> > [  493.764972]     journal_seq       0
-> > [  493.764983]     need_discard      0
-> > [  493.764994]     need_inc_gen      0
-> > [  493.765005]     dirty_sectors     256
-> > [  493.765016]     cached_sectors    0
-> > [  493.765027]     stripe            0
-> > [  493.765038]     stripe_redundancy 0
-> > [  493.765049]     io_time[READ]     0
-> > [  493.765060]     io_time[WRITE]    0
-> > [  493.765071]     fragmentation     0
-> > [  493.765082]     bp_start          7
-> > [  493.765093]
-> > [  493.765104]   update: btree=alloc cached=1
-> > bch2_trans_mark_pointer.constprop.0+0x532/0xbf0
-> > [  493.765116]     old u64s 5 type deleted 1:581:0 len 0 ver 0
-> > [  493.765128]     new u64s 12 type alloc_v4 1:581:0 len 0 ver 0:
-> > [  493.765139]     gen 0 oldest_gen 0 data_type btree
-> > [  493.765151]     journal_seq       0
-> > [  493.765162]     need_discard      0
-> > [  493.765173]     need_inc_gen      0
-> > [  493.765184]     dirty_sectors     256
-> > [  493.765195]     cached_sectors    0
-> > [  493.765206]     stripe            0
-> > [  493.765217]     stripe_redundancy 0
-> > [  493.765228]     io_time[READ]     0
-> > [  493.765239]     io_time[WRITE]    0
-> > [  493.765250]     fragmentation     0
-> > [  493.765261]     bp_start          7
-> > [  493.765272]
-> > [  493.765283]   update: btree=need_discard cached=0
-> > bch2_bucket_do_index+0x4ba/0x770
-> > [  493.765295]     old u64s 5 type deleted 0:96:0 len 0 ver 0
-> > [  493.765307]     new u64s 5 type set 0:96:0 len 0 ver 0
-> > [  493.765318]   update: btree=need_discard cached=0
-> > bch2_bucket_do_index+0x4ba/0x770
-> > [  493.765330]     old u64s 5 type deleted 1:96:0 len 0 ver 0
-> > [  493.765342]     new u64s 5 type set 1:96:0 len 0 ver 0
-> > [  493.765353]   update: btree=bucket_gens cached=0
-> > bch2_bucket_gen_update+0x3ce/0x540
-> > [  493.765365]     old u64s 5 type deleted POS_MIN len 0 ver 0
-> > [  493.765377]     new u64s 37 type bucket_gens POS_MIN len 0 ver 0: 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0
-> > [  493.765399]   update: btree=bucket_gens cached=0
-> > bch2_bucket_gen_update+0x3ce/0x540
-> > [  493.765412]     old u64s 5 type deleted 1:0:0 len 0 ver 0
-> > [  493.765423]     new u64s 37 type bucket_gens 1:0:0 len 0 ver 0: 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 0 0 0 0 0 0 0 0 0
-> > [  493.765446]   update: btree=backpointers wb=1
-> > bch2_btree_insert_nonextent+0x164/0x170
-> > [  493.765458]     new u64s 5 type deleted 0:25165824:0 len 0 ver 0
-> > [  493.765470]   update: btree=backpointers wb=1
-> > bch2_btree_insert_nonextent+0x164/0x170
-> > [  493.765482]     new u64s 5 type deleted 1:25165824:0 len 0 ver 0
-> > [  493.765494]   update: btree=backpointers wb=1
-> > bch2_btree_insert_nonextent+0x164/0x170
-> > [  493.765506]     new u64s 9 type backpointer 0:25690112:0 len 0 ver
-> > 0: bucket=0:98:0 btree=extents l=1 offset=0:0 len=256
-> > pos=671088640:149504:U32_MAX
-> > [  493.765519]   update: btree=backpointers wb=1
-> > bch2_btree_insert_nonextent+0x164/0x170
-> > [  493.765531]     new u64s 9 type backpointer 1:25690112:0 len 0 ver
-> > 0: bucket=1:98:0 btree=extents l=1 offset=0:0 len=256
-> > pos=671088640:149504:U32_MAX
-> > [  493.765545]   update: btree=backpointers wb=1
-> > bch2_btree_insert_nonextent+0x164/0x170
-> > [  493.765557]     new u64s 9 type backpointer 0:78643200:0 len 0 ver
-> > 0: bucket=0:300:0 btree=extents l=1 offset=0:0 len=256 pos=SPOS_MAX
-> > [  493.765570]   update: btree=backpointers wb=1
-> > bch2_btree_insert_nonextent+0x164/0x170
-> > [  493.765582]     new u64s 9 type backpointer 1:78643200:0 len 0 ver
-> > 0: bucket=1:300:0 btree=extents l=1 offset=0:0 len=256 pos=SPOS_MAX
-> > [  493.765595]   update: btree=backpointers wb=1
-> > bch2_btree_insert_nonextent+0x164/0x170
-> > [  493.765608]     new u64s 9 type backpointer 0:152305664:0 len 0 ver
-> > 0: bucket=0:581:0 btree=extents l=2 offset=0:0 len=256 pos=SPOS_MAX
-> > [  493.765622]   update: btree=backpointers wb=1
-> > bch2_btree_insert_nonextent+0x164/0x170
-> > [  493.765634]     new u64s 9 type backpointer 1:152305664:0 len 0 ver
-> > 0: bucket=1:581:0 btree=extents l=2 offset=0:0 len=256 pos=SPOS_MAX
-> > [  493.765648]
-> > [  496.612047] Kernel panic - not syncing: trans path overflow
-> > [  496.626162] CPU: 18 PID: 11 Comm: kworker/u96:0 Not tainted
-> > 6.6.0-rc4-next-20231005 #3
-> > [  496.642928] Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS
-> > 2.5 09/08/2022
-> > [  496.659120] Workqueue: btree_update btree_interior_update_work
-> > [  496.673783] Call Trace:
-> > [  496.684799]  <TASK>
-> > [  496.695345]  dump_stack_lvl+0x5f/0xc0
-> > [  496.707528]  dump_stack+0x10/0x20
-> > [  496.719236]  panic+0x444/0x4b0
-> > [  496.730566]  ? kfree+0x12a/0x150
-> > [  496.742073]  ? __pfx_panic+0x10/0x10
-> > [  496.753841]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  496.766816]  ? __bch2_dump_trans_paths_updates+0xda/0x120
-> > [  496.780289]  ? __pfx_bch2_btree_path_verify_level+0x10/0x10
-> > [  496.793999]  btree_path_overflow+0x1f/0x20
-> > [  496.806119]  __bch2_btree_path_make_mut+0x6e8/0x840
-> > [  496.819146]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  496.832005]  ? btree_trans_verify_sorted_refs+0x263/0x340
-> > [  496.845475]  ? __asan_storeN+0x12/0x30
-> > [  496.857128]  ? bch2_trans_update_extent.isra.0+0x17a/0x740
-> > [  496.870432]  __bch2_btree_path_set_pos+0x1dc/0x7e0
-> > [  496.882969]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  496.895575]  ? bch2_btree_path_verify+0xbd/0x1a0
-> > [  496.908175]  bch2_btree_iter_peek_upto+0xb14/0x1d00
-> > [  496.921066]  ? bch2_trans_update_extent.isra.0+0x17a/0x740
-> > [  496.934381]  ? __pfx_bch2_btree_iter_peek_upto+0x10/0x10
-> > [  496.947402]  ? bch2_trans_update_extent.isra.0+0x17a/0x740
-> > [  496.960594]  ? bch2_trans_update_extent.isra.0+0x17a/0x740
-> > [  496.973626]  ? __pfx_bch2_trans_iter_init_outlined+0x10/0x10
-> > [  496.986793]  ? bch2_btree_path_verify_locks+0xe7/0x220
-> > [  496.999311]  bch2_trans_update_extent.isra.0+0x1d3/0x740
-> > [  497.011773]  ? bch2_trans_update_extent.isra.0+0x1d3/0x740
-> > [  497.024430]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.036194]  ? __pfx_bch2_trans_update_extent.isra.0+0x10/0x10
-> > [  497.048854]  ? __pfx_bch2_btree_iter_peek_slot+0x10/0x10
-> > [  497.061036]  ? bch2_trans_update_extent.isra.0+0x17a/0x740
-> > [  497.073114]  ? bch2_bucket_do_index+0x429/0x770
-> > [  497.084016]  bch2_trans_update+0x1bd/0x210
-> > [  497.094299]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.105155]  ? bch2_trans_update+0x1bd/0x210
-> > [  497.115346]  bch2_bucket_do_index+0x4ba/0x770
-> > [  497.125552]  ? __pfx_bch2_bucket_do_index+0x10/0x10
-> > [  497.136144]  ? __pfx_bch2_bucket_gen_update+0x10/0x10
-> > [  497.146625]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.156815]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.166824]  ? bch2_bucket_do_index+0x429/0x770
-> > [  497.176301]  ? __asan_loadN+0xf/0x20
-> > [  497.184765]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.194463]  ? bch2_btree_path_peek_slot+0x315/0x4a0
-> > [  497.204342]  bch2_trans_mark_alloc+0x2e2/0x8d0
-> > [  497.213532]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.223020]  ? bch2_trans_mark_alloc+0x2e2/0x8d0
-> > [  497.232374]  ? __pfx_bch2_trans_mark_alloc+0x10/0x10
-> > [  497.242097]  ? __pfx_verify_update_old_key+0x10/0x10
-> > [  497.251873]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.261420]  ? bch2_btree_path_verify_locks+0xe7/0x220
-> > [  497.271445]  run_btree_triggers+0x40b/0x7c0
-> > [  497.280557]  ? __pfx_run_btree_triggers+0x10/0x10
-> > [  497.290141]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.299876]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.309460]  ? bch2_replicas_entry_sort+0x66/0xd0
-> > [  497.318999]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.328560]  ? update_replicas_list+0xc5/0xf0
-> > [  497.337739]  __bch2_trans_commit+0x993/0x4200
-> > [  497.346872]  ? __pfx_bch2_trans_mark_extent+0x10/0x10
-> > [  497.356698]  ? __asan_storeN+0x12/0x30
-> > [  497.365116]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.374735]  ? __pfx___bch2_trans_commit+0x10/0x10
-> > [  497.384234]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.393722]  ? kasan_save_alloc_info+0x1e/0x40
-> > [  497.402885]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.412373]  ? __kmalloc_node_track_caller+0x117/0x140
-> > [  497.422218]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.431691]  ? rcu_is_watching+0x23/0x60
-> > [  497.440253]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.449863]  btree_interior_update_work+0x1012/0x1460
-> > [  497.459802]  ? __pfx_btree_interior_update_work+0x10/0x10
-> > [  497.469986]  ? __pfx_lock_acquire+0x10/0x10
-> > [  497.478878]  ? __pfx_lock_release+0x10/0x10
-> > [  497.487667]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.497110]  ? process_one_work+0x3d6/0x950
-> > [  497.505859]  ? process_one_work+0x3d1/0x950
-> > [  497.514540]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.523856]  ? _raw_spin_unlock_irq+0x27/0x70
-> > [  497.532767]  process_one_work+0x470/0x950
-> > [  497.541347]  ? __pfx_process_one_work+0x10/0x10
-> > [  497.550360]  ? do_raw_spin_lock+0x115/0x1d0
-> > [  497.559088]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > [  497.568360]  ? assign_work+0xec/0x130
-> > [  497.576490]  worker_thread+0x370/0x680
-> > [  497.584774]  ? __pfx_worker_thread+0x10/0x10
-> > [  497.593493]  kthread+0x1b3/0x200
-> > [  497.601172]  ? kthread+0x103/0x200
-> > [  497.609008]  ? __pfx_kthread+0x10/0x10
-> > [  497.617208]  ret_from_fork+0x47/0x80
-> > [  497.625178]  ? __pfx_kthread+0x10/0x10
-> > [  497.633322]  ret_from_fork_asm+0x1b/0x30
-> > [  497.641759]  </TASK>
-> > [  497.649175] Kernel Offset: disabled
-> > [  497.855603] ---[ end Kernel panic - not syncing: trans path overflow ]---
-> > -- 
-> > Daniel J Blueman
+>  
+>  #define KEY(_inode, _offset, _size)					\
+> diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
+> index 7ee8d031bb6c..6248e17bbac5 100644
+> --- a/fs/bcachefs/extents.h
+> +++ b/fs/bcachefs/extents.h
+> @@ -642,7 +642,7 @@ static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr
+>  
+>  		ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
+>  
+> -		memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+> +		memcpy(&k->bytes[bkey_val_bytes(&k->k)],
+>  		       &ptr,
+>  		       sizeof(ptr));
+>  		k->k.u64s++;
+> -- 
+> 2.34.1
 > 
 
