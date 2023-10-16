@@ -2,187 +2,219 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BF40CDB47E
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 13 Oct 2023 23:44:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3004DCDB465
+	for <linux-bcachefs@archiver.kernel.org>; Mon, 16 Oct 2023 12:42:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjJMXoZ (ORCPT
+        id S232133AbjJPMmY (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 13 Oct 2023 19:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
+        Mon, 16 Oct 2023 08:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbjJMXoZ (ORCPT
+        with ESMTP id S232094AbjJPMmX (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:44:25 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184DBBE
-        for <linux-bcachefs@vger.kernel.org>; Fri, 13 Oct 2023 16:44:23 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c7373cff01so28797855ad.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 13 Oct 2023 16:44:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697240662; x=1697845462; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=m16elKmpWpc68P/gnYgqcKwJ5UOKKxemZVtL5n1HtMw=;
-        b=iRSRlkDy6nibm5lx3s68pXIncuNti2mjv5zVZmFihUCK1HazgsrH1PEeLBWzv8Knfq
-         Bd+tCiSjODE6D02iuaKj5DT5EFXpgUYAgdW79efuIwOJz/povXmfHzhsVlLVJOyqGM47
-         HmM5AM7nBtoy69aOWMRdZnQ964UEL5A5iNt/A=
+        Mon, 16 Oct 2023 08:42:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE56114
+        for <linux-bcachefs@vger.kernel.org>; Mon, 16 Oct 2023 05:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697460095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mO4SofqUiQyFUX1ot47zU7IJaXSxrjUqVWuCkw2EMIs=;
+        b=eXZtIl0DHKdqYOMCcg0jUDAesvcWqQPuxNiZATH9rhxTI7rXsOqHe+QpzrR/31ulHbvMl5
+        3IMJW/PQCowL/l9Aq3BJdpq5mqGWmP5foYxpQ7/37Xi68RM/VgkovgzTbmxw4vrkY2+HmS
+        C5HBnjZBsAXbc/62/ys30kXbu9FCwMk=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-259-Q3acMb5VOMCjbpJLN1keDg-1; Mon, 16 Oct 2023 08:41:34 -0400
+X-MC-Unique: Q3acMb5VOMCjbpJLN1keDg-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-66d0ceb78cbso50121286d6.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 16 Oct 2023 05:41:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697240662; x=1697845462;
+        d=1e100.net; s=20230601; t=1697460093; x=1698064893;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m16elKmpWpc68P/gnYgqcKwJ5UOKKxemZVtL5n1HtMw=;
-        b=GVxRYydpTZDQrQaMq08F2nqjMG4/BtSEdneT2FBFatII0bmcXFmXJFAnjfl9LY0cz1
-         12uxNHT4JNNSEZDIX0ORChs3/x3m9ACfMZLs51xAI0H5MR3j6LxyNmpjw/z2Eo7oLcM7
-         RCdWR+DEcZL4RPBQvJH/QBW/y8a4BHJV8foNOZ4Y4bNXWDt9I3jBtKZc2am6bPk/n9/o
-         nxK50pYj8Z6iGgrZLEG42HPi+VttBtOjDBk4Hg051+8I8M47Bqu9/9DpjBeg0L4P0s88
-         zyZVHZEJsEHI5CIzUB+I3MhoBaoL2zswXxTsd3yleYVOPVqfIplDTGA8Tz18WLridYXt
-         wkrA==
-X-Gm-Message-State: AOJu0YzXuo939c32khnOOZxSQ3jwS45SQTS+dPFOx135GhPUEEClyzIt
-        4qqING9C8Cy0qcXu/OPU67YlTg==
-X-Google-Smtp-Source: AGHT+IHHZCEh0KyaNG5lBNkcjPzUIl4Qu8VPp5RCrEU4Bxp2BkM5PBeuyURnfWsF9t+Xa0r6B2rC5A==
-X-Received: by 2002:a17:902:c945:b0:1ca:71:ea41 with SMTP id i5-20020a170902c94500b001ca0071ea41mr2422991pla.22.1697240662526;
-        Fri, 13 Oct 2023 16:44:22 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h21-20020a170902f7d500b001b53c8659fesm4423805plw.30.2023.10.13.16.44.22
+        bh=mO4SofqUiQyFUX1ot47zU7IJaXSxrjUqVWuCkw2EMIs=;
+        b=MVltF2Ev+h/a8sl+jQO8w6WSjvlgGT1rqUkWgyvD1wbC665MYrbrwfCf3QFK02fzgF
+         0CqzU1TKidHf0zLQl4657Ol4w/Wm/su2+eTECVwlmDOSXIF9nsevMteGdHPhVgZeobK6
+         r1aNEA3IiP0N492pQZuXSLMog8OpS+XlSLA3Nnu2hHbOrE1mG8Gq05Hoo3OerjKuOzHb
+         EiJbg1SdhVEU8PEH3E9OCgFCQFufsMcymmXSQtF/Cx6+/CfSS8AYKK4qdL3j4+eQhnya
+         75fFku7YKz4B47q95qHjtkKoqqL5ENnayxTJjnz9ZQ2EqalTFzsBjGQ28rQFJZdh0eum
+         IMCQ==
+X-Gm-Message-State: AOJu0YxVq3bg1tBzXzXG5J4UF9+p30Ly0F3nE7HGRBZAderEpWVM3NML
+        1DaGFsV+2dCxvy4tCy+C2CYFR+y2Y4/jJPg/c4q66TZfddYmMgj1xUBOXSb1FrZv+lLYChhAmSY
+        ty4sq9gQnzlrgFfGq9Jnx+HRTHSw=
+X-Received: by 2002:a05:6214:262b:b0:66d:63b3:690d with SMTP id gv11-20020a056214262b00b0066d63b3690dmr839214qvb.52.1697460093579;
+        Mon, 16 Oct 2023 05:41:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHZbF62hLypioq3YKXgp/WQB+xZJQLyIaHwZimjf5t0btZD9gbl26zMY3K8kByPTO5og++YUQ==
+X-Received: by 2002:a05:6214:262b:b0:66d:63b3:690d with SMTP id gv11-20020a056214262b00b0066d63b3690dmr839203qvb.52.1697460093330;
+        Mon, 16 Oct 2023 05:41:33 -0700 (PDT)
+Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
+        by smtp.gmail.com with ESMTPSA id n9-20020ae9c309000000b0076f0744ff50sm2915824qkg.136.2023.10.16.05.41.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 16:44:22 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 16:44:21 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Brian Foster <bfoster@redhat.com>
+        Mon, 16 Oct 2023 05:41:32 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 08:41:58 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Kees Cook <keescook@chromium.org>
 Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
         linux-bcachefs@vger.kernel.org, kernel test robot <lkp@intel.com>,
         linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 Subject: Re: [PATCH] bcachefs: Refactor bkey_i to use a flexible array
-Message-ID: <202310131637.D0C66BFBA@keescook>
+Message-ID: <ZS0vlpSwH1+/+EVM@bfoster>
 References: <20231010235609.work.594-kees@kernel.org>
  <ZSkpU0vdrCTfTxuZ@bfoster>
+ <202310131637.D0C66BFBA@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSkpU0vdrCTfTxuZ@bfoster>
+In-Reply-To: <202310131637.D0C66BFBA@keescook>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 07:26:11AM -0400, Brian Foster wrote:
-> On Tue, Oct 10, 2023 at 04:56:12PM -0700, Kees Cook wrote:
-> > The memcpy() in bch2_bkey_append_ptr() is operating on an embedded
-> > fake flexible array. Instead, make it explicit, and convert the memcpy
-> > to target the flexible array instead. Fixes the W=1 warning seen for
-> > -Wstringop-overflow:
+On Fri, Oct 13, 2023 at 04:44:21PM -0700, Kees Cook wrote:
+> On Fri, Oct 13, 2023 at 07:26:11AM -0400, Brian Foster wrote:
+> > On Tue, Oct 10, 2023 at 04:56:12PM -0700, Kees Cook wrote:
+> > > The memcpy() in bch2_bkey_append_ptr() is operating on an embedded
+> > > fake flexible array. Instead, make it explicit, and convert the memcpy
+> > > to target the flexible array instead. Fixes the W=1 warning seen for
+> > > -Wstringop-overflow:
+> > > 
+> > >    In file included from include/linux/string.h:254,
+> > >                     from include/linux/bitmap.h:11,
+> > >                     from include/linux/cpumask.h:12,
+> > >                     from include/linux/smp.h:13,
+> > >                     from include/linux/lockdep.h:14,
+> > >                     from include/linux/radix-tree.h:14,
+> > >                     from include/linux/backing-dev-defs.h:6,
+> > >                     from fs/bcachefs/bcachefs.h:182:
+> > >    fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
+> > >    include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
+> > >       57 | #define __underlying_memcpy     __builtin_memcpy
+> > >          |                                 ^
+> > >    include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
+> > >      648 |         __underlying_##op(p, q, __fortify_size);                        \
+> > >          |         ^~~~~~~~~~~~~
+> > >    include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
+> > >      693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+> > >          |                          ^~~~~~~~~~~~~~~~~~~~
+> > >    fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
+> > >      235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+> > >          |                 ^~~~~~
+> > >    fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
+> > >      287 |                 struct bch_val  v;
+> > >          |                                 ^
+> > > 
+> > > Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> > > Cc: Brian Foster <bfoster@redhat.com>
+> > > Cc: linux-bcachefs@vger.kernel.org
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Closes: https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com/
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  fs/bcachefs/bcachefs_format.h | 5 ++++-
+> > >  fs/bcachefs/extents.h         | 2 +-
+> > >  2 files changed, 5 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+> > > index f0d130440baa..f5e8cb43697b 100644
+> > > --- a/fs/bcachefs/bcachefs_format.h
+> > > +++ b/fs/bcachefs/bcachefs_format.h
+> > > @@ -300,7 +300,10 @@ struct bkey_i {
+> > >  	__u64			_data[0];
+> > >  
+> > >  	struct bkey	k;
+> > > -	struct bch_val	v;
+> > > +	union {
+> > > +		struct bch_val	v;
+> > > +		DECLARE_FLEX_ARRAY(__u8, bytes);
+> > > +	};
+> > >  };
 > > 
-> >    In file included from include/linux/string.h:254,
-> >                     from include/linux/bitmap.h:11,
-> >                     from include/linux/cpumask.h:12,
-> >                     from include/linux/smp.h:13,
-> >                     from include/linux/lockdep.h:14,
-> >                     from include/linux/radix-tree.h:14,
-> >                     from include/linux/backing-dev-defs.h:6,
-> >                     from fs/bcachefs/bcachefs.h:182:
-> >    fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
-> >    include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
-> >       57 | #define __underlying_memcpy     __builtin_memcpy
-> >          |                                 ^
-> >    include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
-> >      648 |         __underlying_##op(p, q, __fortify_size);                        \
-> >          |         ^~~~~~~~~~~~~
-> >    include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
-> >      693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
-> >          |                          ^~~~~~~~~~~~~~~~~~~~
-> >    fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
-> >      235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-> >          |                 ^~~~~~
-> >    fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
-> >      287 |                 struct bch_val  v;
-> >          |                                 ^
+> > Hi Kees,
 > > 
-> > Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> > Cc: Brian Foster <bfoster@redhat.com>
-> > Cc: linux-bcachefs@vger.kernel.org
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com/
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  fs/bcachefs/bcachefs_format.h | 5 ++++-
-> >  fs/bcachefs/extents.h         | 2 +-
-> >  2 files changed, 5 insertions(+), 2 deletions(-)
+> > I'm curious if this is something that could be buried in bch_val given
+> > it's already kind of a fake structure..? If not, my only nitty comment
+> 
+> I was thinking it would be best to keep the flexible array has "high" in
+> the struct as possible, as in the future more refactoring will be needed
+> to avoid having flex arrays overlap with other members in composite
+> structures. So instead of pushing into bch_val, I left it at the highest
+> level possible, bch_i, as that's the struct being used by the memcpy().
+> 
+> Eventually proper unions will be needed instead of overlapping bch_i
+> with other types, as in:
+> 
+> struct btree_root {
+>         struct btree            *b;
+> 
+>         /* On disk root - see async splits: */
+>         __BKEY_PADDED(key, BKEY_BTREE_PTR_VAL_U64s_MAX);
+>         u8                      level;
+>         u8                      alive;
+>         s8                      error;
+> };
+> 
+> But that's all for the future. Right now I wanted to deal with the more
+> pressing matter of a 0-sized array not being zero sized. :)
+> 
+
+Ok, but I'm not really following how one approach vs. the other relates
+to this particular example of an embedded bkey_i. I'm probably just not
+familiar enough with the current issues with 0-sized arrays and the
+anticipated path forward. Can you elaborate for somebody who is more
+focused on trying to manage the design/complexity of these various key
+data structures? For example, what's the practical difference here (for
+future work) if the flex array lives in bch_val vs. bkey_i?
+
+Note that I don't necessarily have a strong opinion on this atm, but if
+there's a "for future reasons" aspect to this approach I'd like to at
+least understand it a little better. ;)
+
+> > is that memcpy(k->bytes[], ...) makes it kind of read like we're copying
+> > in opaque key data rather than value data, so perhaps a slightly more
+> > descriptive field name would be helpful. But regardless I'd wait until
+> > Kent has a chance to comment before changing anything..
+> 
+> How about "v_bytes" instead of "bytes"? Or if it really is preferred,
+> I can move the flex array into bch_val -- it just seems like the wrong
+> layer...
+> 
+
+Yeah.. v_bytes, value_bytes, etc. etc. Anything that avoids misleading
+code when using the field is good with me. Thanks.
+
+Brian
+
+> -Kees
+> 
 > > 
-> > diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-> > index f0d130440baa..f5e8cb43697b 100644
-> > --- a/fs/bcachefs/bcachefs_format.h
-> > +++ b/fs/bcachefs/bcachefs_format.h
-> > @@ -300,7 +300,10 @@ struct bkey_i {
-> >  	__u64			_data[0];
-> >  
-> >  	struct bkey	k;
-> > -	struct bch_val	v;
-> > +	union {
-> > +		struct bch_val	v;
-> > +		DECLARE_FLEX_ARRAY(__u8, bytes);
-> > +	};
-> >  };
-> 
-> Hi Kees,
-> 
-> I'm curious if this is something that could be buried in bch_val given
-> it's already kind of a fake structure..? If not, my only nitty comment
-
-I was thinking it would be best to keep the flexible array has "high" in
-the struct as possible, as in the future more refactoring will be needed
-to avoid having flex arrays overlap with other members in composite
-structures. So instead of pushing into bch_val, I left it at the highest
-level possible, bch_i, as that's the struct being used by the memcpy().
-
-Eventually proper unions will be needed instead of overlapping bch_i
-with other types, as in:
-
-struct btree_root {
-        struct btree            *b;
-
-        /* On disk root - see async splits: */
-        __BKEY_PADDED(key, BKEY_BTREE_PTR_VAL_U64s_MAX);
-        u8                      level;
-        u8                      alive;
-        s8                      error;
-};
-
-But that's all for the future. Right now I wanted to deal with the more
-pressing matter of a 0-sized array not being zero sized. :)
-
-> is that memcpy(k->bytes[], ...) makes it kind of read like we're copying
-> in opaque key data rather than value data, so perhaps a slightly more
-> descriptive field name would be helpful. But regardless I'd wait until
-> Kent has a chance to comment before changing anything..
-
-How about "v_bytes" instead of "bytes"? Or if it really is preferred,
-I can move the flex array into bch_val -- it just seems like the wrong
-layer...
-
--Kees
-
-> 
-> Brian
-> 
-> >  
-> >  #define KEY(_inode, _offset, _size)					\
-> > diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
-> > index 7ee8d031bb6c..6248e17bbac5 100644
-> > --- a/fs/bcachefs/extents.h
-> > +++ b/fs/bcachefs/extents.h
-> > @@ -642,7 +642,7 @@ static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr
-> >  
-> >  		ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
-> >  
-> > -		memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-> > +		memcpy(&k->bytes[bkey_val_bytes(&k->k)],
-> >  		       &ptr,
-> >  		       sizeof(ptr));
-> >  		k->k.u64s++;
-> > -- 
-> > 2.34.1
+> > Brian
+> > 
+> > >  
+> > >  #define KEY(_inode, _offset, _size)					\
+> > > diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
+> > > index 7ee8d031bb6c..6248e17bbac5 100644
+> > > --- a/fs/bcachefs/extents.h
+> > > +++ b/fs/bcachefs/extents.h
+> > > @@ -642,7 +642,7 @@ static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr
+> > >  
+> > >  		ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
+> > >  
+> > > -		memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+> > > +		memcpy(&k->bytes[bkey_val_bytes(&k->k)],
+> > >  		       &ptr,
+> > >  		       sizeof(ptr));
+> > >  		k->k.u64s++;
+> > > -- 
+> > > 2.34.1
+> > > 
 > > 
 > 
+> -- 
+> Kees Cook
+> 
 
--- 
-Kees Cook
