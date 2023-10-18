@@ -2,65 +2,95 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E76ACDB483
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 18 Oct 2023 22:04:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 109E2CDB47E
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 18 Oct 2023 22:36:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbjJRWEQ (ORCPT
+        id S231892AbjJRWgH (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 18 Oct 2023 18:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
+        Wed, 18 Oct 2023 18:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231373AbjJRWEP (ORCPT
+        with ESMTP id S229487AbjJRWgG (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 18 Oct 2023 18:04:15 -0400
-Received: from out-191.mta0.migadu.com (out-191.mta0.migadu.com [91.218.175.191])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0CEB6
-        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 15:04:13 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 18:04:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697666651;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2s3U1yAkM0di0yOCxQzp2ytWG3Emh1ypqTY1EYO4mxw=;
-        b=s1UMVl3cbdUUtkb57UUvuFyq4GhP0cIIbcrHXN/hjQSZ2ymQwfVvzpXbJQZ2G90Ex+DldY
-        TT4ybtNZhgETfTVatkwg6v/+EhdN1E0i1zmDhyWdg5Y46EHh0KpwMwFpDXINvBF7qTsnF0
-        6yNmfX0ieuecgs8Po7tHkg9dWk4NVGU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Kees Cook <keescook@chromium.org>
+        Wed, 18 Oct 2023 18:36:06 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728E7119
+        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 15:36:02 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ca3a54d2c4so38872275ad.3
+        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 15:36:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697668562; x=1698273362; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gU8UgFLtIwBMnNin+UfjeLA6KRbmnG6Wd91XkYWntpA=;
+        b=GQhkVl/9fDceZRGSVUreqYnt3zuY5DMfBTEFTanW2ex901gUNulYVNrrmdTLIvHRt7
+         w54JVgMxU+iBiWwDff9UJNcaBR6Dyixjer5sedl1HZc/Vt5DHZLrAMffHaHQyWUOYFYS
+         Sq/fV1rqYB1Sjq5yIIjAdwZqeYPzg/ybbts/w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697668562; x=1698273362;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gU8UgFLtIwBMnNin+UfjeLA6KRbmnG6Wd91XkYWntpA=;
+        b=ln8OzD2sxW57RBidvXnVhq53MENS2qhpleJxIhNUXXj18+yWjbDPjLL0Kh08HDsMy0
+         pUUfrkF81TLvQQm4t2mpLaXUdTWUda2jqLFM3kBL53Jv/EcHioXOsrbTAfWfjppBzLDy
+         A1aqTQ4HWpN7PZVuCJSsCM9s9HYF9laLuemKkTKHxtaUyEFLkcaAp3cfJlTU3v4MpW+M
+         IXlygunLa8QQt+V3naOI97lvE5qHG9ZQxAo3HYyvCvbd7n9xHr8tSlIjXGcAyRZb4Xjt
+         zGiIw1pGUKAeNOAvdAMPCXz9fvbC5RTTKT5xtuGDT2uDQl90yONX2dABqJ3BMDVP+wsX
+         aeew==
+X-Gm-Message-State: AOJu0YwAsOTQeP7eaQ9QVLudGlElv/sgs7sNLYskJOAeoNRtRwutoF6Y
+        K2jCX1Yp6Ggp2OysTJhmwOcxZ+iuKEoi46NpgpI=
+X-Google-Smtp-Source: AGHT+IHZ7D6QAbuRry6EjRTPblbyH23khZ4i/P+R2xOAqDQmfqYJkoXHgkb29YoqYPno7OWAy5G2/Q==
+X-Received: by 2002:a17:903:2342:b0:1c7:5f03:8562 with SMTP id c2-20020a170903234200b001c75f038562mr729819plh.30.1697668561892;
+        Wed, 18 Oct 2023 15:36:01 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id iw6-20020a170903044600b001c0a414695dsm453085plb.62.2023.10.18.15.36.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 15:36:01 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 15:36:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
         kernel test robot <lkp@intel.com>,
         linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 Subject: Re: [PATCH] bcachefs: Refactor bkey_i to use a flexible array
-Message-ID: <20231018220407.b5dvm2ehibcqvhzq@moria.home.lan>
+Message-ID: <202310181534.54934E68@keescook>
 References: <20231010235609.work.594-kees@kernel.org>
  <ZSkpU0vdrCTfTxuZ@bfoster>
  <202310131637.D0C66BFBA@keescook>
+ <20231018220407.b5dvm2ehibcqvhzq@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202310131637.D0C66BFBA@keescook>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20231018220407.b5dvm2ehibcqvhzq@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 04:44:21PM -0700, Kees Cook wrote:
-> On Fri, Oct 13, 2023 at 07:26:11AM -0400, Brian Foster wrote:
-> > Hi Kees,
+On Wed, Oct 18, 2023 at 06:04:07PM -0400, Kent Overstreet wrote:
+> On Fri, Oct 13, 2023 at 04:44:21PM -0700, Kees Cook wrote:
+> > On Fri, Oct 13, 2023 at 07:26:11AM -0400, Brian Foster wrote:
+> > > Hi Kees,
+> > > 
+> > > I'm curious if this is something that could be buried in bch_val given
+> > > it's already kind of a fake structure..? If not, my only nitty comment
 > > 
-> > I'm curious if this is something that could be buried in bch_val given
-> > it's already kind of a fake structure..? If not, my only nitty comment
+> > I was thinking it would be best to keep the flexible array has "high" in
+> > the struct as possible, as in the future more refactoring will be needed
+> > to avoid having flex arrays overlap with other members in composite
+> > structures. So instead of pushing into bch_val, I left it at the highest
+> > level possible, bch_i, as that's the struct being used by the memcpy().
 > 
-> I was thinking it would be best to keep the flexible array has "high" in
-> the struct as possible, as in the future more refactoring will be needed
-> to avoid having flex arrays overlap with other members in composite
-> structures. So instead of pushing into bch_val, I left it at the highest
-> level possible, bch_i, as that's the struct being used by the memcpy().
+> I agree with Brian here - I'd like this buried in bch_val, if possible.
+> 
+> I also went with unsafe_memcpy() for now - that's now in my for-next
+> tree. I'm not seeing any advantage of DECLARE_FLEX_ARRAY over that -
+> perhaps later if we could use __counted_by that would make more sense.
 
-I agree with Brian here - I'd like this buried in bch_val, if possible.
+This won't help here because of the combination of -fstrict-flex-arrays=3
+and -Wstringop-overflow (the latter is in W=1 builds). The builtin memcpy
+still complains about the 0-sized destination. I'll send a v3 with this
+in bch_val.
 
-I also went with unsafe_memcpy() for now - that's now in my for-next
-tree. I'm not seeing any advantage of DECLARE_FLEX_ARRAY over that -
-perhaps later if we could use __counted_by that would make more sense.
+-- 
+Kees Cook
