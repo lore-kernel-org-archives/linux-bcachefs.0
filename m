@@ -2,81 +2,117 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A03ACDB47E
-	for <linux-bcachefs@archiver.kernel.org>; Wed, 18 Oct 2023 20:30:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5233ACDB47E
+	for <linux-bcachefs@archiver.kernel.org>; Wed, 18 Oct 2023 21:11:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbjJRUao (ORCPT
+        id S232376AbjJRVLp (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 18 Oct 2023 16:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
+        Wed, 18 Oct 2023 17:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbjJRUaa (ORCPT
+        with ESMTP id S235038AbjJRVLb (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:30:30 -0400
-Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6ECD6D
-        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 13:29:59 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 16:29:55 -0400
+        Wed, 18 Oct 2023 17:11:31 -0400
+Received: from out-198.mta0.migadu.com (out-198.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655924697
+        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 14:05:02 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 17:04:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697660997;
+        t=1697663100;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ThelgcPdbQVBiMthLurD4t/d/kD11jPWQqjYw72B5OQ=;
-        b=Y5diJkwH8UuBrkYX7CVa8a/NOJupKggvhbyzOA1KTw9oHSr4/TchKz+qf8jW58Y0ASIWKz
-        /ijO3ak0GPjvXJsvpNzXWwZhvSPRLia+SWcNOgEM1yJwVFPYLApfr4A9zwte6pjXVEAKcD
-        I4I+DsuuOtLAhJsFWWzCwnzE6TOQVbw=
+        bh=/1ArYLLOZBAUcL76jk5+IqwZHBWHE65QdqzM7Jwfn30=;
+        b=PUZ5sZGnRytk4geioVimacEw2cEuvdXKXjA5NiIVXtas9kSdhr6BFkPxNbVKPSrukOW87F
+        F71gKsf1bZPDpHFT6N0KA2B5Fx+VMtGdZDzbT0nStxQme5LPclO6KxT+fTjoo57XsVndUG
+        Shn/ZsqKI1EPv+jv39uCiZhMgQZ+Iow=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Parke <parke.nexus@gmail.com>
-Cc:     linux-bcachefs@vger.kernel.org
-Subject: Re: Bcachefs: export a different st_dev for each subvolume
-Message-ID: <20231018202955.i2xjqqpd7cubunvg@moria.home.lan>
-References: <CAPxz1+Yt644v4q-ahjE46Sh_ZZSE2r=wwSaup4nYC4uYgQy+rA@mail.gmail.com>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>, linux-bcachefs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [NAK] Re: [PATCH 11/20] locking/osq: Export osq_(lock|unlock)
+Message-ID: <20231018210456.lgdicnuekvmvcgvm@moria.home.lan>
+References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
+ <20230712211115.2174650-12-kent.overstreet@linux.dev>
+ <bb77f456-8804-b63a-7868-19e0cd9e697f@redhat.com>
+ <20230802204407.lk5mnj7ua6idddbd@moria.home.lan>
+ <11d39248-31fc-c625-7c06-341f0146bd67@redhat.com>
+ <20230802214211.y3x3swic4jbphmtg@moria.home.lan>
+ <ZSUGwr5S5Nflbiay@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPxz1+Yt644v4q-ahjE46Sh_ZZSE2r=wwSaup4nYC4uYgQy+rA@mail.gmail.com>
+In-Reply-To: <ZSUGwr5S5Nflbiay@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 12:37:59PM -0700, Parke wrote:
-> Hello, linux-bcachefs@vger.kernel.org,
+On Tue, Oct 10, 2023 at 10:09:38AM +0200, Ingo Molnar wrote:
+> > Waiman, if you think you can add all the features of six locks to rwsem,
+> > knock yourself out - but right now this is a vaporware idea for you, not
+> > something I can seriously entertain. I'm looking to merge bcachefs next
+> > cycle, not sit around and bikeshed for the next six months.
 > 
-> I am exploring the feasibility of adding colorization of subvolumes to
-> the output of the coreutils `ls` program.  Specifically, for the
-> BTRFS, ZFS, and Bcachefs filesystems.
+> That's an entirely inappropriate response to valid review feedback.
 > 
-> In order for `ls` colorization of subvolumes to be feasible, detection
-> of subvolumes, by non-root users, needs to be implemented in an
-> efficient and reliable manner.
-> 
-> In searching the linux-bcachefs mailing list, I found a post by Kent Overstreet:
-> 
-> On 4 Nov 2021, Kent Overstreet wrote:
-> Still todo:
->    - need to export a different st_dev for each subvolume, like btrfs, so that
->      find -xdev does what you want and skips snapshots
-> 
-> Source:
-> https://lore.kernel.org/linux-bcachefs/YYQZ+QmATIgKfzZ8@moria.home.lan/
-> 
-> What is the status of the above todo item regarding a distinct st_dev
-> value for each subvolume?
+> Not having two overlapping locking facilities is not 'bikeshedding' at all ...
 
-Not done yet (and thanks for the reminder!)
+Well, there was already a long off-list discussion about adding six lock
+features to rwsem.
 
-> A second question:  On Btrfs, each subvolume has an inode value of 256.
+Basically, it looks to me like a total redesign of rwsem in order to do
+it correctly, and I don't think that would fly. The rwsem code has
+separate entrypoints for every lock state, and adding a third lock state
+would at a minimum add a lot of new - nearly duplicate - code.
+
+There's also features and optimizations in six locks that rwsem doesn't
+have, and it's not clear to me that it would be appropriate to add them
+to rwsem - each of them would need real discussion. The big ones are:
+
+ - percpu reader mode, used for locks for interior nodes and subvolume
+   keys in bcachefs
+ - exposing of waitlist entries (and this requires nontrivial guarantees
+   to do correctly!), so that bcachefs can do cycle detection deadlock
+   avoidance on top.
+
+In short, this would _not_ be a small project, and I think the saner
+approach if we really did want to condense down to a single locking
+implementation would be to replace rwsem with six locks. But before even
+contemplating that we'd want to see six locks getting wider usage and
+testing first.
+
+Hence why we're at leaving six locks in fs/bcachefs/ for now.
+
+> > If you start making a serious effort on adding those features to rwsem
+> > I'll start walking you through everything six locks has, but right now
+> > this is a major digression on a patch that just exports two symbols.
 > 
-> Source:  https://btrfs.readthedocs.io/en/latest/Subvolumes.html
+> In Linux the burden of work is on people submitting new code, not on 
+> reviewers. The rule is that you should not reinvent the wheel in new
+> features - extend existing locking facilities please.
 > 
-> Is there any easy method for users (especially non-root users) to
-> identify Bcachefs subvolumes?
+> Waiman gave you some pointers as to how to extend rwsems.
+> 
+> Meanwhile, NAK on the export of osq_(lock|unlock):
 
-Unfortunately nothing so easy - snapshots will have the same inode
-number for their root as the parent subvolume, but new (empty)
-subvolumes get new inode numbers for their root inode.
+Perhaps we could get some justification for why you want osq locks to be
+private?
 
-Perhaps we could sketch out a proper interface for this...
+My initial pull request had six locks in kernel/locking/, specifically
+to keep osq locks private, as requested by locking people (some years
+back). But since Linus shot that down, I need an alternative.
+
+If you're really dead set against exporting osq locks (and again, why?),
+my only alternative will be to either take optimistic spinning out of
+six locks, or implement optimistic spinning another way (which is
+something I was already looking at before; the way lock handoff works in
+six locks now makes that an attractive idea anyways, but of course the
+devil is in the details with locking code).
