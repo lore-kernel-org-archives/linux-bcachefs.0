@@ -2,90 +2,96 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8C31CDB465
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 07:55:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A460C46CA1
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 13:28:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbjJSHzB (ORCPT
+        id S1345960AbjJSN2I (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 19 Oct 2023 03:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
+        Thu, 19 Oct 2023 09:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbjJSHzA (ORCPT
+        with ESMTP id S1345945AbjJSN2H (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:55:00 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CD9124;
-        Thu, 19 Oct 2023 00:54:58 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507c5249d55so3058587e87.3;
-        Thu, 19 Oct 2023 00:54:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697702097; x=1698306897; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rXJ/Mr+spXECJ9u0aAvXnCzzdApNwtlPUw+XhQPOmiE=;
-        b=e0DCnjIJ0KC82mf+oqwh0/o+YUCkFPpsjshuG/5RB7trYriLGI0Q0xZ/GrZz/acjOk
-         bUJi6HsW+tPDbwXNmaCnkuh4yE6WKk4Vm+5KLI9Iz5bgNIi/z6HwnMO9/7JDyfWwyfIX
-         uC1qBvJnPApas892IwlilYShHIzJ2qL+THAjq82nrmqOe8F3JiWFemfhWcs5BgmdfLI4
-         44+pua6NizIl3/SHcqfKUA+Lov5OvMktkOFRguzbnSa4GCevDPDigREHISn/dxRk++I/
-         lOrgBb0RbgeI9f/KUWQfL0P4kb6BhyLlDTbeCtag22qR9l5nIe8C04Wsbgd9VOlWrvP3
-         YIYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697702097; x=1698306897;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rXJ/Mr+spXECJ9u0aAvXnCzzdApNwtlPUw+XhQPOmiE=;
-        b=WHg6W5QMBMfLh+V1IrMG8lBzFTYoKp76oDKv8MNAwTzwl8P49M6mPUCD6mnZ4TXcDX
-         dBa4CKYALW1Tay0zqrINczffF5fFg7pErXX7wV8dpCR52RWrBjuNZtITdkDZDps6sZbm
-         /fZqtlXA5aDLFZAnLlv5yZao7HpuSmCBGT62Qr/QE4UEDDcGOoU9D6vUeiSyze5Z45BE
-         HAsqBTMSVDKVxCb+NMndj2Oe4bjaei6RZgc60Gly23cU05dez+enmqNC7MnY/tNKCodN
-         MG2YAE5Kgz6qD3Vn+B1X+Uu3IUTX8XZD88TtHUEU6ztFEcBlaozPWeQdxeegwIBS3vgD
-         e81A==
-X-Gm-Message-State: AOJu0YxYjaDZ2eJAjNj1HZPDLyWhmK/ZEiDrrSOeIx6fmu3HdgE06RfZ
-        dPtRFgQzmPvwZrvIyOzXfxCFzx/j2Ns=
-X-Google-Smtp-Source: AGHT+IGhBCdv3F02RoO6WXb7swa56I2T+hnTKGyT76SnzWyqXbwC7LTjG7c2oBJSqzEOTMfGgxaX3A==
-X-Received: by 2002:a05:6512:455:b0:507:9dfd:f840 with SMTP id y21-20020a056512045500b005079dfdf840mr909014lfk.68.1697702096870;
-        Thu, 19 Oct 2023 00:54:56 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id c18-20020adfe712000000b0032da49e18fasm3881275wrm.23.2023.10.19.00.54.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 00:54:56 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Brian Foster <bfoster@redhat.com>,
-        linux-bcachefs@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] bcachefs: Fix spelling mistake "strcuct" -> "struct"
-Date:   Thu, 19 Oct 2023 08:54:55 +0100
-Message-Id: <20231019075455.369650-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 19 Oct 2023 09:28:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E631106
+        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 06:27:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697722045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=E0V07jbBBQkty44/FK72sIAtNozZ9GYKewpoNL4M+d0=;
+        b=AsYoV6iwGmjJRSM6Y69jatat4TtGfbiYxNZJVh74oa7Xyd6bF7GcIXvDclbtFN/NOte67R
+        inKGnNiPJR+SUCoyre5EcIU6JO72NOiN6F7VmU3t6WwS8mHFdCLCmoqlsGrl9/EgmPTqrz
+        lJ/UsLxj2Ng2+Yjj1xjBDxrm1Of66FU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-657-YcA6s83VP4uzkrjTwKQ_dg-1; Thu, 19 Oct 2023 09:27:19 -0400
+X-MC-Unique: YcA6s83VP4uzkrjTwKQ_dg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BF38C1C07563
+        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 13:27:18 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.32.106])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 82777492BEE
+        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 13:27:18 +0000 (UTC)
+From:   Brian Foster <bfoster@redhat.com>
+To:     linux-bcachefs@vger.kernel.org
+Subject: [PATCH] bcachefs: update alloc cursor in early bucket allocator
+Date:   Thu, 19 Oct 2023 09:27:46 -0400
+Message-ID: <20231019132746.279256-1-bfoster@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-There is a spelling mistake in an unsafe_memcpy message. Fix it.
+A recent bug report uncovered a scenario where a filesystem never
+runs with freespace_initialized, and therefore the user observes
+significantly degraded write performance by virtue of running the
+early bucket allocator. The associated bug aside, the primary cause
+of the performance drop in this particular instance is that the
+early bucket allocator does not update the allocation cursor. This
+means that every allocation walks the alloc btree from the first
+bucket of the associated device looking for a bucket marked as free
+space.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Update the early allocator code to set the alloc cursor to the
+prospectively allocated bucket, similar to how the freelist
+allocator behaves. This improves performance of the early bucket
+allocator dramatically (even though it should be bypassed in favor
+of the freelist allocator in most cases).
+
+Signed-off-by: Brian Foster <bfoster@redhat.com>
 ---
- fs/bcachefs/buckets.c | 2 +-
+
+cshepherd on #bcache originally reported the early bucket allocator
+problem and helped chase it down to what looks like a members_v2
+regression. I believe he was planning to post a patch for that one.
+
+Brian
+
+ fs/bcachefs/alloc_foreground.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
-index a1a4b5feadaa..9e93de2670d5 100644
---- a/fs/bcachefs/buckets.c
-+++ b/fs/bcachefs/buckets.c
-@@ -475,7 +475,7 @@ static inline int update_replicas_list(struct btree_trans *trans,
- 	n->delta = sectors;
- 	unsafe_memcpy((void *) n + offsetof(struct replicas_delta, r),
- 		      r, replicas_entry_bytes(r),
--		      "flexible array member embedded in strcuct with padding");
-+		      "flexible array member embedded in struct with padding");
- 	bch2_replicas_entry_sort(&n->r);
- 	d->used += b;
- 	return 0;
+diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
+index 3bc4abd3d7d5..be3fc0f38c79 100644
+--- a/fs/bcachefs/alloc_foreground.c
++++ b/fs/bcachefs/alloc_foreground.c
+@@ -431,7 +431,7 @@ bch2_bucket_alloc_early(struct btree_trans *trans,
+ 	}
+ 	bch2_trans_iter_exit(trans, &iter);
+ 
+-	ca->alloc_cursor = alloc_cursor;
++	ca->alloc_cursor = IS_ERR_OR_NULL(ob) ? alloc_cursor : ob->bucket;
+ 
+ 	if (!ob && ret)
+ 		ob = ERR_PTR(ret);
 -- 
-2.39.2
+2.41.0
 
