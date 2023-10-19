@@ -2,85 +2,120 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D30FFCDB465
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 17:00:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A6E8CDB465
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 17:23:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbjJSRAT (ORCPT
+        id S235476AbjJSRXM (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 19 Oct 2023 13:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47980 "EHLO
+        Thu, 19 Oct 2023 13:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233147AbjJSRAS (ORCPT
+        with ESMTP id S233238AbjJSRXL (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:00:18 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAC3130
-        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 10:00:13 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507a0907896so8156384e87.2
-        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 10:00:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697734811; x=1698339611; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uIFWgO+sBLy9unfBjCxOzLy/zJCprivD05GJALtqNr8=;
-        b=PRN7yMv0N/gHPAyWno5oqH/DMhmapQ5yNNTkXyftGRCQHcIEMMsXlzOmpYuwlt8pwo
-         FccV+vmtIZuVnqaqIWRZiMnO6gMJhibSFHyEjuhKwFnH6VU7JC+7eQmoGZHloAJQS4FY
-         UuBZoWgbpqgTCgWjx9sjs18mbAY37oTRYU0ma9erl80LkHJ29/FG9aLspsJBCU8sxmbg
-         1RRw3jzldRDCVH02C/HSdbwVoNEARC7SB0QGzOLjH8DvRnBjk8X1PXWQane78ss7Hzwz
-         CPigBkAUOGIWJ7EHQrjFutVKUuQgpd6r0hIgfxDDR3EI/DV/E8WtUTT4v88cqW5MYsM7
-         GWbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697734811; x=1698339611;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uIFWgO+sBLy9unfBjCxOzLy/zJCprivD05GJALtqNr8=;
-        b=h6h6qNwXUMgZXVSLketGjbz+sZavAS/kAY7/xEGmReeOJCzedS35MtEnuqXxI6PWsY
-         bAmbbxbOPVAN39fkDJQUYikocO6VViF0iCgcCeFiVRA5l06I5Cn4NEgWljJ+yT0MM6jT
-         PfAq6NeguETlBDw80lcbxe+qQtYufCA/dl7i4OLp/Y/w/P9AyxVjfsq2e4ZpGoq78Bv8
-         +hnXHtANZfNxenAbOZ8EquCPh24OltdBwHWTSo/OWQa+UGaFeLrJ1pqNW+8o2sqG6jVQ
-         2FMrHy3xE5H4sqf1ftBqdb3EetlKiBytHYt8eA1I5CtJPnSRhq29DxekHAULS3FJf20g
-         w0lw==
-X-Gm-Message-State: AOJu0YxqK3EXl9jfS8/yZhQvVjVc5WqE+jsqeWqZ8HqdwqkqcX9F8lOl
-        P7us8/jJ5yIhWrHTYE/NpQGsh9N4KnsvoW0snJq7IDxs
-X-Google-Smtp-Source: AGHT+IGLG5wfVvqNeB3SzmgnPL/XaT7Iy1HOe7USk2eboKWFIDUrzo84E8+GALbeLN2+LJUl68hgkO548nREg4JhgHs=
-X-Received: by 2002:a19:5206:0:b0:502:9fce:b6d4 with SMTP id
- m6-20020a195206000000b005029fceb6d4mr1908107lfb.25.1697734811234; Thu, 19 Oct
- 2023 10:00:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAPxz1+Yt644v4q-ahjE46Sh_ZZSE2r=wwSaup4nYC4uYgQy+rA@mail.gmail.com>
- <20231018202955.i2xjqqpd7cubunvg@moria.home.lan> <CAPxz1+ZTODcUt=nbToDtpsHr1LW04VNVqDPJNV2QhuXb-=+CnQ@mail.gmail.com>
- <20231019002654.cgsmfhu6pxnh4vro@moria.home.lan> <CAPxz1+YcGd23wH4J+Vo1ES6-ncMaW0ga6DSxehS8Ty=t6rTbNg@mail.gmail.com>
- <20231019004704.ehjplvjlhzqgnyx6@moria.home.lan>
-In-Reply-To: <20231019004704.ehjplvjlhzqgnyx6@moria.home.lan>
-From:   Parke <parke.nexus@gmail.com>
-Date:   Thu, 19 Oct 2023 09:59:35 -0700
-Message-ID: <CAPxz1+ZsY9-v_Fw5_qMF_0S3rVZYn1oFUtVusFjOFP4JQY7CdQ@mail.gmail.com>
-Subject: Re: Bcachefs: export a different st_dev for each subvolume
+        Thu, 19 Oct 2023 13:23:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EA712F
+        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 10:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697736144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rXJ9JuL3Dno6k0U4BX1kjtohTG0QgN9f8PG72sEviIU=;
+        b=I9j3tSRtlWY2jyOGYfmcbT+z0UmgIOM9hhwlxLSXbi+oFKPzj82doqapM5G64i2R4jVm3q
+        xmdZU19v/rsrB+rg4LrSfBCAFFVttPZLLSTZWG0LHzShM+84B+qTV9xaTsTX8FLU3JFdLG
+        l7VlJKzVOMaAIHEaOKKpqamQ+WMHAz4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-621-L2Be-JN4M7y4MzTLdXoAtg-1; Thu, 19 Oct 2023 13:22:22 -0400
+X-MC-Unique: L2Be-JN4M7y4MzTLdXoAtg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E90F28E6D05;
+        Thu, 19 Oct 2023 17:22:21 +0000 (UTC)
+Received: from bfoster (unknown [10.22.32.106])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B9E4A492BEE;
+        Thu, 19 Oct 2023 17:22:21 +0000 (UTC)
+Date:   Thu, 19 Oct 2023 13:22:38 -0400
+From:   Brian Foster <bfoster@redhat.com>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] bcachefs: update alloc cursor in early bucket allocator
+Message-ID: <ZTFl3jJJi2CoDdJB@bfoster>
+References: <20231019132746.279256-1-bfoster@redhat.com>
+ <20231019153019.jl73n6ipif7zwc5b@moria.home.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019153019.jl73n6ipif7zwc5b@moria.home.lan>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 5:47=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
-> So, in that case, you just need a single bit reported via stat() or
-> statx().
->
-> Unfortunately, I don't see a flags field in struct statx...
+On Thu, Oct 19, 2023 at 11:30:19AM -0400, Kent Overstreet wrote:
+> On Thu, Oct 19, 2023 at 09:27:46AM -0400, Brian Foster wrote:
+> > A recent bug report uncovered a scenario where a filesystem never
+> > runs with freespace_initialized, and therefore the user observes
+> > significantly degraded write performance by virtue of running the
+> > early bucket allocator. The associated bug aside, the primary cause
+> > of the performance drop in this particular instance is that the
+> > early bucket allocator does not update the allocation cursor. This
+> > means that every allocation walks the alloc btree from the first
+> > bucket of the associated device looking for a bucket marked as free
+> > space.
+> > 
+> > Update the early allocator code to set the alloc cursor to the
+> > prospectively allocated bucket, similar to how the freelist
+> > allocator behaves. This improves performance of the early bucket
+> > allocator dramatically (even though it should be bypassed in favor
+> > of the freelist allocator in most cases).
+> > 
+> > Signed-off-by: Brian Foster <bfoster@redhat.com>
+> > ---
+> > 
+> > cshepherd on #bcache originally reported the early bucket allocator
+> > problem and helped chase it down to what looks like a members_v2
+> > regression. I believe he was planning to post a patch for that one.
+> > 
+> > Brian
+> > 
+> >  fs/bcachefs/alloc_foreground.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
+> > index 3bc4abd3d7d5..be3fc0f38c79 100644
+> > --- a/fs/bcachefs/alloc_foreground.c
+> > +++ b/fs/bcachefs/alloc_foreground.c
+> > @@ -431,7 +431,7 @@ bch2_bucket_alloc_early(struct btree_trans *trans,
+> >  	}
+> >  	bch2_trans_iter_exit(trans, &iter);
+> >  
+> > -	ca->alloc_cursor = alloc_cursor;
+> > +	ca->alloc_cursor = IS_ERR_OR_NULL(ob) ? alloc_cursor : ob->bucket;
+> 
+> Oh, this code is broken. The local alloc_cursor never gets updated, and
+> it needs to for where we check if we need to loop around.
+> 
 
-After some more contemplation, I think I am going to implement
-colorization of st_dev differences.  (As I originally envisioned, and
-as Kent previously suggested.)
+Ah, good point.
 
-This means that if/when Bcachefs implements distinct st_dev's for each
-subvolume, my modified version of ls will be able to display them in a
-custom color.
+> The proper fix would be to add
+> 
+>   alloc_cursor = iter.pos.offset;
+> 
+> before the line you changed
+> 
 
-Cheers,
+Thanks. I'll give that a whirl.
 
-Parke
+BTW, should this code be protected from no free space situations at a
+higher level, or should we consider a max retry count or something? I
+want to be cautious about things like prospective livelocks
+(particularly if this path is less common) if this retry was effectively
+dead code due to not updating alloc_cursor.
+
+Brian
+
