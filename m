@@ -2,122 +2,91 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80A60CDB482
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 13:37:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DD1ECDB465
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 15:30:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbjJSNhp (ORCPT
+        id S1345484AbjJSPa1 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 19 Oct 2023 09:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
+        Thu, 19 Oct 2023 11:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235394AbjJSNhp (ORCPT
+        with ESMTP id S1345450AbjJSPa1 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:37:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E762D130
-        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 06:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697722622;
+        Thu, 19 Oct 2023 11:30:27 -0400
+Received: from out-193.mta0.migadu.com (out-193.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3203121
+        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 08:30:24 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 11:30:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697729423;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=ltRSh3ysnysXuqOSRu+H5VVN1GCboCRNJ1jMGzqgxmY=;
-        b=fsqAXOOC9h6Pj1tK9ydO06cgJsg7b6aXpl3uiG+IvLG7ngKau6Sa2NunT7/OpLsTdiupD3
-        bSaJzKTzkSmZIog5hWmK7iZ6Sxqt8CNL1KUAL39IC04xaaP++AiZ8SmHbfyYr5vJOSf1eq
-        ESlUkxHd+HPIbQ2ubNZ+NZ6VZXTKSaE=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-575-67x2uW2NMCm2R0L6MdT1nQ-1; Thu, 19 Oct 2023 09:37:00 -0400
-X-MC-Unique: 67x2uW2NMCm2R0L6MdT1nQ-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4199725b054so91996201cf.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 06:37:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697722620; x=1698327420;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ltRSh3ysnysXuqOSRu+H5VVN1GCboCRNJ1jMGzqgxmY=;
-        b=LWFOfQd+EqEtQedNbrQyzPvc6VyW1zdATzOj407rwovq1WcyFhDUn0BumzDQjlUYqU
-         +eyRSMZS6fEHsCk8KUJ8mVzpdeK7BHKxYzBpGk75pe4XmaTgGojncLzZortVqSdS23v5
-         0ZxdrgtKunURJLeFeW4aOLElCYyNqrSwys5K/AqXsuGntuzmeNpj3cAAfV45GOi7fRoe
-         GytZyoxwzvgdt4pY9r7Ij73hpERQUrCJ6sgrYTqlhPSd+MfY98NWca74ykEC8UAEGIGN
-         7BzgGVZ8eK/c+a/piyxNwMIY1SpIIapkzR2hRDNDB2B8x0uD6QCV5rb7PxSe71nRnrS0
-         05vg==
-X-Gm-Message-State: AOJu0Yyz5bKvd+ONdKtYWSCpdYayx/IwrQhh+umQWYFhYNkCDL0LodGk
-        L79uPWhJ0FVg+iX+CEcSHPrVrQuis6nKGtm7yQOL6UyMvhxe7xr1Tw+KxL6brj04ZQLENBpdmFC
-        1B4wNsb6GJpEAnKOFUf6yjNeYlhIrAtM/ElQnQ2enDpOEcpfXvV88mI7ayOX8pjLmBGiTTWX0eF
-        VC/vj2e/3tiw==
-X-Received: by 2002:ac8:5b86:0:b0:41c:bddb:fa47 with SMTP id a6-20020ac85b86000000b0041cbddbfa47mr2503919qta.67.1697722619908;
-        Thu, 19 Oct 2023 06:36:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IESmRWWOHdO9Sjg77GaDmKygSOPY/tt2MgRSa8oghmjI89JFdnxM7WRDlrQR7NxzDv5Z19Nkw==
-X-Received: by 2002:ac8:5b86:0:b0:41c:bddb:fa47 with SMTP id a6-20020ac85b86000000b0041cbddbfa47mr2503899qta.67.1697722619521;
-        Thu, 19 Oct 2023 06:36:59 -0700 (PDT)
-Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
-        by smtp.gmail.com with ESMTPSA id jd24-20020a05622a719800b004196a813639sm738929qtb.17.2023.10.19.06.36.58
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 06:36:58 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 09:37:24 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     linux-bcachefs@vger.kernel.org
-Subject: [BUG] bcachefs (early?) bucket allocator raciness
-Message-ID: <ZTExFP9G1fUIUgVZ@bfoster>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVZr8pdATtAuW4NYuvMYvVXQ0LwrEXc3ZrLK8IVDtz8=;
+        b=tnz/2s2JiovkW6wU7VtEbPdUet5CiScAMklSSR/3P5xQqYVDrLr2AaOSUed0BqndRy3moy
+        PL5na/SsSU+B308PljXShqwxaN4+3N4TW0cuFrwERoEtpUT1rQBJ5/LM6ZruT3uONsBUpW
+        h1NavDEqMrfIgsoXTDP0dYh0kAKB+xk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: update alloc cursor in early bucket allocator
+Message-ID: <20231019153019.jl73n6ipif7zwc5b@moria.home.lan>
+References: <20231019132746.279256-1-bfoster@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231019132746.279256-1-bfoster@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi Kent, All,
+On Thu, Oct 19, 2023 at 09:27:46AM -0400, Brian Foster wrote:
+> A recent bug report uncovered a scenario where a filesystem never
+> runs with freespace_initialized, and therefore the user observes
+> significantly degraded write performance by virtue of running the
+> early bucket allocator. The associated bug aside, the primary cause
+> of the performance drop in this particular instance is that the
+> early bucket allocator does not update the allocation cursor. This
+> means that every allocation walks the alloc btree from the first
+> bucket of the associated device looking for a bucket marked as free
+> space.
+> 
+> Update the early allocator code to set the alloc cursor to the
+> prospectively allocated bucket, similar to how the freelist
+> allocator behaves. This improves performance of the early bucket
+> allocator dramatically (even though it should be bypassed in favor
+> of the freelist allocator in most cases).
+> 
+> Signed-off-by: Brian Foster <bfoster@redhat.com>
+> ---
+> 
+> cshepherd on #bcache originally reported the early bucket allocator
+> problem and helped chase it down to what looks like a members_v2
+> regression. I believe he was planning to post a patch for that one.
+> 
+> Brian
+> 
+>  fs/bcachefs/alloc_foreground.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
+> index 3bc4abd3d7d5..be3fc0f38c79 100644
+> --- a/fs/bcachefs/alloc_foreground.c
+> +++ b/fs/bcachefs/alloc_foreground.c
+> @@ -431,7 +431,7 @@ bch2_bucket_alloc_early(struct btree_trans *trans,
+>  	}
+>  	bch2_trans_iter_exit(trans, &iter);
+>  
+> -	ca->alloc_cursor = alloc_cursor;
+> +	ca->alloc_cursor = IS_ERR_OR_NULL(ob) ? alloc_cursor : ob->bucket;
 
-I recently observed a data corruption problem that is related to the
-recently discovered issue of mounted fs' running with the early bucket
-allocator instead of the freelist allocator. The immediate failure is
-generic/113 producing various splats, the most common of which is a
-duplicate backpointer issue. generic/113 is primarily an aio/dio stress
-test.
+Oh, this code is broken. The local alloc_cursor never gets updated, and
+it needs to for where we check if we need to loop around.
 
-I eventually tracked this down to an actual duplicate bucket allocation
-in the early bucket allocator code. The race generally looks as follows:
+The proper fix would be to add
 
-- Task 1 lands in bch2_bucket_alloc_early(), selects key A from the
-  alloc btree, and then schedules (perhaps due to freelist_lock).
+  alloc_cursor = iter.pos.offset;
 
-- Task 2 runs through the same alloc path and selects the same key K,
-  but proceeds to open the associated bucket, alloc/write to it,
-  complete the I/O and release the bucket (removing it from the hash).
-
-- Task 1 continues with alloc key K. bch2_bucket_is_open() returns false
-  because the previously opened bucket has been removed from the hash
-  list. Therefore task 1 opens a new bucket for what is now no longer free
-  space and uses it for the its associated write operation.
-
-This eventually results in a splat related to duplicate backpointers or
-multiple data types in a single bucket. The fundamental problem is
-inconsistency between the key walk and bucket management. In theory, a
-simple fix would be something like reader exclusion or revalidation
-(i.e. seqlock type checks to revalidate the current/prospective key)
-once the allocation side is under lock, but that would require more
-experimentation to confirm, validate performance, etc.
-
-Once it became apparent that this fs shouldn't be running the early
-allocator in the first place, I worked around that problem to try and
-see whether this sort of race could still be reproduced with the
-freelist allocator. So far I've not been able to reproduce.
-
-Note that one factor wrt to the early allocator is that it doesn't
-effectively update the alloc cursor, which means multiple threads can
-come through and process the same sets of keys repeatedly. Fixing that
-cursor issue [1] actually helps mitigate the race as well, even if not a
-proper fix. However, I'm still not able to reproduce with the freelist
-allocator even if I remove the cursor updates to try and simulate the
-same sort of problem there. So far nothing stands out to me as obviously
-different between how the alloc and freespace btrees are managed wrt to
-serialization against foreground allocation, so I'm not totally clear if
-this is just a timing thing due to relative inefficiency of the early
-allocator or if I'm just missing something in the code. Thoughts?
-
-Brian
-
-[1] https://lore.kernel.org/linux-bcachefs/20231019132746.279256-1-bfoster@redhat.com/
-
+before the line you changed
