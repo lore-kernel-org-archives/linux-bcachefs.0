@@ -2,93 +2,151 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB3F0CDB465
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 15:52:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 733DBCDB465
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 16:00:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbjJSPwV (ORCPT
+        id S1346423AbjJSQAR (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 19 Oct 2023 11:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
+        Thu, 19 Oct 2023 12:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233176AbjJSPwU (ORCPT
+        with ESMTP id S1345737AbjJSQAQ (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:52:20 -0400
-Received: from out-207.mta0.migadu.com (out-207.mta0.migadu.com [IPv6:2001:41d0:1004:224b::cf])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB0D93
-        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 08:52:18 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 11:52:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697730734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TQ2glw2E7OqJ6Q5LkUNaW719St9vmq0TU22+hkH1+Rg=;
-        b=bvAQrQZOZymVcS6yyA1JTlIbRZgqtPo2sqso97DPVeaK+JZllhRigFsZPTDdGOczItI/bO
-        g6VCEcay8Xz6JNDObIs5UJTxCDnJjjHXKsje9180I7nCu+krdu5yT1h+l5s3zyjIq1HLU2
-        t8nScM3Nel5nKXpZQ7I2WFFqQmBSRAI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     linux-bcachefs@vger.kernel.org
-Subject: Re: [BUG] bcachefs (early?) bucket allocator raciness
-Message-ID: <20231019155211.ir433bgkuyuh6cqc@moria.home.lan>
-References: <ZTExFP9G1fUIUgVZ@bfoster>
+        Thu, 19 Oct 2023 12:00:16 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0575B6;
+        Thu, 19 Oct 2023 09:00:13 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c50cd16f3bso91075641fa.2;
+        Thu, 19 Oct 2023 09:00:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697731212; x=1698336012; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fSDDMkWKOscG8d7aFe9xNzMWpe2tWGppER9q+Picffw=;
+        b=hV84FMsEQDUDbv3DeZ4WLdHhDp46aXY8d6E7vntBVsTWmx/tB96wrkNmsqdmvqXKM5
+         dAQKz4k1qsqUD6eEt/Mbkan7OMT7SePQ5IE2jyY5EnkZxQXY6GkWK5oVGIWawPeG3uGg
+         znzeJJRjtxv7vO/XDyjCTnvKQxnByYL4Wx63P5How7UUeGXT9nPu6zkbybA0H8+cgOSG
+         1hWtbGaZMXRsZYs/1LhyC8Zjcn3DQDonKYMTd8eCNQc0XY4K6jmDLRiwJwedoST9ymMX
+         wsPy70KHyoN7LeQ3+snu4s+oGitQHKdDYX2NdLiQo1tuXdkKJ8rXGz78WmJ6tBQEeOji
+         alLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697731212; x=1698336012;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fSDDMkWKOscG8d7aFe9xNzMWpe2tWGppER9q+Picffw=;
+        b=fmIv/UrNc0iD6Cln3bjO5F4NLuLoUmb5RxCvEjJ6OJ6+Ne2M3/r+ZNn4t51DKmAxlD
+         10x3vyQobs7kNS3MLCh/20wV/XGo9mQff3m+8S9asQpAmMH5Z+OvVh0NK+5kP1fF5oQa
+         wBcSgcb+U5B6tL5/y1c2CdvFBHbY+1yH79tGxvOnliUGJcnY06qEfXUmEcH5GeM68Ut3
+         HM3ayVkx3M/n6mUaRtUrQTCJzj5uV6uZt5Un+WXxuYCwJua76Z/iV052X0JygQIjLILC
+         DWLXOv8p+Q9/C0mxhMSLPBzT4S/8Xu5WW75D9iqdOIsDVwGkbluNEym0YK9eVvzNkPlC
+         b6Rg==
+X-Gm-Message-State: AOJu0YzSeerCvboRHnt9i9gTIQL/LvjUeSIA++iMyUabYBPN23nlMfiE
+        xrr3Y2+k+9fKCb17/JGMozU=
+X-Google-Smtp-Source: AGHT+IG3e6RX4/S2XxCBBQFe1+QWTlT36Exu33T/w95mZLQJPeQ2D33wxraevY5sRm43e/jMnglcSw==
+X-Received: by 2002:a2e:97ca:0:b0:2bc:d5f1:b9cf with SMTP id m10-20020a2e97ca000000b002bcd5f1b9cfmr1737842ljj.27.1697731211784;
+        Thu, 19 Oct 2023 09:00:11 -0700 (PDT)
+Received: from f (cst-prg-84-171.cust.vodafone.cz. [46.135.84.171])
+        by smtp.gmail.com with ESMTPSA id i18-20020a05600c481200b00407b93d8085sm4675459wmo.27.2023.10.19.09.00.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 09:00:11 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 17:59:58 +0200
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Dave Chinner <dchinner@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
+Message-ID: <20231019155958.7ek7oyljs6y44ah7@f>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-23-kent.overstreet@linux.dev>
+ <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
+ <20231019153040.lj3anuescvdprcq7@f>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZTExFP9G1fUIUgVZ@bfoster>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20231019153040.lj3anuescvdprcq7@f>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 09:37:24AM -0400, Brian Foster wrote:
-> Hi Kent, All,
+On Thu, Oct 19, 2023 at 05:30:40PM +0200, Mateusz Guzik wrote:
+> On Tue, May 23, 2023 at 11:28:38AM +0200, Christian Brauner wrote:
+> > On Tue, 09 May 2023 12:56:47 -0400, Kent Overstreet wrote:
+> > > Because scalability of the global inode_hash_lock really, really
+> > > sucks.
+> > > 
+> > > 32-way concurrent create on a couple of different filesystems
+> > > before:
+> > > 
+> > > -   52.13%     0.04%  [kernel]            [k] ext4_create
+> > >    - 52.09% ext4_create
+> > >       - 41.03% __ext4_new_inode
+> > >          - 29.92% insert_inode_locked
+> > >             - 25.35% _raw_spin_lock
+> > >                - do_raw_spin_lock
+> > >                   - 24.97% __pv_queued_spin_lock_slowpath
+> > > 
+> > > [...]
+> > 
+> > This is interesting completely independent of bcachefs so we should give
+> > it some testing.
+> > 
+> > I updated a few places that had outdated comments.
+> > 
+> > ---
+> > 
+> > Applied to the vfs.unstable.inode-hash branch of the vfs/vfs.git tree.
+> > Patches in the vfs.unstable.inode-hash branch should appear in linux-next soon.
+> > 
+> > Please report any outstanding bugs that were missed during review in a
+> > new review to the original patch series allowing us to drop it.
+> > 
+> > It's encouraged to provide Acked-bys and Reviewed-bys even though the
+> > patch has now been applied. If possible patch trailers will be updated.
+> > 
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+> > branch: vfs.unstable.inode-hash
+> > 
+> > [22/32] vfs: inode cache conversion to hash-bl
+> >         https://git.kernel.org/vfs/vfs/c/e3e92d47e6b1
 > 
-> I recently observed a data corruption problem that is related to the
-> recently discovered issue of mounted fs' running with the early bucket
-> allocator instead of the freelist allocator. The immediate failure is
-> generic/113 producing various splats, the most common of which is a
-> duplicate backpointer issue. generic/113 is primarily an aio/dio stress
-> test.
+> What, if anything, is blocking this? It is over 5 months now, I don't
+> see it in master nor -next.
 > 
-> I eventually tracked this down to an actual duplicate bucket allocation
-> in the early bucket allocator code. The race generally looks as follows:
+> To be clear there is no urgency as far as I'm concerned, but I did run
+> into something which is primarily bottlenecked by inode hash lock and
+> looks like the above should sort it out.
 > 
-> - Task 1 lands in bch2_bucket_alloc_early(), selects key A from the
->   alloc btree, and then schedules (perhaps due to freelist_lock).
+> Looks like the patch was simply forgotten.
 > 
-> - Task 2 runs through the same alloc path and selects the same key K,
->   but proceeds to open the associated bucket, alloc/write to it,
->   complete the I/O and release the bucket (removing it from the hash).
-> 
-> - Task 1 continues with alloc key K. bch2_bucket_is_open() returns false
->   because the previously opened bucket has been removed from the hash
->   list. Therefore task 1 opens a new bucket for what is now no longer free
->   space and uses it for the its associated write operation.
+> tl;dr can this land in -next please
 
-This shouldn't be possible because task 1 is holding the alloc key
-locked, and task 2 has to update that same alloc key before releasing
-the open bucket.
+In case you can't be arsed, here is something funny which may convince
+you to expedite. ;)
 
-Except perhaps not - perhaps this is a key cache coherency issue?
+I did some benching by running 20 processes in parallel, each doing stat
+on a tree of 1 million files (one tree per proc, 1000 dirs x 1000 files,
+so 20 mln inodes in total).  Box had 24 cores and 24G RAM.
 
-We're not using a BTREE_ITER_CACHED iterator, because we're scanning and
-we can't scan with key cache iterators. It's still supposed to be
-coherent with the key cache; bch2_btree_iter_peek_slot() ->
-btree_trans_peek_key_cache() checks if a key exists in the key cache and
-returns that key instead of the key in the btree if it exists.
+Best times:
+Linux:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
+FreeBSD:        3.49s user 345.12s system 1983% cpu 17.573 total
+OpenBSD:        5.01s user 6463.66s system 2000% cpu 5:23.42 total
+DragonflyBSD:   11.73s user 1316.76s system 1023% cpu 2:09.78 total
+OmniosCE:       9.17s user 516.53s system 1550% cpu 33.905 total
 
-But it doesn't return with that slot locked in the key cache locked if
-the key didn't exist in the key cache. Oops.
+NetBSD failed to complete the run, OOM-killing workers:
+http://mail-index.netbsd.org/tech-kern/2023/10/19/msg029242.html
+OpenBSD is shafted by a big kernel lock, so no surprise it takes a long
+time.
 
-So we're going to need to keep an eye out for this issue occuring
-elsewhere, and maybe come up with a real fix in the btree iterator code:
-looking up a key in a cached btree without BTREE_ITER_CACHED _does_
-return the correct key at that particular point in time, but it does
-_not_ necessarily keep it locked for the duration of the transaction.
+So what I find funny is that Linux needed more time than OmniosCE (an
+Illumos variant, fork of Solaris).
 
-For now, we can fix this locally in bch2_bucket_alloc_early() with a
-second BTREE_ITER_CACHED iterator - run some tests with freespace
-initialization disabled, confirm that that's the issue, then go from
-there.
+It also needed more time than FreeBSD, which is not necessarily funny
+but not that great either.
+
+All systems were mostly busy contending on locks and in particular Linux
+was almost exclusively busy waiting on inode hash lock.
