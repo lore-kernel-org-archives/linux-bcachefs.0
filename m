@@ -2,91 +2,121 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DD1ECDB465
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 15:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3880CDB482
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 15:30:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345484AbjJSPa1 (ORCPT
+        id S1345537AbjJSPa7 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 19 Oct 2023 11:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
+        Thu, 19 Oct 2023 11:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345450AbjJSPa1 (ORCPT
+        with ESMTP id S1345450AbjJSPa6 (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:30:27 -0400
-Received: from out-193.mta0.migadu.com (out-193.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3203121
-        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Oct 2023 08:30:24 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 11:30:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697729423;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uVZr8pdATtAuW4NYuvMYvVXQ0LwrEXc3ZrLK8IVDtz8=;
-        b=tnz/2s2JiovkW6wU7VtEbPdUet5CiScAMklSSR/3P5xQqYVDrLr2AaOSUed0BqndRy3moy
-        PL5na/SsSU+B308PljXShqwxaN4+3N4TW0cuFrwERoEtpUT1rQBJ5/LM6ZruT3uONsBUpW
-        h1NavDEqMrfIgsoXTDP0dYh0kAKB+xk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: update alloc cursor in early bucket allocator
-Message-ID: <20231019153019.jl73n6ipif7zwc5b@moria.home.lan>
-References: <20231019132746.279256-1-bfoster@redhat.com>
+        Thu, 19 Oct 2023 11:30:58 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F86A121;
+        Thu, 19 Oct 2023 08:30:57 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507962561adso10081935e87.0;
+        Thu, 19 Oct 2023 08:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697729454; x=1698334254; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4FWVeU9IigKcVsNnwc6AFvvF7vK4/01UmH97KV2uxsw=;
+        b=IVrvJlgO2v4myj+dkNpwFhW3vJ3xYsBb6CbrokhO6QOIvNYx8EMmZLd8b/5LRDvIyj
+         au8eC73E7ebWlEekOejUFJhf43DvKxM0fE5H1OiHYyJupmxSSUg07p8gpwQTwxrccfIX
+         wobQlsZXDfL6UE4gv4oye8+y8Ku8KPL1nk6WN10vSnAYjztcK158JZD5ESXKu7+SIELb
+         DW0twGkgVrH+Oni+15BnX7UvO0vo9PIcrKJeLvV7mm1dgSaugzony8pFYcLTv2+8+Efa
+         g7zv/4Kuxmc4pKe8GViNkab7528ZW+KKy7BaC2JtEJi0p7hx+BQoRlORsG+urmADbmAo
+         WpIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697729454; x=1698334254;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4FWVeU9IigKcVsNnwc6AFvvF7vK4/01UmH97KV2uxsw=;
+        b=Lm5wz2jSZHZV8mEUn27tufZ8OBAySIhLQ8KY+DjABURG13jyIMoUHhqbMWEq7HkE1W
+         XKYHB5rlHnkDeRav/hkTUPpUhWPVjvKRFdr8mJi2UZ9x/e/zuy2JnT7Hjpkg+SyS5Uup
+         fzyp3ZVtKSN3hxGRu8VcXQhojyuitUNCsFQiwTx+mvLj8y/FOCPtnUzQh4S6VYxioA4X
+         vGjjzC5ZeN3GD+Oh63uJpfGKPO2BWaP59u0qGUBakHQb6sSaxhifiLFYjZNsCZ51QoVB
+         TcKRW+Sc8gjZNA66cYC1xeWrKBP14d0Doa7Pa/KTaZDNZkNZ6iWKCB1yW2rmz2m0RI/L
+         E68A==
+X-Gm-Message-State: AOJu0Yy8aNVRvYD3AyI1ByBx1ku0ZykzG48VzPRuN1Dbg4eEzNbaGnqy
+        dVF5Q2StKycoKMzjr3PuDiY=
+X-Google-Smtp-Source: AGHT+IGypHTslM4jzHKGC5Rcxh8As846X2fCX1u0jn27VNqfaCCTCqDXLPG4/BVtbxed1W+TEDszdg==
+X-Received: by 2002:a19:e007:0:b0:500:adbd:43e9 with SMTP id x7-20020a19e007000000b00500adbd43e9mr1973084lfg.15.1697729453971;
+        Thu, 19 Oct 2023 08:30:53 -0700 (PDT)
+Received: from f (cst-prg-84-171.cust.vodafone.cz. [46.135.84.171])
+        by smtp.gmail.com with ESMTPSA id j4-20020a5d4524000000b00317a04131c5sm4753323wra.57.2023.10.19.08.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 08:30:53 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 17:30:40 +0200
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Dave Chinner <dchinner@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
+Message-ID: <20231019153040.lj3anuescvdprcq7@f>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-23-kent.overstreet@linux.dev>
+ <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231019132746.279256-1-bfoster@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 09:27:46AM -0400, Brian Foster wrote:
-> A recent bug report uncovered a scenario where a filesystem never
-> runs with freespace_initialized, and therefore the user observes
-> significantly degraded write performance by virtue of running the
-> early bucket allocator. The associated bug aside, the primary cause
-> of the performance drop in this particular instance is that the
-> early bucket allocator does not update the allocation cursor. This
-> means that every allocation walks the alloc btree from the first
-> bucket of the associated device looking for a bucket marked as free
-> space.
+On Tue, May 23, 2023 at 11:28:38AM +0200, Christian Brauner wrote:
+> On Tue, 09 May 2023 12:56:47 -0400, Kent Overstreet wrote:
+> > Because scalability of the global inode_hash_lock really, really
+> > sucks.
+> > 
+> > 32-way concurrent create on a couple of different filesystems
+> > before:
+> > 
+> > -   52.13%     0.04%  [kernel]            [k] ext4_create
+> >    - 52.09% ext4_create
+> >       - 41.03% __ext4_new_inode
+> >          - 29.92% insert_inode_locked
+> >             - 25.35% _raw_spin_lock
+> >                - do_raw_spin_lock
+> >                   - 24.97% __pv_queued_spin_lock_slowpath
+> > 
+> > [...]
 > 
-> Update the early allocator code to set the alloc cursor to the
-> prospectively allocated bucket, similar to how the freelist
-> allocator behaves. This improves performance of the early bucket
-> allocator dramatically (even though it should be bypassed in favor
-> of the freelist allocator in most cases).
+> This is interesting completely independent of bcachefs so we should give
+> it some testing.
 > 
-> Signed-off-by: Brian Foster <bfoster@redhat.com>
+> I updated a few places that had outdated comments.
+> 
 > ---
 > 
-> cshepherd on #bcache originally reported the early bucket allocator
-> problem and helped chase it down to what looks like a members_v2
-> regression. I believe he was planning to post a patch for that one.
+> Applied to the vfs.unstable.inode-hash branch of the vfs/vfs.git tree.
+> Patches in the vfs.unstable.inode-hash branch should appear in linux-next soon.
 > 
-> Brian
+> Please report any outstanding bugs that were missed during review in a
+> new review to the original patch series allowing us to drop it.
 > 
->  fs/bcachefs/alloc_foreground.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> It's encouraged to provide Acked-bys and Reviewed-bys even though the
+> patch has now been applied. If possible patch trailers will be updated.
 > 
-> diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
-> index 3bc4abd3d7d5..be3fc0f38c79 100644
-> --- a/fs/bcachefs/alloc_foreground.c
-> +++ b/fs/bcachefs/alloc_foreground.c
-> @@ -431,7 +431,7 @@ bch2_bucket_alloc_early(struct btree_trans *trans,
->  	}
->  	bch2_trans_iter_exit(trans, &iter);
->  
-> -	ca->alloc_cursor = alloc_cursor;
-> +	ca->alloc_cursor = IS_ERR_OR_NULL(ob) ? alloc_cursor : ob->bucket;
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+> branch: vfs.unstable.inode-hash
+> 
+> [22/32] vfs: inode cache conversion to hash-bl
+>         https://git.kernel.org/vfs/vfs/c/e3e92d47e6b1
 
-Oh, this code is broken. The local alloc_cursor never gets updated, and
-it needs to for where we check if we need to loop around.
+What, if anything, is blocking this? It is over 5 months now, I don't
+see it in master nor -next.
 
-The proper fix would be to add
+To be clear there is no urgency as far as I'm concerned, but I did run
+into something which is primarily bottlenecked by inode hash lock and
+looks like the above should sort it out.
 
-  alloc_cursor = iter.pos.offset;
+Looks like the patch was simply forgotten.
 
-before the line you changed
+tl;dr can this land in -next please
