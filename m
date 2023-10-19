@@ -2,115 +2,122 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91AC6CDB47E
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 02:28:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55CA3CDB465
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 03:59:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbjJSC2m (ORCPT
+        id S230297AbjJSD7W (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 18 Oct 2023 22:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        Wed, 18 Oct 2023 23:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJSC2m (ORCPT
+        with ESMTP id S230051AbjJSD7W (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 18 Oct 2023 22:28:42 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB05114
-        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 19:28:39 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6ce27aadf24so283881a34.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 19:28:39 -0700 (PDT)
+        Wed, 18 Oct 2023 23:59:22 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F77109
+        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 20:59:20 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40675f06f1fso1560155e9.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 20:59:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697682518; x=1698287318; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697687958; x=1698292758; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pm17BzM2ARI2RrzePHTfnzeX6F07vJD4CzibGyt8MNI=;
-        b=TC2KlZq2f+2NP9WBSoxKsyth38NDh+ATmZuG2rIQLAIemhXN2auh2MaLS5WF06Y/bZ
-         piOMXBk56AEsAsq1lz8yi2ZBNGYm4SPxN4IIcE0SbCrzbrCs5vw7rjiTxiRBgB75DGbA
-         vqz3pUbDrRA34Bg0QErysGhegUmoODSxBh8bM=
+        bh=smCHlXCkAD5hWJULmagEeYYRYq/DhsZe/rrV+7VwmIg=;
+        b=nwA0sazY7pucbjFlxmKf+ivuGorDXlGR3mAPPRhSW2/G+GnF3lDVboIPIIRg3sHcVA
+         xz8aARCXCDPps7Utd8qiRE3HWM2xDdgXdY6LTHqRCN+cvXOFHGZneRwkQ2kJNPo/GC/b
+         MTU8KGbpjdpyhVzDL7WaINdK5rB6N8B+OSNcmBuCmCsQtGSQhD/4A9j0aj7CT8Wy2pBJ
+         rKXCd+XCAgIHtM/pRrogWknuPSNCWBJPmdhgK+87lU2tDLqcu/iviRKQtnWMz+sukC6W
+         F1bqOsit5NA+VN7NFUuKSL08i+JztFERn/mJaJuATi3o7vLdDSkAMjoop5Jhe0DLmn+u
+         4lWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697682518; x=1698287318;
+        d=1e100.net; s=20230601; t=1697687958; x=1698292758;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pm17BzM2ARI2RrzePHTfnzeX6F07vJD4CzibGyt8MNI=;
-        b=wX+JrMX4oTyYWcyqgH1I/SJYMioLHXu7WlkVYSgilpkSTDjRTNzqEY0sRoVJOyjk2J
-         z+Q2mjVmZ4KG7NOdlsGTjdbajYwT12cboz9Woud9TgRUtNR1j9wDz76rJlFVhQ2piQH2
-         MUiwn5RKfJfWSv+RXg3Z+jLLNUgKmBSHSHvYSSjyo5KgThfYqdJK3WEM5jq8yyrvU2LW
-         rURcc/Pc1+WiDaXJLZj9Jy1Y3LbGpiuzwPtPKnfZ39PRnh4zBGU9W5KLh0BJsGEwCGXF
-         tNX+/Des0a5h+jrjsKs6ROk7+DiaazllTAXw0ViaBlz0K471/ZVwIh200JZm9ANn5Sbb
-         trpg==
-X-Gm-Message-State: AOJu0Ywuw8R5rQjvVXRVSgPj8WBqsIRe7yCg9pmgNEsdI3ExEk9tmYYg
-        PNMQuXc5g+Ey7xds6n5GnVkZTyhWryBsqSmsqMI=
-X-Google-Smtp-Source: AGHT+IH6n/YddGMyyhykRMLGfcwrjiN8g/F/Ne2bkA3nBvBFFVPKu/XWTZPWpMhTQPVvSmD2Qjdyhg==
-X-Received: by 2002:a9d:7f94:0:b0:6b7:5687:8a9e with SMTP id t20-20020a9d7f94000000b006b756878a9emr1006430otp.15.1697682518599;
-        Wed, 18 Oct 2023 19:28:38 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a129-20020a624d87000000b006906aaf1e4dsm4142079pfb.150.2023.10.18.19.28.37
+        bh=smCHlXCkAD5hWJULmagEeYYRYq/DhsZe/rrV+7VwmIg=;
+        b=XnXWtJ8RlzB/uOIIJqifDBkxGM25QYGWfiJEL4kEZYC3mEy6CHAYDmo5id2LdvxMfp
+         4SqvaUii1pF3MsXv4tnPvmBMj8K2EdgYGgj3WewbOcHN5c98HzC4JV65EAt3bKPl4kW5
+         UniDyJOx4HlYEQIz0SPstZrJy3q/riL5GR5q7Lk54mwOLgJxUkXvtwl9CndyU2vI/c3Z
+         4A9UlLQnX/CoegGaLIZv+rJwoaumUPnqqJ4Rb2zprJHALu6LM738LZTsYZfEzFpiyFzX
+         wvkyYWpLzwqOLuo4vknltkTl4powmMLEvrp6f1ZUlOLwqSmUDRrJ9u5pSECkTHkCcucF
+         t5Ng==
+X-Gm-Message-State: AOJu0Yxbrlnn84griwn4zSv8sOKDyCABHLqB6saFRbvUSGBUFCSWNlEb
+        2it6S6XqcW01N2iK2JnYamZlSQ==
+X-Google-Smtp-Source: AGHT+IEJSwNWE2k5xa1QdmewxLYmNWRcqfiCu2G7T8tIBY21HSDdFa5wqmxksS6JCrBscOGJs3lCew==
+X-Received: by 2002:adf:c041:0:b0:31f:fc9a:a03 with SMTP id c1-20020adfc041000000b0031ffc9a0a03mr506847wrf.20.1697687958001;
+        Wed, 18 Oct 2023 20:59:18 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id j20-20020a05600c1c1400b003fefb94ccc9sm3153658wms.11.2023.10.18.20.59.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 19:28:37 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 19:28:37 -0700
-From:   Kees Cook <keescook@chromium.org>
+        Wed, 18 Oct 2023 20:59:17 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 06:59:14 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3] bcachefs: Refactor memcpy into direct assignment
-Message-ID: <202310181927.F9CCC45@keescook>
-References: <20231018230728.make.202-kees@kernel.org>
- <20231019003232.5uwphr7de7nybsra@moria.home.lan>
+Cc:     kent.overstreet@gmail.com, linux-bcachefs@vger.kernel.org
+Subject: Re: [bug report] bcachefs: missing error check on
+ bch2_btree_node_mem_alloc()
+Message-ID: <d8433264-90e1-44d9-931c-d6ffc76ccca9@kadam.mountain>
+References: <19cb1451-4cf4-46e7-b7c1-74a9b14e859a@moroto.mountain>
+ <20231019011942.wq5l7ebvfss5nn4y@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231019003232.5uwphr7de7nybsra@moria.home.lan>
+In-Reply-To: <20231019011942.wq5l7ebvfss5nn4y@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 08:32:32PM -0400, Kent Overstreet wrote:
-> On Wed, Oct 18, 2023 at 04:07:32PM -0700, Kees Cook wrote:
-> > The memcpy() in bch2_bkey_append_ptr() is operating on an embedded fake
-> > flexible array which looks to the compiler like it has 0 size. This
-> > causes W=1 builds to emit warnings due to -Wstringop-overflow:
+On Wed, Oct 18, 2023 at 09:19:42PM -0400, Kent Overstreet wrote:
+> On Fri, Oct 13, 2023 at 10:17:21AM +0300, Dan Carpenter wrote:
+> > Hello Kent Overstreet,
 > > 
-> >    In file included from include/linux/string.h:254,
-> >                     from include/linux/bitmap.h:11,
-> >                     from include/linux/cpumask.h:12,
-> >                     from include/linux/smp.h:13,
-> >                     from include/linux/lockdep.h:14,
-> >                     from include/linux/radix-tree.h:14,
-> >                     from include/linux/backing-dev-defs.h:6,
-> >                     from fs/bcachefs/bcachefs.h:182:
-> >    fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
-> >    include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
-> >       57 | #define __underlying_memcpy     __builtin_memcpy
-> >          |                                 ^
-> >    include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
-> >      648 |         __underlying_##op(p, q, __fortify_size);                        \
-> >          |         ^~~~~~~~~~~~~
-> >    include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
-> >      693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
-> >          |                          ^~~~~~~~~~~~~~~~~~~~
-> >    fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
-> >      235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-> >          |                 ^~~~~~
-> >    fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
-> >      287 |                 struct bch_val  v;
-> >          |                                 ^
+> > The patch e0750d947352: "bcachefs: Initial commit" from Mar 16, 2017
+> > (linux-next), leads to the following Smatch static checker warning:
 > > 
-> > Avoid making any structure changes and just replace the u64 copy into a
-> > direct assignment, side-stepping the entire problem.
+> > 	fs/bcachefs/btree_update_interior.c:2265 bch2_btree_node_update_key()
+> > 	error: 'new_hash' dereferencing possible ERR_PTR()
+> > 
+> > fs/bcachefs/btree_update_interior.c
+> >     2227 int bch2_btree_node_update_key(struct btree_trans *trans, struct btree_iter *iter,
+> >     2228                                struct btree *b, struct bkey_i *new_key,
+> >     2229                                unsigned commit_flags, bool skip_triggers)
+> >     2230 {
+> >     2231         struct bch_fs *c = trans->c;
+> >     2232         struct btree *new_hash = NULL;
+> >     2233         struct btree_path *path = iter->path;
+> >     2234         struct closure cl;
+> >     2235         int ret = 0;
+> >     2236 
+> >     2237         ret = bch2_btree_path_upgrade(trans, path, b->c.level + 1);
+> >     2238         if (ret)
+> >     2239                 return ret;
+> >     2240 
+> >     2241         closure_init_stack(&cl);
+> >     2242 
+> >     2243         /*
+> >     2244          * check btree_ptr_hash_val() after @b is locked by
+> >     2245          * btree_iter_traverse():
+> >     2246          */
+> >     2247         if (btree_ptr_hash_val(new_key) != b->hash_val) {
+> >     2248                 ret = bch2_btree_cache_cannibalize_lock(c, &cl);
+> >     2249                 if (ret) {
+> >     2250                         ret = drop_locks_do(trans, (closure_sync(&cl), 0));
+> >     2251                         if (ret)
+> >     2252                                 return ret;
+> >     2253                 }
+> >     2254 
+> >     2255                 new_hash = bch2_btree_node_mem_alloc(trans, false);
+> > 
+> > This allocation can fail and it returns an error pointer?
 > 
-> This does make me wonder about the usefulness of the fortify source
-> stuff if it can be sidestepped this way, but hey, I'll take it :)
+> It doesn't fail when we hold the cannibalize lock. I can add an
+> assertion that documents that if it'll stop smatch from complaining...
 
-Well, the "weird" cases like this are the ones that get attention. All
-the places it's working more cleanly are very effectively stomping real
-bugs.
+Nah.  It won't stop Smatch from complaining unless it has a panic().
+Smatch ignores assertions which only trigger a warning.
 
-> Pulled it into the testing branch, https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-testing
+Just leave it.  Generally the policy with Smatch is to only report
+warnings once and search lore for this email if it's a false positive.
 
-Thanks!
-
--Kees
-
--- 
-Kees Cook
+regards,
+dan carpenter
