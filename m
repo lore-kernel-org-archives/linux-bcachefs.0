@@ -2,103 +2,90 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A8FBCDB482
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 06:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8C31CDB465
+	for <linux-bcachefs@archiver.kernel.org>; Thu, 19 Oct 2023 07:55:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbjJSGbh (ORCPT
+        id S232926AbjJSHzB (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 19 Oct 2023 02:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
+        Thu, 19 Oct 2023 03:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjJSGbg (ORCPT
+        with ESMTP id S232870AbjJSHzA (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:31:36 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4DBBE
-        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 23:31:34 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507bd64814fso3738248e87.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 18 Oct 2023 23:31:34 -0700 (PDT)
+        Thu, 19 Oct 2023 03:55:00 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CD9124;
+        Thu, 19 Oct 2023 00:54:58 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507c5249d55so3058587e87.3;
+        Thu, 19 Oct 2023 00:54:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697697092; x=1698301892; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FthGN00KtXBYmbiHU96hoM4H045fCnfczea/upO9Ntw=;
-        b=UGv/imSaqmAkouCDamCFYvLLuSCg4gDxIMLOCVn6ldmrplKYehb4ut+z9tvB3CaLbH
-         2VJPbZyRdhFLMK3W/wX9o0yWUaau1b895MQB8C/LPWXjL6Ehv/TUuPOP/a1Rg5o9CAci
-         Sr7tyPZr6lIQXT6PjSP/WyJHs8wq2lHFlg5m0TPCjAy1fQuDALeYqem2AvoXkuI4WRUM
-         OEOk3K9d1RepZKEOINsbQgichdGYn1XF2snsUaf5MDn3DBOWgK4FRkCJEU0BEBnNzMUM
-         mLcG8fT4wPxGBedVWg1OnlAEDfBk63rmE1CFcMGPG2u9HUAUwEW4LXyKs98zYmmwMNWf
-         mz8A==
+        d=gmail.com; s=20230601; t=1697702097; x=1698306897; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rXJ/Mr+spXECJ9u0aAvXnCzzdApNwtlPUw+XhQPOmiE=;
+        b=e0DCnjIJ0KC82mf+oqwh0/o+YUCkFPpsjshuG/5RB7trYriLGI0Q0xZ/GrZz/acjOk
+         bUJi6HsW+tPDbwXNmaCnkuh4yE6WKk4Vm+5KLI9Iz5bgNIi/z6HwnMO9/7JDyfWwyfIX
+         uC1qBvJnPApas892IwlilYShHIzJ2qL+THAjq82nrmqOe8F3JiWFemfhWcs5BgmdfLI4
+         44+pua6NizIl3/SHcqfKUA+Lov5OvMktkOFRguzbnSa4GCevDPDigREHISn/dxRk++I/
+         lOrgBb0RbgeI9f/KUWQfL0P4kb6BhyLlDTbeCtag22qR9l5nIe8C04Wsbgd9VOlWrvP3
+         YIYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697697092; x=1698301892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FthGN00KtXBYmbiHU96hoM4H045fCnfczea/upO9Ntw=;
-        b=LeMyN7hc+h5SmiKkATBEg1cMUgjNJyXL8i+xjcnKp3JqTLP4dQ39MLqeWjRmR4GbX+
-         2VtLvDsDUkmLQRILeKE4VE//AIHkrLTczqr0D2QWeqnoroVlyuuUkgRogeJj8WcFvGkN
-         UCgpU7icl1fjvesu28zJpU5XJDA+EtAUBvQsR4q8OUCJLJV/RbmABkzjOochLTI1dFwq
-         QGRI26cUsgBHcsTW0K0wZj1jMlchdWbTsh/DIp9dkVjTYv2kdrrXyq2bLQ88H22ymwDJ
-         GhN/8C1YPWaZLWQ+7clzBzu1BhVSHiakWxsXJ5Pf++XZtrRlRVg40LbZS5wIC2c5hAjn
-         ldiQ==
-X-Gm-Message-State: AOJu0YwXEzrdP425S95vOU5x7wDtsmcvBj/XcGiCws5PuSzEnQ/KuJWT
-        Ed6kFLuvftSg4vozuWPg0aE8ZUyvamiRTcauCk7aKeDFRW85FA==
-X-Google-Smtp-Source: AGHT+IHJAyfUVK38pX8NLiLf7qTzIg7i+iD+9f2J7+zQc2u9xbyS9WQzf3v6vpK1pgEIv/Yt+XCVH2ioWN+7gO+okHk=
-X-Received: by 2002:a19:6509:0:b0:507:aa8d:a572 with SMTP id
- z9-20020a196509000000b00507aa8da572mr807842lfb.49.1697697092055; Wed, 18 Oct
- 2023 23:31:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697702097; x=1698306897;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rXJ/Mr+spXECJ9u0aAvXnCzzdApNwtlPUw+XhQPOmiE=;
+        b=WHg6W5QMBMfLh+V1IrMG8lBzFTYoKp76oDKv8MNAwTzwl8P49M6mPUCD6mnZ4TXcDX
+         dBa4CKYALW1Tay0zqrINczffF5fFg7pErXX7wV8dpCR52RWrBjuNZtITdkDZDps6sZbm
+         /fZqtlXA5aDLFZAnLlv5yZao7HpuSmCBGT62Qr/QE4UEDDcGOoU9D6vUeiSyze5Z45BE
+         HAsqBTMSVDKVxCb+NMndj2Oe4bjaei6RZgc60Gly23cU05dez+enmqNC7MnY/tNKCodN
+         MG2YAE5Kgz6qD3Vn+B1X+Uu3IUTX8XZD88TtHUEU6ztFEcBlaozPWeQdxeegwIBS3vgD
+         e81A==
+X-Gm-Message-State: AOJu0YxYjaDZ2eJAjNj1HZPDLyWhmK/ZEiDrrSOeIx6fmu3HdgE06RfZ
+        dPtRFgQzmPvwZrvIyOzXfxCFzx/j2Ns=
+X-Google-Smtp-Source: AGHT+IGhBCdv3F02RoO6WXb7swa56I2T+hnTKGyT76SnzWyqXbwC7LTjG7c2oBJSqzEOTMfGgxaX3A==
+X-Received: by 2002:a05:6512:455:b0:507:9dfd:f840 with SMTP id y21-20020a056512045500b005079dfdf840mr909014lfk.68.1697702096870;
+        Thu, 19 Oct 2023 00:54:56 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id c18-20020adfe712000000b0032da49e18fasm3881275wrm.23.2023.10.19.00.54.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 00:54:56 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Brian Foster <bfoster@redhat.com>,
+        linux-bcachefs@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] bcachefs: Fix spelling mistake "strcuct" -> "struct"
+Date:   Thu, 19 Oct 2023 08:54:55 +0100
+Message-Id: <20231019075455.369650-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <CAPxz1+Yt644v4q-ahjE46Sh_ZZSE2r=wwSaup4nYC4uYgQy+rA@mail.gmail.com>
- <20231018202955.i2xjqqpd7cubunvg@moria.home.lan> <CAPxz1+ZTODcUt=nbToDtpsHr1LW04VNVqDPJNV2QhuXb-=+CnQ@mail.gmail.com>
- <20231019002654.cgsmfhu6pxnh4vro@moria.home.lan> <CAPxz1+YcGd23wH4J+Vo1ES6-ncMaW0ga6DSxehS8Ty=t6rTbNg@mail.gmail.com>
- <20231019004704.ehjplvjlhzqgnyx6@moria.home.lan>
-In-Reply-To: <20231019004704.ehjplvjlhzqgnyx6@moria.home.lan>
-From:   Parke <parke.nexus@gmail.com>
-Date:   Wed, 18 Oct 2023 23:30:55 -0700
-Message-ID: <CAPxz1+bKiC1h7VVKE3irfec7nJSDABfWErHzAoxrwnkZD+WuMg@mail.gmail.com>
-Subject: Re: Bcachefs: export a different st_dev for each subvolume
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 5:47=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
-> So, in that case, you just need a single bit reported via stat() or
-> statx().
->
-> Unfortunately, I don't see a flags field in struct statx...
+There is a spelling mistake in an unsafe_memcpy message. Fix it.
 
-A single bit from somewhere would do it.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ fs/bcachefs/buckets.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-BTRFS's approach is pretty close to ideal.  A BTRFS subvolume can be
-identified as follows:
+diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
+index a1a4b5feadaa..9e93de2670d5 100644
+--- a/fs/bcachefs/buckets.c
++++ b/fs/bcachefs/buckets.c
+@@ -475,7 +475,7 @@ static inline int update_replicas_list(struct btree_trans *trans,
+ 	n->delta = sectors;
+ 	unsafe_memcpy((void *) n + offsetof(struct replicas_delta, r),
+ 		      r, replicas_entry_bytes(r),
+-		      "flexible array member embedded in strcuct with padding");
++		      "flexible array member embedded in struct with padding");
+ 	bch2_replicas_entry_sort(&n->r);
+ 	d->used += b;
+ 	return 0;
+-- 
+2.39.2
 
-1) Is the entry a directory?
-2) Is the inode 256?
-3) Is the filesystem type BTRFS?
-
-1 and 2 are readily available in `ls`.  They are provided by stat(),
-and `ls` already calls stat() for every entry.
-
-If a directory has an inode of 256, then a single call to statfs() can
-determine whether or not the filesystem is BTRFS, simultaneously
-determining whether or not the directory itself is a subvolume.
-
-`ls` does allow for one (or several?) additional function call(s) to
-assist with colorization in some cases.  This is done to color files
-with capabilities, for example.
-
-ZFS is almost as good.  A ZFS subvolume (actually called a
-"filesystem") has a low inode that is often 34.  But it is not
-guaranteed to always be 34, unfortunately.
-
-Source:  https://github.com/openzfs/zfs/discussions/15192
-
-Cheers,
-
-Parke
