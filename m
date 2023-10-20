@@ -2,192 +2,202 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 283DFCDB474
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 20 Oct 2023 09:04:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 961B0CDB47E
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 20 Oct 2023 11:48:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376523AbjJTJEB (ORCPT
+        id S1377147AbjJTLsF (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 20 Oct 2023 05:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49726 "EHLO
+        Fri, 20 Oct 2023 07:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376543AbjJTJEA (ORCPT
+        with ESMTP id S1377351AbjJTLsA (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:04:00 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9642CAB
-        for <linux-bcachefs@vger.kernel.org>; Fri, 20 Oct 2023 02:03:58 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so782248a12.2
-        for <linux-bcachefs@vger.kernel.org>; Fri, 20 Oct 2023 02:03:58 -0700 (PDT)
+        Fri, 20 Oct 2023 07:48:00 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BA6211D
+        for <linux-bcachefs@vger.kernel.org>; Fri, 20 Oct 2023 04:38:12 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1ca052ec63bso5721205ad.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 20 Oct 2023 04:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=quora.org; s=google; t=1697792636; x=1698397436; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zigtOv58tnPGQKfdXDSWHrJFKEE0VZ4YQ+LEHnNYUQs=;
-        b=ojywdxiW4KMVFFptOcQiYs5mhG2Dss2kfr18p5RC3yhAsfQu2f/4wKy3epn7p51mV1
-         P6D10pUCR2BXsS9B2sch/w+dmEWkcqtRP8Fldb6pTh4T4nYxnZG+0pKzmkAF1gxicZ0a
-         fHvHyMr/v9MQtneJsPMTIvfggOyzyXUJlm+SM=
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1697801890; x=1698406690; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nHc4Q7aNLDfKDMEpMkUlEYG6owovem3B/txsOLe61Kk=;
+        b=fGAwJgWClOMTXj/GPBgYw/PPekWiRMMiuDvxus4Kh2+ZKQ+SD4/m8ISwbaj0xN4R9X
+         K6dUNEBHkx+46ngn6mzjY5Cz/VNXPVftr6j4UttnLvIkJcSNvF6H+TOHL9ro7BMRIB4F
+         J7bG6xpZSxuD3g274JIh7kgTejmJnG0213y6Xdke5Fa36xvTdWhWfTdgG2uFlQUAXDY6
+         TQsu1l5I37N5qNNOwKu2IzbxlJHfpsDY/4O1Uw7OkWAdcY5Gm07dFFiEVr3J8mzjV8tf
+         awKFANJV4ojsz7Yts7wmqo7hancBaZBHqxpcIAxlSoyIcPVtRAQJaXgY9rxd+mfkNZ2M
+         kKvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697792636; x=1698397436;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zigtOv58tnPGQKfdXDSWHrJFKEE0VZ4YQ+LEHnNYUQs=;
-        b=G416e6Zi3BvDZCr63zu9Dq+GN9GJPEZTQInFk8qpmQ0WCHExxrvKPr3DEt3WEFsjEu
-         EweWu/4CsWyqL6ukOiuI/aRaiim7xudzwkfV7koJt786FF7g3cwCmmFZEGOn67Sl0eO0
-         ElBRX9J7iyE123m6CKkmOF0LnRI84L+p2UwutqW2jbDPDlz5StbwYd2Bl5sBwb+oOUxb
-         6XQXe7cvSbw6Y6cKY5TVTKyUvhNOx+AH6NbLxJ1jyWYLBNoj4+9G1jqaX+/BZYE08B6h
-         BNEaG2ZoERxJbQZZgjt2WB9T5LEULQopuN6JZ8vS5NVDmEy8UdDFq4cADT07PxmstPd4
-         +yGg==
-X-Gm-Message-State: AOJu0Yy5vGBC8EL+9tSsLJvxHOytfYEffnTETipBfyFAkepYiNOFvdjQ
-        UwtiaEjKj2Zj4GPTO0ozK7Xel2/nen4+NrtxGzuvRNQMyDq8yqLmHso=
-X-Google-Smtp-Source: AGHT+IFvRL/PHDiOCao/qBCulTDPP5BmLLiK3V40dxLUElDxWepD+8nUQRXC3c8JPbllh3WgafYWehsA5yP+QnjRyfY=
-X-Received: by 2002:a05:6402:190d:b0:53e:6da7:72ba with SMTP id
- e13-20020a056402190d00b0053e6da772bamr1286874edz.38.1697792636500; Fri, 20
- Oct 2023 02:03:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697801890; x=1698406690;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nHc4Q7aNLDfKDMEpMkUlEYG6owovem3B/txsOLe61Kk=;
+        b=Ne9+R22gJwGvmoUUDLJCZYK1Ywx20x/LTY/rWBvPc5aUuqM+BnGpy9kiyonpZAyb5w
+         Le9Yqkzu+MqGE4yGbsShekjG2ifaahEFn9jnzpvoJ0l07lXw91YDA2oWxgiJLnrthB7V
+         UAIbKvKDjMXE07hK60L6pUYlKbhkSG4Xc5qvM16t//0Gw8GeKOt6Kt821CLhCl43s8U9
+         IDzI/DqFU6IeT7ib3919bIMRiALUMb8oLEEwQ2U/n/8Vv0RmELXxbDofSiDo1kQG40rW
+         QnucHCftxOyhI+rhozZDlPZ2OyD7rWv3bmnFnhmwN+XNmHKscPFe4iCJ6NGZgmaxnYbi
+         rDMQ==
+X-Gm-Message-State: AOJu0YzsjnALSJlSkKB0tLqZRnmRTzaCpivyIH1zj03CXPz6jtX/ttX/
+        GpnIOi+SwMGlcXNX9dCq134Glg==
+X-Google-Smtp-Source: AGHT+IHUpNmeTOpQidbdUgCos1qKRsn99on/JSt7Z4rUgyZa0bTb+iBZXSnvJkeNczJcNMs80YRlZA==
+X-Received: by 2002:a17:903:1210:b0:1c6:2dbb:e5fa with SMTP id l16-20020a170903121000b001c62dbbe5famr1875051plh.44.1697801890145;
+        Fri, 20 Oct 2023 04:38:10 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170902ed0100b001b392bf9192sm1323598pld.145.2023.10.20.04.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 04:38:09 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qtnpO-001Ylg-31;
+        Fri, 20 Oct 2023 22:38:06 +1100
+Date:   Fri, 20 Oct 2023 22:38:06 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
+Message-ID: <ZTJmnsAxGDnks2aj@dread.disaster.area>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-23-kent.overstreet@linux.dev>
+ <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
+ <20231019153040.lj3anuescvdprcq7@f>
+ <20231019155958.7ek7oyljs6y44ah7@f>
 MIME-Version: 1.0
-From:   Daniel J Blueman <daniel@quora.org>
-Date:   Fri, 20 Oct 2023 17:03:45 +0800
-Message-ID: <CAMVG2sss9S45sCRnV+0nQ2jcd+XTMqYXNZ0FObodhD9kFUhwyg@mail.gmail.com>
-Subject: bcachefs KASAN SLAB out of bounds
-To:     linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019155958.7ek7oyljs6y44ah7@f>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi Kent et al,
+On Thu, Oct 19, 2023 at 05:59:58PM +0200, Mateusz Guzik wrote:
+> On Thu, Oct 19, 2023 at 05:30:40PM +0200, Mateusz Guzik wrote:
+> > On Tue, May 23, 2023 at 11:28:38AM +0200, Christian Brauner wrote:
+> > > On Tue, 09 May 2023 12:56:47 -0400, Kent Overstreet wrote:
+> > > > Because scalability of the global inode_hash_lock really, really
+> > > > sucks.
+> > > > 
+> > > > 32-way concurrent create on a couple of different filesystems
+> > > > before:
+> > > > 
+> > > > -   52.13%     0.04%  [kernel]            [k] ext4_create
+> > > >    - 52.09% ext4_create
+> > > >       - 41.03% __ext4_new_inode
+> > > >          - 29.92% insert_inode_locked
+> > > >             - 25.35% _raw_spin_lock
+> > > >                - do_raw_spin_lock
+> > > >                   - 24.97% __pv_queued_spin_lock_slowpath
+> > > > 
+> > > > [...]
+> > > 
+> > > This is interesting completely independent of bcachefs so we should give
+> > > it some testing.
+> > > 
+> > > I updated a few places that had outdated comments.
+> > > 
+> > > ---
+> > > 
+> > > Applied to the vfs.unstable.inode-hash branch of the vfs/vfs.git tree.
+> > > Patches in the vfs.unstable.inode-hash branch should appear in linux-next soon.
+> > > 
+> > > Please report any outstanding bugs that were missed during review in a
+> > > new review to the original patch series allowing us to drop it.
+> > > 
+> > > It's encouraged to provide Acked-bys and Reviewed-bys even though the
+> > > patch has now been applied. If possible patch trailers will be updated.
+> > > 
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+> > > branch: vfs.unstable.inode-hash
+> > > 
+> > > [22/32] vfs: inode cache conversion to hash-bl
+> > >         https://git.kernel.org/vfs/vfs/c/e3e92d47e6b1
+> > 
+> > What, if anything, is blocking this? It is over 5 months now, I don't
+> > see it in master nor -next.
 
-Booting bcachefs/master (SHA a180af9d) with a stock Ubuntu 23.04
-config plus CONFIG_KASAN=CONFIG_KASAN_VMALLOC=y, I have identified a
-minimal and consistent reproducer [1] triggering a KASAN report after
-~90s of the fio workload [2].
+Not having a test machine that can validate my current vfs-scale
+patchset for 4 of the 5 months makes it hard to measure and
+demonstrate the efficacy of the changes on a current kernel....
 
-The report shows a SLAB out of bounds access in connection from IO
-uring submission queue entries [3].
+> > To be clear there is no urgency as far as I'm concerned, but I did run
+> > into something which is primarily bottlenecked by inode hash lock and
+> > looks like the above should sort it out.
+> > 
+> > Looks like the patch was simply forgotten.
+> > 
+> > tl;dr can this land in -next please
+> 
+> In case you can't be arsed, here is something funny which may convince
+> you to expedite. ;)
+> 
+> I did some benching by running 20 processes in parallel, each doing stat
+> on a tree of 1 million files (one tree per proc, 1000 dirs x 1000 files,
+> so 20 mln inodes in total).  Box had 24 cores and 24G RAM.
+> 
+> Best times:
+> Linux:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
+> FreeBSD:        3.49s user 345.12s system 1983% cpu 17.573 total
+> OpenBSD:        5.01s user 6463.66s system 2000% cpu 5:23.42 total
+> DragonflyBSD:   11.73s user 1316.76s system 1023% cpu 2:09.78 total
+> OmniosCE:       9.17s user 516.53s system 1550% cpu 33.905 total
+> 
+> NetBSD failed to complete the run, OOM-killing workers:
+> http://mail-index.netbsd.org/tech-kern/2023/10/19/msg029242.html
+> OpenBSD is shafted by a big kernel lock, so no surprise it takes a long
+> time.
+> 
+> So what I find funny is that Linux needed more time than OmniosCE (an
+> Illumos variant, fork of Solaris).
+> 
+> It also needed more time than FreeBSD, which is not necessarily funny
+> but not that great either.
+> 
+> All systems were mostly busy contending on locks and in particular Linux
+> was almost exclusively busy waiting on inode hash lock.
 
-I confirmed the report isn't emitted when using ext4 in place of
-bcachefs; let me know if you'd like further testing on it.
+Did you bother to test the patch, or are you just complaining
+that nobody has already done the work for you?
 
-Thanks,
-  Daniel
+Because if you tested the patch, you'd have realised that by itself
+it does nothing to improve performance of the concurrent find+stat
+workload. The lock contention simply moves to the sb_inode_list_lock
+instead.
 
--- [1]
+Patches to get rid of the  sb_inode_list_lock contention were
+written by smarter people than me long before I wrote the hash-bl
+patches. However, the problem the dlist stuff was written to address
+(sync iterating all inodes causing sb inode list lock contention
+when we have a hundred million cached inodes in memory) was better
+fixed by changing the sync algorithm not to iterate all cached
+inodes just to find the handful of dirty ones it needed to sync.
 
-modprobe brd rd_nr=1 rd_size=1048576
-bcachefs format /dev/ram0
-mount -t bcachefs /dev/ram0 /mnt
-fio workload.fio
+IOWs, those sb_inode_list_lock changes haven't been included for the
+same reason as the hash-bl patches: outside micro-benchmarks, these
+locks just don't show up in profiles on production machines.
+Hence there's no urgency to "fix" these lock contention
+problems despite the ease with which micro-benchmarks can reproduce
+it...
 
--- [2] workload.fio
+I've kept the patches current for years, even though there hasn't
+been a pressing need for them. The last "vfs-scale" version I did
+some validation on is here:
 
-[global]
-group_reporting
-ioengine=io_uring
-directory=/mnt
-size=16m
-time_based
-runtime=48h
-iodepth=256
-verify_async=8
-bs=4k-64k
-norandommap
-random_distribution=zipf:0.5
-ioengine=io_uring
-numjobs=16
-rw=randrw
+https://git.kernel.org/pub/scm/linux/kernel/git/dgc/linux-xfs.git/log/?h=vfs-scale
 
-[job1]
-direct=1
+5.17 was the last kernel I did any serious validation and
+measurement against, and that all needs to be repeated before
+proposing it for inclusion because lots of stuff has changed since I
+last did some serious multi-filesystem a/b testing of this code....
 
-[job2]
-direct=0
-
--- [3]
-
-BUG: KASAN: slab-out-of-bounds in io_req_local_work_add+0xf0/0x2a0
-Read of size 4 at addr ffff888138305218 by task iou-wrk-2702/3275
-
-CPU: 38 PID: 3275 Comm: iou-wrk-2702 Not tainted 6.5.0+ #1
-Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
-Call Trace:
- <TASK>
- dump_stack_lvl+0x48/0x70
- print_report+0xd2/0x660
- ? __virt_addr_valid+0x103/0x180
- ? srso_alias_return_thunk+0x5/0x7f
- ? kasan_complete_mode_report_info+0x40/0x230
- ? io_req_local_work_add+0xf0/0x2a0
- kasan_report+0xd0/0x120
- ? io_req_local_work_add+0xf0/0x2a0
- __asan_load4+0x8e/0xd0
- io_req_local_work_add+0xf0/0x2a0
- ? __pfx_io_req_local_work_add+0x10/0x10
- io_req_complete_post+0x88/0x120
- io_issue_sqe+0x363/0x6b0
- io_wq_submit_work+0x10c/0x4d0
- io_worker_handle_work+0x494/0xa60
- io_wq_worker+0x3d5/0x660
- ? __pfx_io_wq_worker+0x10/0x10
- ? srso_alias_return_thunk+0x5/0x7f
- ? __kasan_check_write+0x14/0x30
- ? srso_alias_return_thunk+0x5/0x7f
- ? _raw_spin_lock_irq+0x8b/0x100
- ? __pfx__raw_spin_lock_irq+0x10/0x10
- ? srso_alias_return_thunk+0x5/0x7f
- ? __kasan_check_write+0x14/0x30
- ? srso_alias_return_thunk+0x5/0x7f
- ? srso_alias_return_thunk+0x5/0x7f
- ? calculate_sigpending+0x5a/0x70
- ? __pfx_io_wq_worker+0x10/0x10
- ret_from_fork+0x47/0x80
- ? __pfx_io_wq_worker+0x10/0x10
- ret_from_fork_asm+0x1b/0x30
-RIP: 0033:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 002b:0000000000000000 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: 0000000000000000 RBX: 00007f752ea36718 RCX: 000055792b721268
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000006
-RBP: 00007f752ea36718 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000001
-R13: 000055792d883950 R14: 00000000000532ed R15: 000055792d915740
- </TASK>
-
-Allocated by task 2702:
- kasan_save_stack+0x38/0x70
- kasan_set_track+0x25/0x40
- kasan_save_alloc_info+0x1e/0x40
- __kasan_slab_alloc+0x9d/0xa0
- slab_post_alloc_hook+0x5f/0xe0
- kmem_cache_alloc_bulk+0x264/0x3e0
- __io_alloc_req_refill+0x1d8/0x370
- io_submit_sqes+0x549/0xb80
- __do_sys_io_uring_enter+0x968/0x1330
- __x64_sys_io_uring_enter+0x7f/0xa0
- do_syscall_64+0x5b/0x90
- entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-The buggy address belongs to the object at ffff888138305180
-which belongs to the cache io_kiocb of size 224
-The buggy address is located 152 bytes inside of        allocated
-224-byte region [ffff888138305180, ffff888138305260)
-
-The buggy address belongs to the physical page:
-page:00000000f168c2d3 refcount:1 mapcount:0 mapping:0000000000000000
-index:0xffff8881383048c0 pfn:0x138304
-head:00000000f168c2d3 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-memcg:ffff8881cfb7e001
-flags: 0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-page_type: 0xffffffff()
-raw: 0017ffffc0010200 ffff888126f670c0 dead000000000122 0000000000000000
-raw: ffff8881383048c0 000000008033002b 00000001ffffffff ffff8881cfb7e001
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888138305100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888138305180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888138305200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-              ^
- ffff888138305280: fc fc fc fc fc fc fc fc 00 00 00 00 00 00 00 00
- ffff888138305300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+-Dave.
 -- 
-Daniel J Blueman
+Dave Chinner
+david@fromorbit.com
