@@ -2,61 +2,62 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 909BEC001DF
-	for <linux-bcachefs@archiver.kernel.org>; Fri, 20 Oct 2023 17:49:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94DA4C001E0
+	for <linux-bcachefs@archiver.kernel.org>; Sat, 21 Oct 2023 12:13:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjJTRtY (ORCPT
+        id S229686AbjJUMN4 (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Fri, 20 Oct 2023 13:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        Sat, 21 Oct 2023 08:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjJTRtY (ORCPT
+        with ESMTP id S229478AbjJUMNz (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:49:24 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3FAA3;
-        Fri, 20 Oct 2023 10:49:20 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-457cc01b805so451352137.0;
-        Fri, 20 Oct 2023 10:49:20 -0700 (PDT)
+        Sat, 21 Oct 2023 08:13:55 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC606E9;
+        Sat, 21 Oct 2023 05:13:53 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-581b6b93bd1so1027807eaf.1;
+        Sat, 21 Oct 2023 05:13:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697824159; x=1698428959; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697890433; x=1698495233; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:references:in-reply-to
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tCrUKrBe4ohlQTB10c53pGU4/58DcFanqEbH8HpfhOw=;
-        b=k3jkDQgyOOEGBLncynGx1oKHmRKfTL4IH/3SEE7/IRLCteJhKqo2xAu8NyM/8bPZ3g
-         L1i7MQvGBisWUe4antxtLa/TxuupknQxsOxJsXsHqSOuVKq6pjKZt5GmssTbiIy8riWH
-         m+mMpoLF8X4C4YKC+XRPEhb+HJpqag3gAFO0JBasZtQklz9g1ogh3hc2MC4+dHJDP3SZ
-         Q49gk0wu064j40aG4ow+qiIRahiYEYrRBVNVLy1z9UiHak2z1YBQ45OEhjUZdxZ50tup
-         FAYVmHAbShFqrmHV0ZHyju/viLB3wVkfHvmJviIo8TAPE0RyqVCefWY5OpHA6Yyaz+Y1
-         WuVQ==
+        bh=ZhVz9azCV/vrdF8MlrpbOzEjmntEbZAUTW3gxmj6+yw=;
+        b=j2629HcGDHLmuICJmyQ70JPgNrtdrf0lWfuFAnKCazWHwXZRyEncpfq8BCFQxlgutN
+         Wee9tfDuZVkXc8osMeKe5oK74y0K06H0zh1H6M0fisw0JMYqgOMR97WfH7I7eT++++DX
+         KScRhtjTd6N0nvPrPdakW21dmFFesB5D7mp0hrsUi/Ogr/HsX0aZ8e4Ex8aUwd6xBlaS
+         CpEjGi0QNd8vJ4luqIldX3AKSpFZ279o1mB6uOseZF/Jipc/6KnWxke3kuYR+flOVDut
+         0C3K+G/fPkWI79speulIpoGJIfhwnddyRVwujnRbfQp5DHF/7yEDtirwRFPrunwkg0+F
+         P2Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697824159; x=1698428959;
+        d=1e100.net; s=20230601; t=1697890433; x=1698495233;
         h=cc:to:subject:message-id:date:from:references:in-reply-to
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tCrUKrBe4ohlQTB10c53pGU4/58DcFanqEbH8HpfhOw=;
-        b=LyRA2qkUkpi9WNrXhfxhqZT2YQ0tKj/633EFvN1eMpWwrWmu4OtQl3cRbE+KDZeaCq
-         loWElDgHszvFN24HlJn4DbnotGLthVUmgk70LJxUnD8GtYZTnIpJIO4A/JGJcbdyIBFv
-         RCAvEyuy0Mgun6i0fAC/B0alOHQiXN9e8npr8rYEuLNrn1gWwhKgnH0vu5VKvxwHZkvL
-         nw+3nRJwS2vRSxa24rkfOUGHk2bOmUYOctOVii0cxMG+0sfAY6N6GF1OHtkg1UsDe77r
-         AB8CPRZAtl4w80W8DbpHXSEUk3rYuTePcxAFiqgWnRJ3f0YJwnDm0vl91/Ef3Awi6FrP
-         Okzg==
-X-Gm-Message-State: AOJu0YyCWLpe31K15ndd1DEAZ+SWnUZ9S+9qzihhfjVdXn/kSFEsIsS5
-        3/Z8akraBwRLQw7FZTKWG2lxSDURkHzXc9UL94E=
-X-Google-Smtp-Source: AGHT+IG+YDJbUucLWpHMjGyz7FRf13DQj6hv3iEc+6Dur5YraL4KHTm4SjlD+Wrbjjp7foJIXDIbYD6FYpflaH7FUx8=
-X-Received: by 2002:a67:cb9b:0:b0:44e:8ae0:3df with SMTP id
- h27-20020a67cb9b000000b0044e8ae003dfmr2333417vsl.3.1697824159203; Fri, 20 Oct
- 2023 10:49:19 -0700 (PDT)
+        bh=ZhVz9azCV/vrdF8MlrpbOzEjmntEbZAUTW3gxmj6+yw=;
+        b=vxjXiZ3jayWAp2yEIGwSlIYz1BQ6R2Azw1c1to6a1EodECG6mOl8HAV6IPQeBbzXFs
+         MQkU0EpgMdBz2b1dUQQo5c8YUDcx9J1r6wxCpBiyQ+5GoH+fltZ6T08HVFBg+2It3qR7
+         1y/wmJIUxEbUeCzbgcPZZAvnYuIcgtiZ9Bmsch67D1stZBytq4mqcIoSl7S1Sot8MmTG
+         3MbGeQZCHbz0J85IfMgB6DnMY1AABsNlqooQMwC2lcs+CyuOmX20NTnzH4zEOsKlSeil
+         Z8XrqyGKd9asoOLvX0DkXDRcU5TE6S6zQXNrmmggxB3g5p/C1mw6MDX9B/xGyJyzmDQK
+         sAXA==
+X-Gm-Message-State: AOJu0Yw/H1XJ/YUwdQfNztUvoz6qKVZxJQ7SHe23ZPVZZ6os7XF2QK3T
+        wEYxLnbAOXcpCM1JOS1s6/pikXPOsvhZ9g5u6iNIdMgAejI=
+X-Google-Smtp-Source: AGHT+IEJnNMnlUT23fA3NLfWmP1W1ZyETwDn8yAKHoeKAW2VBhbgT/vTD+IHqZMkntMLZxjVwAhiC3EFgqCG/YVxL2g=
+X-Received: by 2002:a4a:e782:0:b0:56e:466c:7393 with SMTP id
+ x2-20020a4ae782000000b0056e466c7393mr4463846oov.5.1697890432955; Sat, 21 Oct
+ 2023 05:13:52 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ab0:3153:0:b0:783:def9:1a3a with HTTP; Fri, 20 Oct 2023
- 10:49:18 -0700 (PDT)
-In-Reply-To: <ZTJmnsAxGDnks2aj@dread.disaster.area>
+Received: by 2002:ac9:7b90:0:b0:4f0:1250:dd51 with HTTP; Sat, 21 Oct 2023
+ 05:13:52 -0700 (PDT)
+In-Reply-To: <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
 References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
  <20230509165657.1735798-23-kent.overstreet@linux.dev> <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
- <20231019153040.lj3anuescvdprcq7@f> <20231019155958.7ek7oyljs6y44ah7@f> <ZTJmnsAxGDnks2aj@dread.disaster.area>
+ <20231019153040.lj3anuescvdprcq7@f> <20231019155958.7ek7oyljs6y44ah7@f>
+ <ZTJmnsAxGDnks2aj@dread.disaster.area> <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
 From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Fri, 20 Oct 2023 19:49:18 +0200
-Message-ID: <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
+Date:   Sat, 21 Oct 2023 14:13:52 +0200
+Message-ID: <CAGudoHFcz1wQgQ53sy-HPJvJhx_DHhXcVVg3FfrFKHHdxt=scg@mail.gmail.com>
 Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
 To:     Dave Chinner <david@fromorbit.com>
 Cc:     Christian Brauner <brauner@kernel.org>,
@@ -70,155 +71,74 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On 10/20/23, Dave Chinner <david@fromorbit.com> wrote:
-> On Thu, Oct 19, 2023 at 05:59:58PM +0200, Mateusz Guzik wrote:
->> On Thu, Oct 19, 2023 at 05:30:40PM +0200, Mateusz Guzik wrote:
->> > On Tue, May 23, 2023 at 11:28:38AM +0200, Christian Brauner wrote:
->> > > On Tue, 09 May 2023 12:56:47 -0400, Kent Overstreet wrote:
->> > > > Because scalability of the global inode_hash_lock really, really
->> > > > sucks.
->> > > >
->> > > > 32-way concurrent create on a couple of different filesystems
->> > > > before:
->> > > >
->> > > > -   52.13%     0.04%  [kernel]            [k] ext4_create
->> > > >    - 52.09% ext4_create
->> > > >       - 41.03% __ext4_new_inode
->> > > >          - 29.92% insert_inode_locked
->> > > >             - 25.35% _raw_spin_lock
->> > > >                - do_raw_spin_lock
->> > > >                   - 24.97% __pv_queued_spin_lock_slowpath
->> > > >
->> > > > [...]
->> > >
->> > > This is interesting completely independent of bcachefs so we should
->> > > give
->> > > it some testing.
->> > >
->> > > I updated a few places that had outdated comments.
->> > >
->> > > ---
->> > >
->> > > Applied to the vfs.unstable.inode-hash branch of the vfs/vfs.git
->> > > tree.
->> > > Patches in the vfs.unstable.inode-hash branch should appear in
->> > > linux-next soon.
->> > >
->> > > Please report any outstanding bugs that were missed during review in
->> > > a
->> > > new review to the original patch series allowing us to drop it.
->> > >
->> > > It's encouraged to provide Acked-bys and Reviewed-bys even though the
->> > > patch has now been applied. If possible patch trailers will be
->> > > updated.
->> > >
->> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
->> > > branch: vfs.unstable.inode-hash
->> > >
->> > > [22/32] vfs: inode cache conversion to hash-bl
->> > >         https://git.kernel.org/vfs/vfs/c/e3e92d47e6b1
->> >
->> > What, if anything, is blocking this? It is over 5 months now, I don't
->> > see it in master nor -next.
->
-> Not having a test machine that can validate my current vfs-scale
-> patchset for 4 of the 5 months makes it hard to measure and
-> demonstrate the efficacy of the changes on a current kernel....
->
+It was bugging me that find_inode_fast is at the top of the profile
+(modulo the locking routine).
 
-Ok, see below.
+Internals don't look too bad (it skips collisions without taking
+locks), so I started wondering if hashing is any good.
 
->> > To be clear there is no urgency as far as I'm concerned, but I did run
->> > into something which is primarily bottlenecked by inode hash lock and
->> > looks like the above should sort it out.
->> >
->> > Looks like the patch was simply forgotten.
->> >
->> > tl;dr can this land in -next please
->>
->> In case you can't be arsed, here is something funny which may convince
->> you to expedite. ;)
->>
->> I did some benching by running 20 processes in parallel, each doing stat
->> on a tree of 1 million files (one tree per proc, 1000 dirs x 1000 files,
->> so 20 mln inodes in total).  Box had 24 cores and 24G RAM.
->>
->> Best times:
->> Linux:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
->> FreeBSD:        3.49s user 345.12s system 1983% cpu 17.573 total
->> OpenBSD:        5.01s user 6463.66s system 2000% cpu 5:23.42 total
->> DragonflyBSD:   11.73s user 1316.76s system 1023% cpu 2:09.78 total
->> OmniosCE:       9.17s user 516.53s system 1550% cpu 33.905 total
->>
->> NetBSD failed to complete the run, OOM-killing workers:
->> http://mail-index.netbsd.org/tech-kern/2023/10/19/msg029242.html
->> OpenBSD is shafted by a big kernel lock, so no surprise it takes a long
->> time.
->>
->> So what I find funny is that Linux needed more time than OmniosCE (an
->> Illumos variant, fork of Solaris).
->>
->> It also needed more time than FreeBSD, which is not necessarily funny
->> but not that great either.
->>
->> All systems were mostly busy contending on locks and in particular Linux
->> was almost exclusively busy waiting on inode hash lock.
->
-> Did you bother to test the patch, or are you just complaining
-> that nobody has already done the work for you?
->
+I re-ran the scan of 20 mln and started counting visited inodes for
+each call, got this:
 
-Why are you giving me attitude?
+[0, 1)             58266 |                                                    |
+[1, 2)            385228 |@@@                                                 |
+[2, 3)           1252480 |@@@@@@@@@@                                          |
+[3, 4)           2710082 |@@@@@@@@@@@@@@@@@@@@@@@                             |
+[4, 5)           4385945 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@               |
+[5, 6)           5662628 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    |
+[6, 7)           6074390 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[7, 8)           5575381 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     |
+[8, 9)           4475706 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@              |
+[9, 10)          3183676 |@@@@@@@@@@@@@@@@@@@@@@@@@@@                         |
+[10, 11)         2041743 |@@@@@@@@@@@@@@@@@                                   |
+[11, 12)         1189850 |@@@@@@@@@@                                          |
+[12, 13)          637683 |@@@@@                                               |
+[13, 14)          313830 |@@                                                  |
+[14, 15)          143277 |@                                                   |
+[15, 16)           61501 |                                                    |
+[16, 17)           25116 |                                                    |
+[17, 18)            9693 |                                                    |
+[18, 19)            3435 |                                                    |
+[19, 20)            1120 |                                                    |
+[20, 21)             385 |                                                    |
+[21, 22)              99 |                                                    |
+[22, 23)              45 |                                                    |
+[23, 24)              15 |                                                    |
+[24, 25)               2 |                                                    |
+[25, 26)               2 |                                                    |
+[26, 27)               2 |                                                    |
 
-I ran a test, found the major bottleneck and it turned out there is a
-patch which takes care of it, but its inclusion is stalled without
-further communication. So I asked about it.
+I compared this to literally just taking the ino & i_hash_mask as the
+value, got this:
+[0, 1)            119800 |                                                    |
+[1, 2)            508063 |@@@                                                 |
+[2, 3)           1576390 |@@@@@@@@@@@                                         |
+[3, 4)           2763163 |@@@@@@@@@@@@@@@@@@@                                 |
+[4, 5)           3696348 |@@@@@@@@@@@@@@@@@@@@@@@@@@                          |
+[5, 6)           5975274 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@          |
+[6, 7)           7253615 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[7, 8)           6563736 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     |
+[8, 9)           5012728 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                 |
+[9, 10)          3495208 |@@@@@@@@@@@@@@@@@@@@@@@@@                           |
+[10, 11)         1606659 |@@@@@@@@@@@                                         |
+[11, 12)          459458 |@@@                                                 |
+[12, 13)            3940 |                                                    |
+[13, 14)              21 |                                                    |
+[14, 15)               6 |                                                    |
+[15, 16)               2 |                                                    |
 
-> Because if you tested the patch, you'd have realised that by itself
-> it does nothing to improve performance of the concurrent find+stat
-> workload. The lock contention simply moves to the sb_inode_list_lock
-> instead.
->
+That is to say distribution is much better, in particular the longest
+streak is 15 (as opposed to 26).
 
-Is that something you benched? While it may be there is no change,
-going from one bottleneck to another does not automatically mean there
-are no gains in performance.
+While I'm not saying just taking ino is any good, I am saying there is
+room for improvement here as far as one mount point is concerned.
 
-For example, this thing on FreeBSD used to take over one minute (just
-like on Linux right now), vast majority of which was spent on
-multicore issues. I massaged it down to ~18 seconds, despite it still
-being mostly bottlenecked on locks.
+Side note is that sb could have a randomly generated seed instead of
+its address, which should help distributing this better.
 
-So I benched the hashbl change and it provides a marked improvement:
-stock:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
-patched:  6.34s user 453.87s system 1312% cpu 35.052 total
-
-But indeed as expected it is still bottlenecked on locks.
-
-> IOWs, those sb_inode_list_lock changes haven't been included for the
-> same reason as the hash-bl patches: outside micro-benchmarks, these
-> locks just don't show up in profiles on production machines.
-> Hence there's no urgency to "fix" these lock contention
-> problems despite the ease with which micro-benchmarks can reproduce
-> it...
->
-
-The above is not a made-up microbenchmark though.
-
-I got someone running FreeBSD whose workload mostly consists of
-stating tens of millions of files in parallel and which was suffering
-a lot from perf standpoint -- flamegraphs show that contending on
-locks due to memory reclamation induced by stat calls is almost
-everything that was going on at the time. Said workload probably
-should not do that to begin with (instead have a db with everything it
-normally stats for?), but here we are.
-
-That is to say, while I would not be in position to test Linux in the
-above workload, the problem (high inode turnover in memory) is very
-much real.
-
-All that said, if a real deployment which runs into the problem is
-needed to justify the change, then I can't help (wrong system).
+So tl;dr hash distribution leaves some room for improvement and
+*maybe* I'll prod it some time next month. One can also grow the table
+of course, but that's for later.
 
 -- 
 Mateusz Guzik <mjguzik gmail.com>
