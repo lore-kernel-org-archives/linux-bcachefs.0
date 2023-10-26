@@ -2,37 +2,37 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0312C25B6E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A1E5C25B6B
 	for <linux-bcachefs@archiver.kernel.org>; Thu, 26 Oct 2023 19:15:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbjJZTPH (ORCPT
+        id S231904AbjJZTPG (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 26 Oct 2023 15:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        Thu, 26 Oct 2023 15:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232016AbjJZTPC (ORCPT
+        with ESMTP id S231926AbjJZTPB (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:15:02 -0400
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [IPv6:2001:41d0:203:375::af])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB9C10E5
-        for <linux-bcachefs@vger.kernel.org>; Thu, 26 Oct 2023 12:14:43 -0700 (PDT)
+        Thu, 26 Oct 2023 15:15:01 -0400
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E7A10F5
+        for <linux-bcachefs@vger.kernel.org>; Thu, 26 Oct 2023 12:14:42 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698347681;
+        t=1698347680;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ezODqgR79M9c97Dnl82my6sH9Y1AJRitRqSpCNpxuxI=;
-        b=qpfSewWBMCR8C+H29cjdfeJbUCjBMD9UOc+Khsmni4aZlKrjAo2fVtlLeWCBLRe8a6GhHP
-        FHJU4bOu0MrYBFwuYyvsnEQ2W7XklZjoYXrHQRk1DxQb646VJ1bUKC6Zv00N6Z4v2ifaS9
-        34pQQPky3YBaw6w5Q3gQAI4CfFBH9I4=
+        bh=VztqNwWdyTd40Ep+Y/JtNYo3A339fFLDjGrfKX62Hps=;
+        b=kJV1OgwjTaqdbTmXMGVADx/y9N0dr1RcCnVigRaX+bRQj3eMmkhhq9Y6TSQNUUKPrlBe8V
+        0hbqhE89Q1FgLJQrPdnsEpzYcIy46bgrlJsltGrOPixe34NVjKdHIKUmthgG+k8YO+Zqgm
+        5QckzHaeKetJiKW9XabBtsf3l91pzqI=
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     linux-bcachefs@vger.kernel.org
 Cc:     Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/2] bcachefs: bch_sb_field_errors
-Date:   Thu, 26 Oct 2023 15:14:31 -0400
-Message-ID: <20231026191434.2976460-3-kent.overstreet@linux.dev>
+Subject: [PATCH 1/2] bcachefs: Add IO error counts to bch_member
+Date:   Thu, 26 Oct 2023 15:14:30 -0400
+Message-ID: <20231026191434.2976460-2-kent.overstreet@linux.dev>
 In-Reply-To: <20231026191434.2976460-1-kent.overstreet@linux.dev>
 References: <20231026191434.2976460-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
@@ -42,576 +42,590 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Add a new superblock section to keep counts of errors seen since
-filesystem creation: we'll be addingcounters for every distinct fsck
-error.
+We now track IO errors per device since filesystem creation.
 
-The new superblock section has entries of the for [ id, count,
-time_of_last_error ]; this is intended to let us see what errors are
-occuring - and getting fixed - via show-super output.
+IO error counts can be viewed in sysfs, or with the 'bcachefs
+show-super' command.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/Makefile          |   1 +
- fs/bcachefs/bcachefs.h        |  14 ++-
- fs/bcachefs/bcachefs_format.h |  14 ++-
- fs/bcachefs/errcode.h         |   1 +
- fs/bcachefs/error.c           |  22 ++---
- fs/bcachefs/sb-errors.c       | 175 ++++++++++++++++++++++++++++++++++
- fs/bcachefs/sb-errors.h       |  26 +++++
- fs/bcachefs/sb-errors_types.h |  16 ++++
- fs/bcachefs/sb-members.c      |   2 +-
- fs/bcachefs/sb-members.h      |   2 +-
- fs/bcachefs/super-io.c        |   3 +
- fs/bcachefs/super-io.h        |   5 +
- fs/bcachefs/super.c           |  12 ++-
- 13 files changed, 270 insertions(+), 23 deletions(-)
- create mode 100644 fs/bcachefs/sb-errors.c
- create mode 100644 fs/bcachefs/sb-errors.h
- create mode 100644 fs/bcachefs/sb-errors_types.h
+ fs/bcachefs/bcachefs.h        |  2 ++
+ fs/bcachefs/bcachefs_format.h | 13 +++++++
+ fs/bcachefs/btree_io.c        |  6 ++--
+ fs/bcachefs/ec.c              |  6 +++-
+ fs/bcachefs/error.c           |  3 +-
+ fs/bcachefs/error.h           | 10 +++---
+ fs/bcachefs/io_read.c         |  4 +--
+ fs/bcachefs/io_write.c        |  2 +-
+ fs/bcachefs/journal_io.c      |  5 +--
+ fs/bcachefs/opts.c            |  5 ---
+ fs/bcachefs/opts.h            |  1 -
+ fs/bcachefs/sb-members.c      | 68 ++++++++++++++++++++++++++---------
+ fs/bcachefs/sb-members.h      | 39 +++++++++++++++++++-
+ fs/bcachefs/super-io.c        |  9 +++--
+ fs/bcachefs/super-io.h        | 35 ------------------
+ fs/bcachefs/super.c           |  5 +++
+ fs/bcachefs/sysfs.c           | 27 +++++++++++---
+ 17 files changed, 160 insertions(+), 80 deletions(-)
 
-diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
-index e8e49f96e360..3eccbcc646aa 100644
---- a/fs/bcachefs/Makefile
-+++ b/fs/bcachefs/Makefile
-@@ -69,6 +69,7 @@ bcachefs-y		:=	\
- 	reflink.o		\
- 	replicas.o		\
- 	sb-clean.o		\
-+	sb-errors.o		\
- 	sb-members.o		\
- 	siphash.o		\
- 	six.o			\
 diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index 0ae14a69dfde..9cb8684959ee 100644
+index 68f0ff03c28a..0ae14a69dfde 100644
 --- a/fs/bcachefs/bcachefs.h
 +++ b/fs/bcachefs/bcachefs.h
-@@ -209,6 +209,7 @@
- #include "nocow_locking_types.h"
- #include "opts.h"
- #include "recovery_types.h"
-+#include "sb-errors_types.h"
- #include "seqmutex.h"
- #include "util.h"
- 
-@@ -992,11 +993,6 @@ struct bch_fs {
- 	struct bio_set		dio_read_bioset;
- 	struct bio_set		nocow_flush_bioset;
- 
--	/* ERRORS */
--	struct list_head	fsck_errors;
--	struct mutex		fsck_error_lock;
--	bool			fsck_alloc_err;
--
- 	/* QUOTAS */
- 	struct bch_memquota_type quotas[QTYP_NR];
- 
-@@ -1045,6 +1041,14 @@ struct bch_fs {
- 	struct bch2_time_stats	times[BCH_TIME_STAT_NR];
- 
- 	struct btree_transaction_stats btree_transaction_stats[BCH_TRANSACTIONS_NR];
+@@ -502,6 +502,8 @@ struct bch_dev {
+ 	 * Committed by bch2_write_super() -> bch_fs_mi_update()
+ 	 */
+ 	struct bch_member_cpu	mi;
++	atomic64_t		errors[BCH_MEMBER_ERROR_NR];
 +
-+	/* ERRORS */
-+	struct list_head	fsck_error_msgs;
-+	struct mutex		fsck_error_msgs_lock;
-+	bool			fsck_alloc_msgs_err;
-+
-+	bch_sb_errors_cpu	fsck_error_counts;
-+	struct mutex		fsck_error_counts_lock;
- };
+ 	__uuid_t		uuid;
+ 	char			name[BDEVNAME_SIZE];
  
- extern struct wait_queue_head bch2_read_only_wait;
 diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index c5340d7aa3fe..6f415e280636 100644
+index e04999c57892..c5340d7aa3fe 100644
 --- a/fs/bcachefs/bcachefs_format.h
 +++ b/fs/bcachefs/bcachefs_format.h
-@@ -1218,7 +1218,8 @@ struct bch_sb_field {
- 	x(journal_seq_blacklist, 8)		\
- 	x(journal_v2,	9)			\
- 	x(counters,	10)			\
--	x(members_v2,	11)
-+	x(members_v2,	11)			\
-+	x(errors,	12)
- 
- enum bch_sb_field_type {
- #define x(f, nr)	BCH_SB_FIELD_##f = nr,
-@@ -1619,6 +1620,17 @@ struct bch_sb_field_journal_seq_blacklist {
- 	__u64			_data[];
+@@ -1268,6 +1268,18 @@ enum bch_iops_measurement {
+ 	BCH_IOPS_NR
  };
  
-+struct bch_sb_field_errors {
-+	struct bch_sb_field	field;
-+	struct bch_sb_field_error_entry {
-+		__le64		v;
-+		__le64		last_error_time;
-+	}			entries[];
++#define BCH_MEMBER_ERROR_TYPES()		\
++	x(read,		0)			\
++	x(write,	1)			\
++	x(checksum,	2)
++
++enum bch_member_error_type {
++#define x(t, n) BCH_MEMBER_ERROR_##t = n,
++	BCH_MEMBER_ERROR_TYPES()
++#undef x
++	BCH_MEMBER_ERROR_NR
 +};
 +
-+LE64_BITMASK(BCH_SB_ERROR_ENTRY_ID,	struct bch_sb_field_error_entry, v,  0, 16);
-+LE64_BITMASK(BCH_SB_ERROR_ENTRY_NR,	struct bch_sb_field_error_entry, v, 16, 64);
-+
- /* Superblock: */
+ struct bch_member {
+ 	__uuid_t		uuid;
+ 	__le64			nbuckets;	/* device size */
+@@ -1278,6 +1290,7 @@ struct bch_member {
  
- /*
-diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
-index 3e9f09cea6c7..2a11f32cf30a 100644
---- a/fs/bcachefs/errcode.h
-+++ b/fs/bcachefs/errcode.h
-@@ -213,6 +213,7 @@
- 	x(BCH_ERR_invalid_sb,		invalid_sb_crypt)			\
- 	x(BCH_ERR_invalid_sb,		invalid_sb_clean)			\
- 	x(BCH_ERR_invalid_sb,		invalid_sb_quota)			\
-+	x(BCH_ERR_invalid_sb,		invalid_sb_errors)			\
- 	x(BCH_ERR_invalid_sb,		invalid_sb_opt_compression)		\
- 	x(BCH_ERR_invalid,		invalid_bkey)				\
- 	x(BCH_ERR_operation_blocked,    nocow_lock_blocked)			\
+ 	__le64			flags;
+ 	__le32			iops[4];
++	__le64			errors[BCH_MEMBER_ERROR_NR];
+ };
+ 
+ #define BCH_MEMBER_V1_BYTES	56
+diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+index 7bf3ee25bc32..dba78b5d92af 100644
+--- a/fs/bcachefs/btree_io.c
++++ b/fs/bcachefs/btree_io.c
+@@ -1168,7 +1168,8 @@ static void btree_node_read_work(struct work_struct *work)
+ start:
+ 		printbuf_reset(&buf);
+ 		bch2_btree_pos_to_text(&buf, c, b);
+-		bch2_dev_io_err_on(bio->bi_status, ca, "btree read error %s for %s",
++		bch2_dev_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_read,
++				   "btree read error %s for %s",
+ 				   bch2_blk_status_to_str(bio->bi_status), buf.buf);
+ 		if (rb->have_ioref)
+ 			percpu_ref_put(&ca->io_ref);
+@@ -1749,7 +1750,8 @@ static void btree_node_write_endio(struct bio *bio)
+ 	if (wbio->have_ioref)
+ 		bch2_latency_acct(ca, wbio->submit_time, WRITE);
+ 
+-	if (bch2_dev_io_err_on(bio->bi_status, ca, "btree write error: %s",
++	if (bch2_dev_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_write,
++			       "btree write error: %s",
+ 			       bch2_blk_status_to_str(bio->bi_status)) ||
+ 	    bch2_meta_write_fault("btree")) {
+ 		spin_lock_irqsave(&c->btree_write_error_lock, flags);
+diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
+index 8646856e4539..c9795cd98192 100644
+--- a/fs/bcachefs/ec.c
++++ b/fs/bcachefs/ec.c
+@@ -373,7 +373,11 @@ static void ec_block_endio(struct bio *bio)
+ 	struct bch_dev *ca = ec_bio->ca;
+ 	struct closure *cl = bio->bi_private;
+ 
+-	if (bch2_dev_io_err_on(bio->bi_status, ca, "erasure coding %s error: %s",
++	if (bch2_dev_io_err_on(bio->bi_status, ca,
++			       bio_data_dir(bio)
++			       ? BCH_MEMBER_ERROR_write
++			       : BCH_MEMBER_ERROR_read,
++			       "erasure coding %s error: %s",
+ 			       bio_data_dir(bio) ? "write" : "read",
+ 			       bch2_blk_status_to_str(bio->bi_status)))
+ 		clear_bit(ec_bio->idx, ec_bio->buf->valid);
 diff --git a/fs/bcachefs/error.c b/fs/bcachefs/error.c
-index 4dbfe31197bc..d759afc910fc 100644
+index 2a5af8872613..4dbfe31197bc 100644
 --- a/fs/bcachefs/error.c
 +++ b/fs/bcachefs/error.c
-@@ -117,27 +117,27 @@ static struct fsck_err_state *fsck_err_get(struct bch_fs *c, const char *fmt)
- 	if (test_bit(BCH_FS_FSCK_DONE, &c->flags))
- 		return NULL;
- 
--	list_for_each_entry(s, &c->fsck_errors, list)
-+	list_for_each_entry(s, &c->fsck_error_msgs, list)
- 		if (s->fmt == fmt) {
- 			/*
- 			 * move it to the head of the list: repeated fsck errors
- 			 * are common
- 			 */
--			list_move(&s->list, &c->fsck_errors);
-+			list_move(&s->list, &c->fsck_error_msgs);
- 			return s;
- 		}
- 
- 	s = kzalloc(sizeof(*s), GFP_NOFS);
- 	if (!s) {
--		if (!c->fsck_alloc_err)
-+		if (!c->fsck_alloc_msgs_err)
- 			bch_err(c, "kmalloc err, cannot ratelimit fsck errs");
--		c->fsck_alloc_err = true;
-+		c->fsck_alloc_msgs_err = true;
- 		return NULL;
- 	}
- 
- 	INIT_LIST_HEAD(&s->list);
- 	s->fmt = fmt;
--	list_add(&s->list, &c->fsck_errors);
-+	list_add(&s->list, &c->fsck_error_msgs);
- 	return s;
+@@ -56,8 +56,9 @@ void bch2_io_error_work(struct work_struct *work)
+ 	up_write(&c->state_lock);
  }
  
-@@ -153,7 +153,7 @@ int bch2_fsck_err(struct bch_fs *c, unsigned flags, const char *fmt, ...)
- 	prt_vprintf(out, fmt, args);
- 	va_end(args);
- 
--	mutex_lock(&c->fsck_error_lock);
-+	mutex_lock(&c->fsck_error_msgs_lock);
- 	s = fsck_err_get(c, fmt);
- 	if (s) {
- 		/*
-@@ -163,7 +163,7 @@ int bch2_fsck_err(struct bch_fs *c, unsigned flags, const char *fmt, ...)
- 		 */
- 		if (s->last_msg && !strcmp(buf.buf, s->last_msg)) {
- 			ret = s->ret;
--			mutex_unlock(&c->fsck_error_lock);
-+			mutex_unlock(&c->fsck_error_msgs_lock);
- 			printbuf_exit(&buf);
- 			return ret;
- 		}
-@@ -258,7 +258,7 @@ int bch2_fsck_err(struct bch_fs *c, unsigned flags, const char *fmt, ...)
- 	if (s)
- 		s->ret = ret;
- 
--	mutex_unlock(&c->fsck_error_lock);
-+	mutex_unlock(&c->fsck_error_msgs_lock);
- 
- 	printbuf_exit(&buf);
- 
-@@ -279,9 +279,9 @@ void bch2_flush_fsck_errs(struct bch_fs *c)
+-void bch2_io_error(struct bch_dev *ca)
++void bch2_io_error(struct bch_dev *ca, enum bch_member_error_type type)
  {
- 	struct fsck_err_state *s, *n;
- 
--	mutex_lock(&c->fsck_error_lock);
-+	mutex_lock(&c->fsck_error_msgs_lock);
- 
--	list_for_each_entry_safe(s, n, &c->fsck_errors, list) {
-+	list_for_each_entry_safe(s, n, &c->fsck_error_msgs, list) {
- 		if (s->ratelimited && s->last_msg)
- 			bch_err(c, "Saw %llu errors like:\n    %s", s->nr, s->last_msg);
- 
-@@ -290,5 +290,5 @@ void bch2_flush_fsck_errs(struct bch_fs *c)
- 		kfree(s);
- 	}
- 
--	mutex_unlock(&c->fsck_error_lock);
-+	mutex_unlock(&c->fsck_error_msgs_lock);
++	atomic64_inc(&ca->errors[type]);
+ 	//queue_work(system_long_wq, &ca->io_error_work);
  }
-diff --git a/fs/bcachefs/sb-errors.c b/fs/bcachefs/sb-errors.c
-new file mode 100644
-index 000000000000..3d66f15ae8f5
---- /dev/null
-+++ b/fs/bcachefs/sb-errors.c
-@@ -0,0 +1,175 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "bcachefs.h"
-+#include "sb-errors.h"
-+#include "super-io.h"
-+
-+static const char * const bch2_sb_error_strs[] = {
+ 
+diff --git a/fs/bcachefs/error.h b/fs/bcachefs/error.h
+index 7ce9540052e5..958b2bed4f39 100644
+--- a/fs/bcachefs/error.h
++++ b/fs/bcachefs/error.h
+@@ -179,26 +179,26 @@ do {									\
+ void bch2_io_error_work(struct work_struct *);
+ 
+ /* Does the error handling without logging a message */
+-void bch2_io_error(struct bch_dev *);
++void bch2_io_error(struct bch_dev *, enum bch_member_error_type);
+ 
+-#define bch2_dev_io_err_on(cond, ca, ...)				\
++#define bch2_dev_io_err_on(cond, ca, _type, ...)			\
+ ({									\
+ 	bool _ret = (cond);						\
+ 									\
+ 	if (_ret) {							\
+ 		bch_err_dev_ratelimited(ca, __VA_ARGS__);		\
+-		bch2_io_error(ca);					\
++		bch2_io_error(ca, _type);				\
+ 	}								\
+ 	_ret;								\
+ })
+ 
+-#define bch2_dev_inum_io_err_on(cond, ca, ...)				\
++#define bch2_dev_inum_io_err_on(cond, ca, _type, ...)			\
+ ({									\
+ 	bool _ret = (cond);						\
+ 									\
+ 	if (_ret) {							\
+ 		bch_err_inum_offset_ratelimited(ca, __VA_ARGS__);	\
+-		bch2_io_error(ca);					\
++		bch2_io_error(ca, _type);				\
+ 	}								\
+ 	_ret;								\
+ })
+diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
+index 443c3ea65527..ae36fc485f5f 100644
+--- a/fs/bcachefs/io_read.c
++++ b/fs/bcachefs/io_read.c
+@@ -643,7 +643,7 @@ static void __bch2_read_endio(struct work_struct *work)
+ 		"data checksum error: expected %0llx:%0llx got %0llx:%0llx (type %s)",
+ 		rbio->pick.crc.csum.hi, rbio->pick.crc.csum.lo,
+ 		csum.hi, csum.lo, bch2_csum_types[crc.csum_type]);
+-	bch2_io_error(ca);
++	bch2_io_error(ca, BCH_MEMBER_ERROR_checksum);
+ 	bch2_rbio_error(rbio, READ_RETRY_AVOID, BLK_STS_IOERR);
+ 	goto out;
+ decompression_err:
+@@ -677,7 +677,7 @@ static void bch2_read_endio(struct bio *bio)
+ 	if (!rbio->split)
+ 		rbio->bio.bi_end_io = rbio->end_io;
+ 
+-	if (bch2_dev_inum_io_err_on(bio->bi_status, ca,
++	if (bch2_dev_inum_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_read,
+ 				    rbio->read_pos.inode,
+ 				    rbio->read_pos.offset,
+ 				    "data read error: %s",
+diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
+index 6d9c777213e3..613f38436640 100644
+--- a/fs/bcachefs/io_write.c
++++ b/fs/bcachefs/io_write.c
+@@ -637,7 +637,7 @@ static void bch2_write_endio(struct bio *bio)
+ 	struct bch_fs *c		= wbio->c;
+ 	struct bch_dev *ca		= bch_dev_bkey_exists(c, wbio->dev);
+ 
+-	if (bch2_dev_inum_io_err_on(bio->bi_status, ca,
++	if (bch2_dev_inum_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_write,
+ 				    op->pos.inode,
+ 				    wbio->inode_offset << 9,
+ 				    "data write error: %s",
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index b29ece313e44..39f4d3276953 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -900,7 +900,7 @@ static int journal_read_bucket(struct bch_dev *ca,
+ 			ret = submit_bio_wait(bio);
+ 			kfree(bio);
+ 
+-			if (bch2_dev_io_err_on(ret, ca,
++			if (bch2_dev_io_err_on(ret, ca, BCH_MEMBER_ERROR_read,
+ 					       "journal read error: sector %llu",
+ 					       offset) ||
+ 			    bch2_meta_read_fault("journal")) {
+@@ -1581,7 +1581,8 @@ static void journal_write_endio(struct bio *bio)
+ 	struct journal_buf *w = journal_last_unwritten_buf(j);
+ 	unsigned long flags;
+ 
+-	if (bch2_dev_io_err_on(bio->bi_status, ca, "error writing journal entry %llu: %s",
++	if (bch2_dev_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_write,
++			       "error writing journal entry %llu: %s",
+ 			       le64_to_cpu(w->data->seq),
+ 			       bch2_blk_status_to_str(bio->bi_status)) ||
+ 	    bch2_meta_write_fault("journal")) {
+diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+index b7722b623697..4ad5880664b0 100644
+--- a/fs/bcachefs/opts.c
++++ b/fs/bcachefs/opts.c
+@@ -12,11 +12,6 @@
+ 
+ #define x(t, n, ...) [n] = #t,
+ 
+-const char * const bch2_iops_measurements[] = {
+-	BCH_IOPS_MEASUREMENTS()
+-	NULL
+-};
+-
+ const char * const bch2_error_actions[] = {
+ 	BCH_ERROR_ACTIONS()
+ 	NULL
+diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
+index 2307cdd2a23c..8526f177450a 100644
+--- a/fs/bcachefs/opts.h
++++ b/fs/bcachefs/opts.h
+@@ -10,7 +10,6 @@
+ 
+ struct bch_fs;
+ 
+-extern const char * const bch2_iops_measurements[];
+ extern const char * const bch2_error_actions[];
+ extern const char * const bch2_fsck_fix_opts[];
+ extern const char * const bch2_version_upgrade_opts[];
+diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
+index 168b032a82d3..def420684fa3 100644
+--- a/fs/bcachefs/sb-members.c
++++ b/fs/bcachefs/sb-members.c
+@@ -7,6 +7,18 @@
+ #include "sb-members.h"
+ #include "super-io.h"
+ 
 +#define x(t, n, ...) [n] = #t,
-+	BCH_SB_ERRS()
++static const char * const bch2_iops_measurements[] = {
++	BCH_IOPS_MEASUREMENTS()
 +	NULL
 +};
 +
-+static void bch2_sb_error_id_to_text(struct printbuf *out, enum bch_sb_error_id id)
-+{
-+	if (id < BCH_SB_ERR_MAX)
-+		prt_str(out, bch2_sb_error_strs[id]);
-+	else
-+		prt_printf(out, "(unknown error %u)", id);
-+}
-+
-+static inline unsigned bch2_sb_field_errors_nr_entries(struct bch_sb_field_errors *e)
-+{
-+	return e
-+		? (bch2_sb_field_bytes(&e->field) - sizeof(*e)) / sizeof(e->entries[0])
-+		: 0;
-+}
-+
-+static inline unsigned bch2_sb_field_errors_u64s(unsigned nr)
-+{
-+	return (sizeof(struct bch_sb_field_errors) +
-+		sizeof(struct bch_sb_field_error_entry) * nr) / sizeof(u64);
-+}
-+
-+static int bch2_sb_errors_validate(struct bch_sb *sb, struct bch_sb_field *f,
-+				   struct printbuf *err)
-+{
-+	struct bch_sb_field_errors *e = field_to_type(f, errors);
-+	unsigned i, nr = bch2_sb_field_errors_nr_entries(e);
-+
-+	for (i = 0; i < nr; i++) {
-+		if (!BCH_SB_ERROR_ENTRY_NR(&e->entries[i])) {
-+			prt_printf(err, "entry with count 0 (id ");
-+			bch2_sb_error_id_to_text(err, BCH_SB_ERROR_ENTRY_ID(&e->entries[i]));
-+			prt_printf(err, ")");
-+			return -BCH_ERR_invalid_sb_errors;
-+		}
-+
-+		if (i + 1 < nr &&
-+		    BCH_SB_ERROR_ENTRY_ID(&e->entries[i]) >=
-+		    BCH_SB_ERROR_ENTRY_ID(&e->entries[i + 1])) {
-+			prt_printf(err, "entries out of order");
-+			return -BCH_ERR_invalid_sb_errors;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void bch2_sb_errors_to_text(struct printbuf *out, struct bch_sb *sb,
-+				   struct bch_sb_field *f)
-+{
-+	struct bch_sb_field_errors *e = field_to_type(f, errors);
-+	unsigned i, nr = bch2_sb_field_errors_nr_entries(e);
-+	u64 now = ktime_get_real_seconds();
-+
-+	if (out->nr_tabstops <= 1)
-+		printbuf_tabstop_push(out, 16);
-+
-+	for (i = 0; i < nr; i++) {
-+		bch2_sb_error_id_to_text(out, BCH_SB_ERROR_ENTRY_ID(&e->entries[i]));
-+		prt_tab(out);
-+		prt_u64(out, BCH_SB_ERROR_ENTRY_NR(&e->entries[i]));
-+		prt_tab(out);
-+		bch2_pr_time_units(out, (now - le64_to_cpu(e->entries[i].last_error_time)) *
-+				   NSEC_PER_SEC);
-+		prt_str(out, " ago");
-+		prt_newline(out);
-+	}
-+}
-+
-+const struct bch_sb_field_ops bch_sb_field_ops_errors = {
-+	.validate	= bch2_sb_errors_validate,
-+	.to_text	= bch2_sb_errors_to_text,
++char * const bch2_member_error_strs[] = {
++	BCH_MEMBER_ERROR_TYPES()
++	NULL
 +};
-+
-+void bch2_sb_error_count(struct bch_fs *c, enum bch_sb_error_id err)
-+{
-+	bch_sb_errors_cpu *e = &c->fsck_error_counts;
-+	struct bch_sb_error_entry_cpu n = {
-+		.id = err,
-+		.nr = 1,
-+		.last_error_time = ktime_get_real_seconds()
-+	};
-+	unsigned i;
-+
-+	mutex_lock(&c->fsck_error_counts_lock);
-+	for (i = 0; i < e->nr; i++) {
-+		if (err == e->data[i].id) {
-+			e->data[i].nr++;
-+			e->data[i].last_error_time = n.last_error_time;
-+			goto out;
-+		}
-+		if (err < e->data[i].id)
-+			break;
-+	}
-+
-+	if (darray_make_room(e, 1))
-+		goto out;
-+
-+	darray_insert_item(e, i, n);
-+out:
-+	mutex_unlock(&c->fsck_error_counts_lock);
-+}
-+
-+void bch2_sb_errors_from_cpu(struct bch_fs *c)
-+{
-+	bch_sb_errors_cpu *src = &c->fsck_error_counts;
-+	struct bch_sb_field_errors *dst =
-+		bch2_sb_field_resize(&c->disk_sb, errors,
-+				     bch2_sb_field_errors_u64s(src->nr));
-+	unsigned i;
-+
-+	if (!dst)
-+		return;
-+
-+	for (i = 0; i < src->nr; i++) {
-+		SET_BCH_SB_ERROR_ENTRY_ID(&dst->entries[i], src->data[i].id);
-+		SET_BCH_SB_ERROR_ENTRY_NR(&dst->entries[i], src->data[i].nr);
-+		dst->entries[i].last_error_time = cpu_to_le64(src->data[i].last_error_time);
-+	}
-+}
-+
-+static int bch2_sb_errors_to_cpu(struct bch_fs *c)
-+{
-+	struct bch_sb_field_errors *src = bch2_sb_field_get(c->disk_sb.sb, errors);
-+	bch_sb_errors_cpu *dst = &c->fsck_error_counts;
-+	unsigned i, nr = bch2_sb_field_errors_nr_entries(src);
-+	int ret;
-+
-+	if (!nr)
-+		return 0;
-+
-+	mutex_lock(&c->fsck_error_counts_lock);
-+	ret = darray_make_room(dst, nr);
-+	if (ret)
-+		goto err;
-+
-+	dst->nr = nr;
-+
-+	for (i = 0; i < nr; i++) {
-+		dst->data[i].id = BCH_SB_ERROR_ENTRY_ID(&src->entries[i]);
-+		dst->data[i].nr = BCH_SB_ERROR_ENTRY_NR(&src->entries[i]);
-+		dst->data[i].last_error_time = le64_to_cpu(src->entries[i].last_error_time);
-+	}
-+err:
-+	mutex_unlock(&c->fsck_error_counts_lock);
-+
-+	return ret;
-+}
-+
-+void bch2_fs_sb_errors_exit(struct bch_fs *c)
-+{
-+	darray_exit(&c->fsck_error_counts);
-+}
-+
-+void bch2_fs_sb_errors_init_early(struct bch_fs *c)
-+{
-+	mutex_init(&c->fsck_error_counts_lock);
-+	darray_init(&c->fsck_error_counts);
-+}
-+
-+int bch2_fs_sb_errors_init(struct bch_fs *c)
-+{
-+	return bch2_sb_errors_to_cpu(c);
-+}
-diff --git a/fs/bcachefs/sb-errors.h b/fs/bcachefs/sb-errors.h
-new file mode 100644
-index 000000000000..7f8172821240
---- /dev/null
-+++ b/fs/bcachefs/sb-errors.h
-@@ -0,0 +1,26 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BCACHEFS_SB_ERRORS_H
-+#define _BCACHEFS_SB_ERRORS_H
-+
-+#include "sb-errors_types.h"
-+
-+#define BCH_SB_ERRS()
-+
-+enum bch_sb_error_id {
-+#define x(t, n) BCH_FSCK_ERR_##t = n,
-+	BCH_SB_ERRS()
 +#undef x
-+	BCH_SB_ERR_MAX
-+};
 +
-+extern const struct bch_sb_field_ops bch_sb_field_ops_errors;
-+
-+void bch2_sb_error_count(struct bch_fs *, enum bch_sb_error_id);
-+
-+void bch2_sb_errors_from_cpu(struct bch_fs *);
-+
-+void bch2_fs_sb_errors_exit(struct bch_fs *);
-+void bch2_fs_sb_errors_init_early(struct bch_fs *);
-+int bch2_fs_sb_errors_init(struct bch_fs *);
-+
-+#endif /* _BCACHEFS_SB_ERRORS_H */
-diff --git a/fs/bcachefs/sb-errors_types.h b/fs/bcachefs/sb-errors_types.h
-new file mode 100644
-index 000000000000..b1c099843a39
---- /dev/null
-+++ b/fs/bcachefs/sb-errors_types.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BCACHEFS_SB_ERRORS_TYPES_H
-+#define _BCACHEFS_SB_ERRORS_TYPES_H
-+
-+#include "darray.h"
-+
-+struct bch_sb_error_entry_cpu {
-+	u64			id:16,
-+				nr:48;
-+	u64			last_error_time;
-+};
-+
-+typedef DARRAY(struct bch_sb_error_entry_cpu) bch_sb_errors_cpu;
-+
-+#endif /* _BCACHEFS_SB_ERRORS_TYPES_H */
-+
-diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
-index def420684fa3..7df5b81cf410 100644
---- a/fs/bcachefs/sb-members.c
-+++ b/fs/bcachefs/sb-members.c
-@@ -84,7 +84,7 @@ static int sb_members_v2_resize_entries(struct bch_fs *c)
- 	return 0;
+ /* Code for bch_sb_field_members_v1: */
+ 
+ static struct bch_member *members_v2_get_mut(struct bch_sb_field_members_v2 *mi, int i)
+@@ -92,7 +104,7 @@ int bch2_members_v2_init(struct bch_fs *c)
+ 	return sb_members_v2_resize_entries(c);
  }
  
--int bch2_members_v2_init(struct bch_fs *c)
-+int bch2_sb_members_v2_init(struct bch_fs *c)
+-int bch_members_cpy_v2_v1(struct bch_sb_handle *disk_sb)
++int bch2_sb_members_cpy_v2_v1(struct bch_sb_handle *disk_sb)
  {
  	struct bch_sb_field_members_v1 *mi1;
  	struct bch_sb_field_members_v2 *mi2;
+@@ -156,7 +168,6 @@ static void member_to_text(struct printbuf *out,
+ 	u64 bucket_size = le16_to_cpu(m.bucket_size);
+ 	u64 device_size = le64_to_cpu(m.nbuckets) * bucket_size;
+ 
+-
+ 	prt_printf(out, "Device:");
+ 	prt_tab(out);
+ 	prt_printf(out, "%u", i);
+@@ -164,6 +175,21 @@ static void member_to_text(struct printbuf *out,
+ 
+ 	printbuf_indent_add(out, 2);
+ 
++	prt_printf(out, "Label:");
++	prt_tab(out);
++	if (BCH_MEMBER_GROUP(&m)) {
++		unsigned idx = BCH_MEMBER_GROUP(&m) - 1;
++
++		if (idx < disk_groups_nr(gi))
++			prt_printf(out, "%s (%u)",
++				   gi->entries[idx].label, idx);
++		else
++			prt_printf(out, "(bad disk labels section)");
++	} else {
++		prt_printf(out, "(none)");
++	}
++	prt_newline(out);
++
+ 	prt_printf(out, "UUID:");
+ 	prt_tab(out);
+ 	pr_uuid(out, m.uuid.b);
+@@ -174,6 +200,13 @@ static void member_to_text(struct printbuf *out,
+ 	prt_units_u64(out, device_size << 9);
+ 	prt_newline(out);
+ 
++	for (unsigned i = 0; i < BCH_MEMBER_ERROR_NR; i++) {
++		prt_printf(out, "%s errors:", bch2_member_error_strs[i]);
++		prt_tab(out);
++		prt_u64(out, le64_to_cpu(m.errors[i]));
++		prt_newline(out);
++	}
++
+ 	for (unsigned i = 0; i < BCH_IOPS_NR; i++) {
+ 		prt_printf(out, "%s iops:", bch2_iops_measurements[i]);
+ 		prt_tab(out);
+@@ -212,21 +245,6 @@ static void member_to_text(struct printbuf *out,
+ 		   : "unknown");
+ 	prt_newline(out);
+ 
+-	prt_printf(out, "Label:");
+-	prt_tab(out);
+-	if (BCH_MEMBER_GROUP(&m)) {
+-		unsigned idx = BCH_MEMBER_GROUP(&m) - 1;
+-
+-		if (idx < disk_groups_nr(gi))
+-			prt_printf(out, "%s (%u)",
+-				   gi->entries[idx].label, idx);
+-		else
+-			prt_printf(out, "(bad disk labels section)");
+-	} else {
+-		prt_printf(out, "(none)");
+-	}
+-	prt_newline(out);
+-
+ 	prt_printf(out, "Data allowed:");
+ 	prt_tab(out);
+ 	if (BCH_MEMBER_DATA_ALLOWED(&m))
+@@ -337,3 +355,19 @@ const struct bch_sb_field_ops bch_sb_field_ops_members_v2 = {
+ 	.validate	= bch2_sb_members_v2_validate,
+ 	.to_text	= bch2_sb_members_v2_to_text,
+ };
++
++void bch2_sb_members_from_cpu(struct bch_fs *c)
++{
++	struct bch_sb_field_members_v2 *mi = bch2_sb_field_get(c->disk_sb.sb, members_v2);
++	struct bch_dev *ca;
++	unsigned i, e;
++
++	rcu_read_lock();
++	for_each_member_device_rcu(ca, c, i, NULL) {
++		struct bch_member *m = members_v2_get_mut(mi, i);
++
++		for (e = 0; e < BCH_MEMBER_ERROR_NR; e++)
++			m->errors[e] = cpu_to_le64(atomic64_read(&ca->errors[e]));
++	}
++	rcu_read_unlock();
++}
 diff --git a/fs/bcachefs/sb-members.h b/fs/bcachefs/sb-members.h
-index edbdfb896c14..f79e64557b42 100644
+index 430f3457bfd4..edbdfb896c14 100644
 --- a/fs/bcachefs/sb-members.h
 +++ b/fs/bcachefs/sb-members.h
-@@ -4,7 +4,7 @@
+@@ -2,8 +2,10 @@
+ #ifndef _BCACHEFS_SB_MEMBERS_H
+ #define _BCACHEFS_SB_MEMBERS_H
  
- extern char * const bch2_member_error_strs[];
- 
--int bch2_members_v2_init(struct bch_fs *c);
-+int bch2_sb_members_v2_init(struct bch_fs *c);
- int bch2_sb_members_cpy_v2_v1(struct bch_sb_handle *disk_sb);
++extern char * const bch2_member_error_strs[];
++
+ int bch2_members_v2_init(struct bch_fs *c);
+-int bch_members_cpy_v2_v1(struct bch_sb_handle *disk_sb);
++int bch2_sb_members_cpy_v2_v1(struct bch_sb_handle *disk_sb);
  struct bch_member *bch2_members_v2_get_mut(struct bch_sb *sb, int i);
  struct bch_member bch2_sb_member_get(struct bch_sb *sb, int i);
+ 
+@@ -179,4 +181,39 @@ static inline struct bch_devs_mask bch2_online_devs(struct bch_fs *c)
+ extern const struct bch_sb_field_ops bch_sb_field_ops_members_v1;
+ extern const struct bch_sb_field_ops bch_sb_field_ops_members_v2;
+ 
++static inline bool bch2_member_exists(struct bch_member *m)
++{
++	return !bch2_is_zero(&m->uuid, sizeof(m->uuid));
++}
++
++static inline bool bch2_dev_exists(struct bch_sb *sb,
++				   unsigned dev)
++{
++	if (dev < sb->nr_devices) {
++	struct bch_member m = bch2_sb_member_get(sb, dev);
++		return bch2_member_exists(&m);
++	}
++	return false;
++}
++
++static inline struct bch_member_cpu bch2_mi_to_cpu(struct bch_member *mi)
++{
++	return (struct bch_member_cpu) {
++		.nbuckets	= le64_to_cpu(mi->nbuckets),
++		.first_bucket	= le16_to_cpu(mi->first_bucket),
++		.bucket_size	= le16_to_cpu(mi->bucket_size),
++		.group		= BCH_MEMBER_GROUP(mi),
++		.state		= BCH_MEMBER_STATE(mi),
++		.discard	= BCH_MEMBER_DISCARD(mi),
++		.data_allowed	= BCH_MEMBER_DATA_ALLOWED(mi),
++		.durability	= BCH_MEMBER_DURABILITY(mi)
++			? BCH_MEMBER_DURABILITY(mi) - 1
++			: 1,
++		.freespace_initialized = BCH_MEMBER_FREESPACE_INITIALIZED(mi),
++		.valid		= bch2_member_exists(mi),
++	};
++}
++
++void bch2_sb_members_from_cpu(struct bch_fs *);
++
+ #endif /* _BCACHEFS_SB_MEMBERS_H */
 diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-index 64e861b87535..83bdb4368289 100644
+index 332d41e1c0a3..64e861b87535 100644
 --- a/fs/bcachefs/super-io.c
 +++ b/fs/bcachefs/super-io.c
-@@ -13,6 +13,7 @@
- #include "replicas.h"
- #include "quota.h"
- #include "sb-clean.h"
-+#include "sb-errors.h"
- #include "sb-members.h"
- #include "super-io.h"
- #include "super.h"
-@@ -897,7 +898,9 @@ int bch2_write_super(struct bch_fs *c)
+@@ -805,7 +805,12 @@ static void write_super_endio(struct bio *bio)
+ 
+ 	/* XXX: return errors directly */
+ 
+-	if (bch2_dev_io_err_on(bio->bi_status, ca, "superblock write error: %s",
++	if (bch2_dev_io_err_on(bio->bi_status, ca,
++			       bio_data_dir(bio)
++			       ? BCH_MEMBER_ERROR_write
++			       : BCH_MEMBER_ERROR_read,
++			       "superblock %s error: %s",
++			       bio_data_dir(bio) ? "write" : "read",
+ 			       bch2_blk_status_to_str(bio->bi_status)))
+ 		ca->sb_write_error = 1;
+ 
+@@ -892,7 +897,7 @@ int bch2_write_super(struct bch_fs *c)
  	SET_BCH_SB_BIG_ENDIAN(c->disk_sb.sb, CPU_BIG_ENDIAN);
  
  	bch2_sb_counters_from_cpu(c);
-+	bch2_sb_members_from_cpu(c);
- 	bch2_sb_members_cpy_v2_v1(&c->disk_sb);
-+	bch2_sb_errors_from_cpu(c);
+-	bch_members_cpy_v2_v1(&c->disk_sb);
++	bch2_sb_members_cpy_v2_v1(&c->disk_sb);
  
  	for_each_online_member(ca, c, i)
  		bch2_sb_from_fs(c, ca);
 diff --git a/fs/bcachefs/super-io.h b/fs/bcachefs/super-io.h
-index 5d079dd12f95..f5abd102bff7 100644
+index b0d8584f475f..5d079dd12f95 100644
 --- a/fs/bcachefs/super-io.h
 +++ b/fs/bcachefs/super-io.h
-@@ -23,6 +23,11 @@ u64 bch2_upgrade_recovery_passes(struct bch_fs *c,
- 				 unsigned,
- 				 unsigned);
+@@ -78,41 +78,6 @@ static inline void bch2_check_set_feature(struct bch_fs *c, unsigned feat)
+ 		__bch2_check_set_feature(c, feat);
+ }
  
-+static inline size_t bch2_sb_field_bytes(struct bch_sb_field *f)
-+{
-+	return le32_to_cpu(f->u64s) * sizeof(u64);
-+}
-+
- #define field_to_type(_f, _name)					\
- 	container_of_or_null(_f, struct bch_sb_field_##_name, field)
+-/* BCH_SB_FIELD_members_v1: */
+-
+-static inline bool bch2_member_exists(struct bch_member *m)
+-{
+-	return !bch2_is_zero(&m->uuid, sizeof(m->uuid));
+-}
+-
+-static inline bool bch2_dev_exists(struct bch_sb *sb,
+-				   unsigned dev)
+-{
+-	if (dev < sb->nr_devices) {
+-	struct bch_member m = bch2_sb_member_get(sb, dev);
+-		return bch2_member_exists(&m);
+-	}
+-	return false;
+-}
+-
+-static inline struct bch_member_cpu bch2_mi_to_cpu(struct bch_member *mi)
+-{
+-	return (struct bch_member_cpu) {
+-		.nbuckets	= le64_to_cpu(mi->nbuckets),
+-		.first_bucket	= le16_to_cpu(mi->first_bucket),
+-		.bucket_size	= le16_to_cpu(mi->bucket_size),
+-		.group		= BCH_MEMBER_GROUP(mi),
+-		.state		= BCH_MEMBER_STATE(mi),
+-		.discard	= BCH_MEMBER_DISCARD(mi),
+-		.data_allowed	= BCH_MEMBER_DATA_ALLOWED(mi),
+-		.durability	= BCH_MEMBER_DURABILITY(mi)
+-			? BCH_MEMBER_DURABILITY(mi) - 1
+-			: 1,
+-		.freespace_initialized = BCH_MEMBER_FREESPACE_INITIALIZED(mi),
+-		.valid		= bch2_member_exists(mi),
+-	};
+-}
+-
+ void bch2_sb_maybe_downgrade(struct bch_fs *);
+ void bch2_sb_upgrade(struct bch_fs *, unsigned);
  
 diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index 7c129efa7cf0..ffe5558bbf03 100644
+index ce59018b27ac..7c129efa7cf0 100644
 --- a/fs/bcachefs/super.c
 +++ b/fs/bcachefs/super.c
-@@ -49,6 +49,7 @@
- #include "recovery.h"
- #include "replicas.h"
- #include "sb-clean.h"
-+#include "sb-errors.h"
- #include "sb-members.h"
- #include "snapshot.h"
- #include "subvolume.h"
-@@ -400,7 +401,7 @@ static int __bch2_fs_read_write(struct bch_fs *c, bool early)
+@@ -1131,6 +1131,7 @@ static struct bch_dev *__bch2_dev_alloc(struct bch_fs *c,
+ 					struct bch_member *member)
+ {
+ 	struct bch_dev *ca;
++	unsigned i;
  
- 	bch_info(c, "going read-write");
+ 	ca = kzalloc(sizeof(*ca), GFP_KERNEL);
+ 	if (!ca)
+@@ -1148,6 +1149,10 @@ static struct bch_dev *__bch2_dev_alloc(struct bch_fs *c,
+ 	bch2_time_stats_init(&ca->io_latency[WRITE]);
  
--	ret = bch2_members_v2_init(c);
-+	ret = bch2_sb_members_v2_init(c);
- 	if (ret)
- 		goto err;
+ 	ca->mi = bch2_mi_to_cpu(member);
++
++	for (i = 0; i < ARRAY_SIZE(member->errors); i++)
++		atomic64_set(&ca->errors[i], le64_to_cpu(member->errors[i]));
++
+ 	ca->uuid = member->uuid;
  
-@@ -481,6 +482,7 @@ static void __bch2_fs_free(struct bch_fs *c)
- 		bch2_time_stats_exit(&c->times[i]);
+ 	ca->nr_btree_reserve = DIV_ROUND_UP(BTREE_NODE_RESERVE,
+diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
+index db2727e5cc5f..59de78e5fbb6 100644
+--- a/fs/bcachefs/sysfs.c
++++ b/fs/bcachefs/sysfs.c
+@@ -149,7 +149,8 @@ read_attribute(bucket_size);
+ read_attribute(first_bucket);
+ read_attribute(nbuckets);
+ rw_attribute(durability);
+-read_attribute(iodone);
++read_attribute(io_done);
++read_attribute(io_errors);
  
- 	bch2_free_pending_node_rewrites(c);
-+	bch2_fs_sb_errors_exit(c);
- 	bch2_fs_counters_exit(c);
- 	bch2_fs_snapshots_exit(c);
- 	bch2_fs_quota_exit(c);
-@@ -713,6 +715,7 @@ static struct bch_fs *bch2_fs_alloc(struct bch_sb *sb, struct bch_opts opts)
- 	bch2_fs_quota_init(c);
- 	bch2_fs_ec_init_early(c);
- 	bch2_fs_move_init(c);
-+	bch2_fs_sb_errors_init_early(c);
+ read_attribute(io_latency_read);
+ read_attribute(io_latency_write);
+@@ -880,7 +881,7 @@ static const char * const bch2_rw[] = {
+ 	NULL
+ };
  
- 	INIT_LIST_HEAD(&c->list);
+-static void dev_iodone_to_text(struct printbuf *out, struct bch_dev *ca)
++static void dev_io_done_to_text(struct printbuf *out, struct bch_dev *ca)
+ {
+ 	int rw, i;
  
-@@ -729,8 +732,8 @@ static struct bch_fs *bch2_fs_alloc(struct bch_sb *sb, struct bch_opts opts)
+@@ -894,6 +895,18 @@ static void dev_iodone_to_text(struct printbuf *out, struct bch_dev *ca)
+ 	}
+ }
  
- 	INIT_LIST_HEAD(&c->journal_iters);
- 
--	INIT_LIST_HEAD(&c->fsck_errors);
--	mutex_init(&c->fsck_error_lock);
-+	INIT_LIST_HEAD(&c->fsck_error_msgs);
-+	mutex_init(&c->fsck_error_msgs_lock);
- 
- 	seqcount_init(&c->gc_pos_lock);
- 
-@@ -840,6 +843,7 @@ static struct bch_fs *bch2_fs_alloc(struct bch_sb *sb, struct bch_opts opts)
++static void dev_io_errors_to_text(struct printbuf *out, struct bch_dev *ca)
++{
++	printbuf_tabstop_push(out, 12);
++
++	for (unsigned i = 0; i < BCH_MEMBER_ERROR_NR; i++) {
++		prt_printf(out, "%s:", bch2_member_error_strs[i]);
++		prt_tab(out);
++		prt_u64(out, atomic64_read(&ca->errors[i]));
++		prt_newline(out);
++	}
++}
++
+ SHOW(bch2_dev)
+ {
+ 	struct bch_dev *ca = container_of(kobj, struct bch_dev, kobj);
+@@ -923,8 +936,11 @@ SHOW(bch2_dev)
+ 		prt_char(out, '\n');
  	}
  
- 	ret = bch2_fs_counters_init(c) ?:
-+	    bch2_fs_sb_errors_init(c) ?:
- 	    bch2_io_clock_init(&c->io_clock[READ]) ?:
- 	    bch2_io_clock_init(&c->io_clock[WRITE]) ?:
- 	    bch2_fs_journal_init(&c->journal) ?:
-@@ -942,7 +946,7 @@ int bch2_fs_start(struct bch_fs *c)
+-	if (attr == &sysfs_iodone)
+-		dev_iodone_to_text(out, ca);
++	if (attr == &sysfs_io_done)
++		dev_io_done_to_text(out, ca);
++
++	if (attr == &sysfs_io_errors)
++		dev_io_errors_to_text(out, ca);
  
- 	mutex_lock(&c->sb_lock);
+ 	sysfs_print(io_latency_read,		atomic64_read(&ca->cur_latency[READ]));
+ 	sysfs_print(io_latency_write,		atomic64_read(&ca->cur_latency[WRITE]));
+@@ -1008,7 +1024,8 @@ struct attribute *bch2_dev_files[] = {
+ 	&sysfs_label,
  
--	ret = bch2_members_v2_init(c);
-+	ret = bch2_sb_members_v2_init(c);
- 	if (ret) {
- 		mutex_unlock(&c->sb_lock);
- 		goto err;
+ 	&sysfs_has_data,
+-	&sysfs_iodone,
++	&sysfs_io_done,
++	&sysfs_io_errors,
+ 
+ 	&sysfs_io_latency_read,
+ 	&sysfs_io_latency_write,
 -- 
 2.42.0
 
