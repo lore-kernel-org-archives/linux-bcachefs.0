@@ -2,630 +2,300 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A1E5C25B6B
-	for <linux-bcachefs@archiver.kernel.org>; Thu, 26 Oct 2023 19:15:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 137F7C25B6E
+	for <linux-bcachefs@archiver.kernel.org>; Fri, 27 Oct 2023 02:36:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbjJZTPG (ORCPT
+        id S229590AbjJ0CgA (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 26 Oct 2023 15:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
+        Thu, 26 Oct 2023 22:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231926AbjJZTPB (ORCPT
+        with ESMTP id S229437AbjJ0CgA (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:15:01 -0400
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E7A10F5
-        for <linux-bcachefs@vger.kernel.org>; Thu, 26 Oct 2023 12:14:42 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698347680;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VztqNwWdyTd40Ep+Y/JtNYo3A339fFLDjGrfKX62Hps=;
-        b=kJV1OgwjTaqdbTmXMGVADx/y9N0dr1RcCnVigRaX+bRQj3eMmkhhq9Y6TSQNUUKPrlBe8V
-        0hbqhE89Q1FgLJQrPdnsEpzYcIy46bgrlJsltGrOPixe34NVjKdHIKUmthgG+k8YO+Zqgm
-        5QckzHaeKetJiKW9XabBtsf3l91pzqI=
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     linux-bcachefs@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 1/2] bcachefs: Add IO error counts to bch_member
-Date:   Thu, 26 Oct 2023 15:14:30 -0400
-Message-ID: <20231026191434.2976460-2-kent.overstreet@linux.dev>
-In-Reply-To: <20231026191434.2976460-1-kent.overstreet@linux.dev>
-References: <20231026191434.2976460-1-kent.overstreet@linux.dev>
+        Thu, 26 Oct 2023 22:36:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5B5C4;
+        Thu, 26 Oct 2023 19:35:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A9A4C433C8;
+        Fri, 27 Oct 2023 02:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698374157;
+        bh=n3ME9tWIt2dalzcflVyTYrCBONW9asESIh/U5jElb4A=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lzUNrg9VCFfquamP6YWNUx9P8pNzKW6EcME/+y21nyCAkwEDMJ9PITOXZZ6Wdx4yK
+         oiBeUy1j3v/8aCGTS0F6R4r1v8K3Y/qBep07C/ld54z0SRjfbIHJ4vRWUdoJ4hLuTf
+         cDFLIthmCf7rpodfK55K8dEsbtzr9o1dJHdOswbeCVBEkQK4Nwf2TyHVKGlkdSXTuI
+         8gl2+GRCjYyUYKw0akcasslKMih8BQYIg6wUqH/vA93ER+vxIoO8eC7ev0Xm8unpaf
+         X9QDSZQqZHpyDXMbmri1ywuSk+in4WihvQocpjTZ9z+Yx2rNgmXXkK7IjLmJBJWRDP
+         QNO1qDCthX/Tg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6E85ACE1D02; Thu, 26 Oct 2023 19:35:56 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 19:35:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     rcu@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-next@vger.kernel.org, Daniel J Blueman <daniel@quora.org>
+Subject: Re: bcachefs RCU warnings
+Message-ID: <5a94d7fd-9e0a-4e3b-b95c-23e5c77bfee1@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CAMVG2su2RvAaTAyj8kFtUZcRfcZuKncxqhL3h-Ag8JQeSR=jxw@mail.gmail.com>
+ <20231025180845.sq6tpl6c4hefdbg7@moria.home.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025180845.sq6tpl6c4hefdbg7@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-We now track IO errors per device since filesystem creation.
+On Wed, Oct 25, 2023 at 02:08:45PM -0400, Kent Overstreet wrote:
+> Hey Paul, RCU folks :)
+> 
+> I've got no idea what these warnings mean and haven't seen them before,
+> do you suppose one of you could point me in the right direction?
+> 
+> On Wed, Oct 25, 2023 at 09:28:09PM +0800, Daniel J Blueman wrote:
+> > Hi Kent et al,
+> > 
+> > On 6.6.0-rc7-next-20231024 with my bcachefs exerciser [1], I was able
+> > to reproduce three related kernel warnings due to RCU grace period
+> > counts being zero, ie WARN_ON_ONCE(READ_ONCE(rsp->gp_count) == 0).
+> > 
+> > If this is something of interest, I'll find a minimal reproducer.
+> > These warnings aside, bcachefs is looking really solid.
+> > 
+> > Thanks,
+> >   Daniel
+> > 
+> > -- [1] https://github.com/dblueman/bcachefs-gym
+> > 
+> > -- [2]
+> > 
+> > WARNING: CPU: 15 PID: 259240 at kernel/rcu/sync.c:171 rcu_sync_exit+0xe3/0xf0
 
-IO error counts can be viewed in sysfs, or with the 'bcachefs
-show-super' command.
+The usual cause would be mismatched rcu_sync_enter() and rcu_sync_exit(),
+as in one more rcu_sync_exit() than rcu_sync_enter()...
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/bcachefs.h        |  2 ++
- fs/bcachefs/bcachefs_format.h | 13 +++++++
- fs/bcachefs/btree_io.c        |  6 ++--
- fs/bcachefs/ec.c              |  6 +++-
- fs/bcachefs/error.c           |  3 +-
- fs/bcachefs/error.h           | 10 +++---
- fs/bcachefs/io_read.c         |  4 +--
- fs/bcachefs/io_write.c        |  2 +-
- fs/bcachefs/journal_io.c      |  5 +--
- fs/bcachefs/opts.c            |  5 ---
- fs/bcachefs/opts.h            |  1 -
- fs/bcachefs/sb-members.c      | 68 ++++++++++++++++++++++++++---------
- fs/bcachefs/sb-members.h      | 39 +++++++++++++++++++-
- fs/bcachefs/super-io.c        |  9 +++--
- fs/bcachefs/super-io.h        | 35 ------------------
- fs/bcachefs/super.c           |  5 +++
- fs/bcachefs/sysfs.c           | 27 +++++++++++---
- 17 files changed, 160 insertions(+), 80 deletions(-)
+> > Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
+> > amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
+> > rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
+> > ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
+> > dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet m
+> > ii btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
+> > async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
+> > multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
+> > polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
+> > sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
+> > nvme_core tg3 l
+> > ibahci xhci_pci i2c_piix4 xhci_pci_renesas wmi aesni_intel crypto_simd
+> > cryptd [last unloaded: brd]
+> > CPU: 15 PID: 259240 Comm: bch-data/3edb8b Tainted: G W
+> > 6.6.0-rc7-next-20231024 #1
+> > Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
+> > RIP: 0010:rcu_sync_exit+0xe3/0xf0
+> > Code: c6 e0 06 c7 b2 e8 dd 0e 01 00 4c 89 e7 e8 b5 54 91 01 5b 41 5c
+> > 41 5d 5d 31 c0 31 f6 31 ff e9 8f 35 a9 01 0f 0b e9 3d ff ff ff <0f> 0b
+> > e9 4d ff ff ff 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90
+> > RSP: 0018:ffffc90024127b60 EFLAGS: 00010246
+> > RAX: 0000000000000000 RBX: ffff8883b7383740 RCX: 0000000000000000
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > RBP: ffffc90024127b78 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000000 R12: ffff8883b7383798
+> > R13: ffff8883b7383744 R14: ffff8883b7383740 R15: ffff8883b7380498
+> > FS: 0000000000000000(0000) GS:ffff88bf0e780000(0000) knlGS:0000000000000000
+> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007fea708bae00 CR3: 000000034b860003 CR4: 0000000000770ef0
+> > PKRU: 55555554
+> > Call Trace:
+> > <TASK>
+> > ? show_regs+0x6c/0x80
+> > ? __warn+0xa4/0x1c0
+> > ? rcu_sync_exit+0xe3/0xf0
+> > ? report_bug+0x1bc/0x1f0
+> > ? handle_bug+0x46/0x90
+> > ? exc_invalid_op+0x18/0x50
+> > ? asm_exc_invalid_op+0x1b/0x20
+> > ? rcu_sync_exit+0xe3/0xf0
+> > percpu_up_write+0x4d/0x60
 
-diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index 68f0ff03c28a..0ae14a69dfde 100644
---- a/fs/bcachefs/bcachefs.h
-+++ b/fs/bcachefs/bcachefs.h
-@@ -502,6 +502,8 @@ struct bch_dev {
- 	 * Committed by bch2_write_super() -> bch_fs_mi_update()
- 	 */
- 	struct bch_member_cpu	mi;
-+	atomic64_t		errors[BCH_MEMBER_ERROR_NR];
-+
- 	__uuid_t		uuid;
- 	char			name[BDEVNAME_SIZE];
- 
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index e04999c57892..c5340d7aa3fe 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -1268,6 +1268,18 @@ enum bch_iops_measurement {
- 	BCH_IOPS_NR
- };
- 
-+#define BCH_MEMBER_ERROR_TYPES()		\
-+	x(read,		0)			\
-+	x(write,	1)			\
-+	x(checksum,	2)
-+
-+enum bch_member_error_type {
-+#define x(t, n) BCH_MEMBER_ERROR_##t = n,
-+	BCH_MEMBER_ERROR_TYPES()
-+#undef x
-+	BCH_MEMBER_ERROR_NR
-+};
-+
- struct bch_member {
- 	__uuid_t		uuid;
- 	__le64			nbuckets;	/* device size */
-@@ -1278,6 +1290,7 @@ struct bch_member {
- 
- 	__le64			flags;
- 	__le32			iops[4];
-+	__le64			errors[BCH_MEMBER_ERROR_NR];
- };
- 
- #define BCH_MEMBER_V1_BYTES	56
-diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
-index 7bf3ee25bc32..dba78b5d92af 100644
---- a/fs/bcachefs/btree_io.c
-+++ b/fs/bcachefs/btree_io.c
-@@ -1168,7 +1168,8 @@ static void btree_node_read_work(struct work_struct *work)
- start:
- 		printbuf_reset(&buf);
- 		bch2_btree_pos_to_text(&buf, c, b);
--		bch2_dev_io_err_on(bio->bi_status, ca, "btree read error %s for %s",
-+		bch2_dev_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_read,
-+				   "btree read error %s for %s",
- 				   bch2_blk_status_to_str(bio->bi_status), buf.buf);
- 		if (rb->have_ioref)
- 			percpu_ref_put(&ca->io_ref);
-@@ -1749,7 +1750,8 @@ static void btree_node_write_endio(struct bio *bio)
- 	if (wbio->have_ioref)
- 		bch2_latency_acct(ca, wbio->submit_time, WRITE);
- 
--	if (bch2_dev_io_err_on(bio->bi_status, ca, "btree write error: %s",
-+	if (bch2_dev_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_write,
-+			       "btree write error: %s",
- 			       bch2_blk_status_to_str(bio->bi_status)) ||
- 	    bch2_meta_write_fault("btree")) {
- 		spin_lock_irqsave(&c->btree_write_error_lock, flags);
-diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-index 8646856e4539..c9795cd98192 100644
---- a/fs/bcachefs/ec.c
-+++ b/fs/bcachefs/ec.c
-@@ -373,7 +373,11 @@ static void ec_block_endio(struct bio *bio)
- 	struct bch_dev *ca = ec_bio->ca;
- 	struct closure *cl = bio->bi_private;
- 
--	if (bch2_dev_io_err_on(bio->bi_status, ca, "erasure coding %s error: %s",
-+	if (bch2_dev_io_err_on(bio->bi_status, ca,
-+			       bio_data_dir(bio)
-+			       ? BCH_MEMBER_ERROR_write
-+			       : BCH_MEMBER_ERROR_read,
-+			       "erasure coding %s error: %s",
- 			       bio_data_dir(bio) ? "write" : "read",
- 			       bch2_blk_status_to_str(bio->bi_status)))
- 		clear_bit(ec_bio->idx, ec_bio->buf->valid);
-diff --git a/fs/bcachefs/error.c b/fs/bcachefs/error.c
-index 2a5af8872613..4dbfe31197bc 100644
---- a/fs/bcachefs/error.c
-+++ b/fs/bcachefs/error.c
-@@ -56,8 +56,9 @@ void bch2_io_error_work(struct work_struct *work)
- 	up_write(&c->state_lock);
- }
- 
--void bch2_io_error(struct bch_dev *ca)
-+void bch2_io_error(struct bch_dev *ca, enum bch_member_error_type type)
- {
-+	atomic64_inc(&ca->errors[type]);
- 	//queue_work(system_long_wq, &ca->io_error_work);
- }
- 
-diff --git a/fs/bcachefs/error.h b/fs/bcachefs/error.h
-index 7ce9540052e5..958b2bed4f39 100644
---- a/fs/bcachefs/error.h
-+++ b/fs/bcachefs/error.h
-@@ -179,26 +179,26 @@ do {									\
- void bch2_io_error_work(struct work_struct *);
- 
- /* Does the error handling without logging a message */
--void bch2_io_error(struct bch_dev *);
-+void bch2_io_error(struct bch_dev *, enum bch_member_error_type);
- 
--#define bch2_dev_io_err_on(cond, ca, ...)				\
-+#define bch2_dev_io_err_on(cond, ca, _type, ...)			\
- ({									\
- 	bool _ret = (cond);						\
- 									\
- 	if (_ret) {							\
- 		bch_err_dev_ratelimited(ca, __VA_ARGS__);		\
--		bch2_io_error(ca);					\
-+		bch2_io_error(ca, _type);				\
- 	}								\
- 	_ret;								\
- })
- 
--#define bch2_dev_inum_io_err_on(cond, ca, ...)				\
-+#define bch2_dev_inum_io_err_on(cond, ca, _type, ...)			\
- ({									\
- 	bool _ret = (cond);						\
- 									\
- 	if (_ret) {							\
- 		bch_err_inum_offset_ratelimited(ca, __VA_ARGS__);	\
--		bch2_io_error(ca);					\
-+		bch2_io_error(ca, _type);				\
- 	}								\
- 	_ret;								\
- })
-diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
-index 443c3ea65527..ae36fc485f5f 100644
---- a/fs/bcachefs/io_read.c
-+++ b/fs/bcachefs/io_read.c
-@@ -643,7 +643,7 @@ static void __bch2_read_endio(struct work_struct *work)
- 		"data checksum error: expected %0llx:%0llx got %0llx:%0llx (type %s)",
- 		rbio->pick.crc.csum.hi, rbio->pick.crc.csum.lo,
- 		csum.hi, csum.lo, bch2_csum_types[crc.csum_type]);
--	bch2_io_error(ca);
-+	bch2_io_error(ca, BCH_MEMBER_ERROR_checksum);
- 	bch2_rbio_error(rbio, READ_RETRY_AVOID, BLK_STS_IOERR);
- 	goto out;
- decompression_err:
-@@ -677,7 +677,7 @@ static void bch2_read_endio(struct bio *bio)
- 	if (!rbio->split)
- 		rbio->bio.bi_end_io = rbio->end_io;
- 
--	if (bch2_dev_inum_io_err_on(bio->bi_status, ca,
-+	if (bch2_dev_inum_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_read,
- 				    rbio->read_pos.inode,
- 				    rbio->read_pos.offset,
- 				    "data read error: %s",
-diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
-index 6d9c777213e3..613f38436640 100644
---- a/fs/bcachefs/io_write.c
-+++ b/fs/bcachefs/io_write.c
-@@ -637,7 +637,7 @@ static void bch2_write_endio(struct bio *bio)
- 	struct bch_fs *c		= wbio->c;
- 	struct bch_dev *ca		= bch_dev_bkey_exists(c, wbio->dev);
- 
--	if (bch2_dev_inum_io_err_on(bio->bi_status, ca,
-+	if (bch2_dev_inum_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_write,
- 				    op->pos.inode,
- 				    wbio->inode_offset << 9,
- 				    "data write error: %s",
-diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-index b29ece313e44..39f4d3276953 100644
---- a/fs/bcachefs/journal_io.c
-+++ b/fs/bcachefs/journal_io.c
-@@ -900,7 +900,7 @@ static int journal_read_bucket(struct bch_dev *ca,
- 			ret = submit_bio_wait(bio);
- 			kfree(bio);
- 
--			if (bch2_dev_io_err_on(ret, ca,
-+			if (bch2_dev_io_err_on(ret, ca, BCH_MEMBER_ERROR_read,
- 					       "journal read error: sector %llu",
- 					       offset) ||
- 			    bch2_meta_read_fault("journal")) {
-@@ -1581,7 +1581,8 @@ static void journal_write_endio(struct bio *bio)
- 	struct journal_buf *w = journal_last_unwritten_buf(j);
- 	unsigned long flags;
- 
--	if (bch2_dev_io_err_on(bio->bi_status, ca, "error writing journal entry %llu: %s",
-+	if (bch2_dev_io_err_on(bio->bi_status, ca, BCH_MEMBER_ERROR_write,
-+			       "error writing journal entry %llu: %s",
- 			       le64_to_cpu(w->data->seq),
- 			       bch2_blk_status_to_str(bio->bi_status)) ||
- 	    bch2_meta_write_fault("journal")) {
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index b7722b623697..4ad5880664b0 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -12,11 +12,6 @@
- 
- #define x(t, n, ...) [n] = #t,
- 
--const char * const bch2_iops_measurements[] = {
--	BCH_IOPS_MEASUREMENTS()
--	NULL
--};
--
- const char * const bch2_error_actions[] = {
- 	BCH_ERROR_ACTIONS()
- 	NULL
-diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
-index 2307cdd2a23c..8526f177450a 100644
---- a/fs/bcachefs/opts.h
-+++ b/fs/bcachefs/opts.h
-@@ -10,7 +10,6 @@
- 
- struct bch_fs;
- 
--extern const char * const bch2_iops_measurements[];
- extern const char * const bch2_error_actions[];
- extern const char * const bch2_fsck_fix_opts[];
- extern const char * const bch2_version_upgrade_opts[];
-diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
-index 168b032a82d3..def420684fa3 100644
---- a/fs/bcachefs/sb-members.c
-+++ b/fs/bcachefs/sb-members.c
-@@ -7,6 +7,18 @@
- #include "sb-members.h"
- #include "super-io.h"
- 
-+#define x(t, n, ...) [n] = #t,
-+static const char * const bch2_iops_measurements[] = {
-+	BCH_IOPS_MEASUREMENTS()
-+	NULL
-+};
-+
-+char * const bch2_member_error_strs[] = {
-+	BCH_MEMBER_ERROR_TYPES()
-+	NULL
-+};
-+#undef x
-+
- /* Code for bch_sb_field_members_v1: */
- 
- static struct bch_member *members_v2_get_mut(struct bch_sb_field_members_v2 *mi, int i)
-@@ -92,7 +104,7 @@ int bch2_members_v2_init(struct bch_fs *c)
- 	return sb_members_v2_resize_entries(c);
- }
- 
--int bch_members_cpy_v2_v1(struct bch_sb_handle *disk_sb)
-+int bch2_sb_members_cpy_v2_v1(struct bch_sb_handle *disk_sb)
- {
- 	struct bch_sb_field_members_v1 *mi1;
- 	struct bch_sb_field_members_v2 *mi2;
-@@ -156,7 +168,6 @@ static void member_to_text(struct printbuf *out,
- 	u64 bucket_size = le16_to_cpu(m.bucket_size);
- 	u64 device_size = le64_to_cpu(m.nbuckets) * bucket_size;
- 
--
- 	prt_printf(out, "Device:");
- 	prt_tab(out);
- 	prt_printf(out, "%u", i);
-@@ -164,6 +175,21 @@ static void member_to_text(struct printbuf *out,
- 
- 	printbuf_indent_add(out, 2);
- 
-+	prt_printf(out, "Label:");
-+	prt_tab(out);
-+	if (BCH_MEMBER_GROUP(&m)) {
-+		unsigned idx = BCH_MEMBER_GROUP(&m) - 1;
-+
-+		if (idx < disk_groups_nr(gi))
-+			prt_printf(out, "%s (%u)",
-+				   gi->entries[idx].label, idx);
-+		else
-+			prt_printf(out, "(bad disk labels section)");
-+	} else {
-+		prt_printf(out, "(none)");
-+	}
-+	prt_newline(out);
-+
- 	prt_printf(out, "UUID:");
- 	prt_tab(out);
- 	pr_uuid(out, m.uuid.b);
-@@ -174,6 +200,13 @@ static void member_to_text(struct printbuf *out,
- 	prt_units_u64(out, device_size << 9);
- 	prt_newline(out);
- 
-+	for (unsigned i = 0; i < BCH_MEMBER_ERROR_NR; i++) {
-+		prt_printf(out, "%s errors:", bch2_member_error_strs[i]);
-+		prt_tab(out);
-+		prt_u64(out, le64_to_cpu(m.errors[i]));
-+		prt_newline(out);
-+	}
-+
- 	for (unsigned i = 0; i < BCH_IOPS_NR; i++) {
- 		prt_printf(out, "%s iops:", bch2_iops_measurements[i]);
- 		prt_tab(out);
-@@ -212,21 +245,6 @@ static void member_to_text(struct printbuf *out,
- 		   : "unknown");
- 	prt_newline(out);
- 
--	prt_printf(out, "Label:");
--	prt_tab(out);
--	if (BCH_MEMBER_GROUP(&m)) {
--		unsigned idx = BCH_MEMBER_GROUP(&m) - 1;
--
--		if (idx < disk_groups_nr(gi))
--			prt_printf(out, "%s (%u)",
--				   gi->entries[idx].label, idx);
--		else
--			prt_printf(out, "(bad disk labels section)");
--	} else {
--		prt_printf(out, "(none)");
--	}
--	prt_newline(out);
--
- 	prt_printf(out, "Data allowed:");
- 	prt_tab(out);
- 	if (BCH_MEMBER_DATA_ALLOWED(&m))
-@@ -337,3 +355,19 @@ const struct bch_sb_field_ops bch_sb_field_ops_members_v2 = {
- 	.validate	= bch2_sb_members_v2_validate,
- 	.to_text	= bch2_sb_members_v2_to_text,
- };
-+
-+void bch2_sb_members_from_cpu(struct bch_fs *c)
-+{
-+	struct bch_sb_field_members_v2 *mi = bch2_sb_field_get(c->disk_sb.sb, members_v2);
-+	struct bch_dev *ca;
-+	unsigned i, e;
-+
-+	rcu_read_lock();
-+	for_each_member_device_rcu(ca, c, i, NULL) {
-+		struct bch_member *m = members_v2_get_mut(mi, i);
-+
-+		for (e = 0; e < BCH_MEMBER_ERROR_NR; e++)
-+			m->errors[e] = cpu_to_le64(atomic64_read(&ca->errors[e]));
-+	}
-+	rcu_read_unlock();
-+}
-diff --git a/fs/bcachefs/sb-members.h b/fs/bcachefs/sb-members.h
-index 430f3457bfd4..edbdfb896c14 100644
---- a/fs/bcachefs/sb-members.h
-+++ b/fs/bcachefs/sb-members.h
-@@ -2,8 +2,10 @@
- #ifndef _BCACHEFS_SB_MEMBERS_H
- #define _BCACHEFS_SB_MEMBERS_H
- 
-+extern char * const bch2_member_error_strs[];
-+
- int bch2_members_v2_init(struct bch_fs *c);
--int bch_members_cpy_v2_v1(struct bch_sb_handle *disk_sb);
-+int bch2_sb_members_cpy_v2_v1(struct bch_sb_handle *disk_sb);
- struct bch_member *bch2_members_v2_get_mut(struct bch_sb *sb, int i);
- struct bch_member bch2_sb_member_get(struct bch_sb *sb, int i);
- 
-@@ -179,4 +181,39 @@ static inline struct bch_devs_mask bch2_online_devs(struct bch_fs *c)
- extern const struct bch_sb_field_ops bch_sb_field_ops_members_v1;
- extern const struct bch_sb_field_ops bch_sb_field_ops_members_v2;
- 
-+static inline bool bch2_member_exists(struct bch_member *m)
-+{
-+	return !bch2_is_zero(&m->uuid, sizeof(m->uuid));
-+}
-+
-+static inline bool bch2_dev_exists(struct bch_sb *sb,
-+				   unsigned dev)
-+{
-+	if (dev < sb->nr_devices) {
-+	struct bch_member m = bch2_sb_member_get(sb, dev);
-+		return bch2_member_exists(&m);
-+	}
-+	return false;
-+}
-+
-+static inline struct bch_member_cpu bch2_mi_to_cpu(struct bch_member *mi)
-+{
-+	return (struct bch_member_cpu) {
-+		.nbuckets	= le64_to_cpu(mi->nbuckets),
-+		.first_bucket	= le16_to_cpu(mi->first_bucket),
-+		.bucket_size	= le16_to_cpu(mi->bucket_size),
-+		.group		= BCH_MEMBER_GROUP(mi),
-+		.state		= BCH_MEMBER_STATE(mi),
-+		.discard	= BCH_MEMBER_DISCARD(mi),
-+		.data_allowed	= BCH_MEMBER_DATA_ALLOWED(mi),
-+		.durability	= BCH_MEMBER_DURABILITY(mi)
-+			? BCH_MEMBER_DURABILITY(mi) - 1
-+			: 1,
-+		.freespace_initialized = BCH_MEMBER_FREESPACE_INITIALIZED(mi),
-+		.valid		= bch2_member_exists(mi),
-+	};
-+}
-+
-+void bch2_sb_members_from_cpu(struct bch_fs *);
-+
- #endif /* _BCACHEFS_SB_MEMBERS_H */
-diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-index 332d41e1c0a3..64e861b87535 100644
---- a/fs/bcachefs/super-io.c
-+++ b/fs/bcachefs/super-io.c
-@@ -805,7 +805,12 @@ static void write_super_endio(struct bio *bio)
- 
- 	/* XXX: return errors directly */
- 
--	if (bch2_dev_io_err_on(bio->bi_status, ca, "superblock write error: %s",
-+	if (bch2_dev_io_err_on(bio->bi_status, ca,
-+			       bio_data_dir(bio)
-+			       ? BCH_MEMBER_ERROR_write
-+			       : BCH_MEMBER_ERROR_read,
-+			       "superblock %s error: %s",
-+			       bio_data_dir(bio) ? "write" : "read",
- 			       bch2_blk_status_to_str(bio->bi_status)))
- 		ca->sb_write_error = 1;
- 
-@@ -892,7 +897,7 @@ int bch2_write_super(struct bch_fs *c)
- 	SET_BCH_SB_BIG_ENDIAN(c->disk_sb.sb, CPU_BIG_ENDIAN);
- 
- 	bch2_sb_counters_from_cpu(c);
--	bch_members_cpy_v2_v1(&c->disk_sb);
-+	bch2_sb_members_cpy_v2_v1(&c->disk_sb);
- 
- 	for_each_online_member(ca, c, i)
- 		bch2_sb_from_fs(c, ca);
-diff --git a/fs/bcachefs/super-io.h b/fs/bcachefs/super-io.h
-index b0d8584f475f..5d079dd12f95 100644
---- a/fs/bcachefs/super-io.h
-+++ b/fs/bcachefs/super-io.h
-@@ -78,41 +78,6 @@ static inline void bch2_check_set_feature(struct bch_fs *c, unsigned feat)
- 		__bch2_check_set_feature(c, feat);
- }
- 
--/* BCH_SB_FIELD_members_v1: */
--
--static inline bool bch2_member_exists(struct bch_member *m)
--{
--	return !bch2_is_zero(&m->uuid, sizeof(m->uuid));
--}
--
--static inline bool bch2_dev_exists(struct bch_sb *sb,
--				   unsigned dev)
--{
--	if (dev < sb->nr_devices) {
--	struct bch_member m = bch2_sb_member_get(sb, dev);
--		return bch2_member_exists(&m);
--	}
--	return false;
--}
--
--static inline struct bch_member_cpu bch2_mi_to_cpu(struct bch_member *mi)
--{
--	return (struct bch_member_cpu) {
--		.nbuckets	= le64_to_cpu(mi->nbuckets),
--		.first_bucket	= le16_to_cpu(mi->first_bucket),
--		.bucket_size	= le16_to_cpu(mi->bucket_size),
--		.group		= BCH_MEMBER_GROUP(mi),
--		.state		= BCH_MEMBER_STATE(mi),
--		.discard	= BCH_MEMBER_DISCARD(mi),
--		.data_allowed	= BCH_MEMBER_DATA_ALLOWED(mi),
--		.durability	= BCH_MEMBER_DURABILITY(mi)
--			? BCH_MEMBER_DURABILITY(mi) - 1
--			: 1,
--		.freespace_initialized = BCH_MEMBER_FREESPACE_INITIALIZED(mi),
--		.valid		= bch2_member_exists(mi),
--	};
--}
--
- void bch2_sb_maybe_downgrade(struct bch_fs *);
- void bch2_sb_upgrade(struct bch_fs *, unsigned);
- 
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index ce59018b27ac..7c129efa7cf0 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -1131,6 +1131,7 @@ static struct bch_dev *__bch2_dev_alloc(struct bch_fs *c,
- 					struct bch_member *member)
- {
- 	struct bch_dev *ca;
-+	unsigned i;
- 
- 	ca = kzalloc(sizeof(*ca), GFP_KERNEL);
- 	if (!ca)
-@@ -1148,6 +1149,10 @@ static struct bch_dev *__bch2_dev_alloc(struct bch_fs *c,
- 	bch2_time_stats_init(&ca->io_latency[WRITE]);
- 
- 	ca->mi = bch2_mi_to_cpu(member);
-+
-+	for (i = 0; i < ARRAY_SIZE(member->errors); i++)
-+		atomic64_set(&ca->errors[i], le64_to_cpu(member->errors[i]));
-+
- 	ca->uuid = member->uuid;
- 
- 	ca->nr_btree_reserve = DIV_ROUND_UP(BTREE_NODE_RESERVE,
-diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
-index db2727e5cc5f..59de78e5fbb6 100644
---- a/fs/bcachefs/sysfs.c
-+++ b/fs/bcachefs/sysfs.c
-@@ -149,7 +149,8 @@ read_attribute(bucket_size);
- read_attribute(first_bucket);
- read_attribute(nbuckets);
- rw_attribute(durability);
--read_attribute(iodone);
-+read_attribute(io_done);
-+read_attribute(io_errors);
- 
- read_attribute(io_latency_read);
- read_attribute(io_latency_write);
-@@ -880,7 +881,7 @@ static const char * const bch2_rw[] = {
- 	NULL
- };
- 
--static void dev_iodone_to_text(struct printbuf *out, struct bch_dev *ca)
-+static void dev_io_done_to_text(struct printbuf *out, struct bch_dev *ca)
- {
- 	int rw, i;
- 
-@@ -894,6 +895,18 @@ static void dev_iodone_to_text(struct printbuf *out, struct bch_dev *ca)
- 	}
- }
- 
-+static void dev_io_errors_to_text(struct printbuf *out, struct bch_dev *ca)
-+{
-+	printbuf_tabstop_push(out, 12);
-+
-+	for (unsigned i = 0; i < BCH_MEMBER_ERROR_NR; i++) {
-+		prt_printf(out, "%s:", bch2_member_error_strs[i]);
-+		prt_tab(out);
-+		prt_u64(out, atomic64_read(&ca->errors[i]));
-+		prt_newline(out);
-+	}
-+}
-+
- SHOW(bch2_dev)
- {
- 	struct bch_dev *ca = container_of(kobj, struct bch_dev, kobj);
-@@ -923,8 +936,11 @@ SHOW(bch2_dev)
- 		prt_char(out, '\n');
- 	}
- 
--	if (attr == &sysfs_iodone)
--		dev_iodone_to_text(out, ca);
-+	if (attr == &sysfs_io_done)
-+		dev_io_done_to_text(out, ca);
-+
-+	if (attr == &sysfs_io_errors)
-+		dev_io_errors_to_text(out, ca);
- 
- 	sysfs_print(io_latency_read,		atomic64_read(&ca->cur_latency[READ]));
- 	sysfs_print(io_latency_write,		atomic64_read(&ca->cur_latency[WRITE]));
-@@ -1008,7 +1024,8 @@ struct attribute *bch2_dev_files[] = {
- 	&sysfs_label,
- 
- 	&sysfs_has_data,
--	&sysfs_iodone,
-+	&sysfs_io_done,
-+	&sysfs_io_errors,
- 
- 	&sysfs_io_latency_read,
- 	&sysfs_io_latency_write,
--- 
-2.42.0
+...correspond to one more percpu_up_write() than percpu_down_write().
 
+If it is possible to reproduce this easily, one way to get more
+information would be to run with lockdep.
+
+> > bch2_replicas_gc_end+0x60/0x110
+> > bch2_journal_flush_device_pins+0x2d7/0x4b0
+> > ? __entry_text_end+0x102619/0x10261d
+> > ? __pfx_bch2_journal_flush_device_pins+0x10/0x10
+> > ? __pfx_scnprintf+0x10/0x10
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? raw_spin_rq_unlock+0x17/0x70
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? finish_task_switch.isra.0+0xc1/0x410
+> > ? __switch_to+0x281/0x6d0
+> > bch2_data_job+0x1fb/0x500
+> > ? __pfx_bch2_data_job+0x10/0x10
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? try_to_wake_up+0x4b1/0xca0
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? __pfx_bch2_data_thread+0x10/0x10
+> > bch2_data_thread+0x60/0xa0
+> > kthread+0x188/0x1d0
+> > ? __pfx_kthread+0x10/0x10
+> > ret_from_fork+0x47/0x80
+> > ? __pfx_kthread+0x10/0x10
+> > ret_from_fork_asm+0x1a/0x30
+> > </TASK>
+> > 
+> > WARNING: CPU: 15 PID: 259240 at kernel/rcu/sync.c:129 rcu_sync_enter+0x1d6/0x200
+
+In which case this would be a consequence of the above imbalance.
+
+> > Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
+> > amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
+> > rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
+> > ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
+> > dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet m
+> > ii btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
+> > async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
+> > multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
+> > polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
+> > sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
+> > nvme_core tg3 l
+> > ibahci xhci_pci i2c_piix4 xhci_pci_renesas wmi aesni_intel crypto_simd
+> > cryptd [last unloaded: brd]
+> > CPU: 15 PID: 259240 Comm: bch-data/3edb8b Tainted: G W
+> > 6.6.0-rc7-next-20231024 #1
+> > Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
+> > RIP: 0010:rcu_sync_enter+0x1d6/0x200
+> > Code: 89 ef e8 2d fb f9 ff 48 89 df e8 35 45 3f 00 8b 03 83 f8 01 7e
+> > d8 48 8d b5 68 ff ff ff 4c 89 ef e8 6f c1 f9 ff e9 0b ff ff ff <0f> 0b
+> > 4c 89 ff 41 83 c6 01 e8 ec 45 3f 00 44 89 73 04 4c 89 ef e8
+> > RSP: 0018:ffffc90024127b00 EFLAGS: 00010086
+> > RAX: 0000000000000000 RBX: ffff8883b7383740 RCX: 0000000000000000
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > RBP: ffffc90024127bc8 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000000 R12: 1ffff92004824f60
+> > R13: ffff8883b7383748 R14: 00000000ffffffff R15: ffff8883b7383744
+> > FS: 0000000000000000(0000) GS:ffff88bf0e780000(0000) knlGS:0000000000000000
+> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007fea708bae00 CR3: 000000034b860003 CR4: 0000000000770ef0
+> > PKRU: 55555554
+> > Call Trace:
+> > <TASK>
+> > ? show_regs+0x6c/0x80
+> > ? __warn+0xa4/0x1c0
+> > ? rcu_sync_enter+0x1d6/0x200
+> > ? report_bug+0x1bc/0x1f0
+> > ? handle_bug+0x46/0x90
+> > ? exc_invalid_op+0x18/0x50
+> > ? asm_exc_invalid_op+0x1b/0x20
+> > ? rcu_sync_enter+0x1d6/0x200
+> > ? __pfx_rcu_sync_enter+0x10/0x10
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? __kasan_check_write+0x14/0x30
+> > percpu_down_write+0x2f/0x2b0
+> > ? bch2_replicas_gc2+0x122/0x6f0
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? __kmalloc+0x61/0xf0
+> > bch2_replicas_gc2+0x155/0x6f0
+> > ? __pfx_bch2_replicas_gc2+0x10/0x10
+> > ? raw_spin_rq_unlock+0x17/0x70
+> > ? finish_task_switch.isra.0+0xc1/0x410
+> > ? __switch_to+0x281/0x6d0
+> > bch2_data_job+0x298/0x500
+> > ? __pfx_bch2_data_job+0x10/0x10
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? try_to_wake_up+0x4b1/0xca0
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? __pfx_bch2_data_thread+0x10/0x10
+> > bch2_data_thread+0x60/0xa0
+> > kthread+0x188/0x1d0
+> > ? __pfx_kthread+0x10/0x10
+> > ret_from_fork+0x47/0x80
+> > ? __pfx_kthread+0x10/0x10
+> > ret_from_fork_asm+0x1a/0x30
+> > </TASK>
+> > 
+> > WARNING: CPU: 38 PID: 262351 at kernel/rcu/sync.c:193 rcu_sync_dtor+0x96/0xb0
+
+As would this as well.
+
+							Thanx, Paul
+
+> > Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
+> > amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
+> > rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
+> > ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
+> > dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet mii
+> > btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
+> > async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
+> > multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
+> > polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
+> > sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
+> > nvme_core tg3 libahci xhci_pci i2c_piix4 xhci_pci_renesas wmi
+> > aesni_intel crypto_simd cryptd [last unloaded: brd]
+> > CPU: 38 PID: 262351 Comm: umount Tainted: G W 6.6.0-rc7-next-20231024 #1
+> > Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
+> > RIP: 0010:rcu_sync_dtor+0x96/0xb0
+> > Code: e8 4f 44 3f 00 c7 03 03 00 00 00 4c 89 e7 e8 01 54 91 01 e8 fc
+> > 80 00 00 48 89 df e8 54 43 3f 00 8b 03 85 c0 74 c8 0f 0b eb c4 <0f> 0b
+> > 48 89 df e8 40 43 3f 00 8b 03 83 f8 02 75 89 0f 0b eb 85 cc
+> > RSP: 0018:ffffc9000d35fc60 EFLAGS: 00010286
+> > RAX: 00000000ffffffff RBX: ffff8883b7383740 RCX: 0000000000000000
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > RBP: ffffc9000d35fc78 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000000 R12: ffff8883b7383770
+> > R13: ffff8883b7380040 R14: ffff8883b7380000 R15: 0000000000000000
+> > FS: 00007f2033aef800(0000) GS:ffff88bf0f300000(0000) knlGS:0000000000000000
+> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007fea708bae00 CR3: 000000042bf7e005 CR4: 0000000000770ef0
+> > PKRU: 55555554
+> > Call Trace:
+> > <TASK>
+> > ? show_regs+0x6c/0x80
+> > ? __warn+0xa4/0x1c0
+> > ? rcu_sync_dtor+0x96/0xb0
+> > ? report_bug+0x1bc/0x1f0
+> > ? handle_bug+0x46/0x90
+> > ? exc_invalid_op+0x18/0x50
+> > ? asm_exc_invalid_op+0x1b/0x20
+> > ? rcu_sync_dtor+0x96/0xb0
+> > percpu_free_rwsem+0x2a/0x60
+> > bch2_fs_release+0x131/0x340
+> > kobject_put+0x103/0x250
+> > bch2_fs_free+0x144/0x190
+> > bch2_kill_sb+0x50/0x70
+> > deactivate_locked_super+0x69/0x110
+> > deactivate_super+0x64/0x80
+> > cleanup_mnt+0x141/0x220
+> > __cleanup_mnt+0x12/0x20
+> > task_work_run+0x10b/0x190
+> > ? __pfx_task_work_run+0x10/0x10
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? __x64_sys_umount+0xff/0x110
+> > exit_to_user_mode_prepare+0x169/0x190
+> > syscall_exit_to_user_mode+0x28/0x60
+> > do_syscall_64+0x6b/0xf0
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? syscall_exit_to_user_mode+0x36/0x60
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? do_syscall_64+0x6b/0xf0
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? irqentry_exit_to_user_mode+0x17/0x20
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? irqentry_exit+0x43/0x50
+> > ? srso_alias_return_thunk+0x5/0xfbef5
+> > ? sysvec_call_function+0x48/0xd0
+> > entry_SYSCALL_64_after_hwframe+0x6c/0x74
+> > RIP: 0033:0x7f203391ee5b
+> > Code: c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 f3 0f 1e fa 31 f6
+> > e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d
+> > 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 8b 15 89 6f 0d 00 f7 d8
+> > RSP: 002b:00007ffcadb990e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> > RAX: 0000000000000000 RBX: 0000560145c5a5c0 RCX: 00007f203391ee5b
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560145c5e820
+> > RBP: 0000560145c5a6d8 R08: 0000000000000073 R09: 00007ffcadb98031
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> > R13: 0000560145c5e820 R14: 0000560145c5e7f0 R15: 0000560145c5a5c0
+> > </TASK>
