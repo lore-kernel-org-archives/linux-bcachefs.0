@@ -2,108 +2,126 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41173C4332F
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 31 Oct 2023 11:31:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0E78C4332F
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 31 Oct 2023 12:47:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbjJaLbn (ORCPT
+        id S1344293AbjJaMrU convert rfc822-to-8bit (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 31 Oct 2023 07:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
+        Tue, 31 Oct 2023 08:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235613AbjJaLbm (ORCPT
+        with ESMTP id S1344332AbjJaMrT (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:31:42 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1158891;
-        Tue, 31 Oct 2023 04:31:40 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6ce2b6b3cb6so3721170a34.3;
-        Tue, 31 Oct 2023 04:31:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698751899; x=1699356699; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zYGDhB/um96+OSL3bdNH6Xb1xNttdqBHEeOQYlAiy+4=;
-        b=VKSEaqGanVQNrWpcmf21+Tk4hgKRzDH83SR7GX1RqcbDUxCcW84D6P96siXTiGYQrT
-         0eXNjl8CyMqL+TlaO3JRZ9Ajy87IHVAlUHQKKYjC0lJ5r1vtf7Q6JNnMlhMCuYkSZQCH
-         yYZjMGtfCBxYnYTxUL/lgFlEUpWNRXDPkZ7b2v5kOJRqngsy0k/oAWaRxN+gZKDvaZDE
-         pp0V1oJAt7IiffnbWnpZFLAMm7Z9y4RKaJXguyGCW9R7yYkC/SY8eRqUkHgDfdePXp2w
-         je92RUl54APIbkeDwgrR2en5Ge/DmiSq/Z/g7tWSbUZtlEO27sUR+EOvq96LUtPF+ibQ
-         9Pdw==
+        Tue, 31 Oct 2023 08:47:19 -0400
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B28C2;
+        Tue, 31 Oct 2023 05:47:17 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5a7eef0b931so53665537b3.0;
+        Tue, 31 Oct 2023 05:47:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698751899; x=1699356699;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zYGDhB/um96+OSL3bdNH6Xb1xNttdqBHEeOQYlAiy+4=;
-        b=NrcK82KUZkYEtgSyKznQrpuJdPNt1wq5Odfj08ZehjOndNKw1baVZrNO3XvNDhyo2X
-         +7d4mazDfG1vQFKmFulmjkDJ/gnvV36LMxsxEdGlw4cFXYFCsIA7xFoO5GYQQxWLuV99
-         4Sj85gwVJsWaKe5Ycn4mlYwkR4mVAU4z/NdKmYj+RW3TYyNohuMK2utYLIEWG3YXomBl
-         Uy+rUherVgf4EksI0pDtr82mKrmedkqMnD3iqig9eUySd7tdjzazn5Khjizl4qUUDYka
-         /+FN2YutgSJC/zYPhYrHk+hjB4Y8UWd55DwoNKhUYjcO1pi7ov/zzbE+GuDHvYkVWs8V
-         cXFQ==
-X-Gm-Message-State: AOJu0YyMc7wQkxNjiQJMFuIPZ/50ahA9+dLQqqG1aQ/BxH23EuQWFJhs
-        HjFke5I/hgXGL0NJ3QT4eee5MtHSqsUYNRqhgDc=
-X-Google-Smtp-Source: AGHT+IHuYP72qDA7lV1u5U+Et4v2vvDxnY6s+Al6fXDbgkiWs9zjXI2/VLFe0hP5lM6ClxyT2yA6zMq4AXtgvsttkaM=
-X-Received: by 2002:a05:6830:1e99:b0:6be:ea3e:367 with SMTP id
- n25-20020a0568301e9900b006beea3e0367mr13025879otr.23.1698751899308; Tue, 31
- Oct 2023 04:31:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698756436; x=1699361236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dtpwqyp0A02VdCSa2nK6MzwPbTqa+e280XT4tyuC4zk=;
+        b=YF3qas8q/OxGaXVMDiv5OlZ9BeuRPsRHg3ZAY8CLlL8jeuvCt0H2MFsaRnb3BH9gnZ
+         l7iE3/SzpT74JysnnS6PN1FfTtl3GMYkvnSfml9WRsm9nUmunXiEeULi42FjpjrS+CC+
+         V0d4Zx/ydd9tUNxpHk7KQIenBzXq7CrdlIHGMJCZY8DgnARsOKPLTB2Q0cA6c+CmDQQO
+         x2r94QXrtDzIab9dqVM4CqgpOU7NHcZuwSG7McHjrdxFujicpV3T1GPqqZj0Mvs3+SEV
+         93NIdSHpyrzn+pMdiyutGlb4UeR/YaWNBz05Mxk91BA7JFF9LlC/KSV2l602HJfkKGxg
+         pv+Q==
+X-Gm-Message-State: AOJu0YwjJfFXS51CTdJCbDNiftUZ82f+z2Tmf4fywrtmgRTQbDda4Qjg
+        gRPt4xG+ke87qcnjXsKoHLbcnYSEP0YxXQ==
+X-Google-Smtp-Source: AGHT+IGv50Jyg14I5ATij6XR9WTbTLhs4fH0g+tTx6SOrSqaEvL/HtGcU6fZoSOSQK42fXtVM3WXZw==
+X-Received: by 2002:a05:690c:714:b0:5a8:d86f:bb3f with SMTP id bs20-20020a05690c071400b005a8d86fbb3fmr13720875ywb.8.1698756436034;
+        Tue, 31 Oct 2023 05:47:16 -0700 (PDT)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id t8-20020a0dea08000000b0059b085c4051sm741572ywe.85.2023.10.31.05.47.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 05:47:15 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9a4c0d89f7so5110330276.1;
+        Tue, 31 Oct 2023 05:47:15 -0700 (PDT)
+X-Received: by 2002:a25:fc16:0:b0:d9b:4f28:f6ce with SMTP id
+ v22-20020a25fc16000000b00d9b4f28f6cemr10853098ybd.1.1698756435614; Tue, 31
+ Oct 2023 05:47:15 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a8a:d1:0:b0:4f0:1250:dd51 with HTTP; Tue, 31 Oct 2023
- 04:31:38 -0700 (PDT)
-In-Reply-To: <20231031-proviant-anrollen-d2245037ce97@brauner>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-23-kent.overstreet@linux.dev> <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
- <20231019153040.lj3anuescvdprcq7@f> <20231019155958.7ek7oyljs6y44ah7@f>
- <ZTJmnsAxGDnks2aj@dread.disaster.area> <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
- <ZTYAUyiTYsX43O9F@dread.disaster.area> <CAGudoHGzX2H4pUuDNYzYOf8s-HaZuAi7Dttpg_SqtXAgTw8tiw@mail.gmail.com>
- <20231031-proviant-anrollen-d2245037ce97@brauner>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Tue, 31 Oct 2023 12:31:38 +0100
-Message-ID: <CAGudoHEw+JRNB_qfdam2LM-3KLWiQu369ewQFO=hnpQ7qALmbA@mail.gmail.com>
-Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <20231030145540.pjkggoiddobyjicq@moria.home.lan>
+In-Reply-To: <20231030145540.pjkggoiddobyjicq@moria.home.lan>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 31 Oct 2023 13:47:02 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXpwMdLuoWsNGa8qacT_5Wv-vSTz0xoBR5n_fnD9cNOuQ@mail.gmail.com>
+Message-ID: <CAMuHMdXpwMdLuoWsNGa8qacT_5Wv-vSTz0xoBR5n_fnD9cNOuQ@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs for v6.7
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On 10/31/23, Christian Brauner <brauner@kernel.org> wrote:
->> The follow up including a statement about "being arsed" once more was
->> to Christian, not you and was rather "tongue in cheek".
+Hi Kent,
+
+On Mon, Oct 30, 2023 at 3:56 PM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+> The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 >
-> Fyi, I can't be arsed to be talked to like that.
+>   Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 >
-
-Maybe there is a language or cultural barrier at play here and the
-above comes off to you as inflammatory.
-
-I assumed the tone here is rather informal. For example here is an
-excerpt from your response to me in another thread:
-> You're all driving me nuts. ;)
-
-I assumed this was not a serious statement and the "being arsed" thing
-was written by me in the same spirit. I find it surprising there is a
-strong reaction to it, but I can only explain why.
-
-All that said, I have some patches I intend to submit in the
-foreseeable future. I am going to make sure to stick to more
-professional tone.
-
->> Whether the patch is ready for reviews and whatnot is your call to
->> make as the author.
+> are available in the Git repository at:
 >
-> This is basically why that patch never staid in -next. Dave said this
-> patch is meaningless without his other patchs and I had no reason to
-> doubt that claim nor currently the cycles to benchmark and disprove it.
+>   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-10-30
 >
+> for you to fetch changes up to b827ac419721a106ae2fccaa40576b0594edad92:
+>
+>   exportfs: Change bcachefs fid_type enum to avoid conflicts (2023-10-26 16:41:00 -0400)
+>
+> ----------------------------------------------------------------
+> Initial bcachefs pull request for 6.7-rc1
+>
+> Here's the bcachefs filesystem pull request.
+>
+> One new patch since last week: the exportfs constants ended up
+> conflicting with other filesystems that are also getting added to the
+> global enum, so switched to new constants picked by Amir.
+>
+> I'll also be sending another pull request later on in the cycle bringing
+> things up to date my master branch that people are currently running;
+> that will be restricted to fs/bcachefs/, naturally.
+>
+> Testing - fstests as well as the bcachefs specific tests in ktest:
+>   https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-for-upstream
+>
+> It's also been soaking in linux-next, which resulted in a whole bunch of
+> smatch complaints and fixes and a patch or two from Kees.
+>
+> The only new non fs/bcachefs/ patch is the objtool patch that adds
+> bcachefs functions to the list of noreturns. The patch that exports
+> osq_lock() has been dropped for now, per Ingo.
 
-That makes sense, thanks.
+Thanks for your PR!
+
+>  fs/bcachefs/mean_and_variance.c                 |  159 ++
+>  fs/bcachefs/mean_and_variance.h                 |  198 ++
+>  fs/bcachefs/mean_and_variance_test.c            |  240 ++
+
+Looking into missing dependencies for MEAN_AND_VARIANCE_UNIT_TEST and
+failing mean_and_variance tests, this does not seem to match what was
+submitted for public review?
+
+Lore only has:
+"[PATCH 31/32] lib: add mean and variance module."
+https://lore.kernel.org/all/20230509165657.1735798-32-kent.overstreet@linux.dev/
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
