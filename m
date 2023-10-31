@@ -2,44 +2,50 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1793C4167B
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 31 Oct 2023 20:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8AD7C4332F
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 31 Oct 2023 21:48:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbjJaU7L convert rfc822-to-8bit (ORCPT
+        id S234354AbjJaVsn convert rfc822-to-8bit (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 31 Oct 2023 16:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        Tue, 31 Oct 2023 17:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbjJaU7K (ORCPT
+        with ESMTP id S229649AbjJaVsm (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 31 Oct 2023 16:59:10 -0400
-X-Greylist: delayed 527 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 31 Oct 2023 13:59:07 PDT
+        Tue, 31 Oct 2023 17:48:42 -0400
 Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8181F5
-        for <linux-bcachefs@vger.kernel.org>; Tue, 31 Oct 2023 13:59:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68F1E4;
+        Tue, 31 Oct 2023 14:48:40 -0700 (PDT)
 Received: from quad.stoffel.org (097-095-183-072.res.spectrum.com [97.95.183.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.stoffel.org (Postfix) with ESMTPSA id 52F861E12B
-        for <linux-bcachefs@vger.kernel.org>; Tue, 31 Oct 2023 16:50:20 -0400 (EDT)
+        by mail.stoffel.org (Postfix) with ESMTPSA id 0DFA91E135;
+        Tue, 31 Oct 2023 17:48:40 -0400 (EDT)
 Received: by quad.stoffel.org (Postfix, from userid 1000)
-        id C6EE5A8B03; Tue, 31 Oct 2023 16:50:18 -0400 (EDT)
+        id 2CCD7A8B05; Tue, 31 Oct 2023 17:48:39 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
-Message-ID: <25921.26762.792489.57701@quad.stoffel.home>
-Date:   Tue, 31 Oct 2023 16:50:18 -0400
+Message-ID: <25921.30263.150556.245226@quad.stoffel.home>
+Date:   Tue, 31 Oct 2023 17:48:39 -0400
 From:   "John Stoffel" <john@stoffel.org>
-To:     linux-bcachefs@vger.kernel.org
-Subject: Compile error from latest linux git master branch
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs for v6.7
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 
-I saw that bcachefs was pulled into Linus' tree, so I pulled it down
-and tried to compile but it bombs with:
+Using latest HEAD from linux git (commit
+5a6a09e97199d6600d31383055f9d43fbbcbe86f (HEAD -> master,
+origin/master, origin/HEAD), and the following config, I get this
+failure when compiling on x86_64 Debian Bullseye (11):
+
 
      CC      fs/bcachefs/btree_io.o
    In file included from fs/bcachefs/btree_io.c:11:
@@ -70,18 +76,15 @@ and tried to compile but it bombs with:
    make: *** [Makefile:234: __sub-make] Error 2
 
 
-And my .config file settings for BCHACEFS setting are the following:
+My .config looks like this for BCACHEFS:
 
-   $ grep BCACHE .config
-   CONFIG_BCACHE=y
-   # CONFIG_BCACHE_DEBUG is not set
-   # CONFIG_BCACHE_ASYNC_REGISTRATION is not set
-   CONFIG_FS_MBCACHE=y
+   $ grep BCACHEFS .config
    CONFIG_BCACHEFS_FS=y
    CONFIG_BCACHEFS_QUOTA=y
    CONFIG_BCACHEFS_POSIX_ACL=y
    CONFIG_BCACHEFS_DEBUG_TRANSACTIONS=y
-   # CONFIG_BCACHEFS_DEBUG is not set
-   # CONFIG_BCACHEFS_TESTS is not set
+   CONFIG_BCACHEFS_DEBUG=y
+   CONFIG_BCACHEFS_TESTS=y
    # CONFIG_BCACHEFS_LOCK_TIME_STATS is not set
    # CONFIG_BCACHEFS_NO_LATENCY_ACCT is not set
+
