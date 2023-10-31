@@ -2,126 +2,155 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0E78C4332F
-	for <linux-bcachefs@archiver.kernel.org>; Tue, 31 Oct 2023 12:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EC18C4332F
+	for <linux-bcachefs@archiver.kernel.org>; Tue, 31 Oct 2023 14:11:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344293AbjJaMrU convert rfc822-to-8bit (ORCPT
+        id S232369AbjJaOLo (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Tue, 31 Oct 2023 08:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51660 "EHLO
+        Tue, 31 Oct 2023 10:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344332AbjJaMrT (ORCPT
+        with ESMTP id S231383AbjJaOLo (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:47:19 -0400
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B28C2;
-        Tue, 31 Oct 2023 05:47:17 -0700 (PDT)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5a7eef0b931so53665537b3.0;
-        Tue, 31 Oct 2023 05:47:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698756436; x=1699361236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dtpwqyp0A02VdCSa2nK6MzwPbTqa+e280XT4tyuC4zk=;
-        b=YF3qas8q/OxGaXVMDiv5OlZ9BeuRPsRHg3ZAY8CLlL8jeuvCt0H2MFsaRnb3BH9gnZ
-         l7iE3/SzpT74JysnnS6PN1FfTtl3GMYkvnSfml9WRsm9nUmunXiEeULi42FjpjrS+CC+
-         V0d4Zx/ydd9tUNxpHk7KQIenBzXq7CrdlIHGMJCZY8DgnARsOKPLTB2Q0cA6c+CmDQQO
-         x2r94QXrtDzIab9dqVM4CqgpOU7NHcZuwSG7McHjrdxFujicpV3T1GPqqZj0Mvs3+SEV
-         93NIdSHpyrzn+pMdiyutGlb4UeR/YaWNBz05Mxk91BA7JFF9LlC/KSV2l602HJfkKGxg
-         pv+Q==
-X-Gm-Message-State: AOJu0YwjJfFXS51CTdJCbDNiftUZ82f+z2Tmf4fywrtmgRTQbDda4Qjg
-        gRPt4xG+ke87qcnjXsKoHLbcnYSEP0YxXQ==
-X-Google-Smtp-Source: AGHT+IGv50Jyg14I5ATij6XR9WTbTLhs4fH0g+tTx6SOrSqaEvL/HtGcU6fZoSOSQK42fXtVM3WXZw==
-X-Received: by 2002:a05:690c:714:b0:5a8:d86f:bb3f with SMTP id bs20-20020a05690c071400b005a8d86fbb3fmr13720875ywb.8.1698756436034;
-        Tue, 31 Oct 2023 05:47:16 -0700 (PDT)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id t8-20020a0dea08000000b0059b085c4051sm741572ywe.85.2023.10.31.05.47.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 05:47:15 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9a4c0d89f7so5110330276.1;
-        Tue, 31 Oct 2023 05:47:15 -0700 (PDT)
-X-Received: by 2002:a25:fc16:0:b0:d9b:4f28:f6ce with SMTP id
- v22-20020a25fc16000000b00d9b4f28f6cemr10853098ybd.1.1698756435614; Tue, 31
- Oct 2023 05:47:15 -0700 (PDT)
+        Tue, 31 Oct 2023 10:11:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F43C1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 31 Oct 2023 07:10:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698761452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7cAiFZDbqXAXs7sCflnjq5qd1T3C/J6RDfmcdO14Lq8=;
+        b=GUhQv6UCkDBn1qLaU0esZKRnISsx8NRVfBVN+jj89h5M8+LSpR5gmb6H+RIGinwBgOXx14
+        MEZdB3NsMpraRcvvRNQ5vwPWYMW28fP5GjjPywEu+OQIhXhVmqvkT4DMCvRizd9twXi5bJ
+        Smv97pELRZHZsWIOoZf4VzSziBSUfT0=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-696-5Mlv8V1gM06D3ODVGwFo7Q-1; Tue,
+ 31 Oct 2023 10:10:50 -0400
+X-MC-Unique: 5Mlv8V1gM06D3ODVGwFo7Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B9CB029ABA29;
+        Tue, 31 Oct 2023 14:10:49 +0000 (UTC)
+Received: from bfoster (unknown [10.22.16.88])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 879B22166B26;
+        Tue, 31 Oct 2023 14:10:49 +0000 (UTC)
+Date:   Tue, 31 Oct 2023 10:11:25 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Subject: Re: odebuf and lockdep splat with bcachefs
+Message-ID: <ZUELDel5DKZGfAwu@bfoster>
+References: <09a4c8ed-c984-4582-b5c4-0804ee4d55ec@roeck-us.net>
 MIME-Version: 1.0
-References: <20231030145540.pjkggoiddobyjicq@moria.home.lan>
-In-Reply-To: <20231030145540.pjkggoiddobyjicq@moria.home.lan>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 31 Oct 2023 13:47:02 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXpwMdLuoWsNGa8qacT_5Wv-vSTz0xoBR5n_fnD9cNOuQ@mail.gmail.com>
-Message-ID: <CAMuHMdXpwMdLuoWsNGa8qacT_5Wv-vSTz0xoBR5n_fnD9cNOuQ@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs for v6.7
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09a4c8ed-c984-4582-b5c4-0804ee4d55ec@roeck-us.net>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Hi Kent,
+On Mon, Oct 30, 2023 at 08:07:17PM -0700, Guenter Roeck wrote:
+> Hi,
+> 
+> when trying the new bcachefs in the mainline kernel, I see the
+> attached ODEBUG and lockdep splats.
+> 
+> This is simply mounting an empty bcachefs file system and
+> copying some files into it.
+> 
 
-On Mon, Oct 30, 2023 at 3:56 PM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
-> The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
->
->   Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
->
-> are available in the Git repository at:
->
->   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-10-30
->
-> for you to fetch changes up to b827ac419721a106ae2fccaa40576b0594edad92:
->
->   exportfs: Change bcachefs fid_type enum to avoid conflicts (2023-10-26 16:41:00 -0400)
->
-> ----------------------------------------------------------------
-> Initial bcachefs pull request for 6.7-rc1
->
-> Here's the bcachefs filesystem pull request.
->
-> One new patch since last week: the exportfs constants ended up
-> conflicting with other filesystems that are also getting added to the
-> global enum, so switched to new constants picked by Amir.
->
-> I'll also be sending another pull request later on in the cycle bringing
-> things up to date my master branch that people are currently running;
-> that will be restricted to fs/bcachefs/, naturally.
->
-> Testing - fstests as well as the bcachefs specific tests in ktest:
->   https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-for-upstream
->
-> It's also been soaking in linux-next, which resulted in a whole bunch of
-> smatch complaints and fixes and a patch or two from Kees.
->
-> The only new non fs/bcachefs/ patch is the objtool patch that adds
-> bcachefs functions to the list of noreturns. The patch that exports
-> osq_lock() has been dropped for now, per Ingo.
+Hi Guenter,
 
-Thanks for your PR!
+I reproduce fairly quickly with DEBUG_OBJECTS_WORK enabled. It looks to
+me that the lockdep splat is essentially fallout from the subsequent
+warning, which doesn't like the INIT_WORK() of the onstack rhashtable.
+Ideally this could INIT_WORK_ONSTACK(), but I don't see support for that
+plumbed through the rhashtable interface. Given this is the main copygc
+task fn, it seems fairly reasonable to me to just slab alloc the whole
+bucket tracking structure (as below). This addresses the splat for me on
+a quick test.
 
->  fs/bcachefs/mean_and_variance.c                 |  159 ++
->  fs/bcachefs/mean_and_variance.h                 |  198 ++
->  fs/bcachefs/mean_and_variance_test.c            |  240 ++
+Kent,
 
-Looking into missing dependencies for MEAN_AND_VARIANCE_UNIT_TEST and
-failing mean_and_variance tests, this does not seem to match what was
-submitted for public review?
+Let me know if you're good with this and I'll post a proper patch..
 
-Lore only has:
-"[PATCH 31/32] lib: add mean and variance module."
-https://lore.kernel.org/all/20230509165657.1735798-32-kent.overstreet@linux.dev/
+Brian
 
-Gr{oetje,eeting}s,
+--- 8< ---
 
-                        Geert
+diff --git a/fs/bcachefs/movinggc.c b/fs/bcachefs/movinggc.c
+index 4017120baeee..b835b85ef8b9 100644
+--- a/fs/bcachefs/movinggc.c
++++ b/fs/bcachefs/movinggc.c
+@@ -304,14 +304,16 @@ static int bch2_copygc_thread(void *arg)
+ 	struct moving_context ctxt;
+ 	struct bch_move_stats move_stats;
+ 	struct io_clock *clock = &c->io_clock[WRITE];
+-	struct buckets_in_flight buckets;
++	struct buckets_in_flight *buckets;
+ 	u64 last, wait;
+ 	int ret = 0;
+ 
+-	memset(&buckets, 0, sizeof(buckets));
+-
+-	ret = rhashtable_init(&buckets.table, &bch_move_bucket_params);
++	buckets = kzalloc(sizeof(struct buckets_in_flight), GFP_KERNEL);
++	if (!buckets)
++		return -ENOMEM;
++	ret = rhashtable_init(&buckets->table, &bch_move_bucket_params);
+ 	if (ret) {
++		kfree(buckets);
+ 		bch_err_msg(c, ret, "allocating copygc buckets in flight");
+ 		return ret;
+ 	}
+@@ -329,12 +331,12 @@ static int bch2_copygc_thread(void *arg)
+ 		cond_resched();
+ 
+ 		if (!c->copy_gc_enabled) {
+-			move_buckets_wait(trans, &ctxt, &buckets, true);
++			move_buckets_wait(trans, &ctxt, buckets, true);
+ 			kthread_wait_freezable(c->copy_gc_enabled);
+ 		}
+ 
+ 		if (unlikely(freezing(current))) {
+-			move_buckets_wait(trans, &ctxt, &buckets, true);
++			move_buckets_wait(trans, &ctxt, buckets, true);
+ 			__refrigerator(false);
+ 			continue;
+ 		}
+@@ -345,7 +347,7 @@ static int bch2_copygc_thread(void *arg)
+ 		if (wait > clock->max_slop) {
+ 			c->copygc_wait_at = last;
+ 			c->copygc_wait = last + wait;
+-			move_buckets_wait(trans, &ctxt, &buckets, true);
++			move_buckets_wait(trans, &ctxt, buckets, true);
+ 			trace_and_count(c, copygc_wait, c, wait, last + wait);
+ 			bch2_kthread_io_clock_wait(clock, last + wait,
+ 					MAX_SCHEDULE_TIMEOUT);
+@@ -355,14 +357,16 @@ static int bch2_copygc_thread(void *arg)
+ 		c->copygc_wait = 0;
+ 
+ 		c->copygc_running = true;
+-		ret = bch2_copygc(trans, &ctxt, &buckets);
++		ret = bch2_copygc(trans, &ctxt, buckets);
+ 		c->copygc_running = false;
+ 
+ 		wake_up(&c->copygc_running_wq);
+ 	}
+ 
+-	move_buckets_wait(trans, &ctxt, &buckets, true);
+-	rhashtable_destroy(&buckets.table);
++	move_buckets_wait(trans, &ctxt, buckets, true);
++
++	rhashtable_destroy(&buckets->table);
++	kfree(buckets);
+ 	bch2_trans_put(trans);
+ 	bch2_moving_ctxt_exit(&ctxt);
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
