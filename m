@@ -2,98 +2,169 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AEC5C4332F
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  1 Nov 2023 15:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7051AC4332F
+	for <linux-bcachefs@archiver.kernel.org>; Wed,  1 Nov 2023 17:03:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbjKAPCm convert rfc822-to-8bit (ORCPT
+        id S231981AbjKARDC (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 1 Nov 2023 11:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51038 "EHLO
+        Wed, 1 Nov 2023 13:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjKAPCl (ORCPT
+        with ESMTP id S232819AbjKARDB (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 1 Nov 2023 11:02:41 -0400
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C9DDC;
-        Wed,  1 Nov 2023 08:02:38 -0700 (PDT)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5a7b91faf40so69489257b3.1;
-        Wed, 01 Nov 2023 08:02:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698850958; x=1699455758;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PeqpghJGIn+FJig0S4AO4Z/Kq8V9fOr8ACdyqDQ8PIU=;
-        b=kKmoSBrTaHJTreR6+77TQZSCf1aDxCWmyWCdQUfTDx6g7l3rzEF0+ELSixuWOw7UCM
-         I9+zH1Ec99IRXEFDcaol1nFdKUnvgiv/hHU9HBVSsObb0zD8xvOX39lb4hftht6a4xci
-         Su6mwQDZbybV9ov9wbr3GGxzTJOsv9FpNPHH8kVI37Bi+7Ew8rsL+zCJ31RF9T3rOf8Z
-         bN+hLyr7fHPTuobnyHZhMhMt2vudUpKnq0FHcD4dcqZsciDHJcD2iVyZQga/+/REdZdO
-         aot9CgPRJuHrNIR5Xu8BSRCwc/5Bj+hmbUSiCKXbIQ4TGGqHcvGWm1YMVWJppi0fnr72
-         3B/w==
-X-Gm-Message-State: AOJu0Yytbxa3j+g9jO6K63B90xxmDdP1tme2Xr1CxCxHHqubbrus7b3Z
-        IoUrm7rkgMq0mVtoTimpuYcGZcO5/z7zRQ==
-X-Google-Smtp-Source: AGHT+IG/giQJiapQlJiZ0hB6g0O2l9o3+d6JvoEPG5DoKXhxME6J+54LE5egxkmwMCEykgOJGUWANw==
-X-Received: by 2002:a81:b60d:0:b0:5a7:c641:4fd2 with SMTP id u13-20020a81b60d000000b005a7c6414fd2mr15154808ywh.10.1698850957731;
-        Wed, 01 Nov 2023 08:02:37 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id s5-20020a817705000000b00597e912e67esm17882ywc.131.2023.11.01.08.02.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 08:02:37 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5a7c08b7744so69506997b3.3;
-        Wed, 01 Nov 2023 08:02:37 -0700 (PDT)
-X-Received: by 2002:a81:e608:0:b0:5a7:baae:329f with SMTP id
- u8-20020a81e608000000b005a7baae329fmr13801406ywl.15.1698850957231; Wed, 01
- Nov 2023 08:02:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231030145540.pjkggoiddobyjicq@moria.home.lan>
- <CAMuHMdXpwMdLuoWsNGa8qacT_5Wv-vSTz0xoBR5n_fnD9cNOuQ@mail.gmail.com>
- <20231031144505.bqnxu3pgrodp7ukp@moria.home.lan> <CAMuHMdVKi=ShPUwTHrX0CEN2f9+jRXWymnKH=BiXTpmg857AJQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVKi=ShPUwTHrX0CEN2f9+jRXWymnKH=BiXTpmg857AJQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 1 Nov 2023 16:02:25 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVfj5q_06cM3dXvNyfdNZQM=M=ocbG5XFpCp2UhVjjJ9w@mail.gmail.com>
-Message-ID: <CAMuHMdVfj5q_06cM3dXvNyfdNZQM=M=ocbG5XFpCp2UhVjjJ9w@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs for v6.7
+        Wed, 1 Nov 2023 13:03:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4707FD
+        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 10:02:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA23C433C7;
+        Wed,  1 Nov 2023 17:02:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698858177;
+        bh=c6Ba3o56njqd2+encFpg4dJezCru72eL+DgPCZbJy2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h1MSPMYlv0pAcjyVjLrPYPewNqFsn4BKStOYTP895OqAmTvZrbcFyhHI7EWUiYXAp
+         leW95MlRf9TLMzS4QPwDV9lUopEMJNkWLcQHrQgWpl/j17zovCW0wec1MojBzzlUM1
+         cmFsUnq/LmXbtkxZaHs9oYz0eL/mGv186MwZHAnBtnMlD8OI6TrfjNgwqzv/7ccz9F
+         kaOeoCXnu8DswsvBsiatx9R5cxh1RKrpJ8v4n0Li90slr3jd6VsRlRfoR46bIaMb34
+         48qNC8G3UpZQGmE9+TPS+FN8MmApk/3+WQrvYMsk/7DRrtAGnYmgNTQ9cL8VwkyCoL
+         IGE6Jk9ZJFBhQ==
+Date:   Wed, 1 Nov 2023 10:02:55 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
 To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Cc:     linux-bcachefs@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH 6/6] bcachefs: rebalance_work
+Message-ID: <20231101170255.GA1158461@dev-arch.thelio-3990X>
+References: <20231024191414.2157874-1-kent.overstreet@linux.dev>
+ <20231024191414.2157874-7-kent.overstreet@linux.dev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024191414.2157874-7-kent.overstreet@linux.dev>
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
 Hi Kent,
 
-On Tue, Oct 31, 2023 at 4:00 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Tue, Oct 31, 2023 at 3:45 PM Kent Overstreet
-> MEAN_AND_VARIANCE_UNIT_TEST should depend on BCACHEFS_FS, as the actual
-> mean_and_variance code is only compiled if BCACHEFS_FS is enabled.
+On Tue, Oct 24, 2023 at 03:14:11PM -0400, Kent Overstreet wrote:
+> This adds a new btree, rebalance_work, to eliminate scanning required
+> for finding extents that need work done on them in the background - i.e.
+> for the background_target and background_compression options.
+> 
+> rebalance_work is a bitset btree, where a KEY_TYPE_set corresponds to an
+> extent in the extents or reflink btree at the same pos.
+> 
+> A new extent field is added, bch_extent_rebalance, which indicates that
+> this extent has work that needs to be done in the background - and which
+> options to use. This allows per-inode options to be propagated to
+> indirect extents - at least in some circumstances. In this patch,
+> changing IO options on a file will not propagate the new options to
+> indirect extents pointed to by that file.
+> 
+> Updating (setting/clearing) the rebalance_work btree is done by the
+> extent trigger, which looks at the bch_extent_rebalance field.
+> 
+> Scanning is still requrired after changing IO path options - either just
+> for a given inode, or for the whole filesystem. We indicate that
+> scanning is required by adding a KEY_TYPE_cookie key to the
+> rebalance_work btree: the cookie counter is so that we can detect that
+> scanning is still required when an option has been flipped mid-way
+> through an existing scan.
+> 
+> Future possible work:
+>  - Propagate options to indirect extents when being changed
+>  - Add other IO path options - nr_replicas, ec, to rebalance_work so
+>    they can be applied in the background when they change
+>  - Add a counter, for bcachefs fs usage output, showing the pending
+>    amount of rebalance work: we'll probably want to do this after the
+>    disk space accounting rewrite (moving it to a new btree)
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-And I really meant "should depend on BCACHEFS_FS", not "should select
-BCACHEFS_FS", like is done in today's linux-next:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/fs/bcachefs/Kconfig?h=next-20231101&id=487ed6712ae1bf2311197bd41ae572ff8da5e966
+<snip>
 
-> On m68k (ARAnyM), it fails with:
+> diff --git a/fs/bcachefs/reflink.c b/fs/bcachefs/reflink.c
+> index 540c78cd4b0c..dbbdf1955f76 100644
+> --- a/fs/bcachefs/reflink.c
+> +++ b/fs/bcachefs/reflink.c
+> @@ -7,6 +7,7 @@
+>  #include "inode.h"
+>  #include "io_misc.h"
+>  #include "io_write.h"
+> +#include "rebalance.h"
+>  #include "reflink.h"
+>  #include "subvolume.h"
+>  #include "super-io.h"
+> @@ -252,6 +253,7 @@ s64 bch2_remap_range(struct bch_fs *c,
+>  	struct bpos dst_start = POS(dst_inum.inum, dst_offset);
+>  	struct bpos src_start = POS(src_inum.inum, src_offset);
+>  	struct bpos dst_end = dst_start, src_end = src_start;
+> +	struct bch_io_opts opts;
+>  	struct bpos src_want;
+>  	u64 dst_done;
+>  	u32 dst_snapshot, src_snapshot;
+> @@ -269,6 +271,10 @@ s64 bch2_remap_range(struct bch_fs *c,
+>  	bch2_bkey_buf_init(&new_src);
+>  	trans = bch2_trans_get(c);
+>  
+> +	ret = bch2_inum_opts_get(trans, src_inum, &opts);
+> +	if (ret)
+> +		goto err;
+> +
 
-[...]
+Not sure if this has been reported or fixed yet but this appears to
+introduce a valid clang warning:
 
-> # Totals: pass:7 fail:2 skip:0 total:9
-> not ok 1 mean and variance tests
->
-> Haven't tried the test on any other platform yet, so this could be a
-> big-endian, 32-bit, m68k-specific, or even a generic problem.
+  fs/bcachefs/reflink.c:275:6: error: variable 'dst_done' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+    275 |         if (ret)
+        |             ^~~
+  fs/bcachefs/reflink.c:405:9: note: uninitialized use occurs here
+    405 |         return dst_done ?: ret ?: ret2;
+        |                ^~~~~~~~
+  fs/bcachefs/reflink.c:275:2: note: remove the 'if' if its condition is always false
+    275 |         if (ret)
+        |         ^~~~~~~~
+    276 |                 goto err;
+        |                 ~~~~~~~~
+  fs/bcachefs/reflink.c:258:14: note: initialize the variable 'dst_done' to silence this warning
+    258 |         u64 dst_done;
+        |                     ^
+        |                      = 0
+  1 error generated.
 
-It fails in the exact same way on arm32 and arm64...
+I tried to reason my way through a patch but I am a little lost, hence
+just the report :)
 
-Gr{oetje,eeting}s,
+>  	bch2_trans_iter_init(trans, &src_iter, BTREE_ID_extents, src_start,
+>  			     BTREE_ITER_INTENT);
+>  	bch2_trans_iter_init(trans, &dst_iter, BTREE_ID_extents, dst_start,
+> @@ -352,10 +358,13 @@ s64 bch2_remap_range(struct bch_fs *c,
+>  				min(src_k.k->p.offset - src_want.offset,
+>  				    dst_end.offset - dst_iter.pos.offset));
+>  
+> -		ret = bch2_extent_update(trans, dst_inum, &dst_iter,
+> -					 new_dst.k, &disk_res,
+> -					 new_i_size, i_sectors_delta,
+> -					 true);
+> +		ret =   bch2_bkey_set_needs_rebalance(c, new_dst.k,
+> +					opts.background_target,
+> +					opts.background_compression) ?:
+> +			bch2_extent_update(trans, dst_inum, &dst_iter,
+> +					new_dst.k, &disk_res,
+> +					new_i_size, i_sectors_delta,
+> +					true);
+>  		bch2_disk_reservation_put(c, &disk_res);
+>  	}
+>  	bch2_trans_iter_exit(trans, &dst_iter);
+> @@ -386,7 +395,7 @@ s64 bch2_remap_range(struct bch_fs *c,
+>  
+>  		bch2_trans_iter_exit(trans, &inode_iter);
+>  	} while (bch2_err_matches(ret2, BCH_ERR_transaction_restart));
+> -
+> +err:
+>  	bch2_trans_put(trans);
+>  	bch2_bkey_buf_exit(&new_src, c);
+>  	bch2_bkey_buf_exit(&new_dst, c);
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Cheers,
+Nathan
