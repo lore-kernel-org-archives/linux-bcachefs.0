@@ -2,91 +2,144 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC50FC4332F
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  1 Nov 2023 07:24:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89B24C4332F
+	for <linux-bcachefs@archiver.kernel.org>; Wed,  1 Nov 2023 13:01:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjKAHYh (ORCPT
+        id S229472AbjKANBP (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 1 Nov 2023 03:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
+        Wed, 1 Nov 2023 09:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKAHYh (ORCPT
+        with ESMTP id S235135AbjKANBP (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 1 Nov 2023 03:24:37 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906E4E4;
-        Wed,  1 Nov 2023 00:24:31 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qy5aW-0000Pd-To; Wed, 01 Nov 2023 08:24:28 +0100
-Message-ID: <d186d562-7706-44ba-b213-dafee3f15704@leemhuis.info>
-Date:   Wed, 1 Nov 2023 08:24:28 +0100
+        Wed, 1 Nov 2023 09:01:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282FD101
+        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 06:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698843630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=l59QNL8WpomZ1eV/XolkCj2jfIE+VYD5X7E5qEGdHIo=;
+        b=Eo9crFpHV8zvdDG0y6CNd4pKHaAdoPDnBaWgNM7hvhDhzeAIlNSdOKum9tqgxgh/3+4MBU
+        Kzyrbz6BHIwp9D3WKICPrqi3otHIs+EKAdejBGjXMsz71FuxweCVji7myUjmPUkAWIoEI6
+        m8VrPSqik7+jqfKc/q6U8/EIqIiXf0g=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-584-Jsl8vOw_NXuZuG4ueRHwig-1; Wed, 01 Nov 2023 09:00:26 -0400
+X-MC-Unique: Jsl8vOw_NXuZuG4ueRHwig-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B645980D721;
+        Wed,  1 Nov 2023 13:00:25 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.16.88])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 81DBB1C060BA;
+        Wed,  1 Nov 2023 13:00:25 +0000 (UTC)
+From:   Brian Foster <bfoster@redhat.com>
+To:     linux-bcachefs@vger.kernel.org
+Cc:     Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] bcachefs: fix odebug warn and lockdep splat due to on-stack rhashtable
+Date:   Wed,  1 Nov 2023 09:01:02 -0400
+Message-ID: <20231101130102.365223-1-bfoster@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: mainline build failure due to 5cfd69775eb5 ("bcachefs: Array
- bounds fixes")
-Content-Language: en-US, de-DE
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        regressions@lists.linux.dev
-References: <ZUF8bYTl5SBlbBBJ@debian>
- <20231031222455.mbhbhxiykq7dnuvl@moria.home.lan>
- <CADVatmMc-ZjPj0oNEidG4JK+k6YZ7XXPmMCCuYe_fnJ83xV5pw@mail.gmail.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <CADVatmMc-ZjPj0oNEidG4JK+k6YZ7XXPmMCCuYe_fnJ83xV5pw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698823471;c866e10b;
-X-HE-SMSGID: 1qy5aW-0000Pd-To
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On 01.11.23 06:18, Sudip Mukherjee wrote:
-> On Tue, 31 Oct 2023 at 22:24, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->> On Tue, Oct 31, 2023 at 10:15:09PM +0000, Sudip Mukherjee (Codethink) wrote:
->>>
->>> The latest mainline kernel branch fails to build arm64 allmodconfig
->>> with a native build on an arm64 host with the error:
->>[...]
->> Following patch should resolve everything:
->[...]
-> Thanks, and I can confirm that fixes the build for me too on the arm hosts.
+Guenter Roeck reports a lockdep splat and DEBUG_OBJECTS_WORK related
+warning when bch2_copygc_thread() initializes its rhashtable. The
+lockdep splat relates to a warning print caused by the fact that the
+rhashtable exists on the stack but is not annotated as so. This is
+something that could be addressed by INIT_WORK_ONSTACK(), but
+rhashtable doesn't expose that control and probably isnt worth the
+churn for just one user. Instead, dynamically allocate the
+buckets_in_flight structure and avoid the splat that way.
 
->> -- >8 --
->> From ad77f25f730ec9a0eb04be5adc591628654b85ae Mon Sep 17 00:00:00 2001
->> From: Kent Overstreet <kent.overstreet@linux.dev>
->> Date: Tue, 31 Oct 2023 18:05:22 -0400
->> Subject: [PATCH] bcachefs: Fix build errors with gcc 10
->>
->> gcc 10 seems to complain about array bounds in situations where gcc 11
->> does not - curious.
->>
->> This unfortunately requires adding some casts for now; we may
->> investigate getting rid of our __u64 _data[] VLA in a future patch so
->> that our start[0] members can be VLAs.
->>
->> Reported-by: John Stoffel <john@stoffel.org>
->> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> 
-> Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
+ fs/bcachefs/movinggc.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-Kent, thx for handling this so quickly. If you want to do me a favor,
-please in the future include a "Link:" or "Closes:" tag with a URL to
-the report in cases like this, as explained in the docs (it's important
-for regression tracking, but also for future code archeologists);
-checkpatch should have pointed this out for this patch.
+diff --git a/fs/bcachefs/movinggc.c b/fs/bcachefs/movinggc.c
+index 6f9882f6622b..0158c7aae6b0 100644
+--- a/fs/bcachefs/movinggc.c
++++ b/fs/bcachefs/movinggc.c
+@@ -305,14 +305,16 @@ static int bch2_copygc_thread(void *arg)
+ 	struct moving_context ctxt;
+ 	struct bch_move_stats move_stats;
+ 	struct io_clock *clock = &c->io_clock[WRITE];
+-	struct buckets_in_flight buckets;
++	struct buckets_in_flight *buckets;
+ 	u64 last, wait;
+ 	int ret = 0;
+ 
+-	memset(&buckets, 0, sizeof(buckets));
+-
+-	ret = rhashtable_init(&buckets.table, &bch_move_bucket_params);
++	buckets = kzalloc(sizeof(struct buckets_in_flight), GFP_KERNEL);
++	if (!buckets)
++		return -ENOMEM;
++	ret = rhashtable_init(&buckets->table, &bch_move_bucket_params);
+ 	if (ret) {
++		kfree(buckets);
+ 		bch_err_msg(c, ret, "allocating copygc buckets in flight");
+ 		return ret;
+ 	}
+@@ -331,12 +333,12 @@ static int bch2_copygc_thread(void *arg)
+ 		cond_resched();
+ 
+ 		if (!c->copy_gc_enabled) {
+-			move_buckets_wait(&ctxt, &buckets, true);
++			move_buckets_wait(&ctxt, buckets, true);
+ 			kthread_wait_freezable(c->copy_gc_enabled);
+ 		}
+ 
+ 		if (unlikely(freezing(current))) {
+-			move_buckets_wait(&ctxt, &buckets, true);
++			move_buckets_wait(&ctxt, buckets, true);
+ 			__refrigerator(false);
+ 			continue;
+ 		}
+@@ -347,7 +349,7 @@ static int bch2_copygc_thread(void *arg)
+ 		if (wait > clock->max_slop) {
+ 			c->copygc_wait_at = last;
+ 			c->copygc_wait = last + wait;
+-			move_buckets_wait(&ctxt, &buckets, true);
++			move_buckets_wait(&ctxt, buckets, true);
+ 			trace_and_count(c, copygc_wait, c, wait, last + wait);
+ 			bch2_kthread_io_clock_wait(clock, last + wait,
+ 					MAX_SCHEDULE_TIMEOUT);
+@@ -357,7 +359,7 @@ static int bch2_copygc_thread(void *arg)
+ 		c->copygc_wait = 0;
+ 
+ 		c->copygc_running = true;
+-		ret = bch2_copygc(&ctxt, &buckets, &did_work);
++		ret = bch2_copygc(&ctxt, buckets, &did_work);
+ 		c->copygc_running = false;
+ 
+ 		wake_up(&c->copygc_running_wq);
+@@ -373,8 +375,10 @@ static int bch2_copygc_thread(void *arg)
+ 		}
+ 	}
+ 
+-	move_buckets_wait(&ctxt, &buckets, true);
+-	rhashtable_destroy(&buckets.table);
++	move_buckets_wait(&ctxt, buckets, true);
++
++	rhashtable_destroy(&buckets->table);
++	kfree(buckets);
+ 	bch2_moving_ctxt_exit(&ctxt);
+ 	bch2_move_stats_exit(&move_stats, c);
+ 
+-- 
+2.41.0
 
-Anyway, no big deal here, let me tell regzbot directly about the fix:
-
-#regzbot fix: bcachefs: Fix build errors with gcc 10
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
