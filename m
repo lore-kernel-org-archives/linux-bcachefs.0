@@ -2,115 +2,91 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D2BC4332F
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  1 Nov 2023 05:18:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC50FC4332F
+	for <linux-bcachefs@archiver.kernel.org>; Wed,  1 Nov 2023 07:24:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjKAFSn (ORCPT
+        id S229882AbjKAHYh (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 1 Nov 2023 01:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
+        Wed, 1 Nov 2023 03:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbjKAFSm (ORCPT
+        with ESMTP id S229436AbjKAHYh (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 1 Nov 2023 01:18:42 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0570ED;
-        Tue, 31 Oct 2023 22:18:39 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-991c786369cso1011489166b.1;
-        Tue, 31 Oct 2023 22:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698815918; x=1699420718; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8jpkMwCXqhfiGZN0qlr18CaGkiQXpOM96Yew3hJKrCw=;
-        b=F74E3HomwoThAmdgtcmNNUrek0RIoVtBHMRRIhCZVj34w3/RClHkl9xn36/IThqq08
-         fGa/eauwRhfEiX2b2EjB5WJMeyjp6dSKtWVbmIVEyEW5eP0h67yL/yexNTxNwD0mutpf
-         vyyeYT6/Ep7Vm1mxKbda2LfmhKFT/2rZphHinOYh8c5yswgnMWYRnqplvBdbeKLtx+Ex
-         co1p1ADyc9JEYcFzZggcjqmBVTVwzZQGqbxsSf7I57gwQEG3KCneBZQz0DhrsngBMzSb
-         V08PLMULgTSMQh7uF/NPR4UtRkB8QUWNrpmSYN7GdYRnGO//6cJAYb6HJJ3BavU0XQGp
-         W3lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698815918; x=1699420718;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8jpkMwCXqhfiGZN0qlr18CaGkiQXpOM96Yew3hJKrCw=;
-        b=JhgwurbcKodygqbGvXjubeFRSND4qjhRjUBr6uL/Rf6dWVPoCHn55dP2xcadPhKzm/
-         pOB7YG1astqFWqMhEd/wWzt3kLJRNvk/qfhD7XOwFCzVaw56Y2pseDAAx8dpwkTul94Q
-         c2prXi8bI8P5w7SJbM4FwdrM9U0ybu35hSygArqWd6G6b5hxzaWDskMOOYGoTJeiciCK
-         78r3hK//HFwjrhMQCbJP8FouMBO6glFYaNysZSatwjQwoU/DlPvYF3J2dOMrXMz9ha9F
-         orLLbAqe8Od+HP5mfrPZ5DEq1B+BnBaDnI/RnIiaDr7WOmsHmKC+8fwqxqN1l2yRY0RR
-         jTsA==
-X-Gm-Message-State: AOJu0YzpNcaQGX7dhYb28d/pUAC2ceU8ZSyIz1jPTznzj72TZdlox0IN
-        g/4tdwIguwMU/LQKZmlU1ue3iBq4NBIJsvTaa9I=
-X-Google-Smtp-Source: AGHT+IFOZm77gF15cdLthwaJNp3/RzBOfz1HO0z6blJPnT8d/NRXXF8t1UCwkQ6Bnw3iGduYX1BBMDC7hW/Hw126G/Y=
-X-Received: by 2002:a17:907:9814:b0:9d5:9065:90aa with SMTP id
- ji20-20020a170907981400b009d5906590aamr920884ejc.76.1698815918029; Tue, 31
- Oct 2023 22:18:38 -0700 (PDT)
+        Wed, 1 Nov 2023 03:24:37 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906E4E4;
+        Wed,  1 Nov 2023 00:24:31 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qy5aW-0000Pd-To; Wed, 01 Nov 2023 08:24:28 +0100
+Message-ID: <d186d562-7706-44ba-b213-dafee3f15704@leemhuis.info>
+Date:   Wed, 1 Nov 2023 08:24:28 +0100
 MIME-Version: 1.0
-References: <ZUF8bYTl5SBlbBBJ@debian> <20231031222455.mbhbhxiykq7dnuvl@moria.home.lan>
-In-Reply-To: <20231031222455.mbhbhxiykq7dnuvl@moria.home.lan>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Wed, 1 Nov 2023 05:18:01 +0000
-Message-ID: <CADVatmMc-ZjPj0oNEidG4JK+k6YZ7XXPmMCCuYe_fnJ83xV5pw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 Subject: Re: mainline build failure due to 5cfd69775eb5 ("bcachefs: Array
  bounds fixes")
-To:     Kent Overstreet <kent.overstreet@linux.dev>
+Content-Language: en-US, de-DE
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>
 Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
         regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+References: <ZUF8bYTl5SBlbBBJ@debian>
+ <20231031222455.mbhbhxiykq7dnuvl@moria.home.lan>
+ <CADVatmMc-ZjPj0oNEidG4JK+k6YZ7XXPmMCCuYe_fnJ83xV5pw@mail.gmail.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <CADVatmMc-ZjPj0oNEidG4JK+k6YZ7XXPmMCCuYe_fnJ83xV5pw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698823471;c866e10b;
+X-HE-SMSGID: 1qy5aW-0000Pd-To
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Tue, 31 Oct 2023 at 22:24, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> On Tue, Oct 31, 2023 at 10:15:09PM +0000, Sudip Mukherjee (Codethink) wrote:
-> > Hi All,
-> >
-> > The latest mainline kernel branch fails to build arm64 allmodconfig
-> > with a native build on an arm64 host with the error:
-> >
-> > In file included from fs/bcachefs/btree_io.c:11:
-> > fs/bcachefs/btree_update_interior.h: In function 'want_new_bset':
-> > fs/bcachefs/btree_update_interior.h:274:36: error: array subscript 0 is outside the bounds of an interior zero-length array 'struct bkey_packed[0]' [-Werror=zero-length-bounds]
-> >   274 |   __bch_btree_u64s_remaining(c, b, &bne->keys.start[0]);
-> >       |                                    ^~~~~~~~~~~~~~~~~~~
-> > In file included from fs/bcachefs/bcachefs.h:206,
-> >                  from fs/bcachefs/btree_io.c:3:
-> > fs/bcachefs/bcachefs_format.h:2344:21: note: while referencing 'start'
-> >  2344 |  struct bkey_packed start[0];
-> >       |                     ^~~~~
-> >
-> > git bisect pointed to 5cfd69775eb5 ("bcachefs: Array bounds fixes").
-> >
-> > I will be happy to test any patch or provide any extra log if needed.
->
-> Following patch should resolve everything:
+On 01.11.23 06:18, Sudip Mukherjee wrote:
+> On Tue, 31 Oct 2023 at 22:24, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>> On Tue, Oct 31, 2023 at 10:15:09PM +0000, Sudip Mukherjee (Codethink) wrote:
+>>>
+>>> The latest mainline kernel branch fails to build arm64 allmodconfig
+>>> with a native build on an arm64 host with the error:
+>>[...]
+>> Following patch should resolve everything:
+>[...]
+> Thanks, and I can confirm that fixes the build for me too on the arm hosts.
 
-Thanks, and I can confirm that fixes the build for me too on the arm hosts.
+>> -- >8 --
+>> From ad77f25f730ec9a0eb04be5adc591628654b85ae Mon Sep 17 00:00:00 2001
+>> From: Kent Overstreet <kent.overstreet@linux.dev>
+>> Date: Tue, 31 Oct 2023 18:05:22 -0400
+>> Subject: [PATCH] bcachefs: Fix build errors with gcc 10
+>>
+>> gcc 10 seems to complain about array bounds in situations where gcc 11
+>> does not - curious.
+>>
+>> This unfortunately requires adding some casts for now; we may
+>> investigate getting rid of our __u64 _data[] VLA in a future patch so
+>> that our start[0] members can be VLAs.
+>>
+>> Reported-by: John Stoffel <john@stoffel.org>
+>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
->
-> -- >8 --
-> From ad77f25f730ec9a0eb04be5adc591628654b85ae Mon Sep 17 00:00:00 2001
-> From: Kent Overstreet <kent.overstreet@linux.dev>
-> Date: Tue, 31 Oct 2023 18:05:22 -0400
-> Subject: [PATCH] bcachefs: Fix build errors with gcc 10
->
-> gcc 10 seems to complain about array bounds in situations where gcc 11
-> does not - curious.
->
-> This unfortunately requires adding some casts for now; we may
-> investigate getting rid of our __u64 _data[] VLA in a future patch so
-> that our start[0] members can be VLAs.
->
-> Reported-by: John Stoffel <john@stoffel.org>
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Kent, thx for handling this so quickly. If you want to do me a favor,
+please in the future include a "Link:" or "Closes:" tag with a URL to
+the report in cases like this, as explained in the docs (it's important
+for regression tracking, but also for future code archeologists);
+checkpatch should have pointed this out for this patch.
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Anyway, no big deal here, let me tell regzbot directly about the fix:
 
+#regzbot fix: bcachefs: Fix build errors with gcc 10
 
--- 
-Regards
-Sudip
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
