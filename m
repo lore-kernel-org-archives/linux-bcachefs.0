@@ -2,191 +2,151 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F48AC4332F
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  1 Nov 2023 17:07:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 512C8C4332F
+	for <linux-bcachefs@archiver.kernel.org>; Wed,  1 Nov 2023 17:43:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbjKARHu (ORCPT
+        id S232395AbjKARne (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 1 Nov 2023 13:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        Wed, 1 Nov 2023 13:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233698AbjKARHt (ORCPT
+        with ESMTP id S231974AbjKARnd (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:07:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F4CA6
-        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 10:07:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06B81C433C8;
-        Wed,  1 Nov 2023 17:07:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698858465;
-        bh=BTFB91K5ra51OBY3zyZlQS2HSSk11fNszJgkuWJT6cc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Worq+ZHwfxgH12Hs6WCuba9oIWGDRjULWAmmc6dE6Wu+bXNGV0nT55LkRO1zLbUVY
-         XRwNhJ/C/iotTs8ddj5m/l6ApSMe5+CKUfmXOX7mb8WA3cXLioEPnseuGdJ7gNe+Xp
-         BZHfSVbdJ5Yg01o1qHTwwF8W8VJh2HyU2tA6ppWpzE8AuLdUAnIGNU/RYhxixmSUhP
-         2ad4K/qX/4AoJBW40etCg6oWv+Ryq9Cmx/DFMyMlkoZP4kGciCuTX+FQVOehW+zBNy
-         yGvO0SFlzpEtNOhYP5NI7It0Nz7AKt++ovbWw0/2q+e4XXPoKwCaC/zSXkdzIQaFgc
-         8R3NDbGSwoYwg==
-Date:   Wed, 1 Nov 2023 10:07:43 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 6/6] bcachefs: rebalance_work
-Message-ID: <20231101170743.GA1159015@dev-arch.thelio-3990X>
-References: <20231024191414.2157874-1-kent.overstreet@linux.dev>
- <20231024191414.2157874-7-kent.overstreet@linux.dev>
- <20231101170255.GA1158461@dev-arch.thelio-3990X>
+        Wed, 1 Nov 2023 13:43:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E747DC1;
+        Wed,  1 Nov 2023 10:43:27 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7073C1F74D;
+        Wed,  1 Nov 2023 17:43:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1698860606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BKgU7PXImH1iO/Gfidz43SCBxUDiM+b1vjlZXIIJoLw=;
+        b=qT0SdyxC7R3WLtfNwZ+LOMxOmkeVc2EUmFHzRsAJQAqtgnzskRtCU1/whUV8EaITQDDtpR
+        0EHnK+43adFUTMMUHm1pj7fwQVb+9/GhvA8nAHCmMxnRJydjxLD4OqkyjAHK/JojzGkTop
+        w8v5wR8X6uGNdCREOai98OrAlNPMT0g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1698860606;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BKgU7PXImH1iO/Gfidz43SCBxUDiM+b1vjlZXIIJoLw=;
+        b=gHqMXehBHu4edaJ6i3SAX0Y2E5Dw1F7tX7ckof6E7QNMBJh0ZHpNNq+gRel88g/d6SKrp8
+        z4/3Lao7E5MzGLCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 572C013ADB;
+        Wed,  1 Nov 2023 17:43:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id N8rHFD6OQmUlYQAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 01 Nov 2023 17:43:26 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id C7ED7A06E5; Wed,  1 Nov 2023 18:43:25 +0100 (CET)
+From:   Jan Kara <jack@suse.cz>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@google.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        <linux-xfs@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>,
+        Jan Kara <jack@suse.cz>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Brian Foster <bfoster@redhat.com>,
+        linux-bcachefs@vger.kernel.org
+Subject: [PATCH 1/7] bcachefs: Convert to bdev_open_by_path()
+Date:   Wed,  1 Nov 2023 18:43:06 +0100
+Message-Id: <20231101174325.10596-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20231101173542.23597-1-jack@suse.cz>
+References: <20231101173542.23597-1-jack@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101170255.GA1158461@dev-arch.thelio-3990X>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2324; i=jack@suse.cz; h=from:subject; bh=Ob0PQzZ8Jq9WpAfJA+ZOLADwBqFzDEL4g6I7733eXBQ=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBlQo4qfY1b5vP0uNrwSfo0fCP5xtWPQ9ln3zTqpPUy F4mIL3aJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZUKOKgAKCRCcnaoHP2RA2fAzCA ChaPW1pZOanUyhjpFIhk50n7Cx6o2p9BvjqUsTzxPUUz6G+ZTyh35hpl9h4YHpckxjPFED8MtyL4AM EucBwvED00occzs6RxvHRQMfIGpuS6iqwnKnfZNSOVt/Vu19mh4deH5bpAxLj3anctfGzlJqjtZFOh yIBbw0RN3YnJWFyz6KoEkMbh8NGhNI4UkqhPlp9bPBINY8dXm5C5SKC1rbsMJ86/hW8xQlr2KIYZSc zZbMQOtNeOk4UXvrKV3ofQvEukJdqmHPrGt+i8Hf7Ebn40zaC7IbxeDfNi6PTfNgGI+kHVhmOj8CdC htqlWP5IT3AoEpVEokTfrUCLiA12pA
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 10:02:55AM -0700, Nathan Chancellor wrote:
-> Hi Kent,
-> 
-> On Tue, Oct 24, 2023 at 03:14:11PM -0400, Kent Overstreet wrote:
-> > This adds a new btree, rebalance_work, to eliminate scanning required
-> > for finding extents that need work done on them in the background - i.e.
-> > for the background_target and background_compression options.
-> > 
-> > rebalance_work is a bitset btree, where a KEY_TYPE_set corresponds to an
-> > extent in the extents or reflink btree at the same pos.
-> > 
-> > A new extent field is added, bch_extent_rebalance, which indicates that
-> > this extent has work that needs to be done in the background - and which
-> > options to use. This allows per-inode options to be propagated to
-> > indirect extents - at least in some circumstances. In this patch,
-> > changing IO options on a file will not propagate the new options to
-> > indirect extents pointed to by that file.
-> > 
-> > Updating (setting/clearing) the rebalance_work btree is done by the
-> > extent trigger, which looks at the bch_extent_rebalance field.
-> > 
-> > Scanning is still requrired after changing IO path options - either just
-> > for a given inode, or for the whole filesystem. We indicate that
-> > scanning is required by adding a KEY_TYPE_cookie key to the
-> > rebalance_work btree: the cookie counter is so that we can detect that
-> > scanning is still required when an option has been flipped mid-way
-> > through an existing scan.
-> > 
-> > Future possible work:
-> >  - Propagate options to indirect extents when being changed
-> >  - Add other IO path options - nr_replicas, ec, to rebalance_work so
-> >    they can be applied in the background when they change
-> >  - Add a counter, for bcachefs fs usage output, showing the pending
-> >    amount of rebalance work: we'll probably want to do this after the
-> >    disk space accounting rewrite (moving it to a new btree)
-> > 
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> 
-> <snip>
-> 
-> > diff --git a/fs/bcachefs/reflink.c b/fs/bcachefs/reflink.c
-> > index 540c78cd4b0c..dbbdf1955f76 100644
-> > --- a/fs/bcachefs/reflink.c
-> > +++ b/fs/bcachefs/reflink.c
-> > @@ -7,6 +7,7 @@
-> >  #include "inode.h"
-> >  #include "io_misc.h"
-> >  #include "io_write.h"
-> > +#include "rebalance.h"
-> >  #include "reflink.h"
-> >  #include "subvolume.h"
-> >  #include "super-io.h"
-> > @@ -252,6 +253,7 @@ s64 bch2_remap_range(struct bch_fs *c,
-> >  	struct bpos dst_start = POS(dst_inum.inum, dst_offset);
-> >  	struct bpos src_start = POS(src_inum.inum, src_offset);
-> >  	struct bpos dst_end = dst_start, src_end = src_start;
-> > +	struct bch_io_opts opts;
-> >  	struct bpos src_want;
-> >  	u64 dst_done;
-> >  	u32 dst_snapshot, src_snapshot;
-> > @@ -269,6 +271,10 @@ s64 bch2_remap_range(struct bch_fs *c,
-> >  	bch2_bkey_buf_init(&new_src);
-> >  	trans = bch2_trans_get(c);
-> >  
-> > +	ret = bch2_inum_opts_get(trans, src_inum, &opts);
-> > +	if (ret)
-> > +		goto err;
-> > +
-> 
-> Not sure if this has been reported or fixed yet but this appears to
-> introduce a valid clang warning:
-> 
->   fs/bcachefs/reflink.c:275:6: error: variable 'dst_done' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->     275 |         if (ret)
->         |             ^~~
->   fs/bcachefs/reflink.c:405:9: note: uninitialized use occurs here
->     405 |         return dst_done ?: ret ?: ret2;
->         |                ^~~~~~~~
->   fs/bcachefs/reflink.c:275:2: note: remove the 'if' if its condition is always false
->     275 |         if (ret)
->         |         ^~~~~~~~
->     276 |                 goto err;
->         |                 ~~~~~~~~
->   fs/bcachefs/reflink.c:258:14: note: initialize the variable 'dst_done' to silence this warning
->     258 |         u64 dst_done;
->         |                     ^
->         |                      = 0
->   1 error generated.
-> 
-> I tried to reason my way through a patch but I am a little lost, hence
-> just the report :)
+Convert bcachefs to use bdev_open_by_path() and pass the handle around.
 
-Actually, it just seems like dst_done should be explicitly zero
-initialized, so that ret is used as the return value. Don't know why I
-was as confused as I was :) would you like a formal patch or to just
-squash it in?
+CC: Kent Overstreet <kent.overstreet@linux.dev>
+CC: Brian Foster <bfoster@redhat.com>
+CC: linux-bcachefs@vger.kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/bcachefs/super-io.c    | 19 ++++++++++---------
+ fs/bcachefs/super_types.h |  1 +
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/fs/bcachefs/reflink.c b/fs/bcachefs/reflink.c
-index eb31df605c2e..6e1bfe9feb59 100644
---- a/fs/bcachefs/reflink.c
-+++ b/fs/bcachefs/reflink.c
-@@ -255,7 +255,7 @@ s64 bch2_remap_range(struct bch_fs *c,
- 	struct bpos dst_end = dst_start, src_end = src_start;
- 	struct bch_io_opts opts;
- 	struct bpos src_want;
--	u64 dst_done;
-+	u64 dst_done = 0;
- 	u32 dst_snapshot, src_snapshot;
- 	int ret = 0, ret2 = 0;
+diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+index 332d41e1c0a3..01a32c41a540 100644
+--- a/fs/bcachefs/super-io.c
++++ b/fs/bcachefs/super-io.c
+@@ -162,8 +162,8 @@ void bch2_sb_field_delete(struct bch_sb_handle *sb,
+ void bch2_free_super(struct bch_sb_handle *sb)
+ {
+ 	kfree(sb->bio);
+-	if (!IS_ERR_OR_NULL(sb->bdev))
+-		blkdev_put(sb->bdev, sb->holder);
++	if (!IS_ERR_OR_NULL(sb->bdev_handle))
++		bdev_release(sb->bdev_handle);
+ 	kfree(sb->holder);
  
+ 	kfree(sb->sb);
+@@ -685,21 +685,22 @@ int bch2_read_super(const char *path, struct bch_opts *opts,
+ 	if (!opt_get(*opts, nochanges))
+ 		sb->mode |= BLK_OPEN_WRITE;
+ 
+-	sb->bdev = blkdev_get_by_path(path, sb->mode, sb->holder, &bch2_sb_handle_bdev_ops);
+-	if (IS_ERR(sb->bdev) &&
+-	    PTR_ERR(sb->bdev) == -EACCES &&
++	sb->bdev_handle = bdev_open_by_path(path, sb->mode, sb->holder, &bch2_sb_handle_bdev_ops);
++	if (IS_ERR(sb->bdev_handle) &&
++	    PTR_ERR(sb->bdev_handle) == -EACCES &&
+ 	    opt_get(*opts, read_only)) {
+ 		sb->mode &= ~BLK_OPEN_WRITE;
+ 
+-		sb->bdev = blkdev_get_by_path(path, sb->mode, sb->holder, &bch2_sb_handle_bdev_ops);
+-		if (!IS_ERR(sb->bdev))
++		sb->bdev_handle = bdev_open_by_path(path, sb->mode, sb->holder, &bch2_sb_handle_bdev_ops);
++		if (!IS_ERR(sb->bdev_handle))
+ 			opt_set(*opts, nochanges, true);
+ 	}
+ 
+-	if (IS_ERR(sb->bdev)) {
+-		ret = PTR_ERR(sb->bdev);
++	if (IS_ERR(sb->bdev_handle)) {
++		ret = PTR_ERR(sb->bdev_handle);
+ 		goto out;
+ 	}
++	sb->bdev = sb->bdev_handle->bdev;
+ 
+ 	ret = bch2_sb_realloc(sb, 0);
+ 	if (ret) {
+diff --git a/fs/bcachefs/super_types.h b/fs/bcachefs/super_types.h
+index 78d6138db62d..b77d8897c9fa 100644
+--- a/fs/bcachefs/super_types.h
++++ b/fs/bcachefs/super_types.h
+@@ -4,6 +4,7 @@
+ 
+ struct bch_sb_handle {
+ 	struct bch_sb		*sb;
++	struct bdev_handle	*bdev_handle;
+ 	struct block_device	*bdev;
+ 	struct bio		*bio;
+ 	void			*holder;
+-- 
+2.35.3
 
-> >  	bch2_trans_iter_init(trans, &src_iter, BTREE_ID_extents, src_start,
-> >  			     BTREE_ITER_INTENT);
-> >  	bch2_trans_iter_init(trans, &dst_iter, BTREE_ID_extents, dst_start,
-> > @@ -352,10 +358,13 @@ s64 bch2_remap_range(struct bch_fs *c,
-> >  				min(src_k.k->p.offset - src_want.offset,
-> >  				    dst_end.offset - dst_iter.pos.offset));
-> >  
-> > -		ret = bch2_extent_update(trans, dst_inum, &dst_iter,
-> > -					 new_dst.k, &disk_res,
-> > -					 new_i_size, i_sectors_delta,
-> > -					 true);
-> > +		ret =   bch2_bkey_set_needs_rebalance(c, new_dst.k,
-> > +					opts.background_target,
-> > +					opts.background_compression) ?:
-> > +			bch2_extent_update(trans, dst_inum, &dst_iter,
-> > +					new_dst.k, &disk_res,
-> > +					new_i_size, i_sectors_delta,
-> > +					true);
-> >  		bch2_disk_reservation_put(c, &disk_res);
-> >  	}
-> >  	bch2_trans_iter_exit(trans, &dst_iter);
-> > @@ -386,7 +395,7 @@ s64 bch2_remap_range(struct bch_fs *c,
-> >  
-> >  		bch2_trans_iter_exit(trans, &inode_iter);
-> >  	} while (bch2_err_matches(ret2, BCH_ERR_transaction_restart));
-> > -
-> > +err:
-> >  	bch2_trans_put(trans);
-> >  	bch2_bkey_buf_exit(&new_src, c);
-> >  	bch2_bkey_buf_exit(&new_dst, c);
-> 
-> Cheers,
-> Nathan
-> 
