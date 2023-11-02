@@ -2,172 +2,128 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33B14C4332F
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  2 Nov 2023 02:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47BFCC4332F
+	for <linux-bcachefs@archiver.kernel.org>; Thu,  2 Nov 2023 03:35:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346522AbjKBCuJ (ORCPT
+        id S233032AbjKBDfD (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 1 Nov 2023 22:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
+        Wed, 1 Nov 2023 23:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346504AbjKBCuE (ORCPT
+        with ESMTP id S233001AbjKBDfB (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 1 Nov 2023 22:50:04 -0400
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E75C184
-        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 19:49:35 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+        Wed, 1 Nov 2023 23:35:01 -0400
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [IPv6:2001:41d0:203:375::af])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D693BD7
+        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 20:34:53 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 23:34:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698893372;
+        t=1698896092;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qgS50a7UGhoWZX3jzc6fu31kYnFQwHCuySCcxYtwyrc=;
-        b=r4BDEInxPtXVgdKRuXSfreBOnAuyx+EkrnIsNFXH+NhUK8Y7kiSoeIlYq1Ay3UPC0urUX6
-        uZRZ7VVQFPo0h6cuFaDzI2XxIFvfarUduFu4Xdn5yKMposjz6CdZSmfAa3BZ49Z5yMw3rG
-        7qMuk/rJIUHbGz07lIW03fcD7qdX3iw=
+        bh=m+s54p7hnGuket/W7aZgpE59zkKEmKuT57DL8xlDOA4=;
+        b=C+Ya2v71cxCef5wk6SsbS7txBaMhPUN4wAOF1UVisMKRb/sm40WmGJqAQr+B46XHv3hx9v
+        QQCKXh7PeGfjInM/s05LfXGUTj560xMpq+NYQddX9fOuO9ohik0xPKjH56YWonqWqXOOYY
+        E4Wjn7ffQ+sDjfjTJotGvaabAfOL23E=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     linux-bcachefs@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/2] bcachefs: Split brain detection
-Date:   Wed,  1 Nov 2023 22:49:20 -0400
-Message-ID: <20231102024924.4107287-3-kent.overstreet@linux.dev>
-In-Reply-To: <20231102024924.4107287-1-kent.overstreet@linux.dev>
-References: <20231102024924.4107287-1-kent.overstreet@linux.dev>
+To:     janpieter.sollie@kabelmail.de
+Cc:     linux-bcachefs@vger.kernel.org,
+        Janpieter Sollie <janpieter.sollie@edpnet.be>
+Subject: Re: [PATCH v3 03/10] ktest-bcachefs: run tests on emulated
+ architectures
+Message-ID: <20231102033449.rnttij34c4c5nquy@moria.home.lan>
+References: <20231030151046.29827-1-janpieter.sollie@kabelmail.de>
+ <20231030151046.29827-4-janpieter.sollie@kabelmail.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030151046.29827-4-janpieter.sollie@kabelmail.de>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Use the new bch_member->seq, sb->write_time fields to detect split brain
-and kick out devices when necessary.
+On Mon, Oct 30, 2023 at 03:58:14PM +0100, janpieter.sollie@kabelmail.de wrote:
+> From: Janpieter Sollie <janpieter.sollie@edpnet.be>
+> 
+> Allow the tests to run on a non-ABI-compatible cpu,
+> verify code when the architecture isn't physically available.
+> in the future, bcachefs-tools should be cross-compiled,
+> and the list of CPU types should be expanded
+> 
+> Signed-off-by: jpsollie <janpieter.sollie@edpnet.be>
+> ---
+>  build-test-kernel |  2 +-
+>  lib/common.sh     | 11 ++++++++---
+>  lib/libktest.sh   |  8 ++++++--
+>  lib/testrunner    | 10 +++++++++-
+>  root_image        |  8 +++++++-
+>  tests/kconfig.sh  |  2 ++
+>  6 files changed, 33 insertions(+), 8 deletions(-)
+> 
+> diff --git a/build-test-kernel b/build-test-kernel
+> index 72990ba..9121fd1 100755
+> --- a/build-test-kernel
+> +++ b/build-test-kernel
+> @@ -107,7 +107,7 @@ ktest_kernel_source=$(readlink -e "$ktest_kernel_source")
+>  ktest_kernel_build="$ktest_out/kernel_build.$ktest_arch"
+>  mkdir -p "$ktest_kernel_build"
+>  
+> -if [[ -n $CROSS_COMPILE ]]; then
+> +if [[ -z ${CROSS_COMPILE:+x} ]]; then
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/errcode.h |  1 +
- fs/bcachefs/super.c   | 56 ++++++++++++++++++++++++++++++++++---------
- 2 files changed, 46 insertions(+), 11 deletions(-)
+???
 
-diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
-index 2a11f32cf30a..e1f733eeb7f0 100644
---- a/fs/bcachefs/errcode.h
-+++ b/fs/bcachefs/errcode.h
-@@ -169,6 +169,7 @@
- 	x(EINVAL,			device_size_too_small)			\
- 	x(EINVAL,			device_not_a_member_of_filesystem)	\
- 	x(EINVAL,			device_has_been_removed)		\
-+	x(EINVAL,			device_splitbrain)			\
- 	x(EINVAL,			device_already_online)			\
- 	x(EINVAL,			insufficient_devices_to_start)		\
- 	x(EINVAL,			invalid)				\
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index 24672bb31cbe..e6b72ff06f56 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -1012,20 +1012,46 @@ static int bch2_dev_may_add(struct bch_sb *sb, struct bch_fs *c)
- 	return 0;
- }
- 
--static int bch2_dev_in_fs(struct bch_sb *fs, struct bch_sb *sb)
-+static int bch2_dev_in_fs(struct bch_sb_handle *fs,
-+			  struct bch_sb_handle *sb)
- {
--	struct bch_sb *newest =
--		le64_to_cpu(fs->seq) > le64_to_cpu(sb->seq) ? fs : sb;
-+	if (fs == sb)
-+		return 0;
- 
--	if (!uuid_equal(&fs->uuid, &sb->uuid))
-+	if (!uuid_equal(&fs->sb->uuid, &sb->sb->uuid))
- 		return -BCH_ERR_device_not_a_member_of_filesystem;
- 
--	if (!bch2_dev_exists(newest, sb->dev_idx))
-+	if (!bch2_dev_exists(fs->sb, sb->sb->dev_idx))
- 		return -BCH_ERR_device_has_been_removed;
- 
--	if (fs->block_size != sb->block_size)
-+	if (fs->sb->block_size != sb->sb->block_size)
- 		return -BCH_ERR_mismatched_block_size;
- 
-+	if (fs->sb->seq == sb->sb->seq &&
-+	    fs->sb->write_time != sb->sb->write_time) {
-+		pr_err("Split brain detected between %pg and %pg:\n"
-+		       "seq (%llu) equal but write_time does not match\n"
-+		       "Not using older sb %pg",
-+		       sb->bdev, fs->bdev,
-+		       le64_to_cpu(sb->sb->seq), sb->bdev);
-+		return -BCH_ERR_device_splitbrain;
-+	}
-+
-+	struct bch_member m = bch2_sb_member_get(fs->sb, sb->sb->dev_idx);
-+	u64 seq_from_fs		= le64_to_cpu(m.seq);
-+	u64 seq_from_member	= le64_to_cpu(sb->sb->seq);
-+
-+	if (seq_from_fs && seq_from_fs < seq_from_member) {
-+		pr_err("Split brain detected between %pg and %pg:\n"
-+		       "%pg believes seq of %pg to be %llu, but %pg has %llu\n"
-+		       "Not using %pg",
-+		       sb->bdev, fs->bdev,
-+		       fs->bdev, sb->bdev, seq_from_fs,
-+		       sb->bdev, seq_from_member,
-+		       sb->bdev);
-+		return -BCH_ERR_device_splitbrain;
-+	}
-+
- 	return 0;
- }
- 
-@@ -1734,7 +1760,7 @@ int bch2_dev_online(struct bch_fs *c, const char *path)
- 
- 	dev_idx = sb.sb->dev_idx;
- 
--	ret = bch2_dev_in_fs(c->disk_sb.sb, sb.sb);
-+	ret = bch2_dev_in_fs(&c->disk_sb, &sb);
- 	if (ret) {
- 		bch_err_msg(c, ret, "bringing %s online", path);
- 		goto err;
-@@ -1882,6 +1908,12 @@ struct bch_dev *bch2_dev_lookup(struct bch_fs *c, const char *name)
- 
- /* Filesystem open: */
- 
-+static inline int sb_cmp(struct bch_sb *l, struct bch_sb *r)
-+{
-+	return  cmp_int(le64_to_cpu(l->seq), le64_to_cpu(r->seq)) ?:
-+		cmp_int(le64_to_cpu(l->write_time), le64_to_cpu(r->write_time));
-+}
-+
- struct bch_fs *bch2_fs_open(char * const *devices, unsigned nr_devices,
- 			    struct bch_opts opts)
- {
-@@ -1914,19 +1946,21 @@ struct bch_fs *bch2_fs_open(char * const *devices, unsigned nr_devices,
- 	}
- 
- 	darray_for_each(sbs, sb)
--		if (!best || le64_to_cpu(sb->sb->seq) > le64_to_cpu(best->sb->seq))
-+		if (!best || sb_cmp(sb->sb, best->sb) > 0)
- 			best = sb;
- 
- 	darray_for_each_reverse(sbs, sb) {
--		if (sb != best && !bch2_dev_exists(best->sb, sb->sb->dev_idx)) {
--			pr_info("%pg has been removed, skipping", sb->bdev);
-+		ret = bch2_dev_in_fs(best, sb);
-+
-+		if (ret == -BCH_ERR_device_has_been_removed ||
-+		    ret == -BCH_ERR_device_splitbrain) {
- 			bch2_free_super(sb);
- 			darray_remove_item(&sbs, sb);
- 			best -= best > sb;
-+			ret = 0;
- 			continue;
- 		}
- 
--		ret = bch2_dev_in_fs(best->sb, sb->sb);
- 		if (ret)
- 			goto err_print;
- 	}
--- 
-2.42.0
+This looks like a workaround for test, i.e. [ - [[ behaves better.
 
+> diff --git a/lib/testrunner b/lib/testrunner
+> index acbc45f..a8e8d17 100755
+> --- a/lib/testrunner
+> +++ b/lib/testrunner
+> @@ -20,6 +20,10 @@ ktest_out="/host/$ktest_out"
+>  ln -sf $ktest_dir /ktest
+>  ln -sf $ktest_out /ktest-out
+>  
+> +. /ktest/lib/common.sh
+> +
+> +parse_arch $(uname -m)
+> +
+>  # Some home directories are in weird places:
+>  mkdir -p $(dirname $home)
+>  ln -sf /host/$home $home
+> @@ -92,7 +96,11 @@ for i in "${ktest_make_install[@]}"; do
+>      if [[ -f configure && ! -f Makefile ]]; then
+>  	run_quiet "configure $(basename $i)" ./configure
+>      fi
+> -    run_quiet "building $(basename $i)" make -j $ktest_cpus
+> +    #this won't make me popular - compiling bcachefs tools with rust support on a emulated machine is too heavy to be useful, so omit it:
+> +    rustcompile="" && [[ "$(systemd-detect-virt)" == "qemu" ]] && rustcompile="NO_RUST=1"
+> +    #bcachefs tools sometimes seems to use compiled files from previous runs, even if other architecture, so clean out:
+> +    [ "bcachefs-tools" == "$(basename $i)" ] && [ "$(objdump -f bcachefs.o | grep architecture | cut -d' ' -f 2)" == "$(objdump -f /bin/bash | grep architecture | cut -d' ' -f 2)" ] || make clean
+> +    run_quiet "building $(basename $i)" make $rustcompile -j $ktest_cpus
+>      run_quiet "installing $(basename $i)" make -j $ktest_cpus install
+>      popd > /dev/null
+
+Nope, don't put bcachefs-tools specific stuff in testrunner.
+
+>  done
+> diff --git a/root_image b/root_image
+> index 26c99fe..87add22 100755
+> --- a/root_image
+> +++ b/root_image
+> @@ -118,7 +118,12 @@ PACKAGES+=(cryptsetup)
+>  PACKAGES+=(multipath-tools sg3-utils srptools)
+>  
+>  # ZFS support
+> -PACKAGES+=("linux-headers-generic" dkms zfsutils-linux zfs-dkms)
+> +PACKAGES+=("linux-headers-generic")
+> +# unless no other option when cross-compiling, ignore ZFS
+> +# DKMS needs to cross-compile the module,
+> +# against a different kernel on a different CPUarchitecture.
+> +# this has to cause errors
+> +[ $CROSS_COMPILE == 1 ] || PACKAGES+=(dkms zfsutils-linux zfs-dkms)
+
+CROSS_COMPILE isn't for root_image - not sure what you're trying to do
+here.
