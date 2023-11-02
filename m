@@ -2,116 +2,61 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D7BFC41535
-	for <linux-bcachefs@archiver.kernel.org>; Wed,  1 Nov 2023 19:03:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ED4FC4167B
+	for <linux-bcachefs@archiver.kernel.org>; Thu,  2 Nov 2023 00:36:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbjKATDG (ORCPT
+        id S232864AbjKBAgO (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 1 Nov 2023 15:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
+        Wed, 1 Nov 2023 20:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbjKATDE (ORCPT
+        with ESMTP id S229727AbjKBAgN (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 1 Nov 2023 15:03:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0578F7
-        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 12:02:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698865331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f0Yf5miKQ2u0WyI49z2G29Fn/XB3EFcIITgPXzLSY18=;
-        b=egH15POzmobX2RH6h3kW1PfYAQDtW7Bminwo4Lm2sORkFyJBfdpoks87Qh6gyrg2vE7zo5
-        w4WiKpZCr/rgm5xUQZS52v7z+fdk/jlWIVbX/BQflrdctHvb1IGuzL3nFmPp2YFa/9SoHV
-        uC/HyWckLga3CWp8Qq6vr+OnEtfb+CM=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-205-4PXNYuVRP0eAy6rg_IJrsQ-1; Wed,
- 01 Nov 2023 15:02:09 -0400
-X-MC-Unique: 4PXNYuVRP0eAy6rg_IJrsQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4C4602806674
-        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 19:02:09 +0000 (UTC)
-Received: from bfoster.redhat.com (unknown [10.22.16.88])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2FC8140C6EBC
-        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 19:02:09 +0000 (UTC)
-From:   Brian Foster <bfoster@redhat.com>
-To:     linux-bcachefs@vger.kernel.org
-Subject: [PATCH 2/2] bcachefs: update alloc cursor in early bucket allocator
-Date:   Wed,  1 Nov 2023 15:02:45 -0400
-Message-ID: <20231101190245.478567-3-bfoster@redhat.com>
-In-Reply-To: <20231101190245.478567-1-bfoster@redhat.com>
-References: <20231101190245.478567-1-bfoster@redhat.com>
+        Wed, 1 Nov 2023 20:36:13 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F99124;
+        Wed,  1 Nov 2023 17:36:06 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VvTiKF3_1698885362;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VvTiKF3_1698885362)
+          by smtp.aliyun-inc.com;
+          Thu, 02 Nov 2023 08:36:03 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     kent.overstreet@linux.dev, bfoster@redhat.com
+Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] bcachefs: Remove unneeded semicolon
+Date:   Thu,  2 Nov 2023 08:36:00 +0800
+Message-Id: <20231102003600.94657-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-A recent bug report uncovered a scenario where a filesystem never
-runs with freespace_initialized, and therefore the user observes
-significantly degraded write performance by virtue of running the
-early bucket allocator. The associated bug aside, the primary cause
-of the performance drop in this particular instance is that the
-early bucket allocator does not update the allocation cursor. This
-means that every allocation walks the alloc btree from the first
-bucket of the associated device looking for a bucket marked as free
-space.
+./fs/bcachefs/reflink.c:112:32-33: Unneeded semicolon
 
-Update the early allocator code to set the alloc cursor to the last
-processed position in the tree, similar to how the freelist
-allocator behaves. With the alloc_cursor being updated, the retry
-logic also needs to be updated to restart from the beginning of the
-device when a free bucket is not available between the cursor and
-the end of the device. Track the restart position in a first_bucket
-variable to make the code a bit more easily readable and consistent
-with the freelist allocator.
-
-Signed-off-by: Brian Foster <bfoster@redhat.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7114
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- fs/bcachefs/alloc_foreground.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ fs/bcachefs/reflink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
-index 75ecfc3472ce..b85c7765272f 100644
---- a/fs/bcachefs/alloc_foreground.c
-+++ b/fs/bcachefs/alloc_foreground.c
-@@ -402,8 +402,9 @@ bch2_bucket_alloc_early(struct btree_trans *trans,
- 	struct btree_iter iter, citer;
- 	struct bkey_s_c k, ck;
- 	struct open_bucket *ob = NULL;
--	u64 alloc_start = max_t(u64, ca->mi.first_bucket, ca->new_fs_bucket_idx);
--	u64 alloc_cursor = max(alloc_start, READ_ONCE(ca->alloc_cursor));
-+	u64 first_bucket = max_t(u64, ca->mi.first_bucket, ca->new_fs_bucket_idx);
-+	u64 alloc_start = max(first_bucket, READ_ONCE(ca->alloc_cursor));
-+	u64 alloc_cursor = alloc_start;
- 	int ret;
- 
- 	/*
-@@ -453,13 +454,14 @@ bch2_bucket_alloc_early(struct btree_trans *trans,
+diff --git a/fs/bcachefs/reflink.c b/fs/bcachefs/reflink.c
+index eb31df605c2e..958d9ea718b0 100644
+--- a/fs/bcachefs/reflink.c
++++ b/fs/bcachefs/reflink.c
+@@ -109,7 +109,7 @@ static inline void check_indirect_extent_deleting(struct bkey_i *new, unsigned *
+ 	if ((*flags & BTREE_TRIGGER_INSERT) && !*bkey_refcount(new)) {
+ 		new->k.type = KEY_TYPE_deleted;
+ 		new->k.size = 0;
+-		set_bkey_val_u64s(&new->k, 0);;
++		set_bkey_val_u64s(&new->k, 0);
+ 		*flags &= ~BTREE_TRIGGER_INSERT;
  	}
- 	bch2_trans_iter_exit(trans, &iter);
- 
-+	alloc_cursor = iter.pos.offset;
- 	ca->alloc_cursor = alloc_cursor;
- 
- 	if (!ob && ret)
- 		ob = ERR_PTR(ret);
- 
--	if (!ob && alloc_cursor > alloc_start) {
--		alloc_cursor = alloc_start;
-+	if (!ob && alloc_start > first_bucket) {
-+		alloc_cursor = alloc_start = first_bucket;
- 		goto again;
- 	}
- 
+ }
 -- 
-2.41.0
+2.20.1.7.g153144c
 
