@@ -2,20 +2,20 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40ACEC4167B
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  2 Nov 2023 02:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33B14C4332F
+	for <linux-bcachefs@archiver.kernel.org>; Thu,  2 Nov 2023 02:50:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346501AbjKBCuE (ORCPT
+        id S1346522AbjKBCuJ (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Wed, 1 Nov 2023 22:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
+        Wed, 1 Nov 2023 22:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346485AbjKBCuD (ORCPT
+        with ESMTP id S1346504AbjKBCuE (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Wed, 1 Nov 2023 22:50:03 -0400
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0546ED71
-        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 19:49:34 -0700 (PDT)
+        Wed, 1 Nov 2023 22:50:04 -0400
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E75C184
+        for <linux-bcachefs@vger.kernel.org>; Wed,  1 Nov 2023 19:49:35 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
         t=1698893372;
@@ -23,16 +23,16 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iCwI9OcRT4JdPoGBxhRdAfYvrG5TWjmUCmKfHNTj6sg=;
-        b=nhXn5YWJS6cAMaRFmXfYxAFjcvRimjQ+barzmXjOb2A4im1ohUvhmVvRTf3UyTRO6c2ktk
-        ADtv7I66J8HhYjaW0d1Nc83gQCXvVPdg3NDnjbb+5SxbLvz4b1RJKJvbPaWmsVlsCZdxAK
-        L4rxRwVsAU+zJyonWOpaj7GMYSEQ18c=
+        bh=qgS50a7UGhoWZX3jzc6fu31kYnFQwHCuySCcxYtwyrc=;
+        b=r4BDEInxPtXVgdKRuXSfreBOnAuyx+EkrnIsNFXH+NhUK8Y7kiSoeIlYq1Ay3UPC0urUX6
+        uZRZ7VVQFPo0h6cuFaDzI2XxIFvfarUduFu4Xdn5yKMposjz6CdZSmfAa3BZ49Z5yMw3rG
+        7qMuk/rJIUHbGz07lIW03fcD7qdX3iw=
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     linux-bcachefs@vger.kernel.org
 Cc:     Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 1/2] bcachefs: bch_member->seq
-Date:   Wed,  1 Nov 2023 22:49:19 -0400
-Message-ID: <20231102024924.4107287-2-kent.overstreet@linux.dev>
+Subject: [PATCH 2/2] bcachefs: Split brain detection
+Date:   Wed,  1 Nov 2023 22:49:20 -0400
+Message-ID: <20231102024924.4107287-3-kent.overstreet@linux.dev>
 In-Reply-To: <20231102024924.4107287-1-kent.overstreet@linux.dev>
 References: <20231102024924.4107287-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
@@ -42,88 +42,132 @@ Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-Add new fields for split brain detection:
-
- - bch_member->seq, which tracks the sequence number of the last superblock
-   write that happened to each member device
-
- - bch_sb->write_time, which tracks the time of the last superblock write,
-   to allow detection of when two members have diverged but had the same
-   number of superblock writes.
+Use the new bch_member->seq, sb->write_time fields to detect split brain
+and kick out devices when necessary.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/bcachefs_format.h |  4 +++-
- fs/bcachefs/sb-members.c      |  5 +++++
- fs/bcachefs/super-io.c        | 10 ++++++++++
- 3 files changed, 18 insertions(+), 1 deletion(-)
+ fs/bcachefs/errcode.h |  1 +
+ fs/bcachefs/super.c   | 56 ++++++++++++++++++++++++++++++++++---------
+ 2 files changed, 46 insertions(+), 11 deletions(-)
 
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index 5b44598b9df9..b22868ca9770 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -1294,6 +1294,7 @@ struct bch_member {
- 	__le64			errors[BCH_MEMBER_ERROR_NR];
- 	__le64			errors_at_reset[BCH_MEMBER_ERROR_NR];
- 	__le64			errors_reset_time;
-+	__le64			seq;
- };
+diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
+index 2a11f32cf30a..e1f733eeb7f0 100644
+--- a/fs/bcachefs/errcode.h
++++ b/fs/bcachefs/errcode.h
+@@ -169,6 +169,7 @@
+ 	x(EINVAL,			device_size_too_small)			\
+ 	x(EINVAL,			device_not_a_member_of_filesystem)	\
+ 	x(EINVAL,			device_has_been_removed)		\
++	x(EINVAL,			device_splitbrain)			\
+ 	x(EINVAL,			device_already_online)			\
+ 	x(EINVAL,			insufficient_devices_to_start)		\
+ 	x(EINVAL,			invalid)				\
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index 24672bb31cbe..e6b72ff06f56 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -1012,20 +1012,46 @@ static int bch2_dev_may_add(struct bch_sb *sb, struct bch_fs *c)
+ 	return 0;
+ }
  
- #define BCH_MEMBER_V1_BYTES	56
-@@ -1761,7 +1762,8 @@ struct bch_sb {
- 	__le32			time_base_hi;
- 	__le32			time_precision;
+-static int bch2_dev_in_fs(struct bch_sb *fs, struct bch_sb *sb)
++static int bch2_dev_in_fs(struct bch_sb_handle *fs,
++			  struct bch_sb_handle *sb)
+ {
+-	struct bch_sb *newest =
+-		le64_to_cpu(fs->seq) > le64_to_cpu(sb->seq) ? fs : sb;
++	if (fs == sb)
++		return 0;
  
--	__le64			flags[8];
-+	__le64			flags[7];
-+	__le64			write_time;
- 	__le64			features[2];
- 	__le64			compat[2];
+-	if (!uuid_equal(&fs->uuid, &sb->uuid))
++	if (!uuid_equal(&fs->sb->uuid, &sb->sb->uuid))
+ 		return -BCH_ERR_device_not_a_member_of_filesystem;
  
-diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
-index 6a7e20de971c..4c6908cfca05 100644
---- a/fs/bcachefs/sb-members.c
-+++ b/fs/bcachefs/sb-members.c
-@@ -235,6 +235,11 @@ static void member_to_text(struct printbuf *out,
- 		prt_printf(out, "(never)");
- 	prt_newline(out);
+-	if (!bch2_dev_exists(newest, sb->dev_idx))
++	if (!bch2_dev_exists(fs->sb, sb->sb->dev_idx))
+ 		return -BCH_ERR_device_has_been_removed;
  
-+	prt_printf(out, "Last superblock write:");
-+	prt_tab(out);
-+	prt_u64(out, le64_to_cpu(m.seq));
-+	prt_newline(out);
+-	if (fs->block_size != sb->block_size)
++	if (fs->sb->block_size != sb->sb->block_size)
+ 		return -BCH_ERR_mismatched_block_size;
+ 
++	if (fs->sb->seq == sb->sb->seq &&
++	    fs->sb->write_time != sb->sb->write_time) {
++		pr_err("Split brain detected between %pg and %pg:\n"
++		       "seq (%llu) equal but write_time does not match\n"
++		       "Not using older sb %pg",
++		       sb->bdev, fs->bdev,
++		       le64_to_cpu(sb->sb->seq), sb->bdev);
++		return -BCH_ERR_device_splitbrain;
++	}
 +
- 	prt_printf(out, "State:");
- 	prt_tab(out);
- 	prt_printf(out, "%s",
-diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-index a93e53d0b37e..3ebe14c806ac 100644
---- a/fs/bcachefs/super-io.c
-+++ b/fs/bcachefs/super-io.c
-@@ -890,6 +890,11 @@ int bch2_write_super(struct bch_fs *c)
- 
- 	le64_add_cpu(&c->disk_sb.sb->seq, 1);
- 
-+	struct bch_sb_field_members_v2 *mi = bch2_sb_field_get(c->disk_sb.sb, members_v2);
-+	for_each_online_member(ca, c, i)
-+		__bch2_members_v2_get_mut(mi, i)->seq = c->disk_sb.sb->seq;
-+	c->disk_sb.sb->write_time = cpu_to_le64(ktime_get_real_seconds());
++	struct bch_member m = bch2_sb_member_get(fs->sb, sb->sb->dev_idx);
++	u64 seq_from_fs		= le64_to_cpu(m.seq);
++	u64 seq_from_member	= le64_to_cpu(sb->sb->seq);
 +
- 	if (test_bit(BCH_FS_ERROR, &c->flags))
- 		SET_BCH_SB_HAS_ERRORS(c->disk_sb.sb, 1);
- 	if (test_bit(BCH_FS_TOPOLOGY_ERROR, &c->flags))
-@@ -1193,6 +1198,11 @@ void bch2_sb_to_text(struct printbuf *out, struct bch_sb *sb,
- 	prt_printf(out, "%llu", le64_to_cpu(sb->seq));
- 	prt_newline(out);
- 
-+	prt_printf(out, "Time of last write:");
-+	prt_tab(out);
-+	bch2_prt_date_seconds(out, le64_to_cpu(sb->write_time));
-+	prt_newline(out);
++	if (seq_from_fs && seq_from_fs < seq_from_member) {
++		pr_err("Split brain detected between %pg and %pg:\n"
++		       "%pg believes seq of %pg to be %llu, but %pg has %llu\n"
++		       "Not using %pg",
++		       sb->bdev, fs->bdev,
++		       fs->bdev, sb->bdev, seq_from_fs,
++		       sb->bdev, seq_from_member,
++		       sb->bdev);
++		return -BCH_ERR_device_splitbrain;
++	}
 +
- 	prt_printf(out, "Superblock size:");
- 	prt_tab(out);
- 	prt_printf(out, "%zu", vstruct_bytes(sb));
+ 	return 0;
+ }
+ 
+@@ -1734,7 +1760,7 @@ int bch2_dev_online(struct bch_fs *c, const char *path)
+ 
+ 	dev_idx = sb.sb->dev_idx;
+ 
+-	ret = bch2_dev_in_fs(c->disk_sb.sb, sb.sb);
++	ret = bch2_dev_in_fs(&c->disk_sb, &sb);
+ 	if (ret) {
+ 		bch_err_msg(c, ret, "bringing %s online", path);
+ 		goto err;
+@@ -1882,6 +1908,12 @@ struct bch_dev *bch2_dev_lookup(struct bch_fs *c, const char *name)
+ 
+ /* Filesystem open: */
+ 
++static inline int sb_cmp(struct bch_sb *l, struct bch_sb *r)
++{
++	return  cmp_int(le64_to_cpu(l->seq), le64_to_cpu(r->seq)) ?:
++		cmp_int(le64_to_cpu(l->write_time), le64_to_cpu(r->write_time));
++}
++
+ struct bch_fs *bch2_fs_open(char * const *devices, unsigned nr_devices,
+ 			    struct bch_opts opts)
+ {
+@@ -1914,19 +1946,21 @@ struct bch_fs *bch2_fs_open(char * const *devices, unsigned nr_devices,
+ 	}
+ 
+ 	darray_for_each(sbs, sb)
+-		if (!best || le64_to_cpu(sb->sb->seq) > le64_to_cpu(best->sb->seq))
++		if (!best || sb_cmp(sb->sb, best->sb) > 0)
+ 			best = sb;
+ 
+ 	darray_for_each_reverse(sbs, sb) {
+-		if (sb != best && !bch2_dev_exists(best->sb, sb->sb->dev_idx)) {
+-			pr_info("%pg has been removed, skipping", sb->bdev);
++		ret = bch2_dev_in_fs(best, sb);
++
++		if (ret == -BCH_ERR_device_has_been_removed ||
++		    ret == -BCH_ERR_device_splitbrain) {
+ 			bch2_free_super(sb);
+ 			darray_remove_item(&sbs, sb);
+ 			best -= best > sb;
++			ret = 0;
+ 			continue;
+ 		}
+ 
+-		ret = bch2_dev_in_fs(best->sb, sb->sb);
+ 		if (ret)
+ 			goto err_print;
+ 	}
 -- 
 2.42.0
 
