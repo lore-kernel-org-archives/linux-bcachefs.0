@@ -2,98 +2,82 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33C4FC4332F
-	for <linux-bcachefs@archiver.kernel.org>; Thu,  2 Nov 2023 19:11:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79FFEC4332F
+	for <linux-bcachefs@archiver.kernel.org>; Fri,  3 Nov 2023 02:42:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjKBTLt (ORCPT
+        id S234800AbjKCCmt (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Thu, 2 Nov 2023 15:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
+        Thu, 2 Nov 2023 22:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKBTLs (ORCPT
+        with ESMTP id S229570AbjKCCmt (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:11:48 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C35012D
-        for <linux-bcachefs@vger.kernel.org>; Thu,  2 Nov 2023 12:11:43 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-419b53acc11so63061cf.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 02 Nov 2023 12:11:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698952302; x=1699557102; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VIakNXnRvrAUTek4TZG2B/UaefFH7tlKdSQhJTCcSHo=;
-        b=yHMv1aum06LNrNZJ2niqD8OXm1glgT8Yqdi67lwKWFhfulSVOKrtnJ593zKzjSD4Lt
-         MJfYnyBI1TmQAvpbC8hAHbBaAfp9MbXSLyDkozlmPDXdrSp77FAoaeL12RhcMxEk/BeQ
-         M1rEpNsbW+4QO0RAyxFEOtqPrG92AfnspmabZ+VaxSq3iXpjFlqjxqnh6iI7WWM8UDz3
-         hxtBa6YolglnWc6eCaqhU6n4W22P3G1D0OfgEvILlzMBj5iN2aobboAS5ZKeCxaDxKfv
-         a0h4akvrTrQeqKuA7oQ2lVk6ExE496nQK23gSyOnubJj9dlJvs5ME5F0UcnVMnE1wwDt
-         EyVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698952302; x=1699557102;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VIakNXnRvrAUTek4TZG2B/UaefFH7tlKdSQhJTCcSHo=;
-        b=hOQcLWLDiTqiE2H48PY01i1A3WCnNQ23vk22PGLzKE78CqbMq13+suIn7bFfJEHI7w
-         skW3Mi9c0R6pn6z4bP5ARTvk7rngfQLR9vX7cuNxsa3Ud5x9G/ouiJ/TluMqVuedXXmU
-         nQoIAskWL9ACbNKUNLNfkwQMtixeLeSR4cFfcY4EFCRfFh+Ez+jZ6IwUP3tpUZcqv1E4
-         Z/wwho4zeAoBelNOGijeYC+82hFuGPuRSdbjwSgXDjUSEFCMPb4vbKBDrxwapP2gYeFD
-         hVGILyxrLwHSQPbxzAycIoXqRnaczZ5Sv1m4Dds7GSeCYUi3dWDNnELkjSSRA9EOZILA
-         6dhg==
-X-Gm-Message-State: AOJu0YxAuiVWinNvMmyrppUWyky82hhjhrrk1IWe4dObIOpvBeYvjF+u
-        WveY2zh2WAnF2Wp+cT4K/kyOx8x2n3b3FD17k0W/fF4u7R8D/rFhAQ4=
-X-Google-Smtp-Source: AGHT+IGHbB6XsWDAQ+U7Ciz5e7YEltYGiO4gBjI2AUDr6sGgzw5IJwgfAuK9xxJXB8SzPOsz2nYa0IbY6e14u28NYEg=
-X-Received: by 2002:ac8:4418:0:b0:41e:50ed:eb3b with SMTP id
- j24-20020ac84418000000b0041e50edeb3bmr272192qtn.8.1698952302088; Thu, 02 Nov
- 2023 12:11:42 -0700 (PDT)
+        Thu, 2 Nov 2023 22:42:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C205419D;
+        Thu,  2 Nov 2023 19:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698979363; x=1730515363;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=A12jr/Fr5ti9ffyJx+eCxY4/gYdHcgsiea0V3zc8/9E=;
+  b=kr3W4i67wNKzzKZkKTj2eDN4k527oAN85BmP8XHbWgdntcqYZEardMi+
+   MyaVFtP7LFOVmvUIljMZ+xJ5Bts0TwxeJ2b88PdxWOc7HiF7HgkBxWIrZ
+   KQDlWE+Zl7MxbDwU7gEQhiK9PbJyyk2kzGfziMpemxC+HQlCPI22mI20I
+   J/8GL3SWp6Wvkes5N3j4nmPTJi5/vP9HcpH4RhhUEeFMa+NWQ6Eel4Yic
+   SvtK1zi8EPgbkbQpZ59rdSg/Wt4xRktjyhnyT57yHEaNhzEHeQgm7KyfK
+   zsMSB9ADVo3o9FVWGgj22gMIaciU8R8eySJTx4HXES9A7JF7dWzj368VG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="7501649"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="7501649"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 19:42:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="852135977"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="852135977"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Nov 2023 19:42:40 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyk8s-00027w-1N;
+        Fri, 03 Nov 2023 02:42:38 +0000
+Date:   Fri, 3 Nov 2023 10:41:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kent Overstreet <kmo@daterainc.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Brian Foster <bfoster@redhat.com>,
+        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [linux-next:master 15635/16110] fs/bcachefs/disk_groups.c:534:6:
+ sparse: sparse: symbol 'bch2_target_to_text_sb' was not declared. Should it
+ be static?
+Message-ID: <202311031030.xZT1XBXd-lkp@intel.com>
 MIME-Version: 1.0
-References: <CAMT0RQRwBLBBp7ufmk3mrAaVAQxPKxiGEK5t+qvE+ftRnfyvmA@mail.gmail.com>
- <20231102144102.o5vfyhq6x2nhm7x3@moria.home.lan>
-In-Reply-To: <20231102144102.o5vfyhq6x2nhm7x3@moria.home.lan>
-From:   Hannu Krosing <hannuk@google.com>
-Date:   Thu, 2 Nov 2023 20:11:29 +0100
-Message-ID: <CAMT0RQSdLXvtXT_SYxDxjm4EQcTSBGWx35kuccCa69-nxxJeQg@mail.gmail.com>
-Subject: Re: A question on bcachefs as a Cluster File System
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-What parts make it hard to use it as the basis for a CFS ?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+head:   ab57716449b3438c0136f6f412a2e59e0cf037a9
+commit: bf0d9e89de2e62fe9967ebb77b68d58d3812e4db [15635/16110] bcachefs: Split apart bch2_target_to_text(), bch2_target_to_text_sb()
+config: i386-randconfig-061-20231102 (https://download.01.org/0day-ci/archive/20231103/202311031030.xZT1XBXd-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311031030.xZT1XBXd-lkp@intel.com/reproduce)
 
-By Shared Nothing do you mean some kind of log replay in a "mirror" filesys=
-tem ?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311031030.xZT1XBXd-lkp@intel.com/
 
+sparse warnings: (new ones prefixed by >>)
+   fs/bcachefs/disk_groups.c: note: in included file:
+   fs/bcachefs/bcachefs.h:957:9: sparse: sparse: array of flexible structures
+>> fs/bcachefs/disk_groups.c:534:6: sparse: sparse: symbol 'bch2_target_to_text_sb' was not declared. Should it be static?
 
-
-On Thu, Nov 2, 2023 at 3:41=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Thu, Nov 02, 2023 at 01:48:25PM +0100, Hannu Krosing wrote:
-> > What is the current thinking around using bacachefs as a cluster file
-> > system (CFS)?
-> >
-> > By CFS I mean a file system which can be mounted concurrently from
-> > many hosts or VMs.
-> >
-> > At high level it looks like it should be something quite easy to
-> > accommodate, bcachefs having grown out of caching work and the main
-> > difference between CFS and non-cluster FS being the ability to
-> > guarantee cache coherency.
-> >
-> > So what are your thoughts on this, assuming that bcachefs is runnning
-> > on a storage that is already available for all the hosts/VMs, what is
-> > missing and how hard would it be to get there ?
-> >
-> > I did not find anything about CFS support in the
-> > https://bcachefs.org/FAQ/ or other pages.
->
-> No, bcachefs would not be a good basis for a traditional shared storage
-> cluster filesystem.
->
-> Shared nothing, OTOH...
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
