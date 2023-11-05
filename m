@@ -2,119 +2,147 @@ Return-Path: <linux-bcachefs-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F8F9C4167D
-	for <linux-bcachefs@archiver.kernel.org>; Sun,  5 Nov 2023 20:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E059C4167D
+	for <linux-bcachefs@archiver.kernel.org>; Sun,  5 Nov 2023 20:56:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbjKEUau (ORCPT
+        id S229447AbjKEU4m (ORCPT
         <rfc822;linux-bcachefs@archiver.kernel.org>);
-        Sun, 5 Nov 2023 15:30:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
+        Sun, 5 Nov 2023 15:56:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjKEUau (ORCPT
+        with ESMTP id S229573AbjKEU4l (ORCPT
         <rfc822;linux-bcachefs@vger.kernel.org>);
-        Sun, 5 Nov 2023 15:30:50 -0500
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [IPv6:2001:41d0:203:375::b7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186A0B8
-        for <linux-bcachefs@vger.kernel.org>; Sun,  5 Nov 2023 12:30:47 -0800 (PST)
-Date:   Sun, 5 Nov 2023 15:30:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699216245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ADVJ+6DIh5mmhUFH9WjNHPkIvMW58mGXof8zs+EMIzA=;
-        b=esFn8luMDw7MkPedtR8BSZFDVQKmAQhJiNViIO7x5bSG1mBQUPkV0miyeAPbJz1yyHD/zi
-        66XUxbEwES4QAGhZYwyCOLG1/dSOFEGbo2FFYzY22YKQVPo2nnwHh6HICSqP2mB1wucw9j
-        NHd3bmvk9gutaYVwh5s9Gm9SUWqV2Ak=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     linux-bcachefs@vger.kernel.org
+        Sun, 5 Nov 2023 15:56:41 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907C0E0
+        for <linux-bcachefs@vger.kernel.org>; Sun,  5 Nov 2023 12:56:38 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3b587bd1a63so1566081b6e.1
+        for <linux-bcachefs@vger.kernel.org>; Sun, 05 Nov 2023 12:56:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699217798; x=1699822598; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tu011NtphqvDQPoDGfZ+UAh2eKpJuyPyJNXCmlGGePk=;
+        b=L8ReimV5QYFWmlcuqx+oaShUQezytP3w/TSP/UXkvLFHhI4rvrTq4Yca4iK/ob5nAm
+         6NOEaVQWSkbpsPlEcXlyRpJyk+FluCuF8lfks16GWC3/YNFmoo0yloMPS8yr/XogEYix
+         ovepmWSOioGPeShox+C77CQFWlFoeM8JG7ORim2gfHHYgNG36bhFL2op+TLsKaDkXcA8
+         KcegwBx4MVYe+a47TSFKsn9wWzGKoU4QUb9Y/g7GfbRoFMEi3y4wdW4VvXDGxnW5sKDR
+         tm/lVQMVX7QyU+9QZZIU9VITJwxMUVG+hw08+vPz1FUaTnQuJrIDz3+K32TSlxC+UlPI
+         tFhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699217798; x=1699822598;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tu011NtphqvDQPoDGfZ+UAh2eKpJuyPyJNXCmlGGePk=;
+        b=X07YWwkO6iM+1lMaSoFQZQ9FeC0S7erTr7ZhoxNoEDmVR+L423mLypKO+ie9lYJ3LA
+         hL5/BhLKVbCzxoCmmTkYG6iAbvaYDu8FQjjB18acsJk/xw+FGbh2JDdzz5QAMF/AC2CA
+         syhLOzR/s1dYqrpxTP1sYiSHX/76E/LuJL8X5fn2bJEB8ewyeRjST0/Fzt/13iWzN0sQ
+         6i7Ul6fZrccSOGrhZWvNaUc3FdoKZrtUcF7rmMqr2GGS5Qopx614binHuVtvVooQyfxj
+         Vqus/2lEKtIQy8ncxpYhQRYnZuf/6YDNF7veQ7qgwOTb2nCENy5oHibs4mRSTekO583O
+         Reyg==
+X-Gm-Message-State: AOJu0Yw1L7HGzqf/Z+V/k5sZrhrTrxssKYuY6Bs270VwvdTO0aL7ef43
+        IDp6VmZKtE/FQBhuYNsQZYW/qMSfhCvm8DPRPSw=
+X-Google-Smtp-Source: AGHT+IHJgA/XKtv6sWIrHa2X42RG0xXbGNE1IciqbcSEd78u1vFVIUXYY1ZtGVePsHAG1aiTvlhzFEzc4xqunKJQojY=
+X-Received: by 2002:a05:6808:a0e:b0:3b2:f4a2:e7fc with SMTP id
+ n14-20020a0568080a0e00b003b2f4a2e7fcmr4216293oij.25.1699217797906; Sun, 05
+ Nov 2023 12:56:37 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:ac9:7f8f:0:b0:4f0:1250:dd51 with HTTP; Sun, 5 Nov 2023
+ 12:56:37 -0800 (PST)
+In-Reply-To: <20231105203042.xr2qcdqqkbnpvnny@moria.home.lan>
+References: <CAGudoHGenxzk0ZqPXXi1_QDbfqQhGHu+wUwzyS6WmfkUZ1HiXA@mail.gmail.com>
+ <20231105162630.q25p2vz2egh7jb43@moria.home.lan> <CAGudoHFSpfiJYKf1RtEp1H80vne+JpiSonorwD4N5YoAM8Sn3w@mail.gmail.com>
+ <20231105201527.ahvcmrrmxex3hrlc@moria.home.lan> <CAGudoHFcAh=WpoL16yaf4oiq04Y_X5dzUskPuoqtZ_hgUL_MHQ@mail.gmail.com>
+ <20231105203042.xr2qcdqqkbnpvnny@moria.home.lan>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Sun, 5 Nov 2023 21:56:37 +0100
+Message-ID: <CAGudoHH_DDB+exZZh0kmzhCDjtQtejGsAqeh6dmgDGwC5BpzEg@mail.gmail.com>
 Subject: Re: long stalls when creating 20 directory trees of 1 million inodes
  in parallel
-Message-ID: <20231105203042.xr2qcdqqkbnpvnny@moria.home.lan>
-References: <CAGudoHGenxzk0ZqPXXi1_QDbfqQhGHu+wUwzyS6WmfkUZ1HiXA@mail.gmail.com>
- <20231105162630.q25p2vz2egh7jb43@moria.home.lan>
- <CAGudoHFSpfiJYKf1RtEp1H80vne+JpiSonorwD4N5YoAM8Sn3w@mail.gmail.com>
- <20231105201527.ahvcmrrmxex3hrlc@moria.home.lan>
- <CAGudoHFcAh=WpoL16yaf4oiq04Y_X5dzUskPuoqtZ_hgUL_MHQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGudoHFcAh=WpoL16yaf4oiq04Y_X5dzUskPuoqtZ_hgUL_MHQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-bcachefs.vger.kernel.org>
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 
-On Sun, Nov 05, 2023 at 09:27:15PM +0100, Mateusz Guzik wrote:
-> On 11/5/23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > On Sun, Nov 05, 2023 at 08:57:53PM +0100, Mateusz Guzik wrote:
-> >> On 11/5/23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >> > Can you check btree_transactions in debugfs?
-> >>
-> >> 3807 __bch2_create
-> >>   path 0 b l=0 subvolumes:0:1:0
-> >>     r l=0       ff4007690c378000 b l=0 subvolumes:SPOS_MAX locks 6:0:0
-> >> held by pid 0
-> >>   path 1 c l=0 inodes:0:805879636:U32_MAX
-> >>     w l=0       ff40076876671648 c l=0 inodes:0:805879636:U32_MAX
-> >> locks 0:1:1 held by pid 3807
-> >>   path 2 b l=0 inodes:0:805879771:0
-> >>     i l=0       ff4007683e267a00 b l=0 inodes:0:872415843:U32_MAX
-> >> locks 0:2:1 held by pid 3807
-> >>   path 3 c l=0 inodes:0:805879771:U32_MAX
-> >>     i l=0       ff4007691298d870 c l=0 inodes:0:805879771:U32_MAX
-> >> locks 0:1:0 held by pid 3807
-> >>   path 4 b l=0 inodes:0:805879772:U32_MAX
-> >>     w l=0       ff4007683e267a00 b l=0 inodes:0:872415843:U32_MAX
-> >> locks 0:2:1 held by pid 3807
-> >>   path 5 c l=0 inodes:0:805879772:U32_MAX
-> >>     w l=0       ff4007691298c958 c l=0 inodes:0:805879772:U32_MAX
-> >> locks 0:1:1 held by pid 3807
-> >>   path 6 b l=0 dirents:805879636:877646214245309706:U32_MAX
-> >>     w l=0       ff4007683e260a00 b l=0
-> >> dirents:872415232:213834028349939920:U32_MAX locks 0:1:1 held by pid
-> >> 3807
-> >>   path 7 c l=0 inodes:0:872415232:U32_MAX
-> >>     i l=0       ff40076903cdc000 c l=0 inodes:0:872415232:U32_MAX
-> >> locks 0:1:0 held by pid 3807
-> >> backtrace:
-> >>   [<0>] bch2_btree_key_cache_scan+0x33/0x450
-> >>   [<0>] do_shrink_slab+0x13c/0x360
-> >>   [<0>] shrink_slab+0xc9/0x3c0
-> >>   [<0>] shrink_node+0x363/0xb70
-> >>   [<0>] do_try_to_free_pages+0xd5/0x5b0
-> >>   [<0>] try_to_free_pages+0xdd/0x200
-> >>   [<0>] __alloc_pages_slowpath.constprop.0+0x2e4/0xd50
-> >>   [<0>] __alloc_pages+0x305/0x330
-> >>   [<0>] alloc_pages_mpol+0x91/0x1e0
-> >>   [<0>] allocate_slab+0x2d1/0x4d0
-> >>   [<0>] ___slab_alloc.constprop.0+0x42a/0x6c0
-> >>   [<0>] __kmem_cache_alloc_node+0x113/0x270
-> >>   [<0>] __kmalloc_node_track_caller+0x4d/0x150
-> >>   [<0>] krealloc+0x5d/0xc0
-> >>   [<0>] __bch2_trans_commit+0x1d59/0x1f30
-> >>   [<0>] __bch2_create+0x288/0x4e0
-> >>   [<0>] bch2_create+0x26/0x60
-> >>   [<0>] path_openat+0xe9f/0x11d0
-> >>   [<0>] do_filp_open+0xb4/0x160
-> >>   [<0>] do_sys_openat2+0x91/0xc0
-> >>   [<0>] __x64_sys_openat+0x6a/0xa0
-> >>   [<0>] do_syscall_64+0x32/0xf0
-> >>   [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> >
-> > So we called krealloc() with GFP_KERNEL, which then invoked key cache
-> > reclaim, with btree locks held - oops.
-> >
-> > Can you run scripts/faddr2line on __bch2_trans_commit+0x1d59/0x1f30 ?
-> >
-> 
-> __bch2_trans_commit+0x1d59/0x1f30:
-> btree_key_can_insert_cached at fs/bcachefs/btree_trans_commit.c:350
-> (inlined by) bch2_trans_commit_write_locked at
-> fs/bcachefs/btree_trans_commit.c:583
-> (inlined by) do_bch2_trans_commit at fs/bcachefs/btree_trans_commit.c:847
-> (inlined by) __bch2_trans_commit at fs/bcachefs/btree_trans_commit.c:1126
+On 11/5/23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> On Sun, Nov 05, 2023 at 09:27:15PM +0100, Mateusz Guzik wrote:
+>> On 11/5/23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>> > On Sun, Nov 05, 2023 at 08:57:53PM +0100, Mateusz Guzik wrote:
+>> >> On 11/5/23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>> >> > Can you check btree_transactions in debugfs?
+>> >>
+>> >> 3807 __bch2_create
+>> >>   path 0 b l=0 subvolumes:0:1:0
+>> >>     r l=0       ff4007690c378000 b l=0 subvolumes:SPOS_MAX locks 6:0:0
+>> >> held by pid 0
+>> >>   path 1 c l=0 inodes:0:805879636:U32_MAX
+>> >>     w l=0       ff40076876671648 c l=0 inodes:0:805879636:U32_MAX
+>> >> locks 0:1:1 held by pid 3807
+>> >>   path 2 b l=0 inodes:0:805879771:0
+>> >>     i l=0       ff4007683e267a00 b l=0 inodes:0:872415843:U32_MAX
+>> >> locks 0:2:1 held by pid 3807
+>> >>   path 3 c l=0 inodes:0:805879771:U32_MAX
+>> >>     i l=0       ff4007691298d870 c l=0 inodes:0:805879771:U32_MAX
+>> >> locks 0:1:0 held by pid 3807
+>> >>   path 4 b l=0 inodes:0:805879772:U32_MAX
+>> >>     w l=0       ff4007683e267a00 b l=0 inodes:0:872415843:U32_MAX
+>> >> locks 0:2:1 held by pid 3807
+>> >>   path 5 c l=0 inodes:0:805879772:U32_MAX
+>> >>     w l=0       ff4007691298c958 c l=0 inodes:0:805879772:U32_MAX
+>> >> locks 0:1:1 held by pid 3807
+>> >>   path 6 b l=0 dirents:805879636:877646214245309706:U32_MAX
+>> >>     w l=0       ff4007683e260a00 b l=0
+>> >> dirents:872415232:213834028349939920:U32_MAX locks 0:1:1 held by pid
+>> >> 3807
+>> >>   path 7 c l=0 inodes:0:872415232:U32_MAX
+>> >>     i l=0       ff40076903cdc000 c l=0 inodes:0:872415232:U32_MAX
+>> >> locks 0:1:0 held by pid 3807
+>> >> backtrace:
+>> >>   [<0>] bch2_btree_key_cache_scan+0x33/0x450
+>> >>   [<0>] do_shrink_slab+0x13c/0x360
+>> >>   [<0>] shrink_slab+0xc9/0x3c0
+>> >>   [<0>] shrink_node+0x363/0xb70
+>> >>   [<0>] do_try_to_free_pages+0xd5/0x5b0
+>> >>   [<0>] try_to_free_pages+0xdd/0x200
+>> >>   [<0>] __alloc_pages_slowpath.constprop.0+0x2e4/0xd50
+>> >>   [<0>] __alloc_pages+0x305/0x330
+>> >>   [<0>] alloc_pages_mpol+0x91/0x1e0
+>> >>   [<0>] allocate_slab+0x2d1/0x4d0
+>> >>   [<0>] ___slab_alloc.constprop.0+0x42a/0x6c0
+>> >>   [<0>] __kmem_cache_alloc_node+0x113/0x270
+>> >>   [<0>] __kmalloc_node_track_caller+0x4d/0x150
+>> >>   [<0>] krealloc+0x5d/0xc0
+>> >>   [<0>] __bch2_trans_commit+0x1d59/0x1f30
+>> >>   [<0>] __bch2_create+0x288/0x4e0
+>> >>   [<0>] bch2_create+0x26/0x60
+>> >>   [<0>] path_openat+0xe9f/0x11d0
+>> >>   [<0>] do_filp_open+0xb4/0x160
+>> >>   [<0>] do_sys_openat2+0x91/0xc0
+>> >>   [<0>] __x64_sys_openat+0x6a/0xa0
+>> >>   [<0>] do_syscall_64+0x32/0xf0
+>> >>   [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>> >
+>> > So we called krealloc() with GFP_KERNEL, which then invoked key cache
+>> > reclaim, with btree locks held - oops.
+>> >
+>> > Can you run scripts/faddr2line on __bch2_trans_commit+0x1d59/0x1f30 ?
+>> >
+>>
+>> __bch2_trans_commit+0x1d59/0x1f30:
+>> btree_key_can_insert_cached at fs/bcachefs/btree_trans_commit.c:350
+>> (inlined by) bch2_trans_commit_write_locked at
+>> fs/bcachefs/btree_trans_commit.c:583
+>> (inlined by) do_bch2_trans_commit at fs/bcachefs/btree_trans_commit.c:847
+>> (inlined by) __bch2_trans_commit at fs/bcachefs/btree_trans_commit.c:1126
+>
+> Fix is in the bcachefs-testing branch :)
+>
 
-Fix is in the bcachefs-testing branch :)
+have you tested this? looks rather fishy as there is no memcpy of the
+old content.
+
+-- 
+Mateusz Guzik <mjguzik gmail.com>
