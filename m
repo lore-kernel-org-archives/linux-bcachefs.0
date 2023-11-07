@@ -1,46 +1,86 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3AB18F;
-	Tue,  7 Nov 2023 00:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC937FD
+	for <linux-bcachefs@vger.kernel.org>; Tue,  7 Nov 2023 00:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2FYYS8MO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E2A7C433C7;
-	Tue,  7 Nov 2023 00:00:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1699315253;
-	bh=gWSQwVS/DuFY8epvQLsUoxyqrJ0L53S7NX9Y3cpdBb4=;
-	h=Date:From:To:Subject:From;
-	b=2FYYS8MOF+g1KB68wRaTBLt4qdi1oVNOVrcDhGPFKyzvQpkvWgDuhvgDRlPv0wRJ9
-	 JnCnzHfzpUgAfDJzf3Ko047wJ9qpjDPxUaQ+vacrgU1ekeVhxA1SkM+w7u2PxssFC5
-	 3MfQ3cbwb3IY+DCqoN+XoJe/TnyNPHlODGXbQPMA=
-Date: Mon, 6 Nov 2023 19:00:52 -0500
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: lartc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-assembly@vger.kernel.org, linux-bcache@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-btrace@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org, linux-csky@vger.kernel.org, 
-	linux-debuggers@vger.kernel.org, linux-edac@vger.kernel.org, linux-efi@vger.kernel.org
-Subject: PSA: this list has been migrated (no action required)
-Message-ID: <20231106-courageous-soft-caiman-7b3e6a@meerkat>
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BBv9tJ05"
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C36F1BF
+	for <linux-bcachefs@vger.kernel.org>; Mon,  6 Nov 2023 16:06:51 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc329ce84cso46191745ad.2
+        for <linux-bcachefs@vger.kernel.org>; Mon, 06 Nov 2023 16:06:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699315611; x=1699920411; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3lHltmHAT3Zjs2Or9HI9VhRMd3mEFK2uKST2wN2rlk=;
+        b=BBv9tJ05TyDM6ruq5aLaQG6bBpSjbAi22255S4eTkR3+Wt6CCj6eLdFORVXaj4cAIS
+         e8Qp6m2gtuaiKUBIurLBSJ8m1k95L24J0an7pbMqNr8aAk8yj1MsUaedccNQ8NbexXPX
+         DbG9xbQzCBsAgdjSupa4nzqhER4PMH0zyur0w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699315611; x=1699920411;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s3lHltmHAT3Zjs2Or9HI9VhRMd3mEFK2uKST2wN2rlk=;
+        b=YzQyk2A85yed1efLRvjmh3JvjxU7hyx6in4+7exlfJqHmglM7H3NtJ6Y6slDdBKHu0
+         Pgmn8VYHSrXVRMId3JUaGGZFeGskdht0wGURjjaHsIjeLpVcF5k1EkXvumI7dPB1X2l7
+         7NCgY54JzP/PAUDJn3xYrXnxIEqpYuHTUWiwnFx+utdMSrZ8Szgqe9tC0gyzqOIGnTGi
+         VqbFkGLZDFrPF/QqoVJpxFRAcRFckC30z1HXl+4sxCkiLvsgDnTFXsDyTH3NiiDaI+mO
+         nd5Ssq/K/0wnaUwfGL62QBz88DH03IWCndWIGWQXjTCoXSboAo3SsDjhejSCY74eArTv
+         mNpA==
+X-Gm-Message-State: AOJu0Ywzvu/hzVQxvuqwfI4NB3f78GT80bdGbyNaXvxci+o9w+I++gvc
+	5Zqfu27+DLRyiD3uILjzINyIcg==
+X-Google-Smtp-Source: AGHT+IE9z6AcBHk9ED2kB1KouwueOG1tOWlEHOZOuaUzdUabyJxe5oUCUNA4++KR+8Vk6f8c04Ot/w==
+X-Received: by 2002:a17:903:2594:b0:1c6:117b:7086 with SMTP id jb20-20020a170903259400b001c6117b7086mr27742336plb.5.1699315610900;
+        Mon, 06 Nov 2023 16:06:50 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j9-20020a17090276c900b001ca82a4a9c8sm6307809plt.269.2023.11.06.16.06.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 16:06:50 -0800 (PST)
+Date: Mon, 6 Nov 2023 16:06:49 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] bcachefs: Fix multiple -Warray-bounds warnings
+Message-ID: <202311061606.29DB1C09@keescook>
+References: <ZUldRv35EXKHAt3L@work>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ZUldRv35EXKHAt3L@work>
 
-Hello:
+On Mon, Nov 06, 2023 at 03:40:22PM -0600, Gustavo A. R. Silva wrote:
+> Transform zero-length array `entries` into a proper flexible-array
+> member in `struct journal_seq_blacklist_table`; and fix the following
+> -Warray-bounds warnings:
+> 
+> fs/bcachefs/journal_seq_blacklist.c:148:26: warning: array subscript idx is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:150:30: warning: array subscript idx is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:154:27: warning: array subscript idx is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:176:27: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:177:27: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:297:34: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:298:34: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:300:31: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> 
+> This results in no differences in binary output.
+> 
+> This helps with the ongoing efforts to globally enable -Warray-bounds.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-This list has been migrated to the new vger infrastructure. You should't need
-to change anything about how you participate with the list or how you receive
-mail.
+Thanks; that looks right to me.
 
-If something isn't working right, please reach out to helpdesk@kernel.org.
+-Kees
 
-Best regards,
-Konstantin
+-- 
+Kees Cook
