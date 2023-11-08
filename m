@@ -1,22 +1,22 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC7813AC4;
-	Wed,  8 Nov 2023 13:00:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2021182A2;
+	Wed,  8 Nov 2023 13:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B+f+/ny3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76C0EC433AD;
-	Wed,  8 Nov 2023 13:00:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HyUdTwUX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE3C9C43395;
+	Wed,  8 Nov 2023 13:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699448416;
-	bh=ZBKce+BclKJuPvfrGVaMlCG97KikRMQHFUuD4JaMpbQ=;
+	s=k20201202; t=1699448431;
+	bh=K9YdPzoARD4njnEo80jUrY+DZkb+0aAdqYzClA8UgAI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=B+f+/ny3qeJrR82O1C3PdnsXhEckmoDYhsV1vM5jFM7YlOprDL7q1wVovHZzO0od3
-	 499YY5TVYKzHq9eBMv3aYUirkmP6OZPe1fJ2h/Mg+S2sNhq4zXAR2Gwx7MoYvCVASU
-	 /bLoMQIPrglEOLJeGr4JPh3PDHW2NWOAViM8Pb8hdageFlq4VTahBUzddj3pHyTr52
-	 iGfe3Ul3olMGEGMt0WgZTqlKADqJR5tv399+1fcxttnnTSaKPF7rdZ2LT+sZV1AiC9
-	 bLfJaYESDDX5QTyMltr33GK7z00KWyXS8Ric8qjmd34KzH2arXpPmz9opQe/7smFnY
-	 iNa78T2aQ5d2g==
+	b=HyUdTwUXtZOlnyvxdNKc+kj+jb0JvSjpSyNuNfinD/hOMX3R5j5WCRvrkFeKCIoaK
+	 dck1LhuXouzgxrjEZ+GfXmwACWuIHu7Z5T4tv5Ur3mBUern292mV3o4hHeM6goJmTl
+	 07hDeR7Iqhwa3/f+qzmGQajf1dFdpx/z/q8jYxJI4nnayQSqsNQMlgpL0fthML/+e1
+	 RUA1p/Ek88IwoPkFfFrEZT9/Y2MOyc8v/2srZE3JErq77d73XQLbdWL9p5SFFwRzqp
+	 V4Zk/JhktD/mAeNqOSIIMV3pGJDyvfJKmq7usGaEaG4ltRDerYT+4+zq3kRGWGhqoG
+	 rX6LOl910Dk3Q==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org,
@@ -88,9 +88,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	dri-devel@lists.freedesktop.org,
 	linux-bcachefs@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 05/22] [RESEND] parport: gsc: mark init function static
-Date: Wed,  8 Nov 2023 13:58:26 +0100
-Message-Id: <20231108125843.3806765-6-arnd@kernel.org>
+Subject: [PATCH 06/22] [RESEND] stackleak: add declarations for global functions
+Date: Wed,  8 Nov 2023 13:58:27 +0100
+Message-Id: <20231108125843.3806765-7-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
@@ -104,30 +104,45 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This is only used locally, so mark it static to avoid a warning:
+With -Wmissing-prototypes enabled, the stackleak code produces a couple of
+warnings that have no declarations because they are only called from assembler:
 
-drivers/parport/parport_gsc.c:395:5: error: no previous prototype for 'parport_gsc_init' [-Werror=missing-prototypes]
+stackleak.c:127:25: error: no previous prototype for 'stackleak_erase' [-Werror=missing-prototypes]
+stackleak.c:139:25: error: no previous prototype for 'stackleak_erase_on_task_stack' [-Werror=missing-prototypes]
+stackleak.c:151:25: error: no previous prototype for 'stackleak_erase_off_task_stack' [-Werror=missing-prototypes]
+stackleak.c:159:49: error: no previous prototype for 'stackleak_track_stack' [-Werror=missing-prototypes]
 
-Acked-by: Helge Deller <deller@gmx.de>
-Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Add declarations to the stackleak header to shut up the warnings.
+
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/parport/parport_gsc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/stackleak.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/parport/parport_gsc.c b/drivers/parport/parport_gsc.c
-index 5e4475254bd0..c7e18382dc01 100644
---- a/drivers/parport/parport_gsc.c
-+++ b/drivers/parport/parport_gsc.c
-@@ -392,7 +392,7 @@ static struct parisc_driver parport_driver __refdata = {
- 	.remove		= __exit_p(parport_remove_chip),
- };
+diff --git a/include/linux/stackleak.h b/include/linux/stackleak.h
+index c36e7a3b45e7..3be2cb564710 100644
+--- a/include/linux/stackleak.h
++++ b/include/linux/stackleak.h
+@@ -14,6 +14,7 @@
  
--int parport_gsc_init(void)
-+static int parport_gsc_init(void)
- {
- 	return register_parisc_driver(&parport_driver);
+ #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
+ #include <asm/stacktrace.h>
++#include <linux/linkage.h>
+ 
+ /*
+  * The lowest address on tsk's stack which we can plausibly erase.
+@@ -76,6 +77,11 @@ static inline void stackleak_task_init(struct task_struct *t)
+ # endif
  }
+ 
++asmlinkage void noinstr stackleak_erase(void);
++asmlinkage void noinstr stackleak_erase_on_task_stack(void);
++asmlinkage void noinstr stackleak_erase_off_task_stack(void);
++void __no_caller_saved_registers noinstr stackleak_track_stack(void);
++
+ #else /* !CONFIG_GCC_PLUGIN_STACKLEAK */
+ static inline void stackleak_task_init(struct task_struct *t) { }
+ #endif
 -- 
 2.39.2
 
