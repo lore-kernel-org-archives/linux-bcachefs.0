@@ -1,249 +1,93 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D334430355;
-	Wed,  8 Nov 2023 23:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BzFtaBog"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FB6AC433C8;
-	Wed,  8 Nov 2023 23:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699485626;
-	bh=PYJW4QGKn9tJvNiaagWV7uxmfj3dj1vHSKjkB8gGQNU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=BzFtaBogfySwWTla2NJeVqR4PuaYoyopTLM2Vi9KPqLDdx3zZhWzGVJP/DnI0doAr
-	 DCysq9OUVMln4AwlnrEJVkGy7f+Qm12tVyciJjWeul+4uzovgGCKk2sMAtDMAjSHQk
-	 VewIlU9Taz4GP2QauTMdLCa7SvSTilwhfOh7tff1Ga+FrRKGb/HdT6qnkIpQd6cOAM
-	 O/27XvUeKFXk5bmEslLGwZ3jtw7QVPeQvIoDsIh/p8JjCWRipxoFk8lN/qC5a7ewR/
-	 H/tawx3cjSx2H40w4euTMdD4AcO2ZafY4Qwdj7yo9jdfRTzsx4bJpJ6lI9DE3yX0ny
-	 IuIsDgsRCUzJQ==
-Date: Thu, 9 Nov 2023 08:20:09 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, Arnd
- Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet Gupta
- <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Guo Ren <guoren@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Huacai Chen
- <chenhuacai@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Michal Simek
- <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh
- Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Geoff Levand <geoff@infradead.org>, Palmer
- Dabbelt <palmer@dabbelt.com>, Heiko Carstens <hca@linux.ibm.com>, John Paul
- Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller"
- <davem@davemloft.net>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, x86@kernel.org, Helge
- Deller <deller@gmx.de>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Timur Tabi <timur@kernel.org>,
- Kent Overstreet <kent.overstreet@linux.dev>, David Woodhouse
- <dwmw2@infradead.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S
- Keshavamurthy <anil.s.keshavamurthy@intel.com>, Kees Cook
- <keescook@chromium.org>, Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Nathan Chancellor <nathan@kernel.org>, Nick
- Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>,
- Al Viro <viro@zeniv.linux.org.uk>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
- <u.kleine-koenig@pengutronix.de>, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 03/22] [RESEND] kprobes: unify
- kprobes_exceptions_nofify() prototypes
-Message-Id: <20231109082009.a34621399a98181ee6cde60b@kernel.org>
-In-Reply-To: <20231108125843.3806765-4-arnd@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059EF7F4;
+	Thu,  9 Nov 2023 01:08:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B390211F;
+	Wed,  8 Nov 2023 17:08:19 -0800 (PST)
+Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.53])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SQkN45Xx2zfb3S;
+	Thu,  9 Nov 2023 09:08:04 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 9 Nov 2023 09:07:44 +0800
+Subject: Re: [PATCH 02/22] [RESEND^2] jffs2: mark
+ __jffs2_dbg_superblock_counts() static
+To: Arnd Bergmann <arnd@kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>, Masahiro Yamada
+	<masahiroy@kernel.org>, <linux-kbuild@vger.kernel.org>
+CC: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet
+ Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin
+ Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Guo Ren <guoren@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Huacai Chen
+	<chenhuacai@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Michal Simek
+	<monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh
+ Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+ Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Geoff Levand <geoff@infradead.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Heiko Carstens <hca@linux.ibm.com>, John Paul Adrian Glaubitz
+	<glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, Andy
+ Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, <x86@kernel.org>, Helge Deller <deller@gmx.de>,
+	Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Timur Tabi <timur@kernel.org>, Kent Overstreet
+	<kent.overstreet@linux.dev>, David Woodhouse <dwmw2@infradead.org>, "Naveen
+ N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
+	<anil.s.keshavamurthy@intel.com>, Kees Cook <keescook@chromium.org>, Vincenzo
+ Frascino <vincenzo.frascino@arm.com>, Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>, Nathan Chancellor
+	<nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Nicolas
+ Schier <nicolas@fjasle.eu>, Al Viro <viro@zeniv.linux.org.uk>,
+	=?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+	<linux-alpha@vger.kernel.org>, <linux-snps-arc@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-csky@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-m68k@lists.linux-m68k.org>, <linux-mips@vger.kernel.org>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+	<linux-s390@vger.kernel.org>, <linux-sh@vger.kernel.org>,
+	<sparclinux@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<linux-parisc@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+	<linux-fbdev@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-bcachefs@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Tudor
+ Ambarus <tudor.ambarus@linaro.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
-	<20231108125843.3806765-4-arnd@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20231108125843.3806765-3-arnd@kernel.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <cf3724db-e130-01f2-c41e-f2f1e88fc1a8@huawei.com>
+Date: Thu, 9 Nov 2023 09:07:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+In-Reply-To: <20231108125843.3806765-3-arnd@kernel.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
+X-CFilter-Loop: Reflected
 
-On Wed,  8 Nov 2023 13:58:24 +0100
-Arnd Bergmann <arnd@kernel.org> wrote:
-
+ÔÚ 2023/11/8 20:58, Arnd Bergmann Ð´µÀ:
 > From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Most architectures that support kprobes declare this function in their
-> own asm/kprobes.h header and provide an override, but some are missing
-> the prototype, which causes a warning for the __weak stub implementation:
-> 
-> kernel/kprobes.c:1865:12: error: no previous prototype for 'kprobe_exceptions_notify' [-Werror=missing-prototypes]
->  1865 | int __weak kprobe_exceptions_notify(struct notifier_block *self,
-> 
-> Move the prototype into linux/kprobes.h so it is visible to all
-> the definitions.
-
-Thanks, let me pick this to linux-trace tree.
-
-> 
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+> This function is only called locally and does not need to be
+> global. Since there is no external prototype, gcc warns about
+> the non-static definition:
+>
+> fs/jffs2/debug.c:160:6: error: no previous prototype for '__jffs2_dbg_superblock_counts' [-Werror=missing-prototypes]
+>
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  arch/arc/include/asm/kprobes.h     | 3 ---
->  arch/arm/include/asm/kprobes.h     | 2 --
->  arch/arm64/include/asm/kprobes.h   | 2 --
->  arch/mips/include/asm/kprobes.h    | 2 --
->  arch/powerpc/include/asm/kprobes.h | 2 --
->  arch/s390/include/asm/kprobes.h    | 2 --
->  arch/sh/include/asm/kprobes.h      | 2 --
->  arch/sparc/include/asm/kprobes.h   | 2 --
->  arch/x86/include/asm/kprobes.h     | 2 --
->  include/linux/kprobes.h            | 4 ++++
->  10 files changed, 4 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/arc/include/asm/kprobes.h b/arch/arc/include/asm/kprobes.h
-> index de1566e32cb8..68e8301c0df2 100644
-> --- a/arch/arc/include/asm/kprobes.h
-> +++ b/arch/arc/include/asm/kprobes.h
-> @@ -32,9 +32,6 @@ struct kprobe;
->  
->  void arch_remove_kprobe(struct kprobe *p);
->  
-> -int kprobe_exceptions_notify(struct notifier_block *self,
-> -			     unsigned long val, void *data);
-> -
->  struct prev_kprobe {
->  	struct kprobe *kp;
->  	unsigned long status;
-> diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
-> index e26a278d301a..5b8dbf1b0be4 100644
-> --- a/arch/arm/include/asm/kprobes.h
-> +++ b/arch/arm/include/asm/kprobes.h
-> @@ -40,8 +40,6 @@ struct kprobe_ctlblk {
->  
->  void arch_remove_kprobe(struct kprobe *);
->  int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
-> -int kprobe_exceptions_notify(struct notifier_block *self,
-> -			     unsigned long val, void *data);
->  
->  /* optinsn template addresses */
->  extern __visible kprobe_opcode_t optprobe_template_entry[];
-> diff --git a/arch/arm64/include/asm/kprobes.h b/arch/arm64/include/asm/kprobes.h
-> index 05cd82eeca13..be7a3680dadf 100644
-> --- a/arch/arm64/include/asm/kprobes.h
-> +++ b/arch/arm64/include/asm/kprobes.h
-> @@ -37,8 +37,6 @@ struct kprobe_ctlblk {
->  
->  void arch_remove_kprobe(struct kprobe *);
->  int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
-> -int kprobe_exceptions_notify(struct notifier_block *self,
-> -			     unsigned long val, void *data);
->  void __kretprobe_trampoline(void);
->  void __kprobes *trampoline_probe_handler(struct pt_regs *regs);
->  
-> diff --git a/arch/mips/include/asm/kprobes.h b/arch/mips/include/asm/kprobes.h
-> index 68b1e5d458cf..bc27d99c9436 100644
-> --- a/arch/mips/include/asm/kprobes.h
-> +++ b/arch/mips/include/asm/kprobes.h
-> @@ -71,8 +71,6 @@ struct kprobe_ctlblk {
->  	struct prev_kprobe prev_kprobe;
->  };
->  
-> -extern int kprobe_exceptions_notify(struct notifier_block *self,
-> -				    unsigned long val, void *data);
->  
->  #endif /* CONFIG_KPROBES */
->  #endif /* _ASM_KPROBES_H */
-> diff --git a/arch/powerpc/include/asm/kprobes.h b/arch/powerpc/include/asm/kprobes.h
-> index c8e4b4fd4e33..4525a9c68260 100644
-> --- a/arch/powerpc/include/asm/kprobes.h
-> +++ b/arch/powerpc/include/asm/kprobes.h
-> @@ -84,8 +84,6 @@ struct arch_optimized_insn {
->  	kprobe_opcode_t *insn;
->  };
->  
-> -extern int kprobe_exceptions_notify(struct notifier_block *self,
-> -					unsigned long val, void *data);
->  extern int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
->  extern int kprobe_handler(struct pt_regs *regs);
->  extern int kprobe_post_handler(struct pt_regs *regs);
-> diff --git a/arch/s390/include/asm/kprobes.h b/arch/s390/include/asm/kprobes.h
-> index 21b9e5290c04..01f1682a73b7 100644
-> --- a/arch/s390/include/asm/kprobes.h
-> +++ b/arch/s390/include/asm/kprobes.h
-> @@ -73,8 +73,6 @@ struct kprobe_ctlblk {
->  void arch_remove_kprobe(struct kprobe *p);
->  
->  int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
-> -int kprobe_exceptions_notify(struct notifier_block *self,
-> -	unsigned long val, void *data);
->  
->  #define flush_insn_slot(p)	do { } while (0)
->  
-> diff --git a/arch/sh/include/asm/kprobes.h b/arch/sh/include/asm/kprobes.h
-> index eeba83e0a7d2..65d4c3316a5b 100644
-> --- a/arch/sh/include/asm/kprobes.h
-> +++ b/arch/sh/include/asm/kprobes.h
-> @@ -46,8 +46,6 @@ struct kprobe_ctlblk {
->  };
->  
->  extern int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
-> -extern int kprobe_exceptions_notify(struct notifier_block *self,
-> -				    unsigned long val, void *data);
->  extern int kprobe_handle_illslot(unsigned long pc);
->  #else
->  
-> diff --git a/arch/sparc/include/asm/kprobes.h b/arch/sparc/include/asm/kprobes.h
-> index 06c2bc767ef7..aec742cd898f 100644
-> --- a/arch/sparc/include/asm/kprobes.h
-> +++ b/arch/sparc/include/asm/kprobes.h
-> @@ -47,8 +47,6 @@ struct kprobe_ctlblk {
->  	struct prev_kprobe prev_kprobe;
->  };
->  
-> -int kprobe_exceptions_notify(struct notifier_block *self,
-> -			     unsigned long val, void *data);
->  int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
->  asmlinkage void __kprobes kprobe_trap(unsigned long trap_level,
->  				      struct pt_regs *regs);
-> diff --git a/arch/x86/include/asm/kprobes.h b/arch/x86/include/asm/kprobes.h
-> index a2e9317aad49..5939694dfb28 100644
-> --- a/arch/x86/include/asm/kprobes.h
-> +++ b/arch/x86/include/asm/kprobes.h
-> @@ -113,8 +113,6 @@ struct kprobe_ctlblk {
->  };
->  
->  extern int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
-> -extern int kprobe_exceptions_notify(struct notifier_block *self,
-> -				    unsigned long val, void *data);
->  extern int kprobe_int3_handler(struct pt_regs *regs);
->  
->  #else
-> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> index 365eb092e9c4..ab1da3142b06 100644
-> --- a/include/linux/kprobes.h
-> +++ b/include/linux/kprobes.h
-> @@ -445,6 +445,10 @@ int kprobe_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
->  
->  int arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
->  			    char *type, char *sym);
-> +
-> +int kprobe_exceptions_notify(struct notifier_block *self,
-> +			     unsigned long val, void *data);
-> +
->  #else /* !CONFIG_KPROBES: */
->  
->  static inline int kprobe_fault_handler(struct pt_regs *regs, int trapnr)
-> -- 
-> 2.39.2
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>   fs/jffs2/debug.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
