@@ -1,30 +1,30 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89A938DCE
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5E238DD3
 	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Nov 2023 16:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="raCHQbMw"
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C663EB0B
-	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Nov 2023 08:32:08 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tjs2Elfj"
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b3])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D10D3EB0C
+	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Nov 2023 08:32:09 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699633927;
+	t=1699633928;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6PTDoOl6tPuo40eF69102Y9ey7E7VyYY/tkdSJ65F0Q=;
-	b=raCHQbMw9OXU7Q1H1lvHV0o6gdRlr4Sp8wTEzOf24CQNl0pFLtVOx85QubEnbZJZoc0qzc
-	3ycHYvr3P7iehQvfcETImyDdZeiwnixozoogu3fAkZwbXarCd0ocZvG76rULyN/pACRJo9
-	F5VTdMDOCheGbzBGwrWDA5FruT8Twhs=
+	bh=pRfLe/sqECEKYl22qxyfv5y+YIiQDkzwYjAziHjsaWo=;
+	b=tjs2ElfjxYOWOtr7NOyh/pZWZnt+dVdU4auWaggcK/CwmQJ6S9j7E/qUR8cn1OSBJt3PuE
+	OfD/UjdB9KMxvOR84tE08NiqTmK6iIDAi7lqolRgkCai0sfiME2h0w2InQffiPGuv6SixY
+	+ETZKKpfBorXbl/q70MmCCcq/ET5Pe4=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 06/17] bcachefs: Go rw before journal replay
-Date: Fri, 10 Nov 2023 11:31:43 -0500
-Message-ID: <20231110163157.2736111-7-kent.overstreet@linux.dev>
+Subject: [PATCH 07/17] bcachefs: Make journal replay more efficient
+Date: Fri, 10 Nov 2023 11:31:44 -0500
+Message-ID: <20231110163157.2736111-8-kent.overstreet@linux.dev>
 In-Reply-To: <20231110163157.2736111-1-kent.overstreet@linux.dev>
 References: <20231110163157.2736111-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -36,58 +36,159 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This gets us slightly nicer log messages.
+Journal replay now first attempts to replay keys in sorted order,
+similar to how the btree write buffer flush path works.
 
-Also, this slightly clarifies synchronization of c->journal_keys; after
-we go RW it's in use by multiple threads (so that the btree iterator
-code can overlay keys from the journal); so it has to be prepped before
-that point.
+Any keys that can not be replayed due to journal deadlock are then left
+for later and replayed in journal order, unpinning journal entries as we
+go.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/recovery.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ fs/bcachefs/errcode.h  |  1 -
+ fs/bcachefs/recovery.c | 84 ++++++++++++++++++++++++++++--------------
+ 2 files changed, 56 insertions(+), 29 deletions(-)
 
+diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
+index 68a1a96bb7ca..e5c3262cc303 100644
+--- a/fs/bcachefs/errcode.h
++++ b/fs/bcachefs/errcode.h
+@@ -73,7 +73,6 @@
+ 	x(ENOMEM,			ENOMEM_fsck_add_nlink)			\
+ 	x(ENOMEM,			ENOMEM_journal_key_insert)		\
+ 	x(ENOMEM,			ENOMEM_journal_keys_sort)		\
+-	x(ENOMEM,			ENOMEM_journal_replay)			\
+ 	x(ENOMEM,			ENOMEM_read_superblock_clean)		\
+ 	x(ENOMEM,			ENOMEM_fs_alloc)			\
+ 	x(ENOMEM,			ENOMEM_fs_name_alloc)			\
 diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-index 8fe39a91beed..6eafff2557a4 100644
+index 6eafff2557a4..3524d1e0003e 100644
 --- a/fs/bcachefs/recovery.c
 +++ b/fs/bcachefs/recovery.c
-@@ -148,9 +148,6 @@ static int bch2_journal_replay(struct bch_fs *c)
- 	size_t i;
+@@ -98,6 +98,9 @@ static int bch2_journal_replay_key(struct btree_trans *trans,
+ 	unsigned update_flags = BTREE_TRIGGER_NORUN;
  	int ret;
  
--	move_gap(keys->d, keys->nr, keys->size, keys->gap, keys->nr);
--	keys->gap = keys->nr;
--
- 	keys_sorted = kvmalloc_array(keys->nr, sizeof(*keys_sorted), GFP_KERNEL);
- 	if (!keys_sorted)
- 		return -BCH_ERR_ENOMEM_journal_replay;
-@@ -177,7 +174,6 @@ static int bch2_journal_replay(struct bch_fs *c)
- 		replay_now_at(j, k->journal_seq);
++	if (k->overwritten)
++		return 0;
++
+ 	trans->journal_res.seq = k->journal_seq;
  
- 		ret = bch2_trans_do(c, NULL, NULL,
--				    BTREE_INSERT_LAZY_RW|
- 				    BTREE_INSERT_NOFAIL|
- 				    (!k->allocated
- 				     ? BTREE_INSERT_JOURNAL_REPLAY|BCH_WATERMARK_reclaim
-@@ -491,7 +487,19 @@ static int bch2_check_allocations(struct bch_fs *c)
- 
- static int bch2_set_may_go_rw(struct bch_fs *c)
+ 	/*
+@@ -141,24 +144,14 @@ static int journal_sort_seq_cmp(const void *_l, const void *_r)
+ static int bch2_journal_replay(struct bch_fs *c)
  {
-+	struct journal_keys *keys = &c->journal_keys;
+ 	struct journal_keys *keys = &c->journal_keys;
+-	struct journal_key **keys_sorted, *k;
++	DARRAY(struct journal_key *) keys_sorted = { 0 };
++	struct journal_key **kp;
+ 	struct journal *j = &c->journal;
+ 	u64 start_seq	= c->journal_replay_seq_start;
+ 	u64 end_seq	= c->journal_replay_seq_start;
+-	size_t i;
++	struct btree_trans *trans = bch2_trans_get(c);
+ 	int ret;
+ 
+-	keys_sorted = kvmalloc_array(keys->nr, sizeof(*keys_sorted), GFP_KERNEL);
+-	if (!keys_sorted)
+-		return -BCH_ERR_ENOMEM_journal_replay;
+-
+-	for (i = 0; i < keys->nr; i++)
+-		keys_sorted[i] = &keys->d[i];
+-
+-	sort(keys_sorted, keys->nr,
+-	     sizeof(keys_sorted[0]),
+-	     journal_sort_seq_cmp, NULL);
+-
+ 	if (keys->nr) {
+ 		ret = bch2_journal_log_msg(c, "Starting journal replay (%zu keys in entries %llu-%llu)",
+ 					   keys->nr, start_seq, end_seq);
+@@ -166,26 +159,61 @@ static int bch2_journal_replay(struct bch_fs *c)
+ 			goto err;
+ 	}
+ 
+-	for (i = 0; i < keys->nr; i++) {
+-		k = keys_sorted[i];
++	/*
++	 * First, attempt to replay keys in sorted order. This is more
++	 * efficient, but some might fail if that would cause a journal
++	 * deadlock.
++	 */
++	for (size_t i = 0; i < keys->nr; i++) {
++		cond_resched();
++
++		struct journal_key *k = keys->d + i;
++
++		ret = commit_do(trans, NULL, NULL,
++				BTREE_INSERT_NOFAIL|
++				BTREE_INSERT_JOURNAL_RECLAIM|
++				(!k->allocated ? BTREE_INSERT_JOURNAL_REPLAY : 0),
++			     bch2_journal_replay_key(trans, k));
++		BUG_ON(!ret && !k->overwritten);
++		if (ret) {
++			ret = darray_push(&keys_sorted, k);
++			if (ret)
++				goto err;
++		}
++	}
 +
 +	/*
-+	 * After we go RW, the journal keys buffer can't be modified (except for
-+	 * setting journal_key->overwritten: it will be accessed by multiple
-+	 * threads
++	 * Now, replay any remaining keys in the order in which they appear in
++	 * the journal, unpinning those journal entries as we go:
 +	 */
-+	move_gap(keys->d, keys->nr, keys->size, keys->gap, keys->nr);
-+	keys->gap = keys->nr;
++	sort(keys_sorted.data, keys_sorted.nr,
++	     sizeof(keys_sorted.data[0]),
++	     journal_sort_seq_cmp, NULL);
+ 
++	darray_for_each(keys_sorted, kp) {
+ 		cond_resched();
+ 
++		struct journal_key *k = *kp;
 +
- 	set_bit(BCH_FS_MAY_GO_RW, &c->flags);
-+	if (keys->nr)
-+		return bch2_fs_read_write_early(c);
- 	return 0;
+ 		replay_now_at(j, k->journal_seq);
+ 
+-		ret = bch2_trans_do(c, NULL, NULL,
+-				    BTREE_INSERT_NOFAIL|
+-				    (!k->allocated
+-				     ? BTREE_INSERT_JOURNAL_REPLAY|BCH_WATERMARK_reclaim
+-				     : 0),
++		ret = commit_do(trans, NULL, NULL,
++				BTREE_INSERT_NOFAIL|
++				(!k->allocated
++				 ? BTREE_INSERT_JOURNAL_REPLAY|BCH_WATERMARK_reclaim
++				 : 0),
+ 			     bch2_journal_replay_key(trans, k));
+-		if (ret) {
+-			bch_err(c, "journal replay: error while replaying key at btree %s level %u: %s",
+-				bch2_btree_id_str(k->btree_id), k->level, bch2_err_str(ret));
++		bch_err_msg(c, ret, "while replaying key at btree %s level %u:",
++			    bch2_btree_id_str(k->btree_id), k->level);
++		if (ret)
+ 			goto err;
+-		}
++
++		BUG_ON(!k->overwritten);
+ 	}
+ 
++	bch2_trans_put(trans);
++	trans = NULL;
++
+ 	replay_now_at(j, j->replay_journal_seq_end);
+ 	j->replay_journal_seq = 0;
+ 
+@@ -196,10 +224,10 @@ static int bch2_journal_replay(struct bch_fs *c)
+ 	if (keys->nr && !ret)
+ 		bch2_journal_log_msg(c, "journal replay finished");
+ err:
+-	kvfree(keys_sorted);
+-
+-	if (ret)
+-		bch_err_fn(c, ret);
++	if (trans)
++		bch2_trans_put(trans);
++	darray_exit(&keys_sorted);
++	bch_err_fn(c, ret);
+ 	return ret;
  }
  
 -- 
