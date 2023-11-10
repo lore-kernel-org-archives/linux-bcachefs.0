@@ -1,30 +1,30 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B7C38DD6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35F0338DF2
 	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Nov 2023 16:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X/RU+YLs"
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8843EB13
-	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Nov 2023 08:32:12 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KItvQjYR"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BEE3EB07
+	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Nov 2023 08:32:13 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699633931;
+	t=1699633932;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7CFar9D5MrlKsW1n8xd7hWJxjk39TZ+wr617lkAIHpU=;
-	b=X/RU+YLsf+95/Oe8mnSWX0j56JPhJuTmOCOevoDyWmrSLVcskdAO+i4EPiBexzDLicjVch
-	n8HEQ+GMFEB6nw1oT6ns/WHjMYlSrQCFcqqgiWXyVoFdW9NeEnWLklo8UjUXqKyRkeD8R+
-	QT72uUYN4MaKt3z6Dgrk+hCZhfK3umg=
+	bh=0RPu8WaxZtmwWfVzsOY7JqDLc0sR8czY/b6xfUl63aQ=;
+	b=KItvQjYRF2pkRW5Sv6VTPGic9Fb28DxYQisOV0hONlS6qu+5bKBm2Z2qPMiF4dg45aJ/ON
+	1p5uoAVg7+MKhA1o2nWj+yW+WVYaXVCWscovCnizeHwDozSC6HLjxr/vKZQo+Tm3qq8VHN
+	tsEK7G0eOsPfu24KGTYaNFJ9mYj48so=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 13/17] bcachefs: bch2_btree_write_buffer_flush_locked()
-Date: Fri, 10 Nov 2023 11:31:50 -0500
-Message-ID: <20231110163157.2736111-14-kent.overstreet@linux.dev>
+Subject: [PATCH 15/17] bcachefs: Improve btree write buffer tracepoints
+Date: Fri, 10 Nov 2023 11:31:52 -0500
+Message-ID: <20231110163157.2736111-16-kent.overstreet@linux.dev>
 In-Reply-To: <20231110163157.2736111-1-kent.overstreet@linux.dev>
 References: <20231110163157.2736111-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -36,127 +36,87 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Minor refactoring - improved naming, and move the responsibility for
-flush_lock to the caller instead of having it be shared.
+ - add a tracepoint for write_buffer_flush_sync; this is expensive
+ - fix the write_buffer_flush_slowpath tracepoint
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/btree_trans_commit.c |  6 ++++--
- fs/bcachefs/btree_write_buffer.c | 23 +++++++++++++----------
- fs/bcachefs/btree_write_buffer.h |  2 +-
- 3 files changed, 18 insertions(+), 13 deletions(-)
+ fs/bcachefs/btree_write_buffer.c |  4 +++-
+ fs/bcachefs/trace.h              | 31 ++++++++++++++++++++++++-------
+ 2 files changed, 27 insertions(+), 8 deletions(-)
 
-diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
-index 929fe398f1db..722542316eb1 100644
---- a/fs/bcachefs/btree_trans_commit.c
-+++ b/fs/bcachefs/btree_trans_commit.c
-@@ -962,7 +962,8 @@ int bch2_trans_commit_error(struct btree_trans *trans, unsigned flags,
- 
- 			if (wb->state.nr > wb->size * 3 / 4) {
- 				bch2_trans_begin(trans);
--				ret = __bch2_btree_write_buffer_flush(trans, true);
-+				ret = bch2_btree_write_buffer_flush_locked(trans);
-+				mutex_unlock(&wb->flush_lock);
- 				if (!ret) {
- 					trace_and_count(c, trans_restart_write_buffer_flush, trans, _THIS_IP_);
- 					ret = btree_trans_restart(trans, BCH_ERR_transaction_restart_write_buffer_flush);
-@@ -1081,7 +1082,8 @@ int __bch2_trans_commit(struct btree_trans *trans, unsigned flags)
- 		bch2_trans_begin(trans);
- 		bch2_trans_unlock(trans);
- 
--		ret = __bch2_btree_write_buffer_flush(trans, true);
-+		ret = bch2_btree_write_buffer_flush_locked(trans);
-+		mutex_unlock(&c->btree_write_buffer.flush_lock);
- 		if (!ret) {
- 			trace_and_count(c, trans_restart_write_buffer_flush, trans, _THIS_IP_);
- 			ret = btree_trans_restart(trans, BCH_ERR_transaction_restart_write_buffer_flush);
 diff --git a/fs/bcachefs/btree_write_buffer.c b/fs/bcachefs/btree_write_buffer.c
-index 7f358a3d0789..4eced8b161bd 100644
+index be8308789477..74d864715b39 100644
 --- a/fs/bcachefs/btree_write_buffer.c
 +++ b/fs/bcachefs/btree_write_buffer.c
-@@ -137,7 +137,7 @@ btree_write_buffered_insert(struct btree_trans *trans,
- 	return ret;
- }
- 
--int __bch2_btree_write_buffer_flush(struct btree_trans *trans, bool locked)
-+int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
- {
- 	struct bch_fs *c = trans->c;
- 	struct journal *j = &c->journal;
-@@ -152,9 +152,6 @@ int __bch2_btree_write_buffer_flush(struct btree_trans *trans, bool locked)
- 
- 	memset(&pin, 0, sizeof(pin));
- 
--	if (!locked && !mutex_trylock(&wb->flush_lock))
--		return 0;
--
- 	bch2_journal_pin_copy(j, &pin, &wb->journal_pin,
- 			      bch2_btree_write_buffer_journal_flush);
- 	bch2_journal_pin_drop(j, &wb->journal_pin);
-@@ -237,7 +234,6 @@ int __bch2_btree_write_buffer_flush(struct btree_trans *trans, bool locked)
- 	bch2_fs_fatal_err_on(ret, c, "%s: insert error %s", __func__, bch2_err_str(ret));
- out:
+@@ -236,7 +236,7 @@ int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
  	bch2_journal_pin_drop(j, &pin);
--	mutex_unlock(&wb->flush_lock);
  	return ret;
  slowpath:
- 	trace_write_buffer_flush_slowpath(trans, i - keys, nr);
-@@ -280,8 +276,9 @@ int bch2_btree_write_buffer_flush_sync(struct btree_trans *trans)
- 		return -BCH_ERR_erofs_no_writes;
+-	trace_write_buffer_flush_slowpath(trans, i - keys, nr);
++	trace_write_buffer_flush_slowpath(trans, slowpath, nr);
  
- 	bch2_trans_unlock(trans);
--	mutex_lock(&trans->c->btree_write_buffer.flush_lock);
--	int ret = __bch2_btree_write_buffer_flush(trans, true);
-+	mutex_lock(&c->btree_write_buffer.flush_lock);
-+	int ret = bch2_btree_write_buffer_flush_locked(trans);
-+	mutex_unlock(&c->btree_write_buffer.flush_lock);
- 	bch2_write_ref_put(c, BCH_WRITE_REF_btree_write_buffer);
- 	return ret;
- }
-@@ -289,11 +286,16 @@ int bch2_btree_write_buffer_flush_sync(struct btree_trans *trans)
- int bch2_btree_write_buffer_flush(struct btree_trans *trans)
- {
- 	struct bch_fs *c = trans->c;
-+	struct btree_write_buffer *wb = &c->btree_write_buffer;
-+	int ret = 0;
- 
+ 	/*
+ 	 * Now sort the rest by journal seq and bump the journal pin as we go.
+@@ -275,6 +275,8 @@ int bch2_btree_write_buffer_flush_sync(struct btree_trans *trans)
  	if (!bch2_write_ref_tryget(c, BCH_WRITE_REF_btree_write_buffer))
  		return -BCH_ERR_erofs_no_writes;
  
--	int ret = __bch2_btree_write_buffer_flush(trans, false);
-+	if (mutex_trylock(&wb->flush_lock)) {
-+		ret = bch2_btree_write_buffer_flush_locked(trans);
-+		mutex_unlock(&wb->flush_lock);
-+	}
- 	bch2_write_ref_put(c, BCH_WRITE_REF_btree_write_buffer);
- 	return ret;
- }
-@@ -305,9 +307,10 @@ static int bch2_btree_write_buffer_journal_flush(struct journal *j,
- 	struct btree_write_buffer *wb = &c->btree_write_buffer;
++	trace_write_buffer_flush_sync(trans, _RET_IP_);
++
+ 	bch2_trans_unlock(trans);
+ 	mutex_lock(&c->btree_write_buffer.flush_lock);
+ 	int ret = bch2_btree_write_buffer_flush_locked(trans);
+diff --git a/fs/bcachefs/trace.h b/fs/bcachefs/trace.h
+index 7857671159b4..8fadf06c7dbf 100644
+--- a/fs/bcachefs/trace.h
++++ b/fs/bcachefs/trace.h
+@@ -1298,21 +1298,38 @@ TRACE_EVENT(write_buffer_flush,
+ 		  __entry->nr, __entry->size, __entry->skipped, __entry->fast)
+ );
  
- 	mutex_lock(&wb->flush_lock);
-+	int ret = bch2_trans_run(c, bch2_btree_write_buffer_flush_locked(trans));
-+	mutex_unlock(&wb->flush_lock);
++TRACE_EVENT(write_buffer_flush_sync,
++	TP_PROTO(struct btree_trans *trans, unsigned long caller_ip),
++	TP_ARGS(trans, caller_ip),
++
++	TP_STRUCT__entry(
++		__array(char,			trans_fn, 32	)
++		__field(unsigned long,		caller_ip	)
++	),
++
++	TP_fast_assign(
++		strscpy(__entry->trans_fn, trans->fn, sizeof(__entry->trans_fn));
++		__entry->caller_ip		= caller_ip;
++	),
++
++	TP_printk("%s %pS", __entry->trans_fn, (void *) __entry->caller_ip)
++);
++
+ TRACE_EVENT(write_buffer_flush_slowpath,
+-	TP_PROTO(struct btree_trans *trans, size_t nr, size_t size),
+-	TP_ARGS(trans, nr, size),
++	TP_PROTO(struct btree_trans *trans, size_t slowpath, size_t total),
++	TP_ARGS(trans, slowpath, total),
  
--	return bch2_trans_run(c,
--			__bch2_btree_write_buffer_flush(trans, true));
-+	return ret;
- }
+ 	TP_STRUCT__entry(
+-		__field(size_t,		nr		)
+-		__field(size_t,		size		)
++		__field(size_t,		slowpath	)
++		__field(size_t,		total		)
+ 	),
  
- static inline u64 btree_write_buffer_ref(int idx)
-diff --git a/fs/bcachefs/btree_write_buffer.h b/fs/bcachefs/btree_write_buffer.h
-index 8639b4209544..3735bdcf11f7 100644
---- a/fs/bcachefs/btree_write_buffer.h
-+++ b/fs/bcachefs/btree_write_buffer.h
-@@ -2,7 +2,7 @@
- #ifndef _BCACHEFS_BTREE_WRITE_BUFFER_H
- #define _BCACHEFS_BTREE_WRITE_BUFFER_H
+ 	TP_fast_assign(
+-		__entry->nr	= nr;
+-		__entry->size	= size;
++		__entry->slowpath	= slowpath;
++		__entry->total		= total;
+ 	),
  
--int __bch2_btree_write_buffer_flush(struct btree_trans *, bool);
-+int bch2_btree_write_buffer_flush_locked(struct btree_trans *);
- int bch2_btree_write_buffer_flush_sync(struct btree_trans *);
- int bch2_btree_write_buffer_flush(struct btree_trans *);
+-	TP_printk("%zu/%zu", __entry->nr, __entry->size)
++	TP_printk("%zu/%zu", __entry->slowpath, __entry->total)
+ );
  
+ #endif /* _TRACE_BCACHEFS_H */
 -- 
 2.42.0
 
