@@ -1,30 +1,30 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B5938DC5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E74538DD1
 	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Nov 2023 16:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C2NSWLrq"
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA7B3EB08
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SL3rlI0q"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B893EB03
 	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Nov 2023 08:32:11 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699633929;
+	t=1699633930;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gymOPzA4EO+MlthIckrUAdFfMv+mkbLMegehE/EQmG4=;
-	b=C2NSWLrqO5l7aCQkxMk7Oafg5MsC+AZ0XHXqcYWyVmHcQzeW1Koge0301RGU1iVMlije1D
-	t6TT/v09fCT5Ih9OUZgk4VEH+bULrMnAfr3Em6obmpnAAbFfmvV6T7EqEfWxJ2Cpr5xOws
-	vE+gnnWqOHz8/8PY0kBEob1sdmRyT3M=
+	bh=/dDUz52QBAudFxMUHsk8Wzp5IttQVxZ3e38yHrs3nKU=;
+	b=SL3rlI0q9oP43Dg97aU4hEKWmV00dchqpFE+4AWh5kkGyAzMjVehq9YujyH/pPIgu8+T5Y
+	chf+iYX54faFH0pBH54j5KC1QMlI6p7Biv5hQpWjusLNQG7Pnpn++8tNDGCgV49fZnIPp0
+	JvMeUwUtOqbPJeahxfDZquqJ2pNbYMc=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 10/17] bcachefs: journal->buf_lock
-Date: Fri, 10 Nov 2023 11:31:47 -0500
-Message-ID: <20231110163157.2736111-11-kent.overstreet@linux.dev>
+Subject: [PATCH 11/17] bcachefs: bch2_journal_block_reservations()
+Date: Fri, 10 Nov 2023 11:31:48 -0500
+Message-ID: <20231110163157.2736111-12-kent.overstreet@linux.dev>
 In-Reply-To: <20231110163157.2736111-1-kent.overstreet@linux.dev>
 References: <20231110163157.2736111-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -36,61 +36,84 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Add a new lock for synchronizing between journal IO path and btree write
-buffer flush.
+Add a new journal method for blocking new journal reservations and
+waiting on outstanding reservations, to be used by the btree write
+buffer flush path.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/journal.c       | 1 +
- fs/bcachefs/journal_io.c    | 2 ++
- fs/bcachefs/journal_types.h | 6 ++++++
- 3 files changed, 9 insertions(+)
+ fs/bcachefs/journal.c | 29 +++++++++++++++++++++++++++++
+ fs/bcachefs/journal.h |  3 ++-
+ 2 files changed, 31 insertions(+), 1 deletion(-)
 
 diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
-index 7d448136434b..3a6b73d4ec24 100644
+index 3a6b73d4ec24..5b390cb91884 100644
 --- a/fs/bcachefs/journal.c
 +++ b/fs/bcachefs/journal.c
-@@ -1215,6 +1215,7 @@ int bch2_fs_journal_init(struct journal *j)
- 	static struct lock_class_key res_key;
- 	unsigned i;
+@@ -147,6 +147,7 @@ void bch2_journal_buf_put_final(struct journal *j, u64 seq, bool write)
+ 		bch2_journal_reclaim_fast(j);
+ 	if (write)
+ 		closure_call(&j->io, bch2_journal_write, c->io_complete_wq, NULL);
++	wake_up(&j->wait);
+ }
  
-+	mutex_init(&j->buf_lock);
- 	spin_lock_init(&j->lock);
- 	spin_lock_init(&j->err_lock);
- 	init_waitqueue_head(&j->wait);
-diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-index 51796454bba4..2394d4b02fff 100644
---- a/fs/bcachefs/journal_io.c
-+++ b/fs/bcachefs/journal_io.c
-@@ -1869,9 +1869,11 @@ void bch2_journal_write(struct closure *cl)
- 	if (ret)
- 		goto err;
+ /*
+@@ -764,6 +765,34 @@ void bch2_journal_block(struct journal *j)
+ 	journal_quiesce(j);
+ }
  
-+	mutex_lock(&j->buf_lock);
- 	journal_buf_realloc(j, w);
++/*
++ * XXX: ideally this would not be closing the current journal entry, but
++ * otherwise we do not have a way to avoid racing with res_get() - j->blocked
++ * will race.
++ */
++static bool journal_reservations_stopped(struct journal *j)
++{
++	union journal_res_state s;
++
++	journal_entry_close(j);
++
++	s.v = atomic64_read_acquire(&j->reservations.counter);
++
++	return  s.buf0_count == 0 &&
++		s.buf1_count == 0 &&
++		s.buf2_count == 0 &&
++		s.buf3_count == 0;
++}
++
++void bch2_journal_block_reservations(struct journal *j)
++{
++	spin_lock(&j->lock);
++	j->blocked++;
++	spin_unlock(&j->lock);
++
++	wait_event(j->wait, journal_reservations_stopped(j));
++}
++
+ /* allocate journal on a device: */
  
- 	ret = bch2_journal_write_prep(j, w);
-+	mutex_unlock(&j->buf_lock);
- 	if (ret)
- 		goto err;
+ static int __bch2_set_nr_journal_buckets(struct bch_dev *ca, unsigned nr,
+diff --git a/fs/bcachefs/journal.h b/fs/bcachefs/journal.h
+index c85d01cf4948..310654bb74de 100644
+--- a/fs/bcachefs/journal.h
++++ b/fs/bcachefs/journal.h
+@@ -259,7 +259,7 @@ static inline union journal_res_state journal_state_buf_put(struct journal *j, u
+ {
+ 	union journal_res_state s;
  
-diff --git a/fs/bcachefs/journal_types.h b/fs/bcachefs/journal_types.h
-index 2427cce64fed..0fed32f94976 100644
---- a/fs/bcachefs/journal_types.h
-+++ b/fs/bcachefs/journal_types.h
-@@ -181,6 +181,12 @@ struct journal {
- 	 */
- 	darray_u64		early_journal_entries;
+-	s.v = atomic64_sub_return(((union journal_res_state) {
++	s.v = atomic64_sub_return_release(((union journal_res_state) {
+ 				    .buf0_count = idx == 0,
+ 				    .buf1_count = idx == 1,
+ 				    .buf2_count = idx == 2,
+@@ -427,6 +427,7 @@ static inline void bch2_journal_set_replay_done(struct journal *j)
  
-+	/*
-+	 * Protects journal_buf->data, when accessing without a jorunal
-+	 * reservation: for synchronization between the btree write buffer code
-+	 * and the journal write path:
-+	 */
-+	struct mutex		buf_lock;
- 	/*
- 	 * Two journal entries -- one is currently open for new entries, the
- 	 * other is possibly being written out.
+ void bch2_journal_unblock(struct journal *);
+ void bch2_journal_block(struct journal *);
++void bch2_journal_block_reservations(struct journal *);
+ 
+ void __bch2_journal_debug_to_text(struct printbuf *, struct journal *);
+ void bch2_journal_debug_to_text(struct printbuf *, struct journal *);
 -- 
 2.42.0
 
