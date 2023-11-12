@@ -1,26 +1,26 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9E45235
-	for <linux-bcachefs@vger.kernel.org>; Sun, 12 Nov 2023 09:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CD714AB6
+	for <linux-bcachefs@vger.kernel.org>; Sun, 12 Nov 2023 16:12:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kloenk.de header.i=@kloenk.de header.b="PXjOE1ta"
+	dkim=pass (1024-bit key) header.d=kloenk.de header.i=@kloenk.de header.b="ycBfVQA7"
 Received: from gimli.kloenk.de (gimli.kloenk.de [IPv6:2a01:4f8:c012:b874::])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496DA2D59
-	for <linux-bcachefs@vger.kernel.org>; Sun, 12 Nov 2023 01:19:21 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBBC2702
+	for <linux-bcachefs@vger.kernel.org>; Sun, 12 Nov 2023 08:12:50 -0800 (PST)
 From: Finn Behrens <me@kloenk.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kloenk.de; s=mail;
-	t=1699780757; bh=Pn67NMfj3fGIdwtYqsAXxzvLNQcxCOnPmxdtTUeQ9cA=;
+	t=1699805566; bh=oe6ELH5mS1vcH+5nL3UUs/JafCpxsbFJ78ZmjdAZZpY=;
 	h=From:To:Cc:Subject:Date;
-	b=PXjOE1taCvteV5eBqgvIL5TAUvhoKk/aTsYeYpuisWKha0p71gYmMh965eiByH1sd
-	 ve/3DU8ykU22VG44hMG1frUa2fsgBAp0LQiy3XtmP0IOBWwasJSTHjmMM50ZR/GNzt
-	 VfzOy6UTflf1zMKe4XMcpBgsiVbPinPBXtftEpgQ=
+	b=ycBfVQA7DmRs/zfQFQ8ZZV76R+2YIU3WCOAeykjNqiUt+fEShX3HC1IhUI4nh2AGG
+	 kkgkdeo+wRVnPTnt5eTheAz3sach+LzxvHeWo94D6fUsavKYRl8Cm2Aw1T31W1yKpd
+	 tp9LGUUZGTAsqS29S/LWhSM0Z6A3Gdzzgx61gwkQ=
 To: linux-bcachefs@vger.kernel.org,
 	kent.overstreet@linux.dev
 Cc: Finn Behrens <me@kloenk.de>
-Subject: [PATCH TOOLS] rust keylocation add none variant and implement ValueEnum
-Date: Sun, 12 Nov 2023 10:19:09 +0100
-Message-Id: <20231112091909.29868-1-me@kloenk.de>
+Subject: [PATCH TOOLS v2] rust keylocation add none variant and implement ValueEnum
+Date: Sun, 12 Nov 2023 17:12:36 +0100
+Message-Id: <20231112161236.23565-1-me@kloenk.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -38,19 +38,19 @@ Signed-Off-By: Finn Behrens <me@kloenk.de>
  2 files changed, 32 insertions(+), 23 deletions(-)
 
 diff --git a/rust-src/src/cmd_mount.rs b/rust-src/src/cmd_mount.rs
-index bb23c1a..e045a3c 100644
+index 9d58cb3..17a289c 100644
 --- a/rust-src/src/cmd_mount.rs
 +++ b/rust-src/src/cmd_mount.rs
-@@ -5,7 +5,7 @@ use clap::Parser;
+@@ -5,7 +5,7 @@ use clap::{Parser, Subcommand};
  use uuid::Uuid;
  use std::path::PathBuf;
- use crate::key;
+ use crate::{key, transform_c_args};
 -use crate::key::KeyLoc;
 +use crate::key::KeyLocation;
  use crate::logger::SimpleLogger;
  use std::ffi::{CStr, CString, OsStr, c_int, c_char, c_void};
  use std::os::unix::ffi::OsStrExt;
-@@ -137,7 +137,7 @@ struct Cli {
+@@ -137,7 +137,7 @@ pub struct Cli {
      /// "wait" - wait for password to become available before mounting;
      /// "ask" -  prompt the user for password;
      #[arg(short, long, default_value = "ask", verbatim_doc_comment)]
