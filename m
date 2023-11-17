@@ -1,36 +1,37 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eifkJI2q"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YPMiMrUN"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E41AD59
-	for <linux-bcachefs@vger.kernel.org>; Fri, 17 Nov 2023 05:12:13 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE7AC5
+	for <linux-bcachefs@vger.kernel.org>; Fri, 17 Nov 2023 06:42:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1700226732;
+	s=mimecast20190719; t=1700232152;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=hwRyKM5cVKLJaStFulhdM09+blPCEjbNJ4xaKH6+oHg=;
-	b=eifkJI2qBMssJ+NCPgShWjaz6GvFJlgxGygvCuBy6kiLIYeIZyKHh7DtdCRTAms40CpW+6
-	kAl8vHxYu4h0OYLt7lg5zbRGzM65nOUwNsML8mATPdQu4BZQ0W+9nJYEVW4qRCTpgqEJBc
-	QSxepuVh8Q+E1fUn2xRSIWEl36zEI8Y=
+	bh=viEBw0op9J3Rz65ZIAnnSEgNGq9SfbItEJguo/umJ08=;
+	b=YPMiMrUNiknpfyT+BJwFcgXP2RoBihk9tFhqptT+KdktFQC8C/XahBr0q4ynyuJRZPc5dz
+	0vbrUGOtJ8K+eXU7ijB/uv2ay60feSS2us6FrMZMLgs2Ba+CnqsI2nxp/OF+FqrQO6h24L
+	o7BRKjUZkBlC6POcBJvlMttJ0XxoAGI=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-502-iUEYAzdTOlCCSCXvfpBGOA-1; Fri,
- 17 Nov 2023 08:12:10 -0500
-X-MC-Unique: iUEYAzdTOlCCSCXvfpBGOA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-138-Vs4Fr8nHPxucXZYU739o-Q-1; Fri,
+ 17 Nov 2023 09:42:31 -0500
+X-MC-Unique: Vs4Fr8nHPxucXZYU739o-Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 79B703C0F422
-	for <linux-bcachefs@vger.kernel.org>; Fri, 17 Nov 2023 13:12:10 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BD9A1381A8A0;
+	Fri, 17 Nov 2023 14:42:29 +0000 (UTC)
 Received: from bfoster.redhat.com (unknown [10.22.32.99])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 5DED1492BE9
-	for <linux-bcachefs@vger.kernel.org>; Fri, 17 Nov 2023 13:12:10 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 967352166B2A;
+	Fri, 17 Nov 2023 14:42:29 +0000 (UTC)
 From: Brian Foster <bfoster@redhat.com>
-To: linux-bcachefs@vger.kernel.org
-Subject: [PATCH] bcachefs-tools: fix broken libblkid superblock wipe
-Date: Fri, 17 Nov 2023 08:12:58 -0500
-Message-ID: <20231117131258.9045-1-bfoster@redhat.com>
+To: fstests@vger.kernel.org
+Cc: linux-bcachefs@vger.kernel.org
+Subject: [PATCH] generic/459: improve shutdown/read-only check to accommodate bcachefs
+Date: Fri, 17 Nov 2023 09:43:17 -0500
+Message-ID: <20231117144317.10882-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -39,64 +40,92 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-When playing around with comparing some fstests results on different
-filesystems, I noticed that a 'bcachefs format' of a previously
-btrfs-formatted device still continued to mount as btrfs. The reason
-for this is that the blkid wipe invoked via open_for_format() is not
-working correctly. blkid_do_wipe() depends on the "SBMAGIC[_OFFSET]"
-values to do any work, and the associated superblock magic flag is
-not enabled on the probe.
+generic/459 occasionally fails on bcachefs because the deliberately
+induced I/O errors caused by exhausting the overprovisioned thin
+pool can lead to filesystem shutdown. This test considers this
+expected behavior on certain fs', but only checks for the ext4
+remount read-only behavior. bcachefs does a similar emergency
+read-only transition in response to certain I/O errors, but it
+behaves more similar to an XFS shutdown and doesn't necessarily
+reflect "ro" state in the mount table (unless induced by userspace).
 
-Set the probe flags to explicitly enable the values the bcachefs
-code depends on in the probe. This includes the type, label and
-superblock magic information.
-
-There are also a couple quirks in the libblkid code that might be
-worth noting. One is that the superblock enablement and flag setting
-functions appear hardcoded to return zero, so we just combine the
-error checks. Second, while blkid_do_wipe() can return an error, it
-actually doesn't in the scenario being addressed here because it
-doesn't seem to distinguish between the values being absent because
-nothing was found by the probe or because the values weren't enabled
-in the first place. Regardless, add an error check here in the event
-the wipe does explicitly fail for some unexpected reason.
+Since the test already runs a touch command to help trigger the ext4
+error handling sequence, this can be tweaked to serve double duty
+and also more accurately detect read-only status on bcachefs.
+Refactor into a small helper, check for an EROFS return to the touch
+command, and consider the fs read-only if either that or the mount
+entry check indicates it.
 
 Signed-off-by: Brian Foster <bfoster@redhat.com>
 ---
- tools-util.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/tools-util.c b/tools-util.c
-index 923a666..7d4a3c1 100644
---- a/tools-util.c
-+++ b/tools-util.c
-@@ -232,7 +232,10 @@ int open_for_format(struct dev_opts *dev, bool force)
- 		die("blkid error 1");
- 	if (blkid_probe_set_device(pr, dev->bdev->bd_buffered_fd, 0, 0))
- 		die("blkid error 2");
--	if (blkid_probe_enable_partitions(pr, true))
-+	if (blkid_probe_enable_partitions(pr, true) ||
-+	    blkid_probe_enable_superblocks(pr, true) ||
-+	    blkid_probe_set_superblocks_flags(pr,
-+			BLKID_SUBLKS_LABEL|BLKID_SUBLKS_TYPE|BLKID_SUBLKS_MAGIC))
- 		die("blkid error 3");
- 	if (blkid_do_fullprobe(pr) < 0)
- 		die("blkid error 4");
-@@ -250,8 +253,10 @@ int open_for_format(struct dev_opts *dev, bool force)
- 		fputs("Proceed anyway?", stdout);
- 		if (!ask_yn())
- 			exit(EXIT_FAILURE);
--		while (blkid_do_probe(pr) == 0)
--			blkid_do_wipe(pr, 0);
-+		while (blkid_do_probe(pr) == 0) {
-+			if (blkid_do_wipe(pr, 0))
-+				die("Failed to wipe preexisting metadata.");
-+		}
- 	}
+Something I realized when writing up the commit log is that the EROFS
+check doesn't technically cover XFS, which IIRC returns EIO in response
+to any sorts of writes once the fs has shutdown. I'm not sure this
+matters currently because XFS doesn't shutdown due to the default
+behavior to retry failed I/Os, but technically if XFS were configured to
+not retry I/O errors and go right to permanent failure, I suspect it
+would fail this test in the same way bcachefs does.
+
+That could be addressed fairly easily by also checking for EIO error
+message output, or just assuming touch failure == shutdown, etc. I don't
+have much preference on that, so thoughts appreciated.
+
+Brian
+
+ tests/generic/459 | 30 +++++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
+
+diff --git a/tests/generic/459 b/tests/generic/459
+index 4dd7a43b..d0c48325 100755
+--- a/tests/generic/459
++++ b/tests/generic/459
+@@ -57,6 +57,26 @@ origpsize=200
+ virtsize=300
+ newpsize=300
  
- 	blkid_free_probe(pr);
++# Check whether the filesystem has shutdown or remounted read-only. Behavior can
++# differ based on filesystem and configuration. Some fs' may not have remounted
++# without an additional write while others may have shutdown but do not
++# necessarily reflect read-only state in the mount options. Check both here to
++# cover the various scenarios.
++is_shutdown_or_ro()
++{
++	ro=0
++
++	# if the fs has not shutdown, this may help trigger a remount-ro
++	touch $SCRATCH_MNT/newfile 2>&1 | \
++		grep "Read-only file system" > /dev/null
++	[ $? == 0 ] && ro=1
++
++	_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro" > /dev/null
++	[ $? == 0 ] && ro=1
++
++	echo $ro
++}
++
+ # Ensure we have enough disk space
+ _scratch_mkfs_sized $((350 * 1024 * 1024)) >>$seqres.full 2>&1
+ 
+@@ -113,13 +133,9 @@ ret=$?
+ #	- The filesystem stays in Read-Write mode, but can be frozen/thawed
+ #	  without getting stuck.
+ if [ $ret -ne 0 ]; then
+-	# freeze failed, filesystem should reject further writes and remount
+-	# as readonly. Sometimes the previous write process won't trigger
+-	# ro-remount, e.g. on ext3/4, do additional touch here to make sure
+-	# filesystems see the metadata I/O error.
+-	touch $SCRATCH_MNT/newfile >/dev/null 2>&1
+-	ISRO=$(_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro")
+-	if [ -n "$ISRO" ]; then
++	# freeze failed, filesystem should reject further writes
++	ISRO=`is_shutdown_or_ro`
++	if [ $ISRO == 1 ]; then
+ 		echo "Test OK"
+ 	else
+ 		echo "Freeze failed and FS isn't Read-Only. Test Failed"
 -- 
 2.41.0
 
