@@ -1,30 +1,24 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301C44501A;
-	Fri, 17 Nov 2023 22:14:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IaMnTsHT"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E39C433CB;
-	Fri, 17 Nov 2023 22:14:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700259274;
-	bh=PNYfVQ+zO7InrXBryqJTm7E9w6l0Va52AZcS/gJ58Q4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IaMnTsHTEskPPg5ElYnV8jD9pEzJzf5iWm12C7VdcB3Ja4WwVA7qjo9O87/yKF97z
-	 aaFQX0Q3pVaCeZ2KxHzMQF0TLGf/P3vyfTzQ5KZA/NjbEpLcrapuBuG5VqMX5e1d/F
-	 jyyMyE8pzbMuanT+5X584deFygDISDo8DcOupoB/jMX2i00sBH9eZnRq2nN+Bnn09z
-	 O6N10s2QbZTGxQ/bM0QtNdZcZRg9wdtOgjo+bw4Y+L+c56NvvIQ4DCc/Q0PaQzSACB
-	 INAAkGdktP/70XnO3f3ggQA73xyCSlpcA76hmyrbqe+E5h3GsSpqpe3qxWVFnM1R0N
-	 iUG3wHJRFKBjw==
-Date: Fri, 17 Nov 2023 14:14:34 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Brian Foster <bfoster@redhat.com>
-Cc: fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] generic/459: improve shutdown/read-only check to
- accommodate bcachefs
-Message-ID: <20231117221434.GI36175@frogsfrogsfrogs>
-References: <20231117144317.10882-1-bfoster@redhat.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZjwZV0tN"
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [IPv6:2001:41d0:1004:224b::aa])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44630D4D
+	for <linux-bcachefs@vger.kernel.org>; Fri, 17 Nov 2023 14:33:30 -0800 (PST)
+Date: Fri, 17 Nov 2023 17:33:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700260408;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=op13F3XEN7FjDKlCWlYMcAKyKy+rR7LtkeYSw6GZX7w=;
+	b=ZjwZV0tN5AwYZkUFXKLEJ09DiglxyMaAjiwxGcFuTLiPvZu1fiILmcfbtxQ8Hf+RzTqezS
+	MoE8Pdnc2OcHN0a6/gVcuxR3Q5J1/Gj67jYjO3fMdtuzsslg3HAEaGsRMA0Hb4fDUiRZtF
+	b3io4pgMS0f6C2ZVDSvlF2q3F9yOf+U=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes
+Message-ID: <20231117223325.no4eqblc5zqte5xg@moria.home.lan>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -33,103 +27,105 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231117144317.10882-1-bfoster@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Nov 17, 2023 at 09:43:17AM -0500, Brian Foster wrote:
-> generic/459 occasionally fails on bcachefs because the deliberately
-> induced I/O errors caused by exhausting the overprovisioned thin
-> pool can lead to filesystem shutdown. This test considers this
-> expected behavior on certain fs', but only checks for the ext4
-> remount read-only behavior. bcachefs does a similar emergency
-> read-only transition in response to certain I/O errors, but it
-> behaves more similar to an XFS shutdown and doesn't necessarily
-> reflect "ro" state in the mount table (unless induced by userspace).
-> 
-> Since the test already runs a touch command to help trigger the ext4
-> error handling sequence, this can be tweaked to serve double duty
-> and also more accurately detect read-only status on bcachefs.
-> Refactor into a small helper, check for an EROFS return to the touch
-> command, and consider the fs read-only if either that or the mount
-> entry check indicates it.
-> 
-> Signed-off-by: Brian Foster <bfoster@redhat.com>
-> ---
-> 
-> Something I realized when writing up the commit log is that the EROFS
-> check doesn't technically cover XFS, which IIRC returns EIO in response
-> to any sorts of writes once the fs has shutdown. I'm not sure this
-> matters currently because XFS doesn't shutdown due to the default
-> behavior to retry failed I/Os, but technically if XFS were configured to
-> not retry I/O errors and go right to permanent failure, I suspect it
-> would fail this test in the same way bcachefs does.
-> 
-> That could be addressed fairly easily by also checking for EIO error
-> message output, or just assuming touch failure == shutdown, etc. I don't
-> have much preference on that, so thoughts appreciated.
+Hi Linus, bugfix pull request for you :)
 
-I wish there was a better way to signal that a filesystem has shut down,
-though ATM that isn't even a VFS level concept.  I generally assume that
-touch failure == shutdown if the fs was previously writable.
+Cheers,
+Kent
 
-OTOH with statmount landing soonish, perhaps we ought to apply for a new
-SB_SHUTDOWN state flag for it to export?
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
---D
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-> Brian
-> 
->  tests/generic/459 | 30 +++++++++++++++++++++++-------
->  1 file changed, 23 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tests/generic/459 b/tests/generic/459
-> index 4dd7a43b..d0c48325 100755
-> --- a/tests/generic/459
-> +++ b/tests/generic/459
-> @@ -57,6 +57,26 @@ origpsize=200
->  virtsize=300
->  newpsize=300
->  
-> +# Check whether the filesystem has shutdown or remounted read-only. Behavior can
-> +# differ based on filesystem and configuration. Some fs' may not have remounted
-> +# without an additional write while others may have shutdown but do not
-> +# necessarily reflect read-only state in the mount options. Check both here to
-> +# cover the various scenarios.
-> +is_shutdown_or_ro()
-> +{
-> +	ro=0
-> +
-> +	# if the fs has not shutdown, this may help trigger a remount-ro
-> +	touch $SCRATCH_MNT/newfile 2>&1 | \
-> +		grep "Read-only file system" > /dev/null
-> +	[ $? == 0 ] && ro=1
-> +
-> +	_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro" > /dev/null
-> +	[ $? == 0 ] && ro=1
-> +
-> +	echo $ro
-> +}
-> +
->  # Ensure we have enough disk space
->  _scratch_mkfs_sized $((350 * 1024 * 1024)) >>$seqres.full 2>&1
->  
-> @@ -113,13 +133,9 @@ ret=$?
->  #	- The filesystem stays in Read-Write mode, but can be frozen/thawed
->  #	  without getting stuck.
->  if [ $ret -ne 0 ]; then
-> -	# freeze failed, filesystem should reject further writes and remount
-> -	# as readonly. Sometimes the previous write process won't trigger
-> -	# ro-remount, e.g. on ext3/4, do additional touch here to make sure
-> -	# filesystems see the metadata I/O error.
-> -	touch $SCRATCH_MNT/newfile >/dev/null 2>&1
-> -	ISRO=$(_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro")
-> -	if [ -n "$ISRO" ]; then
-> +	# freeze failed, filesystem should reject further writes
-> +	ISRO=`is_shutdown_or_ro`
-> +	if [ $ISRO == 1 ]; then
->  		echo "Test OK"
->  	else
->  		echo "Freeze failed and FS isn't Read-Only. Test Failed"
-> -- 
-> 2.41.0
-> 
-> 
+are available in the Git repository at:
+
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-11-17
+
+for you to fetch changes up to ba276ce5865b5a22ee96c4c5664bfefd9c1bb593:
+
+  bcachefs: Fix missing locking for dentry->d_parent access (2023-11-16 16:57:19 -0500)
+
+----------------------------------------------------------------
+bcachefs bugfixes for 6.7
+
+Lots of small fixes for minor nits and compiler warnings. Bigger items:
+
+ - The six locks lost wakeup is finally fixed: six_read_trylock() was
+   checking for the waiting bit before decrementing the number of
+   readers - validated the fix with a torture test.
+
+ - Fix for a memory reclaim issue: when needing to reallocate a key
+   cache key, we now do our usual GFP_NOWAIT; unlock(); GFP_KERNEL
+   dance.
+
+ - Multiple deleted inodes btree fixes
+
+ - Fix an issue in fsck, where i_nlink would be recalculated incorrectly
+   for hardlinked files if a snapshot had ever been taken.
+
+ - Kill journal pre-reservations: This is a bigger patch than I would
+   normally send at this point, but it deletes code and it fixes some of
+   our tests that would sporadically die with the journal getting stuck,
+   and it's a performance improvement, too.
+
+----------------------------------------------------------------
+Daniel J Blueman (1):
+      bcachefs: Fix potential sleeping during mount
+
+Gustavo A. R. Silva (2):
+      bcachefs: Use DECLARE_FLEX_ARRAY() helper and fix multiple -Warray-bounds warnings
+      bcachefs: Fix multiple -Warray-bounds warnings
+
+Jiapeng Chong (1):
+      bcachefs: make bch2_target_to_text_sb static
+
+Kent Overstreet (18):
+      bcachefs: Use correct fgf_t type as function argument
+      bcachefs: Fix null ptr deref in bch2_backpointer_get_node()
+      bcachefs: Guard against insufficient devices to create stripes
+      bcachefs: Split out btree_key_cache_types.h
+      bcachefs: Run btree key cache shrinker less aggressively
+      bcachefs: btree_trans->write_locked
+      bcachefs: Make sure to drop/retake btree locks before reclaim
+      bcachefs: Check for nonce offset inconsistency in data_update path
+      bcachefs: Kill journal pre-reservations
+      bcachefs: Fix iterator leak in may_delete_deleted_inode()
+      bcachefs: Fix error path in bch2_mount()
+      bcachefs: Fix missing transaction commit
+      bcachefs: Disable debug log statements
+      bcachefs: Don't decrease BTREE_ITER_MAX when LOCKDEP=y
+      bcachefs: Fix bch2_check_nlinks() for snapshots
+      bcachefs: Fix no_data_io mode checksum check
+      bcachefs: six locks: Fix lost wakeup
+      bcachefs: Fix missing locking for dentry->d_parent access
+
+ fs/bcachefs/backpointers.c          |  10 +--
+ fs/bcachefs/bcachefs.h              |   2 +-
+ fs/bcachefs/btree_iter.c            |   2 -
+ fs/bcachefs/btree_key_cache.c       |  37 ++++----
+ fs/bcachefs/btree_key_cache_types.h |  34 ++++++++
+ fs/bcachefs/btree_trans_commit.c    | 169 ++++++++++++++++++++----------------
+ fs/bcachefs/btree_types.h           |  35 +-------
+ fs/bcachefs/btree_update_interior.c |  30 -------
+ fs/bcachefs/btree_update_interior.h |   1 -
+ fs/bcachefs/data_update.c           |  28 ++++++
+ fs/bcachefs/disk_groups.c           |   4 +-
+ fs/bcachefs/ec.c                    |  16 +++-
+ fs/bcachefs/fs-io-pagecache.c       |   2 +-
+ fs/bcachefs/fs-io-pagecache.h       |   2 +-
+ fs/bcachefs/fs.c                    |   8 +-
+ fs/bcachefs/fsck.c                  |   2 +-
+ fs/bcachefs/inode.c                 |   8 +-
+ fs/bcachefs/io_write.c              |   2 +-
+ fs/bcachefs/journal.c               |  31 -------
+ fs/bcachefs/journal.h               |  98 ---------------------
+ fs/bcachefs/journal_io.c            |   7 ++
+ fs/bcachefs/journal_reclaim.c       |  42 ++++-----
+ fs/bcachefs/journal_types.h         |  26 ------
+ fs/bcachefs/six.c                   |   7 +-
+ fs/bcachefs/subvolume_types.h       |   2 +-
+ fs/bcachefs/trace.h                 |  11 +--
+ fs/bcachefs/xattr.c                 |   9 ++
+ 27 files changed, 248 insertions(+), 377 deletions(-)
+ create mode 100644 fs/bcachefs/btree_key_cache_types.h
