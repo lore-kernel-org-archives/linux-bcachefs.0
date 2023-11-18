@@ -1,179 +1,103 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JHoJLcY7"
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [IPv6:2001:41d0:203:375::ba])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345CE192
-	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 12:10:57 -0800 (PST)
-Date: Sat, 18 Nov 2023 15:10:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700338255;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8X1epWaJycDC6LeQV9c8UKa3feRXYlvcSusjCzAd3Xw=;
-	b=JHoJLcY79lVs4RrlCT92WfzKL1D98nWUIA5CMfwQkV2LbrF63hBot2WxsGBoZzwXOuvmVE
-	Qwxfhnr6ctpPKxFDJjfbN8zKFSRso3jFtOjs7MEF3OeBkKrkvOIYna+BxKU3SSn89jLRcm
-	4UvOuyEWwXvqVlPwp6Bdk5wO8siCT9g=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Janpieter Sollie <janpieter.sollie@edpnet.be>
-Cc: linux-bcachefs@vger.kernel.org,
-	Janpieter Sollie <janpieter.sollie@kabelmail.de>
-Subject: Re: [PATCH v4 03/10] ktest: upgrade to debian trixie channel
-Message-ID: <20231118201053.7r627yjgvv6zh7pl@moria.home.lan>
-References: <20231118194453.41324-1-janpieter.sollie@kabelmail.de>
- <20231118194453.41324-4-janpieter.sollie@kabelmail.de>
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+X-Greylist: delayed 6117 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 18 Nov 2023 12:57:53 PST
+Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016F411D
+	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 12:57:52 -0800 (PST)
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id C4FB2815EF7;
+	Sat, 18 Nov 2023 21:57:50 +0100 (CET)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: Questions related to BCacheFS
+Date: Sat, 18 Nov 2023 21:57:50 +0100
+Message-ID: <2210413.NgBsaNRSFp@lichtvoll.de>
+In-Reply-To: <20231118195024.qe2bjxeubhru3de5@moria.home.lan>
+References:
+ <23311511.6Emhk5qWAg@lichtvoll.de>
+ <20231118195024.qe2bjxeubhru3de5@moria.home.lan>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231118194453.41324-4-janpieter.sollie@kabelmail.de>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Sat, Nov 18, 2023 at 08:38:42PM +0100, Janpieter Sollie wrote:
-> Due to bcachefs being mainlined,
-> it's worth considering a more recent update channel,
-> which may include bcachefs features in the future.
+Hi Kent.
+
+Thanks for answering so timely. Feel free to skip answering during rest of 
+the weekend :)
+
+Kent Overstreet - 18.11.23, 20:50:24 CET:
+> > 10) Anything you think an article about BCacheFS should absolutely
+> > mention?
 > 
-> Necessary adjustments have been made for the packages,
-> but kernel requirements may still need some extra tweaks
+> Would personally love to see some non-phoronix benchmarks :)
+
+I see. Well thing is, I am not really satisfied about Samsung 980 Pro 2 TB 
+NVME SSD performance on this ThinkPad T14 AMD Gen 1 under Linux, so not 
+sure whether performance benchmarks would be suitable on that setup. At 
+least not without going about a firmware upgrade again and hoping it helps 
+this time, if available. However I remember not really liking to dig out 
+the firmware upgrade from an ISO image for Samsung not providing via LVFS. 
+Also benchmarking may more be in scope of a later article if at all, cause 
+I think even with just explaining about BCacheFS the article will become 
+long enough :). It is challenging to get benchmarking right and obtain 
+actually meaningful results. And before getting it wrong, I'd rather skip 
+or delay that. But anyway: Any suggestion for a specific benchmark?
+
+Any advice about Phoronix benchmarks? I bet the one I saw was with some 
+debug option on, that may better be off. I think it has been: 
+CONFIG_BCACHEFS_DEBUG_TRANSACTIONS? I did not check whether Michael 
+Larabel did a new one already with that turned off.
+
+As far as I understand one specific performance related aspect of BCacheFS 
+would be low latencies due to the frontend / backend architecture which in 
+principle is based on what has been there in BCache already. I am 
+intending to explore a bit into that concept in my article.
+
+> I've put a ton of effort into performance, my goal is a COW filesystem
+> that can compete with XFS on performance and scalabality - which is a
+> tall order! but we're getting close.
 > 
-> Signed-off-by: jpsollie <janpieter.sollie@edpnet.be>
-> ---
->  lib/common.sh      |  8 +++++---
->  lib/libktest.sh    |  2 +-
->  root_image         | 12 +++++++-----
->  tests/test-libs.sh |  2 +-
->  4 files changed, 14 insertions(+), 10 deletions(-)
+> With the btree write buffer rewrite (still not quite merged, any day
+> now) - I'm pushing _900k_ iops, 4k random writes - through the COW write
+> path.
 > 
-> diff --git a/lib/common.sh b/lib/common.sh
-> index b94557d..353bb36 100644
-> --- a/lib/common.sh
-> +++ b/lib/common.sh
-> @@ -83,7 +83,7 @@ join_by()
->  parse_arch()
->  {
->      case $1 in
-> -	x86|i386)
-> +	x86|i386|i686)
->  	    ktest_arch=x86
->  	    DEBIAN_ARCH=i386
->  	    ARCH_TRIPLE=${ARCH_TRIPLE_X86}
-> @@ -92,7 +92,7 @@ parse_arch()
->  	    BITS=32
->  
->  	    QEMU_PACKAGE=qemu-system-x86
-> -	    QEMU_BIN=qemu-system-x86_64
-> +	    QEMU_BIN=qemu-system-i386
->  	    ;;
->  	x86_64|amd64)
->  	    ktest_arch=x86_64
-> @@ -188,7 +188,8 @@ parse_arch()
->      if [[ $ktest_arch != $(uname -m) ]]; then
->  	CROSS_COMPILE=1
->      fi
-> -
-> +    #special case: x86_64 is able to run i386 code.  this isn't always the case for armv8 -> armv7 (cortex A35)
-> +    [[ $DEBIAN_ARCH == "i386" && "$(uname -m)" == "x86_64" ]] && unset CROSS_COMPILE
->      export DEBIAN_ARCH
->      export MIRROR
->      export ARCH_TRIPLE
-> @@ -196,6 +197,7 @@ parse_arch()
->      export QEMU_PACKAGE
->      export QEMU_BIN
->      export ktest_arch
-> +    export BITS
->  }
->  
->  find_command() {
-> diff --git a/lib/libktest.sh b/lib/libktest.sh
-> index 8ead78b..0b2704b 100644
-> --- a/lib/libktest.sh
-> +++ b/lib/libktest.sh
-> @@ -309,7 +309,7 @@ start_vm()
->      local qemu_cmd=("$QEMU_BIN" -nodefaults -nographic)
->      local accel=kvm
->      local cputype=host
-> -    [[ $(uname -m) == $ktest_arch ]] || accel=tcg && cputype=max
-> +    [[ ${CROSS_COMPILE+x} ]] && accel=tcg && cputype=max
->      case $ktest_arch in
->  	x86|x86_64)
->  	    qemu_cmd+=(-cpu $cputype -machine type=q35,accel=$accel,nvdimm=on)
-> diff --git a/root_image b/root_image
-> index a881714..e36a4f1 100755
-> --- a/root_image
-> +++ b/root_image
-> @@ -45,6 +45,7 @@ if [[ $# = 0 ]]; then
->  fi
->  
->  ktest_image=""
-> +ktest_arch="$(uname -m)"
->  CMD="cmd_$1"
->  shift
->  
-> @@ -100,7 +101,7 @@ PACKAGES+=(libudev-dev libldap2-dev)
->  PACKAGES+=(acct bsdextrautils xfsprogs xfslibs-dev quota libcap2-bin)
->  PACKAGES+=(libattr1-dev libaio-dev libgdbm-dev libacl1-dev gettext)
->  PACKAGES+=(libssl-dev libgdbm-dev libgdbm-compat-dev liburing-dev)
-> -PACKAGES+=(duperemove thin-provisioning-tools fsverity)
-> +PACKAGES+=(duperemove fsverity)
->  
->  # xfsprogs:
->  PACKAGES+=(libinih-dev)
-> @@ -123,7 +124,7 @@ PACKAGES+=("linux-headers-generic")
->  # DKMS needs to cross-compile the module,
->  # against a different kernel on a different CPUarchitecture.
->  # this has to cause errors
-> -[[ -n $CROSS_COMPILE ] && PACKAGES+=(dkms zfsutils-linux zfs-dkms)
-> +[[ ${CROSS_COMPILE+x} ]] || PACKAGES+=(dkms zfsutils-linux zfs-dkms)
+> This is in my benchmarking/profiling mode, with checksums off and data
+> reads/writes to the device turned off - i.e. just showing bcachefs
+> overhead. So not real world nummbers, but indicative of how well we can
+> scale.
 
-Delete this change
+Interesting. Only thing regarding performance I noticed so far that 
+deleting an almost 8 GiB large DVD ISO image file took a bit longer than 
+instant, but I was using Dolphin on Plasma, so not sure whether this tiny 
+delay was filesystem or GUI related.
 
->  
->  # suspend testing:
->  # [[ $KERNEL_ARCH = x86 ]] && PACKAGES+=(uswsusp)
-> @@ -241,6 +242,7 @@ update_packages()
->      chmod 755 "$MNT"/tmp/rustup.sh
->  
->      _chroot "$MNT" /tmp/rustup.sh -y
-> +    echo 'export PATH="$HOME/.cargo/bin:$PATH"' > $MNT/etc/profile.d/rustup.sh
->  }
->  
->  trim_image()
-> @@ -304,10 +306,10 @@ cmd_create()
->  	--arch="$DEBIAN_ARCH"				\
->  	--exclude=$(join_by , "${EXCLUDE[@]}")		\
->  	--foreign					\
-> -	--components='main,contrib,non-free,bullseye-backports' \
-> -	bullseye "$MNT" "$MIRROR"
-> +	--components='main,contrib,non-free' \
-> +	trixie "$MNT" "$MIRROR"
->  
-> -    [[ -n ${CROSS_COMPILE} ]] || cp $(which qemu-${ktest_arch}) ${MNT}$(which qemu-${ktest_arch})
-> +    [[ ${CROSS_COMPILE+x} ]] && cp $(which qemu-${ktest_arch}) ${MNT}$(which qemu-${ktest_arch})
+Also I found that free space with "df -hT" was only 35,8 GiB initially, 
+now 36 GiB of 40 GiB instead of the initial 37 GiB after making the 
+filesystem, but I bet that may just be related to allocation behavior. 
+Some kind of chunk allocated but not freed again so it can be reused 
+later. But I need to dig into this a bit deeper. I read about some 
+reservation as well, but need to dig that up again.
 
-Stop changing these if statements - we don't need workarounds for the
-test command when we're using [[.
+I'd really love to dig a bit into what makes BCacheFS unique, also in 
+comparison with BTRFS and maybe a bit also ZFS. Also to explain: "Why yet 
+another filesystem?" to the reader :). My own hope is that indeed BCacheFS 
+will improve on some of the performance issues with BTRFS. And also with 
+BCacheFS you can have cache devices which AFAIK is still not implemented 
+for BTRFS. There was VFS Hot Data Tracking + BTRFS part patches on BTRFS 
+mailing list some longer time ago, but AFAIK they never went in.
 
->      _chroot "$MNT" /debootstrap/debootstrap --second-stage
->      _chroot "$MNT" dpkg --configure -a
->  
-> diff --git a/tests/test-libs.sh b/tests/test-libs.sh
-> index 3cacda2..d172e4c 100644
-> --- a/tests/test-libs.sh
-> +++ b/tests/test-libs.sh
-> @@ -7,7 +7,7 @@
->  . $(dirname $(readlink -e ${BASH_SOURCE[0]}))/prelude.sh
->  . $(dirname $(readlink -e ${BASH_SOURCE[0]}))/kconfig.sh
->  
-> -config-mem 4G
-> +config-mem 8G
->  
->  (($ktest_cpus > 16)) && ktest_cpus=16
->  
-> -- 
-> 2.42.1
-> 
+Best,
+-- 
+Martin
+
+
