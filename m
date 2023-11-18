@@ -1,27 +1,27 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CQU1Ida0"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JHoJLcY7"
 Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [IPv6:2001:41d0:203:375::ba])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799BE182
-	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 12:09:26 -0800 (PST)
-Date: Sat, 18 Nov 2023 15:09:21 -0500
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345CE192
+	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 12:10:57 -0800 (PST)
+Date: Sat, 18 Nov 2023 15:10:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700338164;
+	t=1700338255;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4diszcmFXqDArOr66km1Fckd0BOu1Uu3uVNl9dH/VLA=;
-	b=CQU1Ida07+V6w5E7IcqQXfSc1B7JT9vEXLLaKgs7CDcCmfO1kNqKNpT/OXARpN8Sc71zKR
-	4URw6idOTtnpbHler3XCP3VANoAFijZgAjEy2+ArNk6VRX4yxCJr6O2/Nq1e1Jz4nMTdRj
-	WZztznk10+O0ZE7MBRuWy1bf54+mZqc=
+	bh=8X1epWaJycDC6LeQV9c8UKa3feRXYlvcSusjCzAd3Xw=;
+	b=JHoJLcY79lVs4RrlCT92WfzKL1D98nWUIA5CMfwQkV2LbrF63hBot2WxsGBoZzwXOuvmVE
+	Qwxfhnr6ctpPKxFDJjfbN8zKFSRso3jFtOjs7MEF3OeBkKrkvOIYna+BxKU3SSn89jLRcm
+	4UvOuyEWwXvqVlPwp6Bdk5wO8siCT9g=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Janpieter Sollie <janpieter.sollie@edpnet.be>
 Cc: linux-bcachefs@vger.kernel.org,
 	Janpieter Sollie <janpieter.sollie@kabelmail.de>
-Subject: Re: [PATCH v4 02/10] Run bcachefs tests on emulated architectures
-Message-ID: <20231118200921.fdimf2qysk7kphqk@moria.home.lan>
+Subject: Re: [PATCH v4 03/10] ktest: upgrade to debian trixie channel
+Message-ID: <20231118201053.7r627yjgvv6zh7pl@moria.home.lan>
 References: <20231118194453.41324-1-janpieter.sollie@kabelmail.de>
- <20231118194453.41324-3-janpieter.sollie@kabelmail.de>
+ <20231118194453.41324-4-janpieter.sollie@kabelmail.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -30,209 +30,150 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231118194453.41324-3-janpieter.sollie@kabelmail.de>
+In-Reply-To: <20231118194453.41324-4-janpieter.sollie@kabelmail.de>
 X-Migadu-Flow: FLOW_OUT
 
-On Sat, Nov 18, 2023 at 08:38:41PM +0100, Janpieter Sollie wrote:
-> Allow the tests to run on a non-ABI-compatible cpu,
-> verify code when the architecture isn't physically available.
-> in the future, bcachefs-tools should be cross-compiled,
-> and the list of CPU types should be expanded
+On Sat, Nov 18, 2023 at 08:38:42PM +0100, Janpieter Sollie wrote:
+> Due to bcachefs being mainlined,
+> it's worth considering a more recent update channel,
+> which may include bcachefs features in the future.
+> 
+> Necessary adjustments have been made for the packages,
+> but kernel requirements may still need some extra tweaks
 > 
 > Signed-off-by: jpsollie <janpieter.sollie@edpnet.be>
 > ---
->  build-test-kernel                    | 10 ++++------
->  lib/common.sh                        | 11 ++++++++---
->  lib/libktest.sh                      |  8 ++++++--
->  lib/testrunner                       |  4 ++++
->  root_image                           |  8 +++++++-
->  tests/bcachefs/bcachefs-test-libs.sh |  8 ++++++++
->  tests/kconfig.sh                     |  2 ++
->  7 files changed, 39 insertions(+), 12 deletions(-)
+>  lib/common.sh      |  8 +++++---
+>  lib/libktest.sh    |  2 +-
+>  root_image         | 12 +++++++-----
+>  tests/test-libs.sh |  2 +-
+>  4 files changed, 14 insertions(+), 10 deletions(-)
 > 
-> diff --git a/build-test-kernel b/build-test-kernel
-> index 72990ba..b7dd70c 100755
-> --- a/build-test-kernel
-> +++ b/build-test-kernel
-> @@ -107,7 +107,7 @@ ktest_kernel_source=$(readlink -e "$ktest_kernel_source")
->  ktest_kernel_build="$ktest_out/kernel_build.$ktest_arch"
->  mkdir -p "$ktest_kernel_build"
->  
-> -if [[ -n $CROSS_COMPILE ]]; then
-> +if [[ ${CROSS_COMPILE+x} ]]; then
-
-This change is uneccesary when we're using bash's [[
-
->      checkdep "$ARCH_TRIPLE-gcc" "gcc-$ARCH_TRIPLE"
->  fi
->  
-> @@ -121,10 +121,8 @@ run_ktest()
->  
->  do_make()
->  {
-> -    if [[ -n $CROSS_COMPILE ]]; then
-> -	export ARCH="$KERNEL_ARCH"
-> -	export CROSS_COMPILE="$ARCH_TRIPLE-"
-> -    fi
-> +	local ARCH="$KERNEL_ARCH"
-> +	local CROSS_COMPILE="$ARCH_TRIPLE-"
-
-Why are these needed? I don't see them referenced, since you're just
-spcifying them as make args now (which is good)
-
->  
->      make --jobs="$ktest_njobs"			\
->  	--directory="$ktest_kernel_source"    	\
-> @@ -192,7 +190,7 @@ build_kernel()
->  
->      log_verbose "kernel_config_require: ${ktest_kernel_config_require[@]}"
->  
-> -    MAKEARGS+=("LOCALVERSION=-ktest")
-> +    MAKEARGS+=("LOCALVERSION=-ktest" ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-")
->  
->      for opt in "${ktest_kernel_config_require[@]}"; do
->  	[[ -n $opt ]] && kernel_opt set "$opt"
 > diff --git a/lib/common.sh b/lib/common.sh
-> index 078f512..b94557d 100644
+> index b94557d..353bb36 100644
 > --- a/lib/common.sh
 > +++ b/lib/common.sh
-> @@ -80,9 +80,6 @@ join_by()
->      echo "$*"
->  }
->  
-> -ktest_arch=$(uname -m)
-> -CROSS_COMPILE=""
-> -
+> @@ -83,7 +83,7 @@ join_by()
 >  parse_arch()
 >  {
 >      case $1 in
-> @@ -191,6 +188,14 @@ parse_arch()
+> -	x86|i386)
+> +	x86|i386|i686)
+>  	    ktest_arch=x86
+>  	    DEBIAN_ARCH=i386
+>  	    ARCH_TRIPLE=${ARCH_TRIPLE_X86}
+> @@ -92,7 +92,7 @@ parse_arch()
+>  	    BITS=32
+>  
+>  	    QEMU_PACKAGE=qemu-system-x86
+> -	    QEMU_BIN=qemu-system-x86_64
+> +	    QEMU_BIN=qemu-system-i386
+>  	    ;;
+>  	x86_64|amd64)
+>  	    ktest_arch=x86_64
+> @@ -188,7 +188,8 @@ parse_arch()
 >      if [[ $ktest_arch != $(uname -m) ]]; then
 >  	CROSS_COMPILE=1
 >      fi
-> +
-> +    export DEBIAN_ARCH
-> +    export MIRROR
-> +    export ARCH_TRIPLE
-> +    export KERNEL_ARCH
-> +    export QEMU_PACKAGE
-> +    export QEMU_BIN
-> +    export ktest_arch
+> -
+> +    #special case: x86_64 is able to run i386 code.  this isn't always the case for armv8 -> armv7 (cortex A35)
+> +    [[ $DEBIAN_ARCH == "i386" && "$(uname -m)" == "x86_64" ]] && unset CROSS_COMPILE
+>      export DEBIAN_ARCH
+>      export MIRROR
+>      export ARCH_TRIPLE
+> @@ -196,6 +197,7 @@ parse_arch()
+>      export QEMU_PACKAGE
+>      export QEMU_BIN
+>      export ktest_arch
+> +    export BITS
 >  }
 >  
 >  find_command() {
 > diff --git a/lib/libktest.sh b/lib/libktest.sh
-> index 9b4931d..8ead78b 100644
+> index 8ead78b..0b2704b 100644
 > --- a/lib/libktest.sh
 > +++ b/lib/libktest.sh
-> @@ -85,6 +85,7 @@ parse_ktest_arg()
->  
->  parse_args_post()
->  {
-> +    [ -z ${ktest_arch:+x} ] && ktest_arch=$(uname -m)
->      parse_arch "$ktest_arch"
->  
->      ktest_out=$(readlink -f "$ktest_out")
-> @@ -306,12 +307,15 @@ start_vm()
->      kernelargs+=("${ktest_kernel_append[@]}")
->  
+> @@ -309,7 +309,7 @@ start_vm()
 >      local qemu_cmd=("$QEMU_BIN" -nodefaults -nographic)
-> +    local accel=kvm
-> +    local cputype=host
-> +    [[ $(uname -m) == $ktest_arch ]] || accel=tcg && cputype=max
+>      local accel=kvm
+>      local cputype=host
+> -    [[ $(uname -m) == $ktest_arch ]] || accel=tcg && cputype=max
+> +    [[ ${CROSS_COMPILE+x} ]] && accel=tcg && cputype=max
 >      case $ktest_arch in
 >  	x86|x86_64)
-> -	    qemu_cmd+=(-cpu host -machine type=q35,accel=kvm,nvdimm=on)
-> +	    qemu_cmd+=(-cpu $cputype -machine type=q35,accel=$accel,nvdimm=on)
->  	    ;;
->  	aarch64)
-> -	    qemu_cmd+=(-cpu host -machine type=virt,gic-version=max,accel=kvm)
-> +	    qemu_cmd+=(-cpu $cputype -machine type=virt,gic-version=max,accel=$accel)
->  	    ;;
->  	mips)
->  	    qemu_cmd+=(-cpu 24Kf -machine malta)
-> diff --git a/lib/testrunner b/lib/testrunner
-> index acbc45f..4eb73f2 100755
-> --- a/lib/testrunner
-> +++ b/lib/testrunner
-> @@ -20,6 +20,10 @@ ktest_out="/host/$ktest_out"
->  ln -sf $ktest_dir /ktest
->  ln -sf $ktest_out /ktest-out
->  
-> +. /ktest/lib/common.sh
-> +
-> +parse_arch $(uname -m)
-> +
->  # Some home directories are in weird places:
->  mkdir -p $(dirname $home)
->  ln -sf /host/$home $home
+>  	    qemu_cmd+=(-cpu $cputype -machine type=q35,accel=$accel,nvdimm=on)
 > diff --git a/root_image b/root_image
-> index 26c99fe..a881714 100755
+> index a881714..e36a4f1 100755
 > --- a/root_image
 > +++ b/root_image
-> @@ -118,7 +118,12 @@ PACKAGES+=(cryptsetup)
->  PACKAGES+=(multipath-tools sg3-utils srptools)
+> @@ -45,6 +45,7 @@ if [[ $# = 0 ]]; then
+>  fi
 >  
->  # ZFS support
-> -PACKAGES+=("linux-headers-generic" dkms zfsutils-linux zfs-dkms)
-> +PACKAGES+=("linux-headers-generic")
-> +# unless no other option when cross-compiling, ignore ZFS
-> +# DKMS needs to cross-compile the module,
-> +# against a different kernel on a different CPUarchitecture.
-> +# this has to cause errors
-> +[[ -n $CROSS_COMPILE ] && PACKAGES+=(dkms zfsutils-linux zfs-dkms)
+>  ktest_image=""
+> +ktest_arch="$(uname -m)"
+>  CMD="cmd_$1"
+>  shift
+>  
+> @@ -100,7 +101,7 @@ PACKAGES+=(libudev-dev libldap2-dev)
+>  PACKAGES+=(acct bsdextrautils xfsprogs xfslibs-dev quota libcap2-bin)
+>  PACKAGES+=(libattr1-dev libaio-dev libgdbm-dev libacl1-dev gettext)
+>  PACKAGES+=(libssl-dev libgdbm-dev libgdbm-compat-dev liburing-dev)
+> -PACKAGES+=(duperemove thin-provisioning-tools fsverity)
+> +PACKAGES+=(duperemove fsverity)
+>  
+>  # xfsprogs:
+>  PACKAGES+=(libinih-dev)
+> @@ -123,7 +124,7 @@ PACKAGES+=("linux-headers-generic")
+>  # DKMS needs to cross-compile the module,
+>  # against a different kernel on a different CPUarchitecture.
+>  # this has to cause errors
+> -[[ -n $CROSS_COMPILE ] && PACKAGES+=(dkms zfsutils-linux zfs-dkms)
+> +[[ ${CROSS_COMPILE+x} ]] || PACKAGES+=(dkms zfsutils-linux zfs-dkms)
+
+Delete this change
+
 >  
 >  # suspend testing:
 >  # [[ $KERNEL_ARCH = x86 ]] && PACKAGES+=(uswsusp)
-> @@ -302,6 +307,7 @@ cmd_create()
->  	--components='main,contrib,non-free,bullseye-backports' \
->  	bullseye "$MNT" "$MIRROR"
+> @@ -241,6 +242,7 @@ update_packages()
+>      chmod 755 "$MNT"/tmp/rustup.sh
 >  
-> +    [[ -n ${CROSS_COMPILE} ]] || cp $(which qemu-${ktest_arch}) ${MNT}$(which qemu-${ktest_arch})
+>      _chroot "$MNT" /tmp/rustup.sh -y
+> +    echo 'export PATH="$HOME/.cargo/bin:$PATH"' > $MNT/etc/profile.d/rustup.sh
+>  }
+>  
+>  trim_image()
+> @@ -304,10 +306,10 @@ cmd_create()
+>  	--arch="$DEBIAN_ARCH"				\
+>  	--exclude=$(join_by , "${EXCLUDE[@]}")		\
+>  	--foreign					\
+> -	--components='main,contrib,non-free,bullseye-backports' \
+> -	bullseye "$MNT" "$MIRROR"
+> +	--components='main,contrib,non-free' \
+> +	trixie "$MNT" "$MIRROR"
+>  
+> -    [[ -n ${CROSS_COMPILE} ]] || cp $(which qemu-${ktest_arch}) ${MNT}$(which qemu-${ktest_arch})
+> +    [[ ${CROSS_COMPILE+x} ]] && cp $(which qemu-${ktest_arch}) ${MNT}$(which qemu-${ktest_arch})
 
-What? Please explain.
+Stop changing these if statements - we don't need workarounds for the
+test command when we're using [[.
 
 >      _chroot "$MNT" /debootstrap/debootstrap --second-stage
 >      _chroot "$MNT" dpkg --configure -a
 >  
-> diff --git a/tests/bcachefs/bcachefs-test-libs.sh b/tests/bcachefs/bcachefs-test-libs.sh
-> index 7167856..05996b1 100644
-> --- a/tests/bcachefs/bcachefs-test-libs.sh
-> +++ b/tests/bcachefs/bcachefs-test-libs.sh
-> @@ -5,8 +5,16 @@
->  #
+> diff --git a/tests/test-libs.sh b/tests/test-libs.sh
+> index 3cacda2..d172e4c 100644
+> --- a/tests/test-libs.sh
+> +++ b/tests/test-libs.sh
+> @@ -7,7 +7,7 @@
+>  . $(dirname $(readlink -e ${BASH_SOURCE[0]}))/prelude.sh
+>  . $(dirname $(readlink -e ${BASH_SOURCE[0]}))/kconfig.sh
 >  
->  . $(dirname $(readlink -e "${BASH_SOURCE[0]}"))/../test-libs.sh
-> +bch_loc=$(dirname $(readlink -e "${BASH_SOURCE[0]}"))/bcachefs-tools
+> -config-mem 4G
+> +config-mem 8G
 >  
->  require-git http://evilpiepirate.org/git/bcachefs-tools.git
-> +if [[ ! -f "${bch_loc}/.last_arch_for_compile" || "$(cat ${bch_loc}/.last_arch_for_compile)" != $ktest_arch ]]; then
-> +	make -C ${bch_loc} clean >/dev/null 2>&1;
-> +	rm -rf "${bch_loc}/rust-src/target/*";
-> +	find ${bch_loc} -name "*.o" -exec rm {} \;
-> +	find ${bch_loc} -name "*.a" -exec rm {} \;
-> +	echo $ktest_arch > ${bch_loc}/.last_arch_for_compile
-
-make clean doesn't properly clean rust build outputs (which is a bug);
-either use git clean -xfd, or fix make clean in bcachefs-tools.
-
-> +fi
->  require-make bcachefs-tools
+>  (($ktest_cpus > 16)) && ktest_cpus=16
 >  
->  require-kernel-config BCACHEFS_FS
-> diff --git a/tests/kconfig.sh b/tests/kconfig.sh
-> index 68005fc..73e93db 100644
-> --- a/tests/kconfig.sh
-> +++ b/tests/kconfig.sh
-> @@ -4,6 +4,8 @@ have_kvmguest=0
->  have_virtio=0
->  have_suspend=0
->  
-> +[ -z ${ktest_arch:+x} ] && ktest_arch=$(uname -m)
-> +
->  case $ktest_arch in
->      x86)
->  	require-kernel-config SMP
 > -- 
 > 2.42.1
 > 
