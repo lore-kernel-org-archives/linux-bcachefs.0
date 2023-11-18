@@ -1,25 +1,27 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kGs4MLBQ"
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D249130
-	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 11:50:29 -0800 (PST)
-Date: Sat, 18 Nov 2023 14:50:24 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CQU1Ida0"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [IPv6:2001:41d0:203:375::ba])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799BE182
+	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 12:09:26 -0800 (PST)
+Date: Sat, 18 Nov 2023 15:09:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700337027;
+	t=1700338164;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rFFaj8GcGe1T64A2mHIfEp+AEEVGxkTt0xxsknQ5dVs=;
-	b=kGs4MLBQ2LqjrMYffqfSCA6+a51qBanJ17cHim07ikGEv73oJeKJu85s+josImSEKW/w9i
-	sWpFG56jugXF1a6P4cPl2WFe6IcqVdPVvvIo7hW8ElBuCyLPsi8drnrDXd+jhTKhjQN4tu
-	r3fajaD60KdiXun394dCuPvBL/ueYtg=
+	bh=4diszcmFXqDArOr66km1Fckd0BOu1Uu3uVNl9dH/VLA=;
+	b=CQU1Ida07+V6w5E7IcqQXfSc1B7JT9vEXLLaKgs7CDcCmfO1kNqKNpT/OXARpN8Sc71zKR
+	4URw6idOTtnpbHler3XCP3VANoAFijZgAjEy2+ArNk6VRX4yxCJr6O2/Nq1e1Jz4nMTdRj
+	WZztznk10+O0ZE7MBRuWy1bf54+mZqc=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Martin Steigerwald <martin@lichtvoll.de>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: Questions related to BCacheFS
-Message-ID: <20231118195024.qe2bjxeubhru3de5@moria.home.lan>
-References: <23311511.6Emhk5qWAg@lichtvoll.de>
+To: Janpieter Sollie <janpieter.sollie@edpnet.be>
+Cc: linux-bcachefs@vger.kernel.org,
+	Janpieter Sollie <janpieter.sollie@kabelmail.de>
+Subject: Re: [PATCH v4 02/10] Run bcachefs tests on emulated architectures
+Message-ID: <20231118200921.fdimf2qysk7kphqk@moria.home.lan>
+References: <20231118194453.41324-1-janpieter.sollie@kabelmail.de>
+ <20231118194453.41324-3-janpieter.sollie@kabelmail.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -28,122 +30,209 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <23311511.6Emhk5qWAg@lichtvoll.de>
+In-Reply-To: <20231118194453.41324-3-janpieter.sollie@kabelmail.de>
 X-Migadu-Flow: FLOW_OUT
 
-On Sat, Nov 18, 2023 at 08:15:50PM +0100, Martin Steigerwald wrote:
-> Hi!
+On Sat, Nov 18, 2023 at 08:38:41PM +0100, Janpieter Sollie wrote:
+> Allow the tests to run on a non-ABI-compatible cpu,
+> verify code when the architecture isn't physically available.
+> in the future, bcachefs-tools should be cross-compiled,
+> and the list of CPU types should be expanded
 > 
-> Awesome that BCacheFS is finally merged! Many thanks to everyone who made 
-> this happen. I appreciate it!
+> Signed-off-by: jpsollie <janpieter.sollie@edpnet.be>
+> ---
+>  build-test-kernel                    | 10 ++++------
+>  lib/common.sh                        | 11 ++++++++---
+>  lib/libktest.sh                      |  8 ++++++--
+>  lib/testrunner                       |  4 ++++
+>  root_image                           |  8 +++++++-
+>  tests/bcachefs/bcachefs-test-libs.sh |  8 ++++++++
+>  tests/kconfig.sh                     |  2 ++
+>  7 files changed, 39 insertions(+), 12 deletions(-)
 > 
-> I am writing an article about BCacheFS. I am willing to provide a link 
-> once it is published. It will be in German language.
+> diff --git a/build-test-kernel b/build-test-kernel
+> index 72990ba..b7dd70c 100755
+> --- a/build-test-kernel
+> +++ b/build-test-kernel
+> @@ -107,7 +107,7 @@ ktest_kernel_source=$(readlink -e "$ktest_kernel_source")
+>  ktest_kernel_build="$ktest_out/kernel_build.$ktest_arch"
+>  mkdir -p "$ktest_kernel_build"
+>  
+> -if [[ -n $CROSS_COMPILE ]]; then
+> +if [[ ${CROSS_COMPILE+x} ]]; then
+
+This change is uneccesary when we're using bash's [[
+
+>      checkdep "$ARCH_TRIPLE-gcc" "gcc-$ARCH_TRIPLE"
+>  fi
+>  
+> @@ -121,10 +121,8 @@ run_ktest()
+>  
+>  do_make()
+>  {
+> -    if [[ -n $CROSS_COMPILE ]]; then
+> -	export ARCH="$KERNEL_ARCH"
+> -	export CROSS_COMPILE="$ARCH_TRIPLE-"
+> -    fi
+> +	local ARCH="$KERNEL_ARCH"
+> +	local CROSS_COMPILE="$ARCH_TRIPLE-"
+
+Why are these needed? I don't see them referenced, since you're just
+spcifying them as make args now (which is good)
+
+>  
+>      make --jobs="$ktest_njobs"			\
+>  	--directory="$ktest_kernel_source"    	\
+> @@ -192,7 +190,7 @@ build_kernel()
+>  
+>      log_verbose "kernel_config_require: ${ktest_kernel_config_require[@]}"
+>  
+> -    MAKEARGS+=("LOCALVERSION=-ktest")
+> +    MAKEARGS+=("LOCALVERSION=-ktest" ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-")
+>  
+>      for opt in "${ktest_kernel_config_require[@]}"; do
+>  	[[ -n $opt ]] && kernel_opt set "$opt"
+> diff --git a/lib/common.sh b/lib/common.sh
+> index 078f512..b94557d 100644
+> --- a/lib/common.sh
+> +++ b/lib/common.sh
+> @@ -80,9 +80,6 @@ join_by()
+>      echo "$*"
+>  }
+>  
+> -ktest_arch=$(uname -m)
+> -CROSS_COMPILE=""
+> -
+>  parse_arch()
+>  {
+>      case $1 in
+> @@ -191,6 +188,14 @@ parse_arch()
+>      if [[ $ktest_arch != $(uname -m) ]]; then
+>  	CROSS_COMPILE=1
+>      fi
+> +
+> +    export DEBIAN_ARCH
+> +    export MIRROR
+> +    export ARCH_TRIPLE
+> +    export KERNEL_ARCH
+> +    export QEMU_PACKAGE
+> +    export QEMU_BIN
+> +    export ktest_arch
+>  }
+>  
+>  find_command() {
+> diff --git a/lib/libktest.sh b/lib/libktest.sh
+> index 9b4931d..8ead78b 100644
+> --- a/lib/libktest.sh
+> +++ b/lib/libktest.sh
+> @@ -85,6 +85,7 @@ parse_ktest_arg()
+>  
+>  parse_args_post()
+>  {
+> +    [ -z ${ktest_arch:+x} ] && ktest_arch=$(uname -m)
+>      parse_arch "$ktest_arch"
+>  
+>      ktest_out=$(readlink -f "$ktest_out")
+> @@ -306,12 +307,15 @@ start_vm()
+>      kernelargs+=("${ktest_kernel_append[@]}")
+>  
+>      local qemu_cmd=("$QEMU_BIN" -nodefaults -nographic)
+> +    local accel=kvm
+> +    local cputype=host
+> +    [[ $(uname -m) == $ktest_arch ]] || accel=tcg && cputype=max
+>      case $ktest_arch in
+>  	x86|x86_64)
+> -	    qemu_cmd+=(-cpu host -machine type=q35,accel=kvm,nvdimm=on)
+> +	    qemu_cmd+=(-cpu $cputype -machine type=q35,accel=$accel,nvdimm=on)
+>  	    ;;
+>  	aarch64)
+> -	    qemu_cmd+=(-cpu host -machine type=virt,gic-version=max,accel=kvm)
+> +	    qemu_cmd+=(-cpu $cputype -machine type=virt,gic-version=max,accel=$accel)
+>  	    ;;
+>  	mips)
+>  	    qemu_cmd+=(-cpu 24Kf -machine malta)
+> diff --git a/lib/testrunner b/lib/testrunner
+> index acbc45f..4eb73f2 100755
+> --- a/lib/testrunner
+> +++ b/lib/testrunner
+> @@ -20,6 +20,10 @@ ktest_out="/host/$ktest_out"
+>  ln -sf $ktest_dir /ktest
+>  ln -sf $ktest_out /ktest-out
+>  
+> +. /ktest/lib/common.sh
+> +
+> +parse_arch $(uname -m)
+> +
+>  # Some home directories are in weird places:
+>  mkdir -p $(dirname $home)
+>  ln -sf /host/$home $home
+> diff --git a/root_image b/root_image
+> index 26c99fe..a881714 100755
+> --- a/root_image
+> +++ b/root_image
+> @@ -118,7 +118,12 @@ PACKAGES+=(cryptsetup)
+>  PACKAGES+=(multipath-tools sg3-utils srptools)
+>  
+>  # ZFS support
+> -PACKAGES+=("linux-headers-generic" dkms zfsutils-linux zfs-dkms)
+> +PACKAGES+=("linux-headers-generic")
+> +# unless no other option when cross-compiling, ignore ZFS
+> +# DKMS needs to cross-compile the module,
+> +# against a different kernel on a different CPUarchitecture.
+> +# this has to cause errors
+> +[[ -n $CROSS_COMPILE ] && PACKAGES+=(dkms zfsutils-linux zfs-dkms)
+>  
+>  # suspend testing:
+>  # [[ $KERNEL_ARCH = x86 ]] && PACKAGES+=(uswsusp)
+> @@ -302,6 +307,7 @@ cmd_create()
+>  	--components='main,contrib,non-free,bullseye-backports' \
+>  	bullseye "$MNT" "$MIRROR"
+>  
+> +    [[ -n ${CROSS_COMPILE} ]] || cp $(which qemu-${ktest_arch}) ${MNT}$(which qemu-${ktest_arch})
+
+What? Please explain.
+
+>      _chroot "$MNT" /debootstrap/debootstrap --second-stage
+>      _chroot "$MNT" dpkg --configure -a
+>  
+> diff --git a/tests/bcachefs/bcachefs-test-libs.sh b/tests/bcachefs/bcachefs-test-libs.sh
+> index 7167856..05996b1 100644
+> --- a/tests/bcachefs/bcachefs-test-libs.sh
+> +++ b/tests/bcachefs/bcachefs-test-libs.sh
+> @@ -5,8 +5,16 @@
+>  #
+>  
+>  . $(dirname $(readlink -e "${BASH_SOURCE[0]}"))/../test-libs.sh
+> +bch_loc=$(dirname $(readlink -e "${BASH_SOURCE[0]}"))/bcachefs-tools
+>  
+>  require-git http://evilpiepirate.org/git/bcachefs-tools.git
+> +if [[ ! -f "${bch_loc}/.last_arch_for_compile" || "$(cat ${bch_loc}/.last_arch_for_compile)" != $ktest_arch ]]; then
+> +	make -C ${bch_loc} clean >/dev/null 2>&1;
+> +	rm -rf "${bch_loc}/rust-src/target/*";
+> +	find ${bch_loc} -name "*.o" -exec rm {} \;
+> +	find ${bch_loc} -name "*.a" -exec rm {} \;
+> +	echo $ktest_arch > ${bch_loc}/.last_arch_for_compile
+
+make clean doesn't properly clean rust build outputs (which is a bug);
+either use git clean -xfd, or fix make clean in bcachefs-tools.
+
+> +fi
+>  require-make bcachefs-tools
+>  
+>  require-kernel-config BCACHEFS_FS
+> diff --git a/tests/kconfig.sh b/tests/kconfig.sh
+> index 68005fc..73e93db 100644
+> --- a/tests/kconfig.sh
+> +++ b/tests/kconfig.sh
+> @@ -4,6 +4,8 @@ have_kvmguest=0
+>  have_virtio=0
+>  have_suspend=0
+>  
+> +[ -z ${ktest_arch:+x} ] && ktest_arch=$(uname -m)
+> +
+>  case $ktest_arch in
+>      x86)
+>  	require-kernel-config SMP
+> -- 
+> 2.42.1
 > 
-> I do have a few questions:
-> 
-> 1) Is discard supported? fstrim says it is not. However /sys/fs/bcachefs/
-> UUID/options/discard shows "1". BCacheFS User manual Principles of 
-> Operations mentions it at a device option. I am not completely sure how 
-> these work. Auto-detected and just IOCTL for fstrim missing?
-
-Yes, it's supported. There's no need for fstrim support because we
-discard buckets as soon as they become empty.
-
-> 
-> 2) What are the plans for scrubbing? Right now it is not yet implemented, 
-> right?
-
-Yes, it's very much planned.
-
-> 3) Is the documentation of mount and other options in
-> https://bcachefs.org/bcachefs-principles-of-operation.pdf complete? If 
-> not, care to elaborate what is missing?
-
-The master option list is here:
-https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/opts.h#n122
-
-A few of these are hidden; OPT_FORMAT and OPT_MOUNT options are the
-options you'll be looking for - and OPT_DEVICE for device specific
-options.
-
-> 4) What are the plans or ideas for documentation? I specially ask as there 
-> does not seem to be a manpage like mount.bcachefs or mkfs.bcachefs yet. 
-> There is no mention of bcachefs in mount manpage either. And no bcachefs 
-> manpage in section 5 like with btrfs or xfs. There is a bcachefs manpage 
-> in section 8 which for example for a complete list of mount options refers 
-> to above Principles of Operation user manual. And it has information on 
-> "bcachefs format" and some other sub commands. I bet it is still too early 
-> or maybe you have different plans on how to go about documentation. 
-> Anything you can share already regarding this?
-
-I'm entirely too busy with just writing code - I'd love to have more
-time for documentation, but it's hard :) But, there are people starting
-to contribute to the man pages, so I expect that will improve.
-
-> 5) Is the feature implementation status on bcachefs.org up-to-date? How 
-> about the one in Principles of Operation user manual? Is any of these more 
-> up-to-date? If anything is missing from these, care to elaborate?
-
-Reasonably up to date, yes. The main areas that still need work and
-testing are snapshots and erasure coding; with snapshots it's looking
-like just minor bugs are left and fleshing out features, erasure coding
-is improving but still needs quite a bit of work.
-
-> 6) What is the status for xxhash checksums? They are mentioned as an 
-> option in the output of "bcachefs format". Yet no mention of it in 
-> bcachefs manpage nor in Principles of Operation user manual.
-
-I initially had concerns about whether that code was actually solid - I
-think it's been resolved; I'll just want to hear some positive feedback
-from people using it before I add it to the documentation.
-
-> 7) On mounting BCacheFS without compression enabled on 6.7-rc1, shortly 
-> before rc2, commit 791c8ab095f71327899023223940dd52257a4173 also LZ4 
-> compression modules  lz4hc_compress and lz4_compress are loaded. Why?
-
-We just add hard dependencies on the compression modules because a) the
-crypto interface (that lets you use them as runtime dependencies)
-_sucks_ and the lz4 modules at least are pretty small. zstd is bigger
-though, so making these runtime dependencies would be a worthwhile
-enhancement for anyone who's interested.
-
-> 8) Regarding bcachefs-tools. More out of curiosity, cause there is already 
-> a bcachefs-tools package in Debian repo, albeit only version 1.2. I see a 
-> "debian" directory, however version number is 1.0.8-2~bpo8+1 while 
-> compiling via make gives version 1.33. So I suppose packaging information 
-> is not up to date? For now I am going with "make install" from bcachefs-
-> tools git repo, as package in Debian repo is outdated.
-
-Yeah I'm in contact with the debian maintainer, it should be updated
-soon.
-
-> 9) What is the preferred way to report bugs? Mailing list? Kernel bug 
-> tracker? Both? Anything else?
-
-Mailing list is good, or the github bugtrackers (that really should be
-linked on the website:
-
-https://github.com/koverstreet/bcachefs/issues/
-https://github.com/koverstreet/bcachefs-tools/issues/
-
-> 10) Anything you think an article about BCacheFS should absolutely 
-> mention?
-
-Would personally love to see some non-phoronix benchmarks :)
-
-I've put a ton of effort into performance, my goal is a COW filesystem
-that can compete with XFS on performance and scalabality - which is a
-tall order! but we're getting close.
-
-With the btree write buffer rewrite (still not quite merged, any day
-now) - I'm pushing _900k_ iops, 4k random writes - through the COW write
-path.
-
-This is in my benchmarking/profiling mode, with checksums off and data
-reads/writes to the device turned off - i.e. just showing bcachefs
-overhead. So not real world nummbers, but indicative of how well we can
-scale.
-
-Cheers,
-Kent
