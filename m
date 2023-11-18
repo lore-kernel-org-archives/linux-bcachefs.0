@@ -1,178 +1,149 @@
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from relay-b03.edpnet.be (relay-b03.edpnet.be [212.71.1.220])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9434AD57
-	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 11:45:26 -0800 (PST)
-X-ASG-Debug-ID: 1700336721-24639c7fb84da540004-qsCQDO
-Received: from linuxserver.costadelsollie.local (213.219.166.214.adsl.dyn.edpnet.net [213.219.166.214]) by relay-b03.edpnet.be with ESMTP id sDIA5qRqzHkZiNpy; Sat, 18 Nov 2023 20:45:22 +0100 (CET)
-X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
-X-Barracuda-Effective-Source-IP: 213.219.166.214.adsl.dyn.edpnet.net[213.219.166.214]
-X-Barracuda-Apparent-Source-IP: 213.219.166.214
-From: Janpieter Sollie <janpieter.sollie@kabelmail.de>
-To: kent.overstreet@linux.dev,
-	linux-bcachefs@vger.kernel.org
-Cc: Janpieter Sollie <janpieter.sollie@kabelmail.de>,
-	jpsollie <janpieter.sollie@edpnet.be>
-Subject: [PATCH v4 03/10] ktest: upgrade to debian trixie channel
-Date: Sat, 18 Nov 2023 20:38:42 +0100
-X-ASG-Orig-Subj: [PATCH v4 03/10] ktest: upgrade to debian trixie channel
-Message-ID: <20231118194453.41324-4-janpieter.sollie@kabelmail.de>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231118194453.41324-1-janpieter.sollie@kabelmail.de>
-References: <20231118194453.41324-1-janpieter.sollie@kabelmail.de>
-Reply-To: Janpieter Sollie <janpieter.sollie@edpnet.be>
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kGs4MLBQ"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D249130
+	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 11:50:29 -0800 (PST)
+Date: Sat, 18 Nov 2023 14:50:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700337027;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rFFaj8GcGe1T64A2mHIfEp+AEEVGxkTt0xxsknQ5dVs=;
+	b=kGs4MLBQ2LqjrMYffqfSCA6+a51qBanJ17cHim07ikGEv73oJeKJu85s+josImSEKW/w9i
+	sWpFG56jugXF1a6P4cPl2WFe6IcqVdPVvvIo7hW8ElBuCyLPsi8drnrDXd+jhTKhjQN4tu
+	r3fajaD60KdiXun394dCuPvBL/ueYtg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Martin Steigerwald <martin@lichtvoll.de>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: Questions related to BCacheFS
+Message-ID: <20231118195024.qe2bjxeubhru3de5@moria.home.lan>
+References: <23311511.6Emhk5qWAg@lichtvoll.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Barracuda-Connect: 213.219.166.214.adsl.dyn.edpnet.net[213.219.166.214]
-X-Barracuda-Start-Time: 1700336722
-X-Barracuda-URL: https://212.71.1.220:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 4266
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.116931
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23311511.6Emhk5qWAg@lichtvoll.de>
+X-Migadu-Flow: FLOW_OUT
 
-Due to bcachefs being mainlined,
-it's worth considering a more recent update channel,
-which may include bcachefs features in the future.
+On Sat, Nov 18, 2023 at 08:15:50PM +0100, Martin Steigerwald wrote:
+> Hi!
+> 
+> Awesome that BCacheFS is finally merged! Many thanks to everyone who made 
+> this happen. I appreciate it!
+> 
+> I am writing an article about BCacheFS. I am willing to provide a link 
+> once it is published. It will be in German language.
+> 
+> I do have a few questions:
+> 
+> 1) Is discard supported? fstrim says it is not. However /sys/fs/bcachefs/
+> UUID/options/discard shows "1". BCacheFS User manual Principles of 
+> Operations mentions it at a device option. I am not completely sure how 
+> these work. Auto-detected and just IOCTL for fstrim missing?
 
-Necessary adjustments have been made for the packages,
-but kernel requirements may still need some extra tweaks
+Yes, it's supported. There's no need for fstrim support because we
+discard buckets as soon as they become empty.
 
-Signed-off-by: jpsollie <janpieter.sollie@edpnet.be>
----
- lib/common.sh      |  8 +++++---
- lib/libktest.sh    |  2 +-
- root_image         | 12 +++++++-----
- tests/test-libs.sh |  2 +-
- 4 files changed, 14 insertions(+), 10 deletions(-)
+> 
+> 2) What are the plans for scrubbing? Right now it is not yet implemented, 
+> right?
 
-diff --git a/lib/common.sh b/lib/common.sh
-index b94557d..353bb36 100644
---- a/lib/common.sh
-+++ b/lib/common.sh
-@@ -83,7 +83,7 @@ join_by()
- parse_arch()
- {
-     case $1 in
--	x86|i386)
-+	x86|i386|i686)
- 	    ktest_arch=x86
- 	    DEBIAN_ARCH=i386
- 	    ARCH_TRIPLE=${ARCH_TRIPLE_X86}
-@@ -92,7 +92,7 @@ parse_arch()
- 	    BITS=32
- 
- 	    QEMU_PACKAGE=qemu-system-x86
--	    QEMU_BIN=qemu-system-x86_64
-+	    QEMU_BIN=qemu-system-i386
- 	    ;;
- 	x86_64|amd64)
- 	    ktest_arch=x86_64
-@@ -188,7 +188,8 @@ parse_arch()
-     if [[ $ktest_arch != $(uname -m) ]]; then
- 	CROSS_COMPILE=1
-     fi
--
-+    #special case: x86_64 is able to run i386 code.  this isn't always the case for armv8 -> armv7 (cortex A35)
-+    [[ $DEBIAN_ARCH == "i386" && "$(uname -m)" == "x86_64" ]] && unset CROSS_COMPILE
-     export DEBIAN_ARCH
-     export MIRROR
-     export ARCH_TRIPLE
-@@ -196,6 +197,7 @@ parse_arch()
-     export QEMU_PACKAGE
-     export QEMU_BIN
-     export ktest_arch
-+    export BITS
- }
- 
- find_command() {
-diff --git a/lib/libktest.sh b/lib/libktest.sh
-index 8ead78b..0b2704b 100644
---- a/lib/libktest.sh
-+++ b/lib/libktest.sh
-@@ -309,7 +309,7 @@ start_vm()
-     local qemu_cmd=("$QEMU_BIN" -nodefaults -nographic)
-     local accel=kvm
-     local cputype=host
--    [[ $(uname -m) == $ktest_arch ]] || accel=tcg && cputype=max
-+    [[ ${CROSS_COMPILE+x} ]] && accel=tcg && cputype=max
-     case $ktest_arch in
- 	x86|x86_64)
- 	    qemu_cmd+=(-cpu $cputype -machine type=q35,accel=$accel,nvdimm=on)
-diff --git a/root_image b/root_image
-index a881714..e36a4f1 100755
---- a/root_image
-+++ b/root_image
-@@ -45,6 +45,7 @@ if [[ $# = 0 ]]; then
- fi
- 
- ktest_image=""
-+ktest_arch="$(uname -m)"
- CMD="cmd_$1"
- shift
- 
-@@ -100,7 +101,7 @@ PACKAGES+=(libudev-dev libldap2-dev)
- PACKAGES+=(acct bsdextrautils xfsprogs xfslibs-dev quota libcap2-bin)
- PACKAGES+=(libattr1-dev libaio-dev libgdbm-dev libacl1-dev gettext)
- PACKAGES+=(libssl-dev libgdbm-dev libgdbm-compat-dev liburing-dev)
--PACKAGES+=(duperemove thin-provisioning-tools fsverity)
-+PACKAGES+=(duperemove fsverity)
- 
- # xfsprogs:
- PACKAGES+=(libinih-dev)
-@@ -123,7 +124,7 @@ PACKAGES+=("linux-headers-generic")
- # DKMS needs to cross-compile the module,
- # against a different kernel on a different CPUarchitecture.
- # this has to cause errors
--[[ -n $CROSS_COMPILE ] && PACKAGES+=(dkms zfsutils-linux zfs-dkms)
-+[[ ${CROSS_COMPILE+x} ]] || PACKAGES+=(dkms zfsutils-linux zfs-dkms)
- 
- # suspend testing:
- # [[ $KERNEL_ARCH = x86 ]] && PACKAGES+=(uswsusp)
-@@ -241,6 +242,7 @@ update_packages()
-     chmod 755 "$MNT"/tmp/rustup.sh
- 
-     _chroot "$MNT" /tmp/rustup.sh -y
-+    echo 'export PATH="$HOME/.cargo/bin:$PATH"' > $MNT/etc/profile.d/rustup.sh
- }
- 
- trim_image()
-@@ -304,10 +306,10 @@ cmd_create()
- 	--arch="$DEBIAN_ARCH"				\
- 	--exclude=$(join_by , "${EXCLUDE[@]}")		\
- 	--foreign					\
--	--components='main,contrib,non-free,bullseye-backports' \
--	bullseye "$MNT" "$MIRROR"
-+	--components='main,contrib,non-free' \
-+	trixie "$MNT" "$MIRROR"
- 
--    [[ -n ${CROSS_COMPILE} ]] || cp $(which qemu-${ktest_arch}) ${MNT}$(which qemu-${ktest_arch})
-+    [[ ${CROSS_COMPILE+x} ]] && cp $(which qemu-${ktest_arch}) ${MNT}$(which qemu-${ktest_arch})
-     _chroot "$MNT" /debootstrap/debootstrap --second-stage
-     _chroot "$MNT" dpkg --configure -a
- 
-diff --git a/tests/test-libs.sh b/tests/test-libs.sh
-index 3cacda2..d172e4c 100644
---- a/tests/test-libs.sh
-+++ b/tests/test-libs.sh
-@@ -7,7 +7,7 @@
- . $(dirname $(readlink -e ${BASH_SOURCE[0]}))/prelude.sh
- . $(dirname $(readlink -e ${BASH_SOURCE[0]}))/kconfig.sh
- 
--config-mem 4G
-+config-mem 8G
- 
- (($ktest_cpus > 16)) && ktest_cpus=16
- 
--- 
-2.42.1
+Yes, it's very much planned.
 
+> 3) Is the documentation of mount and other options in
+> https://bcachefs.org/bcachefs-principles-of-operation.pdf complete? If 
+> not, care to elaborate what is missing?
+
+The master option list is here:
+https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/opts.h#n122
+
+A few of these are hidden; OPT_FORMAT and OPT_MOUNT options are the
+options you'll be looking for - and OPT_DEVICE for device specific
+options.
+
+> 4) What are the plans or ideas for documentation? I specially ask as there 
+> does not seem to be a manpage like mount.bcachefs or mkfs.bcachefs yet. 
+> There is no mention of bcachefs in mount manpage either. And no bcachefs 
+> manpage in section 5 like with btrfs or xfs. There is a bcachefs manpage 
+> in section 8 which for example for a complete list of mount options refers 
+> to above Principles of Operation user manual. And it has information on 
+> "bcachefs format" and some other sub commands. I bet it is still too early 
+> or maybe you have different plans on how to go about documentation. 
+> Anything you can share already regarding this?
+
+I'm entirely too busy with just writing code - I'd love to have more
+time for documentation, but it's hard :) But, there are people starting
+to contribute to the man pages, so I expect that will improve.
+
+> 5) Is the feature implementation status on bcachefs.org up-to-date? How 
+> about the one in Principles of Operation user manual? Is any of these more 
+> up-to-date? If anything is missing from these, care to elaborate?
+
+Reasonably up to date, yes. The main areas that still need work and
+testing are snapshots and erasure coding; with snapshots it's looking
+like just minor bugs are left and fleshing out features, erasure coding
+is improving but still needs quite a bit of work.
+
+> 6) What is the status for xxhash checksums? They are mentioned as an 
+> option in the output of "bcachefs format". Yet no mention of it in 
+> bcachefs manpage nor in Principles of Operation user manual.
+
+I initially had concerns about whether that code was actually solid - I
+think it's been resolved; I'll just want to hear some positive feedback
+from people using it before I add it to the documentation.
+
+> 7) On mounting BCacheFS without compression enabled on 6.7-rc1, shortly 
+> before rc2, commit 791c8ab095f71327899023223940dd52257a4173 also LZ4 
+> compression modules  lz4hc_compress and lz4_compress are loaded. Why?
+
+We just add hard dependencies on the compression modules because a) the
+crypto interface (that lets you use them as runtime dependencies)
+_sucks_ and the lz4 modules at least are pretty small. zstd is bigger
+though, so making these runtime dependencies would be a worthwhile
+enhancement for anyone who's interested.
+
+> 8) Regarding bcachefs-tools. More out of curiosity, cause there is already 
+> a bcachefs-tools package in Debian repo, albeit only version 1.2. I see a 
+> "debian" directory, however version number is 1.0.8-2~bpo8+1 while 
+> compiling via make gives version 1.33. So I suppose packaging information 
+> is not up to date? For now I am going with "make install" from bcachefs-
+> tools git repo, as package in Debian repo is outdated.
+
+Yeah I'm in contact with the debian maintainer, it should be updated
+soon.
+
+> 9) What is the preferred way to report bugs? Mailing list? Kernel bug 
+> tracker? Both? Anything else?
+
+Mailing list is good, or the github bugtrackers (that really should be
+linked on the website:
+
+https://github.com/koverstreet/bcachefs/issues/
+https://github.com/koverstreet/bcachefs-tools/issues/
+
+> 10) Anything you think an article about BCacheFS should absolutely 
+> mention?
+
+Would personally love to see some non-phoronix benchmarks :)
+
+I've put a ton of effort into performance, my goal is a COW filesystem
+that can compete with XFS on performance and scalabality - which is a
+tall order! but we're getting close.
+
+With the btree write buffer rewrite (still not quite merged, any day
+now) - I'm pushing _900k_ iops, 4k random writes - through the COW write
+path.
+
+This is in my benchmarking/profiling mode, with checksums off and data
+reads/writes to the device turned off - i.e. just showing bcachefs
+overhead. So not real world nummbers, but indicative of how well we can
+scale.
+
+Cheers,
+Kent
