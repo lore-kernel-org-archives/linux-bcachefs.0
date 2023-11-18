@@ -1,123 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Wwod6iFg";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="CmOBsO6n"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A46A0;
-	Sat, 18 Nov 2023 09:20:38 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+X-Greylist: delayed 432 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 18 Nov 2023 11:23:05 PST
+Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826D012B
+	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 11:23:05 -0800 (PST)
+Received: from 127.0.0.1 (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 904F71F37C;
-	Sat, 18 Nov 2023 17:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1700328036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=46ia7DRlB/IH6qcR1sQCmNVQI/gY2ouMnWRwtUSreIQ=;
-	b=Wwod6iFgcElg0ih/AqP21gh/Yi73DyT/8fa9P5MTi8SQLvZZOeh2Why2HT1VKbvb1ivqKg
-	Xx4ilzpVr8l5sovhnHfxP9EA76slz5S8G3KUHcHIPczFbjpTo7xJg8/naNkEFvMRx4vwsK
-	Tx/H8AXcwa0R5/Va/3mBL14U8Lc9L/Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1700328036;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=46ia7DRlB/IH6qcR1sQCmNVQI/gY2ouMnWRwtUSreIQ=;
-	b=CmOBsO6nCOgGXfmGARYeRJLiuydOq+btwAwDdEnXmD5XU3p3j9Dr9JzAomXPM+wMpUCJGu
-	32dYOQSIqXslv6Dg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 403721348D;
-	Sat, 18 Nov 2023 17:20:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id iIKMO2LyWGUiLwAAMHmgww
-	(envelope-from <colyli@suse.de>); Sat, 18 Nov 2023 17:20:34 +0000
-Content-Type: text/plain;
-	charset=utf-8
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id B64CD815BF8
+	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 20:15:50 +0100 (CET)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: linux-bcachefs@vger.kernel.org
+Subject: Questions related to BCacheFS
+Date: Sat, 18 Nov 2023 20:15:50 +0100
+Message-ID: <23311511.6Emhk5qWAg@lichtvoll.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: Re: [PATCH 0/2] Two small closures patches
-From: Coly Li <colyli@suse.de>
-In-Reply-To: <79FE1457-FC6D-46A9-A7F9-55ADCCBE42DF@suse.de>
-Date: Sun, 19 Nov 2023 01:20:22 +0800
-Cc: Bcache Linux <linux-bcache@vger.kernel.org>,
- linux-bcachefs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DD7F284F-7133-46A1-A866-31E17604314F@suse.de>
-References: <20231031162454.3761482-1-kent.overstreet@linux.dev>
- <79FE1457-FC6D-46A9-A7F9-55ADCCBE42DF@suse.de>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.28
-X-Spamd-Result: default: False [-3.28 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-2.48)[97.65%];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 MV_CASE(0.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TO_DN_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
+Hi!
 
+Awesome that BCacheFS is finally merged! Many thanks to everyone who made 
+this happen. I appreciate it!
 
-> 2023=E5=B9=B411=E6=9C=8819=E6=97=A5 00:43=EF=BC=8CColy Li =
-<colyli@suse.de> =E5=86=99=E9=81=93=EF=BC=9A
->=20
->=20
->=20
->> 2023=E5=B9=B411=E6=9C=881=E6=97=A5 00:24=EF=BC=8CKent Overstreet =
-<kent.overstreet@linux.dev> =E5=86=99=E9=81=93=EF=BC=9A
->>=20
->> I'll be sending these to Linus in my next pull request, sending them =
-to
->> linux-bcache so Coly gets a chance to see them.
->>=20
->> Kent Overstreet (2):
->> closures: Better memory barriers
->> closures: Fix race in closure_sync()
->>=20
->> fs/bcachefs/fs-io-direct.c |  1 +
->> include/linux/closure.h    | 12 +++++++++---
->> lib/closure.c              |  9 +++++++--
->> 3 files changed, 17 insertions(+), 5 deletions(-)
->=20
-> The whole series got tested with current bcache code, it works fine.
->=20
-> Acked-by: Coly Li <colyli@suse.de <mailto:colyli@suse.de>>
+I am writing an article about BCacheFS. I am willing to provide a link 
+once it is published. It will be in German language.
 
-The above line was automatically modified by the MacOS Mail client, =
-sigh=E2=80=A6
-Please use the following line,
+I do have a few questions:
 
-Acked-by: Coly Li <colyli@suse.de>
+1) Is discard supported? fstrim says it is not. However /sys/fs/bcachefs/
+UUID/options/discard shows "1". BCacheFS User manual Principles of 
+Operations mentions it at a device option. I am not completely sure how 
+these work. Auto-detected and just IOCTL for fstrim missing?
 
+2) What are the plans for scrubbing? Right now it is not yet implemented, 
+right?
 
-Thanks.
+3) Is the documentation of mount and other options in
+https://bcachefs.org/bcachefs-principles-of-operation.pdf complete? If 
+not, care to elaborate what is missing?
 
-Coly Li
+4) What are the plans or ideas for documentation? I specially ask as there 
+does not seem to be a manpage like mount.bcachefs or mkfs.bcachefs yet. 
+There is no mention of bcachefs in mount manpage either. And no bcachefs 
+manpage in section 5 like with btrfs or xfs. There is a bcachefs manpage 
+in section 8 which for example for a complete list of mount options refers 
+to above Principles of Operation user manual. And it has information on 
+"bcachefs format" and some other sub commands. I bet it is still too early 
+or maybe you have different plans on how to go about documentation. 
+Anything you can share already regarding this?
+
+5) Is the feature implementation status on bcachefs.org up-to-date? How 
+about the one in Principles of Operation user manual? Is any of these more 
+up-to-date? If anything is missing from these, care to elaborate?
+
+6) What is the status for xxhash checksums? They are mentioned as an 
+option in the output of "bcachefs format". Yet no mention of it in 
+bcachefs manpage nor in Principles of Operation user manual.
+
+7) On mounting BCacheFS without compression enabled on 6.7-rc1, shortly 
+before rc2, commit 791c8ab095f71327899023223940dd52257a4173 also LZ4 
+compression modules  lz4hc_compress and lz4_compress are loaded. Why?
+
+8) Regarding bcachefs-tools. More out of curiosity, cause there is already 
+a bcachefs-tools package in Debian repo, albeit only version 1.2. I see a 
+"debian" directory, however version number is 1.0.8-2~bpo8+1 while 
+compiling via make gives version 1.33. So I suppose packaging information 
+is not up to date? For now I am going with "make install" from bcachefs-
+tools git repo, as package in Debian repo is outdated.
+
+9) What is the preferred way to report bugs? Mailing list? Kernel bug 
+tracker? Both? Anything else?
+
+10) Anything you think an article about BCacheFS should absolutely 
+mention?
+
+There may be more at a later time. :)
+
+Best,
+-- 
+Martin
+
 
