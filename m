@@ -1,176 +1,110 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SHqyw0VI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44931D5C
-	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 03:55:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1700308500;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FpJYaWnjn61v2hTRrNbnNDF+9YwaNoe+fZbzEhgL7FQ=;
-	b=SHqyw0VIb591yZgE/KKXZkY61dYEx99aYoBpRJIumSdnm/vlsfVGRcJ2mNd4hJ2IZJyvcQ
-	FgJPbVwZjtqn1qteeCtk0UMlu0yz+vNRNHTZNR9OQKCY0rcaSQQdnfNQ1SslmP+2tFKH74
-	AR24EKzBuJUgKNlkNjTS/+X/EQidECc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-690-h8YLETNrPW-SUrWP1XYicQ-1; Sat, 18 Nov 2023 06:54:58 -0500
-X-MC-Unique: h8YLETNrPW-SUrWP1XYicQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="yYql8ujw";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="q8f5jFnh"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA0DE5;
+	Sat, 18 Nov 2023 08:43:33 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 39051811E7B;
-	Sat, 18 Nov 2023 11:54:58 +0000 (UTC)
-Received: from bfoster (unknown [10.22.32.99])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 05E0510EA1;
-	Sat, 18 Nov 2023 11:54:57 +0000 (UTC)
-Date: Sat, 18 Nov 2023 06:55:45 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] generic/459: improve shutdown/read-only check to
- accommodate bcachefs
-Message-ID: <ZVimQVg0/5CNmC1S@bfoster>
-References: <20231117144317.10882-1-bfoster@redhat.com>
- <20231117221434.GI36175@frogsfrogsfrogs>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 145A31F45E;
+	Sat, 18 Nov 2023 16:43:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1700325812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jlbJbB5h6moL2eoLGsN3b6JGgLCOxAl5/1Rn1Oo2CUQ=;
+	b=yYql8ujwgFRsAIsnB3SH3U8o2goXVkVtgc0Wg2fkaAjY+CtNCP/BM2u2FXWlz0kKI5XIi7
+	CHEhqKdFqhYDyjLWCcajxLK1T90Cv1mQ9peiSboxe4an47p3KEpcUxRK2zd33msQSoLQoW
+	+MA+yD7rNA/8KHzuUcVn16QtbQnCC04=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1700325812;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jlbJbB5h6moL2eoLGsN3b6JGgLCOxAl5/1Rn1Oo2CUQ=;
+	b=q8f5jFnhEY2yo1wYoGUPtE5+FOoIm5hiaH5Tn+HHuYgdvxFN6ZXc0S9DtQOilqiRBW4OPB
+	8+3JGosvrLvY6SCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 11024138EF;
+	Sat, 18 Nov 2023 16:43:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id b/WgM7LpWGW2IAAAMHmgww
+	(envelope-from <colyli@suse.de>); Sat, 18 Nov 2023 16:43:30 +0000
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231117221434.GI36175@frogsfrogsfrogs>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
+Subject: Re: [PATCH 0/2] Two small closures patches
+From: Coly Li <colyli@suse.de>
+In-Reply-To: <20231031162454.3761482-1-kent.overstreet@linux.dev>
+Date: Sun, 19 Nov 2023 00:43:18 +0800
+Cc: Bcache Linux <linux-bcache@vger.kernel.org>,
+ linux-bcachefs@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <79FE1457-FC6D-46A9-A7F9-55ADCCBE42DF@suse.de>
+References: <20231031162454.3761482-1-kent.overstreet@linux.dev>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.27
+X-Spamd-Result: default: False [-2.27 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-1.55)[92.04%];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 MV_CASE(0.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TO_DN_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.13)[-0.637];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
 
-On Fri, Nov 17, 2023 at 02:14:34PM -0800, Darrick J. Wong wrote:
-> On Fri, Nov 17, 2023 at 09:43:17AM -0500, Brian Foster wrote:
-> > generic/459 occasionally fails on bcachefs because the deliberately
-> > induced I/O errors caused by exhausting the overprovisioned thin
-> > pool can lead to filesystem shutdown. This test considers this
-> > expected behavior on certain fs', but only checks for the ext4
-> > remount read-only behavior. bcachefs does a similar emergency
-> > read-only transition in response to certain I/O errors, but it
-> > behaves more similar to an XFS shutdown and doesn't necessarily
-> > reflect "ro" state in the mount table (unless induced by userspace).
-> > 
-> > Since the test already runs a touch command to help trigger the ext4
-> > error handling sequence, this can be tweaked to serve double duty
-> > and also more accurately detect read-only status on bcachefs.
-> > Refactor into a small helper, check for an EROFS return to the touch
-> > command, and consider the fs read-only if either that or the mount
-> > entry check indicates it.
-> > 
-> > Signed-off-by: Brian Foster <bfoster@redhat.com>
-> > ---
-> > 
-> > Something I realized when writing up the commit log is that the EROFS
-> > check doesn't technically cover XFS, which IIRC returns EIO in response
-> > to any sorts of writes once the fs has shutdown. I'm not sure this
-> > matters currently because XFS doesn't shutdown due to the default
-> > behavior to retry failed I/Os, but technically if XFS were configured to
-> > not retry I/O errors and go right to permanent failure, I suspect it
-> > would fail this test in the same way bcachefs does.
-> > 
-> > That could be addressed fairly easily by also checking for EIO error
-> > message output, or just assuming touch failure == shutdown, etc. I don't
-> > have much preference on that, so thoughts appreciated.
-> 
-> I wish there was a better way to signal that a filesystem has shut down,
-> though ATM that isn't even a VFS level concept.  I generally assume that
-> touch failure == shutdown if the fs was previously writable.
-> 
 
-Yeah, mildly annoying there was no good way to detect this. I think all
-we really have atm is dmesg scraping to call out unexpected shutdowns.
-That still needs to be added for bcachefs btw, but I've been holding off
-because it leads to noise on various dm-flakey oriented tests and
-whatnot that complain about shutdowns that otherwise seem to be expected
-from bcachefs. Though perhaps the right thing to do there is to enable
-it and just filter those tests out for the time being.
 
-But that's a separate topic... It sounds reasonable to me to just use
-the touch failure in this particular case. I'll post a v2 with that
-tweak next week.
+> 2023=E5=B9=B411=E6=9C=881=E6=97=A5 00:24=EF=BC=8CKent Overstreet =
+<kent.overstreet@linux.dev> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> I'll be sending these to Linus in my next pull request, sending them =
+to
+> linux-bcache so Coly gets a chance to see them.
+>=20
+> Kent Overstreet (2):
+>  closures: Better memory barriers
+>  closures: Fix race in closure_sync()
+>=20
+> fs/bcachefs/fs-io-direct.c |  1 +
+> include/linux/closure.h    | 12 +++++++++---
+> lib/closure.c              |  9 +++++++--
+> 3 files changed, 17 insertions(+), 5 deletions(-)
 
-> OTOH with statmount landing soonish, perhaps we ought to apply for a new
-> SB_SHUTDOWN state flag for it to export?
-> 
+The whole series got tested with current bcache code, it works fine.
 
-Perhaps worth a discussion..? The flipside I suppose is that shutdown
-has historically been a rather hacky, informalized thing with
-inconsistent behavior across fs' simply because it's a last ditch
-failsafe technique that we hope should never happen. Is it worth trying
-to generalize/formalize/document something that is basically a "has my
-filesystem crashed?" check..?
+Acked-by: Coly Li <colyli@suse.de <mailto:colyli@suse.de>>
 
-We do have the vfs GOINGDOWN ioctl. I wonder if something like a new
-flag for a nomodify/check goingdown mode or something that would return
-whether a shutdown would occur or already has would be sufficient... hm?
+Thanks.
 
-Brian
-
-> --D
-> 
-> > Brian
-> > 
-> >  tests/generic/459 | 30 +++++++++++++++++++++++-------
-> >  1 file changed, 23 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/tests/generic/459 b/tests/generic/459
-> > index 4dd7a43b..d0c48325 100755
-> > --- a/tests/generic/459
-> > +++ b/tests/generic/459
-> > @@ -57,6 +57,26 @@ origpsize=200
-> >  virtsize=300
-> >  newpsize=300
-> >  
-> > +# Check whether the filesystem has shutdown or remounted read-only. Behavior can
-> > +# differ based on filesystem and configuration. Some fs' may not have remounted
-> > +# without an additional write while others may have shutdown but do not
-> > +# necessarily reflect read-only state in the mount options. Check both here to
-> > +# cover the various scenarios.
-> > +is_shutdown_or_ro()
-> > +{
-> > +	ro=0
-> > +
-> > +	# if the fs has not shutdown, this may help trigger a remount-ro
-> > +	touch $SCRATCH_MNT/newfile 2>&1 | \
-> > +		grep "Read-only file system" > /dev/null
-> > +	[ $? == 0 ] && ro=1
-> > +
-> > +	_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro" > /dev/null
-> > +	[ $? == 0 ] && ro=1
-> > +
-> > +	echo $ro
-> > +}
-> > +
-> >  # Ensure we have enough disk space
-> >  _scratch_mkfs_sized $((350 * 1024 * 1024)) >>$seqres.full 2>&1
-> >  
-> > @@ -113,13 +133,9 @@ ret=$?
-> >  #	- The filesystem stays in Read-Write mode, but can be frozen/thawed
-> >  #	  without getting stuck.
-> >  if [ $ret -ne 0 ]; then
-> > -	# freeze failed, filesystem should reject further writes and remount
-> > -	# as readonly. Sometimes the previous write process won't trigger
-> > -	# ro-remount, e.g. on ext3/4, do additional touch here to make sure
-> > -	# filesystems see the metadata I/O error.
-> > -	touch $SCRATCH_MNT/newfile >/dev/null 2>&1
-> > -	ISRO=$(_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro")
-> > -	if [ -n "$ISRO" ]; then
-> > +	# freeze failed, filesystem should reject further writes
-> > +	ISRO=`is_shutdown_or_ro`
-> > +	if [ $ISRO == 1 ]; then
-> >  		echo "Test OK"
-> >  	else
-> >  		echo "Freeze failed and FS isn't Read-Only. Test Failed"
-> > -- 
-> > 2.41.0
-> > 
-> > 
-> 
+Coly Li
 
