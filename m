@@ -1,21 +1,20 @@
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 Received: from relay-b03.edpnet.be (relay-b03.edpnet.be [212.71.1.220])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEFADD4D
-	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 11:45:30 -0800 (PST)
-X-ASG-Debug-ID: 1700336721-24639c7fb84da54000b-qsCQDO
-Received: from linuxserver.costadelsollie.local (213.219.166.214.adsl.dyn.edpnet.net [213.219.166.214]) by relay-b03.edpnet.be with ESMTP id FifaMCrBQ8rnSXOZ; Sat, 18 Nov 2023 20:45:25 +0100 (CET)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EBCD60
+	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Nov 2023 11:45:26 -0800 (PST)
+X-ASG-Debug-ID: 1700336721-24639c7fb84da540005-qsCQDO
+Received: from linuxserver.costadelsollie.local (213.219.166.214.adsl.dyn.edpnet.net [213.219.166.214]) by relay-b03.edpnet.be with ESMTP id 3t0dGtAIPj9GIs5P; Sat, 18 Nov 2023 20:45:23 +0100 (CET)
 X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
 X-Barracuda-Effective-Source-IP: 213.219.166.214.adsl.dyn.edpnet.net[213.219.166.214]
 X-Barracuda-Apparent-Source-IP: 213.219.166.214
 From: Janpieter Sollie <janpieter.sollie@kabelmail.de>
 To: kent.overstreet@linux.dev,
 	linux-bcachefs@vger.kernel.org
-Cc: Janpieter Sollie <janpieter.sollie@kabelmail.de>,
-	jpsollie <janpieter.sollie@edpnet.be>
-Subject: [PATCH v4 10/10] ktest: use overlays to store arch-specific bcachefs-tools build
-Date: Sat, 18 Nov 2023 20:38:49 +0100
-X-ASG-Orig-Subj: [PATCH v4 10/10] ktest: use overlays to store arch-specific bcachefs-tools build
-Message-ID: <20231118194453.41324-11-janpieter.sollie@kabelmail.de>
+Cc: Janpieter Sollie <janpieter.sollie@edpnet.be>
+Subject: [PATCH v4 04/10] enable ARMv7 support
+Date: Sat, 18 Nov 2023 20:38:43 +0100
+X-ASG-Orig-Subj: [PATCH v4 04/10] enable ARMv7 support
+Message-ID: <20231118194453.41324-5-janpieter.sollie@kabelmail.de>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231118194453.41324-1-janpieter.sollie@kabelmail.de>
 References: <20231118194453.41324-1-janpieter.sollie@kabelmail.de>
@@ -28,89 +27,253 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Barracuda-Connect: 213.219.166.214.adsl.dyn.edpnet.net[213.219.166.214]
-X-Barracuda-Start-Time: 1700336725
+X-Barracuda-Start-Time: 1700336723
 X-Barracuda-URL: https://212.71.1.220:443/cgi-mod/mark.cgi
 X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 3104
+X-Barracuda-Scan-Msg-Size: 6857
 X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
+X-Barracuda-Spam-Score: 0.75
+X-Barracuda-Spam-Status: No, SCORE=0.75 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=BSF_RULE_7580E
 X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.116931
 	Rule breakdown below
 	 pts rule name              description
 	---- ---------------------- --------------------------------------------------
+	0.75 BSF_RULE_7580E         Custom Rule 7580E
 
-when running tests, eg test1 on arch 1, and then on arch 2,
-the whole bcachefs-tools package needs to be rebuilt:
-all binaries of arch 1 need to be erased, and recompiled for arch 2
-when going back to arch 1, it happens again
+From: Janpieter Sollie <janpieter.sollie@edpnet.be>
 
-This patch fixes the issue by applying a arch-specific overlay,
-so bcachefs-tools doesn't need a full rebuild every time.
-The overlay is mounted via fuse-overlay.
-If this isn't available, it will fall back to rsync,
-causing a larger waste of disk space,
-and not-applied-immediately git commits.
+Ktest has now been expanded with cross-binary armv7 (hard float).
+this should allow some testing on more legacy armv7 hardware,
+which may still be present in NAS devices.
+However, due to the nature of the ecosystem, a limit is in place:
+- 3GB ram for 32 bit systems
+- 4 CPUs for 32 bit systems
+I think if you need more, you'd better think of going 64-bit.
+These constraints allow the ARM emulator to run smoothly.
 
-Signed-of-by: jpsollie <janpieter.sollie@edpnet.be>
+Signed-off-by:  jpsollie <janpieter.sollie@edpnet.be>
 ---
- lib/common.sh                        |  2 ++
- tests/bcachefs/bcachefs-test-libs.sh | 22 +++++++++++++++++++---
- 2 files changed, 21 insertions(+), 3 deletions(-)
+ build-test-kernel | 19 +++++++++++--------
+ cross.conf        |  2 +-
+ lib/common.sh     | 11 +++++++++++
+ lib/libktest.sh   | 11 ++++++++---
+ tests/kconfig.sh  | 25 ++++++++++++++++++++++---
+ 5 files changed, 53 insertions(+), 15 deletions(-)
 
-diff --git a/lib/common.sh b/lib/common.sh
-index 6a9a912..14ead88 100644
---- a/lib/common.sh
-+++ b/lib/common.sh
-@@ -19,6 +19,8 @@ ktest_exit()
+diff --git a/build-test-kernel b/build-test-kernel
+index b7dd70c..0d7bdda 100755
+--- a/build-test-kernel
++++ b/build-test-kernel
+@@ -139,7 +139,7 @@ new_config()
+     local config_tool="$ktest_kernel_source/scripts/config"
+ 
+     if [[ ! -f $kconfig ]]; then
+-	do_make allnoconfig
++	do_make ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-" allnoconfig
+ 
+ 	# Really undefine everything:
+ 	sed -i -e 's/\(CONFIG_.*\)=.*/# \1 is not set/' "$kconfig"
+@@ -186,17 +186,17 @@ build_kernel()
+ 	mv "$kconfig" "$kconfig".bak
      fi
  
-     [[ -n $ktest_tmp ]] && rm -rf "$ktest_tmp"
-+    #umount overlayfs of bcachefs-tools if needed
-+    [[ -n $ktest_tmp && $(grep bcachefs-tools-$ktest_arch /proc/mounts) ]] && umount $(grep bcachefs-tools-$ktest_arch /proc/mounts | cut -d' ' -f 2)
-     true
++    MAKEARGS+=("LOCALVERSION=-ktest" ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-")
++
+     new_config
+ 
+     log_verbose "kernel_config_require: ${ktest_kernel_config_require[@]}"
+ 
+-    MAKEARGS+=("LOCALVERSION=-ktest" ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-")
+-
+     for opt in "${ktest_kernel_config_require[@]}"; do
+ 	[[ -n $opt ]] && kernel_opt set "$opt"
+     done
+ 
+-    do_make olddefconfig
++    do_make ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-" olddefconfig
+ 
+     for opt in "${ktest_kernel_config_require[@]}"; do
+ 	[[ -n $opt ]] && kernel_opt check "$opt"
+@@ -209,10 +209,10 @@ build_kernel()
+ 
+     case $KERNEL_ARCH in
+ 	mips)
+-	    do_make -k vmlinuz
++	    do_make $MAKEARGS -k vmlinuz
+ 	    ;;
+ 	*)
+-	    do_make -k
++	    do_make $MAKEARGS -k
+ 	    ;;
+     esac
+ 
+@@ -222,6 +222,9 @@ build_kernel()
+ 	x86*)
+ 	    install -m0644 "$BOOT/bzImage"	"$ktest_kernel_binary/vmlinuz"
+ 	    ;;
++	arm)
++	    install -m0644 "$BOOT/zImage"	"$ktest_kernel_binary/vmlinuz"
++	    ;;
+ 	aarch64)
+ 	    install -m0644 "$BOOT/Image"	"$ktest_kernel_binary/vmlinuz"
+ 	    ;;
+@@ -281,13 +284,13 @@ cmd_boot()
+ cmd_oldconfig()
+ {
+     new_config
+-    do_make oldconfig
++    do_make ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-" oldconfig
  }
  
-diff --git a/tests/bcachefs/bcachefs-test-libs.sh b/tests/bcachefs/bcachefs-test-libs.sh
-index 90c36b6..f6461b5 100644
---- a/tests/bcachefs/bcachefs-test-libs.sh
-+++ b/tests/bcachefs/bcachefs-test-libs.sh
-@@ -7,16 +7,32 @@
- . $(dirname $(readlink -e "${BASH_SOURCE[0]}"))/../test-libs.sh
- bch_loc=$(dirname $(readlink -e "${BASH_SOURCE[0]}"))/bcachefs-tools
+ cmd_config()
+ {
+     new_config
+-    do_make nconfig
++    do_make ARCH="$KERNEL_ARCH" CROSS_COMPILE="$ARCH_TRIPLE-" nconfig
+ }
  
--require-git http://evilpiepirate.org/git/bcachefs-tools.git
--if [[ ! -f "${bch_loc}/.last_arch_for_compile" || "$(cat ${bch_loc}/.last_arch_for_compile)" != $ktest_arch ]]; then
-+declare -A ov_dirs=(["tmp"]="${bch_loc}/../.tmp-bcachefs-tools-overlay" \
-+              ["diff"]="${bch_loc}/../.bcachefs-tools-overlay-${ktest_arch}" \
-+              ["merge"]="${bch_loc}/../bcachefs-tools-${ktest_arch}")
+ cmd_faddr2line()
+diff --git a/cross.conf b/cross.conf
+index 2896885..d98219e 100644
+--- a/cross.conf
++++ b/cross.conf
+@@ -5,4 +5,4 @@
+ ARCH_TRIPLE_X86=x86-linux-gnu
+ ARCH_TRIPLE_X86_64=x86_64-linux-gnu
+ ARCH_TRIPLE_ARM64=aarch64-linux-gnu
+-
++ARCH_TRIPLE_ARMV7=arm-linux-gnueabihf
+diff --git a/lib/common.sh b/lib/common.sh
+index 353bb36..5e24169 100644
+--- a/lib/common.sh
++++ b/lib/common.sh
+@@ -116,6 +116,17 @@ parse_arch()
+ 	    QEMU_PACKAGE=qemu-system-arm
+ 	    QEMU_BIN=qemu-system-aarch64
+ 	    ;;
++	armhf|armv7|armv7l|arm)
++	    ktest_arch=arm
++	    DEBIAN_ARCH=armhf
++	    ARCH_TRIPLE=${ARCH_TRIPLE_ARMV7}
 +
-+for dir_overlay in ${ov_dirs[@]}; do
-+  if [[ ! -d ${dir_overlay} ]]; then mkdir -p ${dir_overlay}; fi
-+done
++	    KERNEL_ARCH=arm
++	    BITS=32
 +
-+if [[ $(which fuse-overlayfs) && ! $(grep bcachefs-tools-$ktest_arch /proc/mounts) ]]; then
-+	fuse-overlayfs -o lowerdir=${bch_loc},upperdir=${ov_dirs["diff"]},workdir=${ov_dirs["tmp"]} ${ov_dirs["merge"]}
-+elif [[ ! $(grep bcachefs-tools-$ktest_arch /proc/mounts) ]]; then
-+	rsync -av ${bch_loc}/ ${ov_dirs["merge"]}/
-+fi
-+
-+bch_loc=$(dirname $(readlink -e "${BASH_SOURCE[0]}"))/bcachefs-tools-${ktest_arch}
-+
-+if [[ ! -f "${bch_loc}/.last_arch_for_compile" || "$(cat ${bch_loc}/.last_arch_for_compile)" != ${ktest_arch} ]]; then
- 	make -C ${bch_loc} clean >/dev/null 2>&1;
- 	rm -rf "${bch_loc}/rust-src/target/*";
- 	find ${bch_loc} -name "*.o" -exec rm {} \;
- 	find ${bch_loc} -name "*.a" -exec rm {} \;
- 	echo $ktest_arch > ${bch_loc}/.last_arch_for_compile
- fi
--require-make bcachefs-tools
++	    QEMU_PACKAGE=qemu-system-arm
++	    QEMU_BIN=qemu-system-arm
++	    ;;
+ 	mips)
+ 	    DEBIAN_ARCH=mips
+ 	    ARCH_TRIPLE=mips-linux-gnu
+diff --git a/lib/libktest.sh b/lib/libktest.sh
+index 0b2704b..3307b76 100644
+--- a/lib/libktest.sh
++++ b/lib/libktest.sh
+@@ -223,7 +223,7 @@ ktest_kgdb()
  
-+require-git http://evilpiepirate.org/git/bcachefs-tools.git
-+require-make bcachefs-tools-${ktest_arch}
- require-kernel-config BCACHEFS_FS
+ ktest_mon()
+ {
+-    exec socat UNIX-CONNECT:"$ktest_out/vm/on" STDIO
++    exec socat UNIX-CONNECT:"$ktest_out/vm/mon" STDIO
+     exec nc "$ktest_out/vm/mon"
+ }
  
- if [[ ! -v NO_BCACHEFS_DEBUG ]]; then
+@@ -314,7 +314,7 @@ start_vm()
+ 	x86|x86_64)
+ 	    qemu_cmd+=(-cpu $cputype -machine type=q35,accel=$accel,nvdimm=on)
+ 	    ;;
+-	aarch64)
++	aarch64|arm)
+ 	    qemu_cmd+=(-cpu $cputype -machine type=virt,gic-version=max,accel=$accel)
+ 	    ;;
+ 	mips)
+@@ -327,9 +327,12 @@ start_vm()
+     esac
+ 
+     local maxmem=$(awk '/MemTotal/ {printf "%dG\n", $2/1024/1024}' /proc/meminfo 2>/dev/null) || maxmem="1T"
++    local memconfig="$ktest_mem,slots=8,maxmem=$maxmem"
++
++    [ $BITS == 32 ] &&  memconfig="3G" && ktest_cpus=4 #do not be fancy on 32-bit hardware.  if it works, it's fine
+ 
+     qemu_cmd+=(								\
+-	-m		"$ktest_mem,slots=8,maxmem=$maxmem"		\
++	-m		"$memconfig"					\
+ 	-smp		"$ktest_cpus"					\
+ 	-kernel		"$ktest_kernel_binary/vmlinuz"			\
+ 	-append		"$(join_by " " ${kernelargs[@]})"		\
+@@ -343,6 +346,8 @@ start_vm()
+ 	-virtfs		local,path=/,mount_tag=host,security_model=none,multidevs=remap	\
+     )
+ 
++
++
+     if [[ -f $ktest_kernel_binary/initramfs ]]; then
+ 	qemu_cmd+=(-initrd 	"$ktest_kernel_binary/initramfs")
+     fi
+diff --git a/tests/kconfig.sh b/tests/kconfig.sh
+index 73e93db..5f032aa 100644
+--- a/tests/kconfig.sh
++++ b/tests/kconfig.sh
+@@ -12,6 +12,7 @@ case $ktest_arch in
+ 	require-kernel-config MCORE2	# optimize for core2
+ 	require-kernel-config IO_DELAY_0XED
+ 	require-kernel-config 64BIT=n
++	require-kernel-config COMPAT_32BIT_TIME
+ 	require-kernel-config ACPI	# way slower without it, do not know why
+ 	require-kernel-config UNWINDER_FRAME_POINTER
+ 	require-kernel-config HARDLOCKUP_DETECTOR
+@@ -38,13 +39,33 @@ case $ktest_arch in
+ 	have_virtio=1
+ 	have_suspend=1
+ 
++	require-kernel-append console=hvc0
++	;;
++    arm)
++	require-kernel-config ARCH_VIRT
++	require-kernel-config SMP
++	require-kernel-config VFP
++	require-kernel-config NEON
++	require-kernel-config ARM_LPAE
++	require-kernel-config MMU
++	require-kernel-config HAVE_PCI
++	require-kernel-config PCI_HOST_GENERIC
++	require-kernel-config ARM_AMBA
++	require-kernel-config COMPAT_32BIT_TIME
++	require-kernel-config RTC_DRV_PL031
++
++	have_virtio=1
++
+ 	require-kernel-append console=hvc0
+ 	;;
+     aarch64)
+ 	require-kernel-config PCI_HOST_GENERIC
+ 	require-kernel-config RTC_DRV_PL031
++	require-kernel-config COMPAT_32BIT_TIME
++	require-kernel-config IOMMU_SUPPORT
+ 
+ 	have_virtio=1
++	have_kvmguest=1
+ 
+ 	require-kernel-append console=hvc0
+ 	;;
+@@ -70,7 +91,7 @@ case $ktest_arch in
+ 	require-kernel-append console=hvc0
+ 	;;
+     *)
+-	echo "Kernel architecture not supported by kconfig.sh"
++	echo "Kernel architecture $ktest_arch not supported by kconfig.sh"
+ 	exit 1
+ 	;;
+ esac
+@@ -95,8 +116,6 @@ require-kernel-config BINFMT_SCRIPT
+ 
+ require-kernel-config COMPACTION	# virtfs doesn't do well without it
+ 
+-require-kernel-config PROC_KCORE	# XXX Needed?
+-
+ require-kernel-config TTY
+ require-kernel-config VT
+ 
 -- 
 2.42.1
 
