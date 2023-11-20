@@ -1,82 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C3B136
-	for <linux-bcachefs@vger.kernel.org>; Mon, 20 Nov 2023 09:34:35 -0800 (PST)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-	(No client certificate requested)
-	by mail.lichtvoll.de (Postfix) with ESMTPSA id 07325818CB1;
-	Mon, 20 Nov 2023 18:34:33 +0100 (CET)
-Authentication-Results: mail.lichtvoll.de;
-	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-From: Martin Steigerwald <martin@lichtvoll.de>
-To: Kent Overstreet <kent.overstreet@linux.dev>
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U8xX770V"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D916FD9
+	for <linux-bcachefs@vger.kernel.org>; Mon, 20 Nov 2023 12:13:07 -0800 (PST)
+Date: Mon, 20 Nov 2023 15:13:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700511186;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/aupNkGHfYxShIJnBuOFBQ8NxV15JjssTzLaaldl7cI=;
+	b=U8xX770VKiqrZSaE02xjyJ8lQhTG2drha0/KdJsylMuKYZg5B8Ji549UqUCsmoKuZJwMdR
+	0Q5sH7rVrNk0QNbrYIFdmevnQiPLQU7mcezqceubf+12yfkxBMMcZnWMz+QSlh7jZquR/A
+	KFpOIbipJyuYgQ3PJgzwPbR7XwTJnWs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Finn Behrens <me@kloenk.de>
 Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: Questions related to BCacheFS
-Date: Mon, 20 Nov 2023 18:34:33 +0100
-Message-ID: <3539807.iIbC2pHGDl@lichtvoll.de>
-In-Reply-To: <20231119231001.tb3teva5j4azqp7i@moria.home.lan>
-References:
- <23311511.6Emhk5qWAg@lichtvoll.de> <2273246.iZASKD2KPV@lichtvoll.de>
- <20231119231001.tb3teva5j4azqp7i@moria.home.lan>
+Subject: Re: [PATH TOOLS] nix: add bcachefs-fuse package
+Message-ID: <20231120201302.epj6p66aplkmdxnw@moria.home.lan>
+References: <20231119211314.301361-1-me@kloenk.de>
+ <20231119232000.rlvnbt254y2hl32l@moria.home.lan>
+ <862316D3-1894-4BCD-8397-4FCA522AABE5@kloenk.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <862316D3-1894-4BCD-8397-4FCA522AABE5@kloenk.de>
+X-Migadu-Flow: FLOW_OUT
 
-Kent Overstreet - 20.11.23, 00:10:01 CET:
-> Maybe I need to continue testing BCacheFS on a virtual machine, but I'd
->=20
-> > really love to have a BCacheFS filesystem on my laptop and actually
-> > really using it for something. Well I am going to leave it at that
-> > and probably research on this after the weekend. Now it is time to
-> > have a Sunday off.
-> The Nixos install process with bcachefs as root is pretty smooth, just
-> make sure to set up a separate filesystem for /boot!
+On Mon, Nov 20, 2023 at 09:16:04AM +0100, Finn Behrens wrote:
+> 
+> 
+> On 20 Nov 2023, at 0:20, Kent Overstreet wrote:
+> 
+> > On Sun, Nov 19, 2023 at 10:13:14PM +0100, Finn Behrens wrote:
+> >> Add a fuseSupport argument and bcachefs-fuse as flake output with fuse enabled.
+> >>
+> >> Signed-off-by: Finn Behrens <me@kloenk.de>
+> >
+> > We can't do this just yet, not until the fuse support is getting more
+> > attention; it's been frequently failing to build lately.
+> 
+> This just adds a second output, the default is still building without fuse, but with this you can easily let nix build with fuse support.
+> As there is no sort of nix CI as far as I’m aware, this should also not block anything.
 
-Thanks for that idea.
-
-While it might have been that those BTRFS filesystems that got corrupted=20
-where corrupted by an "thou shalt not resume from this hibernation image"=20
-I will indeed wait before I try 5.7 kernel again on this laptop. Also I=20
-will likely wait for an update bcachefs-tools package. I still don't know=20
-why GRUB greeted me with a command prompt after having removed 5.7 kernel=20
-again. My current idea on why the BTRFS corruption happened is cause of=20
-kernel 6.6.1 resuming from hibernation after I fixed up the boot loader in=
-=20
-two GRML sessions, accessing / and /boot, but not doing anything to=20
-invalidate the hibernation image on the swap volume. Reminder to self:=20
-Absolutely do that next time!
-
-I had to restore / and /home BTRFS filesystem as well as /boot, which got=20
-GRUB broken once more:
-
-xfsprogs-6.5.0 with grub 2.12~rc1-12: unknown filesystem
-
-https://lore.kernel.org/linux-xfs/1889442.tdWV9SEqCh@lichtvoll.de/T/#t
-
-So yes I am very well aware of the advantages of a separate /boot. But=20
-even with that GRUB was funny on me. Maybe that is why I have seen Ext4 in=
-=20
-Ext3 mode for /boot. It does not gain new features.
-
-I may investigate an alternative boot loader=E2=80=A6 it is not the first t=
-ime GRUB=20
-broke on new filesystem features and it is not even surprising. It would be=
-=20
-best to have GRUB use a very simple file system that does not gain new=20
-features. A bootfs filesystem just for the purposes of a boot loader to=20
-store a few files and be done with it.
-
-Anyway, it will be a VM for now.
-
-Ciao,
-=2D-=20
-Martin
-
-
+Ah, ok - I'll apply it then.
