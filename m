@@ -1,54 +1,52 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U8xX770V"
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D916FD9
-	for <linux-bcachefs@vger.kernel.org>; Mon, 20 Nov 2023 12:13:07 -0800 (PST)
-Date: Mon, 20 Nov 2023 15:13:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700511186;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/aupNkGHfYxShIJnBuOFBQ8NxV15JjssTzLaaldl7cI=;
-	b=U8xX770VKiqrZSaE02xjyJ8lQhTG2drha0/KdJsylMuKYZg5B8Ji549UqUCsmoKuZJwMdR
-	0Q5sH7rVrNk0QNbrYIFdmevnQiPLQU7mcezqceubf+12yfkxBMMcZnWMz+QSlh7jZquR/A
-	KFpOIbipJyuYgQ3PJgzwPbR7XwTJnWs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Finn Behrens <me@kloenk.de>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [PATH TOOLS] nix: add bcachefs-fuse package
-Message-ID: <20231120201302.epj6p66aplkmdxnw@moria.home.lan>
-References: <20231119211314.301361-1-me@kloenk.de>
- <20231119232000.rlvnbt254y2hl32l@moria.home.lan>
- <862316D3-1894-4BCD-8397-4FCA522AABE5@kloenk.de>
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425D2A2;
+	Mon, 20 Nov 2023 17:05:20 -0800 (PST)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VwqVgP7_1700528717;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VwqVgP7_1700528717)
+          by smtp.aliyun-inc.com;
+          Tue, 21 Nov 2023 09:05:18 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: kent.overstreet@linux.dev,
+	bfoster@redhat.com
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] bcachefs: clean up one inconsistent indenting
+Date: Tue, 21 Nov 2023 09:05:15 +0800
+Message-Id: <20231121010515.89897-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <862316D3-1894-4BCD-8397-4FCA522AABE5@kloenk.de>
-X-Migadu-Flow: FLOW_OUT
 
-On Mon, Nov 20, 2023 at 09:16:04AM +0100, Finn Behrens wrote:
-> 
-> 
-> On 20 Nov 2023, at 0:20, Kent Overstreet wrote:
-> 
-> > On Sun, Nov 19, 2023 at 10:13:14PM +0100, Finn Behrens wrote:
-> >> Add a fuseSupport argument and bcachefs-fuse as flake output with fuse enabled.
-> >>
-> >> Signed-off-by: Finn Behrens <me@kloenk.de>
-> >
-> > We can't do this just yet, not until the fuse support is getting more
-> > attention; it's been frequently failing to build lately.
-> 
-> This just adds a second output, the default is still building without fuse, but with this you can easily let nix build with fuse support.
-> As there is no sort of nix CI as far as I’m aware, this should also not block anything.
+fs/bcachefs/journal_io.c:1843 bch2_journal_write_pick_flush() warn: inconsistent indenting
 
-Ah, ok - I'll apply it then.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7585
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/bcachefs/journal_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index b061d77b2430..85f780796ac6 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -1839,7 +1839,7 @@ static int bch2_journal_write_pick_flush(struct journal *j, struct journal_buf *
+ 	    (!w->must_flush &&
+ 	     (jiffies - j->last_flush_write) < msecs_to_jiffies(c->opts.journal_flush_delay) &&
+ 	     test_bit(JOURNAL_MAY_SKIP_FLUSH, &j->flags))) {
+-		     w->noflush = true;
++		w->noflush = true;
+ 		SET_JSET_NO_FLUSH(w->data, true);
+ 		w->data->last_seq	= 0;
+ 		w->last_seq		= 0;
+-- 
+2.20.1.7.g153144c
+
