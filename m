@@ -1,56 +1,45 @@
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3530198;
-	Tue, 21 Nov 2023 18:26:41 -0800 (PST)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VwuNqXE_1700619988;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VwuNqXE_1700619988)
-          by smtp.aliyun-inc.com;
-          Wed, 22 Nov 2023 10:26:39 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: kent.overstreet@linux.dev
-Cc: bfoster@redhat.com,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] bcachefs: make __bch2_read_super static
-Date: Wed, 22 Nov 2023 10:26:27 +0800
-Message-Id: <20231122022627.53229-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ToypDvhU"
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bc])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA351AB
+	for <linux-bcachefs@vger.kernel.org>; Wed, 22 Nov 2023 14:42:14 -0800 (PST)
+Date: Wed, 22 Nov 2023 17:42:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700692932;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=S5RIBgmlMLqW8rTznyMYInPN5NtJWFJGVUiISZ95zro=;
+	b=ToypDvhU3RybpuFWldIzS7/VZZGntIItdAxeG8dIJApgf3grYgaGb7ggbkJ2hiruX5Db70
+	hooqi+sO0+Vgfcmr/HFe4kHDPLatHjT6svb6trCGZnkqnGvBdeMeXS3B4qgQ5NugFHp4RL
+	mfEmmWoeUdj7J8g/96KUx77q8sUwKnw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Nick Terrell <terrelln@fb.com>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: zstd error when used in bcachefs
+Message-ID: <20231122224208.procyauioksotuit@moria.home.lan>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-The __bch2_read_super are not used outside the file super-io.c,
-so the modification is defined as static.
+I just got a report of data being marked as incompressible when written
+with particular blocksizes.
 
-fs/bcachefs/super-io.c:661:5: warning: no previous prototype for ‘__bch2_read_super’.
+Investigating a bit further, when attempting to compress >= 32k (of all
+zeroes), I get:
+[    8.214090] bcachefs (vdb): zstd error: (efault) -64, src_len 32768 dst_len 32768
+[    8.214713] bcachefs (vdb): zstd error: (efault) -64, src_len 65536 dst_len 65536
+[    8.215349] bcachefs (vdb): zstd error: (efault) -64, src_len 65536 dst_len 65536
+[    8.215432] bcachefs (vdb): zstd error: (efault) -64, src_len 65536 dst_len 65536
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7604
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- fs/bcachefs/super-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+bcachefs code that calls zstd:
+https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/compress.c?h=bcachefs-testing#n350
 
-diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-index f90fc7a4c26f..e78270e82fa8 100644
---- a/fs/bcachefs/super-io.c
-+++ b/fs/bcachefs/super-io.c
-@@ -658,7 +658,7 @@ static int read_one_super(struct bch_sb_handle *sb, u64 offset, struct printbuf
- 	return 0;
- }
- 
--int __bch2_read_super(const char *path, struct bch_opts *opts,
-+static int __bch2_read_super(const char *path, struct bch_opts *opts,
- 		    struct bch_sb_handle *sb, bool ignore_notbchfs_msg)
- {
- 	u64 offset = opt_get(*opts, sb);
--- 
-2.20.1.7.g153144c
-
+-64 appears to be ZSTD_error_memory_allocation, but I get no hits for
+that grepping, so I'm a bit stuck.
