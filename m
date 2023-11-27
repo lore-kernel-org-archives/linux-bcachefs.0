@@ -1,88 +1,85 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="3w8bJekj"
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80128D4B;
-	Mon, 27 Nov 2023 08:33:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=N2zDXv8N842SdWeP1QfvmzEvIcEsyQplx8msSV1RBzc=; b=3w8bJekjauD14xkhiSXsSeP1yp
-	9N3b2DKZZPdBt27xj1DIEE7RXLXZrvHxDKR2sRYD21pNAAIJ3vl1ZCKZ4NFvv5G6xjzqey6N1n0KK
-	ZrI0nakNUBsMEbW2Q4e4j1NRh5OeO1tyxIFUhlV8EaqwcQbah9MgH17+QPadh0DqL/pm4sqZ5f/vV
-	IH1EMWIP6up9ybGx4dw0MvcLdLRClPIEOMfWizJpOcO8WEMAVnlOuY5kgUVe2HK2Xt75AhDq2qkmf
-	jzAFQBFfr3qP/5tAASIdgOPBH9JmPj2A8s0x9fJ50RYVccYl2K4OsZZ71u82sMqjEZ1B5f5BIa6y8
-	Lia9qiAg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7eXO-0030D4-22;
-	Mon, 27 Nov 2023 16:32:46 +0000
-Date: Mon, 27 Nov 2023 08:32:46 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: Christoph Hellwig <hch@infradead.org>, ming.lei@redhat.com,
-	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-	konishi.ryusuke@gmail.com, dchinner@redhat.com,
-	linux@weissschuh.net, min15.li@samsung.com, dlemoal@kernel.org,
-	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-	p.raghav@samsung.com, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-	linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH block/for-next v2 01/16] block: add a new helper to get
- inode from block_device
-Message-ID: <ZWTErvnMf7HiO1Wj@infradead.org>
-References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
- <20231127062116.2355129-2-yukuai1@huaweicloud.com>
- <ZWRDeQ4K8BiYnV+X@infradead.org>
- <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PAg35cck"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628C2B8
+	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Nov 2023 10:30:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1701109825;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=AAvj4RGTIm3ogJFCYQgCDc4WJZhXtwPxjRvCzL35sf4=;
+	b=PAg35cck/cL82NuGok/5eJMhx6+4z+QvZQSDZfNK+8A2UxB6M6IZE9xDLAMbjFvKkzz48i
+	wOYLKm6kOV2xa5WUghZQ7OFX91lVBZhqHDTqtPL9MxiROucyEA7AEL9MlQO1csnQ9IYt66
+	mC3kNVR0bZhzJjU6bqVI133qagoL+rU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-540-XLhc-Kr3NHeq14ADo41XLA-1; Mon,
+ 27 Nov 2023 13:30:22 -0500
+X-MC-Unique: XLhc-Kr3NHeq14ADo41XLA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CA56B3813F5E
+	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Nov 2023 18:30:21 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.16.228])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id ADBBA5028
+	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Nov 2023 18:30:21 +0000 (UTC)
+From: Brian Foster <bfoster@redhat.com>
+To: linux-bcachefs@vger.kernel.org
+Subject: [PATCH] bcachefs-tools: don't skip stale superblock wipe in force mode
+Date: Mon, 27 Nov 2023 13:31:10 -0500
+Message-ID: <20231127183110.294141-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Mon, Nov 27, 2023 at 09:07:22PM +0800, Yu Kuai wrote:
-> 1) Is't okay to add a new helper to pass in bdev for following apis?
+Even though the blkid wipe has been fixed to detect and wipe old
+superblocks, we still incorrectly skip the wipe when in force mode.
+Update the force logic in open_for_format() to bypass the user
+request and otherwise proceed with the wipe.
 
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
+ tools-util.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-For some we already have them (e.g. bdev_nr_bytes to read the bdev)
-size, for some we need to add them.  The big thing that seems to
-stick out is page cache API, and I think that is where we need to
-define maintainable APIs for file systems and others to use the
-block device page cache.  Probably only in folio versions and not
-pages once if we're touching the code anyay
-
-> 2) For the file fs/buffer.c, there are some special usage like
-> following that I don't think it's good to add a helper:
-> 
-> spin_lock(&bd_inode->i_mapping->private_lock);
-> 
-> Is't okay to move following apis from fs/buffer.c directly to
-> block/bdev.c?
-> 
-> __find_get_block
-> bdev_getblk
-
-I'm not sure moving is a good idea, but we might end up the
-some kind of low-level access from buffer.c, be that special
-helpers, a separate header or something else.  Let's sort out
-the rest of the kernel first.
+diff --git a/tools-util.c b/tools-util.c
+index 7d4a3c1..a1e67dd 100644
+--- a/tools-util.c
++++ b/tools-util.c
+@@ -225,9 +225,6 @@ int open_for_format(struct dev_opts *dev, bool force)
+ 	if (ret < 0)
+ 		die("Error opening device to format %s: %s", dev->path, strerror(-ret));
+ 
+-	if (force)
+-		return 0;
+-
+ 	if (!(pr = blkid_new_probe()))
+ 		die("blkid error 1");
+ 	if (blkid_probe_set_device(pr, dev->bdev->bd_buffered_fd, 0, 0))
+@@ -250,9 +247,11 @@ int open_for_format(struct dev_opts *dev, bool force)
+ 		else
+ 			printf("%s contains a %s filesystem\n",
+ 			       dev->path, fs_type);
+-		fputs("Proceed anyway?", stdout);
+-		if (!ask_yn())
+-			exit(EXIT_FAILURE);
++		if (!force) {
++			fputs("Proceed anyway?", stdout);
++			if (!ask_yn())
++				exit(EXIT_FAILURE);
++		}
+ 		while (blkid_do_probe(pr) == 0) {
+ 			if (blkid_do_wipe(pr, 0))
+ 				die("Failed to wipe preexisting metadata.");
+-- 
+2.41.0
 
