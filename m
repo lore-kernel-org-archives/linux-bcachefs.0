@@ -1,88 +1,116 @@
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F2D41C67;
+	Tue, 28 Nov 2023 18:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="ajmIPgE3"
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1915DE6
-	for <linux-bcachefs@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3316bb1303bso3263243f8f.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1701165931; x=1701770731; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
-        b=ajmIPgE3cf4/VQcKecwZurNFwBZ7fhShFWpQSsfDV0gtymPBLKvL5H3127D9k1L6dp
-         hX+TAPJ6uHosbFCDtux+M7ll0rT1Bey3JLg8DNYEpumCySiJ7nd6xroxIcltB8532kPn
-         gu41KkYYBNQIm56IEzzrBy+Y2oWQCUj/A3o20=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701165931; x=1701770731;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
-        b=S4shHhlA98x8xaKdwJmBBCbYou4UZkzUhyCPSb4aS+kpaeDX1B5op0VqB9STI37QWI
-         hCb2sn6UMfwuAG1F81Sv86RCkhGQL5BDLi4cuec6gH/l3gJWETexjhxGh8fL3gmsvAaF
-         n5OJdSBpaKPUPtxytDFNIJo253ACxUF0SmzyUYqWxgmaD0iwPbA/cQh6U+7EIf6/R/O0
-         OUyc2EOurGcNA9QdYOvBZT+Hcmq0BJTui9BO1Y0XsX+r/OEDD9ZhEHJkr0FuulY51yPR
-         5XtJiTPZinqJmshrSN37+OBFBRok8SfPARMxO/5j2a7GH0+uJkxkQPTBpd72PQZGNGV0
-         XM/A==
-X-Gm-Message-State: AOJu0YzCrgVyk3352T5GnfYednHSCCh1NCzVYbps1zSq2HX8lAukVKIK
-	xUNfHkizpXaIeoKM1dmMPL0pow==
-X-Google-Smtp-Source: AGHT+IHso67qiRejATVe+y4q8GA8WkjBME6ZXNG2nx2AvipjQBf9Fe7u/GIhGV/RuBTAoKaGDDxyQg==
-X-Received: by 2002:a5d:4bcf:0:b0:332:f81d:8dac with SMTP id l15-20020a5d4bcf000000b00332f81d8dacmr6833150wrt.67.1701165931581;
-        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
-Received: from localhost ([213.195.113.99])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d674a000000b00332eef1ca7asm9779426wrw.80.2023.11.28.02.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
-Date: Tue, 28 Nov 2023 11:05:30 +0100
-From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-	konishi.ryusuke@gmail.com, dchinner@redhat.com,
-	linux@weissschuh.net, min15.li@samsung.com, yukuai3@huawei.com,
-	dlemoal@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
-	hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-	linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: Re: [PATCH block/for-next v2 02/16] xen/blkback: use new helper to
- get inode from block_device
-Message-ID: <ZWW7ag6vIhc_Skh5@macbook>
-References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
- <20231127062116.2355129-3-yukuai1@huaweicloud.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CI/yy0Um"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93A02C433C8;
+	Tue, 28 Nov 2023 18:22:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701195778;
+	bh=cmXLCB6F0Jpxz1dOg+AMECgAoHmZ4123tddCyGivbbE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=CI/yy0Umi/PpzvRt1FlzsEM7nnYvzJwqE3X5Im7HmTJPnRHmYCTu0qONSLZUIPjxz
+	 J5F3P6b0AlI5jyvlE2NiIVMHqRXZQwCj/j5JWL8rk2GAv5FugU/wU2EzqPrkqth0l4
+	 yOxmslgztj+TA7ToNy4NQURj1YZZVKLKTpq6VbgRpFxBUz8Hv1xC0CAlN1/0Tacsxs
+	 FLtFehfOUXF3Pz0Lcutrq2hjsyifyOdE6rn+OWTjD7hE2JBbG/V5sl8SDKgK4xKdw0
+	 k671ZdXQY73LErhZ22jaDgyYdY9XU7FyYalV5va1aE4UbOrezjSC3izJnDSijy9mJ9
+	 pfJkPvZmLQzJg==
+Date: Tue, 28 Nov 2023 12:22:55 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH][next] bcachefs: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <ZWYv/ywR/qxUhVSU@work>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231127062116.2355129-3-yukuai1@huaweicloud.com>
 
-On Mon, Nov 27, 2023 at 02:21:02PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Which is more efficiency, and also prepare to remove the field
-> 'bd_inode' from block_device.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Fake flexible arrays (zero-length and one-element arrays) are
+deprecated, and should be replaced by flexible-array members.
 
-Acked-by: Roger Pau Monné <roger.pau@citrix.com>
+So, replace zero-length arrays with flexible-array members
+in multiple structures.
 
-Thanks, Roger.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ fs/bcachefs/bcachefs_ioctl.h | 4 ++--
+ fs/bcachefs/io_read.c        | 2 +-
+ fs/bcachefs/move.c           | 2 +-
+ fs/bcachefs/replicas_types.h | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/fs/bcachefs/bcachefs_ioctl.h b/fs/bcachefs/bcachefs_ioctl.h
+index 44ba7a87aea7..43822c17297c 100644
+--- a/fs/bcachefs/bcachefs_ioctl.h
++++ b/fs/bcachefs/bcachefs_ioctl.h
+@@ -276,7 +276,7 @@ struct bch_ioctl_fs_usage {
+ 	__u32			replica_entries_bytes;
+ 	__u32			pad;
+ 
+-	struct bch_replicas_usage replicas[0];
++	struct bch_replicas_usage replicas[];
+ };
+ 
+ /*
+@@ -313,7 +313,7 @@ struct bch_ioctl_dev_usage_v2 {
+ 	__u32			bucket_size;
+ 	__u64			nr_buckets;
+ 
+-	struct bch_ioctl_dev_usage_type  d[0];
++	struct bch_ioctl_dev_usage_type d[];
+ };
+ 
+ /*
+diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
+index 3281c4dd1d52..4c9eaf7cea8d 100644
+--- a/fs/bcachefs/io_read.c
++++ b/fs/bcachefs/io_read.c
+@@ -80,7 +80,7 @@ struct promote_op {
+ 	struct bpos		pos;
+ 
+ 	struct data_update	write;
+-	struct bio_vec		bi_inline_vecs[0]; /* must be last */
++	struct bio_vec		bi_inline_vecs[]; /* must be last */
+ };
+ 
+ static const struct rhashtable_params bch_promote_params = {
+diff --git a/fs/bcachefs/move.c b/fs/bcachefs/move.c
+index c5518a866276..5a693c3e2ed2 100644
+--- a/fs/bcachefs/move.c
++++ b/fs/bcachefs/move.c
+@@ -81,7 +81,7 @@ struct moving_io {
+ 
+ 	struct data_update		write;
+ 	/* Must be last since it is variable size */
+-	struct bio_vec			bi_inline_vecs[0];
++	struct bio_vec			bi_inline_vecs[];
+ };
+ 
+ static void move_free(struct moving_io *io)
+diff --git a/fs/bcachefs/replicas_types.h b/fs/bcachefs/replicas_types.h
+index 030324078bba..ac90d142c4e8 100644
+--- a/fs/bcachefs/replicas_types.h
++++ b/fs/bcachefs/replicas_types.h
+@@ -21,7 +21,7 @@ struct replicas_delta_list {
+ 	u64			nr_inodes;
+ 	u64			persistent_reserved[BCH_REPLICAS_MAX];
+ 	struct			{} memset_end;
+-	struct replicas_delta	d[0];
++	struct replicas_delta	d[];
+ };
+ 
+ #endif /* _BCACHEFS_REPLICAS_TYPES_H */
+-- 
+2.34.1
+
