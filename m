@@ -1,69 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35EFC1
-	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Nov 2023 23:49:29 -0800 (PST)
-Received: from [192.168.1.123] (ip5b4280bd.dynamic.kabel-deutschland.de [91.66.128.189])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: buczek)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id E279F61E5FE01;
-	Tue, 28 Nov 2023 08:49:23 +0100 (CET)
-Message-ID: <3222cf4b-8f9d-4576-b2e2-c78e5655f4dc@molgen.mpg.de>
-Date: Tue, 28 Nov 2023 08:49:23 +0100
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="ajmIPgE3"
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1915DE6
+	for <linux-bcachefs@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3316bb1303bso3263243f8f.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1701165931; x=1701770731; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
+        b=ajmIPgE3cf4/VQcKecwZurNFwBZ7fhShFWpQSsfDV0gtymPBLKvL5H3127D9k1L6dp
+         hX+TAPJ6uHosbFCDtux+M7ll0rT1Bey3JLg8DNYEpumCySiJ7nd6xroxIcltB8532kPn
+         gu41KkYYBNQIm56IEzzrBy+Y2oWQCUj/A3o20=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701165931; x=1701770731;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
+        b=S4shHhlA98x8xaKdwJmBBCbYou4UZkzUhyCPSb4aS+kpaeDX1B5op0VqB9STI37QWI
+         hCb2sn6UMfwuAG1F81Sv86RCkhGQL5BDLi4cuec6gH/l3gJWETexjhxGh8fL3gmsvAaF
+         n5OJdSBpaKPUPtxytDFNIJo253ACxUF0SmzyUYqWxgmaD0iwPbA/cQh6U+7EIf6/R/O0
+         OUyc2EOurGcNA9QdYOvBZT+Hcmq0BJTui9BO1Y0XsX+r/OEDD9ZhEHJkr0FuulY51yPR
+         5XtJiTPZinqJmshrSN37+OBFBRok8SfPARMxO/5j2a7GH0+uJkxkQPTBpd72PQZGNGV0
+         XM/A==
+X-Gm-Message-State: AOJu0YzCrgVyk3352T5GnfYednHSCCh1NCzVYbps1zSq2HX8lAukVKIK
+	xUNfHkizpXaIeoKM1dmMPL0pow==
+X-Google-Smtp-Source: AGHT+IHso67qiRejATVe+y4q8GA8WkjBME6ZXNG2nx2AvipjQBf9Fe7u/GIhGV/RuBTAoKaGDDxyQg==
+X-Received: by 2002:a5d:4bcf:0:b0:332:f81d:8dac with SMTP id l15-20020a5d4bcf000000b00332f81d8dacmr6833150wrt.67.1701165931581;
+        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
+Received: from localhost ([213.195.113.99])
+        by smtp.gmail.com with ESMTPSA id l10-20020a5d674a000000b00332eef1ca7asm9779426wrw.80.2023.11.28.02.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
+Date: Tue, 28 Nov 2023 11:05:30 +0100
+From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+	konishi.ryusuke@gmail.com, dchinner@redhat.com,
+	linux@weissschuh.net, min15.li@samsung.com, yukuai3@huawei.com,
+	dlemoal@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
+	hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: Re: [PATCH block/for-next v2 02/16] xen/blkback: use new helper to
+ get inode from block_device
+Message-ID: <ZWW7ag6vIhc_Skh5@macbook>
+References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
+ <20231127062116.2355129-3-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-bcachefs@vger.kernel.org
-Cc: Stefan Krueger <stefan.krueger@aei.mpg.de>
-From: Donald Buczek <buczek@molgen.mpg.de>
-Subject: How to cope with subvolumes and snapshots on muti-user systems?
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231127062116.2355129-3-yukuai1@huaweicloud.com>
 
-Hi,
+On Mon, Nov 27, 2023 at 02:21:02PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Which is more efficiency, and also prepare to remove the field
+> 'bd_inode' from block_device.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-I'm happy, bcachefs finally made it to mainline, Kudos to Kent!
+Acked-by: Roger Pau Monné <roger.pau@citrix.com>
 
-As far as I know, there is an ongoing discussion about the problems of non-unique inode numbers exposed by snapshots an no real conclusion yet, on how filesystems should expose snapshots.
-
-The current behavior is kind of a showstopper for us, because we are still running multi-user systems. The problem is, that any unprivileged user can create subvolumes and snapshots:
-
-     buczek@dose:/scratch/local3$ bcachefs subvolume create vol1
-     buczek@dose:/scratch/local3$ mkdir vol1/dir1
-     buczek@dose:/scratch/local3$ bcachefs subvolume snapshot vol1/snp1
-     buczek@dose:/scratch/local3$ ls -li vol1/
-     total 0
-     1342189197 drwxrwxr-x 2 buczek buczek 0 Nov 20 15:01 dir1
-     1476413180 drwxrwxr-x 3 buczek buczek 0 Nov 20 15:01 snp1
-     buczek@dose:/scratch/local3$ ls -li vol1/snp1/
-     total 0
-     1342189197 drwxrwxr-x 2 buczek buczek 0 Nov 20 15:01 dir1
-     buczek@dose:/scratch/local3$ find .
-     .
-     ./vol1
-     find: File system loop detected; ‘./vol1/snp1’ is part of the same file system loop as ‘./vol1’.
-     ./vol1/dir1
-     buczek@dose:/scratch/local3$
-
-We have a few tools which walk over the filesystem (backup, mirror, accounting) and these are just not prepared for non-unique inode numbers aside from regular hardlinks. I'm concerned that experiments of a unprivileged users could make important tools to fail.
-
-Questions:
-
-- Would it be a workaround to make creation of subvolumes and snapshots privileged operations?
-
-- If we want to evolve our tools: What is the best way for userspace to recognize subvolumes and snapshots and tell them apart from ordinary directories?
-
-Thanks
-
-   Donald
-
--- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 1433
+Thanks, Roger.
