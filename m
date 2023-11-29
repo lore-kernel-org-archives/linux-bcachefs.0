@@ -1,131 +1,92 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VLiS20OM"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCD895
-	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 13:36:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701293806;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Gr8hmQyi"
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB04A8
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 13:43:36 -0800 (PST)
+Date: Wed, 29 Nov 2023 16:43:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701294213;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5GixFoov6jiXZ9zFkX121wR8CuGEds8cNEpO8FfpBkU=;
-	b=VLiS20OMRUHAfqzF0bJ/CEhvoutrQFjyuqb43n2mG0v0ceC2WDm7WS75j9E73PiUwHCN6p
-	NYXnHVUDzIuJHsFqVkFw+oKgr2B/VurlUvWsvJUihk5KIJ12uuGBinYiiRAFB93EcZDULH
-	slXgXIExja73/KKqgZtKcyJVQihfV4E=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-210-PNTOOKvLOqu9sHIp4FlKfg-1; Wed, 29 Nov 2023 16:36:45 -0500
-X-MC-Unique: PNTOOKvLOqu9sHIp4FlKfg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BEE8785A58C;
-	Wed, 29 Nov 2023 21:36:44 +0000 (UTC)
-Received: from redhat.com (unknown [10.2.17.161])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 82FE35028;
-	Wed, 29 Nov 2023 21:36:44 +0000 (UTC)
-Date: Wed, 29 Nov 2023 15:36:43 -0600
-From: Bill O'Donnell <bodonnel@redhat.com>
-To: Brian Foster <bfoster@redhat.com>
-Cc: fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2] generic/459: improve shutdown/read-only check to
- accommodate bcachefs
-Message-ID: <ZWeu623M2xNW7IlH@redhat.com>
-References: <20231129201614.347901-1-bfoster@redhat.com>
+	bh=6GTs/Bvk4u6125pXeIB7YBqDHWbeYlhoerZiW+ag1QI=;
+	b=Gr8hmQyiOb4Fs0/dAIgeaUuMZYAKuRBCRVAyw9ORfZgSIAKD6mc8RPIuYXwjXMw1PkIrM+
+	OSSoFFVT1CS5oY2uDngc75n4yPEqqn8zP/oXOSS1iPT5V6809EClkVbEisjYhVyKVrQSdk
+	V56DnNujpW3j9yY6+FNOz2PF50933To=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Donald Buczek <buczek@molgen.mpg.de>
+Cc: linux-bcachefs@vger.kernel.org,
+	Stefan Krueger <stefan.krueger@aei.mpg.de>,
+	Neil Brown <neilb@suse.de>
+Subject: Re: How to cope with subvolumes and snapshots on muti-user systems?
+Message-ID: <20231129214328.efbfpl3javifvwk5@moria.home.lan>
+References: <3222cf4b-8f9d-4576-b2e2-c78e5655f4dc@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231129201614.347901-1-bfoster@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3222cf4b-8f9d-4576-b2e2-c78e5655f4dc@molgen.mpg.de>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Nov 29, 2023 at 03:16:14PM -0500, Brian Foster wrote:
-> generic/459 occasionally fails on bcachefs because the deliberately
-> induced I/O errors caused by exhausting the overprovisioned thin
-> pool can lead to filesystem shutdown. This test considers this
-> expected behavior on certain fs', but only checks for the ext4
-> remount read-only behavior. bcachefs does a similar emergency
-> read-only transition in response to certain I/O errors, but it
-> behaves more similar to an XFS shutdown and doesn't necessarily
-> reflect "ro" state in the mount table (unless induced by userspace).
+On Tue, Nov 28, 2023 at 08:49:23AM +0100, Donald Buczek wrote:
+> Hi,
 > 
-> Since the test already runs a touch command to help trigger the ext4
-> error handling sequence, this can be tweaked to serve double duty
-> and also more accurately detect read-only status on bcachefs.
-> Refactor into a small helper, check for touch command failure, and
-> consider the fs read-only if either that or the mount entry check
-> indicates it.
+> I'm happy, bcachefs finally made it to mainline, Kudos to Kent!
 > 
-> Signed-off-by: Brian Foster <bfoster@redhat.com>
+> As far as I know, there is an ongoing discussion about the problems of non-unique inode numbers exposed by snapshots an no real conclusion yet, on how filesystems should expose snapshots.
+> 
+> The current behavior is kind of a showstopper for us, because we are still running multi-user systems. The problem is, that any unprivileged user can create subvolumes and snapshots:
+> 
+>     buczek@dose:/scratch/local3$ bcachefs subvolume create vol1
+>     buczek@dose:/scratch/local3$ mkdir vol1/dir1
+>     buczek@dose:/scratch/local3$ bcachefs subvolume snapshot vol1/snp1
+>     buczek@dose:/scratch/local3$ ls -li vol1/
+>     total 0
+>     1342189197 drwxrwxr-x 2 buczek buczek 0 Nov 20 15:01 dir1
+>     1476413180 drwxrwxr-x 3 buczek buczek 0 Nov 20 15:01 snp1
+>     buczek@dose:/scratch/local3$ ls -li vol1/snp1/
+>     total 0
+>     1342189197 drwxrwxr-x 2 buczek buczek 0 Nov 20 15:01 dir1
+>     buczek@dose:/scratch/local3$ find .
+>     .
+>     ./vol1
+>     find: File system loop detected; ‘./vol1/snp1’ is part of the same file system loop as ‘./vol1’.
+>     ./vol1/dir1
+>     buczek@dose:/scratch/local3$
+> 
+> We have a few tools which walk over the filesystem (backup, mirror, accounting) and these are just not prepared for non-unique inode numbers aside from regular hardlinks. I'm concerned that experiments of a unprivileged users could make important tools to fail.
+> 
+> Questions:
+> 
+> - Would it be a workaround to make creation of subvolumes and snapshots privileged operations?
+> 
+> - If we want to evolve our tools: What is the best way for userspace to recognize subvolumes and snapshots and tell them apart from ordinary directories?
 
-Looks fine.
+I'm considering writing an "integer identifiers considered harmful"
+paper. I haven't dug into it yet - just skimmed the lwn coverage - but
+adding in the overlayfs issue makes this problem sound fundamentally
+unsolvable given the current constraints.
 
-Reviewed-by: Bill O'Donnell <bodonnel@redhat.com>
+Recognizing subvolume boundaries: we don't have anything for this yet,
+and given what happened with btrfs I'm not sure we want to go that
+route.
 
-> ---
-> 
-> v2:
-> - Drop error filtering and just check touch failure.
-> - Comment tweaks.
-> v1: https://lore.kernel.org/fstests/20231117144317.10882-1-bfoster@redhat.com/
-> 
->  tests/generic/459 | 28 +++++++++++++++++++++-------
->  1 file changed, 21 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tests/generic/459 b/tests/generic/459
-> index 4dd7a43b..c3f0b2b0 100755
-> --- a/tests/generic/459
-> +++ b/tests/generic/459
-> @@ -57,6 +57,24 @@ origpsize=200
->  virtsize=300
->  newpsize=300
->  
-> +# Check whether the filesystem has shutdown or remounted read-only. Shutdown
-> +# behavior can differ based on filesystem and configuration. Some fs' may not
-> +# have remounted without an additional write while others may have shutdown but
-> +# do not necessarily reflect read-only state in the mount options. Check both
-> +# here by first trying a simple write and following with an explicit ro check.
-> +is_shutdown_or_ro()
-> +{
-> +	ro=0
-> +
-> +	# if the fs has not shutdown, this may help trigger a remount-ro
-> +	touch $SCRATCH_MNT/newfile > /dev/null 2>&1 || ro=1
-> +
-> +	_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro" > /dev/null
-> +	[ $? == 0 ] && ro=1
-> +
-> +	echo $ro
-> +}
-> +
->  # Ensure we have enough disk space
->  _scratch_mkfs_sized $((350 * 1024 * 1024)) >>$seqres.full 2>&1
->  
-> @@ -113,13 +131,9 @@ ret=$?
->  #	- The filesystem stays in Read-Write mode, but can be frozen/thawed
->  #	  without getting stuck.
->  if [ $ret -ne 0 ]; then
-> -	# freeze failed, filesystem should reject further writes and remount
-> -	# as readonly. Sometimes the previous write process won't trigger
-> -	# ro-remount, e.g. on ext3/4, do additional touch here to make sure
-> -	# filesystems see the metadata I/O error.
-> -	touch $SCRATCH_MNT/newfile >/dev/null 2>&1
-> -	ISRO=$(_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro")
-> -	if [ -n "$ISRO" ]; then
-> +	# freeze failed, filesystem should reject further writes
-> +	ISRO=`is_shutdown_or_ro`
-> +	if [ $ISRO == 1 ]; then
->  		echo "Test OK"
->  	else
->  		echo "Freeze failed and FS isn't Read-Only. Test Failed"
-> -- 
-> 2.41.0
-> 
-> 
+We could (probably) expose unique inode numbers, filesystem wide, but at
+a cost. We'd have to restrict ourselves internally to 32 bit inode
+numbers, and then report inode numbers that include the subvolume ID as
+the high 32 bits.
 
+That won't leave enough bits to shard inode numbers at create time based
+on CPU id, which isn't the _most_ important optimization, but would hurt
+to lose.
+
+Going forward, we really need - as you allude to - better userspace
+APIs. Inode number probably can't be an integer anymore, it needs to be
+a string if it's going to be able to do all the things we want it to do.
