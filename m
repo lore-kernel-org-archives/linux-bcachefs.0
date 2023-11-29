@@ -1,157 +1,82 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NOfwYpFJ";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Fajihkt2"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2661735;
-	Wed, 29 Nov 2023 00:08:53 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1B7172191E;
-	Wed, 29 Nov 2023 08:08:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1701245331; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ff6pAJpcX3l7MPwnKq6UwMRVAXT7uHWdW8qXvtQnSOM=;
-	b=NOfwYpFJNcsLFFNezw3nE+validjAfo58PcPGDSRV0buD137yKHXFJ7G92GDcPWj4szyoz
-	dtLZMMYPXoXbO9yVEL4dekjRADnKnq7YvzHQ0I+GI0CEakOC5fxWOFjq0TW7+k6VEeBAe5
-	ES/3+v9IiMm+o8KAvr3OVolM8LexlxA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1701245331;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ff6pAJpcX3l7MPwnKq6UwMRVAXT7uHWdW8qXvtQnSOM=;
-	b=Fajihkt29yGkLJ/h1MKUkmz5ITB1D575FcaVndQTfOxzbg06bVbgWVGTeDxiW161xs897u
-	PF+jaL1D0JtY53Ag==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E6E561377E;
-	Wed, 29 Nov 2023 08:08:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id b1IhJY7xZmWkNwAAn2gu4w
-	(envelope-from <colyli@suse.de>); Wed, 29 Nov 2023 08:08:46 +0000
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NSwW7BGM"
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BAFED67
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 12:13:18 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6cdd405ca77so190241b3a.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 12:13:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701288797; x=1701893597; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wGNO/FU6EbIMJxkiiI7PYYT8RbUNVHzpIkE2CHH5mhE=;
+        b=NSwW7BGMjMuVUUuyJsckqVA2ZjLRzOGxhvTnAkQBjucTSPmzM1G4AZOeB/VxQ29MaU
+         ez/ac/su8xhqonQikcx/9eBeGBhX6sCZ7y+leSFyE8aa6vzKYUdat9e7ZZZKd/bAq9sN
+         Mu0G4ArZYrPsxM/EKyDhIdhWaIBtTkbJmHtBI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701288797; x=1701893597;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wGNO/FU6EbIMJxkiiI7PYYT8RbUNVHzpIkE2CHH5mhE=;
+        b=EcdTAuSi5npVumhGzEC3Kx487H+0kaYiGWG21xHWdelPeUasxjbHZP0ywklECHRDRR
+         zyzhCJQPLpKtYBzEdWsIZCSLHgGTBlkliTI55TrvWcZCbLRwjXXHw8r9050p/oChdb2p
+         GDHFCW89b21k6FQ8HdLhuwGNWcCcDiWT449SZgdTkXIMz5g59iFxPBWcTP3HJESw78b/
+         UfD2gL/A+aHwjUXc0FMUehTnETAOvFOhe1ZzA/W1Oe9qlbytbsmIX+C1MGtb6g17XSpM
+         F2Wnwi9UW6sd69FKps8PK8ejItB9/BB8b9OPV2MIDfdmntOQWnbNnJjfBfTLj4MEZMJc
+         KF5Q==
+X-Gm-Message-State: AOJu0Yw1ZDilN6kyhItrJI2Qrv/xYWFBEBZYlrQljhDoIA1H0sI6As/k
+	pdRehoc4SUwQkVPsvU9VzOb3GQ==
+X-Google-Smtp-Source: AGHT+IGLRLEmidEeUyhKevGVc4UsmZ87Z0IfhEoUik0F4rdAevbEg58uIkhKRgMt0cR609AqHC53bQ==
+X-Received: by 2002:a05:6a00:15cb:b0:6cd:85a4:bbbc with SMTP id o11-20020a056a0015cb00b006cd85a4bbbcmr14837775pfu.9.1701288797589;
+        Wed, 29 Nov 2023 12:13:17 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id fi35-20020a056a0039a300b006c2d53e0b5fsm11133448pfb.57.2023.11.29.12.13.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 12:13:17 -0800 (PST)
+Date: Wed, 29 Nov 2023 12:13:16 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-bcache@vger.kernel.org,
+	Coly Li <colyli@suse.de>
+Subject: Re: [PATCH] closures: CLOSURE_CALLBACK() to fix type punning
+Message-ID: <202311291212.7955AF30D1@keescook>
+References: <20231120030729.3285278-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: Re: block/badblocks.c warning in 6.7-rc2
-From: Coly Li <colyli@suse.de>
-In-Reply-To: <562a2442-d098-4972-baa1-5a843e06b180@gmail.com>
-Date: Wed, 29 Nov 2023 16:08:25 +0800
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Regressions <regressions@lists.linux.dev>,
- Linux Block Devices <linux-block@vger.kernel.org>,
- Linux RAID <linux-raid@vger.kernel.org>,
- Linux bcachefs <linux-bcachefs@vger.kernel.org>,
- Xiao Ni <xni@redhat.com>,
- Geliang Tang <geliang.tang@suse.com>,
- Jens Axboe <axboe@kernel.dk>,
- Song Liu <song@kernel.org>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- Janpieter Sollie <janpieter.sollie@edpnet.be>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C8305655-3749-411B-A696-E07E95882215@suse.de>
-References: <562a2442-d098-4972-baa1-5a843e06b180@gmail.com>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.15 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-1.35)[90.51%];
-	 FROM_HAS_DN(0.00)[];
-	 MV_CASE(0.50)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 TO_DN_ALL(0.00)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.989];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -2.15
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120030729.3285278-1-kent.overstreet@linux.dev>
 
+On Sun, Nov 19, 2023 at 10:07:25PM -0500, Kent Overstreet wrote:
+> Control flow integrity is now checking that type signatures match on
+> indirect function calls. That breaks closures, which embed a work_struct
+> in a closure in such a way that a closure_fn may also be used as a
+> workqueue fn by the underlying closure code.
+> 
+> So we have to change closure fns to take a work_struct as their
+> argument - but that results in a loss of clarity, as closure fns have
+> different semantics from normal workqueue functions (they run owning a
+> ref on the closure, which must be released with continue_at() or
+> closure_return()).
+> 
+> Thus, this patc introduces CLOSURE_CALLBACK() and closure_type() macros
+> as suggested by Kees, to smooth things over a bit.
+> 
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Cc: Coly Li <colyli@suse.de>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
+Thanks for doing this! This looks reasonable to me. I look forward to
+being able to do fancier CFI prototype partitioning in the future...
 
-> 2023=E5=B9=B411=E6=9C=8829=E6=97=A5 07:47=EF=BC=8CBagas Sanjaya =
-<bagasdotme@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> Hi,
->=20
-> I notice a regression report that is rather well-handled on Bugzilla =
-[1].
-> Quoting from it:
->=20
->>=20
->> when booting from 6.7-rc2, compiled with clang, I get this warning on =
-one of my 3 bcachefs volumes:
->> WARNING: CPU: 3 PID: 712 at block/badblocks.c:1284 badblocks_check =
-(block/badblocks.c:1284)=20
->> The reason why isn't clear, but the stack trace points to an error in =
-md error handling.
->> This bug didn't happen in 6.6
->> there are 3 commits in 6.7-rc2 which may cause them,
->> in attachment:
->> - decoded stacktrace of dmesg
->> - kernel .config
->=20
-> The culprit author then replied:
->=20
->> The warning is from this line of code in _badblocks_check(),
->> 1284         WARN_ON(bb->shift < 0 || sectors =3D=3D 0);
->>=20
->> It means the caller sent an invalid range to check. =46rom the oops =
-information,
->> "RDX: 0000000000000000" means parameter 'sectors' is 0.
->>=20
->> So the question is, why does md raid code send a 0-length range for =
-badblocks check? Is this behavior on purpose, or improper?
->> ...
->> IMHO, it doesn't make sense for caller to check a zero-length LBA =
-range. The warning works as expect to detect improper call to =
-badblocks_check().
->=20
-> See Bugzilla for the full thread and attached decoded dmesg and kernel =
-config.
->=20
-> Anyway, I'm adding this regression to regzbot:
->=20
-> #regzbot introduced: 3ea3354cb9f03e =
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218184
-> #regzbot title: badblocks_check regression (md error handling) on =
-bcachefs volume
->=20
-> Thanks.
->=20
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D218184
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-It seems the improved bad blocks code caught a zero-size bio request =
-from upper layer, this improper behavior was silently neglected before. =
-It might be too early or simple to decide this is a regression, =
-especially Janpieter closes the report for now.
+-Kees
 
-Thanks.
-
-Coly Li
-
+-- 
+Kees Cook
