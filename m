@@ -1,23 +1,28 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZEJ8FSSi"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210C110C3
-	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 12:43:43 -0800 (PST)
-Date: Wed, 29 Nov 2023 15:43:36 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g08wS+Lc"
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA6B12F
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 13:13:00 -0800 (PST)
+Date: Wed, 29 Nov 2023 16:12:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701290621;
+	t=1701292378;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=VAfvTVgkT1TJqyKd1et+j08YoV+NfvuOHQ/uuVLCDts=;
-	b=ZEJ8FSSi/bpE8wwFLHlzVDiewRK7yIqiubswyI2W8D8MbvxLTMV1i6F7VkfEKBBnFtk7Q0
-	53/+ap7tGPOEwhjw5RYZ28AVQ+bnvH4A8kxMwcLXfxsPe8Ekk6eprTRPG6I78NMAR2oH+j
-	LDWdag5TvUhDTF5tqBt3kerfurXiWHI=
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j6B/ppfbw4nVXEGkOzTBY61+qsKBAI4aamGlzoAAChk=;
+	b=g08wS+LcBoeVtI3QYrYcOsZQXBygvg5pMvS+dVnu6jxoEA+GXUqudxD23qKR5gzB8//Lxi
+	F2IVANic5JJvOm5/Jl4BTG4DtwivVoETi48bAzvTDApA5+M7Oxdc1uQ8TMh60nvJ7DFYFg
+	bJrkjK7Fhs33eiTginub9jRpgc4v2fI=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [GIT PULL] more bcachefs fixes
-Message-ID: <20231129204336.4yfhhptdgrfaguur@moria.home.lan>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH][next] bcachefs: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <20231129211254.45yu4ghc2wg5d4w5@moria.home.lan>
+References: <ZWYv/ywR/qxUhVSU@work>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -26,129 +31,21 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ZWYv/ywR/qxUhVSU@work>
 X-Migadu-Flow: FLOW_OUT
 
-Hi Linus, some more bcachefs fixes. Nothing too crazy to report,
-changelog should have it all.
+On Tue, Nov 28, 2023 at 12:22:55PM -0600, Gustavo A. R. Silva wrote:
+> Fake flexible arrays (zero-length and one-element arrays) are
+> deprecated, and should be replaced by flexible-array members.
+> 
+> So, replace zero-length arrays with flexible-array members
+> in multiple structures.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Cheers,
-Kent
+There are some ZLAs I hadn't converted because they led to new warnings
+- in particular, array of flexible members.
 
-The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
-
-  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
-
-are available in the Git repository at:
-
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-11-29
-
-for you to fetch changes up to 415e5107b0dce0e5407ae4a46700cd7e8859e252:
-
-  bcachefs: Extra kthread_should_stop() calls for copygc (2023-11-28 22:58:23 -0500)
-
-----------------------------------------------------------------
-More bcachefs bugfixes for 6.7
-
-Bigger/user visible fixes:
-
- - bcache & bcachefs were broken with CFI enabled; patch for closures to
-   fix type punning
-
- - mark erasure coding as extra-experimental; there are incompatible
-   disk space accounting changes coming for erasure coding, and I'm
-   still seeing checksum errors in some tests
-
- - several fixes for durability-related issues (durability is a device
-   specific setting where we can tell bcachefs that data on a given
-   device should be counted as replicated x times )
-
- - a fix for a rare livelock when a btree node merge then updates a
-   parent node that is almost full
-
- - fix a race in the device removal path, where dropping a pointer in a
-   btree node to a device would be clobbered by an in flight btree write
-   updating the btree node key on completion
-
- - fix one SRCU lock hold time warning in the btree gc code - ther's
-   still a bunch more of these to fix
-
- - fix a rare race where we'd start copygc before initializing the "are
-   we rw" percpu refcount; copygc would think we were already ro and die
-   immediately
-
-https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-for-upstream
-
-----------------------------------------------------------------
-Brian Foster (1):
-      bcachefs: preserve device path as device name
-
-Kent Overstreet (22):
-      closures: CLOSURE_CALLBACK() to fix type punning
-      bcachefs: Put erasure coding behind an EXPERIMENTAL kconfig option
-      bcachefs: bch2_moving_ctxt_flush_all()
-      bcachefs: Make sure bch2_move_ratelimit() also waits for move_ops
-      bcachefs: Don't stop copygc thread on device resize
-      bcachefs: Start gc, copygc, rebalance threads after initing writes ref
-      bcachefs: Fix an endianness conversion
-      bcachefs: Proper refcounting for journal_keys
-      bcachefs: deallocate_extra_replicas()
-      bcachefs: Data update path won't accidentaly grow replicas
-      bcachefs: Fix ec + durability calculation
-      bcachefs: bpos is misaligned on big endian
-      bcachefs: Fix zstd compress workspace size
-      bcachefs: Add missing validation for jset_entry_data_usage
-      bcachefs: Fix bucket data type for stripe buckets
-      bcachefs: Fix split_race livelock
-      bcachefs: trace_move_extent_start_fail() now includes errcode
-      bcachefs: -EROFS doesn't count as move_extent_start_fail
-      bcachefs: move journal seq assertion
-      bcachefs: Fix race between btree writes and metadata drop
-      bcachefs: Convert gc_alloc_start() to for_each_btree_key2()
-      bcachefs: Extra kthread_should_stop() calls for copygc
-
- drivers/md/bcache/btree.c           |  14 ++--
- drivers/md/bcache/journal.c         |  20 +++---
- drivers/md/bcache/movinggc.c        |  16 ++---
- drivers/md/bcache/request.c         |  74 ++++++++++-----------
- drivers/md/bcache/request.h         |   2 +-
- drivers/md/bcache/super.c           |  40 ++++++------
- drivers/md/bcache/writeback.c       |  16 ++---
- fs/bcachefs/Kconfig                 |  12 ++++
- fs/bcachefs/alloc_foreground.c      |  30 +++++++++
- fs/bcachefs/bcachefs.h              |   4 +-
- fs/bcachefs/bcachefs_format.h       |   8 ++-
- fs/bcachefs/btree_gc.c              |   9 +--
- fs/bcachefs/btree_io.c              |   7 +-
- fs/bcachefs/btree_iter.c            |   6 +-
- fs/bcachefs/btree_journal_iter.c    |  18 +++++-
- fs/bcachefs/btree_journal_iter.h    |  10 ++-
- fs/bcachefs/btree_update_interior.c |  14 +++-
- fs/bcachefs/buckets.c               |  10 +--
- fs/bcachefs/compress.c              |  16 +++--
- fs/bcachefs/data_update.c           |  92 +++++++++++++++++++++++---
- fs/bcachefs/data_update.h           |   9 ++-
- fs/bcachefs/errcode.h               |   3 +-
- fs/bcachefs/extents.c               |  30 ++++-----
- fs/bcachefs/fs-io-direct.c          |   8 +--
- fs/bcachefs/fs.c                    |   3 +-
- fs/bcachefs/io_read.c               |   2 +-
- fs/bcachefs/io_write.c              |  14 ++--
- fs/bcachefs/io_write.h              |   3 +-
- fs/bcachefs/journal.c               |   2 +
- fs/bcachefs/journal.h               |   4 +-
- fs/bcachefs/journal_io.c            |  29 ++++++---
- fs/bcachefs/journal_io.h            |   2 +-
- fs/bcachefs/move.c                  | 126 ++++++++++++------------------------
- fs/bcachefs/move.h                  |  19 ++++++
- fs/bcachefs/movinggc.c              |   2 +-
- fs/bcachefs/recovery.c              |  11 ++--
- fs/bcachefs/replicas.c              |  69 +++++++++++---------
- fs/bcachefs/replicas.h              |   2 +
- fs/bcachefs/snapshot.c              |   2 +-
- fs/bcachefs/super-io.c              |   5 ++
- fs/bcachefs/super.c                 |  34 ++++++----
- fs/bcachefs/super_types.h           |   1 +
- fs/bcachefs/trace.h                 |   6 +-
- include/linux/closure.h             |   9 ++-
- lib/closure.c                       |   5 +-
- 45 files changed, 495 insertions(+), 323 deletions(-)
+I don't think that applies to any of the ones you changed
+(replicas_delta_list, maybe?) - but it's something we need to figure
+out if we're getting serious about this.
