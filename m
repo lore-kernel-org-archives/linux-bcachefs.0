@@ -1,120 +1,71 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JiJk7Dqk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EDB10F4
-	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 12:15:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701288930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=HVLcF0LVKuWOYDDhhGF0ykKSh6AB0tHaoYJQt5pm8IM=;
-	b=JiJk7DqkPVtTf1ThXYHkVJj2ExWJshaF7jO7lRV7eaq1qA6i6WIYiEq0B0HfZpKzffPovR
-	VyTIZT0nHdvJYd2AhUhpUltv1Q0bdCkk52O/IwRTlFRAZ4qprV91o2oNyaIaU2I25HAttq
-	ePfVJWCZcfJtJ4WtUhMgXrevxljK/II=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-528-XVE6V36yOdilF_LFtXZ75A-1; Wed, 29 Nov 2023 15:15:26 -0500
-X-MC-Unique: XVE6V36yOdilF_LFtXZ75A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 477C084AEE1;
-	Wed, 29 Nov 2023 20:15:26 +0000 (UTC)
-Received: from bfoster.redhat.com (unknown [10.22.16.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 240AFC1596F;
-	Wed, 29 Nov 2023 20:15:26 +0000 (UTC)
-From: Brian Foster <bfoster@redhat.com>
-To: fstests@vger.kernel.org
-Cc: linux-bcachefs@vger.kernel.org
-Subject: [PATCH v2] generic/459: improve shutdown/read-only check to accommodate bcachefs
-Date: Wed, 29 Nov 2023 15:16:14 -0500
-Message-ID: <20231129201614.347901-1-bfoster@redhat.com>
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hcdfwa4T"
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA8FD7F
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 12:15:48 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5c5f0e325a6so138944a12.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 12:15:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701288948; x=1701893748; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jotP4vYpPJo//cpTI3uXY4V9lpzWkYj/fK6F2WyIseA=;
+        b=hcdfwa4TYcjUsd4YezCO6cbH/PkKleuvxCuGnZoxGifuXLSJvfQZOm/1KrNR32M4CY
+         TzKCy+vq+86ljb5r9bxSkTOK/rwW8sUqP023BbJ0FDV+beFBFTstZ49SRNuEFe99uSdW
+         2K3KvdnptVVMNAWbLYfloZ86JP7odnEBhv8pI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701288948; x=1701893748;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jotP4vYpPJo//cpTI3uXY4V9lpzWkYj/fK6F2WyIseA=;
+        b=Of7iRjTBxN2BcBtbqSIVMa8B/53SHkA/ng0eUgXbpB3fMKwIe1S5Oca28p2J0+Ti2o
+         GFTBAlRV5McIMIDB6iGC1neeiqsjIKXVUCWXqDnE1e034m+aWvFUcublCFuUXNr0kWTo
+         2ahG56ycrSruBmkKr6MCOZo2UvMFatHD3U3IZh5el1yAfLgjC6qF1dW14umY/o/dOoQ2
+         7bWFb1kCitTwWPQv7WYdzQ6OaXae4xCa93/eGzhokg014IgGUh1F36hDd2DKlVi1pIrw
+         8a0tqyjfBnIPbWJnA03t+ELy2an8WvpkNl1l7m6dKx7nKiwHyagQ4MPSAIRWUJXCSE7d
+         uDoA==
+X-Gm-Message-State: AOJu0YypkcjagvK19N63HKUx1zkrW0khVZsEe0xpI03Bf6H3p/HF2gA6
+	+sTlsmUxPm7DW0bcBwBfMng1UQ==
+X-Google-Smtp-Source: AGHT+IG534o8LlbEMOfFzpwYToM7hK+n/JXeWeW9JF2pDdVckMCGK6vCE97PcNRJj6shzwBCP8zRfA==
+X-Received: by 2002:a05:6a20:e113:b0:18c:5c04:a55e with SMTP id kr19-20020a056a20e11300b0018c5c04a55emr17283060pzb.49.1701288947811;
+        Wed, 29 Nov 2023 12:15:47 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v15-20020aa7850f000000b006cde291d429sm194972pfn.39.2023.11.29.12.15.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 12:15:47 -0800 (PST)
+Date: Wed, 29 Nov 2023 12:15:46 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] bcachefs: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <202311291215.9BBCD8E@keescook>
+References: <ZWYv/ywR/qxUhVSU@work>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWYv/ywR/qxUhVSU@work>
 
-generic/459 occasionally fails on bcachefs because the deliberately
-induced I/O errors caused by exhausting the overprovisioned thin
-pool can lead to filesystem shutdown. This test considers this
-expected behavior on certain fs', but only checks for the ext4
-remount read-only behavior. bcachefs does a similar emergency
-read-only transition in response to certain I/O errors, but it
-behaves more similar to an XFS shutdown and doesn't necessarily
-reflect "ro" state in the mount table (unless induced by userspace).
+On Tue, Nov 28, 2023 at 12:22:55PM -0600, Gustavo A. R. Silva wrote:
+> Fake flexible arrays (zero-length and one-element arrays) are
+> deprecated, and should be replaced by flexible-array members.
+> 
+> So, replace zero-length arrays with flexible-array members
+> in multiple structures.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Since the test already runs a touch command to help trigger the ext4
-error handling sequence, this can be tweaked to serve double duty
-and also more accurately detect read-only status on bcachefs.
-Refactor into a small helper, check for touch command failure, and
-consider the fs read-only if either that or the mount entry check
-indicates it.
+These look like straight-forward conversions. Thanks!
 
-Signed-off-by: Brian Foster <bfoster@redhat.com>
----
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-v2:
-- Drop error filtering and just check touch failure.
-- Comment tweaks.
-v1: https://lore.kernel.org/fstests/20231117144317.10882-1-bfoster@redhat.com/
-
- tests/generic/459 | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
-
-diff --git a/tests/generic/459 b/tests/generic/459
-index 4dd7a43b..c3f0b2b0 100755
---- a/tests/generic/459
-+++ b/tests/generic/459
-@@ -57,6 +57,24 @@ origpsize=200
- virtsize=300
- newpsize=300
- 
-+# Check whether the filesystem has shutdown or remounted read-only. Shutdown
-+# behavior can differ based on filesystem and configuration. Some fs' may not
-+# have remounted without an additional write while others may have shutdown but
-+# do not necessarily reflect read-only state in the mount options. Check both
-+# here by first trying a simple write and following with an explicit ro check.
-+is_shutdown_or_ro()
-+{
-+	ro=0
-+
-+	# if the fs has not shutdown, this may help trigger a remount-ro
-+	touch $SCRATCH_MNT/newfile > /dev/null 2>&1 || ro=1
-+
-+	_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro" > /dev/null
-+	[ $? == 0 ] && ro=1
-+
-+	echo $ro
-+}
-+
- # Ensure we have enough disk space
- _scratch_mkfs_sized $((350 * 1024 * 1024)) >>$seqres.full 2>&1
- 
-@@ -113,13 +131,9 @@ ret=$?
- #	- The filesystem stays in Read-Write mode, but can be frozen/thawed
- #	  without getting stuck.
- if [ $ret -ne 0 ]; then
--	# freeze failed, filesystem should reject further writes and remount
--	# as readonly. Sometimes the previous write process won't trigger
--	# ro-remount, e.g. on ext3/4, do additional touch here to make sure
--	# filesystems see the metadata I/O error.
--	touch $SCRATCH_MNT/newfile >/dev/null 2>&1
--	ISRO=$(_fs_options /dev/mapper/$vgname-$snapname | grep -w "ro")
--	if [ -n "$ISRO" ]; then
-+	# freeze failed, filesystem should reject further writes
-+	ISRO=`is_shutdown_or_ro`
-+	if [ $ISRO == 1 ]; then
- 		echo "Test OK"
- 	else
- 		echo "Freeze failed and FS isn't Read-Only. Test Failed"
 -- 
-2.41.0
-
+Kees Cook
