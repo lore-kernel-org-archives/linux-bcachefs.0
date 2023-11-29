@@ -1,104 +1,154 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="zd/RjNXC"
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFB4D69
-	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 12:25:41 -0800 (PST)
-Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
-	by cmsmtp with ESMTPS
-	id 8KatrXtGEWcCI8R7srvNLX; Wed, 29 Nov 2023 20:25:40 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id 8R7rruOzL0xkr8R7rrMie6; Wed, 29 Nov 2023 20:25:39 +0000
-X-Authority-Analysis: v=2.4 cv=N7U6qkxB c=1 sm=1 tr=0 ts=65679e43
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=7m0pAUNwt3ppyxJkgzeoew==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=QyXUC8HyAAAA:8 a=cm27Pg_UAAAA:8 a=OF05aalTVPlpCPcANIMA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=X9PfSXn7t68Xlz7c+nvYbrRm7E2SUhd1bYPLGI3AcUY=; b=zd/RjNXClZW/9iU4JNIKXpXvVS
-	SxEFr7kciKd2cTEIOajoIsZ+JzFyJjF5jpLqyCWRb/lE3FIvCE1385Ctj3s9kGVkXvqGuLWchSUmC
-	yEXT6FuiJjBMyScyf+AEMaZMQ5LPupcq+d+Q3ct7RWDAp4sZiffJrMBq1NRQz1t0jJGDH0Ta50Ek7
-	GODzdqXjRiETgDlx4g/6aCHR1o0zZvfKYF5ZS7uDsdNFDNa8zMEu2EwVGpfkQ6AWJb6+YRPOU2NTz
-	CHtBE0V8mv5Ss/widskIPGwqI7Ba2kEW72z1V0vKgHp4tM1xxnfB6lPsMp8UU1b7gxwLq2HPZhdmR
-	T27c4pww==;
-Received: from 187.184.156.122.cable.dyn.cableonline.com.mx ([187.184.156.122]:36057 helo=[192.168.0.28])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1r8R7q-003RPp-2V;
-	Wed, 29 Nov 2023 14:25:38 -0600
-Message-ID: <d63db040-1635-426a-8d3c-0b755187ba2e@embeddedor.com>
-Date: Wed, 29 Nov 2023 14:25:36 -0600
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZEJ8FSSi"
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210C110C3
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 12:43:43 -0800 (PST)
+Date: Wed, 29 Nov 2023 15:43:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701290621;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=VAfvTVgkT1TJqyKd1et+j08YoV+NfvuOHQ/uuVLCDts=;
+	b=ZEJ8FSSi/bpE8wwFLHlzVDiewRK7yIqiubswyI2W8D8MbvxLTMV1i6F7VkfEKBBnFtk7Q0
+	53/+ap7tGPOEwhjw5RYZ28AVQ+bnvH4A8kxMwcLXfxsPe8Ekk6eprTRPG6I78NMAR2oH+j
+	LDWdag5TvUhDTF5tqBt3kerfurXiWHI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [GIT PULL] more bcachefs fixes
+Message-ID: <20231129204336.4yfhhptdgrfaguur@moria.home.lan>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] bcachefs: Replace zero-length arrays with
- flexible-array members
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
- Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <ZWYv/ywR/qxUhVSU@work> <202311291215.9BBCD8E@keescook>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <202311291215.9BBCD8E@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.184.156.122
-X-Source-L: No
-X-Exim-ID: 1r8R7q-003RPp-2V
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187.184.156.122.cable.dyn.cableonline.com.mx ([192.168.0.28]) [187.184.156.122]:36057
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfD+/tweFSbZx0XQAxe6L9Z3CKVPTMJChRgXB6+nQlywPrxEKiFGWLuoGsuSKzSpjc0FmrDq2DRAa32RIGIjDh8akZhMeKeSPYCnsU77CZKW48xROKktu
- Nf03jG39AjwUdEzHqdrv/o1OElu9j4A50k+TIFdSH5Kr8/HFfhariHE1T2d/Nr61VQOn0jfb1rusK8l9svBf7lEXkN4tCPkxtbkyPX9VXmQ3Qxi2ZsN9ns59
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
+Hi Linus, some more bcachefs fixes. Nothing too crazy to report,
+changelog should have it all.
 
+Cheers,
+Kent
 
-On 11/29/23 14:15, Kees Cook wrote:
-> On Tue, Nov 28, 2023 at 12:22:55PM -0600, Gustavo A. R. Silva wrote:
->> Fake flexible arrays (zero-length and one-element arrays) are
->> deprecated, and should be replaced by flexible-array members.
->>
->> So, replace zero-length arrays with flexible-array members
->> in multiple structures.
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> These look like straight-forward conversions. Thanks!
+The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
 
-Yep, these also fix a buch of -Warray-bounds warnings reported
-by 0-day:
+  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
 
-https://lore.kernel.org/lkml/202311290720.TzNYq81c-lkp@intel.com/
+are available in the Git repository at:
 
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-11-29
 
-Thanks!
---
-Gustavo
+for you to fetch changes up to 415e5107b0dce0e5407ae4a46700cd7e8859e252:
+
+  bcachefs: Extra kthread_should_stop() calls for copygc (2023-11-28 22:58:23 -0500)
+
+----------------------------------------------------------------
+More bcachefs bugfixes for 6.7
+
+Bigger/user visible fixes:
+
+ - bcache & bcachefs were broken with CFI enabled; patch for closures to
+   fix type punning
+
+ - mark erasure coding as extra-experimental; there are incompatible
+   disk space accounting changes coming for erasure coding, and I'm
+   still seeing checksum errors in some tests
+
+ - several fixes for durability-related issues (durability is a device
+   specific setting where we can tell bcachefs that data on a given
+   device should be counted as replicated x times )
+
+ - a fix for a rare livelock when a btree node merge then updates a
+   parent node that is almost full
+
+ - fix a race in the device removal path, where dropping a pointer in a
+   btree node to a device would be clobbered by an in flight btree write
+   updating the btree node key on completion
+
+ - fix one SRCU lock hold time warning in the btree gc code - ther's
+   still a bunch more of these to fix
+
+ - fix a rare race where we'd start copygc before initializing the "are
+   we rw" percpu refcount; copygc would think we were already ro and die
+   immediately
+
+https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-for-upstream
+
+----------------------------------------------------------------
+Brian Foster (1):
+      bcachefs: preserve device path as device name
+
+Kent Overstreet (22):
+      closures: CLOSURE_CALLBACK() to fix type punning
+      bcachefs: Put erasure coding behind an EXPERIMENTAL kconfig option
+      bcachefs: bch2_moving_ctxt_flush_all()
+      bcachefs: Make sure bch2_move_ratelimit() also waits for move_ops
+      bcachefs: Don't stop copygc thread on device resize
+      bcachefs: Start gc, copygc, rebalance threads after initing writes ref
+      bcachefs: Fix an endianness conversion
+      bcachefs: Proper refcounting for journal_keys
+      bcachefs: deallocate_extra_replicas()
+      bcachefs: Data update path won't accidentaly grow replicas
+      bcachefs: Fix ec + durability calculation
+      bcachefs: bpos is misaligned on big endian
+      bcachefs: Fix zstd compress workspace size
+      bcachefs: Add missing validation for jset_entry_data_usage
+      bcachefs: Fix bucket data type for stripe buckets
+      bcachefs: Fix split_race livelock
+      bcachefs: trace_move_extent_start_fail() now includes errcode
+      bcachefs: -EROFS doesn't count as move_extent_start_fail
+      bcachefs: move journal seq assertion
+      bcachefs: Fix race between btree writes and metadata drop
+      bcachefs: Convert gc_alloc_start() to for_each_btree_key2()
+      bcachefs: Extra kthread_should_stop() calls for copygc
+
+ drivers/md/bcache/btree.c           |  14 ++--
+ drivers/md/bcache/journal.c         |  20 +++---
+ drivers/md/bcache/movinggc.c        |  16 ++---
+ drivers/md/bcache/request.c         |  74 ++++++++++-----------
+ drivers/md/bcache/request.h         |   2 +-
+ drivers/md/bcache/super.c           |  40 ++++++------
+ drivers/md/bcache/writeback.c       |  16 ++---
+ fs/bcachefs/Kconfig                 |  12 ++++
+ fs/bcachefs/alloc_foreground.c      |  30 +++++++++
+ fs/bcachefs/bcachefs.h              |   4 +-
+ fs/bcachefs/bcachefs_format.h       |   8 ++-
+ fs/bcachefs/btree_gc.c              |   9 +--
+ fs/bcachefs/btree_io.c              |   7 +-
+ fs/bcachefs/btree_iter.c            |   6 +-
+ fs/bcachefs/btree_journal_iter.c    |  18 +++++-
+ fs/bcachefs/btree_journal_iter.h    |  10 ++-
+ fs/bcachefs/btree_update_interior.c |  14 +++-
+ fs/bcachefs/buckets.c               |  10 +--
+ fs/bcachefs/compress.c              |  16 +++--
+ fs/bcachefs/data_update.c           |  92 +++++++++++++++++++++++---
+ fs/bcachefs/data_update.h           |   9 ++-
+ fs/bcachefs/errcode.h               |   3 +-
+ fs/bcachefs/extents.c               |  30 ++++-----
+ fs/bcachefs/fs-io-direct.c          |   8 +--
+ fs/bcachefs/fs.c                    |   3 +-
+ fs/bcachefs/io_read.c               |   2 +-
+ fs/bcachefs/io_write.c              |  14 ++--
+ fs/bcachefs/io_write.h              |   3 +-
+ fs/bcachefs/journal.c               |   2 +
+ fs/bcachefs/journal.h               |   4 +-
+ fs/bcachefs/journal_io.c            |  29 ++++++---
+ fs/bcachefs/journal_io.h            |   2 +-
+ fs/bcachefs/move.c                  | 126 ++++++++++++------------------------
+ fs/bcachefs/move.h                  |  19 ++++++
+ fs/bcachefs/movinggc.c              |   2 +-
+ fs/bcachefs/recovery.c              |  11 ++--
+ fs/bcachefs/replicas.c              |  69 +++++++++++---------
+ fs/bcachefs/replicas.h              |   2 +
+ fs/bcachefs/snapshot.c              |   2 +-
+ fs/bcachefs/super-io.c              |   5 ++
+ fs/bcachefs/super.c                 |  34 ++++++----
+ fs/bcachefs/super_types.h           |   1 +
+ fs/bcachefs/trace.h                 |   6 +-
+ include/linux/closure.h             |   9 ++-
+ lib/closure.c                       |   5 +-
+ 45 files changed, 495 insertions(+), 323 deletions(-)
