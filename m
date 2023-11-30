@@ -1,122 +1,164 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VLlc/aFD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC42106
-	for <linux-bcachefs@vger.kernel.org>; Thu, 30 Nov 2023 11:16:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701371790;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=SVsy4bHVicY2Q7XP0Chhi9Qh3zIEvaJp4ubK1MjmXsE=;
-	b=VLlc/aFDMujEySCjZVT+6ODhhLvlA7D9jJvknATnCciBTn/uyv0CVYzGqUY7Nupl7LSV13
-	qw7iWf4L40W53StlP5khJCu1XNOQ+/kNDxHnItmqTcQOh3+hymxtVtpMFJlHxDA+4wuoH+
-	8B4LhbHnFq5pnzaFjFNj3diGLsAXauo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-629-Y3ca_mPLOhOYrqoP8JYUNQ-1; Thu,
- 30 Nov 2023 14:16:23 -0500
-X-MC-Unique: Y3ca_mPLOhOYrqoP8JYUNQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0935B170F
+	for <linux-bcachefs@vger.kernel.org>; Thu, 30 Nov 2023 12:36:12 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BABA61C06506
-	for <linux-bcachefs@vger.kernel.org>; Thu, 30 Nov 2023 19:16:22 +0000 (UTC)
-Received: from bfoster.redhat.com (unknown [10.22.16.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9B8542166B26
-	for <linux-bcachefs@vger.kernel.org>; Thu, 30 Nov 2023 19:16:22 +0000 (UTC)
-From: Brian Foster <bfoster@redhat.com>
-To: linux-bcachefs@vger.kernel.org
-Subject: [PATCH] bcachefs: remove sb lock and flags update on explicit shutdown
-Date: Thu, 30 Nov 2023 14:17:11 -0500
-Message-ID: <20231130191711.384300-1-bfoster@redhat.com>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 321F921B8A;
+	Thu, 30 Nov 2023 20:36:11 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 85C9C1342E;
+	Thu, 30 Nov 2023 20:36:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id NpJSDTnyaGUaLQAAD6G6ig
+	(envelope-from <neilb@suse.de>); Thu, 30 Nov 2023 20:36:09 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+From: "NeilBrown" <neilb@suse.de>
+To: "Kent Overstreet" <kent.overstreet@linux.dev>
+Cc: "Donald Buczek" <buczek@molgen.mpg.de>, linux-bcachefs@vger.kernel.org,
+ "Stefan Krueger" <stefan.krueger@aei.mpg.de>
+Subject: Re: How to cope with subvolumes and snapshots on muti-user systems?
+In-reply-to: <20231129214328.efbfpl3javifvwk5@moria.home.lan>
+References: <3222cf4b-8f9d-4576-b2e2-c78e5655f4dc@molgen.mpg.de>,
+ <20231129214328.efbfpl3javifvwk5@moria.home.lan>
+Date: Fri, 01 Dec 2023 07:36:06 +1100
+Message-id: <170137656625.7109.11633427959061675371@noble.neil.brown.name>
+X-Spamd-Bar: +++++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [7.02 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 SUBJECT_ENDS_QUESTION(1.00)[];
+	 R_SPF_SOFTFAIL(4.60)[~all:c];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_SPAM_LONG(2.23)[0.638];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Score: 7.02
+X-Rspamd-Queue-Id: 321F921B8A
 
-bcachefs grabs s_umount and sets SB_RDONLY when the fs is shutdown
-via the ioctl() interface. This has a couple issues related to
-interactions between shutdown and freeze:
+On Thu, 30 Nov 2023, Kent Overstreet wrote:
+> On Tue, Nov 28, 2023 at 08:49:23AM +0100, Donald Buczek wrote:
+> > Hi,
+> >=20
+> > I'm happy, bcachefs finally made it to mainline, Kudos to Kent!
+> >=20
+> > As far as I know, there is an ongoing discussion about the problems of no=
+n-unique inode numbers exposed by snapshots an no real conclusion yet, on how=
+ filesystems should expose snapshots.
+> >=20
+> > The current behavior is kind of a showstopper for us, because we are stil=
+l running multi-user systems. The problem is, that any unprivileged user can =
+create subvolumes and snapshots:
+> >=20
+> >     buczek@dose:/scratch/local3$ bcachefs subvolume create vol1
+> >     buczek@dose:/scratch/local3$ mkdir vol1/dir1
+> >     buczek@dose:/scratch/local3$ bcachefs subvolume snapshot vol1/snp1
+> >     buczek@dose:/scratch/local3$ ls -li vol1/
+> >     total 0
+> >     1342189197 drwxrwxr-x 2 buczek buczek 0 Nov 20 15:01 dir1
+> >     1476413180 drwxrwxr-x 3 buczek buczek 0 Nov 20 15:01 snp1
+> >     buczek@dose:/scratch/local3$ ls -li vol1/snp1/
+> >     total 0
+> >     1342189197 drwxrwxr-x 2 buczek buczek 0 Nov 20 15:01 dir1
+> >     buczek@dose:/scratch/local3$ find .
+> >     .
+> >     ./vol1
+> >     find: File system loop detected; =E2=80=98./vol1/snp1=E2=80=99 is par=
+t of the same file system loop as =E2=80=98./vol1=E2=80=99.
+> >     ./vol1/dir1
+> >     buczek@dose:/scratch/local3$
+> >=20
+> > We have a few tools which walk over the filesystem (backup, mirror, accou=
+nting) and these are just not prepared for non-unique inode numbers aside fro=
+m regular hardlinks. I'm concerned that experiments of a unprivileged users c=
+ould make important tools to fail.
+> >=20
+> > Questions:
+> >=20
+> > - Would it be a workaround to make creation of subvolumes and snapshots p=
+rivileged operations?
+> >=20
+> > - If we want to evolve our tools: What is the best way for userspace to r=
+ecognize subvolumes and snapshots and tell them apart from ordinary directori=
+es?
+>=20
+> I'm considering writing an "integer identifiers considered harmful"
+> paper. I haven't dug into it yet - just skimmed the lwn coverage - but
+> adding in the overlayfs issue makes this problem sound fundamentally
+> unsolvable given the current constraints.
+>=20
+> Recognizing subvolume boundaries: we don't have anything for this yet,
+> and given what happened with btrfs I'm not sure we want to go that
+> route.
+>=20
+> We could (probably) expose unique inode numbers, filesystem wide, but at
+> a cost. We'd have to restrict ourselves internally to 32 bit inode
+> numbers, and then report inode numbers that include the subvolume ID as
+> the high 32 bits.
+>=20
+> That won't leave enough bits to shard inode numbers at create time based
+> on CPU id, which isn't the _most_ important optimization, but would hurt
+> to lose.
+>=20
+> Going forward, we really need - as you allude to - better userspace
+> APIs. Inode number probably can't be an integer anymore, it needs to be
+> a string if it's going to be able to do all the things we want it to do.
+>=20
 
-1. The flags == FSOP_GOING_FLAGS_DEFAULT case is a deadlock vector
-   because freeze_bdev() calls into freeze_super(), which also
-   acquires s_umount.
+If you want to give up on Posix comparability - and with it any hope
+that your fs will be used - then using a string as the inode identifier
+might work.  But in the real world, inodes have 64 bit numbers.
 
-2. If an explicit shutdown occurs while the sb is frozen, SB_RDONLY
-   alters the thaw path as if the sb was read-only at freeze time.
-   This effectively leaks the frozen state and leaves the sb frozen
-   indefinitely.
+The only credible alternative is to use the fhandle as a primary
+identifier.  You still need to support inode numbers, and they still
+need to be stable and to be as unique as you can possibly make them
+across the filesystem.
 
-The usage of SB_RDONLY here goes back to the initial bcachefs commit
-and AFAICT is simply historical behavior. This behavior is unique to
-bcachefs relative to the handful of other filesystems that support
-the shutdown ioctl(). Typically, SB_RDONLY is reserved for the
-proper remount path, which itself is restricted from modifying
-frozen superblocks in reconfigure_super(). Drop the unnecessary sb
-lock and flags update bch2_ioc_goingdown() to address both of these
-issues.
+My preference would be to make the inode number reported to userspace be
+a strong hash of the fhandle (which absolutely must be unique - but can be
+quite large).  Then systemic clashes - like the one with results in find
+misdetecting filesystem loops - will be extremely unlikely.
 
-Signed-off-by: Brian Foster <bfoster@redhat.com>
----
+For code that really really needs to detect if two filesystems are the
+same (tar being the obvious example) we should encourage the use of
+name_to_handle_at().
 
-This is currently churning through CI here (though I had already pushed
-an early version that ran clean):
+Experience with NFSv2 and exclusive opens shows that if a filesystem
+breaks something in a way that it still works most of the time but
+occasionally still fails randomly, then people will still use it
+(providing it provides real benefits of course) and they will find a
+work-around to avoid the breakage.  So thanks to NFSv2, people stopped
+using O_CREAT|O_EXCL as a locking mechanism, and did things with hard
+links instead.
 
-https://evilpiepirate.org/~testdashboard/ci?branch=bfoster
-
-Brian
-
- fs/bcachefs/fs-ioctl.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
-
-diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
-index 5a39bcb597a3..0baa23c35ef5 100644
---- a/fs/bcachefs/fs-ioctl.c
-+++ b/fs/bcachefs/fs-ioctl.c
-@@ -287,34 +287,26 @@ static int bch2_ioc_goingdown(struct bch_fs *c, u32 __user *arg)
- 
- 	bch_notice(c, "shutdown by ioctl type %u", flags);
- 
--	down_write(&c->vfs_sb->s_umount);
--
- 	switch (flags) {
- 	case FSOP_GOING_FLAGS_DEFAULT:
- 		ret = freeze_bdev(c->vfs_sb->s_bdev);
- 		if (ret)
--			goto err;
--
-+			break;
- 		bch2_journal_flush(&c->journal);
--		c->vfs_sb->s_flags |= SB_RDONLY;
- 		bch2_fs_emergency_read_only(c);
- 		thaw_bdev(c->vfs_sb->s_bdev);
- 		break;
--
- 	case FSOP_GOING_FLAGS_LOGFLUSH:
- 		bch2_journal_flush(&c->journal);
- 		fallthrough;
--
- 	case FSOP_GOING_FLAGS_NOLOGFLUSH:
--		c->vfs_sb->s_flags |= SB_RDONLY;
- 		bch2_fs_emergency_read_only(c);
- 		break;
- 	default:
- 		ret = -EINVAL;
- 		break;
- 	}
--err:
--	up_write(&c->vfs_sb->s_umount);
-+
- 	return ret;
- }
- 
--- 
-2.41.0
-
+NeilBrown
