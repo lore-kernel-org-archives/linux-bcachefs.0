@@ -1,116 +1,122 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BpSUJFAX"
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [IPv6:2001:41d0:203:375::b0])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B00196
-	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Nov 2023 23:39:53 -0800 (PST)
-Date: Thu, 30 Nov 2023 02:39:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701329991;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VLlc/aFD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC42106
+	for <linux-bcachefs@vger.kernel.org>; Thu, 30 Nov 2023 11:16:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1701371790;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6fCAnjycCjRt14s8yNvPV3lhRuGi8liC5jJ2vPRX8g4=;
-	b=BpSUJFAXsnZS02jXhWeP9Ftotipmhuez1QPd+fBPV+SMGaseYxW2/YrMScFFrn7xreWlwQ
-	QDSHwjCFyWSjq0VNbrZFzesM7ABS+oMOsKzqyLFHQdx4eC1JZSgDXyfQQSsREs65yzdqLv
-	iWfHPPcqzckaLV9wOj823+itHIuCpaU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Donald Buczek <buczek@molgen.mpg.de>
-Cc: linux-bcachefs@vger.kernel.org,
-	Stefan Krueger <stefan.krueger@aei.mpg.de>,
-	Neil Brown <neilb@suse.de>
-Subject: Re: How to cope with subvolumes and snapshots on muti-user systems?
-Message-ID: <20231130073948.v3jkmmvtwnefwvq3@moria.home.lan>
-References: <3222cf4b-8f9d-4576-b2e2-c78e5655f4dc@molgen.mpg.de>
- <20231129214328.efbfpl3javifvwk5@moria.home.lan>
- <63ca9346-6bec-40d5-8f7e-4181721652f1@molgen.mpg.de>
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=SVsy4bHVicY2Q7XP0Chhi9Qh3zIEvaJp4ubK1MjmXsE=;
+	b=VLlc/aFDMujEySCjZVT+6ODhhLvlA7D9jJvknATnCciBTn/uyv0CVYzGqUY7Nupl7LSV13
+	qw7iWf4L40W53StlP5khJCu1XNOQ+/kNDxHnItmqTcQOh3+hymxtVtpMFJlHxDA+4wuoH+
+	8B4LhbHnFq5pnzaFjFNj3diGLsAXauo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-629-Y3ca_mPLOhOYrqoP8JYUNQ-1; Thu,
+ 30 Nov 2023 14:16:23 -0500
+X-MC-Unique: Y3ca_mPLOhOYrqoP8JYUNQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BABA61C06506
+	for <linux-bcachefs@vger.kernel.org>; Thu, 30 Nov 2023 19:16:22 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.16.228])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 9B8542166B26
+	for <linux-bcachefs@vger.kernel.org>; Thu, 30 Nov 2023 19:16:22 +0000 (UTC)
+From: Brian Foster <bfoster@redhat.com>
+To: linux-bcachefs@vger.kernel.org
+Subject: [PATCH] bcachefs: remove sb lock and flags update on explicit shutdown
+Date: Thu, 30 Nov 2023 14:17:11 -0500
+Message-ID: <20231130191711.384300-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <63ca9346-6bec-40d5-8f7e-4181721652f1@molgen.mpg.de>
-X-Migadu-Flow: FLOW_OUT
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Thu, Nov 30, 2023 at 08:35:12AM +0100, Donald Buczek wrote:
-> On 11/29/23 22:43, Kent Overstreet wrote:
-> > On Tue, Nov 28, 2023 at 08:49:23AM +0100, Donald Buczek wrote:
-> > > Hi,
-> > > 
-> > > I'm happy, bcachefs finally made it to mainline, Kudos to Kent!
-> > > 
-> > > As far as I know, there is an ongoing discussion about the problems of non-unique inode numbers exposed by snapshots an no real conclusion yet, on how filesystems should expose snapshots.
-> > > 
-> > > The current behavior is kind of a showstopper for us, because we are still running multi-user systems. The problem is, that any unprivileged user can create subvolumes and snapshots:
-> > > 
-> > >      buczek@dose:/scratch/local3$ bcachefs subvolume create vol1
-> > >      buczek@dose:/scratch/local3$ mkdir vol1/dir1
-> > >      buczek@dose:/scratch/local3$ bcachefs subvolume snapshot vol1/snp1
-> > >      buczek@dose:/scratch/local3$ ls -li vol1/
-> > >      total 0
-> > >      1342189197 drwxrwxr-x 2 buczek buczek 0 Nov 20 15:01 dir1
-> > >      1476413180 drwxrwxr-x 3 buczek buczek 0 Nov 20 15:01 snp1
-> > >      buczek@dose:/scratch/local3$ ls -li vol1/snp1/
-> > >      total 0
-> > >      1342189197 drwxrwxr-x 2 buczek buczek 0 Nov 20 15:01 dir1
-> > >      buczek@dose:/scratch/local3$ find .
-> > >      .
-> > >      ./vol1
-> > >      find: File system loop detected; ‘./vol1/snp1’ is part of the same file system loop as ‘./vol1’.
-> > >      ./vol1/dir1
-> > >      buczek@dose:/scratch/local3$
-> > > 
-> > > We have a few tools which walk over the filesystem (backup, mirror, accounting) and these are just not prepared for non-unique inode numbers aside from regular hardlinks. I'm concerned that experiments of a unprivileged users could make important tools to fail.
-> > > 
-> > > Questions:
-> > > 
-> > > - Would it be a workaround to make creation of subvolumes and snapshots privileged operations?
-> > > 
-> > > - If we want to evolve our tools: What is the best way for userspace to recognize subvolumes and snapshots and tell them apart from ordinary directories?
-> > 
-> > I'm considering writing an "integer identifiers considered harmful"
-> > paper. I haven't dug into it yet - just skimmed the lwn coverage - but
-> > adding in the overlayfs issue makes this problem sound fundamentally
-> > unsolvable given the current constraints.
-> > 
-> > Recognizing subvolume boundaries: we don't have anything for this yet,
-> > and given what happened with btrfs I'm not sure we want to go that
-> > route.
-> 
-> A fabricated fsid - I think, that is what btrfs does - wouldn't help
-> us either. The mentioned tools would just stop at the assumed mount
-> points.
+bcachefs grabs s_umount and sets SB_RDONLY when the fs is shutdown
+via the ioctl() interface. This has a couple issues related to
+interactions between shutdown and freeze:
 
-*nod* - nor for NFS.
+1. The flags == FSOP_GOING_FLAGS_DEFAULT case is a deadlock vector
+   because freeze_bdev() calls into freeze_super(), which also
+   acquires s_umount.
 
-> > We could (probably) expose unique inode numbers, filesystem wide, but at
-> > a cost. We'd have to restrict ourselves internally to 32 bit inode
-> > numbers, and then report inode numbers that include the subvolume ID as
-> > the high 32 bits.
-> > 
-> > That won't leave enough bits to shard inode numbers at create time based
-> > on CPU id, which isn't the _most_ important optimization, but would hurt
-> > to lose.
-> > 
-> > Going forward, we really need - as you allude to - better userspace
-> > APIs. Inode number probably can't be an integer anymore, it needs to be
-> > a string if it's going to be able to do all the things we want it to do.
-> 
-> Should be an uuid then. Expose inode uuid (and/or snapshot uuid) via
-> xattr? Anyway, I know, people more competent than me are thinking
-> about the problem.
+2. If an explicit shutdown occurs while the sb is frozen, SB_RDONLY
+   alters the thaw path as if the sb was read-only at freeze time.
+   This effectively leaks the frozen state and leaves the sb frozen
+   indefinitely.
 
-Exposing the subvolume ID via an xattr would be easy, if that works for
-you.
+The usage of SB_RDONLY here goes back to the initial bcachefs commit
+and AFAICT is simply historical behavior. This behavior is unique to
+bcachefs relative to the handful of other filesystems that support
+the shutdown ioctl(). Typically, SB_RDONLY is reserved for the
+proper remount path, which itself is restricted from modifying
+frozen superblocks in reconfigure_super(). Drop the unnecessary sb
+lock and flags update bch2_ioc_goingdown() to address both of these
+issues.
 
-> What to you think about the suggestion to make creation of snapshots
-> (and possible volumes, not sure about that) a privileged operation
-> (optional, of course) ? I know, multi-user is niche nowadays, but for
-> me it looks like a rather cheap workaround.
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
 
-Yeah, that's not an unreasonable ask.
+This is currently churning through CI here (though I had already pushed
+an early version that ran clean):
+
+https://evilpiepirate.org/~testdashboard/ci?branch=bfoster
+
+Brian
+
+ fs/bcachefs/fs-ioctl.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
+index 5a39bcb597a3..0baa23c35ef5 100644
+--- a/fs/bcachefs/fs-ioctl.c
++++ b/fs/bcachefs/fs-ioctl.c
+@@ -287,34 +287,26 @@ static int bch2_ioc_goingdown(struct bch_fs *c, u32 __user *arg)
+ 
+ 	bch_notice(c, "shutdown by ioctl type %u", flags);
+ 
+-	down_write(&c->vfs_sb->s_umount);
+-
+ 	switch (flags) {
+ 	case FSOP_GOING_FLAGS_DEFAULT:
+ 		ret = freeze_bdev(c->vfs_sb->s_bdev);
+ 		if (ret)
+-			goto err;
+-
++			break;
+ 		bch2_journal_flush(&c->journal);
+-		c->vfs_sb->s_flags |= SB_RDONLY;
+ 		bch2_fs_emergency_read_only(c);
+ 		thaw_bdev(c->vfs_sb->s_bdev);
+ 		break;
+-
+ 	case FSOP_GOING_FLAGS_LOGFLUSH:
+ 		bch2_journal_flush(&c->journal);
+ 		fallthrough;
+-
+ 	case FSOP_GOING_FLAGS_NOLOGFLUSH:
+-		c->vfs_sb->s_flags |= SB_RDONLY;
+ 		bch2_fs_emergency_read_only(c);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+-err:
+-	up_write(&c->vfs_sb->s_umount);
++
+ 	return ret;
+ }
+ 
+-- 
+2.41.0
+
