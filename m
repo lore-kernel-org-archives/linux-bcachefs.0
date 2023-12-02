@@ -1,55 +1,84 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D448A262B6;
-	Fri,  1 Dec 2023 21:21:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SLDx7iKp"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 61E42C433C7;
-	Fri,  1 Dec 2023 21:21:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701465704;
-	bh=a6VAM6LKqNgD6Puv2OUlj5CEqPB85sLEtOqOcxbQwlo=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=SLDx7iKpthiLbFqW+7PvI3+HtgLLVSvM5Z9mfJJqVR87TK4P+/tsZmr0O9ZPVWnI3
-	 GcOrdwnVanyvlhsCUeBt2wbLKb0nYcRKEFE+OVxyFV/ajkknGlcSYYbdKUlpPuje1f
-	 bRY0JKsgEuwzYNpuACQ2UzEmeSk2mLpM+Dv0HNG8YiUsHX7Tqa3kCoDg6NQN/xjVzZ
-	 A5Z8hX9Uxg1U3lO2KhiJJDFSu9jN6KYYZ8HMTEY0iWfPvvza7Kt3Kgj8NVqB90I2Yy
-	 HpRttsrAxNTWyQ/+cchi/OH1q2VT30MpSrEXLRkBucahgKKxfwIw/tEnE0vNxR/5e8
-	 /bU6DTDZ8RbWA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4EA48DFAA94;
-	Fri,  1 Dec 2023 21:21:44 +0000 (UTC)
-Subject: Re: [GIT PULL] more bcachefs fixes
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20231129204336.4yfhhptdgrfaguur@moria.home.lan>
-References: <20231129204336.4yfhhptdgrfaguur@moria.home.lan>
-X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231129204336.4yfhhptdgrfaguur@moria.home.lan>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-11-29
-X-PR-Tracked-Commit-Id: 415e5107b0dce0e5407ae4a46700cd7e8859e252
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e6861be452a53a5de3e1a048eabd811a05a44915
-Message-Id: <170146570431.19100.16520157136518044796.pr-tracker-bot@kernel.org>
-Date: Fri, 01 Dec 2023 21:21:44 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y8Mhsq1t"
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA39FF4
+	for <linux-bcachefs@vger.kernel.org>; Fri,  1 Dec 2023 16:38:37 -0800 (PST)
+Date: Fri, 1 Dec 2023 19:38:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701477515;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ndh0q6hknmNqO3AcT8ZIgD4pO+HyGuFWYjO+keNOVuI=;
+	b=Y8Mhsq1tIkXTV6yG0Bx07zYJ7Skp49BmPauaYbzB18GEI3FmHhHPlga1HY9NAQM76IRVo8
+	DdJ7gEeEIJpKXFR7c+iyw8owiZfiXAFxJoXclcTq19XFk6tofYdpyYERr1Tm0FreSbPjgn
+	mCTxh7u0UK8SbkomdXtHJE4dASNYcTw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: remove sb lock and flags update on explicit
+ shutdown
+Message-ID: <20231202003832.siuozvioahjhwhnq@moria.home.lan>
+References: <20231130191711.384300-1-bfoster@redhat.com>
+ <20231201020006.4i5gztfj6m2lr264@moria.home.lan>
+ <ZWnjGOvxSLUfUos2@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWnjGOvxSLUfUos2@bfoster>
+X-Migadu-Flow: FLOW_OUT
 
-The pull request you sent on Wed, 29 Nov 2023 15:43:36 -0500:
+On Fri, Dec 01, 2023 at 08:43:52AM -0500, Brian Foster wrote:
+> On Thu, Nov 30, 2023 at 09:00:06PM -0500, Kent Overstreet wrote:
+> > On Thu, Nov 30, 2023 at 02:17:11PM -0500, Brian Foster wrote:
+> > > bcachefs grabs s_umount and sets SB_RDONLY when the fs is shutdown
+> > > via the ioctl() interface. This has a couple issues related to
+> > > interactions between shutdown and freeze:
+> > > 
+> > > 1. The flags == FSOP_GOING_FLAGS_DEFAULT case is a deadlock vector
+> > >    because freeze_bdev() calls into freeze_super(), which also
+> > >    acquires s_umount.
+> > > 
+> > > 2. If an explicit shutdown occurs while the sb is frozen, SB_RDONLY
+> > >    alters the thaw path as if the sb was read-only at freeze time.
+> > >    This effectively leaks the frozen state and leaves the sb frozen
+> > >    indefinitely.
+> > > 
+> > > The usage of SB_RDONLY here goes back to the initial bcachefs commit
+> > > and AFAICT is simply historical behavior. This behavior is unique to
+> > > bcachefs relative to the handful of other filesystems that support
+> > > the shutdown ioctl(). Typically, SB_RDONLY is reserved for the
+> > > proper remount path, which itself is restricted from modifying
+> > > frozen superblocks in reconfigure_super(). Drop the unnecessary sb
+> > > lock and flags update bch2_ioc_goingdown() to address both of these
+> > > issues.
+> > 
+> > Nice, I noticed a deadlock issue recently with s_umount here but didn't
+> > have time to fully debug it - applied!
+> > 
+> 
+> Thanks!
+> 
+> Hmm.. got a reference to that observed deadlock handy? I'd be a little
+> cautious associating here because 1. I dont think any test tooling
+> currently uses the default shutdown mode for the ioctl and 2. the
+> non-ioctl emergency shutdown paths dont set SB_RDONLY, so shouldn't
+> trigger the freeze issue.
 
-> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-11-29
+No, only observed it once and I was looking at other stuff at the time,
+alas.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e6861be452a53a5de3e1a048eabd811a05a44915
+> So IOW while this path was broken in the ways described in the commit
+> log, it still seems rather unlikely for a normal use or test case to
+> trigger this. It would be good to know if there's still a lingering
+> issue to resolve..
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Touching a VFS lock here at all was always a bit suspect; I have no idea
+where I originally cribbed that from. I generally try to keep a clearer
+separation between VFS locks/state and filesystem locks/state...
