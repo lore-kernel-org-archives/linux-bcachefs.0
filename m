@@ -1,15 +1,11 @@
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC09AC0;
-	Mon,  4 Dec 2023 03:04:34 -0800 (PST)
-Received: from [192.168.1.123] (ip5b4280bd.dynamic.kabel-deutschland.de [91.66.128.189])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: buczek)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id CE56761E646C3;
-	Mon,  4 Dec 2023 12:03:26 +0100 (CET)
-Message-ID: <5cc5076e-3a85-48e2-b75f-a3d1021f531e@molgen.mpg.de>
-Date: Mon, 4 Dec 2023 12:03:26 +0100
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A671FD2;
+	Mon,  4 Dec 2023 04:10:49 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rA7mh-0000e8-Iq; Mon, 04 Dec 2023 13:10:47 +0100
+Message-ID: <17bd838f-12a0-43c2-a45c-46021083170b@leemhuis.info>
+Date: Mon, 4 Dec 2023 13:10:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -17,49 +13,62 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Stefan Krueger <stefan.krueger@aei.mpg.de>
-From: Donald Buczek <buczek@molgen.mpg.de>
-Subject: [bcachefs] [bug]: missing subvolume 0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: block/badblocks.c warning in 6.7-rc2
+Content-Language: en-US, de-DE
+To: Coly Li <colyli@suse.de>, Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Regressions <regressions@lists.linux.dev>,
+ Linux Block Devices <linux-block@vger.kernel.org>,
+ Linux RAID <linux-raid@vger.kernel.org>,
+ Linux bcachefs <linux-bcachefs@vger.kernel.org>, Xiao Ni <xni@redhat.com>,
+ Geliang Tang <geliang.tang@suse.com>, Jens Axboe <axboe@kernel.dk>,
+ Song Liu <song@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>,
+ Janpieter Sollie <janpieter.sollie@edpnet.be>
+References: <562a2442-d098-4972-baa1-5a843e06b180@gmail.com>
+ <C8305655-3749-411B-A696-E07E95882215@suse.de>
+From: "Linux regression tracking #update (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <C8305655-3749-411B-A696-E07E95882215@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701691849;400920e5;
+X-HE-SMSGID: 1rA7mh-0000e8-Iq
 
-Reporting to maintainer.pl list, hope that's correct?
+On 29.11.23 09:08, Coly Li wrote:
+>> 2023年11月29日 07:47，Bagas Sanjaya <bagasdotme@gmail.com> 写道：
+>>
+>> I notice a regression report that is rather well-handled on Bugzilla [1].
+>> Quoting from it:
+>>
+>>>
+>>> when booting from 6.7-rc2, compiled with clang, I get this warning on one of my 3 bcachefs volumes:
+>>> WARNING: CPU: 3 PID: 712 at block/badblocks.c:1284 badblocks_check (block/badblocks.c:1284) 
+>>> The reason why isn't clear, but the stack trace points to an error in md error handling.
+>>> This bug didn't happen in 6.6
+>>> there are 3 commits in 6.7-rc2 which may cause them,
+>>> in attachment:
+>>> - decoded stacktrace of dmesg
+>>> - kernel .config
+>> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218184
+> 
+> It seems the improved bad blocks code caught a zero-size bio request
+> from upper layer, this improper behavior was silently neglected before.
+> It might be too early or simple to decide this is a regression,
 
-Probably, this is a trivial one:
-Linux 6.7.0-rc4.
+Well, it's often better to add an issue to the tracking even if there is
+a chance that it's not a real regression, as the issue might otherwise
+fall through the cracks. But given...
 
-buczek@dose:~$ sudo bcachefs format /dev/vdb
-External UUID:                              d5181483-dc0c-4781-a266-ef830fa3c099
-Internal UUID:                              d96e4b19-43f3-4a5b-bc5c-3fe2b726b1ef
-[...]
-buczek@dose:~$ sudo bcachefs mount /dev/vdb /mnt
-buczek@dose:~$ sudo chmod a=rwxt /mnt
-buczek@dose:~$ mkdir /mnt/d
-buczek@dose:~$ bcachefs subvolume snapshot /mnt/d/snp1
-BCH_IOCTL_SUBVOLUME_CREATE ioctl error: No such file or directory
-buczek@dose:~$ dmesg|tail -10
-[ 7477.587299] bcachefs (vdb): mounting version 1.3: rebalance_work
-[ 7477.589134] bcachefs (vdb): recovering from clean shutdown, journal seq 14
-[ 7477.608861] bcachefs (vdb): alloc_read... done
-[ 7477.610525] bcachefs (vdb): stripes_read... done
-[ 7477.612037] bcachefs (vdb): snapshots_read... done
-[ 7477.644331] bcachefs (vdb): journal_replay... done
-[ 7477.645940] bcachefs (vdb): resume_logged_ops... done
-[ 7477.650087] bcachefs (vdb): going read-write
-[ 7514.113568] bcachefs (vdb): missing subvolume 0
-[ 7514.115121] bcachefs (vdb): inconsistency detected - emergency read only
-buczek@dose:~$
+> especially Janpieter closes the report for now.
 
+...this I agree that this is likely not worth tracking, hence:
 
+#regzbot inconclusive: maybe not a regression and report can not
+reproduce it anymore
 
-Best
-   Donald
-
--- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 1433
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
