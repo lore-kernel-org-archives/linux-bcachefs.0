@@ -1,118 +1,101 @@
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47A719A4;
-	Tue,  5 Dec 2023 04:40:12 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0VY4y3vz4f3lCq;
-	Tue,  5 Dec 2023 20:40:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 5822A1A0B3A;
-	Tue,  5 Dec 2023 20:40:10 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgA3iA4nGm9ljNo8Cw--.18416S4;
-	Tue, 05 Dec 2023 20:40:09 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: axboe@kernel.dk,
-	roger.pau@citrix.com,
-	colyli@suse.de,
-	kent.overstreet@gmail.com,
-	joern@lazybastard.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	sth@linux.ibm.com,
-	hoeppner@linux.ibm.com,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	jejb@linux.ibm.com,
-	martin.petersen@oracle.com,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com,
-	nico@fluxnic.net,
-	xiang@kernel.org,
-	chao@kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	agruenba@redhat.com,
-	jack@suse.com,
-	konishi.ryusuke@gmail.com,
-	willy@infradead.org,
-	akpm@linux-foundation.org,
-	hare@suse.de,
-	p.raghav@samsung.com
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	linux-nilfs@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH -next RFC 14/14] nilfs2: use bdev api in nilfs_attach_log_writer()
-Date: Tue,  5 Dec 2023 20:39:05 +0800
-Message-Id: <20231205123905.1866894-1-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X3JyuRfq"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20454B9
+	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Dec 2023 05:23:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1701782625;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DDheIURSyOpXgyH16DTrVGGaUFXKRvQRZBOa3ydUSdU=;
+	b=X3JyuRfqJ+lU3Ctd+T5Kpkda8Qot4/ycG5r7jCiisdeWOWHpVdtJNqp9MxPjwys1jGoAT4
+	8O2ewhfMfVX3Y0jRQ1w4dP5kVrnDnwU1gbhml8b+Pk3xI/lkB75qfGvW9ZhvrEc+BAUZ+6
+	nuFEavt9qT4tkEvOH6MUyIgDeSloQC8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-171-4o6xcvPZMfGs9-W1NrIpmQ-1; Tue, 05 Dec 2023 08:23:43 -0500
+X-MC-Unique: 4o6xcvPZMfGs9-W1NrIpmQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 83341101A555
+	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Dec 2023 13:23:43 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.32.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 689ED492BF0
+	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Dec 2023 13:23:43 +0000 (UTC)
+From: Brian Foster <bfoster@redhat.com>
+To: linux-bcachefs@vger.kernel.org
+Subject: [PATCH 0/2] a couple more freeze/shutdown fixes
+Date: Tue,  5 Dec 2023 08:24:37 -0500
+Message-ID: <20231205132439.130755-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgA3iA4nGm9ljNo8Cw--.18416S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFWxAFW7ZFyrGFW3ZFyDGFg_yoW3Gwc_Zr
-	n8GryvgryFqFZ3Zw4DCrZ0yryrJ3WrKa18XryrGFyrGF40yrs5Cr1qvr4jqayUWwnrXws3
-	JwnrWr98tw15XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
-	6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-	n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8
-	JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfU59
-	NVDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-From: Yu Kuai <yukuai3@huawei.com>
+Hi Kent,
 
-Avoid to access bd_inode directly, prepare to remove bd_inode from
-block_devcie.
+I managed to catch up a bit on the fsync thing we had talked about
+earlier this year. Skimming through the original thread, I think this
+mail [1] summarizes things best. The short of it is that we can address
+at least a couple of the failures we're seeing with fstests
+generic/441,484 with a couple small tweaks in bcachefs and fstests, but
+these aren't necessarily the longer term fix.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- fs/nilfs2/segment.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Firstly, patch 1 is just another unrelated (un)freeze fixup I happened
+across when hacking around. I don't know that it currently associates to
+any related test failures. I just include it here for convenience.
 
-diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
-index 52995838f2de..be47a1d21889 100644
---- a/fs/nilfs2/segment.c
-+++ b/fs/nilfs2/segment.c
-@@ -2824,7 +2824,7 @@ int nilfs_attach_log_writer(struct super_block *sb, struct nilfs_root *root)
- 	if (!nilfs->ns_writer)
- 		return -ENOMEM;
- 
--	inode_attach_wb(nilfs->ns_bdev->bd_inode, NULL);
-+	bdev_attach_wb(nilfs->ns_bdev);
- 
- 	err = nilfs_segctor_start_thread(nilfs->ns_writer);
- 	if (unlikely(err))
+Patch 2 of this series tweaks the fsync path to be a bit more deliberate
+/ less aggressive to help avoid spurious shutdowns. The reasoning behind
+this is that if fsync fails, the user can't be certain of the state of
+things on disk anyways. What I've observed with this patch is that it
+seems to prevent generic/484 failures (though not sure that is
+guaranteed) and based on the original thread, it can address generic/441
+when combined with an fstests tweak to allow the fs a bit of time to
+idle before transitioning to the dm error table..
+
+All in all, I still think this is a reasonable incremental improvement.
+I think the longer term fix here is more something like the ability to
+retry metadata I/O on failure such that we can be a little less
+sensitive to emergency shutdowns. I had managed to hack up a quick
+prototype of metadata I/O failure/retries a few weeks or so ago just to
+explore how difficult it might be, and it didn't seem that bad IIRC. The
+bigger question in my mind is how to deal with journal writes,
+particularly if journal I/O is any more frequent than the common
+filesystems fstests tends to accommodate (i.e. xfs, ext4, etc.). I
+suspect this is worth discussing further in an upcoming call..
+
+Also just as a data point, btrfs skips generic/441 in favor of its own
+custom variant in btrfs/146. That test runs the same fsync tool, but it
+looks like it sets up a combination of data striping (raid0) and
+metadata replication on the fs presumably to facilitate data I/O errors
+on single disk errors without triggering high level metadata errors.
+This might be another option worth considering for bcachefs if we can do
+something similar...
+
+Thoughts, reviews, flames appreciated.
+
+Brian
+
+[1] https://lore.kernel.org/linux-bcachefs/Y+EduoshRHXec+XU@bfoster/
+
+Brian Foster (2):
+  bcachefs: don't attempt rw on unfreeze when shutdown
+  bcachefs: return from fsync on writeback error to avoid early shutdown
+
+ fs/bcachefs/fs-io.c | 14 +++++++++-----
+ fs/bcachefs/fs.c    |  3 +++
+ 2 files changed, 12 insertions(+), 5 deletions(-)
+
 -- 
-2.39.2
+2.42.0
 
