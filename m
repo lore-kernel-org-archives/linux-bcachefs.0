@@ -1,97 +1,73 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Vo2zXoUD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2562C129
-	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Dec 2023 06:53:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701788024;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sg5ZUx+fcDNL8/koH5e+xD4Rd0Z2ue5Z8G6f5hh22Xk=;
-	b=Vo2zXoUDkOf5c4s6QJtbT5EANpRD94wUG5grpvGCLzHktiO8G6coyAEoRJkTkm5WKEe9HC
-	LrhHqcLKO11hATbT+dZH3Ys6js8hG4XSHbYxFeT70AVAdRcVZ53IqOsRWAShkUU+L5m7BS
-	MjU3HjZKa2AOKc9LWJAQi7y080ffe70=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-323-kLbUmprFNU2IzzY-5DEwaQ-1; Tue, 05 Dec 2023 09:53:41 -0500
-X-MC-Unique: kLbUmprFNU2IzzY-5DEwaQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BFB1B8370F1;
-	Tue,  5 Dec 2023 14:53:40 +0000 (UTC)
-Received: from bfoster (unknown [10.22.32.38])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B0B4492BE6;
-	Tue,  5 Dec 2023 14:53:40 +0000 (UTC)
-Date: Tue, 5 Dec 2023 09:54:36 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Steve Smith <tarkasteve@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [bug]: fiemap returns zero extents for all files
-Message-ID: <ZW85rKUfEXeaWqsL@bfoster>
-References: <CAHLWS5EiGVn_-BFm2X1PKZ2m0EJq6VjckLdOuVqL2zWibxYUqA@mail.gmail.com>
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBD9A1;
+	Tue,  5 Dec 2023 09:03:55 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-58ceab7daddso2484286eaf.3;
+        Tue, 05 Dec 2023 09:03:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701795835; x=1702400635;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Kxt6CKccKyM2aD5KqaYbJ+5NRAtsSu20TdTe87tfro=;
+        b=gC36X4NARMJFnoLUNZ6eIGcjEc1l5871SjthUiIspKmoaHf1kKjnlSO/V046uFgT2E
+         ANpe+rE5YEEqD2ycQzEEJ2mRgqdkimd665BviZzZGLt00siu1fKb6fMq6SofmFtGR9Px
+         /zZsUIDflXJhqBv7j8JhsaId5oPThrEeECQf5cm+TU/s04ZWVnfKzi3t9ivWG7FV5IV7
+         HAKl0s0DEmaS9cO/6BzT6PWwXhne8jh6A1fDwzLnkdgkZjOzP56x2wDgqZCl+pc1x+lZ
+         w4m5sa7rw0F01s7QLkdN9wIPpD6NKIHh+cJB34LW3DHrhW2juZF4rQu33NAJsvjscxVW
+         LC8Q==
+X-Gm-Message-State: AOJu0YyRYu6XQo6MkLfAFga6iBIY3nm9gjjsFU1upk6OFnZLq5EGsGF2
+	MNkzx2aSUSOJ7Mqx2nFdsWg=
+X-Google-Smtp-Source: AGHT+IHREsBDTR/fguPuUAOPGrQJFqdX7+L934/9nqEfo9v3T6jgbM8x1qOuTAd7fOfx1S8tYfwMzA==
+X-Received: by 2002:a05:6358:6f95:b0:16e:43a1:6881 with SMTP id s21-20020a0563586f9500b0016e43a16881mr2252180rwn.26.1701795834695;
+        Tue, 05 Dec 2023 09:03:54 -0800 (PST)
+Received: from [172.20.2.177] (rrcs-173-197-90-226.west.biz.rr.com. [173.197.90.226])
+        by smtp.gmail.com with ESMTPSA id s25-20020a639259000000b00578afd8e012sm5146562pgn.92.2023.12.05.09.03.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 09:03:54 -0800 (PST)
+Message-ID: <189fa9b2-bcc8-4839-ac04-33a29bba9aaa@acm.org>
+Date: Tue, 5 Dec 2023 09:03:48 -0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHLWS5EiGVn_-BFm2X1PKZ2m0EJq6VjckLdOuVqL2zWibxYUqA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
+Content-Language: en-US
+To: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk, roger.pau@citrix.com,
+ colyli@suse.de, kent.overstreet@gmail.com, joern@lazybastard.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+ gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+ martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+ dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+ konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
+ hare@suse.de, p.raghav@samsung.com
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+ linux-nilfs@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com,
+ yangerkun@huawei.com
+References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+ <20231205123728.1866699-2-yukuai1@huaweicloud.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20231205123728.1866699-2-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 05, 2023 at 04:26:40PM +1100, Steve Smith wrote:
-> Hi,
-> 
-> I'm doing some testing of xcp[1] against bcachefs, and having issues
-> with fiemap. Using fiemap on both sparse and non-sparse files always
-> returns `mapped_extents` of 0. The same tests on other extent-based
-> FSs return non-zero extents, with consistent values. This is against
-> -rc4 and master.
-> 
-> I've broken the relevant tests (in Rust) out into a standalone crate
-> if you want to reproduce:
-> 
->     https://github.com/tarka/bcachefs-test
-> 
-> The FS in question was created with a simple `bcachefs -L xcp-test /dev/sdh1`.
-> 
+On 12/5/23 04:37, Yu Kuai wrote:
+> +static inline u8 block_bits(struct block_device *bdev)
+> +{
+> +	return bdev->bd_inode->i_blkbits;
+> +}
 
-Hi Steve,
+This function needs a name that's more descriptive.
 
-Well I'm not really familiar with xcp or your test harness here, but
-have you checked the results you're seeing against known working tools?
-For example, one of the subtests just seems to perform a simple write
-followed by an fiemap check/assert for a single extent. That is roughly
-equivalent to:
+Thanks,
 
-# xfs_io -fc "pwrite 0 128k" -c "fiemap -v" ./file
-wrote 131072/131072 bytes at offset 0
-128 KiB, 32 ops; 0.0011 sec (108.790 MiB/sec and 27850.3046 ops/sec)
-./file:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..127]:        339968..340095     128   0x0
-   1: [128..255]:      340096..340223     128   0x1
-
-... which mostly seems to DTRT. I have noticed in the past that bcachefs
-fiemap seems to break extents into bucket size or some such segments,
-regardless of contiguity, but this doesn't seem to be the issue you are
-reporting here. I.e. an strace of the above shows the following for the
-fiemap ioctl():
-
-ioctl(3, FS_IOC_FIEMAP, {fm_start=0, fm_length=18446744073709551615, fm_flags=FIEMAP_FLAG_SYNC, fm_extent_count=32} => {fm_flags=FIEMAP_FLAG_SYNC, fm_mapped_extents=2, ...}) = 0
-
-... which shows fm_mapped_extents == 2. Hm?
-
-Brian
-
-> Cheers,
-> Steve
-> 
-> [1]: https://github.com/tarka/xcp
-> 
-
+Bart.
