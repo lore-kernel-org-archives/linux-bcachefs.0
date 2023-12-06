@@ -1,150 +1,115 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jHE3IW8z"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E2F135
-	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Dec 2023 11:00:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701889227;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M+s0wIND"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [IPv6:2001:41d0:203:375::b8])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890EB8F
+	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Dec 2023 12:33:22 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701894800;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5ASA2WfCNw2DykBTCR15qulVl2D/3MPpvBvcFDtuDzI=;
-	b=jHE3IW8zTRKs1VzJIrPKfwgONV5wjQOHM04RqZMMnk4+95mRqsCO4tx09xxd9tOWpXaF49
-	hqwy2FRnfhtuiYYVWJFstlhTTwC8ljn0CVVCqqbAkrrQiopHYpE/EK0dJCLjRa4TJ3dsj/
-	H4aC9l64mETnbmdYp+p1Ar2rMIv6kDo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-173-JrHkKAzCMTqLdAP0sc69pw-1; Wed, 06 Dec 2023 14:00:24 -0500
-X-MC-Unique: JrHkKAzCMTqLdAP0sc69pw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 24B6F870821;
-	Wed,  6 Dec 2023 19:00:07 +0000 (UTC)
-Received: from bfoster (unknown [10.22.32.38])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id F1645111E400;
-	Wed,  6 Dec 2023 19:00:06 +0000 (UTC)
-Date: Wed, 6 Dec 2023 14:01:02 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Steve Smith <tarkasteve@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [bug]: fiemap returns zero extents for all files
-Message-ID: <ZXDE7gn7xw5Hsli+@bfoster>
-References: <CAHLWS5EiGVn_-BFm2X1PKZ2m0EJq6VjckLdOuVqL2zWibxYUqA@mail.gmail.com>
- <ZW85rKUfEXeaWqsL@bfoster>
- <CAHLWS5GOqsSZH5rZ4yobzUH+RbhznoQW0z1E_T=rTTJAXqXVTw@mail.gmail.com>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=AH+5UqcUTENRSdtd2h2p+NMPQ5eQ1y6bqzLI6h8XRuA=;
+	b=M+s0wINDzXC6QDelqA+dPcy6ZDGpkgqCwLQUfGJhu0OmAB0FqeCBdC1K5TDglzYpbNfpGW
+	pkjAlzo+OkgsxyaaUJepgpFR1PQxzuPSwUVw/m0WH7v2C5xyf7lLVUZp5X8MQqyvLFQwgt
+	dPJwbMbSoXS5ZaBp5/ptcz+FbdFuPzI=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	djwong@kernel.org
+Subject: [PATCH 0/6] [RFC WIP] bcachefs: online fsck
+Date: Wed,  6 Dec 2023 15:33:04 -0500
+Message-ID: <20231206203313.2197302-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHLWS5GOqsSZH5rZ4yobzUH+RbhznoQW0z1E_T=rTTJAXqXVTw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Dec 06, 2023 at 10:26:14AM +1100, Steve Smith wrote:
-> Hi Brian,
-> 
-> Thanks for the suggestion. Yes, the ioctl call that xfs_io makes is
-> basically identical to the one the test makes, except it has the SYNC
-> flag set. Adding this flag (or calling fsync) results in expected
-> behaviour (mapped_extents > 0).
-> 
+Spent a couple days hacking code with Darrick, and online fsck seems to
+be coming _way_ sooner than I expected/realized - various threads coming
+together nicely.
 
-Ah..
+What works - most of checking alloc info:
 
-> I assume that the bcachefs fiemap impl ignores unwritten data and only
-> responds with flushed extents? I'm not sure if this is correct; for
-> comparison, XFS, Btfs, zfs, and ext4, all return the extent map
-> immediately after write without syncing.
-> 
+All but the original btree_gc.c code already runs while we're RW, and
+various internal processes are actively modifying the filesystem:
+copygc, rebalance, the do_discard worker. This means that in particular
+the check alloc info passes are already well tested in RW mode with
+active use.
 
-Ok, thanks for digging into the difference. I can reproduce what you
-observe by just removing the sync flag from the xfs_io command.
+There's one known concurrency bug in that part of fsck, which is that we
+process gaps in the alloc btree all at once, which is incorrect since we
+don't have any way of taking range locks on the key cache, but that bug
+doesn't affect online fsck any more than regular fsck.
 
-I know that XFS basically looks up extents in the in-core extent tree,
-which will include things like delayed allocation (i.e. buffered writes
-that have not yet been physically allocated and flushed to disk). It
-looks like bcachefs fiemap just walks the extents btree for associated
-inode keys. I suspect the buffered write path is just not updating the
-tree in any way, which means fiemap won't see extents until dirty data
-is flushed out. FWIW, this can also be observed by doing buffered
-overwrites and observing that the underlying block range does not change
-until the file data is flushed.
+Still debating how to fix that one, just dropping the "process a gap all
+at once" and going back to key-by-key is a serious regression on mkfs
+performance on huge filesystems, and fsck performance when the fs is
+still mostly empty.
 
-I'll have to read through the buffered write path to grok it more
-clearly and maybe think about if/how this could be improved. For the
-time being I'd suggest to consider bcachefs fiemap without
-FIEMAP_FLAG_SYNC as unsupported if you expect to see most recent inode
-state. The most obvious solution may very well be to flush
-unconditionally anyways. Thanks for reporting this behavior.
+Todo: btree_gc.c
 
-Brian
+The old btree_gc code used to run while the fs was in use and RW (before
+bcachefs was a fs); it was well tested and relied upon then, but the
+traversal order meant that it had to block btree topology changes,
+effectively any interior btree node update. As filesystems keep getting
+bigger that is definitely no longer feasible, so that code will all need
+to be reworked and modernized (and possibly split into multiple passes,
+i.e. splitting out checking of indirect extent refcounts).
 
-> You're right that bcachefs seems to split extents that would be
-> contiguous on some other FSs, but that's fine here.
-> 
-> Thanks,
-> Steve
-> 
-> 
-> 
-> On Wed, 6 Dec 2023 at 01:53, Brian Foster <bfoster@redhat.com> wrote:
-> >
-> > On Tue, Dec 05, 2023 at 04:26:40PM +1100, Steve Smith wrote:
-> > > Hi,
-> > >
-> > > I'm doing some testing of xcp[1] against bcachefs, and having issues
-> > > with fiemap. Using fiemap on both sparse and non-sparse files always
-> > > returns `mapped_extents` of 0. The same tests on other extent-based
-> > > FSs return non-zero extents, with consistent values. This is against
-> > > -rc4 and master.
-> > >
-> > > I've broken the relevant tests (in Rust) out into a standalone crate
-> > > if you want to reproduce:
-> > >
-> > >     https://github.com/tarka/bcachefs-test
-> > >
-> > > The FS in question was created with a simple `bcachefs -L xcp-test /dev/sdh1`.
-> > >
-> >
-> > Hi Steve,
-> >
-> > Well I'm not really familiar with xcp or your test harness here, but
-> > have you checked the results you're seeing against known working tools?
-> > For example, one of the subtests just seems to perform a simple write
-> > followed by an fiemap check/assert for a single extent. That is roughly
-> > equivalent to:
-> >
-> > # xfs_io -fc "pwrite 0 128k" -c "fiemap -v" ./file
-> > wrote 131072/131072 bytes at offset 0
-> > 128 KiB, 32 ops; 0.0011 sec (108.790 MiB/sec and 27850.3046 ops/sec)
-> > ./file:
-> >  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-> >    0: [0..127]:        339968..340095     128   0x0
-> >    1: [128..255]:      340096..340223     128   0x1
-> >
-> > ... which mostly seems to DTRT. I have noticed in the past that bcachefs
-> > fiemap seems to break extents into bucket size or some such segments,
-> > regardless of contiguity, but this doesn't seem to be the issue you are
-> > reporting here. I.e. an strace of the above shows the following for the
-> > fiemap ioctl():
-> >
-> > ioctl(3, FS_IOC_FIEMAP, {fm_start=0, fm_length=18446744073709551615, fm_flags=FIEMAP_FLAG_SYNC, fm_extent_count=32} => {fm_flags=FIEMAP_FLAG_SYNC, fm_mapped_extents=2, ...}) = 0
-> >
-> > ... which shows fm_mapped_extents == 2. Hm?
-> >
-> > Brian
-> >
-> > > Cheers,
-> > > Steve
-> > >
-> > > [1]: https://github.com/tarka/xcp
-> > >
-> >
-> 
+Todo: fsck.c
+
+The passes that check filesystem-level structure were written assuming
+the filesystem was not in use and being modified; they use the normal
+btree transaction API that handles locking w.r.t. other transactions,
+but not "correctly"; they do things like build up state (walking a btree
+path, tracking where extents end in different snapshots), but the btree
+transactions (trans_begin() -> trans_commit()) are smaller than they
+should be to protect that state as they're walking things.
+
+The main reason for this is that currently, there's a fixed limit on the
+number of btree_paths (it's a fixed array) in the btree_trans object -
+64. I've started looking at lifting that limit and making the array of
+paths dynamically growable, and I think that's going to be the way to go
+- the alternative would be introducing extra outside locking to all the
+filesystem paths that touch that stuff, and we don't want to do that.
+
+Fortunately other developments have happened that make growing the max
+btree_paths look a lot more reasonable than when last I was considering
+it, and fsck should be a good place for testing that out and seeing what
+growing pains we encounter.
+
+other misc todo:
+ - the thread_with_file stuff can probably use further cleanup and
+   refactoring; also the f_ops we implement needs a .poll() so userspace
+   doesn't spin when using O_NONBLOCK
+
+ - ???
+
+ - profit!
+
+Kent Overstreet (6):
+  bcachefs: thread_with_file
+  bcachefs: Add ability to redirect log output
+  bcachefs: Mark recovery passses that are safe to run online
+  bcachefs: bch2_run_online_recovery_passes()
+  bcachefs: BCH_IOCTL_FSCK_OFFLINE
+  bcachefs: BCH_IOCTL_FSCK_ONLINE
+
+ fs/bcachefs/bcachefs.h       |  61 ++++--
+ fs/bcachefs/bcachefs_ioctl.h |  24 +++
+ fs/bcachefs/chardev.c        | 376 ++++++++++++++++++++++++++++++-----
+ fs/bcachefs/opts.h           |   5 +
+ fs/bcachefs/recovery.c       |  51 +++--
+ fs/bcachefs/recovery.h       |   1 +
+ fs/bcachefs/recovery_types.h |  73 +++----
+ fs/bcachefs/super.c          |  28 +++
+ 8 files changed, 506 insertions(+), 113 deletions(-)
+
+-- 
+2.42.0
 
