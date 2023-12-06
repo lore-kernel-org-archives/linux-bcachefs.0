@@ -1,49 +1,40 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jhEd/dyd"
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA2FD44;
-	Wed,  6 Dec 2023 09:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Snap78XnwhxghrXH/x5DQQflOIE581aXjQMNJjr942g=; b=jhEd/dydrVcA4CqjenXKvBzOhR
-	81C86OaTSZvOMqak9GSj26Gk4YbmuiZYqP7Inoay495Qv5aZdhoCk8XtjbZygZ3zFO1MW8qKrFi2H
-	jyJUerjxpHvoYivz2Tw0Fom0GZl5ibZD6cI47f6RLNKkoLSSNt8ndPXabCTs9v50CaHUmh6n8EwdV
-	h3a11wO9KMQTDIeK5z9Ompws1FrJbStRk/+i8NoSwEjnMVM2d8/eYZK+A65e+FB9FyAW6cFULMbV3
-	D4ZCe0VCUv3C54OOIhpqqs0icRWLiCRtInXdBESqtPRpMCqUFSNmSUQ2owjCoBA1ulhjzpRpsIDuc
-	qR59KN6w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAw9b-00AzA5-00;
-	Wed, 06 Dec 2023 17:57:47 +0000
-Date: Wed, 6 Dec 2023 09:57:46 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
-	roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
-	joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
-	vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
-	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-	jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
-	josef@toxicpanda.com, dsterba@suse.com, nico@fluxnic.net,
-	xiang@kernel.org, chao@kernel.org, adilger.kernel@dilger.ca,
-	agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-	p.raghav@samsung.com, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
-Message-ID: <ZXC2Gg7NPWu9MULx@infradead.org>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
- <20231205123728.1866699-2-yukuai1@huaweicloud.com>
- <ZXARKD0OmjLrvHmU@infradead.org>
- <20231206175038.GJ509422@mit.edu>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jHE3IW8z"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E2F135
+	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Dec 2023 11:00:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1701889227;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5ASA2WfCNw2DykBTCR15qulVl2D/3MPpvBvcFDtuDzI=;
+	b=jHE3IW8zTRKs1VzJIrPKfwgONV5wjQOHM04RqZMMnk4+95mRqsCO4tx09xxd9tOWpXaF49
+	hqwy2FRnfhtuiYYVWJFstlhTTwC8ljn0CVVCqqbAkrrQiopHYpE/EK0dJCLjRa4TJ3dsj/
+	H4aC9l64mETnbmdYp+p1Ar2rMIv6kDo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-173-JrHkKAzCMTqLdAP0sc69pw-1; Wed, 06 Dec 2023 14:00:24 -0500
+X-MC-Unique: JrHkKAzCMTqLdAP0sc69pw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 24B6F870821;
+	Wed,  6 Dec 2023 19:00:07 +0000 (UTC)
+Received: from bfoster (unknown [10.22.32.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id F1645111E400;
+	Wed,  6 Dec 2023 19:00:06 +0000 (UTC)
+Date: Wed, 6 Dec 2023 14:01:02 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Steve Smith <tarkasteve@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [bug]: fiemap returns zero extents for all files
+Message-ID: <ZXDE7gn7xw5Hsli+@bfoster>
+References: <CAHLWS5EiGVn_-BFm2X1PKZ2m0EJq6VjckLdOuVqL2zWibxYUqA@mail.gmail.com>
+ <ZW85rKUfEXeaWqsL@bfoster>
+ <CAHLWS5GOqsSZH5rZ4yobzUH+RbhznoQW0z1E_T=rTTJAXqXVTw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -52,22 +43,108 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231206175038.GJ509422@mit.edu>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAHLWS5GOqsSZH5rZ4yobzUH+RbhznoQW0z1E_T=rTTJAXqXVTw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Wed, Dec 06, 2023 at 12:50:38PM -0500, Theodore Ts'o wrote:
-> This was added because pulling a mounted a USB thumb drive (or a HDD
-> drops off the SATA bus) while the file system is mounted and actively
-> in use, would result in a kernel OOPS.  If that's no longer true,
-> that's great, but it would be good to test to make sure this is the
-> case....
+On Wed, Dec 06, 2023 at 10:26:14AM +1100, Steve Smith wrote:
+> Hi Brian,
+> 
+> Thanks for the suggestion. Yes, the ioctl call that xfs_io makes is
+> basically identical to the one the test makes, except it has the SYNC
+> flag set. Adding this flag (or calling fsync) results in expected
+> behaviour (mapped_extents > 0).
+> 
 
-And, surprise, surprise - that didn't just affect ext4.  So I ended
-up fixing this properly in the block layer.
+Ah..
 
-> If we really want to remove it, I'd suggest doing this as a separate
-> commit, so that after we see syzbot reports, or users complaining
-> about kernel crashes, we can revert the removal if necessary.
+> I assume that the bcachefs fiemap impl ignores unwritten data and only
+> responds with flushed extents? I'm not sure if this is correct; for
+> comparison, XFS, Btfs, zfs, and ext4, all return the extent map
+> immediately after write without syncing.
+> 
 
-Yes, this should of course be separate, well documented commit.
+Ok, thanks for digging into the difference. I can reproduce what you
+observe by just removing the sync flag from the xfs_io command.
+
+I know that XFS basically looks up extents in the in-core extent tree,
+which will include things like delayed allocation (i.e. buffered writes
+that have not yet been physically allocated and flushed to disk). It
+looks like bcachefs fiemap just walks the extents btree for associated
+inode keys. I suspect the buffered write path is just not updating the
+tree in any way, which means fiemap won't see extents until dirty data
+is flushed out. FWIW, this can also be observed by doing buffered
+overwrites and observing that the underlying block range does not change
+until the file data is flushed.
+
+I'll have to read through the buffered write path to grok it more
+clearly and maybe think about if/how this could be improved. For the
+time being I'd suggest to consider bcachefs fiemap without
+FIEMAP_FLAG_SYNC as unsupported if you expect to see most recent inode
+state. The most obvious solution may very well be to flush
+unconditionally anyways. Thanks for reporting this behavior.
+
+Brian
+
+> You're right that bcachefs seems to split extents that would be
+> contiguous on some other FSs, but that's fine here.
+> 
+> Thanks,
+> Steve
+> 
+> 
+> 
+> On Wed, 6 Dec 2023 at 01:53, Brian Foster <bfoster@redhat.com> wrote:
+> >
+> > On Tue, Dec 05, 2023 at 04:26:40PM +1100, Steve Smith wrote:
+> > > Hi,
+> > >
+> > > I'm doing some testing of xcp[1] against bcachefs, and having issues
+> > > with fiemap. Using fiemap on both sparse and non-sparse files always
+> > > returns `mapped_extents` of 0. The same tests on other extent-based
+> > > FSs return non-zero extents, with consistent values. This is against
+> > > -rc4 and master.
+> > >
+> > > I've broken the relevant tests (in Rust) out into a standalone crate
+> > > if you want to reproduce:
+> > >
+> > >     https://github.com/tarka/bcachefs-test
+> > >
+> > > The FS in question was created with a simple `bcachefs -L xcp-test /dev/sdh1`.
+> > >
+> >
+> > Hi Steve,
+> >
+> > Well I'm not really familiar with xcp or your test harness here, but
+> > have you checked the results you're seeing against known working tools?
+> > For example, one of the subtests just seems to perform a simple write
+> > followed by an fiemap check/assert for a single extent. That is roughly
+> > equivalent to:
+> >
+> > # xfs_io -fc "pwrite 0 128k" -c "fiemap -v" ./file
+> > wrote 131072/131072 bytes at offset 0
+> > 128 KiB, 32 ops; 0.0011 sec (108.790 MiB/sec and 27850.3046 ops/sec)
+> > ./file:
+> >  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+> >    0: [0..127]:        339968..340095     128   0x0
+> >    1: [128..255]:      340096..340223     128   0x1
+> >
+> > ... which mostly seems to DTRT. I have noticed in the past that bcachefs
+> > fiemap seems to break extents into bucket size or some such segments,
+> > regardless of contiguity, but this doesn't seem to be the issue you are
+> > reporting here. I.e. an strace of the above shows the following for the
+> > fiemap ioctl():
+> >
+> > ioctl(3, FS_IOC_FIEMAP, {fm_start=0, fm_length=18446744073709551615, fm_flags=FIEMAP_FLAG_SYNC, fm_extent_count=32} => {fm_flags=FIEMAP_FLAG_SYNC, fm_mapped_extents=2, ...}) = 0
+> >
+> > ... which shows fm_mapped_extents == 2. Hm?
+> >
+> > Brian
+> >
+> > > Cheers,
+> > > Steve
+> > >
+> > > [1]: https://github.com/tarka/xcp
+> > >
+> >
+> 
 
