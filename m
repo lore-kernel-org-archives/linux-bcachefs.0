@@ -1,26 +1,26 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IMATcDYk"
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [IPv6:2001:41d0:203:375::bd])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56543135
-	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Dec 2023 12:33:24 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KLDlFEbK"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2A81A5
+	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Dec 2023 12:33:25 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701894802;
+	t=1701894803;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=J/j5sdkX1hVsN6Xpgh3ipv13xQH+/fCrafOYV9u1Ads=;
-	b=IMATcDYk8uBNMIUxXiuNGg+XlkNOp4ac9mMQOvh6CjSwFX4pyNteKnbv/AGFXXY1jwGqUr
-	xq5HLTJ/9kfrerS4gB2bb3hcbLnuFA7SfQZDKM8WIjVeut1rKbpUoRiheqqNc21sJMJGyc
-	gL+K+kvgmB+2g+vAMvC6P31kK5thzmo=
+	bh=v6Z+qtf0J2K+kcTmOmCa+fyqiJE8yrtEIXb+xXYGI1Q=;
+	b=KLDlFEbKuKwm3bU9KB2AuhrcYWSqOPOq08ALvOuC1xHkhVQK+vgpLuRAoEWQJirSLqwpML
+	LvDRILcRxSwyLlzy+8cM2tlzBxT+pU04sJMMF0Fh8XNWDgOpy1fSicifVzLf5q173R4zQl
+	HlcZrUoErZRHVGEDBNDKeB2eq3tT3rU=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
 	djwong@kernel.org
-Subject: [PATCH 3/6] bcachefs: Mark recovery passses that are safe to run online
-Date: Wed,  6 Dec 2023 15:33:07 -0500
-Message-ID: <20231206203313.2197302-4-kent.overstreet@linux.dev>
+Subject: [PATCH 4/6] bcachefs: bch2_run_online_recovery_passes()
+Date: Wed,  6 Dec 2023 15:33:08 -0500
+Message-ID: <20231206203313.2197302-5-kent.overstreet@linux.dev>
 In-Reply-To: <20231206203313.2197302-1-kent.overstreet@linux.dev>
 References: <20231206203313.2197302-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -32,99 +32,133 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Online fsck is coming, and many of our recovery/fsck passes are already
-safe to run while the filesystem is in use - mark which ones.
+Add a new helper for running online recovery passes - i.e. online fsck.
+This is a subset of our normal recovery passes, and does not - for now -
+use or follow c->curr_recovery_pass.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/recovery_types.h | 73 ++++++++++++++++++------------------
- 1 file changed, 37 insertions(+), 36 deletions(-)
+ fs/bcachefs/bcachefs.h |  7 ++++++
+ fs/bcachefs/recovery.c | 51 ++++++++++++++++++++++++++++--------------
+ fs/bcachefs/recovery.h |  1 +
+ 3 files changed, 42 insertions(+), 17 deletions(-)
 
-diff --git a/fs/bcachefs/recovery_types.h b/fs/bcachefs/recovery_types.h
-index 515e3d62c2ac..3af29a2762c6 100644
---- a/fs/bcachefs/recovery_types.h
-+++ b/fs/bcachefs/recovery_types.h
-@@ -6,43 +6,44 @@
- #define PASS_FSCK		BIT(1)
- #define PASS_UNCLEAN		BIT(2)
- #define PASS_ALWAYS		BIT(3)
-+#define PASS_ONLINE		BIT(4)
+diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
+index 4689a6d6233b..83ef5d29c226 100644
+--- a/fs/bcachefs/bcachefs.h
++++ b/fs/bcachefs/bcachefs.h
+@@ -1038,6 +1038,13 @@ struct bch_fs {
+ 	/* RECOVERY */
+ 	u64			journal_replay_seq_start;
+ 	u64			journal_replay_seq_end;
++	/*
++	 * Two different uses:
++	 * "Has this fsck pass?" - i.e. should this type of error be an
++	 * emergency read-only
++	 * And, in certain situations fsck will rewind to an earlier pass: used
++	 * for signaling to the toplevel code which pass we want to run now.
++	 */
+ 	enum bch_recovery_pass	curr_recovery_pass;
+ 	/* bitmap of explicitly enabled recovery passes: */
+ 	u64			recovery_passes_explicit;
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index 585b4928964f..262c923b2f1a 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -634,7 +634,7 @@ u64 bch2_fsck_recovery_passes(void)
  
--#define BCH_RECOVERY_PASSES()									\
--	x(alloc_read,			PASS_ALWAYS)						\
--	x(stripes_read,			PASS_ALWAYS)						\
--	x(initialize_subvolumes,	0)							\
--	x(snapshots_read,		PASS_ALWAYS)						\
--	x(check_topology,		0)							\
--	x(check_allocations,		PASS_FSCK)						\
--	x(trans_mark_dev_sbs,		PASS_ALWAYS|PASS_SILENT)				\
--	x(fs_journal_alloc,		PASS_ALWAYS|PASS_SILENT)				\
--	x(set_may_go_rw,		PASS_ALWAYS|PASS_SILENT)				\
--	x(journal_replay,		PASS_ALWAYS)						\
--	x(check_alloc_info,		PASS_FSCK)						\
--	x(check_lrus,			PASS_FSCK)						\
--	x(check_btree_backpointers,	PASS_FSCK)						\
--	x(check_backpointers_to_extents,PASS_FSCK)						\
--	x(check_extents_to_backpointers,PASS_FSCK)						\
--	x(check_alloc_to_lru_refs,	PASS_FSCK)						\
--	x(fs_freespace_init,		PASS_ALWAYS|PASS_SILENT)				\
--	x(bucket_gens_init,		0)							\
--	x(check_snapshot_trees,		PASS_FSCK)						\
--	x(check_snapshots,		PASS_FSCK)						\
--	x(check_subvols,		PASS_FSCK)						\
--	x(delete_dead_snapshots,	PASS_FSCK)						\
--	x(fs_upgrade_for_subvolumes,	0)							\
--	x(resume_logged_ops,		PASS_ALWAYS)						\
--	x(check_inodes,			PASS_FSCK)						\
--	x(check_extents,		PASS_FSCK)						\
--	x(check_indirect_extents,	PASS_FSCK)						\
--	x(check_dirents,		PASS_FSCK)						\
--	x(check_xattrs,			PASS_FSCK)						\
--	x(check_root,			PASS_FSCK)						\
--	x(check_directory_structure,	PASS_FSCK)						\
--	x(check_nlinks,			PASS_FSCK)						\
--	x(delete_dead_inodes,		PASS_FSCK|PASS_UNCLEAN)					\
--	x(fix_reflink_p,		0)							\
--	x(set_fs_needs_rebalance,	0)							\
-+#define BCH_RECOVERY_PASSES()							\
-+	x(alloc_read,				PASS_ALWAYS)			\
-+	x(stripes_read,				PASS_ALWAYS)			\
-+	x(initialize_subvolumes,		0)				\
-+	x(snapshots_read,			PASS_ALWAYS)			\
-+	x(check_topology,			0)				\
-+	x(check_allocations,			PASS_FSCK)			\
-+	x(trans_mark_dev_sbs,			PASS_ALWAYS|PASS_SILENT)	\
-+	x(fs_journal_alloc,			PASS_ALWAYS|PASS_SILENT)	\
-+	x(set_may_go_rw,			PASS_ALWAYS|PASS_SILENT)	\
-+	x(journal_replay,			PASS_ALWAYS)			\
-+	x(check_alloc_info,			PASS_ONLINE|PASS_FSCK)		\
-+	x(check_lrus,				PASS_ONLINE|PASS_FSCK)		\
-+	x(check_btree_backpointers,		PASS_ONLINE|PASS_FSCK)		\
-+	x(check_backpointers_to_extents,	PASS_ONLINE|PASS_FSCK)		\
-+	x(check_extents_to_backpointers,	PASS_ONLINE|PASS_FSCK)		\
-+	x(check_alloc_to_lru_refs,		PASS_ONLINE|PASS_FSCK)		\
-+	x(fs_freespace_init,			PASS_ALWAYS|PASS_SILENT)	\
-+	x(bucket_gens_init,			0)				\
-+	x(check_snapshot_trees,			PASS_ONLINE|PASS_FSCK)		\
-+	x(check_snapshots,			PASS_ONLINE|PASS_FSCK)		\
-+	x(check_subvols,			PASS_ONLINE|PASS_FSCK)		\
-+	x(delete_dead_snapshots,		PASS_ONLINE|PASS_FSCK)		\
-+	x(fs_upgrade_for_subvolumes,		0)				\
-+	x(resume_logged_ops,			PASS_ALWAYS)			\
-+	x(check_inodes,				PASS_FSCK)			\
-+	x(check_extents,			PASS_FSCK)			\
-+	x(check_indirect_extents,		PASS_FSCK)			\
-+	x(check_dirents,			PASS_FSCK)			\
-+	x(check_xattrs,				PASS_FSCK)			\
-+	x(check_root,				PASS_FSCK)			\
-+	x(check_directory_structure,		PASS_FSCK)			\
-+	x(check_nlinks,				PASS_FSCK)			\
-+	x(delete_dead_inodes,			PASS_FSCK|PASS_UNCLEAN)		\
-+	x(fix_reflink_p,			0)				\
-+	x(set_fs_needs_rebalance,		0)				\
+ static bool should_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
+ {
+-	struct recovery_pass_fn *p = recovery_pass_fns + c->curr_recovery_pass;
++	struct recovery_pass_fn *p = recovery_pass_fns + pass;
  
- enum bch_recovery_pass {
- #define x(n, when)	BCH_RECOVERY_PASS_##n,
+ 	if (c->opts.norecovery && pass > BCH_RECOVERY_PASS_snapshots_read)
+ 		return false;
+@@ -651,39 +651,56 @@ static bool should_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pa
+ 
+ static int bch2_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
+ {
++	struct recovery_pass_fn *p = recovery_pass_fns + pass;
+ 	int ret;
+ 
+-	c->curr_recovery_pass = pass;
++	if (!(p->when & PASS_SILENT))
++		printk(KERN_INFO bch2_log_msg(c, "%s..."),
++		       bch2_recovery_passes[pass]);
++	ret = p->fn(c);
++	if (ret)
++		return ret;
++	if (!(p->when & PASS_SILENT))
++		printk(KERN_CONT " done\n");
+ 
+-	if (should_run_recovery_pass(c, pass)) {
+-		struct recovery_pass_fn *p = recovery_pass_fns + pass;
++	return 0;
++}
+ 
+-		if (!(p->when & PASS_SILENT))
+-			printk(KERN_INFO bch2_log_msg(c, "%s..."),
+-			       bch2_recovery_passes[pass]);
+-		ret = p->fn(c);
+-		if (ret)
+-			return ret;
+-		if (!(p->when & PASS_SILENT))
+-			printk(KERN_CONT " done\n");
++static int bch2_run_recovery_passes(struct bch_fs *c)
++{
++	int ret = 0;
+ 
+-		c->recovery_passes_complete |= BIT_ULL(pass);
++	while (c->curr_recovery_pass < ARRAY_SIZE(recovery_pass_fns)) {
++		if (should_run_recovery_pass(c, c->curr_recovery_pass)) {
++			ret = bch2_run_recovery_pass(c, c->curr_recovery_pass);
++			if (bch2_err_matches(ret, BCH_ERR_restart_recovery))
++				continue;
++			if (ret)
++				break;
++
++			c->recovery_passes_complete |= BIT_ULL(c->curr_recovery_pass);
++		}
++		c->curr_recovery_pass++;
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+-static int bch2_run_recovery_passes(struct bch_fs *c)
++int bch2_run_online_recovery_passes(struct bch_fs *c)
+ {
+ 	int ret = 0;
+ 
+-	while (c->curr_recovery_pass < ARRAY_SIZE(recovery_pass_fns)) {
++	for (unsigned i = 0; i < ARRAY_SIZE(recovery_pass_fns); i++) {
++		struct recovery_pass_fn *p = recovery_pass_fns + c->curr_recovery_pass;
++
++		if (!(p->when & PASS_ONLINE))
++			continue;
++
+ 		ret = bch2_run_recovery_pass(c, c->curr_recovery_pass);
+ 		if (bch2_err_matches(ret, BCH_ERR_restart_recovery))
+ 			continue;
+ 		if (ret)
+ 			break;
+-		c->curr_recovery_pass++;
+ 	}
+ 
+ 	return ret;
+diff --git a/fs/bcachefs/recovery.h b/fs/bcachefs/recovery.h
+index 852d30567da9..447590f60609 100644
+--- a/fs/bcachefs/recovery.h
++++ b/fs/bcachefs/recovery.h
+@@ -25,6 +25,7 @@ static inline int bch2_run_explicit_recovery_pass(struct bch_fs *c,
+ 	}
+ }
+ 
++int bch2_run_online_recovery_passes(struct bch_fs *);
+ u64 bch2_fsck_recovery_passes(void);
+ 
+ int bch2_fs_recovery(struct bch_fs *);
 -- 
 2.42.0
 
