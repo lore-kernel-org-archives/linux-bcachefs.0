@@ -1,26 +1,26 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KLDlFEbK"
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2A81A5
-	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Dec 2023 12:33:25 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C0WuD3GL"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [IPv6:2001:41d0:203:375::ba])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CB18F
+	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Dec 2023 12:33:26 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701894803;
+	t=1701894804;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v6Z+qtf0J2K+kcTmOmCa+fyqiJE8yrtEIXb+xXYGI1Q=;
-	b=KLDlFEbKuKwm3bU9KB2AuhrcYWSqOPOq08ALvOuC1xHkhVQK+vgpLuRAoEWQJirSLqwpML
-	LvDRILcRxSwyLlzy+8cM2tlzBxT+pU04sJMMF0Fh8XNWDgOpy1fSicifVzLf5q173R4zQl
-	HlcZrUoErZRHVGEDBNDKeB2eq3tT3rU=
+	bh=AKYKyQS+swCYRPoEhHHstTPz9C3lBo78d482K5huzFo=;
+	b=C0WuD3GLBKHdHBSqln1jv1ifU0ZFBSSqYzWLf0TecK0VrRZP+JQ54jcFcG9pUD1mt5mJfP
+	3VsADmCAGfk0oRoTKqnom2QQ2hCZmOQ3cBKG0iJxKXjldGOi6nTLxpSXUgqwIhgwJZIukE
+	2fw0lufmDFc/0wbWeQHE7YFGwVfJE0o=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
 	djwong@kernel.org
-Subject: [PATCH 4/6] bcachefs: bch2_run_online_recovery_passes()
-Date: Wed,  6 Dec 2023 15:33:08 -0500
-Message-ID: <20231206203313.2197302-5-kent.overstreet@linux.dev>
+Subject: [PATCH 6/6] bcachefs: BCH_IOCTL_FSCK_ONLINE
+Date: Wed,  6 Dec 2023 15:33:10 -0500
+Message-ID: <20231206203313.2197302-7-kent.overstreet@linux.dev>
 In-Reply-To: <20231206203313.2197302-1-kent.overstreet@linux.dev>
 References: <20231206203313.2197302-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -32,133 +32,132 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Add a new helper for running online recovery passes - i.e. online fsck.
-This is a subset of our normal recovery passes, and does not - for now -
-use or follow c->curr_recovery_pass.
-
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/bcachefs.h |  7 ++++++
- fs/bcachefs/recovery.c | 51 ++++++++++++++++++++++++++++--------------
- fs/bcachefs/recovery.h |  1 +
- 3 files changed, 42 insertions(+), 17 deletions(-)
+ fs/bcachefs/bcachefs_ioctl.h | 11 +++++++
+ fs/bcachefs/chardev.c        | 61 +++++++++++++++++++++++++++++++++++-
+ 2 files changed, 71 insertions(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index 4689a6d6233b..83ef5d29c226 100644
---- a/fs/bcachefs/bcachefs.h
-+++ b/fs/bcachefs/bcachefs.h
-@@ -1038,6 +1038,13 @@ struct bch_fs {
- 	/* RECOVERY */
- 	u64			journal_replay_seq_start;
- 	u64			journal_replay_seq_end;
-+	/*
-+	 * Two different uses:
-+	 * "Has this fsck pass?" - i.e. should this type of error be an
-+	 * emergency read-only
-+	 * And, in certain situations fsck will rewind to an earlier pass: used
-+	 * for signaling to the toplevel code which pass we want to run now.
-+	 */
- 	enum bch_recovery_pass	curr_recovery_pass;
- 	/* bitmap of explicitly enabled recovery passes: */
- 	u64			recovery_passes_explicit;
-diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-index 585b4928964f..262c923b2f1a 100644
---- a/fs/bcachefs/recovery.c
-+++ b/fs/bcachefs/recovery.c
-@@ -634,7 +634,7 @@ u64 bch2_fsck_recovery_passes(void)
+diff --git a/fs/bcachefs/bcachefs_ioctl.h b/fs/bcachefs/bcachefs_ioctl.h
+index 07c490851742..2ac6272c8ef5 100644
+--- a/fs/bcachefs/bcachefs_ioctl.h
++++ b/fs/bcachefs/bcachefs_ioctl.h
+@@ -85,6 +85,8 @@ struct bch_ioctl_incremental {
  
- static bool should_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
- {
--	struct recovery_pass_fn *p = recovery_pass_fns + c->curr_recovery_pass;
-+	struct recovery_pass_fn *p = recovery_pass_fns + pass;
+ #define BCH_IOCTL_FSCK_OFFLINE		_IOW(0xbc,	19,  struct bch_ioctl_fsck_offline)
  
- 	if (c->opts.norecovery && pass > BCH_RECOVERY_PASS_snapshots_read)
- 		return false;
-@@ -651,39 +651,56 @@ static bool should_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pa
++#define BCH_IOCTL_FSCK_ONLINE		_IOW(0xbc,	20,  struct bch_ioctl_fsck_online)
++
+ /* ioctl below act on a particular file, not the filesystem as a whole: */
  
- static int bch2_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
- {
-+	struct recovery_pass_fn *p = recovery_pass_fns + pass;
- 	int ret;
+ #define BCHFS_IOC_REINHERIT_ATTRS	_IOR(0xbc, 64, const char __user *)
+@@ -399,4 +401,13 @@ struct bch_ioctl_fsck_offline {
+ 	__u64			devs[0];
+ };
  
--	c->curr_recovery_pass = pass;
-+	if (!(p->when & PASS_SILENT))
-+		printk(KERN_INFO bch2_log_msg(c, "%s..."),
-+		       bch2_recovery_passes[pass]);
-+	ret = p->fn(c);
-+	if (ret)
-+		return ret;
-+	if (!(p->when & PASS_SILENT))
-+		printk(KERN_CONT " done\n");
++/*
++ * BCH_IOCTL_FSCK_ONLINE: run fsck from the 'bcachefs fsck' userspace command,
++ * but with the kernel's implementation of fsck:
++ */
++struct bch_ioctl_fsck_online {
++	__u64			flags;
++	__u64			opts;		/* string */
++};
++
+ #endif /* _BCACHEFS_IOCTL_H */
+diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
+index 03082a001036..c572f3b7aa1f 100644
+--- a/fs/bcachefs/chardev.c
++++ b/fs/bcachefs/chardev.c
+@@ -7,6 +7,7 @@
+ #include "chardev.h"
+ #include "journal.h"
+ #include "move.h"
++#include "recovery.h"
+ #include "replicas.h"
+ #include "super.h"
+ #include "super-io.h"
+@@ -199,6 +200,7 @@ static long bch2_ioctl_incremental(struct bch_ioctl_incremental __user *user_arg
+ struct fsck_thread {
+ 	struct thread_with_file	thr;
+ 	struct printbuf		buf;
++	struct bch_fs		*c;
+ 	char			**devs;
+ 	size_t			nr_devs;
+ 	struct bch_opts		opts;
+@@ -915,6 +917,62 @@ static long bch2_ioctl_disk_resize_journal(struct bch_fs *c,
+ 	return ret;
+ }
  
--	if (should_run_recovery_pass(c, pass)) {
--		struct recovery_pass_fn *p = recovery_pass_fns + pass;
++static int bch2_fsck_online_thread_fn(void *arg)
++{
++	struct fsck_thread *thr = container_of(arg, struct fsck_thread, thr);
++	struct bch_fs *c = thr->c;
++
++	c->output_filter = current;
++	c->output = &thr->output;
++
++	c->opts.fsck = true;
++	c->curr_recovery_pass = BCH_RECOVERY_PASS_check_alloc_info;
++	bch2_run_online_recovery_passes(c);
++
++	c->output = NULL;
++	c->output_filter = NULL;
++
++	thr->thr.done = true;
++	wake_up(&thr->output.wait);
 +	return 0;
 +}
- 
--		if (!(p->when & PASS_SILENT))
--			printk(KERN_INFO bch2_log_msg(c, "%s..."),
--			       bch2_recovery_passes[pass]);
--		ret = p->fn(c);
--		if (ret)
--			return ret;
--		if (!(p->when & PASS_SILENT))
--			printk(KERN_CONT " done\n");
-+static int bch2_run_recovery_passes(struct bch_fs *c)
++
++static long bch2_ioctl_fsck_online(struct bch_fs *c,
++				   struct bch_ioctl_fsck_online arg)
 +{
-+	int ret = 0;
- 
--		c->recovery_passes_complete |= BIT_ULL(pass);
-+	while (c->curr_recovery_pass < ARRAY_SIZE(recovery_pass_fns)) {
-+		if (should_run_recovery_pass(c, c->curr_recovery_pass)) {
-+			ret = bch2_run_recovery_pass(c, c->curr_recovery_pass);
-+			if (bch2_err_matches(ret, BCH_ERR_restart_recovery))
-+				continue;
-+			if (ret)
-+				break;
++	struct fsck_thread *thr = NULL;
++	long ret = 0;
 +
-+			c->recovery_passes_complete |= BIT_ULL(c->curr_recovery_pass);
-+		}
-+		c->curr_recovery_pass++;
- 	}
- 
--	return 0;
++	/* XXX what refcount are we taking on the filesystem? */
++
++	if (arg.flags)
++		return -EINVAL;
++
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
++	thr = kzalloc(sizeof(*thr), GFP_KERNEL);
++	if (!thr)
++		return -ENOMEM;
++
++	thr->c = c;
++	thr->output.buf	= PRINTBUF;
++	thr->output.buf.atomic++;
++	spin_lock_init(&thr->output.lock);
++	init_waitqueue_head(&thr->output.wait);
++	darray_init(&thr->output2);
++
++	ret = run_thread_with_file(&thr->thr,
++				   &fsck_thread_ops,
++				   bch2_fsck_online_thread_fn,
++				   "bch-fsck");
++	if (ret < 0) {
++		bch_err_fn(c, ret);
++		bch2_fsck_thread_free(thr);
++	}
 +	return ret;
- }
- 
--static int bch2_run_recovery_passes(struct bch_fs *c)
-+int bch2_run_online_recovery_passes(struct bch_fs *c)
- {
- 	int ret = 0;
- 
--	while (c->curr_recovery_pass < ARRAY_SIZE(recovery_pass_fns)) {
-+	for (unsigned i = 0; i < ARRAY_SIZE(recovery_pass_fns); i++) {
-+		struct recovery_pass_fn *p = recovery_pass_fns + c->curr_recovery_pass;
++}
 +
-+		if (!(p->when & PASS_ONLINE))
-+			continue;
-+
- 		ret = bch2_run_recovery_pass(c, c->curr_recovery_pass);
- 		if (bch2_err_matches(ret, BCH_ERR_restart_recovery))
- 			continue;
- 		if (ret)
- 			break;
--		c->curr_recovery_pass++;
+ #define BCH_IOCTL(_name, _argtype)					\
+ do {									\
+ 	_argtype i;							\
+@@ -970,7 +1028,8 @@ long bch2_fs_ioctl(struct bch_fs *c, unsigned cmd, void __user *arg)
+ 		BCH_IOCTL(disk_resize, struct bch_ioctl_disk_resize);
+ 	case BCH_IOCTL_DISK_RESIZE_JOURNAL:
+ 		BCH_IOCTL(disk_resize_journal, struct bch_ioctl_disk_resize_journal);
+-
++	case BCH_IOCTL_FSCK_ONLINE:
++		BCH_IOCTL(fsck_online, struct bch_ioctl_fsck_online);
+ 	default:
+ 		return -ENOTTY;
  	}
- 
- 	return ret;
-diff --git a/fs/bcachefs/recovery.h b/fs/bcachefs/recovery.h
-index 852d30567da9..447590f60609 100644
---- a/fs/bcachefs/recovery.h
-+++ b/fs/bcachefs/recovery.h
-@@ -25,6 +25,7 @@ static inline int bch2_run_explicit_recovery_pass(struct bch_fs *c,
- 	}
- }
- 
-+int bch2_run_online_recovery_passes(struct bch_fs *);
- u64 bch2_fsck_recovery_passes(void);
- 
- int bch2_fs_recovery(struct bch_fs *);
 -- 
 2.42.0
 
