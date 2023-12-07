@@ -1,51 +1,169 @@
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B91122;
-	Thu,  7 Dec 2023 04:44:29 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="J+g5oDVM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vVt9mI3o";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="J+g5oDVM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vVt9mI3o"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721E110F7;
+	Thu,  7 Dec 2023 06:33:52 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SmDVL0kpKz4xGR;
-	Thu,  7 Dec 2023 23:44:10 +1100 (AEDT)
-From: Michael Ellerman <patch-notifications@ellerman.id.au>
-To: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Guo Ren <guoren@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh Nguyen <dinguyen@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Geoff Levand <geoff@infradead.org>, Palmer Dabbelt <palmer@dabbelt.com>, Heiko Carstens <hca@linux.ibm.com>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molna
- r <mingo@redhat.com>, x86@kernel.org, Helge Deller <deller@gmx.de>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Timur Tabi <timur@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>, David Woodhouse <dwmw2@infradead.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, Kees Cook <keescook@chromium.org>, Vincenzo Frascino <vincenzo.frascino@arm.com>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, Al Viro <viro@zeniv.linux.org.uk>, Uwe Kleine-König <u.kleine-koenig@pengutronix.de>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kerne
- l.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, netdev@vger.kernel.org, linux-parisc@vger.kernel.org, linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org, linux-mtd@lists.infradead.org
-In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
-References: <20231108125843.3806765-1-arnd@kernel.org>
-Subject: Re: (subset) [PATCH 00/22] -Wmissing-prototype warning fixes
-Message-Id: <170195271155.2310221.7822619081586355844.b4-ty@ellerman.id.au>
-Date: Thu, 07 Dec 2023 23:38:31 +1100
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BA6651FB68;
+	Thu,  7 Dec 2023 14:33:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1701959630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cbIILpPU4O/CYPufSjDFVOBlCYtDBe0oPyyPwYROY+Y=;
+	b=J+g5oDVMHGtAEl6TLGLUDijX542rgs/u1O/sUgB1ynFgEEdqUzn1rN5bxGWeD+19uEhe8i
+	CXArRC2WppxAgQ8YocYbAvL3XcK4CfpVO5nCL2QIAKBANid8JHMaR7dVSGJPgWEm8panQr
+	x4b/D0JAXQQXTowet4W0itA1zXX/NgU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1701959630;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cbIILpPU4O/CYPufSjDFVOBlCYtDBe0oPyyPwYROY+Y=;
+	b=vVt9mI3o80FYF2dxYM/8KQ/Hc6xQvJNzBbWdaEqVDfqyq/bIqPzP4hPTKU5WwbMyJd9gh2
+	sqJ9jp38bk29R2DA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1701959630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cbIILpPU4O/CYPufSjDFVOBlCYtDBe0oPyyPwYROY+Y=;
+	b=J+g5oDVMHGtAEl6TLGLUDijX542rgs/u1O/sUgB1ynFgEEdqUzn1rN5bxGWeD+19uEhe8i
+	CXArRC2WppxAgQ8YocYbAvL3XcK4CfpVO5nCL2QIAKBANid8JHMaR7dVSGJPgWEm8panQr
+	x4b/D0JAXQQXTowet4W0itA1zXX/NgU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1701959630;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cbIILpPU4O/CYPufSjDFVOBlCYtDBe0oPyyPwYROY+Y=;
+	b=vVt9mI3o80FYF2dxYM/8KQ/Hc6xQvJNzBbWdaEqVDfqyq/bIqPzP4hPTKU5WwbMyJd9gh2
+	sqJ9jp38bk29R2DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9332113B6A;
+	Thu,  7 Dec 2023 14:33:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6eQuIc7XcWV0NwAAD6G6ig
+	(envelope-from <chrubis@suse.cz>); Thu, 07 Dec 2023 14:33:50 +0000
+Date: Thu, 7 Dec 2023 15:33:40 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, Li Wang <liwang@redhat.com>,
+	Richard Palethorpe <rpalethorpe@suse.com>,
+	Jan Stancek <jstancek@redhat.com>, Xiao Yang <yangx.jy@fujitsu.com>,
+	Yang Xu <xuyang2018.jy@fujitsu.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: Re: [PATCH 1/1] lib: Add support bcachefs filesystem
+Message-ID: <ZXHXxCRa31xO-Lo_@rei>
+References: <20231116135546.2599273-1-pvorel@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116135546.2599273-1-pvorel@suse.cz>
+X-Spam-Level: 
+X-Spam-Score: 0.40
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.80
+X-Spamd-Result: default: False [-0.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[36.00%]
+X-Spam-Flag: NO
 
-On Wed, 08 Nov 2023 13:58:21 +0100, Arnd Bergmann wrote:
-> I slightly dropped the ball on this since last sending the series in
-> August, but a number of warning fixes have made it into the kernel in
-> the meantime, both from my earlier submission and from architecture
-> maintainers.
+Hi!
+> bcachefs has been merged into v6.7-rc1 [1]. Let's add it's support to
+> LTP .all_filesystems = 1 and TST_ALL_FILESYSTEMS=1.
 > 
-> I have none patches that remain from the previous submission, with
-> two of them reworked according to comments. The additional patches
-> are from more testing across architectures and configurations that
-> I had previously missed.
+> [1] https://lwn.net/Articles/934692/
 > 
-> [...]
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi,
+> 
+> this should be merged after v6.7 is released.
 
-Applied to powerpc/next.
+Agreed, although it's unlikey that they will pull bcachefs off from the
+tree now. Any way I think that we should add the support to the next
+release.
 
-[17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
-        https://git.kernel.org/powerpc/c/04c40eed3f7ac48ddaf20104489510e743a53c47
-[18/22] powerpc: pasemi: mark pas_shutdown() static
-        https://git.kernel.org/powerpc/c/0c9a768de64d24e38e27652b8c273725ccc31916
-[19/22] powerpc: powermac: mark smp_psurge_{give,take}_timebase static
-        https://git.kernel.org/powerpc/c/afb36ac386783d2ef2ed839293c03fd06f470be0
+> So far I haven't tested all LTP tests on bcachefs temporary directory.
+> I have only tested tests which use .all_filesystems = 1 or TST_ALL_FILESYSTEMS=1.
+> So far it looks like there are only a few tests failing:
+> 
+> statvfs01.c:44: TFAIL: creat(valid_fname, 0444) failed: ENAMETOOLONG (36)
 
-cheers
+That strange, that would mean that statvfs() reports possibly wrong
+f_namemax. Looking at the code the f_namemax is initialized to
+BCH_NAME_MAX in bch2_statfs().
+
+And the dirent_create_key() does:
+
+        if (name->len > BCH_NAME_MAX)
+                return ERR_PTR(-ENAMETOOLONG);
+
+That does not look like there is any room for a failure. Maybe we can
+print the buf.f_namemax value in the test and check if it's 512 since
+that is the value of BCH_NAME_MAX.
+
+> statx04.c:122: TFAIL: STATX_ATTR_COMPRESSED not supported
+
+This probably just needs:
+
+diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+index 58296bd24..8d14cef8c 100644
+--- a/testcases/kernel/syscalls/statx/statx04.c
++++ b/testcases/kernel/syscalls/statx/statx04.c
+@@ -97,7 +97,8 @@ static void setup(void)
+                expected_mask |= attr_list[i].attr;
+
+        /* STATX_ATTR_COMPRESSED not supported on XFS, TMPFS */
+-       if (!strcmp(tst_device->fs_type, "xfs") || !strcmp(tst_device->fs_type, "tmpfs"))
++       if (!strcmp(tst_device->fs_type, "xfs") || !strcmp(tst_device->fs_type, "tmpfs") ||
++           !strcmp(tst_device->fs_type, "bcachefs")
+                expected_mask &= ~STATX_ATTR_COMPRESSED;
+
+        /* Attribute support was added to Btrfs statx() in kernel v4.13 */
+
+> fanotify13.c, fanotify15.c and fanotify16.c produce many errors.
+
+That is probably something for Jan Kara or Amir Goldstein.
+
+> I haven't tested on machine with more NUMA nodes, thus
+> set_mempolicy03.c, set_mempolicy04.c has not been tested.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
