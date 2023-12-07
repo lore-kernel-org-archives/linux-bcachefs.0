@@ -1,79 +1,51 @@
-Received: from cdw.me.uk (cdw.me.uk [91.203.57.136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 30FBBD57
-	for <linux-bcachefs@vger.kernel.org>; Thu,  7 Dec 2023 04:40:59 -0800 (PST)
-Received: from [148.252.147.228] (helo=smtpclient.apple)
-	by delta.arachsys.com with esmtpa (Exim 4.80)
-	(envelope-from <chris@arachsys.com>)
-	id 1rBDgX-0007Dm-0s; Thu, 07 Dec 2023 12:40:57 +0000
-Content-Type: text/plain;
-	charset=us-ascii;
-	delsp=yes;
-	format=flowed
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B91122;
+	Thu,  7 Dec 2023 04:44:29 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SmDVL0kpKz4xGR;
+	Thu,  7 Dec 2023 23:44:10 +1100 (AEDT)
+From: Michael Ellerman <patch-notifications@ellerman.id.au>
+To: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Guo Ren <guoren@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh Nguyen <dinguyen@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Geoff Levand <geoff@infradead.org>, Palmer Dabbelt <palmer@dabbelt.com>, Heiko Carstens <hca@linux.ibm.com>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molna
+ r <mingo@redhat.com>, x86@kernel.org, Helge Deller <deller@gmx.de>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Timur Tabi <timur@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>, David Woodhouse <dwmw2@infradead.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, Kees Cook <keescook@chromium.org>, Vincenzo Frascino <vincenzo.frascino@arm.com>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, Al Viro <viro@zeniv.linux.org.uk>, Uwe Kleine-König <u.kleine-koenig@pengutronix.de>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kerne
+ l.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, netdev@vger.kernel.org, linux-parisc@vger.kernel.org, linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
+References: <20231108125843.3806765-1-arnd@kernel.org>
+Subject: Re: (subset) [PATCH 00/22] -Wmissing-prototype warning fixes
+Message-Id: <170195271155.2310221.7822619081586355844.b4-ty@ellerman.id.au>
+Date: Thu, 07 Dec 2023 23:38:31 +1100
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.15\))
-Subject: Re: bcachefs-tools 1.3.5 FTBFS
-From: Chris Webb <chris@arachsys.com>
-In-Reply-To: <3C032AF8-28B9-40D4-81D7-DB53B9432EBA@arachsys.com>
-Date: Thu, 7 Dec 2023 12:40:54 +0000
-Cc: Jan Engelhardt <jengelh@inai.de>,
- Daniel Hill <daniel@gluo.nz>,
- linux-bcachefs@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <AE9C6F86-E763-4C0B-810D-23311E4816BB@arachsys.com>
-References: <rpq876s0-37r5-5099-6q6r-p3n36r7rr701@vanv.qr>
- <85FBC6E4-174C-46B5-8D7E-C7FE77124C7D@arachsys.com>
- <20231207081401.w44znpjbndiomrg4@moria.home.lan>
- <3C032AF8-28B9-40D4-81D7-DB53B9432EBA@arachsys.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3654.120.0.1.15)
 
-Chris Webb <chris@arachsys.com> wrote:
+On Wed, 08 Nov 2023 13:58:21 +0100, Arnd Bergmann wrote:
+> I slightly dropped the ball on this since last sending the series in
+> August, but a number of warning fixes have made it into the kernel in
+> the meantime, both from my earlier submission and from architecture
+> maintainers.
+> 
+> I have none patches that remain from the previous submission, with
+> two of them reworked according to comments. The additional patches
+> are from more testing across architectures and configurations that
+> I had previously missed.
+> 
+> [...]
 
-> There's si_meminfo() for the /proc/meminfo information... and I think  
-> he's already using that rather than mallinfo2() for all the values  
-> formerly read from /proc/meminfo.
+Applied to powerpc/next.
 
-...or I should say, sysconf() in si_meminfo() for that information. For  
-the values we're using, this calls sysinfo() underneath in both glibc and  
-musl, filling out a struct sysinfo and then peeling off the relevant value.
+[17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
+        https://git.kernel.org/powerpc/c/04c40eed3f7ac48ddaf20104489510e743a53c47
+[18/22] powerpc: pasemi: mark pas_shutdown() static
+        https://git.kernel.org/powerpc/c/0c9a768de64d24e38e27652b8c273725ccc31916
+[19/22] powerpc: powermac: mark smp_psurge_{give,take}_timebase static
+        https://git.kernel.org/powerpc/c/afb36ac386783d2ef2ed839293c03fd06f470be0
 
-Having read the patch more carefully, it's actually two changes in one:
-
-1. Fix si_meminfo() to use sysconf() not /proc/meminfo. This is very  
-sensible and causes no libc-portability problems. I imagine it must get  
-called a lot in the fast path if it's a big performance win, so needs to  
-be fast?
-
-We should probably do a single sysinfo() call here rather than several  
-sysconf()s resulting in multiple sysinfo()s to fill in a struct sysinfo  
-for each sub-value retrieved, especially as we're filling in a struct  
-sysinfo ourselves anyway.
-
-
-2. Change run_shrinkers() to test the heap size from mallinfo2() against  
-the host's physical RAM. This breaks on musl and older glibc - and  
-presumably any other libc - because the heap size isn't exposed in a  
-libc-independent way.
-
-The current heuristic effectively assumes that we are the dominant memory  
-user at the time, trying to shrink our heap size when it grows over 80% of  
-the physical RAM. That sounds pretty reasonable for a fsck process.
-
-The old heuristic was changed because it didn't allow for the physical RAM  
-freed up because we start to swap. But sysinfo() provides total and free  
-sizes for both physical RAM and swap, so presumably we could just consider  
-the 'real' free memory to be info.freeram + info.freeswap - info.totalswap  
-when working out the pressure? That also loosens the assumption that we're  
-the only significant memory user at the time.
-
-
-Does that sound vaguely sensible? Happy to send a patch if it does make  
-sense and I'm not missing something obvious.
-
-Best wishes,
-
-Chris.
+cheers
