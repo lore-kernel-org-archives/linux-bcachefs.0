@@ -1,39 +1,39 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G9KvP2zj"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GjquG+1M"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B232BB5
-	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Dec 2023 12:24:09 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCA410D
+	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Dec 2023 12:26:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702067049;
+	s=mimecast20190719; t=1702067160;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3aDVTdcl5IHMDxaRA+jbWej2fUNkDSWdpb7yG/wKP9A=;
-	b=G9KvP2zjum12UPVPVY78ShBauLYOPT+9isUUqkMBViHD1jvHVc3LlCsZLpyRZqAxDkNon7
-	n5I5ZhTr6hBSUfjzHFIuZ3goWdIiKPQ1uLJ/3BgKmk9v5QJmaQVwKluRXydDZ30/MtAR46
-	dwMkHDjaPbnCg69qyXXkkApms98pi5U=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-386-jenPOkGmO72jldhMrNzWAg-1; Fri, 08 Dec 2023 15:24:07 -0500
-X-MC-Unique: jenPOkGmO72jldhMrNzWAg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	bh=IWG29Gwco08doxTxbOeySaYWLvki+X0W+uFODGm7A/8=;
+	b=GjquG+1MTZQc43HoY46votJj0LMQx+9uhngoZF5ww2DWhUrp/ugTPDeVtHNvjTLKN2FgDX
+	eps0fv5saCASY/T9mUEgBJHZTfNZ4EJxbw+h/oTwlMcLwfTh7fmTBltMW4IF8/ocExClGU
+	wqm7KVAhXjfoKvMjpSEsqkBu1ySczTk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-328-b0W7n1myOjyQSQATWrpvtw-1; Fri,
+ 08 Dec 2023 15:25:58 -0500
+X-MC-Unique: b0W7n1myOjyQSQATWrpvtw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1891485A588;
-	Fri,  8 Dec 2023 20:24:07 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1C4213CBDFA7;
+	Fri,  8 Dec 2023 20:25:58 +0000 (UTC)
 Received: from bfoster (unknown [10.22.32.38])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id DDED3111F3C6;
-	Fri,  8 Dec 2023 20:24:06 +0000 (UTC)
-Date: Fri, 8 Dec 2023 15:25:02 -0500
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id E37592026D66;
+	Fri,  8 Dec 2023 20:25:57 +0000 (UTC)
+Date: Fri, 8 Dec 2023 15:26:53 -0500
 From: Brian Foster <bfoster@redhat.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org, djwong@kernel.org
-Subject: Re: [PATCH 4/6] bcachefs: bch2_run_online_recovery_passes()
-Message-ID: <ZXN7nrQJCsPzFab3@bfoster>
+Subject: Re: [PATCH 5/6] bcachefs: BCH_IOCTL_FSCK_OFFLINE
+Message-ID: <ZXN8DXEWJ7WbjxHV@bfoster>
 References: <20231206203313.2197302-1-kent.overstreet@linux.dev>
- <20231206203313.2197302-5-kent.overstreet@linux.dev>
+ <20231206203313.2197302-6-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -42,117 +42,183 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231206203313.2197302-5-kent.overstreet@linux.dev>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+In-Reply-To: <20231206203313.2197302-6-kent.overstreet@linux.dev>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Wed, Dec 06, 2023 at 03:33:08PM -0500, Kent Overstreet wrote:
-> Add a new helper for running online recovery passes - i.e. online fsck.
-> This is a subset of our normal recovery passes, and does not - for now -
-> use or follow c->curr_recovery_pass.
+On Wed, Dec 06, 2023 at 03:33:09PM -0500, Kent Overstreet wrote:
+> This adds a new ioctl for running fsck on a list of devices.
+> 
+> Normally, if we wish to use the kernel's implementation of fsck we'd run
+> it at mount time with -o fsck. This ioctl lets us run fsck without
+> mounting, so that userspace bcachefs-tools can transparently switch to
+> the kernel's implementation of fsck when appropriate - primarily if the
+> kernel version of bcachefs better matches the filesystem on disk.
 > 
 > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 > ---
->  fs/bcachefs/bcachefs.h |  7 ++++++
->  fs/bcachefs/recovery.c | 51 ++++++++++++++++++++++++++++--------------
->  fs/bcachefs/recovery.h |  1 +
->  3 files changed, 42 insertions(+), 17 deletions(-)
+>  fs/bcachefs/bcachefs_ioctl.h |  13 +++
+>  fs/bcachefs/chardev.c        | 206 ++++++++++++++++++++++++++++++++++-
+>  fs/bcachefs/recovery.c       |   6 +-
+>  3 files changed, 219 insertions(+), 6 deletions(-)
 > 
 ...
-> diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-> index 585b4928964f..262c923b2f1a 100644
-> --- a/fs/bcachefs/recovery.c
-> +++ b/fs/bcachefs/recovery.c
+> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
+> index 8e3ac2d32298..03082a001036 100644
+> --- a/fs/bcachefs/chardev.c
+> +++ b/fs/bcachefs/chardev.c
 ...
-> @@ -651,39 +651,56 @@ static bool should_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pa
->  
->  static int bch2_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
->  {
-> +	struct recovery_pass_fn *p = recovery_pass_fns + pass;
->  	int ret;
->  
-> -	c->curr_recovery_pass = pass;
-> +	if (!(p->when & PASS_SILENT))
-> +		printk(KERN_INFO bch2_log_msg(c, "%s..."),
-> +		       bch2_recovery_passes[pass]);
-> +	ret = p->fn(c);
-> +	if (ret)
-> +		return ret;
-> +	if (!(p->when & PASS_SILENT))
-> +		printk(KERN_CONT " done\n");
->  
-> -	if (should_run_recovery_pass(c, pass)) {
-> -		struct recovery_pass_fn *p = recovery_pass_fns + pass;
-> +	return 0;
-> +}
->  
-> -		if (!(p->when & PASS_SILENT))
-> -			printk(KERN_INFO bch2_log_msg(c, "%s..."),
-> -			       bch2_recovery_passes[pass]);
-> -		ret = p->fn(c);
-> -		if (ret)
-> -			return ret;
-> -		if (!(p->when & PASS_SILENT))
-> -			printk(KERN_CONT " done\n");
-> +static int bch2_run_recovery_passes(struct bch_fs *c)
-> +{
-> +	int ret = 0;
->  
-> -		c->recovery_passes_complete |= BIT_ULL(pass);
-> +	while (c->curr_recovery_pass < ARRAY_SIZE(recovery_pass_fns)) {
-> +		if (should_run_recovery_pass(c, c->curr_recovery_pass)) {
-> +			ret = bch2_run_recovery_pass(c, c->curr_recovery_pass);
-> +			if (bch2_err_matches(ret, BCH_ERR_restart_recovery))
-> +				continue;
-> +			if (ret)
-> +				break;
-> +
-> +			c->recovery_passes_complete |= BIT_ULL(c->curr_recovery_pass);
-> +		}
-> +		c->curr_recovery_pass++;
->  	}
->  
-> -	return 0;
-> +	return ret;
+> @@ -193,8 +196,196 @@ static long bch2_ioctl_incremental(struct bch_ioctl_incremental __user *user_arg
 >  }
+>  #endif
 >  
-> -static int bch2_run_recovery_passes(struct bch_fs *c)
-> +int bch2_run_online_recovery_passes(struct bch_fs *c)
->  {
->  	int ret = 0;
->  
-> -	while (c->curr_recovery_pass < ARRAY_SIZE(recovery_pass_fns)) {
-> +	for (unsigned i = 0; i < ARRAY_SIZE(recovery_pass_fns); i++) {
-> +		struct recovery_pass_fn *p = recovery_pass_fns + c->curr_recovery_pass;
+...
+> +
+> +static const struct file_operations fsck_thread_ops = {
+> +	.release	= bch2_fsck_thread_release,
+> +	.read		= bch2_fsck_thread_read,
+> +	.llseek		= no_llseek,
+> +};
+> +
+> +static int bch2_fsck_offline_thread_fn(void *arg)
+> +{
+> +	struct fsck_thread *thr = container_of(arg, struct fsck_thread, thr);
+> +	struct bch_fs *c = bch2_fs_open(thr->devs, thr->nr_devs, thr->opts);
+> +
+> +	thr->thr.ret = PTR_ERR_OR_ZERO(c);
+> +	if (!thr->thr.ret)
+> +		bch2_fs_stop(c);
+> +
 
-Maybe I'm confused, but should this be using i?
+Looks pretty neat. Mainly just curious if I'm following this right...
+Basically it looks like we wire up the log output redirect to c->output
+via options, then start/stop the fs which runs "mount time" fsck (?),
+but feeding the message output to the redirect (and then fed to
+userspace via the fd/read handler just above). Hm?
 
 Brian
 
+> +	thr->thr.done = true;
+> +	wake_up(&thr->output.wait);
+> +	return 0;
+> +}
 > +
-> +		if (!(p->when & PASS_ONLINE))
-> +			continue;
+> +static long bch2_ioctl_fsck_offline(struct bch_ioctl_fsck_offline __user *user_arg)
+> +{
+> +	struct bch_ioctl_fsck_offline arg;
+> +	struct fsck_thread *thr = NULL;
+> +	u64 *devs = NULL;
+> +	long ret = 0;
 > +
->  		ret = bch2_run_recovery_pass(c, c->curr_recovery_pass);
->  		if (bch2_err_matches(ret, BCH_ERR_restart_recovery))
->  			continue;
->  		if (ret)
->  			break;
-> -		c->curr_recovery_pass++;
+> +	if (copy_from_user(&arg, user_arg, sizeof(arg)))
+> +		return -EFAULT;
+> +
+> +	if (arg.flags)
+> +		return -EINVAL;
+> +
+> +	if (!capable(CAP_SYS_ADMIN))
+> +		return -EPERM;
+> +
+> +	if (!(devs = kcalloc(arg.nr_devs, sizeof(*devs), GFP_KERNEL)) ||
+> +	    !(thr = kzalloc(sizeof(*thr), GFP_KERNEL)) ||
+> +	    !(thr->devs = kcalloc(arg.nr_devs, sizeof(*thr->devs), GFP_KERNEL))) {
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	thr->nr_devs = arg.nr_devs;
+> +	thr->output.buf	= PRINTBUF;
+> +	thr->output.buf.atomic++;
+> +	spin_lock_init(&thr->output.lock);
+> +	init_waitqueue_head(&thr->output.wait);
+> +	darray_init(&thr->output2);
+> +
+> +	if (copy_from_user(devs, &user_arg->devs[0], sizeof(user_arg->devs[0]) * arg.nr_devs)) {
+> +		ret = -EINVAL;
+> +		goto err;
+> +	}
+> +
+> +	for (size_t i = 0; i < arg.nr_devs; i++) {
+> +		thr->devs[i] = strndup_user((char __user *)(unsigned long) devs[i], PATH_MAX);
+> +		ret = PTR_ERR_OR_ZERO(thr->devs[i]);
+> +		if (ret)
+> +			goto err;
+> +	}
+> +
+> +	if (arg.opts) {
+> +		char *optstr = strndup_user((char __user *)(unsigned long) arg.opts, 1 << 16);
+> +
+> +		ret =   PTR_ERR_OR_ZERO(optstr) ?:
+> +			bch2_parse_mount_opts(NULL, &thr->opts, optstr);
+> +		kfree(optstr);
+> +
+> +		if (ret)
+> +			goto err;
+> +	}
+> +
+> +	opt_set(thr->opts, log_output, (u64)(unsigned long)&thr->output);
+> +
+> +	ret = run_thread_with_file(&thr->thr,
+> +				   &fsck_thread_ops,
+> +				   bch2_fsck_offline_thread_fn,
+> +				   "bch-fsck");
+> +err:
+> +	if (ret < 0) {
+> +		if (thr)
+> +			bch2_fsck_thread_free(thr);
+> +		pr_err("ret %s", bch2_err_str(ret));
+> +	}
+> +	kfree(devs);
+> +	return ret;
+> +}
+> +
+>  static long bch2_global_ioctl(unsigned cmd, void __user *arg)
+>  {
+> +	long ret;
+> +
+>  	switch (cmd) {
+>  #if 0
+>  	case BCH_IOCTL_ASSEMBLE:
+> @@ -202,9 +393,18 @@ static long bch2_global_ioctl(unsigned cmd, void __user *arg)
+>  	case BCH_IOCTL_INCREMENTAL:
+>  		return bch2_ioctl_incremental(arg);
+>  #endif
+> +	case BCH_IOCTL_FSCK_OFFLINE: {
+> +		ret = bch2_ioctl_fsck_offline(arg);
+> +		break;
+> +	}
+>  	default:
+> -		return -ENOTTY;
+> +		ret = -ENOTTY;
+> +		break;
 >  	}
->  
->  	return ret;
-> diff --git a/fs/bcachefs/recovery.h b/fs/bcachefs/recovery.h
-> index 852d30567da9..447590f60609 100644
-> --- a/fs/bcachefs/recovery.h
-> +++ b/fs/bcachefs/recovery.h
-> @@ -25,6 +25,7 @@ static inline int bch2_run_explicit_recovery_pass(struct bch_fs *c,
->  	}
+> +
+> +	if (ret < 0)
+> +		ret = bch2_err_class(ret);
+> +	return ret;
 >  }
 >  
-> +int bch2_run_online_recovery_passes(struct bch_fs *);
->  u64 bch2_fsck_recovery_passes(void);
+>  static long bch2_ioctl_query_uuid(struct bch_fs *c,
+> diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+> index 262c923b2f1a..2f5daecfbcf7 100644
+> --- a/fs/bcachefs/recovery.c
+> +++ b/fs/bcachefs/recovery.c
+> @@ -655,13 +655,13 @@ static int bch2_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
+>  	int ret;
 >  
->  int bch2_fs_recovery(struct bch_fs *);
+>  	if (!(p->when & PASS_SILENT))
+> -		printk(KERN_INFO bch2_log_msg(c, "%s..."),
+> -		       bch2_recovery_passes[pass]);
+> +		bch2_print(c, KERN_INFO bch2_log_msg(c, "%s..."),
+> +			   bch2_recovery_passes[pass]);
+>  	ret = p->fn(c);
+>  	if (ret)
+>  		return ret;
+>  	if (!(p->when & PASS_SILENT))
+> -		printk(KERN_CONT " done\n");
+> +		bch2_print(c, KERN_CONT " done\n");
+>  
+>  	return 0;
+>  }
 > -- 
 > 2.42.0
 > 
