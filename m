@@ -1,53 +1,110 @@
-Received: from cdw.me.uk (cdw.me.uk [91.203.57.136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 579BB2704
-	for <linux-bcachefs@vger.kernel.org>; Thu,  7 Dec 2023 13:39:41 -0800 (PST)
-Received: from [148.252.147.228] (helo=smtpclient.apple)
-	by delta.arachsys.com with esmtpa (Exim 4.80)
-	(envelope-from <chris@arachsys.com>)
-	id 1rBM5r-0001YG-81; Thu, 07 Dec 2023 21:39:39 +0000
-Content-Type: text/plain;
-	charset=us-ascii;
-	delsp=yes;
-	format=flowed
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="uqRsedl6";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LQYhXBSE"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E511712
+	for <linux-bcachefs@vger.kernel.org>; Thu,  7 Dec 2023 17:17:03 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6146D220D6;
+	Fri,  8 Dec 2023 01:17:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1701998222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yWKCVcGtbWhHu2DA1dqn7T4HqFOVG7ZxGxbtuMJDVSU=;
+	b=uqRsedl6+LQxVFrQWzjIXXqamOvGk7J5ebk/uV0Ueoic8MEMzSKhRWIKfDak0gugNIC8dR
+	aJANHLBTQyFbIjClTX6ULRravHolfIZvo9/rP+1HCscZXXAJDX+iQJNFFouYlfB796IS6K
+	3mvOuhOhASx76pgzAyXn2qVgJmThfBA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1701998222;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yWKCVcGtbWhHu2DA1dqn7T4HqFOVG7ZxGxbtuMJDVSU=;
+	b=LQYhXBSEsMYkCb5EIj+ARUeyU+QERRqMNMYC8r/T3WSohBg+47a7MslcXNuzgptCEGGvBY
+	/SRY+pyeFgkZtIDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8A0513725;
+	Fri,  8 Dec 2023 01:17:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id U874GYxucmXUDQAAD6G6ig
+	(envelope-from <neilb@suse.de>); Fri, 08 Dec 2023 01:17:00 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.15\))
-Subject: Re: bcachefs-tools 1.3.5 FTBFS
-From: Chris Webb <chris@arachsys.com>
-In-Reply-To: <AE9C6F86-E763-4C0B-810D-23311E4816BB@arachsys.com>
-Date: Thu, 7 Dec 2023 21:39:37 +0000
-Cc: Jan Engelhardt <jengelh@inai.de>,
- Daniel Hill <daniel@gluo.nz>,
- linux-bcachefs@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <77008BC5-68B9-493E-BCB4-BEA7BDFAF08D@arachsys.com>
-References: <rpq876s0-37r5-5099-6q6r-p3n36r7rr701@vanv.qr>
- <85FBC6E4-174C-46B5-8D7E-C7FE77124C7D@arachsys.com>
- <20231207081401.w44znpjbndiomrg4@moria.home.lan>
- <3C032AF8-28B9-40D4-81D7-DB53B9432EBA@arachsys.com>
- <AE9C6F86-E763-4C0B-810D-23311E4816BB@arachsys.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3654.120.0.1.15)
+MIME-Version: 1.0
+From: "NeilBrown" <neilb@suse.de>
+To: "Donald Buczek" <buczek@molgen.mpg.de>
+Cc: "Kent Overstreet" <kent.overstreet@linux.dev>,
+ linux-bcachefs@vger.kernel.org, "Stefan Krueger" <stefan.krueger@aei.mpg.de>
+Subject: Re: How to cope with subvolumes and snapshots on muti-user systems?
+In-reply-to: <97375d00-4bf7-4c4f-96ec-47f4078abb3d@molgen.mpg.de>
+References: <3222cf4b-8f9d-4576-b2e2-c78e5655f4dc@molgen.mpg.de>,
+ <20231129214328.efbfpl3javifvwk5@moria.home.lan>,
+ <63ca9346-6bec-40d5-8f7e-4181721652f1@molgen.mpg.de>,
+ <20231130073948.v3jkmmvtwnefwvq3@moria.home.lan>,
+ <170137665630.7109.15666373159604652834@noble.neil.brown.name>,
+ <3b2720ca-23eb-4666-b04f-5bff4b1ac1cf@molgen.mpg.de>,
+ <170172993746.7109.10813288295717935377@noble.neil.brown.name>,
+ <12f711f9-70a2-408e-8588-2839e599b668@molgen.mpg.de>,
+ <170181366042.7109.5045075782421670339@noble.neil.brown.name>,
+ <97375d00-4bf7-4c4f-96ec-47f4078abb3d@molgen.mpg.de>
+Date: Fri, 08 Dec 2023 12:16:53 +1100
+Message-id: <170199821328.12910.289120389882559143@noble.neil.brown.name>
+X-Spamd-Result: default: False [0.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 SUBJECT_ENDS_QUESTION(1.00)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[28.28%]
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.90
 
-Chris Webb <chris@arachsys.com> wrote:
+On Thu, 07 Dec 2023, Donald Buczek wrote:
+> 
+> I'd vote for the subvol-id.  I think, with bcachefs a u32 would do,
+> but it could be return as u64 for future growth or other filesystems.
 
-> The current heuristic effectively assumes that we are the dominant  
-> memory user at the time, trying to shrink our heap size when it grows  
-> over 80% of the physical RAM. That sounds pretty reasonable for a fsck  
-> process.
+Probably a good choice.  Though I'd like to re-emphasise that even doing
+this doesn't remove the need to make sure inode numbers are as unique as
+they can possibly be made.  There are multiple places in /proc (for
+example) where a file is identified by fsid and inode number.  It isn't
+really practical to insert a volume-id in there (though maybe we could
+duplicate all those interfaces....).
 
-(Although as far as I can see, it is actually the wrong way round:
+Inode numbers would need to be absolutely unique with a volume, and
+mostly unique within a filesystem.  xor-ing the internal inode number
+with a hash of the volume number is one way to achieve this.
 
-	/* freeram goes up when system swaps, use malloced data instead */
+i.e.: while enabling processes that use stat() family function is
+clearly import, it does not solve all the problems caused by the
+addition of a volume/subvol level between "filesystem" and "inode".
 
-	want_shrink = -malloc_info.arena + (info.totalram / 10 * 8);
-	if (want_shrink <= 0)
-		return;
-
-Here, want_shrink is +ve and large when we have allocated nothing at all,  
-falling down to zero and the early exit when we've allocated 80%+ of total  
-RAM.)
+Thanks,
+NeilBrown
 
