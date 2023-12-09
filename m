@@ -1,41 +1,43 @@
 Received: from cdw.me.uk (cdw.me.uk [91.203.57.136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6BF6910D0
-	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Dec 2023 04:58:47 -0800 (PST)
-Received: from chris by delta.arachsys.com with local (Exim 4.80)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id B12EC1A1
+	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Dec 2023 05:10:41 -0800 (PST)
+Received: from [148.252.147.228] (helo=smtpclient.apple)
+	by delta.arachsys.com with esmtpa (Exim 4.80)
 	(envelope-from <chris@arachsys.com>)
-	id 1rBwus-0001v4-Pr
-	for linux-bcachefs@vger.kernel.org; Sat, 09 Dec 2023 12:58:46 +0000
-Date: Sat, 9 Dec 2023 12:58:46 +0000
+	id 1rBx6N-0002Ez-VI
+	for linux-bcachefs@vger.kernel.org; Sat, 09 Dec 2023 13:10:40 +0000
 From: Chris Webb <chris@arachsys.com>
-To: linux-bcachefs@vger.kernel.org
-Subject: [PATCH] bcachefs-tools: Use basename(3) from <libgen.h>
-Message-ID: <9cd6c15a5049030d5c8aefc0bad4c1159525c18d.1702126622.git.chris@arachsys.com>
+Content-Type: text/plain;
+	charset=us-ascii;
+	delsp=yes;
+	format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.15\))
+Subject: Re: [PATCH 2/2] bcachefs-tools: Avoid glibc-specific mallinfo() in
+ shrinker
+Date: Sat, 9 Dec 2023 13:10:38 +0000
+References: <2d7abd52206065d763691b082e089811e1e2b962.1702125906.git.chris@arachsys.com>
+ <a954a56e0923e067d646f584fc3838bdeae9e2d7.1702125906.git.chris@arachsys.com>
+To: linux-bcachefs@vger.kernel.org
+In-Reply-To: <a954a56e0923e067d646f584fc3838bdeae9e2d7.1702125906.git.chris@arachsys.com>
+Message-Id: <A8210FBA-2AFF-4ADE-87AF-654A0AFB48A7@arachsys.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.15)
 
-Although glibc also provides basename(3) from <string.h>, this is
-non-standard whereas it is available from <libgen.h> portably.
+Chris Webb <chris@arachsys.com> wrote:
 
-Signed-off-by: Chris Webb <chris@arachsys.com>
----
- libbcachefs.c | 1 +
- 1 file changed, 1 insertion(+)
+> +	/* Aim for 6% of physical RAM free without anything in swap */
+> +	want_shrink = (info.totalram << 4) - info.freeram
+> +			+ info.totalswap - info.freeswap;
+> +	if (want_shrink <= 0)
+> +		return;
 
-diff --git a/libbcachefs.c b/libbcachefs.c
-index 82f131c..a3b9c30 100644
---- a/libbcachefs.c
-+++ b/libbcachefs.c
-@@ -2,6 +2,7 @@
- #include <dirent.h>
- #include <errno.h>
- #include <fcntl.h>
-+#include <libgen.h>
- #include <stdbool.h>
- #include <stdint.h>
- #include <stdio.h>
+(info.totalram >> 4) here, sorry, of course!
+
+Best wishes,
+
+Chris.
