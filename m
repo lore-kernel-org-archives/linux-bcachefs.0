@@ -1,16 +1,16 @@
 Received: from cdw.me.uk (cdw.me.uk [91.203.57.136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 16797F9
-	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Dec 2023 06:15:10 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id C218AD1
+	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Dec 2023 06:31:40 -0800 (PST)
 Received: from chris by delta.arachsys.com with local (Exim 4.80)
 	(envelope-from <chris@arachsys.com>)
-	id 1rBy6m-00040m-IV
-	for linux-bcachefs@vger.kernel.org; Sat, 09 Dec 2023 14:15:08 +0000
-Date: Sat, 9 Dec 2023 14:15:08 +0000
+	id 1rByMm-0004Qm-5n
+	for linux-bcachefs@vger.kernel.org; Sat, 09 Dec 2023 14:31:40 +0000
+Date: Sat, 9 Dec 2023 14:31:40 +0000
 From: Chris Webb <chris@arachsys.com>
 To: linux-bcachefs@vger.kernel.org
-Subject: [PATCH] bcachefs-tools: Guard the __struct_group() #define in
- kernel.h
-Message-ID: <e89c20fd7efdba920804749d08c337be50aa57f1.1702131070.git.chris@arachsys.com>
+Subject: [PATCH] bcachefs-tools: Disable -Wgnu-variable-sized-type-not-at-end
+ for clang
+Message-ID: <0625843a8474c4534cc9b34004c6150219f92a2c.1702132174.git.chris@arachsys.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -20,33 +20,24 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Our include/linux/byteorder.h uses the system <asm/byteorder.h>
-because we don't provide our own in include/asm. This then pulls in
-system <linux/stddef.h> which defines __struct_group. That definition
-collides with the unconditional #define __struct_group in our local
-include/linux/kernel.h, provoking preprocessor warnings.
+clang's default warnings include -Wgnu-variable-sized-type-not-at-end,
+producing a lot of false alarms about the GNU extension for libbcachefs.
+Disable these using cc-disable-warning when building with clang.
 
 Signed-off-by: Chris Webb <chris@arachsys.com>
 ---
- include/linux/kernel.h | 3 +++
- 1 file changed, 3 insertions(+)
+ Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 6315e53..6f56748 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -99,11 +99,14 @@
- 	(type *)((char *)__mptr - offsetof(type, member)); })
- #endif
+diff --git a/Makefile b/Makefile
+index 177ee45..5693c0e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -59,6 +59,7 @@ CFLAGS+=$(call cc-disable-warning, missing-braces)
+ CFLAGS+=$(call cc-disable-warning, zero-length-array)
+ CFLAGS+=$(call cc-disable-warning, shift-overflow)
+ CFLAGS+=$(call cc-disable-warning, enum-conversion)
++CFLAGS+=$(call cc-disable-warning, gnu-variable-sized-type-not-at-end)
  
-+#ifndef __struct_group
- #define __struct_group(TAG, NAME, ATTRS, MEMBERS...) \
- 	union { \
- 		struct { MEMBERS } ATTRS; \
- 		struct TAG { MEMBERS } ATTRS NAME; \
- 	}
-+#endif
-+
- #define struct_group(NAME, MEMBERS...)	\
- 	__struct_group(/* no tag */, NAME, /* no attrs */, MEMBERS)
- 
+ PKGCONFIG_LIBS="blkid uuid liburcu libsodium zlib liblz4 libzstd libudev libkeyutils udev"
+ ifdef BCACHEFS_FUSE
