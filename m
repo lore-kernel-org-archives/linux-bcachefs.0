@@ -1,117 +1,170 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FnMM5Wl6"
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E04ED
-	for <linux-bcachefs@vger.kernel.org>; Sun, 10 Dec 2023 15:57:23 -0800 (PST)
-Date: Sun, 10 Dec 2023 18:57:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702252642;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=h7rXAs69dsNWlMVqeR5qiVX7rKSJND/l1/P8dU0zdyc=;
-	b=FnMM5Wl6jJmu+cvz/WLDNDRf73iC6TVQnHxZKY9fcF/nOcEK9vTCRWtlupzVaqLIE6N1Yf
-	iReyVOTHfyAuXIwBO1JPp1XUPHTaapJDDnOrpXDIBm+5TZH7XHIJlv4k/u5DXdv1pswjwB
-	aszr72OK9E+7VaIDhBVQcKKMI/XnwUI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] More bcachefs fixes for 6.7
-Message-ID: <20231210235718.svy4bjxqqrtgkgoc@moria.home.lan>
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D714C3F;
+	Mon, 11 Dec 2023 06:07:22 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Spk8N3TFDz4f3kG7;
+	Mon, 11 Dec 2023 22:07:16 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id D84331A060E;
+	Mon, 11 Dec 2023 22:07:18 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgDn6xGTF3dlDYFxDQ--.28013S4;
+	Mon, 11 Dec 2023 22:07:17 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: axboe@kernel.dk,
+	roger.pau@citrix.com,
+	colyli@suse.de,
+	kent.overstreet@gmail.com,
+	joern@lazybastard.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	sth@linux.ibm.com,
+	hoeppner@linux.ibm.com,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	jejb@linux.ibm.com,
+	martin.petersen@oracle.com,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	nico@fluxnic.net,
+	xiang@kernel.org,
+	chao@kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	agruenba@redhat.com,
+	jack@suse.com,
+	konishi.ryusuke@gmail.com,
+	willy@infradead.org,
+	akpm@linux-foundation.org,
+	p.raghav@samsung.com,
+	hare@suse.de
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH RFC v2 for-6.8/block 00/18] block: don't access bd_inode directly from other modules
+Date: Mon, 11 Dec 2023 22:05:34 +0800
+Message-Id: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDn6xGTF3dlDYFxDQ--.28013S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr48Ww4Utw47JFWDWFW7Arb_yoW5XFWfpr
+	13KF4fGr1UWryxZaya9a17tw1rG3WkGayUWFnIy34rZFW5AryfZrWktF1rJa4kXryxXr4k
+	Xw17JryrKr1jgaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4U
+	JwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	fUojjgUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi Linus, more bcachefs fixes for 6.7. Nothing terribly exciting, the
-bug squashing continues...
+From: Yu Kuai <yukuai3@huawei.com>
 
-Cheers,
-Kent
+Changes in v2:
+ - remove some bdev apis that is not necessary;
+ - pass in offset for bdev_read_folio() and __bdev_get_folio();
+ - remove bdev_gfp_constraint() and add a new helper in fs/buffer.c to
+ prevent access bd_indoe() directly from mapping_gfp_constraint() in
+ ext4.(patch 15, 16);
+ - remove block_device_ejected() from ext4.
 
-----------------------------------------------------------------
+Noted that following is not changed yet since v1:
+- Chirstoph suggested to remove invalidate_inode_pages2() from
+xen_update_blkif_status(), however, this sync_bdev() + invalidate_bdev()
+is used from many modules, and I'll leave this for later if we want to
+kill all of them.
+- Matthew suggested that pass in valid file_ra_state for cramfs,
+however, I don't see an easy way to do this for cramfs_lookup() and
+cramfs_read_super().
 
-The following changes since commit 33cc938e65a98f1d29d0a18403dbbee050dcad9a:
+Patch 1 add some bdev apis, then follow up patches will use these apis
+to avoid access bd_inode directly, and hopefully the field bd_inode can
+be removed eventually(after figure out a way for fs/buffer.c).
 
-  Linux 6.7-rc4 (2023-12-03 18:52:56 +0900)
+Yu Kuai (18):
+  block: add some bdev apis
+  xen/blkback: use bdev api in xen_update_blkif_status()
+  bcache: use bdev api in read_super()
+  mtd: block2mtd: use bdev apis
+  s390/dasd: use bdev api in dasd_format()
+  scsicam: use bdev api in scsi_bios_ptable()
+  bcachefs: remove dead function bdev_sectors()
+  bio: export bio_add_folio_nofail()
+  btrfs: use bdev apis
+  cramfs: use bdev apis in cramfs_blkdev_read()
+  erofs: use bdev api
+  gfs2: use bdev api
+  nilfs2: use bdev api in nilfs_attach_log_writer()
+  jbd2: use bdev apis
+  buffer: add a new helper to read sb block
+  ext4: use new helper to read sb block
+  ext4: remove block_device_ejected()
+  ext4: use bdev apis
 
-are available in the Git repository at:
+ block/bdev.c                       | 70 ++++++++++++++++++++++++++
+ block/bio.c                        |  1 +
+ block/blk.h                        |  2 -
+ drivers/block/xen-blkback/xenbus.c |  3 +-
+ drivers/md/bcache/super.c          | 11 ++--
+ drivers/mtd/devices/block2mtd.c    | 81 +++++++++++++-----------------
+ drivers/s390/block/dasd_ioctl.c    |  5 +-
+ drivers/scsi/scsicam.c             |  4 +-
+ fs/bcachefs/util.h                 |  5 --
+ fs/btrfs/disk-io.c                 | 71 ++++++++++++--------------
+ fs/btrfs/volumes.c                 | 17 +++----
+ fs/btrfs/zoned.c                   | 15 +++---
+ fs/buffer.c                        | 68 +++++++++++++++++--------
+ fs/cramfs/inode.c                  | 36 +++++--------
+ fs/erofs/data.c                    | 18 ++++---
+ fs/erofs/internal.h                |  2 +
+ fs/ext4/dir.c                      |  6 +--
+ fs/ext4/ext4.h                     | 13 -----
+ fs/ext4/ext4_jbd2.c                |  6 +--
+ fs/ext4/inode.c                    |  8 +--
+ fs/ext4/super.c                    | 66 ++++--------------------
+ fs/ext4/symlink.c                  |  2 +-
+ fs/gfs2/glock.c                    |  2 +-
+ fs/gfs2/ops_fstype.c               |  2 +-
+ fs/jbd2/journal.c                  |  3 +-
+ fs/jbd2/recovery.c                 |  6 +--
+ fs/nilfs2/segment.c                |  2 +-
+ include/linux/blkdev.h             | 17 +++++++
+ include/linux/buffer_head.h        | 18 ++++++-
+ 29 files changed, 301 insertions(+), 259 deletions(-)
 
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-12-10
+-- 
+2.39.2
 
-for you to fetch changes up to a66ff26b0f31189e413a87065c25949c359e4bef:
-
-  bcachefs: Close journal entry if necessary when flushing all pins (2023-12-10 16:53:46 -0500)
-
-----------------------------------------------------------------
-More bcachefs bugfixes for 6.7:
-
- - Fix a rare emergency shutdown path bug: dropping journal pins after
-   the filesystem has mostly been torn down is not what we want.
- - Fix some concurrency issues with the btree write buffer and journal
-   replay by not using the btree write buffer until journal replay is
-   finished
- - A fixup from the prior patch to kill journal pre-reservations: at the
-   start of the btree update path, where previously we took a
-   pre-reservation, we do at least want to check the journal watermark.
- - Fix a race between dropping device metadata and btree node writes,
-   which would re-add a pointer to a device that had just been dropped
- - Fix one of the SCRU lock warnings, in
-   bch2_compression_stats_to_text().
- - Partial fix for a rare transaction paths overflow, when indirect
-   extents had been split by background tasks, by not running certain
-   triggers when they're not needed.
- - Fix for creating a snapshot with implicit source in a subdirectory of
-   the containing subvolume
- - Don't unfreeze when we're emergency read-only
- - Fix for rebalance spinning trying to compress unwritten extentns
- - Another deleted_inodes fix, for directories
- - Fix a rare deadlock (usually just an unecessary wait) when flushing
-   the journal with an open journal entry.
-
-----------------------------------------------------------------
-Brian Foster (1):
-      bcachefs: don't attempt rw on unfreeze when shutdown
-
-Daniel Hill (1):
-      bcachefs: rebalance shouldn't attempt to compress unwritten extents
-
-Kent Overstreet (10):
-      bcachefs: Don't drop journal pins in exit path
-      bcachefs; Don't use btree write buffer until journal replay is finished
-      bcachefs: Fix a journal deadlock in replay
-      bcachefs: Fix bch2_extent_drop_ptrs() call
-      bcachefs: Convert compression_stats to for_each_btree_key2
-      bcachefs: Don't run indirect extent trigger unless inserting/deleting
-      bcachefs: Fix creating snapshot with implict source
-      bcachefs: Fix deleted inode check for dirs
-      bcachefs: Fix uninitialized var in bch2_journal_replay()
-      bcachefs: Close journal entry if necessary when flushing all pins
-
- fs/bcachefs/btree_cache.c           |  8 +++-----
- fs/bcachefs/btree_io.c              |  4 ++--
- fs/bcachefs/btree_io.h              |  3 ---
- fs/bcachefs/btree_key_cache.c       |  2 --
- fs/bcachefs/btree_update.c          | 16 ++++++++++++++++
- fs/bcachefs/btree_update_interior.c | 11 +++++++++++
- fs/bcachefs/data_update.c           |  4 ++--
- fs/bcachefs/dirent.c                | 19 +++++++++++--------
- fs/bcachefs/dirent.h                |  1 +
- fs/bcachefs/extents.c               |  3 ++-
- fs/bcachefs/fs-ioctl.c              |  2 +-
- fs/bcachefs/fs.c                    |  3 +++
- fs/bcachefs/inode.c                 | 15 ++++++++++-----
- fs/bcachefs/journal.c               |  8 ++++----
- fs/bcachefs/journal.h               |  1 +
- fs/bcachefs/journal_io.c            |  1 +
- fs/bcachefs/journal_reclaim.c       |  3 +++
- fs/bcachefs/recovery.c              |  2 +-
- fs/bcachefs/reflink.c               |  8 ++++++++
- fs/bcachefs/sysfs.c                 |  8 ++++----
- 20 files changed, 84 insertions(+), 38 deletions(-)
