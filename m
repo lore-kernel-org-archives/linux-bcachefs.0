@@ -1,175 +1,189 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KJ4efM9E";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TO6pszgb";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wzXbksvR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k3338zTO"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62B5C3;
-	Mon, 11 Dec 2023 09:27:11 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LZNwfG0n";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yadL40oK";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LZNwfG0n";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yadL40oK"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50655AF
+	for <linux-bcachefs@vger.kernel.org>; Mon, 11 Dec 2023 14:43:35 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B84E5223DB;
-	Mon, 11 Dec 2023 17:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702315630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B63F61FBEF;
+	Mon, 11 Dec 2023 22:43:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702334613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
-	b=KJ4efM9E+sa33aFAd8jwg5VXmnjMxleP6CmyD1Z0i97ow/IMJQBSqYXPh1ej+xavVwSRP4
-	Yg1lz/fUikUZbf1u2+vXr2RJE2evTJgLdRHZp8PKCuknSrpV2KnjDsWgIdBkLdxCyxxQjh
-	RNp4pJOJa1FNsc52gTMd8s7goQjnjEc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702315630;
+	bh=ecutAA7b/vrKJ3u9Ps72gjK4hPQ/FOMnlnYZHaO1UPQ=;
+	b=LZNwfG0nquYzG+pvXidg5ysZf/k7vtjp7twu6OaVpqlpU+ThuFnHmIoyt/h1vChm0AMChk
+	I4RN6QusgyIFSFVrUwAnp/1Vlc7PRH04SIJqEFhQaiv85M3YspJFeoImqMgZld3/u6cPSa
+	fOrfAm91z8zYseSdb4w1TRnZGSWZfNI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702334613;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
-	b=TO6pszgbMWjR3gBZnaW4MEVQ+gbRax/0poyUFFXjotFHInDoOr+qN7/2TD3A7ZbLly3/IT
-	YRHLNJGFEpFf+TBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702315629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=ecutAA7b/vrKJ3u9Ps72gjK4hPQ/FOMnlnYZHaO1UPQ=;
+	b=yadL40oK8yclVorbXiKr1bxqpWJ0zd1xvgcSPulamfIPIsyX/nkVm0+PQU5JTYk3yJHGGZ
+	tOgRzYPOfw53A9Cw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702334613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
-	b=wzXbksvRNiCb4BbXMMBxbEnY6iRN/20VAk4MCpHS3Rljj8T26a7bGIb5ufMVkyXIF6ZR91
-	EvfGBjSwf9A5O7MLBegJl4BM0+huE5fNoBm4jZzLIFLmDT7FuH6vs9QkRAvxTJx13mPPRM
-	NuBUsypYbVCpDejdowVksfEijuMTCJg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702315629;
+	bh=ecutAA7b/vrKJ3u9Ps72gjK4hPQ/FOMnlnYZHaO1UPQ=;
+	b=LZNwfG0nquYzG+pvXidg5ysZf/k7vtjp7twu6OaVpqlpU+ThuFnHmIoyt/h1vChm0AMChk
+	I4RN6QusgyIFSFVrUwAnp/1Vlc7PRH04SIJqEFhQaiv85M3YspJFeoImqMgZld3/u6cPSa
+	fOrfAm91z8zYseSdb4w1TRnZGSWZfNI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702334613;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
-	b=k3338zTO3EpETkE8li6Dp/0dY97GEZjygMS4ZhvDNl1b1VwUfwBL4jBi4Swo7FgrfAdnP+
-	7OISWgzg4D5XlXAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	bh=ecutAA7b/vrKJ3u9Ps72gjK4hPQ/FOMnlnYZHaO1UPQ=;
+	b=yadL40oK8yclVorbXiKr1bxqpWJ0zd1xvgcSPulamfIPIsyX/nkVm0+PQU5JTYk3yJHGGZ
+	tOgRzYPOfw53A9Cw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A588134B0;
-	Mon, 11 Dec 2023 17:27:09 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 189BB133DE;
+	Mon, 11 Dec 2023 22:43:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id DhppJW1Gd2WxHQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 17:27:09 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0511CA07E3; Mon, 11 Dec 2023 18:27:08 +0100 (CET)
-Date: Mon, 11 Dec 2023 18:27:08 +0100
-From: Jan Kara <jack@suse.cz>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-	konishi.ryusuke@gmail.com, willy@infradead.org,
-	akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to
- read sb block
-Message-ID: <20231211172708.qpuk4rkwq4u2zbmj@quack3>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140753.975297-1-yukuai1@huaweicloud.com>
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id nyxXLpOQd2XXQAAAD6G6ig
+	(envelope-from <neilb@suse.de>); Mon, 11 Dec 2023 22:43:31 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211140753.975297-1-yukuai1@huaweicloud.com>
-X-Spam-Score: 16.16
-X-Spamd-Bar: +++++++++
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=wzXbksvR;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=k3338zTO;
-	dmarc=none;
-	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [9.46 / 50.00];
+From: "NeilBrown" <neilb@suse.de>
+To: "Kent Overstreet" <kent.overstreet@linux.dev>
+Cc: "Donald Buczek" <buczek@molgen.mpg.de>, linux-bcachefs@vger.kernel.org,
+ "Stefan Krueger" <stefan.krueger@aei.mpg.de>
+Subject: Re: How to cope with subvolumes and snapshots on muti-user systems?
+In-reply-to: <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
+References: <3b2720ca-23eb-4666-b04f-5bff4b1ac1cf@molgen.mpg.de>,
+ <170172993746.7109.10813288295717935377@noble.neil.brown.name>,
+ <12f711f9-70a2-408e-8588-2839e599b668@molgen.mpg.de>,
+ <170181366042.7109.5045075782421670339@noble.neil.brown.name>,
+ <97375d00-4bf7-4c4f-96ec-47f4078abb3d@molgen.mpg.de>,
+ <170199821328.12910.289120389882559143@noble.neil.brown.name>,
+ <20231208013739.frhvlisxut6hexnd@moria.home.lan>,
+ <170200162890.12910.9667703050904306180@noble.neil.brown.name>,
+ <20231208024919.yjmyasgc76gxjnda@moria.home.lan>,
+ <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>,
+ <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
+Date: Tue, 12 Dec 2023 09:43:27 +1100
+Message-id: <170233460764.12910.276163802059260666@noble.neil.brown.name>
+X-Spam-Level: ********
+X-Spam-Score: 8.22
+X-Spamd-Result: default: False [-11.01 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 TO_DN_SOME(0.00)[];
-	 R_SPF_SOFTFAIL(4.60)[~all];
-	 R_RATELIMIT(0.00)[to_ip_from(RLa8hd5fybgmzcyr9mhbq8ey7y)];
+	 R_SPF_SOFTFAIL(0.00)[~all:c];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 DMARC_POLICY_ALLOW(0.00)[suse.de,none];
 	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[50];
+	 DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
+	 SUBJECT_ENDS_QUESTION(1.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
 	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 RCPT_COUNT_THREE(0.00)[4];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(1.20)[suse.cz];
-	 NEURAL_SPAM_SHORT(2.97)[0.991];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,huawei.com:email];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 WHITELIST_DMARC(-7.00)[suse.de:D:+];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,redhat.com,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,lists.linux.dev,huawei.com];
 	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 9.46
-X-Rspamd-Queue-Id: B84E5223DB
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
 X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1
+X-Spam-Level: 
+X-Rspamd-Queue-Id: B63F61FBEF
+X-Spam-Score: -11.01
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=LZNwfG0n;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=yadL40oK;
+	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de;
+	dmarc=pass (policy=none) header.from=suse.de
 
-On Mon 11-12-23 22:07:53, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Unlike __bread_gfp(), ext4 has special handing while reading sb block:
-> 
-> 1) __GFP_NOFAIL is not set, and memory allocation can fail;
-> 2) If buffer write failed before, set buffer uptodate and don't read
->    block from disk;
-> 3) REQ_META is set for all IO, and REQ_PRIO is set for reading xattr;
-> 4) If failed, return error ptr instead of NULL;
-> 
-> This patch add a new helper __bread_gfp2() that will match above 2 and 3(
-> 1 will be used, and 4 will still be encapsulated by ext4), and prepare to
-> prevent calling mapping_gfp_constraint() directly on bd_inode->i_mapping
-> in ext4.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-...
-> +/*
-> + * This works like __bread_gfp() except:
-> + * 1) If buffer write failed before, set buffer uptodate and don't read
-> + * block from disk;
-> + * 2) Caller can pass in additional op_flags like REQ_META;
-> + */
-> +struct buffer_head *
-> +__bread_gfp2(struct block_device *bdev, sector_t block, unsigned int size,
-> +	     blk_opf_t op_flags, gfp_t gfp)
-> +{
-> +	return bread_gfp(bdev, block, size, op_flags, gfp, true);
-> +}
-> +EXPORT_SYMBOL(__bread_gfp2);
+On Sat, 09 Dec 2023, Kent Overstreet wrote:
+> On Fri, Dec 08, 2023 at 12:34:28PM +0100, Donald Buczek wrote:
+> > On 12/8/23 03:49, Kent Overstreet wrote:
+> >=20
+> > > We really only need 6 or 7 bits out of the inode number for sharding;
+> > > then 20-32 bits (nobody's going to have a billion snapshots; a million
+> > > is a more reasonable upper bound) for the subvolume ID leaves 30 to 40
+> > > bits for actually allocating inodes out of.
+> > >=20
+> > > That'll be enough for the vast, vast majority of users, but exceeding
+> > > that limit is already something we're technically capable of: we're
+> > > currently seeing filesystems well over 100 TB, petabyte range expected
+> > > as fsck gets more optimized and online fsck comes.
+> >=20
+> > 30 bits would not be enough even today:
+> >=20
+> > buczek@done:~$ df -i /amd/done/C/C8024
+> > Filesystem         Inodes     IUsed      IFree IUse% Mounted on
+> > /dev/md0       2187890304 618857441 1569032863   29% /amd/done/C/C8024
+> >=20
+> > So that's 32 bit on a random production system ( 618857441 =3D=3D 0x24e30=
+3e1 ).
 
-__bread_gfp2() is not a great name, why not just using bread_gfp()
-directly? I'm not a huge fan of boolean arguments but three different flags
-arguments would be too much for my taste ;) so I guess I can live with
-that.
+only 30 bits though.  So it is a long way before you use all 32 bits.
+How many volumes do you have?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> >=20
+> > And if the idea to produce unique inode numbers by hashing the filehandle=
+ into 64 is followed, collisions definitely need to be addressed. With 618857=
+441 objects, the probability of a hash collision with 64 bit is already over =
+1% [1].
+>=20
+> Oof, thanks for the data point. Yeah, 64 bits is clearly not enough for
+> a unique identifier; time to start looking at how to extend statx.
+>=20
+
+64 should be plenty...
+
+If you have 32 bits for free allocation, and 7 bits for sharding across
+128 CPUs, then you can allocate many more than 4 billion inodes.  Maybe
+not the full 500 billion for 39 bits, but if you actually spread the
+load over all the shards, then certainly tens of billions.
+
+If you use 22 bits for volume number and 42 bits for inodes in a volume,
+then you can spend 7 on sharding and still have room for 55 of Donald's
+filesystems to be allocated by each CPU.
+
+And if Donald only needs thousands of volumes, not millions, then he
+could configure for a whole lot more headroom.
+
+In fact, if you use the 64 bits of vfs_inode number by filling in bits from
+the fs-inode number from one end, and bits from the volume number from
+the other end, then you don't need to pre-configure how the 64 bits are
+shared.
+You record inum-bits and volnum bits in the filesystem metadata, and
+increase either as needed.  Once the sum hits 64, you start returning
+ENOSPC for new files or new volumes.
+
+There will come a day when 64 bits is not enough for inodes in a single
+filesystem.  Today is not that day.
+
+NeilBrown
