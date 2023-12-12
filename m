@@ -1,164 +1,213 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KYFmvhp9";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="AsWdKKWV";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KYFmvhp9";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="AsWdKKWV"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DBBB3;
-	Tue, 12 Dec 2023 14:00:57 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7A9381FC11;
-	Tue, 12 Dec 2023 22:00:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702418456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2ivYwgdqs0q7RxHtaoRaa/Ww+pOgF1a5Sj6U6sMAObU=;
-	b=KYFmvhp9o7KIVLePnRZND+guag4iZEzj62wRCe05QbnZrL1AldZ1ZdqbmbCoFbVU9VjyuX
-	Sna5+9a8ERvzmkZ45X2G/fPNzQlaKlq8edPUVg6igwFyK6/mkW085fNYwufPLPoRovsltN
-	mMOJt0V6J8InsoNnt/6C+y4bzRno8B4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702418456;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2ivYwgdqs0q7RxHtaoRaa/Ww+pOgF1a5Sj6U6sMAObU=;
-	b=AsWdKKWV5mepHoc99NZqpt9gh02qe/k8e4UjY2o4HWBTQNcynuYfWJvOEpcOxaPmo7bwey
-	itvCA5yZ6gbSYhDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702418456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2ivYwgdqs0q7RxHtaoRaa/Ww+pOgF1a5Sj6U6sMAObU=;
-	b=KYFmvhp9o7KIVLePnRZND+guag4iZEzj62wRCe05QbnZrL1AldZ1ZdqbmbCoFbVU9VjyuX
-	Sna5+9a8ERvzmkZ45X2G/fPNzQlaKlq8edPUVg6igwFyK6/mkW085fNYwufPLPoRovsltN
-	mMOJt0V6J8InsoNnt/6C+y4bzRno8B4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702418456;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2ivYwgdqs0q7RxHtaoRaa/Ww+pOgF1a5Sj6U6sMAObU=;
-	b=AsWdKKWV5mepHoc99NZqpt9gh02qe/k8e4UjY2o4HWBTQNcynuYfWJvOEpcOxaPmo7bwey
-	itvCA5yZ6gbSYhDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E2272136C7;
-	Tue, 12 Dec 2023 22:00:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8uTxIxXYeGXdEQAAD6G6ig
-	(envelope-from <neilb@suse.de>); Tue, 12 Dec 2023 22:00:53 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Yb/lXpSK"
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DD8F7
+	for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 14:10:36 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6ce72730548so5519915b3a.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 14:10:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1702419036; x=1703023836; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jksHTXWP7vnkrZVnqffRJvyq0I4mi3oOgIw7MJGRo1Y=;
+        b=Yb/lXpSKzi1d/xLKfWzW9dbQPO/LiJrButjJ1TufIRigmI6a+5qjjR7QcTuzs3rmFR
+         iFTo3A+Eg8MW13R9cPMj4Y0jrW535atvufwbVPK56PBahyxd+UYbklocXsw16mLl32OD
+         Ad7uwtg0ucoK4xgm6NXY4TMfPcI6u0ku7Kqi8Hlm89w755PsP5I1hN+aGHKsnqpZOovY
+         w9w3WHxXHf+WgoxjdIxv+8gD8gaKEpyPHhxFagkBvHCbxAATOlE1w6Q6yO9KlRQ/Agmd
+         N19npn4rvEIz5SnxVlB0EECltWEOdTpryrxt6yEyv4aZV5BVem+/SZ4r7l3vRHDo5BfC
+         YKEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702419036; x=1703023836;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jksHTXWP7vnkrZVnqffRJvyq0I4mi3oOgIw7MJGRo1Y=;
+        b=anztI5lGUo4cTyhkGLkftfP0ZHYJdAxRJa3YHuIpZo4J5f0bte8d8IHfOl/LyliGUG
+         3paohmwuDXrf2Hi8umIg31/Nz+fTdsecTkzkNuHj2i4Cg/RyDsEjfs9VFj92wWuW5pp6
+         J43/w2V36O6xHu0Q1QOKOzpMFpicOb2X4Ggshh2QfTdeqnuQ2rYoogSc441aqTAtWwQZ
+         8RngzCOfnt686jI2u9okqplXQo9ZNG/wbKLfS7/yMcCZcNL0240NlAEm9HiVrGHmOgFw
+         fUFVCpnjk25XN01YRScGBX2VElLGgkpDHfnm3cSWvMKbqXSpHkVryqrRisNbTWN1vHdF
+         HLNw==
+X-Gm-Message-State: AOJu0Yy45sizONos3ynlqzm38QRHOWMlaLH8UqYcn+Z5QYC/tIHQyxs0
+	cEJv180XHUIgKNNnUQyGPm9e3Q==
+X-Google-Smtp-Source: AGHT+IGIiJGz/Z6IxlGvHOxKa2MtuY7yH6Y9SMQClH6bVhN2Ta/PMJF1tvhERee2/lpC8omiHzqcwA==
+X-Received: by 2002:aa7:88cf:0:b0:6ce:7a8f:af7c with SMTP id k15-20020aa788cf000000b006ce7a8faf7cmr7924621pff.12.1702419036107;
+        Tue, 12 Dec 2023 14:10:36 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id f21-20020a056a00239500b006ce57f2a254sm8574465pfc.209.2023.12.12.14.10.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 14:10:35 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rDAxU-007TkB-20;
+	Wed, 13 Dec 2023 09:10:32 +1100
+Date: Wed, 13 Dec 2023 09:10:32 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: NeilBrown <neilb@suse.de>, Donald Buczek <buczek@molgen.mpg.de>,
+	linux-bcachefs@vger.kernel.org,
+	Stefan Krueger <stefan.krueger@aei.mpg.de>,
+	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
+ snapshots on muti-user systems?)
+Message-ID: <ZXjaWIFKvBRH7Q4c@dread.disaster.area>
+References: <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
+ <170233460764.12910.276163802059260666@noble.neil.brown.name>
+ <20231211233231.oiazgkqs7yahruuw@moria.home.lan>
+ <170233878712.12910.112528191448334241@noble.neil.brown.name>
+ <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
+ <170234279139.12910.809452786055101337@noble.neil.brown.name>
+ <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+ <20231212152153.tasaxsrljq2zzbxe@moria.home.lan>
+ <ZXjHEPn3DfgQNoms@dread.disaster.area>
+ <20231212212306.tpaw7nfubbuogglw@moria.home.lan>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Dave Chinner" <david@fromorbit.com>
-Cc: "Kent Overstreet" <kent.overstreet@linux.dev>,
- "Donald Buczek" <buczek@molgen.mpg.de>, linux-bcachefs@vger.kernel.org,
- "Stefan Krueger" <stefan.krueger@aei.mpg.de>,
- "David Howells" <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
- snapshots on muti-user systems?)
-In-reply-to: <ZXjHEPn3DfgQNoms@dread.disaster.area>
-References: <20231208024919.yjmyasgc76gxjnda@moria.home.lan>,
- <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>,
- <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>,
- <170233460764.12910.276163802059260666@noble.neil.brown.name>,
- <20231211233231.oiazgkqs7yahruuw@moria.home.lan>,
- <170233878712.12910.112528191448334241@noble.neil.brown.name>,
- <20231212000515.4fesfyobdlzjlwra@moria.home.lan>,
- <170234279139.12910.809452786055101337@noble.neil.brown.name>,
- <ZXf1WCrw4TPc5y7d@dread.disaster.area>,
- <20231212152153.tasaxsrljq2zzbxe@moria.home.lan>,
- <ZXjHEPn3DfgQNoms@dread.disaster.area>
-Date: Wed, 13 Dec 2023 09:00:50 +1100
-Message-id: <170241845067.12910.13041782380548675911@noble.neil.brown.name>
-X-Spam-Level: 
-X-Spam-Score: -4.10
-X-Spam-Level: 
-X-Spam-Flag: NO
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-4.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Score: -4.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212212306.tpaw7nfubbuogglw@moria.home.lan>
 
-On Wed, 13 Dec 2023, Dave Chinner wrote:
-> On Tue, Dec 12, 2023 at 10:21:53AM -0500, Kent Overstreet wrote:
-> > On Tue, Dec 12, 2023 at 04:53:28PM +1100, Dave Chinner wrote:
-> > > Doesn't anyone else see or hear the elephant trumpeting loudly in
-> > > the middle of the room?
+On Tue, Dec 12, 2023 at 04:23:06PM -0500, Kent Overstreet wrote:
+> On Wed, Dec 13, 2023 at 07:48:16AM +1100, Dave Chinner wrote:
+> > On Tue, Dec 12, 2023 at 10:21:53AM -0500, Kent Overstreet wrote:
+> > > On Tue, Dec 12, 2023 at 04:53:28PM +1100, Dave Chinner wrote:
+> > > > Doesn't anyone else see or hear the elephant trumpeting loudly in
+> > > > the middle of the room?
+> > > > 
+> > > > I mean, we already have name_to_handle_at() for userspace to get a
+> > > > unique, opaque, filesystem defined file handle for any given file.
+> > > > It's the same filehandle that filesystems hand to the nfsd so nfs
+> > > > clients can uniquely identify the file they are asking the nfsd to
+> > > > operate on.
+> > > > 
+> > > > The contents of these filehandles is entirely defined by the file
+> > > > system and completely opaque to the user. The only thing that
+> > > > parses the internal contents of the handle is the filesystem itself.
+> > > > Therefore, as long as the fs encodes the information it needs into the
+> > > > handle to determine what subvol/snapshot the inode belongs to when
+> > > > the handle is passed back to it (e.g. from open_by_handle_at()) then
+> > > > nothing else needs to care how it is encoded.
+> > > > 
+> > > > So can someone please explain to me why we need to try to re-invent
+> > > > a generic filehandle concept in statx when we already have a
+> > > > have working and widely supported user API that provides exactly
+> > > > this functionality?
 > > > 
-> > > I mean, we already have name_to_handle_at() for userspace to get a
-> > > unique, opaque, filesystem defined file handle for any given file.
-> > > It's the same filehandle that filesystems hand to the nfsd so nfs
-> > > clients can uniquely identify the file they are asking the nfsd to
-> > > operate on.
+> > > Definitely should be part of the discussion :)
 > > > 
-> > > The contents of these filehandles is entirely defined by the file
-> > > system and completely opaque to the user. The only thing that
-> > > parses the internal contents of the handle is the filesystem itself.
-> > > Therefore, as long as the fs encodes the information it needs into the
-> > > handle to determine what subvol/snapshot the inode belongs to when
-> > > the handle is passed back to it (e.g. from open_by_handle_at()) then
-> > > nothing else needs to care how it is encoded.
-> > > 
-> > > So can someone please explain to me why we need to try to re-invent
-> > > a generic filehandle concept in statx when we already have a
-> > > have working and widely supported user API that provides exactly
-> > > this functionality?
+> > > But I think it _does_ need to be in statx; because:
+> > >  - we've determined that 64 bit ino_t just isn't a future proof
+> > >    interface, we're having real problems with it today
+> > >  - statx is _the_ standard, future proofed interface for getting inode
+> > >    attributes
 > > 
-> > Definitely should be part of the discussion :)
-> > 
-> > But I think it _does_ need to be in statx; because:
-> >  - we've determined that 64 bit ino_t just isn't a future proof
-> >    interface, we're having real problems with it today
-> >  - statx is _the_ standard, future proofed interface for getting inode
-> >    attributes
+> > No, it most definitely isn't, and statx was never intended as a
+> > dumping ground for anything and everything inode related. e.g. Any
+> > inode attribute that can be modified needs to use a different
+> > interface - one that has a corresponding "set" operation.
 > 
-> No, it most definitely isn't, and statx was never intended as a
-> dumping ground for anything and everything inode related. e.g. Any
-> inode attribute that can be modified needs to use a different
-> interface - one that has a corresponding "set" operation.
+> And here I thought the whole point of statx was to be an extensible way
+> to request any sort of inode attribute.
 
-stx_size, stx_mtime, stx_atime, stx_mode, stx_owner, stx_group,
-stx_nlink, ....
+Within reason. When the size of a single attribute is dynamically
+sized, can double the size of the statx structure and there's an
+existing syscall to retrieve that information from the filesystem,
+it makes no sense *at all* to duplicate that information in statx().
 
-These can all be modified but don't have matched get and set operations.
+statx() is for new attributes we don't have any other way of exposing to
+userspace easily. it is designed for fixed size attributes and
+flags, it is not designed for dynamically sized information to be
+embedded in struct statx.
 
-stx_handle, of course, cannot be modified.
+Filehandles are not new, and we already have APIs that expose them
+to userspace that handle the dynamic size of filehandles just fine.
+This functionality simply does not belong in statx() at all.
 
-I think I must be completely misunderstanding you, because the way I
-read your words, they don't make any sense at all.  Help!
+> > >  - therefore, if we want userspace programmers to be using filehandles,
+> > >    instead of inode numbers, so there code isn't broken, we need to be
+> > >    providing interfaces that guide them in that direction.
+> > 
+> > We already have a filehandle interface they can use for this
+> > purpose. It is already used by some userspace applications for this
+> > purpose.
+> > 
+> > Anything new API function do with statx() will require application
+> > changes, and the vast majority of applications aren't using statx()
+> > directly - they are using stat() which glibc wraps to statx()
+> > internally. So they are going to need a change of API, anyway.
+> > 
+> > So, fundamentally, there is a change of API for most applications
+> > that need to do thorough inode uniqueness checks regardless of
+> > anything else. They can do this right now - just continue using
+> > stat() as they do right now, and then use name_to_filehandle_at()
+> > for uniqueness checks.
+> > 
+> > > Even assuming we can update all the documentation to say "filehandles
+> > > are the correct way to test inode uniqueness", you know at least half of
+> > > programmers will stick to stx_ino instead of the filehandle if the
+> > > filehandle is an extra syscall.
+> > 
+> > Your argument is "programmers suck so we must design for the
+> > lowest common denominator". That's an -awful- way to design APIs.
+> 
+> No, I'm saying if the old way doing things no longer works, we ought to
+> make the new future proofed way as ergonomic and easy to use as the old
+> way was - else it won't get used.
+> 
+> At the _very_ least we need to add a flag to statx for "inode number is
+> unreliable for uniqueness checks".
+> 
+> bcachefs could leave this off until the first snapshot has been taken.
+> 
+> But even with that option, I think we ought to be telling anyone doing
+> uniqueness checks to use the filehandle, because it includes i_generation.
+> 
+> > Further, this "programmers suck" design comes at a cost to every
+> > statx() call that does not need filehandles. That's the vast
+> > majority of statx() calls that are made on a system. Why should we
+> > slow down statx() for all users when so few applications actually
+> > need uniqueness and they can take the cost of robust uniqueness
+> > tests with an extra syscall entirely themselves?
+> 
+> For any local filesystem the filehandle is going to be the inode
+> generation number, the subvolume ID (if applicable), and the inode
+> number. That's 16 bytes on bcachefs, and if we make an attempt to
+> standardize how this works across filesystems we should be able to do it
+> without adding a new indirect function call to the statx() path. That
+> sounds pretty negligable to me.
 
-NeilBrown
+Filehandle encoding is already standardised.
+
+exportfs_encode_fh() does everything needed already, including
+providing the default EXPORT_FH_FID behaviour
+(exportfs_encode_ino64_fid()) for filesystems that don't otherwise
+support filehandles.
+
+e.g. this will call into bcachefs and run bch2_encode_fh() to
+calculate the filehandle for bcachefs.  It will call into btrfs
+and run btrfs_encode_fh() to encode the file handle. The
+infrastructure for encoding filehandles in a consistent, common
+manner across all filesystems in the kernel is already present.
+
+What you are suggesting is that we now duplicate filehandle encoding
+into every filesystem's statx() implementation.  That's a bad
+trade-off from a maintenance, testing and consistency POV because
+now we end up with lots of individual, filehandle encoding
+implementations in addition to the generic filehandle
+infrastructure that we all have to test and validate.
+
+> The syscall overhead isn't going to be negligable when an application
+> has to do lots of scanning to find the files its interested - rsync.
+
+Similarly, the extra syscall overhead for calling
+name_to_handle_at() will be neglible for applications that need
+robust inode uniqueness detection....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
