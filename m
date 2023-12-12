@@ -1,36 +1,30 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="LzwyPqVo"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE749AA
-	for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 07:20:53 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-124-235.bstnma.fios.verizon.net [173.48.124.235])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3BCFKGb9002440
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Dec 2023 10:20:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1702394419; bh=Rf4NyHU1FOsEao5ocA/GzTHYRoWx+CcxR8bLTSQhNCI=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=LzwyPqVoUn+Fn2+gO9Ci6S3jZyCMaoE4vCzLIRfuYho35bG2RlaZ1IypvFeQ3BAo/
-	 JSdMGhuYhRPSlW1KCc07K7HPbRtNc1eTdm1b5n7I2bl8Pxd45Gz/rFYPfkLN4MIpXJ
-	 XPPZTwqf+4pmZOffG7x9LykWkF8qZJcx1ryzTiY67SsgVyKkmmlcUMuLYxVB4mW4qi
-	 WzzOp0lvvl4yaQP1dtNiX89TOrjc5g6yAtheEsOUAWUFEcUcYmu8Vk9KFqeYCGi11T
-	 C2Jmld4XjsoLxSn9rLjQz9IaQ1/f7rcpr9JkXW6FHLr/t0n3Klkfq9ZAo5S13vZZQs
-	 Z/OraBZLq2XJg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 9F47715C3B37; Tue, 12 Dec 2023 10:20:16 -0500 (EST)
-Date: Tue, 12 Dec 2023 10:20:16 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Donald Buczek <buczek@molgen.mpg.de>
-Cc: Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-bcachefs@vger.kernel.org,
-        Stefan Krueger <stefan.krueger@aei.mpg.de>,
-        David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: file handle in statx
-Message-ID: <20231212152016.GB142380@mit.edu>
-References: <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WBT+Q9uQ"
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b9])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31535E9
+	for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 07:21:58 -0800 (PST)
+Date: Tue, 12 Dec 2023 10:21:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702394516;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M7QgFteOYbCeX2vVpxWnLWW2DbsXumaa/4I4AHoHgfU=;
+	b=WBT+Q9uQoobl3Uw8HYBHbEDp2uvEChQP2I+FPAYdcb9otcqJtTyIutnsyVq8uLIxOOnnte
+	VO4FJcWqN1F1tl/WkB5txnsLzZrtF88qsJ2qGNGfVKpJESvDWiyq2M05s3fNjANbeZmj8z
+	eLslwUlnVDnsJKkkxAmSqv4tp6mj+sc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Dave Chinner <david@fromorbit.com>
+Cc: NeilBrown <neilb@suse.de>, Donald Buczek <buczek@molgen.mpg.de>,
+	linux-bcachefs@vger.kernel.org,
+	Stefan Krueger <stefan.krueger@aei.mpg.de>,
+	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
+ snapshots on muti-user systems?)
+Message-ID: <20231212152153.tasaxsrljq2zzbxe@moria.home.lan>
+References: <170200162890.12910.9667703050904306180@noble.neil.brown.name>
+ <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
  <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>
  <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
  <170233460764.12910.276163802059260666@noble.neil.brown.name>
@@ -39,7 +33,6 @@ References: <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
  <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
  <170234279139.12910.809452786055101337@noble.neil.brown.name>
  <ZXf1WCrw4TPc5y7d@dread.disaster.area>
- <e07d2063-1a0b-4527-afca-f6e6e2ecb821@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -48,23 +41,44 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e07d2063-1a0b-4527-afca-f6e6e2ecb821@molgen.mpg.de>
+In-Reply-To: <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 12, 2023 at 10:10:23AM +0100, Donald Buczek wrote:
-> On 12/12/23 06:53, Dave Chinner wrote:
+On Tue, Dec 12, 2023 at 04:53:28PM +1100, Dave Chinner wrote:
+> Doesn't anyone else see or hear the elephant trumpeting loudly in
+> the middle of the room?
 > 
-> > So can someone please explain to me why we need to try to re-invent
-> > a generic filehandle concept in statx when we already have a
-> > have working and widely supported user API that provides exactly
-> > this functionality?
+> I mean, we already have name_to_handle_at() for userspace to get a
+> unique, opaque, filesystem defined file handle for any given file.
+> It's the same filehandle that filesystems hand to the nfsd so nfs
+> clients can uniquely identify the file they are asking the nfsd to
+> operate on.
 > 
-> name_to_handle_at() is fine, but userspace could profit from being
-> able to retrieve the filehandle together with the other metadata in
-> a single system call.
+> The contents of these filehandles is entirely defined by the file
+> system and completely opaque to the user. The only thing that
+> parses the internal contents of the handle is the filesystem itself.
+> Therefore, as long as the fs encodes the information it needs into the
+> handle to determine what subvol/snapshot the inode belongs to when
+> the handle is passed back to it (e.g. from open_by_handle_at()) then
+> nothing else needs to care how it is encoded.
+> 
+> So can someone please explain to me why we need to try to re-invent
+> a generic filehandle concept in statx when we already have a
+> have working and widely supported user API that provides exactly
+> this functionality?
 
-Can you say more?  What, specifically is the application that would
-want to do that, and is it really in such a hot path that it would be
-a user-visible improveable, let aloine something that can be actually
-be measured?
+Definitely should be part of the discussion :)
 
-						- Ted
+But I think it _does_ need to be in statx; because:
+ - we've determined that 64 bit ino_t just isn't a future proof
+   interface, we're having real problems with it today
+ - statx is _the_ standard, future proofed interface for getting inode
+   attributes
+ - therefore, if we want userspace programmers to be using filehandles,
+   instead of inode numbers, so there code isn't broken, we need to be
+   providing interfaces that guide them in that direction.
+
+Even assuming we can update all the documentation to say "filehandles
+are the correct way to test inode uniqueness", you know at least half of
+programmers will stick to stx_ino instead of the filehandle if the
+filehandle is an extra syscall.
