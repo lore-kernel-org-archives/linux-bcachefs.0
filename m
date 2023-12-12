@@ -1,76 +1,40 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OAzQ/fBe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qa+P4Izo";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uTGa5y8K";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OpvHJSgi"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07021A8;
-	Tue, 12 Dec 2023 06:48:24 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EB85D22511;
-	Tue, 12 Dec 2023 14:48:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702392502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="l0T8itEe"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [IPv6:2001:41d0:203:375::b5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24FECA
+	for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 07:16:36 -0800 (PST)
+Date: Tue, 12 Dec 2023 10:16:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702394195;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4PAfGpOfftQeO2akfkq9FK9oVv+T8+yemPjH2JRXj5U=;
-	b=OAzQ/fBeKayU3RkQjr2ypXR3zml+0+EZ0WaezUv5U6nr+ndBWSNpJq0fvao0iuDUhzb8TZ
-	gkwc8JCaMDtJyQ0BJ302QWW+iOmuqU7JbmXq9WIg4ySzNg4W2O1k8XpH81yrznTKd7qNpX
-	7rJL9C0ceTLf7stuBwXd4WGEAEb4wQ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702392502;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4PAfGpOfftQeO2akfkq9FK9oVv+T8+yemPjH2JRXj5U=;
-	b=qa+P4IzoIAJNNzpcfKiizNZhfIT78Uhypo0WCy1DNJWwriGancaNN+l6UVx2XZWllUY3n/
-	J3v7taZJfDWMqMCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702392501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4PAfGpOfftQeO2akfkq9FK9oVv+T8+yemPjH2JRXj5U=;
-	b=uTGa5y8KauYVRlm4Is9n1afxzu/Kogooa3fjZWIE3E20NdEthA57GCtpYACYB4jy6stCxn
-	QY22IrDVVbT3GA7wf6S5KYUxbuXssuykDwvTOFQH5eBRhTxNdIv8sQIZEu1C81uJxyDr3r
-	j7BwcReTPSeBfdEAGEZEJXa+4WYcZO0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702392501;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4PAfGpOfftQeO2akfkq9FK9oVv+T8+yemPjH2JRXj5U=;
-	b=OpvHJSgimr05uCMDcMCdMRuQv33sbnoNfu6WBQlIkl8cohrFm6xEOPxsUO5tbMnUOxJjWY
-	D0NIoEx7LjjkBoBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DF036132DC;
-	Tue, 12 Dec 2023 14:48:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id R89wNrVyeGU9WwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 14:48:21 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 845A9A07E0; Tue, 12 Dec 2023 15:48:21 +0100 (CET)
-Date: Tue, 12 Dec 2023 15:48:21 +0100
-From: Jan Kara <jack@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>,
-	Li Wang <liwang@redhat.com>,
-	Richard Palethorpe <rpalethorpe@suse.com>,
-	Jan Stancek <jstancek@redhat.com>, Xiao Yang <yangx.jy@fujitsu.com>,
-	Yang Xu <xuyang2018.jy@fujitsu.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-	fstests@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-	Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v2 0/3] Add support bcachefs filesystem
-Message-ID: <20231212144821.rji2to3iiedyqxlm@quack3>
-References: <20231207194011.273027-1-pvorel@suse.cz>
+	bh=IAvBDqN7URQA7HRlFvKs2d63EJZvcsvm6p9cVChC2Qc=;
+	b=l0T8itEeLgP+TeuxTerhTmP7PKg/A2wSuyKw6g6ssdmrwj4LaH4uRcEErtuJzZNTp2lg/p
+	L7C1Tyeg37an2pUbmbfFWhdBn5xL5H8Mvth+ImPyMKlJXZcj8worxUm4WNsgiq8uoYtp8E
+	WrTFMh8oY55gLZJY+zg54sHAs7tNjgM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Amir Goldstein <amir73il@gmail.com>, Dave Chinner <david@fromorbit.com>,
+	NeilBrown <neilb@suse.de>, Donald Buczek <buczek@molgen.mpg.de>,
+	linux-bcachefs@vger.kernel.org,
+	Stefan Krueger <stefan.krueger@aei.mpg.de>,
+	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
+	Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
+ snapshots on muti-user systems?)
+Message-ID: <20231212151631.wi7rgawmp3uig6cl@moria.home.lan>
+References: <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>
+ <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
+ <170233460764.12910.276163802059260666@noble.neil.brown.name>
+ <20231211233231.oiazgkqs7yahruuw@moria.home.lan>
+ <170233878712.12910.112528191448334241@noble.neil.brown.name>
+ <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
+ <170234279139.12910.809452786055101337@noble.neil.brown.name>
+ <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+ <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
+ <20231212-impfung-linden-6f973f2ade19@brauner>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -79,81 +43,21 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231207194011.273027-1-pvorel@suse.cz>
-X-Spam-Score: -0.16
-X-Spamd-Bar: +++
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=uTGa5y8K;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OpvHJSgi;
-	dmarc=none;
-	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [3.10 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_SPF_SOFTFAIL(4.60)[~all];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.975];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.19)[70.97%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(1.20)[suse.cz];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[lists.linux.it,suse.cz,redhat.com,suse.com,fujitsu.com,linux.dev,vger.kernel.org,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spam-Score: 3.10
-X-Rspamd-Queue-Id: EB85D22511
-X-Spam-Flag: NO
+In-Reply-To: <20231212-impfung-linden-6f973f2ade19@brauner>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu 07-12-23 20:40:08, Petr Vorel wrote:
-> Hi all,
+On Tue, Dec 12, 2023 at 09:56:45AM +0100, Christian Brauner wrote:
+> On Tue, Dec 12, 2023 at 08:32:55AM +0200, Amir Goldstein wrote:
+> > > >  STATX_ATTR_INUM_NOT_UNIQUE - it is possible that two files have the
+> > > >                               same inode number
 > 
-> @Amir @Jan, could you please have look on fanotify failures on Bcachefs?
-> fanotify13.c, fanotify15.c and fanotify16.c produce many errors.
-> 
-> To test, just apply this patchset and then run with LTP_SINGLE_FS_TYPE:
-> 
-> # LTP_SINGLE_FS_TYPE=bcachefs ./fanotify15
+> This is just ugly with questionable value. A constant reminder of how
+> broken this is. Exposing the subvolume id also makes this somewhat redundant.
 
-I suspect some catch with fsids but we'll see... I hopefully get to this
-tomorrow.
+Oh hell no. We finally get a reasonably productive discussion and I wake
+up to you calling things ugly and broken, with no reason or
+justification or any response to the justification that's already been
+given?
 
-								Honza
-
-> changes v1->v2:
-> Two new commits:
-> * lib: Add Bcachefs magic
-> * statx04: Skip STATX_ATTR_COMPRESSED on Bcachefs
-> 
-> Petr Vorel (3):
->   lib: Add Bcachefs magic
->   lib: Add support bcachefs filesystem to .all_filesystems
->   statx04: Skip STATX_ATTR_COMPRESSED on Bcachefs
-> 
->  include/tst_fs.h                          | 3 +++
->  lib/tst_fs_type.c                         | 2 ++
->  lib/tst_supported_fs_types.c              | 2 ++
->  testcases/kernel/syscalls/statx/statx04.c | 5 +++--
->  4 files changed, 10 insertions(+), 2 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Christain, that's not how we do things. Let's not turn what was a
+productive discussion into a trainwreck, OK?
