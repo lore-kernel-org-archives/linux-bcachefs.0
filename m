@@ -1,34 +1,31 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A38BD2;
+	Tue, 12 Dec 2023 01:10:47 -0800 (PST)
+Received: from [141.14.31.7] (theinternet.molgen.mpg.de [141.14.31.7])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF9122338;
-	Tue, 12 Dec 2023 09:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vm7jXJWr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FB45C433C7;
-	Tue, 12 Dec 2023 09:08:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702372114;
-	bh=M60dkv6D7KJActsFVbT0uZgMRt1gTMDaE/YXf/4ZBMc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Vm7jXJWrOb8EL46XN1SPJEuFpcMGYJrTqMdYgW5HJ6lQH4DTurEWP/unAZ7rt8mV1
-	 KEvgDBwv0G+vmSznGDqEDzcy65RriuTG4697adli0Q0MeXjxrVo4s/82VNtk2BLxXc
-	 1OK0jzv/RemWs0agx7wW7gu/LM52i1sUXrs0eUfirgJ/x/EQQsCxmSn704vUWzmg8G
-	 8qyvpM5ezYcpZwn9YCCJwr9vE2kOsw+D+16x/Qs1kFaIGJCg/lf1x3biTcmc+kYS3n
-	 2zlJGfVrx1OYaMtf6UfuRcozqk3cd7YYvsoC63APCzoODgNx/n25Ll1J3NHUSsClhv
-	 9yhp+hEkFCTUw==
-Date: Tue, 12 Dec 2023 10:08:30 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: NeilBrown <neilb@suse.de>
+	(Authenticated sender: buczek)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 10D4461E646CF;
+	Tue, 12 Dec 2023 10:10:24 +0100 (CET)
+Message-ID: <e07d2063-1a0b-4527-afca-f6e6e2ecb821@molgen.mpg.de>
+Date: Tue, 12 Dec 2023 10:10:23 +0100
+Precedence: bulk
+X-Mailing-List: linux-bcachefs@vger.kernel.org
+List-Id: <linux-bcachefs.vger.kernel.org>
+List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: file handle in statx
+Content-Language: en-US
+To: Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Donald Buczek <buczek@molgen.mpg.de>,
-	linux-bcachefs@vger.kernel.org,
-	Stefan Krueger <stefan.krueger@aei.mpg.de>,
-	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
- snapshots on muti-user systems?)
-Message-ID: <20231212-hinfahren-unvorbereitet-193db16c5b00@brauner>
-References: <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
+ linux-bcachefs@vger.kernel.org, Stefan Krueger <stefan.krueger@aei.mpg.de>,
+ David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
+References: <20231208013739.frhvlisxut6hexnd@moria.home.lan>
+ <170200162890.12910.9667703050904306180@noble.neil.brown.name>
+ <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
  <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>
  <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
  <170233460764.12910.276163802059260666@noble.neil.brown.name>
@@ -36,106 +33,38 @@ References: <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
  <170233878712.12910.112528191448334241@noble.neil.brown.name>
  <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
  <170234279139.12910.809452786055101337@noble.neil.brown.name>
- <20231212011038.i5cinr5ok7gkotlm@moria.home.lan>
- <170234718752.12910.7741039469009828768@noble.neil.brown.name>
-Precedence: bulk
-X-Mailing-List: linux-bcachefs@vger.kernel.org
-List-Id: <linux-bcachefs.vger.kernel.org>
-List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <170234718752.12910.7741039469009828768@noble.neil.brown.name>
+ <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+From: Donald Buczek <buczek@molgen.mpg.de>
+In-Reply-To: <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 12, 2023 at 01:13:07PM +1100, NeilBrown wrote:
-> On Tue, 12 Dec 2023, Kent Overstreet wrote:
-> > On Tue, Dec 12, 2023 at 11:59:51AM +1100, NeilBrown wrote:
-> > > On Tue, 12 Dec 2023, Kent Overstreet wrote:
-> > > > NFSv4 specs that for the maximum size? That is pretty hefty...
-> > > 
-> > > It is - but it needs room to identify the filesystem and it needs to be
-> > > stable across time.  That need is more than a local filesystem needs.
-> > > 
-> > > NFSv2 allowed 32 bytes which is enough for a 16 byte filesys uuid, 8
-> > > byte inum and 8byte generation num.  But only just.
-> > > 
-> > > NFSv3 allowed 64 bytes which was likely plenty for (nearly?) every
-> > > situation.
-> > > 
-> > > NFSv4 doubled it again because .... who knows.  "why not" I guess.
-> > > Linux nfsd typically uses 20 or 28 bytes plus whatever the filesystem
-> > > wants. (28 when the export point is not the root of the filesystem).
-> > > I suspect this always fits within an NFSv3 handle except when
-> > > re-exporting an NFS filesystem.  NFS re-export is an interesting case...
-> > 
-> > Now I'm really curious - i_generation wasn't enough? Are we including
-> > filesystem UUIDs?
+On 12/12/23 06:53, Dave Chinner wrote:
+
+> So can someone please explain to me why we need to try to re-invent
+> a generic filehandle concept in statx when we already have a
+> have working and widely supported user API that provides exactly
+> this functionality?
+
+name_to_handle_at() is fine, but userspace could profit from being able to retrieve
+the filehandle together with the other metadata in a single system call.
+
+One argument regarding stx_vol was that userspace tools, which walk the
+filesystem tree, might want to avoid to run blindly into snapshots.
+
+Additionally, if a volume defines the namespace for a set of unique inode numbers,
+the tools could continue to use inode numbers just on a per-volume basis.
+
+Best
+
+  Donald
+
+> Cheers,
 > 
-> i_generation was invented so that it could be inserted into the NFS
-> fileshandle.
-> 
-> The NFS filehandle is opaque.  It likely contains an inode number, a
-> generation number, and a filesystem identifier.  But it is not possible
-> to extract those from the handle.
-> 
-> > 
-> > I suppose if we want to be able to round trip this stuff we do need to
-> > allocate space for it, even if a local filesystem would never include
-> > it.
-> > 
-> > > I suggest:
-> > > 
-> > >  STATX_ATTR_INUM_NOT_UNIQUE - it is possible that two files have the
-> > >                               same inode number
-> > > 
-> > >  
-> > >  __u64 stx_vol     Volume identifier.  Two files with same stx_vol and 
-> > >                    stx_ino MUST be the same.  Exact meaning of volumes
-> > >                    is filesys-specific
-> > 
-> > NFS reexport that you mentioned previously makes it seem like this
-> > guarantee is impossible to provide in general (so I'd leave it out
-> > entirely, it's just something for people to trip over).
-> 
-> NFS would not set stx_vol and would not return STATX_VOL in stx_mask.
-> So it would not attempt to provide that guarantee.
-> 
-> Maybe we don't need to explicitly make this guarantee.
-> 
-> > 
-> > But we definitely want stx_vol in there. Another thing that people ask
-> > for is a way to ask "is this a subvolume root?" - we should make sure
-> > that's clearly specified, or can we just include a bit for it?
-> 
-> The start way to test for a filesystem root - or mount point at least -
-> is to stat the directory in question and its parent (..) and see if the
-> have the same st_dev or not.
+> Dave.
 
-It depends. If you want to figure out whether it's a different
-filesystem or a different btrfs subvolume then yes, this generally
-works because of changing device ids. But it doesn't work for
-bind-mounts as they don't change device numbers. But maybe you and I are
-using mount point differently here.
+-- 
+Donald Buczek
+buczek@molgen.mpg.de
+Tel: +49 30 8413 1433
 
-> Applying the same logic to volumes means that a single stx_vol number is
-> sufficient.
-
-Yes, that would generally work.
-
-> 
-> I'm not strongly against a STATX_ATTR_VOL_ROOT flag providing everyone
-> agrees what it means that we cannot imagine any awkward corner-cases
-> (like a 'root' being different from a 'mount point').
-
-I feel like you might have missed my previous mails where I strongly
-argued for the addition of STATX_ATTR_SUBVOLUME_ROOT:
-
-https://lore.kernel.org/linux-btrfs/20231108-herleiten-bezwangen-ffb2821f539e@brauner
-
-The concept of a subvolume root and of a mount point should be kept
-separate. Christoph tried mapping subvolumes to vfsmounts, something
-that I (and Al) vehemently oppose for various reasons outlined in that
-and other long threads.
-
-I still think that we should start with exposing subvolume id first.
