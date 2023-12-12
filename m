@@ -1,119 +1,213 @@
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706BACE;
-	Mon, 11 Dec 2023 17:32:21 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sq1Lj3Z6Rz4f3lDc;
-	Tue, 12 Dec 2023 09:32:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 5C7FC1A0D83;
-	Tue, 12 Dec 2023 09:32:18 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCn9gwauHdlugyeDQ--.45656S3;
-	Tue, 12 Dec 2023 09:32:13 +0800 (CST)
-Subject: Re: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to
- read sb block
-To: Jan Kara <jack@suse.cz>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
- kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
- hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
- jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
- josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
- brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
- konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
- p.raghav@samsung.com, hare@suse.de, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
- linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
- "yangerkun@huawei.com" <yangerkun@huawei.com>,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140753.975297-1-yukuai1@huaweicloud.com>
- <20231211172708.qpuk4rkwq4u2zbmj@quack3>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <be459c50-5179-2748-2636-7965b9e1cb7a@huaweicloud.com>
-Date: Tue, 12 Dec 2023 09:32:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="QKwiGgAP";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jl2ExQS6";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="QKwiGgAP";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jl2ExQS6"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A78FB3;
+	Mon, 11 Dec 2023 18:13:14 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 060592246D;
+	Tue, 12 Dec 2023 02:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702347193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OZqGcXQjt1NjVljjpUzX4wNLKOVR+Z2g9oE8pzeu2xc=;
+	b=QKwiGgAP47wsIiyUy6taKm8KEwQgl2zywlNPSzlTU3FNec435yNGWx6fOKGWCGaWjcx5Az
+	TzeRSEEgTJKVnQ1YTQPv+VrFoT+bf+zNT68QUtiT/jseVhjyiXDql5YDnHAdxr8Gv2VEZC
+	Blg7VyavtnQkApasW8F/agY46VUfnGE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702347193;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OZqGcXQjt1NjVljjpUzX4wNLKOVR+Z2g9oE8pzeu2xc=;
+	b=jl2ExQS6cmR4ROMyitekEhVL1ekahSdQ1YOqZH1t0kt2jKC25mgfCWOUxQ7FugqmGQ7XkB
+	3cf6WrUj8vvGaaAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702347193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OZqGcXQjt1NjVljjpUzX4wNLKOVR+Z2g9oE8pzeu2xc=;
+	b=QKwiGgAP47wsIiyUy6taKm8KEwQgl2zywlNPSzlTU3FNec435yNGWx6fOKGWCGaWjcx5Az
+	TzeRSEEgTJKVnQ1YTQPv+VrFoT+bf+zNT68QUtiT/jseVhjyiXDql5YDnHAdxr8Gv2VEZC
+	Blg7VyavtnQkApasW8F/agY46VUfnGE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702347193;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OZqGcXQjt1NjVljjpUzX4wNLKOVR+Z2g9oE8pzeu2xc=;
+	b=jl2ExQS6cmR4ROMyitekEhVL1ekahSdQ1YOqZH1t0kt2jKC25mgfCWOUxQ7FugqmGQ7XkB
+	3cf6WrUj8vvGaaAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BB1D3136C7;
+	Tue, 12 Dec 2023 02:13:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Cz5sGrbBd2V4EQAAD6G6ig
+	(envelope-from <neilb@suse.de>); Tue, 12 Dec 2023 02:13:10 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231211172708.qpuk4rkwq4u2zbmj@quack3>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCn9gwauHdlugyeDQ--.45656S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7trWDZF4Dur4DWFWktF1xGrg_yoW8WF48pr
-	ySkayakrZrAr1a9F12qw1rXFyrKa13G3WrCFyfJa4UAryagr13XrWxGF4UGFW3ZrnrAws8
-	Xa1FkayrZw15KFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9q14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6rWU
-	JVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F
-	4UJbIYCTnIWIevJa73UjIFyTuYvjfUFfHUDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+From: "NeilBrown" <neilb@suse.de>
+To: "Kent Overstreet" <kent.overstreet@linux.dev>
+Cc: "Donald Buczek" <buczek@molgen.mpg.de>, linux-bcachefs@vger.kernel.org,
+ "Stefan Krueger" <stefan.krueger@aei.mpg.de>,
+ "David Howells" <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
+ snapshots on muti-user systems?)
+In-reply-to: <20231212011038.i5cinr5ok7gkotlm@moria.home.lan>
+References: <20231208013739.frhvlisxut6hexnd@moria.home.lan>,
+ <170200162890.12910.9667703050904306180@noble.neil.brown.name>,
+ <20231208024919.yjmyasgc76gxjnda@moria.home.lan>,
+ <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>,
+ <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>,
+ <170233460764.12910.276163802059260666@noble.neil.brown.name>,
+ <20231211233231.oiazgkqs7yahruuw@moria.home.lan>,
+ <170233878712.12910.112528191448334241@noble.neil.brown.name>,
+ <20231212000515.4fesfyobdlzjlwra@moria.home.lan>,
+ <170234279139.12910.809452786055101337@noble.neil.brown.name>,
+ <20231212011038.i5cinr5ok7gkotlm@moria.home.lan>
+Date: Tue, 12 Dec 2023 13:13:07 +1100
+Message-id: <170234718752.12910.7741039469009828768@noble.neil.brown.name>
+X-Spam-Level: 
+X-Spam-Score: -4.30
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.997];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Flag: NO
 
-Hi,
-
-ÔÚ 2023/12/12 1:27, Jan Kara Ð´µÀ:
-> On Mon 11-12-23 22:07:53, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Unlike __bread_gfp(), ext4 has special handing while reading sb block:
->>
->> 1) __GFP_NOFAIL is not set, and memory allocation can fail;
->> 2) If buffer write failed before, set buffer uptodate and don't read
->>     block from disk;
->> 3) REQ_META is set for all IO, and REQ_PRIO is set for reading xattr;
->> 4) If failed, return error ptr instead of NULL;
->>
->> This patch add a new helper __bread_gfp2() that will match above 2 and 3(
->> 1 will be used, and 4 will still be encapsulated by ext4), and prepare to
->> prevent calling mapping_gfp_constraint() directly on bd_inode->i_mapping
->> in ext4.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ...
->> +/*
->> + * This works like __bread_gfp() except:
->> + * 1) If buffer write failed before, set buffer uptodate and don't read
->> + * block from disk;
->> + * 2) Caller can pass in additional op_flags like REQ_META;
->> + */
->> +struct buffer_head *
->> +__bread_gfp2(struct block_device *bdev, sector_t block, unsigned int size,
->> +	     blk_opf_t op_flags, gfp_t gfp)
->> +{
->> +	return bread_gfp(bdev, block, size, op_flags, gfp, true);
->> +}
->> +EXPORT_SYMBOL(__bread_gfp2);
+On Tue, 12 Dec 2023, Kent Overstreet wrote:
+> On Tue, Dec 12, 2023 at 11:59:51AM +1100, NeilBrown wrote:
+> > On Tue, 12 Dec 2023, Kent Overstreet wrote:
+> > > NFSv4 specs that for the maximum size? That is pretty hefty...
+> > 
+> > It is - but it needs room to identify the filesystem and it needs to be
+> > stable across time.  That need is more than a local filesystem needs.
+> > 
+> > NFSv2 allowed 32 bytes which is enough for a 16 byte filesys uuid, 8
+> > byte inum and 8byte generation num.  But only just.
+> > 
+> > NFSv3 allowed 64 bytes which was likely plenty for (nearly?) every
+> > situation.
+> > 
+> > NFSv4 doubled it again because .... who knows.  "why not" I guess.
+> > Linux nfsd typically uses 20 or 28 bytes plus whatever the filesystem
+> > wants. (28 when the export point is not the root of the filesystem).
+> > I suspect this always fits within an NFSv3 handle except when
+> > re-exporting an NFS filesystem.  NFS re-export is an interesting case...
 > 
-> __bread_gfp2() is not a great name, why not just using bread_gfp()
-> directly? I'm not a huge fan of boolean arguments but three different flags
-> arguments would be too much for my taste ;) so I guess I can live with
-> that.
+> Now I'm really curious - i_generation wasn't enough? Are we including
+> filesystem UUIDs?
 
-I agree that __bread_gfp2 is not a greate name, if possible, I'll try to
-figure out a better name for v3.
+i_generation was invented so that it could be inserted into the NFS
+fileshandle.
 
-Thanks for reviewing this patchset!
-Kuai
+The NFS filehandle is opaque.  It likely contains an inode number, a
+generation number, and a filesystem identifier.  But it is not possible
+to extract those from the handle.
+
 > 
-> 								Honza
+> I suppose if we want to be able to round trip this stuff we do need to
+> allocate space for it, even if a local filesystem would never include
+> it.
+> 
+> > I suggest:
+> > 
+> >  STATX_ATTR_INUM_NOT_UNIQUE - it is possible that two files have the
+> >                               same inode number
+> > 
+> >  
+> >  __u64 stx_vol     Volume identifier.  Two files with same stx_vol and 
+> >                    stx_ino MUST be the same.  Exact meaning of volumes
+> >                    is filesys-specific
+> 
+> NFS reexport that you mentioned previously makes it seem like this
+> guarantee is impossible to provide in general (so I'd leave it out
+> entirely, it's just something for people to trip over).
+
+NFS would not set stx_vol and would not return STATX_VOL in stx_mask.
+So it would not attempt to provide that guarantee.
+
+Maybe we don't need to explicitly make this guarantee.
+
+> 
+> But we definitely want stx_vol in there. Another thing that people ask
+> for is a way to ask "is this a subvolume root?" - we should make sure
+> that's clearly specified, or can we just include a bit for it?
+
+The start way to test for a filesystem root - or mount point at least -
+is to stat the directory in question and its parent (..) and see if the
+have the same st_dev or not.
+Applying the same logic to volumes means that a single stx_vol number is
+sufficient.
+
+I'm not strongly against a STATX_ATTR_VOL_ROOT flag providing everyone
+agrees what it means that we cannot imagine any awkward corner-cases
+(like a 'root' being different from a 'mount point').
+
+> 
+> >  STATX_VOL         Want stx_vol
+> > 
+> >   __u8 stx_handle_len  Length of stx_handle if present
+> >   __u8 stx_handle[128] Unique stable identifier for this file.  Will
+> >                        NEVER be reused for a different file.
+> >                        This appears AFTER __statx_pad2, beyond
+> >                        the current 'struct statx'.
+> >  STATX_HANDLE      Want stx_handle_len and stx_handle. Buffer for
+> >                    receiving statx info has at least
+> >                    sizeof(struct statx)+128 bytes.
+> > 
+> > I think both the handle and the vol can be useful.
+> > NFS can provide stx_handle but not stx_vol.  It is the thing
+> > to use for equality testing, but it is only needed if
+> > STATX_ATTR_INUM_NOT_UNIQUE is set.
+> > stx_vol is useful for "du -x" or maybe "du --one-volume" or similar.
+> > 
+> > 
+> > Note that we *could* add stx_vol to NFSv4.2.  It is designed for
+> > incremental extension.  I suspect we wouldn't want to rush into this,
+> > but to wait to see if different volume-capable filesystems have other
+> > details of volumes that are common and can usefully be exported by statx
+> 
+> Sounds reasonable
 > 
 
+Thanks,
+NeilBrown
