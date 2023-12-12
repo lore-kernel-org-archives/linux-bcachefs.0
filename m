@@ -1,84 +1,91 @@
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157F775403;
+	Tue, 12 Dec 2023 15:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WBT+Q9uQ"
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31535E9
-	for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 07:21:58 -0800 (PST)
-Date: Tue, 12 Dec 2023 10:21:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702394516;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M7QgFteOYbCeX2vVpxWnLWW2DbsXumaa/4I4AHoHgfU=;
-	b=WBT+Q9uQoobl3Uw8HYBHbEDp2uvEChQP2I+FPAYdcb9otcqJtTyIutnsyVq8uLIxOOnnte
-	VO4FJcWqN1F1tl/WkB5txnsLzZrtF88qsJ2qGNGfVKpJESvDWiyq2M05s3fNjANbeZmj8z
-	eLslwUlnVDnsJKkkxAmSqv4tp6mj+sc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Dave Chinner <david@fromorbit.com>
-Cc: NeilBrown <neilb@suse.de>, Donald Buczek <buczek@molgen.mpg.de>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T8lAcSDS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B635BC433C8;
+	Tue, 12 Dec 2023 15:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702394678;
+	bh=pkdBqV21b4Rfh/sUCZdEfLUL98HZquCTqxlPZhn+Osk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T8lAcSDSqXLnp9J6sCXrdO5TxFpG4jjPrautjBO8odwGvYNgVxr+oFMkhVCZknFAS
+	 L8MROPHcjijzWytZ5SDc989QsSGAMgWiWZIZTtHGMnG5vVoEGP6DePOT/i+UnJA3iK
+	 oSOr8vuxGuJMdLR1RBjl3WmsQ1MLd8b/Qc+wFu+BQIZrGtZuAymBB1eVG23m+Zvu0X
+	 h8sEtvVUXT6IWlsVcxoPIAFbLddgvj2Ew6EP2C1i+ZwzxcJ45O+p1H2J1rW2V8BCl1
+	 n/oqCkLEYZeMd1mGAQloBOzKRFO1easG16/35IJtCSRqcFeyJnpnH3xcH5pOvG4HrR
+	 tK2x93mz191JQ==
+Date: Tue, 12 Dec 2023 16:24:33 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: David Howells <dhowells@redhat.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Donald Buczek <buczek@molgen.mpg.de>,
 	linux-bcachefs@vger.kernel.org,
 	Stefan Krueger <stefan.krueger@aei.mpg.de>,
-	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
+	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+	linux-btrfs@vger.kernel.org
 Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
  snapshots on muti-user systems?)
-Message-ID: <20231212152153.tasaxsrljq2zzbxe@moria.home.lan>
-References: <170200162890.12910.9667703050904306180@noble.neil.brown.name>
- <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
- <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>
- <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
- <170233460764.12910.276163802059260666@noble.neil.brown.name>
- <20231211233231.oiazgkqs7yahruuw@moria.home.lan>
- <170233878712.12910.112528191448334241@noble.neil.brown.name>
- <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
- <170234279139.12910.809452786055101337@noble.neil.brown.name>
+Message-ID: <20231212-untiefen-leihwagen-ca303230fc4e@brauner>
+References: <170234279139.12910.809452786055101337@noble.neil.brown.name>
  <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+ <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
+ <2810685.1702372247@warthog.procyon.org.uk>
+ <20231212-ablauf-achtbar-ae6e5b15b057@brauner>
+ <CAJfpegvL9kV+06v2W+5LbUk0eZr1ydfT1v0P-Pp_KexLNz=Lfg@mail.gmail.com>
+ <20231212-sechzehn-hausgemacht-6eb61150554e@brauner>
+ <CAJfpegshsEWtm-dcdUy2w9_ic0Ag7GXpA2yRWGR+LD2T37odGQ@mail.gmail.com>
+ <20231212-kahlschlag-abtropfen-51dc89b9ac11@brauner>
+ <CAJfpegu3uwAjMQd2jrBty0Lx-oHOczF0x6xNkyqcT4MBqyJo7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZXf1WCrw4TPc5y7d@dread.disaster.area>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <CAJfpegu3uwAjMQd2jrBty0Lx-oHOczF0x6xNkyqcT4MBqyJo7Q@mail.gmail.com>
 
-On Tue, Dec 12, 2023 at 04:53:28PM +1100, Dave Chinner wrote:
-> Doesn't anyone else see or hear the elephant trumpeting loudly in
-> the middle of the room?
+On Tue, Dec 12, 2023 at 03:06:07PM +0100, Miklos Szeredi wrote:
+> On Tue, 12 Dec 2023 at 14:48, Christian Brauner <brauner@kernel.org> wrote:
 > 
-> I mean, we already have name_to_handle_at() for userspace to get a
-> unique, opaque, filesystem defined file handle for any given file.
-> It's the same filehandle that filesystems hand to the nfsd so nfs
-> clients can uniquely identify the file they are asking the nfsd to
-> operate on.
+> > Exposing the subvolume id in statx() is still fine imho. It's a concept
+> > shared between btrfs and bcachefs and it's pretty useful for interested
+> > userspace that wants to make use of these apis.
 > 
-> The contents of these filehandles is entirely defined by the file
-> system and completely opaque to the user. The only thing that
-> parses the internal contents of the handle is the filesystem itself.
-> Therefore, as long as the fs encodes the information it needs into the
-> handle to determine what subvol/snapshot the inode belongs to when
-> the handle is passed back to it (e.g. from open_by_handle_at()) then
-> nothing else needs to care how it is encoded.
+> Exposing subvolume ID should be okay, as long as it's not advertised
+> as a way to uniquely identify an inode.   Its use should be limited to
+> finding subvolume boundaries.
 > 
-> So can someone please explain to me why we need to try to re-invent
-> a generic filehandle concept in statx when we already have a
-> have working and widely supported user API that provides exactly
-> this functionality?
+> > > It might help to have the fh in statx, since that's easier on the
+> > > userspace programmer than having to deal with two interfaces (i_ino
+> > > won't go away for some time, because of backward compatibility).
+> > > OTOH I also don't like the way it would need to be shoehorned into
+> > > statx.
+> >
+> > No, it really doesn't belong into statx().
+> >
+> > And besides, the file handle apis name_to_handle_at() are already
+> > in wider use than a lot of people think. Not just for the exportfs case
+> > but also for example, cgroupfs uses file handles to provide unique
+> > identifiers for cgroups that can be compared.
+> 
+> The issue with name_to_handle_at() is its use of the old, non-unique
+> mount ID.  Yes, yes, we can get away with
+> 
+>  fd = openat(dfd, path, O_PATH);
+>  name_to_handle_at(fd, "", ..., AT_EMPTY_PATH);
+>  statx(fd, "", AT_EMPTY_PATH, STATX_MNT_ID_UNIQUE, ...);
+>  close(fd);
+> 
+> But that's *four* syscalls instead of one...
 
-Definitely should be part of the discussion :)
-
-But I think it _does_ need to be in statx; because:
- - we've determined that 64 bit ino_t just isn't a future proof
-   interface, we're having real problems with it today
- - statx is _the_ standard, future proofed interface for getting inode
-   attributes
- - therefore, if we want userspace programmers to be using filehandles,
-   instead of inode numbers, so there code isn't broken, we need to be
-   providing interfaces that guide them in that direction.
-
-Even assuming we can update all the documentation to say "filehandles
-are the correct way to test inode uniqueness", you know at least half of
-programmers will stick to stx_ino instead of the filehandle if the
-filehandle is an extra syscall.
+Yeah, but putting this into statx() isn't really nice imho. Once we do
+actually land the unique mount id thing it wouldn't be the worst thing
+to add name_to_handle_at2().
