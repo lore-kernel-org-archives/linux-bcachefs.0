@@ -1,74 +1,92 @@
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE506DCFB;
+	Tue, 12 Dec 2023 13:47:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="picipgXF"
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059CCB3;
-	Tue, 12 Dec 2023 05:25:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=b0EJSjGbwEr2b4Ml7A+chJ8+pEiLc4/B8ooSTDiYxzk=; b=picipgXFbvzoUhEoBG/zPnQX1q
-	HE6smIRBy5a89R9akhr+qXOZgV2ZWsX5XPLxtAEgCavvFg2RD1Nd4bY6y3UtqlfS5bvjWd1FYs03a
-	CEKxQcI96bW9kVZcHP+cYaV8hEgMc7fElg/c9Fc75ryish62M2PDTmzUmPs5fvjFZ8ka06osdMRpf
-	ASMKxc6mHhCj37Uwwthec0X8EOQOG/hGGGWoR9QRV2Bnh4w97sL+F2xaXO4b3Qr1y31RDun14/d27
-	LpamT9Qvnaapt6jca0mzWu9EovPM8+74IynFRKTN08S2sDe2pXO4Td8t8oHiM29FNbbe9flIcdz3n
-	3xcYUrag==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rD2lJ-00BnAr-2I;
-	Tue, 12 Dec 2023 13:25:25 +0000
-Date: Tue, 12 Dec 2023 05:25:25 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-	konishi.ryusuke@gmail.com, willy@infradead.org,
-	akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to
- read sb block
-Message-ID: <ZXhfRdocHfrViOos@infradead.org>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140753.975297-1-yukuai1@huaweicloud.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Soo6BjJw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1178C433CD;
+	Tue, 12 Dec 2023 13:47:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702388876;
+	bh=KK6k7ktFdcMgvX1gs7P76rUn6O9ERk65npZY37aPADA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Soo6BjJw9sG9qzCxgmUA+QzURPApdg6AHB5j9LZxaFflQGJDsi5NtgRBLKtWsbplK
+	 KuZ6my0SFlPVy2/hD0CBCRwWE3fQ5QhVvkuJXqm/8kzFfFaEdVUNKFWPD5bNWCi8cu
+	 9ykSqBt8ncPXuUctx1Y3nuKA3TXuEWcz95gh6tdcEJvPvUGyOiuCbX83eirVttE4DI
+	 daRXkF1P2P9/f7OL1oXCzBUvboHq1Yjc+jHojwOgJydcoDBGLSJYhBQcTe5IJzRiZl
+	 T1pwoT/+CeXkpsffqK7v6VbbxLvrWe1qnub/rM91vF1lxWjdiqqs0cp1pRQyLT8vjX
+	 +TYv5gapNQwww==
+Date: Tue, 12 Dec 2023 14:47:51 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: David Howells <dhowells@redhat.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Donald Buczek <buczek@molgen.mpg.de>,
+	linux-bcachefs@vger.kernel.org,
+	Stefan Krueger <stefan.krueger@aei.mpg.de>,
+	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+	linux-btrfs@vger.kernel.org
+Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
+ snapshots on muti-user systems?)
+Message-ID: <20231212-kahlschlag-abtropfen-51dc89b9ac11@brauner>
+References: <170233878712.12910.112528191448334241@noble.neil.brown.name>
+ <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
+ <170234279139.12910.809452786055101337@noble.neil.brown.name>
+ <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+ <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
+ <2810685.1702372247@warthog.procyon.org.uk>
+ <20231212-ablauf-achtbar-ae6e5b15b057@brauner>
+ <CAJfpegvL9kV+06v2W+5LbUk0eZr1ydfT1v0P-Pp_KexLNz=Lfg@mail.gmail.com>
+ <20231212-sechzehn-hausgemacht-6eb61150554e@brauner>
+ <CAJfpegshsEWtm-dcdUy2w9_ic0Ag7GXpA2yRWGR+LD2T37odGQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231211140753.975297-1-yukuai1@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAJfpegshsEWtm-dcdUy2w9_ic0Ag7GXpA2yRWGR+LD2T37odGQ@mail.gmail.com>
 
-On Mon, Dec 11, 2023 at 10:07:53PM +0800, Yu Kuai wrote:
-> +static __always_inline int buffer_uptodate_or_error(struct buffer_head *bh)
-> +{
-> +	/*
-> +	 * If the buffer has the write error flag, data was failed to write
-> +	 * out in the block. In this case, set buffer uptodate to prevent
-> +	 * reading old data.
-> +	 */
-> +	if (buffer_write_io_error(bh))
-> +		set_buffer_uptodate(bh);
-> +	return buffer_uptodate(bh);
-> +}
+On Tue, Dec 12, 2023 at 10:42:58AM +0100, Miklos Szeredi wrote:
+> On Tue, 12 Dec 2023 at 10:35, Christian Brauner <brauner@kernel.org> wrote:
+> 
+> > So taking a step back here, please. The original motivation for this
+> > discussion was restricted to handle btrfs - and now bcachefs as well.
+> > Both have a concept of a subvolume so it made sense to go that route.
+> > IOW, it wasn't originally a generic problem or pitched as such.
+> >
+> > Would overlayfs be able to utilize an extended inode field as well?
+> 
+> Well, yes, but I don't think that's the right solution.
 
-So - risking this blows up into a lot of nasty work: Why do we even
-clear the uptodate flag on write errors?  Doing so makes not sense to
-me as the data isn't any less uptodate just because we failed to write
-it..
+Exposing the subvolume id in statx() is still fine imho. It's a concept
+shared between btrfs and bcachefs and it's pretty useful for interested
+userspace that wants to make use of these apis.
 
+> 
+> I think the right solution is to move to using file handles instead of
+> st_ino, the problem with that is that there's no way kernel can force
+> upgrading userspace.
+
+That's not our job tbh. I get why this is desirable. What we can do is
+advertise better and newer apis but we don't have to make unpleasant
+compromises in our interfaces for that.
+
+> 
+> It might help to have the fh in statx, since that's easier on the
+> userspace programmer than having to deal with two interfaces (i_ino
+> won't go away for some time, because of backward compatibility).
+> OTOH I also don't like the way it would need to be shoehorned into
+> statx.
+
+No, it really doesn't belong into statx().
+
+And besides, the file handle apis name_to_handle_at() are already
+in wider use than a lot of people think. Not just for the exportfs case
+but also for example, cgroupfs uses file handles to provide unique
+identifiers for cgroups that can be compared.
