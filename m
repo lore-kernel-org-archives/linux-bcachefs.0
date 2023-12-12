@@ -1,113 +1,101 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E1A/D2kl"
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126F2C6
-	for <linux-bcachefs@vger.kernel.org>; Mon, 11 Dec 2023 17:10:45 -0800 (PST)
-Date: Mon, 11 Dec 2023 20:10:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702343442;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uCmzAPr9FjBUdx8UYMDyo1yWi9l38cZDY5iPqozgHRs=;
-	b=E1A/D2kljetGe803sPAAR5ifgX8fM2f5k8Zi3S66RHvBz5qXxOCuMTRZvgN78btPmqJK0C
-	z6wzpb9uX7GOKdx++MCwvYTgA42kBeNbDS2qob9yA+5UHX4CBDD1teDoSMt2R5iv3eOhMl
-	L4AZgOC6TcrmH0itDDITUcFAwN+RDyI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: NeilBrown <neilb@suse.de>
-Cc: Donald Buczek <buczek@molgen.mpg.de>, linux-bcachefs@vger.kernel.org,
-	Stefan Krueger <stefan.krueger@aei.mpg.de>,
-	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
- snapshots on muti-user systems?)
-Message-ID: <20231212011038.i5cinr5ok7gkotlm@moria.home.lan>
-References: <20231208013739.frhvlisxut6hexnd@moria.home.lan>
- <170200162890.12910.9667703050904306180@noble.neil.brown.name>
- <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
- <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>
- <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
- <170233460764.12910.276163802059260666@noble.neil.brown.name>
- <20231211233231.oiazgkqs7yahruuw@moria.home.lan>
- <170233878712.12910.112528191448334241@noble.neil.brown.name>
- <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
- <170234279139.12910.809452786055101337@noble.neil.brown.name>
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C39D0;
+	Mon, 11 Dec 2023 17:25:31 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sq1Bq47PJz4f3lDH;
+	Tue, 12 Dec 2023 09:25:23 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 6A3D51A049A;
+	Tue, 12 Dec 2023 09:25:28 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgDn6hCEtndlu5ydDQ--.58697S3;
+	Tue, 12 Dec 2023 09:25:27 +0800 (CST)
+Subject: Re: [PATCH RFC v2 for-6.8/block 01/18] block: add some bdev apis
+To: Jan Kara <jack@suse.cz>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+ kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+ hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+ jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+ josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+ konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
+ p.raghav@samsung.com, hare@suse.de, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+ linux-nilfs@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140552.973290-2-yukuai1@huaweicloud.com>
+ <20231211165217.fil437byq7w2vcp7@quack3>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <7d2bfa29-f93d-def2-80a3-72af063b36b3@huaweicloud.com>
+Date: Tue, 12 Dec 2023 09:25:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170234279139.12910.809452786055101337@noble.neil.brown.name>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20231211165217.fil437byq7w2vcp7@quack3>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDn6hCEtndlu5ydDQ--.58697S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7JF4fJw47CF1rCry7Ww4DJwb_yoWfGrc_ZF
+	nakrWkWw1fJa18Kr4qyFs0vr1kWayrWr42vry8tanrX3yrXa92kFsrKr1Fkr45G3yqkrnx
+	uFn2gFyxJr10qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbaxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j
+	6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+	BIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Tue, Dec 12, 2023 at 11:59:51AM +1100, NeilBrown wrote:
-> On Tue, 12 Dec 2023, Kent Overstreet wrote:
-> > NFSv4 specs that for the maximum size? That is pretty hefty...
-> 
-> It is - but it needs room to identify the filesystem and it needs to be
-> stable across time.  That need is more than a local filesystem needs.
-> 
-> NFSv2 allowed 32 bytes which is enough for a 16 byte filesys uuid, 8
-> byte inum and 8byte generation num.  But only just.
-> 
-> NFSv3 allowed 64 bytes which was likely plenty for (nearly?) every
-> situation.
-> 
-> NFSv4 doubled it again because .... who knows.  "why not" I guess.
-> Linux nfsd typically uses 20 or 28 bytes plus whatever the filesystem
-> wants. (28 when the export point is not the root of the filesystem).
-> I suspect this always fits within an NFSv3 handle except when
-> re-exporting an NFS filesystem.  NFS re-export is an interesting case...
+Hi,
 
-Now I'm really curious - i_generation wasn't enough? Are we including
-filesystem UUIDs?
-
-I suppose if we want to be able to round trip this stuff we do need to
-allocate space for it, even if a local filesystem would never include
-it.
-
-> I suggest:
+ÔÚ 2023/12/12 0:52, Jan Kara Ð´µÀ:
+> On Mon 11-12-23 22:05:35, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Those apis will be used for other modules, so that bd_inode won't be
+>> accessed directly from other modules.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > 
->  STATX_ATTR_INUM_NOT_UNIQUE - it is possible that two files have the
->                               same inode number
+> ...
 > 
->  
->  __u64 stx_vol     Volume identifier.  Two files with same stx_vol and 
->                    stx_ino MUST be the same.  Exact meaning of volumes
->                    is filesys-specific
+>> +void bdev_associated_mapping(struct block_device *bdev,
+>> +			     struct address_space *mapping)
+>> +{
+>> +	mapping->host = bdev->bd_inode;
+>> +}
+> 
+> Here I'm not sure - is the helper really a win? It seems a bit obscure to
+> me. This initialization of another mapping for a bdev looks really special.
 
-NFS reexport that you mentioned previously makes it seem like this
-guarantee is impossible to provide in general (so I'd leave it out
-entirely, it's just something for people to trip over).
+Yes, I don't like this helper at all, but gfs2 is used this way, and I
+need this helper to remove 'bd_inode' from block_devcie later. I'm not
+familiar with gfs2 at all but perhaps it worth to dig deeper and figure
+out a proper way for gfs2.
 
-But we definitely want stx_vol in there. Another thing that people ask
-for is a way to ask "is this a subvolume root?" - we should make sure
-that's clearly specified, or can we just include a bit for it?
+Thanks,
+Kuai
+> 
+> 								Honza
+> 
 
->  STATX_VOL         Want stx_vol
-> 
->   __u8 stx_handle_len  Length of stx_handle if present
->   __u8 stx_handle[128] Unique stable identifier for this file.  Will
->                        NEVER be reused for a different file.
->                        This appears AFTER __statx_pad2, beyond
->                        the current 'struct statx'.
->  STATX_HANDLE      Want stx_handle_len and stx_handle. Buffer for
->                    receiving statx info has at least
->                    sizeof(struct statx)+128 bytes.
-> 
-> I think both the handle and the vol can be useful.
-> NFS can provide stx_handle but not stx_vol.  It is the thing
-> to use for equality testing, but it is only needed if
-> STATX_ATTR_INUM_NOT_UNIQUE is set.
-> stx_vol is useful for "du -x" or maybe "du --one-volume" or similar.
-> 
-> 
-> Note that we *could* add stx_vol to NFSv4.2.  It is designed for
-> incremental extension.  I suspect we wouldn't want to rush into this,
-> but to wait to see if different volume-capable filesystems have other
-> details of volumes that are common and can usefully be exported by statx
-
-Sounds reasonable
