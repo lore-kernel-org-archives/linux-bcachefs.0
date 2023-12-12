@@ -1,85 +1,77 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="L1bguwEo"
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DBBD49
-	for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 08:41:36 -0800 (PST)
-Date: Tue, 12 Dec 2023 11:41:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702399294;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CcT5dzqkNb7nk+Wonzwn1SrUsw3iMdiGcuo3tKoKXl4=;
-	b=L1bguwEoiRj1RMrmQPzaHjTe5RYKQ+wEgm1CPbDKGEB2GcYNJfq7IeIdKKTX2h6YIzy5jH
-	HKAJ5970GiZ2lXOzE04xHknqgr90aCHCMtMSitzHbQTu66KivwQge3kJBgdaiXnSh7T5Cb
-	jqckV3XgbuCJa0IPIL58dWz7oCpITgk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
-	Donald Buczek <buczek@molgen.mpg.de>,
-	linux-bcachefs@vger.kernel.org,
-	Stefan Krueger <stefan.krueger@aei.mpg.de>,
-	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
- snapshots on muti-user systems?)
-Message-ID: <20231212164130.ggezxdqq6gkq3smr@moria.home.lan>
-References: <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
- <20231212-impfung-linden-6f973f2ade19@brauner>
- <20231212151631.wi7rgawmp3uig6cl@moria.home.lan>
- <20231212-neudefinition-hingucken-785061b73237@brauner>
- <20231212153542.kl2fbzrabhr6kai5@moria.home.lan>
- <CAJfpegsKsbdtUHUPnu3huCiPXwX46eKYSUbLXiWqH23GinXo7w@mail.gmail.com>
- <20231212154302.uudmkumgjaz5jouw@moria.home.lan>
- <CAJfpegvOEZwZgcbAeivDA+X0qmfGGjOxdvq-xpGQjYuzAJxzkw@mail.gmail.com>
- <20231212160829.vybfdajncvugweiy@moria.home.lan>
- <CAJfpegvNVXoxn3gW9-38YfY5u0FLjXTCDxcv5OtS-p0=0ocQvg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=earthlink.net header.i=@earthlink.net header.b="P0+UqP9Q"
+X-Greylist: delayed 335 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Dec 2023 09:21:15 PST
+Received: from mta-102a.earthlink-vadesecure.net (mta-102a.earthlink-vadesecure.net [51.81.61.66])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F57A0;
+	Tue, 12 Dec 2023 09:21:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; bh=QLgKdeI1YofNbiS/FOWwaRkB1buWzAVPYqmRcM
+ eNmgk=; c=relaxed/relaxed; d=earthlink.net; h=from:reply-to:subject:
+ date:to:cc:resent-date:resent-from:resent-to:resent-cc:in-reply-to:
+ references:list-id:list-help:list-unsubscribe:list-subscribe:list-post:
+ list-owner:list-archive; q=dns/txt; s=dk12062016; t=1702401331;
+ x=1703006131; b=P0+UqP9Q7efKX8QFIRYo4b1UjSvBp8kD/qsqoNx4RPIB3dsFvpSY7nV
+ lzFqEyCkw5eNdspzxtXs9tfAKllEEx5sStOx5YdAk5z88/N3ycDG8AbQx1PRSCCI2EBJ3Dc
+ WPr7JU0O4uBqYfDcWbIpdK9seqAdRlAYTpM9uv0wkwQ+cPdlBqGA+I+Op6LDQ8+z7EYfbh5
+ nk5oP/gnGIjQPbtVJZcuXmnLvHHOAOHq+e7wGGl6FmHBsiSpCH29EuXl69MDkJqkPSyT2e1
+ jW9M/ikV++GKX8k/97teNIBlIr7/f5WV+R/uZnu+qV+/637f3XIlOSLeWVXFpvjy36DGCOs
+ aPg==
+Received: from FRANKSTHINKPAD ([174.174.49.201])
+ by vsel1nmtao02p.internal.vadesecure.com with ngmta
+ id 48a1b7b4-17a024fd67e3209c; Tue, 12 Dec 2023 17:15:30 +0000
+From: "Frank Filz" <ffilzlnx@mindspring.com>
+To: "'Theodore Ts'o'" <tytso@mit.edu>,
+	"'Donald Buczek'" <buczek@molgen.mpg.de>
+Cc: "'Dave Chinner'" <david@fromorbit.com>,
+	"'NeilBrown'" <neilb@suse.de>,
+	"'Kent Overstreet'" <kent.overstreet@linux.dev>,
+	<linux-bcachefs@vger.kernel.org>,
+	"'Stefan Krueger'" <stefan.krueger@aei.mpg.de>,
+	"'David Howells'" <dhowells@redhat.com>,
+	<linux-fsdevel@vger.kernel.org>
+References: <20231208024919.yjmyasgc76gxjnda@moria.home.lan> <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de> <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan> <170233460764.12910.276163802059260666@noble.neil.brown.name> <20231211233231.oiazgkqs7yahruuw@moria.home.lan> <170233878712.12910.112528191448334241@noble.neil.brown.name> <20231212000515.4fesfyobdlzjlwra@moria.home.lan> <170234279139.12910.809452786055101337@noble.neil.brown.name> <ZXf1WCrw4TPc5y7d@dread.disaster.area> <e07d2063-1a0b-4527-afca-f6e6e2ecb821@molgen.mpg.de> <20231212152016.GB142380@mit.edu>
+In-Reply-To: <20231212152016.GB142380@mit.edu>
+Subject: RE: file handle in statx
+Date: Tue, 12 Dec 2023 09:15:29 -0800
+Message-ID: <0b4c01da2d1e$cf65b930$6e312b90$@mindspring.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegvNVXoxn3gW9-38YfY5u0FLjXTCDxcv5OtS-p0=0ocQvg@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Content-Language: en-us
+Thread-Index: AQI2jiBebf/oJPBNRzSpvij1RIkwjAJNcH/PAj0PmP4Bx04wjwGrb0drAjE7wAEBipc+KAKTzaQNAUh2UVECn5o3SAFneCXlr1A9N2A=
+Authentication-Results: earthlink-vadesecure.net;
+ auth=pass smtp.auth=ffilzlnx@mindspring.com smtp.mailfrom=ffilzlnx@mindspring.com;
+X-Spam-Level: *
 
-On Tue, Dec 12, 2023 at 05:30:23PM +0100, Miklos Szeredi wrote:
-> On Tue, 12 Dec 2023 at 17:08, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> On Tue, Dec 12, 2023 at 10:10:23AM +0100, Donald Buczek wrote:
+> > On 12/12/23 06:53, Dave Chinner wrote:
+> >
+> > > So can someone please explain to me why we need to try to re-invent
+> > > a generic filehandle concept in statx when we already have a have
+> > > working and widely supported user API that provides exactly this
+> > > functionality?
+> >
+> > name_to_handle_at() is fine, but userspace could profit from being
+> > able to retrieve the filehandle together with the other metadata in a
+> > single system call.
 > 
-> > In short, STATX_ATTR_INUM_NOT_UNIQUE is required to tell userspace when
-> > they _must_ do the new thing if they care about correctness; it provides
-> > a way to tell userspace what guarantees we're able to provide.
-> 
-> That flag would not help with improving userspace software.
+> Can you say more?  What, specifically is the application that would want
+to do
+> that, and is it really in such a hot path that it would be a user-visible
+> improveable, let aloine something that can be actually be measured?
 
-I disagree. Just having it there and in the documentation will be a good
-solid nudge to userspace programmers that this is something they need to
-consider.
+A user space NFS server like Ganesha could benefit from getting attributes
+and file handle in a single system call.
 
-And: if we size this thing for NFSv4 filehandles, those are big: there's
-an overhead associated with using those, since userspace generally has
-to track in memory all inode numbers/file handles that it's seen.
-STATX_ATTR_INUM_NOT_UNIQUE would allow userspace to avoid that overhead
-when it is safe to do so.
+Potentially it could also avoid some of the challenges of using
+name_to_handle_at that is a privileged operation.
 
-(But remember that file handles include inode generation numbers, and
-inode numbers do not; that is something we should remember to document,
-and explain why it is important).
+Frank
 
-> What would help, if said software started using a unique identifier.
-> We already seem to have a unique ID in the form of file handles,
-> though some exotic filesystems might allow more than one fh to refer
-> to the same inode, so this still needs some looking into.
-> 
-> The big problem is that we can't do a lot about existing software, and
-> must keep trying to keep st_ino unique for the foreseeable future.
 
-Whatever hacks we try to apply to st_ino are outside the scope of this
-discussion. Right now, we need to be figuring out what our future
-proofed interface is going to be, so that we don't end up kicking this
-can down the road when st_ino will be _really_ space constrained.
