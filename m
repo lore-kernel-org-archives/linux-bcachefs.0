@@ -1,93 +1,73 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HPZDKqWv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEFCDC
-	for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 01:46:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702374417;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=esvxw69kt9HBv0/olNC0BlWzgDrZkwrB0IdPpNeWzPE=;
-	b=HPZDKqWvFRFG77KnfYS4sDqdaGQL1ir6sTD3VLmGKoiiR4w9BBDK61M9QjBSAAAXtxY5wK
-	4ALurNNvmHhN0erVcS0wBAbzWbkh/2EKk+UIeFN2BEPMblO4kW343ZqQ5yMc0CmSJHJpUQ
-	n/8wPhBC3P17xIJS4qPjgI2/s/Wtxzk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-607-SCyH3tE6PLuxiN5U41ameg-1; Tue, 12 Dec 2023 04:46:54 -0500
-X-MC-Unique: SCyH3tE6PLuxiN5U41ameg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8FAE8835389;
-	Tue, 12 Dec 2023 09:46:53 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F118F40C6EB9;
-	Tue, 12 Dec 2023 09:46:51 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20231212-ablauf-achtbar-ae6e5b15b057@brauner>
-References: <20231212-ablauf-achtbar-ae6e5b15b057@brauner> <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de> <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan> <170233460764.12910.276163802059260666@noble.neil.brown.name> <20231211233231.oiazgkqs7yahruuw@moria.home.lan> <170233878712.12910.112528191448334241@noble.neil.brown.name> <20231212000515.4fesfyobdlzjlwra@moria.home.lan> <170234279139.12910.809452786055101337@noble.neil.brown.name> <ZXf1WCrw4TPc5y7d@dread.disaster.area> <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com> <2810685.1702372247@warthog.procyon.org.uk>
-To: Christian Brauner <brauner@kernel.org>
-Cc: dhowells@redhat.com, Amir Goldstein <amir73il@gmail.com>,
-    Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
-    Kent Overstreet <kent.overstreet@linux.dev>,
-    Donald Buczek <buczek@molgen.mpg.de>, linux-bcachefs@vger.kernel.org,
-    Stefan Krueger <stefan.krueger@aei.mpg.de>,
-    linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-    linux-btrfs@vger.kernel.org
-Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and snapshots on muti-user systems?)
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dT7hUcTd"
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A045A7;
+	Tue, 12 Dec 2023 05:15:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=d9GOM1CReQqHO2Eq5TSJ+QFrtD+BDx0i0I5iG3RHOkc=; b=dT7hUcTdggq68z9eTLTpZvkowz
+	o0hzxFtGP/1A5CdpXLfKR7IAabXtd6tscvW4EWJ7bqf73me/qP/EdG2B4FI3typytMvICOqncBaZB
+	juLPQegmxMqcDjRUgDWRxj7eyVDzzLp60SQCJEDdgc0OscK42Z3kENibYVgGF0I1l4mcAYgv7Nega
+	dtBKSq2W5Eht1hqZUznEkZjKNtAWvDjb82DMtqFruzGL7aQEKgH38NdlFfSSWk5+OxXcyVtpRNqmc
+	NPwFb5zSyEEcKZJQSk14/2oMDYGzCgMBHQVgCHGvkAUHl3vAl4PoAud1hrwXpknFsKsviOKDCWU7T
+	JzSMOq4g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rD2ae-00BldE-0K;
+	Tue, 12 Dec 2023 13:14:24 +0000
+Date: Tue, 12 Dec 2023 05:14:24 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
+	roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
+	joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
+	vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+	josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org,
+	chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
+	willy@infradead.org, akpm@linux-foundation.org,
+	p.raghav@samsung.com, hare@suse.de, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 for-6.8/block 01/18] block: add some bdev apis
+Message-ID: <ZXhcsNbvzbArtBUj@infradead.org>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140552.973290-2-yukuai1@huaweicloud.com>
+ <20231211165217.fil437byq7w2vcp7@quack3>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2812078.1702374411.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 12 Dec 2023 09:46:51 +0000
-Message-ID: <2812079.1702374411@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211165217.fil437byq7w2vcp7@quack3>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Christian Brauner <brauner@kernel.org> wrote:
+On Mon, Dec 11, 2023 at 05:52:17PM +0100, Jan Kara wrote:
+> > +void bdev_associated_mapping(struct block_device *bdev,
+> > +			     struct address_space *mapping)
+> > +{
+> > +	mapping->host = bdev->bd_inode;
+> > +}
+> 
+> Here I'm not sure - is the helper really a win? It seems a bit obscure to
+> me. This initialization of another mapping for a bdev looks really special.
 
-> > There is a upcoming potential problem where even the 64-bit field I pl=
-aced
-> > in statx() may be insufficient.  The Auristor AFS server, for example,=
- has
-> > a 96-bit vnode ID, but I can't properly represent this in stx_ino.
-> > Currently, I
-> =
+If we want to hide bd_inode we'll something like this helper even if
+I don't particularly like it either.
 
-> Is that vnode ID akin to a volume? Because if so you could just
-> piggy-back on a subvolume id field in statx() and expose it there.
-
-No.  The volume ID is the ID of the volume.  The vnode is the equivalent o=
-f an
-inode.
-
-> > just truncate the value to fit and hope that the discarded part will b=
-e all
-> > zero, but that's not really a good thing to do - especially when stx_i=
-no is
-> > used programmatically to check for hardlinks.
-> > =
-
-> > Would it be better to add an 'stx_ino_2' field and corresponding flag?
-> =
-
-> Would this be meaningfully different from using a file handle?
-
-There's also the matter of presenting the "inode number" to the user - "ls=
- -i"
-for example.
-
-David
-
+But it might be a good idea to move out of this series and into the
+follow on removing bd_inode, as it's rather pointless without that
+context.
