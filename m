@@ -1,102 +1,148 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=earthlink.net header.i=@earthlink.net header.b="rMg4ncyU"
-Received: from mta-101a.earthlink-vadesecure.net (mta-101a.earthlink-vadesecure.net [51.81.61.60])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387D1AD;
-	Tue, 12 Dec 2023 11:18:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; bh=iNhXZaA1uzGEWSnxpxhdt0noXL5bjA9mN7YcaH
- C9Il8=; c=relaxed/relaxed; d=earthlink.net; h=from:reply-to:subject:
- date:to:cc:resent-date:resent-from:resent-to:resent-cc:in-reply-to:
- references:list-id:list-help:list-unsubscribe:list-subscribe:list-post:
- list-owner:list-archive; q=dns/txt; s=dk12062016; t=1702408684;
- x=1703013484; b=rMg4ncyUWE8j4hdw52dMjlM4O2QSzI2aQaZyfa18oIbaXYdAZs5B/n/
- +OfDMejvRgdAyZQqce4B27Z/gab85vDlI18AjfzyAKbXIhoPupbpK32Ykf3BvvFqkqFaLJp
- WbLtGIltspRy02zgm7XPPdTXMLXDyUnN3cav7VDhqn50zMcdmRmMOwuNCVBtHQ0OimRZSWy
- PpGYInXwl86M6RyzCgFIfZaJpLLUvJulkSLHEBFzBYJ49I4GVxhWr68R/im7CwJlkmbe+Aj
- jMsKWhO9XcHbZp0OwF+0zkyhFLSSWMiwQ41fLj8CsZ+XI69PtwxJm830KZu+osjcn0D6eca
- tig==
-Received: from FRANKSTHINKPAD ([174.174.49.201])
- by vsel1nmtao01p.internal.vadesecure.com with ngmta
- id ef714e20-17a02bad7b096f68; Tue, 12 Dec 2023 19:18:04 +0000
-From: "Frank Filz" <ffilzlnx@mindspring.com>
-To: "'Amir Goldstein'" <amir73il@gmail.com>,
-	"'Kent Overstreet'" <kent.overstreet@linux.dev>
-Cc: "'Theodore Ts'o'" <tytso@mit.edu>,
-	"'Donald Buczek'" <buczek@molgen.mpg.de>,
-	"'Dave Chinner'" <david@fromorbit.com>,
-	"'NeilBrown'" <neilb@suse.de>,
-	<linux-bcachefs@vger.kernel.org>,
-	"'Stefan Krueger'" <stefan.krueger@aei.mpg.de>,
-	"'David Howells'" <dhowells@redhat.com>,
-	<linux-fsdevel@vger.kernel.org>
-References: <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan> <170233460764.12910.276163802059260666@noble.neil.brown.name> <20231211233231.oiazgkqs7yahruuw@moria.home.lan> <170233878712.12910.112528191448334241@noble.neil.brown.name> <20231212000515.4fesfyobdlzjlwra@moria.home.lan> <170234279139.12910.809452786055101337@noble.neil.brown.name> <ZXf1WCrw4TPc5y7d@dread.disaster.area> <e07d2063-1a0b-4527-afca-f6e6e2ecb821@molgen.mpg.de> <20231212152016.GB142380@mit.edu> <0b4c01da2d1e$cf65b930$6e312b90$@mindspring.com> <20231212174432.toj6c65mlqrlt256@moria.home.lan> <CAOQ4uxgcUQE9Ldg8rodMXJvbU9BDCC9wGED0jANGrC-OLY1HJQ@mail.gmail.com>
-In-Reply-To: <CAOQ4uxgcUQE9Ldg8rodMXJvbU9BDCC9wGED0jANGrC-OLY1HJQ@mail.gmail.com>
-Subject: RE: file handle in statx
-Date: Tue, 12 Dec 2023 11:18:02 -0800
-Message-ID: <0b5d01da2d2f$ee5df9e0$cb19eda0$@mindspring.com>
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="sLqInWGe"
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A030D60
+	for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 12:48:20 -0800 (PST)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-5906e03a7a4so3387548eaf.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 12:48:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1702414100; x=1703018900; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eVqjzYmMQlC8GFrsUFTCmPpPXyWkgv32hXJBYv5zBPg=;
+        b=sLqInWGeZOV0m3TId42q/7hH88dLpFBnxfCD2InaaA/asS5N6d2nYPAvSA+FqS5oo4
+         RI8swNCW3L5PNDSXGAcQoSoIvQcfBjPpGomZXWF3KbZ+E3u3S9qjkwTzhW2ItSPnIow4
+         n8OsXCmMSVMwYCyhOCDxcc9G+OxjKa/l/0S8shIDd7cR1rgUujy4JX74ZR7QyFX4Hg+O
+         nFicUGUiE658Lb+coAKQYXDEc3scWybaX9jTin4bQUhfnwqiTE5WSyMrOtzi3FUA+kWe
+         ol4EPNAMWcQHm+tAm4SazPlt94b7rQLbKQyMrqxf7fP1wcFRDN1ZGalD/b7N/ugePgS7
+         +xIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702414100; x=1703018900;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eVqjzYmMQlC8GFrsUFTCmPpPXyWkgv32hXJBYv5zBPg=;
+        b=V38XvqY5ilRamEy4N9Us1JNnh7XLz+XHuS0QGuzpVNJp9pMZKqhoCI4yf2qC5IM2nC
+         jBuuvyZdyQyz6gbWDCafDhv+QVspm52LEvSkRH9xNu+m/HC7VTVt/9h7maIakGPoQGuA
+         i+0PJpIDf0lQBStBsX09T1E8XT8VIcc+agNbba/lF1II75Okm6HV5DSL9XFnh0e5nc7g
+         aUFViKzoLsSVf21N+Aj/hpo3Hm6rWHKkMDCPH/QoyjvZzzf7bvYxAOxkNGJI2SMnD4xG
+         gdBKBXyulsgOBDvmcGgxtu3jVABpZNRzrzR5zJTFx8MDppyfRJwFKdUPb40Cef2Vekmi
+         CESg==
+X-Gm-Message-State: AOJu0YwcpZsyEk8b4+iU1V6rWPSawZRb3m24MOjLDQAk4L2NQbRsE3vU
+	gSMwRi+WlBARc+mY06ZE/HUSYg==
+X-Google-Smtp-Source: AGHT+IEko0WrYzcClnAKt6LFrWR88tsKOkk7WGPmvQ8700VnhlisdsftOAR9JshHQTBff8F/+hr7jw==
+X-Received: by 2002:a05:6359:1a86:b0:170:21ef:3e71 with SMTP id rv6-20020a0563591a8600b0017021ef3e71mr4232756rwb.42.1702414100115;
+        Tue, 12 Dec 2023 12:48:20 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id ks5-20020a056a004b8500b006cef51f51b7sm6449110pfb.155.2023.12.12.12.48.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 12:48:19 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rD9fs-007S6y-0s;
+	Wed, 13 Dec 2023 07:48:16 +1100
+Date: Wed, 13 Dec 2023 07:48:16 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: NeilBrown <neilb@suse.de>, Donald Buczek <buczek@molgen.mpg.de>,
+	linux-bcachefs@vger.kernel.org,
+	Stefan Krueger <stefan.krueger@aei.mpg.de>,
+	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
+ snapshots on muti-user systems?)
+Message-ID: <ZXjHEPn3DfgQNoms@dread.disaster.area>
+References: <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
+ <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>
+ <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
+ <170233460764.12910.276163802059260666@noble.neil.brown.name>
+ <20231211233231.oiazgkqs7yahruuw@moria.home.lan>
+ <170233878712.12910.112528191448334241@noble.neil.brown.name>
+ <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
+ <170234279139.12910.809452786055101337@noble.neil.brown.name>
+ <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+ <20231212152153.tasaxsrljq2zzbxe@moria.home.lan>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 15.0
-Content-Language: en-us
-Thread-Index: AQI9D5j+iWWTWnyU8CMdbk6E8xo4PwHHTjCPAatvR2sCMTvAAQGKlz4oApPNpA0BSHZRUQKfmjdIAWd4JeUCEu11rwHu2mPMAhIwDuivNxBsIA==
-Authentication-Results: earthlink-vadesecure.net;
- auth=pass smtp.auth=ffilzlnx@mindspring.com smtp.mailfrom=ffilzlnx@mindspring.com;
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212152153.tasaxsrljq2zzbxe@moria.home.lan>
 
-> On Tue, Dec 12, 2023 at 7:44=E2=80=AFPM Kent Overstreet =
-<kent.overstreet@linux.dev>
-> wrote:
-> >
-> > On Tue, Dec 12, 2023 at 09:15:29AM -0800, Frank Filz wrote:
-> > > > On Tue, Dec 12, 2023 at 10:10:23AM +0100, Donald Buczek wrote:
-> > > > > On 12/12/23 06:53, Dave Chinner wrote:
-> > > > >
-> > > > > > So can someone please explain to me why we need to try to
-> > > > > > re-invent a generic filehandle concept in statx when we
-> > > > > > already have a have working and widely supported user API =
-that
-> > > > > > provides exactly this functionality?
-> > > > >
-> > > > > name_to_handle_at() is fine, but userspace could profit from
-> > > > > being able to retrieve the filehandle together with the other
-> > > > > metadata in a single system call.
-> > > >
-> > > > Can you say more?  What, specifically is the application that
-> > > > would want
-> > > to do
-> > > > that, and is it really in such a hot path that it would be a
-> > > > user-visible improveable, let aloine something that can be =
-actually be
-> measured?
-> > >
-> > > A user space NFS server like Ganesha could benefit from getting
-> > > attributes and file handle in a single system call.
-> > >
-> > > Potentially it could also avoid some of the challenges of using
-> > > name_to_handle_at that is a privileged operation.
-> >
-> > which begs the question - why is name_to_handle_at() privileged?
-> >
->=20
-> AFAICT, it is not privileged.
-> Only open_by_handle_at() is privileged.
+On Tue, Dec 12, 2023 at 10:21:53AM -0500, Kent Overstreet wrote:
+> On Tue, Dec 12, 2023 at 04:53:28PM +1100, Dave Chinner wrote:
+> > Doesn't anyone else see or hear the elephant trumpeting loudly in
+> > the middle of the room?
+> > 
+> > I mean, we already have name_to_handle_at() for userspace to get a
+> > unique, opaque, filesystem defined file handle for any given file.
+> > It's the same filehandle that filesystems hand to the nfsd so nfs
+> > clients can uniquely identify the file they are asking the nfsd to
+> > operate on.
+> > 
+> > The contents of these filehandles is entirely defined by the file
+> > system and completely opaque to the user. The only thing that
+> > parses the internal contents of the handle is the filesystem itself.
+> > Therefore, as long as the fs encodes the information it needs into the
+> > handle to determine what subvol/snapshot the inode belongs to when
+> > the handle is passed back to it (e.g. from open_by_handle_at()) then
+> > nothing else needs to care how it is encoded.
+> > 
+> > So can someone please explain to me why we need to try to re-invent
+> > a generic filehandle concept in statx when we already have a
+> > have working and widely supported user API that provides exactly
+> > this functionality?
+> 
+> Definitely should be part of the discussion :)
+> 
+> But I think it _does_ need to be in statx; because:
+>  - we've determined that 64 bit ino_t just isn't a future proof
+>    interface, we're having real problems with it today
+>  - statx is _the_ standard, future proofed interface for getting inode
+>    attributes
 
-Ah, that makes sense. I'm a consumer of these interfaces, not so much in =
-the kernel these days.
+No, it most definitely isn't, and statx was never intended as a
+dumping ground for anything and everything inode related. e.g. Any
+inode attribute that can be modified needs to use a different
+interface - one that has a corresponding "set" operation.
 
-Ganesha depends on open_by_handle_at as well, so requires privilege to =
-do handle stuff with kernel file systems.
+>  - therefore, if we want userspace programmers to be using filehandles,
+>    instead of inode numbers, so there code isn't broken, we need to be
+>    providing interfaces that guide them in that direction.
 
-In any case, Ganesha could easily benefit from a savings of system =
-calls.
+We already have a filehandle interface they can use for this
+purpose. It is already used by some userspace applications for this
+purpose.
 
-What would also be handy is a read directory with attributes that gave =
-the statx results for each entry.
+Anything new API function do with statx() will require application
+changes, and the vast majority of applications aren't using statx()
+directly - they are using stat() which glibc wraps to statx()
+internally. So they are going to need a change of API, anyway.
 
-Frank
+So, fundamentally, there is a change of API for most applications
+that need to do thorough inode uniqueness checks regardless of
+anything else. They can do this right now - just continue using
+stat() as they do right now, and then use name_to_filehandle_at()
+for uniqueness checks.
 
+> Even assuming we can update all the documentation to say "filehandles
+> are the correct way to test inode uniqueness", you know at least half of
+> programmers will stick to stx_ino instead of the filehandle if the
+> filehandle is an extra syscall.
+
+Your argument is "programmers suck so we must design for the
+lowest common denominator". That's an -awful- way to design APIs.
+
+Further, this "programmers suck" design comes at a cost to every
+statx() call that does not need filehandles. That's the vast
+majority of statx() calls that are made on a system. Why should we
+slow down statx() for all users when so few applications actually
+need uniqueness and they can take the cost of robust uniqueness
+tests with an extra syscall entirely themselves?
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
