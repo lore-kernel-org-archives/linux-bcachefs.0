@@ -1,93 +1,69 @@
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF62BD;
-	Tue, 12 Dec 2023 23:38:33 -0800 (PST)
-Received: from [141.14.31.7] (theinternet.molgen.mpg.de [141.14.31.7])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: buczek)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id F124D61E5FE04;
-	Wed, 13 Dec 2023 08:37:57 +0100 (CET)
-Message-ID: <a0f820a7-3cf5-4826-a15b-e536abb5b1de@molgen.mpg.de>
-Date: Wed, 13 Dec 2023 08:37:57 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2201EB37;
+	Wed, 13 Dec 2023 09:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BztBqQf2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B8F8C433C7;
+	Wed, 13 Dec 2023 09:41:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702460467;
+	bh=1O6MSfrSt69X44+QtFffJJy5vAeC5w5FjpWi7Is60aQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BztBqQf2LzyPjacA2eN1b+Ik37XUPfKdAWUsKSs/TgMJGF205qgCXeprR6SRwXmce
+	 lCFAnMyjI82KsmaH/4LEU2OBkkvCgj3qrsddCNGhR3tSzgGr0xF/HzshlZln1MOrig
+	 pygdnezAxjuMnSIVyrlf2HJ/BrpWzqR0XEocg3/xHjB8jsHOxBIvznMdMp3k6V/aIY
+	 0hr2NR2twyo6k/XT3t7puQeCN4XwgZ+BVDmVDJ1PwrJjzLb+wvkET/et9GocU9poZO
+	 bqRJuZn0aKbTeq7N6RFr+tY4SJDpq/KXVoPUmICIaiEdehjbWLlee2try45W12hpw3
+	 TB219d/NuQzKg==
+Date: Wed, 13 Dec 2023 10:41:01 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>,
+	Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
+	Donald Buczek <buczek@molgen.mpg.de>,
+	linux-bcachefs@vger.kernel.org,
+	Stefan Krueger <stefan.krueger@aei.mpg.de>,
+	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
+	Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
+ snapshots on muti-user systems?)
+Message-ID: <20231213-unansehnlich-immun-a57123171e9d@brauner>
+References: <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+ <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
+ <20231212-impfung-linden-6f973f2ade19@brauner>
+ <20231212151631.wi7rgawmp3uig6cl@moria.home.lan>
+ <20231212-neudefinition-hingucken-785061b73237@brauner>
+ <20231212153542.kl2fbzrabhr6kai5@moria.home.lan>
+ <CAJfpegsKsbdtUHUPnu3huCiPXwX46eKYSUbLXiWqH23GinXo7w@mail.gmail.com>
+ <20231212154302.uudmkumgjaz5jouw@moria.home.lan>
+ <CAJfpegvOEZwZgcbAeivDA+X0qmfGGjOxdvq-xpGQjYuzAJxzkw@mail.gmail.com>
+ <20231212160829.vybfdajncvugweiy@moria.home.lan>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: file handle in statx
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
- Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org,
- Stefan Krueger <stefan.krueger@aei.mpg.de>,
- David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
-References: <20231208024919.yjmyasgc76gxjnda@moria.home.lan>
- <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>
- <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
- <170233460764.12910.276163802059260666@noble.neil.brown.name>
- <20231211233231.oiazgkqs7yahruuw@moria.home.lan>
- <170233878712.12910.112528191448334241@noble.neil.brown.name>
- <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
- <170234279139.12910.809452786055101337@noble.neil.brown.name>
- <ZXf1WCrw4TPc5y7d@dread.disaster.area>
- <e07d2063-1a0b-4527-afca-f6e6e2ecb821@molgen.mpg.de>
- <20231212152016.GB142380@mit.edu>
-Content-Language: en-US, de-DE
-From: Donald Buczek <buczek@molgen.mpg.de>
-In-Reply-To: <20231212152016.GB142380@mit.edu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231212160829.vybfdajncvugweiy@moria.home.lan>
 
-On 12/12/23 16:20, Theodore Ts'o wrote:
-> On Tue, Dec 12, 2023 at 10:10:23AM +0100, Donald Buczek wrote:
->> On 12/12/23 06:53, Dave Chinner wrote:
->>
->>> So can someone please explain to me why we need to try to re-invent
->>> a generic filehandle concept in statx when we already have a
->>> have working and widely supported user API that provides exactly
->>> this functionality?
->>
->> name_to_handle_at() is fine, but userspace could profit from being
->> able to retrieve the filehandle together with the other metadata in
->> a single system call.
-> 
-> Can you say more?  What, specifically is the application that would
-> want to do that, and is it really in such a hot path that it would be
-> a user-visible improveable, let aloine something that can be actually
-> be measured?
+> But when you show up to a discussion that's been going on for a page,
 
-Probably not for the specific applications I mentioned (backup, mirror,
-accounting). These are intended to run continuously, slowly and unnoticed
-in the background, so they are memory and i/o throttled via cgroups anyway
-and one is even using sleep after so-and-so many stat calls to reduce
-its impact.
+On the bcachefs mailing list without fsdevel or anyone else Cced.
 
-If they could tell a directory from a snapshot, I would probably stop them
-from walking into snapshots. And if not, the snapshot id is all that is
-needed to tell a clone in a snapshot from a hardlink. So these don't really
-need the filehandle.
+> where everything's been constructively gathering input, and you start
+> namecalling - and crucially, _without giving any technical justification
 
-In the thread it was assumed, that there are other (unspecified)
-applications which need the filehandle and currently use name_to_handle_at().
+I didn't namecall at all. I just didn't like the flag and called it
+"ugly" and explicitly said that I didn't see the value it brings. And
+I'm not the only one.
 
-I though it was self-evident that a single syscall to retrieve all
-information atomically is better than a set of syscalls. Each additional
-syscall has overhead and you need to be concerned with the data changing
-between the calls.
+I've been pretty supportive of the other parts of this. So I truly don't
+understand why your turning this into a personal thing.
 
-Userspace nfs server as an example of an application, where visible
-performance is more relevant, was already mentioned by someone else.
+> for your opinions_ - that's just you being a dick.
 
-Best
-  Donald
-
-
-> 
-> 						- Ted
--- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 1433
-
+Calling me a dick even if just implied is clearly crossing a line.
