@@ -1,97 +1,76 @@
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92935CD;
-	Tue, 12 Dec 2023 17:10:11 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sqcpl4009z4f3jps;
-	Wed, 13 Dec 2023 09:10:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B49591A0952;
-	Wed, 13 Dec 2023 09:10:08 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgDX2xFuBHlllVr5DQ--.61515S3;
-	Wed, 13 Dec 2023 09:10:07 +0800 (CST)
-Subject: Re: [PATCH RFC v2 for-6.8/block 01/18] block: add some bdev apis
-To: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>
-Cc: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk, roger.pau@citrix.com,
- colyli@suse.de, kent.overstreet@gmail.com, joern@lazybastard.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
- martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
- nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
- konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
- p.raghav@samsung.com, hare@suse.de, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
- linux-nilfs@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140552.973290-2-yukuai1@huaweicloud.com>
- <20231211165217.fil437byq7w2vcp7@quack3> <ZXhcsNbvzbArtBUj@infradead.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <718c424e-2514-8a14-b461-7e20b6355d16@huaweicloud.com>
-Date: Wed, 13 Dec 2023 09:10:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lkYAkaqk"
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [IPv6:2001:41d0:203:375::ad])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A74698
+	for <linux-bcachefs@vger.kernel.org>; Tue, 12 Dec 2023 18:46:23 -0800 (PST)
+Date: Tue, 12 Dec 2023 21:46:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702435581;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4tTjib9hcujEFVbs9UAmhXbLn7lUpajBH1hkqTzs0/I=;
+	b=lkYAkaqkhQQnt2XomNJotDVDLlmtP66idz86QnMviVc9NBCekO0luMeIs5dsFHxFEwBEPR
+	Ea7SoSx5aXT1ZtBElagbubMzuM9UZphWvI3r5sZYTjf1h3+ls6j5WOhqRORRGLMRkozr7Q
+	4JYyIEM+1fo+iidwmv5BWhAIauaILks=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>,
+	Li Wang <liwang@redhat.com>,
+	Richard Palethorpe <rpalethorpe@suse.com>,
+	Jan Stancek <jstancek@redhat.com>, Xiao Yang <yangx.jy@fujitsu.com>,
+	Yang Xu <xuyang2018.jy@fujitsu.com>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	fstests@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+	Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH v2 3/3] statx04: Skip STATX_ATTR_COMPRESSED on Bcachefs
+Message-ID: <20231213024617.vx3epsav2n2lxozi@moria.home.lan>
+References: <20231207194011.273027-1-pvorel@suse.cz>
+ <20231207194011.273027-4-pvorel@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZXhcsNbvzbArtBUj@infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDX2xFuBHlllVr5DQ--.61515S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF1DtryfCryDXw4DAry7Wrg_yoW3GFg_Xr
-	909FW8K3W8A3ykJr43trs8Kr9YyFs2gr1UZrWrJ3W7X34kXFs8GFWvyr98WryfGw48CrnI
-	kF9F934fJr92qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbaxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-	17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Gr0_
-	Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x0JUCXdbUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207194011.273027-4-pvorel@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
+On Thu, Dec 07, 2023 at 08:40:11PM +0100, Petr Vorel wrote:
+> STATX_ATTR_COMPRESSED is not supported on Bcachefs, thus skip it
+> (it's already skipped on tmpfs and XFS).
 
-ÔÚ 2023/12/12 21:14, Christoph Hellwig Ð´µÀ:
-> On Mon, Dec 11, 2023 at 05:52:17PM +0100, Jan Kara wrote:
->>> +void bdev_associated_mapping(struct block_device *bdev,
->>> +			     struct address_space *mapping)
->>> +{
->>> +	mapping->host = bdev->bd_inode;
->>> +}
->>
->> Here I'm not sure - is the helper really a win? It seems a bit obscure to
->> me. This initialization of another mapping for a bdev looks really special.
+Hang on, bcachefs most definitely does hae compression. This would be
+just because statx isn't plumbed through?
+
 > 
-> If we want to hide bd_inode we'll something like this helper even if
-> I don't particularly like it either.
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> New in v2
 > 
-> But it might be a good idea to move out of this series and into the
-> follow on removing bd_inode, as it's rather pointless without that
-> context.
-
-Yes, this sounds good, I'll remove this from v3.
-
-Thanks,
-Kuai
-
-> .
+>  testcases/kernel/syscalls/statx/statx04.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-
+> diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+> index 58296bd24..c2ed52deb 100644
+> --- a/testcases/kernel/syscalls/statx/statx04.c
+> +++ b/testcases/kernel/syscalls/statx/statx04.c
+> @@ -96,8 +96,9 @@ static void setup(void)
+>  	for (i = 0, expected_mask = 0; i < ARRAY_SIZE(attr_list); i++)
+>  		expected_mask |= attr_list[i].attr;
+>  
+> -	/* STATX_ATTR_COMPRESSED not supported on XFS, TMPFS */
+> -	if (!strcmp(tst_device->fs_type, "xfs") || !strcmp(tst_device->fs_type, "tmpfs"))
+> +	/* STATX_ATTR_COMPRESSED not supported on Bcachefs, TMPFS, XFS */
+> +	if (!strcmp(tst_device->fs_type, "bcachefs") || !strcmp(tst_device->fs_type, "tmpfs") ||
+> +	    !strcmp(tst_device->fs_type, "xfs"))
+>  		expected_mask &= ~STATX_ATTR_COMPRESSED;
+>  
+>  	/* Attribute support was added to Btrfs statx() in kernel v4.13 */
+> -- 
+> 2.43.0
+> 
