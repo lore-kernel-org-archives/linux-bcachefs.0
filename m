@@ -1,149 +1,156 @@
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15F6DD;
-	Wed, 13 Dec 2023 05:48:32 -0800 (PST)
-Received: from [141.14.31.7] (theinternet.molgen.mpg.de [141.14.31.7])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fNSxBj8J";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="q5uAsB1z";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Imxu1RF/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="USthpHul"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8352EB9
+	for <linux-bcachefs@vger.kernel.org>; Wed, 13 Dec 2023 08:51:14 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: buczek)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 1E48761E5FE0A;
-	Wed, 13 Dec 2023 14:48:14 +0100 (CET)
-Message-ID: <7ed8baa0-b895-43a2-bb13-93a92e18a823@molgen.mpg.de>
-Date: Wed, 13 Dec 2023 14:48:13 +0100
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D3D7F225E7;
+	Wed, 13 Dec 2023 16:51:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702486273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MjnSZcYc2/R6+mXiil5KbjqjW0fm464lxdVIEs0fbPs=;
+	b=fNSxBj8JpKirvKLEhfBgEl0grOj1QeJE7oC7yvTIPORKQNZaEpQu23bs31KahnVHzQR0MD
+	FgE6mLTX8P+OgrXGLJzmIxMh451Ag5NZZ673RpAy0XL2mtCsPbTMvHXZ6Rg6fpr6QlSBlm
+	nMYYxDzqABmbWOhDb33svsvVkjB1QDk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702486273;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MjnSZcYc2/R6+mXiil5KbjqjW0fm464lxdVIEs0fbPs=;
+	b=q5uAsB1zBDfVraAze9j8I+sKr8uknuxvS7ngSEcx7VN6+mWm6l/1LNeFChQTYLsoGZGdES
+	NN0qU5L5lBLxtFCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702486272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MjnSZcYc2/R6+mXiil5KbjqjW0fm464lxdVIEs0fbPs=;
+	b=Imxu1RF/1X1rVq+qWCEiExfU0UZfM4L910aMzAmjrh/vJZlXbGLEMxf8L65W/QJ5PfaqQ8
+	94mFVK7yBygOvMDe3pc0psRoaDCBWvE2LV2kfAL+x0lK8dueg1EhfAXQukFfuiKuJn6dT4
+	8rjnJnXgnX0d30SQY/Ybu21b111ZNFg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702486272;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MjnSZcYc2/R6+mXiil5KbjqjW0fm464lxdVIEs0fbPs=;
+	b=USthpHul1CNE/Obi1vLkoxwTVnWF7cjyUV7/JC8hfVvJAF0PcsyDOKMfCbXOs8IS/izmVt
+	EA/AmD9OJjoQo0BQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C353B1391D;
+	Wed, 13 Dec 2023 16:51:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id ZEFfLwDheWUCbQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Wed, 13 Dec 2023 16:51:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 64F8AA07E0; Wed, 13 Dec 2023 17:51:08 +0100 (CET)
+From: Jan Kara <jack@suse.cz>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Brian Foster <bfoster@redhat.com>,
+	linux-bcachefs@vger.kernel.org,
+	Petr Vorel <pvorel@suse.cz>,
+	Jan Kara <jack@suse.cz>
+Subject: [PATCH] bcachefs: Fix determining required file handle length
+Date: Wed, 13 Dec 2023 17:51:04 +0100
+Message-Id: <20231213165104.19716-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: file handle in statx
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Theodore Ts'o <tytso@mit.edu>, Dave Chinner <david@fromorbit.com>,
- NeilBrown <neilb@suse.de>, linux-bcachefs@vger.kernel.org,
- Stefan Krueger <stefan.krueger@aei.mpg.de>,
- David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org
-References: <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
- <170233460764.12910.276163802059260666@noble.neil.brown.name>
- <20231211233231.oiazgkqs7yahruuw@moria.home.lan>
- <170233878712.12910.112528191448334241@noble.neil.brown.name>
- <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
- <170234279139.12910.809452786055101337@noble.neil.brown.name>
- <ZXf1WCrw4TPc5y7d@dread.disaster.area>
- <e07d2063-1a0b-4527-afca-f6e6e2ecb821@molgen.mpg.de>
- <20231212152016.GB142380@mit.edu>
- <a0f820a7-3cf5-4826-a15b-e536abb5b1de@molgen.mpg.de>
- <20231213122820.umqmp3yvbbvizfym@moria.home.lan>
-From: Donald Buczek <buczek@molgen.mpg.de>
-In-Reply-To: <20231213122820.umqmp3yvbbvizfym@moria.home.lan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1636; i=jack@suse.cz; h=from:subject; bh=qiAIQXpkDgsaS4bmtJBzQW3VN1jt0bNBPUdFhdxLpRM=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBleeDybgiwIdhnwSoiqIRQiHyqW3D26jkIwQ/nwLBb qCJquUeJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZXng8gAKCRCcnaoHP2RA2akVCA CrqkDRI3lQWQT4/GGX8r/PMFuU/2MxFPy2kUyCIlCosFvlqVfKmVp9n+kL9iDJIMDKm7jOOzqbcraV CTyk8XjuNyZIgU+Cw2O2Jmdz4dHRH+5GBB9h2rVZAkVUGehieIE7Dh0b6VflULfpXZEzhS/2aMrdU7 jEUswBYzSloH3rSZzcvSstI/n2Okpt4ZDHDYYoM9hhDMdYWnWLQ1FtdDmG6v6RK5BkFjZRG2QnRq1A vysuAySlxht935WYoLhShVsw+V2OBgS5eY2e52rBSPhf9JFAnYoi3q/6T+wPWsNttHtCXTJ6kOsCf/ RSo/61EzKz4AUSF2XirihGQVzLHjGs
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: 4.90
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Score: 3.78
+X-Spamd-Result: default: False [3.78 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.12)[-0.616];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
-On 12/13/23 13:28, Kent Overstreet wrote:
-> On Wed, Dec 13, 2023 at 08:37:57AM +0100, Donald Buczek wrote:
->> Probably not for the specific applications I mentioned (backup, mirror,
->> accounting). These are intended to run continuously, slowly and unnoticed
->> in the background, so they are memory and i/o throttled via cgroups anyway
->> and one is even using sleep after so-and-so many stat calls to reduce
->> its impact.
->>
->> If they could tell a directory from a snapshot, I would probably stop them
->> from walking into snapshots. And if not, the snapshot id is all that is
->> needed to tell a clone in a snapshot from a hardlink. So these don't really
->> need the filehandle.
-> 
-> Perhaps we should allocate a bit for differentiating a snapshot from a
-> non snapshot subvolume?
-Are there non-snapshots subvolumes?
+The ->encode_fh method is responsible for setting amount of space
+required for storing the file handle if not enough space was provided.
+bch2_encode_fh() was not setting required length in that case which
+breaks e.g. fanotify. Fix it.
 
-From  debugfs bcachefs/../btrees, I've got the impression, that every
-volume starts with a (single) snapshot.
+Reported-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/bcachefs/fs.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-new fileystem:
-
-subvolumes
-==========
-u64s 10 type subvolume 0:1:0 len 0 ver 0: root 4096 snapshot id 4294967295 parent 0
-
-snapshots
-=========
-u64s 10 type snapshot 0:4294967295:0 len 0 ver 0: is_subvol 1 deleted 0 parent          0 children          0          0 subvol 1 tree 1 depth 0 skiplist 0 0 0
-
-`bcachefs subvolume create /mnt/v`
-
-subvolumes
-==========
-u64s 10 type subvolume 0:1:0 len 0 ver 0: root 4096 snapshot id 4294967295 parent 0
-u64s 10 type subvolume 0:2:0 len 0 ver 0: root 1207959552 snapshot id 4294967294 parent 0
-
-snapshots
-=========
-u64s 10 type snapshot 0:4294967294:0 len 0 ver 0: is_subvol 1 deleted 0 parent          0 children          0          0 subvol 2 tree 2 depth 0 skiplist 0 0 0
-u64s 10 type snapshot 0:4294967295:0 len 0 ver 0: is_subvol 1 deleted 0 parent          0 children          0          0 subvol 1 tree 1 depth 0 skiplist 0 0 0
-
-`bcachefs subvolume snapshot /mnt/v /mnt/s`
-
-subvolumes
-==========
-u64s 10 type subvolume 0:1:0 len 0 ver 0: root 4096 snapshot id 4294967295 parent 0
-u64s 10 type subvolume 0:2:0 len 0 ver 0: root 1207959552 snapshot id 4294967292 parent 0
-u64s 10 type subvolume 0:3:0 len 0 ver 0: root 1207959552 snapshot id 4294967293 parent 2
-
-snapshot
-========
-u64s 10 type snapshot 0:4294967292:0 len 0 ver 0: is_subvol 1 deleted 0 parent 4294967294 children          0          0 subvol 2 tree 2 depth 1 skiplist 4294967294 4294967294 4294967294
-u64s 10 type snapshot 0:4294967293:0 len 0 ver 0: is_subvol 1 deleted 0 parent 4294967294 children          0          0 subvol 3 tree 2 depth 1 skiplist 4294967294 4294967294 4294967294
-u64s 10 type snapshot 0:4294967294:0 len 0 ver 0: is_subvol 0 deleted 0 parent          0 children 4294967293 4294967292 subvol 0 tree 2 depth 0 skiplist 0 0 0
-u64s 10 type snapshot 0:4294967295:0 len 0 ver 0: is_subvol 1 deleted 0 parent          0 children          0          0 subvol 1 tree 1 depth 0 skiplist 0 0 0
-
-Now reading and interpreting the filehandles:
-
-/mnt/.     type  177 : 00 10 00 00 00 00 00 00 01 00 00 00 00 00 00 00 : inode 0000000000001000 subvolume 00000001 generation 00000000
-/mnt/v     type  177 : 00 00 00 48 00 00 00 00 02 00 00 00 00 00 00 00 : inode 0000000048000000 subvolume 00000002 generation 00000000
-/mnt/s     type  177 : 00 00 00 48 00 00 00 00 03 00 00 00 00 00 00 00 : inode 0000000048000000 subvolume 00000003 generation 00000000
-
-
-So is there really a type difference between the objects created by
-`bcachefs subvolume create` and `bcachefs subvolume snapshot` ? It appears
-that they both point to a volume which points to a snapshot in the snapshot
-tree.
-
-Best
-
-  Donald
-
-
->> In the thread it was assumed, that there are other (unspecified)
->> applications which need the filehandle and currently use name_to_handle_at().
->>
->> I though it was self-evident that a single syscall to retrieve all
->> information atomically is better than a set of syscalls. Each additional
->> syscall has overhead and you need to be concerned with the data changing
->> between the calls.
-> 
-> All other things being equal, yeah it would be. But things are never
-> equal :)
-> 
-> Expanding struct statx is not going to be as easy as hoped, so we need
-> to be a bit careful how we use the remaining space, and since as Dave
-> pointed out the filehandle isn't needed for checking uniqueness unless
-> nlink > 1 it's not really a hotpath in any application I can think of.
-> 
-> (If anyone does know of an application where it might matter, now's the
-> time to bring it up!)
-> 
->> Userspace nfs server as an example of an application, where visible
->> performance is more relevant, was already mentioned by someone else.
-> 
-> I'd love to hear confirmation from someone more intimately familiar with
-> NFS, but AFAIK it shouldn't matter there; the filehandle exists to
-> support resuming IO or other operations to a file (because the server
-> can go away and come back). If all the client did was a stat, there's no
-> need for a filehandle - that's not needed until a file is opened.
-
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 4d51be813509..fec558343ebb 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -1143,24 +1143,33 @@ static int bch2_encode_fh(struct inode *vinode, u32 *fh, int *len,
+ {
+ 	struct bch_inode_info *inode	= to_bch_ei(vinode);
+ 	struct bch_inode_info *dir	= to_bch_ei(vdir);
+-
+-	if (*len < sizeof(struct bcachefs_fid_with_parent) / sizeof(u32))
+-		return FILEID_INVALID;
++	int min_len;
+ 
+ 	if (!S_ISDIR(inode->v.i_mode) && dir) {
+ 		struct bcachefs_fid_with_parent *fid = (void *) fh;
+ 
++		min_len = sizeof(*fid) / sizeof(u32);
++		if (*len < min_len) {
++			*len = min_len;
++			return FILEID_INVALID;
++		}
++
+ 		fid->fid = bch2_inode_to_fid(inode);
+ 		fid->dir = bch2_inode_to_fid(dir);
+ 
+-		*len = sizeof(*fid) / sizeof(u32);
++		*len = min_len;
+ 		return FILEID_BCACHEFS_WITH_PARENT;
+ 	} else {
+ 		struct bcachefs_fid *fid = (void *) fh;
+ 
++		min_len = sizeof(*fid) / sizeof(u32);
++		if (*len < min_len) {
++			*len = min_len;
++			return FILEID_INVALID;
++		}
+ 		*fid = bch2_inode_to_fid(inode);
+ 
+-		*len = sizeof(*fid) / sizeof(u32);
++		*len = min_len;
+ 		return FILEID_BCACHEFS_WITHOUT_PARENT;
+ 	}
+ }
 -- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 1433
+2.35.3
 
