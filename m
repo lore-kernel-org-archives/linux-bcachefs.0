@@ -1,47 +1,39 @@
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85DA336A
-	for <linux-bcachefs@vger.kernel.org>; Fri, 15 Dec 2023 00:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309E982EC2
+	for <linux-bcachefs@vger.kernel.org>; Fri, 15 Dec 2023 17:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CLh+iabv"
-Date: Thu, 14 Dec 2023 19:36:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702600598;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TewKeuVu"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702660425;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WSylWbosBNBGHLPin/OZI2sugc03tGYwEDwO/pvcfoM=;
-	b=CLh+iabvfcEShn1Q9RBL5D3pFhYDhOfsUJJowvw8qmXjU/P0S9xoQoh2XgKgF+4oPFT/8F
-	DsNzV1NEPIgh1/DrlRLnzmdsldULn8tNtjM9h5qtqtbdXc58o+3rat/VcYhu4VbS5ns23g
-	7xfTA1+MLaLxNMEFf7FcYyxb+9N+sQs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: NeilBrown <neilb@suse.de>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Dave Chinner <david@fromorbit.com>,
-	Donald Buczek <buczek@molgen.mpg.de>,
-	linux-bcachefs@vger.kernel.org,
-	Stefan Krueger <stefan.krueger@aei.mpg.de>,
-	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
- snapshots on muti-user systems?)
-Message-ID: <20231215003635.uxwxdr4uesskqkwv@moria.home.lan>
-References: <ZXf1WCrw4TPc5y7d@dread.disaster.area>
- <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
- <20231212-impfung-linden-6f973f2ade19@brauner>
- <20231212151631.wi7rgawmp3uig6cl@moria.home.lan>
- <20231212-neudefinition-hingucken-785061b73237@brauner>
- <20231212153542.kl2fbzrabhr6kai5@moria.home.lan>
- <CAJfpegsKsbdtUHUPnu3huCiPXwX46eKYSUbLXiWqH23GinXo7w@mail.gmail.com>
- <170241761429.12910.13323799451396212981@noble.neil.brown.name>
- <20231213-umgearbeitet-erdboden-c2fd5409034d@brauner>
- <170259406740.12910.16837717665385509134@noble.neil.brown.name>
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=ThdJeZKJvn4FKQKnj2GVbHAKzt3jIUBgRnicNjm7sjk=;
+	b=TewKeuVu5MnnPdIk+Dg4A6ltDVhe9blUeAnSmgEs5J5MsRD3FibWRwXHj7qhliQ9ar/BZP
+	b4yJN6kVaIt2palthTnzRLD4X+0nQbsmEDU4cZfdMyofocQxIWw3voRxfZsojd1DATpGoX
+	KlviEHM2E8BKs/xAC7DT6E7aMdIsp5M=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-684-0qei5iN9PU6itUWEf_TvvA-1; Fri,
+ 15 Dec 2023 12:13:43 -0500
+X-MC-Unique: 0qei5iN9PU6itUWEf_TvvA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3AE9E29AB3EC
+	for <linux-bcachefs@vger.kernel.org>; Fri, 15 Dec 2023 17:13:43 +0000 (UTC)
+Received: from bfoster (unknown [10.22.8.199])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1D7EF492BF0
+	for <linux-bcachefs@vger.kernel.org>; Fri, 15 Dec 2023 17:13:43 +0000 (UTC)
+Date: Fri, 15 Dec 2023 12:14:44 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: linux-bcachefs@vger.kernel.org
+Subject: generic/243 occasional fsck SIGSEGV
+Message-ID: <ZXyJhKUpnqcfNCD5@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -50,41 +42,70 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <170259406740.12910.16837717665385509134@noble.neil.brown.name>
-X-Migadu-Flow: FLOW_OUT
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Fri, Dec 15, 2023 at 09:47:47AM +1100, NeilBrown wrote:
-> On Wed, 13 Dec 2023, Christian Brauner wrote:
-> > On Wed, Dec 13, 2023 at 08:46:54AM +1100, NeilBrown wrote:
-> > > On Wed, 13 Dec 2023, Miklos Szeredi wrote:
-> > > > On Tue, 12 Dec 2023 at 16:35, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > > > 
-> > > > > Other poeple have been finding ways to contribute to the technical
-> > > > > discussion; just calling things "ugly and broken" does not.
-> > > > 
-> > > > Kent, calm down please.  We call things "ugly and broken" all the
-> > > > time.  That's just an opinion, you are free to argue it, and no need
-> > > > to take it personally.
-> > > 
-> > > But maybe we shouldn't.  Maybe we should focus on saying what, exactly,
-> > > is unpleasant to look at and way.  Or what exactly causes poor
-> > > funcationality.
-> > 
-> > I said it's "ugly" and I doubted it's value. I didn't call it "broken".
-> > And I've been supportive of the other parts. Yet everyone seems fine
-> > with having this spiral out of control to the point where I'm being
-> > called a dick.
-> > 
-> > You hade a privat discussion on the bcachefs mailing list and it seems
-> > you expected to show up here with a complete interface that we just all
-> > pick up and merge even though this is a multi-year longstanding
-> > argument.
-> 
-> I thought I was still having that private discussion on the bcachefs
-> mailing list.  I didn't realise that fsdevel had been added.
+Hi all,
 
-I only thought that the discussion had gotten to the point where we had
-something concrete enough to start to circulate more widely.
+So we've been seeing an occasional failure of generic/243 that seems to
+be caused by a userspace fsck crash. This is not the most reproducible
+failure as it seems to require hundreds of iterations. The test failure
+generally looks like this:
 
-I wonder if some introspection could go into why this has been a
-multi-year longstanding argument.
+_check_generic_filesystem: filesystem on /dev/mapper/fedora_fs--i40c--06-scratch is inconsistent
+*** fsck.bcachefs output ***
+fsck from util-linux 2.38.1
+fsck: Warning... fsck.bcachefs for device /dev/mapper/fedora_fs--i40c--06-scratch exited with signal 11.
+*** end fsck.bcachefs output
+
+I reproduced with a non-optimized bcachefs binary and managed to collect
+a core file from this test system. The initial crash signature looks
+like this:
+
+Core was generated by `fsck.bcachefs -n /dev/mapper/fedora_fs--i40c--06-scratch'.
+Program terminated with signal SIGSEGV, Segmentation fault.
+#0  memcpy_u64s_small (dst=0x7ffc02479e50, src=0x7fd846fab040, u64s=5) at libbcachefs/util.h:607
+607                     *d++ = *s++;
+[Current thread is 1 (Thread 0x7fd8478cdc80 (LWP 562943))]
+(gdb) bt
+#0  memcpy_u64s_small (dst=0x7ffc02479e50, src=0x7fd846fab040, u64s=5) at libbcachefs/util.h:607
+#1  0x000000000043a186 in bkey_reassemble (dst=0x7ffc02479e28, src=...) at libbcachefs/bkey.h:553
+#2  0x000000000043bab0 in bch2_bkey_buf_reassemble (s=0x7ffc02479e20, c=0x7fd847804000, k=...) at libbcachefs/bkey_buf.h:28
+#3  0x000000000043e05e in check_bp_exists (trans=0xccb000, bucket=..., bp=..., orig_k=..., bucket_start=..., bucket_end=..., last_flushed=0x7ffc02479e20) at libbcachefs/backpointers.c:450
+#4  0x000000000043e464 in check_extent_to_backpointers (trans=0xccb000, btree=BTREE_ID_backpointers, level=1, bucket_start=..., bucket_end=..., last_flushed=0x7ffc02479e20, k=...) at libbcachefs/backpointers.c:501
+#5  0x000000000043ed70 in bch2_check_extents_to_backpointers_pass (trans=0xccb000, bucket_start=..., bucket_end=...) at libbcachefs/backpointers.c:647
+#6  0x000000000043fa17 in bch2_check_extents_to_backpointers (c=0x7fd847804000) at libbcachefs/backpointers.c:758
+#7  0x0000000000536dc0 in bch2_run_recovery_pass (c=0x7fd847804000, pass=BCH_RECOVERY_PASS_check_extents_to_backpointers) at libbcachefs/recovery.c:664
+#8  0x0000000000536e57 in bch2_run_recovery_passes (c=0x7fd847804000) at libbcachefs/recovery.c:681
+#9  0x0000000000537775 in bch2_fs_recovery (c=0x7fd847804000) at libbcachefs/recovery.c:875
+#10 0x000000000055d0ba in bch2_fs_start (c=0x7fd847804000) at libbcachefs/super.c:1010
+#11 0x00000000005602d8 in bch2_fs_open (devices=0x7ffc0247a808, nr_devices=1, opts=...) at libbcachefs/super.c:2000
+#12 0x000000000041a96d in cmd_fsck (argc=1, argv=0x7ffc0247a808) at cmd_fsck.c:145
+#13 0x0000000000411dca in main (argc=3, argv=0x7ffc0247a7f8) at bcachefs.c:202
+
+I've not grokked the high level algorithm for this particular fsck pass,
+but some quick mechanical analysis suggests that we somehow or another
+end up with a bkey with a value that points to inaccessible memory. For
+example, starting in the lowest frame and then jumping up to the frame
+where k is assigned via bch2_btree_iter_peek():
+
+(gdb) p *d
+$2 = 9131882230505012667
+(gdb) p *s
+Cannot access memory at address 0x7fd846fab048
+(gdb) p src
+$1 = (const void *) 0x7fd846fab040
+(gdb) p *(u64 *) 0x7fd846fab040
+Cannot access memory at address 0x7fd846fab040
+(gdb) frame 5
+#5  0x000000000043ed70 in bch2_check_extents_to_backpointers_pass (trans=0xccb000, bucket_start=..., bucket_end=...) at libbcachefs/backpointers.c:647
+647                                             check_extent_to_backpointers(trans, btree_id, level,
+(gdb) p k.k
+$4 = (const struct bkey *) 0x7ffc02479ee0
+(gdb) p k.v
+$5 = (const struct bch_val *) 0x7fd846fab040
+
+So I dont have enough data and context here to know root cause, but I
+wanted to put some of this data on the list for reference.
+
+Brian
+
