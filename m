@@ -1,31 +1,51 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74CD415B2
-	for <linux-bcachefs@vger.kernel.org>; Tue, 19 Dec 2023 01:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F3CC1170D
+	for <linux-bcachefs@vger.kernel.org>; Tue, 19 Dec 2023 04:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P1/rkGsP"
-Date: Mon, 18 Dec 2023 20:31:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702949500;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Og+ebVjdtObkh/9hZzSUL0YvYnnGqKkNV0U89WgdwhY=;
-	b=P1/rkGsPhU373ucv7wBZ+fBBFamyyw9UmxNMe3CHvxWKumP7w5wBjacgwCRn/7dWM7qK62
-	cobI4lsHTx2SHyXRikmlUWgbpUKU3Kn+LzWWV4Z19Dwd+ZjeMxXiK7WuujbvK+r+2pbsdR
-	IYDc//4ot7IL1UZj1xwx8G4kYVVnOKM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] bcachefs: Replace zero-length array with
- flex-array member and use __counted_by
-Message-ID: <20231219013138.c6jo33i7oowk4vgr@moria.home.lan>
-References: <ZYDi1bWIKRSs2NpH@work>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fAWPOIl3"
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-35d74cf427cso16401665ab.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 18 Dec 2023 20:07:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702958870; x=1703563670; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=udIYRPrcW+z7SYAVuub5lgEodWWt7pu/61MZNmpaedY=;
+        b=fAWPOIl3sZSr90Kh15FIY5AzVulNTWqLIQug+W/7LCpR8sPbBC3xoc2nKc8Ohhmq4O
+         KmyY3XLq0TmCZRrUi76wBk1rNuIrq4R5qWS7wNFzRHqZnyCcCs/pSO8G4F4VUUg0s1bX
+         GKgz48TZLR0J24tdUDlLIDu4fxbAsyRkkv1cLH2Bcx5SxJDXGklaG02+/9IO6IxvJKWo
+         c9kvb2BZHfZqpgZC6emfx13uBBDMloZBo/w+zbLVYyhA1rqmuHHadG+i/oe/8v5B41TB
+         7WEM+ZAcr04jzcpiQNHX9B/Ao/QVTUdcXf8zrJ92prKyAcS/O7RiDzDXs3zgOZAatXD+
+         im8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702958870; x=1703563670;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=udIYRPrcW+z7SYAVuub5lgEodWWt7pu/61MZNmpaedY=;
+        b=ebvgkqyrFRIElVFDAgbtZv3muPYBQMxIj0acY37JUF1T31lqNvBX5scHoE8fhhe9hJ
+         L01B0SZWSF04ddZWvZHwhP9SBEzLm+E2YncNkdEY5g9iyoVQCurWDFwI8QZRhpeHPhil
+         3FyFQoZkO8aBTNi0JTev0aMsUL5LWdmKaJsotIrFC9wm8Coy39o80M7o6d58++kOaV/X
+         zTHacWouLbf52AJL27kX+NM3lgKA7H46uj3cPktexdJxzewZbbA4r8NeY3MG4tm5c7YF
+         /qOLMkvGig5qsPbifdt6bwye1UVO0ovb+szrkO4Dk0Yjbmuv2mUQd2OU628yaQHQ0TKI
+         wyyA==
+X-Gm-Message-State: AOJu0YwukZn7f8jc64mOnctqRuLQBl3q76BfcepiiDABUY6XecwQmto/
+	JY8fM0Xs7+2GdNhfxBoMMqt7Eu1+TNo=
+X-Google-Smtp-Source: AGHT+IEEXRX1H6N1R4Z5QdKB8Wybia7v8yIHV6r+SBYALKo0AiW6zzzuQw1btSoTQBL3no5wW58rIQ==
+X-Received: by 2002:a05:6e02:2161:b0:35d:66f5:946b with SMTP id s1-20020a056e02216100b0035d66f5946bmr20616612ilv.21.1702958870330;
+        Mon, 18 Dec 2023 20:07:50 -0800 (PST)
+Received: from fedora (c-73-127-246-43.hsd1.nm.comcast.net. [73.127.246.43])
+        by smtp.gmail.com with ESMTPSA id g7-20020a056e02130700b0035faecac7e5sm1172011ilr.35.2023.12.18.20.07.49
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 20:07:49 -0800 (PST)
+Date: Mon, 18 Dec 2023 21:07:47 -0700
+From: Thomas Bertschinger <tahbertschinger@gmail.com>
+To: linux-bcachefs@vger.kernel.org
+Subject: bcachefs CLI: question on use of mlockall()
+Message-ID: <20231219040747.GB251273@fedora>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -34,33 +54,35 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZYDi1bWIKRSs2NpH@work>
-X-Migadu-Flow: FLOW_OUT
 
-On Mon, Dec 18, 2023 at 06:24:53PM -0600, Gustavo A. R. Silva wrote:
-> Fake flexible arrays (zero-length and one-element arrays) are
-> deprecated, and should be replaced by flexible-array members.
-> So, replace zero-length array with a flexible-array member in
-> `struct bch_ioctl_fsck_offline`.
-> 
-> Also annotate array `devs` with `__counted_by()` to prepare for the
-> coming implementation by GCC and Clang of the `__counted_by` attribute.
-> Flexible array members annotated with `__counted_by` can have their
-> accesses bounds-checked at run-time via `CONFIG_UBSAN_BOUNDS` (for
-> array indexing) and `CONFIG_FORTIFY_SOURCE` (for strcpy/memcpy-family
-> functions).
-> 
-> This fixes the following -Warray-bounds warnings:
-> fs/bcachefs/chardev.c: In function 'bch2_ioctl_fsck_offline':
-> fs/bcachefs/chardev.c:363:34: warning: array subscript 0 is outside array bounds of '__u64[0]' {aka 'long long unsigned int[]'} [-Warray-bounds=]
->   363 |         if (copy_from_user(devs, &user_arg->devs[0], sizeof(user_arg->devs[0]) * arg.nr_devs)) {
->       |                                  ^~~~~~~~~~~~~~~~~~
-> In file included from fs/bcachefs/chardev.c:5:
-> fs/bcachefs/bcachefs_ioctl.h:400:33: note: while referencing 'devs'
->   400 |         __u64                   devs[0];
-> 
-> This results in no differences in binary output.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+The mlockall(MCL_FUTURE) call at the beginning of the bcachefs CLI
+tool seems problematic in some cases. When running commands as an
+unprivileged user with the default mlock limit (8 MiB), it can cause
+ENOMEM failures, for example:
 
-Applied
+$ ulimit -l
+8192
+$ fallocate -l $((1024 ** 3)) test-image
+$ bcachefs format test-image
+...
+error opening test-img: ENOMEM_fs_other_alloc
+
+
+While this can be worked around by running the bcachefs utility as
+root, or by raising the default limit, I think commands like this
+should work for unprivileged users under a common default configuration.
+
+I wonder if the mlockall() can be targeted to the scenarios where it's
+really needed, instead of applying to every bcachefs command? Some
+ideas on how to target it: 
+- only call it if running as root
+- check that getrlimit(RLIMIT_MEMLOCK, ...) is at a "high enough" value
+first
+- or, only call it for subcommands that actually need it
+
+Any thoughts / comments? Would a better, or complementary approach, be
+to reduce the amount of memory mapped for operations like 'format'?
+
+Thanks!
+
+- Thomas Bertschinger
