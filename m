@@ -1,31 +1,31 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F6163A;
-	Tue, 19 Dec 2023 00:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77A71381
+	for <linux-bcachefs@vger.kernel.org>; Tue, 19 Dec 2023 01:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JWmjYB24"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C7ACC433C8;
-	Tue, 19 Dec 2023 00:26:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702945588;
-	bh=7NEFQ8R3rBkXCqeCCvEjVFHOC3Fz0I3oIIJHg+yuvj0=;
-	h=Date:From:To:Cc:Subject:From;
-	b=JWmjYB24TEa+UDi07pE7PXCdzt9C2b35c1LndtSIoxerQbe9EeA/6P0hsImCXPR4T
-	 hSeh8mYPIY8L+7Qt4kfT0H31V+67XUKLQ/qOirLVzbiJvVpdldHcra6DGtTT23W2Wb
-	 PGEiJkyq+Aem+hREwVvTX6tJUOnKngN6VOnkUDwjm+SHOBjBc6IEKmUqhzAb0QOKlA
-	 /USL+uFtoejY64WHXsbKEF/HYpJHW/yqvOprJdR26+oB+iimV7p6tteOEeQ4DSyNit
-	 l6OonzamS4j1hvoZElPOfM8FOl8e6uoyKrJrKJZWQct1+CUX6RSUxgds54SLAIWrlJ
-	 gsEAlStkNpXUA==
-Date: Mon, 18 Dec 2023 18:26:26 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH][next] bcachefs: Use array_size() in call to copy_from_user()
-Message-ID: <ZYDjMgyrFYhOsazc@work>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D8qiBgm/"
+Date: Mon, 18 Dec 2023 20:29:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702949363;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J+2lN3dxvu7LEkdLrAg6MbL3/i/2eiwYJm2xRVYEtng=;
+	b=D8qiBgm/y4+/+VFA7Y6CB9YD5OTNXu73nKS+7ONO4Dn4ru4YR4iPT9ppe2QTOaThNAoBGU
+	c1oSF5bkGyho/w4bex0/mNUN6OcfrJkfT/zAYNATrLlllkhjsLUFFZkRoZkGfkb//Frx1a
+	oSrF4aWWGgyXMjvp2COreukKF6SfIgA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] bcachefs: Use array_size() in call to
+ copy_from_user()
+Message-ID: <20231219012919.cpxuybc5mfozlpvp@moria.home.lan>
+References: <ZYDjMgyrFYhOsazc@work>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -34,29 +34,13 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ZYDjMgyrFYhOsazc@work>
+X-Migadu-Flow: FLOW_OUT
 
-Use array_size() helper, instead of the open-coded version in
-call to copy_from_user().
+On Mon, Dec 18, 2023 at 06:26:26PM -0600, Gustavo A. R. Silva wrote:
+> Use array_size() helper, instead of the open-coded version in
+> call to copy_from_user().
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/bcachefs/chardev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-index 304ea619a888..22a52bc8406b 100644
---- a/fs/bcachefs/chardev.c
-+++ b/fs/bcachefs/chardev.c
-@@ -360,7 +360,8 @@ static long bch2_ioctl_fsck_offline(struct bch_ioctl_fsck_offline __user *user_a
- 	init_waitqueue_head(&thr->output.wait);
- 	darray_init(&thr->output2);
- 
--	if (copy_from_user(devs, &user_arg->devs[0], sizeof(user_arg->devs[0]) * arg.nr_devs)) {
-+	if (copy_from_user(devs, &user_arg->devs[0],
-+			   array_size(sizeof(user_arg->devs[0]), arg.nr_devs))) {
- 		ret = -EINVAL;
- 		goto err;
- 	}
--- 
-2.34.1
-
+Applied
