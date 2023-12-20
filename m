@@ -1,96 +1,127 @@
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA60CFBE1
-	for <linux-bcachefs@vger.kernel.org>; Wed, 20 Dec 2023 03:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9222418E02;
+	Wed, 20 Dec 2023 06:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n1rJJQ7k"
-Date: Tue, 19 Dec 2023 22:30:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703043059;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=5Tf3bbmEYMwA+02doK4ycgX594KTKbQv3kVFPgTRuKY=;
-	b=n1rJJQ7kTSdFDqEK/GIxQvIiMJRy8mGSqcQhFBKMDu/DZ0qtOLlh389mMU/MqGv/RnvXv0
-	ih3DCnYtL6BPIqo2hNNPir1hZi30k+ru3GKy38vFQ+ABQ1xicdMjWEfeUNxTo3t5oY05dQ
-	S23/jSSLun9AlGZBNpJcHzKzbCV68Cg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [GIT PULL] more bcachefs fixes for 6.7
-Message-ID: <20231220033056.hvoespiy4vcbpl32@moria.home.lan>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="e72hiog8"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=yJ+oDqG2zmO444SiJyKceB+qxN8npAMGhcgnHq7cw2A=; b=e72hiog84p+r45gw6hgXKxK5sH
+	4rwkXx/QGErqNyZsbKkY5fYwF05//8+VeIGIetiChkvfb4WY8YOZIlEma7tMCkAMAxJdd162Nmfp+
+	MXB/qa6/HjHEXUsabbN9cTDowt5FkkYJA7PmKh/fz2qkynmhgfZDVh2MnH4yBAfiTGGv6oW4G7Td8
+	4pirO8A/FzsIaLfiGWx0Xc8AopRIDhdoaK6r3gCSr0z2UMPF2sX/Nh/50V9xtBxFkbUZRMWqsC2yE
+	/7gQPAo4oSczBCfrll2nmb32pj/5+LCOUvILTeWBeMJlyEP0c+Cx2KxhnL3/ri/2hmrrKcdnEF5Ds
+	POslinEQ==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFqJN-00GKFj-1v;
+	Wed, 20 Dec 2023 06:44:09 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>,
+	linux-bcachefs@vger.kernel.org
+Subject: [PATCH] bcachefs: mean and variance: fix kernel-doc for function params
+Date: Tue, 19 Dec 2023 22:44:09 -0800
+Message-ID: <20231220064409.12161-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-Hi Linus, few more fixes for you - nothing big, but several important
-ones in here.
+Add missing function parameter descriptions in mean_and_variance.c.
+The also eliminates the "Excess function parameter" warnings.
 
-Cheers,
+Prevents these kernel-doc warnings:
 
+mean_and_variance.c:67: warning: Function parameter or member 's' not described in 'mean_and_variance_get_mean'
+mean_and_variance.c:78: warning: Function parameter or member 's1' not described in 'mean_and_variance_get_variance'
+mean_and_variance.c:94: warning: Function parameter or member 's' not described in 'mean_and_variance_get_stddev'
+mean_and_variance.c:108: warning: Function parameter or member 's' not described in 'mean_and_variance_weighted_update'
+mean_and_variance.c:108: warning: Function parameter or member 'x' not described in 'mean_and_variance_weighted_update'
+mean_and_variance.c:108: warning: Excess function parameter 's1' description in 'mean_and_variance_weighted_update'
+mean_and_variance.c:108: warning: Excess function parameter 's2' description in 'mean_and_variance_weighted_update'
+mean_and_variance.c:134: warning: Function parameter or member 's' not described in 'mean_and_variance_weighted_get_mean'
+mean_and_variance.c:143: warning: Function parameter or member 's' not described in 'mean_and_variance_weighted_get_variance'
+mean_and_variance.c:153: warning: Function parameter or member 's' not described in 'mean_and_variance_weighted_get_stddev'
 
-The following changes since commit a66ff26b0f31189e413a87065c25949c359e4bef:
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org
+---
+ fs/bcachefs/mean_and_variance.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-  bcachefs: Close journal entry if necessary when flushing all pins (2023-12-10 16:53:46 -0500)
-
-are available in the Git repository at:
-
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-12-19
-
-for you to fetch changes up to 247ce5f1bb3ea90879e8552b8edf4885b9a9f849:
-
-  bcachefs: Fix bch2_alloc_sectors_start_trans() error handling (2023-12-19 19:01:52 -0500)
-
-----------------------------------------------------------------
-More bcachefs bugfixes for 6.7:
-
- - Fix a deadlock in the data move path with nocow locks (vs. update in
-   place writes); when trylock failed we were incorrectly waiting for in
-   flight ios to flush.
- - Fix reporting of NFS file handle length
- - Fix early error path in bch2_fs_alloc() - list head wasn't being
-   initialized early enough
- - Make sure correct (hardware accelerated) crc modules get loaded
- - Fix a rare overflow in the btree split path, when the packed bkey
-   format grows and all the keys have no value (LRU btree).
- - Fix error handling in the sector allocator
-   This was causing writes to spuriously fail in multidevice setups, and
-   another bug meant that the errors weren't being logged, only reported
-   via fsync.
-
-----------------------------------------------------------------
-Daniel Hill (1):
-      bcachefs: improve modprobe support by providing softdeps
-
-Jan Kara (1):
-      bcachefs: Fix determining required file handle length
-
-Kent Overstreet (5):
-      bcachefs: Fix nocow locks deadlock
-      bcachefs: print explicit recovery pass message only once
-      bcachefs: btree_node_u64s_with_format() takes nr keys
-      bcachefs; guard against overflow in btree node split
-      bcachefs: Fix bch2_alloc_sectors_start_trans() error handling
-
-Thomas Bertschinger (1):
-      bcachefs: fix invalid memory access in bch2_fs_alloc() error path
-
- fs/bcachefs/alloc_foreground.c      | 14 ++++++++++---
- fs/bcachefs/btree_iter.c            |  8 ++++++--
- fs/bcachefs/btree_iter.h            |  1 +
- fs/bcachefs/btree_update_interior.c | 39 ++++++++++++++++++++++++-------------
- fs/bcachefs/btree_update_interior.h |  4 ----
- fs/bcachefs/data_update.c           |  3 ++-
- fs/bcachefs/fs.c                    | 19 +++++++++++++-----
- fs/bcachefs/recovery.h              |  3 +++
- fs/bcachefs/super.c                 |  7 +++++++
- 9 files changed, 70 insertions(+), 28 deletions(-)
+diff -- a/fs/bcachefs/mean_and_variance.c b/fs/bcachefs/mean_and_variance.c
+--- a/fs/bcachefs/mean_and_variance.c
++++ b/fs/bcachefs/mean_and_variance.c
+@@ -62,6 +62,7 @@ EXPORT_SYMBOL_GPL(u128_div);
+ 
+ /**
+  * mean_and_variance_get_mean() - get mean from @s
++ * @s: mean and variance number of samples and their sums
+  */
+ s64 mean_and_variance_get_mean(struct mean_and_variance s)
+ {
+@@ -71,6 +72,7 @@ EXPORT_SYMBOL_GPL(mean_and_variance_get_
+ 
+ /**
+  * mean_and_variance_get_variance() -  get variance from @s1
++ * @s1: mean and variance number of samples and sums
+  *
+  * see linked pdf equation 12.
+  */
+@@ -89,6 +91,7 @@ EXPORT_SYMBOL_GPL(mean_and_variance_get_
+ 
+ /**
+  * mean_and_variance_get_stddev() - get standard deviation from @s
++ * @s: mean and variance number of samples and their sums
+  */
+ u32 mean_and_variance_get_stddev(struct mean_and_variance s)
+ {
+@@ -98,8 +101,8 @@ EXPORT_SYMBOL_GPL(mean_and_variance_get_
+ 
+ /**
+  * mean_and_variance_weighted_update() - exponentially weighted variant of mean_and_variance_update()
+- * @s1: ..
+- * @s2: ..
++ * @s: mean and variance number of samples and their sums
++ * @x: new value to include in the &mean_and_variance_weighted
+  *
+  * see linked pdf: function derived from equations 140-143 where alpha = 2^w.
+  * values are stored bitshifted for performance and added precision.
+@@ -129,6 +132,7 @@ EXPORT_SYMBOL_GPL(mean_and_variance_weig
+ 
+ /**
+  * mean_and_variance_weighted_get_mean() - get mean from @s
++ * @s: mean and variance number of samples and their sums
+  */
+ s64 mean_and_variance_weighted_get_mean(struct mean_and_variance_weighted s)
+ {
+@@ -138,6 +142,7 @@ EXPORT_SYMBOL_GPL(mean_and_variance_weig
+ 
+ /**
+  * mean_and_variance_weighted_get_variance() -- get variance from @s
++ * @s: mean and variance number of samples and their sums
+  */
+ u64 mean_and_variance_weighted_get_variance(struct mean_and_variance_weighted s)
+ {
+@@ -148,6 +153,7 @@ EXPORT_SYMBOL_GPL(mean_and_variance_weig
+ 
+ /**
+  * mean_and_variance_weighted_get_stddev() - get standard deviation from @s
++ * @s: mean and variance number of samples and their sums
+  */
+ u32 mean_and_variance_weighted_get_stddev(struct mean_and_variance_weighted s)
+ {
