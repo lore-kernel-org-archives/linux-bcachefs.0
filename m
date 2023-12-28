@@ -1,55 +1,74 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344F2107BA;
-	Thu, 28 Dec 2023 21:26:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZnNCSJ/M"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0A8A8C433C7;
-	Thu, 28 Dec 2023 21:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703798789;
-	bh=wwUHoYtBd+l/dvrkQzEk/EWT4KkFtGnBMOmrOb5rNbc=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=ZnNCSJ/MPyJRxmNBPOTxpTbrefK6sxdf7crP9oox/9fWUEjhGFZ6ObT7xmsmumoEv
-	 0mFKXCe/3bVUuUjksxeFw0nxsHjUoeTjO6qxYBahwa4I2MaZrnikaAMhPuVbOk5c2C
-	 jcL1UIDSoM9cEooVHXgFyXzB0GmXZwe5bk2FPB/ndPlJfBB3W7M5Nqds6U75Cbr8vM
-	 W3gkedB9bj2J8oaDzxlpmyeV+r1y3KXE4PF/LZRezTl5LzO6W+X4k5fhskkljLaJgo
-	 SmNFgOR+2Yg9Gn0bN2i+okDUm8oIE3kfSbqyJEbaLH/hweYHvDHnPcah1liBW3+8K5
-	 i6McykWOEjm5g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E6FECE333D5;
-	Thu, 28 Dec 2023 21:26:28 +0000 (UTC)
-Subject: Re: [GIT PULL] more bcachefs fixes for 6.7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <2uukaswjjfuudinozm3igqtfwx2sgkmpwxp7t4jgq2icseoygm@sr3pst2cwvlq>
-References: <2uukaswjjfuudinozm3igqtfwx2sgkmpwxp7t4jgq2icseoygm@sr3pst2cwvlq>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <2uukaswjjfuudinozm3igqtfwx2sgkmpwxp7t4jgq2icseoygm@sr3pst2cwvlq>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-12-27
-X-PR-Tracked-Commit-Id: 7b474c77daddaf89bbb72594737538f4e0dce2fd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: eeec2599630ac1ac03db98f3ba976975c72a1427
-Message-Id: <170379878894.15710.480601333610120560.pr-tracker-bot@kernel.org>
-Date: Thu, 28 Dec 2023 21:26:28 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A603110948
+	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Dec 2023 21:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 646FA140DED0F
+	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Dec 2023 13:59:49 -0800 (PST)
+Date: Thu, 28 Dec 2023 13:59:49 -0800 (PST)
+From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+To: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+Message-ID: <1082805315.289.1703800789271@mail.carlthompson.net>
+Subject: Manipulation of bcachefs subvolumes and snapshots breaks s2idle
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
+X-Originating-Client: open-xchange-appsuite
 
-The pull request you sent on Wed, 27 Dec 2023 11:44:50 -0500:
+Hello, there appears to be a bug in bcachefs in which certain changes to subvolumes and snapshots can result in an inability to suspend the system. Specifically, if a bcachefs snapshot is taken of a subvolume, then a file is removed or modified in either the subvolume or snapshot, then the subvolume and snapshot are deleted, then after that s2idle will fail until the system is rebooted. This is 100% reproducible on my laptop running rc7. 
 
-> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-12-27
+Here is a short example of something that will trigger the bug:
+---
+[carl@clip test]$ bcachefs subvolume create subvol
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/eeec2599630ac1ac03db98f3ba976975c72a1427
+[carl@clip test]$ touch subvol/file
 
-Thank you!
+[carl@clip test]$ bcachefs subvolume snapshot subvol snapshot_of_subvol
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+[carl@clip test]$ rm subvol/file
+
+[carl@clip test]$ bcachefs subvolume delete subvol
+
+[carl@clip test]$ bcachefs subvolume delete snapshot_of_subvol
+---
+
+After this suspending the system will fail and produce kernel messages like the following:
+---
+[10898.793676] Freezing remaining freezable tasks
+[10918.797255] Freezing remaining freezable tasks failed after 20.003 seconds (0 tasks refusing to freeze, wq_busy=1):
+[10918.797270] Showing freezable workqueues that are still busy:
+[10918.797273] workqueue events_freezable: flags=0x4
+[10918.797277]   pwq 28: cpus=14 node=0 flags=0x0 nice=0 active=0/0 refcnt=2
+[10918.797289]     inactive: pci_pme_list_scan
+[10918.797309] workqueue bcachefs_write_ref: flags=0x4
+[10918.797314]   pwq 4: cpus=2 node=0 flags=0x0 nice=0 active=2/0 refcnt=3
+[10918.797322]     in-flight: 12451:bch2_subvolume_wait_for_pagecache_and_delete [bcachefs] bch2_subvolume_wait_for_pagecache_and_delete [bcachefs]
+[10918.797519] workqueue bcachefs_io: flags=0x1c
+[10918.797525]   pwq 9: cpus=4 node=0 flags=0x0 nice=-20 active=0/0 refcnt=2
+[10918.797532]     inactive: journal_write_work [bcachefs]
+[10918.797616] workqueue bcachefs_write_ref: flags=0x4
+[10918.797620]   pwq 18: cpus=9 node=0 flags=0x0 nice=0 active=2/0 refcnt=3
+[10918.797626]     in-flight: 17562:bch2_subvolume_wait_for_pagecache_and_delete [bcachefs] bch2_subvolume_wait_for_pagecache_and_delete [bcachefs]
+[10918.798386] Restarting kernel threads ... done.
+[10918.799643] OOM killer enabled.
+[10918.799647] Restarting tasks ... done.
+[10918.803749] random: crng reseeded on system resumption
+[10919.295422] PM: suspend exit
+---
+
+- I have only tested this on bcachefs filesystems with 4k blocks. If this is related to the issue causing one of my other bug reports today then it's possible in may not happen on filesystems with 512 byte blocks (untested).
+
+Thank you,
+Carl Thompson
