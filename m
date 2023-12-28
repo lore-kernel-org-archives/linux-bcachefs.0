@@ -1,69 +1,55 @@
-Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F0B107BA
-	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Dec 2023 21:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlthompson.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
-Received: from mail.carlthompson.net (mail.home [10.35.20.252])
-	(Authenticated sender: cet@carlthompson.net)
-	by smtp.carlthompson.net (Postfix) with ESMTPSA id 6996714006409
-	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Dec 2023 13:19:36 -0800 (PST)
-Date: Thu, 28 Dec 2023 13:19:36 -0800 (PST)
-From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
-To: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Message-ID: <1804957404.243.1703798376220@mail.carlthompson.net>
-Subject: bcachefs subvols / snapshots broken
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344F2107BA;
+	Thu, 28 Dec 2023 21:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZnNCSJ/M"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0A8A8C433C7;
+	Thu, 28 Dec 2023 21:26:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703798789;
+	bh=wwUHoYtBd+l/dvrkQzEk/EWT4KkFtGnBMOmrOb5rNbc=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=ZnNCSJ/MPyJRxmNBPOTxpTbrefK6sxdf7crP9oox/9fWUEjhGFZ6ObT7xmsmumoEv
+	 0mFKXCe/3bVUuUjksxeFw0nxsHjUoeTjO6qxYBahwa4I2MaZrnikaAMhPuVbOk5c2C
+	 jcL1UIDSoM9cEooVHXgFyXzB0GmXZwe5bk2FPB/ndPlJfBB3W7M5Nqds6U75Cbr8vM
+	 W3gkedB9bj2J8oaDzxlpmyeV+r1y3KXE4PF/LZRezTl5LzO6W+X4k5fhskkljLaJgo
+	 SmNFgOR+2Yg9Gn0bN2i+okDUm8oIE3kfSbqyJEbaLH/hweYHvDHnPcah1liBW3+8K5
+	 i6McykWOEjm5g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E6FECE333D5;
+	Thu, 28 Dec 2023 21:26:28 +0000 (UTC)
+Subject: Re: [GIT PULL] more bcachefs fixes for 6.7
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <2uukaswjjfuudinozm3igqtfwx2sgkmpwxp7t4jgq2icseoygm@sr3pst2cwvlq>
+References: <2uukaswjjfuudinozm3igqtfwx2sgkmpwxp7t4jgq2icseoygm@sr3pst2cwvlq>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <2uukaswjjfuudinozm3igqtfwx2sgkmpwxp7t4jgq2icseoygm@sr3pst2cwvlq>
+X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-12-27
+X-PR-Tracked-Commit-Id: 7b474c77daddaf89bbb72594737538f4e0dce2fd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: eeec2599630ac1ac03db98f3ba976975c72a1427
+Message-Id: <170379878894.15710.480601333610120560.pr-tracker-bot@kernel.org>
+Date: Thu, 28 Dec 2023 21:26:28 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
-X-Originating-Client: open-xchange-appsuite
 
-Hello, there appears to be a bug in bcachefs in which certain changes to subvolumes and snapshots can result in file contents not being read properly when copied. Specifically, if a snapshot is created of a subvolume and a file in either the subvolume or the snapshot is removed or modified, incorrect data is read from the corresponding unmodified file in the subvolume or snapshot if that corresponding file is copied. I've reproduced on multiple systems running rc6 and rc7 but on my systems I can reproduce this 100% of the time on bcachefs filesystems where the block size is 4k; I cannot reproduce at all on filesystems with 512 byte blocks (but see below). I've only tested with 4k and 512 block sizes. None of the other format options I've tried made a difference in my tests including compression and bucket size.
+The pull request you sent on Wed, 27 Dec 2023 11:44:50 -0500:
 
-Here is a short example:
----
-[carl@clip test]$ bcachefs subvolume create subvol
+> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-12-27
 
-[carl@clip test]$ echo "Test" > subvol/file
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/eeec2599630ac1ac03db98f3ba976975c72a1427
 
-[carl@clip test]$ bcachefs subvolume snapshot subvol snapshot_of_subvol
+Thank you!
 
-[carl@clip test]$ rm subvol/file 
-
-[carl@clip test]$ cat snapshot_of_subvol/file 
-Test
-
-[carl@clip test]$ cp snapshot_of_subvol/file file
-
-[carl@clip test]$ cat file
-
-[carl@clip test]$ ls -l file
--rw-r--r-- 1 carl carl 5 Dec 28 12:56 file
-
-[carl@clip test]$ hexdump -C file
-00000000  00 00 00 00 00                                    |.....|
-00000005
-
-[carl@clip test]$ 
----
-
-- The copied file has the correct length but has zeroes instead of the correct data
-- The problem also occurs if the file in the **snapshot** is removed or modified and the original file in the subvolume is copied
-- In my tests I only see the problem on filesystems with 4k blocks. I've never been able to reproduce with 512 byte blocks. However someone else on Reddit says that it definitely happened to them on a filesystem with 512 byte blocks (but they can't reproduce it now)
-- The bug only happens if the file is copied to the same bcachefs filesystem. It does **not** happen if the file is copied to a different bcachefs filesystem or a different filesystem entirely
-- The bug does **not** occur if the cp command is given the `--reflink=never` option
-- Discussion can be found on this Reddit thread (but not all comments are correct: https://www.reddit.com/r/bcachefs/comments/18sbl9z/how_do_you_restore_a_file_from_a_snapshot/
-
-In my opinion this is a severe issue because it could lead to data loss if users rely on copied files having the correct contents.
-
-Thank you,
-Carl Thompson
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
