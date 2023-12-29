@@ -1,70 +1,121 @@
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B8212E57
-	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Dec 2023 19:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jY/ITena"
-Date: Fri, 29 Dec 2023 14:39:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703878761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+xnCTZmWYQbigA7l27ozobkpAkuikcFrYqh8vnxScu0=;
-	b=jY/ITenaK2aJgeqHvAFeBYO/bRl0eLG5MdTgYDYrj+9/ls6pqXqvuaWcELwusJ+Zv4Cq7o
-	y+WaXnjhZn7IN1yRk7Dk/k51EVgorQNzhmGcf4nHMmISEY3tS+DcnYSVaIgVnlRD+/2iFP
-	2+Ey2z26KueAuyBkVs/2BpcZvGy05D0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63D514264
+	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Dec 2023 20:44:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 54EBD140DED0F;
+	Fri, 29 Dec 2023 12:44:39 -0800 (PST)
+Date: Fri, 29 Dec 2023 12:44:39 -0800 (PST)
+From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: bcachefs can't mount filesystems with duplicate UUIDs (including
- snapshots and backups)
-Message-ID: <elzmgpr2fodhgz7xr7lxrnbpfrrdw64hfo3wg2wlhgu7rdqauy@gtmjuujw6qem>
-References: <2122357159.374.1703803993005@mail.carlthompson.net>
+Message-ID: <513708765.544.1703882679194@mail.carlthompson.net>
+In-Reply-To: <evltrlnkclj3g3yqm2nqyfz63tg53ojxs45uouq5e6nosxz37z@rxqrn6smqmuc>
+References: <1804957404.243.1703798376220@mail.carlthompson.net>
+ <evltrlnkclj3g3yqm2nqyfz63tg53ojxs45uouq5e6nosxz37z@rxqrn6smqmuc>
+Subject: Re: bcachefs subvols / snapshots broken
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2122357159.374.1703803993005@mail.carlthompson.net>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
+X-Originating-Client: open-xchange-appsuite
 
-On Thu, Dec 28, 2023 at 02:53:12PM -0800, Carl E. Thompson wrote:
-> Hello, there is an issue (bug or missing needed feature) in bcachefs
-> where it appears to be impossible to mount a bcachefs filesystem which
-> has the same UUID as an already mounted filesystem. This is necessary
-> in many forensic and online backup scenarios. For example, in my
-> personal and professional workflows crash-consistent online backups
-> are made by mounting thin LVM snapshots. This seems to be impossible
-> with bcachefs because it lacks a mount option to bypass the unique UID
-> test and the mount fails with an `Invalid argument` message from mount
-> on the command line and a `filesystem UUID already open` message in
-> the kernel log.
+I don't see anything recent on the -testing branch on GitHub so I applied the patch from your email and the other io_write.c patch directly to rc7.
+
+So far it seems to work to fix this issue for me. I'll keep testing. Thanks for such a quick fix!
+
+Thank you,
+Carl Thompson
+
+
+> On 2023-12-29 10:50 AM PST Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> ...
+> Fix is in the -testing branch, will be making it to the appropriate
+> places shortly:
 > 
-> Other filesystems have a mount option specifically to allow this. For
-> example, XFS has a `nouuid` option. I believe that bcachefs needs a
-> similar option to be broadly useful, particularly for non-hobbyist use
-> cases. (If it makes it easier to implement IMO for most uses if the
-> new mount option to bypass the UUID check implied the `nochanges`
-> option that would be fine.)
+> commit 05b11fb627bcd71cc19e79cdeabfa1b514bf8acf
+> Author: Kent Overstreet <kent.overstreet@linux.dev>
+> Date:   Fri Dec 29 13:39:07 2023 -0500
 > 
-> I am aware that I could just use bcachefs native snapshots instead
-> (when they are proven to work reliably). However, a large part of the
-> reason I use LVM is because it gives me a consistent interface for
-> snapshots (and thus for backups) for all the different filesystems I
-> use. Retooling to special-case for bcachefs would require a lot of
-> work and testing and would remove a huge benefit of this approach.
-
-Tricky one, because we're multi device so we have a lot of code that
-actually needs the UUID for identifying which filesystem a device is in;
-we probably would want it to imply -o nochanges for it to be remotely
-safe.
-
-Another item for the todo list :)
+>     bcachefs: Fix extents iteration + snapshots interaction
+>     
+>     peek_upto() checks against the end position and bails out before
+>     FILTER_SNAPSHOTS checks; this is because if we end up at a different
+>     inode number than the original search key none of the keys we see might
+>     be visibile in the current snapshot - we might be looking at inode in a
+>     completely different subvolume.
+>     
+>     But this is broken, because when we're iterating over extents we're
+>     checking against the extent start position to decide when to bail out,
+>     and the extent start position isn't monotonically increasing until after
+>     we've run FILTER_SNAPSHOTS.
+>     
+>     Fix this by adding a simple inode number check where the old bailout
+>     check was, and moving the main check to the correct position.
+>     
+>     Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
+> index 732c8bb3f803..7e5c797cfaf2 100644
+> --- a/fs/bcachefs/btree_iter.c
+> +++ b/fs/bcachefs/btree_iter.c
+> @@ -2145,18 +2145,16 @@ struct bkey_s_c bch2_btree_iter_peek_upto(struct btree_iter *iter, struct bpos e
+>  			goto out_no_locked;
+>  
+>  		/*
+> -		 * iter->pos should be mononotically increasing, and always be
+> -		 * equal to the key we just returned - except extents can
+> -		 * straddle iter->pos:
+> +		 * We need to check against @end before FILTER_SNAPSHOTS because
+> +		 * if we get to a different inode that requested we might be
+> +		 * seeing keys for a different snapshot tree that will all be
+> +		 * filtered out.
+> +		 *
+> +		 * But we can't do the full check here, because bkey_start_pos()
+> +		 * isn't monotonically increasing before FILTER_SNAPSHOTS, and
+> +		 * that's what we check against in extents mode:
+>  		 */
+> -		if (!(iter->flags & BTREE_ITER_IS_EXTENTS))
+> -			iter_pos = k.k->p;
+> -		else
+> -			iter_pos = bkey_max(iter->pos, bkey_start_pos(k.k));
+> -
+> -		if (unlikely(!(iter->flags & BTREE_ITER_IS_EXTENTS)
+> -			     ? bkey_gt(iter_pos, end)
+> -			     : bkey_ge(iter_pos, end)))
+> +		if (k.k->p.inode > end.inode)
+>  			goto end;
+>  
+>  		if (iter->update_path &&
+> @@ -2215,6 +2213,21 @@ struct bkey_s_c bch2_btree_iter_peek_upto(struct btree_iter *iter, struct bpos e
+>  			continue;
+>  		}
+>  
+> +		/*
+> +		 * iter->pos should be mononotically increasing, and always be
+> +		 * equal to the key we just returned - except extents can
+> +		 * straddle iter->pos:
+> +		 */
+> +		if (!(iter->flags & BTREE_ITER_IS_EXTENTS))
+> +			iter_pos = k.k->p;
+> +		else
+> +			iter_pos = bkey_max(iter->pos, bkey_start_pos(k.k));
+> +
+> +		if (unlikely(!(iter->flags & BTREE_ITER_IS_EXTENTS)
+> +			     ? bkey_gt(iter_pos, end)
+> +			     : bkey_ge(iter_pos, end)))
+> +			goto end;
+> +
+>  		break;
+>  	}
