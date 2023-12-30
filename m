@@ -1,176 +1,99 @@
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CFE10EB
-	for <linux-bcachefs@vger.kernel.org>; Sat, 30 Dec 2023 03:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kode54.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kode54.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68CE23BB
+	for <linux-bcachefs@vger.kernel.org>; Sat, 30 Dec 2023 08:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=quora.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quora.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kode54.net header.i=@kode54.net header.b="JDxRlXsF";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="0HqGBSjj"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.nyi.internal (Postfix) with ESMTP id BEE3B5C01A8;
-	Fri, 29 Dec 2023 22:29:56 -0500 (EST)
-Received: from imap44 ([10.202.2.94])
-  by compute1.internal (MEProxy); Fri, 29 Dec 2023 22:29:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kode54.net; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1703906996; x=1703993396; bh=6qWlHhA+u+
-	/loFKAjbsn+4shtio9fVFEPm5Ov+zzFNE=; b=JDxRlXsFqxLlijBFcApaw26bc1
-	JRmmOAfd0zYk6GPU4bVcc44RQ8ahcpXxUDKlu4ZDE8SQDIcAkdhXIDPYmRrdHnum
-	3/FMRlU80bJ3e74WSoDr+Fq24s4+OnR5sxlmUOHDtwHJKmqsD4qQMyp6Mj3uVUSb
-	UUI+N8bj7qQLrS9FPQ701podnYdZIS+QcUdJzbOHttwlpywW68mo++1+uS8DDDYO
-	q4/DS9wX4XKMgryQy0PUPTgmQSKbyG/f51mfZooeUZnrbVyFie2HFhSmrIhgFJdA
-	obmgFzWJ4COhBwfJlnp8wkiKUqoXztNWize9XdDKGsh9WM6HT7OYk3NBXO9g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703906996; x=1703993396; bh=6qWlHhA+u+/loFKAjbsn+4shtio9
-	fVFEPm5Ov+zzFNE=; b=0HqGBSjj3ZVHDkQ3ZMsF67uODdjrYBw8q8fjdedV92FF
-	inaRSFkdAxasfpTauvR9VEUzLPo+F/0GZAXd2nBt6Ua3nLzn4a1hLYimvJ2+m5Tp
-	fi3TBbQ1D/YjE6latNXdrHR0TrVtTDQyL6+/UBNJA7/Sn2u+G1mqm+0zQR+C0tsr
-	hxQvxeszJFghzcRXC0b0cXfG2t9jcLFU/HCnTPfD04GLpjRN5OR4iQQxt5CyWvdk
-	IaHb4E5yNOTC/thEm1MDW7tTCPZ2RfmpBPKLaBPaCB+oY9rKgl3bQ79EUrryj9Fp
-	E2+RHOQqIZ2vjAkydbl8m3X3tmy02gj5MVWOkBJ3kQ==
-X-ME-Sender: <xms:tI6PZSL73K-sjEIuU5aSIrIun8cRQAvh--rx2OciscqTD0GTIfosXw>
-    <xme:tI6PZaKVBbITdkixT1B14wSVrEiCjYodshhhBySDnSCqPffXOxzqKfOOww2JPfzAW
-    7A-uH-Hnmur-d0MUOI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdefgedgiedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfvehh
-    rhhishhtohhphhgvrhcuufhnohifhhhilhhlfdcuoegthhhrihhssehkohguvgehgedrnh
-    gvtheqnecuggftrfgrthhtvghrnhepgfduuddvlefhtefglefhgedtveffleelgedugeel
-    udevgfffiefgvdegheeuudejnecuffhomhgrihhnpegvvhhilhhpihgvphhirhgrthgvrd
-    horhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    tghhrhhisheskhhouggvheegrdhnvght
-X-ME-Proxy: <xmx:tI6PZSuaiDWDNt6hNnkgbHuytnXBPPELBvyRH6CuTCukQ26Z6eQGlA>
-    <xmx:tI6PZXayMzTDZLLkzM6wYRRNYeCqnAuM9S8CUa6f_reJF8zKC8HbhQ>
-    <xmx:tI6PZZbEZMEeGKxY6T2FtF30qAXtHUA9dfLFc6nyyUjF7ag2EkPDdQ>
-    <xmx:tI6PZaCx4OPn0Oznm1bSsjFaWxzLhQgU_WuEOSnDhRJL24xx5hyM6Q>
-Feedback-ID: i01794759:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 7532E36A0076; Fri, 29 Dec 2023 22:29:56 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	dkim=pass (1024-bit key) header.d=quora.org header.i=@quora.org header.b="I4KSlf/e"
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-552d39ac3ccso14692711a12.0
+        for <linux-bcachefs@vger.kernel.org>; Sat, 30 Dec 2023 00:34:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=quora.org; s=google; t=1703925291; x=1704530091; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jKSwzg5qyL9S9punEuxfKNhmr3B9w+Hx8x84ychqNZo=;
+        b=I4KSlf/eOLGBilBW0ohqJzKGmtzMjF8aOokU1I67Uaj+/q+7O1XvwDkB+hYTJCN6/U
+         8q8g79Yf7SlbB0gnUafJC+RCqpwHSNa9bU1gVMoi3bgbs34VPnzSR+MAq322FzohJtim
+         83/D5r5jCLppj6nSv4vAQKe6P2m/NHmg6ChV4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703925291; x=1704530091;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jKSwzg5qyL9S9punEuxfKNhmr3B9w+Hx8x84ychqNZo=;
+        b=wBR/co6IVYgvtOqFTwopx3c0S/7MCHYqezSPZNDPHiL6WuYbkV9A/Q1Afc4oz9Gy6d
+         CzhX04r9fEnMELBH48DV6qP5E5kLPsiZXnOh0cQ2qiMMDG8pZh2oTwWTMUkE9lqt6XuU
+         elrkQYc/3syurEGQvZ6KDyQh6Dz1I5miuSoK4+t5xqjtG0cwwex0qf7y1mw4k3DINKDS
+         WI8wo/VwpoMTQUHNqx1DoE+kSPxzXZrVE9yEOXaiI/Z7I1ZBzwNJpVDXq+tD0hjJPDoO
+         GUCKv2owVrJzkeuBfh7wrWLZzLUd84jjVeq7/2fpoqhpYiLYhniW+wpO5WbViJKYjfk+
+         eKSg==
+X-Gm-Message-State: AOJu0YwpJQdwOoGnT28z4tUuLhAiM0q4p6kARqgGn30JYByZYDgav69W
+	fBbd6owXhMlvi9doO1o6JamhkdJEUO8FMpzdCozAW1aqavxLEQ==
+X-Google-Smtp-Source: AGHT+IGZ1829LMk+ibKivi9thXfdLJc26LZgUmRke9amhyQhkx0MkfWd+YibVkFTZXYyPxySeMX0Z8quwmY2SmDM7zQ=
+X-Received: by 2002:a17:906:97:b0:a27:a953:bf63 with SMTP id
+ 23-20020a170906009700b00a27a953bf63mr1356526ejc.42.1703925291104; Sat, 30 Dec
+ 2023 00:34:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <b7228c18-fc7f-4ddc-83b5-3b442ed29446@app.fastmail.com>
-In-Reply-To: <513708765.544.1703882679194@mail.carlthompson.net>
-References: <1804957404.243.1703798376220@mail.carlthompson.net>
- <evltrlnkclj3g3yqm2nqyfz63tg53ojxs45uouq5e6nosxz37z@rxqrn6smqmuc>
- <513708765.544.1703882679194@mail.carlthompson.net>
-Date: Fri, 29 Dec 2023 19:29:24 -0800
-From: "Christopher Snowhill" <chris@kode54.net>
-To: "Carl E. Thompson" <list-bcachefs@carlthompson.net>,
- "Kent Overstreet" <kent.overstreet@linux.dev>
-Cc: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: bcachefs subvols / snapshots broken
-Content-Type: text/plain
+References: <CAMVG2su=Kt5mkyEHGh5D4YH+1xTUFX3BhOjf-D0bcRTntav3ng@mail.gmail.com>
+ <jt3gy5v3jhqadakhxbdezvfo2n2f4n7sc52ljw4kztct6poihr@zork6muwdity>
+In-Reply-To: <jt3gy5v3jhqadakhxbdezvfo2n2f4n7sc52ljw4kztct6poihr@zork6muwdity>
+From: Daniel J Blueman <daniel@quora.org>
+Date: Sat, 30 Dec 2023 16:34:39 +0800
+Message-ID: <CAMVG2sveJiXO=88uFfrxYK0n3Nx1a4mTDJZ6N-zwaAUj76twDw@mail.gmail.com>
+Subject: Re: Stack corruption in bch2_nocow_write
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, 
+	Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Dec 29, 2023, at 12:44 PM, Carl E. Thompson wrote:
-> I don't see anything recent on the -testing branch on GitHub so I 
-> applied the patch from your email and the other io_write.c patch 
-> directly to rc7.
-
-As far as I know, the official repository is:
-
-https://evilpiepirate.org/git/bcachefs.git
-
-And GitHub is a mirror of this.
-
+On Sat, 30 Dec 2023 at 02:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
 >
-> So far it seems to work to fix this issue for me. I'll keep testing. 
-> Thanks for such a quick fix!
+> On Fri, Dec 29, 2023 at 07:43:13PM +0800, Daniel J Blueman wrote:
+> > Hi Kent et al,
+> >
+> > On Linux 6.7-rc7 from bcachefs master SHA f3608cbdfd built with UBSAN
+> > [1], with a crafted workload [2] I'm able to trigger stack corruption
+> > in bch2_nocow_write [3].
+> >
+> > Let me know if you can't reproduce it and I'll check reproducibility
+> > on another platform, and let me know for any patch testing.
 >
-> Thank you,
-> Carl Thompson
+> this should be fixed in the testing branch:
 >
+> commit ab35f724070ccdaa31f6376a1890473e7d031ed0
+> Author: Kent Overstreet <kent.overstreet@linux.dev>
+> Date:   Fri Dec 29 13:54:00 2023 -0500
 >
->> On 2023-12-29 10:50 AM PST Kent Overstreet <kent.overstreet@linux.dev> wrote:
->> ...
->> Fix is in the -testing branch, will be making it to the appropriate
->> places shortly:
->> 
->> commit 05b11fb627bcd71cc19e79cdeabfa1b514bf8acf
->> Author: Kent Overstreet <kent.overstreet@linux.dev>
->> Date:   Fri Dec 29 13:39:07 2023 -0500
->> 
->>     bcachefs: Fix extents iteration + snapshots interaction
->>     
->>     peek_upto() checks against the end position and bails out before
->>     FILTER_SNAPSHOTS checks; this is because if we end up at a different
->>     inode number than the original search key none of the keys we see might
->>     be visibile in the current snapshot - we might be looking at inode in a
->>     completely different subvolume.
->>     
->>     But this is broken, because when we're iterating over extents we're
->>     checking against the extent start position to decide when to bail out,
->>     and the extent start position isn't monotonically increasing until after
->>     we've run FILTER_SNAPSHOTS.
->>     
->>     Fix this by adding a simple inode number check where the old bailout
->>     check was, and moving the main check to the correct position.
->>     
->>     Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
->> 
->> diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
->> index 732c8bb3f803..7e5c797cfaf2 100644
->> --- a/fs/bcachefs/btree_iter.c
->> +++ b/fs/bcachefs/btree_iter.c
->> @@ -2145,18 +2145,16 @@ struct bkey_s_c bch2_btree_iter_peek_upto(struct btree_iter *iter, struct bpos e
->>  			goto out_no_locked;
->>  
->>  		/*
->> -		 * iter->pos should be mononotically increasing, and always be
->> -		 * equal to the key we just returned - except extents can
->> -		 * straddle iter->pos:
->> +		 * We need to check against @end before FILTER_SNAPSHOTS because
->> +		 * if we get to a different inode that requested we might be
->> +		 * seeing keys for a different snapshot tree that will all be
->> +		 * filtered out.
->> +		 *
->> +		 * But we can't do the full check here, because bkey_start_pos()
->> +		 * isn't monotonically increasing before FILTER_SNAPSHOTS, and
->> +		 * that's what we check against in extents mode:
->>  		 */
->> -		if (!(iter->flags & BTREE_ITER_IS_EXTENTS))
->> -			iter_pos = k.k->p;
->> -		else
->> -			iter_pos = bkey_max(iter->pos, bkey_start_pos(k.k));
->> -
->> -		if (unlikely(!(iter->flags & BTREE_ITER_IS_EXTENTS)
->> -			     ? bkey_gt(iter_pos, end)
->> -			     : bkey_ge(iter_pos, end)))
->> +		if (k.k->p.inode > end.inode)
->>  			goto end;
->>  
->>  		if (iter->update_path &&
->> @@ -2215,6 +2213,21 @@ struct bkey_s_c bch2_btree_iter_peek_upto(struct btree_iter *iter, struct bpos e
->>  			continue;
->>  		}
->>  
->> +		/*
->> +		 * iter->pos should be mononotically increasing, and always be
->> +		 * equal to the key we just returned - except extents can
->> +		 * straddle iter->pos:
->> +		 */
->> +		if (!(iter->flags & BTREE_ITER_IS_EXTENTS))
->> +			iter_pos = k.k->p;
->> +		else
->> +			iter_pos = bkey_max(iter->pos, bkey_start_pos(k.k));
->> +
->> +		if (unlikely(!(iter->flags & BTREE_ITER_IS_EXTENTS)
->> +			     ? bkey_gt(iter_pos, end)
->> +			     : bkey_ge(iter_pos, end)))
->> +			goto end;
->> +
->>  		break;
->>  	}
+>     bcachefs: fix nocow write path when writing to multiple extents
+>
+>     Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+>
+> diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
+> index c5961bac19f0..7c5963cd0b85 100644
+> --- a/fs/bcachefs/io_write.c
+> +++ b/fs/bcachefs/io_write.c
+> @@ -1316,6 +1316,7 @@ static void bch2_nocow_write(struct bch_write_op *op)
+>                 closure_get(&op->cl);
+>                 bch2_submit_wbio_replicas(to_wbio(bio), c, BCH_DATA_user,
+>                                           op->insert_keys.top, true);
+> +               nr_buckets = 0;
+>
+>                 bch2_keylist_push(&op->insert_keys);
+>                 if (op->flags & BCH_WRITE_DONE)
+
+Thanks for the quick update, Kent.
+
+With this change and a few runs of the reproducer, I still hit this
+stack corruption with the same backtrace.
+
+Let me know for any further testing,
+  Dan
+-- 
+Daniel J Blueman
