@@ -1,79 +1,120 @@
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF0823D8
-	for <linux-bcachefs@vger.kernel.org>; Sun, 31 Dec 2023 09:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=quora.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quora.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7BA63C1
+	for <linux-bcachefs@vger.kernel.org>; Mon,  1 Jan 2024 16:57:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=quora.org header.i=@quora.org header.b="mIwyD0GL"
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5553f251e3cso2961105a12.2
-        for <linux-bcachefs@vger.kernel.org>; Sun, 31 Dec 2023 01:54:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=quora.org; s=google; t=1704016464; x=1704621264; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UMSYvbQU54i14Wl8nNwYDolPzMJV8XGJUyQsZje4uBY=;
-        b=mIwyD0GLQQqdipZ3TUrib+Vdws8pi5kjz6dCN7TL5DIAENfuf8IjWPSeQrZxgDpIdh
-         TKa6j9rmb0g+i28o+HG8tQC07e4cwU+RXVdbQQ1D/x+VIizAAZwd8ev1P/tqnNddynCI
-         oDKK5CluVseZ5Ek7lMZrJ18DScZNSlBySFvA0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704016464; x=1704621264;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UMSYvbQU54i14Wl8nNwYDolPzMJV8XGJUyQsZje4uBY=;
-        b=EQ1Ul7qRZcqVw//KunFbcfHH91nw3R5BqFDleZGNEEiOpb5KzwjfK8DiCvOagxpfIp
-         0u8IcN+d09M9KyTxa/HEJWu6aXS56m43y1ceQ/NMgrtgnmLLQzvFjO2sofJRkr/RqFUK
-         /jUlRrY7q74IyhEMhGLem870acJZtuPay+qC5thafZNJXppcegw1EJDCkl/3L0WCvkky
-         c43S32TcjgLQkc+Aa9AGZ/Bb57Om5A+vqfgmbtBHKDgnA9esiIjxkMnzSfaceT2+jxRD
-         yYA4oUD/qMDb6j41WZn39t8s21Y+MbQQzGspXM6/+rJYYYdEG0cdHC1FACbopevzPIrE
-         Ckgw==
-X-Gm-Message-State: AOJu0YxfQEVYaRwba7ehlVhWPFhsDId2/YdpK6pMawkP3hjAVyTskFp0
-	cCFNuvPV8I0g9H2Nw0UB400G8GTF6RITdJGBCZ1Cizm1MMmM/+IzVML33Q2oZOE=
-X-Google-Smtp-Source: AGHT+IGguVoLqG7zV7/NKjRUlfprYZvwSNt3u5/ArIaKl+XloJV19T36AckPR4r0EbobPLiRtrpZ9JopO5oPdj8AcQM=
-X-Received: by 2002:a17:906:b0d8:b0:9fe:81a:c258 with SMTP id
- bk24-20020a170906b0d800b009fe081ac258mr8091222ejb.26.1704016463805; Sun, 31
- Dec 2023 01:54:23 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jQ4sr2ta"
+Date: Mon, 1 Jan 2024 11:57:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704128229;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=cmvErc4bVmNIdfsEyQKE+VfNG+TsormXZQZVPalSIsg=;
+	b=jQ4sr2taSFWLfiAzp6+1xFur/KSny+47PWTKSD0SXJpvPF03vIYVvqEWHjXDPtLa3Q543V
+	QtYFU9wqDpOOlqBavtBvK0sa+9rjrlScnIdv4FAwywbcc5G61m96ZGVH++8myaFqAE/9e2
+	qkkWUIkVEbvjZ/+ptgMYJCNRl4dcH9M=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs new years fixes for 6.7
+Message-ID: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMVG2su=Kt5mkyEHGh5D4YH+1xTUFX3BhOjf-D0bcRTntav3ng@mail.gmail.com>
- <2g6gw7ybne5d5u2ewsbfpsoxslw5vie3d6whlhrcmbombkyzqs@dd6tr3se6fu7>
-In-Reply-To: <2g6gw7ybne5d5u2ewsbfpsoxslw5vie3d6whlhrcmbombkyzqs@dd6tr3se6fu7>
-From: Daniel J Blueman <daniel@quora.org>
-Date: Sun, 31 Dec 2023 17:54:12 +0800
-Message-ID: <CAMVG2sueLr7Sy58iaZqbnvvj2POtQNRiaQRNh2TjPw3gw3ei1Q@mail.gmail.com>
-Subject: Re: Stack corruption in bch2_nocow_write
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, 
-	Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, 31 Dec 2023 at 06:41, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> On Fri, Dec 29, 2023 at 07:43:13PM +0800, Daniel J Blueman wrote:
-> > Hi Kent et al,
-> >
-> > On Linux 6.7-rc7 from bcachefs master SHA f3608cbdfd built with UBSAN
-> > [1], with a crafted workload [2] I'm able to trigger stack corruption
-> > in bch2_nocow_write [3].
-> >
-> > Let me know if you can't reproduce it and I'll check reproducibility
-> > on another platform, and let me know for any patch testing.
->
-> Can you give the bcachefs-testing branch a try?
+Hi Linus, some more fixes for you, and some compatibility work so that
+6.7 will be able to handle the disk space accounting rewrite when it
+rolls out.
 
-Good fixes! I can't reproduce the issue on SHA 67503f8d4 in
-bcachefs.git/bcachefs-testing, and no warnings are triggered with
-CONFIG_PROVE_LOCKING.
+Happy new year!
 
-Tested-by: Daniel J Blueman <daniel@quora.org>
+The following changes since commit 453f5db0619e2ad64076aab16ff5a00e0f7c53a2:
 
-Thanks,
-  Dan
--- 
-Daniel J Blueman
+  Merge tag 'trace-v6.7-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace (2023-12-30 11:37:35 -0800)
+
+are available in the Git repository at:
+
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-01-01
+
+for you to fetch changes up to 0d72ab35a925d66b044cb62b709e53141c3f0143:
+
+  bcachefs: make RO snapshots actually RO (2024-01-01 11:47:07 -0500)
+
+----------------------------------------------------------------
+More bcachefs bugfixes for 6.7, and forwards compatibility work:
+
+ - fix for a nasty extents + snapshot interaction, reported when reflink
+   of a snapshotted file wouldn't complete but turned out to be a more
+   general bug
+ - fix for an invalid free in dio write path when iov vector was longer
+   than our inline vecotr
+ - fix for a buffer overflow in the nocow write path - BCH_REPLICAS_MAX
+   doesn't actually limit the number of pointers in an extent when
+   cached pointers are included
+ - RO snapshots are actually RO now
+ - And, a new superblock section to avoid future breakage when the disk
+   space acounting rewrite rolls out: the new superblock section
+   describes versions that need work to downgrade, where the work
+   required is a list of recovery passes and errors to silently fix.
+
+----------------------------------------------------------------
+Kent Overstreet (13):
+      bcachefs: Fix extents iteration + snapshots interaction
+      bcachefs: fix invalid free in dio write path
+      bcachefs: fix setting version_upgrade_complete
+      bcachefs: Factor out darray resize slowpath
+      bcachefs: Switch darray to kvmalloc()
+      bcachefs: DARRAY_PREALLOCATED()
+      bcachefs: fix buffer overflow in nocow write path
+      bcachefs: move BCH_SB_ERRS() to sb-errors_types.h
+      bcachefs: prt_bitflags_vector()
+      bcachefs: Add persistent identifiers for recovery passes
+      bcachefs: bch_sb.recovery_passes_required
+      bcachefs: bch_sb_field_downgrade
+      bcachefs: make RO snapshots actually RO
+
+ fs/bcachefs/Makefile          |   2 +
+ fs/bcachefs/acl.c             |   3 +-
+ fs/bcachefs/bcachefs.h        |   1 +
+ fs/bcachefs/bcachefs_format.h |  51 ++++++---
+ fs/bcachefs/btree_iter.c      |  35 ++++--
+ fs/bcachefs/darray.c          |  24 ++++
+ fs/bcachefs/darray.h          |  48 +++++---
+ fs/bcachefs/errcode.h         |   3 +
+ fs/bcachefs/error.c           |   3 +
+ fs/bcachefs/fs-io-direct.c    |  13 +--
+ fs/bcachefs/fs-ioctl.c        |  12 +-
+ fs/bcachefs/fs.c              |  38 ++++++-
+ fs/bcachefs/io_write.c        |  82 +++++++-------
+ fs/bcachefs/printbuf.c        |  22 ++++
+ fs/bcachefs/printbuf.h        |   2 +
+ fs/bcachefs/recovery.c        | 137 +++++++++++++++++++----
+ fs/bcachefs/recovery.h        |   3 +
+ fs/bcachefs/recovery_types.h  |  86 ++++++++------
+ fs/bcachefs/sb-clean.c        |   2 -
+ fs/bcachefs/sb-downgrade.c    | 188 +++++++++++++++++++++++++++++++
+ fs/bcachefs/sb-downgrade.h    |  10 ++
+ fs/bcachefs/sb-errors.c       |   6 +-
+ fs/bcachefs/sb-errors.h       | 253 +-----------------------------------------
+ fs/bcachefs/sb-errors_types.h | 253 ++++++++++++++++++++++++++++++++++++++++++
+ fs/bcachefs/subvolume.c       |  18 +++
+ fs/bcachefs/subvolume.h       |   3 +
+ fs/bcachefs/super-io.c        |  86 +++++++++++++-
+ fs/bcachefs/super-io.h        |  12 +-
+ fs/bcachefs/util.h            |   1 +
+ fs/bcachefs/xattr.c           |   3 +-
+ 30 files changed, 977 insertions(+), 423 deletions(-)
+ create mode 100644 fs/bcachefs/darray.c
+ create mode 100644 fs/bcachefs/sb-downgrade.c
+ create mode 100644 fs/bcachefs/sb-downgrade.h
