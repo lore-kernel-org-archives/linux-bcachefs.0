@@ -1,30 +1,31 @@
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B77314A9A
-	for <linux-bcachefs@vger.kernel.org>; Tue,  2 Jan 2024 15:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F20014F60
+	for <linux-bcachefs@vger.kernel.org>; Tue,  2 Jan 2024 16:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rCeVdf1+"
-Date: Tue, 2 Jan 2024 10:59:22 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vXCRF1Z/"
+Date: Tue, 2 Jan 2024 11:05:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704211165;
+	t=1704211562;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lP7mSk3Qvihir4BFOTD7brqhLvx7VKJEPTNj8uSx69A=;
-	b=rCeVdf1+4p30D3rT9gZ3PjvX8ggfNd+ZjlRvFyIb1Pfy1uXVIBFLvZtC9/JTF1OcmBLNRd
-	ZeB6JKSEEPGRrcN+CqtMY2IWIaMgojbiQnWfgr7U/61g37d/e9jogkNDgJlmxgVZ+kqlh+
-	BkzX2NBlDvxqOSANcWbYgdBmcngM6OA=
+	bh=FfBSIcri6gvRT1pMgWG+pIwCoQ0ekq61NfBifzBCZVU=;
+	b=vXCRF1Z/FWzUW4N5OGNmiHEKvwZyzdT3+1J8P3ZO6hx43S12CDxCrbMOYp3+WrmeobPtT7
+	XExCwT7RZ3mdBrIebl5SwCUCpLGollYRHMgxXayWXgCKsr4APLunvwl638XQvLcp5GA48S
+	JxZNtGq0LHmop6gjeCjtxTFNMSL8Wqw=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Joey Gouly <joey.gouly@arm.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: make RO snapshots actually RO
-Message-ID: <gsutet5eavxirguinw6pfvbpnfdgl3d6m5oqoorwh7zgnmrwhq@el5tle57tnis>
-References: <20231230195802.2220651-1-kent.overstreet@linux.dev>
- <20240102142804.GA1028907@e124191.cambridge.arm.com>
+To: Viacheslav Dubeyko <slava@dubeyko.com>
+Cc: lsf-pc@lists.linux-foundation.org, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] bcachefs
+Message-ID: <mpvktfgmdhcjohcwg24ssxli3nrv2nu6ev6hyvszabyik2oiam@axba2nsiovyx>
+References: <i6ugxvkuz7fsnfoqlnmtjyy2owfyr4nlkszdxkexxixxbafhqa@mbsiiiw2jwqi>
+ <3EB6181B-2BEA-49BE-A290-AFDE21FFD55F@dubeyko.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -33,94 +34,43 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240102142804.GA1028907@e124191.cambridge.arm.com>
+In-Reply-To: <3EB6181B-2BEA-49BE-A290-AFDE21FFD55F@dubeyko.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jan 02, 2024 at 02:28:04PM +0000, Joey Gouly wrote:
-> Hi Kent,
+On Tue, Jan 02, 2024 at 11:02:59AM +0300, Viacheslav Dubeyko wrote:
 > 
-> On Sat, Dec 30, 2023 at 02:58:02PM -0500, Kent Overstreet wrote:
-> > Add checks to all the VFS paths for "are we in a RO snapshot?".
+> 
+> > On Jan 2, 2024, at 1:56 AM, Kent Overstreet <kent.overstreet@linux.dev> wrote:
 > > 
-> > Note - we don't check this when setting inode options via our xattr
-> > interface, since those generally only affect data placement, not
-> > contents of data.
+> > LSF topic: bcachefs status & roadmap
 > > 
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > ---
-> >  fs/bcachefs/acl.c       |  3 ++-
-> >  fs/bcachefs/fs-ioctl.c  | 12 +++++-------
-> >  fs/bcachefs/fs.c        | 38 +++++++++++++++++++++++++++++++++-----
-> >  fs/bcachefs/subvolume.c | 18 ++++++++++++++++++
-> >  fs/bcachefs/subvolume.h |  3 +++
-> >  fs/bcachefs/xattr.c     |  3 ++-
-> >  6 files changed, 63 insertions(+), 14 deletions(-)
+> 
+> <skipped>
+> 
 > > 
-> > diff --git a/fs/bcachefs/acl.c b/fs/bcachefs/acl.c
-> > index f3809897f00a..a9f3b0817b41 100644
-> > --- a/fs/bcachefs/acl.c
-> > +++ b/fs/bcachefs/acl.c
-> > @@ -366,7 +366,8 @@ int bch2_set_acl(struct mnt_idmap *idmap,
-> >  	bch2_trans_begin(trans);
-> >  	acl = _acl;
-> >  
-> > -	ret = bch2_inode_peek(trans, &inode_iter, &inode_u, inode_inum(inode),
-> > +	ret   = bch2_subvol_is_ro_trans(trans, inode->ei_subvol);
-> > +		bch2_inode_peek(trans, &inode_iter, &inode_u, inode_inum(inode),
-> >  			      BTREE_ITER_INTENT);
+> > A delayed allocation for btree nodes mode is coming, which is the main
+> > piece needed for ZNS support
+> > 
 > 
-> Looks like this is throwing away the return value of `bch2_inode_peek`, because
-> the previous line ends in ';' but it should end in '?:' to match other changes
-> in this commit?
-> 
-> >  	if (ret)
-> >  		goto btree_err;
-> > diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
-> > index 8098a3a299d1..e0a19a73c8e1 100644
-> > --- a/fs/bcachefs/fs-ioctl.c
-> > +++ b/fs/bcachefs/fs-ioctl.c
-> > @@ -100,7 +100,8 @@ static int bch2_ioc_setflags(struct bch_fs *c,
-> >  	}
-> >  
-> >  	mutex_lock(&inode->ei_update_lock);
-> > -	ret = bch2_write_inode(c, inode, bch2_inode_flags_set, &s,
-> > +	ret   = bch2_subvol_is_ro(c, inode->ei_subvol) ?:
-> > +		bch2_write_inode(c, inode, bch2_inode_flags_set, &s,
-> >  			       ATTR_CTIME);
-> >  	mutex_unlock(&inode->ei_update_lock);
-> >  
-> > @@ -183,13 +184,10 @@ static int bch2_ioc_fssetxattr(struct bch_fs *c,
-> >  	}
-> >  
-> >  	mutex_lock(&inode->ei_update_lock);
-> > -	ret = bch2_set_projid(c, inode, fa.fsx_projid);
-> > -	if (ret)
-> > -		goto err_unlock;
-> > -
-> > -	ret = bch2_write_inode(c, inode, fssetxattr_inode_update_fn, &s,
-> > +	ret   = bch2_subvol_is_ro(c, inode->ei_subvol) ?:
-> > +		bch2_set_projid(c, inode, fa.fsx_projid) ?:
-> > +		bch2_write_inode(c, inode, fssetxattr_inode_update_fn, &s,
-> >  			       ATTR_CTIME);
-> > -err_unlock:
-> >  	mutex_unlock(&inode->ei_update_lock);
-> >  err:
-> >  	inode_unlock(&inode->v);
-> > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> > index 34cb22a9c05d..0e1d709100bb 100644
-> > --- a/fs/bcachefs/fs.c
-> > +++ b/fs/bcachefs/fs.c
-> > @@ -258,7 +258,8 @@ __bch2_create(struct mnt_idmap *idmap,
-> >  retry:
-> >  	bch2_trans_begin(trans);
-> >  
-> > -	ret   = bch2_create_trans(trans,
-> > +	ret   = bch2_subvol_is_ro_trans(trans, dir->ei_subvol);
-> > +		bch2_create_trans(trans,
-> >  				  inode_inum(dir), &dir_u, &inode_u,
-> >  				  !(flags & BCH_CREATE_TMPFILE)
-> >  				  ? &dentry->d_name : NULL,
-> 
-> Same again.
+> I could miss some emails. But have you shared the vision of ZNS support
+> architecture for the case of bcachefs already? It will be interesting to hear
+> the high-level concept.
 
-yup, they were fortunately spotted before the pull request went out
+There's not a whole lot to it. bcache/bcachefs allocation is already
+bucket based, where the model is that we allocate a bucket, then write
+to it sequentially and never overwrite until the whole bucket is reused.
+
+The main exception has been btree nodes, which are log structured and
+typically smaller than a bucket; that doesn't break the "no overwrites"
+property ZNS wants, but it does mean writes within a bucket aren't
+happening sequentially.
+
+So I'm adding a mode where every time we do a btree node write we write
+out the whole node to a new location, instead of appending at an
+existing location. It won't be as efficient for random updates across a
+large working set, but in practice that doesn't happen too much; average
+btree write size has always been quite high on any filesystem I've
+looked at.
+
+Aside from that, it's mostly just plumbing and integration; bcachefs on
+ZNS will work pretty much just the same as bcachefs on regular block devices.
