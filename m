@@ -1,76 +1,58 @@
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F20014F60
-	for <linux-bcachefs@vger.kernel.org>; Tue,  2 Jan 2024 16:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vXCRF1Z/"
-Date: Tue, 2 Jan 2024 11:05:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704211562;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FfBSIcri6gvRT1pMgWG+pIwCoQ0ekq61NfBifzBCZVU=;
-	b=vXCRF1Z/FWzUW4N5OGNmiHEKvwZyzdT3+1J8P3ZO6hx43S12CDxCrbMOYp3+WrmeobPtT7
-	XExCwT7RZ3mdBrIebl5SwCUCpLGollYRHMgxXayWXgCKsr4APLunvwl638XQvLcp5GA48S
-	JxZNtGq0LHmop6gjeCjtxTFNMSL8Wqw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Viacheslav Dubeyko <slava@dubeyko.com>
-Cc: lsf-pc@lists.linux-foundation.org, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] bcachefs
-Message-ID: <mpvktfgmdhcjohcwg24ssxli3nrv2nu6ev6hyvszabyik2oiam@axba2nsiovyx>
-References: <i6ugxvkuz7fsnfoqlnmtjyy2owfyr4nlkszdxkexxixxbafhqa@mbsiiiw2jwqi>
- <3EB6181B-2BEA-49BE-A290-AFDE21FFD55F@dubeyko.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE15808;
+	Wed,  3 Jan 2024 01:07:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VzrtB.y_1704244041;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VzrtB.y_1704244041)
+          by smtp.aliyun-inc.com;
+          Wed, 03 Jan 2024 09:07:22 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: kent.overstreet@linux.dev,
+	bfoster@redhat.com
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] bcachefs: Remove unneeded semicolon
+Date: Wed,  3 Jan 2024 09:07:20 +0800
+Message-Id: <20240103010720.39784-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3EB6181B-2BEA-49BE-A290-AFDE21FFD55F@dubeyko.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 02, 2024 at 11:02:59AM +0300, Viacheslav Dubeyko wrote:
-> 
-> 
-> > On Jan 2, 2024, at 1:56 AM, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > 
-> > LSF topic: bcachefs status & roadmap
-> > 
-> 
-> <skipped>
-> 
-> > 
-> > A delayed allocation for btree nodes mode is coming, which is the main
-> > piece needed for ZNS support
-> > 
-> 
-> I could miss some emails. But have you shared the vision of ZNS support
-> architecture for the case of bcachefs already? It will be interesting to hear
-> the high-level concept.
+./fs/bcachefs/super.c:1093:59-60: Unneeded semicolon
+./fs/bcachefs/super.c:1097:59-60: Unneeded semicolon
 
-There's not a whole lot to it. bcache/bcachefs allocation is already
-bucket based, where the model is that we allocate a bucket, then write
-to it sequentially and never overwrite until the whole bucket is reused.
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/bcachefs/super.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The main exception has been btree nodes, which are log structured and
-typically smaller than a bucket; that doesn't break the "no overwrites"
-property ZNS wants, but it does mean writes within a bucket aren't
-happening sequentially.
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index 64ff7da49860..bc254d69b596 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -1090,11 +1090,11 @@ static int bch2_dev_in_fs(struct bch_sb_handle *fs,
+ 		prt_newline(&buf);
+ 
+ 		prt_printf(&buf, "%pg ", fs->bdev);
+-		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));;
++		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));
+ 		prt_newline(&buf);
+ 
+ 		prt_printf(&buf, "%pg ", sb->bdev);
+-		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));;
++		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));
+ 		prt_newline(&buf);
+ 
+ 		prt_printf(&buf, "Not using older sb");
+-- 
+2.20.1.7.g153144c
 
-So I'm adding a mode where every time we do a btree node write we write
-out the whole node to a new location, instead of appending at an
-existing location. It won't be as efficient for random updates across a
-large working set, but in practice that doesn't happen too much; average
-btree write size has always been quite high on any filesystem I've
-looked at.
-
-Aside from that, it's mostly just plumbing and integration; bcachefs on
-ZNS will work pretty much just the same as bcachefs on regular block devices.
