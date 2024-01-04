@@ -1,173 +1,169 @@
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE1E200A5
-	for <linux-bcachefs@vger.kernel.org>; Thu,  4 Jan 2024 07:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubeyko.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2129320DDF;
+	Thu,  4 Jan 2024 11:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b="jiGStf/U"
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cd08f0c12aso2487161fa.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 03 Jan 2024 23:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20230601.gappssmtp.com; s=20230601; t=1704354236; x=1704959036; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W1yThAJfEzlOfxwivhZ6fEV4ArFBKNTkjUY01E38OUc=;
-        b=jiGStf/U7sX4wckOBg9k33xpGzJ9DrwzXWvS45Z2RXFld+hTex5hJS7xvPdh1PgzF1
-         76ycvdFQjGQyhMSQO2bLfxTumXACLdyzi+dmu3QVzTQ9Ij2rbnqpEF534wtj1fGEptPp
-         1V4E9EyjzAqS+7ImTJdZKCFbBs4Yc1XYopGrjxKWXyzJTaV277AcK+15pEyou34kuCXV
-         RAj67/9ErT8ET/r3XiANnONFwJBLvU0i1sslCtAniIKTxw9KWe3YHEShNsfUxZ6ffsux
-         URQxyq2ATNdtO9WyIjB6FB2G0igeXzPB3BiLme6fyJWBMXJDIy/H2Zs/jdWiS01Q/VkW
-         6D+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704354236; x=1704959036;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W1yThAJfEzlOfxwivhZ6fEV4ArFBKNTkjUY01E38OUc=;
-        b=TuS989uw7Rt8RrQTIyzHtxFUzmjxI0wVB9XegBU9X7RD0zNqnFx+jTjIuV+gUUcinn
-         kCeUOOMmKquegnsOKapn/ILu8qv2v//Q8GJjPc6VJPrFVq6Aky0HK5Xy0a5312+MUNsE
-         iiewkNXNi9eJ0ZSTX9okAm5RGCm7xoaqF96G961uBd7raB7CpDopWVcbl8iPQuorST+y
-         nKmX2b6+VJwtHWRo7lR6CnUAXWLrLknRXw0v3kByCpE417PeJHDA6wicGwYzNxz9jdcE
-         ignToKQwlFR9wRVgwpP7AJR5slOsi3zoFU/aOevL5OEfPRk9rCWwYAe8AIDmOnItDXUM
-         jpbA==
-X-Gm-Message-State: AOJu0Yy09AudkOoRCmfcpyMM75ZwTpe0NWOLCAYp2Qcua03ciLRuBL2z
-	eYJ3/QYYwxvLKgAy32wwSLAy+v3dRdZZPQ==
-X-Google-Smtp-Source: AGHT+IFosEy9Q4acYcwWdLKciqfLUnI9EMQ7EDAWnAxSzSS/1EmOsbOqZAxSr7g9TgtWbWJSvMfREg==
-X-Received: by 2002:a2e:9d84:0:b0:2cd:1d26:232 with SMTP id c4-20020a2e9d84000000b002cd1d260232mr71013ljj.2.1704354236372;
-        Wed, 03 Jan 2024 23:43:56 -0800 (PST)
-Received: from smtpclient.apple ([2a00:1370:81a4:169c:b9b3:d30e:5f66:5758])
-        by smtp.gmail.com with ESMTPSA id k10-20020a2e920a000000b002ccad70dacfsm5345916ljg.26.2024.01.03.23.43.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Jan 2024 23:43:55 -0800 (PST)
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ed15D+gF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d34IMjGx";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ed15D+gF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d34IMjGx"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B485A21DCD;
+	Thu,  4 Jan 2024 11:06:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704366391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z1IF2wF6kwKN1+MUgbe4SPYXy6b3fZ2jaH8f6LqUCAU=;
+	b=ed15D+gFpwqrClSMscoZXuYlaFPD5SRis5efpvHvwOFtmLvhKDT31k32lM3uAx1eRSCBKC
+	hGWnOxrPK5+SF+IRzKDbnKvvUPebbuYgLoeLF6ITUFuGcKaIsQsfKLkUxjC5o8/NojVblh
+	G6DHXJd4vsjP8BrQ30igQ2HAR83E4MQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704366391;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z1IF2wF6kwKN1+MUgbe4SPYXy6b3fZ2jaH8f6LqUCAU=;
+	b=d34IMjGxeazCejiFudncTLHw7CMgLsIjxWQRRZJ2xAsFnDqQbVIvRRVRb/OJinOkDWu2zI
+	4PZWPGF65Myy4bAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704366391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z1IF2wF6kwKN1+MUgbe4SPYXy6b3fZ2jaH8f6LqUCAU=;
+	b=ed15D+gFpwqrClSMscoZXuYlaFPD5SRis5efpvHvwOFtmLvhKDT31k32lM3uAx1eRSCBKC
+	hGWnOxrPK5+SF+IRzKDbnKvvUPebbuYgLoeLF6ITUFuGcKaIsQsfKLkUxjC5o8/NojVblh
+	G6DHXJd4vsjP8BrQ30igQ2HAR83E4MQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704366391;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z1IF2wF6kwKN1+MUgbe4SPYXy6b3fZ2jaH8f6LqUCAU=;
+	b=d34IMjGxeazCejiFudncTLHw7CMgLsIjxWQRRZJ2xAsFnDqQbVIvRRVRb/OJinOkDWu2zI
+	4PZWPGF65Myy4bAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A20CE13722;
+	Thu,  4 Jan 2024 11:06:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 8zOOJzeRlmXyfQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 11:06:31 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 3DC50A07EF; Thu,  4 Jan 2024 12:06:31 +0100 (CET)
+Date: Thu, 4 Jan 2024 12:06:31 +0100
+From: Jan Kara <jack@suse.cz>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
+	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
+	p.raghav@samsung.com, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v3 for-6.8/block 02/17] xen/blkback: use bdev api in
+ xen_update_blkif_status()
+Message-ID: <20240104110631.3vspsvxbbvcpdqdu@quack3>
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085712.1766333-3-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.4\))
-Subject: Re: [LSF/MM/BPF TOPIC] bcachefs
-From: Viacheslav Dubeyko <slava@dubeyko.com>
-In-Reply-To: <cgivkso5ugccwkhtd5rh3d6rkoxdrra3hxgxhp5e5m45kn623s@f6hd3iajb3zg>
-Date: Thu, 4 Jan 2024 10:43:49 +0300
-Cc: lsf-pc@lists.linux-foundation.org,
- linux-bcachefs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D7F7675E-B615-48DC-B4D8-63B867B25887@dubeyko.com>
-References: <i6ugxvkuz7fsnfoqlnmtjyy2owfyr4nlkszdxkexxixxbafhqa@mbsiiiw2jwqi>
- <3EB6181B-2BEA-49BE-A290-AFDE21FFD55F@dubeyko.com>
- <mpvktfgmdhcjohcwg24ssxli3nrv2nu6ev6hyvszabyik2oiam@axba2nsiovyx>
- <74751256-EA58-4EBB-8CA9-F1DD5E2F23FA@dubeyko.com>
- <cgivkso5ugccwkhtd5rh3d6rkoxdrra3hxgxhp5e5m45kn623s@f6hd3iajb3zg>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3696.120.41.1.4)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221085712.1766333-3-yukuai1@huaweicloud.com>
+X-Spam-Level: **
+X-Spam-Level: 
+X-Spamd-Bar: /
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ed15D+gF;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=d34IMjGx
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.50 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(0.01)[44.94%];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLhr85cyeg3mfw7iggddtjdkgs)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[48];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 0.50
+X-Rspamd-Queue-Id: B485A21DCD
+X-Spam-Flag: NO
 
+On Thu 21-12-23 16:56:57, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Avoid to access bd_inode directly, prepare to remove bd_inode from
+> block_devcie.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/block/xen-blkback/xenbus.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+> index e34219ea2b05..e645afa4af57 100644
+> --- a/drivers/block/xen-blkback/xenbus.c
+> +++ b/drivers/block/xen-blkback/xenbus.c
+> @@ -104,8 +104,7 @@ static void xen_update_blkif_status(struct xen_blkif *blkif)
+>  		xenbus_dev_error(blkif->be->dev, err, "block flush");
+>  		return;
+>  	}
+> -	invalidate_inode_pages2(
+> -			blkif->vbd.bdev_handle->bdev->bd_inode->i_mapping);
+> +	invalidate_bdev(blkif->vbd.bdev_handle->bdev);
 
+This function uses invalidate_inode_pages2() while invalidate_bdev() ends
+up using mapping_try_invalidate() and there are subtle behavioral
+differences between these two (for example invalidate_inode_pages2() tries
+to clean dirty pages using the ->launder_folio method). So I think you'll
+need helper like invalidate_bdev2() for this.
 
-> On Jan 3, 2024, at 8:52 PM, Kent Overstreet =
-<kent.overstreet@linux.dev> wrote:
->=20
-> On Wed, Jan 03, 2024 at 10:39:50AM +0300, Viacheslav Dubeyko wrote:
->>=20
->>=20
->>> On Jan 2, 2024, at 7:05 PM, Kent Overstreet =
-<kent.overstreet@linux.dev> wrote:
->>>=20
->>> On Tue, Jan 02, 2024 at 11:02:59AM +0300, Viacheslav Dubeyko wrote:
->>>>=20
->>>>=20
->>>>> On Jan 2, 2024, at 1:56 AM, Kent Overstreet =
-<kent.overstreet@linux.dev> wrote:
->>>>>=20
->>>>> LSF topic: bcachefs status & roadmap
->>>>>=20
->>>>=20
->>>> <skipped>
->>>>=20
->>>>>=20
->>>>> A delayed allocation for btree nodes mode is coming, which is the =
-main
->>>>> piece needed for ZNS support
->>>>>=20
->>>>=20
->>>> I could miss some emails. But have you shared the vision of ZNS =
-support
->>>> architecture for the case of bcachefs already? It will be =
-interesting to hear
->>>> the high-level concept.
->>>=20
->>> There's not a whole lot to it. bcache/bcachefs allocation is already
->>> bucket based, where the model is that we allocate a bucket, then =
-write
->>> to it sequentially and never overwrite until the whole bucket is =
-reused.
->>>=20
->>> The main exception has been btree nodes, which are log structured =
-and
->>> typically smaller than a bucket; that doesn't break the "no =
-overwrites"
->>> property ZNS wants, but it does mean writes within a bucket aren't
->>> happening sequentially.
->>>=20
->>> So I'm adding a mode where every time we do a btree node write we =
-write
->>> out the whole node to a new location, instead of appending at an
->>> existing location. It won't be as efficient for random updates =
-across a
->>> large working set, but in practice that doesn't happen too much; =
-average
->>> btree write size has always been quite high on any filesystem I've
->>> looked at.
->>>=20
->>> Aside from that, it's mostly just plumbing and integration; bcachefs =
-on
->>> ZNS will work pretty much just the same as bcachefs on regular block =
-devices.
->>=20
->> I assume that you are aware about limited number of open/active zones
->> on ZNS device. It means that you can open for write operations
->> only N zones simultaneously (for example, 14 zones for the case of =
-WDC
->> ZNS device). Can bcachefs survive with such limitation? Can you limit =
-the number
->> of buckets for write operations?
->=20
-> Yes, open/active zones correspond to write points in the bcachefs
-> allocator. The default number of write points is 32 for user writes =
-plus
-> a few for internal ones, but it's not a problem to run with fewer.
->=20
-
-Frankly speaking, the 14 open/active zones limitation is extreme case.
-Samsung provides bigger number for available open/active zones in ZNS =
-SSD.
-Even WDC made some promise to increase this number. But what=E2=80=99s =
-the minimal
-possible number of write pointers that can give opportunity for bcachefs =
-still work
-and survive in the environment of limited number of open/active zones?
-
-So, does this change from default 32 write pointers to smaller number =
-require
-modification of file system driver logic (or maybe even on-disk layout)?
-Or this is configurable parameter of file system? Is it internal =
-configuration parameter
-or end-user can configure the number of write pointers?
-
-I see from documentation that expected size of the bucket is 128KB - =
-8MB.
-Will 256MB - 2GB bucket size being digested by bcachefs without any =
-modifications?
-Or it could require some modification of logic (or even on-disk layout)? =
-It=E2=80=99s pretty
-significant bucket size change for my taste.
-
-Thanks,
-Slava.
-
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
