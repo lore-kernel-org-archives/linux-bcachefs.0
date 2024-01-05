@@ -1,223 +1,84 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17802D602
-	for <linux-bcachefs@vger.kernel.org>; Thu,  4 Jan 2024 23:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lTZJFPuU"
-Date: Thu, 4 Jan 2024 18:41:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704411689;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aQaC+qZOAnzqx/1J8RbXfkiEOhtli/fOHQQ6fdLgWVY=;
-	b=lTZJFPuU3uxJMGeDHHgv34gnHH9FOVWiilUInXecX2Flb/Sgs4td1X6dlZeFCMm3b96RY6
-	SnOWdXe1oieSQ23SwHiW102xI3sIknqK/UMZo0k5RxcRE3ZVLqtS4SFNwhoBmBv7+JIZrT
-	zLQbzTXCNeqmVZULs+JyqRsM0O80nKM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	djwong@kernel.org
-Subject: Re: [PATCH 1/2] bcachefs: add fiemap delalloc extent detection
-Message-ID: <5sttczrkktgkivq5ncusst3rrjqi7hgpx4nswq2vjqn6iqr4b2@25hi2ukb2rh7>
-References: <20231219140215.300753-1-bfoster@redhat.com>
- <20231219140215.300753-2-bfoster@redhat.com>
- <20231219235742.fmon4qqvbabuxq6c@moria.home.lan>
- <ZZagv/f2lWOSMUSn@bfoster>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CAE5228;
+	Fri,  5 Jan 2024 04:44:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=49;SR=0;TI=SMTPD_---0VzzUQHt_1704429833;
+Received: from 30.222.33.160(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VzzUQHt_1704429833)
+          by smtp.aliyun-inc.com;
+          Fri, 05 Jan 2024 12:43:56 +0800
+Message-ID: <a2c7910c-4c2f-4290-a895-1c4255b2ee62@linux.alibaba.com>
+Date: Fri, 5 Jan 2024 12:43:52 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZagv/f2lWOSMUSn@bfoster>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v3 for-6.8/block 11/17] erofs: use bdev api
+To: Yu Kuai <yukuai1@huaweicloud.com>, Jan Kara <jack@suse.cz>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+ kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+ hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+ jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+ josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+ konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
+ hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085826.1768395-1-yukuai1@huaweicloud.com>
+ <20240104120207.ig7tfc3mgckwkp2n@quack3>
+ <7f868579-f993-aaa1-b7d7-eccbe0b0173c@huaweicloud.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <7f868579-f993-aaa1-b7d7-eccbe0b0173c@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-+cc btrfs folks
 
-On Thu, Jan 04, 2024 at 07:12:47AM -0500, Brian Foster wrote:
-> On Tue, Dec 19, 2023 at 06:57:42PM -0500, Kent Overstreet wrote:
-> > On Tue, Dec 19, 2023 at 09:02:14AM -0500, Brian Foster wrote:
-> > > +	start = bch2_seek_pagecache_data(vinode, start, end, 0, false);
-> > > +	if (start >= end)
-> > > +		return false;
-> > > +	end = bch2_seek_pagecache_hole(vinode, start, end, 0, false);
-> > > +
-> > > +	/*
-> > > +	 * Create a fake extent key in the buffer. We have to add a dummy extent
-> > > +	 * pointer for the fill code to add an extent entry. It's explicitly
-> > > +	 * zeroed to reflect delayed allocation (i.e. phys offset 0).
-> > > +	 */
-> > > +	bch2_bkey_buf_realloc(cur, c, sizeof(*delextent) / sizeof(u64));
-> > > +	delextent = bkey_extent_init(cur->k);
-> > > +	delextent->k.p = POS(ei->v.i_ino, start >> 9);
-> > > +	bch2_key_resize(&delextent->k, (end - start) >> 9);
-> > > +	bch2_bkey_append_ptr(&delextent->k_i, ptr);
-> > > +
-> > > +	return true;
-> > > +}
-> > 
-> > I don't like that this returns a delalloc extent when data is merely
-> > present in the pagecache - that's wrong.
-> > 
-> > bch2_seek_pagecache_dirty_data()?
-> > 
+
+On 2024/1/4 20:32, Yu Kuai wrote:
+> Hi, Jan!
 > 
-> Technically it just returns a file offset range represented in an extent
-> key. I could tweak it to just return a range or something and make the
-> delalloc part a separate helper.
+> 在 2024/01/04 20:02, Jan Kara 写道:
+>> On Thu 21-12-23 16:58:26, Yu Kuai wrote:
+>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>
+>>> Avoid to access bd_inode directly, prepare to remove bd_inode from
+>>> block_device.
+>>>
+>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>
+>> I'm not erofs maintainer but IMO this is quite ugly and grows erofs_buf
+>> unnecessarily. I'd rather store 'sb' pointer in erofs_buf and then do the
+>> right thing in erofs_bread() which is the only place that seems to care
+>> about the erofs_is_fscache_mode() distinction... Also blkszbits is then
+>> trivially sb->s_blocksize_bits so it would all seem much more
+>> straightforward.
 > 
-> More to the broader point, I thought that technically this was all
-> somewhat racy wrt to folio state and I was a little concerned about
-> possibly showing weird/inconsistent state if this runs concurrently with
-> writeback. I'll have to take a closer look at the bch2_seek_* helpers
-> though to better quantify that concern...
+> Thanks for your suggestion, I'll follow this unless Gao Xiang has other
+> suggestions.
 
-Yeah, it does get tricky there; writeback will flip the folio state from
-dirty to allocated before it shows up in the btree.
+Yes, that would be better, I'm fine with that.  Yet in the future we
+may support a seperate large dirblocksize more than block size, but
+we could revisit later.
 
-To fix that we'd need to add a new state to BCH_FOLIO_SECTOR_STATE, and
-it seems like that's something we should strongly consider.
-
-There may also be some lingering bugginess in the i_sectors accounting
-code, if we're touching this stuff we definitely want to be looking for
-ways to make that more rigoroous if we can - I thought I was done with
-that, but I have an assert patch in my garbage branch that was firing -
-hadn't had time to track it down:
-https://evilpiepirate.org/git/bcachefs.git/commit/?h=bcachefs-garbage&id=50010457597c6c30aec1195b0568868d2d30bb76
-
-This is likely related to the warning that's been popping in the CI from
-time to time about i_sectors_delta being the wrong sign in writeback
-completion.
-
-Not the main focus here, just wanted to bring it up in case you start to
-go down that rabbit hole
-
-
-> > Now that we're not compiling in gnu89 mode anymore, I'm moving code away
-> > from this "declare all variables at the top" style - I want variables
-> > declared where they're initialized.
-> > 
-> > The reason is that bugs of the "I accidently used a var before I
-> > initialized it" are really common, and the compiler does a crap job of
-> > catching them.
-> > 
-> > Anywhere where we can write our code in a more functional style (in the
-> > SSA sense, variables are declared where they are initialized and never
-> > mutated) without it affecting the quality of the output is a big win.
-> > 
-> > (across function calls, we can't generally do this because C doesn't
-> > have return value optimization).
-> > 
-> 
-> Hmm.. not really sure I want to get into this. My initial reaction is
-> that this strikes me as odd formatting that makes the code incrementally
-> more annoying to read for marginal benefit. Has there been any broader
-> discussion on this sort of thing anywhere that I can catch up on?
-
-Starting that discussion now :)
-
-Actually, this did come up not too long ago; there was a bug in some usb
-code where they were using the loop iterator after breaking out of the
-loop - which should have been ok, but for some horribly subtly reasons
-was not, and Linus brought up that it's probably time to switch to
-declaring the loop iterator in the for () statement to make those sorts
-of bugs impossible.
-
-More broadly, I regularly come across subtle bugs that should not have
-happened purely because of variable reuse; consider the way we declare
-int ret; at the top of a lot of functions, and then reuse it throughout.
-
-That's error prone for a whole bunch of reasons, and the bugs it causes
-tends to be ones that get introduced in later refactoring - some code
-skips initializing ret where it's declared because _at the time that
-code was written_ it was immediately assigned to, or code will use it
-for something that wasn't an error code and then forget to set it back
-to 0.
-
-It's really much better to only declare variables when they're first
-assigned to, and only use them for one thing.
-
-You'll notice I've got a whole bunch of patches queued up for 6.8 that
-change almost all of our for loop macros to declaring the loop iter in
-the macro, and I will be going through and changing other variable uses
-to this style as it comes up.
-
-> > >  	bool have_extent = false;
-> > >  	u32 snapshot;
-> > >  	int ret = 0;
-> > > @@ -916,6 +952,19 @@ static int bch2_fiemap(struct inode *vinode, struct fiemap_extent_info *info,
-> > >  			continue;
-> > >  		}
-> > >  
-> > > +		/*
-> > > +		 * Outstanding buffered writes aren't tracked in the extent
-> > > +		 * btree until dirty folios are written back. Check holes in the
-> > > +		 * extent tree for data in pagecache and report it as delalloc.
-> > > +		 */
-> > > +		if (iter.pos.offset > start &&
-> > > +		    bch2_fiemap_scan_pagecache(vinode, start << 9,
-> > > +					       iter.pos.offset << 9, &cur)) {
-> > > +			cflags = FIEMAP_EXTENT_DELALLOC;
-> > 
-> > but cflags/plags are unnecessary, no? can't we just detected this in
-> > bch2_fill_extent when the ptr offset is 0?
-> > 
-> 
-> I thought (briefly) about if/how this state could be implied by the
-> helper (moreso out of laziness ;), but I feel that sort of logic is more
-> fragile than just being explicit about state.
-
-The logic can be confined to one place - a helper with a good name -
-while the way you're doing it you're now spreading the state that's
-passed around across multiple variables.
-
-The clean way to do what you're doing would be to have a wrapper type so
-we could store the bkey_buf with the fiemap flags in one variable.
+Thanks,
+Gao Xiang
 
 > 
-> > > +			start = bkey_start_offset(&cur.k->k) + cur.k->k.size;
-> > > +			goto fill;
-> > > +		}
-> > 
-> > The goto fill is also a code smell.
-> > 
-> 
-> It's just basically a goto next pattern. I think the logical wart is
-> more how this post-processes the gaps/hoes in the extent offset ranges
-> and set_pos' the same start value repeatedly as we process delalloc
-> extents. Not really sure if that's what you mean here, but that's the
-> part that I didn't really love when hacking on this.
-> 
-> > The right way to do it would be to search, from the same position, both
-> > the btree and the pagecache: then compare those two extents, using
-> > delalloc extent if it comes first, and trimming the btree extent if it
-> > comes first but the delalloc extent overlaps.
-> > 
-> > Then there's no goto fill; after we've decided which extent to use the
-> > rest of the loop is unchanged.
-> > 
-> > (The btree iterator code works roughly this way, where it has to overlay
-> > keys from the journal and pending updates).
-> > 
-> 
-> Yeah, I thought that something like this would be necessary for changing
-> behavior of the "dirty data over existing COW blocks" case, if we ever
-> wanted to do that, but figured it wasn't worth the complexity unless we
-> go that direction. It might be improvement enough for the iteration
-> either way though. I'll try to take a fresh look at that. Thanks for the
-> review.
-
-btrfs folks have probably looked at this as well - any notes from you
-guys on fiemap behaviour - has anything come up where a particular
-behaviour is important?
-
-Also, someone (Darrick?) mentioned in the Tuesday meeting that maybe we
-actually can extend fiemap for multiple device filesystems, wonder if
-anyone's interested in that...
+> Kuai
+>>
+>>                                 Honza
+>>
