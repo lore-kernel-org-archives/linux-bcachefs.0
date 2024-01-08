@@ -1,66 +1,57 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468B355E70
-	for <linux-bcachefs@vger.kernel.org>; Mon,  8 Jan 2024 20:54:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hArcSTsZ"
-Date: Mon, 8 Jan 2024 15:54:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704747279;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RcYTwFfSB+4FKsdjsP7P++2hZCBcGK1EdtN9nb4v1IU=;
-	b=hArcSTsZ/Ctb7L81FQJl0LBtNkZbCuNF3zeMTbiHhuE+hFnfb8tuSTPRuWOEHX59Eqgdma
-	StObN5+3huGXnaWIM6Pqhpjg8aBKXGxo0K7GoSq9ZoZrgt1eRxEZ9PBRI3eAY3jTTiJsZS
-	i0OyKpTi3u5KCJnhgmQq9nlALvu11CM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Cyril Hrubis <chrubis@suse.cz>
-Cc: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it, 
-	Li Wang <liwang@redhat.com>, Richard Palethorpe <rpalethorpe@suse.com>, 
-	Jan Stancek <jstancek@redhat.com>, Xiao Yang <yangx.jy@fujitsu.com>, 
-	Yang Xu <xuyang2018.jy@fujitsu.com>, Brian Foster <bfoster@redhat.com>, 
-	linux-bcachefs@vger.kernel.org, fstests@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, 
-	Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v2 3/3] statx04: Skip STATX_ATTR_COMPRESSED on Bcachefs
-Message-ID: <gjfjylr4bdytdot7ywjispswvgpvjtkdmtsinsbcbc42ik2y3d@ws4tjmwqywrb>
-References: <20231207194011.273027-1-pvorel@suse.cz>
- <20231207194011.273027-4-pvorel@suse.cz>
- <20231213024617.vx3epsav2n2lxozi@moria.home.lan>
- <ZZvIBO-a1b_nIHJ8@yuki>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CBA15AE
+	for <linux-bcachefs@vger.kernel.org>; Mon,  8 Jan 2024 22:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id C39C4140DED17;
+	Mon,  8 Jan 2024 14:34:43 -0800 (PST)
+Date: Mon, 8 Jan 2024 14:34:43 -0800 (PST)
+From: "Carl E. Thompson" <cet@carlthompson.net>
+To: Brian Foster <bfoster@redhat.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, djwong@kernel.org
+Message-ID: <1197499938.727.1704753283643@mail.carlthompson.net>
+In-Reply-To: <ZZwV5ohFULB2Q2i9@bfoster>
+References: <20231219140215.300753-1-bfoster@redhat.com>
+ <20231219140215.300753-2-bfoster@redhat.com>
+ <20231219235742.fmon4qqvbabuxq6c@moria.home.lan>
+ <ZZagv/f2lWOSMUSn@bfoster>
+ <5sttczrkktgkivq5ncusst3rrjqi7hgpx4nswq2vjqn6iqr4b2@25hi2ukb2rh7>
+ <ZZwV5ohFULB2Q2i9@bfoster>
+Subject: Re: [PATCH 1/2] bcachefs: add fiemap delalloc extent detection
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZvIBO-a1b_nIHJ8@yuki>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
+X-Originating-Client: open-xchange-appsuite
 
-On Mon, Jan 08, 2024 at 11:01:40AM +0100, Cyril Hrubis wrote:
-> Hi!
-> > On Thu, Dec 07, 2023 at 08:40:11PM +0100, Petr Vorel wrote:
-> > > STATX_ATTR_COMPRESSED is not supported on Bcachefs, thus skip it
-> > > (it's already skipped on tmpfs and XFS).
-> > 
-> > Hang on, bcachefs most definitely does hae compression. This would be
-> > just because statx isn't plumbed through?
-> 
-> Quite likely, other filesystems does have an inode flag that is set when
-> file has been compressed and simply report that in the foo_getattr()
-> callback. Looking at bcachefs I supose that we need to figure out if the
-> inode is v3 and then unpack the v3 info to get to the compressed flag,
-> you probably know best how to do that.
+I'm not a kernel developer so feel free to ignore this.
 
-I'm still not clear how we want to map STATX_ATTR_COMPRESSED, since it's
-extents that are compressed, not entire files - and just reporting the
-compression option is probably not what we want since it can be flipped
-off, and existing data will still be compressed.
+> On 2024-01-08 7:33 AM PST Brian Foster <bfoster@redhat.com> wrote:
 
-Do you know anything about the intended use case?
+> ...
+
+> 3. Logistically, this is likely to be a bit awkward for pretty much
+> everybody who has a history of working with C code.
+
+I disagree with this point. The ability to declare variables anywhere has been around officially since c99 and unofficially for much longer. For half or more of the 50-year history of C it has been allowed so most people with longtime C experience aren't going to be confused.
+
+In fact C **never** required that **all** variables be declared at the beginning of a function. C has always allowed variables to be declared at the beginning of **any** block including unattached / unconditional blocks which I have personally used to great effect to limit the scope of temporary variables and to declare them close to where they were used going as far back as the 80s.
+
+> In the context of kernel development, something also tells me this has
+> potential to be a tinderbox for a flamewar, but who knows.. ;P
+
+Well that may be the **real** issue! From the outside the kernel developers seem reluctant to revisit old decisions... It's 2024 and the mailing lists still don't accept modern email formats (HTML) which seem like they would make discussion easier. I used to be one of those people who resisted the change and preferred text-based email only but it's now been decades. Time to let that one go!
+
+> ...
