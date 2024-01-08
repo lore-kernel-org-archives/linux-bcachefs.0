@@ -1,31 +1,79 @@
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A45D29417
-	for <linux-bcachefs@vger.kernel.org>; Mon,  8 Jan 2024 03:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3445C13ACF;
+	Mon,  8 Jan 2024 10:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DOSCtMm7"
-Date: Sun, 7 Jan 2024 22:24:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704684251;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BmeQ3US+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HeyWBfsl";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BmeQ3US+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HeyWBfsl"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 57D8B21DA5;
+	Mon,  8 Jan 2024 10:01:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704708081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RnPCia1NNWGSTcxjvuKsoVEKAu8Mavk49zdrQWSUZMw=;
-	b=DOSCtMm7Rxe4OGe+jmbM/vMxWzyi1xtn+aOKW3B6nLpF+JCd5/GBGjVqTaNZ+8NJ3iIwUg
-	/6X90z5GuCMlORqJiMtcNn6RrInJ/I/qNfpfiCpcnol7HHdPRc48CXFOWoJ7uQz0wOLHMK
-	m1Cnj8hvbj49GUAz1Oanm2M8hVPjqr4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Thomas Bertschinger <tahbertschinger@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org, bfoster@redhat.com
-Subject: Re: [PATCH TOOLS] create common entry point for Rust commands
-Message-ID: <2dzey52pqpmi3mwdhcfhj2wvbssdeipxap6di5jttcms3c4ivq@zz2ej62lspyf>
-References: <20240108013633.119160-1-tahbertschinger@gmail.com>
- <haijgauamlu7pn2rrvjtk4hpskxxjjezrdzo5wtuvre3aihm4i@ncqgo4t2rilc>
- <20240108031003.GB120162@fedora-laptop>
+	bh=jlWShqjOKUBsu8m1F+QnDCfvDJCg/ee5PVLq5rTSE6o=;
+	b=BmeQ3US+1vod9O83ekeM5WVxVpQysq1l9qsEy6tRtwVWgU/K+EHpslvoqWzM4zBDt7KKff
+	oRjqiTgqnVRAGkZzQ8BV9b2ts4qwEEcygeBcnEEEQXpnVgRn4hLsU6zvFAlbtMzqiDW5Me
+	vP4rIjDiKu/J1byXglWYAheNsyOwHJk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704708081;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jlWShqjOKUBsu8m1F+QnDCfvDJCg/ee5PVLq5rTSE6o=;
+	b=HeyWBfslA3ykwlwSkmajFoq2ZiXj639ON/RYlojA7OkrHaxZHr10F7XVVWFATLmAYfJHpd
+	QxbrnWxo8zNHgbAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704708081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jlWShqjOKUBsu8m1F+QnDCfvDJCg/ee5PVLq5rTSE6o=;
+	b=BmeQ3US+1vod9O83ekeM5WVxVpQysq1l9qsEy6tRtwVWgU/K+EHpslvoqWzM4zBDt7KKff
+	oRjqiTgqnVRAGkZzQ8BV9b2ts4qwEEcygeBcnEEEQXpnVgRn4hLsU6zvFAlbtMzqiDW5Me
+	vP4rIjDiKu/J1byXglWYAheNsyOwHJk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704708081;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jlWShqjOKUBsu8m1F+QnDCfvDJCg/ee5PVLq5rTSE6o=;
+	b=HeyWBfslA3ykwlwSkmajFoq2ZiXj639ON/RYlojA7OkrHaxZHr10F7XVVWFATLmAYfJHpd
+	QxbrnWxo8zNHgbAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 488B91392C;
+	Mon,  8 Jan 2024 10:01:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0UUWEfHHm2WeNAAAD6G6ig
+	(envelope-from <chrubis@suse.cz>); Mon, 08 Jan 2024 10:01:21 +0000
+Date: Mon, 8 Jan 2024 11:01:40 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it,
+	Li Wang <liwang@redhat.com>,
+	Richard Palethorpe <rpalethorpe@suse.com>,
+	Jan Stancek <jstancek@redhat.com>, Xiao Yang <yangx.jy@fujitsu.com>,
+	Yang Xu <xuyang2018.jy@fujitsu.com>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	fstests@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+	Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH v2 3/3] statx04: Skip STATX_ATTR_COMPRESSED on Bcachefs
+Message-ID: <ZZvIBO-a1b_nIHJ8@yuki>
+References: <20231207194011.273027-1-pvorel@suse.cz>
+ <20231207194011.273027-4-pvorel@suse.cz>
+ <20231213024617.vx3epsav2n2lxozi@moria.home.lan>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -34,24 +82,56 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240108031003.GB120162@fedora-laptop>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20231213024617.vx3epsav2n2lxozi@moria.home.lan>
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 57D8B21DA5
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=BmeQ3US+;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HeyWBfsl
+X-Spam-Score: -1.01
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.01 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[suse.cz,lists.linux.it,redhat.com,suse.com,fujitsu.com,vger.kernel.org,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[28.56%]
 
-On Sun, Jan 07, 2024 at 08:10:03PM -0700, Thomas Bertschinger wrote:
-> On Sun, Jan 07, 2024 at 09:37:53PM -0500, Kent Overstreet wrote:
-> > Applying this
-> > 
-> > If you feel like going the extra mile, maybe we could convert the top
-> > level main() to Rust, that'd further improve our helptext...
+Hi!
+> On Thu, Dec 07, 2023 at 08:40:11PM +0100, Petr Vorel wrote:
+> > STATX_ATTR_COMPRESSED is not supported on Bcachefs, thus skip it
+> > (it's already skipped on tmpfs and XFS).
 > 
-> I thought about that, I wasn't sure if it made sense to do it now or wait
-> until more stuff is done on the Rust side. Are there plans to move all
-> the commands over to Rust at some point?
-> 
-> I'd be willing to give this a shot and send a patch if it'd be useful.
-> 
-> Is it important to keep a C top level main() around for compiling
-> without Rust, BCACHEFS_NO_RUST defined? Or is Rust considered a hard
-> requirement at this point?
+> Hang on, bcachefs most definitely does hae compression. This would be
+> just because statx isn't plumbed through?
 
-It will be soon enough anyways, we can drop that now.
+Quite likely, other filesystems does have an inode flag that is set when
+file has been compressed and simply report that in the foo_getattr()
+callback. Looking at bcachefs I supose that we need to figure out if the
+inode is v3 and then unpack the v3 info to get to the compressed flag,
+you probably know best how to do that.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
