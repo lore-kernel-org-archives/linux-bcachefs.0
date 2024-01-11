@@ -1,30 +1,37 @@
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B3A50253
-	for <linux-bcachefs@vger.kernel.org>; Thu, 11 Jan 2024 16:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0062B51007;
+	Thu, 11 Jan 2024 17:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qXSnYYIo"
-Date: Thu, 11 Jan 2024 11:37:09 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HPgO+BgO"
+Date: Thu, 11 Jan 2024 12:38:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704991031;
+	t=1704994741;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ybxsMvmrI3V4Ip45Nv9SUAbIu72iHpBLx+E0cWa2rs4=;
-	b=qXSnYYIoy4ElNF2N6nkNJssKCrdmXEui1pc6Rmn7zCs/jUlSBlNmz5CHcupAyNnZuFlrMa
-	sg+umAojRu83LTF1pp1vZH1ykJ9/LMIWvSBeu7WnH1sow+gD4xLIb6tocrkrl6OIPTpU89
-	pmwTdKfvZKG6WxB34g5PMDdUHJGY91Q=
+	bh=xtqt+XCKB8URLfIsERdpgm7zJXhhxVtHiUsa5sbp2Qs=;
+	b=HPgO+BgOiUMMuo2RZ60QxQwyLWf4P3il3GGphNXgQBouaq1OB/mIzjNhVEP3afsyDA5DAJ
+	PWpweSxttYFFzKAo9AXVddFHL4SDloJ1/QrY/HRNZAcTmNoBH0ugS47JTlcp7c8Buf6tkg
+	MlTAdsKgmHq2vm3x1pL8iY8wb25jB0Q=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Christoph Hellwig <hch@lst.de>
-Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: fix incorrect usage of REQ_OP_FLUSH
-Message-ID: <e6wpysqepf5nfpvugxutqqohkunjvewomk7lkvk2kd2cwkstg2@g7r3qz46txx7>
-References: <20240111073655.2095423-1-hch@lst.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	Nikolai Kondrashov <spbnick@gmail.com>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+ <202401101525.112E8234@keescook>
+ <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
+ <202401101625.3664EA5B@keescook>
+ <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -33,32 +40,76 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240111073655.2095423-1-hch@lst.de>
+In-Reply-To: <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 11, 2024 at 08:36:55AM +0100, Christoph Hellwig wrote:
-> REQ_OP_FLUSH is only for internal use in the blk-mq and request based
-> drivers. File systems and other block layer consumers must use
-> REQ_OP_WRITE | REQ_PREFLUSH as documented in
-> Documentation/block/writeback_cache_control.rst.
+On Thu, Jan 11, 2024 at 03:35:40PM +0000, Mark Brown wrote:
+> On Wed, Jan 10, 2024 at 07:58:20PM -0500, Kent Overstreet wrote:
+> > On Wed, Jan 10, 2024 at 04:39:22PM -0800, Kees Cook wrote:
 > 
-> While REQ_OP_FLUSH appears to work for blk-mq drivers it does not
-> get the proper flush state machine handling, and completely fails
-> for any bio based drivers, including all the stacking drivers.  The
-> block layer will also get a check in 6.8 to reject this use case
-> entirely.
+> > > With no central CI, the best we've got is everyone running the same
+> > > "minimum set" of checks. I'm most familiar with netdev's CI which has
+> > > such things (and checkpatch.pl is included). For example see:
+> > > https://patchwork.kernel.org/project/netdevbpf/patch/20240110110451.5473-3-ptikhomirov@virtuozzo.com/
 > 
-> [Note: completely untested, but as this never got fixed since the
-> original bug report in November:
+> > Yeah, we badly need a central/common CI. I've been making noises that my
+> > own thing could be a good basis for that - e.g. it shouldn't be much
+> > work to use it for running our tests in tools/tesing/selftests. Sadly no
+> > time for that myself, but happy to talk about it if someone does start
+> > leading/coordinating that effort.
 > 
->    https://bugzilla.kernel.org/show_bug.cgi?id=218184
-> 
-> and the the discussion in December:
-> 
->     https://lore.kernel.org/all/20231221053016.72cqcfg46vxwohcj@moria.home.lan/T/
-> 
-> this seems to be best way to force it]
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> IME the actually running the tests bit isn't usually *so* much the
+> issue, someone making a new test runner and/or output format does mean a
+> bit of work integrating it into infrastructure but that's more usually
+> annoying than a blocker.
 
-Hey Christoph, thanks - applied.
+No, the proliferation of test runners, test output formats, CI systems,
+etc. really is an issue; it means we can't have one common driver that
+anyone can run from the command line, and instead there's a bunch of
+disparate systems with patchwork integration and all the feedback is nag
+emails - after you've finished whan you were working on instead of
+moving on to the next thing - with no way to get immediate feedback.
+
+And it's because building something shiny and new is the fun part, no
+one wants to do the grungy integration work.
+
+> Issues tend to be more around arranging to
+> drive the relevant test systems, figuring out which tests to run where
+> (including things like figuring out capacity on test devices, or how
+> long you're prepared to wait in interactive usage) and getting the
+> environment on the target devices into a state where the tests can run.
+> Plus any stability issues with the tests themselves of course, and
+> there's a bunch of costs somewhere along the line.
+> 
+> I suspect we're more likely to get traction with aggregating test
+> results and trying to do UI/reporting on top of that than with the
+> running things bit, that really would be very good to have.  I've copied
+> in Nikolai who's work on kcidb is the main thing I'm aware of there,
+> though at the minute operational issues mean it's a bit write only.
+> 
+> > example tests, example output:
+> > https://evilpiepirate.org/git/ktest.git/tree/tests/bcachefs/single_device.ktest
+> > https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-testing
+> 
+> For example looking at the sample test there it looks like it needs
+> among other things mkfs.btrfs, bcachefs, stress-ng, xfs_io, fio, mdadm,
+> rsync
+
+Getting all that set up by the end user is one command:
+  ktest/root_image create
+and running a test is one morecommand:
+build-test-kernel run ~/ktest/tests/bcachefs/single_device.ktest
+
+> and a reasonably performant disk with 40G of space available.
+> None of that is especially unreasonable for a filesystems test but it's
+> all things that we need to get onto the system where we want to run the
+> test and there's a lot of systems where the storage requirements would
+> be unsustainable for one reason or another.  It also appears to take
+> about 33000s to run on whatever system you use which is distinctly
+> non-trivial.
+
+Getting sufficient coverage in filesystem land does take some amount of
+resources, but it's not so bad - I'm leasing 80 core ARM64 machines from
+Hetzner for $250/month and running 10 test VMs per machine, so it's
+really not that expensive. Other subsystems would probably be fine with
+less resources.
