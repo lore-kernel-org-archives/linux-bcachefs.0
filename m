@@ -1,99 +1,82 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D21D27D;
-	Thu, 11 Jan 2024 07:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YsepFaiS"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=86lzbsT3tHHU5IGJayzM10iebi9uekS0Ew74ZP6MAfg=; b=YsepFaiSqx0RO4qH4yw0MQrHjS
-	TGtO9iIWtmd/891g+N1xnAXCKRg8QJNUDDAPy6IKqCt5mpALwfbdbpfMPsFceElDnt1LnTcuYpMXN
-	qC7IXHjyAEoJ9FLqvh6x/vWlz695RiU4ay75VFO3gT8t7bjOli3WXh9VNLJGP+T8Ic/M92aPzfsyt
-	ChDiDo+HEP6w4PApBIHTpq1ePgFpEoIYrepoL9ZhRDBEXdiVkGuJLbr6yIH4Ua0KCprek+37HEKaK
-	PiCofkB/8xX5BBZJ+XNDkdLxtWjEHyiYiSuSgRWElGmoIupXhIF+4KFk032+84+00hGNm9L63jv4B
-	1HL8cFYA==;
-Received: from [2001:4bb8:191:2f6b:63ff:a340:8ed1:7cd5] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNpcY-00GKDk-31;
-	Thu, 11 Jan 2024 07:36:59 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: kent.overstreet@linux.dev,
-	bfoster@redhat.com
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH] bcachefs: fix incorrect usage of REQ_OP_FLUSH
-Date: Thu, 11 Jan 2024 08:36:55 +0100
-Message-Id: <20240111073655.2095423-1-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D90B156C1
+	for <linux-bcachefs@vger.kernel.org>; Thu, 11 Jan 2024 11:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id C0C5186C3E0;
+	Thu, 11 Jan 2024 12:58:27 +0100 (CET)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: AP <lkml@inml.grue.cc>, linux-bcachefs@vger.kernel.org
+Subject:
+ Re: Error while unlocking encrypted BCacheFS: Required key not available
+Date: Thu, 11 Jan 2024 12:58:26 +0100
+Message-ID: <12360099.O9o76ZdvQC@lichtvoll.de>
+In-Reply-To: <4msliytwmws5zsxv2zbczxoce26bgxrmccpjphfvimcicwfipq@7hwgt4qvhozv>
+References:
+ <2312305.ElGaqSPkdT@lichtvoll.de> <6010058.lOV4Wx5bFT@lichtvoll.de>
+ <4msliytwmws5zsxv2zbczxoce26bgxrmccpjphfvimcicwfipq@7hwgt4qvhozv>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-REQ_OP_FLUSH is only for internal use in the blk-mq and request based
-drivers. File systems and other block layer consumers must use
-REQ_OP_WRITE | REQ_PREFLUSH as documented in
-Documentation/block/writeback_cache_control.rst.
+Hi!
 
-While REQ_OP_FLUSH appears to work for blk-mq drivers it does not
-get the proper flush state machine handling, and completely fails
-for any bio based drivers, including all the stacking drivers.  The
-block layer will also get a check in 6.8 to reject this use case
-entirely.
+Kent Overstreet - 10.01.24, 20:13:59 CET:
+> On Wed, Jan 10, 2024 at 03:18:55PM +0100, Martin Steigerwald wrote:
+> > AP - 10.01.24, 03:13:01 CET:
+> > > On Sun, Jan 07, 2024 at 12:27:29PM +0100, Martin Steigerwald wrote:
+> > > > In case this is an issue with Debian packaging of bcachefs-tools I
+> > > > can
+> > > > report there.
+> > >=20
+> > > What version of bcachefs-tools are you using? The default one in
+> > > bookworm is v0.24 and is >1 year old and that may be the issue.
+> >=20
+> > As I wrote:
+> >=20
+> > "BCacheFS tools 1.3.3 =E2=80=93 according to bcachefs version =E2=80=93=
+ from Debian
+> > package bcachefs-tools 24+really1.3.4-2.".
+> >=20
+> > > I'm starting to switch from btrfs to bcachefs and I backported
+> > > v1.3.4
+> > > from sid.
+> >=20
+> > That is where above package is from.
+>=20
+> The keyring stuff has been a perpetual utter headache.
+>=20
+> I've been debating rewriting that stuff to just pass a memfd handle as a
+> mount option and rip out keyring usage...
+>=20
+> alternately - now that we're pretty much always mounting via the mount
+> helper, perhaps it would be a little bit less fragile if the mount
+> helper was adding the key to the keyring - that might be worth checking.
 
-[Note: completely untested, but as this never got fixed since the
-original bug report in November:
+So no suggestion what to try to make it work except for putting BCacheFS=20
+unto LUKS? I wanted to get rid of LUKS for removable media. Often enough I=
+=20
+have "cryptsetup luksClose" complaining about still in use while I the=20
+filesystem on top of it clearly got unmounted already. In these case BTRFS=
+=20
+still.
 
-   https://bugzilla.kernel.org/show_bug.cgi?id=218184
+Ciao,
+=2D-=20
+Martin
 
-and the the discussion in December:
-
-    https://lore.kernel.org/all/20231221053016.72cqcfg46vxwohcj@moria.home.lan/T/
-
-this seems to be best way to force it]
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/bcachefs/fs-io.c      | 2 +-
- fs/bcachefs/journal_io.c | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/fs/bcachefs/fs-io.c b/fs/bcachefs/fs-io.c
-index b0e8144ec5500c..a8500af6c7438f 100644
---- a/fs/bcachefs/fs-io.c
-+++ b/fs/bcachefs/fs-io.c
-@@ -79,7 +79,7 @@ void bch2_inode_flush_nocow_writes_async(struct bch_fs *c,
- 			continue;
- 
- 		bio = container_of(bio_alloc_bioset(ca->disk_sb.bdev, 0,
--						    REQ_OP_FLUSH,
-+						    REQ_OP_WRITE | REQ_PREFLUSH,
- 						    GFP_KERNEL,
- 						    &c->nocow_flush_bioset),
- 				   struct nocow_flush, bio);
-diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-index 3eb6c3f62a811b..43c76c9ad9a316 100644
---- a/fs/bcachefs/journal_io.c
-+++ b/fs/bcachefs/journal_io.c
-@@ -1948,7 +1948,8 @@ CLOSURE_CALLBACK(bch2_journal_write)
- 			percpu_ref_get(&ca->io_ref);
- 
- 			bio = ca->journal.bio;
--			bio_reset(bio, ca->disk_sb.bdev, REQ_OP_FLUSH);
-+			bio_reset(bio, ca->disk_sb.bdev,
-+					REQ_OP_WRITE | REQ_PREFLUSH),
- 			bio->bi_end_io		= journal_write_endio;
- 			bio->bi_private		= ca;
- 			closure_bio_submit(bio, cl);
--- 
-2.39.2
 
