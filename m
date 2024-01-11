@@ -1,65 +1,99 @@
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F1F19C
-	for <linux-bcachefs@vger.kernel.org>; Thu, 11 Jan 2024 02:38:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D21D27D;
+	Thu, 11 Jan 2024 07:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VQ/Gzw04"
-Date: Wed, 10 Jan 2024 21:38:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704940701;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9OnZBpdG9bOW8XLUaCBZabNj/tKnIUMV0rVnm5KFKXY=;
-	b=VQ/Gzw04/W0DC/aZk2TVzGCAqq1yb5WRa4tcruimhCHsUABnYKLSvioHgVBQZy+6VY76fJ
-	xLDPgODgdtuyS4OXXBmG8LVi2zQiIRVFqkPqYL5q27n25x5pbsVgcEV/LvtwEJjxpxuBt1
-	WdvMuTTdOEX3baNYGQryYG14vG9UwWQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Su Yue <glass.su@suse.com>
-Cc: linux-bcachefs@vger.kernel.org, l@damenly.org, bfoster@redhat.com
-Subject: Re: [PATCH v3] bcachefs: fix memleak in bch2_split_devs
-Message-ID: <5szfx5gdtviiupizdk6nkskircggnxpimo3dhimdqs4g6bh4vm@56lrt5hjs33k>
-References: <20240108151108.1115630-1-glass.su@suse.com>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YsepFaiS"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=86lzbsT3tHHU5IGJayzM10iebi9uekS0Ew74ZP6MAfg=; b=YsepFaiSqx0RO4qH4yw0MQrHjS
+	TGtO9iIWtmd/891g+N1xnAXCKRg8QJNUDDAPy6IKqCt5mpALwfbdbpfMPsFceElDnt1LnTcuYpMXN
+	qC7IXHjyAEoJ9FLqvh6x/vWlz695RiU4ay75VFO3gT8t7bjOli3WXh9VNLJGP+T8Ic/M92aPzfsyt
+	ChDiDo+HEP6w4PApBIHTpq1ePgFpEoIYrepoL9ZhRDBEXdiVkGuJLbr6yIH4Ua0KCprek+37HEKaK
+	PiCofkB/8xX5BBZJ+XNDkdLxtWjEHyiYiSuSgRWElGmoIupXhIF+4KFk032+84+00hGNm9L63jv4B
+	1HL8cFYA==;
+Received: from [2001:4bb8:191:2f6b:63ff:a340:8ed1:7cd5] (helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rNpcY-00GKDk-31;
+	Thu, 11 Jan 2024 07:36:59 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: kent.overstreet@linux.dev,
+	bfoster@redhat.com
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH] bcachefs: fix incorrect usage of REQ_OP_FLUSH
+Date: Thu, 11 Jan 2024 08:36:55 +0100
+Message-Id: <20240111073655.2095423-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240108151108.1115630-1-glass.su@suse.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Jan 08, 2024 at 11:11:08PM +0800, Su Yue wrote:
-> The pointer dev_name can be modified by strseq(),
-> then causes the memleak:
-> 
-> unreferenced object 0xffff9d08a2916c80 (size 32):
->   comm "mount.bcachefs", pid 9090, jiffies 4295856224 (age 17.564s)
->   hex dump (first 32 bytes):
->     2f 64 65 76 2f 6d 61 70 70 65 72 2f 74 65 73 74  /dev/mapper/test
->     2d 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -0..............
->   backtrace:
->     [<00000000c5d3be7d>] __kmem_cache_alloc_node+0x1f3/0x2c0
->     [<0000000052215d26>] __kmalloc_node_track_caller+0x51/0x150
->     [<0000000069fea956>] kstrdup+0x32/0x60
->     [<000000000877fcf1>] bch2_split_devs+0x3f/0x150 [bcachefs]
->     [<000000007ee93204>] bch2_mount+0xcb/0x640 [bcachefs]
->     [<000000002dd1e04b>] legacy_get_tree+0x30/0x60
->     [<000000006afc31d3>] vfs_get_tree+0x28/0xf0
->     [<000000007b0c538e>] path_mount+0x475/0xb60
->     [<0000000092de5882>] __x64_sys_mount+0x105/0x140
->     [<0000000054fc05d8>] do_syscall_64+0x42/0xf0
->     [<00000000df584910>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> 
-> Fix it by copy pointer dev_name at beginning and free the copied
-> pointer at end.
-> 
-> Signed-off-by: Su Yue <glass.su@suse.com>
+REQ_OP_FLUSH is only for internal use in the blk-mq and request based
+drivers. File systems and other block layer consumers must use
+REQ_OP_WRITE | REQ_PREFLUSH as documented in
+Documentation/block/writeback_cache_control.rst.
 
-Thanks, applied :)
+While REQ_OP_FLUSH appears to work for blk-mq drivers it does not
+get the proper flush state machine handling, and completely fails
+for any bio based drivers, including all the stacking drivers.  The
+block layer will also get a check in 6.8 to reject this use case
+entirely.
+
+[Note: completely untested, but as this never got fixed since the
+original bug report in November:
+
+   https://bugzilla.kernel.org/show_bug.cgi?id=218184
+
+and the the discussion in December:
+
+    https://lore.kernel.org/all/20231221053016.72cqcfg46vxwohcj@moria.home.lan/T/
+
+this seems to be best way to force it]
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/bcachefs/fs-io.c      | 2 +-
+ fs/bcachefs/journal_io.c | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fs/bcachefs/fs-io.c b/fs/bcachefs/fs-io.c
+index b0e8144ec5500c..a8500af6c7438f 100644
+--- a/fs/bcachefs/fs-io.c
++++ b/fs/bcachefs/fs-io.c
+@@ -79,7 +79,7 @@ void bch2_inode_flush_nocow_writes_async(struct bch_fs *c,
+ 			continue;
+ 
+ 		bio = container_of(bio_alloc_bioset(ca->disk_sb.bdev, 0,
+-						    REQ_OP_FLUSH,
++						    REQ_OP_WRITE | REQ_PREFLUSH,
+ 						    GFP_KERNEL,
+ 						    &c->nocow_flush_bioset),
+ 				   struct nocow_flush, bio);
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index 3eb6c3f62a811b..43c76c9ad9a316 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -1948,7 +1948,8 @@ CLOSURE_CALLBACK(bch2_journal_write)
+ 			percpu_ref_get(&ca->io_ref);
+ 
+ 			bio = ca->journal.bio;
+-			bio_reset(bio, ca->disk_sb.bdev, REQ_OP_FLUSH);
++			bio_reset(bio, ca->disk_sb.bdev,
++					REQ_OP_WRITE | REQ_PREFLUSH),
+ 			bio->bi_end_io		= journal_write_endio;
+ 			bio->bi_private		= ca;
+ 			closure_bio_submit(bio, cl);
+-- 
+2.39.2
+
