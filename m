@@ -1,164 +1,215 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8BF6BB40;
-	Fri, 12 Jan 2024 13:58:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597902560A;
+	Fri, 12 Jan 2024 18:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XyqsDZrW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mcveIrfm";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XyqsDZrW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mcveIrfm"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 45394222B2;
-	Fri, 12 Jan 2024 13:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705067926;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0HqVQzM59rREB+HKNlQD5Ej/HEsQgUqlm1eyf5ROcYM=;
-	b=XyqsDZrWYtabY5kJ52JkQby2UXHoT7FE0J9Q3GMOB9V56AEW7PBvZ7zmg5mDcw5bQ3vCbS
-	VQeo9nm1w2P7gb3cv2XLxX/Mu3Xet+6zbqHNU2TE+NsQavdlqYz2kOufyyODdTozM8ajYV
-	e8QCO8sW5LbHjExLapXU3R+BlnlZuzE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705067926;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0HqVQzM59rREB+HKNlQD5Ej/HEsQgUqlm1eyf5ROcYM=;
-	b=mcveIrfmVqqn256Wp3ACMPrClWxe0O4ana+x2HTbQis5LQHFgOB4ZocRHhLtX2kpHY2SOz
-	s4hs2eEHbyfzABCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705067926;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0HqVQzM59rREB+HKNlQD5Ej/HEsQgUqlm1eyf5ROcYM=;
-	b=XyqsDZrWYtabY5kJ52JkQby2UXHoT7FE0J9Q3GMOB9V56AEW7PBvZ7zmg5mDcw5bQ3vCbS
-	VQeo9nm1w2P7gb3cv2XLxX/Mu3Xet+6zbqHNU2TE+NsQavdlqYz2kOufyyODdTozM8ajYV
-	e8QCO8sW5LbHjExLapXU3R+BlnlZuzE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705067926;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0HqVQzM59rREB+HKNlQD5Ej/HEsQgUqlm1eyf5ROcYM=;
-	b=mcveIrfmVqqn256Wp3ACMPrClWxe0O4ana+x2HTbQis5LQHFgOB4ZocRHhLtX2kpHY2SOz
-	s4hs2eEHbyfzABCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27E35136A4;
-	Fri, 12 Jan 2024 13:58:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9/SWBpVFoWVdfgAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Fri, 12 Jan 2024 13:58:45 +0000
-Date: Fri, 12 Jan 2024 14:58:38 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Su Yue <l@damenly.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, ltp@lists.linux.it,
-	Cyril Hrubis <chrubis@suse.cz>, Li Wang <liwang@redhat.com>,
-	Richard Palethorpe <rpalethorpe@suse.com>,
-	Jan Stancek <jstancek@redhat.com>, Xiao Yang <yangx.jy@fujitsu.com>,
-	Yang Xu <xuyang2018.jy@fujitsu.com>,
-	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-	fstests@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-	Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v2 1/3] lib: Add Bcachefs magic
-Message-ID: <20240112135838.GA2009596@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20231207194011.273027-1-pvorel@suse.cz>
- <20231207194011.273027-2-pvorel@suse.cz>
- <frz27k44.fsf@damenly.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cdlcrtmq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0B58C433C7;
+	Fri, 12 Jan 2024 18:22:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705083780;
+	bh=lU3HCrdKgQWP+2uYW9g0VOt5OLiZn7shgDnF710EWXA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cdlcrtmqtc4RIj/ehk3I9GgSPENo8oFhjP05Q1gjkiiVIzH5RcFlOnoRBKmnvhC8S
+	 MGXlhqBNmJ8uXmDzFEhy6HHY8uFIDjaqWE2klebrDfPJj9VW4D3a3jbQ//VIGi2hRH
+	 gspA72SUP4AyCNu0l3Fo/7lOcYKiFnkg1v+4YSbAxd1vmnAe5OaBzZa/eft3LOcfcD
+	 CtS4KbLBHMQ8/pqAfF+aOJPlXRzoPR70YFSHl8dXneVjl0OVTxUUejeYYb5heSdOar
+	 0G9Y46AfkxdhMHfrAKnFBj2aJHokLxuY/VK1E9WXEjbNU9zGnRt47+Ts4v95VnzCEX
+	 bKU0KuUs0/AmQ==
+Date: Fri, 12 Jan 2024 18:22:55 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Neal Gompa <neal@gompa.dev>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Kees Cook <keescook@chromium.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Nikolai Kondrashov <spbnick@gmail.com>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+ <202401101525.112E8234@keescook>
+ <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
+ <202401101625.3664EA5B@keescook>
+ <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
+ <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+ <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+ <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="UV+e11fnWR99TzU9"
 Content-Disposition: inline
-In-Reply-To: <frz27k44.fsf@damenly.org>
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XyqsDZrW;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=mcveIrfm
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.72 / 50.00];
-	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.01)[51.26%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 REPLYTO_EQ_FROM(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux.dev,lists.linux.it,suse.cz,redhat.com,suse.com,fujitsu.com,vger.kernel.org,gmail.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -0.72
-X-Rspamd-Queue-Id: 45394222B2
-X-Spam-Flag: NO
-
-Hi all,
+In-Reply-To: <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+X-Cookie: I want a WESSON OIL lease!!
 
 
-> On Thu 07 Dec 2023 at 20:40, Petr Vorel <pvorel@suse.cz> wrote:
+--UV+e11fnWR99TzU9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > New in v2
+On Fri, Jan 12, 2024 at 06:11:04AM -0500, Neal Gompa wrote:
+> On Thu, Jan 11, 2024 at 8:11=E2=80=AFPM Kent Overstreet
+> > On Thu, Jan 11, 2024 at 09:47:26PM +0000, Mark Brown wrote:
 
-> >  include/tst_fs.h  | 3 +++
-> >  lib/tst_fs_type.c | 2 ++
-> >  2 files changed, 5 insertions(+)
+> > > It's certainly an issue and it's much better if people do manage to f=
+it
+> > > their tests into some existing thing but I'm not convinced that's the
+> > > big reason why you have a bunch of different systems running separate=
+ly
+> > > and doing different things.  For example the enterprise vendors will
+> > > naturally tend to have a bunch of server systems in their labs and fo=
+cus
+> > > on their testing needs while I know the Intel audio CI setup has a bu=
+nch
 
-> > diff --git a/include/tst_fs.h b/include/tst_fs.h
-> > index eb9841165..06f5be896 100644
-> > --- a/include/tst_fs.h
-> > +++ b/include/tst_fs.h
-> > @@ -34,6 +34,9 @@
-> >  #define TST_VFAT_MAGIC     0x4d44 /* AKA MSDOS */
-> >  #define TST_EXFAT_MAGIC    0x2011BAB0UL
+> > No, you're overthinking.
 
-> > +/* fs/bcachefs/bcachefs_format.h */
-> > +#define TST_BCACHE_MAGIC		0xca451a4e
-> > +
+> > The vast majority of kernel testing requires no special hardware, just a
+> > virtual machine.
 
-> Not object to the patch. There are three MAGIC values in
-> bcachefs_format.h: BCACHE_MAGIC, BCHFS_MAGIC, BCACHEFS_STATFS_MAGIC.
+This depends a lot on the area of the kernel you're looking at - some
+things are very amenable to testing in a VM but there's plenty of code
+where you really do want to ensure that at some point you're running
+with some actual hardware, ideally as wide a range of it with diverse
+implementation decisions as you can manage.  OTOH some things can only
+be tested virtually because the hardware doesn't exist yet!
 
-> IIUC, BCACHE_MAGIC is the older one in superblock, BCHFS_MAGIC is the
-> new one. BCACHEFS_STATFS_MAGIC is for statfs.
-> Kent,
-> Would you please export needed magic values to include/uapi/linux/magic.h?
+> > There is _no fucking reason_ we shouldn't be able to run tests on our
+> > own local machines - _local_ machines, not waiting for the Intel CI
+> > setup and asking for a git branch to be tested, not waiting for who
+> > knows how long for the CI farm to get to it - just run the damn tests
+> > immediately and get immediate feedback.
 
-+1, very good idea.
+> > You guys are overthinking and overengineering and ignoring the basics,
+> > the way enterprise people always do.
 
-Kind regards,
-Petr
+> As one of those former enterprise people that actually did do this
+> stuff, I can say that even when I was "in the enterprise", I tried to
+> avoid overthinking and overengineering stuff like this. :)
 
-> Since you are the maintainer also I'm confused about variables to be named.
+> Nobody can maintain anything that's so complicated nobody can run the
+> tests on their machine. That is the root of all sadness.
+
+Yeah, similar with a lot of the more hardware focused or embedded stuff
+- running something on the machine that's in front of you is seldom the
+bit that causes substantial issues.  Most of the exceptions I've
+personally dealt with involved testing hardware (from simple stuff like
+wiring the audio inputs and outputs together to verify that they're
+working to attaching fancy test equipment to simulate things or validate
+that desired physical parameters are being achieved).
+
+> > > of the existing systems fit well.  Anecdotally it seems much more com=
+mon
+> > > to see people looking for things to reuse in order to save time than =
+it
+> > > is to see people going off and reinventing the world.
+
+> > It's a basic lack of leadership. Yes, the younger engineers are always
+> > going to be doing the new and shiny, and always going to want to build
+> > something new instead of finishing off the tests or integrating with
+> > something existing. Which is why we're supposed to have managers saying
+> > "ok, what do I need to prioritize for my team be able to develop
+> > effectively".
+
+That sounds more like a "(reproducible) tests don't exist" complaint
+which is a different thing again to people going off and NIHing fancy
+frameworks.
+
+> > > That does assume that you're building and running everything directly=
+ on
+> > > the system under test and are happy to have the test in a VM which is=
+n't
+> > > an assumption that holds universally, and also that whoever's doing t=
+he
+> > > testing doesn't want to do something like use their own distro or
+> > > something - like I say none of it looks too unreasonable for
+> > > filesystems.
+
+> > No, I'm doing it that way because technically that's the simplest way to
+> > do it.
+
+> > All you guys building crazy contraptions for running tests on Google
+> > Cloud or Amazon or whatever - you're building technical workarounds for
+> > broken procurement.
+
+I think you're addressing some specific stuff that I'm not super
+familiar with here?  My own stuff (and most of the stuff I end up
+looking at) involves driving actual hardware.
+
+> > Just requisition the damn machines.
+
+There's some assumptions there which are true for a lot of people
+working on the kernel but not all of them...
+
+> Running in the cloud does not mean it has to be complicated. It can be
+> a simple Buildbot or whatever that knows how to spawn spot instances
+> for tests and destroy them when they're done *if the test passed*. If
+> a test failed on an instance, it could hold onto them for a day or two
+> for someone to debug if needed.
+
+> (I mention Buildbot because in a previous life, I used that to run
+> tests for the dattobd out-of-tree kernel module before. That was the
+> strategy I used for it.)
+
+Yeah, or if your thing runs in a Docker container rather than a VM then
+throwing it at a Kubernetes cluster using a batch job isn't a big jump.
+
+> > I'd also really like to get automated performance testing going too,
+> > which would have similar requirements in that jobs would need to be
+> > scheduled on specific dedicated machines. I think what you're doing
+> > could still build off of some common infrastructure.
+
+It does actually - like quite a few test labs mine is based around LAVA,
+labgrid is the other popular option (people were actually thinking about
+integrating the two recently since labgrid is a bit lower level than
+LAVA and they could conceptually play nicely with each other).  Since
+the control API is internet accessible this means that it's really
+simple for me to to donate spare time on the boards to KernelCI as it
+understands how to drive LAVA, testing that I in turn use myself.  Both
+my stuff and KernelCI use a repository of glue which knows how to drive
+various testsuites inside a LAVA job, that's also used by other systems
+using LAVA like LKFT.
+
+The custom stuff I have is all fairly thin (and quite janky), mostly
+just either things specific to my physical lab or managing which tests I
+want to run and what results I expect.  What I've got is *much* more
+limited than I'd like, and frankly if I wasn't able to pick up huge
+amounts of preexisting work most of this stuff would not be happening.
+
+> > > I'd also note that the 9 hour turnaround time for that test set you're
+> > > pointing at isn't exactly what I'd associate with immediate feedback.
+
+> > My CI shards at the subtest level, and like I mentioned I run 10 VMs per
+> > physical machine, so with just 2 of the 80 core Ampere boxes I get full
+> > test runs done in ~20 minutes.
+
+> This design, ironically, is way more cloud-friendly than a lot of
+> testing system designs I've seen in the past. :)
+
+Sounds like a small private cloud to me!  :P
+
+--UV+e11fnWR99TzU9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWhg38ACgkQJNaLcl1U
+h9DHZwf+PUi1dDbFvsjAfmvcY+0m2KkcjKJUtDiUwTEHmzVMfX8ecVVG8n3KvIoK
+yJPiP3akTv4vWMqCVYjXdWrIWgxd9JD3tLscfll2OH1dFJPKVKynWNhqdAKLfBIv
+dZALV/v+MthofRA4/SQclK5mUqp8TfQ9Y+oHdKoc9IZ/ouD2XKpmdx2Pd7czeDXF
+3g5bgNNV0B6qTNySSsk9kFIMqGrFd9x8lD5JGDI+Yn0Pszd1apv0G2Jd0GizYuUa
+0zWhQFJC1o7YVIdocJlIUQMMw4DarW45ZWzhHOqw/l4qyJ5ozT5LPB+PzEmfNLQj
+Sk+tVn8kcBGo7OmCWlw8wcd5eUNqvQ==
+=b3J3
+-----END PGP SIGNATURE-----
+
+--UV+e11fnWR99TzU9--
