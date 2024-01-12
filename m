@@ -1,291 +1,227 @@
-Received: from redpilled.dev (redpilled.dev [195.201.122.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FD035C90C;
-	Fri, 12 Jan 2024 07:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=redpilled.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redpilled.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redpilled.dev header.i=@redpilled.dev header.b="OT1+6aLG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E8767E64;
+	Fri, 12 Jan 2024 11:11:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cd8bd6ce1bso17371891fa.1;
+        Fri, 12 Jan 2024 03:11:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705057903; x=1705662703;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1SBHLbp3sL8hAzWSZQUe86EmKU8Kk9eLpOGMHJxmd/0=;
+        b=c9LiBBgmw4IycKKk9daj38nfDs//UZX7g7N7/GFECYILs2u+Nrke9O9g193ZvueXrY
+         bkMI7rblLGpLzgAwxSoVi6gw9HzzeRe8RFgkckTN1GzI3jo5eIFtVJ0QA1Z1W3l1rrbf
+         +rFHvYvHKLjKuIdg1rLq7Bi6/PTyefR/3dB9K58JesPspFAi8APWv8sqwrPZjRmAF8xj
+         MhqGhQ6P/XeWLizQYEDwtmGv/Z50Qrh7oa3CF3CkMHtkgqfwJsctENO3bG/pVy7//VYV
+         qCRxroY488VgW8f9CGNWdGGoc9rHxTPxQ7b44XC83JIFsAacvN5InWRI99ZeItOL92mJ
+         Rj9Q==
+X-Gm-Message-State: AOJu0YwQOMMkMqd1gUMpjE3PKnctlXSWPhZe793Sd3wO0yc++8cYlw0c
+	Sw5J9UtdpB2Ye9aoC8H0i+Wp5Z2kP1gGVg==
+X-Google-Smtp-Source: AGHT+IEho1GEPZWGXPLG3FNR5ZqpQkfEuSCLHvMZ2zplw1U5MS+LQWzzeVM2vrizouunaP/gB+/+aw==
+X-Received: by 2002:a2e:b7d4:0:b0:2cd:1e40:2902 with SMTP id p20-20020a2eb7d4000000b002cd1e402902mr375669ljo.1.1705057902824;
+        Fri, 12 Jan 2024 03:11:42 -0800 (PST)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
+        by smtp.gmail.com with ESMTPSA id n14-20020a056402060e00b0055344b92fb6sm1671040edv.75.2024.01.12.03.11.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 03:11:42 -0800 (PST)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a28cc85e6b5so756738066b.1;
+        Fri, 12 Jan 2024 03:11:42 -0800 (PST)
+X-Received: by 2002:a17:906:802:b0:a2c:34e8:6422 with SMTP id
+ e2-20020a170906080200b00a2c34e86422mr338753ejd.178.1705057901747; Fri, 12 Jan
+ 2024 03:11:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redpilled.dev;
-	s=mail; t=1705044078;
-	bh=zjv/K4BDJq6mHH6xaikJhlEHfdzmdGc7uo6JC3hv3j0=;
-	h=Date:From:To:Subject;
-	b=OT1+6aLGje4sy7rLtR0PrhyqpPLx4IL7nE0bVigt7xGjB6vxjqoPJmmdqB/o/EepN
-	 7LUG4Iz8pzZUpFdiLO+fQkRcVBC2buopTYMtsfBXoP8HPmXszzuho0WOwuDeKfKv4B
-	 vyNQZTsgZOcMdkMqFOpw/GtEDJNjaXl+t6SOMABI=
-Date: Fri, 12 Jan 2024 07:21:17 +0000
-From: chad@redpilled.dev
-To: linux-bcachefs@vger.kernel.org, linux-block@vger.kernel.org
-Subject: I/O timeouts and system freezes on Kingston A2000 NVME with BCACHEFS
-Message-ID: <52cc9df7fdc3a3f94fa50e32a0da1e5b@redpilled.dev>
-X-Sender: chad@redpilled.dev
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+ <202401101525.112E8234@keescook> <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
+ <202401101625.3664EA5B@keescook> <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk> <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+ <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk> <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+In-Reply-To: <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+From: Neal Gompa <neal@gompa.dev>
+Date: Fri, 12 Jan 2024 06:11:04 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+Message-ID: <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Nikolai Kondrashov <spbnick@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This issue was originally reported here: 
-https://github.com/koverstreet/bcachefs/issues/628
+On Thu, Jan 11, 2024 at 8:11=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Thu, Jan 11, 2024 at 09:47:26PM +0000, Mark Brown wrote:
+> > On Thu, Jan 11, 2024 at 12:38:57PM -0500, Kent Overstreet wrote:
+> > > On Thu, Jan 11, 2024 at 03:35:40PM +0000, Mark Brown wrote:
+> >
+> > > > IME the actually running the tests bit isn't usually *so* much the
+> > > > issue, someone making a new test runner and/or output format does m=
+ean a
+> > > > bit of work integrating it into infrastructure but that's more usua=
+lly
+> > > > annoying than a blocker.
+> >
+> > > No, the proliferation of test runners, test output formats, CI system=
+s,
+> > > etc. really is an issue; it means we can't have one common driver tha=
+t
+> > > anyone can run from the command line, and instead there's a bunch of
+> > > disparate systems with patchwork integration and all the feedback is =
+nag
+> > > emails - after you've finished whan you were working on instead of
+> > > moving on to the next thing - with no way to get immediate feedback.
+> >
+> > It's certainly an issue and it's much better if people do manage to fit
+> > their tests into some existing thing but I'm not convinced that's the
+> > big reason why you have a bunch of different systems running separately
+> > and doing different things.  For example the enterprise vendors will
+> > naturally tend to have a bunch of server systems in their labs and focu=
+s
+> > on their testing needs while I know the Intel audio CI setup has a bunc=
+h
+> > of laptops, laptop like dev boards and things in there with loopback
+> > audio cables and I think test equipment plugged in and focuses rather
+> > more on audio.  My own lab is built around on systems I can be in the
+> > same room as without getting too annoyed and does things I find useful,
+> > plus using spare bandwidth for KernelCI because they can take donated
+> > lab time.
+>
+> No, you're overthinking.
+>
+> The vast majority of kernel testing requires no special hardware, just a
+> virtual machine.
+>
+> There is _no fucking reason_ we shouldn't be able to run tests on our
+> own local machines - _local_ machines, not waiting for the Intel CI
+> setup and asking for a git branch to be tested, not waiting for who
+> knows how long for the CI farm to get to it - just run the damn tests
+> immediately and get immediate feedback.
+>
+> You guys are overthinking and overengineering and ignoring the basics,
+> the way enterprise people always do.
+>
 
-Transferring large amounts of files to the bcachefs from the btrfs 
-causes I/O timeouts and freezes the whole system. This doesn't seem to 
-be related to the btrfs, but rather to the heavy I/O on the drive, as it 
-happens without btrfs being mounted. Transferring the files to the HDD, 
-and then from it to the bcachefs on the NVME sometimes doesn't make the 
-problem occur.
-The problem only happens on the bcachefs, not on btrfs or ext4. It 
-doesn't happen on the HDD, I can't test with other NVME drives sadly.
-The behaviour when it is frozen is like this: all drive accesses can't 
-process, when not cached in ram, so every app that is loaded in the ram, 
-continues to function, but at the moment it tries to access the drive it 
-freezes, until the drive is reset and those abort status messages appear 
-in the dmesg, after that system is unfrozen for a moment, if you keep 
-copying the files then the problem reoccurs once again.
+As one of those former enterprise people that actually did do this
+stuff, I can say that even when I was "in the enterprise", I tried to
+avoid overthinking and overengineering stuff like this. :)
 
-This drive is known to have problems with the power management in the 
-past:
-https://wiki.archlinux.org/title/Solid_state_drive/NVMe#Troubleshooting
-But those problems where since fixed with kernel workarounds / firmware 
-updates.
-This issue is may be related, perhaps bcachefs does something different 
-from the other filesystems, and workarounds don't apply, which causes 
-the bug to occur only on it. It may be a problem in the nvme subsystem, 
-or just some edge case in the bcachefs too, who knows.
-I tried to disable ASPM and setting latency to 0 like was suggested, it 
-didn't fix the problem, so I don't know.
-If this is indeed related to that specific drive it would be hard to 
-reproduce.
----
+Nobody can maintain anything that's so complicated nobody can run the
+tests on their machine. That is the root of all sadness.
 
-Errors:
+> > > And it's because building something shiny and new is the fun part, no
+> > > one wants to do the grungy integration work.
+> >
+> > I think you may be overestimating people's enthusiasm for writing test
+> > stuff there!  There is NIH stuff going on for sure but lot of the time
+> > when you look at something where people have gone off and done their ow=
+n
+> > thing it's either much older than you initially thought and predates
+> > anything they might've integrated with or there's some reason why none
+> > of the existing systems fit well.  Anecdotally it seems much more commo=
+n
+> > to see people looking for things to reuse in order to save time than it
+> > is to see people going off and reinventing the world.
+>
+> It's a basic lack of leadership. Yes, the younger engineers are always
+> going to be doing the new and shiny, and always going to want to build
+> something new instead of finishing off the tests or integrating with
+> something existing. Which is why we're supposed to have managers saying
+> "ok, what do I need to prioritize for my team be able to develop
+> effectively".
+>
+> >
+> > > > > example tests, example output:
+> > > > > https://evilpiepirate.org/git/ktest.git/tree/tests/bcachefs/singl=
+e_device.ktest
+> > > > > https://evilpiepirate.org/~testdashboard/ci?branch=3Dbcachefs-tes=
+ting
+> >
+> > > > For example looking at the sample test there it looks like it needs
+> > > > among other things mkfs.btrfs, bcachefs, stress-ng, xfs_io, fio, md=
+adm,
+> > > > rsync
+> >
+> > > Getting all that set up by the end user is one command:
+> > >   ktest/root_image create
+> > > and running a test is one morecommand:
+> > > build-test-kernel run ~/ktest/tests/bcachefs/single_device.ktest
+> >
+> > That does assume that you're building and running everything directly o=
+n
+> > the system under test and are happy to have the test in a VM which isn'=
+t
+> > an assumption that holds universally, and also that whoever's doing the
+> > testing doesn't want to do something like use their own distro or
+> > something - like I say none of it looks too unreasonable for
+> > filesystems.
+>
+> No, I'm doing it that way because technically that's the simplest way to
+> do it.
+>
+> All you guys building crazy contraptions for running tests on Google
+> Cloud or Amazon or whatever - you're building technical workarounds for
+> broken procurement.
+>
+> Just requisition the damn machines.
+>
 
-```
-! dmesg
-[   34.890981] bcachefs (nvme0n1p3): mounting version 1.3: 
-rebalance_work
-[   34.890988] bcachefs (nvme0n1p3): recovering from clean shutdown, 
-journal seq 1782
-[   34.899111] bcachefs (nvme0n1p3): alloc_read... done
-[   34.899130] bcachefs (nvme0n1p3): stripes_read... done
-[   34.899132] bcachefs (nvme0n1p3): snapshots_read... done
-[   34.906883] bcachefs (nvme0n1p3): journal_replay... done
-[   34.906887] bcachefs (nvme0n1p3): resume_logged_ops... done
-[   34.907482] bcachefs (nvme0n1p3): going read-write
-[   92.196122] nvme nvme0: I/O 512 (I/O Cmd) QID 1 timeout, aborting
-[   92.196134] nvme nvme0: I/O 513 (I/O Cmd) QID 1 timeout, aborting
-[   92.196138] nvme nvme0: I/O 514 (I/O Cmd) QID 1 timeout, aborting
-[   92.196141] nvme nvme0: I/O 515 (I/O Cmd) QID 1 timeout, aborting
-[   92.196145] nvme nvme0: I/O 516 (I/O Cmd) QID 1 timeout, aborting
-[  122.405176] nvme nvme0: I/O 512 QID 1 timeout, reset controller
-[  185.384762] nvme0n1: I/O Cmd(0x2) @ LBA 105272408, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384768] I/O error, dev nvme0n1, sector 105272408 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384772] nvme0n1: I/O Cmd(0x2) @ LBA 105272664, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384774] I/O error, dev nvme0n1, sector 105272664 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384775] nvme0n1: I/O Cmd(0x2) @ LBA 105272920, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384776] I/O error, dev nvme0n1, sector 105272920 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384778] nvme0n1: I/O Cmd(0x2) @ LBA 105273176, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384779] I/O error, dev nvme0n1, sector 105273176 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384780] nvme0n1: I/O Cmd(0x2) @ LBA 105273432, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384781] I/O error, dev nvme0n1, sector 105273432 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384782] nvme0n1: I/O Cmd(0x2) @ LBA 105273688, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384783] I/O error, dev nvme0n1, sector 105273688 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384784] nvme0n1: I/O Cmd(0x2) @ LBA 105273944, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384785] I/O error, dev nvme0n1, sector 105273944 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384786] nvme0n1: I/O Cmd(0x2) @ LBA 105274200, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384787] I/O error, dev nvme0n1, sector 105274200 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384788] nvme0n1: I/O Cmd(0x2) @ LBA 105274456, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384789] I/O error, dev nvme0n1, sector 105274456 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384790] nvme0n1: I/O Cmd(0x2) @ LBA 105274712, 256 blocks, I/O 
-Error (sct 0x3 / sc 0x71)
-[  185.384791] I/O error, dev nvme0n1, sector 105274712 op 0x0:(READ) 
-flags 0x84700 phys_seg 1 prio class 2
-[  185.384834] nvme nvme0: Abort status: 0x371
-[  185.384836] nvme nvme0: Abort status: 0x371
-[  185.384837] nvme nvme0: Abort status: 0x371
-[  185.384839] nvme nvme0: Abort status: 0x371
-[  185.384840] nvme nvme0: Abort status: 0x371
-[  185.388439] nvme nvme0: 8/0/0 default/read/poll queues
-```
----
+Running in the cloud does not mean it has to be complicated. It can be
+a simple Buildbot or whatever that knows how to spawn spot instances
+for tests and destroy them when they're done *if the test passed*. If
+a test failed on an instance, it could hold onto them for a day or two
+for someone to debug if needed.
 
-System info:
+(I mention Buildbot because in a previous life, I used that to run
+tests for the dattobd out-of-tree kernel module before. That was the
+strategy I used for it.)
 
-```
-› uname -a
-Linux hp-laptop 6.7.0 #1-NixOS SMP PREEMPT_DYNAMIC Sun Jan  7 20:18:38 
-UTC 2024 x86_64 GNU/Linux
-```
+> > Some will be, some will have more demanding requirements especially whe=
+n
+> > you want to test on actual hardware rather than in a VM.  For example
+> > with my own test setup which is more focused on hardware the operating
+> > costs aren't such a big deal but I've got boards that are for various
+> > reasons irreplaceable, often single instances of boards (which makes
+> > scheduling a thing) and for some of the tests I'd like to get around to
+> > setting up I need special physical setup.  Some of the hardware I'd lik=
+e
+> > to cover is only available in machines which are in various respects
+> > annoying to automate, I've got a couple of unused systems waiting for m=
+e
+> > to have sufficient bandwidth to work out how to automate them.  Either
+> > way I don't think the costs are trival enough to be completely handwave=
+d
+> > away.
+>
+> That does complicate things.
+>
+> I'd also really like to get automated performance testing going too,
+> which would have similar requirements in that jobs would need to be
+> scheduled on specific dedicated machines. I think what you're doing
+> could still build off of some common infrastructure.
+>
+> > I'd also note that the 9 hour turnaround time for that test set you're
+> > pointing at isn't exactly what I'd associate with immediate feedback.
+>
+> My CI shards at the subtest level, and like I mentioned I run 10 VMs per
+> physical machine, so with just 2 of the 80 core Ampere boxes I get full
+> test runs done in ~20 minutes.
+>
 
-```
-› rg -z -i bcachefs  /proc/config.gz
-10478:CONFIG_BCACHEFS_FS=m
-10479:CONFIG_BCACHEFS_QUOTA=y
-10480:# CONFIG_BCACHEFS_ERASURE_CODING is not set
-10481:CONFIG_BCACHEFS_POSIX_ACL=y
-10482:# CONFIG_BCACHEFS_DEBUG_TRANSACTIONS is not set
-10483:# CONFIG_BCACHEFS_DEBUG is not set
-10484:# CONFIG_BCACHEFS_TESTS is not set
-10485:# CONFIG_BCACHEFS_LOCK_TIME_STATS is not set
-10486:# CONFIG_BCACHEFS_NO_LATENCY_ACCT is not set
-```
+This design, ironically, is way more cloud-friendly than a lot of
+testing system designs I've seen in the past. :)
 
-```
-! nvme list
-Node           Generic     Model                   Namespace  Usage      
-                 Format           FW Rev
--------------- ----------- ----------------------- ---------- 
--------------------------- ---------------- --------
-/dev/nvme0n1   /dev/ng0n1  KINGSTON SA2000M8500G   0x1        348.70  GB 
-/ 500.11  GB    512   B +  0 B   S5Z42109
-```
 
-```
-› lsblk -f
-NAME        FSTYPE   FSVER LABEL   UUID                                 
-FSAVAIL FSUSE% MOUNTPOINTS
-sda
-├─sda1      ext4     1.0   storage 7ad8dd91-b675-4411-81bc-301e72af3ddb
-├─sda2
-└─sda3      ntfs           System  EAEAA44FEAA419B9
-zram0                                                                    
-               [SWAP]
-nvme0n1
-├─nvme0n1p1 vfat     FAT32 boot    145B-7C42                             
-402.4M    19% /boot
-├─nvme0n1p2 btrfs          iris    0501be49-5d61-483d-b95e-8879cecd0f12  
-    50G    66% /home
-│                                                                        
-               /nix/store
-│                                                                        
-               /nix
-│                                                                        
-               /
-└─nvme0n1p3 bcachefs 1027  irene   85599249-65d6-47dc-b17c-635dc7407581  
-133.8G     2% /mnt
-```
-
----
-
-This is when it happens on my machine:
-
-```
-! mkfs -t bcachefs -f /dev/nvme0n1p3
-/dev/nvme0n1p3 contains a bcachefs filesystem
-External UUID:                              
-5bb48a77-c303-4b98-aa7d-ec3d01443fc6
-Internal UUID:                              
-c8348431-90e8-4cb1-b31d-170fdfe00522
-Device index:                               0
-Label:
-Version:                                    1.3: rebalance_work
-Version upgrade complete:                   0.0: (unknown version)
-Oldest version on disk:                     1.3: rebalance_work
-Created:                                    Wed Jan 10 10:26:51 2024
-Sequence number:                            0
-Superblock size:                            952
-Clean:                                      0
-Devices:                                    1
-Sections:                                   members_v1,members_v2
-Features:                                   
-new_siphash,new_extent_overwrite,btree_ptr_v2,extents_above_btree_updates,btree_updates_journalled,new_varint,journal_no_flush,alloc_v2,extents_across_btree_nodes
-Compat features:
-
-Options:
-   block_size:                               512 B
-   btree_node_size:                          256 KiB
-   errors:                                   continue [ro] panic
-   metadata_replicas:                        1
-   data_replicas:                            1
-   metadata_replicas_required:               1
-   data_replicas_required:                   1
-   encoded_extent_max:                       64.0 KiB
-   metadata_checksum:                        none [crc32c] crc64 xxhash
-   data_checksum:                            none [crc32c] crc64 xxhash
-   compression:                              none
-   background_compression:                   none
-   str_hash:                                 crc32c crc64 [siphash]
-   metadata_target:                          none
-   foreground_target:                        none
-   background_target:                        none
-   promote_target:                           none
-   erasure_code:                             0
-   inodes_32bit:                             1
-   shard_inode_numbers:                      1
-   inodes_use_key_cache:                     1
-   gc_reserve_percent:                       8
-   gc_reserve_bytes:                         0 B
-   root_reserve_percent:                     0
-   wide_macs:                                0
-   acl:                                      1
-   usrquota:                                 0
-   grpquota:                                 0
-   prjquota:                                 0
-   journal_flush_delay:                      1000
-   journal_flush_disabled:                   0
-   journal_reclaim_delay:                    100
-   journal_transaction_names:                1
-   version_upgrade:                          [compatible] incompatible 
-none
-   nocow:                                    0
-
-members_v2 (size 136):
-   Device:                                   0
-     Label:                                  (none)
-     UUID:                                   
-109a3a6c-bf69-435d-b2cc-c6b92dab1a22
-     Size:                                   153 GiB
-     read errors:                            0
-     write errors:                           0
-     checksum errors:                        0
-     seqread iops:                           0
-     seqwrite iops:                          0
-     randread iops:                          0
-     randwrite iops:                         0
-     Bucket size:                            256 KiB
-     First bucket:                           0
-     Buckets:                                625088
-     Last mount:                             (never)
-     State:                                  rw
-     Data allowed:                           journal,btree,user
-     Has data:                               (none)
-     Durability:                             2
-     Discard:                                0
-     Freespace initialized:                  0
-mounting version 1.3: rebalance_work
-initializing new filesystem
-going read-write
-initializing freespace
-
-! mount -t bcachefs 
-/dev/disk/by-partuuid/dab50f50-ff2e-4a54-8d59-6d267cb31148 /mnt
-
-! cp -ax /home /mnt/
-```
-
----
-
-Please tell as to what other info do you need and how to provide it.
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
