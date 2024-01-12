@@ -1,57 +1,79 @@
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17572168A2
-	for <linux-bcachefs@vger.kernel.org>; Fri, 12 Jan 2024 20:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB8D15AFA
+	for <linux-bcachefs@vger.kernel.org>; Fri, 12 Jan 2024 21:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BP8P2gVZ"
-Date: Fri, 12 Jan 2024 15:03:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705089822;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cZvfhh2FKJuDhc8TVoY8YmtXbEywMhrygFeox1FhJtA=;
-	b=BP8P2gVZyYgAfPCit6RcNlSJmZLNAplb+BmfvZtu490mdsi8OTQ4WRsdN7V5aXihrOJ3JE
-	Q4YTOzLT/EeMaSqaWvBL8TZ1y7xlIzeRRpw77W4sDqtNzPOv+uhKlVNG3Ka4JricNO/bx6
-	hlMNu2jRvGnRRdCgTPV05i5BqqrPlkQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Thomas Bertschinger <tahbertschinger@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org, bfoster@redhat.com
-Subject: Re: [PATCH TOOLS] fix invalid write in pop_cmd()
-Message-ID: <ozo2qrwys2dciao53rujt4rduzzkgydxu6irsgvr2ryecxfo74@zelohtemex4i>
-References: <20240112065730.261392-1-tahbertschinger@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Via8Fbc1"
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e80d40a41so8774426e87.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 12 Jan 2024 13:08:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705093681; x=1705698481; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VfKASEhuCVDUSGv745UnbzNSl+tADQcQeEz/x1b0E8Q=;
+        b=Via8Fbc1278nuux/yqbNcyK8EQDETgk8xr7IU1JlCoskXGAWIc5mRYYmG2lMS/s3Xk
+         TUh/ND2XI+TAt+ytfz6XfofxspIsmhtWjDLTbTOnBpMSpPR/y96JfGWmdw3HZrTZOGlw
+         Tw3wn3yfnn/QhHPkJlL4qq6idgPOALbZaRbfEtA7j6ZPVzz23w1apC5dLONLTZFRDTKF
+         6GJAEHSsVsIC9iVJc06/M0oiQKEB7sYvZ10GprsoEF+Aqz1523LF8q6iQ3lzLIxgsDK4
+         MNrj6ceJBgQQ5YNGrm0yqdWjVfvxQA+x4XtbnSFWq18Y8W4kIoqfhNOsvGA35G5NhBMe
+         Et/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705093681; x=1705698481;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VfKASEhuCVDUSGv745UnbzNSl+tADQcQeEz/x1b0E8Q=;
+        b=Euyp2K955lpBWRV49wwcZI47+YjJaChV/6cf6GuwxQTq1Oz66VmWYtmut6AJ9iOy+f
+         6esR9pk1LMc7mP3aXEQbBtx7dMdwEscfP7EOlPWVNdlSgJJo4CdrLm+wlgflFSYRRS8q
+         Rm3by1AJ+2MfLZjiIkYiFHWUVon0v5YzQi8HVR05jUD5C6uuOqFcHnp9t1H+/B4G+ajC
+         AnfC4VIaQSg75I4ppTIaWHYRAQq/mecjqFC8tpR/63i+LXvZ/QB1lIKWYNNbprXJl8tT
+         /EzDRMYGw2gChaNE2FHzi/EAd9MkkKrHmSEYbE9BOiaAN1msPBZXVGSDKq/9Qrma5ZlO
+         Da+w==
+X-Gm-Message-State: AOJu0Yz7PZ7+vQz1kNhekQwF7ltmPkEdyG4C9mUkFtCAD5+ABezH6Aos
+	wxNTt8elNaBQvpqkB/D2KvpCnjR0MwQIrubmwpZHFKFM
+X-Google-Smtp-Source: AGHT+IHxAzvo42Q48/YiKtzmUlUbYamjgKamkbOoA4uNm7LI+uJ8l6HKZT9vOeazIiBajo1Tg6DdeJuwFRKpw4V+J8I=
+X-Received: by 2002:a05:6512:234f:b0:50e:31fc:ca1e with SMTP id
+ p15-20020a056512234f00b0050e31fcca1emr1255190lfu.40.1705093680921; Fri, 12
+ Jan 2024 13:08:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112065730.261392-1-tahbertschinger@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <CAPxz1+Yt644v4q-ahjE46Sh_ZZSE2r=wwSaup4nYC4uYgQy+rA@mail.gmail.com>
+In-Reply-To: <CAPxz1+Yt644v4q-ahjE46Sh_ZZSE2r=wwSaup4nYC4uYgQy+rA@mail.gmail.com>
+From: Parke <parke.nexus@gmail.com>
+Date: Fri, 12 Jan 2024 13:07:24 -0800
+Message-ID: <CAPxz1+Y1VfrPpFhvbi=5-qgBnyMApN8r83kC-h8Q4J2DhtCHbg@mail.gmail.com>
+Subject: Bcachefs: export a different st_dev for each subvolume
+To: linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 11:57:29PM -0700, Thomas Bertschinger wrote:
-> The memmove() in pop_cmd() reads and writes beyond the end of argv.
-> 
-> This is basically harmless in the current C program; the environment
-> variable list immediately follows argv so all this does is unnecessarily
-> copy the beginning of that list.
-> 
-> However, this will become problematic once we start calling C functions
-> like fs_cmds() from Rust code. Then argv will be a Vec<String> (as
-> *mut *mut i8) and the memory layout will be different--in particular,
-> I don't think we can assume that a Vec<String> will be NULL-terminated
-> like argv always is--, meaning the invalid write could lead to heap
-> corruption.
-> 
-> Also, it doesn't look like full_cmd ever gets used after calling
-> pop_cmd() so I'm removing it here since it looks unneeded to me.
-> 
-> Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
+I asked this question back in October of 2023, but I don't know how to
+check if per-subvolume st_dev numbers have been implemented yet, so
+I'm going to ask again.
 
-Thanks - applied
+On Wed, Oct 18, 2023 at 12:37=E2=80=AFPM Parke <parke.nexus@gmail.com> wrot=
+e:
+> In searching the linux-bcachefs mailing list, I found a post by Kent Over=
+street:
+>
+> On 4 Nov 2021, Kent Overstreet wrote:
+> Still todo:
+>    - need to export a different st_dev for each subvolume, like btrfs, so=
+ that
+>      find -xdev does what you want and skips snapshots
+>
+> Source:
+> https://lore.kernel.org/linux-bcachefs/YYQZ+QmATIgKfzZ8@moria.home.lan/
+>
+> What is the status of the above todo item regarding a distinct st_dev
+> value for each subvolume?
+
+Thanks!
