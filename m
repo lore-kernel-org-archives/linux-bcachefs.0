@@ -1,29 +1,54 @@
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D6B1803D
-	for <linux-bcachefs@vger.kernel.org>; Mon, 15 Jan 2024 17:48:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B59182A0
+	for <linux-bcachefs@vger.kernel.org>; Mon, 15 Jan 2024 17:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UtQ2h7Da"
-Date: Mon, 15 Jan 2024 12:48:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705340911;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hBQTXI+Sdi6qBfKu0k6iv6C1b1UXYnkB1paMl6RLZmg=;
-	b=UtQ2h7DaWX7lx2q9t4j2tplhaa/RZ7RtiXxYGqr8YRPNfnwdTdQxNf+aYGSn9mDPg3DyAB
-	4RL3vtL4jpM0oIxH5Gq8vxc7ZY/uidoAlX5SZcKIDOm0SXoKJVY2HBO/XhK6oMrnaLB7Rx
-	Yuf6BPguSJGtQzKN0GiH9gJoEWZTyBg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Thomas Bertschinger <tahbertschinger@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BZwvl9uR"
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7beefdfe71eso234527039f.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 15 Jan 2024 09:55:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705341314; x=1705946114; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dYC74vm1C/SB+y3RCbgiGDwH9atP7FM9WYzE8+UOEhw=;
+        b=BZwvl9uRIIWI7S4Ie0sufjcOSONlspyn1GNQy4wqg6s/Bo6pf6Pur7viZ3xcRIiYUd
+         U6DYr1XioVnHJ/Ik6w90dMNSBTzXQT8zg+JqPytNwGjc0mFZifrCjc7sYmiWCFBLD9Fk
+         tw7u5AFBshU2gLAT1C64CBZnBwlE5F3DG8t8qoRcE/rFgTgl1WA4+66DkzDIVwTQFAYz
+         waFiQot+5l1yYzRttIi3+9rba252abVtZvadYlyAbslsogrldxGo/BpteKnkvCoWhX2t
+         oxz1/xJCt+wc55G7aMcSqCTko3KU8yKm3wtekh9fp5//aqXIJXuGje6NlCLdPo07ybrE
+         KLBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705341314; x=1705946114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dYC74vm1C/SB+y3RCbgiGDwH9atP7FM9WYzE8+UOEhw=;
+        b=io5HVfDClBF2yCTlXkADZZEb7WqkCpwdqXxRFDF3Oc+UqtjUNMdIAvMXjmzRrl6JEB
+         SbvRtOIsbVi1CAnnKy5WDpiPlghvwMzTz0Ci4mb55gSNiLiygJptatcpTWQ78BdBHpgy
+         tNSSf3r70qtQWK9wGz7HJQfEbvPpsQ9bqfIqbWKf4VqzmLs5b0w1IfCsQ1A6Gvppq5g7
+         mj5VotQS+2PhWij9zfLWRTC/uTtpHAFtLW5VJnJUn06ByZPV5kiKnnsiuqYmwG3orhUP
+         p/1ruGZAApgMSE9xAzsRGpaAPOcpFHb/TZARSLmeHuV5WDeQbwGJyiwi0ZAu0qHpUoDF
+         7BIQ==
+X-Gm-Message-State: AOJu0YxnM81YMUWfqNYntFWotIJgn1oZjYXbs1cOqKR86beHIrX7UB9g
+	5eGPQ/5Ryh3n4ta/tg3fEYrWyfLgAMRkaQ==
+X-Google-Smtp-Source: AGHT+IEYb91aBVTOehNCGYpoTzcf9N0UUlL2vsnR+K8CjrLgRXgyhVfgPkE2X2D7NwUqb03mYYpdCg==
+X-Received: by 2002:a05:6602:4fd1:b0:7bb:e2ad:de03 with SMTP id gs17-20020a0566024fd100b007bbe2adde03mr5641772iob.25.1705341314354;
+        Mon, 15 Jan 2024 09:55:14 -0800 (PST)
+Received: from fedora-laptop (c-73-127-246-43.hsd1.nm.comcast.net. [73.127.246.43])
+        by smtp.gmail.com with ESMTPSA id m6-20020a0566380ac600b0046993034c91sm2478064jab.77.2024.01.15.09.55.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 09:55:13 -0800 (PST)
+Date: Mon, 15 Jan 2024 10:55:09 -0700
+From: Thomas Bertschinger <tahbertschinger@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org, bfoster@redhat.com
 Subject: Re: [PATCH TOOLS 0/2] convert main() from C to Rust
-Message-ID: <gmunf5rk52zg47zabt6i6635r7ddspvujq5bu2kirffwozjfm3@wj3ehlzwzuwc>
+Message-ID: <20240115175509.GA156208@fedora-laptop>
 References: <20240115052451.145611-1-tahbertschinger@gmail.com>
+ <pawxsqxbjncrwtxytattvgizwrtmkis6suokgkb6wfm5xvsnhd@njjz4ywheu2a>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -32,37 +57,33 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240115052451.145611-1-tahbertschinger@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <pawxsqxbjncrwtxytattvgizwrtmkis6suokgkb6wfm5xvsnhd@njjz4ywheu2a>
 
-On Sun, Jan 14, 2024 at 10:24:49PM -0700, Thomas Bertschinger wrote:
-> This converts the top-level main() of the bcachefs command line tool
-> from C to Rust.
+On Mon, Jan 15, 2024 at 12:32:23PM -0500, Kent Overstreet wrote:
+> I think there's some more rearraging we could do - it'd be cleaner if we
+> moved the C sources out of the top level directory, perhaps to c_src,
+> and then moved everything in rust-src/ to the toplevel.
 > 
-> The first patch does all the work of implementing a new main(), updating
-> the build process, and making things look for the executable in its new
-> location which is now rust-src/target/release/bcachefs.
-> 
-> The second patch removes the Library crate from the Rust package. This
-> was needed previously to allow the C program to link in the Rust
-> functions, but that doesn't happen anymore.
-> 
-> It seems likely that a bcachefs-tools library will be needed in the
-> future; for example see this request [1] on GitHub. This library will
-> have a different external-focused API as opposed to the previous library
-> that provided an internal API for the bcachefs tool itself. Considering
-> Rust's structure of one library crate per package, removing the current
-> library makes room for that requested library.
-> 
-> I tried to update everything to account for the new location of the
-> bcachefs executable, but let me know if anyone sees something I missed.
-> I could not figure out how this is set for the Debian package so it's
-> possible I missed something there...
-> 
-> [1] https://github.com/koverstreet/bcachefs-tools/issues/188
+> Top level directory is getting a bit crowded, and then the new bcachefs
+> binary won't be quite so out of the way; I frequently build and run
+> without installing when I'm debugging.
 
-We've got a new CI failure; it looks like perhaps the MSRV environment
-variable isn't being set correctly in the test environment. Can you take
-a look?
+I agree this makes sense. I'll work on a v2 that does this.
 
-https://github.com/koverstreet/bcachefs-tools/actions/runs/7532280737/job/20502558560
+Thoughts on keeping Make as the top-level build tool vs. using Cargo? I
+am still fairly new to Rust/Cargo so I'm not sure how easy it would be
+to replicate all of the Makefile targets in Cargo. It does appear to be
+possible to use Cargo to invoke gcc to build the C library.
+
+I can see three approaches:
+- keep Make as the primary build tool
+- hybrid: use Cargo for source code building but keep the Makefile around
+  for the supplemental targets like "make doc", "make rpm", etc.
+- use Cargo for everything (not sure if this is easy / possible, but I
+  could look into it if desired)
+
+I'm leaning towards keeping Make as the primary build tool for now and
+perhaps a future patch can move towards using Cargo. But other opinions
+are welcome.
+
+- Thomas Bertschinger
