@@ -1,28 +1,28 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3A2A1802F
-	for <linux-bcachefs@vger.kernel.org>; Mon, 15 Jan 2024 17:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D6B1803D
+	for <linux-bcachefs@vger.kernel.org>; Mon, 15 Jan 2024 17:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MtH70f6H"
-Date: Mon, 15 Jan 2024 12:32:23 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UtQ2h7Da"
+Date: Mon, 15 Jan 2024 12:48:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705339946;
+	t=1705340911;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MBcqMzDODhXAHoOyB9tIwwVocQW9n7c24sgSfHLLm0Y=;
-	b=MtH70f6HhMR0+0zRuivsbx16GugpoUMZMJHZDvsm5s0tndxti2Uyz2di+BuPJ7Ok4Sc+bV
-	SHlMClADkONyfXzuD4tNLLcqpjpIIK3frnI2hhb1SPgVV4VIfHBCGFvDj0367yYMoZJ5uD
-	0lIv2tkNaaw6X2ii7sNuX+x5ms8NtQQ=
+	bh=hBQTXI+Sdi6qBfKu0k6iv6C1b1UXYnkB1paMl6RLZmg=;
+	b=UtQ2h7DaWX7lx2q9t4j2tplhaa/RZ7RtiXxYGqr8YRPNfnwdTdQxNf+aYGSn9mDPg3DyAB
+	4RL3vtL4jpM0oIxH5Gq8vxc7ZY/uidoAlX5SZcKIDOm0SXoKJVY2HBO/XhK6oMrnaLB7Rx
+	Yuf6BPguSJGtQzKN0GiH9gJoEWZTyBg=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Thomas Bertschinger <tahbertschinger@gmail.com>
 Cc: linux-bcachefs@vger.kernel.org, bfoster@redhat.com
 Subject: Re: [PATCH TOOLS 0/2] convert main() from C to Rust
-Message-ID: <pawxsqxbjncrwtxytattvgizwrtmkis6suokgkb6wfm5xvsnhd@njjz4ywheu2a>
+Message-ID: <gmunf5rk52zg47zabt6i6635r7ddspvujq5bu2kirffwozjfm3@wj3ehlzwzuwc>
 References: <20240115052451.145611-1-tahbertschinger@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
@@ -61,12 +61,8 @@ On Sun, Jan 14, 2024 at 10:24:49PM -0700, Thomas Bertschinger wrote:
 > 
 > [1] https://github.com/koverstreet/bcachefs-tools/issues/188
 
-Nice work :)
+We've got a new CI failure; it looks like perhaps the MSRV environment
+variable isn't being set correctly in the test environment. Can you take
+a look?
 
-I think there's some more rearraging we could do - it'd be cleaner if we
-moved the C sources out of the top level directory, perhaps to c_src,
-and then moved everything in rust-src/ to the toplevel.
-
-Top level directory is getting a bit crowded, and then the new bcachefs
-binary won't be quite so out of the way; I frequently build and run
-without installing when I'm debugging.
+https://github.com/koverstreet/bcachefs-tools/actions/runs/7532280737/job/20502558560
