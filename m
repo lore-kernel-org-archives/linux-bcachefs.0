@@ -1,237 +1,158 @@
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AAEA33F7
-	for <linux-bcachefs@vger.kernel.org>; Mon, 15 Jan 2024 02:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA84B17CB;
+	Mon, 15 Jan 2024 02:25:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GFXQ0F7V"
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2ccec119587so99990751fa.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 14 Jan 2024 18:21:41 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WSCgA1iV"
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-28ca63fd071so4195872a91.3;
+        Sun, 14 Jan 2024 18:25:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1705285299; x=1705890099; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cZTCgORGFd46THe1DW1wiaa+PEyorMp+hg1gKaRExh4=;
-        b=GFXQ0F7VDg0RQhrjXJFjbkT8pE9T8lh1/xDkSD5KKHl6bhhxC5LwG9MBhTEcNW6iDe
-         VS+9oYe6xEDnezjm4/8Jh5lBNi+wSuUb+Yd4aRjcEpnQeDWs2TeoJX0dB3KthizTMkwl
-         Qj6DvoqopjS1AB3fTNMLNKy0xC4VHTvzgxM09DYU4RqRJt5eQQNFqZhudwhtqdIfkP4J
-         T/UrIfb3InpP/skFir6A8Yk3dpwnqVEvkLiPte1cJB2/6l2axabiZqUD8OxvSF89mGXf
-         IGjEnNMOplNkPkidUS+lnouPyXqKE8RO+8E2TEFpPTZjxRBTIq96JoxmIQt8EJwQ2PvH
-         Z58w==
+        d=gmail.com; s=20230601; t=1705285538; x=1705890338; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4Uy/zKEwkQ7YbhJDVPGcaBEyks0QIDEAsE5dyoOAEIQ=;
+        b=WSCgA1iVQDHKvBbV85c9r82n2m3eFsZqq7jvBJf+dU7+vkIlfM/TPye4dUsbo9tsMm
+         DxozOYqd6rYBeTPRHCmlmoOSs15szxisDVhSKgzzkkiObFWmR+xX6hSM5vZyHUK/dgbg
+         ptTMX4jKA4zEJ7yTliqD/PtqcDpwzn5z0KCqFwv0PntPPOY0eeuMVgf3yoN5Q+9+7FVI
+         63XYgQEl/BPS4Mc72Ehm1x89Px75WOriCInd+B/tzUuPg9xh3YPU5SCtHkoQHLzvTp2m
+         TtMW8c9rTrZ83RYPHfybLo8RObviqkIoAjVF8MLH4ouBDBTaNdfadfOEri1CqZ02HPFJ
+         7e3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705285299; x=1705890099;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cZTCgORGFd46THe1DW1wiaa+PEyorMp+hg1gKaRExh4=;
-        b=cUYiLQX8lKkyJE/MexAtJjzZwXSExcD8c2C5gTysEEJUarI3FxBh73N7VALVOeiJmS
-         yp0mVuEh5ZUOWxW60Izkg3V5YpcaZkjoAxa23aDsDcY2tK9HeOWvwhr+McUX97JuFZYC
-         i6VyLWbkau+ZuuycDFKBcqar9FPKoJpPuULpGAY2vmJvym0X0YGm9LADz9Hz3R2D6JZM
-         QNF2vr9GjUo28ZhnVBQ9jbTI34VHTt40f9wti05vRk3J5jJW9xmHVMf9NFOWXxJyHAym
-         EmPuoIDd91piEAl68aF00QkPkkFb5lYc/XFgvQlqKQL1sNpJPg0U2P5/0gpkLwL0ITvp
-         EGDw==
-X-Gm-Message-State: AOJu0YxRmb1gdhfuHHcn4KNtCEBbIdwYMUovrNqp5kI9sb8+7vLOMlSj
-	YIbsqcdg2rHEX1FGDfvG8e9iulzktTIu+863xjUCuh085vk=
-X-Google-Smtp-Source: AGHT+IFe4aKuqS1C9vCwVDsJlR1uXzDiCB/JhbpC2XcOILa/ctdsycCOElf9B7r1zMun4kGdtYHlew==
-X-Received: by 2002:a2e:7c0b:0:b0:2cd:5a63:81a7 with SMTP id x11-20020a2e7c0b000000b002cd5a6381a7mr2160460ljc.1.1705285298685;
-        Sun, 14 Jan 2024 18:21:38 -0800 (PST)
-Received: from localhost.localdomain ([23.247.139.60])
-        by smtp.gmail.com with ESMTPSA id x4-20020aa784c4000000b006d93afd243asm6628584pfn.72.2024.01.14.18.21.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jan 2024 18:21:38 -0800 (PST)
-From: Su Yue <glass.su@suse.com>
-To: linux-bcachefs@vger.kernel.org
-Cc: l@damenly.org,
-	Su Yue <glass.su@suse.com>
-Subject: [PATCH] bcachefs: grab s_umount only if snapshotting
-Date: Mon, 15 Jan 2024 10:21:25 +0800
-Message-ID: <20240115022125.148669-1-glass.su@suse.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1705285538; x=1705890338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4Uy/zKEwkQ7YbhJDVPGcaBEyks0QIDEAsE5dyoOAEIQ=;
+        b=Uu+/BCcZQ2HxLQu8TZ0DiRsyg9b2YXgtkoa+iD+1N10VzIorThsPPkAWfrLAizEgxW
+         U8ICtioxIH3jl5OSMQuzdsX/KCPz8TDDvibPtDNf0w/fuZ8f2mPGPJKBDSGwAcR+oTb+
+         9Gorhhw3K15Rnxf534l48XwYcDyC7bMRPVD0EvPu7jhq/cfj64Cj8kW5G8qp5Dm5YvgI
+         wqX6HgOJoyHEE8S7o46WA0sheLp+j5C+v2FbTk0BWlo05NspSuKTz+nQZ3K4MdLo+SLk
+         we7MT8W8W9IWWUgojAmgHvcsiRX+x+b3GrUGECitVwumMeYaHh2bP4L5ffonHc47q/aZ
+         ieFw==
+X-Gm-Message-State: AOJu0Ywdkq9vHfv9lFEouS4Bq1HU8gFrlYVWbzEr7OIgv0RUinfv6JYQ
+	P7MvKjIu7weLq2wWEzMcTPrsRtazToY4VqQIp3E=
+X-Google-Smtp-Source: AGHT+IEHv1ktXYZDCrq8oObRyYfZ0ULnvB7B7uzQjtCPAeIB5c9G1JRAwwjY1/h2bde1/3k/nxE/yhnY5DSsrNUIJ8M=
+X-Received: by 2002:a17:90a:fd93:b0:28c:3907:81d5 with SMTP id
+ cx19-20020a17090afd9300b0028c390781d5mr2216759pjb.3.1705285537799; Sun, 14
+ Jan 2024 18:25:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
+In-Reply-To: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
+From: Luna Jernberg <droidbittin@gmail.com>
+Date: Mon, 15 Jan 2024 02:25:24 +0000
+Message-ID: <CADo9pHgNBew6bVZ9HuH6i+66f3zf+XVG29WXkbm87j4vUf1Cow@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs new years fixes for 6.7
+To: Kent Overstreet <kent.overstreet@linux.dev>, Luna Jernberg <droidbittin@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When I was testing mongodb over bcachefs with compression,
-there is a lockdep warning when snapshotting mongodb data volume.
+Hey!
 
-$ cat test.sh
-prog=bcachefs
+Listening to you in Linux Unplugged #545 now:
+https://jupiter.tube/w/mug8WfikZs3T5aXyTGTbCF the bcachefs part of the
+show starts in around 1,5 hour in
 
-$prog subvolume create /mnt/data
-$prog subvolume create /mnt/data/snapshots
-
-while true;do
-    $prog subvolume snapshot /mnt/data /mnt/data/snapshots/$(date +%s)
-    sleep 1s
-done
-
-$ cat /etc/mongodb.conf
-systemLog:
-  destination: file
-  logAppend: true
-  path: /mnt/data/mongod.log
-
-storage:
-  dbPath: /mnt/data/
-
-lockdep reports:
-[ 3437.452330] ======================================================
-[ 3437.452750] WARNING: possible circular locking dependency detected
-[ 3437.453168] 6.7.0-rc7-custom+ #85 Tainted: G            E
-[ 3437.453562] ------------------------------------------------------
-[ 3437.453981] bcachefs/35533 is trying to acquire lock:
-[ 3437.454325] ffffa0a02b2b1418 (sb_writers#10){.+.+}-{0:0}, at: filename_create+0x62/0x190
-[ 3437.454875]
-               but task is already holding lock:
-[ 3437.455268] ffffa0a02b2b10e0 (&type->s_umount_key#48){.+.+}-{3:3}, at: bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
-[ 3437.456009]
-               which lock already depends on the new lock.
-
-[ 3437.456553]
-               the existing dependency chain (in reverse order) is:
-[ 3437.457054]
-               -> #3 (&type->s_umount_key#48){.+.+}-{3:3}:
-[ 3437.457507]        down_read+0x3e/0x170
-[ 3437.457772]        bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
-[ 3437.458206]        __x64_sys_ioctl+0x93/0xd0
-[ 3437.458498]        do_syscall_64+0x42/0xf0
-[ 3437.458779]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[ 3437.459155]
-               -> #2 (&c->snapshot_create_lock){++++}-{3:3}:
-[ 3437.459615]        down_read+0x3e/0x170
-[ 3437.459878]        bch2_truncate+0x82/0x110 [bcachefs]
-[ 3437.460276]        bchfs_truncate+0x254/0x3c0 [bcachefs]
-[ 3437.460686]        notify_change+0x1f1/0x4a0
-[ 3437.461283]        do_truncate+0x7f/0xd0
-[ 3437.461555]        path_openat+0xa57/0xce0
-[ 3437.461836]        do_filp_open+0xb4/0x160
-[ 3437.462116]        do_sys_openat2+0x91/0xc0
-[ 3437.462402]        __x64_sys_openat+0x53/0xa0
-[ 3437.462701]        do_syscall_64+0x42/0xf0
-[ 3437.462982]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[ 3437.463359]
-               -> #1 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}:
-[ 3437.463843]        down_write+0x3b/0xc0
-[ 3437.464223]        bch2_write_iter+0x5b/0xcc0 [bcachefs]
-[ 3437.464493]        vfs_write+0x21b/0x4c0
-[ 3437.464653]        ksys_write+0x69/0xf0
-[ 3437.464839]        do_syscall_64+0x42/0xf0
-[ 3437.465009]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[ 3437.465231]
-               -> #0 (sb_writers#10){.+.+}-{0:0}:
-[ 3437.465471]        __lock_acquire+0x1455/0x21b0
-[ 3437.465656]        lock_acquire+0xc6/0x2b0
-[ 3437.465822]        mnt_want_write+0x46/0x1a0
-[ 3437.465996]        filename_create+0x62/0x190
-[ 3437.466175]        user_path_create+0x2d/0x50
-[ 3437.466352]        bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
-[ 3437.466617]        __x64_sys_ioctl+0x93/0xd0
-[ 3437.466791]        do_syscall_64+0x42/0xf0
-[ 3437.466957]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[ 3437.467180]
-               other info that might help us debug this:
-
-[ 3437.469670] 2 locks held by bcachefs/35533:
-               other info that might help us debug this:
-
-[ 3437.467507] Chain exists of:
-                 sb_writers#10 --> &c->snapshot_create_lock --> &type->s_umount_key#48
-
-[ 3437.467979]  Possible unsafe locking scenario:
-
-[ 3437.468223]        CPU0                    CPU1
-[ 3437.468405]        ----                    ----
-[ 3437.468585]   rlock(&type->s_umount_key#48);
-[ 3437.468758]                                lock(&c->snapshot_create_lock);
-[ 3437.469030]                                lock(&type->s_umount_key#48);
-[ 3437.469291]   rlock(sb_writers#10);
-[ 3437.469434]
-                *** DEADLOCK ***
-
-[ 3437.469670] 2 locks held by bcachefs/35533:
-[ 3437.469838]  #0: ffffa0a02ce00a88 (&c->snapshot_create_lock){++++}-{3:3}, at: bch2_fs_file_ioctl+0x1e3/0xc90 [bcachefs]
-[ 3437.470294]  #1: ffffa0a02b2b10e0 (&type->s_umount_key#48){.+.+}-{3:3}, at: bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
-[ 3437.470744]
-               stack backtrace:
-[ 3437.470922] CPU: 7 PID: 35533 Comm: bcachefs Kdump: loaded Tainted: G            E      6.7.0-rc7-custom+ #85
-[ 3437.471313] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
-[ 3437.471694] Call Trace:
-[ 3437.471795]  <TASK>
-[ 3437.471884]  dump_stack_lvl+0x57/0x90
-[ 3437.472035]  check_noncircular+0x132/0x150
-[ 3437.472202]  __lock_acquire+0x1455/0x21b0
-[ 3437.472369]  lock_acquire+0xc6/0x2b0
-[ 3437.472518]  ? filename_create+0x62/0x190
-[ 3437.472683]  ? lock_is_held_type+0x97/0x110
-[ 3437.472856]  mnt_want_write+0x46/0x1a0
-[ 3437.473025]  ? filename_create+0x62/0x190
-[ 3437.473204]  filename_create+0x62/0x190
-[ 3437.473380]  user_path_create+0x2d/0x50
-[ 3437.473555]  bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
-[ 3437.473819]  ? lock_acquire+0xc6/0x2b0
-[ 3437.474002]  ? __fget_files+0x2a/0x190
-[ 3437.474195]  ? __fget_files+0xbc/0x190
-[ 3437.474380]  ? lock_release+0xc5/0x270
-[ 3437.474567]  ? __x64_sys_ioctl+0x93/0xd0
-[ 3437.474764]  ? __pfx_bch2_fs_file_ioctl+0x10/0x10 [bcachefs]
-[ 3437.475090]  __x64_sys_ioctl+0x93/0xd0
-[ 3437.475277]  do_syscall_64+0x42/0xf0
-[ 3437.475454]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[ 3437.475691] RIP: 0033:0x7f2743c313af
-======================================================
-
-In __bch2_ioctl_subvolume_create(), we grab s_umount unconditionally
-and unlock it at the end of the function. There is a comment
-"why do we need this lock?" about the lock coming from
-commit 42d237320e98 ("bcachefs: Snapshot creation, deletion")
-The reason is that __bch2_ioctl_subvolume_create() calls
-sync_inodes_sb() which enforce locked s_umount to writeback all dirty
-nodes before doing snapshot works.
-
-Fix it by read locking s_umount for snapshotting only and unlocking
-s_umount after sync_inodes_sb().
-
-Signed-off-by: Su Yue <glass.su@suse.com>
----
- fs/bcachefs/fs-ioctl.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
-index e0a19a73c8e1..1346861ed944 100644
---- a/fs/bcachefs/fs-ioctl.c
-+++ b/fs/bcachefs/fs-ioctl.c
-@@ -337,11 +337,12 @@ static long __bch2_ioctl_subvolume_create(struct bch_fs *c, struct file *filp,
- 	if (arg.flags & BCH_SUBVOL_SNAPSHOT_RO)
- 		create_flags |= BCH_CREATE_SNAPSHOT_RO;
- 
--	/* why do we need this lock? */
--	down_read(&c->vfs_sb->s_umount);
--
--	if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE)
-+	if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE) {
-+		/* sync_inodes_sb enforce s_umount is locked */
-+		down_read(&c->vfs_sb->s_umount);
- 		sync_inodes_sb(c->vfs_sb);
-+		up_read(&c->vfs_sb->s_umount);
-+	}
- retry:
- 	if (arg.src_ptr) {
- 		error = user_path_at(arg.dirfd,
-@@ -425,8 +426,6 @@ static long __bch2_ioctl_subvolume_create(struct bch_fs *c, struct file *filp,
- 		goto retry;
- 	}
- err1:
--	up_read(&c->vfs_sb->s_umount);
--
- 	return error;
- }
- 
--- 
-2.43.0
-
+Den m=C3=A5n 1 jan. 2024 kl 16:57 skrev Kent Overstreet <kent.overstreet@li=
+nux.dev>:
+>
+> Hi Linus, some more fixes for you, and some compatibility work so that
+> 6.7 will be able to handle the disk space accounting rewrite when it
+> rolls out.
+>
+> Happy new year!
+>
+> The following changes since commit 453f5db0619e2ad64076aab16ff5a00e0f7c53=
+a2:
+>
+>   Merge tag 'trace-v6.7-rc7' of git://git.kernel.org/pub/scm/linux/kernel=
+/git/trace/linux-trace (2023-12-30 11:37:35 -0800)
+>
+> are available in the Git repository at:
+>
+>   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-01-01
+>
+> for you to fetch changes up to 0d72ab35a925d66b044cb62b709e53141c3f0143:
+>
+>   bcachefs: make RO snapshots actually RO (2024-01-01 11:47:07 -0500)
+>
+> ----------------------------------------------------------------
+> More bcachefs bugfixes for 6.7, and forwards compatibility work:
+>
+>  - fix for a nasty extents + snapshot interaction, reported when reflink
+>    of a snapshotted file wouldn't complete but turned out to be a more
+>    general bug
+>  - fix for an invalid free in dio write path when iov vector was longer
+>    than our inline vecotr
+>  - fix for a buffer overflow in the nocow write path - BCH_REPLICAS_MAX
+>    doesn't actually limit the number of pointers in an extent when
+>    cached pointers are included
+>  - RO snapshots are actually RO now
+>  - And, a new superblock section to avoid future breakage when the disk
+>    space acounting rewrite rolls out: the new superblock section
+>    describes versions that need work to downgrade, where the work
+>    required is a list of recovery passes and errors to silently fix.
+>
+> ----------------------------------------------------------------
+> Kent Overstreet (13):
+>       bcachefs: Fix extents iteration + snapshots interaction
+>       bcachefs: fix invalid free in dio write path
+>       bcachefs: fix setting version_upgrade_complete
+>       bcachefs: Factor out darray resize slowpath
+>       bcachefs: Switch darray to kvmalloc()
+>       bcachefs: DARRAY_PREALLOCATED()
+>       bcachefs: fix buffer overflow in nocow write path
+>       bcachefs: move BCH_SB_ERRS() to sb-errors_types.h
+>       bcachefs: prt_bitflags_vector()
+>       bcachefs: Add persistent identifiers for recovery passes
+>       bcachefs: bch_sb.recovery_passes_required
+>       bcachefs: bch_sb_field_downgrade
+>       bcachefs: make RO snapshots actually RO
+>
+>  fs/bcachefs/Makefile          |   2 +
+>  fs/bcachefs/acl.c             |   3 +-
+>  fs/bcachefs/bcachefs.h        |   1 +
+>  fs/bcachefs/bcachefs_format.h |  51 ++++++---
+>  fs/bcachefs/btree_iter.c      |  35 ++++--
+>  fs/bcachefs/darray.c          |  24 ++++
+>  fs/bcachefs/darray.h          |  48 +++++---
+>  fs/bcachefs/errcode.h         |   3 +
+>  fs/bcachefs/error.c           |   3 +
+>  fs/bcachefs/fs-io-direct.c    |  13 +--
+>  fs/bcachefs/fs-ioctl.c        |  12 +-
+>  fs/bcachefs/fs.c              |  38 ++++++-
+>  fs/bcachefs/io_write.c        |  82 +++++++-------
+>  fs/bcachefs/printbuf.c        |  22 ++++
+>  fs/bcachefs/printbuf.h        |   2 +
+>  fs/bcachefs/recovery.c        | 137 +++++++++++++++++++----
+>  fs/bcachefs/recovery.h        |   3 +
+>  fs/bcachefs/recovery_types.h  |  86 ++++++++------
+>  fs/bcachefs/sb-clean.c        |   2 -
+>  fs/bcachefs/sb-downgrade.c    | 188 +++++++++++++++++++++++++++++++
+>  fs/bcachefs/sb-downgrade.h    |  10 ++
+>  fs/bcachefs/sb-errors.c       |   6 +-
+>  fs/bcachefs/sb-errors.h       | 253 +-----------------------------------=
+------
+>  fs/bcachefs/sb-errors_types.h | 253 ++++++++++++++++++++++++++++++++++++=
+++++++
+>  fs/bcachefs/subvolume.c       |  18 +++
+>  fs/bcachefs/subvolume.h       |   3 +
+>  fs/bcachefs/super-io.c        |  86 +++++++++++++-
+>  fs/bcachefs/super-io.h        |  12 +-
+>  fs/bcachefs/util.h            |   1 +
+>  fs/bcachefs/xattr.c           |   3 +-
+>  30 files changed, 977 insertions(+), 423 deletions(-)
+>  create mode 100644 fs/bcachefs/darray.c
+>  create mode 100644 fs/bcachefs/sb-downgrade.c
+>  create mode 100644 fs/bcachefs/sb-downgrade.h
+>
