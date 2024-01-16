@@ -1,42 +1,42 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C978763AE
-	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 13:36:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A721BDD6
+	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 13:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HkD66i9E"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AssJU+9L"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705412168;
+	s=mimecast20190719; t=1705412795;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0Ah6aTcdTYMpyaqib2NnkHjiDGc+iX+PqIWbHGZSyoQ=;
-	b=HkD66i9E3COGckohcZn2LvUvTX/j/KgvjBGAFgS43VZnq0fETfD+sDxjY2VsN8P0TKBekn
-	By95i6j6Pi2n4n+VDzqHBZpDx90brzPFA9DJTtIRNOsNCTfJAiTtx5f/xJQVHqiBCTISlD
-	ziHJTyZtezOS4fb3oMjsAnw23jlZ/2E=
+	bh=dFGSt9SLaVr/u+xLsKpZsfeali+gftLoIdqEZfohzB8=;
+	b=AssJU+9LtDdSHYRe4fjOiTJVa25sLT06RsZQPzaJmQY0gziykaLOvOFDRcrmgKgBI8OMIq
+	1mV9Yg7woxozKq2IZvinPoLm4S9LhoJL3q5U25IMz2GjdOSM1zBtadpQnhm/ubnC9PBpLW
+	slSeuuzLHZDGzYwdUNhzYgDBz2G+Acs=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-155-_RV9yR67PsK88VGvLdpFgw-1; Tue,
- 16 Jan 2024 08:36:04 -0500
-X-MC-Unique: _RV9yR67PsK88VGvLdpFgw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-349-tua1iWztNN28uQOkHki-0A-1; Tue,
+ 16 Jan 2024 08:46:31 -0500
+X-MC-Unique: tua1iWztNN28uQOkHki-0A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A38A53C14947;
-	Tue, 16 Jan 2024 13:36:03 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 601AC383008B;
+	Tue, 16 Jan 2024 13:46:31 +0000 (UTC)
 Received: from bfoster (unknown [10.22.8.116])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 5BF0B3C25;
-	Tue, 16 Jan 2024 13:36:03 +0000 (UTC)
-Date: Tue, 16 Jan 2024 08:37:21 -0500
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FD851BDB3;
+	Tue, 16 Jan 2024 13:46:31 +0000 (UTC)
+Date: Tue, 16 Jan 2024 08:47:49 -0500
 From: Brian Foster <bfoster@redhat.com>
 To: Su Yue <glass.su@suse.com>
-Cc: fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org, l@damenly.org
-Subject: Re: [PATCH] fstests: introduce MKFS_BCACHEFS_PROG for bcachefs
-Message-ID: <ZaaGkadipvNY02HM@bfoster>
-References: <20240114044120.140111-1-glass.su@suse.com>
+Cc: linux-bcachefs@vger.kernel.org, l@damenly.org
+Subject: Re: [PATCH] bcachefs: grab s_umount only if snapshotting
+Message-ID: <ZaaJBUlutcDw7s8D@bfoster>
+References: <20240115022125.148669-1-glass.su@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -45,104 +45,193 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240114044120.140111-1-glass.su@suse.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+In-Reply-To: <20240115022125.148669-1-glass.su@suse.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Sun, Jan 14, 2024 at 12:41:20PM +0800, Su Yue wrote:
-> mkfs.bcachefs supports force overwrite when option '-f' is given:
-> $ mkfs.bcachefs --help | grep force
->   -f, --force
-> After this commit, MKFS_BCACHEFS_PROG will contains ' -f' so
-> we don't have to add '-f' to $MKFS_OPTIONS manually.
+On Mon, Jan 15, 2024 at 10:21:25AM +0800, Su Yue wrote:
+> When I was testing mongodb over bcachefs with compression,
+> there is a lockdep warning when snapshotting mongodb data volume.
 > 
-> It also fixes generic/466 which unsets MKFS_OPTIONS causing
-> that test hangs in mfks.bcachefs waiting for confirmation of
-> the force overwrite.
+> $ cat test.sh
+> prog=bcachefs
+> 
+> $prog subvolume create /mnt/data
+> $prog subvolume create /mnt/data/snapshots
+> 
+> while true;do
+>     $prog subvolume snapshot /mnt/data /mnt/data/snapshots/$(date +%s)
+>     sleep 1s
+> done
+> 
+> $ cat /etc/mongodb.conf
+> systemLog:
+>   destination: file
+>   logAppend: true
+>   path: /mnt/data/mongod.log
+> 
+> storage:
+>   dbPath: /mnt/data/
+> 
+> lockdep reports:
+> [ 3437.452330] ======================================================
+> [ 3437.452750] WARNING: possible circular locking dependency detected
+> [ 3437.453168] 6.7.0-rc7-custom+ #85 Tainted: G            E
+> [ 3437.453562] ------------------------------------------------------
+> [ 3437.453981] bcachefs/35533 is trying to acquire lock:
+> [ 3437.454325] ffffa0a02b2b1418 (sb_writers#10){.+.+}-{0:0}, at: filename_create+0x62/0x190
+> [ 3437.454875]
+>                but task is already holding lock:
+> [ 3437.455268] ffffa0a02b2b10e0 (&type->s_umount_key#48){.+.+}-{3:3}, at: bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+> [ 3437.456009]
+>                which lock already depends on the new lock.
+> 
+> [ 3437.456553]
+>                the existing dependency chain (in reverse order) is:
+> [ 3437.457054]
+>                -> #3 (&type->s_umount_key#48){.+.+}-{3:3}:
+> [ 3437.457507]        down_read+0x3e/0x170
+> [ 3437.457772]        bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+> [ 3437.458206]        __x64_sys_ioctl+0x93/0xd0
+> [ 3437.458498]        do_syscall_64+0x42/0xf0
+> [ 3437.458779]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [ 3437.459155]
+>                -> #2 (&c->snapshot_create_lock){++++}-{3:3}:
+> [ 3437.459615]        down_read+0x3e/0x170
+> [ 3437.459878]        bch2_truncate+0x82/0x110 [bcachefs]
+> [ 3437.460276]        bchfs_truncate+0x254/0x3c0 [bcachefs]
+> [ 3437.460686]        notify_change+0x1f1/0x4a0
+> [ 3437.461283]        do_truncate+0x7f/0xd0
+> [ 3437.461555]        path_openat+0xa57/0xce0
+> [ 3437.461836]        do_filp_open+0xb4/0x160
+> [ 3437.462116]        do_sys_openat2+0x91/0xc0
+> [ 3437.462402]        __x64_sys_openat+0x53/0xa0
+> [ 3437.462701]        do_syscall_64+0x42/0xf0
+> [ 3437.462982]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [ 3437.463359]
+>                -> #1 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}:
+> [ 3437.463843]        down_write+0x3b/0xc0
+> [ 3437.464223]        bch2_write_iter+0x5b/0xcc0 [bcachefs]
+> [ 3437.464493]        vfs_write+0x21b/0x4c0
+> [ 3437.464653]        ksys_write+0x69/0xf0
+> [ 3437.464839]        do_syscall_64+0x42/0xf0
+> [ 3437.465009]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [ 3437.465231]
+>                -> #0 (sb_writers#10){.+.+}-{0:0}:
+> [ 3437.465471]        __lock_acquire+0x1455/0x21b0
+> [ 3437.465656]        lock_acquire+0xc6/0x2b0
+> [ 3437.465822]        mnt_want_write+0x46/0x1a0
+> [ 3437.465996]        filename_create+0x62/0x190
+> [ 3437.466175]        user_path_create+0x2d/0x50
+> [ 3437.466352]        bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
+> [ 3437.466617]        __x64_sys_ioctl+0x93/0xd0
+> [ 3437.466791]        do_syscall_64+0x42/0xf0
+> [ 3437.466957]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [ 3437.467180]
+>                other info that might help us debug this:
+> 
+> [ 3437.469670] 2 locks held by bcachefs/35533:
+>                other info that might help us debug this:
+> 
+> [ 3437.467507] Chain exists of:
+>                  sb_writers#10 --> &c->snapshot_create_lock --> &type->s_umount_key#48
+> 
+> [ 3437.467979]  Possible unsafe locking scenario:
+> 
+> [ 3437.468223]        CPU0                    CPU1
+> [ 3437.468405]        ----                    ----
+> [ 3437.468585]   rlock(&type->s_umount_key#48);
+> [ 3437.468758]                                lock(&c->snapshot_create_lock);
+> [ 3437.469030]                                lock(&type->s_umount_key#48);
+> [ 3437.469291]   rlock(sb_writers#10);
+> [ 3437.469434]
+>                 *** DEADLOCK ***
+> 
+> [ 3437.469670] 2 locks held by bcachefs/35533:
+> [ 3437.469838]  #0: ffffa0a02ce00a88 (&c->snapshot_create_lock){++++}-{3:3}, at: bch2_fs_file_ioctl+0x1e3/0xc90 [bcachefs]
+> [ 3437.470294]  #1: ffffa0a02b2b10e0 (&type->s_umount_key#48){.+.+}-{3:3}, at: bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+> [ 3437.470744]
+>                stack backtrace:
+> [ 3437.470922] CPU: 7 PID: 35533 Comm: bcachefs Kdump: loaded Tainted: G            E      6.7.0-rc7-custom+ #85
+> [ 3437.471313] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
+> [ 3437.471694] Call Trace:
+> [ 3437.471795]  <TASK>
+> [ 3437.471884]  dump_stack_lvl+0x57/0x90
+> [ 3437.472035]  check_noncircular+0x132/0x150
+> [ 3437.472202]  __lock_acquire+0x1455/0x21b0
+> [ 3437.472369]  lock_acquire+0xc6/0x2b0
+> [ 3437.472518]  ? filename_create+0x62/0x190
+> [ 3437.472683]  ? lock_is_held_type+0x97/0x110
+> [ 3437.472856]  mnt_want_write+0x46/0x1a0
+> [ 3437.473025]  ? filename_create+0x62/0x190
+> [ 3437.473204]  filename_create+0x62/0x190
+> [ 3437.473380]  user_path_create+0x2d/0x50
+> [ 3437.473555]  bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
+> [ 3437.473819]  ? lock_acquire+0xc6/0x2b0
+> [ 3437.474002]  ? __fget_files+0x2a/0x190
+> [ 3437.474195]  ? __fget_files+0xbc/0x190
+> [ 3437.474380]  ? lock_release+0xc5/0x270
+> [ 3437.474567]  ? __x64_sys_ioctl+0x93/0xd0
+> [ 3437.474764]  ? __pfx_bch2_fs_file_ioctl+0x10/0x10 [bcachefs]
+> [ 3437.475090]  __x64_sys_ioctl+0x93/0xd0
+> [ 3437.475277]  do_syscall_64+0x42/0xf0
+> [ 3437.475454]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [ 3437.475691] RIP: 0033:0x7f2743c313af
+> ======================================================
+> 
+> In __bch2_ioctl_subvolume_create(), we grab s_umount unconditionally
+> and unlock it at the end of the function. There is a comment
+> "why do we need this lock?" about the lock coming from
+> commit 42d237320e98 ("bcachefs: Snapshot creation, deletion")
+> The reason is that __bch2_ioctl_subvolume_create() calls
+> sync_inodes_sb() which enforce locked s_umount to writeback all dirty
+> nodes before doing snapshot works.
+> 
+> Fix it by read locking s_umount for snapshotting only and unlocking
+> s_umount after sync_inodes_sb().
 > 
 
-This seems mostly reasonable to me, but I'm kind of wondering why I
-haven't had to add -f to my MKFS_OPTIONS for bcachefs. Is there
-something unique to the test environment that affects this? I.e., I
-don't see any issue with generic/466 on a recent Fedora, even if I
-pre-format the scratch dev with XFS.
+Heh, seems reasonable to me..
 
 > Signed-off-by: Su Yue <glass.su@suse.com>
 > ---
->  common/config |  3 ++-
->  common/rc     | 12 +++++++++---
->  2 files changed, 11 insertions(+), 4 deletions(-)
+>  fs/bcachefs/fs-ioctl.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
 > 
-> diff --git a/common/config b/common/config
-> index c9771ff934cb..1f9edceec57a 100644
-> --- a/common/config
-> +++ b/common/config
-> @@ -105,7 +105,7 @@ set_mkfs_prog_path_with_opts()
->  	# Note: mkfs.f2fs doesn't support the --help option yet, but it doesn't
->  	# matter since it also prints the help when an invalid option is given.
->  	if [ "$p" != "" ] && \
-> -		$p --help |& grep -q "[[:space:]]-f[[:space:]|]"; then
-> +		$p --help |& grep -q "[[:space:]]-f[[:space:]|,]"; then
->  		echo "$p -f"
->  	else
->  		echo $p
-> @@ -313,6 +313,7 @@ export MKFS_REISER4_PROG=$(type -P mkfs.reiser4)
->  export E2FSCK_PROG=$(type -P e2fsck)
->  export TUNE2FS_PROG=$(type -P tune2fs)
->  export FSCK_OVERLAY_PROG=$(type -P fsck.overlay)
-> +export MKFS_BCACHEFS_PROG=$(set_mkfs_prog_path_with_opts bcachefs)
+> diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
+> index e0a19a73c8e1..1346861ed944 100644
+> --- a/fs/bcachefs/fs-ioctl.c
+> +++ b/fs/bcachefs/fs-ioctl.c
+> @@ -337,11 +337,12 @@ static long __bch2_ioctl_subvolume_create(struct bch_fs *c, struct file *filp,
+>  	if (arg.flags & BCH_SUBVOL_SNAPSHOT_RO)
+>  		create_flags |= BCH_CREATE_SNAPSHOT_RO;
 >  
->  # SELinux adds extra xattrs which can mess up our expected output.
->  # So, mount with a context, and they won't be created.
-> diff --git a/common/rc b/common/rc
-> index cc92fe0681d6..f2e900bf1166 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -611,6 +611,9 @@ _test_mkfs()
->      xfs)
->  	$MKFS_PROG -t $FSTYP -- -f $MKFS_OPTIONS $* $TEST_DEV
->  	;;
-> +    bcachefs)
-> +    $MKFS_BCACHEFS_PROG $MKFS_OPTIONS $* $TEST_DEV > /dev/null
-> +	;;
->      *)
->  	yes | $MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS $* $TEST_DEV
->  	;;
-> @@ -753,6 +756,10 @@ _scratch_mkfs()
->  		mkfs_cmd="yes | $MKFS_PROG -t $FSTYP --"
->  		mkfs_filter="grep -v -e ^mkfs\.ocfs2"
->  		;;
-> +    bcachefs)
-> +		mkfs_cmd="$MKFS_BCACHEFS_PROG"
-> +		mkfs_filter="cat"
-> +		;;
->  	*)
->  		mkfs_cmd="yes | $MKFS_PROG -t $FSTYP --"
->  		mkfs_filter="cat"
-> @@ -1044,7 +1051,7 @@ _scratch_mkfs_sized()
->  		export MOUNT_OPTIONS="-o size=$fssize $TMPFS_MOUNT_OPTIONS"
->  		;;
->  	bcachefs)
-> -		$MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS --fs_size=$fssize --block_size=$blocksize $SCRATCH_DEV
-> +		$MKFS_BCACHEFS_PROG $MKFS_OPTIONS --fs_size=$fssize --block_size=$blocksize $SCRATCH_DEV
+> -	/* why do we need this lock? */
+> -	down_read(&c->vfs_sb->s_umount);
+> -
+> -	if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE)
+> +	if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE) {
+> +		/* sync_inodes_sb enforce s_umount is locked */
+> +		down_read(&c->vfs_sb->s_umount);
+>  		sync_inodes_sb(c->vfs_sb);
+> +		up_read(&c->vfs_sb->s_umount);
+> +	}
+>  retry:
+>  	if (arg.src_ptr) {
+>  		error = user_path_at(arg.dirfd,
+> @@ -425,8 +426,6 @@ static long __bch2_ioctl_subvolume_create(struct bch_fs *c, struct file *filp,
+>  		goto retry;
+>  	}
+>  err1:
+> -	up_read(&c->vfs_sb->s_umount);
+> -
 
-Should this function have another bcachefs check at the top to set
-def_blksize in the case the config specifies a blocksize to use?
+Can we get rid of this label now that it serves no purpose?
 
 Brian
 
->  		;;
->  	*)
->  		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized"
-> @@ -1128,8 +1135,7 @@ _scratch_mkfs_blocksized()
->  						-C $blocksize $SCRATCH_DEV
->  		;;
->  	bcachefs)
-> -		${MKFS_PROG} -t $FSTYP $MKFS_OPTIONS --block_size=$blocksize \
-> -								$SCRATCH_DEV
-> +		_scratch_mkfs --block_size=$blocksize
->  		;;
->  	udf)
->  		_scratch_mkfs -b $blocksize
+>  	return error;
+>  }
+>  
 > -- 
 > 2.43.0
 > 
