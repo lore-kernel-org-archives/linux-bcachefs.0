@@ -1,104 +1,270 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-108-mta138.mxroute.com (mail-108-mta138.mxroute.com [136.175.108.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2AA1BDDA
-	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 13:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC871C698
+	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 15:25:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c2upTbzd"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705413590;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FqhlVC483d/Jp5V2BSEbp0a7wISrFNvy6LiACtWbELo=;
-	b=c2upTbzdd7/1LC55HfDmDbq49s+JkfTQA++CBrUcRyYnEnYPRNKEwMfgT2G9kTfRrx4evs
-	KbdhUOSFVY1DNVEJm/yIrnADHdnoaCboqh/SD/sIjpM0FQBGX2uieklT6wl4GW8izzPJWw
-	P1Ano0Y6theTOyoFEvEoDraauCfsZcE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-64-l80-S4AtMuiiBeFQ4oJLsg-1; Tue, 16 Jan 2024 08:59:48 -0500
-X-MC-Unique: l80-S4AtMuiiBeFQ4oJLsg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B145385CBA6;
-	Tue, 16 Jan 2024 13:59:47 +0000 (UTC)
-Received: from bfoster (unknown [10.22.8.116])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F4193C25;
-	Tue, 16 Jan 2024 13:59:47 +0000 (UTC)
-Date: Tue, 16 Jan 2024 09:01:05 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] bcachefs: remove redundant variable tmp
-Message-ID: <ZaaMIYDL/4AzG758@bfoster>
-References: <20240116110723.2247265-1-colin.i.king@gmail.com>
+	dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="P+ARAYqC"
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta138.mxroute.com (ZoneMTA) with ESMTPSA id 18d12dc3b7e0003727.003
+ for <linux-bcachefs@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Tue, 16 Jan 2024 15:20:39 +0000
+X-Zone-Loop: 0645a08f6fb6aa1b468781f4e8fdf666a73aa5ca61b1
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
+	; s=x; h=Content-Type:MIME-Version:Message-ID:In-reply-to:Date:Subject:Cc:To:
+	From:References:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=xxsV19Cy5hmicCvMDYCooq3u3RkqLDvmQC/na1NXqeA=; b=P+ARAYqCbxh1unO96jWT0lCaWo
+	HCmbBVGiYUskoCY0q5oamq/K1WvNFPw7g163wVpA92Itb+hpXX3965j+rO2cVvHEARRAQhzCJwPkT
+	XPSKH+0VU+3nQun2082KswBKsihwvVoQPiK26BB9ahBeNkOF7yPSt+sEDD3JiXAoOYwgj0sahiZoq
+	bWMC7f9T6KPiZ/m3y23WzXx3uXk4evfeRPT67ziu0CHyrE1TpmAqVWA05rDVwlstHgyl9m+ZoX2AJ
+	wChN/BAsYU6QMyxV5YM4T3pS3ptly/97yGq6wO8UY/Xm/7kyAJLXDs4Nc0M4rHbs7Ld9dblPd3qAJ
+	4lM8wO9g==;
+References: <20240115022125.148669-1-glass.su@suse.com>
+ <ZaaJBUlutcDw7s8D@bfoster>
+User-agent: mu4e 1.7.5; emacs 28.2
+From: Su Yue <l@damenly.org>
+To: Brian Foster <bfoster@redhat.com>
+Cc: Su Yue <glass.su@suse.com>, linux-bcachefs@vger.kernel.org, l@damenly.org
+Subject: Re: [PATCH] bcachefs: grab s_umount only if snapshotting
+Date: Tue, 16 Jan 2024 22:10:53 +0800
+In-reply-to: <ZaaJBUlutcDw7s8D@bfoster>
+Message-ID: <8r4p71d3.fsf@damenly.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116110723.2247265-1-colin.i.king@gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Type: text/plain; format=flowed
+X-Authenticated-Id: l@damenly.org
 
-On Tue, Jan 16, 2024 at 11:07:23AM +0000, Colin Ian King wrote:
-> The variable tmp is being assigned a value but it isn't being
-> read afterwards. The assignment is redundant and so tmp can be
-> removed.
-> 
 
-I assume this intends to refer to s/tmp/ret/ ...
+On Tue 16 Jan 2024 at 08:47, Brian Foster <bfoster@redhat.com> 
+wrote:
 
-> Cleans up clang scan build warning:
-> warning: Although the value stored to 'ret' is used in the enclosing
-> expression, the value is never actually read from 'ret'
-> [deadcode.DeadStores]
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  fs/bcachefs/rebalance.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
-> index 95f46cb3b5bd..827316a27431 100644
-> --- a/fs/bcachefs/rebalance.c
-> +++ b/fs/bcachefs/rebalance.c
-> @@ -385,7 +385,6 @@ static int bch2_rebalance_thread(void *arg)
->  	struct bch_fs *c = arg;
->  	struct bch_fs_rebalance *r = &c->rebalance;
->  	struct moving_context ctxt;
-> -	int ret;
->  
->  	set_freezable();
->  
-> @@ -393,8 +392,7 @@ static int bch2_rebalance_thread(void *arg)
->  			      writepoint_ptr(&c->rebalance_write_point),
->  			      true);
->  
-> -	while (!kthread_should_stop() &&
-> -	       !(ret = do_rebalance(&ctxt)))
-> +	while (!kthread_should_stop() && !do_rebalance(&ctxt))
+> On Mon, Jan 15, 2024 at 10:21:25AM +0800, Su Yue wrote:
+>> When I was testing mongodb over bcachefs with compression,
+>> there is a lockdep warning when snapshotting mongodb data 
+>> volume.
+>>
+>> $ cat test.sh
+>> prog=bcachefs
+>>
+>> $prog subvolume create /mnt/data
+>> $prog subvolume create /mnt/data/snapshots
+>>
+>> while true;do
+>>     $prog subvolume snapshot /mnt/data 
+>>     /mnt/data/snapshots/$(date +%s)
+>>     sleep 1s
+>> done
+>>
+>> $ cat /etc/mongodb.conf
+>> systemLog:
+>>   destination: file
+>>   logAppend: true
+>>   path: /mnt/data/mongod.log
+>>
+>> storage:
+>>   dbPath: /mnt/data/
+>>
+>> lockdep reports:
+>> [ 3437.452330] 
+>> ======================================================
+>> [ 3437.452750] WARNING: possible circular locking dependency 
+>> detected
+>> [ 3437.453168] 6.7.0-rc7-custom+ #85 Tainted: G            E
+>> [ 3437.453562] 
+>> ------------------------------------------------------
+>> [ 3437.453981] bcachefs/35533 is trying to acquire lock:
+>> [ 3437.454325] ffffa0a02b2b1418 (sb_writers#10){.+.+}-{0:0}, 
+>> at: filename_create+0x62/0x190
+>> [ 3437.454875]
+>>                but task is already holding lock:
+>> [ 3437.455268] ffffa0a02b2b10e0 
+>> (&type->s_umount_key#48){.+.+}-{3:3}, at: 
+>> bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+>> [ 3437.456009]
+>>                which lock already depends on the new lock.
+>>
+>> [ 3437.456553]
+>>                the existing dependency chain (in reverse order) 
+>>                is:
+>> [ 3437.457054]
+>>                -> #3 (&type->s_umount_key#48){.+.+}-{3:3}:
+>> [ 3437.457507]        down_read+0x3e/0x170
+>> [ 3437.457772]        bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+>> [ 3437.458206]        __x64_sys_ioctl+0x93/0xd0
+>> [ 3437.458498]        do_syscall_64+0x42/0xf0
+>> [ 3437.458779]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>> [ 3437.459155]
+>>                -> #2 (&c->snapshot_create_lock){++++}-{3:3}:
+>> [ 3437.459615]        down_read+0x3e/0x170
+>> [ 3437.459878]        bch2_truncate+0x82/0x110 [bcachefs]
+>> [ 3437.460276]        bchfs_truncate+0x254/0x3c0 [bcachefs]
+>> [ 3437.460686]        notify_change+0x1f1/0x4a0
+>> [ 3437.461283]        do_truncate+0x7f/0xd0
+>> [ 3437.461555]        path_openat+0xa57/0xce0
+>> [ 3437.461836]        do_filp_open+0xb4/0x160
+>> [ 3437.462116]        do_sys_openat2+0x91/0xc0
+>> [ 3437.462402]        __x64_sys_openat+0x53/0xa0
+>> [ 3437.462701]        do_syscall_64+0x42/0xf0
+>> [ 3437.462982]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>> [ 3437.463359]
+>>                -> #1 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}:
+>> [ 3437.463843]        down_write+0x3b/0xc0
+>> [ 3437.464223]        bch2_write_iter+0x5b/0xcc0 [bcachefs]
+>> [ 3437.464493]        vfs_write+0x21b/0x4c0
+>> [ 3437.464653]        ksys_write+0x69/0xf0
+>> [ 3437.464839]        do_syscall_64+0x42/0xf0
+>> [ 3437.465009]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>> [ 3437.465231]
+>>                -> #0 (sb_writers#10){.+.+}-{0:0}:
+>> [ 3437.465471]        __lock_acquire+0x1455/0x21b0
+>> [ 3437.465656]        lock_acquire+0xc6/0x2b0
+>> [ 3437.465822]        mnt_want_write+0x46/0x1a0
+>> [ 3437.465996]        filename_create+0x62/0x190
+>> [ 3437.466175]        user_path_create+0x2d/0x50
+>> [ 3437.466352]        bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
+>> [ 3437.466617]        __x64_sys_ioctl+0x93/0xd0
+>> [ 3437.466791]        do_syscall_64+0x42/0xf0
+>> [ 3437.466957]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>> [ 3437.467180]
+>>                other info that might help us debug this:
+>>
+>> [ 3437.469670] 2 locks held by bcachefs/35533:
+>>                other info that might help us debug this:
+>>
+>> [ 3437.467507] Chain exists of:
+>>                  sb_writers#10 --> &c->snapshot_create_lock --> 
+>>                  &type->s_umount_key#48
+>>
+>> [ 3437.467979]  Possible unsafe locking scenario:
+>>
+>> [ 3437.468223]        CPU0                    CPU1
+>> [ 3437.468405]        ----                    ----
+>> [ 3437.468585]   rlock(&type->s_umount_key#48);
+>> [ 3437.468758] 
+>> lock(&c->snapshot_create_lock);
+>> [ 3437.469030] 
+>> lock(&type->s_umount_key#48);
+>> [ 3437.469291]   rlock(sb_writers#10);
+>> [ 3437.469434]
+>>                 *** DEADLOCK ***
+>>
+>> [ 3437.469670] 2 locks held by bcachefs/35533:
+>> [ 3437.469838]  #0: ffffa0a02ce00a88 
+>> (&c->snapshot_create_lock){++++}-{3:3}, at: 
+>> bch2_fs_file_ioctl+0x1e3/0xc90 [bcachefs]
+>> [ 3437.470294]  #1: ffffa0a02b2b10e0 
+>> (&type->s_umount_key#48){.+.+}-{3:3}, at: 
+>> bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+>> [ 3437.470744]
+>>                stack backtrace:
+>> [ 3437.470922] CPU: 7 PID: 35533 Comm: bcachefs Kdump: loaded 
+>> Tainted: G            E      6.7.0-rc7-custom+ #85
+>> [ 3437.471313] Hardware name: QEMU Standard PC (i440FX + PIIX, 
+>> 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
+>> [ 3437.471694] Call Trace:
+>> [ 3437.471795]  <TASK>
+>> [ 3437.471884]  dump_stack_lvl+0x57/0x90
+>> [ 3437.472035]  check_noncircular+0x132/0x150
+>> [ 3437.472202]  __lock_acquire+0x1455/0x21b0
+>> [ 3437.472369]  lock_acquire+0xc6/0x2b0
+>> [ 3437.472518]  ? filename_create+0x62/0x190
+>> [ 3437.472683]  ? lock_is_held_type+0x97/0x110
+>> [ 3437.472856]  mnt_want_write+0x46/0x1a0
+>> [ 3437.473025]  ? filename_create+0x62/0x190
+>> [ 3437.473204]  filename_create+0x62/0x190
+>> [ 3437.473380]  user_path_create+0x2d/0x50
+>> [ 3437.473555]  bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
+>> [ 3437.473819]  ? lock_acquire+0xc6/0x2b0
+>> [ 3437.474002]  ? __fget_files+0x2a/0x190
+>> [ 3437.474195]  ? __fget_files+0xbc/0x190
+>> [ 3437.474380]  ? lock_release+0xc5/0x270
+>> [ 3437.474567]  ? __x64_sys_ioctl+0x93/0xd0
+>> [ 3437.474764]  ? __pfx_bch2_fs_file_ioctl+0x10/0x10 [bcachefs]
+>> [ 3437.475090]  __x64_sys_ioctl+0x93/0xd0
+>> [ 3437.475277]  do_syscall_64+0x42/0xf0
+>> [ 3437.475454]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>> [ 3437.475691] RIP: 0033:0x7f2743c313af
+>> ======================================================
+>>
+>> In __bch2_ioctl_subvolume_create(), we grab s_umount 
+>> unconditionally
+>> and unlock it at the end of the function. There is a comment
+>> "why do we need this lock?" about the lock coming from
+>> commit 42d237320e98 ("bcachefs: Snapshot creation, deletion")
+>> The reason is that __bch2_ioctl_subvolume_create() calls
+>> sync_inodes_sb() which enforce locked s_umount to writeback all 
+>> dirty
+>> nodes before doing snapshot works.
+>>
+>> Fix it by read locking s_umount for snapshotting only and 
+>> unlocking
+>> s_umount after sync_inodes_sb().
+>>
+>
+> Heh, seems reasonable to me..
+>
+>> Signed-off-by: Su Yue <glass.su@suse.com>
+>> ---
+>>  fs/bcachefs/fs-ioctl.c | 11 +++++------
+>>  1 file changed, 5 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
+>> index e0a19a73c8e1..1346861ed944 100644
+>> --- a/fs/bcachefs/fs-ioctl.c
+>> +++ b/fs/bcachefs/fs-ioctl.c
+>> @@ -337,11 +337,12 @@ static long 
+>> __bch2_ioctl_subvolume_create(struct bch_fs *c, struct file 
+>> *filp,
+>>  	if (arg.flags & BCH_SUBVOL_SNAPSHOT_RO)
+>>  		create_flags |= BCH_CREATE_SNAPSHOT_RO;
+>>
+>> -	/* why do we need this lock? */
+>> -	down_read(&c->vfs_sb->s_umount);
+>> -
+>> -	if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE)
+>> +	if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE) {
+>> +		/* sync_inodes_sb enforce s_umount is locked */
+>> +		down_read(&c->vfs_sb->s_umount);
+>>  		sync_inodes_sb(c->vfs_sb);
+>> +		up_read(&c->vfs_sb->s_umount);
+>> +	}
+>>  retry:
+>>  	if (arg.src_ptr) {
+>>  		error = user_path_at(arg.dirfd,
+>> @@ -425,8 +426,6 @@ static long 
+>> __bch2_ioctl_subvolume_create(struct bch_fs *c, struct file 
+>> *filp,
+>>  		goto retry;
+>>  	}
+>>  err1:
+>> -	up_read(&c->vfs_sb->s_umount);
+>> -
+>
+> Can we get rid of this label now that it serves no purpose?
+>
+I think we can't. Two gotos are still there(under the retry label)
+unless change them to return
 
-Part of me wonders if this was intended to return ret, as that appears
-to bubble back through kthread_stop(). That said, we don't check for
-error there either (i.e. bch2_rebalance_stop()), so this seems
-reasonable enough to me to address the warning:
+--
+Su
 
-Reviewed-by: Brian Foster <bfoster@redhat.com>
-
->  		;
->  
->  	bch2_moving_ctxt_exit(&ctxt);
-> -- 
-> 2.39.2
-> 
-
+> Brian
+>
+>>  	return error;
+>>  }
+>>
+>> --
+>> 2.43.0
+>>
+>>
