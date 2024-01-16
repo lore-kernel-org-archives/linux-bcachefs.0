@@ -1,94 +1,272 @@
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6981CA87
-	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 17:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2CB1CA9B
+	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 17:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705424924; cv=none; b=r16QeNwrZ5LyURZ+c5XZs+yRelSDdTDeSGqVa+L8W8aqa+//+9ZWuGXayhm+S1MYA/6ce+V/9g/0/GfnfR6sZ8vVjEfA70k4ahHcsm2Hd+CldsSAmXB1WtAkFxcQpgxnGzSyb2n9MBAgH9zKPgfjKTE6yM+fEdiC9poa9D3ZJrQ=
+	t=1705425479; cv=none; b=RsHJtYFkJjdLuL24jz9B7qYc5Xj5zGN8oZRthH9fIzQg3A2idR/pyF0LT1VfWVkY0VUGi65B4jglQiWqVvnW7hBn/d9qVb7ubGelwuXtKQhqCySJd5Hwo1usll5ykWUYYmJQvLaXqe9FoqwhO1+Vipx0dqzTmK1yrWGGlF+hKIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705424924; c=relaxed/simple;
-	bh=jmGrs/fnUzm+t2a7Rek4Rget43bvk1LpCkPaHae4DXI=;
+	s=arc-20240116; t=1705425479; c=relaxed/simple;
+	bh=jDkYk15EfsCtleDYEouT1hCRaEeYANF9HDX//LyLA0c=;
 	h=Date:DKIM-Signature:X-Report-Abuse:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-Migadu-Flow; b=a6T9v1LJEx1C69TWyzjlQlqGA9ScYqmdvNBR/xncO2L2KWbFShtPayVtFlu+9zNjcNoEPPjh5ck15e1pB9XaJfra320TYeoLZNK2Dh9DBPj6Vh4/0htVP03tgtOb0YKYgxNoJlzalWEQx7LDhYg9rKSxqavSoLIXszkN9fXnJWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GkWHoH7B
+	 Content-Transfer-Encoding:In-Reply-To:X-Migadu-Flow; b=hyRb7HbUGXMRN9jYxRzXQeifG9WAAclGs3yTNazdPcLHQtkQOLKx9IEuJyDKRnMvE12a/h1VmI1SvEF0WdOm2c8noczRR5jKJWOc0qG0yXmC/zRpQT+fduwlALlnlGmia6oSDWWe15mbYzkHQKE1RpGwAM9NAmPV03soSayWX6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oBaGnJb5; arc=none smtp.client-ip=91.218.175.183
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GkWHoH7B"
-Date: Tue, 16 Jan 2024 12:08:38 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oBaGnJb5"
+Date: Tue, 16 Jan 2024 12:17:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705424920;
+	t=1705425475;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k+hoiLgfhnjPFjgcavvf/H3iIpqzMWG874dczQk/8X4=;
-	b=GkWHoH7BQz3B6NhRPaELpr3I+EwiKDoNapH9XUZ/me1KS527U4TTQIA+htVNF8G4Q9ziW1
-	nnFzcSucRGf4HxaP4OvbHv+n6DcFPTQqo3zYFsVSNoSwfqmsUzi0w/Gr8G/9tJN6JtG3A/
-	9SfRrY0BXT7YNav2avWg30S2zWVMmXA=
+	bh=q6Vxxo2aAhb+V4KcxlI6Qs8ooKdV3TRYdAt9uXcYCR0=;
+	b=oBaGnJb5zfznF8Q8vMVzARBxi7+bkCz/q7j4QbgnmJYnzLJj27QBrtsaYGJzSCf5mHmyci
+	neGwrf1NmEWqfQPhj59BLSNL/hkG1cFfO3LdD/aEz8tpaKSKaypNl4N7zEHpjxq0l3Rz25
+	/yyGSDAuoWzIjCZnJuWoxs3mW5HX64g=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Su Yue <glass.su@suse.com>
-Cc: linux-bcachefs@vger.kernel.org, l@damenly.org
-Subject: Re: [PATCH] bcachefs: kvfree bch_fs::snapshots in
- bch2_fs_snapshots_exit
-Message-ID: <4kca2taimpjfflrjziijqtegppxb5hah2ynxmav3heqznyvzqb@kk6neohyemop>
-References: <20240116110537.1124476-1-glass.su@suse.com>
+To: Glass Su <glass.su@suse.com>
+Cc: Brian Foster <bfoster@redhat.com>, Su Yue <l@damenly.org>, 
+	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+Subject: Re: [PATCH] bcachefs: grab s_umount only if snapshotting
+Message-ID: <2gaknrhp3t2aeikdkxiq377bfpzsood6fjrxbdyr6lcso65du3@amsnlbs6fvic>
+References: <20240115022125.148669-1-glass.su@suse.com>
+ <ZaaJBUlutcDw7s8D@bfoster>
+ <8r4p71d3.fsf@damenly.org>
+ <ZaahjyEyV02xKzdP@bfoster>
+ <7DD9AEC3-30C6-46BF-AC9B-9A5706647293@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240116110537.1124476-1-glass.su@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7DD9AEC3-30C6-46BF-AC9B-9A5706647293@suse.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jan 16, 2024 at 07:05:37PM +0800, Su Yue wrote:
-> bch_fs::snapshots is allocated by kvzalloc in __snapshot_t_mut.
-> It should be freed by kvfree not kfree.
-> Or umount will triger:
+On Tue, Jan 16, 2024 at 03:45:29PM +0000, Glass Su wrote:
 > 
-> [  406.829178 ] BUG: unable to handle page fault for address: ffffe7b487148008
-> [  406.830676 ] #PF: supervisor read access in kernel mode
-> [  406.831643 ] #PF: error_code(0x0000) - not-present page
-> [  406.832487 ] PGD 0 P4D 0
-> [  406.832898 ] Oops: 0000 [#1] PREEMPT SMP PTI
-> [  406.833512 ] CPU: 2 PID: 1754 Comm: umount Kdump: loaded Tainted: G           OE      6.7.0-rc7-custom+ #90
-> [  406.834746 ] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
-> [  406.835796 ] RIP: 0010:kfree+0x62/0x140
-> [  406.836197 ] Code: 80 48 01 d8 0f 82 e9 00 00 00 48 c7 c2 00 00 00 80 48 2b 15 78 9f 1f 01 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 56 9f 1f 01 <48> 8b 50 08 48 89 c7 f6 c2 01 0f 85 b0 00 00 00 66 90 48 8b 07 f6
-> [  406.837810 ] RSP: 0018:ffffb9d641607e48 EFLAGS: 00010286
-> [  406.838213 ] RAX: ffffe7b487148000 RBX: ffffb9d645200000 RCX: ffffb9d641607dc4
-> [  406.838738 ] RDX: 000065bb00000000 RSI: ffffffffc0d88b84 RDI: ffffb9d645200000
-> [  406.839217 ] RBP: ffff9a4625d00068 R08: 0000000000000001 R09: 0000000000000001
-> [  406.839650 ] R10: 0000000000000001 R11: 000000000000001f R12: ffff9a4625d4da80
-> [  406.840055 ] R13: ffff9a4625d00000 R14: ffffffffc0e2eb20 R15: 0000000000000000
-> [  406.840451 ] FS:  00007f0a264ffb80(0000) GS:ffff9a4e2d500000(0000) knlGS:0000000000000000
-> [  406.840851 ] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  406.841125 ] CR2: ffffe7b487148008 CR3: 000000018c4d2000 CR4: 00000000000006f0
-> [  406.841464 ] Call Trace:
-> [  406.841583 ]  <TASK>
-> [  406.841682 ]  ? __die+0x1f/0x70
-> [  406.841828 ]  ? page_fault_oops+0x159/0x470
-> [  406.842014 ]  ? fixup_exception+0x22/0x310
-> [  406.842198 ]  ? exc_page_fault+0x1ed/0x200
-> [  406.842382 ]  ? asm_exc_page_fault+0x22/0x30
-> [  406.842574 ]  ? bch2_fs_release+0x54/0x280 [bcachefs]
-> [  406.842842 ]  ? kfree+0x62/0x140
-> [  406.842988 ]  ? kfree+0x104/0x140
-> [  406.843138 ]  bch2_fs_release+0x54/0x280 [bcachefs]
-> [  406.843390 ]  kobject_put+0xb7/0x170
-> [  406.843552 ]  deactivate_locked_super+0x2f/0xa0
-> [  406.843756 ]  cleanup_mnt+0xba/0x150
-> [  406.843917 ]  task_work_run+0x59/0xa0
-> [  406.844083 ]  exit_to_user_mode_prepare+0x197/0x1a0
-> [  406.844302 ]  syscall_exit_to_user_mode+0x16/0x40
-> [  406.844510 ]  do_syscall_64+0x4e/0xf0
-> [  406.844675 ]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> [  406.844907 ] RIP: 0033:0x7f0a2664e4fb
 > 
-> Signed-off-by: Su Yue <glass.su@suse.com>
+> > On Jan 16, 2024, at 23:32, Brian Foster <bfoster@redhat.com> wrote:
+> > 
+> > On Tue, Jan 16, 2024 at 10:10:53PM +0800, Su Yue wrote:
+> >> 
+> >> On Tue 16 Jan 2024 at 08:47, Brian Foster <bfoster@redhat.com> wrote:
+> >> 
+> >>> On Mon, Jan 15, 2024 at 10:21:25AM +0800, Su Yue wrote:
+> >>>> When I was testing mongodb over bcachefs with compression,
+> >>>> there is a lockdep warning when snapshotting mongodb data volume.
+> >>>> 
+> >>>> $ cat test.sh
+> >>>> prog=bcachefs
+> >>>> 
+> >>>> $prog subvolume create /mnt/data
+> >>>> $prog subvolume create /mnt/data/snapshots
+> >>>> 
+> >>>> while true;do
+> >>>>    $prog subvolume snapshot /mnt/data
+> >>>> /mnt/data/snapshots/$(date +%s)
+> >>>>    sleep 1s
+> >>>> done
+> >>>> 
+> >>>> $ cat /etc/mongodb.conf
+> >>>> systemLog:
+> >>>>  destination: file
+> >>>>  logAppend: true
+> >>>>  path: /mnt/data/mongod.log
+> >>>> 
+> >>>> storage:
+> >>>>  dbPath: /mnt/data/
+> >>>> 
+> >>>> lockdep reports:
+> >>>> [ 3437.452330]
+> >>>> ======================================================
+> >>>> [ 3437.452750] WARNING: possible circular locking dependency
+> >>>> detected
+> >>>> [ 3437.453168] 6.7.0-rc7-custom+ #85 Tainted: G            E
+> >>>> [ 3437.453562]
+> >>>> ------------------------------------------------------
+> >>>> [ 3437.453981] bcachefs/35533 is trying to acquire lock:
+> >>>> [ 3437.454325] ffffa0a02b2b1418 (sb_writers#10){.+.+}-{0:0}, at:
+> >>>> filename_create+0x62/0x190
+> >>>> [ 3437.454875]
+> >>>>               but task is already holding lock:
+> >>>> [ 3437.455268] ffffa0a02b2b10e0
+> >>>> (&type->s_umount_key#48){.+.+}-{3:3}, at:
+> >>>> bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+> >>>> [ 3437.456009]
+> >>>>               which lock already depends on the new lock.
+> >>>> 
+> >>>> [ 3437.456553]
+> >>>>               the existing dependency chain (in reverse order)
+> >>>> is:
+> >>>> [ 3437.457054]
+> >>>>               -> #3 (&type->s_umount_key#48){.+.+}-{3:3}:
+> >>>> [ 3437.457507]        down_read+0x3e/0x170
+> >>>> [ 3437.457772]        bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+> >>>> [ 3437.458206]        __x64_sys_ioctl+0x93/0xd0
+> >>>> [ 3437.458498]        do_syscall_64+0x42/0xf0
+> >>>> [ 3437.458779]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >>>> [ 3437.459155]
+> >>>>               -> #2 (&c->snapshot_create_lock){++++}-{3:3}:
+> >>>> [ 3437.459615]        down_read+0x3e/0x170
+> >>>> [ 3437.459878]        bch2_truncate+0x82/0x110 [bcachefs]
+> >>>> [ 3437.460276]        bchfs_truncate+0x254/0x3c0 [bcachefs]
+> >>>> [ 3437.460686]        notify_change+0x1f1/0x4a0
+> >>>> [ 3437.461283]        do_truncate+0x7f/0xd0
+> >>>> [ 3437.461555]        path_openat+0xa57/0xce0
+> >>>> [ 3437.461836]        do_filp_open+0xb4/0x160
+> >>>> [ 3437.462116]        do_sys_openat2+0x91/0xc0
+> >>>> [ 3437.462402]        __x64_sys_openat+0x53/0xa0
+> >>>> [ 3437.462701]        do_syscall_64+0x42/0xf0
+> >>>> [ 3437.462982]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >>>> [ 3437.463359]
+> >>>>               -> #1 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}:
+> >>>> [ 3437.463843]        down_write+0x3b/0xc0
+> >>>> [ 3437.464223]        bch2_write_iter+0x5b/0xcc0 [bcachefs]
+> >>>> [ 3437.464493]        vfs_write+0x21b/0x4c0
+> >>>> [ 3437.464653]        ksys_write+0x69/0xf0
+> >>>> [ 3437.464839]        do_syscall_64+0x42/0xf0
+> >>>> [ 3437.465009]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >>>> [ 3437.465231]
+> >>>>               -> #0 (sb_writers#10){.+.+}-{0:0}:
+> >>>> [ 3437.465471]        __lock_acquire+0x1455/0x21b0
+> >>>> [ 3437.465656]        lock_acquire+0xc6/0x2b0
+> >>>> [ 3437.465822]        mnt_want_write+0x46/0x1a0
+> >>>> [ 3437.465996]        filename_create+0x62/0x190
+> >>>> [ 3437.466175]        user_path_create+0x2d/0x50
+> >>>> [ 3437.466352]        bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
+> >>>> [ 3437.466617]        __x64_sys_ioctl+0x93/0xd0
+> >>>> [ 3437.466791]        do_syscall_64+0x42/0xf0
+> >>>> [ 3437.466957]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >>>> [ 3437.467180]
+> >>>>               other info that might help us debug this:
+> >>>> 
+> >>>> [ 3437.469670] 2 locks held by bcachefs/35533:
+> >>>>               other info that might help us debug this:
+> >>>> 
+> >>>> [ 3437.467507] Chain exists of:
+> >>>>                 sb_writers#10 --> &c->snapshot_create_lock -->
+> >>>> &type->s_umount_key#48
+> >>>> 
+> >>>> [ 3437.467979]  Possible unsafe locking scenario:
+> >>>> 
+> >>>> [ 3437.468223]        CPU0                    CPU1
+> >>>> [ 3437.468405]        ----                    ----
+> >>>> [ 3437.468585]   rlock(&type->s_umount_key#48);
+> >>>> [ 3437.468758] lock(&c->snapshot_create_lock);
+> >>>> [ 3437.469030] lock(&type->s_umount_key#48);
+> >>>> [ 3437.469291]   rlock(sb_writers#10);
+> >>>> [ 3437.469434]
+> >>>>                *** DEADLOCK ***
+> >>>> 
+> >>>> [ 3437.469670] 2 locks held by bcachefs/35533:
+> >>>> [ 3437.469838]  #0: ffffa0a02ce00a88
+> >>>> (&c->snapshot_create_lock){++++}-{3:3}, at:
+> >>>> bch2_fs_file_ioctl+0x1e3/0xc90 [bcachefs]
+> >>>> [ 3437.470294]  #1: ffffa0a02b2b10e0
+> >>>> (&type->s_umount_key#48){.+.+}-{3:3}, at:
+> >>>> bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+> >>>> [ 3437.470744]
+> >>>>               stack backtrace:
+> >>>> [ 3437.470922] CPU: 7 PID: 35533 Comm: bcachefs Kdump: loaded
+> >>>> Tainted: G            E      6.7.0-rc7-custom+ #85
+> >>>> [ 3437.471313] Hardware name: QEMU Standard PC (i440FX + PIIX,
+> >>>> 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
+> >>>> [ 3437.471694] Call Trace:
+> >>>> [ 3437.471795]  <TASK>
+> >>>> [ 3437.471884]  dump_stack_lvl+0x57/0x90
+> >>>> [ 3437.472035]  check_noncircular+0x132/0x150
+> >>>> [ 3437.472202]  __lock_acquire+0x1455/0x21b0
+> >>>> [ 3437.472369]  lock_acquire+0xc6/0x2b0
+> >>>> [ 3437.472518]  ? filename_create+0x62/0x190
+> >>>> [ 3437.472683]  ? lock_is_held_type+0x97/0x110
+> >>>> [ 3437.472856]  mnt_want_write+0x46/0x1a0
+> >>>> [ 3437.473025]  ? filename_create+0x62/0x190
+> >>>> [ 3437.473204]  filename_create+0x62/0x190
+> >>>> [ 3437.473380]  user_path_create+0x2d/0x50
+> >>>> [ 3437.473555]  bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
+> >>>> [ 3437.473819]  ? lock_acquire+0xc6/0x2b0
+> >>>> [ 3437.474002]  ? __fget_files+0x2a/0x190
+> >>>> [ 3437.474195]  ? __fget_files+0xbc/0x190
+> >>>> [ 3437.474380]  ? lock_release+0xc5/0x270
+> >>>> [ 3437.474567]  ? __x64_sys_ioctl+0x93/0xd0
+> >>>> [ 3437.474764]  ? __pfx_bch2_fs_file_ioctl+0x10/0x10 [bcachefs]
+> >>>> [ 3437.475090]  __x64_sys_ioctl+0x93/0xd0
+> >>>> [ 3437.475277]  do_syscall_64+0x42/0xf0
+> >>>> [ 3437.475454]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >>>> [ 3437.475691] RIP: 0033:0x7f2743c313af
+> >>>> ======================================================
+> >>>> 
+> >>>> In __bch2_ioctl_subvolume_create(), we grab s_umount unconditionally
+> >>>> and unlock it at the end of the function. There is a comment
+> >>>> "why do we need this lock?" about the lock coming from
+> >>>> commit 42d237320e98 ("bcachefs: Snapshot creation, deletion")
+> >>>> The reason is that __bch2_ioctl_subvolume_create() calls
+> >>>> sync_inodes_sb() which enforce locked s_umount to writeback all
+> >>>> dirty
+> >>>> nodes before doing snapshot works.
+> >>>> 
+> >>>> Fix it by read locking s_umount for snapshotting only and unlocking
+> >>>> s_umount after sync_inodes_sb().
+> >>>> 
+> >>> 
+> >>> Heh, seems reasonable to me..
+> >>> 
+> >>>> Signed-off-by: Su Yue <glass.su@suse.com>
+> >>>> ---
+> >>>> fs/bcachefs/fs-ioctl.c | 11 +++++------
+> >>>> 1 file changed, 5 insertions(+), 6 deletions(-)
+> >>>> 
+> >>>> diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
+> >>>> index e0a19a73c8e1..1346861ed944 100644
+> >>>> --- a/fs/bcachefs/fs-ioctl.c
+> >>>> +++ b/fs/bcachefs/fs-ioctl.c
+> >>>> @@ -337,11 +337,12 @@ static long
+> >>>> __bch2_ioctl_subvolume_create(struct bch_fs *c, struct file *filp,
+> >>>> if (arg.flags & BCH_SUBVOL_SNAPSHOT_RO)
+> >>>> create_flags |= BCH_CREATE_SNAPSHOT_RO;
+> >>>> 
+> >>>> - /* why do we need this lock? */
+> >>>> - down_read(&c->vfs_sb->s_umount);
+> >>>> -
+> >>>> - if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE)
+> >>>> + if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE) {
+> >>>> + /* sync_inodes_sb enforce s_umount is locked */
+> >>>> + down_read(&c->vfs_sb->s_umount);
+> >>>> sync_inodes_sb(c->vfs_sb);
+> >>>> + up_read(&c->vfs_sb->s_umount);
+> >>>> + }
+> >>>> retry:
+> >>>> if (arg.src_ptr) {
+> >>>> error = user_path_at(arg.dirfd,
+> >>>> @@ -425,8 +426,6 @@ static long __bch2_ioctl_subvolume_create(struct
+> >>>> bch_fs *c, struct file *filp,
+> >>>> goto retry;
+> >>>> }
+> >>>> err1:
+> >>>> - up_read(&c->vfs_sb->s_umount);
+> >>>> -
+> >>> 
+> >>> Can we get rid of this label now that it serves no purpose?
+> >>> 
+> >> I think we can't. Two gotos are still there(under the retry label)
+> >> unless change them to return
+> >> 
+> > 
+> > Sorry.. yes, that's what I mean. Usually we can just return directly
+> > rather than goto for cases where there is no necessary clean up on exit.
+> > 
+> Of course… It’s just about personal flavor and code style.
+> Actually I don’t like neither of jumping  between labels or returning in loop.
 
-Applied
+I've got no real opinion on the matter (except that I can't wait for
+Rust so we don't have to be bothered), so applying this :)
