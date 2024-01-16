@@ -1,280 +1,276 @@
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2082.outbound.protection.outlook.com [40.107.6.82])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0ABF1C2A3
-	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 15:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 862301C298
+	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 15:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="zkRGsKcc"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E4BsFpZzoplb8c4RiEb942U1AwI27WobZSFzjSzo/M2GryiJLV68hMe/EtnccKpb9tT2SQ7BNaw0U5b1ILFKQLm6/16FzFA2yACSMVQcM84xE/omBWCuLSeZTfossDZ8HEbK5LZC/E1UdtikpcB5Wa6fhkB2mbEWGM8CPv0pqUmn199ncEehv6nE9M9mKpFd7rLdI+1uDHtWj+UDLSHpOC1yDOeozdT/p3RGKyuYPuKHJYxtIEFzaCGiaoue3+2UNH3yX3OhXA/4XsDlpB6Wf+W1UrcFqodD5v/T8kIV7LDb5UfDFbe/DeGxGbtyTm9T9m6tLofkaUcXmH89X23KSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+Zz7g4BIBPRpALItd0WS/QqWvBmGilEp6/lKXsLa9NI=;
- b=fZuDO0v4oLot+ozobQgy7F7Gcv4eiTFH367u+TzoatB49ZcwZ8kyVrcKS5q5cDBaytSLUuOZTI2VPbpt5vZMA0urUjYMk9vHYG2+xdtEATrg3c1VmFVFeeLjcOhVCdA0xWLkEmz2QRohO8O6AjCuESZWowPP8JLdlMvhhwh306mNU9jQ6T0FH0Q5ARLgTaKtRQTzrs+b0W/UakWPGs/h2YcexjM3Gvuyp2gNHB0P+LunDhexRIjpn819G7OIM7o1dKI4/8sNKzi/UNQmUcAMR9vDcrUOZkgBCTkOUlGNJfnrjdgZZvdpoKOjvjIiWJ0GrA0lKLVjO25lhpFqrZtAdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+Zz7g4BIBPRpALItd0WS/QqWvBmGilEp6/lKXsLa9NI=;
- b=zkRGsKccrqduiX+4jWOnd5XIqK3/VKTGXdJf+WsGLkFG/HOJyFlxw4vi/Fyip5+mQW3a4Kr8UIFM5BXLIkVoQEEs8DDTFhmIj8oWY7B5DXFubogfQT/A6nejaAsC4mtFAbWb6lcQYlJ9dFtkZIWDYQeXXc70F+3++gDICf71Lhny8BoXn6PTGhAUMtygrFAd1lCyumDKWoO/H82HmNUGvZIqCq4FYaLUFX6wYP40h7pHisHyNutmtL7EaUfooDiPyOj5mcnubnqSOCA+YCyC2mPj7dq0fchh+LwoYGT1XRqKghEBApQzzmmTZJDnWEbH4WO9l02x0bsHxzbSGK6PKA==
-Received: from DB6PR04MB3270.eurprd04.prod.outlook.com (2603:10a6:6:11::18) by
- AM0PR04MB6868.eurprd04.prod.outlook.com (2603:10a6:208:18c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.28; Tue, 16 Jan
- 2024 15:45:29 +0000
-Received: from DB6PR04MB3270.eurprd04.prod.outlook.com
- ([fe80::3b92:46ef:3ee2:8fce]) by DB6PR04MB3270.eurprd04.prod.outlook.com
- ([fe80::3b92:46ef:3ee2:8fce%4]) with mapi id 15.20.7181.027; Tue, 16 Jan 2024
- 15:45:29 +0000
-From: Glass Su <glass.su@suse.com>
-To: Brian Foster <bfoster@redhat.com>
-CC: Su Yue <l@damenly.org>, Glass Su <glass.su@suse.com>,
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L3FT0Ic9"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705419956;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d2rUFoYfFitiE1XTM5LtmG3QjxmDrAv+hzHMCl4phq8=;
+	b=L3FT0Ic9ZyiusQHY/U/zFase1Pzuo6oMAZ3NSULvQXcKeP+lZHlfJbR1ZYVCHBbvt7sINT
+	ZmyfZ+ITRlho9botUVYmJwEBfbAM9RtEJ+OApAjZTVg+9FvKlhFhSFYRiykQp//CEhdDfl
+	tbw1ekSjPDKGmHPL1wbhXUZXDxTJ5A8=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-318-WR47pVJcPV6h9Yh6U3U6Xw-1; Tue,
+ 16 Jan 2024 10:31:14 -0500
+X-MC-Unique: WR47pVJcPV6h9Yh6U3U6Xw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F169D3C14951;
+	Tue, 16 Jan 2024 15:31:13 +0000 (UTC)
+Received: from bfoster (unknown [10.22.8.116])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id B5F952166B32;
+	Tue, 16 Jan 2024 15:31:13 +0000 (UTC)
+Date: Tue, 16 Jan 2024 10:32:31 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Su Yue <l@damenly.org>
+Cc: Su Yue <glass.su@suse.com>, linux-bcachefs@vger.kernel.org
 Subject: Re: [PATCH] bcachefs: grab s_umount only if snapshotting
-Thread-Topic: [PATCH] bcachefs: grab s_umount only if snapshotting
-Thread-Index: AQHaR1mWCXhDTQI9fEiSuh5wjO730LDcdnyAgAAGcoCAABbPgIAAA5IA
-Date: Tue, 16 Jan 2024 15:45:29 +0000
-Message-ID: <7DD9AEC3-30C6-46BF-AC9B-9A5706647293@suse.com>
+Message-ID: <ZaahjyEyV02xKzdP@bfoster>
 References: <20240115022125.148669-1-glass.su@suse.com>
- <ZaaJBUlutcDw7s8D@bfoster> <8r4p71d3.fsf@damenly.org>
- <ZaahjyEyV02xKzdP@bfoster>
-In-Reply-To: <ZaahjyEyV02xKzdP@bfoster>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DB6PR04MB3270:EE_|AM0PR04MB6868:EE_
-x-ms-office365-filtering-correlation-id: ea6892e7-ca10-4502-8dd3-08dc16aa2a72
-x-ld-processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- BF6sjB50i9Lo18PKoFVEv1Xz6+7xu/RsA9qS+1gpnLCkdbqPMjU8zVNwEcYFMPM0VZYJQEV8Bc5JqQrA8J3v6HFIPY3aZZRLKBoKWJ/VB7xfxni0RrMiVTzr5JMsAVvBQe9+nyU66VEeUB0fTNo86B0/CuOiHRlhx7VpH19NOQgDApxSX9bPf+IjfYj2ljG1oznPo8NOcOdnajyOTja9FiBVd5kV4F/DLA9wazjacIgcFNzRdjz3THjqy5cwlaz9a1mREZP1Z8ckUwOEYZHC8RM8VSzmVPE9uzx3hS7T/DxQJ0LJz/hbcT+KGJyFOtWM9jiccnr0NGxdc5NlHqCqFamwnQtl7O/eMm1rO/PRwc3tXgEYKAUQMJwjWc22E+sV/fRGQ037eNuv1wnEHcdiO2bQy6ItVy734awwrVNt5+PXug9nFqxW9HkpiO/yUhPPLAoCPcqCkLiBKQoA6W+mLOZUFPzpPvY5Ksy+aUpNQhMwxKXRmQbhOJeQz39CPAZTVeK0THPnqQKooRJycRblLwNDRJCbKZg7gLfRne15cp3riX/i96tcjlcNTv8ovarNk3+FYfLuqO6GpdlYjpTTMELCKFvfeQshqBlsv3N0WCAKEoME7p1fusqTJ4YTa3A/biTp1y83Ls/5UAej19oh6EzdTPKDJSlB6qy05b239nnEjfNz5sq9evBIPepCIEQE
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR04MB3270.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(136003)(366004)(396003)(346002)(376002)(230273577357003)(230922051799003)(230173577357003)(451199024)(186009)(64100799003)(1800799012)(5660300002)(8936002)(8676002)(2906002)(4326008)(64756008)(66446008)(66476007)(54906003)(6916009)(66946007)(66556008)(76116006)(316002)(6512007)(53546011)(44832011)(71200400001)(6506007)(478600001)(83380400001)(2616005)(41300700001)(122000001)(38100700002)(86362001)(36756003)(91956017)(6486002)(33656002)(38070700009)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TEIveW5OR1QvSjZOdFhQUUhKN3FtK0x0SEtBVWplUmpUZHVxd0dRbHdZUXBl?=
- =?utf-8?B?MEtPcGdvVEhDdE9NOHhzcTdYUVBuK01JZlVnNUEvalByamdrQVpxdFpEWVg1?=
- =?utf-8?B?TXdlSzB5dXRHeURJQk8xUXhFSWtJTDNlQnFXOWJmOU03L3owM00vQzFXb1ZR?=
- =?utf-8?B?MU5uSWFJUnk5ZlZOeDNTMEhVcHRJRWZKeU1lR0dhT3pSYXh5ZTd2VWcrZy9k?=
- =?utf-8?B?djNCRW9tQlB0R2lHZS8zZU1iNXdXcnhacU53eUpxQ1JzUnNFR1ZFQ3FRMWRG?=
- =?utf-8?B?ZkhGQ3IxbDR5MDdHTjdnaWZNZVlzTkQwZVRGbEgvRExicDgwN1k0ODFXNUo1?=
- =?utf-8?B?SkVKNkhrdDFoc0VMRGhQY3lURmFveG16SXM3ZGxvMGJRZy96bXN6ekYvbzR1?=
- =?utf-8?B?dmRKN1JJQ0s5eXJkcG1oVUx6SDlSSG04UDF0eHRNNXNoZUt4ZFg3dTF0a2l0?=
- =?utf-8?B?aTRaNTJHYjJtNGpjdWdadWczcm0wQ0dsM0JVM1VPSm5wYjZJenF0TmxGL0gz?=
- =?utf-8?B?b2w0blVTT2QrdDdSNGlLODRodzljSjVhTVp6dnU5dzlwMXROYVhFNE5PRmZ2?=
- =?utf-8?B?VlhsVlRtZThvS0pnZTFvOUZzOVRvdVZUSWkxVFIza3RINllRSzY0eE9vd216?=
- =?utf-8?B?a3NHMWJGTEpWbW5PWFEramx2WWdXb2pGOGowWXZnbHhmNldtWnpsZ1JBUHpr?=
- =?utf-8?B?NU5rcm04V1lnOHJpWDgzd0xKQkNzTzNOMlI0TTNqcmtJYVhZRDJrcEU4YUI1?=
- =?utf-8?B?OFZNbzJqWUJMcmNqU1doSUlVUHlOL1FYaytRYWl2OEFGOHFzcmoxNVN4R3pj?=
- =?utf-8?B?NHFEVjVsUzFuU1NYcEZxWmdpdmI1UHF4cG9DSkY3ZVpxR09xYjFpclVJdEwx?=
- =?utf-8?B?SkZ3NE84WW9VWUo4M0NBd1FYT3lTK25uYVJQZ0duN2cxSU54V2xvUVBVV1do?=
- =?utf-8?B?c3F1VDk2bnU4ZCtDS0ZNaE52ZlU0c3VRVlMrYTBGRVNVdHJNL1diV01CSFJ4?=
- =?utf-8?B?emdWY2RQTndVcjhoc1pUZHRJSGVycUJmNFpkamxBT25tU3VjemRvcElUeXN1?=
- =?utf-8?B?WUowUmpFaHdrTFhaOVZONU1pSWZ3SExGdnAvUFVwVnVPQXFWYTF0elQwdDg1?=
- =?utf-8?B?TUZadFNMV3ZlZFVNM1hka3A3d0E0YUllNU4zL0FFbk1laHRVODBuWnRTbldX?=
- =?utf-8?B?TGFBY1FTME1HalkyRzN4UGQ3SU5NRTh1M2xSWG1CenlCZHBYY1pSYTNxTUlk?=
- =?utf-8?B?b1d6QVp0TkxMR2VPc251NGZDbVNZdXEzeW5EMFhGUGsydWNkdlVyd1lnV2pU?=
- =?utf-8?B?QkZVRVgyT2FsV3RoQy9uckVqRzd1S3RlejFFbytJd1FGaU9CRG9NazNibzRs?=
- =?utf-8?B?NFp3Q0NQcm1yaXdXcm5DOHFLc3RwQStQdWl4UzQ2Q09ENWZDb0lvMWg3UFdm?=
- =?utf-8?B?elcxQ0NVZ01KTVpMUWdKMS84bStBZDJiVUpmQ1dIdXpCbkZkaEcrZFZyZi9G?=
- =?utf-8?B?M3VNRmhSbmdBUjVOYzJUWkFVQUY1QmYrNElrMmMydThrVjdBVnA5K0JtZVhO?=
- =?utf-8?B?c1N1MkFYSjhlZ0hyMmV2Qk40eXBXZk5pd2J2QjU5RXB5WlFPVXdSMFFiemc0?=
- =?utf-8?B?ZGRhQkhWSHZVS1BLSDh5TkphZGdvZjFxYTdwUjdTT1VMVlRvN20yNjBoWjVI?=
- =?utf-8?B?SmZKYjhaZGRMNWd4R1dlajFOeDFlM2lUNDJiVFV1akJGeGJKNi9SZUZZWllW?=
- =?utf-8?B?TllXanVvZFZvNWxSeVdqRFM5blZjelRtQW16T1VBNFhQcVltQkp5UlF6VzdX?=
- =?utf-8?B?dVQ1akUvaVJCN013ekhaeEk1RzJXK3NObmdCMWlJZXdOU1I5VEIrakptQUFM?=
- =?utf-8?B?YWVBMm5Da0tHZUVnSTV1K2tTVE13d0FrTTM5aGtQR2JxLzAzcEhzRXZjQmZP?=
- =?utf-8?B?M1R3YW11YUhXK2tveTI0b2QrZEZyT1ZJR24wZFdyNzlBdEg1aTdaOFpWc3JY?=
- =?utf-8?B?c3lhVGoyTjZxNUhyTjB2TUFDWlVMS1NqeFB5bXA1d2kxUG5mLzhjVXhBSldL?=
- =?utf-8?B?ampJU3VPcVM1dzlIcU9BWlVkek5rQ1JUbTdtVlRiTHpuTzVld3ZnR0pxSDEv?=
- =?utf-8?B?S2JHcGRiNDEzcTNIWkk3aHhFTHZxQXhKOG5LbFVOTTJhNmpKL1lYWXZyQ2Zn?=
- =?utf-8?B?SWc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7DA5C5CE1A5F06409CEF9810613915D8@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <ZaaJBUlutcDw7s8D@bfoster>
+ <8r4p71d3.fsf@damenly.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR04MB3270.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea6892e7-ca10-4502-8dd3-08dc16aa2a72
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2024 15:45:29.1729
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3+bCF7zuxul4VI5AajHRUsKNjRqx+tHIIeq2df8kDvdILkA26O5qnHEu85Q+/+VY89eF47CuPxbK4KO4Brf30g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6868
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8r4p71d3.fsf@damenly.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-DQoNCj4gT24gSmFuIDE2LCAyMDI0LCBhdCAyMzozMiwgQnJpYW4gRm9zdGVyIDxiZm9zdGVyQHJl
-ZGhhdC5jb20+IHdyb3RlOg0KPiANCj4gT24gVHVlLCBKYW4gMTYsIDIwMjQgYXQgMTA6MTA6NTNQ
-TSArMDgwMCwgU3UgWXVlIHdyb3RlOg0KPj4gDQo+PiBPbiBUdWUgMTYgSmFuIDIwMjQgYXQgMDg6
-NDcsIEJyaWFuIEZvc3RlciA8YmZvc3RlckByZWRoYXQuY29tPiB3cm90ZToNCj4+IA0KPj4+IE9u
-IE1vbiwgSmFuIDE1LCAyMDI0IGF0IDEwOjIxOjI1QU0gKzA4MDAsIFN1IFl1ZSB3cm90ZToNCj4+
-Pj4gV2hlbiBJIHdhcyB0ZXN0aW5nIG1vbmdvZGIgb3ZlciBiY2FjaGVmcyB3aXRoIGNvbXByZXNz
-aW9uLA0KPj4+PiB0aGVyZSBpcyBhIGxvY2tkZXAgd2FybmluZyB3aGVuIHNuYXBzaG90dGluZyBt
-b25nb2RiIGRhdGEgdm9sdW1lLg0KPj4+PiANCj4+Pj4gJCBjYXQgdGVzdC5zaA0KPj4+PiBwcm9n
-PWJjYWNoZWZzDQo+Pj4+IA0KPj4+PiAkcHJvZyBzdWJ2b2x1bWUgY3JlYXRlIC9tbnQvZGF0YQ0K
-Pj4+PiAkcHJvZyBzdWJ2b2x1bWUgY3JlYXRlIC9tbnQvZGF0YS9zbmFwc2hvdHMNCj4+Pj4gDQo+
-Pj4+IHdoaWxlIHRydWU7ZG8NCj4+Pj4gICAgJHByb2cgc3Vidm9sdW1lIHNuYXBzaG90IC9tbnQv
-ZGF0YQ0KPj4+PiAvbW50L2RhdGEvc25hcHNob3RzLyQoZGF0ZSArJXMpDQo+Pj4+ICAgIHNsZWVw
-IDFzDQo+Pj4+IGRvbmUNCj4+Pj4gDQo+Pj4+ICQgY2F0IC9ldGMvbW9uZ29kYi5jb25mDQo+Pj4+
-IHN5c3RlbUxvZzoNCj4+Pj4gIGRlc3RpbmF0aW9uOiBmaWxlDQo+Pj4+ICBsb2dBcHBlbmQ6IHRy
-dWUNCj4+Pj4gIHBhdGg6IC9tbnQvZGF0YS9tb25nb2QubG9nDQo+Pj4+IA0KPj4+PiBzdG9yYWdl
-Og0KPj4+PiAgZGJQYXRoOiAvbW50L2RhdGEvDQo+Pj4+IA0KPj4+PiBsb2NrZGVwIHJlcG9ydHM6
-DQo+Pj4+IFsgMzQzNy40NTIzMzBdDQo+Pj4+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPj4+PiBbIDM0MzcuNDUyNzUwXSBXQVJOSU5HOiBw
-b3NzaWJsZSBjaXJjdWxhciBsb2NraW5nIGRlcGVuZGVuY3kNCj4+Pj4gZGV0ZWN0ZWQNCj4+Pj4g
-WyAzNDM3LjQ1MzE2OF0gNi43LjAtcmM3LWN1c3RvbSsgIzg1IFRhaW50ZWQ6IEcgICAgICAgICAg
-ICBFDQo+Pj4+IFsgMzQzNy40NTM1NjJdDQo+Pj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPj4+PiBbIDM0MzcuNDUzOTgxXSBiY2FjaGVm
-cy8zNTUzMyBpcyB0cnlpbmcgdG8gYWNxdWlyZSBsb2NrOg0KPj4+PiBbIDM0MzcuNDU0MzI1XSBm
-ZmZmYTBhMDJiMmIxNDE4IChzYl93cml0ZXJzIzEwKXsuKy4rfS17MDowfSwgYXQ6DQo+Pj4+IGZp
-bGVuYW1lX2NyZWF0ZSsweDYyLzB4MTkwDQo+Pj4+IFsgMzQzNy40NTQ4NzVdDQo+Pj4+ICAgICAg
-ICAgICAgICAgYnV0IHRhc2sgaXMgYWxyZWFkeSBob2xkaW5nIGxvY2s6DQo+Pj4+IFsgMzQzNy40
-NTUyNjhdIGZmZmZhMGEwMmIyYjEwZTANCj4+Pj4gKCZ0eXBlLT5zX3Vtb3VudF9rZXkjNDgpey4r
-Lit9LXszOjN9LCBhdDoNCj4+Pj4gYmNoMl9mc19maWxlX2lvY3RsKzB4MjMyLzB4YzkwIFtiY2Fj
-aGVmc10NCj4+Pj4gWyAzNDM3LjQ1NjAwOV0NCj4+Pj4gICAgICAgICAgICAgICB3aGljaCBsb2Nr
-IGFscmVhZHkgZGVwZW5kcyBvbiB0aGUgbmV3IGxvY2suDQo+Pj4+IA0KPj4+PiBbIDM0MzcuNDU2
-NTUzXQ0KPj4+PiAgICAgICAgICAgICAgIHRoZSBleGlzdGluZyBkZXBlbmRlbmN5IGNoYWluIChp
-biByZXZlcnNlIG9yZGVyKQ0KPj4+PiBpczoNCj4+Pj4gWyAzNDM3LjQ1NzA1NF0NCj4+Pj4gICAg
-ICAgICAgICAgICAtPiAjMyAoJnR5cGUtPnNfdW1vdW50X2tleSM0OCl7LisuK30tezM6M306DQo+
-Pj4+IFsgMzQzNy40NTc1MDddICAgICAgICBkb3duX3JlYWQrMHgzZS8weDE3MA0KPj4+PiBbIDM0
-MzcuNDU3NzcyXSAgICAgICAgYmNoMl9mc19maWxlX2lvY3RsKzB4MjMyLzB4YzkwIFtiY2FjaGVm
-c10NCj4+Pj4gWyAzNDM3LjQ1ODIwNl0gICAgICAgIF9feDY0X3N5c19pb2N0bCsweDkzLzB4ZDAN
-Cj4+Pj4gWyAzNDM3LjQ1ODQ5OF0gICAgICAgIGRvX3N5c2NhbGxfNjQrMHg0Mi8weGYwDQo+Pj4+
-IFsgMzQzNy40NTg3NzldICAgICAgICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg2
-ZS8weDc2DQo+Pj4+IFsgMzQzNy40NTkxNTVdDQo+Pj4+ICAgICAgICAgICAgICAgLT4gIzIgKCZj
-LT5zbmFwc2hvdF9jcmVhdGVfbG9jayl7KysrK30tezM6M306DQo+Pj4+IFsgMzQzNy40NTk2MTVd
-ICAgICAgICBkb3duX3JlYWQrMHgzZS8weDE3MA0KPj4+PiBbIDM0MzcuNDU5ODc4XSAgICAgICAg
-YmNoMl90cnVuY2F0ZSsweDgyLzB4MTEwIFtiY2FjaGVmc10NCj4+Pj4gWyAzNDM3LjQ2MDI3Nl0g
-ICAgICAgIGJjaGZzX3RydW5jYXRlKzB4MjU0LzB4M2MwIFtiY2FjaGVmc10NCj4+Pj4gWyAzNDM3
-LjQ2MDY4Nl0gICAgICAgIG5vdGlmeV9jaGFuZ2UrMHgxZjEvMHg0YTANCj4+Pj4gWyAzNDM3LjQ2
-MTI4M10gICAgICAgIGRvX3RydW5jYXRlKzB4N2YvMHhkMA0KPj4+PiBbIDM0MzcuNDYxNTU1XSAg
-ICAgICAgcGF0aF9vcGVuYXQrMHhhNTcvMHhjZTANCj4+Pj4gWyAzNDM3LjQ2MTgzNl0gICAgICAg
-IGRvX2ZpbHBfb3BlbisweGI0LzB4MTYwDQo+Pj4+IFsgMzQzNy40NjIxMTZdICAgICAgICBkb19z
-eXNfb3BlbmF0MisweDkxLzB4YzANCj4+Pj4gWyAzNDM3LjQ2MjQwMl0gICAgICAgIF9feDY0X3N5
-c19vcGVuYXQrMHg1My8weGEwDQo+Pj4+IFsgMzQzNy40NjI3MDFdICAgICAgICBkb19zeXNjYWxs
-XzY0KzB4NDIvMHhmMA0KPj4+PiBbIDM0MzcuNDYyOTgyXSAgICAgICAgZW50cnlfU1lTQ0FMTF82
-NF9hZnRlcl9od2ZyYW1lKzB4NmUvMHg3Ng0KPj4+PiBbIDM0MzcuNDYzMzU5XQ0KPj4+PiAgICAg
-ICAgICAgICAgIC0+ICMxICgmc2ItPnNfdHlwZS0+aV9tdXRleF9rZXkjMTUpeysuKy59LXszOjN9
-Og0KPj4+PiBbIDM0MzcuNDYzODQzXSAgICAgICAgZG93bl93cml0ZSsweDNiLzB4YzANCj4+Pj4g
-WyAzNDM3LjQ2NDIyM10gICAgICAgIGJjaDJfd3JpdGVfaXRlcisweDViLzB4Y2MwIFtiY2FjaGVm
-c10NCj4+Pj4gWyAzNDM3LjQ2NDQ5M10gICAgICAgIHZmc193cml0ZSsweDIxYi8weDRjMA0KPj4+
-PiBbIDM0MzcuNDY0NjUzXSAgICAgICAga3N5c193cml0ZSsweDY5LzB4ZjANCj4+Pj4gWyAzNDM3
-LjQ2NDgzOV0gICAgICAgIGRvX3N5c2NhbGxfNjQrMHg0Mi8weGYwDQo+Pj4+IFsgMzQzNy40NjUw
-MDldICAgICAgICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg2ZS8weDc2DQo+Pj4+
-IFsgMzQzNy40NjUyMzFdDQo+Pj4+ICAgICAgICAgICAgICAgLT4gIzAgKHNiX3dyaXRlcnMjMTAp
-ey4rLit9LXswOjB9Og0KPj4+PiBbIDM0MzcuNDY1NDcxXSAgICAgICAgX19sb2NrX2FjcXVpcmUr
-MHgxNDU1LzB4MjFiMA0KPj4+PiBbIDM0MzcuNDY1NjU2XSAgICAgICAgbG9ja19hY3F1aXJlKzB4
-YzYvMHgyYjANCj4+Pj4gWyAzNDM3LjQ2NTgyMl0gICAgICAgIG1udF93YW50X3dyaXRlKzB4NDYv
-MHgxYTANCj4+Pj4gWyAzNDM3LjQ2NTk5Nl0gICAgICAgIGZpbGVuYW1lX2NyZWF0ZSsweDYyLzB4
-MTkwDQo+Pj4+IFsgMzQzNy40NjYxNzVdICAgICAgICB1c2VyX3BhdGhfY3JlYXRlKzB4MmQvMHg1
-MA0KPj4+PiBbIDM0MzcuNDY2MzUyXSAgICAgICAgYmNoMl9mc19maWxlX2lvY3RsKzB4MmVjLzB4
-YzkwIFtiY2FjaGVmc10NCj4+Pj4gWyAzNDM3LjQ2NjYxN10gICAgICAgIF9feDY0X3N5c19pb2N0
-bCsweDkzLzB4ZDANCj4+Pj4gWyAzNDM3LjQ2Njc5MV0gICAgICAgIGRvX3N5c2NhbGxfNjQrMHg0
-Mi8weGYwDQo+Pj4+IFsgMzQzNy40NjY5NTddICAgICAgICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVy
-X2h3ZnJhbWUrMHg2ZS8weDc2DQo+Pj4+IFsgMzQzNy40NjcxODBdDQo+Pj4+ICAgICAgICAgICAg
-ICAgb3RoZXIgaW5mbyB0aGF0IG1pZ2h0IGhlbHAgdXMgZGVidWcgdGhpczoNCj4+Pj4gDQo+Pj4+
-IFsgMzQzNy40Njk2NzBdIDIgbG9ja3MgaGVsZCBieSBiY2FjaGVmcy8zNTUzMzoNCj4+Pj4gICAg
-ICAgICAgICAgICBvdGhlciBpbmZvIHRoYXQgbWlnaHQgaGVscCB1cyBkZWJ1ZyB0aGlzOg0KPj4+
-PiANCj4+Pj4gWyAzNDM3LjQ2NzUwN10gQ2hhaW4gZXhpc3RzIG9mOg0KPj4+PiAgICAgICAgICAg
-ICAgICAgc2Jfd3JpdGVycyMxMCAtLT4gJmMtPnNuYXBzaG90X2NyZWF0ZV9sb2NrIC0tPg0KPj4+
-PiAmdHlwZS0+c191bW91bnRfa2V5IzQ4DQo+Pj4+IA0KPj4+PiBbIDM0MzcuNDY3OTc5XSAgUG9z
-c2libGUgdW5zYWZlIGxvY2tpbmcgc2NlbmFyaW86DQo+Pj4+IA0KPj4+PiBbIDM0MzcuNDY4MjIz
-XSAgICAgICAgQ1BVMCAgICAgICAgICAgICAgICAgICAgQ1BVMQ0KPj4+PiBbIDM0MzcuNDY4NDA1
-XSAgICAgICAgLS0tLSAgICAgICAgICAgICAgICAgICAgLS0tLQ0KPj4+PiBbIDM0MzcuNDY4NTg1
-XSAgIHJsb2NrKCZ0eXBlLT5zX3Vtb3VudF9rZXkjNDgpOw0KPj4+PiBbIDM0MzcuNDY4NzU4XSBs
-b2NrKCZjLT5zbmFwc2hvdF9jcmVhdGVfbG9jayk7DQo+Pj4+IFsgMzQzNy40NjkwMzBdIGxvY2so
-JnR5cGUtPnNfdW1vdW50X2tleSM0OCk7DQo+Pj4+IFsgMzQzNy40NjkyOTFdICAgcmxvY2soc2Jf
-d3JpdGVycyMxMCk7DQo+Pj4+IFsgMzQzNy40Njk0MzRdDQo+Pj4+ICAgICAgICAgICAgICAgICoq
-KiBERUFETE9DSyAqKioNCj4+Pj4gDQo+Pj4+IFsgMzQzNy40Njk2NzBdIDIgbG9ja3MgaGVsZCBi
-eSBiY2FjaGVmcy8zNTUzMzoNCj4+Pj4gWyAzNDM3LjQ2OTgzOF0gICMwOiBmZmZmYTBhMDJjZTAw
-YTg4DQo+Pj4+ICgmYy0+c25hcHNob3RfY3JlYXRlX2xvY2speysrKyt9LXszOjN9LCBhdDoNCj4+
-Pj4gYmNoMl9mc19maWxlX2lvY3RsKzB4MWUzLzB4YzkwIFtiY2FjaGVmc10NCj4+Pj4gWyAzNDM3
-LjQ3MDI5NF0gICMxOiBmZmZmYTBhMDJiMmIxMGUwDQo+Pj4+ICgmdHlwZS0+c191bW91bnRfa2V5
-IzQ4KXsuKy4rfS17MzozfSwgYXQ6DQo+Pj4+IGJjaDJfZnNfZmlsZV9pb2N0bCsweDIzMi8weGM5
-MCBbYmNhY2hlZnNdDQo+Pj4+IFsgMzQzNy40NzA3NDRdDQo+Pj4+ICAgICAgICAgICAgICAgc3Rh
-Y2sgYmFja3RyYWNlOg0KPj4+PiBbIDM0MzcuNDcwOTIyXSBDUFU6IDcgUElEOiAzNTUzMyBDb21t
-OiBiY2FjaGVmcyBLZHVtcDogbG9hZGVkDQo+Pj4+IFRhaW50ZWQ6IEcgICAgICAgICAgICBFICAg
-ICAgNi43LjAtcmM3LWN1c3RvbSsgIzg1DQo+Pj4+IFsgMzQzNy40NzEzMTNdIEhhcmR3YXJlIG5h
-bWU6IFFFTVUgU3RhbmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsDQo+Pj4+IDE5OTYpLCBCSU9TIEFy
-Y2ggTGludXggMS4xNi4zLTEtMSAwNC8wMS8yMDE0DQo+Pj4+IFsgMzQzNy40NzE2OTRdIENhbGwg
-VHJhY2U6DQo+Pj4+IFsgMzQzNy40NzE3OTVdICA8VEFTSz4NCj4+Pj4gWyAzNDM3LjQ3MTg4NF0g
-IGR1bXBfc3RhY2tfbHZsKzB4NTcvMHg5MA0KPj4+PiBbIDM0MzcuNDcyMDM1XSAgY2hlY2tfbm9u
-Y2lyY3VsYXIrMHgxMzIvMHgxNTANCj4+Pj4gWyAzNDM3LjQ3MjIwMl0gIF9fbG9ja19hY3F1aXJl
-KzB4MTQ1NS8weDIxYjANCj4+Pj4gWyAzNDM3LjQ3MjM2OV0gIGxvY2tfYWNxdWlyZSsweGM2LzB4
-MmIwDQo+Pj4+IFsgMzQzNy40NzI1MThdICA/IGZpbGVuYW1lX2NyZWF0ZSsweDYyLzB4MTkwDQo+
-Pj4+IFsgMzQzNy40NzI2ODNdICA/IGxvY2tfaXNfaGVsZF90eXBlKzB4OTcvMHgxMTANCj4+Pj4g
-WyAzNDM3LjQ3Mjg1Nl0gIG1udF93YW50X3dyaXRlKzB4NDYvMHgxYTANCj4+Pj4gWyAzNDM3LjQ3
-MzAyNV0gID8gZmlsZW5hbWVfY3JlYXRlKzB4NjIvMHgxOTANCj4+Pj4gWyAzNDM3LjQ3MzIwNF0g
-IGZpbGVuYW1lX2NyZWF0ZSsweDYyLzB4MTkwDQo+Pj4+IFsgMzQzNy40NzMzODBdICB1c2VyX3Bh
-dGhfY3JlYXRlKzB4MmQvMHg1MA0KPj4+PiBbIDM0MzcuNDczNTU1XSAgYmNoMl9mc19maWxlX2lv
-Y3RsKzB4MmVjLzB4YzkwIFtiY2FjaGVmc10NCj4+Pj4gWyAzNDM3LjQ3MzgxOV0gID8gbG9ja19h
-Y3F1aXJlKzB4YzYvMHgyYjANCj4+Pj4gWyAzNDM3LjQ3NDAwMl0gID8gX19mZ2V0X2ZpbGVzKzB4
-MmEvMHgxOTANCj4+Pj4gWyAzNDM3LjQ3NDE5NV0gID8gX19mZ2V0X2ZpbGVzKzB4YmMvMHgxOTAN
-Cj4+Pj4gWyAzNDM3LjQ3NDM4MF0gID8gbG9ja19yZWxlYXNlKzB4YzUvMHgyNzANCj4+Pj4gWyAz
-NDM3LjQ3NDU2N10gID8gX194NjRfc3lzX2lvY3RsKzB4OTMvMHhkMA0KPj4+PiBbIDM0MzcuNDc0
-NzY0XSAgPyBfX3BmeF9iY2gyX2ZzX2ZpbGVfaW9jdGwrMHgxMC8weDEwIFtiY2FjaGVmc10NCj4+
-Pj4gWyAzNDM3LjQ3NTA5MF0gIF9feDY0X3N5c19pb2N0bCsweDkzLzB4ZDANCj4+Pj4gWyAzNDM3
-LjQ3NTI3N10gIGRvX3N5c2NhbGxfNjQrMHg0Mi8weGYwDQo+Pj4+IFsgMzQzNy40NzU0NTRdICBl
-bnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg2ZS8weDc2DQo+Pj4+IFsgMzQzNy40NzU2
-OTFdIFJJUDogMDAzMzoweDdmMjc0M2MzMTNhZg0KPj4+PiA9PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4+Pj4gDQo+Pj4+IEluIF9fYmNoMl9p
-b2N0bF9zdWJ2b2x1bWVfY3JlYXRlKCksIHdlIGdyYWIgc191bW91bnQgdW5jb25kaXRpb25hbGx5
-DQo+Pj4+IGFuZCB1bmxvY2sgaXQgYXQgdGhlIGVuZCBvZiB0aGUgZnVuY3Rpb24uIFRoZXJlIGlz
-IGEgY29tbWVudA0KPj4+PiAid2h5IGRvIHdlIG5lZWQgdGhpcyBsb2NrPyIgYWJvdXQgdGhlIGxv
-Y2sgY29taW5nIGZyb20NCj4+Pj4gY29tbWl0IDQyZDIzNzMyMGU5OCAoImJjYWNoZWZzOiBTbmFw
-c2hvdCBjcmVhdGlvbiwgZGVsZXRpb24iKQ0KPj4+PiBUaGUgcmVhc29uIGlzIHRoYXQgX19iY2gy
-X2lvY3RsX3N1YnZvbHVtZV9jcmVhdGUoKSBjYWxscw0KPj4+PiBzeW5jX2lub2Rlc19zYigpIHdo
-aWNoIGVuZm9yY2UgbG9ja2VkIHNfdW1vdW50IHRvIHdyaXRlYmFjayBhbGwNCj4+Pj4gZGlydHkN
-Cj4+Pj4gbm9kZXMgYmVmb3JlIGRvaW5nIHNuYXBzaG90IHdvcmtzLg0KPj4+PiANCj4+Pj4gRml4
-IGl0IGJ5IHJlYWQgbG9ja2luZyBzX3Vtb3VudCBmb3Igc25hcHNob3R0aW5nIG9ubHkgYW5kIHVu
-bG9ja2luZw0KPj4+PiBzX3Vtb3VudCBhZnRlciBzeW5jX2lub2Rlc19zYigpLg0KPj4+PiANCj4+
-PiANCj4+PiBIZWgsIHNlZW1zIHJlYXNvbmFibGUgdG8gbWUuLg0KPj4+IA0KPj4+PiBTaWduZWQt
-b2ZmLWJ5OiBTdSBZdWUgPGdsYXNzLnN1QHN1c2UuY29tPg0KPj4+PiAtLS0NCj4+Pj4gZnMvYmNh
-Y2hlZnMvZnMtaW9jdGwuYyB8IDExICsrKysrLS0tLS0tDQo+Pj4+IDEgZmlsZSBjaGFuZ2VkLCA1
-IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pDQo+Pj4+IA0KPj4+PiBkaWZmIC0tZ2l0IGEv
-ZnMvYmNhY2hlZnMvZnMtaW9jdGwuYyBiL2ZzL2JjYWNoZWZzL2ZzLWlvY3RsLmMNCj4+Pj4gaW5k
-ZXggZTBhMTlhNzNjOGUxLi4xMzQ2ODYxZWQ5NDQgMTAwNjQ0DQo+Pj4+IC0tLSBhL2ZzL2JjYWNo
-ZWZzL2ZzLWlvY3RsLmMNCj4+Pj4gKysrIGIvZnMvYmNhY2hlZnMvZnMtaW9jdGwuYw0KPj4+PiBA
-QCAtMzM3LDExICszMzcsMTIgQEAgc3RhdGljIGxvbmcNCj4+Pj4gX19iY2gyX2lvY3RsX3N1YnZv
-bHVtZV9jcmVhdGUoc3RydWN0IGJjaF9mcyAqYywgc3RydWN0IGZpbGUgKmZpbHAsDQo+Pj4+IGlm
-IChhcmcuZmxhZ3MgJiBCQ0hfU1VCVk9MX1NOQVBTSE9UX1JPKQ0KPj4+PiBjcmVhdGVfZmxhZ3Mg
-fD0gQkNIX0NSRUFURV9TTkFQU0hPVF9STzsNCj4+Pj4gDQo+Pj4+IC0gLyogd2h5IGRvIHdlIG5l
-ZWQgdGhpcyBsb2NrPyAqLw0KPj4+PiAtIGRvd25fcmVhZCgmYy0+dmZzX3NiLT5zX3Vtb3VudCk7
-DQo+Pj4+IC0NCj4+Pj4gLSBpZiAoYXJnLmZsYWdzICYgQkNIX1NVQlZPTF9TTkFQU0hPVF9DUkVB
-VEUpDQo+Pj4+ICsgaWYgKGFyZy5mbGFncyAmIEJDSF9TVUJWT0xfU05BUFNIT1RfQ1JFQVRFKSB7
-DQo+Pj4+ICsgLyogc3luY19pbm9kZXNfc2IgZW5mb3JjZSBzX3Vtb3VudCBpcyBsb2NrZWQgKi8N
-Cj4+Pj4gKyBkb3duX3JlYWQoJmMtPnZmc19zYi0+c191bW91bnQpOw0KPj4+PiBzeW5jX2lub2Rl
-c19zYihjLT52ZnNfc2IpOw0KPj4+PiArIHVwX3JlYWQoJmMtPnZmc19zYi0+c191bW91bnQpOw0K
-Pj4+PiArIH0NCj4+Pj4gcmV0cnk6DQo+Pj4+IGlmIChhcmcuc3JjX3B0cikgew0KPj4+PiBlcnJv
-ciA9IHVzZXJfcGF0aF9hdChhcmcuZGlyZmQsDQo+Pj4+IEBAIC00MjUsOCArNDI2LDYgQEAgc3Rh
-dGljIGxvbmcgX19iY2gyX2lvY3RsX3N1YnZvbHVtZV9jcmVhdGUoc3RydWN0DQo+Pj4+IGJjaF9m
-cyAqYywgc3RydWN0IGZpbGUgKmZpbHAsDQo+Pj4+IGdvdG8gcmV0cnk7DQo+Pj4+IH0NCj4+Pj4g
-ZXJyMToNCj4+Pj4gLSB1cF9yZWFkKCZjLT52ZnNfc2ItPnNfdW1vdW50KTsNCj4+Pj4gLQ0KPj4+
-IA0KPj4+IENhbiB3ZSBnZXQgcmlkIG9mIHRoaXMgbGFiZWwgbm93IHRoYXQgaXQgc2VydmVzIG5v
-IHB1cnBvc2U/DQo+Pj4gDQo+PiBJIHRoaW5rIHdlIGNhbid0LiBUd28gZ290b3MgYXJlIHN0aWxs
-IHRoZXJlKHVuZGVyIHRoZSByZXRyeSBsYWJlbCkNCj4+IHVubGVzcyBjaGFuZ2UgdGhlbSB0byBy
-ZXR1cm4NCj4+IA0KPiANCj4gU29ycnkuLiB5ZXMsIHRoYXQncyB3aGF0IEkgbWVhbi4gVXN1YWxs
-eSB3ZSBjYW4ganVzdCByZXR1cm4gZGlyZWN0bHkNCj4gcmF0aGVyIHRoYW4gZ290byBmb3IgY2Fz
-ZXMgd2hlcmUgdGhlcmUgaXMgbm8gbmVjZXNzYXJ5IGNsZWFuIHVwIG9uIGV4aXQuDQo+IA0KT2Yg
-Y291cnNl4oCmIEl04oCZcyBqdXN0IGFib3V0IHBlcnNvbmFsIGZsYXZvciBhbmQgY29kZSBzdHls
-ZS4NCkFjdHVhbGx5IEkgZG9u4oCZdCBsaWtlIG5laXRoZXIgb2YganVtcGluZyAgYmV0d2VlbiBs
-YWJlbHMgb3IgcmV0dXJuaW5nIGluIGxvb3AuDQoNCuKAlA0KU3UNCj4gQnJpYW4NCj4gDQo+PiAt
-LQ0KPj4gU3UNCj4+IA0KPj4+IEJyaWFuDQo+Pj4gDQo+Pj4+IHJldHVybiBlcnJvcjsNCj4+Pj4g
-fQ0KPj4+PiANCj4+Pj4gLS0NCj4+Pj4gMi40My4wDQoNCg0K
+On Tue, Jan 16, 2024 at 10:10:53PM +0800, Su Yue wrote:
+> 
+> On Tue 16 Jan 2024 at 08:47, Brian Foster <bfoster@redhat.com> wrote:
+> 
+> > On Mon, Jan 15, 2024 at 10:21:25AM +0800, Su Yue wrote:
+> > > When I was testing mongodb over bcachefs with compression,
+> > > there is a lockdep warning when snapshotting mongodb data volume.
+> > > 
+> > > $ cat test.sh
+> > > prog=bcachefs
+> > > 
+> > > $prog subvolume create /mnt/data
+> > > $prog subvolume create /mnt/data/snapshots
+> > > 
+> > > while true;do
+> > >     $prog subvolume snapshot /mnt/data
+> > > /mnt/data/snapshots/$(date +%s)
+> > >     sleep 1s
+> > > done
+> > > 
+> > > $ cat /etc/mongodb.conf
+> > > systemLog:
+> > >   destination: file
+> > >   logAppend: true
+> > >   path: /mnt/data/mongod.log
+> > > 
+> > > storage:
+> > >   dbPath: /mnt/data/
+> > > 
+> > > lockdep reports:
+> > > [ 3437.452330]
+> > > ======================================================
+> > > [ 3437.452750] WARNING: possible circular locking dependency
+> > > detected
+> > > [ 3437.453168] 6.7.0-rc7-custom+ #85 Tainted: G            E
+> > > [ 3437.453562]
+> > > ------------------------------------------------------
+> > > [ 3437.453981] bcachefs/35533 is trying to acquire lock:
+> > > [ 3437.454325] ffffa0a02b2b1418 (sb_writers#10){.+.+}-{0:0}, at:
+> > > filename_create+0x62/0x190
+> > > [ 3437.454875]
+> > >                but task is already holding lock:
+> > > [ 3437.455268] ffffa0a02b2b10e0
+> > > (&type->s_umount_key#48){.+.+}-{3:3}, at:
+> > > bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+> > > [ 3437.456009]
+> > >                which lock already depends on the new lock.
+> > > 
+> > > [ 3437.456553]
+> > >                the existing dependency chain (in reverse order)
+> > > is:
+> > > [ 3437.457054]
+> > >                -> #3 (&type->s_umount_key#48){.+.+}-{3:3}:
+> > > [ 3437.457507]        down_read+0x3e/0x170
+> > > [ 3437.457772]        bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+> > > [ 3437.458206]        __x64_sys_ioctl+0x93/0xd0
+> > > [ 3437.458498]        do_syscall_64+0x42/0xf0
+> > > [ 3437.458779]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> > > [ 3437.459155]
+> > >                -> #2 (&c->snapshot_create_lock){++++}-{3:3}:
+> > > [ 3437.459615]        down_read+0x3e/0x170
+> > > [ 3437.459878]        bch2_truncate+0x82/0x110 [bcachefs]
+> > > [ 3437.460276]        bchfs_truncate+0x254/0x3c0 [bcachefs]
+> > > [ 3437.460686]        notify_change+0x1f1/0x4a0
+> > > [ 3437.461283]        do_truncate+0x7f/0xd0
+> > > [ 3437.461555]        path_openat+0xa57/0xce0
+> > > [ 3437.461836]        do_filp_open+0xb4/0x160
+> > > [ 3437.462116]        do_sys_openat2+0x91/0xc0
+> > > [ 3437.462402]        __x64_sys_openat+0x53/0xa0
+> > > [ 3437.462701]        do_syscall_64+0x42/0xf0
+> > > [ 3437.462982]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> > > [ 3437.463359]
+> > >                -> #1 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}:
+> > > [ 3437.463843]        down_write+0x3b/0xc0
+> > > [ 3437.464223]        bch2_write_iter+0x5b/0xcc0 [bcachefs]
+> > > [ 3437.464493]        vfs_write+0x21b/0x4c0
+> > > [ 3437.464653]        ksys_write+0x69/0xf0
+> > > [ 3437.464839]        do_syscall_64+0x42/0xf0
+> > > [ 3437.465009]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> > > [ 3437.465231]
+> > >                -> #0 (sb_writers#10){.+.+}-{0:0}:
+> > > [ 3437.465471]        __lock_acquire+0x1455/0x21b0
+> > > [ 3437.465656]        lock_acquire+0xc6/0x2b0
+> > > [ 3437.465822]        mnt_want_write+0x46/0x1a0
+> > > [ 3437.465996]        filename_create+0x62/0x190
+> > > [ 3437.466175]        user_path_create+0x2d/0x50
+> > > [ 3437.466352]        bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
+> > > [ 3437.466617]        __x64_sys_ioctl+0x93/0xd0
+> > > [ 3437.466791]        do_syscall_64+0x42/0xf0
+> > > [ 3437.466957]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> > > [ 3437.467180]
+> > >                other info that might help us debug this:
+> > > 
+> > > [ 3437.469670] 2 locks held by bcachefs/35533:
+> > >                other info that might help us debug this:
+> > > 
+> > > [ 3437.467507] Chain exists of:
+> > >                  sb_writers#10 --> &c->snapshot_create_lock -->
+> > > &type->s_umount_key#48
+> > > 
+> > > [ 3437.467979]  Possible unsafe locking scenario:
+> > > 
+> > > [ 3437.468223]        CPU0                    CPU1
+> > > [ 3437.468405]        ----                    ----
+> > > [ 3437.468585]   rlock(&type->s_umount_key#48);
+> > > [ 3437.468758] lock(&c->snapshot_create_lock);
+> > > [ 3437.469030] lock(&type->s_umount_key#48);
+> > > [ 3437.469291]   rlock(sb_writers#10);
+> > > [ 3437.469434]
+> > >                 *** DEADLOCK ***
+> > > 
+> > > [ 3437.469670] 2 locks held by bcachefs/35533:
+> > > [ 3437.469838]  #0: ffffa0a02ce00a88
+> > > (&c->snapshot_create_lock){++++}-{3:3}, at:
+> > > bch2_fs_file_ioctl+0x1e3/0xc90 [bcachefs]
+> > > [ 3437.470294]  #1: ffffa0a02b2b10e0
+> > > (&type->s_umount_key#48){.+.+}-{3:3}, at:
+> > > bch2_fs_file_ioctl+0x232/0xc90 [bcachefs]
+> > > [ 3437.470744]
+> > >                stack backtrace:
+> > > [ 3437.470922] CPU: 7 PID: 35533 Comm: bcachefs Kdump: loaded
+> > > Tainted: G            E      6.7.0-rc7-custom+ #85
+> > > [ 3437.471313] Hardware name: QEMU Standard PC (i440FX + PIIX,
+> > > 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
+> > > [ 3437.471694] Call Trace:
+> > > [ 3437.471795]  <TASK>
+> > > [ 3437.471884]  dump_stack_lvl+0x57/0x90
+> > > [ 3437.472035]  check_noncircular+0x132/0x150
+> > > [ 3437.472202]  __lock_acquire+0x1455/0x21b0
+> > > [ 3437.472369]  lock_acquire+0xc6/0x2b0
+> > > [ 3437.472518]  ? filename_create+0x62/0x190
+> > > [ 3437.472683]  ? lock_is_held_type+0x97/0x110
+> > > [ 3437.472856]  mnt_want_write+0x46/0x1a0
+> > > [ 3437.473025]  ? filename_create+0x62/0x190
+> > > [ 3437.473204]  filename_create+0x62/0x190
+> > > [ 3437.473380]  user_path_create+0x2d/0x50
+> > > [ 3437.473555]  bch2_fs_file_ioctl+0x2ec/0xc90 [bcachefs]
+> > > [ 3437.473819]  ? lock_acquire+0xc6/0x2b0
+> > > [ 3437.474002]  ? __fget_files+0x2a/0x190
+> > > [ 3437.474195]  ? __fget_files+0xbc/0x190
+> > > [ 3437.474380]  ? lock_release+0xc5/0x270
+> > > [ 3437.474567]  ? __x64_sys_ioctl+0x93/0xd0
+> > > [ 3437.474764]  ? __pfx_bch2_fs_file_ioctl+0x10/0x10 [bcachefs]
+> > > [ 3437.475090]  __x64_sys_ioctl+0x93/0xd0
+> > > [ 3437.475277]  do_syscall_64+0x42/0xf0
+> > > [ 3437.475454]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> > > [ 3437.475691] RIP: 0033:0x7f2743c313af
+> > > ======================================================
+> > > 
+> > > In __bch2_ioctl_subvolume_create(), we grab s_umount unconditionally
+> > > and unlock it at the end of the function. There is a comment
+> > > "why do we need this lock?" about the lock coming from
+> > > commit 42d237320e98 ("bcachefs: Snapshot creation, deletion")
+> > > The reason is that __bch2_ioctl_subvolume_create() calls
+> > > sync_inodes_sb() which enforce locked s_umount to writeback all
+> > > dirty
+> > > nodes before doing snapshot works.
+> > > 
+> > > Fix it by read locking s_umount for snapshotting only and unlocking
+> > > s_umount after sync_inodes_sb().
+> > > 
+> > 
+> > Heh, seems reasonable to me..
+> > 
+> > > Signed-off-by: Su Yue <glass.su@suse.com>
+> > > ---
+> > >  fs/bcachefs/fs-ioctl.c | 11 +++++------
+> > >  1 file changed, 5 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
+> > > index e0a19a73c8e1..1346861ed944 100644
+> > > --- a/fs/bcachefs/fs-ioctl.c
+> > > +++ b/fs/bcachefs/fs-ioctl.c
+> > > @@ -337,11 +337,12 @@ static long
+> > > __bch2_ioctl_subvolume_create(struct bch_fs *c, struct file *filp,
+> > >  	if (arg.flags & BCH_SUBVOL_SNAPSHOT_RO)
+> > >  		create_flags |= BCH_CREATE_SNAPSHOT_RO;
+> > > 
+> > > -	/* why do we need this lock? */
+> > > -	down_read(&c->vfs_sb->s_umount);
+> > > -
+> > > -	if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE)
+> > > +	if (arg.flags & BCH_SUBVOL_SNAPSHOT_CREATE) {
+> > > +		/* sync_inodes_sb enforce s_umount is locked */
+> > > +		down_read(&c->vfs_sb->s_umount);
+> > >  		sync_inodes_sb(c->vfs_sb);
+> > > +		up_read(&c->vfs_sb->s_umount);
+> > > +	}
+> > >  retry:
+> > >  	if (arg.src_ptr) {
+> > >  		error = user_path_at(arg.dirfd,
+> > > @@ -425,8 +426,6 @@ static long __bch2_ioctl_subvolume_create(struct
+> > > bch_fs *c, struct file *filp,
+> > >  		goto retry;
+> > >  	}
+> > >  err1:
+> > > -	up_read(&c->vfs_sb->s_umount);
+> > > -
+> > 
+> > Can we get rid of this label now that it serves no purpose?
+> > 
+> I think we can't. Two gotos are still there(under the retry label)
+> unless change them to return
+> 
+
+Sorry.. yes, that's what I mean. Usually we can just return directly
+rather than goto for cases where there is no necessary clean up on exit.
+
+Brian
+
+> --
+> Su
+> 
+> > Brian
+> > 
+> > >  	return error;
+> > >  }
+> > > 
+> > > --
+> > > 2.43.0
+> > > 
+> > > 
+> 
+
