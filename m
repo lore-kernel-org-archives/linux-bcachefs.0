@@ -1,121 +1,101 @@
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0891A581
-	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 11:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69121A590;
+	Tue, 16 Jan 2024 11:07:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Zu04g9GR"
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cddb0ee311so7431841fa.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 03:05:53 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lzTL8GnA"
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50eaabc36bcso11965667e87.2;
+        Tue, 16 Jan 2024 03:07:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1705403151; x=1706007951; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705403245; x=1706008045; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=w7aTREyWhwnUgzKoAEJalUbgXBHPKN40xUbLk3dhV6g=;
-        b=Zu04g9GRWM0rlREtfo7LNQM1imEJITr/2Lr8YjvT3dVqWwAbSaK5uL4w3rPLlibUJQ
-         ayy0/V0eUsdIN7aGpAml2ojgBc4LbthhaYRSgYqNrKjtEoOeAdKeNihRIRWJlhNPhH7u
-         NaGOGgMaVXOrITr2IU+fNJrlu/22arXmOCU5q1U2rdx+R5XW36cT1tZK/bPeyguK3xfC
-         Yo/vEmgQv6TUkf0VxGSmHLQYi7e/4e6KKC4/PpqU5pSVWi6ESMjQkLMzjFMXn8tGMNok
-         FpDUfZjto3/5PJcoyJ5BzBazTtPLktUi/JoD8nzzIu66GaOAHl93Xjs/s6mwBEURKUQd
-         xKIg==
+        bh=QVAGc4XL3xs1uMSry25G+l6Lbj7TMq/VrUzFoxhkoKU=;
+        b=lzTL8GnAmiCDdrB9X8AY46y+KtpHjUe0jjlCof1XZ//53AcBhiZwsfOT1l7LFYR7AJ
+         4oiL3uLCrugQa4P5/gpHNYYbnA4v2pcDuFgbT3iGDmMEuhsU5YXlvilPhkUYR1DkP/DO
+         6c/0XR02UZ0XXJr4HYA3SR25cUrKHGlYyBIFi0Ht5Zdn8i7Vy0ytZYrfJY3zxpD2LLry
+         2HYjOpilk0PE6rakgdXJKnSjAMnpBtGqWDX3rtsiCx9KqVDuN4y0ottbKFLj3B90BAeu
+         ALyg12sGYUP5q8NgQZfDaAk4bWwuCl3QxRaurYStHcbpMk4btO0mqC2P1TkbLH7p1Pmm
+         9Xsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705403151; x=1706007951;
+        d=1e100.net; s=20230601; t=1705403245; x=1706008045;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=w7aTREyWhwnUgzKoAEJalUbgXBHPKN40xUbLk3dhV6g=;
-        b=loQJCFOC0JaQuwx9G7z/iApVCaXFHYfyUTOtbP+D7ZI1GZwnA69VkHY4jn5e2z70Rb
-         /aIoecpoVvyfHdW2ONTQjl/AtjJec3yDZjd6Tdi2pHSzJnLurTb3qhgdnTLYa3+O5tiH
-         6XhGOWFDwKR5QaPLSks/ia0QzjCVcy28lJ/EboMg1wEWvk9c9hdOcd3ZEG2KMg5lD3WN
-         p8I+YkGEWJ3R2qDTpyUIAC0/ckdn3WamXC8rkV42OUZBcvXH0fbNcQlvfVKdRi2rYqck
-         jlvgWOiMaaA6YP8sGm4qn2b/CXkEiWJmxIwtKxlYP/kmJJkyd3nCHaV8KX1uHZAAEPN9
-         Wg1Q==
-X-Gm-Message-State: AOJu0YxL/ivvnQMfgchbRkrQxEEqoFA/K1E5x2GW44RHHSaZq089swMV
-	P9+ofauKwUpGBRFvzvjGO7nOhn8EVL9PXKHUJpN22QasM2w=
-X-Google-Smtp-Source: AGHT+IEMrt9SRYnjFz0c2E/8guJTxtdR17nWNa7cHt6TVORhulxSskk7HD/8PVKt5oY6BT/r8LTqfw==
-X-Received: by 2002:a2e:880d:0:b0:2cc:de09:eea9 with SMTP id x13-20020a2e880d000000b002ccde09eea9mr1598304ljh.144.1705403150697;
-        Tue, 16 Jan 2024 03:05:50 -0800 (PST)
-Received: from localhost.localdomain ([23.247.139.60])
-        by smtp.gmail.com with ESMTPSA id fk22-20020a056a003a9600b006dabe67bb85sm8963885pfb.216.2024.01.16.03.05.48
+        bh=QVAGc4XL3xs1uMSry25G+l6Lbj7TMq/VrUzFoxhkoKU=;
+        b=g/zmD6x/Bc7W6XxzDo5CEqaJSHWZaySjHZefqtxJ7/PD03Fmlzt8fwUcWBo0ldJeQQ
+         5RmpGti9UPch9sQJdP/ASkd/CuYhP3KD2LKEdTAs1PVAMyC4AAvwfJkXVy9qiOf8zUPo
+         FLGG6eDKmnGRucm6D08eCHJmuUBYh2JaVpiGzEwETgftPeRM5BeZ2nbrzPbS0kXpS+JY
+         T+dHxuAynoIMEClKiteka2tT9V/qLCQqyUkAy6za3KBZliZsHxnsaJ50HEVfe/hO9QpA
+         a2KSytmNR/G0XRZ7C46aSYY0S2Tca3h5O+Lobrfx6lr3ZGsELbKKWeY75KhSn59YpKW0
+         5v4w==
+X-Gm-Message-State: AOJu0Yyg0NbSS7wIl1UKroVSNH3S/1OgrfCl0exs11nsvJYxvATTjLgk
+	Dw17lFzEX4goXPmhc/x0G8M=
+X-Google-Smtp-Source: AGHT+IE1zjgAqZDFrlJqftk3i9QAie/p3my2wHOSZKNnxYMT9k9Y+X+BZb4QNjwSDtY8aIciDcTVRA==
+X-Received: by 2002:a19:6549:0:b0:50e:abe1:1c63 with SMTP id c9-20020a196549000000b0050eabe11c63mr3434504lfj.32.1705403244776;
+        Tue, 16 Jan 2024 03:07:24 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id a18-20020adffad2000000b003373ece28efsm14329359wrs.29.2024.01.16.03.07.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 03:05:50 -0800 (PST)
-From: Su Yue <glass.su@suse.com>
-To: linux-bcachefs@vger.kernel.org
-Cc: l@damenly.org,
-	Su Yue <glass.su@suse.com>
-Subject: [PATCH] bcachefs: kvfree bch_fs::snapshots in bch2_fs_snapshots_exit
-Date: Tue, 16 Jan 2024 19:05:37 +0800
-Message-ID: <20240116110537.1124476-1-glass.su@suse.com>
-X-Mailer: git-send-email 2.43.0
+        Tue, 16 Jan 2024 03:07:24 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>,
+	linux-bcachefs@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] bcachefs: remove redundant variable tmp
+Date: Tue, 16 Jan 2024 11:07:23 +0000
+Message-Id: <20240116110723.2247265-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-bch_fs::snapshots is allocated by kvzalloc in __snapshot_t_mut.
-It should be freed by kvfree not kfree.
-Or umount will triger:
+The variable tmp is being assigned a value but it isn't being
+read afterwards. The assignment is redundant and so tmp can be
+removed.
 
-[  406.829178 ] BUG: unable to handle page fault for address: ffffe7b487148008
-[  406.830676 ] #PF: supervisor read access in kernel mode
-[  406.831643 ] #PF: error_code(0x0000) - not-present page
-[  406.832487 ] PGD 0 P4D 0
-[  406.832898 ] Oops: 0000 [#1] PREEMPT SMP PTI
-[  406.833512 ] CPU: 2 PID: 1754 Comm: umount Kdump: loaded Tainted: G           OE      6.7.0-rc7-custom+ #90
-[  406.834746 ] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
-[  406.835796 ] RIP: 0010:kfree+0x62/0x140
-[  406.836197 ] Code: 80 48 01 d8 0f 82 e9 00 00 00 48 c7 c2 00 00 00 80 48 2b 15 78 9f 1f 01 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 56 9f 1f 01 <48> 8b 50 08 48 89 c7 f6 c2 01 0f 85 b0 00 00 00 66 90 48 8b 07 f6
-[  406.837810 ] RSP: 0018:ffffb9d641607e48 EFLAGS: 00010286
-[  406.838213 ] RAX: ffffe7b487148000 RBX: ffffb9d645200000 RCX: ffffb9d641607dc4
-[  406.838738 ] RDX: 000065bb00000000 RSI: ffffffffc0d88b84 RDI: ffffb9d645200000
-[  406.839217 ] RBP: ffff9a4625d00068 R08: 0000000000000001 R09: 0000000000000001
-[  406.839650 ] R10: 0000000000000001 R11: 000000000000001f R12: ffff9a4625d4da80
-[  406.840055 ] R13: ffff9a4625d00000 R14: ffffffffc0e2eb20 R15: 0000000000000000
-[  406.840451 ] FS:  00007f0a264ffb80(0000) GS:ffff9a4e2d500000(0000) knlGS:0000000000000000
-[  406.840851 ] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  406.841125 ] CR2: ffffe7b487148008 CR3: 000000018c4d2000 CR4: 00000000000006f0
-[  406.841464 ] Call Trace:
-[  406.841583 ]  <TASK>
-[  406.841682 ]  ? __die+0x1f/0x70
-[  406.841828 ]  ? page_fault_oops+0x159/0x470
-[  406.842014 ]  ? fixup_exception+0x22/0x310
-[  406.842198 ]  ? exc_page_fault+0x1ed/0x200
-[  406.842382 ]  ? asm_exc_page_fault+0x22/0x30
-[  406.842574 ]  ? bch2_fs_release+0x54/0x280 [bcachefs]
-[  406.842842 ]  ? kfree+0x62/0x140
-[  406.842988 ]  ? kfree+0x104/0x140
-[  406.843138 ]  bch2_fs_release+0x54/0x280 [bcachefs]
-[  406.843390 ]  kobject_put+0xb7/0x170
-[  406.843552 ]  deactivate_locked_super+0x2f/0xa0
-[  406.843756 ]  cleanup_mnt+0xba/0x150
-[  406.843917 ]  task_work_run+0x59/0xa0
-[  406.844083 ]  exit_to_user_mode_prepare+0x197/0x1a0
-[  406.844302 ]  syscall_exit_to_user_mode+0x16/0x40
-[  406.844510 ]  do_syscall_64+0x4e/0xf0
-[  406.844675 ]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[  406.844907 ] RIP: 0033:0x7f0a2664e4fb
+Cleans up clang scan build warning:
+warning: Although the value stored to 'ret' is used in the enclosing
+expression, the value is never actually read from 'ret'
+[deadcode.DeadStores]
 
-Signed-off-by: Su Yue <glass.su@suse.com>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- fs/bcachefs/snapshot.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/bcachefs/rebalance.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
-index 56af937523ff..cdcff4e5ae5c 100644
---- a/fs/bcachefs/snapshot.c
-+++ b/fs/bcachefs/snapshot.c
-@@ -1681,5 +1681,5 @@ int bch2_snapshots_read(struct bch_fs *c)
+diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
+index 95f46cb3b5bd..827316a27431 100644
+--- a/fs/bcachefs/rebalance.c
++++ b/fs/bcachefs/rebalance.c
+@@ -385,7 +385,6 @@ static int bch2_rebalance_thread(void *arg)
+ 	struct bch_fs *c = arg;
+ 	struct bch_fs_rebalance *r = &c->rebalance;
+ 	struct moving_context ctxt;
+-	int ret;
  
- void bch2_fs_snapshots_exit(struct bch_fs *c)
- {
--	kfree(rcu_dereference_protected(c->snapshots, true));
-+	kvfree(rcu_dereference_protected(c->snapshots, true));
- }
+ 	set_freezable();
+ 
+@@ -393,8 +392,7 @@ static int bch2_rebalance_thread(void *arg)
+ 			      writepoint_ptr(&c->rebalance_write_point),
+ 			      true);
+ 
+-	while (!kthread_should_stop() &&
+-	       !(ret = do_rebalance(&ctxt)))
++	while (!kthread_should_stop() && !do_rebalance(&ctxt))
+ 		;
+ 
+ 	bch2_moving_ctxt_exit(&ctxt);
 -- 
-2.43.0
+2.39.2
 
