@@ -1,43 +1,44 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B241BC47
-	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 13:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2AA1BDDA
+	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jan 2024 13:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UTqarTTe"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c2upTbzd"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705413032;
+	s=mimecast20190719; t=1705413590;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HUjl0MwInjaGruhRglOeKdkS3QEEIWTxiFXApsKYRo0=;
-	b=UTqarTTefiNxetMNDEvGa8Wjczma6HUDW1oy61yHDVWOtpLx/cBkqHAnIRZO+sePxQs9xX
-	w70o88flbD9gszD63ICa9FNNZ4CfwNwF/yJskRlZ/jNIIa5csIyAEHVGeTUO/bE0Opl0Ho
-	FdEGDvZrJhO3cGYWvOtudNqQEzzlwk0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-588-iZiCb2ybP6SlaqoZuztoaA-1; Tue,
- 16 Jan 2024 08:50:30 -0500
-X-MC-Unique: iZiCb2ybP6SlaqoZuztoaA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	bh=FqhlVC483d/Jp5V2BSEbp0a7wISrFNvy6LiACtWbELo=;
+	b=c2upTbzdd7/1LC55HfDmDbq49s+JkfTQA++CBrUcRyYnEnYPRNKEwMfgT2G9kTfRrx4evs
+	KbdhUOSFVY1DNVEJm/yIrnADHdnoaCboqh/SD/sIjpM0FQBGX2uieklT6wl4GW8izzPJWw
+	P1Ano0Y6theTOyoFEvEoDraauCfsZcE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-64-l80-S4AtMuiiBeFQ4oJLsg-1; Tue, 16 Jan 2024 08:59:48 -0500
+X-MC-Unique: l80-S4AtMuiiBeFQ4oJLsg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0B2AA280BC8B;
-	Tue, 16 Jan 2024 13:50:30 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B145385CBA6;
+	Tue, 16 Jan 2024 13:59:47 +0000 (UTC)
 Received: from bfoster (unknown [10.22.8.116])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id D18B0C15E75;
-	Tue, 16 Jan 2024 13:50:29 +0000 (UTC)
-Date: Tue, 16 Jan 2024 08:51:48 -0500
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F4193C25;
+	Tue, 16 Jan 2024 13:59:47 +0000 (UTC)
+Date: Tue, 16 Jan 2024 09:01:05 -0500
 From: Brian Foster <bfoster@redhat.com>
-To: Su Yue <glass.su@suse.com>
-Cc: linux-bcachefs@vger.kernel.org, l@damenly.org
-Subject: Re: [PATCH] bcachefs: kvfree bch_fs::snapshots in
- bch2_fs_snapshots_exit
-Message-ID: <ZaaJ9H1e6ZctI2VH@bfoster>
-References: <20240116110537.1124476-1-glass.su@suse.com>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] bcachefs: remove redundant variable tmp
+Message-ID: <ZaaMIYDL/4AzG758@bfoster>
+References: <20240116110723.2247265-1-colin.i.king@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -46,74 +47,58 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240116110537.1124476-1-glass.su@suse.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+In-Reply-To: <20240116110723.2247265-1-colin.i.king@gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Tue, Jan 16, 2024 at 07:05:37PM +0800, Su Yue wrote:
-> bch_fs::snapshots is allocated by kvzalloc in __snapshot_t_mut.
-> It should be freed by kvfree not kfree.
-> Or umount will triger:
+On Tue, Jan 16, 2024 at 11:07:23AM +0000, Colin Ian King wrote:
+> The variable tmp is being assigned a value but it isn't being
+> read afterwards. The assignment is redundant and so tmp can be
+> removed.
 > 
-> [  406.829178 ] BUG: unable to handle page fault for address: ffffe7b487148008
-> [  406.830676 ] #PF: supervisor read access in kernel mode
-> [  406.831643 ] #PF: error_code(0x0000) - not-present page
-> [  406.832487 ] PGD 0 P4D 0
-> [  406.832898 ] Oops: 0000 [#1] PREEMPT SMP PTI
-> [  406.833512 ] CPU: 2 PID: 1754 Comm: umount Kdump: loaded Tainted: G           OE      6.7.0-rc7-custom+ #90
-> [  406.834746 ] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
-> [  406.835796 ] RIP: 0010:kfree+0x62/0x140
-> [  406.836197 ] Code: 80 48 01 d8 0f 82 e9 00 00 00 48 c7 c2 00 00 00 80 48 2b 15 78 9f 1f 01 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 56 9f 1f 01 <48> 8b 50 08 48 89 c7 f6 c2 01 0f 85 b0 00 00 00 66 90 48 8b 07 f6
-> [  406.837810 ] RSP: 0018:ffffb9d641607e48 EFLAGS: 00010286
-> [  406.838213 ] RAX: ffffe7b487148000 RBX: ffffb9d645200000 RCX: ffffb9d641607dc4
-> [  406.838738 ] RDX: 000065bb00000000 RSI: ffffffffc0d88b84 RDI: ffffb9d645200000
-> [  406.839217 ] RBP: ffff9a4625d00068 R08: 0000000000000001 R09: 0000000000000001
-> [  406.839650 ] R10: 0000000000000001 R11: 000000000000001f R12: ffff9a4625d4da80
-> [  406.840055 ] R13: ffff9a4625d00000 R14: ffffffffc0e2eb20 R15: 0000000000000000
-> [  406.840451 ] FS:  00007f0a264ffb80(0000) GS:ffff9a4e2d500000(0000) knlGS:0000000000000000
-> [  406.840851 ] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  406.841125 ] CR2: ffffe7b487148008 CR3: 000000018c4d2000 CR4: 00000000000006f0
-> [  406.841464 ] Call Trace:
-> [  406.841583 ]  <TASK>
-> [  406.841682 ]  ? __die+0x1f/0x70
-> [  406.841828 ]  ? page_fault_oops+0x159/0x470
-> [  406.842014 ]  ? fixup_exception+0x22/0x310
-> [  406.842198 ]  ? exc_page_fault+0x1ed/0x200
-> [  406.842382 ]  ? asm_exc_page_fault+0x22/0x30
-> [  406.842574 ]  ? bch2_fs_release+0x54/0x280 [bcachefs]
-> [  406.842842 ]  ? kfree+0x62/0x140
-> [  406.842988 ]  ? kfree+0x104/0x140
-> [  406.843138 ]  bch2_fs_release+0x54/0x280 [bcachefs]
-> [  406.843390 ]  kobject_put+0xb7/0x170
-> [  406.843552 ]  deactivate_locked_super+0x2f/0xa0
-> [  406.843756 ]  cleanup_mnt+0xba/0x150
-> [  406.843917 ]  task_work_run+0x59/0xa0
-> [  406.844083 ]  exit_to_user_mode_prepare+0x197/0x1a0
-> [  406.844302 ]  syscall_exit_to_user_mode+0x16/0x40
-> [  406.844510 ]  do_syscall_64+0x4e/0xf0
-> [  406.844675 ]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> [  406.844907 ] RIP: 0033:0x7f0a2664e4fb
+
+I assume this intends to refer to s/tmp/ret/ ...
+
+> Cleans up clang scan build warning:
+> warning: Although the value stored to 'ret' is used in the enclosing
+> expression, the value is never actually read from 'ret'
+> [deadcode.DeadStores]
 > 
-> Signed-off-by: Su Yue <glass.su@suse.com>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 > ---
+>  fs/bcachefs/rebalance.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
+> index 95f46cb3b5bd..827316a27431 100644
+> --- a/fs/bcachefs/rebalance.c
+> +++ b/fs/bcachefs/rebalance.c
+> @@ -385,7 +385,6 @@ static int bch2_rebalance_thread(void *arg)
+>  	struct bch_fs *c = arg;
+>  	struct bch_fs_rebalance *r = &c->rebalance;
+>  	struct moving_context ctxt;
+> -	int ret;
+>  
+>  	set_freezable();
+>  
+> @@ -393,8 +392,7 @@ static int bch2_rebalance_thread(void *arg)
+>  			      writepoint_ptr(&c->rebalance_write_point),
+>  			      true);
+>  
+> -	while (!kthread_should_stop() &&
+> -	       !(ret = do_rebalance(&ctxt)))
+> +	while (!kthread_should_stop() && !do_rebalance(&ctxt))
+
+Part of me wonders if this was intended to return ret, as that appears
+to bubble back through kthread_stop(). That said, we don't check for
+error there either (i.e. bch2_rebalance_stop()), so this seems
+reasonable enough to me to address the warning:
 
 Reviewed-by: Brian Foster <bfoster@redhat.com>
 
->  fs/bcachefs/snapshot.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
-> index 56af937523ff..cdcff4e5ae5c 100644
-> --- a/fs/bcachefs/snapshot.c
-> +++ b/fs/bcachefs/snapshot.c
-> @@ -1681,5 +1681,5 @@ int bch2_snapshots_read(struct bch_fs *c)
+>  		;
 >  
->  void bch2_fs_snapshots_exit(struct bch_fs *c)
->  {
-> -	kfree(rcu_dereference_protected(c->snapshots, true));
-> +	kvfree(rcu_dereference_protected(c->snapshots, true));
->  }
+>  	bch2_moving_ctxt_exit(&ctxt);
 > -- 
-> 2.43.0
-> 
+> 2.39.2
 > 
 
