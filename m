@@ -1,83 +1,51 @@
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57968F54;
-	Wed, 17 Jan 2024 05:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DC58C06
+	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jan 2024 05:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705469490; cv=none; b=mgoW0b+nH/3b2ZejfmBWfOYnObWEd7ZX5jdrAywywLmpvn6wv9W7W60dkUkY4oSXA8rI+u2hihz9CmNOeyFkAeVXZKtiS3a4y5QjCW7k/2ByiFE3+TRP8vLi+pBXzHQhwNoY0dZqNtQaB9wqueI6q07dHwF6X1CdIOG85yauYyw=
+	t=1705470939; cv=none; b=uiVS4K+DIR/hisMa3i3a9opDRLrOZFDVdwZRO/IRHdq9oZZn7rWjB3m4AMHA8EE5JSdTwSupuBXRUqg0yWUOKeSG5b3NfMQqGZV4CS8TlCE49iRPCXAj32kB96XHWsSDuPqROUiQetHkBbUq1fLlAz4leq06ozkfIk5kfGPMKMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705469490; c=relaxed/simple;
-	bh=jHL2J3+E38Au+xWZe7O4FJLaMCCvPQTV1dGdd+k4q2c=;
-	h=Received:Received:DKIM-Signature:DKIM-Signature:X-ME-Sender:
-	 X-ME-Received:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PCIm6Mf2EgR25Zv5jZiOfsXstT4fTq5FduznEH2vbu0W7DTd0rgdIInfwHYLf5dDdlaDTkI4xfATM9lwHV/qMN7+vy5NpanzFsVOcUUz23lR9iBtn6I9t3YoqMcGpiPOfvWX3a44+r6AInWcPNJVLBCU+4KgsgkUWpckdD+RKEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=p6E0pJ9j; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ZnBywQrO; arc=none smtp.client-ip=64.147.123.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+	s=arc-20240116; t=1705470939; c=relaxed/simple;
+	bh=Cajldxp5L4q+bgoRIKnlBgXzSAKMtR7sfecEvOfpwAs=;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=WzS4pustzTLD2n1wifl8pEUsHDcVYdPsU5uU01l1HBKMUxmY5KeiLyJ38UsTqOwmJlUGhqftEQE8gd4S38fjN3hkJ/mZ9ut+KZoaZfLmx++gBGy6c20KwZPZH+il9SkTuLMTVH2ef44T1IZC9lyL7K+GKzz2MS9/46kUzp4/U5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=lCTi0ygw; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="p6E0pJ9j";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZnBywQrO"
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailnew.west.internal (Postfix) with ESMTP id 80DD62B0033A;
-	Wed, 17 Jan 2024 00:31:24 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 17 Jan 2024 00:31:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1705469484; x=1705476684; bh=YadxD7argV
-	wfwOZCJO/d0Knc3t1gSPI/urFbVLP3SN8=; b=p6E0pJ9jY0Qi3MgC507KiUYpte
-	5ydSLIAl/skKovet9YCXtrq8FUm+nnoeuRwIP5X84eYwVWdfeHet1cB3VCQCwpYo
-	GIY+exwPTFTkokZOggHPj5pwutOvi0wU/UP1MQAo3aqRMgHdqLkCZ7u3NPS7IuCJ
-	SWJ0InIyZpJw4zeMzxAZLp1WGc8gLHvrCwHS0g67svCZGc+JN6WXSurz2D7qdgmm
-	tbUcVYsDUbd/sUujL0i1jsV7Md27BBp+j2K9jJLGfm8LnTKdqASfUEXuYS/if0sT
-	LI2/4fjYW3FFHpqw233HDbe38n0sjXB2a3qjH17fa4yrdOMUz1xDV6vUrU8w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1705469484; x=1705476684; bh=YadxD7argVwfwOZCJO/d0Knc3t1g
-	SPI/urFbVLP3SN8=; b=ZnBywQrOW+kdZkSVVuHGkoCgUjsrrGPIAG63B8NFpx0+
-	zGOkodqNL5CZ6mivLDV8Di76QJhqlSBh6iV2k/KsQ05dEYrZG5XFH861nC6YLfz/
-	O7X0yu5/0e4AMuxUwGHs2w2QD89MErhusgTBje7zeRJXkJ/o7shRUPzMlpDes4UL
-	DZaYmcKC4DtFZCR3j1LwQHbubjF1WnZro0crTWIVS2XKqUZPvXkfY1e4d+8Y+GP9
-	4irmlNi20JryuxGmliQKJ18iIjleM81eAU2bg2dh6a44B0xDFJhmFxTv8VX48jYH
-	MVUzc7YyfvjO7uKS88L42bbpWLB4Kvb7UV4mXMKMiA==
-X-ME-Sender: <xms:K2anZVmTMBOqIL4FRMBqM8A3mAhOqwIGZAzEeN8kB5P40URcnaBakw>
-    <xme:K2anZQ3PEhyID0WYqjBjAwvw7eFA1M0z_TGowkRXLWD6yzGD-wPrZYSyfGmo1XvU-
-    huYW0S1EUSfQw>
-X-ME-Received: <xmr:K2anZbouZPfz8xAe0HdHFJsW3WUs2sBGDYQshXxDlqxjTlHHgemNsaLU9M6o342aPLqeaS5KB_m-IZ6hiB8TvoxgVDJpp4S_Gg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejgedgkeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
-    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
-    hhrdgtohhm
-X-ME-Proxy: <xmx:K2anZVlt_vvqq1JNwh5yiPO24pM2uVFeFkAmuiJqm9918mtOK9Xz6A>
-    <xmx:K2anZT1J4hmtDZ8bp_CMc3yA5sk8NdiTlpVOFCSWBBSCWEOIFgsgjg>
-    <xmx:K2anZUuZSD4gtMNlsK4mQpe-JgYphWxQwXQMm4gxqQT1B6zni6UfWg>
-    <xmx:LGanZRlOV6b14O6fhsuLdvFUH1pYr29tW6gdjY3wRQPfVFI6VEzhnbpUurY>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 17 Jan 2024 00:31:23 -0500 (EST)
-Date: Wed, 17 Jan 2024 06:31:20 +0100
-From: Greg KH <greg@kroah.com>
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="lCTi0ygw"
+Received: from cwcc.thunk.org (pool-173-48-112-211.bstnma.fios.verizon.net [173.48.112.211])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40H5sv3E016205
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 00:54:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1705470901; bh=E6Z/eQkBMXHSee05+WcpGSIz4ByCJGYdInYrVxwiAVk=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=lCTi0ygwe47zegAHZboHFyqL3Sd5496YzTJRXwjVrME86O0SGElAaUC1FFlOL73QF
+	 C2WX0qpUXggTBxcZrTHCnD+b7q4VV5CHVW5em+Tm3VCWP8B7y8bkMr2LrC/208YnUJ
+	 HByA2MwQztUOiFI+Y6tkvXLd5nFtoNgFTt87OoxpVZkV3UK36kgNaakybCEELm8L8i
+	 ebttMKfsy7qs+mqakIxV4DuOpAkRlnyigPymnoUORF2A14qORY0nwM8SDVW1yCjAoa
+	 OpJdDQZzJl+nkzuj16Lllw4DAnHaUvhCIXyBUBfIGiSbC7khdXDosihq9XwXXDBsMJ
+	 GNZLM844ywkxg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 89D5315C0278; Wed, 17 Jan 2024 00:54:57 -0500 (EST)
+Date: Wed, 17 Jan 2024 00:54:57 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
 To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Mark Brown <broonie@kernel.org>, Neal Gompa <neal@gompa.dev>,
-	Kees Cook <keescook@chromium.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Nikolai Kondrashov <spbnick@gmail.com>,
-	Philip Li <philip.li@intel.com>,
-	Luis Chamberlain <mcgrof@kernel.org>
+Cc: Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>,
+        Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Nikolai Kondrashov <spbnick@gmail.com>,
+        Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
 Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <2024011754-footer-saturday-2dda@gregkh>
+Message-ID: <20240117055457.GL911245@mit.edu>
 References: <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
  <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
  <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
@@ -99,27 +67,15 @@ Content-Disposition: inline
 In-Reply-To: <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
 
 On Tue, Jan 16, 2024 at 11:41:25PM -0500, Kent Overstreet wrote:
-> On Mon, Jan 15, 2024 at 09:13:01PM +0100, Greg KH wrote:
-> > On Mon, Jan 15, 2024 at 01:42:53PM -0500, Kent Overstreet wrote:
-> > > > That sounds more like a "(reproducible) tests don't exist" complaint
-> > > > which is a different thing again to people going off and NIHing fancy
-> > > > frameworks.
-> > > 
 > > > No, it's a leadership/mentorship thing.
 > > > 
 > > > And this is something that's always been lacking in kernel culture.
 > > > Witness the kind of general grousing that goes on at maintainer summits;
 > > > maintainers complain about being overworked and people not stepping up
 > > > to help with the grungy responsibilities, while simultaneously we still
-> > > very much have a "fuck off if you haven't proven yourself" attitude
-> > > towards newcomers. Understandable given the historical realities (this
-> > > shit is hard and the penalties of fucking up are high, so there does
-> > > need to be a barrier to entry), but it's left us with some real gaps.
-> > > 
-> > > We don't have enough a people in the senier engineer role who lay out
-> > > designs and organise people to take on projects that are bigger than one
-> > > single person can do, or that are necessary but not "fun".
-> > > 
+
+     <blah blah blah>
+
 > > > Tests and test infrastructure fall into the necessary but not fun
 > > > category, so they languish.
 > > 
@@ -130,70 +86,39 @@ On Tue, Jan 16, 2024 at 11:41:25PM -0500, Kent Overstreet wrote:
 > > here, refuse to take any new changes unless someone ponys up and does
 > > the infrastructure and testing work first?  That's not going to fly, for
 > > valid reasons.
-> > 
-> > And as proof of this, we have had many real features, that benefit
-> > everyone, called out as "please, companies, pay for this to be done, you
-> > all want it, and so do we!" and yet, no one does it.  One real example
-> > is the RT work, it has a real roadmap, people to do the work, a tiny
-> > price tag, yet almost no one sponsoring it.  Yes, for that specific
-> > issue it's slowly getting there and better, but it is one example of how
-> > you view of this might not be all that correct.
-> 
-> Well, what's so special about any of those features? What's special
-> about the RT work? The list of features and enhancements we want is
-> never ending.
 
-Nothing is special about RT except it is a good example of the kernel
-"leadership" asking for help, and companies just ignoring us by not
-funding the work to be done that they themselves want to see happen
-because their own devices rely on it.
+Greg is absolutely right about this.
 
 > But good tools are important beacuse they affect the rate of everyday
 > development; they're a multiplier on the money everone is spending on
 > salaries.
-> 
-> In everyday development, the rate at which we can run tests and verify
-> the corectness of the code we're working on is more often than not _the_
-> limiting factor on rate of development. It's a particularly big deal for
-> getting new people up to speed, and for work that crosses subsystems.
 
-Agreed, I'm not objecting here at all.
+Alas, companies don't see it that way.  They take the value that get
+from Linux for granted, and they only care about the multipler effect
+of their employees salaries (and sometimes not even that).  They most
+certainly care about the salutary effects on the entire ecosyustem.
+At least, I haven't seen any company make funding decisions on that
+basis.
 
-> > And you will see that we now have the infrastructure in places for this.
-> > The great kunit testing framework, the kselftest framework, and the
-> > stuff tying it all together is there.  All it takes is people actually
-> > using it to write their tests, which is slowly happening.
-> > 
-> > So maybe, the "leadership" here is working, but in a nice organic way of
-> > "wouldn't it be nice if you cleaned that out-of-tree unit test framework
-> > up and get it merged" type of leadership, not mandates-from-on-high that
-> > just don't work.  So organic you might have missed it :)
-> 
-> Things are moving in the right direction; the testing track at Plumber's
-> was exciting to see.
-> 
-> Kselftests is not there yet, though. Those tests could all be runnable
-> with a single command - and _most_ of what's needed is there, the kernel
-> config dependencies are listed out, but we're still lacking a
-> testrunner.
+It's easy enough for you to blame "leadership", but the problem is the
+leaders at the VP and SVP level who control the budgets, not the
+leadership of the maintainers, who are overworked, and who often
+invest in testing themselves, on their own personal time, because they
+don't get adequate support from others.
 
-'make kselftest' is a good start, it outputs in proper format that test
-runners can consume.  We even have 'make rusttest' now too because "rust
-is special" for some odd reason :)
+It's also for that reason why we try to prove that people won't just
+stick around enough for their pet feature (or in the case of ntfs,
+their pet file system) gets into the kernel --- and then disappear.
+For too often, this is what happens, either because they have their
+itch scratched, or their company reassigns them to some other project
+that is important for their company's bottom-line.
 
-And that should be all that the kernel needs to provide as test runners
-all work differently for various reasons, but if you want to help
-standardize on something, that's what kernelci is doing, I know they can
-always appreciate the help as well.
-
-> I've been trying to get someone interested in hooking them up to ktest
-> (my ktest, not that other thing), so that we'd have one common
-> testrunner for running anything that can be a VM test. Similarly with
-> blktests, mmtests, et cetera.
-
-Hey, that "other" ktest.pl is what I have been using for stable kernel
-test builds for years, it does work well for what it is designed for,
-and I know other developers also use it.
+If that person is willing their own personal time, long after work
+hours, to steward their contribution in the absence of corporate
+support, great.  But we need to have that proven to us, or at the very
+least, make sure the feature's long-term maintenace burden is as low
+possible, to mitigate the likelihood that we won't see the new
+engineer after their feature lands upstream.
 
 > Having one common way of running all our functional VM tests, and a
 > common collection of those tests would be a huge win for productivity
@@ -202,8 +127,28 @@ and I know other developers also use it.
 > down to < 1 minute, with the same tests framework for local development
 > and automated testing in the big test cloud...
 
-Agreed, and that's what kernelci is working to help provide.
+I'm going to call bullshit on this assertion.  The fact that we have
+multiple ways of running our tests is not the reason why testing takes
+a long time.
 
-thanks,
+If you are going to run stress tests, which is critical for testing
+real file systems, that's going to take at least an hour; more if you
+want to test muliple file system features.  The full regression set
+for ext4, using the common fstests testt suite, takes about 25 hours
+of VM time; and about 2.5 hours of wall clock time since I shard it
+across a dozen VM's.
 
-greg k-h
+Yes, w could try to add some unit tests which take much less time
+running tests where fstests is creating a file system, mounting it,
+exercising the code through userspace functions, and then unmounting
+the file system and then checking the file system.  Even if that were
+an adequate replacement for some of the existing fstests, (a) it's not
+a replacement for stress testing, and (b) this would require a vast
+amount of file system specific software engineering investment, and
+where is that going from?
+
+The bottom line is that problem is that having a one common way of
+running our functional VM tests is not even *close* to root cause of
+the problem.
+
+	    	       	  	       - Ted
