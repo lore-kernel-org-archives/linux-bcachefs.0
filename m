@@ -1,126 +1,210 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0150422EE0;
-	Wed, 17 Jan 2024 18:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B45250E8;
+	Wed, 17 Jan 2024 20:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705515590; cv=none; b=CkqNDY2w/N9BpzN4foTzuOPDgnqvMtHoKv1fQhFtlvjb96LyxXD7XXy1gvAIfMfvXaM3gpdVxikuXZZdWi6nG3zjgAOwl/KgC+XF6g2zPltxaG3iVHK0OZMiHcVsYRhY4enB/jqhWNb+f5bBpKikGqNv6f4YrRzVkykDxchZYb8=
+	t=1705524835; cv=none; b=jXVVYrcyKMEV3MmfdEO6s9Gv12Ick9+yrJItxG5hRbVgXNqS6NY8Q9phKScvVvg469KrqsRR6KqEI3YjOrHULCqN1aKjt32rAKNwu6GD9/F4UDMQQP8FcUk3QPTj9zvWzGwxwhR+PUkr6fUzlRwcDmAxht28OSs9/QFdWZ24W0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705515590; c=relaxed/simple;
-	bh=qGlcZRV44crjqbw1JQjmrtKXLKflvsUJg8srLpQ9eco=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-Cookie; b=JPVk6j/BIC9MkBXnO1Fon03MyJMeTIuR2lr/iEgHbopUkyD0sKssYOyy4dbDNMA4mmBVsygeXrpanYgne12YVxHmnkwTP+hpV/q5Rpk7KIEz4Tkis5NlnLHaA3ULtZqseJ2jDzwo05/YA+WCbYUEaxqlbx5oB4tpN6ky+LenneM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=adFzkfSO; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1705524835; c=relaxed/simple;
+	bh=nfzBUFpTVfYKkbNTgb1Nmnf+ekQoGuqr3FfY04uP1JA=;
+	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
+	 DKIM-Signature:Received:Received:Date:From:To:Cc:Subject:
+	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-Spamd-Result:X-Rspamd-Server:
+	 X-Rspamd-Queue-Id:X-Spam-Level:X-Spam-Score:X-Spam-Flag; b=IV0b61q6Gwq+GosWZulu6biWN9aASZ70O3/5YUMO8MvUiDEqxASIklm4lM2kk/aNLUuYkrWE/++9aYJMooZT9nxoZIsSvLpHA2KmmyzZwAjNHOZGvxAFFtxe1K/8frKSCqRsS1qi3eBG9wEJlW0ydg7qngA204cKZIud3Jrflt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=j3TMmmRi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HIvEexuf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=j3TMmmRi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HIvEexuf; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="adFzkfSO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B03A2C433C7;
-	Wed, 17 Jan 2024 18:19:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705515589;
-	bh=qGlcZRV44crjqbw1JQjmrtKXLKflvsUJg8srLpQ9eco=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=adFzkfSOVycGp6YJDdZ0RCzxsP3syYVSeLMqqsOZ2+IuVdDJ2F8BeiEZNAE1+G4nF
-	 uwAy1cm7aUll6YGX/rBgIeKNLKAaCuI5SRH0Cz7M9HPA5oXrvwX0jXpLe3F92eTv7T
-	 Ogmf+M5bUkMIe876iFliMxq/yQ00eg0kxxKUTe9WQR8fgsEQ/jj17xF8697FV8TOeT
-	 KnfylJh+dP0/v2DiUa4OVGZ7NUKojv0MbupGpFswIpMRO2dtm+68PJS0BTDts6m6lO
-	 7A9FabHDWunu3/oDuIUv1IZW72VZpvSJeGtaBrmZ49gDYAydA3jj382NAIIRfi13lH
-	 di4hlLX2dmdHQ==
-Date: Wed, 17 Jan 2024 18:19:43 +0000
-From: Mark Brown <broonie@kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Theodore Ts'o <tytso@mit.edu>,
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="j3TMmmRi";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HIvEexuf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="j3TMmmRi";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HIvEexuf"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 45EFE1F391;
+	Wed, 17 Jan 2024 20:53:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705524831;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eRDIiDroMCvM69s3QA+b2XVfeJo5GJLdEPsAEzVMC9A=;
+	b=j3TMmmRinPI7VxLym2fwWzEj/ZDx/e3AWDi4HRzMhq0+V6y3MVW2cjnqHTgQsKEw/xx44r
+	dBteypt+Vpy1LIRQfVtdniX4bq1/ELDdMzTdO5BUVsKiXgvohiV6SfaxWFKhmD8djYTQCw
+	KfD4CVT2ayfNi0oYtwG7e/5VkmNFI/o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705524831;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eRDIiDroMCvM69s3QA+b2XVfeJo5GJLdEPsAEzVMC9A=;
+	b=HIvEexufSLffz9AB+a616MxNd6OwtSLJnwNZ8vH3Rdkbjd62p0430p73x3tteL/mNPazKZ
+	Fu8iMlsiKp3YQHDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705524831;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eRDIiDroMCvM69s3QA+b2XVfeJo5GJLdEPsAEzVMC9A=;
+	b=j3TMmmRinPI7VxLym2fwWzEj/ZDx/e3AWDi4HRzMhq0+V6y3MVW2cjnqHTgQsKEw/xx44r
+	dBteypt+Vpy1LIRQfVtdniX4bq1/ELDdMzTdO5BUVsKiXgvohiV6SfaxWFKhmD8djYTQCw
+	KfD4CVT2ayfNi0oYtwG7e/5VkmNFI/o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705524831;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eRDIiDroMCvM69s3QA+b2XVfeJo5GJLdEPsAEzVMC9A=;
+	b=HIvEexufSLffz9AB+a616MxNd6OwtSLJnwNZ8vH3Rdkbjd62p0430p73x3tteL/mNPazKZ
+	Fu8iMlsiKp3YQHDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A857513751;
+	Wed, 17 Jan 2024 20:53:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 3pGIJV4+qGX1egAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Wed, 17 Jan 2024 20:53:50 +0000
+Date: Wed, 17 Jan 2024 21:53:48 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Cc: ltp@lists.linux.it, Li Wang <liwang@redhat.com>,
+	Jan Stancek <jstancek@redhat.com>, Xiao Yang <yangx.jy@fujitsu.com>,
+	Yang Xu <xuyang2018.jy@fujitsu.com>,
 	Kent Overstreet <kent.overstreet@linux.dev>,
-	Greg KH <greg@kroah.com>, Neal Gompa <neal@gompa.dev>,
-	Kees Cook <keescook@chromium.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Nikolai Kondrashov <spbnick@gmail.com>,
-	Philip Li <philip.li@intel.com>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <c69a3103-ae4d-459a-b5f4-d3bbe2af6fb2@sirena.org.uk>
-References: <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
- <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
- <20240117055457.GL911245@mit.edu>
- <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: Re: [PATCH 1/1] safe_macros: Fix bcachefs failure old kernel
+Message-ID: <20240117205348.GB2723246@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20240111150553.1923767-1-pvorel@suse.cz>
+ <Zaf53YElGwHq04Sl@yuki>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7aTkAu68BodLGEOk"
-Content-Disposition: inline
-In-Reply-To: <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
-X-Cookie: Nostalgia isn't what it used to be.
-
-
---7aTkAu68BodLGEOk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <Zaf53YElGwHq04Sl@yuki>
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=j3TMmmRi;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HIvEexuf
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 REPLYTO_EQ_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 45EFE1F391
+X-Spam-Level: 
+X-Spam-Score: -2.51
+X-Spam-Flag: NO
 
-On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
+> Hi!
+> > I'm sorry, although man bcachefs(8) mentions fusemount, I haven't
+> > figured out how to mount filesystem. Am I missing something?
 
-> I also have to say, that for all the complaints there's just not any
-> open source pull for test tools (there's no-one who's on a mission to
-> make them better).  Demanding that someone else do it is proof of this
-> (if you cared enough you'd do it yourself).  That's why all our testing
-> infrastructure is just some random set of scripts that mostly does what
-> I want, because it's the last thing I need to prove the thing I
-> actually care about works.
+> > Also, maybe for the start I would prefer to to test just kernel
+> > functionality (no fuse).
 
-> Finally testing infrastructure is how OSDL (the precursor to the Linux
-> foundation) got started and got its initial funding, so corporations
-> have been putting money into it for decades with not much return (and
-> pretty much nothing to show for a unified testing infrastructure ...
-> ten points to the team who can actually name the test infrastructure
-> OSDL produced) and have finally concluded it's not worth it, making it
-> a 10x harder sell now.
+> So this means that mount.bcasefs does exist, but the mount() fails? That
+> sounds like something wasn't wired up properly.
 
-I think that's a *bit* pessimistic, at least for some areas of the
-kernel - there is commercial stuff going on with kernel testing with
-varying degrees of community engagement (eg, off the top of my head
-Baylibre, Collabora and Linaro all have offerings of various kinds that
-I'm aware of), and some of that does turn into investments in reusable
-things rather than proprietary stuff.  I know that I look at the
-kernelci.org results for my trees, and that I've fixed issues I saw
-purely in there.  kselftest is noticably getting much better over time,
-and LTP is quite active too.  The stuff I'm aware of is more focused
-around the embedded space than the enterprise/server space but it does
-exist.  That's not to say that this is all well resourced and there's no
-problem (far from it), but it really doesn't feel like a complete dead
-loss either.
+Yes, mount.bcasefs exists, at least on openSUSE Tumbleweed (I suppose elsewhere
+as well). Everything is done by single binary bcachefs.
 
-Some of the issues come from the different questions that people are
-trying to answer with testing, or the very different needs of the
-tests that people want to run - for example one of the reasons
-filesystems aren't particularly well covered for the embedded cases is
-that if your local storage is SD or worse eMMC then heavy I/O suddenly
-looks a lot more demanding and media durability a real consideration.
+ls -la /sbin/* |grep bcachefs
+-rwxr-xr-x 1 root root     1424080 Jan  9 15:00 /sbin/bcachefs
+lrwxrwxrwx 1 root root           8 Jan  9 15:00 /sbin/fsck.bcachefs -> bcachefs
+lrwxrwxrwx 1 root root           8 Jan  9 15:00 /sbin/fsck.fuse.bcachefs -> bcachefs
+lrwxrwxrwx 1 root root           8 Jan  9 15:00 /sbin/mkfs.bcachefs -> bcachefs
+lrwxrwxrwx 1 root root           8 Jan  9 15:00 /sbin/mkfs.fuse.bcachefs -> bcachefs
+lrwxrwxrwx 1 root root           8 Jan  9 15:00 /sbin/mount.bcachefs -> bcachefs
+lrwxrwxrwx 1 root root           8 Jan  9 15:00 /sbin/mount.fuse.bcachefs -> bcachefs
 
---7aTkAu68BodLGEOk
-Content-Type: application/pgp-signature; name="signature.asc"
+> > Kind regards,
+> > Petr
 
------BEGIN PGP SIGNATURE-----
+> >  lib/tst_supported_fs_types.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWoGj8ACgkQJNaLcl1U
-h9BXrwf/ax2MGFfufapvl5UITLAL098Oq/M/cEtg80e2uwB7x6eMnWfzLW5If0FL
-7TaDVEb9oUXdsBZAVdETKiszFMAVH6+owpWtLGMkd1CWHbsH4OqpzuITEVsfidM0
-YogO4PuLXHCJdoPOogl32UraTyhxJKgYRqy3tr8Mv0UNnA+KpvSgfS/dX7AJOw0h
-KLFxAYjNa3JG6SbHJgS2Fw40YWY1kw1fdt193Div+CCIWgkd0SVwg+jIA7xsakb5
-YDVyHHT3WY5OpUc+5Ay/WeoDxFlFFmS91U457Dokm+/VS5WjYYJWc1eLKGkx6w+X
-otunFRoyx0Y6IoJhrDegDIRv82SVvA==
-=x1fy
------END PGP SIGNATURE-----
+> > diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+> > index 369836717..21765c370 100644
+> > --- a/lib/tst_supported_fs_types.c
+> > +++ b/lib/tst_supported_fs_types.c
+> > @@ -96,6 +96,11 @@ static enum tst_fs_impl has_kernel_support(const char *fs_type)
 
---7aTkAu68BodLGEOk--
+> >  	SAFE_RMDIR(template);
+
+> > +	if (!strcmp(fs_type, "bcachefs") && tst_kvercmp(6, 7, 0) < 0) {
+> > +		tst_res(TINFO, "bcachefs skipped on kernel < 6.7");
+> > +		return TST_FS_UNSUPPORTED;
+> > +	}
+
+> I would rather turn this into a FUSE specific blacklist without a kernel
+> version, since bcachefs got into the kernel I do not think the fuse
+> version would be useful for testhing at all, so what about:
+
+Your code makes sense, I'll test it.
+
+Kind regards,
+Petr
+
+> diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+> index 369836717..4110c826e 100644
+> --- a/lib/tst_supported_fs_types.c
+> +++ b/lib/tst_supported_fs_types.c
+> @@ -33,6 +33,11 @@ static const char *const fs_type_whitelist[] = {
+>         NULL
+>  };
+
+> +static const cahr *const fs_type_fuse_blacklist[] = {
+> +       "bcachefs",
+> +       NULL,
+> +};
+> +
+>  static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
+
+>  static int has_mkfs(const char *fs_type)
+> @@ -96,6 +101,11 @@ static enum tst_fs_impl has_kernel_support(const char *fs_type)
+
+>         SAFE_RMDIR(template);
+
+> +       if (tst_fs_in_skiplist(fs_type, tst_fs_type_fuse_blacklist)) {
+> +               tst_res("Skipping %s because of FUSE blacklist", fs_type);
+> +               return TST_FS_UNSUPPORTED;
+> +       }
+> +
+>         /* Is FUSE supported by kernel? */
+>         if (fuse_supported == -1) {
+>                 ret = open("/dev/fuse", O_RDWR);
+
+
+> >  	/* Is FUSE supported by kernel? */
+> >  	if (fuse_supported == -1) {
+> >  		ret = open("/dev/fuse", O_RDWR);
