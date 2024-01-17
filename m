@@ -1,154 +1,165 @@
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DC58C06
-	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jan 2024 05:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B90E14270
+	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jan 2024 09:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705470939; cv=none; b=uiVS4K+DIR/hisMa3i3a9opDRLrOZFDVdwZRO/IRHdq9oZZn7rWjB3m4AMHA8EE5JSdTwSupuBXRUqg0yWUOKeSG5b3NfMQqGZV4CS8TlCE49iRPCXAj32kB96XHWsSDuPqROUiQetHkBbUq1fLlAz4leq06ozkfIk5kfGPMKMg=
+	t=1705483408; cv=none; b=hmCJjwluBglNula2lRS5Ia6yWsOtd7hrlo4VazjuCuQq0l/nWTpuO26v/fvIXedvhuMzQm/GttWTwm/llKE7PGqzaCPP/FpxzgKeEzS6OWxFtnWWCmdJxhe595Jp3YxvwgECFP0xEggVO/PpXj9SBEufRdGQJt+NqwOlomcDs74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705470939; c=relaxed/simple;
-	bh=Cajldxp5L4q+bgoRIKnlBgXzSAKMtR7sfecEvOfpwAs=;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=WzS4pustzTLD2n1wifl8pEUsHDcVYdPsU5uU01l1HBKMUxmY5KeiLyJ38UsTqOwmJlUGhqftEQE8gd4S38fjN3hkJ/mZ9ut+KZoaZfLmx++gBGy6c20KwZPZH+il9SkTuLMTVH2ef44T1IZC9lyL7K+GKzz2MS9/46kUzp4/U5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=lCTi0ygw; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+	s=arc-20240116; t=1705483408; c=relaxed/simple;
+	bh=ZAC0gMTewDsyDKK+KtO6CsLORbCsrw14QrlNvQDIlg8=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=nXT9VUNmtIlyYcdRiOIqRPHK3xVKhGdnnJGO40B76IK7jTJiRD4BlMrev2T9mHxJVKvwFYqsdAGw+QVcEHzGkAya2ffcJ6WdHkiT+WptDGJVpCASugS0q8sxa+m7SJ3rGM7MjRrundb/CkrvsxqRCxhP2E2x1o7l3PuRl3m5g+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ARb1uo4+; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="lCTi0ygw"
-Received: from cwcc.thunk.org (pool-173-48-112-211.bstnma.fios.verizon.net [173.48.112.211])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40H5sv3E016205
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 00:54:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1705470901; bh=E6Z/eQkBMXHSee05+WcpGSIz4ByCJGYdInYrVxwiAVk=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=lCTi0ygwe47zegAHZboHFyqL3Sd5496YzTJRXwjVrME86O0SGElAaUC1FFlOL73QF
-	 C2WX0qpUXggTBxcZrTHCnD+b7q4VV5CHVW5em+Tm3VCWP8B7y8bkMr2LrC/208YnUJ
-	 HByA2MwQztUOiFI+Y6tkvXLd5nFtoNgFTt87OoxpVZkV3UK36kgNaakybCEELm8L8i
-	 ebttMKfsy7qs+mqakIxV4DuOpAkRlnyigPymnoUORF2A14qORY0nwM8SDVW1yCjAoa
-	 OpJdDQZzJl+nkzuj16Lllw4DAnHaUvhCIXyBUBfIGiSbC7khdXDosihq9XwXXDBsMJ
-	 GNZLM844ywkxg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 89D5315C0278; Wed, 17 Jan 2024 00:54:57 -0500 (EST)
-Date: Wed, 17 Jan 2024 00:54:57 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>,
-        Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Nikolai Kondrashov <spbnick@gmail.com>,
-        Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <20240117055457.GL911245@mit.edu>
-References: <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
- <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
- <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
- <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ARb1uo4+"
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cd0d05838fso122364411fa.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jan 2024 01:23:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1705483404; x=1706088204; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EfI3fIB++8nw+ASq5F8fuLbZ+fGhBjFlMzRTBNAgO5A=;
+        b=ARb1uo4+X1tYggKCAQgz96JkYHnGvXsVXzRaAc2yf9fM6m1Bq/QRYVB9PrwJIxWy05
+         eIMf//dMrmuSLtwCLxIV/nkvn51qK4qabhZrjBKDXk86+wtavOSSss2QTWpJvdb61vNs
+         tCXLnnRH3dZ/Y+FQpGUFu7uCPn5c0PDuPe6K6psaqT0ac9mQWlmT6pizYFdc0Yzzyb14
+         VkAHtCvmmcfuwPDgbR+rAvv6TYmHufEEQzEA+IeGDkT6NMv2Q1BUjGaV9r7h9TeKtYzU
+         Vx9yARhfrbFdAPv21aUoNsGoukilaWkm9eRym1k0CZrKotL7i8gv09ABAsYRozEjUVqU
+         2kbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705483404; x=1706088204;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EfI3fIB++8nw+ASq5F8fuLbZ+fGhBjFlMzRTBNAgO5A=;
+        b=V1M4LN3F8j8eil1E3jsOOAKg3yqxaUiO5bz47KMiM2TDbi5Ph8vWibbeiqDgUjzLHa
+         XPSYtiiWrrh7+XyYUOh+vfCmKSUVx7HYNJ+Lp+DGKrYfTOKeF1l20bSamrnAs2+iPjsJ
+         2FWJBMXDElV1ouj9dp4dYL/49FuArbzag1g0bPYqOf+zBaddVREItRJIpfCHcLMMChja
+         ukU1Ji26A/UXS/tN+mf5mgrzpgRu8IIOfN2lVSK1xZAcwjqAOJByLHaw93gSNWxJEO5y
+         lmI6H8AZrpEQyGemTyLietkZU5BCop6FYGviKJlZcHPD2jQTTKZHraKHztHeFZKzYMX8
+         oxmg==
+X-Gm-Message-State: AOJu0Yx26953hi6N70UUzdo4geHFrQjl+aHB/qerKqPoLGqJisBHGmrg
+	oqSk4bYyWHhe5yolezC/V5BIIEgNvwjsgqiEK7VPI7EGgcg=
+X-Google-Smtp-Source: AGHT+IFb5xxEErYLOic0etNAPoIwSC6V6gnM1l8IUklYxDo3T2Ka348d5/LCSQzWyh4K+/MHAjHw2A==
+X-Received: by 2002:a2e:9593:0:b0:2cd:9f94:f93a with SMTP id w19-20020a2e9593000000b002cd9f94f93amr3042130ljh.43.1705483404142;
+        Wed, 17 Jan 2024 01:23:24 -0800 (PST)
+Received: from localhost.localdomain ([23.247.139.60])
+        by smtp.gmail.com with ESMTPSA id d3-20020a17090b004300b0028ceeca04a1sm13736472pjt.19.2024.01.17.01.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 01:23:23 -0800 (PST)
+From: Su Yue <glass.su@suse.com>
+To: fstests@vger.kernel.org
+Cc: linux-bcachefs@vger.kernel.org,
+	l@damenly.org,
+	bfoster@redhat.com,
+	Su Yue <glass.su@suse.com>
+Subject: [PATCH v2 1/2] fstests: introduce MKFS_BCACHEFS_PROG for bcachefs
+Date: Wed, 17 Jan 2024 17:23:08 +0800
+Message-ID: <20240117092309.1134595-1-glass.su@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 16, 2024 at 11:41:25PM -0500, Kent Overstreet wrote:
-> > > No, it's a leadership/mentorship thing.
-> > > 
-> > > And this is something that's always been lacking in kernel culture.
-> > > Witness the kind of general grousing that goes on at maintainer summits;
-> > > maintainers complain about being overworked and people not stepping up
-> > > to help with the grungy responsibilities, while simultaneously we still
+mkfs.bcachefs supports force overwrite when option '-f' is given:
+$ mkfs.bcachefs --help | grep force
+  -f, --force
 
-     <blah blah blah>
+There are some tests which call _scratch_mkfs multiple times
+e.g. tests/generic/171. Without '-f' in MKFS_OPTIONS,
+these tests just hang in overwrite confirmation.
+After this commit, MKFS_BCACHEFS_PROG will contains ' -f' so
+we don't have to add '-f' to MKFS_OPTIONS manually to make
+these tests pass.
 
-> > > Tests and test infrastructure fall into the necessary but not fun
-> > > category, so they languish.
-> > 
-> > No, they fall into the "no company wants to pay someone to do the work"
-> > category, so it doesn't get done.
-> > 
-> > It's not a "leadership" issue, what is the "leadership" supposed to do
-> > here, refuse to take any new changes unless someone ponys up and does
-> > the infrastructure and testing work first?  That's not going to fly, for
-> > valid reasons.
+It also fixes generic/466 which unsets MKFS_OPTIONS causing
+that test hangs in mfks.bcachefs waiting for confirmation of
+the force overwrite.
 
-Greg is absolutely right about this.
+Signed-off-by: Su Yue <glass.su@suse.com>
+---
+changelog:
+v2:
+    Add more details about why MKFS_BCACHEFS_PROG should contain '-f'.
+---
+ common/config |  3 ++-
+ common/rc     | 12 +++++++++---
+ 2 files changed, 11 insertions(+), 4 deletions(-)
 
-> But good tools are important beacuse they affect the rate of everyday
-> development; they're a multiplier on the money everone is spending on
-> salaries.
+diff --git a/common/config b/common/config
+index c9771ff934cb..1f9edceec57a 100644
+--- a/common/config
++++ b/common/config
+@@ -105,7 +105,7 @@ set_mkfs_prog_path_with_opts()
+ 	# Note: mkfs.f2fs doesn't support the --help option yet, but it doesn't
+ 	# matter since it also prints the help when an invalid option is given.
+ 	if [ "$p" != "" ] && \
+-		$p --help |& grep -q "[[:space:]]-f[[:space:]|]"; then
++		$p --help |& grep -q "[[:space:]]-f[[:space:]|,]"; then
+ 		echo "$p -f"
+ 	else
+ 		echo $p
+@@ -313,6 +313,7 @@ export MKFS_REISER4_PROG=$(type -P mkfs.reiser4)
+ export E2FSCK_PROG=$(type -P e2fsck)
+ export TUNE2FS_PROG=$(type -P tune2fs)
+ export FSCK_OVERLAY_PROG=$(type -P fsck.overlay)
++export MKFS_BCACHEFS_PROG=$(set_mkfs_prog_path_with_opts bcachefs)
+ 
+ # SELinux adds extra xattrs which can mess up our expected output.
+ # So, mount with a context, and they won't be created.
+diff --git a/common/rc b/common/rc
+index 524ffa02aa6a..31c21d2a8360 100644
+--- a/common/rc
++++ b/common/rc
+@@ -611,6 +611,9 @@ _test_mkfs()
+     xfs)
+ 	$MKFS_PROG -t $FSTYP -- -f $MKFS_OPTIONS $* $TEST_DEV
+ 	;;
++    bcachefs)
++    $MKFS_BCACHEFS_PROG $MKFS_OPTIONS $* $TEST_DEV > /dev/null
++	;;
+     *)
+ 	yes | $MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS $* $TEST_DEV
+ 	;;
+@@ -753,6 +756,10 @@ _scratch_mkfs()
+ 		mkfs_cmd="yes | $MKFS_PROG -t $FSTYP --"
+ 		mkfs_filter="grep -v -e ^mkfs\.ocfs2"
+ 		;;
++    bcachefs)
++		mkfs_cmd="$MKFS_BCACHEFS_PROG"
++		mkfs_filter="cat"
++		;;
+ 	*)
+ 		mkfs_cmd="yes | $MKFS_PROG -t $FSTYP --"
+ 		mkfs_filter="cat"
+@@ -1044,7 +1051,7 @@ _scratch_mkfs_sized()
+ 		export MOUNT_OPTIONS="-o size=$fssize $TMPFS_MOUNT_OPTIONS"
+ 		;;
+ 	bcachefs)
+-		$MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS --fs_size=$fssize --block_size=$blocksize $SCRATCH_DEV
++		$MKFS_BCACHEFS_PROG $MKFS_OPTIONS --fs_size=$fssize --block_size=$blocksize $SCRATCH_DEV
+ 		;;
+ 	*)
+ 		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized"
+@@ -1128,8 +1135,7 @@ _scratch_mkfs_blocksized()
+ 						-C $blocksize $SCRATCH_DEV
+ 		;;
+ 	bcachefs)
+-		${MKFS_PROG} -t $FSTYP $MKFS_OPTIONS --block_size=$blocksize \
+-								$SCRATCH_DEV
++		_scratch_mkfs --block_size=$blocksize
+ 		;;
+ 	udf)
+ 		_scratch_mkfs -b $blocksize
+-- 
+2.43.0
 
-Alas, companies don't see it that way.  They take the value that get
-from Linux for granted, and they only care about the multipler effect
-of their employees salaries (and sometimes not even that).  They most
-certainly care about the salutary effects on the entire ecosyustem.
-At least, I haven't seen any company make funding decisions on that
-basis.
-
-It's easy enough for you to blame "leadership", but the problem is the
-leaders at the VP and SVP level who control the budgets, not the
-leadership of the maintainers, who are overworked, and who often
-invest in testing themselves, on their own personal time, because they
-don't get adequate support from others.
-
-It's also for that reason why we try to prove that people won't just
-stick around enough for their pet feature (or in the case of ntfs,
-their pet file system) gets into the kernel --- and then disappear.
-For too often, this is what happens, either because they have their
-itch scratched, or their company reassigns them to some other project
-that is important for their company's bottom-line.
-
-If that person is willing their own personal time, long after work
-hours, to steward their contribution in the absence of corporate
-support, great.  But we need to have that proven to us, or at the very
-least, make sure the feature's long-term maintenace burden is as low
-possible, to mitigate the likelihood that we won't see the new
-engineer after their feature lands upstream.
-
-> Having one common way of running all our functional VM tests, and a
-> common collection of those tests would be a huge win for productivity
-> because _way_ too many developers are still using slow ad hoc testing
-> methods, and a good test runner (ktest) gets the edit/compile/test cycle
-> down to < 1 minute, with the same tests framework for local development
-> and automated testing in the big test cloud...
-
-I'm going to call bullshit on this assertion.  The fact that we have
-multiple ways of running our tests is not the reason why testing takes
-a long time.
-
-If you are going to run stress tests, which is critical for testing
-real file systems, that's going to take at least an hour; more if you
-want to test muliple file system features.  The full regression set
-for ext4, using the common fstests testt suite, takes about 25 hours
-of VM time; and about 2.5 hours of wall clock time since I shard it
-across a dozen VM's.
-
-Yes, w could try to add some unit tests which take much less time
-running tests where fstests is creating a file system, mounting it,
-exercising the code through userspace functions, and then unmounting
-the file system and then checking the file system.  Even if that were
-an adequate replacement for some of the existing fstests, (a) it's not
-a replacement for stress testing, and (b) this would require a vast
-amount of file system specific software engineering investment, and
-where is that going from?
-
-The bottom line is that problem is that having a one common way of
-running our functional VM tests is not even *close* to root cause of
-the problem.
-
-	    	       	  	       - Ted
