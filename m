@@ -1,144 +1,90 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90F81EB25
-	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jan 2024 13:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A63C21347
+	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jan 2024 15:54:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705496789; cv=none; b=ND0B/cMem9Q9uBBzpuLXpMTAKr5BhCEMyKugApA3z4PNWbb0imTqLCt7EnV2DSdS4Rlg6pThh33EinvniAhAJ1XIj4uCwEepd7LDta2KHI/ONSirJZxg0skeC9tY902n0fY4/Kpwpi95U6kwK801QtP2n9zmvqLEKKKzae6fgeI=
+	t=1705506898; cv=none; b=MlhBqeT8mG1LTgyTjXmV3718AXuVFgyqn2eizO1+ILN7/SO4CMVVrhVTeifWJTGSJ9h40kTcxhn7dQVGxp62rTWaCO7n41dUSc9FxXHOFEFvZMxv4Xx8txlJ73edbHGUh+fU00pHouLGp9wN2p3CGVsGei5sM1JjwP187sX7x+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705496789; c=relaxed/simple;
-	bh=38W5MneQfhi+PkMmiG1+xsJHLR7cL3eAkFMgz4boq9k=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Date:From:
-	 To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-Scanned-By; b=FK2s56hy6l9qelxAfLdyoAuKm+s1UlzpLZ/teDgNfpa/i6xq6I+8jCsBRICVM+b8DJH+OHINeJoZ6gW7OUT7GAtASe9kUHCuXL3FSaf3NuXg6DBwWrRlhfVh83f/EJQKhm2OiRUWNhg14OV/77SyU7l7XWB2yy8VFjSYuivMl+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fm7TuV8m; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1705506898; c=relaxed/simple;
+	bh=KiPkJgcZApa3VhGro0U2VO+ELCvyX0whNRmdCOKBCgY=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:From:To:
+	 Subject:Date:Message-ID:In-Reply-To:References:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-Scanned-By; b=NLKv6CEAen664rIvFXZ8Uvj6T8LFER5lcNh1SVZ9NklgayIpdy9oZWP4JQnGASmgW5HzIQTdJ/Aw4M/yb2q2GC5VeazKSPgpeXcTRtIPxg+V50V7SKXJGLg/vItjVK0n2DoZ+tDBcIxLzLfXpdoaZ65gjFX3w0Zn4QeXGpzdjgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=enP3yFbX; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fm7TuV8m"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="enP3yFbX"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705496786;
+	s=mimecast20190719; t=1705506895;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4UBM1e8Jpt+xJM1FY09T5hg2h6yCau7ag8H3c/fNH7s=;
-	b=Fm7TuV8mTCXc1meau5+EuswRtvjH4HHSld+MrCye0JJdUGqxpKkHLZr6METu4EXf62q/v2
-	CgaZJ+BbDIqn/FN7j/KxglDByjsjR2yhWsxlMkt+1WrAqFX2FUIgDSb7vboVlF6aGyAxFX
-	W/5HYk6Hd54qwXBC4qxKVuddGANZ1Lg=
+	bh=+oOLJt0ifL6z++Zc0huhNwSMj9ockBgMkIk/zf3IQQo=;
+	b=enP3yFbXuveDKDIA++UtCTtPh3Z6DP2V4cxKmvIOYUvT0IcQHHDR99kcezR54COd8YS9u6
+	QEEKR9/sSSoMzppf9q2I1bKYw84c3Rxi+A4TeZwyUf82A14HPgBx/rf3MTgsT2VtAOf1je
+	7PVcHIyKNNUTdguRkORYL/S0a4fvGeY=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-9-Um6eO6JTPheB6QQ5__Fo4Q-1; Wed, 17 Jan 2024 08:06:22 -0500
-X-MC-Unique: Um6eO6JTPheB6QQ5__Fo4Q-1
+ us-mta-574-ESzvQYSWPOa8NRgOcK_3Iw-1; Wed, 17 Jan 2024 10:54:53 -0500
+X-MC-Unique: ESzvQYSWPOa8NRgOcK_3Iw-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A10F6185A781;
-	Wed, 17 Jan 2024 13:06:20 +0000 (UTC)
-Received: from bfoster (unknown [10.22.8.116])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6EC021BDB0;
-	Wed, 17 Jan 2024 13:06:20 +0000 (UTC)
-Date: Wed, 17 Jan 2024 08:07:38 -0500
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7E31687280A
+	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jan 2024 15:54:52 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.8.116])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 64ED9FEEE
+	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jan 2024 15:54:52 +0000 (UTC)
 From: Brian Foster <bfoster@redhat.com>
-To: Su Yue <l@damenly.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [BUG] general protection fault, probably for non-canonical
- address 0x280766500040001: 0000 [#1] PREEMPT SMP PTI
-Message-ID: <ZafRGgsW9Z7oORtV@bfoster>
-References: <ZaahtMNCEd42G3EP@bfoster>
- <ze74khldgkvbht5ryjq2bs5rjnm7eds2xytlwc76nqurjwf7tx@rpcyvnwbkglp>
- <Zaa74Ehk4idtZNwc@bfoster>
- <dbqhxiv7kxbaeilxyyqzqqpjlaobxh262u7czkg5koec2w35p4@2oznjzf466no>
- <bk9k60zw.fsf@damenly.org>
+To: linux-bcachefs@vger.kernel.org
+Subject: [PATCH v2 2/4] bcachefs: track current fiemap offset in start variable
+Date: Wed, 17 Jan 2024 10:56:09 -0500
+Message-ID: <20240117155611.248042-3-bfoster@redhat.com>
+In-Reply-To: <20240117155611.248042-1-bfoster@redhat.com>
+References: <20240117155611.248042-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bk9k60zw.fsf@damenly.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Wed, Jan 17, 2024 at 12:20:55PM +0800, Su Yue wrote:
-> 
-> On Tue 16 Jan 2024 at 12:33, Kent Overstreet <kent.overstreet@linux.dev>
-> wrote:
-> 
-> > On Tue, Jan 16, 2024 at 12:24:48PM -0500, Brian Foster wrote:
-> > > On Tue, Jan 16, 2024 at 12:03:09PM -0500, Kent Overstreet wrote:
-> > > > On Tue, Jan 16, 2024 at 10:33:08AM -0500, Brian Foster wrote:
-> > > > > Hi Kent,
-> > > > >
-> > > > > JFYI, I'm seeing the following splat pretty reliably via > >
-> > > generic/361 on
-> > > > > an 80xcpu test box. The CI doesn't seem to produce this > >
-> > > failure for
-> > > > > whatever reason. This bisects down to commit 023f9ac9f70f > >
-> > > ("bcachefs:
-> > > > > Delete dio read alignment check"), before which the test > >
-> > > still fails but
-> > > > > the kernel doesn't explode.
-> > > > >
-> > > > > Brian
-> > > > >
-> > > >
-> > > > Can you test the following?
-> > > >
-> > > 
-> > > Still blows up... repeated a couple times to be sure.
-> > 
-> > That sounds like a driver bug then - what driver?
-> 
-> 
-> I think it's not a drive bug. It's related to bcachefs block_size.
-> I can reproduce it by running generic/361 with block_size 4096.
-> 
-> The test devices are normal qemu disks backing by files in host.
-> The bug disappears after hanging mkfs block_size to 512.
-> 
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
+ fs/bcachefs/fs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hi Su,
-
-Yes, I think this is the issue as block_bytes(c) is 4k in my test.
-Thanks for testing/confirming.
-
-The immediate reason for the crash appears to be bio_copy_data_iter()
-going off the rails trying to copy a larger source bio into a smaller
-destination bio with seemingly inconsistent size/bvec.
-
-The broader context is we start with a sub-block sized read, so e.g. I
-see a request for 1024 bytes at offset 4096. This results in a bio with
-bi_size == 4096, however, because right after the alignment check that
-was removed we do this:
-
-	ret = min_t(loff_t, iter->count,
-		    max_t(loff_t, 0, i_size_read(&inode->v) - offset));
-	...
-	shorten = iov_iter_count(iter) - round_up(ret, block_bytes(c));
-	iter->count -= shorten;
-
-... which appears to underflow the iter count and is presumably fixed up
-somewhere to cap at the block size. I'm assuming this ends up in a
-situation where an internally inconsistent iov_iter leads to a similarly
-broken bvec_iter on the bio, or otherwise this gets further confused
-when creating the bounce bio, but I haven't traced to that level of
-detail.
-
-In any event, we end up in bio_copy_data_iter() with a destination bio
-of bi_size == 4k that only appears to have a single 1k sized bvec. The
-first 1k copies as expected, but this doesn't reduce bi_size to zero and
-so the iteration just continues to advance the bio vec index until it
-finds some garbage data it can infer as a non-zero bv_len bvec to copy
-into.
-
-Brian
-
-> --
-> Su
-> 
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 696f266febfe..c9f426905ef9 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -945,6 +945,7 @@ static int bch2_fiemap(struct inode *vinode, struct fiemap_extent_info *info,
+ 		bch2_bkey_buf_realloc(&prev, c, k.k->u64s);
+ 
+ 		sectors = min(sectors, k.k->size - offset_into_extent);
++		start = iter.pos.offset + sectors;
+ 
+ 		bch2_cut_front(POS(k.k->p.inode,
+ 				   bkey_start_offset(k.k) +
+@@ -965,8 +966,7 @@ static int bch2_fiemap(struct inode *vinode, struct fiemap_extent_info *info,
+ 		bkey_copy(prev.k, cur.k);
+ 		have_extent = true;
+ 
+-		bch2_btree_iter_set_pos(&iter,
+-			POS(iter.pos.inode, iter.pos.offset + sectors));
++		bch2_btree_iter_set_pos(&iter, POS(iter.pos.inode, start));
+ 	}
+ 	start = iter.pos.offset;
+ 	bch2_trans_iter_exit(trans, &iter);
+-- 
+2.42.0
 
