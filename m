@@ -1,89 +1,168 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A24B79D4;
-	Thu, 18 Jan 2024 05:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30BDE208C9;
+	Thu, 18 Jan 2024 09:00:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705556131; cv=none; b=ETgKGW8SM+XoiZmDzxT+VPqqQncqoxj2/usSM3vxbsNWO3A0/WeX2oisfbe0do81BLIPO0aCzHD3bFyrWgyGVkCvrQyn7TZvYgewVV5LbrEFPSxy0J2H3vLbX7ZPn8tM3seGuGo1t3pBDtLh94U+t1u2QGxx1z0w49ew4sh5Bf0=
+	t=1705568419; cv=none; b=tfrrH4RxtgSVHNKPP/vA6FCm8wrWW38NnkbSFpcz7anbVWTV8KlAbH1j61qkvq6LmNIjXovNXP/GlD09XsLETDmbw/fNYivPIqIQxv0cXLbdy6+if2t4G+/U2S2I2GmK5zsyy7QJCfN6J7HnsnhK2J3lg8aLqrrwErjK8wXhT98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705556131; c=relaxed/simple;
-	bh=LzhELx9h/U3h0sODMzPzGL+liQMJLMUOPLsau3AmHcA=;
-	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=gRfXID9QmgchD2MeuHft24U/x941xut7A7r18vQ696j/1oiaV4A3VtGByjrvcx7dz6W0Ud+X0lUfIMugtZXszRRaNdYnrbNQx/AwuRXFXKhVJFW2KcomhnhQGViY7X45UTbaiGhkIHJIiWjxsnv7xkESitLYGvO1mpRR40xhXxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MNtkIGsz; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1705568419; c=relaxed/simple;
+	bh=se7z6adz9nviIqYENvt7nq7zrehjz1+jdUJ2lRfcRxM=;
+	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
+	 DKIM-Signature:Received:Received:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
+	 X-Spamd-Result:X-Spam-Level:X-Spam-Score:X-Spam-Flag; b=Ugc9bnNQsxRuWKMDEizI5/n8uTFjlu0S6CkqHRtRqgyxh+Uy7RNQgYqSizo97PLOtqpfT86o0PnkUdmyfXDz7iW5pjYgJdVkJ8A30SV19EUiY7W8TwIao/wwOQODusuIygyoxuRiLAJwctnOMDtp/T9b8Fo7+yHbIWNbKMI0+MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MFiPLupX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+KWY0Bk5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zh48p0VG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uRfGgje1; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MNtkIGsz"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=dH6p9SMJNPi+ukFSRBSjYz3JqljL0xzAdUNPFPGLjN8=; b=MNtkIGszG0wjyKy69ZChUe34pJ
-	I9qgJLnzNof+kFnP30VaWjvapB5VfCSGR4/ZqawI3a9cwUWnHBsZtoIagpZ4gBI/etsgnJPKy9+Z+
-	24NfymFoezA1htxrNuWZiVSWhhcShszSc4bBaFEfoyAf2PdaYtOW0myN2BRnci8bpyqikpcrMyPy4
-	o4JmwO+S6B78p6hGvGplNaift93ECgd59muZJ9qncEM4/94+iBVml1Y+fSKhD8KYx4vK2YbhHZHYV
-	O5LIcd0nJtSn+VxI9hDufL4NGkV4im3AbZlqTM7ZEik1920mShuOQxa4m/XppLvv5rc3dd7cBIlN6
-	r2CdE+0w==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQL3c-001iKd-19;
-	Thu, 18 Jan 2024 05:35:16 +0000
-Message-ID: <34862fc1-1cd9-47e3-b8e1-3fcce6ff7cf7@infradead.org>
-Date: Wed, 17 Jan 2024 21:35:15 -0800
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MFiPLupX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+KWY0Bk5";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zh48p0VG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uRfGgje1"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5AA1E1F76E;
+	Thu, 18 Jan 2024 09:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705568415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=B0p7urB7wmsb6dkQLoDkW2Eq0MLph5IqLA7LzKlWVtQ=;
+	b=MFiPLupXoI/IjAFBOm+i8VxEFvE9hLE3jyvyjnNE/brjFelGGsBJ/qWJeTOxsVV8rbGJ/z
+	d4cMfqJqapzeMt+uQ8P0Ixp8oA2xeMYKR6HRe68hrpk7+zA009qPshBkMd4AxOblvAVj0V
+	0F7ICy23Y+uSdMciISIVpjhKXKBChug=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705568415;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=B0p7urB7wmsb6dkQLoDkW2Eq0MLph5IqLA7LzKlWVtQ=;
+	b=+KWY0Bk5LOi9Mi7trAeQusRxYkvp4JhbEGiwIBz0jjJjLSENlymcBTrwI72vUjgaICh6P9
+	uEIwkx8t44gJ7yBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705568414; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=B0p7urB7wmsb6dkQLoDkW2Eq0MLph5IqLA7LzKlWVtQ=;
+	b=zh48p0VG8fbrBt+T/qJYdSzf9+Zf1O3R5Ya1py1kJPTrO7LyZcWz0hChYPE3uvjR4qu21H
+	68N/l7jcI5zQBHOgTCYIXFr9YHD5nx6CUXbVcGisHIYkV8GjiQPenxdne73RwqiFdvhcX6
+	osVjNH5dqLBuHN2YQMS9HhEZuMoCJh4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705568414;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=B0p7urB7wmsb6dkQLoDkW2Eq0MLph5IqLA7LzKlWVtQ=;
+	b=uRfGgje1H/VAtaqD68L+XB03JUuvQ52sO6hza1OrSr2gfeAA+fKHMNaFqkUwuldrT4qJWd
+	p5a1J89zF+1IACDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2DBDA136F5;
+	Thu, 18 Jan 2024 09:00:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Pq1aCZ3oqGVnMAAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Thu, 18 Jan 2024 09:00:13 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Cc: Petr Vorel <pvorel@suse.cz>,
+	Cyril Hrubis <chrubis@suse.cz>,
+	Li Wang <liwang@redhat.com>,
+	Jan Stancek <jstancek@redhat.com>,
+	Xiao Yang <yangx.jy@fujitsu.com>,
+	Yang Xu <xuyang2018.jy@fujitsu.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>,
+	linux-bcachefs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH 1/1] tst_supported_fs_types: Disable FUSE bcachefs
+Date: Thu, 18 Jan 2024 10:00:04 +0100
+Message-ID: <20240118090004.2748107-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Content-Language: en-US
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
- Theodore Ts'o <tytso@mit.edu>, Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>,
- Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- Nikolai Kondrashov <spbnick@gmail.com>, Philip Li <philip.li@intel.com>,
- Luis Chamberlain <mcgrof@kernel.org>
-References: <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
- <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
- <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
- <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
- <20240117055457.GL911245@mit.edu>
- <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [4.54 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.36)[76.67%]
+X-Spam-Level: ****
+X-Spam-Score: 4.54
+X-Spam-Flag: NO
 
+bcachefs got into the kernel in 6.7 therefore it's not much useful for
+testing FUSE version.
 
+NOTE: The original purpose for this was a failure with bcachefs-tools on
+kernel without bcachefs support (e.g. kernel < 6.7):
 
-On 1/17/24 05:03, James Bottomley wrote:
-> Finally testing infrastructure is how OSDL (the precursor to the Linux
-> foundation) got started and got its initial funding, so corporations
-> have been putting money into it for decades with not much return (and
-> pretty much nothing to show for a unified testing infrastructure ...
-> ten points to the team who can actually name the test infrastructure
-> OSDL produced) and have finally concluded it's not worth it, making it
-> a 10x harder sell now.
+    # LTP_SINGLE_FS_TYPE=bcachefs ./chdir01
+    ...
+    tst_supported_fs_types.c:57: TINFO: mkfs.bcachefs does exist
+    tst_test.c:1669: TINFO: === Testing on bcachefs ===
+    tst_test.c:1117: TINFO: Formatting /dev/loop0 with bcachefs opts=''
+    extra opts=''
+    tst_test.c:1131: TINFO: Mounting /dev/loop0 to
+    /tmp/LTP_chdwqhGtZ/mntpoint fstyp=bcachefs flags=0
+    tst_test.c:1131: TBROK: mount(/dev/loop0, mntpoint, bcachefs, 0, (nil))
+    failed: ENODEV (19)
 
-What will ten points get me?  a weak cup of coffee?
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/tst_supported_fs_types.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Do I need a team to answer the question?
-
-Anyway, Crucible.
-
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+index 369836717..bbbb8df19 100644
+--- a/lib/tst_supported_fs_types.c
++++ b/lib/tst_supported_fs_types.c
+@@ -33,6 +33,11 @@ static const char *const fs_type_whitelist[] = {
+ 	NULL
+ };
+ 
++static const char *const fs_type_fuse_blacklist[] = {
++	"bcachefs",
++	NULL,
++};
++
+ static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
+ 
+ static int has_mkfs(const char *fs_type)
+@@ -96,6 +101,11 @@ static enum tst_fs_impl has_kernel_support(const char *fs_type)
+ 
+ 	SAFE_RMDIR(template);
+ 
++	if (tst_fs_in_skiplist(fs_type, fs_type_fuse_blacklist)) {
++		tst_res(TINFO, "Skipping %s because of FUSE blacklist", fs_type);
++		return TST_FS_UNSUPPORTED;
++	}
++
+ 	/* Is FUSE supported by kernel? */
+ 	if (fuse_supported == -1) {
+ 		ret = open("/dev/fuse", O_RDWR);
 -- 
-#Randy
+2.43.0
+
