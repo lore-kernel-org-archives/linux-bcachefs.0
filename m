@@ -1,160 +1,128 @@
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-108-mta190.mxroute.com (mail-108-mta190.mxroute.com [136.175.108.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601E628F5
-	for <linux-bcachefs@vger.kernel.org>; Thu, 18 Jan 2024 02:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1868BA2B
+	for <linux-bcachefs@vger.kernel.org>; Thu, 18 Jan 2024 03:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705546204; cv=none; b=LudbbPbjwIfrZz5/vKZ0egtmZL8bBQPpmsd/djGP1/esoQzZURY4OiBH8laWDw6JKURJgFOBBTt1bi9xo5mTrgbnoukWM9cqDTIWRHDcq+B0qENYlNgSTVqmgSK03gjAg6zgI0qieckt7yd+p7V3Wj6ZvYJFOS9VE2SnIY/tM6w=
+	t=1705548379; cv=none; b=Ic1Qg8RN825IEg9uEPT5KFwg7E3E1NQUAEtaI0Pp6dZWFwuPn0w/JVEO9lsRss+JXIMe3Dyx7aGMYWuGVlg1NjmAtQKghnABB4dpHNbuJYcAsJrJtbTluZ07zHlpeo8ZdT3Q4FO85vGVd1aiUan2sXAJpQ1LsEoTB1FDMyv/DYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705546204; c=relaxed/simple;
-	bh=BJg75ZFdFsMHx0IzN/znZuL4kHgdbCZHjvh8m/sP/Ic=;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=OWDsOH1fXV0bSboZ/VeAN3RKVhXByqGtk7Dp3dEuRPvsmBXJwefYTY+2Q+2Dci7fjNzwmV0ZzLA/+sCsB6jhJRMP6O0ho9BhGMlBMR+nzPxN2r6xIiMJQ9RHrmfiqQiFmLZjQHKoTy5Q449Di+0Xl38xXsHVbdisa38pdU5StB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=nEZ0rDNJ; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+	s=arc-20240116; t=1705548379; c=relaxed/simple;
+	bh=rGdAesDSzSftNr4T7c/BhqESkbTb6xbDRRRW9UI30xQ=;
+	h=Received:X-Zone-Loop:X-Originating-IP:DKIM-Signature:References:
+	 User-agent:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type:X-Authenticated-Id; b=rHKdHQO9CJ7LMV69w6z4ugjuby4J4hZyhI1BLmhAAe93I+pvtjiE93J15pimueDkTTohFA59M5LfALRdG5ZhdYr/BIW0zbDRNIInVFxueXf5Ev5Ug2G+wdaLhcNgKWmHm+G7Uymsnu6271foGuhSvuCxS2yjqehgAgoLaO0oHbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=TTUQE9gn; arc=none smtp.client-ip=136.175.108.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="nEZ0rDNJ"
-Received: from cwcc.thunk.org (pool-173-48-112-211.bstnma.fios.verizon.net [173.48.112.211])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40I2nMf0019056
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 21:49:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1705546166; bh=QY2jieE117yh9NkMq2fzek7v348fUElM78MBn1O7k+c=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=nEZ0rDNJWDL7d1gCdVYmfFfutRKEw2G+rNE4+GDGhxboywGSJtNjBqEe+MTnpiBik
-	 yVjrGhFN+FUGGE4TXKk0mgfcA19fnasGKYpVsNbMuLqEREcvVI9545CVNmF82H4mmG
-	 dC0kCfezHq6SMV7AalXUahxeaDxPKUt0X4z/PU8tJT666bmVDF9tjAFTzvUVv2hf/F
-	 ATwbGobBtp4bFlkdlL+wqjIV+plKAZz5ntdTgt1jGs8ao5G/6smZS0yMGsaBPbIsX/
-	 9wNI4Rlqf9vk1QiE3F2yluvG4UhQrXxXoyYBffTJ86mh3Z6JdQf/GkE0v6fj8aeJtx
-	 y1GEMArcvRm8w==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 82EC215C0278; Wed, 17 Jan 2024 21:49:22 -0500 (EST)
-Date: Wed, 17 Jan 2024 21:49:22 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Greg KH <greg@kroah.com>,
-        Mark Brown <broonie@kernel.org>, Neal Gompa <neal@gompa.dev>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Nikolai Kondrashov <spbnick@gmail.com>,
-        Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <20240118024922.GB1353741@mit.edu>
-References: <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
- <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
- <20240117055457.GL911245@mit.edu>
- <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+	dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="TTUQE9gn"
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta190.mxroute.com (ZoneMTA) with ESMTPSA id 18d1a961cef0003727.004
+ for <linux-bcachefs@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Thu, 18 Jan 2024 03:21:01 +0000
+X-Zone-Loop: d038bbe40767f4c00dd8426017d08bead5b32faa58e3
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
+	; s=x; h=Content-Type:MIME-Version:Message-ID:In-reply-to:Date:Subject:Cc:To:
+	From:References:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=7Jv0ncTMuPmhr68q4kbNwyzle6PgT1ciB9M9807Jgx0=; b=TTUQE9gnty3qbue5sojJADNiXL
+	sgwbhH1YEYTAEzzn+F8Bx6wQkQOX8LXlICv7sC9OvX7lC3uWq2zNmxi5IB3+80HANifFXNPP9uroZ
+	0kwea/Dein6qXB+6o494c7m8oYFeRTjJHaG57GkVqvIel80uj+DuwdwyOfBoH2tSd0w4WmwFdWH32
+	mtbT3905nhiOkIaXbfFjbOfmup58DpmUPv4YLjBldLzph3mnPqap8NDjFyieI45YBTma/JlRLc96B
+	WyFviXVmrasLdRJSD+MM/BGGqP0CoGaasn7S2xhMr3gTqGRDAQhFeWWC5nxpRG4EVFB7RKMPNw8o3
+	fZKBKCcg==;
+References: <20240117092309.1134595-1-glass.su@suse.com>
+ <20240117092309.1134595-2-glass.su@suse.com> <ZagUdl+DlxIw+siv@bfoster>
+User-agent: mu4e 1.7.5; emacs 28.2
+From: Su Yue <l@damenly.org>
+To: Brian Foster <bfoster@redhat.com>
+Cc: Su Yue <glass.su@suse.com>, fstests@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, l@damenly.org
+Subject: Re: [PATCH v2 2/2] common/rc: improve block size support for bcachefs
+Date: Thu, 18 Jan 2024 10:59:14 +0800
+In-reply-to: <ZagUdl+DlxIw+siv@bfoster>
+Message-ID: <h6jb49cm.fsf@damenly.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+Content-Type: text/plain; format=flowed
+X-Authenticated-Id: l@damenly.org
 
-On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
-> Actually, this is partly our fault.  Companies behave exactly like a
-> selfish contributor does:
-> 
-> https://archive.fosdem.org/2020/schedule/event/selfish_contributor/
-> 
-> The question they ask is "if I'm putting money into it, what am I
-> getting out of it".  If the answer to that is that it benefits
-> everybody, it's basically charity  to the entity being asked (and not
-> even properly tax deductible at that), which goes way back behind even
-> real charitable donations (which at least have a publicity benefit) and
-> you don't even get to speak to anyone about it when you go calling with
-> the collecting tin.  If you can say it benefits these 5 tasks your
-> current employees are doing, you might have a possible case for the
-> engineering budget (you might get in the door but you'll still be
-> queuing behind every in-plan budget item).  The best case is if you can
-> demonstrate some useful for profit contribution it makes to the actual
-> line of business (or better yet could be used to spawn a new line of
-> business), so when you're asking for a tool, it has to be usable
-> outside the narrow confines of the kernel and you need to be able to
-> articulate why it's generally useful (git is a great example, it was
-> designed to solve a kernel specific problem, but not it's in use pretty
-> much everywhere source control is a thing).
 
-I have on occasion tried to make the "it benefits the whole ecosystem"
-argument, and that will work on the margins.  But it's a lot harder
-when it's more than a full SWE-year's worth of investment, at least
-more recently.  I *have* tried to get more test investment. with an
-eye towards benefitting not just one company, but in a much more
-general fasion ---- but multi-engineer projects are a very hard sell,
-especially recently.  If Kent wants to impugn my leadership skills,
-that's fine; I invite him to try and see if he can get SVP's cough up
-the dough.  :-)
+On Wed 17 Jan 2024 at 12:55, Brian Foster <bfoster@redhat.com> 
+wrote:
 
-I've certainly had a lot more success with the "Business quid pro quo"
-argument; fscrypt and fsverity was developed for Android and Chrome;
-casefolding support benefited Android and Steam; ext4 fast commits was
-targetted at cloud-based NFS and Samba serving, etc.
+> On Wed, Jan 17, 2024 at 05:23:09PM +0800, Su Yue wrote:
+>> For bcachefs, def_blksz is never assigned even MKFS_OPTIONS 
+>> contains option
+>> '--block_size'. So block size of bcachefs on scratch dev is 
+>> always 4096
+>> if _scratch_mkfs_sized is called without second parameter.
+>>
+>> Add the pattern to set def_blksz if '--block_size' is given in 
+>> MKFS_OPTIONS.
+>>
+>> Signed-off-by: Su Yue <glass.su@suse.com>
+>> ---
+>> changelog:
+>> v2:
+>>     Born.
+>> ---
+>>  common/rc | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/common/rc b/common/rc
+>> index 31c21d2a8360..6a01de69cf05 100644
+>> --- a/common/rc
+>> +++ b/common/rc
+>> @@ -950,6 +950,9 @@ _scratch_mkfs_sized()
+>>  	jfs)
+>>  		def_blksz=4096
+>>  		;;
+>> +	bcachefs)
+>> +		def_blksz=`echo $MKFS_OPTIONS | sed -rn 
+>> 's/.*(--block_size)[ =]?+([0-9]+).*/\2/p'`
+>> +		;;
+>
+> So if the default bcachefs block size is 512b, I wonder if this 
+> should
+> do something like what the udf branch does a few lines above and
+>
+mkfs.bcachefs decides block size by querying statbuf.st_blksize or
+BLKPBSZGET from the device if the option is not given.
 
-My conception of a successful open source maintainer includes a strong
-aspect of a product manager whose job is to find product/market fit.
-That is, I try to be a matchmaker between some feature that I've
-wnated for my subsystem, and would benefit users, and a business case
-that is sufficientlty compelling that a company is willing to fund the
-engineering effort to make taht feature happen.  That companmy might
-be one that signs my patcheck, or might be some other company.  For
-special bonus points, if I can convince some other company to find a
-good chunk of the engineering effort, and it *also* benefits the
-company that pays my salary, that's a win-win that I can crow about at
-performance review time.  :-)
+> override the hardcoded default of 4k. ISTM this whole thing 
+> would be
+> more robust if it just elided the param in the default cases and 
+> let the
+> associated mkfs tool use its own default, but that's probably a 
+> separate
+> issue. Hm?
+>
+Since there is no default block size of bcachefs, maybe we can let
+mkfs.bcachefs decide on its own but it will make chaos when 
+somebody
+reports an unreproducible BUG due to the different block_size even
+we have same local.config. It just happened...
+So for now, I think 4096 is a resonable value of bcachefs block 
+size.
 
-> Somewhere between 2000 and now we seem to have lost our ability to
-> frame the argument in the above terms, because the business quid pro
-> quo argument was what got us money for stuff we needed and the Linux
-> Foundation and the TAB formed, but we're not managing nearly as well
-> now.  The environment has hardened against us (we're no longer the new
-> shiny) but that's not the whole explanation.
-
-There are a couple of dynamics going on here, I think.  When a company
-is just starting to invest in open source, and it is the "new shiny"
-it's a lot easier to make the pitch for big projects that are good for
-everyone.  In the early days of the IBM Linux Technolgy Center, the
-Linux SMP scalability effort, ltp, etc., were significantly funded by
-the IBM LTC.  And in some cases, efforts which didn't make it
-upstream, but which inspired the features to enter Linux (even if it
-wasn't IBM code), such as in the case of the IBM's linux thread or
-volume management, it was still considered a win by IBM management.
-
-Unfortunately, this effect fades over time.  It's a lot easier to fund
-multi-engineer projects which run for more than a year, when a company
-is just starting out, and when it's still trying to attract upstream
-developers, and it has a sizeable "investment" budget.  ("IBM will
-invest a billion dollars in Linux").  But then in later years, the
-VP's have to justify their budget, and so companies tend to become
-more and more "selfish".  After all, that's how capitalism works ---
-"think of the children^H^H^H^H^H^H^H shareholders!"
-
-I suspect we can all think of companies beyond just IBM where this
-dynamic is at play; I certainly can!
-
-The economic cycle can also make a huge difference.  Things got harder
-after the dot com imposiion; then things lossened up.  Howver,
-post-COVID, we've seen multiple companies really become much more
-focused on "how is this good for our company".  It has different names
-at different companies, such as "year of efficiency" or "sharpening
-our focus", but it often is accompanied with layoffs, and a general
-tightening of budgets.  I don't think it's an accident that
-maintainwer grumpiness has been higher than normal in the last year or
-so.
-
-	    	       	  	      	     	- Ted
+--
+Su
+>
+> Brian
+>
+>>  	esac
+>>
+>>  	[ -n "$def_blksz" ] && blocksize=$def_blksz
+>> --
+>> 2.43.0
+>>
