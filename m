@@ -1,125 +1,120 @@
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B236D56745
-	for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 19:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D81F1DFCB
+	for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 21:14:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705691131; cv=none; b=mIhiv9bie8haKbrFctmxTHradHGVzw3kq7ssPYaC2mx7l9+9dxHIRMxHReWIzozCR0cwXiIKtNVT4/aY2P1LDA9QOUXj3GZ90qvbXjfONxqB7kfWrTnXyGG9onjqzfwMBjuXShmmw0wQ6z7iFOzILDy/kNpeTFsFYwQKwGEow7c=
+	t=1705698899; cv=none; b=p5GbiSizTUmzGWCD+2JKl1DWJTT72rzLbYAK5G+If+S5iGp99C8CwNI97ILl4t7QKIsvL/LpXspov/TBJ3fIEmSdSvYFY1exi85+I8Xx4PSjWOpG7WoVV58+YoHYJfspI7Q432scVzCogYoMGkmiIMcg3OWx5NJjQ8sAM+Cago8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705691131; c=relaxed/simple;
-	bh=Dv3AKUp9mbZLCqHHcZN6aA7o9Ua0jZarcVy11aFogys=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nHyHpwI8/rr8Didgf5VGbb6at8GMxKkD8gdS1MQ6s9xDbC2Jm2O8DhIvxSd2KMJqCFhXH3aCNqNFDq1dzL3lFTYaJUfG/fwmQHGuU2gN5YY5UifL1xvusZjmB/rk0JqDlhih2B+pXulPtfiJRL+HoVJXqSQYsPT0gZSkyo6SNRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=U8oul7eb; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+	s=arc-20240116; t=1705698899; c=relaxed/simple;
+	bh=F9F2GNKmjLUbux+84Pb89lxHGN+eZi/eIvcnBt3MVnw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=NVH5dW5b+yVexiYPUYPuT+XOkYVEYwjsxWByV6r+m2/eFVOre11ua83FyXOnshH8yuy9Fx7c78fY+SHlkmn0KESSv6koxl1V+YIogWtyZGcR0HA51mCcKUd0MPxGhoS3Q1k4YIPw4zmzUOoAI9xEdp602Kvkzlh7Yv936u6u7VI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Npu+jXgd; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="U8oul7eb"
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5f0c0ca5ef1so11395047b3.2
-        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 11:05:29 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Npu+jXgd"
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d5db9eb0e7so8387595ad.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 13:14:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1705691128; x=1706295928; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dv3AKUp9mbZLCqHHcZN6aA7o9Ua0jZarcVy11aFogys=;
-        b=U8oul7ebgW1gli+UqF4RtBK9JXpntiTkh0NET0aYdEN2SaNx8KDgk/QF7WluqdJ9UE
-         /cMIsQXN8ThsFuMS7pJPHuJEbNmfQOO5C1NuqpsdEYCViyz9uj1HHfOryQKfFn1EbY+p
-         qneNKnT8S1Wspxb4R0WgWkC+sGMXteMpqet5tzTyxP4pIrfkake0Y6bzrr6S6lB6HJ7T
-         vWCWr07zLktVzGGlq/kU2SHpYu3h63VDN3Ojmov2xJAcJZv06m7aJFii39hbdYF9eWnr
-         Uh18CNHmoq/xJ5TJchwQDUKWl5YxFQsv5t+6iPo+eISQbGPKBhGbg8MJppNawxs2biWc
-         dZSA==
+        d=chromium.org; s=google; t=1705698896; x=1706303696; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1jO5gTxlFcZqy3fTlQWHVnYXrLv/qAX0Mnxwu0zISok=;
+        b=Npu+jXgdh1m5j24CHVteSOvlcRn7MaK7MqofDUJIix+GgSLeP6O6k2Tdb1ohzCK4ZC
+         nPRTHJhdhxwbJ9dl1oZ2Gn5aGuhcWMSgrFQvEMjunPub5aB9ZlNaznsFBMdObUs82kso
+         +z1973MPe3ZAWGYSKC29TH0D+kevL0dTJDUMI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705691128; x=1706295928;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dv3AKUp9mbZLCqHHcZN6aA7o9Ua0jZarcVy11aFogys=;
-        b=Ph1jlsMqvK42QgMhqcT+ejoll4oWj7mmAzhd7MfJ+HCuaNqZ6MHPi/B8onk20hKm0a
-         8f8OxxQZUKcLjDtpTX5xvKtLIF4HAz54AImhmleBpzn22WwvQ81mVTBOMov00SjTLg+G
-         BFtUUblZAF7ilbvtTAY1XLFdtU+rea3eDCdMx+ML39Bkw0LLDW9c0c5R84XHSg9NHH/B
-         t9102lgBVop/9NGLIWrh05ixnKlOyKqEaMikaNGLudn+im/SmF5Sm/8xC+t7e2+gZCS4
-         ZImoXILQfLN2qzMYKqx9tb2hJRpNOT2dufCHP5irEUcY20ipYk/4XgVE9QW3oAzdt+Z7
-         s8Kw==
-X-Gm-Message-State: AOJu0YwQ0TFP4YmweuUCaSo6lRGKUfYcVjRvzxYIrPpZYAWgxsQVL5VB
-	8h7AwKTTeViQhzWtSNiyoV52hlV39xnOSuybJoXsl6qO7u+EstfxEOlZ3gh+t4v4hII7OAoq/4t
-	M2bLRUey4b67HiKbiCXoc4FkAmHWf4qR2iBbNUQ==
-X-Google-Smtp-Source: AGHT+IFEtiDHLie/I5GCf60H90tgsZGXreXdh8cYWtzorAUnHqVop0/IV4mf/+HjXVenA3nTnnZ+KYXfOHHsHSvx2RA=
-X-Received: by 2002:a0d:cb85:0:b0:5ff:5e94:277b with SMTP id
- n127-20020a0dcb85000000b005ff5e94277bmr404871ywd.45.1705691128652; Fri, 19
- Jan 2024 11:05:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705698896; x=1706303696;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1jO5gTxlFcZqy3fTlQWHVnYXrLv/qAX0Mnxwu0zISok=;
+        b=wtKmQWyYUQveWNQv102szUfQnS2vMlRwqA76otI6qzDJSQ9ITj5xVcNZqERvcwrAx3
+         rGI78qrPJ3wqWLMd/y2ySwzLNA06ufEDQfneIvf+LCBM3zBTHqN2MKwf9xRogHTRD34g
+         bPxc90BIqE1JvIBnMu/+5suTTcbeU4d/BJB0lwpHKrBz/ZgK+I+mC2NXVhC4LKcqXnFx
+         GooNj0fAM8GYIvv3Q3moUr6V4a+egrVd16wOO2C14s69cWd65jOeBwZPeCjuJCHDpYBm
+         feNyMNqNumYl+P/IWlyVwm5bQS+fyniXhcd144gktnhzypBuhMbrnIcYDXL1IEn3bmiD
+         v/5w==
+X-Gm-Message-State: AOJu0YyfIqoESCBFYt8JKSqR2AceCGTmZbjOovT2K/6Ycm3lI3S1Im/R
+	Sgk9jfGItbjkir/aUOgYArf90WqrXimfeZJSLr/XYAMVOR52bGhd9+H/Nx+8jg==
+X-Google-Smtp-Source: AGHT+IHteMrsjbxz/XOxufy7SLo0IQwvOQ84Qlzbhc16uTdBfRGUnXUD7sidx0J4g0mfmpxi2kRqHg==
+X-Received: by 2002:a17:902:db05:b0:1d7:20a4:4a91 with SMTP id m5-20020a170902db0500b001d720a44a91mr502945plx.109.1705698896431;
+        Fri, 19 Jan 2024 13:14:56 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id kh6-20020a170903064600b001d5e1353693sm3433530plb.266.2024.01.19.13.14.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 13:14:55 -0800 (PST)
+Date: Fri, 19 Jan 2024 13:14:55 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Andy Whitcroft <apw@canonical.com>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Brian Foster <bfoster@redhat.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Joe Perches <joe@perches.com>, Kees Cook <keescook@chromium.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [GIT PULL] strlcpy removal for v6.8-rc1
+Message-ID: <202401191311.B6AA79D@keescook>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115052451.145611-1-tahbertschinger@gmail.com>
- <pawxsqxbjncrwtxytattvgizwrtmkis6suokgkb6wfm5xvsnhd@njjz4ywheu2a>
- <20240115175509.GA156208@fedora-laptop> <iiraqelv6wtwxcdf2yjtjt26ghejngfantjx7d4mztav27qu7y@gmiztxamveq3>
- <20240115191022.GC156208@fedora-laptop> <z7ajmttuzbvtxn4onwoxph6mevqt2rje2nga6cpux73geffias@p5kk7pqnswf6>
-In-Reply-To: <z7ajmttuzbvtxn4onwoxph6mevqt2rje2nga6cpux73geffias@p5kk7pqnswf6>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Fri, 19 Jan 2024 13:05:17 -0600
-Message-ID: <CALNs47t6qjYZeQKC+ahAaG6iNDGGNe8o+Q8tKhpRynYLWL3R8Q@mail.gmail.com>
-Subject: Re: [PATCH TOOLS 0/2] convert main() from C to Rust
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Thomas Bertschinger <tahbertschinger@gmail.com>, linux-bcachefs@vger.kernel.org, 
-	bfoster@redhat.com, Miguel Ojeda <ojeda@kernel.org>, rust-for-linux@vger.kernel.org, 
-	Benno Lossin <benno.lossin@proton.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, Jan 15, 2024 at 1:22=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Mon, Jan 15, 2024 at 12:10:22PM -0700, Thomas Bertschinger wrote:
-> > On Mon, Jan 15, 2024 at 01:45:22PM -0500, Kent Overstreet wrote:
-> > > On Mon, Jan 15, 2024 at 10:55:09AM -0700, Thomas Bertschinger wrote:
-> > > > I'm leaning towards keeping Make as the primary build tool for now =
-and
-> > > > perhaps a future patch can move towards using Cargo. But other opin=
-ions
-> > > > are welcome.
-> > >
-> > > Let's hold off on that for now.
-> > >
-> > > I'm planning on pullling the Rust code in bch_bindgen into the kernel
-> > > soon, and I want to see how that interacts with the kernel build syst=
-em.
-> > > If there's potential for commonality with the kernel build system, we
-> > > might want to take advantage of that.
-> > >
-> > > (Also, if you're interested in that project, let me know! Getting tha=
-t
-> > > ready for the next merge window is a high priority item, but I have a
-> > > lot of high priority items at the moment... :)
-> >
-> > Sure, I would definitely be interested in helping out with that. I don'=
-t
-> > want to make any promises regarding timeline, since this combines two
-> > worlds--Rust, and Linux Kernel development--that are both still very
-> > new to me. But I can certainly give it an honest try :) as long as you,
-> > or someone else experienced, can help with any questions I might run
-> > into.
->
-> Of course :)
->
-> Join the IRC channel - irc.oftc.net#bcache, we've got quite a few people
-> acquainted with Rust there.
->
-> The main thing that needs to be sorted out is that we require a patched
-> version of bindgen (since rustc can't yet handle types that are both
-> packed and aligned); we need to talk to the rust-for-linux people about
-> whether they'll be ok with switching the kernel to the patched bindgen
-> until we can get a proper fix into rustc.
->
+Hi Linus,
 
-Do you have a link to the patches needed? We are wondering if this is
-something that could be upstreamed.
+Please pull this strlcpy removal for v6.8-rc1. As promised, it is the
+"part 2" of the hardening tree, late in -rc1 now that all the other trees
+with strlcpy() removals have landed. One new user appeared (in bcachefs)
+but was a trivial refactor. The kernel is now free of the strlcpy() API!
 
-Miguel found [1] which seems to be the rustc fix but I am curious how
-you work around this.
+Thanks!
 
-[1]: https://github.com/rust-lang/rust/issues/59154#issuecomment-1899563996
+-Kees
+
+The following changes since commit b0d326da462e20285236e11e4cbc32085de9f363:
+
+  Merge tag 'sched-urgent-2024-01-18' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2024-01-18 11:57:33 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/strlcpy-removal-v6.8-rc1
+
+for you to fetch changes up to d26270061ae66b915138af7cd73ca6f8b85e6b44:
+
+  string: Remove strlcpy() (2024-01-19 11:59:11 -0800)
+
+----------------------------------------------------------------
+strlcpy removal for v6.8-rc1
+
+- Remove of the final (very recent) user of strlcpy() (in bcachefs).
+
+- Remove the strlcpy() API. Long live strscpy().
+
+----------------------------------------------------------------
+Kees Cook (2):
+      bcachefs: Replace strlcpy() with strscpy()
+      string: Remove strlcpy()
+
+ fs/bcachefs/super.c                           |  4 +--
+ include/linux/fortify-string.h                | 51 ---------------------------
+ include/linux/string.h                        |  3 --
+ lib/nlattr.c                                  |  2 +-
+ lib/string.c                                  | 15 --------
+ lib/test_fortify/write_overflow-strlcpy-src.c |  5 ---
+ lib/test_fortify/write_overflow-strlcpy.c     |  5 ---
+ 7 files changed, 3 insertions(+), 82 deletions(-)
+ delete mode 100644 lib/test_fortify/write_overflow-strlcpy-src.c
+ delete mode 100644 lib/test_fortify/write_overflow-strlcpy.c
+
+-- 
+Kees Cook
