@@ -1,127 +1,85 @@
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8996958AB2
-	for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 21:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960B858205
+	for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 22:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705700337; cv=none; b=rEuDFVdtGIP+XlcvlLP9viylG/QPSRhKOrWx1dQeLZvOy5mj/ZM2Ii/jPPJvcgmhQxUWw+np/SCgkvBsQjn1ro56M6ZYuNcfligEJG52Jcz4ZER/5j/jq0V6yPmZ/5dJi7FYeoifJdfpkorZW/19GIi7xH4uIXz2to3+VRW7Hkg=
+	t=1705701636; cv=none; b=ccpVYz0Cp+zHt2Q0urIu/m+JvCwez3eXasknNF4jJxLR9aRu2mP/KbJkEI7e9jONqistWOjMHwfhdS0khhXKoN8BgfH7eU4axC/nzoFT511/kctoSDlIth4TMTWYBwb7watIKjacj+nTB6tX3w0Yy6tQb8I4M35VnZjWsn3NF6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705700337; c=relaxed/simple;
-	bh=XL9DtTTfuY851gbuBUk2IfkNMbF7U+krYQuq/9Wb7eY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vFdy0fEDzfaB3CzMNg9QqbWxvdM91tICWhfluIDZskhTFCP2E8xSPShKUVnosiwcicB8VGGHwj9zuydvCfeHFgjmej6rAXOWH+dIUTwI3NTrpjFXaH/DOSn0iKsbJJy8GT6BvQF5eXU0LCMPM9SyQvxeVzq100cjg8UTMTaKwV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=pjWPTFYM; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+	s=arc-20240116; t=1705701636; c=relaxed/simple;
+	bh=Xqh2spPXg/36Nd5acHIcaHi1wPMckOnZCFfqASQrpgY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Us0Uzd1wShPZu3JDgXi6YPupWj+PyaUMVg+GA8Atx/zQawy9zEENB9HIKTNZQACSkU6hbOaoQzvswD+8daUq4sLRllx7p/7H4F+w61W9emgBE5+TunK9WEp2uSjlWSMzPv/w9SKrC8/kBzG4Kw9fIh3/fNzoLREvc+VNMWy42mU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FXP9BOi8; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="pjWPTFYM"
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7bbdd28a52aso16490439f.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 13:38:54 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FXP9BOi8"
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a28fb463a28so126859466b.3
+        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 14:00:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705700333; x=1706305133; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w81q7ZYYMDn0rmz9YGOMbYmxBkTkJD+b4cgOreci3a0=;
-        b=pjWPTFYMspFhHH6xyL6iQm4e95cOS6Sr7lskBlKTeGrSFlWCQ2CwbIxftP7fxYSM91
-         TdwGWbFF9uZP+ITAADjG68382M3OelxgwqpOqm3ZhwO1VJnf7NF71xKZGEsN0J83WHSz
-         D8696duvcOsZKlzv8XEDPDHRmMOzETcKMKcetFD9S5VUzyUhGoxRrlKp8guTdn0bXT9O
-         DTsEscA3m4eQKzwaMUZ6oTdwORicUks8WXGSGqDtPT5DrZ1QudY3lPPoCwFtRNAjH2V0
-         IhE9oYxYZvQmh8AvHKGzyrOa3+XdHf7qZE7bIkcryxVCe9UWU0FE9ao1DG1WyxaFfAyp
-         MLgA==
+        d=linux-foundation.org; s=google; t=1705701632; x=1706306432; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/xlofjQtofHXFjo9khK5kC3pChLQbc+i5Psd0zeHygA=;
+        b=FXP9BOi8lJxESl4aQoNDvBYdmNGftf8GHq4kmSUcVujGGSTLWLwMpmE2CcGvpgInhR
+         8u014PV3juo9tNlK+V3DJ9BBPYTuvgwxBExSnRIZbiuLYh/yrU1teZ6KGJepiNrZUVW6
+         EakghN4Rv4jwso9qObAvoFX4pF7R9H+87Ld/0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705700333; x=1706305133;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w81q7ZYYMDn0rmz9YGOMbYmxBkTkJD+b4cgOreci3a0=;
-        b=owxYtoWlRU6O8GXowIHY/l4tyU/e27vXOsfYT/Y/gOVdz84lTiOFcGp17HTUoNvh7E
-         WUy6fBR28EOcLhqZjdkdmCrZ5V/OCUnk3WoTuetq3HzKvuHNOUg2n5qbpK9gTxhC+FN6
-         bdsM7UwfLbgGPg7VwwS+Dm/X0qi4I3Xky8XTwWjP/H9MoAjzXSdZVK6JmnHF5ya+Icmc
-         bMqEVwPDFDWpog4aarO2YbjC9nHx0iUNtBglSEFq71pp4dTfG7p5e3HeUEhfifM4sDZe
-         xJdMOnpbwUhHhnP6tXA139SW7z0U5oRgXYYeoB61EtWxIxsWRlF1KCWsM39WaZu4QFAO
-         jsIg==
-X-Gm-Message-State: AOJu0YwQYPBE57Pk0TDqKWj3A3Sd+pDlbdZls1tTx3iilOZPsT3FMNpm
-	VWyn2UDvmgTP3oX3jHvYGgjBmf17cDK6SI2uSA7gOiPncS3rbN8BmnzMI/Q+JYI=
-X-Google-Smtp-Source: AGHT+IEZ7MwAlj/2AVQHt0vLZJCgIM639R5JZkHM4c666ps7wnDkNpJWJW5E+AH/QxzendqT5oYF8g==
-X-Received: by 2002:a05:6e02:1c2f:b0:35f:f59f:9f4c with SMTP id m15-20020a056e021c2f00b0035ff59f9f4cmr905052ilh.1.1705700333638;
-        Fri, 19 Jan 2024 13:38:53 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id bd10-20020a056e02300a00b0035f7f712c78sm5736905ilb.36.2024.01.19.13.38.52
+        d=1e100.net; s=20230601; t=1705701632; x=1706306432;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/xlofjQtofHXFjo9khK5kC3pChLQbc+i5Psd0zeHygA=;
+        b=Ed4+zv8sD6+wB+nxDG905hE4uY7Uk2e5gea3Kpzx9GDMCCbQuk7bFjVRGHUuzTlX7O
+         f/Hxf4HiG3gqEDIszJqoZRELArzR/6D/UjsGRsgiXr+1Ho2kWlECahGAsC5wU5y0yYsX
+         j/A1c+l7yEUJB3NjrIC+IKvHxqAyCOTJN+6lTyaEX0/kAg92NM2KRDAXNDhhIU7iRoh9
+         KYSFJCS6vcfz7rGItZJyLjHHGMWgq3g/9dze0LjXDiYs1f+snLB50KDDDk0NGjXfPt+I
+         ksM0OXiupHkbpH0qDYA5akOTaxeaTqRl7FmMqe0TzUPuEftB0ILY9wlk9C91/tf/mUSq
+         NxLg==
+X-Gm-Message-State: AOJu0YzOgLt78CE5kVuWFnWruI+z1vflF6WXtYjf1uHoeD0yuT1aPyxw
+	Mj4TmAGDXw8iKP7l6ok8Gii+ox9TVOYQfPPxiAQgdYeIKQX/osIne2CzV8hljulFmteaObd+UgZ
+	NENBHog==
+X-Google-Smtp-Source: AGHT+IH2lMvAlIXvtJQ+ydzusgdUUnv+1s6Mj6YP0zTp+Iv1i936D/JM5Eil9xwywzUvOIOxF6CEaA==
+X-Received: by 2002:a17:907:a0d1:b0:a2c:189d:8707 with SMTP id hw17-20020a170907a0d100b00a2c189d8707mr306575ejc.99.1705701632658;
+        Fri, 19 Jan 2024 14:00:32 -0800 (PST)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id fj21-20020a1709069c9500b00a2da3bbeb4esm7259644ejc.26.2024.01.19.14.00.31
+        for <linux-bcachefs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jan 2024 13:38:53 -0800 (PST)
-Message-ID: <772c3422-0657-4c61-9392-0388119902a4@kernel.dk>
-Date: Fri, 19 Jan 2024 14:38:52 -0700
+        Fri, 19 Jan 2024 14:00:31 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so1477241a12.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 14:00:31 -0800 (PST)
+X-Received: by 2002:a05:6402:28a2:b0:55a:590f:3464 with SMTP id
+ eg34-20020a05640228a200b0055a590f3464mr186462edb.3.1705701630814; Fri, 19 Jan
+ 2024 14:00:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] I/O timeouts and system freezes on Kingston A2000 NVME with
- BCACHEFS
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Mia Kanashi <chad@redpilled.dev>, linux-bcachefs@vger.kernel.org,
- linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
- Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
-References: <54fcc150f287216593b19271f443bf13@redpilled.dev>
- <c8f441c2-d662-43fc-9e8e-fc847428dbaa@kernel.dk>
- <ijsmgkglg2eiy6fswgjj7utrtlq7weiih2afx2cssaaz2pjwem@wonvjbulvgsw>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ijsmgkglg2eiy6fswgjj7utrtlq7weiih2afx2cssaaz2pjwem@wonvjbulvgsw>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <202401191311.B6AA79D@keescook>
+In-Reply-To: <202401191311.B6AA79D@keescook>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 19 Jan 2024 14:00:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj0j07B=n1Bt4EkDJpN5CBmxMuZhv+nnFdi0DxDVSiZAA@mail.gmail.com>
+Message-ID: <CAHk-=wj0j07B=n1Bt4EkDJpN5CBmxMuZhv+nnFdi0DxDVSiZAA@mail.gmail.com>
+Subject: Re: [GIT PULL] strlcpy removal for v6.8-rc1
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>, Andy Whitcroft <apw@canonical.com>, 
+	Azeem Shaikh <azeemshaikh38@gmail.com>, Brian Foster <bfoster@redhat.com>, 
+	Dwaipayan Ray <dwaipayanray1@gmail.com>, Joe Perches <joe@perches.com>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 1/19/24 2:34 PM, Kent Overstreet wrote:
-> On Fri, Jan 19, 2024 at 02:22:04PM -0700, Jens Axboe wrote:
->> On 1/19/24 5:25 AM, Mia Kanashi wrote:
->>> This issue was originally reported here: https://github.com/koverstreet/bcachefs/issues/628
->>>
->>> Transferring large amounts of files to the bcachefs from the btrfs
->>> causes I/O timeouts and freezes the whole system. This doesn't seem to
->>> be related to the btrfs, but rather to the heavy I/O on the drive, as
->>> it happens without btrfs being mounted. Transferring the files to the
->>> HDD, and then from it to the bcachefs on the NVME sometimes doesn't
->>> make the problem occur. The problem only happens on the bcachefs, not
->>> on btrfs or ext4. It doesn't happen on the HDD, I can't test with
->>> other NVME drives sadly. The behaviour when it is frozen is like this:
->>> all drive accesses can't process, when not cached in ram, so every app
->>> that is loaded in the ram, continues to function, but at the moment it
->>> tries to access the drive it freezes, until the drive is reset and
->>> those abort status messages appear in the dmesg, after that system is
->>> unfrozen for a moment, if you keep copying the files then the problem
->>> reoccurs once again.
->>>
->>> This drive is known to have problems with the power management in the
->>> past:
->>> https://wiki.archlinux.org/title/Solid_state_drive/NVMe#Troubleshooting
->>> But those problems where since fixed with kernel workarounds /
->>> firmware updates. This issue is may be related, perhaps bcachefs does
->>> something different from the other filesystems, and workarounds don't
->>> apply, which causes the bug to occur only on it. It may be a problem
->>> in the nvme subsystem, or just some edge case in the bcachefs too, who
->>> knows. I tried to disable ASPM and setting latency to 0 like was
->>> suggested, it didn't fix the problem, so I don't know. If this is
->>> indeed related to that specific drive it would be hard to reproduce.
->>
->> From a quick look, looks like a broken drive/firmware. It is suspicious
->> that all failed IO is 256 blocks. You could try and limit the transfer
->> size and see if that helps:
->>
->> # echo 64 > /sys/block/nvme0n1/queue/max_sectors_kb
->>
->> Or maybe the transfer size is just a red herring, who knows. The error
->> code seems wonky:
-> 
-> Does nvme have a blacklist/quirks mechanism, if that ends up resolving
-> it?
+On Fri, 19 Jan 2024 at 13:14, Kees Cook <keescook@chromium.org> wrote:
+>
+> The kernel is now free of the strlcpy() API!
 
-It does, in fact this drive is already marked as having broken suspend.
-So not too surprising if it's misbehaving in other ways too, I guess.
+.. still mentioned in docs and checkpatch. Maybe remove that too?
 
--- 
-Jens Axboe
-
+              Linus
