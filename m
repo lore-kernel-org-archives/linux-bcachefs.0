@@ -1,96 +1,98 @@
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256395821D
-	for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 22:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB9059174
+	for <linux-bcachefs@vger.kernel.org>; Sat, 20 Jan 2024 00:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705704804; cv=none; b=mLoohWp0je04yH1UlIEH3vstLfU6JKH7GeEhXbjWJ0XzZuLWohEIpb9LhQ8ImToGahRjoFBWpOx+kkMU/O0TA62gRzBAgQTftRv5lbqe81KN2dsfbANI8JmvetddmGRiM5vWfjzoR56+L2elRUQTpsEkQBm0xXPpDGC7pHHtIZY=
+	t=1705708804; cv=none; b=sMQv1faID6MjO8lRzksLqUXo1nXTKL4lp1MIdGG1hvJp+M+5U2nrYJ31UCjIcaWwIz+Ny2klpfiOO5wyzaplpVLqqHhRTGvCSgiPRPM/oQH/n1bz7maLVp3zLciwVhUz5w3LTiCZtVpoKVLT95tq6xOtimrXcaSbZjdRyPfOUD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705704804; c=relaxed/simple;
-	bh=cXFQABVkDQ0a0E3pFCzVsdT8CC/V4HbLE2EFYUk9T0U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dBD7kfcmwp181vAp0RSgnq71OtDvEDbz3vhntfl97oaV4KTKtv7XZMnxT13/MmqOBjqy4ep0we1W2WVq9ZOmyzSn3C/dgaGcLZU+kdRnecdqHZgCxvac/e/ahdwDis0J9wqLnIUbQEv3DbtO1dIwfwYxxKJDa84GSO1lD9GdeIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Wsj84mse; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+	s=arc-20240116; t=1705708804; c=relaxed/simple;
+	bh=2Q6PXCNZrdoKAZHFLazUfCoSdXno+GFbgX4A6oP8KSg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aoGUSA5JY8LdLKfyTNDDXgSkdJkpFGYpPhStkxe4G+eSBkYpl+0ZeHlQomG41TRBoWOqYTk9YOB8BsIAZXW6XlBOxjCaC9CojBtXgnKKn+ZM4Vkmja/ChJpzc4653ipTNqaFurLwUEHnJsIetfmalkN9TMU8ErksnowIYg9jnvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZlTm3ICR; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Wsj84mse"
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6d9c2db82b0so1197996b3a.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 14:53:22 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZlTm3ICR"
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2d04888d3dso143268766b.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 16:00:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705704802; x=1706309602; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sWad+tkSe47JjCBUATlLgY9DkjlP39hvBfIJ4tcS5v4=;
-        b=Wsj84mseOuuJwWKO5DTTHSZOePaHDDj2v9gpifG0cMQDIJvA47qHZb6hMliEhYd+9E
-         vfuSfgoblCtjHtIVQ0Tjbp05dyrQ3EgeQd/0sIXLH9K2CNcqnB3HGCa/xfX4Wck3UBHt
-         kj00AktNWWa/WnHZHI7sRgiROmZUW3O8sObMI=
+        d=linux-foundation.org; s=google; t=1705708801; x=1706313601; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eOFYb/RTZy8MO7nlFfaeJozsL+6Jsio6dI6byv2M1AM=;
+        b=ZlTm3ICR3ZRy0BgfySAy6axvWXSQt5OZO5B9Ol118+A9siYwKnWX9mSZBp0lJQYN1u
+         gdKmE8BpVMknKVWR7HwutEGPUGCvwkrgjdO1g+XtNmV44XC6hsrWavTRRVA+wFhokcbx
+         80tY0AyvD/6WbcFCLH/LhmUWjvWdo6B1bIpYk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705704802; x=1706309602;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sWad+tkSe47JjCBUATlLgY9DkjlP39hvBfIJ4tcS5v4=;
-        b=fj2BuJmd6D8NfGPR+zYnVxMklX6NpKE3DT2cCNWSZGumAQ75GITKGk9YO71gkhirao
-         aiN8JYI0C4+QY3+a3UXC2VrIIHelZe7wjWtVkbzi1wG/il/DUaDmd/y/6LPeSyOHHPVT
-         jHAu4uptHoptq+RPZxdzl4yDaC408a45AxQ2isEuUyjr5Y9T1ornE1sLKJ0J1AGvP62U
-         vdVJb8hM0AJuD5sX7W1aZmasro3eZNq8JrvIydalZ2YiCDdV7E9t2yJGrFa1R5Y5SXJr
-         O4pDhs0HBVeahOjGN0yhcRJkNIPdterOseOzfPeWcD1/UW+GNEG5s1Fty3iSC+1mWWkt
-         Q9Ug==
-X-Gm-Message-State: AOJu0Yxpag+to4wLoNl3cQXGzyVCUqD0kEUCHKwk0QTrLJy/44k2Oxit
-	vklS/WKAoM4aX8ByIEe+f7z3F0KYC+j9f4w6jEhn8oSqy6fW4TKQJmOO9phhEw==
-X-Google-Smtp-Source: AGHT+IE+IQHn+4YqB/lmtgA3p4J8DA8wXFp6+0CzprVWrwhYC9bV9FJqlGyXVmXghPBe/oDy22G7SQ==
-X-Received: by 2002:a05:6a20:3943:b0:19b:827d:ee10 with SMTP id r3-20020a056a20394300b0019b827dee10mr553889pzg.92.1705704802463;
-        Fri, 19 Jan 2024 14:53:22 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id pl15-20020a17090b268f00b0028bdc73edfcsm4660022pjb.12.2024.01.19.14.53.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 14:53:22 -0800 (PST)
-Date: Fri, 19 Jan 2024 14:53:21 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Andy Whitcroft <apw@canonical.com>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Brian Foster <bfoster@redhat.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Joe Perches <joe@perches.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [GIT PULL] strlcpy removal for v6.8-rc1
-Message-ID: <202401191450.CAF805687A@keescook>
-References: <202401191311.B6AA79D@keescook>
- <CAHk-=wj0j07B=n1Bt4EkDJpN5CBmxMuZhv+nnFdi0DxDVSiZAA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1705708801; x=1706313601;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eOFYb/RTZy8MO7nlFfaeJozsL+6Jsio6dI6byv2M1AM=;
+        b=BAWxkiaJYIUGrllDyGtAN4+IGwxBOQ4QfIOZGD7JRTzm3tgUGsmkWKHlk+REMLPGHX
+         JYckOG/3cSq3E96EBPtNoNbkPAWFaMtA+GGDAPPpo154OrRjdBkBF7E5oixrPBDiMxR/
+         SXP3pNbmtN39WcFw1HjhTdTZ/om6PXenyp+BfREmJy5tbLWWQLXc8wFy9sg6yi/tij0n
+         /IryFThzqS2U1hl0eXugEJC9195fVHjvP31+f+H/rva6U9dU5XI0nTbtNvvwgRBLzbGa
+         5kkjkiV2WehYrYS0gQD0adg1lKZf8YwXNA3np7gYAFVVkp/A/OauKXZt6NaQHp5j8NQ8
+         zTZQ==
+X-Gm-Message-State: AOJu0Yw5VV72O/GnjQLjF1XyvzxWRmSh10r/l2gBqndR0q7l+awFax+M
+	8M2oSkCVEeC0WQp+HR+4Z5labmMr/cvfBfqRPXaPjSFtNpv122x685KgjrOxPkfb6HAIzPxKEWh
+	aeEJihg==
+X-Google-Smtp-Source: AGHT+IG0lfrpN3hfSg3GRoUccxT4cMEfuuAhnImO+9sq4NVW6n4iVJe7NR+FzBsqdwmJqUz3gwyOyA==
+X-Received: by 2002:a17:906:2b8a:b0:a28:921e:cc53 with SMTP id m10-20020a1709062b8a00b00a28921ecc53mr228551ejg.54.1705708801249;
+        Fri, 19 Jan 2024 16:00:01 -0800 (PST)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id f4-20020a170906c08400b00a2b10e20292sm10826051ejz.215.2024.01.19.15.59.59
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jan 2024 16:00:00 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so1623750a12.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 15:59:59 -0800 (PST)
+X-Received: by 2002:a05:6402:228a:b0:559:b648:b954 with SMTP id
+ cw10-20020a056402228a00b00559b648b954mr243986edb.47.1705708799556; Fri, 19
+ Jan 2024 15:59:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj0j07B=n1Bt4EkDJpN5CBmxMuZhv+nnFdi0DxDVSiZAA@mail.gmail.com>
+References: <202401191311.B6AA79D@keescook> <CAHk-=wj0j07B=n1Bt4EkDJpN5CBmxMuZhv+nnFdi0DxDVSiZAA@mail.gmail.com>
+ <202401191450.CAF805687A@keescook>
+In-Reply-To: <202401191450.CAF805687A@keescook>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 19 Jan 2024 15:59:43 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whu2k-PwHVZS4uKj3kksVUF_Fqzap-YXwnVKeC6S9pBNg@mail.gmail.com>
+Message-ID: <CAHk-=whu2k-PwHVZS4uKj3kksVUF_Fqzap-YXwnVKeC6S9pBNg@mail.gmail.com>
+Subject: Re: [GIT PULL] strlcpy removal for v6.8-rc1
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>, Andy Whitcroft <apw@canonical.com>, 
+	Azeem Shaikh <azeemshaikh38@gmail.com>, Brian Foster <bfoster@redhat.com>, 
+	Dwaipayan Ray <dwaipayanray1@gmail.com>, Joe Perches <joe@perches.com>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jan 19, 2024 at 02:00:14PM -0800, Linus Torvalds wrote:
-> On Fri, 19 Jan 2024 at 13:14, Kees Cook <keescook@chromium.org> wrote:
-> >
-> > The kernel is now free of the strlcpy() API!
-> 
-> .. still mentioned in docs and checkpatch. Maybe remove that too?
+On Fri, 19 Jan 2024 at 14:53, Kees Cook <keescook@chromium.org> wrote:
+>
+> Sorry, I should have called that out in the PR, but the commit itself
+> had my rationale for intentionally leaving those in:
+>
+>     Leave mentions in Documentation (about its deprecation), and in
+>     checkpatch.pl (to help migrate host-only tools/ usage).
 
-Sorry, I should have called that out in the PR, but the commit itself
-had my rationale for intentionally leaving those in:
+Hmm. Yeah, I guess the host tooling is an issue, although there
+strlcpy makes a lot more sense since I think it exists in various user
+space libraries (while strscpy() is kernel-only).
 
-    Leave mentions in Documentation (about its deprecation), and in
-    checkpatch.pl (to help migrate host-only tools/ usage).
+> If you feel like that's not right, I can either respin or send a
+> follow-up patch?
 
-If you feel like that's not right, I can either respin or send a
-follow-up patch?
+Oh, I already took the pull request, I was just reacting to leftovers.
+This is not a big deal.
 
--Kees
-
--- 
-Kees Cook
+              Linus
