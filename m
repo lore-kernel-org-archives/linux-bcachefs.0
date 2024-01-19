@@ -1,172 +1,125 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2B454667
-	for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 16:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B236D56745
+	for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 19:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705680478; cv=none; b=RhEcuf/pEZ315jXIcXWCvGhE6gnBteJrIEDmshzh0+83bX0w2ZB5MvEIZATocntbbhrnbbFOek+fRjNZVoZUHyiIw+Pa6ME+ZyUj7SERFBhx5SU8j52LfIDdLdIlHVRsLNb49QDDbIy6rAYEue/gpFCR70jZJsdI09JsSZSpZYM=
+	t=1705691131; cv=none; b=mIhiv9bie8haKbrFctmxTHradHGVzw3kq7ssPYaC2mx7l9+9dxHIRMxHReWIzozCR0cwXiIKtNVT4/aY2P1LDA9QOUXj3GZ90qvbXjfONxqB7kfWrTnXyGG9onjqzfwMBjuXShmmw0wQ6z7iFOzILDy/kNpeTFsFYwQKwGEow7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705680478; c=relaxed/simple;
-	bh=YCyYbSKIJMFpARo3ntSuLegG9b+aQ8OdHSjhC7Lp8zk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OLpt68Zv/HHhoC0DyV2W3B60zMzr7VP9ef9DmAOFl9o6HMuKKAt0HBAv5WZ8L0g2c4pJFls6kT73pGMWTFxCsXQaYXWjBK6FGIN8rSVG3vu19ovsR7p7gGzVpqoKcXkeygK8H3BY/Jv1MDTDgJSwPSfFYcL+raqbUDxPpzAQoo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z7aUJScQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1705691131; c=relaxed/simple;
+	bh=Dv3AKUp9mbZLCqHHcZN6aA7o9Ua0jZarcVy11aFogys=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nHyHpwI8/rr8Didgf5VGbb6at8GMxKkD8gdS1MQ6s9xDbC2Jm2O8DhIvxSd2KMJqCFhXH3aCNqNFDq1dzL3lFTYaJUfG/fwmQHGuU2gN5YY5UifL1xvusZjmB/rk0JqDlhih2B+pXulPtfiJRL+HoVJXqSQYsPT0gZSkyo6SNRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=U8oul7eb; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z7aUJScQ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705680476;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G/IYbea0AebPY0Ag11OP4fbl7cOQO4x0KBWk+c1hMjk=;
-	b=Z7aUJScQBLpl5Uzcb0DNLmc5pceQt8rZZdQl/UCestHMq60jHLMnE8Ad59gc0bitLH7sju
-	iya7VnysyoEQPyHou5EbPcIiNbC8q53pKWC05dvmBDeTvXpn/RZXxUkCz70rkUD1SV0CPb
-	x0/4Rp3kw+S/zW+s3+616QryQFT2jfQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-665-JYGK08IqPZufH4U6jp6jCA-1; Fri,
- 19 Jan 2024 11:07:51 -0500
-X-MC-Unique: JYGK08IqPZufH4U6jp6jCA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4B93C3821363;
-	Fri, 19 Jan 2024 16:07:51 +0000 (UTC)
-Received: from bfoster (unknown [10.22.8.116])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1305E2166B35;
-	Fri, 19 Jan 2024 16:07:50 +0000 (UTC)
-Date: Fri, 19 Jan 2024 11:09:09 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Su Yue <l@damenly.org>
-Cc: Su Yue <glass.su@suse.com>, fstests@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] common/rc: improve block size support for bcachefs
-Message-ID: <ZaqepfRjb1vU+nDw@bfoster>
-References: <20240117092309.1134595-1-glass.su@suse.com>
- <20240117092309.1134595-2-glass.su@suse.com>
- <ZagUdl+DlxIw+siv@bfoster>
- <h6jb49cm.fsf@damenly.org>
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="U8oul7eb"
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5f0c0ca5ef1so11395047b3.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Jan 2024 11:05:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1705691128; x=1706295928; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dv3AKUp9mbZLCqHHcZN6aA7o9Ua0jZarcVy11aFogys=;
+        b=U8oul7ebgW1gli+UqF4RtBK9JXpntiTkh0NET0aYdEN2SaNx8KDgk/QF7WluqdJ9UE
+         /cMIsQXN8ThsFuMS7pJPHuJEbNmfQOO5C1NuqpsdEYCViyz9uj1HHfOryQKfFn1EbY+p
+         qneNKnT8S1Wspxb4R0WgWkC+sGMXteMpqet5tzTyxP4pIrfkake0Y6bzrr6S6lB6HJ7T
+         vWCWr07zLktVzGGlq/kU2SHpYu3h63VDN3Ojmov2xJAcJZv06m7aJFii39hbdYF9eWnr
+         Uh18CNHmoq/xJ5TJchwQDUKWl5YxFQsv5t+6iPo+eISQbGPKBhGbg8MJppNawxs2biWc
+         dZSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705691128; x=1706295928;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dv3AKUp9mbZLCqHHcZN6aA7o9Ua0jZarcVy11aFogys=;
+        b=Ph1jlsMqvK42QgMhqcT+ejoll4oWj7mmAzhd7MfJ+HCuaNqZ6MHPi/B8onk20hKm0a
+         8f8OxxQZUKcLjDtpTX5xvKtLIF4HAz54AImhmleBpzn22WwvQ81mVTBOMov00SjTLg+G
+         BFtUUblZAF7ilbvtTAY1XLFdtU+rea3eDCdMx+ML39Bkw0LLDW9c0c5R84XHSg9NHH/B
+         t9102lgBVop/9NGLIWrh05ixnKlOyKqEaMikaNGLudn+im/SmF5Sm/8xC+t7e2+gZCS4
+         ZImoXILQfLN2qzMYKqx9tb2hJRpNOT2dufCHP5irEUcY20ipYk/4XgVE9QW3oAzdt+Z7
+         s8Kw==
+X-Gm-Message-State: AOJu0YwQ0TFP4YmweuUCaSo6lRGKUfYcVjRvzxYIrPpZYAWgxsQVL5VB
+	8h7AwKTTeViQhzWtSNiyoV52hlV39xnOSuybJoXsl6qO7u+EstfxEOlZ3gh+t4v4hII7OAoq/4t
+	M2bLRUey4b67HiKbiCXoc4FkAmHWf4qR2iBbNUQ==
+X-Google-Smtp-Source: AGHT+IFEtiDHLie/I5GCf60H90tgsZGXreXdh8cYWtzorAUnHqVop0/IV4mf/+HjXVenA3nTnnZ+KYXfOHHsHSvx2RA=
+X-Received: by 2002:a0d:cb85:0:b0:5ff:5e94:277b with SMTP id
+ n127-20020a0dcb85000000b005ff5e94277bmr404871ywd.45.1705691128652; Fri, 19
+ Jan 2024 11:05:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <h6jb49cm.fsf@damenly.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+References: <20240115052451.145611-1-tahbertschinger@gmail.com>
+ <pawxsqxbjncrwtxytattvgizwrtmkis6suokgkb6wfm5xvsnhd@njjz4ywheu2a>
+ <20240115175509.GA156208@fedora-laptop> <iiraqelv6wtwxcdf2yjtjt26ghejngfantjx7d4mztav27qu7y@gmiztxamveq3>
+ <20240115191022.GC156208@fedora-laptop> <z7ajmttuzbvtxn4onwoxph6mevqt2rje2nga6cpux73geffias@p5kk7pqnswf6>
+In-Reply-To: <z7ajmttuzbvtxn4onwoxph6mevqt2rje2nga6cpux73geffias@p5kk7pqnswf6>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Fri, 19 Jan 2024 13:05:17 -0600
+Message-ID: <CALNs47t6qjYZeQKC+ahAaG6iNDGGNe8o+Q8tKhpRynYLWL3R8Q@mail.gmail.com>
+Subject: Re: [PATCH TOOLS 0/2] convert main() from C to Rust
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Thomas Bertschinger <tahbertschinger@gmail.com>, linux-bcachefs@vger.kernel.org, 
+	bfoster@redhat.com, Miguel Ojeda <ojeda@kernel.org>, rust-for-linux@vger.kernel.org, 
+	Benno Lossin <benno.lossin@proton.me>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 18, 2024 at 10:59:14AM +0800, Su Yue wrote:
-> 
-> On Wed 17 Jan 2024 at 12:55, Brian Foster <bfoster@redhat.com> wrote:
-> 
-> > On Wed, Jan 17, 2024 at 05:23:09PM +0800, Su Yue wrote:
-> > > For bcachefs, def_blksz is never assigned even MKFS_OPTIONS contains
-> > > option
-> > > '--block_size'. So block size of bcachefs on scratch dev is always
-> > > 4096
-> > > if _scratch_mkfs_sized is called without second parameter.
-> > > 
-> > > Add the pattern to set def_blksz if '--block_size' is given in
-> > > MKFS_OPTIONS.
-> > > 
-> > > Signed-off-by: Su Yue <glass.su@suse.com>
-> > > ---
-> > > changelog:
-> > > v2:
-> > >     Born.
-> > > ---
-> > >  common/rc | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/common/rc b/common/rc
-> > > index 31c21d2a8360..6a01de69cf05 100644
-> > > --- a/common/rc
-> > > +++ b/common/rc
-> > > @@ -950,6 +950,9 @@ _scratch_mkfs_sized()
-> > >  	jfs)
-> > >  		def_blksz=4096
-> > >  		;;
-> > > +	bcachefs)
-> > > +		def_blksz=`echo $MKFS_OPTIONS | sed -rn 's/.*(--block_size)[
-> > > =]?+([0-9]+).*/\2/p'`
-> > > +		;;
-> > 
-> > So if the default bcachefs block size is 512b, I wonder if this should
-> > do something like what the udf branch does a few lines above and
-> > 
-> mkfs.bcachefs decides block size by querying statbuf.st_blksize or
-> BLKPBSZGET from the device if the option is not given.
-> 
-> > override the hardcoded default of 4k. ISTM this whole thing would be
-> > more robust if it just elided the param in the default cases and let the
-> > associated mkfs tool use its own default, but that's probably a separate
-> > issue. Hm?
-> > 
-> Since there is no default block size of bcachefs, maybe we can let
-> mkfs.bcachefs decide on its own but it will make chaos when somebody
-> reports an unreproducible BUG due to the different block_size even
-> we have same local.config. It just happened...
-> So for now, I think 4096 is a resonable value of bcachefs block size.
-> 
+On Mon, Jan 15, 2024 at 1:22=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Mon, Jan 15, 2024 at 12:10:22PM -0700, Thomas Bertschinger wrote:
+> > On Mon, Jan 15, 2024 at 01:45:22PM -0500, Kent Overstreet wrote:
+> > > On Mon, Jan 15, 2024 at 10:55:09AM -0700, Thomas Bertschinger wrote:
+> > > > I'm leaning towards keeping Make as the primary build tool for now =
+and
+> > > > perhaps a future patch can move towards using Cargo. But other opin=
+ions
+> > > > are welcome.
+> > >
+> > > Let's hold off on that for now.
+> > >
+> > > I'm planning on pullling the Rust code in bch_bindgen into the kernel
+> > > soon, and I want to see how that interacts with the kernel build syst=
+em.
+> > > If there's potential for commonality with the kernel build system, we
+> > > might want to take advantage of that.
+> > >
+> > > (Also, if you're interested in that project, let me know! Getting tha=
+t
+> > > ready for the next merge window is a high priority item, but I have a
+> > > lot of high priority items at the moment... :)
+> >
+> > Sure, I would definitely be interested in helping out with that. I don'=
+t
+> > want to make any promises regarding timeline, since this combines two
+> > worlds--Rust, and Linux Kernel development--that are both still very
+> > new to me. But I can certainly give it an honest try :) as long as you,
+> > or someone else experienced, can help with any questions I might run
+> > into.
+>
+> Of course :)
+>
+> Join the IRC channel - irc.oftc.net#bcache, we've got quite a few people
+> acquainted with Rust there.
+>
+> The main thing that needs to be sorted out is that we require a patched
+> version of bindgen (since rustc can't yet handle types that are both
+> packed and aligned); we need to talk to the rust-for-linux people about
+> whether they'll be ok with switching the kernel to the patched bindgen
+> until we can get a proper fix into rustc.
+>
 
-I think we run into this no matter what if we pick a size out of a hat,
-regardless of what the value is. If somebody is testing with default
-blocksize (i.e. based on mkfs) on a filesystem where the default isn't
-actually 4k, then it seems quite unexpected that _scratch_mkfs_sized
-would use something different from _scratch_mkfs when a block size isn't
-explicitly specified. That's exactly the situation we ran into with the
-generic/361 thing where I would have expected this test to use 512b
-blocks.
+Do you have a link to the patches needed? We are wondering if this is
+something that could be upstreamed.
 
-ISTM that the 4k value in _scratch_mkfs_sized() is mainly a last resort
-default value so the $blocks calculation can work for any filesystem
-that might not be properly supported by the function. The function looks
-a little wonky overall, but I think there are at least a couple options
-to improve things for bcachefs. FWIW, it also looks to me that nothing
-actually passes a blocksize param to _scratch_mkfs_sized, so perhaps we
-could just drop that blocksize=$2 parameter across the board as a
-simplification?
+Miguel found [1] which seems to be the rustc fix but I am curious how
+you work around this.
 
-With that, I think bcache could either:
-
-1. Do something like def_blksize=`blockdev --getpbsz $SCRATCH_DEV` in
-the first switch if no block size is specified in MKFS_OPTIONS (or
-whatever best mimics mkfs logic).
-
-OR
-
-2. Do something like the following in the last switch:
-
-	[ -n $def_blksize ] && def_blksize="--block_size=$def_blksize"
-	$MKFS_BCACHEFS_PROG ... $def_blksize $SCRATCH_DEV
-
-... to allow mkfs to determine the block size. I _think_ that works
-because the bcachefs format doesn't depend on $blocks at all, so
-whatever $blocksize was set to is irrelevent unless $def_blksize was set
-above, but I could be missing something. That also assumes blocksize
-wasn't set to something by the caller.
-
-If correct, option #2 seems a little cleaner to me, but other
-thoughts/ideas?
-
-Brian
-
-> --
-> Su
-> > 
-> > Brian
-> > 
-> > >  	esac
-> > > 
-> > >  	[ -n "$def_blksz" ] && blocksize=$def_blksz
-> > > --
-> > > 2.43.0
-> > > 
-> 
-
+[1]: https://github.com/rust-lang/rust/issues/59154#issuecomment-1899563996
