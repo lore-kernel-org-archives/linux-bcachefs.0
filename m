@@ -1,95 +1,63 @@
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C584B383B8
-	for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jan 2024 22:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6389F38DF9;
+	Sun, 21 Jan 2024 22:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705874776; cv=none; b=SDHn2JzjTf6uaIsvwAoMVyiEO+TP6rGoHQ6RJw7PPK9np11xzT/2j7fEHbXFzlK97RMwr+/tAWtkc5KP0dXwpCnh9JYbhl7IM2m183H9Z0J/LiVvyR+NDFTN5Xqn/lPiRvEGeKJMMgct+R6VDnrlz/cQ8s/NajwIaoQt7cjxT+o=
+	t=1705875835; cv=none; b=pA1rvuXVND1AwBoIa3KBp8K7FT4Uf0ZbEKp8Y2tqknPQFfOK4bF1tzIlyhHNtqjZPS8K8T6zrB+TzKJv7feoQ4OlOoQoyds6J7et495ftUcH/2qk0SW93hJr6r8c+QU/IuBwr46Q3D272SOJI5gZOkHi0mJoyWOCzG6baL3yGhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705874776; c=relaxed/simple;
-	bh=eKWkdKMEDARbLDRUqfnzbi3sl/rOE8242LOsXnrFZJ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kcD0xb1fANdZxDX5DpIkgYFCMcq2PaOjQ2Bce95PIY9EwsssDd0zP6knxtGXLa1F76DUeDubEd/Fv4QV/kqiNP/sqPr5bCWQVYZYOl0aOhnwiH7om0QkPWtG0cmSYUE9KirrvbfXD+2cX94TjzJP6OHOwmCRGahLnwvP9qQWDfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GnUqPOHA; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1705875835; c=relaxed/simple;
+	bh=xAds2pXHVZSmfZj/XJ/cxloKWSR1UFfu3kPTCn0RmQE=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=nFjtdF2Qew4KlAt70QhyAmyZEAke0MaT/hDMtevsh/nBK/lNEIIAcJUd2YM3EAT7/gyPIKUIHHUG9+cRO/sLZqt0C6M7fnCSPSKAeHmwuFPNrPCIjfJ6GdWyQ6hhe/7F0cn3Z6KA81rj46PAwvmUYMtSp5c88C3LE0ude28+2y0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UzjwKgJM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GnUqPOHA"
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50eabfac2b7so3015506e87.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jan 2024 14:06:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1705874772; x=1706479572; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QlVOU0qgbHsfmWmBhtAfMlGMpRk/E6kiXNX1BeiPg/E=;
-        b=GnUqPOHACOv4PYToAApEQmo36jT+KsCI++EXCNa7Ki9UF8Ww/dpcOFMpcu2Yv5jhTj
-         yoFIKH+UxChATRuCgiX1FFeMSxEoDxNh56tqfH4X176HSyQOhZaZ9uDvkmS+oINfwMb3
-         En3gIaOBDci0BdUHoaEzTA1J+OfSnDd/FUPIM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705874772; x=1706479572;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QlVOU0qgbHsfmWmBhtAfMlGMpRk/E6kiXNX1BeiPg/E=;
-        b=oVVIoDJSt640c7Defjgr3fagd//3PDp/AlAPGpVgJp9B0J3wLW7kANl9KW3xjWkQHX
-         KDjBMPJNV8dXZR8YcZ378Cn6v2fV3n0SukE0V1yp2ry2G4G6Ng7OjOycJg5Y50bR6usF
-         qAF4Gl/9rfcR7cmTM/OtPkc5ty6oMME5/SOtE3Gyuch7kLTeB5vSNnWiNi9Btwi7ijmR
-         S8Nhi6Xc3B9vZPlxq5ZMMu9kjbWBwB2YPeOyLQ79/s50XOk2EjxqiTgOFWKYzVR7QC10
-         l7vBRa2Csg3TdtntUncByVaDo+u/OQzSaUPwhz4hL234anHn2PQFYQ5X7Y5g8baDq95s
-         6mGQ==
-X-Gm-Message-State: AOJu0YwI8QpgCos01VpNKreVltIsv4sEWgQN7JM2eeGUZcQOFxwf5wh9
-	r42YWJFWqCkxOH0gwECaNBRVorWeqIuFrIkIKWJEXDupd3tvTgVgu2l0beIxnKzcfWcy8wwghyN
-	eOcgKdg==
-X-Google-Smtp-Source: AGHT+IHm5JAVd3xwP4hOe9p+KL4e3cLqGv1yAtIf6ueSb7+GC3cyMe8UW4bXyEjxVFO4sdc5qJ+LPA==
-X-Received: by 2002:a05:6512:33cf:b0:50e:7e53:8f6b with SMTP id d15-20020a05651233cf00b0050e7e538f6bmr1261773lfg.127.1705874772544;
-        Sun, 21 Jan 2024 14:06:12 -0800 (PST)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id wb9-20020a170907d50900b00a2fe4463711sm1725349ejc.0.2024.01.21.14.06.11
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jan 2024 14:06:12 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55a44bb66d3so2694010a12.1
-        for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jan 2024 14:06:11 -0800 (PST)
-X-Received: by 2002:a05:6402:1a2f:b0:55a:6d67:6319 with SMTP id
- be15-20020a0564021a2f00b0055a6d676319mr1539223edb.54.1705874771698; Sun, 21
- Jan 2024 14:06:11 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UzjwKgJM"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E119BC433F1;
+	Sun, 21 Jan 2024 22:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705875834;
+	bh=xAds2pXHVZSmfZj/XJ/cxloKWSR1UFfu3kPTCn0RmQE=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=UzjwKgJMrS1kDL5oKnDUy5LDXRv8O4R+q+d0JnsHsu2i6FkFSEY+w3ewy2abMstL0
+	 iYdGD0GCPwehuKIC2b2XwfLuvYvg4hKEfDHWg0iJOhW6W8LI980WkIUQVPFvJ2G9hL
+	 QGfkI7M+bzZFA+p1IapjGDcHsTUjq20GjnIeX/EAqiG8mlokRVUCG/xoVIkQ+aan2r
+	 vekGBMzVQB7/DNzei2I+sMmaY363DiuqLXkthLZ+zjVcyDd3EGGLshpBswu8pAcWKe
+	 E9VbWSAunj/C8J0MW4QVkndlCoROJp2eBGv3HmKc6lQbYwco7i/LoKnizKOrZ26nlP
+	 lKHJEhHveDEpg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C433ED8C970;
+	Sun, 21 Jan 2024 22:23:54 +0000 (UTC)
+Subject: Re: [GIT PULL] More bcachefs updates for 6.8-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <a34bqdrz33jw26a5px4ul3eid5zudgaxavc2xqoftk2tywgi5w@ghgoiavnkhtd>
+References: <a34bqdrz33jw26a5px4ul3eid5zudgaxavc2xqoftk2tywgi5w@ghgoiavnkhtd>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <a34bqdrz33jw26a5px4ul3eid5zudgaxavc2xqoftk2tywgi5w@ghgoiavnkhtd>
+X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-01-21
+X-PR-Tracked-Commit-Id: 249f441f83c546281f1c175756c81fac332bb64c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 35a4474b5c3dd4315f72bd53e87b97f128d9bb3d
+Message-Id: <170587583477.27364.7964231928269674267.pr-tracker-bot@kernel.org>
+Date: Sun, 21 Jan 2024 22:23:54 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <a34bqdrz33jw26a5px4ul3eid5zudgaxavc2xqoftk2tywgi5w@ghgoiavnkhtd>
-In-Reply-To: <a34bqdrz33jw26a5px4ul3eid5zudgaxavc2xqoftk2tywgi5w@ghgoiavnkhtd>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 21 Jan 2024 14:05:55 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjKjvytH19t2mMHZbkY2bpGurGbG4Tb7xmTjfzA71Lb7g@mail.gmail.com>
-Message-ID: <CAHk-=wjKjvytH19t2mMHZbkY2bpGurGbG4Tb7xmTjfzA71Lb7g@mail.gmail.com>
-Subject: Re: [GIT PULL] More bcachefs updates for 6.8-rc1
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 21 Jan 2024 at 13:35, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> Hi Linus, another small bcachefs pull. Some fixes, Some refactoring,
-> some minor features.
+The pull request you sent on Sun, 21 Jan 2024 16:35:06 -0500:
 
-I'm taking this, but only because bcachefs is new.
+> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-01-21
 
-You need to be aware that the merge window is for *merging*. Not for
-new development.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/35a4474b5c3dd4315f72bd53e87b97f128d9bb3d
 
-And almost all of the code here is new development.
+Thank you!
 
-What you send during the merge window is stuff that should all have
-been ready *before* the merge window opened, not whatever random
-changes you made during it.
-
-Now, fixes happen any time, but for that argument to work they need to
-be real fixes. Not "reorganize the code to make things easier to fix"
-with the fix being something small on top of a big change.
-
-                Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
