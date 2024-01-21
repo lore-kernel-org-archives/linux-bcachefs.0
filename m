@@ -1,224 +1,191 @@
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-io1-f66.google.com (mail-io1-f66.google.com [209.85.166.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9482A383BA;
-	Sun, 21 Jan 2024 15:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54495376E2;
+	Sun, 21 Jan 2024 16:11:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705851437; cv=none; b=ezkxdlLcmJIhQZrZDI/mu1MAxAnrRFDMSEssSFLf75m5Sup2jKYuy6w2jb7wvf5dRnaAOcL6ePSDY+7kXNvSsPg8Vl6tmOFiv1X0IW8caZ/LQm6ouh7C6HbByA3r9BBfp03iElUi3Nc/huXKZDlFJ7hbtGw8A//oX3ZKFR4CHEs=
+	t=1705853491; cv=none; b=ijTAsKZJvs09c80RVVZG+fMsEh/0XypeHWnwUMsXFiYInoye+YQdWFsRsGatKs2Wjfey71/SFYXSzrNJ9eLP5NEFyZN4bIiFbN/J3qwIYzMZ3O2ExhcsCbft/Rj59q8HxZMiFtYcElbUUDwKYKzra3/HXmmnfswu/oeQ/37zYDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705851437; c=relaxed/simple;
-	bh=/VqrbHUIRmrLzrdN+YUUNaTaIebnWjB3AeI+d3LBsk4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tab9B317JCvR+flhM7eG0m/Om/QPW6BQZRD2fiVVhk3jHymM/qJbRIl/A4skEYah8dwShTH5aUbbVWd1cNBNHUKscRJ4YQ3WYP4QXGzV/cdIkpJoV9o16ZnWobsTUCAA8GK1vwukjxbu5JXjP7RuxO8ofGCtxbGaEe5HZo2N7IM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ucqf9o1m; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1705853491; c=relaxed/simple;
+	bh=KHfILTQu09kI25WvL4T/Zev7kLpIOmmLihCAJhUNB68=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qYbvkJ/gSo7ORg9C5xRRsRh43EkNjd6PYqr92WBhJGfeekT75xqbyk89eNl21AO8PTLbXV4hk0+LfeQLqf6L2MCykEMyP5/5bgWbmM16tqABgV8F3PBzt/s8uB3M4rrnKtKechBOUHh11hAIMkem143utRkIzW/cuNd98u6+5Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FrPFO7H1; arc=none smtp.client-ip=209.85.166.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ucqf9o1m"
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5cdbc42f5efso194278a12.0;
-        Sun, 21 Jan 2024 07:37:15 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FrPFO7H1"
+Received: by mail-io1-f66.google.com with SMTP id ca18e2360f4ac-7bc32b0fdadso113902039f.2;
+        Sun, 21 Jan 2024 08:11:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705851435; x=1706456235; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l18zRlt2Y1RNd/KM4WSl1s19uASsIpnGpnt5xxTh/gA=;
-        b=Ucqf9o1mFallL8saWFNH6iKgwij3WAxUv6o7wEPAcXxfsLK73YZ+D03lYeObvioHmF
-         WKnrdpmC7zUD1Rj3hc/Catf+UX7BexD8vSjRK+zpLhQZG+d4jBhwFcnY6pGMpnypU8PV
-         yb8/qB9HPto9KejvsALTKtWrFKLh2iILHnFN5oCUh6WLFCvhg/bFqwnobjVqa37eby9F
-         IrEvc/KGD9CM4ZvxB/ZngpVjn2COxYY/UdlySyq/mES2JW95wwfXY10AqoZUO78bBBpe
-         91PF0fYTTHW4yH5Sc1MVucXKTqsxspMZVxSakNdzI5NCeMwxkIafTAHMDJtVSDkACXaf
-         PaCg==
+        d=gmail.com; s=20230601; t=1705853489; x=1706458289; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=89YgpIaIWnPKVmzHfu5o8z2/6REYUD8L+4R60J0jIaI=;
+        b=FrPFO7H1VB/JnZF2MB+EUQ+bhaXWZwO1fwtKe7B8yb4tjLSY0MIa1YLlZ/QAfNALk6
+         mZlJb6aah6jXUeZJ1veKgzx8YoPNfcLJsottIsJspgRc1ckywUD7DsE/I6u/ZT1rVkRq
+         CeuC1DDcBRhKVIcbDrps1uCG55dCLvckZhilYMT4XNCorsm00de0IwhHsh+7cID2GaaB
+         QZg1xq/4cD+708F0H4e8eQvtRa6I7K5zW7rxOmoeQLjB9HNDijOKi6KC6eE/SWoH9ZIg
+         /kRjT6km67qxRX12zNPnw7gEJuzaoFKoZNPxPl8duoIL9fVjkzOcFbnNLMQx1Uln/rYD
+         BWVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705851435; x=1706456235;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l18zRlt2Y1RNd/KM4WSl1s19uASsIpnGpnt5xxTh/gA=;
-        b=JTjG3exd8qK1AGpVxq/Ib1YMcO6ng6PlYvLYEEVyi6UOGQxBFhWLhjkplWZvDT6YIT
-         QxAnw9SBv8VvykOkMS8KnULab+GdeSaq+B868rL/W6lFR8bLVIEg+mo2jYNUUN3khf87
-         Yj/qYkOpicW7HqoX0OqbN44R0XzGqcRtWz72iHpWlDUROEXpUGjEtFzrPW6snR3QT5eU
-         6Bt9MxDsHP3VYZKxMEvZxupaGLiIc3CXf1SKsOxd+nQp0AbPh/EiPR2eSDuGLsxBSMgC
-         XTFJlWg/CRONsc1wx8+qWr5dEuDdyYf39xPDFbKoBJ3SrY+qMCRyGWFue9Xcu8eIv7Rh
-         RmDQ==
-X-Gm-Message-State: AOJu0Yxy5Xi7Pi1rzZEyP63oo4xsPeOPpXZh+yipc1Jbb/xSM2rnAHTG
-	fXjOsK50HjdlrmIwHIV0GxHmPSPu/hIamsxbUobeRQFlmEOUq7Se
-X-Google-Smtp-Source: AGHT+IEj47iqSM/u5cnpFwEi+Tlit4Kq3eDjT8Fcn9cvyD2BTStrxajADI0G6lDHkblf2BuAGIFa5Q==
-X-Received: by 2002:a17:902:ee05:b0:1d3:c5e4:b2f6 with SMTP id z5-20020a170902ee0500b001d3c5e4b2f6mr6021894plb.4.1705851434840;
-        Sun, 21 Jan 2024 07:37:14 -0800 (PST)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id sv13-20020a17090b538d00b0028d8fa0171asm7744347pjb.35.2024.01.21.07.37.12
+        d=1e100.net; s=20230601; t=1705853489; x=1706458289;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=89YgpIaIWnPKVmzHfu5o8z2/6REYUD8L+4R60J0jIaI=;
+        b=AiOwXK04S5BxvqvgyBQve+lvEh5QVjik3fHIt09v1tXk26X1K/pNhrfm0v4YjvNXVG
+         icUulX5k/g4gkDCMjB4D0aGaexLh3B9CrzUJLRFNhm+mJ8da/kZ+cDTKWpyd24wiYSaO
+         6XzHEDKE+vjktz7fFWne/5Ln06LdPSIxtmby1E30PwKC3LiyFw5TNzptVH0pmHf6OY8G
+         cZ7L0BySDHWG/WMxNOxyWn90TF4oao/FASR9dd6E4z6Ae5UYH2nUS2vYhipXGmjtJRdZ
+         ea8rNUeh8EioiMf1LwK340ZikQg1Y++p21ZuOlYwR3INncVU6q6ZYP8/UqgQVrdNTk8d
+         Hm5Q==
+X-Gm-Message-State: AOJu0Ywi6qOyZAELttKnVOrXTfiOR+chg4wv5vENmIBYmLMMbRIw+m53
+	AeuM2HgESGd7tCTfPpO6psePHP7Tz1fs9q30Qu9K6Izkia3WgyBN
+X-Google-Smtp-Source: AGHT+IGlIX3qXe8JsjaZQU1MpYrgHaWU1Loq7HudyS2CPsNFhEVlfVq4e8uEQ6f7NvSHZnElOg4HGA==
+X-Received: by 2002:a6b:c986:0:b0:7bf:824:d57a with SMTP id z128-20020a6bc986000000b007bf0824d57amr2863585iof.24.1705853487762;
+        Sun, 21 Jan 2024 08:11:27 -0800 (PST)
+Received: from fedora-laptop (c-73-127-246-43.hsd1.nm.comcast.net. [73.127.246.43])
+        by smtp.gmail.com with ESMTPSA id z15-20020a6bc90f000000b007bf05f618f3sm6054987iof.55.2024.01.21.08.11.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jan 2024 07:37:14 -0800 (PST)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: colyli@suse.de,
-	kent.overstreet@linux.dev
-Cc: bfoster@redhat.com,
-	jserv@ccns.ncku.edu.tw,
-	linux-bcache@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH 5/5] bcache: Optimize number of comparisons in heap_sift
-Date: Sun, 21 Jan 2024 23:36:49 +0800
-Message-Id: <20240121153649.2733274-6-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240121153649.2733274-1-visitorckw@gmail.com>
-References: <20240121153649.2733274-1-visitorckw@gmail.com>
+        Sun, 21 Jan 2024 08:11:27 -0800 (PST)
+Date: Sun, 21 Jan 2024 09:11:24 -0700
+From: Thomas Bertschinger <tahbertschinger@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Trevor Gross <tmgross@umich.edu>, linux-bcachefs@vger.kernel.org,
+	bfoster@redhat.com, Miguel Ojeda <ojeda@kernel.org>,
+	rust-for-linux@vger.kernel.org,
+	Benno Lossin <benno.lossin@proton.me>
+Subject: packed, aligned structs in bcachefs (was: Re: [PATCH TOOLS 0/2]
+ convert main() from C to Rust)
+Message-ID: <20240121161124.GA151023@fedora-laptop>
+References: <20240115052451.145611-1-tahbertschinger@gmail.com>
+ <pawxsqxbjncrwtxytattvgizwrtmkis6suokgkb6wfm5xvsnhd@njjz4ywheu2a>
+ <20240115175509.GA156208@fedora-laptop>
+ <iiraqelv6wtwxcdf2yjtjt26ghejngfantjx7d4mztav27qu7y@gmiztxamveq3>
+ <20240115191022.GC156208@fedora-laptop>
+ <z7ajmttuzbvtxn4onwoxph6mevqt2rje2nga6cpux73geffias@p5kk7pqnswf6>
+ <CALNs47t6qjYZeQKC+ahAaG6iNDGGNe8o+Q8tKhpRynYLWL3R8Q@mail.gmail.com>
+ <gpokpnqgj6c2pcmtpiu46jy3kb3tom4xkp3fykg26zx6e3c2qe@zrnl2653qwsk>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <gpokpnqgj6c2pcmtpiu46jy3kb3tom4xkp3fykg26zx6e3c2qe@zrnl2653qwsk>
 
-Optimize the heap_sift() macro, resulting in a significant reduction of
-approximately 50% in the number of comparisons for large random inputs,
-while maintaining identical results.
+On Fri, Jan 19, 2024 at 04:37:51PM -0500, Kent Overstreet wrote:
+> On Fri, Jan 19, 2024 at 01:05:17PM -0600, Trevor Gross wrote:
+> > On Mon, Jan 15, 2024 at 1:22 PM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+> > > The main thing that needs to be sorted out is that we require a patched
+> > > version of bindgen (since rustc can't yet handle types that are both
+> > > packed and aligned); we need to talk to the rust-for-linux people about
+> > > whether they'll be ok with switching the kernel to the patched bindgen
+> > > until we can get a proper fix into rustc.
+> > 
+> > Do you have a link to the patches needed? We are wondering if this is
+> > something that could be upstreamed.
+> 
+> The current workaround is to just drop #[repr(align)] if the type is
+> both packed and aligned - but that leads to rustc and gcc disagreeing on
+> the memory layout of certain types; it only works as long as we're not
+> mutating types where this matters from rust code.
 
-The current implementation performs two comparisons per level to
-identify the maximum among three elements. In contrast, the proposed
-bottom-up variation uses only one comparison per level to assess two
-children until reaching the leaves. Then, it sifts up until the correct
-position is determined.
+I made a script to compare the size and alignment of bcachefs structs
+in C vs. in Rust generated by the patched, lossy bindgen. All sizes
+were the same, but the following types had different alignment:
 
-Typically, the process of sifting down proceeds to the leaf level,
-resulting in O(1) secondary comparisons instead of log2(n). This
-optimization significantly reduces the number of costly indirect
-function calls and improves overall performance.
+bkey			(8 in C, 4 in Rust)
+bch_extent_crc32	(8 in C, 4 in Rust)
+bch_extent_ptr		(8 in C, 1 in Rust)
 
-The experimental data below is derived from first adding N elements
-generated by get_random_u32() to the heap, and then performing heap_pop
-until the heap is empty.
+I didn't explicitly compare the offsets of all struct members between
+Rust and C as I couldn't come up with a trivial way to automate this.
+However, I think that if the C struct is packed, and the Rust and C
+structs have the same size, you can conclude that all member offsets
+are the same. This is because Rust could not increase the offset of a
+member (or else the Rust size would be larger), it could not decrease
+the offset of a member (because it's already packed), and it could not
+reorder the members (because #[repr(C)] prohibits this in Rust).
 
-|   N   | comparisons(old) | comparisons(new) | time(old) | time(new) |
-|-------|------------------|------------------|-----------|-----------|
-| 10000 |     249215       |     164872       |   1253 us |    958 us |
-| 20000 |     539766       |     350113       |   2693 us |   2059 us |
-| 30000 |     843297       |     543037       |   4120 us |   3119 us |
-| 40000 |    1159127       |     739595       |   5624 us |   4221 us |
-| 50000 |    1482608       |     941655       |   7147 us |   5349 us |
-| 60000 |    1808772       |    1144716       |   8754 us |   6786 us |
-| 70000 |    2139443       |    1348878       |  10323 us |   8030 us |
-| 80000 |    2478304       |    1560892       |  11934 us |   9061 us |
-| 90000 |    2820532       |    1768678       |  13611 us |  10679 us |
-| 100000|    3163503       |    1983806       |  15244 us |  11745 us |
+Given the above logic, I think it's safe to conclude that if a struct
+is packed in C, and the size and alignment are the same between C and
+Rust, then they are fully ABI compatible. Does anyone see an error in
+my reasoning?
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
-This patch has undergone unit testing and micro benchmarking using the
-following code [1].
 
-[1]:
-static long long int cmp_count = 0;
+Taking a look at struct bkey, the alignment difference arises from a
+semantic difference between gcc's __attribute__((packed, aligned(N)))
+and rustc's #[repr(C, packed(N))]. In Rust, 
 
-typedef DECLARE_HEAP(u32, heap);
+> By specifying this attribute, the alignment of the struct would be
+> the smaller of the specified packing and the default alignment of the
+> struct. [1]
 
-int mycmp(u32 a, u32 b)
-{
-    cmp_count++;
-    return a > b;
-}
+We can get the same alignment for struct bkey in Rust by modifying
+the code from bindgen to use align(8) instead of packed(8). On my
+x86_64 Linux system, this results in a struct with the same size,
+alignment, and offsets of all members as the original C struct. This
+works because the struct happens to be packed already, so the
+#[repr(packed)] attribute is superfluous. I can't say if this works in
+any other environment with different architecture, endianness, etc. But
+introducing an automated test for comparing the size and alignment of
+bindgen-generated structs could help with validating other environments.
 
-int check_heap(heap *h, int (*cmp)(u32, u32))
-{
-    size_t i;
 
-    for (i = 0; i < h->used / 2; i++) {
-        if (i * 2 + 1 < h->used)
-            if (cmp(h->data[i], h->data[i * 2 + 1]))
-                return -1;
-        if (i * 2 + 2 < h->used)
-            if (cmp(h->data[i], h->data[i * 2 + 2]))
-                return -1;
-    }
-    return 0;
-}
+In general, given a C structure like
 
-static int test(void)
-{
-    size_t N, i;
-    u32 x;
-    heap myheap;
-    ktime_t start, end;
-	s64 delta;
+struct A {
+	...
+} __packed __aligned(N);
 
-	/* Test for correctness. */
-    for (N = 1000; N <= 10000; N += 1000) {
-        init_heap(&myheap, N, GFP_KERNEL);
-        for (i = 0; i < N; i++) {
-            heap_add(&myheap, get_random_u32(), mycmp);
-            if (check_heap(&myheap, mycmp))
-                return -1;
-        }
-        for (i = 0; i < N; i++) {
-            heap_pop(&myheap, x, mycmp);
-            if (check_heap(&myheap, mycmp))
-                return -1;
-        }
-        free_heap(&myheap);
-    }
+I think a Rust structure can be created with the same size, alignment,
+and member offsets in the following cases: 
 
-	/* Micro-benchmark. */
-	for(N = 10000; N <= 100000; N += 10000) {
-		cmp_count = 0;
-        init_heap(&myheap, N, GFP_KERNEL);
+(1) #[repr(packed(N))] will have the same layout if N is <= the
+    structure's default alignment and all members with a default
+    alignment >= N naturally have an offset that is a multiple of N.
+    Also, no member can have an alignment attribute as rustc forbids
+    this [2].
 
-        start = ktime_get();
-        for (i = 0; i < N; i++)
-            heap_add(&myheap, get_random_u32(), mycmp);
-        for (i = 0; i < N; i++)
-            heap_pop(&myheap, x, mycmp);
-        end = ktime_get();
-		delta = ktime_us_delta(end, start);
-        printk(KERN_INFO "time: %lld\n", delta);
-        printk(KERN_INFO "comparisons: %lld\n", cmp_count);
-        free_heap(&myheap);
-    }
+(2) #[repr(align(N))] will have the same layout if the structure's size
+    without the packed attribute is equal to the sum of the size of all
+    its members (i.e., it is "naturally packed"), and the structure's
+    default alignment is <= N.
 
-    return 0;
-}
+(I haven't formally proven these rules and I welcome counterexamples if
+someone can spot an error in my logic.)
 
- drivers/md/bcache/util.h | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+An example of a struct that I think the current rustc cannot represent:
 
-diff --git a/drivers/md/bcache/util.h b/drivers/md/bcache/util.h
-index f61ab1bada6c..3aa74b0d7f0a 100644
---- a/drivers/md/bcache/util.h
-+++ b/drivers/md/bcache/util.h
-@@ -56,17 +56,20 @@ do {									\
- 
- #define heap_sift(h, i, cmp)						\
- do {									\
--	size_t _r, _j = i;						\
-+	size_t _j, _k;							\
- 									\
--	for (; _j * 2 + 1 < (h)->used; _j = _r) {			\
--		_r = _j * 2 + 1;					\
--		if (_r + 1 < (h)->used &&				\
--		    cmp((h)->data[_r], (h)->data[_r + 1]))		\
--			_r++;						\
--									\
--		if (cmp((h)->data[_r], (h)->data[_j]))			\
--			break;						\
--		heap_swap(h, _r, _j);					\
-+	for (_j = i; _k = 2 * _j + 1, _k + 1 < (h)->used;) {		\
-+		if (cmp((h)->data[_k], (h)->data[_k + 1]))		\
-+			_k++;						\
-+		_j = _k;						\
-+	}								\
-+	if (_j * 2 + 2 == (h)->used)					\
-+		_j = _j * 2 + 1;					\
-+	while (_j != i && cmp((h)->data[_j], (h)->data[i]))		\
-+		_j = (_j - 1) / 2;					\
-+	for (_k = _j; _j != i;) {					\
-+		_j = (_j - 1) / 2;					\
-+		heap_swap(h, _j, _k);					\
- 	}								\
- } while (0)
- 
--- 
-2.25.1
+struct rust_cannot_represent_this {
+	u8 a;
+	u32 b;
+} __packed __aligned(2);
 
+Luckily, I do not think bcachefs has any structs like this.
+
+
+TL;DR -- even without a rustc fix to support packed and aligned structs,
+I think it is possible in many cases to create Rust structs with the
+same memory layout, although it may take some manual effort. Perhaps
+bindgen could be enhanced with awareness of rule (2) from above, to
+automatically cover more cases than it does now?
+
+Of course, a fix to rustc is the best option. It would avoid the need
+for error-prone manual work. Specifying both #[repr(packed, align(N))]
+also communicates semantic intent more than specifying just one even
+when the result is the same. But we could be waiting a while for that
+fix to arrive.
+
+[1] https://rust-lang.github.io/rfcs/1399-repr-pack.html
+[2] https://github.com/rust-lang/rust/issues/100743
+
+- Thomas Bertschinger
