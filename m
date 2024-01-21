@@ -1,217 +1,135 @@
-Received: from mail-108-mta117.mxroute.com (mail-108-mta117.mxroute.com [136.175.108.117])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DED3FBF0
-	for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jan 2024 04:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.117
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC3136AFC
+	for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jan 2024 12:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705810337; cv=none; b=QAWARQqhX39xp0EhAy+MlAxrnqSZymWCCLlo7OGFAFr53xTntho0noNGyZ/J6hrYXnArtLYJU0qsdhDXZjiv+IImxoC9MMbuCIIaIalJItZ6+6J6Rl2AuoE4DFhVarzeaBZaSrPkBcZT5dYTRur8CzSdk4+IsgkGVIez/D0qSnM=
+	t=1705839640; cv=none; b=kBpUkjPZ23JjUSXSn49qIaxgFO/Y1IA0hGpaikWHoBhN/oS+IW6z8AispHbZyWQrIMazJN0pXEhh/9pFcdX1+fa5A2lxtGJ1Mau5dx+dv+LMP9WR611R8mXRYCU6N52HcmumMnXkcdMXpUq7oCcW8Y5uwHouSj+X1Xe5njtnjDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705810337; c=relaxed/simple;
-	bh=USoWfbrLCHP08/BiLgcVJYCsYQRrhGsSlxACS4R1t/Y=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=Zay/JmUfK4yLF0XGLwVs/Zd1eZ40hxemrEr065WB6RcqB927cewDiOVhYAPvCqXNVa7gXDtIk1vAhAKpArE7Ye2/7CdE5+vz7969CmtKVsI7Qhw3EWDyGnjCxS6hRA7Px705XdjAhkke7aPzD6sPnu9e8W65et+bM04k+tx/KLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=uKA6TG9r; arc=none smtp.client-ip=136.175.108.117
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
+	s=arc-20240116; t=1705839640; c=relaxed/simple;
+	bh=JfMnjHNkzRw8i9j0k1upUxvHfwH7uPKDpAZHbblJyGo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SLV11LbGaJBmtn6Fxhg4kMUD8kb1RTlrZl0l3ug3tTKfpfP5z6B/yl03pFX8Wk4g1+IiitX6iAU9LB9JW7eBlfmMwDINOGQu3rYm4A0BNWsRM477j3FJ/2eKI2EukmoD32XPt+CHeVzLVAc0pFbPTw+DrrTICP/WbG3hTMHHqik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UGshX6PL; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="uKA6TG9r"
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta117.mxroute.com (ZoneMTA) with ESMTPSA id 18d2a3352570003727.004
- for <linux-bcachefs@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Sun, 21 Jan 2024 04:07:03 +0000
-X-Zone-Loop: 6621f3fe99dc1b5d7e6c4af40cdd6847a9fc2a16be4f
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
-	; s=x; h=Content-Type:MIME-Version:Message-ID:In-reply-to:Date:Subject:Cc:To:
-	From:References:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=+u9G9L+4HwumXflYhe2+AtfZUA0wkw5t5/J+RW/Wooc=; b=uKA6TG9r4HapP0vJr4uNM0M4wK
-	57PHBH0WB/O14KqYfJhdZOOQEYyeCVwNCHBgsLmBOLcuieP0Wp5P2nVAPf+2+MsIlYD1EEjphVyoJ
-	7f7VXiEOfs/0OYy911MWcRyuhjOib4h8UkHcM+dA+ke5FfO5xuwf3gfNJNLpYp45Sz10muXW9Je0c
-	15RQBr5g2/yNGwGxGVg9zXH5JQKXx9N9ZnsghgE6ttD1Yg53i+6wBMeG7WdAQVcZCzmvba1jo1kx6
-	BCNaBzpuBjyNUhPTiAe7UAmeT1zzIevgzNPRc/krHt1u4g7qoD88W/aIy/1HvQeEaqAbbCtuBXEU1
-	3ZfBz5VQ==;
-References: <20240117092309.1134595-1-glass.su@suse.com>
- <20240117092309.1134595-2-glass.su@suse.com> <ZagUdl+DlxIw+siv@bfoster>
- <h6jb49cm.fsf@damenly.org> <ZaqepfRjb1vU+nDw@bfoster>
-User-agent: mu4e 1.7.5; emacs 28.2
-From: Su Yue <l@damenly.org>
-To: Brian Foster <bfoster@redhat.com>
-Cc: Su Yue <l@damenly.org>, Su Yue <glass.su@suse.com>,
- fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] common/rc: improve block size support for bcachefs
-Date: Sun, 21 Jan 2024 12:00:47 +0800
-In-reply-to: <ZaqepfRjb1vU+nDw@bfoster>
-Message-ID: <cytv49hm.fsf@damenly.org>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UGshX6PL"
+Date: Sun, 21 Jan 2024 07:20:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705839636;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MhNPlaBEpE1xN4v3GTZA0CsrCRKrMbxj54/fyRMaXwg=;
+	b=UGshX6PLCyjkuZXe1ylBJ4pAZyxjp5sCWpvlS9QneLoRnDCEWuea+ffZ/c3Uy6IT3whTls
+	GqSzZQqyWVehRmwvIT0qPH+u/RoEyQ8Rlqd3f15b3le7T5mV3+HYeOw/OPnNRf7PyDYhH+
+	vhW2ETUg2IzOSP9rrlj/g/oFwsSZ5Ys=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, 
+	Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>, Neal Gompa <neal@gompa.dev>, 
+	Kees Cook <keescook@chromium.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Nikolai Kondrashov <spbnick@gmail.com>, 
+	Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <32cn5wzlryvq7z64uwo3ztooh7rthlp2ihmbgfyayvehtdbeyt@pnvumkjz4eve>
+References: <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+ <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+ <2024011532-mortician-region-8302@gregkh>
+ <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+ <20240117055457.GL911245@mit.edu>
+ <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+ <20240118024922.GB1353741@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Authenticated-Id: l@damenly.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118024922.GB1353741@mit.edu>
+X-Migadu-Flow: FLOW_OUT
 
+On Wed, Jan 17, 2024 at 09:49:22PM -0500, Theodore Ts'o wrote:
+> On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
+> > Actually, this is partly our fault.  Companies behave exactly like a
+> > selfish contributor does:
+> > 
+> > https://archive.fosdem.org/2020/schedule/event/selfish_contributor/
+> > 
+> > The question they ask is "if I'm putting money into it, what am I
+> > getting out of it".  If the answer to that is that it benefits
+> > everybody, it's basically charity  to the entity being asked (and not
+> > even properly tax deductible at that), which goes way back behind even
+> > real charitable donations (which at least have a publicity benefit) and
+> > you don't even get to speak to anyone about it when you go calling with
+> > the collecting tin.  If you can say it benefits these 5 tasks your
+> > current employees are doing, you might have a possible case for the
+> > engineering budget (you might get in the door but you'll still be
+> > queuing behind every in-plan budget item).  The best case is if you can
+> > demonstrate some useful for profit contribution it makes to the actual
+> > line of business (or better yet could be used to spawn a new line of
+> > business), so when you're asking for a tool, it has to be usable
+> > outside the narrow confines of the kernel and you need to be able to
+> > articulate why it's generally useful (git is a great example, it was
+> > designed to solve a kernel specific problem, but not it's in use pretty
+> > much everywhere source control is a thing).
+> 
+> I have on occasion tried to make the "it benefits the whole ecosystem"
+> argument, and that will work on the margins.  But it's a lot harder
+> when it's more than a full SWE-year's worth of investment, at least
+> more recently.  I *have* tried to get more test investment. with an
+> eye towards benefitting not just one company, but in a much more
+> general fasion ---- but multi-engineer projects are a very hard sell,
+> especially recently.  If Kent wants to impugn my leadership skills,
+> that's fine; I invite him to try and see if he can get SVP's cough up
+> the dough.  :-)
 
-On Fri 19 Jan 2024 at 11:09, Brian Foster <bfoster@redhat.com> 
-wrote:
+Well, I've tried talking to you about improving our testing tooling - in
+particular, what we could do if we had better, more self contained
+tools, not just targeted at xfstests, in particular a VM testrunner that
+could run kselftests too - and as I recall, your reaction was pretty
+much "why would I be interested in that? What does that do for me?"
 
-> On Thu, Jan 18, 2024 at 10:59:14AM +0800, Su Yue wrote:
->>
->> On Wed 17 Jan 2024 at 12:55, Brian Foster <bfoster@redhat.com> 
->> wrote:
->>
->> > On Wed, Jan 17, 2024 at 05:23:09PM +0800, Su Yue wrote:
->> > > For bcachefs, def_blksz is never assigned even MKFS_OPTIONS 
->> > > contains
->> > > option
->> > > '--block_size'. So block size of bcachefs on scratch dev is 
->> > > always
->> > > 4096
->> > > if _scratch_mkfs_sized is called without second parameter.
->> > >
->> > > Add the pattern to set def_blksz if '--block_size' is given 
->> > > in
->> > > MKFS_OPTIONS.
->> > >
->> > > Signed-off-by: Su Yue <glass.su@suse.com>
->> > > ---
->> > > changelog:
->> > > v2:
->> > >     Born.
->> > > ---
->> > >  common/rc | 3 +++
->> > >  1 file changed, 3 insertions(+)
->> > >
->> > > diff --git a/common/rc b/common/rc
->> > > index 31c21d2a8360..6a01de69cf05 100644
->> > > --- a/common/rc
->> > > +++ b/common/rc
->> > > @@ -950,6 +950,9 @@ _scratch_mkfs_sized()
->> > >  	jfs)
->> > >  		def_blksz=4096
->> > >  		;;
->> > > +	bcachefs)
->> > > +		def_blksz=`echo $MKFS_OPTIONS | sed -rn 
->> > > 's/.*(--block_size)[
->> > > =]?+([0-9]+).*/\2/p'`
->> > > +		;;
->> >
->> > So if the default bcachefs block size is 512b, I wonder if 
->> > this should
->> > do something like what the udf branch does a few lines above 
->> > and
->> >
->> mkfs.bcachefs decides block size by querying statbuf.st_blksize 
->> or
->> BLKPBSZGET from the device if the option is not given.
->>
->> > override the hardcoded default of 4k. ISTM this whole thing 
->> > would be
->> > more robust if it just elided the param in the default cases 
->> > and let the
->> > associated mkfs tool use its own default, but that's probably 
->> > a separate
->> > issue. Hm?
->> >
->> Since there is no default block size of bcachefs, maybe we can 
->> let
->> mkfs.bcachefs decide on its own but it will make chaos when 
->> somebody
->> reports an unreproducible BUG due to the different block_size 
->> even
->> we have same local.config. It just happened...
->> So for now, I think 4096 is a resonable value of bcachefs block 
->> size.
->>
->
-> I think we run into this no matter what if we pick a size out of 
-> a hat,
-> regardless of what the value is. If somebody is testing with 
-> default
-> blocksize (i.e. based on mkfs) on a filesystem where the default 
-> isn't
-> actually 4k, then it seems quite unexpected that 
-> _scratch_mkfs_sized
-> would use something different from _scratch_mkfs when a block 
-> size isn't
-> explicitly specified. That's exactly the situation we ran into 
-> with the
-> generic/361 thing where I would have expected this test to use 
-> 512b
-> blocks.
->
-> ISTM that the 4k value in _scratch_mkfs_sized() is mainly a last 
-> resort
-> default value so the $blocks calculation can work for any 
-> filesystem
-> that might not be properly supported by the function. The 
-> function looks
-> a little wonky overall, but I think there are at least a couple 
-> options
-> to improve things for bcachefs. FWIW, it also looks to me that 
-> nothing
-> actually passes a blocksize param to _scratch_mkfs_sized, so 
-> perhaps we
-> could just drop that blocksize=$2 parameter across the board as 
-> a
-> simplification?
->
-Maybe it can be dropped. The only user is generic/466
+So yeah, I would call that a fail in leadership. Us filesystem people
+have the highest testing requirements and ought to know how to do this
+best, and if the poeple with the most experience aren't trying share
+that knowledge and experience in the form of collaborating on tooling,
+what the fuck are we even doing here?
 
-> With that, I think bcache could either:
->
-> 1. Do something like def_blksize=`blockdev --getpbsz 
-> $SCRATCH_DEV` in
-> the first switch if no block size is specified in MKFS_OPTIONS 
-> (or
-> whatever best mimics mkfs logic).
->
-> OR
->
-> 2. Do something like the following in the last switch:
->
-> 	[ -n $def_blksize ] && def_blksize="--block_size=$def_blksize"
-> 	$MKFS_BCACHEFS_PROG ... $def_blksize $SCRATCH_DEV
->
-> ... to allow mkfs to determine the block size. I _think_ that 
-> works
-> because the bcachefs format doesn't depend on $blocks at all, so
-> whatever $blocksize was set to is irrelevent unless $def_blksize 
-> was set
-> above, but I could be missing something. That also assumes 
-> blocksize
-> wasn't set to something by the caller.
->
-> If correct, option #2 seems a little cleaner to me, but other
-> thoughts/ideas?
->
-Option 2 is preferable. I would code it as(on more varaiable for 
-readability):
+If I sound frustrated, it's because I am.
 
-local blocksize_opt
+> I've certainly had a lot more success with the "Business quid pro quo"
+> argument; fscrypt and fsverity was developed for Android and Chrome;
+> casefolding support benefited Android and Steam; ext4 fast commits was
+> targetted at cloud-based NFS and Samba serving, etc.
 
-[ -n $def_blksize ] && blockzie_opt="--block_size=$def_blksize"
-$MKFS_BCACHEFS_PROG ... $blocksize_opt $SCRATCH_DEV
+Yeah, I keep hearing you talking about the product management angle and
+I have to call bullshit. There's a lot more to maintaining the health of
+projects in the long term than just selling features to customers.
 
---
-Su
->
-> Brian
->
->> --
->> Su
->> >
->> > Brian
->> >
->> > >  	esac
->> > >
->> > >  	[ -n "$def_blksz" ] && blocksize=$def_blksz
->> > > --
->> > > 2.43.0
->> > >
->>
+> Unfortunately, this effect fades over time.  It's a lot easier to fund
+> multi-engineer projects which run for more than a year, when a company
+> is just starting out, and when it's still trying to attract upstream
+> developers, and it has a sizeable "investment" budget.  ("IBM will
+> invest a billion dollars in Linux").  But then in later years, the
+> VP's have to justify their budget, and so companies tend to become
+> more and more "selfish".  After all, that's how capitalism works ---
+> "think of the children^H^H^H^H^H^H^H shareholders!"
+
+This stuff doesn't have to be huge multi engineer-year projects to get
+anything useful done.
+
+ktest has been a tiny side project for me. If I can turn that into a
+full blown CI that runs arbitrary self contained VM tests with quick
+turnaround and a nice git log UI, in my spare time, why can't we pitch
+in together instead of each running in different directions and
+collaborate and communicate a bit better instead of bitching so much?
