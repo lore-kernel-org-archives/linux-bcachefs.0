@@ -1,135 +1,99 @@
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC3136AFC
-	for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jan 2024 12:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99651273FB;
+	Sun, 21 Jan 2024 15:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705839640; cv=none; b=kBpUkjPZ23JjUSXSn49qIaxgFO/Y1IA0hGpaikWHoBhN/oS+IW6z8AispHbZyWQrIMazJN0pXEhh/9pFcdX1+fa5A2lxtGJ1Mau5dx+dv+LMP9WR611R8mXRYCU6N52HcmumMnXkcdMXpUq7oCcW8Y5uwHouSj+X1Xe5njtnjDo=
+	t=1705851417; cv=none; b=fOD/cLLhhb5YOE2cmmUdtFSWK/Di8EnplZmOfvvZRFn0ZxeBdJWIytaXs5RASpc7XSWz1Cot9P0o6f5LoN2+GcnxDoHn0LgUpKxbELnMzxnufANjpxxWJeXXWdpbs6O/xj/mkRIJpKLgIgZdAczCIem5j/9xCW/XDK2LsTXhuAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705839640; c=relaxed/simple;
-	bh=JfMnjHNkzRw8i9j0k1upUxvHfwH7uPKDpAZHbblJyGo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SLV11LbGaJBmtn6Fxhg4kMUD8kb1RTlrZl0l3ug3tTKfpfP5z6B/yl03pFX8Wk4g1+IiitX6iAU9LB9JW7eBlfmMwDINOGQu3rYm4A0BNWsRM477j3FJ/2eKI2EukmoD32XPt+CHeVzLVAc0pFbPTw+DrrTICP/WbG3hTMHHqik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UGshX6PL; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1705851417; c=relaxed/simple;
+	bh=OToNoS2KhWjwJ7oKMtu9Y/Gf1v1EhBU5bWep/eGedAE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=O5AiaUGW+PyMZazfHlXGexJbVf4UOafTY0osIUJA4HEL5dricNXODtoob9sS05BzxBeFo9bxqDZiUAYuhMihRwepfSHOFca4jzgc617Fb4tp3PV8yxWJPBZ4ejPwBswIiMRyPksl/hB+b2IYn6J/V/1j5klo+rCx5K56/5nZkXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M2CPQM6v; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UGshX6PL"
-Date: Sun, 21 Jan 2024 07:20:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705839636;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MhNPlaBEpE1xN4v3GTZA0CsrCRKrMbxj54/fyRMaXwg=;
-	b=UGshX6PLCyjkuZXe1ylBJ4pAZyxjp5sCWpvlS9QneLoRnDCEWuea+ffZ/c3Uy6IT3whTls
-	GqSzZQqyWVehRmwvIT0qPH+u/RoEyQ8Rlqd3f15b3le7T5mV3+HYeOw/OPnNRf7PyDYhH+
-	vhW2ETUg2IzOSP9rrlj/g/oFwsSZ5Ys=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, 
-	Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>, Neal Gompa <neal@gompa.dev>, 
-	Kees Cook <keescook@chromium.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Nikolai Kondrashov <spbnick@gmail.com>, 
-	Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <32cn5wzlryvq7z64uwo3ztooh7rthlp2ihmbgfyayvehtdbeyt@pnvumkjz4eve>
-References: <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
- <20240117055457.GL911245@mit.edu>
- <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
- <20240118024922.GB1353741@mit.edu>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M2CPQM6v"
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-28bbe484bc0so602697a91.1;
+        Sun, 21 Jan 2024 07:36:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705851416; x=1706456216; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vVHG+8xKK4bDOVD38QzrtIW6oL2Yuwi1GWqKNOlEnpA=;
+        b=M2CPQM6v6CQ0bwgEa/ozeNsohQNaKJnweQkK9zE5tGglkbC4ZAD27D0NO7DkSqtU/u
+         OHpDVNuZBNqODO+U98cvwzaH45QnVkH7hbBJknShy50vPwLsCWMD2DGQZ828MHzlk7Hl
+         NamIk4nuebIGL90ihSBcuEAdSq24AaSGvmlb4Omzu3GKnYOOZJM4W3ObobtWYl3WP6WH
+         L791DoA8aAcxp8R6fM6qHatnCDM6nYK3hPOVKFT2P0SNmN35fRgLJujTfjF4AFa7qNEM
+         Z3mkee5sQSf4S14SIRoqrvfiDDa/rxwz8b2FGK51zu1/Rky/mVw+IU+l3dgnVCNSTRsN
+         MQmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705851416; x=1706456216;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vVHG+8xKK4bDOVD38QzrtIW6oL2Yuwi1GWqKNOlEnpA=;
+        b=FtsXIuSGZgUVwE1v//gmmuhwvoZiBPw6dVyEew7wnWY8s+kNLLzITiaYek93RwfCL2
+         2YLgAOhSmUpyfQ01xLzqc9ADTyAbwyfNtgV95EhNQ4OWmfWwPeQ7WlZeTUD0ecc6ofko
+         1fvAgeerqZaJYtz9x95QsUF9Ta+9LK0DaEFdpckXLJAToVcpuCAuO4xszJKsvmPaOdpC
+         NJuEK372JzcnvERIFpysRwl57V0xUkh88dEQDAyc4gwAu4I+6u1hcb4k/31DO7yW0LHy
+         CkWDAnEcIzDZ3Z/xczdOwZyS/QY6cz5/yTeSn9jq9srHEw6grnnYEBPjdpIBS1J+uNat
+         gn/A==
+X-Gm-Message-State: AOJu0YzUvrIXqlI3b+2h5aTRN6AhfqzzqNXqSJUPLyMRZ8YAS4DMjeyN
+	sAe/DsoBgNwj2v3jqRw1BNjNU8XuW6qMS3CoTagfT+98bXpPZgto
+X-Google-Smtp-Source: AGHT+IGeE84l68Vra6WCZ39i7YzXJKVHPaFYFqpkJTmi29/+geppKxidhdiRykQrAd7m8N/mN4/V3A==
+X-Received: by 2002:a17:90a:46c7:b0:28e:3989:c49f with SMTP id x7-20020a17090a46c700b0028e3989c49fmr3694917pjg.1.1705851415960;
+        Sun, 21 Jan 2024 07:36:55 -0800 (PST)
+Received: from localhost.localdomain ([140.116.154.65])
+        by smtp.gmail.com with ESMTPSA id sv13-20020a17090b538d00b0028d8fa0171asm7744347pjb.35.2024.01.21.07.36.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jan 2024 07:36:55 -0800 (PST)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: colyli@suse.de,
+	kent.overstreet@linux.dev
+Cc: bfoster@redhat.com,
+	jserv@ccns.ncku.edu.tw,
+	linux-bcache@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH 0/5] Optimize number of comparisons for heap/heapsort implementaion
+Date: Sun, 21 Jan 2024 23:36:44 +0800
+Message-Id: <20240121153649.2733274-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118024922.GB1353741@mit.edu>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 17, 2024 at 09:49:22PM -0500, Theodore Ts'o wrote:
-> On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
-> > Actually, this is partly our fault.  Companies behave exactly like a
-> > selfish contributor does:
-> > 
-> > https://archive.fosdem.org/2020/schedule/event/selfish_contributor/
-> > 
-> > The question they ask is "if I'm putting money into it, what am I
-> > getting out of it".  If the answer to that is that it benefits
-> > everybody, it's basically charity  to the entity being asked (and not
-> > even properly tax deductible at that), which goes way back behind even
-> > real charitable donations (which at least have a publicity benefit) and
-> > you don't even get to speak to anyone about it when you go calling with
-> > the collecting tin.  If you can say it benefits these 5 tasks your
-> > current employees are doing, you might have a possible case for the
-> > engineering budget (you might get in the door but you'll still be
-> > queuing behind every in-plan budget item).  The best case is if you can
-> > demonstrate some useful for profit contribution it makes to the actual
-> > line of business (or better yet could be used to spawn a new line of
-> > business), so when you're asking for a tool, it has to be usable
-> > outside the narrow confines of the kernel and you need to be able to
-> > articulate why it's generally useful (git is a great example, it was
-> > designed to solve a kernel specific problem, but not it's in use pretty
-> > much everywhere source control is a thing).
-> 
-> I have on occasion tried to make the "it benefits the whole ecosystem"
-> argument, and that will work on the margins.  But it's a lot harder
-> when it's more than a full SWE-year's worth of investment, at least
-> more recently.  I *have* tried to get more test investment. with an
-> eye towards benefitting not just one company, but in a much more
-> general fasion ---- but multi-engineer projects are a very hard sell,
-> especially recently.  If Kent wants to impugn my leadership skills,
-> that's fine; I invite him to try and see if he can get SVP's cough up
-> the dough.  :-)
+Hello,
 
-Well, I've tried talking to you about improving our testing tooling - in
-particular, what we could do if we had better, more self contained
-tools, not just targeted at xfstests, in particular a VM testrunner that
-could run kselftests too - and as I recall, your reaction was pretty
-much "why would I be interested in that? What does that do for me?"
+The existing implementations of heap/heapsort follow the conventional
+textbook approach, where each heapify operation requires approximately
+2*log2(n) comparisons. In this series, I introduce a bottom-up variant
+that reduces the number of comparisons during heapify operations to
+approximately log2(n), while maintaining the same number of swap
+operations.
 
-So yeah, I would call that a fail in leadership. Us filesystem people
-have the highest testing requirements and ought to know how to do this
-best, and if the poeple with the most experience aren't trying share
-that knowledge and experience in the form of collaborating on tooling,
-what the fuck are we even doing here?
+Thanks,
+Kuan-Wei
 
-If I sound frustrated, it's because I am.
+Kuan-Wei Chiu (5):
+  bcachefs: Optimize eytzinger0_sort() using bottom-up heapsort
+  bcachefs: Introduce parent function for sort_cmp_size()
+  bcachefs: Optimize sort_cmp_size() using bottom-up heapsort
+  bcachefs: Optimize number of comparisons in heap_sift_down
+  bcache: Optimize number of comparisons in heap_sift
 
-> I've certainly had a lot more success with the "Business quid pro quo"
-> argument; fscrypt and fsverity was developed for Android and Chrome;
-> casefolding support benefited Android and Steam; ext4 fast commits was
-> targetted at cloud-based NFS and Samba serving, etc.
+ drivers/md/bcache/util.h |  23 +++++----
+ fs/bcachefs/util.c       | 109 ++++++++++++++++++++++++++-------------
+ fs/bcachefs/util.h       |  23 +++++----
+ 3 files changed, 98 insertions(+), 57 deletions(-)
 
-Yeah, I keep hearing you talking about the product management angle and
-I have to call bullshit. There's a lot more to maintaining the health of
-projects in the long term than just selling features to customers.
+-- 
+2.25.1
 
-> Unfortunately, this effect fades over time.  It's a lot easier to fund
-> multi-engineer projects which run for more than a year, when a company
-> is just starting out, and when it's still trying to attract upstream
-> developers, and it has a sizeable "investment" budget.  ("IBM will
-> invest a billion dollars in Linux").  But then in later years, the
-> VP's have to justify their budget, and so companies tend to become
-> more and more "selfish".  After all, that's how capitalism works ---
-> "think of the children^H^H^H^H^H^H^H shareholders!"
-
-This stuff doesn't have to be huge multi engineer-year projects to get
-anything useful done.
-
-ktest has been a tiny side project for me. If I can turn that into a
-full blown CI that runs arbitrary self contained VM tests with quick
-turnaround and a nice git log UI, in my spare time, why can't we pitch
-in together instead of each running in different directions and
-collaborate and communicate a bit better instead of bitching so much?
