@@ -1,131 +1,123 @@
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C243DB82
-	for <linux-bcachefs@vger.kernel.org>; Mon, 22 Jan 2024 14:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7707B3CF45;
+	Mon, 22 Jan 2024 14:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935099; cv=none; b=lybAHAmEvyMZ/PNLXOuztYDyRpv5+ax+lx6kMXD5/cGdvf92oG7OG3OUqY2hQNLVLOzS13SSfqHbuWThnp+d+/Z0RdSRNPNCRaPTBKpJUVwpI1kU0uYhS8JVQjJ5EQSvV2RQuEqOKxHUFqK5qadFVuX8mmMFW1AHw+SLcMJTvxs=
+	t=1705935145; cv=none; b=LcgLXc8++pmQhb3Kts7TkZlLfqw3NeUI4URL14Wu8glBhjGduEIVYEGpv1bAwaHYzUHl3MZLmiFDSWax1Prk7PdVpr5cHaUbrhUW4G74yYJejDvpfRiYqU6LEC6pRZ6oSOEJN+LW6UNgSxEpfdjAlZe6PFO66pYZrwMeFBgL8R0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935099; c=relaxed/simple;
-	bh=KOGxtfpEhnQ7oAZOCqeMvfNeqtxqNcCKjIGY/p2rNvs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=UdxNKyrdn3tpDGMYpgNHB+E8ums59XvyLVF5rvWcTxrO+FhEgP+c9Fu+jnNo+8a2Ni61Vp4JF/syrTzFsvzXRCACznbj8xN3G69wniAV1Tz2ywBDprZ5tbRmbSVFZIix5hU79UpKQlU90wSpYNAFwACHM7gV4Lh5kgepgpEUhrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QX0RqMY1; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1705935145; c=relaxed/simple;
+	bh=Hy5Zc12lQ++Q8QHg/cD6L3gnD0KgOnmF9tp0GhzX+Dk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=XmduK5pB5KiSr6PQ+seBJ8wvgd2Q8OJtHNnM5RoTzuZ4mnkX14pn9sv2hPCADaICoT0axx3+zoEKH+KHtxm2SivxTwjwKOoagu1jDVa5TsQvDlURnuT5JjEr295SPHmWOoGGoFVZNx/34djjG8kcmqEShk5Klhqoqvs3gqKeb70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qy5v8sHf; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QX0RqMY1"
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e9d288f45so38889865e9.2
-        for <linux-bcachefs@vger.kernel.org>; Mon, 22 Jan 2024 06:51:37 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qy5v8sHf"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6dc1f02090fso15333b3a.0;
+        Mon, 22 Jan 2024 06:52:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705935096; x=1706539896; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=gmail.com; s=20230601; t=1705935144; x=1706539944; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cfRuzGtnviDBvENKgRtKt9Tq+grP61BoY2wxDNzWV6c=;
-        b=QX0RqMY1qo3himbkVdE6spEV/Vdq3G9qkf5UfUY0Y/i0H6MSSV5dw0UzPVzd5gZe0h
-         hDZuC3zKpeWZj4ZtNsWYqo6a5Ghkv/QtQuNYoguuuKs14whA9VAP1HpxfFPN2wDApOX+
-         mVETgRa/umN6BFAvQFCdunq/uCzKH3KPWiAP4r3JgYU3CKGRiAWsRNiEb2cULcpDyv5G
-         kYVCnbScFZKHLHmf4L1y2DB/ewGCooCrmyY9uJEsZnSGE6P27ZNJEkFKzUX+Ev2G3i5B
-         Z3/Qfw5l/oVdFU9yLZyoogsVyt4Z9iC38VzDewH15qoPjxps9oAWxiOHRF7kUDC5TEf8
-         4RNg==
+        bh=+BRBWR64JXQ0HMdfmWSg7M/4xI9ANlZ+3Mn/VN5r0Bc=;
+        b=Qy5v8sHf9S8wwsnfNmCNuzCHXZelVpBRN5sinl3aTZXizzSWLsqTJ6bMoq7BxHj3UP
+         bO6UDA9P1UUz3+wizBOH7aKke1HdyMWzzsdaUpXW2KL3DSumKz9LeabEr3vILKzEzIms
+         g8hBKD0LkvkORVNWCLICg8lYqaeA2kqZpXyqwIq1zDyw8K9qrQvAjiUJGXQEX/LJLwwd
+         FZzISMcCf+XChIby1CGaloQp6Yx+cLklX0KgB/bGAZF9mhXgBv3Acz4AtQ1oKzArsYDA
+         y4Tg6FWZB5iWwPe62TT105AoVIcnXxhhmJvuEFZQDZ/c1ALnpNzU53yrb72zzgSfPreX
+         UxeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705935096; x=1706539896;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1705935144; x=1706539944;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cfRuzGtnviDBvENKgRtKt9Tq+grP61BoY2wxDNzWV6c=;
-        b=KwrS1G3sgjiT+B31h5wLCA+aYAQZOXmebtIqXcu0OpKD0zwmmDmSR8BM7aD+vDSGDR
-         pweyPJ81jw1djHZKXAxK8EFnioNmtnxrBhPaDkERB7F9x7/hTeRv7NJNMPqawNcD8T80
-         d/JmTr2XbxwSOZWMWqHNwuW2eQnEav80JciRwpgiPzASCwtqEzjyVbQ0NxXWwUZ/Z2Xx
-         gZqAwYXJ7MCiEp86OfLXFa7JqZs3fbODVFJ67+ocF9W83aeiv9AUkhLw4byyxfsqIA1t
-         sCjhD9efHgXFzK9UpmJDphWPlYtLFkqt+YTHp/xUTwyQpLtUSkfd3Te2sibJNxKwf+ws
-         LIoA==
-X-Gm-Message-State: AOJu0YxIb0DF46T+ZqiqqxButcmyvJF2zxdJJas9ljINHxiNTUVIC3dw
-	JnnS/EAAdl8I4tUK5wqEf7uo2Ga3K/V5PRumVkO0N2pV0eoD9k7s5+bgziBN/D4=
-X-Google-Smtp-Source: AGHT+IH7GS/aoL3nZ2Y5xpqjssU4B0Jln7lFCFTM8ETEVRKgmEYIH/iWUWEoFRYufp5mkDWnRnEpcw==
-X-Received: by 2002:a05:600c:35c2:b0:40e:95b9:2e30 with SMTP id r2-20020a05600c35c200b0040e95b92e30mr1643398wmq.42.1705935096227;
-        Mon, 22 Jan 2024 06:51:36 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id l13-20020a05600c4f0d00b0040e85f86515sm21469501wmq.29.2024.01.22.06.51.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 06:51:35 -0800 (PST)
-Date: Mon, 22 Jan 2024 17:51:32 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org
-Subject: [bug report] bcachefs: Better journal tracepoints
-Message-ID: <7120e608-e5c2-4d5c-819d-a9423c7a7262@moroto.mountain>
+        bh=+BRBWR64JXQ0HMdfmWSg7M/4xI9ANlZ+3Mn/VN5r0Bc=;
+        b=Wdx5wli++C+yQ2aBDkeWfegoTKN/qHFH2PT3twINVqILtCxlIBPvv1r+vKK6kS5B7B
+         JQsuDraDS7+Op7UTCi8Ir+P2oIvhh0zC2DbZxgzbA5VHN+8gi8lTJKb/SUQCJZpw0EoR
+         k6rFOWrPF5+4ORnc+bPn1C+VtpvvJ3AuV5j+8O2ZPPcTlyinXICOEGYCQNLUFkVxxTNR
+         vZ7dfAf3Be0QQB6l3NOC8yu8uza+1jTQgLF2yoxih2d9Y/YunzpgKU70hWrTlQhHS2V2
+         hSvKYrIb3wapqF4imbarLwKnbGfjJ5uMqSAalz/yn4T2Ql2KT+z+a4qIGNv+L81HOZyg
+         3zTQ==
+X-Gm-Message-State: AOJu0YzoXekFwKZFrHiNbcFAeVbiFJUYj0n6Rmh0M61Bo0Ep5ISKfFcf
+	6zuLSPbX2lSxmKXlQqoF0W8oh+FEr4t6qXgi/hX5ekL+w4o+SrQb
+X-Google-Smtp-Source: AGHT+IFPrXP7Es2vHG0KngQdbq7Lpriv9qBV3hoohr5v5vf+0JkMXtZ0hk73JSULoBk1ugeQ5HvYWg==
+X-Received: by 2002:a05:6a00:1914:b0:6db:9c1:7164 with SMTP id y20-20020a056a00191400b006db09c17164mr6868790pfi.15.1705935143692;
+        Mon, 22 Jan 2024 06:52:23 -0800 (PST)
+Received: from [192.168.54.105] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id g8-20020a056a0023c800b006d9aaee2f57sm9607640pfc.102.2024.01.22.06.52.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 06:52:23 -0800 (PST)
+Message-ID: <39e77d5d-d29e-4f4c-a678-78b6e562eaae@gmail.com>
+Date: Mon, 22 Jan 2024 11:52:19 -0300
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH BCACHEFS-TOOLS] use upstream bindgen; fix packed and
+ aligned types
+Content-Language: en-US
+To: Thomas Bertschinger <tahbertschinger@gmail.com>,
+ Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org,
+ Brian Foster <bfoster@redhat.com>, rust-for-linux@vger.kernel.org
+References: <20240122143643.201936-1-tahbertschinger@gmail.com>
+From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20240122143643.201936-1-tahbertschinger@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello Kent Overstreet,
+On 1/22/24 11:36, Thomas Bertschinger wrote:
+> bcachefs-tools has been using a patched bindgen to work around a
+> limitation of rustc that prevents compiling structs with
+> both #[repr(packed(N)] and #[repr(align(N)] attributes. The patch:
+> e8168ceda507 "codegen: Don't generate conflicting packed() and align()
+> representation hints." discards the "align" attribute in cases where
+> bindgen produces a type with both.
+> 
+> This may be correct for some types, but it turns out that for each
+> bcachefs type with this problem, keeping the "align" attribute and
+> discarding the "packed" attribute generates a type with the same ABI as
+> the original C type.
+> 
+> This can be tested automatically by running:
+> $ cargo test --manifest-path bch_bindgen/Cargo.toml
+> in the bcachefs-tools tree.
+> 
+> There has been pressure recently to start using upstream bindgen; both
+> externally, from distribution maintainers who want to build
+> bcachefs-tools with standard dependencies, and internally, in order to
+> enable using Rust for bcachefs in-kernel.
+> 
+> This patch updates bcachefs-tools to use upstream bindgen. It works
+> around the rustc limitation with a post-processing step in the bindgen
+> build that adjusts the attributes to include "#[repr(C, align(N))]" and
+> exclude #[repr(packed(N)] only for the 4 types that need it.
+> 
+> Some types that had been manually implemented in
+> bch_bindgen/src/bcachefs.rs are now automatically generated by bindgen,
+> so that they will be covered by the ABI compatibility testing mentioned
+> above.
+> 
+> I intentionally targeted the post-processing to the exact 4 types with
+> the issue currently, so that any changes to bcachefs that result in this
+> issue appearing for a new type will require manual intervention. I
+> figured any such changes should require careful consideration.
+> 
+> Ideally, bindgen can be updated to handle situations where "align(N)"
+> is needed and "packed(N)" can be safely discarded. If a patch for this
+> is accepted into bindgen, the post-processing hack can be removed.
+> 
+> Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
+> ---
+> [...]
 
-The patch ff35f7b3d0cf: "bcachefs: Better journal tracepoints" from
-Jan 15, 2024 (linux-next), leads to the following Smatch static
-checker warning:
+You really got lucky that those types didn't require packing in
+Rust. LGTM.
 
-	fs/bcachefs/journal.c:236 __journal_entry_close()
-	warn: sleeping in atomic context
-
-fs/bcachefs/journal.c
-    200 static void __journal_entry_close(struct journal *j, unsigned closed_val, bool trace)
-    201 {
-    202         struct bch_fs *c = container_of(j, struct bch_fs, journal);
-    203         struct journal_buf *buf = journal_cur_buf(j);
-    204         union journal_res_state old, new;
-    205         u64 v = atomic64_read(&j->reservations.counter);
-    206         unsigned sectors;
-    207 
-    208         BUG_ON(closed_val != JOURNAL_ENTRY_CLOSED_VAL &&
-    209                closed_val != JOURNAL_ENTRY_ERROR_VAL);
-    210 
-    211         lockdep_assert_held(&j->lock);
-    212 
-    213         do {
-    214                 old.v = new.v = v;
-    215                 new.cur_entry_offset = closed_val;
-    216 
-    217                 if (old.cur_entry_offset == JOURNAL_ENTRY_ERROR_VAL ||
-    218                     old.cur_entry_offset == new.cur_entry_offset)
-    219                         return;
-    220         } while ((v = atomic64_cmpxchg(&j->reservations.counter,
-    221                                        old.v, new.v)) != old.v);
-    222 
-    223         if (!__journal_entry_is_open(old))
-    224                 return;
-    225 
-    226         /* Close out old buffer: */
-    227         buf->data->u64s                = cpu_to_le32(old.cur_entry_offset);
-    228 
-    229         if (trace_journal_entry_close_enabled() && trace) {
-    230                 struct printbuf pbuf = PRINTBUF;
-    231                 pbuf.atomic++;
-    232 
-    233                 prt_str(&pbuf, "entry size: ");
-    234                 prt_human_readable_u64(&pbuf, vstruct_bytes(buf->data));
-    235                 prt_newline(&pbuf);
---> 236                 bch2_prt_task_backtrace(&pbuf, current, 1);
-                        ^^^^^^^^^^^^^^^^^^^^^^^
-It looks like bch2_prt_task_backtrace() calls kvmalloc() in
-__bch2_darray_resize() which is a sleeping function.  A lot of of the
-callers are holding spinlocks.
-
-bch2_journal_halt() <- disables preempt
-bch2_journal_entry_close() <- disables preempt
-bch2_journal_flush_seq_async() <- disables preempt
--> journal_entry_want_write()
-journal_write_work() <- disables preempt
-__journal_res_get() <- disables preempt
-bch2_journal_entry_res_resize() <- disables preempt
-bch2_journal_flush_seq_async() <- disables preempt <duplicate>
-__bch2_next_write_buffer_flush_journal_buf() <- disables preempt
-   -> __journal_entry_close()
-
-regards,
-dan carpenter
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
