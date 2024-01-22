@@ -1,70 +1,38 @@
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7760150279;
-	Mon, 22 Jan 2024 16:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C0D64CF5
+	for <linux-bcachefs@vger.kernel.org>; Mon, 22 Jan 2024 17:27:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705940629; cv=none; b=AvNKdQGlqOgbps+SJ/pI2JLMdJKoB8g9z41UuPIcRxBe+NDP4sQn6rxjbARe53GCDLLiFMuEOZlSFARfamldkd8s5NOM2X/zV3T7GNUO4tuuawy5RaY18DEN2LX/j+Yuc4+9w9R9CkDh50D/ebGvs1PFzrJ768tZlMfGiY+AlSE=
+	t=1705944477; cv=none; b=VLEJ+czB1Nv5PYufLq0Rcbd1XWEN+5dAnVYgRLOEWejLraM4mOjMm76inxSxeIOlHncMP5N9BOISYkDRiiUwY0sh0AjXvEiTBFUqY/0pyJS4mIpv+6nMUuDHI872fCxzMNrm6VLeH8onVq6mMMhNqUPfpF2+DJHpUPfhTwNrN/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705940629; c=relaxed/simple;
-	bh=ctEaKNZFDGbsSXqRw8IOY9JUurhEb6JZdXGmd/zRjxc=;
+	s=arc-20240116; t=1705944477; c=relaxed/simple;
+	bh=VMp3FysYdPSbT9RzT8L4XckDvOAop32e5dVRJSsDz0o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZwCiCbNHyOaLXoC/fgeUDKZqo4a8ipIgaYXJgHjcWn95mchHynQlYrBfkBFIKmsAiTJOJuGltBr9XwLwjKe4CcRek84rGRLf57uh00AtIytXjVmGvbut91zAv5z6CY+fsbBNSeg65cRwvIy7yPjIZDIcN4oNl1j+/5ggdHmaBUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Enx1HGIs; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=kc5SQ6tmpiHWI9INFlcvXoJRnnc53wNt5A7qJApsrfpOxAWm8/gz0grAXlxNLzMlJjrN4E0YEd65qpLTC0cZC5kjy73VSrKW3qxS9aY+LZgOcsUdvUao8pYVxv11NyPrXTBl1hymQPnrmOzeEbjXRgg173HhrfLTa65YnzlKV74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tuq8FRKX; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Enx1HGIs"
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36275c1f11bso116575ab.1;
-        Mon, 22 Jan 2024 08:23:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705940627; x=1706545427; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Mfx2hahF3mSU03cNx8bFJW8kznthWgLM/hhXHRDnxI=;
-        b=Enx1HGIsEfU3DzCHtEYX/zvbJsSrMEkQ1VxmvjeBTVrgPBgP2Vs7YFJ7uD1Q2bMv1Z
-         vXwFnvWXOGGtAy6MYJcEtavb5bGoH7Y6AvAWdR5j9WhuAim12c5qKgyjCvnitn+2AYui
-         zKzi9K7gpKPvU9JpXx8y+bi/YTOXtCpEJP/9UhPbDx9/ywGtAos2+Au1xPYTWNPiWeb5
-         lMgH48nvWQQC1rgZr7Wyxl2sbILZRHI9czlv2nJCIjXGW3WYsKk1xoYQmtYovUXKS7F4
-         M1BQBXbXNyDlCj+a9GNWniPd/xwNklDcQwoOvECIBjDEklZy5DtoEDumyYHGIa+AdOEE
-         p8XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705940627; x=1706545427;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Mfx2hahF3mSU03cNx8bFJW8kznthWgLM/hhXHRDnxI=;
-        b=OqvaX7OYTGA3O2Qb3hIau75Ypcpv/4i1Go6ujGUr8r1l3hkDsIR0fDYZDblWcvsOU5
-         3qPZNXO0mwdWvr9+UgeH50pJPMwIqLpzWvAXFCRIO5ZK3ngtC4+aS2UX4ZrfOHXZ2fGu
-         R+CllSDI5TQ9luC59ACZoZ3LKW2JcMzaU6T4HAwsjVlLqGWtSAOs3JHEgIq1tes8r9nF
-         +AxmqV4vpJOSNOLXHuieGkQN16CStHieUSiwJZg+G258EPbhOfjUEYfZjpG5bYKlSGsb
-         8CMl3dT2HW3GTkCR7g+I7Q3p95gnZXR3ntZteetdZTu2DijmBxduOfuXXSc15F190LpS
-         osNQ==
-X-Gm-Message-State: AOJu0Yzh4faLWc+zQDBBtQnfymcX19SXID7tdMmZAZQdiFA9AzP2k1t0
-	w51BhIjM4knfMxvuRZRSppNhdch2H3UHRzLayhk0ELyV04NbbU6rTwXbbqIy
-X-Google-Smtp-Source: AGHT+IG6BLYd5D1AcOz1m3V0gy6/cTz5Q8nZuwLgDP3aHWZW79Gac93IIbSggDEw97xq9QyE5ZZHMw==
-X-Received: by 2002:a05:6e02:1c2f:b0:35f:f59f:9f4c with SMTP id m15-20020a056e021c2f00b0035ff59f9f4cmr7339058ilh.1.1705940627467;
-        Mon, 22 Jan 2024 08:23:47 -0800 (PST)
-Received: from visitorckw-System-Product-Name (IP-216-168.cs.nctu.edu.tw. [140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id f1-20020a63dc41000000b005c6617b52e6sm8766104pgj.5.2024.01.22.08.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 08:23:47 -0800 (PST)
-Date: Tue, 23 Jan 2024 00:23:43 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: colyli@suse.de, bfoster@redhat.com, jserv@ccns.ncku.edu.tw,
-	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 0/5] Optimize number of comparisons for heap/heapsort
- implementaion
-Message-ID: <Za6Wj1730cqvoYaQ@visitorckw-System-Product-Name>
-References: <20240121153649.2733274-1-visitorckw@gmail.com>
- <nl6kvjxg4gia5pbfb4jibxusvavmlwumrvy3swfs33ciub32wt@2kmeqnqycxxh>
- <Za1Ml/ZUBXdYXOIt@visitorckw-System-Product-Name>
- <ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu>
- <Za6EjshZWFUPLJef@visitorckw-System-Product-Name>
- <zwcm35flig23fttyybenorsu27ki3dsurqjkjxhrlbnk5zg3n7@vmagssufbuy2>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tuq8FRKX"
+Date: Mon, 22 Jan 2024 12:27:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705944473;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FAzzKUc9Ls0+RwM3zcsfwVU9lOyEbqpFB7DJ25T4JKc=;
+	b=Tuq8FRKXJQqZ3fEiFjVzRzyyEM75dY6/5AkXc3GhatYmsppIOGK3Pez1tv71Gb7abaX1Ok
+	52AUIyNeGmLE6HweYOM30BwQMqgYAxlDCOMRx2JOGFui2uZnGvJ0WEMTO4CwwKO+R0e+KT
+	skknQs6xUtMfY+7ks3G36OYwrzdiD8I=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [bug report] bcachefs: Better journal tracepoints
+Message-ID: <p7f64kdm7bfrbn333e5gqkp3moqujy7mtq4omqcbco7v5vqs55@ztowr2nrolyx>
+References: <7120e608-e5c2-4d5c-819d-a9423c7a7262@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -73,85 +41,74 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <zwcm35flig23fttyybenorsu27ki3dsurqjkjxhrlbnk5zg3n7@vmagssufbuy2>
+In-Reply-To: <7120e608-e5c2-4d5c-819d-a9423c7a7262@moroto.mountain>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jan 22, 2024 at 11:06:39AM -0500, Kent Overstreet wrote:
-> On Mon, Jan 22, 2024 at 11:06:54PM +0800, Kuan-Wei Chiu wrote:
-> > On Sun, Jan 21, 2024 at 12:41:55PM -0500, Kent Overstreet wrote:
-> > > On Mon, Jan 22, 2024 at 12:55:51AM +0800, Kuan-Wei Chiu wrote:
-> > > > On Sun, Jan 21, 2024 at 11:21:06AM -0500, Kent Overstreet wrote:
-> > > > > On Sun, Jan 21, 2024 at 11:36:44PM +0800, Kuan-Wei Chiu wrote:
-> > > > > > Hello,
-> > > > > > 
-> > > > > > The existing implementations of heap/heapsort follow the conventional
-> > > > > > textbook approach, where each heapify operation requires approximately
-> > > > > > 2*log2(n) comparisons. In this series, I introduce a bottom-up variant
-> > > > > > that reduces the number of comparisons during heapify operations to
-> > > > > > approximately log2(n), while maintaining the same number of swap
-> > > > > > operations.
-> > > > > > 
-> > > > > > Thanks,
-> > > > > > Kuan-Wei
-> > > > > > 
-> > > > > > Kuan-Wei Chiu (5):
-> > > > > >   bcachefs: Optimize eytzinger0_sort() using bottom-up heapsort
-> > > > > >   bcachefs: Introduce parent function for sort_cmp_size()
-> > > > > >   bcachefs: Optimize sort_cmp_size() using bottom-up heapsort
-> > > > > >   bcachefs: Optimize number of comparisons in heap_sift_down
-> > > > > >   bcache: Optimize number of comparisons in heap_sift
-> > > > > > 
-> > > > > >  drivers/md/bcache/util.h |  23 +++++----
-> > > > > >  fs/bcachefs/util.c       | 109 ++++++++++++++++++++++++++-------------
-> > > > > >  fs/bcachefs/util.h       |  23 +++++----
-> > > > > >  3 files changed, 98 insertions(+), 57 deletions(-)
-> > > > > 
-> > > > > Good stuff
-> > > > > 
-> > > > > While we're looking at this code, we should be doing some cleanup too -
-> > > > > there's no reason for the heap code to be duplicated in bcache and
-> > > > > bcachefs anymore, and it'd also be nice to get fs/bcachefs/eytzinger.h
-> > > > > moved to include/linux and bcache converted to use it.
-> > > > > 
-> > > > > I also would not be surprised if there's another heap implementation in
-> > > > > include/linux; we'll want to check for that and if there is decide which
-> > > > > is worth keeping.
-> > > > >
-> > > > Yes, we have 'min_heap.h' in include/linux.
-> > > 
-> > > So that has the advantage of more readable code - functions instead of
-> > > macros - whereas my version has the type safe interface.
-> > > 
-> > > We could combine the two approaches, and put a type-safe interface on
-> > > top of the min_heap.h code with some small macro wrappers - see
-> > > generic-radix-tree.h for an example of how that's done.
-> > 
-> > Without modifying the interface provided by min_heap.h, it seems
-> > challenging to implement the functionality of heap_add due to the
-> > relationship with heap_setbackpointer.
+On Mon, Jan 22, 2024 at 05:51:32PM +0300, Dan Carpenter wrote:
+> Hello Kent Overstreet,
 > 
-> min_heap.h has the same functionality, different interface - updating
-> the callers for an interface change is fine.
->
-OK, I'll take some time to do these cleanups.
-> > 
-> > Additionally, when looking into the code in generic-radix-tree.h,
-> > should we replace type[0] with type[]? This is because zero-length
-> > arrays are deprecated language features mentioned in document [1].
+> The patch ff35f7b3d0cf: "bcachefs: Better journal tracepoints" from
+> Jan 15, 2024 (linux-next), leads to the following Smatch static
+> checker warning:
 > 
-> Zero length arrays are deprecated as VLAs, but this isn't a VLA - we're
-> not storing anything there, the variable is just so that macros have
-> access to the type.
+> 	fs/bcachefs/journal.c:236 __journal_entry_close()
+> 	warn: sleeping in atomic context
 > 
-> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays [1]
-> > > 
-> > > min_heap.h has only one user though? I don't think I can quite believe
-> > > that's the only other code in the kernel using a heap, there must be
-> > > more open coded out there...
-> > 
-> > I'm not sure why, but it seems that in the kernel, other places using
-> > the heap implement their own subsystem-specific solutions rather than
-> > utilizing a generic heap interface. For instance,
-> > kernel/sched/cpudeadline.c and net/sched/sch_cake.c both have their own
-> > implementations.
+> fs/bcachefs/journal.c
+>     200 static void __journal_entry_close(struct journal *j, unsigned closed_val, bool trace)
+>     201 {
+>     202         struct bch_fs *c = container_of(j, struct bch_fs, journal);
+>     203         struct journal_buf *buf = journal_cur_buf(j);
+>     204         union journal_res_state old, new;
+>     205         u64 v = atomic64_read(&j->reservations.counter);
+>     206         unsigned sectors;
+>     207 
+>     208         BUG_ON(closed_val != JOURNAL_ENTRY_CLOSED_VAL &&
+>     209                closed_val != JOURNAL_ENTRY_ERROR_VAL);
+>     210 
+>     211         lockdep_assert_held(&j->lock);
+>     212 
+>     213         do {
+>     214                 old.v = new.v = v;
+>     215                 new.cur_entry_offset = closed_val;
+>     216 
+>     217                 if (old.cur_entry_offset == JOURNAL_ENTRY_ERROR_VAL ||
+>     218                     old.cur_entry_offset == new.cur_entry_offset)
+>     219                         return;
+>     220         } while ((v = atomic64_cmpxchg(&j->reservations.counter,
+>     221                                        old.v, new.v)) != old.v);
+>     222 
+>     223         if (!__journal_entry_is_open(old))
+>     224                 return;
+>     225 
+>     226         /* Close out old buffer: */
+>     227         buf->data->u64s                = cpu_to_le32(old.cur_entry_offset);
+>     228 
+>     229         if (trace_journal_entry_close_enabled() && trace) {
+>     230                 struct printbuf pbuf = PRINTBUF;
+>     231                 pbuf.atomic++;
+>     232 
+>     233                 prt_str(&pbuf, "entry size: ");
+>     234                 prt_human_readable_u64(&pbuf, vstruct_bytes(buf->data));
+>     235                 prt_newline(&pbuf);
+> --> 236                 bch2_prt_task_backtrace(&pbuf, current, 1);
+>                         ^^^^^^^^^^^^^^^^^^^^^^^
+> It looks like bch2_prt_task_backtrace() calls kvmalloc() in
+> __bch2_darray_resize() which is a sleeping function.  A lot of of the
+> callers are holding spinlocks.
 > 
-> Sounds like a fun cleanup project :)
+> bch2_journal_halt() <- disables preempt
+> bch2_journal_entry_close() <- disables preempt
+> bch2_journal_flush_seq_async() <- disables preempt
+> -> journal_entry_want_write()
+> journal_write_work() <- disables preempt
+> __journal_res_get() <- disables preempt
+> bch2_journal_entry_res_resize() <- disables preempt
+> bch2_journal_flush_seq_async() <- disables preempt <duplicate>
+> __bch2_next_write_buffer_flush_journal_buf() <- disables preempt
+>    -> __journal_entry_close()
+> 
+> regards,
+> dan carpenter
+
+Thanks - that just needs gfp flags plumbed.
