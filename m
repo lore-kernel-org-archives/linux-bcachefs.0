@@ -1,123 +1,142 @@
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7707B3CF45;
-	Mon, 22 Jan 2024 14:52:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B719495D9;
+	Mon, 22 Jan 2024 15:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935145; cv=none; b=LcgLXc8++pmQhb3Kts7TkZlLfqw3NeUI4URL14Wu8glBhjGduEIVYEGpv1bAwaHYzUHl3MZLmiFDSWax1Prk7PdVpr5cHaUbrhUW4G74yYJejDvpfRiYqU6LEC6pRZ6oSOEJN+LW6UNgSxEpfdjAlZe6PFO66pYZrwMeFBgL8R0=
+	t=1705936020; cv=none; b=LzRYYQK2+VunwFDw6La6wxfmfUGVeSbfi7OYD/8Rju0tjPu5UWux3wuP1njvyGtVQq67kkZbtPz4Wt7aOA4281rhN7uxaEr56oKATOncOixDE9pirhbPRouPVtnrxXRybdkOWjkVCPRVZBb/s3HhbW4uyGS28JQ2a2aS3k2U+kY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935145; c=relaxed/simple;
-	bh=Hy5Zc12lQ++Q8QHg/cD6L3gnD0KgOnmF9tp0GhzX+Dk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=XmduK5pB5KiSr6PQ+seBJ8wvgd2Q8OJtHNnM5RoTzuZ4mnkX14pn9sv2hPCADaICoT0axx3+zoEKH+KHtxm2SivxTwjwKOoagu1jDVa5TsQvDlURnuT5JjEr295SPHmWOoGGoFVZNx/34djjG8kcmqEShk5Klhqoqvs3gqKeb70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qy5v8sHf; arc=none smtp.client-ip=209.85.210.171
+	s=arc-20240116; t=1705936020; c=relaxed/simple;
+	bh=4UjfoZOWKhz9CUcE2OAu1F/mEKNnn+MN6pIwNPWP0kE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dJTz7LG5Z7SPibbTDRNnIsPrAXSP9I8aQZpWTjLguI59B0gIZFK2uFW6EZhi29khyXTTgq0kIE++UxNaStPaHW6CrqpxQaXyZWbk/KfRo4M66AtXKYjCNS4VOBhRIdZK0j38YPt+18VpqFtmAKskXcICuWoHmI/HuPEX9NjQrf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DCO8JNh+; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qy5v8sHf"
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6dc1f02090fso15333b3a.0;
-        Mon, 22 Jan 2024 06:52:24 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DCO8JNh+"
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d7517fe9d4so836105ad.0;
+        Mon, 22 Jan 2024 07:06:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705935144; x=1706539944; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+BRBWR64JXQ0HMdfmWSg7M/4xI9ANlZ+3Mn/VN5r0Bc=;
-        b=Qy5v8sHf9S8wwsnfNmCNuzCHXZelVpBRN5sinl3aTZXizzSWLsqTJ6bMoq7BxHj3UP
-         bO6UDA9P1UUz3+wizBOH7aKke1HdyMWzzsdaUpXW2KL3DSumKz9LeabEr3vILKzEzIms
-         g8hBKD0LkvkORVNWCLICg8lYqaeA2kqZpXyqwIq1zDyw8K9qrQvAjiUJGXQEX/LJLwwd
-         FZzISMcCf+XChIby1CGaloQp6Yx+cLklX0KgB/bGAZF9mhXgBv3Acz4AtQ1oKzArsYDA
-         y4Tg6FWZB5iWwPe62TT105AoVIcnXxhhmJvuEFZQDZ/c1ALnpNzU53yrb72zzgSfPreX
-         UxeA==
+        d=gmail.com; s=20230601; t=1705936018; x=1706540818; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pB8swrgfuo82HJIoA7WtzOzLJAOPh3SgeZ4ldwd4D6U=;
+        b=DCO8JNh+kOCXQkxFVcIdv8AcW4E/R8N5fKeFvWpNMb+7COl2LdAgDEXLWoZYn9hdQB
+         I1TTWhw/23Uh5CvgsXZH6Fbd/P4FIylo4IH0wJS5vxvsyNwICHtrpzu5Dex4gQ6nzWpc
+         BhgB5CPJl3OLZqIH8Eyhhh3DNT2uP1HHtGNiq0vjdndC9xhgwdE4uqo/qIs8ZuTqSbYV
+         tQqo9WQERPxePqEhTwdhAgLV0+dcnutFDUWh2CraCjnPWCrrtkHe3fJ026G6qfr9Hx/a
+         /ZGFM2AYQwPJpz4NzOAqg+MfG8ocONBSTD6mQmowPZS3/TVVBY6n2Q5CNEi+RfIicdzf
+         xDfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705935144; x=1706539944;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+BRBWR64JXQ0HMdfmWSg7M/4xI9ANlZ+3Mn/VN5r0Bc=;
-        b=Wdx5wli++C+yQ2aBDkeWfegoTKN/qHFH2PT3twINVqILtCxlIBPvv1r+vKK6kS5B7B
-         JQsuDraDS7+Op7UTCi8Ir+P2oIvhh0zC2DbZxgzbA5VHN+8gi8lTJKb/SUQCJZpw0EoR
-         k6rFOWrPF5+4ORnc+bPn1C+VtpvvJ3AuV5j+8O2ZPPcTlyinXICOEGYCQNLUFkVxxTNR
-         vZ7dfAf3Be0QQB6l3NOC8yu8uza+1jTQgLF2yoxih2d9Y/YunzpgKU70hWrTlQhHS2V2
-         hSvKYrIb3wapqF4imbarLwKnbGfjJ5uMqSAalz/yn4T2Ql2KT+z+a4qIGNv+L81HOZyg
-         3zTQ==
-X-Gm-Message-State: AOJu0YzoXekFwKZFrHiNbcFAeVbiFJUYj0n6Rmh0M61Bo0Ep5ISKfFcf
-	6zuLSPbX2lSxmKXlQqoF0W8oh+FEr4t6qXgi/hX5ekL+w4o+SrQb
-X-Google-Smtp-Source: AGHT+IFPrXP7Es2vHG0KngQdbq7Lpriv9qBV3hoohr5v5vf+0JkMXtZ0hk73JSULoBk1ugeQ5HvYWg==
-X-Received: by 2002:a05:6a00:1914:b0:6db:9c1:7164 with SMTP id y20-20020a056a00191400b006db09c17164mr6868790pfi.15.1705935143692;
-        Mon, 22 Jan 2024 06:52:23 -0800 (PST)
-Received: from [192.168.54.105] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id g8-20020a056a0023c800b006d9aaee2f57sm9607640pfc.102.2024.01.22.06.52.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 06:52:23 -0800 (PST)
-Message-ID: <39e77d5d-d29e-4f4c-a678-78b6e562eaae@gmail.com>
-Date: Mon, 22 Jan 2024 11:52:19 -0300
+        d=1e100.net; s=20230601; t=1705936018; x=1706540818;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pB8swrgfuo82HJIoA7WtzOzLJAOPh3SgeZ4ldwd4D6U=;
+        b=L8yVn5/VjB7kLjt4jxyODeAFodMFAsMpnKslNcSuX/uYikvETGz9WRS01CCiJCi1jv
+         dtTK+3lLbNo1qBrz7SkrEN12ST/6A1xiwc971hmXgVuwACZfEEVDDtnC4IGKSA2aNG6f
+         4Btkmc6LhPlp/VYLqDfm/TSpehnYBo2zIUTEs31E/9OuxNWfWD/wY9HZoafscjGDVCRr
+         s029z9wAOEf+CXzbc6II9t9rgN/SqlsUtU175l/sEnExIAIWDjQAP4ltNaY0gHXkZWHo
+         lUQDPk7C3Ar1O2rQbNMS5InXa2swgS+DTnB2Q9jXCl+rT6vKuwOkCC4NAdCW2jD1nNt/
+         ucxg==
+X-Gm-Message-State: AOJu0Yz20wVZuVHul23rDwmjfsXs8kXgd0FXq4HAS0mdS1s4mcPXxGjO
+	x9R3HBRIuzLXy+D/0bV7eTuskz8Tg4My+q4xRMLP7zSYFEFIhRnq
+X-Google-Smtp-Source: AGHT+IHqAgflk104ZbHizf63K/+tBR8ze0aFA/FPCHNIZ4lPx6NazJ9AFhqEO6Jbnej/ZCpb1JDW9g==
+X-Received: by 2002:a17:903:54a:b0:1d5:f667:10a1 with SMTP id jo10-20020a170903054a00b001d5f66710a1mr8439165plb.6.1705936018228;
+        Mon, 22 Jan 2024 07:06:58 -0800 (PST)
+Received: from visitorckw-System-Product-Name (IP-216-168.cs.nctu.edu.tw. [140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id t1-20020a1709028c8100b001d7505a6894sm2020913plo.230.2024.01.22.07.06.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 07:06:57 -0800 (PST)
+Date: Mon, 22 Jan 2024 23:06:54 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: colyli@suse.de, bfoster@redhat.com, jserv@ccns.ncku.edu.tw,
+	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH 0/5] Optimize number of comparisons for heap/heapsort
+ implementaion
+Message-ID: <Za6EjshZWFUPLJef@visitorckw-System-Product-Name>
+References: <20240121153649.2733274-1-visitorckw@gmail.com>
+ <nl6kvjxg4gia5pbfb4jibxusvavmlwumrvy3swfs33ciub32wt@2kmeqnqycxxh>
+ <Za1Ml/ZUBXdYXOIt@visitorckw-System-Product-Name>
+ <ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH BCACHEFS-TOOLS] use upstream bindgen; fix packed and
- aligned types
-Content-Language: en-US
-To: Thomas Bertschinger <tahbertschinger@gmail.com>,
- Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org,
- Brian Foster <bfoster@redhat.com>, rust-for-linux@vger.kernel.org
-References: <20240122143643.201936-1-tahbertschinger@gmail.com>
-From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20240122143643.201936-1-tahbertschinger@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu>
 
-On 1/22/24 11:36, Thomas Bertschinger wrote:
-> bcachefs-tools has been using a patched bindgen to work around a
-> limitation of rustc that prevents compiling structs with
-> both #[repr(packed(N)] and #[repr(align(N)] attributes. The patch:
-> e8168ceda507 "codegen: Don't generate conflicting packed() and align()
-> representation hints." discards the "align" attribute in cases where
-> bindgen produces a type with both.
+On Sun, Jan 21, 2024 at 12:41:55PM -0500, Kent Overstreet wrote:
+> On Mon, Jan 22, 2024 at 12:55:51AM +0800, Kuan-Wei Chiu wrote:
+> > On Sun, Jan 21, 2024 at 11:21:06AM -0500, Kent Overstreet wrote:
+> > > On Sun, Jan 21, 2024 at 11:36:44PM +0800, Kuan-Wei Chiu wrote:
+> > > > Hello,
+> > > > 
+> > > > The existing implementations of heap/heapsort follow the conventional
+> > > > textbook approach, where each heapify operation requires approximately
+> > > > 2*log2(n) comparisons. In this series, I introduce a bottom-up variant
+> > > > that reduces the number of comparisons during heapify operations to
+> > > > approximately log2(n), while maintaining the same number of swap
+> > > > operations.
+> > > > 
+> > > > Thanks,
+> > > > Kuan-Wei
+> > > > 
+> > > > Kuan-Wei Chiu (5):
+> > > >   bcachefs: Optimize eytzinger0_sort() using bottom-up heapsort
+> > > >   bcachefs: Introduce parent function for sort_cmp_size()
+> > > >   bcachefs: Optimize sort_cmp_size() using bottom-up heapsort
+> > > >   bcachefs: Optimize number of comparisons in heap_sift_down
+> > > >   bcache: Optimize number of comparisons in heap_sift
+> > > > 
+> > > >  drivers/md/bcache/util.h |  23 +++++----
+> > > >  fs/bcachefs/util.c       | 109 ++++++++++++++++++++++++++-------------
+> > > >  fs/bcachefs/util.h       |  23 +++++----
+> > > >  3 files changed, 98 insertions(+), 57 deletions(-)
+> > > 
+> > > Good stuff
+> > > 
+> > > While we're looking at this code, we should be doing some cleanup too -
+> > > there's no reason for the heap code to be duplicated in bcache and
+> > > bcachefs anymore, and it'd also be nice to get fs/bcachefs/eytzinger.h
+> > > moved to include/linux and bcache converted to use it.
+> > > 
+> > > I also would not be surprised if there's another heap implementation in
+> > > include/linux; we'll want to check for that and if there is decide which
+> > > is worth keeping.
+> > >
+> > Yes, we have 'min_heap.h' in include/linux.
 > 
-> This may be correct for some types, but it turns out that for each
-> bcachefs type with this problem, keeping the "align" attribute and
-> discarding the "packed" attribute generates a type with the same ABI as
-> the original C type.
+> So that has the advantage of more readable code - functions instead of
+> macros - whereas my version has the type safe interface.
 > 
-> This can be tested automatically by running:
-> $ cargo test --manifest-path bch_bindgen/Cargo.toml
-> in the bcachefs-tools tree.
-> 
-> There has been pressure recently to start using upstream bindgen; both
-> externally, from distribution maintainers who want to build
-> bcachefs-tools with standard dependencies, and internally, in order to
-> enable using Rust for bcachefs in-kernel.
-> 
-> This patch updates bcachefs-tools to use upstream bindgen. It works
-> around the rustc limitation with a post-processing step in the bindgen
-> build that adjusts the attributes to include "#[repr(C, align(N))]" and
-> exclude #[repr(packed(N)] only for the 4 types that need it.
-> 
-> Some types that had been manually implemented in
-> bch_bindgen/src/bcachefs.rs are now automatically generated by bindgen,
-> so that they will be covered by the ABI compatibility testing mentioned
-> above.
-> 
-> I intentionally targeted the post-processing to the exact 4 types with
-> the issue currently, so that any changes to bcachefs that result in this
-> issue appearing for a new type will require manual intervention. I
-> figured any such changes should require careful consideration.
-> 
-> Ideally, bindgen can be updated to handle situations where "align(N)"
-> is needed and "packed(N)" can be safely discarded. If a patch for this
-> is accepted into bindgen, the post-processing hack can be removed.
-> 
-> Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
-> ---
-> [...]
+> We could combine the two approaches, and put a type-safe interface on
+> top of the min_heap.h code with some small macro wrappers - see
+> generic-radix-tree.h for an example of how that's done.
 
-You really got lucky that those types didn't require packing in
-Rust. LGTM.
+Without modifying the interface provided by min_heap.h, it seems
+challenging to implement the functionality of heap_add due to the
+relationship with heap_setbackpointer.
 
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Additionally, when looking into the code in generic-radix-tree.h,
+should we replace type[0] with type[]? This is because zero-length
+arrays are deprecated language features mentioned in document [1].
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays [1]
+> 
+> min_heap.h has only one user though? I don't think I can quite believe
+> that's the only other code in the kernel using a heap, there must be
+> more open coded out there...
+
+I'm not sure why, but it seems that in the kernel, other places using
+the heap implement their own subsystem-specific solutions rather than
+utilizing a generic heap interface. For instance,
+kernel/sched/cpudeadline.c and net/sched/sch_cake.c both have their own
+implementations.
