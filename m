@@ -1,184 +1,121 @@
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA6E7162748
-	for <linux-bcachefs@vger.kernel.org>; Tue, 23 Jan 2024 00:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3513A5D751
+	for <linux-bcachefs@vger.kernel.org>; Tue, 23 Jan 2024 00:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705970186; cv=none; b=u2VciyWXky3VpLVWNUjYniz5Xz1aZOg1mtqtkMQLsmj2N93AUSRzZZpeEze5JMsApG/TgIx2lxp3PFhsw3w3SutCRGlHHuoonLhoo0+51WrO9R+B8F5yewB4cRBvuy5W0YXxRrW89eR+TU3YE2posjJrs08OSWt7FvpUwbf5Btk=
+	t=1705970548; cv=none; b=lXnOBeCrYKcRYDC4N7vT6J+WTfXoq9qcwd/nxEmAIKW9eBC3TzTydo2dgwdxKYnzUaHBsPjfzIRbII4Xc/nlu6KlVSCFG0XS7e0aFzbj6Zi3/lH5LKCWg+Jc7GYhMQxXVKP8+bJD40/xsPItHWGKQaGMtm/GJSb+4ue7Hg9e73s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705970186; c=relaxed/simple;
-	bh=ep/lIptA9L4lr+f06tjVEEoLQ4MXnnp5iyNA3nOOpBE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RTFCyCag5o5n7YMF8IZGZRaiQbsIjcLHgXkyabcCqdseKmJ7AGCeerB7k9ymfeoEv730RxFUG+PcruYCAA5N1sXzUOSb8+EWcNWXpQkYyyZt6i7++x3Pjrr+ztuuJJNDCcU11z95yOJyCkNLOjrQFHMJpEEtrmw0fxk7h5k1VD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=D717a4+h; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+	s=arc-20240116; t=1705970548; c=relaxed/simple;
+	bh=M7U1cGu7aS9RwZouLbNcErYMaJZcmv28Ia6b7kg0HG4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ux34yQ8fTpFd4pS8Ta4bw4lO+CYv0FHZubPjn8q8Pc6EmtUM9taNOOlrFN/UZ5vobMWdg3qpk/bAZZ91K/7nQ9BAE6On1aWffklxJHSN7/07iFjryELvwkxtPWAjSgFANnOxGsRYcYgnELWzPItGR/1r933dtBViTMIv7Dngpbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=ECR9Sedc; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="D717a4+h"
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2909978624eso670838a91.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 22 Jan 2024 16:36:24 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="ECR9Sedc"
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bdb42da0e0so1398059b6e.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 22 Jan 2024 16:42:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705970184; x=1706574984; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gu7JD83IcutVIpR+vN3JS6ozq09X5iWFwWB5AcENu1U=;
-        b=D717a4+hchIOaKmqCVEbuWLkT6x4LFiOyOsg9820QbdtTjnxtBvHUX6v4s6sZAbgvD
-         D4akV6dkP7oQx+px2xduOIbAhE/yLcXvQFa9oQhjhlsoZtyGFvpTPXrv6LxqsYGwZgtO
-         dX9BlM60yl+1W5Ip70JgQgCk7MGQ1OsMud9/0=
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1705970546; x=1706575346; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pZ/KMTxmbinFPSTe5EWCd4hdo6wOhA4XkQxlu3a3Gyk=;
+        b=ECR9SedcqDvOF9sPKXvYETC3Df/wuadqrDHYnjlBG0oLL/WAmLrA4Qbt44Gcb0YusL
+         iTjwXJ73m5eiL8TnupbRNJBDRA0It0kJI+OlReISDQy33yAKq9yL33uZKyrp3eBrd2NI
+         FKJtxovyBOU55rzEYVvgZ6Nf4rGMJin8PxxEJZyoVtVpRo7+7CDI5aXojnT/ws5JaES3
+         S0K0AumcubtYUljo3aNrjGmlba01YO77Om/7zWHofbWjRks3ZkNJra31ryaOrFBz4XAl
+         HQ600Y2kmB/mvnYziV6avAT7SxFGapdall7oWx8r/QtZ2Wgf5RUgS632y7V+wDhJibna
+         e9+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705970184; x=1706574984;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gu7JD83IcutVIpR+vN3JS6ozq09X5iWFwWB5AcENu1U=;
-        b=CjvlMjICYw2pLk/9sX5GZ8ulkOcePHroJEjQ3RsjIhP0omvfj5djtrg2eXyFeYGuPA
-         Ax90tv/7amp0GTjdJBBCNIhfjSS5yowYvT6ggi+wWULIGk1JzZxE5yAYLM3FFo2vzla9
-         HL0JF1X2yxajjiBjc0GbJNhtsgq1bEffK1InkneoqT88izgsi0gKys2F41CDPfkjOpMt
-         bSTB6k/vJPOjQgOvCHI1PejMRLHgDqu2mqIWxDKT9rvv7g8veZKYPbZ0McX60/2voRBc
-         jJ5RCe//3F4GLcIc/cdjlUzMqa4p62hTWUU52N8U5+b0ry1D6wyYv/WECqzgZcFAFSB0
-         4QHw==
-X-Gm-Message-State: AOJu0Yyxfy1Qq7sjZo2FCPNz+lZIqGEd0Qh1tt4X8GbUC1e7bqh14f7A
-	ntGM+jigWDQrFkMqbIHEpawIY04w3GxNviSsYApWxENr6c0gxmJY3h2OpLJVPw==
-X-Google-Smtp-Source: AGHT+IHU9ZlgSYh0eMx7669Diqv2Km4wEiGnQJDHlmT3vbHjtvtixLA5vnHZex0ljbCE4nmOmTLkXQ==
-X-Received: by 2002:a17:90b:3443:b0:290:20:2e7d with SMTP id lj3-20020a17090b344300b0029000202e7dmr2129175pjb.47.1705970184314;
-        Mon, 22 Jan 2024 16:36:24 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id sx7-20020a17090b2cc700b0029072c64439sm5247062pjb.5.2024.01.22.16.36.12
+        d=1e100.net; s=20230601; t=1705970546; x=1706575346;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pZ/KMTxmbinFPSTe5EWCd4hdo6wOhA4XkQxlu3a3Gyk=;
+        b=Lyfsm9erXeLRuVDaHoxksjR3VFI0cvSzoErINUdIrS83iIxBtX4kkNuuqI+nm4l7qW
+         8dnty3bNcI2ZdYzYbqfy+LKy7nkk+NWL7X/oTubh8hGAk0pE6Ww876y+GWjHSUWs/whD
+         xTldo/aQU+L+q2K7vZppsbWlflYw9MgLe7cKAOSrGbNUFBCxzwCRPy+rfXZ87PJQUmK/
+         3BTJ6RWVelHma1HVu6zIcZOBYZzmZWV64PuNwLwPqJXT8y+ye0Te5ydf3R/jAIVCr7tY
+         URzDj+GflZ2nqmfBqsaSoLqsHz2VWyWQC2FwLsGcBg2p0QV/+OhmyXiqFxTvH1Y/iMXG
+         ntfA==
+X-Gm-Message-State: AOJu0YwOpsiQQ6fVRyFaG1iJ10KxyXg+0ypVAPvbpo1riSdnCR5aijDu
+	LCSYRYrLuJIqXNAGiBL6ky5sb6ItJmZp+IVXby9xuXgaQ9IGlL62cx2jlec040U=
+X-Google-Smtp-Source: AGHT+IHZQ1DRLXyIkkuOSstqMxSNlG1DBiQn/ClIGY9BZemkx1tQXgP0dZgnaAkLQM5ih9nC3sb37g==
+X-Received: by 2002:a05:6808:188e:b0:3bd:c2bd:21d3 with SMTP id bi14-20020a056808188e00b003bdc2bd21d3mr718344oib.29.1705970546330;
+        Mon, 22 Jan 2024 16:42:26 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id s4-20020a62e704000000b006dbd59c126fsm3738787pfh.11.2024.01.22.16.42.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 16:36:18 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: linux-hardening@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>,
-	linux-bcachefs@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 42/82] bcachefs: Refactor intentional wrap-around test
-Date: Mon, 22 Jan 2024 16:27:17 -0800
-Message-Id: <20240123002814.1396804-42-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240122235208.work.748-kees@kernel.org>
-References: <20240122235208.work.748-kees@kernel.org>
+        Mon, 22 Jan 2024 16:42:25 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rS4ru-00Dzoo-1L;
+	Tue, 23 Jan 2024 11:42:22 +1100
+Date: Tue, 23 Jan 2024 11:42:22 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, bfoster@redhat.com,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: fix incorrect usage of REQ_OP_FLUSH
+Message-ID: <Za8LbtBgIZgj1mcx@dread.disaster.area>
+References: <20240111073655.2095423-1-hch@lst.de>
+ <ueeqal442uw77vrmonr5crix5jehetzg266725shaqi2oim6h7@4q4tlcm2y6k7>
+ <20240122063007.GA23991@lst.de>
+ <eyyg26ls45xqdyjrvowm7hfusfr7ezr3pjve6ojikg4znys6dx@rd2ugzmo44r4>
+ <20240122065038.GA24601@lst.de>
+ <3cs7zhkf3gz7fmytpxqjvstr6oegvhy3ehwu3mzomfllvjqlmc@yaq6ophbgbfr>
+ <20240122173809.GA5676@lst.de>
+ <6jhgnewkmex25jgtw2s3fifyyje4w3yja2exdrnx2vesk6bp5w@gysfpght3cbo>
+ <20240122184147.GA7072@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3557; i=keescook@chromium.org;
- h=from:subject; bh=ep/lIptA9L4lr+f06tjVEEoLQ4MXnnp5iyNA3nOOpBE=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgI2+Elt1IhHtkv5xgC3b3FRvTtskbiERH9l
- 1ZNTeeF/b2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICAAKCRCJcvTf3G3A
- JjCLD/9xtD8moVS+50gZifAJkdU1ZG18tKRem8TQm9iujCTKM7k0RA9Gt8uWtXoWJI2iqcmr7so
- 6wDWNya25DwDHnA6i6cJcDCSKOUIWj9scqgsnc/vc4ITbCC36C8LufYn9hTR2C8dxojAdmv+oWg
- AbBeJl5BpJ/nNaasEJCbPtG/FaEqLUr1cVCXz1f4t/JfMlxIvR3A1axBfLBZIMGjQDtJYXHkL9p
- LFdbnw42F7LQAZdMegEC8ocQU04rYslKCLVrwhOjQCcsv6Ws6kE9vl7RJy+m+9uPUWC0Sl3Du+I
- kaPcZbyCi8S96+rC+3Sqkn8nxgB0Ji3KlCWYiom6XD/SCas2mJlZV/Fsgw4ZogGoScMiYHeDVxA
- 3uTAn740ytyh0GrA0mTeQCmVpWEEgRgl8yAEEFpN/x5prVl7B7OWBB3fLqipeDFvn+08dE6MQ44
- bK5og4830KAx7t1L/91syH794xNxDXyBfKMXgc8jHBAoPFLHV3Z11nzBQfhMFaLNyc3nKMCbkiP
- HgAKEE2E/rqRQZXoovbv2UsHH9qCg3D+20pG3URgwo9T1LgXTwOm94X59lEyn4fM80SQYA4kwUq
- lecpfKL9uzLXFqhGSnccEE+zNNjAHSFYJQxxeCm4t8TK3hf2xjDUryQOdhwdB+FESFtDBAzIc48 oZI7aHBEQ8bWKPQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122184147.GA7072@lst.de>
 
-In an effort to separate intentional arithmetic wrap-around from
-unexpected wrap-around, we need to refactor places that depend on this
-kind of math. One of the most common code patterns of this is:
+On Mon, Jan 22, 2024 at 07:41:47PM +0100, Christoph Hellwig wrote:
+> On Mon, Jan 22, 2024 at 12:42:24PM -0500, Kent Overstreet wrote:
+> > updating my tests for the MD_FAULTY removal, then will do. Is there
+> > anything you want me to look for?
+> 
+> Nothing fancy.  Just that you do data integrity operations and do
+> not see an error.
+> 
+> > considering most tests won't break or won't clearly break if flush/fua
+> > is being dropped (even generic/388 was passing reliably, of course,
+> > since virtual block devices aren't going to reorder writes...) maybe we
+> > could do some print statement sanity checking...
+> 
+> Well, xfstests is not very good about power fail testing, because it
+> can't inject a power fail..  Which is a problem in it's own, but
+> would need hardware power failing or at least some pretty good VM
+> emulation of the same outside the scope of the actual xfstests runner.
 
-	VAR + value < VAR
+We do actually have stuff in fstests that checks write vs flush
+ordering as issued by the filesystem. We use dm-logwrites for
+tracking the writes and flushes and to be able to replay arbitrary
+groups of writes between flushes.  generic/482 is one of those
+tests.
 
-Notably, this is considered "undefined behavior" for signed and pointer
-types, which the kernel works around by using the -fno-strict-overflow
-option in the build[1] (which used to just be -fwrapv). Regardless, we
-want to get the kernel source to the position where we can meaningfully
-instrument arithmetic wrap-around conditions and catch them when they
-are unexpected, regardless of whether they are signed[2], unsigned[3],
-or pointer[4] types.
+These are the ordering problems that power failures expose,
+so we do actually have tests that cover the same conditions that
+pulling the power from a device would exercise.
 
-Refactor open-coded wrap-around addition test to use add_would_overflow().
-This paves the way to enabling the wrap-around sanitizers in the future.
+I even wrote a debugging script (tools/dm-logwrite-replay) to
+iterate write+fua groups in the test corpse to isolate the write
+groups where the consistency failure occurs when doing work to
+optimise flushes being issued by the XFS journal checkpoint writes.
 
-Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
-Link: https://github.com/KSPP/linux/issues/26 [2]
-Link: https://github.com/KSPP/linux/issues/27 [3]
-Link: https://github.com/KSPP/linux/issues/344 [4]
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/bcachefs/bkey.c  | 4 ++--
- fs/bcachefs/fs.c    | 2 +-
- fs/bcachefs/quota.c | 2 +-
- fs/bcachefs/util.c  | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+Cheers,
 
-diff --git a/fs/bcachefs/bkey.c b/fs/bcachefs/bkey.c
-index 76e79a15ba08..c68f1cfd579e 100644
---- a/fs/bcachefs/bkey.c
-+++ b/fs/bcachefs/bkey.c
-@@ -448,7 +448,7 @@ static bool bkey_format_has_too_big_fields(const struct bkey_format *f)
- 			: 0;
- 		u64 field_offset = le64_to_cpu(f->field_offset[i]);
- 
--		if (packed_max + field_offset < packed_max ||
-+		if (add_would_overflow(packed_max, field_offset) ||
- 		    packed_max + field_offset > unpacked_max)
- 			return true;
- 	}
-@@ -664,7 +664,7 @@ int bch2_bkey_format_invalid(struct bch_fs *c,
- 				: 0;
- 			u64 field_offset = le64_to_cpu(f->field_offset[i]);
- 
--			if (packed_max + field_offset < packed_max ||
-+			if (add_would_overflow(packed_max, field_offset) ||
- 			    packed_max + field_offset > unpacked_max) {
- 				prt_printf(err, "field %u too large: %llu + %llu > %llu",
- 					   i, packed_max, field_offset, unpacked_max);
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index ec419b8e2c43..00a606171656 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -901,7 +901,7 @@ static int bch2_fiemap(struct inode *vinode, struct fiemap_extent_info *info,
- 	if (ret)
- 		return ret;
- 
--	if (start + len < start)
-+	if (add_would_overflow(start, len))
- 		return -EINVAL;
- 
- 	start >>= 9;
-diff --git a/fs/bcachefs/quota.c b/fs/bcachefs/quota.c
-index e68b34eab90a..1738b1fc1c75 100644
---- a/fs/bcachefs/quota.c
-+++ b/fs/bcachefs/quota.c
-@@ -392,7 +392,7 @@ static void __bch2_quota_transfer(struct bch_memquota *src_q,
- 				  enum quota_counters counter, s64 v)
- {
- 	BUG_ON(v > src_q->c[counter].v);
--	BUG_ON(v + dst_q->c[counter].v < v);
-+	BUG_ON(add_would_overflow(v, dst_q->c[counter].v));
- 
- 	src_q->c[counter].v -= v;
- 	dst_q->c[counter].v += v;
-diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-index a135136adeee..2200c81edbd2 100644
---- a/fs/bcachefs/util.c
-+++ b/fs/bcachefs/util.c
-@@ -148,7 +148,7 @@ static int __bch2_strtou64_h(const char *cp, u64 *res)
- 		return -ERANGE;
- 
- 	f_n = div_u64(f_n * b, f_d);
--	if (v + f_n < v)
-+	if (add_would_overflow(v, f_n))
- 		return -ERANGE;
- 	v += f_n;
- 
+Dave.
 -- 
-2.34.1
-
+Dave Chinner
+david@fromorbit.com
