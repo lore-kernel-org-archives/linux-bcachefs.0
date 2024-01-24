@@ -1,310 +1,126 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08C95392;
-	Wed, 24 Jan 2024 03:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08C6E55E
+	for <linux-bcachefs@vger.kernel.org>; Wed, 24 Jan 2024 05:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706066694; cv=none; b=XJnRGjqCS3WM1MiZJs1XJN5ueY3GhKFkZ1NPV4FkYpeiTq07F38+Jfl8oYeWOxD66zyARX/+TV4Ko3XapMy5YTJ3/AEU4dYa0C4MkJAvuOdTeTjfCB+gUn6jxZT/ZRkGeMvQBZOd9/qGvevhr/7LudoaLSRnGuO4yjFPyUotSR0=
+	t=1706075563; cv=none; b=ZHj+NDWU+PHC+TQr3DidN7CqVxI78SqMh9h5l/KB1XUOQZpZIRda515MCGDpQHdVIikoyHbfAluH5XTZH+v5Do/EyzeTLuQXhfMg3SjX/OCyHEG2CVgW82YjHPwZEm3EwuMKEEBVvRcuJ/RlDQbui1QCmYTw2yXd1/TmhHckidI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706066694; c=relaxed/simple;
-	bh=OO19hjBQfesEcdq/8aueMqCyeS0pJFWXiXzBPSArfMQ=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=ULRES+v06n29HdU+0jdH/YG4+AGHEgVrhZrXzDr7nT1jMHmhAHS0vXd7kxLDr8H8/2Z2RVXf4SqzvC7r0WGBwmeTSrarz9RSAyZfcZrsVKiHzBsEogv5xlzANIezS0Z+MblCCLHzUA/71f1ND7I9Ei46nvhEXW4K6Q0lp0JbQdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lLcyncgm; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1706075563; c=relaxed/simple;
+	bh=yZt0zg3iBUVwGQBEldSRY9zt6NOsTAKk72w6fdMhYKw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d9vSvakjm1kiWtDpxfcWMCmdle6ZsOZZfXBF+5tOLTtM+A/q5F4reM/zP0dNOzzi7s8LvKGuhK8GvGYHVh4XmnVQa7bTI8CVIcIjDbgb1FyhAL/a+bid3qce/aPjN1QzRVpeerXcInI29EuhMTvPW6SriVvZHSQDMXQ7eBnVOHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=fRZW24rB; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lLcyncgm"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706066692; x=1737602692;
-  h=date:from:to:cc:subject:message-id;
-  bh=OO19hjBQfesEcdq/8aueMqCyeS0pJFWXiXzBPSArfMQ=;
-  b=lLcyncgmHuPX+DsKOAtYTnjCD46JNuxpBZiFSYn5tKpdWMbprqS+icwi
-   DNpiNkq+0Nm1oaGX2SY2MhKL+SG0hTj6/S6Zf7EAURs9xrJLxU9vkDnA4
-   CAeHRUtUz3Tw7Z7PR6UwSRV1S8GUP209MD8/fEWucdC0S6R6Via4ZE65A
-   2pn0u5BEyE4w4SM+00AxVZc3I8FU/eKFKsJd0M5EiHDAKqSEF6SP1YeED
-   c99cROrlr3BG66a5V1AbpNMgfMIWl10UZy06qJmRWYvako0fkJ/XEbaDN
-   g30hpvsQnqScXgx5CWAivyzhyGPOnoswIZbu7icD2gOod1GzNJupo1Jbp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8381509"
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="8381509"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:24:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="959366456"
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="959366456"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 23 Jan 2024 19:24:48 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rSTsb-0007pR-27;
-	Wed, 24 Jan 2024 03:24:45 +0000
-Date: Wed, 24 Jan 2024 11:23:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
- etnaviv@lists.freedesktop.org, kasan-dev@googlegroups.com,
- linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [linux-next:master] BUILD REGRESSION
- 774551425799cb5bbac94e1768fd69eec4f78dd4
-Message-ID: <202401241153.saaJ1jP1-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="fRZW24rB"
+Received: from cwcc.thunk.org (pool-173-48-122-36.bstnma.fios.verizon.net [173.48.122.36])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40O5q14u027448
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 00:52:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1706075525; bh=E/PUYLVV836aOWBrB38K06wEMiKIYR/pOEJXNqfgSKM=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=fRZW24rBnce67VYuFMD5QYTSjuCtt55kikicVmlYUY8j8QCeFQFzwzs4A5K9cnO0Z
+	 A7T9VFsI9RLmCiwfWB8+T6gzixGYaqD3S5QPaj5is/jjCi0uoPw65kHZ8Eth5LkMPB
+	 gVPzDbCrkjXH4Q2wRMxTpm9/j9nlHZVrBLu0/JPRSZGCSSr2IshM4PZguoG1wfL8Qr
+	 NNdhPZd4kbK5rTzwA6t7wNsy6v1XxR0T1u0bGamTruZl+1wr6iIdC6OOXMg5MvSkVM
+	 L1YdSTaiR4VsJSyVN6sfpPsMoK9lJqwvTDNlDCimW3kTVW5B5Z+SxKLF01ZIsDOeI2
+	 qsCHDZlP/g/zw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 6F9DF15C04DD; Wed, 24 Jan 2024 00:52:01 -0500 (EST)
+Date: Wed, 24 Jan 2024 00:52:01 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>,
+        Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Nikolai Kondrashov <spbnick@gmail.com>,
+        Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <20240124055201.GA2125008@mit.edu>
+References: <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+ <2024011532-mortician-region-8302@gregkh>
+ <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+ <20240117055457.GL911245@mit.edu>
+ <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+ <20240118024922.GB1353741@mit.edu>
+ <32cn5wzlryvq7z64uwo3ztooh7rthlp2ihmbgfyayvehtdbeyt@pnvumkjz4eve>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32cn5wzlryvq7z64uwo3ztooh7rthlp2ihmbgfyayvehtdbeyt@pnvumkjz4eve>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 774551425799cb5bbac94e1768fd69eec4f78dd4  Add linux-next specific files for 20240123
+On Sun, Jan 21, 2024 at 07:20:32AM -0500, Kent Overstreet wrote:
+> 
+> Well, I've tried talking to you about improving our testing tooling - in
+> particular, what we could do if we had better, more self contained
+> tools, not just targeted at xfstests, in particular a VM testrunner that
+> could run kselftests too - and as I recall, your reaction was pretty
+> much "why would I be interested in that? What does that do for me?"
 
-Error/Warning reports:
+My reaction was to your proposal that I throw away my framework which
+works super well for me, in favor of your favorite framework.  My
+framework already supports blktests and the Phoronix Test Suite, and
+it would be a lot less work for me to add support for kselftests to
+{gce,kvm,android}-xfstests.
 
-https://lore.kernel.org/oe-kbuild-all/202401231518.8q9LD8n7-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202401240123.wBsFom3Z-lkp@intel.com
+The reality is that we all have test suites that are optimized for our
+workflow.  Trying to get everyone to standardize on a single test
+framework is going to be hard, since they have optimized for different
+use cases.  Mine can be used for both local testing as well as
+sharding across multiple Google Cloud VM's, and with auto-bisection
+features, and it already supports blktests and PTS, and it handles
+both x86 and arm64 with both native and cross-compiling support.  I'm
+certainly willing to work with others to improve my xfstests-bld.
 
-Error/Warning: (recently discovered and may have been fixed)
+> So yeah, I would call that a fail in leadership. Us filesystem people
+> have the highest testing requirements and ought to know how to do this
+> best, and if the poeple with the most experience aren't trying share
+> that knowledge and experience in the form of collaborating on tooling,
+> what the fuck are we even doing here?
 
-drivers/dma/at_hdmac.c:255: warning: Enum value 'ATC_IS_CYCLIC' not described in enum 'atc_status'
-drivers/dma/at_hdmac.c:255: warning: Enum value 'ATC_IS_PAUSED' not described in enum 'atc_status'
+I'm certainly willing to work with others, and I've accepted patches
+from other users of {kvm,gce,android}-xfstests.  If you have something
+which is a strict superset of all of the features of xfstests-bld, I'm
+certainly willing to talk.
 
-Error/Warning ids grouped by kconfigs:
+I'm sure you have a system which works well for *you*.  However, I'm
+much less interested in throwing away of my invested effort for
+something that works well for me --- as well as other users of
+xfstests-bld.  (This includes other ext4 developers, Google's internal
+prodkernel for our data centers, and testing ext4 and xfs for Google's
+Cloud-Opmized OS distribution.)
 
-gcc_recent_errors
-|-- arc-randconfig-r062-20240123
-|   `-- drivers-gpu-drm-etnaviv-etnaviv_drv.c:ERROR:probable-double-put.
-|-- arm-multi_v5_defconfig
-|   |-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_CYCLIC-not-described-in-enum-atc_status
-|   `-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_PAUSED-not-described-in-enum-atc_status
-|-- i386-randconfig-051-20240123
-|   `-- drivers-gpu-drm-etnaviv-etnaviv_drv.c:ERROR:probable-double-put.
-|-- i386-randconfig-054-20240123
-|   `-- drivers-gpu-drm-etnaviv-etnaviv_drv.c:ERROR:probable-double-put.
-|-- i386-randconfig-062-20240123
-|   |-- drivers-usb-gadget-function-f_ncm.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-unsigned-short-usertype-max_segment_size-got-restricted-__le16-usertype
-|   `-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-sum-got-unsigned-int-assigned-csum
-|-- i386-randconfig-141-20240123
-|   |-- fs-bcachefs-btree_locking.c-bch2_trans_relock()-warn:passing-zero-to-PTR_ERR
-|   |-- fs-bcachefs-buckets.c-bch2_trans_account_disk_usage_change()-error:we-previously-assumed-trans-disk_res-could-be-null-(see-line-)
-|   `-- mm-huge_memory.c-thpsize_create()-warn:Calling-kobject_put-get-with-state-initialized-unset-from-line:
-|-- microblaze-randconfig-r064-20240123
-|   `-- drivers-gpu-drm-etnaviv-etnaviv_drv.c:ERROR:probable-double-put.
-|-- microblaze-randconfig-r123-20240123
-|   `-- drivers-regulator-qcom_smd-regulator.c:sparse:sparse:symbol-smd_vreg_rpm-was-not-declared.-Should-it-be-static
-|-- mips-allyesconfig
-|   |-- (.ref.text):relocation-truncated-to-fit:R_MIPS_26-against-start_secondary
-|   `-- (.text):relocation-truncated-to-fit:R_MIPS_26-against-kernel_entry
-|-- nios2-randconfig-r052-20240123
-|   `-- drivers-gpu-drm-etnaviv-etnaviv_drv.c:ERROR:probable-double-put.
-|-- nios2-randconfig-r054-20240123
-|   `-- drivers-gpu-drm-etnaviv-etnaviv_drv.c:ERROR:probable-double-put.
-|-- openrisc-randconfig-r131-20240123
-|   `-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-csum-got-unsigned-int-assigned-csum
-|-- sh-randconfig-r133-20240123
-|   `-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-sum-got-unsigned-int-assigned-csum
-|-- x86_64-randconfig-101-20240123
-|   `-- drivers-gpu-drm-etnaviv-etnaviv_drv.c:ERROR:probable-double-put.
-|-- x86_64-randconfig-102-20240123
-|   `-- drivers-gpu-drm-etnaviv-etnaviv_drv.c:ERROR:probable-double-put.
-`-- x86_64-randconfig-161-20240123
-    |-- mm-huge_memory.c-thpsize_create()-warn:Calling-kobject_put-get-with-state-initialized-unset-from-line:
-    |-- mm-kasan-kasan_test.c-mempool_double_free_helper()-error:double-free-of-elem
-    `-- mm-kasan-kasan_test.c-mempool_uaf_helper()-warn:passing-freed-memory-elem
-clang_recent_errors
-|-- x86_64-randconfig-121-20240123
-|   `-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-csum-got-unsigned-int-assigned-csum
-`-- x86_64-randconfig-r132-20240123
-    `-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-csum-got-unsigned-int-assigned-csum
+This is not a leadership failure; this is more like telling a Debian
+user to throw away their working system because you think Fedora
+better, and "wouldn't it be better if we all used the same
+distribution"?
 
-elapsed time: 1483m
+> ktest has been a tiny side project for me. If I can turn that into a
+> full blown CI that runs arbitrary self contained VM tests with quick
+> turnaround and a nice git log UI, in my spare time, why can't we pitch
+> in together instead of each running in different directions and
+> collaborate and communicate a bit better instead of bitching so much?
 
-configs tested: 177
-configs skipped: 3
+xfstests-bld started as a side project to me as well, and has
+accumulated other users and contributors.  Why can't you use my system
+instead?  By your definition of "failure of leadership", you have
+clearly failed as well in not seeing the light and using *my* system.  :-)
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240123   gcc  
-arc                   randconfig-002-20240123   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                                 defconfig   clang
-arm                          ixp4xx_defconfig   clang
-arm                            mps2_defconfig   gcc  
-arm                        mvebu_v7_defconfig   gcc  
-arm                          pxa910_defconfig   gcc  
-arm                   randconfig-001-20240123   gcc  
-arm                   randconfig-002-20240123   gcc  
-arm                   randconfig-003-20240123   gcc  
-arm                   randconfig-004-20240123   gcc  
-arm                       versatile_defconfig   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240123   gcc  
-arm64                 randconfig-002-20240123   gcc  
-arm64                 randconfig-003-20240123   gcc  
-arm64                 randconfig-004-20240123   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240123   gcc  
-csky                  randconfig-002-20240123   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240123   clang
-hexagon               randconfig-002-20240123   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20240123   gcc  
-i386         buildonly-randconfig-002-20240123   gcc  
-i386         buildonly-randconfig-003-20240123   gcc  
-i386         buildonly-randconfig-004-20240123   gcc  
-i386         buildonly-randconfig-005-20240123   gcc  
-i386         buildonly-randconfig-006-20240123   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20240123   gcc  
-i386                  randconfig-002-20240123   gcc  
-i386                  randconfig-003-20240123   gcc  
-i386                  randconfig-004-20240123   gcc  
-i386                  randconfig-005-20240123   gcc  
-i386                  randconfig-006-20240123   gcc  
-i386                  randconfig-011-20240123   clang
-i386                  randconfig-012-20240123   clang
-i386                  randconfig-013-20240123   clang
-i386                  randconfig-014-20240123   clang
-i386                  randconfig-015-20240123   clang
-i386                  randconfig-016-20240123   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240123   gcc  
-loongarch             randconfig-002-20240123   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-mips                     cu1830-neo_defconfig   clang
-mips                       lemote2f_defconfig   gcc  
-mips                        omega2p_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240123   gcc  
-nios2                 randconfig-002-20240123   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-64bit_defconfig   gcc  
-parisc                randconfig-001-20240123   gcc  
-parisc                randconfig-002-20240123   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      katmai_defconfig   clang
-powerpc                 mpc832x_rdb_defconfig   clang
-powerpc               randconfig-001-20240123   gcc  
-powerpc               randconfig-002-20240123   gcc  
-powerpc               randconfig-003-20240123   gcc  
-powerpc64             randconfig-001-20240123   gcc  
-powerpc64             randconfig-002-20240123   gcc  
-powerpc64             randconfig-003-20240123   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20240123   gcc  
-riscv                 randconfig-002-20240123   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20240123   clang
-s390                  randconfig-002-20240123   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240123   gcc  
-sh                    randconfig-002-20240123   gcc  
-sh                           se7206_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
-sh                   sh7724_generic_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240123   gcc  
-sparc64               randconfig-002-20240123   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240123   gcc  
-um                    randconfig-002-20240123   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240123   gcc  
-x86_64       buildonly-randconfig-002-20240123   gcc  
-x86_64       buildonly-randconfig-003-20240123   gcc  
-x86_64       buildonly-randconfig-004-20240123   gcc  
-x86_64       buildonly-randconfig-005-20240123   gcc  
-x86_64       buildonly-randconfig-006-20240123   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240123   clang
-x86_64                randconfig-002-20240123   clang
-x86_64                randconfig-003-20240123   clang
-x86_64                randconfig-004-20240123   clang
-x86_64                randconfig-005-20240123   clang
-x86_64                randconfig-006-20240123   clang
-x86_64                randconfig-011-20240123   gcc  
-x86_64                randconfig-012-20240123   gcc  
-x86_64                randconfig-013-20240123   gcc  
-x86_64                randconfig-014-20240123   gcc  
-x86_64                randconfig-015-20240123   gcc  
-x86_64                randconfig-016-20240123   gcc  
-x86_64                randconfig-071-20240123   gcc  
-x86_64                randconfig-072-20240123   gcc  
-x86_64                randconfig-073-20240123   gcc  
-x86_64                randconfig-074-20240123   gcc  
-x86_64                randconfig-075-20240123   gcc  
-x86_64                randconfig-076-20240123   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240123   gcc  
-xtensa                randconfig-002-20240123   gcc  
-xtensa                         virt_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+						- Ted
