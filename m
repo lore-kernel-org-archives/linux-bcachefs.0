@@ -1,61 +1,79 @@
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08C6E55E
-	for <linux-bcachefs@vger.kernel.org>; Wed, 24 Jan 2024 05:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96BDD7C091;
+	Wed, 24 Jan 2024 20:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706075563; cv=none; b=ZHj+NDWU+PHC+TQr3DidN7CqVxI78SqMh9h5l/KB1XUOQZpZIRda515MCGDpQHdVIikoyHbfAluH5XTZH+v5Do/EyzeTLuQXhfMg3SjX/OCyHEG2CVgW82YjHPwZEm3EwuMKEEBVvRcuJ/RlDQbui1QCmYTw2yXd1/TmhHckidI=
+	t=1706126448; cv=none; b=g7rms3m3ViODiXT95YEX7OR4B5TQ4S2/wtFQfATMBdLco5KS6eO3u4JkQ0letXO5Hw0Es+gMp9N63kAvjHxchmyh8X1F3uxTUN/M8dah3TN/9DLn9V3EYzGXVvhsTezG7USdEyownKGdpTPgIRpjuo5LMt8UduNXqGfg2qDsZhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706075563; c=relaxed/simple;
-	bh=yZt0zg3iBUVwGQBEldSRY9zt6NOsTAKk72w6fdMhYKw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d9vSvakjm1kiWtDpxfcWMCmdle6ZsOZZfXBF+5tOLTtM+A/q5F4reM/zP0dNOzzi7s8LvKGuhK8GvGYHVh4XmnVQa7bTI8CVIcIjDbgb1FyhAL/a+bid3qce/aPjN1QzRVpeerXcInI29EuhMTvPW6SriVvZHSQDMXQ7eBnVOHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=fRZW24rB; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+	s=arc-20240116; t=1706126448; c=relaxed/simple;
+	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=d13nOg7ETFILYbL4E4IFa6ucnb5gheu1NcaCEqyuUaPekPCLJu8jpFOMvqxiKAwbAjaQ5cgVoD5LRRDZWCwNbRCOlYomN0fmgjcMJ2hCWw1fkfRWT8mRu3kl7pkT6JOJ6uxsd2bM070BLJvhOd4wZo3DG6UPxikFgy14MftVDc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bsa8IUuC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EOYy6Szk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bsa8IUuC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EOYy6Szk; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="fRZW24rB"
-Received: from cwcc.thunk.org (pool-173-48-122-36.bstnma.fios.verizon.net [173.48.122.36])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40O5q14u027448
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 00:52:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1706075525; bh=E/PUYLVV836aOWBrB38K06wEMiKIYR/pOEJXNqfgSKM=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=fRZW24rBnce67VYuFMD5QYTSjuCtt55kikicVmlYUY8j8QCeFQFzwzs4A5K9cnO0Z
-	 A7T9VFsI9RLmCiwfWB8+T6gzixGYaqD3S5QPaj5is/jjCi0uoPw65kHZ8Eth5LkMPB
-	 gVPzDbCrkjXH4Q2wRMxTpm9/j9nlHZVrBLu0/JPRSZGCSSr2IshM4PZguoG1wfL8Qr
-	 NNdhPZd4kbK5rTzwA6t7wNsy6v1XxR0T1u0bGamTruZl+1wr6iIdC6OOXMg5MvSkVM
-	 L1YdSTaiR4VsJSyVN6sfpPsMoK9lJqwvTDNlDCimW3kTVW5B5Z+SxKLF01ZIsDOeI2
-	 qsCHDZlP/g/zw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 6F9DF15C04DD; Wed, 24 Jan 2024 00:52:01 -0500 (EST)
-Date: Wed, 24 Jan 2024 00:52:01 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>,
-        Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Nikolai Kondrashov <spbnick@gmail.com>,
-        Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <20240124055201.GA2125008@mit.edu>
-References: <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
- <20240117055457.GL911245@mit.edu>
- <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
- <20240118024922.GB1353741@mit.edu>
- <32cn5wzlryvq7z64uwo3ztooh7rthlp2ihmbgfyayvehtdbeyt@pnvumkjz4eve>
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bsa8IUuC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EOYy6Szk";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bsa8IUuC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EOYy6Szk"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E6FF91FD86;
+	Wed, 24 Jan 2024 20:00:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706126438;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
+	b=bsa8IUuCyMQj1+5ItOzpNLdT3qdq3WAbbs74m+bMYKF3/aEFHrCdTg/aopMIA1+P5rr7F7
+	OXA9djRAkR3q1QnmreJnFedun0RcykvGehlArbCGiDdNeWFsg1uRHZPiuPnjbAIJJDQYRm
+	ni+6hgt8WFYyXsGO3BqM7u7UOsNyl0E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706126438;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
+	b=EOYy6Szke58Zr9Lku7VcdziX/RE4c9vZQ+FTkLpmeNUfbRUUnifytgPO2APKmdhByCrJcF
+	gNEs5G4mZat2c2Bg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706126438;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
+	b=bsa8IUuCyMQj1+5ItOzpNLdT3qdq3WAbbs74m+bMYKF3/aEFHrCdTg/aopMIA1+P5rr7F7
+	OXA9djRAkR3q1QnmreJnFedun0RcykvGehlArbCGiDdNeWFsg1uRHZPiuPnjbAIJJDQYRm
+	ni+6hgt8WFYyXsGO3BqM7u7UOsNyl0E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706126438;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
+	b=EOYy6Szke58Zr9Lku7VcdziX/RE4c9vZQ+FTkLpmeNUfbRUUnifytgPO2APKmdhByCrJcF
+	gNEs5G4mZat2c2Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 748AE1333E;
+	Wed, 24 Jan 2024 20:00:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iLkFGWZssWVAYgAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Wed, 24 Jan 2024 20:00:38 +0000
+Date: Wed, 24 Jan 2024 21:00:32 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ltp@lists.linux.it
+Subject: bcachefs fails to mount loop device on kernel
+Message-ID: <20240124200032.GA343522@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -64,63 +82,59 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <32cn5wzlryvq7z64uwo3ztooh7rthlp2ihmbgfyayvehtdbeyt@pnvumkjz4eve>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [0.70 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	 REPLYTO_EQ_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[36.87%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.70
 
-On Sun, Jan 21, 2024 at 07:20:32AM -0500, Kent Overstreet wrote:
-> 
-> Well, I've tried talking to you about improving our testing tooling - in
-> particular, what we could do if we had better, more self contained
-> tools, not just targeted at xfstests, in particular a VM testrunner that
-> could run kselftests too - and as I recall, your reaction was pretty
-> much "why would I be interested in that? What does that do for me?"
+Hi all,
 
-My reaction was to your proposal that I throw away my framework which
-works super well for me, in favor of your favorite framework.  My
-framework already supports blktests and the Phoronix Test Suite, and
-it would be a lot less work for me to add support for kselftests to
-{gce,kvm,android}-xfstests.
+bcachefs fails to mount loop device on kernel on both 6.7 and 6.8.0-rc1.
+Is mounting loop even supported?
 
-The reality is that we all have test suites that are optimized for our
-workflow.  Trying to get everyone to standardize on a single test
-framework is going to be hard, since they have optimized for different
-use cases.  Mine can be used for both local testing as well as
-sharding across multiple Google Cloud VM's, and with auto-bisection
-features, and it already supports blktests and PTS, and it handles
-both x86 and arm64 with both native and cross-compiling support.  I'm
-certainly willing to work with others to improve my xfstests-bld.
+dd if=/dev/zero of=test_file bs=400M count=1
+losetup /dev/loop0 test_file
+mkfs.bcachefs /dev/loop0
 
-> So yeah, I would call that a fail in leadership. Us filesystem people
-> have the highest testing requirements and ought to know how to do this
-> best, and if the poeple with the most experience aren't trying share
-> that knowledge and experience in the form of collaborating on tooling,
-> what the fuck are we even doing here?
+mount -t bcachefs -o loop test_file /mnt
+=> Unknown command /dev/loop0
 
-I'm certainly willing to work with others, and I've accepted patches
-from other users of {kvm,gce,android}-xfstests.  If you have something
-which is a strict superset of all of the features of xfstests-bld, I'm
-certainly willing to talk.
+modprobe bcachefs
+mount -t bcachefs -o loop test_file /mnt
+=> mount: /mnt: failed to setup loop device for test_file.
 
-I'm sure you have a system which works well for *you*.  However, I'm
-much less interested in throwing away of my invested effort for
-something that works well for me --- as well as other users of
-xfstests-bld.  (This includes other ext4 developers, Google's internal
-prodkernel for our data centers, and testing ext4 and xfs for Google's
-Cloud-Opmized OS distribution.)
+mount -t bcachefs test_file /mnt
+=> Unknown command test_file
 
-This is not a leadership failure; this is more like telling a Debian
-user to throw away their working system because you think Fedora
-better, and "wouldn't it be better if we all used the same
-distribution"?
+mount -t bcachefs -o loop /dev/loop0 /mnt
+=> Unknown command /dev/loop1
 
-> ktest has been a tiny side project for me. If I can turn that into a
-> full blown CI that runs arbitrary self contained VM tests with quick
-> turnaround and a nice git log UI, in my spare time, why can't we pitch
-> in together instead of each running in different directions and
-> collaborate and communicate a bit better instead of bitching so much?
+mount -t bcachefs /dev/loop0 /mnt
+=> Unknown command /dev/loop0
 
-xfstests-bld started as a side project to me as well, and has
-accumulated other users and contributors.  Why can't you use my system
-instead?  By your definition of "failure of leadership", you have
-clearly failed as well in not seeing the light and using *my* system.  :-)
+bcachefs mount /dev/loop0 /mnt
+=> Unknown command mount
 
-						- Ted
+Thanks for info.
+
+Kind regards,
+Petr
