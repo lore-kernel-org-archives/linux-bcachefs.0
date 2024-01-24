@@ -1,79 +1,64 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96BDD7C091;
-	Wed, 24 Jan 2024 20:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41E0E1350C2;
+	Wed, 24 Jan 2024 20:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706126448; cv=none; b=g7rms3m3ViODiXT95YEX7OR4B5TQ4S2/wtFQfATMBdLco5KS6eO3u4JkQ0letXO5Hw0Es+gMp9N63kAvjHxchmyh8X1F3uxTUN/M8dah3TN/9DLn9V3EYzGXVvhsTezG7USdEyownKGdpTPgIRpjuo5LMt8UduNXqGfg2qDsZhc=
+	t=1706129515; cv=none; b=s1XXSwrowTDuEQPI4puM7iWhSvkFBAQPOam2bAlNBSb9zmJaPGACGBW1BehPlEtYmoneW+Fjm/iBYqbTx6MVTXgl+gVNeO0z9FGQOsZ0m/Tiy3KWN7nnVnhnyFfhtJVFVflM9exQc/gpfjiyk9iZ2Xg2Wz8lA9vWLpgOFAQjJSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706126448; c=relaxed/simple;
-	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=d13nOg7ETFILYbL4E4IFa6ucnb5gheu1NcaCEqyuUaPekPCLJu8jpFOMvqxiKAwbAjaQ5cgVoD5LRRDZWCwNbRCOlYomN0fmgjcMJ2hCWw1fkfRWT8mRu3kl7pkT6JOJ6uxsd2bM070BLJvhOd4wZo3DG6UPxikFgy14MftVDc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bsa8IUuC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EOYy6Szk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bsa8IUuC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EOYy6Szk; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1706129515; c=relaxed/simple;
+	bh=YzLAmy8T5+KzhcRUKVCXnk+hL/8R2osLEOkylGRvDO0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XOzUxAgCRMw+/71UeSBHNHvsIb6POioaoUgQ2wZi2Goanui/yhV68fQf6fNujMxuId3Zf+Y+DaM4+edj1pp8I3po1wTszAriGQ6LgA58PKTwdCnWQ87AnvjP4CxfyU52r18DXKSghvkGkaefNb6dOVnF9zltqlU67d2IZhWdemw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OEo9qjfc; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bsa8IUuC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EOYy6Szk";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bsa8IUuC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EOYy6Szk"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E6FF91FD86;
-	Wed, 24 Jan 2024 20:00:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706126438;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
-	b=bsa8IUuCyMQj1+5ItOzpNLdT3qdq3WAbbs74m+bMYKF3/aEFHrCdTg/aopMIA1+P5rr7F7
-	OXA9djRAkR3q1QnmreJnFedun0RcykvGehlArbCGiDdNeWFsg1uRHZPiuPnjbAIJJDQYRm
-	ni+6hgt8WFYyXsGO3BqM7u7UOsNyl0E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706126438;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
-	b=EOYy6Szke58Zr9Lku7VcdziX/RE4c9vZQ+FTkLpmeNUfbRUUnifytgPO2APKmdhByCrJcF
-	gNEs5G4mZat2c2Bg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706126438;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
-	b=bsa8IUuCyMQj1+5ItOzpNLdT3qdq3WAbbs74m+bMYKF3/aEFHrCdTg/aopMIA1+P5rr7F7
-	OXA9djRAkR3q1QnmreJnFedun0RcykvGehlArbCGiDdNeWFsg1uRHZPiuPnjbAIJJDQYRm
-	ni+6hgt8WFYyXsGO3BqM7u7UOsNyl0E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706126438;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=9WDyjkO8pqVbP2nVSHovZI6utBCUXWI/CXKQZzAtRR4=;
-	b=EOYy6Szke58Zr9Lku7VcdziX/RE4c9vZQ+FTkLpmeNUfbRUUnifytgPO2APKmdhByCrJcF
-	gNEs5G4mZat2c2Bg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 748AE1333E;
-	Wed, 24 Jan 2024 20:00:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iLkFGWZssWVAYgAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Wed, 24 Jan 2024 20:00:38 +0000
-Date: Wed, 24 Jan 2024 21:00:32 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ltp@lists.linux.it
-Subject: bcachefs fails to mount loop device on kernel
-Message-ID: <20240124200032.GA343522@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OEo9qjfc"
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7beddc139c4so258568239f.0;
+        Wed, 24 Jan 2024 12:51:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706129513; x=1706734313; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fQVPErXU290D1mpBNScwazLtfS5510hpywHlBQuGA3w=;
+        b=OEo9qjfc+MJ6wAbVT5YswlEPYR8uskf9XSeZSjKevfL9dNNhcDIiDQNLkHEJEk/cfL
+         NXKiR+ScxiJRiYie6Fn0iGRt1gdond/BcnJoycYS1nlN7gRAHI8B2LohsSe1LxdTRZ4p
+         OKp08LPAIHxNARtKQ2qGmzb45gtj0fosHILfELE95lHAZUEY6ma0WUKsjKYi701DayQT
+         HC5TKJ8BY0F5BjMWECHhyNVOzSFIXxeIxDFXgyCXbmJQJXq8D3YdJIrpT0fuQp4qq7jq
+         LQG+lzxKzRwQUwEysFEK/vdzcapJuB965OeDD/cWay7YmXk000i8KabD1MKNLfyniq0X
+         FGxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706129513; x=1706734313;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fQVPErXU290D1mpBNScwazLtfS5510hpywHlBQuGA3w=;
+        b=j4rpU7jaxtNUZB73S7Y8hixuR9kmguVwruokekMxJLQULFMeBCGiH0zLln0A6Uef0a
+         VjNhjRyg3vtG3i2wz2n4OHdgg5MvqfAS30CJUjgkih7m0HMNSLW4phieuneTibZEuv5/
+         xXoxp+y4pbfPZTe+Tm7CUno/QpB5iPwksVcE+DONKRWVz8fMn4MK0TXyqW6kvQ2lE0Ii
+         r5RGxXIexse5Kc0gE7hf0ObsCghSrRofsfQUk8ttnYLnqjGzBg+BF672fGHpyL85BLDh
+         k3ellODGd2nUNQH39e9NFFZKINH4kvP4mHz4kikp/Nt0PWGw7wT4jfvr5mNSCjqjnE7d
+         3rtQ==
+X-Gm-Message-State: AOJu0YzlHATLVNC1aoncp5ltHII3m8fh5H6y7s2/jr56dqb2Y8+CkCVF
+	tpeccFmNVByY23aY9OHzpsh0dPJqdivuXxYFSHX2yAxagi/B8jYo
+X-Google-Smtp-Source: AGHT+IHjNeWesur/WB2rRojObeX1a+LSe04ratH+e1bBz40qjvSKeqNxLteQ5vzjt/5l3tCMVI0Yfw==
+X-Received: by 2002:a5e:a50e:0:b0:7bf:59d5:3b43 with SMTP id 14-20020a5ea50e000000b007bf59d53b43mr27797iog.3.1706129513250;
+        Wed, 24 Jan 2024 12:51:53 -0800 (PST)
+Received: from fedora-laptop (c-73-127-246-43.hsd1.nm.comcast.net. [73.127.246.43])
+        by smtp.gmail.com with ESMTPSA id gs1-20020a0566382d8100b0046e9ad3dbe3sm4136813jab.128.2024.01.24.12.51.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 12:51:52 -0800 (PST)
+Date: Wed, 24 Jan 2024 13:51:49 -0700
+From: Thomas Bertschinger <tahbertschinger@gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ltp@lists.linux.it
+Subject: Re: bcachefs fails to mount loop device on kernel
+Message-ID: <20240124205149.GA268968@fedora-laptop>
+References: <20240124200032.GA343522@pevik>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -82,59 +67,30 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	 REPLYTO_EQ_FROM(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[36.87%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.70
+In-Reply-To: <20240124200032.GA343522@pevik>
 
-Hi all,
+On Wed, Jan 24, 2024 at 09:00:32PM +0100, Petr Vorel wrote:
+> Hi all,
+> 
+> bcachefs fails to mount loop device on kernel on both 6.7 and 6.8.0-rc1.
+> Is mounting loop even supported?
+> 
+> [...]
+>
+> bcachefs mount /dev/loop0 /mnt
+> => Unknown command mount
 
-bcachefs fails to mount loop device on kernel on both 6.7 and 6.8.0-rc1.
-Is mounting loop even supported?
+What version of the bcachefs CLI tool are you using? Is it distribution
+provided or did you build it yourself?
 
-dd if=/dev/zero of=test_file bs=400M count=1
-losetup /dev/loop0 test_file
-mkfs.bcachefs /dev/loop0
+The mount command has been implemented in Rust for a while (since
+28f703cc256f "Rust now integrated into bcachefs binary") and if building
+without Rust support (BCACHEFS_NO_RUST defined), that command won't be
+included in the binary.
 
-mount -t bcachefs -o loop test_file /mnt
-=> Unknown command /dev/loop0
+In more recent versions of bcachefs-tools, building without Rust is not
+supported at all.
 
-modprobe bcachefs
-mount -t bcachefs -o loop test_file /mnt
-=> mount: /mnt: failed to setup loop device for test_file.
+I don't think this has anything to do with loop devices specifically.
 
-mount -t bcachefs test_file /mnt
-=> Unknown command test_file
-
-mount -t bcachefs -o loop /dev/loop0 /mnt
-=> Unknown command /dev/loop1
-
-mount -t bcachefs /dev/loop0 /mnt
-=> Unknown command /dev/loop0
-
-bcachefs mount /dev/loop0 /mnt
-=> Unknown command mount
-
-Thanks for info.
-
-Kind regards,
-Petr
+- Thomas Bertschinger
