@@ -1,63 +1,212 @@
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460A7135A5D
-	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Jan 2024 20:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C626C135413;
+	Thu, 25 Jan 2024 21:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706213461; cv=none; b=MXz0Isrago+EdOjbd7cspG/E/TMH308/eL0iDijtnwKnZXZD8Sf41ZoMoS6Rigc3c/3WDuQcI/FQgBVZT/ZkPKRa0Zz8vxVkPBHqQHFg46LE62GLUETvaQOPjZnboWdXePZ3DjUpzhY4tzKe/KELO6B0J8crjCstqtShFpsVoE8=
+	t=1706219225; cv=none; b=D3AGhW9P/kTBs4uW3a5Bd9udZ4vaJX/MHwI97i1DHM8ipDYp2tf3RWaW7iivJVHJpBZb74YEU2nlfZxw8OtY2B8r/bvngkXXuZI2mkAywPQFSaQ4Bi62VJFbOPb1rsFBj2g7O0eowblshYf1iM3BWHsgjc7ke/HbdTFCXLLYDys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706213461; c=relaxed/simple;
-	bh=u1LLf1cGm6NKtGU9QV2vl36eYjmM5X7OQrOW497t1Zg=;
-	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=h737/UsgKcwIm0V+bwz+YxIykSHBOR16jsG53aUC3DD5lnSaqfRK25Qw7ALofvbfThsUn4VlSP+1jl/QMGVxbrPRTFcnmli+3RtqbutI7EghAUKFfsfI7EWCBpM5AHS3mwlyPxEmqHSIwm7oJ4MxE9CKc+fgy2n7udsaW4dmc70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=HZuBEYtJ; arc=none smtp.client-ip=185.70.40.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+	s=arc-20240116; t=1706219225; c=relaxed/simple;
+	bh=fjFf6vRo4yuWVrpY3vShY+6xxu0dgHE9J/OQbltZeUs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SD0c1pbjYnWQOdbZZSBLa30wbTAKX2wHdq2aDTmzz0SY+ZXeR0by6ryt/1AuBqAsbdkUgiJAVpJ+V8Ya2edYl8pB4411u5U9wrh64lVHvj0+GWusvr6u27OvEiFukotrAyAn44sXwqYebTptd+BQOf3F1ThOi4QIZKVdCox3MfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UauIyJax; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="HZuBEYtJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1706213450; x=1706472650;
-	bh=u1LLf1cGm6NKtGU9QV2vl36eYjmM5X7OQrOW497t1Zg=;
-	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=HZuBEYtJOANNsyr802Hp+JWTO5D85Rxyl0ISzkHJ2NMsY63QszyWLAWmq3DzW3f1v
-	 F8RoqRd7OkS+y3JQuKpxre0irErOKTZDOyecACbpfqYporFdLNWFoy0KewjmoQOjn6
-	 GsP9TeKNXWGIlcMom3FOiBW9S3a6pBKCz/cn8b1XfBIoRNlDyEVazKPPdkDvBimPZN
-	 pSMyFe2W0IfYy4ix7A8AovPybEqbkmaO3op8OC/aYb3KNKX6w2rXEHE6wZ+R3cCNsl
-	 dkH2562J7RiJEd7kcS1xvwmoQlPQyfcaGTDL9CjYm/oXczbU+roKX8cH0vSOfAXJfL
-	 OglU+GAsyuISQ==
-Date: Thu, 25 Jan 2024 20:10:25 +0000
-To: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-From: RlndVt <RlndVt@protonmail.com>
-Subject: Mounting a encrypted disk: Fatal error: Required key not available
-Message-ID: <Xp4_NQrvvUiIrrXXHjmhCQLmGSM2uRzN3CKOAHr1e1oridV3HcuggbV_xzRf4uNm7ASyP1QWITqf1zUtONlDh43tNRoKYHYS1hgD1kQxKoY=@protonmail.com>
-Feedback-ID: 63185315:user:proton
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UauIyJax"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FE51C433C7;
+	Thu, 25 Jan 2024 21:47:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706219225;
+	bh=fjFf6vRo4yuWVrpY3vShY+6xxu0dgHE9J/OQbltZeUs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UauIyJaxOjRGvGs4W/OY+L7QWCmsRuosHxifU5R6Qx0UzIbhXAa87Cm0Dmpg2x5dr
+	 Jd2PMPu8MnnzXoIfjVsJR3Qc82TKDSFpjGEoW827lPQEoDtPqQi2yGB5PU6DJG5/5k
+	 RRWm1N1X+o1CaFtc0BaWEu4CiYAtNyg0m3XchubQTIXEC64QZNf9zWWJeYoGs+mbl1
+	 TZDQonudge3fIQOhFfNSAK6oSLlGekENiN4IcCc6daA4vT0L2sQXRxmUbJrKXCydW5
+	 /DAKupIyOlPDEMvE2qgrV3rvHNrUVJ3dBMGvq7/oDlN2xNFo0Jk4tFQesovJabhgL1
+	 aeK8IN40vfqjA==
+Date: Thu, 25 Jan 2024 21:46:59 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Theodore Ts'o <tytso@mit.edu>, Greg KH <greg@kroah.com>,
+	Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Nikolai Kondrashov <spbnick@gmail.com>,
+	Philip Li <philip.li@intel.com>,
+	Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <ZbLW0/t57GVQJVF1@sirena.org.uk>
+References: <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+ <2024011532-mortician-region-8302@gregkh>
+ <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+ <20240117055457.GL911245@mit.edu>
+ <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+ <c69a3103-ae4d-459a-b5f4-d3bbe2af6fb2@sirena.org.uk>
+ <vm5fwfqtqoy5yl37meflf4yrmzotyi5aszouwthfv6q7nrtxhq@oucmld5ak4uo>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="95W9f47JAmPj9bg9"
+Content-Disposition: inline
+In-Reply-To: <vm5fwfqtqoy5yl37meflf4yrmzotyi5aszouwthfv6q7nrtxhq@oucmld5ak4uo>
+X-Cookie: You might have mail.
+X-TUID: zJhhZNiCh8nK
+
+
+--95W9f47JAmPj9bg9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Sat, Jan 20, 2024 at 10:24:09PM -0500, Kent Overstreet wrote:
+> On Wed, Jan 17, 2024 at 06:19:43PM +0000, Mark Brown wrote:
+> > On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
 
-I'm having difficulties mounting a new array I've created:
+> > I think that's a *bit* pessimistic, at least for some areas of the
+> > kernel - there is commercial stuff going on with kernel testing with
+> > varying degrees of community engagement (eg, off the top of my head
+> > Baylibre, Collabora and Linaro all have offerings of various kinds that
+> > I'm aware of), and some of that does turn into investments in reusable
+> > things rather than proprietary stuff.  I know that I look at the
+> > kernelci.org results for my trees, and that I've fixed issues I saw
+> > purely in there.  kselftest is noticably getting much better over time,
+> > and LTP is quite active too.  The stuff I'm aware of is more focused
+> > around the embedded space than the enterprise/server space but it does
+> > exist.  That's not to say that this is all well resourced and there's no
+> > problem (far from it), but it really doesn't feel like a complete dead
+> > loss either.
 
-# bcachefs mount /dev/sde /mnt/vault/
-ERROR - bcachefs_rust::cmd_mount: Fatal error: Required key not available
+> kselftest is pretty exciting to me; "collect all our integration tests
+> into one place and start to standarize on running them" is good stuff.
 
-This array was created using:
+> You seem to be pretty familiar with all the various testing efforts, I
+> wonder if you could talk about what you see that's interesting and
+> useful in the various projects?
 
-# bcachefs format --block_size=3D4k --encrypted /dev/sde
+Well, I'm familiar with the bits I look at and some of the adjacent
+areas but definitely not with the testing world as a whole.
 
-And unlocked with `bcachefs unlock`.
+For tests themselves there's some generic suites like LTP and kselftest,
+plus a lot of domain specific things which are widely used in their
+areas.  Often the stuff that's separate either lives with something like
+a userspace library rather than just being a purely kernel thing or has
+some other special infrastructure needs.
 
-The host is running fedora 39 with kernel 6.7.0-200.fc39.x86_64 and bcachef=
-s-tools-1.4.1-2.fc39.
+For lab orchestration there's at least:
 
-Sorry if this isn't much to go by, would love help getting this working.
+    https://beaker-project.org/
+    https://github.com/labgrid-project/labgrid
+    https://www.lavasoftware.org/
 
-Thanks in advanced,
-Roland
+Beaker and LAVA are broadly similar in a parallel evolution sort of way,
+scalable job scheduler/orchestration things intended for non interactive
+use with a lot of overlap in design choices.  LAVA plays nicer with
+embedded boards since Beaker comes from RedHat and is focused more on
+server/PC type use cases though I don't think there's anything
+fundamental there.  Labgrid has a strong embedded focus with facilities
+like integrating anciliary test equipment and caters a lot more to
+interactive use than either of the other two but AIUI doesn't help so
+much with batch usage, though that can be built on top.  All of them can
+handle virtual targets as well as physical ones.
+
+All of these need something driving them to actually generate test jobs
+and present the results, as well as larger projects there's also people
+like Guenter Roeck and myself who run things that amuse us and report
+them by hand.  Of the bigger general purpose orchestration projects off
+the top of my head there's
+
+    https://github.com/intel/lkp-tests/blob/master/doc/faq.md
+    https://cki-project.org/
+    https://kernelci.org/
+    https://lkft.linaro.org/
+
+CKI and KernelCI are not a million miles apart, they both monitor a
+bunch of trees and run well known testsuites that they've integrated,
+and have code available if you want to deploy your own thing (eg, for
+non-public stuff).  They're looking at pooling their results into kcidb
+as part of the KernelCI LF project.  Like 0day is proprietary to Intel
+LKFT is proprietary to Linaro, LKFT has a focus on running a lot of
+tests on stable -rcs with manual reporting though they do have some best
+effort coverage of mainline and -next as well.
+
+There's also a bunch of people doing things specific to a given hardware
+type or other interest, often internal to a vendor but for example Intel
+have some public CI for their graphics and audio:
+
+    https://intel-gfx-ci.01.org/
+    https://github.com/thesofproject/linux/
+
+(you can see the audio stuff doing it's thing on the pull requests in
+the SOF repo.)  The infra behind these is a bit task specific AIUI, for
+example the audio testing includes a lot of boards that don't have
+serial consoles or anything (eg, laptops) so it uses a fixed filesystem
+on the device, copies a kernel in and uses grub-reboot to try it one
+time.  They're particularly interesting because they're more actively
+tied to the development flow.  The clang people have something too using
+a github flow:
+
+    https://github.com/ClangBuiltLinux/continuous-integration2
+
+(which does have some boots on virtual platforms as well as just build
+coverage.)
+
+> I think a lot of this stems from a lack of organization and a lack of
+> communication; I see a lot of projects reinventing things in slightly
+> different ways and failing to build off of each other.
+
+There's definitely some NIHing going on in places but a lot of it comes
+=66rom people with different needs or environments (like the Intel audio
+stuff I mentioned), or just things already existing and nobody wanting
+to disrupt what they've got for a wholesale replacement.  People are
+rarely working from nothing, and there's a bunch of communication and
+sharing of ideas going on.
+
+> > Some of the issues come from the different questions that people are
+> > trying to answer with testing, or the very different needs of the
+> > tests that people want to run - for example one of the reasons
+> > filesystems aren't particularly well covered for the embedded cases is
+> > that if your local storage is SD or worse eMMC then heavy I/O suddenly
+> > looks a lot more demanding and media durability a real consideration.
+
+> Well, for filesystem testing we (mostly) don't want to be hammering on
+> an actual block device if we can help it - there are occasionally bugs
+> that will only manifest when you're testing on a device with realistic
+> performance characteristics, and we definitely want to be doing some
+> amount of performance testing on actual devices, but most of our testing
+> is best done in a VM where the scratch devices live entirely in dram on
+> the host.
+
+Sure, though there can be limitations with the amount of memory on a lot
+of these systems too!  You can definitely do things, it's just not
+always ideal - for example filesystem people will tend to default to
+using test filesystems sized like the total memory of a lot of even
+modern embedded boards so if nothing else you need to tune things down
+if you're going to do a memory only test.
+
+--95W9f47JAmPj9bg9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWy1tIACgkQJNaLcl1U
+h9CVTgf/R7iosqegrv7uwYe4o59k308aqsf0UrmWnF7gVhEtitPC84CIBvjkKRc+
+6w0aNtqn16xcQT11AqCbzmkZvlmODIpwLyS58fknXWBF+VXz082jtYVK0SThg22+
+cGnCMUrWCWJ6t6Y4nsA0ocRe2MDB4Ykk84XSjgn6sPeP8GX3HRY3GKHsJhQ7nLMu
+bTBttmqO/e39T+F8ldYOX25ZK+qHpW4x7k7WEdpVBm2xXGPtdZzUwXHAtqVx/GJQ
+CaiclaF/HHd/uCv6ErlcmYB3VNHtnpW0k+zqiqlW6kC2Z4QkMdr0MdGkvAqbPjHi
+Ooqh5CkJTQXefxz2oEuXWGz7FBIlnA==
+=fF9S
+-----END PGP SIGNATURE-----
+
+--95W9f47JAmPj9bg9--
