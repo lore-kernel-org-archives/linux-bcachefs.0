@@ -1,41 +1,42 @@
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0020841C96
-	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Jan 2024 22:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5816B4F886
+	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Jan 2024 22:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706306828; cv=none; b=NiG83KF7swEg1VdXkhk4yR9gprBG8IXvwqMPuxtZiNbo+XiWFj3Eau18MtpkVO9uLf/eszWPKqInwQVQaM9rq7/iGH+BxY9y5MMcjZvGGI9x5k7rpTXbnXWXpjODOcswQyL57WxwIYXIQHaAeuhnSsrcbI66SRgr/OCs43IOlr0=
+	t=1706306831; cv=none; b=WMxmnf1KI5uLUesuhqOiZGLRDO2yo8AM/7G5B/PsnqQSCpY9h7P75EbuSECK2R/bmN4YWGJ1qs+bNGqtXlWUuz3J4FYUNnHbenHEIstI3EVgiq2u26yF0lJwx9E8ww54vFlTIL26qF1nTMnIwANpcAHS55oZxlCzUCHkT2eNlyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706306828; c=relaxed/simple;
-	bh=0OUrbng9hpKSc9SYikihN8HmexwMf0xE3gor+hG7oWs=;
+	s=arc-20240116; t=1706306831; c=relaxed/simple;
+	bh=8CnJaY7BjvsEKERI3WiIcsrr0Xz+2a3GTassLSHl/Vw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k1hKs555KL+ePIf4L/YIHn2xGJkNEoKFqe39967jN0YtVRC0E6xeVYGeBBihszcj+rLxD+3SdS4AYUCrkPYNmpO0EzwrycUoOTciIsEq8fs/mZyqqSfXoMH+RW+wFo/tMHKCRcVjMSo9g69m86Zm+93AdEs7kGil9msjszW9EQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=b6KLBbKr; arc=none smtp.client-ip=95.215.58.189
+	 MIME-Version; b=Qx4iRZ332gAOV+7dAenlskZBJX8bziMBomXnklsS8o2AqY8hU4wqDzRBPC1XvSptKKhBDSfhGP6IlGgbXvMvLV7Exu0qCc3aNavdsvLODFj/PfoQNtt/5G70/3nKh6Crb05xdH1anndULc7uWCb4A6THquvuEKlswvF40zfO0RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KNBVfLCk; arc=none smtp.client-ip=95.215.58.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b6KLBbKr"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KNBVfLCk"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706306824;
+	t=1706306826;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=M6DdAKjqitnGGFd6TAWjZ/fZCoyj9qP3U91XnThZ1Fw=;
-	b=b6KLBbKroxKYRPes2D57pZ0DbDJuzLAIZ39sD0x5r2RN1zV1D2N6BX/SkOpWkcE9grtxba
-	wxjLNXCOnF0r3Om5I4Ydfg0OlDMMOCTUtNuG10SmUW3dNh7xdWCfZnWNi6hCXalMsBnzPT
-	bDyTLwwg84k1sxnk4yo+D4M3Ww+2FOI=
+	bh=K4UUd+8rwXKk/VwhFBzqzE6Fq2sLZQhFm6oGMqd8OBs=;
+	b=KNBVfLCkHC9WC19MLNw07wmaOS/YFHtBQJuFGhLAp54HRh7Z6Dwk0eNqx1LNNbNeLcYza0
+	pz8fk9MdKdUOtgfeCCwrn8tBX03nuOJtqOZm4tg0KvJwtzKYG/cvj7ixKOA9u5xHXfMGdx
+	X7lWgCgZH9fG1w+YNH4KZ9BDXGEVMhY=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-kernel@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-bcache@vger.kernel.org,
 	linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 3/5] bcachefs: bch2_time_stats_to_seq_buf()
-Date: Fri, 26 Jan 2024 17:06:53 -0500
-Message-ID: <20240126220655.395093-3-kent.overstreet@linux.dev>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Coly Li <colyli@suse.de>
+Subject: [PATCH 5/5] bcache: Convert to lib/time_stats
+Date: Fri, 26 Jan 2024 17:06:55 -0500
+Message-ID: <20240126220655.395093-5-kent.overstreet@linux.dev>
 In-Reply-To: <20240126220655.395093-1-kent.overstreet@linux.dev>
 References: <20240126220655.395093-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -47,198 +48,341 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
+delete bcache's time stats code, convert to newer version from bcachefs.
+
+example output:
+
+root@moria-kvm:/sys/fs/bcache/bdaedb8c-4554-4dd2-87e4-276e51eb47cc# cat internal/btree_sort_times
+count: 6414
+                       since mount        recent
+duration of events
+  min:                          440 ns
+  max:                         1102 us
+  total:                        674 ms
+  mean:                         105 us     102 us
+  stddev:                       101 us      88 us
+time between events
+  min:                          881 ns
+  max:                            3 s
+  mean:                           7 ms       6 ms
+  stddev:                        52 ms       6 ms
+
+Cc: Coly Li <colyli@suse.de>
+Cc: linux-bcache@vger.kernel.org
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/super.c |   2 +
- fs/bcachefs/util.c  | 129 +++++++++++++++++++++++++++++++++++++++-----
- fs/bcachefs/util.h  |   4 ++
- 3 files changed, 121 insertions(+), 14 deletions(-)
+ drivers/md/bcache/Kconfig  |  1 +
+ drivers/md/bcache/bcache.h |  1 +
+ drivers/md/bcache/bset.c   |  6 +++--
+ drivers/md/bcache/bset.h   |  1 +
+ drivers/md/bcache/btree.c  |  6 ++---
+ drivers/md/bcache/super.c  |  7 +++++
+ drivers/md/bcache/sysfs.c  | 25 +++++++++---------
+ drivers/md/bcache/util.c   | 30 ----------------------
+ drivers/md/bcache/util.h   | 52 +++++---------------------------------
+ 9 files changed, 37 insertions(+), 92 deletions(-)
 
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index da8697c79a97..e74534096cb5 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -1262,6 +1262,8 @@ static struct bch_dev *__bch2_dev_alloc(struct bch_fs *c,
+diff --git a/drivers/md/bcache/Kconfig b/drivers/md/bcache/Kconfig
+index b2d10063d35f..7ea057983d3d 100644
+--- a/drivers/md/bcache/Kconfig
++++ b/drivers/md/bcache/Kconfig
+@@ -5,6 +5,7 @@ config BCACHE
+ 	select BLOCK_HOLDER_DEPRECATED if SYSFS
+ 	select CRC64
+ 	select CLOSURES
++	select TIME_STATS
+ 	help
+ 	Allows a block device to be used as cache for other devices; uses
+ 	a btree for indexing and the layout is optimized for SSDs.
+diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
+index 6ae2329052c9..76e7b494c394 100644
+--- a/drivers/md/bcache/bcache.h
++++ b/drivers/md/bcache/bcache.h
+@@ -186,6 +186,7 @@
+ #include <linux/rbtree.h>
+ #include <linux/rwsem.h>
+ #include <linux/refcount.h>
++#include <linux/time_stats.h>
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
+ #include <linux/kthread.h>
+diff --git a/drivers/md/bcache/bset.c b/drivers/md/bcache/bset.c
+index 2bba4d6aaaa2..31c08d4ab83b 100644
+--- a/drivers/md/bcache/bset.c
++++ b/drivers/md/bcache/bset.c
+@@ -1177,6 +1177,7 @@ struct bkey *bch_btree_iter_next_filter(struct btree_iter *iter,
  
- 	bch2_time_stats_init(&ca->io_latency[READ]);
- 	bch2_time_stats_init(&ca->io_latency[WRITE]);
-+	ca->io_latency[READ].quantiles_enabled = true;
-+	ca->io_latency[WRITE].quantiles_enabled = true;
- 
- 	ca->mi = bch2_mi_to_cpu(member);
- 
-diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-index c7cf9c6fcf9a..f2c8550c1331 100644
---- a/fs/bcachefs/util.c
-+++ b/fs/bcachefs/util.c
-@@ -505,10 +505,8 @@ static inline void pr_name_and_units(struct printbuf *out, const char *name, u64
- 
- void bch2_time_stats_to_text(struct printbuf *out, struct bch2_time_stats *stats)
+ void bch_bset_sort_state_free(struct bset_sort_state *state)
  {
--	const struct time_unit *u;
- 	s64 f_mean = 0, d_mean = 0;
--	u64 q, last_q = 0, f_stddev = 0, d_stddev = 0;
--	int i;
-+	u64 f_stddev = 0, d_stddev = 0;
- 
- 	if (stats->buffer) {
- 		int cpu;
-@@ -607,19 +605,122 @@ void bch2_time_stats_to_text(struct printbuf *out, struct bch2_time_stats *stats
- 
- 	printbuf_tabstops_reset(out);
- 
--	i = eytzinger0_first(NR_QUANTILES);
--	u = pick_time_units(stats->quantiles.entries[i].m);
-+	if (stats->quantiles_enabled) {
-+		int i = eytzinger0_first(NR_QUANTILES);
-+		const struct time_unit *u =
-+			pick_time_units(stats->quantiles.entries[i].m);
-+		u64 last_q = 0;
-+
-+		prt_printf(out, "quantiles (%s):\t", u->name);
-+		eytzinger0_for_each(i, NR_QUANTILES) {
-+			bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-+
-+			u64 q = max(stats->quantiles.entries[i].m, last_q);
-+			prt_printf(out, "%llu ", div_u64(q, u->nsecs));
-+			if (is_last)
-+				prt_newline(out);
-+			last_q = q;
-+		}
-+	}
-+}
-+
-+#include <linux/seq_buf.h>
-+
-+static void seq_buf_time_units_aligned(struct seq_buf *out, u64 ns)
-+{
-+	const struct time_unit *u = pick_time_units(ns);
-+
-+	seq_buf_printf(out, "%8llu %s", div64_u64(ns, u->nsecs), u->name);
-+}
-+
-+void bch2_time_stats_to_seq_buf(struct seq_buf *out, struct bch2_time_stats *stats)
-+{
-+	s64 f_mean = 0, d_mean = 0;
-+	u64 f_stddev = 0, d_stddev = 0;
-+
-+	if (stats->buffer) {
-+		int cpu;
- 
--	prt_printf(out, "quantiles (%s):\t", u->name);
--	eytzinger0_for_each(i, NR_QUANTILES) {
--		bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-+		spin_lock_irq(&stats->lock);
-+		for_each_possible_cpu(cpu)
-+			__bch2_time_stats_clear_buffer(stats, per_cpu_ptr(stats->buffer, cpu));
-+		spin_unlock_irq(&stats->lock);
-+	}
- 
--		q = max(stats->quantiles.entries[i].m, last_q);
--		prt_printf(out, "%llu ",
--		       div_u64(q, u->nsecs));
--		if (is_last)
--			prt_newline(out);
--		last_q = q;
-+	/*
-+	 * avoid divide by zero
-+	 */
-+	if (stats->freq_stats.n) {
-+		f_mean = mean_and_variance_get_mean(stats->freq_stats);
-+		f_stddev = mean_and_variance_get_stddev(stats->freq_stats);
-+		d_mean = mean_and_variance_get_mean(stats->duration_stats);
-+		d_stddev = mean_and_variance_get_stddev(stats->duration_stats);
-+	}
-+
-+	seq_buf_printf(out, "count: %llu\n", stats->duration_stats.n);
-+
-+	seq_buf_printf(out, "                       since mount        recent\n");
-+
-+	seq_buf_printf(out, "duration of events\n");
-+
-+	seq_buf_printf(out, "  min:                     ");
-+	seq_buf_time_units_aligned(out, stats->min_duration);
-+	seq_buf_printf(out, "\n");
-+
-+	seq_buf_printf(out, "  max:                     ");
-+	seq_buf_time_units_aligned(out, stats->max_duration);
-+	seq_buf_printf(out, "\n");
-+
-+	seq_buf_printf(out, "  total:                   ");
-+	seq_buf_time_units_aligned(out, stats->total_duration);
-+	seq_buf_printf(out, "\n");
-+
-+	seq_buf_printf(out, "  mean:                    ");
-+	seq_buf_time_units_aligned(out, d_mean);
-+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_mean(stats->duration_stats_weighted));
-+	seq_buf_printf(out, "\n");
-+
-+	seq_buf_printf(out, "  stddev:                  ");
-+	seq_buf_time_units_aligned(out, d_stddev);
-+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_stddev(stats->duration_stats_weighted));
-+	seq_buf_printf(out, "\n");
-+
-+	seq_buf_printf(out, "time between events\n");
-+
-+	seq_buf_printf(out, "  min:                     ");
-+	seq_buf_time_units_aligned(out, stats->min_freq);
-+	seq_buf_printf(out, "\n");
-+
-+	seq_buf_printf(out, "  max:                     ");
-+	seq_buf_time_units_aligned(out, stats->max_freq);
-+	seq_buf_printf(out, "\n");
-+
-+	seq_buf_printf(out, "  mean:                    ");
-+	seq_buf_time_units_aligned(out, f_mean);
-+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_mean(stats->freq_stats_weighted));
-+	seq_buf_printf(out, "\n");
-+
-+	seq_buf_printf(out, "  stddev:                  ");
-+	seq_buf_time_units_aligned(out, f_stddev);
-+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_stddev(stats->freq_stats_weighted));
-+	seq_buf_printf(out, "\n");
-+
-+	if (stats->quantiles_enabled) {
-+		int i = eytzinger0_first(NR_QUANTILES);
-+		const struct time_unit *u =
-+			pick_time_units(stats->quantiles.entries[i].m);
-+		u64 last_q = 0;
-+
-+		prt_printf(out, "quantiles (%s):\t", u->name);
-+		eytzinger0_for_each(i, NR_QUANTILES) {
-+			bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-+
-+			u64 q = max(stats->quantiles.entries[i].m, last_q);
-+			seq_buf_printf(out, "%llu ", div_u64(q, u->nsecs));
-+			if (is_last)
-+				seq_buf_printf(out, "\n");
-+			last_q = q;
-+		}
- 	}
++	time_stats_exit(&state->time);
+ 	mempool_exit(&state->pool);
  }
- #else
-diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
-index c3b11c3d24ea..7ff2d4fe26f6 100644
---- a/fs/bcachefs/util.h
-+++ b/fs/bcachefs/util.h
-@@ -382,6 +382,7 @@ struct bch2_time_stat_buffer {
  
- struct bch2_time_stats {
- 	spinlock_t	lock;
-+	bool		quantiles_enabled;
- 	/* all fields are in nanoseconds */
- 	u64             min_duration;
- 	u64		max_duration;
-@@ -435,6 +436,9 @@ static inline bool track_event_change(struct bch2_time_stats *stats,
+@@ -1184,6 +1185,7 @@ int bch_bset_sort_state_init(struct bset_sort_state *state,
+ 			     unsigned int page_order)
+ {
+ 	spin_lock_init(&state->time.lock);
++	time_stats_init(&state->time);
  
- void bch2_time_stats_to_text(struct printbuf *, struct bch2_time_stats *);
+ 	state->page_order = page_order;
+ 	state->crit_factor = int_sqrt(1 << page_order);
+@@ -1286,7 +1288,7 @@ static void __btree_sort(struct btree_keys *b, struct btree_iter *iter,
+ 	bch_bset_build_written_tree(b);
  
-+struct seq_buf;
-+void bch2_time_stats_to_seq_buf(struct seq_buf *, struct bch2_time_stats *);
+ 	if (!start)
+-		bch_time_stats_update(&state->time, start_time);
++		time_stats_update(&state->time, start_time);
+ }
+ 
+ void bch_btree_sort_partial(struct btree_keys *b, unsigned int start,
+@@ -1329,7 +1331,7 @@ void bch_btree_sort_into(struct btree_keys *b, struct btree_keys *new,
+ 
+ 	btree_mergesort(b, new->set->data, &iter, false, true);
+ 
+-	bch_time_stats_update(&state->time, start_time);
++	time_stats_update(&state->time, start_time);
+ 
+ 	new->set->size = 0; // XXX: why?
+ }
+diff --git a/drivers/md/bcache/bset.h b/drivers/md/bcache/bset.h
+index d795c84246b0..13e524ad7783 100644
+--- a/drivers/md/bcache/bset.h
++++ b/drivers/md/bcache/bset.h
+@@ -3,6 +3,7 @@
+ #define _BCACHE_BSET_H
+ 
+ #include <linux/kernel.h>
++#include <linux/time_stats.h>
+ #include <linux/types.h>
+ 
+ #include "bcache_ondisk.h"
+diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+index 196cdacce38f..0ed337c5f0dc 100644
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -270,7 +270,7 @@ static void bch_btree_node_read(struct btree *b)
+ 		goto err;
+ 
+ 	bch_btree_node_read_done(b);
+-	bch_time_stats_update(&b->c->btree_read_time, start_time);
++	time_stats_update(&b->c->btree_read_time, start_time);
+ 
+ 	return;
+ err:
+@@ -1852,7 +1852,7 @@ static void bch_btree_gc(struct cache_set *c)
+ 	bch_btree_gc_finish(c);
+ 	wake_up_allocators(c);
+ 
+-	bch_time_stats_update(&c->btree_gc_time, start_time);
++	time_stats_update(&c->btree_gc_time, start_time);
+ 
+ 	stats.key_bytes *= sizeof(uint64_t);
+ 	stats.data	<<= 9;
+@@ -2343,7 +2343,7 @@ static int btree_split(struct btree *b, struct btree_op *op,
+ 	btree_node_free(b);
+ 	rw_unlock(true, n1);
+ 
+-	bch_time_stats_update(&b->c->btree_split_time, start_time);
++	time_stats_update(&b->c->btree_split_time, start_time);
+ 
+ 	return 0;
+ err_free2:
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index dc3f50f69714..625e4883299c 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -1676,6 +1676,9 @@ static CLOSURE_CALLBACK(cache_set_free)
+ 
+ 	debugfs_remove(c->debug);
+ 
++	time_stats_exit(&c->btree_read_time);
++	time_stats_exit(&c->btree_split_time);
++	time_stats_exit(&c->btree_gc_time);
+ 	bch_open_buckets_free(c);
+ 	bch_btree_cache_free(c);
+ 	bch_journal_free(c);
+@@ -1913,6 +1916,10 @@ struct cache_set *bch_cache_set_alloc(struct cache_sb *sb)
+ 	INIT_LIST_HEAD(&c->btree_cache_freed);
+ 	INIT_LIST_HEAD(&c->data_buckets);
+ 
++	time_stats_init(&c->btree_gc_time);
++	time_stats_init(&c->btree_split_time);
++	time_stats_init(&c->btree_read_time);
 +
- void bch2_time_stats_exit(struct bch2_time_stats *);
- void bch2_time_stats_init(struct bch2_time_stats *);
+ 	iter_size = ((meta_bucket_pages(sb) * PAGE_SECTORS) / sb->block_size + 1) *
+ 		sizeof(struct btree_iter_set);
  
+diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+index a438efb66069..01cc5c632f08 100644
+--- a/drivers/md/bcache/sysfs.c
++++ b/drivers/md/bcache/sysfs.c
+@@ -14,6 +14,7 @@
+ #include "features.h"
+ 
+ #include <linux/blkdev.h>
++#include <linux/seq_buf.h>
+ #include <linux/sort.h>
+ #include <linux/sched/clock.h>
+ 
+@@ -79,10 +80,10 @@ read_attribute(active_journal_entries);
+ read_attribute(backing_dev_name);
+ read_attribute(backing_dev_uuid);
+ 
+-sysfs_time_stats_attribute(btree_gc,	sec, ms);
+-sysfs_time_stats_attribute(btree_split, sec, us);
+-sysfs_time_stats_attribute(btree_sort,	ms,  us);
+-sysfs_time_stats_attribute(btree_read,	ms,  us);
++read_attribute(btree_gc_times);
++read_attribute(btree_split_times);
++read_attribute(btree_sort_times);
++read_attribute(btree_read_times);
+ 
+ read_attribute(btree_nodes);
+ read_attribute(btree_used_percent);
+@@ -743,10 +744,10 @@ SHOW(__bch_cache_set)
+ 	sysfs_print(btree_cache_max_chain,	bch_cache_max_chain(c));
+ 	sysfs_print(cache_available_percent,	100 - c->gc_stats.in_use);
+ 
+-	sysfs_print_time_stats(&c->btree_gc_time,	btree_gc, sec, ms);
+-	sysfs_print_time_stats(&c->btree_split_time,	btree_split, sec, us);
+-	sysfs_print_time_stats(&c->sort.time,		btree_sort, ms, us);
+-	sysfs_print_time_stats(&c->btree_read_time,	btree_read, ms, us);
++	sysfs_print_time_stats(&c->btree_gc_time,	btree_gc_times);
++	sysfs_print_time_stats(&c->btree_split_time,	btree_split_times);
++	sysfs_print_time_stats(&c->sort.time,		btree_sort_times);
++	sysfs_print_time_stats(&c->btree_read_time,	btree_read_times);
+ 
+ 	sysfs_print(btree_used_percent,	bch_btree_used(c));
+ 	sysfs_print(btree_nodes,	c->gc_stats.nodes);
+@@ -989,10 +990,10 @@ KTYPE(bch_cache_set);
+ static struct attribute *bch_cache_set_internal_attrs[] = {
+ 	&sysfs_active_journal_entries,
+ 
+-	sysfs_time_stats_attribute_list(btree_gc, sec, ms)
+-	sysfs_time_stats_attribute_list(btree_split, sec, us)
+-	sysfs_time_stats_attribute_list(btree_sort, ms, us)
+-	sysfs_time_stats_attribute_list(btree_read, ms, us)
++	&sysfs_btree_gc_times,
++	&sysfs_btree_split_times,
++	&sysfs_btree_sort_times,
++	&sysfs_btree_read_times,
+ 
+ 	&sysfs_btree_nodes,
+ 	&sysfs_btree_used_percent,
+diff --git a/drivers/md/bcache/util.c b/drivers/md/bcache/util.c
+index ae380bc3992e..95282bf0f9a7 100644
+--- a/drivers/md/bcache/util.c
++++ b/drivers/md/bcache/util.c
+@@ -160,36 +160,6 @@ int bch_parse_uuid(const char *s, char *uuid)
+ 	return i;
+ }
+ 
+-void bch_time_stats_update(struct time_stats *stats, uint64_t start_time)
+-{
+-	uint64_t now, duration, last;
+-
+-	spin_lock(&stats->lock);
+-
+-	now		= local_clock();
+-	duration	= time_after64(now, start_time)
+-		? now - start_time : 0;
+-	last		= time_after64(now, stats->last)
+-		? now - stats->last : 0;
+-
+-	stats->max_duration = max(stats->max_duration, duration);
+-
+-	if (stats->last) {
+-		ewma_add(stats->average_duration, duration, 8, 8);
+-
+-		if (stats->average_frequency)
+-			ewma_add(stats->average_frequency, last, 8, 8);
+-		else
+-			stats->average_frequency  = last << 8;
+-	} else {
+-		stats->average_duration  = duration << 8;
+-	}
+-
+-	stats->last = now ?: 1;
+-
+-	spin_unlock(&stats->lock);
+-}
+-
+ /**
+  * bch_next_delay() - update ratelimiting statistics and calculate next delay
+  * @d: the struct bch_ratelimit to update
+diff --git a/drivers/md/bcache/util.h b/drivers/md/bcache/util.h
+index f61ab1bada6c..6fcb9db4f50d 100644
+--- a/drivers/md/bcache/util.h
++++ b/drivers/md/bcache/util.h
+@@ -344,20 +344,6 @@ ssize_t bch_hprint(char *buf, int64_t v);
+ bool bch_is_zero(const char *p, size_t n);
+ int bch_parse_uuid(const char *s, char *uuid);
+ 
+-struct time_stats {
+-	spinlock_t	lock;
+-	/*
+-	 * all fields are in nanoseconds, averages are ewmas stored left shifted
+-	 * by 8
+-	 */
+-	uint64_t	max_duration;
+-	uint64_t	average_duration;
+-	uint64_t	average_frequency;
+-	uint64_t	last;
+-};
+-
+-void bch_time_stats_update(struct time_stats *stats, uint64_t time);
+-
+ static inline unsigned int local_clock_us(void)
+ {
+ 	return local_clock() >> 10;
+@@ -372,40 +358,16 @@ static inline unsigned int local_clock_us(void)
+ 	sysfs_print(name ## _ ## stat ## _ ## units,			\
+ 		    div_u64((stats)->stat >> 8, NSEC_PER_ ## units))
+ 
+-#define sysfs_print_time_stats(stats, name,				\
+-			       frequency_units,				\
+-			       duration_units)				\
++#define sysfs_print_time_stats(stats, name)				\
+ do {									\
+-	__print_time_stat(stats, name,					\
+-			  average_frequency,	frequency_units);	\
+-	__print_time_stat(stats, name,					\
+-			  average_duration,	duration_units);	\
+-	sysfs_print(name ## _ ##max_duration ## _ ## duration_units,	\
+-			div_u64((stats)->max_duration,			\
+-				NSEC_PER_ ## duration_units));		\
+-									\
+-	sysfs_print(name ## _last_ ## frequency_units, (stats)->last	\
+-		    ? div_s64(local_clock() - (stats)->last,		\
+-			      NSEC_PER_ ## frequency_units)		\
+-		    : -1LL);						\
++	if (attr == &sysfs_##name) {					\
++		struct seq_buf seq;					\
++		seq_buf_init(&seq, buf, PAGE_SIZE);			\
++		time_stats_to_seq_buf(&seq, stats);			\
++		return seq.len;						\
++	}								\
+ } while (0)
+ 
+-#define sysfs_time_stats_attribute(name,				\
+-				   frequency_units,			\
+-				   duration_units)			\
+-read_attribute(name ## _average_frequency_ ## frequency_units);		\
+-read_attribute(name ## _average_duration_ ## duration_units);		\
+-read_attribute(name ## _max_duration_ ## duration_units);		\
+-read_attribute(name ## _last_ ## frequency_units)
+-
+-#define sysfs_time_stats_attribute_list(name,				\
+-					frequency_units,		\
+-					duration_units)			\
+-&sysfs_ ## name ## _average_frequency_ ## frequency_units,		\
+-&sysfs_ ## name ## _average_duration_ ## duration_units,		\
+-&sysfs_ ## name ## _max_duration_ ## duration_units,			\
+-&sysfs_ ## name ## _last_ ## frequency_units,
+-
+ #define ewma_add(ewma, val, weight, factor)				\
+ ({									\
+ 	(ewma) *= (weight) - 1;						\
 -- 
 2.43.0
 
