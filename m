@@ -1,306 +1,250 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2011B81B
-	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Jan 2024 13:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A439C3EA86;
+	Fri, 26 Jan 2024 22:07:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706276344; cv=none; b=bCxU7knBRY9MowB+9lzu9mvf/uxoCLSPN9qtO4jiIlDOW1EJdz0aI4B4DxHeEbcBQwzztHxVhy1V6zxIgVrZePuZHkjr8pvcD/FDh8ja5XW73atX8a5LsIB5cwiHC5uxt+q3t5Sz0m3nMcCzzTfi4AqWB/YT+IyKjH4n/qyfd8I=
+	t=1706306826; cv=none; b=CqopL3Jw5feMdFU/99Fu9JAmEDPl39iSFVxEONJh+8ug9z/pcJuRREjKKyHtHeVK8GjC2OMxQx+eUUcrcrgJqHHfmTBq68QTpjdbZbm/Ju9/PBh37cWRjOl6qDkw5qby9h+jK3JmhP0yb25fF0PCMJ/DzCJNhWQEz9+61ssEEdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706276344; c=relaxed/simple;
-	bh=Gr/SAYSUF4AB8zWZZFjavWIZkDAV/K1hDa2NhNFzNho=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jEhrxBHNxx8eRNCj4JkLs8hb8JkzyMH34VefsBHywzks/2TJ2yt7EJP/CNsRJuV6Ddm10wFR7waJb1Z2ePJCykxcp8T8tESTUEb9OK1JHcm5F5tnWwP0hkushni55xTaRuse7kL/xJHVpoVOPF+vcFze76B7DNdpvxAFhASEKrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h3vVM8se; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1706306826; c=relaxed/simple;
+	bh=XB4fRjTtTylKsY7YTWjFycmOakQ+8VZzbUngR9Y7Qlw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b2Q+w4uRLrYQBPxbqQWD+7DpdG6d8vX1irwBpdT3IDRDLnT6Oqc52v3YdyruSHdVt1okkov6YKRosE7M2oTA8M2+ao1W7irnGKX3W4LApamFV6K9pTzIg7ta4EmXr4Fz3AjnbIRcbpllk3mDxcr5GxNs8tZqz4q6NraryJ+0bOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FTHZZY7n; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h3vVM8se"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706276341;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FTHZZY7n"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706306822;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M+HT3GxhlFSU+mJ6HY2Z7P+aHJT9QjUD+Y3cJNdjNMA=;
-	b=h3vVM8sePgGInj3tDD9UTlSpSZvKmIUqappX6cHdtZPTGSAQrU78KfCyCZN544eFeb4Al1
-	+3Aujo051AwbDT6MRssVdx2obHMbSPngmTNvFuvUcOuAkf7ch/S3t/Ws23iVtIsHQjp6i7
-	Rz3GFetz1F+rmqQYsyal1x149R4gX9s=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-595-9u9VihaAN76Ed02OitOiRA-1; Fri, 26 Jan 2024 08:38:58 -0500
-X-MC-Unique: 9u9VihaAN76Ed02OitOiRA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C375085A597;
-	Fri, 26 Jan 2024 13:38:57 +0000 (UTC)
-Received: from bfoster (unknown [10.22.32.186])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 8439C492BC6;
-	Fri, 26 Jan 2024 13:38:57 +0000 (UTC)
-Date: Fri, 26 Jan 2024 08:40:15 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Su Yue <l@damenly.org>
-Cc: Su Yue <glass.su@suse.com>, fstests@vger.kernel.org,
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=0uDCQI2J2OdCX4BmaIuAGyUG1leeUjTKY0gYVjTj18U=;
+	b=FTHZZY7nMvcAvxX6xS1FLXGkx0hsfKKwXyDXmPmqGDw7kVxMvOHTtXUUdrlLbydUYjkuhm
+	Uil/VEkNUoYYyJkVZfAGojNEY5KD0/t+NYanXQde+kvUBrUdmc3/QPQiSLCi6Vc2xFe2E8
+	y+wyuRqqhiOi81sWmkl7FYrCiJZK1dc=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-bcache@vger.kernel.org,
 	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] common/rc: improve block size support for bcachefs
-Message-ID: <ZbO2P/SWDT2uGE/c@bfoster>
-References: <20240117092309.1134595-1-glass.su@suse.com>
- <20240117092309.1134595-2-glass.su@suse.com>
- <ZagUdl+DlxIw+siv@bfoster>
- <h6jb49cm.fsf@damenly.org>
- <ZaqepfRjb1vU+nDw@bfoster>
- <cytv49hm.fsf@damenly.org>
- <Za6HuxcIl0TNlffY@bfoster>
- <34umi23g.fsf@damenly.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Daniel Hill <daniel@gluo.nz>,
+	"Darrick J . Wong" <djwong@kernel.org>
+Subject: [PATCH 1/5] mean and variance: Promote to lib/math
+Date: Fri, 26 Jan 2024 17:06:51 -0500
+Message-ID: <20240126220655.395093-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <34umi23g.fsf@damenly.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 25, 2024 at 10:10:48AM +0800, Su Yue wrote:
-> 
-> On Mon 22 Jan 2024 at 10:20, Brian Foster <bfoster@redhat.com> wrote:
-> 
-> > On Sun, Jan 21, 2024 at 12:00:47PM +0800, Su Yue wrote:
-> > > 
-> > > On Fri 19 Jan 2024 at 11:09, Brian Foster <bfoster@redhat.com>
-> > > wrote:
-> > > 
-> > > > On Thu, Jan 18, 2024 at 10:59:14AM +0800, Su Yue wrote:
-> > > > >
-> > > > > On Wed 17 Jan 2024 at 12:55, Brian Foster > >
-> > > <bfoster@redhat.com>
-> > > > > wrote:
-> > > > >
-> > > > > > On Wed, Jan 17, 2024 at 05:23:09PM +0800, Su Yue wrote:
-> > > > > > > For bcachefs, def_blksz is never assigned even > > > >
-> > > MKFS_OPTIONS > >
-> > > > > contains
-> > > > > > > option
-> > > > > > > '--block_size'. So block size of bcachefs on scratch > > > >
-> > > dev is > >
-> > > > > always
-> > > > > > > 4096
-> > > > > > > if _scratch_mkfs_sized is called without second > > > >
-> > > parameter.
-> > > > > > >
-> > > > > > > Add the pattern to set def_blksz if '--block_size' is > > >
-> > > > given > >
-> > > > > in
-> > > > > > > MKFS_OPTIONS.
-> > > > > > >
-> > > > > > > Signed-off-by: Su Yue <glass.su@suse.com>
-> > > > > > > ---
-> > > > > > > changelog:
-> > > > > > > v2:
-> > > > > > >     Born.
-> > > > > > > ---
-> > > > > > >  common/rc | 3 +++
-> > > > > > >  1 file changed, 3 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/common/rc b/common/rc
-> > > > > > > index 31c21d2a8360..6a01de69cf05 100644
-> > > > > > > --- a/common/rc
-> > > > > > > +++ b/common/rc
-> > > > > > > @@ -950,6 +950,9 @@ _scratch_mkfs_sized()
-> > > > > > >  	jfs)
-> > > > > > >  		def_blksz=4096
-> > > > > > >  		;;
-> > > > > > > +	bcachefs)
-> > > > > > > +		def_blksz=`echo $MKFS_OPTIONS | sed -rn > >
-> > > > > 's/.*(--block_size)[
-> > > > > > > =]?+([0-9]+).*/\2/p'`
-> > > > > > > +		;;
-> > > > > >
-> > > > > > So if the default bcachefs block size is 512b, I wonder > > >
-> > > if > this
-> > > > > should
-> > > > > > do something like what the udf branch does a few lines > > >
-> > > above > and
-> > > > > >
-> > > > > mkfs.bcachefs decides block size by querying > >
-> > > statbuf.st_blksize or
-> > > > > BLKPBSZGET from the device if the option is not given.
-> > > > >
-> > > > > > override the hardcoded default of 4k. ISTM this whole > > >
-> > > thing >
-> > > > > would be
-> > > > > > more robust if it just elided the param in the default > > >
-> > > cases > and
-> > > > > let the
-> > > > > > associated mkfs tool use its own default, but that's > > >
-> > > probably > a
-> > > > > separate
-> > > > > > issue. Hm?
-> > > > > >
-> > > > > Since there is no default block size of bcachefs, maybe we > >
-> > > can let
-> > > > > mkfs.bcachefs decide on its own but it will make chaos when > >
-> > > somebody
-> > > > > reports an unreproducible BUG due to the different > >
-> > > block_size even
-> > > > > we have same local.config. It just happened...
-> > > > > So for now, I think 4096 is a resonable value of bcachefs > >
-> > > block
-> > > > > size.
-> > > > >
-> > > >
-> > > > I think we run into this no matter what if we pick a size out > of
-> > > a hat,
-> > > > regardless of what the value is. If somebody is testing with >
-> > > default
-> > > > blocksize (i.e. based on mkfs) on a filesystem where the > default
-> > > isn't
-> > > > actually 4k, then it seems quite unexpected that >
-> > > _scratch_mkfs_sized
-> > > > would use something different from _scratch_mkfs when a block >
-> > > size isn't
-> > > > explicitly specified. That's exactly the situation we ran > into
-> > > with the
-> > > > generic/361 thing where I would have expected this test to > use
-> > > 512b
-> > > > blocks.
-> > > >
-> > > > ISTM that the 4k value in _scratch_mkfs_sized() is mainly a > last
-> > > resort
-> > > > default value so the $blocks calculation can work for any >
-> > > filesystem
-> > > > that might not be properly supported by the function. The >
-> > > function looks
-> > > > a little wonky overall, but I think there are at least a > couple
-> > > options
-> > > > to improve things for bcachefs. FWIW, it also looks to me > that
-> > > nothing
-> > > > actually passes a blocksize param to _scratch_mkfs_sized, so >
-> > > perhaps we
-> > > > could just drop that blocksize=$2 parameter across the board > as
-> > > a
-> > > > simplification?
-> > > >
-> > > Maybe it can be dropped. The only user is generic/466
-> > > 
-> > 
-> > Ah, good point.
-> > 
-> Sorry for the late reply, was busy with other works.
-> 
+Small statistics library, for taking in a series of value and computing
+mean, weighted mean, standard deviation and weighted deviation.
 
-No worries, same..
+The main use case is for statistics on latency measurements.
 
-> > So generic/466 clears MKFS_OPTIONS so the function will use the provided
-> > block size over whatever exists in the config, yet generic/466 is the
-> > only user of this param in the first place.
-> > 
-> > I wonder if a more useful change might be to change the
-> > _scratch_mkfs_sized logic to prefer the provided block size over
-> > whatever is in the config, but then again that might require further
-> > changes for any of the places that continue to use MKFS_OPTIONS. :/
-> > 
-> I am wondering too...
-> 
-> > > > With that, I think bcache could either:
-> > > >
-> > > > 1. Do something like def_blksize=`blockdev --getpbsz >
-> > > $SCRATCH_DEV` in
-> > > > the first switch if no block size is specified in > MKFS_OPTIONS
-> > > (or
-> > > > whatever best mimics mkfs logic).
-> > > >
-> > > > OR
-> > > >
-> > > > 2. Do something like the following in the last switch:
-> > > >
-> > > > 	[ -n $def_blksize ] && > def_blksize="--block_size=$def_blksize"
-> > > > 	$MKFS_BCACHEFS_PROG ... $def_blksize $SCRATCH_DEV
-> > > >
-> > > > ... to allow mkfs to determine the block size. I _think_ that >
-> > > works
-> > > > because the bcachefs format doesn't depend on $blocks at all, > so
-> > > > whatever $blocksize was set to is irrelevent unless > $def_blksize
-> > > was set
-> > > > above, but I could be missing something. That also assumes >
-> > > blocksize
-> > > > wasn't set to something by the caller.
-> > > >
-> > > > If correct, option #2 seems a little cleaner to me, but other
-> > > > thoughts/ideas?
-> > > >
-> > > Option 2 is preferable. I would code it as(on more varaiable for
-> > > readability):
-> > > 
-> > > local blocksize_opt
-> > > 
-> > > [ -n $def_blksize ] && blockzie_opt="--block_size=$def_blksize"
-> > > $MKFS_BCACHEFS_PROG ... $blocksize_opt $SCRATCH_DEV
-> > > 
-> > 
-> > That seems reasonable to me. The only caveat is this was assuming the
-> > blocksize param would go away and so could be ignored for bcachefs.
-> > 
-> > Without getting too far into the weeds on the higher level parameter
-> > handling, I wonder if the blocksize parameter was initially put into a
-> > separate variable (i.e. blocksize_param or some such), if that would at
-> > least help bcachefs determine between the case where 4096 was requested
-> > by the caller vs. picked out of a hat by the default handling logic
-> > earlier in the function, and thus correctly determine when to set a
-> > blocksize vs. use the mkfs (non-4k) default.
-> > 
-> After going through the call stack of _scratch_mkfs quickly, I did not
-> found something global to describe blocksize.
-> So I think blocksize_param is unnecessary?
-> 
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Daniel Hill <daniel@gluo.nz>
+Cc: Darrick J. Wong <djwong@kernel.org>
+---
+ MAINTAINERS                                        |  9 +++++++++
+ fs/bcachefs/Kconfig                                | 10 +---------
+ fs/bcachefs/Makefile                               |  3 ---
+ fs/bcachefs/util.c                                 |  2 +-
+ fs/bcachefs/util.h                                 |  3 +--
+ {fs/bcachefs => include/linux}/mean_and_variance.h |  0
+ lib/Kconfig.debug                                  |  9 +++++++++
+ lib/math/Kconfig                                   |  3 +++
+ lib/math/Makefile                                  |  2 ++
+ {fs/bcachefs => lib/math}/mean_and_variance.c      |  3 +--
+ {fs/bcachefs => lib/math}/mean_and_variance_test.c |  3 +--
+ 11 files changed, 28 insertions(+), 19 deletions(-)
+ rename {fs/bcachefs => include/linux}/mean_and_variance.h (100%)
+ rename {fs/bcachefs => lib/math}/mean_and_variance.c (99%)
+ rename {fs/bcachefs => lib/math}/mean_and_variance_test.c (99%)
 
-My concern was more that I think the original logic I posted didn't
-properly handle the case where a blocksize param is passed in (and thus
-my version removed the parameter, which was incorrect due to not
-realizing that generic/466 used it), but it's also possible I confused
-myself between the various options that have been discussed or am just
-not expressing the concern clearly enough.
-
-It's probably not worth getting further hung up on this point here. If
-you have a patch along the lines of your most recent example, that
-sounds like a good direction to me and so I can just take a fresh look
-from there...
-
-Brian
-
-> --
-> Su
-> 
-> > So then IOW the logic might look something like this..?
-> > 
-> > 	[ -n $blocksize_param ] &&
-> > blocksize_opt="--block_size=$blocksize_param"
-> > 	[ -n $def_blksize ] && blocksize_opt="--block_size=$def_blksize"
-> > 	mkfs ...
-> > 
-> > Brian
-> > 
-> > > --
-> > > Su
-> > > >
-> > > > Brian
-> > > >
-> > > > > --
-> > > > > Su
-> > > > > >
-> > > > > > Brian
-> > > > > >
-> > > > > > >  	esac
-> > > > > > >
-> > > > > > >  	[ -n "$def_blksz" ] && blocksize=$def_blksz
-> > > > > > > --
-> > > > > > > 2.43.0
-> > > > > > >
-> > > > >
-> > > 
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8d1052fa6a69..de635cfd354d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13379,6 +13379,15 @@ S:	Maintained
+ F:	drivers/net/mdio/mdio-regmap.c
+ F:	include/linux/mdio/mdio-regmap.h
+ 
++MEAN AND VARIANCE LIBRARY
++M:	Daniel B. Hill <daniel@gluo.nz>
++M:	Kent Overstreet <kent.overstreet@linux.dev>
++S:	Maintained
++T:	git https://github.com/YellowOnion/linux/
++F:	include/linux/mean_and_variance.h
++F:	lib/math/mean_and_variance.c
++F:	lib/math/mean_and_variance_test.c
++
+ MEASUREMENT COMPUTING CIO-DAC IIO DRIVER
+ M:	William Breathitt Gray <william.gray@linaro.org>
+ L:	linux-iio@vger.kernel.org
+diff --git a/fs/bcachefs/Kconfig b/fs/bcachefs/Kconfig
+index 5cdfef3b551a..72d1179262b3 100644
+--- a/fs/bcachefs/Kconfig
++++ b/fs/bcachefs/Kconfig
+@@ -24,6 +24,7 @@ config BCACHEFS_FS
+ 	select XXHASH
+ 	select SRCU
+ 	select SYMBOLIC_ERRNAME
++	select MEAN_AND_VARIANCE
+ 	help
+ 	The bcachefs filesystem - a modern, copy on write filesystem, with
+ 	support for multiple devices, compression, checksumming, etc.
+@@ -86,12 +87,3 @@ config BCACHEFS_SIX_OPTIMISTIC_SPIN
+ 	Instead of immediately sleeping when attempting to take a six lock that
+ 	is held by another thread, spin for a short while, as long as the
+ 	thread owning the lock is running.
+-
+-config MEAN_AND_VARIANCE_UNIT_TEST
+-	tristate "mean_and_variance unit tests" if !KUNIT_ALL_TESTS
+-	depends on KUNIT
+-	depends on BCACHEFS_FS
+-	default KUNIT_ALL_TESTS
+-	help
+-	  This option enables the kunit tests for mean_and_variance module.
+-	  If unsure, say N.
+diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
+index 1a05cecda7cc..b11ba74b8ad4 100644
+--- a/fs/bcachefs/Makefile
++++ b/fs/bcachefs/Makefile
+@@ -57,7 +57,6 @@ bcachefs-y		:=	\
+ 	keylist.o		\
+ 	logged_ops.o		\
+ 	lru.o			\
+-	mean_and_variance.o	\
+ 	migrate.o		\
+ 	move.o			\
+ 	movinggc.o		\
+@@ -88,5 +87,3 @@ bcachefs-y		:=	\
+ 	util.o			\
+ 	varint.o		\
+ 	xattr.o
+-
+-obj-$(CONFIG_MEAN_AND_VARIANCE_UNIT_TEST)   += mean_and_variance_test.o
+diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
+index 56b815fd9fc6..d7ea95abb9df 100644
+--- a/fs/bcachefs/util.c
++++ b/fs/bcachefs/util.c
+@@ -22,9 +22,9 @@
+ #include <linux/string.h>
+ #include <linux/types.h>
+ #include <linux/sched/clock.h>
++#include <linux/mean_and_variance.h>
+ 
+ #include "eytzinger.h"
+-#include "mean_and_variance.h"
+ #include "util.h"
+ 
+ static const char si_units[] = "?kMGTPEZY";
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index b414736d59a5..0059481995ef 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -17,8 +17,7 @@
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
+ #include <linux/workqueue.h>
+-
+-#include "mean_and_variance.h"
++#include <linux/mean_and_variance.h>
+ 
+ #include "darray.h"
+ 
+diff --git a/fs/bcachefs/mean_and_variance.h b/include/linux/mean_and_variance.h
+similarity index 100%
+rename from fs/bcachefs/mean_and_variance.h
+rename to include/linux/mean_and_variance.h
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 975a07f9f1cc..817ddfe132cd 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2191,6 +2191,15 @@ config CPUMASK_KUNIT_TEST
+ 
+ 	  If unsure, say N.
+ 
++config MEAN_AND_VARIANCE_UNIT_TEST
++	tristate "mean_and_variance unit tests" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	select MEAN_AND_VARIANCE
++	default KUNIT_ALL_TESTS
++	help
++	  This option enables the kunit tests for mean_and_variance module.
++	  If unsure, say N.
++
+ config TEST_LIST_SORT
+ 	tristate "Linked list sorting test" if !KUNIT_ALL_TESTS
+ 	depends on KUNIT
+diff --git a/lib/math/Kconfig b/lib/math/Kconfig
+index 0634b428d0cb..7530ae9a3584 100644
+--- a/lib/math/Kconfig
++++ b/lib/math/Kconfig
+@@ -15,3 +15,6 @@ config PRIME_NUMBERS
+ 
+ config RATIONAL
+ 	tristate
++
++config MEAN_AND_VARIANCE
++	tristate
+diff --git a/lib/math/Makefile b/lib/math/Makefile
+index 91fcdb0c9efe..8cdfa13a67ce 100644
+--- a/lib/math/Makefile
++++ b/lib/math/Makefile
+@@ -4,6 +4,8 @@ obj-y += div64.o gcd.o lcm.o int_log.o int_pow.o int_sqrt.o reciprocal_div.o
+ obj-$(CONFIG_CORDIC)		+= cordic.o
+ obj-$(CONFIG_PRIME_NUMBERS)	+= prime_numbers.o
+ obj-$(CONFIG_RATIONAL)		+= rational.o
++obj-$(CONFIG_MEAN_AND_VARIANCE) += mean_and_variance.o
+ 
+ obj-$(CONFIG_TEST_DIV64)	+= test_div64.o
+ obj-$(CONFIG_RATIONAL_KUNIT_TEST) += rational-test.o
++obj-$(CONFIG_MEAN_AND_VARIANCE_UNIT_TEST)   += mean_and_variance_test.o
+diff --git a/fs/bcachefs/mean_and_variance.c b/lib/math/mean_and_variance.c
+similarity index 99%
+rename from fs/bcachefs/mean_and_variance.c
+rename to lib/math/mean_and_variance.c
+index bf0ef668fd38..ba90293204ba 100644
+--- a/fs/bcachefs/mean_and_variance.c
++++ b/lib/math/mean_and_variance.c
+@@ -40,10 +40,9 @@
+ #include <linux/limits.h>
+ #include <linux/math.h>
+ #include <linux/math64.h>
++#include <linux/mean_and_variance.h>
+ #include <linux/module.h>
+ 
+-#include "mean_and_variance.h"
+-
+ u128_u u128_div(u128_u n, u64 d)
+ {
+ 	u128_u r;
+diff --git a/fs/bcachefs/mean_and_variance_test.c b/lib/math/mean_and_variance_test.c
+similarity index 99%
+rename from fs/bcachefs/mean_and_variance_test.c
+rename to lib/math/mean_and_variance_test.c
+index 019583c3ca0e..f45591a169d8 100644
+--- a/fs/bcachefs/mean_and_variance_test.c
++++ b/lib/math/mean_and_variance_test.c
+@@ -1,7 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <kunit/test.h>
+-
+-#include "mean_and_variance.h"
++#include <linux/mean_and_variance.h>
+ 
+ #define MAX_SQR (SQRT_U64_MAX*SQRT_U64_MAX)
+ 
+-- 
+2.43.0
 
