@@ -1,116 +1,73 @@
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16751DDA5
-	for <linux-bcachefs@vger.kernel.org>; Sun, 28 Jan 2024 08:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA07DDC4;
+	Sun, 28 Jan 2024 08:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706431595; cv=none; b=RFw6XtZmo0aKBDD+ATVOf/2rj9iaNg3u1cSRPuW7OreIs7U9fddukNhP/YNY7N5KoJ9Yk/HG1I5Z7LVQLxp4K0j/2/oNW84YqQrZY6ZzSk+oDam/JafpQBAb0ayyz75vVGiNVKVmjBB/3HBcVvwvLwSlDzLYpmHEgy9Zpj+9piA=
+	t=1706432040; cv=none; b=TmJF0vq3roFlv1K99RyB5wIsALo6vaBGLROA21VQT0tLrKM2XpMmCw7YwY7AJjFP4/r/5dCPCVsNXhNCu4greTXiyPfDUGF4odAdxMbbHNMS/Vz0FonKqWiZJlb8qnuyiSfvPJy3A2XLOhaL9s06k9PChW98iCPLOVO6pYvkGjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706431595; c=relaxed/simple;
-	bh=sWcA4vq4dELgnmpuck9GmvRQbLoyCozWTOdtI6rbXDI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NyRzhaqUwvrxFIna7eAwp5y9S3+jYIoYdZ1vh7R1eIhiRItsQLL61k9H6mHSbntrTuc4VdqXoZpT3RcHVXtcqxQ5xQXXPaeHBfopzXMHMwB2wCyXwxiyhH6khkajBaoEwEMxt35xTdCNG/thS4zd297VVWpCfwlGdeJ5RzJHVl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LbSBRvTg; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1706432040; c=relaxed/simple;
+	bh=qCDdwLKf3bT6cGGaU4frMAHoDwbySJE5/GyHOk7wHgg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=CeX4DdbKGMDVvV1HZ/Q9dpkBpj6TmMx9FDZ/iob6z75+CzHlBzy8BbcrGFMS5EuvvmYWOFXTTN7ckcQz+R30XeQDyi47zmKtTwfvxKykRajzyqpyQNUkZJeXmFa0UAf/TEsVHxD5N1PFvCy1tCM1gcdf0pF9rrJcmEOOJ9hyA8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G9OkGm2k; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LbSBRvTg"
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6dc20b4595bso1745400a34.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 28 Jan 2024 00:46:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706431593; x=1707036393; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aML3G8USSFyMNcBLGlckX4g/sSCdHko1ADe8d06KmNI=;
-        b=LbSBRvTgQ5Qunv0Rl4rU6D+N+5HuGdbcuFIwoJ3/6VZkM2pZ9tKtvV+FB++UvJ6bK1
-         9VcoP+pRq9qX9oRXXP0Bjp4upHfZQE8+ZJqg9hg9OiPK1C6moWsDIogCf7XIiSZjuDZw
-         9D8QgU847gIj8uyvoAeVylq/J+Qec2NQn4shgLxpRAO3UVzULjGnnbnjhV4/j9ukZ+lT
-         LZQX7A4crMF1bpb4XiRn0lg5TiNwaOMzoXlw4TWa/TPE1Kyu+rUHfnJL/2hbA/NU/kGI
-         LK1Yz+UCb80LbG1cP7QGx8FmkFzYqNeIdUyWRUQrkeUG/TLOpOiRgxho0khj/AqcP7l/
-         b4Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706431593; x=1707036393;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aML3G8USSFyMNcBLGlckX4g/sSCdHko1ADe8d06KmNI=;
-        b=mOdb3P8TC+mPnkSi7cdqhvnjEghTJjOj4dRRairwDrhXUcljKD9DosCtXskwB8bwnh
-         +O2ohiyMSKfo0LKlP90b3aKCISqNgIzi9IsLlhBBh1Du+xB0+n3OrefdwRHJc+lJGFmi
-         DkQhsbtuXHFi593dOES7aLCTqZ6ECMh+SeVNnMWJnVPWOT/0y6oKMOM9RW0hhWft13OG
-         qgV9JzYDQcossXJ8dalHhI5eTIRen0gXBa+aDV+iIrfiBavT6JxdempRSplEkl2Kj1Mc
-         9OZGJFdJa6NGCzGwNeNrXwkrN3SvQN9Us6fzoq1gjPfPg3pyX8VRc818R6QBwKOcruBf
-         gw6g==
-X-Gm-Message-State: AOJu0YzQeYdRwHSSD3O9sGBZHCg+x1HHb33CPFakfJwfD3ndoe9bzf76
-	UwfFRs1MYVfoGj7Y0FnWRBgRQ762JBFatNL0hGoZ2MsVoQtODvhI
-X-Google-Smtp-Source: AGHT+IESXdl/cCecZpSJ2JpIAuBfFTf8JeYoBxDjTjHhwXYAn+sCBvPo5rxaDfAZJw/pYTcN4/BLug==
-X-Received: by 2002:a05:6358:e919:b0:176:485a:5df5 with SMTP id gk25-20020a056358e91900b00176485a5df5mr2830420rwb.39.1706431592873;
-        Sun, 28 Jan 2024 00:46:32 -0800 (PST)
-Received: from localhost ([163.125.244.247])
-        by smtp.gmail.com with ESMTPSA id mm11-20020a1709030a0b00b001d8b3c8c758sm2010136plb.66.2024.01.28.00.46.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 00:46:32 -0800 (PST)
-From: Guoyu Ou <benogy@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	Guoyu Ou <benogy@gmail.com>
-Subject: [PATCH] bcachefs: unlock parent dir if entry is not found in subvolume deletion
-Date: Sun, 28 Jan 2024 16:46:17 +0800
-Message-ID: <20240128084617.244234-1-benogy@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G9OkGm2k"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67774C433F1;
+	Sun, 28 Jan 2024 08:53:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706432039;
+	bh=qCDdwLKf3bT6cGGaU4frMAHoDwbySJE5/GyHOk7wHgg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=G9OkGm2kEYH4gtzh31ggEe5BqfS6B6LMQy+ElheFFabiGciApVqloUDURStdBSnW3
+	 uNO+cEx1HKbpoWvh4eqyuAPAIeug+LIN44/jPyOhBEXupka+3uz/j6S9bxhD+eoB5I
+	 chR7MnQpwf0EQTRXcocVMpH2EzPmgncyohuGAWlyC50GAhmlDya6TmXxXIVEvD28gU
+	 GHosdvIEkpa2e6P//D6gAF9zlyCjWh7Pl/Gwg7FC7ysTLL8GghiAO+bBCedE/8eBL+
+	 O8XHg7E+q0x84A8VuZLxs62SCUhIggTsBya7pvK0ypqut7L09SXHaAvSyCH4bz1BH6
+	 np+mscw0MUuFA==
+Date: Sun, 28 Jan 2024 09:53:55 +0100
+From: Helge Deller <deller@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Subject: [PATCH] bcachefs: Fix build on parisc by avoiding __multi3()
+Message-ID: <ZbYWI_s05yxbvubr@p100>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Parent dir is locked by user_path_locked_at() before validating the
-required dentry. It should be unlocked if we can not perform the
-deletion.
+The gcc compiler on paric does support the __int128 type, although the
+architecture does not have native 128-bit support.
 
-This fixes the problem:
+The effect is, that the bcachefs u128_square() function will pull in the
+libgcc __multi3() helper, which breaks the kernel build when bcachefs is
+built as module since this function isn't currently exported in
+arch/parisc/kernel/parisc_ksyms.c.
+The build failure can be seen in the latest debian kernel build at:
+https://buildd.debian.org/status/fetch.php?pkg=linux&arch=hppa&ver=6.7.1-1%7Eexp1&stamp=1706132569&raw=0
 
-$ bcachefs subvolume delete not-exist-entry
-BCH_IOCTL_SUBVOLUME_DESTROY ioctl error: No such file or directory
-$ bcachefs subvolume delete not-exist-entry
+We prefer to not export that symbol, so fall back to the optional 64-bit
+implementation provided by bcachefs and thus avoid usage of __multi3().
 
-the second will stuck because the parent dir is locked in the previous
-deletion.
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
 
-Signed-off-by: Guoyu Ou <benogy@gmail.com>
----
- fs/bcachefs/fs-ioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
-index 3a4c24c28e7f..3dc8630ff9fe 100644
---- a/fs/bcachefs/fs-ioctl.c
-+++ b/fs/bcachefs/fs-ioctl.c
-@@ -455,6 +455,7 @@ static long bch2_ioctl_subvolume_destroy(struct bch_fs *c, struct file *filp,
- 	if (IS_ERR(victim))
- 		return PTR_ERR(victim);
+diff --git a/fs/bcachefs/mean_and_variance.h b/fs/bcachefs/mean_and_variance.h
+index b2be565bb8f2..64df11ab422b 100644
+--- a/fs/bcachefs/mean_and_variance.h
++++ b/fs/bcachefs/mean_and_variance.h
+@@ -17,7 +17,7 @@
+  * Rust and rustc has issues with u128.
+  */
  
-+	dir = d_inode(path.dentry);
- 	if (victim->d_sb->s_fs_info != c) {
- 		ret = -EXDEV;
- 		goto err;
-@@ -463,14 +464,13 @@ static long bch2_ioctl_subvolume_destroy(struct bch_fs *c, struct file *filp,
- 		ret = -ENOENT;
- 		goto err;
- 	}
--	dir = d_inode(path.dentry);
- 	ret = __bch2_unlink(dir, victim, true);
- 	if (!ret) {
- 		fsnotify_rmdir(dir, victim);
- 		d_delete(victim);
- 	}
--	inode_unlock(dir);
- err:
-+	inode_unlock(dir);
- 	dput(victim);
- 	path_put(&path);
- 	return ret;
--- 
-2.43.0
-
+-#if defined(__SIZEOF_INT128__) && defined(__KERNEL__)
++#if defined(__SIZEOF_INT128__) && defined(__KERNEL__) && !defined(CONFIG_PARISC)
+ 
+ typedef struct {
+ 	unsigned __int128 v;
