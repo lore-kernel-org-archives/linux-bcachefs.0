@@ -1,76 +1,168 @@
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE061FBEB
-	for <linux-bcachefs@vger.kernel.org>; Mon, 29 Jan 2024 03:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79E6657B3
+	for <linux-bcachefs@vger.kernel.org>; Mon, 29 Jan 2024 14:01:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706498122; cv=none; b=BfMsQ6s8LoQlHDCNwXdABZ90lLrQ+bIaHSWMpiMu0yEvQiOiPRICm2OD8ppwuc3b+hCxweq5aISXMsylQXPy+ltYWDM3kyYUUOBtpXxFJMyf/flMDDSuxh+w3eqyQ4Y3RlqCTvuXf505WQlK85ce4254FDTDediQIlTTXs5vFJs=
+	t=1706536880; cv=none; b=cx/ecVaNXIKqama7PqQRV8YwqgzzXI89fMmUZLKxlwppsotTKUoXd3W1gZVd4glBVcx9rDQgp2CHROYLFtTyOsCz9GgZeRoRtCKu5R86fQvrhMbKESEH8ubi1L9sZDr2V5VY6EDfWJ1lwFtBmfZ7PZlakCyooknr6N+5KIzORT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706498122; c=relaxed/simple;
-	bh=pVOAHvV73qtGdWxZfcNjxh4I6MiDu+GVNyz6I0oLcsU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PUWkLel9WkGjHh8UenX7tgphVpxMqz9YmmM/PsGQSV0fWlCKO+FK/FspeIUKDlD+pcgQGNZlT7vaJcUnyuFf0kflpSuiwCfe1z/YiWAi03kipFvna4B+/R3RfOY/2OJNEXhRSGbZ7nwFT7LwhbCnqWA4BeedxHEOZcuAdjLob2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=lQ8Bg0IH; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+	s=arc-20240116; t=1706536880; c=relaxed/simple;
+	bh=jsB6Fb4jKChHeHmoRxJBZsDMl8u82PA/P4RbwHxVqdc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qxxERIvktH1GbvA4oujgSVbYmcIuYAmXl+3xxn6z3UfuBTQBXAUVil11ym+S03qEZtq4jXB/OBgMhL0VzeGaw2FyZWlRj9DVbt8kiim30OyOihpqSjAGnupzWD0M0k99CirAyyF/WHGGn4oZKWu82HAHKZQOCcRd5aa108qh2IM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aHPkzD7Y; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="lQ8Bg0IH"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Mk5nQTMVzK9RF3BMjrBn+c7Qpu4JxyLgRuOAARzpzPU=; b=lQ8Bg0IH8R+mskf/Il6P0zRK8O
-	C3FuKu6giHtF4FS3rytL2wDzi58ydIpf2P1qmCu2g4I1jw3swIwEvS1PxWa7GsoyU/RPGlU8mM7Xa
-	7TWg9EOYkF7LdHE56nOfB16l3TzD44zw1GIOj7rhsGCAouVUBG9zqACRQTDWH00kLBzR6ovZKKYck
-	G9iErUGC7INdsODN6YeZqwKjnAWUT3juVoerWM4WKoR5Fv+l6Lqtc3KmEVGfeNWssLuW+ZfwGsJXl
-	XXMVoBhfnUBogFc8INxMrxVumm35nnSWUGbaLMjRfuV+26vOr10hD08x2Nqo+22TdSagMhOKEJvbp
-	/sTz+mmw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rUI7B-00076N-0M;
-	Mon, 29 Jan 2024 03:15:17 +0000
-Date: Mon, 29 Jan 2024 03:15:17 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Guoyu Ou <benogy@gmail.com>, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: unlock parent dir if entry is not found in
- subvolume deletion
-Message-ID: <20240129031517.GA26059@ZenIV>
-References: <20240128084617.244234-1-benogy@gmail.com>
- <ihz24ycxt7vipgup5din2y4oz74ndekkgwuyckuxnibm5bnyat@t7lggqpno26l>
- <20240129022338.GH2087318@ZenIV>
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aHPkzD7Y"
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d04c0b1cacso11142491fa.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 29 Jan 2024 06:01:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1706536876; x=1707141676; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+kk9KCNAFqv/VBIv/yGuF7QaAZ/PCtsVd4gqpBBURvg=;
+        b=aHPkzD7Yzp+wRQjBe2muatN69q6MbyZDQ5pxLudBvTuxtX3TDW+mmRmgHECmuxE/+D
+         E1X2GSU7601UleAeFm5kz5qtSsWvNA9sWfolnX2yFvpReimZpe4fwIlRn7nxhxIhSF6l
+         h5n6dZZ6YuJtVZFsL8GzxBCsPWvj5+iRySyhwcDXPrrcCqp3J+RboJNdzxbcfjB3lUFY
+         GF6wCmo6D+pOM4MUcTiexEH16G++a7EhOxLsK3DNU6yGNGB8QUJE7I5abrR0pT6rr4sR
+         dmaFdps5D3CJIIFmkuVjAuQcJPaGewXbyf2PJmqDewr/EHI4Bz1UnQx1lShzquvBqGGj
+         gY1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706536876; x=1707141676;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+kk9KCNAFqv/VBIv/yGuF7QaAZ/PCtsVd4gqpBBURvg=;
+        b=MwOaBmCymdZ799c5M9g/epxAjDJamooiV61RPwPD83gQS+kyATUl2A0gnsYBhSBq2d
+         X/pQkY6Anlwzucvooh5iipXuLLSMb0rG/kWBeAVmwFe4I6+3ibgm20pkbZcLfMFSR2nG
+         bzhNnhBx3zzGk13wcrKwnUrJA2DdBaAzwMrNzmO4X/Bo7fvrI34tYOQXAITWZDgPCVod
+         8dTYfnAJxFyVffiLXMnMqBS5RCUKR29PskblHZqQq5P/gvGle+efDlu6B29i3htXwR8i
+         zNkMmkH6OtxZs+8toX/JO58wu3tTYVOulER/K/L6e4/snahrkXpDYDw52Zgh/eimpSC+
+         8iDQ==
+X-Gm-Message-State: AOJu0YyuEK/gcmzpcRyfGHQn+tvzW8Zem6L0xSuahxkbTt/MuGDgqQnC
+	eWuPIRlLOPCigVBRtOC5RRCT4IMHIvj7quNEvJ9G2/KEZyxvmv/OwB78uS0Pa7o=
+X-Google-Smtp-Source: AGHT+IGpb9VKxJR1vLHwUv4xKDtNC0nqzxRwZ4Q0lmfM9SMSXAHAFdb4K05OJ+4cgO5QgMRL4r9JWQ==
+X-Received: by 2002:a2e:8482:0:b0:2cf:1aa1:beaf with SMTP id b2-20020a2e8482000000b002cf1aa1beafmr4013575ljh.42.1706536875760;
+        Mon, 29 Jan 2024 06:01:15 -0800 (PST)
+Received: from localhost.localdomain ([43.228.146.200])
+        by smtp.gmail.com with ESMTPSA id s3-20020a17090330c300b001d8e2618792sm1871900plc.106.2024.01.29.06.01.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 06:01:14 -0800 (PST)
+From: Su Yue <glass.su@suse.com>
+X-Google-Original-From: Su Yue <l@damenly.org>
+To: fstests@vger.kernel.org
+Cc: linux-bcachefs@vger.kernel.org,
+	l@damenly.org,
+	bfoster@redhat.com,
+	Su Yue <glass.su@suse.com>
+Subject: [PATCH v3 1/2] fstests: introduce MKFS_BCACHEFS_PROG for bcachefs
+Date: Mon, 29 Jan 2024 22:00:58 +0800
+Message-ID: <20240129140101.4259-1-l@damenly.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129022338.GH2087318@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 29, 2024 at 02:23:38AM +0000, Al Viro wrote:
-> On Sun, Jan 28, 2024 at 09:21:48PM -0500, Kent Overstreet wrote:
-> 
-> > How do we feel about the following?
-> 
-> No, with side of Fuck, NO.
+From: Su Yue <glass.su@suse.com>
 
-To elaborate a bit: that essentially introduces a new type (mount/dentry
-pair, possibly locked) *and* converts existing instances of struct path
-(file->f_path, mount->mnt_mountpoint, etc.) to that.  Suddenly we get
-an extra constraint that needs to be verified - "no long-term struct
-path instance with ->locked being true".  What's more, currently
-one can do
-	v = *p;
-	path_get(&v);
-	...
-	path_put(&v);
-with eventual
-	path_put(p);
-possibly from another thread.  Every place like that needs a proof that
-we can't possibly get there with p->locked being true.
+mkfs.bcachefs supports force overwrite when option '-f' is given:
+$ mkfs.bcachefs --help | grep force
+  -f, --force
 
-There's a lot of other reasons why that's a really bad idea.  Seriously,
-let's not go there.
+There are some tests which call _scratch_mkfs multiple times
+e.g. tests/generic/171. Without '-f' in MKFS_OPTIONS,
+these tests just hang in overwrite confirmation.
+After this commit, MKFS_BCACHEFS_PROG will contains ' -f' so
+we don't have to add '-f' to MKFS_OPTIONS manually to make
+these tests pass.
+
+It also fixes generic/466 which unsets MKFS_OPTIONS causing
+that test hangs in mfks.bcachefs waiting for confirmation of
+the force overwrite.
+
+Signed-off-by: Su Yue <glass.su@suse.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
+---
+changelog:
+v3:
+    Add Brian's Reviewed-by.
+v2:
+    Add more details about why MKFS_BCACHEFS_PROG should contain '-f'.
+    
+ common/config |  3 ++-
+ common/rc     | 12 +++++++++---
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/common/config b/common/config
+index c9771ff934cb..1f9edceec57a 100644
+--- a/common/config
++++ b/common/config
+@@ -105,7 +105,7 @@ set_mkfs_prog_path_with_opts()
+ 	# Note: mkfs.f2fs doesn't support the --help option yet, but it doesn't
+ 	# matter since it also prints the help when an invalid option is given.
+ 	if [ "$p" != "" ] && \
+-		$p --help |& grep -q "[[:space:]]-f[[:space:]|]"; then
++		$p --help |& grep -q "[[:space:]]-f[[:space:]|,]"; then
+ 		echo "$p -f"
+ 	else
+ 		echo $p
+@@ -313,6 +313,7 @@ export MKFS_REISER4_PROG=$(type -P mkfs.reiser4)
+ export E2FSCK_PROG=$(type -P e2fsck)
+ export TUNE2FS_PROG=$(type -P tune2fs)
+ export FSCK_OVERLAY_PROG=$(type -P fsck.overlay)
++export MKFS_BCACHEFS_PROG=$(set_mkfs_prog_path_with_opts bcachefs)
+ 
+ # SELinux adds extra xattrs which can mess up our expected output.
+ # So, mount with a context, and they won't be created.
+diff --git a/common/rc b/common/rc
+index 524ffa02aa6a..31c21d2a8360 100644
+--- a/common/rc
++++ b/common/rc
+@@ -611,6 +611,9 @@ _test_mkfs()
+     xfs)
+ 	$MKFS_PROG -t $FSTYP -- -f $MKFS_OPTIONS $* $TEST_DEV
+ 	;;
++    bcachefs)
++    $MKFS_BCACHEFS_PROG $MKFS_OPTIONS $* $TEST_DEV > /dev/null
++	;;
+     *)
+ 	yes | $MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS $* $TEST_DEV
+ 	;;
+@@ -753,6 +756,10 @@ _scratch_mkfs()
+ 		mkfs_cmd="yes | $MKFS_PROG -t $FSTYP --"
+ 		mkfs_filter="grep -v -e ^mkfs\.ocfs2"
+ 		;;
++    bcachefs)
++		mkfs_cmd="$MKFS_BCACHEFS_PROG"
++		mkfs_filter="cat"
++		;;
+ 	*)
+ 		mkfs_cmd="yes | $MKFS_PROG -t $FSTYP --"
+ 		mkfs_filter="cat"
+@@ -1044,7 +1051,7 @@ _scratch_mkfs_sized()
+ 		export MOUNT_OPTIONS="-o size=$fssize $TMPFS_MOUNT_OPTIONS"
+ 		;;
+ 	bcachefs)
+-		$MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS --fs_size=$fssize --block_size=$blocksize $SCRATCH_DEV
++		$MKFS_BCACHEFS_PROG $MKFS_OPTIONS --fs_size=$fssize --block_size=$blocksize $SCRATCH_DEV
+ 		;;
+ 	*)
+ 		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized"
+@@ -1128,8 +1135,7 @@ _scratch_mkfs_blocksized()
+ 						-C $blocksize $SCRATCH_DEV
+ 		;;
+ 	bcachefs)
+-		${MKFS_PROG} -t $FSTYP $MKFS_OPTIONS --block_size=$blocksize \
+-								$SCRATCH_DEV
++		_scratch_mkfs --block_size=$blocksize
+ 		;;
+ 	udf)
+ 		_scratch_mkfs -b $blocksize
+-- 
+2.43.0
+
