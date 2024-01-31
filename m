@@ -1,320 +1,150 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56056158D85;
-	Tue, 30 Jan 2024 18:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63AD080C0F
+	for <linux-bcachefs@vger.kernel.org>; Wed, 31 Jan 2024 14:11:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706638869; cv=none; b=GsZN1qe8dFbLYL5NCtLN5yw0EaltNMYXrkiiZwepEvKYF2osQaC46Jr88CDCJdjD5YW2AnwsNu/PZztfsVk84zJuV4prNorGAANhSy/Y5AZ/m/qeAyJzPg8EBcncGUTQnCEgswg3OvO9F8ZlyRlGX4fqWYyO1BkYh07Tdy0Rvwk=
+	t=1706710315; cv=none; b=hushtBqeu4LptCoo5VVE5YT5a8v4RL41E2dOGWdsyqvbXhI0CPmzBofTRBBnCR9Ad15ax42DYtW1Eo9mgbASSO6DA6+wGzP90t0d7UrC61mWHfPHYQkctLA9E9CckFoIUvTy7YAo/TeYo61ZrO/84ZAlRRl7yy9L6itExJqry04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706638869; c=relaxed/simple;
-	bh=o8+KFDEHXK0m0UWTRZP+oopOaFtdMnmhqSxrKUL/onc=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=N716+FNc1DeZviwPlVGohYzKWfQAR6v0SZ43VvMXvef6E8a2yus8bVf/td8cflwaFM6kC/t/aJKiXM7RUy5gxUvaZZWJIU2/qHfr8EOCHdI14xSQXrBrhfSQ7IzdXwZJDsaalt/GW4DwG5PqA/hkSXb1i4i/fFQszpXXA9XrGH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VXgPFVyw; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1706710315; c=relaxed/simple;
+	bh=rVR7BNBZBtNMx2j/+oKZJxghwXHKX9iut7QXMbHxjN8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H6aqEGB2Tt23IXNtwD0BcEe/2T+Aej3Dedh9f/Hc6ndhhF6IcqnfHJio0DAqaxWK6hyMKapQkvRL+i11U1hQEwThvnjjMB7CYwGV+BRZbMRw6Nug02A0rF1o0viIYPXWtM7jElox3NlTY6WhhS5ifgZTQZfwszegYVf5SHCHywU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fvRl8yXR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VXgPFVyw"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706638867; x=1738174867;
-  h=date:from:to:cc:subject:message-id;
-  bh=o8+KFDEHXK0m0UWTRZP+oopOaFtdMnmhqSxrKUL/onc=;
-  b=VXgPFVywiUKkwsUTToDaYYflc5Uoqv+8EPKvO/zCVNC8YFQo/Am6kDVa
-   uZTL8+8FPB8LoEu05uZXPnTNLZ5iM2xHuHOBTwG2ufj3n6Q5fL7wJ2CQP
-   /eeG/bWKxGO6MGqz2oDhuF+1cQtbO64b3B6HmQ7HU4SxQ4seWR0WMjQ7h
-   CBxxsM8zKQawhNwYKvhcMek0KgsdjvsJP9vE6c7hdxJjhhZkhQOfW43AP
-   N1SJnrKFQCtXVLnDmMmXH7y+g6uvTbBKxf4KoWMUWkkGibZGZ5snVRlFZ
-   Jd7gUkFZVaeZxMsZYTILTjyF4F/w/R1DhMhJhR53QLgnQmvoif5RXKwfk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="2298591"
-X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="2298591"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 10:21:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
-   d="scan'208";a="3782940"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orviesa003.jf.intel.com with ESMTP; 30 Jan 2024 10:21:03 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rUsjE-0000gQ-2f;
-	Tue, 30 Jan 2024 18:21:00 +0000
-Date: Wed, 31 Jan 2024 02:20:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- linux-usb@vger.kernel.org, ntfs3@lists.linux.dev
-Subject: [linux-next:master] BUILD REGRESSION
- 41d66f96d0f15a0a2ad6fa2208f6bac1a66cbd52
-Message-ID: <202401310219.t9eXMTcG-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fvRl8yXR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706710312;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AMjcP4lz0fQtJiuXGiD0XLKEQG2nHpsVAsiofujyr0U=;
+	b=fvRl8yXRBcgQ2qxuA8ChkdwclnmPbeIzK+COmRH8pUpEWIlPExY1eOiG0kM1tK/HSmqWlt
+	MO8vfCvI0dqysnQyxWRENHnp1lpmptvicSji2FFMdo/2RB0mGH1uOHbsRSp43HrNWSVP6r
+	5BvyrLjmnEVGrV0vcTbospr9jNqbtHA=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-377-apwUABmkM1K-GOL4titjeQ-1; Wed, 31 Jan 2024 09:11:48 -0500
+X-MC-Unique: apwUABmkM1K-GOL4titjeQ-1
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5ce67a3f275so3713089a12.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 31 Jan 2024 06:11:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706710307; x=1707315107;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AMjcP4lz0fQtJiuXGiD0XLKEQG2nHpsVAsiofujyr0U=;
+        b=prjmUeeLAOeqRILvequLtIA9CTHqV/U/Wv4XKL9jNALqdzZ3Nv3PUsNESbxecA6WGH
+         xp78Sirid6k5MIorYuQCQEytZkCUk7aCadrKMEKGTAufFCLicD0yepsXi7QUuagcn+Vy
+         /2ZnWQ77lQSeKqS/hfLbmAMyGHmxlCg9AFM9JrC/EBNG+JwTpUdVMAOH82A/Gg3uO6Ns
+         m/cH5LnJ0fb4eXsq3e7w4jw3YPTzPkTuANVzVyMSMgSP/DtD7Lrj5Z/hJ5mqE7cXESSJ
+         eQ8p1NxoAoBSy/xTOEktqFHYTzYdogE2HANlXzkxi6c08eVIbE0KAeZG8Z2dC483qhrG
+         EXGg==
+X-Gm-Message-State: AOJu0YxpqvI/9OcIDKJRtJSS8CDEXBDi1UO1E+9nP6loZTKNKU8vukLu
+	Uns+6GhB2wLYBS23CPgj/58TuHUmuR/vTn8UDiRiGfJwoVRX/+jX0KrvGnuybiMqPpS1mqRwXnQ
+	5QbTFVg1jGmu9THTDt3YU33ydXQOoGYiXFWSd5mZkvsTHLjcatvjEPKEMW5LEp1trOMOzFXCXgY
+	M=
+X-Received: by 2002:a05:6a21:32a3:b0:19c:a988:24b9 with SMTP id yt35-20020a056a2132a300b0019ca98824b9mr1904612pzb.25.1706710307502;
+        Wed, 31 Jan 2024 06:11:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHzo2Qd33nCbPvMgXORy+rq2hkew1ZZjh96/HTu6onc924vg6puW7DvQgM4aOjCuH1JYiMreg==
+X-Received: by 2002:a05:6a21:32a3:b0:19c:a988:24b9 with SMTP id yt35-20020a056a2132a300b0019ca98824b9mr1904588pzb.25.1706710307199;
+        Wed, 31 Jan 2024 06:11:47 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV6cTZZXe+vFjg1zlwg73JXpM1OTkI9xZKxCMJIMNOUsryu+JOD3rAVbd7/UF9mZ5DHMUM4bDaDKs7Xxp86myrMBIUKCarLVLZP2qg7RlJTNhAm6sDvPO1kZxQiWE4saEqf4wwaMtpjqpbNmbz7tOEPDw==
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id x7-20020a636307000000b005c259cef481sm10526630pgb.59.2024.01.31.06.11.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 06:11:46 -0800 (PST)
+Date: Wed, 31 Jan 2024 22:11:43 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Su Yue <glass.su@suse.com>
+Cc: fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org, l@damenly.org,
+	bfoster@redhat.com
+Subject: Re: [PATCH v4 2/2] common/rc: improve block_size support for bcachefs
+Message-ID: <20240131141143.st3gpqn4iivdyfey@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20240129235104.8976-1-l@damenly.org>
+ <20240129235104.8976-2-l@damenly.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129235104.8976-2-l@damenly.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 41d66f96d0f15a0a2ad6fa2208f6bac1a66cbd52  Add linux-next specific files for 20240130
+On Tue, Jan 30, 2024 at 07:51:04AM +0800, Su Yue wrote:
+> From: Su Yue <glass.su@suse.com>
+> 
+> mkfs.bcachefs now supports option '--block_size' to allow
+> custom block_size.
+> 
+> Add the pattern to set def_blksz if MKFS_OPTIONS contains the
+> option in _scratch_mkfs_sized.
+> Also let mkfs.bcachefs decide blocksize if no option is given in
+> MKFS_OPTIONS or _scratch_mkfs_sized parameter.
+> 
+> Signed-off-by: Su Yue <glass.su@suse.com>
+> ---
+> changelog:
+> v4:
+>     Respect block_size in MKFS_OPTIONS. 
+> v3:
+>     Add logic to Let mkfs.bcachefs decide blocksize if no option is given in
+>     local.config or _scratch_mkfs_sized parameter.
+> v2:
+>     Born.
+> ---
 
-Error/Warning reports:
+Thanks for helping fstests to support bcachefs better, feel
+free to send more patches for bcachefs testing.
 
-https://lore.kernel.org/oe-kbuild-all/202401302044.TYqzwNmq-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202401302054.sXdwijhd-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202401302130.Zw501PI9-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202401302158.oKXhk0gV-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202401302359.PL3jJegi-lkp@intel.com
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-Error/Warning: (recently discovered and may have been fixed)
+>  common/rc | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/common/rc b/common/rc
+> index 31c21d2a8360..315a2413f963 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -930,6 +930,7 @@ _scratch_mkfs_sized()
+>  	local fssize=$1
+>  	local blocksize=$2
+>  	local def_blksz
+> +	local blocksize_opt
+>  
+>  	case $FSTYP in
+>  	xfs)
+> @@ -950,6 +951,13 @@ _scratch_mkfs_sized()
+>  	jfs)
+>  		def_blksz=4096
+>  		;;
+> +	bcachefs)
+> +		def_blksz=`echo $MKFS_OPTIONS | sed -rn 's/.*(--block_size)[ =]?+([0-9]+).*/\2/p'`
+> +		[ -n "$blocksize" ] && blocksize_opt="--block_size=$blocksize"
+> +		[ -n "$def_blksize" ] && blocksize_opt="--block_size=$def_blksize"
+> +		# If no block size is given by local.confg or parameter, blocksize_opt is empty.
+> +		# Let MKFS_BCACHEFS_PROG decide block size on its own.
+> +		;;
+>  	esac
+>  
+>  	[ -n "$def_blksz" ] && blocksize=$def_blksz
+> @@ -1051,7 +1059,7 @@ _scratch_mkfs_sized()
+>  		export MOUNT_OPTIONS="-o size=$fssize $TMPFS_MOUNT_OPTIONS"
+>  		;;
+>  	bcachefs)
+> -		$MKFS_BCACHEFS_PROG $MKFS_OPTIONS --fs_size=$fssize --block_size=$blocksize $SCRATCH_DEV
+> +		$MKFS_BCACHEFS_PROG $MKFS_OPTIONS --fs_size=$fssize $blocksize_opt $SCRATCH_DEV
+>  		;;
+>  	*)
+>  		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized"
+> -- 
+> 2.43.0
+> 
+> 
 
-Warning: Documentation/gpu/amdgpu/display/display-contributing.rst references a file that doesn't exist: Documentation/GPU/amdgpu/display/mpo-overview.rst
-fs/ntfs3/frecord.c:2460:16: warning: unused variable 'i_size' [-Wunused-variable]
-
-Unverified Error/Warning (likely false positive, please contact us if interested):
-
-drivers/usb/typec/ucsi/ucsi_acpi.c:174 ucsi_dell_sync_write() warn: missing error code? 'ret'
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- arm-allmodconfig
-|   |-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_CYCLIC-not-described-in-enum-atc_status
-|   `-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_PAUSED-not-described-in-enum-atc_status
-|-- arm-allyesconfig
-|   |-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_CYCLIC-not-described-in-enum-atc_status
-|   `-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_PAUSED-not-described-in-enum-atc_status
-|-- i386-randconfig-061-20240130
-|   `-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-sum-got-unsigned-int-assigned-csum
-|-- i386-randconfig-062-20240130
-|   `-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-sum-got-unsigned-int-assigned-csum
-|-- i386-randconfig-141-20240130
-|   |-- fs-bcachefs-btree_locking.c-bch2_trans_relock()-warn:passing-zero-to-PTR_ERR
-|   |-- fs-bcachefs-buckets.c-bch2_trans_account_disk_usage_change()-error:we-previously-assumed-trans-disk_res-could-be-null-(see-line-)
-|   `-- mm-huge_memory.c-thpsize_create()-warn:Calling-kobject_put-get-with-state-initialized-unset-from-line:
-|-- loongarch-randconfig-r113-20240129
-|   |-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-__s-got-unsigned-char-noderef-usertype-__rcu-new
-|   |-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-__to-got-unsigned-char-noderef-usertype-__rcu-new
-|   `-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-__from-got-unsigned-char-noderef-usertype-__rcu-old
-|-- mips-allyesconfig
-|   |-- (.ref.text):relocation-truncated-to-fit:R_MIPS_26-against-start_secondary
-|   `-- (.text):relocation-truncated-to-fit:R_MIPS_26-against-kernel_entry
-|-- parisc-randconfig-r133-20240130
-|   `-- drivers-regulator-qcom_smd-regulator.c:sparse:sparse:symbol-smd_vreg_rpm-was-not-declared.-Should-it-be-static
-|-- sh-allmodconfig
-|   `-- standard-input:Error:unknown-pseudo-op:cfi_def_
-|-- sh-randconfig-r023-20220313
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- x86_64-allnoconfig
-|   `-- Warning:Documentation-gpu-amdgpu-display-display-contributing.rst-references-a-file-that-doesn-t-exist:Documentation-GPU-amdgpu-display-mpo-overview.rst
-`-- x86_64-randconfig-161-20240130
-    |-- drivers-usb-typec-ucsi-ucsi_acpi.c-ucsi_dell_sync_write()-warn:missing-error-code-ret
-    `-- mm-huge_memory.c-thpsize_create()-warn:Calling-kobject_put-get-with-state-initialized-unset-from-line:
-clang_recent_errors
-|-- arm-defconfig
-|   |-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_CYCLIC-not-described-in-enum-atc_status
-|   `-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_PAUSED-not-described-in-enum-atc_status
-|-- x86_64-randconfig-002-20240130
-|   `-- error-E0425:cannot-find-value-WORK_CPU_UNBOUND-in-crate-bindings
-|-- x86_64-randconfig-005-20240130
-|   `-- error-E0425:cannot-find-value-WORK_CPU_UNBOUND-in-crate-bindings
-|-- x86_64-randconfig-121-20240130
-|   `-- fs-ntfs3-fslog.c:sparse:sparse:restricted-__le32-degrades-to-integer
-|-- x86_64-randconfig-122-20240130
-|   |-- drivers-usb-cdns3-cdns3-gadget.c:sparse:sparse:restricted-__le32-degrades-to-integer
-|   |-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
-|   `-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-q-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
-|-- x86_64-randconfig-123-20240130
-|   `-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
-`-- x86_64-rhel-8.3-rust
-    `-- error-E0425:cannot-find-value-WORK_CPU_UNBOUND-in-crate-bindings
-
-elapsed time: 846m
-
-configs tested: 176
-configs skipped: 4
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                 nsimosci_hs_smp_defconfig   gcc  
-arc                   randconfig-001-20240130   gcc  
-arc                   randconfig-002-20240130   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240130   gcc  
-arm                   randconfig-002-20240130   gcc  
-arm                   randconfig-003-20240130   gcc  
-arm                   randconfig-004-20240130   gcc  
-arm64                            alldefconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240130   gcc  
-arm64                 randconfig-002-20240130   gcc  
-arm64                 randconfig-003-20240130   gcc  
-arm64                 randconfig-004-20240130   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240130   gcc  
-csky                  randconfig-002-20240130   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240130   clang
-hexagon               randconfig-002-20240130   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20240130   gcc  
-i386         buildonly-randconfig-002-20240130   gcc  
-i386         buildonly-randconfig-003-20240130   gcc  
-i386         buildonly-randconfig-004-20240130   gcc  
-i386         buildonly-randconfig-005-20240130   gcc  
-i386         buildonly-randconfig-006-20240130   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20240130   gcc  
-i386                  randconfig-002-20240130   gcc  
-i386                  randconfig-003-20240130   gcc  
-i386                  randconfig-004-20240130   gcc  
-i386                  randconfig-005-20240130   gcc  
-i386                  randconfig-006-20240130   gcc  
-i386                  randconfig-011-20240130   clang
-i386                  randconfig-012-20240130   clang
-i386                  randconfig-013-20240130   clang
-i386                  randconfig-014-20240130   clang
-i386                  randconfig-015-20240130   clang
-i386                  randconfig-016-20240130   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240130   gcc  
-loongarch             randconfig-002-20240130   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5275evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-mips                       lemote2f_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240130   gcc  
-nios2                 randconfig-002-20240130   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                  or1klitex_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240130   gcc  
-parisc                randconfig-002-20240130   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                    gamecube_defconfig   clang
-powerpc                  iss476-smp_defconfig   gcc  
-powerpc                 mpc8313_rdb_defconfig   clang
-powerpc                    mvme5100_defconfig   clang
-powerpc               randconfig-001-20240130   gcc  
-powerpc               randconfig-002-20240130   gcc  
-powerpc               randconfig-003-20240130   gcc  
-powerpc                  storcenter_defconfig   gcc  
-powerpc                     tqm5200_defconfig   clang
-powerpc64             randconfig-001-20240130   gcc  
-powerpc64             randconfig-002-20240130   gcc  
-powerpc64             randconfig-003-20240130   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20240130   gcc  
-riscv                 randconfig-002-20240130   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20240130   clang
-s390                  randconfig-002-20240130   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         apsh4a3a_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240130   gcc  
-sh                    randconfig-002-20240130   gcc  
-sh                           se7780_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240130   gcc  
-sparc64               randconfig-002-20240130   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240130   gcc  
-um                    randconfig-002-20240130   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240130   gcc  
-x86_64       buildonly-randconfig-002-20240130   gcc  
-x86_64       buildonly-randconfig-003-20240130   gcc  
-x86_64       buildonly-randconfig-004-20240130   gcc  
-x86_64       buildonly-randconfig-005-20240130   gcc  
-x86_64       buildonly-randconfig-006-20240130   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240130   clang
-x86_64                randconfig-002-20240130   clang
-x86_64                randconfig-003-20240130   clang
-x86_64                randconfig-004-20240130   clang
-x86_64                randconfig-005-20240130   clang
-x86_64                randconfig-006-20240130   clang
-x86_64                randconfig-011-20240130   gcc  
-x86_64                randconfig-012-20240130   gcc  
-x86_64                randconfig-013-20240130   gcc  
-x86_64                randconfig-014-20240130   gcc  
-x86_64                randconfig-015-20240130   gcc  
-x86_64                randconfig-016-20240130   gcc  
-x86_64                randconfig-071-20240130   gcc  
-x86_64                randconfig-072-20240130   gcc  
-x86_64                randconfig-073-20240130   gcc  
-x86_64                randconfig-074-20240130   gcc  
-x86_64                randconfig-075-20240130   gcc  
-x86_64                randconfig-076-20240130   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                       common_defconfig   gcc  
-xtensa                randconfig-001-20240130   gcc  
-xtensa                randconfig-002-20240130   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
