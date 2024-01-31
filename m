@@ -1,150 +1,392 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63AD080C0F
-	for <linux-bcachefs@vger.kernel.org>; Wed, 31 Jan 2024 14:11:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 062A583CAA;
+	Wed, 31 Jan 2024 14:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706710315; cv=none; b=hushtBqeu4LptCoo5VVE5YT5a8v4RL41E2dOGWdsyqvbXhI0CPmzBofTRBBnCR9Ad15ax42DYtW1Eo9mgbASSO6DA6+wGzP90t0d7UrC61mWHfPHYQkctLA9E9CckFoIUvTy7YAo/TeYo61ZrO/84ZAlRRl7yy9L6itExJqry04=
+	t=1706712042; cv=none; b=aahN5xZ6ge5Qi/Gk1RN5vY1gp7J6TP1rTz37/EtvuQ0XhJZ0AyJ5/oARbuYW7bdrA85ruOqb+8Edk9bsiAk/oCYswSQUr0eqHO17ejZ3wqbXXTX+Q+8njgSi/TxRVNN+0zgU/7Hql9bDNTtBY0iOWayGXQKCHUmtd+O0+ySkCSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706710315; c=relaxed/simple;
-	bh=rVR7BNBZBtNMx2j/+oKZJxghwXHKX9iut7QXMbHxjN8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H6aqEGB2Tt23IXNtwD0BcEe/2T+Aej3Dedh9f/Hc6ndhhF6IcqnfHJio0DAqaxWK6hyMKapQkvRL+i11U1hQEwThvnjjMB7CYwGV+BRZbMRw6Nug02A0rF1o0viIYPXWtM7jElox3NlTY6WhhS5ifgZTQZfwszegYVf5SHCHywU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fvRl8yXR; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1706712042; c=relaxed/simple;
+	bh=JzDKV/e525CLow2aSr7kvC01CJp0vYxWBR4UV8y0kT8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=jDbP2nJrqGK7GFnrPNXHgaAdL4bduKjJS9ZykZr2i+r9YJIoLj0hEp/LFsh+xQj4mylhJFzLwC62Z/iG9grFuehW8dFWY28B054QblxHFogZohO2dREioPI0H4s2kPz5YYmUSQt354PMD3x0MCEEG1zuFCE54Q5eKB/5qA4OZww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iwHc1IiM; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fvRl8yXR"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706710312;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AMjcP4lz0fQtJiuXGiD0XLKEQG2nHpsVAsiofujyr0U=;
-	b=fvRl8yXRBcgQ2qxuA8ChkdwclnmPbeIzK+COmRH8pUpEWIlPExY1eOiG0kM1tK/HSmqWlt
-	MO8vfCvI0dqysnQyxWRENHnp1lpmptvicSji2FFMdo/2RB0mGH1uOHbsRSp43HrNWSVP6r
-	5BvyrLjmnEVGrV0vcTbospr9jNqbtHA=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-377-apwUABmkM1K-GOL4titjeQ-1; Wed, 31 Jan 2024 09:11:48 -0500
-X-MC-Unique: apwUABmkM1K-GOL4titjeQ-1
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5ce67a3f275so3713089a12.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 31 Jan 2024 06:11:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706710307; x=1707315107;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AMjcP4lz0fQtJiuXGiD0XLKEQG2nHpsVAsiofujyr0U=;
-        b=prjmUeeLAOeqRILvequLtIA9CTHqV/U/Wv4XKL9jNALqdzZ3Nv3PUsNESbxecA6WGH
-         xp78Sirid6k5MIorYuQCQEytZkCUk7aCadrKMEKGTAufFCLicD0yepsXi7QUuagcn+Vy
-         /2ZnWQ77lQSeKqS/hfLbmAMyGHmxlCg9AFM9JrC/EBNG+JwTpUdVMAOH82A/Gg3uO6Ns
-         m/cH5LnJ0fb4eXsq3e7w4jw3YPTzPkTuANVzVyMSMgSP/DtD7Lrj5Z/hJ5mqE7cXESSJ
-         eQ8p1NxoAoBSy/xTOEktqFHYTzYdogE2HANlXzkxi6c08eVIbE0KAeZG8Z2dC483qhrG
-         EXGg==
-X-Gm-Message-State: AOJu0YxpqvI/9OcIDKJRtJSS8CDEXBDi1UO1E+9nP6loZTKNKU8vukLu
-	Uns+6GhB2wLYBS23CPgj/58TuHUmuR/vTn8UDiRiGfJwoVRX/+jX0KrvGnuybiMqPpS1mqRwXnQ
-	5QbTFVg1jGmu9THTDt3YU33ydXQOoGYiXFWSd5mZkvsTHLjcatvjEPKEMW5LEp1trOMOzFXCXgY
-	M=
-X-Received: by 2002:a05:6a21:32a3:b0:19c:a988:24b9 with SMTP id yt35-20020a056a2132a300b0019ca98824b9mr1904612pzb.25.1706710307502;
-        Wed, 31 Jan 2024 06:11:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHzo2Qd33nCbPvMgXORy+rq2hkew1ZZjh96/HTu6onc924vg6puW7DvQgM4aOjCuH1JYiMreg==
-X-Received: by 2002:a05:6a21:32a3:b0:19c:a988:24b9 with SMTP id yt35-20020a056a2132a300b0019ca98824b9mr1904588pzb.25.1706710307199;
-        Wed, 31 Jan 2024 06:11:47 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV6cTZZXe+vFjg1zlwg73JXpM1OTkI9xZKxCMJIMNOUsryu+JOD3rAVbd7/UF9mZ5DHMUM4bDaDKs7Xxp86myrMBIUKCarLVLZP2qg7RlJTNhAm6sDvPO1kZxQiWE4saEqf4wwaMtpjqpbNmbz7tOEPDw==
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id x7-20020a636307000000b005c259cef481sm10526630pgb.59.2024.01.31.06.11.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 06:11:46 -0800 (PST)
-Date: Wed, 31 Jan 2024 22:11:43 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Su Yue <glass.su@suse.com>
-Cc: fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org, l@damenly.org,
-	bfoster@redhat.com
-Subject: Re: [PATCH v4 2/2] common/rc: improve block_size support for bcachefs
-Message-ID: <20240131141143.st3gpqn4iivdyfey@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20240129235104.8976-1-l@damenly.org>
- <20240129235104.8976-2-l@damenly.org>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iwHc1IiM"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706712040; x=1738248040;
+  h=date:from:to:cc:subject:message-id;
+  bh=JzDKV/e525CLow2aSr7kvC01CJp0vYxWBR4UV8y0kT8=;
+  b=iwHc1IiMdjLvyQJs8Dao1IzhaJamSZKW/Ypmse/76VhGnqULShhsSPgA
+   /bg0wKyLYsj/zAQHNsSVzhLepFv8JtmHQ+7Slo2E4ppLV87S08+wE3ioi
+   h+vl/8+1bByMc17zKJzwRcaKqRzpvQhj69ctRY0sfibCA2Ea3MZPCb6zB
+   +f/7HoXR5tFx4igvjHb0QAlAPdfnZhxp6ZjshUSKFTB5qbboVOQbMSAKB
+   YRLEdtyDPY/IuJibqHm1UpYUO1ol1IaKlglxRpmu+IBUJz7N+owMd2dWV
+   hLjZ5LZUf1PyW6+KOkA0MJg+2C9Mi1QqBYEWlc+VTuUa29ZgtzuxvaKqZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3453367"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="3453367"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 06:40:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="4077211"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by orviesa003.jf.intel.com with ESMTP; 31 Jan 2024 06:40:36 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rVBlQ-0001dU-17;
+	Wed, 31 Jan 2024 14:40:32 +0000
+Date: Wed, 31 Jan 2024 22:39:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+ ntfs3@lists.linux.dev
+Subject: [linux-next:master] BUILD REGRESSION
+ 06f658aadff0e483ee4f807b0b46c9e5cba62bfa
+Message-ID: <202401312230.etMTMMa8-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129235104.8976-2-l@damenly.org>
 
-On Tue, Jan 30, 2024 at 07:51:04AM +0800, Su Yue wrote:
-> From: Su Yue <glass.su@suse.com>
-> 
-> mkfs.bcachefs now supports option '--block_size' to allow
-> custom block_size.
-> 
-> Add the pattern to set def_blksz if MKFS_OPTIONS contains the
-> option in _scratch_mkfs_sized.
-> Also let mkfs.bcachefs decide blocksize if no option is given in
-> MKFS_OPTIONS or _scratch_mkfs_sized parameter.
-> 
-> Signed-off-by: Su Yue <glass.su@suse.com>
-> ---
-> changelog:
-> v4:
->     Respect block_size in MKFS_OPTIONS. 
-> v3:
->     Add logic to Let mkfs.bcachefs decide blocksize if no option is given in
->     local.config or _scratch_mkfs_sized parameter.
-> v2:
->     Born.
-> ---
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 06f658aadff0e483ee4f807b0b46c9e5cba62bfa  Add linux-next specific files for 20240131
 
-Thanks for helping fstests to support bcachefs better, feel
-free to send more patches for bcachefs testing.
+Error/Warning reports:
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+https://lore.kernel.org/oe-kbuild-all/202401311655.FJYxii3p-lkp@intel.com
 
->  common/rc | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/common/rc b/common/rc
-> index 31c21d2a8360..315a2413f963 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -930,6 +930,7 @@ _scratch_mkfs_sized()
->  	local fssize=$1
->  	local blocksize=$2
->  	local def_blksz
-> +	local blocksize_opt
->  
->  	case $FSTYP in
->  	xfs)
-> @@ -950,6 +951,13 @@ _scratch_mkfs_sized()
->  	jfs)
->  		def_blksz=4096
->  		;;
-> +	bcachefs)
-> +		def_blksz=`echo $MKFS_OPTIONS | sed -rn 's/.*(--block_size)[ =]?+([0-9]+).*/\2/p'`
-> +		[ -n "$blocksize" ] && blocksize_opt="--block_size=$blocksize"
-> +		[ -n "$def_blksize" ] && blocksize_opt="--block_size=$def_blksize"
-> +		# If no block size is given by local.confg or parameter, blocksize_opt is empty.
-> +		# Let MKFS_BCACHEFS_PROG decide block size on its own.
-> +		;;
->  	esac
->  
->  	[ -n "$def_blksz" ] && blocksize=$def_blksz
-> @@ -1051,7 +1059,7 @@ _scratch_mkfs_sized()
->  		export MOUNT_OPTIONS="-o size=$fssize $TMPFS_MOUNT_OPTIONS"
->  		;;
->  	bcachefs)
-> -		$MKFS_BCACHEFS_PROG $MKFS_OPTIONS --fs_size=$fssize --block_size=$blocksize $SCRATCH_DEV
-> +		$MKFS_BCACHEFS_PROG $MKFS_OPTIONS --fs_size=$fssize $blocksize_opt $SCRATCH_DEV
->  		;;
->  	*)
->  		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized"
-> -- 
-> 2.43.0
-> 
-> 
+Error/Warning: (recently discovered and may have been fixed)
 
+error[E0425]: cannot find value `WORK_CPU_UNBOUND` in crate `bindings`
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arc-randconfig-001-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- arm-allmodconfig
+|   |-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_CYCLIC-not-described-in-enum-atc_status
+|   `-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_PAUSED-not-described-in-enum-atc_status
+|-- arm-allyesconfig
+|   |-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_CYCLIC-not-described-in-enum-atc_status
+|   `-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_PAUSED-not-described-in-enum-atc_status
+|-- i386-randconfig-012-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-013-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- mips-allyesconfig
+|   |-- (.ref.text):relocation-truncated-to-fit:R_MIPS_26-against-start_secondary
+|   `-- (.text):relocation-truncated-to-fit:R_MIPS_26-against-kernel_entry
+|-- nios2-randconfig-001-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- parisc-randconfig-002-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- powerpc64-randconfig-r132-20240131
+|   |-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-sum-got-unsigned-int-assigned-csum
+|   `-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
+|-- powerpc64-randconfig-r133-20240131
+|   |-- fs-ntfs3-fslog.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   |-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
+|   `-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-q-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
+|-- sh-allmodconfig
+|   `-- standard-input:Error:unknown-pseudo-op:cfi_def_
+|-- sh-randconfig-001-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- sparc-randconfig-001-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- sparc-randconfig-r112-20240131
+|   `-- drivers-regulator-qcom_smd-regulator.c:sparse:sparse:symbol-smd_vreg_rpm-was-not-declared.-Should-it-be-static
+|-- sparc-randconfig-r131-20240131
+|   |-- drivers-regulator-qcom_smd-regulator.c:sparse:sparse:symbol-smd_vreg_rpm-was-not-declared.-Should-it-be-static
+|   |-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|   |-- fs-ntfs3-fslog.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   `-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-sum-got-unsigned-int-assigned-csum
+|-- sparc64-randconfig-002-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- sparc64-randconfig-r051-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-allnoconfig
+|   `-- Warning:Documentation-gpu-amdgpu-display-display-contributing.rst-references-a-file-that-doesn-t-exist:Documentation-GPU-amdgpu-display-mpo-overview.rst
+|-- x86_64-randconfig-005-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-006-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-121-20240131
+|   |-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
+|   `-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-q-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
+|-- xtensa-randconfig-001-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+`-- xtensa-randconfig-r122-20240131
+    `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+clang_recent_errors
+|-- arm-defconfig
+|   |-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_CYCLIC-not-described-in-enum-atc_status
+|   `-- drivers-dma-at_hdmac.c:warning:Enum-value-ATC_IS_PAUSED-not-described-in-enum-atc_status
+|-- arm64-randconfig-002-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- arm64-randconfig-r053-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- arm64-randconfig-r123-20240131
+|   |-- drivers-regulator-qcom_smd-regulator.c:sparse:sparse:symbol-smd_vreg_rpm-was-not-declared.-Should-it-be-static
+|   |-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|   |-- fs-ntfs3-fslog.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   `-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
+|-- i386-buildonly-randconfig-001-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-buildonly-randconfig-002-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-001-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-003-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-006-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-051-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-053-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-061-20240131
+|   |-- fs-ntfs3-fslog.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   `-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-sum-got-unsigned-int-assigned-csum
+|-- i386-randconfig-062-20240131
+|   |-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|   |-- fs-ntfs3-fslog.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   |-- lib-checksum_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__wsum-usertype-sum-got-unsigned-int-assigned-csum
+|   |-- sound-core-sound_kunit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-snd_pcm_format_t-usertype-format-got-int
+|   `-- sound-core-sound_kunit.c:sparse:sparse:restricted-snd_pcm_format_t-degrades-to-integer
+|-- i386-randconfig-141-20240131
+|   |-- fs-bcachefs-btree_locking.c-bch2_trans_relock()-warn:passing-zero-to-PTR_ERR
+|   |-- fs-bcachefs-buckets.c-bch2_trans_account_disk_usage_change()-error:we-previously-assumed-trans-disk_res-could-be-null-(see-line-)
+|   `-- mm-huge_memory.c-thpsize_create()-warn:Calling-kobject_put-get-with-state-initialized-unset-from-line:
+|-- i386-randconfig-r113-20240131
+|   `-- fs-ntfs3-fslog.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|-- riscv-randconfig-r111-20240131
+|   `-- mm-mempolicy.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-got-unsigned-char-noderef-usertype-__rcu-static-addressable-toplevel-iw_table
+|-- riscv-randconfig-r121-20240131
+|   |-- drivers-usb-cdns3-cdns3-gadget.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   |-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|   `-- fs-ntfs3-fslog.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|-- x86_64-buildonly-randconfig-002-20240131
+|   `-- error-E0425:cannot-find-value-WORK_CPU_UNBOUND-in-crate-bindings
+|-- x86_64-buildonly-randconfig-003-20240131
+|   `-- error-E0425:cannot-find-value-WORK_CPU_UNBOUND-in-crate-bindings
+|-- x86_64-buildonly-randconfig-005-20240131
+|   `-- error-E0425:cannot-find-value-WORK_CPU_UNBOUND-in-crate-bindings
+|-- x86_64-buildonly-randconfig-006-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-011-20240131
+|   `-- error-E0425:cannot-find-value-WORK_CPU_UNBOUND-in-crate-bindings
+|-- x86_64-randconfig-012-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-013-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-102-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-103-20240131
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-161-20240131
+|   `-- mm-huge_memory.c-thpsize_create()-warn:Calling-kobject_put-get-with-state-initialized-unset-from-line:
+`-- x86_64-rhel-8.3-rust
+    `-- error-E0425:cannot-find-value-WORK_CPU_UNBOUND-in-crate-bindings
+
+elapsed time: 740m
+
+configs tested: 180
+configs skipped: 3
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                        nsim_700_defconfig   gcc  
+arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20240131   gcc  
+arc                   randconfig-002-20240131   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                     am200epdkit_defconfig   clang
+arm                                 defconfig   clang
+arm                      integrator_defconfig   gcc  
+arm                        neponset_defconfig   clang
+arm                   randconfig-001-20240131   clang
+arm                   randconfig-002-20240131   clang
+arm                   randconfig-003-20240131   clang
+arm                   randconfig-004-20240131   clang
+arm                        spear6xx_defconfig   gcc  
+arm                           spitz_defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240131   clang
+arm64                 randconfig-002-20240131   clang
+arm64                 randconfig-003-20240131   clang
+arm64                 randconfig-004-20240131   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240131   gcc  
+csky                  randconfig-002-20240131   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240131   clang
+hexagon               randconfig-002-20240131   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20240131   clang
+i386         buildonly-randconfig-002-20240131   clang
+i386         buildonly-randconfig-003-20240131   clang
+i386         buildonly-randconfig-004-20240131   clang
+i386         buildonly-randconfig-005-20240131   clang
+i386         buildonly-randconfig-006-20240131   clang
+i386                                defconfig   gcc  
+i386                  randconfig-001-20240131   clang
+i386                  randconfig-002-20240131   clang
+i386                  randconfig-003-20240131   clang
+i386                  randconfig-004-20240131   clang
+i386                  randconfig-005-20240131   clang
+i386                  randconfig-006-20240131   clang
+i386                  randconfig-011-20240131   gcc  
+i386                  randconfig-012-20240131   gcc  
+i386                  randconfig-013-20240131   gcc  
+i386                  randconfig-014-20240131   gcc  
+i386                  randconfig-015-20240131   gcc  
+i386                  randconfig-016-20240131   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240131   gcc  
+loongarch             randconfig-002-20240131   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                        bcm47xx_defconfig   gcc  
+mips                        bcm63xx_defconfig   clang
+mips                           ip27_defconfig   gcc  
+mips                     loongson1b_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240131   gcc  
+nios2                 randconfig-002-20240131   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240131   gcc  
+parisc                randconfig-002-20240131   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    amigaone_defconfig   gcc  
+powerpc                        fsp2_defconfig   clang
+powerpc                 mpc832x_rdb_defconfig   clang
+powerpc               randconfig-001-20240131   clang
+powerpc               randconfig-002-20240131   clang
+powerpc               randconfig-003-20240131   clang
+powerpc64             randconfig-001-20240131   clang
+powerpc64             randconfig-002-20240131   clang
+powerpc64             randconfig-003-20240131   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20240131   clang
+riscv                 randconfig-002-20240131   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20240131   gcc  
+s390                  randconfig-002-20240131   gcc  
+sh                               alldefconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240131   gcc  
+sh                    randconfig-002-20240131   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240131   gcc  
+sparc64               randconfig-002-20240131   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240131   clang
+um                    randconfig-002-20240131   clang
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240131   clang
+x86_64       buildonly-randconfig-002-20240131   clang
+x86_64       buildonly-randconfig-003-20240131   clang
+x86_64       buildonly-randconfig-004-20240131   clang
+x86_64       buildonly-randconfig-005-20240131   clang
+x86_64       buildonly-randconfig-006-20240131   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240131   gcc  
+x86_64                randconfig-002-20240131   gcc  
+x86_64                randconfig-003-20240131   gcc  
+x86_64                randconfig-004-20240131   gcc  
+x86_64                randconfig-005-20240131   gcc  
+x86_64                randconfig-006-20240131   gcc  
+x86_64                randconfig-011-20240131   clang
+x86_64                randconfig-012-20240131   clang
+x86_64                randconfig-013-20240131   clang
+x86_64                randconfig-014-20240131   clang
+x86_64                randconfig-015-20240131   clang
+x86_64                randconfig-016-20240131   clang
+x86_64                randconfig-071-20240131   clang
+x86_64                randconfig-072-20240131   clang
+x86_64                randconfig-073-20240131   clang
+x86_64                randconfig-074-20240131   clang
+x86_64                randconfig-075-20240131   clang
+x86_64                randconfig-076-20240131   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                  cadence_csp_defconfig   gcc  
+xtensa                randconfig-001-20240131   gcc  
+xtensa                randconfig-002-20240131   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
