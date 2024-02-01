@@ -1,375 +1,123 @@
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86533F8F9
-	for <linux-bcachefs@vger.kernel.org>; Wed, 31 Jan 2024 20:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0A415B0F9
+	for <linux-bcachefs@vger.kernel.org>; Thu,  1 Feb 2024 10:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706732196; cv=none; b=aM/JMPe7SLH/766yM0CFwuZju445Fq2qEGOrg6HaKZlvZo8xZJimsHExj3j0Hb1OzDqKfxc/MaVC5bHExka6ez7wPL1BT85dmYENuhYQrUZvw9/DkO8lhhr7D2jFj6qUXDwaZ0PCkYYIIiQmn3rmBNBlZxkwYcuwxXcrlc+fhJY=
+	t=1706781636; cv=none; b=SE6GOBsJ/6a4HVJAxTQS9bphl/3HBsYxb8OucTwaXh/0l+UOk5S3Biqvyo9nZYrOvh5PD3iBfzgsLPiNYoSP+sqXRSV5sikBdclUloSHCmmx9qbBCGFDYkRYYDSiBi70f2fMgvBCH2zsqV7uqTp+ebQGgcIXGG2mdjGdOkS6gi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706732196; c=relaxed/simple;
-	bh=8aHFuptKC6eaiuDaDoOszomKmC7n/MTeZCcnoMnqpPs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YDKFHHEplfL3FCJ+544CY8+3RebGl79tHjancUXAOV/I+CtgQkay2HzycL0ir4yLDmqpyw5t5fQeK+ev8oDQHp6diFhnwibE8K3NlILxCJIXWbscDrpjckysVeE9joYFusJjCvdVze4aVjFG7M2pdieGOBaHJETdJXrVSJWLgrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bZfwXPtW; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1706781636; c=relaxed/simple;
+	bh=8e272kMnyr1BsycMZ2FxSdPkeCgmXf8RC9aJ4fe5K7U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OGnziRa+jfGmQfJhn4aP+ivKW7Rmxl3WhWrTjBWwMZ4w4NqFWGu528xGCnDD9sUvkMr6p2ekzJiXcc3nPWF/4as+AJz4wA+CSUFgRNt+9DPngIWn5CM38YYR9+evRCvD4fXkPIOSAquR2IKKHUlEDrRl8NNwRuy0Aq2cjOKm44U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rqaeHEoB; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bZfwXPtW"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706732191;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o5AFlVsfpI9ux20q5I/u+z5eVr7t6v/zdjKe5aw7sW0=;
-	b=bZfwXPtWMGYw9jFn6nk9xUvcb6tpnOfbmnHjeyr8dFkkeBQDulhknEo8oXjbBFJWlQvgYP
-	AWBMTkPz+pJWvQ5Py6BYDK2ff9sOVSI24aMjirljhdImbWYnjwiekVjtiwQtF5P1XexWwT
-	dO1FmWWFJINGQRGKJKBXWFy484iJcFo=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 3/3] bcachefs: better journal pipelining
-Date: Wed, 31 Jan 2024 15:16:22 -0500
-Message-ID: <20240131201622.3409726-3-kent.overstreet@linux.dev>
-In-Reply-To: <20240131201622.3409726-1-kent.overstreet@linux.dev>
-References: <20240131201622.3409726-1-kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rqaeHEoB"
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a34c5ca2537so92002466b.0
+        for <linux-bcachefs@vger.kernel.org>; Thu, 01 Feb 2024 02:00:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706781633; x=1707386433; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KHfEjt9Rq9BDLjwdJayCDbrptp97+8N9ZY8belPywYA=;
+        b=rqaeHEoB5Psg+3TAsTjpscbIkY9V5bCVE6sjVFa4yurhuUBTG9nymaFAscDWZ8Yl9A
+         Ksdmms2aJ0RsPJCAVK9ZBBnd7wn4n1k311zj0uLdS0aB03cDEAcbaus0aOGKz14rber7
+         5u4fUDMt2N4yDsIHJJ3gaR5r+yGIZs1gpseCl3GC1nRmXgQd0f2Uuz64Fz9yopkzxccH
+         D8yjJyL6JTqyrt1XUiqoQ6vFMW/fH3Xlppgevdrqj8HNmQ9/I66Hr1EiqpDVCO59I7fH
+         sqluJvAlMMndtGdbJakdYCeB5l8e41/CFchP+Knk8EL3km42smbn5o4Tb1yQwspRfcG6
+         cHRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706781633; x=1707386433;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KHfEjt9Rq9BDLjwdJayCDbrptp97+8N9ZY8belPywYA=;
+        b=KUOgNYvX5/MuqsdSvN6EMvHk08iUbM69uf93LzK5+7IZx1bFUGRKUzPyNRQbsSnofv
+         2/OEYFiA6LrgzSqPzg3V8fe0W7yGYXFvg/qFe6ZxKocfHd6YTbVjJV7TAlOTOreR3hub
+         QXW5iRC9wzQVGIaclA6o0BwMKSVW5dT0Ow6VFRo/MwuYN4IN2Ysdu7Vldhsb0vixV2L/
+         a3wkONGN4dCDEtHjE9O2CHsnYLUpArMoDUOI0jAxa36qQKEYRfDr+rBw9JAeJgX5aOPH
+         m+1UmfPJsjTCEgAVPhhcUYkxxzWAXc+BmdES9441TZLD2EI0eiSsbuQht4RyuQIOh53Z
+         qpVA==
+X-Gm-Message-State: AOJu0YzBuK46JATD4d8bnqiNF1AW7/kn9x3+F+g2SBjFGZe0Kbqedz7o
+	38K2VEnyICV/Jtl3feIdetISML4Xo5irXyMK85jbkYv9JpC7nhF3boSI8DsTvNw=
+X-Google-Smtp-Source: AGHT+IH/fMQeezT+Ubyaw7OuZFel7mFCZYbVqfQf6KRvvWIRyX3dxS4wMaPi9O0Yl4SWGaCc8TIzUA==
+X-Received: by 2002:a17:907:bb8d:b0:a35:a3e2:edcc with SMTP id xo13-20020a170907bb8d00b00a35a3e2edccmr2917823ejc.48.1706781633059;
+        Thu, 01 Feb 2024 02:00:33 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id r26-20020a170906c29a00b00a35cb514aaesm3900016ejz.82.2024.02.01.02.00.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 02:00:32 -0800 (PST)
+Date: Thu, 1 Feb 2024 13:00:10 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: kent.overstreet@gmail.com, linux-bcachefs@vger.kernel.org
+Subject: Re: [bug report] bcachefs: missing error checks for
+ bio_alloc_bioset()
+Message-ID: <a1d5fc7c-87ac-45f5-8f3d-5af1b7cd3614@moroto.mountain>
+References: <0c35596b-a280-40df-946c-c50574c3ce26@moroto.mountain>
+ <fufpv24643xxn3a5jpfxx4wbfwlczrhjyzqkxo33be3yeb4sea@y4obfahio6ag>
+ <11e692bc-4077-4e82-b680-fa86182d15d9@moroto.mountain>
+ <34p5j77iamkybfexdpjslxegy74da7mjtpsssrv4mems4bo5mj@5xlpdnvm4yxz>
+ <e92fc993-ab94-4f3b-9ee2-4e0ca5341720@moroto.mountain>
+ <uxyjkjzbur2unpdkt5yl2bojacg4tptfj6k4zyshcyvyfun3i7@y6q267iebdgg>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <uxyjkjzbur2unpdkt5yl2bojacg4tptfj6k4zyshcyvyfun3i7@y6q267iebdgg>
 
-Recently a severe performance regression was discovered, which bisected
-to
+This email thread has gone very badly and I'm definitely 50% responsible
+for that.  I apologize.
 
-  a6548c8b5eb5 bcachefs: Avoid flushing the journal in the discard path
+On Wed, Jan 31, 2024 at 01:57:58PM -0500, Kent Overstreet wrote:
+> On Wed, Jan 31, 2024 at 09:43:14PM +0300, Dan Carpenter wrote:
+>
+> > Come on Kent, don't pretend like I haven't pointed out over a dozen
+> > bcachefs bugs since it was merged...  I'm just saying the comments
+> > weren't obvious here.
+> 
+> Most of them weren't real bugs, just places where I tweaked the code to
+> please the static analyzer; I believe the number of actual bugs was more
+> like 3-4.
+> 
 
-It turns out the old behaviour, which issued excessive journal flushes,
-worked around a performance issue where queueing delays would cause the
-journal to not be able to write quickly enough and stall.
+That's not true...  I really try avoiding make the static checker happy
+patches.
 
-The journal flushes masked the issue because they periodically flushed
-the device write cache, reducing write latency for non flushes.
+The only one I see which was obviously just to make the checker happy
+is commit 4b33a1916a35 ("bcachefs: bch2_ioctl_disk_resize_journal():
+check for integer truncation") here was my bug report for that:
+https://lore.kernel.org/all/3b879f4f-2fe4-4e0f-aeeb-1d5a62d0a1ce@moroto.mountain/
 
-This patch reworks the journalling code to allow more than one
-(non-flush) write to be in flight at a time. With this patch, doing 4k
-random writes and an iodepth of 128, we are now able to hit 560k iops to
-a Samsung 970 EVO Plus - previously, we were stuck in the ~200k range.
+There were three other patches where it was like we have an "if (ret)"
+but the "ret = " assignment was accidentally left off, but I consider
+those real bugs because obviously the "ret = " assignment wasn't left
+off deliberately.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/journal.c       | 47 +++++++++++++++----
- fs/bcachefs/journal.h       |  7 +--
- fs/bcachefs/journal_io.c    | 94 ++++++++++++++++++++-----------------
- fs/bcachefs/journal_types.h | 11 +++--
- 4 files changed, 99 insertions(+), 60 deletions(-)
+Here is the whole list.
 
-diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
-index 3508871cfd8a..c040f69dfb5c 100644
---- a/fs/bcachefs/journal.c
-+++ b/fs/bcachefs/journal.c
-@@ -74,6 +74,13 @@ static void bch2_journal_buf_to_text(struct printbuf *out, struct journal *j, u6
- 	prt_printf(out, "%li jiffies", buf->expires - jiffies);
- 	prt_newline(out);
- 
-+	if (buf->write_done)
-+		prt_printf(out, "write done\n");
-+	else if (buf->write_allocated)
-+		prt_printf(out, "write allocated\n");
-+	else if (buf->write_started)
-+		prt_printf(out, "write started\n");
-+
- 	printbuf_indent_sub(out, 2);
- }
- 
-@@ -175,21 +182,40 @@ journal_error_check_stuck(struct journal *j, int error, unsigned flags)
- 	return stuck;
- }
- 
-+void bch2_journal_do_writes(struct journal *j)
-+{
-+	for (u64 seq = journal_last_unwritten_seq(j);
-+	     seq <= journal_cur_seq(j);
-+	     seq++) {
-+		unsigned idx = seq & JOURNAL_BUF_MASK;
-+		struct journal_buf *w = j->buf + idx;
-+
-+		if (w->write_started && !w->write_allocated)
-+			break;
-+		if (w->write_started)
-+			continue;
-+
-+		if (!journal_state_count(j->reservations, idx)) {
-+			w->write_started = true;
-+			closure_call(&w->io, bch2_journal_write, j->wq, NULL);
-+		}
-+
-+		break;
-+	}
-+}
-+
- /*
-  * Final processing when the last reference of a journal buffer has been
-  * dropped. Drop the pin list reference acquired at journal entry open and write
-  * the buffer, if requested.
-  */
--void bch2_journal_buf_put_final(struct journal *j, u64 seq, bool write)
-+void bch2_journal_buf_put_final(struct journal *j, u64 seq)
- {
- 	lockdep_assert_held(&j->lock);
- 
- 	if (__bch2_journal_pin_put(j, seq))
- 		bch2_journal_reclaim_fast(j);
--	if (write) {
--		struct journal_buf *w = j->buf + (seq & JOURNAL_BUF_MASK);
--		closure_call(&w->io, bch2_journal_write, j->wq, NULL);
--	}
-+	bch2_journal_do_writes(j);
- }
- 
- /*
-@@ -381,11 +407,14 @@ static int journal_entry_open(struct journal *j)
- 	BUG_ON(j->buf + (journal_cur_seq(j) & JOURNAL_BUF_MASK) != buf);
- 
- 	bkey_extent_init(&buf->key);
--	buf->noflush	= false;
--	buf->must_flush	= false;
--	buf->separate_flush = false;
--	buf->flush_time	= 0;
-+	buf->noflush		= false;
-+	buf->must_flush		= false;
-+	buf->separate_flush	= false;
-+	buf->flush_time		= 0;
- 	buf->need_flush_to_write_buffer = true;
-+	buf->write_started	= false;
-+	buf->write_allocated	= false;
-+	buf->write_done		= false;
- 
- 	memset(buf->data, 0, sizeof(*buf->data));
- 	buf->data->seq	= cpu_to_le64(journal_cur_seq(j));
-diff --git a/fs/bcachefs/journal.h b/fs/bcachefs/journal.h
-index 4544ce24bb8a..7c7528f839c5 100644
---- a/fs/bcachefs/journal.h
-+++ b/fs/bcachefs/journal.h
-@@ -264,7 +264,8 @@ static inline union journal_res_state journal_state_buf_put(struct journal *j, u
- }
- 
- bool bch2_journal_entry_close(struct journal *);
--void bch2_journal_buf_put_final(struct journal *, u64, bool);
-+void bch2_journal_do_writes(struct journal *);
-+void bch2_journal_buf_put_final(struct journal *, u64);
- 
- static inline void __bch2_journal_buf_put(struct journal *j, unsigned idx, u64 seq)
- {
-@@ -272,7 +273,7 @@ static inline void __bch2_journal_buf_put(struct journal *j, unsigned idx, u64 s
- 
- 	s = journal_state_buf_put(j, idx);
- 	if (!journal_state_count(s, idx))
--		bch2_journal_buf_put_final(j, seq, idx == s.unwritten_idx);
-+		bch2_journal_buf_put_final(j, seq);
- }
- 
- static inline void bch2_journal_buf_put(struct journal *j, unsigned idx, u64 seq)
-@@ -282,7 +283,7 @@ static inline void bch2_journal_buf_put(struct journal *j, unsigned idx, u64 seq
- 	s = journal_state_buf_put(j, idx);
- 	if (!journal_state_count(s, idx)) {
- 		spin_lock(&j->lock);
--		bch2_journal_buf_put_final(j, seq, idx == s.unwritten_idx);
-+		bch2_journal_buf_put_final(j, seq);
- 		spin_unlock(&j->lock);
- 	}
- }
-diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-index 8dbf3b3fac32..388e8e15691a 100644
---- a/fs/bcachefs/journal_io.c
-+++ b/fs/bcachefs/journal_io.c
-@@ -1600,12 +1600,12 @@ static CLOSURE_CALLBACK(journal_write_done)
- 	struct bch_fs *c = container_of(j, struct bch_fs, journal);
- 	struct bch_replicas_padded replicas;
- 	union journal_res_state old, new;
--	u64 v, seq;
-+	u64 v, seq = le64_to_cpu(w->data->seq);
- 	int err = 0;
- 
- 	time_stats_update(!JSET_NO_FLUSH(w->data)
--			       ? j->flush_write_time
--			       : j->noflush_write_time, j->write_start_time);
-+			  ? j->flush_write_time
-+			  : j->noflush_write_time, j->write_start_time);
- 
- 	if (!w->devs_written.nr) {
- 		bch_err(c, "unable to write journal to sufficient devices");
-@@ -1620,63 +1620,68 @@ static CLOSURE_CALLBACK(journal_write_done)
- 	if (err)
- 		bch2_fatal_error(c);
- 
--	spin_lock(&j->lock);
--	seq = le64_to_cpu(w->data->seq);
-+	closure_debug_destroy(cl);
- 
-+	spin_lock(&j->lock);
- 	if (seq >= j->pin.front)
- 		journal_seq_pin(j, seq)->devs = w->devs_written;
-+	if (err && (!j->err_seq || seq < j->err_seq))
-+		j->err_seq	= seq;
-+	w->write_done = true;
-+
-+	bool completed = false;
-+
-+	for (seq = journal_last_unwritten_seq(j);
-+	     seq <= journal_cur_seq(j);
-+	     seq++) {
-+		w = j->buf + (seq & JOURNAL_BUF_MASK);
-+		if (!w->write_done)
-+			break;
- 
--	if (!err) {
--		if (!JSET_NO_FLUSH(w->data)) {
-+		if (!j->err_seq && !JSET_NO_FLUSH(w->data)) {
- 			j->flushed_seq_ondisk = seq;
- 			j->last_seq_ondisk = w->last_seq;
- 
- 			bch2_do_discards(c);
- 			closure_wake_up(&c->freelist_wait);
--
- 			bch2_reset_alloc_cursors(c);
- 		}
--	} else if (!j->err_seq || seq < j->err_seq)
--		j->err_seq	= seq;
- 
--	j->seq_ondisk		= seq;
-+		j->seq_ondisk = seq;
- 
--	/*
--	 * Updating last_seq_ondisk may let bch2_journal_reclaim_work() discard
--	 * more buckets:
--	 *
--	 * Must come before signaling write completion, for
--	 * bch2_fs_journal_stop():
--	 */
--	if (j->watermark != BCH_WATERMARK_stripe)
--		journal_reclaim_kick(&c->journal);
-+		/*
-+		 * Updating last_seq_ondisk may let bch2_journal_reclaim_work() discard
-+		 * more buckets:
-+		 *
-+		 * Must come before signaling write completion, for
-+		 * bch2_fs_journal_stop():
-+		 */
-+		if (j->watermark != BCH_WATERMARK_stripe)
-+			journal_reclaim_kick(&c->journal);
- 
--	/* also must come before signalling write completion: */
--	closure_debug_destroy(cl);
-+		v = atomic64_read(&j->reservations.counter);
-+		do {
-+			old.v = new.v = v;
-+			BUG_ON(journal_state_count(new, new.unwritten_idx));
-+			BUG_ON(new.unwritten_idx != (seq & JOURNAL_BUF_MASK));
- 
--	v = atomic64_read(&j->reservations.counter);
--	do {
--		old.v = new.v = v;
--		BUG_ON(journal_state_count(new, new.unwritten_idx));
-+			new.unwritten_idx++;
-+		} while ((v = atomic64_cmpxchg(&j->reservations.counter, old.v, new.v)) != old.v);
- 
--		new.unwritten_idx++;
--	} while ((v = atomic64_cmpxchg(&j->reservations.counter,
--				       old.v, new.v)) != old.v);
-+		completed = true;
-+	}
- 
--	bch2_journal_reclaim_fast(j);
--	bch2_journal_space_available(j);
-+	if (completed) {
-+		bch2_journal_reclaim_fast(j);
-+		bch2_journal_space_available(j);
- 
--	track_event_change(&c->times[BCH_TIME_blocked_journal_max_in_flight], false);
-+		track_event_change(&c->times[BCH_TIME_blocked_journal_max_in_flight], false);
- 
--	closure_wake_up(&w->wait);
--	journal_wake(j);
-+		closure_wake_up(&w->wait);
-+		journal_wake(j);
-+	}
- 
--	if (!journal_state_count(new, new.unwritten_idx) &&
--	    journal_last_unwritten_seq(j) <= journal_cur_seq(j)) {
--		struct journal_buf *w = j->buf + (journal_last_unwritten_seq(j) & JOURNAL_BUF_MASK);
--		spin_unlock(&j->lock);
--		closure_call(&w->io, bch2_journal_write, j->wq, NULL);
--	} else if (journal_last_unwritten_seq(j) == journal_cur_seq(j) &&
-+	if (journal_last_unwritten_seq(j) == journal_cur_seq(j) &&
- 		   new.cur_entry_offset < JOURNAL_ENTRY_CLOSED_VAL) {
- 		struct journal_buf *buf = journal_cur_buf(j);
- 		long delta = buf->expires - jiffies;
-@@ -1686,12 +1691,10 @@ static CLOSURE_CALLBACK(journal_write_done)
- 		 * previous entries still in flight - the current journal entry
- 		 * might want to be written now:
- 		 */
--
--		spin_unlock(&j->lock);
- 		mod_delayed_work(j->wq, &j->write_work, max(0L, delta));
--	} else {
--		spin_unlock(&j->lock);
- 	}
-+
-+	spin_unlock(&j->lock);
- }
- 
- static void journal_write_endio(struct bio *bio)
-@@ -1945,6 +1948,7 @@ CLOSURE_CALLBACK(bch2_journal_write)
- 	int ret;
- 
- 	BUG_ON(BCH_SB_CLEAN(c->disk_sb.sb));
-+	BUG_ON(w->write_allocated);
- 
- 	j->write_start_time = local_clock();
- 
-@@ -1988,12 +1992,14 @@ CLOSURE_CALLBACK(bch2_journal_write)
- 	 * bch2_journal_space_available():
- 	 */
- 	w->sectors = 0;
-+	w->write_allocated = true;
- 
- 	/*
- 	 * journal entry has been compacted and allocated, recalculate space
- 	 * available:
- 	 */
- 	bch2_journal_space_available(j);
-+	bch2_journal_do_writes(j);
- 	spin_unlock(&j->lock);
- 
- 	w->devs_written = bch2_bkey_devs(bkey_i_to_s_c(&w->key));
-diff --git a/fs/bcachefs/journal_types.h b/fs/bcachefs/journal_types.h
-index 4f7769aede33..011f7a0d4ebd 100644
---- a/fs/bcachefs/journal_types.h
-+++ b/fs/bcachefs/journal_types.h
-@@ -34,10 +34,13 @@ struct journal_buf {
- 	unsigned		disk_sectors;	/* maximum size entry could have been, if
- 						   buf_size was bigger */
- 	unsigned		u64s_reserved;
--	bool			noflush;	/* write has already been kicked off, and was noflush */
--	bool			must_flush;	/* something wants a flush */
--	bool			separate_flush;
--	bool			need_flush_to_write_buffer;
-+	bool			noflush:1;	/* write has already been kicked off, and was noflush */
-+	bool			must_flush:1;	/* something wants a flush */
-+	bool			separate_flush:1;
-+	bool			need_flush_to_write_buffer:1;
-+	bool			write_started:1;
-+	bool			write_allocated:1;
-+	bool			write_done:1;
- 	u8			idx;
- };
- 
--- 
-2.43.0
+$ git log --oneline --grep=Carpenter fs/bcachefs/
+03cc1e67a243 bcachefs: Fix null ptr deref in bch2_backpointer_get_node()
+97ecc23632fa bcachefs: Fix strndup_user() error checking
+cfda31c03315 bcachefs: drop journal lock before calling journal_write
+4b33a1916a35 bcachefs: bch2_ioctl_disk_resize_journal(): check for integer truncation
+75e0c4789b62 bcachefs: Fix error checks in bch2_chacha_encrypt_key()
+a55fc65eb2c7 bcachefs: Fix an overflow check
+f7f6943a8c6d bcachefs: Fix copy_to_user() usage in flush_buf()
+d67a72bfc92b bcachefs: snapshot: Add missing assignment in bch2_delete_dead_snapshots()
+1f12900ab523 bcachefs: fs-ioctl: Fix copy_to_user() error code
+b6c22147e0fc bcachefs: acl: Add missing check in bch2_acl_chmod()
+e9a0a26ed05a bcachefs: acl: Uninitialized variable in bch2_acl_chmod()
+867c1fe0187f bcachefs: fix error checking in bch2_fs_alloc()
+4ba985b84de6 bcachefs: chardev: fix an integer overflow (32 bit only)
+301e0237cadf bcachefs: chardev: return -EFAULT if copy_to_user() fails
 
+regards,
+dan carpenter
