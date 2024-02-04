@@ -1,403 +1,103 @@
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4116612D9
-	for <linux-bcachefs@vger.kernel.org>; Fri,  2 Feb 2024 09:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24813881E
+	for <linux-bcachefs@vger.kernel.org>; Sun,  4 Feb 2024 07:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706867803; cv=none; b=KSeKWpctnXO6/8H4dRKo1rWCOjFxQMPACNm7eWGife+80vEFV1gerZdZmnsM+QRsg1pFAeShdohnGZLyYNv9se7RqxLGCbhgCgyAZJQi255kyweIEyOSRrB2o90xpkgPGuDQvFgtJwOs5ok231CravvAoAAHOAklaR6iPW9wcJ0=
+	t=1707033117; cv=none; b=ACzzYN40/BLMj5KHHeo+9XzWpTt2a6z9cmk+mtEqmFuN/a6eA4hjkIMsZWCxha1+NN8G3Z2kq0wN4SRnxBvgdpVWe0rPWilyMMEbLPPCyOn2p/QAS9LInh/buiFYuZV1KjBZx6oRLoEzK7mh7aoLx1+nRifdKMzOTv7AQEC5qHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706867803; c=relaxed/simple;
-	bh=jFd7EsbL2UD3/eH+I7gvO1kjZM1o/csCQMuUYw3xP6U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R9ZIbb4h7aN/HqnyvCcoW4WXcYO5TueG3tAuhxssMOE52HHEVATlvRNhf0ZLotxHqIcHs07b+gFqTAFpipkOzsTMER9MpLBBqGz8z2dElhALORkNU1aFMJGOyWd2thIJjsOR5xdLy87K9eC3HSi6lynfCUwEAwqTi9gVqmhnQ4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=k9DvJYa5; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1707033117; c=relaxed/simple;
+	bh=swxDwCuqOvnW0ofmUHTOSsI69KrSJEGYUdUJMkgW6DE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z834Z4rYJrfIxCR4eW+5mkUF+U2DUR/csuxWxCA3mwiov63tzRlEvsbP/c2bLYkuQ7R+QmoUc1WzzBQQ6F7WopRHWuhVHRW2gV3S+jVA5JrfwUxW4t/gvQ4A5N8atPuIz2QKbMhdotYHW9MuJADXp7xyWEweFiwlBkhA6Uv7XBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=grsecurity.net; spf=pass smtp.mailfrom=opensrcsec.com; dkim=pass (2048-bit key) header.d=grsecurity.net header.i=@grsecurity.net header.b=FwpgcRC9; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=grsecurity.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensrcsec.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="k9DvJYa5"
-Date: Fri, 2 Feb 2024 04:56:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706867799;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c/kwKN+uCJ51GCpF2O8i/vCBiz0wcy/tOW3gBbjrPvY=;
-	b=k9DvJYa58eBxE81UmNTPQABQy1mSpcl0ykfNZ0OqmutbPhgux2avtzWHEh8oD6+u6pSKvb
-	XvxqKtPpIhDxfTTfngGqprz4EFh10QcXGuq4Er2wvl3hW0JxeE8+V1sxKB3prN8yGi7yLS
-	dBLJ8PygXxaGsq9/7HTAa3teWr8vd/w=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-bcache@vger.kernel.org, linux-bcachefs@vger.kernel.org, Daniel Hill <daniel@gluo.nz>
-Subject: Re: [PATCH 1/5] mean and variance: Promote to lib/math
-Message-ID: <eya7wfoocwriwqsmhlqpteqvw3n5pacczatmhiatgq5hhub7q4@xjavhzvyu3p6>
-References: <20240126220655.395093-1-kent.overstreet@linux.dev>
- <20240202073034.GG6184@frogsfrogsfrogs>
+	dkim=pass (2048-bit key) header.d=grsecurity.net header.i=@grsecurity.net header.b="FwpgcRC9"
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso467473366b.2
+        for <linux-bcachefs@vger.kernel.org>; Sat, 03 Feb 2024 23:51:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=grsecurity.net; s=grsec; t=1707033114; x=1707637914; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=r9lL0IzOj5zPv3u3eQbvaxza72dRt9HHWlCqgXcKhlY=;
+        b=FwpgcRC9+9Y5MyW50N3eNNgCUtHixy/RnfHEhTPUxfnwMdvXNEDptvv0aSLCAKDU14
+         /AxIn6pc62aS+rkSWaX8/LDVGFByIzWxLYiCcr0Ayv6IxLhpS086yMMp5Ze6L9bA9zd6
+         jYWlzCx9/h1fqazN14cRSKRhWNTJbVJ/YfgOPUNq2fC7etBNpM3c0rH+heK19zqfwVOG
+         ESl2FAcCMzCKiCD8Q/Ml8IHTg1STiONcU2EhUqD9LONvyiVU7ntZs5JA1bBT9BDWL1Yn
+         1Q3WBV6NbmBO1BaEcczu6mse6A19EzY+WLDSBp6RsH5bYwQ4EBa0mUeavZ1uHqO8ZXGL
+         1uiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707033114; x=1707637914;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=r9lL0IzOj5zPv3u3eQbvaxza72dRt9HHWlCqgXcKhlY=;
+        b=tXBvK+jo4gWqH0UYJgGIsAQs1m28XFubawu41uq+ab9RqGOsK6Dnt/dTLo+GvtXBBj
+         /PsehYCeR8A8Cpm3ECRo+87OxTu8uU0pkk08sgav2Bo7CO7YtGcjm108lMtHSaJpvp3C
+         4fivd+huXCZGUqASNFzXIUVFOKR9PmThwlglJoibyleAZwIXRcI4VINOEaPCJpLJbXxd
+         x4nc0eu0XP5vKmb/u6p0mUNicqGIWjp9XO8V47PNgVXnkIQrb/UhpZ7VQRjWHvQ3FJCK
+         ZmyEJImXFN0dc4GSSaDS1dt9dwI8YUya2VZaYOm+2YBrMxZGO03Nx0VXLO9J2jkM/bYu
+         IxYw==
+X-Gm-Message-State: AOJu0YzvycKXcn+K+tXrzi46gJCius1OfYdYC3VEeOopLCqmf/eH9dT9
+	7kII3wreWhjUwUsbfXX/9Ir6/eRSbZQcW2mbbMc3NVnFGtpBe+odrIcU1QnH04A=
+X-Google-Smtp-Source: AGHT+IFaUId2YjI/7K0G74BgyKxetnOxYAKjZVZ/4EnhPSVz8M3hluftmtM9ljduBj6scQUzlvjrow==
+X-Received: by 2002:a17:906:e9b:b0:a36:741e:a5 with SMTP id p27-20020a1709060e9b00b00a36741e00a5mr9556198ejf.70.1707033114107;
+        Sat, 03 Feb 2024 23:51:54 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXdTdtaPKHz+ZjeZIntLpv33KdmF01cL/QmdmOUKZpIvQpEmz+OwrX9F3wNg2kOEiWJAayAX6RHgMs5kSWGbzUmv4v9qBd6ImKIdI9/AnHOhQME8w55iJk/yuXXDBaQiYmK94xX6LE=
+Received: from x1.fosdem.net ([2001:67c:1810:f051:d51b:7b6:cc25:3002])
+        by smtp.gmail.com with ESMTPSA id bz8-20020a1709070aa800b00a376758a0e9sm1098439ejc.81.2024.02.03.23.51.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Feb 2024 23:51:53 -0800 (PST)
+From: Mathias Krause <minipli@grsecurity.net>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Brian Foster <bfoster@redhat.com>,
+	linux-bcachefs@vger.kernel.org,
+	Mathias Krause <minipli@grsecurity.net>
+Subject: [PATCH] bcachefs: install fd later to avoid race with close
+Date: Sun,  4 Feb 2024 08:51:52 +0100
+Message-Id: <20240204075152.695920-1-minipli@grsecurity.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202073034.GG6184@frogsfrogsfrogs>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 01, 2024 at 11:30:34PM -0800, Darrick J. Wong wrote:
-> On Fri, Jan 26, 2024 at 05:06:51PM -0500, Kent Overstreet wrote:
-> > Small statistics library, for taking in a series of value and computing
-> > mean, weighted mean, standard deviation and weighted deviation.
-> > 
-> > The main use case is for statistics on latency measurements.
-> 
-> Oh, heh, I didn't realize this was a patch and not a cover letter.
-> 
-> A few things I noticed while adding timestats to xfs -- pahole says this
-> about the weighted mean and variance object:
-> 
-> struct mean_and_variance_weighted {
->         /* typedef bool */ _Bool                      init;                              /*     0     1 */
->         /* typedef u8 -> __u8 */ unsigned char              weight;                      /*     1     1 */
-> 
->         /* XXX 6 bytes hole, try to pack */
-> 
->         /* typedef s64 -> __s64 */ long long int              mean;                      /*     8     8 */
->         /* typedef u64 -> __u64 */ long long unsigned int     variance;                  /*    16     8 */
-> 
->         /* size: 24, cachelines: 1, members: 4 */
->         /* sum members: 18, holes: 1, sum holes: 6 */
->         /* last cacheline: 24 bytes */
-> };
-> 
-> AFAICT the init flag isn't used, and the u8 wastes 6 bytes of space.
-> Two of these get plugged into struct time_stats, which means we waste 12
-> bytes of space on a ~464 byte structure.  Removing quantiles support
-> from that shrinks the struct down to 208 bytes.
-> 
-> Any chance we could pass in the weights as a function parameter so that
-> we could shrink this to 16 bytes?  If we do that and rearrange
-> time_stats, the whole thing goes down to 192 bytes, which means I can
-> spray in twice as many timestats.
+Calling fd_install() makes a file reachable for userland, including the
+possibility to close the file descriptor, which leads to calling its
+'release' hook. If that happens before the code had a chance to bump the
+reference of the newly created task struct, the release callback will
+call put_task_struct() too early, leading to the premature destruction
+of the kernel thread.
 
-I think that works - 3 cachelines is a nice neat size.
+Avoid that race by calling fd_install() later, after all the setup is
+done.
 
-> 
-> I also noticed that struct time_stat_buffer is:
-> 
-> struct time_stat_buffer {
->         unsigned int               nr;                                                   /*     0     4 */
-> 
->         /* XXX 4 bytes hole, try to pack */
-> 
->         struct time_stat_buffer_entry {
->                 /* typedef u64 -> __u64 */ long long unsigned int start;                 /*     8     8 */
->                 /* typedef u64 -> __u64 */ long long unsigned int end;                   /*    16     8 */
->         } entries[32]; /*     8   512 */
-> 
->         /* size: 520, cachelines: 9, members: 2 */
->         /* sum members: 516, holes: 1, sum holes: 4 */
->         /* last cacheline: 8 bytes */
-> };
-> 
-> I wonder, if entries[] shrank to 31 entries, this would align to 512b;
-> would that make for more efficient allocations?  I tried to follow
-> alloc_percpu_gfp and got caught in a twisty mess of macros.
+Fixes: 1c6fdbd8f246 ("bcachefs: Initial commit")
+Signed-off-by: Mathias Krause <minipli@grsecurity.net>
+---
+ fs/bcachefs/thread_with_file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-yes, yes it would
+diff --git a/fs/bcachefs/thread_with_file.c b/fs/bcachefs/thread_with_file.c
+index b1c867aa2b58..9220d7de10db 100644
+--- a/fs/bcachefs/thread_with_file.c
++++ b/fs/bcachefs/thread_with_file.c
+@@ -53,9 +53,9 @@ int bch2_run_thread_with_file(struct thread_with_file *thr,
+ 	if (ret)
+ 		goto err;
+ 
+-	fd_install(fd, file);
+ 	get_task_struct(thr->task);
+ 	wake_up_process(thr->task);
++	fd_install(fd, file);
+ 	return fd;
+ err:
+ 	if (fd >= 0)
+-- 
+2.39.2
 
-the percpu allocator is really simplistic, it's just finding the first
-free region >= the requested size.
-
-Also, there's some more savings that could be had if someone wanted to
-derive the weighted version of median absolute deviation as Linus
-suggested awhile back, but that one was above my stastitical pay
-grade...
-
-> 
-> --D
-> 
-> FWIW the full time_stats struct ended up like this after I turned off
-> quantiles and did all the lazy rearranging I could do without removing
-> init or weight:
-> 
-> struct time_stats {
->         /* typedef spinlock_t */ struct spinlock {
->                 union {
->                         struct raw_spinlock {
->                                 /* typedef arch_spinlock_t */ struct qspinlock {
->                                         union {
->                                                 /* typedef atomic_t */ struct {
->                                                         int                    counter;  /*     0     4 */
->                                                 } val; /*     0     4 */
->                                                 struct {
->                                                         /* typedef u8 -> __u8 */ unsigned char          locked; /*     0     1 */
->                                                         /* typedef u8 -> __u8 */ unsigned char          pending; /*     1     1 */
->                                                 };                                       /*     0     2 */
->                                                 struct {
->                                                         /* typedef u16 -> __u16 */ short unsigned int     locked_pending; /*     0     2 */
->                                                         /* typedef u16 -> __u16 */ short unsigned int     tail; /*     2     2 */
->                                                 };                                       /*     0     4 */
->                                         };                                               /*     0     4 */
->                                 } raw_lock; /*     0     4 */
->                                 unsigned int magic;                                      /*     4     4 */
->                                 unsigned int owner_cpu;                                  /*     8     4 */
-> 
->                                 /* XXX 4 bytes hole, try to pack */
-> 
->                                 void * owner;                                            /*    16     8 */
->                         }rlock; /*     0    24 */
->                 };                                                                       /*     0    24 */
->         } lock; /*     0    24 */
->         /* typedef u64 -> __u64 */ long long unsigned int     min_duration;              /*    24     8 */
->         /* typedef u64 -> __u64 */ long long unsigned int     max_duration;              /*    32     8 */
->         /* typedef u64 -> __u64 */ long long unsigned int     total_duration;            /*    40     8 */
->         /* typedef u64 -> __u64 */ long long unsigned int     max_freq;                  /*    48     8 */
->         /* typedef u64 -> __u64 */ long long unsigned int     min_freq;                  /*    56     8 */
->         /* --- cacheline 1 boundary (64 bytes) --- */
->         /* typedef u64 -> __u64 */ long long unsigned int     last_event;                /*    64     8 */
->         /* typedef u64 -> __u64 */ long long unsigned int     last_event_start;          /*    72     8 */
->         struct mean_and_variance {
->                 /* typedef s64 -> __s64 */ long long int      n;                         /*    80     8 */
->                 /* typedef s64 -> __s64 */ long long int      sum;                       /*    88     8 */
->                 /* typedef u128_u */ struct {
->                         __int128 unsigned v;                                             /*    96    16 */
->                 } sum_squares __attribute__((__aligned__(16))) __attribute__((__aligned__(16))); /*    96    16 */
->         } __attribute__((__aligned__(16)))duration_stats __attribute__((__aligned__(16))); /*    80    32 */
->         struct mean_and_variance {
->                 /* typedef s64 -> __s64 */ long long int      n;                         /*   112     8 */
->                 /* typedef s64 -> __s64 */ long long int      sum;                       /*   120     8 */
->                 /* --- cacheline 2 boundary (128 bytes) --- */
->                 /* typedef u128_u */ struct {
->                         __int128 unsigned v;                                             /*   128    16 */
->                 } sum_squares __attribute__((__aligned__(16))) __attribute__((__aligned__(16))); /*   128    16 */
->         } __attribute__((__aligned__(16)))freq_stats __attribute__((__aligned__(16))); /*   112    32 */
->         struct mean_and_variance_weighted {
->                 /* typedef bool */ _Bool              init;                              /*   144     1 */
->                 /* typedef u8 -> __u8 */ unsigned char      weight;                      /*   145     1 */
-> 
->                 /* XXX 6 bytes hole, try to pack */
-> 
->                 /* typedef s64 -> __s64 */ long long int      mean;                      /*   152     8 */
->                 /* typedef u64 -> __u64 */ long long unsigned int variance;              /*   160     8 */
->         }duration_stats_weighted; /*   144    24 */
->         struct mean_and_variance_weighted {
->                 /* typedef bool */ _Bool              init;                              /*   168     1 */
->                 /* typedef u8 -> __u8 */ unsigned char      weight;                      /*   169     1 */
-> 
->                 /* XXX 6 bytes hole, try to pack */
-> 
->                 /* typedef s64 -> __s64 */ long long int      mean;                      /*   176     8 */
->                 /* typedef u64 -> __u64 */ long long unsigned int variance;              /*   184     8 */
->         }freq_stats_weighted; /*   168    24 */
->         /* --- cacheline 3 boundary (192 bytes) --- */
->         struct time_stat_buffer *  buffer;                                               /*   192     8 */
-> 
->         /* size: 208, cachelines: 4, members: 13 */
->         /* padding: 8 */
->         /* forced alignments: 2 */
->         /* last cacheline: 16 bytes */
-> } __attribute__((__aligned__(16)));
-> 
-> 
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > Cc: Daniel Hill <daniel@gluo.nz>
-> > Cc: Darrick J. Wong <djwong@kernel.org>
-> > ---
-> >  MAINTAINERS                                        |  9 +++++++++
-> >  fs/bcachefs/Kconfig                                | 10 +---------
-> >  fs/bcachefs/Makefile                               |  3 ---
-> >  fs/bcachefs/util.c                                 |  2 +-
-> >  fs/bcachefs/util.h                                 |  3 +--
-> >  {fs/bcachefs => include/linux}/mean_and_variance.h |  0
-> >  lib/Kconfig.debug                                  |  9 +++++++++
-> >  lib/math/Kconfig                                   |  3 +++
-> >  lib/math/Makefile                                  |  2 ++
-> >  {fs/bcachefs => lib/math}/mean_and_variance.c      |  3 +--
-> >  {fs/bcachefs => lib/math}/mean_and_variance_test.c |  3 +--
-> >  11 files changed, 28 insertions(+), 19 deletions(-)
-> >  rename {fs/bcachefs => include/linux}/mean_and_variance.h (100%)
-> >  rename {fs/bcachefs => lib/math}/mean_and_variance.c (99%)
-> >  rename {fs/bcachefs => lib/math}/mean_and_variance_test.c (99%)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 8d1052fa6a69..de635cfd354d 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -13379,6 +13379,15 @@ S:	Maintained
-> >  F:	drivers/net/mdio/mdio-regmap.c
-> >  F:	include/linux/mdio/mdio-regmap.h
-> >  
-> > +MEAN AND VARIANCE LIBRARY
-> > +M:	Daniel B. Hill <daniel@gluo.nz>
-> > +M:	Kent Overstreet <kent.overstreet@linux.dev>
-> > +S:	Maintained
-> > +T:	git https://github.com/YellowOnion/linux/
-> > +F:	include/linux/mean_and_variance.h
-> > +F:	lib/math/mean_and_variance.c
-> > +F:	lib/math/mean_and_variance_test.c
-> > +
-> >  MEASUREMENT COMPUTING CIO-DAC IIO DRIVER
-> >  M:	William Breathitt Gray <william.gray@linaro.org>
-> >  L:	linux-iio@vger.kernel.org
-> > diff --git a/fs/bcachefs/Kconfig b/fs/bcachefs/Kconfig
-> > index 5cdfef3b551a..72d1179262b3 100644
-> > --- a/fs/bcachefs/Kconfig
-> > +++ b/fs/bcachefs/Kconfig
-> > @@ -24,6 +24,7 @@ config BCACHEFS_FS
-> >  	select XXHASH
-> >  	select SRCU
-> >  	select SYMBOLIC_ERRNAME
-> > +	select MEAN_AND_VARIANCE
-> >  	help
-> >  	The bcachefs filesystem - a modern, copy on write filesystem, with
-> >  	support for multiple devices, compression, checksumming, etc.
-> > @@ -86,12 +87,3 @@ config BCACHEFS_SIX_OPTIMISTIC_SPIN
-> >  	Instead of immediately sleeping when attempting to take a six lock that
-> >  	is held by another thread, spin for a short while, as long as the
-> >  	thread owning the lock is running.
-> > -
-> > -config MEAN_AND_VARIANCE_UNIT_TEST
-> > -	tristate "mean_and_variance unit tests" if !KUNIT_ALL_TESTS
-> > -	depends on KUNIT
-> > -	depends on BCACHEFS_FS
-> > -	default KUNIT_ALL_TESTS
-> > -	help
-> > -	  This option enables the kunit tests for mean_and_variance module.
-> > -	  If unsure, say N.
-> > diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
-> > index 1a05cecda7cc..b11ba74b8ad4 100644
-> > --- a/fs/bcachefs/Makefile
-> > +++ b/fs/bcachefs/Makefile
-> > @@ -57,7 +57,6 @@ bcachefs-y		:=	\
-> >  	keylist.o		\
-> >  	logged_ops.o		\
-> >  	lru.o			\
-> > -	mean_and_variance.o	\
-> >  	migrate.o		\
-> >  	move.o			\
-> >  	movinggc.o		\
-> > @@ -88,5 +87,3 @@ bcachefs-y		:=	\
-> >  	util.o			\
-> >  	varint.o		\
-> >  	xattr.o
-> > -
-> > -obj-$(CONFIG_MEAN_AND_VARIANCE_UNIT_TEST)   += mean_and_variance_test.o
-> > diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-> > index 56b815fd9fc6..d7ea95abb9df 100644
-> > --- a/fs/bcachefs/util.c
-> > +++ b/fs/bcachefs/util.c
-> > @@ -22,9 +22,9 @@
-> >  #include <linux/string.h>
-> >  #include <linux/types.h>
-> >  #include <linux/sched/clock.h>
-> > +#include <linux/mean_and_variance.h>
-> >  
-> >  #include "eytzinger.h"
-> > -#include "mean_and_variance.h"
-> >  #include "util.h"
-> >  
-> >  static const char si_units[] = "?kMGTPEZY";
-> > diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
-> > index b414736d59a5..0059481995ef 100644
-> > --- a/fs/bcachefs/util.h
-> > +++ b/fs/bcachefs/util.h
-> > @@ -17,8 +17,7 @@
-> >  #include <linux/slab.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/workqueue.h>
-> > -
-> > -#include "mean_and_variance.h"
-> > +#include <linux/mean_and_variance.h>
-> >  
-> >  #include "darray.h"
-> >  
-> > diff --git a/fs/bcachefs/mean_and_variance.h b/include/linux/mean_and_variance.h
-> > similarity index 100%
-> > rename from fs/bcachefs/mean_and_variance.h
-> > rename to include/linux/mean_and_variance.h
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 975a07f9f1cc..817ddfe132cd 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -2191,6 +2191,15 @@ config CPUMASK_KUNIT_TEST
-> >  
-> >  	  If unsure, say N.
-> >  
-> > +config MEAN_AND_VARIANCE_UNIT_TEST
-> > +	tristate "mean_and_variance unit tests" if !KUNIT_ALL_TESTS
-> > +	depends on KUNIT
-> > +	select MEAN_AND_VARIANCE
-> > +	default KUNIT_ALL_TESTS
-> > +	help
-> > +	  This option enables the kunit tests for mean_and_variance module.
-> > +	  If unsure, say N.
-> > +
-> >  config TEST_LIST_SORT
-> >  	tristate "Linked list sorting test" if !KUNIT_ALL_TESTS
-> >  	depends on KUNIT
-> > diff --git a/lib/math/Kconfig b/lib/math/Kconfig
-> > index 0634b428d0cb..7530ae9a3584 100644
-> > --- a/lib/math/Kconfig
-> > +++ b/lib/math/Kconfig
-> > @@ -15,3 +15,6 @@ config PRIME_NUMBERS
-> >  
-> >  config RATIONAL
-> >  	tristate
-> > +
-> > +config MEAN_AND_VARIANCE
-> > +	tristate
-> > diff --git a/lib/math/Makefile b/lib/math/Makefile
-> > index 91fcdb0c9efe..8cdfa13a67ce 100644
-> > --- a/lib/math/Makefile
-> > +++ b/lib/math/Makefile
-> > @@ -4,6 +4,8 @@ obj-y += div64.o gcd.o lcm.o int_log.o int_pow.o int_sqrt.o reciprocal_div.o
-> >  obj-$(CONFIG_CORDIC)		+= cordic.o
-> >  obj-$(CONFIG_PRIME_NUMBERS)	+= prime_numbers.o
-> >  obj-$(CONFIG_RATIONAL)		+= rational.o
-> > +obj-$(CONFIG_MEAN_AND_VARIANCE) += mean_and_variance.o
-> >  
-> >  obj-$(CONFIG_TEST_DIV64)	+= test_div64.o
-> >  obj-$(CONFIG_RATIONAL_KUNIT_TEST) += rational-test.o
-> > +obj-$(CONFIG_MEAN_AND_VARIANCE_UNIT_TEST)   += mean_and_variance_test.o
-> > diff --git a/fs/bcachefs/mean_and_variance.c b/lib/math/mean_and_variance.c
-> > similarity index 99%
-> > rename from fs/bcachefs/mean_and_variance.c
-> > rename to lib/math/mean_and_variance.c
-> > index bf0ef668fd38..ba90293204ba 100644
-> > --- a/fs/bcachefs/mean_and_variance.c
-> > +++ b/lib/math/mean_and_variance.c
-> > @@ -40,10 +40,9 @@
-> >  #include <linux/limits.h>
-> >  #include <linux/math.h>
-> >  #include <linux/math64.h>
-> > +#include <linux/mean_and_variance.h>
-> >  #include <linux/module.h>
-> >  
-> > -#include "mean_and_variance.h"
-> > -
-> >  u128_u u128_div(u128_u n, u64 d)
-> >  {
-> >  	u128_u r;
-> > diff --git a/fs/bcachefs/mean_and_variance_test.c b/lib/math/mean_and_variance_test.c
-> > similarity index 99%
-> > rename from fs/bcachefs/mean_and_variance_test.c
-> > rename to lib/math/mean_and_variance_test.c
-> > index 019583c3ca0e..f45591a169d8 100644
-> > --- a/fs/bcachefs/mean_and_variance_test.c
-> > +++ b/lib/math/mean_and_variance_test.c
-> > @@ -1,7 +1,6 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  #include <kunit/test.h>
-> > -
-> > -#include "mean_and_variance.h"
-> > +#include <linux/mean_and_variance.h>
-> >  
-> >  #define MAX_SQR (SQRT_U64_MAX*SQRT_U64_MAX)
-> >  
-> > -- 
-> > 2.43.0
-> > 
-> > 
