@@ -1,64 +1,64 @@
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24813881E
-	for <linux-bcachefs@vger.kernel.org>; Sun,  4 Feb 2024 07:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA052556E
+	for <linux-bcachefs@vger.kernel.org>; Sun,  4 Feb 2024 20:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707033117; cv=none; b=ACzzYN40/BLMj5KHHeo+9XzWpTt2a6z9cmk+mtEqmFuN/a6eA4hjkIMsZWCxha1+NN8G3Z2kq0wN4SRnxBvgdpVWe0rPWilyMMEbLPPCyOn2p/QAS9LInh/buiFYuZV1KjBZx6oRLoEzK7mh7aoLx1+nRifdKMzOTv7AQEC5qHY=
+	t=1707079773; cv=none; b=do/zBNXC1kDSTd0G5u4zIHXt9i68HiOqbHMSNsAJq7Dd+kUrU3RbCz8zF8XOhbrbF8lyhdpLFHypCZDgbE5P6ig2X0jFuItZPo8cie72afgtgQub+NqfRdZ4W1sNOt1y4IQi+TUfJJPRHt5Qv4xMGHC/ZBSKiF6LM+wNC30TFuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707033117; c=relaxed/simple;
-	bh=swxDwCuqOvnW0ofmUHTOSsI69KrSJEGYUdUJMkgW6DE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z834Z4rYJrfIxCR4eW+5mkUF+U2DUR/csuxWxCA3mwiov63tzRlEvsbP/c2bLYkuQ7R+QmoUc1WzzBQQ6F7WopRHWuhVHRW2gV3S+jVA5JrfwUxW4t/gvQ4A5N8atPuIz2QKbMhdotYHW9MuJADXp7xyWEweFiwlBkhA6Uv7XBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=grsecurity.net; spf=pass smtp.mailfrom=opensrcsec.com; dkim=pass (2048-bit key) header.d=grsecurity.net header.i=@grsecurity.net header.b=FwpgcRC9; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=grsecurity.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensrcsec.com
+	s=arc-20240116; t=1707079773; c=relaxed/simple;
+	bh=EBqDNcRoP3kUPXU7ERLjpqpFP2Hde1D+DEqfs87HQXE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eRvpEgeOZ5Ru8WcAe7Yxsrkff0Xttf5tte44R1ZgKpKZ5/cCPiiV0J7w+r42PB851q48h3xfvEWJlE9aHKKgONsT9SN1WdHC4HAs/Lf7MONBWULwLbSQUh9MJW+PSVorC4SaRBvOnu9kNegIwnI8wKxkABIWBVzwtNdzQmk/Iu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DX6/cOM9; arc=none smtp.client-ip=209.85.166.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=grsecurity.net header.i=@grsecurity.net header.b="FwpgcRC9"
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso467473366b.2
-        for <linux-bcachefs@vger.kernel.org>; Sat, 03 Feb 2024 23:51:55 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DX6/cOM9"
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7bed9f5d35dso159703239f.3
+        for <linux-bcachefs@vger.kernel.org>; Sun, 04 Feb 2024 12:49:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=grsecurity.net; s=grsec; t=1707033114; x=1707637914; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707079769; x=1707684569; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=r9lL0IzOj5zPv3u3eQbvaxza72dRt9HHWlCqgXcKhlY=;
-        b=FwpgcRC9+9Y5MyW50N3eNNgCUtHixy/RnfHEhTPUxfnwMdvXNEDptvv0aSLCAKDU14
-         /AxIn6pc62aS+rkSWaX8/LDVGFByIzWxLYiCcr0Ayv6IxLhpS086yMMp5Ze6L9bA9zd6
-         jYWlzCx9/h1fqazN14cRSKRhWNTJbVJ/YfgOPUNq2fC7etBNpM3c0rH+heK19zqfwVOG
-         ESl2FAcCMzCKiCD8Q/Ml8IHTg1STiONcU2EhUqD9LONvyiVU7ntZs5JA1bBT9BDWL1Yn
-         1Q3WBV6NbmBO1BaEcczu6mse6A19EzY+WLDSBp6RsH5bYwQ4EBa0mUeavZ1uHqO8ZXGL
-         1uiA==
+        bh=C9vNtKM8DqygIqAKl16TYUucp9p/LzvgLyz6f5GCjAs=;
+        b=DX6/cOM9uoRfvLzjW1XvQnczxw2lj9NS0y9TIfKAc/VpV+KMRxG04daulp5OR7vr/4
+         jvSdd2BhmmozVTyGGzKMJlbD5lQkPbIsrOTXnxx1MorsK30R7JKkc+oM9t8eDeO2+14T
+         E6nCzYSJzBRVygWF+JWlZ1a4uOf+xSZlgy3T1XmUc95o1uUzpa13fWuQ9LiaNYmiYP4Z
+         Pg46/c09r7vgk4AOvxmlosWXJIydXhbvAVdN4HvEk1VNbiNEA+M/SHIG+1b3Qjv3grak
+         GUIJA3OhMb6hRGBi1B14OVHRVE9saMAxCvizdtgRjRVv3NwSOpxorrZ9GQ6IWePc6r2o
+         Gj8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707033114; x=1707637914;
+        d=1e100.net; s=20230601; t=1707079769; x=1707684569;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=r9lL0IzOj5zPv3u3eQbvaxza72dRt9HHWlCqgXcKhlY=;
-        b=tXBvK+jo4gWqH0UYJgGIsAQs1m28XFubawu41uq+ab9RqGOsK6Dnt/dTLo+GvtXBBj
-         /PsehYCeR8A8Cpm3ECRo+87OxTu8uU0pkk08sgav2Bo7CO7YtGcjm108lMtHSaJpvp3C
-         4fivd+huXCZGUqASNFzXIUVFOKR9PmThwlglJoibyleAZwIXRcI4VINOEaPCJpLJbXxd
-         x4nc0eu0XP5vKmb/u6p0mUNicqGIWjp9XO8V47PNgVXnkIQrb/UhpZ7VQRjWHvQ3FJCK
-         ZmyEJImXFN0dc4GSSaDS1dt9dwI8YUya2VZaYOm+2YBrMxZGO03Nx0VXLO9J2jkM/bYu
-         IxYw==
-X-Gm-Message-State: AOJu0YzvycKXcn+K+tXrzi46gJCius1OfYdYC3VEeOopLCqmf/eH9dT9
-	7kII3wreWhjUwUsbfXX/9Ir6/eRSbZQcW2mbbMc3NVnFGtpBe+odrIcU1QnH04A=
-X-Google-Smtp-Source: AGHT+IFaUId2YjI/7K0G74BgyKxetnOxYAKjZVZ/4EnhPSVz8M3hluftmtM9ljduBj6scQUzlvjrow==
-X-Received: by 2002:a17:906:e9b:b0:a36:741e:a5 with SMTP id p27-20020a1709060e9b00b00a36741e00a5mr9556198ejf.70.1707033114107;
-        Sat, 03 Feb 2024 23:51:54 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXdTdtaPKHz+ZjeZIntLpv33KdmF01cL/QmdmOUKZpIvQpEmz+OwrX9F3wNg2kOEiWJAayAX6RHgMs5kSWGbzUmv4v9qBd6ImKIdI9/AnHOhQME8w55iJk/yuXXDBaQiYmK94xX6LE=
-Received: from x1.fosdem.net ([2001:67c:1810:f051:d51b:7b6:cc25:3002])
-        by smtp.gmail.com with ESMTPSA id bz8-20020a1709070aa800b00a376758a0e9sm1098439ejc.81.2024.02.03.23.51.53
+        bh=C9vNtKM8DqygIqAKl16TYUucp9p/LzvgLyz6f5GCjAs=;
+        b=jqpNv9aPS3hMkypBqk+ysCs9YVZWktF6jF7IMCR5HGc4obmJGgQt3D3sVA1Xi1HTN3
+         a8YUojEGZjYR+Piek/b66b9nuVNmEZFz2JA+LWyVL+9AhC/l1fRcN7HzfZgb+QdUHcwZ
+         vVHVVlSF5xk81nhc1ACOjhxIcKQpBQYrpcmWqkqpVsKlty6ncbB72mAJ3+WNzOUEIiXZ
+         Cq52expclb4L5KNKPFgJ3GmuxX6eWld2SjAYllJjMcV6KXQ9ISN8GR8FHIPhWWXECiwq
+         ZONj0XfNWbYzAXQiBuHi8xCoY6lMWS9w34MU/VUmWANCj7WV/stiKpGZmXPNgP7DCh1e
+         w9sQ==
+X-Gm-Message-State: AOJu0Yy0JJZQPEyWZngcMHJ+avncZtvqutwxR6xOx3YHZhjCG0N4VY9D
+	CXiF9RCOF0DUcSsrNA01B2/xpeyCN9F3nILYwUtQLkYieauzlNSIDn2JYaFiFlM=
+X-Google-Smtp-Source: AGHT+IG0kIKQkKoNf11oeFseORSsEdlQKDOao2TBSYggURRgs4gEgeP9RdDC0uycTRngHbPeX7iXiA==
+X-Received: by 2002:a5e:a617:0:b0:7bf:5458:51a3 with SMTP id q23-20020a5ea617000000b007bf545851a3mr11686693ioi.6.1707079769403;
+        Sun, 04 Feb 2024 12:49:29 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV8y9XSENBbzSRd2jksg00gue54hvwhk3CX3EB9WO5VvpqBPdXDMylCEUgFRtFqdoCJK+FnGKPiHMPwrEhS9G44+iVaIMNN2hH0gxIACtYKYzW0wqDb48qnbgIlJClo5P672g==
+Received: from fedora-laptop.hsd1.nm.comcast.net (c-73-127-246-43.hsd1.nm.comcast.net. [73.127.246.43])
+        by smtp.gmail.com with ESMTPSA id z135-20020a6bc98d000000b007bf3754d792sm1847546iof.19.2024.02.04.12.49.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 23:51:53 -0800 (PST)
-From: Mathias Krause <minipli@grsecurity.net>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>,
+        Sun, 04 Feb 2024 12:49:29 -0800 (PST)
+From: Thomas Bertschinger <tahbertschinger@gmail.com>
+To: kent.overstreet@linux.dev,
 	linux-bcachefs@vger.kernel.org,
-	Mathias Krause <minipli@grsecurity.net>
-Subject: [PATCH] bcachefs: install fd later to avoid race with close
-Date: Sun,  4 Feb 2024 08:51:52 +0100
-Message-Id: <20240204075152.695920-1-minipli@grsecurity.net>
-X-Mailer: git-send-email 2.39.2
+	bfoster@redhat.com
+Cc: Thomas Bertschinger <tahbertschinger@gmail.com>
+Subject: [PATCH] rust: update bindgen to 0.69.4; remove custom type modifications
+Date: Sun,  4 Feb 2024 13:49:23 -0700
+Message-ID: <20240204204923.332908-1-tahbertschinger@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -67,37 +67,142 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Calling fd_install() makes a file reachable for userland, including the
-possibility to close the file descriptor, which leads to calling its
-'release' hook. If that happens before the code had a chance to bump the
-reference of the newly created task struct, the release callback will
-call put_task_struct() too early, leading to the premature destruction
-of the kernel thread.
+This updates rust-bindgen to version 0.69.4 which includes the patch
+199bee441ad0: "try to avoid #[repr(packed)] when align is needed". With
+this patch, bindgen generates code that is both ABI-correct and can be
+compiled by rustc, for 3 bcachefs types:
 
-Avoid that race by calling fd_install() later, after all the setup is
-done.
+- bkey
+- bch_extent_crc32
+- bch_extent_ptr
 
-Fixes: 1c6fdbd8f246 ("bcachefs: Initial commit")
-Signed-off-by: Mathias Krause <minipli@grsecurity.net>
+This allows us to remove the custom treatment for these three types.
+
+Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
 ---
- fs/bcachefs/thread_with_file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Cargo.lock             | 21 ++++++++++++---------
+ bch_bindgen/Cargo.toml |  2 +-
+ bch_bindgen/build.rs   | 43 +++++++++---------------------------------
+ 3 files changed, 22 insertions(+), 44 deletions(-)
 
-diff --git a/fs/bcachefs/thread_with_file.c b/fs/bcachefs/thread_with_file.c
-index b1c867aa2b58..9220d7de10db 100644
---- a/fs/bcachefs/thread_with_file.c
-+++ b/fs/bcachefs/thread_with_file.c
-@@ -53,9 +53,9 @@ int bch2_run_thread_with_file(struct thread_with_file *thr,
- 	if (ret)
- 		goto err;
+diff --git a/Cargo.lock b/Cargo.lock
+index bcbdbc5..9987974 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -119,17 +119,17 @@ dependencies = [
  
--	fd_install(fd, file);
- 	get_task_struct(thr->task);
- 	wake_up_process(thr->task);
-+	fd_install(fd, file);
- 	return fd;
- err:
- 	if (fd >= 0)
+ [[package]]
+ name = "bindgen"
+-version = "0.69.2"
++version = "0.69.4"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "a4c69fae65a523209d34240b60abe0c42d33d1045d445c0839d8a4894a736e2d"
++checksum = "a00dc851838a2120612785d195287475a3ac45514741da670b735818822129a0"
+ dependencies = [
+  "bitflags 2.4.2",
+  "cexpr",
+  "clang-sys",
++ "itertools",
+  "lazy_static",
+  "lazycell",
+  "log",
+- "peeking_take_while",
+  "prettyplease",
+  "proc-macro2",
+  "quote",
+@@ -332,6 +332,15 @@ dependencies = [
+  "windows-sys 0.52.0",
+ ]
+ 
++[[package]]
++name = "itertools"
++version = "0.12.1"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
++dependencies = [
++ "either",
++]
++
+ [[package]]
+ name = "lazy_static"
+ version = "1.4.0"
+@@ -425,12 +434,6 @@ version = "1.0.14"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "de3145af08024dea9fa9914f381a17b8fc6034dfb00f3a84013f7ff43f29ed4c"
+ 
+-[[package]]
+-name = "peeking_take_while"
+-version = "0.1.2"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "19b17cddbe7ec3f8bc800887bab5e717348c95ea2ca0b1bf0837fb964dc67099"
+-
+ [[package]]
+ name = "pkg-config"
+ version = "0.3.29"
+diff --git a/bch_bindgen/Cargo.toml b/bch_bindgen/Cargo.toml
+index fcc4668..63be4f3 100644
+--- a/bch_bindgen/Cargo.toml
++++ b/bch_bindgen/Cargo.toml
+@@ -19,4 +19,4 @@ paste = "1.0.11"
+ 
+ [build-dependencies]
+ pkg-config = "0.3"
+-bindgen = "0.69.2"
++bindgen = "0.69.4"
+diff --git a/bch_bindgen/build.rs b/bch_bindgen/build.rs
+index c9a90fc..1baa266 100644
+--- a/bch_bindgen/build.rs
++++ b/bch_bindgen/build.rs
+@@ -120,40 +120,15 @@ fn main() {
+         .expect("Writing to output file failed for: `keyutils.rs`");
+ }
+ 
+-// rustc has a limitation where it does not allow structs to have both a "packed" and "align"
+-// attribute. This means that bindgen cannot copy all attributes from some C types, like struct
+-// bkey, that are both packed and aligned.
++// rustc has a limitation where it does not allow structs with a "packed" attribute to contain a
++// member with an "align(N)" attribute. There is one type in bcachefs with this issue:
++// struct btree_node.
+ //
+-// bindgen tries to handle this situation smartly and for many types it will only apply a
+-// "packed(N)" attribute if that is good enough. However, there are a few types where bindgen
+-// does end up generating both a packed(N) and align(N) attribute. These types can't be compiled
+-// by rustc.
+-//
+-// To work around this, we can remove either the "packed" or "align" attribute. It happens that
+-// for all the types with this problem in bcachefs, removing the "packed" attribute and keeping
+-// the "align" attribute results in a type with the correct ABI.
+-//
+-// This function applies that transformation to the following bcachefs types that need it:
+-//   - bkey
+-//   - bch_extent_crc32
+-//   - bch_extent_ptr
+-//   - btree_node
++// Luckily, it happens that this type does not need the "packed(N)" attribute in Rust to have the
++// same ABI as C, so we can strip it off the bindgen output.
+ fn packed_and_align_fix(bindings: std::string::String) -> std::string::String {
+-    bindings
+-        .replace(
+-            "#[repr(C, packed(8))]\n#[repr(align(8))]\n#[derive(Debug, Default, Copy, Clone)]\npub struct bkey {",
+-            "#[repr(C, align(8))]\n#[derive(Debug, Default, Copy, Clone)]\npub struct bkey {",
+-        )
+-        .replace(
+-            "#[repr(C, packed(8))]\n#[repr(align(8))]\n#[derive(Debug, Default, Copy, Clone)]\npub struct bch_extent_crc32 {",
+-            "#[repr(C, align(8))]\n#[derive(Debug, Default, Copy, Clone)]\npub struct bch_extent_crc32 {",
+-        )
+-        .replace(
+-            "#[repr(C, packed(8))]\n#[repr(align(8))]\n#[derive(Debug, Default, Copy, Clone)]\npub struct bch_extent_ptr {",
+-            "#[repr(C, align(8))]\n#[derive(Debug, Default, Copy, Clone)]\npub struct bch_extent_ptr {",
+-        )
+-        .replace(
+-            "#[repr(C, packed(8))]\npub struct btree_node {",
+-            "#[repr(C, align(8))]\npub struct btree_node {",
+-        )
++    bindings.replace(
++        "#[repr(C, packed(8))]\npub struct btree_node {",
++        "#[repr(C, align(8))]\npub struct btree_node {",
++    )
+ }
 -- 
-2.39.2
+2.43.0
 
