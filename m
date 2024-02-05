@@ -1,53 +1,65 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1435FEF2
-	for <linux-bcachefs@vger.kernel.org>; Mon,  5 Feb 2024 19:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5925948CF2;
+	Mon,  5 Feb 2024 23:58:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707161819; cv=none; b=uhCczxGFiTPmmBiMaBu/QhQmgj4/h4gKn0ODWePNjf7MHJWY93h/ynX0VoXVaKGlMaoGkYk05rEtHQZBh3Ru1O6ImR1qD8q1099iT/ynIMoC0gbJQHbLaxFh8W7W3bLSUX16kNj0Mj1BKl+PN4K+u3npOIXlCLER9yMKQRf03kg=
+	t=1707177514; cv=none; b=meDH2kb/3E3OGYy9HvFFJhWrmjG+MXgE0cY9d2+fTp3Ps8/3nivrX0uEkJvRDm2z4rGTR3ra/GBlft50vopFQ97Jl6BvLFMjBnYF433xsOHHV6Z7wQvDXWXaD+mlaXQzcIP/4e9JqRUqjXwgYRy3Zw4SP+fruxkO2k61DNJ3z9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707161819; c=relaxed/simple;
-	bh=rCsmGWH16HRq1r6NTqd9BJG/A5eZPN+Pd1eN40T1c9w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qMPqVzC7ayQUKCD0aOAtQR86ML/PDECsbj41T9+65cg275AXw/agu0UmT1urg/0dwrBAC0e8jZIS49ffx6BGGmHTJbB0dcUDs68CUrjaq8LylF2cfVYTkuexT+Gvr0WtQv/qnimMIYk1DphgMYH4E8XhDUd+D6lzhPczcPm/tow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A6yXwFDB; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1707177514; c=relaxed/simple;
+	bh=93QXxafaVw5XvGO/nunfJv/0a5KfZBxmrHdx1Ptzq+M=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=jWA44upCpvLWN8B0VGGdLZRla6Y0cZfljYu1LIZ/nKOT6ZShNHVssDQCJymCFnagBzAcsu9A6aW0xe7etAmxlOHU1UBAP5KwV5nWwynGA/WR2nbwPlNP7jc+XAce9JJIoNm+bjQVrwmGEhSBsFY+/YGCxEwbYJlt4G6KXYBiAT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=deCfnlkG; arc=none smtp.client-ip=209.85.160.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A6yXwFDB"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707161817;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ECK4186IyFxCEqlMcn1f1352RTGxTblClRPHvVY727k=;
-	b=A6yXwFDBqpgqisOilxyqvseZjVFgylXwzr2DdhA44l9G2PPFpXUvDlGi0aSFObuiyOIgVd
-	IaIYdkjp2hx6JI0VusrSQ18LLQIU/u3e5EONasyq8Z/SN/NG7+V4uG0j2jvytQytmOMtKD
-	auYZJzR5RrdPfcxsMgc2GqsRW6XgzmM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-383-jBrlVGFFPfKbS9eioQS9Mw-1; Mon, 05 Feb 2024 14:36:55 -0500
-X-MC-Unique: jBrlVGFFPfKbS9eioQS9Mw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7EFD385A58B;
-	Mon,  5 Feb 2024 19:36:55 +0000 (UTC)
-Received: from bfoster (unknown [10.22.32.186])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 5CA5B2028CD2;
-	Mon,  5 Feb 2024 19:36:55 +0000 (UTC)
-Date: Mon, 5 Feb 2024 14:38:13 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: fix iov_iter count underflow on sub-block dio
- read
-Message-ID: <ZcE5JY279PGUrP9F@bfoster>
-References: <20240205154814.910664-1-bfoster@redhat.com>
- <4fdyk3to57izolmljjiehnn5kt5dxckhh2oodo7vk6gssgqbsb@6gsjfytnv2xy>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="deCfnlkG"
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-20503dc09adso3388107fac.2;
+        Mon, 05 Feb 2024 15:58:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707177511; x=1707782311; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=LtaKsqfpcyHuWJPjZvPw/ChfmsDTwQtI/UDfAaWKaM8=;
+        b=deCfnlkGvThZXSSrL/+2e4zxvV0ZNfCMEGIRpUSktFvbHNrzUdEkq35lORhND5LRQr
+         LS2fP63cddgZoUxIaUSvh2fQ5YiSV2skMoyEaesDCnmaSomClXH21yFuMAoZvNSI5iCt
+         6bRz5nO8KtL1duQniFQfhbEEY6oPz6mSrceV4uBR+5HqUgppMYvxv3mWs6PT/tWaEbXf
+         Khe6kyaMnwf3yloCnsfsuGEBVVLeZv/uLyeV1c0h7CEDk2HEtvly6CmnnhmxKW+AwDFb
+         /zaXGVyce4tJs2r2aDzsNlcGxqTcmWtD85C4MXBA5txczBmkricOj/xMR7YBx+xCZUVT
+         qpDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707177511; x=1707782311;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LtaKsqfpcyHuWJPjZvPw/ChfmsDTwQtI/UDfAaWKaM8=;
+        b=gbWG1OMS9AJVP0e0RKFBMBR6FXB7/SjugZaOvqAvMid3iC0NArraruZoiICIi2MfR7
+         miQmt7b8lAVQ7x82tx/sixNGZE66YjmFHtC7KasJ77uJbiF7V8N9IuQIIZLkOGEILzXX
+         5C8Sl1uZku1QEOlJLGJ0/LH1blJdkG5VUDzVBvt/Vyx7dwKdzmiwZp2eBr8vt3JJfKnt
+         9m01SD9tVc99LFknYvjGFdOPFsdEoO+i9sLPpyV7rGb5YTh2Ws8NavMZx1VSgq8Z4rCo
+         9MyBBsfDi3uUJWK1gQshsNQmH3NKWrABHhruvsXkxmkV97WL9o23y4c4PgMGcfTgPGG7
+         M+lw==
+X-Gm-Message-State: AOJu0Yzzb7TzAZrNIFtkk3U3x1SMkSy+Q3qGQjZdb6aJwsqKza3snjkZ
+	oNTcHz9+Flcw0zHiyw7ZADFVXkPqidYjyccP8/vEn9AmYKM10/QZ
+X-Google-Smtp-Source: AGHT+IFLSb/qzbcHV4+eK/vehAJPhhAMyWJ0waravQi5GuADBjdj5rmxTzMEH07ljUnTlNe1yaylxQ==
+X-Received: by 2002:a05:6870:bac7:b0:218:3c0a:7d75 with SMTP id js7-20020a056870bac700b002183c0a7d75mr823025oab.9.1707177511257;
+        Mon, 05 Feb 2024 15:58:31 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUPExShyc/bRXaRWNwyV382EpjROWLSZRHV+E1tHFlJX4UAhwzw/ml5wc9Zo77/jpdsVTeXv20H4AxQjFvom/yinEOhZBvnsB6r/v0bV9zuri73ASy5SavqSn5P4U1scnqV+K7ETfrwcqeIipUaWvDKZss=
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id g20-20020a635214000000b005d8b89bbf20sm637409pgb.63.2024.02.05.15.58.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 15:58:30 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 5 Feb 2024 13:58:29 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bcachefs: Use alloc_ordered_workqueue() to create ordered
+ workqueues
+Message-ID: <ZcF2JaEuwMdg9kYi@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -56,50 +68,74 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4fdyk3to57izolmljjiehnn5kt5dxckhh2oodo7vk6gssgqbsb@6gsjfytnv2xy>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Mon, Feb 05, 2024 at 02:15:36PM -0500, Kent Overstreet wrote:
-> On Mon, Feb 05, 2024 at 10:48:14AM -0500, Brian Foster wrote:
-> > bch2_direct_IO_read() checks the request offset and size for sector
-> > alignment and then falls through to a couple calculations to shrink
-> > the size of the request based on the inode size. The problem is that
-> > these checks round up to the fs block size, which runs the risk of
-> > underflowing iter->count if the block size happens to be large
-> > enough. This is triggered by fstest generic/361 with a 4k block
-> > size, which subsequently leads to a crash.
-> > 
-> > After some discussion, the original purpose of the shorten logic in this
-> > path is not totally clear. It appears to be intended as an optimization
-> > of limited value, so simplify things and avoid the underflow problem by
-> > removing it.
-> 
-> Thinking about this a bit more...
-> 
-> All that we're avoiding with the shorten is zeroing out the rest of the
-> read, which will happen in bch2_read_extent(); we won't be issuing any
-> IO, since that would require real data extents above i_size, which is of
-> course not allowed.
-> 
-> But zeroing out the rest of the read is actual work that's being
-> avoided, since if we return a short read (which is what we're doing
-> here) it's undefined what happens to the rest of the buffer.
-> 
-> So... maybe we should keep it, for the crazy but inevitable application
-> that uses a 1MB read buffer for everything, including O_DIRECT reads to
-> 4k files?
-> 
+BACKGROUND
+==========
 
-I had another change around that basically just protected against the
-underflow. I.e., something along the lines of the following, to also
-cover the additional use of shorten later in the function:
+When multiple work items are queued to a workqueue, their execution order
+doesn't match the queueing order. They may get executed in any order and
+simultaneously. When fully serialized execution - one by one in the queueing
+order - is needed, an ordered workqueue should be used which can be created
+with alloc_ordered_workqueue().
 
-	if (shorten >= iter->count)
-		shorten = 0;
+However, alloc_ordered_workqueue() was a later addition. Before it, an
+ordered workqueue could be obtained by creating an UNBOUND workqueue with
+@max_active==1. This originally was an implementation side-effect which was
+broken by 4c16bd327c74 ("workqueue: restore WQ_UNBOUND/max_active==1 to be
+ordered"). Because there were users that depended on the ordered execution,
+5c0338c68706 ("workqueue: restore WQ_UNBOUND/max_active==1 to be ordered")
+made workqueue allocation path to implicitly promote UNBOUND workqueues w/
+@max_active==1 to ordered workqueues.
 
-... and IIRC that seemed to work as well. But I'll probably have to take
-a closer look at that large buffer case to grok what's happening and the
-original purpose of this logic.
+While this has worked okay, overloading the UNBOUND allocation interface
+this way creates other issues. It's difficult to tell whether a given
+workqueue actually needs to be ordered and users that legitimately want a
+min concurrency level wq unexpectedly gets an ordered one instead. With
+planned UNBOUND workqueue updates to improve execution locality and more
+prevalence of chiplet designs which can benefit from such improvements, this
+isn't a state we wanna be in forever.
 
-Brian
+This patch series audits all callsites that create an UNBOUND workqueue w/
+@max_active==1 and converts them to alloc_ordered_workqueue() as necessary.
 
+WHAT TO LOOK FOR
+================
+
+The conversions are from
+
+  alloc_workqueue(WQ_UNBOUND | flags, 1, args..)
+
+to 
+
+  alloc_ordered_workqueue(flags, args...)
+
+which don't cause any functional changes. If you know that fully ordered
+execution is not ncessary, please let me know. I'll drop the conversion and
+instead add a comment noting the fact to reduce confusion while conversion
+is in progress.
+
+If you aren't fully sure, it's completely fine to let the conversion
+through. The behavior will stay exactly the same and we can always
+reconsider later.
+
+As there are follow-up workqueue core changes, I'd really appreciate if the
+patch can be routed through the workqueue tree w/ your acks. Thanks.
+
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Brian Foster <bfoster@redhat.com>
+---
+ fs/bcachefs/btree_update_interior.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/fs/bcachefs/btree_update_interior.c
++++ b/fs/bcachefs/btree_update_interior.c
+@@ -2484,7 +2484,7 @@ void bch2_fs_btree_interior_update_init_
+ int bch2_fs_btree_interior_update_init(struct bch_fs *c)
+ {
+ 	c->btree_interior_update_worker =
+-		alloc_workqueue("btree_update", WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
++		alloc_ordered_workqueue("btree_update", WQ_MEM_RECLAIM);
+ 	if (!c->btree_interior_update_worker)
+ 		return -BCH_ERR_ENOMEM_btree_interior_update_worker_init;
+ 
