@@ -1,39 +1,53 @@
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F970481C7
-	for <linux-bcachefs@vger.kernel.org>; Mon,  5 Feb 2024 19:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1435FEF2
+	for <linux-bcachefs@vger.kernel.org>; Mon,  5 Feb 2024 19:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707160545; cv=none; b=hgWZ5C3GvDisjETquiNm36jFn6OxOHBmzeWpXnwb2MIBpCQsMNq/dFiz6EnbwWGpz4JK7uWcGn4Dj1xvR55RSK9QlR9LDpBrCK9ec07A39HmfAqCQE1lcJGYMz9CHFvS6TFpGM8Do2UNY927nCty15scP4X0BZVzPDyiHhQfNNc=
+	t=1707161819; cv=none; b=uhCczxGFiTPmmBiMaBu/QhQmgj4/h4gKn0ODWePNjf7MHJWY93h/ynX0VoXVaKGlMaoGkYk05rEtHQZBh3Ru1O6ImR1qD8q1099iT/ynIMoC0gbJQHbLaxFh8W7W3bLSUX16kNj0Mj1BKl+PN4K+u3npOIXlCLER9yMKQRf03kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707160545; c=relaxed/simple;
-	bh=ST25p+sVZTvhGPFzPYOWryDi1C+zxQsPXngteX77vHQ=;
+	s=arc-20240116; t=1707161819; c=relaxed/simple;
+	bh=rCsmGWH16HRq1r6NTqd9BJG/A5eZPN+Pd1eN40T1c9w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KxGF3dEfXZRuKqlAl8bsohsQmtSVtx4GBjHol+W1QXN71nTeAKP+3dk5p91E7S/O99snhtMqc6AmhyO2ImzbnikIgpL3+sjvRcpQPR16OyEi2Uuwfa94AoFi4zV0ICUNNexeDvzuQb37WKkpOJHSW3V6YJoEI/b8Ld4uArh6MqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s6GSkg1d; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=qMPqVzC7ayQUKCD0aOAtQR86ML/PDECsbj41T9+65cg275AXw/agu0UmT1urg/0dwrBAC0e8jZIS49ffx6BGGmHTJbB0dcUDs68CUrjaq8LylF2cfVYTkuexT+Gvr0WtQv/qnimMIYk1DphgMYH4E8XhDUd+D6lzhPczcPm/tow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A6yXwFDB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s6GSkg1d"
-Date: Mon, 5 Feb 2024 14:15:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707160540;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A6yXwFDB"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707161817;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NV1cAy9I+gAwMD1jAYb2ngrg1ndVYX21XQFvVIg+Ot4=;
-	b=s6GSkg1de0mk71tZARDNB0qpIYmw8hyzx3+yAhjtjz8L3DF46XW2lIQFmXBoWD3qjGGl9t
-	aS06cDJ7+z3B2YHi8Y010EuZ3mquTW2JJb+PzqaG4esNQYlPF8IU2nOUC2LIId77najWb+
-	vFsh9BhCA37CCH+/LhfOOMphw89dsi4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Brian Foster <bfoster@redhat.com>
+	bh=ECK4186IyFxCEqlMcn1f1352RTGxTblClRPHvVY727k=;
+	b=A6yXwFDBqpgqisOilxyqvseZjVFgylXwzr2DdhA44l9G2PPFpXUvDlGi0aSFObuiyOIgVd
+	IaIYdkjp2hx6JI0VusrSQ18LLQIU/u3e5EONasyq8Z/SN/NG7+V4uG0j2jvytQytmOMtKD
+	auYZJzR5RrdPfcxsMgc2GqsRW6XgzmM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-383-jBrlVGFFPfKbS9eioQS9Mw-1; Mon, 05 Feb 2024 14:36:55 -0500
+X-MC-Unique: jBrlVGFFPfKbS9eioQS9Mw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7EFD385A58B;
+	Mon,  5 Feb 2024 19:36:55 +0000 (UTC)
+Received: from bfoster (unknown [10.22.32.186])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 5CA5B2028CD2;
+	Mon,  5 Feb 2024 19:36:55 +0000 (UTC)
+Date: Mon, 5 Feb 2024 14:38:13 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org
 Subject: Re: [PATCH] bcachefs: fix iov_iter count underflow on sub-block dio
  read
-Message-ID: <4fdyk3to57izolmljjiehnn5kt5dxckhh2oodo7vk6gssgqbsb@6gsjfytnv2xy>
+Message-ID: <ZcE5JY279PGUrP9F@bfoster>
 References: <20240205154814.910664-1-bfoster@redhat.com>
+ <4fdyk3to57izolmljjiehnn5kt5dxckhh2oodo7vk6gssgqbsb@6gsjfytnv2xy>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -42,34 +56,50 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240205154814.910664-1-bfoster@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <4fdyk3to57izolmljjiehnn5kt5dxckhh2oodo7vk6gssgqbsb@6gsjfytnv2xy>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Mon, Feb 05, 2024 at 10:48:14AM -0500, Brian Foster wrote:
-> bch2_direct_IO_read() checks the request offset and size for sector
-> alignment and then falls through to a couple calculations to shrink
-> the size of the request based on the inode size. The problem is that
-> these checks round up to the fs block size, which runs the risk of
-> underflowing iter->count if the block size happens to be large
-> enough. This is triggered by fstest generic/361 with a 4k block
-> size, which subsequently leads to a crash.
+On Mon, Feb 05, 2024 at 02:15:36PM -0500, Kent Overstreet wrote:
+> On Mon, Feb 05, 2024 at 10:48:14AM -0500, Brian Foster wrote:
+> > bch2_direct_IO_read() checks the request offset and size for sector
+> > alignment and then falls through to a couple calculations to shrink
+> > the size of the request based on the inode size. The problem is that
+> > these checks round up to the fs block size, which runs the risk of
+> > underflowing iter->count if the block size happens to be large
+> > enough. This is triggered by fstest generic/361 with a 4k block
+> > size, which subsequently leads to a crash.
+> > 
+> > After some discussion, the original purpose of the shorten logic in this
+> > path is not totally clear. It appears to be intended as an optimization
+> > of limited value, so simplify things and avoid the underflow problem by
+> > removing it.
 > 
-> After some discussion, the original purpose of the shorten logic in this
-> path is not totally clear. It appears to be intended as an optimization
-> of limited value, so simplify things and avoid the underflow problem by
-> removing it.
+> Thinking about this a bit more...
+> 
+> All that we're avoiding with the shorten is zeroing out the rest of the
+> read, which will happen in bch2_read_extent(); we won't be issuing any
+> IO, since that would require real data extents above i_size, which is of
+> course not allowed.
+> 
+> But zeroing out the rest of the read is actual work that's being
+> avoided, since if we return a short read (which is what we're doing
+> here) it's undefined what happens to the rest of the buffer.
+> 
+> So... maybe we should keep it, for the crazy but inevitable application
+> that uses a 1MB read buffer for everything, including O_DIRECT reads to
+> 4k files?
+> 
 
-Thinking about this a bit more...
+I had another change around that basically just protected against the
+underflow. I.e., something along the lines of the following, to also
+cover the additional use of shorten later in the function:
 
-All that we're avoiding with the shorten is zeroing out the rest of the
-read, which will happen in bch2_read_extent(); we won't be issuing any
-IO, since that would require real data extents above i_size, which is of
-course not allowed.
+	if (shorten >= iter->count)
+		shorten = 0;
 
-But zeroing out the rest of the read is actual work that's being
-avoided, since if we return a short read (which is what we're doing
-here) it's undefined what happens to the rest of the buffer.
+... and IIRC that seemed to work as well. But I'll probably have to take
+a closer look at that large buffer case to grok what's happening and the
+original purpose of this logic.
 
-So... maybe we should keep it, for the crazy but inevitable application
-that uses a 1MB read buffer for everything, including O_DIRECT reads to
-4k files?
+Brian
+
