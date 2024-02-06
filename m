@@ -1,65 +1,40 @@
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5925948CF2;
-	Mon,  5 Feb 2024 23:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02141361
+	for <linux-bcachefs@vger.kernel.org>; Tue,  6 Feb 2024 00:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707177514; cv=none; b=meDH2kb/3E3OGYy9HvFFJhWrmjG+MXgE0cY9d2+fTp3Ps8/3nivrX0uEkJvRDm2z4rGTR3ra/GBlft50vopFQ97Jl6BvLFMjBnYF433xsOHHV6Z7wQvDXWXaD+mlaXQzcIP/4e9JqRUqjXwgYRy3Zw4SP+fruxkO2k61DNJ3z9g=
+	t=1707178234; cv=none; b=tVCFliZJy/IG3iZS54XTPdBUGRuzJLP19O+1jgQQT7u13s6+1hi4fzZRZWszm/1Y7YHPQDwATuytKNVhn5I5h8ACfXeFVh1f8YeRRStg8OwMlvnIPxOosKn769fFIfUYC0T8I+8qqjWATuX7vtL0ZZinMrOK5/XIPhOsYDpsShQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707177514; c=relaxed/simple;
-	bh=93QXxafaVw5XvGO/nunfJv/0a5KfZBxmrHdx1Ptzq+M=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=jWA44upCpvLWN8B0VGGdLZRla6Y0cZfljYu1LIZ/nKOT6ZShNHVssDQCJymCFnagBzAcsu9A6aW0xe7etAmxlOHU1UBAP5KwV5nWwynGA/WR2nbwPlNP7jc+XAce9JJIoNm+bjQVrwmGEhSBsFY+/YGCxEwbYJlt4G6KXYBiAT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=deCfnlkG; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1707178234; c=relaxed/simple;
+	bh=mY3kM4wkEcCfDb8VcAjk8TVVa8cwcy1QsEtwBHhbYzg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dp0u53hk0sypnNNCL33cojLAbvJvZTv3gBUXFf4UzyOjyhc7SlD0TRetMIXgh7IcGAeqbYxk9k8rmeirOqWz2t+VPyM7GHo/6geQsraHI1x4/mmKSNEVpKq1/3VC3OQCjd6QtFz2KzPC81OWdOUHV5PQ6IeqAIw6BJNOA6ojbKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qOsAQHWA; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="deCfnlkG"
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-20503dc09adso3388107fac.2;
-        Mon, 05 Feb 2024 15:58:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707177511; x=1707782311; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=LtaKsqfpcyHuWJPjZvPw/ChfmsDTwQtI/UDfAaWKaM8=;
-        b=deCfnlkGvThZXSSrL/+2e4zxvV0ZNfCMEGIRpUSktFvbHNrzUdEkq35lORhND5LRQr
-         LS2fP63cddgZoUxIaUSvh2fQ5YiSV2skMoyEaesDCnmaSomClXH21yFuMAoZvNSI5iCt
-         6bRz5nO8KtL1duQniFQfhbEEY6oPz6mSrceV4uBR+5HqUgppMYvxv3mWs6PT/tWaEbXf
-         Khe6kyaMnwf3yloCnsfsuGEBVVLeZv/uLyeV1c0h7CEDk2HEtvly6CmnnhmxKW+AwDFb
-         /zaXGVyce4tJs2r2aDzsNlcGxqTcmWtD85C4MXBA5txczBmkricOj/xMR7YBx+xCZUVT
-         qpDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707177511; x=1707782311;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LtaKsqfpcyHuWJPjZvPw/ChfmsDTwQtI/UDfAaWKaM8=;
-        b=gbWG1OMS9AJVP0e0RKFBMBR6FXB7/SjugZaOvqAvMid3iC0NArraruZoiICIi2MfR7
-         miQmt7b8lAVQ7x82tx/sixNGZE66YjmFHtC7KasJ77uJbiF7V8N9IuQIIZLkOGEILzXX
-         5C8Sl1uZku1QEOlJLGJ0/LH1blJdkG5VUDzVBvt/Vyx7dwKdzmiwZp2eBr8vt3JJfKnt
-         9m01SD9tVc99LFknYvjGFdOPFsdEoO+i9sLPpyV7rGb5YTh2Ws8NavMZx1VSgq8Z4rCo
-         9MyBBsfDi3uUJWK1gQshsNQmH3NKWrABHhruvsXkxmkV97WL9o23y4c4PgMGcfTgPGG7
-         M+lw==
-X-Gm-Message-State: AOJu0Yzzb7TzAZrNIFtkk3U3x1SMkSy+Q3qGQjZdb6aJwsqKza3snjkZ
-	oNTcHz9+Flcw0zHiyw7ZADFVXkPqidYjyccP8/vEn9AmYKM10/QZ
-X-Google-Smtp-Source: AGHT+IFLSb/qzbcHV4+eK/vehAJPhhAMyWJ0waravQi5GuADBjdj5rmxTzMEH07ljUnTlNe1yaylxQ==
-X-Received: by 2002:a05:6870:bac7:b0:218:3c0a:7d75 with SMTP id js7-20020a056870bac700b002183c0a7d75mr823025oab.9.1707177511257;
-        Mon, 05 Feb 2024 15:58:31 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUPExShyc/bRXaRWNwyV382EpjROWLSZRHV+E1tHFlJX4UAhwzw/ml5wc9Zo77/jpdsVTeXv20H4AxQjFvom/yinEOhZBvnsB6r/v0bV9zuri73ASy5SavqSn5P4U1scnqV+K7ETfrwcqeIipUaWvDKZss=
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id g20-20020a635214000000b005d8b89bbf20sm637409pgb.63.2024.02.05.15.58.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 15:58:30 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 5 Feb 2024 13:58:29 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bcachefs: Use alloc_ordered_workqueue() to create ordered
- workqueues
-Message-ID: <ZcF2JaEuwMdg9kYi@slm.duckdns.org>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qOsAQHWA"
+Date: Mon, 5 Feb 2024 19:10:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707178230;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DGtsKhqTTNpaIDjq1vKDcZl0fR89t64g8nFeZ7iH1Uo=;
+	b=qOsAQHWA4L0Bjk0srxhctSJinauhHQq3yXq31wFyts011eQd0XotTcMs9/2pJAELDGFVlO
+	+gvRWbGsZu901GPSYhTcIDa5qwfyhacsCN/Zd3tpbmvAsrYykcild9nfaX16ERyxHORLbI
+	U4OWXlFzMf1Kl6MpbbiZnik839L+nKw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: Use alloc_ordered_workqueue() to create
+ ordered workqueues
+Message-ID: <kksa5w6lgxu66h223quzkw33523zgoltqvl74lmthb4aaj7iat@rss6cnpn3t2p>
+References: <ZcF2JaEuwMdg9kYi@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -68,74 +43,84 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ZcF2JaEuwMdg9kYi@slm.duckdns.org>
+X-Migadu-Flow: FLOW_OUT
 
-BACKGROUND
-==========
+On Mon, Feb 05, 2024 at 01:58:29PM -1000, Tejun Heo wrote:
+> BACKGROUND
+> ==========
+> 
+> When multiple work items are queued to a workqueue, their execution order
+> doesn't match the queueing order. They may get executed in any order and
+> simultaneously. When fully serialized execution - one by one in the queueing
+> order - is needed, an ordered workqueue should be used which can be created
+> with alloc_ordered_workqueue().
+> 
+> However, alloc_ordered_workqueue() was a later addition. Before it, an
+> ordered workqueue could be obtained by creating an UNBOUND workqueue with
+> @max_active==1. This originally was an implementation side-effect which was
+> broken by 4c16bd327c74 ("workqueue: restore WQ_UNBOUND/max_active==1 to be
+> ordered"). Because there were users that depended on the ordered execution,
+> 5c0338c68706 ("workqueue: restore WQ_UNBOUND/max_active==1 to be ordered")
+> made workqueue allocation path to implicitly promote UNBOUND workqueues w/
+> @max_active==1 to ordered workqueues.
+> 
+> While this has worked okay, overloading the UNBOUND allocation interface
+> this way creates other issues. It's difficult to tell whether a given
+> workqueue actually needs to be ordered and users that legitimately want a
+> min concurrency level wq unexpectedly gets an ordered one instead. With
+> planned UNBOUND workqueue updates to improve execution locality and more
+> prevalence of chiplet designs which can benefit from such improvements, this
+> isn't a state we wanna be in forever.
+> 
+> This patch series audits all callsites that create an UNBOUND workqueue w/
+> @max_active==1 and converts them to alloc_ordered_workqueue() as necessary.
+> 
+> WHAT TO LOOK FOR
+> ================
+> 
+> The conversions are from
+> 
+>   alloc_workqueue(WQ_UNBOUND | flags, 1, args..)
+> 
+> to 
+> 
+>   alloc_ordered_workqueue(flags, args...)
+> 
+> which don't cause any functional changes. If you know that fully ordered
+> execution is not ncessary, please let me know. I'll drop the conversion and
+> instead add a comment noting the fact to reduce confusion while conversion
+> is in progress.
+> 
+> If you aren't fully sure, it's completely fine to let the conversion
+> through. The behavior will stay exactly the same and we can always
+> reconsider later.
+> 
+> As there are follow-up workqueue core changes, I'd really appreciate if the
+> patch can be routed through the workqueue tree w/ your acks. Thanks.
+> 
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Brian Foster <bfoster@redhat.com>
+> ---
+>  fs/bcachefs/btree_update_interior.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- a/fs/bcachefs/btree_update_interior.c
+> +++ b/fs/bcachefs/btree_update_interior.c
+> @@ -2484,7 +2484,7 @@ void bch2_fs_btree_interior_update_init_
+>  int bch2_fs_btree_interior_update_init(struct bch_fs *c)
+>  {
+>  	c->btree_interior_update_worker =
+> -		alloc_workqueue("btree_update", WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
+> +		alloc_ordered_workqueue("btree_update", WQ_MEM_RECLAIM);
+>  	if (!c->btree_interior_update_worker)
+>  		return -BCH_ERR_ENOMEM_btree_interior_update_worker_init;
+>  
 
-When multiple work items are queued to a workqueue, their execution order
-doesn't match the queueing order. They may get executed in any order and
-simultaneously. When fully serialized execution - one by one in the queueing
-order - is needed, an ordered workqueue should be used which can be created
-with alloc_ordered_workqueue().
+This one doesn't actually need to be ordered - if anything, we might
+want to bump up max_active.
 
-However, alloc_ordered_workqueue() was a later addition. Before it, an
-ordered workqueue could be obtained by creating an UNBOUND workqueue with
-@max_active==1. This originally was an implementation side-effect which was
-broken by 4c16bd327c74 ("workqueue: restore WQ_UNBOUND/max_active==1 to be
-ordered"). Because there were users that depended on the ordered execution,
-5c0338c68706 ("workqueue: restore WQ_UNBOUND/max_active==1 to be ordered")
-made workqueue allocation path to implicitly promote UNBOUND workqueues w/
-@max_active==1 to ordered workqueues.
-
-While this has worked okay, overloading the UNBOUND allocation interface
-this way creates other issues. It's difficult to tell whether a given
-workqueue actually needs to be ordered and users that legitimately want a
-min concurrency level wq unexpectedly gets an ordered one instead. With
-planned UNBOUND workqueue updates to improve execution locality and more
-prevalence of chiplet designs which can benefit from such improvements, this
-isn't a state we wanna be in forever.
-
-This patch series audits all callsites that create an UNBOUND workqueue w/
-@max_active==1 and converts them to alloc_ordered_workqueue() as necessary.
-
-WHAT TO LOOK FOR
-================
-
-The conversions are from
-
-  alloc_workqueue(WQ_UNBOUND | flags, 1, args..)
-
-to 
-
-  alloc_ordered_workqueue(flags, args...)
-
-which don't cause any functional changes. If you know that fully ordered
-execution is not ncessary, please let me know. I'll drop the conversion and
-instead add a comment noting the fact to reduce confusion while conversion
-is in progress.
-
-If you aren't fully sure, it's completely fine to let the conversion
-through. The behavior will stay exactly the same and we can always
-reconsider later.
-
-As there are follow-up workqueue core changes, I'd really appreciate if the
-patch can be routed through the workqueue tree w/ your acks. Thanks.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>
----
- fs/bcachefs/btree_update_interior.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/fs/bcachefs/btree_update_interior.c
-+++ b/fs/bcachefs/btree_update_interior.c
-@@ -2484,7 +2484,7 @@ void bch2_fs_btree_interior_update_init_
- int bch2_fs_btree_interior_update_init(struct bch_fs *c)
- {
- 	c->btree_interior_update_worker =
--		alloc_workqueue("btree_update", WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
-+		alloc_ordered_workqueue("btree_update", WQ_MEM_RECLAIM);
- 	if (!c->btree_interior_update_worker)
- 		return -BCH_ERR_ENOMEM_btree_interior_update_worker_init;
- 
+Tejun, can you drop this patch? If you're trying to get rid of all
+WQ_UNBOUND with max_active=1 workqueues for your own auditing, either
+you or I could change that to 8.
