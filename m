@@ -1,80 +1,63 @@
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E72389
-	for <linux-bcachefs@vger.kernel.org>; Tue,  6 Feb 2024 00:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A3C128831;
+	Tue,  6 Feb 2024 07:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707178544; cv=none; b=tSMxrAerVLiPwTxZ5hv9iZxb3tGTQ7IiXoMKKjaLgjYCKFm59rKD/ehALEnCBuPmxjtzWB8XgeUz+s3a20EnB34OgPohCYQSIFXWHk3yE4DwxQjiq3fVnzDDUywt7i34D9ELuqj4imZvIXmbXyQQEqkpdyujYlfruuUaT/Amzaw=
+	t=1707205646; cv=none; b=Deo5pmighKoFyi6m/mqod5+O3fccMQEkc9rxUFGOBq9i0kVAegCDW35YU+KpCiJU2L04N+zLOIWIJEPWyw0R/An1vyz37irmj4Uq+rWY7C0P2ghjHlvkcl/Fz2A0lr1U3f5g6mY4oJEz6PWpbK5k4524TE+0Y4yCZL9Sw+0Gep4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707178544; c=relaxed/simple;
-	bh=9NypLZM2tEXd+GyB6FpQmrft/6iRx1o5Z33y+VeHbpA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NWnQnSKYIY/1WHME+FU2v9Dp7f92WRXAMjVuJgizGjEbVNsp45OLB3e6OUmTA6gWjRtcTg+HyDPuwYBdj0ttzFmjI0jNWaYBydw7jrviCp/763s8n0K09kOaTCImzd0bssAYB06hL1jqp3dPicpbwxcjZ+VKEkWyUKRnxauknvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DeicHDOc; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1707205646; c=relaxed/simple;
+	bh=YwhZgwgbQswfOHSxcvvJqiI10qad8vn74BWIWjWT/yI=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=IElX7QxNOWE435sycAYjYCOH2QU131ra7LvCpKQCbBqiW9zeqn5G3Pqm09+k761/wxGKpRb6VGUNYx4q8gIUH4e8OHsDUs9kKgk+owR9YSS7FzlDOF0S7ckj6yH79+/OPgXnmtTSkEQbLVIhOkh98R9yPjq34XsAGG30M3mK91U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tgScM+Lq; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DeicHDOc"
-Date: Mon, 5 Feb 2024 19:15:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707178540;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=heVNvJcnn6416qhrWoUDj7AImSBv0rywq2SJ2v2xunk=;
-	b=DeicHDOcckGsOp/J4wGcUd6QLXQbkhuFW+8ms0A5sP4k9wD2JOJ/mX/VnA8Thw1QrKHjKu
-	0D0gpg+YLG3CINRgf0oS8Jg6Y+1UL44u6763x2XVn8dN4i3eyTU5s5D5AfzV+UAMZ/in92
-	pfrMmKjANw4yUZRtK0IOkgRGtZGf/Yg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for 6.8-rc4
-Message-ID: <v6czqjwdsso2hy6be7qeu4mqxsx4oydq6shavws4k7sexshcrp@np4inrse4e4p>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tgScM+Lq"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 44C4BC433C7;
+	Tue,  6 Feb 2024 07:47:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707205646;
+	bh=YwhZgwgbQswfOHSxcvvJqiI10qad8vn74BWIWjWT/yI=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=tgScM+Lq/MFetVQA1xBBsAy75mwgwc+vGkhzoctpoe/rg0gOLg0IdQP0p6PZ3lva9
+	 fjRuxGbinTuFPna0H/XLewLPToOTfRuKmQMnSeXW/4K+uGWC2YWbeRmc1j7jG/GMKb
+	 1PEPu1hymyKZeNPoYeNauGimi4ThEhuJxCjK/GYWM2yczck8fgXFXmFVCQ6UZWi84u
+	 QAH9PGGmO8GgDOXH3UdjS/jV3GGPwIH14+PyI57ldDac5+LC1ZXk5Mehj9n96EeoUh
+	 wB7IThGqeQ2DlMJQX2PGa9Za9K0ufaMXpDHYHs0eS6Ks40Fv4Jlq4oKNFJwOCV0HbA
+	 Vxc/wdXpl+N8Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 33483E2F2ED;
+	Tue,  6 Feb 2024 07:47:26 +0000 (UTC)
+Subject: Re: [GIT PULL] bcachefs fixes for 6.8-rc4
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <v6czqjwdsso2hy6be7qeu4mqxsx4oydq6shavws4k7sexshcrp@np4inrse4e4p>
+References: <v6czqjwdsso2hy6be7qeu4mqxsx4oydq6shavws4k7sexshcrp@np4inrse4e4p>
+X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <v6czqjwdsso2hy6be7qeu4mqxsx4oydq6shavws4k7sexshcrp@np4inrse4e4p>
+X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-02-05
+X-PR-Tracked-Commit-Id: 7b508b323b2ec45be59769bd4e4aeba729c52cf6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 99bd3cb0d12e85d5114425353552121ec8f93adc
+Message-Id: <170720564619.3974.9278369920294903060.pr-tracker-bot@kernel.org>
+Date: Tue, 06 Feb 2024 07:47:26 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
 
-The following changes since commit d2fda304bb739b97c1a3e46e39700eb49f07a62c:
+The pull request you sent on Mon, 5 Feb 2024 19:15:32 -0500:
 
-  bcachefs: __lookup_dirent() works in snapshot, not subvol (2024-01-25 20:02:11 -0500)
+> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-02-05
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/99bd3cb0d12e85d5114425353552121ec8f93adc
 
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-02-05
+Thank you!
 
-for you to fetch changes up to 7b508b323b2ec45be59769bd4e4aeba729c52cf6:
-
-  bcachefs: time_stats: Check for last_event == 0 when updating freq stats (2024-02-05 01:16:31 -0500)
-
-----------------------------------------------------------------
-bcachefs fixes for v6.8-rc4
-
-Two serious ones here that we'll want to backport to stable: a fix for a
-race in the thread_with_file code, and another locking fixup in the
-subvolume deletion path.
-
-----------------------------------------------------------------
-Guoyu Ou (1):
-      bcachefs: unlock parent dir if entry is not found in subvolume deletion
-
-Helge Deller (1):
-      bcachefs: Fix build on parisc by avoiding __multi3()
-
-Kent Overstreet (1):
-      bcachefs: time_stats: Check for last_event == 0 when updating freq stats
-
-Mathias Krause (1):
-      bcachefs: install fd later to avoid race with close
-
- fs/bcachefs/fs-ioctl.c          | 4 ++--
- fs/bcachefs/mean_and_variance.h | 2 +-
- fs/bcachefs/thread_with_file.c  | 2 +-
- fs/bcachefs/util.c              | 5 +++--
- 4 files changed, 7 insertions(+), 6 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
