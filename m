@@ -1,170 +1,126 @@
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530E01CF8D
-	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Feb 2024 06:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A3E1B5B3;
+	Wed,  7 Feb 2024 11:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707289135; cv=none; b=Vbg648FUNPR3g2pHpucKD3rCIe4atqmjI9G4tnZ++0KcQlUd++BOmVsxBCqBL4quK9JYckCUmHN+jHxXucuXwClgKh3uAZ1GRn3FqOWE9sLnjI1wJWdlL7/7QT2c4wBvm1lE+L8nmlJXOGnmNXYxKMD9/bS2b2srSv7FX3km+7c=
+	t=1707303979; cv=none; b=EFycXeqWdIOnYvj7J2xKofdmQAkKmPIkpyd/p8CuvooCbMRs5WE3fUH05MgjoIIAio6y+hz1ltrRZNX00cIVsvM53i9eh38F3Fz13GYjp/4MrJqgBnHRWLUp2blBlJ1eoaG99ckwxmDQLgNfqrUY7KmFmyE12n5GFIm2zfJJIhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707289135; c=relaxed/simple;
-	bh=hGQdL7Pb3ieOdj6NN/Nx2EaOMhnf7hDUVPdl0cr8epc=;
+	s=arc-20240116; t=1707303979; c=relaxed/simple;
+	bh=OqkbEuGG7NXNqpM7nP0dy4/Ha5w5xp44TS/914MtwbI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KpuqWMBzxaBK2GOMn/c2d1ZjsrqMmyFfAp0YdH0kWsH2EUCeDDpzr76LO692e/7ITy13AAc9jrG20Eg7Gy1V425hDuEFdHlTx8yaAdLkGjqQjzvdF1q87mv1idIR3iqufO5QsdzlXhCkEQgFuyjulJ6Js8hj1f5lr+pvODm/z58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=QRSkfQQH; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+	 To:Cc:Content-Type; b=fcZy1AqQovtjhlwq3bk9feiwVUO/BGJ73H8i1YNdpJrpyfKmgJGpOo0wgZAH/lmusqMD9ke2yQx4geFxp5gHfMOIFYM6rftMzLNfVnpueeff06VqLahY7b4z+2djmeNKNwr2JERZ9ptsYR8HPOPV6ONf2A7tjNxMJGi54U47ejY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LyUk6azY; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="QRSkfQQH"
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60492a2593fso1913167b3.2
-        for <linux-bcachefs@vger.kernel.org>; Tue, 06 Feb 2024 22:58:52 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LyUk6azY"
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-60498c31743so2221627b3.3;
+        Wed, 07 Feb 2024 03:06:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1707289131; x=1707893931; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707303977; x=1707908777; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qADUWqhu/lzA1GSQbIFX5bCS8/LLHdKCMAhzZYJcLro=;
-        b=QRSkfQQHH7S3S5EKo8rW27TghaM894kukGz+Jd12+x+H4jKQzSAUYxCLvQRJ7fl8Tm
-         VRcICHUwjf5EDQ7Ub5hmUTJxRe/BUoCEQBzM2nX/ulBNLPY057fRLcKfIG70KHT4q90c
-         rs2QCYHmVaKnTNO9CuwHcQKRmuaVBK2Ein4thiOe1sHbdvhddRgJ9xw+hvnG1JjhDdY9
-         KdWjvI95wYbEOeNk2yYC7QPrla44DfR6iPSDMm29lLFORAmKyFdM9yVfdCtti6tr3u/A
-         S9r9KTDAMoknLQeMyjrRkjBww4z3Zt+U4/kp3jYbNhSxcl/5XdJr3V+GaFCbd21pfJD+
-         LbgA==
+        bh=OqkbEuGG7NXNqpM7nP0dy4/Ha5w5xp44TS/914MtwbI=;
+        b=LyUk6azYXsjk8lFUNp3vlorkUVdhQxGkTzC9RGkqmsJBYBY1TiVE5sLxZyVilP1hHi
+         GqI/TVOdU8oVvf9+/Cj/ivxtO5ZpaKRIUCnKEkGANU3wMSUpYVZFyhTrKgTJkfFQh9v4
+         Cse/bfx4IGX7qhhFExMVEFfhGADNkxMShjn4DgFWGdix2ykCXre7gVZkWe0iJJ3fGWZT
+         qrSdRB7i9ikpVjmtPS0N0A2DdHTVbzvJ3oqM9oquCRlZZ3dfB4kKdxwPOXvGWlwSqP6s
+         puDTzzWSUzsRlHFPlSK+m3+FrGc3ZNJcnhn487Hp+pO/ryoxQ2Mgnr5OfTHjYOhxITPE
+         WKJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707289131; x=1707893931;
+        d=1e100.net; s=20230601; t=1707303977; x=1707908777;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qADUWqhu/lzA1GSQbIFX5bCS8/LLHdKCMAhzZYJcLro=;
-        b=pUix1LzyqI4G/y2GklYjE7/Bb0gW0saG+kFTXe3+MWqwa/nJd/WXkLZabH+S2SnMMj
-         DCD86grqgd/L5705sNOm5C/w2Gn2EJvLtETqussw2JaTX1Pen4e+Vxct1Y/Ks4Pk9N5a
-         ngzaVJ1QUkeL4VriTF/nGFRiEZoqmF0rC5gHD8/hHp2yVYg/tNVzKzbs2AnOHVFUCR1f
-         UMc3mOv9Aw0BnHrSBnQVt1caP6qc9gmaBd9kmfSE+4KoDpBG+0lOTJ7itmLS4N9MP7EI
-         uj1qRE08dy5UPM9H4kOK7ZmArauu6zsk8Ttnf/ef6JBU8axJRHG7asJm0IVq+TEURD/B
-         eKew==
-X-Forwarded-Encrypted: i=1; AJvYcCWskNBFUOOjfqBeYiyUsFcyr53G1Xh/mQmUFji+oP8ij75/uPEubhZ9bx+wR9IMHHa6+5Ms25HJNzN3MBoTx1GYmHUelEjucK/Lyvsu31s=
-X-Gm-Message-State: AOJu0YxS3Ky5veQN2CZgldAl+Nv5wnfUZ7jbgu5YoAR+iTs0JRCXsbyP
-	rIN8kI/KKwxcYni9TFSN5aAjIuGbuxhFwWzDeS6h06ZBORZUwujMGHdXEjGAKxZ1pS3S39H9fOn
-	OB6hiegwYl8SRyYU8r3bVJcSQonKGMc4UE5KuGLaxCXarZlhZ+qxZQQ==
-X-Google-Smtp-Source: AGHT+IEaePtWGAcs6cY6BlYozZs9/7GM+wHXN+9aCjmPI/3evE1sIwzWlPkWpdgiK4VRxdNqtj3F00+U+axcbSHU9rI=
-X-Received: by 2002:a05:690c:72f:b0:604:11f9:5bfb with SMTP id
- bt15-20020a05690c072f00b0060411f95bfbmr4250202ywb.18.1707289130986; Tue, 06
- Feb 2024 22:58:50 -0800 (PST)
+        bh=OqkbEuGG7NXNqpM7nP0dy4/Ha5w5xp44TS/914MtwbI=;
+        b=a0qhxnV6gAfql4FH1MS/s/4GKRvMSCLM8bMW2Khs6hxBVUY3ZTCXMcVJcu2As4h3jA
+         Y6hM15iJk3dICV2eGiUDtgad+T/h8wOFC6gPLN6f6t9OdbvjVbNvrseOwV1LASs+bWfk
+         aslUb8VHRauslJrtsLgf1Au3J4ez3CQOSUZtP1mFHCo6NLfq6uJqQZnEFXFyfiaUp7ec
+         g+c7ezrBhG+DpQSJbkoAY7zQUTN1vK7tbYy08I/tJxpGWfFTKAeVqPP2O1Ckx6vuel7x
+         xwU10V61OSN1UQLNfDFDaJQp6wbpO+xCgYSmmQUGSWJEUWXU6KqBgIkj+riJtOwre5sy
+         CNHw==
+X-Gm-Message-State: AOJu0YykJ80HphzGKg1NX0DesnzyqmEeAtzTRZxDXt0ElvRNH4LBLgnK
+	E2jCwhu17A9DyPmXmdhHct9HK9fLd6LHd9wB2zGElmRH5yzz4iiv3ydh+jRMpOFv1TWRMdowzrb
+	dilgCwfoPVZmXJIQAp/QNUR/uUc4=
+X-Google-Smtp-Source: AGHT+IHsjU4hinncRp4nROnRthRfO5WuZrBm8ZzErP9Em5jlbg9uemMNuNGdo2qGiNircg3XmtvcQBYwXyIonIoOHNo=
+X-Received: by 2002:a0d:d991:0:b0:604:9403:f76b with SMTP id
+ b139-20020a0dd991000000b006049403f76bmr855659ywe.51.1707303977017; Wed, 07
+ Feb 2024 03:06:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207055845.611710-1-tahbertschinger@gmail.com>
-In-Reply-To: <20240207055845.611710-1-tahbertschinger@gmail.com>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Wed, 7 Feb 2024 01:58:40 -0500
-Message-ID: <CALNs47u9QU2t1ug9_3_-nPzJCOR=uAHpuCT-yVd-MfWFkVVeYA@mail.gmail.com>
-Subject: Re: [PATCH RFC 3/3] bcachefs: introduce Rust module implementation
+References: <20240207055558.611606-1-tahbertschinger@gmail.com>
+In-Reply-To: <20240207055558.611606-1-tahbertschinger@gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Wed, 7 Feb 2024 12:06:05 +0100
+Message-ID: <CANiq72=00+vZ+BqacSh+Xk8_VtNPVADH2Hcsyo-MPufojXvNFQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] bcachefs: add framework for internal Rust code
 To: Thomas Bertschinger <tahbertschinger@gmail.com>
 Cc: rust-for-linux@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, kent.overstreet@linux.dev, bfoster@redhat.com, 
-	ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com
+	linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	kent.overstreet@linux.dev, bfoster@redhat.com, ojeda@kernel.org, 
+	alex.gaynor@gmail.com, wedsonaf@gmail.com, masahiroy@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 7, 2024 at 12:59=E2=80=AFAM Thomas Bertschinger
+On Wed, Feb 7, 2024 at 6:57=E2=80=AFAM Thomas Bertschinger
 <tahbertschinger@gmail.com> wrote:
 >
-> This patch uses the bcachefs bindgen framework to introduce a Rust
-> implementation of the module entry and exit functions. With this change,
-> bcachefs is now a Rust kernel module (that calls C functions to do most
-> of its work).
->
-> This is only if CONFIG_BCACHEFS_RUST is defined; the C implementation of
-> the module init and exit code is left around so that bcachefs remains
-> usable in kernels compiled without Rust support.
->
-> Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
-> ---
->
-> [...]
->
-> diff --git a/fs/bcachefs/bcachefs_module.rs b/fs/bcachefs/bcachefs_module=
-.rs
-> new file mode 100644
-> index 000000000000..8db2de8139bc
-> --- /dev/null
-> +++ b/fs/bcachefs/bcachefs_module.rs
-> @@ -0,0 +1,66 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +//! bcachefs
-> +//!
-> +//! Rust kernel module for bcachefs.
-> +
-> +pub mod bindings;
-> +
-> +use kernel::prelude::*;
-> +
-> +use crate::bindings::*;
+> This series adds support for Rust code into bcachefs. This only enables
+> using Rust internally within bcachefs; there are no public Rust APIs
+> added. Rust support is hidden behind a new config option,
+> CONFIG_BCACHEFS_RUST. It is optional and bcachefs can still be built
+> with full functionality without rust.
 
-Most in-tree code uses the `bindings::` prefix when referencing C to
-make extern calls clear, rather than doing the glob import. I think we
-probably want to keep this style.
+But is it the goal to make it use Rust always? If not, do you mean you
+are you going to have 2 "modes" in bcachefs? i.e. one with all C, and
+one with some parts replaced (i.e. duplicated) in Rust?
 
-> +module! {
-> +    type: Bcachefs,
-> +    name: "bcachefs",
-> +    author: "Kent Overstreet <kent.overstreet@gmail.com>",
-> +    description: "bcachefs filesystem",
-> +    license: "GPL",
-> +}
-> +
-> +struct Bcachefs;
-> +
-> +impl kernel::Module for Bcachefs {
-> +    #[link_section =3D ".init.text"]
+If it is the former (dropping C), then please note that it will limit
+where bcachefs can be built for, i.e. architectures and configurations
+(at least for the time being, i.e. we want to relax all that, but it
+will take time).
 
-Is the attribute still needed if this lands?
-https://lore.kernel.org/rust-for-linux/20240206153806.567055-1-tahbertschin=
-ger@gmail.com/T/#u
+If it is the latter (duplication), then please note that the kernel
+has only gone the "duplication" route for "Rust reference drivers" as
+an exceptional case that we requested to bootstrap their subsystems
+and give Rust a try.
 
-> +    fn init(_module: &'static ThisModule) -> Result<Self> {
-> +        // SAFETY: this block registers the bcachefs services with the k=
-ernel. After succesful
-> +        // registration, all such services are guaranteed by the kernel =
-to exist as long as the
-> +        // driver is loaded. In the event of any failure in the registra=
-tion, all registered
-> +        // services are unregistered.
-> +        unsafe {
-> +            bch2_bkey_pack_test();
-> +
-> +            if bch2_kset_init() !=3D 0
-> +                || bch2_btree_key_cache_init() !=3D 0
-> +                || bch2_chardev_init() !=3D 0
-> +                || bch2_vfs_init() !=3D 0
-> +                || bch2_debug_init() !=3D 0
-> +            {
-> +                __drop();
-> +                return Err(ENOMEM);
+Could you please explain more about what is the intention here?
 
-Do these init functions ever return anything more descriptive than
-ENOMEM that should be returned instead? Maybe not worth changing if
-the next phase will let you `?` the results.
+Either way, the approach you are taking in this patch series seems to
+be about calling C code directly, rather than writing and using
+abstractions in general. For instance, in one of the patches you
+mention in a comment "If/when a Rust API is provided" to justify the
+functions, but it is the other way around, i.e. you need to first
+write the abstractions for that C code, upstream them through the
+relevant tree/maintainers, and then you use them from your Rust code.
 
-> +            }
-> +        }
-> +
-> +        Ok(Bcachefs)
-> +    }
-> +}
-> +
-> +fn __drop() {
+Instead, to bootstrap things, what about writing a bcachefs module in
+Rust that uses e.g. the VFS abstractions posted by Wedson, and
+perhaps, to experiment/prototype, fill it with calls to the relevant C
+parts of bcachefs? That way you can start working on the abstractions
+and code you will eventually need for a Rust bcachefs module, without
+limiting what C bcachefs can do/build for. And that way it would also
+help to justify the upstreaming of the VFS abstractions too, since you
+would be another expected user of them, and so on.
 
-Something like `drop_impl` or `unregister` is probably more in line
-with naming, dunder is really only used when something
-unstable/generated needs to be made public.
+> I wasn't sure if this needed to be an RFC based on the current status
+> of accepting Rust code outside of the rust/ tree, so I designated it as
+> such to be safe. However, Kent plans to merge rust+bcachefs code in the
+> 6.9 merge window, so I hope at least the first 2 patches in this series,
+> the ones that actually enable Rust for bcachefs, can be accepted.
 
-> [...]
+This is worrying -- there has been no discussion about mixing C and
+Rust like this, but you say it is targeted for 6.9. I feel there is a
+disconnect somewhere. Perhaps it would be a good idea to have a quick
+meeting about this.
 
-Cool to see the ball rolling on this :)
-
-- Trevor
+Cheers,
+Miguel
