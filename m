@@ -1,292 +1,368 @@
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0841CD1E;
-	Wed,  7 Feb 2024 06:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8EE1CD2D;
+	Wed,  7 Feb 2024 06:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707286041; cv=none; b=DMP8B5PJvRBHnIfUZLraT0wIYjZrNaAaQTgFopabIWJMuG4tTwhXB5sKsq/dBBrxYsecJffXJqRd5fKMkwjVIINwJhGlH88eVQ6IcSM5HBDWS/J2X4QEK9p9RZkYYiWFgzvcu9lC3anCZmOjzEIHD+RX/kxAVotdL0fykV9iQ3g=
+	t=1707287928; cv=none; b=s56/ftCAqdvAmU5oqEgmBHAAGHtzlIXdzeKmYKCJi47AT8FGeUz05B0obiz2tjyfrKrfIZMoRAIJy+l3v8fACbmJUPK0ndfuBkFgRd0MIOuhLMfRS7lhO/z8NbWYVSsd/k/D9MTj5EOjwZyv0POhTjnAnze0b3OK/cmAmjPOOMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707286041; c=relaxed/simple;
-	bh=q0Mk42SfClBmXgR+mRwkON9QCrmzXvm/owjFOgsgmeA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Egkh5XfZBdrUh0QC0UpUB1sy7gNhTucqNR8AbU2SVJWPMpKlNdchX6+Lnbh1kPgLSTixOr+uRrxIYqDC231x1ejM6S/rFpp1KOY88TWzNX8Df1gFluhITfekMT48UQyBnTrvnNAZBshCpiFqc0t6T1UHXLajPb8rLygjqApMPAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t9puZH7V; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1707287928; c=relaxed/simple;
+	bh=5XH2+QhIIh6vtV8cZGfPe4lADyppCqTou0VjC/BHAxA=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=S0J6wlnGX3xdQkINbuBdZecWL9/3xaGKK4chYOSB+bjcVYopYjjVYroHy9kPbMJGHGxy/qaLMsviNU5dAenoVnG2YGnCOD9t7S2helJRDSj/kq9FZl6a68pkaVB8KurBAKv9yxdRGho6/5NFw41G9nTrzFnXbMFCHdg/borOzV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VzvwsCW0; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t9puZH7V"
-Date: Wed, 7 Feb 2024 01:07:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707286036;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rXdRa4zp6MzexystDTSFUKYrLZ3abbocWvQ9PBcVzwc=;
-	b=t9puZH7VCCTNvKi8fyuu0OUIYPAwmi2atp3W9rWCEA7SeHhZwSjVrfg08j0KTQcFyx/wnH
-	mWP82k2NrCnmp6JtnL031Osa7yvkTu8hXT4BD4ItYr+jXYavGClZAUIaBfSnLd7CsVEeZ1
-	mpiw53RuFpFXpQU839qROJwKRIGZqy4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Thomas Bertschinger <tahbertschinger@gmail.com>
-Cc: rust-for-linux@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, bfoster@redhat.com, ojeda@kernel.org, alex.gaynor@gmail.com, 
-	wedsonaf@gmail.com
-Subject: Re: [PATCH RFC 3/3] bcachefs: introduce Rust module implementation
-Message-ID: <byanermjc6vyh373uswa5hhbnwcnv3uzgngcvrkbbp5kijr67q@t3g6ox35pnbt>
-References: <20240207055845.611710-1-tahbertschinger@gmail.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VzvwsCW0"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707287926; x=1738823926;
+  h=date:from:to:cc:subject:message-id;
+  bh=5XH2+QhIIh6vtV8cZGfPe4lADyppCqTou0VjC/BHAxA=;
+  b=VzvwsCW0o6AxVDLl3cmC1Zh4dOgp/5ZM1c02bxr0d9SesmfFoLAd9s+o
+   Pdr62y2docpaiLdOJUwVQw0NBXkPuLILc/OFu/of6CDuPVOz6ziwuHwIY
+   dq/gXRrC8WvDiRhnFPK/M6HAOmaRQQqEJ0n6oXBnJJsVsOSpPSkHjdob3
+   XpYBNs/MbBHE5uasDy8OX1QKMPYsiiSpm/CsNiiFFj2Buu6OnlB8Lznsf
+   oR0tPfJ0baASa55kZW/vDUpzBT0DJ3C/f9nrjd4YpI0FN1RO1+3odZ8L2
+   ZgNKSSQkDnaAuQrX2v7v3nrqQ9GbZaZmz9yoY7g6U4VyJjb0kPBk6E07q
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="23399320"
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="23399320"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 22:38:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="6015081"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 06 Feb 2024 22:38:42 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rXbZu-0002Hc-2Y;
+	Wed, 07 Feb 2024 06:38:38 +0000
+Date: Wed, 07 Feb 2024 14:37:46 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ ceph-devel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ kunit-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+ linux-bcachefs@vger.kernel.org, linux-cifs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ nouveau@lists.freedesktop.org, ntfs3@lists.linux.dev,
+ samba-technical@lists.samba.org
+Subject: [linux-next:master] BUILD REGRESSION
+ ac139fc7db67968e5061715508b5fc4aa7c40c56
+Message-ID: <202402071439.AER2foE3-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207055845.611710-1-tahbertschinger@gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 06, 2024 at 10:58:45PM -0700, Thomas Bertschinger wrote:
-> This patch uses the bcachefs bindgen framework to introduce a Rust
-> implementation of the module entry and exit functions. With this change,
-> bcachefs is now a Rust kernel module (that calls C functions to do most
-> of its work).
-> 
-> This is only if CONFIG_BCACHEFS_RUST is defined; the C implementation of
-> the module init and exit code is left around so that bcachefs remains
-> usable in kernels compiled without Rust support.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: ac139fc7db67968e5061715508b5fc4aa7c40c56  Add linux-next specific files for 20240206
 
-so the module_init in Rust is an interesting test case, but - not much
-point in checking it in if we're not deleting code on the C side.
+Error/Warning reports:
 
-Instead, have you looked at pulling the btree transaction layer bindings
-from -tools into the kernel? That was going to be my starting point;
-once we've got that there's a lot of code we'll be able to rewrite in
-Rust piecmeal (fsck, debugs, alloc_background.c - anything that
-primarily interacts with the transaction layer).
+https://lore.kernel.org/oe-kbuild-all/202402061900.rTuYDlo6-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202402062106.cfArbjsv-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202402062134.a6CqAt3s-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202402062139.MKznS4Qf-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202402062151.Kq60k2LK-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202402062210.3YyBVGF1-lkp@intel.com
 
-> 
-> Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
-> ---
->  fs/bcachefs/Makefile                   |  3 ++
->  fs/bcachefs/bcachefs.h                 |  5 ++
->  fs/bcachefs/bcachefs_module.rs         | 66 ++++++++++++++++++++++++++
->  fs/bcachefs/bindgen_parameters         | 13 ++++-
->  fs/bcachefs/bindings/bindings_helper.h |  4 ++
->  fs/bcachefs/bindings/mod.rs            |  2 +
->  fs/bcachefs/super.c                    | 31 ++++++++++--
->  7 files changed, 120 insertions(+), 4 deletions(-)
->  create mode 100644 fs/bcachefs/bcachefs_module.rs
-> 
-> diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
-> index 3f209511149c..252810a4d9a0 100644
-> --- a/fs/bcachefs/Makefile
-> +++ b/fs/bcachefs/Makefile
-> @@ -89,8 +89,11 @@ bcachefs-y		:=	\
->  	varint.o		\
->  	xattr.o
->  
-> +bcachefs-$(CONFIG_BCACHEFS_RUST)	+= bcachefs_module.o
->  always-$(CONFIG_BCACHEFS_RUST)		+= bindings/bcachefs_generated.rs
->  
-> +$(obj)/bcachefs_module.o: $(src)/bindings/bcachefs_generated.rs
-> +
->  $(obj)/bindings/bcachefs_generated.rs: private bindgen_target_flags = \
->      $(shell grep -Ev '^#|^$$' $(srctree)/$(src)/bindgen_parameters)
->  
-> diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-> index b80c6c9efd8c..3a777592bff4 100644
-> --- a/fs/bcachefs/bcachefs.h
-> +++ b/fs/bcachefs/bcachefs.h
-> @@ -1252,4 +1252,9 @@ static inline struct stdio_redirect *bch2_fs_stdio_redirect(struct bch_fs *c)
->  #define BKEY_PADDED_ONSTACK(key, pad)				\
->  	struct { struct bkey_i key; __u64 key ## _pad[pad]; }
->  
-> +#ifdef CONFIG_BCACHEFS_RUST
-> +int bch2_kset_init(void);
-> +void bch2_kset_exit(void);
-> +#endif
-> +
->  #endif /* _BCACHEFS_H */
-> diff --git a/fs/bcachefs/bcachefs_module.rs b/fs/bcachefs/bcachefs_module.rs
-> new file mode 100644
-> index 000000000000..8db2de8139bc
-> --- /dev/null
-> +++ b/fs/bcachefs/bcachefs_module.rs
-> @@ -0,0 +1,66 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +//! bcachefs
-> +//!
-> +//! Rust kernel module for bcachefs.
-> +
-> +pub mod bindings;
-> +
-> +use kernel::prelude::*;
-> +
-> +use crate::bindings::*;
-> +
-> +module! {
-> +    type: Bcachefs,
-> +    name: "bcachefs",
-> +    author: "Kent Overstreet <kent.overstreet@gmail.com>",
-> +    description: "bcachefs filesystem",
-> +    license: "GPL",
-> +}
-> +
-> +struct Bcachefs;
-> +
-> +impl kernel::Module for Bcachefs {
-> +    #[link_section = ".init.text"]
-> +    fn init(_module: &'static ThisModule) -> Result<Self> {
-> +        // SAFETY: this block registers the bcachefs services with the kernel. After succesful
-> +        // registration, all such services are guaranteed by the kernel to exist as long as the
-> +        // driver is loaded. In the event of any failure in the registration, all registered
-> +        // services are unregistered.
-> +        unsafe {
-> +            bch2_bkey_pack_test();
-> +
-> +            if bch2_kset_init() != 0
-> +                || bch2_btree_key_cache_init() != 0
-> +                || bch2_chardev_init() != 0
-> +                || bch2_vfs_init() != 0
-> +                || bch2_debug_init() != 0
-> +            {
-> +                __drop();
-> +                return Err(ENOMEM);
-> +            }
-> +        }
-> +
-> +        Ok(Bcachefs)
-> +    }
-> +}
-> +
-> +fn __drop() {
-> +    // SAFETY: The kernel does not allow cleanup_module() (which results in
-> +    // drop()) to be called unless there are no users of the filesystem.
-> +    // The *_exit() functions only free data that they confirm is allocated, so
-> +    // this is safe to call even if the module's init() function did not finish.
-> +    unsafe {
-> +        bch2_debug_exit();
-> +        bch2_vfs_exit();
-> +        bch2_chardev_exit();
-> +        bch2_btree_key_cache_exit();
-> +        bch2_kset_exit();
-> +    }
-> +}
-> +
-> +impl Drop for Bcachefs {
-> +    fn drop(&mut self) {
-> +        __drop();
-> +    }
-> +}
-> diff --git a/fs/bcachefs/bindgen_parameters b/fs/bcachefs/bindgen_parameters
-> index 547212bebd6e..96a63e3a2cc3 100644
-> --- a/fs/bcachefs/bindgen_parameters
-> +++ b/fs/bcachefs/bindgen_parameters
-> @@ -1,5 +1,16 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
-> ---allowlist-function ''
-> +--allowlist-function bch2_bkey_pack_test
-> +--allowlist-function bch2_kset_init
-> +--allowlist-function bch2_btree_key_cache_init
-> +--allowlist-function bch2_chardev_init
-> +--allowlist-function bch2_vfs_init
-> +--allowlist-function bch2_debug_init
-> +--allowlist-function bch2_debug_exit
-> +--allowlist-function bch2_vfs_exit
-> +--allowlist-function bch2_chardev_exit
-> +--allowlist-function bch2_btree_key_cache_exit
-> +--allowlist-function bch2_kset_exit
-> +
->  --allowlist-type ''
->  --allowlist-var ''
-> diff --git a/fs/bcachefs/bindings/bindings_helper.h b/fs/bcachefs/bindings/bindings_helper.h
-> index f8bef3676f71..8cf3c35e8ca1 100644
-> --- a/fs/bcachefs/bindings/bindings_helper.h
-> +++ b/fs/bcachefs/bindings/bindings_helper.h
-> @@ -1,3 +1,7 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->  
->  #include "../bcachefs.h"
-> +#include "../btree_key_cache.h"
-> +#include "../chardev.h"
-> +#include "../fs.h"
-> +#include "../debug.h"
-> diff --git a/fs/bcachefs/bindings/mod.rs b/fs/bcachefs/bindings/mod.rs
-> index 19a3ae3c63c6..d1c3bbbd7b5a 100644
-> --- a/fs/bcachefs/bindings/mod.rs
-> +++ b/fs/bcachefs/bindings/mod.rs
-> @@ -1,3 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
->  
-> +#![allow(missing_docs)]
-> +
->  include!("bcachefs_generated.rs");
-> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-> index da8697c79a97..343c4bc6e81c 100644
-> --- a/fs/bcachefs/super.c
-> +++ b/fs/bcachefs/super.c
-> @@ -69,9 +69,12 @@
->  #include <linux/sysfs.h>
->  #include <crypto/hash.h>
->  
-> +#ifndef CONFIG_BCACHEFS_RUST
-> +/* when enabled, the Rust module exports these modinfo attributes */
->  MODULE_LICENSE("GPL");
->  MODULE_AUTHOR("Kent Overstreet <kent.overstreet@gmail.com>");
->  MODULE_DESCRIPTION("bcachefs filesystem");
-> +#endif
->  MODULE_SOFTDEP("pre: crc32c");
->  MODULE_SOFTDEP("pre: crc64");
->  MODULE_SOFTDEP("pre: sha256");
-> @@ -2082,6 +2085,7 @@ struct bch_fs *bch2_fs_open(char * const *devices, unsigned nr_devices,
->  
->  /* Global interfaces/init */
->  
-> +#ifndef CONFIG_BCACHEFS_RUST
->  static void bcachefs_exit(void)
->  {
->  	bch2_debug_exit();
-> @@ -2109,6 +2113,30 @@ static int __init bcachefs_init(void)
->  	return -ENOMEM;
->  }
->  
-> +module_exit(bcachefs_exit);
-> +module_init(bcachefs_init);
-> +
-> +#else /* CONFIG_BCACHEFS_RUST */
-> +/*
-> + * bch2_kset_init() and bch2_kset_exit() are wrappers around the kset functions
-> + * to be called from the Rust module init and exit because there is not
-> + * currently a Rust API for ksets. If/when a Rust API is provided, these
-> + * wrappers can be removed and the Rust kernel module can use that directly.
-> + */
-> +int __init bch2_kset_init(void)
-> +{
-> +	bcachefs_kset = kset_create_and_add("bcachefs", NULL, fs_kobj);
-> +
-> +	return !bcachefs_kset;
-> +}
-> +
-> +void bch2_kset_exit(void)
-> +{
-> +	if (bcachefs_kset)
-> +		kset_unregister(bcachefs_kset);
-> +}
-> +#endif
-> +
->  #define BCH_DEBUG_PARAM(name, description)			\
->  	bool bch2_##name;					\
->  	module_param_named(name, bch2_##name, bool, 0644);	\
-> @@ -2119,6 +2147,3 @@ BCH_DEBUG_PARAMS()
->  __maybe_unused
->  static unsigned bch2_metadata_version = bcachefs_metadata_version_current;
->  module_param_named(version, bch2_metadata_version, uint, 0400);
-> -
-> -module_exit(bcachefs_exit);
-> -module_init(bcachefs_init);
-> -- 
-> 2.43.0
-> 
+Error/Warning: (recently discovered and may have been fixed)
+
+arch/sh/boot/compressed/../../../../lib/xz/xz_dec_lzma2.c:648:(.text+0xaf0): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+arch/sh/boot/compressed/../../../../lib/zlib_inflate/inffast.c:132:(.text+0x738): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+arch/sh/boot/compressed/../../../../lib/zlib_inflate/inflate.c:57:(.text+0xbd0): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+arch/sh/boot/compressed/../../../../lib/zlib_inflate/inftrees.c:270:(.text+0x3dc): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+arch/xtensa/boot/lib/inflate.c:91:(.text+0x1a4): undefined reference to `__ubsan_handle_out_of_bounds'
+drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c:1955: warning: Function parameter or struct member 'gsp' not described in 'nvkm_gsp_radix3_sg'
+fs/ceph/locks.c:379:27: warning: unused variable 'lock' [-Wunused-variable]
+make[2]: *** kselftest/livepatch/test_modules: No such file or directory.  Stop.
+powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data202' from `fs/overlayfs/copy_up.o' being placed in section `.bss..Lubsan_data202'
+powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data219' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data219'
+powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data327' from `kernel/sched/core.o' being placed in section `.bss..Lubsan_data327'
+sh4-linux-ld: arch/sh/boot/compressed/../../../../lib/zlib_inflate/inffast.c:305:(.text+0xac4): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+sh4-linux-ld: arch/sh/boot/compressed/../../../../lib/zlib_inflate/inftrees.c:315:(.text+0x60c): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+sh4-linux-ld: arch/sh/boot/compressed/misc.o:(.debug_addr+0x388): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+sh4-linux-ld: misc.c:(.text+0x23d4): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+xtensa-linux-ld: arch/xtensa/boot/lib/inflate.c:487:(.text+0x546): undefined reference to `__ubsan_handle_out_of_bounds'
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arc-randconfig-r113-20240206
+|   `-- drivers-gpu-drm-bridge-imx-imx8mp-hdmi-pvi.c:sparse:sparse:Using-plain-integer-as-NULL-pointer
+|-- arm-randconfig-r071-20240206
+|   `-- fs-ceph-locks.c:warning:unused-variable-lock
+|-- i386-buildonly-randconfig-003-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-014-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-016-20240206
+|   `-- include-kunit-test.h:warning:s-directive-argument-is-null
+|-- i386-randconfig-052-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- mips-allyesconfig
+|   |-- (.ref.text):relocation-truncated-to-fit:R_MIPS_26-against-start_secondary
+|   `-- (.text):relocation-truncated-to-fit:R_MIPS_26-against-kernel_entry
+|-- nios2-randconfig-001-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- parisc-defconfig
+|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
+|-- parisc-randconfig-001-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- powerpc-randconfig-r022-20230201
+|   |-- powerpc-linux-ld:warning:orphan-section-bss..Lubsan_data202-from-fs-overlayfs-copy_up.o-being-placed-in-section-.bss..Lubsan_data202
+|   |-- powerpc-linux-ld:warning:orphan-section-bss..Lubsan_data219-from-kernel-ptrace.o-being-placed-in-section-.bss..Lubsan_data219
+|   `-- powerpc-linux-ld:warning:orphan-section-bss..Lubsan_data327-from-kernel-sched-core.o-being-placed-in-section-.bss..Lubsan_data327
+|-- powerpc64-randconfig-003-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- sh-randconfig-r003-20220501
+|   |-- arch-sh-boot-compressed-..-..-..-..-lib-zlib_inflate-inffast.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
+|   |-- arch-sh-boot-compressed-..-..-..-..-lib-zlib_inflate-inflate.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
+|   |-- arch-sh-boot-compressed-..-..-..-..-lib-zlib_inflate-inftrees.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
+|   |-- sh4-linux-ld:arch-sh-boot-compressed-..-..-..-..-lib-zlib_inflate-inffast.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
+|   `-- sh4-linux-ld:arch-sh-boot-compressed-..-..-..-..-lib-zlib_inflate-inftrees.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
+|-- sh-randconfig-r015-20220607
+|   `-- sh4-linux-ld:misc.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
+|-- sh-randconfig-r023-20230502
+|   |-- arch-sh-boot-compressed-..-..-..-..-lib-xz-xz_dec_lzma2.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
+|   `-- sh4-linux-ld:arch-sh-boot-compressed-misc.o:(.debug_addr):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
+|-- sparc64-randconfig-001-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- sparc64-randconfig-002-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-003-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-004-20240206
+|   `-- include-kunit-test.h:warning:s-directive-argument-is-null
+|-- x86_64-randconfig-161-20240206
+|   |-- fs-bcachefs-btree_locking.c-bch2_trans_relock()-warn:passing-zero-to-PTR_ERR
+|   |-- fs-bcachefs-buckets.c-bch2_trans_account_disk_usage_change()-error:we-previously-assumed-trans-disk_res-could-be-null-(see-line-)
+|   `-- mm-huge_memory.c-thpsize_create()-warn:Calling-kobject_put-get-with-state-initialized-unset-from-line:
+|-- x86_64-rhel-8.3-bpf
+|   `-- make:kselftest-livepatch-test_modules:No-such-file-or-directory.-Stop.
+`-- xtensa-randconfig-r022-20220710
+    |-- arch-xtensa-boot-lib-inflate.c:(.text):undefined-reference-to-__ubsan_handle_out_of_bounds
+    `-- xtensa-linux-ld:arch-xtensa-boot-lib-inflate.c:(.text):undefined-reference-to-__ubsan_handle_out_of_bounds
+clang_recent_errors
+|-- arm64-randconfig-002-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-buildonly-randconfig-002-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-buildonly-randconfig-004-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-003-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-004-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-013-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- i386-randconfig-054-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- powerpc-randconfig-003-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-006-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-012-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+|-- x86_64-randconfig-014-20240206
+|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
+`-- x86_64-randconfig-122-20240206
+    |-- fs-quota-dquot.c:sparse:sparse:incompatible-types-in-comparison-expression-(different-address-spaces):
+    `-- fs-smb-client-file.c:sparse:sparse:symbol-cifs_req_ops-was-not-declared.-Should-it-be-static
+
+elapsed time: 1479m
+
+configs tested: 179
+configs skipped: 3
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240206   gcc  
+arc                   randconfig-002-20240206   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                        mvebu_v7_defconfig   clang
+arm                        neponset_defconfig   gcc  
+arm                   randconfig-001-20240206   clang
+arm                   randconfig-002-20240206   gcc  
+arm                   randconfig-003-20240206   gcc  
+arm                   randconfig-004-20240206   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240206   gcc  
+arm64                 randconfig-002-20240206   clang
+arm64                 randconfig-003-20240206   gcc  
+arm64                 randconfig-004-20240206   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240206   gcc  
+csky                  randconfig-002-20240206   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240206   clang
+hexagon               randconfig-002-20240206   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240206   clang
+i386         buildonly-randconfig-002-20240206   clang
+i386         buildonly-randconfig-003-20240206   gcc  
+i386         buildonly-randconfig-004-20240206   clang
+i386         buildonly-randconfig-005-20240206   gcc  
+i386         buildonly-randconfig-006-20240206   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240206   clang
+i386                  randconfig-002-20240206   clang
+i386                  randconfig-003-20240206   clang
+i386                  randconfig-004-20240206   clang
+i386                  randconfig-005-20240206   clang
+i386                  randconfig-006-20240206   clang
+i386                  randconfig-011-20240206   clang
+i386                  randconfig-012-20240206   gcc  
+i386                  randconfig-013-20240206   clang
+i386                  randconfig-014-20240206   gcc  
+i386                  randconfig-015-20240206   gcc  
+i386                  randconfig-016-20240206   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240206   gcc  
+loongarch             randconfig-002-20240206   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+m68k                        mvme147_defconfig   gcc  
+m68k                            q40_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                          malta_defconfig   gcc  
+mips                      maltasmvp_defconfig   gcc  
+mips                           mtx1_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240206   gcc  
+nios2                 randconfig-002-20240206   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240206   gcc  
+parisc                randconfig-002-20240206   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                   currituck_defconfig   clang
+powerpc                  iss476-smp_defconfig   gcc  
+powerpc                   microwatt_defconfig   gcc  
+powerpc                      ppc64e_defconfig   gcc  
+powerpc               randconfig-001-20240206   clang
+powerpc               randconfig-002-20240206   gcc  
+powerpc               randconfig-003-20240206   clang
+powerpc                  storcenter_defconfig   gcc  
+powerpc64             randconfig-001-20240206   gcc  
+powerpc64             randconfig-002-20240206   clang
+powerpc64             randconfig-003-20240206   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240206   gcc  
+riscv                 randconfig-002-20240206   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240206   clang
+s390                  randconfig-002-20240206   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240206   gcc  
+sh                    randconfig-002-20240206   gcc  
+sh                          sdk7780_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240206   gcc  
+sparc64               randconfig-002-20240206   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                    randconfig-001-20240206   clang
+um                    randconfig-002-20240206   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240206   gcc  
+x86_64       buildonly-randconfig-002-20240206   clang
+x86_64       buildonly-randconfig-003-20240206   gcc  
+x86_64       buildonly-randconfig-004-20240206   gcc  
+x86_64       buildonly-randconfig-005-20240206   gcc  
+x86_64       buildonly-randconfig-006-20240206   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240206   clang
+x86_64                randconfig-002-20240206   clang
+x86_64                randconfig-003-20240206   gcc  
+x86_64                randconfig-004-20240206   gcc  
+x86_64                randconfig-005-20240206   gcc  
+x86_64                randconfig-006-20240206   clang
+x86_64                randconfig-011-20240206   gcc  
+x86_64                randconfig-012-20240206   clang
+x86_64                randconfig-013-20240206   gcc  
+x86_64                randconfig-014-20240206   clang
+x86_64                randconfig-015-20240206   gcc  
+x86_64                randconfig-016-20240206   clang
+x86_64                randconfig-071-20240206   gcc  
+x86_64                randconfig-072-20240206   gcc  
+x86_64                randconfig-073-20240206   gcc  
+x86_64                randconfig-074-20240206   gcc  
+x86_64                randconfig-075-20240206   clang
+x86_64                randconfig-076-20240206   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                           alldefconfig   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240206   gcc  
+xtensa                randconfig-002-20240206   gcc  
+xtensa                         virt_defconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
