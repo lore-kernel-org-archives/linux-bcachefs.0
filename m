@@ -1,124 +1,161 @@
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658871E892;
-	Thu,  8 Feb 2024 01:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5445B2E3F9
+	for <linux-bcachefs@vger.kernel.org>; Thu,  8 Feb 2024 04:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707354861; cv=none; b=Jq34b/EjVyEuZl0YqoIJFTSMJyYtacsysfwIzGrvHY5sfnRuGDikx0ku9osT5HBm5JgioN0no3gJrcZ223wDr6DzZcM6gtlEUGRrVgL+fmuFmsfsy+nDwq0u1KOF09bymN57ObYG6gx935NsDhqlOuJt2FMm2WbRqRC5kIApQi0=
+	t=1707365956; cv=none; b=gANAtGwJ1YcR7BCnyy32jOLCS6LZEHR5SW12fJaVHlmCX/NHfpilIqN2eXf6oiT685ekhLlj/2whFFP9NBhehWLR3dFA9v6uJC3+lkv9UoxPoiCIFzYOF4MmDOSccbhVAFfFLi9gpqKXKPQiLJPBKlDYhJb6BmmnrsaDsM9COUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707354861; c=relaxed/simple;
-	bh=V8hu5tMPUddcH6YFCxePDhQZpJF/Hqq+culCda8DuO0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N+jiWtPOqMThKffKziead6YoBj4Cna/hCA/s8bc5Ft/bcSwvmNco5G2ZHdpZa/OeU+bTOS2OJ+0GVA9gspEcuk4EoM0aS0QMfINzgXsZbg6BvfTotCJD/Xf7vhIu/5d/qs03jShBwzs3n99p+Cu9+MA+UzBKTzrXfwL9C7vxRXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/F1Xw2Q; arc=none smtp.client-ip=209.85.166.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1707365956; c=relaxed/simple;
+	bh=NGGl+yhBQ3UuLPGGYs/icqIBUq5Q0ZOnWSdq8ZZ3yNQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YCyavw8oXtlw0piGnxUzS7SV3CvO6o/Uwj0bj28BmfTTUYbKJECYKcR+B5rSXQFyw+MVA17s3Qi4Y3sdrESb5yCGEoEghFZVM+dIZ7VdYf+J9pGE/Vnr88rHodPiOkkeUCI2leAmtAa2xmkqV/+S5SwBgIoXYGwLAlhSfFyBIMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=Svov09+P; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/F1Xw2Q"
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-363afc38a1cso4384055ab.3;
-        Wed, 07 Feb 2024 17:14:20 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="Svov09+P"
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-604a05a36d2so8350697b3.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 07 Feb 2024 20:19:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707354859; x=1707959659; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kFsX8xdUkzE0GD5ap+mQT8txMXBLmGUqgXm2bLd6w7w=;
-        b=I/F1Xw2QmGvXWTjQsjdph6f3fDN4LO9xnPLcUjV9XN2y5IctYy53vQLKm1aEZ8DTzS
-         HUtDitJ+8L7qeCXTRYIB+fWx3FO3q81A5WrL5CFpN8h/Il1fcGZZ1wm1R1VAqReRv/bJ
-         QiRIHbb8LStOIzBmA0o091gftj31UkYI1H1FsdFhs4g/m9UKR+Tnd9C7YnBf610we+GK
-         NsHVjyjbWZ6nLVg7HEtA/fbFh3YRuZX5CUdX8oQysY7tFpZP19iKGGP3aCtNUuU5yfq4
-         9ZosnppGKxkQ3z2IgEMsoAtP3k8fzD7p3SjSs83lenFEBdKBkzuzJ0YErkKyKK1kq9v2
-         48VQ==
+        d=umich.edu; s=google-2016-06-03; t=1707365952; x=1707970752; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T6Rsu7zMx9101ReVRLly7pW/OCnK9YhpRRktI8iHZFI=;
+        b=Svov09+Pa+DWOjlAMNKp9qeZ1xJoPtmNqbnuaGVwezsEOv7YtXYWkDCY6RDe/RjotS
+         OhpZaZ3MSajD/FY+pAcWmAERoivq30GQ93VNafsPDyS08LyLpAzOR4TVr1yw7oYjb4yT
+         g1iQrSEpgOorJyJorME0z2nDtczHixMNmpjvyUVEzdQv1AkH3NgsXTnfMrE6shn6C40r
+         MBoCn3zLKgry46NZFZrmxEapC8rv+uZ0f17gMxsLQL4VMGSxv6ABkh9wlYB2rvXryNac
+         3AdP/v91GAlW/19gnsiQbQs37msJiV9cxkJlT3Nl7hppXkLck7TTxD54ODRaTTj7kBWE
+         xyxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707354859; x=1707959659;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kFsX8xdUkzE0GD5ap+mQT8txMXBLmGUqgXm2bLd6w7w=;
-        b=KbdRux4wVBzjyQmBfW360Ix5d53AQJ99igPI9wLE8DxXYA6kvsnL+R/s1Y7Fo9Q2EX
-         P0hkstIxQzs3eaUXpYTIZDwlzWdNHKxNNhbj7GOH2eU6ybib8Xpn47HJ0sq28+pWcbV8
-         yAU44ZYTpXwcAZ1ET858oneK1jM42rb8KDTPiU94KLOKx/Ofd86o9aDStQdwss0sffb5
-         Bwg/Wukxf8RyEEDsw9nH9c0lm1KHNGQGAATU+nS0b4FB7vtraXBz/s+DNBGWFAYY5BIR
-         6Ma41Ivm7u6ZbDFNc9//u9A5blEYoMufsaW7c0rE5fw7uFxvfuYHc2ynSlPDMyO1ZxmA
-         qlfA==
-X-Gm-Message-State: AOJu0Ywox2RJ6mxglFHF4GzV71xQBFV0Fsg/XAm3g750egR8KyMRpVaF
-	Dz1jEVOOnP6vZdQOpDNqeuJAwD8AEj+BtxwsyiYxH5tZMp0RZpyg
-X-Google-Smtp-Source: AGHT+IEeXxDsTYV4nuQUqnrtwwu7sZeXmBIc/+m645CbzT8RxgHWW4nTPDIn3pbYDfqQ1rppeQ+5Ww==
-X-Received: by 2002:a92:b70b:0:b0:363:d9c7:a7e6 with SMTP id k11-20020a92b70b000000b00363d9c7a7e6mr4561249ili.4.1707354859402;
-        Wed, 07 Feb 2024 17:14:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUK7DfxOkbAVat6x6wMIv1mx8Efi6Bh32GuM1x0seIJVrz7NH8MCWuF+5GSN961TwiPD/mPakBSgrHE2BUT6N/8zpXTpVgwFlppFm7ecOqEgziAdoDwFBnfUZqAdIBlgMJKu1RuTFbmXx6tfj5DZPdPykCJDnhqt3zoX2DIj/vQuDmPPQbsGGah5oBO4yim8Cgu22KBycbwPYBT1MTFpt3+96dE0wPd67EfZbYfnst/Ay/vKQ5mKJEihG/H2ZxipCwhtkz25Yg09TLtrEciLkLIux+/u7sLRF3WjKciyFrf80Hd1MwRWBMHcpDKRUCUczWDQkxmFI654P0bCbOTKciwn/JxEnPg2DAsxz6oaw==
-Received: from fedora-laptop (c-73-127-246-43.hsd1.nm.comcast.net. [73.127.246.43])
-        by smtp.gmail.com with ESMTPSA id v15-20020a92d24f000000b00363c584361esm702700ilg.80.2024.02.07.17.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 17:14:18 -0800 (PST)
-Date: Wed, 7 Feb 2024 18:14:15 -0700
-From: Thomas Bertschinger <tahbertschinger@gmail.com>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: rust-for-linux@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-	kent.overstreet@linux.dev, bfoster@redhat.com, ojeda@kernel.org,
-	alex.gaynor@gmail.com, wedsonaf@gmail.com, masahiroy@kernel.org
-Subject: Re: [PATCH RFC 0/3] bcachefs: add framework for internal Rust code
-Message-ID: <20240208011415.GA574244@fedora-laptop>
-References: <20240207055558.611606-1-tahbertschinger@gmail.com>
- <CANiq72=00+vZ+BqacSh+Xk8_VtNPVADH2Hcsyo-MPufojXvNFQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1707365952; x=1707970752;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T6Rsu7zMx9101ReVRLly7pW/OCnK9YhpRRktI8iHZFI=;
+        b=dqKWGfr3fs5oenurKMEZ0HDZKWwzoyEZ8GUZvCcn9ZrbN9/9j440ZRxWnSaMsNzqqF
+         o9N+apib4LHadZ7bljLNAcztv/KyZZ/KelZaL1O1+Selp6GIsw6C6ElKgudKseXmUMj+
+         WXPaZoLzKd2xBk8b13mcWCHraSU6+KERjifUJKVkCZlpL/jtEph4L7J98TwycvesyMIF
+         ACrG+uOgAewP8t9k/zPtv5zRpzwzEWPGeI9HFqnz/PyoMtXbhX9rlFP+SrT/M8Eu+ocj
+         Y6J0LKLNWMiUBS+ddLdVMWy6iYtkvsPX0Tii8+6Q2Np8D2j7QLx+dI921pVPQbV8vgYL
+         6lQQ==
+X-Gm-Message-State: AOJu0Yw97tTaIumztG+5hQ4U2lXqpUY5halYkAlWBrYtE8lE59PHN5zK
+	cMSfDXyDA32MNqFoPkPOe099ZV0OipndFjtcVnBdP24oUBslg0uo/jx4OrwnF/VgogSIW3zutL1
+	SE0vZVSzsU15K0g0IuXzr+TUKjSko/y8u04OHoQ==
+X-Google-Smtp-Source: AGHT+IE23A27tLG6Zbdgze019TxOSOcO6pq7eWFrGwYWhqlbeni3gNe7Qel902A26fgZTDZqrCIeQ/H4+LhEAwmGhwQ=
+X-Received: by 2002:a81:d306:0:b0:5fc:b5d4:f1cf with SMTP id
+ y6-20020a81d306000000b005fcb5d4f1cfmr7446477ywi.35.1707365952128; Wed, 07 Feb
+ 2024 20:19:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72=00+vZ+BqacSh+Xk8_VtNPVADH2Hcsyo-MPufojXvNFQ@mail.gmail.com>
+References: <20240207055558.611606-1-tahbertschinger@gmail.com>
+ <CANiq72=00+vZ+BqacSh+Xk8_VtNPVADH2Hcsyo-MPufojXvNFQ@mail.gmail.com>
+ <qo637rxuw5tcskmgubutpe6dfmhhms4d4pjivzhewl5tpg3eth@xil6gpcvdiya> <20240207223927.GM6184@frogsfrogsfrogs>
+In-Reply-To: <20240207223927.GM6184@frogsfrogsfrogs>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Wed, 7 Feb 2024 23:19:00 -0500
+Message-ID: <CALNs47uR5ab_dm6ryET4ZkL2nj=ykhGYAyjB6FY4skBZhKqmKQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] bcachefs: add framework for internal Rust code
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, 
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, 
+	Thomas Bertschinger <tahbertschinger@gmail.com>, rust-for-linux@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, bfoster@redhat.com, ojeda@kernel.org, 
+	alex.gaynor@gmail.com, wedsonaf@gmail.com, masahiroy@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 07, 2024 at 12:06:05PM +0100, Miguel Ojeda wrote:
-> On Wed, Feb 7, 2024 at 6:57 AM Thomas Bertschinger
-> <tahbertschinger@gmail.com> wrote:
-> > I wasn't sure if this needed to be an RFC based on the current status
-> > of accepting Rust code outside of the rust/ tree, so I designated it as
-> > such to be safe. However, Kent plans to merge rust+bcachefs code in the
-> > 6.9 merge window, so I hope at least the first 2 patches in this series,
-> > the ones that actually enable Rust for bcachefs, can be accepted.
-> 
-> This is worrying -- there has been no discussion about mixing C and
-> Rust like this, but you say it is targeted for 6.9. I feel there is a
-> disconnect somewhere. Perhaps it would be a good idea to have a quick
-> meeting about this.
-> 
-> Cheers,
-> Miguel
+On Wed, Feb 7, 2024 at 5:39=E2=80=AFPM Darrick J. Wong <djwong@kernel.org> =
+wrote:
+> [..]
+> Which architectures are supported by RoL at this point?
+>
+> I can't speak for kmo, but bcachefs is new(ish) to the kernel, and
+> restricting support to the five major 64-bit arches (x64, arm64, ppc64,
+> s390x, riscv64) might be quite a load off him and his team.
+>
+> Just speaking for myself, where xfs gets occasional weird bug reports of
+> strange behavior on platforms that none of us can test (csky) or OOM
+> reports with multi-TB filesystems on m68k.
 
-That could be a good idea; what format do you suggest?
+6.7 only has x86. Loongarch is in for 6.8, aarch64 [1] and riscv [2]
+shouldn't be too far away, and there has been some interest in the IBM
+targets but they haven't sent anything yet.
 
-One question that I would like clarity on is if in general work to add
-Rust into something like fs/bcachefs/ can be accepted at this point.
-That is, is it realistic to expect that an upcoming kernel release could
-include Rust code in fs/bcachefs/ at all (even if not in the form in
-this patch series)?
+Any of Rust's tier 2 targets [3] should be reasonably feasible to
+support at some point if the maintainers are interested. csky and m68k
+are both tier 3 targets so less likely anytime soon, anything more
+niche than tier 3 will need GCC support. Which isn't terribly far
+off...
 
-Kent has been suggesting his plan to do this for a while, I think, but I
-haven't yet seen many explicit statements about what would, and would
-not be accepted into an upstream kernel for rust+bcachefs. (If I missed
-any conversations where this was laid out, please let me know.)
+[1]: https://lore.kernel.org/rust-for-linux/20231020155056.3495121-1-Jamie.=
+Cunliffe@arm.com/
+[2]: https://lore.kernel.org/rust-for-linux/20230307102441.94417-1-conor.do=
+oley@microchip.com/
+[3]: https://doc.rust-lang.org/beta/rustc/platform-support.html
 
-Actually, the previous paragraphs in your email are helpful in terms
-of laying out concrete expectations, so thank you.
+> > > Instead, to bootstrap things, what about writing a bcachefs module in
+> > > Rust that uses e.g. the VFS abstractions posted by Wedson, and
+> > > perhaps, to experiment/prototype, fill it with calls to the relevant =
+C
+> > > parts of bcachefs? That way you can start working on the abstractions
+> > > and code you will eventually need for a Rust bcachefs module, without
+> > > limiting what C bcachefs can do/build for. And that way it would also
+> > > help to justify the upstreaming of the VFS abstractions too, since yo=
+u
+> > > would be another expected user of them, and so on.
+> >
+> > You mean a new, from scratch bcachefs module? Sorry, but that would not
+> > be practical :)
+> >
+> > Wedson's work is on my radar too - that opens up a lot of possibilities=
+.
+> > But right now my goal is just to get /some/ Rust code into bcachefs,
+> > and make sure we can incrementally bring in more Rust code within the s=
+ame
+> > module.
+>
+> Is the ultimate goal of the RoL project to build Rust wrappers around
+> the C filesystem objects?  Or to design something more Rustic(?) and
+> present the interfaces that the VFS wants to the VFS only as needed?
+>
+> I might be talking nonsense here, I've only started learning Rust.  But
+> I /can/ speculate about what a Rust fs will need based on all the stuff
+> I've learned over the past 20y of wrangling the C filesystems.
+> [..]
 
-You talk about using the broader kernel Rust APIs like the proposed VFS
-layer. What about bindings for internal bcachefs APIs, like the btree
-interface [1] that Kent mentioned in another response?
+The current approach is:
 
-Would a v2 of this series, that removes the current 3rd patch and replaces
-it with a patch to add in the bcachefs btree bindings, be more suitable
-for acceptance upstream?
+1. Raw bindings to needed APIs are autogenerated with bindgen
+2. Abstractions are written on top of the bindings. These should
+provide a safe interface where, as much as possible, you can't
+accidentally misuse them to do something "wrong" (no UB by Rust's
+definitions, plus a fair bit of functional safety).
+3. Modules use abstractions, no C bindings directly
 
-I think testing the VFS abstractions for bcachefs sounds like a very
-worthwhile project--but it also sounds like a distinct project from
-Kent's goals for integrating Rust into bcachefs in the near term.
+So Rust code is currently strictly a consumer of public core APIs,
+which cuts off at the module boundary. No reason there couldn't also
+be some core functionality, but there is a pretty strong goal of not
+keeping duplicate logic between Rust and C. Just not much of a use
+case yet.
 
-[1] https://evilpiepirate.org/git/bcachefs-tools.git/tree/bch_bindgen/src/btree.rs
+It works out best if bcachefs uses the same model, so future code can
+make use of whatever abstractions come along - at least for the core
+APIs, I can imagine bcache-c to bcache-rust will look different. There
+is a reasonably complete VFS abstraction available [4] (looks like you
+know of this already). I keep a loose list of what is being worked on,
+for any other interfaces needed [5].
 
-- Thomas Bertschinger
+- Trevor
+
+[4]: https://lore.kernel.org/rust-for-linux/20231018122518.128049-1-wedsona=
+f@gmail.com/#t
+[5]: https://github.com/tgross35/RFL-patch-registry/
