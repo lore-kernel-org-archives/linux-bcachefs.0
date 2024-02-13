@@ -1,62 +1,62 @@
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96171754E
-	for <linux-bcachefs@vger.kernel.org>; Tue, 13 Feb 2024 07:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9F6D13AD4
+	for <linux-bcachefs@vger.kernel.org>; Tue, 13 Feb 2024 07:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707808424; cv=none; b=Z45QGIPWo8uxFZFpwx4gH6bHdx/G1hfaxPNYXwBjqiWG03YuaDRHtQSj466Ekoj3GH9ICMedX9AfUZcUJVIlMLLFSbYZykHIAh62xV0XGwcH2V4s2KGIZc/C+Lm5WpNVkbz+qL6MeEPDoUkXK+SRMqpHn9yY001we/FfV0ZYkgA=
+	t=1707810646; cv=none; b=Gl2OYTEDCE3R1/2ToAAi505YekxRUPyBFa0wlQjt70tUlFrMgYgK7VMEejGHdlGQfw6bT2ZppN5Kq58cCcfS7pPfF5RND1kFBt7PEA2z7VUF3G6Yy6wSefOzNLU+zlmxleasUgJDl2NraxNmiw8G6juszQ8EBGQjPfir/dPEwLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707808424; c=relaxed/simple;
-	bh=HC5oxnvLDhimRYxt1ZIg5l1R/iERiejOJwdgBEHthG0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uZD5nf57bh5I58eBi2uMbVT4n4Q2t9qZFclXtd3DbahRZAaxF3CFg0RkCcnFO5CLO+ow1yDL2hnlwKczGLsQPSKIPLPNCzqMoJAn/HvLzH3QfSVhdKEB66JhGKpdMRDb7EPfsiUYuBA32niroNUWB399K132RlQnyBNwtIXzfpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDj/9VHx; arc=none smtp.client-ip=209.85.210.170
+	s=arc-20240116; t=1707810646; c=relaxed/simple;
+	bh=fRnpp0pooZ9Kb6HVV2cPKZrqXg+YDAAO4UdMAyiY2IM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oMAARnj8Z0BuPI6arWuNJAyNZv1Tu46QVwpYaJDJoT5hq+BAzCKP7FaV0bf29QAxrCFSoF2hOVwChy0DnYfpYIAteHwLwYCdw7mboTf/2uGDvIIPHOmOjzfjB1b/oSpEcHfS6V7O2T8ZxVK+4E2wkO8CZRiIMYeMDFol5g/bPxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VtjGM6BJ; arc=none smtp.client-ip=209.85.215.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDj/9VHx"
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e06d2180b0so3245639b3a.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 12 Feb 2024 23:13:42 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VtjGM6BJ"
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso3776640a12.3
+        for <linux-bcachefs@vger.kernel.org>; Mon, 12 Feb 2024 23:50:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707808422; x=1708413222; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707810644; x=1708415444; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vs5GOZxnoNDNXWYUZY4S7Osy0LfjnN6WodXLV56Dr4c=;
-        b=EDj/9VHxbO9cuzJ+TL0ezUP/i6bihRlbk5W1fElQE8ssRbR8zBiAxKojJUWHxVlkMk
-         y6S/KWBS2Z7SUDGNEs34MeNIGv1ZAGlZYINKD2j+Y7KnhlT+BYSQEziPaK20ypE74beA
-         oisafmv31YhhaYxsT8n1nQm34XssfrS8oOtQy4K7NYVPtEKVpyAMSpDpldH8l4+vQe37
-         vE5mifk1CZyQ4RMJki1BxMvXa2v1c7PXd4aAHeuPndC51RAVtpTgl/W9Ue/hPveX0h2k
-         eztv8iqNxae0qAWFEv1AkjtyC83rTarkbUvrxRFJ9PXEG8JpNnopkbCEr15nTIK0hSTv
-         oDXw==
+        bh=O/cQ3rMbG1MPBE5giriJpPq/R9YBRI5n+KI6dif493c=;
+        b=VtjGM6BJ9Ply7opwxxescVkbaQ1wU46H1fHuPaE5jrVGDSjmdg+VryX/sDLvIn3rgS
+         hgQXAzyc8qNETRvn0J+91m/0BrzLt+szdvcKvYyuua8LOYYesYgsR2/U4y7fooOW1T06
+         suYZvGKCBHR3Sb0UPQHeuCLlArSafDksf8L/du5MJAnAR5oJtZdefqkFDPPts9gXJ3/K
+         fZVUn4BY0vHD1OX7f1h375vsxlOvvWcM1mnfXKTdFiYjDHlvbUJaCTz0nHEkuoAur0TP
+         mh2SyjAgJ+OoZfVCi7sc+1sgqtG6l89xuLYan0hlk+FEvOG65wzFxGiV/WfXRRymvplw
+         Nn0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707808422; x=1708413222;
+        d=1e100.net; s=20230601; t=1707810644; x=1708415444;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Vs5GOZxnoNDNXWYUZY4S7Osy0LfjnN6WodXLV56Dr4c=;
-        b=U1ySDZNYk5FwxE567fyNjcMOUR4pTqhMGRyN/5O336qfyglC2AdjfSywkw3BdEP78C
-         9sDNE5mrwJxjxMtVkWKuRiuTbCHtsQ1/FF3upOqVJ3gZK4E7oOkTQV9Ajx6bRffmn8a1
-         pv8l03EYYT/H/MtgpoYg6lG1aAW8kxXAVNNRJyEkGXEiruSmAqh/YOaAeIpm5tmip5Pp
-         QPNQaO5rmu7UWJMoopCUtml6nQBb0DXjLpNjvYt14FGvvdV94zjd/Y8e5qPdObzOA5sp
-         B878AaotmPjHsZ9IWp0vb/KhVdySkGXNENKMzEqw4jT4u+aLTe9sTWIrNQnaMWwITokM
-         7BsA==
-X-Gm-Message-State: AOJu0YwHY1u9SXlmbg1JymLotwa2qILlaqXsIG3psuZo+ZXFqqyzlddf
-	G0aYnYa8nqZE9EnrQ8aTqWnNz1uAj4ntrD8ZD3fBk8Bp2nN+nYGl+LSaYiN75OCdgBTd
-X-Google-Smtp-Source: AGHT+IHLrVcf9tRVbKk/sH10D8daPpPVhdis821RI4oFgjkpiTNMvjWatKV05XQQ42wl/M+5RMrQFA==
-X-Received: by 2002:a05:6a21:8ccb:b0:19e:be98:fc68 with SMTP id ta11-20020a056a218ccb00b0019ebe98fc68mr12491746pzb.52.1707808421993;
-        Mon, 12 Feb 2024 23:13:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU4b+SRyoOMFtxNL4ktND5kVFO08WX8mZAQL+i4OOf/ehLDms8DJTl5Wq1+FjbIUfaTTaNjFuO4RmYf3wOCs4jZ
+        bh=O/cQ3rMbG1MPBE5giriJpPq/R9YBRI5n+KI6dif493c=;
+        b=jBo7itowDaV37/RJ6YFD49C8BcMqyBleaGpZUdUyepQyzF0Me0XAjOJVevEgPWf15R
+         dULi7kDz1Aw29Pk9AZyx8kOI3ay5AAmJ7Ot+ZAK7VxreGvGmyfl1bzse+dVqhYiwZtPB
+         cGFJK+71+4+Yyfr9TaXVuRcslmyd+qPdSzIrhVBkoVq/cJ9tu8W3fG2QIO2XsiJimxdn
+         XjVt8s+CEAnzTB39v8CLE2Z4wAm5uPVmCOwZX6fSgKzE00Zmnn1db2MCJctytzXFxvLa
+         DqlKWMzKzogvH4appqz3Pwad/3uLaVbpNusSo+DDXJswD4rMElWr23MKwTqHmPtxhRew
+         WCBQ==
+X-Gm-Message-State: AOJu0YzRgzyIxDZRYXkiF/7Pz3XvI5gsyGXqptmWVOC6xEjjd+aQ+aFw
+	ev+zo4ThyNL5WU4fVPJECs/vfaZ4Kz85Vvwiqi307vqoCrOgWbi6elw+WYZkpYwzvsiI
+X-Google-Smtp-Source: AGHT+IHb344j0njiuJlcihBAXnTlt4GNLDS8v+4deR9vzmBv65Wsw4mMey5BIxVWTqaDHQ8kstLPjA==
+X-Received: by 2002:a05:6a20:9f9a:b0:19e:b614:48ad with SMTP id mm26-20020a056a209f9a00b0019eb61448admr8039142pzb.5.1707810643993;
+        Mon, 12 Feb 2024 23:50:43 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUvUNVY0SjLQfoeKChxmyYYYMN9/RyADQ13YTNNhjbnT0oC5Lj3cuicPpPHDSFRPxt5V7ZTzRRdPit1p1K4eU6V
 Received: from localhost.localdomain ([8.218.212.108])
-        by smtp.gmail.com with ESMTPSA id ph8-20020a17090b3bc800b0029899165611sm1200593pjb.35.2024.02.12.23.13.40
+        by smtp.gmail.com with ESMTPSA id p14-20020a170902e74e00b001d9a40e204bsm1496566plf.21.2024.02.12.23.50.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 23:13:41 -0800 (PST)
+        Mon, 12 Feb 2024 23:50:43 -0800 (PST)
 From: Guoyu Ou <benogy@gmail.com>
 To: kent.overstreet@linux.dev
 Cc: linux-bcachefs@vger.kernel.org,
 	Guoyu Ou <benogy@gmail.com>
-Subject: [PATCH] ktest: add a test case for rmdir empty snapshot
-Date: Tue, 13 Feb 2024 15:13:25 +0800
-Message-ID: <20240213071326.12699-1-benogy@gmail.com>
+Subject: [PATCH v2] bcachefs: skip invisible entries in empty subvolume checking
+Date: Tue, 13 Feb 2024 15:50:29 +0800
+Message-ID: <20240213075030.45296-1-benogy@gmail.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
@@ -66,38 +66,91 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+When we are checking whether a subvolume is empty in the specified snapshot,
+entries that do not belong to this subvolume should be skipped.
+
+This fixes the following case:
+
+    $ bcachefs subvolume create ./sub
+    $ cd sub
+    $ bcachefs subvolume create ./sub2
+    $ bcachefs subvolume snapshot . ./snap
+    $ ls -a snap
+    . ..
+    $ rmdir snap
+    rmdir: failed to remove 'snap': Directory not empty
+
+As Kent suggested, we pass 0 in may_delete_deleted_inode() to ignore subvols
+in the subvol we want to deleted, because inode.bi_subvol is only set on
+subvolume roots, and we can't go through every inode in the subvolume and
+change bi_subvol when taking a snapshot. It makes the check less strict, but
+that's ok, the rest of fsck will still catch it.
+
 Signed-off-by: Guoyu Ou <benogy@gmail.com>
 ---
- tests/bcachefs/subvol.ktest | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ fs/bcachefs/dirent.c | 7 +++++--
+ fs/bcachefs/dirent.h | 2 +-
+ fs/bcachefs/inode.c  | 2 +-
+ 3 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/tests/bcachefs/subvol.ktest b/tests/bcachefs/subvol.ktest
-index 1915d84..4a50da2 100755
---- a/tests/bcachefs/subvol.ktest
-+++ b/tests/bcachefs/subvol.ktest
-@@ -718,4 +718,22 @@ test_subvol_mv()
-     bcachefs fsck ${ktest_scratch_dev[0]}
+diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
+index 4ae1e9f002a0..82c5bff01411 100644
+--- a/fs/bcachefs/dirent.c
++++ b/fs/bcachefs/dirent.c
+@@ -508,7 +508,7 @@ u64 bch2_dirent_lookup(struct bch_fs *c, subvol_inum dir,
+ 	return ret;
  }
  
-+test_subvol_rmdir_empty_snapshot()
-+{
-+    run_quiet "" bcachefs format -f ${ktest_scratch_dev[0]}
-+    mount -t bcachefs ${ktest_scratch_dev[0]} /mnt
-+
-+    cd /mnt
-+    bcachefs subvolume create ./sub
-+    cd sub
-+    bcachefs subvolume create ./sub2
-+    bcachefs subvolume snapshot . ./snap
-+    rmdir ./snap
-+
-+    cd /
-+    umount /mnt
-+
-+    bcachefs fsck ${ktest_scratch_dev[0]}
-+}
-+
- main "$@"
+-int bch2_empty_dir_snapshot(struct btree_trans *trans, u64 dir, u32 snapshot)
++int bch2_empty_dir_snapshot(struct btree_trans *trans, u64 dir, u32 subvol, u32 snapshot)
+ {
+ 	struct btree_iter iter;
+ 	struct bkey_s_c k;
+@@ -518,6 +518,9 @@ int bch2_empty_dir_snapshot(struct btree_trans *trans, u64 dir, u32 snapshot)
+ 			   SPOS(dir, 0, snapshot),
+ 			   POS(dir, U64_MAX), 0, k, ret)
+ 		if (k.k->type == KEY_TYPE_dirent) {
++			struct bkey_s_c_dirent d = bkey_s_c_to_dirent(k);
++			if (d.v->d_type == DT_SUBVOL && le32_to_cpu(d.v->d_parent_subvol) != subvol)
++				continue;
+ 			ret = -ENOTEMPTY;
+ 			break;
+ 		}
+@@ -531,7 +534,7 @@ int bch2_empty_dir_trans(struct btree_trans *trans, subvol_inum dir)
+ 	u32 snapshot;
+ 
+ 	return bch2_subvolume_get_snapshot(trans, dir.subvol, &snapshot) ?:
+-		bch2_empty_dir_snapshot(trans, dir.inum, snapshot);
++		bch2_empty_dir_snapshot(trans, dir.inum, dir.subvol, snapshot);
+ }
+ 
+ int bch2_readdir(struct bch_fs *c, subvol_inum inum, struct dir_context *ctx)
+diff --git a/fs/bcachefs/dirent.h b/fs/bcachefs/dirent.h
+index 21ffeb78f02e..aeb8207ca9f2 100644
+--- a/fs/bcachefs/dirent.h
++++ b/fs/bcachefs/dirent.h
+@@ -69,7 +69,7 @@ u64 bch2_dirent_lookup(struct bch_fs *, subvol_inum,
+ 		       const struct bch_hash_info *,
+ 		       const struct qstr *, subvol_inum *);
+ 
+-int bch2_empty_dir_snapshot(struct btree_trans *, u64, u32);
++int bch2_empty_dir_snapshot(struct btree_trans *, u64, u32, u32);
+ int bch2_empty_dir_trans(struct btree_trans *, subvol_inum);
+ int bch2_readdir(struct bch_fs *, subvol_inum, struct dir_context *);
+ 
+diff --git a/fs/bcachefs/inode.c b/fs/bcachefs/inode.c
+index 086f0090b03a..84a6e5011032 100644
+--- a/fs/bcachefs/inode.c
++++ b/fs/bcachefs/inode.c
+@@ -1088,7 +1088,7 @@ static int may_delete_deleted_inode(struct btree_trans *trans,
+ 		goto out;
+ 
+ 	if (S_ISDIR(inode.bi_mode)) {
+-		ret = bch2_empty_dir_snapshot(trans, pos.offset, pos.snapshot);
++		ret = bch2_empty_dir_snapshot(trans, pos.offset, 0, pos.snapshot);
+ 		if (fsck_err_on(ret == -ENOTEMPTY, c, deleted_inode_is_dir,
+ 				"non empty directory %llu:%u in deleted_inodes btree",
+ 				pos.offset, pos.snapshot))
 -- 
 2.43.0
 
