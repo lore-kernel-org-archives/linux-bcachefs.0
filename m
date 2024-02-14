@@ -1,159 +1,142 @@
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23FE11197
-	for <linux-bcachefs@vger.kernel.org>; Wed, 14 Feb 2024 10:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6614712836F
+	for <linux-bcachefs@vger.kernel.org>; Wed, 14 Feb 2024 18:12:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707907492; cv=none; b=OUulN3nJH9RoiH2Q8XKzukmFHzTI50K1SScPNDndXsSgAQt8CmcfQ6H7AsFo9JinvW1wZ9nM3St1qztlvTizvMAMyn0Pmd/rrenW5QClQY5ZMl/Gh/yNKACLu1ZfyU1EVblmqjoujHWdVa2yN1eHePkYODUrSFADViN2CjgcuKQ=
+	t=1707934341; cv=none; b=YI1PFCJkJhGMO3xJoujImVLETEWWj47mdnoQ1YtZYC1N7J5qpyHErYRFtytEcKfc30A5gsmn6UtGS3Y7uzXXgf7YDmmh3e4PRpRAsLzIuryd2wCQaaGxk7KnqtrKudIuVUfkLbJ6rDvfvHjYrB5mWH18rjQcWdNnzckCUPL95VM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707907492; c=relaxed/simple;
-	bh=vdUVMSN/DBEbi9xLtereQlPEved8sJ0OAE7THRyHVaE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=ISVDO3fgyctl4WWgYYrXbxRuIfsWzHQO/uDU26P6z0Kurp6GAh6D4mGZoAL2yE3W4WB3m/xr9vE+5HmhMpZLXaBuAPfHVwdotnYY9DlnX38vSicnLMbQ/m9wGywKvcdoCSnY3r15J091T0WO1broWr8kgNisvef1k8HrN9ltp8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-56-wLKyE-NdNOaDYt-85i9Meg-1; Wed, 14 Feb 2024 10:42:20 +0000
-X-MC-Unique: wLKyE-NdNOaDYt-85i9Meg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 14 Feb
- 2024 10:41:59 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 14 Feb 2024 10:41:59 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Kent Overstreet' <kent.overstreet@linux.dev>, Nathan Chancellor
-	<nathan@kernel.org>
-CC: "llvm@lists.linux.dev" <llvm@lists.linux.dev>, Will Deacon
-	<will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: RE: static assertion failed in fs/bcachefs/journal_io.c
-Thread-Topic: static assertion failed in fs/bcachefs/journal_io.c
-Thread-Index: AQHaXuOGUA5YsYgoKEe2qel95jLubrEJmFgw
-Date: Wed, 14 Feb 2024 10:41:59 +0000
-Message-ID: <b91d20f513e642669f716a217f15f9de@AcuMS.aculab.com>
-References: <20240213215640.GA80329@dev-arch.thelio-3990X>
- <wl7u2f7gvrw5yeyoa4rit4fy5kepn5tmqgzelrduhpajqvcuxy@4imci5mhzecr>
-In-Reply-To: <wl7u2f7gvrw5yeyoa4rit4fy5kepn5tmqgzelrduhpajqvcuxy@4imci5mhzecr>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1707934341; c=relaxed/simple;
+	bh=alKj2okcl6YHQsfmVlazJEnQfZhXyjc1E7pSt1csz3U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JHb6MpT8LhPz1yWNaes1ju1LqCnRTmUnsfOATRReZg3YJS5P1dBFAXUFX2hZv4KyxrFKpdWwHvAAZ/aG6cJ53q7gFUAOFLomoHQjrfWmiHA1+4OxA2ZmxwlSF9yheuxPedd31fTe7xAmRl5n8bbehDLe/meLmzhvd+63nJSNK5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DfQhTKcU; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DfQhTKcU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707934338;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9FogLmZZ74GV8NolbejryLc31PPnYcCxnUdvYpTKv3c=;
+	b=DfQhTKcUK/8gBcvuxuFB0XPQbyOHiGW/NcFbuJHwzrs1Jy7R4HHqSU5EvZB4vwBbP1jsax
+	c47d99HT/Iru3a1IaaJIfa5fIQc14TK1Ok0GSCoX/Yv9PF1dk4rhxRD/GL2bBGBXAfFRv2
+	gZMW57UukNm/EUGIfIHIMxZtNeOHoA4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-532-33Y4xSe1MmCKMdNleNFtZA-1; Wed,
+ 14 Feb 2024 13:12:14 -0500
+X-MC-Unique: 33Y4xSe1MmCKMdNleNFtZA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8358C380662E;
+	Wed, 14 Feb 2024 18:12:14 +0000 (UTC)
+Received: from bfoster (unknown [10.22.16.56])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 531C2200B3D9;
+	Wed, 14 Feb 2024 18:12:14 +0000 (UTC)
+Date: Wed, 14 Feb 2024 13:13:51 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Su Yue <l@damenly.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: fix iov_iter count underflow on sub-block dio
+ read
+Message-ID: <Zc0C32sbI2zjSDgL@bfoster>
+References: <20240205154814.910664-1-bfoster@redhat.com>
+ <4fdyk3to57izolmljjiehnn5kt5dxckhh2oodo7vk6gssgqbsb@6gsjfytnv2xy>
+ <ZcE5JY279PGUrP9F@bfoster>
+ <il2yfjaa.fsf@damenly.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <il2yfjaa.fsf@damenly.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-From: Kent Overstreet
-> Sent: 14 February 2024 01:17
->=20
-> bcachefs bugs should go to the bcachefs mailing list; I assume this is
-> just a case where we need min_t instead of min, if so I'll fix it
-> shortly
+On Fri, Feb 09, 2024 at 10:39:43AM +0800, Su Yue wrote:
+> 
+> On Mon 05 Feb 2024 at 14:38, Brian Foster <bfoster@redhat.com> wrote:
+> 
+> > On Mon, Feb 05, 2024 at 02:15:36PM -0500, Kent Overstreet wrote:
+> > > On Mon, Feb 05, 2024 at 10:48:14AM -0500, Brian Foster wrote:
+> > > > bch2_direct_IO_read() checks the request offset and size for >
+> > > sector
+> > > > alignment and then falls through to a couple calculations to >
+> > > shrink
+> > > > the size of the request based on the inode size. The problem > is
+> > > that
+> > > > these checks round up to the fs block size, which runs the > risk
+> > > of
+> > > > underflowing iter->count if the block size happens to be > large
+> > > > enough. This is triggered by fstest generic/361 with a 4k > block
+> > > > size, which subsequently leads to a crash.
+> > > >
+> > > > After some discussion, the original purpose of the shorten > logic
+> > > in this
+> > > > path is not totally clear. It appears to be intended as an >
+> > > optimization
+> > > > of limited value, so simplify things and avoid the underflow >
+> > > problem by
+> > > > removing it.
+> > > 
+> > > Thinking about this a bit more...
+> > > 
+> > > All that we're avoiding with the shorten is zeroing out the rest of
+> > > the
+> > > read, which will happen in bch2_read_extent(); we won't be issuing
+> > > any
+> > > IO, since that would require real data extents above i_size, which
+> > > is of
+> > > course not allowed.
+> > > 
+> > > But zeroing out the rest of the read is actual work that's being
+> > > avoided, since if we return a short read (which is what we're doing
+> > > here) it's undefined what happens to the rest of the buffer.
+> > > 
+> > > So... maybe we should keep it, for the crazy but inevitable
+> > > application
+> > > that uses a 1MB read buffer for everything, including O_DIRECT reads
+> > > to
+> > > 4k files?
+> > > 
+> > 
+> > I had another change around that basically just protected against the
+> > underflow. I.e., something along the lines of the following, to also
+> > cover the additional use of shorten later in the function:
+> > 
+> > 	if (shorten >= iter->count)
+> > 		shorten = 0;
+> > 
+> 
+> The change is a clean fix without breaking logic in bch2_direct_IO_read.
+> If without shroten, the next loop counting on iter->count must be altered.
+> I'd like the simpler way.
+> 
 
-You should pretty much never use min_t() - it contains casts that are just
-waiting to cause grief.
+Hi Su,
 
-I'm sure a bug got raised on clang so it outputting the source of the
-_Static_assert() when there is a message.
-That just makes the error message worse.
+I'm not quite following your comment on the "next loop counting on
+iter->count." Can you elaborate? Also, which option are you calling more
+simple? :) Thanks.
 
-Hacking at the error message, it comes from (expanded by min()):
+Brian
 
-min(replicas_want, ({
-    do {
-        __attribute__((__noreturn__))
-            extern void __compiletime_assert_578(void)
-            __attribute__((__error__("Unsupported access size for {READ,WRI=
-TE}_ONCE().")));
-        if (...)
-            __compiletime_assert_578();
-    } while (0);
-    ({
-        typeof(&(c->opts.metadata_replicas_required)) __x =3D &(c->opts.met=
-adata_replicas_required);
-        int atomic =3D 1;
-        union {
-            typeof( _Generic((*__x),
-                char: (char)0,
-                unsigned char: (unsigned char)0,
-                signed char: (signed char)0,
-                unsigned short: (unsigned short)0,
-                signed short: (signed short)0,
-                unsigned int: (unsigned int)0,
-                signed int: (signed int)0,
-                unsigned long: (unsigned long)0,
-                signed long: (signed long)0,
-                unsigned long long: (unsigned long long)0,
-                signed long long: (signed long long)0,
-                default: (*__x))) __val;
-            char __c[1];
-        } __u;
-        switch (sizeof(c->opts.metadata_replicas_required)) {
-        case 1: asm volatile("..." : "=3Dr" (*(__u8 *)__u.__c) : "Q" (*__x)=
- : "memory");
-            break;
-        case 2: asm volatile("..." : "=3Dr" (*(__u16 *)__u.__c) : "Q" (*__x=
-) : "memory");
-            break;
-        case 4: asm volatile("..." : "=3Dr" (*(__u32 *)__u.__c) : "Q" (*__x=
-) : "memory");
-            break;
-        case 8: asm volatile("..." : "=3Dr" (*(__u64 *)__u.__c) : "Q" (*__x=
-) : "memory");
-            break;
-        default:
-            atomic =3D 0;
-        }
-        atomic ? (typeof(*__x))__u.__val : (*(volatile typeof(__x))__x);
-    });
-}))
-
-So I suspect it is min(replicas_want, READ_ONCE(replices_required)).
-I think replicas_want is unsigned (int) and replicas_required u8.
-
->=20
-> On Tue, Feb 13, 2024 at 02:56:40PM -0700, Nathan Chancellor wrote:
-> > Hi all,
-> >
-> > I am not really sure where to go with this, so I figured I would loop
-> > some people in and see if we can figure out what is going on here.
-> >
-> > After commit 67a8e7de7ef0 ("bcachefs: Clamp replicas_required to
-> > replicas") in linux-next, I see a massive error occur when building for
-> > ARCH=3Darm64 with both CONFIG_BCACHEFS_FS and CONFIG_LTO enabled, which=
- is
-> > important because arm64 defines its own __READ_ONCE() with LTO enabled.
-> > The error appears to be related to the minmax.h changes that went into
-> > 6.7; I think it is specifically around commit d03eba99f5bf ("minmax:
-> > allow min()/max()/clamp() if the arguments have the same signedness.").
-> >
-> > As far as I can tell, replicas_want and the metadata_replicas_required
-> > member in struct bch_opts should have the same signedness, unless the
-> > __READ_ONCE() macro is messing something up, which is kind of hard to
-> > tell at this point...
-
-The last line of that READ_ONCE() expansion looks dubious to me.
-The result type is independent of 'atomic' and I suspect ?: counts
-as an arithmetic operation and u8 gets promoted to int.
-
-That would fail the old min() as well as the new one.
-Is this code new? I can see it online in 6.8.4-rc4.
-
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+> --
+> Su
+> 
+> > ... and IIRC that seemed to work as well. But I'll probably have to take
+> > a closer look at that large buffer case to grok what's happening and the
+> > original purpose of this logic.
+> > 
+> > Brian
+> 
 
