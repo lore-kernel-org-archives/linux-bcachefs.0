@@ -1,41 +1,39 @@
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA06612E
-	for <linux-bcachefs@vger.kernel.org>; Wed, 14 Feb 2024 02:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C4819B
+	for <linux-bcachefs@vger.kernel.org>; Wed, 14 Feb 2024 02:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707877755; cv=none; b=qeRZAu13YtKvbEdPuHAZ/g0h/5oEWiEIe3eHvhaejIg5pRhTG3FpaAp9F/RuqqTwyKWQlWGnWUygfRp+D7qzfXgZG6J6YYdCzooxFjDX1kwLttWYcXvLuKZxVJHTeYvEKuMIXUC/ddD9YR73NervmyWNf2QNj8EUmArCGxx2RdA=
+	t=1707878347; cv=none; b=Y78Pcs1R1Wi22PmnhikzVSJzmKhPaG223LTxJtlYeyQnm+KYLGOicItfwG1jAeNku+jYtI4hWBsFzzdOCe/15mNaxAKz6hPtSI+pBSOR0xvqcPvRxGaji25dBqW/hsVI3GkF4qIKpt8zmJ8DRUnx3rPB0/xKjRrwpA9kvlb6bCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707877755; c=relaxed/simple;
-	bh=qnMXIzAsvwbg9RdPvS3yVDUsbE7YmK9K5gnzIv7DBfA=;
+	s=arc-20240116; t=1707878347; c=relaxed/simple;
+	bh=GHvSvuvjAnWYwmZoqQcwMu96pEqkk8OQ/1Up0nfSqgY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=krvV2dYtSC4/u+ZmxV6Du9/jGWQ6y5AemwXPj0qQXDJucNP6JqnZN2He5Hl1luWoQuZgCqhUI41tQcvKaNrVsV1Cy0J5f6YV/qp3nQPq10vYPPTb5BEPDhtL55kiHoe90osmQS1kYzAVGyxmf5QAWzVGhELEVlrB1NY0B1c2heQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=k+y8Hwll; arc=none smtp.client-ip=95.215.58.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hh4y7/JktZ85LHGumbPZjoSB58g3FevRgSwrju+5YyqeXqCl+LDNHanIVZyshZT3+0MARz2mmu3JvEZDKHXveV53GYD4rk9UQ7lRclEgUYEW+Ecz7hfAWJ2sDaSHHGYH1uH7NvfbxncRUzxtLmRg3Gwz/4eeG2541L3+1s0VuIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fiLIW8dF; arc=none smtp.client-ip=95.215.58.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="k+y8Hwll"
-Date: Tue, 13 Feb 2024 21:28:37 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fiLIW8dF"
+Date: Tue, 13 Feb 2024 21:38:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707877750;
+	t=1707878343;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Rh748CJKLC8xvLfwlnns4OR7wyB9t3Vax7RM1Ml7NJM=;
-	b=k+y8HwllTEJkXP1GNY0NZLbw388OpCwxLx7tXyNC7iE5VZmjzj1ISGEwkoehdqMz3OoPA9
-	jTAgAeuEymJPjQZ6ebnnRCkk6FEdfJo2YQ+LN7P8QuEdQ2n+E5y+zKV1vFWzlq42RMO5As
-	tjTHAIcg3kJ657Lhyb9cZ8V5BCW63eE=
+	bh=eNIbO8xAcnDJNZLW6h9DjsS7FMZyyq1J175GxQ/aMPA=;
+	b=fiLIW8dF7ELhSseFWEw11IcmY60V0SNJGaitiIzb2Ls0M3UOJSRdZbuFusXFkvkjGh9ebP
+	eJmLUXDRffyGtE5QTaTYSs2HFvCOsNfCuJjli+d/mw6zSNvgLK03orhm3Lv5sxaS6krj/G
+	ICoCRA4YsE2j2tIpheQvuRLR7MjNUsY=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs stable updates for v6.7
-Message-ID: <jhwinzfpw2xjjdwsgqsrtjnzcqdbfoqev3qrm65oaxktua4c7m@mes2iwvk2yep>
-References: <6yl6zvu2pa3mz7irsaax5ivp6kh3dae5kaslvst7yafmg6672g@mskleu2vjfp2>
- <2024021307-reactive-woven-8543@gregkh>
- <2024021300-deck-duffel-5d2b@gregkh>
+To: Guoyu Ou <benogy@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v3] bcachefs: skip invisible entries in empty subvolume
+ checking
+Message-ID: <bkgmhj35rvon4e2gawwn5qepeitppss4kiharvetcl46q6x2pj@3c7jrrbtxco4>
+References: <20240213082004.46076-1-benogy@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -44,100 +42,99 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2024021300-deck-duffel-5d2b@gregkh>
+In-Reply-To: <20240213082004.46076-1-benogy@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 13, 2024 at 03:44:25PM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Feb 13, 2024 at 03:38:10PM +0100, Greg Kroah-Hartman wrote:
-> > On Thu, Feb 08, 2024 at 08:14:39PM -0500, Kent Overstreet wrote:
-> > > Hi Greg, few stable updates for you -
-> > > 
-> > > Cheers,
-> > > Kent
-> > > 
-> > > The following changes since commit 0dd3ee31125508cd67f7e7172247f05b7fd1753a:
-> > > 
-> > >   Linux 6.7 (2024-01-07 12:18:38 -0800)
-> > > 
-> > > are available in the Git repository at:
-> > > 
-> > >   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-for-v6.7-stable-20240208
-> > > 
-> > > for you to fetch changes up to f1582f4774ac7c30c5460a8c7a6e5a82b9ce5a6a:
-> > > 
-> > >   bcachefs: time_stats: Check for last_event == 0 when updating freq stats (2024-02-08 15:33:11 -0500)
-> > 
-> > This didn't work well :(
-> > 
-> > All of the original git commit ids are gone, and for me to look them up
-> > and add them back by hand is a pain.  I'll do it this time, but next
-> > time can you please include them in the commit somewhere (cherry-pick -x
-> > will do it automatically for you)
-> > 
-> > Let's see if I can figure it out...
+On Tue, Feb 13, 2024 at 04:20:04PM +0800, Guoyu Ou wrote:
+> When we are checking whether a subvolume is empty in the specified snapshot,
+> entries that do not belong to this subvolume should be skipped.
 > 
-> I got all but 3 applied, can you please send an updated set of 3 patches
-> for the ones I couldn't just cherry-pick from Linus's tree?
+> This fixes the following case:
+> 
+>     $ bcachefs subvolume create ./sub
+>     $ cd sub
+>     $ bcachefs subvolume create ./sub2
+>     $ bcachefs subvolume snapshot . ./snap
+>     $ ls -a snap
+>     . ..
+>     $ rmdir snap
+>     rmdir: failed to remove 'snap': Directory not empty
+> 
+> As Kent suggested, we pass 0 in may_delete_deleted_inode() to ignore subvols
+> in the subvol we are checking, because inode.bi_subvol is only set on
+> subvolume roots, and we can't go through every inode in the subvolume and
+> change bi_subvol when taking a snapshot. It makes the check less strict, but
+> that's ok, the rest of fsck will still catch it.
+> 
+> Signed-off-by: Guoyu Ou <benogy@gmail.com>
+> ---
+>  fs/bcachefs/dirent.c | 7 +++++--
+>  fs/bcachefs/dirent.h | 2 +-
+>  fs/bcachefs/inode.c  | 2 +-
+>  3 files changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
+> index 4ae1e9f002a0..82c5bff01411 100644
+> --- a/fs/bcachefs/dirent.c
+> +++ b/fs/bcachefs/dirent.c
+> @@ -508,7 +508,7 @@ u64 bch2_dirent_lookup(struct bch_fs *c, subvol_inum dir,
+>  	return ret;
+>  }
+>  
+> -int bch2_empty_dir_snapshot(struct btree_trans *trans, u64 dir, u32 snapshot)
+> +int bch2_empty_dir_snapshot(struct btree_trans *trans, u64 dir, u32 subvol, u32 snapshot)
+>  {
+>  	struct btree_iter iter;
+>  	struct bkey_s_c k;
+> @@ -518,6 +518,9 @@ int bch2_empty_dir_snapshot(struct btree_trans *trans, u64 dir, u32 snapshot)
+>  			   SPOS(dir, 0, snapshot),
+>  			   POS(dir, U64_MAX), 0, k, ret)
+>  		if (k.k->type == KEY_TYPE_dirent) {
+> +			struct bkey_s_c_dirent d = bkey_s_c_to_dirent(k);
+> +			if (d.v->d_type == DT_SUBVOL && le32_to_cpu(d.v->d_parent_subvol) != subvol)
+> +				continue;
 
-New pull request work?
 
-The following changes since commit 0dd3ee31125508cd67f7e7172247f05b7fd1753a:
+if (d.v->d_type == DT_SUBVOL && (le32_to_cpu(d.v->d_parent_subvol) != subvol || !subvol))
 
-  Linux 6.7 (2024-01-07 12:18:38 -0800)
-
-are available in the Git repository at:
-
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-6.7-stable-2024-02-13
-
-for you to fetch changes up to b291ceeb4faa9ee34d1704116fe393d66ff1f221:
-
-  bcachefs: time_stats: Check for last_event == 0 when updating freq stats (2024-02-13 21:22:41 -0500)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.7 stable
-
-----------------------------------------------------------------
-Al Viro (2):
-      new helper: user_path_locked_at()
-      bch2_ioctl_subvolume_destroy(): fix locking
-
-Christoph Hellwig (1):
-      bcachefs: fix incorrect usage of REQ_OP_FLUSH
-
-Daniel Hill (1):
-      bcachefs: rebalance should wakeup on shutdown if disabled
-
-Guoyu Ou (1):
-      bcachefs: unlock parent dir if entry is not found in subvolume deletion
-
-Helge Deller (1):
-      bcachefs: Fix build on parisc by avoiding __multi3()
-
-Kent Overstreet (4):
-      bcachefs: Don't pass memcmp() as a pointer
-      bcachefs: Add missing bch2_moving_ctxt_flush_all()
-      bcachefs: bch2_kthread_io_clock_wait() no longer sleeps until full amount
-      bcachefs: time_stats: Check for last_event == 0 when updating freq stats
-
-Mathias Krause (1):
-      bcachefs: install fd later to avoid race with close
-
-Su Yue (2):
-      bcachefs: kvfree bch_fs::snapshots in bch2_fs_snapshots_exit
-      bcachefs: grab s_umount only if snapshotting
-
- fs/bcachefs/chardev.c           |  3 +--
- fs/bcachefs/clock.c             |  4 ++--
- fs/bcachefs/fs-io.c             |  2 +-
- fs/bcachefs/fs-ioctl.c          | 42 +++++++++++++++++++++--------------------
- fs/bcachefs/journal_io.c        |  3 ++-
- fs/bcachefs/mean_and_variance.h |  2 +-
- fs/bcachefs/move.c              |  2 +-
- fs/bcachefs/move.h              |  1 +
- fs/bcachefs/rebalance.c         | 13 +++++++++++--
- fs/bcachefs/replicas.c          | 10 ++++++++--
- fs/bcachefs/snapshot.c          |  2 +-
- fs/bcachefs/util.c              |  5 +++--
- fs/namei.c                      | 16 +++++++++++++---
- include/linux/namei.h           |  1 +
- 14 files changed, 68 insertions(+), 38 deletions(-)
+>  			ret = -ENOTEMPTY;
+>  			break;
+>  		}
+> @@ -531,7 +534,7 @@ int bch2_empty_dir_trans(struct btree_trans *trans, subvol_inum dir)
+>  	u32 snapshot;
+>  
+>  	return bch2_subvolume_get_snapshot(trans, dir.subvol, &snapshot) ?:
+> -		bch2_empty_dir_snapshot(trans, dir.inum, snapshot);
+> +		bch2_empty_dir_snapshot(trans, dir.inum, dir.subvol, snapshot);
+>  }
+>  
+>  int bch2_readdir(struct bch_fs *c, subvol_inum inum, struct dir_context *ctx)
+> diff --git a/fs/bcachefs/dirent.h b/fs/bcachefs/dirent.h
+> index 21ffeb78f02e..aeb8207ca9f2 100644
+> --- a/fs/bcachefs/dirent.h
+> +++ b/fs/bcachefs/dirent.h
+> @@ -69,7 +69,7 @@ u64 bch2_dirent_lookup(struct bch_fs *, subvol_inum,
+>  		       const struct bch_hash_info *,
+>  		       const struct qstr *, subvol_inum *);
+>  
+> -int bch2_empty_dir_snapshot(struct btree_trans *, u64, u32);
+> +int bch2_empty_dir_snapshot(struct btree_trans *, u64, u32, u32);
+>  int bch2_empty_dir_trans(struct btree_trans *, subvol_inum);
+>  int bch2_readdir(struct bch_fs *, subvol_inum, struct dir_context *);
+>  
+> diff --git a/fs/bcachefs/inode.c b/fs/bcachefs/inode.c
+> index 086f0090b03a..84a6e5011032 100644
+> --- a/fs/bcachefs/inode.c
+> +++ b/fs/bcachefs/inode.c
+> @@ -1088,7 +1088,7 @@ static int may_delete_deleted_inode(struct btree_trans *trans,
+>  		goto out;
+>  
+>  	if (S_ISDIR(inode.bi_mode)) {
+> -		ret = bch2_empty_dir_snapshot(trans, pos.offset, pos.snapshot);
+> +		ret = bch2_empty_dir_snapshot(trans, pos.offset, 0, pos.snapshot);
+>  		if (fsck_err_on(ret == -ENOTEMPTY, c, deleted_inode_is_dir,
+>  				"non empty directory %llu:%u in deleted_inodes btree",
+>  				pos.offset, pos.snapshot))
+> -- 
+> 2.43.0
+> 
