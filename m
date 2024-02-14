@@ -1,37 +1,64 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DFB605C6
-	for <linux-bcachefs@vger.kernel.org>; Tue, 13 Feb 2024 19:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6BF05398
+	for <linux-bcachefs@vger.kernel.org>; Wed, 14 Feb 2024 00:03:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707851837; cv=none; b=mNk47AbvSi/ZOBMlIu8+sY/1p66k8gn7uQEkx7yLRSeSEb/7YTJvupM4SVxHQ/7prJew66nr00YHlu1jCxJWsB1nIx+RpIOpZeKgPi3GM//aBrVSaq9IKCSsPvrlvoTx15h6KlLg4RxAMMPC+7MxwbPrMd8h0qRuYMNkHqBUhBE=
+	t=1707869020; cv=none; b=GPIdbIUGGgdVgsMywCxh9Um8hFPOLwQ/0CDqY9pXJvQmWrkcruxW7GUMNKgWoogjkW8JFwhcenhmL5N49XI7uOgSAngt7z7i05Kb9D7rveHQhuHpoPTRVwql9lellG3DcfXhmoMedYHTUDp6j75OStsQijflFRY2wC74d/M38YU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707851837; c=relaxed/simple;
-	bh=fCr3MSuUOxA6764CzR/XBJ5u4Dh6Rw2fD8+m9h9Ezpw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=HUE1OnyFRIABdYbU2VMsGjayJ0jiYgLHbVy+NStlBL2hlQwDAqIKH/Vki5n0ty2sXv/hn1+EOAlF3dexmA321plIsEbW3JrWlJpEH45pS5WswCEfGi3hJuF1/7BmK0BBE3CMG87LIxtuZP5GZ7rLHerWFXiwKdk63LXB4Av7sos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s5DpXJoD; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1707869020; c=relaxed/simple;
+	bh=8hhjJArGuTrb01w9KR7VfGFjTK+QM8XbPfc5O1BlDNQ=;
+	h=From:Date:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GD+WyrznRIEYUmtTuR5csX9kCvvFfoY/B7vh41w8wv2oPcnimj/VL03qynl3YkoI1CIKWzrgIn9R7cnTWRayLDRzLk3YOa3nS3VgscKQU13yPuu73tWQpdEujSsZtVkQUqFo+r1QNChISO26tqKLm/ip0ixkFUOA2cjJGmZ0shc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=djCBOE2y; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s5DpXJoD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6F1DC433F1;
-	Tue, 13 Feb 2024 19:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707851836;
-	bh=fCr3MSuUOxA6764CzR/XBJ5u4Dh6Rw2fD8+m9h9Ezpw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=s5DpXJoDOQ/4b3+cuD/9bbXRWERKwdQ/83NzrIHXox6gBUbnJEhjFmToNdYGY+56l
-	 9R19cYVE4+uFXjhgBxFZc+ma3wkzE/YRWlEdBwXOkZTwd3qCR1DHu6YxQIpN/XSPHc
-	 QjNZAG8ZkdvI+P/sd2oZ3mIshwZ8LYdh8DXTrmUxbdtZGwzLvOMJ3Ys7OLk65MlupI
-	 goygUsy/jG+lobEn/wyao290JDzPORxb0mtEipXc3JcGrm2iF/c4r8J6DN1f342VXN
-	 jE1RQFOtEpRrP7uMkg9avDz5v+GuYDB8f70EoFT4UHbua4Ec31C2MaToEhgZ/0H2Yo
-	 un3YAZR5wCUvw==
-Date: Tue, 13 Feb 2024 11:17:16 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: djwong@kernel.org, kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org
-Subject: [ANNOUNCE] thread with file: twf-cleanups updated to 1737799da27ff
-Message-ID: <170785143225.984170.828418190611017982.stg-ugh@frogsfrogsfrogs>
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="djCBOE2y"
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d70b0e521eso37477555ad.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 13 Feb 2024 16:03:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707869018; x=1708473818; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S5KvIIxgHED0qUD38JtNJLqQBOi5mdYPuXDuUCUlxsI=;
+        b=djCBOE2yZfChkl4BK4rM9eukCOAbfAMTqZoHl8Ee2TTxj/2lv8BiQZtqIpkaEygHqS
+         fuodi6w+OO4qRosBH/JiHz4fAmiLc02TEsldoR7cJwZMTne7sjWrpbFd4ELFLeQH4yh9
+         aAlI/ZU+3DtVMnNc0HGkr+FcY0xLCHNmdbfmY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707869018; x=1708473818;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S5KvIIxgHED0qUD38JtNJLqQBOi5mdYPuXDuUCUlxsI=;
+        b=PBdY/2jNkzsqUjEH22tzXAghL5kPXX3UjWnPKUrogNeqwXnv+4X0h/aKN6U68r4pFC
+         wWanHQef5pbO93gfM2Iq2vuPTpmpzhcWjF3OEMKNOY+tiU6+HhV/d02b6p0heARgJkgL
+         0Oh92zgIfL0Q+taFFv6Pwz7ix6wjLhzs0KgYfKOX3RGXWpVMA+fZeQFqGt4J0C0b2T9p
+         VANaMrtXuLcsXsX+zTQgIhr79xPtT18+UeonbcA3RVJePgmQ1+MkFWXTUdXEH9xXCo7F
+         15Dupe/H1uVT7sDwx+hWK1PnZFRtHlbqPGdfmHxc41yz/MhTU662Wl0FzmKBlPvyX1ZP
+         G0ZQ==
+X-Gm-Message-State: AOJu0YzbgUjOxA76MF8mAo4N+DpDGLftdI0sTDfLxk1VgWU8Rua7/jE1
+	aI7Bj861HZOcXpP+gk8Z/LS7jLxtHFp6XLsde0s8+8R1b4uD2l/X8JncS8mvEQ==
+X-Google-Smtp-Source: AGHT+IGvii1pz5Qtbml0HlPO4mlvNOppuYUgtORJaUe6oE/++e0grTswYB62DSIZ5RJkmOTD6odEsg==
+X-Received: by 2002:a17:903:2289:b0:1db:4c8d:9135 with SMTP id b9-20020a170903228900b001db4c8d9135mr1097758plh.8.1707869018377;
+        Tue, 13 Feb 2024 16:03:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUGNfPy6SBtkiwYFx7mxAkHk5NefCYdhE0oFJsirFxOlvy154DJNYLhH8iNKcCbgDLM8tQwSpkD4vDYiOTVn6kKmS9xgT9f2tGxoZr3nZDpeKGifhQ+wfiE/R3kDoMripDcGmBiOFr9HHNwjeTUpKLjOtfzV9mwPjJ1UAfpf/QajoJehd80y7lIIu2p4W3w7KbpbI1iw/wrtu6YYXbEpxPBJhsZfW8Eta/S49d+dvSHaWx1OEGHkju4c+nFG7cJnZ6j6zuuEG3ZEOmoJygJ8yiUCA8aV5NLcjiY3QmvnxKkRJv07FH0weKDu0CTyjmJfAYyuLN7fj3Q70x/tQaJCAsgFZYR6DzjRA==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id kd12-20020a17090313cc00b001d706e373a9sm178448plb.292.2024.02.13.16.03.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 16:03:38 -0800 (PST)
+From: coverity-bot <keescook@chromium.org>
+X-Google-Original-From: coverity-bot <keescook+coverity-bot@chromium.org>
+Date: Tue, 13 Feb 2024 16:03:37 -0800
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Brian Foster <bfoster@redhat.com>,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Coverity: darray_vprintf(): API usage errors
+Message-ID: <202402131603.E953E2CF@keescook>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -41,36 +68,47 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hi Kent,
+Hello!
 
-The twf-cleanups branch of the xfs-linux repository at:
+This is an experimental semi-automated report about issues detected by
+Coverity from a scan of next-20240213 as part of the linux-next scan project:
+https://scan.coverity.com/projects/linux-next-weekly-scan
 
-https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git
+You're getting this email because you were associated with the identified
+lines of code (noted below) that were touched by commits:
 
-has just been updated for your review.
+  Mon Feb 12 13:55:16 2024 -0500
+    ead021e0fe5b ("thread_with_file: Lift from bcachefs")
 
-This code snapshot has been rebased against recent upstream, freshly
-QA'd, and is ready for people to examine.  For the best experience, it
-is recommended to pull this branch and walk the commits instead of
-trying to read any patch deluge.  I'm kinda done with spraying hundreds
-of patches at the lists, so now I'm trying out a method of sending email
-about an entire branch to start a human-to-human discussion.
+Coverity reported the following:
 
-The new head of the twf-cleanups branch is commit:
+*** CID 1583634:  API usage errors  (VARARGS)
+lib/thread_with_file.c:123 in darray_vprintf()
+117     		va_copy(args2, args);
+118
+119     		len = vsnprintf(out->data + out->nr, darray_room(*out), fmt, args2);
+120     	} while (len + 1 > darray_room(*out) && !darray_make_room_gfp(out, len + 1, gfp));
+121
+122     	out->nr += min(len, darray_room(*out));
+vvv     CID 1583634:  API usage errors  (VARARGS)
+vvv     "va_end" was not called for "args2".
+123     }
+124
+125     void stdio_redirect_vprintf(struct stdio_redirect *stdio, bool nonblocking,
+126     			    const char *fmt, va_list args)
+127     {
+128     	struct stdio_buf *buf = &stdio->output;
 
-1737799da27ff thread_with_file: allow ioctls against these files
+If this is a false positive, please let us know so we can mark it as
+such, or teach the Coverity rules to be smarter. If not, please make
+sure fixes get into linux-next. :) For patches fixing this, please
+include these lines (but double-check the "Fixes" first):
 
-4 new commits:
+Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+Addresses-Coverity-ID: 1583634 ("API usage errors")
+Fixes: ead021e0fe5b ("thread_with_file: Lift from bcachefs")
 
-Darrick J. Wong (4):
-[6e7de89d28959] thread_with_file: allow creation of readonly files
-[3a4eae9b01b42] thread_with_file: fix various printf problems
-[93a017afe3941] thread_with_file: create ops structure for thread_with_stdio
-[1737799da27ff] thread_with_file: allow ioctls against these files
+Thanks for your attention!
 
-Code Diffstat:
-
-fs/bcachefs/chardev.c            |  18 ++++---
-include/linux/thread_with_file.h |  20 +++++---
-lib/thread_with_file.c           | 107 +++++++++++++++++++++++++++++++--------
-3 files changed, 111 insertions(+), 34 deletions(-)
+-- 
+Coverity-bot
