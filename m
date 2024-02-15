@@ -1,601 +1,196 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-108-mta97.mxroute.com (mail-108-mta97.mxroute.com [136.175.108.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5919D79DD
-	for <linux-bcachefs@vger.kernel.org>; Thu, 15 Feb 2024 05:16:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933ADDDD8
+	for <linux-bcachefs@vger.kernel.org>; Thu, 15 Feb 2024 07:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707974164; cv=none; b=aTvF/5qKubHw5hmE2Tjzuo4ZXE9ukehR31Tkq7xclY/YIFu+B14vSC0FhDBX4puVVjHYkpNmCNShcE9ctti5MbHDyfhwH56JNUShaEx7k8fLtpEqKVF0EwY6Tj2aSbleSL2y1H3Nulvriuk2J+V8u0/TJhbGITkKg7Z8OPch5YM=
+	t=1707982272; cv=none; b=rhQTY6kHk8R5tmmMNNid5dLCqm+XFCxCPLKkG20YNheuQkF/me+8MmAomwL4lXWbp6yeTSblQMcwl63IT/CakRQElGk8oriUvnJySY2bypOa67StiXD+DYY94NoQu63LxrvRpWHSrfWaTFnx5QlblBuWiE8NB4WaES5w+D2n5GU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707974164; c=relaxed/simple;
-	bh=qgdJhSSNO7rE+7kO4I8ld6UjUekfeRC5owY/T3MGV+g=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=cK2feJh6LIJJYWswXIb4eFOF66ADlavBUfMweniVbgLMCA41fZdnhwK7GnYZhffL+7ed0B8JlTNxm+4XiFCBI6lyvifMWiM9BPE6L+wmKVGssXdZDrmAZm4R8JiF2OGFxpuZ/GRhflJaWvF0FfB+TRQiE/iTb/XwUVPMfCP1+eU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fn7eIohm; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1707982272; c=relaxed/simple;
+	bh=/wdXp6oytFcvEkbai6GX7Bhz6BDeCKIz8r4l1B9ZRJ4=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=jnz8IjD426Pi4wG1TWo9eNgOlUDeSsV6Xp+pbg3pikZtUXo7ZNXGpt5srn7aqPvbbOK/Q+zrAJj4v1GL2/WhDQXwdTL0HWvKBdZsTQf2yWujseWzzyFNLWkGTIBEKLUybqfsFjzta3Ms2+DA+cvlSKH1fU4UuBlD3rhX6XINACg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=nu34ylBa; arc=none smtp.client-ip=136.175.108.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fn7eIohm"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707974162; x=1739510162;
-  h=date:from:to:cc:subject:message-id;
-  bh=qgdJhSSNO7rE+7kO4I8ld6UjUekfeRC5owY/T3MGV+g=;
-  b=fn7eIohmlDLQWPIZiQLwZF/Gsb9upwky7BDSHLVcgAbb8WDxD0LsdEwK
-   e1CGTt6nvB1nIDVfqBtCry5yqZfdiAn+l1FvqDheIqKJvz1k1VxzkoFCM
-   35vx77GrZ/Z8NEVUWJTGkkBnAPxb0HCbr8p2t45IZHl59FYgJ0ZQi6bcd
-   1w3g5WhZBBrMzwwwynNTwtyalMzr8dWmyCB0GnGyXf4OPQeIoHTrvO0Qe
-   HJMqTdgxxMrKmPIUQB2x/QCEXJOBwnZVpEPdnOgicYijoQGT8hBk45PSl
-   YE9913u/2khXRntxtabr2a5grlK63eAaFIOrG0pc1RtxAOuA/EK4GP7ws
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5877733"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="5877733"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 21:16:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="26591598"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 14 Feb 2024 21:15:58 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1raU5b-00008N-1L;
-	Thu, 15 Feb 2024 05:15:23 +0000
-Date: Thu, 15 Feb 2024 13:06:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-bcachefs@vger.kernel.org, nouveau@lists.freedesktop.org,
- ntfs3@lists.linux.dev
-Subject: [linux-next:master] BUILD REGRESSION
- 2c3b09aac00d7835023bbc4473ee06696be64fa8
-Message-ID: <202402151350.ysyHLvEa-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="nu34ylBa"
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta97.mxroute.com (ZoneMTA) with ESMTPSA id 18daba867d60000466.003
+ for <linux-bcachefs@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Thu, 15 Feb 2024 07:25:57 +0000
+X-Zone-Loop: 2ee8342db6eb64dcc4d2523af2ae9e6dcf255868f1ed
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
+	; s=x; h=Content-Type:MIME-Version:Message-ID:In-reply-to:Date:Subject:Cc:To:
+	From:References:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=WfzvBn8CwEdgC0yyJQ8n4G14cJr/mkmQJSog6DPpdn4=; b=nu34ylBa9Z8QrJ3WydMcoUoUSM
+	ZQhEbhPOW5GOVCQijcrwLKL+53mB9+ceG9Yo0U2vww/Yp9H5I2AxmcS4mEc2/Sj5+Sec/8L5md4zl
+	GD3amyF0xTc8f2UN4NHCzWLrwVgGKAPN0RY2SxV9MhSV6DEIT8xXFaX3gdl6ToB1zAJ30k30wQV/z
+	0GpF6KUrUtrB7L+8k47cEu7ZWTdw8q4pvSaS9ycRgjc/MKBq1Vzj8aiNF4f+mCqqyaDsdCgAeS4mz
+	kRei/FL+mLlseiWGzdkK5RQ1R2S+9vtMPR4oRv2zHwv1TTD09XGek8fgY0q6nlHLQM/0scw+jdcob
+	tfgzrG0w==;
+References: <20240205154814.910664-1-bfoster@redhat.com>
+ <4fdyk3to57izolmljjiehnn5kt5dxckhh2oodo7vk6gssgqbsb@6gsjfytnv2xy>
+ <ZcE5JY279PGUrP9F@bfoster> <il2yfjaa.fsf@damenly.org>
+ <Zc0C32sbI2zjSDgL@bfoster>
+User-agent: mu4e 1.7.5; emacs 28.2
+From: Su Yue <l@damenly.org>
+To: Brian Foster <bfoster@redhat.com>
+Cc: Su Yue <l@damenly.org>, Kent Overstreet <kent.overstreet@linux.dev>,
+ linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: fix iov_iter count underflow on sub-block dio
+ read
+Date: Thu, 15 Feb 2024 14:59:35 +0800
+In-reply-to: <Zc0C32sbI2zjSDgL@bfoster>
+Message-ID: <cysyb36w.fsf@damenly.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed
+X-Authenticated-Id: l@damenly.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 2c3b09aac00d7835023bbc4473ee06696be64fa8  Add linux-next specific files for 20240214
 
-Error/Warning: (recently discovered and may have been fixed)
+On Wed 14 Feb 2024 at 13:13, Brian Foster <bfoster@redhat.com> 
+wrote:
 
-iptable_nat.c:(.ref.text+0x1a): undefined reference to `ipt_unregister_table_exit'
-xtensa-linux-ld: iptable_nat.c:(.text+0x2b4): undefined reference to `ipt_register_table'
-xtensa-linux-ld: iptable_nat.c:(.text+0x2b8): undefined reference to `ipt_unregister_table_exit'
-xtensa-linux-ld: iptable_nat.c:(.text+0x2cf): undefined reference to `ipt_alloc_initial_table'
-xtensa-linux-ld: net/ipv4/netfilter/iptable_nat.o:(.ref.text+0x4): undefined reference to `ipt_unregister_table_exit'
-xtensa-linux-ld: net/ipv4/netfilter/iptable_nat.o:(.rodata+0x88): undefined reference to `ipt_do_table'
+> On Fri, Feb 09, 2024 at 10:39:43AM +0800, Su Yue wrote:
+>>
+>> On Mon 05 Feb 2024 at 14:38, Brian Foster <bfoster@redhat.com> 
+>> wrote:
+>>
+>> > On Mon, Feb 05, 2024 at 02:15:36PM -0500, Kent Overstreet 
+>> > wrote:
+>> > > On Mon, Feb 05, 2024 at 10:48:14AM -0500, Brian Foster 
+>> > > wrote:
+>> > > > bch2_direct_IO_read() checks the request offset and size 
+>> > > > for >
+>> > > sector
+>> > > > alignment and then falls through to a couple calculations 
+>> > > > to >
+>> > > shrink
+>> > > > the size of the request based on the inode size. The 
+>> > > > problem > is
+>> > > that
+>> > > > these checks round up to the fs block size, which runs 
+>> > > > the > risk
+>> > > of
+>> > > > underflowing iter->count if the block size happens to be 
+>> > > > > large
+>> > > > enough. This is triggered by fstest generic/361 with a 4k 
+>> > > > > block
+>> > > > size, which subsequently leads to a crash.
+>> > > >
+>> > > > After some discussion, the original purpose of the 
+>> > > > shorten > logic
+>> > > in this
+>> > > > path is not totally clear. It appears to be intended as 
+>> > > > an >
+>> > > optimization
+>> > > > of limited value, so simplify things and avoid the 
+>> > > > underflow >
+>> > > problem by
+>> > > > removing it.
+>> > >
+>> > > Thinking about this a bit more...
+>> > >
+>> > > All that we're avoiding with the shorten is zeroing out the 
+>> > > rest of
+>> > > the
+>> > > read, which will happen in bch2_read_extent(); we won't be 
+>> > > issuing
+>> > > any
+>> > > IO, since that would require real data extents above 
+>> > > i_size, which
+>> > > is of
+>> > > course not allowed.
+>> > >
+>> > > But zeroing out the rest of the read is actual work that's 
+>> > > being
+>> > > avoided, since if we return a short read (which is what 
+>> > > we're doing
+>> > > here) it's undefined what happens to the rest of the 
+>> > > buffer.
+>> > >
+>> > > So... maybe we should keep it, for the crazy but inevitable
+>> > > application
+>> > > that uses a 1MB read buffer for everything, including 
+>> > > O_DIRECT reads
+>> > > to
+>> > > 4k files?
+>> > >
+>> >
+>> > I had another change around that basically just protected 
+>> > against the
+>> > underflow. I.e., something along the lines of the following, 
+>> > to also
+>> > cover the additional use of shorten later in the function:
+>> >
+>> > 	if (shorten >= iter->count)
+>> > 		shorten = 0;
+>> >
 
-Unverified Error/Warning (likely false positive, please contact us if interested):
+Sorry for the misleading reply.
+I mean the check of shorten is efficient and simpler which looks 
+good to me.
 
-{standard input}:508: Warning: overflow in branch to .L76; converted into longer instruction sequence
-{standard input}:631: Warning: overflow in branch to .L88; converted into longer instruction sequence
+>>
+>> The change is a clean fix without breaking logic in 
+>> bch2_direct_IO_read.
+>> If without shroten, the next loop counting on iter->count must 
+>> be altered.
+>> I'd like the simpler way.
+>>
+>
+> Hi Su,
+>
+> I'm not quite following your comment on the "next loop counting 
+> on
+> iter->count." Can you elaborate? Also, which option are you 
+> calling more
+> simple? :) Thanks.
+>
+I think I just explained Kent's opinion in another way. The loop 
+is
 
-Error/Warning ids grouped by kconfigs:
+fs/bcachefs/fs-io-direct.c:
+static int bch2_direct_IO_read(struct kiocb *req, struct iov_iter 
+*iter) {
+91         iter->count -= shorten;
+...
+130         while (iter->count) {
+                ...
+                bch2_read()
+            }
 
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- arc-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- arc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- arm-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- arm-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- arm64-defconfig
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- csky-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- csky-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- csky-randconfig-001-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- csky-randconfig-r064-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- i386-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- i386-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- i386-buildonly-randconfig-004-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- i386-buildonly-randconfig-005-20240214
-|   |-- iptable_nat.c:(.text):undefined-reference-to-ipt_alloc_initial_table
-|   `-- ld:net-ipv4-netfilter-iptable_nat.o:(.rodata):undefined-reference-to-ipt_do_table
-|-- i386-randconfig-004-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- i386-randconfig-014-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- loongarch-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- loongarch-defconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   `-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|-- microblaze-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- microblaze-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- microblaze-randconfig-r053-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- mips-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- openrisc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- parisc-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- parisc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- parisc-defconfig
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- parisc-randconfig-001-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- parisc64-defconfig
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- powerpc-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- s390-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- sh-randconfig-c004-20220215
-|   `-- standard-input:Warning:overflow-in-branch-to-.L88-converted-into-longer-instruction-sequence
-|-- sh-randconfig-r022-20230722
-|   `-- standard-input:Warning:overflow-in-branch-to-.L76-converted-into-longer-instruction-sequence
-|-- sparc-allmodconfig
-|   |-- Error:vdso-image-contains-dynamic-relocations
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|   |-- sparc64-linux-ld:vclock_gettime.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
-|   |-- sparc64-linux-objcopy:arch-sparc-vdso-vdso64.so.dbg:No-such-file
-|   `-- vclock_gettime.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
-|-- sparc-randconfig-002-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- sparc64-allmodconfig
-|   |-- Error:vdso-image-contains-dynamic-relocations
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|   |-- sparc64-linux-ld:vclock_gettime.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
-|   |-- sparc64-linux-objcopy:arch-sparc-vdso-vdso64.so.dbg:No-such-file
-|   `-- vclock_gettime.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
-|-- sparc64-allyesconfig
-|   |-- Error:vdso-image-contains-dynamic-relocations
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|   |-- sparc64-linux-ld:vclock_gettime.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
-|   |-- sparc64-linux-objcopy:arch-sparc-vdso-vdso64.so.dbg:No-such-file
-|   `-- vclock_gettime.c:(.text):undefined-reference-to-__ubsan_handle_shift_out_of_bounds
-|-- sparc64-randconfig-002-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- um-allyesconfig
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- x86_64-buildonly-randconfig-003-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- x86_64-randconfig-002-20240214
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- x86_64-randconfig-004-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- x86_64-randconfig-013-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- x86_64-randconfig-014-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- x86_64-randconfig-076-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   `-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|-- x86_64-randconfig-102-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- x86_64-randconfig-161-20240214
-|   |-- fs-bcachefs-btree_locking.c-bch2_trans_relock()-warn:passing-zero-to-PTR_ERR
-|   `-- fs-bcachefs-buckets.c-bch2_trans_account_disk_usage_change()-error:we-previously-assumed-trans-disk_res-could-be-null-(see-line-)
-|-- xtensa-buildonly-randconfig-r001-20220206
-|   |-- iptable_nat.c:(.ref.text):undefined-reference-to-ipt_unregister_table_exit
-|   |-- xtensa-linux-ld:iptable_nat.c:(.text):undefined-reference-to-ipt_alloc_initial_table
-|   |-- xtensa-linux-ld:iptable_nat.c:(.text):undefined-reference-to-ipt_register_table
-|   |-- xtensa-linux-ld:iptable_nat.c:(.text):undefined-reference-to-ipt_unregister_table_exit
-|   |-- xtensa-linux-ld:net-ipv4-netfilter-iptable_nat.o:(.ref.text):undefined-reference-to-ipt_unregister_table_exit
-|   `-- xtensa-linux-ld:net-ipv4-netfilter-iptable_nat.o:(.rodata):undefined-reference-to-ipt_do_table
-`-- xtensa-randconfig-002-20240214
-    `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-clang_recent_errors
-|-- arm-defconfig
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- arm-randconfig-001-20240214
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- arm-randconfig-004-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- arm64-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- arm64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- arm64-randconfig-002-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   `-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|-- arm64-randconfig-004-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- i386-buildonly-randconfig-001-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- i386-buildonly-randconfig-002-20240214
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- i386-buildonly-randconfig-006-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- i386-randconfig-002-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- i386-randconfig-005-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- i386-randconfig-016-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   `-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|-- i386-randconfig-052-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- i386-randconfig-141-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|   |-- fs-bcachefs-btree_locking.c-bch2_trans_relock()-warn:passing-zero-to-PTR_ERR
-|   `-- fs-bcachefs-buckets.c-bch2_trans_account_disk_usage_change()-error:we-previously-assumed-trans-disk_res-could-be-null-(see-line-)
-|-- mips-randconfig-r062-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- powerpc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- powerpc-randconfig-001-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- powerpc-randconfig-002-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- powerpc-randconfig-003-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   `-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|-- riscv-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- riscv-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- riscv-defconfig
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- s390-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- s390-randconfig-001-20240214
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- x86_64-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- x86_64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- x86_64-buildonly-randconfig-006-20240214
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- x86_64-randconfig-003-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   `-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|-- x86_64-randconfig-005-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- x86_64-randconfig-011-20240214
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_get_wptr
-|   |-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_irq_rearm
-|   `-- drivers-gpu-drm-amd-amdgpu-ih_v7_0.c:warning:Function-parameter-or-struct-member-ih-not-described-in-ih_v7_0_set_rptr
-|-- x86_64-randconfig-015-20240214
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
-|-- x86_64-randconfig-072-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- x86_64-randconfig-074-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- x86_64-randconfig-101-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-|-- x86_64-randconfig-103-20240214
-|   `-- fs-ntfs3-frecord.c:warning:unused-variable-i_size
-`-- x86_64-randconfig-104-20240214
-    `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
+            iter->count += shorten;
+}
 
-elapsed time: 1451m
+bch2_direct_IO_read() does all boundary check for dio. If shorten 
+is
+removed and no other condition in the loop, it brings more bios,
+more btree searches in bch2_read[_extent].
 
-configs tested: 178
-configs skipped: 3
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20240214   gcc  
-arc                   randconfig-002-20240214   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                         at91_dt_defconfig   clang
-arm                                 defconfig   clang
-arm                   milbeaut_m10v_defconfig   clang
-arm                             pxa_defconfig   gcc  
-arm                   randconfig-001-20240214   clang
-arm                   randconfig-002-20240214   gcc  
-arm                   randconfig-003-20240214   clang
-arm                   randconfig-004-20240214   clang
-arm                        realview_defconfig   clang
-arm                           sunxi_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240214   clang
-arm64                 randconfig-002-20240214   clang
-arm64                 randconfig-003-20240214   gcc  
-arm64                 randconfig-004-20240214   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240214   gcc  
-csky                  randconfig-002-20240214   gcc  
-hexagon                          alldefconfig   clang
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240214   clang
-hexagon               randconfig-002-20240214   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240214   clang
-i386         buildonly-randconfig-002-20240214   clang
-i386         buildonly-randconfig-003-20240214   clang
-i386         buildonly-randconfig-004-20240214   gcc  
-i386         buildonly-randconfig-005-20240214   gcc  
-i386         buildonly-randconfig-006-20240214   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240214   clang
-i386                  randconfig-002-20240214   clang
-i386                  randconfig-003-20240214   clang
-i386                  randconfig-004-20240214   gcc  
-i386                  randconfig-005-20240214   clang
-i386                  randconfig-006-20240214   gcc  
-i386                  randconfig-011-20240214   clang
-i386                  randconfig-012-20240214   gcc  
-i386                  randconfig-013-20240214   gcc  
-i386                  randconfig-014-20240214   gcc  
-i386                  randconfig-015-20240214   clang
-i386                  randconfig-016-20240214   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240214   gcc  
-loongarch             randconfig-002-20240214   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ip28_defconfig   gcc  
-mips                           mtx1_defconfig   clang
-mips                         rt305x_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240214   gcc  
-nios2                 randconfig-002-20240214   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240214   gcc  
-parisc                randconfig-002-20240214   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                  mpc885_ads_defconfig   clang
-powerpc                       ppc64_defconfig   clang
-powerpc               randconfig-001-20240214   clang
-powerpc               randconfig-002-20240214   clang
-powerpc               randconfig-003-20240214   clang
-powerpc                        warp_defconfig   gcc  
-powerpc64             randconfig-001-20240214   clang
-powerpc64             randconfig-002-20240214   clang
-powerpc64             randconfig-003-20240214   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240214   clang
-riscv                 randconfig-002-20240214   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240214   clang
-s390                  randconfig-002-20240214   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240214   gcc  
-sh                    randconfig-002-20240214   gcc  
-sh                   rts7751r2dplus_defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sh                   sh7770_generic_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240214   gcc  
-sparc64               randconfig-002-20240214   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                    randconfig-001-20240214   clang
-um                    randconfig-002-20240214   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240214   gcc  
-x86_64       buildonly-randconfig-002-20240214   clang
-x86_64       buildonly-randconfig-003-20240214   gcc  
-x86_64       buildonly-randconfig-004-20240214   gcc  
-x86_64       buildonly-randconfig-005-20240214   gcc  
-x86_64       buildonly-randconfig-006-20240214   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240214   clang
-x86_64                randconfig-002-20240214   gcc  
-x86_64                randconfig-003-20240214   clang
-x86_64                randconfig-004-20240214   gcc  
-x86_64                randconfig-005-20240214   clang
-x86_64                randconfig-006-20240214   clang
-x86_64                randconfig-011-20240214   clang
-x86_64                randconfig-012-20240214   clang
-x86_64                randconfig-013-20240214   gcc  
-x86_64                randconfig-014-20240214   gcc  
-x86_64                randconfig-015-20240214   clang
-x86_64                randconfig-016-20240214   clang
-x86_64                randconfig-071-20240214   gcc  
-x86_64                randconfig-072-20240214   clang
-x86_64                randconfig-073-20240214   gcc  
-x86_64                randconfig-074-20240214   clang
-x86_64                randconfig-075-20240214   clang
-x86_64                randconfig-076-20240214   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240214   gcc  
-xtensa                randconfig-002-20240214   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--
+Su
+> Brian
+>
+>> --
+>> Su
+>>
+>> > ... and IIRC that seemed to work as well. But I'll probably 
+>> > have to take
+>> > a closer look at that large buffer case to grok what's 
+>> > happening and the
+>> > original purpose of this logic.
+>> >
+>> > Brian
+>>
