@@ -1,196 +1,108 @@
-Received: from mail-108-mta97.mxroute.com (mail-108-mta97.mxroute.com [136.175.108.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933ADDDD8
-	for <linux-bcachefs@vger.kernel.org>; Thu, 15 Feb 2024 07:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04158127B6D;
+	Thu, 15 Feb 2024 11:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.150.191.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707982272; cv=none; b=rhQTY6kHk8R5tmmMNNid5dLCqm+XFCxCPLKkG20YNheuQkF/me+8MmAomwL4lXWbp6yeTSblQMcwl63IT/CakRQElGk8oriUvnJySY2bypOa67StiXD+DYY94NoQu63LxrvRpWHSrfWaTFnx5QlblBuWiE8NB4WaES5w+D2n5GU=
+	t=1707995372; cv=none; b=NPSglT9Tv88+cDwq+NJ/cCpHUaOrs+WsZHvCsTTTdplO3hQ/r5UFUrE0MvzYZoZnXI8rGaVtNSJe3KLJNzxqVPS7ycThBXWU5bS0vw45c7NeiDzUDLaX3U/UsMJrfo7Nsq7y9pnAFchWAE1XzkuoYFQIPRvVZKK2MzxFScfk18c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707982272; c=relaxed/simple;
-	bh=/wdXp6oytFcvEkbai6GX7Bhz6BDeCKIz8r4l1B9ZRJ4=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=jnz8IjD426Pi4wG1TWo9eNgOlUDeSsV6Xp+pbg3pikZtUXo7ZNXGpt5srn7aqPvbbOK/Q+zrAJj4v1GL2/WhDQXwdTL0HWvKBdZsTQf2yWujseWzzyFNLWkGTIBEKLUybqfsFjzta3Ms2+DA+cvlSKH1fU4UuBlD3rhX6XINACg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=nu34ylBa; arc=none smtp.client-ip=136.175.108.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="nu34ylBa"
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta97.mxroute.com (ZoneMTA) with ESMTPSA id 18daba867d60000466.003
- for <linux-bcachefs@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Thu, 15 Feb 2024 07:25:57 +0000
-X-Zone-Loop: 2ee8342db6eb64dcc4d2523af2ae9e6dcf255868f1ed
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
-	; s=x; h=Content-Type:MIME-Version:Message-ID:In-reply-to:Date:Subject:Cc:To:
-	From:References:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=WfzvBn8CwEdgC0yyJQ8n4G14cJr/mkmQJSog6DPpdn4=; b=nu34ylBa9Z8QrJ3WydMcoUoUSM
-	ZQhEbhPOW5GOVCQijcrwLKL+53mB9+ceG9Yo0U2vww/Yp9H5I2AxmcS4mEc2/Sj5+Sec/8L5md4zl
-	GD3amyF0xTc8f2UN4NHCzWLrwVgGKAPN0RY2SxV9MhSV6DEIT8xXFaX3gdl6ToB1zAJ30k30wQV/z
-	0GpF6KUrUtrB7L+8k47cEu7ZWTdw8q4pvSaS9ycRgjc/MKBq1Vzj8aiNF4f+mCqqyaDsdCgAeS4mz
-	kRei/FL+mLlseiWGzdkK5RQ1R2S+9vtMPR4oRv2zHwv1TTD09XGek8fgY0q6nlHLQM/0scw+jdcob
-	tfgzrG0w==;
-References: <20240205154814.910664-1-bfoster@redhat.com>
- <4fdyk3to57izolmljjiehnn5kt5dxckhh2oodo7vk6gssgqbsb@6gsjfytnv2xy>
- <ZcE5JY279PGUrP9F@bfoster> <il2yfjaa.fsf@damenly.org>
- <Zc0C32sbI2zjSDgL@bfoster>
-User-agent: mu4e 1.7.5; emacs 28.2
-From: Su Yue <l@damenly.org>
-To: Brian Foster <bfoster@redhat.com>
-Cc: Su Yue <l@damenly.org>, Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: fix iov_iter count underflow on sub-block dio
- read
-Date: Thu, 15 Feb 2024 14:59:35 +0800
-In-reply-to: <Zc0C32sbI2zjSDgL@bfoster>
-Message-ID: <cysyb36w.fsf@damenly.org>
+	s=arc-20240116; t=1707995372; c=relaxed/simple;
+	bh=Y2pGpvd23nSIXN6OktBS6/0YBWljbrMTHz18LGF/8m8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Maa+PXmriJ22Xsyaa3nZmUa/LTAZN4Q7vW0nCtOWQxHgleuWvaixjBZYqV++XH4CdWhA+MtG3usckR4fEac4MW6I/9h7Iv7Uc3SgjFSopue/hjGdGgg7459kZTHp9YU0Jf5PuS74nNZ+rRbIZtkp7MaW5/YyhKu5RA3919ugpQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=194.150.191.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id BF16C89B671;
+	Thu, 15 Feb 2024 12:09:20 +0100 (CET)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: stable@vger.kernel.org, regressions@lists.linux.dev,
+ linux-usb@vger.kernel.org,
+ Holger =?ISO-8859-1?Q?Hoffst=E4tte?= <holger@applied-asynchrony.com>,
+ linux-bcachefs@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: I/O errors while writing to external Transcend XS-2000 4TB SSD
+Date: Thu, 15 Feb 2024 12:09:20 +0100
+Message-ID: <1979818.usQuhbGJ8B@lichtvoll.de>
+In-Reply-To: <ypeck262h6ccdnsxzo46vydzygh2y6coe3d4mvgermaaeo5ygg@4nvailbg7ay3>
+References:
+ <1854085.atdPhlSkOF@lichtvoll.de> <6599603.G0QQBjFxQf@lichtvoll.de>
+ <ypeck262h6ccdnsxzo46vydzygh2y6coe3d4mvgermaaeo5ygg@4nvailbg7ay3>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Authenticated-Id: l@damenly.org
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+Kent Overstreet - 12.02.24, 21:42:26 CET:
+
+[thoughts about whether a cache flush / FUA request with write caches=20
+disabled would be a no-op anyway]
+
+> > I may test the Transcend XS2000 with BTRFS to see whether it makes a
+> > difference, however I really like to use it with BCacheFS and I do not
+> > really like to use LUKS for external devices. According to the kernel
+> > log I still don't really think those errors at the block layer were
+> > about anything filesystem specific, but what  do I know?
+>=20
+> It's definitely not unheard of for one specific filesystem to be
+> tickling driver/device bugs and not others.
+>=20
+> I wonder what it would take to dump the outstanding requests on device
+> timeout.
+
+I got some reply back from Transcend support.
+
+They brought up two possible issues:
+
+1) Copied to many files at once. I am not going to accept that one. An=20
+external 4 TB SSD should handle writing 1,4 TB in about 215000 files,=20
+coming from a slower Toshiba Canvio Basics external HD, just fine. About=20
+90000 files was larger files like sound and video files or installation=20
+archives. The rest is from a Linux system backup, so smaller files. I=20
+likely move those elsewhere before I try again as I do not need these on=20
+flash anyway. However if the amount of files or data matters I could never=
+=20
+know what amount of data I could write safely in one go. That is not=20
+acceptable to me.
+
+2) Power management related to USB port. Cause I am using a laptop. It may=
+=20
+have been that the Linux kernel decided to put the USB port the SSD was=20
+connected to into some kind of sleep state. However it was a constant=20
+rsync based copy workload. Yes, the kernel buffers data and the reads from=
+=20
+Toshiba HD should be quite a bit slower than the Transcend SSD could=20
+handle the writes. I saw now more than 80-90 MiB/s coming from the hard=20
+disk. However I would doubt this lead to pauses of write activity of more=20
+than 30 seconds. Still it could be a thing.
+
+Regarding further testing I am unsure whether to first test with BTRFS on=20
+top of LUKS =E2=80=93 I do not like to store clear text data on the SSD =E2=
+=80=93 or with=20
+BCacheFS plus fixes which are 6.7.5 or 6.8-rc4 in just in the case the flus=
+h=20
+handling fixes would still have an influence on the issue at hand.
+
+=46irst I will have a look on how to see what USB power management options=
+=20
+may be in place and how to tell Linux to keep the USB port the SSD is=20
+connected to at all times.
+
+Let's see how this story unfolds. At least I am in no hurry about it.
+
+Best,
+=2D-=20
+Martin
 
 
-On Wed 14 Feb 2024 at 13:13, Brian Foster <bfoster@redhat.com> 
-wrote:
-
-> On Fri, Feb 09, 2024 at 10:39:43AM +0800, Su Yue wrote:
->>
->> On Mon 05 Feb 2024 at 14:38, Brian Foster <bfoster@redhat.com> 
->> wrote:
->>
->> > On Mon, Feb 05, 2024 at 02:15:36PM -0500, Kent Overstreet 
->> > wrote:
->> > > On Mon, Feb 05, 2024 at 10:48:14AM -0500, Brian Foster 
->> > > wrote:
->> > > > bch2_direct_IO_read() checks the request offset and size 
->> > > > for >
->> > > sector
->> > > > alignment and then falls through to a couple calculations 
->> > > > to >
->> > > shrink
->> > > > the size of the request based on the inode size. The 
->> > > > problem > is
->> > > that
->> > > > these checks round up to the fs block size, which runs 
->> > > > the > risk
->> > > of
->> > > > underflowing iter->count if the block size happens to be 
->> > > > > large
->> > > > enough. This is triggered by fstest generic/361 with a 4k 
->> > > > > block
->> > > > size, which subsequently leads to a crash.
->> > > >
->> > > > After some discussion, the original purpose of the 
->> > > > shorten > logic
->> > > in this
->> > > > path is not totally clear. It appears to be intended as 
->> > > > an >
->> > > optimization
->> > > > of limited value, so simplify things and avoid the 
->> > > > underflow >
->> > > problem by
->> > > > removing it.
->> > >
->> > > Thinking about this a bit more...
->> > >
->> > > All that we're avoiding with the shorten is zeroing out the 
->> > > rest of
->> > > the
->> > > read, which will happen in bch2_read_extent(); we won't be 
->> > > issuing
->> > > any
->> > > IO, since that would require real data extents above 
->> > > i_size, which
->> > > is of
->> > > course not allowed.
->> > >
->> > > But zeroing out the rest of the read is actual work that's 
->> > > being
->> > > avoided, since if we return a short read (which is what 
->> > > we're doing
->> > > here) it's undefined what happens to the rest of the 
->> > > buffer.
->> > >
->> > > So... maybe we should keep it, for the crazy but inevitable
->> > > application
->> > > that uses a 1MB read buffer for everything, including 
->> > > O_DIRECT reads
->> > > to
->> > > 4k files?
->> > >
->> >
->> > I had another change around that basically just protected 
->> > against the
->> > underflow. I.e., something along the lines of the following, 
->> > to also
->> > cover the additional use of shorten later in the function:
->> >
->> > 	if (shorten >= iter->count)
->> > 		shorten = 0;
->> >
-
-Sorry for the misleading reply.
-I mean the check of shorten is efficient and simpler which looks 
-good to me.
-
->>
->> The change is a clean fix without breaking logic in 
->> bch2_direct_IO_read.
->> If without shroten, the next loop counting on iter->count must 
->> be altered.
->> I'd like the simpler way.
->>
->
-> Hi Su,
->
-> I'm not quite following your comment on the "next loop counting 
-> on
-> iter->count." Can you elaborate? Also, which option are you 
-> calling more
-> simple? :) Thanks.
->
-I think I just explained Kent's opinion in another way. The loop 
-is
-
-fs/bcachefs/fs-io-direct.c:
-static int bch2_direct_IO_read(struct kiocb *req, struct iov_iter 
-*iter) {
-91         iter->count -= shorten;
-...
-130         while (iter->count) {
-                ...
-                bch2_read()
-            }
-
-            iter->count += shorten;
-}
-
-bch2_direct_IO_read() does all boundary check for dio. If shorten 
-is
-removed and no other condition in the loop, it brings more bios,
-more btree searches in bch2_read[_extent].
-
---
-Su
-> Brian
->
->> --
->> Su
->>
->> > ... and IIRC that seemed to work as well. But I'll probably 
->> > have to take
->> > a closer look at that large buffer case to grok what's 
->> > happening and the
->> > original purpose of this logic.
->> >
->> > Brian
->>
