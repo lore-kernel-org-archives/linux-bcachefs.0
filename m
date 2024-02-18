@@ -1,63 +1,116 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99B61CF83
-	for <linux-bcachefs@vger.kernel.org>; Sat, 17 Feb 2024 21:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C84D6BB53
+	for <linux-bcachefs@vger.kernel.org>; Sun, 18 Feb 2024 16:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708204983; cv=none; b=oQl8MBFNXC3/MTP+t9KTy3JhN3Gh2/m/oofCmBbRrCJtC/XlAn7qMw+Z4jE7ZQ99acC+qQpgLnCB7M4Km0MqAxsHvPMbXlbfIxf128/RnyJMQmLcIGTDsoJmrQofQPh6sLa1MqFcOb4vBnjRPvRNspopE9XmdHfbcOezTaldzA4=
+	t=1708272829; cv=none; b=EMVfxl+iTcQw01Y7EMzKDyMGg20Xp8vRboZg2C4XMUkEYKeaHsWyXoIBQ5UnGpq6lBXFFv4n5+UGGn2pYlH9D3VjJxIIp0Tpbg3r+BkAGpBipfcUxhbscBjRlJDJWgqJZbG/dMafSGvvY9Nh/pXgIcSPdyTkBjuKbFuYAw+N5D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708204983; c=relaxed/simple;
-	bh=FbvqmEFEmBAFffymovyVwbr4F0sXpiSABQ/4nd6+EFM=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=SACVkYS9iIQ7qnMUvY7CC53W7rdPxj2Q6E8LYWZGBqCNugQdiMwMHJsXqw3qsUaV7ty86hfcYpYXBGRmGzba4QFtJF5qpyrhq6PfhCPzyNwjmNhbYA+9yhskJn8XoIvykakjUHQVyVgFcjKpY2pxRl4qjLjobGrSrzv+rBaUtT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pjLQ7oGe; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1708272829; c=relaxed/simple;
+	bh=bbVXN7nFPxD2+8T/Qp3xY6pFsgPWqO0g3GtqcUTohS4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aL3tM5w01N5D5ZOmQXwuPTrbj85nvoL2yrNHMJAi1B4O8DRfjy94oRgsXo8FUaoW9fN1+acXgtFgOH6SMD2hOA/6Jy0ioJeDh84sAXkwh1bQOEKv81hAQ30J723dSkGc3IPw34tHi0SvjFTx72V9uDk3TZAWlP90lxm1BObsAP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=JHaOFZbA; arc=none smtp.client-ip=80.12.242.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pjLQ7oGe"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6B2CBC433C7;
-	Sat, 17 Feb 2024 21:23:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708204983;
-	bh=FbvqmEFEmBAFffymovyVwbr4F0sXpiSABQ/4nd6+EFM=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=pjLQ7oGeT6syYuG48K5/3NFJIOjb0yS99fLUXHa70IchNtc9zzXkbErMD0c7bLX31
-	 cN0WqJPekjSVDjFoXW2qiy5bI/+QkdLclXB5TLqRS+hbV6rbabrywY21Ypddsw1553
-	 mignXJCWa32+vTEvAp8sOVRH8V267imRuwXkcg2+ZFcch1KYQd4QZd9szhULdadZjB
-	 oQCoenu1zqvMMtb1wSEvMohldAfH971EDTfUlDAyALkGIOKrrunVYGeX2Qs6zWsFS/
-	 vgMOdmofFmu2cWghsRQsp4ZvMAQ5EhbUlQg5P+CA3HFQlLaC+JsPN1VARGgCkCELTw
-	 66rNmhIPclX1A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 56392C04E24;
-	Sat, 17 Feb 2024 21:23:03 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs fixes for 6.8-rc5
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <p732lizcbavjuvut7qfz6k7i5iozoha4dkn4t6vublkdnmhdff@5mdx7mwqwy7t>
-References: <p732lizcbavjuvut7qfz6k7i5iozoha4dkn4t6vublkdnmhdff@5mdx7mwqwy7t>
-X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <p732lizcbavjuvut7qfz6k7i5iozoha4dkn4t6vublkdnmhdff@5mdx7mwqwy7t>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-02-17
-X-PR-Tracked-Commit-Id: 816054f40a5fdaaed05d9e7f603d2824eeee7e62
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f2667e0c32404a68496891b2d2015825de189b06
-Message-Id: <170820498334.19833.3838305261993305979.pr-tracker-bot@kernel.org>
-Date: Sat, 17 Feb 2024 21:23:03 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="JHaOFZbA"
+Received: from fedora.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id bjmLrpU1LVqNHbjmLrVuBk; Sun, 18 Feb 2024 17:12:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1708272754;
+	bh=yP76YXZufoYcbf/1hIaf1uWL8S4sDWOfmF4KUI6YdvU=;
+	h=From:To:Cc:Subject:Date;
+	b=JHaOFZbAvu0zG1EvsB/x423fdxAWjYdx+Flpo+0ruoCfh8f0EnbAsRDDWzio52hMD
+	 gqImRib0PIjw31bAQaABDabNQjHimRkR1HYvo1VOtSQkqpSHWXo7t9sFmscYKOBZP5
+	 9mtdG71zMCFgwKWJEj687d9tdx4+uqqidiCAa0SCrczJ8e9oI+gVPA/zQTg9XGfU64
+	 bTOlvP3vYm3zvCE3LqOCH1LLeYL+Wh8iZXftj8dNT+YUQO36EHtMhGMGFgQeaOZ6w7
+	 MmQClqXECsTRopQXvfGmb4gNNJM5d4g8Lr4eBtD2GFzTxL9YCvMpDEcSxWfksBW3V4
+	 e7Z5HvIfNy0GQ==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 18 Feb 2024 17:12:34 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-bcachefs@vger.kernel.org
+Subject: [PATCH v2] bcachefs: Avoid a potential useless over memory allocation in bch2_prt_[v]printf()
+Date: Sun, 18 Feb 2024 17:12:28 +0100
+Message-ID: <4c614db674887346ea418acaeafd6bf86502ec77.1708272713.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Sat, 17 Feb 2024 12:43:45 -0500:
+2 issues related to incorrect available space in the output buffer
+computation may lead to some extra memory allocation.
 
-> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-02-17
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f2667e0c32404a68496891b2d2015825de189b06
+First: vsnprintf() takes the size of the buffer, *including* the space for
+the trailing null.
 
-Thank you!
+But printbuf_remaining() returns the number of characters we can print
+to the output buffer, *excluding* the terminating null.
 
+So, use printbuf_remaining_size(), which includes the space for the
+terminating null.
+
+
+Second: if the return value of vsnprintf() is greater than or equal to the
+passed size, the resulting string is truncated.
+So, in order to see if some extra space is needed, the check needs to be
+changed.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Un-tested
+
+v2: - Use printbuf_remaining_size() instead of hand-writing it.  [Brian Foster]
+    - Reword the commit log, hoping it is clearer.
+    - Synch with -next-20240215
+
+v1: https://lore.kernel.org/all/0f40108bed3e084057223bdbe32c4b37f8500ff3.1694845203.git.christophe.jaillet@wanadoo.fr/
+---
+ fs/bcachefs/printbuf.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/fs/bcachefs/printbuf.c b/fs/bcachefs/printbuf.c
+index b27d22925929..8cee9c2f88c4 100644
+--- a/fs/bcachefs/printbuf.c
++++ b/fs/bcachefs/printbuf.c
+@@ -55,9 +55,10 @@ void bch2_prt_vprintf(struct printbuf *out, const char *fmt, va_list args)
+ 		va_list args2;
+ 
+ 		va_copy(args2, args);
+-		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out), fmt, args2);
++		len = vsnprintf(out->buf + out->pos, printbuf_remaining_size(out),
++				fmt, args2);
+ 		va_end(args2);
+-	} while (len + 1 >= printbuf_remaining(out) &&
++	} while (len >= printbuf_remaining_size(out) &&
+ 		 !bch2_printbuf_make_room(out, len + 1));
+ 
+ 	len = min_t(size_t, len,
+@@ -72,9 +73,10 @@ void bch2_prt_printf(struct printbuf *out, const char *fmt, ...)
+ 
+ 	do {
+ 		va_start(args, fmt);
+-		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out), fmt, args);
++		len = vsnprintf(out->buf + out->pos, printbuf_remaining_size(out),
++				fmt, args);
+ 		va_end(args);
+-	} while (len + 1 >= printbuf_remaining(out) &&
++	} while (len >= printbuf_remaining_size(out) &&
+ 		 !bch2_printbuf_make_room(out, len + 1));
+ 
+ 	len = min_t(size_t, len,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.43.2
+
