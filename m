@@ -1,119 +1,160 @@
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55AF381B9
-	for <linux-bcachefs@vger.kernel.org>; Mon, 19 Feb 2024 14:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A882481D1
+	for <linux-bcachefs@vger.kernel.org>; Mon, 19 Feb 2024 18:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708354224; cv=none; b=bTTdsmZqGKVZI2yaHSyLBDvW+Y9RBarX+6xvMTxybJkG5+ZuquAoHVl0P0XQtGWMQV4ZQxR8vEGqGzZYVyMBTVNF6KWqq2JPlkBgNl5FKcGhMuUKQkhMQXN+/CKdUN6DHo2BCNWmdb4IVIgV1pP+ioD2FqZndeD1fXd/D5iaqeM=
+	t=1708366284; cv=none; b=cN0Q8nl992MaoUxQBsLB0iEgwbmZ5XFewpvMLr3lYmSJzt0wi7zALaCu7VqxkGOVKpJCzoEjZPe/x5JDnKDDRng4zH6dSUX6dOT/8yuMlfiF8A3UFdKzbsXcwwAS2F3WaBl+sVx95ufHBzA8CIPGIcsKb5GOV7Fyiaoo05Y4j4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708354224; c=relaxed/simple;
-	bh=Tn+P6Dq4x125q9G3LC5yE5GoNI1kLvuYrJQWhgVyBGo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m96zAPlS14EF/XRlVZ+7exLo/GWDMRd9QcpT3gisk161mNIOLUVCHhKumrbDNdYWjRJ12ipEwVHLgIvG0jnvLAXMphTC2ncHk175vqfoZfK+P8cyB4YAZgNtPH7M9TqFyITPuJl0NVhDolzk4lvwK4sbceNHjw7EHICy9tp4lJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gluo.nz; spf=pass smtp.mailfrom=gluo.nz; dkim=pass (2048-bit key) header.d=gluo-nz.20230601.gappssmtp.com header.i=@gluo-nz.20230601.gappssmtp.com header.b=iwvycXqn; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gluo.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gluo.nz
+	s=arc-20240116; t=1708366284; c=relaxed/simple;
+	bh=VMG0FUPd+kO1UMfam5hKqmeC8mpbpmgr7NCRClOWnXk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ex0UaYzw5GM+PvTAr/0nqWk6iNi8AhGxo8i4C7iGJED+MJ2lb5x+Ih+PCdiUPSQuNNw/gamfyVLetGet55M2su1wceYwk8vKXF4Gyh84OHHj0KYC1RwlMgq14jYSMnFkCchhuBHcqCcXh2LCj5+KTRZX2wZLrSANzo3LvE0MILY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=F6tpps14; arc=none smtp.client-ip=80.12.242.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gluo-nz.20230601.gappssmtp.com header.i=@gluo-nz.20230601.gappssmtp.com header.b="iwvycXqn"
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e4751b97eeso181288b3a.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 19 Feb 2024 06:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gluo-nz.20230601.gappssmtp.com; s=20230601; t=1708354222; x=1708959022; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mrA2bJ3ekGJw7X2nX60fCVuGQfG/nmdxEizS01S7SRI=;
-        b=iwvycXqntP7PRfXu7BFJYATVHYDqDLkHUthOrUuJrL8rHQvHjl9jq2zKkhVTxtgIy7
-         +FbpSuENKQjLJSGQLPY26GpGztE2KeNIPDwalXunKIyg0Ikwix3Isuyy52H8N2+obMif
-         vI/5CX1O8H3nC69Dxh9jkwPzW0DOB3fEmatGO6QVmo7uLLwShGhmKCuOAeoim/7Tx5Yy
-         eqv8GkboCrxsMlzY+riSlK5K+KrVWoVXEkdV7lWmso8Qvzij5/cTTQTe/yxn/UT9y9kT
-         t6kGBM1LFjJ4/HhaDf/xSleBgtcLYsHua5UvHQfnAGUrdRy/nGx4x9Fn1cBmUzoBVPmj
-         jKXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708354222; x=1708959022;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mrA2bJ3ekGJw7X2nX60fCVuGQfG/nmdxEizS01S7SRI=;
-        b=YoFfnsRJzxHVhwPhu0OubIWeSIQjzQ5hlZpnL/S3IWq/d9mceySdEkXr1n+M0Xwltb
-         4dqTbWaFYg8J4afWdGwCvbr7BtB8SRkgcIC1dNn8CMOCOyMV8vT7Zhv6mnLLW3rUH4cc
-         RZOG2c41Agl5oGVg/Ln7i245BoPfs9CGxQl8ssIey/+X6HH1r9e7LqJmrcUibzXtmvWG
-         YaNKfdhPUWwMmeeldV+SNBZnkUBANnmR7dp8QeUbJwkerOHh5jzDnbhf/LhVPMfE7+BF
-         MhzupcRIcwW0Of845rQE6jV6unLdorgMRhWM5HQj4Fp/Hws+LoK7H8Zh+WklERjMlTKI
-         +WwQ==
-X-Gm-Message-State: AOJu0YzKHXTrSdutTWHKjr4TNy3CghM4nj8oeGmNQ0Q2h1kiztiKdFKj
-	nT+0KNIPSiYEdhaalFoS3vA9PPnJoo+A8AAYI02pEW3aaIuj1lVM0ZtvuZRxoo2TrSkQxT91E3b
-	o
-X-Google-Smtp-Source: AGHT+IF+UvL86JB79tntfr7Xd13q/PLROXIRMti8jbx9nKvsMPsbsusB8mtNrQJE09agWMCZQAyCwA==
-X-Received: by 2002:a05:6a20:d49a:b0:1a0:56c9:60ab with SMTP id im26-20020a056a20d49a00b001a056c960abmr13700063pzb.44.1708354221813;
-        Mon, 19 Feb 2024 06:50:21 -0800 (PST)
-Received: from Purple-Sunrise.. (125-239-189-189-fibre.sparkbb.co.nz. [125.239.189.189])
-        by smtp.gmail.com with ESMTPSA id e1-20020a63aa01000000b005c2420fb198sm4155101pgf.37.2024.02.19.06.50.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 06:50:21 -0800 (PST)
-From: Daniel Hill <daniel@gluo.nz>
-To: linux-bcachefs@vger.kernel.org
-Cc: Daniel Hill <daniel@gluo.nz>
-Subject: [PATCH 3/3] bcachefs: add check for missing fragmentation in check_alloc_to_lru_ref()
-Date: Tue, 20 Feb 2024 03:49:17 +1300
-Message-ID: <20240219145008.915291-4-daniel@gluo.nz>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240219145008.915291-1-daniel@gluo.nz>
-References: <20240219145008.915291-1-daniel@gluo.nz>
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="F6tpps14"
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id c85irVcPB58CZc85irrhO1; Mon, 19 Feb 2024 19:10:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1708366211;
+	bh=tLmysCFqJCBp4TBWVrdLLgYXDPccma3RhSmnyQ0EwgI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=F6tpps144gVlrYjHGIDYz/gTXAJluqaebMaqobJjJk71MNEprsG3bMLFkMMFlswrQ
+	 O+DJDNWCgS+VL43hGZ8FUBk3SXWbNrfWsR+g7f82QU1LHMM8uSyA20YYIuWLJ0wXCH
+	 D7cYPhd54wh8HTfyiXihFZeDLMd6QY0Ci5oblWtsreh6li3xEOz2fdrNit11sBPPX+
+	 Pb5ZxP2IDZchfteFz7WwEIa1HZ2Lukc+xmOJPtd4FFSnKXgBZtvoWKfOEez0sZ5t4k
+	 qrJA2z8QHkyOs0kxKk5pO2CDk6biRxXX11dzHb05JZV0Kvg95J6lfsalRN3khLR0R/
+	 x1uI3iPoh+kQA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 19 Feb 2024 19:10:11 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <c745c4d3-a084-440d-bc07-0ecbcfe10e37@wanadoo.fr>
+Date: Mon, 19 Feb 2024 19:10:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] bcachefs: Avoid a potential useless over memory
+ allocation in bch2_prt_[v]printf()
+Content-Language: en-MW
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Brian Foster <bfoster@redhat.com>, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-bcachefs@vger.kernel.org
+References: <4c614db674887346ea418acaeafd6bf86502ec77.1708272713.git.christophe.jaillet@wanadoo.fr>
+ <pmyezdskyr3t2iyald4diibl6b7lttf46d6sskxfu2wq3pub7r@gmyezjb3wfeu>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <pmyezdskyr3t2iyald4diibl6b7lttf46d6sskxfu2wq3pub7r@gmyezjb3wfeu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-We need to make sure we're not missing any fragmenation entries in the
-LRU BTREE after repairing ALLOC BTREE
+Le 19/02/2024 à 04:39, Kent Overstreet a écrit :
+> On Sun, Feb 18, 2024 at 05:12:28PM +0100, Christophe JAILLET wrote:
+>> 2 issues related to incorrect available space in the output buffer
+>> computation may lead to some extra memory allocation.
+>>
+>>
+>> First: vsnprintf() takes the size of the buffer, *including* the space for
+>> the trailing null.
+>>
+>> But printbuf_remaining() returns the number of characters we can print
+>> to the output buffer, *excluding* the terminating null.
+>>
+>> So, use printbuf_remaining_size(), which includes the space for the
+>> terminating null.
+> 
+> nope, buggy.
+> 
+> passing printbuf_remaining_size() to snprintf() is correct, but
+> snprintf() returns the number of charecters wrote _excluding_ the null
 
-Signed-off-by: Daniel Hill <daniel@gluo.nz>
----
- fs/bcachefs/alloc_background.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Hi,
 
-diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
-index 3bf2a2daad93..c0894680ac4c 100644
---- a/fs/bcachefs/alloc_background.c
-+++ b/fs/bcachefs/alloc_background.c
-@@ -1566,6 +1566,32 @@ static int bch2_check_alloc_to_lru_ref(struct btree_trans *trans,
- 
- 	a = bch2_alloc_to_v4(alloc_k, &a_convert);
- 
-+	if (a->fragmentation_lru) {
-+		lru_k = bch2_bkey_get_iter(trans, &lru_iter, BTREE_ID_lru,
-+					   lru_pos(BCH_LRU_FRAGMENTATION_START,
-+						   bucket_to_u64(alloc_k.k->p),
-+						   a->fragmentation_lru), 0);
-+		ret = bkey_err(lru_k);
-+
-+		if (ret)
-+			return ret;
-+
-+		if (fsck_err_on(lru_k.k->type != KEY_TYPE_set, c,
-+				alloc_key_to_missing_lru_entry,
-+				"missing fragmentation_lru entry\n"
-+				"  %s",
-+				(printbuf_reset(&buf),
-+				bch2_bkey_val_to_text(&buf, c, alloc_k), buf.buf))) {
-+			ret = bch2_lru_set(trans,
-+					BCH_LRU_FRAGMENTATION_START,
-+					bucket_to_u64(alloc_k.k->p),
-+					a->fragmentation_lru);
-+			if (ret)
-+				goto err;
-+		}
-+		bch2_trans_iter_exit(trans, &lru_iter);
-+	}
-+
- 	if (a->data_type != BCH_DATA_cached)
- 		return 0;
- 
--- 
-2.43.0
+I think that the patch is correct.
+
+snprintf() returns the number of characters wrote _excluding_ the null. 
+That is why the test is: len >= size_of_the_buffer   ==>  more space is 
+needed.
+The case you describe is handled by the == part of >=.
+
+On the contrary, if len is < size_of_the_buffer, then we have at least 1 
+place for the terminating NULL. It will then eventually lead to:
+   len_of_the_string + space_for_'\0' ==  size_of_the_buffer
+So it does not overflow.
+
+
+Anyway, feel free to ignore the patch completely if it sounds too risky, 
+take only half of it (s/printbuf_remaining/printbuf_remaining_size/) if 
+you are more confident with it, or the complete patch if the explanation 
+above convinced you.
+
+ From my PoV, the 3 options lead to the same run-time output, with more 
+or less memory allocated.
+
+Best regards.
+
+CJ
+
+
+> 
+>>
+>>
+>> Second: if the return value of vsnprintf() is greater than or equal to the
+>> passed size, the resulting string is truncated.
+>> So, in order to see if some extra space is needed, the check needs to be
+>> changed.
+>>
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>> Un-tested
+>>
+>> v2: - Use printbuf_remaining_size() instead of hand-writing it.  [Brian Foster]
+>>      - Reword the commit log, hoping it is clearer.
+>>      - Synch with -next-20240215
+>>
+>> v1: https://lore.kernel.org/all/0f40108bed3e084057223bdbe32c4b37f8500ff3.1694845203.git.christophe.jaillet@wanadoo.fr/
+>> ---
+>>   fs/bcachefs/printbuf.c | 10 ++++++----
+>>   1 file changed, 6 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/bcachefs/printbuf.c b/fs/bcachefs/printbuf.c
+>> index b27d22925929..8cee9c2f88c4 100644
+>> --- a/fs/bcachefs/printbuf.c
+>> +++ b/fs/bcachefs/printbuf.c
+>> @@ -55,9 +55,10 @@ void bch2_prt_vprintf(struct printbuf *out, const char *fmt, va_list args)
+>>   		va_list args2;
+>>   
+>>   		va_copy(args2, args);
+>> -		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out), fmt, args2);
+>> +		len = vsnprintf(out->buf + out->pos, printbuf_remaining_size(out),
+>> +				fmt, args2);
+>>   		va_end(args2);
+>> -	} while (len + 1 >= printbuf_remaining(out) &&
+>> +	} while (len >= printbuf_remaining_size(out) &&
+>>   		 !bch2_printbuf_make_room(out, len + 1));
+>>   
+>>   	len = min_t(size_t, len,
+>> @@ -72,9 +73,10 @@ void bch2_prt_printf(struct printbuf *out, const char *fmt, ...)
+>>   
+>>   	do {
+>>   		va_start(args, fmt);
+>> -		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out), fmt, args);
+>> +		len = vsnprintf(out->buf + out->pos, printbuf_remaining_size(out),
+>> +				fmt, args);
+>>   		va_end(args);
+>> -	} while (len + 1 >= printbuf_remaining(out) &&
+>> +	} while (len >= printbuf_remaining_size(out) &&
+>>   		 !bch2_printbuf_make_room(out, len + 1));
+>>   
+>>   	len = min_t(size_t, len,
+>> -- 
+>> 2.43.2
+>>
+> 
+> 
 
