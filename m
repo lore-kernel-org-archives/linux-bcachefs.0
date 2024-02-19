@@ -1,63 +1,63 @@
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88F0532182
-	for <linux-bcachefs@vger.kernel.org>; Mon, 19 Feb 2024 13:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA0BF32182
+	for <linux-bcachefs@vger.kernel.org>; Mon, 19 Feb 2024 13:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708350939; cv=none; b=Mn5NaJLnwyiwyuFK1ETMdT2FOsnyCdW4S3iNFnl4yDa0kxkhAIUtSbfuh7x5abrabfYHtTnCEbZcVsWaS5ABrUpECF+1qlMxaFiJ05Rvd3i5exX/RyAS1j4GBKj8hhxCngW+eR2gPi6mTgEkqWACxl+fYQ5w5pzGrjRSmaJ6W+0=
+	t=1708350944; cv=none; b=kaqpq5Enf0HbdhWHPfbGL0VPZ9B/DfFfEsfvCFmJDMpX+9B2Ext7Z0hk5wWHeRCl3/3uS4fAYpOwLXYJSHM33GAHXE6p44cUOzBRa3N0K5hOyVfm59Z731153u3RxcuGk7pxYVi5h0dEZUyYfS4wdYHkH79d2x4ftfiImRaLTeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708350939; c=relaxed/simple;
-	bh=Vu8ByjvihTmX7YDHUn9bFcfZH4JWYrU+vIt0DVWXUpA=;
+	s=arc-20240116; t=1708350944; c=relaxed/simple;
+	bh=FZKjCqBR7woVT7lTmOH5M9jMQIV2xwKtPlHWzMvcxPg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pu/Wn6f1nVOe6XKXpvlF9q1Yjn9tSH6GsponzSd15VTre5zFOlx10oZJHRKgOGLikdiFSU85fpw1QRvZMyOJ42D8gJHHL8+mH6eRKE/g7PLjwRuc2K8RA8VO9oppXGHbQf6shufSIaOQoEFQ0/+vYIgvMnqkA43DzRt9fmvqz50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gluo.nz; spf=pass smtp.mailfrom=gluo.nz; dkim=pass (2048-bit key) header.d=gluo-nz.20230601.gappssmtp.com header.i=@gluo-nz.20230601.gappssmtp.com header.b=SvfCzh8v; arc=none smtp.client-ip=209.85.210.174
+	 MIME-Version; b=qTiYVXU2B0R14058XFaMWbjNP3ezZdkUJrAx13dMI8zoMPoYMuH7iC3PFou1f5CqsLH+qyQx2EMAwFhK+2j/HxUW/JUMTdeDGSxZzEBtJ+UogDFgITJepBcjSCY8344pRW1chT5Ep4wVwy7w2AxRC9PSnm5bfS2cwP9iqR5gA0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gluo.nz; spf=pass smtp.mailfrom=gluo.nz; dkim=pass (2048-bit key) header.d=gluo-nz.20230601.gappssmtp.com header.i=@gluo-nz.20230601.gappssmtp.com header.b=U810OJA7; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gluo.nz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gluo.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gluo-nz.20230601.gappssmtp.com header.i=@gluo-nz.20230601.gappssmtp.com header.b="SvfCzh8v"
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e09a890341so2112971b3a.3
-        for <linux-bcachefs@vger.kernel.org>; Mon, 19 Feb 2024 05:55:37 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gluo-nz.20230601.gappssmtp.com header.i=@gluo-nz.20230601.gappssmtp.com header.b="U810OJA7"
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e104a8e3f7so3719989b3a.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 19 Feb 2024 05:55:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gluo-nz.20230601.gappssmtp.com; s=20230601; t=1708350936; x=1708955736; darn=vger.kernel.org;
+        d=gluo-nz.20230601.gappssmtp.com; s=20230601; t=1708350942; x=1708955742; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OqU9SeGneC4pvhTLyKyD6NERgvC6LBUEb5UiMTcvUsQ=;
-        b=SvfCzh8vh1tPYT8jL0BrgBiR+nk8NYU+3KsDITRZ7r+9PUlKSYxdS9J2lHyeSuu4Uw
-         hdB3SGjB08Wne3egXyeW9xa2EQemKzN4c4aNowiyqOi2XduQBtSJzc7/AQwjo1HhtaOb
-         qQGgphGotyBCFQm10ySWZ8tBXgZXdy3ZISTQwRo03W0Q6hkB7dmDivcp14xQkRPYy0kH
-         ShjAI3XDmD9t+lR84qDDNecwvAE0EBRLuNTS32gP2pL1wbRUWq3q/zqFpKsZZS2tf/xp
-         KnTjCpxwf1gLgjm+BQnaZAYOCM+2JMLr4kC8xvkzNUF7RkF5WlDGefmYsN0Z5BAT7f2N
-         pzzg==
+        bh=YDCm05UH0Ho2Y9Xwe2LKk3TRQTfUo2ZwR0rrArJQL5k=;
+        b=U810OJA7QgwRknJEzvnO0Bhl216MEDcK6lwXEV2Rqyg1FpH0Ziz6LIHSsVgqdXh07W
+         pmKV6R8bFM8W5l/Gdq07sARPZlnEMYL1MdvaZOIqW6zQ+nj8luazzwVkyBWCphW+0RX3
+         bOrVtXkTYKigbu+S3OS5miLp62L4Be/Wu9DUb0qmuv0lqDGg4MkAo2BeP1eS2ut3ME3m
+         T6mudJboWR3/laUhqNZSuMJrtboeP28aabz3fnHXnVa+6GmHcrza8SKwQxiSadr+Oyu9
+         B9T2g+88S6evjryFXFySa/m4WI/jXCbaaC1FYRH/3Ne8LmTN8IYOZCwXpQrxQmPL+oqh
+         SY4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708350936; x=1708955736;
+        d=1e100.net; s=20230601; t=1708350942; x=1708955742;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OqU9SeGneC4pvhTLyKyD6NERgvC6LBUEb5UiMTcvUsQ=;
-        b=KI2wtcKDTQuDI7v2Q0sELwKq0RvavziMeCPyULloQe8KL6ZD77fyqcbArvg/TleFJD
-         TIgFc/rlHukmTpmoxh55QNh/Gz9ObcDxz6R4un1dCgwZzQ965mb5flCZ6XgSi+b5EyTP
-         qC7b2fZngiejLsSjcabhDfnvTJ4+CazvvcVmXVlhQI05Ig+ulGB4F3oBf0gcFUzkmb7I
-         LYeRe99rxy33zzSdRnMVwCPPGQE2U5uISdAxZFb0ITL2gCjQsSi5WzjPUr8oM5c0WFWQ
-         bSZfzG6aU/h1+6k9Vy8fNTjcGZ/xRVzc6oK6UrHwBkqRhkyak2qQRcbC7878ix1B5VnI
-         Jm0w==
-X-Gm-Message-State: AOJu0Ywk8FZVPB6bbcEJquIL0z+jfmV2ieg8rgEOfaMg6dP46FGA0tU0
-	rq1WcpUyAWp0sR6+6vG7Dqls88QckOahCqTKcQB0cv0awisBFCOMOb9P9ihQiPD2mhMKp0PilYq
-	G
-X-Google-Smtp-Source: AGHT+IFJWSTOHIgqTky7Wq+/+YVmKmdFlY2owG1mFPxWQ9VKmuCau/1VCWS79jdy4M2INJHcBL6WrQ==
-X-Received: by 2002:a05:6a20:d703:b0:19c:6fb0:2b02 with SMTP id iz3-20020a056a20d70300b0019c6fb02b02mr11134531pzb.61.1708350936655;
-        Mon, 19 Feb 2024 05:55:36 -0800 (PST)
+        bh=YDCm05UH0Ho2Y9Xwe2LKk3TRQTfUo2ZwR0rrArJQL5k=;
+        b=en3l8W1yUnMqZnpVBwEtBsRVZp66XG6MYYQ7SboZ6ADW3dWfuLud/se0A99e6nmCGw
+         mF7vpU66ukQhUly/CIjuo6iuMmwPxZAy/hlbqSgg0faCAhL0W/NiVch6Rivf5yqF/czl
+         1kd/0fQbzvPRL/s4W5a922iIVR2SgbLvWg2NQtsRfvMKbV9IBxmHNNJVJwiA9awHn2VT
+         /ZsgRbryIW0/SJUBG/eFormxDJ5omgsasrUbqEWA21HsfQrXA7RO+TZCg84lk//CouCr
+         +zmi9YjRUnr2WiNSXIHPDv2/fpRUyaV02li95phyEAnj5LRI7+qzXsnsaiOrLl9Uuoba
+         smyA==
+X-Gm-Message-State: AOJu0YyQpsLAAuzM0FAooJRUP46vsmoMOUGu0YumnW1mY+2LNudt9ykL
+	QIEA0Ka1D7uhGhHFSF3pLea0oy7eXdonDQNdixKgU2tUTR2j/HpIkJ9N1qRZzENN7nCHHPL/I6+
+	y
+X-Google-Smtp-Source: AGHT+IF/+T97VeP7mxQ42fm0am+UufGJTlKuFNZI94xcTgRM/jS1ORWiZ8PBdoARMor+RVLhuFG/xA==
+X-Received: by 2002:a05:6a20:d38f:b0:19e:9a97:cb12 with SMTP id iq15-20020a056a20d38f00b0019e9a97cb12mr16062422pzb.54.1708350941954;
+        Mon, 19 Feb 2024 05:55:41 -0800 (PST)
 Received: from Purple-Sunrise.. (125-239-189-189-fibre.sparkbb.co.nz. [125.239.189.189])
-        by smtp.gmail.com with ESMTPSA id k13-20020aa788cd000000b006e4641f578csm1853499pff.189.2024.02.19.05.55.35
+        by smtp.gmail.com with ESMTPSA id k13-20020aa788cd000000b006e4641f578csm1853499pff.189.2024.02.19.05.55.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 05:55:36 -0800 (PST)
+        Mon, 19 Feb 2024 05:55:41 -0800 (PST)
 From: Daniel Hill <daniel@gluo.nz>
 To: linux-bcachefs@vger.kernel.org
 Cc: Daniel Hill <daniel@gluo.nz>
-Subject: [PATCH 2/3] bcachefs: add btree_key_cache shrinker stats
-Date: Tue, 20 Feb 2024 02:28:39 +1300
-Message-ID: <20240219135425.885068-3-daniel@gluo.nz>
+Subject: [PATCH 3/3] bcachefs: add hit/miss percent to btree_cache sysfs
+Date: Tue, 20 Feb 2024 02:28:40 +1300
+Message-ID: <20240219135425.885068-4-daniel@gluo.nz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240219135425.885068-1-daniel@gluo.nz>
 References: <20240219135425.885068-1-daniel@gluo.nz>
@@ -69,127 +69,129 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some counters to keep track of what is causing us to skip over some
-entries causing potential leaks.
+This should help us identify any performance issues with the btree node
+cache.
 
 Signed-off-by: Daniel Hill <daniel@gluo.nz>
 ---
- fs/bcachefs/btree_key_cache.c       | 40 +++++++++++++++++++++++++----
- fs/bcachefs/btree_key_cache_types.h |  4 +++
- 2 files changed, 39 insertions(+), 5 deletions(-)
+ fs/bcachefs/btree_cache.c | 35 +++++++++++++++++++++++++++++++++++
+ fs/bcachefs/btree_types.h |  3 +++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
-index 74e52fd28abe..bed209a625cb 100644
---- a/fs/bcachefs/btree_key_cache.c
-+++ b/fs/bcachefs/btree_key_cache.c
-@@ -827,6 +827,7 @@ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
- 	struct bucket_table *tbl;
- 	struct bkey_cached *ck, *t;
- 	size_t scanned = 0, freed = 0, nr = sc->nr_to_scan;
-+	long shrinker_skipped = 0;
- 	unsigned start, flags;
- 	int srcu_idx;
+diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+index 799750464969..8d2954ab3598 100644
+--- a/fs/bcachefs/btree_cache.c
++++ b/fs/bcachefs/btree_cache.c
+@@ -418,6 +418,9 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
+ 	flags = memalloc_nofs_save();
+ 	mutex_lock(&bc->lock);
  
-@@ -854,7 +855,7 @@ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
- 	}
- 
- 	if (scanned >= nr)
--		goto out;
-+		goto freed_out;
- 
- 	scanned += bc->nr_freed_pcpu;
- 
-@@ -871,6 +872,9 @@ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
- 		bc->nr_freed_pcpu--;
- 	}
- 
-+freed_out:
-+	atomic_long_add(freed > scanned ? 0 : scanned - freed, &bc->shrinker_srcu_skipped);
++	free_percpu(bc->hits);
++	free_percpu(bc->misses);
 +
- 	if (scanned >= nr)
- 		goto out;
+ 	if (c->verify_data)
+ 		list_move(&c->verify_data->list, &bc->live);
  
-@@ -889,15 +893,21 @@ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
- 			next = rht_dereference_bucket_rcu(pos->next, tbl, bc->shrink_iter);
- 			ck = container_of(pos, struct bkey_cached, hash);
+@@ -467,6 +470,11 @@ int bch2_fs_btree_cache_init(struct bch_fs *c)
+ 	unsigned i;
+ 	int ret = 0;
  
--			if (test_bit(BKEY_CACHED_DIRTY, &ck->flags))
-+			if (test_bit(BKEY_CACHED_DIRTY, &ck->flags)) {
-+				shrinker_skipped++;
- 				goto next;
-+			}
- 
--			if (test_bit(BKEY_CACHED_ACCESSED, &ck->flags))
-+			if (test_bit(BKEY_CACHED_ACCESSED, &ck->flags)) {
- 				clear_bit(BKEY_CACHED_ACCESSED, &ck->flags);
-+				shrinker_skipped++;
-+			}
- 			else if (bkey_cached_lock_for_evict(ck)) {
- 				bkey_cached_evict(bc, ck);
- 				bkey_cached_free(bc, ck);
--			}
++	bc->hits   = __alloc_percpu(sizeof(u64) * BTREE_MAX_DEPTH, sizeof(u64));
++	bc->misses = __alloc_percpu(sizeof(u64) * BTREE_MAX_DEPTH, sizeof(u64));
++	if (!bc->hits || !bc->misses)
++		goto err;
 +
-+			} else
-+				shrinker_skipped++;
+ 	ret = rhashtable_init(&bc->table, &bch_btree_cache_params);
+ 	if (ret)
+ 		goto err;
+@@ -833,6 +841,7 @@ static struct btree *__bch2_btree_node_get(struct btree_trans *trans, struct btr
+ 	struct btree *b;
+ 	struct bset_tree *t;
+ 	bool need_relock = false;
++	bool is_hit = true;
+ 	int ret;
  
- 			scanned++;
- 			if (scanned >= nr)
-@@ -913,6 +923,9 @@ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
+ 	EBUG_ON(level >= BTREE_MAX_DEPTH);
+@@ -852,6 +861,8 @@ static struct btree *__bch2_btree_node_get(struct btree_trans *trans, struct btr
+ 		if (!b)
+ 			goto retry;
  
- 	rcu_read_unlock();
- out:
-+	atomic_long_inc(&bc->shrinker_count);
-+	atomic_long_add(nr, &bc->shrinker_to_scan);
-+	atomic_long_add(shrinker_skipped, &bc->shrinker_skipped);
- 	memalloc_nofs_restore(flags);
- 	srcu_read_unlock(&c->btree_trans_barrier, srcu_idx);
- 	mutex_unlock(&bc->lock);
-@@ -1044,12 +1057,29 @@ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
- 
- void bch2_btree_key_cache_to_text(struct printbuf *out, struct btree_key_cache *c)
- {
--	prt_printf(out, "nr_freed:\t%lu",	atomic_long_read(&c->nr_freed));
-+	long scanned = atomic_long_read(&c->shrinker_to_scan);
-+	long freed = atomic_long_read(&c->nr_freed);
++		is_hit = false;
 +
-+	prt_printf(out, "nr_freed:\t%lu",	freed);
- 	prt_newline(out);
- 	prt_printf(out, "nr_keys:\t%lu",	atomic_long_read(&c->nr_keys));
- 	prt_newline(out);
- 	prt_printf(out, "nr_dirty:\t%lu",	atomic_long_read(&c->nr_dirty));
- 	prt_newline(out);
-+	prt_printf(out, "shrinker_count:\t%lu",	atomic_long_read(&c->shrinker_count));
-+	prt_newline(out);
-+	prt_printf(out, "shrinker_to_scan:\t\t%lu", scanned);
-+	prt_newline(out);
-+	prt_printf(out, "shrinker_skipped:\t\t%lu",
-+		   atomic_long_read(&c->shrinker_skipped));
-+	prt_newline(out);
-+	prt_printf(out, "shrinker_srcu_skipped:\t\t%lu",
-+		   atomic_long_read(&c->shrinker_srcu_skipped));
-+	prt_newline(out);
-+	prt_printf(out, "freed/scanned: ");
-+	bch2_prt_percent_rational_u64(out, freed, scanned, 100);
-+	prt_newline(out);
+ 		if (IS_ERR(b))
+ 			return b;
+ 	} else {
+@@ -925,6 +936,11 @@ static struct btree *__bch2_btree_node_get(struct btree_trans *trans, struct btr
+ 	EBUG_ON(BTREE_NODE_LEVEL(b->data) != level);
+ 	btree_check_header(c, b);
+ 
++	if (is_hit)
++		this_cpu_inc(bc->hits[level]);
++	else
++		this_cpu_inc(bc->misses[level]);
 +
+ 	return b;
  }
  
- void bch2_btree_key_cache_exit(void)
-diff --git a/fs/bcachefs/btree_key_cache_types.h b/fs/bcachefs/btree_key_cache_types.h
-index 290e4e57df5b..ba5dd263b2e4 100644
---- a/fs/bcachefs/btree_key_cache_types.h
-+++ b/fs/bcachefs/btree_key_cache_types.h
-@@ -24,6 +24,10 @@ struct btree_key_cache {
- 	atomic_long_t		nr_freed;
- 	atomic_long_t		nr_keys;
- 	atomic_long_t		nr_dirty;
-+	atomic_long_t		shrinker_count;
-+	atomic_long_t		shrinker_to_scan;
-+	atomic_long_t		shrinker_skipped;
-+	atomic_long_t		shrinker_srcu_skipped;
+@@ -1029,6 +1045,7 @@ struct btree *bch2_btree_node_get_noiter(struct btree_trans *trans,
+ 	struct btree_cache *bc = &c->btree_cache;
+ 	struct btree *b;
+ 	struct bset_tree *t;
++	bool is_hit = true;
+ 	int ret;
+ 
+ 	EBUG_ON(level >= BTREE_MAX_DEPTH);
+@@ -1055,6 +1072,8 @@ struct btree *bch2_btree_node_get_noiter(struct btree_trans *trans,
+ 		    !bch2_btree_cache_cannibalize_lock(trans, NULL))
+ 			goto retry;
+ 
++		is_hit = false;
++
+ 		if (IS_ERR(b))
+ 			goto out;
+ 	} else {
+@@ -1100,6 +1119,11 @@ struct btree *bch2_btree_node_get_noiter(struct btree_trans *trans,
+ 	EBUG_ON(BTREE_NODE_LEVEL(b->data) != level);
+ 	btree_check_header(c, b);
+ out:
++	if (is_hit)
++		this_cpu_inc(bc->hits[level]);
++	else
++		this_cpu_inc(bc->misses[level]);
++
+ 	bch2_btree_cache_cannibalize_unlock(trans);
+ 	return b;
+ }
+@@ -1225,4 +1249,15 @@ void bch2_btree_cache_to_text(struct printbuf *out, const struct bch_fs *c)
+ 	prt_printf(out, "nr nodes:\t\t%u\n", c->btree_cache.used);
+ 	prt_printf(out, "nr dirty:\t\t%u\n", atomic_read(&c->btree_cache.dirty));
+ 	prt_printf(out, "cannibalize lock:\t%p\n", c->btree_cache.alloc_lock);
++
++	for (int i = 0; i < BTREE_MAX_DEPTH; i++) {
++		u64 hits = percpu_u64_get(&c->btree_cache.hits[i]);
++		u64 misses = percpu_u64_get(&c->btree_cache.misses[i]);
++		u64 total = hits + misses;
++
++		prt_printf(out, "level %i misses: ", i);
++		bch2_prt_percent_rational_u64(out, misses, total, 0);
++		prt_printf(out, " %llu+%llu/%llu", hits, misses, total);
++		prt_newline(out);
++	}
+ }
+diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
+index b2ebf143c3b7..a10ab188908d 100644
+--- a/fs/bcachefs/btree_types.h
++++ b/fs/bcachefs/btree_types.h
+@@ -179,6 +179,9 @@ struct btree_cache {
+ 	struct bbpos		pinned_nodes_end;
+ 	u64			pinned_nodes_leaf_mask;
+ 	u64			pinned_nodes_interior_mask;
++
++	u64 __percpu *hits;
++	u64 __percpu *misses;
  };
  
- struct bkey_cached_key {
+ struct btree_node_iter {
 -- 
 2.43.0
 
