@@ -1,157 +1,73 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A4C53E22
-	for <linux-bcachefs@vger.kernel.org>; Mon, 19 Feb 2024 21:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888B553E3E
+	for <linux-bcachefs@vger.kernel.org>; Mon, 19 Feb 2024 21:38:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708378577; cv=none; b=MDzbWQb+2Smfx1io/3MhN7qN4bfit/xQCK5DGtIxmqcH6j8xeFwL6U9H7xe8y46LploTXcVIfE7AfBdTHyJ4EOYOV1Ou/ycx2jNg7bewIccIQ711Q4zVytAvpHNkEjj9B1j/69a8ccEw0mg9Qd/lBe0i5fYodxHApYrTYbAj/cc=
+	t=1708378703; cv=none; b=eZH+Ncr5WGO8ISeZImcZh82viEgMyZ+jafzZKLXOykcl5B8CyxDmK0aAoQQZujNvbJzq723rUSND6qbBG0JQVv7Hr/glWPEvq2BLQBOjAboA3ASWcV5GLSE1EWcItzEJCX4zolH1yHTravSX9ETTocqG2e0urZdx0Pgnxs63fno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708378577; c=relaxed/simple;
-	bh=m9hU62GZDlzRYkm5TflwXBi9gQJhj+hqg7sdx9BPbQs=;
+	s=arc-20240116; t=1708378703; c=relaxed/simple;
+	bh=kO132W8VqA0lD1aQkVq+6FYNc/RgNUSWNOzioNfJoaE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oN97sRcWmPbSI3IA2JrwtR2CVRLLUuXgskyGl24VRnzn1DIFR2U+HkxkHn9ekAjn51y1AGvknIQXbhxtxO/YsQ6gxBg5WtYGQ5T9r0yU/yVFTpJCbjnqKp81KZCOgYzLYjzGxwi2Uoq6tIvUTmJehjmjCdXSRZvovJbyQst9lv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CEfenD8+; arc=none smtp.client-ip=95.215.58.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=aUtZi2MCtnEWG4C+pd7cmTon7mtCmAlurp1/hx6fFwK0Hnr29cNqVtc58p872y5A4oXMiia196QlJmikhNAWCiZ1E9VUw3Ibl+FEHRjb3O+8x4yZbBWrR93wpkVW2xa9NklHuqUpqweidN6BAkmCN32fLs0sNWr8eT6uc99Td9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LYgZZmdY; arc=none smtp.client-ip=95.215.58.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CEfenD8+"
-Date: Mon, 19 Feb 2024 16:36:09 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LYgZZmdY"
+Date: Mon, 19 Feb 2024 16:38:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708378573;
+	t=1708378699;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nHWVuGms67eXElpk+GQbCw/8AGqs4biTimQboa9uwN4=;
-	b=CEfenD8+3EJDfCF8/kmLMYKXU6y35aU46WIWwSJJB356+dXfd/9gbPuyr240gOR4UaCLWG
-	D71lvlpBHmfECRSHcvmmRB9oo/r/LA4JYFB9GKvYtPeBwKAtm2Vm3vA7kRSO6M82aN3fFD
-	KiS4pObDhkHQIzhSjmNJbWzugkqSAx8=
+	bh=WpuYG+h3TSgyJSJgZR3W7kq8XDyXD92PYjoj3CYxhKo=;
+	b=LYgZZmdYURqdOY2BjU1tDAodlBauQ4yMQnodt1+ilDy29kY1R5fvMAPPf/Alv2+kADA69i
+	InYCp5WEtaURfLXbDfINRsl4rjD2D7bH1xbUHqs1afhu3kPaq0WchaLZZhOcUO5N5oP5Af
+	vBaw05jHnz79LjMrVIyafdgUabZFRDg=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Brian Foster <bfoster@redhat.com>, linux-kernel@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2] bcachefs: Avoid a potential useless over memory
- allocation in bch2_prt_[v]printf()
-Message-ID: <csjcyhnh5lhj22emlwdzpr6v4s3mfldsw3um75hsk4ffjsmqmb@otyei3qylhdn>
-References: <4c614db674887346ea418acaeafd6bf86502ec77.1708272713.git.christophe.jaillet@wanadoo.fr>
- <pmyezdskyr3t2iyald4diibl6b7lttf46d6sskxfu2wq3pub7r@gmyezjb3wfeu>
- <c745c4d3-a084-440d-bc07-0ecbcfe10e37@wanadoo.fr>
+To: David Laight <David.Laight@aculab.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, 
+	Arnd Bergmann <arnd@arndb.de>, Calvin Owens <jcalvinowens@gmail.com>, 
+	Dave Martin <Dave.Martin@arm.com>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+Subject: Re: [PATCH] arm: Silence gcc warnings about arch ABI drift
+Message-ID: <msw3w26o27g2lvdgche535m47vqdzmr4g2evq5gc4uvmo5fqi2@bedh4opzimmt>
+References: <fe51512baa18e1480ce997fc535813ce6a0b0721.1708286962.git.jcalvinowens@gmail.com>
+ <431dd956-ad31-4da8-ad42-34f7380824bb@app.fastmail.com>
+ <ZdMe24xN1Ej4QoVU@shell.armlinux.org.uk>
+ <xs2splnjhlj257uca5yae64fp4solc4ugbxrkczoyd75n42r66@42boyzdcmyj4>
+ <ZdMkyPX/h9s8xht5@shell.armlinux.org.uk>
+ <fharyfc7fnh45dthgd2ehwsgdqzmdfptp7jw7gi5ahb6slwgf6@nrkhlhvbbzx7>
+ <ff0164553d6f486f97643eae8235cc5f@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c745c4d3-a084-440d-bc07-0ecbcfe10e37@wanadoo.fr>
+In-Reply-To: <ff0164553d6f486f97643eae8235cc5f@AcuMS.aculab.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Feb 19, 2024 at 07:10:10PM +0100, Christophe JAILLET wrote:
-> Le 19/02/2024 à 04:39, Kent Overstreet a écrit :
-> > On Sun, Feb 18, 2024 at 05:12:28PM +0100, Christophe JAILLET wrote:
-> > > 2 issues related to incorrect available space in the output buffer
-> > > computation may lead to some extra memory allocation.
-> > > 
-> > > 
-> > > First: vsnprintf() takes the size of the buffer, *including* the space for
-> > > the trailing null.
-> > > 
-> > > But printbuf_remaining() returns the number of characters we can print
-> > > to the output buffer, *excluding* the terminating null.
-> > > 
-> > > So, use printbuf_remaining_size(), which includes the space for the
-> > > terminating null.
-> > 
-> > nope, buggy.
-> > 
-> > passing printbuf_remaining_size() to snprintf() is correct, but
-> > snprintf() returns the number of charecters wrote _excluding_ the null
+On Mon, Feb 19, 2024 at 07:53:15PM +0000, David Laight wrote:
+> ...
+> > I'm not always trying to write code that will generate the fastest
+> > assembly possible; there aro other considerations. As long a the
+> > compiler is doing something /reasonable/, the code is fine.
 > 
-> Hi,
+> Speaks the man who was writing horrid 'jit' code ...
 > 
-> I think that the patch is correct.
+> This also begs the question of why that data is so compressed
+> in the first place?
+> It is quite likely that a few accesses generate far more code
+> than the data you are attempting to save.
 
-You didn't test it, I did.
+It's easy to understand if you understand profiling, benchmarking and
+cache effects.
 
-In the future, no more patches that you haven't tested - thanks.
-
-> snprintf() returns the number of characters wrote _excluding_ the null. That
-> is why the test is: len >= size_of_the_buffer   ==>  more space is needed.
-> The case you describe is handled by the == part of >=.
-> 
-> On the contrary, if len is < size_of_the_buffer, then we have at least 1
-> place for the terminating NULL. It will then eventually lead to:
->   len_of_the_string + space_for_'\0' ==  size_of_the_buffer
-> So it does not overflow.
-> 
-> 
-> Anyway, feel free to ignore the patch completely if it sounds too risky,
-> take only half of it (s/printbuf_remaining/printbuf_remaining_size/) if you
-> are more confident with it, or the complete patch if the explanation above
-> convinced you.
-> 
-> From my PoV, the 3 options lead to the same run-time output, with more or
-> less memory allocated.
-> 
-> Best regards.
-> 
-> CJ
-> 
-> 
-> > 
-> > > 
-> > > 
-> > > Second: if the return value of vsnprintf() is greater than or equal to the
-> > > passed size, the resulting string is truncated.
-> > > So, in order to see if some extra space is needed, the check needs to be
-> > > changed.
-> > > 
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > ---
-> > > Un-tested
-> > > 
-> > > v2: - Use printbuf_remaining_size() instead of hand-writing it.  [Brian Foster]
-> > >      - Reword the commit log, hoping it is clearer.
-> > >      - Synch with -next-20240215
-> > > 
-> > > v1: https://lore.kernel.org/all/0f40108bed3e084057223bdbe32c4b37f8500ff3.1694845203.git.christophe.jaillet@wanadoo.fr/
-> > > ---
-> > >   fs/bcachefs/printbuf.c | 10 ++++++----
-> > >   1 file changed, 6 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/fs/bcachefs/printbuf.c b/fs/bcachefs/printbuf.c
-> > > index b27d22925929..8cee9c2f88c4 100644
-> > > --- a/fs/bcachefs/printbuf.c
-> > > +++ b/fs/bcachefs/printbuf.c
-> > > @@ -55,9 +55,10 @@ void bch2_prt_vprintf(struct printbuf *out, const char *fmt, va_list args)
-> > >   		va_list args2;
-> > >   		va_copy(args2, args);
-> > > -		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out), fmt, args2);
-> > > +		len = vsnprintf(out->buf + out->pos, printbuf_remaining_size(out),
-> > > +				fmt, args2);
-> > >   		va_end(args2);
-> > > -	} while (len + 1 >= printbuf_remaining(out) &&
-> > > +	} while (len >= printbuf_remaining_size(out) &&
-> > >   		 !bch2_printbuf_make_room(out, len + 1));
-> > >   	len = min_t(size_t, len,
-> > > @@ -72,9 +73,10 @@ void bch2_prt_printf(struct printbuf *out, const char *fmt, ...)
-> > >   	do {
-> > >   		va_start(args, fmt);
-> > > -		len = vsnprintf(out->buf + out->pos, printbuf_remaining(out), fmt, args);
-> > > +		len = vsnprintf(out->buf + out->pos, printbuf_remaining_size(out),
-> > > +				fmt, args);
-> > >   		va_end(args);
-> > > -	} while (len + 1 >= printbuf_remaining(out) &&
-> > > +	} while (len >= printbuf_remaining_size(out) &&
-> > >   		 !bch2_printbuf_make_room(out, len + 1));
-> > >   	len = min_t(size_t, len,
-> > > -- 
-> > > 2.43.2
-> > > 
-> > 
-> > 
-> 
+That 'jit code' is for _all_ filesystem metadata.
