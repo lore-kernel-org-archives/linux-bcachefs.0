@@ -1,41 +1,66 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC63208D7;
-	Mon, 19 Feb 2024 06:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E26200C4;
+	Mon, 19 Feb 2024 06:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708323932; cv=none; b=hyT0xBrUz1+rEbFWEu3035Gdn71fSfpJ8vD6rxJ/e1SPqOANZcDEAnXM2axgVaVdFfM1JCXzEaj0VwAFmU6MpYsdciRyILHhVTq/VBNOcFgqPoWEXsQwPotgaMqUBKzSCXfKU/F+uAZ8FmzIJaa00Ayg6WQW9nRXWtlAseQe628=
+	t=1708325897; cv=none; b=S81z/reugan0uDDlIGzznccCsdCxK4X8M/md4Fot+ehkhbjypd/SApFRqbkeXm/Kp9jdbcdmugNNsdF3H7nDRUBxji4cCCxv2KTTpWRJ+MV2UigEXyAcLN8mm+icaihT4FKmfVHHxjLek5ePMn9sB3xRPTFnXlEH2VSc+Ijvx60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708323932; c=relaxed/simple;
-	bh=70Ay6BnT3v6YUlVpOlPdzbiXxgRhOAsAQxZhR1uZTMc=;
+	s=arc-20240116; t=1708325897; c=relaxed/simple;
+	bh=CbvNehSQsmjo5xsV/L89m1wM6vfv2EwyYMq67xrvs/w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u4BodusGdPx5ug/sAYq/yQ9HE42gsnx1wOBGIDYYpxQXVhp4LHoEcraUfLYl8RQ8JTxLllmOmj8UVQ9BZY9SR9BRu4a+J0X6KsTAJC7xCH3TtZXBbRiE04ZxNsLCbXa6YzS2QeHJLqbNzlGzBQkuf3by+xsBAwh10THC4xBs6fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TCrIH9Ao; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=AUBdrXvo5hyhE/CN0vmAJY1//Lifido/n53mDGIQ1vijyE4enra9UkVS80Kp1JOPb957kIMrdTtL6Q6C1qCwnfDmG8NreEw7qOsoG3TD1qBbyOvXoIWtv2jbVsanL1kQ0XO14uKBVnuPze3+gTpgPrdlufoNpe2UF90s5L0/8JI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OtsxI88c; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TCrIH9Ao"
-Date: Mon, 19 Feb 2024 01:25:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708323927;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7d9J/jggDFvXefrkjiCWASipqQmLXrO/7brHX5k4i7E=;
-	b=TCrIH9AoO0q1jih7sKPGtaXv5qAHPl5jLrMi26x+lpZwRDXT/lR26HrhrW9hB12r0tz/oc
-	EsJ3dBUn2+fVuvoJuyNzS4mXYVwv2/bJpHdxsd8/kWPbWklXztq1DuorGHVLqZrf9k2CtS
-	kWH+h8cc+IA5QdmLh2FRWACXLrx+ZoM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OtsxI88c"
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3c03d6e5e56so4300019b6e.1;
+        Sun, 18 Feb 2024 22:58:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708325895; x=1708930695; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jDzYA3NEdFlq1ACOSgNhvQr7ItIR43JX1Kc+EeVYRPs=;
+        b=OtsxI88ckFFqN//ddn6P3rc+pcHfdko/wxMY1Gp30BEpZ0woKtpk76hzYME/rw2tND
+         gv4mQ3bDtskkUZwe766qY6clqixDE2u4hI9b+kZypLw42jvwPJ03r4gTk+hQP8rE2u+v
+         QkHSVH48TE+14nwn6xJI79fPGmDQAOC4GKg/LpwGSzEninnlxNvXU0hXjc7HJMSuTg6g
+         r4E8/Xw07hQ71BQK55Ei+yg982sl8NvXHtoAgOnRygdsgtlqJcz+o2Rj53c2iXUXFSor
+         6Rkk+JyRi5meKgrpTHZJOO3dXdrCzWbasoM2ULGViueadFKobAUFOchz+LPDZYVyIqW9
+         HEWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708325895; x=1708930695;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jDzYA3NEdFlq1ACOSgNhvQr7ItIR43JX1Kc+EeVYRPs=;
+        b=BCdlE+W+R+mMKUrUeddSx2ph8yy6rLTlAmlRs0xUKT0e+ROolVkGgY+2AbUJn3kfDH
+         fZUQPLutDiNzjHZy+8iIIvnCXo1SKNZ+ABmjs4NwzNuS8pxO5CcEspyWequs8JpRfU7F
+         St+pbvr5LC2Qc1/Q5uMvCXF/MTLJY2HXEgypVAMyk7UwKax9Qm9GAR7ey9VTnj8RxZQF
+         CV+8Mrlf0bKiF381/QqtDlflnn3Zz4YNMCChVd/46ZMy0VyDmnBjX0Pfyk0ncJFcTkhY
+         zMAKbfrPa2qqvqzzqxKTbKFOcpug9+hHJsr8mdzqq1Nw6EaltyYvlNReLiCoPLq29/P0
+         QQmA==
+X-Forwarded-Encrypted: i=1; AJvYcCXEFx18w/EUvXfoDzw8M/Db4hpeF191Je8qSgJqDXh0jZxN9cpGtLa8KdSZa5PC/oZNj64I4IqMT3Upwn5NcgVeD3gHk/SDpVHVLo6X6uWLvSnDK7o5xEMrIVcBwLUUwlAKtFGrV9jKTAZERNw=
+X-Gm-Message-State: AOJu0YzFgwyiR02/Xv0q78exBOCJ2NwnM4OZkKXXxUCLdzdjsTWL/pLE
+	kxaje6j50GVlHGXPxGfuQ/P6/JjKRYkL3+phpnJ+w2VavrMBDYlH
+X-Google-Smtp-Source: AGHT+IGbw7iculL+CN0bnGdj6v5FvEw/7MjbSFePuDJZLsQqsdRE0Y/d4XJ8gI+wJ/VXx9jPn/ixUw==
+X-Received: by 2002:a05:6808:10d3:b0:3c0:b3f3:c30f with SMTP id s19-20020a05680810d300b003c0b3f3c30fmr14896630ois.9.1708325895301;
+        Sun, 18 Feb 2024 22:58:15 -0800 (PST)
+Received: from gmail.com ([192.184.167.79])
+        by smtp.gmail.com with ESMTPSA id p27-20020a056a0026db00b006e4648059b6sm1011242pfw.26.2024.02.18.22.58.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 22:58:14 -0800 (PST)
+Date: Sun, 18 Feb 2024 22:58:07 -0800
+From: Calvin Owens <jcalvinowens@gmail.com>
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Calvin Owens <jcalvinowens@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, Dave Martin <Dave.Martin@arm.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>, Dave Martin <Dave.Martin@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>
 Subject: Re: [PATCH] arm: Silence gcc warnings about arch ABI drift
-Message-ID: <k6cclnrqu2h6mh4wb33hpakhfasq7jec7dnbaiaxlpw525adan@cor5l3bi35u2>
+Message-ID: <ZdL7_-2VCJqjn634@gmail.com>
 References: <fe51512baa18e1480ce997fc535813ce6a0b0721.1708286962.git.jcalvinowens@gmail.com>
  <431dd956-ad31-4da8-ad42-34f7380824bb@app.fastmail.com>
 Precedence: bulk
@@ -48,9 +73,8 @@ Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <431dd956-ad31-4da8-ad42-34f7380824bb@app.fastmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Mon, Feb 19, 2024 at 07:21:11AM +0100, Arnd Bergmann wrote:
+On Monday 02/19 at 07:21 +0100, Arnd Bergmann wrote:
 > On Mon, Feb 19, 2024, at 05:09, Calvin Owens wrote:
 > > 32-bit arm builds uniquely emit a lot of spam like this:
 > >
@@ -65,8 +89,18 @@ On Mon, Feb 19, 2024 at 07:21:11AM +0100, Arnd Bergmann wrote:
 > > Cc: Dave Martin <Dave.Martin@arm.com>
 > > Signed-off-by: Calvin Owens <jcalvinowens@gmail.com>
 > > ---
-> 
+>
 > I think these should be addressed in bcachefs instead.
+
+That seems reasonable to me. For clarity, I just happened to notice this
+while doing allyesconfig cross builds for something entirely unrelated.
+
+I'll take it up with them. It's not a big problem from my POV, the notes
+don't cause -Werror builds to fail or anything like that.
+
+Thanks,
+Calvin
+
 > While it's not the fault of bcachefs that the calling
 > convention changed between gcc versions, have a look at
 > the actual structure layout:
@@ -107,5 +141,5 @@ On Mon, Feb 19, 2024 at 07:21:11AM +0100, Arnd Bergmann wrote:
 > 
 > This is not something that should ever be passed by value
 > into a function.
-
-Why?
+> 
+>       Arnd
