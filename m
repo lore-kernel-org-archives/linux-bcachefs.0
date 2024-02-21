@@ -1,107 +1,95 @@
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C245380040
-	for <linux-bcachefs@vger.kernel.org>; Wed, 21 Feb 2024 15:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763C785C6C
+	for <linux-bcachefs@vger.kernel.org>; Wed, 21 Feb 2024 21:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708528010; cv=none; b=W2eETuXMpnYYZrKSgVWfALgEok9i+OKtqXZmbta5GZslnxyjL2VB30LopzOrHN062swQypznOHY7wiFJSdkblpZ4wgvdfNDGerPiTbrOe+SibOyPqyPFyoHmAx/y16neqYXvSbgSsubRzCyNuWKuOp3GhsshLTrIG96zEYoMIiY=
+	t=1708549508; cv=none; b=i5XSRtmnPD4tz4bBm8GgsNqN4Pe4hMhj9A6KHSSykN8rQOt9qWVAKTkdFccBGSHId5y1B7cIgvtfOyGHPlmsnvxP+9Xojh6LKfD7yjuhmyAY2Krdk6JsQ6ooorSVv+wcwnoz57iLHJkBZ6qqeb+U3l+11hu9sn3v8gAz2S7PIZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708528010; c=relaxed/simple;
-	bh=IfJatG9lRhZKsYbgCREitFJU8OpCGpoZT8OQPAcVahk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GTUXal+Hlm+BILDb5wq4e5oTXO5GFyJ7ldNZUNQwbVs/1TdHBSiwMcd8ULt0mZpLEKdyw8yU5E5yywuADgAbSrGWriYw97VAbItwZZN5BiFnTvNXmPp550a2NlxDt59mFa9AxZt162j+mQkc8mbmEIQ0BZFJ36cZF3Xc0vWKqXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=cBpNq+AE; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+	s=arc-20240116; t=1708549508; c=relaxed/simple;
+	bh=43K2olQjRDLoK2JMYHwSGAyFBao6TRTJN3RH0Z7TSso=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dpk5NBZccV3DYtac70B3eqGmt2pYKH9pNlfR/vEiH0LDDoRL7oUeFwhlOeXjNkWQ0paJyG5pOIkr1YWwifg7moqAtG71d+gucSM0lyECEEWKkSh5SVinvf+Bp6WO3Pj4Ym5RqtUfo3eyQ7ZITJQzzOIgQLwuoDftHXIjRmfQpfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GN1UAiLa; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="cBpNq+AE"
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3e82664d53so464848166b.3
-        for <linux-bcachefs@vger.kernel.org>; Wed, 21 Feb 2024 07:06:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1708528006; x=1709132806; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jIv9PGtlgXOsnlHNE4Tcy9JvBcQ7HLVWrvu11qJkS/c=;
-        b=cBpNq+AE9Yg4EOhFD+7XEsO7TU5XVOlX8SrcXQIiduRyd9nYXGB7G3uWK4MAOsLM97
-         14ek3N7AUgGmTh6xD5kMj9s3JSGsZugvwb7Igy/nVl4dVEBNiPr/lGXzlizXJzh2krUC
-         p1K1WPbeAi6qDoq79XdDIXsLf2oc8T7fIhf5E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708528006; x=1709132806;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jIv9PGtlgXOsnlHNE4Tcy9JvBcQ7HLVWrvu11qJkS/c=;
-        b=Z1JV1ofCwPZhsFl9RxL2GjNQu8asnYGaR9H+LbPLZBi6Qic16+q4CeOw4L9RECyecM
-         8XPgh25+scEBSEHRpGuHlWEKpKz5UbiPTeKQnV/+u3O9sBucTeCI3vvU8nGG9HnQ57F2
-         VZHLGkg/+YsPua0wG871FjnqUT9q7/qRQivi7Uj0zFt2VVezW5qrMFmJAwfl9Mcy25xl
-         JHVJHKng5kbi7/VVsguxdukOOav3pYzB/SskwP0WMqOPaKmiAltHTFScs7adylJtDwwe
-         zGa22CECmH2s4TpHSDEM63sOZiliq5XIJHNHVqMuE+OHxbOGxfyARf8QKg919WROuHBS
-         1htA==
-X-Gm-Message-State: AOJu0YyZYwCnsqdRd/m0ke2WwwwG9miyXvP59JTzRTFfCNa3UZ29yMhw
-	aOFT3gapdnJGC4oevan1I5vRYmaQwaoFFAMfexXC8Rh4TlB772FHdH1qglUstydeH25po0HBQe6
-	RZWOB7PMCi2+XR5pv1Z/xujyzv5jbQxMvPncQlzZ2qYvUf/zc
-X-Google-Smtp-Source: AGHT+IERxnqIikhmylu4cOJ75RfiT2FYUV0rib82c7+t48H2eRYLuPnPyIEpvl+01PQoj6symStM8+Yyyt3FTnnwVaU=
-X-Received: by 2002:a17:906:fccd:b0:a3f:816:1e29 with SMTP id
- qx13-20020a170906fccd00b00a3f08161e29mr3428600ejb.39.1708528005923; Wed, 21
- Feb 2024 07:06:45 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GN1UAiLa"
+Date: Wed, 21 Feb 2024 16:04:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708549504;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sTsivf6BMqQt+BMiZsHRmWuFS0uMyL6NGhUqEyvJOuc=;
+	b=GN1UAiLazx0hAHCknbnw+5J5Jk4KgDCGiMBtjacLlmDCfCDnypK0OiNv0O54sjDEFM5cDr
+	Owr9egG5ffC6VA2iPwiYqkMRQMHQENEgUoGGmJQSMXAeDpv/iI8/f6RUH2jXdW1/yZ+gqg
+	+dXYq/BJcaIgLAfpcT1URpK4q5B5Fvg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, lsf-pc@lists.linux-foundation.org, 
+	NeilBrown <neilb@suse.de>
+Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems &
+ more
+Message-ID: <l4o3zai7j5a4g3masz3a4tah3lji3bnro7vylcuitleixjmg4p@j4bpnwffgldg>
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
-In-Reply-To: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Wed, 21 Feb 2024 16:06:34 +0100
-Message-ID: <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
-Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems & more
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lsf-pc@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> Recently we had a pretty long discussion on statx extensions, which
-> eventually got a bit offtopic but nevertheless hashed out all the major
-> issues.
->
-> To summarize:
->  - guaranteeing inode number uniqueness is becoming increasingly
->    infeasible, we need a bit to tell userspace "inode number is not
->    unique, use filehandle instead"
+On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
+> On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > Recently we had a pretty long discussion on statx extensions, which
+> > eventually got a bit offtopic but nevertheless hashed out all the major
+> > issues.
+> >
+> > To summarize:
+> >  - guaranteeing inode number uniqueness is becoming increasingly
+> >    infeasible, we need a bit to tell userspace "inode number is not
+> >    unique, use filehandle instead"
+> 
+> This is a tough one.   POSIX says "The st_ino and st_dev fields taken
+> together uniquely identify the file within the system."
+> 
+> Adding a bit that says "from now the above POSIX rule is invalid"
+> doesn't instantly fix all the existing applications that rely on it.
 
-This is a tough one.   POSIX says "The st_ino and st_dev fields taken
-together uniquely identify the file within the system."
+Even POSIX must bend when faced with reality. 64 bits is getting
+uncomfortably cramped already and with filesystems getting bigger it's
+going to break sooner or later.
 
-Adding a bit that says "from now the above POSIX rule is invalid"
-doesn't instantly fix all the existing applications that rely on it.
+We don't want to be abusing st_dev, and snapshots and inode number
+sharding mean we're basically out of bits today.
 
-Linux did manage to extend st_ino from 32 to 64 bits, but even in that
-case it's not clear how many instances of
+> doing (see documentation) is generally the right direction.  It makes
+> various compromises but not to uniqueness, and we haven't had
+> complaints (fingers crossed).
 
-    stat(path1, &st);
-    unsigned int ino = st.st_ino;
-    stat(path2, &st);
-    if (ino == st.st_ino)
-        ...
+I haven't seen anything in overlayfs that looked like a real solution,
+just hacks that would break sooner or later if more filesystems are
+being stacked.
 
-are waiting to blow up one fine day.  Of course the code should have
-used ino_t, but I think this pattern is not that uncommon.
+> Nudging userspace developers to use file handles would also be good,
+> but they should do so unconditionally, not based on a flag that has no
+> well defined meaning.
 
-All in all, I don't think adding a flag to statx is the right answer.
-It entitles filesystem developers to be sloppy about st_ino
-uniqueness, which is not a good idea.   I think what overlayfs is
-doing (see documentation) is generally the right direction.  It makes
-various compromises but not to uniqueness, and we haven't had
-complaints (fingers crossed).
+If we define it, it has a perfectly well defined meaning.
 
-Nudging userspace developers to use file handles would also be good,
-but they should do so unconditionally, not based on a flag that has no
-well defined meaning.
+I wouldn't be against telling userspace to use file handles
+unconditionally; they should only need to query it for a file that has
+handlinks, anyways.
 
-Thanks,
-Miklos
+But I think we _do_ need this bit, if nothing else, as exactly that
+nudge.
