@@ -1,70 +1,99 @@
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FD93D0CA
-	for <linux-bcachefs@vger.kernel.org>; Wed, 21 Feb 2024 09:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CBA03C493;
+	Wed, 21 Feb 2024 11:52:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708508277; cv=none; b=eHY/HWnOpVzAJDrWXEKqsWuy7o2iAW7i/S/MDaihlXtIZazjEfWwXcw12lG1kGrKdIlWcQAFkZdHPuZPWV8hpmfPjg5UqG4w3Jp9ytiAe+sUjAaUgju27xBFU/Nd8Qwg87Zy6GsWbtEwyeXW5NDHoqkfFztjU8blMQaFFfcLjAI=
+	t=1708516328; cv=none; b=soktZvOPEg4bmlcL2VMxxv2R1qvQvfzsgx82Z+YaBtgzzFKgAOUfSGkdnj33/25nsl06Gm63quq0f567IDiPXwhTQb+M/Ec2qij6DJ9BkJ6Wp5vql5PQ91YCJN2ZZ9en4LcBN623MfqJxQbYW2lT2iD4u18Z148TyIKvCkd+1b8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708508277; c=relaxed/simple;
-	bh=yO8GaWx3TzE4qkB8MGfeBSy+f6tNYuvYT22i1dwgYSo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ISjl+3yLAt+vW2XXNsQQE0nfsCzI+vrshzA0Jzppwye/PCDLPlFDRO1FysPBYZTotfG2wz9DLS0ydlDAS7zrnZV3kVBflgG8a+ssn37mei0obWvU+kyKtGmZbe+SABdiKMj8y4uEWSEdIgaUfj7D5N/mUqoiOAnHo40NCFQuhOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Tfrjp1SQLz1h0Sp;
-	Wed, 21 Feb 2024 17:35:42 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id D16021402CC;
-	Wed, 21 Feb 2024 17:37:50 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 21 Feb
- 2024 17:37:50 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <ruanjinjie@huawei.com>,
-	<lihongbo22@huawei.com>, <chris.zjh@huawei.com>
-Subject: [PATCH] bcachefs: intercept mountoption value for bool type
-Date: Wed, 21 Feb 2024 17:37:04 +0800
-Message-ID: <20240221093704.3924287-1-lihongbo22@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708516328; c=relaxed/simple;
+	bh=eFsdIkXaJEgfpS4THYxhHiEbCRqYhMwSm+DSEtwMlcY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=TOvh0wCeuPlpSLWuR2q5vR+vYmXt/wkM4uRzFBlJUTZM5Evhhd+N3sgSC5ZBCb4bH4kEIoWGG8i2v+WN/IF3pfonR7EoUdM6T/zVLBJI3gqrVRlAhQD2dl+6kevg6rmYxD+l0wDzAMQeM3dIp+2WRkF4U+3D4wWYEpaJy8kVqX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W7mO9GIX; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W7mO9GIX"
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d22b8801b9so7343591fa.0;
+        Wed, 21 Feb 2024 03:52:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708516325; x=1709121125; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5bDsddkEN+lUWqN5ZaY3+6CrL7Csh45NI5ac4HlpkYc=;
+        b=W7mO9GIXtalsQYIs1/rtW6RdChYPVOpYHQBXlbraEHCswtMtckx81Tr1Z1clKh/cO9
+         NinwgkoJ/IMVFziDI+WVwjEdicdeGTBsQwv8+HRmWxCEjoCuqOiWGgbu7wACph5YoyqJ
+         wJlufNh1h4hgIF9S6tqRHz/AO7+d3sZi22qCEVSJPFQom2KLch3vn8iRv4ux/CHXJfvd
+         rMEreDhVERbB3A2gbB6QKeocO08d2ybPc2NPkWcwuJQZn+a8PaqnXVnbZBr4a+Lz6QOu
+         motmz3jS5nWyM6is0lwqBYfevVoY/01HRx9Qd3hsRSBDL5zdij+jXdaWMEN15jXc33u/
+         RUmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708516325; x=1709121125;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5bDsddkEN+lUWqN5ZaY3+6CrL7Csh45NI5ac4HlpkYc=;
+        b=m32VNTqxASUPVg03GG4QzGwXIXPxBctpT6QlCZKClqJ2Q5OCxUxeh3ksCQSk2wBM7N
+         aB0HUQGqSfhK/+4TJeJ19iMMfJUSib0igeaRiIwrnSREE69WqfJhdoyIGF3E7cOZV3Qd
+         7pQqUW8DBYD4mGALyN7naxYEeQWR5cO1rsYH+7ATsci/PM+UV14BJyQZpL4ZkrtqVULA
+         J2dbp3UjJDqUR4F6ia/IHJFcu4coELecjvwzdfHTdlCbSojuHw9vRm9VxtnUT3NbexEA
+         Rl+aoFhB/4UWCzAfnbxFx4m7Of3+KZ5e4NxQ8I77PNqs4pdWD0UPquLH5YDP81TuRM8V
+         KpDA==
+X-Forwarded-Encrypted: i=1; AJvYcCUweIHa2eFNAoE5WMZ0d6ezA7BZHz24MNKjBms34XoSzOculLvfVP2nPuJkYyM5YYd5xut9KEQhB8aPI7zWLDpOQd9v6Oqy7jzdeDTjJUhep1R/xiYbxB0Y4aQd5kTnKtQH+w6xuX7lTgw6a60=
+X-Gm-Message-State: AOJu0Yy4uNUxlocPIu5UCv6gtai1vKAkEUiF5jzwAuX6RHEdyA4LTSph
+	Xei8EofhnITMcvCDHLqARlXfgoOr6YWoEqK1EICxxPip21wr4kYQ
+X-Google-Smtp-Source: AGHT+IHbxPEAHBugkO77qtNz65rcRno7FBkmRRP+NS11t1bJ2Ne90xn10OlFbQkCxqoQBNq39OysSQ==
+X-Received: by 2002:a2e:be28:0:b0:2d2:2cb4:f817 with SMTP id z40-20020a2ebe28000000b002d22cb4f817mr9080866ljq.44.1708516325144;
+        Wed, 21 Feb 2024 03:52:05 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id bt27-20020a056000081b00b0033d1b653e4csm17353085wrb.54.2024.02.21.03.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 03:52:04 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>,
+	linux-bcachefs@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] bcachefs: remove redundant assignment to variable ret
+Date: Wed, 21 Feb 2024 11:52:03 +0000
+Message-Id: <20240221115203.3413554-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500022.china.huawei.com (7.185.36.66)
 
-For mount option with bool type, the value must be 0 or 1 (See
-bch2_opt_parse). But this seems does not well intercepted cause
-for other value(like 2...), it returns the unexpect return code
-with error message printed.
+Variable ret is being assigned a value that is never read, it is
+being re-assigned a couple of statements later on. The assignment
+is redundant and can be removed.
 
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+Cleans up clang scan build warning:
+fs/bcachefs/super-io.c:806:2: warning: Value stored to 'ret' is
+never read [deadcode.DeadStores]
+
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- fs/bcachefs/opts.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/bcachefs/super-io.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index b1ed0b9a20d3..fe1f17830694 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -314,7 +314,7 @@ int bch2_opt_parse(struct bch_fs *c,
- 		if (ret < 0 || (*res != 0 && *res != 1)) {
- 			if (err)
- 				prt_printf(err, "%s: must be bool", opt->attr.name);
--			return ret;
-+			return ret < 0 ?: -EINVAL;
- 		}
- 		break;
- 	case BCH_OPT_UINT:
+diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+index 110dcb0337ce..c6d590404425 100644
+--- a/fs/bcachefs/super-io.c
++++ b/fs/bcachefs/super-io.c
+@@ -804,7 +804,6 @@ static int __bch2_read_super(const char *path, struct bch_opts *opts,
+ 		goto err;
+ 	}
+ 
+-	ret = 0;
+ 	sb->have_layout = true;
+ 
+ 	ret = bch2_sb_validate(sb, &err, READ);
 -- 
-2.34.1
+2.39.2
 
