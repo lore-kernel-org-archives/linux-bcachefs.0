@@ -1,121 +1,93 @@
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2015645C14
-	for <linux-bcachefs@vger.kernel.org>; Thu, 22 Feb 2024 11:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CAE7CF32
+	for <linux-bcachefs@vger.kernel.org>; Thu, 22 Feb 2024 12:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602933; cv=none; b=H+r1J5WKbBIoBhB1Hutq4C7MHOvLFWvPJkW6M3dKmkYWlk4oPK8L9avy9UrNI7jA5aVSsCqBGKkkjpajXeN9yNCjQLxfhEAQvPrS+eMFF0w5sFCRDA61bO1dxndUWGAQH37fqpbMfWotqAhqupI0NDvJ9pJIFX1UNVAa8yAWD4Q=
+	t=1708606140; cv=none; b=GWDVtgzqtOdwXpcNNjKAUNaNEhy9baH3qbsL1+uH3TByMu6Zmg0NqacprFJlMXJ3zTwSqOhYPdM2LOk+yRMkbuBFeIAQJT+ixlKLr2Ssei5FrnjxZ+jl/YA0SRTlVUMnrcC/y7uOdwnR5Tiegi2+KQXvx3NzJIuZvMYXSV+ANVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602933; c=relaxed/simple;
-	bh=0CJpr26zan7TdkdLzjJcZGBNSSb45N51xiEhwd3+uaw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eiqHIpb0ae666MZBeT3PfheoNXqCEOgaV4yCvkGpHhC4Cg9xiVxeo8Dce8fOyVE2Bh38M+SchV86px6z4I8P0wTLTfycFBBBqjICfBczk+dXqcBn7D13g6GSQ1xslEdqtFBoeiUFTT9aIJoAgMW5OZhpGuOmY7HICZKnLC06FCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lRDl0nHn; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1708606140; c=relaxed/simple;
+	bh=IaZnxBsuLBFhLCtq4o+sFHyJl6jTMn3zf5TloDU0gxU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=URu3MoEA4cLksaG2e1PYZ242svylSbKtmn0rINnjIjiPKNKwBB2MSq35quVk7bipRviCYF45hb5sUi7k+EkUQGSUMcaBvz6m02LUHH0YwTsdpy7ySXr6T722KpiWSbtxBzEGqcg7KZzlU6HlPjByIfq8+VF+dkdltjMAo+9CstI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=fll1RrOO; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lRDl0nHn"
-Date: Thu, 22 Feb 2024 06:55:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708602930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZOSNF//i8qwwUlDAqBjDcUQ68DsRV1xIVPVD8Mb3zPM=;
-	b=lRDl0nHnJJsSXURYD+j4aDEP5upGN1kgw5NWTCfYi+JVsZEyXn78qm2NmO8/+ePcYaOOIB
-	XlFrD8tQcHtTeRssf1+3QzUcCWLKu1/iNUq03e3Ehdu/wB04e1Htiua1y9wVPWYvuE1znI
-	gkxm21v3AaWlXjatwcNzTsKJaHhyumk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Jan Kara <jack@suse.cz>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, Josef Bacik <josef@toxicpanda.com>, 
-	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	lsf-pc@lists.linux-foundation.org, linux-btrfs@vger.kernel.org
-Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
- filesystems & more
-Message-ID: <2tsfxaf2blhcxlkfcagfavz3mnuga3qsjgpytbstvykmcq2prj@icc7vub55i3p>
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
- <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
- <20240221210811.GA1161565@perftesting>
- <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
- <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
- <20240222110138.ckai4sxiin3a74ku@quack3>
- <u4btyvpsohnf77r5rm43tz426u3advjc4goea4obt2wtv6xyog@7bukhgoyumed>
- <20240222114417.wpcdkgsed7wklv3h@quack3>
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="fll1RrOO"
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso8096137a12.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 22 Feb 2024 04:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1708606137; x=1709210937; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IFwr9ha9a/GO5zeQAiQ5BbOipoVYz0stbyW2PYDXp3k=;
+        b=fll1RrOO7XDrUfc5NNSLxz60HeekCbr1nrS34Ikie3pwl0++yp9qhLuyYzJYuYXNqI
+         Uu+9xnchOtP9xOujSO3RFSI4ySdeN7GoYp8ycmSkWXcNPLwmd2f/ru2dTCB3mj01D8gE
+         Nh25l644A0xVM2kBAwJR0PnomXBWj4u3Ss9j0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708606137; x=1709210937;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IFwr9ha9a/GO5zeQAiQ5BbOipoVYz0stbyW2PYDXp3k=;
+        b=u/xeb0/bfUXiJlQKyttjHoU7Qa0OIoIIBNJyJkIICDjwJ7J4XMXoW3qwS+2IX4uQWD
+         CoePtAKVXPAp/iLTbgBrS6XJy5K5JI4PF8+IyWEGWVVnVxak/nosCzSPG3LQETIS2GMi
+         aSd2glrJ8tYzmKOQHVp9hWmkuGVqv8/iBUCI8yNQ0Gqmy7zbzGU/K3VIapRubeooIbMR
+         z+YkSKSRvoStNaz5CsPeiy7nqqjQIlnGEm0EIjhyJ05TkZZnwuT3X5a7XD4N/+Dr1iM7
+         8QvYgQVmWlU1xvqaK9a0HK6GsrmzgkLnvIdHCkQdmtCg95+e0jlhd6ArTpXQSEfsPr5d
+         W/Jg==
+X-Forwarded-Encrypted: i=1; AJvYcCWxoysxnfMgjVOeMrPc5TbjlT9krLGqg3PfY2NBRAvXzA4TQxxt9lUZeeqBvbVL8U5T3EjFKdHNc3k9i+JGyI2r/TmGPoPbSiS3oh1o9jI=
+X-Gm-Message-State: AOJu0Yy4cNCPt0sJsjrYuLTTzTOqRpC3wV0aQ7C7HYJAWJA8D15AIGRm
+	X8SNukkVyrxQlqucp9UY5hGdpYe32v63QbOrH40C0ssstzTQmqe/EO7BsmojYUg899ZUk3vpqHd
+	9eBY9KsRaISEs6JsezoEhAnesavq+0g4MQ6ix7Q==
+X-Google-Smtp-Source: AGHT+IFcJq6G1W4GM/8Xx0ldjd6icR0JuT2f4svLMCyrSjNeTeZkiYryyGjJrI/Z7YxDp/vI8lMF+gdExOLZezH1T1w=
+X-Received: by 2002:a17:906:c0a:b0:a3f:6513:1489 with SMTP id
+ s10-20020a1709060c0a00b00a3f65131489mr2350336ejf.55.1708606137154; Thu, 22
+ Feb 2024 04:48:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222114417.wpcdkgsed7wklv3h@quack3>
-X-Migadu-Flow: FLOW_OUT
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting> <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
+ <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx> <20240222110138.ckai4sxiin3a74ku@quack3>
+In-Reply-To: <20240222110138.ckai4sxiin3a74ku@quack3>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Thu, 22 Feb 2024 13:48:45 +0100
+Message-ID: <CAJfpegtUZ4YWhYqqnS_BcKKpwhHvdUsQPQMf4j49ahwAe2_AXQ@mail.gmail.com>
+Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
+ filesystems & more
+To: Jan Kara <jack@suse.cz>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Josef Bacik <josef@toxicpanda.com>, 
+	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, lsf-pc@lists.linux-foundation.org, 
+	linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Feb 22, 2024 at 12:44:17PM +0100, Jan Kara wrote:
-> On Thu 22-02-24 06:27:14, Kent Overstreet wrote:
-> > On Thu, Feb 22, 2024 at 12:01:38PM +0100, Jan Kara wrote:
-> > > On Thu 22-02-24 04:42:07, Kent Overstreet wrote:
-> > > > On Thu, Feb 22, 2024 at 10:14:20AM +0100, Miklos Szeredi wrote:
-> > > > > On Wed, 21 Feb 2024 at 22:08, Josef Bacik <josef@toxicpanda.com> wrote:
-> > > > > >
-> > > > > > On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
-> > > > > > > On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > > > > > > >
-> > > > > > > > Recently we had a pretty long discussion on statx extensions, which
-> > > > > > > > eventually got a bit offtopic but nevertheless hashed out all the major
-> > > > > > > > issues.
-> > > > > > > >
-> > > > > > > > To summarize:
-> > > > > > > >  - guaranteeing inode number uniqueness is becoming increasingly
-> > > > > > > >    infeasible, we need a bit to tell userspace "inode number is not
-> > > > > > > >    unique, use filehandle instead"
-> > > > > > >
-> > > > > > > This is a tough one.   POSIX says "The st_ino and st_dev fields taken
-> > > > > > > together uniquely identify the file within the system."
-> > > > > > >
-> > > > > >
-> > > > > > Which is what btrfs has done forever, and we've gotten yelled at forever for
-> > > > > > doing it.  We have a compromise and a way forward, but it's not a widely held
-> > > > > > view that changing st_dev to give uniqueness is an acceptable solution.  It may
-> > > > > > have been for overlayfs because you guys are already doing something special,
-> > > > > > but it's not an option that is afforded the rest of us.
-> > > > > 
-> > > > > Overlayfs tries hard not to use st_dev to give uniqueness and instead
-> > > > > partitions the 64bit st_ino space within the same st_dev.  There are
-> > > > > various fallback cases, some involve switching st_dev and some using
-> > > > > non-persistent st_ino.
-> > > > 
-> > > > Yeah no, you can't crap multiple 64 bit inode number spaces into 64
-> > > > bits: pigeonhole principle.
-> > > > 
-> > > > We need something better than "hacks".
-> > > 
-> > > I agree we should have a better long-term plan than finding ways how to
-> > > cram things into 64-bits inos. However I don't see a realistic short-term
-> > > solution other than that.
-> > > 
-> > > To explicit: Currently, tar and patch and very likely other less well-known
-> > > tools are broken on bcachefs due to non-unique inode numbers. If you want
-> > > ot fix them, either you find ways how bcachefs can cram things into 64-bit
-> > > ino_t or you go and modify these tools (or prod maintainers or whatever) to
-> > > not depend on ino_t for uniqueness. The application side of things isn't
-> > > going to magically fix itself by us telling "bad luck, ino_t isn't unique
-> > > anymore".
-> > 
-> > My intent is to make a real effort towards getting better interfaces
-> > going, prod those maintainers, _then_ look at adding those hacks (that
-> > will necessarily be short term solutions since 64 bits is already
-> > looking cramped).
-> 
-> OK, fine by me :) So one thing is still not quite clear to me - how do you
-> expect the INO_NOT_UNIQUE flag to be used by these apps? Do you expect them
-> to use st_dev + st_ino by default and fall back to fsid + fhandle only when
-> INO_NOT_UNIQUE is set?
+On Thu, 22 Feb 2024 at 12:01, Jan Kara <jack@suse.cz> wrote:
 
-Shouldn't matter. If they care about performance and they're in some
-strange situation where the syscal overhead matters, they can use
-fhandle only when the bit is set, but I'd personally prefer to see
-everyone on the same codepath and just always using fh.
+> I think for "unique inode identifier" we don't even have to come up with
+> new APIs. The file handle + fsid pair is an established way to do this,
+
+Why not uuid?
+
+fsid seems to be just a degraded uuid.   We can do better with statx
+and/or statmount.
+
+> fanotify successfully uses this as object identifier and Amir did quite
+> some work for this to be usable for vast majority of filesystems (including
+
+Vast majority != all.   Also even uuid is just a statistically unique
+identifier, while st_dev was guaranteed to be unique (but not
+persistent, like uuid).
+
+If we are going to start fixing userspace, then we better make sure to
+use the right interfaces, that won't have issues in the future.
+
+Thanks,
+Miklos
