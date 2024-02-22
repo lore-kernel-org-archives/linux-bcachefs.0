@@ -1,191 +1,82 @@
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70861862A
-	for <linux-bcachefs@vger.kernel.org>; Thu, 22 Feb 2024 03:46:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900BF79F0
+	for <linux-bcachefs@vger.kernel.org>; Thu, 22 Feb 2024 05:25:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708573603; cv=none; b=Ex4iz7bn1RIle6RxVSYMt0yvulAE3jO+JKVEpVvX6ko3eua8ih1UlicF0D0IHufnNciVamRTXqKGOToZXUVpZKthYU3OELgwQYyKpItv0JRWkzhmxxAeGt6Aw5dbMlHZcQ9Ifj5gFqHwfyaHNalK46fYNT/mSTyatgXS3tYnLcY=
+	t=1708579506; cv=none; b=ew4Xigy9aw8mxxgMBCTYZVKZpgGdwnp1sfd3MXvyJ0Qs9JgH+UG6ZOSSA3YMafupS/PpYoSlhzEumPyxLmqfKA3di7OVSUV3Lz3v5fjhmh0cvGxGwJ2eb6jsxy4uwMKQ5udROMbMykDXJZtZog4Nty/u4K9fleLXRHVlRJ4ddj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708573603; c=relaxed/simple;
-	bh=Hy1LMowQaldEwPq28ZYDavNDykm0+O8XRwpirgfargg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=uXD7dBCxKwjiavlT9S85060jG1eiBfxnrN/I/Q6GuucpNFx42SS1Yk0OwHojKjcK1aWt3aaCHKzR9XHrzkQbm96kRLnvjxRz1LgixOkdzCSjOA5kN3kP/ab/B4FqTG71QFLYiy5wl4AnnZ4JA+SAikcEe2RP7cnBgjU+AW2xqlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TgJpv2GMFz1FL71;
-	Thu, 22 Feb 2024 11:41:43 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id CA14214040D;
-	Thu, 22 Feb 2024 11:46:35 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 22 Feb 2024 11:46:35 +0800
-Message-ID: <6606c887-7bf3-435a-ac6c-5008115607ae@huawei.com>
-Date: Thu, 22 Feb 2024 11:46:35 +0800
+	s=arc-20240116; t=1708579506; c=relaxed/simple;
+	bh=8H/BzytqOZYzFjZacY932uXfieYnQyStCWl2l/du+ws=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a/FpctOqniGmRX27VnARkIvjWu+fPb0MJH3bg6zM+5PcrlQ6jYCdTogj1/oDyA+uHJ3veC5mONUu0V067OMr8xZH6YTzxFpGoMysYQ+1PcNDfOrd7g3Dc10A1oCuGmBi181KBwDLm8VRtwZlfI6CN1iPyaSfWCUMbsk9eMNUQNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ix51u0ti; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ix51u0ti"
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso82487f8f.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 21 Feb 2024 21:25:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708579503; x=1709184303; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8H/BzytqOZYzFjZacY932uXfieYnQyStCWl2l/du+ws=;
+        b=ix51u0tiPc2BdlkZS3k/4vhnj5pk1TgWrLfxU9VZcC9OMdkLtAL1zTmT9mEmwT44/a
+         uVVeCSQyE4g+3D08w1fV5LK+6r/T3hpZIEr7ae0gU4YtF0Od1LuevAeYT2FQYSA9yNFO
+         tFVW+iHZ3P/oH2vwH7EoGWByWet7QGyalF7baflv09xeIRgavmq5SCXqD5GcWOR87BR0
+         oYE708MaWijQ7ZlYAfPHiCoU9OKKsPPfBB+h3fM8BteFuPj4PqEYo/aC9IOCUU/zE9FR
+         Mbf2OrBj2UTawxgAdxfvZTcuspg7td3MccE2vyR00lyw2yUut6VupJGX49hlwHQQpRft
+         tbkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708579503; x=1709184303;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8H/BzytqOZYzFjZacY932uXfieYnQyStCWl2l/du+ws=;
+        b=WCtPQx7pPVFZ+j6hoPvCrxqEx7wkkLO26VdIzJWAIv8geid1kaSqvJlGigVbWkjO6D
+         WeD9Mqr59wZAXHSK9/QlNoqaxBQ/g8csp5RU0hTdhBhl1uIZezbtpNREG38R6dBsBXbP
+         QTLWV7igao67v+lK3iIy6f4kLxeS0luKQA47cDST2q7YAR+4fMfW4jtksEbmXIMvWvFL
+         JBmKnIpoxmwAio72Y8AQwQDHfc40jReB2g6bVaZfjv2iUz+5R+XBcVsYEzWSMC6X+1CG
+         HksRZX6Wx3RiKvTSgkiOp294MJJ6ToWHvOXJTRoujaGVZZwC7WISzpokB+2albYGN2rX
+         Y1MA==
+X-Forwarded-Encrypted: i=1; AJvYcCXELagIvLr8PHFfxbnXB3ghJ6UpGVyqTa8FyQLfMRHV9deELvO6IELsVBQECkxpyze+x7kQHXszQBxxvAba+MncfcoBA90qjpspHnkOaxw=
+X-Gm-Message-State: AOJu0YzGa6Y37ySZSarNjjktU+7gw+f+ts9Z2zHW7RC0saZCu2EUGviG
+	QiLapcRascht9xHTku5y8VtJqnafZSnS7nHl549NA91lU25oovV0sX5N1Xj/W0k=
+X-Google-Smtp-Source: AGHT+IGccZ0j73/5DrOmMr+HWme+77iCv5MXgbQTR75Cls7ZJMbT2w/CLOu9Xq8tSwrznHtU3sy6jg==
+X-Received: by 2002:a5d:4d8e:0:b0:33d:6fe1:8dc2 with SMTP id b14-20020a5d4d8e000000b0033d6fe18dc2mr1057619wru.3.1708579502807;
+        Wed, 21 Feb 2024 21:25:02 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id e2-20020a056000120200b0033cf80ad6f5sm18922729wrx.60.2024.02.21.21.25.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 21:25:02 -0800 (PST)
+Date: Thu, 22 Feb 2024 08:24:58 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: "Colin King (gmail)" <colin.i.king@gmail.com>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] bcachefs: remove redundant assignment to variable
+ ret
+Message-ID: <bc2cef70-6adf-48cb-814c-a1087939ec17@moroto.mountain>
+References: <20240221115203.3413554-1-colin.i.king@gmail.com>
+ <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
+ <cfa4cd82-67e9-4483-9c35-a425859f4a21@gmail.com>
+ <27hacgxfzyeatjx27nb4k5rb5cajt5yw4c2papfr4h64urb7qx@teo2ha6msqnl>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: intercept mountoption value for bool type
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>
-CC: Brian Foster <bfoster@redhat.com>, <linux-bcachefs@vger.kernel.org>,
-	<ruanjinjie@huawei.com>, <chris.zjh@huawei.com>
-References: <20240221093704.3924287-1-lihongbo22@huawei.com>
- <ZdX8ek1o6MQErZMr@bfoster>
- <if2d3bmpvm3hvkgahyn5umjdnfwrtft7567opyr6k2bmwxcf4b@gm34y24jpeqy>
- <01e26540-04b6-43b2-b8d4-6d1944475145@huawei.com>
- <sfdxvffrgdjxthrblqqc2vj2zgeuszrmo6muqkicdryx4ulzrp@wfbw4muo54ow>
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <sfdxvffrgdjxthrblqqc2vj2zgeuszrmo6muqkicdryx4ulzrp@wfbw4muo54ow>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <27hacgxfzyeatjx27nb4k5rb5cajt5yw4c2papfr4h64urb7qx@teo2ha6msqnl>
 
+To be honest, the point of explaining how to run Smatch was really to
+let you know that you're now on your own.
 
+regards,
+dan carpenter
 
-On 2024/2/22 11:03, Kent Overstreet wrote:
-> On Thu, Feb 22, 2024 at 09:30:20AM +0800, Hongbo Li wrote:
->>
->>
->> On 2024/2/22 7:51, Kent Overstreet wrote:
->>> On Wed, Feb 21, 2024 at 08:36:58AM -0500, Brian Foster wrote:
->>>> On Wed, Feb 21, 2024 at 05:37:04PM +0800, Hongbo Li wrote:
->>>>> For mount option with bool type, the value must be 0 or 1 (See
->>>>> bch2_opt_parse). But this seems does not well intercepted cause
->>>>> for other value(like 2...), it returns the unexpect return code
->>>>> with error message printed.
->>>>>
->>>>> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
->>>>> ---
->>>>>    fs/bcachefs/opts.c | 2 +-
->>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
->>>>> index b1ed0b9a20d3..fe1f17830694 100644
->>>>> --- a/fs/bcachefs/opts.c
->>>>> +++ b/fs/bcachefs/opts.c
->>>>> @@ -314,7 +314,7 @@ int bch2_opt_parse(struct bch_fs *c,
->>>>>    		if (ret < 0 || (*res != 0 && *res != 1)) {
->>>>>    			if (err)
->>>>>    				prt_printf(err, "%s: must be bool", opt->attr.name);
->>>>> -			return ret;
->>>>> +			return ret < 0 ?: -EINVAL;
->>>>
->>>> It might be nice for that error message to be more specific in that the
->>>> bool value must be 0 or 1, but LGTM regardless:
->>>
->>> Please give this a distinct private error code as well (just like we
->>> discussed in the previous patch)
->>>
->> Here, the -EINVAL refers to the return value of other exception branches of
->> this function to keep the consistent error code of this function.
->>
->> In fact, it is a bit confusing to use whether to return a private error code
->> or a system error code in some functions. For example, in bch2_opt_validate,
->> the two exception branches of no sector alignment and power of 2 do not
->> return internal error codes.
-> 
-> bcachefs code should _never_ throw standard error codes; the only case I
-> make an exception for, and in some situations is -ENOMEM - because
-> generally speaking an allocation failure will emit a backtrace, and most
-> allocation failures we never really hit in practice and if we're OOMing,
-> the exact allocation is uninteresting.
-> 
-> But even that isn't a hard rule - I've seen bugs where the filesystem
-> was failing to open (i.e. mount was failing) due to a failed allocation
-> and we did need to know which one, and sometimes there's one allocation
-> hiding among the many that's way bigger than you expected - so for all
-> the init paths, I try to make sure we have error codes that correspond
-> to each allocation.
-> 
-> So in short: always define a distinct error code and give it the best
-> name you can think of
-> 
-
-ok, thank you. This answers my confusion.
->> I don't know what the boundaries are for using private error codes.
->> Generally, internal functions are passed through private error codes, but
->> now I can only refer to this function context to determine the error code
->> type.
-> 
-> The boundary is the bcachefs module boundary - generally speaking the
-> last line of code when we're returning to non-bcachefs code should be
-> the bch2_err_class() call.
-> 
-> Incidentally, I've been meaning to add a tracepoint so that we can
-> recover these error codes even when they're not logged; thanks for
-> bringing this up as a reminder. Doing that tonight, and writing the
-> following documentation:
-> 
-> diff --git a/Documentation/filesystems/bcachefs/errorcodes.rst b/Documentation/filesystems/bcachefs/errorcodes.rst
-> new file mode 100644
-> index 000000000000..2cccaa0ba7cd
-> --- /dev/null
-> +++ b/Documentation/filesystems/bcachefs/errorcodes.rst
-> @@ -0,0 +1,30 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +bcachefs private error codes
-> +----------------------------
-> +
-> +In bcachefs, as a hard rule we do not throw or directly use standard error
-> +codes (-EINVAL, -EBUSY, etc.). Instead, we define private error codes as needed
-> +in fs/bcachefs/errcode.h.
-> +
-> +This gives us much better error messages and makes debugging much easier. Any
-> +direct uses of standard error codes you see in the source code are simply old
-> +code that has yet to be converted - feel free to clean it up!
-> +
-
-I will refine this patch later. But before that, please help review this 
-patch first:
-
-https://lore.kernel.org/linux-bcachefs/tcjqfii2emtqwpsgt4doldgg2iwjnsh6fzv7nkdccxt43gpu4g@pfasjkkj3e4k/T/#t
-
-It introduced the parent error code about mount option error in the 
-first time (x(EINVAL,mount_option)). Later, I will define more private 
-error code related to mount error in other patch.
-
-Thank you!
-> +Private error codes may subtype another error code, this allows for grouping of
-> +related errors that should be handled similarly (e.g. transaction restart
-> +errors), as well as specifying which standard error code should be returned at
-> +the bcachefs module boundary.
-> +
-> +At the module boundary, we use bch2_err_class() to convert to a standard error
-> +code; this also emits a trace event so that the original error code be
-> +recovered even if it wasn't logged.
-> +
-> +Do not reuse error codes! Generally speaking, a private error code should only
-> +be thrown in one place. That means that when we see it in a log message we can
-> +see, unambiguously, exactly which file and line number it was returned from.
-> +
-> +Try to give error codes names that are as reasonably descriptive of the error
-> +as possible. Frequently, the error will be logged at a place far removed from
-> +where the error was generated; good names for error codes mean much more
-> +descriptive and useful error messages.
-> diff --git a/fs/bcachefs/trace.h b/fs/bcachefs/trace.h
-> index 2baba5f9ad3f..cb35789d591e 100644
-> --- a/fs/bcachefs/trace.h
-> +++ b/fs/bcachefs/trace.h
-> @@ -1443,6 +1443,12 @@ DEFINE_EVENT(fs_str, data_update,
->   	TP_ARGS(c, str)
->   );
->   
-> +TRACE_EVENT(error_downcast,
-> +	TP_PROTO(struct bch_fs *c, int bch_err, int std_err, unsigned long ip),
-> +	TP_ARGS(c, str)
-> +);
-> +
->   #endif /* _TRACE_BCACHEFS_H */
->   
->   /* This part must be outside protection */
