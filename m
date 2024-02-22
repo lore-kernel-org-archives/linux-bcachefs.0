@@ -1,114 +1,192 @@
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA4939FFC
-	for <linux-bcachefs@vger.kernel.org>; Thu, 22 Feb 2024 10:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88432182D2;
+	Thu, 22 Feb 2024 11:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708597527; cv=none; b=F09h85T7azsdAQ1hfQMdegiv9DcQKT7Gj9E8rbriQ50Se8jrsOcxgZjsLSrukuDs1Nl7WEYSTCUe0+SSaOe9DFL3ZcELwyzhRNnFzD40aqvIoLrJKm9v0jrjmZmTMqc8Qjyk36W8y8ckJA3dp91iLVnsVjdHMaPF/OOLw3VeQa0=
+	t=1708599709; cv=none; b=hKNXjB9ZVuyciq6fo71YNCVPxTE1w7tYgucbeXGyPCtlGq9/ZJj/jO8j6QBchhJCyYzpXQg5nRtyf6yGmU9jlR2TRerJjieOxwNQzXt/wXe0vx6xk/DSXJNcziFwXZ06O33c0/00kqebBjpHoJwbWOvyftVxcDCk2isZ9L5C9kc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708597527; c=relaxed/simple;
-	bh=Q13FOxl27CAz/cOTAlE9oo3H7aFDqQ5nK/tKyITOrFs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M5+SM1rTHN4xvdKamOeMhwNNp7PmlcEv2GjjgGUbUTC3a52QO92Co6p3tHmx/fRotXIa+HxSN83cT+cKaMuABz/Udkfm8eIG3PSIociF47NHOSOVawzegd24yAWr0WAXZMRrTxBZzP5hn9SBVEb2zdd7t+ZB2+YEvX1rIBUd3V4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=WnfM+8S3; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+	s=arc-20240116; t=1708599709; c=relaxed/simple;
+	bh=uypqJ4fFQ77C+nUKIm+0Q6hsjDxZIHQh+EoFhOxiisU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e1WlnazthpxsqdlzI07J8FeoprafxAsekiYDhvS6L5N+XnV+d+OHY2OV84YWhcYDwa7qRT4ZaTpsgPuY9zNQOY3nN7C58Iu+ZunqlgwIJw6IfnJDXhgf8G0bwdGJTSN1xLJH4yAnJIwDlgmm0L3Sh5R4CRZPLUkbS/z6atlpRDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TDUdQYpm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UHp0fn4H; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TDUdQYpm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UHp0fn4H; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="WnfM+8S3"
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3f48422fb6so234364666b.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 22 Feb 2024 02:25:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1708597524; x=1709202324; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LyfCMikxUhIuPNypfCt5bvQkByB+IHG2Wh6701iMNSM=;
-        b=WnfM+8S3I+Dr88qLq4kCqj+X036LnuGPezrubt0xQ9wK+cM6RD/dS1U1Ai60s/2fgA
-         Lst5hinMbtZOpeJLhoLOIjsvrBoHsE49GHWOC16Okii0zw8JMqg5Sta+AJAZLqOM4BXN
-         lduMk3X/a164Ri8zqfbY1YEQ0kpQ0+mykI8lk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708597524; x=1709202324;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LyfCMikxUhIuPNypfCt5bvQkByB+IHG2Wh6701iMNSM=;
-        b=rF+F4bT+LbwXP1MCIMZDmpdzRb6T/0uSWC3dhnLQQt+4QQLuUtOb/BjhpkXtl3UXpH
-         8G45ghNCtoMJBt0A4Qh13t7ea47ysTghdUC88u7GQK4ozVf9kjPXLC9uIW8jf2p8lWUX
-         FaSni0hnXz6O/zqZ6VcjCEkkRL5D5hvKTB+VQCp7RmfURhCLdbAmEvtV3maE3SeFAXCS
-         zd3rAq/f8hbq9CwCGPoURQKQ9++4mmR7G9LMLtyq/PpL1oGMsq/Da5NPy2uP/yMVpL7K
-         cPzvFbjBX+Ul3n9wnEsWQ9bFpKOwxZeMJFFMTGRwrJBO+xEQHYfLl6IPr1jfowR3oLhm
-         LGGg==
-X-Forwarded-Encrypted: i=1; AJvYcCXkas6vM6N48/srK6oPtwpjdgd+j892zZR8XUl5wR1e3Qlps3VKMks/SZQbPFmPQfMEVAXfQ0DvSc4R58/lnLhf7v5b8w3tyGN5XpXl53o=
-X-Gm-Message-State: AOJu0Yxs9QOX86mgX1pusUSqbZYHurz3U/co2gSTqW3Xieg6wtTv91hu
-	N7bMztvkEicZcCZBIMEB5HGDORnh7at+X39kUOX7x6dPnY37Z/hVXh1/usD+QztYerlebBIOsDM
-	SaD+PH3sO6VOMnz9DeKTiPUm1nbqvBThnMBBzcg==
-X-Google-Smtp-Source: AGHT+IGhZ6qvSWLNcOGjEpamFEzkA4AOa+ciP3VrCmvGNu7ABvFqOlp6DSlpe9k3SjFuI7QnlREU28iTFKQjuDGZnvM=
-X-Received: by 2002:a17:906:cc83:b0:a3f:52dc:6a21 with SMTP id
- oq3-20020a170906cc8300b00a3f52dc6a21mr2403270ejb.14.1708597524017; Thu, 22
- Feb 2024 02:25:24 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TDUdQYpm";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UHp0fn4H";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TDUdQYpm";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UHp0fn4H"
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 620301FB9A;
+	Thu, 22 Feb 2024 11:01:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708599703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57n3UQkx8/XYTnaB10q60NOgFC3ggZDEpt6Gg1dxT1o=;
+	b=TDUdQYpmzi2LnpQDGxgFVneXvhJPUrBy1zz7J4cI/HqcRStOy37Njl5UytajVBojefqVEc
+	vMmWM9Vn3uy3A4chu1o0y2wI3hQ6IfUdGP97Ck6I+z8l4XxnlUg9IKBBkWD5NZe7KbaGpx
+	P+p4LHlYh2vMZF59LhfFMxSmYlqT2XI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708599703;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57n3UQkx8/XYTnaB10q60NOgFC3ggZDEpt6Gg1dxT1o=;
+	b=UHp0fn4Hfcs/SmbunYu7BfAuZ3N2FGlDCmXctHYuAGXnvbApAxULRsNgAmWe48PGYFs3kl
+	L0nrxLNLlfFUuNDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708599703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57n3UQkx8/XYTnaB10q60NOgFC3ggZDEpt6Gg1dxT1o=;
+	b=TDUdQYpmzi2LnpQDGxgFVneXvhJPUrBy1zz7J4cI/HqcRStOy37Njl5UytajVBojefqVEc
+	vMmWM9Vn3uy3A4chu1o0y2wI3hQ6IfUdGP97Ck6I+z8l4XxnlUg9IKBBkWD5NZe7KbaGpx
+	P+p4LHlYh2vMZF59LhfFMxSmYlqT2XI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708599703;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57n3UQkx8/XYTnaB10q60NOgFC3ggZDEpt6Gg1dxT1o=;
+	b=UHp0fn4Hfcs/SmbunYu7BfAuZ3N2FGlDCmXctHYuAGXnvbApAxULRsNgAmWe48PGYFs3kl
+	L0nrxLNLlfFUuNDw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5573B13419;
+	Thu, 22 Feb 2024 11:01:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 6IXYFJcp12XxNQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 22 Feb 2024 11:01:43 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id E8EB4A0807; Thu, 22 Feb 2024 12:01:38 +0100 (CET)
+Date: Thu, 22 Feb 2024 12:01:38 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Josef Bacik <josef@toxicpanda.com>,
+	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, lsf-pc@lists.linux-foundation.org,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
+ filesystems & more
+Message-ID: <20240222110138.ckai4sxiin3a74ku@quack3>
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting>
+ <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
+ <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
- <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
- <20240221210811.GA1161565@perftesting> <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
- <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Thu, 22 Feb 2024 11:25:12 +0100
-Message-ID: <CAJfpegtxv3Omm3227c-1vprHYVTd1n3WoOxDKUSioNSP5pdeGw@mail.gmail.com>
-Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems & more
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, lsf-pc@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On Thu, 22 Feb 2024 at 10:42, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-
+On Thu 22-02-24 04:42:07, Kent Overstreet wrote:
+> On Thu, Feb 22, 2024 at 10:14:20AM +0100, Miklos Szeredi wrote:
+> > On Wed, 21 Feb 2024 at 22:08, Josef Bacik <josef@toxicpanda.com> wrote:
+> > >
+> > > On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
+> > > > On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > > > >
+> > > > > Recently we had a pretty long discussion on statx extensions, which
+> > > > > eventually got a bit offtopic but nevertheless hashed out all the major
+> > > > > issues.
+> > > > >
+> > > > > To summarize:
+> > > > >  - guaranteeing inode number uniqueness is becoming increasingly
+> > > > >    infeasible, we need a bit to tell userspace "inode number is not
+> > > > >    unique, use filehandle instead"
+> > > >
+> > > > This is a tough one.   POSIX says "The st_ino and st_dev fields taken
+> > > > together uniquely identify the file within the system."
+> > > >
+> > >
+> > > Which is what btrfs has done forever, and we've gotten yelled at forever for
+> > > doing it.  We have a compromise and a way forward, but it's not a widely held
+> > > view that changing st_dev to give uniqueness is an acceptable solution.  It may
+> > > have been for overlayfs because you guys are already doing something special,
+> > > but it's not an option that is afforded the rest of us.
+> > 
+> > Overlayfs tries hard not to use st_dev to give uniqueness and instead
+> > partitions the 64bit st_ino space within the same st_dev.  There are
+> > various fallback cases, some involve switching st_dev and some using
+> > non-persistent st_ino.
+> 
 > Yeah no, you can't crap multiple 64 bit inode number spaces into 64
 > bits: pigeonhole principle.
-
-Obviously not.  And I have no idea about the inode number allocation
-strategy of bcachefs and how many bits would be needed for subvolumes,
-etc..   I was just telling what overlayfs does and why.  It's a
-pragmatic solution that works.  I'd very much like to move to better
-interfaces, but creating good interfaces is never easy.
-
+> 
 > We need something better than "hacks".
 
-That's the end goal, obviously.   But we also need to take care of
-legacy.  Always have.
+I agree we should have a better long-term plan than finding ways how to
+cram things into 64-bits inos. However I don't see a realistic short-term
+solution other than that.
 
+To explicit: Currently, tar and patch and very likely other less well-known
+tools are broken on bcachefs due to non-unique inode numbers. If you want
+ot fix them, either you find ways how bcachefs can cram things into 64-bit
+ino_t or you go and modify these tools (or prod maintainers or whatever) to
+not depend on ino_t for uniqueness. The application side of things isn't
+going to magically fix itself by us telling "bad luck, ino_t isn't unique
+anymore".
+
+> > What overlayfs does may or may not be applicable to btrfs/bcachefs,
+> > but that's not my point.  My point is that adding a flag to statx does
+> > not solve anything.   You can't just say that from now on btrfs
+> > doesn't have use unique st_ino/st_dev because we've just indicated
+> > that in statx and everything is fine.   That will trigger the
+> > no-regressions rule and then it's game over.  At least I would expect
+> > that to happen.
+> > 
+> > What we can do instead is introduce a new API that is better,
+> 
 > This isn't a serious proposal.
 
-If not, then what is?
+I think for "unique inode identifier" we don't even have to come up with
+new APIs. The file handle + fsid pair is an established way to do this,
+fanotify successfully uses this as object identifier and Amir did quite
+some work for this to be usable for vast majority of filesystems (including
+virtual ones). The problem is with rewriting all these applications to use
+it. If statx flag telling whether inode numbers are unique helps with that,
+sure we can add it, but that seems like a trivial part of the problem.
 
-BTW to expand on the st_dev_v2 idea, it can be done by adding a
-STATX_DEV_V2 query mask.
-
-That way userspace can ask for the uniform stx_dev if it wants,
-knowing full well that stx_ino will be non-unique within that
-filesystem.  Then kernel is free to return with or without
-STATX_DEV_V2, which is basically what you proposed.  Except it's now
-negotiated and not forced upon legacy interfaces.
-
-The other issue is adding subvolume ID.  You seem to think that it's
-okay to add that to statx and let userspace use (st_ino, st_subvoid)
-to identify the inode.  I'm saying this is wrong, because it doesn't
-work in the general case.
-
-It doesn't work for overlayfs, for example, and we definitely want to
-avoid having userspace do filesystem specific things *if it isn't
-absolutely necessary*.  So for example "tar" should not care about
-subvolumes as long as it's not been explicitly told to care.  And that
-means for hard link detection if should using the file handle +
-st_dev_v2 instead of st_ino + st_subvolid + st_dev_v2.   So if that
-field is added to statx it must come with a stern warning about this
-type of usage.
-
-Thanks,
-Miklos
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
