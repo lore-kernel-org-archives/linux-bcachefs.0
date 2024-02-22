@@ -1,79 +1,105 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74F215BF
-	for <linux-bcachefs@vger.kernel.org>; Thu, 22 Feb 2024 00:13:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5948512B7D
+	for <linux-bcachefs@vger.kernel.org>; Thu, 22 Feb 2024 01:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708560798; cv=none; b=pQa7WBGe3K0AQsYIYv3O9OOUzqY2ut+ZjIq065ewgf6HeTN1ok7TY2RGEXwj441w+y9rC7IyZkukXKHLajKl/0n2IE4po/Yoi75h2GFBg3cCL5V3lxeEtBZw+qiQ1QFhtml3F3h4zSHhlkYySKnFEyP/qd8EXNeN7dEqXZVqYYk=
+	t=1708565426; cv=none; b=aeXXhfw2gXQk4rGcVt92geTVHg2cLiKoROXZfsdE6blyZOHOwDuCSMZ9nV1KXTLasq0Sn6TfPRmUme8DgEjyR44hQcIxxc3jU8t7qTT0WGdr7ETp848XlmoScqSILaCnq3LzXnFTt+uMoW1OPg9F/f+271DeFoZlZYCPZefrmcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708560798; c=relaxed/simple;
-	bh=iUVWUF9NkdrHOfQDIfPkftj/GJ/E6lO+EKObpVPf634=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Iqg2r2TOomNFXVykok86U9kSyVFPFBA9LgGEW7xoeX4YzdXHuKUrsJQKOqsI3bmVXs7zwgqCAUneQJZ0KWGMssBF2XEjJapQGAZPsLIcA/OoIeftem82Q5uVvvKjKVHLhN99fsLf0ZCjpYxnPjHvAZCiUG2MXlELSNh9n0YXbqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BVCFB3Qn; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BVCFB3Qn"
-Date: Wed, 21 Feb 2024 19:13:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708560795;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9DMHLnyzhcN8vf6iG1IKFZXAcocDG2xngD5mV3RGx+c=;
-	b=BVCFB3QnnSsV6YcYDk3XQRAF6CwNL1RSt46ymfCNlUPryJ2e1DhklXaqKS/wmxS1ei03ee
-	g/fOundriHURen1VughVUN9rg1SEunNP6VvbfK2iVnr5us4mzitB7DjnHo+J7l28wZsFYR
-	gYbJ1Epul/iyk/9wkhxWIEoN3zQ1Hxc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Colin King (gmail)" <colin.i.king@gmail.com>
-Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] bcachefs: remove redundant assignment to variable
- ret
-Message-ID: <27hacgxfzyeatjx27nb4k5rb5cajt5yw4c2papfr4h64urb7qx@teo2ha6msqnl>
-References: <20240221115203.3413554-1-colin.i.king@gmail.com>
- <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
- <cfa4cd82-67e9-4483-9c35-a425859f4a21@gmail.com>
+	s=arc-20240116; t=1708565426; c=relaxed/simple;
+	bh=2YQzN3NysKE0UgFuNWwqgiBmM3PpnxBDxodyHlHuClw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Z6y5fmM/zdbTVWkLplQw1SLqoOR/Tp39S7z7hEsv6Ihv30fC8VQHZArYasFyFtAqIp0igczUz2D7DWMaly+eG4DQL/27QYK86eKk+P6oy4I/kZ2kVNd4VyHEfGBt/9/MA6BU5apWfOa83E32x+lm0y7d4cerbD77W84MjpiyiJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TgFnh6bZKz1FL9t;
+	Thu, 22 Feb 2024 09:25:28 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5151F18002F;
+	Thu, 22 Feb 2024 09:30:21 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 22 Feb 2024 09:30:20 +0800
+Message-ID: <01e26540-04b6-43b2-b8d4-6d1944475145@huawei.com>
+Date: Thu, 22 Feb 2024 09:30:20 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cfa4cd82-67e9-4483-9c35-a425859f4a21@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: intercept mountoption value for bool type
+Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>, Brian Foster
+	<bfoster@redhat.com>
+CC: <linux-bcachefs@vger.kernel.org>, <ruanjinjie@huawei.com>,
+	<chris.zjh@huawei.com>
+References: <20240221093704.3924287-1-lihongbo22@huawei.com>
+ <ZdX8ek1o6MQErZMr@bfoster>
+ <if2d3bmpvm3hvkgahyn5umjdnfwrtft7567opyr6k2bmwxcf4b@gm34y24jpeqy>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <if2d3bmpvm3hvkgahyn5umjdnfwrtft7567opyr6k2bmwxcf4b@gm34y24jpeqy>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Thu, Feb 22, 2024 at 12:08:28AM +0000, Colin King (gmail) wrote:
-> On 22/02/2024 00:04, Kent Overstreet wrote:
-> > On Wed, Feb 21, 2024 at 11:52:03AM +0000, Colin Ian King wrote:
-> > > Variable ret is being assigned a value that is never read, it is
-> > > being re-assigned a couple of statements later on. The assignment
-> > > is redundant and can be removed.
-> > > 
-> > > Cleans up clang scan build warning:
-> > > fs/bcachefs/super-io.c:806:2: warning: Value stored to 'ret' is
-> > > never read [deadcode.DeadStores]
-> > > 
-> > > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> > 
-> > I'll take this, but - entirely too much of the traffic on this list is
-> > getting taken up by static analyzer bullshit, we need to cut down on
-> > this
+
+
+On 2024/2/22 7:51, Kent Overstreet wrote:
+> On Wed, Feb 21, 2024 at 08:36:58AM -0500, Brian Foster wrote:
+>> On Wed, Feb 21, 2024 at 05:37:04PM +0800, Hongbo Li wrote:
+>>> For mount option with bool type, the value must be 0 or 1 (See
+>>> bch2_opt_parse). But this seems does not well intercepted cause
+>>> for other value(like 2...), it returns the unexpect return code
+>>> with error message printed.
+>>>
+>>> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+>>> ---
+>>>   fs/bcachefs/opts.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+>>> index b1ed0b9a20d3..fe1f17830694 100644
+>>> --- a/fs/bcachefs/opts.c
+>>> +++ b/fs/bcachefs/opts.c
+>>> @@ -314,7 +314,7 @@ int bch2_opt_parse(struct bch_fs *c,
+>>>   		if (ret < 0 || (*res != 0 && *res != 1)) {
+>>>   			if (err)
+>>>   				prt_printf(err, "%s: must be bool", opt->attr.name);
+>>> -			return ret;
+>>> +			return ret < 0 ?: -EINVAL;
+>>
+>> It might be nice for that error message to be more specific in that the
+>> bool value must be 0 or 1, but LGTM regardless:
 > 
-> I'll back off then.
+> Please give this a distinct private error code as well (just like we
+> discussed in the previous patch)
+> 
+Here, the -EINVAL refers to the return value of other exception branches 
+of this function to keep the consistent error code of this function.
 
-Maybe just wrap up fixes for all the warnings every now and then? It is
-worth keeping up on static analyzer warnings, it's just the mailing list
-noise I want to cut down on, as well as making better use of my own
-time.
+In fact, it is a bit confusing to use whether to return a private error 
+code or a system error code in some functions. For example, in 
+bch2_opt_validate, the two exception branches of no sector alignment and 
+power of 2 do not return internal error codes.
 
-I'd be happy to take a patch like that now and then, or - maybe we could
-get a dashboard going, like I was just running by Dan in the other
-thread? If we could get a dirt simple stupid dashboard that had both the
-clangc analyzer warnings, and the smatch warnings - I think that would
-make a lot of people happy.
+I don't know what the boundaries are for using private error codes. 
+Generally, internal functions are passed through private error codes, 
+but now I can only refer to this function context to determine the error 
+code type.
+>>
+>> Reviewed-by: Brian Foster <bfoster@redhat.com>
+>>
+>>>   		}
+>>>   		break;
+>>>   	case BCH_OPT_UINT:
+>>> -- 
+>>> 2.34.1
+>>>
+>>
