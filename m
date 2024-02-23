@@ -1,91 +1,111 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C27EAD2;
-	Fri, 23 Feb 2024 20:43:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB7414DFC7
+	for <linux-bcachefs@vger.kernel.org>; Fri, 23 Feb 2024 22:20:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708721026; cv=none; b=f/Wx12iSHfpF7xf7NqVy2JgaNi+1zMpqr74k9EAiQTvTG90cOikuv1K9QrFHVTkyIJmjYffky1mvG0CUJfF6mhSMsYbJlduk0w3zTvdAPSh2XM27CHGGBDyr5Ge+Q06YeH86zVWiAUNktCug5SZh+reGq0AkFHyxDodnovurm4A=
+	t=1708726860; cv=none; b=NYmGDRwzIC20m827dbaD7dzhTTfhZxsgvJ7Oh/NUc0cV6XMmiQzeFQKs7j9GxaHODeAUMk7MKkyGIcrC4AbWCW6Ab1TCswRDbwzAYYZIlj+aTvkCiet+6gKK/eUSYqhYKQvg4/PqQD1n4fJfV9AdI5C4iCE+5h7zKDfH7sCtrWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708721026; c=relaxed/simple;
-	bh=PvtLspH93t1y4HSID2+UQ++sl1bnWl4rFM9++eE9Kiw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jjkj4An0NsVm9VFkk6dIH9AjZE1Eek+qJgxBeFZ5ctXoJvzPfS8XnInFF7aqDkSuPWQGn0frWL6Snv6tyi6Sj8RWOAXiWPXSwrq3dyoI/zvfcv4o9TmF2DdbRO7CQrnaEzovU79DIoqZCMd0gXOIMq2/kurKenWiqSZqyAS/iZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67DE0C43390;
-	Fri, 23 Feb 2024 20:43:39 +0000 (UTC)
-Date: Fri, 23 Feb 2024 15:45:32 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- <linuxppc-dev@lists.ozlabs.org>, <kvm@vger.kernel.org>,
- <linux-block@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
- <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
- <amd-gfx@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
- <intel-xe@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
- <freedreno@lists.freedesktop.org>, <virtualization@lists.linux.dev>,
- <linux-rdma@vger.kernel.org>, <linux-pm@vger.kernel.org>,
- <iommu@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
- <netdev@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
- <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
- <ath11k@lists.infradead.org>, <ath12k@lists.infradead.org>,
- <brcm80211@lists.linux.dev>, <brcm80211-dev-list.pdl@broadcom.com>,
- <linux-usb@vger.kernel.org>, <linux-bcachefs@vger.kernel.org>,
- <linux-nfs@vger.kernel.org>, <ocfs2-devel@lists.linux.dev>,
- <linux-cifs@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
- <linux-edac@vger.kernel.org>, <selinux@vger.kernel.org>,
- <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
- <linux-f2fs-devel@lists.sourceforge.net>, <linux-hwmon@vger.kernel.org>,
- <io-uring@vger.kernel.org>, <linux-sound@vger.kernel.org>,
- <bpf@vger.kernel.org>, <linux-wpan@vger.kernel.org>, <dev@openvswitch.org>,
- <linux-s390@vger.kernel.org>, <tipc-discussion@lists.sourceforge.net>,
- Julia Lawall <Julia.Lawall@inria.fr>
-Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
- __assign_str()
-Message-ID: <20240223154532.76475d82@gandalf.local.home>
-In-Reply-To: <20240223134653.524a5c9e@gandalf.local.home>
-References: <20240223125634.2888c973@gandalf.local.home>
-	<0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
-	<20240223134653.524a5c9e@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708726860; c=relaxed/simple;
+	bh=C6DYqCGoecvmlNV4aTYhOXoE5G2p+ThBTQp1YY/q1i0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k5MoGwVtHOvUaPEXpEOZhrMR12zOAr1DUci35FbXLPKh7AhLd+iQSw9YP+drkaKXKTFqLGo9uB2UfFSPWDNqAy/KyMMKp6TryF3YRd7MudGg+iMfa2tdZ6tvb8xZ2Amf9BSjU4Rkx8717I0GEydHJay4dYwPHmyaG1rLXbGIMUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hn2XOFEQ; arc=none smtp.client-ip=209.85.166.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hn2XOFEQ"
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-365145ef32fso2283095ab.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 23 Feb 2024 14:20:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708726849; x=1709331649; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=totYPU1oe0M42Q0/drGFwaOh09XGh4Kl0wwEiXNLuo4=;
+        b=Hn2XOFEQtjasEcF485n2JgHXnJsp+3QYWth8iteICaNqVM9oaO+FP//GmOPJCMKBa5
+         fmsELZcmhGuPS/nimpPmXENLWncs/UqURuUGS9J8D4cmswNVttokQPGuKW+vkIF1zn5V
+         aLGS0WI7iLnvb12RbF39U2iX9U3kkDx7SqrKJSCBMQFTyJSe55gDrbOLkvmJU8jHFGuf
+         Gn8VyTGIzdiPlWEjfoETzfbE6X0BwPMdz+U5AGYXDQwDPnIPbIk6wAdAYBNkolfDjtDh
+         jJJ0psmcN8dEvpeGaf9TUJlrQvlupg+8M1c21dBW6gLmPvYMX34FrfIGAq0R8C/1645e
+         pk4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708726849; x=1709331649;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=totYPU1oe0M42Q0/drGFwaOh09XGh4Kl0wwEiXNLuo4=;
+        b=ubBkYiME+QMR0U9A9Bmu5gaLuDkKgI5ICFI5MzprrEBfnZ6LO3t8qY0/0dN6fyURFo
+         yQGICl+vXc19jD9f204KB1/XftpKoRLN9LieqyiNQUKsmAdoM8w+UIE6zx7szZQB2TDZ
+         Qfe4/0hDJpUXnSzEyBSsMZMp1Eb4mCql/qlcehjNIq9AUUraOKmqgiIj53b2GAoHj25k
+         TvQDD5RCB8RwXnubtCyyOHELpeMrxR02ynjZcmLkYfAaNTp8lp6nETosXGbngbEd0HA5
+         8mM4POMByOqgj2OBIYOpx4gKbIZDjWNKs0SdlwoaCmjp7u1w2zUhP5xjC3UsfLXyl7ZD
+         vlUg==
+X-Forwarded-Encrypted: i=1; AJvYcCUUwBgCEPs+pmxYsr5D+jCJEN7heZ0gqQ7x5IGoQ1WHx/O4fR9BnG2vkWqcRzihKgPNVBB1IBsfoPDVCIQ6cRRDS1pFvBDlNiu8DP+KwHk=
+X-Gm-Message-State: AOJu0YxQ8g5Qxs4CQWg46ftGxJcxYVbWkQ59/fJ/Ls6vcExY/xxBCsw2
+	NEwnwNVVp9f+uFHRerUGrTc7UR+0UQCbKGN55xvWua4nOoLAcpQJTE8+cxJI
+X-Google-Smtp-Source: AGHT+IEq1lHlKCmTxBeJnDw0QSzipMYnlRYxSNGXNIB7tsQ/w4sYCcyqTtgqfRqVQ3VBmHM0bVhX0Q==
+X-Received: by 2002:a05:6e02:60e:b0:363:b805:fcb6 with SMTP id t14-20020a056e02060e00b00363b805fcb6mr1248230ils.28.1708726849399;
+        Fri, 23 Feb 2024 14:20:49 -0800 (PST)
+Received: from fedora-laptop.hsd1.nm.comcast.net (c-73-127-246-43.hsd1.nm.comcast.net. [73.127.246.43])
+        by smtp.gmail.com with ESMTPSA id f5-20020a92cb45000000b0036581060910sm300136ilq.6.2024.02.23.14.20.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 14:20:48 -0800 (PST)
+From: Thomas Bertschinger <tahbertschinger@gmail.com>
+To: kent.overstreet@linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	bfoster@redhat.com
+Cc: Thomas Bertschinger <tahbertschinger@gmail.com>
+Subject: [PATCH TOOLS] powerpc: use "long long" for 64-bit types in userspace
+Date: Fri, 23 Feb 2024 15:20:42 -0700
+Message-ID: <20240223222042.140688-1-tahbertschinger@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri, 23 Feb 2024 13:46:53 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+This resolves build warnings and failures for architectures where the
+Linux userspace `asm/types.h` header defines 64-bit types (u64, s64) as
+`long` instead of `long long`.
 
-> Now one thing I could do is to not remove the parameter, but just add:
-> 
-> 	WARN_ON_ONCE((src) != __data_offsets->item##_ptr_);
-> 
-> in the __assign_str() macro to make sure that it's still the same that is
-> assigned. But I'm not sure how useful that is, and still causes burden to
-> have it. I never really liked the passing of the string in two places to
-> begin with.
+By defining `__SANE_USERSPACE_TYPES__`, these types are defined as
+`long long` instead.
 
-Hmm, maybe I'll just add this patch for 6.9 and then in 6.10 do the
-parameter removal.
+Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
+---
+ Makefile              | 1 +
+ include/linux/types.h | 2 ++
+ 2 files changed, 3 insertions(+)
 
--- Steve
+diff --git a/Makefile b/Makefile
+index 6e5d0e5..7363d5d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -42,6 +42,7 @@ CFLAGS+=-std=gnu11 -O2 -g -MMD -Wall -fPIC			\
+ 	-DNO_BCACHEFS_FS					\
+ 	-DNO_BCACHEFS_SYSFS					\
+ 	-DVERSION_STRING='"$(VERSION)"'				\
++	-D__SANE_USERSPACE_TYPES__				\
+ 	$(EXTRA_CFLAGS)
+ 
+ # Intenionally not doing the above to $(LDFLAGS) because we rely on
+diff --git a/include/linux/types.h b/include/linux/types.h
+index 6ae97c4..004d5eb 100644
+--- a/include/linux/types.h
++++ b/include/linux/types.h
+@@ -10,7 +10,9 @@
+ #include <sys/types.h>
+ #include <linux/posix_types.h>
+ 
++#ifndef __SANE_USERSPACE_TYPES__
+ #define __SANE_USERSPACE_TYPES__	/* For PPC64, to get LL64 types */
++#endif
+ #include <asm/types.h>
+ 
+ #include <linux/cache.h>
+-- 
+2.43.0
 
-diff --git a/include/trace/stages/stage6_event_callback.h b/include/trace/stages/stage6_event_callback.h
-index 0c0f50bcdc56..7372e2c2a0c4 100644
---- a/include/trace/stages/stage6_event_callback.h
-+++ b/include/trace/stages/stage6_event_callback.h
-@@ -35,6 +35,7 @@ #define __assign_str(dst, src)
- 	do {								\
- 		char *__str__ = __get_str(dst);				\
- 		int __len__ = __get_dynamic_array_len(dst) - 1;		\
-+		WARN_ON_ONCE((src) != __data_offsets.dst##_ptr_); 	\
- 		memcpy(__str__, __data_offsets.dst##_ptr_ ? :		\
- 		       EVENT_NULL_STR, __len__);			\
- 		__str__[__len__] = '\0';				\
