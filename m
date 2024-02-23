@@ -1,164 +1,334 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCAA414F9CB;
-	Thu, 22 Feb 2024 16:08:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+Received: from server.roznica.com.ua (server.roznica.com.ua [80.90.224.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E01370
+	for <linux-bcachefs@vger.kernel.org>; Fri, 23 Feb 2024 00:27:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.90.224.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708618111; cv=none; b=BjMMUIz680Ig4eWzCH5qeQmUKjB1GEkSoD3ku4GGaV+J19hHMz/4r/+M2JcMctpotTPtF496grioLtUqxfNAhDda3BamLH7m7p7XihZQmnzzuyAKBxka8g4E0GkVc9nz6CwfOGu6eBOYv0ElU5tgBoz3zB+NxaK9uFtUvC8Rl60=
+	t=1708648048; cv=none; b=eVmhqaPjQJH4G9uV6L5827Ve0S4HGw5FgarUkPGwUhXOMXOXgYLislSaLdvNQMLo9Ae/gqLIhF9V5Y0FpvXdu/JqwJ47W9UeBWJ2gqCCvK73B/h9RRXnAiGO8bci1A2Jf3gIV0gmPQtOtOPhkeNLVqoBE5+Qn0Qr87k3hn7XC6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708618111; c=relaxed/simple;
-	bh=48BXanacAVUSV46yQ32xR3V/Cq8Aa0DPP/5keWQqljg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MyAlpM8BnF4J9Pw6E1G/DftALKylUct45mgzzxGjZ4A3ZnEuM8+c5IsSmXnzWnWhNnCMNFYwT4Dtgy3IAMpQiLrKe+FyoUtkdpBYPOYqBS0d+A/H4q9sNS5bEr7MrGn4mhm3aS4+zIIICfB9wmaEn6PtjCtLK6stEDvsuuUPi7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ePxFagu8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2WLpqt/e; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ePxFagu8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2WLpqt/e; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ePxFagu8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2WLpqt/e";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ePxFagu8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2WLpqt/e"
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 035B3222CA;
-	Thu, 22 Feb 2024 16:08:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708618108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1KMBzPDx1ur8HmYjTZ/70Mhlnz+IVPKsaUfFS7zXjNc=;
-	b=ePxFagu8i0lj4DsKzPI17lRX4vqKZW9FTg8nGFozKqIPfQqrP5m5wKeQkV7rrkLVzkLv7/
-	7q8OVxHyi4+vyTc0hN3hRlqhuwJIF40pymCfE4Gl3hAiltelvqm75LVgK/GZZhijAm5DMu
-	Hxrnoluxhyn/Rcj3pVV51zNmHsrztjk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708618108;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1KMBzPDx1ur8HmYjTZ/70Mhlnz+IVPKsaUfFS7zXjNc=;
-	b=2WLpqt/eod4ZPqZz/l8x5G34c8ziq1ZzbWZF2kFTZSoQCKDiXiDTSsdsREN8fMjlMObeQ8
-	WH0J00m1ziqL+uAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708618108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1KMBzPDx1ur8HmYjTZ/70Mhlnz+IVPKsaUfFS7zXjNc=;
-	b=ePxFagu8i0lj4DsKzPI17lRX4vqKZW9FTg8nGFozKqIPfQqrP5m5wKeQkV7rrkLVzkLv7/
-	7q8OVxHyi4+vyTc0hN3hRlqhuwJIF40pymCfE4Gl3hAiltelvqm75LVgK/GZZhijAm5DMu
-	Hxrnoluxhyn/Rcj3pVV51zNmHsrztjk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708618108;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1KMBzPDx1ur8HmYjTZ/70Mhlnz+IVPKsaUfFS7zXjNc=;
-	b=2WLpqt/eod4ZPqZz/l8x5G34c8ziq1ZzbWZF2kFTZSoQCKDiXiDTSsdsREN8fMjlMObeQ8
-	WH0J00m1ziqL+uAA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EB6CC13A6B;
-	Thu, 22 Feb 2024 16:08:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id g/1vOXtx12XbegAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 22 Feb 2024 16:08:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 6F625A0807; Thu, 22 Feb 2024 17:08:23 +0100 (CET)
-Date: Thu, 22 Feb 2024 17:08:23 +0100
-From: Jan Kara <jack@suse.cz>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Jan Kara <jack@suse.cz>, Kent Overstreet <kent.overstreet@linux.dev>,
-	Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	lsf-pc@lists.linux-foundation.org, linux-btrfs@vger.kernel.org
-Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
- filesystems & more
-Message-ID: <20240222160823.pclx6isoyaf7l64r@quack3>
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
- <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
- <20240221210811.GA1161565@perftesting>
- <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
- <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
- <20240222110138.ckai4sxiin3a74ku@quack3>
- <CAJfpegtUZ4YWhYqqnS_BcKKpwhHvdUsQPQMf4j49ahwAe2_AXQ@mail.gmail.com>
+	s=arc-20240116; t=1708648048; c=relaxed/simple;
+	bh=aFplCM917MYy1xEjIWtYK8Kk5wfqBobObrC1U2wzr+A=;
+	h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type; b=PJlmKf+W9i9DNefG8UsKk30949D6SFCe0XZeyN9S8TrDRk3Wq4Abo72lYwVJ23rdEZoS0dhLUT6ANUc9gOBtRv56TTyffhpJYvN/R/nbRDcnxH2Ak9Hb+fGpZ7dbDfscaqMtASCZM9JVxxXVK2B9vpaqdOSxz3fjmrOq9yHof/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roznica.com.ua; spf=pass smtp.mailfrom=roznica.com.ua; arc=none smtp.client-ip=80.90.224.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roznica.com.ua
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=roznica.com.ua
+Received: from work.roznica.com.ua (188-115-152-42.broadband.tenet.odessa.ua [188.115.152.42])
+	by server.roznica.com.ua (Postfix) with ESMTP id CD8A8984FA4
+	for <linux-bcachefs@vger.kernel.org>; Fri, 23 Feb 2024 02:27:14 +0200 (EET)
+To: linux-bcachefs@vger.kernel.org
+From: Michael <mclaud@roznica.com.ua>
+Subject: Strange behavior, ignore replicas_required
+Message-ID: <4ede0655-df7f-c26d-7c87-66c59a7737bc@roznica.com.ua>
+Date: Fri, 23 Feb 2024 02:27:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegtUZ4YWhYqqnS_BcKKpwhHvdUsQPQMf4j49ahwAe2_AXQ@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.80
-X-Spamd-Result: default: False [-0.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[42.06%]
-X-Spam-Flag: NO
+Content-Type: multipart/mixed;
+ boundary="------------AC1045603A2CDD98CBA86E36"
+Content-Language: en-US
 
-On Thu 22-02-24 13:48:45, Miklos Szeredi wrote:
-> On Thu, 22 Feb 2024 at 12:01, Jan Kara <jack@suse.cz> wrote:
-> 
-> > I think for "unique inode identifier" we don't even have to come up with
-> > new APIs. The file handle + fsid pair is an established way to do this,
-> 
-> Why not uuid?
-> 
-> fsid seems to be just a degraded uuid.   We can do better with statx
-> and/or statmount.
+This is a multi-part message in MIME format.
+--------------AC1045603A2CDD98CBA86E36
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-fanotify uses fsid because we have standard interface for querying fsid
-(statfs(2)) and because not all filesystems (in particular virtual ones)
-bother with uuid. At least the first thing is being changed now.
+In the firsts tests fs ignore set values data_replicas_required=2 or 
+durability and metadata_target=rammeta.
+On step 4 data count of replicas 1 (data_replicas_required=2 ignored or 
+wrong count foreground_target with durability=0 as second replica), 
+completely ignore meta_target (usage 0).
+On step 5 strange percent of rereplicate and 163 MiB of data stay with 1 
+replica and partial cached metadata on zram2.
 
-> > fanotify successfully uses this as object identifier and Amir did quite
-> > some work for this to be usable for vast majority of filesystems (including
-> 
-> Vast majority != all.
+kernel 6.7.5
+bcachefs-tools 1.6.3
+full bcachefs usage -h attached
 
-True. If we are going to use this scheme more widely, we need to have a
-look whether the remaining cases need fixing or we can just ignore them.
-They were not very interesting for fanotify so we moved on.
+1) Create:
 
-> Also even uuid is just a statistically unique
-> identifier, while st_dev was guaranteed to be unique (but not
-> persistent, like uuid).
+zramctl -a lzo-rle -s 32G /dev/zram2
+zramctl -a lzo-rle -s 32G /dev/zram3
 
-Well, everything is just statistically true in this world :) If you have
-conflicting uuids, you are likely to see also other problems so I would not
-be too concerned about that.
+bcachefs format \
+        --data_replicas=2 --data_replicas_required=2 \
+        --metadata_replicas=2 --metadata_replicas_required=2 \
+        --compression=zstd:3 \
+        --background_compression=zstd:9 \
+        --label=hdd.01 --durability=1 /dev/mapper/sdk_cr \
+        --label=hdd.02 --durability=1 /dev/mapper/sdl_cr \
+        --label=rammeta.cache --durability=0 --discard /dev/zram2 \
+        --label=ramdata.cache --durability=0 --discard /dev/zram3 \
+        --metadata_target=rammeta \
+        --foreground_target=ramdata \
+        --promote_target=ramdata \
+        --background_target=hdd
 
-> If we are going to start fixing userspace, then we better make sure to
-> use the right interfaces, that won't have issues in the future.
+mount -tbcachefs -ojournal_flush_disabled,discard 
+/dev/mapper/sdk_cr:/dev/mapper/sdl_cr:/dev/zram2:/dev/zram3 /mnt/bcachefs/
 
-I agree we should give this a good thought which identification of a
-filesystem is the best.
+bcachefs usage -h
+Size:                       6.75 TiB
+Used:                       4.52 GiB
+Online reserved:                 0 B
 
-								Honza
+Data type       Required/total  Durability    Devices
+btree:          1/2             2             [dm-20 dm-21] 10.0 MiB
+
+2) create subvolume s1
+3) create subvolume s1/s2
+4) rsync some data ->s1/s2
+bcachefs usage -h
+Filesystem: 9d284190-ab97-4e27-9d73-d1ec5ae4c55b
+Size:                       6.75 TiB
+Used:                       14.4 GiB
+Online reserved:                 0 B
+
+Data type       Required/total  Durability    Devices
+btree:          1/2             2             [dm-20 dm-21] 445 MiB
+user:           1/1             1             [dm-20] 9.46 GiB
+cached:         1/1             0             [zram3] 9.46 GiB
+
+zram2 - empty
+strange replication
+8k/s random disk activity (journal?)
+
+5) bcachefs data rereplicate
+....
+113% complete: current position user extents:805306913:1028608
+....
+187% complete: current position user extents:1275075211:3142912
+....
+238% complete: current position user extents:1946157064:16
+Done
+
+bcachefs usage -h
+Filesystem: 9d284190-ab97-4e27-9d73-d1ec5ae4c55b
+Size:                       6.75 TiB
+Used:                       23.9 GiB
+Online reserved:                 0 B
+
+Data type       Required/total  Durability    Devices
+btree:          1/2             2             [dm-20 dm-21] 623 MiB
+user:           1/2             2             [dm-20 dm-21] 18.6 GiB
+user:           1/1             1             [dm-20] 163 MiB <<<--- 
+strange
+cached:         1/1             0             [zram3] 9.47 GiB
+cached:         1/1             0             [zram2] 81.5 MiB <<<--- 
+meta partial cached?
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Michael
+
+
+--------------AC1045603A2CDD98CBA86E36
+Content-Type: text/plain; charset=UTF-8;
+ name="01_usage_fresh_create.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="01_usage_fresh_create.txt"
+
+RmlsZXN5c3RlbTogOWQyODQxOTAtYWI5Ny00ZTI3LTlkNzMtZDFlYzVhZTRjNTViClNpemU6
+ICAgICAgICAgICAgICAgICAgICAgICA2Ljc1IFRpQgpVc2VkOiAgICAgICAgICAgICAgICAg
+ICAgICAgNC41MiBHaUIKT25saW5lIHJlc2VydmVkOiAgICAgICAgICAgICAgICAgMCBCCgpE
+YXRhIHR5cGUgICAgICAgUmVxdWlyZWQvdG90YWwgIER1cmFiaWxpdHkgICAgRGV2aWNlcwpi
+dHJlZTogICAgICAgICAgMS8yICAgICAgICAgICAgIDIgICAgICAgICAgICAgW2RtLTIwIGRt
+LTIxXSAgICAgICAxMC4wIE1pQgoKaGRkLjAxIChkZXZpY2UgMCk6ICAgICAgICAgICAgIGRt
+LTIwICAgICAgICAgICAgICBydwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRh
+dGEgICAgICAgICBidWNrZXRzICAgIGZyYWdtZW50ZWQKICBmcmVlOiAgICAgICAgICAgICAg
+ICAgICAgIDMuNjQgVGlCICAgICAgICAxNTI1MzUwMgogIHNiOiAgICAgICAgICAgICAgICAg
+ICAgICAgMy4wMCBNaUIgICAgICAgICAgICAgIDEzICAgICAgIDI1MiBLaUIKICBqb3VybmFs
+OiAgICAgICAgICAgICAgICAgIDIuMDAgR2lCICAgICAgICAgICAgODE5MgogIGJ0cmVlOiAg
+ICAgICAgICAgICAgICAgICAgNS4wMCBNaUIgICAgICAgICAgICAgIDIwCiAgdXNlcjogICAg
+ICAgICAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBjYWNoZWQ6ICAg
+ICAgICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIHBhcml0eTogICAg
+ICAgICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgc3RyaXBlOiAgICAg
+ICAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBuZWVkX2djX2dlbnM6
+ICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIG5lZWRfZGlzY2FyZDog
+ICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgY2FwYWNpdHk6ICAgICAg
+ICAgICAgICAgICAzLjY0IFRpQiAgICAgICAgMTUyNjE3MjcKCmhkZC4wMiAoZGV2aWNlIDEp
+OiAgICAgICAgICAgICBkbS0yMSAgICAgICAgICAgICAgcncKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBkYXRhICAgICAgICAgYnVja2V0cyAgICBmcmFnbWVudGVkCiAgZnJl
+ZTogICAgICAgICAgICAgICAgICAgICAzLjY0IFRpQiAgICAgICAgMTUyNTM1MDIKICBzYjog
+ICAgICAgICAgICAgICAgICAgICAgIDMuMDAgTWlCICAgICAgICAgICAgICAxMyAgICAgICAy
+NTIgS2lCCiAgam91cm5hbDogICAgICAgICAgICAgICAgICAyLjAwIEdpQiAgICAgICAgICAg
+IDgxOTIKICBidHJlZTogICAgICAgICAgICAgICAgICAgIDUuMDAgTWlCICAgICAgICAgICAg
+ICAyMAogIHVzZXI6ICAgICAgICAgICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAg
+ICAwCiAgY2FjaGVkOiAgICAgICAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAg
+IDAKICBwYXJpdHk6ICAgICAgICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAg
+MAogIHN0cmlwZTogICAgICAgICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAw
+CiAgbmVlZF9nY19nZW5zOiAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAK
+ICBuZWVkX2Rpc2NhcmQ6ICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAog
+IGNhcGFjaXR5OiAgICAgICAgICAgICAgICAgMy42NCBUaUIgICAgICAgIDE1MjYxNzI3Cgpy
+YW1kYXRhLmNhY2hlIChkZXZpY2UgMyk6ICAgICAgenJhbTMgICAgICAgICAgICAgIHJ3CiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSAgICAgICAgIGJ1Y2tldHMgICAg
+ZnJhZ21lbnRlZAogIGZyZWU6ICAgICAgICAgICAgICAgICAgICAgMzEuNyBHaUIgICAgICAg
+ICAgMTMwMDM1CiAgc2I6ICAgICAgICAgICAgICAgICAgICAgICAzLjAwIE1pQiAgICAgICAg
+ICAgICAgMTMgICAgICAgMjUyIEtpQgogIGpvdXJuYWw6ICAgICAgICAgICAgICAgICAgIDI1
+NiBNaUIgICAgICAgICAgICAxMDI0CiAgYnRyZWU6ICAgICAgICAgICAgICAgICAgICAgICAg
+IDAgQiAgICAgICAgICAgICAgIDAKICB1c2VyOiAgICAgICAgICAgICAgICAgICAgICAgICAg
+MCBCICAgICAgICAgICAgICAgMAogIGNhY2hlZDogICAgICAgICAgICAgICAgICAgICAgICAw
+IEIgICAgICAgICAgICAgICAwCiAgcGFyaXR5OiAgICAgICAgICAgICAgICAgICAgICAgIDAg
+QiAgICAgICAgICAgICAgIDAKICBzdHJpcGU6ICAgICAgICAgICAgICAgICAgICAgICAgMCBC
+ICAgICAgICAgICAgICAgMAogIG5lZWRfZ2NfZ2VuczogICAgICAgICAgICAgICAgICAwIEIg
+ICAgICAgICAgICAgICAwCiAgbmVlZF9kaXNjYXJkOiAgICAgICAgICAgICAgICAgIDAgQiAg
+ICAgICAgICAgICAgIDAKICBjYXBhY2l0eTogICAgICAgICAgICAgICAgIDMyLjAgR2lCICAg
+ICAgICAgIDEzMTA3MgoKcmFtbWV0YS5jYWNoZSAoZGV2aWNlIDIpOiAgICAgIHpyYW0yICAg
+ICAgICAgICAgICBydwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgICAg
+ICAgICBidWNrZXRzICAgIGZyYWdtZW50ZWQKICBmcmVlOiAgICAgICAgICAgICAgICAgICAg
+IDMxLjcgR2lCICAgICAgICAgIDEzMDAzNQogIHNiOiAgICAgICAgICAgICAgICAgICAgICAg
+My4wMCBNaUIgICAgICAgICAgICAgIDEzICAgICAgIDI1MiBLaUIKICBqb3VybmFsOiAgICAg
+ICAgICAgICAgICAgICAyNTYgTWlCICAgICAgICAgICAgMTAyNAogIGJ0cmVlOiAgICAgICAg
+ICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgdXNlcjogICAgICAgICAg
+ICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBjYWNoZWQ6ICAgICAgICAg
+ICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIHBhcml0eTogICAgICAgICAg
+ICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgc3RyaXBlOiAgICAgICAgICAg
+ICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBuZWVkX2djX2dlbnM6ICAgICAg
+ICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIG5lZWRfZGlzY2FyZDogICAgICAg
+ICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgY2FwYWNpdHk6ICAgICAgICAgICAg
+ICAgICAzMi4wIEdpQiAgICAgICAgICAxMzEwNzIK
+--------------AC1045603A2CDD98CBA86E36
+Content-Type: text/plain; charset=UTF-8;
+ name="02_usage_after_copy.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="02_usage_after_copy.txt"
+
+RmlsZXN5c3RlbTogOWQyODQxOTAtYWI5Ny00ZTI3LTlkNzMtZDFlYzVhZTRjNTViClNpemU6
+ICAgICAgICAgICAgICAgICAgICAgICA2Ljc1IFRpQgpVc2VkOiAgICAgICAgICAgICAgICAg
+ICAgICAgMTQuNCBHaUIKT25saW5lIHJlc2VydmVkOiAgICAgICAgICAgICAgICAgMCBCCgpE
+YXRhIHR5cGUgICAgICAgUmVxdWlyZWQvdG90YWwgIER1cmFiaWxpdHkgICAgRGV2aWNlcwpi
+dHJlZTogICAgICAgICAgMS8yICAgICAgICAgICAgIDIgICAgICAgICAgICAgW2RtLTIwIGRt
+LTIxXSAgICAgICAgNDQ1IE1pQgp1c2VyOiAgICAgICAgICAgMS8xICAgICAgICAgICAgIDEg
+ICAgICAgICAgICAgW2RtLTIwXSAgICAgICAgICAgICA5LjQ2IEdpQgpjYWNoZWQ6ICAgICAg
+ICAgMS8xICAgICAgICAgICAgIDAgICAgICAgICAgICAgW3pyYW0zXSAgICAgICAgICAgICA5
+LjQ2IEdpQgoKaGRkLjAxIChkZXZpY2UgMCk6ICAgICAgICAgICAgIGRtLTIwICAgICAgICAg
+ICAgICBydwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgICAgICAgICBi
+dWNrZXRzICAgIGZyYWdtZW50ZWQKICBmcmVlOiAgICAgICAgICAgICAgICAgICAgIDMuNjMg
+VGlCICAgICAgICAxNTIxMzg2OAogIHNiOiAgICAgICAgICAgICAgICAgICAgICAgMy4wMCBN
+aUIgICAgICAgICAgICAgIDEzICAgICAgIDI1MiBLaUIKICBqb3VybmFsOiAgICAgICAgICAg
+ICAgICAgIDIuMDAgR2lCICAgICAgICAgICAgODE5MgogIGJ0cmVlOiAgICAgICAgICAgICAg
+ICAgICAgIDIyMyBNaUIgICAgICAgICAgICAgODkwCiAgdXNlcjogICAgICAgICAgICAgICAg
+ICAgICA5LjQ2IEdpQiAgICAgICAgICAgMzg3NjQgICAgICAyOC4wIEtpQgogIGNhY2hlZDog
+ICAgICAgICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgcGFyaXR5OiAg
+ICAgICAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBzdHJpcGU6ICAg
+ICAgICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIG5lZWRfZ2NfZ2Vu
+czogICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgbmVlZF9kaXNjYXJk
+OiAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBjYXBhY2l0eTogICAg
+ICAgICAgICAgICAgIDMuNjQgVGlCICAgICAgICAxNTI2MTcyNwoKaGRkLjAyIChkZXZpY2Ug
+MSk6ICAgICAgICAgICAgIGRtLTIxICAgICAgICAgICAgICBydwogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIGRhdGEgICAgICAgICBidWNrZXRzICAgIGZyYWdtZW50ZWQKICBm
+cmVlOiAgICAgICAgICAgICAgICAgICAgIDMuNjQgVGlCICAgICAgICAxNTI1MjYzMgogIHNi
+OiAgICAgICAgICAgICAgICAgICAgICAgMy4wMCBNaUIgICAgICAgICAgICAgIDEzICAgICAg
+IDI1MiBLaUIKICBqb3VybmFsOiAgICAgICAgICAgICAgICAgIDIuMDAgR2lCICAgICAgICAg
+ICAgODE5MgogIGJ0cmVlOiAgICAgICAgICAgICAgICAgICAgIDIyMyBNaUIgICAgICAgICAg
+ICAgODkwCiAgdXNlcjogICAgICAgICAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAg
+ICAgIDAKICBjYWNoZWQ6ICAgICAgICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAg
+ICAgMAogIHBhcml0eTogICAgICAgICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAg
+ICAwCiAgc3RyaXBlOiAgICAgICAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAg
+IDAKICBuZWVkX2djX2dlbnM6ICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAg
+MAogIG5lZWRfZGlzY2FyZDogICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAw
+CiAgY2FwYWNpdHk6ICAgICAgICAgICAgICAgICAzLjY0IFRpQiAgICAgICAgMTUyNjE3MjcK
+CnJhbWRhdGEuY2FjaGUgKGRldmljZSAzKTogICAgICB6cmFtMyAgICAgICAgICAgICAgcncK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhICAgICAgICAgYnVja2V0cyAg
+ICBmcmFnbWVudGVkCiAgZnJlZTogICAgICAgICAgICAgICAgICAgICAyMi4zIEdpQiAgICAg
+ICAgICAgOTEyNzEKICBzYjogICAgICAgICAgICAgICAgICAgICAgIDMuMDAgTWlCICAgICAg
+ICAgICAgICAxMyAgICAgICAyNTIgS2lCCiAgam91cm5hbDogICAgICAgICAgICAgICAgICAg
+MjU2IE1pQiAgICAgICAgICAgIDEwMjQKICBidHJlZTogICAgICAgICAgICAgICAgICAgICAg
+ICAgMCBCICAgICAgICAgICAgICAgMAogIHVzZXI6ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAwIEIgICAgICAgICAgICAgICAwCiAgY2FjaGVkOiAgICAgICAgICAgICAgICAgICA5LjQ2
+IEdpQiAgICAgICAgICAgMzg3NjQKICBwYXJpdHk6ICAgICAgICAgICAgICAgICAgICAgICAg
+MCBCICAgICAgICAgICAgICAgMAogIHN0cmlwZTogICAgICAgICAgICAgICAgICAgICAgICAw
+IEIgICAgICAgICAgICAgICAwCiAgbmVlZF9nY19nZW5zOiAgICAgICAgICAgICAgICAgIDAg
+QiAgICAgICAgICAgICAgIDAKICBuZWVkX2Rpc2NhcmQ6ICAgICAgICAgICAgICAgICAgMCBC
+ICAgICAgICAgICAgICAgMAogIGNhcGFjaXR5OiAgICAgICAgICAgICAgICAgMzIuMCBHaUIg
+ICAgICAgICAgMTMxMDcyCgpyYW1tZXRhLmNhY2hlIChkZXZpY2UgMik6ICAgICAgenJhbTIg
+ICAgICAgICAgICAgIHJ3CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSAg
+ICAgICAgIGJ1Y2tldHMgICAgZnJhZ21lbnRlZAogIGZyZWU6ICAgICAgICAgICAgICAgICAg
+ICAgMzEuNyBHaUIgICAgICAgICAgMTMwMDM1CiAgc2I6ICAgICAgICAgICAgICAgICAgICAg
+ICAzLjAwIE1pQiAgICAgICAgICAgICAgMTMgICAgICAgMjUyIEtpQgogIGpvdXJuYWw6ICAg
+ICAgICAgICAgICAgICAgIDI1NiBNaUIgICAgICAgICAgICAxMDI0CiAgYnRyZWU6ICAgICAg
+ICAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICB1c2VyOiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIGNhY2hlZDogICAgICAg
+ICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgcGFyaXR5OiAgICAgICAg
+ICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBzdHJpcGU6ICAgICAgICAg
+ICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIG5lZWRfZ2NfZ2VuczogICAg
+ICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgbmVlZF9kaXNjYXJkOiAgICAg
+ICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBjYXBhY2l0eTogICAgICAgICAg
+ICAgICAgIDMyLjAgR2lCICAgICAgICAgIDEzMTA3Mgo=
+--------------AC1045603A2CDD98CBA86E36
+Content-Type: text/plain; charset=UTF-8;
+ name="03_usage_after_rereplicate.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="03_usage_after_rereplicate.txt"
+
+RmlsZXN5c3RlbTogOWQyODQxOTAtYWI5Ny00ZTI3LTlkNzMtZDFlYzVhZTRjNTViClNpemU6
+ICAgICAgICAgICAgICAgICAgICAgICA2Ljc1IFRpQgpVc2VkOiAgICAgICAgICAgICAgICAg
+ICAgICAgMjMuOSBHaUIKT25saW5lIHJlc2VydmVkOiAgICAgICAgICAgICAgICAgMCBCCgpE
+YXRhIHR5cGUgICAgICAgUmVxdWlyZWQvdG90YWwgIER1cmFiaWxpdHkgICAgRGV2aWNlcwpi
+dHJlZTogICAgICAgICAgMS8yICAgICAgICAgICAgIDIgICAgICAgICAgICAgW2RtLTIwIGRt
+LTIxXSAgICAgICAgNjIzIE1pQgp1c2VyOiAgICAgICAgICAgMS8yICAgICAgICAgICAgIDIg
+ICAgICAgICAgICAgW2RtLTIwIGRtLTIxXSAgICAgICAxOC42IEdpQgp1c2VyOiAgICAgICAg
+ICAgMS8xICAgICAgICAgICAgIDEgICAgICAgICAgICAgW2RtLTIwXSAgICAgICAgICAgICAg
+MTYzIE1pQgpjYWNoZWQ6ICAgICAgICAgMS8xICAgICAgICAgICAgIDAgICAgICAgICAgICAg
+W3pyYW0zXSAgICAgICAgICAgICA5LjQ3IEdpQgpjYWNoZWQ6ICAgICAgICAgMS8xICAgICAg
+ICAgICAgIDAgICAgICAgICAgICAgW3pyYW0yXSAgICAgICAgICAgICA4MS41IE1pQgoKaGRk
+LjAxIChkZXZpY2UgMCk6ICAgICAgICAgICAgIGRtLTIwICAgICAgICAgICAgICBydwogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgICAgICAgICBidWNrZXRzICAgIGZy
+YWdtZW50ZWQKICBmcmVlOiAgICAgICAgICAgICAgICAgICAgIDMuNjMgVGlCICAgICAgICAx
+NTIxMzUxMwogIHNiOiAgICAgICAgICAgICAgICAgICAgICAgMy4wMCBNaUIgICAgICAgICAg
+ICAgIDEzICAgICAgIDI1MiBLaUIKICBqb3VybmFsOiAgICAgICAgICAgICAgICAgIDIuMDAg
+R2lCICAgICAgICAgICAgODE5MgogIGJ0cmVlOiAgICAgICAgICAgICAgICAgICAgIDMxMSBN
+aUIgICAgICAgICAgICAxMjQ1CiAgdXNlcjogICAgICAgICAgICAgICAgICAgICA5LjQ2IEdp
+QiAgICAgICAgICAgMzg3NjQgICAgICAyOC4wIEtpQgogIGNhY2hlZDogICAgICAgICAgICAg
+ICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgcGFyaXR5OiAgICAgICAgICAgICAg
+ICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBzdHJpcGU6ICAgICAgICAgICAgICAg
+ICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIG5lZWRfZ2NfZ2VuczogICAgICAgICAg
+ICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgbmVlZF9kaXNjYXJkOiAgICAgICAgICAg
+ICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBjYXBhY2l0eTogICAgICAgICAgICAgICAg
+IDMuNjQgVGlCICAgICAgICAxNTI2MTcyNwoKaGRkLjAyIChkZXZpY2UgMSk6ICAgICAgICAg
+ICAgIGRtLTIxICAgICAgICAgICAgICBydwogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGRhdGEgICAgICAgICBidWNrZXRzICAgIGZyYWdtZW50ZWQKICBmcmVlOiAgICAgICAg
+ICAgICAgICAgICAgIDMuNjMgVGlCICAgICAgICAxNTIxNDExOQogIHNiOiAgICAgICAgICAg
+ICAgICAgICAgICAgMy4wMCBNaUIgICAgICAgICAgICAgIDEzICAgICAgIDI1MiBLaUIKICBq
+b3VybmFsOiAgICAgICAgICAgICAgICAgIDIuMDAgR2lCICAgICAgICAgICAgODE5MgogIGJ0
+cmVlOiAgICAgICAgICAgICAgICAgICAgIDMxMSBNaUIgICAgICAgICAgICAxMjQ1CiAgdXNl
+cjogICAgICAgICAgICAgICAgICAgICA5LjMyIEdpQiAgICAgICAgICAgMzgxNTggICAgICAg
+MjM2IEtpQgogIGNhY2hlZDogICAgICAgICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAg
+ICAgICAwCiAgcGFyaXR5OiAgICAgICAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAg
+ICAgIDAKICBzdHJpcGU6ICAgICAgICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAg
+ICAgMAogIG5lZWRfZ2NfZ2VuczogICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAg
+ICAwCiAgbmVlZF9kaXNjYXJkOiAgICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAg
+IDAKICBjYXBhY2l0eTogICAgICAgICAgICAgICAgIDMuNjQgVGlCICAgICAgICAxNTI2MTcy
+NwoKcmFtZGF0YS5jYWNoZSAoZGV2aWNlIDMpOiAgICAgIHpyYW0zICAgICAgICAgICAgICBy
+dwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgICAgICAgICBidWNrZXRz
+ICAgIGZyYWdtZW50ZWQKICBmcmVlOiAgICAgICAgICAgICAgICAgICAgIDIyLjIgR2lCICAg
+ICAgICAgICA5MTAwMAogIHNiOiAgICAgICAgICAgICAgICAgICAgICAgMy4wMCBNaUIgICAg
+ICAgICAgICAgIDEzICAgICAgIDI1MiBLaUIKICBqb3VybmFsOiAgICAgICAgICAgICAgICAg
+ICAyNTYgTWlCICAgICAgICAgICAgMTAyNAogIGJ0cmVlOiAgICAgICAgICAgICAgICAgICAg
+ICAgICAwIEIgICAgICAgICAgICAgICAwCiAgdXNlcjogICAgICAgICAgICAgICAgICAgICAg
+ICAgIDAgQiAgICAgICAgICAgICAgIDAKICBjYWNoZWQ6ICAgICAgICAgICAgICAgICAgIDku
+NDcgR2lCICAgICAgICAgICAzOTAzNQogIHBhcml0eTogICAgICAgICAgICAgICAgICAgICAg
+ICAwIEIgICAgICAgICAgICAgICAwCiAgc3RyaXBlOiAgICAgICAgICAgICAgICAgICAgICAg
+IDAgQiAgICAgICAgICAgICAgIDAKICBuZWVkX2djX2dlbnM6ICAgICAgICAgICAgICAgICAg
+MCBCICAgICAgICAgICAgICAgMAogIG5lZWRfZGlzY2FyZDogICAgICAgICAgICAgICAgICAw
+IEIgICAgICAgICAgICAgICAwCiAgY2FwYWNpdHk6ICAgICAgICAgICAgICAgICAzMi4wIEdp
+QiAgICAgICAgICAxMzEwNzIKCnJhbW1ldGEuY2FjaGUgKGRldmljZSAyKTogICAgICB6cmFt
+MiAgICAgICAgICAgICAgcncKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRh
+ICAgICAgICAgYnVja2V0cyAgICBmcmFnbWVudGVkCiAgZnJlZTogICAgICAgICAgICAgICAg
+ICAgICAzMS43IEdpQiAgICAgICAgICAxMjk3MDkKICBzYjogICAgICAgICAgICAgICAgICAg
+ICAgIDMuMDAgTWlCICAgICAgICAgICAgICAxMyAgICAgICAyNTIgS2lCCiAgam91cm5hbDog
+ICAgICAgICAgICAgICAgICAgMjU2IE1pQiAgICAgICAgICAgIDEwMjQKICBidHJlZTogICAg
+ICAgICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIHVzZXI6ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgY2FjaGVkOiAgICAg
+ICAgICAgICAgICAgICA4MS41IE1pQiAgICAgICAgICAgICAzMjYKICBwYXJpdHk6ICAgICAg
+ICAgICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIHN0cmlwZTogICAgICAg
+ICAgICAgICAgICAgICAgICAwIEIgICAgICAgICAgICAgICAwCiAgbmVlZF9nY19nZW5zOiAg
+ICAgICAgICAgICAgICAgIDAgQiAgICAgICAgICAgICAgIDAKICBuZWVkX2Rpc2NhcmQ6ICAg
+ICAgICAgICAgICAgICAgMCBCICAgICAgICAgICAgICAgMAogIGNhcGFjaXR5OiAgICAgICAg
+ICAgICAgICAgMzIuMCBHaUIgICAgICAgICAgMTMxMDcyCg==
+--------------AC1045603A2CDD98CBA86E36--
