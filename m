@@ -1,34 +1,34 @@
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA5145028;
-	Sat, 24 Feb 2024 14:59:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6290145033;
+	Sat, 24 Feb 2024 15:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708786791; cv=none; b=L7UoN+YTR1F/X1YbRDaQRib4/8GWaGYME6esbgGl8OQ8IT0YaEuqP+caE7XKhcxWfqOZtNmqhErKwX+ZLgHXzp1E+VaMK4WF9RLDCWLTU6hwYjIP8UTdAYBPswsO5nSG64Cn2/czg1cfZja6SQfijjTmxH1w1ljsVI8tLEalfw8=
+	t=1708787848; cv=none; b=sey7UNfVmIk/OeRFAiyqa45vuPXe7NdGhpdKsEBgbg7PWJvrLw42/1jBkcYwgBHL6hWMTthc2Q30E1/vvhnPr/S8nYMbTlsjhOGZsp+6tPYUy3v5tQ5uMLCtmaJEKarzg6wzqny0NGdOKBatHDhoRsyMv+524/8RegJI1vrGtcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708786791; c=relaxed/simple;
-	bh=GXwJdQKczfCri7kuRFyPAfWFwpv9CLz1xjPSkkrGDBE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t+1uYnxo3vtmbikTMNvj6PmRoowD6sOrqc0n1+paCRpZiklkudkuZJ2zyICkuCNwyo+fSRXb9DLKFgRlZ00JZkVK9Xidrd0J9Gb7WcfMQK5USDjAtrWsLPVIUiLyOr7mXIbOF9bovz4WgEPGU9XtoRD17ruH2v/Jmyc2oXLgi1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=ZtoPfK2K; arc=none smtp.client-ip=212.227.17.22
+	s=arc-20240116; t=1708787848; c=relaxed/simple;
+	bh=/Ai4/Q7V0MmW3HXmJ0iBatCL69uChHgdEWoGbQ5ItZk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mNVBnz3RLy4v8a/rbUowr85M/DNW9WdsC7jZYNHt3LVrciDj2PlR6c9Bx1S7NS2kM+hgWi8YIUuHe1R0DciyAUIUnoZ5evu7tisfiHJYgLL701ZG5x7PqFAdfFTITm2UupZuzZMM3dxUmkVYcW0j+wYMzAYZtF7hkzKRE66C9gE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=du0Gha4L; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="ZtoPfK2K"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="du0Gha4L"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1708786779; x=1709391579; i=erick.archer@gmx.com;
-	bh=GXwJdQKczfCri7kuRFyPAfWFwpv9CLz1xjPSkkrGDBE=;
+	s=s31663417; t=1708787837; x=1709392637; i=erick.archer@gmx.com;
+	bh=/Ai4/Q7V0MmW3HXmJ0iBatCL69uChHgdEWoGbQ5ItZk=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=ZtoPfK2KUcgeUx7BrZozE9lFn3/vLA49E1ChYV/y6jnopnfYH+tOI8iazTwx//Td
-	 wM0/HJLVUjXkGN/+C+o+ov2121Pe30hfUWJLsMOo1bgJMcKsb1danFAni1PZUn0ZS
-	 8JqKFjYQ5bd3v6J2YYVVCd62ZWNUg35zEtJGFPdXnKJC8P5sl/GTmI1J83umU7wVd
-	 bGxzy/EFjvdkIgL71nmgiw2rOWjxfhAskzyRAO974PnZ6q7lHD5OOtfSsur29MSC1
-	 qYFbxRW7jFxhNDCdMVWObC85tHESs+z/6leKvf9JNrxO3kRIb7151W6minzbWZxAF
-	 YNkpgm6TTlk2dyxwNA==
+	b=du0Gha4LrGTzIR1VjWKkV4JBqPp0HYcNFkXAKgp+S3lsY8SwP7umMaZ78i9Stqu7
+	 qpRWmhdqGKhlG0Ep3tVnIGZ79/1OqGqOCI7q7TTcsbM0L2jO1zBEgkjz+iX73g8gS
+	 KI5IM7kAtv6MY1hChDP3fLhNfWUjh+LiBluTRmsfbwIIX8MtVicXKEutSwK5xHIVk
+	 flrMqemW8jr/1ZXdmfy4mmPQejNBfPvMImaRNVSy5fTKK+04BwtaOC6rtw+9SEOaB
+	 FxE4BUzgqR+zVXD+CsMGwTw6dTatuc5yEQDYA+Nao6BrDDSWk04nP8Y5OcIT2mFlz
+	 MPYk2qFTBaDYbYYNhA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1N7i8Y-1qrCvp1g1K-014ieB; Sat, 24 Feb 2024 15:59:39 +0100
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MA7Ka-1rjyZb2BfW-00Bahh; Sat, 24 Feb 2024 16:17:17 +0100
 From: Erick Archer <erick.archer@gmx.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>,
 	Brian Foster <bfoster@redhat.com>,
@@ -39,8 +39,8 @@ Cc: Erick Archer <erick.archer@gmx.com>,
 	linux-kernel@vger.kernel.org,
 	linux-hardening@vger.kernel.org
 Subject: [PATCH] bcachefs: Prefer struct_size over open coded arithmetic
-Date: Sat, 24 Feb 2024 15:59:24 +0100
-Message-Id: <20240224145924.7468-1-erick.archer@gmx.com>
+Date: Sat, 24 Feb 2024 16:16:58 +0100
+Message-Id: <20240224151658.8272-1-erick.archer@gmx.com>
 X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
@@ -49,34 +49,38 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JUoiwKLF8APLvcFjy9rt3Tj1Yh62YBlzwLpZ/tX95GiVy7Ykwsz
- YwEEQ6AfKP+TnH3k4Rp7Qi6vq3AZ1859s1mPKceixyerZ41+mVf0FRhXy5DqKPTcMPR0Pkw
- e2qb9Hks9yUrs3pnRzHu3VbBfwC0u9B64K4xvsZJbSsJJD2NFmYNBD+ONjdkIWaQ1c4eMZP
- jhDTGAGZ5VbB2pNVHUXiw==
+X-Provags-ID: V03:K1:GZsbmeNaBr0xi5hRenKf+OJZBVs7DEAPKRYS0/rm+w2gCsyic61
+ sKzfT0VaJ1bEMsEzPS3S/0HJHtkPltI5lPA6sMy5wVX9Ijd+Q4xe3KPZMGRf3ml8q8jXU/A
+ fBM/4SBTCpwMSd0FHnXym5s/sL97mYr+tqflhcsJxu2CwINqeMfx+pQYNNNTFBVW6humkHu
+ 8+J5Txcy1n2/uiIkPmS8w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:u5njqjBC44s=;+Up8iJIUClOpGuh2fvPIJnlxf1q
- y/NJQQvQ8X6Meif7skAMa8oZOjB1bjBc76N5VMaZDyNUMU0ZiMvXxkLtEvmLWq6O8Thzp38zp
- hfuCcdDsOrbN5Y3E+Rsefo9JfeihJ9zuMmOC7UKABoSAKqVdqPamv0PiyoNGwaisAPc7iQVeL
- vqTBOptLQoFYOljJpF3m+vnybexTdNCSB5H+Yr3GuRtA6CE623dUcgQW/TjoZ7fVb7pa+mRtC
- aQBfI5V19rj63Gs/h48Mn0yrfdYHk7feTt5gpGH8Gv3KRC+JuVmHBAmNx42dFniqkpaCofH89
- GBpApAtghWNtjlhGKXlurYu4UM9p2DrqLpmmu8LXoIFOXkbG1dUWSUdRamuoCUA6Yb0YXPsnN
- SgWtUFj7wRpLaXo3rpNF3cw+dnIrwc/oNiXAvGSZ8S8boNCj2uS4ir4aiChmRYF53+vzO44YU
- Q6qdcOLRMj7U5zDUGw6H0/14v3MnL3GL43ZSoE7AZU4y0jlJSs9k1O0r7/0bQiOuXlHnIm3m+
- IKrF1KvVjfhaAt/4XY6tbDiPq4RXJH708HT3JLvp5IsnisDcwPv/TQH+FMYUvPzEx8iQZ1PmH
- ff5xQLe2nkZVcEG8iz7CbBqrwTHPyaqrEdWq7L6/fYxzx0iEEbKiZXUtMJkRRdFam3g8pTCzw
- NaYH8Zm5vpBGI1/o6p7eLrunrQFIvUmKAuTOkIoTC8kkuOIlc2Zo7auKb+bl6H7Mx06VZMdMz
- UPIJI8Hv1WtFvtVxHMFC0V245dcgCZXOOJttmsUjo5WGvl5d88wadNZEIq9TP/SvyDWef6D39
- mJ2YtKlTKBeyxtZ7yQWhSpkVYIgq/UfGR5pxF6lDH/AVs=
+UI-OutboundReport: notjunk:1;M01:P0:14ZWeun70VM=;TIYijmmwBT7pG+DaqiuWItPhcrR
+ /jGH1gmGcYxnW87plh7Zp11dc3WxGVEO97WpWyDhrGNq9kxH20NvUNJqDcU68mE+z/hO+hFJP
+ +DGt+W0bKJXjqomZtkKW57QQYbyQ4Lr+a/thOD9MR+wC5OB39LpDaD+oQ4xg6CoAf28bvcmda
+ CvwGmkTAAy8ebfUOq1TnjaUjGU34gWKOL8+PL0s8l2+dqU+91TEMtwgYcdMLPTWkH5DEM1iC5
+ TBIK42NpvSk8za3ioZTjnGsozgnaxD3t4aR2WkpeMX2nBfIuaurJItNCMdr0ABqpbPB0LLzv1
+ 61BZlCmZzjppZE6oPdv34YyVaB4tgxQGyiu35Nrx8xcXixLtnHrnT/PvARLp1zaRx6gan6jpu
+ yaU4/Z1eoRWttKnzMqTfE0XXtdh/cZNqIcngNl/8tH1eOGttpFo5Sd4eyAconTt3R8zR4TsSv
+ 7dZLyaxNrOVk29f7pqIRm80ruENzAFKZ4iRcJHBE7xAgUvgy35duHfkynyatpqIZRsPJLg4sy
+ DuBhJ3EjeouU7DlyHEYB1uXToSeEFt/VAnzXDgs5VJvQ+ajtHmj9W6qH8OclwLW3WvZioPzVI
+ 7DHr4kXWF4HhB0BAvazwMVdGxFpF2zNp2VIuDnI8Gn5ZYP7m8+oizkqQcpu5vU+nfnkz+ewHi
+ 9mEjwfjooGigD10VYkUwBuEH61QMQyFj6/tkbVdXoJaDYQva2wiZq6C5tHpVS6F7jVTayzqCS
+ 1x8iFqGGvuv4jHtq+HoEAKex6c2Sk7zqlIjLA4mzxiCyGm5O2kVh6aBnZ0loMJLKZaXmFWJXu
+ MuGIoefpWN7I62/e7nQ8XoM0c1oImJ0Ut9kOrDEiBPXSk=
 
 This is an effort to get rid of all multiplications from allocation
 functions in order to prevent integer overflows [1][2].
 
-As the "op" variable is a pointer to "struct promote_op" and this
-structure ends in a flexible array:
+As the "t" variable is a pointer to "struct journal_seq_blacklist_table"
+and this structure ends in a flexible array:
 
-struct promote_op {
+struct journal_seq_blacklist_table {
 	[...]
-	struct bio_vec bi_inline_vecs[];
+	struct journal_seq_blacklist_table_entry {
+		u64		start;
+		u64		end;
+		bool		dirty;
+	}			entries[];
 };
 
 the preferred way in the kernel is to use the struct_size() helper to
@@ -90,24 +94,24 @@ coded-arithmetic-in-allocator-arguments [1]
 Link: https://github.com/KSPP/linux/issues/160 [2]
 Signed-off-by: Erick Archer <erick.archer@gmx.com>
 =2D--
- fs/bcachefs/io_read.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/bcachefs/journal_seq_blacklist.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
-index dce136cd2271..01beab55c6b3 100644
-=2D-- a/fs/bcachefs/io_read.c
-+++ b/fs/bcachefs/io_read.c
-@@ -174,7 +174,7 @@ static struct promote_op *__promote_alloc(struct btree=
-_trans *trans,
- 	if (!bch2_write_ref_tryget(c, BCH_WRITE_REF_promote))
- 		return ERR_PTR(-BCH_ERR_nopromote_no_writes);
+diff --git a/fs/bcachefs/journal_seq_blacklist.c b/fs/bcachefs/journal_seq=
+_blacklist.c
+index 024c9b1b323f..2c2490aa15fe 100644
+=2D-- a/fs/bcachefs/journal_seq_blacklist.c
++++ b/fs/bcachefs/journal_seq_blacklist.c
+@@ -165,8 +165,7 @@ int bch2_blacklist_table_initialize(struct bch_fs *c)
+ 	if (!bl)
+ 		return 0;
 
--	op =3D kzalloc(sizeof(*op) + sizeof(struct bio_vec) * pages, GFP_KERNEL)=
-;
-+	op =3D kzalloc(struct_size(op, bi_inline_vecs, pages), GFP_KERNEL);
- 	if (!op) {
- 		ret =3D -BCH_ERR_nopromote_enomem;
- 		goto err;
+-	t =3D kzalloc(sizeof(*t) + sizeof(t->entries[0]) * nr,
+-		    GFP_KERNEL);
++	t =3D kzalloc(struct_size(t, entries, nr), GFP_KERNEL);
+ 	if (!t)
+ 		return -BCH_ERR_ENOMEM_blacklist_table_init;
+
 =2D-
 2.25.1
 
