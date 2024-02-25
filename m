@@ -1,41 +1,41 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69AB4C96
-	for <linux-bcachefs@vger.kernel.org>; Sun, 25 Feb 2024 02:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D488C05
+	for <linux-bcachefs@vger.kernel.org>; Sun, 25 Feb 2024 02:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708828720; cv=none; b=ZUn8AB9vLOAQqGO3j/2omAdufXdKwFZRXcIJX0Aeh0XqqUHE04mylkCuND4iaGWzLtgiVOv/BWDaurkRbO0G+5B3QbFV1yunIkKwqh5sOjy9ex5+qJUqyeiDmrB23zsXORxj79LO7iq0bzd/mnH1YL57et4YGSngdAx7JpR8NzI=
+	t=1708828722; cv=none; b=MCrh0ubuvTjDRQAy7wpSnNTwf+2/K88yUmRu7AxwcqdU3JUFx7AQGOaaQS8PaiSwvTbsfY7++HJw6lX/thYR0LSlCGHEMzbcsLktiQd+vxeT+ahHc0zGxucHipgVSheOXSOyqoAzUkmNtOXCfMdQTabAWAs7hx/kLP4tasYS6gU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708828720; c=relaxed/simple;
-	bh=K1vgmzriFmWvEgJQok9FDXdRbIZtQ7Piq5QxBv6WPqs=;
+	s=arc-20240116; t=1708828722; c=relaxed/simple;
+	bh=WhdKHqtzSdKzXSywa8/Kdpjd1qyDu5Tei06epJX7qUk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ky1eSLarP+l7wG3/EfYXPgBXfNAljYsFoYfhTSR6D3pCrn1tEXnW7sYkJaJt8Gt3A8U/5HgwiEFlvBwhGfpL2VviVIkJMVNHGOI+GwCtz5CFr3JQ5NYhQKW/JIdagsAGB2IYA7IHN62mll/1RkfrvplyFXN+vDdmQP9Cjq2pNJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LVoDiof7; arc=none smtp.client-ip=95.215.58.173
+	 MIME-Version; b=SbvhgwpQyS/hhx0M/Nyss3j5HswQZoi64SxpRsXwvx2YB9LHMBy/Jb3s+381NkMJJW7kz3Pmk+tFjDYweQjl1U5yaC7jl65TTH3rUnHcC11bDPRgxKFk9hAoRaV++ce+YMD/jLx3V17WYm2OnzGBKJEJorqwntjGpdGmLxZAugc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dGAOx/GL; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LVoDiof7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dGAOx/GL"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708828717;
+	t=1708828718;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tb3shMFnBEZZ4S6E3i1HVvq3aYHajiaSmFjcTi21EZM=;
-	b=LVoDiof7IIb3DSJ7OEkVgngw1g0y5zhCbQNc0/k7+sYocgA3CXFJfK1hTc3qxYNUeH5f1i
-	b+x+CSFz7sezKiLEr0q9+DVnPDfNdUrscbrPF4o/VdX0nxV3op4z0niYlDermoB6Hq0IgJ
-	hLQNNzDYbMheESPmlyu9rVc6RaMSB3M=
+	bh=DrOHx5wMYDRZo/YqdsvPnCBIdET0WVtHDJeAbRuqJI0=;
+	b=dGAOx/GLUxtEdliB0UdEMTiotkvOejJNPfJ61o3fMSJjoewuwiT3emDwd6XodW30MavCZb
+	jB3slYjO1Uy9H72d5KMb9yXufezoiKDtmz1+I1cAzdDELRlh7FrPEa/l37qal7/ruDAtS/
+	9hYMIPbSuygjbJL+DJPEvhfCmIdEQ1o=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
 	djwong@kernel.org,
 	bfoster@redhat.com
-Subject: [PATCH 03/21] bcachefs: btree write buffer knows how to accumulate bch_accounting keys
-Date: Sat, 24 Feb 2024 21:38:05 -0500
-Message-ID: <20240225023826.2413565-4-kent.overstreet@linux.dev>
+Subject: [PATCH 05/21] bcachefs: dev_usage updated by new accounting
+Date: Sat, 24 Feb 2024 21:38:07 -0500
+Message-ID: <20240225023826.2413565-6-kent.overstreet@linux.dev>
 In-Reply-To: <20240225023826.2413565-1-kent.overstreet@linux.dev>
 References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -47,195 +47,248 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Teach the btree write buffer how to accumulate accounting keys - instead
-of having the newer key overwrite the older key as we do with other
-updates, we need to add them together.
+Reading disk accounting now requires an eytzinger lookup (see:
+bch2_accounting_mem_read()), but the per-device counters are used
+frequently enough that we'd like to still be able to read them with just
+a percpu sum, as in the old code.
 
-Also, add a flag so that write buffer flush knows when journal replay is
-finished flushing accounting, and teach it to hold accounting keys until
-that flag is set.
+This patch special cases the device counters; when we update in-memory
+accounting we also update the old style percpu counters if it's a deice
+counter update.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/bcachefs.h           |  1 +
- fs/bcachefs/btree_write_buffer.c | 66 +++++++++++++++++++++++++++-----
- fs/bcachefs/recovery.c           |  3 ++
- 3 files changed, 61 insertions(+), 9 deletions(-)
+ fs/bcachefs/bcachefs.h        |  3 +--
+ fs/bcachefs/btree_gc.c        |  2 +-
+ fs/bcachefs/buckets.c         | 36 +++++------------------------------
+ fs/bcachefs/buckets_types.h   |  2 +-
+ fs/bcachefs/disk_accounting.c | 14 ++++++++++++++
+ fs/bcachefs/disk_accounting.h | 11 ++++++++++-
+ fs/bcachefs/recovery.c        | 14 --------------
+ fs/bcachefs/sb-clean.c        | 17 -----------------
+ 8 files changed, 32 insertions(+), 67 deletions(-)
 
 diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index 62812fc1cad0..9a24989c9a6a 100644
+index 18c00051a8f6..91c40fde1925 100644
 --- a/fs/bcachefs/bcachefs.h
 +++ b/fs/bcachefs/bcachefs.h
-@@ -616,6 +616,7 @@ struct bch_dev {
+@@ -576,8 +576,7 @@ struct bch_dev {
+ 	unsigned long		*buckets_nouse;
+ 	struct rw_semaphore	bucket_lock;
  
- #define BCH_FS_FLAGS()			\
- 	x(started)			\
-+	x(accounting_replay_done)	\
- 	x(may_go_rw)			\
- 	x(rw)				\
- 	x(was_rw)			\
-diff --git a/fs/bcachefs/btree_write_buffer.c b/fs/bcachefs/btree_write_buffer.c
-index b77e7b382b66..002a0762fc85 100644
---- a/fs/bcachefs/btree_write_buffer.c
-+++ b/fs/bcachefs/btree_write_buffer.c
-@@ -5,6 +5,7 @@
- #include "btree_update.h"
- #include "btree_update_interior.h"
- #include "btree_write_buffer.h"
-+#include "disk_accounting.h"
- #include "error.h"
- #include "journal.h"
- #include "journal_io.h"
-@@ -123,7 +124,9 @@ static noinline int wb_flush_one_slowpath(struct btree_trans *trans,
+-	struct bch_dev_usage		*usage_base;
+-	struct bch_dev_usage __percpu	*usage[JOURNAL_BUF_NR];
++	struct bch_dev_usage __percpu	*usage;
+ 	struct bch_dev_usage __percpu	*usage_gc;
  
- static inline int wb_flush_one(struct btree_trans *trans, struct btree_iter *iter,
- 			       struct btree_write_buffered_key *wb,
--			       bool *write_locked, size_t *fast)
-+			       bool *write_locked,
-+			       bool *accounting_accumulated,
-+			       size_t *fast)
+ 	/* Allocator: */
+diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
+index 2dfa7ca95fc0..93826749356e 100644
+--- a/fs/bcachefs/btree_gc.c
++++ b/fs/bcachefs/btree_gc.c
+@@ -1233,7 +1233,7 @@ static int bch2_gc_done(struct bch_fs *c,
+ 		bch2_fs_usage_acc_to_base(c, i);
+ 
+ 	__for_each_member_device(c, ca) {
+-		struct bch_dev_usage *dst = ca->usage_base;
++		struct bch_dev_usage *dst = this_cpu_ptr(ca->usage);
+ 		struct bch_dev_usage *src = (void *)
+ 			bch2_acc_percpu_u64s((u64 __percpu *) ca->usage_gc,
+ 					     dev_usage_u64s());
+diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
+index fb915c1b7844..7540486ae266 100644
+--- a/fs/bcachefs/buckets.c
++++ b/fs/bcachefs/buckets.c
+@@ -69,15 +69,8 @@ void bch2_fs_usage_initialize(struct bch_fs *c)
+ 
+ void bch2_dev_usage_read_fast(struct bch_dev *ca, struct bch_dev_usage *usage)
  {
- 	struct btree_path *path;
- 	int ret;
-@@ -136,6 +139,16 @@ static inline int wb_flush_one(struct btree_trans *trans, struct btree_iter *ite
- 	if (ret)
- 		return ret;
- 
-+	if (!*accounting_accumulated && wb->k.k.type == KEY_TYPE_accounting) {
-+		struct bkey u;
-+		struct bkey_s_c k = bch2_btree_path_peek_slot_exact(btree_iter_path(trans, iter), &u);
-+
-+		if (k.k->type == KEY_TYPE_accounting)
-+			bch2_accounting_accumulate(bkey_i_to_accounting(&wb->k),
-+						   bkey_s_c_to_accounting(k));
-+	}
-+	*accounting_accumulated = true;
-+
- 	/*
- 	 * We can't clone a path that has write locks: unshare it now, before
- 	 * set_pos and traverse():
-@@ -248,8 +261,9 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
- 	struct journal *j = &c->journal;
- 	struct btree_write_buffer *wb = &c->btree_write_buffer;
- 	struct btree_iter iter = { NULL };
--	size_t skipped = 0, fast = 0, slowpath = 0;
-+	size_t overwritten = 0, fast = 0, slowpath = 0, could_not_insert = 0;
- 	bool write_locked = false;
-+	bool accounting_replay_done = test_bit(BCH_FS_accounting_replay_done, &c->flags);
- 	int ret = 0;
- 
- 	bch2_trans_unlock(trans);
-@@ -284,17 +298,29 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
- 
- 	darray_for_each(wb->sorted, i) {
- 		struct btree_write_buffered_key *k = &wb->flushing.keys.data[i->idx];
-+		bool accounting_accumulated = false;
- 
- 		for (struct wb_key_ref *n = i + 1; n < min(i + 4, &darray_top(wb->sorted)); n++)
- 			prefetch(&wb->flushing.keys.data[n->idx]);
- 
- 		BUG_ON(!k->journal_seq);
- 
-+		if (!accounting_replay_done &&
-+		    k->k.k.type == KEY_TYPE_accounting) {
-+			slowpath++;
-+			continue;
-+		}
-+
- 		if (i + 1 < &darray_top(wb->sorted) &&
- 		    wb_key_eq(i, i + 1)) {
- 			struct btree_write_buffered_key *n = &wb->flushing.keys.data[i[1].idx];
- 
--			skipped++;
-+			if (k->k.k.type == KEY_TYPE_accounting &&
-+			    n->k.k.type == KEY_TYPE_accounting)
-+				bch2_accounting_accumulate(bkey_i_to_accounting(&n->k),
-+							   bkey_i_to_s_c_accounting(&k->k));
-+
-+			overwritten++;
- 			n->journal_seq = min_t(u64, n->journal_seq, k->journal_seq);
- 			k->journal_seq = 0;
- 			continue;
-@@ -325,7 +351,8 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
- 				break;
- 			}
- 
--			ret = wb_flush_one(trans, &iter, k, &write_locked, &fast);
-+			ret = wb_flush_one(trans, &iter, k, &write_locked,
-+					   &accounting_accumulated, &fast);
- 			if (!write_locked)
- 				bch2_trans_begin(trans);
- 		} while (bch2_err_matches(ret, BCH_ERR_transaction_restart));
-@@ -361,8 +388,15 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
- 			if (!i->journal_seq)
- 				continue;
- 
--			bch2_journal_pin_update(j, i->journal_seq, &wb->flushing.pin,
--						bch2_btree_write_buffer_journal_flush);
-+			if (!accounting_replay_done &&
-+			    i->k.k.type == KEY_TYPE_accounting) {
-+				could_not_insert++;
-+				continue;
-+			}
-+
-+			if (!could_not_insert)
-+				bch2_journal_pin_update(j, i->journal_seq, &wb->flushing.pin,
-+							bch2_btree_write_buffer_journal_flush);
- 
- 			bch2_trans_begin(trans);
- 
-@@ -375,13 +409,27 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
- 					btree_write_buffered_insert(trans, i));
- 			if (ret)
- 				goto err;
-+
-+			i->journal_seq = 0;
-+		}
-+
-+		if (could_not_insert) {
-+			struct btree_write_buffered_key *dst = wb->flushing.keys.data;
-+
-+			darray_for_each(wb->flushing.keys, i)
-+				if (i->journal_seq)
-+					*dst++ = *i;
-+			wb->flushing.keys.nr = dst - wb->flushing.keys.data;
- 		}
- 	}
- err:
-+	if (ret || !could_not_insert) {
-+		bch2_journal_pin_drop(j, &wb->flushing.pin);
-+		wb->flushing.keys.nr = 0;
-+	}
-+
- 	bch2_fs_fatal_err_on(ret, c, "%s: insert error %s", __func__, bch2_err_str(ret));
--	trace_write_buffer_flush(trans, wb->flushing.keys.nr, skipped, fast, 0);
--	bch2_journal_pin_drop(j, &wb->flushing.pin);
--	wb->flushing.keys.nr = 0;
-+	trace_write_buffer_flush(trans, wb->flushing.keys.nr, overwritten, fast, 0);
- 	return ret;
+-	struct bch_fs *c = ca->fs;
+-	unsigned seq, i, u64s = dev_usage_u64s();
+-
+-	do {
+-		seq = read_seqcount_begin(&c->usage_lock);
+-		memcpy(usage, ca->usage_base, u64s * sizeof(u64));
+-		for (i = 0; i < ARRAY_SIZE(ca->usage); i++)
+-			acc_u64s_percpu((u64 *) usage, (u64 __percpu *) ca->usage[i], u64s);
+-	} while (read_seqcount_retry(&c->usage_lock, seq));
++	memset(usage, 0, sizeof(*usage));
++	acc_u64s_percpu((u64 *) usage, (u64 __percpu *) ca->usage, dev_usage_u64s());
  }
  
+ u64 bch2_fs_usage_read_one(struct bch_fs *c, u64 *v)
+@@ -147,16 +140,6 @@ void bch2_fs_usage_acc_to_base(struct bch_fs *c, unsigned idx)
+ 			(u64 __percpu *) c->usage[idx], u64s);
+ 	percpu_memset(c->usage[idx], 0, u64s * sizeof(u64));
+ 
+-	rcu_read_lock();
+-	for_each_member_device_rcu(c, ca, NULL) {
+-		u64s = dev_usage_u64s();
+-
+-		acc_u64s_percpu((u64 *) ca->usage_base,
+-				(u64 __percpu *) ca->usage[idx], u64s);
+-		percpu_memset(ca->usage[idx], 0, u64s * sizeof(u64));
+-	}
+-	rcu_read_unlock();
+-
+ 	write_seqcount_end(&c->usage_lock);
+ 	preempt_enable();
+ }
+@@ -1214,23 +1197,14 @@ void bch2_dev_buckets_free(struct bch_dev *ca)
+ {
+ 	kvfree(ca->buckets_nouse);
+ 	kvfree(rcu_dereference_protected(ca->bucket_gens, 1));
+-
+-	for (unsigned i = 0; i < ARRAY_SIZE(ca->usage); i++)
+-		free_percpu(ca->usage[i]);
+-	kfree(ca->usage_base);
++	free_percpu(ca->usage);
+ }
+ 
+ int bch2_dev_buckets_alloc(struct bch_fs *c, struct bch_dev *ca)
+ {
+-	ca->usage_base = kzalloc(sizeof(struct bch_dev_usage), GFP_KERNEL);
+-	if (!ca->usage_base)
++	ca->usage = alloc_percpu(struct bch_dev_usage);
++	if (!ca->usage)
+ 		return -BCH_ERR_ENOMEM_usage_init;
+ 
+-	for (unsigned i = 0; i < ARRAY_SIZE(ca->usage); i++) {
+-		ca->usage[i] = alloc_percpu(struct bch_dev_usage);
+-		if (!ca->usage[i])
+-			return -BCH_ERR_ENOMEM_usage_init;
+-	}
+-
+ 	return bch2_dev_buckets_resize(c, ca, ca->mi.nbuckets);
+ }
+diff --git a/fs/bcachefs/buckets_types.h b/fs/bcachefs/buckets_types.h
+index 6a31740222a7..baa7e0924390 100644
+--- a/fs/bcachefs/buckets_types.h
++++ b/fs/bcachefs/buckets_types.h
+@@ -33,7 +33,7 @@ struct bucket_gens {
+ };
+ 
+ struct bch_dev_usage {
+-	struct {
++	struct bch_dev_usage_type {
+ 		u64		buckets;
+ 		u64		sectors; /* _compressed_ sectors: */
+ 		/*
+diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+index 327c586ac661..e0114d8eb5a8 100644
+--- a/fs/bcachefs/disk_accounting.c
++++ b/fs/bcachefs/disk_accounting.c
+@@ -330,6 +330,20 @@ int bch2_accounting_read(struct bch_fs *c)
+ 		case BCH_DISK_ACCOUNTING_replicas:
+ 			fs_usage_data_type_to_base(usage, k.replicas.data_type, v[0]);
+ 			break;
++		case BCH_DISK_ACCOUNTING_dev_data_type:
++			if (bch2_dev_exists2(c, k.dev_data_type.dev)) {
++				struct bch_dev *ca = bch_dev_bkey_exists(c, k.dev_data_type.dev);
++				struct bch_dev_usage_type __percpu *d = &ca->usage->d[k.dev_data_type.data_type];
++
++				percpu_u64_set(&d->buckets,	v[0]);
++				percpu_u64_set(&d->sectors,	v[1]);
++				percpu_u64_set(&d->fragmented,	v[2]);
++
++				if (k.dev_data_type.data_type == BCH_DATA_sb ||
++				    k.dev_data_type.data_type == BCH_DATA_journal)
++					usage->hidden += v[0] * ca->mi.bucket_size;
++			}
++			break;
+ 		}
+ 	}
+ 	preempt_enable();
+diff --git a/fs/bcachefs/disk_accounting.h b/fs/bcachefs/disk_accounting.h
+index 5fd053a819df..a8526bf43207 100644
+--- a/fs/bcachefs/disk_accounting.h
++++ b/fs/bcachefs/disk_accounting.h
+@@ -3,6 +3,7 @@
+ #define _BCACHEFS_DISK_ACCOUNTING_H
+ 
+ #include <linux/eytzinger.h>
++#include "sb-members.h"
+ 
+ static inline void bch2_u64s_neg(u64 *v, unsigned nr)
+ {
+@@ -126,6 +127,7 @@ static inline int __bch2_accounting_mem_add(struct bch_fs *c, struct bkey_s_c_ac
+ 
+ static inline int bch2_accounting_mem_add(struct btree_trans *trans, struct bkey_s_c_accounting a)
+ {
++	struct bch_fs *c = trans->c;
+ 	struct disk_accounting_key acc_k;
+ 	bpos_to_disk_accounting_key(&acc_k, a.k->p);
+ 
+@@ -136,8 +138,15 @@ static inline int bch2_accounting_mem_add(struct btree_trans *trans, struct bkey
+ 	case BCH_DISK_ACCOUNTING_replicas:
+ 		fs_usage_data_type_to_base(&trans->fs_usage_delta, acc_k.replicas.data_type, a.v->d[0]);
+ 		break;
++	case BCH_DISK_ACCOUNTING_dev_data_type: {
++		struct bch_dev *ca = bch_dev_bkey_exists(c, acc_k.dev_data_type.dev);
++
++		this_cpu_add(ca->usage->d[acc_k.dev_data_type.data_type].buckets, a.v->d[0]);
++		this_cpu_add(ca->usage->d[acc_k.dev_data_type.data_type].sectors, a.v->d[1]);
++		this_cpu_add(ca->usage->d[acc_k.dev_data_type.data_type].fragmented, a.v->d[2]);
++	}
+ 	}
+-	return __bch2_accounting_mem_add(trans->c, a);
++	return __bch2_accounting_mem_add(c, a);
+ }
+ 
+ static inline void bch2_accounting_mem_read_counters(struct bch_fs *c,
 diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-index 6829d80bd181..b8289af66c8e 100644
+index 140393256f32..5a0ab3920382 100644
 --- a/fs/bcachefs/recovery.c
 +++ b/fs/bcachefs/recovery.c
-@@ -228,6 +228,8 @@ static int bch2_journal_replay(struct bch_fs *c)
- 			goto err;
+@@ -368,20 +368,6 @@ static int journal_replay_entry_early(struct bch_fs *c,
+ 					      le64_to_cpu(u->v));
+ 		break;
+ 	}
+-	case BCH_JSET_ENTRY_dev_usage: {
+-		struct jset_entry_dev_usage *u =
+-			container_of(entry, struct jset_entry_dev_usage, entry);
+-		struct bch_dev *ca = bch_dev_bkey_exists(c, le32_to_cpu(u->dev));
+-		unsigned i, nr_types = jset_entry_dev_usage_nr_types(u);
+-
+-		for (i = 0; i < min_t(unsigned, nr_types, BCH_DATA_NR); i++) {
+-			ca->usage_base->d[i].buckets	= le64_to_cpu(u->d[i].buckets);
+-			ca->usage_base->d[i].sectors	= le64_to_cpu(u->d[i].sectors);
+-			ca->usage_base->d[i].fragmented	= le64_to_cpu(u->d[i].fragmented);
+-		}
+-
+-		break;
+-	}
+ 	case BCH_JSET_ENTRY_blacklist: {
+ 		struct jset_entry_blacklist *bl_entry =
+ 			container_of(entry, struct jset_entry_blacklist, entry);
+diff --git a/fs/bcachefs/sb-clean.c b/fs/bcachefs/sb-clean.c
+index 5980ba2563fe..a7f2cc774492 100644
+--- a/fs/bcachefs/sb-clean.c
++++ b/fs/bcachefs/sb-clean.c
+@@ -228,23 +228,6 @@ void bch2_journal_super_entries_add_common(struct bch_fs *c,
+ 			      "embedded variable length struct");
  	}
  
-+	set_bit(BCH_FS_accounting_replay_done, &c->flags);
-+
- 	/*
- 	 * First, attempt to replay keys in sorted order. This is more
- 	 * efficient - better locality of btree access -  but some might fail if
-@@ -1204,6 +1206,7 @@ int bch2_fs_initialize(struct bch_fs *c)
- 	 * set up the journal.pin FIFO and journal.cur pointer:
- 	 */
- 	bch2_fs_journal_start(&c->journal, 1);
-+	set_bit(BCH_FS_accounting_replay_done, &c->flags);
- 	bch2_journal_set_replay_done(&c->journal);
+-	for_each_member_device(c, ca) {
+-		unsigned b = sizeof(struct jset_entry_dev_usage) +
+-			sizeof(struct jset_entry_dev_usage_type) * BCH_DATA_NR;
+-		struct jset_entry_dev_usage *u =
+-			container_of(jset_entry_init(end, b),
+-				     struct jset_entry_dev_usage, entry);
+-
+-		u->entry.type = BCH_JSET_ENTRY_dev_usage;
+-		u->dev = cpu_to_le32(ca->dev_idx);
+-
+-		for (unsigned i = 0; i < BCH_DATA_NR; i++) {
+-			u->d[i].buckets = cpu_to_le64(ca->usage_base->d[i].buckets);
+-			u->d[i].sectors	= cpu_to_le64(ca->usage_base->d[i].sectors);
+-			u->d[i].fragmented = cpu_to_le64(ca->usage_base->d[i].fragmented);
+-		}
+-	}
+-
+ 	percpu_up_read(&c->mark_lock);
  
- 	ret = bch2_fs_read_write_early(c);
+ 	for (unsigned i = 0; i < 2; i++) {
 -- 
 2.43.0
 
