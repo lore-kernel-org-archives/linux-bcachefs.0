@@ -1,40 +1,43 @@
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C832FB2
-	for <linux-bcachefs@vger.kernel.org>; Sun, 25 Feb 2024 02:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160DC4414
+	for <linux-bcachefs@vger.kernel.org>; Sun, 25 Feb 2024 02:38:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708828718; cv=none; b=ek/IytnRxe96IFxBG8YJCbpLPpcUG9te69sRqlaPcVE46kc/qiTPITny7lh9g/LpsasL3Re6r7yhvMhSV64TJJXixqpM16+Qe8HlJsNNeP+PJ8PD1DxHFN6CtSl3ZhKNZ1UdihgSb7mgRnFUQXTANpT0Gq0aDQIwbB92CnptugY=
+	t=1708828720; cv=none; b=V5c+r+gQExHLEuX+PbhfD1JFiDGTPpNQCF62nRHqhVPvi42zYqNsbNAFz3dM+Huf7Jv9Y57LUGPbF1lgCO4mC8vEJ5pNh5cg1CIMr3HL9gPLyhbuccQX/Gph6Y1BGAxs/CUmVxR8taNeqhx/BdskiE8g/sIbOb/28jYWnAqYzz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708828718; c=relaxed/simple;
-	bh=JoV9DJ+vFR1r4GaiacG2hqDz+lqO9SZK4X/J6Hh6ANI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nqGsUzXRjZo3RJtrW4RlyNoLMvt2/U1jXhituk6Guyn5i2oZPIIoBbPchyjjfuiVv1v1Zriv3Q2JCdaOn2Vn3Eo0+VoZuBMY2MbRSffPgsHrlFPisTd3ayTWH46Euou98TRnQIlpQaRQWovw4NTkIumjpu/cLDTZtbXnnGJf45s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uvwcLTA/; arc=none smtp.client-ip=95.215.58.189
+	s=arc-20240116; t=1708828720; c=relaxed/simple;
+	bh=TY8NtdnU3pWFnKYN+4BU1L207QW6+D+/TUTduTofl4s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=GAVUmU1vKRYDd5DoOhNQJoWe3r6Yx9T92B5blMfhEq9w8HLVFmPnmiQ4dSL7q0R448T8eRadURq87KtsuOOMIphv6iJJ0xkmnwePwKRY9eDZhwPy3a3tVrGOaAbKK2FPZqw/Dwk79w23zYXDwgOOUKYXic7fJtfMhN8f6isI268=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vpUILZjD; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uvwcLTA/"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vpUILZjD"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708828714;
+	t=1708828716;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=V5+DSdY0aRNEv/2+yTdFbM0tH4++AQae7Dw+EEJHSY8=;
-	b=uvwcLTA/FEYN7cQhp0+DJgmyNTxQzHXzQcPOnzdacjXH9q08bX/38vNHprJikRJ/V1Rn4Z
-	PvREeBNAPNBb39BzEPLVcbpB5A2F6t1yyKPL8b5HDDIQ5tmjq/h69jnBsTULrLBQbrQ4/6
-	l9xrarlLJ5u49AJ9HDVZ+V04c0xldrA=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oAccuhu6Iwsb4yqWKJItHSJ6C2cFFxtNuJ2qW8cn31Q=;
+	b=vpUILZjD67dT5GvnEE+MYqYBvAl2MpVeSAy1+47qjpPmcvPYX9jCSoJkXGK3TostWq241J
+	lZzXyTNOx7Ty/LUv45lJwV4zGe84EdqX0is+ApkUjprA3SK3gWcqXRJZ3JlG/dMUL/qXcv
+	dRKZaO1GOJq/v6T8Sg5/85O++xxJWTM=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
 	djwong@kernel.org,
 	bfoster@redhat.com
-Subject: [PATCH 00/21] bcachefs disk accounting rewrite
-Date: Sat, 24 Feb 2024 21:38:02 -0500
-Message-ID: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+Subject: [PATCH 02/21] bcachefs: Accumulate accounting keys in journal replay
+Date: Sat, 24 Feb 2024 21:38:04 -0500
+Message-ID: <20240225023826.2413565-3-kent.overstreet@linux.dev>
+In-Reply-To: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -44,151 +47,269 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-here it is; the disk accounting rewrite I've been talking about since
-forever.
+Until accounting keys hit the btree, they are deltas, not new versions
+of the existing key; this means we have to teach journal replay to
+accumulate them.
 
-git link:
-https://evilpiepirate.org/git/bcachefs.git/log/?h=bcachefs-disk-accounting-rewrite
+Additionally, the journal doesn't track precisely which entries have
+been flushed to the btree; it only tracks a range of entries that may
+possibly still need to be flushed.
 
-test dashboard (just rebased, results are regenerating as of this
-writing but shouldn't be any regressions left):
-https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-disk-accounting-rewrite
+That means we need to compare accounting keys against the version in the
+btree and only flush updates that are newer.
 
-The old disk accounting scheme was fast, but had some limitations:
+There's another wrinkle with the write buffer: if the write buffer
+starts flushing accounting keys before journal replay has finished
+flushing accounting keys, journal replay will see the version number
+from the new updates and updates from the journal will be lost.
 
- - lack of scalability: it was based on percpu counters additionally
-   sharded by outstanding journal buffer, and then just prior to journal
-   write we'd roll up the counters and add them to the journal entry.
+To avoid this, journal replay has to flush accounting keys first, and
+we'll be adding a flag so that write buffer flush knows to hold
+accounting keys until then.
 
-   But this meant that all counters were added to every journal write,
-   which meant it'd never be able to support per-snapshot counters.
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/btree_journal_iter.c | 23 +++-------
+ fs/bcachefs/btree_journal_iter.h | 15 +++++++
+ fs/bcachefs/btree_trans_commit.c |  9 +++-
+ fs/bcachefs/btree_update.h       | 14 +++++-
+ fs/bcachefs/recovery.c           | 76 +++++++++++++++++++++++++++++++-
+ 5 files changed, 117 insertions(+), 20 deletions(-)
 
- - it was a pain to extend
-   this was why, until now, we didn't have proper compressed accounting,
-   and getting compression ratio required a full btree scan
-
-In the new scheme:
- - every set of counters is a bkey, a key in a btree
-   (BTREE_ID_accounting).
-
-   this means they aren't pinned in the journal
-
- - the key has structure, and is extensible
-   disk_accounting_key is a tagged union, and it's just union'd over
-   bpos
-
- - counters are deltas, until flushed to the underlying btree
-
-   this means counter updates are normal btree updates; the btree write
-   buffer makes counter updates efficient.
-
-Since reading counters from the btree would be expensive - it'd require
-a write buffer flush to get up-to-date counters - we also maintain a
-parallel set of accounting in memory, a bit like the old scheme but
-without the per-journal-buffer sharding. The in memory accounters
-indexed in an eytzinger tree by disk_accounting_key/bpos, with the
-counters themselves being percpu u64s.
-
-Reviewers: do a "is this adequately documented, can I find my way
-around, do things make sense", not line-by-line "does this have bugs".
-
-Compatibility: this is in no way compatible with the old disk accounting
-on disk format, and it's not feasible to write out accounting in the old
-format - that means we have to regenerate accounting when upgrading or
-downgrading past this version.
-
-That should work more or less seamlessly with the most recent compat
-bits (bch_sb_field downgrade, so we can tell older versions what
-recovery psases to run and what to fix); additionally, userspace fsck
-now checks if the kernel bcachefs version better matches the on disk
-version than itself and if so uses the kernle fsck implementation with
-the OFFLINE_FSCK ioctl - so we shouldn't be bouncing back and forth
-between versions if your tools and kernel don't match.
-
-upgrade/downgrade still need a bit more testing, but transparently using
-kernel fsck is well tested as of latest versions.
-
-but: 6.7 users (& possibly 6.8) beware, the sb_downgrade section is in
-6.7 but BCH_IOCTL_OFFLINE_FSCK is not, and backporting that doesn't look
-likely given current -stable process fiasco.
-
-merge ETA - this stuff may make the next merge window; I'd like to get
-per-snapshot-id accounting done with it, that should be the biggest item
-left.
-
-Cheers,
-Kent
-
-Kent Overstreet (21):
-  bcachefs: KEY_TYPE_accounting
-  bcachefs: Accumulate accounting keys in journal replay
-  bcachefs: btree write buffer knows how to accumulate bch_accounting
-    keys
-  bcachefs: Disk space accounting rewrite
-  bcachefs: dev_usage updated by new accounting
-  bcachefs: Kill bch2_fs_usage_initialize()
-  bcachefs: Convert bch2_ioctl_fs_usage() to new accounting
-  bcachefs: kill bch2_fs_usage_read()
-  bcachefs: Kill writing old accounting to journal
-  bcachefs: Delete journal-buf-sharded old style accounting
-  bcachefs: Kill bch2_fs_usage_to_text()
-  bcachefs: Kill fs_usage_online
-  bcachefs: Kill replicas_journal_res
-  bcachefs: Convert gc to new accounting
-  bcachefs: Convert bch2_replicas_gc2() to new accounting
-  bcachefs: bch2_verify_accounting_clean()
-  bcachefs: Eytzinger accumulation for accounting keys
-  bcachefs: bch_acct_compression
-  bcachefs: Convert bch2_compression_stats_to_text() to new accounting
-  bcachefs: bch2_fs_accounting_to_text()
-  bcachefs: bch2_fs_usage_base_to_text()
-
- fs/bcachefs/Makefile                   |   3 +-
- fs/bcachefs/alloc_background.c         | 137 +++--
- fs/bcachefs/alloc_background.h         |   2 +
- fs/bcachefs/bcachefs.h                 |  22 +-
- fs/bcachefs/bcachefs_format.h          |  81 +--
- fs/bcachefs/bcachefs_ioctl.h           |   7 +-
- fs/bcachefs/bkey_methods.c             |   1 +
- fs/bcachefs/btree_gc.c                 | 259 ++++------
- fs/bcachefs/btree_iter.c               |   9 -
- fs/bcachefs/btree_journal_iter.c       |  23 +-
- fs/bcachefs/btree_journal_iter.h       |  15 +
- fs/bcachefs/btree_trans_commit.c       |  71 ++-
- fs/bcachefs/btree_types.h              |   1 -
- fs/bcachefs/btree_update.h             |  22 +-
- fs/bcachefs/btree_write_buffer.c       | 120 ++++-
- fs/bcachefs/btree_write_buffer.h       |  50 +-
- fs/bcachefs/btree_write_buffer_types.h |   2 +
- fs/bcachefs/buckets.c                  | 663 ++++---------------------
- fs/bcachefs/buckets.h                  |  70 +--
- fs/bcachefs/buckets_types.h            |  14 +-
- fs/bcachefs/chardev.c                  |  75 +--
- fs/bcachefs/disk_accounting.c          | 584 ++++++++++++++++++++++
- fs/bcachefs/disk_accounting.h          | 203 ++++++++
- fs/bcachefs/disk_accounting_format.h   | 145 ++++++
- fs/bcachefs/disk_accounting_types.h    |  20 +
- fs/bcachefs/ec.c                       | 166 ++++---
- fs/bcachefs/inode.c                    |  42 +-
- fs/bcachefs/journal_io.c               |  13 +-
- fs/bcachefs/recovery.c                 | 126 +++--
- fs/bcachefs/recovery_types.h           |   1 +
- fs/bcachefs/replicas.c                 | 242 ++-------
- fs/bcachefs/replicas.h                 |  16 +-
- fs/bcachefs/replicas_format.h          |  21 +
- fs/bcachefs/replicas_types.h           |  16 -
- fs/bcachefs/sb-clean.c                 |  62 ---
- fs/bcachefs/sb-downgrade.c             |  12 +-
- fs/bcachefs/sb-errors_types.h          |   4 +-
- fs/bcachefs/super.c                    |  74 ++-
- fs/bcachefs/sysfs.c                    | 109 ++--
- 39 files changed, 1873 insertions(+), 1630 deletions(-)
- create mode 100644 fs/bcachefs/disk_accounting.c
- create mode 100644 fs/bcachefs/disk_accounting.h
- create mode 100644 fs/bcachefs/disk_accounting_format.h
- create mode 100644 fs/bcachefs/disk_accounting_types.h
- create mode 100644 fs/bcachefs/replicas_format.h
-
+diff --git a/fs/bcachefs/btree_journal_iter.c b/fs/bcachefs/btree_journal_iter.c
+index 207dd32e2ecc..164a316d8995 100644
+--- a/fs/bcachefs/btree_journal_iter.c
++++ b/fs/bcachefs/btree_journal_iter.c
+@@ -16,21 +16,6 @@
+  * operations for the regular btree iter code to use:
+  */
+ 
+-static int __journal_key_cmp(enum btree_id	l_btree_id,
+-			     unsigned		l_level,
+-			     struct bpos	l_pos,
+-			     const struct journal_key *r)
+-{
+-	return (cmp_int(l_btree_id,	r->btree_id) ?:
+-		cmp_int(l_level,	r->level) ?:
+-		bpos_cmp(l_pos,	r->k->k.p));
+-}
+-
+-static int journal_key_cmp(const struct journal_key *l, const struct journal_key *r)
+-{
+-	return __journal_key_cmp(l->btree_id, l->level, l->k->k.p, r);
+-}
+-
+ static inline size_t idx_to_pos(struct journal_keys *keys, size_t idx)
+ {
+ 	size_t gap_size = keys->size - keys->nr;
+@@ -492,7 +477,13 @@ static void __journal_keys_sort(struct journal_keys *keys)
+ 	struct journal_key *dst = keys->data;
+ 
+ 	darray_for_each(*keys, src) {
+-		if (src + 1 < &darray_top(*keys) &&
++		/*
++		 * We don't accumulate accounting keys here because we have to
++		 * compare each individual accounting key against the version in
++		 * the btree during replay:
++		 */
++		if (src->k->k.type != KEY_TYPE_accounting &&
++		    src + 1 < &darray_top(*keys) &&
+ 		    !journal_key_cmp(src, src + 1))
+ 			continue;
+ 
+diff --git a/fs/bcachefs/btree_journal_iter.h b/fs/bcachefs/btree_journal_iter.h
+index c9d19da3ea04..8f3d9a3f1969 100644
+--- a/fs/bcachefs/btree_journal_iter.h
++++ b/fs/bcachefs/btree_journal_iter.h
+@@ -26,6 +26,21 @@ struct btree_and_journal_iter {
+ 	bool			prefetch;
+ };
+ 
++static inline int __journal_key_cmp(enum btree_id	l_btree_id,
++				    unsigned		l_level,
++				    struct bpos	l_pos,
++				    const struct journal_key *r)
++{
++	return (cmp_int(l_btree_id,	r->btree_id) ?:
++		cmp_int(l_level,	r->level) ?:
++		bpos_cmp(l_pos,	r->k->k.p));
++}
++
++static inline int journal_key_cmp(const struct journal_key *l, const struct journal_key *r)
++{
++	return __journal_key_cmp(l->btree_id, l->level, l->k->k.p, r);
++}
++
+ struct bkey_i *bch2_journal_keys_peek_upto(struct bch_fs *, enum btree_id,
+ 				unsigned, struct bpos, struct bpos, size_t *);
+ struct bkey_i *bch2_journal_keys_peek_slot(struct bch_fs *, enum btree_id,
+diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
+index 30d69a6d133e..60f6255367b9 100644
+--- a/fs/bcachefs/btree_trans_commit.c
++++ b/fs/bcachefs/btree_trans_commit.c
+@@ -760,8 +760,15 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
+ 
+ static noinline void bch2_drop_overwrites_from_journal(struct btree_trans *trans)
+ {
++	/*
++	 * Accounting keys aren't deduped in the journal: we have to compare
++	 * each individual update against what's in the btree to see if it has
++	 * been applied yet, and accounting updates also don't overwrite,
++	 * they're deltas that accumulate.
++	 */
+ 	trans_for_each_update(trans, i)
+-		bch2_journal_key_overwritten(trans->c, i->btree_id, i->level, i->k->k.p);
++		if (i->k->k.type != KEY_TYPE_accounting)
++			bch2_journal_key_overwritten(trans->c, i->btree_id, i->level, i->k->k.p);
+ }
+ 
+ static noinline int bch2_trans_commit_bkey_invalid(struct btree_trans *trans,
+diff --git a/fs/bcachefs/btree_update.h b/fs/bcachefs/btree_update.h
+index cc7c53e83f89..21f887fe857c 100644
+--- a/fs/bcachefs/btree_update.h
++++ b/fs/bcachefs/btree_update.h
+@@ -128,7 +128,19 @@ static inline int __must_check bch2_trans_update_buffered(struct btree_trans *tr
+ 					    enum btree_id btree,
+ 					    struct bkey_i *k)
+ {
+-	if (unlikely(trans->journal_replay_not_finished))
++	/*
++	 * Most updates skip the btree write buffer until journal replay is
++	 * finished because synchronization with journal replay relies on having
++	 * a btree node locked - if we're overwriting a key in the journal that
++	 * journal replay hasn't yet replayed, we have to mark it as
++	 * overwritten.
++	 *
++	 * But accounting updates don't overwrite, they're deltas, and they have
++	 * to be flushed to the btree strictly in order for journal replay to be
++	 * able to tell which updates need to be applied:
++	 */
++	if (k->k.type != KEY_TYPE_accounting &&
++	    unlikely(trans->journal_replay_not_finished))
+ 		return bch2_btree_insert_clone_trans(trans, btree, k);
+ 
+ 	struct jset_entry *e = bch2_trans_jset_entry_alloc(trans, jset_u64s(k->k.u64s));
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index 96e7a1ec7091..6829d80bd181 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -11,6 +11,7 @@
+ #include "btree_io.h"
+ #include "buckets.h"
+ #include "dirent.h"
++#include "disk_accounting.h"
+ #include "ec.h"
+ #include "errcode.h"
+ #include "error.h"
+@@ -87,6 +88,56 @@ static void replay_now_at(struct journal *j, u64 seq)
+ 		bch2_journal_pin_put(j, j->replay_journal_seq++);
+ }
+ 
++static int bch2_journal_replay_accounting_key(struct btree_trans *trans,
++					      struct journal_key *k)
++{
++	struct journal_keys *keys = &trans->c->journal_keys;
++
++	struct btree_iter iter;
++	bch2_trans_node_iter_init(trans, &iter, k->btree_id, k->k->k.p,
++				  BTREE_MAX_DEPTH, k->level,
++				  BTREE_ITER_INTENT);
++	int ret = bch2_btree_iter_traverse(&iter);
++	if (ret)
++		goto out;
++
++	struct bkey u;
++	struct bkey_s_c old = bch2_btree_path_peek_slot(btree_iter_path(trans, &iter), &u);
++
++	if (bversion_cmp(old.k->version, k->k->k.version) >= 0) {
++		ret = 0;
++		goto out;
++	}
++
++	if (k + 1 < &darray_top(*keys) &&
++	    !journal_key_cmp(k, k + 1)) {
++		BUG_ON(bversion_cmp(k[0].k->k.version, k[1].k->k.version) > 0);
++
++		bch2_accounting_accumulate(bkey_i_to_accounting(k[1].k),
++					   bkey_i_to_s_c_accounting(k[0].k));
++		ret = 0;
++		goto out;
++	}
++
++	struct bkey_i *new = k->k;
++	if (old.k->type == KEY_TYPE_accounting) {
++		new = bch2_bkey_make_mut_noupdate(trans, bkey_i_to_s_c(k->k));
++		ret = PTR_ERR_OR_ZERO(new);
++		if (ret)
++			goto out;
++
++		bch2_accounting_accumulate(bkey_i_to_accounting(new),
++					   bkey_s_c_to_accounting(old));
++	}
++
++	trans->journal_res.seq = k->journal_seq;
++
++	ret = bch2_trans_update(trans, &iter, new, BTREE_TRIGGER_NORUN);
++out:
++	bch2_trans_iter_exit(trans, &iter);
++	return ret;
++}
++
+ static int bch2_journal_replay_key(struct btree_trans *trans,
+ 				   struct journal_key *k)
+ {
+@@ -159,12 +210,33 @@ static int bch2_journal_replay(struct bch_fs *c)
+ 
+ 	BUG_ON(!atomic_read(&keys->ref));
+ 
++	/*
++	 * Replay accounting keys first: we can't allow the write buffer to
++	 * flush accounting keys until we're done
++	 */
++	darray_for_each(*keys, k) {
++		if (!(k->k->k.type == KEY_TYPE_accounting && !k->allocated))
++			continue;
++
++		cond_resched();
++
++		ret = commit_do(trans, NULL, NULL,
++				BCH_TRANS_COMMIT_no_enospc|
++				BCH_TRANS_COMMIT_no_journal_res,
++			     bch2_journal_replay_accounting_key(trans, k));
++		if (bch2_fs_fatal_err_on(ret, c, "error replaying accounting; %s", bch2_err_str(ret)))
++			goto err;
++	}
++
+ 	/*
+ 	 * First, attempt to replay keys in sorted order. This is more
+ 	 * efficient - better locality of btree access -  but some might fail if
+ 	 * that would cause a journal deadlock.
+ 	 */
+ 	darray_for_each(*keys, k) {
++		if (k->k->k.type == KEY_TYPE_accounting && !k->allocated)
++			continue;
++
+ 		cond_resched();
+ 
+ 		/* Skip fastpath if we're low on space in the journal */
+@@ -174,7 +246,7 @@ static int bch2_journal_replay(struct bch_fs *c)
+ 				  BCH_TRANS_COMMIT_journal_reclaim|
+ 				  (!k->allocated ? BCH_TRANS_COMMIT_no_journal_res : 0),
+ 			     bch2_journal_replay_key(trans, k));
+-		BUG_ON(!ret && !k->overwritten);
++		BUG_ON(!ret && !k->overwritten && k->k->k.type != KEY_TYPE_accounting);
+ 		if (ret) {
+ 			ret = darray_push(&keys_sorted, k);
+ 			if (ret)
+@@ -208,7 +280,7 @@ static int bch2_journal_replay(struct bch_fs *c)
+ 		if (ret)
+ 			goto err;
+ 
+-		BUG_ON(!k->overwritten);
++		BUG_ON(k->btree_id != BTREE_ID_accounting && !k->overwritten);
+ 	}
+ 
+ 	/*
 -- 
 2.43.0
 
