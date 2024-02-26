@@ -1,76 +1,94 @@
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9696EEDE;
-	Mon, 26 Feb 2024 03:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CECE11C6A6
+	for <linux-bcachefs@vger.kernel.org>; Mon, 26 Feb 2024 08:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708916440; cv=none; b=tzRanl7GwG6f56zKZaPXONjuzVAaqlktp3TLlI5he9m44N9QtGCj0WDDofm5doPpynz+9Q4fV+PHbWU6CIKbGubjdpmD9Klgr9DXGotk6H4dWi06QArbeY5dIWVjwfzzk0aSv+veO0l/j+dIgFX7wZ689rpHxRm7Zaxy9tJOSzo=
+	t=1708935307; cv=none; b=CFIqI0I3pZxXitvw9YgAOG8soYWHFcs7hfhwSufzbr4AGjqCHKGgdPvEmrvhYcury2eB7cmq+lcY+r8st54t9lkVVvSJXdacjZTK64yKMavkW8+N+xHaw/PlebF2rt3EGVBXV+IipXa84RiLUUqnpXxuF2t61gvLHZJD6xxThbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708916440; c=relaxed/simple;
-	bh=csSYGWemCbLGZwDYJ4avPHeqV2/fyzcR4e4AEvbbhkU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=l3MR7eHXDHD+qFXMOSEbFDwNNZ9pAUwYcJFHNDDBdsXicA9TT9V52SxKOjDlBEfRXXRdqwWmd80u5Lc8cnuxJxaKdLT4t7BjsSgmDKUdXZHFvOqIRSJZzwV50wayHwoSmS97ivkyvhWyCod0c8X9H1c3PMKBphJF/ZK4Qb53eLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=OrAqBBZ3; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1708935307; c=relaxed/simple;
+	bh=wc6imTjryGlZEGM8Hd8Jr4/OgAt8z10WVDMkwzjaplg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nl5JUWcwloCs+WHkfyMmyxBH5IDk00W7MLXqRs5oxo7Nfc43akaPztO+YMIoggy3zzauNRWigkll+jk2GmWChfImUasQMRKeOBGf/gB/tT17AeqDcHeuH2BXnR6ODGuuJ65PAku+vmuMkvOeFET1iQkZ9OQkzb9mlyQXetLPsz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=Iv1w8886; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="OrAqBBZ3"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708916435; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=j52EVcWLD2Oyf2TLWnGwY3nHXSPDfngP9hva8J3Fsgg=;
-	b=OrAqBBZ3/HZGlrqsVKIjR/jGcU8B4gLYhqRp2GVPg6vX/o6WYa6qpkv5PoxF/3tIQx32LHos9HUm1YEzDlpHbx4MSuqEhWqCD1oKrKZ9E1yND91r3CDrSNuXsEIUaYCMdCkNy+7L9ZdLYneEckPuKur6NoJHbxXUe80sb2LgyX0=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W1ACdfU_1708916419;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W1ACdfU_1708916419)
-          by smtp.aliyun-inc.com;
-          Mon, 26 Feb 2024 11:00:35 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: kent.overstreet@linux.dev
-Cc: bfoster@redhat.com,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] bcachefs: Remove unused function
-Date: Mon, 26 Feb 2024 11:00:18 +0800
-Message-Id: <20240226030018.98875-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="Iv1w8886"
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3e550ef31cso294524966b.3
+        for <linux-bcachefs@vger.kernel.org>; Mon, 26 Feb 2024 00:15:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1708935303; x=1709540103; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tXChnYM6jqoevNoB06P78tnxuorT/1Io0Mk4HtClhXM=;
+        b=Iv1w8886SfgA19CpcF2knQdSFAMl+enITl8gv1lm9dBe3PwBmUuUPD2vm0BEu+YFfe
+         eF9Wn7aQ+52lonyWUn1a0crWNWzTYP8bahasZi+RGlu6/0nyK3b5qWuTEmocvB6FeHMh
+         To0jQbVy9polW3MgJemaT4cG4ovUH2+8XuMAQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708935303; x=1709540103;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tXChnYM6jqoevNoB06P78tnxuorT/1Io0Mk4HtClhXM=;
+        b=Iof1z0TM+hBfclB9h3494yaMYPnoaRVFpGKZOlunCL/CbbsDAsCDczjVIokD0YgJmR
+         B/xtlf0nGda0U9j1aJBD2E/NLT1OSVtEwaian+Zex3bHc3JnEQoONqJKdBfjbecINoxf
+         OGbJjdW8A8KSa7HJgD3bnhZz01hynYsr2vOEKlQL+2w4cuwyD5uA5C0a1oclihROQV4x
+         tSOJzwpUO0vx9Rdg2GV9zlGz0XzW/UYs5H0oynzHGAfPQvZkj8Sh1BPstOHmBHEZLGHR
+         nDVfuQkR58GV3cBnolSGaQ+Nki4cDZYwNh8QweFMB3Sk6zRb+lrrgTI4fbxc1rK5kdpV
+         5mhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVQGXZphA2rwdUOdlHyewzy2/GttwN2eFrIvLEe8w/CJ/mL0qctpSXSorqhFTdl9X3xqjRmC6qRH48JvnQmVYIUC9mvaEKMWOFkX4aWrvw=
+X-Gm-Message-State: AOJu0YzngB9oczxFJCZPpk07tAWZfB5tN9TJ96rgYb76Rc6hGnlJPiVy
+	dB1eAzPgQhvNOrnhyDGWiJCeAqQL0MiTDZ7imIL8d/GsNcDMoRA7s4gzmq/GH2R7zHD3vLapbln
+	3gWKK4Lu549E3BBRY8zD8mHx8U2R5654gXp5jsg==
+X-Google-Smtp-Source: AGHT+IH2bEcWWKZhtSpcqVfNN3HRnSrKljnvZLVLF3StAQMjpLEdFDMGIoyyE/VYuQFRBAyUtqaGPeKO+HUcp1F2vGo=
+X-Received: by 2002:a17:906:3657:b0:a3e:127b:690e with SMTP id
+ r23-20020a170906365700b00a3e127b690emr3685184ejb.70.1708935303115; Mon, 26
+ Feb 2024 00:15:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting> <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
+ <20240222154802.GA1219527@perftesting>
+In-Reply-To: <20240222154802.GA1219527@perftesting>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Mon, 26 Feb 2024 09:14:51 +0100
+Message-ID: <CAJfpeguEbd1h96OVhDAPEwoWGrF0Nk7q0GD9W6FhGp+eVgVRCQ@mail.gmail.com>
+Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems & more
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, 
+	lsf-pc@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 
-The function are defined in the journal_io.c file, but not called
-elsewhere, so delete the unused function.
+On Thu, 22 Feb 2024 at 16:48, Josef Bacik <josef@toxicpanda.com> wrote:
 
-fs/bcachefs/journal_io.c:1592:35: warning: unused function 'journal_last_unwritten_buf'.
+> Right, nobody is arguing that.  Our plan is to
+>
+> 1) Introduce some sort of statx mechanism to expose this information.
+> 2) Introduce an incompat fs feature flag to give unique inode numbers for people
+>    that want them, and there stop doing the st_dev thing we currently do.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8315
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- fs/bcachefs/journal_io.c | 5 -----
- 1 file changed, 5 deletions(-)
+I don't get it.   What does the filesystem (the actual bits on disk)
+have anything to do with how st_dev is exposed to userspace
+applications?
 
-diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-index f9e5b100a9da..ee5c53cc58d0 100644
---- a/fs/bcachefs/journal_io.c
-+++ b/fs/bcachefs/journal_io.c
-@@ -1589,11 +1589,6 @@ static void journal_buf_realloc(struct journal *j, struct journal_buf *buf)
- 	kvfree(new_buf);
- }
- 
--static inline struct journal_buf *journal_last_unwritten_buf(struct journal *j)
--{
--	return j->buf + (journal_last_unwritten_seq(j) & JOURNAL_BUF_MASK);
--}
--
- static CLOSURE_CALLBACK(journal_write_done)
- {
- 	closure_type(w, struct journal_buf, io);
--- 
-2.20.1.7.g153144c
+This is not a filesystem feature, this is an interface feature.  And I
+even doubt that salvaging st_dev is worth it.  Userspace should just
+be converted to use something else.  In other words st_ino *and*
+st_dev are legacy and we need to find superior alternatives.
 
+Seems like there's an agreement about file handle being able to replace st_ino.
+
+I'm not quite sure fsid or uuid can replace st_dev, but that's up for
+discussion.
+
+Thanks,
+Miklos
