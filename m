@@ -1,43 +1,40 @@
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC755664
-	for <linux-bcachefs@vger.kernel.org>; Sun, 25 Feb 2024 02:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9696EEDE;
+	Mon, 26 Feb 2024 03:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708828737; cv=none; b=kMWGhRi1l8YJ2K3BdjY2Y0DNse0R4iC4Il6i3zL4n+RfhqJoY6NjY2o9V7GP+zfX7NgYn3R6ZmVmJWLXK83NnImp9shJySWEVf+lZlWY3tWVCWwySd3w3750E5kpPqua+Gyl1I5fM8m+w1zCuaB4DtKl36bGDl4dFbKJ05fWWZY=
+	t=1708916440; cv=none; b=tzRanl7GwG6f56zKZaPXONjuzVAaqlktp3TLlI5he9m44N9QtGCj0WDDofm5doPpynz+9Q4fV+PHbWU6CIKbGubjdpmD9Klgr9DXGotk6H4dWi06QArbeY5dIWVjwfzzk0aSv+veO0l/j+dIgFX7wZ689rpHxRm7Zaxy9tJOSzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708828737; c=relaxed/simple;
-	bh=d8WYXNqXDWpZE4u+quG0FNl5y/ZGCmEc/dORUsz9M60=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CGW6Gis9j5KmAqHhUyZw3rdiS4MuoiBVmCI1gtEyhp7LYk5yWuhNb1uXDB1kJtpKKp/9NY+/9hvstqOotdE21fA9U6RVxyv+PFny/zR58mTZlarbmDKvaKvhcXBayjDYbfr5sPyfPobJCSgo/wZb3zCQwgNyD5cjOwhbjQLAQyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dFpkOyJp; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1708916440; c=relaxed/simple;
+	bh=csSYGWemCbLGZwDYJ4avPHeqV2/fyzcR4e4AEvbbhkU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=l3MR7eHXDHD+qFXMOSEbFDwNNZ9pAUwYcJFHNDDBdsXicA9TT9V52SxKOjDlBEfRXXRdqwWmd80u5Lc8cnuxJxaKdLT4t7BjsSgmDKUdXZHFvOqIRSJZzwV50wayHwoSmS97ivkyvhWyCod0c8X9H1c3PMKBphJF/ZK4Qb53eLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=OrAqBBZ3; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dFpkOyJp"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708828732;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=njdVxTl+tyjYoQarlLc40yxm4EXppgie2qLf5Ju2emw=;
-	b=dFpkOyJpE+vAWCrCeqjmgO4KjuyA+cNXR4K91DVMXSDUhtYjTvtg6YwMCkRtaUGjncIAsx
-	KVLX5Brz3u8mgYUCbdcLe11heCjIT0PwXC0u2vfVqvnYCX5qsnu+oB+a9z3fHp9fGTSoyx
-	WNE/5CtIf30n9gMB+JkKbtfWeKAW9Nc=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	djwong@kernel.org,
-	bfoster@redhat.com
-Subject: [PATCH 20/21] bcachefs: bch2_fs_accounting_to_text()
-Date: Sat, 24 Feb 2024 21:38:22 -0500
-Message-ID: <20240225023826.2413565-21-kent.overstreet@linux.dev>
-In-Reply-To: <20240225023826.2413565-1-kent.overstreet@linux.dev>
-References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="OrAqBBZ3"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708916435; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=j52EVcWLD2Oyf2TLWnGwY3nHXSPDfngP9hva8J3Fsgg=;
+	b=OrAqBBZ3/HZGlrqsVKIjR/jGcU8B4gLYhqRp2GVPg6vX/o6WYa6qpkv5PoxF/3tIQx32LHos9HUm1YEzDlpHbx4MSuqEhWqCD1oKrKZ9E1yND91r3CDrSNuXsEIUaYCMdCkNy+7L9ZdLYneEckPuKur6NoJHbxXUe80sb2LgyX0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W1ACdfU_1708916419;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W1ACdfU_1708916419)
+          by smtp.aliyun-inc.com;
+          Mon, 26 Feb 2024 11:00:35 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: kent.overstreet@linux.dev
+Cc: bfoster@redhat.com,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] bcachefs: Remove unused function
+Date: Mon, 26 Feb 2024 11:00:18 +0800
+Message-Id: <20240226030018.98875-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -45,96 +42,35 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Helper to show raw accounting in sysfs, mainly for debugging.
+The function are defined in the journal_io.c file, but not called
+elsewhere, so delete the unused function.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+fs/bcachefs/journal_io.c:1592:35: warning: unused function 'journal_last_unwritten_buf'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8315
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- fs/bcachefs/disk_accounting.c | 26 ++++++++++++++++++++++++++
- fs/bcachefs/disk_accounting.h |  1 +
- fs/bcachefs/sysfs.c           |  5 +++++
- 3 files changed, 32 insertions(+)
+ fs/bcachefs/journal_io.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
-index dc020d651d0a..9d6ca2ea307b 100644
---- a/fs/bcachefs/disk_accounting.c
-+++ b/fs/bcachefs/disk_accounting.c
-@@ -286,6 +286,32 @@ int bch2_fs_replicas_usage_read(struct bch_fs *c, darray_char *usage)
- 	return ret;
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index f9e5b100a9da..ee5c53cc58d0 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -1589,11 +1589,6 @@ static void journal_buf_realloc(struct journal *j, struct journal_buf *buf)
+ 	kvfree(new_buf);
  }
  
-+void bch2_fs_accounting_to_text(struct printbuf *out, struct bch_fs *c)
-+{
-+	struct bch_accounting_mem *acc = &c->accounting[0];
-+
-+	percpu_down_read(&c->mark_lock);
-+	out->atomic++;
-+
-+	eytzinger0_for_each(i, acc->k.nr) {
-+		struct disk_accounting_key acc_k;
-+		bpos_to_disk_accounting_key(&acc_k, acc->k.data[i].pos);
-+
-+		bch2_accounting_key_to_text(out, &acc_k);
-+
-+		u64 v[BCH_ACCOUNTING_MAX_COUNTERS];
-+		bch2_accounting_mem_read_counters(c, i, v, ARRAY_SIZE(v), false);
-+
-+		prt_str(out, ":");
-+		for (unsigned j = 0; j < acc->k.data[i].nr_counters; j++)
-+			prt_printf(out, " %llu", v[j]);
-+		prt_newline(out);
-+	}
-+
-+	--out->atomic;
-+	percpu_up_read(&c->mark_lock);
-+}
-+
- static int accounting_write_key(struct btree_trans *trans, struct bpos pos, u64 *v, unsigned nr_counters)
+-static inline struct journal_buf *journal_last_unwritten_buf(struct journal *j)
+-{
+-	return j->buf + (journal_last_unwritten_seq(j) & JOURNAL_BUF_MASK);
+-}
+-
+ static CLOSURE_CALLBACK(journal_write_done)
  {
- 	struct bkey_i_accounting *a = bch2_trans_kmalloc(trans, sizeof(*a) + sizeof(*v) * nr_counters);
-diff --git a/fs/bcachefs/disk_accounting.h b/fs/bcachefs/disk_accounting.h
-index a0cf7a0b84a7..c4a8b9cce6ba 100644
---- a/fs/bcachefs/disk_accounting.h
-+++ b/fs/bcachefs/disk_accounting.h
-@@ -186,6 +186,7 @@ static inline void bch2_accounting_mem_read(struct bch_fs *c, struct bpos p,
- }
- 
- int bch2_fs_replicas_usage_read(struct bch_fs *, darray_char *);
-+void bch2_fs_accounting_to_text(struct printbuf *, struct bch_fs *);
- 
- int bch2_accounting_gc_done(struct bch_fs *);
- 
-diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
-index 287a0bf920db..10470cef30f0 100644
---- a/fs/bcachefs/sysfs.c
-+++ b/fs/bcachefs/sysfs.c
-@@ -204,6 +204,7 @@ read_attribute(disk_groups);
- 
- read_attribute(has_data);
- read_attribute(alloc_debug);
-+read_attribute(accounting);
- 
- #define x(t, n, ...) read_attribute(t);
- BCH_PERSISTENT_COUNTERS()
-@@ -413,6 +414,9 @@ SHOW(bch2_fs)
- 	if (attr == &sysfs_disk_groups)
- 		bch2_disk_groups_to_text(out, c);
- 
-+	if (attr == &sysfs_accounting)
-+		bch2_fs_accounting_to_text(out, c);
-+
- 	return 0;
- }
- 
-@@ -625,6 +629,7 @@ struct attribute *bch2_fs_internal_files[] = {
- 	&sysfs_internal_uuid,
- 
- 	&sysfs_disk_groups,
-+	&sysfs_accounting,
- 	NULL
- };
- 
+ 	closure_type(w, struct journal_buf, io);
 -- 
-2.43.0
+2.20.1.7.g153144c
 
