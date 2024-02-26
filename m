@@ -1,51 +1,51 @@
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CECE11C6A6
-	for <linux-bcachefs@vger.kernel.org>; Mon, 26 Feb 2024 08:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7DC1CAAF
+	for <linux-bcachefs@vger.kernel.org>; Mon, 26 Feb 2024 08:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708935307; cv=none; b=CFIqI0I3pZxXitvw9YgAOG8soYWHFcs7hfhwSufzbr4AGjqCHKGgdPvEmrvhYcury2eB7cmq+lcY+r8st54t9lkVVvSJXdacjZTK64yKMavkW8+N+xHaw/PlebF2rt3EGVBXV+IipXa84RiLUUqnpXxuF2t61gvLHZJD6xxThbg=
+	t=1708936052; cv=none; b=Pbd5jZjp9k8aP6P7VpFc9d5ng1tZ3CLpz3sYwncLHO1Z0zx0vJ2FEZiqSf6kFcc+adWVAY3NEcVW9aKnSKq+c+b0T+sn3s0V6wimcuaNbResszOkRFjtaQVJErQbzycUDIGYQ0FDScNR24W5ggTaGimTJjghWaMw+RogV6OLoXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708935307; c=relaxed/simple;
-	bh=wc6imTjryGlZEGM8Hd8Jr4/OgAt8z10WVDMkwzjaplg=;
+	s=arc-20240116; t=1708936052; c=relaxed/simple;
+	bh=OgPr33qeJxSN1ACFIn4rsbOwqQ7JzF96ye/o470bEHc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nl5JUWcwloCs+WHkfyMmyxBH5IDk00W7MLXqRs5oxo7Nfc43akaPztO+YMIoggy3zzauNRWigkll+jk2GmWChfImUasQMRKeOBGf/gB/tT17AeqDcHeuH2BXnR6ODGuuJ65PAku+vmuMkvOeFET1iQkZ9OQkzb9mlyQXetLPsz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=Iv1w8886; arc=none smtp.client-ip=209.85.218.45
+	 To:Cc:Content-Type; b=OKZ0y6wgyvv0inxU7PWjjfTNWlc15v9cPrPntLAvVKgk7B1GD4CM4zNaUMv8H4m6TKsC0u2OarKTndlgcroG5Q144ePB8N498Iyqzm31b6lv+qCw4V1H/ZJ4mJM9LLxPVakg6cMQhBvEeYiDtesas+A22/IvU9ETZlq6zmNgC+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=d4celLX0; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="Iv1w8886"
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3e550ef31cso294524966b.3
-        for <linux-bcachefs@vger.kernel.org>; Mon, 26 Feb 2024 00:15:04 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="d4celLX0"
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3f893ad5f4so389280766b.2
+        for <linux-bcachefs@vger.kernel.org>; Mon, 26 Feb 2024 00:27:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1708935303; x=1709540103; darn=vger.kernel.org;
+        d=szeredi.hu; s=google; t=1708936049; x=1709540849; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tXChnYM6jqoevNoB06P78tnxuorT/1Io0Mk4HtClhXM=;
-        b=Iv1w8886SfgA19CpcF2knQdSFAMl+enITl8gv1lm9dBe3PwBmUuUPD2vm0BEu+YFfe
-         eF9Wn7aQ+52lonyWUn1a0crWNWzTYP8bahasZi+RGlu6/0nyK3b5qWuTEmocvB6FeHMh
-         To0jQbVy9polW3MgJemaT4cG4ovUH2+8XuMAQ=
+        bh=RG8h9HtTqCH0xD/0lp/MK6evwSHkizYp8Z0N+/dsPdM=;
+        b=d4celLX0P6jBSCp8LLD68JLofuxG37dTOs9Ualsu0f/cldUauXiEPTNyDg3AqjrgTZ
+         LUopENJZyRvP+kAYz7YvF0MQZ6X8NBE44orv5UzFr1LiOHPg1wRQuGomzQaDEAMTr6ux
+         IBenw/kkiOuoxzX8uVX8BLHtRWbVz2y5JTW3U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708935303; x=1709540103;
+        d=1e100.net; s=20230601; t=1708936049; x=1709540849;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tXChnYM6jqoevNoB06P78tnxuorT/1Io0Mk4HtClhXM=;
-        b=Iof1z0TM+hBfclB9h3494yaMYPnoaRVFpGKZOlunCL/CbbsDAsCDczjVIokD0YgJmR
-         B/xtlf0nGda0U9j1aJBD2E/NLT1OSVtEwaian+Zex3bHc3JnEQoONqJKdBfjbecINoxf
-         OGbJjdW8A8KSa7HJgD3bnhZz01hynYsr2vOEKlQL+2w4cuwyD5uA5C0a1oclihROQV4x
-         tSOJzwpUO0vx9Rdg2GV9zlGz0XzW/UYs5H0oynzHGAfPQvZkj8Sh1BPstOHmBHEZLGHR
-         nDVfuQkR58GV3cBnolSGaQ+Nki4cDZYwNh8QweFMB3Sk6zRb+lrrgTI4fbxc1rK5kdpV
-         5mhw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQGXZphA2rwdUOdlHyewzy2/GttwN2eFrIvLEe8w/CJ/mL0qctpSXSorqhFTdl9X3xqjRmC6qRH48JvnQmVYIUC9mvaEKMWOFkX4aWrvw=
-X-Gm-Message-State: AOJu0YzngB9oczxFJCZPpk07tAWZfB5tN9TJ96rgYb76Rc6hGnlJPiVy
-	dB1eAzPgQhvNOrnhyDGWiJCeAqQL0MiTDZ7imIL8d/GsNcDMoRA7s4gzmq/GH2R7zHD3vLapbln
-	3gWKK4Lu549E3BBRY8zD8mHx8U2R5654gXp5jsg==
-X-Google-Smtp-Source: AGHT+IH2bEcWWKZhtSpcqVfNN3HRnSrKljnvZLVLF3StAQMjpLEdFDMGIoyyE/VYuQFRBAyUtqaGPeKO+HUcp1F2vGo=
-X-Received: by 2002:a17:906:3657:b0:a3e:127b:690e with SMTP id
- r23-20020a170906365700b00a3e127b690emr3685184ejb.70.1708935303115; Mon, 26
- Feb 2024 00:15:03 -0800 (PST)
+        bh=RG8h9HtTqCH0xD/0lp/MK6evwSHkizYp8Z0N+/dsPdM=;
+        b=ZvGMI7sSvPWkBI4FSczaf/7TsBi3lTiJYYASP3GIPVKRYE7cIJaMMBgBzLFY3rq1iM
+         85hOltKq6mMB6Y7arG9wTIb4T4oQca+x/O0GD4pmf3xO0nMwhHNzSw5f1sVJBll43by8
+         au0cMpLlnKujB5lQKRXoQmP6Az4/qIYNWWLZM+X6uxJZP0VzMMPB4IB36X4Qcg2P9uTw
+         u/8dRNxjkmOdWQykRUN8c1I5BRJvpZBmhPeAqWSCZIASyr9/NRROuQKLlpc1tOfGQxu3
+         EaxJYNBe8EIjw6Y8WM/EeEkbXFQmN0tptdhZwcHMQGl/N5lo8YV+nq9tf5h9qc1AMbZj
+         F3JA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOID1DJsWTuoPL6oxf1NHkvIXCP9VdL7+1Jd12W/RSa03z4TWuMmsQt07UIvdMwadA+Ohk/pohpdgEtLxfMDnFHf2/Dpb6z2sGp4hq+7c=
+X-Gm-Message-State: AOJu0YwgXsvrGBp+K5N6H3P8yvTxtKUI+jzI5SeWZvyBxIouF/bjfAZU
+	phwxt/gFrPMu5HnRR/4rpvs089ACUImQbuJ90TwUKCueSR9x3biuPT+ANTg2UcYEOvdm6oevuYb
+	gBHGvBsTUWOJ79CZEMsm2/JR2GTs4joDHi+Z6Xw==
+X-Google-Smtp-Source: AGHT+IG0pgMt4vUs7EtTrd5627D4m1+vfVpIva+Me50maxinT8JXAUNoW+2KDn+dpslvef9S4XuUmVkrbBD1zZuYPIw=
+X-Received: by 2002:a17:906:3c7:b0:a3e:720a:b961 with SMTP id
+ c7-20020a17090603c700b00a3e720ab961mr389723eja.34.1708936049011; Mon, 26 Feb
+ 2024 00:27:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -55,40 +55,41 @@ MIME-Version: 1.0
 References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
  <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
  <20240221210811.GA1161565@perftesting> <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
- <20240222154802.GA1219527@perftesting>
-In-Reply-To: <20240222154802.GA1219527@perftesting>
+ <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
+ <20240222110138.ckai4sxiin3a74ku@quack3> <CAJfpegtUZ4YWhYqqnS_BcKKpwhHvdUsQPQMf4j49ahwAe2_AXQ@mail.gmail.com>
+ <20240222160823.pclx6isoyaf7l64r@quack3>
+In-Reply-To: <20240222160823.pclx6isoyaf7l64r@quack3>
 From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Mon, 26 Feb 2024 09:14:51 +0100
-Message-ID: <CAJfpeguEbd1h96OVhDAPEwoWGrF0Nk7q0GD9W6FhGp+eVgVRCQ@mail.gmail.com>
-Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems & more
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, 
-	lsf-pc@lists.linux-foundation.org
+Date: Mon, 26 Feb 2024 09:27:17 +0100
+Message-ID: <CAJfpegvvuzXUDusbsJ1VO0CQf5iZO=TZ8kK7V3-k738oi5RM5w@mail.gmail.com>
+Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
+ filesystems & more
+To: Jan Kara <jack@suse.cz>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Josef Bacik <josef@toxicpanda.com>, 
+	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, lsf-pc@lists.linux-foundation.org, 
+	linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 22 Feb 2024 at 16:48, Josef Bacik <josef@toxicpanda.com> wrote:
+On Thu, 22 Feb 2024 at 17:08, Jan Kara <jack@suse.cz> wrote:
 
-> Right, nobody is arguing that.  Our plan is to
+> > If we are going to start fixing userspace, then we better make sure to
+> > use the right interfaces, that won't have issues in the future.
 >
-> 1) Introduce some sort of statx mechanism to expose this information.
-> 2) Introduce an incompat fs feature flag to give unique inode numbers for people
->    that want them, and there stop doing the st_dev thing we currently do.
+> I agree we should give this a good thought which identification of a
+> filesystem is the best.
 
-I don't get it.   What does the filesystem (the actual bits on disk)
-have anything to do with how st_dev is exposed to userspace
-applications?
+To find mount boundaries statx.stx_mnt_id (especially with
+STATX_MNT_ID_UNIQUE) is perfect.
 
-This is not a filesystem feature, this is an interface feature.  And I
-even doubt that salvaging st_dev is worth it.  Userspace should just
-be converted to use something else.  In other words st_ino *and*
-st_dev are legacy and we need to find superior alternatives.
+By supplying stx_mnt_id to statmount(2) it's possible to get the
+device number associated with that filesystem (statmount.sb_dev_*).  I
+think it's what Josef wants btrfs to return as st_dev.
 
-Seems like there's an agreement about file handle being able to replace st_ino.
-
-I'm not quite sure fsid or uuid can replace st_dev, but that's up for
-discussion.
+And statx could return that in stx_dev_*, with an interface feature
+flag, same as we've done with stx_mnt_id.  I.e. STATX_DEV_NOHACK would
+force the vfs to replace anything the filesystem put in kstat.dev with
+sb->s_dev.
 
 Thanks,
 Miklos
