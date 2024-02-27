@@ -1,54 +1,54 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA2E14601A
-	for <linux-bcachefs@vger.kernel.org>; Tue, 27 Feb 2024 15:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991231474DE
+	for <linux-bcachefs@vger.kernel.org>; Tue, 27 Feb 2024 15:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709048890; cv=none; b=h/sQVmnAZIP1W1PZhQAv+jqTzYrbf6PKTMzbV0/uWOu1aRCrgySe98qMmhnU9maJtGh2+xKR/oSG1RbB1Z+2wmZGaht3XGt5+PW1iskDKuFLGFEBoEOGPv6Yu8QnbskYhNyt+j2Uq34XQOY+DlG8Sof6xmc5ZXGFSd6wcry6gi8=
+	t=1709048931; cv=none; b=lqgIR6pWAMpJSOLHWR1n/e9GnY5FB6BNpTJdFoZS0gvbMN434ZKWsGWPDInlmlrpBCcFUNxrn+S89I7pP/Bs3NJw2MexuSix130qfZe6NCy4d12mpAx5XU4ld1oLpDSU0uRqzD3VdaHsgTr/4+dv2kSI57692o3/yvuOsBo2iBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709048890; c=relaxed/simple;
-	bh=5IiVI93ftUJqT+CCb32p6HAxT/tP2McLx9FLAz4oqsk=;
+	s=arc-20240116; t=1709048931; c=relaxed/simple;
+	bh=i9u+dH97zSEs1MAnJLs4Et4BvaFS2eYMv/edXCLeuA8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JY6IXyolo/0qOxPqleJDLTjkP1MsprG7yFw/7nHm5wcpDXR0+mdCdR/7vG9typ5/fs1T3rmL3QYz3XaR0juIisQaTQoeK8CvWgsQlyXLlfgY0F+H1JinkCGJ+On9KPGl8VIRQC3vVjeFAmW6xUzeQq/nXT8bJtg7jYC9djRWONE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y+xsb+3t; arc=none smtp.client-ip=170.10.133.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=PEwVHnOn0kvr11EvFZAFbPNYhjS07d+2qvv+TzL4wdayzsh7WtF3BLZQsKvclU6rQKPRjdhsSRdsLJZpr8b4mwivPq8uT9s9PYy5K0ntFAg2n5egNrPer0X5pJ1mD6ErBcZAB8YRqwszwvCKR72iSwLrsZfGc6Yu7Y/zcXElvJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SdBAhV/0; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y+xsb+3t"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SdBAhV/0"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709048888;
+	s=mimecast20190719; t=1709048928;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4b1Tyl4aPcg7pGwu6b92y+s1c1JJGt4qQ6bGVrOMVjU=;
-	b=Y+xsb+3t6Uh9g1ymuynl4cix0s5gJ6UnSqsCJSbn6WZgcgWCI5uvhPbvGQnFdG5YhNXxcC
-	FmDZSyTqRtcTGBV/UA911SCopSD7629fFohtntFFy2JUNsqkucrJtmdjSrEHgSZJYWRfnO
-	WHj4r2CHpPI/hDcOjMHXQE47yuy0oT4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-144-G4XhUFHgOo2fE-7yfpzdPg-1; Tue,
- 27 Feb 2024 10:48:04 -0500
-X-MC-Unique: G4XhUFHgOo2fE-7yfpzdPg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	bh=wlhecyX4wcvqsYqsTlIlSWKDqo0GLSZ3uSP1tPTi8UA=;
+	b=SdBAhV/037L3+R534MCK+bJON0w3X0XEAJ/kFQm2zk7VsuCpI6LvR3HVF87yORjtyoVbKC
+	Vr5MBz2sEcf3yjpuTVcPeI7sKO2zt+aKCR2fO/AYsR/agghojpYLJ5r0Su86CnPVYP5Mda
+	h4BF4cRgH7/Iizdo5+t/rP2kwJdqu8M=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-222-ymtI2wXdMNyMZSVJv2jKPg-1; Tue, 27 Feb 2024 10:48:43 -0500
+X-MC-Unique: ymtI2wXdMNyMZSVJv2jKPg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 768291C0BA54;
-	Tue, 27 Feb 2024 15:48:04 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5102F84ACA3;
+	Tue, 27 Feb 2024 15:48:42 +0000 (UTC)
 Received: from bfoster (unknown [10.22.32.137])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 3EB921CBC8;
-	Tue, 27 Feb 2024 15:48:04 +0000 (UTC)
-Date: Tue, 27 Feb 2024 10:49:46 -0500
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 12BA52166B33;
+	Tue, 27 Feb 2024 15:48:42 +0000 (UTC)
+Date: Tue, 27 Feb 2024 10:50:23 -0500
 From: Brian Foster <bfoster@redhat.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
 	djwong@kernel.org
-Subject: Re: [PATCH 02/21] bcachefs: Accumulate accounting keys in journal
- replay
-Message-ID: <Zd4EmpK0zJp0mbml@bfoster>
+Subject: Re: [PATCH 03/21] bcachefs: btree write buffer knows how to
+ accumulate bch_accounting keys
+Message-ID: <Zd4Ev8XPzn5AJ8K9@bfoster>
 References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
- <20240225023826.2413565-3-kent.overstreet@linux.dev>
+ <20240225023826.2413565-4-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -57,175 +57,219 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240225023826.2413565-3-kent.overstreet@linux.dev>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+In-Reply-To: <20240225023826.2413565-4-kent.overstreet@linux.dev>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Sat, Feb 24, 2024 at 09:38:04PM -0500, Kent Overstreet wrote:
-> Until accounting keys hit the btree, they are deltas, not new versions
-> of the existing key; this means we have to teach journal replay to
-> accumulate them.
+On Sat, Feb 24, 2024 at 09:38:05PM -0500, Kent Overstreet wrote:
+> Teach the btree write buffer how to accumulate accounting keys - instead
+> of having the newer key overwrite the older key as we do with other
+> updates, we need to add them together.
 > 
-> Additionally, the journal doesn't track precisely which entries have
-> been flushed to the btree; it only tracks a range of entries that may
-> possibly still need to be flushed.
-> 
-> That means we need to compare accounting keys against the version in the
-> btree and only flush updates that are newer.
-> 
-> There's another wrinkle with the write buffer: if the write buffer
-> starts flushing accounting keys before journal replay has finished
-> flushing accounting keys, journal replay will see the version number
-> from the new updates and updates from the journal will be lost.
-> 
-> To avoid this, journal replay has to flush accounting keys first, and
-> we'll be adding a flag so that write buffer flush knows to hold
-> accounting keys until then.
+> Also, add a flag so that write buffer flush knows when journal replay is
+> finished flushing accounting, and teach it to hold accounting keys until
+> that flag is set.
 > 
 > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 > ---
->  fs/bcachefs/btree_journal_iter.c | 23 +++-------
->  fs/bcachefs/btree_journal_iter.h | 15 +++++++
->  fs/bcachefs/btree_trans_commit.c |  9 +++-
->  fs/bcachefs/btree_update.h       | 14 +++++-
->  fs/bcachefs/recovery.c           | 76 +++++++++++++++++++++++++++++++-
->  5 files changed, 117 insertions(+), 20 deletions(-)
+>  fs/bcachefs/bcachefs.h           |  1 +
+>  fs/bcachefs/btree_write_buffer.c | 66 +++++++++++++++++++++++++++-----
+>  fs/bcachefs/recovery.c           |  3 ++
+>  3 files changed, 61 insertions(+), 9 deletions(-)
 > 
 ...
-> diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-> index 96e7a1ec7091..6829d80bd181 100644
-> --- a/fs/bcachefs/recovery.c
-> +++ b/fs/bcachefs/recovery.c
-> @@ -11,6 +11,7 @@
->  #include "btree_io.h"
->  #include "buckets.h"
->  #include "dirent.h"
+> diff --git a/fs/bcachefs/btree_write_buffer.c b/fs/bcachefs/btree_write_buffer.c
+> index b77e7b382b66..002a0762fc85 100644
+> --- a/fs/bcachefs/btree_write_buffer.c
+> +++ b/fs/bcachefs/btree_write_buffer.c
+> @@ -5,6 +5,7 @@
+>  #include "btree_update.h"
+>  #include "btree_update_interior.h"
+>  #include "btree_write_buffer.h"
 > +#include "disk_accounting.h"
->  #include "ec.h"
->  #include "errcode.h"
 >  #include "error.h"
-> @@ -87,6 +88,56 @@ static void replay_now_at(struct journal *j, u64 seq)
->  		bch2_journal_pin_put(j, j->replay_journal_seq++);
+>  #include "journal.h"
+>  #include "journal_io.h"
+> @@ -123,7 +124,9 @@ static noinline int wb_flush_one_slowpath(struct btree_trans *trans,
+>  
+>  static inline int wb_flush_one(struct btree_trans *trans, struct btree_iter *iter,
+>  			       struct btree_write_buffered_key *wb,
+> -			       bool *write_locked, size_t *fast)
+> +			       bool *write_locked,
+> +			       bool *accounting_accumulated,
+> +			       size_t *fast)
+>  {
+>  	struct btree_path *path;
+>  	int ret;
+> @@ -136,6 +139,16 @@ static inline int wb_flush_one(struct btree_trans *trans, struct btree_iter *ite
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (!*accounting_accumulated && wb->k.k.type == KEY_TYPE_accounting) {
+> +		struct bkey u;
+> +		struct bkey_s_c k = bch2_btree_path_peek_slot_exact(btree_iter_path(trans, iter), &u);
+> +
+> +		if (k.k->type == KEY_TYPE_accounting)
+> +			bch2_accounting_accumulate(bkey_i_to_accounting(&wb->k),
+> +						   bkey_s_c_to_accounting(k));
+
+So it looks like we're accumulating from the btree key into the write
+buffer key. Is this so the following code will basically insert a new
+btree key based on the value of the write buffer key?
+
+> +	}
+> +	*accounting_accumulated = true;
+> +
+>  	/*
+>  	 * We can't clone a path that has write locks: unshare it now, before
+>  	 * set_pos and traverse():
+> @@ -248,8 +261,9 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  	struct journal *j = &c->journal;
+>  	struct btree_write_buffer *wb = &c->btree_write_buffer;
+>  	struct btree_iter iter = { NULL };
+> -	size_t skipped = 0, fast = 0, slowpath = 0;
+> +	size_t overwritten = 0, fast = 0, slowpath = 0, could_not_insert = 0;
+>  	bool write_locked = false;
+> +	bool accounting_replay_done = test_bit(BCH_FS_accounting_replay_done, &c->flags);
+>  	int ret = 0;
+>  
+>  	bch2_trans_unlock(trans);
+> @@ -284,17 +298,29 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  
+>  	darray_for_each(wb->sorted, i) {
+>  		struct btree_write_buffered_key *k = &wb->flushing.keys.data[i->idx];
+> +		bool accounting_accumulated = false;
+
+Should this live within the interior flush loop?
+
+>  
+>  		for (struct wb_key_ref *n = i + 1; n < min(i + 4, &darray_top(wb->sorted)); n++)
+>  			prefetch(&wb->flushing.keys.data[n->idx]);
+>  
+>  		BUG_ON(!k->journal_seq);
+>  
+> +		if (!accounting_replay_done &&
+> +		    k->k.k.type == KEY_TYPE_accounting) {
+> +			slowpath++;
+> +			continue;
+> +		}
+> +
+>  		if (i + 1 < &darray_top(wb->sorted) &&
+>  		    wb_key_eq(i, i + 1)) {
+>  			struct btree_write_buffered_key *n = &wb->flushing.keys.data[i[1].idx];
+>  
+> -			skipped++;
+> +			if (k->k.k.type == KEY_TYPE_accounting &&
+> +			    n->k.k.type == KEY_TYPE_accounting)
+> +				bch2_accounting_accumulate(bkey_i_to_accounting(&n->k),
+> +							   bkey_i_to_s_c_accounting(&k->k));
+> +
+> +			overwritten++;
+>  			n->journal_seq = min_t(u64, n->journal_seq, k->journal_seq);
+>  			k->journal_seq = 0;
+>  			continue;
+> @@ -325,7 +351,8 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  				break;
+>  			}
+>  
+> -			ret = wb_flush_one(trans, &iter, k, &write_locked, &fast);
+> +			ret = wb_flush_one(trans, &iter, k, &write_locked,
+> +					   &accounting_accumulated, &fast);
+>  			if (!write_locked)
+>  				bch2_trans_begin(trans);
+>  		} while (bch2_err_matches(ret, BCH_ERR_transaction_restart));
+> @@ -361,8 +388,15 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  			if (!i->journal_seq)
+>  				continue;
+>  
+> -			bch2_journal_pin_update(j, i->journal_seq, &wb->flushing.pin,
+> -						bch2_btree_write_buffer_journal_flush);
+> +			if (!accounting_replay_done &&
+> +			    i->k.k.type == KEY_TYPE_accounting) {
+> +				could_not_insert++;
+> +				continue;
+> +			}
+> +
+> +			if (!could_not_insert)
+> +				bch2_journal_pin_update(j, i->journal_seq, &wb->flushing.pin,
+> +							bch2_btree_write_buffer_journal_flush);
+
+Hmm.. so this is sane because the slowpath runs in journal sorted order,
+right?
+
+>  
+>  			bch2_trans_begin(trans);
+>  
+> @@ -375,13 +409,27 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  					btree_write_buffered_insert(trans, i));
+>  			if (ret)
+>  				goto err;
+> +
+> +			i->journal_seq = 0;
+> +		}
+> +
+
+		/*
+		 * Condense the remaining keys <reasons reasons>...??
+		 */
+
+> +		if (could_not_insert) {
+> +			struct btree_write_buffered_key *dst = wb->flushing.keys.data;
+> +
+> +			darray_for_each(wb->flushing.keys, i)
+> +				if (i->journal_seq)
+> +					*dst++ = *i;
+> +			wb->flushing.keys.nr = dst - wb->flushing.keys.data;
+>  		}
+>  	}
+>  err:
+> +	if (ret || !could_not_insert) {
+> +		bch2_journal_pin_drop(j, &wb->flushing.pin);
+> +		wb->flushing.keys.nr = 0;
+> +	}
+> +
+>  	bch2_fs_fatal_err_on(ret, c, "%s: insert error %s", __func__, bch2_err_str(ret));
+> -	trace_write_buffer_flush(trans, wb->flushing.keys.nr, skipped, fast, 0);
+> -	bch2_journal_pin_drop(j, &wb->flushing.pin);
+> -	wb->flushing.keys.nr = 0;
+> +	trace_write_buffer_flush(trans, wb->flushing.keys.nr, overwritten, fast, 0);
+
+I feel like the last time I looked at the write buffer stuff the flush
+wasn't reentrant in this way. I.e., the flush switched out the active
+buffer and so had to process all entries in the current buffer (or
+something like that). Has something changed or do I misunderstand?
+
+>  	return ret;
 >  }
 >  
-> +static int bch2_journal_replay_accounting_key(struct btree_trans *trans,
-> +					      struct journal_key *k)
-> +{
-> +	struct journal_keys *keys = &trans->c->journal_keys;
+> diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+> index 6829d80bd181..b8289af66c8e 100644
+> --- a/fs/bcachefs/recovery.c
+> +++ b/fs/bcachefs/recovery.c
+> @@ -228,6 +228,8 @@ static int bch2_journal_replay(struct bch_fs *c)
+>  			goto err;
+>  	}
+>  
+> +	set_bit(BCH_FS_accounting_replay_done, &c->flags);
 > +
-> +	struct btree_iter iter;
-> +	bch2_trans_node_iter_init(trans, &iter, k->btree_id, k->k->k.p,
-> +				  BTREE_MAX_DEPTH, k->level,
-> +				  BTREE_ITER_INTENT);
-> +	int ret = bch2_btree_iter_traverse(&iter);
-> +	if (ret)
-> +		goto out;
-> +
-> +	struct bkey u;
-> +	struct bkey_s_c old = bch2_btree_path_peek_slot(btree_iter_path(trans, &iter), &u);
-> +
-> +	if (bversion_cmp(old.k->version, k->k->k.version) >= 0) {
-> +		ret = 0;
-> +		goto out;
-> +	}
 
-So I assume this is what correlates back to the need to not flush the
-write buffer until replay completes, otherwise we could unintentionally
-skip subsequent key updates. Is that the case?
+I assume this ties into the question on the previous patch..
 
-If so, it would be nice to have some comments here that explain this.
-I.e., I don't quite have a big enough picture to know where or how this
-is prevented to ensure that the version updates down the key
-accumulation helpers don't conflict with this particular check, so
-something that helps connect the dots enough to somebody who doesn't
-already know how this is all supposed to work would be useful.
+Related question.. if the write buffer can't flush during journal
+replay, is there concern/risk of overflowing it?
 
 Brian
 
-> +
-> +	if (k + 1 < &darray_top(*keys) &&
-> +	    !journal_key_cmp(k, k + 1)) {
-> +		BUG_ON(bversion_cmp(k[0].k->k.version, k[1].k->k.version) > 0);
-> +
-> +		bch2_accounting_accumulate(bkey_i_to_accounting(k[1].k),
-> +					   bkey_i_to_s_c_accounting(k[0].k));
-> +		ret = 0;
-> +		goto out;
-> +	}
-> +
-> +	struct bkey_i *new = k->k;
-> +	if (old.k->type == KEY_TYPE_accounting) {
-> +		new = bch2_bkey_make_mut_noupdate(trans, bkey_i_to_s_c(k->k));
-> +		ret = PTR_ERR_OR_ZERO(new);
-> +		if (ret)
-> +			goto out;
-> +
-> +		bch2_accounting_accumulate(bkey_i_to_accounting(new),
-> +					   bkey_s_c_to_accounting(old));
-> +	}
-> +
-> +	trans->journal_res.seq = k->journal_seq;
-> +
-> +	ret = bch2_trans_update(trans, &iter, new, BTREE_TRIGGER_NORUN);
-> +out:
-> +	bch2_trans_iter_exit(trans, &iter);
-> +	return ret;
-> +}
-> +
->  static int bch2_journal_replay_key(struct btree_trans *trans,
->  				   struct journal_key *k)
->  {
-> @@ -159,12 +210,33 @@ static int bch2_journal_replay(struct bch_fs *c)
->  
->  	BUG_ON(!atomic_read(&keys->ref));
->  
-> +	/*
-> +	 * Replay accounting keys first: we can't allow the write buffer to
-> +	 * flush accounting keys until we're done
-> +	 */
-> +	darray_for_each(*keys, k) {
-> +		if (!(k->k->k.type == KEY_TYPE_accounting && !k->allocated))
-> +			continue;
-> +
-> +		cond_resched();
-> +
-> +		ret = commit_do(trans, NULL, NULL,
-> +				BCH_TRANS_COMMIT_no_enospc|
-> +				BCH_TRANS_COMMIT_no_journal_res,
-> +			     bch2_journal_replay_accounting_key(trans, k));
-> +		if (bch2_fs_fatal_err_on(ret, c, "error replaying accounting; %s", bch2_err_str(ret)))
-> +			goto err;
-> +	}
-> +
 >  	/*
 >  	 * First, attempt to replay keys in sorted order. This is more
 >  	 * efficient - better locality of btree access -  but some might fail if
->  	 * that would cause a journal deadlock.
+> @@ -1204,6 +1206,7 @@ int bch2_fs_initialize(struct bch_fs *c)
+>  	 * set up the journal.pin FIFO and journal.cur pointer:
 >  	 */
->  	darray_for_each(*keys, k) {
-> +		if (k->k->k.type == KEY_TYPE_accounting && !k->allocated)
-> +			continue;
-> +
->  		cond_resched();
+>  	bch2_fs_journal_start(&c->journal, 1);
+> +	set_bit(BCH_FS_accounting_replay_done, &c->flags);
+>  	bch2_journal_set_replay_done(&c->journal);
 >  
->  		/* Skip fastpath if we're low on space in the journal */
-> @@ -174,7 +246,7 @@ static int bch2_journal_replay(struct bch_fs *c)
->  				  BCH_TRANS_COMMIT_journal_reclaim|
->  				  (!k->allocated ? BCH_TRANS_COMMIT_no_journal_res : 0),
->  			     bch2_journal_replay_key(trans, k));
-> -		BUG_ON(!ret && !k->overwritten);
-> +		BUG_ON(!ret && !k->overwritten && k->k->k.type != KEY_TYPE_accounting);
->  		if (ret) {
->  			ret = darray_push(&keys_sorted, k);
->  			if (ret)
-> @@ -208,7 +280,7 @@ static int bch2_journal_replay(struct bch_fs *c)
->  		if (ret)
->  			goto err;
->  
-> -		BUG_ON(!k->overwritten);
-> +		BUG_ON(k->btree_id != BTREE_ID_accounting && !k->overwritten);
->  	}
->  
->  	/*
+>  	ret = bch2_fs_read_write_early(c);
 > -- 
 > 2.43.0
 > 
