@@ -1,52 +1,42 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A763FBA7
-	for <linux-bcachefs@vger.kernel.org>; Wed, 28 Feb 2024 20:11:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB56F1361A6
+	for <linux-bcachefs@vger.kernel.org>; Wed, 28 Feb 2024 22:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709151091; cv=none; b=jwg49HTnjJ6rAbDViLbE7bIiDRN0lLrX592uUQvPieprbAhMNSZUi2owXP5mwCxKDbiuRh0NCMQP/wMAzk5ey5cJU62SmQZ1WcM3VIYwzqUQq0UYG/+erG8gcNsLSlTiPjre8AYtvGYtOz0FQjWXL1TjZWrANMvd3N5C7xazIT0=
+	t=1709160169; cv=none; b=rTIDGS1Pe24XkkSfmNEqZ9NgTckVTF0qYgMIPSGCNKu3uAjHov0j1PUiCmJHqufGfhFF8daW4lJTH5krwXe/41lhK3YrWdlQj34dDgL1AKqfUJJJll+ctYUia4hTy4ZM5kjeEwoZVcthxbwlaluYZhSKhudfJbEAl8y9g1jNUIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709151091; c=relaxed/simple;
-	bh=z9nAe/MD+ONtoRfGDu5OVu4vWPfHu+Y3qBJoXdyczJE=;
+	s=arc-20240116; t=1709160169; c=relaxed/simple;
+	bh=9jZFoe64DNoKwYWX8i88izZaLs70/tiAPdx/QKTRLVc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yz0MYLl87ZgqGCNwf7QDLhf0sIBHuxYfCl3sAOEa7LCzU5Huu8Z8l4ip+55Pp5O4MHuyK4Beq57J1fpPYxRrqmJyBY67817iHjgC2ERMuHQOpJhHOioFYFOhhQ+sETyZcL7Aua1i2CN+d+sadtf12d5yHUAIxgmeyHR/zEGxadU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R3xUW2J/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=fuM0/aexlSiXxpncixQMoQ4XQfdevHsTyO4kcIsNGyhi3GzYvNGRgVYhxyeo3lOumSpZbzXaW0/oBZRNie4id453oZAZmZe2p6ar5gshGqaYs1ePsnyZ9gZoOA5vvhWOq/zOcJAd5JTurH7+2vB/EMc4Wo+k1qpTsdtoT3UuXGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hTRfQZQQ; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R3xUW2J/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709151085;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hTRfQZQQ"
+Date: Wed, 28 Feb 2024 17:42:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709160164;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=n27EQJHuT5MB9CbgL0I6AtFhTvsIr6W8uYFtug7KHVg=;
-	b=R3xUW2J/UviHgCeNwq96/faN+gjeqNxsAu2dswauBirC1vZt+HPS8sM0pSK9Rx45Mk2CQS
-	tQEUu02Ee77NA1rTNHmlBW0x395oi6s1dKq8wg5B7hXtwZLFny4bBkfaIB0AsNDQsdG6gb
-	3t4h4cgT27g4SxcQ49CERbh6YRlhnho=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-608-Uw4hegsJMUOGRBGonvs4zg-1; Wed,
- 28 Feb 2024 15:11:23 -0500
-X-MC-Unique: Uw4hegsJMUOGRBGonvs4zg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2A30229ABA0C;
-	Wed, 28 Feb 2024 20:11:23 +0000 (UTC)
-Received: from bfoster (unknown [10.22.32.137])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 00440492BE2;
-	Wed, 28 Feb 2024 20:11:22 +0000 (UTC)
-Date: Wed, 28 Feb 2024 15:13:04 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [BUG] bcachefs fio lockup via generic/703
-Message-ID: <Zd+T0EeeodCXKqQt@bfoster>
-References: <Zd+NzotWTooA/9zq@bfoster>
- <izlhsoadddmmfyc64pc557tx3lk3vtu7ycwu3ahryh2r3o6nj5@eaqsftsh7kv3>
+	bh=4zK8BkbnEgOr6gIlrjbd4nIptjld+uOBK6dwnrdJ/7Y=;
+	b=hTRfQZQQWYD3xl6wdDcR2GDCYnK3mnqg4oZiJ7O/V9d7PV7JSwAxp6s1A+9AqZygQoAM7r
+	7Lv/m5r2PtQO6kGhAzxa+cLLRfwXWHzxbl7jxrY77C2IyK7aMZ/hO3ci5eJYbXPOB3ASwI
+	dNU5FJ4nzr9Cn2lfunwZykCzV4Qs+bY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	djwong@kernel.org
+Subject: Re: [PATCH 03/21] bcachefs: btree write buffer knows how to
+ accumulate bch_accounting keys
+Message-ID: <ius5flpyc3nelyhflvf3cjok7fh6a6qceq43ruweqyu3giqg2k@n2eun6iwtsyj>
+References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+ <20240225023826.2413565-4-kent.overstreet@linux.dev>
+ <Zd4Ev8XPzn5AJ8K9@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -55,83 +45,141 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <izlhsoadddmmfyc64pc557tx3lk3vtu7ycwu3ahryh2r3o6nj5@eaqsftsh7kv3>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+In-Reply-To: <Zd4Ev8XPzn5AJ8K9@bfoster>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 28, 2024 at 03:03:06PM -0500, Kent Overstreet wrote:
-> On Wed, Feb 28, 2024 at 02:47:26PM -0500, Brian Foster wrote:
-> > Hi Kent,
-> > 
-> > Firstly, I confirmed that today's master seems to avoid the splat I sent
-> > previously (re: your comment about a reverse journal replay patch or
-> > some such).
-> > 
-> > I still reproduce the stall issue on this system. After peeling away at
-> > it, I was eventually able to reproduce without the drop writes
-> > (dm-flakey) behavior from the test, and with fio using either the libaio
-> > or sync I/O engine options. The sync I/O mode fortunately provides a
-> > more useful stack trace:
-> > 
-> > # cat /proc/177747/stack 
-> > [<0>] bch2_dio_write_flush+0x122/0x160 [bcachefs]
-> > [<0>] bch2_direct_write+0xb53/0xce0 [bcachefs]
-> > [<0>] bch2_write_iter+0x142/0xc70 [bcachefs]
-> > [<0>] vfs_write+0x29b/0x470
-> > [<0>] ksys_write+0x6f/0xf0
-> > [<0>] do_syscall_64+0x86/0x170
-> > [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> > 
-> > ... which resolves down to the closure_sync() call in
-> > bch2_dio_write_flush(). The problem seems to go away if I remove the
-> > preceding journal flush from that function. This seems to rule out
-> > io_uring/aio and instead suggest that we're getting stuck somehow
-> > waiting on a journal flush.
-> > 
-> > Based on that I went back to the first commit before 746a33c96b7a0
-> > ("bcachefs: better journal pipelining"). With that, I can run hundreds
-> > of iterations of generic/703 without a problem, so this appears to be a
-> > regression associated with the journal pipeline improvements. I'm
-> > currently re-running on the last known good commit with my test tweaks
-> > backed out (i.e. so back to io_uring and drop writes) just to
-> > corroborate that it's the same problem, but so far it's running as
-> > expected...
+On Tue, Feb 27, 2024 at 10:50:23AM -0500, Brian Foster wrote:
+> On Sat, Feb 24, 2024 at 09:38:05PM -0500, Kent Overstreet wrote:
+> > +	if (!*accounting_accumulated && wb->k.k.type == KEY_TYPE_accounting) {
+> > +		struct bkey u;
+> > +		struct bkey_s_c k = bch2_btree_path_peek_slot_exact(btree_iter_path(trans, iter), &u);
+> > +
+> > +		if (k.k->type == KEY_TYPE_accounting)
+> > +			bch2_accounting_accumulate(bkey_i_to_accounting(&wb->k),
+> > +						   bkey_s_c_to_accounting(k));
 > 
-> So I suppose the journal must be getting stuck, and a journal write
-> isn't completing - what does sysfs internal/journal_debug say when it happens?
+> So it looks like we're accumulating from the btree key into the write
+> buffer key. Is this so the following code will basically insert a new
+> btree key based on the value of the write buffer key?
+
+Correct, this is where we go from "accounting keys is a delta" to
+"accounting key is new version of the key".
+
+> >  	darray_for_each(wb->sorted, i) {
+> >  		struct btree_write_buffered_key *k = &wb->flushing.keys.data[i->idx];
+> > +		bool accounting_accumulated = false;
 > 
+> Should this live within the interior flush loop?
 
-dirty journal entries:  0/32768
-seq:                    11
-seq_ondisk:             11
-last_seq:               12
-last_seq_ondisk:        11
-flushed_seq_ondisk:     11
-watermark:              stripe
-each entry reserved:    346
-nr flush writes:        10
-nr noflush writes:      1
-average write size:     10.9 KiB
-nr direct reclaim:      0
-nr background reclaim:  25
-reclaim kicked:         0
-reclaim runs in:        0 ms
-current entry sectors:  512
-current entry error:    ok
-current entry:          closed
-unwritten entries:
-last buf closed
-replay done:            1
-space:
-        discarded       512:244736
-        clean ondisk    512:244736
-        clean           512:244736
-        total           512:245760
-dev 0:
-        nr              480
-        bucket size     512
-        available       478:266
-        discard_idx     1
-        dirty_ondisk    1 (seq 11)
-        dirty_idx       1 (seq 11)
-        cur_idx         1 (seq 11)
+We can't define it within the loop because then we'd be setting it to
+false on every loop iteration... but it does belong _with_ the loop, so
+I'll move it to right before.
 
+> > -			bch2_journal_pin_update(j, i->journal_seq, &wb->flushing.pin,
+> > -						bch2_btree_write_buffer_journal_flush);
+> > +			if (!accounting_replay_done &&
+> > +			    i->k.k.type == KEY_TYPE_accounting) {
+> > +				could_not_insert++;
+> > +				continue;
+> > +			}
+> > +
+> > +			if (!could_not_insert)
+> > +				bch2_journal_pin_update(j, i->journal_seq, &wb->flushing.pin,
+> > +							bch2_btree_write_buffer_journal_flush);
+> 
+> Hmm.. so this is sane because the slowpath runs in journal sorted order,
+> right?
+
+yup, which means as soon as we hit a key we can't insert we can't
+release any more journal pins
+
+> 
+> >  
+> >  			bch2_trans_begin(trans);
+> >  
+> > @@ -375,13 +409,27 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+> >  					btree_write_buffered_insert(trans, i));
+> >  			if (ret)
+> >  				goto err;
+> > +
+> > +			i->journal_seq = 0;
+> > +		}
+> > +
+> 
+> 		/*
+> 		 * Condense the remaining keys <reasons reasons>...??
+> 		 */
+
+yup, that's a good comment
+
+> > +		if (could_not_insert) {
+> > +			struct btree_write_buffered_key *dst = wb->flushing.keys.data;
+> > +
+> > +			darray_for_each(wb->flushing.keys, i)
+> > +				if (i->journal_seq)
+> > +					*dst++ = *i;
+> > +			wb->flushing.keys.nr = dst - wb->flushing.keys.data;
+> >  		}
+> >  	}
+> >  err:
+> > +	if (ret || !could_not_insert) {
+> > +		bch2_journal_pin_drop(j, &wb->flushing.pin);
+> > +		wb->flushing.keys.nr = 0;
+> > +	}
+> > +
+> >  	bch2_fs_fatal_err_on(ret, c, "%s: insert error %s", __func__, bch2_err_str(ret));
+> > -	trace_write_buffer_flush(trans, wb->flushing.keys.nr, skipped, fast, 0);
+> > -	bch2_journal_pin_drop(j, &wb->flushing.pin);
+> > -	wb->flushing.keys.nr = 0;
+> > +	trace_write_buffer_flush(trans, wb->flushing.keys.nr, overwritten, fast, 0);
+> 
+> I feel like the last time I looked at the write buffer stuff the flush
+> wasn't reentrant in this way. I.e., the flush switched out the active
+> buffer and so had to process all entries in the current buffer (or
+> something like that). Has something changed or do I misunderstand?
+
+Yeah, originally we were adding keys to the write buffer directly from
+the transaction commit path, so that necessitated the super fast
+lockless stuff where we'd toggle between buffers so one was always
+available.
+
+Now keys are pulled from the journal, so we can use (somewhat) simpler
+locking and buffering; now the complication is that we can't predict in
+advance how many keys are going to come out of the journal for the write
+buffer.
+
+> 
+> >  	return ret;
+> >  }
+> >  
+> > diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+> > index 6829d80bd181..b8289af66c8e 100644
+> > --- a/fs/bcachefs/recovery.c
+> > +++ b/fs/bcachefs/recovery.c
+> > @@ -228,6 +228,8 @@ static int bch2_journal_replay(struct bch_fs *c)
+> >  			goto err;
+> >  	}
+> >  
+> > +	set_bit(BCH_FS_accounting_replay_done, &c->flags);
+> > +
+> 
+> I assume this ties into the question on the previous patch..
+> 
+> Related question.. if the write buffer can't flush during journal
+> replay, is there concern/risk of overflowing it?
+
+Shouldn't be any actual risk. It's just new accounting updates that the
+write buffer can't flush, and those are only going to be generated by
+interior btree node updates as journal replay has to split/rewrite nodes
+to make room for its updates.
+
+And for those new acounting updates, updates to the same counters get
+accumulated as they're flushed from the journal to the write buffer -
+see the patch for eytzingcer tree accumulated. So we could only overflow
+if the number of distinct counters touched somehow was very large.
+
+And the number of distinct counters will be growing significantly, but
+the new counters will all be for user data, not metadata.
+
+(Except: that reminds me, we do want to add per-btree counters, so users
+can see "I have x amount of extents, x amount of dirents, etc.).
