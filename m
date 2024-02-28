@@ -1,38 +1,42 @@
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2685E073
-	for <linux-bcachefs@vger.kernel.org>; Wed, 28 Feb 2024 20:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85585E082
+	for <linux-bcachefs@vger.kernel.org>; Wed, 28 Feb 2024 20:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709150594; cv=none; b=WiAvlcw/9rhNlygvlXlJA3l0teWQicsiXU+KroRBDKDK/9UNrzsnUyRteUudADRKme5J40uxg3t+sgmjb+LtqyW6MxX7q47EaE8h8IsUmwKmTGA+FGJNLIhyGQAagqVU0fo3fT4vCIkNaiQW8OnJlIo3NEzu3VBzMSejWiQWkMw=
+	t=1709150773; cv=none; b=M9Mgc7BwwHldu5CCFQT+DDuw2Z1eSxlj8IMyn4zDG+dgZhIdnW/mnSawyg6/L1r38baGPhodtGP8v9zpg4CkxA5yMWZtjOg9cQprlFdktAP6mOWKsMY8mSkweG5w9+WtBMAenIktB2O//q5XLOgo8yu4WA4iVkVOb/WAf3EW/UU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709150594; c=relaxed/simple;
-	bh=96N/VsISlOry+hmvIgD+lYrXj4/LNgiLnND8t0eqyyI=;
+	s=arc-20240116; t=1709150773; c=relaxed/simple;
+	bh=k/m4YheVfQs4VHgcocYJE6LjLMExMpl/5ZaI3/fMn8g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ai2jXQdsfETLtcAWoGojR4x6bXglrcVFsPqBPid4E19Z7avd3H5M+3YRjV0mYPdbDbtI0xixJmj9EGCYGbetGObxXCwN4P17EHuICPoF5J+U7TzDcfo9IlzkpNMpmbXR5yZBaZluK3POtsYY2W75F2pnuv5Fme0HpTxiRK5ZmnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V9kEtriR; arc=none smtp.client-ip=91.218.175.186
+	 Content-Type:Content-Disposition:In-Reply-To; b=qwLpDy6bRdySQ53Iw5GPJEL4nXsTzT1dpfxupyPY2wCMq7ppP9x6VGZG+W9THLikPfmIE7e9dxX4WQMudZIer/13uRYSIpvwpc776HCCqQjjbF22MwMRM6HKK1R0XmIU6+qYw8+zS1oPF5kooZNTOjl9Zj7BtMlfZeRIjFQYcqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p62TuRDJ; arc=none smtp.client-ip=91.218.175.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V9kEtriR"
-Date: Wed, 28 Feb 2024 15:03:06 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p62TuRDJ"
+Date: Wed, 28 Feb 2024 15:06:02 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709150589;
+	t=1709150768;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tVLtku8euYOoI34C4OXIfekNcaMGomDud5CYdKG8FX4=;
-	b=V9kEtriRT6rxsySe81Y7aJ4nWRyUe2La36HWy0VmpNTkr6fOOjNnLqVWehg5WdRZVRknnA
-	9juKCWNQiPRKfr5PmzH85DYW3y0eUFf5GOQT4s2DmIwPA4a584waH7ETcZ0bv5NcF4S12R
-	cEnPqT1GlDIq/BWsVQ8TSeT28Rja7U0=
+	bh=Od6nSrqP2/hZbAtGU3cLKbPlzuM3mAeGtdvOMo4Vn/I=;
+	b=p62TuRDJRe5Gi6VYpKsvcCPUoOCqt4c/PugiE8eqtxJDAYA/o/AtmO0Kn5f4tg3ilLMAT/
+	SJChWy1VQj/nxbPhnPtFW1q2hysyTIyyY2iGuHaQ9OJMXbO8v5GIZUBKgvx11+FyVizGnR
+	Mjq6NfDXp8LBql/eO5BLQY+UH1PtS8I=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [BUG] bcachefs fio lockup via generic/703
-Message-ID: <izlhsoadddmmfyc64pc557tx3lk3vtu7ycwu3ahryh2r3o6nj5@eaqsftsh7kv3>
-References: <Zd+NzotWTooA/9zq@bfoster>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	djwong@kernel.org
+Subject: Re: [PATCH 02/21] bcachefs: Accumulate accounting keys in journal
+ replay
+Message-ID: <zy6htbwdtvq2wikbgflfisbpu7lsluejch67wlbdmrin5d3awa@elqulgzc3bn5>
+References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+ <20240225023826.2413565-3-kent.overstreet@linux.dev>
+ <Zd4EmpK0zJp0mbml@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -41,45 +45,84 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zd+NzotWTooA/9zq@bfoster>
+In-Reply-To: <Zd4EmpK0zJp0mbml@bfoster>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 28, 2024 at 02:47:26PM -0500, Brian Foster wrote:
-> Hi Kent,
+On Tue, Feb 27, 2024 at 10:49:46AM -0500, Brian Foster wrote:
+> On Sat, Feb 24, 2024 at 09:38:04PM -0500, Kent Overstreet wrote:
+> > Until accounting keys hit the btree, they are deltas, not new versions
+> > of the existing key; this means we have to teach journal replay to
+> > accumulate them.
+> > 
+> > Additionally, the journal doesn't track precisely which entries have
+> > been flushed to the btree; it only tracks a range of entries that may
+> > possibly still need to be flushed.
+> > 
+> > That means we need to compare accounting keys against the version in the
+> > btree and only flush updates that are newer.
+> > 
+> > There's another wrinkle with the write buffer: if the write buffer
+> > starts flushing accounting keys before journal replay has finished
+> > flushing accounting keys, journal replay will see the version number
+> > from the new updates and updates from the journal will be lost.
+> > 
+> > To avoid this, journal replay has to flush accounting keys first, and
+> > we'll be adding a flag so that write buffer flush knows to hold
+> > accounting keys until then.
+> > 
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > ---
+> >  fs/bcachefs/btree_journal_iter.c | 23 +++-------
+> >  fs/bcachefs/btree_journal_iter.h | 15 +++++++
+> >  fs/bcachefs/btree_trans_commit.c |  9 +++-
+> >  fs/bcachefs/btree_update.h       | 14 +++++-
+> >  fs/bcachefs/recovery.c           | 76 +++++++++++++++++++++++++++++++-
+> >  5 files changed, 117 insertions(+), 20 deletions(-)
+> > 
+> ...
+> > diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+> > index 96e7a1ec7091..6829d80bd181 100644
+> > --- a/fs/bcachefs/recovery.c
+> > +++ b/fs/bcachefs/recovery.c
+> > @@ -11,6 +11,7 @@
+> >  #include "btree_io.h"
+> >  #include "buckets.h"
+> >  #include "dirent.h"
+> > +#include "disk_accounting.h"
+> >  #include "ec.h"
+> >  #include "errcode.h"
+> >  #include "error.h"
+> > @@ -87,6 +88,56 @@ static void replay_now_at(struct journal *j, u64 seq)
+> >  		bch2_journal_pin_put(j, j->replay_journal_seq++);
+> >  }
+> >  
+> > +static int bch2_journal_replay_accounting_key(struct btree_trans *trans,
+> > +					      struct journal_key *k)
+> > +{
+> > +	struct journal_keys *keys = &trans->c->journal_keys;
+> > +
+> > +	struct btree_iter iter;
+> > +	bch2_trans_node_iter_init(trans, &iter, k->btree_id, k->k->k.p,
+> > +				  BTREE_MAX_DEPTH, k->level,
+> > +				  BTREE_ITER_INTENT);
+> > +	int ret = bch2_btree_iter_traverse(&iter);
+> > +	if (ret)
+> > +		goto out;
+> > +
+> > +	struct bkey u;
+> > +	struct bkey_s_c old = bch2_btree_path_peek_slot(btree_iter_path(trans, &iter), &u);
+> > +
+> > +	if (bversion_cmp(old.k->version, k->k->k.version) >= 0) {
+> > +		ret = 0;
+> > +		goto out;
+> > +	}
 > 
-> Firstly, I confirmed that today's master seems to avoid the splat I sent
-> previously (re: your comment about a reverse journal replay patch or
-> some such).
-> 
-> I still reproduce the stall issue on this system. After peeling away at
-> it, I was eventually able to reproduce without the drop writes
-> (dm-flakey) behavior from the test, and with fio using either the libaio
-> or sync I/O engine options. The sync I/O mode fortunately provides a
-> more useful stack trace:
-> 
-> # cat /proc/177747/stack 
-> [<0>] bch2_dio_write_flush+0x122/0x160 [bcachefs]
-> [<0>] bch2_direct_write+0xb53/0xce0 [bcachefs]
-> [<0>] bch2_write_iter+0x142/0xc70 [bcachefs]
-> [<0>] vfs_write+0x29b/0x470
-> [<0>] ksys_write+0x6f/0xf0
-> [<0>] do_syscall_64+0x86/0x170
-> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> 
-> ... which resolves down to the closure_sync() call in
-> bch2_dio_write_flush(). The problem seems to go away if I remove the
-> preceding journal flush from that function. This seems to rule out
-> io_uring/aio and instead suggest that we're getting stuck somehow
-> waiting on a journal flush.
-> 
-> Based on that I went back to the first commit before 746a33c96b7a0
-> ("bcachefs: better journal pipelining"). With that, I can run hundreds
-> of iterations of generic/703 without a problem, so this appears to be a
-> regression associated with the journal pipeline improvements. I'm
-> currently re-running on the last known good commit with my test tweaks
-> backed out (i.e. so back to io_uring and drop writes) just to
-> corroborate that it's the same problem, but so far it's running as
-> expected...
+> So I assume this is what correlates back to the need to not flush the
+> write buffer until replay completes, otherwise we could unintentionally
+> skip subsequent key updates. Is that the case?
 
-So I suppose the journal must be getting stuck, and a journal write
-isn't completing - what does sysfs internal/journal_debug say when it happens?
+No, this is the "has this delta been applie to the btree key" check -
+adding that as a comment.
+
+Write buffer exclusion comes with a new filesytem bit that gets set once
+accounting keys have all been replayed, that's in the next patch
