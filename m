@@ -1,43 +1,45 @@
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB1D16062B
-	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 16:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB3826288
+	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 16:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709223893; cv=none; b=NQrA147jm5qtsBSicHKRU9gw/0HvqIQ0nVajzAiReYwiszKzL6IJK/eZMpY5cNs+/SYfXcWoRXJl16olzreyR1G8yulWfKmjbUxp8ch9WJ2bQxe4/SNlroTVtO/yrMnzlxxOPVSwIbH+MIC+hWQsK5H/Sgw9MJAHtTvHQ8v7QB0=
+	t=1709225014; cv=none; b=fsYMkYajLeMWx1X28E1TNMWRwE93jlex2+RGZPxV2nLRjE4PwT7XrMsUmLSD3cQlRbhuynDEI5waq8FBUBu5vPWh+LnWL4w7CMPKgvZt4cK/t0Oq5UNmye2Z1EHzNg4JcXHzxs+fOYLmcYdo8ABLvUcmUAAdezDRRFeNbM1l4aY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709223893; c=relaxed/simple;
-	bh=HdjUQYZu1OZj2QKVKCdJixDfO99nINaRmSxA7bGFl2g=;
+	s=arc-20240116; t=1709225014; c=relaxed/simple;
+	bh=1+21ldCzpprljlvUJ2Lr3Gx5oQp3S9XRiF1iVZ+duVk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fgq8xtmIwMdx8Vue/fWmiQVKLKeH+zyHhVF8TV4AC5dyekzEH4SjzR/qwPBrwXRKeBsnREI4mAcl5PtJdikFPqhl0jVn7Yrf7WxFMqLK6FmOT5Q44rGnLGwA8GfFz0ydA1FT3y6SID4C9sWLcREvZZxWxkw7OUbr8i4IgCsyiIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GdEgCUql; arc=none smtp.client-ip=91.218.175.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=bfOM774qi2Ca8PIbP3eGOeE1FTTiBkg4zUmRe6LHU6ERU8Kr2hq513Gkb/nW/8K57tBGs49CkgLrV9mpdCtHy00mpc6tVfAVQ2i58FSPhEdblhXUgFYkNPer0U8ewVGnXtVnSLRHp1ticMM2PGKZkVw0HgW1nEB5tOHPjo1CwHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jtn1bVX3; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GdEgCUql"
-Date: Thu, 29 Feb 2024 11:24:43 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jtn1bVX3"
+Date: Thu, 29 Feb 2024 11:43:27 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709223888;
+	t=1709225010;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Q2yi0Kq3LJ+m/+HJ0H8ANWNc5RP3umFTtcVHARSWr6o=;
-	b=GdEgCUqlaE9ZWWJEzZpBBtM819YCJ4TObvqBOExjQyh+5SH2Qd1e2YuYiWj5u4s+T2bEmj
-	U27ZvkBd5v16+EHO8qYqUHlP+WV8Lnj2MUYF4nJG/us0mST4poi2k5vDPHXOlwlvY4enhy
-	jv8BZOFY5GkhZg+wMS0gE3a658qfs8I=
+	bh=LAE1asfDpdVLwQya95aH6pklaTkHLNchRUYul7b04dM=;
+	b=Jtn1bVX3crLm8FbDb9+w75RuQGRxHwKraJfcORafYigU5vQOyeUFxyUv3iswk9DIjelA9j
+	Lyw8LgWaKP2XB580LjhnHgVhOGxlvbMbu5Lh3fMvhGoVWGeqAMvlE4H63rQfb/jmZV8NCd
+	+/poXf/E4GAL6b4nI/8MitOezx80WOE=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [BUG] bcachefs fio lockup via generic/703
-Message-ID: <ay7pae6pkn3yg2nnopoii2iodfefi3k2ilkhd5hvtzsecctpfz@72rgb4psuqn2>
-References: <Zd+NzotWTooA/9zq@bfoster>
- <izlhsoadddmmfyc64pc557tx3lk3vtu7ycwu3ahryh2r3o6nj5@eaqsftsh7kv3>
- <Zd+T0EeeodCXKqQt@bfoster>
- <fv5nsvkc7cgl727nhyvloi6vhuvn5vbn2isg3r3mfet2t3ymry@4onepu6bzlfq>
- <h6cve56ifz6fszequog73uzgyjnalvtbdwz23kxupt4eun2ymh@anxj25u7gaf2>
- <ZeCpApARcJvDyAbf@bfoster>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, david@fromorbit.com, 
+	mcgrof@kernel.org, hch@lst.de, willy@infradead.org
+Subject: Re: [PATCH 2/2] bcachefs: Buffered write path now can avoid the
+ inode lock
+Message-ID: <y6hurdequpds6fgpsm3vlapzzfj6e5pgs2ukfjm4qbziv5kdwr@lrjkcnzkjh75>
+References: <20240229063010.68754-1-kent.overstreet@linux.dev>
+ <20240229063010.68754-3-kent.overstreet@linux.dev>
+ <CAHk-=whf9HsM6BP3L4EYONCjGawAV=X0aBDoUHXkND4fpqB2Ww@mail.gmail.com>
+ <CAHk-=wg96Rt-SuUeRb-xev1KdwqX0GLFjf2=qnRsyLimx6-xzw@mail.gmail.com>
+ <20240229-gestrafft-waage-157c1c4ee225@brauner>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -46,65 +48,54 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZeCpApARcJvDyAbf@bfoster>
+In-Reply-To: <20240229-gestrafft-waage-157c1c4ee225@brauner>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Feb 29, 2024 at 10:55:46AM -0500, Brian Foster wrote:
-> So I can still reproduce the issue on master, which includes commit
-> 3c8f22258ab ("bcachefs: Fix bch2_journal_noflush_seq()"). Just for
-> reference, the related debug info is as follows:
+On Thu, Feb 29, 2024 at 10:46:48AM +0100, Christian Brauner wrote:
+> On Wed, Feb 28, 2024 at 11:27:05PM -0800, Linus Torvalds wrote:
+> > On Wed, 28 Feb 2024 at 23:20, Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > >
+> > >  - take the lock exclusively if O_APPEND or if it *looks* like you
+> > > might extend the file size.
+> > >
+> > >  - otherwise, take the shared lock, and THEN RE-CHECK. The file size
+> > > might have changed, so now you need to double-check that you're really
+> > > not going to extend the size of the file, and if you are, you need to
+> > > go back and take the inode lock exclusively after all.
+> > 
+> > Same goes for the suid/sgid checks. You need to take the inode lock
+> > shared to even have the i_mode be stable, and at that point you might
+> > decide "oh, I need to clear suid/sgid after all" and have to go drop
+> > the lock and retake it for exclusive access after all.
 > 
-> # cat /proc/13918/stack 
-> [<0>] bch2_dio_write_flush+0x15b/0x190 [bcachefs]
-> [<0>] bch2_direct_write+0xb75/0xd30 [bcachefs]
-> [<0>] bch2_write_iter+0x4c/0xf10 [bcachefs]
-> [<0>] vfs_write+0x29b/0x470
-> [<0>] ksys_write+0x6f/0xf0
-> [<0>] do_syscall_64+0x86/0x170
-> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> I agree. And this is how we've done it in xfs as well. The inode lock is
+> taken shared, then check for IS_NOSEC(inode) and if that's true keep the
+> shared lock, otherwise upgrade to an exclusive lock. Note that this
+> whole check also checks filesystem capability xattrs.
 > 
-> # cat journal_debug 
-> dirty journal entries:  0/32768
-> seq:                    72
-> seq_ondisk:             72
-> last_seq:               73
-> last_seq_ondisk:        72
-> flushed_seq_ondisk:     72
-> watermark:              stripe
-> each entry reserved:    361
-> nr flush writes:        65
-> nr noflush writes:      0
-> average write size:     2.14 KiB
-> nr direct reclaim:      0
-> nr background reclaim:  66
-> reclaim kicked:         0
-> reclaim runs in:        0 ms
-> blocked:                0
-> current entry sectors:  512
-> current entry error:    ok
-> current entry:          closed
-> unwritten entries:
-> last buf closed
-> replay done:            1
-> space:
->         discarded       512:244736
->         clean ondisk    512:244736
->         clean           512:244736
->         total           512:245760
-> dev 0:
->         nr              480
->         bucket size     512
->         available       478:188
->         discard_idx     1
->         dirty_ondisk    1 (seq 72)
->         dirty_idx       1 (seq 72)
->         cur_idx         1 (seq 72)
+> I think you'd also get potential security issues or at least very subtle
+> behavior. Someone could make a binary setuid and a concurrent write
+> happens. chmod is taking the exclusive lock and there's a concurrent
+> write going on changing the contents to something unsafe without being
+> forced to remove the set*id bits.
 > 
-> # cat closures 
-> 0000000044781eb9: __closure_sync+0x49/0x180 -> closure_sync_fn+0x0/0x30 p 0000000000000000 r 1 
->  W bch2_journal_flush_seq_async.part.0+0xed/0x590 [bcachefs]
-> 
-> 000000001b9a5601: bch2_fs_open+0x538/0x15e0 [bcachefs] -> 0x0 p 0000000000000000 r 1 R
+> Similar for {g,u}id changes. Someone starts a chown() taking inode lock
+> while someone issues a concurrent write. The chown changes the group
+> ownership so that a writer would be forced to drop the sgid bit. But the
+> writer proceeds keeping that bit.
 
-So, definitely some sort of lost wakeup, or we accidentally waited on a
-journal buf that wasn't actually outstanding
+That's the kind of race that's not actually a race - if the syscalls
+being invoked at the same time, it's fine if the result is as if the
+write happened first, then the chown.
+
+For there to be an actual race one of two things would have to be the
+case:
+ - the chown/chmod path would have to be dependent on the on the data
+   the write path is changing, or
+ - there'd have to be a problem wnith the write path seeing inconsistent
+   state mid modification
+
+But I can't claim 100% the second case isn't a factor, I don't know the
+security side of things as well, and the XFS way sounds nice and clean.
