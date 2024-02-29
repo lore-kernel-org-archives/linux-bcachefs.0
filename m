@@ -1,45 +1,55 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB3826288
-	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 16:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B68381C4
+	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 18:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709225014; cv=none; b=fsYMkYajLeMWx1X28E1TNMWRwE93jlex2+RGZPxV2nLRjE4PwT7XrMsUmLSD3cQlRbhuynDEI5waq8FBUBu5vPWh+LnWL4w7CMPKgvZt4cK/t0Oq5UNmye2Z1EHzNg4JcXHzxs+fOYLmcYdo8ABLvUcmUAAdezDRRFeNbM1l4aY=
+	t=1709232102; cv=none; b=O/GWYm41yS7PkfbqJGXT2B+kRLkjRsBjyDKPUuGgU87OmpIWV7PZm7Dfn6+PyiZeXLXw2h6J+KT/Na+aGP9PqYo55b3B6rsaQob7JbdfV4RZo/F39C5qEbZe4eBtHD+zi9G5Cyo1a3xatb+PAvrzNbLKl+MsQGxRb9lorhDYcTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709225014; c=relaxed/simple;
-	bh=1+21ldCzpprljlvUJ2Lr3Gx5oQp3S9XRiF1iVZ+duVk=;
+	s=arc-20240116; t=1709232102; c=relaxed/simple;
+	bh=Fg9exPopaMXgoBeg3T8QjIb2dbC8fu4hOHN1ULOmBgg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bfOM774qi2Ca8PIbP3eGOeE1FTTiBkg4zUmRe6LHU6ERU8Kr2hq513Gkb/nW/8K57tBGs49CkgLrV9mpdCtHy00mpc6tVfAVQ2i58FSPhEdblhXUgFYkNPer0U8ewVGnXtVnSLRHp1ticMM2PGKZkVw0HgW1nEB5tOHPjo1CwHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jtn1bVX3; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=H+LO6Hjhj2cQludy2+6+MQMfcwsKn0Z3xvPEYHsImLaYRcwXjpA6u9CB+5D3WVHKwM0+QXH5N13hr6B8qIcZRSNQtYIuANCpW+50og5uVCH+S5Z9sGMp/EugW78bTEqG4M3auQK0LAJ6gK43m8iWy8IjFWRH3MDM7kkseV6Utcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L8j5LBql; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jtn1bVX3"
-Date: Thu, 29 Feb 2024 11:43:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709225010;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L8j5LBql"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709232097;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=LAE1asfDpdVLwQya95aH6pklaTkHLNchRUYul7b04dM=;
-	b=Jtn1bVX3crLm8FbDb9+w75RuQGRxHwKraJfcORafYigU5vQOyeUFxyUv3iswk9DIjelA9j
-	Lyw8LgWaKP2XB580LjhnHgVhOGxlvbMbu5Lh3fMvhGoVWGeqAMvlE4H63rQfb/jmZV8NCd
-	+/poXf/E4GAL6b4nI/8MitOezx80WOE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, david@fromorbit.com, 
-	mcgrof@kernel.org, hch@lst.de, willy@infradead.org
-Subject: Re: [PATCH 2/2] bcachefs: Buffered write path now can avoid the
- inode lock
-Message-ID: <y6hurdequpds6fgpsm3vlapzzfj6e5pgs2ukfjm4qbziv5kdwr@lrjkcnzkjh75>
-References: <20240229063010.68754-1-kent.overstreet@linux.dev>
- <20240229063010.68754-3-kent.overstreet@linux.dev>
- <CAHk-=whf9HsM6BP3L4EYONCjGawAV=X0aBDoUHXkND4fpqB2Ww@mail.gmail.com>
- <CAHk-=wg96Rt-SuUeRb-xev1KdwqX0GLFjf2=qnRsyLimx6-xzw@mail.gmail.com>
- <20240229-gestrafft-waage-157c1c4ee225@brauner>
+	bh=imfi9nyY2Ds1zTSvT7FW6iYVGAy7PqxovSx7W2kz8Yk=;
+	b=L8j5LBql9X1LHlxfVrxhv5djBoG34rCpJ4JbOYCSJsS0ayzwitsy2CZcrlC7CyjMjfhxRy
+	EgmiiJ+0ajuuM6RMsc6HRgPVkv7B9z29czhWZhVzIqgjg2pA1gZYgazuob1QgDaMi+hIAh
+	QGLrocYQB7qZsV98jRfNOMDAjD9AfkE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-354-HBfG6nMvNqO1SbL0atuuFQ-1; Thu,
+ 29 Feb 2024 13:41:33 -0500
+X-MC-Unique: HBfG6nMvNqO1SbL0atuuFQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5B75629AC011;
+	Thu, 29 Feb 2024 18:41:33 +0000 (UTC)
+Received: from bfoster (unknown [10.22.32.137])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 23E242166AE1;
+	Thu, 29 Feb 2024 18:41:33 +0000 (UTC)
+Date: Thu, 29 Feb 2024 13:43:15 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	djwong@kernel.org
+Subject: Re: [PATCH 01/21] bcachefs: KEY_TYPE_accounting
+Message-ID: <ZeDQQ8cyMTgYaY6D@bfoster>
+References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+ <20240225023826.2413565-2-kent.overstreet@linux.dev>
+ <Zd4Ef49kHX3g69VT@bfoster>
+ <t6cc6gqgla2csyvrsv2znel5lg76vx7t2zna772qpw7zd6pnft@rxdakxza5cab>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -48,54 +58,88 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240229-gestrafft-waage-157c1c4ee225@brauner>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <t6cc6gqgla2csyvrsv2znel5lg76vx7t2zna772qpw7zd6pnft@rxdakxza5cab>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Thu, Feb 29, 2024 at 10:46:48AM +0100, Christian Brauner wrote:
-> On Wed, Feb 28, 2024 at 11:27:05PM -0800, Linus Torvalds wrote:
-> > On Wed, 28 Feb 2024 at 23:20, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > >
-> > >  - take the lock exclusively if O_APPEND or if it *looks* like you
-> > > might extend the file size.
-> > >
-> > >  - otherwise, take the shared lock, and THEN RE-CHECK. The file size
-> > > might have changed, so now you need to double-check that you're really
-> > > not going to extend the size of the file, and if you are, you need to
-> > > go back and take the inode lock exclusively after all.
+On Wed, Feb 28, 2024 at 02:39:38PM -0500, Kent Overstreet wrote:
+> On Tue, Feb 27, 2024 at 10:49:19AM -0500, Brian Foster wrote:
+> > On Sat, Feb 24, 2024 at 09:38:03PM -0500, Kent Overstreet wrote:
+> > > New key type for the disk space accounting rewrite.
+> > > 
+> > >  - Holds a variable sized array of u64s (may be more than one for
+> > >    accounting e.g. compressed and uncompressed size, or buckets and
+> > >    sectors for a given data type)
+> > > 
+> > >  - Updates are deltas, not new versions of the key: this means updates
+> > >    to accounting can happen via the btree write buffer, which we'll be
+> > >    teaching to accumulate deltas.
+> > > 
+> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > ---
+> > >  fs/bcachefs/Makefile                 |   3 +-
+> > >  fs/bcachefs/bcachefs.h               |   1 +
+> > >  fs/bcachefs/bcachefs_format.h        |  80 +++------------
+> > >  fs/bcachefs/bkey_methods.c           |   1 +
+> > >  fs/bcachefs/disk_accounting.c        |  70 ++++++++++++++
+> > >  fs/bcachefs/disk_accounting.h        |  52 ++++++++++
+> > >  fs/bcachefs/disk_accounting_format.h | 139 +++++++++++++++++++++++++++
+> > >  fs/bcachefs/replicas_format.h        |  21 ++++
+> > >  fs/bcachefs/sb-downgrade.c           |  12 ++-
+> > >  fs/bcachefs/sb-errors_types.h        |   3 +-
+> > >  10 files changed, 311 insertions(+), 71 deletions(-)
+> > >  create mode 100644 fs/bcachefs/disk_accounting.c
+> > >  create mode 100644 fs/bcachefs/disk_accounting.h
+> > >  create mode 100644 fs/bcachefs/disk_accounting_format.h
+> > >  create mode 100644 fs/bcachefs/replicas_format.h
+> > > 
+> > ...
+> > > diff --git a/fs/bcachefs/disk_accounting_format.h b/fs/bcachefs/disk_accounting_format.h
+> > > new file mode 100644
+> > > index 000000000000..e06a42f0d578
+> > > --- /dev/null
+> > > +++ b/fs/bcachefs/disk_accounting_format.h
+> > > @@ -0,0 +1,139 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +#ifndef _BCACHEFS_DISK_ACCOUNTING_FORMAT_H
+> > > +#define _BCACHEFS_DISK_ACCOUNTING_FORMAT_H
+> > > +
+> > > +#include "replicas_format.h"
+> > > +
+> > > +/*
+> > > + * Disk accounting - KEY_TYPE_accounting - on disk format:
+> > > + *
+> > > + * Here, the key has considerably more structure than a typical key (bpos); an
+> > > + * accounting key is 'struct disk_accounting_key', which is a union of bpos.
+> > > + *
 > > 
-> > Same goes for the suid/sgid checks. You need to take the inode lock
-> > shared to even have the i_mode be stable, and at that point you might
-> > decide "oh, I need to clear suid/sgid after all" and have to go drop
-> > the lock and retake it for exclusive access after all.
+> > First impression.. I'm a little confused why the key type is a union of
+> > bpos. I'm possibly missing something fundamental/obvious, but could you
+> > elaborate more on why that is here?
 > 
-> I agree. And this is how we've done it in xfs as well. The inode lock is
-> taken shared, then check for IS_NOSEC(inode) and if that's true keep the
-> shared lock, otherwise upgrade to an exclusive lock. Note that this
-> whole check also checks filesystem capability xattrs.
+> How's this?
 > 
-> I think you'd also get potential security issues or at least very subtle
-> behavior. Someone could make a binary setuid and a concurrent write
-> happens. chmod is taking the exclusive lock and there's a concurrent
-> write going on changing the contents to something unsafe without being
-> forced to remove the set*id bits.
+>  * More specifically: a key is just a muliword integer (where word endianness   
+>  * matches native byte order), so we're treating bpos as an opaque 20 byte                                                                                  
+>  * integer and mapping bch_accounting_key to that.
 > 
-> Similar for {g,u}id changes. Someone starts a chown() taking inode lock
-> while someone issues a concurrent write. The chown changes the group
-> ownership so that a writer would be forced to drop the sgid bit. But the
-> writer proceeds keeping that bit.
 
-That's the kind of race that's not actually a race - if the syscalls
-being invoked at the same time, it's fine if the result is as if the
-write happened first, then the chown.
+Hmm.. I think the connection I missed on first look is basically
+disk_accounting_key_to_bpos(). I think what is confusing is that calling
+this a key makes me think of bkey, which I understand to contain a bpos,
+so then overlaying it with a bpos didn't really make a lot of sense to
+me conceptually.
 
-For there to be an actual race one of two things would have to be the
-case:
- - the chown/chmod path would have to be dependent on the on the data
-   the write path is changing, or
- - there'd have to be a problem wnith the write path seeing inconsistent
-   state mid modification
+So when I look at disk_accounting_key_to_bpos(), I see we are actually
+using the bpos _pad field, and this structure basically _is_ the bpos
+for a disk accounting btree bkey. So that kind of makes me wonder why
+this isn't called something like disk_accounting_pos instead of _key,
+but maybe that is wrong for other reasons.
 
-But I can't claim 100% the second case isn't a factor, I don't know the
-security side of things as well, and the XFS way sounds nice and clean.
+Either way, what I'm trying to get at is that I think this documentation
+would be better if it explained conceptually how disk_accounting_key
+relates to bkey/bpos, and why it exists separately from bkey vs. other
+key types, rather than (or at least before) getting into the lower level
+side effects of a union with bpos.
+
+Brian
+
