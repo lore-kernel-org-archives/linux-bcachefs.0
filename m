@@ -1,292 +1,122 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF4E2231F
-	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 06:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0FED524DF
+	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 07:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709188226; cv=none; b=ZqmBs4TtfpgQXroVvIGs7AwlPVm2Uk/UVMG4vAeu9llzqHJUpWtDbthfjIc1sfA0FCfQUU+0isEA8S25JebwRenI/Sb6j4RfXe/aQbt/626G8rq40YS/6mjZcfSvNpx3opDJvudyR7skWh5z0pUfERGwSd6zcqGoH8wJluA3J1U=
+	t=1709191267; cv=none; b=t0RQj2d17ECAq5rYnDhXuqaCFMZgJptmPuXzVJXoJoRR5D/xYrm+3r/QaYR5wGm5iQYFfIExcqKIyb+p/bwU++M31YVtBgQYqINjeCvf2SdcuBxdWTzO8EdNZUjKocK8FLi0LRQi4t+OGJtzXipVBu6uq3/1tP5LADl5xbpFqFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709188226; c=relaxed/simple;
-	bh=BPzqn+d+lsYRYpjLVCaIRRf0/ndaIMpw8rTPaEZwmcI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TRsl9hshPf2VtMBJ1f4OCB5lX5QKirwczXJF1hjuTf4CEkBh4d5WOgARj0pFcP8oPUUtVB7nH+Ia6Xdm8HNuUqhnApairRBJgmcwryZ1vGJ5Tbz9ZWg1wEy8EaBiFn58EDT55wII4rMHVM+7xNhyIfsCVipW6lNJMFNq7C4degY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dq7qcKXv; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1709191267; c=relaxed/simple;
+	bh=4BWkix83xa69Td6GkY4u4awSoBX+UEzZGygqWJSpHls=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uN2DWfa9jJStMkKks/ulxDg6IQXOEBwAgvUtk0kRNv5by9UP2oyfX8LqxiYn/zJJUI463gi3cPMTBZzx/00nSI9NfdL9T6PpciqKREKhWkHYoYHl70VcPgnn1mid5jPYFOmF5Vi+LslHh8dkd+BVbiZEDGKGlkyO3cedUCv3nNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=QbwcDjEI; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dq7qcKXv"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709188222;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AYPSfPxcht/ebETsoi0J8ZwT/8VCoaH5tOzKLdUfld4=;
-	b=dq7qcKXvz3u1e7WQryoOKWgWz7+Nugp768XpEtDLqr8VvAaVYSY3R+/k80VW4MDQIKnX28
-	B9ZXap03Y0P6uo/OgZHidfPsvURF5f7aybdioc5ULp8eRG3/ToScPW/phq9vfpfpWzalCa
-	UfTNKwintwp7ahe/Trq+VdUcBk8veIw=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	david@fromorbit.com,
-	mcgrof@kernel.org,
-	torvalds@linux-foundation.org,
-	hch@lst.de,
-	willy@infradead.org
-Subject: [PATCH 2/2] bcachefs: Buffered write path now can avoid the inode lock
-Date: Thu, 29 Feb 2024 01:30:08 -0500
-Message-ID: <20240229063010.68754-3-kent.overstreet@linux.dev>
-In-Reply-To: <20240229063010.68754-1-kent.overstreet@linux.dev>
-References: <20240229063010.68754-1-kent.overstreet@linux.dev>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="QbwcDjEI"
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso98156866b.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Feb 2024 23:21:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1709191263; x=1709796063; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GEAakXwp+X35NpPg8nElFXY9Bau6mxbRPajKEZaxeiQ=;
+        b=QbwcDjEIBITPcuAGwuwCtVwcMv0cKekSfml+cTZPU9Rc6ZfHlWkGX0fSaaEAk9dJ05
+         ZBYaMinD3R5ZYewVb41lqDjQ/RIuVyV/8VddIj7igDBmQtN1EZ5zSGNxpc48modOTJ6c
+         B8QdeqQdv3OhBLbwKuxEc+/CgtwccMnukvkUw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709191263; x=1709796063;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GEAakXwp+X35NpPg8nElFXY9Bau6mxbRPajKEZaxeiQ=;
+        b=VQIbXtkQTU28tSOvrhLfA7QnvQrlj2n3Zgh3E9EyYyVAKSwpwielMboL8q5XD7cy4J
+         QGc4+JazNsZ4lwFUXG4lLtxUEa0NTgyrZ65e9eW9bGPkDEWL3ERLct81OnRu6uDu0Ydr
+         tc/+sZZMYAsWDmVwGJ12l5lqirqS5U2l+KyHvUIyyVXxIuTD5vjrTecpQyoGBtIG53vw
+         lubHqX7BdJQNyBchN9Ch6m1Rtuxtp4eIjszAEhkx4A3NM59UktrXyPR8U7Az5pxVV2wC
+         Jf9sjIrA0+OBDs/V0HLY2oy0NsIUUKLLYAE9C3IrDyYqAmMVwhFiBijLhvpFtwTtzNz/
+         B9Ng==
+X-Gm-Message-State: AOJu0Yzf6ZjhDHg4zk2z12ByR4Q90+QJW/IRo5lGVm923HHmctvIenwG
+	B4zL/iXWdjvYRti0+Bjl2sKr25vDO2BCZlA35msxnGVaLPMxv/R8/h2+NfHN/MZEJ5X6e5zzx4c
+	pF03UiQ==
+X-Google-Smtp-Source: AGHT+IEouT8gKAwBQK1dB5FujW4omnnMxsc+I5+f9QD/FBO8/OpZIyQMhXSBSR+WT6XELxIdzGrxGg==
+X-Received: by 2002:a17:906:a0d3:b0:a44:2779:6faf with SMTP id bh19-20020a170906a0d300b00a4427796fafmr686780ejb.36.1709191262958;
+        Wed, 28 Feb 2024 23:21:02 -0800 (PST)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id ub13-20020a170907c80d00b00a4406929637sm376026ejc.162.2024.02.28.23.21.02
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 23:21:02 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso98152766b.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Feb 2024 23:21:02 -0800 (PST)
+X-Received: by 2002:a17:907:aa9:b0:a44:2cc3:2ba8 with SMTP id
+ bz9-20020a1709070aa900b00a442cc32ba8mr685150ejc.27.1709191261969; Wed, 28 Feb
+ 2024 23:21:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240229063010.68754-1-kent.overstreet@linux.dev> <20240229063010.68754-3-kent.overstreet@linux.dev>
+In-Reply-To: <20240229063010.68754-3-kent.overstreet@linux.dev>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 28 Feb 2024 23:20:44 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whf9HsM6BP3L4EYONCjGawAV=X0aBDoUHXkND4fpqB2Ww@mail.gmail.com>
+Message-ID: <CAHk-=whf9HsM6BP3L4EYONCjGawAV=X0aBDoUHXkND4fpqB2Ww@mail.gmail.com>
+Subject: Re: [PATCH 2/2] bcachefs: Buffered write path now can avoid the inode lock
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	david@fromorbit.com, mcgrof@kernel.org, hch@lst.de, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-Non append, non extending buffered writes can now avoid taking the inode
-lock.
+On Wed, 28 Feb 2024 at 22:30, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> Non append, non extending buffered writes can now avoid taking the inode
+> lock.
 
-To ensure atomicity of writes w.r.t. other writes, we lock every folio
-that we'll be writing to, and if this fails we fall back to taking the
-inode lock.
+I think this is buggy.
 
-Extensive comments are provided as to corner cases.
+I think you still need to take the inode lock *shared* for the writes,
+because otherwise you can have somebody else that truncates the file
+and now you will do a write past the end of the size of the file. That
+will cause a lot of issues.
 
-Link: https://lore.kernel.org/linux-fsdevel/Zdkxfspq3urnrM6I@bombadil.infradead.org/
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/errcode.h        |   3 +-
- fs/bcachefs/fs-io-buffered.c | 145 +++++++++++++++++++++++++----------
- 2 files changed, 107 insertions(+), 41 deletions(-)
+So it's not a "inode_lock or not" situation. I think it's a
+"inode_lock vs inode_locks_shared" situation.
 
-diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
-index e960a6eae66a..2791d5127090 100644
---- a/fs/bcachefs/errcode.h
-+++ b/fs/bcachefs/errcode.h
-@@ -247,7 +247,8 @@
- 	x(BCH_ERR_nopromote,		nopromote_congested)			\
- 	x(BCH_ERR_nopromote,		nopromote_in_flight)			\
- 	x(BCH_ERR_nopromote,		nopromote_no_writes)			\
--	x(BCH_ERR_nopromote,		nopromote_enomem)
-+	x(BCH_ERR_nopromote,		nopromote_enomem)			\
-+	x(0,				need_inode_lock)
- 
- enum bch_errcode {
- 	BCH_ERR_START		= 2048,
-diff --git a/fs/bcachefs/fs-io-buffered.c b/fs/bcachefs/fs-io-buffered.c
-index 27710cdd5710..9ce92d1bc3ea 100644
---- a/fs/bcachefs/fs-io-buffered.c
-+++ b/fs/bcachefs/fs-io-buffered.c
-@@ -810,7 +810,8 @@ static noinline void folios_trunc(folios *fs, struct folio **fi)
- static int __bch2_buffered_write(struct bch_inode_info *inode,
- 				 struct address_space *mapping,
- 				 struct iov_iter *iter,
--				 loff_t pos, unsigned len)
-+				 loff_t pos, unsigned len,
-+				 bool inode_locked)
- {
- 	struct bch_fs *c = inode->v.i_sb->s_fs_info;
- 	struct bch2_folio_reservation res;
-@@ -835,6 +836,15 @@ static int __bch2_buffered_write(struct bch_inode_info *inode,
- 
- 	BUG_ON(!fs.nr);
- 
-+	/*
-+	 * If we're not using the inode lock, we need to lock all the folios for
-+	 * atomiticity of writes vs. other writes:
-+	 */
-+	if (!inode_locked && folio_end_pos(darray_last(fs)) < end) {
-+		ret = -BCH_ERR_need_inode_lock;
-+		goto out;
-+	}
-+
- 	f = darray_first(fs);
- 	if (pos != folio_pos(f) && !folio_test_uptodate(f)) {
- 		ret = bch2_read_single_folio(f, mapping);
-@@ -929,8 +939,10 @@ static int __bch2_buffered_write(struct bch_inode_info *inode,
- 	end = pos + copied;
- 
- 	spin_lock(&inode->v.i_lock);
--	if (end > inode->v.i_size)
-+	if (end > inode->v.i_size) {
-+		BUG_ON(!inode_locked);
- 		i_size_write(&inode->v, end);
-+	}
- 	spin_unlock(&inode->v.i_lock);
- 
- 	f_pos = pos;
-@@ -974,9 +986,61 @@ static ssize_t bch2_buffered_write(struct kiocb *iocb, struct iov_iter *iter)
- 	struct file *file = iocb->ki_filp;
- 	struct address_space *mapping = file->f_mapping;
- 	struct bch_inode_info *inode = file_bch_inode(file);
--	loff_t pos = iocb->ki_pos;
--	ssize_t written = 0;
--	int ret = 0;
-+	loff_t pos;
-+	bool inode_locked = false;
-+	ssize_t written = 0, written2 = 0, ret = 0;
-+
-+	/*
-+	 * We don't take the inode lock unless i_size will be changing. Folio
-+	 * locks provide exclusion with other writes, and the pagecache add lock
-+	 * provides exclusion with truncate and hole punching.
-+	 *
-+	 * There is one nasty corner case where atomicity would be broken
-+	 * without great care: when copying data from userspace to the page
-+	 * cache, we do that with faults disable - a page fault would recurse
-+	 * back into the filesystem, taking filesystem locks again, and
-+	 * deadlock; so it's done with faults disabled, and we fault in the user
-+	 * buffer when we aren't holding locks.
-+	 *
-+	 * If we do part of the write, but we then race and in the userspace
-+	 * buffer have been evicted and are no longer resident, then we have to
-+	 * drop our folio locks to re-fault them in, breaking write atomicity.
-+	 *
-+	 * To fix this, we restart the write from the start, if we weren't
-+	 * holding the inode lock.
-+	 *
-+	 * There is another wrinkle after that; if we restart the write from the
-+	 * start, and then get an unrecoverable error, we _cannot_ claim to
-+	 * userspace that we did not write data we actually did - so we must
-+	 * track (written2) the most we ever wrote.
-+	 */
-+
-+	if ((iocb->ki_flags & IOCB_APPEND) ||
-+	    (iocb->ki_pos + iov_iter_count(iter) > i_size_read(&inode->v))) {
-+		inode_lock(&inode->v);
-+		inode_locked = true;
-+	}
-+
-+	ret = generic_write_checks(iocb, iter);
-+	if (ret <= 0)
-+		goto unlock;
-+
-+	ret = file_remove_privs_flags(file, !inode_locked ? IOCB_NOWAIT : 0);
-+	if (ret) {
-+		if (!inode_locked) {
-+			inode_lock(&inode->v);
-+			inode_locked = true;
-+			ret = file_remove_privs_flags(file, 0);
-+		}
-+		if (ret)
-+			goto unlock;
-+	}
-+
-+	ret = file_update_time(file);
-+	if (ret)
-+		goto unlock;
-+
-+	pos = iocb->ki_pos;
- 
- 	bch2_pagecache_add_get(inode);
- 
-@@ -1004,12 +1068,17 @@ static ssize_t bch2_buffered_write(struct kiocb *iocb, struct iov_iter *iter)
- 			}
- 		}
- 
-+		if (unlikely(bytes != iov_iter_count(iter) && !inode_locked))
-+			goto get_inode_lock;
-+
- 		if (unlikely(fatal_signal_pending(current))) {
- 			ret = -EINTR;
- 			break;
- 		}
- 
--		ret = __bch2_buffered_write(inode, mapping, iter, pos, bytes);
-+		ret = __bch2_buffered_write(inode, mapping, iter, pos, bytes, inode_locked);
-+		if (ret == -BCH_ERR_need_inode_lock)
-+			goto get_inode_lock;
- 		if (unlikely(ret < 0))
- 			break;
- 
-@@ -1030,50 +1099,46 @@ static ssize_t bch2_buffered_write(struct kiocb *iocb, struct iov_iter *iter)
- 		}
- 		pos += ret;
- 		written += ret;
-+		written2 = max(written, written2);
-+
-+		if (ret != bytes && !inode_locked)
-+			goto get_inode_lock;
- 		ret = 0;
- 
- 		balance_dirty_pages_ratelimited(mapping);
--	} while (iov_iter_count(iter));
- 
-+		if (0) {
-+get_inode_lock:
-+			bch2_pagecache_add_put(inode);
-+			inode_lock(&inode->v);
-+			inode_locked = true;
-+			bch2_pagecache_add_get(inode);
-+
-+			iov_iter_revert(iter, written);
-+			pos -= written;
-+			written = 0;
-+			ret = 0;
-+		}
-+	} while (iov_iter_count(iter));
- 	bch2_pagecache_add_put(inode);
-+unlock:
-+	if (inode_locked)
-+		inode_unlock(&inode->v);
-+
-+	iocb->ki_pos += written;
- 
--	return written ? written : ret;
-+	ret = max(written, written2) ?: ret;
-+	if (ret > 0)
-+		ret = generic_write_sync(iocb, ret);
-+	return ret;
- }
- 
--ssize_t bch2_write_iter(struct kiocb *iocb, struct iov_iter *from)
-+ssize_t bch2_write_iter(struct kiocb *iocb, struct iov_iter *iter)
- {
--	struct file *file = iocb->ki_filp;
--	struct bch_inode_info *inode = file_bch_inode(file);
--	ssize_t ret;
--
--	if (iocb->ki_flags & IOCB_DIRECT) {
--		ret = bch2_direct_write(iocb, from);
--		goto out;
--	}
--
--	inode_lock(&inode->v);
--
--	ret = generic_write_checks(iocb, from);
--	if (ret <= 0)
--		goto unlock;
--
--	ret = file_remove_privs(file);
--	if (ret)
--		goto unlock;
--
--	ret = file_update_time(file);
--	if (ret)
--		goto unlock;
--
--	ret = bch2_buffered_write(iocb, from);
--	if (likely(ret > 0))
--		iocb->ki_pos += ret;
--unlock:
--	inode_unlock(&inode->v);
-+	ssize_t ret = iocb->ki_flags & IOCB_DIRECT
-+		? bch2_direct_write(iocb, iter)
-+		: bch2_buffered_write(iocb, iter);
- 
--	if (ret > 0)
--		ret = generic_write_sync(iocb, ret);
--out:
- 	return bch2_err_class(ret);
- }
- 
--- 
-2.43.0
+Note that the reading side isn't all that critical - if a read races
+with a truncate, at worst it will read some zeroes because we used the
+old length and the page cache got cleared in the meantime.
 
+But the writing side ends up having actual consistency issues on disk.
+You don't want to have a truncate that removes the pages past the end
+of the new size and clears the end of the new last page, and race with
+another write that used the old size and *thought* it was writing to
+the middle of the file, but is now actually accessing a folio that is
+past the end of the whole file and writing to it.
+
+There may be some reason that I'm missing that would make this a
+non-issue, but I really think you want to get the inode lock at least
+shared for the duration of the write.
+
+Also note that for similar reasons, you can't just look at "will I
+extend the file" and take the lock non-shared. No, in order to
+actually trust the size, you need to *hold* the lock, so the logic
+needs to be something like
+
+ - take the lock exclusively if O_APPEND or if it *looks* like you
+might extend the file size.
+
+ - otherwise, take the shared lock, and THEN RE-CHECK. The file size
+might have changed, so now you need to double-check that you're really
+not going to extend the size of the file, and if you are, you need to
+go back and take the inode lock exclusively after all.
+
+Again - I haven't thought a ton about this, so maybe there's some
+trick to it, but the above is what my naive thinking says the rule has
+to be. Writes are different from reads.
+
+              Linus
