@@ -1,41 +1,41 @@
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1A1481AD
-	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 02:59:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EEB938384
+	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 04:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709175565; cv=none; b=Z2VkCpp48lBBlCAzeFE6w03DWEOnWiwc4ok3h5nq1cD8BLK3iflwFnsYrFLXO7T97m9NvQ3D9tW8RjWpaARInNmV57pbDVLlc/TJmpkj7tpNnGEQR3WDIg0/ihielUTKxA2V2flo6mBoHDhGMZiOhK7MeUAl+iwhHoO6LJHJDik=
+	t=1709179821; cv=none; b=RbdGVR8Nwu4hjDBr/vGdPyCGx7HQGFnbAnECaqIiML8OzhkbdSUAigsTG0Ceuqnty9cfrNdHCvjRHIXEHmMt4uogsEr9uV4pWnbgDQzz4uh/hRa5Qc5ShTWZp2nM7umQNPISuldyK6V43lpL8ivJ3jssAA7F52ngfFvr309slLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709175565; c=relaxed/simple;
-	bh=Niu5undvn6d6N1Td0gPIAkitHL2+3fPlZIIdYDybKtg=;
+	s=arc-20240116; t=1709179821; c=relaxed/simple;
+	bh=UYYdqxLFb7MLmjI9KG+IhZDCP1e6tLTAJCM3IvY8lU4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LJnvmOzdTBv5oc6HYaXA5ZUKrqD5laK9wrCsvgJ9WIXf62TvCIX554gv2V60ZFPsHddhYXl81o2S6daoMLLO0136xiKnQr1lzYCa+x3CNQ0oJMaXXFAtWv9Szc2pGsfe1YuNEHaqNl/2sW8EGaXG2e204xC1V7Aj69hbLndpd7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LBS+KraF; arc=none smtp.client-ip=95.215.58.187
+	 Content-Type:Content-Disposition:In-Reply-To; b=oqky6m8Wva2ekOMI3H/As/fYvJ2WXiLtd+5SiVfOaedxYnfhk9U+XeCtQwXDuRsrsqA5R7oH4TYj5VUjEfjiRITL6wV2wViaPCBBUTImfyrdVKkP8xPtshEuTY/UeeSQ9NfIedXH1xAqyRHKE/u7mjI8AX8lujRkCL8MJFtUEd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KYHB2mTZ; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LBS+KraF"
-Date: Wed, 28 Feb 2024 21:59:12 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KYHB2mTZ"
+Date: Wed, 28 Feb 2024 23:10:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709175557;
+	t=1709179815;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9z2cKcRsz+2Zp9LYf4XM0SQ7dLeoYQgv3w/jfTDi/hE=;
-	b=LBS+KraFM/IymPu/IW9kcNL/5SVrLR54d+6Naw8cSmXKdiQBENE3mO4uDtGc+4spViMEXw
-	9L5CBIv7jqPskE2QGqRQRAp48+hvtCYO2IYpHUcI2CHrUXiAlvIzsaDoHafY1g7YrXy7jv
-	l+K9M7rmsZF8wyjRoknAFFJer0DMwz8=
+	bh=2UgdVcpIPLfsNvZm0q0FbdYag8AhkH5OxKUeK3SGo7w=;
+	b=KYHB2mTZE2ZvOKGMJgZDzM20KxF+JqZnV5ecW3LKOCcCwd66Hns6V9Vj4Ckq6g5ulQhrX/
+	HPfqlVf9WRt5t9+oyQyRaXnDmQiNUZJdqZkMsm0KkXH+33MZfQxMLmOw9+9sM/ub8hzHhw
+	pGZYEyucDPH7Oc+aZlD45aux5vSWAGc=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [BUG] bcachefs fio lockup via generic/703
-Message-ID: <h6cve56ifz6fszequog73uzgyjnalvtbdwz23kxupt4eun2ymh@anxj25u7gaf2>
-References: <Zd+NzotWTooA/9zq@bfoster>
- <izlhsoadddmmfyc64pc557tx3lk3vtu7ycwu3ahryh2r3o6nj5@eaqsftsh7kv3>
- <Zd+T0EeeodCXKqQt@bfoster>
- <fv5nsvkc7cgl727nhyvloi6vhuvn5vbn2isg3r3mfet2t3ymry@4onepu6bzlfq>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	djwong@kernel.org
+Subject: Re: [PATCH 04/21] bcachefs: Disk space accounting rewrite
+Message-ID: <3dug3vvjmlkhu42glwhkm5ozgkp4tzqvekxdabbgv4dv4yhxig@r5bw746uaxym>
+References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+ <20240225023826.2413565-5-kent.overstreet@linux.dev>
+ <Zd4F1qE1IFCz0/ML@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -44,158 +44,361 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fv5nsvkc7cgl727nhyvloi6vhuvn5vbn2isg3r3mfet2t3ymry@4onepu6bzlfq>
+In-Reply-To: <Zd4F1qE1IFCz0/ML@bfoster>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 28, 2024 at 07:02:39PM -0500, Kent Overstreet wrote:
-> On Wed, Feb 28, 2024 at 03:13:04PM -0500, Brian Foster wrote:
-> > On Wed, Feb 28, 2024 at 03:03:06PM -0500, Kent Overstreet wrote:
-> > > On Wed, Feb 28, 2024 at 02:47:26PM -0500, Brian Foster wrote:
-> > > > Hi Kent,
-> > > > 
-> > > > Firstly, I confirmed that today's master seems to avoid the splat I sent
-> > > > previously (re: your comment about a reverse journal replay patch or
-> > > > some such).
-> > > > 
-> > > > I still reproduce the stall issue on this system. After peeling away at
-> > > > it, I was eventually able to reproduce without the drop writes
-> > > > (dm-flakey) behavior from the test, and with fio using either the libaio
-> > > > or sync I/O engine options. The sync I/O mode fortunately provides a
-> > > > more useful stack trace:
-> > > > 
-> > > > # cat /proc/177747/stack 
-> > > > [<0>] bch2_dio_write_flush+0x122/0x160 [bcachefs]
-> > > > [<0>] bch2_direct_write+0xb53/0xce0 [bcachefs]
-> > > > [<0>] bch2_write_iter+0x142/0xc70 [bcachefs]
-> > > > [<0>] vfs_write+0x29b/0x470
-> > > > [<0>] ksys_write+0x6f/0xf0
-> > > > [<0>] do_syscall_64+0x86/0x170
-> > > > [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> > > > 
-> > > > ... which resolves down to the closure_sync() call in
-> > > > bch2_dio_write_flush(). The problem seems to go away if I remove the
-> > > > preceding journal flush from that function. This seems to rule out
-> > > > io_uring/aio and instead suggest that we're getting stuck somehow
-> > > > waiting on a journal flush.
-> > > > 
-> > > > Based on that I went back to the first commit before 746a33c96b7a0
-> > > > ("bcachefs: better journal pipelining"). With that, I can run hundreds
-> > > > of iterations of generic/703 without a problem, so this appears to be a
-> > > > regression associated with the journal pipeline improvements. I'm
-> > > > currently re-running on the last known good commit with my test tweaks
-> > > > backed out (i.e. so back to io_uring and drop writes) just to
-> > > > corroborate that it's the same problem, but so far it's running as
-> > > > expected...
-> > > 
-> > > So I suppose the journal must be getting stuck, and a journal write
-> > > isn't completing - what does sysfs internal/journal_debug say when it happens?
-> > > 
+On Tue, Feb 27, 2024 at 10:55:02AM -0500, Brian Foster wrote:
+> On Sat, Feb 24, 2024 at 09:38:06PM -0500, Kent Overstreet wrote:
+> > Main part of the disk accounting rewrite.
 > > 
-> > dirty journal entries:  0/32768
-> > seq:                    11
-> > seq_ondisk:             11
-> > last_seq:               12
-> > last_seq_ondisk:        11
-> > flushed_seq_ondisk:     11
-> > watermark:              stripe
-> > each entry reserved:    346
-> > nr flush writes:        10
-> > nr noflush writes:      1
-> > average write size:     10.9 KiB
-> > nr direct reclaim:      0
-> > nr background reclaim:  25
-> > reclaim kicked:         0
-> > reclaim runs in:        0 ms
-> > current entry sectors:  512
-> > current entry error:    ok
-> > current entry:          closed
-> > unwritten entries:
-> > last buf closed
-> > replay done:            1
-> > space:
-> >         discarded       512:244736
-> >         clean ondisk    512:244736
-> >         clean           512:244736
-> >         total           512:245760
-> > dev 0:
-> >         nr              480
-> >         bucket size     512
-> >         available       478:266
-> >         discard_idx     1
-> >         dirty_ondisk    1 (seq 11)
-> >         dirty_idx       1 (seq 11)
-> >         cur_idx         1 (seq 11)
+> > This is a wholesale rewrite of the existing disk space accounting, which
+> > relies on percepu counters that are sharded by journal buffer, and
+> > rolled up and added to each journal write.
 > > 
+> > With the new scheme, every set of counters is a distinct key in the
+> > accounting btree; this fixes scaling limitations of the old scheme,
+> > where counters took up space in each journal entry and required multiple
+> > percpu counters.
+> > 
+> > Now, in memory accounting requires a single set of percpu counters - not
+> > multiple for each in flight journal buffer - and in the future we'll
+> > probably also have counters that don't use in memory percpu counters,
+> > they're not strictly required.
+> > 
+> > An accounting update is now a normal btree update, using the btree write
+> > buffer path. At transaction commit time, we apply accounting updates to
+> > the in memory counters, which are percpu counters indexed in an
+> > eytzinger tree by the accounting key.
+> > 
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > ---
+> >  fs/bcachefs/alloc_background.c      |  68 +++++-
+> >  fs/bcachefs/bcachefs.h              |   6 +-
+> >  fs/bcachefs/bcachefs_format.h       |   1 -
+> >  fs/bcachefs/bcachefs_ioctl.h        |   7 +-
+> >  fs/bcachefs/btree_gc.c              |   3 +-
+> >  fs/bcachefs/btree_iter.c            |   9 -
+> >  fs/bcachefs/btree_trans_commit.c    |  62 ++++--
+> >  fs/bcachefs/btree_types.h           |   1 -
+> >  fs/bcachefs/btree_update.h          |   8 -
+> >  fs/bcachefs/buckets.c               | 289 +++++---------------------
+> >  fs/bcachefs/buckets.h               |  33 +--
+> >  fs/bcachefs/disk_accounting.c       | 308 ++++++++++++++++++++++++++++
+> >  fs/bcachefs/disk_accounting.h       | 126 ++++++++++++
+> >  fs/bcachefs/disk_accounting_types.h |  20 ++
+> >  fs/bcachefs/ec.c                    |  24 ++-
+> >  fs/bcachefs/inode.c                 |   9 +-
+> >  fs/bcachefs/recovery.c              |  12 +-
+> >  fs/bcachefs/recovery_types.h        |   1 +
+> >  fs/bcachefs/replicas.c              |  42 ++--
+> >  fs/bcachefs/replicas.h              |  11 +-
+> >  fs/bcachefs/replicas_types.h        |  16 --
+> >  fs/bcachefs/sb-errors_types.h       |   3 +-
+> >  fs/bcachefs/super.c                 |  49 +++--
+> >  23 files changed, 704 insertions(+), 404 deletions(-)
+> >  create mode 100644 fs/bcachefs/disk_accounting_types.h
+> > 
+> ...
+> > diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+> > index 209f59e87b34..327c586ac661 100644
+> > --- a/fs/bcachefs/disk_accounting.c
+> > +++ b/fs/bcachefs/disk_accounting.c
+> ...
+> > @@ -13,6 +17,44 @@ static const char * const disk_accounting_type_strs[] = {
+> >  	NULL
+> >  };
+> >  
 > 
-> I might see it - journal_last_unwritten_seq() is now wrong, it's
-> assuming that j->seq_ondisk + 1 hasn't been submitted yet.
+> So I'm gonna need to stare at all this much more than I have so far, but
+> one initial thing that stands out to me is the lack of high level
+> function comments. IMO, something that helps tremendously in
+> reading/reviewing these sorts of systemic changes is having a a couple
+> sentence or so comment at the top of the main/external interfaces just
+> to briefly explain what they do in plain english.
 > 
-> bch2_journal_flush_seq_async() then sets that journal buf to "must be a
-> flush write", but if it's already been submitted - whoops
+> So here, something like "modify an accounting key in the btree based on
+> <whatever> ..." helps explain what it does and why it's used where it
+> is. The same goes for some of the other interface level functions, like
+> reading in accounting from disk, updating in-memory accounting (from
+> journal entries in committing transactions?), updating the superblock,
+> etc. I think I've started to put some of those pieces together, but
+> having to jump all through the implementation to piece together high
+> level behaviors is significantly more time consuming than having the
+> author guide one through the high level interactions.
+> 
+> IOW, I think if you minimally document the functions that are sufficient
+> to help understand how accounting works as a black box (somewhere
+> beneath the [nice] higher level big comment descriptions of the whole
+> thing and above the low level implementation details), that helps the
+> reviewer establish an understanding of the mechanism before having to
+> dig through the implementation details and also serves as a reference
+> going forward for the next person who is in a similar position and wants
+> to read/debug/tweak/whatever this code.
+> 
+> > +int bch2_disk_accounting_mod(struct btree_trans *trans,
+> > +			     struct disk_accounting_key *k,
+> > +			     s64 *d, unsigned nr)
+> > +{
+> > +	/* Normalize: */
+> > +	switch (k->type) {
+> > +	case BCH_DISK_ACCOUNTING_replicas:
+> > +		bubble_sort(k->replicas.devs, k->replicas.nr_devs, u8_cmp);
+> > +		break;
+> > +	}
+> > +
+> > +	BUG_ON(nr > BCH_ACCOUNTING_MAX_COUNTERS);
+> > +
+> > +	struct {
+> > +		__BKEY_PADDED(k, BCH_ACCOUNTING_MAX_COUNTERS);
+> > +	} k_i;
+> > +	struct bkey_i_accounting *acc = bkey_accounting_init(&k_i.k);
+> > +
+> > +	acc->k.p = disk_accounting_key_to_bpos(k);
+> > +	set_bkey_val_u64s(&acc->k, sizeof(struct bch_accounting) / sizeof(u64) + nr);
+> > +
+> > +	memcpy_u64s_small(acc->v.d, d, nr);
+> > +
+> > +	return bch2_trans_update_buffered(trans, BTREE_ID_accounting, &acc->k_i);
+> > +}
+> > +
+> ...
+> > diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+> > index a7f9de220d90..685d54d0ddbb 100644
+> > --- a/fs/bcachefs/super.c
+> > +++ b/fs/bcachefs/super.c
+> ...
+> > @@ -1618,6 +1621,16 @@ int bch2_dev_remove(struct bch_fs *c, struct bch_dev *ca, int flags)
+> >  	if (ret)
+> >  		goto err;
+> >  
+> > +	/*
+> > +	 * We need to flush the entire journal to get rid of keys that reference
+> > +	 * the device being removed before removing the superblock entry
+> > +	 */
+> > +	bch2_journal_flush_all_pins(&c->journal);
+> 
+> I thought this needed to occur between the device removal and superblock
+> update (according to the comment below). Is that not the case? Either
+> way, is it moved for reasons related to accounting?
 
-On further reading, journal_flusH_seq_async() looks correct, but
-bch2_journal_noflush_seq() was wrong - the following patch is in
--testing:
+I think it ended up not needing to be moved, and I just forgot to drop
+it - originally I disallowed accounting entries that referenced
+nonexistent devices, but that wasn't workable so now it's only nonzero
+accounting keys that aren't allowed to reference nonexistent devices.
 
+I'll see if I can delete it.
 
-From 3c8f22258ab39992ac8a4b077610a30c733f068d Mon Sep 17 00:00:00 2001
+Applying the following fixup patch, renaming for consistency but mostly
+adding documentation. Helpful?
+
+From 2f2c088f5a4c374d6e7357398c5307425dc52140 Mon Sep 17 00:00:00 2001
 From: Kent Overstreet <kent.overstreet@linux.dev>
-Date: Wed, 28 Feb 2024 21:56:57 -0500
-Subject: [PATCH] bcachefs: Fix bch2_journal_noflush_seq()
+Date: Wed, 28 Feb 2024 23:09:28 -0500
+Subject: [PATCH] fixup! bcachefs: Disk space accounting rewrite
 
-Improved journal pipelining broke journal_noflush_seq(); it implicitly
-assumed only the oldest outstanding journal buf could be in flight, but
-that's no longer true.
 
-Make this more straightforward by just setting buf->must_flush whenever
-we know a journal buf is going to be flush.
-
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-
-diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
-index ed1724b52204..3dc1534d1d3c 100644
---- a/fs/bcachefs/journal.c
-+++ b/fs/bcachefs/journal.c
-@@ -715,7 +715,7 @@ int bch2_journal_flush_seq_async(struct journal *j, u64 seq,
- 			return ret;
+diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
+index b005e20039bb..3a5b815af8bc 100644
+--- a/fs/bcachefs/btree_trans_commit.c
++++ b/fs/bcachefs/btree_trans_commit.c
+@@ -697,7 +697,7 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
+ 			a->k.version = journal_pos_to_bversion(&trans->journal_res,
+ 							(u64 *) entry - (u64 *) trans->journal_entries);
+ 			BUG_ON(bversion_zero(a->k.version));
+-			ret = bch2_accounting_mem_add(trans, accounting_i_to_s_c(a));
++			ret = bch2_accounting_mem_mod(trans, accounting_i_to_s_c(a));
+ 			if (ret)
+ 				goto revert_fs_usage;
+ 		}
+@@ -784,7 +784,7 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
+ 			struct bkey_s_accounting a = bkey_i_to_s_accounting(entry2->start);
  
- 		seq = res.seq;
--		buf = j->buf + (seq & JOURNAL_BUF_MASK);
-+		buf = journal_seq_to_buf(j, seq);
- 		buf->must_flush = true;
+ 			bch2_accounting_neg(a);
+-			bch2_accounting_mem_add(trans, a.c);
++			bch2_accounting_mem_mod(trans, a.c);
+ 			bch2_accounting_neg(a);
+ 		}
+ 	percpu_up_read(&c->mark_lock);
+diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+index df9791da1ab7..e8a6ff191acd 100644
+--- a/fs/bcachefs/disk_accounting.c
++++ b/fs/bcachefs/disk_accounting.c
+@@ -10,6 +10,45 @@
+ #include "journal_io.h"
+ #include "replicas.h"
  
- 		if (!buf->flush_time) {
-@@ -733,8 +733,8 @@ int bch2_journal_flush_seq_async(struct journal *j, u64 seq,
++/*
++ * Notes on disk accounting:
++ *
++ * We have two parallel sets of counters to be concerned with, and both must be
++ * kept in sync.
++ *
++ *  - Persistent/on disk accounting, stored in the accounting btree and updated
++ *    via btree write buffer updates that treat new accounting keys as deltas to
++ *    apply to existing values. But reading from a write buffer btree is
++ *    expensive, so we also have
++ *
++ *  - In memory accounting, where accounting is stored as an array of percpu
++ *    counters, indexed by an eytzinger array of disk acounting keys/bpos (which
++ *    are the same thing, excepting byte swabbing on big endian).
++ *
++ *    Cheap to read, but non persistent.
++ *
++ * To do a disk accounting update:
++ * - initialize a disk_accounting_key, to specify which counter is being update
++ * - initialize counter deltas, as an array of 1-3 s64s
++ * - call bch2_disk_accounting_mod()
++ *
++ * This queues up the accounting update to be done at transaction commit time.
++ * Underneath, it's a normal btree write buffer update.
++ *
++ * The transaction commit path is responsible for propagating updates to the in
++ * memory counters, with bch2_accounting_mem_mod().
++ *
++ * The commit path also assigns every disk accounting update a unique version
++ * number, based on the journal sequence number and offset within that journal
++ * buffer; this is used by journal replay to determine which updates have been
++ * done.
++ *
++ * The transaction commit path also ensures that replicas entry accounting
++ * updates are properly marked in the superblock (so that we know whether we can
++ * mount without data being unavailable); it will update the superblock if
++ * bch2_accounting_mem_mod() tells it to.
++ */
++
+ static const char * const disk_accounting_type_strs[] = {
+ #define x(t, n, ...) [n] = #t,
+ 	BCH_DISK_ACCOUNTING_TYPES()
+@@ -133,6 +172,10 @@ static int bch2_accounting_update_sb_one(struct bch_fs *c, struct bpos p)
+ 		: 0;
+ }
+ 
++/*
++ * Ensure accounting keys being updated are present in the superblock, when
++ * applicable (i.e. replicas updates)
++ */
+ int bch2_accounting_update_sb(struct btree_trans *trans)
+ {
+ 	for (struct jset_entry *i = trans->journal_entries;
+@@ -147,7 +190,7 @@ int bch2_accounting_update_sb(struct btree_trans *trans)
+ 	return 0;
+ }
+ 
+-static int __bch2_accounting_mem_add_slowpath(struct bch_fs *c, struct bkey_s_c_accounting a)
++static int __bch2_accounting_mem_mod_slowpath(struct bch_fs *c, struct bkey_s_c_accounting a)
+ {
+ 	struct bch_replicas_padded r;
+ 
+@@ -191,16 +234,24 @@ static int __bch2_accounting_mem_add_slowpath(struct bch_fs *c, struct bkey_s_c_
+ 	return 0;
+ }
+ 
+-int bch2_accounting_mem_add_slowpath(struct bch_fs *c, struct bkey_s_c_accounting a)
++int bch2_accounting_mem_mod_slowpath(struct bch_fs *c, struct bkey_s_c_accounting a)
+ {
+ 	percpu_up_read(&c->mark_lock);
+ 	percpu_down_write(&c->mark_lock);
+-	int ret = __bch2_accounting_mem_add_slowpath(c, a);
++	int ret = __bch2_accounting_mem_mod_slowpath(c, a);
+ 	percpu_up_write(&c->mark_lock);
+ 	percpu_down_read(&c->mark_lock);
+ 	return ret;
+ }
+ 
++/*
++ * Read out accounting keys for replicas entries, as an array of
++ * bch_replicas_usage entries.
++ *
++ * Note: this may be deprecated/removed at smoe point in the future and replaced
++ * with something more general, it exists to support the ioctl used by the
++ * 'bcachefs fs usage' command.
++ */
+ int bch2_fs_replicas_usage_read(struct bch_fs *c, darray_char *usage)
+ {
+ 	struct bch_accounting_mem *acc = &c->accounting;
+@@ -234,15 +285,6 @@ int bch2_fs_replicas_usage_read(struct bch_fs *c, darray_char *usage)
+ 	return ret;
+ }
+ 
+-static bool accounting_key_is_zero(struct bkey_s_c_accounting a)
+-{
+-
+-	for (unsigned i = 0; i < bch2_accounting_counters(a.k); i++)
+-		if (a.v->d[i])
+-			return false;
+-	return true;
+-}
+-
+ static int accounting_read_key(struct bch_fs *c, struct bkey_s_c k)
+ {
+ 	struct printbuf buf = PRINTBUF;
+@@ -251,10 +293,10 @@ static int accounting_read_key(struct bch_fs *c, struct bkey_s_c k)
+ 		return 0;
+ 
+ 	percpu_down_read(&c->mark_lock);
+-	int ret = __bch2_accounting_mem_add(c, bkey_s_c_to_accounting(k));
++	int ret = __bch2_accounting_mem_mod(c, bkey_s_c_to_accounting(k));
+ 	percpu_up_read(&c->mark_lock);
+ 
+-	if (accounting_key_is_zero(bkey_s_c_to_accounting(k)) &&
++	if (bch2_accounting_key_is_zero(bkey_s_c_to_accounting(k)) &&
+ 	    ret == -BCH_ERR_btree_insert_need_mark_replicas)
+ 		ret = 0;
+ 
+@@ -272,6 +314,10 @@ static int accounting_read_key(struct bch_fs *c, struct bkey_s_c k)
+ 	return ret;
+ }
+ 
++/*
++ * At startup time, initialize the in memory accounting from the btree (and
++ * journal)
++ */
+ int bch2_accounting_read(struct bch_fs *c)
+ {
+ 	struct bch_accounting_mem *acc = &c->accounting;
+diff --git a/fs/bcachefs/disk_accounting.h b/fs/bcachefs/disk_accounting.h
+index 5fd053a819df..d9f2ce327761 100644
+--- a/fs/bcachefs/disk_accounting.h
++++ b/fs/bcachefs/disk_accounting.h
+@@ -105,15 +105,15 @@ static inline int accounting_pos_cmp(const void *_l, const void *_r)
+ 	return bpos_cmp(*l, *r);
+ }
+ 
+-int bch2_accounting_mem_add_slowpath(struct bch_fs *, struct bkey_s_c_accounting);
++int bch2_accounting_mem_mod_slowpath(struct bch_fs *, struct bkey_s_c_accounting);
+ 
+-static inline int __bch2_accounting_mem_add(struct bch_fs *c, struct bkey_s_c_accounting a)
++static inline int __bch2_accounting_mem_mod(struct bch_fs *c, struct bkey_s_c_accounting a)
+ {
+ 	struct bch_accounting_mem *acc = &c->accounting;
+ 	unsigned idx = eytzinger0_find(acc->k.data, acc->k.nr, sizeof(acc->k.data[0]),
+ 				       accounting_pos_cmp, &a.k->p);
+ 	if (unlikely(idx >= acc->k.nr))
+-		return bch2_accounting_mem_add_slowpath(c, a);
++		return bch2_accounting_mem_mod_slowpath(c, a);
+ 
+ 	unsigned offset = acc->k.data[idx].offset;
+ 
+@@ -124,7 +124,12 @@ static inline int __bch2_accounting_mem_add(struct bch_fs *c, struct bkey_s_c_ac
+ 	return 0;
+ }
+ 
+-static inline int bch2_accounting_mem_add(struct btree_trans *trans, struct bkey_s_c_accounting a)
++/*
++ * Update in memory counters so they match the btree update we're doing; called
++ * from transaction commit path
++ */
++static inline int bch2_accounting_mem_mod(struct btree_trans *trans, struct
++					  bkey_s_c_accounting a)
+ {
+ 	struct disk_accounting_key acc_k;
+ 	bpos_to_disk_accounting_key(&acc_k, a.k->p);
+@@ -137,7 +142,7 @@ static inline int bch2_accounting_mem_add(struct btree_trans *trans, struct bkey
+ 		fs_usage_data_type_to_base(&trans->fs_usage_delta, acc_k.replicas.data_type, a.v->d[0]);
+ 		break;
  	}
+-	return __bch2_accounting_mem_add(trans->c, a);
++	return __bch2_accounting_mem_mod(trans->c, a);
+ }
  
- 	/*
--	 * if write was kicked off without a flush, flush the next sequence
--	 * number instead
-+	 * if write was kicked off without a flush, or if we promised it
-+	 * wouldn't be a flush, flush the next sequence number instead
- 	 */
- 	buf = journal_seq_to_buf(j, seq);
- 	if (buf->noflush) {
-@@ -812,8 +812,8 @@ bool bch2_journal_noflush_seq(struct journal *j, u64 seq)
- 	     unwritten_seq++) {
- 		struct journal_buf *buf = journal_seq_to_buf(j, unwritten_seq);
- 
--		/* journal write is already in flight, and was a flush write: */
--		if (unwritten_seq == journal_last_unwritten_seq(j) && !buf->noflush)
-+		/* journal flush already in flight, or flush requseted */
-+		if (buf->must_flush)
- 			goto out;
- 
- 		buf->noflush = true;
-diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-index 4557b5c1f7e1..77e93ad875d6 100644
---- a/fs/bcachefs/journal_io.c
-+++ b/fs/bcachefs/journal_io.c
-@@ -1935,6 +1935,7 @@ static int bch2_journal_write_pick_flush(struct journal *j, struct journal_buf *
- 
- 		j->nr_noflush_writes++;
- 	} else {
-+		w->must_flush = true;
- 		j->last_flush_write = jiffies;
- 		j->nr_flush_writes++;
- 		clear_bit(JOURNAL_NEED_FLUSH_WRITE, &j->flags);
+ static inline void bch2_accounting_mem_read_counters(struct bch_fs *c,
