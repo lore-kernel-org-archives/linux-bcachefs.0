@@ -1,37 +1,37 @@
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD17713D2E3
-	for <linux-bcachefs@vger.kernel.org>; Wed, 28 Feb 2024 23:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8DD620
+	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 00:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709163846; cv=none; b=q1Cm/bnUFPKeWSUClP5snDEvE4G1sNV766/f3swy4y6aYXMraC8yySRDuv7CLAK5fFEndlqMvzkKF7TVZn7mOOYtRYcX96B2HzfOrnHVgf6F8I3rsK1LA25lZgkCvrOj7LXOCClmHG2sJuFOR5FUZkb4twtjRVdvIxD+DHYX3r8=
+	t=1709164967; cv=none; b=JxmzdDtNtY2ElbJ+JxcULCTzhYe5o0mAN4GfrXsCb5IWnJ56fLAqJFWnyNMV7uTnHci/o9W79BuIpPNCv1I84WPk0ijHHM20zgL6MEp63uA9GCyIJ5x8KirEN6Df9zpq5MHVKQ+/KpVB+5BprjQ5bNZQCUYrkgUk0Hm/puz+j/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709163846; c=relaxed/simple;
-	bh=OQdtav5ZN5VXkpImRRgfdgdvax9asdTp7c5a4G5d4oI=;
+	s=arc-20240116; t=1709164967; c=relaxed/simple;
+	bh=tIgfmAT73We1XStI1Ns+2IyAhOLSGj9wrgqCQ+MJwhE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YlPFphLY2jiYilY9jYRejUki7oqf5SW9HJXvAEKnVuCvqbeNgVpnUDWTQdtRrDgsOd1685etSCI7GPQ68B463dZVLthUK0n/tij4rb+vmRBrfY8XZFWz+lTHp86/6zUOhY4gykRI7JPaIvbLR1cJi/E0103xIBQlldrt90unKq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MCUu3ewM; arc=none smtp.client-ip=95.215.58.175
+	 Content-Type:Content-Disposition:In-Reply-To; b=W00iT6T8jS76Wk7D8YzeqT/EXBP5s5HB5AwR267SFGCqEN8YJP45lfOpE27b/Gpelp1aDXnoYXT7LDrIQ7Mt/D1Sf4jXR4muUGKTX4SzeQrIHWkxTfdIA0a4NondvR60/Wto40eC+2ecOay/9O8G5LqBPODG7i3tbhpiMCHGbXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JhFTozgf; arc=none smtp.client-ip=91.218.175.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MCUu3ewM"
-Date: Wed, 28 Feb 2024 18:43:28 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JhFTozgf"
+Date: Wed, 28 Feb 2024 19:02:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709163839;
+	t=1709164963;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/KnD5tsIige7OqaWrXtbpm15ibiDRsxz39Bq6uctoAM=;
-	b=MCUu3ewM5+0DDtich6CQ4rD7wVQ4fouYlRqtz/2oYnLVwIfGWeNeK7mMWRrcYCdLOoWzXK
-	naQgrgv3eWLmPaXwwn+TmfGPGy9goRG39A8DRd3C/E83xdsa5hsv9LXHMD+sA2uTHrTHc2
-	+MUl6nFRdtv24U1f7PLGFCIwjN2D5aY=
+	bh=U75c4RkOe/i2NlxXFtiZ4sRNJUr+XHJPkZvzaG+z630=;
+	b=JhFTozgf+pD0LgL0rc8TIrhuOg4hRJhrBu1XNBhbeDMnvWp+58b6JMXobgulMi7mAVyQ8P
+	ma6CzgMXZVbBg60cH9A1zHE4ow2hqsMoB1FMD+x7kN1rPdz4dMOsBURxY41MrsKW39HX20
+	PQGZGJI037zLFIhhfblkMqwWi+mntRM=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Brian Foster <bfoster@redhat.com>
 Cc: linux-bcachefs@vger.kernel.org
 Subject: Re: [BUG] bcachefs fio lockup via generic/703
-Message-ID: <j5yjaykxfukltyclurz5d5mtp2kzd7ctxp2kdk7tf7zm7ldm2v@jxhoqdtln453>
+Message-ID: <fv5nsvkc7cgl727nhyvloi6vhuvn5vbn2isg3r3mfet2t3ymry@4onepu6bzlfq>
 References: <Zd+NzotWTooA/9zq@bfoster>
  <izlhsoadddmmfyc64pc557tx3lk3vtu7ycwu3ahryh2r3o6nj5@eaqsftsh7kv3>
  <Zd+T0EeeodCXKqQt@bfoster>
@@ -125,18 +125,11 @@ On Wed, Feb 28, 2024 at 03:13:04PM -0500, Brian Foster wrote:
 >         cur_idx         1 (seq 11)
 > 
 
-Can you enable closure debugging (in kconfig?) That will show
-outstanding closures and info on what they're waiting on in debugfs.
+I might see it - journal_last_unwritten_seq() is now wrong, it's
+assuming that j->seq_ondisk + 1 hasn't been submitted yet.
 
-bch2_dio_write_flush is doing a journal flush and waiting on it to
-complete, but the journal isn't doing anything, so... lost wakeup,
-perhaps?
+bch2_journal_flush_seq_async() then sets that journal buf to "must be a
+flush write", but if it's already been submitted - whoops
 
-Another thing to check for would be if we have waiters on journal_bufs
-that aren't in use - maybe add some simple assertions in
-journal_debug_to_text() -> journal_bufs_to_text(), if a buf isn't active
-and isn't in the range that's being printed just make sure buf->wait is
-NULL.
-
-and journal_buf_to_text() doesn't seem to print out whether the waitlist
-has waiters, that's an oversight...
+But your journal_debug says seq_ondisk == flushed_seq_ondisk, so maybe
+that's not actually it here?
