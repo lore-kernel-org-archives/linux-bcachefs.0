@@ -1,97 +1,81 @@
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE22916FF47
-	for <linux-bcachefs@vger.kernel.org>; Thu, 29 Feb 2024 21:24:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E91B2BAE7
+	for <linux-bcachefs@vger.kernel.org>; Fri,  1 Mar 2024 03:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709241883; cv=none; b=j4mnDdoxXqvvkhvTqzAupD4WzpYtg1gjnaVrQveGgPb6SIdhLZTkKKNCOZJrXPSjz7zM3aa1Qr4w3fVHZGpuKyFu03rUsH2MEuTW03VRsuT6GOtqySMkZhn5KALo6PU0OuaAnbEv4f1LpETUzBbkbWra+BhdkL/NPmwvmfPpkUg=
+	t=1709263113; cv=none; b=hKE7K1TDndtUVCFp3scHsCpGiFTc5wYmJRIhVir/qIKui4gVtxUfsWFH66neHPpBjQHZe3R3Qdju2wfcd8Iuc1N0aqRIdqj96KSag0JTUDaHj5zRz+YP4xXn1TiA8/jN0nCmrNwsDp+Xt43Tn+Xu/J4yQsOmGhHZHjSR0scuxqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709241883; c=relaxed/simple;
-	bh=Jv57XkdEOb5lCcmwhvsrgcTRHKKlbAL+X8QUWiBeHm0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iYuJAtzEg4ki3TsVpn8omXffvkfPmapT542ScIU7ltcipjedUe42PxPOFyRsl0T86Fryc1E+h4hmZadH2ZKam1iq4E1npozjTilnc55DWYSxZ2q4u6XhkyO5urniQkzl8RwrtGfC26IILxqx5Y0gdIR7vJ/d8+mJo2EeXqM07Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dEe/F6Cp; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dEe/F6Cp"
-Date: Thu, 29 Feb 2024 16:24:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709241879;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jv57XkdEOb5lCcmwhvsrgcTRHKKlbAL+X8QUWiBeHm0=;
-	b=dEe/F6Cpa/brZBrjcWn/DWZZekUEpH/qX6WBbE+JZND6SmPso1PcIBIYezVUQHo+OrQ4Gq
-	sebiBHtZe5Yqj6NE+8c1QgumE18RpWc/el5cK0/UWnrIyn6BnEcz55686sgS0N7myIErKs
-	Kjcz/Ieltatda8+p5hHhM8AXrTgVtt8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	djwong@kernel.org
-Subject: Re: [PATCH 01/21] bcachefs: KEY_TYPE_accounting
-Message-ID: <r2ieuj2kvitrrg7sqhuossm3wn4zzlkhygfqx7bxorzbaylnw2@kpgfn4e42iuw>
-References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
- <20240225023826.2413565-2-kent.overstreet@linux.dev>
- <Zd4Ef49kHX3g69VT@bfoster>
- <t6cc6gqgla2csyvrsv2znel5lg76vx7t2zna772qpw7zd6pnft@rxdakxza5cab>
- <ZeDQQ8cyMTgYaY6D@bfoster>
+	s=arc-20240116; t=1709263113; c=relaxed/simple;
+	bh=syeyAnBKH71YnE9Gxz6XsmSt6TX5pWOE1uEhMY/HuxA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bOmFIaYXcUd5clyY2xu17NMVKq7K92OZ6k3P1sc3WwA+9VU/L/NetcqsKdlLQFagGLkk3HR5u6y3B3y+olVuPr038pXugJ3h3OI5LGTdFb3AqOkIS5S7C4hvszgy7OdgfOKROrmR6gL4rO6s06AFlSp3bDk87frhhys038EXPbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TmCt83Ln3z1Q9CG;
+	Fri,  1 Mar 2024 11:16:32 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3D7AD140429;
+	Fri,  1 Mar 2024 11:18:23 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
+ (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 1 Mar
+ 2024 11:18:23 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
+CC: <linux-bcachefs@vger.kernel.org>, <ruanjinjie@huawei.com>,
+	<lihongbo22@huawei.com>
+Subject: [PATCH] bcachefs: avoid returning private error code in bch2_xattr_bcachefs_set
+Date: Fri, 1 Mar 2024 11:17:45 +0800
+Message-ID: <20240301031745.1912157-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeDQQ8cyMTgYaY6D@bfoster>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Thu, Feb 29, 2024 at 01:43:15PM -0500, Brian Foster wrote:
-> Hmm.. I think the connection I missed on first look is basically
-> disk_accounting_key_to_bpos(). I think what is confusing is that calling
-> this a key makes me think of bkey, which I understand to contain a bpos,
-> so then overlaying it with a bpos didn't really make a lot of sense to
-> me conceptually.
->
-> So when I look at disk_accounting_key_to_bpos(), I see we are actually
-> using the bpos _pad field, and this structure basically _is_ the bpos
-> for a disk accounting btree bkey. So that kind of makes me wonder why
-> this isn't called something like disk_accounting_pos instead of _key,
-> but maybe that is wrong for other reasons.
+Avoid the private error code return to caller. The error code
+should be transformed into genernal error code.
 
-hmm, I didn't consider calling it disk_accounting_pos. I'll let that
-roll around in my brain.
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+ fs/bcachefs/xattr.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-'key' is more standard terminology to me outside bcachefs, but 'pos'
-does make more sense within bcachefs.
+diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
+index 9c0d2316031b..754f17bba68e 100644
+--- a/fs/bcachefs/xattr.c
++++ b/fs/bcachefs/xattr.c
+@@ -544,11 +544,11 @@ static int bch2_xattr_bcachefs_set(const struct xattr_handler *handler,
+ 		kfree(buf);
+ 
+ 		if (ret < 0)
+-			return ret;
++			goto err_class_exit;
+ 
+ 		ret = bch2_opt_check_may_set(c, opt_id, v);
+ 		if (ret < 0)
+-			return ret;
++			goto err_class_exit;
+ 
+ 		s.v = v + 1;
+ 		s.defined = true;
+@@ -595,6 +595,7 @@ static int bch2_xattr_bcachefs_set(const struct xattr_handler *handler,
+ 	     (opt_id == Opt_compression && !inode_opt_get(c, &inode->ei_inode, background_compression))))
+ 		bch2_set_rebalance_needs_scan(c, inode->ei_inode.bi_inum);
+ 
++err_class_exit:
+ 	return bch2_err_class(ret);
+ }
+ 
+-- 
+2.34.1
 
-> Either way, what I'm trying to get at is that I think this documentation
-> would be better if it explained conceptually how disk_accounting_key
-> relates to bkey/bpos, and why it exists separately from bkey vs. other
-> key types, rather than (or at least before) getting into the lower level
-> side effects of a union with bpos.
-
-Well, that gets into some fun territory - ideally bpos would not be a
-fixed thing that every btree was forced to use, we'd be able to define
-different types per btree.
-
-And we're actually going to need to be able to do that in order to do
-configurationless autotiering - i.e. tracking how hot/cold data is on an
-inode:offset basis, because LRU btree backreferences need to go in the
-key (bpos), not the value, in order to avoid collisions, and bpos isn't
-big enough for that.
-
-disk_accounting_(key|pos) is an even trickier situation, because of
-endianness issues. The trick we do with bpos of defining the field order
-differently based on endianness so that byte order matches word order -
-that really wouldn't work here, so there is at present no practical way
-that I know of to avoid the byte swabbing when going back and forth
-between bpos and disk_accounting_pos on big endian.
-
-But gcc does have an attribute now that lets you specify that an integer
-struct member is big or little endian... I if we could get them to go
-one step further and give us an attribute to control whether members are
-laid out in ascending or descending order...
