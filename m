@@ -1,110 +1,88 @@
-Received: from mail-108-mta97.mxroute.com (mail-108-mta97.mxroute.com [136.175.108.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99B03FE23
-	for <linux-bcachefs@vger.kernel.org>; Fri,  1 Mar 2024 05:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33FDB67E62
+	for <linux-bcachefs@vger.kernel.org>; Fri,  1 Mar 2024 06:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709272395; cv=none; b=gW1d1hOMLSRDiLi3/qpDFCjdGBRQK16M7Ll8RBF46EDq/9JXfPe4V4XF+1bSU4M29WQ5og6wUqLfI1UkPnEDVFnYksKZP12k5gij6Nb+pmSY/5u9ei6XUrOVdPCDiV6ivkOyOKJIro1VIq06RVxWYUsqjeP1lpYigUKzV+wNUIY=
+	t=1709275158; cv=none; b=jY4rBRhhBDVy7MDERs7n2uDjrecJgj4bVXnQMpE6xd8BNxlMUiilNrY9eFrLRCGu5xjf/Oow6WFxk3vA6zcZjI/BmHfybW8pOFheiGRpbyBrfNRU55hHkFUbEAueqv3YIjoUDVKLg8+2cLCDJmM2djXENHGCUPAqLuWFHUBHphc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709272395; c=relaxed/simple;
-	bh=3XTIwmGSQe2O26JtrW3tnJpUxADtMURDUHlroc1Apr0=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=XWSIRnFp3D1HO04dO4Q85LfQdlzUUQJwTPTV3g2RQLrcEf9i7Vhc+bIJUQbcUMhjMrTck8/0EjrJcCAhwCdE8HyXhG7tWyFcE8AgMgdzcCnQ65uEzH7GQCq5qVHrCFigcvULSd5esot4exQI7W2RC+BjR/4UxN2r7lE1xO6Qcdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=DFajT6Qz; arc=none smtp.client-ip=136.175.108.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="DFajT6Qz"
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta97.mxroute.com (ZoneMTA) with ESMTPSA id 18df88e22410003bea.005
- for <linux-bcachefs@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Fri, 01 Mar 2024 05:48:00 +0000
-X-Zone-Loop: cebf40ef9964dc9e16a855cbf1a3d92062053dfb0c9e
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
-	; s=x; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
-	In-reply-to:Date:Subject:Cc:To:From:References:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=ErJPVqVp8bE7HtbXACZbI+9rSXtYxkg2ePjAU3UIvrw=; b=DFajT6QzzQNPSeZs2wZrUH3p3m
-	iJMfQs21R5hIwpchI5mZhykosyZfzyrh1g3k/jCHlm8bRsC+N/BDuzp2Qees18JipTlp1/5Jg9LzH
-	glpO/U6CJuLFoeqk1vDM1SRx7BEnGuciWzQRRF7lF9nvRW+/vUG+cp8Jw/66Z4P4gNBqE79Ub28tx
-	MjsQzefKsaruPqf6hYW6J3ACznT2N6YtRHUa2pEMeO2dUc+K8CcsmgJwGEf7gFRSNXbJGbzZTtE/X
-	lYdSNVTxKHdUJwri55RHLyOegjNp5OKKvT2q9Cu6xqbMb0rCR+ocEI6+k/J/aM/mRWABBsiFd1Ltg
-	iuBIW2NQ==;
-References: <20240301031745.1912157-1-lihongbo22@huawei.com>
- <27c97dbd-cbc1-f6d3-9114-3eaf27d86c48@huawei.com>
-User-agent: mu4e 1.7.5; emacs 28.2
-From: Su Yue <l@damenly.org>
-To: Jinjie Ruan <ruanjinjie@huawei.com>
-Cc: Hongbo Li <lihongbo22@huawei.com>, kent.overstreet@linux.dev,
- bfoster@redhat.com, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: avoid returning private error code in
- bch2_xattr_bcachefs_set
-Date: Fri, 01 Mar 2024 13:45:23 +0800
-In-reply-to: <27c97dbd-cbc1-f6d3-9114-3eaf27d86c48@huawei.com>
-Message-ID: <wmqmmrmd.fsf@damenly.org>
+	s=arc-20240116; t=1709275158; c=relaxed/simple;
+	bh=JiBSx5kAGfwhQWrF2TXQbw5Jg1jZJL8MO0V4BVTPVBI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qQTjJjy5PbC19wjXkGuHyNwJ4ogEEn3XyOjWn6eOh8E/N1q1mALAM6TAmIXqr0/AzTtEY4lpldHzk8pxkEC8DtgV4C2uIUXjOKyMKk8fz2dm0L/gQ5mnpB63uNdg49zAUY84xhC3Gks7Ju+Mh1Zo3JlRloZ/hIpApKFsnwH0cns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TmJL62byrzNlnQ;
+	Fri,  1 Mar 2024 14:37:34 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id DDFB6180079;
+	Fri,  1 Mar 2024 14:39:06 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
+ (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 1 Mar
+ 2024 14:39:06 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
+CC: <linux-bcachefs@vger.kernel.org>, <ruanjinjie@huawei.com>,
+	<lihongbo22@huawei.com>
+Subject: [PATCH v2] bcachefs: intercept mountoption value for bool type
+Date: Fri, 1 Mar 2024 14:38:33 +0800
+Message-ID: <20240301063833.1933506-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Authenticated-Id: l@damenly.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
+For mount option with bool type, the value must be 0 or 1 (See
+bch2_opt_parse). But this seems does not well intercepted cause
+for other value(like 2...), it returns the unexpect return code
+with error message printed.
 
-On Fri 01 Mar 2024 at 11:26, Jinjie Ruan <ruanjinjie@huawei.com>=20
-wrote:
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+v2:
+  - refine code by adding private error code for non-bool option
 
-> On 2024/3/1 11:17, Hongbo Li wrote:
->> Avoid the private error code return to caller. The error code
->> should be transformed into genernal error code.
->>
->> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
->> ---
->>  fs/bcachefs/xattr.c | 5 +++--
->>  1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
->> index 9c0d2316031b..754f17bba68e 100644
->> --- a/fs/bcachefs/xattr.c
->> +++ b/fs/bcachefs/xattr.c
->> @@ -544,11 +544,11 @@ static int bch2_xattr_bcachefs_set(const=20
->> struct xattr_handler *handler,
->>  		kfree(buf);
->>
->>  		if (ret < 0)
->> -			return ret;
->> +			goto err_class_exit;
->>
->>  		ret =3D bch2_opt_check_may_set(c, opt_id, v);
->>  		if (ret < 0)
->> -			return ret;
->> +			goto err_class_exit;
->>
->>  		s.v =3D v + 1;
->>  		s.defined =3D true;
->> @@ -595,6 +595,7 @@ static int bch2_xattr_bcachefs_set(const=20
->> struct xattr_handler *handler,
->>  	     (opt_id =3D=3D Opt_compression && !inode_opt_get(c,=20
->>  &inode->ei_inode, background_compression))))
->>  		bch2_set_rebalance_needs_scan(c,=20
->>  inode->ei_inode.bi_inum);
->>
->> +err_class_exit:
->>  	return bch2_err_class(ret);
->
-> =E9=82=A3=E5=89=8D=E9=9D=A2=E7=9A=84return -ENOMEM=E5=92=8Creturn -EINVAL=
-=E4=B8=8D=E7=94=A8=E8=BD=AC=E6=8D=A2=E5=90=97
->
-Please reply in english. Thanks.
+v1: https://lore.kernel.org/linux-bcachefs/6606c887-7bf3-435a-ac6c-5008115607ae@huawei.com/T/#t
+---
+ fs/bcachefs/errcode.h | 1 +
+ fs/bcachefs/opts.c    | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
---
-Su
->>  }
->>
+diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
+index a8f1a3976305..47bafbd7707a 100644
+--- a/fs/bcachefs/errcode.h
++++ b/fs/bcachefs/errcode.h
+@@ -8,6 +8,7 @@
+ 	x(EINVAL,			mount_option)				\
+ 	x(BCH_ERR_mount_option,		option_name)				\
+ 	x(BCH_ERR_mount_option,		option_value)				\
++	x(BCH_ERR_mount_option,         option_not_bool)                        \
+ 	x(ENOMEM,			ENOMEM_stripe_buf)			\
+ 	x(ENOMEM,			ENOMEM_replicas_table)			\
+ 	x(ENOMEM,			ENOMEM_cpu_replicas)			\
+diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+index 1db11c15b2b9..08ea0cfc4aef 100644
+--- a/fs/bcachefs/opts.c
++++ b/fs/bcachefs/opts.c
+@@ -314,7 +314,7 @@ int bch2_opt_parse(struct bch_fs *c,
+ 		if (ret < 0 || (*res != 0 && *res != 1)) {
+ 			if (err)
+ 				prt_printf(err, "%s: must be bool", opt->attr.name);
+-			return ret;
++			return ret < 0 ? ret : -BCH_ERR_option_not_bool;
+ 		}
+ 		break;
+ 	case BCH_OPT_UINT:
+-- 
+2.34.1
+
