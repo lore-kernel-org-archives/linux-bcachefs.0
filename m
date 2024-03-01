@@ -1,57 +1,45 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E0641C7A
-	for <linux-bcachefs@vger.kernel.org>; Fri,  1 Mar 2024 15:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4624C3B198
+	for <linux-bcachefs@vger.kernel.org>; Fri,  1 Mar 2024 19:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709305324; cv=none; b=ZSRzHmHz6FNuKt7DkaDzR9NqSnC9r8u01Uz7/xp2Q6H8H2uplqDftKjQPykilganO2Efho/jAPhBHv01nYGNCJM6DreGEDcFI1QiBv8Bslo5SqG/P9+G5E5b2gEhh1GKcgehjQ+MVBWX8Htvk50e+F223ScCV3LfiuXixyZNLZY=
+	t=1709321420; cv=none; b=sqC40+Er9aU9lHO0Cy7YH2CY4zPiwKRO3HnqWcLaU1bpHUqaHRJTl7dfcyFNrRo6PV1m1Cb1s4+PR5czyX+lhmXrLA3JSK/Yp89Rkba/4EfiFQ+H7RlZQTHQhwGkvEpzssir6dxujUiKISy5AayxJ4G450N7NvEQQPNjFmmK46c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709305324; c=relaxed/simple;
-	bh=WcFb6UJyrAj6vMVXS9jpaavIcTkGQ6WkUCPf39EjXH4=;
+	s=arc-20240116; t=1709321420; c=relaxed/simple;
+	bh=fC8yO5GWYw+06lbv+gmvQc70RO0jzfxz/BUuBmtcRTc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HeIzusEBnG5FXQpo4e4Qnuo/uK9okR+fiI/4aVwKg8Fe+0v1MGP2STFGVEb1UrU9E5uxNUmCufXk90w4zhMMNwP+Y0FkHEZ/jLyqNxp+EXS7AiapL5nKVJxAs6i2IYYTGOon2DyfBRjA8jDZxzmZHnt2kvAnJn1Cu9VbwmW6RrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UhvmraFn; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=U3PGKb+W2LnBIJM8D80TWTqg9JpGPpDY4ZqEXsUMCxEh2pektD6n2W3kbaktAx4wGiudM5MUfeh6dpDk15b9kAQ09CzSyjW3010Zb33mxz4VWxPiBtamSc1WHFZYrasy4bcnQ9nXIzqVsqljQ4ZIMLU8A4zlLAAMnBPHlwA0nUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iNE8hwhO; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UhvmraFn"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709305321;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iNE8hwhO"
+Date: Fri, 1 Mar 2024 14:30:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709321415;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=LxpqDIonN0/AQ1Q5Zx4aN7Ac1V+lU2NoYWrXBhd0Etg=;
-	b=UhvmraFnkosJyze9KoMXCP7G3ZiZT/QIm8C2ll5EH24/Umk6pDFzIOvu33ccDqL4EeKyDR
-	8TTaKldJGHKnCOhKm603mStRsAMgToIk+UKXE3JkwEU1LBWh/fux7fsbv6CUP9qVo7CV35
-	YBVsPrkeaTRNVYVNaPGOqaQhzMJPImY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-189-gdLcepOFNM2CPVAuVBP41Q-1; Fri,
- 01 Mar 2024 10:01:55 -0500
-X-MC-Unique: gdLcepOFNM2CPVAuVBP41Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5CCE42815E29;
-	Fri,  1 Mar 2024 15:01:53 +0000 (UTC)
-Received: from bfoster (unknown [10.22.32.137])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 25F21111D3E6;
-	Fri,  1 Mar 2024 15:01:53 +0000 (UTC)
-Date: Fri, 1 Mar 2024 10:03:35 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bh=KVORUB8MfdgpvFduZPozM66OeXPUqmhrFFOZyuRPc9k=;
+	b=iNE8hwhOIYqwMWCsgj7YwWxI+o4wpI/RWuHzWRfRtHlhGO6nngoPvBnN710qq8ORRCLgsN
+	jHacogkkt5a2w6i/CCMc3asHARnnbCbMObcUFMzv1iQFYu0SuSoNWZ4uajtB4+lGHM+fGu
+	Kv47NrxHkfnRRUF6w3nRh/CVYXuaAw4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	djwong@kernel.org
-Subject: Re: [PATCH 04/21] bcachefs: Disk space accounting rewrite
-Message-ID: <ZeHuRyZLlVD5vc7v@bfoster>
+Subject: Re: [PATCH 01/21] bcachefs: KEY_TYPE_accounting
+Message-ID: <gmyoy7dfs67dnoc3vznfpcjbe2vgo3fuqlssw5lk2opbb2jmu3@nxlkvv724i5u>
 References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
- <20240225023826.2413565-5-kent.overstreet@linux.dev>
- <Zd4F1qE1IFCz0/ML@bfoster>
- <3dug3vvjmlkhu42glwhkm5ozgkp4tzqvekxdabbgv4dv4yhxig@r5bw746uaxym>
- <ZeDQi3mRwJc7wqX/@bfoster>
- <nywd7rix6qapogaqg5kxny3k272ptpzi4qv5q2dqts42bqbxrw@te5enoxvdhti>
+ <20240225023826.2413565-2-kent.overstreet@linux.dev>
+ <Zd4Ef49kHX3g69VT@bfoster>
+ <t6cc6gqgla2csyvrsv2znel5lg76vx7t2zna772qpw7zd6pnft@rxdakxza5cab>
+ <ZeDQQ8cyMTgYaY6D@bfoster>
+ <r2ieuj2kvitrrg7sqhuossm3wn4zzlkhygfqx7bxorzbaylnw2@kpgfn4e42iuw>
+ <ZeHuKv4ciR22X87z@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -60,130 +48,70 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <nywd7rix6qapogaqg5kxny3k272ptpzi4qv5q2dqts42bqbxrw@te5enoxvdhti>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+In-Reply-To: <ZeHuKv4ciR22X87z@bfoster>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Feb 29, 2024 at 04:16:00PM -0500, Kent Overstreet wrote:
-> On Thu, Feb 29, 2024 at 01:44:27PM -0500, Brian Foster wrote:
-> > On Wed, Feb 28, 2024 at 11:10:12PM -0500, Kent Overstreet wrote:
-> > > I think it ended up not needing to be moved, and I just forgot to drop
-> > > it - originally I disallowed accounting entries that referenced
-> > > nonexistent devices, but that wasn't workable so now it's only nonzero
-> > > accounting keys that aren't allowed to reference nonexistent devices.
-> > > 
-> > > I'll see if I can delete it.
-> > > 
+On Fri, Mar 01, 2024 at 10:03:06AM -0500, Brian Foster wrote:
+> On Thu, Feb 29, 2024 at 04:24:37PM -0500, Kent Overstreet wrote:
+> > On Thu, Feb 29, 2024 at 01:43:15PM -0500, Brian Foster wrote:
+> > > Hmm.. I think the connection I missed on first look is basically
+> > > disk_accounting_key_to_bpos(). I think what is confusing is that calling
+> > > this a key makes me think of bkey, which I understand to contain a bpos,
+> > > so then overlaying it with a bpos didn't really make a lot of sense to
+> > > me conceptually.
+> > >
+> > > So when I look at disk_accounting_key_to_bpos(), I see we are actually
+> > > using the bpos _pad field, and this structure basically _is_ the bpos
+> > > for a disk accounting btree bkey. So that kind of makes me wonder why
+> > > this isn't called something like disk_accounting_pos instead of _key,
+> > > but maybe that is wrong for other reasons.
 > > 
-> > Do you mean to delete the change that moves the call, or the flush call
-> > entirely?
+> > hmm, I didn't consider calling it disk_accounting_pos. I'll let that
+> > roll around in my brain.
+> > 
+> > 'key' is more standard terminology to me outside bcachefs, but 'pos'
+> > does make more sense within bcachefs.
+> > 
 > 
-> Delte the change, I think there's further cleanup (& probably bugs to
-> fix) possible with that flush call but I'm not going to get into it
-> right now.
+> Ok, so I'm not totally crazy at least. :)
 > 
+> Note again that wasn't an explicit suggestion, just that it seems more
+> logical to me based on my current understanding. I'm just trying to put
+> down my initial thoughts/confusions in hopes that at least some of this
+> triggers ideas for improvements...
 
-Ok, just trying to determine whether I need to look back and make sure
-this doesn't regress the problem this originally fixed.
+I liked it because it makes the relationship between disk_accounting_pos
+and bpos more explicit - they're both the same kind of thing.
 
-> > > +/*
-> > > + * Notes on disk accounting:
-> > > + *
-> > > + * We have two parallel sets of counters to be concerned with, and both must be
-> > > + * kept in sync.
-> > > + *
-> > > + *  - Persistent/on disk accounting, stored in the accounting btree and updated
-> > > + *    via btree write buffer updates that treat new accounting keys as deltas to
-> > > + *    apply to existing values. But reading from a write buffer btree is
-> > > + *    expensive, so we also have
-> > > + *
+> > > Either way, what I'm trying to get at is that I think this documentation
+> > > would be better if it explained conceptually how disk_accounting_key
+> > > relates to bkey/bpos, and why it exists separately from bkey vs. other
+> > > key types, rather than (or at least before) getting into the lower level
+> > > side effects of a union with bpos.
 > > 
-> > I find the wording a little odd here, and I also think it would be
-> > helpful to explain how/from where the deltas originate. For example,
-> > something along the lines of:
+> > Well, that gets into some fun territory - ideally bpos would not be a
+> > fixed thing that every btree was forced to use, we'd be able to define
+> > different types per btree.
 > > 
-> > "Persistent/on disk accounting, stored in the accounting btree and
-> > updated via btree write buffer updates. Accounting updates are
-> > represented as deltas that originate from <somewhere? trans triggers?>.
-> > Accounting keys represent these deltas through commit into the write
-> > buffer. The accounting/delta keys in the write buffer are then
-> > accumulated into the appropriate accounting btree key at write buffer
-> > flush time."
 > 
-> yeah, that's worth including.
+> Ok, but this starts to sound orthogonal to the accounting bits. Since I
+> don't really grok why this is called a key, here's how I would add to
+> the existing documentation:
 > 
-> There's an interesting point that you're touching on; btree write buffer
-> are always dependent state changes from some other (non write buffer)
-> btree; we never look at a write buffer btree and generate an update
-> there - we can't, reading from a write buffer btree doesn't get you
-> anything consistent or up to date.
+> "Here, the key has considerably more structure than a typical key
+> (bpos); an accounting key is 'struct disk_accounting_key', which is a
+> union of bpos. We do this because disk_account_key actually is bpos for
+> the related bkey that ends up in the accounting btree.
 > 
-> So in normal operation it really only makes sense to do write buffer
-> updates from a transactional trigger - that's the only way to use them
-> and have them be consistent with the resst of the filesystem.
+> This btree uses nontraditional bpos semantics because accounting btree
+> keys are indexed differently <reasons based on the counter
+> structures..?>. Yadda yadda..
 > 
-> And since triggers work by comparing old and new, they naturally
-> generate updates that are deltas.
-> 
+> Unlike with other key types, <continued existing comment> ...
 
-Hm that is interesting, I hadn't made that connection. Thanks.
+I'm just going to go with my latest revision for now, I think it's a
+reasonable balance between terse and explanatory:
 
-Brian
-
-> > > + *  - In memory accounting, where accounting is stored as an array of percpu
-> > > + *    counters, indexed by an eytzinger array of disk acounting keys/bpos (which
-> > > + *    are the same thing, excepting byte swabbing on big endian).
-> > > + *
-> > 
-> > Not really sure about the keys vs. bpos thing, kind of related to my
-> > comments on the earlier patch. It might be more clear to just elide the
-> > implementation details here, i.e.:
-> > 
-> > "In memory accounting, where accounting is stored as an array of percpu
-> > counters that are cheap to read, but not persistent. Updates to in
-> > memory accounting are propagated from the transaction commit path."
-> > 
-> > ... but NBD, and feel free to reword, drop and/or correct any of that
-> > text.
-> 
-> It's there because bch2_accounting_mem_read() takes a bpos when it
-> should be a disk_accounting_key. I'll fix that if I can...
-> 
-> > > + *    Cheap to read, but non persistent.
-> > > + *
-> > > + * To do a disk accounting update:
-> > > + * - initialize a disk_accounting_key, to specify which counter is being update
-> > > + * - initialize counter deltas, as an array of 1-3 s64s
-> > > + * - call bch2_disk_accounting_mod()
-> > > + *
-> > > + * This queues up the accounting update to be done at transaction commit time.
-> > > + * Underneath, it's a normal btree write buffer update.
-> > > + *
-> > > + * The transaction commit path is responsible for propagating updates to the in
-> > > + * memory counters, with bch2_accounting_mem_mod().
-> > > + *
-> > > + * The commit path also assigns every disk accounting update a unique version
-> > > + * number, based on the journal sequence number and offset within that journal
-> > > + * buffer; this is used by journal replay to determine which updates have been
-> > > + * done.
-> > > + *
-> > > + * The transaction commit path also ensures that replicas entry accounting
-> > > + * updates are properly marked in the superblock (so that we know whether we can
-> > > + * mount without data being unavailable); it will update the superblock if
-> > > + * bch2_accounting_mem_mod() tells it to.
-> > 
-> > I'm not really sure what this last paragraph is telling me, but granted
-> > I've not got that far into the code yet either.
-> 
-> yeah that's for a whole different subsystem that happens to be slaved to
-> the accounting - replicas.c, which also used to help out quite a bit
-> with the accounting but now it's pretty much just for managing the
-> superblock replicas section.
-> 
-> The superblock replicas section is just a list of entries, where each
-> entry is a list of devices - "there is replicated data present on this
-> set of devices". We also have full counters of how much data is present
-> replicated across each set of devices, so the superblock section is just
-> a truncated version of the accounting - "data exists on these devices",
-> instead of saying how much.
-> 
-
+ * More specifically: a key is just a muliword integer (where word endianness
+ * matches native byte order), so we're treating bpos as an opaque 20 byte
+ * integer and mapping bch_accounting_pos to that.
