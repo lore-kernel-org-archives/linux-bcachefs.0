@@ -1,147 +1,130 @@
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34C97462
-	for <linux-bcachefs@vger.kernel.org>; Sat,  2 Mar 2024 02:14:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A9542072
+	for <linux-bcachefs@vger.kernel.org>; Sat,  2 Mar 2024 22:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709345699; cv=none; b=spB9PHjvcsLYlHcLz21G6xsVyLNtZtFrBE7p3YfHm7YyCBJ4OM1KCFKeaOrhIzqSDH1Evg0qZvp4ocX0EYRXusTk108gfIzrr1oRPnXsGTzJemVaTVPNrRTCfY4z5qD4V5AmbD9gJAkVLyRSU/H+l70toTeDzZEzVyFW+WLORLI=
+	t=1709416938; cv=none; b=b3SFS96ltKVjAkNfGEqs+1aQKJWPBSEvf4wg0IrWoFMljdi9UXKqFskla09sPIjXksgho7kcFJ2T8cRo/VN/v3JdlxoDmihZr7nqpboYDVAghhfA30m2W0k5neIxWKYPLt3xTQuXEu0VLzqJvZKQbU4p0RhSpy6ueOIrHzEqy5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709345699; c=relaxed/simple;
-	bh=xdUH8yt56H1yrlX9btyLfY5jD2X0MPDmpzirbToSkN0=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=DU+qaO2jrXb5g8itbv1yVy5fkgxSCQ8SqW1Dx8x/dGNGQ93GDU4eBoYlVyG7R2VFFGWFPWYEwvPTwONnSkCxNXt5AUUbHwqlkLSxpzS4fIyz9qlcyrQYulf2a83hhunzmMSZPaym89rnU+IPCdLfegQeeQAAomQenQxYrgBbmgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Dpk2Es87; arc=none smtp.client-ip=95.215.58.174
+	s=arc-20240116; t=1709416938; c=relaxed/simple;
+	bh=D3XN16M6Y57uWxVwLnlF9xADST6YeevavrFwllCfXWQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EawjLdOeNW554ZUBhT4zMDGIy6n6IYf5uwKYYO1YLwJvUZ4L6k/QskkilCoKyWAM6J+AgWqlm5P1YP2j6cjwsRNRGqcPMFECPVUgLYKTPWp95xOJzKVbkuKTgyoUNbykXp77hwm052YFp/zt/PYZOWz0s7SCAu5KEINSe1yTUU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mJf2tL9q; arc=none smtp.client-ip=95.215.58.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Dpk2Es87"
-Date: Fri, 1 Mar 2024 21:14:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709345695;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=SLhMFb9RPBAVJDy0ylhiUFPZYEbcZieEIC/CfKQNaUQ=;
-	b=Dpk2Es87o5cb0ruLrDNl0GHFI1Zz8TwMOVzXb8YkI7CBIisdANsCZ8u0BSWo2Q0+ppxECs
-	Wm2o8+aLXxhWQ+tbLhUnYjuAAAJlTMUWxhoVby4PDR++QkiSS3351AlhLScgGojZtqz4Jw
-	GiGM0j6VboSzMFx5mr4kE+9NIrtooLs=
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mJf2tL9q"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709416934;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=aqe1bsXqpWMOsaSaAwaBLUQoehzaMA/zwKYXylUSUEI=;
+	b=mJf2tL9qJVNFMI5UHcD3vg9GZUQH6OCyFLF9wtJHzwJPuNkRtKo5Pz4nagtiMAa6kNdzMy
+	hHC7/Teu0KO0RxPW0Yo9pwdNixmvQmt9Xs3KeGDhSZ44q7Da5CZMNbgBHmM3S36Vt5V27V
+	C29Oodz0kJ7tlOMG9Bq3eu8FoWPmQBw=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [WIP] bcachefs fs usage update
-Message-ID: <gajhq3iyluwmr44ee2fzacfpgpxmr2jurwqg6aeiab4lfila3p@b3l7bywr3yed>
+To: linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	David Howells <dhowells@redhat.com>
+Subject: [PATCH] statx: stx_vol
+Date: Sat,  2 Mar 2024 17:02:03 -0500
+Message-ID: <20240302220203.623614-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-I'm currently updating the 'bcachefs fs usage' command for the disk
-accounting rewrite, and looking for suggestions on any improements we
-could make - ways to present the output that would be clearer and more
-useful, possibly ideas on on new things to count...
+Add a new statx field for (sub)volume identifiers.
 
-I think a shorter form of the per-device section is in order, a table
-with data type on the x axis and the device on the y axis; we also want
-percentages.
+This includes bcachefs support; we'll definitely want btrfs support as
+well.
 
-The big thing I'm trying to figure out is how to present the snapshots
-counters in a useful way.
+Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Miklos Szeredi <mszeredi@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: David Howells <dhowells@redhat.com>
+---
+ fs/bcachefs/fs.c          | 3 +++
+ fs/stat.c                 | 1 +
+ include/linux/stat.h      | 1 +
+ include/uapi/linux/stat.h | 4 +++-
+ 4 files changed, 8 insertions(+), 1 deletion(-)
 
-Snapshot IDs form trees, where subvolumes correspond to leaf nodes in
-snapshot trees and interior nodes represent data shared between multiple
-subvolumes.
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 3f073845bbd7..d82f7f3f0670 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+ 	stat->blksize	= block_bytes(c);
+ 	stat->blocks	= inode->v.i_blocks;
+ 
++	stat->vol	= inode->ei_subvol;
++	stat->result_mask |= STATX_VOL;
++
+ 	if (request_mask & STATX_BTIME) {
+ 		stat->result_mask |= STATX_BTIME;
+ 		stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
+diff --git a/fs/stat.c b/fs/stat.c
+index 77cdc69eb422..80d5f7502d99 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+ 	tmp.stx_mnt_id = stat->mnt_id;
+ 	tmp.stx_dio_mem_align = stat->dio_mem_align;
+ 	tmp.stx_dio_offset_align = stat->dio_offset_align;
++	tmp.stx_vol = stat->vol;
+ 
+ 	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+ }
+diff --git a/include/linux/stat.h b/include/linux/stat.h
+index 52150570d37a..9dc1b493ef1f 100644
+--- a/include/linux/stat.h
++++ b/include/linux/stat.h
+@@ -53,6 +53,7 @@ struct kstat {
+ 	u32		dio_mem_align;
+ 	u32		dio_offset_align;
+ 	u64		change_cookie;
++	u64		vol;
+ };
+ 
+ /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
+diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+index 2f2ee82d5517..ae090d67946d 100644
+--- a/include/uapi/linux/stat.h
++++ b/include/uapi/linux/stat.h
+@@ -126,8 +126,9 @@ struct statx {
+ 	__u64	stx_mnt_id;
+ 	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
+ 	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
++	__u64	stx_vol;	/* Subvolume identifier */
+ 	/* 0xa0 */
+-	__u64	__spare3[12];	/* Spare space for future expansion */
++	__u64	__spare3[11];	/* Spare space for future expansion */
+ 	/* 0x100 */
+ };
+ 
+@@ -155,6 +156,7 @@ struct statx {
+ #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
+ #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
+ #define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
++#define STATX_VOL		0x00008000U	/* Want/got stx_vol */
+ 
+ #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+ 
+-- 
+2.43.0
 
-That means it's straightforward to print how much data each subvolumme
-is using directly - look up the subvolume for a given snapshot ID, look
-up the filesystem path of that subvolume - but I haven't come up with a
-good way of presenting how data is shared; these trees can be
-arbitrarily large.
-
-Thoughts?
-
-Filesystem: 77d3a40d-58b6-46c9-a4d2-e59c8681e152
-Size:                       11.0 GiB
-Used:                       4.96 GiB
-Online reserved:                 0 B
-Inodes:                            4
-
-Persistent reservations:
-2x                          5.00 MiB
-
-Data type       Required/total  Durability    Devices
-btree:          1/2             2             [vdb vdc]           14.0 MiB
-btree:          1/2             2             [vdb vdd]           17.8 MiB
-btree:          1/2             2             [vdc vdd]           14.3 MiB
-user:           1/2             2             [vdb vdc]           1.64 GiB
-user:           1/2             2             [vdb vdd]           1.63 GiB
-user:           1/2             2             [vdc vdd]           1.64 GiB
-
-Compression:      compressed    uncompressed     average extent size
-lz4                 4.63 GiB        6.57 GiB                 112 KiB
-incompressible       328 MiB         328 MiB                 113 KiB
-
-Snapshots:
-4294967295          4.91 GiB
-
-Btrees:
-extents             12.0 MiB
-inodes               256 KiB
-dirents              256 KiB
-alloc               10.8 MiB
-subvolumes           256 KiB
-snapshots            256 KiB
-lru                  256 KiB
-freespace            256 KiB
-need_discard         256 KiB
-backpointers        20.5 MiB
-bucket_gens          256 KiB
-snapshot_trees       256 KiB
-logged_ops           256 KiB
-accounting           256 KiB
-
-(no label) (device 0):           vdb              rw
-                                data         buckets    fragmented
-  free:                     2.27 GiB           18627
-  sb:                       3.00 MiB              25       124 KiB
-  journal:                  32.0 MiB             256
-  btree:                    15.9 MiB             127
-  user:                     1.64 GiB           13733      41.1 MiB
-  cached:                        0 B               0
-  parity:                        0 B               0
-  stripe:                        0 B               0
-  need_gc_gens:                  0 B               0
-  need_discard:                  0 B               0
-  capacity:                 4.00 GiB           32768
-
-(no label) (device 1):           vdc              rw
-                                data         buckets    fragmented
-  free:                     2.28 GiB           18652
-  sb:                       3.00 MiB              25       124 KiB
-  journal:                  32.0 MiB             256
-  btree:                    14.1 MiB             113
-  user:                     1.64 GiB           13722      38.5 MiB
-  cached:                        0 B               0
-  parity:                        0 B               0
-  stripe:                        0 B               0
-  need_gc_gens:                  0 B               0
-  need_discard:                  0 B               0
-  capacity:                 4.00 GiB           32768
-
-(no label) (device 2):           vdd              rw
-                                data         buckets    fragmented
-  free:                     2.28 GiB           18640
-  sb:                       3.00 MiB              25       124 KiB
-  journal:                  32.0 MiB             256
-  btree:                    16.0 MiB             128
-  user:                     1.64 GiB           13719      38.6 MiB
-  cached:                        0 B               0
-  parity:                        0 B               0
-  stripe:                        0 B               0
-  need_gc_gens:                  0 B               0
-  need_discard:                  0 B               0
-  capacity:                 4.00 GiB           32768
