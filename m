@@ -1,121 +1,141 @@
-Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EB418E10;
-	Mon,  4 Mar 2024 08:21:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.150.191.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCAA208DD;
+	Mon,  4 Mar 2024 09:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709540496; cv=none; b=snx1le37KHFfuKCwZ7twvCsQxvDt+mm98w+7r/o8EBSpk5W4Ggh1+vTsWC+9TaQJyCn6+iDQ8Az6fa0B1+g87x24+Nd4xz8+vMb+yP9AxmLBWPhPnHb73JgFfKHLo0pptjARU7jR77m8lTRJ4ll3FbK+HdN1uTA28ZkR7zLfIEM=
+	t=1709543908; cv=none; b=SGojyaKqdevy62oxRU3fg38t5em66kwuxG4FZnEBZNmfPULkY49S5nd3XUEMzndEEAIVTb6vweuX6ll+lcnTbqCg5k/0tKdcxGga2ZEbXnzHSh7h5lp51S0CxJMrcijAumH21oGmOc278T+JIzgpjKZ873eJHCLkUeFdY67qspE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709540496; c=relaxed/simple;
-	bh=rQistqTUrGOlKZBaVskLCJfYvitC30s8IkMeYcZYZWc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M62l2gbpe1+rFxChRdoJiqeJseU32iOBs/ep5ytWoWV/RnZEcC4pXGQtntEaxqf0EuoT7uVpO5zCG46umfl+ZOQYO2tE+LQ3lBwD1eO0ba2YK7Mm/p5XhxQVn29yJ3sIwtJBO+sgQBYbyJrQ+af5o/dKVKoZSJP5tmmxnUvb658=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=194.150.191.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-	(No client certificate requested)
-	by mail.lichtvoll.de (Postfix) with ESMTPSA id 830728B1959;
-	Mon,  4 Mar 2024 09:16:19 +0100 (CET)
-Authentication-Results: mail.lichtvoll.de;
-	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-From: Martin Steigerwald <martin@lichtvoll.de>
-To: John Stoffel <john@stoffel.org>,
- Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP] bcachefs fs usage update
-Date: Mon, 04 Mar 2024 09:16:18 +0100
-Message-ID: <2199336.irdbgypaU6@lichtvoll.de>
-In-Reply-To: <apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
-References:
- <gajhq3iyluwmr44ee2fzacfpgpxmr2jurwqg6aeiab4lfila3p@b3l7bywr3yed>
- <26085.7607.331602.673876@quad.stoffel.home>
- <apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
+	s=arc-20240116; t=1709543908; c=relaxed/simple;
+	bh=iIcoVUjRlYsRf3EzWL9aMWy1LM1drhYauQiWNrhqycA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kODaLlN4Xz3DsbxvvepjOuh05ouLRUSN5X+cN2Cjwc49i6wiURi8Jw6OmI6OfoeGfi2DPAj1dnVIKy6H6OK3WVuEpP2YKQ3HGti5PXvfcjTtOupM7wb3bspyTLn8ey+i1cRy3bPB9AqfNiC24cBPoXZdNU3ZEbHZhuJjyMBKZIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SkRP4VuM; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SkRP4VuM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DF05C433F1;
+	Mon,  4 Mar 2024 09:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709543907;
+	bh=iIcoVUjRlYsRf3EzWL9aMWy1LM1drhYauQiWNrhqycA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SkRP4VuMgOJdbbQLJ4Y3sr1szCP+jS3LWglocdiHm1gTFqV7xNwdB9jdD24EQvm/c
+	 URBAHeOH7mwVEBK2ocYhfQl/9jljaPhXcWg7UuzBIx1tB/KncI0LolAWKvX6M7bsWP
+	 cH7nLWnrZPjsPPN/xveDb403ry0gMx1E7QvVM1OpCRNNXPZ1McHcfsJqlZR4CTMTXL
+	 tqPVvQWBg1dQ5ZisZj9qYitHEf5AP7Q3H4ZXzppqgsaVgEyWPjqtGI3dfmdamiqanv
+	 zVkwvHMVGVO6QIvjxG69oPDBnNOyQCVhxqb1zRxWSjFooyCQVfaGqxDj4NZBv3OX9J
+	 WMP2e7TQAwmww==
+Date: Mon, 4 Mar 2024 10:18:22 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Miklos Szeredi <mszeredi@redhat.com>, David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH] statx: stx_vol
+Message-ID: <20240304-konfus-neugierig-5c7c9d5a8ad6@brauner>
+References: <20240302220203.623614-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240302220203.623614-1-kent.overstreet@linux.dev>
 
-Kent Overstreet - 04.03.24, 02:08:44 CET:
-> > This is not the same level of detail needed by a filesystem developer,
-> > and I _never_ said it was.  I'm looking for the inforation
-> > needed/wanted by a SysAdmin when an end user comes whining about
-> > needing more space.  And then being able to examine the system
-> > holistically to give them an answer.  Which usually means "delete
-> > something!"  *grin*
->=20
-> 'bcachefs fs usage' needs to show _all_ disk accounting information
-> bcachefs has, because we need there to be one single tool that shows all
-> the information we have - that's this tool.
->=20
-> If we're collecting information, it needs to be available.
->=20
-> There will no doubt be switches and options for providing reduced forms,
-> but for now I'm mainly concerned with making sure all the information
-> that we have is there in a reasonably understandable way.
+On Sat, Mar 02, 2024 at 05:02:03PM -0500, Kent Overstreet wrote:
+> Add a new statx field for (sub)volume identifiers.
+> 
+> This includes bcachefs support; we'll definitely want btrfs support as
+> well.
+> 
+> Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: Miklos Szeredi <mszeredi@redhat.com>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: David Howells <dhowells@redhat.com>
+> ---
 
-=46rom a sysadmin view I totally get what John is writing.
+As I've said many times before I'm supportive of this and would pick up
+a patch like this. There's definitely a lot of userspace that would make
+use of this that I'm aware of. If the btrfs people could provide an Ack
+on this to express their support here that would be great.
 
-I know "btrfs filesystem usage" also shows a lot of information, but still=
-=20
-with some learning it is quite understandable. At least I can explain it=20
-nicely enough in one of my Linux Performance Analysis & Tuning courses.
+And it would be lovely if we could expand the commit message a bit and
+do some renaming/bikeshedding. Imho, STATX_SUBVOLUME_ID is great and
+then stx_subvolume_id or stx_subvol_id. And then subvolume_id or
+subvol_id for the field in struct kstat.
 
-Commands like "lspci" do not show all the information by default. You need=
-=20
-to add "-v" even several times to show it all.
-
-So I am with you that it is good to have a tool that shows *all* the=20
-information. I am just not so sure whether showing *all* the information=20
-by default is wise.
-
-No one was asking for the lowest common denominator. But there is a=20
-balance between information that is useful in daily usage of BCacheFS and=20
-information that is more aimed at debugging purposes and filesystem=20
-developers. That "df -hT" is not really enough to understand what is going=
-=20
-on in a filesystem like BCacheFS and BTRFS is clear.
-
-So what I'd argue for is a middle ground by default and adding more with=20
-"-v" or "--detail" or an option like that. In the end if I consider who=20
-will be wanting to use the information, my bet would be it would be over=20
-95% sysadmins and Linux users at home. It would be less, I bet way less=20
-than 5% Linux filesystem developers. And that's generous. So "what target=20
-audience are you aiming at?" is an important question as well.
-
-What also improves the utility of the displayed information is explaining=20
-it. In a man page preferably.
-
-If there then is also a way to retrieve the information as JSON for=20
-something like that=E2=80=A6 it makes monitoring the usage state by 3rd par=
-ty=20
-tools easier.
-
-Another approach would be something like "free -m" versus "cat /proc/
-meminfo" and "cat /proc/vmstat". I.e. provide all the details via SysFS=20
-and a part of it by "bcachefs filesystem usage".
-
-You indeed asked for feedback about "bcachefs fs usage". So there you have=
-=20
-it. As usual do with it what you want. You can even outright dismiss it=20
-without even considering it. But then I wonder why you asked for feedback=20
-to begin with. See, John just did what you asked for: John gave feedback.
-
-I planned to go into detail of your example output and tell you what I=20
-think about each part of what you propose and ask questions for deeper=20
-understanding. If you are open to at least consider the feedback, only=20
-consider, of course you can still decline everything and all of it after=20
-consideration, then I'd be willing to spend the time to do it.
-
-Best,
-=2D-=20
-Martin
-
-
+>  fs/bcachefs/fs.c          | 3 +++
+>  fs/stat.c                 | 1 +
+>  include/linux/stat.h      | 1 +
+>  include/uapi/linux/stat.h | 4 +++-
+>  4 files changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index 3f073845bbd7..d82f7f3f0670 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+>  	stat->blksize	= block_bytes(c);
+>  	stat->blocks	= inode->v.i_blocks;
+>  
+> +	stat->vol	= inode->ei_subvol;
+> +	stat->result_mask |= STATX_VOL;
+> +
+>  	if (request_mask & STATX_BTIME) {
+>  		stat->result_mask |= STATX_BTIME;
+>  		stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
+> diff --git a/fs/stat.c b/fs/stat.c
+> index 77cdc69eb422..80d5f7502d99 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+>  	tmp.stx_mnt_id = stat->mnt_id;
+>  	tmp.stx_dio_mem_align = stat->dio_mem_align;
+>  	tmp.stx_dio_offset_align = stat->dio_offset_align;
+> +	tmp.stx_vol = stat->vol;
+>  
+>  	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+>  }
+> diff --git a/include/linux/stat.h b/include/linux/stat.h
+> index 52150570d37a..9dc1b493ef1f 100644
+> --- a/include/linux/stat.h
+> +++ b/include/linux/stat.h
+> @@ -53,6 +53,7 @@ struct kstat {
+>  	u32		dio_mem_align;
+>  	u32		dio_offset_align;
+>  	u64		change_cookie;
+> +	u64		vol;
+>  };
+>  
+>  /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
+> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> index 2f2ee82d5517..ae090d67946d 100644
+> --- a/include/uapi/linux/stat.h
+> +++ b/include/uapi/linux/stat.h
+> @@ -126,8 +126,9 @@ struct statx {
+>  	__u64	stx_mnt_id;
+>  	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
+>  	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
+> +	__u64	stx_vol;	/* Subvolume identifier */
+>  	/* 0xa0 */
+> -	__u64	__spare3[12];	/* Spare space for future expansion */
+> +	__u64	__spare3[11];	/* Spare space for future expansion */
+>  	/* 0x100 */
+>  };
+>  
+> @@ -155,6 +156,7 @@ struct statx {
+>  #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
+>  #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
+>  #define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
+> +#define STATX_VOL		0x00008000U	/* Want/got stx_vol */
+>  
+>  #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+>  
+> -- 
+> 2.43.0
+> 
