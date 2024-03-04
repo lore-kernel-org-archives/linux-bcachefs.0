@@ -1,121 +1,121 @@
-Received: from mail-108-mta14.mxroute.com (mail-108-mta14.mxroute.com [136.175.108.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98451BA5E
-	for <linux-bcachefs@vger.kernel.org>; Mon,  4 Mar 2024 06:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EB418E10;
+	Mon,  4 Mar 2024 08:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.150.191.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709532841; cv=none; b=Po1UYUehWFyiOckH0uM1rbBStEC8aZPaRgXeaWn75kL4H3h1Bvsa281ZUlVX2VVlGmXVLNwPaenyCgf5fPQEeSYCdvIY06+bHOOlIUcw4JZtrewD5++nmVAHJMCW8zwineDr0LF9BLwWVyG6kz3uUKP1lt8fnn99BcARFWCQ8hc=
+	t=1709540496; cv=none; b=snx1le37KHFfuKCwZ7twvCsQxvDt+mm98w+7r/o8EBSpk5W4Ggh1+vTsWC+9TaQJyCn6+iDQ8Az6fa0B1+g87x24+Nd4xz8+vMb+yP9AxmLBWPhPnHb73JgFfKHLo0pptjARU7jR77m8lTRJ4ll3FbK+HdN1uTA28ZkR7zLfIEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709532841; c=relaxed/simple;
-	bh=JA+ToT62ofN18tC9Y/a9EcQCQzLzVQ2/LikqbqFWxmQ=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=ihEjN4W0b3MSoMDkv9W30h4gfWeFj7HV6t1LsSzA+VSQRNVfnXFi2Jtp8siS4Sw4fpho/41pm14Mg7d+gXbPolEJcxTPSFZ+RvnblXhUZoTXlttQvElZARVMLn3uqhTBhpm03O1LRdM8q5ZZkMA1G4AHHq6NtDFWBvD75H3kj/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=VehTBCH6; arc=none smtp.client-ip=136.175.108.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="VehTBCH6"
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta14.mxroute.com (ZoneMTA) with ESMTPSA id 18e08143a6c0003bea.004
- for <linux-bcachefs@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Mon, 04 Mar 2024 06:08:47 +0000
-X-Zone-Loop: 555d5018ae581a03e0251dae6dae5a6f69304ca75749
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
-	; s=x; h=Content-Type:MIME-Version:Message-ID:In-reply-to:Date:Subject:Cc:To:
-	From:References:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=nYqwQY5WZpB5b6Y6JJAAKQwIZSkHfM0YPUUkqlGVit8=; b=VehTBCH6AwnsY01KTB2REayOUu
-	h1eNlti/BBAG8E9pYQoCgKCACBZKDWLs6WvX42i86tVb+OcCOp2TWR4pJBCT4wXU35r+TnwEpyFbv
-	5PxrNXtNP+BMLlSUjwrsEej8PFqgCjpYLgcyKlyY+Tk43TZsle4eB4hbVmW2HYZkv54gNjpkSXq4D
-	kjiwmv94Nb752a2YAZvRKZyUx9MCWT3QvxDF4yl74c9ZS3/DUmFJ2xh7P0vttceERpOy/uh4ZmVmR
-	bFwIb5l6g/2etsUDEnsDK15Ngc2WlUws08/5NYfZClQcD1OKIbHb2K/oDAg+M2kTg6Z/awO4R1jtz
-	LgDD0mAg==;
-References: <20240304032203.3480001-1-lizetao1@huawei.com>
-User-agent: mu4e 1.7.5; emacs 28.2
-From: Su Yue <l@damenly.org>
-To: Li Zetao <lizetao1@huawei.com>
-Cc: kent.overstreet@linux.dev, bfoster@redhat.com,
- linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Fix null-ptr-deref in bch2_fs_alloc()
-Date: Mon, 04 Mar 2024 13:12:07 +0800
-In-reply-to: <20240304032203.3480001-1-lizetao1@huawei.com>
-Message-ID: <frx6edjh.fsf@damenly.org>
+	s=arc-20240116; t=1709540496; c=relaxed/simple;
+	bh=rQistqTUrGOlKZBaVskLCJfYvitC30s8IkMeYcZYZWc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=M62l2gbpe1+rFxChRdoJiqeJseU32iOBs/ep5ytWoWV/RnZEcC4pXGQtntEaxqf0EuoT7uVpO5zCG46umfl+ZOQYO2tE+LQ3lBwD1eO0ba2YK7Mm/p5XhxQVn29yJ3sIwtJBO+sgQBYbyJrQ+af5o/dKVKoZSJP5tmmxnUvb658=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=194.150.191.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id 830728B1959;
+	Mon,  4 Mar 2024 09:16:19 +0100 (CET)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: John Stoffel <john@stoffel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP] bcachefs fs usage update
+Date: Mon, 04 Mar 2024 09:16:18 +0100
+Message-ID: <2199336.irdbgypaU6@lichtvoll.de>
+In-Reply-To: <apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
+References:
+ <gajhq3iyluwmr44ee2fzacfpgpxmr2jurwqg6aeiab4lfila3p@b3l7bywr3yed>
+ <26085.7607.331602.673876@quad.stoffel.home>
+ <apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Authenticated-Id: l@damenly.org
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+Kent Overstreet - 04.03.24, 02:08:44 CET:
+> > This is not the same level of detail needed by a filesystem developer,
+> > and I _never_ said it was.  I'm looking for the inforation
+> > needed/wanted by a SysAdmin when an end user comes whining about
+> > needing more space.  And then being able to examine the system
+> > holistically to give them an answer.  Which usually means "delete
+> > something!"  *grin*
+>=20
+> 'bcachefs fs usage' needs to show _all_ disk accounting information
+> bcachefs has, because we need there to be one single tool that shows all
+> the information we have - that's this tool.
+>=20
+> If we're collecting information, it needs to be available.
+>=20
+> There will no doubt be switches and options for providing reduced forms,
+> but for now I'm mainly concerned with making sure all the information
+> that we have is there in a reasonably understandable way.
+
+=46rom a sysadmin view I totally get what John is writing.
+
+I know "btrfs filesystem usage" also shows a lot of information, but still=
+=20
+with some learning it is quite understandable. At least I can explain it=20
+nicely enough in one of my Linux Performance Analysis & Tuning courses.
+
+Commands like "lspci" do not show all the information by default. You need=
+=20
+to add "-v" even several times to show it all.
+
+So I am with you that it is good to have a tool that shows *all* the=20
+information. I am just not so sure whether showing *all* the information=20
+by default is wise.
+
+No one was asking for the lowest common denominator. But there is a=20
+balance between information that is useful in daily usage of BCacheFS and=20
+information that is more aimed at debugging purposes and filesystem=20
+developers. That "df -hT" is not really enough to understand what is going=
+=20
+on in a filesystem like BCacheFS and BTRFS is clear.
+
+So what I'd argue for is a middle ground by default and adding more with=20
+"-v" or "--detail" or an option like that. In the end if I consider who=20
+will be wanting to use the information, my bet would be it would be over=20
+95% sysadmins and Linux users at home. It would be less, I bet way less=20
+than 5% Linux filesystem developers. And that's generous. So "what target=20
+audience are you aiming at?" is an important question as well.
+
+What also improves the utility of the displayed information is explaining=20
+it. In a man page preferably.
+
+If there then is also a way to retrieve the information as JSON for=20
+something like that=E2=80=A6 it makes monitoring the usage state by 3rd par=
+ty=20
+tools easier.
+
+Another approach would be something like "free -m" versus "cat /proc/
+meminfo" and "cat /proc/vmstat". I.e. provide all the details via SysFS=20
+and a part of it by "bcachefs filesystem usage".
+
+You indeed asked for feedback about "bcachefs fs usage". So there you have=
+=20
+it. As usual do with it what you want. You can even outright dismiss it=20
+without even considering it. But then I wonder why you asked for feedback=20
+to begin with. See, John just did what you asked for: John gave feedback.
+
+I planned to go into detail of your example output and tell you what I=20
+think about each part of what you propose and ask questions for deeper=20
+understanding. If you are open to at least consider the feedback, only=20
+consider, of course you can still decline everything and all of it after=20
+consideration, then I'd be willing to spend the time to do it.
+
+Best,
+=2D-=20
+Martin
 
 
-On Mon 04 Mar 2024 at 11:22, Li Zetao <lizetao1@huawei.com> wrote:
-
-> There is a null-ptr-deref issue reported by kasan:
->
->   KASAN: null-ptr-deref in range 
->   [0x0000000000000000-0x0000000000000007]
->   Call Trace:
->     <TASK>
->     bch2_fs_alloc+0x1092/0x2170 [bcachefs]
->     bch2_fs_open+0x683/0xe10 [bcachefs]
->     ...
->
-> When initializing the name of bch_fs, it needs to dynamically 
-> alloc memory
-> to meet the length of the name. However, when name allocation 
-> failed, it
-> will cause a null-ptr-deref access exception in subsequent 
-> string copy.
->
-bch2_printbuf_make_room() does return -ENOMEM but
-bch2_prt_printf() doesn't check the return code. And there are too 
-many
-callers of bch2_prt_printf() don't check allocation_failure.
-
-> Fix this issue by checking if name allocation is successful.
->
-> Fixes: 401ec4db6308 ("bcachefs: Printbuf rework")
-> Signed-off-by: Li Zetao <lizetao1@huawei.com>
-> ---
->  fs/bcachefs/super.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-> index 6b23e11825e6..24fa41bbe7e3 100644
-> --- a/fs/bcachefs/super.c
-> +++ b/fs/bcachefs/super.c
-> @@ -818,13 +818,13 @@ static struct bch_fs *bch2_fs_alloc(struct 
-> bch_sb *sb, struct bch_opts opts)
->  		goto err;
->
->  	pr_uuid(&name, c->sb.user_uuid.b);
-> -	strscpy(c->name, name.buf, sizeof(c->name));
-> -	printbuf_exit(&name);
-> -
->  	ret = name.allocation_failure ? -BCH_ERR_ENOMEM_fs_name_alloc 
->  : 0;
->  	if (ret)
->  		goto err;
->
-IIRC, krealloc() doesn't free old pointer if new-size allocation 
-failed.
-There is no printbuf_exit called in label err then memory leak 
-happens.
-
---
-Su
->
-> +	strscpy(c->name, name.buf, sizeof(c->name));
-> +	printbuf_exit(&name);
-> +
->  	/* Compat: */
->  	if (le16_to_cpu(sb->version) <= 
->  bcachefs_metadata_version_inode_v2 &&
->  	    !BCH_SB_JOURNAL_FLUSH_DELAY(sb))
