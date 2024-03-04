@@ -1,176 +1,173 @@
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pannekake.samfundet.no (pannekake.samfundet.no [193.35.52.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D453E462
-	for <linux-bcachefs@vger.kernel.org>; Mon,  4 Mar 2024 13:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2406168B
+	for <linux-bcachefs@vger.kernel.org>; Mon,  4 Mar 2024 17:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.35.52.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709559893; cv=none; b=IfHQSm6q6Rq/sPJ9wtPLOKVS81P/wQ41/DzAWYmAtNOAWqjJ/v6XdrUNbeW6W4Op8NbHxtRMxml0NrynZudHQbjzSEgN+4rrOe4kp4SkAn+8ngZLRVOoerYNIKmFp5g7vU2v9q4BtNG6ZK6fZo1hIdPl+GFvWskj9/XDNspuwfM=
+	t=1709573812; cv=none; b=pkhjesu4mbqD2dLqfrH0xr6VK/pmJFodIy+Yprsry5aEYkSjvfxlpGcBFXN8yAdrGQDnlZdBesXNEiolg0MmZpTAOccdHjhREo1OhrxuxJjloBLkOln2lUFxd49+/kd/6/265DG6pKfu/cf/Kj/5vZ+bF6T0+GCY4knkh+zB/Bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709559893; c=relaxed/simple;
-	bh=WYatNNPv1dfXR9HApUaPLck/xdTS5uci2N4HpAiipls=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mQYG6cKAisjW3cYzrPsOKdMITM0NUnhcPmRuZw+yd2gVS4SiUiGiJoYwOjs6r+ZI01F06gKSAUqGHau+AcFkxdnaoU2j0hCiLXlMySXZCa1NlmJsh/DlwCIGkyHLkxJ2Z6FIKsz7fQcm2HOTY3yhXV5Eg1rWdtV92r0Ohfz7EEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XZo5KEJq; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1709573812; c=relaxed/simple;
+	bh=Sl4Y9/LZwh4bKn32sfWGi1C/vt0wNvPqfCo1Re2ezio=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=WcYG/lxG0+sHqOxXY70PgaOZjEZorCq46ksRfwEkK5uUxjBQCUH2az6FhDb9xQBZJ6HAXVrX3LkBPA7Ay4XmlBikeCozSvytf8m8gooSMe9VJtaq35DGo6+62NMH1Mn01Uwu6r+FMLucyIXoh6lJnxZXvQOSHtCRdABsJdPXKtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gunderson.no; spf=pass smtp.mailfrom=gunderson.no; dkim=pass (2048-bit key) header.d=gunderson.no header.i=@gunderson.no header.b=WXapGKyH; arc=none smtp.client-ip=193.35.52.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gunderson.no
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gunderson.no
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XZo5KEJq"
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42ef8193ae6so73171cf.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 04 Mar 2024 05:44:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709559890; x=1710164690; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=edjrhenNqonpGUDHiZU8SAS1zKy2+Rf2zjdCiAXt36Y=;
-        b=XZo5KEJqgOl2q7HsYLlHM2nMU17F7Vbx3+QeFZjH2QiLrqN6aJwoJFfB8qhYa/pEkS
-         +n0AygkD1SAyEv7pPNOhLmmAD7752pwJLOqTVKa+aJ3jsgQUqhYA0bpeN7WwcGrOyvmE
-         GDLaxgsafVFD1124nh4dfZ93J0ePomRQ6tVdqK4xPvwoN5pojmfwyN8ztrhr0qHoXf1u
-         bxxnFNAjmgRqXQB6QGMjj7LUpqnNgggXS5i9TDKWh/zbY3sV4vujXbRJJ/OFF75HnVhR
-         6jTZ1knUej6dhO5HPhNj1zdl5l964p4Y6hklyrplcXxPLpQU6m0wHXOkIN+CW3mIcSNM
-         OZ7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709559890; x=1710164690;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=edjrhenNqonpGUDHiZU8SAS1zKy2+Rf2zjdCiAXt36Y=;
-        b=BwkQ/uP7EsqYTbvV8aEcA2l1RwtRjNXtkixh6vDXNoU8+0OA68HaK3ikYaJHNqKOiX
-         N8OGwlDjWWEu8P2Jetfsyhq3O30DGO8CM1MRBTwl/uA3EGEZ3KsuSyejan34FSsBlnnb
-         owl6TEkVK/4PfKt0TkiOJbjQBTlsvg/aZ7DkfqSt6eSg2dT1NQp2omtQheGoLMpClLVl
-         8i53IyRrOAOKO9OVPS+2FTz5Wm8j2wp1btoc1Zf/dRcP+kixImlJUlzM56sdq1gYiUnq
-         Ta3rPOBwBZdo6xWgQlH62pk6GZe58u9LQ9bebBB1g9Yb82DBVEQsuVPpJYkx4WlkJK52
-         POQw==
-X-Forwarded-Encrypted: i=1; AJvYcCU3moo1C/8FByB17QgwJfxBhzpp9jZKtx78aPXQXnZFUp/fsZ5IXF9NsaumhaDWblO21sH9KiWGoTD0kMUiaCAxH9zOX6ObCRsnpseteio=
-X-Gm-Message-State: AOJu0YzImgn78VTUytwXOYUTNZhdRZ7pUMMnuMlSiKLwwg1Pw/oQPPXa
-	9goHS1t2ZwboZy+CoVWYnYeSBW9wEvkl7MBq5yGeAD7Z3EadNp/bNXzOhNOA3stovtjNdWyNwzE
-	pCB0GfP30RIkmq0ZNxL8kFq2o5+3HqhWJyD0R
-X-Google-Smtp-Source: AGHT+IERiVdZBoyn/IdfDoiVMAiiLMXBzhpIjtI8VIsf4pFNU+BDe+32SPFMQxPMD/HEiSxXeMpZUlBDxl+M3aCXveo=
-X-Received: by 2002:ac8:1090:0:b0:42e:6de9:cd13 with SMTP id
- a16-20020ac81090000000b0042e6de9cd13mr507236qtj.3.1709559890450; Mon, 04 Mar
- 2024 05:44:50 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gunderson.no header.i=@gunderson.no header.b="WXapGKyH"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gunderson.no; s=legacy; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=hrnsxfg/G60r5SONPqT5NtR3O/sJFGxlQQUqP0UTgWU=; b=WXapGKyHlri9qxZAFIp006lRbi
+	CgdxIdZggyokwsIy1FuGMFb8fl5EQ/gs50mYZdTXXjEHr4yTG/Sl+aFjEU9FBc9/CZgcqot0/T51J
+	zZKDiHf8dIj+akr0kY3Oplb8q3lduVEv3HXH62Zi8E9Gr7BYW0tz5ZN+ZiZnZuEGvBDydCDQ85FA7
+	X+Lp7Hn/p7kUuly5nBVrmm8zvJs+g3RevmvMAKKhbLjfRt9Co5QeD6CBxfH1PMZqWPvSQntFULMm2
+	qpltqIpkUmuycbbiUTR04HEcjmrWRlvQyfU08TJTSqgXfE/tnprzINwy9/dc/vyY52hZP1O9lRkeL
+	2q0GH9Xg==;
+Received: from sesse by pannekake.samfundet.no with local (Exim 4.96)
+	(envelope-from <steinar+bounces@gunderson.no>)
+	id 1rhCF5-00F5zi-1m
+	for linux-bcachefs@vger.kernel.org;
+	Mon, 04 Mar 2024 18:36:47 +0100
+Date: Mon, 4 Mar 2024 18:36:47 +0100
+From: "Steinar H. Gunderson" <steinar+bcachefs@gunderson.no>
+To: linux-bcachefs@vger.kernel.org
+Subject: Broken multi-device filesystem
+Message-ID: <20240304173647.s5mpkojd3fnvbpu4@sesse.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <gajhq3iyluwmr44ee2fzacfpgpxmr2jurwqg6aeiab4lfila3p@b3l7bywr3yed>
- <26085.7607.331602.673876@quad.stoffel.home> <apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
- <2199336.irdbgypaU6@lichtvoll.de> <CAMT0RQRsdLd9dg5jkpQ+gRTn0XJe=cU5Umsjs2npyvz6pCU61g@mail.gmail.com>
-In-Reply-To: <CAMT0RQRsdLd9dg5jkpQ+gRTn0XJe=cU5Umsjs2npyvz6pCU61g@mail.gmail.com>
-From: Hannu Krosing <hannuk@google.com>
-Date: Mon, 4 Mar 2024 14:44:39 +0100
-Message-ID: <CAMT0RQQp5mdRpgJ9ae=YF1uiSr-xMHe1rAA3OnAVDnqh8Jc0HA@mail.gmail.com>
-Subject: Re: [WIP] bcachefs fs usage update
-To: Martin Steigerwald <martin@lichtvoll.de>
-Cc: John Stoffel <john@stoffel.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Can we have an option to get the output in JSON format so that it can
-then be processed by whatever is doing the monitoring ?
+Hi,
 
-Cheers
-Hannu
+I have a bcachefs root filesystem over two SSDs, together about ~1TB
+of space (replicas=1). For historical reasons, one of them is an LVM
+volume, and the other one is a simple partition. This is with a 6.7
+kernel (Debian 6.7.7-1, IIRC).
 
+While doing a large-ish build, I noticed the machine got slower and slower,
+until it hung completely. I hit the physical reset button, and as the root
+filesystem started mounting, it hung in the step after journal replay
+(I believe it is called something with “deleted inodes”). After about two
+hours, I hit the physical reset button again, and ran bcachefs fsck
+(from bcachefs-tools 1.6.3) on the filesystem. It printed out the following
+(manually typed from a photo of the display, errors may occur):
 
-On Mon, Mar 4, 2024 at 2:37=E2=80=AFPM Hannu Krosing <hannuk@google.com> wr=
-ote:
->
-> Can we have an option to get the output in JSON format so that it can the=
-n be processed by whatever is doing the monitoring ?
->
-> Cheers
-> Hannu
->
-> On Mon, Mar 4, 2024 at 9:22=E2=80=AFAM Martin Steigerwald <martin@lichtvo=
-ll.de> wrote:
->>
->> Kent Overstreet - 04.03.24, 02:08:44 CET:
->> > > This is not the same level of detail needed by a filesystem develope=
-r,
->> > > and I _never_ said it was.  I'm looking for the inforation
->> > > needed/wanted by a SysAdmin when an end user comes whining about
->> > > needing more space.  And then being able to examine the system
->> > > holistically to give them an answer.  Which usually means "delete
->> > > something!"  *grin*
->> >
->> > 'bcachefs fs usage' needs to show _all_ disk accounting information
->> > bcachefs has, because we need there to be one single tool that shows a=
-ll
->> > the information we have - that's this tool.
->> >
->> > If we're collecting information, it needs to be available.
->> >
->> > There will no doubt be switches and options for providing reduced form=
-s,
->> > but for now I'm mainly concerned with making sure all the information
->> > that we have is there in a reasonably understandable way.
->>
->> From a sysadmin view I totally get what John is writing.
->>
->> I know "btrfs filesystem usage" also shows a lot of information, but sti=
-ll
->> with some learning it is quite understandable. At least I can explain it
->> nicely enough in one of my Linux Performance Analysis & Tuning courses.
->>
->> Commands like "lspci" do not show all the information by default. You ne=
-ed
->> to add "-v" even several times to show it all.
->>
->> So I am with you that it is good to have a tool that shows *all* the
->> information. I am just not so sure whether showing *all* the information
->> by default is wise.
->>
->> No one was asking for the lowest common denominator. But there is a
->> balance between information that is useful in daily usage of BCacheFS an=
-d
->> information that is more aimed at debugging purposes and filesystem
->> developers. That "df -hT" is not really enough to understand what is goi=
-ng
->> on in a filesystem like BCacheFS and BTRFS is clear.
->>
->> So what I'd argue for is a middle ground by default and adding more with
->> "-v" or "--detail" or an option like that. In the end if I consider who
->> will be wanting to use the information, my bet would be it would be over
->> 95% sysadmins and Linux users at home. It would be less, I bet way less
->> than 5% Linux filesystem developers. And that's generous. So "what targe=
-t
->> audience are you aiming at?" is an important question as well.
->>
->> What also improves the utility of the displayed information is explainin=
-g
->> it. In a man page preferably.
->>
->> If there then is also a way to retrieve the information as JSON for
->> something like that=E2=80=A6 it makes monitoring the usage state by 3rd =
-party
->> tools easier.
->>
->> Another approach would be something like "free -m" versus "cat /proc/
->> meminfo" and "cat /proc/vmstat". I.e. provide all the details via SysFS
->> and a part of it by "bcachefs filesystem usage".
->>
->> You indeed asked for feedback about "bcachefs fs usage". So there you ha=
-ve
->> it. As usual do with it what you want. You can even outright dismiss it
->> without even considering it. But then I wonder why you asked for feedbac=
-k
->> to begin with. See, John just did what you asked for: John gave feedback=
-.
->>
->> I planned to go into detail of your example output and tell you what I
->> think about each part of what you propose and ask questions for deeper
->> understanding. If you are open to at least consider the feedback, only
->> consider, of course you can still decline everything and all of it after
->> consideration, then I'd be willing to spend the time to do it.
->>
->> Best,
->> --
->> Martin
->>
->>
->>
+  fsck binary is version 1.6: btree_subvolume_children but filesystem is 1.3: rebalance_work and kernel is 1.3: rebalance_work
+  mounting version 1.3: rebalance_work opts=ro,compression=lz4,degraded,fsck,fix_errors=ask,read_only
+  recovering from unclean shutdown
+  Doing compatible version upgrade from 1.3: rebalance_work to 1.6: btree_subvolume_children
+    running recovery passes: check_subvols,check_dirents
+  journal read done,replaying entries 7263879-7263879
+  alloc_read... done
+  stripes_read... done
+  snapshots_read... done
+  check_allocations...dev 0 has wrong free buckets: got 507491, should be 499853: fix?
+   (y,n, or Y,N for all errors of this type) Y
+  dev 0 has wrong sb buckets: got 0, should be 7, fixing
+  dev 0 has wrong sb sectors: got 0, should be 6152: fix?
+   (y,n, or Y,N for all errors of this type) Y
+  dev 0 has wrong sb fragmented: got 0, should be 1016: fix?
+   (y,n, or Y,N for all errors of this type) Y
+  dev 0 has wrong journal buckets: got 0, should be 7631, fixing
+  dev 0 has wrong journal buckets: got 0, should be 1192480: fix?
+   (y,n, or Y,N for all errors of this type) Y
+   done
+  going read-write
+  journal_replay... done
+  check_alloc_info... done
+  check_lrus... done
+  check_btree_backpointers... done
+  check_backpointers_to_extents... done
+  check_alloc_to_lru_refs... done
+  check_snapshot_trees... done
+  check_snapshots... done
+  check_subvols... done
+  check_subvol_children... done
+  delete_dead_snapshot... done
+  resume_logged_ops... done
+  check_inodes...inodes 759339:4294967288 unlinked, but not on deleted list: fix?
+  WARNING at libbcachefs/btree_iter.c:2827: btree trans held srcu lock (delaying memory reclaim) for 22 seconds
+
+At this point, there was no visible I/O and no visible progress for about
+an hour (and being in initramfs, I couldn't check top), so I Ctrl-C-ed fsck
+and tried to mount again. It gave (more manual typing; the top and right is
+cut off in the screenshot, and I haven't bothered typing in the
+microseconds):
+
+  [  729.446] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): alloc_read... done
+  [  729.452] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): stripes_read... done
+  [  729.457] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): snapshots_read... done
+  [  729.484] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): journal_replay... done
+  [  729.489] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_subvols... done
+  [  729.494] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): resume_logged_ops... done
+  [  729.499] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirents...
+  [  729.543] inode 1410398479:4294966699 has wrong backpointer:
+  [  729.543] got       604737456:6483958551636691117
+  [  729.543] should be 23149:8508601757679713244, exiting
+  [  729.562] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): Unable to continue, halting
+  [  729.567] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirent_target(): error fsck_erro
+  [  729.572] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirent(): error fsck_errors_not_
+  [  729.577] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_check_dirents(): error fsck_errors
+  [  729.583] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_fs_start(): error starting filesys
+  [  729.588] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): mounting version 1.6: (unknown version)
+  [  729.626] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): recovering from unclean shutdown
+  [  729.631] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): superblock required following recovery 
+  [  729.636]   check_subvols,check_dirents
+  [  729.646] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): Version downgrade required:
+  [  729.646]
+  [  729.657] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): Version upgrade from 1.3: rebalance_work
+  [  729.657] Doing compatible version upgrade from 1.3: rebalance_work to 1.6: (unknown version)
+  [  729.657] 
+  [  731.722] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): journal read done, replaying entries 7263
+  [  731.747] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): alloc_read...  done
+  [  731.750] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): stripes_read... done
+  [  731.754] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): snapshots_read... done
+  [  731.759] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): journal_replay... done
+  [  731.786] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_subvols... done
+  [  731.791] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): resume_logged_ops... done
+  [  731.796] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirents...
+  [  731.846] inode 1410398479:4294966699 has wrong backpointer:
+  [  731.846] got       604737456:6483958551636691117
+  [  731.846] should be 23149:8508601757679713244, exiting
+  [  731.867] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): Unable to continue, halting
+  [  731.872] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirent_target(): error fsck_errors_no
+  [  731.877] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirent(): error fsck_errors_not_fixed
+  [  731.883] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_check_dirents(): error fsck_errors_not
+  [  731.888] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_fs_recovery(): error fsck_errors_not_f
+  [  731.893] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_fs_start(): error starting filesys
+ERROR - bcachefs::commands::cmd_mount Fatal error: Invalid argument
+mount: mounting /dev/mapper/bigscreen--vg-tablebase:/dev/nvme1n1p1 on /root failed: Invalid argument
+
+At this point, I am no longer allowed to try fsck, because it thinks the two
+devices have gone into split brain:
+
+  (initramfs) bcachefs fsck /dev/mapper/bigscreen--vg-tablebase:/dev/nvme1n1p1
+  bch2_dev_in_fs() Split brain detected between /dev/nvme1n1p1 and /dev/mapper/bigscreen--vg-tablebase:
+  /dev/mapper/bigscreen--vg-tablebase believes seq of /dev/nvme1n1p1 to be 126, but /dev/nvme1n1p1 has 130
+  Not using /dev/nvme1n1p1
+  bch2_fs_open() bcs_fs_open err opening /dev/mapper/bigscreen--vg-tablebase: insufficient_devices_to_start
+  bch2_dev_in_fs() Split brain detected between /dev/nvme1n1p1 and /dev/mapper/bigscreen--vg-tablebase:
+  /dev/mapper/bigscreen--vg-tablebase believes seq of /dev/nvme1n1p1 to be 126, but /dev/nvme1n1p1 has 130
+  Not using /dev/nvme1n1p1
+  insufficient devices online (0) for replicas entry journal: 1/1 [0]
+  bch2_fs_open() bcs_fs_open err opening /dev/mapper/bigscreen--vg-tablebase: insufficient_devices_to_start
+
+So the entire machine is hosed. (I still have an older copy of the filesystem
+in xfs form on a different partition, so I can boot into that, and I do have
+backups of all the user data, but it is still pretty inconvenient.) Is there
+any cure?
+
+/* Steinar */
+-- 
+Homepage: https://www.sesse.net/
