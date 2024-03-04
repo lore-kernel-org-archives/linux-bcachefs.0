@@ -1,172 +1,176 @@
-Received: from mail-108-mta162.mxroute.com (mail-108-mta162.mxroute.com [136.175.108.162])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7C4CB654
-	for <linux-bcachefs@vger.kernel.org>; Mon,  4 Mar 2024 11:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.162
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D453E462
+	for <linux-bcachefs@vger.kernel.org>; Mon,  4 Mar 2024 13:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709550247; cv=none; b=dUQxFyTIBHW63HAoPMV3yKDkGiEBQDVjfGQUYrsndW4Fh4uFjY0/N4zvKLz7K1gnylkLJo5N3/pIpFIzTV+cs6lh6qKHpwtx9wsuBLiYHi+PjnbGi0RarJw7H5W9D8TxQf3G2062MyK42+1An5p7JkAo+YalJVvD+71bw6Wg3i4=
+	t=1709559893; cv=none; b=IfHQSm6q6Rq/sPJ9wtPLOKVS81P/wQ41/DzAWYmAtNOAWqjJ/v6XdrUNbeW6W4Op8NbHxtRMxml0NrynZudHQbjzSEgN+4rrOe4kp4SkAn+8ngZLRVOoerYNIKmFp5g7vU2v9q4BtNG6ZK6fZo1hIdPl+GFvWskj9/XDNspuwfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709550247; c=relaxed/simple;
-	bh=ABUoXqb4QcK+r5diPiS8LiJQ/RSUu4on3uLn1QJNZcw=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=LAtlwfX836Caj6mGG7j5hT/Hka+6fb2mBJXlAtGdbWDY2SW+ViWeDMDzyU5fbtKhda29lV7mzyV9YRvU4pXfNqFFgk1xtS/ecev3QZ7iItzdxOIGmsMYVN7difowXznZLIXR/Z5v0TbYigHM0ddLJOvmwo+9rxZY7rX/zjhJVWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=WbY6V3Aj; arc=none smtp.client-ip=136.175.108.162
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
+	s=arc-20240116; t=1709559893; c=relaxed/simple;
+	bh=WYatNNPv1dfXR9HApUaPLck/xdTS5uci2N4HpAiipls=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mQYG6cKAisjW3cYzrPsOKdMITM0NUnhcPmRuZw+yd2gVS4SiUiGiJoYwOjs6r+ZI01F06gKSAUqGHau+AcFkxdnaoU2j0hCiLXlMySXZCa1NlmJsh/DlwCIGkyHLkxJ2Z6FIKsz7fQcm2HOTY3yhXV5Eg1rWdtV92r0Ohfz7EEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XZo5KEJq; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="WbY6V3Aj"
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta162.mxroute.com (ZoneMTA) with ESMTPSA id 18e091dda850003bea.004
- for <linux-bcachefs@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Mon, 04 Mar 2024 10:58:55 +0000
-X-Zone-Loop: 3a0759f50025f37a672c356c25d8355e0a93ded91971
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
-	; s=x; h=Content-Transfer-Encoding:Content-Type:Message-ID:References:
-	In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=1UHzGpZdyo1LjOM2X4xUat1TELrdDB5G2pictjBphhE=; b=WbY6V3AjRRB67xfHdY9ToSWf/A
-	iyAsRRXYbHErJ2EpvW0vKvDz7xup68uZuW5A5psDgsDbjWB/LSo0SMhsnChCO7JphKL/advlksyOp
-	j3fCR2AOEiNzzJMN5L5pxB8LPMtGIxU8GM5RjzPz30RBZ0Cmwm5yNRnbYCxv9RHXyUXg7oD8JW7z+
-	1WwjGpN7gFsUZK7Etbiv276r4yPtfw/BqgiLw2DK5XSIou0SFASie8y6zVf2UnG39DvcKw/5vLoBy
-	DukPlxn8VBxeRqPZgDzeAi7aSb8WEyie3ajr2DIZI0gnV+NXH5o7wh+UO7RlIpAvA3+6ErAdHTVV0
-	NGVy0iwg==;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XZo5KEJq"
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42ef8193ae6so73171cf.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 04 Mar 2024 05:44:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709559890; x=1710164690; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=edjrhenNqonpGUDHiZU8SAS1zKy2+Rf2zjdCiAXt36Y=;
+        b=XZo5KEJqgOl2q7HsYLlHM2nMU17F7Vbx3+QeFZjH2QiLrqN6aJwoJFfB8qhYa/pEkS
+         +n0AygkD1SAyEv7pPNOhLmmAD7752pwJLOqTVKa+aJ3jsgQUqhYA0bpeN7WwcGrOyvmE
+         GDLaxgsafVFD1124nh4dfZ93J0ePomRQ6tVdqK4xPvwoN5pojmfwyN8ztrhr0qHoXf1u
+         bxxnFNAjmgRqXQB6QGMjj7LUpqnNgggXS5i9TDKWh/zbY3sV4vujXbRJJ/OFF75HnVhR
+         6jTZ1knUej6dhO5HPhNj1zdl5l964p4Y6hklyrplcXxPLpQU6m0wHXOkIN+CW3mIcSNM
+         OZ7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709559890; x=1710164690;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=edjrhenNqonpGUDHiZU8SAS1zKy2+Rf2zjdCiAXt36Y=;
+        b=BwkQ/uP7EsqYTbvV8aEcA2l1RwtRjNXtkixh6vDXNoU8+0OA68HaK3ikYaJHNqKOiX
+         N8OGwlDjWWEu8P2Jetfsyhq3O30DGO8CM1MRBTwl/uA3EGEZ3KsuSyejan34FSsBlnnb
+         owl6TEkVK/4PfKt0TkiOJbjQBTlsvg/aZ7DkfqSt6eSg2dT1NQp2omtQheGoLMpClLVl
+         8i53IyRrOAOKO9OVPS+2FTz5Wm8j2wp1btoc1Zf/dRcP+kixImlJUlzM56sdq1gYiUnq
+         Ta3rPOBwBZdo6xWgQlH62pk6GZe58u9LQ9bebBB1g9Yb82DBVEQsuVPpJYkx4WlkJK52
+         POQw==
+X-Forwarded-Encrypted: i=1; AJvYcCU3moo1C/8FByB17QgwJfxBhzpp9jZKtx78aPXQXnZFUp/fsZ5IXF9NsaumhaDWblO21sH9KiWGoTD0kMUiaCAxH9zOX6ObCRsnpseteio=
+X-Gm-Message-State: AOJu0YzImgn78VTUytwXOYUTNZhdRZ7pUMMnuMlSiKLwwg1Pw/oQPPXa
+	9goHS1t2ZwboZy+CoVWYnYeSBW9wEvkl7MBq5yGeAD7Z3EadNp/bNXzOhNOA3stovtjNdWyNwzE
+	pCB0GfP30RIkmq0ZNxL8kFq2o5+3HqhWJyD0R
+X-Google-Smtp-Source: AGHT+IERiVdZBoyn/IdfDoiVMAiiLMXBzhpIjtI8VIsf4pFNU+BDe+32SPFMQxPMD/HEiSxXeMpZUlBDxl+M3aCXveo=
+X-Received: by 2002:ac8:1090:0:b0:42e:6de9:cd13 with SMTP id
+ a16-20020ac81090000000b0042e6de9cd13mr507236qtj.3.1709559890450; Mon, 04 Mar
+ 2024 05:44:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Mon, 04 Mar 2024 10:58:53 +0000
-From: l@damenly.org
-To: Li Zetao <lizetao1@huawei.com>
-Cc: kent.overstreet@linux.dev, bfoster@redhat.com,
- linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Fix null-ptr-deref in bch2_fs_alloc()
-In-Reply-To: <f472dffa-d888-1566-e1e2-313f4eb842c2@huawei.com>
-References: <20240304032203.3480001-1-lizetao1@huawei.com>
- <frx6edjh.fsf@damenly.org> <f472dffa-d888-1566-e1e2-313f4eb842c2@huawei.com>
-Message-ID: <c7a48c2f58f409b3446de7655ce59a42@damenly.org>
-X-Sender: l@damenly.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Id: l@damenly.org
+References: <gajhq3iyluwmr44ee2fzacfpgpxmr2jurwqg6aeiab4lfila3p@b3l7bywr3yed>
+ <26085.7607.331602.673876@quad.stoffel.home> <apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
+ <2199336.irdbgypaU6@lichtvoll.de> <CAMT0RQRsdLd9dg5jkpQ+gRTn0XJe=cU5Umsjs2npyvz6pCU61g@mail.gmail.com>
+In-Reply-To: <CAMT0RQRsdLd9dg5jkpQ+gRTn0XJe=cU5Umsjs2npyvz6pCU61g@mail.gmail.com>
+From: Hannu Krosing <hannuk@google.com>
+Date: Mon, 4 Mar 2024 14:44:39 +0100
+Message-ID: <CAMT0RQQp5mdRpgJ9ae=YF1uiSr-xMHe1rAA3OnAVDnqh8Jc0HA@mail.gmail.com>
+Subject: Re: [WIP] bcachefs fs usage update
+To: Martin Steigerwald <martin@lichtvoll.de>
+Cc: John Stoffel <john@stoffel.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-03-04 09:47, Li Zetao wrote:
-> On 2024/3/4 13:12, Su Yue wrote:
->> 
->> On Mon 04 Mar 2024 at 11:22, Li Zetao <lizetao1@huawei.com> wrote:
->> 
->>> There is a null-ptr-deref issue reported by kasan:
->>> 
->>>   KASAN: null-ptr-deref in range   
->>> [0x0000000000000000-0x0000000000000007]
->>>   Call Trace:
->>>     <TASK>
->>>     bch2_fs_alloc+0x1092/0x2170 [bcachefs]
->>>     bch2_fs_open+0x683/0xe10 [bcachefs]
->>>     ...
->>> 
->>> When initializing the name of bch_fs, it needs to dynamically alloc 
->>> memory
->>> to meet the length of the name. However, when name allocation failed, 
->>> it
->>> will cause a null-ptr-deref access exception in subsequent string 
->>> copy.
->>> 
->> bch2_printbuf_make_room() does return -ENOMEM but
->> bch2_prt_printf() doesn't check the return code. And there are too 
->> many
->> callers of bch2_prt_printf() don't check allocation_failure.
-> Indeed, too many callers do not check whether name allocation is 
-> successful, which may cause hidden dangers. Maybe it is neccssary to 
-> use somethings like __GFP_NOFAIL flag here?
+Can we have an option to get the output in JSON format so that it can
+then be processed by whatever is doing the monitoring ?
 
-No need of this as printbuf is not critical for using __GFP_NOFAIL. 
-__GFP_NOFAIL should be used carefully.
-It's just my nags. IOW, a fix as your fix is fine to me unless someone 
-sends 100+ patches to fix places like this.
-
->> 
->>> Fix this issue by checking if name allocation is successful.
->>> 
->>> Fixes: 401ec4db6308 ("bcachefs: Printbuf rework")
->>> Signed-off-by: Li Zetao <lizetao1@huawei.com>
->>> ---
->>>  fs/bcachefs/super.c | 6 +++---
->>>  1 file changed, 3 insertions(+), 3 deletions(-)
->>> 
->>> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
->>> index 6b23e11825e6..24fa41bbe7e3 100644
->>> --- a/fs/bcachefs/super.c
->>> +++ b/fs/bcachefs/super.c
->>> @@ -818,13 +818,13 @@ static struct bch_fs *bch2_fs_alloc(struct 
->>> bch_sb *sb, struct bch_opts opts)
->>>          goto err;
->>> 
->>>      pr_uuid(&name, c->sb.user_uuid.b);
->>> -    strscpy(c->name, name.buf, sizeof(c->name));
->>> -    printbuf_exit(&name);
->>> -
->>>      ret = name.allocation_failure ? -BCH_ERR_ENOMEM_fs_name_alloc  : 
->>> 0;
->>>      if (ret)
->>>          goto err;
->>> 
->> IIRC, krealloc() doesn't free old pointer if new-size allocation 
->> failed.
->> There is no printbuf_exit called in label err then memory leak 
->> happens.
->> 
-> Here krealloc() is a bit complicated:
-> 1.if name allocation failure happens on the first time, the old pointer 
-> will be NULL, which cause a null-ptr-deref issue.
-
-But kfree(NULL) is safe, right?
-
-mm/slub.c:
-/**
-  * kfree - free previously allocated memory
-  * @object: pointer returned by kmalloc() or kmem_cache_alloc()
-  *
-  * If @object is NULL, no operation is performed.
-  */
-void kfree(const void *object)
+Cheers
+Hannu
 
 
--- 
-Su
-> 2.if name allocation failure don't happens on the first time, the old 
-> pointer will be available and need to free.
-> 
-> So the correct modification should be something like this:
->     pr_uuid(&name, c->sb.user_uuid.b);
->     if (unlikely(!name.buf)) {
->         ret = -BCH_ERR_ENOMEM_fs_name_alloc;
->         goto err;
->     }
-> 
->     strscpy(c->name, name.buf, sizeof(c->name));
->     printbuf_exit(&name);
-> 
->     ret = name.allocation_failure ? -BCH_ERR_ENOMEM_fs_name_alloc  : 0;
->     if (ret)
->         goto err;
->> -- Su
->>> 
->>> +    strscpy(c->name, name.buf, sizeof(c->name));
->>> +    printbuf_exit(&name);
->>> +
->>>      /* Compat: */
->>>      if (le16_to_cpu(sb->version) <= 
->>>  bcachefs_metadata_version_inode_v2 &&
->>>          !BCH_SB_JOURNAL_FLUSH_DELAY(sb))
-> 
-> Best regards,
-> --
-> Li Zetao
+On Mon, Mar 4, 2024 at 2:37=E2=80=AFPM Hannu Krosing <hannuk@google.com> wr=
+ote:
+>
+> Can we have an option to get the output in JSON format so that it can the=
+n be processed by whatever is doing the monitoring ?
+>
+> Cheers
+> Hannu
+>
+> On Mon, Mar 4, 2024 at 9:22=E2=80=AFAM Martin Steigerwald <martin@lichtvo=
+ll.de> wrote:
+>>
+>> Kent Overstreet - 04.03.24, 02:08:44 CET:
+>> > > This is not the same level of detail needed by a filesystem develope=
+r,
+>> > > and I _never_ said it was.  I'm looking for the inforation
+>> > > needed/wanted by a SysAdmin when an end user comes whining about
+>> > > needing more space.  And then being able to examine the system
+>> > > holistically to give them an answer.  Which usually means "delete
+>> > > something!"  *grin*
+>> >
+>> > 'bcachefs fs usage' needs to show _all_ disk accounting information
+>> > bcachefs has, because we need there to be one single tool that shows a=
+ll
+>> > the information we have - that's this tool.
+>> >
+>> > If we're collecting information, it needs to be available.
+>> >
+>> > There will no doubt be switches and options for providing reduced form=
+s,
+>> > but for now I'm mainly concerned with making sure all the information
+>> > that we have is there in a reasonably understandable way.
+>>
+>> From a sysadmin view I totally get what John is writing.
+>>
+>> I know "btrfs filesystem usage" also shows a lot of information, but sti=
+ll
+>> with some learning it is quite understandable. At least I can explain it
+>> nicely enough in one of my Linux Performance Analysis & Tuning courses.
+>>
+>> Commands like "lspci" do not show all the information by default. You ne=
+ed
+>> to add "-v" even several times to show it all.
+>>
+>> So I am with you that it is good to have a tool that shows *all* the
+>> information. I am just not so sure whether showing *all* the information
+>> by default is wise.
+>>
+>> No one was asking for the lowest common denominator. But there is a
+>> balance between information that is useful in daily usage of BCacheFS an=
+d
+>> information that is more aimed at debugging purposes and filesystem
+>> developers. That "df -hT" is not really enough to understand what is goi=
+ng
+>> on in a filesystem like BCacheFS and BTRFS is clear.
+>>
+>> So what I'd argue for is a middle ground by default and adding more with
+>> "-v" or "--detail" or an option like that. In the end if I consider who
+>> will be wanting to use the information, my bet would be it would be over
+>> 95% sysadmins and Linux users at home. It would be less, I bet way less
+>> than 5% Linux filesystem developers. And that's generous. So "what targe=
+t
+>> audience are you aiming at?" is an important question as well.
+>>
+>> What also improves the utility of the displayed information is explainin=
+g
+>> it. In a man page preferably.
+>>
+>> If there then is also a way to retrieve the information as JSON for
+>> something like that=E2=80=A6 it makes monitoring the usage state by 3rd =
+party
+>> tools easier.
+>>
+>> Another approach would be something like "free -m" versus "cat /proc/
+>> meminfo" and "cat /proc/vmstat". I.e. provide all the details via SysFS
+>> and a part of it by "bcachefs filesystem usage".
+>>
+>> You indeed asked for feedback about "bcachefs fs usage". So there you ha=
+ve
+>> it. As usual do with it what you want. You can even outright dismiss it
+>> without even considering it. But then I wonder why you asked for feedbac=
+k
+>> to begin with. See, John just did what you asked for: John gave feedback=
+.
+>>
+>> I planned to go into detail of your example output and tell you what I
+>> think about each part of what you propose and ask questions for deeper
+>> understanding. If you are open to at least consider the feedback, only
+>> consider, of course you can still decline everything and all of it after
+>> consideration, then I'd be willing to spend the time to do it.
+>>
+>> Best,
+>> --
+>> Martin
+>>
+>>
+>>
