@@ -1,141 +1,142 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCAA208DD;
-	Mon,  4 Mar 2024 09:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18CF1B819;
+	Mon,  4 Mar 2024 09:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543908; cv=none; b=SGojyaKqdevy62oxRU3fg38t5em66kwuxG4FZnEBZNmfPULkY49S5nd3XUEMzndEEAIVTb6vweuX6ll+lcnTbqCg5k/0tKdcxGga2ZEbXnzHSh7h5lp51S0CxJMrcijAumH21oGmOc278T+JIzgpjKZ873eJHCLkUeFdY67qspE=
+	t=1709545675; cv=none; b=IVLrt/F8f2Y3BFoyQ/s18pRkVoo9J6kuKRTtwIHQwKLntYjq1YELVoewfv+1g7vD4Lq9/P9cDRQ0/fiBFEXNbvFrdrPx8avXx2EVDloKAiZP58w9IKGwE6bn5qZjdpIuvurR9nUBsEca98592mdhGu1Peo/Sdjcj8gf1ycXs+6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543908; c=relaxed/simple;
-	bh=iIcoVUjRlYsRf3EzWL9aMWy1LM1drhYauQiWNrhqycA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kODaLlN4Xz3DsbxvvepjOuh05ouLRUSN5X+cN2Cjwc49i6wiURi8Jw6OmI6OfoeGfi2DPAj1dnVIKy6H6OK3WVuEpP2YKQ3HGti5PXvfcjTtOupM7wb3bspyTLn8ey+i1cRy3bPB9AqfNiC24cBPoXZdNU3ZEbHZhuJjyMBKZIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SkRP4VuM; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SkRP4VuM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DF05C433F1;
-	Mon,  4 Mar 2024 09:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709543907;
-	bh=iIcoVUjRlYsRf3EzWL9aMWy1LM1drhYauQiWNrhqycA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SkRP4VuMgOJdbbQLJ4Y3sr1szCP+jS3LWglocdiHm1gTFqV7xNwdB9jdD24EQvm/c
-	 URBAHeOH7mwVEBK2ocYhfQl/9jljaPhXcWg7UuzBIx1tB/KncI0LolAWKvX6M7bsWP
-	 cH7nLWnrZPjsPPN/xveDb403ry0gMx1E7QvVM1OpCRNNXPZ1McHcfsJqlZR4CTMTXL
-	 tqPVvQWBg1dQ5ZisZj9qYitHEf5AP7Q3H4ZXzppqgsaVgEyWPjqtGI3dfmdamiqanv
-	 zVkwvHMVGVO6QIvjxG69oPDBnNOyQCVhxqb1zRxWSjFooyCQVfaGqxDj4NZBv3OX9J
-	 WMP2e7TQAwmww==
-Date: Mon, 4 Mar 2024 10:18:22 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Miklos Szeredi <mszeredi@redhat.com>, David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH] statx: stx_vol
-Message-ID: <20240304-konfus-neugierig-5c7c9d5a8ad6@brauner>
-References: <20240302220203.623614-1-kent.overstreet@linux.dev>
+	s=arc-20240116; t=1709545675; c=relaxed/simple;
+	bh=1+BaANjFRse1vGdsqvAOD3WKOHIrG01YneoKjzaNY78=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=moT5Y0gGnVglyuKYh6XFL/yayil42EjrcwD2vzqUmWFRmVjEbByjXXnr6cwZTQRuRuX/lITGkVLDy7zn/vy00B2G+LOY5Hi05GZg4TvF6YoeJGOzkBe2pCKi+Gk8PIZblGpu9PTRYmAq5pt+ko27uFiHHUaaXP/H4IxnFfBI4H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TpDMY0VBxz1h1HM;
+	Mon,  4 Mar 2024 17:45:29 +0800 (CST)
+Received: from kwepemd100008.china.huawei.com (unknown [7.221.188.193])
+	by mail.maildlp.com (Postfix) with ESMTPS id 369B01A016C;
+	Mon,  4 Mar 2024 17:47:48 +0800 (CST)
+Received: from kwepemd500012.china.huawei.com (7.221.188.25) by
+ kwepemd100008.china.huawei.com (7.221.188.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 4 Mar 2024 17:47:47 +0800
+Received: from [10.67.111.176] (10.67.111.176) by
+ kwepemd500012.china.huawei.com (7.221.188.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 4 Mar 2024 17:47:47 +0800
+Message-ID: <f472dffa-d888-1566-e1e2-313f4eb842c2@huawei.com>
+Date: Mon, 4 Mar 2024 17:47:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240302220203.623614-1-kent.overstreet@linux.dev>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH] bcachefs: Fix null-ptr-deref in bch2_fs_alloc()
+Content-Language: en-US
+To: Su Yue <l@damenly.org>
+CC: <kent.overstreet@linux.dev>, <bfoster@redhat.com>,
+	<linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240304032203.3480001-1-lizetao1@huawei.com>
+ <frx6edjh.fsf@damenly.org>
+From: Li Zetao <lizetao1@huawei.com>
+In-Reply-To: <frx6edjh.fsf@damenly.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggpeml500009.china.huawei.com (7.185.36.209) To
+ kwepemd500012.china.huawei.com (7.221.188.25)
 
-On Sat, Mar 02, 2024 at 05:02:03PM -0500, Kent Overstreet wrote:
-> Add a new statx field for (sub)volume identifiers.
+
+
+On 2024/3/4 13:12, Su Yue wrote:
 > 
-> This includes bcachefs support; we'll definitely want btrfs support as
-> well.
+> On Mon 04 Mar 2024 at 11:22, Li Zetao <lizetao1@huawei.com> wrote:
 > 
-> Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: Miklos Szeredi <mszeredi@redhat.com>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: David Howells <dhowells@redhat.com>
-> ---
-
-As I've said many times before I'm supportive of this and would pick up
-a patch like this. There's definitely a lot of userspace that would make
-use of this that I'm aware of. If the btrfs people could provide an Ack
-on this to express their support here that would be great.
-
-And it would be lovely if we could expand the commit message a bit and
-do some renaming/bikeshedding. Imho, STATX_SUBVOLUME_ID is great and
-then stx_subvolume_id or stx_subvol_id. And then subvolume_id or
-subvol_id for the field in struct kstat.
-
->  fs/bcachefs/fs.c          | 3 +++
->  fs/stat.c                 | 1 +
->  include/linux/stat.h      | 1 +
->  include/uapi/linux/stat.h | 4 +++-
->  4 files changed, 8 insertions(+), 1 deletion(-)
+>> There is a null-ptr-deref issue reported by kasan:
+>>
+>>   KASAN: null-ptr-deref in range   
+>> [0x0000000000000000-0x0000000000000007]
+>>   Call Trace:
+>>     <TASK>
+>>     bch2_fs_alloc+0x1092/0x2170 [bcachefs]
+>>     bch2_fs_open+0x683/0xe10 [bcachefs]
+>>     ...
+>>
+>> When initializing the name of bch_fs, it needs to dynamically alloc 
+>> memory
+>> to meet the length of the name. However, when name allocation failed, it
+>> will cause a null-ptr-deref access exception in subsequent string copy.
+>>
+> bch2_printbuf_make_room() does return -ENOMEM but
+> bch2_prt_printf() doesn't check the return code. And there are too many
+> callers of bch2_prt_printf() don't check allocation_failure.
+Indeed, too many callers do not check whether name allocation is 
+successful, which may cause hidden dangers. Maybe it is neccssary to use 
+somethings like __GFP_NOFAIL flag here?
 > 
-> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> index 3f073845bbd7..d82f7f3f0670 100644
-> --- a/fs/bcachefs/fs.c
-> +++ b/fs/bcachefs/fs.c
-> @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
->  	stat->blksize	= block_bytes(c);
->  	stat->blocks	= inode->v.i_blocks;
->  
-> +	stat->vol	= inode->ei_subvol;
-> +	stat->result_mask |= STATX_VOL;
-> +
->  	if (request_mask & STATX_BTIME) {
->  		stat->result_mask |= STATX_BTIME;
->  		stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 77cdc69eb422..80d5f7502d99 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
->  	tmp.stx_mnt_id = stat->mnt_id;
->  	tmp.stx_dio_mem_align = stat->dio_mem_align;
->  	tmp.stx_dio_offset_align = stat->dio_offset_align;
-> +	tmp.stx_vol = stat->vol;
->  
->  	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
->  }
-> diff --git a/include/linux/stat.h b/include/linux/stat.h
-> index 52150570d37a..9dc1b493ef1f 100644
-> --- a/include/linux/stat.h
-> +++ b/include/linux/stat.h
-> @@ -53,6 +53,7 @@ struct kstat {
->  	u32		dio_mem_align;
->  	u32		dio_offset_align;
->  	u64		change_cookie;
-> +	u64		vol;
->  };
->  
->  /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
-> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> index 2f2ee82d5517..ae090d67946d 100644
-> --- a/include/uapi/linux/stat.h
-> +++ b/include/uapi/linux/stat.h
-> @@ -126,8 +126,9 @@ struct statx {
->  	__u64	stx_mnt_id;
->  	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
->  	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
-> +	__u64	stx_vol;	/* Subvolume identifier */
->  	/* 0xa0 */
-> -	__u64	__spare3[12];	/* Spare space for future expansion */
-> +	__u64	__spare3[11];	/* Spare space for future expansion */
->  	/* 0x100 */
->  };
->  
-> @@ -155,6 +156,7 @@ struct statx {
->  #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
->  #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
->  #define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
-> +#define STATX_VOL		0x00008000U	/* Want/got stx_vol */
->  
->  #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
->  
+>> Fix this issue by checking if name allocation is successful.
+>>
+>> Fixes: 401ec4db6308 ("bcachefs: Printbuf rework")
+>> Signed-off-by: Li Zetao <lizetao1@huawei.com>
+>> ---
+>>  fs/bcachefs/super.c | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+>> index 6b23e11825e6..24fa41bbe7e3 100644
+>> --- a/fs/bcachefs/super.c
+>> +++ b/fs/bcachefs/super.c
+>> @@ -818,13 +818,13 @@ static struct bch_fs *bch2_fs_alloc(struct 
+>> bch_sb *sb, struct bch_opts opts)
+>>          goto err;
+>>
+>>      pr_uuid(&name, c->sb.user_uuid.b);
+>> -    strscpy(c->name, name.buf, sizeof(c->name));
+>> -    printbuf_exit(&name);
+>> -
+>>      ret = name.allocation_failure ? -BCH_ERR_ENOMEM_fs_name_alloc  : 0;
+>>      if (ret)
+>>          goto err;
+>>
+> IIRC, krealloc() doesn't free old pointer if new-size allocation failed.
+> There is no printbuf_exit called in label err then memory leak happens.
+> 
+Here krealloc() is a bit complicated:
+1.if name allocation failure happens on the first time, the old pointer 
+will be NULL, which cause a null-ptr-deref issue.
+2.if name allocation failure don't happens on the first time, the old 
+pointer will be available and need to free.
+
+So the correct modification should be something like this:
+     pr_uuid(&name, c->sb.user_uuid.b);
+     if (unlikely(!name.buf)) {
+         ret = -BCH_ERR_ENOMEM_fs_name_alloc;
+         goto err;
+     }
+
+     strscpy(c->name, name.buf, sizeof(c->name));
+     printbuf_exit(&name);
+
+     ret = name.allocation_failure ? -BCH_ERR_ENOMEM_fs_name_alloc  : 0;
+     if (ret)
+         goto err;
 > -- 
-> 2.43.0
-> 
+> Su
+>>
+>> +    strscpy(c->name, name.buf, sizeof(c->name));
+>> +    printbuf_exit(&name);
+>> +
+>>      /* Compat: */
+>>      if (le16_to_cpu(sb->version) <= 
+>>  bcachefs_metadata_version_inode_v2 &&
+>>          !BCH_SB_JOURNAL_FLUSH_DELAY(sb))
+
+Best regards,
+--
+Li Zetao
