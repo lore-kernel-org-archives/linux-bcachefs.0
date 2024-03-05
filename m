@@ -1,186 +1,161 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39845C83
-	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Mar 2024 00:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+Received: from server.roznica.com.ua (server.roznica.com.ua [80.90.224.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5D458222
+	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Mar 2024 12:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.90.224.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709599773; cv=none; b=sHWLm9dA9qAik0/EoWhD9Yhs5AoEg4cCJ2H08h134poAoKOcGZrMNMJupr8hDiPv/F4O7cE3EK+gs9+RT/mShMZZQB2TjjJNLnBveU5N5nCDAFzMBqZjuvvCXYIWGw3jfT2mq2OxGlhBlNdxzd6/8WoYiXkl2MQxMe+98WEcEMw=
+	t=1709642617; cv=none; b=YTKpUqwMf0HLA4bVJkULBiaKc73E/J3hPRY6MjDF8sCJ9zIBX9TRKMvNydPHswb8wmDSCt/Rab6+wkgK9Wj2hApt9u0OBIQ/iyK/GRrIpoB3xUmeMKZOEIHqndnfJRsFL47cUCoBqOEqGHWlv1pji1CWMVnnHOW1wWSjizO15qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709599773; c=relaxed/simple;
-	bh=yDKlLOOAx6BSlxy3qKeVFSv5O+VniTuWGGQ6sRcsXn8=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WSD6VHQuBQAza3KdTs0QJPlOgVierY7QIOFllrci11vljW+A4SgK3FQP0bCKhFNhOKEwfTrUZBL4Y1OH68PDRxLAqNnN4Hxas7gnAUMmZVjG5j+RONkP/CiWylnfe+yx7MHpxWzxFTmnqCKeUad5z9kP944tWR+z0ofMWKefAUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RP6Miz8I; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7jtEuzYw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RP6Miz8I; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7jtEuzYw; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RP6Miz8I";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7jtEuzYw";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RP6Miz8I";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7jtEuzYw"
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B27D35C730
-	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Mar 2024 00:49:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709599769; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PNtUw/aR8lIs6S5tAhOsrDz5D4n/FsWf0cxGM1V3iFA=;
-	b=RP6Miz8I+xeoHYFDAQxemHyPRTBLfpw3MOmSOlnOiWPVfsSSHNbih1KchjHaEh46ceOqtO
-	4axIMgmZ55lz1R1P9zARlJl2S48ppkQd5065D5OmJFd7Ze1n6Y9ioAKtWYnBpaK+01HCQ9
-	GTKTLqlsc/idmXrZ4twlxR+9TNSrQxU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709599769;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PNtUw/aR8lIs6S5tAhOsrDz5D4n/FsWf0cxGM1V3iFA=;
-	b=7jtEuzYwqfWgmFseK5RblSEJEtIPlOuy7q5X1LhLcZDpW1KktTnxYeSyitrNsMiHrA3VNL
-	WUBw9veS7iWMPfBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709599769; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PNtUw/aR8lIs6S5tAhOsrDz5D4n/FsWf0cxGM1V3iFA=;
-	b=RP6Miz8I+xeoHYFDAQxemHyPRTBLfpw3MOmSOlnOiWPVfsSSHNbih1KchjHaEh46ceOqtO
-	4axIMgmZ55lz1R1P9zARlJl2S48ppkQd5065D5OmJFd7Ze1n6Y9ioAKtWYnBpaK+01HCQ9
-	GTKTLqlsc/idmXrZ4twlxR+9TNSrQxU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709599769;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PNtUw/aR8lIs6S5tAhOsrDz5D4n/FsWf0cxGM1V3iFA=;
-	b=7jtEuzYwqfWgmFseK5RblSEJEtIPlOuy7q5X1LhLcZDpW1KktTnxYeSyitrNsMiHrA3VNL
-	WUBw9veS7iWMPfBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B883613419
-	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Mar 2024 00:49:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 3MUHGhhs5mU/dAAAn2gu4w
-	(envelope-from <ddiss@suse.de>)
-	for <linux-bcachefs@vger.kernel.org>; Tue, 05 Mar 2024 00:49:28 +0000
-Date: Tue, 5 Mar 2024 11:49:09 +1100
-From: David Disseldorp <ddiss@suse.de>
+	s=arc-20240116; t=1709642617; c=relaxed/simple;
+	bh=eNue71nLbQfoKkzfIR1dOjAmjY2BLRTFl0E+CYDYE3g=;
+	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=MI5wRaUAWuAzWpP969tu6iXux2lQQ4Pacfe4r3w7JKsC6yECWuVNdBQ41neR+bQ1TyGWnekgh6BZ6e3Scy6RRKTdyvE6InSq4kskKU3fXEDtx0s0O4qFmqCsl7u2SjSmXD/0141kJMaUxciDzOFCkv/UnGoGTuwVRPsC8OgKPQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roznica.com.ua; spf=pass smtp.mailfrom=roznica.com.ua; arc=none smtp.client-ip=80.90.224.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roznica.com.ua
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=roznica.com.ua
+Received: from work.roznica.com.ua (188-115-141-236.broadband.tenet.odessa.ua [188.115.141.236])
+	by server.roznica.com.ua (Postfix) with ESMTP id B2049986FDE
+	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Mar 2024 14:33:33 +0200 (EET)
+Subject: Re: [WIP] bcachefs fs usage update
 To: linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] make-release-tarball.sh: run cargo audit
-Message-ID: <20240305114909.537c6080@echidna>
-In-Reply-To: <20240130070356.8174-1-ddiss@suse.de>
-References: <20240130070356.8174-1-ddiss@suse.de>
+References: <gajhq3iyluwmr44ee2fzacfpgpxmr2jurwqg6aeiab4lfila3p@b3l7bywr3yed>
+From: Michael <mclaud@roznica.com.ua>
+Message-ID: <d243882b-7bdd-e743-85ab-00b104befb3f@roznica.com.ua>
+Date: Tue, 5 Mar 2024 14:33:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=RP6Miz8I;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=7jtEuzYw
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-bcachefs@vger.kernel.org];
-	 TO_DN_NONE(0.00)[];
-	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.20)[89.13%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: B27D35C730
-X-Spam-Level: 
-X-Spam-Score: -2.51
-X-Spam-Flag: NO
+In-Reply-To: <gajhq3iyluwmr44ee2fzacfpgpxmr2jurwqg6aeiab4lfila3p@b3l7bywr3yed>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-Any feedback on this change?
+On 2024-03-02 04:14, Kent Overstreet wrote:
+> I'm currently updating the 'bcachefs fs usage' command for the disk
+> accounting rewrite, and looking for suggestions on any improements we
+> could make - ways to present the output that would be clearer and more
+> useful, possibly ideas on on new things to count...
+> 
+> I think a shorter form of the per-device section is in order, a table
+> with data type on the x axis and the device on the y axis; we also want
+> percentages.
+> 
+> The big thing I'm trying to figure out is how to present the snapshots
+> counters in a useful way.
+> 
+> Snapshot IDs form trees, where subvolumes correspond to leaf nodes in
+> snapshot trees and interior nodes represent data shared between multiple
+> subvolumes.
+> 
+> That means it's straightforward to print how much data each subvolumme
+> is using directly - look up the subvolume for a given snapshot ID, look
+> up the filesystem path of that subvolume - but I haven't come up with a
+> good way of presenting how data is shared; these trees can be
+> arbitrarily large.
+> 
+> Thoughts?
+> 
 
-Thanks, David
+Short/long form human readable and something similar to json
+Short form Size, Used, Free
 
-On Tue, 30 Jan 2024 18:03:56 +1100, David Disseldorp wrote:
+> Filesystem: 77d3a40d-58b6-46c9-a4d2-e59c8681e152
+> Size:                       11.0 GiB
+> Used:                       4.96 GiB
+> Online reserved:                 0 B
+> Inodes:                            4
+> 
+> Persistent reservations:
+> 2x                          5.00 MiB
+> 
 
-> cargo audit can be used to check bcachefs dependencies for
-> vulnerabilities published in the advisory database at
-> https://github.com/RustSec/advisory-db.git
->=20
-> Given the significant size of dependency sources (currently ~292M),
-> manual audit is mostly unviable, so rely on this for now.
->=20
-> Audit failure will halt tarball generation with e.g. v1.4.1:
->     Fetching advisory database from `https://github.com/RustSec/advisory-=
-db.git`
->       Loaded 595 security advisories (from /home/david/.cargo/advisory-db)
->     Updating crates.io index
->     Scanning rust-src/Cargo.lock for vulnerabilities (98 crate dependenci=
-es)
-> Crate:     shlex
-> Version:   1.2.0
-> Title:     Multiple issues involving quote API
-> Date:      2024-01-21
-> ID:        RUSTSEC-2024-0006
-> URL:       https://rustsec.org/advisories/RUSTSEC-2024-0006
-> Solution:  Upgrade to >=3D1.3.0
-> Dependency tree:
-> shlex 1.2.0
-> =E2=94=94=E2=94=80=E2=94=80 bindgen 0.64.0
->     =E2=94=94=E2=94=80=E2=94=80 bch_bindgen 0.1.0
->         =E2=94=94=E2=94=80=E2=94=80 bcachefs-rust 0.3.1
->=20
-> Crate:     atty
-> Version:   0.2.14
-> Warning:   unsound
-> Title:     Potential unaligned read
-> Date:      2021-07-04
-> ID:        RUSTSEC-2021-0145
-> URL:       https://rustsec.org/advisories/RUSTSEC-2021-0145
-> Dependency tree:
-> atty 0.2.14
-> =E2=94=94=E2=94=80=E2=94=80 bcachefs-rust 0.3.1
->=20
-> error: 1 vulnerability found!
-> warning: 1 allowed warning found
->=20
-> Signed-off-by: David Disseldorp <ddiss@suse.de>
-> ---
->  make-release-tarball.sh | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/make-release-tarball.sh b/make-release-tarball.sh
-> index c468da7..51875b0 100755
-> --- a/make-release-tarball.sh
-> +++ b/make-release-tarball.sh
-> @@ -7,6 +7,8 @@ version=3D$1
->  git checkout v$version
->  git clean -xfd
-> =20
-> +cargo audit
-> +
->  cargo license > COPYING.rust-dependencies
-> =20
->  git ls-files|
+Option for show layout, warning if layout not optimal
+
+> Data type       Required/total  Durability    Devices
+> btree:          1/2             2             [vdb vdc]           14.0 MiB
+> btree:          1/2             2             [vdb vdd]           17.8 MiB
+> btree:          1/2             2             [vdc vdd]           14.3 MiB
+> user:           1/2             2             [vdb vdc]           1.64 GiB
+> user:           1/2             2             [vdb vdd]           1.63 GiB
+> user:           1/2             2             [vdc vdd]           1.64 GiB
+> 
+
+Option for detailed
+
+> Compression:      compressed    uncompressed     average extent size
+> lz4                 4.63 GiB        6.57 GiB                 112 KiB
+> incompressible       328 MiB         328 MiB                 113 Ki >
+
+> Snapshots:
+> 4294967295          4.91 GiB
+Per snapshot/subvol all/mask info like Total, Exclusive, Short layout 
+(replicas-size, EC-size)
+> 
+> Btrees:
+> extents             12.0 MiB
+> inodes               256 KiB
+> dirents              256 KiB
+> alloc               10.8 MiB
+> subvolumes           256 KiB
+> snapshots            256 KiB
+> lru                  256 KiB
+> freespace            256 KiB
+> need_discard         256 KiB
+> backpointers        20.5 MiB
+> bucket_gens          256 KiB
+> snapshot_trees       256 KiB
+> logged_ops           256 KiB
+> accounting           256 KiB
+> 
+May be device label or device name from /dev/mapper/... Not dm-0, dm-1, etc
+> (no label) (device 0):           vdb              rw
+>                                  data         buckets    fragmented
+>    free:                     2.27 GiB           18627
+>    sb:                       3.00 MiB              25       124 KiB
+>    journal:                  32.0 MiB             256
+>    btree:                    15.9 MiB             127
+>    user:                     1.64 GiB           13733      41.1 MiB
+>    cached:                        0 B               0
+>    parity:                        0 B               0
+>    stripe:                        0 B               0
+>    need_gc_gens:                  0 B               0
+>    need_discard:                  0 B               0
+>    capacity:                 4.00 GiB           32768
+> 
+> (no label) (device 1):           vdc              rw
+>                                  data         buckets    fragmented
+>    free:                     2.28 GiB           18652
+>    sb:                       3.00 MiB              25       124 KiB
+>    journal:                  32.0 MiB             256
+>    btree:                    14.1 MiB             113
+>    user:                     1.64 GiB           13722      38.5 MiB
+>    cached:                        0 B               0
+>    parity:                        0 B               0
+>    stripe:                        0 B               0
+>    need_gc_gens:                  0 B               0
+>    need_discard:                  0 B               0
+>    capacity:                 4.00 GiB           32768
+> 
+> (no label) (device 2):           vdd              rw
+>                                  data         buckets    fragmented
+>    free:                     2.28 GiB           18640
+>    sb:                       3.00 MiB              25       124 KiB
+>    journal:                  32.0 MiB             256
+>    btree:                    16.0 MiB             128
+>    user:                     1.64 GiB           13719      38.6 MiB
+>    cached:                        0 B               0
+>    parity:                        0 B               0
+>    stripe:                        0 B               0
+>    need_gc_gens:                  0 B               0
+>    need_discard:                  0 B               0
+>    capacity:                 4.00 GiB           32768
+> 
+
+And option for full info ))
+
+-- 
+Michael
