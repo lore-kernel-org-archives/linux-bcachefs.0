@@ -1,130 +1,186 @@
-Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9913D76;
-	Tue,  5 Mar 2024 00:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39845C83
+	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Mar 2024 00:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709596847; cv=none; b=D6/626FxKUpLEGxM1vP4aOn5fEJX4WbD+b2+blWDzQHbVutsW+kZK2F+o9bSRje19RnitAceaEbm46T3w0KRNcpjp1PluNsIJp5NJ5/LbdXjT99YU3NtpSqMG3pF5gljyBfLKNBs+CLEcqwi5dS5ZTpiefy5ICaV8+qqYCPsiiU=
+	t=1709599773; cv=none; b=sHWLm9dA9qAik0/EoWhD9Yhs5AoEg4cCJ2H08h134poAoKOcGZrMNMJupr8hDiPv/F4O7cE3EK+gs9+RT/mShMZZQB2TjjJNLnBveU5N5nCDAFzMBqZjuvvCXYIWGw3jfT2mq2OxGlhBlNdxzd6/8WoYiXkl2MQxMe+98WEcEMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709596847; c=relaxed/simple;
-	bh=6/a9wDUr/QyQhXmw269lOeSTRqoP345aUD2SKTmwk6Y=;
-	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
-	 In-Reply-To:References; b=PbsdtK1KR9Ed+If0zLSyS4C3jBGW6gqUPV+mt+LQ4UD/F5qO5OLAbYCs6ZMQnI2ejDaCEr+XjHjGfmmBAdT04uHE7VicCqXwNofe2kkObI6U2iNa3QEdSrQNZItP4fNFzMsXAYpR5/AVvp3lF6xrX8XJISaASr7lDGkj53w2BuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; arc=none smtp.client-ip=172.104.24.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
-Received: from quad.stoffel.org (097-095-183-072.res.spectrum.com [97.95.183.72])
+	s=arc-20240116; t=1709599773; c=relaxed/simple;
+	bh=yDKlLOOAx6BSlxy3qKeVFSv5O+VniTuWGGQ6sRcsXn8=;
+	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WSD6VHQuBQAza3KdTs0QJPlOgVierY7QIOFllrci11vljW+A4SgK3FQP0bCKhFNhOKEwfTrUZBL4Y1OH68PDRxLAqNnN4Hxas7gnAUMmZVjG5j+RONkP/CiWylnfe+yx7MHpxWzxFTmnqCKeUad5z9kP944tWR+z0ofMWKefAUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RP6Miz8I; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7jtEuzYw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RP6Miz8I; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7jtEuzYw; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RP6Miz8I";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7jtEuzYw";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RP6Miz8I";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7jtEuzYw"
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.stoffel.org (Postfix) with ESMTPSA id 4D60E1E727;
-	Mon,  4 Mar 2024 19:00:38 -0500 (EST)
-Received: by quad.stoffel.org (Postfix, from userid 1000)
-	id 1FF6CA0265; Mon,  4 Mar 2024 19:00:37 -0500 (EST)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B27D35C730
+	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Mar 2024 00:49:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709599769; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PNtUw/aR8lIs6S5tAhOsrDz5D4n/FsWf0cxGM1V3iFA=;
+	b=RP6Miz8I+xeoHYFDAQxemHyPRTBLfpw3MOmSOlnOiWPVfsSSHNbih1KchjHaEh46ceOqtO
+	4axIMgmZ55lz1R1P9zARlJl2S48ppkQd5065D5OmJFd7Ze1n6Y9ioAKtWYnBpaK+01HCQ9
+	GTKTLqlsc/idmXrZ4twlxR+9TNSrQxU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709599769;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PNtUw/aR8lIs6S5tAhOsrDz5D4n/FsWf0cxGM1V3iFA=;
+	b=7jtEuzYwqfWgmFseK5RblSEJEtIPlOuy7q5X1LhLcZDpW1KktTnxYeSyitrNsMiHrA3VNL
+	WUBw9veS7iWMPfBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709599769; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PNtUw/aR8lIs6S5tAhOsrDz5D4n/FsWf0cxGM1V3iFA=;
+	b=RP6Miz8I+xeoHYFDAQxemHyPRTBLfpw3MOmSOlnOiWPVfsSSHNbih1KchjHaEh46ceOqtO
+	4axIMgmZ55lz1R1P9zARlJl2S48ppkQd5065D5OmJFd7Ze1n6Y9ioAKtWYnBpaK+01HCQ9
+	GTKTLqlsc/idmXrZ4twlxR+9TNSrQxU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709599769;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PNtUw/aR8lIs6S5tAhOsrDz5D4n/FsWf0cxGM1V3iFA=;
+	b=7jtEuzYwqfWgmFseK5RblSEJEtIPlOuy7q5X1LhLcZDpW1KktTnxYeSyitrNsMiHrA3VNL
+	WUBw9veS7iWMPfBA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B883613419
+	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Mar 2024 00:49:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 3MUHGhhs5mU/dAAAn2gu4w
+	(envelope-from <ddiss@suse.de>)
+	for <linux-bcachefs@vger.kernel.org>; Tue, 05 Mar 2024 00:49:28 +0000
+Date: Tue, 5 Mar 2024 11:49:09 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] make-release-tarball.sh: run cargo audit
+Message-ID: <20240305114909.537c6080@echidna>
+In-Reply-To: <20240130070356.8174-1-ddiss@suse.de>
+References: <20240130070356.8174-1-ddiss@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <26086.24741.103765.962843@quad.stoffel.home>
-Date: Mon, 4 Mar 2024 19:00:37 -0500
-From: "John Stoffel" <john@stoffel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: John Stoffel <john@stoffel.org>,
-    linux-bcachefs@vger.kernel.org,
-    linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP] bcachefs fs usage update
-In-Reply-To: <apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
-References: <gajhq3iyluwmr44ee2fzacfpgpxmr2jurwqg6aeiab4lfila3p@b3l7bywr3yed>
-	<26084.50716.415474.905903@quad.stoffel.home>
-	<tis2cx7vpb2qyywdwq6a74o2ryjmnn7skhsrcarix7v4sz7vad@7sf7bh2unloo>
-	<26085.7607.331602.673876@quad.stoffel.home>
-	<apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
-X-Mailer: VM 8.2.0b under 28.2 (x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=RP6Miz8I;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=7jtEuzYw
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-bcachefs@vger.kernel.org];
+	 TO_DN_NONE(0.00)[];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.20)[89.13%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: B27D35C730
+X-Spam-Level: 
+X-Spam-Score: -2.51
+X-Spam-Flag: NO
 
->>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+Any feedback on this change?
 
-> On Sun, Mar 03, 2024 at 08:02:47PM -0500, John Stoffel wrote:
->> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
->> 
->> > On Sun, Mar 03, 2024 at 01:49:00PM -0500, John Stoffel wrote:
->> >> Again, how does this help the end user?  What can they do to even
->> >> change these values?  They're great for debugging and info on the
->> >> filesystem, but for an end user that's just so much garbage and don't
->> >> tell you what you need to know.
->> 
->> > This is a recurring theme for you; information that you don't
->> > understand, you think we can just delete... while you also say that you
->> > haven't even gotten off your ass and played around with it.
->> 
->> Fair complaint.  But I'm also coming at this NOT from a filesystem
->> developer point of view, but from the Sysadmin view, which is
->> different.  
->> 
->> > So: these tools aren't for the lazy, I'm not a believer in the Gnome
->> > 3 philosophy of "get rid of anything that's not for the lowest
->> > common denominator".
->> 
->> Ok, I can see that, but I never was arguing for simple info, I was
->> also arguing for parseable information dumps, for futher tooling.  I'm
->> happy to write my own tools to parse this output if need be to give
->> _me_ what I find useful.  
->> 
->> But you edlided that part of my comments.  Fine.  
->> 
->> > Rather - these tools will be used by people interested in learning more
->> > about what their computers are doing under the hood, and they will
->> > definitely be used when there's something to debug; I am a big believer
->> > in tools that educate the user about how the system works, and tools
->> > that make debugging easier.
->> 
->> > 'df -h' already exists if that's the level of detail you want :)
->> 
->> Sure, but when it comes to bcachefs, and sub-volumes (I'm following
->> the discussion of statx and how to make sub-volumes distinct from
->> their parent volumes) will df -h from gnu's coreutils package know how
->> to display the extra useful information, like compression ratios,
->> dedupe, etc.  And how snapshots are related to each other in terms of
->> disk space usage.  
+Thanks, David
 
-> Getting subvolumes plumbed all the way into df -h is not on my short
-> term radar. I _am_ looking at, possibly, standardizing some APIs for
-> walking subvolumes - so depending on how that goes, perhaps.
+On Tue, 30 Jan 2024 18:03:56 +1100, David Disseldorp wrote:
 
-And that's fine.  Then maybe one answer is to have a 'bcachefs fs df'
-command which does show data like I'm asking for, but the focus is
-more on the end user, not the developer.  
-
->> This is not the same level of detail needed by a filesystem developer,
->> and I _never_ said it was.  I'm looking for the inforation
->> needed/wanted by a SysAdmin when an end user comes whining about
->> needing more space.  And then being able to examine the system
->> holistically to give them an answer.  Which usually means "delete
->> something!"  *grin*
-
-> 'bcachefs fs usage' needs to show _all_ disk accounting information
-> bcachefs has, because we need there to be one single tool that shows all
-> the information we have - that's this tool.
-
-Sure, but does it need to show all the information all the time?  
-
-> If we're collecting information, it needs to be available.
-
-Sure, but does it need to be shown by default?  
-
-> There will no doubt be switches and options for providing reduced forms,
-> but for now I'm mainly concerned with making sure all the information
-> that we have is there in a reasonably understandable way.
-
-That's an answer then.  So if I want less information, I have to step
-up and generate a patch bundle to propose such changes.  
-
-Whcih I know I won't get to any time soon since I've got other
-commitements first, and I'm not a strong developer, I'm a long time
-SysAdmin.
-
-
+> cargo audit can be used to check bcachefs dependencies for
+> vulnerabilities published in the advisory database at
+> https://github.com/RustSec/advisory-db.git
+>=20
+> Given the significant size of dependency sources (currently ~292M),
+> manual audit is mostly unviable, so rely on this for now.
+>=20
+> Audit failure will halt tarball generation with e.g. v1.4.1:
+>     Fetching advisory database from `https://github.com/RustSec/advisory-=
+db.git`
+>       Loaded 595 security advisories (from /home/david/.cargo/advisory-db)
+>     Updating crates.io index
+>     Scanning rust-src/Cargo.lock for vulnerabilities (98 crate dependenci=
+es)
+> Crate:     shlex
+> Version:   1.2.0
+> Title:     Multiple issues involving quote API
+> Date:      2024-01-21
+> ID:        RUSTSEC-2024-0006
+> URL:       https://rustsec.org/advisories/RUSTSEC-2024-0006
+> Solution:  Upgrade to >=3D1.3.0
+> Dependency tree:
+> shlex 1.2.0
+> =E2=94=94=E2=94=80=E2=94=80 bindgen 0.64.0
+>     =E2=94=94=E2=94=80=E2=94=80 bch_bindgen 0.1.0
+>         =E2=94=94=E2=94=80=E2=94=80 bcachefs-rust 0.3.1
+>=20
+> Crate:     atty
+> Version:   0.2.14
+> Warning:   unsound
+> Title:     Potential unaligned read
+> Date:      2021-07-04
+> ID:        RUSTSEC-2021-0145
+> URL:       https://rustsec.org/advisories/RUSTSEC-2021-0145
+> Dependency tree:
+> atty 0.2.14
+> =E2=94=94=E2=94=80=E2=94=80 bcachefs-rust 0.3.1
+>=20
+> error: 1 vulnerability found!
+> warning: 1 allowed warning found
+>=20
+> Signed-off-by: David Disseldorp <ddiss@suse.de>
+> ---
+>  make-release-tarball.sh | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/make-release-tarball.sh b/make-release-tarball.sh
+> index c468da7..51875b0 100755
+> --- a/make-release-tarball.sh
+> +++ b/make-release-tarball.sh
+> @@ -7,6 +7,8 @@ version=3D$1
+>  git checkout v$version
+>  git clean -xfd
+> =20
+> +cargo audit
+> +
+>  cargo license > COPYING.rust-dependencies
+> =20
+>  git ls-files|
