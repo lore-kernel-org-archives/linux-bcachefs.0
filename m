@@ -1,173 +1,130 @@
-Received: from pannekake.samfundet.no (pannekake.samfundet.no [193.35.52.50])
+Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2406168B
-	for <linux-bcachefs@vger.kernel.org>; Mon,  4 Mar 2024 17:36:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.35.52.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9913D76;
+	Tue,  5 Mar 2024 00:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709573812; cv=none; b=pkhjesu4mbqD2dLqfrH0xr6VK/pmJFodIy+Yprsry5aEYkSjvfxlpGcBFXN8yAdrGQDnlZdBesXNEiolg0MmZpTAOccdHjhREo1OhrxuxJjloBLkOln2lUFxd49+/kd/6/265DG6pKfu/cf/Kj/5vZ+bF6T0+GCY4knkh+zB/Bs=
+	t=1709596847; cv=none; b=D6/626FxKUpLEGxM1vP4aOn5fEJX4WbD+b2+blWDzQHbVutsW+kZK2F+o9bSRje19RnitAceaEbm46T3w0KRNcpjp1PluNsIJp5NJ5/LbdXjT99YU3NtpSqMG3pF5gljyBfLKNBs+CLEcqwi5dS5ZTpiefy5ICaV8+qqYCPsiiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709573812; c=relaxed/simple;
-	bh=Sl4Y9/LZwh4bKn32sfWGi1C/vt0wNvPqfCo1Re2ezio=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=WcYG/lxG0+sHqOxXY70PgaOZjEZorCq46ksRfwEkK5uUxjBQCUH2az6FhDb9xQBZJ6HAXVrX3LkBPA7Ay4XmlBikeCozSvytf8m8gooSMe9VJtaq35DGo6+62NMH1Mn01Uwu6r+FMLucyIXoh6lJnxZXvQOSHtCRdABsJdPXKtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gunderson.no; spf=pass smtp.mailfrom=gunderson.no; dkim=pass (2048-bit key) header.d=gunderson.no header.i=@gunderson.no header.b=WXapGKyH; arc=none smtp.client-ip=193.35.52.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gunderson.no
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gunderson.no
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gunderson.no header.i=@gunderson.no header.b="WXapGKyH"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gunderson.no; s=legacy; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=hrnsxfg/G60r5SONPqT5NtR3O/sJFGxlQQUqP0UTgWU=; b=WXapGKyHlri9qxZAFIp006lRbi
-	CgdxIdZggyokwsIy1FuGMFb8fl5EQ/gs50mYZdTXXjEHr4yTG/Sl+aFjEU9FBc9/CZgcqot0/T51J
-	zZKDiHf8dIj+akr0kY3Oplb8q3lduVEv3HXH62Zi8E9Gr7BYW0tz5ZN+ZiZnZuEGvBDydCDQ85FA7
-	X+Lp7Hn/p7kUuly5nBVrmm8zvJs+g3RevmvMAKKhbLjfRt9Co5QeD6CBxfH1PMZqWPvSQntFULMm2
-	qpltqIpkUmuycbbiUTR04HEcjmrWRlvQyfU08TJTSqgXfE/tnprzINwy9/dc/vyY52hZP1O9lRkeL
-	2q0GH9Xg==;
-Received: from sesse by pannekake.samfundet.no with local (Exim 4.96)
-	(envelope-from <steinar+bounces@gunderson.no>)
-	id 1rhCF5-00F5zi-1m
-	for linux-bcachefs@vger.kernel.org;
-	Mon, 04 Mar 2024 18:36:47 +0100
-Date: Mon, 4 Mar 2024 18:36:47 +0100
-From: "Steinar H. Gunderson" <steinar+bcachefs@gunderson.no>
-To: linux-bcachefs@vger.kernel.org
-Subject: Broken multi-device filesystem
-Message-ID: <20240304173647.s5mpkojd3fnvbpu4@sesse.net>
+	s=arc-20240116; t=1709596847; c=relaxed/simple;
+	bh=6/a9wDUr/QyQhXmw269lOeSTRqoP345aUD2SKTmwk6Y=;
+	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
+	 In-Reply-To:References; b=PbsdtK1KR9Ed+If0zLSyS4C3jBGW6gqUPV+mt+LQ4UD/F5qO5OLAbYCs6ZMQnI2ejDaCEr+XjHjGfmmBAdT04uHE7VicCqXwNofe2kkObI6U2iNa3QEdSrQNZItP4fNFzMsXAYpR5/AVvp3lF6xrX8XJISaASr7lDGkj53w2BuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; arc=none smtp.client-ip=172.104.24.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
+Received: from quad.stoffel.org (097-095-183-072.res.spectrum.com [97.95.183.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.stoffel.org (Postfix) with ESMTPSA id 4D60E1E727;
+	Mon,  4 Mar 2024 19:00:38 -0500 (EST)
+Received: by quad.stoffel.org (Postfix, from userid 1000)
+	id 1FF6CA0265; Mon,  4 Mar 2024 19:00:37 -0500 (EST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <26086.24741.103765.962843@quad.stoffel.home>
+Date: Mon, 4 Mar 2024 19:00:37 -0500
+From: "John Stoffel" <john@stoffel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: John Stoffel <john@stoffel.org>,
+    linux-bcachefs@vger.kernel.org,
+    linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP] bcachefs fs usage update
+In-Reply-To: <apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
+References: <gajhq3iyluwmr44ee2fzacfpgpxmr2jurwqg6aeiab4lfila3p@b3l7bywr3yed>
+	<26084.50716.415474.905903@quad.stoffel.home>
+	<tis2cx7vpb2qyywdwq6a74o2ryjmnn7skhsrcarix7v4sz7vad@7sf7bh2unloo>
+	<26085.7607.331602.673876@quad.stoffel.home>
+	<apot5wnom6wqdvjb6hfforcooxuqonmjl7z6morjyhdbgi6isq@5fcb3hld62xu>
+X-Mailer: VM 8.2.0b under 28.2 (x86_64-pc-linux-gnu)
 
-Hi,
+>>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
 
-I have a bcachefs root filesystem over two SSDs, together about ~1TB
-of space (replicas=1). For historical reasons, one of them is an LVM
-volume, and the other one is a simple partition. This is with a 6.7
-kernel (Debian 6.7.7-1, IIRC).
+> On Sun, Mar 03, 2024 at 08:02:47PM -0500, John Stoffel wrote:
+>> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+>> 
+>> > On Sun, Mar 03, 2024 at 01:49:00PM -0500, John Stoffel wrote:
+>> >> Again, how does this help the end user?  What can they do to even
+>> >> change these values?  They're great for debugging and info on the
+>> >> filesystem, but for an end user that's just so much garbage and don't
+>> >> tell you what you need to know.
+>> 
+>> > This is a recurring theme for you; information that you don't
+>> > understand, you think we can just delete... while you also say that you
+>> > haven't even gotten off your ass and played around with it.
+>> 
+>> Fair complaint.  But I'm also coming at this NOT from a filesystem
+>> developer point of view, but from the Sysadmin view, which is
+>> different.  
+>> 
+>> > So: these tools aren't for the lazy, I'm not a believer in the Gnome
+>> > 3 philosophy of "get rid of anything that's not for the lowest
+>> > common denominator".
+>> 
+>> Ok, I can see that, but I never was arguing for simple info, I was
+>> also arguing for parseable information dumps, for futher tooling.  I'm
+>> happy to write my own tools to parse this output if need be to give
+>> _me_ what I find useful.  
+>> 
+>> But you edlided that part of my comments.  Fine.  
+>> 
+>> > Rather - these tools will be used by people interested in learning more
+>> > about what their computers are doing under the hood, and they will
+>> > definitely be used when there's something to debug; I am a big believer
+>> > in tools that educate the user about how the system works, and tools
+>> > that make debugging easier.
+>> 
+>> > 'df -h' already exists if that's the level of detail you want :)
+>> 
+>> Sure, but when it comes to bcachefs, and sub-volumes (I'm following
+>> the discussion of statx and how to make sub-volumes distinct from
+>> their parent volumes) will df -h from gnu's coreutils package know how
+>> to display the extra useful information, like compression ratios,
+>> dedupe, etc.  And how snapshots are related to each other in terms of
+>> disk space usage.  
 
-While doing a large-ish build, I noticed the machine got slower and slower,
-until it hung completely. I hit the physical reset button, and as the root
-filesystem started mounting, it hung in the step after journal replay
-(I believe it is called something with “deleted inodes”). After about two
-hours, I hit the physical reset button again, and ran bcachefs fsck
-(from bcachefs-tools 1.6.3) on the filesystem. It printed out the following
-(manually typed from a photo of the display, errors may occur):
+> Getting subvolumes plumbed all the way into df -h is not on my short
+> term radar. I _am_ looking at, possibly, standardizing some APIs for
+> walking subvolumes - so depending on how that goes, perhaps.
 
-  fsck binary is version 1.6: btree_subvolume_children but filesystem is 1.3: rebalance_work and kernel is 1.3: rebalance_work
-  mounting version 1.3: rebalance_work opts=ro,compression=lz4,degraded,fsck,fix_errors=ask,read_only
-  recovering from unclean shutdown
-  Doing compatible version upgrade from 1.3: rebalance_work to 1.6: btree_subvolume_children
-    running recovery passes: check_subvols,check_dirents
-  journal read done,replaying entries 7263879-7263879
-  alloc_read... done
-  stripes_read... done
-  snapshots_read... done
-  check_allocations...dev 0 has wrong free buckets: got 507491, should be 499853: fix?
-   (y,n, or Y,N for all errors of this type) Y
-  dev 0 has wrong sb buckets: got 0, should be 7, fixing
-  dev 0 has wrong sb sectors: got 0, should be 6152: fix?
-   (y,n, or Y,N for all errors of this type) Y
-  dev 0 has wrong sb fragmented: got 0, should be 1016: fix?
-   (y,n, or Y,N for all errors of this type) Y
-  dev 0 has wrong journal buckets: got 0, should be 7631, fixing
-  dev 0 has wrong journal buckets: got 0, should be 1192480: fix?
-   (y,n, or Y,N for all errors of this type) Y
-   done
-  going read-write
-  journal_replay... done
-  check_alloc_info... done
-  check_lrus... done
-  check_btree_backpointers... done
-  check_backpointers_to_extents... done
-  check_alloc_to_lru_refs... done
-  check_snapshot_trees... done
-  check_snapshots... done
-  check_subvols... done
-  check_subvol_children... done
-  delete_dead_snapshot... done
-  resume_logged_ops... done
-  check_inodes...inodes 759339:4294967288 unlinked, but not on deleted list: fix?
-  WARNING at libbcachefs/btree_iter.c:2827: btree trans held srcu lock (delaying memory reclaim) for 22 seconds
+And that's fine.  Then maybe one answer is to have a 'bcachefs fs df'
+command which does show data like I'm asking for, but the focus is
+more on the end user, not the developer.  
 
-At this point, there was no visible I/O and no visible progress for about
-an hour (and being in initramfs, I couldn't check top), so I Ctrl-C-ed fsck
-and tried to mount again. It gave (more manual typing; the top and right is
-cut off in the screenshot, and I haven't bothered typing in the
-microseconds):
+>> This is not the same level of detail needed by a filesystem developer,
+>> and I _never_ said it was.  I'm looking for the inforation
+>> needed/wanted by a SysAdmin when an end user comes whining about
+>> needing more space.  And then being able to examine the system
+>> holistically to give them an answer.  Which usually means "delete
+>> something!"  *grin*
 
-  [  729.446] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): alloc_read... done
-  [  729.452] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): stripes_read... done
-  [  729.457] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): snapshots_read... done
-  [  729.484] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): journal_replay... done
-  [  729.489] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_subvols... done
-  [  729.494] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): resume_logged_ops... done
-  [  729.499] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirents...
-  [  729.543] inode 1410398479:4294966699 has wrong backpointer:
-  [  729.543] got       604737456:6483958551636691117
-  [  729.543] should be 23149:8508601757679713244, exiting
-  [  729.562] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): Unable to continue, halting
-  [  729.567] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirent_target(): error fsck_erro
-  [  729.572] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirent(): error fsck_errors_not_
-  [  729.577] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_check_dirents(): error fsck_errors
-  [  729.583] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_fs_start(): error starting filesys
-  [  729.588] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): mounting version 1.6: (unknown version)
-  [  729.626] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): recovering from unclean shutdown
-  [  729.631] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): superblock required following recovery 
-  [  729.636]   check_subvols,check_dirents
-  [  729.646] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): Version downgrade required:
-  [  729.646]
-  [  729.657] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): Version upgrade from 1.3: rebalance_work
-  [  729.657] Doing compatible version upgrade from 1.3: rebalance_work to 1.6: (unknown version)
-  [  729.657] 
-  [  731.722] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): journal read done, replaying entries 7263
-  [  731.747] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): alloc_read...  done
-  [  731.750] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): stripes_read... done
-  [  731.754] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): snapshots_read... done
-  [  731.759] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): journal_replay... done
-  [  731.786] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_subvols... done
-  [  731.791] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): resume_logged_ops... done
-  [  731.796] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirents...
-  [  731.846] inode 1410398479:4294966699 has wrong backpointer:
-  [  731.846] got       604737456:6483958551636691117
-  [  731.846] should be 23149:8508601757679713244, exiting
-  [  731.867] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): Unable to continue, halting
-  [  731.872] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirent_target(): error fsck_errors_no
-  [  731.877] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): check_dirent(): error fsck_errors_not_fixed
-  [  731.883] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_check_dirents(): error fsck_errors_not
-  [  731.888] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_fs_recovery(): error fsck_errors_not_f
-  [  731.893] bcachefs (16494483-fbc6-4e2f-a316-d2777e730960): bch2_fs_start(): error starting filesys
-ERROR - bcachefs::commands::cmd_mount Fatal error: Invalid argument
-mount: mounting /dev/mapper/bigscreen--vg-tablebase:/dev/nvme1n1p1 on /root failed: Invalid argument
+> 'bcachefs fs usage' needs to show _all_ disk accounting information
+> bcachefs has, because we need there to be one single tool that shows all
+> the information we have - that's this tool.
 
-At this point, I am no longer allowed to try fsck, because it thinks the two
-devices have gone into split brain:
+Sure, but does it need to show all the information all the time?  
 
-  (initramfs) bcachefs fsck /dev/mapper/bigscreen--vg-tablebase:/dev/nvme1n1p1
-  bch2_dev_in_fs() Split brain detected between /dev/nvme1n1p1 and /dev/mapper/bigscreen--vg-tablebase:
-  /dev/mapper/bigscreen--vg-tablebase believes seq of /dev/nvme1n1p1 to be 126, but /dev/nvme1n1p1 has 130
-  Not using /dev/nvme1n1p1
-  bch2_fs_open() bcs_fs_open err opening /dev/mapper/bigscreen--vg-tablebase: insufficient_devices_to_start
-  bch2_dev_in_fs() Split brain detected between /dev/nvme1n1p1 and /dev/mapper/bigscreen--vg-tablebase:
-  /dev/mapper/bigscreen--vg-tablebase believes seq of /dev/nvme1n1p1 to be 126, but /dev/nvme1n1p1 has 130
-  Not using /dev/nvme1n1p1
-  insufficient devices online (0) for replicas entry journal: 1/1 [0]
-  bch2_fs_open() bcs_fs_open err opening /dev/mapper/bigscreen--vg-tablebase: insufficient_devices_to_start
+> If we're collecting information, it needs to be available.
 
-So the entire machine is hosed. (I still have an older copy of the filesystem
-in xfs form on a different partition, so I can boot into that, and I do have
-backups of all the user data, but it is still pretty inconvenient.) Is there
-any cure?
+Sure, but does it need to be shown by default?  
 
-/* Steinar */
--- 
-Homepage: https://www.sesse.net/
+> There will no doubt be switches and options for providing reduced forms,
+> but for now I'm mainly concerned with making sure all the information
+> that we have is there in a reasonably understandable way.
+
+That's an answer then.  So if I want less information, I have to step
+up and generate a patch bundle to propose such changes.  
+
+Whcih I know I won't get to any time soon since I've got other
+commitements first, and I'm not a strong developer, I'm a long time
+SysAdmin.
+
+
