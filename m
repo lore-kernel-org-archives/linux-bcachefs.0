@@ -1,133 +1,87 @@
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676DCA50;
-	Wed,  6 Mar 2024 01:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C216C605CF
+	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Mar 2024 11:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709688234; cv=none; b=FwwhZQg7RQvlwzeJpigFNMInmgbA2DUVt3CB0mYgo63m4QuWdfeB5KBgn/IdJ/Yj/6jYTbye2Ms6nNRedaRfOvZKg4ze2Pq3Oo+BlN7ipeWcbRTis2eUznolstJe4pgHahRnhy0OKUyB0izWUT9ez2ccRxoaNrMIYNWmyI9ugfs=
+	t=1709723702; cv=none; b=RAJ9tBMBgYWnHCWTetOj6U00R1GyAb5M6YGTXHTSBqJfEXi5JaPnX5Ji5uBwKNxdHUNId+elffDN3KsgoPZncJVgZc5aEW7KZ1ylZTpay/jkdfWLIeO6ID2c4uBTTKIaCHmDPq3g73HF6tZPcuaHd6h9WVKS9+Sz9ComQ2907lU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709688234; c=relaxed/simple;
-	bh=ROuXL7+LUPZ8Db7wqcYiyDitQ6800u+otyIvruCWmOc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=q2Y/f8i1BetxcP1F6xGDYTOcbz9Nn55r1QQ4qjbBG32OdXSh4MlPRKTbZKNVtCIFMwMEOLmDQkzpTrUqz0Zr4eZ7DTce2mEl/fbkeK5CkWsdS5vQd1Hy6/dIDp7uTR9UUs49QLANZgCBYBlmC+EjAcWy4g9zF8cST1IYRa7QiTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TqF5849jbzXhlr;
-	Wed,  6 Mar 2024 09:21:32 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7AB8B140F95;
-	Wed,  6 Mar 2024 09:23:47 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 6 Mar 2024 09:23:47 +0800
-Message-ID: <d1209aa3-b8d4-4509-9689-4882bc079ffd@huawei.com>
-Date: Wed, 6 Mar 2024 09:23:46 +0800
+	s=arc-20240116; t=1709723702; c=relaxed/simple;
+	bh=DY/aB3QBbKYvrG77b+XMS1N+k5UPy8BD75L0Znt4Drs=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=ez45f6TJpFMLidsIT67Mf8G2LJ0uTVzKx2ENuQxU3xnqAuB7DO/eMqbvogi85NoPay3lzB0FpBh0wOAgF73Q8e6uQvAKOF+hYqeocrAkKlMK6oDy7+bYv0XHF304eCjwJeBix2yUlKSkgCsYEYhdriOjR8w85KTAyQty+qFoQro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=eJr6Rl3o; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="eJr6Rl3o"
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d3ee1c9ea9so24999701fa.3
+        for <linux-bcachefs@vger.kernel.org>; Wed, 06 Mar 2024 03:15:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1709723698; x=1710328498; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SM/GC/uJ68ovpy4Y5o8SQjIn36+s3s8O9klO37PA6oI=;
+        b=eJr6Rl3o7FdvohDiQ5FYyqAI1Ua9B4GOyM4Ghim5V7/4J3zGth95JK1+Pm6jt+6DBY
+         AvuCOkQjwj8fBsh889VTQgH8Vac+mE1TG5sPvXtkjtVVCOL9HcYcv6WB1L9IY1kwWFLU
+         392FPbMob6NoNH04iDounv/0WtclY7udYi0ut1PL+zwZxBHwJdedipRIj2RHUnq+TLSB
+         AyY1qfKMMZBG2UMlP4M0rJqm0BLiVIbRtHAREyxIh3FGO0AdUUQLtvnvrQzkzAHuYInl
+         gqkMp0M2Qdj5PViiVQjVcUU8i1awlxD8w664RxpiVn2Wds3o8X06XNVkO3Hl7f88tTbm
+         o9jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709723698; x=1710328498;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SM/GC/uJ68ovpy4Y5o8SQjIn36+s3s8O9klO37PA6oI=;
+        b=tXXPcIKpwDS/DREds7r4u70GKCKl/61aE9hjuqgLkTx6NSSzMkqUAK8X7JzsihSnXn
+         ev4OaPla8QChHuz8nqEIQGx2myQI9v8Hrv5agD9ZUCTsgmofvnddaQRsyINo6dd6D727
+         B7ssEZMfQu7SLSGkTnhi1rCp1/eF4O3y7UQnkEL//0AgXmPtgwYBCOaPldcRs5wcqpMo
+         +ArJJDc1RalTTtL7SAF9Z7wM4g2Cvx/IPSgoYv2GODn72pKP/a60q8aKq8DWmULsvHBQ
+         r0rlDKNZO5/TjeT1lWePD/Q+9Gzg3TRI3UQ6NJhH2DoXQhoOph8DMvir1N3/xvY9LTgD
+         VXcw==
+X-Gm-Message-State: AOJu0Yz1lEjt2jEFv/xaldQZsetGR7Zj/0D9mCzDz7srVr0s8gZn5yb7
+	JU8niDoahIy5Ru7n8To4YZCYUvX2duvAHW8FYZinO9xoxvAf3KPh1VNMEne+lydei9bFu6rsOel
+	1DRcFNBScH4h6S1s5NgmZtiLDisuWBnYyng4=
+X-Google-Smtp-Source: AGHT+IFHmFleMMqy/Iq0SqkqhU1GkHwx2Orc75ucpXsKUrTH17TwmPuzo0PXw7LRN+Ab7OZXmtVlYIsba/xo1Txu0dg=
+X-Received: by 2002:a2e:b88a:0:b0:2d4:72c:3bb1 with SMTP id
+ r10-20020a2eb88a000000b002d4072c3bb1mr12347ljp.44.1709723697822; Wed, 06 Mar
+ 2024 03:14:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: chardev: make bch_chardev_class constant
-Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>, Kent Overstreet
-	<kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+From: Mike Fleetwood <mike.fleetwood@googlemail.com>
+Date: Wed, 6 Mar 2024 11:14:45 +0000
+Message-ID: <CAMU1PDhRCpqsie5G4jOdVsyOmaXa4naDjWFTvjm_RiDrAhwPRw@mail.gmail.com>
+Subject: Re: [WIP] bcachefs fs usage update
+To: linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On 2024-03-02 04:14, Kent Overstreet wrote:
+> I'm currently updating the 'bcachefs fs usage' command for the disk
+> accounting rewrite, and looking for suggestions on any improements we
+> could make - ways to present the output that would be clearer and more
+> useful, possibly ideas on on new things to count...
 
+[Sorry for any email thread butchering.  I've only just subscribed to
+the list and seen this in the archive.]
 
-On 2024/3/6 4:21, Ricardo B. Marliere wrote:
-> Since commit 43a7206b0963 ("driver core: class: make class_register() take
-> a const *"), the driver core allows for struct class to be in read-only
-> memory, so move the bch_chardev_class structure to be declared at build
-> time placing it into read-only memory, instead of having to be dynamically
-> allocated at boot time.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
->   fs/bcachefs/chardev.c | 23 ++++++++++++-----------
->   1 file changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-> index 226b39c17667..af587453fd3d 100644
-> --- a/fs/bcachefs/chardev.c
-> +++ b/fs/bcachefs/chardev.c
-> @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
->   };
->   
->   static int bch_chardev_major;
-> -static struct class *bch_chardev_class;
-> +static const struct class bch_chardev_class = {
-> +	.name = "bcachefs",
-> +};
->   static struct device *bch_chardev;
->   
->   void bch2_fs_chardev_exit(struct bch_fs *c)
-> @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->   	if (c->minor < 0)
->   		return c->minor;
->   
-> -	c->chardev = device_create(bch_chardev_class, NULL,
-> +	c->chardev = device_create(&bch_chardev_class, NULL,
->   				   MKDEV(bch_chardev_major, c->minor), c,
->   				   "bcachefs%u-ctl", c->minor);
->   	if (IS_ERR(c->chardev))
-> @@ -968,26 +970,25 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->   
->   void bch2_chardev_exit(void)
->   {
-> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> -		device_destroy(bch_chardev_class,
-> -			       MKDEV(bch_chardev_major, U8_MAX));
-> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> -		class_destroy(bch_chardev_class);
-> +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
-> +	class_unregister(&bch_chardev_class);
->   	if (bch_chardev_major > 0)
->   		unregister_chrdev(bch_chardev_major, "bcachefs");
->   }
->   
->   int __init bch2_chardev_init(void)
->   {
-> +	int ret;
-> +
->   	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
->   	if (bch_chardev_major < 0)
->   		return bch_chardev_major;
->   
-> -	bch_chardev_class = class_create("bcachefs");
-> -	if (IS_ERR(bch_chardev_class))
-> -		return PTR_ERR(bch_chardev_class);
-> +	ret = class_register(&bch_chardev_class);
-> +	if (ret)
-Here, I think you should call class_unregister to relase resource which 
-allocated before. And the same thing shoud be done in other exception exit.
-> +		return ret;
->   
-> -	bch_chardev = device_create(bch_chardev_class, NULL,
-> +	bch_chardev = device_create(&bch_chardev_class, NULL,
->   				    MKDEV(bch_chardev_major, U8_MAX),
->   				    NULL, "bcachefs-ctl");
->   	if (IS_ERR(bch_chardev))
-like here..
-> 
-> ---
-> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-> change-id: 20240305-bcachefs-27a4bb8b9f4f
-> 
-> Best regards,
+Background:
+I'm working on adding some level of support for bcachefs into GParted.
+It wants to be able to report the FS usage (per device) of a file system
+to (1) display in the UI, and (2) to limit how small it allows a
+partition to be shrunk.  (I understand that bcachefs doesn't currently
+support shrinking devices).
+
+What I would like from bcache fs usage is:
+1. To be able to get free and capacity figures for a device in an
+   unmounted bcachefs file system.
+   EG:
+   bcachefs fs usage /dev/$PTN
+2. To continue to be able to get free and capacity figures in bytes.
+   Using a command line switch is okay.
+
+Thanks,
+Mike
