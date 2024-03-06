@@ -1,172 +1,105 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD0F7FBAF;
-	Wed,  6 Mar 2024 13:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0EED14039D
+	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Mar 2024 19:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709730125; cv=none; b=toodEE6TsuvMVLmhkZjvh1ZbMJprPbOsHXruww5XFWg2lkgvbAVHoawXgJIgp6BT5bA24gC67jfhRTUPVrRvU44n56dvSe3VPI7VvnMx+ztyD21P0DL0W8baeCZyfqqgjD71PB4zDXyaTTA252ng5dOCladJFCgrM+olUggGnaU=
+	t=1709755202; cv=none; b=ofXtkhjmSGS2iTiQ9xjdO4fgF5qd+4HTcHAfEvWAe6nOXFqaG2LCmVfe2mWhk2Snn68aTtJNuKaq2J+1z4FP4jv0JgKkV694zjQa+2AWVTqlWPC3oYXQr8tb1tsjj2jDtkeBCsKx0U51sz09v7OkWj1+nR7MlsrsNtdFrdqIJwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709730125; c=relaxed/simple;
-	bh=sLNJRztVhA8TtYhb/exdQXUkIVIKU+BQJpgybmhd68U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=bfu3gAIAJcMJnBTIxmmZmfwTwoaEnFKVi/k2l5ku1hnfNcNU4AlqG6TiiatW6rpPvS+Q+tnRPef/w31dLMrOSl8tf65cOsenimqZ0doFHaU38KVouFuoqMVaknL20+arrAuv0FEUCiQ7f+b39Y3OGNBQMpkr0J9tJTIhXwX/SnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TqXZf5hkTz2Bdtb;
-	Wed,  6 Mar 2024 20:59:38 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0A4451A016E;
-	Wed,  6 Mar 2024 21:02:00 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 6 Mar 2024 21:01:59 +0800
-Message-ID: <df64802a-02fd-4f72-b9ec-7812e2779df3@huawei.com>
-Date: Wed, 6 Mar 2024 21:01:59 +0800
+	s=arc-20240116; t=1709755202; c=relaxed/simple;
+	bh=MJQooKERrkO5M8FdxXsbgrCB1vQwZZRXngnYowa1Ucg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r2ccO93QkBJXTtXJmlIR1ZzgvEi44T0tMFtPikOUJfw3/pjaNnPsmWrkaV/uJzGU7JFpLnCtZOq3LMeItu1PdqtaB4HC7Gbp+exj7ELHRIyPwZCzvqi8u2oHEKCvB8Nl5SwB2+/2s9THEyxf15E9J9qSwSpBClnMVHEZIq5aBjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=nxITYk6F; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="nxITYk6F"
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6096ab005c0so1377737b3.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 06 Mar 2024 11:59:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1709755198; x=1710359998; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nk0/J29KPf4TmmeCSNMEsRp4h+k2/fvkEQwAaLlHWxs=;
+        b=nxITYk6FUOJOhKf/sKhG47NLK2mwoGTzHmTNNhxNIk7Bj8T0g3ZXECO7EtcSbbER1L
+         XjxBYhZohxdwY4VBAYKuMI4JSwJEYP2iAigz9VB0licnoowBnxfUxJ9tGsxhL5sZow5+
+         sOkvA06fPJzle4rR3N4lrtCRMvFVd1tv6txgRiDRczMNjT3LuReoqnwbMQf7Yqx95zzO
+         mde9jwIbLHrz1zpSU52WxOFTXRGf9+TA0pTf5na5pOZvEySIAMVSz+RHkZHJFSTsoiwT
+         WJyfZSZrEu56E7OmanKvlynbnnJAqGBgJtm3YxTqt8khigdtDEZGkQq6smn02PrGzagD
+         k8zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709755198; x=1710359998;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nk0/J29KPf4TmmeCSNMEsRp4h+k2/fvkEQwAaLlHWxs=;
+        b=BHvrZY2Y0vKW+HQ4hDlwFId8H7txmoKY3BQa1leCWf6qEzkPUZbBTqrrxtSaBf4P53
+         cLIwM+LHR2Cw80JKcBN3TubbN4pRqML16AcpH9xm4OoSpo+uYBJ5qhtYyAaxLq2Vn10a
+         OyDM8xEdvx9ww3YaLZsaj15z/dYiopoJMuYZ+85t9P6ESGa0+b4Ea0m/ioUHay6D8L2P
+         6c8H1/Vz64arsElRyhQh90E2BA/t1rvaVs0xYNYlhG4/hAO9BH7Q64lyRaTBIZs/TIth
+         IMlPsQ9BHtTS/pZu1MBHapz6KXJFL1JKHJgLbw9MXn7fhqp9K08Z06IsEG6eUQUCa+q4
+         DVNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXhUfc16moqHC7PiWDFh9TxqtFeZRzIo8BWDAT1aUzevdneL3lxIxNE/uvVuQhaiL878eVFs9X2gIdjbL1dPjSsgDWqLoPt59D/+d3KkMs=
+X-Gm-Message-State: AOJu0Ywb6/wNx4o1OfLdO0Cw2nZ8Ee9C8WYQBH4SRPAhoo0pi0BO01xy
+	ACrpeXql/tpXZzCJcBnaouCNESWrFMSj3zrjrjjtpjEssAIVnBhgvO7iiKgEBDE=
+X-Google-Smtp-Source: AGHT+IEmVpurGUd31yZyHxSu4mjLVka0+r+yTrQMWzelFcoJ23tJQXn1JppRqRT3evd2Ke2EuGrRpg==
+X-Received: by 2002:a81:8784:0:b0:608:290d:9f1b with SMTP id x126-20020a818784000000b00608290d9f1bmr14538562ywf.49.1709755197926;
+        Wed, 06 Mar 2024 11:59:57 -0800 (PST)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id r13-20020ac85e8d000000b0042f02284578sm1888194qtx.68.2024.03.06.11.59.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 11:59:57 -0800 (PST)
+Date: Wed, 6 Mar 2024 14:59:56 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
+	David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH] statx: stx_vol
+Message-ID: <20240306195956.GA2420648@perftesting>
+References: <20240302220203.623614-1-kent.overstreet@linux.dev>
+ <20240304-konfus-neugierig-5c7c9d5a8ad6@brauner>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: chardev: make bch_chardev_class constant
-Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-CC: Kent Overstreet <kent.overstreet@linux.dev>, Brian Foster
-	<bfoster@redhat.com>, <linux-bcachefs@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-References: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
- <d1209aa3-b8d4-4509-9689-4882bc079ffd@huawei.com>
- <sky4no6qxoytrkd3azcf5hokmhxrrpluao5ilhbqvprqxwuj4r@ozwmbbulfbrt>
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <sky4no6qxoytrkd3azcf5hokmhxrrpluao5ilhbqvprqxwuj4r@ozwmbbulfbrt>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304-konfus-neugierig-5c7c9d5a8ad6@brauner>
 
+On Mon, Mar 04, 2024 at 10:18:22AM +0100, Christian Brauner wrote:
+> On Sat, Mar 02, 2024 at 05:02:03PM -0500, Kent Overstreet wrote:
+> > Add a new statx field for (sub)volume identifiers.
+> > 
+> > This includes bcachefs support; we'll definitely want btrfs support as
+> > well.
+> > 
+> > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Cc: Josef Bacik <josef@toxicpanda.com>
+> > Cc: Miklos Szeredi <mszeredi@redhat.com>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: David Howells <dhowells@redhat.com>
+> > ---
+> 
+> As I've said many times before I'm supportive of this and would pick up
+> a patch like this. There's definitely a lot of userspace that would make
+> use of this that I'm aware of. If the btrfs people could provide an Ack
+> on this to express their support here that would be great.
+> 
+> And it would be lovely if we could expand the commit message a bit and
+> do some renaming/bikeshedding. Imho, STATX_SUBVOLUME_ID is great and
+> then stx_subvolume_id or stx_subvol_id. And then subvolume_id or
+> subvol_id for the field in struct kstat.
 
+Sorry I had my head down in some NFS problems.  This works for me, I agree with
+the naming suggestions you've made.  Kent, when you send a new version I'll
+review it and then followup with a btrfs patch.  Thanks for getting this ball
+rolling,
 
-On 2024/3/6 19:50, Ricardo B. Marliere wrote:
-> On  6 Mar 09:23, Hongbo Li wrote:
->> On 2024/3/6 4:21, Ricardo B. Marliere wrote:
->>> Since commit 43a7206b0963 ("driver core: class: make class_register() take
->>> a const *"), the driver core allows for struct class to be in read-only
->>> memory, so move the bch_chardev_class structure to be declared at build
->>> time placing it into read-only memory, instead of having to be dynamically
->>> allocated at boot time.
->>>
->>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
->>> ---
->>>    fs/bcachefs/chardev.c | 23 ++++++++++++-----------
->>>    1 file changed, 12 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
->>> index 226b39c17667..af587453fd3d 100644
->>> --- a/fs/bcachefs/chardev.c
->>> +++ b/fs/bcachefs/chardev.c
->>> @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
->>>    };
->>>    
->>>    static int bch_chardev_major;
->>> -static struct class *bch_chardev_class;
->>> +static const struct class bch_chardev_class = {
->>> +	.name = "bcachefs",
->>> +};
->>>    static struct device *bch_chardev;
->>>    
->>>    void bch2_fs_chardev_exit(struct bch_fs *c)
->>> @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->>>    	if (c->minor < 0)
->>>    		return c->minor;
->>>    
->>> -	c->chardev = device_create(bch_chardev_class, NULL,
->>> +	c->chardev = device_create(&bch_chardev_class, NULL,
->>>    				   MKDEV(bch_chardev_major, c->minor), c,
->>>    				   "bcachefs%u-ctl", c->minor);
->>>    	if (IS_ERR(c->chardev))
->>> @@ -968,26 +970,25 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->>>    
->>>    void bch2_chardev_exit(void)
->>>    {
->>> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
->>> -		device_destroy(bch_chardev_class,
->>> -			       MKDEV(bch_chardev_major, U8_MAX));
->>> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
->>> -		class_destroy(bch_chardev_class);
->>> +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
->>> +	class_unregister(&bch_chardev_class);
->>>    	if (bch_chardev_major > 0)
->>>    		unregister_chrdev(bch_chardev_major, "bcachefs");
->>>    }
->>>    
->>>    int __init bch2_chardev_init(void)
->>>    {
->>> +	int ret;
->>> +
->>>    	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
->>>    	if (bch_chardev_major < 0)
->>>    		return bch_chardev_major;
->>>    
->>> -	bch_chardev_class = class_create("bcachefs");
->>> -	if (IS_ERR(bch_chardev_class))
->>> -		return PTR_ERR(bch_chardev_class);
->>> +	ret = class_register(&bch_chardev_class);
->>> +	if (ret)
->> Here, I think you should call class_unregister to relase resource which
->> allocated before. And the same thing shoud be done in other exception exit.
-> 
-> Hi Hongbo,
-> 
-> Thank you for the feedback. Did you mean that bch_chardev_major should
-> be unregistered if the class_register() call fails? Because if it does,
-> there is no need to call class_unregister().
-> 
->>> +		return ret;
->>>    
->>> -	bch_chardev = device_create(bch_chardev_class, NULL,
->>> +	bch_chardev = device_create(&bch_chardev_class, NULL,
->>>    				    MKDEV(bch_chardev_major, U8_MAX),
->>>    				    NULL, "bcachefs-ctl");
->>>    	if (IS_ERR(bch_chardev))
->> like here..
-> 
-> Can you please elaborate?
-> 
-Yes, this I mean. The example like this:
-
-```c
-    major = register_chrdev(0, xx, xx);
-    class = class_create("bcachefs");
-    if (IS_ERR(class))
-         goto out_chrdev:
-
-    ...
-out_class:
-     class_unregister(xxx);
-out_chrdev:
-     unregister_chrdev(xx, xx);
-     ...
-```
-
-Although this was not part of your original intention, it is indeed a flaw.
-
-
-> Best regards,
-> -	Ricardo.
-> 
-> 
->>>
->>> ---
->>> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
->>> change-id: 20240305-bcachefs-27a4bb8b9f4f
->>>
->>> Best regards,
-> 
+Josef
