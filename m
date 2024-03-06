@@ -1,172 +1,133 @@
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01B8D27E;
-	Tue,  5 Mar 2024 20:21:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676DCA50;
+	Wed,  6 Mar 2024 01:23:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709670101; cv=none; b=RpgQ4l9/y9CWupJaUz9D0Lkwb5OxrDAynR7AS5fmkgmjEuA/NBexPsq8RK6HysCDT/lIJgb1pwqFmqBFbFXuVUyBzwYs6d0sQre1n0lYdnHe/vqSrWFRZQcWqyhQjh654etVSKe6mtuSk2ymZxr/INZ/fUY9UsDfJqEe7Psw5n0=
+	t=1709688234; cv=none; b=FwwhZQg7RQvlwzeJpigFNMInmgbA2DUVt3CB0mYgo63m4QuWdfeB5KBgn/IdJ/Yj/6jYTbye2Ms6nNRedaRfOvZKg4ze2Pq3Oo+BlN7ipeWcbRTis2eUznolstJe4pgHahRnhy0OKUyB0izWUT9ez2ccRxoaNrMIYNWmyI9ugfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709670101; c=relaxed/simple;
-	bh=mL6fEtV4dWTChRIioAI8WVMr3ESdzLnLOnDpYBV2TOw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=R8znpuxcx97jx0PzKJAa45jcJrOCF+fHe86Nr8uTDQi3zvQ/3baS9iRNGcHVIhiTbKZDbVbgnWffT17nX+/uaKJH4q6barqb6eFrwHoG/EV3kln4FwyNm2hI32O+thTfKiyW/HCQNeqBxaKRDQf0C5hajkUaSd9WTpqFb2YOP64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=bVCxnkPh; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="bVCxnkPh"
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e56787e691so122110b3a.0;
-        Tue, 05 Mar 2024 12:21:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709670099; x=1710274899;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1fI7n1PPcQRS/z7Y+0uW1YEXs3Os4Jab/vlVX9n/14s=;
-        b=iMYspoADpVLdA0BHlhZI0o6lFnlAmabVKAHGwiXIKVWz2x73vdJUQg2/BdPU9vTHE2
-         ldLA0ZVoTWjq1O+5CHfIPnFii1Jrl1hZ57iJiSly9B5RwTJIui/zxS0troG6gGWOMkmr
-         /0ZwiBpYqQQIRJvylD0yURcuws7aYUFZRGNqF8T3nJRWifWo4OHkJkcwNvE56vXwPcBz
-         vjSFJ/GLr7R8NF0MX35iuv3W6OWUDrXj2ZolyiXPPXGsH7z8Qydo1pdOFoKDFJhhxYOT
-         AoBmpeuzTx3eobX6hc4iXWL7vknhC9lCyLkFd4d7/j1vG9aQAxuz9FO3PE0/zthFSRls
-         rfEA==
-X-Forwarded-Encrypted: i=1; AJvYcCVGyZgiFtCBODopVa/9YIUaWC7mXQxMr9DeRigZhMpZpvzY9NGXi1Hu7azpbuq7MO06Us8J4LquM+5L+wL+irNd2qmn/CdBR7paadQw
-X-Gm-Message-State: AOJu0YynTkyjW8FjRFf0hH96AYvdmT4KynD2wPwscVzfCIPfz95KAjGA
-	+fO22Di5IPcvbRhVKD4fGIodO+YIkIQqHV+LqMZmUY8ubrLcoLlN
-X-Google-Smtp-Source: AGHT+IHUHT+tHH2aFzEIfVJ1KU2MlsE5d6mLNfgPCr5AQGn6F8f/PX/FexxVhnrwEcNjipBoZK+xQQ==
-X-Received: by 2002:a05:6a21:3989:b0:1a1:1f2f:cb36 with SMTP id ad9-20020a056a21398900b001a11f2fcb36mr3579636pzc.26.1709670099269;
-        Tue, 05 Mar 2024 12:21:39 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id k19-20020a63ff13000000b005cfb6e7b0c7sm9753926pgi.39.2024.03.05.12.21.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 12:21:38 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709670097;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=1fI7n1PPcQRS/z7Y+0uW1YEXs3Os4Jab/vlVX9n/14s=;
-	b=bVCxnkPhHL6GmYduWZxA8dusBqwu5W+3LH25CjETtIx8VbkcR/M/Jh2GBBLBTxtaqnykD2
-	2mmTkYbrlK23waWi/I+IbvWb/eqZev1gxo2CqigGe/vN84g4kpvkIqh4v8PTMl9vso9k6g
-	qxHIiyBrJTuWSXTWZwdLlvnd2ny0l/Qyd8x7pOiH3cTk0+McOAMoqFMFYDuedR10LiD4N6
-	Ci+C/gg1W4LGkdMAI8Oa0eRrz3G4RstugHeI1tYLBIdMRU33ES60e1DsiuLvdrvd7BVyvz
-	XAM01QsZfg7wv/J2FWbTDXDBIrfTkncRdeGhuTadrF8YoH/aQ6mEBuzF+EofIg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 05 Mar 2024 17:21:33 -0300
-Subject: [PATCH] bcachefs: chardev: make bch_chardev_class constant
+	s=arc-20240116; t=1709688234; c=relaxed/simple;
+	bh=ROuXL7+LUPZ8Db7wqcYiyDitQ6800u+otyIvruCWmOc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=q2Y/f8i1BetxcP1F6xGDYTOcbz9Nn55r1QQ4qjbBG32OdXSh4MlPRKTbZKNVtCIFMwMEOLmDQkzpTrUqz0Zr4eZ7DTce2mEl/fbkeK5CkWsdS5vQd1Hy6/dIDp7uTR9UUs49QLANZgCBYBlmC+EjAcWy4g9zF8cST1IYRa7QiTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TqF5849jbzXhlr;
+	Wed,  6 Mar 2024 09:21:32 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7AB8B140F95;
+	Wed,  6 Mar 2024 09:23:47 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 6 Mar 2024 09:23:47 +0800
+Message-ID: <d1209aa3-b8d4-4509-9689-4882bc079ffd@huawei.com>
+Date: Wed, 6 Mar 2024 09:23:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: chardev: make bch_chardev_class constant
+Content-Language: en-US
+To: "Ricardo B. Marliere" <ricardo@marliere.net>, Kent Overstreet
+	<kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>
+CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAMx+52UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDYwNT3aTkxOSM1LRiXSPzRJOkJIskyzSTNCWg8oKi1LTMCrBR0bG1tQA
- SPO7vWgAAAA==
-To: Kent Overstreet <kent.overstreet@linux.dev>, 
- Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2730; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=mL6fEtV4dWTChRIioAI8WVMr3ESdzLnLOnDpYBV2TOw=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl537O34rw+Kc2CHNrIkd5UEsovB7PcG8xybS9v
- mGB38YCN2iJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZed+zgAKCRDJC4p8Y4ZY
- pvYaEAC1QirLZS5BzwnEiGj16OUo2/vNFZ5T8+cy/r8nKNFv4aO9Rtt48JCr+lUJPffYxhvQ30t
- Yqd6phY0czQqtZg2uyf/7XYfNxnqymUPo+GlKapqs3H9EtMAriiKK7FaXq5w+ZgWWTWhYvolr+n
- 9SoEJ8XO4yis3El/NHFTyE/g2clDoaw3EuGF98gPMpEO/s8wQJZTA+8rLCu30KJSKuNUTEBzoZk
- SBH1+mKM6SgHqPrCCgOnbXHRdxHJUKiemVuS4twJtobA9HP9Oyoh1axjVjfcggyZWHS4SZaXYwE
- xbiONqGH/us+kAGsaxzX0hLW/okGeBPfEf/fzU3cAzESR3SpJaucqYpXPbe5gD/Kn8dtt0cei8Y
- EeptkOXd7ksQCAMuglQVaQoARGecpJiHG1m9R0rBG5IUEdqx/VT6KM6psAstjtyDsJSODjjC7oe
- 9aipOf24GwTWuRgFpOt0PD5bJqQFQwPZtM3p6+4DbPf0eg1M2ldjENSGz+wVYbPalE4s4CidKII
- dPmRmWtciTk1K2VMSpUyCJU+rqPEh6OaddK2JDM/EM6Nf/+gQ3xEZNJOAOplK1/Xh7XuUBhTGl4
- LVwHAHGZRKKoJy99hR/hQyT1DcEgJ3j8r1HgPKMPF9S1X5uxu4eATis7xs4aLPFpjTrhXIi9sq+
- fyVghRsonZFtP8Q==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-Since commit 43a7206b0963 ("driver core: class: make class_register() take
-a const *"), the driver core allows for struct class to be in read-only
-memory, so move the bch_chardev_class structure to be declared at build
-time placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- fs/bcachefs/chardev.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-index 226b39c17667..af587453fd3d 100644
---- a/fs/bcachefs/chardev.c
-+++ b/fs/bcachefs/chardev.c
-@@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
- };
- 
- static int bch_chardev_major;
--static struct class *bch_chardev_class;
-+static const struct class bch_chardev_class = {
-+	.name = "bcachefs",
-+};
- static struct device *bch_chardev;
- 
- void bch2_fs_chardev_exit(struct bch_fs *c)
-@@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
- 	if (c->minor < 0)
- 		return c->minor;
- 
--	c->chardev = device_create(bch_chardev_class, NULL,
-+	c->chardev = device_create(&bch_chardev_class, NULL,
- 				   MKDEV(bch_chardev_major, c->minor), c,
- 				   "bcachefs%u-ctl", c->minor);
- 	if (IS_ERR(c->chardev))
-@@ -968,26 +970,25 @@ int bch2_fs_chardev_init(struct bch_fs *c)
- 
- void bch2_chardev_exit(void)
- {
--	if (!IS_ERR_OR_NULL(bch_chardev_class))
--		device_destroy(bch_chardev_class,
--			       MKDEV(bch_chardev_major, U8_MAX));
--	if (!IS_ERR_OR_NULL(bch_chardev_class))
--		class_destroy(bch_chardev_class);
-+	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
-+	class_unregister(&bch_chardev_class);
- 	if (bch_chardev_major > 0)
- 		unregister_chrdev(bch_chardev_major, "bcachefs");
- }
- 
- int __init bch2_chardev_init(void)
- {
-+	int ret;
-+
- 	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
- 	if (bch_chardev_major < 0)
- 		return bch_chardev_major;
- 
--	bch_chardev_class = class_create("bcachefs");
--	if (IS_ERR(bch_chardev_class))
--		return PTR_ERR(bch_chardev_class);
-+	ret = class_register(&bch_chardev_class);
-+	if (ret)
-+		return ret;
- 
--	bch_chardev = device_create(bch_chardev_class, NULL,
-+	bch_chardev = device_create(&bch_chardev_class, NULL,
- 				    MKDEV(bch_chardev_major, U8_MAX),
- 				    NULL, "bcachefs-ctl");
- 	if (IS_ERR(bch_chardev))
-
----
-base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-change-id: 20240305-bcachefs-27a4bb8b9f4f
-
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
-
+On 2024/3/6 4:21, Ricardo B. Marliere wrote:
+> Since commit 43a7206b0963 ("driver core: class: make class_register() take
+> a const *"), the driver core allows for struct class to be in read-only
+> memory, so move the bch_chardev_class structure to be declared at build
+> time placing it into read-only memory, instead of having to be dynamically
+> allocated at boot time.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+>   fs/bcachefs/chardev.c | 23 ++++++++++++-----------
+>   1 file changed, 12 insertions(+), 11 deletions(-)
+> 
+> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
+> index 226b39c17667..af587453fd3d 100644
+> --- a/fs/bcachefs/chardev.c
+> +++ b/fs/bcachefs/chardev.c
+> @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
+>   };
+>   
+>   static int bch_chardev_major;
+> -static struct class *bch_chardev_class;
+> +static const struct class bch_chardev_class = {
+> +	.name = "bcachefs",
+> +};
+>   static struct device *bch_chardev;
+>   
+>   void bch2_fs_chardev_exit(struct bch_fs *c)
+> @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
+>   	if (c->minor < 0)
+>   		return c->minor;
+>   
+> -	c->chardev = device_create(bch_chardev_class, NULL,
+> +	c->chardev = device_create(&bch_chardev_class, NULL,
+>   				   MKDEV(bch_chardev_major, c->minor), c,
+>   				   "bcachefs%u-ctl", c->minor);
+>   	if (IS_ERR(c->chardev))
+> @@ -968,26 +970,25 @@ int bch2_fs_chardev_init(struct bch_fs *c)
+>   
+>   void bch2_chardev_exit(void)
+>   {
+> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
+> -		device_destroy(bch_chardev_class,
+> -			       MKDEV(bch_chardev_major, U8_MAX));
+> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
+> -		class_destroy(bch_chardev_class);
+> +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
+> +	class_unregister(&bch_chardev_class);
+>   	if (bch_chardev_major > 0)
+>   		unregister_chrdev(bch_chardev_major, "bcachefs");
+>   }
+>   
+>   int __init bch2_chardev_init(void)
+>   {
+> +	int ret;
+> +
+>   	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
+>   	if (bch_chardev_major < 0)
+>   		return bch_chardev_major;
+>   
+> -	bch_chardev_class = class_create("bcachefs");
+> -	if (IS_ERR(bch_chardev_class))
+> -		return PTR_ERR(bch_chardev_class);
+> +	ret = class_register(&bch_chardev_class);
+> +	if (ret)
+Here, I think you should call class_unregister to relase resource which 
+allocated before. And the same thing shoud be done in other exception exit.
+> +		return ret;
+>   
+> -	bch_chardev = device_create(bch_chardev_class, NULL,
+> +	bch_chardev = device_create(&bch_chardev_class, NULL,
+>   				    MKDEV(bch_chardev_major, U8_MAX),
+>   				    NULL, "bcachefs-ctl");
+>   	if (IS_ERR(bch_chardev))
+like here..
+> 
+> ---
+> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+> change-id: 20240305-bcachefs-27a4bb8b9f4f
+> 
+> Best regards,
