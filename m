@@ -1,190 +1,153 @@
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9591C53818;
-	Fri,  8 Mar 2024 12:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F195C99
+	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Mar 2024 16:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709900053; cv=none; b=Rw7CYr7icJ3pkxrlXqVQFQwVymvFvLzD40IpiyjrpFbnf+1o1TGt7ytXbfOijNYgrPiAeC22Cf01OL8ZofY7mMyBImoOvVxnNKMkGZ03scJXf0sFlEkPMddfoCQohf+Cxc8/o3Gv0pnDiQOt+XdXdTD40ummV0aPw+Jj8xkTHAg=
+	t=1709915689; cv=none; b=Gq+kKpLblAzh9R59om+/bVHQ0S7gxeZODSw4+KEbR97v2QQ6ic3ar0YG8Kz9svEvLRd1bon/pUjSNNA9vfAtZ/IAbP5RQedU/QGZtLwzRAJB3l1I5Np1ZWYAXMc/zvnTcBzXM54UPaAjSYaDewUinkp+97I31pooWgUMH1wDGmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709900053; c=relaxed/simple;
-	bh=Z2gjmGEER6YwjeSGLmpcDZtstH/cbjrJyU9s0AI66/4=;
+	s=arc-20240116; t=1709915689; c=relaxed/simple;
+	bh=4ZhLwiZ0RDhrZTBGJXvOEEK8z8sfiISfXZm+4nEozaY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S66IdWHu7xgc9FIf1vsxfoeyKSI5Ho2GWSUcXiyFs0lJDhG2MKWZhtPjQZQTlFphrJOYIy+CND/vNxnq6Wj5Avy8Ty+yfM7bN+Asy5PqwHHQtzTBWOLft5uaz0dtLOY3sLrwBjsjGPjnDeoOCZXXM14st8bXNjLnxcIRUvEk+CM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=SwUnY2u2; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iihm4Upoar2hYSzwWKKHzbVLDa4sweTSSkOVjVd6m4+F1zaHDeYlpOgWUaN7MZ9dLPrV3GjQX1+yvxok35LGCD3+gRMWHJwpch15er8DemyJMu32VfMxyzqPsuL4CkP66rHFLCrn+bcyCKce8fozd+usbes5SElgR0Xqg4EMPmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jGZ9Enx7; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="SwUnY2u2"
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dd01ea35b5so11873755ad.0;
-        Fri, 08 Mar 2024 04:14:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709900051; x=1710504851;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rgqkPMmyrA39zl1mz2n9jVnuMuXfncFZQfiwsciJnYI=;
-        b=BhLcil7HC1wZ9FXnzwJo106yYA+fS5qhJKYFJ2j9XjnBSwraRf4lta3tAcMQ06JEb/
-         baQ047ndqTtqcjG54NUgnMpdsAgSpEwa3C+oDhMhfFQvUjmgDhODqB1ng6G3cBGnNz5T
-         8EqClVioOd1ySiiBIF4a9yAG2gkPWVlAaoMpwo9bbtF+lafCIWUhOsyqQmyTVaLuIXjR
-         ssPIiwOcj3pLKEuOS4We31Ph6LtCv8QkjcZN3HWRAbWcm5ULyggb87ntEJjtm/2JmDVE
-         5fDSpwBiHjQeX99eGU3MTZPM7C+DKVos3UPx00P9aEvZmFiW6ITnIxzRMVKxDy/8gDD+
-         rZvA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqNsbSWQPBWOYCPuo575reSMuilxh6wJkHS+WBVHgnN7blToQ8cUZcRPtGe1B8gtTVzCEfLuz7iuuyByDtAuvHqQGSAqJTZr0pTDWSB0LHcKFy731utmyZSsmWyj8WVNcliOOIFyY5mWMoRzo=
-X-Gm-Message-State: AOJu0YwNeoCssqa0xbegXKoYp6dgHz2gr9xJuGR5uep3nDp0ttF7SoL2
-	Nk4/6pPVmZgcBZ6P0fsX3PL764hFqLo1gBC8tEJ0Vcq9JXPufYw9
-X-Google-Smtp-Source: AGHT+IFE8NaD7kpLL3RVrWfJIo0LQC7EefKIHy6ax2AH9mcVDFCSmzTeE/JdF/9bOAe55t7TtxhIfQ==
-X-Received: by 2002:a17:903:124b:b0:1d8:f129:a0bc with SMTP id u11-20020a170903124b00b001d8f129a0bcmr13428866plh.13.1709900050803;
-        Fri, 08 Mar 2024 04:14:10 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id mq12-20020a170902fd4c00b001dc8f1e06eesm16150114plb.291.2024.03.08.04.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 04:14:10 -0800 (PST)
-Date: Fri, 8 Mar 2024 09:14:07 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709900049;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jGZ9Enx7"
+Date: Fri, 8 Mar 2024 11:34:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709915685;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rgqkPMmyrA39zl1mz2n9jVnuMuXfncFZQfiwsciJnYI=;
-	b=SwUnY2u2kdAk3//j5fJr5CSk2tHzz1J1QQgOfRzHzBMoqFeGYZWQ4wnYfXgTY03p5yYHOy
-	/ztv4t4yrpkrXDIFRXQK3gaZQ9zQev3D2jbCIFOuDw1/gyw56LeGqAdQO82gLzP1A5Gcq9
-	Ye28p1ske52pm+q0nq1+ysxZ66yyC1V9DjXM+fW8vd6GAKS7lUWiOi2nJtn+RikwEKl3Op
-	GV2cTolY5BvPfLi//RTCXye2DIa3WQTswdWhUBGwySiUw+YsfbkLuOWjpq2bV5Y4M5C8V3
-	zGBqio4lhnHbnieEdkE/JEpiCdOPN01NyK1klgy2XAjWt6nh8k5WzyRqJqHPYw==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Hongbo Li <lihongbo22@huawei.com>, Brian Foster <bfoster@redhat.com>, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] bcachefs: chardev: make bch_chardev_class constant
-Message-ID: <kbf4df66sn5ls4lb2vaotsmpcbv5pwozh464zbrwzawhqqch62@vumhpeaghqqf>
-References: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
- <d1209aa3-b8d4-4509-9689-4882bc079ffd@huawei.com>
- <sky4no6qxoytrkd3azcf5hokmhxrrpluao5ilhbqvprqxwuj4r@ozwmbbulfbrt>
- <5odqpww3sjv6ffj3hpmhx25q4fdacstfr5qn7seb3mwrclynpi@drhj7xa2cfyj>
+	bh=ktBpMrN3UsrnXHVw4tN75j0kRv43XqLYLDOv9Qy1a30=;
+	b=jGZ9Enx7ssxLGkvSXWH7xl+QFlnSXT7I0ydFpvFfbhXUdxui+zVeJ0kvwMw0O7YpBUcsOp
+	Y3jE7Nw0RdAd6Vugm1brtUt8De96L6ASeiGXMKa10wIAXOLcR+aguj/IIJkF5xF5gLfiIp
+	jM7RuTVe17883wuzKU9zSOQRbSOVUdA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Neal Gompa <neal@gompa.dev>
+Cc: linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Miklos Szeredi <mszeredi@redhat.com>, Christian Brauner <brauner@kernel.org>, 
+	David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v2] statx: stx_subvol
+Message-ID: <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5odqpww3sjv6ffj3hpmhx25q4fdacstfr5qn7seb3mwrclynpi@drhj7xa2cfyj>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On  7 Mar 21:18, Kent Overstreet wrote:
-> On Wed, Mar 06, 2024 at 08:50:04AM -0300, Ricardo B. Marliere wrote:
-> > On  6 Mar 09:23, Hongbo Li wrote:
-> > > On 2024/3/6 4:21, Ricardo B. Marliere wrote:
-> > > > Since commit 43a7206b0963 ("driver core: class: make class_register() take
-> > > > a const *"), the driver core allows for struct class to be in read-only
-> > > > memory, so move the bch_chardev_class structure to be declared at build
-> > > > time placing it into read-only memory, instead of having to be dynamically
-> > > > allocated at boot time.
-> > > > 
-> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > > > ---
-> > > >   fs/bcachefs/chardev.c | 23 ++++++++++++-----------
-> > > >   1 file changed, 12 insertions(+), 11 deletions(-)
-> > > > 
-> > > > diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-> > > > index 226b39c17667..af587453fd3d 100644
-> > > > --- a/fs/bcachefs/chardev.c
-> > > > +++ b/fs/bcachefs/chardev.c
-> > > > @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
-> > > >   };
-> > > >   
-> > > >   static int bch_chardev_major;
-> > > > -static struct class *bch_chardev_class;
-> > > > +static const struct class bch_chardev_class = {
-> > > > +	.name = "bcachefs",
-> > > > +};
-> > > >   static struct device *bch_chardev;
-> > > >   
-> > > >   void bch2_fs_chardev_exit(struct bch_fs *c)
-> > > > @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
-> > > >   	if (c->minor < 0)
-> > > >   		return c->minor;
-> > > >   
-> > > > -	c->chardev = device_create(bch_chardev_class, NULL,
-> > > > +	c->chardev = device_create(&bch_chardev_class, NULL,
-> > > >   				   MKDEV(bch_chardev_major, c->minor), c,
-> > > >   				   "bcachefs%u-ctl", c->minor);
-> > > >   	if (IS_ERR(c->chardev))
-> > > > @@ -968,26 +970,25 @@ int bch2_fs_chardev_init(struct bch_fs *c)
-> > > >   
-> > > >   void bch2_chardev_exit(void)
-> > > >   {
-> > > > -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> > > > -		device_destroy(bch_chardev_class,
-> > > > -			       MKDEV(bch_chardev_major, U8_MAX));
-> > > > -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> > > > -		class_destroy(bch_chardev_class);
-> > > > +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
-> > > > +	class_unregister(&bch_chardev_class);
-> > > >   	if (bch_chardev_major > 0)
-> > > >   		unregister_chrdev(bch_chardev_major, "bcachefs");
-> > > >   }
-> > > >   
-> > > >   int __init bch2_chardev_init(void)
-> > > >   {
-> > > > +	int ret;
-> > > > +
-> > > >   	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
-> > > >   	if (bch_chardev_major < 0)
-> > > >   		return bch_chardev_major;
-> > > >   
-> > > > -	bch_chardev_class = class_create("bcachefs");
-> > > > -	if (IS_ERR(bch_chardev_class))
-> > > > -		return PTR_ERR(bch_chardev_class);
-> > > > +	ret = class_register(&bch_chardev_class);
-> > > > +	if (ret)
-> > > Here, I think you should call class_unregister to relase resource which 
-> > > allocated before. And the same thing shoud be done in other exception exit.
-> > 
-> > Hi Hongbo,
-> > 
-> > Thank you for the feedback. Did you mean that bch_chardev_major should
-> > be unregistered if the class_register() call fails? Because if it does,
-> > there is no need to call class_unregister().
+On Fri, Mar 08, 2024 at 06:42:27AM -0500, Neal Gompa wrote:
+> On Thu, Mar 7, 2024 at 9:29 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > Add a new statx field for (sub)volume identifiers, as implemented by
+> > btrfs and bcachefs.
+> >
+> > This includes bcachefs support; we'll definitely want btrfs support as
+> > well.
+> >
+> > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Cc: Josef Bacik <josef@toxicpanda.com>
+> > Cc: Miklos Szeredi <mszeredi@redhat.com>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: David Howells <dhowells@redhat.com>
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > ---
+> >  fs/bcachefs/fs.c          | 3 +++
+> >  fs/stat.c                 | 1 +
+> >  include/linux/stat.h      | 1 +
+> >  include/uapi/linux/stat.h | 4 +++-
+> >  4 files changed, 8 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> > index 3f073845bbd7..6a542ed43e2c 100644
+> > --- a/fs/bcachefs/fs.c
+> > +++ b/fs/bcachefs/fs.c
+> > @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+> >         stat->blksize   = block_bytes(c);
+> >         stat->blocks    = inode->v.i_blocks;
+> >
+> > +       stat->subvol    = inode->ei_subvol;
+> > +       stat->result_mask |= STATX_SUBVOL;
+> > +
+> >         if (request_mask & STATX_BTIME) {
+> >                 stat->result_mask |= STATX_BTIME;
+> >                 stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
+> > diff --git a/fs/stat.c b/fs/stat.c
+> > index 77cdc69eb422..70bd3e888cfa 100644
+> > --- a/fs/stat.c
+> > +++ b/fs/stat.c
+> > @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+> >         tmp.stx_mnt_id = stat->mnt_id;
+> >         tmp.stx_dio_mem_align = stat->dio_mem_align;
+> >         tmp.stx_dio_offset_align = stat->dio_offset_align;
+> > +       tmp.stx_subvol = stat->subvol;
+> >
+> >         return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+> >  }
+> > diff --git a/include/linux/stat.h b/include/linux/stat.h
+> > index 52150570d37a..bf92441dbad2 100644
+> > --- a/include/linux/stat.h
+> > +++ b/include/linux/stat.h
+> > @@ -53,6 +53,7 @@ struct kstat {
+> >         u32             dio_mem_align;
+> >         u32             dio_offset_align;
+> >         u64             change_cookie;
+> > +       u64             subvol;
+> >  };
+> >
+> >  /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
+> > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> > index 2f2ee82d5517..67626d535316 100644
+> > --- a/include/uapi/linux/stat.h
+> > +++ b/include/uapi/linux/stat.h
+> > @@ -126,8 +126,9 @@ struct statx {
+> >         __u64   stx_mnt_id;
+> >         __u32   stx_dio_mem_align;      /* Memory buffer alignment for direct I/O */
+> >         __u32   stx_dio_offset_align;   /* File offset alignment for direct I/O */
+> > +       __u64   stx_subvol;     /* Subvolume identifier */
+> >         /* 0xa0 */
+> > -       __u64   __spare3[12];   /* Spare space for future expansion */
+> > +       __u64   __spare3[11];   /* Spare space for future expansion */
+> >         /* 0x100 */
+> >  };
+> >
+> > @@ -155,6 +156,7 @@ struct statx {
+> >  #define STATX_MNT_ID           0x00001000U     /* Got stx_mnt_id */
+> >  #define STATX_DIOALIGN         0x00002000U     /* Want/got direct I/O alignment info */
+> >  #define STATX_MNT_ID_UNIQUE    0x00004000U     /* Want/got extended stx_mount_id */
+> > +#define STATX_SUBVOL           0x00008000U     /* Want/got stx_subvol */
+> >
+> >  #define STATX__RESERVED                0x80000000U     /* Reserved for future struct statx expansion */
+> >
+> > --
+> > 2.43.0
+> >
+> >
 > 
-> Hongbo is correct, if bch2_chardev_init() fails it needs to clean up
-> anything it did.
-
-Hi Kent, 
-
-I agree. I sent a v2 but let me know if you want that to be in a
-separate commit.
-
-Best regards,
--	Ricardo.
-
-
+> I think it's generally expected that patches that touch different
+> layers are split up. That is, we should have a patch that adds the
+> capability and a separate patch that enables it in bcachefs. This also
+> helps make it clearer to others how a new feature should be plumbed
+> into a filesystem.
 > 
-> > 
-> > > > +		return ret;
-> > > >   
-> > > > -	bch_chardev = device_create(bch_chardev_class, NULL,
-> > > > +	bch_chardev = device_create(&bch_chardev_class, NULL,
-> > > >   				    MKDEV(bch_chardev_major, U8_MAX),
-> > > >   				    NULL, "bcachefs-ctl");
-> > > >   	if (IS_ERR(bch_chardev))
-> > > like here..
-> > 
-> > Can you please elaborate?
-> > 
-> > Best regards,
-> > -	Ricardo.
-> > 
-> > 
-> > > > 
-> > > > ---
-> > > > base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-> > > > change-id: 20240305-bcachefs-27a4bb8b9f4f
-> > > > 
-> > > > Best regards,
+> I would prefer it to be split up in this manner for this reason.
+
+I'll do it that way if the patch is big enough that it ought to be
+split up. For something this small, seeing how it's used is relevant
+context for both reviewers and people looking at it afterwards.
