@@ -1,152 +1,134 @@
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6F0224CC
-	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Mar 2024 02:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F54225CC
+	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Mar 2024 02:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709864327; cv=none; b=Jnh34d2SZ5ewqujykSIzWHdfN6KejoS/ibwcy0+Fsz3z1HHDSdwtngAq9tUHC9qqsMwYwGJFwwUCq4Us5eD7rlBCmUuThduEUr8wgDeBl/RV3EFTkgguSAESdb9zjJd1iuX/tiFhisWrZVXuYy3GReB9znN3ct9OWoPN6ZsIRtQ=
+	t=1709864969; cv=none; b=o7r40NHq6a52AW3RluLNo0bWzyD4SB3zvaYPBaPKABrpVEx/eYW8XfSK6oSOwCwmfnXOJR0XO565Ds9hUP24xvVLCUuCynkSGqVvnV9MDTdWV+17yeDfCZH6CNWnDcuGkYZvnF+yt+9LwTULpCEYQfFxPvlTv+JVNJd9c4H8jpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709864327; c=relaxed/simple;
-	bh=nEwH4yfP4vqXQbZOO7lJhENGHFgNWar4jxiwuKlg7Us=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ofHEBSS+eMkqSgCR0ZJivKVsG8EWQ1K/AwHpeZyf6ZdY3M9vwqrrz1ZgTSDalib+iwBvCaw5Edh1w5IFC2Yk8tY+5eY3UdvP4px5CdeThtwHtpQmGwknaZBKxp/citCPNSVwy+6qQGlbYIMEwinBgjZco1RRO0Ix9gaGPmxgE34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xwaUisIj; arc=none smtp.client-ip=95.215.58.179
+	s=arc-20240116; t=1709864969; c=relaxed/simple;
+	bh=duRSN3TaPjNn+KjXCQlU87+ksRGL7u0yBrkBxCW39Ok=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GC4GBILQ8HUyTdam+0yilpX+YLfiqXsPdpk77Ia86HRFyJDk4P0YvNz3fg6IChF4R5yUAVfYgoQYMSwfRrFHQZwZq6VW3lHS8JvnRpVkkPEDpYKlWMSkK4i9/nzthjjF/zB5XsSvIs0jeNkQL9gMevXa8+Hz1fNYgdxyLpfJ6Z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sd1Lmp61; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xwaUisIj"
-Date: Thu, 7 Mar 2024 21:18:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709864322;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tLxjIs8f/lnLvJoE5R+baInSbYa4ox3iynZ8gnuCrEc=;
-	b=xwaUisIjy/cj/mNY5MLxtwBhEG+kOE1pjEA/ITKL9zJkd1mSJn+xQYI5JqbQOfa4gbNHgn
-	1ksclDjfKdRKb4o4L2cZk0h7fCDoXvtJYCe2Q6N4X5LJLmeqpMHYaoiJ405iBpFwbD4lfD
-	9N8Kgm9ey0EY6ip0U8RY72DRjLzPCAw=
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sd1Lmp61"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709864964;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=G5i/vJIJMCUtMZCyLr/3KzDshYesTXRY7gpXnOJ9PWg=;
+	b=sd1Lmp61w01alOwcbQYwZBNP4+/A9BPUOHbrEKwNDmZ8l4Xf2kOXZZooZHVeceGplwV0ZY
+	w0g38MGHk1toMhnkDrraHPIMw8iPsAMuOZRPbwEplW47cPoEyYm0IgZKPQ/JgGddIDi4Ay
+	iXRJOcaNEsiqIzOnYOCycsA+CK5xgqk=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Hongbo Li <lihongbo22@huawei.com>, Brian Foster <bfoster@redhat.com>, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] bcachefs: chardev: make bch_chardev_class constant
-Message-ID: <5odqpww3sjv6ffj3hpmhx25q4fdacstfr5qn7seb3mwrclynpi@drhj7xa2cfyj>
-References: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
- <d1209aa3-b8d4-4509-9689-4882bc079ffd@huawei.com>
- <sky4no6qxoytrkd3azcf5hokmhxrrpluao5ilhbqvprqxwuj4r@ozwmbbulfbrt>
+To: 
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-fsdevel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Josef Bacik <josef@toxicpanda.com>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	David Howells <dhowells@redhat.com>
+Subject: [PATCH v2] statx: stx_subvol
+Date: Thu,  7 Mar 2024 21:29:12 -0500
+Message-ID: <20240308022914.196982-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <sky4no6qxoytrkd3azcf5hokmhxrrpluao5ilhbqvprqxwuj4r@ozwmbbulfbrt>
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Mar 06, 2024 at 08:50:04AM -0300, Ricardo B. Marliere wrote:
-> On  6 Mar 09:23, Hongbo Li wrote:
-> > On 2024/3/6 4:21, Ricardo B. Marliere wrote:
-> > > Since commit 43a7206b0963 ("driver core: class: make class_register() take
-> > > a const *"), the driver core allows for struct class to be in read-only
-> > > memory, so move the bch_chardev_class structure to be declared at build
-> > > time placing it into read-only memory, instead of having to be dynamically
-> > > allocated at boot time.
-> > > 
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > > ---
-> > >   fs/bcachefs/chardev.c | 23 ++++++++++++-----------
-> > >   1 file changed, 12 insertions(+), 11 deletions(-)
-> > > 
-> > > diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-> > > index 226b39c17667..af587453fd3d 100644
-> > > --- a/fs/bcachefs/chardev.c
-> > > +++ b/fs/bcachefs/chardev.c
-> > > @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
-> > >   };
-> > >   
-> > >   static int bch_chardev_major;
-> > > -static struct class *bch_chardev_class;
-> > > +static const struct class bch_chardev_class = {
-> > > +	.name = "bcachefs",
-> > > +};
-> > >   static struct device *bch_chardev;
-> > >   
-> > >   void bch2_fs_chardev_exit(struct bch_fs *c)
-> > > @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
-> > >   	if (c->minor < 0)
-> > >   		return c->minor;
-> > >   
-> > > -	c->chardev = device_create(bch_chardev_class, NULL,
-> > > +	c->chardev = device_create(&bch_chardev_class, NULL,
-> > >   				   MKDEV(bch_chardev_major, c->minor), c,
-> > >   				   "bcachefs%u-ctl", c->minor);
-> > >   	if (IS_ERR(c->chardev))
-> > > @@ -968,26 +970,25 @@ int bch2_fs_chardev_init(struct bch_fs *c)
-> > >   
-> > >   void bch2_chardev_exit(void)
-> > >   {
-> > > -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> > > -		device_destroy(bch_chardev_class,
-> > > -			       MKDEV(bch_chardev_major, U8_MAX));
-> > > -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> > > -		class_destroy(bch_chardev_class);
-> > > +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
-> > > +	class_unregister(&bch_chardev_class);
-> > >   	if (bch_chardev_major > 0)
-> > >   		unregister_chrdev(bch_chardev_major, "bcachefs");
-> > >   }
-> > >   
-> > >   int __init bch2_chardev_init(void)
-> > >   {
-> > > +	int ret;
-> > > +
-> > >   	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
-> > >   	if (bch_chardev_major < 0)
-> > >   		return bch_chardev_major;
-> > >   
-> > > -	bch_chardev_class = class_create("bcachefs");
-> > > -	if (IS_ERR(bch_chardev_class))
-> > > -		return PTR_ERR(bch_chardev_class);
-> > > +	ret = class_register(&bch_chardev_class);
-> > > +	if (ret)
-> > Here, I think you should call class_unregister to relase resource which 
-> > allocated before. And the same thing shoud be done in other exception exit.
-> 
-> Hi Hongbo,
-> 
-> Thank you for the feedback. Did you mean that bch_chardev_major should
-> be unregistered if the class_register() call fails? Because if it does,
-> there is no need to call class_unregister().
+Add a new statx field for (sub)volume identifiers, as implemented by
+btrfs and bcachefs.
 
-Hongbo is correct, if bch2_chardev_init() fails it needs to clean up
-anything it did.
+This includes bcachefs support; we'll definitely want btrfs support as
+well.
 
-> 
-> > > +		return ret;
-> > >   
-> > > -	bch_chardev = device_create(bch_chardev_class, NULL,
-> > > +	bch_chardev = device_create(&bch_chardev_class, NULL,
-> > >   				    MKDEV(bch_chardev_major, U8_MAX),
-> > >   				    NULL, "bcachefs-ctl");
-> > >   	if (IS_ERR(bch_chardev))
-> > like here..
-> 
-> Can you please elaborate?
-> 
-> Best regards,
-> -	Ricardo.
-> 
-> 
-> > > 
-> > > ---
-> > > base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-> > > change-id: 20240305-bcachefs-27a4bb8b9f4f
-> > > 
-> > > Best regards,
+Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Miklos Szeredi <mszeredi@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: David Howells <dhowells@redhat.com>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/fs.c          | 3 +++
+ fs/stat.c                 | 1 +
+ include/linux/stat.h      | 1 +
+ include/uapi/linux/stat.h | 4 +++-
+ 4 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 3f073845bbd7..6a542ed43e2c 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+ 	stat->blksize	= block_bytes(c);
+ 	stat->blocks	= inode->v.i_blocks;
+ 
++	stat->subvol	= inode->ei_subvol;
++	stat->result_mask |= STATX_SUBVOL;
++
+ 	if (request_mask & STATX_BTIME) {
+ 		stat->result_mask |= STATX_BTIME;
+ 		stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
+diff --git a/fs/stat.c b/fs/stat.c
+index 77cdc69eb422..70bd3e888cfa 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+ 	tmp.stx_mnt_id = stat->mnt_id;
+ 	tmp.stx_dio_mem_align = stat->dio_mem_align;
+ 	tmp.stx_dio_offset_align = stat->dio_offset_align;
++	tmp.stx_subvol = stat->subvol;
+ 
+ 	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+ }
+diff --git a/include/linux/stat.h b/include/linux/stat.h
+index 52150570d37a..bf92441dbad2 100644
+--- a/include/linux/stat.h
++++ b/include/linux/stat.h
+@@ -53,6 +53,7 @@ struct kstat {
+ 	u32		dio_mem_align;
+ 	u32		dio_offset_align;
+ 	u64		change_cookie;
++	u64		subvol;
+ };
+ 
+ /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
+diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+index 2f2ee82d5517..67626d535316 100644
+--- a/include/uapi/linux/stat.h
++++ b/include/uapi/linux/stat.h
+@@ -126,8 +126,9 @@ struct statx {
+ 	__u64	stx_mnt_id;
+ 	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
+ 	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
++	__u64	stx_subvol;	/* Subvolume identifier */
+ 	/* 0xa0 */
+-	__u64	__spare3[12];	/* Spare space for future expansion */
++	__u64	__spare3[11];	/* Spare space for future expansion */
+ 	/* 0x100 */
+ };
+ 
+@@ -155,6 +156,7 @@ struct statx {
+ #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
+ #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
+ #define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
++#define STATX_SUBVOL		0x00008000U	/* Want/got stx_subvol */
+ 
+ #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+ 
+-- 
+2.43.0
+
