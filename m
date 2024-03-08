@@ -1,100 +1,109 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3691C288DF
-	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Mar 2024 17:13:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725F51DDEA
+	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Mar 2024 23:37:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709918006; cv=none; b=sJho+R/w+QcbHRGh4qr1kXZw1Yd+H9Sqea/tMC7cIHIMo/BqHb8XLVG0XWpNuyMvaaDogN0Tuk7F8JUpSEVFY8Ab772D1IfEJ8cTfps7RcrLEUasBD263dwXdaCn9scONwPAPBQC6C9xeue7xeJ4vq2VnFLLXw10T2koTeWs6ag=
+	t=1709941049; cv=none; b=PPTl0FS+nFys9hbue18NfZ21T5zEK7pyN3X70grD/ORC5fPoPFA52bAjYN8nn8v8nJzjvkrBZetVr2v9ZL0ifSfa0xFvzjQ5cJLU44KKa0J46mlpUOfxV9KTQFafM/gbGynHXleBdw26Ki2QmdHMGoYFBa8fRB705aEp0hawfIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709918006; c=relaxed/simple;
-	bh=7Xu6eZCzCVliCAZZme0wZBJGDCt14tP5UMVuvQ4xw/8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UKhlI37AT/sjWObMAx2kGLXMMNNzLwgCyy3a7P7aCxjCSDYfXfi57BLuLamfEe4qWcXd6rryYtEDgLbYq92AaAlPD6NpDLcO4TJCVjEVdBjovSrtVjCB/9/KE4/K0moXhi6MEwZsYvFsGyN9ZzNK5rkPu+dLFyp2wuyINx86MGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gKgJaFyU; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1709941049; c=relaxed/simple;
+	bh=IR1evY+/fVJefynOXniLDEGrtFLiPZkwmPmJGfHqqZA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X1/cCQEnNgCpqLQwBz2OLgQFrMAtR/wPF5naHv1ilKQ0VtjCw0WGdiPLXxeOpvL5T3c7BD3htu4znoDlLW7Y4s/6tglbcGuru7/CN/QENA30KhvZ9tc5hSzNsMNJrQIrR+gjwaWwYHrYQHjXge2Y8tzOdHzb38fURFcd5gV0AK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=di3eiiua; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gKgJaFyU"
-Date: Fri, 8 Mar 2024 12:13:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709918002;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n/ZGm97f9Vx3dMv4Q4ZF92Mt8t0Jy8x8fbbYpW0hUz0=;
-	b=gKgJaFyUdAaj+GtRl0l7T4brse8kJ+I5o8KpA1mSNxkFfrrXV1QQgh/thdpH4oqfVf4SOv
-	UtJw92+UPgU2yOjM4cf2OIrZcQgZ1xK8Af+ReQADA7x8bPLG1aL1wl2eYsjRXDfsRpPD23
-	ojLZKJnsNZSjIpgStzoF/6saJH9xdJo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Neal Gompa <neal@gompa.dev>, linux-fsdevel@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Josef Bacik <josef@toxicpanda.com>, Miklos Szeredi <mszeredi@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-Message-ID: <6czkpcm4gxcjik3drcy6eys6lannfk55oowdesem2qr3gfgobw@lblo3vzck43e>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
- <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
- <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
- <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
- <20240308165633.GO6184@frogsfrogsfrogs>
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="di3eiiua"
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d422b6253cso11381331fa.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 08 Mar 2024 15:37:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1709941045; x=1710545845; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BWqzK++ULFU7/4Kx3s39++fNSG43DjivkrHSKl5PvTo=;
+        b=di3eiiuaN3hru8DB84cSnXr0vPEi2u52v8fwY0yVopRYLWSupn+hv+U9XZhAOzzld3
+         CWyZW6PhieAB5MZWpi1Pz3Ri01Fh8UZxTAp7ffQnKFxHqy4SnQsamr/AbQjz9IwKTvuq
+         dvOO5ybS4OnobVo1AxfoL8wcdMGbch+YqcLbbl/O3jMYXdNCjEKnB9LD8DRY35MNbCXq
+         SGZ6LbT6GcOWqP3BrQgcys8YO/8UV0GRPTR+sJc9A1bNOzUMWpK4OaMjeJFnuvgACkdH
+         POFqq+LC+iAkLA/ujx64OsO0hevWSVtdW95W+zP3MAjrCQS4CXS1XiCTQSCryvS7OCIH
+         oEeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709941045; x=1710545845;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BWqzK++ULFU7/4Kx3s39++fNSG43DjivkrHSKl5PvTo=;
+        b=Uj+jiAB4pX/vGXytGydsslFpRisTc+emvBuzuifhQZAhAj0QjcWF0+YsypZR2KFybY
+         cuowGpL+NTfwO9G51d4VRyBqZ460LKsC7hsgtw8JP7176k2tmiSSkR3dreU3K1NcvLdr
+         Sn8QW7nQZ9SpVDFs3aEju1MKEe9beAH8MQ1/uCoXpw9V0dqdvhL9S50QTOfo7KyNiyfY
+         CYjD4EhL9VV3SftenBjvGoiBYAG/pEw7b50RN8Zhu+CXb1JwXTzuqNvAUx/YuBQrAt4Y
+         Ki+K+nOGKjq3ICgybxXNELAd7w/62ZyLl5Uv/MsTPdvmiauFj+oOZY+70vx3OjY91YOM
+         QXNA==
+X-Gm-Message-State: AOJu0YwXuTG7zaAs5vxHo6eEh6UGwXvtK9ueXsE1N5tM3Ax/0Ydu5Tu5
+	P1GZcDZUBOoLmRHvsPcPCTgHG52JN+OhPbqI0NxYq1wj6gyeijPkLnKjWw53RiB8gKUHNtyTPWr
+	ryhBczEIOMrkcub/UqaVDNF2nRiTt8COpZX4=
+X-Google-Smtp-Source: AGHT+IFWzZSkB44iR5GtwhVSSKuVPiEPLXHAdxZiOeQ10NWzF3Zugv6ag7i15atvU5VqQC7qRb0dgO4G0yY+86ZiqAo=
+X-Received: by 2002:a2e:b0f5:0:b0:2d4:1d45:d5cd with SMTP id
+ h21-20020a2eb0f5000000b002d41d45d5cdmr374425ljl.48.1709941045301; Fri, 08 Mar
+ 2024 15:37:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308165633.GO6184@frogsfrogsfrogs>
-X-Migadu-Flow: FLOW_OUT
+References: <CAMU1PDhRCpqsie5G4jOdVsyOmaXa4naDjWFTvjm_RiDrAhwPRw@mail.gmail.com>
+ <iloqkrwanqljkorf3tky4rskjqpnl4zqqklejjf3w3gfu3ezjp@uwr2xwhscjlz>
+In-Reply-To: <iloqkrwanqljkorf3tky4rskjqpnl4zqqklejjf3w3gfu3ezjp@uwr2xwhscjlz>
+From: Mike Fleetwood <mike.fleetwood@googlemail.com>
+Date: Fri, 8 Mar 2024 23:37:13 +0000
+Message-ID: <CAMU1PDjK=j+OfZhs1i7vPwWQ1E4VNx0t0XB-q4xeZ90_imOu1w@mail.gmail.com>
+Subject: Re: [WIP] bcachefs fs usage update
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Mar 08, 2024 at 08:56:33AM -0800, Darrick J. Wong wrote:
-> On Fri, Mar 08, 2024 at 11:48:31AM -0500, Kent Overstreet wrote:
-> > It's a new feature, not a bugfix, this should never get backported. And
-> > I the bcachefs maintainer wrote the patch, and I'm submitting it to the
-> > VFS maintainer, so if it's fine with him it's fine with me.
-> 
-> But then how am I supposed to bikeshed the structure of the V2 patchset
-> by immediately asking you to recombine the patches and spit out a V3?
-> 
-> </sarcasm>
-> 
-> But, seriously, can you update the manpage too?
+On Fri, 8 Mar 2024 at 01:23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> On Wed, Mar 06, 2024 at 11:14:45AM +0000, Mike Fleetwood wrote:
+> > On 2024-03-02 04:14, Kent Overstreet wrote:
+> > > I'm currently updating the 'bcachefs fs usage' command for the disk
+> > > accounting rewrite, and looking for suggestions on any improements we
+> > > could make - ways to present the output that would be clearer and more
+> > > useful, possibly ideas on on new things to count...
+> >
+> > [Sorry for any email thread butchering.  I've only just subscribed to
+> > the list and seen this in the archive.]
+> >
+> > Background:
+> > I'm working on adding some level of support for bcachefs into GParted.
+> > It wants to be able to report the FS usage (per device) of a file system
+> > to (1) display in the UI, and (2) to limit how small it allows a
+> > partition to be shrunk.  (I understand that bcachefs doesn't currently
+> > support shrinking devices).
+> >
+> > What I would like from bcache fs usage is:
+> > 1. To be able to get free and capacity figures for a device in an
+> >    unmounted bcachefs file system.
+> >    EG:
+> >    bcachefs fs usage /dev/$PTN
+>
+> that'll take some work, but should be doable
+>
+> > 2. To continue to be able to get free and capacity figures in bytes.
+> >    Using a command line switch is okay.
+>
+> json output?
 
-yeah, where's that at?
+Json output is not required.  Plain human readable text will do.
 
-> Is stx_subvol a u64
-> cookie where userspace mustn't try to read anything into its contents?
-> Just like st_ino and st_dev are (supposed) to be?
-
-Actually, that's up for debate. I'm considering having the readdir()
-equivalent for walking subvolumes return subvolume IDs, and then there'd
-be a separate call to open by ID.
-
-Al's idea was to return open fds to child subvolumes, then userspace can
-get the path from /proc; that's also a possibility.
-
-The key thing is that with subvolumes it's actually possible to do an
-open_by_id() call with correct security checks on pathwalking - because
-we don't have hardlinks so there's no ambiguity.
-
-Or we might do it getdents() style and return the path directly.
-
-But I think userspace is going to want to work with the volume
-identifiers directly, which is partly why I'm considering why other
-options might be cleaner.
-
-Another thing to consider: where we're going with this is giving
-userspace a good efficient interrface for recursive tree traversal of
-subvolumes, but it might not be a bad idea to do that for mountpoints as
-well - similar problems, similar scalability issues that we might want
-to solve eventually.
-
-> Should the XFS data and rt volumes be reported with different stx_vol
-> values?
-
-Maybe?
+None of the other file system tools provide json output so GParted just
+parses the plain text output they do provide.  These are the commands
+GParted runs and parses the output from to get usage figures for a few
+of the file systems it supports:
+  btrfs inspect-internal dump-super /dev/$PTN
+  dumpe2fs -h /dev/$PTN
+  xfs_db -r -c 'sb 0' -c 'print blocksize' -c 'print dblocks' \
+  -c 'print fdblocks' /dev/$PTN
