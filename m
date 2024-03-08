@@ -1,134 +1,141 @@
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F54225CC
-	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Mar 2024 02:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E4D2C6AD
+	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Mar 2024 05:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709864969; cv=none; b=o7r40NHq6a52AW3RluLNo0bWzyD4SB3zvaYPBaPKABrpVEx/eYW8XfSK6oSOwCwmfnXOJR0XO565Ds9hUP24xvVLCUuCynkSGqVvnV9MDTdWV+17yeDfCZH6CNWnDcuGkYZvnF+yt+9LwTULpCEYQfFxPvlTv+JVNJd9c4H8jpA=
+	t=1709874205; cv=none; b=Ty0dBs3BwXog2uhWBC96zTx+yWTIfDRULEwhoL5OvlM8BZlQFehd2/HBR/hz9yuPjCoUhsCVI4LBN5ZcPocW+XKNgFkQ/mHNAIM3H2S9Kx9KeVaH2m8K2t1yl2bVAh6MoCc4URiXMNUT47y8V+AgG1Xastt2/irM2V5i4ut+alI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709864969; c=relaxed/simple;
-	bh=duRSN3TaPjNn+KjXCQlU87+ksRGL7u0yBrkBxCW39Ok=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GC4GBILQ8HUyTdam+0yilpX+YLfiqXsPdpk77Ia86HRFyJDk4P0YvNz3fg6IChF4R5yUAVfYgoQYMSwfRrFHQZwZq6VW3lHS8JvnRpVkkPEDpYKlWMSkK4i9/nzthjjF/zB5XsSvIs0jeNkQL9gMevXa8+Hz1fNYgdxyLpfJ6Z0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sd1Lmp61; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1709874205; c=relaxed/simple;
+	bh=yX+xRTLfEct+8uswEj8HF/jRBFVAKp0+EgtSenDq9Jk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mnnqkK5pajTunq8A0BHB6wPc4HJGGTisG83ciNjvxmprmcsZJKYgtmGX86qOZ+TXOTHu+hLQFbbrZrW01ak0vlNb+K5oIMON/xBKzrmISsfIUjz+qvV63W0K11hMBtFzUzASi334qIMeeHNpZGVoQhLgqLWpSQUV2YAmFPXiWkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=JfeXTf/a; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=voxdR0SQ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Dcsy8yOL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Nag4q8VT; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sd1Lmp61"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709864964;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=G5i/vJIJMCUtMZCyLr/3KzDshYesTXRY7gpXnOJ9PWg=;
-	b=sd1Lmp61w01alOwcbQYwZBNP4+/A9BPUOHbrEKwNDmZ8l4Xf2kOXZZooZHVeceGplwV0ZY
-	w0g38MGHk1toMhnkDrraHPIMw8iPsAMuOZRPbwEplW47cPoEyYm0IgZKPQ/JgGddIDi4Ay
-	iXRJOcaNEsiqIzOnYOCycsA+CK5xgqk=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: 
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-fsdevel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>,
-	Miklos Szeredi <mszeredi@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: [PATCH v2] statx: stx_subvol
-Date: Thu,  7 Mar 2024 21:29:12 -0500
-Message-ID: <20240308022914.196982-1-kent.overstreet@linux.dev>
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="JfeXTf/a";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="voxdR0SQ";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Dcsy8yOL";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Nag4q8VT"
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CF1BB6134B;
+	Fri,  8 Mar 2024 03:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709870380; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vR92AfeYytpKVRpFW7l2eLSF27go8K4V6fXc4cP3HOM=;
+	b=JfeXTf/aXgFZ/TWLfbDm5pZuDUhb/fC4+ZiQ2khKWH+ciJxX6ZHVTOFSSl07v6x63goFvt
+	szflYWAxEoZV4F84B3Z6iQLIvMKu6ghKixd7IZSHYRyW+FmmCcU4wirN97LAeyiWt+a7GZ
+	0Ranot82GoZq1l+0ERbifObXZiCZs5Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709870380;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vR92AfeYytpKVRpFW7l2eLSF27go8K4V6fXc4cP3HOM=;
+	b=voxdR0SQzBc0M8myOlOTLrnr/oYrQ/zAw46V72rMD0Le9FZLx2JIz9Eh6fsHB/W2HmWvj0
+	+Qt8fUvNriGbfLDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709870379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vR92AfeYytpKVRpFW7l2eLSF27go8K4V6fXc4cP3HOM=;
+	b=Dcsy8yOL/klOMbV4zxeKrIVZMFUX3cnm/E2FhaRKHQTbnxp9Y0jdmlMK73E1ohhtIxvL9u
+	Yqocf2blgtnQapjQ11fWqYZrLrfFZ4OInLtciwSpn+KYXol/3aMpvH8vkmnutFqjk1DbpE
+	DondlJn4aS9LKsxPxm2Xc81WPUgAOW0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709870379;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vR92AfeYytpKVRpFW7l2eLSF27go8K4V6fXc4cP3HOM=;
+	b=Nag4q8VT0UxLEGYog/fotqqDi4avXQhtTZIV1ozqKB8DOWNLvqKNxaihc4qmnvRtUhjfjA
+	3++HcK4/HNJv7fCg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7DB3A13A5D;
+	Fri,  8 Mar 2024 03:59:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id ukWACyqN6mUdewAAn2gu4w
+	(envelope-from <ddiss@suse.de>); Fri, 08 Mar 2024 03:59:38 +0000
+Date: Fri, 8 Mar 2024 14:59:26 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] make-release-tarball.sh: run cargo audit
+Message-ID: <20240308145926.0b7f7ef6@echidna>
+In-Reply-To: <n6p6xwwrm4rusf2wjrhqromfajixigo5ddc3ma46ch3f3w7jhi@mwl3h25abthd>
+References: <20240130070356.8174-1-ddiss@suse.de>
+	<n6p6xwwrm4rusf2wjrhqromfajixigo5ddc3ma46ch3f3w7jhi@mwl3h25abthd>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Dcsy8yOL;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Nag4q8VT
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.32 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.31)[75.26%]
+X-Spam-Score: -1.32
+X-Rspamd-Queue-Id: CF1BB6134B
+X-Spam-Flag: NO
 
-Add a new statx field for (sub)volume identifiers, as implemented by
-btrfs and bcachefs.
+On Thu, 7 Mar 2024 21:16:02 -0500, Kent Overstreet wrote:
 
-This includes bcachefs support; we'll definitely want btrfs support as
-well.
+> On Tue, Jan 30, 2024 at 06:03:56PM +1100, David Disseldorp wrote:
+> > cargo audit can be used to check bcachefs dependencies for
+> > vulnerabilities published in the advisory database at
+> > https://github.com/RustSec/advisory-db.git
+> > 
+> > Given the significant size of dependency sources (currently ~292M),
+> > manual audit is mostly unviable, so rely on this for now.  
+> 
+> Not a good place for this, workflow-wise; I run make-release-tarball.sh
+> after the new release is tagged and frequently after the tag is
+> uploaded.
+> 
+> This would better be run as some sort of cron job that emails results to
+> the list when something is found.
 
-Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: David Howells <dhowells@redhat.com>
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/fs.c          | 3 +++
- fs/stat.c                 | 1 +
- include/linux/stat.h      | 1 +
- include/uapi/linux/stat.h | 4 +++-
- 4 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 3f073845bbd7..6a542ed43e2c 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
- 	stat->blksize	= block_bytes(c);
- 	stat->blocks	= inode->v.i_blocks;
- 
-+	stat->subvol	= inode->ei_subvol;
-+	stat->result_mask |= STATX_SUBVOL;
-+
- 	if (request_mask & STATX_BTIME) {
- 		stat->result_mask |= STATX_BTIME;
- 		stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
-diff --git a/fs/stat.c b/fs/stat.c
-index 77cdc69eb422..70bd3e888cfa 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
- 	tmp.stx_mnt_id = stat->mnt_id;
- 	tmp.stx_dio_mem_align = stat->dio_mem_align;
- 	tmp.stx_dio_offset_align = stat->dio_offset_align;
-+	tmp.stx_subvol = stat->subvol;
- 
- 	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
- }
-diff --git a/include/linux/stat.h b/include/linux/stat.h
-index 52150570d37a..bf92441dbad2 100644
---- a/include/linux/stat.h
-+++ b/include/linux/stat.h
-@@ -53,6 +53,7 @@ struct kstat {
- 	u32		dio_mem_align;
- 	u32		dio_offset_align;
- 	u64		change_cookie;
-+	u64		subvol;
- };
- 
- /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
-diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-index 2f2ee82d5517..67626d535316 100644
---- a/include/uapi/linux/stat.h
-+++ b/include/uapi/linux/stat.h
-@@ -126,8 +126,9 @@ struct statx {
- 	__u64	stx_mnt_id;
- 	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
- 	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
-+	__u64	stx_subvol;	/* Subvolume identifier */
- 	/* 0xa0 */
--	__u64	__spare3[12];	/* Spare space for future expansion */
-+	__u64	__spare3[11];	/* Spare space for future expansion */
- 	/* 0x100 */
- };
- 
-@@ -155,6 +156,7 @@ struct statx {
- #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
- #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
- #define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
-+#define STATX_SUBVOL		0x00008000U	/* Want/got stx_subvol */
- 
- #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
- 
--- 
-2.43.0
-
+Fair enough, will set something up as part of the downstream (openSUSE)
+release process.
