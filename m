@@ -1,39 +1,38 @@
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB355C99
-	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Mar 2024 01:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7CC225AE
+	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Mar 2024 01:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709860776; cv=none; b=B548eVrCn7+vJYqyXZ6oOIcskLL9IfyJv73l8Ax2bx6XESVVgSjo4DYSqOf3QlcX1/EGOEYYioZlqMCKGWajE+twp0swTBEkBhedEoEhE2GnZLGfiJRUt+254ixX4S/Y9GTqibDWmGYMn6QoRPx67B3HjTlFrXUoAyo3xgIB9iw=
+	t=1709861002; cv=none; b=Y3HQmO4zbWyi3DnnU6WojrnTPt7z8Zbx67J1raDSnee5x1Pn7SQ2RiAlJv4Cb4QlD4bAsprttImTJf5DS6WI/X8LBNrEq14q9IM/ZfDUkSMBP0DjotFtNN9cF8IYpyW8Eik4SXFvZmkMcvBi+msI3ivGMBg3AY8V9NeeMYsSy2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709860776; c=relaxed/simple;
-	bh=hFYC+dZmItRqdY8eLFw1b+2n00gtumaoZ8ajsiyYiBs=;
+	s=arc-20240116; t=1709861002; c=relaxed/simple;
+	bh=sJOle0TfUYxstKMgel09TJ/kKsb8xMMTr/mLtucUaSU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h5i1u6/n12B26C0OrSSOGrTqj8aTEFe3MG4Q2rvacRjuoXnwYuSKhywZ0mdpRj4zOoaRyjXum48bP5p+sl1wgxDnWyKKJ2B0YJBMIb6FjF3RNIe4B2krYVYT+GGVK0uXbjdatg6GtxbfqiGUAGW6qdZCb6W/Atp36chdQW1Q4cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aC7yVitj; arc=none smtp.client-ip=95.215.58.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=MPPPRsoSiOC0zT7CcuJk5+4DH8rifvAez5AslU+PdRxC3edIfi81LbRBTFF3Y/4qZaSAYjCSleYutW32RAr5oZp6MrakBe3fmGbNObilbj0KMc7ymaN1FmWRbfD1lr46WTsbqW/pnIDu5mxXWQE/HUAanSyMb/tEpykJgHycRGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bcHYIM/w; arc=none smtp.client-ip=91.218.175.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aC7yVitj"
-Date: Thu, 7 Mar 2024 20:19:28 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bcHYIM/w"
+Date: Thu, 7 Mar 2024 20:23:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709860772;
+	t=1709860997;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2X7LxRDuZ9a7/MTnYErHNfaujnAmKQPJXz5HFUyzm6g=;
-	b=aC7yVitjD/3VJNPjyrpmpsIFg0NkBYlE3gGaKZstakzQ1Lb7oY0lIFPgaiYjQSXpnGgFj1
-	NKaYakKGgjbSNmyVl5MFkLIb/CZNbyUYR89uh5WwcNWWOdvLy2+BSZE/eP4SsBF+ykSVuf
-	yvt8dJjQT9/zfXg0H9wkASDvCSvZHEU=
+	bh=NJQ3m4N05abn6Lu9DecctEL6PUVe4ZuIOPNH8h68ytc=;
+	b=bcHYIM/wxrT08IZqcMRbcTBVh5DXRPinmr5C0d9iv8fSRxVDGlo1OBxTE1xKq+KydfILvl
+	A+0PtcRnT5OBJ4TS3zHs7PoEc4FOh1/cs0hN8Gl5ZPsrcjX1tfbsvOlecD45BLcDc7mSfV
+	ppJjWuN3gD0xdjZKnIPCSycUfc2J84U=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Steinar H. Gunderson" <steinar+bcachefs@gunderson.no>
+To: Mike Fleetwood <mike.fleetwood@googlemail.com>
 Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: Broken multi-device filesystem
-Message-ID: <ppkxhvv7g4lkuqppijhhigmbu7ofpbkosenmoionbjdq7hsdoq@ds2sckvl5nyr>
-References: <20240304173647.s5mpkojd3fnvbpu4@sesse.net>
- <20240306222521.rxlzivzuz6yqujes@sesse.net>
+Subject: Re: [WIP] bcachefs fs usage update
+Message-ID: <iloqkrwanqljkorf3tky4rskjqpnl4zqqklejjf3w3gfu3ezjp@uwr2xwhscjlz>
+References: <CAMU1PDhRCpqsie5G4jOdVsyOmaXa4naDjWFTvjm_RiDrAhwPRw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -42,49 +41,35 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240306222521.rxlzivzuz6yqujes@sesse.net>
+In-Reply-To: <CAMU1PDhRCpqsie5G4jOdVsyOmaXa4naDjWFTvjm_RiDrAhwPRw@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Mar 06, 2024 at 11:25:21PM +0100, Steinar H. Gunderson wrote:
-> On Mon, Mar 04, 2024 at 06:36:47PM +0100, Steinar H. Gunderson wrote:
-> > So the entire machine is hosed. (I still have an older copy of the filesystem
-> > in xfs form on a different partition, so I can boot into that, and I do have
-> > backups of all the user data, but it is still pretty inconvenient.)
+On Wed, Mar 06, 2024 at 11:14:45AM +0000, Mike Fleetwood wrote:
+> On 2024-03-02 04:14, Kent Overstreet wrote:
+> > I'm currently updating the 'bcachefs fs usage' command for the disk
+> > accounting rewrite, and looking for suggestions on any improements we
+> > could make - ways to present the output that would be clearer and more
+> > useful, possibly ideas on on new things to count...
 > 
-> I did a dump of the filesystem to two .qcow2 files, overriding the split
-> brain detection (and then repaired them with qemu-img, as qemu-nbd was
-> complaining they were broken). fsck on the resulting block devices gave an
-> assertion error:
+> [Sorry for any email thread butchering.  I've only just subscribed to
+> the list and seen this in the archive.]
+> 
+> Background:
+> I'm working on adding some level of support for bcachefs into GParted.
+> It wants to be able to report the FS usage (per device) of a file system
+> to (1) display in the UI, and (2) to limit how small it allows a
+> partition to be shrunk.  (I understand that bcachefs doesn't currently
+> support shrinking devices).
+> 
+> What I would like from bcache fs usage is:
+> 1. To be able to get free and capacity figures for a device in an
+>    unmounted bcachefs file system.
+>    EG:
+>    bcachefs fs usage /dev/$PTN
 
-Can you hop on IRC and send me the dumps with magic wormhole?
+that'll take some work, but should be doable
 
-> 
->   root@bigscreen:~/bcachefs-tools# ./bcachefs fsck /dev/nbd0:/dev/nbd1
->   mounting version 1.6: btree_subvolume_children opts=ro,compression=lz4,degraded,fsck,fix_errors=ask,read_only
->   recovering from unclean shutdown
->   superblock requires following recovery passes to be run:
->     check_subvols,check_dirents
->   Version upgrade from 1.3: rebalance_work to 1.6: btree_subvolume_children incomplete
->   Doing compatible version upgrade from 1.3: rebalance_work to 1.6: btree_subvolume_children
->   
->   journal read done, replaying entries 7263903-7263903
->   error validating btree node on /dev/nbd0 at btree extents level 2/2
->     u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq b25c303a8b7a1163 written 112 min_key POS_MIN durability: 1 ptr: 0:441498:0 gen 1
->     node offset 64/112: btree node data missing: expected 112 sectors, found 64: fix?
->    (y,n, or Y,N for all errors of this type) Y
->   btree_node_read_work: rewriting btree node at btree=extents level=2 SPOS_MAX due to error
->   error validating btree node on /dev/nbd0 at btree dirents level 1/1
->     u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 79b64c5dfcd3e63e written 459 min_key POS_MIN durability: 1 ptr: 0:351317:0 gen 2
->     node offset 0/459 bset u64s 17199: checksum error: got bb38ac4c should be fbddc60e type crc32c_nonzero, fixing
->   error validating btree node at btree dirents level 1/1
->     u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 79b64c5dfcd3e63e written 459 min_key POS_MIN durability: 1 ptr: 0:351317:0 gen 2
->     node offset 0/459 bset u64s 17199: invalid bkey: u64s too small (2 < 5)
->     u64s 2 type deleted POS_MIN len 0 ver 0: , fixing
->   error validating btree node on /dev/nbd0 at btree dirents level 1/1
->     u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 79b64c5dfcd3e63e written 459 min_key POS_MIN durability: 1 ptr: 0:351317:0 gen 2
->     node offset 270/459: btree node data missing: expected 459 sectors, found 270, fixing
->   bcachefs: libbcachefs/extents.h:71: extent_entry_bytes: Assertion `0' failed.
-> 
-> /* Steinar */
-> -- 
-> Homepage: https://www.sesse.net/
+> 2. To continue to be able to get free and capacity figures in bytes.
+>    Using a command line switch is okay.
+
+json output?
