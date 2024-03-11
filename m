@@ -1,152 +1,99 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1417EC;
-	Mon, 11 Mar 2024 01:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04FCAEBE
+	for <linux-bcachefs@vger.kernel.org>; Mon, 11 Mar 2024 02:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710121329; cv=none; b=HVivF2l1ygHzbGke/tgq8MFaQ9l2AlhyRP8ArkKpdk/vDMCta7WFaSs+Uz26sOUTFn6OZOSKBZvz1Il3gVYhAv522fsJ6hhT2E0IA0EPLoidyaRiz61S1ymg5C7LpY/mocdkSn4rAIdWQSIeaPrGb7Wir3SjNEtUjDUocQbMLwA=
+	t=1710123433; cv=none; b=u/5ZXNhQcEMwS6RqyJHDty8u5/2QQZiFRhQxqKxtBqjsWuor6G/7yoD09L7+/hs5Q6oFMJgRZjrxn7m2+J6rjSSpdprcanr7+1f6tI7qK5k47qDNT3b4U0US9W3/xMASncbPWGjQcIl4WooU5PwvRTWUgXwhLDoLhvJfhrPXZ0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710121329; c=relaxed/simple;
-	bh=tlGY4WhXXjsLLH1CJl1ckUpvArPPoMe47vLaJrYpYlc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=dJOJV2zgk0y/v9lQPkQma88hw0EKap76panWsJAa7TGOQaz5TkKwx0nC/umvhvceyLZcyMQhgyf+4Zbr2Z6q8fjUax5JaJ/q+EtxitZzT27w6VewqCBU9KwMBnQy+1mfrKwcfU+Nim+j6YDvN1bHC2lthsCM828KUZZtr7ZktZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TtKGQ386nz1xqhQ;
-	Mon, 11 Mar 2024 09:40:14 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2CDC41A0172;
-	Mon, 11 Mar 2024 09:41:57 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 09:41:56 +0800
-Message-ID: <4ddd2362-2383-434a-b4b0-2075072572d6@huawei.com>
-Date: Mon, 11 Mar 2024 09:41:56 +0800
+	s=arc-20240116; t=1710123433; c=relaxed/simple;
+	bh=1L7MoSZFuvPSNtlP8t+DsIgAFz3OYQfQmtdX/FZeVDI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OZbbD70lnA1r7CCGi7bchajr0jG0BMlvJaQ0KstGj7KObjdR6IaSjxeRHpgirokpta8dPGM64quSK/AtIymO11Akmgn5HrNYbEqYIg+0sCBsbXLJWMh//VNI7sF22GnaWV7TZ0bgvwinemeDkYOwyiJsDYUO4E5CWpXvnvQA0Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=jCk0db+n; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="jCk0db+n"
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-29bbff1505dso855991a91.0
+        for <linux-bcachefs@vger.kernel.org>; Sun, 10 Mar 2024 19:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1710123431; x=1710728231; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P2HOPvTzIOfPgTuaGyDXCX6Oprhe2Q5xowyCchEBaBY=;
+        b=jCk0db+nO/Lk+OXykEwsQIfoYn/mAi0EHmQXCu1T3dBwlf9+KTQiLrby5GBp93j7U7
+         V5ghmYNvale5vaOcsnZ+1He+O8nnGePtL2AI9KIg8S++ZwY4GcGyJtBjqF6y7n8hL4sD
+         j46+YkXWN7Dv4S2FZm/DzLh46ak9YXGD+5wmbWSDv54w8oWWDrNLs6RfrvlbBdOv9kg4
+         5sc4C5KzOT89NoK6Y3b2z4gB397PO7ySMlN4Qmk9wXAxMlTfgceg4KFbcfsxr79qz1Zx
+         rtEI2xQihYLAwHnQH6V5mtU2k1CinLV/rS4y+0Pdh0uVG84aHteeiyNLpTxFKUctBVSb
+         6Otg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710123431; x=1710728231;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P2HOPvTzIOfPgTuaGyDXCX6Oprhe2Q5xowyCchEBaBY=;
+        b=rPBuQUjm/cq9FxOh5gC0TvC7RlYtiBIv/hRF1CEtwj4rViWi/0ItSptKAyFw6IenwP
+         KIwI5TbbAWC47iS6mvWVd7+y8QBuhvFSI+EVRTSgBCbm9d3vfixm9xDTlrQhQY02zWpE
+         TVVtvhQo5lwFvSdrahDNRTFvFcO+dTIc1HliN0ioD7O/CGedLHJk0uDceJ94unPFcNUr
+         01+79Gpl83pp+QGJOlWUkS2dmxFivsGSMFH1A4zVAKDkyAvICn55/GsojzD0G2M0pGkI
+         plWL/6Ni/Ntx84yE5pN1MlPB5O6e5c/Dq25YiBanzsmm35yUmacQvP7BF0Xdeo5s8NaC
+         6S8A==
+X-Forwarded-Encrypted: i=1; AJvYcCXHj1BCbPf4PKEgFG5XexVUyvC5EQmFAUxvXQ23ej4zEWiDvFAxeCAGLzOjnuN3u1Dx1E864fIfPFlKDUnHp32olWOKUdD9bDFvHeqKhj0=
+X-Gm-Message-State: AOJu0YwKD1o9KgdQlpoPHHOD4bcivPTTA6LJC/08+PzQYzZGgc7FlQKu
+	4B9ZZRAAzL2qJCXUvDwUXOWE8qJzRCtlYpKZrXFqS8RygXecBL1ShuYcxrrKIT0=
+X-Google-Smtp-Source: AGHT+IEgtGW5AN8mnjwdibd+gLuySW0tEDIBlzlkkIrMs8fV0hgNTvd0J7PfU9RiDNuMx2cvGySV0Q==
+X-Received: by 2002:a17:90a:f417:b0:299:a69:1f8b with SMTP id ch23-20020a17090af41700b002990a691f8bmr3199478pjb.23.1710123431284;
+        Sun, 10 Mar 2024 19:17:11 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-47-118.pa.nsw.optusnet.com.au. [49.179.47.118])
+        by smtp.gmail.com with ESMTPSA id p3-20020a17090a348300b0029bc1c931d9sm3752893pjb.51.2024.03.10.19.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 19:17:10 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rjVDw-000GCA-1X;
+	Mon, 11 Mar 2024 13:17:08 +1100
+Date: Mon, 11 Mar 2024 13:17:08 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Neal Gompa <neal@gompa.dev>, linux-fsdevel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v2] statx: stx_subvol
+Message-ID: <Ze5ppBOFpVm1jyb+@dread.disaster.area>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
+ <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
+ <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
+ <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
+ <20240308165633.GO6184@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bcachefs: chardev: make bch_chardev_class constant
-To: "Ricardo B. Marliere" <ricardo@marliere.net>, Kent Overstreet
-	<kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240308-bcachefs-v2-1-3e84c845055e@marliere.net>
-Content-Language: en-US
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20240308-bcachefs-v2-1-3e84c845055e@marliere.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308165633.GO6184@frogsfrogsfrogs>
 
-It's fine for me.
+On Fri, Mar 08, 2024 at 08:56:33AM -0800, Darrick J. Wong wrote:
+> Should the XFS data and rt volumes be reported with different stx_vol
+> values?
 
-On 2024/3/8 20:12, Ricardo B. Marliere wrote:
-> Since commit 43a7206b0963 ("driver core: class: make class_register() take
-> a const *"), the driver core allows for struct class to be in read-only
-> memory, so move the bch_chardev_class structure to be declared at build
-> time placing it into read-only memory, instead of having to be dynamically
-> allocated at boot time. Also, correctly clean up after failing paths in
-> bch2_chardev_init().
-> 
-> Cc: Hongbo Li <lihongbo22@huawei.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
-> Changes in v2:
-> - Used "free the last thing" pattern in bch2_chardev_init().
-> - Link to v1: https://lore.kernel.org/r/20240305-bcachefs-v1-1-436196e25729@marliere.net
-> ---
->   fs/bcachefs/chardev.c | 35 ++++++++++++++++++++++-------------
->   1 file changed, 22 insertions(+), 13 deletions(-)
-> 
-> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-> index 226b39c17667..dc09f547dae6 100644
-> --- a/fs/bcachefs/chardev.c
-> +++ b/fs/bcachefs/chardev.c
-> @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
->   };
->   
->   static int bch_chardev_major;
-> -static struct class *bch_chardev_class;
-> +static const struct class bch_chardev_class = {
-> +	.name = "bcachefs",
-> +};
->   static struct device *bch_chardev;
->   
->   void bch2_fs_chardev_exit(struct bch_fs *c)
-> @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->   	if (c->minor < 0)
->   		return c->minor;
->   
-> -	c->chardev = device_create(bch_chardev_class, NULL,
-> +	c->chardev = device_create(&bch_chardev_class, NULL,
->   				   MKDEV(bch_chardev_major, c->minor), c,
->   				   "bcachefs%u-ctl", c->minor);
->   	if (IS_ERR(c->chardev))
-> @@ -968,32 +970,39 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->   
->   void bch2_chardev_exit(void)
->   {
-> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> -		device_destroy(bch_chardev_class,
-> -			       MKDEV(bch_chardev_major, U8_MAX));
-> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> -		class_destroy(bch_chardev_class);
-> +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
-> +	class_unregister(&bch_chardev_class);
->   	if (bch_chardev_major > 0)
->   		unregister_chrdev(bch_chardev_major, "bcachefs");
->   }
->   
->   int __init bch2_chardev_init(void)
->   {
-> +	int ret;
-> +
->   	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
->   	if (bch_chardev_major < 0)
->   		return bch_chardev_major;
->   
-> -	bch_chardev_class = class_create("bcachefs");
-> -	if (IS_ERR(bch_chardev_class))
-> -		return PTR_ERR(bch_chardev_class);
-> +	ret = class_register(&bch_chardev_class);
-> +	if (ret)
-> +		goto major_out;
->   
-> -	bch_chardev = device_create(bch_chardev_class, NULL,
-> +	bch_chardev = device_create(&bch_chardev_class, NULL,
->   				    MKDEV(bch_chardev_major, U8_MAX),
->   				    NULL, "bcachefs-ctl");
-> -	if (IS_ERR(bch_chardev))
-> -		return PTR_ERR(bch_chardev);
-> +	if (IS_ERR(bch_chardev)) {
-> +		ret = PTR_ERR(bch_chardev);
-> +		goto class_out;
-> +	}
->   
->   	return 0;
-> +
-> +class_out:
-> +	class_unregister(&bch_chardev_class);
-> +major_out:
-> +	unregister_chrdev(bch_chardev_major, "bcachefs-ctl");
-> +	return ret;
->   }
->   
->   #endif /* NO_BCACHEFS_CHARDEV */
-> 
-> ---
-> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-> change-id: 20240305-bcachefs-27a4bb8b9f4f
-> 
-> Best regards,
+No, because all the inodes are on the data volume and the same inode
+can have data on the data volume or the rt volume. i.e. "data on rt,
+truncate, clear rt, copy data back into data dev".  It's still the
+same inode, and may have exactly the same data, so why should change
+stx_vol and make it appear to userspace as being a different inode?
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
