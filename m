@@ -1,125 +1,102 @@
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FEAE53E03
-	for <linux-bcachefs@vger.kernel.org>; Wed, 13 Mar 2024 21:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F9F54725
+	for <linux-bcachefs@vger.kernel.org>; Wed, 13 Mar 2024 21:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710365676; cv=none; b=bnRKqmCKkM/v5aBdzKjTpy6mR+IlYS9omBjRUaEHiorfjoB2CYOyAhclf1NjyfKRFcgmc/mciNH8moztbIV1gLXSydPlV3UU1CHPQ6dWz1kX6ocaVuJumfaU3zz+RiZctjZEdeBkmd2Y4APDYJJGb9r3i5TQmTGfctlWE4IiUFg=
+	t=1710366719; cv=none; b=M/UNNxXBDzIR4BzCCwf5iE+Gg/pcWsDdqNWzLkYz6hllJlmPkWMDdRSmwnSoKcuRmKy1NfSGiHchczBDrIhVXtpQ4JjNHn3lTjMzS0YRUBp5nEfnbUSJJVN6dW6CAVKgUpvONdmryKyNlejij83giOde75OHenyXJjOQgpD3NCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710365676; c=relaxed/simple;
-	bh=78PW4X14ihC5fEleCYrPCzpp+cNooZ+uZ4kgdRyzCH4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aPpqsMxSqtB01ULvo2yygXNBjy8KDMhcAkv17xeNXnNQm/h0adDe/Fd4R+nJ55+65LcCEm/0BtVp25VAmqT6krTxt3PmdCbW5b5nJCwUtCc5S2RdX8WGtWBgsqxvp9HQxzwwf+z5cl0tFfG63oMMhx+Nt4JbLarc3dNMzl65x3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fUgkPu16; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1710366719; c=relaxed/simple;
+	bh=hBdvIs25UMavbKrjHvaxFsQ76fNHP6pFUKDpTkxaYns=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DHXETIcWsQIhrILTLNn56ES4bsQ42i7l8l/FVHXjGO9HWB7AUSMfqoIPvAe02HaLguDdIAXysk8fvf3DqPK603Hfa151R4G95x7lqhpur27ly/qypQz89ouN0abFhshvbEHocGBMUnLIfP3dj6RiIZBpl+EbnKrhGyaTU6szp80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FK1pQxy1; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fUgkPu16"
-Date: Wed, 13 Mar 2024 17:34:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710365672;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L6S/o0D2CMop6/QZVenetyqvM7me+8gNVf+Uyf/+tF8=;
-	b=fUgkPu161w2XGctM6Q8jSdDM/+AiXHZGukaq16SZsbl/Rl+X/9FPrlhzRrXR2f3fBxSD+d
-	fnQWYZw5eZNIh6DZmY5fuBr+tIWvZ6QOYEpswJcnxDIuIboKvcHR5boJfHyZ5XE5BOGiuC
-	u1Vv4kyf46M8x1wEbIuBj453OemYWA0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs updates for 6.9
-Message-ID: <bqlnihgtaxv4gq2k6nah33hq7f3vk73x2sd6mlbdvxln2nbfu6@ypoukdqdqbtb>
-References: <lfypw4vqq3rkohlh2iwhub3igjopdy26lfforfcjws2dfizk7d@32yk5dnemi4u>
- <CAHk-=wg3djFJMeN3L_zx3P-6eN978Y1JTssxy81RhAbxB==L8Q@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FK1pQxy1"
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5689d96ba1cso198697a12.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 13 Mar 2024 14:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1710366716; x=1710971516; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QeGHZUugSwtILKFvBXuTtAPNxZwHhdb9r9cwhsNH7u8=;
+        b=FK1pQxy1FxeNpikCxTJ6sX6jx/F3rXGBlNB5S7Dq/biBbNMb0guHxET1e6b86gXLry
+         7DiukqQLtg2sMivqfNRUWt1LSMevWGCJeHAE4d+bY+1oYJwTb3bv0MDgQtpnZXNwGWnV
+         sXxL/W52SfIkwvgg4FzrYwMHQH2YCa2gYbQ98=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710366716; x=1710971516;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QeGHZUugSwtILKFvBXuTtAPNxZwHhdb9r9cwhsNH7u8=;
+        b=mpwzE64wiILWwkWVFlx/U5s0z0x1LbsrHW9Y9FS+XtNPA9NE39cJBK7f3kqnQjBoKA
+         ykWD42cLmgwSIa3DLgoJVBrMhbQ2iATPU24kY84ty/8sYtP2nJi0wT7lriOTEJ4Tw3lw
+         /XXvS7KDOAqGZhYrVTvzz6/S3Ob7iHu0JsKLD60LuE21HwRsVRmv1C1v0Dwec55xjvsX
+         uN5cEvV576ajU1ZtBtPJyg2GywpqOVXriAgmfZ+fOhWLWUhEzpwM31kN839jqh/tkPhX
+         tVg+QWu7oLv1n8WA2RbUpe97nHFZlInaJimR1I9onqrTtFJL+0CGvYs1D28TYSJrMslS
+         0oBA==
+X-Forwarded-Encrypted: i=1; AJvYcCXM5sBVd3OoshjSOiIKwTa7js33zV4DWKCMYBZlqMWbJFUDpEdTMaoPmkeGpyGEovJHirTfGYJ2SQn+uZ4ePqtPEeGajBTL8ccKOP2Mcxw=
+X-Gm-Message-State: AOJu0YwfuMZJqqbtTlqrYYAFXvLJKXuHHK1N+sCpRoQLNDAg56NwweOl
+	SXIGWFI2wQsTXdofwpDXCK1D6e1SkarF/6UhYgNWN3ayXIE9piRFPWQrmT4Bn/LrynVBKkAX8En
+	AgkCaKw==
+X-Google-Smtp-Source: AGHT+IHIIQkiv3D1wLOLss1bA0RXkmdevJZFY3yZAb/IGsAdsig/Sq8ZkbzLulJM9iAWKEKTZsrdmQ==
+X-Received: by 2002:a05:6402:1f14:b0:567:1263:e31f with SMTP id b20-20020a0564021f1400b005671263e31fmr85483edb.10.1710366715728;
+        Wed, 13 Mar 2024 14:51:55 -0700 (PDT)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
+        by smtp.gmail.com with ESMTPSA id m24-20020aa7d358000000b0056729e902f7sm39953edr.56.2024.03.13.14.51.55
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 14:51:55 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a450615d1c4so62715366b.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 13 Mar 2024 14:51:55 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWeGCFJ46/ob7MEkNyzr2KF7eQz7dsHDIpYQH9chOIf6QEUJy3bygl+fFIjw40MSVyDqLS8+puQznRay+K9pyprnpeabf8XY2mpEYD5HjY=
+X-Received: by 2002:a17:906:c0d4:b0:a44:52ec:b9e7 with SMTP id
+ bn20-20020a170906c0d400b00a4452ecb9e7mr20310ejb.16.1710366714711; Wed, 13 Mar
+ 2024 14:51:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg3djFJMeN3L_zx3P-6eN978Y1JTssxy81RhAbxB==L8Q@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <lfypw4vqq3rkohlh2iwhub3igjopdy26lfforfcjws2dfizk7d@32yk5dnemi4u>
+ <CAHk-=wg3djFJMeN3L_zx3P-6eN978Y1JTssxy81RhAbxB==L8Q@mail.gmail.com> <bqlnihgtaxv4gq2k6nah33hq7f3vk73x2sd6mlbdvxln2nbfu6@ypoukdqdqbtb>
+In-Reply-To: <bqlnihgtaxv4gq2k6nah33hq7f3vk73x2sd6mlbdvxln2nbfu6@ypoukdqdqbtb>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 13 Mar 2024 14:51:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whbgtooUErM9bOP2iWimndpkPLaPy1YZmbmHACU07h3Mw@mail.gmail.com>
+Message-ID: <CAHk-=whbgtooUErM9bOP2iWimndpkPLaPy1YZmbmHACU07h3Mw@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs updates for 6.9
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 13, 2024 at 01:47:59PM -0700, Linus Torvalds wrote:
-> On Tue, 12 Mar 2024 at 18:10, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > Hi Linus, few patches for you - plus a simple merge conflict with VFS
-> > changes:
-> 
-> The conflicts are trivial.
-> 
-> The "make random bcachefs code be a library function" stuff I looked
-> at, decided is senseless, and ended up meaning that I'm not pulling
-> this without a lot more explanation (and honestly, I don't think the
-> explanations would hold water).
-> 
-> That "stdio_redirect_printf()" and darray_char stuff is just
-> horrendous interfaces with no explanations. The interfaces are
-> disgusting.
+On Wed, 13 Mar 2024 at 14:34, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> I liked your MAD suggestion, but the catch was that we need an
+> exponentially weighted version,
 
-It's a bidirectional pipe between a kthread and an fd. Not sure what's
-complicated about that?
+The code for the weighted version literally doesn't change.
 
-> And if you *do* make it a library thing, it needs to be
-> 
->  (a) much more explained
-> 
->  (b) have much saner naming, and fewer disgusting and completely
-> nonsensical interfaces ("DARRAY()").
+The variance value is different, but the difference between MAD and
+standard deviation is basically just a constant factor (which will be
+different for different distributions, but so what? Any _particular_
+case will have a particular distribution).
 
-DARRAY() is just a dynamic array, aka a c++ vector; we open code those so
-much it's _stupid_. I wouldn't be opposed to changing the name to
-something more standard (Rust calls it a vector too); I started out with
-the CCAN version and rewrote it later for hte kernel.
+So why would a constant factor make _any_ difference for any
+exponential weighting?
 
-> And no, finding one other filesystem to share this kind of code is not
-> sufficient to try to claim it's a sane interface and sane naming.
-> 
-> But the main dealbreaker is the insane math.
-> 
-> And dammit, we talked about the idiotic "mean and variance" garbage
-> long ago. It was wrong back then, it's *still* wrong.
-> 
-> You didn't explain why it couldn't use the *much* simpler MAD (median
-> absolute deviation) instead of using variance.
+Anyway, feel free to keep your code in bcachefs.
 
-I most certainly did.
+And maybe xfs even wants to copy that code. I don't care, it seems
+stupid, but that's a filesystem choice.
 
-I liked your MAD suggestion, but the catch was that we need an
-exponentially weighted version, not just the standard version, and I
-haven't seen an derivation of exponentially weighted MAD and doing that
-is a bit above my statistical pay grade. I explained all this at the
-time.
+But if we're making it a generic kernel library, it needs to be sane.
+Not making people do 64-bit square roots and 128-bit divides just for
+a random statistical element.
 
-Besides that, the existing code works fine, the u128 stuff is right out
-of Knuth (divide is the only even vaguely tricky one), and it's nicely
-self contained. It's fine.
-
-> I called it insanely over-engineered back then, and as far as I can
-> tell, absolutely *NOTHING* has changed apart from some slight type
-> name details.
-> 
-> As long as you made it some kind of bcachefs-only thing, I don't mind.
-> 
-> But now you're trying to push this garbage as some kind of generic
-> library code that others would use, and that immediately means that I
-> *do* mind insanely overengineered interfaces.
-> 
-> The time_stats stuff otherwise looks at leask like a sane interface
-> with names and uses, but the use of that horrendous infrastructure
-> scuttles it.
-
-Well, that leaves us at a bit of an impasse then because Darrick wants
-this stuff for XFS (he was discovering useful stuff with it pretty much
-right away) and I'm just not doing a MAD conversion, sorry. I'm just
-being practical here, I like MAD in principle but that's too far outside
-my wheelhouse.
-
-Maybe we can get someone else interested? I have a feeling Peter could
-whip it out in about 5 minutes...
+              Linus
