@@ -1,321 +1,153 @@
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808E14A1B
-	for <linux-bcachefs@vger.kernel.org>; Thu, 14 Mar 2024 03:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96BF87317D
+	for <linux-bcachefs@vger.kernel.org>; Thu, 14 Mar 2024 16:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710387444; cv=none; b=HcAQ6ZGKkgFvsUtvJF7v5+C6qljEtYaJ5QVMtGtyz1AdrtlCqbwFM3ypUQKfKDPqvfBbVklN8RJ7f+wUcw6IJJtAHGNjt0xUnC7wmUbigJ/XKlUnfNXkk76qNXXI00GkCBB4gmRq6HG56Yi400ZpBCB1OtdJpKsea63hrc3tzIQ=
+	t=1710432150; cv=none; b=QNvs5FU1HNXpV2efyrOclMKLR900l8ibjTxpxD+Cv55VfECZkb5f4I0SiRfxVILq7J3BSdNh+PIiIiAjnyLtwjfm8BgvPZxdFYrxBTItJltbRtxKc671/ejnHBht75+VTc94M22H2tCPSYMz0/hlQY/Hu4OmjZMfN1hqHPYiNq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710387444; c=relaxed/simple;
-	bh=qdmWg6+2YmWXjID9NQZ9lAUJBUu8LsMBaV+5s/Fw9lA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=L410JqojbacpuxakbzECIaxLOaBRCsjMPA3r/w6sb4FOCa0iqm+vqQFY9zydpXniHFCV3pTUS9rlqtAnCdfz0Y6YYUyp2kZjQVHGgkbMsV4CEpg0eGJyTCoNn0sGrr/AjH1i24QnkdaNRijFE3rg/Op6qSd77pQfA/VB2VhkvBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O2Eh3lLF; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1710432150; c=relaxed/simple;
+	bh=fkb+Y1o9mFRyMV0l6Q6aEfRjSrd/e/Qtp1UMUvnK9v4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NZyGUm9Kq4vX8OsI3m0qIX/qWPmRafrxcqTaGanP0gKTm+rFHUtFfF2xIO1c7FeHEzh1Ev3beG8whj2ihX0xxPDYrOWlaNQ/sAlLf7L9KR4udiZcEgDswKlYjgMVBqjecXljWJzZr60LC+WV8pcY+b3+B8KUsHNUep9DiXvFKRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bz3/XVcC; arc=none smtp.client-ip=209.85.166.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O2Eh3lLF"
-Date: Wed, 13 Mar 2024 23:37:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710387439;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=bEZ4V9sjvqMxqEoF4U6YuT83Yq3pCV1X6XT5lYc8MKI=;
-	b=O2Eh3lLFzNarFtKYygeLyEQn8AbFzutLv6IXRuw3GSMmeVMnpeHig9Uk/FeodZ2g9kYqq4
-	Jxgyjb8ZJVGsmV7hi5nEScKEzJbFxDUtiRM+xUbaQp6iOB01eS7+Wh3vREKRuljOhtiyBw
-	S6JpCcTOImRvDN41kYZjb++/Xxxy1Cw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs 6.9 updates v2
-Message-ID: <b2cm5vuqgiel2gwdzaxvs7hfjnvio3lu6zcu24wwmzt3xsofow@6zdd466oh7jj>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bz3/XVcC"
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-36660d8547eso5046545ab.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Mar 2024 09:02:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710432147; x=1711036947; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UCvo46xAm1BP9RIgX7dSFBNlQt8Vhs+YURLvSQrpn+s=;
+        b=Bz3/XVcCiNkU+ajWPNodpgG8/cjNdc1cABzuPwKd/uD0GJYJEf/MuX/lHZ2D/CokvS
+         yoC2VTgtEvQUfbKZYgDlbwAcpQvDxHKXzhX24QoOTZNmI5u8c5Z1Z4hd6iKFw6FXzn09
+         4KXFBlOl30J1x7QQGoInfe/IYk7RJhcTME5kAB0QfPJB5DNEfwMlZ1XaqjOVmOrinSeI
+         p+QMK5cAl03mst0+4agROJr9sMVpUwET93oCIHWe/Y5YYiQJDuuWhjPD1wuIJ2tlpASO
+         q2+3zGgUbqiyZIMZTi2+wHDJht6Ch/CdkyC1rn+/yOV0xPDYeoRpAbhXET8WKi19CcjB
+         fEHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710432147; x=1711036947;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UCvo46xAm1BP9RIgX7dSFBNlQt8Vhs+YURLvSQrpn+s=;
+        b=waewsjQ2p1GPny2QMZdIn6/yUSPRk1R8W2R1wE6UhOsiAGs4xOTUzDll6dlZHF7VAX
+         EzvfU9SysGMkQJshm6fvhvBHXbqJ9KW9f6m5t7loyUpNA57W5jxyPvygKoCHvmUt4qI5
+         5OxPZ/lpY7p+yN1g6FNc5H78HySWiGfOsvQEkl9ygx4G0FYXgr0MBmRQeuJcORkMROAw
+         RxDHc2jJiGcoTTFDktQBMQk3OCProBImXEemHO1hef2hGGXldNVDFyzszOclJW+9rGYk
+         Anu1NBBBHxSp+Yg6ecySTrm/yrc68GNuic2f4Ob5UlbsvZxf8+kajgCv/dvFaRmmBp1H
+         yxWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfreT5OWibv8xGaltymlmKzEzkP01u/yNowAdLnK8TesCKVrBvRu8qb7utBGxjSN7jGtdTvO+3gG4boo+wbi8D58QO+TjpBxxOVgsbP1o=
+X-Gm-Message-State: AOJu0YyJsMKB2FSQnhzvWp+Nge1LJUVx1X69Qp7Kd9ov8wuNGRiv7iFi
+	0zQ5zScLGQVgVvGyMnunq5y3VmXDfmy4/ajsBUzcnFM1DyLav+I0jyvnK36D
+X-Google-Smtp-Source: AGHT+IFW0/uBmVZDIcZIREHk/clMG8VI5TdwB4TahDrUVPvVVGA8gofHdMOW8/pRcq+BYJU7M9QG6Q==
+X-Received: by 2002:a6b:7409:0:b0:7c8:6303:1bd4 with SMTP id s9-20020a6b7409000000b007c863031bd4mr643816iog.6.1710432147478;
+        Thu, 14 Mar 2024 09:02:27 -0700 (PDT)
+Received: from fedora-laptop.hsd1.nm.comcast.net ([2601:8c1:c100:1c70:46d4:8434:9d74:6efc])
+        by smtp.gmail.com with ESMTPSA id z8-20020a023448000000b00474f0fe1b44sm234815jaz.15.2024.03.14.09.02.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 09:02:26 -0700 (PDT)
+From: Thomas Bertschinger <tahbertschinger@gmail.com>
+To: kent.overstreet@linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	bfoster@redhat.com
+Cc: Thomas Bertschinger <tahbertschinger@gmail.com>
+Subject: [PATCH] bcachefs: create debugfs dir for each btree
+Date: Thu, 14 Mar 2024 10:02:18 -0600
+Message-ID: <20240314160218.192135-1-tahbertschinger@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The following changes since commit d206a76d7d2726f3b096037f2079ce0bd3ba329b:
+This creates a subdirectory for each individual btree under the btrees/
+debugfs directory.
 
-  Linux 6.8-rc6 (2024-02-25 15:46:06 -0800)
+Directory structure, before:
 
-are available in the Git repository at:
+/sys/kernel/debug/bcachefs/$FS_ID/btrees/
+├── alloc
+├── alloc-bfloat-failed
+├── alloc-formats
+├── backpointers
+├── backpointers-bfloat-failed
+├── backpointers-formats
+...
 
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-03-13
+Directory structure, after:
 
-for you to fetch changes up to be28368b2ccb328b207c9f66c35bb088d91e6a03:
+/sys/kernel/debug/bcachefs/$FS_ID/btrees/
+├── alloc
+│   ├── bfloat-failed
+│   ├── formats
+│   └── nodes
+├── backpointers
+│   ├── bfloat-failed
+│   ├── formats
+│   └── nodes
+...
 
-  bcachefs: time_stats: shrink time_stat_buffer for better alignment (2024-03-13 21:38:03 -0400)
+Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
+---
+ fs/bcachefs/debug.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-----------------------------------------------------------------
-bcachefs updates for 6.9
+diff --git a/fs/bcachefs/debug.c b/fs/bcachefs/debug.c
+index b1f147e6be4d..491ad699d558 100644
+--- a/fs/bcachefs/debug.c
++++ b/fs/bcachefs/debug.c
+@@ -866,6 +866,20 @@ void bch2_fs_debug_exit(struct bch_fs *c)
+ 		debugfs_remove_recursive(c->fs_debug_dir);
+ }
+ 
++static void bch2_fs_debug_btree_init(struct bch_fs *c, struct btree_debug *bd)
++{
++	struct dentry *d;
++
++	d = debugfs_create_dir(bch2_btree_id_str(bd->id), c->btree_debug_dir);
++
++	debugfs_create_file("nodes", 0400, d, bd, &btree_debug_ops);
++
++	debugfs_create_file("formats", 0400, d, bd, &btree_format_debug_ops);
++
++	debugfs_create_file("bfloat-failed", 0400, d, bd,
++			    &bfloat_failed_debug_ops);
++}
++
+ void bch2_fs_debug_init(struct bch_fs *c)
+ {
+ 	struct btree_debug *bd;
+@@ -902,21 +916,7 @@ void bch2_fs_debug_init(struct bch_fs *c)
+ 	     bd < c->btree_debug + ARRAY_SIZE(c->btree_debug);
+ 	     bd++) {
+ 		bd->id = bd - c->btree_debug;
+-		debugfs_create_file(bch2_btree_id_str(bd->id),
+-				    0400, c->btree_debug_dir, bd,
+-				    &btree_debug_ops);
+-
+-		snprintf(name, sizeof(name), "%s-formats",
+-			 bch2_btree_id_str(bd->id));
+-
+-		debugfs_create_file(name, 0400, c->btree_debug_dir, bd,
+-				    &btree_format_debug_ops);
+-
+-		snprintf(name, sizeof(name), "%s-bfloat-failed",
+-			 bch2_btree_id_str(bd->id));
+-
+-		debugfs_create_file(name, 0400, c->btree_debug_dir, bd,
+-				    &bfloat_failed_debug_ops);
++		bch2_fs_debug_btree_init(c, bd);
+ 	}
+ }
+ 
+-- 
+2.43.2
 
- - Subvolume children btree; this is needed for providing a userspace
-   interface for walking subvolumes, which will come later
- - Lots of improvements to directory structure checking
- - Improved journal pipelining, significantly improving performance on
-   high iodepth write workloads
- - Discard path improvements: the discard path is more efficient, and no
-   longer flushes the journal unnecessarily
- - Buffered write path can now avoid taking the inode lock
- - new mm helper: memalloc_flags_{save|restore}
- - mempool now does kvmalloc mempools
-
-----------------------------------------------------------------
-Brian Foster (1):
-      bcachefs: fix lost journal buf wakeup due to improved pipelining
-
-Calvin Owens (1):
-      bcachefs: Silence gcc warnings about arm arch ABI drift
-
-Colin Ian King (1):
-      bcachefs: remove redundant assignment to variable ret
-
-Daniel Hill (1):
-      bcachefs: rebalance_status now shows correct units
-
-Darrick J. Wong (8):
-      bcachefs: thread_with_file: allow creation of readonly files
-      bcachefs: thread_with_file: fix various printf problems
-      bcachefs: thread_with_file: create ops structure for thread_with_stdio
-      bcachefs: thread_with_file: allow ioctls against these files
-      bcachefs: time_stats: add larger units
-      bcachefs: mean_and_variance: put struct mean_and_variance_weighted on a diet
-      bcachefs: time_stats: split stats-with-quantiles into a separate structure
-      bcachefs: time_stats: shrink time_stat_buffer for better alignment
-
-Erick Archer (1):
-      bcachefs: Prefer struct_size over open coded arithmetic
-
-Guoyu Ou (1):
-      bcachefs: skip invisible entries in empty subvolume checking
-
-Hongbo Li (3):
-      bcachefs: fix the error code when mounting with incorrect options.
-      bcachefs: avoid returning private error code in bch2_xattr_bcachefs_set
-      bcachefs: intercept mountoption value for bool type
-
-Kent Overstreet (109):
-      bcachefs: journal_seq_blacklist_add() now handles entries being added out of order
-      bcachefs: extent_entry_next_safe()
-      bcachefs: no_splitbrain_check option
-      bcachefs: fix check_inode_deleted_list()
-      bcachefs: Fix journal replay with unreadable btree roots
-      bcachefs: Fix degraded mode fsck
-      bcachefs: Correctly validate k->u64s in btree node read path
-      bcachefs: Set path->uptodate when no node at level
-      bcachefs: fix split brain message
-      bcachefs: Kill unnecessary wakeups in journal reclaim
-      bcachefs: Split out journal workqueue
-      bcachefs: Avoid setting j->write_work unnecessarily
-      bcachefs: Journal writes should be REQ_SYNC|REQ_META
-      bcachefs: Avoid taking journal lock unnecessarily
-      bcachefs: fixup for building in userspace
-      bcachefs: Improve bch2_dirent_to_text()
-      bcachefs: Workqueues should be WQ_HIGHPRI
-      bcachefs: bch2_hash_set_snapshot() -> bch2_hash_set_in_snapshot()
-      bcachefs: Cleanup bch2_dirent_lookup_trans()
-      bcachefs: convert journal replay ptrs to darray
-      bcachefs: improve journal entry read fsck error messages
-      bcachefs: jset_entry_datetime
-      bcachefs: bio per journal buf
-      bcachefs: closure per journal buf
-      bcachefs: better journal pipelining
-      bcachefs: btree_and_journal_iter.trans
-      bcachefs: btree node prefetching in check_topology
-      bcachefs: Subvolumes may now be renamed
-      bcachefs: Switch to uuid_to_fsid()
-      bcachefs: Initialize super_block->s_uuid
-      bcachefs: move fsck_write_inode() to inode.c
-      bcachefs: bump max_active on btree_interior_update_worker
-      bcachefs: Kill some -EINVALs
-      bcachefs: Factor out check_subvol_dirent()
-      bcachefs: factor out check_inode_backpointer()
-      mm: introduce memalloc_flags_{save,restore}
-      mm: introduce PF_MEMALLOC_NORECLAIM, PF_MEMALLOC_NOWARN
-      bcachefs: bch2_inode_insert()
-      bcachefs: bch2_lookup() gives better error message on inode not found
-      mempool: kvmalloc pool
-      bcachefs: kill kvpmalloc()
-      bcachefs: thread_with_stdio: eliminate double buffering
-      bcachefs: thread_with_stdio: convert to darray
-      bcachefs: thread_with_stdio: kill thread_with_stdio_done()
-      bcachefs: thread_with_stdio: fix bch2_stdio_redirect_readline()
-      bcachefs: Thread with file documentation
-      bcachefs: thread_with_stdio: Mark completed in ->release()
-      kernel/hung_task.c: export sysctl_hung_task_timeout_secs
-      bcachefs: thread_with_stdio: suppress hung task warning
-      bcachefs: thread_with_file: Fix missing va_end()
-      bcachefs: thread_with_file: add f_ops.flush
-      bcachefs: Kill more -EIO error codes
-      bcachefs: Check subvol <-> inode pointers in check_subvol()
-      bcachefs: Check subvol <-> inode pointers in check_inode()
-      bcachefs: check_inode_dirent_inode()
-      bcachefs: better log message in lookup_inode_for_snapshot()
-      bcachefs: check bi_parent_subvol in check_inode()
-      bcachefs: simplify check_dirent_inode_dirent()
-      bcachefs: delete duplicated checks in check_dirent_to_subvol()
-      bcachefs: check inode->bi_parent_subvol against dirent
-      bcachefs: check dirent->d_parent_subvol
-      bcachefs: Repair subvol dirents that point to non subvols
-      bcachefs: bch_subvolume::parent -> creation_parent
-      bcachefs: Fix path where dirent -> subvol missing and we don't fix
-      bcachefs: Pass inode bkey to check_path()
-      bcachefs: check_path() now prints full inode when reattaching
-      bcachefs: Correctly reattach subvolumes
-      bcachefs: bch2_btree_bit_mod -> bch2_btree_bit_mod_buffered
-      bcachefs: bch2_btree_bit_mod()
-      bcachefs: bch_subvolume::fs_path_parent
-      bcachefs: BTREE_ID_subvolume_children
-      bcachefs: Check for subvolume children when deleting subvolumes
-      bcachefs: Pin btree cache in ram for random access in fsck
-      bcachefs: Save key_cache_path in peek_slot()
-      bcachefs: Track iter->ip_allocated at bch2_trans_copy_iter()
-      bcachefs: Use kvzalloc() when dynamically allocating btree paths
-      bcachefs: Improve error messages in device remove path
-      bcachefs: bch2_print_opts()
-      bcachefs: bch2_trigger_alloc() handles state changes better
-      bcachefs: bch2_check_subvolume_structure()
-      bcachefs: check_path() now only needs to walk up to subvolume root
-      bcachefs: more informative write path error message
-      bcachefs: Drop redundant btree_path_downgrade()s
-      bcachefs: improve bch2_journal_buf_to_text()
-      bcachefs: Split out discard fastpath
-      bcachefs: Fix journal_buf bitfield accesses
-      bcachefs: Add journal.blocked to journal_debug_to_text()
-      bcachefs: Errcode tracepoint, documentation
-      bcachefs: jset_entry for loops declare loop iter
-      bcachefs: Rename journal_keys.d -> journal_keys.data
-      bcachefs: journal_keys now uses darray helpers
-      bcachefs: improve move_gap()
-      bcachefs: split out ignore_blacklisted, ignore_not_dirty
-      bcachefs: Fix bch2_journal_noflush_seq()
-      fs: file_remove_privs_flags()
-      bcachefs: Buffered write path now can avoid the inode lock
-      bcachefs: Split out bkey_types.h
-      bcachefs: copy_(to|from)_user_errcode()
-      lib/generic-radix-tree.c: Make nodes more reasonably sized
-      bcachefs: fix bch2_journal_buf_to_text()
-      bcachefs: Check for writing superblocks with nonsense member seq fields
-      bcachefs: Kill unused flags argument to btree_split()
-      bcachefs: fix deletion of indirect extents in btree_gc
-      bcachefs: Fix order of gc_done passes
-      bcachefs: Always flush write buffer in delete_dead_inodes()
-      bcachefs: Fix btree key cache coherency during replay
-      bcachefs: fix bch_folio_sector padding
-      bcachefs: reconstruct_alloc cleanup
-      bcachefs: pull out time_stats.[ch]
-
-Li Zetao (1):
-      bcachefs: Fix null-ptr-deref in bch2_fs_alloc()
-
-Thomas Bertschinger (1):
-      bcachefs: omit alignment attribute on big endian struct bkey
-
- Documentation/filesystems/bcachefs/errorcodes.rst |  30 +
- MAINTAINERS                                       |   1 +
- fs/bcachefs/Makefile                              |   4 +
- fs/bcachefs/alloc_background.c                    | 219 ++++--
- fs/bcachefs/alloc_background.h                    |   1 +
- fs/bcachefs/alloc_foreground.c                    |  13 +-
- fs/bcachefs/backpointers.c                        | 143 ++--
- fs/bcachefs/bbpos_types.h                         |   2 +-
- fs/bcachefs/bcachefs.h                            |  21 +-
- fs/bcachefs/bcachefs_format.h                     |  53 +-
- fs/bcachefs/bkey.h                                | 207 +-----
- fs/bcachefs/bkey_types.h                          | 213 ++++++
- fs/bcachefs/btree_cache.c                         |  37 +-
- fs/bcachefs/btree_gc.c                            | 151 ++--
- fs/bcachefs/btree_io.c                            |  22 +-
- fs/bcachefs/btree_iter.c                          |  20 +-
- fs/bcachefs/btree_journal_iter.c                  | 180 +++--
- fs/bcachefs/btree_journal_iter.h                  |  14 +-
- fs/bcachefs/btree_key_cache.c                     |   8 +-
- fs/bcachefs/btree_locking.c                       |   3 +-
- fs/bcachefs/btree_types.h                         |   9 +-
- fs/bcachefs/btree_update.c                        |  23 +-
- fs/bcachefs/btree_update.h                        |   3 +-
- fs/bcachefs/btree_update_interior.c               |  83 ++-
- fs/bcachefs/btree_update_interior.h               |   2 +
- fs/bcachefs/btree_write_buffer.c                  |   4 +-
- fs/bcachefs/buckets.c                             |  32 +-
- fs/bcachefs/chardev.c                             |  57 +-
- fs/bcachefs/checksum.c                            |   2 +-
- fs/bcachefs/compress.c                            |  14 +-
- fs/bcachefs/debug.c                               |   6 +-
- fs/bcachefs/dirent.c                              | 143 ++--
- fs/bcachefs/dirent.h                              |   6 +-
- fs/bcachefs/ec.c                                  |   4 +-
- fs/bcachefs/errcode.c                             |  15 +-
- fs/bcachefs/errcode.h                             |  18 +-
- fs/bcachefs/error.c                               |  10 +-
- fs/bcachefs/error.h                               |   2 +-
- fs/bcachefs/extents.h                             |  11 +-
- fs/bcachefs/fifo.h                                |   4 +-
- fs/bcachefs/fs-common.c                           |  74 +-
- fs/bcachefs/fs-io-buffered.c                      | 149 +++-
- fs/bcachefs/fs-io-pagecache.h                     |   9 +-
- fs/bcachefs/fs.c                                  | 222 ++++--
- fs/bcachefs/fsck.c                                | 847 ++++++++++++++--------
- fs/bcachefs/fsck.h                                |   1 +
- fs/bcachefs/inode.c                               |  55 +-
- fs/bcachefs/inode.h                               |  19 +
- fs/bcachefs/io_read.c                             |   2 +-
- fs/bcachefs/io_write.c                            |  18 +-
- fs/bcachefs/journal.c                             | 280 ++++---
- fs/bcachefs/journal.h                             |   7 +-
- fs/bcachefs/journal_io.c                          | 403 +++++-----
- fs/bcachefs/journal_io.h                          |  47 +-
- fs/bcachefs/journal_reclaim.c                     |  29 +-
- fs/bcachefs/journal_seq_blacklist.c               |  69 +-
- fs/bcachefs/journal_types.h                       |  30 +-
- fs/bcachefs/lru.c                                 |   7 +-
- fs/bcachefs/mean_and_variance.c                   |  28 +-
- fs/bcachefs/mean_and_variance.h                   |  14 +-
- fs/bcachefs/mean_and_variance_test.c              |  80 +-
- fs/bcachefs/migrate.c                             |   8 +-
- fs/bcachefs/opts.c                                |   8 +-
- fs/bcachefs/opts.h                                |  10 +
- fs/bcachefs/rebalance.c                           |   4 +-
- fs/bcachefs/recovery.c                            |  88 ++-
- fs/bcachefs/recovery_types.h                      |   2 +
- fs/bcachefs/sb-clean.c                            |  16 -
- fs/bcachefs/sb-downgrade.c                        |  10 +-
- fs/bcachefs/sb-errors_types.h                     |  19 +-
- fs/bcachefs/str_hash.h                            |  15 +-
- fs/bcachefs/subvolume.c                           | 187 ++++-
- fs/bcachefs/subvolume.h                           |   8 +-
- fs/bcachefs/subvolume_format.h                    |   4 +-
- fs/bcachefs/super-io.c                            |  22 +-
- fs/bcachefs/super.c                               |  93 ++-
- fs/bcachefs/sysfs.c                               |   4 +-
- fs/bcachefs/thread_with_file.c                    | 391 +++++++---
- fs/bcachefs/thread_with_file.h                    |  59 +-
- fs/bcachefs/thread_with_file_types.h              |  15 +-
- fs/bcachefs/time_stats.c                          | 165 +++++
- fs/bcachefs/time_stats.h                          | 159 ++++
- fs/bcachefs/trace.h                               |  19 +
- fs/bcachefs/util.c                                | 227 +-----
- fs/bcachefs/util.h                                | 142 +---
- fs/bcachefs/xattr.c                               |   5 +-
- fs/inode.c                                        |   7 +-
- include/linux/fs.h                                |   1 +
- include/linux/generic-radix-tree.h                |  29 +-
- include/linux/mempool.h                           |  13 +
- include/linux/sched.h                             |   4 +-
- include/linux/sched/mm.h                          |  60 +-
- kernel/hung_task.c                                |   1 +
- lib/generic-radix-tree.c                          |  35 +-
- mm/mempool.c                                      |  13 +
- 95 files changed, 3770 insertions(+), 2253 deletions(-)
- create mode 100644 Documentation/filesystems/bcachefs/errorcodes.rst
- create mode 100644 fs/bcachefs/bkey_types.h
- create mode 100644 fs/bcachefs/time_stats.c
- create mode 100644 fs/bcachefs/time_stats.h
