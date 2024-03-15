@@ -1,136 +1,77 @@
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD5C63A1
-	for <linux-bcachefs@vger.kernel.org>; Fri, 15 Mar 2024 00:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8880517E9
+	for <linux-bcachefs@vger.kernel.org>; Fri, 15 Mar 2024 01:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710461170; cv=none; b=ZrJIpfdVV2cxwrxgY3L4X/AHAkwCj99k8qNyitB/G5LTpi1eP9WVGZvTPbxui29dr56Wq60UtSG/jKmGW5cJmrEuAwKrnayPdexgpyJU/2mBPa60jxAwtm/chlNbUOnvpbW9bw4e5jsvSg1quQIfIzRsPUV6W1ETiuHimlbjxys=
+	t=1710466199; cv=none; b=Dd12j0cPETGF1IUSw1n2d78Y7a63oyNQ6lvCqYsR4ojK8uuSnD9tn7hDC9mZ0pediV/1x2XW5BkocWCLEpMaQBcpr6CrFXZWptvXJKIOeqQZpyuafGA0neIdU1FaEept2rveXByGkJCNp2P/ISsGL2iYZF06y9TrxGE4Lk5TQRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710461170; c=relaxed/simple;
-	bh=XKD/Ec7RtHQl9YspJ3UY9SagZRH83oYatQ4PBgm7Fs4=;
+	s=arc-20240116; t=1710466199; c=relaxed/simple;
+	bh=5fQaBBiJ32aeozoW3KjohNCHwkXyVdDSIZjFh+6TdUc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oBwYP9e2Xz6Pb7u1WCE5CtH+cN1cCBv5elRZMshONFgXqtr9BoOZSbWw96FPXNXWQh3yd5hMhqI50SLnmI8+i/LOSFslY9I2y321XRbOcb4dkfwBMhL1SdbFa3qR8jIjFFRtZlFd2FspwNjHNOzdJ2KWIpNo2qHCaeuBGWTzAYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JcBUjjSm; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=kMMeIh4nFJOPkkMhMV4qF+qEsfRN7Ncg3rOnFtDktxGbZ9y4fBX50JkIJ64CTrvJ7xqdmUzYZRjpGXln1rRM23XATZ4XARQ/PblwxTzr4WS9sc2rYDJxtHAUh+YWgBj0cQmAdDKBVXkfIBJczPhJOm1FotTnqJr3fnVgMUB+4wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tm5gxkDh; arc=none smtp.client-ip=209.85.166.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JcBUjjSm"
-Date: Thu, 14 Mar 2024 20:05:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710461165;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e8a9OotVzItbgoUzlGO1UoWNwzpAZj9Yc4NPEJWGm9U=;
-	b=JcBUjjSm/fLhkF0nUyLwzHG7RGIb2HwgDOUKJxSzIi4vxR43Ly0uVD78IIIB/wKAElRyok
-	yzny1YdbOlpUmL22KegITLF50/dE+LZuFcStAXDuFJ9Jtxpnh3UhHBy6T25s7WoJ6ZNTdI
-	lNSPvPtjiq+2GtVtDAh1JDq1yssaJ+s=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Thomas Bertschinger <tahbertschinger@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tm5gxkDh"
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7beda6a274bso52327139f.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 14 Mar 2024 18:29:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710466197; x=1711070997; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=36dZezNaa+IaRzOe2IQj9hzYoWmp1AvmiR7uNym+Ew8=;
+        b=Tm5gxkDhw1AK1rjMQ79+sGplmBvFwHV3g11ug8f0H1gKeSkKwB1ZTNri0sufZ6AE0O
+         O7MUBxAUhLjihJ8wJNrFDxaOiYqac3JrBgPH/oYPS1fa/dtc5H8TQYpPLkIbDTleG5xO
+         91yH2+nNRBN/DhKBN9gO8TKoyKqVPQVdnsXOaFP/S/8ilW0yAi3ksIRYr+8B+HPM1k10
+         Ih4HKvVsZ2JMIQ8j/gnyR9/Zy8pwt1nezoc875g4x3al3Uo+ufAYn6fGpDWv5IB0tqv5
+         FUMEqnIWyBYLWMl4VYRRzZurN4iaGdEtZ2jmsDtVp30iK2dxZtot4U2IsWxKAQRaE0rM
+         wCPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710466197; x=1711070997;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=36dZezNaa+IaRzOe2IQj9hzYoWmp1AvmiR7uNym+Ew8=;
+        b=Sk1glxSKkYG9ZWt8H6j7cV6n0HR8sz/dw1V14eginyo/HPfv6BSuX8hWzumv+z6YS0
+         L6PDrcNh+lgW+pPyjYd3I0ZMMgROygitlQuKlvReZml7lhpPeCTQ47lMOTZ4t7zgXG2U
+         FA2EkEJtn8ZHvcMleXRUhlImBTEdUrKthaOCar68fcB0cN0HYZE/aMhIv6kiiuhBnVlA
+         pM90bTDnSRa4wC1ijj5SibWSpz40Is2VqdHNl3kSxK3l7i6wAtYJn7W/Gmeye6OeHdgA
+         kFdxcBoLvRdfwSQwbjbKmDVAnp/w9jX00G3vNC7evfu4FFID9KNW+p5emy7vyK6qL0bf
+         mvmg==
+X-Gm-Message-State: AOJu0YzpJQS9Xy4dga47FkfVESo7haAaG9JbKCVkfAQvRgyVmvrCHWj/
+	f0JmK/5doQAZ6zFgeoDlcXuEcEV3Abbm7T3DTuvebF+Oke97hF9f
+X-Google-Smtp-Source: AGHT+IGULKScxyPbRSeTaEs93nNQEcjXsHeYMzH6PO42oWxy0nBRkggG/ICvJOYsHvNHXFlgKL/J5w==
+X-Received: by 2002:a5d:950e:0:b0:7ca:f5e1:a589 with SMTP id d14-20020a5d950e000000b007caf5e1a589mr2169052iom.3.1710466197500;
+        Thu, 14 Mar 2024 18:29:57 -0700 (PDT)
+Received: from fedora-laptop ([2601:8c1:c100:1c70:46d4:8434:9d74:6efc])
+        by smtp.gmail.com with ESMTPSA id n7-20020a02cc07000000b004773b943137sm16456jap.160.2024.03.14.18.29.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Mar 2024 18:29:57 -0700 (PDT)
+Date: Thu, 14 Mar 2024 19:29:55 -0600
+From: Thomas Bertschinger <tahbertschinger@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org, bfoster@redhat.com
 Subject: Re: [PATCH] bcachefs: create debugfs dir for each btree
-Message-ID: <6sb4x4vguubv52lbdcdawinrkyxmbslqzbsgtne4ifhsj5yesi@6q6twh2lhgir>
+Message-ID: <20240315012955.GA197197@fedora-laptop>
 References: <20240314160218.192135-1-tahbertschinger@gmail.com>
+ <6sb4x4vguubv52lbdcdawinrkyxmbslqzbsgtne4ifhsj5yesi@6q6twh2lhgir>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240314160218.192135-1-tahbertschinger@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <6sb4x4vguubv52lbdcdawinrkyxmbslqzbsgtne4ifhsj5yesi@6q6twh2lhgir>
 
-On Thu, Mar 14, 2024 at 10:02:18AM -0600, Thomas Bertschinger wrote:
-> This creates a subdirectory for each individual btree under the btrees/
-> debugfs directory.
+On Thu, Mar 14, 2024 at 08:05:57PM -0400, Kent Overstreet wrote:
+> nodes should actually be keys - nodes would be showing the node
+> structure, only cmd_list.rs currently does that (but -formats covers it)
 > 
-> Directory structure, before:
-> 
-> /sys/kernel/debug/bcachefs/$FS_ID/btrees/
-> ├── alloc
-> ├── alloc-bfloat-failed
-> ├── alloc-formats
-> ├── backpointers
-> ├── backpointers-bfloat-failed
-> ├── backpointers-formats
-> ...
-> 
-> Directory structure, after:
-> 
-> /sys/kernel/debug/bcachefs/$FS_ID/btrees/
-> ├── alloc
-> │   ├── bfloat-failed
-> │   ├── formats
-> │   └── nodes
-> ├── backpointers
-> │   ├── bfloat-failed
-> │   ├── formats
-> │   └── nodes
 
-nodes should actually be keys - nodes would be showing the node
-structure, only cmd_list.rs currently does that (but -formats covers it)
-
-> ...
-> 
-> Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
-> ---
->  fs/bcachefs/debug.c | 30 +++++++++++++++---------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/bcachefs/debug.c b/fs/bcachefs/debug.c
-> index b1f147e6be4d..491ad699d558 100644
-> --- a/fs/bcachefs/debug.c
-> +++ b/fs/bcachefs/debug.c
-> @@ -866,6 +866,20 @@ void bch2_fs_debug_exit(struct bch_fs *c)
->  		debugfs_remove_recursive(c->fs_debug_dir);
->  }
->  
-> +static void bch2_fs_debug_btree_init(struct bch_fs *c, struct btree_debug *bd)
-> +{
-> +	struct dentry *d;
-> +
-> +	d = debugfs_create_dir(bch2_btree_id_str(bd->id), c->btree_debug_dir);
-> +
-> +	debugfs_create_file("nodes", 0400, d, bd, &btree_debug_ops);
-> +
-> +	debugfs_create_file("formats", 0400, d, bd, &btree_format_debug_ops);
-> +
-> +	debugfs_create_file("bfloat-failed", 0400, d, bd,
-> +			    &bfloat_failed_debug_ops);
-> +}
-> +
->  void bch2_fs_debug_init(struct bch_fs *c)
->  {
->  	struct btree_debug *bd;
-> @@ -902,21 +916,7 @@ void bch2_fs_debug_init(struct bch_fs *c)
->  	     bd < c->btree_debug + ARRAY_SIZE(c->btree_debug);
->  	     bd++) {
->  		bd->id = bd - c->btree_debug;
-> -		debugfs_create_file(bch2_btree_id_str(bd->id),
-> -				    0400, c->btree_debug_dir, bd,
-> -				    &btree_debug_ops);
-> -
-> -		snprintf(name, sizeof(name), "%s-formats",
-> -			 bch2_btree_id_str(bd->id));
-> -
-> -		debugfs_create_file(name, 0400, c->btree_debug_dir, bd,
-> -				    &btree_format_debug_ops);
-> -
-> -		snprintf(name, sizeof(name), "%s-bfloat-failed",
-> -			 bch2_btree_id_str(bd->id));
-> -
-> -		debugfs_create_file(name, 0400, c->btree_debug_dir, bd,
-> -				    &bfloat_failed_debug_ops);
-> +		bch2_fs_debug_btree_init(c, bd);
->  	}
->  }
->  
-> -- 
-> 2.43.2
-> 
+Ah, yup. Should I send a v2, or is that a small enough fix that you can
+just amend it?
