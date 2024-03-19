@@ -1,106 +1,139 @@
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1390A5FB8B
-	for <linux-bcachefs@vger.kernel.org>; Tue, 19 Mar 2024 20:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAF84F5E6
+	for <linux-bcachefs@vger.kernel.org>; Tue, 19 Mar 2024 22:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710879227; cv=none; b=X/jG93HXM6OYkN2hv32XfIALNOKUHGjq1IkcT7Fiq5xXzHPihGP39RssfcqkPwQlYm764nBxaJuwgnVN3Yi4u9scQWZLhepioBPHuM5G3zcSGxPab5lKm9oNpWT/VK35mkNS9F+e310h1hOLFPfvp4wnBT4P3QLYWeWZlsFXI5M=
+	t=1710886285; cv=none; b=OHtLG69Q5A5OMGiHbuW4G24x1weuhG7rRsxlBNA1uFbl2GwyYGcY4x8tKrV912U+lW4TWZyBqjm2j7jrJm1obKx4B9V3IRxj4ZSWAiglXvRm5X8nn1q0XiZky41W6VyAvGn6Z+yvSB+25H/lAVrehGD4Bc5xj94RBIado5iP7uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710879227; c=relaxed/simple;
-	bh=TEI1l16U8O229iRg+bnRlquzTRC42x/8zMW3wG5XbLs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tsVaTKpj9JM+moY6NfNcIWp7X+mQmvb++2xuczidKNxbVE96MyMHFunmmVPquQVG+IEzuvvLlDeun4rLryeG8YFGqfdlzo075UHp4wXBwmcx5LBTMZQE1lbXVZdyKgaB1j4U2SkWN/j9VaAVWYLuJG6srkOtaLBlD0FvKXVeo0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gtAnEDUV; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1710886285; c=relaxed/simple;
+	bh=ISOhSDV7rsGKaoctsa473zJBnGTkZPKSqQr9JefmsnU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Pv65xFVmufdw9aMmldZ/FNr4KTAL/tpE2nVQKjcKByylqh4IUxCUudYxURgQ8gQKUBUf/NSV437a1yA83rHiBYEA9lj3iEYVsI+S5lQYOC3TFJHxOYE7YkmJ9wHyrbJwTNa7RzP9cX0a4vmeMFRA0SPkMCnAT9ErtfguIa+nakw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cu9OoAcZ; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gtAnEDUV"
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dee917abd5so5775ad.1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 19 Mar 2024 13:13:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710879225; x=1711484025; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=61E5NQ6/YcOhVh/0k2iDBO7WpqpNwA0nbieT/ua9ouc=;
-        b=gtAnEDUVnZvHgfuPvOALSV92laz8czMB1cfJmNpfaAI3SDF8yI8PpIvoIB8wspgUSY
-         5w0y9kN4RgfF7ReI8e8vf1xrpiVTr17eG083oEne+DYTGEmE3qgXtLu/7Ad3h+kW1gPX
-         GaL5y0w+oY/C33fvFIQYF30A396dqMPN2qPiGBAs5sjCkxnV2Y//egkHXxm/fJGBrhdf
-         dVx0alJ9xtYq+nY2azq325TtMfdnKGeP6rsk6yUV/UwKP91IqIs2bgxXabJsNoAZbrI4
-         hbursat8QPTCctysg1URfQUtJoyMy7Oc3+xw9D8pgDaTrccOhuEab4eNJr7jzdEgQiLA
-         Vuqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710879225; x=1711484025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=61E5NQ6/YcOhVh/0k2iDBO7WpqpNwA0nbieT/ua9ouc=;
-        b=BssTRPL3c4NA7856rpIYOIXI9PHMWodg6qiFibXsPLacKjDuVAIst6I8kf0YggEbH0
-         3NgZh2kPh67bsWxli3tURD8CmD8Z2QOO4GbjYwMo63GmrSvhFP8ult6enSyJmV59x3i1
-         eJQNCZ96MTNSvtpJuXNi++qGT60xqCOfDgyw668wr9BtXrocDlxPd11CBNi1Y8PS/7q1
-         oQ6uiulpY0dbTZ+8ja/oyIxuROrRzK2shs52a9ccETwoi01bW4SNnbhHLBPNwzVQGI7v
-         4u2lYvuY/I6+40YeaDPX5hy0gmyqiDLFxg1rE1Su/CnHknxpZlg5TA7IRsrMTgYYQc2I
-         CTYg==
-X-Forwarded-Encrypted: i=1; AJvYcCXLbKzdZnn4g8I6NQUf2QoGK0DJ+y8SzOmHJtl2VCJtA7mqIO4UmfbdR7xRBVFGm8gpNVImaMAFpjRzN2jupbLR/Yn9KSqg1isGYA9R0RI=
-X-Gm-Message-State: AOJu0YzhpM+4Tof9H95hgHN/EEIuhRJU8mh6y5jHrRE1wHnP+0NnWI1A
-	A4lP47yjqi0cWnma9fjuFHDpXf/BRl93gOOTM1s3/tWhsUNBSLP0UagGuZYjBhHNkPYQxIpw7sf
-	AnDJcd4sTVI/C55FAFKvQTrJF9fNrp/rEZ4tR
-X-Google-Smtp-Source: AGHT+IFREg9SwBdMDFnHH3n5tmN6yW8u/tyc7IrpIagXi7ukyBFEM1dN3wdN7uqPHmnG3vaEtYonkph3M4qPe2lMJDA=
-X-Received: by 2002:a17:902:f691:b0:1de:f0f0:90aa with SMTP id
- l17-20020a170902f69100b001def0f090aamr68484plg.26.1710879225101; Tue, 19 Mar
- 2024 13:13:45 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cu9OoAcZ"
+Date: Tue, 19 Mar 2024 18:11:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710886280;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=QbdXFcsAVXRBojMy8+Pc1cBSvS+94IkHlxqp1mxqCDA=;
+	b=cu9OoAcZOnxyy0MzUqbeHKlUU+mVOtmwFz0r+pnrQlXkFdQSAIYGmYHkXLwIs4zW+At/dP
+	90C6qFzRIREg0qkm2hcW5ePIkrv1KIOs4b0LcsIEeCMDWvVeK+ds7lguhqtWLM3sIqWWTU
+	DLSYVXf65f906aEcgritGg4oSJKozhc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bachefs fixes for 6.9-rc1
+Message-ID: <qhecenhgh5bnkjllimyvmqc6cv5bv4vposvh5hqtjjm7hx3q4u@r4gwjp6wl2k2>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319180005.246930-1-visitorckw@gmail.com> <20240319180005.246930-4-visitorckw@gmail.com>
-In-Reply-To: <20240319180005.246930-4-visitorckw@gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 19 Mar 2024 13:13:33 -0700
-Message-ID: <CAP-5=fUy=m2_f7jKO_kn4+onto5As2fUwrcNBtKEh8uObsNvYA@mail.gmail.com>
-Subject: Re: [PATCH 03/13] bcachefs: Fix typo
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
-	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
-	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Mar 19, 2024 at 11:00=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.co=
-m> wrote:
->
-> Replace 'utiility' with 'utility'.
->
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Hi Linus, small batch of bcachefs fixes for you.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+Going to have a larger pull for you soon with some new repair code -
+some users got hit bad with the failure to downgrade bug (the fix for
+which is still not in 6.7) - that caused the splitbrain detection to
+attempt to kick out every device from the filesystem, and some users
+attempted to run in very_degraded mode got things very borked.
 
-Thanks,
-Ian
+For users:
+ - there's a no_splitbrain_check option which runs the splitbrain checks
+   in dry run mode, that should suffice to get most people going
+ - if your fs is very borked, 'scan entire device for btree nodes and
+   reconstruct' is almost done; it looks like that will be a pretty
+   bulletproof way to reconstruct.
 
-> ---
->  fs/bcachefs/util.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-> index 216fadf16928..f5a16ad65424 100644
-> --- a/fs/bcachefs/util.c
-> +++ b/fs/bcachefs/util.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * random utiility code, for bcache but in theory not specific to bcache
-> + * random utility code, for bcache but in theory not specific to bcache
->   *
->   * Copyright 2010, 2011 Kent Overstreet <kent.overstreet@gmail.com>
->   * Copyright 2012 Google, Inc.
-> --
-> 2.34.1
->
+Some poeple may have their filesystems unavailable for a bit but I'm
+trying to make sure no one looses data, and no one should be forced to
+migrate either, we should always get back to a working functional rw fs.
+
+Cheers,
+Kent
+
+The following changes since commit be28368b2ccb328b207c9f66c35bb088d91e6a03:
+
+  bcachefs: time_stats: shrink time_stat_buffer for better alignment (2024-03-13 21:38:03 -0400)
+
+are available in the Git repository at:
+
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-03-19
+
+for you to fetch changes up to 2e92d26b25432ec3399cb517beb0a79a745ec60f:
+
+  bcachefs: Fix lost wakeup on journal shutdown (2024-03-18 23:35:42 -0400)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.9-rc1
+
+Assorted bugfixes.
+
+Most are fixes for simple assertion pops; the most significant fix is
+for a deadlock in recovery when we have to rewrite large numbers of
+btree nodes to fix errors. This was incorrectly running out of the same
+workqueue as the core interior btree update path - we now give it its
+own single threaded workqueue.
+
+This was visible to users as "bch2_btree_update_start(): error:
+BCH_ERR_journal_reclaim_would_deadlock" - and then recovery hanging.
+
+----------------------------------------------------------------
+Kent Overstreet (17):
+      bcachefs: Change "accounting overran journal reservation" to a warning
+      bcachefs: Fix check_key_has_snapshot() call
+      bcachefs: Fix spurious -BCH_ERR_transaction_restart_nested
+      bcachefs: Avoid extent entry type assertions in .invalid()
+      bcachefs: Fix locking in bch2_alloc_write_key()
+      bcachefs: Split out btree_node_rewrite_worker
+      bcachefs: Improve sysfs internal/btree_updates
+      bcachefs: Fix nested transaction restart handling in bch2_bucket_gens_init()
+      bcachefs: bch2_snapshot_is_ancestor() now safe to call in early recovery
+      bcachefs: fix for building in userspace
+      bcachefs: Don't corrupt journal keys gap buffer when dropping alloc info
+      bcachefs: Fix lost transaction restart error
+      bcachefs: Improve bch2_fatal_error()
+      bcachefs: Run check_topology() first
+      bcachefs: ratelimit errors from async_btree_node_rewrite
+      bcachefs; Fix deadlock in bch2_btree_update_start()
+      bcachefs: Fix lost wakeup on journal shutdown
+
+ fs/bcachefs/alloc_background.c      | 15 +++++++------
+ fs/bcachefs/alloc_foreground.c      | 10 +++++----
+ fs/bcachefs/bcachefs.h              |  2 ++
+ fs/bcachefs/btree_gc.c              |  2 +-
+ fs/bcachefs/btree_io.c              | 12 +++++-----
+ fs/bcachefs/btree_key_cache.c       |  2 +-
+ fs/bcachefs/btree_update_interior.c | 44 ++++++++++++++++++++++++-------------
+ fs/bcachefs/btree_update_interior.h |  1 +
+ fs/bcachefs/btree_write_buffer.c    |  2 +-
+ fs/bcachefs/buckets.c               |  6 ++---
+ fs/bcachefs/debug.c                 |  2 +-
+ fs/bcachefs/ec.c                    |  6 ++---
+ fs/bcachefs/error.h                 |  4 ++--
+ fs/bcachefs/extents.h               |  6 ++---
+ fs/bcachefs/fs.c                    |  3 ++-
+ fs/bcachefs/fsck.c                  | 33 ++++++++++++++++++++--------
+ fs/bcachefs/journal.c               | 12 +++++-----
+ fs/bcachefs/journal_io.c            | 15 ++++++-------
+ fs/bcachefs/logged_ops.c            |  4 ++--
+ fs/bcachefs/movinggc.c              |  3 +--
+ fs/bcachefs/recovery.c              |  6 ++++-
+ fs/bcachefs/recovery_types.h        |  2 +-
+ fs/bcachefs/snapshot.c              | 32 +++++++++++++++------------
+ fs/bcachefs/super-io.c              |  8 +++----
+ fs/bcachefs/super.c                 | 33 ++++++++++++++--------------
+ fs/bcachefs/util.h                  |  3 +++
+ 26 files changed, 157 insertions(+), 111 deletions(-)
