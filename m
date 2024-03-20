@@ -1,105 +1,80 @@
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55FB833062
-	for <linux-bcachefs@vger.kernel.org>; Wed, 20 Mar 2024 21:37:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872942CA6
+	for <linux-bcachefs@vger.kernel.org>; Wed, 20 Mar 2024 21:49:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710970625; cv=none; b=YT1+evOvvyJGnRm1uqw3vbFCYkwZDlDyG2WwM/xbAJYEVv7Di2LHrYmIm53n1oDYf13eIO0L4rf6DTJ/s4PhrjFGpyxLbSshesGAGnhvOqm+cWMu5P2OYKVKmb8AQuCWhmi0R1n/7Tot4/VdrlZjcwdDUCF7InyQPN1R7vlaFRE=
+	t=1710971345; cv=none; b=ugQzr3jrN5v7fF0KA8Gka2pGXTECyQH1q2zKCDut5CRX3MEwWdWxR7+JbHXNgb8EUTV1wdN9GOxO2nuDqgjI9ndCOKCw5D015SPUZdXfUM7Tz2fn4o0io3oW0KJOaazayJODy9HNcVl8w/SF295DAKdA98Ro9SMyQusyFskgDGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710970625; c=relaxed/simple;
-	bh=lk7aQyX6ZKYD8DGcsUW3OSf1EDVaB0iBT6wMAEUmdiQ=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=ea/oEPvwWdHomN4+Oxz7HlsKDtqumN9uy34Ta/WGUO1+mJx3R+FUwOz2oNYBPgqHKHDXRsvglJSePXyKB7CYuRLh9TiHoUTHzwUM+p9PVPPbZVjRURoTfjglO3gK8t83ZW7pWolgBxqUn7fJTQsRNmCvHC0VKNu78xAAIVAvj/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LoKZsYHp; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1710971345; c=relaxed/simple;
+	bh=RKyRVbWC5v/cnVafta8wsFK11+HScT99GeMsbzw2Riw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tqUxfSJzQl/P6Y2zc4B2kfiooa+/D7d56w08T2mfF/rDhc05nAgUINbjigejO8rgOaMMgdK/l84DK+y8t+RNaHOdKgrchATbjZdCNHgTUtOGcxa67wC+SlV1YKlwNpln3dsc2JYrSlJjA3d6rfdeIKswa5nWjVMzGkVO64Jwl8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Qx5dsS5D; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LoKZsYHp"
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-430c32c04c7so2211721cf.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 20 Mar 2024 14:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710970623; x=1711575423; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7f3OJG+sIAatBITf0/0yxDo/7UCXkd+0KskGpiXx3NI=;
-        b=LoKZsYHpy7Vboe2w8r/L6SGTYMtjfUoE0tiBcq+PJfoPWLfa7WZ+GAdHLCOjzMnbl9
-         HDYVbeU3o+dS4xHipHZQgHcCz5eMLPGXHieAA9pk4rheKqqk3YWcufSnlLM2UzN8EqWX
-         C08atYKUgUX+QMlmvKtTYWnwicEjogaFiV719zoqlHSctP7k0Rx92bFwm9vFbJ4aSXaF
-         janZV7ppo8fDWeirG0GPlPhxmkzVjFRmur2WEnIcr3B621Kej2iX89a0q4CcsUBg22Si
-         jokFPA7yOMdMDejICWeUuXTrrmF0BsRq2y9Dm2Q9GMvwYYOdbkkyQYPPyI9M0/MAgrst
-         WsVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710970623; x=1711575423;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7f3OJG+sIAatBITf0/0yxDo/7UCXkd+0KskGpiXx3NI=;
-        b=nMx5RLjgLCww2XWL3DayFcwPiGmV9iVnBsOk27SGDFFLTrJbYYq3oYrFks9yg9Dr2e
-         xuSv/LDqQgJNOl/yq0zoGBGviLmgQP5tk86moqIQnQm3DowiqvLtVNhU9Rd7iBhqPMnR
-         FTUXobjIkiY/y3Lbqqhq8umLzEBb84a4I8LTzSO4BcdhOVSHkRPTxGdVYpx/h7q442OJ
-         fv3r9ktezZNtPHI6o73m5s7r2qXLYR6KzL2bbZNCLeYjyjm18gofUi7+l6Pf3hXHoEmq
-         YoXyfPy1DnZalFYbKe1caBjz2FfMZ4EhCVi2LU3vtrXJzVP0XTzDmS7VN6U2NZTAJSzz
-         otOw==
-X-Gm-Message-State: AOJu0YxPQfrIlj5ovjs3GXvHC8rSN3QCwcHgx5vuW+b08Ijf2tf4HvXe
-	g3RaBuzspWjv9XBnohGhUBL7Y19Tmtqi5fgAzrUXLDuboP60qiv1
-X-Google-Smtp-Source: AGHT+IFe6FRswK1PK+7QB0xSx3iX/rDj/bkx1NQsn+6vAo42LaikTto/+KVlDyIUZfiCRoLZ2+80uQ==
-X-Received: by 2002:a05:622a:489:b0:42e:f47f:7fe7 with SMTP id p9-20020a05622a048900b0042ef47f7fe7mr21401411qtx.37.1710970623298;
-        Wed, 20 Mar 2024 14:37:03 -0700 (PDT)
-Received: from [10.193.190.170] (mobile-130-126-255-72.near.illinois.edu. [130.126.255.72])
-        by smtp.gmail.com with ESMTPSA id dn17-20020a05622a471100b0042ee2bda028sm7510370qtb.54.2024.03.20.14.37.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 14:37:03 -0700 (PDT)
-Message-ID: <080de8c1-497c-45aa-a5a0-10dba5319c64@gmail.com>
-Date: Wed, 20 Mar 2024 16:37:02 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Qx5dsS5D"
+Date: Wed, 20 Mar 2024 17:48:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710971338;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fLwxu/jT8RreXcWSA8pBnvlil888u4IBiRp1nDz/00c=;
+	b=Qx5dsS5DTUAbHIb1cvqHmb6S3gqGfA5lQWdhojSw8iMTzD4YtpGeW+lsqyqnifplOgCHkR
+	GPfY0FsXOGKZAueg1UfGBA7nyaQsNiqym42+fw1iEqC5VAuQ05XZrjKvJLThiJsG1CU1t+
+	KaXrGhzqvSpKXJrjnLsuv/yiH9iM8SM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Zijie Zhao <zzjas98@gmail.com>
+Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
+	chenyuan0y@gmail.com
+Subject: Re: [fs/bcachefs] Question about memory allocation in
+ btree_paths_realloc
+Message-ID: <bblgnrjjvyisunthmn4ti667nqyr5pglr5rws4kxalkxvs2wi4@k7w7ekoc2wru>
+References: <080de8c1-497c-45aa-a5a0-10dba5319c64@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: kent.overstreet@linux.dev, bfoster@redhat.com
-Cc: linux-bcachefs@vger.kernel.org, chenyuan0y@gmail.com
-From: Zijie Zhao <zzjas98@gmail.com>
-Subject: [fs/bcachefs] Question about memory allocation in btree_paths_realloc
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <080de8c1-497c-45aa-a5a0-10dba5319c64@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Dear BCACHEFS maintainers,
+On Wed, Mar 20, 2024 at 04:37:02PM -0500, Zijie Zhao wrote:
+> Dear BCACHEFS maintainers,
+> 
+> We encountered an unusual usage of kzalloc in btree_paths_realloc while
+> performing a static analysis for kernel code.
+> 
+> 
+> https://elixir.bootlin.com/linux/latest/source/fs/bcachefs/btree_iter.c#L1523
+> 
+> ```
+> static noinline void btree_paths_realloc(struct btree_trans *trans)
+> {
+> 	unsigned nr = trans->nr_paths * 2;
+> 
+> 	void *p = kzalloc(BITS_TO_LONGS(nr) * sizeof(unsigned long) +
+> 			  sizeof(struct btree_trans_paths) +
+> 			  nr * sizeof(struct btree_path) +
+> 			  nr * sizeof(btree_path_idx_t) + 8 +
+> 			  nr * sizeof(struct btree_insert_entry), GFP_KERNEL|__GFP_NOFAIL);
+> 
+> 	unsigned long *paths_allocated = p;
+> 	memcpy(paths_allocated, trans->paths_allocated,
+> BITS_TO_LONGS(trans->nr_paths) * sizeof(unsigned long));
+> 	...
+> }
+> ```
+> 
+> Here kzalloc might return NULL in case of out-of-memory, making
+> memcpy(NULL,...) to have undefined behavior. Would a NULL check be needed
+> here?
 
-We encountered an unusual usage of kzalloc in btree_paths_realloc 
-while performing a static analysis for kernel code.
-
-
-https://elixir.bootlin.com/linux/latest/source/fs/bcachefs/btree_iter.c#L1523
-
-```
-static noinline void btree_paths_realloc(struct btree_trans *trans)
-{
-	unsigned nr = trans->nr_paths * 2;
-
-	void *p = kzalloc(BITS_TO_LONGS(nr) * sizeof(unsigned long) +
-			  sizeof(struct btree_trans_paths) +
-			  nr * sizeof(struct btree_path) +
-			  nr * sizeof(btree_path_idx_t) + 8 +
-			  nr * sizeof(struct btree_insert_entry), GFP_KERNEL|__GFP_NOFAIL);
-
-	unsigned long *paths_allocated = p;
-	memcpy(paths_allocated, trans->paths_allocated, 
-BITS_TO_LONGS(trans->nr_paths) * sizeof(unsigned long));
-	...
-}
-```
-
-Here kzalloc might return NULL in case of out-of-memory, making 
-memcpy(NULL,...) to have undefined behavior. Would a NULL check be 
-needed here?
-
-Please let us know if we missed any key information or assumption! We 
-appreciate your time!
-
-
-Best,
-Zijie
+See that __GFP_NOFAIL?
