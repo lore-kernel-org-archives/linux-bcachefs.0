@@ -1,38 +1,81 @@
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EC6522075
-	for <linux-bcachefs@vger.kernel.org>; Wed, 20 Mar 2024 06:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D134879E;
+	Wed, 20 Mar 2024 14:54:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710916195; cv=none; b=WWiKn+PVxCoLatZzSWGzgkvVbfdC3DcdHSxKWwWgzsDVyuF4Pm+H2bCb4xsiaMVD1MV1dIuVkhTqs+gKltTxUI5W8Uzf/hSVE+kJXBd6jFwtobWxx13PVc9TSiD996lQ+f+HACkaU5YjxqkFWK0mCtG00DZgkLt+jqWw+B4ET4M=
+	t=1710946467; cv=none; b=FtZXB5ajhofNWVZEwpez0Fm/nfLTfK9RTmY7w6nbGwgTUES+Z0yLdxrhhIOkheXTa/Sne1UzYUJEjtL4fxXQ3TTC4fxwJqorwI01DxO/+5l7cS8VAidSNOCINTHj1sn/lf2kQHqYAoQI8vc4s1UJ1Lq/p/L28MKb+YGsmftc1AA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710916195; c=relaxed/simple;
-	bh=CX5Ln/B8MUI/lnKqMXpkZjyI9cuCSQEC68bKG32Pycw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XWm/fq+jhd86VdVHEU9E/hYLAcZz0VBeN7lYTZKUHgbfmK2JU47Nes81rPs8O4hUcFpPhFoa3SUmdp5wNs9TlYp2E5KISNgA12Kz3Uh/X11Ml5ct5hQwtUKKJEyNVnavpapuE1eILpNIQHFQU05Gpj15aPqK4abmOinxkIHqhDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TzzCT1f4Hz1R7Dg;
-	Wed, 20 Mar 2024 14:27:17 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id CFB37140155;
-	Wed, 20 Mar 2024 14:29:50 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 20 Mar
- 2024 14:29:50 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
-Subject: [PATCH RFC 2/2] bcachefs: optimize btree_path status representation
-Date: Wed, 20 Mar 2024 14:29:23 +0800
-Message-ID: <20240320062923.305431-3-lihongbo22@huawei.com>
+	s=arc-20240116; t=1710946467; c=relaxed/simple;
+	bh=IYecSohcwpGyIXoXSq7rCQyR8nAeqM8KbTlKn0CKjQQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jHurPcCeQd9zX2giXx1xOKfgb3dOqk3NdQPnL+Ye76UKJnsbzqJsHvoG+pDl1X5N7SyNKJnwC5XPfHAEVzHVqdcd4AJ1sOS6ez+ZbF7vUQwdQJn73HDXgVS+RbwcH8RzcgrlgZRUw+3o2f1gOOarc9gwRVEDl9LUODTC/xcBTDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f5rYFRej; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f5rYFRej"
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e0678265b3so616985ad.0;
+        Wed, 20 Mar 2024 07:54:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710946465; x=1711551265; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H9pPYTnULGauSrpbFS5pR787jIzr/dKzPEq/yKn+20k=;
+        b=f5rYFRejUcoPRn0BmE52+FfJHFPTjxdW3FEU6gpBXiB4Ko9iCtDqBE4LHw5d59LYGy
+         eNqpSuGbqjGZ4BKZeOuQwaRjrygLx74AU5RV0YDnw0KzcMAHuHrYbpI5psJvZuw5de1n
+         f7kIK+0iVziALT21uOKNAOvbyQhfW4be1AJCL9F1E7H1YapXAo9mdtykFElH2Edoyr4J
+         Ddxz2IxcJUv2MPfDYp2eB161nSOZoagKwG5WRgsnpd1EVzOGBqYWg3+G9bj8/KpaLUGo
+         XETCxIsDHw+Ac/mFTbUTVZVFqHw33UWpQBsUrvFYfwq79JBvkq1lXEm6sVDZaWYfzfEY
+         g3Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710946465; x=1711551265;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H9pPYTnULGauSrpbFS5pR787jIzr/dKzPEq/yKn+20k=;
+        b=S1wEbcRN8FG3j9CKMKk4vPFpEJGE/gRKDgza5WmBW9brmCumbULqEVX5/7SyrGolDz
+         MuHyIkFXW6Mc1w2sy44w+bOJ+ici0PR3MZu4E+p/5+6h3j2pd6tASJBRrOEAWDvohUwQ
+         JxL0oiq5udwkIPoY24xRMfi/Xo3qum3IEDNks85iFGCF86WL+1OfjgGR5OLKXuNfKO11
+         klbzKt1QaD5cl6OoCGQbfDtjXBu7w4vCsqPcLSysHnYGfp4sTAz845XtMTWobSAZ8LE1
+         swcwYA5HqJlo+9L99luMfqrMKop/HFfZVJHRtohDl8l8FfrqBVzxvNckIBDfCxID0ZXA
+         q6SA==
+X-Forwarded-Encrypted: i=1; AJvYcCXoMk4rVwAI5pTgoDk6edpbl3HBcI500NSQ7UewC9WTNr2La7BVcZS/OD1Z/tcGcC1VROSEF608QwSD+rRROvs8zdB0Gqpqj+9S16W/cy0KV+NyM5tlVF1XUgFBHs8WSMiQBwIsOaRqeocK4tk0NQmNd5syQwa2R2ksFLRLr/HdJ0Y1vExkCM2sRgBsMQ6qY8LnO0ryLYoEyeaesS57z0FRmZxpHhDST57urQtg
+X-Gm-Message-State: AOJu0YwTieqnmcH9YgejHL1XYqUs+8iQCMasIdgu29/jFZJ0cmBkilie
+	SnEBE/0qvxW9ZhI5U2ibGJRYGQ2L3N9gy70pl0zpoAERCZsVZ9Il
+X-Google-Smtp-Source: AGHT+IEKS3qkVwmOq9hl/R6NzZ7V12FfqonEGI+lod4HJvjLgBZVIKQsxp+rc4s699c4UI2aCaWBjg==
+X-Received: by 2002:a17:903:24f:b0:1dd:7d66:bfc0 with SMTP id j15-20020a170903024f00b001dd7d66bfc0mr19432256plh.4.1710946465092;
+        Wed, 20 Mar 2024 07:54:25 -0700 (PDT)
+Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id la11-20020a170902fa0b00b001dc30f13e6asm13719989plb.137.2024.03.20.07.54.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 07:54:24 -0700 (PDT)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: colyli@suse.de,
+	kent.overstreet@linux.dev,
+	msakai@redhat.com,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	akpm@linux-foundation.org
+Cc: bfoster@redhat.com,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	jserv@ccns.ncku.edu.tw,
+	dm-devel@lists.linux.dev,
+	linux-bcache@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH v2 00/15] treewide: Refactor heap related implementation
+Date: Wed, 20 Mar 2024 22:54:02 +0800
+Message-Id: <20240320145417.336208-1-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240320062923.305431-1-lihongbo22@huawei.com>
-References: <20240320062923.305431-1-lihongbo22@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,249 +83,80 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500022.china.huawei.com (7.185.36.66)
 
-UPTODATE means btree_path is useable, so here use
-btree_path_is_uptodate to check this status. And the old
-function btree_path_set_dirty cannot represent what it really
-does (such as if UPTODATE is passed into it, btree_path sometime
-wasn't dirty).
+This patch series focuses on several adjustments related to heap
+implementation. Firstly, a type-safe interface has been added to the
+min_heap, along with the introduction of several new functions to
+enhance its functionality. Additionally, the heap implementation for
+bcache and bcachefs has been replaced with the generic min_heap
+implementation from include/linux. Furthermore, several typos have been
+corrected.
 
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+Previous discussion with Kent Overstreet:
+https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
+
+Regards,
+Kuan-Wei
+
 ---
- fs/bcachefs/btree_iter.c         | 16 ++++++++--------
- fs/bcachefs/btree_iter.h         | 13 +++++++++----
- fs/bcachefs/btree_key_cache.c    |  2 +-
- fs/bcachefs/btree_locking.c      | 10 +++++-----
- fs/bcachefs/btree_locking.h      |  8 ++++----
- fs/bcachefs/btree_trans_commit.c |  2 +-
- 6 files changed, 28 insertions(+), 23 deletions(-)
 
-diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
-index 2202b3571c81..513142e68f89 100644
---- a/fs/bcachefs/btree_iter.c
-+++ b/fs/bcachefs/btree_iter.c
-@@ -693,7 +693,7 @@ void bch2_trans_node_add(struct btree_trans *trans,
- 	for (;
- 	     path && btree_path_pos_in_node(path, b);
- 	     path = next_btree_path(trans, path))
--		if (path->status == UPTODATE && !path->cached) {
-+		if (btree_path_is_uptodate(path) && !path->cached) {
- 			enum btree_node_locked_type t =
- 				btree_lock_want(path, b->c.level);
- 
-@@ -1007,7 +1007,7 @@ static int bch2_btree_path_traverse_all(struct btree_trans *trans)
- 		 * Traversing a path can cause another path to be added at about
- 		 * the same position:
- 		 */
--		if (trans->paths[idx].status) {
-+		if (!btree_path_is_uptodate(&trans->paths[idx])) {
- 			__btree_path_get(&trans->paths[idx], false);
- 			ret = bch2_btree_path_traverse_one(trans, idx, 0, _THIS_IP_);
- 			__btree_path_put(&trans->paths[idx], false);
-@@ -1068,7 +1068,7 @@ static void btree_path_set_level_down(struct btree_trans *trans,
- 		if (btree_lock_want(path, l) == BTREE_NODE_UNLOCKED)
- 			btree_node_unlock(trans, path, l);
- 
--	btree_path_set_dirty(path, NEED_TRAVERSE);
-+	btree_path_update_state(path, NEED_TRAVERSE);
- 	bch2_btree_path_verify(trans, path);
- }
- 
-@@ -1245,7 +1245,7 @@ __bch2_btree_path_set_pos(struct btree_trans *trans,
- 	if (unlikely(path->cached)) {
- 		btree_node_unlock(trans, path, 0);
- 		path->l[0].b = ERR_PTR(-BCH_ERR_no_btree_node_up);
--		btree_path_set_dirty(path, NEED_TRAVERSE);
-+		btree_path_update_state(path, NEED_TRAVERSE);
- 		goto out;
- 	}
- 
-@@ -1274,7 +1274,7 @@ __bch2_btree_path_set_pos(struct btree_trans *trans,
- 	}
- 
- 	if (unlikely(level != path->level)) {
--		btree_path_set_dirty(path, NEED_TRAVERSE);
-+		btree_path_update_state(path, NEED_TRAVERSE);
- 		__bch2_btree_path_unlock(trans, path);
- 	}
- out:
-@@ -1675,7 +1675,7 @@ struct bkey_s_c bch2_btree_path_peek_slot(struct btree_path *path, struct bkey *
- 	if (unlikely(!l->b))
- 		return bkey_s_c_null;
- 
--	EBUG_ON(path->status != UPTODATE);
-+	EBUG_ON(!btree_path_is_uptodate(path));
- 	EBUG_ON(!btree_node_locked(path, path->level));
- 
- 	if (!path->cached) {
-@@ -1811,7 +1811,7 @@ struct btree *bch2_btree_iter_next_node(struct btree_iter *iter)
- 		__bch2_btree_path_unlock(trans, path);
- 		path->l[path->level].b		= ERR_PTR(-BCH_ERR_no_btree_node_relock);
- 		path->l[path->level + 1].b	= ERR_PTR(-BCH_ERR_no_btree_node_relock);
--		btree_path_set_dirty(path, NEED_TRAVERSE);
-+		btree_path_update_state(path, NEED_TRAVERSE);
- 		trace_and_count(trans->c, trans_restart_relock_next_node, trans, _THIS_IP_, path);
- 		ret = btree_trans_restart(trans, BCH_ERR_transaction_restart_relock);
- 		goto err;
-@@ -1849,7 +1849,7 @@ struct btree *bch2_btree_iter_next_node(struct btree_iter *iter)
- 					iter->flags & BTREE_ITER_INTENT,
- 					btree_iter_ip_allocated(iter));
- 	btree_path_set_should_be_locked(btree_iter_path(trans, iter));
--	EBUG_ON(btree_iter_path(trans, iter)->status);
-+	EBUG_ON(!btree_path_is_uptodate(btree_iter_path(trans, iter)));
- out:
- 	bch2_btree_iter_verify_entry_exit(iter);
- 	bch2_btree_iter_verify(iter);
-diff --git a/fs/bcachefs/btree_iter.h b/fs/bcachefs/btree_iter.h
-index c76070494284..f9ed8c44ab5a 100644
---- a/fs/bcachefs/btree_iter.h
-+++ b/fs/bcachefs/btree_iter.h
-@@ -27,10 +27,15 @@ static inline bool __btree_path_put(struct btree_path *path, bool intent)
- 	return --path->ref == 0;
- }
- 
--static inline void btree_path_set_dirty(struct btree_path *path,
--					enum btree_path_state u)
-+static inline bool btree_path_is_uptodate(struct btree_path *path)
- {
--	path->status = max_t(unsigned, path->status, u);
-+    return path->status == UPTODATE;
-+}
-+
-+static inline void btree_path_update_state(struct btree_path *path,
-+                    enum btree_path_state u)
-+{
-+    path->status = max_t(unsigned, path->status, u);
- }
- 
- static inline struct btree *btree_path_node(struct btree_path *path,
-@@ -219,7 +224,7 @@ int __must_check bch2_btree_path_traverse_one(struct btree_trans *,
- static inline int __must_check bch2_btree_path_traverse(struct btree_trans *trans,
- 					  btree_path_idx_t path, unsigned flags)
- {
--	if (trans->paths[path].status < NEED_RELOCK)
-+	if (btree_path_is_uptodate(&trans->paths[path]))
- 		return 0;
- 
- 	return bch2_btree_path_traverse_one(trans, path, flags, _RET_IP_);
-diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
-index 47cf735f24a0..d178b197dc17 100644
---- a/fs/bcachefs/btree_key_cache.c
-+++ b/fs/bcachefs/btree_key_cache.c
-@@ -540,7 +540,7 @@ bch2_btree_path_traverse_cached_slowpath(struct btree_trans *trans, struct btree
- 		set_bit(BKEY_CACHED_ACCESSED, &ck->flags);
- 
- 	BUG_ON(btree_node_locked_type(path, 0) != btree_lock_want(path, 0));
--	BUG_ON(path->status);
-+	BUG_ON(!btree_path_is_uptodate(path));
- 
- 	return ret;
- err:
-diff --git a/fs/bcachefs/btree_locking.c b/fs/bcachefs/btree_locking.c
-index 8d8e3207ca7a..0f18aacb9b5e 100644
---- a/fs/bcachefs/btree_locking.c
-+++ b/fs/bcachefs/btree_locking.c
-@@ -462,7 +462,7 @@ void bch2_btree_node_lock_write_nofail(struct btree_trans *trans,
- 		for (i = 0; i < BTREE_MAX_DEPTH; i++)
- 			if (btree_node_read_locked(linked, i)) {
- 				btree_node_unlock(trans, linked, i);
--				btree_path_set_dirty(linked, NEED_RELOCK);
-+				btree_path_update_state(linked, NEED_RELOCK);
- 			}
- 	}
- 
-@@ -505,7 +505,7 @@ static inline bool btree_path_get_locks(struct btree_trans *trans,
- 	 */
- 	if (fail_idx >= 0) {
- 		__bch2_btree_path_unlock(trans, path);
--		btree_path_set_dirty(path, NEED_TRAVERSE);
-+		btree_path_update_state(path, NEED_TRAVERSE);
- 
- 		do {
- 			path->l[fail_idx].b = upgrade
-@@ -520,7 +520,7 @@ static inline bool btree_path_get_locks(struct btree_trans *trans,
- 
- 	bch2_trans_verify_locks(trans);
- 
--	return path->status < NEED_RELOCK;
-+	return btree_path_is_uptodate(path);
- }
- 
- bool __bch2_btree_node_relock(struct btree_trans *trans,
-@@ -621,7 +621,7 @@ int bch2_btree_path_relock_intent(struct btree_trans *trans,
- 	     l++) {
- 		if (!bch2_btree_node_relock(trans, path, l)) {
- 			__bch2_btree_path_unlock(trans, path);
--			btree_path_set_dirty(path, NEED_TRAVERSE);
-+			btree_path_update_state(path, NEED_TRAVERSE);
- 			trace_and_count(trans->c, trans_restart_relock_path_intent, trans, _RET_IP_, path);
- 			return btree_trans_restart(trans, BCH_ERR_transaction_restart_relock_path_intent);
- 		}
-@@ -865,7 +865,7 @@ void bch2_btree_path_verify_locks(struct btree_path *path)
- 	unsigned l;
- 
- 	if (!path->nodes_locked) {
--		BUG_ON(path->status == UPTODATE &&
-+		BUG_ON(btree_path_is_uptodate(path) &&
- 		       btree_path_node(path, path->level));
- 		return;
- 	}
-diff --git a/fs/bcachefs/btree_locking.h b/fs/bcachefs/btree_locking.h
-index f3f03292a675..f58f769c0f19 100644
---- a/fs/bcachefs/btree_locking.h
-+++ b/fs/bcachefs/btree_locking.h
-@@ -157,7 +157,7 @@ static inline int btree_path_highest_level_locked(struct btree_path *path)
- static inline void __bch2_btree_path_unlock(struct btree_trans *trans,
- 					    struct btree_path *path)
- {
--	btree_path_set_dirty(path, NEED_RELOCK);
-+	btree_path_update_state(path, NEED_RELOCK);
- 
- 	while (path->nodes_locked)
- 		btree_node_unlock(trans, path, btree_path_lowest_level_locked(path));
-@@ -371,7 +371,7 @@ static inline int bch2_btree_path_upgrade(struct btree_trans *trans,
- 
- 	if (path->locks_want < new_locks_want
- 	    ? __bch2_btree_path_upgrade(trans, path, new_locks_want, &f)
--	    : path->status == UPTODATE)
-+	    : btree_path_is_uptodate(path))
- 		return 0;
- 
- 	trace_and_count(trans->c, trans_restart_upgrade, trans, _THIS_IP_, path,
-@@ -384,7 +384,7 @@ static inline int bch2_btree_path_upgrade(struct btree_trans *trans,
- static inline void btree_path_set_should_be_locked(struct btree_path *path)
- {
- 	EBUG_ON(!btree_node_locked(path, path->level));
--	EBUG_ON(path->status);
-+	EBUG_ON(!btree_path_is_uptodate(path));
- 
- 	path->should_be_locked = true;
- }
-@@ -401,7 +401,7 @@ static inline void btree_path_set_level_up(struct btree_trans *trans,
- 				    struct btree_path *path)
- {
- 	__btree_path_set_level_up(trans, path, path->level++);
--	btree_path_set_dirty(path, NEED_TRAVERSE);
-+	btree_path_update_state(path, NEED_TRAVERSE);
- }
- 
- /* debug */
-diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
-index 0c94a885b567..222c52c1d949 100644
---- a/fs/bcachefs/btree_trans_commit.c
-+++ b/fs/bcachefs/btree_trans_commit.c
-@@ -745,7 +745,7 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
- 			bch2_btree_insert_key_cached(trans, flags, i);
- 		else {
- 			bch2_btree_key_cache_drop(trans, path);
--			btree_path_set_dirty(path, NEED_TRAVERSE);
-+			btree_path_update_state(path, NEED_TRAVERSE);
- 		}
- 	}
- 
+You can preview this patch series on the 'refactor-heap-v2' branch of
+the repository at the following link:
+
+https://github.com/visitorckw/linux.git
+
+Changes in v2:
+- Add attribute __always_unused to the compare and swap functions
+  that do not use the args parameter.
+- Rename min_heapify() to min_heap_sift_down().
+- Update lib/test_min_heap.c to use min_heap_init().
+- Refine the commit message for bcache and bcachefs.
+- Adjust the order of patches in the patch series.
+
+Link to v1: https://lkml.kernel.org/20240319180005.246930-1-visitorckw@gmail.com
+
+Kuan-Wei Chiu (15):
+  perf/core: Fix several typos
+  bcache: Fix typo
+  bcachefs: Fix typo
+  lib min_heap: Add type safe interface
+  lib min_heap: Add min_heap_init()
+  lib min_heap: Add min_heap_peek()
+  lib min_heap: Add min_heap_full()
+  lib min_heap: Add min_heap_del()
+  lib min_heap: Add min_heap_sift_up()
+  lib min_heap: Add args for min_heap_callbacks
+  lib min_heap: Update min_heap_push() and min_heap_pop() to return bool
+    values
+  lib min_heap: Rename min_heapify() to min_heap_sift_down()
+  lib/test_min_heap: Use min_heap_init() for initializing
+  bcache: Remove heap-related macros and switch to generic min_heap
+  bcachefs: Remove heap-related macros and switch to generic min_heap
+
+ drivers/md/bcache/alloc.c      |  66 ++++++++----
+ drivers/md/bcache/bcache.h     |   2 +-
+ drivers/md/bcache/bset.c       |  73 ++++++++-----
+ drivers/md/bcache/bset.h       |  38 ++++---
+ drivers/md/bcache/btree.c      |  27 ++++-
+ drivers/md/bcache/extents.c    |  44 ++++----
+ drivers/md/bcache/movinggc.c   |  40 ++++++--
+ drivers/md/bcache/super.c      |  16 +++
+ drivers/md/bcache/sysfs.c      |   3 +
+ drivers/md/bcache/util.c       |   2 +-
+ drivers/md/bcache/util.h       |  81 +--------------
+ drivers/md/dm-vdo/repair.c     |  29 +++---
+ drivers/md/dm-vdo/slab-depot.c |  22 ++--
+ fs/bcachefs/clock.c            |  53 +++++++---
+ fs/bcachefs/clock_types.h      |   2 +-
+ fs/bcachefs/ec.c               | 100 +++++++++++-------
+ fs/bcachefs/ec_types.h         |   2 +-
+ fs/bcachefs/util.c             |   2 +-
+ fs/bcachefs/util.h             | 127 ++---------------------
+ include/linux/min_heap.h       | 180 ++++++++++++++++++++++++++-------
+ kernel/events/core.c           |  53 +++++-----
+ lib/test_min_heap.c            |  70 ++++++-------
+ 22 files changed, 562 insertions(+), 470 deletions(-)
+
 -- 
 2.34.1
 
