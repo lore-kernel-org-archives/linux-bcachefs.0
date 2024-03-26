@@ -1,120 +1,105 @@
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 279231848;
-	Tue, 26 Mar 2024 12:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6852013D25D
+	for <linux-bcachefs@vger.kernel.org>; Tue, 26 Mar 2024 19:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711454638; cv=none; b=Axd5SnrMz6AuGHAspI7KNnyRsLlvi4C9eclLnBsSPX40KgqOezVXWnf8vIRSieW3ZefrXhs6xktHW4RuKJ8IP2rplQM6bdc9wmh2VzzrItNfGF70uAwUYS8LuutRTrQGTG1EWxJdenP8EBVQe1qnTKXPH6RovorV/hMjOJVT2q4=
+	t=1711482046; cv=none; b=dkXyglXnBAlhUyXqC9YD6czwvpijjox1wsspVVnaH2Q9rki2GbLDByh1pGQM+ZeN66CN7OkaEkC9uDd0g/B8KOQIkXvQeZpcwUBQDRfRaI4DifP+zSY3qx+sa+oCcgj3i33WsaCjMTeuJfePwDdBr4cretutPtb75N9AB9Vz2MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711454638; c=relaxed/simple;
-	bh=/eolo8YDMliBlPkq5x8R4OwAs+JFGRkmM8SLqYlT6MM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WYfYzGJ9xIXQX8MJ979sElCLjKY/ep+EWn3kE5nNIGdLYujNL/S7kJjr7yDy6Eho/jeUKfABWnmuqPn7FUUrfhY4ifMECKyhYP/ZgaX3/E3bYvSS5+amRM3Nc0KpXXEDQjUuNgP+jALriw2mHM7F5UCfkBtNrbZdW/3nptwy5SQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QnN7e4K9; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1711482046; c=relaxed/simple;
+	bh=4ZLJxdWOUMo3IU+W2Q0ODJlGdT/NVmoZik/mXLK1BTs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z+g+gWXODVKoGeKu4ecKBBSGQjkr0bwAQbanAo9AFZ0iGpUUD2jgOUxIDA3gS8Mxti3cM6y1+0ZJ2chh2TZZbDTrPw01Doxfw9OPESRqWGEwBC+BAhR856RkDE1b/HS01/U+TshQSOzaa+kD8R6eiWORyh6ERQLVZ54Ixc9AZNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tfyNWNki; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QnN7e4K9"
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ea9a605ca7so1602274b3a.0;
-        Tue, 26 Mar 2024 05:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711454636; x=1712059436; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lCxgVhPFTxuH1GA92z1REKomLgR0EURFMfPP7QpUiW4=;
-        b=QnN7e4K9aWaypJLnV8uo+Uh7wiFzJQACqIhTixBiUwm8Wa2ZXau5Q7CwPqbWzdjSsX
-         qikpBTFrNDhmaKZEqE3/zroSPhYMnESO6XP51zCoF3ByrVqlT2HTmzB8axE/mpaENWa5
-         BB53zACpQVOMaKs01+1dVDYnR4egfNPguyY70iCcBu3NpD09z9WX+gw+EVlT5KrJsrj+
-         Uo1MuzLqRqQMcYDnBhphm84Q/3I4c+lRtJokNWKXgLZd/X6ZkphEXgwR5fjTOHJN6twI
-         TlAP88bZqz5hGXI+tEpvhv7zfraY4ZBVLfZmhq/OOPyGnrU91cAJV3zPw2fdZ80q1NXd
-         7h6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711454636; x=1712059436;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lCxgVhPFTxuH1GA92z1REKomLgR0EURFMfPP7QpUiW4=;
-        b=E1iKpk2kK5o8HGx8YRO9HTxeAFenEr2bJt0sWDPLV9g1d0LaQ7FTJiPJHF6sDQ6Qud
-         BCwzRIQzr4+cXIH5Uxq005lTSDAPYjxznME/WgKM2AM+V8SRWCdacQHcI2iuOOU/kpIh
-         Z+WgqdEs11ECeVazyN57ZQtXZSa9QZpBb4ZHqa6TUKWSWYvhX0e9chYtCD6+CviOu0xS
-         VpSjS0s9FJ+/bcyb6JbpsGlXdNO/WfUCjY9Ub7K8/tAl7ltvxdyuNps4WQponPZwKYjz
-         SgFrjh/sXOS1fWQiC/4MqSWRh9cyTFRHDrUW7q9O3qyIp5GTVkRR0pz2NmcIq8jwOgko
-         +xtg==
-X-Forwarded-Encrypted: i=1; AJvYcCUR4T3b3rDJqesqd0oc5qCcgvNzD28uCMUlj/lu/+r1BmPD7ZE2keQO7dXgjKCxX4/HRAko0n4c40JySFpucGh9oIfkA6BJcvaQyNS6
-X-Gm-Message-State: AOJu0Ywtifr2XExFA0xj+wZUYB0955WKv3lZD+VhTB1Xg2QsATwM4p47
-	RS+lBbhVOhg4wi4FkLks+4fhKiYHzc561bgrOq/2E23HC5tVBlf1o9avsQ7e
-X-Google-Smtp-Source: AGHT+IHmHKO7a+8nHVpE6M2TFcikxT015pV9L/NOHCfZFYh8UAAC2DIJTelSD/iFLV9HxhnsiNljFQ==
-X-Received: by 2002:a05:6a20:2588:b0:1a3:5d08:4152 with SMTP id k8-20020a056a20258800b001a35d084152mr1862658pzd.19.1711454636212;
-        Tue, 26 Mar 2024 05:03:56 -0700 (PDT)
-Received: from localhost.localdomain ([203.208.167.152])
-        by smtp.gmail.com with ESMTPSA id r6-20020aa78b86000000b006ea92de360esm5991321pfd.93.2024.03.26.05.03.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 05:03:53 -0700 (PDT)
-From: zhuxiaohui <zhuxiaohui400@gmail.com>
-X-Google-Original-From: zhuxiaohui <zhuxiaohui.400@bytedance.com>
-To: kent.overstreet@linux.dev,
-	bfoster@redhat.com
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	zhuxiaohui <zhuxiaohui.400@bytedance.com>
-Subject: [PATCH] bcachefs: add REQ_SYNC and REQ_IDLE in write dio
-Date: Tue, 26 Mar 2024 20:03:45 +0800
-Message-ID: <20240326120345.68786-1-zhuxiaohui.400@bytedance.com>
-X-Mailer: git-send-email 2.41.0
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tfyNWNki"
+Date: Tue, 26 Mar 2024 15:40:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711482042;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MBMrGRBeoCK5lhQTkCKcEr2yvitu8BqU6kFjqdit//4=;
+	b=tfyNWNkiQ+lDdOHy6rxmiPPNOddySF/EZKBWbvy5ucc0HRl9MVzqc+lhh6U+tgPO0Xqj0w
+	e7/ZIjHCvAVdSvKiZM5lWq3O+rMo2TG7dLcMWJDLiQFWexxHSwIak+5B1j+bGNtxrwfjPr
+	Y53DzP/yW4/2sFGhrnjJjKtwnlQJPso=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Hongbo Li <lihongbo22@huawei.com>
+Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: fix the count of nr_freed_pcpu after changing
+ bc->freed_nonpcpu list
+Message-ID: <qi575tzztivxaaau4hj553qucn5cp4wdv6ou52ruuhks3h2r6o@zasfehlnwehw>
+References: <20240326040456.2587357-1-lihongbo22@huawei.com>
+ <663jlo5maeoh5dctbepsrnzbk7p5fwjfqaeshhb43ujcnjccdw@22vssecpk7jx>
+ <b61e1609-9a6e-4f4b-9143-83ce36f11dfa@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b61e1609-9a6e-4f4b-9143-83ce36f11dfa@huawei.com>
+X-Migadu-Flow: FLOW_OUT
 
-when writing file with direct_IO on bcachefs, then performance is
-much lower than other fs due to write back throttle in block layer:
+On Tue, Mar 26, 2024 at 02:04:50PM +0800, Hongbo Li wrote:
+> Do you mean to add these assertions at the end of
+> bkey_cached_move_to_freelist and bkey_cached_alloc?
 
-        wbt_wait+1
-        __rq_qos_throttle+32
-        blk_mq_submit_bio+394
-        submit_bio_noacct_nocheck+649
-        bch2_submit_wbio_replicas+538
-        __bch2_write+2539
-        bch2_direct_write+1663
-        bch2_write_iter+318
-        aio_write+355
-        io_submit_one+1224
-        __x64_sys_io_submit+169
-        do_syscall_64+134
-        entry_SYSCALL_64_after_hwframe+110
+Assertions like this I generally put in the shutdown path - would that
+have caught this bug?
 
-add set REQ_SYNC and REQ_IDLE in bio->bi_opf as standard dirct-io
+If it wouldn't, we could make it a debug mode assertion - probably also
+randomly 1/128th of the time or somoesuch, this will be a bit of an
+expensive one otherwise
 
-Signed-off-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
----
- fs/bcachefs/fs-io-direct.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
-index 33cb6da3a5ad..f49e6c0f0f68 100644
---- a/fs/bcachefs/fs-io-direct.c
-+++ b/fs/bcachefs/fs-io-direct.c
-@@ -536,7 +536,7 @@ static __always_inline long bch2_dio_write_loop(struct dio_write *dio)
- 		if (likely(!dio->iter.count) || dio->op.error)
- 			break;
- 
--		bio_reset(bio, NULL, REQ_OP_WRITE);
-+		bio_reset(bio, NULL, REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
- 	}
- out:
- 	return bch2_dio_write_done(dio);
-@@ -618,7 +618,7 @@ ssize_t bch2_direct_write(struct kiocb *req, struct iov_iter *iter)
- 
- 	bio = bio_alloc_bioset(NULL,
- 			       bio_iov_vecs_to_alloc(iter, BIO_MAX_VECS),
--			       REQ_OP_WRITE,
-+			       REQ_OP_WRITE | REQ_SYNC | REQ_IDLE,
- 			       GFP_KERNEL,
- 			       &c->dio_write_bioset);
- 	dio = container_of(bio, struct dio_write, op.wbio.bio);
--- 
-2.41.0
-
+> 
+> On 2024/3/26 12:17, Kent Overstreet wrote:
+> > On Tue, Mar 26, 2024 at 12:04:56PM +0800, Hongbo Li wrote:
+> > > When allocating bkey_cached from bc->freed_pcpu list, it missed
+> > > decreasing the count of nr_freed_pcpu which would cause the mismatch
+> > > between the value of nr_freed_pcpu and the list items. This problem
+> > > also exists in moving new bkey_cached to bc->freed_pcpu list.
+> > > If these happened, the bug info may appear in
+> > > bch2_fs_btree_key_cache_exit by the follow code:
+> > > 
+> > >     BUG_ON(list_count_nodes(&bc->freed_pcpu) != bc->nr_freed_pcpu);
+> > >     BUG_ON(list_count_nodes(&bc->freed_nonpcpu) != bc->nr_freed_nonpcpu);
+> > 
+> > Please include the assertions too :)
+> > 
+> > > Fixes: c65c13f0eac6 ("bcachefs: Run btree key cache shrinker less aggressively")
+> > > Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+> > > ---
+> > >   fs/bcachefs/btree_key_cache.c | 2 ++
+> > >   1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
+> > > index 581edcb0911b..e1031b9ba3f4 100644
+> > > --- a/fs/bcachefs/btree_key_cache.c
+> > > +++ b/fs/bcachefs/btree_key_cache.c
+> > > @@ -169,6 +169,7 @@ static void bkey_cached_move_to_freelist(struct btree_key_cache *bc,
+> > >   	} else {
+> > >   		mutex_lock(&bc->lock);
+> > >   		list_move_tail(&ck->list, &bc->freed_pcpu);
+> > > +		bc->nr_freed_pcpu++;
+> > >   		mutex_unlock(&bc->lock);
+> > >   	}
+> > >   }
+> > > @@ -245,6 +246,7 @@ bkey_cached_alloc(struct btree_trans *trans, struct btree_path *path,
+> > >   		if (!list_empty(&bc->freed_pcpu)) {
+> > >   			ck = list_last_entry(&bc->freed_pcpu, struct bkey_cached, list);
+> > >   			list_del_init(&ck->list);
+> > > +			bc->nr_freed_pcpu--;
+> > >   		}
+> > >   		mutex_unlock(&bc->lock);
+> > >   	}
+> > > -- 
+> > > 2.34.1
+> > > 
+> > 
