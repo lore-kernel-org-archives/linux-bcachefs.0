@@ -1,87 +1,91 @@
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91BC84A4E;
-	Wed,  3 Apr 2024 07:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6903E48E;
+	Wed,  3 Apr 2024 08:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712129625; cv=none; b=fnpUwUAZjLh2f4qcysFQtAsTl+rrxnVxsLe2+S+qocAQM100ITJnoznOt1RkpoShp8ZvA7nSRMr5o5p2ujXF0lpBhOPi9TyoE81EjjaJOS2l8dEmkrydeYzrhcdGHlu7jUJVFkkdC+Ku+0d72cP7hRjJ073cy5wsfrj4vUSs6u8=
+	t=1712132969; cv=none; b=ho6+ijI8R78pxaONgStjw4TUFIkPxn6vGz4Yxltvkzw8nbwGdLlI0EBE3QGakhnH9RZfdxRD1tZr3UKMQumBzzHSsCEl5parC41U1k6dEBkF3Q2PGxPY8YfjH/z1xC6td8SFhudA383whBZjNMWEoKpCEAyerTif96X5kTxmwYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712129625; c=relaxed/simple;
-	bh=Yn1zFOsTbXIkMwMfnGhDkiIuwvzgn3xDfiaec4KzrE4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AFnN5moD2X2KJ6KWgK9GKLIUQtocFnzScLjJoY+QVO9s/IkEUQnPVYt2dChKMvKHtaIUJbju0MRHygN/Z1iGcNVW4SIni4Vhpve/mMEN2y+uciyvHTwlp8tdHHPvsazQvh6dgiBClx2FK6PxCUySUvPaUgkoG6PI6who/Mt7fro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=sDsi6DwW; arc=none smtp.client-ip=71.19.144.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
+	s=arc-20240116; t=1712132969; c=relaxed/simple;
+	bh=Ldfjw0TveG1bC27L02CGJ1El9aX9iApZ9fZGyu1A5wg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HQuM189R0MWqJgf153p1wXmA2Lq/2s5TiMbkAmh8H2O3SfOOqiNt3cR2wuWoHaKnvd6S2BgsjlWLR69JtPANyo+Jc1WZVg3oinOXY1M1ic3Z2ZywYbIQs6qACB2V+ZBYG55azUMvi0O1+ey+n7VT5WOWKDgAp93LUu6t1xWIvX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=R9aXz0Ht; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="sDsi6DwW"
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	by box.fidei.email (Postfix) with ESMTPSA id 2C4BD809CF;
-	Wed,  3 Apr 2024 03:33:43 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-	t=1712129623; bh=Yn1zFOsTbXIkMwMfnGhDkiIuwvzgn3xDfiaec4KzrE4=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=sDsi6DwW7MGDTQ5P/PQD0Ea0WGP4MIUzVgMSpVt6+MLu6GooeRA15R0TNohgh6qiL
-	 gbBK43U0gy8PnlGmzx5AVqVZKXPV2FapzHQ+oZPLgDBg8vwg4O10OxkgIWX5xngwfS
-	 PH2OvUg5EIy5Q30YenZnXA3NlcNTx0gX57l5+aw+qpCar+CfK/i0FS+xCo+A9QqgN4
-	 6P+NdsGSBq4lgIOk6OA7brNJULtIuyL3MvLZhdqTZi4EiuscId9aGny9zekTgpcN+q
-	 HHBbpXQKtnX9bDxNcRm1osXmflca6Y1t/MYnIvBMaK6dyDUapKLFgLTXR2osI5KMTX
-	 neuFRfY2pFLuQ==
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v3 13/13] bcachefs: fiemap: emit new COMPRESSED state
-Date: Wed,  3 Apr 2024 03:22:54 -0400
-Message-ID: <943938ff75580b210eebf6c885659dd95f029486.1712126039.git.sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1712126039.git.sweettea-kernel@dorminy.me>
-References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="R9aXz0Ht"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712132958; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=6ARyxKsG7GVlym8JkJymXRlceZpVJP0pu/mDsnbzovQ=;
+	b=R9aXz0HtchVxIj0OkVENOP7cn2AfFizRkz0mdt8mvI73FcWSx0ysGaFPOaN+ZaHguEqXNlsr/eeR24y4bKKSzrI8BZ373JQxfl/fwJPrV4hYPSVbj6wg7FluO1tL1kw8ugKsABUjFoL8ZiB7LZ0EV3h0tQaP03EESXs0Njme5JM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W3r6Fd3_1712132955;
+Received: from 30.97.48.165(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W3r6Fd3_1712132955)
+          by smtp.aliyun-inc.com;
+          Wed, 03 Apr 2024 16:29:16 +0800
+Message-ID: <dce83785-af96-4ff8-9552-56d73b5daf98@linux.alibaba.com>
+Date: Wed, 3 Apr 2024 16:29:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+ Jonathan Corbet <corbet@lwn.net>, Kent Overstreet
+ <kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ kernel-team@meta.com
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/bcachefs/fs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index d2793bae842d..54f613f977b4 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -921,7 +921,7 @@ static int bch2_fill_extent(struct bch_fs *c,
- 				flags2 |= FIEMAP_EXTENT_UNWRITTEN;
- 
- 			if (p.crc.compression_type) {
--				flags2 |= FIEMAP_EXTENT_ENCODED;
-+				flags2 |= FIEMAP_EXTENT_DATA_COMPRESSED;
- 				phys_len = p.crc.compressed_size << 9;
- 			} else
- 				offset += p.crc.offset;
--- 
-2.43.0
+On 2024/4/3 15:22, Sweet Tea Dorminy wrote:
+> For many years, various btrfs users have written programs to discover
+> the actual disk space used by files, using root-only interfaces.
+> However, this information is a great fit for fiemap: it is inherently
+> tied to extent information, all filesystems can use it, and the
+> capabilities required for FIEMAP make sense for this additional
+> information also.
+> 
+> Hence, this patchset adds various additional information to fiemap,
+> and extends filesystems (but not iomap) to return it.  This uses some of
+> the reserved padding in the fiemap extent structure, so programs unaware
+> of the changes will be unaffected.
+
+I'm not sure why here iomap was excluded technically or I'm missing some
+previous comments?
+
+> 
+> This is based on next-20240403. I've tested the btrfs part of this with
+> the standard btrfs testing matrix locally and manually, and done minimal
+> testing of the non-btrfs parts.
+> 
+> I'm unsure whether btrfs should be returning the entire physical extent
+> referenced by a particular logical range, or just the part of the
+> physical extent referenced by that range. The v2 thread has a discussion
+> of this.
+
+Could you also make iomap support new FIEMAP physical extent information?
+since compressed EROFS uses iomap FIEMAP interface to report compressed
+extents ("z_erofs_iomap_report_ops") but there is no way to return
+correct compressed lengths, that is unexpected.
+
+Thanks,
+Gao Xiang
 
