@@ -1,49 +1,37 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08DB1534F2;
-	Wed,  3 Apr 2024 18:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7526F155301
+	for <linux-bcachefs@vger.kernel.org>; Wed,  3 Apr 2024 19:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712168423; cv=none; b=d3kIdxCAOuFa0DeSN7rvkik4XmGI0WQTEpR88mN87M9jfTqeGJH820alJhpf40W6/4gh3mOaOd5del3F4eD5IlsrjN99DmYN0+ZmlBo08dLXu3Nd7+zaXdmE+MhmdvTbypFOVOnaaGTVUgWfvqh60+IdVukcJqfzSsnTgp9/Lbw=
+	t=1712172182; cv=none; b=jA2ZI7KLSQG6wuVYDw+XASEl/BmEq9L1loavQnWtclf3uXtBjzd1DFR52PiT/bncv0kzmmaU9muqGYK3FCnxjmffgh+S3fJqS4GM0QG1A5rHYs1mOmajY81+Iaf9Q4XRiy+z6aCo6RwWigi+zY9RvRo2ixZu9xtD7pxfjsvYlxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712168423; c=relaxed/simple;
-	bh=dKvQPTXecftDT+DnIIwHEnA6Z/BLqGb2biglQSFhZeY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UFF09ngcyZrLXNbFYKmRaiIN5pUx8GAsiWaR/J2LlSJ+NU9IZ7ESKCQojkdKV+XDXMEDjWtmmHbCO0WWkBcPhK3tGVsVW3BCnnDOV4EhgJnnB41ZW364t+9VDLSufvs6pGmC02vXX2WfFBZNsr1WPbcjJouduXnquQUawrsnq0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+29GNYu; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1712172182; c=relaxed/simple;
+	bh=GVnRWla4xNbGmuFq8dajbu07/OAKHmUyR3VegVUzplc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=HA3b5qIn91ZBAn9AO1V2Zc6PCWEPzqT9KWOIGeGKM8dSpRNz3fCIgQS7p3iuLLRcnMzaqyOOgDSzBXZ511EYLpn/56O6PGDSpfmiGZWGW+mTUJDSQOnemEz06FAImhxJKQHw1dvGamYbXOeaXNFbFXXRwqvlofkN7qzI1Uzc9Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=a4vz7mcC; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+29GNYu"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30722C433C7;
-	Wed,  3 Apr 2024 18:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712168423;
-	bh=dKvQPTXecftDT+DnIIwHEnA6Z/BLqGb2biglQSFhZeY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P+29GNYuQx0VUmcsHNAcViKqPDDq3ZFBXvXQk8i5X/Ng9rS0Nn5TR2ZFKpItLWJoz
-	 AxQT8f9QGCIMrVhK1tfOsWr/ibXybNTHcuh13+EwHlmZmzl6cHhaXAIJFA2kXoY8nj
-	 Eb9fEuRHhhO+5iGTBPB7lLoN0d0TNvxS1vVTWNROU6LwDNr45oZ1dar1YVARAXcn8w
-	 LqRoDraupidvfHDGwIQvORPlSb6lScoO5H1ipbe0TmVYlxpqNjDw0D5fFjn1h/DyZj
-	 FFLK6Xci6djMMnMU73EvCh8gOPGDnRrFucf6kgrgZvpN41PbVwUI0e2bWiNpZ+LDQT
-	 6+Do0ENej/RcQ==
-Date: Wed, 3 Apr 2024 11:20:22 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-	Jonathan Corbet <corbet@lwn.net>, Brian Foster <bfoster@redhat.com>,
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
-Message-ID: <20240403182022.GB6375@frogsfrogsfrogs>
-References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
- <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a4vz7mcC"
+Date: Wed, 3 Apr 2024 15:22:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712172177;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=oJ71vK/IWYBLmY4Zs39AWEq/G+0AYqB3O096BbL43Mw=;
+	b=a4vz7mcC3yuS8wd5N6caKekggrMEGVTrUK304YZGjokJ318RRh0JBjwqyABNf8y7XzaWzs
+	PzMlLRf0AUJkmimLhqIU9GdXD6BBKTWREMEspzeM9/bqI/vwEt+RS3XwaCo3d2BPQ632Kq
+	H3GkBr3cPReZXTQCBoLMcs4u7i5GOys=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs repair code for rc3
+Message-ID: <nqkz5ed4k5vhhnmr5m32jydfgnon3hv7rj2vl6jywz6h44cjqp@olraxajp3avu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -52,92 +40,118 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Apr 03, 2024 at 02:17:26PM -0400, Kent Overstreet wrote:
-> On Wed, Apr 03, 2024 at 03:22:41AM -0400, Sweet Tea Dorminy wrote:
-> > For many years, various btrfs users have written programs to discover
-> > the actual disk space used by files, using root-only interfaces.
-> > However, this information is a great fit for fiemap: it is inherently
-> > tied to extent information, all filesystems can use it, and the
-> > capabilities required for FIEMAP make sense for this additional
-> > information also.
-> > 
-> > Hence, this patchset adds various additional information to fiemap,
-> > and extends filesystems (but not iomap) to return it.  This uses some of
-> > the reserved padding in the fiemap extent structure, so programs unaware
-> > of the changes will be unaffected.
-> > 
-> > This is based on next-20240403. I've tested the btrfs part of this with
-> > the standard btrfs testing matrix locally and manually, and done minimal
-> > testing of the non-btrfs parts.
-> > 
-> > I'm unsure whether btrfs should be returning the entire physical extent
-> > referenced by a particular logical range, or just the part of the
-> > physical extent referenced by that range. The v2 thread has a discussion
-> > of this.
-> 
-> I believe there was some talk of using the padding for a device ID, so
-> that fiemap could properly support multi device filesystems. Are we sure
-> this is the best use of those bytes?
+Hi Linus, another bcachefs pull for you - this one is the new repair
+code.
 
-We still have 5x u32 of empty space in struct fiemap after this series,
-so I don't think adding the physical length is going to prohibit future
-expansion.
+Cheers,
+Kent
 
---D
+The following changes since commit b3c7fd35c03c17a950737fb56a06b730a7962d28:
 
-> > 
-> > Changelog:
-> > 
-> > v3: 
-> >  - Adapted all the direct users of fiemap, except iomap, to emit
-> >    the new fiemap information, as far as I understand the other
-> >    filesystems.
-> > 
-> > v2:
-> >  - Adopted PHYS_LEN flag and COMPRESSED flag from the previous version,
-> >    as per Andreas Dilger' comment.
-> >    https://patchwork.ozlabs.org/project/linux-ext4/patch/4f8d5dc5b51a43efaf16c39398c23a6276e40a30.1386778303.git.dsterba@suse.cz/
-> >  - https://lore.kernel.org/linux-fsdevel/cover.1711588701.git.sweettea-kernel@dorminy.me/T/#t
-> > 
-> > v1: https://lore.kernel.org/linux-fsdevel/20240315030334.GQ6184@frogsfrogsfrogs/T/#t
-> > 
-> > Sweet Tea Dorminy (13):
-> >   fs: fiemap: add physical_length field to extents
-> >   fs: fiemap: update fiemap_fill_next_extent() signature
-> >   fs: fiemap: add new COMPRESSED extent state
-> >   btrfs: fiemap: emit new COMPRESSED state.
-> >   btrfs: fiemap: return extent physical size
-> >   nilfs2: fiemap: return correct extent physical length
-> >   ext4: fiemap: return correct extent physical length
-> >   f2fs: fiemap: add physical length to trace_f2fs_fiemap
-> >   f2fs: fiemap: return correct extent physical length
-> >   ocfs2: fiemap: return correct extent physical length
-> >   bcachefs: fiemap: return correct extent physical length
-> >   f2fs: fiemap: emit new COMPRESSED state
-> >   bcachefs: fiemap: emit new COMPRESSED state
-> > 
-> >  Documentation/filesystems/fiemap.rst | 35 ++++++++++----
-> >  fs/bcachefs/fs.c                     | 17 +++++--
-> >  fs/btrfs/extent_io.c                 | 72 ++++++++++++++++++----------
-> >  fs/ext4/extents.c                    |  3 +-
-> >  fs/f2fs/data.c                       | 36 +++++++++-----
-> >  fs/f2fs/inline.c                     |  7 +--
-> >  fs/ioctl.c                           | 11 +++--
-> >  fs/iomap/fiemap.c                    |  2 +-
-> >  fs/nilfs2/inode.c                    | 18 ++++---
-> >  fs/ntfs3/frecord.c                   |  7 +--
-> >  fs/ocfs2/extent_map.c                | 10 ++--
-> >  fs/smb/client/smb2ops.c              |  1 +
-> >  include/linux/fiemap.h               |  2 +-
-> >  include/trace/events/f2fs.h          | 10 ++--
-> >  include/uapi/linux/fiemap.h          | 34 ++++++++++---
-> >  15 files changed, 178 insertions(+), 87 deletions(-)
-> > 
-> > 
-> > base-commit: 75e31f66adc4c8d049e8aac1f079c1639294cd65
-> > -- 
-> > 2.43.0
-> > 
-> 
+  bcachefs: On emergency shutdown, print out current journal sequence number (2024-04-01 01:07:24 -0400)
+
+are available in the Git repository at:
+
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-03
+
+for you to fetch changes up to 09d4c2acbf4c864fef0f520bbcba256c9a19102e:
+
+  bcachefs: reconstruct_inode() (2024-04-03 14:46:51 -0400)
+
+----------------------------------------------------------------
+bcachefs repair code for 6.9-rc3
+
+A couple more small fixes, and new repair code.
+
+We can now automatically recover from arbitrary corrupted interior btree
+nodes by scanning, and we can reconstruct metadata as needed to bring a
+filesystem back into a working, consistent, read-write state and
+preserve access to whatevver wasn't corrupted.
+
+Meaning - you can blow away all metadata except for extents and dirents
+leaf nodes, and repair will reconstruct everything else and give you
+your data, and under the correct paths. If inodes are missing i_size
+will be slightly off and permissions/ownership/timestamps will be gone,
+and we do still need the snapshots btree if snapshots were in use - in
+the future we'll be able to guess the snapshot tree structure in some
+situations.
+
+IOW - aside from shaking out remaining bugs (fuzz testing is still
+coming), repair code should be complete and if repair ever doesn't work
+that's the highest priority bug that I want to know about immediately.
+
+This patchset was kindly tested by a user from India who accidentally
+wiped one drive out of a three drive filesystem with no replication on
+the family computer - it took a couple weeks but we got everything
+important back.
+
+----------------------------------------------------------------
+Guenter Roeck (1):
+      mean_and_variance: Drop always failing tests
+
+Kent Overstreet (18):
+      bcachefs: Fix btree node reserve
+      bcachefs: BCH_WATERMARK_interior_updates
+      bcachefs: fix nocow lock deadlock
+      bcachefs: Improve bch2_btree_update_to_text()
+      bcachefs: Check for bad needs_discard before doing discard
+      bcachefs: ratelimit informational fsck errors
+      bcachefs: Clear recovery_passes_required as they complete without errors
+      bcachefs: bch2_shoot_down_journal_keys()
+      bcachefs: Etyzinger cleanups
+      bcachefs: bch2_btree_root_alloc() -> bch2_btree_root_alloc_fake()
+      bcachefs: Don't skip fake btree roots in fsck
+      bcachefs: Repair pass for scanning for btree nodes
+      bcachefs: Topology repair now uses nodes found by scanning to fill holes
+      bcachefs: Flag btrees with missing data
+      bcachefs: Reconstruct missing snapshot nodes
+      bcachefs: Check for extents that point to same space
+      bcachefs: Subvolume reconstruction
+      bcachefs: reconstruct_inode()
+
+ fs/bcachefs/Makefile                 |   2 +
+ fs/bcachefs/alloc_background.c       |  47 ++--
+ fs/bcachefs/alloc_foreground.c       |   4 +-
+ fs/bcachefs/alloc_types.h            |   3 +-
+ fs/bcachefs/backpointers.c           | 173 +++++++++++-
+ fs/bcachefs/bcachefs.h               |   5 +
+ fs/bcachefs/bcachefs_format.h        |   1 +
+ fs/bcachefs/btree_gc.c               | 306 ++++++++++++++--------
+ fs/bcachefs/btree_io.c               |  15 +-
+ fs/bcachefs/btree_journal_iter.c     |  19 ++
+ fs/bcachefs/btree_journal_iter.h     |   4 +
+ fs/bcachefs/btree_node_scan.c        | 495 +++++++++++++++++++++++++++++++++++
+ fs/bcachefs/btree_node_scan.h        |  11 +
+ fs/bcachefs/btree_node_scan_types.h  |  30 +++
+ fs/bcachefs/btree_trans_commit.c     |   3 +-
+ fs/bcachefs/btree_update_interior.c  |  57 ++--
+ fs/bcachefs/btree_update_interior.h  |  26 +-
+ fs/bcachefs/buckets.h                |   1 +
+ fs/bcachefs/data_update.c            |   3 +-
+ fs/bcachefs/extents.c                |  52 ++--
+ fs/bcachefs/extents.h                |   1 +
+ fs/bcachefs/eytzinger.c              | 234 +++++++++++++++++
+ fs/bcachefs/eytzinger.h              |  63 +++--
+ fs/bcachefs/fsck.c                   | 227 ++++++++++++++--
+ fs/bcachefs/journal_seq_blacklist.c  |   3 +-
+ fs/bcachefs/mean_and_variance_test.c |  28 +-
+ fs/bcachefs/opts.h                   |   4 +-
+ fs/bcachefs/recovery.c               | 108 +++++---
+ fs/bcachefs/recovery.h               |   2 +
+ fs/bcachefs/recovery_passes.c        |  42 ++-
+ fs/bcachefs/recovery_passes_types.h  |   2 +
+ fs/bcachefs/replicas.c               |  19 +-
+ fs/bcachefs/sb-errors_types.h        |   5 +-
+ fs/bcachefs/snapshot.c               | 173 +++++++++++-
+ fs/bcachefs/snapshot.h               |  26 +-
+ fs/bcachefs/super-io.c               |   9 +-
+ fs/bcachefs/super.c                  |   3 +
+ fs/bcachefs/util.c                   | 143 ----------
+ fs/bcachefs/util.h                   |  14 +-
+ 39 files changed, 1869 insertions(+), 494 deletions(-)
+ create mode 100644 fs/bcachefs/btree_node_scan.c
+ create mode 100644 fs/bcachefs/btree_node_scan.h
+ create mode 100644 fs/bcachefs/btree_node_scan_types.h
+ create mode 100644 fs/bcachefs/eytzinger.c
