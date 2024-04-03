@@ -1,63 +1,136 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA53915CD4D;
-	Tue,  2 Apr 2024 20:06:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843EB55C29;
+	Wed,  3 Apr 2024 07:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712088373; cv=none; b=sC0K/+SGUAr23wUOc5C91edlaaeIymTAdrtwzcckKBYcZVUGePqf1Es8CbiyNbAUefU8HT5PjHEf5yzvoGmJJrVI+cK4DLIVdJasWEwKuBR2Lw9Ce7SfoEPJI5lrcilDEWWW3GyF7Uc+3yg+Veet5ZRrPCHIjNE2FfZVg5jycIU=
+	t=1712129586; cv=none; b=ohEPCj9LHhuDanS9G+EhOjYcVnwreUL+v539Zz+BtPonw04QhjpQi2Uq3C9UqwEvrksEga6I7MjcpVKeK7b1NhwBry8DWcB+gysTd9Mk/DoO51hAUtvrpx5EdExpO9K9ItAltAWhcQzTKsC127hC6GBaMXijqiMKiHY3wVEWWZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712088373; c=relaxed/simple;
-	bh=AH+u9yD1jlJSCwTFHBY22iNrtcc4kJBqM95CmEZNxsY=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ZArPl5d6uc1hoEiF1pU5Ifb/mAQayjcjaw8homZpgXIZw6phLtS33pbCN5ZQ3BxvSEWHv+WiuqRGVIWsyTmLkFBf8ncMcuzJNh7mc9iip7viYyEByz0hKjF70+uC2d8v9KnsPaJ91SNuclhqsy7+K4bT93EoGvxpINp8p2vVdcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D24TCWwZ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1712129586; c=relaxed/simple;
+	bh=B8T21JVbOLWLZIWqX9Kk4W8YEBxzK1vo2nUprAs1Et0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=YnT6QxSRgbiqiRKQfkis86dC+IJOzeXrihvd/oiWkyF3ZBofhW2c6FuKVERmSR98exLdXRZ8ELgB1LrNI+2mnqE2mSU5DHaHu+ilHsoKkI1xzqaHhTZuaMkOuCKhinM+ROfh9rbxe/j4zWegmqYhaKw+DrjvptYWUk3bzKccXRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=RMMhudxb; arc=none smtp.client-ip=71.19.144.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D24TCWwZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7039DC433F1;
-	Tue,  2 Apr 2024 20:06:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712088373;
-	bh=AH+u9yD1jlJSCwTFHBY22iNrtcc4kJBqM95CmEZNxsY=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=D24TCWwZ/VlQFqz/RYnybaursMP7ag22EyiqOi86ORsMsFef9dky7Q88YULfXo1nV
-	 TksziVXp2dSh2cCJ6cuGDdLBPPLFVDUArwbaAEUXDCiJNTaVQTb7EkLEZwrsJDMWxY
-	 ADOJ6kH0QG8imlKt1fetCm+6EafCB5AnrRpmZRL+QH8/6uVE0dkloe2Rpruor+rFSK
-	 eAH/XSq5BO/KooRUahuU5fv20PSqaQ3uJHpShSaOe6SOnlwqzlZ1sljcr0o8ojOYTx
-	 2tkAEe12ikZY5o8qJGntrmIkiTQof15Rs5ozyLntFH1SsXkM12GZFJpPb9CvgOxfi/
-	 QBLIajJNnIZ3A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 66653D9A155;
-	Tue,  2 Apr 2024 20:06:13 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs fixes for 6.9-rc3
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <wwkqc7ugdewzde6gdej5bi6kb3bsvoqzqkexxejcl64d5r3pow@46qmmqq5wx4y>
-References: <wwkqc7ugdewzde6gdej5bi6kb3bsvoqzqkexxejcl64d5r3pow@46qmmqq5wx4y>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <wwkqc7ugdewzde6gdej5bi6kb3bsvoqzqkexxejcl64d5r3pow@46qmmqq5wx4y>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-01
-X-PR-Tracked-Commit-Id: b3c7fd35c03c17a950737fb56a06b730a7962d28
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 67199a47ddb9e265d1a83bb23bb06c752ffa1f4b
-Message-Id: <171208837341.25987.15931523598662864079.pr-tracker-bot@kernel.org>
-Date: Tue, 02 Apr 2024 20:06:13 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="RMMhudxb"
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by box.fidei.email (Postfix) with ESMTPSA id 83D2B807A2;
+	Wed,  3 Apr 2024 03:33:03 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+	t=1712129583; bh=B8T21JVbOLWLZIWqX9Kk4W8YEBxzK1vo2nUprAs1Et0=;
+	h=From:To:Subject:Date:From;
+	b=RMMhudxb7EIzCkqtHOmFwCDPbzgbWgn5vp8COLdnfwf+qsRdUrHavuwlRc5bMVEiY
+	 kgw67uVuJhjs63x2OaL8IC0tPgouh2AcqwdGCEWhTb0V7eUhPxFrhru47kQh7HeJWE
+	 t2+MhGmN22+WGDmkykhpSjR9PhQJTk/Ep//iqUjzwTzOsSU6sq4vsvZfyhow8doZ7o
+	 YhR7ehQgYH/ByQMLhSyFGRFnpzJKYoUFAaoDiZASvkHxaV54iofPU6PSNKQFMJWjB0
+	 8EOfG2D66AkPESDO8GJmrHFQfKL9137B2ksLw3d3FgnT9Fd+KFJNw/QioT2Nr/hMha
+	 orctZOIBXFCvQ==
+From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>,
+	Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH v3 00/13] fiemap extension for more physical information
+Date: Wed,  3 Apr 2024 03:22:41 -0400
+Message-ID: <cover.1712126039.git.sweettea-kernel@dorminy.me>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Mon, 1 Apr 2024 18:14:33 -0400:
+For many years, various btrfs users have written programs to discover
+the actual disk space used by files, using root-only interfaces.
+However, this information is a great fit for fiemap: it is inherently
+tied to extent information, all filesystems can use it, and the
+capabilities required for FIEMAP make sense for this additional
+information also.
 
-> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-01
+Hence, this patchset adds various additional information to fiemap,
+and extends filesystems (but not iomap) to return it.  This uses some of
+the reserved padding in the fiemap extent structure, so programs unaware
+of the changes will be unaffected.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/67199a47ddb9e265d1a83bb23bb06c752ffa1f4b
+This is based on next-20240403. I've tested the btrfs part of this with
+the standard btrfs testing matrix locally and manually, and done minimal
+testing of the non-btrfs parts.
 
-Thank you!
+I'm unsure whether btrfs should be returning the entire physical extent
+referenced by a particular logical range, or just the part of the
+physical extent referenced by that range. The v2 thread has a discussion
+of this.
 
+Changelog:
+
+v3: 
+ - Adapted all the direct users of fiemap, except iomap, to emit
+   the new fiemap information, as far as I understand the other
+   filesystems.
+
+v2:
+ - Adopted PHYS_LEN flag and COMPRESSED flag from the previous version,
+   as per Andreas Dilger' comment.
+   https://patchwork.ozlabs.org/project/linux-ext4/patch/4f8d5dc5b51a43efaf16c39398c23a6276e40a30.1386778303.git.dsterba@suse.cz/
+ - https://lore.kernel.org/linux-fsdevel/cover.1711588701.git.sweettea-kernel@dorminy.me/T/#t
+
+v1: https://lore.kernel.org/linux-fsdevel/20240315030334.GQ6184@frogsfrogsfrogs/T/#t
+
+Sweet Tea Dorminy (13):
+  fs: fiemap: add physical_length field to extents
+  fs: fiemap: update fiemap_fill_next_extent() signature
+  fs: fiemap: add new COMPRESSED extent state
+  btrfs: fiemap: emit new COMPRESSED state.
+  btrfs: fiemap: return extent physical size
+  nilfs2: fiemap: return correct extent physical length
+  ext4: fiemap: return correct extent physical length
+  f2fs: fiemap: add physical length to trace_f2fs_fiemap
+  f2fs: fiemap: return correct extent physical length
+  ocfs2: fiemap: return correct extent physical length
+  bcachefs: fiemap: return correct extent physical length
+  f2fs: fiemap: emit new COMPRESSED state
+  bcachefs: fiemap: emit new COMPRESSED state
+
+ Documentation/filesystems/fiemap.rst | 35 ++++++++++----
+ fs/bcachefs/fs.c                     | 17 +++++--
+ fs/btrfs/extent_io.c                 | 72 ++++++++++++++++++----------
+ fs/ext4/extents.c                    |  3 +-
+ fs/f2fs/data.c                       | 36 +++++++++-----
+ fs/f2fs/inline.c                     |  7 +--
+ fs/ioctl.c                           | 11 +++--
+ fs/iomap/fiemap.c                    |  2 +-
+ fs/nilfs2/inode.c                    | 18 ++++---
+ fs/ntfs3/frecord.c                   |  7 +--
+ fs/ocfs2/extent_map.c                | 10 ++--
+ fs/smb/client/smb2ops.c              |  1 +
+ include/linux/fiemap.h               |  2 +-
+ include/trace/events/f2fs.h          | 10 ++--
+ include/uapi/linux/fiemap.h          | 34 ++++++++++---
+ 15 files changed, 178 insertions(+), 87 deletions(-)
+
+
+base-commit: 75e31f66adc4c8d049e8aac1f079c1639294cd65
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.43.0
+
