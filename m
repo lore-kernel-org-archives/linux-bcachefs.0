@@ -1,157 +1,82 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7526F155301
-	for <linux-bcachefs@vger.kernel.org>; Wed,  3 Apr 2024 19:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1EF8DDA3;
+	Thu,  4 Apr 2024 00:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712172182; cv=none; b=jA2ZI7KLSQG6wuVYDw+XASEl/BmEq9L1loavQnWtclf3uXtBjzd1DFR52PiT/bncv0kzmmaU9muqGYK3FCnxjmffgh+S3fJqS4GM0QG1A5rHYs1mOmajY81+Iaf9Q4XRiy+z6aCo6RwWigi+zY9RvRo2ixZu9xtD7pxfjsvYlxg=
+	t=1712191420; cv=none; b=uC1sPfpaLX9hY1G1FH9gdymmz73zyT5b71+hO/encfBhI2jA9QpUIJAeXRxUEYHcBZUbV9QjdkFLomBbLZb1N49YCN+TkpSB6MOJoRKS6M/LP7YDtwVxbN1dfuOZUwWtKFtDgVBaA0P7vilr9jZ6TBPo10OsnLAeogPB6+EZBQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712172182; c=relaxed/simple;
-	bh=GVnRWla4xNbGmuFq8dajbu07/OAKHmUyR3VegVUzplc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=HA3b5qIn91ZBAn9AO1V2Zc6PCWEPzqT9KWOIGeGKM8dSpRNz3fCIgQS7p3iuLLRcnMzaqyOOgDSzBXZ511EYLpn/56O6PGDSpfmiGZWGW+mTUJDSQOnemEz06FAImhxJKQHw1dvGamYbXOeaXNFbFXXRwqvlofkN7qzI1Uzc9Pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=a4vz7mcC; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1712191420; c=relaxed/simple;
+	bh=RkkOt127jRNBsyC6/SJ5S0q4ZCbfv408pXMS9DOdvf4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=SZcDETqenSs+qzYSaZxUmluyxViAaiaLKHX9Zf7jsJ/AwY8L69Sd1lBPM1bXhVA+9LROqVrn72SfUkUEvHm9Jq22X5qTUodx1qvhRYjQoErvj1DFdZyQyjM6Ljo9nuYMKbrUfR4L6Yo1K52g+A7+TU6gZUzHrIl+Da3o7pYU1eA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QKbDMANo; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a4vz7mcC"
-Date: Wed, 3 Apr 2024 15:22:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712172177;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=oJ71vK/IWYBLmY4Zs39AWEq/G+0AYqB3O096BbL43Mw=;
-	b=a4vz7mcC3yuS8wd5N6caKekggrMEGVTrUK304YZGjokJ318RRh0JBjwqyABNf8y7XzaWzs
-	PzMlLRf0AUJkmimLhqIU9GdXD6BBKTWREMEspzeM9/bqI/vwEt+RS3XwaCo3d2BPQ632Kq
-	H3GkBr3cPReZXTQCBoLMcs4u7i5GOys=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs repair code for rc3
-Message-ID: <nqkz5ed4k5vhhnmr5m32jydfgnon3hv7rj2vl6jywz6h44cjqp@olraxajp3avu>
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QKbDMANo"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712191414; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=WpGECF9etbyajJ44AaV6qklkz1QRbKFBVu7gebo66/o=;
+	b=QKbDMANoCLoY3VVtW1NmQ+cBzAtpoTZy++IhzuVib/V//+CSyLw16Gmb+rDYbQhhlGbiNwhjmKOtg4Hn3KVGezK3j4E/+LD3I8YVJ+rbGK0cEhL17OIXWU9FaPgOfMkp/ugQI5vg3DncqnIlKMJr3fMsY4d5WjgbK0uVNrAnvq0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W3t.vBW_1712191411;
+Received: from 192.168.2.4(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W3t.vBW_1712191411)
+          by smtp.aliyun-inc.com;
+          Thu, 04 Apr 2024 08:43:33 +0800
+Message-ID: <ad7ebace-9146-4824-85fb-d65416ad8895@linux.alibaba.com>
+Date: Thu, 4 Apr 2024 08:43:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+ Jonathan Corbet <corbet@lwn.net>, Kent Overstreet
+ <kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ kernel-team@meta.com
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+ <dce83785-af96-4ff8-9552-56d73b5daf98@linux.alibaba.com>
+ <2896ee5a-b381-45eb-abc0-54e914605e46@dorminy.me>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <2896ee5a-b381-45eb-abc0-54e914605e46@dorminy.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Linus, another bcachefs pull for you - this one is the new repair
-code.
+Hi,
 
-Cheers,
-Kent
+On 2024/4/3 23:11, Sweet Tea Dorminy wrote:
+> 
+>>
+>> I'm not sure why here iomap was excluded technically or I'm missing some
+>> previous comments?
+>>
+>>
+>> Could you also make iomap support new FIEMAP physical extent information?
+>> since compressed EROFS uses iomap FIEMAP interface to report compressed
+>> extents ("z_erofs_iomap_report_ops") but there is no way to return
+>> correct compressed lengths, that is unexpected.
+>>
+> 
+> I'll add iomap support in v4, I'd skipped it since I was worried it'd be an expansive additional part not necessary initially. Thank you for noting it!
 
-The following changes since commit b3c7fd35c03c17a950737fb56a06b730a7962d28:
+Thanks, I think just fiemap report for iomap seems straight-forward.
+Thanks for your work!
 
-  bcachefs: On emergency shutdown, print out current journal sequence number (2024-04-01 01:07:24 -0400)
+Thanks,
+Gao Xiang
 
-are available in the Git repository at:
-
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-03
-
-for you to fetch changes up to 09d4c2acbf4c864fef0f520bbcba256c9a19102e:
-
-  bcachefs: reconstruct_inode() (2024-04-03 14:46:51 -0400)
-
-----------------------------------------------------------------
-bcachefs repair code for 6.9-rc3
-
-A couple more small fixes, and new repair code.
-
-We can now automatically recover from arbitrary corrupted interior btree
-nodes by scanning, and we can reconstruct metadata as needed to bring a
-filesystem back into a working, consistent, read-write state and
-preserve access to whatevver wasn't corrupted.
-
-Meaning - you can blow away all metadata except for extents and dirents
-leaf nodes, and repair will reconstruct everything else and give you
-your data, and under the correct paths. If inodes are missing i_size
-will be slightly off and permissions/ownership/timestamps will be gone,
-and we do still need the snapshots btree if snapshots were in use - in
-the future we'll be able to guess the snapshot tree structure in some
-situations.
-
-IOW - aside from shaking out remaining bugs (fuzz testing is still
-coming), repair code should be complete and if repair ever doesn't work
-that's the highest priority bug that I want to know about immediately.
-
-This patchset was kindly tested by a user from India who accidentally
-wiped one drive out of a three drive filesystem with no replication on
-the family computer - it took a couple weeks but we got everything
-important back.
-
-----------------------------------------------------------------
-Guenter Roeck (1):
-      mean_and_variance: Drop always failing tests
-
-Kent Overstreet (18):
-      bcachefs: Fix btree node reserve
-      bcachefs: BCH_WATERMARK_interior_updates
-      bcachefs: fix nocow lock deadlock
-      bcachefs: Improve bch2_btree_update_to_text()
-      bcachefs: Check for bad needs_discard before doing discard
-      bcachefs: ratelimit informational fsck errors
-      bcachefs: Clear recovery_passes_required as they complete without errors
-      bcachefs: bch2_shoot_down_journal_keys()
-      bcachefs: Etyzinger cleanups
-      bcachefs: bch2_btree_root_alloc() -> bch2_btree_root_alloc_fake()
-      bcachefs: Don't skip fake btree roots in fsck
-      bcachefs: Repair pass for scanning for btree nodes
-      bcachefs: Topology repair now uses nodes found by scanning to fill holes
-      bcachefs: Flag btrees with missing data
-      bcachefs: Reconstruct missing snapshot nodes
-      bcachefs: Check for extents that point to same space
-      bcachefs: Subvolume reconstruction
-      bcachefs: reconstruct_inode()
-
- fs/bcachefs/Makefile                 |   2 +
- fs/bcachefs/alloc_background.c       |  47 ++--
- fs/bcachefs/alloc_foreground.c       |   4 +-
- fs/bcachefs/alloc_types.h            |   3 +-
- fs/bcachefs/backpointers.c           | 173 +++++++++++-
- fs/bcachefs/bcachefs.h               |   5 +
- fs/bcachefs/bcachefs_format.h        |   1 +
- fs/bcachefs/btree_gc.c               | 306 ++++++++++++++--------
- fs/bcachefs/btree_io.c               |  15 +-
- fs/bcachefs/btree_journal_iter.c     |  19 ++
- fs/bcachefs/btree_journal_iter.h     |   4 +
- fs/bcachefs/btree_node_scan.c        | 495 +++++++++++++++++++++++++++++++++++
- fs/bcachefs/btree_node_scan.h        |  11 +
- fs/bcachefs/btree_node_scan_types.h  |  30 +++
- fs/bcachefs/btree_trans_commit.c     |   3 +-
- fs/bcachefs/btree_update_interior.c  |  57 ++--
- fs/bcachefs/btree_update_interior.h  |  26 +-
- fs/bcachefs/buckets.h                |   1 +
- fs/bcachefs/data_update.c            |   3 +-
- fs/bcachefs/extents.c                |  52 ++--
- fs/bcachefs/extents.h                |   1 +
- fs/bcachefs/eytzinger.c              | 234 +++++++++++++++++
- fs/bcachefs/eytzinger.h              |  63 +++--
- fs/bcachefs/fsck.c                   | 227 ++++++++++++++--
- fs/bcachefs/journal_seq_blacklist.c  |   3 +-
- fs/bcachefs/mean_and_variance_test.c |  28 +-
- fs/bcachefs/opts.h                   |   4 +-
- fs/bcachefs/recovery.c               | 108 +++++---
- fs/bcachefs/recovery.h               |   2 +
- fs/bcachefs/recovery_passes.c        |  42 ++-
- fs/bcachefs/recovery_passes_types.h  |   2 +
- fs/bcachefs/replicas.c               |  19 +-
- fs/bcachefs/sb-errors_types.h        |   5 +-
- fs/bcachefs/snapshot.c               | 173 +++++++++++-
- fs/bcachefs/snapshot.h               |  26 +-
- fs/bcachefs/super-io.c               |   9 +-
- fs/bcachefs/super.c                  |   3 +
- fs/bcachefs/util.c                   | 143 ----------
- fs/bcachefs/util.h                   |  14 +-
- 39 files changed, 1869 insertions(+), 494 deletions(-)
- create mode 100644 fs/bcachefs/btree_node_scan.c
- create mode 100644 fs/bcachefs/btree_node_scan.h
- create mode 100644 fs/bcachefs/btree_node_scan_types.h
- create mode 100644 fs/bcachefs/eytzinger.c
+> 
+> Sweet Tea
