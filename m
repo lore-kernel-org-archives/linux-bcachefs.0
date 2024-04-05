@@ -1,187 +1,55 @@
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376DB171E6C
-	for <linux-bcachefs@vger.kernel.org>; Fri,  5 Apr 2024 18:18:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B706172BAB
+	for <linux-bcachefs@vger.kernel.org>; Fri,  5 Apr 2024 18:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712341097; cv=none; b=fRHo1N9PvPRQoWCPm9elL5I+8vXAUpURsNeykaFDul1Kwa3OssC4lARhfI/uJ2ahW3Pe2bIFMirzXWCllm40bnAc+ncYEYEzQTxmx9QldTe5Gh2/zut3N+vV4Xm+AXbFVXCuu6DZz+J6A145rlTgGbkcd2Fof2dK8k30h/85HBo=
+	t=1712342543; cv=none; b=WBjqkV48V/98ZtJuaU4GMBSQbu/bgfZqeHsKtd8UKU97py0sL4pNvpESlq4WJw07SK9pQR8FFxeoxRVXHJcs9p1IXR0rsRHMDcWjVqbIwDb3t8SJHWJ+7S2AAMzOwxfu9AoCQWcNEhWLPJ/o+U3ZlE/90w05RwUVckjwWp5GLyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712341097; c=relaxed/simple;
-	bh=wdMJhgg03J9ToLHXaFixR/36utzApFawE0KvfzXoqHs=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=kC/GhFghSl3UXJj9jyCC6OVQ4zkzwO4x5iVMiGi+vsq3zb4dc0P0dZLnm0K3IECJzxhzlWcZDBNalbD8ECXHW7lji9AhOiQFAphdtAH0wG12o6foR83wgAqdsfdlaLEEZyLz3plVa3ZLcqkSjSjjjbuPNZgRRiOZJoPZqtF8XWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=pDfz/pHp; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+	s=arc-20240116; t=1712342543; c=relaxed/simple;
+	bh=aKzj2nNlzMJ8azIYfSPAwEduj86IzTAYqe3VzO9WswM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tWDDlQ2ytANjSpLw8d3K9KeWx6v31AsxW+birPwDvsnzJF1dXgAEF5tiXsKn11K4Ux27znkNmd857Zm7xWR5oWbnKnX05x157b+yCclwBlAt03b0OFGzV3tkij4zJpdZYly0/GoHDc0R4gxeUtXxDgVKoVdCKXPQ3gIQQsNt3dU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gjJR7JMP; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="pDfz/pHp"
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a226f8e44aso1706160a91.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 05 Apr 2024 11:18:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712341094; x=1712945894; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Yt5fFOUcQfwmred9ry2pM1oK9JKeRbA+BTjVzFtQRM=;
-        b=pDfz/pHpB9sII143/jXXuhAPupP2d7QqElx2yN6GP5mJZLDzlEq2j3+FkgpvDG8R70
-         bByMj5Xf7C/7OBEFOHZJHxMZaAaeKda+7qN4Wqz17N0FoTKvF7NR+2bZhPvLtMV/EOhy
-         sGkxkLM1kj/Dnl5jKKvuGakKCPr3uUo4pKbYZMoRn9IpjWhB1qqqSSRqoOx07X/YaMjY
-         c3AixXB7DPaoEBUwJUZGapwQnmdKMrBJqoTGe6YglQ6eNqP3C6Cp+2GOJU1Vaq3wOAFN
-         ted3ttFSX/T1A1av5p3hdiK9+mzxI4Qd54n3bf7Ybmz3cmSvBuArKYuLL7sZuYgsBIHi
-         HNJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712341094; x=1712945894;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Yt5fFOUcQfwmred9ry2pM1oK9JKeRbA+BTjVzFtQRM=;
-        b=qtwiI6aMREtPpPnsTVpq5Bb4MyWa5C3ZOT4bdYVsnw0q7ekFutioFwBj4Bm90XNrcg
-         U6M9iPyCos/auRxF64mmaVs83yqxyIlJ2D7WwFUAMIXdq95TMAtJ+4XIhgF/2jtY5iWh
-         v+qBEf2w+E1x0nO8gaE561oxwEcNOMeTOSo4Sh7ElEVfAOJ6odx3V+x6xZDgw3v8fQ2j
-         nFzBquhe14vLgQFo0FpLEJrjgsIhdE4Cq/I/KzSQ0BaOAVibvzuEwjJDNYnG9j5ENSWY
-         ARe1cHdAjcbH9Grx0N9tNFqXCM9U540G+RBpupulFiC4yliuLh53Ulmn0MUKMWbEMOvX
-         DZ4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXdPM065FhxheHqr9fWqcW2WARS984u3QgkGWNvqYIL6LlF2toOcHNNC5MaDmYa1HfHpD39VN1xuD5epV5GTI7mZNktdPSV1O4Ot5l7GJ8=
-X-Gm-Message-State: AOJu0Yybz82zU6XTIpTkxq4MYoNOTrh5htmyW65ucLNMbtcmBEPwX5yb
-	Yoc2j1GTWHgWqRhgyNXClQHX32WNPeO3hP+x4XZ8jc3tJACAKuebWrvg2lfPRLQ=
-X-Google-Smtp-Source: AGHT+IEDn0os+fUgFYATLn+Iq6FZjbfsk3zOmEGVgE/EWJZEoD0wnOYoH0jftB7HpCio2JhiLuD6iA==
-X-Received: by 2002:a17:90a:1648:b0:2a1:f455:c3d7 with SMTP id x8-20020a17090a164800b002a1f455c3d7mr2069740pje.16.1712341094316;
-        Fri, 05 Apr 2024 11:18:14 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id bb20-20020a17090b009400b002a46d73ebdcsm1525837pjb.46.2024.04.05.11.18.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Apr 2024 11:18:13 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <BF24ACE8-3644-4378-8E7A-AFAF82C0CDD3@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gjJR7JMP"
+Date: Fri, 5 Apr 2024 14:42:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712342539;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tZ+uiehsJ3wgEMKI7SgICdPj63wSJBV8Zz0Zm6XtKDI=;
+	b=gjJR7JMPwM69GilljNxaLsraANZiI6ZRtq1EYVMXDo+DU9QnxgReuT6F28u6Gk1vvV1aKA
+	xO8AU8gk5FRrrcr5U3/R50gv77g3bYT79QBgMK3FUOm4LFJ4EkJi7ohhby7osRXx+CbPpA
+	9jPo5NKxNAaopVsaY52eQbFhnH3JOS8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: fix ! vs ~ typo in __clear_bit_le64()
+Message-ID: <ojophuwjmdwwq3ki6zi5lxzsma3xjmfgpwvutb6lden3j746sl@fe5lg43ptovd>
+References: <5ecccc80-70b2-4c04-8c09-1113fef3e515@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
-Date: Fri, 5 Apr 2024 12:20:21 -0600
-In-Reply-To: <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
-Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
- Jonathan Corbet <corbet@lwn.net>,
- Brian Foster <bfoster@redhat.com>,
- Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>,
- Chao Yu <chao@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>,
- =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- linux-doc@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-bcachefs@vger.kernel.org,
- linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- kernel-team@meta.com,
- djwong@kernel.org
-To: Kent Overstreet <kent.overstreet@linux.dev>
-References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
- <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ecccc80-70b2-4c04-8c09-1113fef3e515@moroto.mountain>
+X-Migadu-Flow: FLOW_OUT
 
+On Fri, Apr 05, 2024 at 06:01:02PM +0300, Dan Carpenter wrote:
+> The ! was obviously intended to be ~.  As it is, this function does
+> the equivalent to: "addr[bit / 64] = 0;".
+> 
+> Fixes: 27fcec6c27ca ("bcachefs: Clear recovery_passes_required as they complete without errors")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
---Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-On Apr 3, 2024, at 12:17 PM, Kent Overstreet <kent.overstreet@linux.dev> =
-wrote:
->=20
-> On Wed, Apr 03, 2024 at 03:22:41AM -0400, Sweet Tea Dorminy wrote:
->> For many years, various btrfs users have written programs to discover
->> the actual disk space used by files, using root-only interfaces.
->> However, this information is a great fit for fiemap: it is inherently
->> tied to extent information, all filesystems can use it, and the
->> capabilities required for FIEMAP make sense for this additional
->> information also.
->>=20
->> Hence, this patchset adds various additional information to fiemap,
->> and extends filesystems (but not iomap) to return it.  This uses some =
-of
->> the reserved padding in the fiemap extent structure, so programs =
-unaware
->> of the changes will be unaffected.
->>=20
->> This is based on next-20240403. I've tested the btrfs part of this =
-with
->> the standard btrfs testing matrix locally and manually, and done =
-minimal
->> testing of the non-btrfs parts.
->>=20
->> I'm unsure whether btrfs should be returning the entire physical =
-extent
->> referenced by a particular logical range, or just the part of the
->> physical extent referenced by that range. The v2 thread has a =
-discussion
->> of this.
->=20
-> I believe there was some talk of using the padding for a device ID, so
-> that fiemap could properly support multi device filesystems. Are we =
-sure
-> this is the best use of those bytes?
-
-The current (pre-patch) fiemap_extent struct is:
-
-struct fiemap_extent {
-        __u64 fe_logical;  /* logical offset in bytes for the start of
-                            * the extent from the beginning of the file =
-*/
-        __u64 fe_physical; /* physical offset in bytes for the start
-                            * of the extent from the beginning of the =
-disk */
-        __u64 fe_length;   /* length in bytes for this extent */
-        __u64 fe_reserved64[2];
-        __u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
-        __u32 fe_reserved[3];
-};
-
-and this series is only changing fe_reserved64[0] to fe_phys_length.
-There was discussion in the past of using "fe_reserved[0]" for the =
-device
-ID, which is still OK.
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYQQOUACgkQcqXauRfM
-H+CHWg/+ImmZQ6Nzwva0Efg63ioqP0pS3airRAPWj+bfSnsIXaituGulL3hG2Lt5
-IORycBQ5w1uifrkGHdmcpOjoIsPuaQrjAdC700vt5TRhqLojhU6ZnLz/eZMFUSIe
-oS0f9OPJPx3vDKBfMBeVTZbrzka94z5Wl0pUohNFSshNfYOrAKyGiBc0KLzpslFo
-eQODjM5SpgwhN7Te0Wcpklr8JMQXI5e+QXkAnor25ImqCHB7PPL4BEt40/HS6hH/
-MfDLh7WHcatQFHB4prRJrULNDnOSJz+LD2UAu602/s03c2lIEHiVkTb8AATrFE8O
-FZvfEdge3gjEXaK1zO1/eNScUgHH8eESBDbWk2ACkU/p7Ip9MS5FgcWXVBxEUoDl
-46VkGOuqWFwGgY020Q+Tvo7I6r1+MahDttyCKe34bzu0WB/t19del0moZyHhicgS
-oNyZN8rIM5QPmuwi1glNkPi8uL23QLb3frSVmrTflx1GxKBhB+fyN/TQP+42Y1zJ
-eBbSWPgWoWHC7u3ULQYA1Mjbi5DUh8dAjwWIJXsFIJwL4oGb54mX/vE2ef9YAHpI
-x1p+7ds2vdDYqG2o5UXaI9YPg45kDNVm+/Io5+DXNMKGVH6XIyhr/Uy5dzx6tVHK
-CdPBC3K4hWSLU6rlwFhwXJ0d5kc2AuRrcmDi8Q+FzSOHlLyt9zM=
-=UxlY
------END PGP SIGNATURE-----
-
---Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8--
+Thanks, applied
