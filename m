@@ -1,139 +1,187 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F4616EC0B
-	for <linux-bcachefs@vger.kernel.org>; Fri,  5 Apr 2024 16:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376DB171E6C
+	for <linux-bcachefs@vger.kernel.org>; Fri,  5 Apr 2024 18:18:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712334057; cv=none; b=nE9Mz5mN6Jk4IBFcJi13KZaK4cqbucj3HGNZA9WRfZ/xwdZexn1w+h75pIdtasEHH2jUvBusp8kGGlHKP1rctKmtV9Ulf+JhJhl7A6bL4K2koRalUdiWGYMKkO/59OhnkY4JMlQkZjzsV7XFkwwizc2d1hsY3QGQvY39I6vEYnU=
+	t=1712341097; cv=none; b=fRHo1N9PvPRQoWCPm9elL5I+8vXAUpURsNeykaFDul1Kwa3OssC4lARhfI/uJ2ahW3Pe2bIFMirzXWCllm40bnAc+ncYEYEzQTxmx9QldTe5Gh2/zut3N+vV4Xm+AXbFVXCuu6DZz+J6A145rlTgGbkcd2Fof2dK8k30h/85HBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712334057; c=relaxed/simple;
-	bh=/Rsbj8LxP1g2WtSvrzy0UFYcze0LmoWNHJd2iDKONHw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BcXCM+WOpymfIgnDIJEmEV88rw1T0vuamCq9s2taEiD/yUboO9k5ze4ODettv3/Je/3u8H4Rba38OCFp8xyrElGNnUZf5x/d71IJqfz229SBdqKnU7TMU07qt77tWWsAsXehhIkB75XmmNUeCRvH0zGwHVHW8+MkFS/vNs22pHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dbF2KShc; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1712341097; c=relaxed/simple;
+	bh=wdMJhgg03J9ToLHXaFixR/36utzApFawE0KvfzXoqHs=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=kC/GhFghSl3UXJj9jyCC6OVQ4zkzwO4x5iVMiGi+vsq3zb4dc0P0dZLnm0K3IECJzxhzlWcZDBNalbD8ECXHW7lji9AhOiQFAphdtAH0wG12o6foR83wgAqdsfdlaLEEZyLz3plVa3ZLcqkSjSjjjbuPNZgRRiOZJoPZqtF8XWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=pDfz/pHp; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dbF2KShc"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e062f3a47bso160905ad.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 05 Apr 2024 09:20:55 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="pDfz/pHp"
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a226f8e44aso1706160a91.0
+        for <linux-bcachefs@vger.kernel.org>; Fri, 05 Apr 2024 11:18:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712334055; x=1712938855; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Rsbj8LxP1g2WtSvrzy0UFYcze0LmoWNHJd2iDKONHw=;
-        b=dbF2KShcAMtvfOGkZ1FF3UHGIu8xs6Jf2GwxFWJoOzL6ifQXrgRHpfOdPNMY2kAPE9
-         KpwdiPeV9zq1jGBsbhlKRqMVJYnN+CtzgHvT3aWsbRKbcfAIY3E9WwnGYNOJdVKCGgml
-         pOqoe5k+/OJ6oNO6IrV9UOnDaYfeEpheZrMBStUMTvIILEoLzFb9muMQQkQU84pZ3GtU
-         AfJLOTNhjQ0WOWQJr6AmYaDewTtEf6Y1yZpZtho+Gj0Gh2cYNYEbAGz3/f2zrk5FscI5
-         RvZ89iThH9YFdH/+0ZjomW72z9Ckuow1+8Mle5xioQ63qaD+KWJb2D0mIP4V52cOPbFU
-         Fvjw==
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712341094; x=1712945894; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Yt5fFOUcQfwmred9ry2pM1oK9JKeRbA+BTjVzFtQRM=;
+        b=pDfz/pHpB9sII143/jXXuhAPupP2d7QqElx2yN6GP5mJZLDzlEq2j3+FkgpvDG8R70
+         bByMj5Xf7C/7OBEFOHZJHxMZaAaeKda+7qN4Wqz17N0FoTKvF7NR+2bZhPvLtMV/EOhy
+         sGkxkLM1kj/Dnl5jKKvuGakKCPr3uUo4pKbYZMoRn9IpjWhB1qqqSSRqoOx07X/YaMjY
+         c3AixXB7DPaoEBUwJUZGapwQnmdKMrBJqoTGe6YglQ6eNqP3C6Cp+2GOJU1Vaq3wOAFN
+         ted3ttFSX/T1A1av5p3hdiK9+mzxI4Qd54n3bf7Ybmz3cmSvBuArKYuLL7sZuYgsBIHi
+         HNJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712334055; x=1712938855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/Rsbj8LxP1g2WtSvrzy0UFYcze0LmoWNHJd2iDKONHw=;
-        b=QkWqdLFByHJYUeu57teHItOzHa09UASc5KxfwAT494f5p/fzrs2X/oWgpZiVsMK/Gp
-         M0wVK5go1CzI8fx3OjtWIbAsxTiGwnJF9XfGaq/DoAuSGtVRmIFEYI6npnJ0XwTDVEgQ
-         yTNvioKfDshpF/L3kIdODfmis702Wqwy+j0W94YFAtqZxoy0MkMjxTefQjPWrb6NThMT
-         0QGKoYJLyFpcTyXGPvRIVXY7utrr0FxLIAERXob7phykzM4oMpLgY+MCK4rsOwov6lDR
-         YBJlc6Ugc8crowhJt/Vwt5HkMhDK2DOatKNTR4ziMNIGoKekkoourr4IL0Pn9ofoQbV3
-         aeFA==
-X-Forwarded-Encrypted: i=1; AJvYcCVy5HLI8yQV7E1rVBncfLEPEssdCrymxWGmXB5V95m/5GYb4TouuD4tE3Xhm0rQ2BtCdkaMFm/osMtJiZJyyCCeZ4DUDK978Kezz3mcxI0=
-X-Gm-Message-State: AOJu0Yz+JNvY95mxxJ6Z+Nk46pnJFMlT95VSb4jiZNQScwZZNcg7wEEq
-	l/akpIlo+OodPYx3DwQXzuS4oHurHXw19jt3Tl/KEenmUtHRgC2t2cFlEI/siHk6LBwmVSrdBSK
-	w+tveNu6xof61W0CkLi4Pix/AzCta/MprL5Hb
-X-Google-Smtp-Source: AGHT+IHO0eYohAt+IJavyNTlU3rwUIO3xgxI8Lhpos0DArMBVnuSy3AswyhW/2DQqEDqwSKjYoexUYDZjnRNGDE1CFs=
-X-Received: by 2002:a17:903:5c5:b0:1e2:3991:9e9 with SMTP id
- kf5-20020a17090305c500b001e2399109e9mr422234plb.0.1712334054663; Fri, 05 Apr
- 2024 09:20:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712341094; x=1712945894;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Yt5fFOUcQfwmred9ry2pM1oK9JKeRbA+BTjVzFtQRM=;
+        b=qtwiI6aMREtPpPnsTVpq5Bb4MyWa5C3ZOT4bdYVsnw0q7ekFutioFwBj4Bm90XNrcg
+         U6M9iPyCos/auRxF64mmaVs83yqxyIlJ2D7WwFUAMIXdq95TMAtJ+4XIhgF/2jtY5iWh
+         v+qBEf2w+E1x0nO8gaE561oxwEcNOMeTOSo4Sh7ElEVfAOJ6odx3V+x6xZDgw3v8fQ2j
+         nFzBquhe14vLgQFo0FpLEJrjgsIhdE4Cq/I/KzSQ0BaOAVibvzuEwjJDNYnG9j5ENSWY
+         ARe1cHdAjcbH9Grx0N9tNFqXCM9U540G+RBpupulFiC4yliuLh53Ulmn0MUKMWbEMOvX
+         DZ4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXdPM065FhxheHqr9fWqcW2WARS984u3QgkGWNvqYIL6LlF2toOcHNNC5MaDmYa1HfHpD39VN1xuD5epV5GTI7mZNktdPSV1O4Ot5l7GJ8=
+X-Gm-Message-State: AOJu0Yybz82zU6XTIpTkxq4MYoNOTrh5htmyW65ucLNMbtcmBEPwX5yb
+	Yoc2j1GTWHgWqRhgyNXClQHX32WNPeO3hP+x4XZ8jc3tJACAKuebWrvg2lfPRLQ=
+X-Google-Smtp-Source: AGHT+IEDn0os+fUgFYATLn+Iq6FZjbfsk3zOmEGVgE/EWJZEoD0wnOYoH0jftB7HpCio2JhiLuD6iA==
+X-Received: by 2002:a17:90a:1648:b0:2a1:f455:c3d7 with SMTP id x8-20020a17090a164800b002a1f455c3d7mr2069740pje.16.1712341094316;
+        Fri, 05 Apr 2024 11:18:14 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id bb20-20020a17090b009400b002a46d73ebdcsm1525837pjb.46.2024.04.05.11.18.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Apr 2024 11:18:13 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <BF24ACE8-3644-4378-8E7A-AFAF82C0CDD3@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <oxdwygzxpbpwxgl5v5hzaj7er6oxt2rlmaobkov4t23xqptqrn@gxi3nlapfini>
- <CACT4Y+ZEPWbJsYvWauog95yRFuzZmA=tK-uS+aDT-x=jnc3f7Q@mail.gmail.com> <aw5elbevdhwuqr7ecap6i5hepvkjbgs5xexq7nvu2yvuhh5bpb@tmyjcruysqjf>
-In-Reply-To: <aw5elbevdhwuqr7ecap6i5hepvkjbgs5xexq7nvu2yvuhh5bpb@tmyjcruysqjf>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Fri, 5 Apr 2024 18:20:41 +0200
-Message-ID: <CANp29Y5d3cp_YGfy-3bjJYsNfniXFjAm9WfOUVL5zwk=6weALg@mail.gmail.com>
-Subject: Re: syzbot for bcachefs?
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
+Date: Fri, 5 Apr 2024 12:20:21 -0600
+In-Reply-To: <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
+Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Brian Foster <bfoster@redhat.com>,
+ Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>,
+ Jan Kara <jack@suse.cz>,
+ =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ linux-doc@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-bcachefs@vger.kernel.org,
+ linux-btrfs <linux-btrfs@vger.kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ kernel-team@meta.com,
+ djwong@kernel.org
 To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Dmitry Vyukov <dvyukov@google.com>, syzkaller@googlegroups.com, 
-	Thomas Bertschinger <tahbertschinger@gmail.com>, Ariel Miculas <ariel.miculas@gmail.com>, 
-	linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+ <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
+X-Mailer: Apple Mail (2.3273)
+
+
+--Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-On Fri, Apr 5, 2024 at 1:16=E2=80=AFAM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Thu, Apr 04, 2024 at 10:33:07AM +0200, Dmitry Vyukov wrote:
-> > On Thu, 4 Apr 2024 at 01:59, Kent Overstreet <kent.overstreet@linux.dev=
-> wrote:
-> > >
-> > > Hi - what would it take to get syzbot going for bcachefs?
-> >
-> > Hi Kent,
-> >
-> > There are 2 parts:
-> >
-> > The easy one: we need to enable it in syzbot configs. Should we
-> > configure it as follows?
-> >
-> > CONFIG_BCACHEFS_FS=3Dy
-> > CONFIG_BCACHEFS_QUOTA=3Dy
-> > CONFIG_BCACHEFS_ERASURE_CODING=3Dy
-> > CONFIG_BCACHEFS_POSIX_ACL=3Dy
-> > CONFIG_BCACHEFS_DEBUG=3Dy
-> > # CONFIG_BCACHEFS_TESTS is not set
-> > # CONFIG_BCACHEFS_LOCK_TIME_STATS is not set
-> > # CONFIG_BCACHEFS_NO_LATENCY_ACCT is not set
-> > CONFIG_BCACHEFS_SIX_OPTIMISTIC_SPIN=3Dy
-> >
-> > In particular, I am interested in CONFIG_BCACHEFS_DEBUG. Does it
-> > really add more debug checks rather than lots of console printing w/o
-> > checks? Some "DEBUG" kernel configs are misleading here. Checks will
-> > be useful on syzbot, lots of printing not so much.
+On Apr 3, 2024, at 12:17 PM, Kent Overstreet <kent.overstreet@linux.dev> =
+wrote:
+>=20
+> On Wed, Apr 03, 2024 at 03:22:41AM -0400, Sweet Tea Dorminy wrote:
+>> For many years, various btrfs users have written programs to discover
+>> the actual disk space used by files, using root-only interfaces.
+>> However, this information is a great fit for fiemap: it is inherently
+>> tied to extent information, all filesystems can use it, and the
+>> capabilities required for FIEMAP make sense for this additional
+>> information also.
+>>=20
+>> Hence, this patchset adds various additional information to fiemap,
+>> and extends filesystems (but not iomap) to return it.  This uses some =
+of
+>> the reserved padding in the fiemap extent structure, so programs =
+unaware
+>> of the changes will be unaffected.
+>>=20
+>> This is based on next-20240403. I've tested the btrfs part of this =
+with
+>> the standard btrfs testing matrix locally and manually, and done =
+minimal
+>> testing of the non-btrfs parts.
+>>=20
+>> I'm unsure whether btrfs should be returning the entire physical =
+extent
+>> referenced by a particular logical range, or just the part of the
+>> physical extent referenced by that range. The v2 thread has a =
+discussion
+>> of this.
+>=20
+> I believe there was some talk of using the padding for a device ID, so
+> that fiemap could properly support multi device filesystems. Are we =
+sure
+> this is the best use of those bytes?
 
-For the record: I've just sent
-https://github.com/google/syzkaller/pull/4647 with syzbot config
-updates.
+The current (pre-patch) fiemap_extent struct is:
 
->
-> CONFIG_BCACHEFS_DEBUG adds piles of assertions and no extra console
-> printing :)
->
-> > Second part: syzbot will need to exercise the fs in some useful way.
-> > Is it just a "normal" fs with files, or something special?
->
-> It's a normal - but multi device - filesystem, similar featureset to
-> btrfs.
->
-> > Is it mounted from an image, or an image-less fs? If it needs images,
-> > how can they be created?
->
-> apt install bcachefs-tools
-> mkfs.bcachefs <dev>
-> mount <dev> /mnt
->
-> ...
->
-> > "find tools/testing/ Documentation/ -name "*bcachefs*"" does not give
-> > me anything useful.
->
-> https://bcachefs.org/ has some docs, and the tools have a man page
->
-> Anything else you'd be interested in? Thomas was interested in working
-> on on-disk-image error injection, is that something that would be
-> useful?
->
-> Ariel's also probably going to be working on adding full image creation
-> to mkfs, i.e. pass it a directory - is that something that would be
-> useful as well?
->
+struct fiemap_extent {
+        __u64 fe_logical;  /* logical offset in bytes for the start of
+                            * the extent from the beginning of the file =
+*/
+        __u64 fe_physical; /* physical offset in bytes for the start
+                            * of the extent from the beginning of the =
+disk */
+        __u64 fe_length;   /* length in bytes for this extent */
+        __u64 fe_reserved64[2];
+        __u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+        __u32 fe_reserved[3];
+};
+
+and this series is only changing fe_reserved64[0] to fe_phys_length.
+There was discussion in the past of using "fe_reserved[0]" for the =
+device
+ID, which is still OK.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYQQOUACgkQcqXauRfM
+H+CHWg/+ImmZQ6Nzwva0Efg63ioqP0pS3airRAPWj+bfSnsIXaituGulL3hG2Lt5
+IORycBQ5w1uifrkGHdmcpOjoIsPuaQrjAdC700vt5TRhqLojhU6ZnLz/eZMFUSIe
+oS0f9OPJPx3vDKBfMBeVTZbrzka94z5Wl0pUohNFSshNfYOrAKyGiBc0KLzpslFo
+eQODjM5SpgwhN7Te0Wcpklr8JMQXI5e+QXkAnor25ImqCHB7PPL4BEt40/HS6hH/
+MfDLh7WHcatQFHB4prRJrULNDnOSJz+LD2UAu602/s03c2lIEHiVkTb8AATrFE8O
+FZvfEdge3gjEXaK1zO1/eNScUgHH8eESBDbWk2ACkU/p7Ip9MS5FgcWXVBxEUoDl
+46VkGOuqWFwGgY020Q+Tvo7I6r1+MahDttyCKe34bzu0WB/t19del0moZyHhicgS
+oNyZN8rIM5QPmuwi1glNkPi8uL23QLb3frSVmrTflx1GxKBhB+fyN/TQP+42Y1zJ
+eBbSWPgWoWHC7u3ULQYA1Mjbi5DUh8dAjwWIJXsFIJwL4oGb54mX/vE2ef9YAHpI
+x1p+7ds2vdDYqG2o5UXaI9YPg45kDNVm+/Io5+DXNMKGVH6XIyhr/Uy5dzx6tVHK
+CdPBC3K4hWSLU6rlwFhwXJ0d5kc2AuRrcmDi8Q+FzSOHlLyt9zM=
+=UxlY
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8--
