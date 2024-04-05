@@ -1,108 +1,94 @@
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261DE364BF;
-	Fri,  5 Apr 2024 07:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB99816EBF3
+	for <linux-bcachefs@vger.kernel.org>; Fri,  5 Apr 2024 15:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712301822; cv=none; b=mV5A1bZQEj2dG72opzyb6JVooU2mEW1a3f4YH5WmUIKhzxHcTcb2RwftaLWTmGEQ1908rdNrqWCxAh7LNzUcA3LO0oeRc3TGKaWujVT5Y4IXg+Fis1bvIhofkxAs72HG6VasEFIs2RaDU635Z92K8GeSptynKnNBuOBkMdgS8xU=
+	t=1712329270; cv=none; b=EkFb1RLX7xtQiiQ7BHVSETEvBTN6A54cEmRqc6Krbsk+WeRZG737+D8YpyGSw784at8mUHWlQweuFjLejEUtxm4yPXkPpE6XClaFy8jmpkK70ldavrrC0ba/+KCt2Klgj2nIRSJFXq6kOrroTkG0STvdPYedTJgs35DBjgvZQrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712301822; c=relaxed/simple;
-	bh=dVtxKxdg1OU5ld/QuyllX0mtu7ceOemS+BBlFZUycWI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LKGC5JVg5VWlmQ5CLh/ARNNtq92FhXGI1ouovBSpkME6QdGWLW45oPVgKAZkGu/86MuGi1JG6XMyx7+vXWFfGVwgdsGXvrPTt1/97MhVvi/I8Nt3oeZQVM7oGBksHpA4fD1sQRKL/zbLzJGeO9ZEs4gxwwG+Mmom59QMtFFnRa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R+w9Ub+j; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1712329270; c=relaxed/simple;
+	bh=FDM+rqfjgcFF5IHN0e96vKKuLr3OVua6OMs3SeJABUo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=aDG/mrDgsbDbUW0rJM8Wo3kXGwr0sIpMfuRpJeObgeb+aEHGsiEpUdupEf2QZ/QE4mmpq3aGJqPyKHJeK3nClPAbEQ6Rz2m3oG584m1HBLN/7t4vGn9qS9pEbvsmEI47TdShoHxLChW215j+KXLf7GwlLHjL+Sy4tupS63FzdPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tW+/vp2A; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R+w9Ub+j"
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e2235c630aso11016775ad.2;
-        Fri, 05 Apr 2024 00:23:40 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tW+/vp2A"
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a4644bde1d4so315661566b.3
+        for <linux-bcachefs@vger.kernel.org>; Fri, 05 Apr 2024 08:01:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712301820; x=1712906620; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XxNxklGn9SVUsQVsbibkyPFYcty9WP4EgX03Cm56A0I=;
-        b=R+w9Ub+jh5QtXNCsBXuJe9TSRtkzUszoGheKYxg8g2sseERU/699vAcFjcuNT1CTtp
-         Ba3voz7rhpcqtny+0uIKRtvvkOshHmCHqUGk1b4UxHrs3Qy7IPMTLgGmTJyRq2cUDgJd
-         jIUyZDcUzaeuXD3WsMJ+l8yL4K5HywjMczbU1ZpDhP7UNqAZwxIrPp8H3PM0H9EeSV+R
-         3l0QLDdmmuNnOHpbDBo5AC9z4+KW/owux6LQJbkCRIzpnUE1BL0eHGmcqgTtqAjYXwVY
-         OlLmSZdcYlAHPBI6LnpyIaobz3HjYyfTQIVEdBRqww8NV0HTwlK0+XcVu3VUvg8Vj2NZ
-         C5yg==
+        d=linaro.org; s=google; t=1712329267; x=1712934067; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ls3xSfROj02Oi9qADH98tOOJ7brRe2Fo3DATo6V7VGo=;
+        b=tW+/vp2ADq5/tEdf9Z8vMZH7zjFrfszf5L9zT9mwHzxKLFq89WJkhAStubuJ6F+H9p
+         3uAL8BJyUPnGyYTKsZf230oqRGImGRi4cg5lsxLTMW8WhLF+uPG21wgO7AXTnZHp1i3h
+         nFaCCDnR1ktGOc9/HUhR8jE6OV6ByGFrR+sXiqOl4lkAHHyTxF4ThMd5XDNyh6jbyyAl
+         LJ0zsyT9dnllf79P+7CLwj38ZvJ3LtGnYYAgOqV+EysZ7MP8XHeAXQLsOU3gVceXh826
+         4y0IXsQHBTGvA3xROWC70MQxDA4ig3QyCBsMfLQRw9XU4WckqxfLeImkl311WINcQ5Kk
+         6zFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712301820; x=1712906620;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XxNxklGn9SVUsQVsbibkyPFYcty9WP4EgX03Cm56A0I=;
-        b=m7tIXGieGGi6bGrUg4+kyEqOQzMt/L1b8yylfpVq6lkw0IZ2wu5eMeZXtU9gVc5S0I
-         y/LKU2PlGxAlLvc5q/DX+LdIpMqDQTzUkt9gmw5sDMdJIP3uWqe6+i3TmQEivDwKQSRc
-         7AGoeuR1ubXVDS/kQxYp0Lqpp1Xt/v7ejqzvJ1AQ/k7h16V3WGzUY1Gqq+DZ/mJe4Ffd
-         fELM2G0wzT6SP39OU4P2KtEc27Ccp97Bt9eiub57MuSwNRsCaIvw/SRSZvf1FV/oAb4W
-         HtBUW9IfZEGkPG0/1puh78QW6I6AXd0ezhj2iHhfBjUAf0bgqorzIM49y0WTqhnj6cVG
-         levQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbPOgO/FBdd5fH2DAZTY1iKRo5+fsXK9z4+E/tsnqtOcOUKB9DTPvG6zUeWKbS6PXwJXxnGKaYOLRFNLODDDi0+c+zUXKQPRiMQzLlwfeZS77NafpF6O2Z7vzx7dvl7OHjwFjwJwexa2o=
-X-Gm-Message-State: AOJu0YytYUaUL3k2TBWzkpo4HErspWde5q5o+rqJlpxXtX+Nd9WHrdri
-	MQDkMsiwNDYriygbl+yWQazNfRiAE4DO1gxPrx/FO9JhnyLdHQ5E
-X-Google-Smtp-Source: AGHT+IFfc/IdC5JjDt2WRmesL07W3LVTGgo/ePNVHicM2OyAeObGMTW6GRu5VgzsOxm1/IkxQoNOwQ==
-X-Received: by 2002:a17:902:f542:b0:1e0:cc0:edf with SMTP id h2-20020a170902f54200b001e00cc00edfmr680751plf.13.1712301820418;
-        Fri, 05 Apr 2024 00:23:40 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id i6-20020a170902eb4600b001ddb4df7f70sm844656pli.304.2024.04.05.00.23.39
+        d=1e100.net; s=20230601; t=1712329267; x=1712934067;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ls3xSfROj02Oi9qADH98tOOJ7brRe2Fo3DATo6V7VGo=;
+        b=qecoB6a2npUtjTfqj2G2PWcNDxMlhkCykPrpTZX/ixrGxFB/n7bcto1R8ItsMzZ+OW
+         TT/aFAGnPhG1cmT3mUWz5Pbf+/tjxsxGsp/JoIAmSuErJbL0jyIDKOH/SLYMWOR73ky+
+         tR6HzkSQpsSchAfSq8kTKFzS/p4gB1M+rjTalL+WLaeTgero5oSLxVd7TXlYrPf7rXHu
+         T64om7/ORQuywyAsbk8V6VSQif0wZIDA6ceC283QX1+d6jXrBDf4VptOcrbs/jDWYL2E
+         9X3QJgLA0TPgVpMkmhAyeNbVUpRV2nps2JcydMR+Kn7m0CrRA7CYgBx2Moe3VXbDIeUz
+         VotQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXLP495V/AjmI8v44PTwwG9J+8bIAGyrPR4n2rCUKhZSxiRuJELMCcF+Chp38zk4GTnIRa3MukNKS6MoHYHs+lh99dXzi87mey0MqpZbxY=
+X-Gm-Message-State: AOJu0YyCXD0Ze8+9Lispyx30TYuW2JboH0cSkKb41DZ5Y1sp0VaKO8jA
+	2VP67fSxDAUxbdTmVSU+TBJmtTlP/7dYuvRD6pREJ187wNEa434DYKtz0FOEiAY=
+X-Google-Smtp-Source: AGHT+IHKy57nSuGOHzyW+AHTWzhaIS8bsMFdSatM6N6CkW3nKL+4boqP2WuHmw6B6CE+NVXx+7nQUw==
+X-Received: by 2002:a17:907:7245:b0:a4e:768a:1445 with SMTP id ds5-20020a170907724500b00a4e768a1445mr1664506ejc.16.1712329267179;
+        Fri, 05 Apr 2024 08:01:07 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id jx24-20020a170907761800b00a46baba1a0asm926271ejc.100.2024.04.05.08.01.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 00:23:40 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 9C83F186046F8; Fri,  5 Apr 2024 14:23:38 +0700 (WIB)
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux bcachefs <linux-bcachefs@vger.kernel.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Bagas Sanjaya <bagasdotme@gmail.com>,
-	Chandan Babu R <chandanbabu@kernel.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Steve French <stfrench@microsoft.com>,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 2/2] MAINTAINERS: Add entry for bcachefs documentation
-Date: Fri,  5 Apr 2024 14:23:19 +0700
-Message-ID: <20240405072320.23416-3-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240405072320.23416-1-bagasdotme@gmail.com>
-References: <20240405072320.23416-1-bagasdotme@gmail.com>
+        Fri, 05 Apr 2024 08:01:06 -0700 (PDT)
+Date: Fri, 5 Apr 2024 18:01:02 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] bcachefs: fix ! vs ~ typo in __clear_bit_le64()
+Message-ID: <5ecccc80-70b2-4c04-8c09-1113fef3e515@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=675; i=bagasdotme@gmail.com; h=from:subject; bh=dVtxKxdg1OU5ld/QuyllX0mtu7ceOemS+BBlFZUycWI=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDGn8y3T/1XywyhFoPW+UaS1jEqgQVvdX453XVIdKyQ9v2 R4tuXilo5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABNJf8jwPy+10KKY5aQiX3Ve fX/Uea1jr5+eMvFY+L10ArPkapdX0xkZ5u1iLvs/rcSp6PmhVd837RQ9aXA004Pr8p/autl1Nxb JcQMA
-X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-Now that bcachefs docs exist in Documentation/filesystems/bcachefs/,
-cover it in MAINTAINERS entry for the filesystem.
+The ! was obviously intended to be ~.  As it is, this function does
+the equivalent to: "addr[bit / 64] = 0;".
 
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Fixes: 27fcec6c27ca ("bcachefs: Clear recovery_passes_required as they complete without errors")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ fs/bcachefs/util.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7c121493f43d01..c0091a206fd206 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3573,6 +3573,7 @@ S:	Supported
- C:	irc://irc.oftc.net/bcache
- T:	git https://evilpiepirate.org/git/bcachefs.git
- F:	fs/bcachefs/
-+F:	Documentation/filesystems/bcachefs/
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index b7e7c29278fc..de639e8a3ab5 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -795,7 +795,7 @@ static inline void __set_bit_le64(size_t bit, __le64 *addr)
  
- BDISP ST MEDIA DRIVER
- M:	Fabien Dessenne <fabien.dessenne@foss.st.com>
+ static inline void __clear_bit_le64(size_t bit, __le64 *addr)
+ {
+-	addr[bit / 64] &= !cpu_to_le64(BIT_ULL(bit % 64));
++	addr[bit / 64] &= ~cpu_to_le64(BIT_ULL(bit % 64));
+ }
+ 
+ static inline bool test_bit_le64(size_t bit, __le64 *addr)
 -- 
-An old man doll... just what I always wanted! - Clara
+2.43.0
 
