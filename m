@@ -1,91 +1,53 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23CD3FB92;
-	Sat,  6 Apr 2024 17:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC39617C8B
+	for <linux-bcachefs@vger.kernel.org>; Sat,  6 Apr 2024 18:48:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712424713; cv=none; b=eF/vfA6X2cyrb6V+Mt/tkYGhFRh5G8jRHz+S/JuA+8V+3wpkpwxooSTvAEWSWo4lHkSZS4s9JMbb9/QVyAIKaw97moA81BR1eugHEDb7YQvKcVIY2iIZ1pa/O45CfO7i+ptVDrm30Mf8WZpa+eU6/NO3bmy/PLdHHHf0N9Yzl0s=
+	t=1712429300; cv=none; b=fERdleATYZQPWFVkkkVziYc7N/i215F4QIv6F9LvvAKrOaK7kqXBonUrDLEovujZj4wQBmKnqBcJpxQy0eA9B5odDFsfzlrebKCOmbZ6vHGjQP/SYMsUKuwXNAjIt1OGAx5m4A947jHPNIn9JEcDZ9x/TI9GhQyc8Q5yxdizx/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712424713; c=relaxed/simple;
-	bh=vZ8hOquufdNKiyCJecLeixIcMnrnV1AW3oXr5DxC8CU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d51g6F4sOrv5Kgfob578ZH1Jj1RGnG+rVyhKcTohxsK/f2fm85Mkl6Tm8Ct9I1jnsoSXIi5mbg6upmor98tSFhGlWd12LL8HqSywvsnQvGFIXxvocUw/2DtvVTti1AygXivx/+r1l9uiGaa4ohmemkxo4CoGnWRBOFFup5OApYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=qVCVk5mo; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1712429300; c=relaxed/simple;
+	bh=JkJ7awgyjocGhExtmI0IDac+uVE+RlqQYYJBf5DuZq4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iWQU1vF+ecMXfFlXavKQYBcqc6V3vWQEEfRU5G9JcDZJlWadQhEs4LkeU6mqcBzPz3CgxuQc4ey+O/JGI91jnAczMVjEQubZO19O92UtKngBQta4QL4y0qWIGKzt6tqRqnQWqqSc+r6c30h8caTCPfQBq9g/RVAObovnsK1RC8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pCMnijP8; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qVCVk5mo"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=5v76W08TT679PKia3IEz1oLMJe/sls4wnfr6gKUBWtQ=; b=qVCVk5moDyycimdiGI9lb20ivU
-	+bUKgCMQn2i7dGau9Yj4YI18gbUtwisM3meIjdLI3kVbGwa8PKbwhJ7JZz2dk0908QC+eRTAkr6D+
-	RkuKXz2HX+CYJn+t7/mhcyQyCWNvn2+nU+qw7ipMn3shNoyk6lnkrz8d2o6NsivsWkyqF1G/7OELq
-	JST25fzpSg9ygATfKklKt+N6DgP6GeQyxZIYMAjh1vWJ1cl0M/jq9dqG435fF+ioFCA0LddV6A8Ud
-	/cCP6CLuGq8ooK/o37+2HBimh+Xh/k/it3HgKFuBy8nleqRoKynnS63U4ltWtPsdSMlJqFfOGSAkq
-	cW9He2Bg==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rt9tE-0000000Ajxe-1mzp;
-	Sat, 06 Apr 2024 17:31:40 +0000
-Message-ID: <bce1e749-1317-446b-a07a-6381ceb599e8@infradead.org>
-Date: Sat, 6 Apr 2024 10:31:39 -0700
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pCMnijP8"
+Date: Sat, 6 Apr 2024 14:48:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712429295;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JkJ7awgyjocGhExtmI0IDac+uVE+RlqQYYJBf5DuZq4=;
+	b=pCMnijP8skWXiWntA/2D771ghSaPHh5ZwlBPv314cVMEzn1ZDgz8AUVguO2f2aQL/J0RF7
+	NrC+tsBQev8vsoIwm74bxaqFaVc5kid9MQ+x61BJprgAkCXIIyigmhoKZcBXOybdiUmp94
+	AGBIIOyth5YoNU+D9CeOhezBB6KNWFY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: Rename struct field swap to prevent macro
+ naming collision
+Message-ID: <wvui43l6pcfexoglhyy4xfdjs4mrjzmbcwupnb4djlgvrebn7s@l22gudock5d6>
+References: <20240406141919.248148-2-thorsten.blum@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 03/17] bcachefs: Fix typo
-To: Kuan-Wei Chiu <visitorckw@gmail.com>, colyli@suse.de,
- kent.overstreet@linux.dev, msakai@redhat.com, peterz@infradead.org,
- mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
- akpm@linux-foundation.org
-Cc: bfoster@redhat.com, mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
- adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
- linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
- dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-References: <20240406164727.577914-1-visitorckw@gmail.com>
- <20240406164727.577914-4-visitorckw@gmail.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240406164727.577914-4-visitorckw@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240406141919.248148-2-thorsten.blum@toblux.com>
+X-Migadu-Flow: FLOW_OUT
 
+On Sat, Apr 06, 2024 at 04:19:20PM +0200, Thorsten Blum wrote:
+> The struct field swap can collide with the swap() macro defined in
+> linux/minmax.h. Rename the struct field to prevent such collisions.
 
-
-On 4/6/24 9:47 AM, Kuan-Wei Chiu wrote:
-> Replace 'utiility' with 'utility'.
-> 
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> Reviewed-by: Ian Rogers <irogers@google.com>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  fs/bcachefs/util.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-> index 92c6ad75e702..05ac1b3b0604 100644
-> --- a/fs/bcachefs/util.c
-> +++ b/fs/bcachefs/util.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * random utiility code, for bcache but in theory not specific to bcache
-> + * random utility code, for bcache but in theory not specific to bcache
->   *
->   * Copyright 2010, 2011 Kent Overstreet <kent.overstreet@gmail.com>
->   * Copyright 2012 Google, Inc.
-
--- 
-#Randy
+Same as in lib/sort.c, so what's the actual reason?
