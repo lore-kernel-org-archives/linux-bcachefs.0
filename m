@@ -1,48 +1,43 @@
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40DDE1BF31
-	for <linux-bcachefs@vger.kernel.org>; Sat,  6 Apr 2024 05:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4441DA21
+	for <linux-bcachefs@vger.kernel.org>; Sat,  6 Apr 2024 05:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712380857; cv=none; b=tg8dQODjrVwIKM3BC2Zky2R7aQ0KLGKc0xb4cG5T5QGtohlIPGhxPl22tTi6ienlCzuK9iB8jW+GRY4tOYFxCQuYvpGcY3F0nhshc82SVzM80Vs3SIaAGr69gWotudM6f999HFBWOQjN4ee5zN6T4b51uhuHyCzQTxUpb7cAy/4=
+	t=1712381134; cv=none; b=KRhVx+VpuG/ssHBWCFYmOvxi28BHiftds4ApC3Y/KmRBGYsHNknTKY4GCqoa1pOGZaO52vfWMhBMQrGb/WNsQK7x92TdqV8vJpKdgAkTjnQXHLv0J5PBFsW1r0Vp6qjzYnvzGARkemCB8c68xYXyrFeD2dyUNOfYAetWmdoSMew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712380857; c=relaxed/simple;
-	bh=PIoOgNzqkPt6pFqlUzqJVdnsJcxBBJL9KPIQo8L9CWE=;
+	s=arc-20240116; t=1712381134; c=relaxed/simple;
+	bh=GBJ/4qcyi3hIK6KdFPiWuGa9/vsZlY1k4eIqxJceVYo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MZS2R4L/84FjT+JtTsZCet0+ZzJE115PKpj5Pn1eqymh9R2v9ilHqPYXhaNsmW9j4wLRVP9U6EmgRMheshPzRDIuaQYNveHqxfqK9G2vwnE6XSdihGhFBmBfZpZyh63+TLZbg5hTxHaxOTu/OaBaQCSIrtuRpBVvFvYhyMbqrsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lLPAYrt5; arc=none smtp.client-ip=91.218.175.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=cFAH407Z7kxqgOhkgXy8McUuDhFO+GQJK9jJUkeFW/xPSmWqI1lgDKgLAAa5S14vDTiBje1DyHP934YtAIrgOyW9fY+vMcabpFyyYDDLAHPPGpprPffObz3b63Vl5/Elp6a/qXQE2attMEqHGuGtsqd12IS/S/e9fHAOwIf5o2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KFt4n9CV; arc=none smtp.client-ip=91.218.175.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lLPAYrt5"
-Date: Sat, 6 Apr 2024 01:20:46 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KFt4n9CV"
+Date: Sat, 6 Apr 2024 01:25:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712380852;
+	t=1712381131;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bhfWeUnybAsPC5w2wnk+v+3mDew6UZBufRKxuTERnpI=;
-	b=lLPAYrt5fteZomt541z2r9imi7ugwkVNiZC5pZZu3KjNFo/chRlOU1XA+bzccxMdMbIll9
-	iA+zhVqapFEEo0NHoRaICnZZ4CQhn70DUUTzecq//OFELR8OzaQySC7v12I2ZtwQTy4tva
-	HKowOJToS6St8IaHHb2Zg43DVWkqMkE=
+	bh=b0s8OKyEtBCTwct3IXJh6ls/NerCr/sOkNHMDUlOY/0=;
+	b=KFt4n9CViXD9Lsjtq3gepymSsaeClFuhykWaf7PDCD9iY8hs+/ApOLJ1GdO6ucw5/VMjUp
+	zMAuz1umDjT9Bcvl4kZ3tA6RNxPFtbYERb1QIswrs6lXA9IiFMZ19DqxiachfQ6F9Hn/p0
+	wziY0IxFK5cDlUVy6FLQ/xBfNe07dCc=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andreas Dilger <adilger@dilger.ca>
-Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>, 
-	Jonathan Corbet <corbet@lwn.net>, Brian Foster <bfoster@redhat.com>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, linux-doc@vger.kernel.org, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs <linux-btrfs@vger.kernel.org>, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>, kernel-team@meta.com
-Subject: Re: [PATCH v3 13/13] bcachefs: fiemap: emit new COMPRESSED state
-Message-ID: <2iyoi665o6hogzzlfhs6ets6vq2joh4xi5t3fbcpdmlv2cyrxu@7umadxpnaql7>
-References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
- <943938ff75580b210eebf6c885659dd95f029486.1712126039.git.sweettea-kernel@dorminy.me>
- <7CF0A3D0-50E7-448F-A992-90B9168D557F@dilger.ca>
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Documentation <linux-doc@vger.kernel.org>, Linux bcachefs <linux-bcachefs@vger.kernel.org>, 
+	Brian Foster <bfoster@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	"Darrick J. Wong" <djwong@kernel.org>, Chandan Babu R <chandanbabu@kernel.org>, 
+	Namjae Jeon <linkinjeon@kernel.org>, Steve French <stfrench@microsoft.com>, 
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH 0/2] toctree fix for bcachefs docs
+Message-ID: <lkexpg6uihcokigp3iy7dmqchxjc7nsyaf6fe3nirizzsxpka7@eseglantc7iz>
+References: <20240405072320.23416-1-bagasdotme@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -51,39 +46,14 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7CF0A3D0-50E7-448F-A992-90B9168D557F@dilger.ca>
+In-Reply-To: <20240405072320.23416-1-bagasdotme@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Apr 05, 2024 at 01:17:45PM -0600, Andreas Dilger wrote:
-> On Apr 3, 2024, at 1:22 AM, Sweet Tea Dorminy <sweettea-kernel@dorminy.me> wrote:
-> > 
-> > Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> > ---
-> > fs/bcachefs/fs.c | 2 +-
-> > 1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> > index d2793bae842d..54f613f977b4 100644
-> > --- a/fs/bcachefs/fs.c
-> > +++ b/fs/bcachefs/fs.c
-> > @@ -921,7 +921,7 @@ static int bch2_fill_extent(struct bch_fs *c,
-> > 				flags2 |= FIEMAP_EXTENT_UNWRITTEN;
-> > 
-> > 			if (p.crc.compression_type) {
-> > -				flags2 |= FIEMAP_EXTENT_ENCODED;
-> > +				flags2 |= FIEMAP_EXTENT_DATA_COMPRESSED;
+On Fri, Apr 05, 2024 at 02:23:17PM +0700, Bagas Sanjaya wrote:
+> Hi Kent,
 > 
-> (defect) This should *also* set FIEMAP_EXTENT_ENCODED in this case,
-> along with FIEMAP_EXTENT_DATA_COMPRESSED.  Both for compatibility with
-> older code that doesn't understand FIEMAP_EXTENT_DATA_COMPRESSED, and
-> because the data still cannot be read directly from the volume when it
-> is not mounted.
-> 
-> Probably Kent should chime in here with what needs to be done to set
-> the phys_len properly for bcachefs, or leave this patch out of your
-> series and let him submit it directly.  With proposed wrapper in the
-> first patch of the series there isn't a hard requirement to change
-> all of the filesystems in one shot.
+> Building htmldocs for current Linus's tree triggers a new warning, and
+> that is on your docs (missing toctree). Here's the fix + MAINTAINERS
+> entry for bcachefs docs.
 
-You get phys len from crc.compressed_size - that's always guaranteed,
-even if it's not compressed
+Thanks! Applied.
