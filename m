@@ -1,67 +1,67 @@
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9BE3D0AD
-	for <linux-bcachefs@vger.kernel.org>; Sun,  7 Apr 2024 19:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E753FB80
+	for <linux-bcachefs@vger.kernel.org>; Sun,  7 Apr 2024 19:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712517106; cv=none; b=NtOBrqSy72ijRuEyBo6br0wxDV7abLHaxI8OBI5/b3VE04YzGvGskJPskJszilC5peuDXA+9X81fQhGNFRmxiL9Prjfyt3Q4H3DGkpNPN34O1Nxw7e1wRO5n+B+j+EjrEVjeyPw+CcnDd1+WofIJQ7FuBMtWvaUeo6Divg+8WyM=
+	t=1712517807; cv=none; b=F0Dj7Px3swLUKflRDVWodi9F0DlU1jojhWDunJIdqhKDGAcu+UlrLKVJ2txl/a6lBOyvFzGqPI1SIWZAdmuIYpf/5BKcMG+CresNKfbspudbDIttUli+cTQwW1Dyxn13UvgZ8DmfZNIyosrgGoC3Rvm/j+CrsNWmL6c1JWblauc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712517106; c=relaxed/simple;
-	bh=5+ZSDJ1c1wayZpu3rSXMMx/gAZAOYnaNUAMMmnOCKrs=;
+	s=arc-20240116; t=1712517807; c=relaxed/simple;
+	bh=22VmL+tFNE0uTkCejpkMoP/bIhby50wK3RXGm4NSyrM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YB4raTOHl/Zn9MvcEAyhC8QdzSKluber1j4QCnLyGWJrJW/Y4j8qnAQKD6Qzwv0oEYpNhdj1AJNvqPAJZ0m7VwzeJFkmwCVeuyOpe4bqjVsaPd5XLhCdcdXe7D7gES5AKB6TbStf6mq3N2ulJtymN9PqCNx7+Se6wWkBuh7tnyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fTKLukDG; arc=none smtp.client-ip=209.85.160.171
+	 To:Cc:Content-Type; b=JQstqVixWdGx44MgDbLVwpWe+4sC6r+6eTtWSqim8J7XNg0yB3FsZXtyNDC6s3WMgmqFdd2se8AjTnD9x0UjRnyd28mfYV/+ENYTaIFCvrxr0doW1IYvZWQJoyUjqIy7JdDmcfuvsMNgNBL+cVce9v/fY71VHyr8uQw8Ebtf3Ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dBOUD2Wl; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fTKLukDG"
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-431347c6c99so317151cf.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 07 Apr 2024 12:11:44 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dBOUD2Wl"
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-43477091797so181961cf.1
+        for <linux-bcachefs@vger.kernel.org>; Sun, 07 Apr 2024 12:23:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712517103; x=1713121903; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712517804; x=1713122604; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lNNV1iViAab2iT4F4Gl3z4rLSdw9SuHLMYt6mT0uMl8=;
-        b=fTKLukDGInZUB+fsQg3YPRTy9oXDUyPs1odEsay87TmR44G9qLwV5fwCxW8PlEyG2Y
-         xxKX4HFnnEuVrtKLHT08eRxP5YnDkCrvxVQH+7b0eQzRE1M4/SYlenlaZelQMDx2uazL
-         Kk7L1AJrxRL7qbojiqeXd7NovGDD3p/RYwHg36+8pRP37sZihDp/AYO/Vk8Z8b92j4Z5
-         QXGWDgi0gQFxTVm4Cyi250lvduGLxOir+fVLW611JuqGWYSUiWiqoVOmnn/aHAyylvLU
-         jeGkQ2HZaRwUG4/MucAuXA2OqPh9h3HBgD+3/aftJNHbdihvEpV3RauE/trzj9uU1RLV
-         sUxw==
+        bh=u9EK+/yKJWqRz4L882cCc6fbjSJC3IRZpgkO1qv3gbY=;
+        b=dBOUD2WlDWsa9xSrsNBz0w6qB2Xv5X8vGluK+WmI5jh7+eLpOo52Wcn4IeggH2AXaJ
+         jteQYTbwbf5QQS4RyMgROwhVcF/01xErGZK+c171UjPQ8gmR9+yT4aJhBa7gnOQb+EL/
+         Q/8kkA6OCFaK2bohX/I8Zobraj0A8zlSU1AmUwQT/Gb7sG8swK8MjZvMaHxDW1yrN4wp
+         DMdF9TkJxTQD3/gkW1ev3J0Ac5f+c5tOcgi2oSjOY8+AXzFwh5USVDBVTjIlTvj1owi5
+         g7ylThBdi2ah60InBhvGhkJ+2IEsMncFfYqNXxub/JpOsEPfGhZSny2GPA0UVPTrEoXM
+         swng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712517103; x=1713121903;
+        d=1e100.net; s=20230601; t=1712517804; x=1713122604;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lNNV1iViAab2iT4F4Gl3z4rLSdw9SuHLMYt6mT0uMl8=;
-        b=ocqj+nMXiNN38epaX2G5ipoT3okPesz+/bW3QiLxf/Gert7GoV6sJAHOQy5Z4LN4Ep
-         bCSGnPoelKdSzTDW27BB20PA3DuozU6EPJPlyEZMXlCcnLRS78yvFkORflV1Cile5OMV
-         YE3LS/2lSp8F2QbWZXE1FFIB6N/zWGeA/7fTNg5MB+/P6ZOJizZkW2TL1JqCRPYeGPN6
-         +vfK0N2pjEW1V187wSAPjV135+VFQ70Ra3Bgw81EA4Yo/4KakvBKObEmtCePrrRSwXD8
-         vhQsVfdEazwf+8Q1qdKn519zsAXSEhdD6klwI9MtNGjBkmzjPY3NPxDEMNvA5Y1gjP6S
-         8edA==
-X-Forwarded-Encrypted: i=1; AJvYcCU8Nn7+ut7TusUyp3gfOHrCaifGsJGhgngt/y5vjozowLwUj4j88jpMcnfint8OxoLllUHk8usqUXSoFx4TrRkIhjYLbVMre9UOsN6sKE4=
-X-Gm-Message-State: AOJu0YwoN0qnoGNl6X3RZilZOA5NuG6eM+/7m1cWsmH4+XFfj2UJz3Dn
-	wsB+nmownC8xRB2zM1Es/YmbCQjZ8gwgN+qXKRVhxF/3fqdcpEakiy9V3cZU5hqsCTbd5znVZ0K
-	54wKpRHGnmBD+TifsmJQ5E7YcSRQQYxbxMvl/
-X-Google-Smtp-Source: AGHT+IEbVQ6rh/yVlB3vPD78DUbrZCMUoVH6z6E9ojPzKJf/d8f7GOzVNi588miJW/ClBy/V8n3f5DvHgoDRclWzJ3s=
-X-Received: by 2002:a05:622a:4812:b0:434:7bb9:f231 with SMTP id
- fb18-20020a05622a481200b004347bb9f231mr176338qtb.12.1712517103175; Sun, 07
- Apr 2024 12:11:43 -0700 (PDT)
+        bh=u9EK+/yKJWqRz4L882cCc6fbjSJC3IRZpgkO1qv3gbY=;
+        b=XGHRvYmJE7ZaUn2dAkeWOagNY9rZsvipZqyQ6Kd5zjYHDYqp5IzIFjmdJQQlI3wvAj
+         V/lG6eI0d5lqy0mPn8zLwZjn/m6HSbVlil70uwnuFnWspBhOH9WQYCUeBK4vKpdtU4Bg
+         5mov5nRf37oOmFAQsu2ccs5fPWgEHwltA+QcvWFvywFwR4b4i2lr8J/Jw5zdiW9ipjc1
+         hlINpNuJchYUUJ6lHQdz3XtowzUX+2OWFOJTDW4sVeaZ5HEfzMfRB8A+7VoGecpsKntC
+         xO7WAPbxUwnLVPPlNhAwyXex4qf3YYtnIujx4cWjtyaUNKXKj9iFsxIu1uPNLmMDr7yw
+         tuuA==
+X-Forwarded-Encrypted: i=1; AJvYcCV7KNmHV/ghmSeUtptZfkvQV1NWWvw3xRvgXx43GkZquiHmn/LAVX0ChUg8KvPFlV57WDn0gWhA1PIXC+mWaHxTCO8N0iuJcmeMdlrEstU=
+X-Gm-Message-State: AOJu0YzZ32Fl/FVggpBS4VZhSQyvZ5XqL6gUHndoTndOyCbpa11BFP08
+	L6TknelbI1S1nm0BFC0eKzdh9a33+UDl+bBOz4lE+S/goCbuXYtdfRmDwwL+sMFKXiRxgkgZYFI
+	AfHPE/j4EudUY2q7l/BMIEpe5P3raeetV6uWS
+X-Google-Smtp-Source: AGHT+IHar9eAfxca2nmrIrD2fR+nsCEr8Z9S6xUUBtYvOamZ7oI6wPcUjOWZvBJYg8gNmg59mfRxZth/y35fmMF/4NM=
+X-Received: by 2002:a05:622a:1b1f:b0:430:e8f2:7d02 with SMTP id
+ bb31-20020a05622a1b1f00b00430e8f27d02mr277035qtb.10.1712517804333; Sun, 07
+ Apr 2024 12:23:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240406164727.577914-1-visitorckw@gmail.com> <20240406164727.577914-14-visitorckw@gmail.com>
-In-Reply-To: <20240406164727.577914-14-visitorckw@gmail.com>
+References: <20240406164727.577914-1-visitorckw@gmail.com> <20240406164727.577914-16-visitorckw@gmail.com>
+In-Reply-To: <20240406164727.577914-16-visitorckw@gmail.com>
 From: Ian Rogers <irogers@google.com>
-Date: Sun, 7 Apr 2024 12:11:31 -0700
-Message-ID: <CAP-5=fXYVBeT0Egypq8Ja4DMX=csWBhMoKuuz=WQxsd7iPBAxw@mail.gmail.com>
-Subject: Re: [PATCH v3 13/17] lib min_heap: Update min_heap_push() to use min_heap_sift_up()
+Date: Sun, 7 Apr 2024 12:23:10 -0700
+Message-ID: <CAP-5=fUQz0oiO9i6=+F3X9QgkaPVfCRWxH=kCSpYzNRFR=Y=qg@mail.gmail.com>
+Subject: Re: [PATCH v3 15/17] lib/test_min_heap: Add test for heap_del()
 To: Kuan-Wei Chiu <visitorckw@gmail.com>
 Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
 	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
@@ -76,8 +76,8 @@ Content-Transfer-Encoding: quoted-printable
 On Sat, Apr 6, 2024 at 9:48=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.com>=
  wrote:
 >
-> Update min_heap_push() to use min_heap_sift_up() rather than its origin
-> inline version.
+> Add test cases for the min_heap_del() to ensure its functionality is
+> thoroughly tested.
 >
 > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 
@@ -87,39 +87,65 @@ Thanks,
 Ian
 
 > ---
->  include/linux/min_heap.h | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
+>  lib/test_min_heap.c | 36 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
 >
-> diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
-> index 3086612d7cd5..fe037eb5952e 100644
-> --- a/include/linux/min_heap.h
-> +++ b/include/linux/min_heap.h
-> @@ -190,7 +190,6 @@ bool __min_heap_push(min_heap_char *heap, const void =
-*element, size_t elem_size,
->                 const struct min_heap_callbacks *func, void *args)
->  {
->         void *data =3D heap->data;
-> -       void *child, *parent;
->         int pos;
->
->         if (WARN_ONCE(heap->nr >=3D heap->size, "Pushing on a full heap")=
-)
-> @@ -202,13 +201,7 @@ bool __min_heap_push(min_heap_char *heap, const void=
- *element, size_t elem_size,
->         heap->nr++;
->
->         /* Sift child at pos up. */
-> -       for (; pos > 0; pos =3D (pos - 1) / 2) {
-> -               child =3D data + (pos * elem_size);
-> -               parent =3D data + ((pos - 1) / 2) * elem_size;
-> -               if (func->less(parent, child, args))
-> -                       break;
-> -               func->swp(parent, child, args);
-> -       }
-> +       __min_heap_sift_up(heap, elem_size, pos, func, args);
->
->         return true;
+> diff --git a/lib/test_min_heap.c b/lib/test_min_heap.c
+> index 67dd4f644f6c..9d4bbb590a49 100644
+> --- a/lib/test_min_heap.c
+> +++ b/lib/test_min_heap.c
+> @@ -160,6 +160,40 @@ static __init int test_heap_pop_push(bool min_heap)
+>         return err;
 >  }
+>
+> +static __init int test_heap_del(bool min_heap)
+> +{
+> +       int values[] =3D { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
+> +                        -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
+> +       struct min_heap_test heap;
+> +
+> +       min_heap_init(&heap, values, ARRAY_SIZE(values));
+> +       heap.nr =3D ARRAY_SIZE(values);
+> +       struct min_heap_callbacks funcs =3D {
+> +               .less =3D min_heap ? less_than : greater_than,
+> +               .swp =3D swap_ints,
+> +       };
+> +       int i, err;
+> +
+> +       /* Test with known set of values. */
+> +       min_heapify_all(&heap, &funcs, NULL);
+> +       for (i =3D 0; i < ARRAY_SIZE(values) / 2; i++)
+> +               min_heap_del(&heap, get_random_u32() % heap.nr, &funcs, N=
+ULL);
+> +       err =3D pop_verify_heap(min_heap, &heap, &funcs);
+> +
+> +
+> +       /* Test with randomly generated values. */
+> +       heap.nr =3D ARRAY_SIZE(values);
+> +       for (i =3D 0; i < heap.nr; i++)
+> +               values[i] =3D get_random_u32();
+> +       min_heapify_all(&heap, &funcs, NULL);
+> +
+> +       for (i =3D 0; i < ARRAY_SIZE(values) / 2; i++)
+> +               min_heap_del(&heap, get_random_u32() % heap.nr, &funcs, N=
+ULL);
+> +       err +=3D pop_verify_heap(min_heap, &heap, &funcs);
+> +
+> +       return err;
+> +}
+> +
+>  static int __init test_min_heap_init(void)
+>  {
+>         int err =3D 0;
+> @@ -170,6 +204,8 @@ static int __init test_min_heap_init(void)
+>         err +=3D test_heap_push(false);
+>         err +=3D test_heap_pop_push(true);
+>         err +=3D test_heap_pop_push(false);
+> +       err +=3D test_heap_del(true);
+> +       err +=3D test_heap_del(false);
+>         if (err) {
+>                 pr_err("test failed with %d errors\n", err);
+>                 return -EINVAL;
 > --
 > 2.34.1
 >
