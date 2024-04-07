@@ -1,90 +1,132 @@
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D219184F
-	for <linux-bcachefs@vger.kernel.org>; Sun,  7 Apr 2024 04:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463E33C082
+	for <linux-bcachefs@vger.kernel.org>; Sun,  7 Apr 2024 19:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712463150; cv=none; b=tB1kzAb9Msoo+63BP9eYZYS4frfg4awyTvKDENaWHn5XIL2KADFg7nE9HqHl/kqGpgTU8LL2aY6B45R1qI1s5YMQxnFsWCxNN53d8qc3mihLMlRxNoMS4CJaCjxNNnBadauPyn5ZQ3wMOepaY/cwQh+5c5YuU5G8MitjJuVpUeY=
+	t=1712517055; cv=none; b=uh/EAR9MC9yoeMPyK5JiqLpK0HKqwdUa4AX3a1TJ3C6Lv2F0OwOUC2zm7z2efa5TspTFGMeAHzUi4Y4mZzXmS1aJslNiBIqhwRZNMaVdYH5VA3FmhG8+G1CfEorOJon+7KQOH+LOZOVqFt5U6UnwR8lRdvZc2oAo8FzgGI9rnZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712463150; c=relaxed/simple;
-	bh=Z4KqCREDgBjK4L8+1jCUewIR3d1elGDVnhZBpRAtp2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mFnvHsYeY3TmScKOrInBlR/nBNrn7Qky2e2x1zAyuAyujf/2hwym+25FA7sA3aLpFnYb7jB6cjo/WBx/+N1EBvXwAEOO/4iMnum4Rb7qfPMsK5iRyFCtIGlOloy1KKWEM+q8+ToZBKwIeIIe9JSzwvjhXA+DurHTOL2PWNExOkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UeQyHtIc; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1712517055; c=relaxed/simple;
+	bh=70HHBEd6cxrXlLkgbwjfvu3LYrWt/mT4YkQDDZ2MPi0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HKO+uU1sg1ZjopsIBD7QWydAENv2Zvhwf33210yTAZiwv2pac52A3u6zongRSlLr+fnFhbzQ3XF/1+IK/oupqNZ1eVDGFVFnxLWniSN23yfB6M/+bB+AWQYG5QbQf4J7vrIj0Bus83u1f1XF0KIEXzKkImYO6Osz5IaeZWhKeuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=twdFLsYO; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UeQyHtIc"
-Date: Sun, 7 Apr 2024 00:12:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712463145;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Akf+5PjShga/Knr2bfSD++VsHqynTRQPRIszKrS9DM=;
-	b=UeQyHtIcV8Lc9NLfxaHwq2NA4kugPQURyVr0yc8mvtcEdG89Mx3lf4G5NShmKMKMlpE89B
-	S1N2HFQiycv1UV2Hu/oGKV0I0fJfG3GjA2TmLEJiL+088ODm4rOHH+Sn6UAUkQxbSwyRbD
-	Vhzo++NSvrLpOtgtlCfaAgqwlGuAcmE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: bfoster@redhat.com, jserv@ccns.ncku.edu.tw, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] bcachefs: Optimize eytzinger0_sort() with bottom-up
- heapsort
-Message-ID: <jx6yufij6gygb6ypsoq2yhw3eb3nobr4ytnb7phgmbpn5gmtws@23hu2rwhm4mt>
-References: <2vm32rfcbgy4fap77scebqorlrpaihz3angd6bl2lnpslrcp63@kekiknxt5vup>
- <20240407033904.719773-1-visitorckw@gmail.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="twdFLsYO"
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e42a6158d5so14215ad.0
+        for <linux-bcachefs@vger.kernel.org>; Sun, 07 Apr 2024 12:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712517053; x=1713121853; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x6EUWLXyMd/QrPrA543Vnpb+tkAZZfWHn9rSEQeDI00=;
+        b=twdFLsYOYbDEG5VMd/NJt3yra0CScuu6rLvDlvzD0/UcM3ccsSLLWrFRme5S+Qw4tc
+         4AY8PNP5cS4iwCjKeWSUZvUbK4MwXP6J37sY0+2ec0UvZFPji/4xxe/VoNNkX6mhwJLC
+         hu1+sVaI9v8ro30Kh9TSdyJCvVyrAnB4tSZd6oDpmHx+P1UgL64ssFvTGjV6VdDe3Bwl
+         NIIrwkY261Swzjqh5E3Jxh64m+RJzck+Y3HdCqlFgX+7BqC7cVE8eB5tnujEwkgKkqEG
+         wOJ+UEfcVumZZ8F5KdDvPayNoa3ekqecmz9NsZiJeQ4n/MsY3l99qQ8MMohBqtBzuUby
+         QHfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712517053; x=1713121853;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x6EUWLXyMd/QrPrA543Vnpb+tkAZZfWHn9rSEQeDI00=;
+        b=WO+vDfkrc72JNhN15LUQiQ6BpE99goz4313SoBZwdmaO9qcfy8VkMmP7Rcb3ixnxiS
+         peyn5qebpdfY+52OUxcKxphuVSz8cO6VLwXCCQgSVqtnCvdMojRRKetSEg10l7tMGagl
+         fylqji6nW0y1H+nGbqBizjzOcxre4xOmVTrabHcx9b6qWD5ZiTR94gcXnxEkv9fuv5q6
+         K2/YWYmQAPQe3KGsX/n+57j97kQ//WvD1GQ0SWqnhcpHxW2fuJLfl9L0no7fFCBo8kWx
+         2zLpaEpnrNVuvtkCBCAE+CrSkD1L9G04nPDAEV9SFxJJLNJkXSLr4vCG0Xb1kNioaKAw
+         Xc3g==
+X-Forwarded-Encrypted: i=1; AJvYcCUezNulrz517s6Rf/Bz7kI4x+vw86G0fz4KNXedLCPV0zC0V4oiG+qvN+KRCCOSB+ITYw3APtlXpCgDyegP5FzPfT94Q3vXfbFGaCvIySA=
+X-Gm-Message-State: AOJu0Yxesqejk1C0FQgH/odq3+5ZQiMENtEym3Q2MPp9SW9qWeFoCK9l
+	Pr8s7Rjo3/oibE+PK3Ihf0yqhcAh3dtyzKOF8OES0f3jUQWj5mS/kA2YrIPEPf7BXzOT3Bnaq3h
+	WV/spCAuGL7f8zCwbfPfF+rEhhcRS8TRUMFyG
+X-Google-Smtp-Source: AGHT+IF3K6r9xbBJkilZy6HGKb6dlLXRf6FqatUAZbCIWOQ+wDqVm5LXVF61yEKWVnLToUGV3EtmibzNbcvolpkp1/g=
+X-Received: by 2002:a17:903:32c9:b0:1e3:c1a9:ed7e with SMTP id
+ i9-20020a17090332c900b001e3c1a9ed7emr176673plr.25.1712517053266; Sun, 07 Apr
+ 2024 12:10:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240407033904.719773-1-visitorckw@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20240406164727.577914-1-visitorckw@gmail.com> <20240406164727.577914-10-visitorckw@gmail.com>
+In-Reply-To: <20240406164727.577914-10-visitorckw@gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Sun, 7 Apr 2024 12:10:42 -0700
+Message-ID: <CAP-5=fWb3eNe3mufRJjPAc=jcHFiHYpPqLuK2H8YiijHu0rLZw@mail.gmail.com>
+Subject: Re: [PATCH v3 09/17] lib min_heap: Add min_heap_sift_up()
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
+	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
+	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 07, 2024 at 11:39:04AM +0800, Kuan-Wei Chiu wrote:
-> This optimization reduces the average number of comparisons required
-> from 2*n*log2(n) - 3*n + o(n) to n*log2(n) + 0.37*n + o(n). When n is
-> sufficiently large, it results in approximately 50% fewer comparisons.
-> 
-> Currently, eytzinger0_sort employs the textbook version of heapsort,
-> where during the heapify process, each level requires two comparisons
-> to determine the maximum among three elements. In contrast, the
-> bottom-up heapsort, during heapify, only compares two children at each
-> level until reaching a leaf node. Then, it backtracks from the leaf
-> node to find the correct position. Since heapify typically continues
-> until very close to the leaf node, the standard heapify requires about
-> 2*log2(n) comparisons, while the bottom-up variant only needs log2(n)
-> comparisons.
-> 
-> The experimental data presented below is based on an array generated
-> by get_random_u32().
-> 
-> |   N   | comparisons(old) | comparisons(new) | time(old) | time(new) |
-> |-------|------------------|------------------|-----------|-----------|
-> | 10000 |     235381       |     136615       |  25545 us |  20366 us |
-> | 20000 |     510694       |     293425       |  31336 us |  18312 us |
-> | 30000 |     800384       |     457412       |  35042 us |  27386 us |
-> | 40000 |    1101617       |     626831       |  48779 us |  38253 us |
-> | 50000 |    1409762       |     799637       |  62238 us |  46950 us |
-> | 60000 |    1721191       |     974521       |  75588 us |  58367 us |
-> | 70000 |    2038536       |    1152171       |  90823 us |  68778 us |
-> | 80000 |    2362958       |    1333472       | 104165 us |  78625 us |
-> | 90000 |    2690900       |    1516065       | 116111 us |  89573 us |
-> | 100000|    3019413       |    1699879       | 133638 us | 100998 us |
-> 
-> Refs:
->   BOTTOM-UP-HEAPSORT, a new variant of HEAPSORT beating, on an average,
->   QUICKSORT (if n is not very small)
->   Ingo Wegener
->   Theoretical Computer Science, 118(1); Pages 81-98, 13 September 1993
->   https://doi.org/10.1016/0304-3975(93)90364-Y
-> 
+On Sat, Apr 6, 2024 at 9:48=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.com>=
+ wrote:
+>
+> Add min_heap_sift_up() to sift up the element at index 'idx' in the
+> heap.
+>
 > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-Thanks - applied
+Reviewed-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
+> ---
+>  include/linux/min_heap.h | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+>
+> diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
+> index 9391f7cc9da9..201f59cb3558 100644
+> --- a/include/linux/min_heap.h
+> +++ b/include/linux/min_heap.h
+> @@ -111,6 +111,26 @@ void __min_heapify(min_heap_char *heap, int pos, siz=
+e_t elem_size,
+>  #define min_heapify(_heap, _pos, _func, _args) \
+>         __min_heapify((min_heap_char *)_heap, _pos, __minheap_obj_size(_h=
+eap), _func, _args)
+>
+> +/* Sift up ith element from the heap, O(log2(nr)). */
+> +static __always_inline
+> +void __min_heap_sift_up(min_heap_char *heap, size_t elem_size, size_t id=
+x,
+> +               const struct min_heap_callbacks *func, void *args)
+> +{
+> +       void *data =3D heap->data;
+> +       size_t parent;
+> +
+> +       while (idx) {
+> +               parent =3D (idx - 1) / 2;
+> +               if (func->less(data + parent * elem_size, data + idx * el=
+em_size, args))
+> +                       break;
+> +               func->swp(data + parent * elem_size, data + idx * elem_si=
+ze, args);
+> +               idx =3D parent;
+> +       }
+> +}
+> +
+> +#define min_heap_sift_up(_heap, _idx, _func, _args)    \
+> +       __min_heap_sift_up((min_heap_char *)_heap, __minheap_obj_size(_he=
+ap), _idx, _func, _args)
+> +
+>  /* Floyd's approach to heapification that is O(nr). */
+>  static __always_inline
+>  void __min_heapify_all(min_heap_char *heap, size_t elem_size,
+> --
+> 2.34.1
+>
