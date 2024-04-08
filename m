@@ -1,151 +1,91 @@
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E753FB80
-	for <linux-bcachefs@vger.kernel.org>; Sun,  7 Apr 2024 19:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E90613F433
+	for <linux-bcachefs@vger.kernel.org>; Mon,  8 Apr 2024 14:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712517807; cv=none; b=F0Dj7Px3swLUKflRDVWodi9F0DlU1jojhWDunJIdqhKDGAcu+UlrLKVJ2txl/a6lBOyvFzGqPI1SIWZAdmuIYpf/5BKcMG+CresNKfbspudbDIttUli+cTQwW1Dyxn13UvgZ8DmfZNIyosrgGoC3Rvm/j+CrsNWmL6c1JWblauc=
+	t=1712587612; cv=none; b=B/NkYcXPy892g7HImBniKbXyU9v3pRnm1H4chzhZPURYICwoGjDTRhEX6Rg8NR8zwNfuR25jFcIOaztRx+ZggPLwVOUDLM0jhPv7NHxr6jQK2UD7i2L0TbdN+dkzSH4yYB6ZlN9El0Ye8P6/ejUbyVUYPWVZ3HE4SEqq9pMpwOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712517807; c=relaxed/simple;
-	bh=22VmL+tFNE0uTkCejpkMoP/bIhby50wK3RXGm4NSyrM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JQstqVixWdGx44MgDbLVwpWe+4sC6r+6eTtWSqim8J7XNg0yB3FsZXtyNDC6s3WMgmqFdd2se8AjTnD9x0UjRnyd28mfYV/+ENYTaIFCvrxr0doW1IYvZWQJoyUjqIy7JdDmcfuvsMNgNBL+cVce9v/fY71VHyr8uQw8Ebtf3Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dBOUD2Wl; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1712587612; c=relaxed/simple;
+	bh=ZNyPdi9gwDs6okSYIB3uFmuZC+Ik8WCH8Q4IDz6eCnU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=aaGIZ8QEML3rlZE7F8C+Ok51GSv9JO8Z+OUiuOH4ie2NjoU0RPhuFf9i48hxpvTkPWCafMc0S7sZpSv7HV+eHR9HWytXBBrH8rkD7z/KUJl2PMXG//MCH4HPJYuaGwohEbZSUzC3+vJRELWmgxgLIH7QVA/4AjHrsqoRxjEgUpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hoU948uZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dBOUD2Wl"
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-43477091797so181961cf.1
-        for <linux-bcachefs@vger.kernel.org>; Sun, 07 Apr 2024 12:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712517804; x=1713122604; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u9EK+/yKJWqRz4L882cCc6fbjSJC3IRZpgkO1qv3gbY=;
-        b=dBOUD2WlDWsa9xSrsNBz0w6qB2Xv5X8vGluK+WmI5jh7+eLpOo52Wcn4IeggH2AXaJ
-         jteQYTbwbf5QQS4RyMgROwhVcF/01xErGZK+c171UjPQ8gmR9+yT4aJhBa7gnOQb+EL/
-         Q/8kkA6OCFaK2bohX/I8Zobraj0A8zlSU1AmUwQT/Gb7sG8swK8MjZvMaHxDW1yrN4wp
-         DMdF9TkJxTQD3/gkW1ev3J0Ac5f+c5tOcgi2oSjOY8+AXzFwh5USVDBVTjIlTvj1owi5
-         g7ylThBdi2ah60InBhvGhkJ+2IEsMncFfYqNXxub/JpOsEPfGhZSny2GPA0UVPTrEoXM
-         swng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712517804; x=1713122604;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u9EK+/yKJWqRz4L882cCc6fbjSJC3IRZpgkO1qv3gbY=;
-        b=XGHRvYmJE7ZaUn2dAkeWOagNY9rZsvipZqyQ6Kd5zjYHDYqp5IzIFjmdJQQlI3wvAj
-         V/lG6eI0d5lqy0mPn8zLwZjn/m6HSbVlil70uwnuFnWspBhOH9WQYCUeBK4vKpdtU4Bg
-         5mov5nRf37oOmFAQsu2ccs5fPWgEHwltA+QcvWFvywFwR4b4i2lr8J/Jw5zdiW9ipjc1
-         hlINpNuJchYUUJ6lHQdz3XtowzUX+2OWFOJTDW4sVeaZ5HEfzMfRB8A+7VoGecpsKntC
-         xO7WAPbxUwnLVPPlNhAwyXex4qf3YYtnIujx4cWjtyaUNKXKj9iFsxIu1uPNLmMDr7yw
-         tuuA==
-X-Forwarded-Encrypted: i=1; AJvYcCV7KNmHV/ghmSeUtptZfkvQV1NWWvw3xRvgXx43GkZquiHmn/LAVX0ChUg8KvPFlV57WDn0gWhA1PIXC+mWaHxTCO8N0iuJcmeMdlrEstU=
-X-Gm-Message-State: AOJu0YzZ32Fl/FVggpBS4VZhSQyvZ5XqL6gUHndoTndOyCbpa11BFP08
-	L6TknelbI1S1nm0BFC0eKzdh9a33+UDl+bBOz4lE+S/goCbuXYtdfRmDwwL+sMFKXiRxgkgZYFI
-	AfHPE/j4EudUY2q7l/BMIEpe5P3raeetV6uWS
-X-Google-Smtp-Source: AGHT+IHar9eAfxca2nmrIrD2fR+nsCEr8Z9S6xUUBtYvOamZ7oI6wPcUjOWZvBJYg8gNmg59mfRxZth/y35fmMF/4NM=
-X-Received: by 2002:a05:622a:1b1f:b0:430:e8f2:7d02 with SMTP id
- bb31-20020a05622a1b1f00b00430e8f27d02mr277035qtb.10.1712517804333; Sun, 07
- Apr 2024 12:23:24 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hoU948uZ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712587610;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=RSHphSHRet93tEDtalVSdP3Oq8DGO/EL44E9FO+SeS4=;
+	b=hoU948uZugiv0GAAUmmwhasKWI9XSiPEoEJ9/Lkc8IgBP1G8yEd3x81ofNe0Zw/GCPFY1K
+	52LQFHfvAhL07u+slKsSsnQsIlLMAaGibsjGY69rXhqdrahPMbhgjyoZmUpJeFgmXkpoAD
+	ENTucP7Umx8clifmYGfKloBPsBExSbg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-175-wepGNB5KPi-mVqQpjULvrg-1; Mon,
+ 08 Apr 2024 10:46:47 -0400
+X-MC-Unique: wepGNB5KPi-mVqQpjULvrg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8B3A53810B31
+	for <linux-bcachefs@vger.kernel.org>; Mon,  8 Apr 2024 14:46:47 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.16.57])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 6DD462026D06
+	for <linux-bcachefs@vger.kernel.org>; Mon,  8 Apr 2024 14:46:47 +0000 (UTC)
+From: Brian Foster <bfoster@redhat.com>
+To: linux-bcachefs@vger.kernel.org
+Subject: [PATCH v3 0/4] bcachefs: fiemap delalloc support and cleanup
+Date: Mon,  8 Apr 2024 10:48:42 -0400
+Message-ID: <20240408144846.1001243-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240406164727.577914-1-visitorckw@gmail.com> <20240406164727.577914-16-visitorckw@gmail.com>
-In-Reply-To: <20240406164727.577914-16-visitorckw@gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Sun, 7 Apr 2024 12:23:10 -0700
-Message-ID: <CAP-5=fUQz0oiO9i6=+F3X9QgkaPVfCRWxH=kCSpYzNRFR=Y=qg@mail.gmail.com>
-Subject: Re: [PATCH v3 15/17] lib/test_min_heap: Add test for heap_del()
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
-	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Sat, Apr 6, 2024 at 9:48=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.com>=
- wrote:
->
-> Add test cases for the min_heap_del() to ensure its functionality is
-> thoroughly tested.
->
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Hi all,
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+Here's v3 of the fiemap delalloc support patches for bcachefs. The main
+difference from v2 is that the pagecache seek calls are now using
+nonblocking mode to avoid deadlocks between fiemap and the write path.
+The write path locks in folio -> extent btree order while fiemap walks
+the extent btree and scans for folios in transaction context. Therefore,
+the latter must restart the iterating transaction in the event of folio
+trylock failure and restart the scan from where it left off.
 
-Thanks,
-Ian
+The series is pushed to CI via my test branch, as usual:
 
-> ---
->  lib/test_min_heap.c | 36 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
->
-> diff --git a/lib/test_min_heap.c b/lib/test_min_heap.c
-> index 67dd4f644f6c..9d4bbb590a49 100644
-> --- a/lib/test_min_heap.c
-> +++ b/lib/test_min_heap.c
-> @@ -160,6 +160,40 @@ static __init int test_heap_pop_push(bool min_heap)
->         return err;
->  }
->
-> +static __init int test_heap_del(bool min_heap)
-> +{
-> +       int values[] =3D { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
-> +                        -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
-> +       struct min_heap_test heap;
-> +
-> +       min_heap_init(&heap, values, ARRAY_SIZE(values));
-> +       heap.nr =3D ARRAY_SIZE(values);
-> +       struct min_heap_callbacks funcs =3D {
-> +               .less =3D min_heap ? less_than : greater_than,
-> +               .swp =3D swap_ints,
-> +       };
-> +       int i, err;
-> +
-> +       /* Test with known set of values. */
-> +       min_heapify_all(&heap, &funcs, NULL);
-> +       for (i =3D 0; i < ARRAY_SIZE(values) / 2; i++)
-> +               min_heap_del(&heap, get_random_u32() % heap.nr, &funcs, N=
-ULL);
-> +       err =3D pop_verify_heap(min_heap, &heap, &funcs);
-> +
-> +
-> +       /* Test with randomly generated values. */
-> +       heap.nr =3D ARRAY_SIZE(values);
-> +       for (i =3D 0; i < heap.nr; i++)
-> +               values[i] =3D get_random_u32();
-> +       min_heapify_all(&heap, &funcs, NULL);
-> +
-> +       for (i =3D 0; i < ARRAY_SIZE(values) / 2; i++)
-> +               min_heap_del(&heap, get_random_u32() % heap.nr, &funcs, N=
-ULL);
-> +       err +=3D pop_verify_heap(min_heap, &heap, &funcs);
-> +
-> +       return err;
-> +}
-> +
->  static int __init test_min_heap_init(void)
->  {
->         int err =3D 0;
-> @@ -170,6 +204,8 @@ static int __init test_min_heap_init(void)
->         err +=3D test_heap_push(false);
->         err +=3D test_heap_pop_push(true);
->         err +=3D test_heap_pop_push(false);
-> +       err +=3D test_heap_del(true);
-> +       err +=3D test_heap_del(false);
->         if (err) {
->                 pr_err("test failed with %d errors\n", err);
->                 return -EINVAL;
-> --
-> 2.34.1
->
+https://evilpiepirate.org/~testdashboard/ci?branch=bfoster
+
+Brian
+
+v3:
+- Use nonblocking pagecache seek to address extent btree vs. folio
+  deadlocks.
+v2: https://lore.kernel.org/linux-bcachefs/20240117155611.248042-1-bfoster@redhat.com/
+- Clean up bch2_fiemap() a bit to use processing helpers.
+- Added patch for sync flag fixup.
+v1: https://lore.kernel.org/linux-bcachefs/20231219140215.300753-1-bfoster@redhat.com/
+
+Brian Foster (4):
+  bcachefs: drop duplicate fiemap sync flag
+  bcachefs: track current fiemap offset in start variable
+  bcachefs: refactor fiemap processing into extent helper and struct
+  bcachefs: add fiemap delalloc extent detection
+
+ fs/bcachefs/fs.c | 175 +++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 133 insertions(+), 42 deletions(-)
+
+-- 
+2.44.0
+
