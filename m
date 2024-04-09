@@ -1,171 +1,113 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CE07E0FF;
-	Tue,  9 Apr 2024 08:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09AEA12A160
+	for <linux-bcachefs@vger.kernel.org>; Tue,  9 Apr 2024 12:19:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712650664; cv=none; b=jatRflh7+897iGnr4b/mbHXpoDG0/HpLo9Bk+XPFdUIjGbkbGwLvH8IR49nDdzgrwxkfUnCocOPV3k3cQA+C4PMJLUA8+Q7Xxv5rVTYbKv0Rgrfzv4t3qoKF025O9OZVbo1/DyX6DbrfGQ8H60Xwr5jOWUnj4PqEoEj8933JljI=
+	t=1712665201; cv=none; b=dG1g1zrNuTUSQqRIboEPQHWIyIXn1f1ni7qvcLIegmZxTgGbwfS23WuElQvKcmPAx1zLLn0VOWRJAZHj2pPlac+CwJa7pxEXzMoGR43PfgJ84aGvTx+f0hWFOxV1+uevAcHGANxtzwgb8SIVWdwbkj9ArfNVM2BMO2+Z5MGcR0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712650664; c=relaxed/simple;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=cdCssfdIhcbW9tmf8AtBeaULtlVfiqwYHKeiZL13hljOgm8NC3JGA+uFhStMsedmw0E2+C+pZE2CfG0jtcYyFEW+VwQTchQSB5jJlNyuNE9Yr0Sa1j7jBJxp+c54A96xc3US3U8xYdepTVAZ2MkhZDEsvlo2wrAE6b8IU9MdGaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bCFKi5E3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1grhO2tR; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bCFKi5E3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1grhO2tR; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	s=arc-20240116; t=1712665201; c=relaxed/simple;
+	bh=8txGig02p3dYQPbvCXxiUyZnAOFbmF5y2JKedJ7p9uE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SW75HN+Fi/s5YmWFkmviUt//D13gLj/aBQXOx2E8dwKNYzNfcz4xHMnyvOP+5jAsNmumb8dCrCXc2JFnVbEjwjELD/9vivzGVTyb4gBZpHPC3/mJoGjhzrbVG0niWo707MA48Z5GODxDVNB8FbiYB3DzaGY2zKZ7Id+rqauoyNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZFG+P3Oj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bCFKi5E3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1grhO2tR";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bCFKi5E3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1grhO2tR"
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZFG+P3Oj"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712665198;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=38ANcwOzb+SJPN9KWn5q/+NYLzX+W+zXEwG2dC5+jdI=;
+	b=ZFG+P3OjLcZZCXWSvHaawZaAzLj3c2FX5GqDRdgXMe2vsDVQhqu7cJ0SJ4iCvk3Q96XTsr
+	uzfhV0zoyYQ27x6U0zJIurPTcOOdY92qR1MkySD/V8bmpg5meKQyfG/zcOg0eLHAax6+C2
+	VSlZjZL9VBiI3PtUi5YYAmfp0m0wzi4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-528-NqVkThPwOQaX1QuLJ2zygQ-1; Tue, 09 Apr 2024 08:19:53 -0400
+X-MC-Unique: NqVkThPwOQaX1QuLJ2zygQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 63E692089D;
-	Tue,  9 Apr 2024 08:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712650661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	b=bCFKi5E3op8vqPkRE5Sbt976rEx7PoAKBquyYapJgpO6sHmPOMPbigIrteb2mHDVxdnsBr
-	wuhHZebZF4o7lZLq3nC7dYUJ5Z8v/HOEuH+gxLV9HM7QikbQtV9eiTvkbsy5gDQitRlBuE
-	NNKJQomcOvD5NHxwcCnL6I3Fa0Ep3h0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712650661;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	b=1grhO2tRTMiz95IcoHP+oe+0Ibc+xLaBLrj2dYVbPsag9vxLnppOfoEEzTfy02DmkekeIB
-	0r5f6bsqUpvWv1Bg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712650661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	b=bCFKi5E3op8vqPkRE5Sbt976rEx7PoAKBquyYapJgpO6sHmPOMPbigIrteb2mHDVxdnsBr
-	wuhHZebZF4o7lZLq3nC7dYUJ5Z8v/HOEuH+gxLV9HM7QikbQtV9eiTvkbsy5gDQitRlBuE
-	NNKJQomcOvD5NHxwcCnL6I3Fa0Ep3h0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712650661;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AiFhZZUZqB6jjCLTAQDauhVTYjRmfj10W8hqnvzki7E=;
-	b=1grhO2tRTMiz95IcoHP+oe+0Ibc+xLaBLrj2dYVbPsag9vxLnppOfoEEzTfy02DmkekeIB
-	0r5f6bsqUpvWv1Bg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C638713253;
-	Tue,  9 Apr 2024 08:17:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id yQHPF5z5FGaONgAAn2gu4w
-	(envelope-from <colyli@suse.de>); Tue, 09 Apr 2024 08:17:32 +0000
-Content-Type: text/plain;
-	charset=utf-8
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 30B0580171E;
+	Tue,  9 Apr 2024 12:19:53 +0000 (UTC)
+Received: from bfoster (unknown [10.22.16.57])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id F3C6F47E;
+	Tue,  9 Apr 2024 12:19:52 +0000 (UTC)
+Date: Tue, 9 Apr 2024 08:21:51 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org,
+	Eric Van Hensbergen <eric.vanhensbergen@linux.dev>,
+	v9fs@lists.linux.dev
+Subject: Re: [PATCH v3 0/4] bcachefs: fiemap delalloc support and cleanup
+Message-ID: <ZhUy3805KxOYbkQz@bfoster>
+References: <20240408144846.1001243-1-bfoster@redhat.com>
+ <bytl4gftjro45osrlzqeokzci2imtdidne5a7pkn3xtr6fdbhf@mxjefwpljsto>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH v3 00/17] treewide: Refactor heap related implementation
-From: Coly Li <colyli@suse.de>
-In-Reply-To: <i2qewo34mvw7bizhefwz5s3fc4nlc4zk7eijglkieuci5iradm@zgcks3u5omhw>
-Date: Tue, 9 Apr 2024 16:17:14 +0800
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
- msakai@redhat.com,
- peterz@infradead.org,
- mingo@redhat.com,
- acme@kernel.org,
- namhyung@kernel.org,
- akpm@linux-foundation.org,
- bfoster@redhat.com,
- mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com,
- jolsa@kernel.org,
- irogers@google.com,
- adrian.hunter@intel.com,
- jserv@ccns.ncku.edu.tw,
- Bcache Linux <linux-bcache@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- dm-devel@lists.linux.dev,
- Linux bcachefs <linux-bcachefs@vger.kernel.org>,
- linux-perf-users@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8D0FD5AF-2AD9-4A91-831D-C79A798BED11@suse.de>
-References: <20240406164727.577914-1-visitorckw@gmail.com>
- <i2qewo34mvw7bizhefwz5s3fc4nlc4zk7eijglkieuci5iradm@zgcks3u5omhw>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
-X-Spam-Flag: NO
-X-Spam-Score: -1.58
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.58 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	BAYES_HAM(-0.78)[84.53%];
-	MV_CASE(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,redhat.com,infradead.org,kernel.org,linux-foundation.org,arm.com,linux.intel.com,google.com,intel.com,ccns.ncku.edu.tw,vger.kernel.org,lists.linux.dev];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bytl4gftjro45osrlzqeokzci2imtdidne5a7pkn3xtr6fdbhf@mxjefwpljsto>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
+On Mon, Apr 08, 2024 at 11:33:05PM -0400, Kent Overstreet wrote:
+> On Mon, Apr 08, 2024 at 10:48:42AM -0400, Brian Foster wrote:
+> > Hi all,
+> > 
+> > Here's v3 of the fiemap delalloc support patches for bcachefs. The main
+> > difference from v2 is that the pagecache seek calls are now using
+> > nonblocking mode to avoid deadlocks between fiemap and the write path.
+> > The write path locks in folio -> extent btree order while fiemap walks
+> > the extent btree and scans for folios in transaction context. Therefore,
+> > the latter must restart the iterating transaction in the event of folio
+> > trylock failure and restart the scan from where it left off.
+> > 
+> > The series is pushed to CI via my test branch, as usual:
+> > 
+> > https://evilpiepirate.org/~testdashboard/ci?branch=bfoster
+> 
+> So our testing is currently busted because of a bug in 9pfs - I need you
+> to rebase onto my 9p-revert branch so we can get test results we can
+> look at:
+> https://evilpiepirate.org/git/bcachefs.git/log/?h=9p-revert
+> 
 
+Huh, Ok. I also noticed an issue recently related to some sysfs
+directory structure changes. That required me to rebase on
+bcachefs-testing, though it appears that has since been resolved in
+master (and 9p-revert).
 
-> 2024=E5=B9=B44=E6=9C=889=E6=97=A5 11:40=EF=BC=8CKent Overstreet =
-<kent.overstreet@linux.dev> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Sun, Apr 07, 2024 at 12:47:10AM +0800, Kuan-Wei Chiu wrote:
->> This patch series focuses on several adjustments related to heap
->> implementation. Firstly, a type-safe interface has been added to the
->> min_heap, along with the introduction of several new functions to
->> enhance its functionality. Additionally, the heap implementation for
->> bcache and bcachefs has been replaced with the generic min_heap
->> implementation from include/linux. Furthermore, several typos have =
-been
->> corrected.
->>=20
->> Previous discussion with Kent Overstreet:
->> =
-https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg=
-@nrlek5vmisbu
->>=20
->> Regards,
->> Kuan-Wei
->=20
-> pointing test automation at it now:
-> https://evilpiepirate.org/~testdashboard/ci?branch=3Drefactor-heap-v3
->=20
-> Coli, could I get some acks from you?
+I just rebased my test branch on 9p-revert and pushed. What failures are
+being caused by 9p, anyways?
 
-Yes, the code tested and Acked-by sent.
+> Eric, is this getting fixed? If it's not, and _soon_, we need to send
+> this revert to Linus - then put it through more testing, more asserts,
+> whatever you need and send it again next cycle, _after_ you've figured
+> out what wwent wrong.
+> 
+> Patch series looks good, though - if there's nothing you think needs
+> special attention I'll go ahead and merge it.
+> 
 
-Thanks.
+Not really, mainly just making sure the new locking and transaction
+restart parts looked sane.
 
-Coly Li=
+> I wonder if at some point we could clean up the indirect extent lookup,
+> that's common between this code and the read paths, but that's low
+> priority.
+> 
+
+I'll make a note to read more into that area. Thanks.
+
+Brian
+
