@@ -1,38 +1,105 @@
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4858517A920
-	for <linux-bcachefs@vger.kernel.org>; Wed, 10 Apr 2024 16:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12ED11779B4;
+	Wed, 10 Apr 2024 17:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712765862; cv=none; b=b5DeNSzlVaxzac+h3QOB/lPhKmb3FzIsZedFOz0zUmKeNK6L7Ppi6M8veobSLDZ+bZ6urgNbuwXaGFQL/+c7hcvVjqVfG+fKIiJeVnHRM/f5axIYqIp59wONcljRYsr0RfC3t8iZEVJQ2YwE1OdJXYVmF200+A0+jRiOfQM3oKk=
+	t=1712770571; cv=none; b=ufmzr/kxYKt4NTP9Vv/eyTUSMaAz2nDiGNT+ZRYVTmMm1G/mQsE14HMOrFdWgvhHIM5FJDKArOnrFEXbSj0bgtL4EKpga4XvUrbH1K7UQLRwes1vtQswpNIqRC9ztZKUYjB7XbjU8znidFZTGR/kkgr3JHiRrWt6kt9tmREXylg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712765862; c=relaxed/simple;
-	bh=XicnAFnRvHBWMvzQ5fZBNDYMbCNcZwR1uOHgTMBTOT8=;
+	s=arc-20240116; t=1712770571; c=relaxed/simple;
+	bh=s7AlPHnjW1gFs3weqR//JnIAW3hG+/Mp+aTuvYmxgTU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jPmXJCvGTR1HD4OZZKuNy33av1P/49BW3h2QlwpuGOcbrkL6jBb2VpUK/9EE7wr3poM1MCVBwWOV/qY/VxlbDPyd/4II4i06VRS5qkRCB0brVuxsAGWMdcRtiA/TDF5AkgMe/klAivnYQZoTRuwxk64l/WdUKmCezQzMW6B9yGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vHFUxV2+; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=p2+x3X32CoKrZ801XtkYFNGmkdaDWfFjB3IA9loQOFj+haLX+43yX/Qrqx0UVHKz2mKYkJhVdUEuz67bSAPtr4mMpb+FH5h03XTzcdKa4Z0aPLJ98l6kBSsGYiWHwwnMnpqbGgQrgr1WO8tVj0ye7KrJMr1S9CA6R6ITlRItAw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wo/su6ux; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pwQ8usD0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wo/su6ux; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pwQ8usD0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vHFUxV2+"
-Date: Wed, 10 Apr 2024 12:17:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712765856;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wo/su6ux";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pwQ8usD0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wo/su6ux";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pwQ8usD0"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3395033A89;
+	Wed, 10 Apr 2024 17:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+o/MLS0hmQa69Esy9kJHOFDd5v80IMd7GjTpFqqLwVQ=;
-	b=vHFUxV2+OABQhA0/M9Gnisty2vYtszMdiZSkg460PUw06EZTTVoVp/iK8yd49yuo8bXcPt
-	1Icjvi9eCkmxt/mvWp+x+XnbCNrJKfAlAC3PZeaVXlkKe+ECLucLp0q6NrLwVpWXCgdynM
-	SOOKrRhFhqL6ISndu7vtUuGfaHMgXXA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH RFC 0/3] xfs: nodataio mount option to skip data I/O
-Message-ID: <bbzdge7cxlxkfbjoduck5pg7s4tvyxuu6z25nwqbbqjxsz3w6f@756fkmdbqsp6>
-References: <20240410140956.1186563-1-bfoster@redhat.com>
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
+	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
+	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
+	JIolcEC5hlnuCvCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
+	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
+	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
+	JIolcEC5hlnuCvCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFAAD13691;
+	Wed, 10 Apr 2024 17:36:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 20hgOgbOFmZrWQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 10 Apr 2024 17:36:06 +0000
+Date: Wed, 10 Apr 2024 19:28:37 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Jan Kara <jack@suse.cz>
+Cc: Matthew Wilcox <willy@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>,
+	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
+	akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v3 for-6.8/block 09/17] btrfs: use bdev apis
+Message-ID: <20240410172837.GO3492@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085712.1766333-10-yukuai1@huaweicloud.com>
+ <ZYcZi5YYvt5QHrG9@casper.infradead.org>
+ <20240104114958.f3cit5q7syp3tn3a@quack3>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -41,65 +108,76 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240410140956.1186563-1-bfoster@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240104114958.f3cit5q7syp3tn3a@quack3>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -2.50
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[49];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLtpaten8pmzgjg419jubxqoa7)];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[infradead.org,huaweicloud.com,kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TAGGED_RCPT(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-On Wed, Apr 10, 2024 at 10:09:53AM -0400, Brian Foster wrote:
-> Hi all,
+On Thu, Jan 04, 2024 at 12:49:58PM +0100, Jan Kara wrote:
+> On Sat 23-12-23 17:31:55, Matthew Wilcox wrote:
+> > On Thu, Dec 21, 2023 at 04:57:04PM +0800, Yu Kuai wrote:
+> > > @@ -3674,16 +3670,17 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+> > >  		 * Drop the page of the primary superblock, so later read will
+> > >  		 * always read from the device.
+> > >  		 */
+> > > -		invalidate_inode_pages2_range(mapping,
+> > > -				bytenr >> PAGE_SHIFT,
+> > > +		invalidate_bdev_range(bdev, bytenr >> PAGE_SHIFT,
+> > >  				(bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
+> > >  	}
+> > >  
+> > > -	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
+> > > -	if (IS_ERR(page))
+> > > -		return ERR_CAST(page);
+> > > +	nofs_flag = memalloc_nofs_save();
+> > > +	folio = bdev_read_folio(bdev, bytenr);
+> > > +	memalloc_nofs_restore(nofs_flag);
+> > 
+> > This is the wrong way to use memalloc_nofs_save/restore.  They should be
+> > used at the point that the filesystem takes/releases whatever lock is
+> > also used during reclaim.  I don't know btrfs well enough to suggest
+> > what lock is missing these annotations.
 > 
-> bcachefs has a nodataio mount option that is used for isolated metadata
-> performance testing purposes. When enabled, it performs all metadata I/O
-> as normal and shortcuts data I/O by directly invoking bio completion.
-> Kent had asked for something similar for fs comparison purposes some
-> time ago and I put together a quick hack based around an iomap flag and
-> mount option for XFS.
-> 
-> I don't recall if I ever posted the initial version and Kent recently
-> asked about whether we'd want to consider merging something like this. I
-> think there are at least a couple things that probably need addressing
-> before that is a viable option.
-> 
-> One is that the mount option is kind of hacky in and of itself. Beyond
-> that, this mechanism provides a means for stale data exposure because
-> writes with nodataio mode enabled will operate as if writes were
-> completed normally (including unwritten extent conversion). Therefore, a
-> remount to !nodataio mode means we read off whatever was last written to
-> storage.
-> 
-> Kent mentioned that Eric (or somebody?) had floated the idea of a mkfs
-> time feature flag or some such to control nodataio mode. That would
-> avoid mount api changes in general and also disallow use of such
-> filesystems in a non-nodataio mode, so to me seems like the direction
-> bcachefs should go with its variant of this regardless.
-> 
-> Personally, I don't have much of an opinion on whether something like
-> this lands upstream or just remains as a local test hack for isolated
-> performance testing. The code is simple enough as it is and not really
-> worth the additional polishing for the latter, but I offered to at least
-> rebase and post for discussion. Thoughts, reviews, flames appreciated.
-> 
-> Brian
-> 
-> Brian Foster (3):
->   iomap: factor out a bio submission helper
->   iomap: add nosubmit flag to skip data I/O on iomap mapping
->   xfs: add nodataio mount option to skip all data I/O
-> 
->  fs/iomap/buffered-io.c | 37 ++++++++++++++++++++++++++++---------
->  fs/xfs/xfs_iomap.c     |  3 +++
->  fs/xfs/xfs_mount.h     |  2 ++
->  fs/xfs/xfs_super.c     |  6 +++++-
->  include/linux/iomap.h  |  1 +
->  5 files changed, 39 insertions(+), 10 deletions(-)
-> 
-> -- 
-> 2.44.0
+> In principle I agree with you but in this particular case I agree the ask
+> is just too big. I suspect it is one of btrfs btree locks or maybe
+> chunk_mutex but I doubt even btrfs developers know and maybe it is just a
+> cargo cult. And it is not like this would be the first occurence of this
+> anti-pattern in btrfs - see e.g. device_list_add(), add_missing_dev(),
+> btrfs_destroy_delalloc_inodes() (here the wrapping around
+> invalidate_inode_pages2() looks really weird), and many others...
 
-I'm contemplating add the superblock option to bcachefs as well, that
-would fit well with using this for working with metadata dumps too.
-("Yes, we know all data checksums are wrong, it's fine").
-
-Another thing that makes this exceedingly useful - SSDs these days are
-_garbage_ in terms of getting consistent results. Without this, run to
-run variance is ridiculous without a bunch of prep between each test
-(that takes longer than the test itself).
+The pattern is intentional and a temporary solution before we could
+implement the scoped NOFS. Functions calling allocations get converted
+from GFP_NOFS to GFP_KERNEL but in case they're called from a context
+that either holds big locks or can recursively enter the filesystem then
+it's protected by the memalloc calls. This should not be surprising.
+What may not be obvious is which locks or kmalloc calling functions it
+could be, this depends on the analysis of the function call chain and
+usually there's enough evidence why it's needed.
