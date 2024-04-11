@@ -1,31 +1,31 @@
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1436143C51;
-	Thu, 11 Apr 2024 09:17:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D228913CF91;
+	Thu, 11 Apr 2024 09:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712827025; cv=none; b=PzS36SrMjDSiquqxBwRbpIXthvo7uuKQSIZOw2rMeg8Nsn4aZzp7dkbb0TE0nlTUC1f4CCFWjqXy6oicxxPZK5v0fVVH0AuhxmArJwORqKTdPafKLJeDE0DhqOmMTmB9lAPDMnOYAJC5knzYmyyV6rAd+NcRZEvW7Ly79R+k1oU=
+	t=1712827269; cv=none; b=ESmaZFOEtddNHc5Ir1j+xTABqpG9V2xfrP/O+3u0Sq3oy1bEuoEcxRTl5R2wm+ZK2m/zOmiFmUrUeQd9cactEFm+/4Pp6VJIf7DiZEjmuaC+s6aJbvbEqcN0DrZHj5FGcle91ejtjH9lytUXwvP83K8Ete/q5e2UIlRbD7CIvX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712827025; c=relaxed/simple;
-	bh=l0t4D9s2/1QlWcjfS0uDVRP8x3YMT80ZWdmTgsPw7g8=;
+	s=arc-20240116; t=1712827269; c=relaxed/simple;
+	bh=vMip6sgICuC04GvZbjwcdVeG7Rk0YTkyr5l+fJFWK7o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=sUmBoTs2YiEMzPeuaKxKnrwZ7Y3MibGBJu1o/RxPEqlEp3xy7NUoT8bfDvdWUghScgRm+SnRN91jylkgfTkZuAjCymQoFhjTOxD67iaja/yPL7+JzbQx9Tq3moEHJK6WeWXjAv7H2eiSxJAYa9eFI2tNFLkoZmJZStRC7pI+VEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+	 In-Reply-To:Content-Type; b=ifDd2iN/NpKW4DtGUeecz6+So1+KyeGXB911bg1+jII4U2PMmkp4mbmRfGxb/3RxS5Q+Okq4KHBS6d6KJ0F7jyIz9EU2yt7KhMByKvqi4P0m3AIHg5tpZGukXxCxXtY8+a88Uk1W1+AxNBG/PLih2BjnhwQ7VfRx8J/2ZNDWBnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VFYsq0pNNz1RC7f;
-	Thu, 11 Apr 2024 17:14:07 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VFYyh755wztSJc;
+	Thu, 11 Apr 2024 17:18:20 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2F2AD1400C9;
-	Thu, 11 Apr 2024 17:17:00 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id A58E2140156;
+	Thu, 11 Apr 2024 17:21:05 +0800 (CST)
 Received: from [10.67.111.104] (10.67.111.104) by
  dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 11 Apr 2024 17:16:59 +0800
-Message-ID: <11712bdc-9119-4ad2-b4ac-f6e2d0730134@huawei.com>
-Date: Thu, 11 Apr 2024 17:16:59 +0800
+ 15.1.2507.35; Thu, 11 Apr 2024 17:21:05 +0800
+Message-ID: <a2683fad-07db-4857-9ebf-7adf31a09e50@huawei.com>
+Date: Thu, 11 Apr 2024 17:21:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -48,7 +48,8 @@ Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggpeml500022.china.huawei.com (7.185.36.66)
 
-
+Also, I am curious why such spelling errors cannot be detected at the 
+compilation stage.
 
 On 2024/4/11 16:29, Lukas Bulwahn wrote:
 > Commit ec9cc18fc2e6 ("bcachefs: Add checks for invalid snapshot IDs")
@@ -77,5 +78,3 @@ On 2024/4/11 16:29, Lukas Bulwahn wrote:
 >   	    parent &&
 >   	    s->depth != snapshot_t(c, parent)->depth + 1)
 >   		panic("id %u depth=%u parent %u depth=%u\n",
-
-Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
