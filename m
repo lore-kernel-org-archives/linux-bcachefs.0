@@ -1,80 +1,72 @@
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D228913CF91;
-	Thu, 11 Apr 2024 09:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1925E1F5FA
+	for <linux-bcachefs@vger.kernel.org>; Thu, 11 Apr 2024 10:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712827269; cv=none; b=ESmaZFOEtddNHc5Ir1j+xTABqpG9V2xfrP/O+3u0Sq3oy1bEuoEcxRTl5R2wm+ZK2m/zOmiFmUrUeQd9cactEFm+/4Pp6VJIf7DiZEjmuaC+s6aJbvbEqcN0DrZHj5FGcle91ejtjH9lytUXwvP83K8Ete/q5e2UIlRbD7CIvX0=
+	t=1712830120; cv=none; b=DUTRsBVGIPc5/KOS6DAQWPCrAw1sJKXjtCAi5sGP5Aj3keXwVpNJyBwilQNr0rW4k5IuyAY3rzcF/9TyaKC+aE/C6Pol7nQM1GibLb9rDKn1IF/OtX0vL5q2m4gnXL0pVvosjYrfEOPs7kaYrq2Ggi6I0VfVYQ4Sl3qafgjJFF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712827269; c=relaxed/simple;
-	bh=vMip6sgICuC04GvZbjwcdVeG7Rk0YTkyr5l+fJFWK7o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ifDd2iN/NpKW4DtGUeecz6+So1+KyeGXB911bg1+jII4U2PMmkp4mbmRfGxb/3RxS5Q+Okq4KHBS6d6KJ0F7jyIz9EU2yt7KhMByKvqi4P0m3AIHg5tpZGukXxCxXtY8+a88Uk1W1+AxNBG/PLih2BjnhwQ7VfRx8J/2ZNDWBnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VFYyh755wztSJc;
-	Thu, 11 Apr 2024 17:18:20 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id A58E2140156;
-	Thu, 11 Apr 2024 17:21:05 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 11 Apr 2024 17:21:05 +0800
-Message-ID: <a2683fad-07db-4857-9ebf-7adf31a09e50@huawei.com>
-Date: Thu, 11 Apr 2024 17:21:05 +0800
+	s=arc-20240116; t=1712830120; c=relaxed/simple;
+	bh=wbpx9glS3fE6bDQi+XOp0Gcwc7b4T5B2mgOBzsiuCl4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pkoX/JMJ4TbWtx/EeWC2YdIZ343T4WzabWnpA01t/YzoSZU/vICHB6PvPGsP9vbbFvyNh8oFLta0JVusRdWYFGNsyyi+gZRWT6uoumibBoVZyB0Tql4+tAHXtTOdlPz2bZPNxdrFaKuImSSjFH3ZOuydYhILHocqRgI2ZAuodjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T1KA/vfV; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T1KA/vfV"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F061C433C7;
+	Thu, 11 Apr 2024 10:08:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712830119;
+	bh=wbpx9glS3fE6bDQi+XOp0Gcwc7b4T5B2mgOBzsiuCl4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=T1KA/vfVy+JMYTXNqvJxoTfahOcTbh4TZMOgy+bTaf9sH5x7757x6IVGLDGVjgEHE
+	 Q92a7F1uhEJGrDA836Mo3npYaLMij1dEwWs2nOKlkwOWe33iikbuo4JphQwbZ+9RFG
+	 hBF3Uuin/yeG0a2t7+UvvaYueQLPTgSmg6H5bcWFD9g4XJwVf6zRC1n4zJ1OVJtMrD
+	 ikx8YZRte8Sd5gJK/lcIcgWMBfmwmJ4wdaDw+poyZPDQmbJ48TY8PCDMdmPES2TtWy
+	 cgNxs1VoVvL+Hegh1SQMZlF3PgCLiXlNhKpyw/Ecmu79qsu/+sQauhAgvL1kVd2Yq1
+	 flxQ3Z4+UTafA==
+From: Chao Yu <chao@kernel.org>
+To: kent.overstreet@linux.dev,
+	bfoster@redhat.com
+Cc: linux-bcachefs@vger.kernel.org,
+	Chao Yu <chao@kernel.org>
+Subject: [PATCH] bcachefs: fix error path of __bch2_read_super()
+Date: Thu, 11 Apr 2024 18:08:29 +0800
+Message-Id: <20240411100829.1729332-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: fix typo in reference to BCACHEFS_DEBUG
-Content-Language: en-US
-To: Lukas Bulwahn <lbulwahn@redhat.com>, Kent Overstreet
-	<kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>,
-	<linux-bcachefs@vger.kernel.org>
-CC: <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Lukas
- Bulwahn <lukas.bulwahn@redhat.com>
-References: <20240411082931.56362-1-lukas.bulwahn@redhat.com>
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20240411082931.56362-1-lukas.bulwahn@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Transfer-Encoding: 8bit
 
-Also, I am curious why such spelling errors cannot be detected at the 
-compilation stage.
+In __bch2_read_super(), if kstrdup() fails, it needs to release memory
+in sb->holder, fix to call bch2_free_super() in the error path.
 
-On 2024/4/11 16:29, Lukas Bulwahn wrote:
-> Commit ec9cc18fc2e6 ("bcachefs: Add checks for invalid snapshot IDs")
-> intends to check the sanity of a snapshot and panic when
-> BCACHEFS_DEBUG is set, but that conditional has a typo.
-> 
-> Fix the typo to refer to the actual existing Kconfig symbol.
-> 
-> This was found with ./scripts/checkkconfigsymbols.py.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
-> ---
->   fs/bcachefs/snapshot.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/snapshot.h b/fs/bcachefs/snapshot.h
-> index b7d2fed37c4f..3fdb41b33d2d 100644
-> --- a/fs/bcachefs/snapshot.h
-> +++ b/fs/bcachefs/snapshot.h
-> @@ -77,7 +77,7 @@ static inline u32 __bch2_snapshot_parent(struct bch_fs *c, u32 id)
->   		return 0;
->   
->   	u32 parent = s->parent;
-> -	if (IS_ENABLED(CONFIG_BCACHEFS_DEBU) &&
-> +	if (IS_ENABLED(CONFIG_BCACHEFS_DEBUG) &&
->   	    parent &&
->   	    s->depth != snapshot_t(c, parent)->depth + 1)
->   		panic("id %u depth=%u parent %u depth=%u\n",
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ fs/bcachefs/super-io.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+index ad28e370b640..cec1470c2dd9 100644
+--- a/fs/bcachefs/super-io.c
++++ b/fs/bcachefs/super-io.c
+@@ -698,8 +698,10 @@ static int __bch2_read_super(const char *path, struct bch_opts *opts,
+ 		return -ENOMEM;
+ 
+ 	sb->sb_name = kstrdup(path, GFP_KERNEL);
+-	if (!sb->sb_name)
+-		return -ENOMEM;
++	if (!sb->sb_name) {
++		ret = -ENOMEM;
++		goto err;
++	}
+ 
+ #ifndef __KERNEL__
+ 	if (opt_get(*opts, direct_io) == false)
+-- 
+2.40.1
+
