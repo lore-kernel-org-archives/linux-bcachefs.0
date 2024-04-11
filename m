@@ -1,176 +1,107 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B895F870;
-	Thu, 11 Apr 2024 02:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E813313DB8D
+	for <linux-bcachefs@vger.kernel.org>; Thu, 11 Apr 2024 08:29:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712804077; cv=none; b=mwLX3qD6VKOCCQVhiKveeOK5LLn3EwCeSeHdM7VYJAQTKE0HFws8wANu5OsPYqc2Ba1wP/daRD5bJmwLw3QPTS6OSQ+r4xsv0qTjOMad8VDi37GKSFJ7kdgMwXANM0RD4pzgdTulwadV5yLhQ0EwQFT/KjFcqYtyqru37usDpG0=
+	t=1712824185; cv=none; b=hY48iMQwBZH8kzb58t+2mT3Og0QBzqFY2LtL6ik5XP5dUCmFOYMMe3Yd6yux+8PHU8nSh6WBZbp+m73Uk0V3dL1wAFlRFYAT4jdTP4vrqgLxHsPpifBOZdBaZEMUgDDfe80X0ueCMgFAMegSGKTPTks5FnXNKRLV0xEPiOYxlBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712804077; c=relaxed/simple;
-	bh=uXsuN4wUwAIfsSO+WFyJIu8o15W+PXoOTYaGu0BkidI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=E8hd0hjNtvniNyRx/LH4NKaN47F0pogEZFq6li6ntzJAAh0IUM0pAZfJiimcXpKmpWVfNF5Hsz8i/G/EJX8uA1unGlcVcr2Zx0kiXQ/D0YVpjn4sunEl4AODyw3VZsgZu07lVpRYo/uQc8chYQGe7DCo5d9ZohudIm6toyCVYfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eSnqlqEp; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1712824185; c=relaxed/simple;
+	bh=jUEd61ZFpptZ5KtCvlfoBSHaTCEbZsxcbpzfL6Ny9wc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A1XhJL41YBZi4A0IahUXMkmI8nezQgXz0CkutmyZbd7N+QA12WLMlRiD/WQ+yFj/g9Rzs2X7iQW0xgq7YwHvZsu3kQNyW8BvzpCYsGbnbLCUUuMZmhamfymXi/tpg4ud8pSx16AGyQ+QmJXPBdP8wHpIwJrCkYbrAJOx8ncaQTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ddn5vdWN; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eSnqlqEp"
-Date: Wed, 10 Apr 2024 22:54:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712804070;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ddn5vdWN"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712824182;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=JaNPtXr0mm+bEAmXMp73DrXvXkWEkPC0u2C6L0pm1Wo=;
-	b=eSnqlqEpD9xe76X0eJ1LfdeRuszqbVEsG9vjQ3zGn3C1As9+jZX2I97VBot7qnL8z/Y61y
-	wjvwuV2nb8E6PphsSV4B8D3fdEAGh1nOF+gPuzf0knxdK7RL4/WLUfFCSfkXCc4Qc0kRLe
-	/eOm3FszzAZ38qX5TVr4SPZTxg5Vlnc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for rc4
-Message-ID: <woux55cy6ms6exoa43hg745ftfo6msc3bsnjge3te2c4pvdzmf@57wrbdc5pp7s>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kr8yZ/39CaZL7/MdJLoFtWvQBJY7UICTTRAwrtIhMhU=;
+	b=Ddn5vdWN/BIrrK4j1jCNjsDRblFE2sW7kw0ZVTjqbQOJ3DdzxqTi/n6PQ2yO0lJz0bd1g9
+	3FX6vKMGxlK1t+mnXnTvv+dz/ShIhwyKV1Hbv998945OIWRAj+Kq1jsnTsEUiHN2NFxMiM
+	3uKvuwfZUdDnn6ekOHDs6MDYeS7kfGo=
+Received: from mail-ua1-f70.google.com (mail-ua1-f70.google.com
+ [209.85.222.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-387-G0pnH_mQOWS7L9xH5EJcng-1; Thu, 11 Apr 2024 04:29:39 -0400
+X-MC-Unique: G0pnH_mQOWS7L9xH5EJcng-1
+Received: by mail-ua1-f70.google.com with SMTP id a1e0cc1a2514c-7e3ba3138e2so2322720241.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 11 Apr 2024 01:29:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712824179; x=1713428979;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kr8yZ/39CaZL7/MdJLoFtWvQBJY7UICTTRAwrtIhMhU=;
+        b=cZ8bzGP6nSA2E2EGLyhbl4AVlMhJtBrM9kA/wyCTI8cfUMosQrEnpBGhCQmRWErtwq
+         8Z1YyzK7gM84NvNhd1qa4qLQ5iwKICOc+ouFs+02cjBSAFm8hWV1QtDROX5l7F0R8udG
+         UiixmHQlM8ciqWPGSmEB+HgslUmIlp/vpQr3C2G2afLkObHBy/Qve1pgsDxXsvYkvxn8
+         Pvb05uUBgxv/6o/b5aoxTSVCC/CsCRV6vWxpCCp31iIaAzcwkyirVQCcHRg1u1sC3bx9
+         LdndrKN7gdbqk5NLxKkxrf8bsa3ntOJYj/ysn13PuFsHdZ+ZyHD3KUJZUqS/hpH9U6JN
+         NOpA==
+X-Forwarded-Encrypted: i=1; AJvYcCXeYM8GYva3r7d8RRAgn/a2cACzeL8swLQItfahFkEEkPUCdGH/xl47t73oi/ZRT3I9rWAF257Z62YiGHuZKQqN8DTKHJWew8RLZJfVSyA=
+X-Gm-Message-State: AOJu0YxN77RgLDuHIGZyFnsjqQVDpg+2Gpch/E/FVCc0VvHwJgrb4Lcg
+	UCIyHZVOfYnyXsLzjFQMWIlBkN9AKsCDxYUfkDs9K2T5NjLJF4cr5TZ0c2N25AtslRIdZe3jeGp
+	A9QaGjNx4KKj0TKb+lFCnU/zG/y//9RtHxz/JeJR7pDUGbke2oInTq4a+zsa9qSvb
+X-Received: by 2002:a05:6102:3594:b0:47a:3a6d:4d4d with SMTP id h20-20020a056102359400b0047a3a6d4d4dmr533850vsu.10.1712824179099;
+        Thu, 11 Apr 2024 01:29:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG5GnC0mBUTHupeuCkWYsDJWKGEPm++wTV8jzZf8vaD4JQ9NdRD7MvBPp53DY/6Bg4JWsv9Ng==
+X-Received: by 2002:a05:6102:3594:b0:47a:3a6d:4d4d with SMTP id h20-20020a056102359400b0047a3a6d4d4dmr533810vsu.10.1712824177361;
+        Thu, 11 Apr 2024 01:29:37 -0700 (PDT)
+Received: from lbulwahn-thinkpadx1carbongen9.rmtde.csb ([2a02:810d:7e40:14b0:4ce1:e394:7ac0:6905])
+        by smtp.gmail.com with ESMTPSA id f16-20020ac86ed0000000b004348d54a873sm632760qtv.57.2024.04.11.01.29.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 01:29:36 -0700 (PDT)
+From: Lukas Bulwahn <lbulwahn@redhat.com>
+X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>,
+	linux-bcachefs@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@redhat.com>
+Subject: [PATCH] bcachefs: fix typo in reference to BCACHEFS_DEBUG
+Date: Thu, 11 Apr 2024 10:29:31 +0200
+Message-ID: <20240411082931.56362-1-lukas.bulwahn@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-Hi Linus, another batch of fixes for you...
+Commit ec9cc18fc2e6 ("bcachefs: Add checks for invalid snapshot IDs")
+intends to check the sanity of a snapshot and panic when
+BCACHEFS_DEBUG is set, but that conditional has a typo.
 
-And on the subject of the rc3 announcement - yes, let's please dial back
-the excitement _just_ a bit, it's seemed a bit unhinged at times;
-bcachefs is still marked as experimental for a reason.
+Fix the typo to refer to the actual existing Kconfig symbol.
 
-You shouldn't be running bcachefs just yet if you'll be sad if things
-are offline for a bit (where a bit has been for a few people a week or
-two); IOW, this is still very much for early adopters and people who are
-willing and able to help test and debug.
+This was found with ./scripts/checkkconfigsymbols.py.
 
-Worst case scenario you're not going to lose data, as long as you can be
-patient, but I'm still debugging issues where we get stuck in recovery
-(= filesystem offline).
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+---
+ fs/bcachefs/snapshot.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That said - things are coming together quite nicely. Will have more to
-say at LSF...
+diff --git a/fs/bcachefs/snapshot.h b/fs/bcachefs/snapshot.h
+index b7d2fed37c4f..3fdb41b33d2d 100644
+--- a/fs/bcachefs/snapshot.h
++++ b/fs/bcachefs/snapshot.h
+@@ -77,7 +77,7 @@ static inline u32 __bch2_snapshot_parent(struct bch_fs *c, u32 id)
+ 		return 0;
+ 
+ 	u32 parent = s->parent;
+-	if (IS_ENABLED(CONFIG_BCACHEFS_DEBU) &&
++	if (IS_ENABLED(CONFIG_BCACHEFS_DEBUG) &&
+ 	    parent &&
+ 	    s->depth != snapshot_t(c, parent)->depth + 1)
+ 		panic("id %u depth=%u parent %u depth=%u\n",
+-- 
+2.44.0
 
-----------------------------------------------------------------
-
-The following changes since commit 09d4c2acbf4c864fef0f520bbcba256c9a19102e:
-
-  bcachefs: reconstruct_inode() (2024-04-03 14:46:51 -0400)
-
-are available in the Git repository at:
-
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-10
-
-for you to fetch changes up to 1189bdda6c991cbf9342d84410042dd5f3a792e0:
-
-  bcachefs: Fix __bch2_btree_and_journal_iter_init_node_iter() (2024-04-10 22:28:36 -0400)
-
-----------------------------------------------------------------
-bcachefs fixes for v6.9-rc4
-
-Notable user impacting bugs
-
-- On multi device filesystems, recovery was looping in
-  btree_trans_too_many_iters(). This checks if a transaction has touched
-  too many btree paths (because of iteration over many keys), and isuses
-  a restart to drop unneeded paths. But it's now possible for some paths
-  to exceed the previous limit without iteration in the interior btree
-  update path, since the transaction commit will do alloc updates for
-  every old and new btree node, and during journal replay we don't use
-  the btree write buffer for locking reasons and thus those updates use
-  btree paths when they wouldn't normally.
-
-- Fix a corner case in rebalance when moving extents on a durability=0
-  device. This wouldn't be hit when a device was formatted with
-  durability=0 since in that case we'll only use it as a write through
-  cache (only cached extents will live on it), but durability can now be
-  changed on an existing device.
-
-- bch2_get_acl() could rarely forget to handle a transaction restart;
-  this manifested as the occasional missing acl that came back after
-  dropping caches.
-
-- Fix a major performance regression on high iops multithreaded write
-  workloads (only since 6.9-rc1); a previous fix for a deadlock in the
-  interior btree update path to check the journal watermark introduced a
-  dependency on the state of btree write buffer flushing that we didn't
-  want.
-
-- Assorted other repair paths and recovery fixes.
-
-----------------------------------------------------------------
-Bagas Sanjaya (2):
-      Documentation: filesystems: Add bcachefs toctree
-      MAINTAINERS: Add entry for bcachefs documentation
-
-Dan Carpenter (1):
-      bcachefs: fix ! vs ~ typo in __clear_bit_le64()
-
-Hongbo Li (1):
-      bcachefs: fix the count of nr_freed_pcpu after changing bc->freed_nonpcpu list
-
-Kent Overstreet (19):
-      bcachefs: Make snapshot_is_ancestor() safe
-      bcachefs: Bump limit in btree_trans_too_many_iters()
-      bcachefs: Move btree_updates to debugfs
-      bcachefs: Further improve btree_update_to_text()
-      bcachefs: Print shutdown journal sequence number
-      bcachefs: Fix rebalance from durability=0 device
-      bcachefs: fix rand_delete unit test
-      bcachefs: Fix BCH_IOCTL_FSCK_OFFLINE for encrypted filesystems
-      bcachefs: Disable errors=panic for BCH_IOCTL_FSCK_OFFLINE
-      bcachefs: JOURNAL_SPACE_LOW
-      bcachefs: Fix gap buffer bug in bch2_journal_key_insert_take()
-      bcachefs: fix bch2_get_acl() transaction restart handling
-      bcachefs: fix eytzinger0_find_gt()
-      bcachefs: Fix check_topology() when using node scan
-      bcachefs: Don't scan for btree nodes when we can reconstruct
-      bcachefs: btree_node_scan: Respect member.data_allowed
-      bcachefs: Fix a race in btree_update_nodes_written()
-      bcachefs: Kill read lock dropping in bch2_btree_node_lock_write_nofail()
-      bcachefs: Fix __bch2_btree_and_journal_iter_init_node_iter()
-
-Thomas Bertschinger (1):
-      bcachefs: create debugfs dir for each btree
-
-Thorsten Blum (1):
-      bcachefs: Rename struct field swap to prevent macro naming collision
-
- Documentation/filesystems/bcachefs/index.rst |  11 +++
- Documentation/filesystems/index.rst          |   1 +
- MAINTAINERS                                  |   1 +
- fs/bcachefs/acl.c                            |  30 +++----
- fs/bcachefs/bcachefs_format.h                |  14 +++
- fs/bcachefs/btree_gc.c                       |  13 ++-
- fs/bcachefs/btree_iter.h                     |   2 +-
- fs/bcachefs/btree_journal_iter.c             |  67 ++++++++++----
- fs/bcachefs/btree_key_cache.c                |   4 +-
- fs/bcachefs/btree_locking.c                  |  28 +-----
- fs/bcachefs/btree_node_scan.c                |  11 ++-
- fs/bcachefs/btree_types.h                    |  14 +++
- fs/bcachefs/btree_update_interior.c          | 128 +++++++++++++--------------
- fs/bcachefs/btree_update_interior.h          |   3 +-
- fs/bcachefs/chardev.c                        |  98 +++++++++++---------
- fs/bcachefs/data_update.c                    |  17 +++-
- fs/bcachefs/debug.c                          |  75 ++++++++++++----
- fs/bcachefs/eytzinger.c                      |   8 +-
- fs/bcachefs/eytzinger.h                      |  26 ++++--
- fs/bcachefs/journal_reclaim.c                |   2 +
- fs/bcachefs/journal_types.h                  |   1 +
- fs/bcachefs/recovery.c                       |  14 ---
- fs/bcachefs/snapshot.c                       |  19 ++--
- fs/bcachefs/super.c                          |   5 ++
- fs/bcachefs/sysfs.c                          |   6 --
- fs/bcachefs/tests.c                          |   2 +-
- fs/bcachefs/util.h                           |  10 ++-
- 27 files changed, 372 insertions(+), 238 deletions(-)
- create mode 100644 Documentation/filesystems/bcachefs/index.rst
