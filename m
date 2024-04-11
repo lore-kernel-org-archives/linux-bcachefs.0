@@ -1,105 +1,37 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12ED11779B4;
-	Wed, 10 Apr 2024 17:36:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B895F870;
+	Thu, 11 Apr 2024 02:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712770571; cv=none; b=ufmzr/kxYKt4NTP9Vv/eyTUSMaAz2nDiGNT+ZRYVTmMm1G/mQsE14HMOrFdWgvhHIM5FJDKArOnrFEXbSj0bgtL4EKpga4XvUrbH1K7UQLRwes1vtQswpNIqRC9ztZKUYjB7XbjU8znidFZTGR/kkgr3JHiRrWt6kt9tmREXylg=
+	t=1712804077; cv=none; b=mwLX3qD6VKOCCQVhiKveeOK5LLn3EwCeSeHdM7VYJAQTKE0HFws8wANu5OsPYqc2Ba1wP/daRD5bJmwLw3QPTS6OSQ+r4xsv0qTjOMad8VDi37GKSFJ7kdgMwXANM0RD4pzgdTulwadV5yLhQ0EwQFT/KjFcqYtyqru37usDpG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712770571; c=relaxed/simple;
-	bh=s7AlPHnjW1gFs3weqR//JnIAW3hG+/Mp+aTuvYmxgTU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p2+x3X32CoKrZ801XtkYFNGmkdaDWfFjB3IA9loQOFj+haLX+43yX/Qrqx0UVHKz2mKYkJhVdUEuz67bSAPtr4mMpb+FH5h03XTzcdKa4Z0aPLJ98l6kBSsGYiWHwwnMnpqbGgQrgr1WO8tVj0ye7KrJMr1S9CA6R6ITlRItAw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wo/su6ux; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pwQ8usD0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wo/su6ux; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pwQ8usD0; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1712804077; c=relaxed/simple;
+	bh=uXsuN4wUwAIfsSO+WFyJIu8o15W+PXoOTYaGu0BkidI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=E8hd0hjNtvniNyRx/LH4NKaN47F0pogEZFq6li6ntzJAAh0IUM0pAZfJiimcXpKmpWVfNF5Hsz8i/G/EJX8uA1unGlcVcr2Zx0kiXQ/D0YVpjn4sunEl4AODyw3VZsgZu07lVpRYo/uQc8chYQGe7DCo5d9ZohudIm6toyCVYfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eSnqlqEp; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wo/su6ux";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pwQ8usD0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wo/su6ux";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pwQ8usD0"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3395033A89;
-	Wed, 10 Apr 2024 17:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712770567;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
-	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
-	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
-	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712770567;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
-	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
-	JIolcEC5hlnuCvCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712770567;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
-	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
-	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
-	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712770567;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
-	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
-	JIolcEC5hlnuCvCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFAAD13691;
-	Wed, 10 Apr 2024 17:36:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 20hgOgbOFmZrWQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 10 Apr 2024 17:36:06 +0000
-Date: Wed, 10 Apr 2024 19:28:37 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Jan Kara <jack@suse.cz>
-Cc: Matthew Wilcox <willy@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>,
-	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
-	akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v3 for-6.8/block 09/17] btrfs: use bdev apis
-Message-ID: <20240410172837.GO3492@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
- <20231221085712.1766333-10-yukuai1@huaweicloud.com>
- <ZYcZi5YYvt5QHrG9@casper.infradead.org>
- <20240104114958.f3cit5q7syp3tn3a@quack3>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eSnqlqEp"
+Date: Wed, 10 Apr 2024 22:54:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712804070;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=JaNPtXr0mm+bEAmXMp73DrXvXkWEkPC0u2C6L0pm1Wo=;
+	b=eSnqlqEpD9xe76X0eJ1LfdeRuszqbVEsG9vjQ3zGn3C1As9+jZX2I97VBot7qnL8z/Y61y
+	wjvwuV2nb8E6PphsSV4B8D3fdEAGh1nOF+gPuzf0knxdK7RL4/WLUfFCSfkXCc4Qc0kRLe
+	/eOm3FszzAZ38qX5TVr4SPZTxg5Vlnc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for rc4
+Message-ID: <woux55cy6ms6exoa43hg745ftfo6msc3bsnjge3te2c4pvdzmf@57wrbdc5pp7s>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -108,76 +40,137 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240104114958.f3cit5q7syp3tn3a@quack3>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -2.50
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[49];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RLtpaten8pmzgjg419jubxqoa7)];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[infradead.org,huaweicloud.com,kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 04, 2024 at 12:49:58PM +0100, Jan Kara wrote:
-> On Sat 23-12-23 17:31:55, Matthew Wilcox wrote:
-> > On Thu, Dec 21, 2023 at 04:57:04PM +0800, Yu Kuai wrote:
-> > > @@ -3674,16 +3670,17 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
-> > >  		 * Drop the page of the primary superblock, so later read will
-> > >  		 * always read from the device.
-> > >  		 */
-> > > -		invalidate_inode_pages2_range(mapping,
-> > > -				bytenr >> PAGE_SHIFT,
-> > > +		invalidate_bdev_range(bdev, bytenr >> PAGE_SHIFT,
-> > >  				(bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
-> > >  	}
-> > >  
-> > > -	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
-> > > -	if (IS_ERR(page))
-> > > -		return ERR_CAST(page);
-> > > +	nofs_flag = memalloc_nofs_save();
-> > > +	folio = bdev_read_folio(bdev, bytenr);
-> > > +	memalloc_nofs_restore(nofs_flag);
-> > 
-> > This is the wrong way to use memalloc_nofs_save/restore.  They should be
-> > used at the point that the filesystem takes/releases whatever lock is
-> > also used during reclaim.  I don't know btrfs well enough to suggest
-> > what lock is missing these annotations.
-> 
-> In principle I agree with you but in this particular case I agree the ask
-> is just too big. I suspect it is one of btrfs btree locks or maybe
-> chunk_mutex but I doubt even btrfs developers know and maybe it is just a
-> cargo cult. And it is not like this would be the first occurence of this
-> anti-pattern in btrfs - see e.g. device_list_add(), add_missing_dev(),
-> btrfs_destroy_delalloc_inodes() (here the wrapping around
-> invalidate_inode_pages2() looks really weird), and many others...
+Hi Linus, another batch of fixes for you...
 
-The pattern is intentional and a temporary solution before we could
-implement the scoped NOFS. Functions calling allocations get converted
-from GFP_NOFS to GFP_KERNEL but in case they're called from a context
-that either holds big locks or can recursively enter the filesystem then
-it's protected by the memalloc calls. This should not be surprising.
-What may not be obvious is which locks or kmalloc calling functions it
-could be, this depends on the analysis of the function call chain and
-usually there's enough evidence why it's needed.
+And on the subject of the rc3 announcement - yes, let's please dial back
+the excitement _just_ a bit, it's seemed a bit unhinged at times;
+bcachefs is still marked as experimental for a reason.
+
+You shouldn't be running bcachefs just yet if you'll be sad if things
+are offline for a bit (where a bit has been for a few people a week or
+two); IOW, this is still very much for early adopters and people who are
+willing and able to help test and debug.
+
+Worst case scenario you're not going to lose data, as long as you can be
+patient, but I'm still debugging issues where we get stuck in recovery
+(= filesystem offline).
+
+That said - things are coming together quite nicely. Will have more to
+say at LSF...
+
+----------------------------------------------------------------
+
+The following changes since commit 09d4c2acbf4c864fef0f520bbcba256c9a19102e:
+
+  bcachefs: reconstruct_inode() (2024-04-03 14:46:51 -0400)
+
+are available in the Git repository at:
+
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-10
+
+for you to fetch changes up to 1189bdda6c991cbf9342d84410042dd5f3a792e0:
+
+  bcachefs: Fix __bch2_btree_and_journal_iter_init_node_iter() (2024-04-10 22:28:36 -0400)
+
+----------------------------------------------------------------
+bcachefs fixes for v6.9-rc4
+
+Notable user impacting bugs
+
+- On multi device filesystems, recovery was looping in
+  btree_trans_too_many_iters(). This checks if a transaction has touched
+  too many btree paths (because of iteration over many keys), and isuses
+  a restart to drop unneeded paths. But it's now possible for some paths
+  to exceed the previous limit without iteration in the interior btree
+  update path, since the transaction commit will do alloc updates for
+  every old and new btree node, and during journal replay we don't use
+  the btree write buffer for locking reasons and thus those updates use
+  btree paths when they wouldn't normally.
+
+- Fix a corner case in rebalance when moving extents on a durability=0
+  device. This wouldn't be hit when a device was formatted with
+  durability=0 since in that case we'll only use it as a write through
+  cache (only cached extents will live on it), but durability can now be
+  changed on an existing device.
+
+- bch2_get_acl() could rarely forget to handle a transaction restart;
+  this manifested as the occasional missing acl that came back after
+  dropping caches.
+
+- Fix a major performance regression on high iops multithreaded write
+  workloads (only since 6.9-rc1); a previous fix for a deadlock in the
+  interior btree update path to check the journal watermark introduced a
+  dependency on the state of btree write buffer flushing that we didn't
+  want.
+
+- Assorted other repair paths and recovery fixes.
+
+----------------------------------------------------------------
+Bagas Sanjaya (2):
+      Documentation: filesystems: Add bcachefs toctree
+      MAINTAINERS: Add entry for bcachefs documentation
+
+Dan Carpenter (1):
+      bcachefs: fix ! vs ~ typo in __clear_bit_le64()
+
+Hongbo Li (1):
+      bcachefs: fix the count of nr_freed_pcpu after changing bc->freed_nonpcpu list
+
+Kent Overstreet (19):
+      bcachefs: Make snapshot_is_ancestor() safe
+      bcachefs: Bump limit in btree_trans_too_many_iters()
+      bcachefs: Move btree_updates to debugfs
+      bcachefs: Further improve btree_update_to_text()
+      bcachefs: Print shutdown journal sequence number
+      bcachefs: Fix rebalance from durability=0 device
+      bcachefs: fix rand_delete unit test
+      bcachefs: Fix BCH_IOCTL_FSCK_OFFLINE for encrypted filesystems
+      bcachefs: Disable errors=panic for BCH_IOCTL_FSCK_OFFLINE
+      bcachefs: JOURNAL_SPACE_LOW
+      bcachefs: Fix gap buffer bug in bch2_journal_key_insert_take()
+      bcachefs: fix bch2_get_acl() transaction restart handling
+      bcachefs: fix eytzinger0_find_gt()
+      bcachefs: Fix check_topology() when using node scan
+      bcachefs: Don't scan for btree nodes when we can reconstruct
+      bcachefs: btree_node_scan: Respect member.data_allowed
+      bcachefs: Fix a race in btree_update_nodes_written()
+      bcachefs: Kill read lock dropping in bch2_btree_node_lock_write_nofail()
+      bcachefs: Fix __bch2_btree_and_journal_iter_init_node_iter()
+
+Thomas Bertschinger (1):
+      bcachefs: create debugfs dir for each btree
+
+Thorsten Blum (1):
+      bcachefs: Rename struct field swap to prevent macro naming collision
+
+ Documentation/filesystems/bcachefs/index.rst |  11 +++
+ Documentation/filesystems/index.rst          |   1 +
+ MAINTAINERS                                  |   1 +
+ fs/bcachefs/acl.c                            |  30 +++----
+ fs/bcachefs/bcachefs_format.h                |  14 +++
+ fs/bcachefs/btree_gc.c                       |  13 ++-
+ fs/bcachefs/btree_iter.h                     |   2 +-
+ fs/bcachefs/btree_journal_iter.c             |  67 ++++++++++----
+ fs/bcachefs/btree_key_cache.c                |   4 +-
+ fs/bcachefs/btree_locking.c                  |  28 +-----
+ fs/bcachefs/btree_node_scan.c                |  11 ++-
+ fs/bcachefs/btree_types.h                    |  14 +++
+ fs/bcachefs/btree_update_interior.c          | 128 +++++++++++++--------------
+ fs/bcachefs/btree_update_interior.h          |   3 +-
+ fs/bcachefs/chardev.c                        |  98 +++++++++++---------
+ fs/bcachefs/data_update.c                    |  17 +++-
+ fs/bcachefs/debug.c                          |  75 ++++++++++++----
+ fs/bcachefs/eytzinger.c                      |   8 +-
+ fs/bcachefs/eytzinger.h                      |  26 ++++--
+ fs/bcachefs/journal_reclaim.c                |   2 +
+ fs/bcachefs/journal_types.h                  |   1 +
+ fs/bcachefs/recovery.c                       |  14 ---
+ fs/bcachefs/snapshot.c                       |  19 ++--
+ fs/bcachefs/super.c                          |   5 ++
+ fs/bcachefs/sysfs.c                          |   6 --
+ fs/bcachefs/tests.c                          |   2 +-
+ fs/bcachefs/util.h                           |  10 ++-
+ 27 files changed, 372 insertions(+), 238 deletions(-)
+ create mode 100644 Documentation/filesystems/bcachefs/index.rst
