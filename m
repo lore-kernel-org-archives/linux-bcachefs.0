@@ -1,70 +1,55 @@
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63EC114A0AE;
-	Thu, 11 Apr 2024 11:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD3D7764E;
+	Thu, 11 Apr 2024 17:31:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712835909; cv=none; b=O5QBp94iR7qGC/sJ7a7rs0RT2jmdRB+8BUkIjoiHpVSrFqngAUdY/27V7r+onFcHefd0XZrc8q7JrKvYKVMhEd/QLjV0Eo5v5aZ0svqGJWO8b5IHXKYn3a37BMkLCZz1XbY/QL7hWjEaO/MJY+5sPrrEPfviXh4KodEIX5Zf2u4=
+	t=1712856681; cv=none; b=g78hNP+0g6vIpep0NRrvzM+pAl66Ga5eS+niwABvD50UUK1oyYjC12gWsjeooRIkJ6g+ntFkCBS4XLE2ZmKfMdjOC+p0b8HjiDl0jbE6Se+n9V4qNJyX2VqmfQ+QqipA81FPLLnQoBvzNjHcD1J70/qW34XLlZchyr3uh9ZTSXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712835909; c=relaxed/simple;
-	bh=XRFBR7q3J3br3yr1FBOa62Y1C7spuDVeCqnhCIGgb4k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=c10YGWOgdGyQhk373Ed98zW+J4AuAiApTOMfJlGzVNTuxZ1n8VdHSsi87G6WPY8nGACzHDVWhLCt5hXx5K/UA9X7Ffg7Bmk3lVGYKD8ufqPG3y9295996k+A5w5scVGN1snwFyLl+QbzJ/eC65Tp+QhjtJ90pob1TOqJ7hdOdNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VFd8h3qZhz1R5XY;
-	Thu, 11 Apr 2024 19:42:12 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2BE0C140E9F;
-	Thu, 11 Apr 2024 19:44:57 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 11 Apr 2024 19:44:56 +0800
-Message-ID: <cedafaa6-5507-41d3-bd1e-a8964b8630ba@huawei.com>
-Date: Thu, 11 Apr 2024 19:44:56 +0800
+	s=arc-20240116; t=1712856681; c=relaxed/simple;
+	bh=l7ZI8uzIiysN7n/n3OmmXdTr87Fd9dl+AysUyhl18y4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GsdO+D9OOUMZMR7j5V8kph4HNuXIQY8NzuneckZkePf1ghOE1yUJEDF2requcqJBe7OeMfCGjlmVVaPVwNp+BWwwKOpGpO1sNBI9qFXvX8NYUvIS3LAq/xBZE8gcld8rp3odvLape7PYOArs5YqYTRE9wRRS9a4o+ByFTwsuDGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Cnor1PAI; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Cnor1PAI"
+Date: Thu, 11 Apr 2024 13:31:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712856676;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l7ZI8uzIiysN7n/n3OmmXdTr87Fd9dl+AysUyhl18y4=;
+	b=Cnor1PAI6GYyZvMYeXQP/7xrNwv6VxMf4qgeJG/xdMUo/WpZvkbiZYXvtmoTyB/W+whBoo
+	qbvE0bK9h5trNI+TWtsoDch4r3NCXeb4aQMnffz6/z7yT7/JPKW0HBqjK83k0Zr8gZOWnb
+	frfNoa+N563bg80i0L928kJpSx9se3s=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Hongbo Li <lihongbo22@huawei.com>
+Cc: Lukas Bulwahn <lbulwahn@redhat.com>, Brian Foster <bfoster@redhat.com>, 
+	linux-bcachefs@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Lukas Bulwahn <lukas.bulwahn@redhat.com>
+Subject: Re: [PATCH] bcachefs: fix typo in reference to BCACHEFS_DEBUG
+Message-ID: <w76yialze3mzjmhcdt5guelmsw5ezady4zpn6m7lszluc4u4vg@s3eosgrvhj7w>
+References: <20240411082931.56362-1-lukas.bulwahn@redhat.com>
+ <a2683fad-07db-4857-9ebf-7adf31a09e50@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: fix typo in reference to BCACHEFS_DEBUG
-Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@linaro.org>
-CC: Lukas Bulwahn <lbulwahn@redhat.com>, Kent Overstreet
-	<kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>,
-	<linux-bcachefs@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Lukas Bulwahn <lukas.bulwahn@redhat.com>
-References: <20240411082931.56362-1-lukas.bulwahn@redhat.com>
- <a2683fad-07db-4857-9ebf-7adf31a09e50@huawei.com>
- <b6d90387-7892-4c28-9855-ae35faacfe9c@moroto.mountain>
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <b6d90387-7892-4c28-9855-ae35faacfe9c@moroto.mountain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a2683fad-07db-4857-9ebf-7adf31a09e50@huawei.com>
+X-Migadu-Flow: FLOW_OUT
 
-Thanks, I got it!
+On Thu, Apr 11, 2024 at 05:21:05PM +0800, Hongbo Li wrote:
+> Also, I am curious why such spelling errors cannot be detected at the
+> compilation stage.
 
-On 2024/4/11 18:21, Dan Carpenter wrote:
-> On Thu, Apr 11, 2024 at 05:21:05PM +0800, Hongbo Li wrote:
->> Also, I am curious why such spelling errors cannot be detected at the
->> compilation stage.
->>
-> 
-> The IS_ENABLED() macro is testing whether the define exists or not.
-> In this case both "CONFIG_BCACHEFS_DEBUG" and "CONFIG_BCACHEFS_DEBU" do
-> not exist for this config.
-> 
-> Lukas's scripts make a list of macros we expect to exist and then checks
-> against the list.
-> 
-> regards,
-> dan carpenter
-> 
+code coverage analysis would catch this. I'm one patch away from fully
+automated code coverage.
