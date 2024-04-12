@@ -1,154 +1,82 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555ACDDC3
-	for <linux-bcachefs@vger.kernel.org>; Fri, 12 Apr 2024 02:44:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15BD28C15
+	for <linux-bcachefs@vger.kernel.org>; Fri, 12 Apr 2024 06:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712889888; cv=none; b=ZlDTOyWWwaDWYYydDVR+WEz33/5sbjv/a43SgvDkyrRT1V5P9jHZFrD3TePP6ozjbWOLeZ4v5gH6AKqjxowd2XXiQVSxQLjd33HV/BdcdB3n/jM3uXnVzwtmhXWes498iCsNNgi4u3N3RT49nxpTNZo/jugcEXggRbMqH1tn+mo=
+	t=1712903564; cv=none; b=WZoqjt2gGFv4Kx72qTX9eWjHRIXac2XdclYGMgGXvJohbBnTu5Hjq5Rc75XQyIMHZT8/XExGIgYAZfQdLbk7by0H5ABSYHy5Ra9/6YZiSOkqWUBGa6mzDyndl/K8vtbFLIdpoh0uMrALRTKN4zQLSc/yPahedy6bLD96iIKeFac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712889888; c=relaxed/simple;
-	bh=d8TMlfpqfj0EJkk4co1gVGQPXhL+ttMpGKUpO6Ej/tw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oNbL81efktZXVdkN2BrrgY0DsmNuD3EeSXV4ZGxaHMBtEPN/C58du1JxqBv3TOk4MQffZR+yu9T6DF5Gp7WEkXIuiDmNI3gZyLBA2wokjhDuv3P/512eOhHLv97ZdaMy1VRB/+lXLT1WzR3MTzdoaSutjMz3XvqfKtAkduc4Jd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QOwbCjmt; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1712903564; c=relaxed/simple;
+	bh=Vo1pehrlbUFaeFWGno8VZMGFdgVG00/aBIz/nXuCr94=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b+e+AKovls3NEf98hksNkDC3SqwfZbxcKRlzaduLY9fTu3z4l32FI0jXT52/uOJ0nGYnuIkCge75ju1VhqVZUxSKGAM05v7vrGcVlBz5C9AHPIJDJM/VlJFlqIdBO8snVTA9fZSLUkJa2t7y8nzNbU0SrzFoXt52K7MkLD9dUDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J+oKZaf2; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QOwbCjmt"
-Date: Thu, 11 Apr 2024 22:44:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712889884;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I79hH/MqceyrY7sxro/GgYJP7b4PlTecMBGnWtJf/kE=;
-	b=QOwbCjmtAEE42sRxAb7b4AOsULuYL9eaT/ENTW68O2WWOHkwIByai13wmNjulZDpk5VlT1
-	0lj9Lx96lHfqscUXt+BmOsp7OqM5uuz9N670Zr5su0INS0k36HpSg3jSSaGzx32sJAidS8
-	cZ9xhmBRsbwCenfTJ97RuZqjlEbytwQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Hongbo Li <lihongbo22@huawei.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2] bcachefs: chardev: make bch_chardev_class constant
-Message-ID: <vl32k2zzdeohe6ek5cmfibme7ka2e76x57xbxcm26olxlog6ef@lkxtlw63csnv>
-References: <20240308-bcachefs-v2-1-3e84c845055e@marliere.net>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J+oKZaf2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 054F1C2BBFC;
+	Fri, 12 Apr 2024 06:32:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712903563;
+	bh=Vo1pehrlbUFaeFWGno8VZMGFdgVG00/aBIz/nXuCr94=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=J+oKZaf2RNTfBhVCU7ehtO7v/aTKNkZKLzXdvU+2p4zR4ZgQQlWv6eG1OfG/Xer9h
+	 81hyTcI/otCWv32UUmCnlQiO4d5c7KT+g++CVeaEGxAz2UOb8t2vKXrXeOM913hP+q
+	 u+B+KK4Xn9jM9xwKU+toaL3jIrAfs32EAf+wrDB9pTo6HQcGWDmQCH3KSRC//rwOru
+	 4GCjrF7N2kX3Nx2niPG6OJ7pxR1Bmrhcd2VG37ntx2v7yWH7YYxiOCZJqZkJTQwchL
+	 NpuG/ou9+BAWRroClTxzj4YI7Dr163KfhRhDqZiA4aQnM6zgS//vxceDaujXAZhIZL
+	 b8UvvUc85tQTg==
+Message-ID: <99e80830-0eaf-423d-9250-6a0230fdcdc7@kernel.org>
+Date: Fri, 12 Apr 2024 14:32:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308-bcachefs-v2-1-3e84c845055e@marliere.net>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: fix error path of __bch2_read_super()
+To: Hongbo Li <lihongbo22@huawei.com>, kent.overstreet@linux.dev,
+ bfoster@redhat.com
+Cc: linux-bcachefs@vger.kernel.org
+References: <20240411100829.1729332-1-chao@kernel.org>
+ <a021f61e-dc98-4324-916c-c65c6d979cc0@huawei.com>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <a021f61e-dc98-4324-916c-c65c6d979cc0@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 08, 2024 at 09:12:47AM -0300, Ricardo B. Marliere wrote:
-> Since commit 43a7206b0963 ("driver core: class: make class_register() take
-> a const *"), the driver core allows for struct class to be in read-only
-> memory, so move the bch_chardev_class structure to be declared at build
-> time placing it into read-only memory, instead of having to be dynamically
-> allocated at boot time. Also, correctly clean up after failing paths in
-> bch2_chardev_init().
+On 2024/4/11 19:29, Hongbo Li wrote:
 > 
-> Cc: Hongbo Li <lihongbo22@huawei.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> 
+> On 2024/4/11 18:08, Chao Yu wrote:
+>> In __bch2_read_super(), if kstrdup() fails, it needs to release memory
+>> in sb->holder, fix to call bch2_free_super() in the error path.
+>>
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+>> ---
+>>   fs/bcachefs/super-io.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+>> index ad28e370b640..cec1470c2dd9 100644
+>> --- a/fs/bcachefs/super-io.c
+>> +++ b/fs/bcachefs/super-io.c
+>> @@ -698,8 +698,10 @@ static int __bch2_read_super(const char *path, struct bch_opts *opts,
+>>           return -ENOMEM;
+>>       sb->sb_name = kstrdup(path, GFP_KERNEL);
+>> -    if (!sb->sb_name)
+>> -        return -ENOMEM;
+>> +    if (!sb->sb_name) {
+>> +        ret = -ENOMEM;
+> maybe you should fill err with message info by prt_printf(xxx), because err with no message info when printed in bch2_print_opts.
 
-Thanks, applied
-> ---
-> Changes in v2:
-> - Used "free the last thing" pattern in bch2_chardev_init().
-> - Link to v1: https://lore.kernel.org/r/20240305-bcachefs-v1-1-436196e25729@marliere.net
-> ---
->  fs/bcachefs/chardev.c | 35 ++++++++++++++++++++++-------------
->  1 file changed, 22 insertions(+), 13 deletions(-)
-> 
-> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-> index 226b39c17667..dc09f547dae6 100644
-> --- a/fs/bcachefs/chardev.c
-> +++ b/fs/bcachefs/chardev.c
-> @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
->  };
->  
->  static int bch_chardev_major;
-> -static struct class *bch_chardev_class;
-> +static const struct class bch_chardev_class = {
-> +	.name = "bcachefs",
-> +};
->  static struct device *bch_chardev;
->  
->  void bch2_fs_chardev_exit(struct bch_fs *c)
-> @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->  	if (c->minor < 0)
->  		return c->minor;
->  
-> -	c->chardev = device_create(bch_chardev_class, NULL,
-> +	c->chardev = device_create(&bch_chardev_class, NULL,
->  				   MKDEV(bch_chardev_major, c->minor), c,
->  				   "bcachefs%u-ctl", c->minor);
->  	if (IS_ERR(c->chardev))
-> @@ -968,32 +970,39 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->  
->  void bch2_chardev_exit(void)
->  {
-> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> -		device_destroy(bch_chardev_class,
-> -			       MKDEV(bch_chardev_major, U8_MAX));
-> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
-> -		class_destroy(bch_chardev_class);
-> +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
-> +	class_unregister(&bch_chardev_class);
->  	if (bch_chardev_major > 0)
->  		unregister_chrdev(bch_chardev_major, "bcachefs");
->  }
->  
->  int __init bch2_chardev_init(void)
->  {
-> +	int ret;
-> +
->  	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
->  	if (bch_chardev_major < 0)
->  		return bch_chardev_major;
->  
-> -	bch_chardev_class = class_create("bcachefs");
-> -	if (IS_ERR(bch_chardev_class))
-> -		return PTR_ERR(bch_chardev_class);
-> +	ret = class_register(&bch_chardev_class);
-> +	if (ret)
-> +		goto major_out;
->  
-> -	bch_chardev = device_create(bch_chardev_class, NULL,
-> +	bch_chardev = device_create(&bch_chardev_class, NULL,
->  				    MKDEV(bch_chardev_major, U8_MAX),
->  				    NULL, "bcachefs-ctl");
-> -	if (IS_ERR(bch_chardev))
-> -		return PTR_ERR(bch_chardev);
-> +	if (IS_ERR(bch_chardev)) {
-> +		ret = PTR_ERR(bch_chardev);
-> +		goto class_out;
-> +	}
->  
->  	return 0;
-> +
-> +class_out:
-> +	class_unregister(&bch_chardev_class);
-> +major_out:
-> +	unregister_chrdev(bch_chardev_major, "bcachefs-ctl");
-> +	return ret;
->  }
->  
->  #endif /* NO_BCACHEFS_CHARDEV */
-> 
-> ---
-> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-> change-id: 20240305-bcachefs-27a4bb8b9f4f
-> 
-> Best regards,
-> -- 
-> Ricardo B. Marliere <ricardo@marliere.net>
-> 
+Oh, yes, will revise in v2, thank you for the comments.
+
+Thanks,
+
+>> +        goto err;
+>> +    }
+>>   #ifndef __KERNEL__
+>>       if (opt_get(*opts, direct_io) == false)
