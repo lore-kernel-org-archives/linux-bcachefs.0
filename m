@@ -1,76 +1,79 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB0A1BDCF;
-	Fri, 12 Apr 2024 06:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA4D4652F;
+	Fri, 12 Apr 2024 06:53:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712903815; cv=none; b=pdZVRwlb+ugr6qaogZIEsSf2/lHvxlq5QDuq/VUaMcVr6fSCXT1yFStU9rYsZfXE+1z7bVoYwlzN8LJRHBUiuYGRg6k4WoL/I7lhkNopK8/xp/ZtslMGC7HjwVcEGtUIbDrjpDdDIHKLdanPFoyY40d2VD54nLqT5SrloLbD/Ic=
+	t=1712904787; cv=none; b=fm8HqKp7EoQGv1DGCL/WJLSvdnMPZMWomR4oGI4WBtJXGR8jWwtYgDrVMy+prUfAF9KwAZ08t8exEiBSp7/T2OVC8P1nZSWaEwgcrctdfRrVcA6UhFyGw/t4oNtAP+UpCjO56AxQiI76/YlqE3b8KI5n4C8JnEJ5OpWEwZtL5dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712903815; c=relaxed/simple;
-	bh=NkGJwr7h3mbH6nk/AhjlXuCyRNAnQFgNgi7XccAHJjA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W0z+74nIwY9+32XxcxIhgrxOc9OhQKIr71zyM5rQrZsvW43uxf84wT1T5yAriPf6/7d3nzNmaqBlnTI++oJiS+0Yl41w6OBpf8gvos9WRIzRTVYLmR6DOiok1sqs+m83g1YSACR2+8Ny9p2paLUJfnaJB8WQddqPbZD2+fnhL1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hxBIUjjb; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hxBIUjjb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC0FBC2BBFC;
-	Fri, 12 Apr 2024 06:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712903815;
-	bh=NkGJwr7h3mbH6nk/AhjlXuCyRNAnQFgNgi7XccAHJjA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=hxBIUjjb3ul6O2R4GKwr3ab8w8qRzQXgp8kN9VwSnAgHX1JE8FIR9sr9ZO7P/chvY
-	 cxAE614O32F4PonDUsO82x2sg4y25HdC0/QAhagqcqBY+zsVnswUfDfyUT/6wiBCuy
-	 nXNR08z+sh1yCbiyYaUVyZJWA/TR7msaz0UVgMDz6Vjgjc1Mk5jLLLgm6tAaMHbGB5
-	 Q4K5iyAd5mw789J9vg6x6k29L/SF80CiSxL6tFgUwucxdOkYINrEuPAxL2irMbmYc0
-	 n0UDx0y0PwtikbPbe6hJ17T/+mxZK7P+TRIJE2GAoTu6d365IllHJ1h7N/ocfXwx5r
-	 xlhXDGlIrQhMw==
-From: Chao Yu <chao@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH v2] bcachefs: fix error path of __bch2_read_super()
-Date: Fri, 12 Apr 2024 14:36:38 +0800
-Message-Id: <20240412063638.2068524-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1712904787; c=relaxed/simple;
+	bh=MJwKbK7opNn0X+MjquHdBM5/uyL6GuSmDDNRq43NiLU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=XawMgbJ34vVK4mhGb4gSfSkwNndzqwPv0eMyMOOIFnOdY7aKlGuqVRDlQOoxfjtiADI5SY/2/Yw7UyqD6OtwIZEvXh1li7LJ4lPeGzDHFvNt4koONv8G31gEyRqWDPrEJF0SQ9zzWpvjJ1CJhtHk0189KVbZsSGoN6CCu3Z0TuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VG6gd2Y6Rz1xmRx;
+	Fri, 12 Apr 2024 14:52:13 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6F71D18001A;
+	Fri, 12 Apr 2024 14:53:01 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Apr 2024 14:53:01 +0800
+Message-ID: <9ed2e6d6-186c-4b89-9c07-4b004de6bf23@huawei.com>
+Date: Fri, 12 Apr 2024 14:53:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] bcachefs: fix error path of __bch2_read_super()
+Content-Language: en-US
+To: Chao Yu <chao@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>
+CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240412063638.2068524-1-chao@kernel.org>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240412063638.2068524-1-chao@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-In __bch2_read_super(), if kstrdup() fails, it needs to release memory
-in sb->holder, fix to call bch2_free_super() in the error path.
+Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
 
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v2:
-- add error message in error path pointed out by Hongbo Li.
- fs/bcachefs/super-io.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-index ad28e370b640..cc80d7d30b8c 100644
---- a/fs/bcachefs/super-io.c
-+++ b/fs/bcachefs/super-io.c
-@@ -698,8 +698,11 @@ static int __bch2_read_super(const char *path, struct bch_opts *opts,
- 		return -ENOMEM;
- 
- 	sb->sb_name = kstrdup(path, GFP_KERNEL);
--	if (!sb->sb_name)
--		return -ENOMEM;
-+	if (!sb->sb_name) {
-+		ret = -ENOMEM;
-+		prt_printf(&err, "error allocating memory for sb_name");
-+		goto err;
-+	}
- 
- #ifndef __KERNEL__
- 	if (opt_get(*opts, direct_io) == false)
--- 
-2.40.1
-
+On 2024/4/12 14:36, Chao Yu wrote:
+> In __bch2_read_super(), if kstrdup() fails, it needs to release memory
+> in sb->holder, fix to call bch2_free_super() in the error path.
+> 
+> Signed-off-by: Chao Yu <chao@kernel.org>
+> ---
+> v2:
+> - add error message in error path pointed out by Hongbo Li.
+>   fs/bcachefs/super-io.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+> index ad28e370b640..cc80d7d30b8c 100644
+> --- a/fs/bcachefs/super-io.c
+> +++ b/fs/bcachefs/super-io.c
+> @@ -698,8 +698,11 @@ static int __bch2_read_super(const char *path, struct bch_opts *opts,
+>   		return -ENOMEM;
+>   
+>   	sb->sb_name = kstrdup(path, GFP_KERNEL);
+> -	if (!sb->sb_name)
+> -		return -ENOMEM;
+> +	if (!sb->sb_name) {
+> +		ret = -ENOMEM;
+> +		prt_printf(&err, "error allocating memory for sb_name");
+> +		goto err;
+> +	}
+>   
+>   #ifndef __KERNEL__
+>   	if (opt_get(*opts, direct_io) == false)
