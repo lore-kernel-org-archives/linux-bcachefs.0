@@ -1,63 +1,61 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08601863C;
-	Thu, 11 Apr 2024 19:09:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ABF64431;
+	Fri, 12 Apr 2024 01:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712862563; cv=none; b=BfbfrSuKJvIdfTK1SNfsLEAhFvDP5A7xfy8+kTUF2vOI7ZMHrgke9GRbQsJMbI4BdOq4hHF1AGJso/ovALn3yfHNpPHerOPtL5hW6nZMVZtzRClkA+IF+nLGUAmHW0GszX/FcdmTClDg0bYXgIB4mfxJ14Pm5MKABKAILd5eO1E=
+	t=1712885736; cv=none; b=iImAzs9F9jrCOGNu+4qbC86w95SFrkpp+0cY8FWEbMvzSk8eoBpS9j3FBcFq5b4lBthHjwjYyrl0rBMFllmFuunW9ylnTxcHglz2TNVVC8ZP1EJ/iR04W2h2v0gYZ2Maw6IT+KvPaNi/IRz8oBpmUufedVeE3CRVF9gsQqiTG5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712862563; c=relaxed/simple;
-	bh=W8FgOcWxkM15ZcMp7FGGpwxJMzY0bc1/TiqOakuXieQ=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Tm4fD+ckUpw/PQWaVX5aWRIjAzZPT28oPKWZGlcvKkYNRia0hdE+UpO4R0HH19EMwDqRERyMpC/gxY2uOwNRX9771DAjYAFhuKVlAfCjyWA74lk3WBmxsErNNSKVRPgIxu73Xw10m7qGT3yba3jrFdxs3XX4V4LNG5cxyMfRd00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NbVyUwzX; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NbVyUwzX"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B36FBC113CE;
-	Thu, 11 Apr 2024 19:09:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712862563;
-	bh=W8FgOcWxkM15ZcMp7FGGpwxJMzY0bc1/TiqOakuXieQ=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=NbVyUwzXDcdnCF7z0lwe9eYXyxagx5jEyz1POlIhDVfilFLXDFau1M+1OiKC5Qo8y
-	 qpmn72Ur0+CxPnSm6hsfflrsTnthmRw/KAdeLGAPkTYyrJqdDzhLmegmFX6O6mc429
-	 J25cGXeeusPVQiQ0LUT0XrcWIiKGEbFCeTb1Qg5rl6Yhc5fFJkGUOentUWPSQlX0ID
-	 t0AZfy0QjGu4P5R5rvRY1M3mO2V57udJeFO2zWCsDilzxvOEK/GoFKdxl+grZk42Pc
-	 +WLEKy2fSupZVuqa/uvZIcDZEkthansM0rRiIFo8WvDXsZZx27c1CB+1HnPCruLSlQ
-	 ThGa9ydHEMRmw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A91CDC433F2;
-	Thu, 11 Apr 2024 19:09:23 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs fixes for rc4
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <woux55cy6ms6exoa43hg745ftfo6msc3bsnjge3te2c4pvdzmf@57wrbdc5pp7s>
-References: <woux55cy6ms6exoa43hg745ftfo6msc3bsnjge3te2c4pvdzmf@57wrbdc5pp7s>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <woux55cy6ms6exoa43hg745ftfo6msc3bsnjge3te2c4pvdzmf@57wrbdc5pp7s>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-10
-X-PR-Tracked-Commit-Id: 1189bdda6c991cbf9342d84410042dd5f3a792e0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e1dc191dbf3f35cf07790b52110267bef55515a2
-Message-Id: <171286256368.2172.14990565631104148859.pr-tracker-bot@kernel.org>
-Date: Thu, 11 Apr 2024 19:09:23 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1712885736; c=relaxed/simple;
+	bh=qxII8WXen4/Mu9o7FqjOw5w+uDJbWmKmhBggUKDsnOA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OcQ5D30wElTRQSNRjSueX/fcBTMX4vneGIYGnXv6AfZ6zyNhO0Nlqq/te3i8SugRw1iVWUvpfzVTHy9z/csOrAjCg5HXQjioMPPtgjaRXUflpHp72lETkrT46Q965tATa7KVKQ3z8v4xBlLghUpQuC+MpAyGaa2HTuFDoGQaZ/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VFzdF4fFhz1S5LN;
+	Fri, 12 Apr 2024 09:34:41 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7D3581400C9;
+	Fri, 12 Apr 2024 09:35:29 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Apr 2024 09:35:29 +0800
+Message-ID: <d0aaa23d-ec01-43da-9c06-4a667225afc3@huawei.com>
+Date: Fri, 12 Apr 2024 09:35:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: fix typo in reference to BCACHEFS_DEBUG
+Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>
+CC: Lukas Bulwahn <lbulwahn@redhat.com>, Brian Foster <bfoster@redhat.com>,
+	<linux-bcachefs@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Lukas Bulwahn <lukas.bulwahn@redhat.com>
+References: <20240411082931.56362-1-lukas.bulwahn@redhat.com>
+ <a2683fad-07db-4857-9ebf-7adf31a09e50@huawei.com>
+ <w76yialze3mzjmhcdt5guelmsw5ezady4zpn6m7lszluc4u4vg@s3eosgrvhj7w>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <w76yialze3mzjmhcdt5guelmsw5ezady4zpn6m7lszluc4u4vg@s3eosgrvhj7w>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-The pull request you sent on Wed, 10 Apr 2024 22:54:27 -0400:
+Thanks, got it. And I found many similar cases in other kernel modules. 
+Also, the janitors project seems quite interesting.
 
-> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-10
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e1dc191dbf3f35cf07790b52110267bef55515a2
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+On 2024/4/12 1:31, Kent Overstreet wrote:
+> On Thu, Apr 11, 2024 at 05:21:05PM +0800, Hongbo Li wrote:
+>> Also, I am curious why such spelling errors cannot be detected at the
+>> compilation stage.
+> 
+> code coverage analysis would catch this. I'm one patch away from fully
+> automated code coverage.
