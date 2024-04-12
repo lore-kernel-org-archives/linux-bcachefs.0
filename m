@@ -1,79 +1,117 @@
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA4D4652F;
-	Fri, 12 Apr 2024 06:53:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D282C683;
+	Fri, 12 Apr 2024 07:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712904787; cv=none; b=fm8HqKp7EoQGv1DGCL/WJLSvdnMPZMWomR4oGI4WBtJXGR8jWwtYgDrVMy+prUfAF9KwAZ08t8exEiBSp7/T2OVC8P1nZSWaEwgcrctdfRrVcA6UhFyGw/t4oNtAP+UpCjO56AxQiI76/YlqE3b8KI5n4C8JnEJ5OpWEwZtL5dk=
+	t=1712907029; cv=none; b=BymKsUHSf6h+v1qZ5o9ZBEj0GJykyosGsw4dKrwerl23RX5+pRC2nGEhhRn3Q4OSckbc8t7p3ykOU7i4X2ekbyiEl02VvVF2nDcn5crHj6Bb0QeaBFTvR4B+MlZlrSipOgex3H0LLjTs6PFoljFl0aKD8sS41+yOfcQiArw8uB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712904787; c=relaxed/simple;
-	bh=MJwKbK7opNn0X+MjquHdBM5/uyL6GuSmDDNRq43NiLU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XawMgbJ34vVK4mhGb4gSfSkwNndzqwPv0eMyMOOIFnOdY7aKlGuqVRDlQOoxfjtiADI5SY/2/Yw7UyqD6OtwIZEvXh1li7LJ4lPeGzDHFvNt4koONv8G31gEyRqWDPrEJF0SQ9zzWpvjJ1CJhtHk0189KVbZsSGoN6CCu3Z0TuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VG6gd2Y6Rz1xmRx;
-	Fri, 12 Apr 2024 14:52:13 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6F71D18001A;
-	Fri, 12 Apr 2024 14:53:01 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 14:53:01 +0800
-Message-ID: <9ed2e6d6-186c-4b89-9c07-4b004de6bf23@huawei.com>
-Date: Fri, 12 Apr 2024 14:53:00 +0800
+	s=arc-20240116; t=1712907029; c=relaxed/simple;
+	bh=SMJxN39eSTs8bPxN1doXBcsVnwkQ15ZuSI+TQzwARyU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fDx/toZQ+4LZ2BmDAzDCFyzIsNfFDNfvlAWt13RMari9GiiP9Uxt/FgtlK0elae3f48HS8N1LQ87YTCDQVI+JHjqy3tRSxF/uc+VbcUgx6yPFXGG/RqtfrBBSRgfuw7X5pAe3PvQ8cyUw7GbyzFQKhX3N4DUUe013Jz/eN4BTlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=eX4CZHVJ; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eX4CZHVJ"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=WqsHOb8ca3wTRadlCQz8Y2C98VyRQKabao20sZYMVuU=; b=eX4CZHVJ3CoJuRj6xZ6ZoMY55b
+	E4+cHxnKRhwlspEuPLkPOEMBgu62L57QQplzsmnmGOU1X/5uNFjzPdfUO2PsB+gHBIqcqlsApOVvS
+	w0j47DZ6P36mawIWZi5pmYEEus/SkD8JgwMq6grItMkqZ948DCry5qcbupThkgcWrmkJ6dmvMRMc3
+	sgPanGppQemRKHkCd0b57PPzi6cFhYXZGz/I0dodBsrg49id0nMMEsQ1qvgunJZfvOqw0FnYbd3kM
+	Ym1mlyAaQHZyhzXHPSM1ktyo1vLV6kYiHMYC1g+FS26tGu8xjub1jjlvPX/seM/9iG3HKuQzqZgtb
+	m/G5bwCA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rvBMY-00000008fV6-1VBb;
+	Fri, 12 Apr 2024 07:30:18 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 0880E3004D5; Fri, 12 Apr 2024 09:30:18 +0200 (CEST)
+Date: Fri, 12 Apr 2024 09:30:17 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
+	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
+	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3 04/17] lib min_heap: Add type safe interface
+Message-ID: <20240412073017.GE30852@noisy.programming.kicks-ass.net>
+References: <20240406164727.577914-1-visitorckw@gmail.com>
+ <20240406164727.577914-5-visitorckw@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bcachefs: fix error path of __bch2_read_super()
-Content-Language: en-US
-To: Chao Yu <chao@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240412063638.2068524-1-chao@kernel.org>
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20240412063638.2068524-1-chao@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240406164727.577914-5-visitorckw@gmail.com>
 
-Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
+On Sun, Apr 07, 2024 at 12:47:14AM +0800, Kuan-Wei Chiu wrote:
 
-On 2024/4/12 14:36, Chao Yu wrote:
-> In __bch2_read_super(), if kstrdup() fails, it needs to release memory
-> in sb->holder, fix to call bch2_free_super() in the error path.
-> 
-> Signed-off-by: Chao Yu <chao@kernel.org>
-> ---
-> v2:
-> - add error message in error path pointed out by Hongbo Li.
->   fs/bcachefs/super-io.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-> index ad28e370b640..cc80d7d30b8c 100644
-> --- a/fs/bcachefs/super-io.c
-> +++ b/fs/bcachefs/super-io.c
-> @@ -698,8 +698,11 @@ static int __bch2_read_super(const char *path, struct bch_opts *opts,
->   		return -ENOMEM;
->   
->   	sb->sb_name = kstrdup(path, GFP_KERNEL);
-> -	if (!sb->sb_name)
-> -		return -ENOMEM;
-> +	if (!sb->sb_name) {
-> +		ret = -ENOMEM;
-> +		prt_printf(&err, "error allocating memory for sb_name");
-> +		goto err;
-> +	}
->   
->   #ifndef __KERNEL__
->   	if (opt_get(*opts, direct_io) == false)
+> -struct min_heap {
+> -	void *data;
+> -	int nr;
+> -	int size;
+> -};
+> +#define MIN_HEAP_PREALLOCATED(_type, _name, _nr)	\
+> +struct _name {	\
+> +	int nr;	\
+> +	int size;	\
+> +	_type *data;	\
+> +	_type preallocated[_nr];	\
+> +}
+
+
+> @@ -3738,7 +3739,7 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
+>  	struct perf_cpu_context *cpuctx = NULL;
+>  	/* Space for per CPU and/or any CPU event iterators. */
+>  	struct perf_event *itrs[2];
+> -	struct min_heap event_heap;
+> +	struct perf_event_min_heap event_heap;
+>  	struct perf_event **evt;
+>  	int ret;
+>  
+> @@ -3747,11 +3748,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
+>  
+>  	if (!ctx->task) {
+>  		cpuctx = this_cpu_ptr(&perf_cpu_context);
+> -		event_heap = (struct min_heap){
+> -			.data = cpuctx->heap,
+> -			.nr = 0,
+> -			.size = cpuctx->heap_size,
+> -		};
+> +		event_heap.data = cpuctx->heap;
+> +		event_heap.nr = 0;
+> +		event_heap.size = cpuctx->heap_size;
+>  
+>  		lockdep_assert_held(&cpuctx->ctx.lock);
+>  
+> @@ -3760,11 +3759,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
+>  			css = &cpuctx->cgrp->css;
+>  #endif
+>  	} else {
+> -		event_heap = (struct min_heap){
+> -			.data = itrs,
+> -			.nr = 0,
+> -			.size = ARRAY_SIZE(itrs),
+> -		};
+> +		event_heap.data = itrs;
+> +		event_heap.nr = 0;
+> +		event_heap.size = ARRAY_SIZE(itrs);
+>  		/* Events not within a CPU context may be on any CPU. */
+>  		__heap_add(&event_heap, perf_event_groups_first(groups, -1, pmu, NULL));
+>  	}
+
+Not too happy about these. If you ever add more fields they will go
+uninitialized. Why not keep the existing form and fix the struct name?
