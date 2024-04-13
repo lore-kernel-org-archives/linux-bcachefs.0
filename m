@@ -1,117 +1,376 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D282C683;
-	Fri, 12 Apr 2024 07:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2253FF4
+	for <linux-bcachefs@vger.kernel.org>; Sat, 13 Apr 2024 21:57:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712907029; cv=none; b=BymKsUHSf6h+v1qZ5o9ZBEj0GJykyosGsw4dKrwerl23RX5+pRC2nGEhhRn3Q4OSckbc8t7p3ykOU7i4X2ekbyiEl02VvVF2nDcn5crHj6Bb0QeaBFTvR4B+MlZlrSipOgex3H0LLjTs6PFoljFl0aKD8sS41+yOfcQiArw8uB8=
+	t=1713045459; cv=none; b=kv+U7rorA6mJmCxANLNsaXncqSYQKIgTtqX/HUQVi+tIOM2iHlv/FpycGMy4+3qbDSMDSDEeMOl3rVw7rZXdjdvFFMjan9N2r3S6UJaoBiMSYAYq2tgdRxbyKqkH4hy0R8pwF/jrTunEp5babZr7LuObUn3xNnoyAWP6wxzQV0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712907029; c=relaxed/simple;
-	bh=SMJxN39eSTs8bPxN1doXBcsVnwkQ15ZuSI+TQzwARyU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fDx/toZQ+4LZ2BmDAzDCFyzIsNfFDNfvlAWt13RMari9GiiP9Uxt/FgtlK0elae3f48HS8N1LQ87YTCDQVI+JHjqy3tRSxF/uc+VbcUgx6yPFXGG/RqtfrBBSRgfuw7X5pAe3PvQ8cyUw7GbyzFQKhX3N4DUUe013Jz/eN4BTlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=eX4CZHVJ; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1713045459; c=relaxed/simple;
+	bh=ZYt+JrrA19PAL3Fl1HccTbWDuqAj/fi63LEWADRDCng=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mCrdSS/MhVPGU9VxeME9uZ3fqeDPV30EgHDAEELPJ2bektub6griCZjWNzkGaeMy64qX48bWFoC29lM3bLFgPXV6LPk8ora3P8CV8UCoOV4ME2QllM48q8NVkIFsRh9RwQ95b1JpCNda/6JcDIC+yTH7Bm7FNlszGRpnoiIcXUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Df6LVOUv; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eX4CZHVJ"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=WqsHOb8ca3wTRadlCQz8Y2C98VyRQKabao20sZYMVuU=; b=eX4CZHVJ3CoJuRj6xZ6ZoMY55b
-	E4+cHxnKRhwlspEuPLkPOEMBgu62L57QQplzsmnmGOU1X/5uNFjzPdfUO2PsB+gHBIqcqlsApOVvS
-	w0j47DZ6P36mawIWZi5pmYEEus/SkD8JgwMq6grItMkqZ948DCry5qcbupThkgcWrmkJ6dmvMRMc3
-	sgPanGppQemRKHkCd0b57PPzi6cFhYXZGz/I0dodBsrg49id0nMMEsQ1qvgunJZfvOqw0FnYbd3kM
-	Ym1mlyAaQHZyhzXHPSM1ktyo1vLV6kYiHMYC1g+FS26tGu8xjub1jjlvPX/seM/9iG3HKuQzqZgtb
-	m/G5bwCA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvBMY-00000008fV6-1VBb;
-	Fri, 12 Apr 2024 07:30:18 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 0880E3004D5; Fri, 12 Apr 2024 09:30:18 +0200 (CEST)
-Date: Fri, 12 Apr 2024 09:30:17 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
-	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
-	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v3 04/17] lib min_heap: Add type safe interface
-Message-ID: <20240412073017.GE30852@noisy.programming.kicks-ass.net>
-References: <20240406164727.577914-1-visitorckw@gmail.com>
- <20240406164727.577914-5-visitorckw@gmail.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Df6LVOUv"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713045453;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wkpUeiOk2Yuc6TxmI+UXGtxq4IJggJpO/UawJZIGG/A=;
+	b=Df6LVOUvUhIP9STTl8MbicB+Ktr4AEDZLLQZ2NokaqRCr6dgFWHKMb9hly9OzWNmh5/gOo
+	oRqw8wpjmyYAVSz1BcamJDDKupeDONqhvvUMf4NJ+qRN1uO9kmJrxdDHBSEKDRjliIXjti
+	xJfWOACZCZYvU20943wHQzGJQ0VuKz8=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH] bcachefs: bch_member.btree_allocated_bitmap
+Date: Sat, 13 Apr 2024 17:57:23 -0400
+Message-ID: <20240413215723.1543569-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240406164727.577914-5-visitorckw@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Apr 07, 2024 at 12:47:14AM +0800, Kuan-Wei Chiu wrote:
+For those interested, this is a good tour of the facilities for rolling
+out new on disk format features.
 
-> -struct min_heap {
-> -	void *data;
-> -	int nr;
-> -	int size;
-> -};
-> +#define MIN_HEAP_PREALLOCATED(_type, _name, _nr)	\
-> +struct _name {	\
-> +	int nr;	\
-> +	int size;	\
-> +	_type *data;	\
-> +	_type preallocated[_nr];	\
-> +}
+-- >8 --
 
+This adds a small (64 bit) per-device bitmap that tracks ranges that
+have btree nodes, for accelerating btree node scan if it is ever needed.
 
-> @@ -3738,7 +3739,7 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
->  	struct perf_cpu_context *cpuctx = NULL;
->  	/* Space for per CPU and/or any CPU event iterators. */
->  	struct perf_event *itrs[2];
-> -	struct min_heap event_heap;
-> +	struct perf_event_min_heap event_heap;
->  	struct perf_event **evt;
->  	int ret;
->  
-> @@ -3747,11 +3748,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
->  
->  	if (!ctx->task) {
->  		cpuctx = this_cpu_ptr(&perf_cpu_context);
-> -		event_heap = (struct min_heap){
-> -			.data = cpuctx->heap,
-> -			.nr = 0,
-> -			.size = cpuctx->heap_size,
-> -		};
-> +		event_heap.data = cpuctx->heap;
-> +		event_heap.nr = 0;
-> +		event_heap.size = cpuctx->heap_size;
->  
->  		lockdep_assert_held(&cpuctx->ctx.lock);
->  
-> @@ -3760,11 +3759,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
->  			css = &cpuctx->cgrp->css;
->  #endif
->  	} else {
-> -		event_heap = (struct min_heap){
-> -			.data = itrs,
-> -			.nr = 0,
-> -			.size = ARRAY_SIZE(itrs),
-> -		};
-> +		event_heap.data = itrs;
-> +		event_heap.nr = 0;
-> +		event_heap.size = ARRAY_SIZE(itrs);
->  		/* Events not within a CPU context may be on any CPU. */
->  		__heap_add(&event_heap, perf_event_groups_first(groups, -1, pmu, NULL));
->  	}
+- New helpers, bch2_dev_btree_bitmap_marked() and
+  bch2_dev_bitmap_mark(), for checking and updating the bitmap
 
-Not too happy about these. If you ever add more fields they will go
-uninitialized. Why not keep the existing form and fix the struct name?
+- Interior btree update path updates the bitmaps when required
+
+- The check_allocations pass has a new fsck_err check,
+  btree_bitmap_not_marked
+
+- New on disk format version, mi_btree_mitmap, which indicates the new
+  bitmap is present
+
+- Upgrade table lists the required recovery pass and expected fsck error
+
+- Btree node scan uses the bitmap to skip ranges if we're on the new
+  version
+
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/bcachefs_format.h       |  7 ++--
+ fs/bcachefs/btree_gc.c              | 13 +++++++
+ fs/bcachefs/btree_node_scan.c       |  9 +++--
+ fs/bcachefs/btree_update_interior.c | 24 +++++++++++++
+ fs/bcachefs/sb-downgrade.c          |  5 ++-
+ fs/bcachefs/sb-errors_types.h       |  3 +-
+ fs/bcachefs/sb-members.c            | 53 +++++++++++++++++++++++++++++
+ fs/bcachefs/sb-members.h            | 21 ++++++++++++
+ fs/bcachefs/sb-members_types.h      |  2 ++
+ 9 files changed, 131 insertions(+), 6 deletions(-)
+
+diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+index 9480f1b44f07..085987435a5e 100644
+--- a/fs/bcachefs/bcachefs_format.h
++++ b/fs/bcachefs/bcachefs_format.h
+@@ -578,7 +578,8 @@ struct bch_member {
+ 	__le64			nbuckets;	/* device size */
+ 	__le16			first_bucket;   /* index of first bucket used */
+ 	__le16			bucket_size;	/* sectors */
+-	__le32			pad;
++	__u8			btree_bitmap_shift;
++	__u8			pad[3];
+ 	__le64			last_mount;	/* time_t */
+ 
+ 	__le64			flags;
+@@ -587,6 +588,7 @@ struct bch_member {
+ 	__le64			errors_at_reset[BCH_MEMBER_ERROR_NR];
+ 	__le64			errors_reset_time;
+ 	__le64			seq;
++	__le64			btree_allocated_bitmap;
+ };
+ 
+ #define BCH_MEMBER_V1_BYTES	56
+@@ -876,7 +878,8 @@ struct bch_sb_field_downgrade {
+ 	x(rebalance_work,		BCH_VERSION(1,  3))		\
+ 	x(member_seq,			BCH_VERSION(1,  4))		\
+ 	x(subvolume_fs_parent,		BCH_VERSION(1,  5))		\
+-	x(btree_subvolume_children,	BCH_VERSION(1,  6))
++	x(btree_subvolume_children,	BCH_VERSION(1,  6))		\
++	x(mi_btree_bitmap,		BCH_VERSION(1,  7))
+ 
+ enum bcachefs_metadata_version {
+ 	bcachefs_metadata_version_min = 9,
+diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
+index 10c41cf89212..a77c723a9cef 100644
+--- a/fs/bcachefs/btree_gc.c
++++ b/fs/bcachefs/btree_gc.c
+@@ -822,6 +822,7 @@ static int bch2_gc_mark_key(struct btree_trans *trans, enum btree_id btree_id,
+ 	struct bch_fs *c = trans->c;
+ 	struct bkey deleted = KEY(0, 0, 0);
+ 	struct bkey_s_c old = (struct bkey_s_c) { &deleted, NULL };
++	struct printbuf buf = PRINTBUF;
+ 	int ret = 0;
+ 
+ 	deleted.p = k->k->p;
+@@ -842,11 +843,23 @@ static int bch2_gc_mark_key(struct btree_trans *trans, enum btree_id btree_id,
+ 	if (ret)
+ 		goto err;
+ 
++	if (mustfix_fsck_err_on(level && !bch2_dev_btree_bitmap_marked(c, *k),
++				c, btree_bitmap_not_marked,
++				"btree ptr not marked in member info btree allocated bitmap\n  %s",
++				(bch2_bkey_val_to_text(&buf, c, *k),
++				 buf.buf))) {
++		mutex_lock(&c->sb_lock);
++		bch2_dev_btree_bitmap_mark(c, *k);
++		bch2_write_super(c);
++		mutex_unlock(&c->sb_lock);
++	}
++
+ 	ret = commit_do(trans, NULL, NULL, 0,
+ 			bch2_key_trigger(trans, btree_id, level, old,
+ 					 unsafe_bkey_s_c_to_s(*k), BTREE_TRIGGER_gc));
+ fsck_err:
+ err:
++	printbuf_exit(&buf);
+ 	bch_err_fn(c, ret);
+ 	return ret;
+ }
+diff --git a/fs/bcachefs/btree_node_scan.c b/fs/bcachefs/btree_node_scan.c
+index 20f2b37c4474..866bd278439f 100644
+--- a/fs/bcachefs/btree_node_scan.c
++++ b/fs/bcachefs/btree_node_scan.c
+@@ -205,8 +205,13 @@ static int read_btree_nodes_worker(void *p)
+ 				last_print = jiffies;
+ 			}
+ 
+-			try_read_btree_node(w->f, ca, bio, buf,
+-					    bucket * ca->mi.bucket_size + bucket_offset);
++			u64 sector = bucket * ca->mi.bucket_size + bucket_offset;
++
++			if (c->sb.version_upgrade_complete >= bcachefs_metadata_version_mi_btree_bitmap &&
++			    !bch2_dev_btree_bitmap_marked_sectors(ca, sector, btree_sectors(c)))
++				continue;
++
++			try_read_btree_node(w->f, ca, bio, buf, sector);
+ 		}
+ err:
+ 	bio_put(bio);
+diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+index 593241b15aa8..12ce6287416f 100644
+--- a/fs/bcachefs/btree_update_interior.c
++++ b/fs/bcachefs/btree_update_interior.c
+@@ -21,6 +21,7 @@
+ #include "keylist.h"
+ #include "recovery_passes.h"
+ #include "replicas.h"
++#include "sb-members.h"
+ #include "super-io.h"
+ #include "trace.h"
+ 
+@@ -644,6 +645,26 @@ static int btree_update_nodes_written_trans(struct btree_trans *trans,
+ 	return 0;
+ }
+ 
++static bool btree_update_new_nodes_marked_sb(struct btree_update *as)
++{
++	for_each_keylist_key(&as->new_keys, k)
++		if (!bch2_dev_btree_bitmap_marked(as->c, bkey_i_to_s_c(k)))
++			return false;
++	return true;
++}
++
++static void btree_update_new_nodes_mark_sb(struct btree_update *as)
++{
++	struct bch_fs *c = as->c;
++
++	mutex_lock(&c->sb_lock);
++	for_each_keylist_key(&as->new_keys, k)
++		bch2_dev_btree_bitmap_mark(c, bkey_i_to_s_c(k));
++
++	bch2_write_super(c);
++	mutex_unlock(&c->sb_lock);
++}
++
+ static void btree_update_nodes_written(struct btree_update *as)
+ {
+ 	struct bch_fs *c = as->c;
+@@ -664,6 +685,9 @@ static void btree_update_nodes_written(struct btree_update *as)
+ 	if (ret)
+ 		goto err;
+ 
++	if (!btree_update_new_nodes_marked_sb(as))
++		btree_update_new_nodes_mark_sb(as);
++
+ 	/*
+ 	 * Wait for any in flight writes to finish before we free the old nodes
+ 	 * on disk:
+diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
+index 56ac8f35cdc3..90b06f8aa1df 100644
+--- a/fs/bcachefs/sb-downgrade.c
++++ b/fs/bcachefs/sb-downgrade.c
+@@ -51,7 +51,10 @@
+ 	  BCH_FSCK_ERR_subvol_fs_path_parent_wrong)		\
+ 	x(btree_subvolume_children,				\
+ 	  BIT_ULL(BCH_RECOVERY_PASS_check_subvols),		\
+-	  BCH_FSCK_ERR_subvol_children_not_set)
++	  BCH_FSCK_ERR_subvol_children_not_set)			\
++	x(mi_btree_bitmap,					\
++	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
++	  BCH_FSCK_ERR_btree_bitmap_not_marked)
+ 
+ #define DOWNGRADE_TABLE()
+ 
+diff --git a/fs/bcachefs/sb-errors_types.h b/fs/bcachefs/sb-errors_types.h
+index d7d609131030..5b600c6d7aca 100644
+--- a/fs/bcachefs/sb-errors_types.h
++++ b/fs/bcachefs/sb-errors_types.h
+@@ -270,7 +270,8 @@
+ 	x(btree_ptr_v2_min_key_bad,				262)	\
+ 	x(btree_root_unreadable_and_scan_found_nothing,		263)	\
+ 	x(snapshot_node_missing,				264)	\
+-	x(dup_backpointer_to_bad_csum_extent,			265)
++	x(dup_backpointer_to_bad_csum_extent,			265)	\
++	x(btree_bitmap_not_marked,				266)
+ 
+ enum bch_sb_error_id {
+ #define x(t, n) BCH_FSCK_ERR_##t = n,
+diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
+index 9b7a2f300182..d5937aba0910 100644
+--- a/fs/bcachefs/sb-members.c
++++ b/fs/bcachefs/sb-members.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+ #include "bcachefs.h"
++#include "btree_cache.h"
+ #include "disk_groups.h"
+ #include "opts.h"
+ #include "replicas.h"
+@@ -378,3 +379,55 @@ void bch2_dev_errors_reset(struct bch_dev *ca)
+ 	bch2_write_super(c);
+ 	mutex_unlock(&c->sb_lock);
+ }
++
++/*
++ * Per member "range has btree nodes" bitmap:
++ *
++ * This is so that if we ever have to run the btree node scan to repair we don't
++ * have to scan full devices:
++ */
++
++bool bch2_dev_btree_bitmap_marked(struct bch_fs *c, struct bkey_s_c k)
++{
++	bkey_for_each_ptr(bch2_bkey_ptrs_c(k), ptr)
++		if (!bch2_dev_btree_bitmap_marked_sectors(bch2_dev_bkey_exists(c, ptr->dev),
++							  ptr->offset, btree_sectors(c)))
++			return false;
++	return true;
++}
++
++static void __bch2_dev_btree_bitmap_mark(struct bch_sb_field_members_v2 *mi, unsigned dev,
++				u64 start, unsigned sectors)
++{
++	struct bch_member *m = __bch2_members_v2_get_mut(mi, dev);
++	u64 bitmap = le64_to_cpu(m->btree_allocated_bitmap);
++
++	u64 end = start + sectors;
++
++	int resize = ilog2(roundup_pow_of_two(end)) - (m->btree_bitmap_shift + 6);
++	if (resize > 0) {
++		u64 new_bitmap = 0;
++
++		for (unsigned i = 0; i < 64; i++)
++			if (bitmap & BIT_ULL(i))
++				new_bitmap |= BIT_ULL(i >> resize);
++		bitmap = new_bitmap;
++		m->btree_bitmap_shift += resize;
++	}
++
++	for (unsigned bit = sectors >> m->btree_bitmap_shift;
++	     bit << m->btree_bitmap_shift < end;
++	     bit++)
++		bitmap |= BIT_ULL(bit);
++
++	m->btree_allocated_bitmap = cpu_to_le64(bitmap);
++}
++
++void bch2_dev_btree_bitmap_mark(struct bch_fs *c, struct bkey_s_c k)
++{
++	lockdep_assert_held(&c->sb_lock);
++
++	struct bch_sb_field_members_v2 *mi = bch2_sb_field_get(c->disk_sb.sb, members_v2);
++	bkey_for_each_ptr(bch2_bkey_ptrs_c(k), ptr)
++		__bch2_dev_btree_bitmap_mark(mi, ptr->dev, ptr->offset, btree_sectors(c));
++}
+diff --git a/fs/bcachefs/sb-members.h b/fs/bcachefs/sb-members.h
+index bc3bcfef7b3a..8bbad30a4370 100644
+--- a/fs/bcachefs/sb-members.h
++++ b/fs/bcachefs/sb-members.h
+@@ -3,6 +3,7 @@
+ #define _BCACHEFS_SB_MEMBERS_H
+ 
+ #include "darray.h"
++#include "bkey_types.h"
+ 
+ extern char * const bch2_member_error_strs[];
+ 
+@@ -234,6 +235,8 @@ static inline struct bch_member_cpu bch2_mi_to_cpu(struct bch_member *mi)
+ 			: 1,
+ 		.freespace_initialized = BCH_MEMBER_FREESPACE_INITIALIZED(mi),
+ 		.valid		= bch2_member_alive(mi),
++		.btree_bitmap_shift	= mi->btree_bitmap_shift,
++		.btree_allocated_bitmap = le64_to_cpu(mi->btree_allocated_bitmap),
+ 	};
+ }
+ 
+@@ -242,4 +245,22 @@ void bch2_sb_members_from_cpu(struct bch_fs *);
+ void bch2_dev_io_errors_to_text(struct printbuf *, struct bch_dev *);
+ void bch2_dev_errors_reset(struct bch_dev *);
+ 
++static inline bool bch2_dev_btree_bitmap_marked_sectors(struct bch_dev *ca, u64 start, unsigned sectors)
++{
++	u64 end = start + sectors;
++
++	if (end > 64 << ca->mi.btree_bitmap_shift)
++		return false;
++
++	for (unsigned bit = sectors >> ca->mi.btree_bitmap_shift;
++	     bit << ca->mi.btree_bitmap_shift < end;
++	     bit++)
++		if (!(ca->mi.btree_allocated_bitmap & BIT_ULL(bit)))
++			return false;
++	return true;
++}
++
++bool bch2_dev_btree_bitmap_marked(struct bch_fs *, struct bkey_s_c);
++void bch2_dev_btree_bitmap_mark(struct bch_fs *, struct bkey_s_c);
++
+ #endif /* _BCACHEFS_SB_MEMBERS_H */
+diff --git a/fs/bcachefs/sb-members_types.h b/fs/bcachefs/sb-members_types.h
+index 3f915536d554..c0eda888fe39 100644
+--- a/fs/bcachefs/sb-members_types.h
++++ b/fs/bcachefs/sb-members_types.h
+@@ -14,6 +14,8 @@ struct bch_member_cpu {
+ 	u8			durability;
+ 	u8			freespace_initialized;
+ 	u8			valid;
++	u8			btree_bitmap_shift;
++	u64			btree_allocated_bitmap;
+ };
+ 
+ #endif /* _BCACHEFS_SB_MEMBERS_H */
+-- 
+2.43.0
+
