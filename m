@@ -1,156 +1,381 @@
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F33B1E49D
-	for <linux-bcachefs@vger.kernel.org>; Sun, 14 Apr 2024 22:32:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E04633CA;
+	Mon, 15 Apr 2024 01:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713133934; cv=none; b=NDRdyCa1DdsiU7bbTRzNGMzWpElhVd5Z0Qg/mbAfnty+nOADWx75VhLZKQR0eC1lc14Qhs47WH1Tvm+2vUg6mZUTZBLLEmzKrOaEiglw6UgwbHpNbv8e+bfwf+OaVEVxacgYC7lKfN74FotUrPle3Rljmje7XZ+VbH0tNo0AYQ8=
+	t=1713143539; cv=none; b=CkfJQtNWAPhJbZb5FfXlIp9Uu66+hxQMU59Q0w355EdwK6KhkNDQd4Nsh5p9WMs8mZYuUKHYQWORvgyjFRKIYj7VgJxA0lJ3Q3r6YnUnLrdLeFzWW01ued4+QFMXh1Jp6vytuLkBqKnRSMiSrYQ6h+GKbiq825UfaLd/lBHn5Ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713133934; c=relaxed/simple;
-	bh=MnYksIqvb5FtaeoglclkXGEgkSgT6ycUtxodaz3XLgc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=TUS37kKzar7sjQK1zwjljkqXTOqgRE7+8OoE946VkMJUNhHNZqNbjhxEII8BO8ZuWsX3F5JrbgAUZxFj+Av5c3BrkMIWsPFqDpF1jH+5GmZTfCTfGvG6u7QFH1eCRCTRhEBjTipjx27j3SnLLBHnhfB8sgYM4lFOvrJzXtR3C7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XNHVuFXM; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XNHVuFXM"
-Date: Sun, 14 Apr 2024 18:32:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713133930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=KiyLn6RhoZasL+FS6LenVdQAJyHGH6C0x6+1YBj1+g4=;
-	b=XNHVuFXMPoDHtMGbDkL0Sa/VOnws7xo16dQBrDLMtK2N16jtoP3JqGfFwGbNA2jaX0JTgG
-	MY+YDGPBFK9yY161N9cTqHcLW2p7nU6yI368ey/f75Mqf5J2Lkap8BpLaGZ4x8Jh8rl0vW
-	plRrfGvrrs170Egck8gOa9nXD79w7mU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Johannes Berg <johannes.berg@intel.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: debugfs revoke broken?
-Message-ID: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
+	s=arc-20240116; t=1713143539; c=relaxed/simple;
+	bh=rHd+SpLhsrhPHmqesZ7e0CIStGoBSblWtlRhPMJ+jNo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=pkSPn2fkavAwwMc97/f/OwUZJ0G97fyMgSo5ADdxI9Kp+42SX8bEKjHI2Z0M7yzOGlqwe1bvwdwD3fZOXQ6C5af0zn9htIQWnu+m1m19bd7XreNTVyWBJjRDH+Y/4LSl1Vc5Wch7Mze+aPdg6/jVW8ziNkt2X1fRlCQyPG3tW3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VHpwX3HRwz2CcR6;
+	Mon, 15 Apr 2024 09:09:16 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6C93B1A0190;
+	Mon, 15 Apr 2024 09:12:12 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 15 Apr 2024 09:12:12 +0800
+Message-ID: <d7e9f196-c3bd-47ca-87fb-b21f28f1680a@huawei.com>
+Date: Mon, 15 Apr 2024 09:12:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: bch_member.btree_allocated_bitmap
+Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	<linux-bcachefs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240413215723.1543569-1-kent.overstreet@linux.dev>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240413215723.1543569-1-kent.overstreet@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-I recently started seeing test failures like the following; from the
-"shutdown complete" line we're well after the point where we called
-debugfs_remove_recursive() - yet from the backtrace we were still able
-to call into debugfs.
 
-And I see from the history the remove path has been getting tweaked,
-so...
 
-00091 ========= TEST   generic/001
-00091 
-00092 Setting up swapspace version 1, size = 2 GiB (2147479552 bytes)
-00092 no label, UUID=73a80295-2b03-4512-aae1-785187926ce3
-00092 Adding 2097148k swap on /dev/vde.  Priority:-2 extents:1 across:2097148k 
-00092 configuration error - unknown item 'NONEXISTENT' (notify administrator)
-00092 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
-00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
-00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
-00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
-00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
-00101 building 001... done
-00101 bcachefs (vdb): mounting version 1.7: mi_btree_bitmap
-00101 bcachefs (vdb): initializing new filesystem
-00101 bcachefs (vdb): going read-write
-00101 bcachefs (vdb): marking superblocks
-00101 bcachefs (vdb): initializing freespace
-00101 bcachefs (vdb): done initializing freespace
-00101 bcachefs (vdb): reading snapshots table
-00101 bcachefs (vdb): reading snapshots done
-00101 bcachefs (vdb): done starting filesystem
-00102 FSTYP         -- bcachefs
-00102 PLATFORM      -- Linux/aarch64 Debian-1103-bullseye-arm64-base-kvm 6.9.0-rc2-ktest-g2719f811ae24 #18142 SMP Sun Apr 14 16:26:05 NZST 2024
-00102 MKFS_OPTIONS  -- --encrypted --no_passphrase /dev/vdc
-00102 MOUNT_OPTIONS -- /dev/vdc /mnt/scratch
-00102 
-00102 bcachefs (vdc): mounting version 1.7: mi_btree_bitmap
-00102 bcachefs (vdc): initializing new filesystem
-00102 bcachefs (vdc): going read-write
-00102 bcachefs (vdc): marking superblocks
-00102 bcachefs (vdc): initializing freespace
-00102 bcachefs (vdc): done initializing freespace
-00102 bcachefs (vdc): reading snapshots table
-00102 bcachefs (vdc): reading snapshots done
-00102 bcachefs (vdc): done starting filesystem
-00102 bcachefs (vdc): shutting down
-00102 bcachefs (vdc): going read-only
-00102 bcachefs (vdc): finished waiting for writes to stop
-00102 bcachefs (vdc): flushing journal and stopping allocators, journal seq 3
-00102 bcachefs (vdc): flushing journal and stopping allocators complete, journal seq 5
-00102 bcachefs (vdc): shutdown complete, journal seq 6
-00102 bcachefs (vdc): marking filesystem clean
-00102 bcachefs (vdc): shutdown complete
-00102 bcachefs (vdb): shutting down
-00102 bcachefs (vdb): going read-only
-00102 bcachefs (vdb): finished waiting for writes to stop
-00102 bcachefs (vdb): flushing journal and stopping allocators, journal seq 6
-00102 bcachefs (vdb): flushing journal and stopping allocators complete, journal seq 7
-00102 bcachefs (vdb): shutdown complete, journal seq 8
-00102 bcachefs (vdb): marking filesystem clean
-00102 bcachefs (vdb): shutdown complete
-00102 Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
-00102 Mem abort info:
-00102   ESR = 0x0000000096000004
-00102   EC = 0x25: DABT (current EL), IL = 32 bits
-00102   SET = 0, FnV = 0
-00102   EA = 0, S1PTW = 0
-00102   FSC = 0x04: level 0 translation fault
-00102 Data abort info:
-00102   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-00102   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-00102   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-00102 user pgtable: 4k pages, 48-bit VAs, pgdp=000000011585c000
-00102 [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
-00102 Internal error: Oops: 0000000096000004 [#1] SMP
-00102 Modules linked in:
-00102 CPU: 7 PID: 1805 Comm: cat Not tainted 6.9.0-rc2-ktest-g2719f811ae24 #18142
-00102 Hardware name: linux,dummy-virt (DT)
-00102 pstate: 00001005 (nzcv daif -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-00102 pc : bch2_journal_seq_pins_to_text+0x100/0x208
-00102 lr : bch2_journal_seq_pins_to_text+0xf0/0x208
-00102 sp : ffff0000d6dd3c80
-00102 x29: ffff0000d6dd3c80 x28: ffff0000ca361f00 x27: 0000000000000000
-00102 x26: 0000000000000000 x25: ffff0000da0002c0 x24: ffff0000da0002f0
-00102 x23: ffff0000d50668c0 x22: ffff800080998950 x21: ffff0000da0002c0
-00102 x20: ffff0000c46165c0 x19: 0000000000000000 x18: 00000000fffffffe
-00102 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-00102 x14: ffffffffffffffff x13: ffff0000c0ada1df x12: ffff0000c0ada1d9
-00102 x11: 0000000000000000 x10: 0000000000000000 x9 : ffff800080400ec8
-00102 x8 : 0000000000000000 x7 : 20746e756f63203a x6 : 0000000000000000
-00102 x5 : 0000000000000020 x4 : 000000000000000d x3 : ffff0000c0ada1d0
-00102 x2 : 0000000000000010 x1 : ffff0000c0ada1d0 x0 : 0000000000000012
-00102 Call trace:
-00102  bch2_journal_seq_pins_to_text+0x100/0x208
-00102  bch2_journal_pins_read+0x48/0xd0
-00102  full_proxy_read+0x64/0xb8
-00102  vfs_read+0xd0/0x2d0
-00102  ksys_read+0x5c/0xe0
-00102  __arm64_sys_read+0x20/0x30
-00102  invoke_syscall.constprop.0+0x50/0xe0
-00102  do_el0_svc+0x44/0xc8
-00102  el0_svc+0x18/0x58
-00102  el0t_64_sync_handler+0xb8/0xc0
-00102  el0t_64_sync+0x14c/0x150
-00102 Code: f94002b3 eb15027f 54000180 d503201f (f9400a63) 
-00102 ---[ end trace 0000000000000000 ]---
-00102 Kernel panic - not syncing: Oops: Fatal exception
-00102 SMP: stopping secondary CPUs
-00102 Kernel Offset: disabled
-00102 CPU features: 0x0,00000003,80000008,4240500b
-00102 Memory Limit: none
-00102 ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
-00107 ========= FAILED TIMEOUT generic.001 in 1200s
-
+On 2024/4/14 5:57, Kent Overstreet wrote:
+> For those interested, this is a good tour of the facilities for rolling
+> out new on disk format features.
+> 
+> -- >8 --
+> 
+> This adds a small (64 bit) per-device bitmap that tracks ranges that
+> have btree nodes, for accelerating btree node scan if it is ever needed.
+> 
+> - New helpers, bch2_dev_btree_bitmap_marked() and
+>    bch2_dev_bitmap_mark(), for checking and updating the bitmap
+> 
+> - Interior btree update path updates the bitmaps when required
+> 
+> - The check_allocations pass has a new fsck_err check,
+>    btree_bitmap_not_marked
+> 
+> - New on disk format version, mi_btree_mitmap, which indicates the new
+>    bitmap is present
+> 
+> - Upgrade table lists the required recovery pass and expected fsck error
+> 
+> - Btree node scan uses the bitmap to skip ranges if we're on the new
+>    version
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
+>   fs/bcachefs/bcachefs_format.h       |  7 ++--
+>   fs/bcachefs/btree_gc.c              | 13 +++++++
+>   fs/bcachefs/btree_node_scan.c       |  9 +++--
+>   fs/bcachefs/btree_update_interior.c | 24 +++++++++++++
+>   fs/bcachefs/sb-downgrade.c          |  5 ++-
+>   fs/bcachefs/sb-errors_types.h       |  3 +-
+>   fs/bcachefs/sb-members.c            | 53 +++++++++++++++++++++++++++++
+>   fs/bcachefs/sb-members.h            | 21 ++++++++++++
+>   fs/bcachefs/sb-members_types.h      |  2 ++
+>   9 files changed, 131 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+> index 9480f1b44f07..085987435a5e 100644
+> --- a/fs/bcachefs/bcachefs_format.h
+> +++ b/fs/bcachefs/bcachefs_format.h
+> @@ -578,7 +578,8 @@ struct bch_member {
+>   	__le64			nbuckets;	/* device size */
+>   	__le16			first_bucket;   /* index of first bucket used */
+>   	__le16			bucket_size;	/* sectors */
+> -	__le32			pad;
+> +	__u8			btree_bitmap_shift;
+> +	__u8			pad[3];
+>   	__le64			last_mount;	/* time_t */
+>   
+>   	__le64			flags;
+> @@ -587,6 +588,7 @@ struct bch_member {
+>   	__le64			errors_at_reset[BCH_MEMBER_ERROR_NR];
+>   	__le64			errors_reset_time;
+>   	__le64			seq;
+> +	__le64			btree_allocated_bitmap;
+>   };
+>   
+>   #define BCH_MEMBER_V1_BYTES	56
+> @@ -876,7 +878,8 @@ struct bch_sb_field_downgrade {
+>   	x(rebalance_work,		BCH_VERSION(1,  3))		\
+>   	x(member_seq,			BCH_VERSION(1,  4))		\
+>   	x(subvolume_fs_parent,		BCH_VERSION(1,  5))		\
+> -	x(btree_subvolume_children,	BCH_VERSION(1,  6))
+> +	x(btree_subvolume_children,	BCH_VERSION(1,  6))		\
+> +	x(mi_btree_bitmap,		BCH_VERSION(1,  7))
+>   
+>   enum bcachefs_metadata_version {
+>   	bcachefs_metadata_version_min = 9,
+> diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
+> index 10c41cf89212..a77c723a9cef 100644
+> --- a/fs/bcachefs/btree_gc.c
+> +++ b/fs/bcachefs/btree_gc.c
+> @@ -822,6 +822,7 @@ static int bch2_gc_mark_key(struct btree_trans *trans, enum btree_id btree_id,
+>   	struct bch_fs *c = trans->c;
+>   	struct bkey deleted = KEY(0, 0, 0);
+>   	struct bkey_s_c old = (struct bkey_s_c) { &deleted, NULL };
+> +	struct printbuf buf = PRINTBUF;
+>   	int ret = 0;
+>   
+>   	deleted.p = k->k->p;
+> @@ -842,11 +843,23 @@ static int bch2_gc_mark_key(struct btree_trans *trans, enum btree_id btree_id,
+>   	if (ret)
+>   		goto err;
+>   
+> +	if (mustfix_fsck_err_on(level && !bch2_dev_btree_bitmap_marked(c, *k),
+> +				c, btree_bitmap_not_marked,
+> +				"btree ptr not marked in member info btree allocated bitmap\n  %s",
+> +				(bch2_bkey_val_to_text(&buf, c, *k),
+> +				 buf.buf))) {
+> +		mutex_lock(&c->sb_lock);
+> +		bch2_dev_btree_bitmap_mark(c, *k);
+> +		bch2_write_super(c);
+> +		mutex_unlock(&c->sb_lock);
+> +	}
+> +
+>   	ret = commit_do(trans, NULL, NULL, 0,
+>   			bch2_key_trigger(trans, btree_id, level, old,
+>   					 unsafe_bkey_s_c_to_s(*k), BTREE_TRIGGER_gc));
+>   fsck_err:
+>   err:
+> +	printbuf_exit(&buf);
+>   	bch_err_fn(c, ret);
+>   	return ret;
+>   }
+> diff --git a/fs/bcachefs/btree_node_scan.c b/fs/bcachefs/btree_node_scan.c
+> index 20f2b37c4474..866bd278439f 100644
+> --- a/fs/bcachefs/btree_node_scan.c
+> +++ b/fs/bcachefs/btree_node_scan.c
+> @@ -205,8 +205,13 @@ static int read_btree_nodes_worker(void *p)
+>   				last_print = jiffies;
+>   			}
+>   
+> -			try_read_btree_node(w->f, ca, bio, buf,
+> -					    bucket * ca->mi.bucket_size + bucket_offset);
+> +			u64 sector = bucket * ca->mi.bucket_size + bucket_offset;
+> +
+> +			if (c->sb.version_upgrade_complete >= bcachefs_metadata_version_mi_btree_bitmap &&
+> +			    !bch2_dev_btree_bitmap_marked_sectors(ca, sector, btree_sectors(c)))
+> +				continue;
+> +
+> +			try_read_btree_node(w->f, ca, bio, buf, sector);
+>   		}
+>   err:
+>   	bio_put(bio);
+> diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+> index 593241b15aa8..12ce6287416f 100644
+> --- a/fs/bcachefs/btree_update_interior.c
+> +++ b/fs/bcachefs/btree_update_interior.c
+> @@ -21,6 +21,7 @@
+>   #include "keylist.h"
+>   #include "recovery_passes.h"
+>   #include "replicas.h"
+> +#include "sb-members.h"
+>   #include "super-io.h"
+>   #include "trace.h"
+>   
+> @@ -644,6 +645,26 @@ static int btree_update_nodes_written_trans(struct btree_trans *trans,
+>   	return 0;
+>   }
+>   
+> +static bool btree_update_new_nodes_marked_sb(struct btree_update *as)
+> +{
+> +	for_each_keylist_key(&as->new_keys, k)
+> +		if (!bch2_dev_btree_bitmap_marked(as->c, bkey_i_to_s_c(k)))
+> +			return false;
+> +	return true;
+> +}
+> +
+> +static void btree_update_new_nodes_mark_sb(struct btree_update *as)
+> +{
+> +	struct bch_fs *c = as->c;
+> +
+> +	mutex_lock(&c->sb_lock);
+> +	for_each_keylist_key(&as->new_keys, k)
+> +		bch2_dev_btree_bitmap_mark(c, bkey_i_to_s_c(k));
+> +
+> +	bch2_write_super(c);
+> +	mutex_unlock(&c->sb_lock);
+> +}
+> +
+>   static void btree_update_nodes_written(struct btree_update *as)
+>   {
+>   	struct bch_fs *c = as->c;
+> @@ -664,6 +685,9 @@ static void btree_update_nodes_written(struct btree_update *as)
+>   	if (ret)
+>   		goto err;
+>   
+> +	if (!btree_update_new_nodes_marked_sb(as))
+> +		btree_update_new_nodes_mark_sb(as);
+> +
+>   	/*
+>   	 * Wait for any in flight writes to finish before we free the old nodes
+>   	 * on disk:
+> diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
+> index 56ac8f35cdc3..90b06f8aa1df 100644
+> --- a/fs/bcachefs/sb-downgrade.c
+> +++ b/fs/bcachefs/sb-downgrade.c
+> @@ -51,7 +51,10 @@
+>   	  BCH_FSCK_ERR_subvol_fs_path_parent_wrong)		\
+>   	x(btree_subvolume_children,				\
+>   	  BIT_ULL(BCH_RECOVERY_PASS_check_subvols),		\
+> -	  BCH_FSCK_ERR_subvol_children_not_set)
+> +	  BCH_FSCK_ERR_subvol_children_not_set)			\
+> +	x(mi_btree_bitmap,					\
+> +	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
+> +	  BCH_FSCK_ERR_btree_bitmap_not_marked)
+>   
+>   #define DOWNGRADE_TABLE()
+>   
+> diff --git a/fs/bcachefs/sb-errors_types.h b/fs/bcachefs/sb-errors_types.h
+> index d7d609131030..5b600c6d7aca 100644
+> --- a/fs/bcachefs/sb-errors_types.h
+> +++ b/fs/bcachefs/sb-errors_types.h
+> @@ -270,7 +270,8 @@
+>   	x(btree_ptr_v2_min_key_bad,				262)	\
+>   	x(btree_root_unreadable_and_scan_found_nothing,		263)	\
+>   	x(snapshot_node_missing,				264)	\
+> -	x(dup_backpointer_to_bad_csum_extent,			265)
+> +	x(dup_backpointer_to_bad_csum_extent,			265)	\
+> +	x(btree_bitmap_not_marked,				266)
+>   
+>   enum bch_sb_error_id {
+>   #define x(t, n) BCH_FSCK_ERR_##t = n,
+> diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
+> index 9b7a2f300182..d5937aba0910 100644
+> --- a/fs/bcachefs/sb-members.c
+> +++ b/fs/bcachefs/sb-members.c
+> @@ -1,6 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   
+>   #include "bcachefs.h"
+> +#include "btree_cache.h"
+>   #include "disk_groups.h"
+>   #include "opts.h"
+>   #include "replicas.h"
+> @@ -378,3 +379,55 @@ void bch2_dev_errors_reset(struct bch_dev *ca)
+>   	bch2_write_super(c);
+>   	mutex_unlock(&c->sb_lock);
+>   }
+> +
+> +/*
+> + * Per member "range has btree nodes" bitmap:
+> + *
+> + * This is so that if we ever have to run the btree node scan to repair we don't
+> + * have to scan full devices:
+> + */
+> +
+> +bool bch2_dev_btree_bitmap_marked(struct bch_fs *c, struct bkey_s_c k)
+> +{
+> +	bkey_for_each_ptr(bch2_bkey_ptrs_c(k), ptr)
+> +		if (!bch2_dev_btree_bitmap_marked_sectors(bch2_dev_bkey_exists(c, ptr->dev),
+> +							  ptr->offset, btree_sectors(c)))
+> +			return false;
+> +	return true;
+> +}
+> +
+> +static void __bch2_dev_btree_bitmap_mark(struct bch_sb_field_members_v2 *mi, unsigned dev,
+> +				u64 start, unsigned sectors)
+> +{
+> +	struct bch_member *m = __bch2_members_v2_get_mut(mi, dev);
+> +	u64 bitmap = le64_to_cpu(m->btree_allocated_bitmap);
+> +
+> +	u64 end = start + sectors;
+> +
+> +	int resize = ilog2(roundup_pow_of_two(end)) - (m->btree_bitmap_shift + 6);
+> +	if (resize > 0) {
+> +		u64 new_bitmap = 0;
+> +
+> +		for (unsigned i = 0; i < 64; i++)
+> +			if (bitmap & BIT_ULL(i))
+> +				new_bitmap |= BIT_ULL(i >> resize);
+> +		bitmap = new_bitmap;
+> +		m->btree_bitmap_shift += resize;
+> +	}
+> +
+> +	for (unsigned bit = sectors >> m->btree_bitmap_shift;
+> +	     bit << m->btree_bitmap_shift < end;
+> +	     bit++)
+> +		bitmap |= BIT_ULL(bit);
+> +
+> +	m->btree_allocated_bitmap = cpu_to_le64(bitmap);
+> +}
+> +
+> +void bch2_dev_btree_bitmap_mark(struct bch_fs *c, struct bkey_s_c k)
+> +{
+> +	lockdep_assert_held(&c->sb_lock);
+> +
+> +	struct bch_sb_field_members_v2 *mi = bch2_sb_field_get(c->disk_sb.sb, members_v2);
+> +	bkey_for_each_ptr(bch2_bkey_ptrs_c(k), ptr)
+> +		__bch2_dev_btree_bitmap_mark(mi, ptr->dev, ptr->offset, btree_sectors(c));
+> +}
+> diff --git a/fs/bcachefs/sb-members.h b/fs/bcachefs/sb-members.h
+> index bc3bcfef7b3a..8bbad30a4370 100644
+> --- a/fs/bcachefs/sb-members.h
+> +++ b/fs/bcachefs/sb-members.h
+> @@ -3,6 +3,7 @@
+>   #define _BCACHEFS_SB_MEMBERS_H
+>   
+>   #include "darray.h"
+> +#include "bkey_types.h"
+>   
+>   extern char * const bch2_member_error_strs[];
+>   
+> @@ -234,6 +235,8 @@ static inline struct bch_member_cpu bch2_mi_to_cpu(struct bch_member *mi)
+>   			: 1,
+>   		.freespace_initialized = BCH_MEMBER_FREESPACE_INITIALIZED(mi),
+>   		.valid		= bch2_member_alive(mi),
+> +		.btree_bitmap_shift	= mi->btree_bitmap_shift,
+> +		.btree_allocated_bitmap = le64_to_cpu(mi->btree_allocated_bitmap),
+>   	};
+>   }
+>   
+> @@ -242,4 +245,22 @@ void bch2_sb_members_from_cpu(struct bch_fs *);
+>   void bch2_dev_io_errors_to_text(struct printbuf *, struct bch_dev *);
+>   void bch2_dev_errors_reset(struct bch_dev *);
+>   
+> +static inline bool bch2_dev_btree_bitmap_marked_sectors(struct bch_dev *ca, u64 start, unsigned sectors)
+> +{
+> +	u64 end = start + sectors;
+> +
+> +	if (end > 64 << ca->mi.btree_bitmap_shift)
+> +		return false;
+> +
+> +	for (unsigned bit = sectors >> ca->mi.btree_bitmap_shift;
+> +	     bit << ca->mi.btree_bitmap_shift < end;
+> +	     bit++)
+> +		if (!(ca->mi.btree_allocated_bitmap & BIT_ULL(bit)))
+Should it be transferred by le64_to_cpu?
+> +			return false;
+> +	return true;
+> +}
+> +
+> +bool bch2_dev_btree_bitmap_marked(struct bch_fs *, struct bkey_s_c);
+> +void bch2_dev_btree_bitmap_mark(struct bch_fs *, struct bkey_s_c);
+> +
+>   #endif /* _BCACHEFS_SB_MEMBERS_H */
+> diff --git a/fs/bcachefs/sb-members_types.h b/fs/bcachefs/sb-members_types.h
+> index 3f915536d554..c0eda888fe39 100644
+> --- a/fs/bcachefs/sb-members_types.h
+> +++ b/fs/bcachefs/sb-members_types.h
+> @@ -14,6 +14,8 @@ struct bch_member_cpu {
+>   	u8			durability;
+>   	u8			freespace_initialized;
+>   	u8			valid;
+> +	u8			btree_bitmap_shift;
+> +	u64			btree_allocated_bitmap;
+>   };
+>   
+>   #endif /* _BCACHEFS_SB_MEMBERS_H */
