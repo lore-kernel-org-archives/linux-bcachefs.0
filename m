@@ -1,36 +1,72 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF63E38FA5;
-	Mon, 15 Apr 2024 08:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD3582C7E;
+	Mon, 15 Apr 2024 17:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170879; cv=none; b=i90zXNlS7RHsZeBqPKonIUa0zvtXXfe2E7N709qcKna+Spg2JTh86LpqY7Q9B3k+MsYxDzZxb95wfwbj77TGHC6nOGwAK1ydWXBBtVOaqDCJqAGFvgpMJVIT1IXo1J+pnfZ9sNiCqXQgfnWjQyVCeW4jBS/tseIaLilQpupOWkg=
+	t=1713202539; cv=none; b=m+PqZ8jjUVhVWP0UuAepGeMWHPZ4zGXYblRCHcZVdqyeHmoXYGDAz1P55CuUwmijNGd/K8KrU8o/n1T0zxuCAfm3af4If9tG/dBTnBDnTKkKcvvZ3ECq/7O8xfHZDIcdpiaXZm2H/8NSiCmKU3QCM8nVm+vpMKTcSPUf8kfwnsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170879; c=relaxed/simple;
-	bh=V4JD/K62Bn9Ujl7NQcNkcXzV/bT8ABt7vcbYkyDBR/Y=;
+	s=arc-20240116; t=1713202539; c=relaxed/simple;
+	bh=+mDx52s9ABbP+qylPDjlEdQbUbUBCGmkdgYzyLRZEsw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q5udkU9uOxXRUeAaNaN0sIZt4hhJsIsp+zdl/Yxhdkw6b7FEidejPzWuZ0zktGiqOnIEr4TtTZwraJcyUI9srbwKH0Oof96OdVaBiCYubi8nQPxmhJDaSmJzroKfjF4jq5tf3XXOq0Sbs7pR4FidQhdLYWj/B5NHBAOZQNmMx3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=B7Q+iTC8; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=fqeNeb/Z19YIaPnZaa6lP5S/kM9ifYZxEJ6rAH7AL7A+V4BaleeEjAEFZKzfdTiO+0i3I74mmMQ+4GunAPFDYIaxEGo3kAqm0S1bT0bM3l2Wz9DL7Pv1nFOwvAt4iYkoDOZdKwPOpmo69ZnGw9d5nQIvhDPqe9rUoNGDUFs/MeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZRh5BP4; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="B7Q+iTC8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FF99C113CC;
-	Mon, 15 Apr 2024 08:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713170879;
-	bh=V4JD/K62Bn9Ujl7NQcNkcXzV/bT8ABt7vcbYkyDBR/Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B7Q+iTC88pZwHIypCPfw98m1VQRgmI7HbvnjK1W51yz/xvfbFWp4lZBwYjls8BdFx
-	 nq6wbzJwMF3tcBA3qxSzrq2kGn6DnUzth059UdG+6sx0jk7P+R267X5AOAoKc0DfJV
-	 HLoxC/fXTSZ20V0EJxiwHX3uaqZAe2SUQWB37+Lc=
-Date: Mon, 15 Apr 2024 10:47:56 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Johannes Berg <johannes.berg@intel.com>, linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: debugfs revoke broken?
-Message-ID: <2024041557-stereo-wafer-1551@gregkh>
-References: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZRh5BP4"
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ecff85b21cso494643b3a.1;
+        Mon, 15 Apr 2024 10:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713202537; x=1713807337; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yND2zUfUi+v4q+Fs4T63lVmVArBJWibOzfGLa99Xn9w=;
+        b=OZRh5BP45gs7u13Xk0gSprV0+Z7z6T13T2rmRTsg1AOar+YqX9mYPrruGPrLyvoq2P
+         /s7oPyW+pT588hzUNo83NAckQ+ubiE7df5Bk3bpFleAXuTLqVLtE6s2kMJRVFQh53t8i
+         9xFgzPQ3HsdLb7LQTQe+/qnsIrxlK0J/DeSqe6+0Sda7IIf/1oYwqUcc7HYX2tpJLMyI
+         xCAdwkxyRYaFoRexbp79lkoWNtjEwVy8AH3Rc03PgIpx7V/IuLoTYboG4DY0zLPJ2+iQ
+         qlI7gh3z2WKfbzCbRNA5rL5XgOP3ThjotzKdNe3PJBS4fezf1CB9FuPBhIyDJJyx+C2p
+         /7IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713202537; x=1713807337;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yND2zUfUi+v4q+Fs4T63lVmVArBJWibOzfGLa99Xn9w=;
+        b=lA5IPzMBRucgtJTKCxuALZ/u3Rmhuxu/AimODy3e1heYLQnDtMtbAE62LcFn7WTjfh
+         f64eB5NMu/u5JkoTjZYZ4vcB0SYn90v5ld1l41TxX41bggnlt3WuusiBQjc9PtwDh8uJ
+         23GNwcGsEdAL3wfZhpGbpq2hb04xZPOnFW/XFqbWnVvonWDr3qonPJlvh4JFFvIaQhJ0
+         ywWv8b96QWWISmVn9uHktffLo2ftzxS/nbYC7sd80faQbCLbbjn3sg7Oj8fjVE2uzXl3
+         LRrDE7l02+QOShGB/MIzlZyRvCl9TZXPW2cEKpkwvHvFh/8NmBB4T1vKGwubBt9UJ93f
+         v11w==
+X-Forwarded-Encrypted: i=1; AJvYcCW+1ebhUs4LbpqqqEF5LvUXgaRis44eUC6Cpp0aIwP12Qh5KAPirmVVkQKq14fTrEj7Z00+rNI2f1tOz4nG8T9jGwGdo5BWg76vVUp+mpJ3ztlcD3DjfxdeflbFhNZ19bzMhImMZ+9KN58tcLD8u/rdGJRRMYPhWIye91VWGUur0v85xZrk4t+mIQuchsM52uawzsfu7KxU6o1B8z1CztMRCtEPCudWcZsLWmp1
+X-Gm-Message-State: AOJu0Yws6C4neanW3YH9iIygAcri4vSuqC2Y8bDEU/LxIsLnRAbCJhB3
+	iS2r77EznTPzeQTlMWueON1mCI6abT+iUqxfzAP3U/QNfRG1deKs
+X-Google-Smtp-Source: AGHT+IG6NKLoYgtNA0zwWTzkP8WTGQd4qLXhWBTEEVWaqnnI2QLPzr1rMVeOMKwzxaqVx/1yQ3sSow==
+X-Received: by 2002:a05:6a20:2590:b0:1a9:a31a:1b69 with SMTP id k16-20020a056a20259000b001a9a31a1b69mr13640576pzd.6.1713202537217;
+        Mon, 15 Apr 2024 10:35:37 -0700 (PDT)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id t6-20020a056a00138600b006ecef9e9615sm7456833pfg.200.2024.04.15.10.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 10:35:36 -0700 (PDT)
+Date: Tue, 16 Apr 2024 01:35:31 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
+	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
+	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3 04/17] lib min_heap: Add type safe interface
+Message-ID: <Zh1lY8EFyE943+89@visitorckw-System-Product-Name>
+References: <20240406164727.577914-1-visitorckw@gmail.com>
+ <20240406164727.577914-5-visitorckw@gmail.com>
+ <20240412073017.GE30852@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -39,124 +75,70 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
+In-Reply-To: <20240412073017.GE30852@noisy.programming.kicks-ass.net>
 
-On Sun, Apr 14, 2024 at 06:32:07PM -0400, Kent Overstreet wrote:
-> I recently started seeing test failures like the following; from the
-> "shutdown complete" line we're well after the point where we called
-> debugfs_remove_recursive() - yet from the backtrace we were still able
-> to call into debugfs.
+On Fri, Apr 12, 2024 at 09:30:17AM +0200, Peter Zijlstra wrote:
+> On Sun, Apr 07, 2024 at 12:47:14AM +0800, Kuan-Wei Chiu wrote:
 > 
-> And I see from the history the remove path has been getting tweaked,
-> so...
+> > -struct min_heap {
+> > -	void *data;
+> > -	int nr;
+> > -	int size;
+> > -};
+> > +#define MIN_HEAP_PREALLOCATED(_type, _name, _nr)	\
+> > +struct _name {	\
+> > +	int nr;	\
+> > +	int size;	\
+> > +	_type *data;	\
+> > +	_type preallocated[_nr];	\
+> > +}
 > 
-> 00091 ========= TEST   generic/001
-> 00091 
-> 00092 Setting up swapspace version 1, size = 2 GiB (2147479552 bytes)
-> 00092 no label, UUID=73a80295-2b03-4512-aae1-785187926ce3
-> 00092 Adding 2097148k swap on /dev/vde.  Priority:-2 extents:1 across:2097148k 
-> 00092 configuration error - unknown item 'NONEXISTENT' (notify administrator)
-> 00092 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
-> 00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
-> 00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
-> 00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
-> 00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
-> 00101 building 001... done
-> 00101 bcachefs (vdb): mounting version 1.7: mi_btree_bitmap
-> 00101 bcachefs (vdb): initializing new filesystem
-> 00101 bcachefs (vdb): going read-write
-> 00101 bcachefs (vdb): marking superblocks
-> 00101 bcachefs (vdb): initializing freespace
-> 00101 bcachefs (vdb): done initializing freespace
-> 00101 bcachefs (vdb): reading snapshots table
-> 00101 bcachefs (vdb): reading snapshots done
-> 00101 bcachefs (vdb): done starting filesystem
-> 00102 FSTYP         -- bcachefs
-> 00102 PLATFORM      -- Linux/aarch64 Debian-1103-bullseye-arm64-base-kvm 6.9.0-rc2-ktest-g2719f811ae24 #18142 SMP Sun Apr 14 16:26:05 NZST 2024
-> 00102 MKFS_OPTIONS  -- --encrypted --no_passphrase /dev/vdc
-> 00102 MOUNT_OPTIONS -- /dev/vdc /mnt/scratch
-> 00102 
-> 00102 bcachefs (vdc): mounting version 1.7: mi_btree_bitmap
-> 00102 bcachefs (vdc): initializing new filesystem
-> 00102 bcachefs (vdc): going read-write
-> 00102 bcachefs (vdc): marking superblocks
-> 00102 bcachefs (vdc): initializing freespace
-> 00102 bcachefs (vdc): done initializing freespace
-> 00102 bcachefs (vdc): reading snapshots table
-> 00102 bcachefs (vdc): reading snapshots done
-> 00102 bcachefs (vdc): done starting filesystem
-> 00102 bcachefs (vdc): shutting down
-> 00102 bcachefs (vdc): going read-only
-> 00102 bcachefs (vdc): finished waiting for writes to stop
-> 00102 bcachefs (vdc): flushing journal and stopping allocators, journal seq 3
-> 00102 bcachefs (vdc): flushing journal and stopping allocators complete, journal seq 5
-> 00102 bcachefs (vdc): shutdown complete, journal seq 6
-> 00102 bcachefs (vdc): marking filesystem clean
-> 00102 bcachefs (vdc): shutdown complete
-> 00102 bcachefs (vdb): shutting down
-> 00102 bcachefs (vdb): going read-only
-> 00102 bcachefs (vdb): finished waiting for writes to stop
-> 00102 bcachefs (vdb): flushing journal and stopping allocators, journal seq 6
-> 00102 bcachefs (vdb): flushing journal and stopping allocators complete, journal seq 7
-> 00102 bcachefs (vdb): shutdown complete, journal seq 8
-> 00102 bcachefs (vdb): marking filesystem clean
-> 00102 bcachefs (vdb): shutdown complete
-> 00102 Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
-> 00102 Mem abort info:
-> 00102   ESR = 0x0000000096000004
-> 00102   EC = 0x25: DABT (current EL), IL = 32 bits
-> 00102   SET = 0, FnV = 0
-> 00102   EA = 0, S1PTW = 0
-> 00102   FSC = 0x04: level 0 translation fault
-> 00102 Data abort info:
-> 00102   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> 00102   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> 00102   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> 00102 user pgtable: 4k pages, 48-bit VAs, pgdp=000000011585c000
-> 00102 [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
-> 00102 Internal error: Oops: 0000000096000004 [#1] SMP
-> 00102 Modules linked in:
-> 00102 CPU: 7 PID: 1805 Comm: cat Not tainted 6.9.0-rc2-ktest-g2719f811ae24 #18142
-> 00102 Hardware name: linux,dummy-virt (DT)
-> 00102 pstate: 00001005 (nzcv daif -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-> 00102 pc : bch2_journal_seq_pins_to_text+0x100/0x208
-> 00102 lr : bch2_journal_seq_pins_to_text+0xf0/0x208
-> 00102 sp : ffff0000d6dd3c80
-> 00102 x29: ffff0000d6dd3c80 x28: ffff0000ca361f00 x27: 0000000000000000
-> 00102 x26: 0000000000000000 x25: ffff0000da0002c0 x24: ffff0000da0002f0
-> 00102 x23: ffff0000d50668c0 x22: ffff800080998950 x21: ffff0000da0002c0
-> 00102 x20: ffff0000c46165c0 x19: 0000000000000000 x18: 00000000fffffffe
-> 00102 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-> 00102 x14: ffffffffffffffff x13: ffff0000c0ada1df x12: ffff0000c0ada1d9
-> 00102 x11: 0000000000000000 x10: 0000000000000000 x9 : ffff800080400ec8
-> 00102 x8 : 0000000000000000 x7 : 20746e756f63203a x6 : 0000000000000000
-> 00102 x5 : 0000000000000020 x4 : 000000000000000d x3 : ffff0000c0ada1d0
-> 00102 x2 : 0000000000000010 x1 : ffff0000c0ada1d0 x0 : 0000000000000012
-> 00102 Call trace:
-> 00102  bch2_journal_seq_pins_to_text+0x100/0x208
-> 00102  bch2_journal_pins_read+0x48/0xd0
-> 00102  full_proxy_read+0x64/0xb8
-> 00102  vfs_read+0xd0/0x2d0
-> 00102  ksys_read+0x5c/0xe0
-> 00102  __arm64_sys_read+0x20/0x30
-> 00102  invoke_syscall.constprop.0+0x50/0xe0
-> 00102  do_el0_svc+0x44/0xc8
-> 00102  el0_svc+0x18/0x58
-> 00102  el0t_64_sync_handler+0xb8/0xc0
-> 00102  el0t_64_sync+0x14c/0x150
+> 
+> > @@ -3738,7 +3739,7 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
+> >  	struct perf_cpu_context *cpuctx = NULL;
+> >  	/* Space for per CPU and/or any CPU event iterators. */
+> >  	struct perf_event *itrs[2];
+> > -	struct min_heap event_heap;
+> > +	struct perf_event_min_heap event_heap;
+> >  	struct perf_event **evt;
+> >  	int ret;
+> >  
+> > @@ -3747,11 +3748,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
+> >  
+> >  	if (!ctx->task) {
+> >  		cpuctx = this_cpu_ptr(&perf_cpu_context);
+> > -		event_heap = (struct min_heap){
+> > -			.data = cpuctx->heap,
+> > -			.nr = 0,
+> > -			.size = cpuctx->heap_size,
+> > -		};
+> > +		event_heap.data = cpuctx->heap;
+> > +		event_heap.nr = 0;
+> > +		event_heap.size = cpuctx->heap_size;
+> >  
+> >  		lockdep_assert_held(&cpuctx->ctx.lock);
+> >  
+> > @@ -3760,11 +3759,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
+> >  			css = &cpuctx->cgrp->css;
+> >  #endif
+> >  	} else {
+> > -		event_heap = (struct min_heap){
+> > -			.data = itrs,
+> > -			.nr = 0,
+> > -			.size = ARRAY_SIZE(itrs),
+> > -		};
+> > +		event_heap.data = itrs;
+> > +		event_heap.nr = 0;
+> > +		event_heap.size = ARRAY_SIZE(itrs);
+> >  		/* Events not within a CPU context may be on any CPU. */
+> >  		__heap_add(&event_heap, perf_event_groups_first(groups, -1, pmu, NULL));
+> >  	}
+> 
+> Not too happy about these. If you ever add more fields they will go
+> uninitialized. Why not keep the existing form and fix the struct name?
 
-So this file was open when debugfs_remove() was called?
+Sorry for the late reply. I'm traveling.
+I'll change that back in v4.
 
-Any chance you can bisect?  We just fixed some issues here in
-952c3fce297f ("debugfs: fix wait/cancellation handling during remove")
-that I thought should have handled this.  If you revert that commit,
-does things work again?  And/or what about commit 8c88a474357e
-("debugfs: add API to allow debugfs operations cancellation")?  Maybe we
-need to go back to not having completions at all in the debugfs remove
-path and just live with waiting for the files to be removed before
-continuing (which should at the least, resolve the issue you see here,
-while slowing things down a bit.)
-
-thanks,
-
-greg k-h
+Regards,
+Kuan-Wei
