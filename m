@@ -1,72 +1,40 @@
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD3582C7E;
-	Mon, 15 Apr 2024 17:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AABD91E877;
+	Mon, 15 Apr 2024 18:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713202539; cv=none; b=m+PqZ8jjUVhVWP0UuAepGeMWHPZ4zGXYblRCHcZVdqyeHmoXYGDAz1P55CuUwmijNGd/K8KrU8o/n1T0zxuCAfm3af4If9tG/dBTnBDnTKkKcvvZ3ECq/7O8xfHZDIcdpiaXZm2H/8NSiCmKU3QCM8nVm+vpMKTcSPUf8kfwnsI=
+	t=1713204161; cv=none; b=q33eoqDpd8UHFOD3DxOnwUx3qNxpMXA2Tmmp9XtzOy5ZS/uDokgo39ZQfzwf2/In/PAp9RtkMuyyFUFguUd6waPn9krbgOwS1wzQEyZRQ7EYzCaS2TrTME0SJDiFpvKgAR2MOS5ATsd0BVDdULa8dZRaBId73NypLpKm8j0BMrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713202539; c=relaxed/simple;
-	bh=+mDx52s9ABbP+qylPDjlEdQbUbUBCGmkdgYzyLRZEsw=;
+	s=arc-20240116; t=1713204161; c=relaxed/simple;
+	bh=jjRA8zXzvN3+cUuLH6NQmwsAUi5CL+5L4B90taz/wa0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fqeNeb/Z19YIaPnZaa6lP5S/kM9ifYZxEJ6rAH7AL7A+V4BaleeEjAEFZKzfdTiO+0i3I74mmMQ+4GunAPFDYIaxEGo3kAqm0S1bT0bM3l2Wz9DL7Pv1nFOwvAt4iYkoDOZdKwPOpmo69ZnGw9d5nQIvhDPqe9rUoNGDUFs/MeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZRh5BP4; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=kvL3mtDfGUiMVXNvjw8Iz4LtHaMp3IuU7HVvzFwIEe6ErGDaZvp0Y7iRz+qvDLPLwGMihMa/MKrJgYP6R46TUB5OEm/gthA1AgcHN/GT4uO6CsNnhzG1QCerC/pRjiS0Fl8nMypYaU0dc4sUXoJeMK5Du3OzkeHReRy1Aisd7RU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C8a4cA1i; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZRh5BP4"
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ecff85b21cso494643b3a.1;
-        Mon, 15 Apr 2024 10:35:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713202537; x=1713807337; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yND2zUfUi+v4q+Fs4T63lVmVArBJWibOzfGLa99Xn9w=;
-        b=OZRh5BP45gs7u13Xk0gSprV0+Z7z6T13T2rmRTsg1AOar+YqX9mYPrruGPrLyvoq2P
-         /s7oPyW+pT588hzUNo83NAckQ+ubiE7df5Bk3bpFleAXuTLqVLtE6s2kMJRVFQh53t8i
-         9xFgzPQ3HsdLb7LQTQe+/qnsIrxlK0J/DeSqe6+0Sda7IIf/1oYwqUcc7HYX2tpJLMyI
-         xCAdwkxyRYaFoRexbp79lkoWNtjEwVy8AH3Rc03PgIpx7V/IuLoTYboG4DY0zLPJ2+iQ
-         qlI7gh3z2WKfbzCbRNA5rL5XgOP3ThjotzKdNe3PJBS4fezf1CB9FuPBhIyDJJyx+C2p
-         /7IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713202537; x=1713807337;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yND2zUfUi+v4q+Fs4T63lVmVArBJWibOzfGLa99Xn9w=;
-        b=lA5IPzMBRucgtJTKCxuALZ/u3Rmhuxu/AimODy3e1heYLQnDtMtbAE62LcFn7WTjfh
-         f64eB5NMu/u5JkoTjZYZ4vcB0SYn90v5ld1l41TxX41bggnlt3WuusiBQjc9PtwDh8uJ
-         23GNwcGsEdAL3wfZhpGbpq2hb04xZPOnFW/XFqbWnVvonWDr3qonPJlvh4JFFvIaQhJ0
-         ywWv8b96QWWISmVn9uHktffLo2ftzxS/nbYC7sd80faQbCLbbjn3sg7Oj8fjVE2uzXl3
-         LRrDE7l02+QOShGB/MIzlZyRvCl9TZXPW2cEKpkwvHvFh/8NmBB4T1vKGwubBt9UJ93f
-         v11w==
-X-Forwarded-Encrypted: i=1; AJvYcCW+1ebhUs4LbpqqqEF5LvUXgaRis44eUC6Cpp0aIwP12Qh5KAPirmVVkQKq14fTrEj7Z00+rNI2f1tOz4nG8T9jGwGdo5BWg76vVUp+mpJ3ztlcD3DjfxdeflbFhNZ19bzMhImMZ+9KN58tcLD8u/rdGJRRMYPhWIye91VWGUur0v85xZrk4t+mIQuchsM52uawzsfu7KxU6o1B8z1CztMRCtEPCudWcZsLWmp1
-X-Gm-Message-State: AOJu0Yws6C4neanW3YH9iIygAcri4vSuqC2Y8bDEU/LxIsLnRAbCJhB3
-	iS2r77EznTPzeQTlMWueON1mCI6abT+iUqxfzAP3U/QNfRG1deKs
-X-Google-Smtp-Source: AGHT+IG6NKLoYgtNA0zwWTzkP8WTGQd4qLXhWBTEEVWaqnnI2QLPzr1rMVeOMKwzxaqVx/1yQ3sSow==
-X-Received: by 2002:a05:6a20:2590:b0:1a9:a31a:1b69 with SMTP id k16-20020a056a20259000b001a9a31a1b69mr13640576pzd.6.1713202537217;
-        Mon, 15 Apr 2024 10:35:37 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id t6-20020a056a00138600b006ecef9e9615sm7456833pfg.200.2024.04.15.10.35.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 10:35:36 -0700 (PDT)
-Date: Tue, 16 Apr 2024 01:35:31 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
-	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
-	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v3 04/17] lib min_heap: Add type safe interface
-Message-ID: <Zh1lY8EFyE943+89@visitorckw-System-Product-Name>
-References: <20240406164727.577914-1-visitorckw@gmail.com>
- <20240406164727.577914-5-visitorckw@gmail.com>
- <20240412073017.GE30852@noisy.programming.kicks-ass.net>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C8a4cA1i"
+Date: Mon, 15 Apr 2024 14:02:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713204156;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BvG3OA4w+Lj+qFTRz9zvJBh1oQGpJxeKv6GShdGzH/k=;
+	b=C8a4cA1ivcG5Bo7GDT8vVtf5hr3IqHQvcKX+4O0fFKHUHgmIX1sthSt0u8U3kKTqaSIi+V
+	/lt41/u+rU12oYkxjHuLrF/5lHiSYArGy10tPc0cEinynEE6E3q+T0spsmyRA3XSbE5EEd
+	YiX+R37zTKLup25G96rRs4KCJNxe5Gs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Johannes Berg <johannes.berg@intel.com>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: debugfs revoke broken?
+Message-ID: <ra3ig25pwua6wm6v7vqexjvwybfpk23i5qqfeihth4f3zygjb6@7ykqlkyu25tb>
+References: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
+ <2024041557-stereo-wafer-1551@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -75,70 +43,25 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240412073017.GE30852@noisy.programming.kicks-ass.net>
+In-Reply-To: <2024041557-stereo-wafer-1551@gregkh>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Apr 12, 2024 at 09:30:17AM +0200, Peter Zijlstra wrote:
-> On Sun, Apr 07, 2024 at 12:47:14AM +0800, Kuan-Wei Chiu wrote:
-> 
-> > -struct min_heap {
-> > -	void *data;
-> > -	int nr;
-> > -	int size;
-> > -};
-> > +#define MIN_HEAP_PREALLOCATED(_type, _name, _nr)	\
-> > +struct _name {	\
-> > +	int nr;	\
-> > +	int size;	\
-> > +	_type *data;	\
-> > +	_type preallocated[_nr];	\
-> > +}
-> 
-> 
-> > @@ -3738,7 +3739,7 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
-> >  	struct perf_cpu_context *cpuctx = NULL;
-> >  	/* Space for per CPU and/or any CPU event iterators. */
-> >  	struct perf_event *itrs[2];
-> > -	struct min_heap event_heap;
-> > +	struct perf_event_min_heap event_heap;
-> >  	struct perf_event **evt;
-> >  	int ret;
-> >  
-> > @@ -3747,11 +3748,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
-> >  
-> >  	if (!ctx->task) {
-> >  		cpuctx = this_cpu_ptr(&perf_cpu_context);
-> > -		event_heap = (struct min_heap){
-> > -			.data = cpuctx->heap,
-> > -			.nr = 0,
-> > -			.size = cpuctx->heap_size,
-> > -		};
-> > +		event_heap.data = cpuctx->heap;
-> > +		event_heap.nr = 0;
-> > +		event_heap.size = cpuctx->heap_size;
-> >  
-> >  		lockdep_assert_held(&cpuctx->ctx.lock);
-> >  
-> > @@ -3760,11 +3759,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
-> >  			css = &cpuctx->cgrp->css;
-> >  #endif
-> >  	} else {
-> > -		event_heap = (struct min_heap){
-> > -			.data = itrs,
-> > -			.nr = 0,
-> > -			.size = ARRAY_SIZE(itrs),
-> > -		};
-> > +		event_heap.data = itrs;
-> > +		event_heap.nr = 0;
-> > +		event_heap.size = ARRAY_SIZE(itrs);
-> >  		/* Events not within a CPU context may be on any CPU. */
-> >  		__heap_add(&event_heap, perf_event_groups_first(groups, -1, pmu, NULL));
-> >  	}
-> 
-> Not too happy about these. If you ever add more fields they will go
-> uninitialized. Why not keep the existing form and fix the struct name?
+On Mon, Apr 15, 2024 at 10:47:56AM +0200, Greg Kroah-Hartman wrote:
+> So this file was open when debugfs_remove() was called?
 
-Sorry for the late reply. I'm traveling.
-I'll change that back in v4.
+Seems likely.
 
-Regards,
-Kuan-Wei
+> Any chance you can bisect?  We just fixed some issues here in
+> 952c3fce297f ("debugfs: fix wait/cancellation handling during remove")
+> that I thought should have handled this.  If you revert that commit,
+> does things work again?  And/or what about commit 8c88a474357e
+> ("debugfs: add API to allow debugfs operations cancellation")?  Maybe we
+> need to go back to not having completions at all in the debugfs remove
+> path and just live with waiting for the files to be removed before
+> continuing (which should at the least, resolve the issue you see here,
+> while slowing things down a bit.)
+
+No, this doesn't occur often enough to bisect, unfortunately. All my
+tests bang on sysfs/debugfs in the background to torture test those
+codepaths, and I've seen 2 occurrences out of thousands of test runs -
+it's rare.
