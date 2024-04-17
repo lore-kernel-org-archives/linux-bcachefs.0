@@ -1,80 +1,83 @@
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13E46EB53
-	for <linux-bcachefs@vger.kernel.org>; Tue, 16 Apr 2024 22:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DB64687
+	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Apr 2024 01:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713305352; cv=none; b=UMSKyF48EsCOawFeLPbv2yr3v264B5lHQgF/MYy7/hV4N5L8sESVELuSqU3cUU2ygN8w/u+VpNBUTy/YieG2is5nHjK0teVfq1H7bU4GW3qui7wK1TJMzQ7CSrnugZzgzQ8yZcTBn8uUssjjaZReKGWebEvhvzNPQt5285VJZ6k=
+	t=1713318907; cv=none; b=GZypBJ521BgQuPpNfz79lzNwL1URl6JeyyxLFBC6cG+F+3+xgNvfH8tyVw4xMtnF6xggGfbIAtr9ol94JhFl82xO0AFDUogwcPIbuhqcsWIwKzEYWqC4MQA+HAhPU5k/CIuCD2AaB1MZ5EBdTcyXDxwKFdxb04qAkVOodOAACyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713305352; c=relaxed/simple;
-	bh=cceio2i2g+XpMA67ZaweBAe8aJQ465GCa8o/ranK5qM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IakaKyIOtQTBZf8cEDAlX6xbTJornVZuctURRvM8oDudo3sXHzYlH+BX7uxvfQDV9DoYFonUqCb0jSzXw+dQgVrwnXCvvH13rEjy8ANKnaRXdYWWy/leA48h/zgSXPhdLe50lQNeV/NELgZ1Gg3rNdOMJtH0s7hv9l66hRdk5Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FI5YlVQU; arc=none smtp.client-ip=91.218.175.176
+	s=arc-20240116; t=1713318907; c=relaxed/simple;
+	bh=Wv6lCOo1+OGIlkZsf1D8muIr2irjbTaXE+kqboMajQU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BdR5dd8KnV+HZQB6UaJGHj7EsXTNl+xAihBr7gQExY0gIr/Rc/tBNfb/EpdWWArtllhGC/l05D1CLowcChH6zmEghsgWYeALmJ6P/BU8AzzNm6smtKpMVxEbLOTM4GhBeuMJztT7ZuWdPBGAXsGpWFXMgcQLIFdHeZgm/vt5VZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pQkwxEkx; arc=none smtp.client-ip=95.215.58.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FI5YlVQU"
-Date: Tue, 16 Apr 2024 18:09:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713305348;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4a0PGrEMu5XdQTilCmMwlfM2e10kXfm2bWbg/3JQ9fE=;
-	b=FI5YlVQU7/PZdq56uBNG41rfudamqGUdSMoeKgpiy+XntCQV87bD7yZTFCey4SzZ1+1XFH
-	FyGrHrXmsoC9bfh84x2/qCOhy3JZXpf5na6M8NPndnzBKC0hmzMvSd9Hk90/sYyR5fp1nF
-	8k7rJcky9EPu15hEPYS/3Q00EKGt5ws=
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pQkwxEkx"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] bcachefs: Fix format specifier in validate_bset_keys()
-Message-ID: <xznpzlnjcf3goexunm6azwercgwz7ikgum3i4gpdyxwykb4e4l@ascd3uztphq3>
-References: <20240416-bcachefs-fix-format-specifier-validate_bset_keys-v1-1-3ea2cdf28b12@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713318903;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HgOZ2fSjs/N1ggGZNktiuDnktJI/mqa7RRNdF5NRUdY=;
+	b=pQkwxEkxPhXqBVhY00+zyOR4hFCIFrn+xCUj1oPew/Ekr6Sjt0x1Sq3HJQOxK1zHIlNQgc
+	WW2bWsWparhmiF5L9F+NNgNeKMaLNs1m+wdlYjnBiuEhueKOnzvU4ugPCy3r+l+lXiynhe
+	aiy0CT9IuVlGv+s4kseoMuJ7+1oF6Mg=
+From: Youling Tang <youling.tang@linux.dev>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Youling Tang <tangyouling@kylinos.cn>
+Subject: [PATCH] bcachefs: Align the display format of `btrees/inodes/keys`
+Date: Wed, 17 Apr 2024 09:54:48 +0800
+Message-Id: <20240417015448.84294-1-youling.tang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416-bcachefs-fix-format-specifier-validate_bset_keys-v1-1-3ea2cdf28b12@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Apr 16, 2024 at 08:16:02AM -0700, Nathan Chancellor wrote:
-> When building for 32-bit platforms, for which size_t is 'unsigned int',
-> there is a warning from a format string in validate_bset_keys():
-> 
->   fs/bcachefs/btree_io.c: In function 'validate_bset_keys':
->   fs/bcachefs/btree_io.c:891:34: error: format '%lu' expects argument of type 'long unsigned int', but argument 12 has type 'unsigned int' [-Werror=format=]
->     891 |                                  "bad k->u64s %u (min %u max %lu)", k->u64s,
->         |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   fs/bcachefs/btree_io.c:603:32: note: in definition of macro 'btree_err'
->     603 |                                msg, ##__VA_ARGS__);                     \
->         |                                ^~~
->   fs/bcachefs/btree_io.c:887:21: note: in expansion of macro 'btree_err_on'
->     887 |                 if (btree_err_on(!bkeyp_u64s_valid(&b->format, k),
->         |                     ^~~~~~~~~~~~
->   fs/bcachefs/btree_io.c:891:64: note: format string is defined here
->     891 |                                  "bad k->u64s %u (min %u max %lu)", k->u64s,
->         |                                                              ~~^
->         |                                                                |
->         |                                                                long unsigned int
->         |                                                              %u
->   cc1: all warnings being treated as errors
-> 
-> BKEY_U64s is size_t so the entire expression is promoted to size_t. Use
-> the '%zu' specifier so that there is no warning regardless of the width
-> of size_t.
-> 
-> Fixes: 031ad9e7dbd1 ("bcachefs: Check for packed bkeys that are too big")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202404130747.wH6Dd23p-lkp@intel.com/
-> Closes: https://lore.kernel.org/oe-kbuild-all/202404131536.HdAMBOVc-lkp@intel.com/
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+From: Youling Tang <tangyouling@kylinos.cn>
 
-Thanks, applied
+Before patch:
+```
+ #cat btrees/inodes/keys
+ u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0:   mode=40755
+   flags= (16300000)
+```
+
+After patch:
+```
+ #cat btrees/inodes/keys
+ u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0:
+   mode=40755
+   flags= (16300000)
+```
+
+Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+---
+ fs/bcachefs/bkey_methods.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/bcachefs/bkey_methods.c b/fs/bcachefs/bkey_methods.c
+index db336a43fc08..03c755f65430 100644
+--- a/fs/bcachefs/bkey_methods.c
++++ b/fs/bcachefs/bkey_methods.c
+@@ -306,7 +306,8 @@ void bch2_bkey_val_to_text(struct printbuf *out, struct bch_fs *c,
+ 	bch2_bkey_to_text(out, k.k);
+ 
+ 	if (bkey_val_bytes(k.k)) {
+-		prt_printf(out, ": ");
++		prt_printf(out, ":");
++		prt_newline(out);
+ 		bch2_val_to_text(out, c, k);
+ 	}
+ }
+-- 
+2.34.1
+
