@@ -1,106 +1,103 @@
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0664411;
-	Thu, 18 Apr 2024 01:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251B3154BEA
+	for <linux-bcachefs@vger.kernel.org>; Thu, 18 Apr 2024 08:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713402592; cv=none; b=kk4c7Zk/FG7fIMITSesDJrIRYNCCn4tChmSRK1opd/nlFF8fRIQ940FEotVXyyQJ1kY1ubiJ8T5vWpXx8z9f1jaLx318zUIc0zRxn4N2s4lxSkvlK025ornCeMRUmpQsR8BMFKNHP2/T1PkhC88DUuQK3JzBP4diHQ2lSRQEZaI=
+	t=1713429099; cv=none; b=nhONQKrj6405qmoCZHAhxAuf/TrhcX7DUOZhCMRnHEsT/JM6mXWwZ494D5SYI9gXRgmjL9IFZI0fqLZwgmcrXC6WENNE+ax37BgPh06rv+8bhgSMjVsRW7oLOe1UvwYKlKG1FuRRdZD9ufdL76D02WimfOqpuGtiWZIyRNpFxd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713402592; c=relaxed/simple;
-	bh=lvGFpFWG/c5SJn5k6EpKDjuGe+uh1Zqt7Kd70bAY8Ys=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GIy2MUIsHcaTt2pOjOlcaBhz4NgVO9a685i4QWUDVYLyz4ER6t3o9v058B3efMte5vkW4xbJNRWnTGpO82qjO8ZHjrusXlbpGBGl1Z38G7gzCSIBYY00BCk1Ux2sAfLfBgEz6xwR5CCv33QCtaTOf75/Tt92aTb0qbW5ADXVUhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VKfkB3yl6zwSkL;
-	Thu, 18 Apr 2024 09:06:42 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 557C3140120;
-	Thu, 18 Apr 2024 09:09:46 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 18 Apr 2024 09:09:46 +0800
-Message-ID: <bd0b9517-63d1-4a49-90fd-c68e66dd464a@huawei.com>
-Date: Thu, 18 Apr 2024 09:09:45 +0800
+	s=arc-20240116; t=1713429099; c=relaxed/simple;
+	bh=rDD9ARKShht4L3vBCw1rywnguUbqzkmjdey8LEnbKRY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PlV+z+J1Dyt1ygH9dOPiIDooLN/s8nNwA2jT1AKlJ+CQpeSDAGHVjGnV4gIy1VCT5SGuclUpv0xoeyOjYt51k64isgOz6FhFjJN9N+35w2Lf2WR8WUy5w6kogX8l3enxspxZRIs2C/ujQz8q9265CuS28Skoc9mG/C2/+i/4GnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mC8IP2j9; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mC8IP2j9"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713429095;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=suc4EKre9DSVRyuJ6maS6siQgvj0GzEmZCFUNtsaiH8=;
+	b=mC8IP2j9pYZBEeYg0dN2pSRgSC1T2KH/J76DFpc0ThfCJByScsS9FM1WnEw5rZcRp/O/38
+	xevG+e18vOYlgKuhyq4XJxepetn7XXKnvRudqQOSlZpKqNMGvR1IvLBwmFgL1Jm4ZSRY7t
+	US0pwEp9d4F6tBhvjclJACrWaphGJG8=
+From: Youling Tang <youling.tang@linux.dev>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Youling Tang <tangyouling@kylinos.cn>
+Subject: [PATCH] bcachefs: Fix missing spaces in journal_entry_dev_usage_to_text
+Date: Thu, 18 Apr 2024 16:31:03 +0800
+Message-Id: <20240418083103.66703-1-youling.tang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bcachefs: Align the display format of
- `btrees/inodes/keys`
-To: Youling Tang <youling.tang@linux.dev>, Kent Overstreet
-	<kent.overstreet@linux.dev>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Youling
- Tang <tangyouling@kylinos.cn>
-References: <20240418005055.45482-1-youling.tang@linux.dev>
-Content-Language: en-US
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20240418005055.45482-1-youling.tang@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+From: Youling Tang <tangyouling@kylinos.cn>
 
+Fixed missing spaces displayed in journal_entry_dev_usage_to_text
+while adjusting the display format to improve readability.
 
-On 2024/4/18 8:50, Youling Tang wrote:
-> From: Youling Tang <tangyouling@kylinos.cn>
-> 
-> Before patch:
-> ```
->   #cat btrees/inodes/keys
->   u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0:   mode=40755
->     flags= (16300000)
->     bi_size=0
-> ```
-> 
-> After patch:
-> ```
->   #cat btrees/inodes/keys
->   u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0:
->     mode=40755
->     flags=(16300000)
->     bi_size=0
-> ```
-> 
-> Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
-> ---
-> v2:
-> - Adjust where to add new lines of code.
-> - Remove flags ` ` by Hongbo suggestion.
-> 
->   fs/bcachefs/inode.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/inode.c b/fs/bcachefs/inode.c
-> index f0da2b0048cc..5c9ee41baa72 100644
-> --- a/fs/bcachefs/inode.c
-> +++ b/fs/bcachefs/inode.c
-> @@ -534,12 +534,13 @@ int bch2_inode_v3_invalid(struct bch_fs *c, struct bkey_s_c k,
->   static void __bch2_inode_unpacked_to_text(struct printbuf *out,
->   					  struct bch_inode_unpacked *inode)
->   {
-> +	prt_printf(out, "\n");
->   	printbuf_indent_add(out, 2);
->   	prt_printf(out, "mode=%o\n", inode->bi_mode);
->   
->   	prt_str(out, "flags=");
->   	prt_bitflags(out, bch2_inode_flag_strs, inode->bi_flags & ((1U << 20) - 1));
-> -	prt_printf(out, " (%x)\n", inode->bi_flags);
-> +	prt_printf(out, "(%x)\n", inode->bi_flags);
->   
->   	prt_printf(out, "journal_seq=%llu\n",	inode->bi_journal_seq);
->   	prt_printf(out, "bi_size=%llu\n",	inode->bi_size);
+before:
+```
+ # bcachefs list_journal -a -t alloc:1:0 /dev/sdb
+ ...
+     dev_usage: dev=0free: buckets=233180 sectors=0 fragmented=0sb: buckets=13 sectors=6152 fragmented=504journal: buckets=1847 sectors=945664 fragmented=0btree: buckets=20 sectors=10240 fragmented=0user: buckets=1419 sectors=726513 fragmented=15cached: buckets=0 sectors=0 fragmented=0parity: buckets=0 sectors=0 fragmented=0stripe: buckets=0 sectors=0 fragmented=0need_gc_gens: buckets=0 sectors=0 fragmented=0need_discard: buckets=1 sectors=0 fragmented=0
+```
 
-Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
+after:
+```
+ # bcachefs list_journal -a -t alloc:1:0 /dev/sdb
+ ...
+     dev_usage: dev=0
+       free: buckets=233180 sectors=0 fragmented=0
+       sb: buckets=13 sectors=6152 fragmented=504
+       journal: buckets=1847 sectors=945664 fragmented=0
+       btree: buckets=20 sectors=10240 fragmented=0
+       user: buckets=1419 sectors=726513 fragmented=15
+       cached: buckets=0 sectors=0 fragmented=0
+       parity: buckets=0 sectors=0 fragmented=0
+       stripe: buckets=0 sectors=0 fragmented=0
+       need_gc_gens: buckets=0 sectors=0 fragmented=0
+       need_discard: buckets=1 sectors=0 fragmented=0
+```
+Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+---
+- Note: Test only by modifying bcachefs-tools.
 
-Thanks.
-Hongbo Li
+ fs/bcachefs/journal_io.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index e726d9f560a0..58501ef758b3 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -706,13 +706,16 @@ static void journal_entry_dev_usage_to_text(struct printbuf *out, struct bch_fs
+ 
+ 	prt_printf(out, "dev=%u", le32_to_cpu(u->dev));
+ 
++	printbuf_indent_add(out, 2);
+ 	for (i = 0; i < nr_types; i++) {
++		prt_newline(out);
+ 		bch2_prt_data_type(out, i);
+ 		prt_printf(out, ": buckets=%llu sectors=%llu fragmented=%llu",
+ 		       le64_to_cpu(u->d[i].buckets),
+ 		       le64_to_cpu(u->d[i].sectors),
+ 		       le64_to_cpu(u->d[i].fragmented));
+ 	}
++	printbuf_indent_sub(out, 2);
+ }
+ 
+ static int journal_entry_log_validate(struct bch_fs *c,
+-- 
+2.34.1
 
