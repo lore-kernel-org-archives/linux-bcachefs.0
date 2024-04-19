@@ -1,146 +1,154 @@
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CC94C8A
-	for <linux-bcachefs@vger.kernel.org>; Fri, 19 Apr 2024 08:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2124F214;
+	Fri, 19 Apr 2024 13:12:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713515742; cv=none; b=hU8ORaUQLfbutCN1NFGwI37Tlzvg7clvbSMA1fXKjMTdpFoRKWRx69bmBC42BhthvUT+d4CsNfAdNr7e8qMEcJfOWnGXJFg5Fi4iki/gb33OKBGzcNSa3jYvQ7jihCR1SRiLBdxBAvqlTtECSsbXhjR/JZPIIAxuX0EbRhE+E74=
+	t=1713532338; cv=none; b=Ww9vPl00I4tkBuVMKQZXB4a0k/BniuS/qx3kjWSK88UsJP+eOTugFoGYlMe+uEDqlFU9qPU+vKShggXl7jXeJA2DwU6IYaT933cqUFvD+C37OFlwOXxDqwKDo5GyR+V9doFAv1GkCqll57tMB3utx+ErceICP7Bxb4jKUDl+tP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713515742; c=relaxed/simple;
-	bh=jwTP9di+gHYQLhb3wSyH/zZps3BSu1afU28CygVkNa0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UQrNo34TLZC8KUysDTD9Zkq8APOnAEh/7GtBiBYJUpDaEcc2AWFR9lOOEg9j4T9lSC9/CLaJg61bDLeQCVJqRNr9xHiZ+7iABettZORolmqKHqJGeyorj6M7NNRWVx/gO8J44LN2uEdFWtbdnkfmm0G5K+2RLg5mVlUtRQ5gCjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uL2jwuJv; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1713532338; c=relaxed/simple;
+	bh=LLHhKsPgaUq6jjBOifD2j6ATQ+4xYplY09f2hVg+SqI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X/p87odP12X+dMoKq52yoCS/EU3RKze1gfO3chPPqXYsxiYvxU00sj0IrwANrlZL9xeveTy/LVDPqA+IiMeDr3Mg0VMxpnv6kdbhx++R/pzfKQiRFgWqZKqCsrJ38ZaosPgOiKOluCR0LbIIXQhQzfJXUPzCyNJKayYtGsyBEmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0sBHJN19; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OXf3BwBD; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0sBHJN19; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OXf3BwBD; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uL2jwuJv"
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-571b5fba660so7508a12.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 19 Apr 2024 01:35:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713515739; x=1714120539; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jwTP9di+gHYQLhb3wSyH/zZps3BSu1afU28CygVkNa0=;
-        b=uL2jwuJvEKYrrRp7dcoQp6DENqfgIpWHU+G9p6uUgOV4+mDcG4doW6ayENy+yV9u+x
-         M1TOyQRNWOdO0vl1vg7LK4qbvP56V7Gsxs5wUaAtqaXGgC1hj1UNBC6yOTpd2TboEAQM
-         MBglx25/1rlaXHX1i1T3u7FHGS3hNpH6Qx6GisOw8wcJIuRO2DSHwnFeo6HigxkEgVvv
-         Ig2w1cVUnVsPevcb9xWHaEExxD1PY2l+WEznxp4ax03PsNOkWmL/ItPRLTWoWaBNHarq
-         ky+mf7rwHx0pVbYw+4+cGYpDPzwENm1Je29rxoj9TE6y/E+41Y1T4+ktZRToZGYpxGpw
-         6V7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713515739; x=1714120539;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jwTP9di+gHYQLhb3wSyH/zZps3BSu1afU28CygVkNa0=;
-        b=QhVWyv4PKLew9//mLruCUzHd5RGc6gdNTTP5kWXoFr2Qmpq5Q4r87enaMTOSSTtnsm
-         WBBupy5o1dUHu9pbBMlvMUFUgxCEWp/tvlYkp+hERECeiBBEltLcRnZ33IGNIZsaMPfC
-         dcgpx2wJbZkzmRFB2L502X2dgQFy7T1HxHPhyhjDFLeMeXDiF3XDNVOEUe9AWgT7ArW7
-         CRtfb1FLxCCTGM+jnx1XMMfBilsd3BMsJutg5HAQS30vpl6T+bqyGbarLG75uv/Si4Zb
-         DlgdwFe9kpgjQyry5T+Q005KNMWUbEwnczmcEBOQhn2ASOXenrlVtSw0oaW2sWkcCLpq
-         AjHA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIcRHdx+7fHG1mOLojqaDceffPs2QFYurwtM7xjpdxqWlqm9QmCxegk/Q+FnOb2/5zoGt6hJ4udeaepr2rPjRrQLLp1QEGAqHkY7OaVDo=
-X-Gm-Message-State: AOJu0YybIyFelZFV4z8z1Fjz6NDlnZ+6E9JWRNRQ4aMRykC6hRe7xvt4
-	IilrgVlwVDpfaqeGeOhaHHXMIleJ3FeB7zLGfd+SsOHYxA2aGgDr7gPyZbqNZB1P2zW8rCIvc1W
-	OIYeAnaaBblNkuT6Anv4k2//cqeeHdhK9h57m
-X-Google-Smtp-Source: AGHT+IGqF68h9enzzjjZJLarSKc7mCIqZSv1psCJory//Z+kLQXyNBectIhnkDEBS1rwOCdwAx98Yf9KvgrLdUx4qPQ=
-X-Received: by 2002:a50:cdca:0:b0:570:5d40:5e35 with SMTP id
- h10-20020a50cdca000000b005705d405e35mr122504edj.6.1713515738560; Fri, 19 Apr
- 2024 01:35:38 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0sBHJN19";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OXf3BwBD";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0sBHJN19";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OXf3BwBD"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 352B45D6F7;
+	Fri, 19 Apr 2024 13:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713532333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gRUQmY+zTFLbDhdPnN9JYqdwMNywIx2NLL3xZ9/bCg0=;
+	b=0sBHJN19cARBqVlEw4zBmsAZ98rYt7F+IIaxCjz152F5P8CUmQA/2ACzZ8m1Ig5YXt2FHZ
+	lNCRSKQ3ipgYlXo2WmTFkN4kGi8dV3miOwpSoA8mMWq9YT1K2F7O7JL++He9gq0Oe/zzSV
+	jejtJoiyYHWqsXe/FbTPf76fqlhI7pM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713532333;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gRUQmY+zTFLbDhdPnN9JYqdwMNywIx2NLL3xZ9/bCg0=;
+	b=OXf3BwBDCB8QUNbQ3lofpseinFvlmWqPVqemifXt827kyytgpIycs9xZXYpuysjGMvpkCO
+	AKc6zFxVjRLd5yBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0sBHJN19;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OXf3BwBD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713532333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gRUQmY+zTFLbDhdPnN9JYqdwMNywIx2NLL3xZ9/bCg0=;
+	b=0sBHJN19cARBqVlEw4zBmsAZ98rYt7F+IIaxCjz152F5P8CUmQA/2ACzZ8m1Ig5YXt2FHZ
+	lNCRSKQ3ipgYlXo2WmTFkN4kGi8dV3miOwpSoA8mMWq9YT1K2F7O7JL++He9gq0Oe/zzSV
+	jejtJoiyYHWqsXe/FbTPf76fqlhI7pM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713532333;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gRUQmY+zTFLbDhdPnN9JYqdwMNywIx2NLL3xZ9/bCg0=;
+	b=OXf3BwBDCB8QUNbQ3lofpseinFvlmWqPVqemifXt827kyytgpIycs9xZXYpuysjGMvpkCO
+	AKc6zFxVjRLd5yBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 230331395B;
+	Fri, 19 Apr 2024 13:12:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id gzueBq1tImY7UAAAD6G6ig
+	(envelope-from <chrubis@suse.cz>); Fri, 19 Apr 2024 13:12:13 +0000
+Date: Fri, 19 Apr 2024 15:11:27 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+	fstests@vger.kernel.org, Jan Kara <jack@suse.cz>,
+	Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Subject: Re: [LTP] [PATCH v2 3/3] statx04: Skip STATX_ATTR_COMPRESSED on
+ Bcachefs
+Message-ID: <ZiJtf07WGFJPb_w2@yuki>
+References: <20231207194011.273027-1-pvorel@suse.cz>
+ <20231207194011.273027-4-pvorel@suse.cz>
+ <20231213024617.vx3epsav2n2lxozi@moria.home.lan>
+ <ZZvIBO-a1b_nIHJ8@yuki>
+ <gjfjylr4bdytdot7ywjispswvgpvjtkdmtsinsbcbc42ik2y3d@ws4tjmwqywrb>
+ <ZZ0guBd48WXYapPL@yuki>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <oxdwygzxpbpwxgl5v5hzaj7er6oxt2rlmaobkov4t23xqptqrn@gxi3nlapfini>
- <CACT4Y+ZEPWbJsYvWauog95yRFuzZmA=tK-uS+aDT-x=jnc3f7Q@mail.gmail.com>
- <aw5elbevdhwuqr7ecap6i5hepvkjbgs5xexq7nvu2yvuhh5bpb@tmyjcruysqjf> <CANp29Y5d3cp_YGfy-3bjJYsNfniXFjAm9WfOUVL5zwk=6weALg@mail.gmail.com>
-In-Reply-To: <CANp29Y5d3cp_YGfy-3bjJYsNfniXFjAm9WfOUVL5zwk=6weALg@mail.gmail.com>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Fri, 19 Apr 2024 10:35:27 +0200
-Message-ID: <CACT4Y+aNh4oBMpfPdNe7aAJT-hK9WPN5G47d1DN4NkH883OOdA@mail.gmail.com>
-Subject: Re: syzbot for bcachefs?
-To: Aleksandr Nogikh <nogikh@google.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, syzkaller@googlegroups.com, 
-	Thomas Bertschinger <tahbertschinger@gmail.com>, Ariel Miculas <ariel.miculas@gmail.com>, 
-	linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZ0guBd48WXYapPL@yuki>
+X-Spam-Flag: NO
+X-Spam-Score: -3.97
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 352B45D6F7
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.97 / 50.00];
+	BAYES_HAM(-2.96)[99.84%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-On Fri, 5 Apr 2024 at 18:20, Aleksandr Nogikh <nogikh@google.com> wrote:
->
-> On Fri, Apr 5, 2024 at 1:16=E2=80=AFAM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Thu, Apr 04, 2024 at 10:33:07AM +0200, Dmitry Vyukov wrote:
-> > > On Thu, 4 Apr 2024 at 01:59, Kent Overstreet <kent.overstreet@linux.d=
-ev> wrote:
-> > > >
-> > > > Hi - what would it take to get syzbot going for bcachefs?
-> > >
-> > > Hi Kent,
-> > >
-> > > There are 2 parts:
-> > >
-> > > The easy one: we need to enable it in syzbot configs. Should we
-> > > configure it as follows?
-> > >
-> > > CONFIG_BCACHEFS_FS=3Dy
-> > > CONFIG_BCACHEFS_QUOTA=3Dy
-> > > CONFIG_BCACHEFS_ERASURE_CODING=3Dy
-> > > CONFIG_BCACHEFS_POSIX_ACL=3Dy
-> > > CONFIG_BCACHEFS_DEBUG=3Dy
-> > > # CONFIG_BCACHEFS_TESTS is not set
-> > > # CONFIG_BCACHEFS_LOCK_TIME_STATS is not set
-> > > # CONFIG_BCACHEFS_NO_LATENCY_ACCT is not set
-> > > CONFIG_BCACHEFS_SIX_OPTIMISTIC_SPIN=3Dy
-> > >
-> > > In particular, I am interested in CONFIG_BCACHEFS_DEBUG. Does it
-> > > really add more debug checks rather than lots of console printing w/o
-> > > checks? Some "DEBUG" kernel configs are misleading here. Checks will
-> > > be useful on syzbot, lots of printing not so much.
->
-> For the record: I've just sent
-> https://github.com/google/syzkaller/pull/4647 with syzbot config
-> updates.
->
-> >
-> > CONFIG_BCACHEFS_DEBUG adds piles of assertions and no extra console
-> > printing :)
-> >
-> > > Second part: syzbot will need to exercise the fs in some useful way.
-> > > Is it just a "normal" fs with files, or something special?
-> >
-> > It's a normal - but multi device - filesystem, similar featureset to
-> > btrfs.
-> >
-> > > Is it mounted from an image, or an image-less fs? If it needs images,
-> > > how can they be created?
-> >
-> > apt install bcachefs-tools
-> > mkfs.bcachefs <dev>
-> > mount <dev> /mnt
+Hi!
+> > > Quite likely, other filesystems does have an inode flag that is set when
+> > > file has been compressed and simply report that in the foo_getattr()
+> > > callback. Looking at bcachefs I supose that we need to figure out if the
+> > > inode is v3 and then unpack the v3 info to get to the compressed flag,
+> > > you probably know best how to do that.
+> > 
+> > I'm still not clear how we want to map STATX_ATTR_COMPRESSED, since it's
+> > extents that are compressed, not entire files - and just reporting the
+> > compression option is probably not what we want since it can be flipped
+> > off, and existing data will still be compressed.
+> > 
+> > Do you know anything about the intended use case?
+> 
+> As far as I understand the flag it's a hint that the file I/O may be
+> slower/need more memory because of the compression.
 
-We've enabled the configs, but we don't have good image seeds yet.
-Aleksandr tried to generate them, he is currently OOO, but maybe you
-can help meanwhile.
-He said that running:
+Ping.
 
-$ mkfs.bcachefs test.img
+Kent we are getting closer to a next LTP release, are you going to add
+the compressed flag support into bcachefs or should we add bcachefs to
+the test skiplist?
 
-gives this error (on a quite big image, I don't know how large exactly it w=
-as):
-
-insufficient space for superblocks: start 8 end 4104 > 4096 size 2048
-
-Why could it give such an error and how to avoid it?
-
-Also what would be a good sets of options to generate seed images?
-We try to "sample" space of different images to create seeds. To give
-you an idea here is what we do for other file systems:
-https://github.com/google/syzkaller/blob/af24b0505c748561efb50f1d03c824d664=
-2f6c0b/tools/syz-imagegen/imagegen.go#L60-L516
+-- 
+Cyril Hrubis
+chrubis@suse.cz
