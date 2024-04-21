@@ -1,153 +1,101 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB804205E36
-	for <linux-bcachefs@vger.kernel.org>; Sat, 20 Apr 2024 22:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C771B974
+	for <linux-bcachefs@vger.kernel.org>; Sun, 21 Apr 2024 22:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713650778; cv=none; b=rnH1nzcXhH8UrnKUxD48rp4ebw+N5lJ8X9AFzdEPrWftEelC1Q91RrCj8NOWDxenMV7/zvYWcXvfpon/Rn65a8kkd8bHTqHPQ2djLP+k1e5898mIO0CWE/4VJw1EJGiVATyeoujWE598qG60HHmq32uWoU2hWHySdMbQgXVRxmc=
+	t=1713738998; cv=none; b=mJwtliJNzcsilEa5RaYFhIWvZOBDujqAnLGTP8a71qN1DM9m3kESvHEH7Ez48QmFqZ2sHQU6enuKVlxUsMhCKsin5UpvBHLhUqdzMrkN6vGFyD5CGPn8y9w7aFtf9r1+Buch1a6WBztI2FVKAatcbZ2mhtk9FzUsyzmeb+FQC2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713650778; c=relaxed/simple;
-	bh=Q3/st490ZVEV0a95obH5fbPRSiIaOiRP9188COAHvts=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YuK57dJNdZ85FaJMu+rudBiV+OTG04ECA0krLBrjBRSrLlOKrTrEd/JVbazbEAXqWyE5LlK+N2wfnxDisz50JmvAJottymnst7eF4Y1ERJIrH0eL8n6WC+21a51cKD5iwEQj2oLpI8JXxexbb4JiLQpLC7ud1BFudKCnrrFXW7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FiZxmcEg; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1713738998; c=relaxed/simple;
+	bh=frxj7VoKufQjlZ6utnq8MUHWksTvQ4BGtt3iQhc+LJ0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=njM/qc53+KHQnYeLYA78EaSx7hY6NihSkyH0QFcfQHDznThpsYLiXXSf2K4gUi223wGalKhAu+WzKfyW30CAJB2/foqZsJHI9METun/GrIKZX7bKH+C6S1fHAIynohQWcrHqLYdcrd0spSPD+NQC+PAkzIvGgxrn0nLJBhOfwlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=nCGLFlRm; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FiZxmcEg"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713650772;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=VoccYVdC4pUrUz867A0VVlKD6/J156Gylfus5CpWqMk=;
-	b=FiZxmcEg321RzEpIqwbCMcmGiHPhbqX4k9zyztUFJt7+THaROuP1c5rl/IWS5ka0oKoQ34
-	4QS19BGPMwGUhI/IupAxE1yRIZa1bhCe4s9t8zOADEHjxvTiMVAjQWtBx2Uq+s0SpaVLyh
-	LYCqJ5O9Jd7Y9cq50wZQxGh0KHneflM=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] bcachefs: idle work scheduling design doc
-Date: Sat, 20 Apr 2024 18:06:01 -0400
-Message-ID: <20240420220604.496611-1-kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="nCGLFlRm"
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-346b96f1483so1932166f8f.1
+        for <linux-bcachefs@vger.kernel.org>; Sun, 21 Apr 2024 15:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1713738995; x=1714343795; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EnYedXI07hAt3dhd+HbGbXf1Rjt+QGaitKZA/KSOMMg=;
+        b=nCGLFlRmj5xcxWgRcUByCxVCip37uBts3zRcVenKDD6aZDoi7YTx4GCkWoMIMvzk8Q
+         O/9d04smlPW/1HwVN7rsIs2PITB28036EFh6IlpWgaS8NeYTXrgisT6EnhJh1IVSqW2y
+         JL+t0UA/ZNqeTcfzaLOntVdi8JfUHDuKz7rqWeqVFH7wPXTX5g7Mg4MjYXlsyB9BCXBr
+         dffBmEq2bLOf/o1ryz9h54vgOklAhapnOQLIBYYTaKsxcJwRUjwca5fnrJH6CTS7wwW/
+         u/E6RoCNQD0zfNboAVRProin5u/ei0ttfJMT2HRW104d+Ass5VYX7qbsAvtlHACPu/d1
+         U6uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713738995; x=1714343795;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EnYedXI07hAt3dhd+HbGbXf1Rjt+QGaitKZA/KSOMMg=;
+        b=IAt5/LiPvBo2h4CX+6c3nPA338i0AOfcJsUvAUai0RqUx6fsUTYf2Xa6/8J/mkhkzP
+         VH1uyRjiljnixG0ZnqRq4evXUkNFPxkrwc/W+TzHLgFbKQYfoirJTN/F+q4KRUWXs2sD
+         AR4j6BF6B6Pt7Ujku+/bROebNfMy56AKeJaDCP7V5foRgQEVA/jJP5MBaezQCKibMzjg
+         AxgrL/80sskpJa8Lo58rKTxcJha+1WmRW9NXMbF4GfXA1CoHCTr8DZEvou3XQtyBg6XJ
+         JVyyM1AeefNsu5Q0C4VbjxX5jkYtF1HUuaeZ5UP1/ORCFIpQPbg9PjL9Qsm3IIoJ6afN
+         YLhA==
+X-Gm-Message-State: AOJu0YyyH0vbd76tKlcw8MbGTG/Yy3jltXfg+TqzrlFMBMC4e81OkFnI
+	qdm4ZmO0089iv2U7m9f5liNECLJjMSfe5ib5OfFQwO0Cg485uhZQrpO1Ys+wYUE=
+X-Google-Smtp-Source: AGHT+IH3nS05/Y573CAnV+aIotx/7hBYrQJZjbQWPOFwWawFDdMCAUrtYZrRMhnxPkxNiNA4ue17jw==
+X-Received: by 2002:a5d:53c4:0:b0:34a:70d:1117 with SMTP id a4-20020a5d53c4000000b0034a070d1117mr8754940wrw.18.1713738995089;
+        Sun, 21 Apr 2024 15:36:35 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id i4-20020a05600c354400b0041902ebc87esm11158683wmq.35.2024.04.21.15.36.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Apr 2024 15:36:34 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] bcachefs: Use format specifier %u instead of %lu
+Date: Mon, 22 Apr 2024 00:35:50 +0200
+Message-ID: <20240421223549.952824-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-bcachefs has various background tasks that need to be scheduled to
-balance efficiency, predictability of performance, etc.
+Use %u instead of %lu and cast the value to unsigned int to resolve the
+following warning on m68k:
 
-The design and philosophy hasn't changed too much since bcache, which
-was primarily designed for server usage, with sustained load in mind.
+	format ‘%lu’ expects argument of type ‘long unsigned int’, but
+	argument 12 has type ‘unsigned int’
 
-These days we're seeing more desktop usage - where we really want to let
-the system idle effictively, to reduce total power usage - while also
-still balancing previous concerns, we still want to let work accumulate
-to a degree.
-
-This lays out all the requirements and starts to sketch out the
-algorithm I have in mind.
-
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 ---
- fs/bcachefs/idle.h | 80 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
- create mode 100644 fs/bcachefs/idle.h
+ fs/bcachefs/btree_io.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/bcachefs/idle.h b/fs/bcachefs/idle.h
-new file mode 100644
-index 000000000000..b1717635581e
---- /dev/null
-+++ b/fs/bcachefs/idle.h
-@@ -0,0 +1,80 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BCACHEFS_IDLE_H
-+#define _BCACHEFS_IDLE_H
-+
-+/*
-+ * Idle/background work classes:
-+ *
-+ * We have a number of background tasks (copygc, rebalance, journal reclaim).
-+ *
-+ * SUSTAINED LOAD REGIME
-+ * ---------------------
-+ *
-+ * When the system is under continuous load, we want these jobs to run
-+ * continuously - this is perhaps best modelled with a P/D controller, where
-+ * they'll be trying to keep a target value (i.e. fragmented disk space,
-+ * available journal space) roughly in the middle of some range.
-+ *
-+ * The goal under sustained load is to balance our ability to handle load spikes
-+ * without running out of x resource (free disk space, free space in the
-+ * journal), while also letting some work accumululate to be batched (or become
-+ * unnecessary).
-+ *
-+ * For example, we don't want to run copygc too aggressively, because then it
-+ * will be evacuating buckets that would have become empty (been overwritten or
-+ * deleted) anyways, and we don't want to wait until we're almost out of free
-+ * space because then the system will behave unpredicably - suddenly we're doing
-+ * a lot more work to service each write and the system becomes much slower.
-+ *
-+ * IDLE REGIME
-+ * -----------
-+ *
-+ * Many systems are however not under sustained load - they're idle most of the
-+ * time, and the goal is to let them idle as much as possible because power
-+ * useage is a prime consideration. Thus, we need to detect when we've been
-+ * idle - and the longer we've been idle, the more pending work we should do;
-+ * the goal being to complete all of our pending work as quickly as possible so
-+ * that the system can go back to sleep.
-+ *
-+ * But this does not mean that we should do _all_ our pending work immediately
-+ * when the system is idle; remember that if we allow work to build up, much
-+ * work will not need to be done.
-+ *
-+ * Therefore when we're idle we want to wake up and do some amount of pending
-+ * work in batches; increasing both the amount of work we do and the duration of
-+ * our sleeps proportional to how long we've been idle for.
-+ *
-+ * CLASSES OF IDLE WORK
-+ * --------------------
-+ *
-+ * There are levels of foreground and background tasks; a foreground operation
-+ * (generated from outsisde the system, i.e. userspace) will generate work for
-+ * the data move class and the journal reclaim class, and the data move class
-+ * will generate more work for the journal reclaim class.
-+ *
-+ * This complicates idle detection, because a given class wants to know if
-+ * everything above it has finished or is no longer running, and will want to
-+ * behave differently for work above it coming from outside the system (which we
-+ * cannot schedule and can only guess at based on past behaviour), versus work
-+ * above it but from inside the system (which we can schedule).
-+ *
-+ * That is
-+ * - data moves want to wake up when foreground operations have been quiet for
-+ *   a little while
-+ * - journal reclaim wants to wake up when foreground operations have been quiet
-+ *   for a little while, and immediately after background data moves have
-+ *   finished and gone back to sleep
-+ */
-+
-+#define BCACHEFS_IDLE_CLASSES()		\
-+	x(foreground)			\
-+	x(data_move)			\
-+	x(journal_reclaim)
-+
-+enum bch_idle_class {
-+#define x(n)	BCH_IDLE_##n,
-+	BCACHEFS_IDLE_CLASSES()
-+#undef x
-+};
-+
-+#endif /* _BCACHEFS_IDLE_H */
+diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+index 9678b2375bed..45dff1a77366 100644
+--- a/fs/bcachefs/btree_io.c
++++ b/fs/bcachefs/btree_io.c
+@@ -888,9 +888,10 @@ static int validate_bset_keys(struct bch_fs *c, struct btree *b,
+ 				 -BCH_ERR_btree_node_read_err_fixable,
+ 				 c, NULL, b, i,
+ 				 btree_node_bkey_bad_u64s,
+-				 "bad k->u64s %u (min %u max %lu)", k->u64s,
++				 "bad k->u64s %u (min %u max %u)", k->u64s,
+ 				 bkeyp_key_u64s(&b->format, k),
+-				 U8_MAX - BKEY_U64s + bkeyp_key_u64s(&b->format, k)))
++				 (unsigned int)(U8_MAX - BKEY_U64s +
++					bkeyp_key_u64s(&b->format, k))))
+ 			goto drop_this_key;
+ 
+ 		if (!write)
 -- 
-2.43.0
+2.44.0
 
