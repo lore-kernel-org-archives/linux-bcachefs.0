@@ -1,90 +1,94 @@
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2D914F136
-	for <linux-bcachefs@vger.kernel.org>; Mon, 22 Apr 2024 13:08:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC7D155336
+	for <linux-bcachefs@vger.kernel.org>; Mon, 22 Apr 2024 19:32:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713791320; cv=none; b=rpugemHNwgAMdeoVociIcwWFrTcePVgJyauAldNTI73HkXOjkAGzcSxfM6YXbGziVju22zjUBJgvCZLyLum72EqDq2ECC/8tI+4Z4nca1vGtDlcO1tcsip+8AetZfQJQGOKOImGvV07b9RmTlVzedhyctJO0mU6tV10VrTbH/ag=
+	t=1713814360; cv=none; b=M5aHDF4gTsOZHExb6Atrz86rkR5o93EAuqaLboAO29QwkE3LDt66OAtbjZ9Dgs7D3cAm9fGOTMKASqCYKgouGQK7rmKhjinopRv994EWx+Xn/eTUxxEomQ5QqeSxJ9zhGPFqKw1MygAkvjgtSimHpWAKsFjzMKrsEr4c9nNfNOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713791320; c=relaxed/simple;
-	bh=Fe/jLU7y8EjYZ1hI0fi5WolQe+f8y52gdZ7hpKDSrhY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=hMfQowloMDJiUF+RxYAqoc0Hw8vGCHDdVFX82FfUenj3xeCamAM3SE9Ezu3YfZOpS4H9A+G+29koEUwuFx8Czbg/EzGGyRf1SGd01KIlXTqZFazSIUZbEjR2QX8DWn+qnbp7znkHuoiDAno+6ebaUXWPfELIqJk7CMdfra874W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by andre.telenet-ops.be with bizsmtp
-	id ED8U2C00M0SSLxL01D8UkT; Mon, 22 Apr 2024 15:08:28 +0200
-Received: from geert (helo=localhost)
-	by ramsan.of.borg with local-esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rytPI-001wmi-Gr;
-	Mon, 22 Apr 2024 15:08:28 +0200
-Date: Mon, 22 Apr 2024 15:08:28 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-kernel@vger.kernel.org
-cc: Kent Overstreet <kent.overstreet@linux.dev>, 
-    Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org
-Subject: Re: Build regressions/improvements in v6.9-rc5
-In-Reply-To: <20240422124533.1363483-1-geert@linux-m68k.org>
-Message-ID: <34dec962-474b-353-a33f-de147cffa06c@linux-m68k.org>
-References: <CAHk-=wgfck-6-2YcD3Bzhjo0E0L0g2HGSZksB9pzRCah=Y4HBw@mail.gmail.com> <20240422124533.1363483-1-geert@linux-m68k.org>
+	s=arc-20240116; t=1713814360; c=relaxed/simple;
+	bh=8qj6kgnceGl/XWPqUbwu4wqOqoE/ev+jzoHS6K8BcYE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c5ipQ1gMhIXB5xfJJ/gYe5c+uJHluPP4nNZgik1mEijNDuXaT7JYFtaCz7tBu3TVfVaxY+DXGBOUr3qYPNdOSWxR43XQen5MnoOYYzVORJP+c5eR3gqdbMCs3NIw/l37RgSIA5CUV11XTcPnWmXz2QPJGTQwe+L7gOm/KTOYoZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SlxMTVOE; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SlxMTVOE"
+Date: Mon, 22 Apr 2024 15:32:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713814355;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lPjjI9hwHAjLZP2f1PBusI6x5sJtErhiveXDwtFT25I=;
+	b=SlxMTVOEsHL/2PHJfSWTgNtE/JRqJhkxOZKFiRxzsmy9xUojDjeLtS4oTJNk+uqjn37uAn
+	4zSxwu61rPOr9yLzJGrQFfj3/6wblvKHMmGbUTNlfcpJ8bgrcUZh/Fbeq+glzPlAgGxKPs
+	wkm6NkLKwQcrXrhVfemFA9ImPRtS+0E=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, bfoster@redhat.com, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] bcachefs: Fix format specifier in validate_bset_keys()
+Message-ID: <omczcaeo74gwmsnysol6m7wwrh4rcdonmcn3fwp64pkavczqcp@enobbzrlpymb>
+References: <20240416-bcachefs-fix-format-specifier-validate_bset_keys-v1-1-3ea2cdf28b12@kernel.org>
+ <xznpzlnjcf3goexunm6azwercgwz7ikgum3i4gpdyxwykb4e4l@ascd3uztphq3>
+ <CAMuHMdV9wMO2E=xNezs5FiDK_F3XKaVPaFbhh9+7djd26KkgMA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdV9wMO2E=xNezs5FiDK_F3XKaVPaFbhh9+7djd26KkgMA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 22 Apr 2024, Geert Uytterhoeven wrote:
-> JFYI, when comparing v6.9-rc5[1] to v6.9-rc4[3], the summaries are:
->  - build errors: +6/-5
+On Mon, Apr 22, 2024 at 02:47:32PM +0200, Geert Uytterhoeven wrote:
+> Hi Kent,
+> 
+> On Wed, Apr 17, 2024 at 12:09 AM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> > On Tue, Apr 16, 2024 at 08:16:02AM -0700, Nathan Chancellor wrote:
+> > > When building for 32-bit platforms, for which size_t is 'unsigned int',
+> > > there is a warning from a format string in validate_bset_keys():
+> > >
+> > >   fs/bcachefs/btree_io.c: In function 'validate_bset_keys':
+> > >   fs/bcachefs/btree_io.c:891:34: error: format '%lu' expects argument of type 'long unsigned int', but argument 12 has type 'unsigned int' [-Werror=format=]
+> > >     891 |                                  "bad k->u64s %u (min %u max %lu)", k->u64s,
+> > >         |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >   fs/bcachefs/btree_io.c:603:32: note: in definition of macro 'btree_err'
+> > >     603 |                                msg, ##__VA_ARGS__);                     \
+> > >         |                                ^~~
+> > >   fs/bcachefs/btree_io.c:887:21: note: in expansion of macro 'btree_err_on'
+> > >     887 |                 if (btree_err_on(!bkeyp_u64s_valid(&b->format, k),
+> > >         |                     ^~~~~~~~~~~~
+> > >   fs/bcachefs/btree_io.c:891:64: note: format string is defined here
+> > >     891 |                                  "bad k->u64s %u (min %u max %lu)", k->u64s,
+> > >         |                                                              ~~^
+> > >         |                                                                |
+> > >         |                                                                long unsigned int
+> > >         |                                                              %u
+> > >   cc1: all warnings being treated as errors
+> > >
+> > > BKEY_U64s is size_t so the entire expression is promoted to size_t. Use
+> > > the '%zu' specifier so that there is no warning regardless of the width
+> > > of size_t.
+> > >
+> > > Fixes: 031ad9e7dbd1 ("bcachefs: Check for packed bkeys that are too big")
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Closes: https://lore.kernel.org/oe-kbuild-all/202404130747.wH6Dd23p-lkp@intel.com/
+> > > Closes: https://lore.kernel.org/oe-kbuild-all/202404131536.HdAMBOVc-lkp@intel.com/
+> > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> >
+> > Thanks, applied
+> 
+> This is still not fixed in today's linux-next, while the issue is now
+> causing breakage on several 32-bit defconfs in v6.9-rc5.
 
-   + /kisskb/src/arch/sparc/kernel/setup_64.c: error: no previous prototype for 'alloc_irqstack_bootmem' [-Werror=missing-prototypes]:  => 602:13
-   + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]:  => 254:1
-   + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_clock_gettime_stick' [-Werror=missing-prototypes]:  => 282:1
-   + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]:  => 307:1
-   + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_gettimeofday_stick' [-Werror=missing-prototypes]:  => 343:1
-
-sparc64-gcc13/sparc64-allmodconfig (seen before in other configs)
-
-   + /kisskb/src/fs/bcachefs/btree_io.c: error: format '%lu' expects argument of type 'long unsigned int', but argument 12 has type 'unsigned int' [-Werror=format=]:  => 891:34, 891:6
-
-m68k-gcc8/m68k-allmodconfig
-m68k-gcc8/m68k-defconfig
-m68k-gcc8/sun3_defconfig
-m68k-gcc11/m68k-allmodconfig
-m68k-gcc11/m68k-defconfig
-m68k-gcc11/sun3_defconfig
-m68k-gcc13/m68k-allmodconfig
-m68k-gcc13/m68k-defconfig
-m68k-gcc13/sun3_defconfig
-mips-gcc8/mips-allmodconfig
-mips-gcc13/mips-allmodconfig
-parisc-gcc13/parisc-allmodconfig
-powerpc-gcc5/ppc32_allmodconfig
-powerpc-gcc13/ppc32_allmodconfig
-sh4-gcc13/sh-allmodconfig
-sh4-gcc13/sh-allyesconfig
-sparc64-gcc5/sparc-allmodconfig
-sparc64-gcc13/sparc-allmodconfig
-xtensa-gcc13/xtensa-allmodconfig
-
-(Multiple) fixes available
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ed30a4a51bb196781c8058073ea720133a65596f/ (all 138 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0bbac3facb5d6cc0171c45c9873a2dc96bea9680/ (all 138 configs)
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+Apologies, I just neglected to update my for-next branch, it's in now.
