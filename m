@@ -1,37 +1,43 @@
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA40F15535A
-	for <linux-bcachefs@vger.kernel.org>; Mon, 22 Apr 2024 19:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDD11553B0
+	for <linux-bcachefs@vger.kernel.org>; Mon, 22 Apr 2024 20:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713815534; cv=none; b=D04TOb6sbtXL9P7T6f/27tu6nXf531GCqqNrDYk72AkWCWCcDzsFNxvbLViGCjanucCd/l0zOV5h8jXb0UpgoKHtnnWWdQdNn3WzKbT8XNCXYOg7+Up3el1ZZlfnpps+esNRH1lLRrXOOYTaM/VmbsmztipfPsoyixbUD0mNWtA=
+	t=1713817237; cv=none; b=rR1WHm91IsTcHDcpHAgwmKwDRv4W0KTV3vG/p0tTI597r9QA4FkyeJ+iTjzZqzWv0Q69ldNYhJIkWPQzWkXssQ1OWXP7tKfaxBuFRZQjSsxj4LLwad9F6UWiaDPQicwmXUJHOnjgxCPoNABe0OX8PtlHINB5H6BEvJ2pCQUP08s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713815534; c=relaxed/simple;
-	bh=EK1EZzGAtYGUjl2hyFST+YG4uALloruxlOHlWlLPKhM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NYDA5qG0kTAy/uFah7oru+MqMTXN3pUQIwBeXRn7oHfRH8eslpcUSyUmf1yCm7vJWYaUcveAZlFp1i654lY2OoWK/21z8VknuJy2gOg2jJWuzEbxV9OVhgoQqsGqgozv4VpCGpRj9yZHpb5EUt5Dx70WB5PuArCDvQfI7+lD91s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NsfrRM7n; arc=none smtp.client-ip=91.218.175.174
+	s=arc-20240116; t=1713817237; c=relaxed/simple;
+	bh=tB4j3Mp1cAbAPzA7/QjfWJaHulMX9TPibSa9gTEbIbw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HsLE7XY21ZfhlBMVGjhYFA5Q3j+YR0Ew5XG8h55xXxVDtbnoAF9qJ+c8rK85tRBlX4+xWlCdRLhHRHrqnp8aeIFttcGH1cpqi7ThXSWbXoDduElzq88sDGSL7SKPUeqY2tNnlK7G/Ib7nPSs4TvOzEeWAdWQi6ss4tNC2Os/BB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uQePScF2; arc=none smtp.client-ip=91.218.175.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NsfrRM7n"
-Date: Mon, 22 Apr 2024 15:52:06 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uQePScF2"
+Date: Mon, 22 Apr 2024 16:20:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713815530;
+	t=1713817234;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=2GMQSjZim3LKV3Y1Miu61pAhsMImS7IiK2sA4UPpM/Y=;
-	b=NsfrRM7nU9HcXCA9rhNE6cw8+Nm43qOk5NEEv9VJ6pcm7wkWDZjt6x+7OD39iaf8Y8NGLG
-	lO1cosqkssc9MdPNzsuCxWmz/tMGMlCsHG/b6xrUoO2VD9+JmA1AM/EmUtL6psJxQjxmGV
-	LdQUnp/p5S+G1SwReSTd8gIvncywGLI=
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5RG8Ru3lhWn45ANoWDq3cq77hbBwMzq6GTS3tURq8Wo=;
+	b=uQePScF2xaCNayfHvN64HjSAdSMcLDdhKvjoFTZmqhwGG2g0Jkx6fWZ1g964VvWbejPnhE
+	chFx2UEJnZNQMFh4stRdMHwcs2VFVtMhpsm5n/5T9QrwMT3PoHsG+USG/ZgoQokZ4pEk/r
+	Pr7mR4uih1x7UhF4jRH5+kHb2m4YPVU=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes fro 6.9-rc6
-Message-ID: <fwtvoxp2ktrhst5rm2yk4uk5atjuvnfpg7wjrozg2zd5p7tqzo@mca5izehz5fx>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, msakai@redhat.com, peterz@infradead.org, 
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org, 
+	bfoster@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3 00/17] treewide: Refactor heap related implementation
+Message-ID: <asgiyolfhg2sfwarkrexbcx3y6mborcxklnncz4cn2g6ffubku@vhoumzvwdpzp>
+References: <20240406164727.577914-1-visitorckw@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,81 +46,22 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240406164727.577914-1-visitorckw@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-Hi Linus, another batch of bcachefs fixes.
+On Sun, Apr 07, 2024 at 12:47:10AM +0800, Kuan-Wei Chiu wrote:
+> This patch series focuses on several adjustments related to heap
+> implementation. Firstly, a type-safe interface has been added to the
+> min_heap, along with the introduction of several new functions to
+> enhance its functionality. Additionally, the heap implementation for
+> bcache and bcachefs has been replaced with the generic min_heap
+> implementation from include/linux. Furthermore, several typos have been
+> corrected.
+> 
+> Previous discussion with Kent Overstreet:
+> https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
+> 
+> Regards,
+> Kuan-Wei
 
-Nothing too crazy in this one, and it looks like (fingers crossed) the
-recovery and repair issues are settling down - although there's going to
-be a long tail there, as we've still yet to really ramp up on error
-injection or syzbot.
-
-For users - if anyone is seeing bugs that impact filesystem
-availability, make sure you're reporting those and be noisy about it;
-all the non critical stuff should be reported too, but are lower
-priority for now.
-
-Cheers,
-Kent
-
-The following changes since commit ad29cf999a9161e7849aa229d2028854f90728c2:
-
-  bcachefs: set_btree_iter_dontneed also clears should_be_locked (2024-04-15 13:31:15 -0400)
-
-are available in the Git repository at:
-
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-22
-
-for you to fetch changes up to e858beeddfa3a400844c0e22d2118b3b52f1ea5e:
-
-  bcachefs: If we run merges at a lower watermark, they must be nonblocking (2024-04-22 01:26:51 -0400)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.9-rc6
-
-- fix a few more deadlocks in recovery
-- fix u32/u64 issues in mi_btree_bitmap
-- btree key cache shrinker now actually frees, with more instrumentation
-  coming so we can verify that it's working correctly more easily in the
-  future
-
-----------------------------------------------------------------
-Kent Overstreet (14):
-      bcachefs: Fix null ptr deref in twf from BCH_IOCTL_FSCK_OFFLINE
-      bcachefs: node scan: ignore multiple nodes with same seq if interior
-      bcachefs: make sure to release last journal pin in replay
-      bcachefs: Fix bch2_dev_btree_bitmap_marked_sectors() shift
-      bcachefs: KEY_TYPE_error is allowed for reflink
-      bcachefs: fix leak in bch2_gc_write_reflink_key
-      bcachefs: Fix bio alloc in check_extent_checksum()
-      bcachefs: Check for journal entries overruning end of sb clean section
-      bcachefs: Fix missing call to bch2_fs_allocator_background_exit()
-      bcachefs: bkey_cached.btree_trans_barrier_seq needs to be a ulong
-      bcachefs: Tweak btree key cache shrinker so it actually frees
-      bcachefs: Fix deadlock in journal write path
-      bcachefs: Fix inode early destruction path
-      bcachefs: If we run merges at a lower watermark, they must be nonblocking
-
-Nathan Chancellor (1):
-      bcachefs: Fix format specifier in validate_bset_keys()
-
- fs/bcachefs/backpointers.c          |  2 +-
- fs/bcachefs/bcachefs_format.h       |  3 +-
- fs/bcachefs/btree_gc.c              |  3 +-
- fs/bcachefs/btree_io.c              |  2 +-
- fs/bcachefs/btree_key_cache.c       | 19 +++---------
- fs/bcachefs/btree_node_scan.c       |  2 ++
- fs/bcachefs/btree_types.h           |  2 +-
- fs/bcachefs/btree_update_interior.c |  6 +++-
- fs/bcachefs/chardev.c               |  4 ++-
- fs/bcachefs/fs.c                    |  9 ++++--
- fs/bcachefs/journal_io.c            | 60 ++++++++++++++++++++++++++-----------
- fs/bcachefs/recovery.c              |  5 +++-
- fs/bcachefs/sb-clean.c              |  8 +++++
- fs/bcachefs/sb-errors_types.h       |  3 +-
- fs/bcachefs/sb-members.c            |  4 +--
- fs/bcachefs/sb-members.h            |  6 ++--
- fs/bcachefs/super.c                 |  1 +
- fs/bcachefs/thread_with_file.c      | 15 ++++++++--
- fs/bcachefs/thread_with_file.h      |  3 ++
- 19 files changed, 105 insertions(+), 52 deletions(-)
+We need to get this into -next, where are you at with v4?
