@@ -1,101 +1,137 @@
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C771B974
-	for <linux-bcachefs@vger.kernel.org>; Sun, 21 Apr 2024 22:36:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9A9147C69;
+	Mon, 22 Apr 2024 12:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713738998; cv=none; b=mJwtliJNzcsilEa5RaYFhIWvZOBDujqAnLGTP8a71qN1DM9m3kESvHEH7Ez48QmFqZ2sHQU6enuKVlxUsMhCKsin5UpvBHLhUqdzMrkN6vGFyD5CGPn8y9w7aFtf9r1+Buch1a6WBztI2FVKAatcbZ2mhtk9FzUsyzmeb+FQC2Q=
+	t=1713790069; cv=none; b=MbvYEAeGCLKkFa3X8/n50Eom3fvQw9/QANrz9YxNHZNjHjHNmora1XSjRtpajfpFBAhJACcPngpO5I4qJHTLzr2rQR4wkS4VfGyDMgson+yPOrfd8aUa5cA03UoRMW626w+QfDh6nYELsFlPPMv5Zl6Yw/rdFgdXrznVej5EL4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713738998; c=relaxed/simple;
-	bh=frxj7VoKufQjlZ6utnq8MUHWksTvQ4BGtt3iQhc+LJ0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=njM/qc53+KHQnYeLYA78EaSx7hY6NihSkyH0QFcfQHDznThpsYLiXXSf2K4gUi223wGalKhAu+WzKfyW30CAJB2/foqZsJHI9METun/GrIKZX7bKH+C6S1fHAIynohQWcrHqLYdcrd0spSPD+NQC+PAkzIvGgxrn0nLJBhOfwlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=nCGLFlRm; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="nCGLFlRm"
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-346b96f1483so1932166f8f.1
-        for <linux-bcachefs@vger.kernel.org>; Sun, 21 Apr 2024 15:36:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1713738995; x=1714343795; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EnYedXI07hAt3dhd+HbGbXf1Rjt+QGaitKZA/KSOMMg=;
-        b=nCGLFlRmj5xcxWgRcUByCxVCip37uBts3zRcVenKDD6aZDoi7YTx4GCkWoMIMvzk8Q
-         O/9d04smlPW/1HwVN7rsIs2PITB28036EFh6IlpWgaS8NeYTXrgisT6EnhJh1IVSqW2y
-         JL+t0UA/ZNqeTcfzaLOntVdi8JfUHDuKz7rqWeqVFH7wPXTX5g7Mg4MjYXlsyB9BCXBr
-         dffBmEq2bLOf/o1ryz9h54vgOklAhapnOQLIBYYTaKsxcJwRUjwca5fnrJH6CTS7wwW/
-         u/E6RoCNQD0zfNboAVRProin5u/ei0ttfJMT2HRW104d+Ass5VYX7qbsAvtlHACPu/d1
-         U6uw==
+	s=arc-20240116; t=1713790069; c=relaxed/simple;
+	bh=/GOtHEwRvmHmdn6ZvA+ZYfe6bP5Gtksur+wASo31Ntc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rGQ/RcIT6wpng7YL4DE/pXL14TdA6nAYC9sGfKA9OEdX/eY8KgfMb7A6b33VkJvPNQhhyC+V6Lnle4Eq6xcmvTzu69By4fKVjlo6RXV2E8KiWmE1ZsB/ZdGGK0mGQF6yGcxlFDkBQlWoMw4nmbTCqhBeCLKBDIP6ZzfLvEuMuC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-618769020bcso46095097b3.3;
+        Mon, 22 Apr 2024 05:47:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713738995; x=1714343795;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EnYedXI07hAt3dhd+HbGbXf1Rjt+QGaitKZA/KSOMMg=;
-        b=IAt5/LiPvBo2h4CX+6c3nPA338i0AOfcJsUvAUai0RqUx6fsUTYf2Xa6/8J/mkhkzP
-         VH1uyRjiljnixG0ZnqRq4evXUkNFPxkrwc/W+TzHLgFbKQYfoirJTN/F+q4KRUWXs2sD
-         AR4j6BF6B6Pt7Ujku+/bROebNfMy56AKeJaDCP7V5foRgQEVA/jJP5MBaezQCKibMzjg
-         AxgrL/80sskpJa8Lo58rKTxcJha+1WmRW9NXMbF4GfXA1CoHCTr8DZEvou3XQtyBg6XJ
-         JVyyM1AeefNsu5Q0C4VbjxX5jkYtF1HUuaeZ5UP1/ORCFIpQPbg9PjL9Qsm3IIoJ6afN
-         YLhA==
-X-Gm-Message-State: AOJu0YyyH0vbd76tKlcw8MbGTG/Yy3jltXfg+TqzrlFMBMC4e81OkFnI
-	qdm4ZmO0089iv2U7m9f5liNECLJjMSfe5ib5OfFQwO0Cg485uhZQrpO1Ys+wYUE=
-X-Google-Smtp-Source: AGHT+IH3nS05/Y573CAnV+aIotx/7hBYrQJZjbQWPOFwWawFDdMCAUrtYZrRMhnxPkxNiNA4ue17jw==
-X-Received: by 2002:a5d:53c4:0:b0:34a:70d:1117 with SMTP id a4-20020a5d53c4000000b0034a070d1117mr8754940wrw.18.1713738995089;
-        Sun, 21 Apr 2024 15:36:35 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id i4-20020a05600c354400b0041902ebc87esm11158683wmq.35.2024.04.21.15.36.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Apr 2024 15:36:34 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] bcachefs: Use format specifier %u instead of %lu
-Date: Mon, 22 Apr 2024 00:35:50 +0200
-Message-ID: <20240421223549.952824-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1713790067; x=1714394867;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nlzycx+VXkP7x8f8C0Pz1YcDNNhu/yf0LhpKIds7DPk=;
+        b=Yyk2fqTjsgW52HqrJRhG1/JYtfLXBQ0wad+JFVsu+cMgjc0fq5Iy2WXo1u/kN95yvw
+         1b7TQUveQ5/w2qDasSVBNruiDKWEq4TfR07kyZkYYsmM54vY5y8ibhsuHdZ+Hn2tXx5I
+         lXplaVpQZIqAMoR+Xx1/urhbB4/qta7X2xjjBzc5VJOrINjexy59RCIdX3EWnbQZdxCY
+         vvke4nAmHUrlbCukC6k1G5Tq3PBPthI6Enk6QwNYJx7XRHdfCeC0Z8cWqCJDjT8Jdl2t
+         hLXMW4QNLlLM2+P3s7mo5TgL9g4EJ502iSqD8+/0gWOO8H9CqG+4/YsS3cbwQJrU4gIq
+         xeUg==
+X-Forwarded-Encrypted: i=1; AJvYcCW+lupkQK5t+A7TJfH/uOoqivc48rrWJhFROEqgmqt5ZhymL6ImizSW8rq5g+xwkStqnP0iWG7oVrXfxV86S7PtPoJ7gvs1o+QWCy8RV7gru31DXl9w3tNU/KbErK85IQtBhsAC+JseEg6nKuM=
+X-Gm-Message-State: AOJu0Yxv9/SJLoidzy5ps+hJ/ed1qNVZv6i7RFElE6lDk6VDdXXbTeP8
+	y8qB/AyVP4SyEJ9kzrUnuh2j44SP9yZuuRVfLXVRJzragG/d22J3VIDETwuy
+X-Google-Smtp-Source: AGHT+IHUds8h6/eX+4tePd01oHQLIpNv0clK7+HQXagKE5meyhnqSXWtkFPdn2RVVbvBvkpldxcIeA==
+X-Received: by 2002:a05:690c:3501:b0:618:96eb:980d with SMTP id fq1-20020a05690c350100b0061896eb980dmr10791392ywb.1.1713790065964;
+        Mon, 22 Apr 2024 05:47:45 -0700 (PDT)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id u73-20020a0deb4c000000b0061b232975aesm1849720ywe.47.2024.04.22.05.47.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 05:47:45 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-618769020bcso46094707b3.3;
+        Mon, 22 Apr 2024 05:47:45 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWquRO7XqzMhe9WqtvqnjomfhbDd04JRXbM2ygTovkPbSEmwEXGaChGHNdoSMzu92EPn1XNscNbCRA1Xe9GwV3xgTp4i0kK2SOCBwaid9xm5nayaoEMJI7EbcDYLpFqjQbGF+9fkCCVYJuBiUU=
+X-Received: by 2002:a25:c70e:0:b0:dcd:98bd:7cc8 with SMTP id
+ w14-20020a25c70e000000b00dcd98bd7cc8mr9050028ybe.48.1713790065495; Mon, 22
+ Apr 2024 05:47:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240416-bcachefs-fix-format-specifier-validate_bset_keys-v1-1-3ea2cdf28b12@kernel.org>
+ <xznpzlnjcf3goexunm6azwercgwz7ikgum3i4gpdyxwykb4e4l@ascd3uztphq3>
+In-Reply-To: <xznpzlnjcf3goexunm6azwercgwz7ikgum3i4gpdyxwykb4e4l@ascd3uztphq3>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 22 Apr 2024 14:47:32 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV9wMO2E=xNezs5FiDK_F3XKaVPaFbhh9+7djd26KkgMA@mail.gmail.com>
+Message-ID: <CAMuHMdV9wMO2E=xNezs5FiDK_F3XKaVPaFbhh9+7djd26KkgMA@mail.gmail.com>
+Subject: Re: [PATCH] bcachefs: Fix format specifier in validate_bset_keys()
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Nathan Chancellor <nathan@kernel.org>, bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Use %u instead of %lu and cast the value to unsigned int to resolve the
-following warning on m68k:
+Hi Kent,
 
-	format ‘%lu’ expects argument of type ‘long unsigned int’, but
-	argument 12 has type ‘unsigned int’
+On Wed, Apr 17, 2024 at 12:09=E2=80=AFAM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+> On Tue, Apr 16, 2024 at 08:16:02AM -0700, Nathan Chancellor wrote:
+> > When building for 32-bit platforms, for which size_t is 'unsigned int',
+> > there is a warning from a format string in validate_bset_keys():
+> >
+> >   fs/bcachefs/btree_io.c: In function 'validate_bset_keys':
+> >   fs/bcachefs/btree_io.c:891:34: error: format '%lu' expects argument o=
+f type 'long unsigned int', but argument 12 has type 'unsigned int' [-Werro=
+r=3Dformat=3D]
+> >     891 |                                  "bad k->u64s %u (min %u max =
+%lu)", k->u64s,
+> >         |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~
+> >   fs/bcachefs/btree_io.c:603:32: note: in definition of macro 'btree_er=
+r'
+> >     603 |                                msg, ##__VA_ARGS__);          =
+           \
+> >         |                                ^~~
+> >   fs/bcachefs/btree_io.c:887:21: note: in expansion of macro 'btree_err=
+_on'
+> >     887 |                 if (btree_err_on(!bkeyp_u64s_valid(&b->format=
+, k),
+> >         |                     ^~~~~~~~~~~~
+> >   fs/bcachefs/btree_io.c:891:64: note: format string is defined here
+> >     891 |                                  "bad k->u64s %u (min %u max =
+%lu)", k->u64s,
+> >         |                                                              =
+~~^
+> >         |                                                              =
+  |
+> >         |                                                              =
+  long unsigned int
+> >         |                                                              =
+%u
+> >   cc1: all warnings being treated as errors
+> >
+> > BKEY_U64s is size_t so the entire expression is promoted to size_t. Use
+> > the '%zu' specifier so that there is no warning regardless of the width
+> > of size_t.
+> >
+> > Fixes: 031ad9e7dbd1 ("bcachefs: Check for packed bkeys that are too big=
+")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202404130747.wH6Dd23p-lkp=
+@intel.com/
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202404131536.HdAMBOVc-lkp=
+@intel.com/
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>
+> Thanks, applied
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- fs/bcachefs/btree_io.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+This is still not fixed in today's linux-next, while the issue is now
+causing breakage on several 32-bit defconfs in v6.9-rc5.
 
-diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
-index 9678b2375bed..45dff1a77366 100644
---- a/fs/bcachefs/btree_io.c
-+++ b/fs/bcachefs/btree_io.c
-@@ -888,9 +888,10 @@ static int validate_bset_keys(struct bch_fs *c, struct btree *b,
- 				 -BCH_ERR_btree_node_read_err_fixable,
- 				 c, NULL, b, i,
- 				 btree_node_bkey_bad_u64s,
--				 "bad k->u64s %u (min %u max %lu)", k->u64s,
-+				 "bad k->u64s %u (min %u max %u)", k->u64s,
- 				 bkeyp_key_u64s(&b->format, k),
--				 U8_MAX - BKEY_U64s + bkeyp_key_u64s(&b->format, k)))
-+				 (unsigned int)(U8_MAX - BKEY_U64s +
-+					bkeyp_key_u64s(&b->format, k))))
- 			goto drop_this_key;
- 
- 		if (!write)
--- 
-2.44.0
+Gr{oetje,eeting}s,
 
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
