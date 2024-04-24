@@ -1,54 +1,66 @@
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED28142624
-	for <linux-bcachefs@vger.kernel.org>; Tue, 23 Apr 2024 21:18:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4834C81
+	for <linux-bcachefs@vger.kernel.org>; Wed, 24 Apr 2024 01:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713907105; cv=none; b=sPHRTwndlRhYlV31Ji/ZwgXaT8DKb4uXyBLeGa0A7dRAPApox/VNy+7zH89uy71u0M1hQtet2GvCXjQsQiNBVewa1/aGPsUdy5aTuvUhvpkKet1aAALCeFbxl92IEOQKSkOaD9nZUybFzl9Xt4a1+S3BGKPhcTI3eQFkbKEoazU=
+	t=1713921302; cv=none; b=ucYU8AG6K+S4WcaDh3C/4DnhDwC+mDf85Q7VWOhJSZ6OxiuqwhFCsqNusG0pP14xh/ClttKxbfH5KiY67q9O6Vi7VjwDITfvgy1aLsAFB/y2AtpYiS4XTBNBdeHhzg1+m361H8ca5UpvGBF2JkoxMUiG44D5f36+LUjEu4LlF34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713907105; c=relaxed/simple;
-	bh=JwoURZBvHWy64Vuwrmw9D4a2Bdu35FYKiAqYHQlAE64=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xm4IIaycE9H22xzBnxXiV59MTuaW/Q6l1yrSOUcRhwBFbZ3Db8lsWVTW/0xvhLDHgZC2hzSBYsZpLl28jZ2WXD/oMRwjDTDE/BBN0JEOWL6Zapv9hV7TnVRwvjgO3sTcs3Pks98coP09lZ07feEpmAQq4yNZzHdnXWqtGesbvyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aU8bZwlF; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aU8bZwlF"
-Date: Tue, 23 Apr 2024 17:18:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713907100;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JwoURZBvHWy64Vuwrmw9D4a2Bdu35FYKiAqYHQlAE64=;
-	b=aU8bZwlFl5IEDfbVFUUct9KXfMFMhpM+5/3KaSQv0tbuvSZhieCiT+x/tAaGHHWR9NocfS
-	8OwsmXflCEYdXgxn4jooy6x/Px/F5QZ2uAMR5J++mTrKwrNlxkwhTSLrcVjSoJ6nqJkrdh
-	9Pbf0po2i9a8ANibqQUtl+dWBPTUvaA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
-	patches@lists.linux.dev
-Subject: Re: [PATCH] bcachefs: Fix format specifiers in
- bch2_btree_key_cache_to_text()
-Message-ID: <vkagwwju2wrz6bpd43bgpz2uo4zejts24sdqez2ziicrciud6f@xsmc6g74lpud>
-References: <20240423-bcachefs-fix-wformat-32-bit-pcpu-v1-1-a10549e5271d@kernel.org>
+	s=arc-20240116; t=1713921302; c=relaxed/simple;
+	bh=wdvhBGcxVN+terQPKtqziq2XdAI7tYK9hcpo6/9DkOo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=evJs9xGrY2/P1gw9BsTlPfKODiwadU6enF11AOGnvzGj6xvu3nPj1i735Y8tTlmHCsgEPbPxt0chWdZy4qp6i87VoJ4nDIAsQyELGv5I6J033KoEa+CRHEd3WtrQz+rHMW9zmy4chSWx1823F1x0HUp9rnxIhdtO6KagGYdDJ3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VPLYS16jBzvPv9;
+	Wed, 24 Apr 2024 09:11:56 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5805414037B;
+	Wed, 24 Apr 2024 09:14:57 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 24 Apr 2024 09:14:57 +0800
+Message-ID: <7c56ccf0-18a6-4327-bc37-418e21519045@huawei.com>
+Date: Wed, 24 Apr 2024 09:14:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423-bcachefs-fix-wformat-32-bit-pcpu-v1-1-a10549e5271d@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] eliminate the uninitialized compilation warning
+Content-Language: en-US
+To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
+CC: <linux-bcachefs@vger.kernel.org>
+References: <20240419074851.1583392-1-lihongbo22@huawei.com>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240419074851.1583392-1-lihongbo22@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Tue, Apr 23, 2024 at 01:12:27PM -0700, Nathan Chancellor wrote:
-> When building for a 32-bit target, for which 'size_t' is 'unsigned int',
-> there are two warnings around mismatched format specifiers and argument
-> types:
+These are two compilation warning in bcachefs-tools, the patches may be 
+useful.
 
-Thanks! Applied.
+Thanks,
+Hongbo.
+
+On 2024/4/19 15:48, Hongbo Li wrote:
+> Eliminating the uninitialized compilation warning in bcachefs-tools.
+> 
+> Hongbo Li (2):
+>    bcachefs: eliminate the uninitialized compilation warning in
+>      bch2_reconstruct_snapshots
+>    bcachefs: eliminate the uninitialized compilation warning in
+>      __do_six_trylock
+> 
+>   fs/bcachefs/six.c      | 6 ++----
+>   fs/bcachefs/snapshot.c | 5 ++++-
+>   2 files changed, 6 insertions(+), 5 deletions(-)
+> 
