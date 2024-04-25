@@ -1,43 +1,81 @@
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA46F5B201
-	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Apr 2024 13:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A8E149E0C;
+	Thu, 25 Apr 2024 14:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714053053; cv=none; b=t5iGAVMCCStevVSr0Z3tzChVdvnhGoS2rzUowK/gXG//LyGRHoYf8tRLDl+3KDicTbK2NPvHMYhWlmS0ELmzezZW89vr/v5xpmAP/DyJCWdwpfk2SQbDRdRyCb0QEewCJa9VukAgxzVbvyMBGQNz2VCekWQ/YPgKPK303PATlfA=
+	t=1714054716; cv=none; b=TMkHDJHbkov98GX9F7jmqkk5HPA+1pU0XnjqVH7tr3ZX6yLi9aRG5w0bKsVeWZf8AntbEOJ6z4huIG2mRkZV7cpWny1bzNqTxaI30Xe1kww3YHOKPTSCiGDe+tf+fFFB/4MRhcBjBvWiyvSPZuJqgtPoIBRML1o4wdQPTqXZzQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714053053; c=relaxed/simple;
-	bh=IjETUOGC1m/Z2gGBfqx+o3NlaNR4nYw7A9zXnI7rOPo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q9p1JgpyBN0iJ8qkswr8pTVzk1yMggQlW1cyU7eeqbYrwaAd3QhT7w8lLl4TkyaLhIX+GWnBAQ0ntHl04nIcyLuaKHdxF/rWThFZToh01SZyiZ5t1bb+kqb+Dx98hT3LN1jBs+anqjIvFKSB4plhweQLGnjVCM6etRUKsUYxo98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=js9bruY8; arc=none smtp.client-ip=185.67.36.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+	s=arc-20240116; t=1714054716; c=relaxed/simple;
+	bh=nxOjcL0P74qvHOhUa3G1KBblKkFTMO6kAC1ncKWnWeE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Jp5HCvq7lzz3JZzrgOEqMgPLHQNOXWke4EdfGvd0mGDFbAEzkT4ZATq+NfHYGQHW3C1RA/hmoarAuFFnHuW+kHdEfNNkBcE/cdc/1F2sD2l9oltRsaXSLbY6rxX657TCoHbrvSvIpNeNWXVF8SSCyBh4nQ0xBAVY7DHT56yu+Og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mi+I7ng9; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="js9bruY8"
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id 456B4240028
-	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Apr 2024 15:50:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1714053047; bh=IjETUOGC1m/Z2gGBfqx+o3NlaNR4nYw7A9zXnI7rOPo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:From;
-	b=js9bruY8VA/lX0AnFVJdpz5pJ29U4DqnxxNARiV1i+rP6dY2zIqid2nU0qlFEWRlW
-	 xsJJnfNrKGmy/aT1OPLSPjanxYojBpd09XeStnuIASf9cM84eoYokRyY1mtAhWYNS8
-	 sJLA2FEikjT9d3RauUaq+80hxh+HGwfcAo5jUMVPjtIO5i/kPiqwWjBdplJKoQQGFS
-	 wOcXAfa+s/DFVK0aNwu0tYRK3TuIdJ9Q87uRCWCUdFaBRdfiZQnZHuDyk4Gv7ZxaVF
-	 baWKDk/aZ5lHvwA7QBVM1loVOfNumSUJRVt7JSd7r1cVM4qX0AE7G4Ue/oVCGlbxDQ
-	 n2n++Cmw9YRYA==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4VQHLZ0pK4z6tvd;
-	Thu, 25 Apr 2024 15:50:45 +0200 (CEST)
-From: Christopher Fore <csfore@posteo.net>
-To: linux-bcachefs@vger.kernel.org
-Cc: erhard_f@mailbox.org,
-	Christopher Fore <csfore@posteo.net>
-Subject: [PATCH] bcachefs-tools: Fix compilation on musl libc
-Date: Thu, 25 Apr 2024 13:50:33 +0000
-Message-ID: <20240425135033.1163353-1-csfore@posteo.net>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mi+I7ng9"
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1ead2c5f3f0so107855ad.0;
+        Thu, 25 Apr 2024 07:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714054714; x=1714659514; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SpcFxjVoRf/8zZFpl0pURM6bbS9rd+3CtG1qRJbE4oM=;
+        b=mi+I7ng9P0wPJThgggB3DA6prhhWagplopwMYLvf382EdbmbVYm4tUfV1ZHiTNdMCz
+         ivyaWj6owGJs+KTRU/y//yz7d6tGdPirMW82tG8+MC6bjcfTFU+bozo6lLmiQ0THOnXB
+         pVTi8ZX5JJXEyCUyROCujb1RN1ME611Mpm/zn6G1+Fs1/E1/OqNwP/KNsmeH2Urff4Nx
+         VICQ51CxjcGFNuVE6CeRzTKajI1Tsh27P0kUXiISzN4DtHs4ErRvjBW3F3vkg25fgY+l
+         ijYV2B5f+CnqnYftEnjxXVoYowx9Z6Z4M/qGBxxBZgQ1X46+VE4bXOy0JnHHVb63sjIo
+         llNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714054714; x=1714659514;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SpcFxjVoRf/8zZFpl0pURM6bbS9rd+3CtG1qRJbE4oM=;
+        b=mEcuTSG0syPAKuHLIMVkkXJzf24Iaz9SKRMBLNjwq8ymm0/p6jxwUVcOlngMZgVtup
+         +zAVjLdKKZbjcZ545fLi8xC1a6DyN4MTno/FpJjyeA5C+qW3J48DHWWFtwoTDwh0rhkd
+         kqDa58ry7Y+yI4VQZqk9eklhQuo7UHd9uuVNgWLvMMKY1RBHrEoUeIaPHgzrycqZ4yGa
+         FIGfrvqS90BJM77p26Bmnjt+LNDNQNfYPYsZzczgmwZnwNxY1x/L5F3nWWyVxafD4tt6
+         686JpercvnKXK5flXxEF7UlY9zMqQRq4wkX5g1bB3jEYfBLPWdugGXaYmRYlX2voaoPn
+         MmJw==
+X-Forwarded-Encrypted: i=1; AJvYcCWBIcjQ9VQh5URWOWAyhz7wP+Neq5TjwLmzvvhIrBFu4TQ7ffHKzvoVKdjir8BFHw15rQN/UQJsx/CO3WGtPqBi8ioFRslUTwXoDzwbK4WZ1QSa9JFMN7hIP675UD5+LkFqi0RPs+N+oE5DzLsyJsBjJxZkcF1Z3rT1w2j75pDvwqmQx4dt91eWqDzXwrnaCJ4WJYpzP/1WtOf03TNjhVBft3W5LFzRk3xiJI4F
+X-Gm-Message-State: AOJu0YzGi1bbjiOvK2W7ozEgdRHQSoIyIov2mbUrSn7BLhltcOxei7+F
+	IfqGwswHeaulxkZzzxTfZK7gJhCJfA7/EoOYw4Y/gL2OZ+rSRT57
+X-Google-Smtp-Source: AGHT+IFFwWUen0aR7eKwdpRgMzVD+6uL8RAt9TmXJdXVYBDk+NjjHhRAaa/zcyng5BqcXFQvtoTOsA==
+X-Received: by 2002:aa7:8a50:0:b0:6ec:ceb5:e5de with SMTP id n16-20020aa78a50000000b006ecceb5e5demr7018753pfa.0.1714054714442;
+        Thu, 25 Apr 2024 07:18:34 -0700 (PDT)
+Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id go20-20020a056a003b1400b006e6233563cesm13162397pfb.218.2024.04.25.07.18.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 07:18:33 -0700 (PDT)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: colyli@suse.de,
+	kent.overstreet@linux.dev,
+	msakai@redhat.com,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	akpm@linux-foundation.org
+Cc: bfoster@redhat.com,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	jserv@ccns.ncku.edu.tw,
+	linux-bcache@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH v4 00/16] treewide: Refactor heap related implementation
+Date: Thu, 25 Apr 2024 22:18:10 +0800
+Message-Id: <20240425141826.840077-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -46,163 +84,100 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently there is not a __attribute_const__ defined anywhere in
-linux/sort.c, which results in compilation failure on musl libc
-systems. The compiler also does not necessarily guarantee the macro
-and has only worked on glibc because of possible leakage from the
-header, sys/cdefs.h, which just happened to define __attribute_const__
-in the same way that bcachefs-tools defines it. linux/compiler.h has
-also been included in files that use __attribute_const__ or
-__always_inline without explicit including for futureproofing.
+This patch series focuses on several adjustments related to heap
+implementation. Firstly, a type-safe interface has been added to the
+min_heap, along with the introduction of several new functions to
+enhance its functionality. Additionally, the heap implementation for
+bcache and bcachefs has been replaced with the generic min_heap
+implementation from include/linux. Furthermore, several typos have been
+corrected.
 
-This was narrowed down as the cause by noting that linux/compiler.h is
-not included anywhere in linux/sort.c, yet it was compiling
-successfully on glibc. Then, the preprocessor definitions were printed
-out using the gcc args: -E -dM.
+Previous discussion with Kent Overstreet:
+https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
 
-To view the difference, the command:
-$ gcc -I./include -E -dM linux/sort.c
+Regards,
+Kuan-Wei
 
-on glibc and musl systems will reveal the discrepancy.
-
-Expected output:
-#define __attribute_const__ __attribute__ ((__const__))
-
-On musl there is no output.
-
-Closes: https://github.com/koverstreet/bcachefs-tools/issues/248
-Signed-off-by: Christopher Fore <csfore@posteo.net>
 ---
- libbcachefs/bkey.h         | 1 +
- libbcachefs/bset.c         | 1 +
- libbcachefs/btree_iter.h   | 1 +
- libbcachefs/eytzinger.c    | 1 +
- libbcachefs/fs-io-direct.c | 1 +
- libbcachefs/six.c          | 1 +
- libbcachefs/str_hash.h     | 1 +
- libbcachefs/subvolume.c    | 1 +
- linux/mempool.c            | 1 +
- linux/sort.c               | 1 +
- 10 files changed, 10 insertions(+)
 
-diff --git a/libbcachefs/bkey.h b/libbcachefs/bkey.h
-index 3a45d12..d30d501 100644
---- a/libbcachefs/bkey.h
-+++ b/libbcachefs/bkey.h
-@@ -3,6 +3,7 @@
- #define _BCACHEFS_BKEY_H
- 
- #include <linux/bug.h>
-+#include <linux/compiler.h>
- #include "bcachefs_format.h"
- #include "bkey_types.h"
- #include "btree_types.h"
-diff --git a/libbcachefs/bset.c b/libbcachefs/bset.c
-index 3bb4778..7d6b57f 100644
---- a/libbcachefs/bset.c
-+++ b/libbcachefs/bset.c
-@@ -17,6 +17,7 @@
- #include <linux/console.h>
- #include <linux/random.h>
- #include <linux/prefetch.h>
-+#include <linux/compiler.h>
- 
- static inline void __bch2_btree_node_iter_advance(struct btree_node_iter *,
- 						  struct btree *);
-diff --git a/libbcachefs/btree_iter.h b/libbcachefs/btree_iter.h
-index 1c70836..c4376c7 100644
---- a/libbcachefs/btree_iter.h
-+++ b/libbcachefs/btree_iter.h
-@@ -2,6 +2,7 @@
- #ifndef _BCACHEFS_BTREE_ITER_H
- #define _BCACHEFS_BTREE_ITER_H
- 
-+#include <linux/compiler.h>
- #include "bset.h"
- #include "btree_types.h"
- #include "trace.h"
-diff --git a/libbcachefs/eytzinger.c b/libbcachefs/eytzinger.c
-index 0f955c3..49c2069 100644
---- a/libbcachefs/eytzinger.c
-+++ b/libbcachefs/eytzinger.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#include <linux/compiler.h>
- #include "eytzinger.h"
- 
- /**
-diff --git a/libbcachefs/fs-io-direct.c b/libbcachefs/fs-io-direct.c
-index b889370..e6598f0 100644
---- a/libbcachefs/fs-io-direct.c
-+++ b/libbcachefs/fs-io-direct.c
-@@ -14,6 +14,7 @@
- #include <linux/pagemap.h>
- #include <linux/prefetch.h>
- #include <linux/task_io_accounting_ops.h>
-+#include <linux/compiler.h>
- 
- /* O_DIRECT reads */
- 
-diff --git a/libbcachefs/six.c b/libbcachefs/six.c
-index 3a494c5..a99f365 100644
---- a/libbcachefs/six.c
-+++ b/libbcachefs/six.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#include <linux/compiler.h>
- #include <linux/export.h>
- #include <linux/log2.h>
- #include <linux/percpu.h>
-diff --git a/libbcachefs/str_hash.h b/libbcachefs/str_hash.h
-index 3976f80..ed467d9 100644
---- a/libbcachefs/str_hash.h
-+++ b/libbcachefs/str_hash.h
-@@ -12,6 +12,7 @@
- #include "super.h"
- 
- #include <linux/crc32c.h>
-+#include <linux/compiler.h>
- #include <crypto/hash.h>
- #include <crypto/sha2.h>
- 
-diff --git a/libbcachefs/subvolume.c b/libbcachefs/subvolume.c
-index 88a79c8..8312d96 100644
---- a/libbcachefs/subvolume.c
-+++ b/libbcachefs/subvolume.c
-@@ -10,6 +10,7 @@
- #include "subvolume.h"
- 
- #include <linux/random.h>
-+#include <linux/compiler.h>
- 
- static int bch2_subvolume_delete(struct btree_trans *, u32);
- 
-diff --git a/linux/mempool.c b/linux/mempool.c
-index 74ed17b..5b71f77 100644
---- a/linux/mempool.c
-+++ b/linux/mempool.c
-@@ -18,6 +18,7 @@
- #include <linux/mempool.h>
- #include <linux/mempool.h>
- #include <linux/sched.h>
-+#include <linux/compiler.h>
- 
- #if defined(CONFIG_DEBUG_SLAB) || defined(CONFIG_SLUB_DEBUG_ON)
- static void poison_error(mempool_t *pool, void *element, size_t size,
-diff --git a/linux/sort.c b/linux/sort.c
-index ecce71c..3d4ee41 100644
---- a/linux/sort.c
-+++ b/linux/sort.c
-@@ -15,6 +15,7 @@
- #include <linux/types.h>
- #include <linux/export.h>
- #include <linux/sort.h>
-+#include <linux/compiler.h>
- 
- /**
-  * is_aligned - is this pointer & size okay for word-wide copying?
+You can preview this patch series on the 'refactor-heap-v4' branch of
+the repository at the following link:
+
+https://github.com/visitorckw/linux.git
+
+Changes in v4:
+- Change struct initializations to use designated initializers.
+- Replace memcpy() with func->swp() in heap_del() due to issues with
+  set_backpointer in bcachefs when setting idx.
+- Fix an error in ec_stripes_heap_swap() where
+  ec_stripes_heap_set_backpointer() should be called after swapping.
+
+Changes in v3:
+- Avoid heap->heap.nr to eliminate the nested types.
+- Add MIN_HEAP_PREALLOCATED macro for preallocating some elements.
+- Use min_heap_sift_up() in min_heap_push().
+- Fix a bug in heap_del() where we should copy the last element to
+  'data + idx * element_size' instead of 'data'.
+- Add testcases for heap_del().
+- Fix bugs in bcache/bcachefs patches where the parameter types in
+  some compare functions should have been 'type **', but were
+  mistakenly written as 'type *'.
+
+Changes in v2:
+- Add attribute __always_unused to the compare and swap functions
+  that do not use the args parameter.
+- Rename min_heapify() to min_heap_sift_down().
+- Update lib/test_min_heap.c to use min_heap_init().
+- Refine the commit message for bcache and bcachefs.
+- Adjust the order of patches in the patch series.
+
+Link to v3: https://lore.kernel.org/20240406164727.577914-1-visitorckw@gmail.com
+Link to v2: https://lore.kernel.org/20240320145417.336208-1-visitorckw@gmail.com
+Link to v1: https://lkml.kernel.org/20240319180005.246930-1-visitorckw@gmail.com
+
+Kuan-Wei Chiu (16):
+  perf/core: Fix several typos
+  bcache: Fix typo
+  bcachefs: Fix typo
+  lib min_heap: Add type safe interface
+  lib min_heap: Add min_heap_init()
+  lib min_heap: Add min_heap_peek()
+  lib min_heap: Add min_heap_full()
+  lib min_heap: Add args for min_heap_callbacks
+  lib min_heap: Add min_heap_sift_up()
+  lib min_heap: Add min_heap_del()
+  lib min_heap: Update min_heap_push() and min_heap_pop() to return bool
+    values
+  lib min_heap: Rename min_heapify() to min_heap_sift_down()
+  lib min_heap: Update min_heap_push() to use min_heap_sift_up()
+  lib/test_min_heap: Add test for heap_del()
+  bcache: Remove heap-related macros and switch to generic min_heap
+  bcachefs: Remove heap-related macros and switch to generic min_heap
+
+ drivers/md/bcache/alloc.c      |  64 ++++++++---
+ drivers/md/bcache/bcache.h     |   2 +-
+ drivers/md/bcache/bset.c       |  84 ++++++++++-----
+ drivers/md/bcache/bset.h       |  14 +--
+ drivers/md/bcache/btree.c      |  17 ++-
+ drivers/md/bcache/extents.c    |  53 ++++++----
+ drivers/md/bcache/movinggc.c   |  41 +++++--
+ drivers/md/bcache/sysfs.c      |   2 +
+ drivers/md/bcache/util.c       |   2 +-
+ drivers/md/bcache/util.h       |  67 +-----------
+ drivers/md/bcache/writeback.c  |   3 +
+ drivers/md/dm-vdo/repair.c     |  19 ++--
+ drivers/md/dm-vdo/slab-depot.c |  14 +--
+ fs/bcachefs/clock.c            |  43 ++++++--
+ fs/bcachefs/clock_types.h      |   2 +-
+ fs/bcachefs/ec.c               |  76 ++++++++-----
+ fs/bcachefs/ec_types.h         |   2 +-
+ fs/bcachefs/util.c             |   2 +-
+ fs/bcachefs/util.h             | 118 +--------------------
+ include/linux/min_heap.h       | 188 +++++++++++++++++++++++++--------
+ kernel/events/core.c           |  29 ++---
+ lib/test_min_heap.c            |  75 +++++++++----
+ 22 files changed, 522 insertions(+), 395 deletions(-)
+
 -- 
-2.44.0
+2.34.1
 
