@@ -1,190 +1,130 @@
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1F9364;
-	Fri, 26 Apr 2024 00:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5A617F6
+	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Apr 2024 01:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714090473; cv=none; b=SAYWmPpeXKFaFwMwRIyTYFZF8LacUQB6uiEyJl3cPeap/wHXzBFGgPC9UHhAsSTPrwfDmnLs2+IVE5orzrGuwnN+7qzpIs3DcW/D3yzJkFMO5I6adRKKk6vm2sQZTusGnnqNda5MCoCKQnH9Y7wBUdOZomdtrPmr5DY99gTxOpg=
+	t=1714095123; cv=none; b=mH/34FyZRZsoEGUpyitgoK2kryfZN7ra/uG+q7rpHP6C7p1ptx4GYLx+evavL4KgatcSF6k3GFeqdqDvBqnvBB0Z2taLcK+GpXNYWjBQYUT5uSz2hUkl0rjP+geagj3BaTh7C23I5QwWFbZuGxlkRSTe2nMjsQ8p3p4DPTELyqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714090473; c=relaxed/simple;
-	bh=BNlz4p2+5Fzq2Xhe9VHkNPnVhu1O/EhyxSF3fvihfqQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QIccf6wCVQ+Hv6XjO5NQ5uRAOsStR83VEwBr3B/ji0ezGQwlWpRFkdwy9NWZ6eNFTjUptq83jtvfpYAMWLIKV4DmGQoOXfwhVvNcIdneoEUHmGM7dKwJU+XfVBbSwo91yTg839Jwf/rlXvHlSDlTvDRKhRoiVRYkQ06091u11Sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LmIrrAPJ; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LmIrrAPJ"
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2a2d37b8c4fso376350a91.1;
-        Thu, 25 Apr 2024 17:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714090471; x=1714695271; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SunWQ9HwSBJxyYvtsaZOJFSGcbd0R6AuBnmBsgWqMEg=;
-        b=LmIrrAPJ0S9CeYUZtoDl1JDMAS/eCBukVS1N24OHOWFmzGoItNHVuw1hLKT+djx+aU
-         eNBHzwFeW+xJRw3ddsTHAAgvhvTMuJqsmcwN/g4Al6oMAKya/qXr6QcOB0X3rvxd+Glf
-         y/UFdYM6wUWU3giWdfJYQnuwxDvpLuWFOdIFphIdyACltAAaD0kQojUvNI9qiiqmIYWK
-         axhzQr1DhA7I0msN3IitOwvuMdiWg6NzBof9RDlOjBH8GueM2NdBNS38XdkZl/arQmZS
-         SPv9Tl4qW6MSRLY4Dzv/vIdtzWh5NGkIBqk9u0VcjD/5KO4UOYd2Di4ZcDRClvKN1BMz
-         kJ2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714090471; x=1714695271;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SunWQ9HwSBJxyYvtsaZOJFSGcbd0R6AuBnmBsgWqMEg=;
-        b=AP1x2bXaoC/rhz8LItYKY1vfOyKEr8/c+sgNtv2RRXszNRiyYg9St9LPZp/ym5nHdt
-         Qu0StSmH3ZepEGX1Uay/6Ip1jIACCo7NWnUOReNucWeddEC2MM0Xb9V4HT/STcb0owhP
-         zki37ygAee/kXxRK7TmHf+MW5PxGSUqKHhpOJkMVNT7OM0MrDxbYcRHA0EE/MQJvG4HS
-         fntYgXpTzXVQPh4LmxLMg170FM25XmODt6TGv64+rubKGMGGmL+AdNF9py8R66mxEpR6
-         AaloB6mfCbEUh3nWFtJRUgh8CIwwNQOjgcvctqVQ4Z27jEwnxSH1QTcOtw73bvVlXKnL
-         SN+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUwfqdMN/XB3MClvy9EJiYImP7GUvRf8V0p1QRqz+Z/7ZqboR/1MeULnclVcGTDZdeWMytyweHE2PU3tN8+28KcY1D5umwTkImRY6+wLDvvcI0gZNwu1WlCakFe9W4K6H4cXCxaLf1pN8czQWEpUqlVNcaUl0VXg4j3UeeWokjm8IRUkU91S9X4tFwWOWu1yG+d2u4pHIGNCplpAI9xZdhJHZNnJNwv/4DLbqb/
-X-Gm-Message-State: AOJu0Ywxsl6pPknSHuzfHZ1oaCPjH1zwVtoIwzSt5OE8PY7U3JelhMe4
-	pgCZVEaAw4G30q8/QV+RSYWHnSSR72l180YUtbw8qjUsJzGbCpra
-X-Google-Smtp-Source: AGHT+IFhfYJmlZYX3JCY6d+4vobjo7z2a69ChmkVLT1hXUmpPBdCX2AmDP1EgXQSKYYW9pR9OczIEQ==
-X-Received: by 2002:a05:6a00:880f:b0:6ec:ef1c:5c55 with SMTP id ho15-20020a056a00880f00b006ecef1c5c55mr1525090pfb.2.1714090471464;
-        Thu, 25 Apr 2024 17:14:31 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id gm8-20020a056a00640800b006e740d23674sm14228279pfb.140.2024.04.25.17.14.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 17:14:30 -0700 (PDT)
-Date: Fri, 26 Apr 2024 08:14:25 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, colyli@suse.de,
-	msakai@redhat.com, peterz@infradead.org, mingo@redhat.com,
-	acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org,
-	bfoster@redhat.com, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
-	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v4 00/16] treewide: Refactor heap related implementation
-Message-ID: <Zirx4fCA8C6/hz8m@visitorckw-System-Product-Name>
-References: <20240425141826.840077-1-visitorckw@gmail.com>
- <txga7kntgxylhmxqkzs3rdgmnjai2ftlstdezltkapdctn3ju6@ndyytejfyoc2>
+	s=arc-20240116; t=1714095123; c=relaxed/simple;
+	bh=Wc4l6Fh8aGzslDi9kiFC394+xuSwDsPtms3m8Ry73V4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dU6g3v9uE5z9lzAFLnONCwF2ecfWbUJohb4GZr7xyDREassmyi8r9TPErUURKQK849fqoxqWPtQx0OhjsB5zTubHY3x/8+H/8tHAKVuFmuBR1OhThHfILOuAMyEfFsrrdKkoV2SKYf3jjTXzmHjDIy0d3TZRviSgNnimaUYnmzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VQZqy1h5Dz1RDQ1;
+	Fri, 26 Apr 2024 09:28:46 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3DA021403D1;
+	Fri, 26 Apr 2024 09:31:52 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 26 Apr 2024 09:31:52 +0800
+Message-ID: <3ae892c3-bcef-4302-96eb-9dbdbb8bb083@huawei.com>
+Date: Fri, 26 Apr 2024 09:31:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <txga7kntgxylhmxqkzs3rdgmnjai2ftlstdezltkapdctn3ju6@ndyytejfyoc2>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] bcachefs: eliminate the uninitialized compilation
+ warning in bch2_reconstruct_snapshots
+To: Kent Overstreet <kent.overstreet@linux.dev>
+CC: <bfoster@redhat.com>, <linux-bcachefs@vger.kernel.org>
+References: <20240419074851.1583392-1-lihongbo22@huawei.com>
+ <20240419074851.1583392-2-lihongbo22@huawei.com>
+ <iugrlvi6jpwhcliq54e2cxjzfikhm2mpx7hj22sy455xrv6ho2@ch3lbvaeiztz>
+ <dead760c-e8f3-45c6-97e2-61040488a55c@huawei.com>
+ <ydyguyfadhf3ui7zba25zu7zpocs5gjn44iprsq755uotwafz7@coc5mvcvjztr>
+Content-Language: en-US
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <ydyguyfadhf3ui7zba25zu7zpocs5gjn44iprsq755uotwafz7@coc5mvcvjztr>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Thu, Apr 25, 2024 at 04:54:54PM -0400, Kent Overstreet wrote:
-> Hey Stephen, I think this is ready for -next.
-> 
-> https://github.com/visitorckw/linux.git refactor-heap-v4
-> 
-> Kuan, please add my acked-by to the bcachefs patch as well.
-> 
-Acked-by tag has been added to the repository mentioned above and
-pushed out.
 
-Regards,
-Kuan-Wei
+
+On 2024/4/26 1:08, Kent Overstreet wrote:
+> On Thu, Apr 25, 2024 at 11:55:02AM +0800, Hongbo Li wrote:
+>>
+>>
+>> On 2024/4/25 11:34, Kent Overstreet wrote:
+>>> On Fri, Apr 19, 2024 at 03:48:50PM +0800, Hongbo Li wrote:
+>>>> [BUG]
+>>>> When compiling the bcachefs-tools, the following compilation warning
+>>>> is reported:
+>>>>       libbcachefs/snapshot.c: In function ‘bch2_reconstruct_snapshots’:
+>>>>       libbcachefs/snapshot.c:915:19: warning: ‘tree_id’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+>>>>         915 |  snapshot->v.tree = cpu_to_le32(tree_id);
+>>>>       libbcachefs/snapshot.c:903:6: note: ‘tree_id’ was declared here
+>>>>         903 |  u32 tree_id;
+>>>>          |      ^~~~~~~
+>>>>
+>>>> [CAUSE]
+>>>> This is a false alert, because @tree_id is changed in
+>>>> bch2_snapshot_tree_create after it returns 0. And if this function
+>>>> returns other value, @tree_id wouldn't be used. Thus there should
+>>>> be nothing wrong in logical.
+>>>>
+>>>> [FIX]
+>>>> Although the report itself is a false alert, we can still make it more
+>>>> explicit by:
+>>>>     - check the input parameter 'u32 *tree_id' with WARN_ON_ONCE
+>>>>     - initialize @tree_id to U32_MAX
+>>>>     - add extra WARN_ON_ONCE to make sure @tree_id is updated
+>>>>
+>>>> Fixes: a292be3b68f3 ("bcachefs: Reconstruct missing snapshot nodes")
+>>>> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+>>>> ---
+>>>>    fs/bcachefs/snapshot.c | 5 ++++-
+>>>>    1 file changed, 4 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
+>>>> index 0b26dee17a5a..cad3408903b2 100644
+>>>> --- a/fs/bcachefs/snapshot.c
+>>>> +++ b/fs/bcachefs/snapshot.c
+>>>> @@ -78,6 +78,7 @@ __bch2_snapshot_tree_create(struct btree_trans *trans)
+>>>>    static int bch2_snapshot_tree_create(struct btree_trans *trans,
+>>>>    				u32 root_id, u32 subvol_id, u32 *tree_id)
+>>>>    {
+>>>> +	WARN_ON_ONCE(!tree_id);
+>>>
+>>> There's no point checking for a null pointer like that; the oops from a
+>>> null ptr deref gives us exactly the same information.
+>>>
+>>>>    	struct bkey_i_snapshot_tree *n_tree =
+>>>>    		__bch2_snapshot_tree_create(trans);
+>>>> @@ -900,7 +901,7 @@ static int check_snapshot_exists(struct btree_trans *trans, u32 id)
+>>>>    	if (bch2_snapshot_equiv(c, id))
+>>>>    		return 0;
+>>>> -	u32 tree_id;
+>>>> +	u32 tree_id = U32_MAX;
+>>>
+>>> Just initialize it to 0. 0 is an invalid tree ID, so it'll be caught by
+>>> snapshot_tree_invalid() if it's not set.
+>>>
+>>>>    	int ret = bch2_snapshot_tree_create(trans, id, 0, &tree_id);
+>>>>    	if (ret)
+>>>>    		return ret;
+>>>> @@ -910,6 +911,8 @@ static int check_snapshot_exists(struct btree_trans *trans, u32 id)
+>>>>    	if (ret)
+>>>>    		return ret;
+>>>> +	/* bch2_snapshot_tree_create returned 0, @tree_id must be updated. */
+>>>> +	WARN_ON_ONCE(tree_id == U32_MAX);
+>>>
+>>> Nix this as well.
+>> This is to ensure that the tree_id is modified.
 > 
-> On Thu, Apr 25, 2024 at 10:18:10PM +0800, Kuan-Wei Chiu wrote:
-> > This patch series focuses on several adjustments related to heap
-> > implementation. Firstly, a type-safe interface has been added to the
-> > min_heap, along with the introduction of several new functions to
-> > enhance its functionality. Additionally, the heap implementation for
-> > bcache and bcachefs has been replaced with the generic min_heap
-> > implementation from include/linux. Furthermore, several typos have been
-> > corrected.
-> > 
-> > Previous discussion with Kent Overstreet:
-> > https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
-> > 
-> > Regards,
-> > Kuan-Wei
-> > 
-> > ---
-> > 
-> > You can preview this patch series on the 'refactor-heap-v4' branch of
-> > the repository at the following link:
-> > 
-> > https://github.com/visitorckw/linux.git
-> > 
-> > Changes in v4:
-> > - Change struct initializations to use designated initializers.
-> > - Replace memcpy() with func->swp() in heap_del() due to issues with
-> >   set_backpointer in bcachefs when setting idx.
-> > - Fix an error in ec_stripes_heap_swap() where
-> >   ec_stripes_heap_set_backpointer() should be called after swapping.
-> > 
-> > Changes in v3:
-> > - Avoid heap->heap.nr to eliminate the nested types.
-> > - Add MIN_HEAP_PREALLOCATED macro for preallocating some elements.
-> > - Use min_heap_sift_up() in min_heap_push().
-> > - Fix a bug in heap_del() where we should copy the last element to
-> >   'data + idx * element_size' instead of 'data'.
-> > - Add testcases for heap_del().
-> > - Fix bugs in bcache/bcachefs patches where the parameter types in
-> >   some compare functions should have been 'type **', but were
-> >   mistakenly written as 'type *'.
-> > 
-> > Changes in v2:
-> > - Add attribute __always_unused to the compare and swap functions
-> >   that do not use the args parameter.
-> > - Rename min_heapify() to min_heap_sift_down().
-> > - Update lib/test_min_heap.c to use min_heap_init().
-> > - Refine the commit message for bcache and bcachefs.
-> > - Adjust the order of patches in the patch series.
-> > 
-> > Link to v3: https://lore.kernel.org/20240406164727.577914-1-visitorckw@gmail.com
-> > Link to v2: https://lore.kernel.org/20240320145417.336208-1-visitorckw@gmail.com
-> > Link to v1: https://lkml.kernel.org/20240319180005.246930-1-visitorckw@gmail.com
-> > 
-> > Kuan-Wei Chiu (16):
-> >   perf/core: Fix several typos
-> >   bcache: Fix typo
-> >   bcachefs: Fix typo
-> >   lib min_heap: Add type safe interface
-> >   lib min_heap: Add min_heap_init()
-> >   lib min_heap: Add min_heap_peek()
-> >   lib min_heap: Add min_heap_full()
-> >   lib min_heap: Add args for min_heap_callbacks
-> >   lib min_heap: Add min_heap_sift_up()
-> >   lib min_heap: Add min_heap_del()
-> >   lib min_heap: Update min_heap_push() and min_heap_pop() to return bool
-> >     values
-> >   lib min_heap: Rename min_heapify() to min_heap_sift_down()
-> >   lib min_heap: Update min_heap_push() to use min_heap_sift_up()
-> >   lib/test_min_heap: Add test for heap_del()
-> >   bcache: Remove heap-related macros and switch to generic min_heap
-> >   bcachefs: Remove heap-related macros and switch to generic min_heap
-> > 
-> >  drivers/md/bcache/alloc.c      |  64 ++++++++---
-> >  drivers/md/bcache/bcache.h     |   2 +-
-> >  drivers/md/bcache/bset.c       |  84 ++++++++++-----
-> >  drivers/md/bcache/bset.h       |  14 +--
-> >  drivers/md/bcache/btree.c      |  17 ++-
-> >  drivers/md/bcache/extents.c    |  53 ++++++----
-> >  drivers/md/bcache/movinggc.c   |  41 +++++--
-> >  drivers/md/bcache/sysfs.c      |   2 +
-> >  drivers/md/bcache/util.c       |   2 +-
-> >  drivers/md/bcache/util.h       |  67 +-----------
-> >  drivers/md/bcache/writeback.c  |   3 +
-> >  drivers/md/dm-vdo/repair.c     |  19 ++--
-> >  drivers/md/dm-vdo/slab-depot.c |  14 +--
-> >  fs/bcachefs/clock.c            |  43 ++++++--
-> >  fs/bcachefs/clock_types.h      |   2 +-
-> >  fs/bcachefs/ec.c               |  76 ++++++++-----
-> >  fs/bcachefs/ec_types.h         |   2 +-
-> >  fs/bcachefs/util.c             |   2 +-
-> >  fs/bcachefs/util.h             | 118 +--------------------
-> >  include/linux/min_heap.h       | 188 +++++++++++++++++++++++++--------
-> >  kernel/events/core.c           |  29 ++---
-> >  lib/test_min_heap.c            |  75 +++++++++----
-> >  22 files changed, 522 insertions(+), 395 deletions(-)
-> > 
-> > -- 
-> > 2.34.1
-> > 
+> It's still not a good assertion; it's checking something simple and
+> purely local, and we've got other checks that will fire later - it's not
+> guarding against undefined behaviour.
+> 
+Thank you, I will revise the code based on your reviews.
