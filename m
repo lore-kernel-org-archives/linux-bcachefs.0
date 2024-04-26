@@ -1,35 +1,35 @@
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34187602D
-	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Apr 2024 03:21:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F942F36
+	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Apr 2024 03:21:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714101689; cv=none; b=sEHGRZziUUuz3D0EdP8ck7tkICaUG4CsI8OhzH/jH85u/JrV7xEtrOSxnoQfxIXblvO7q15yQ2UPkPaCxocC9NUZ+srJeCofTMSYEIXbUQ0z8/+9/2uZ2o55qVQ95mY6cC0pRcD4L7kMiUOCK3x+gG0TXvlJwdAxMZHscyLZi68=
+	t=1714101689; cv=none; b=dGjil3LRGYq4aGmx26L9NcjzTZl7gTx75/KGTyZNZ14/ZAYkACQX/T0F4MMcesdCPDmywl5sBbuv7LHi8Am6M07oU6iooZG4l8v0Z6jJreOYsYXSuWDVnchfm3yO+hx3/ltkxn9x4sURASJaQgffEjeOBzUYcs8E5teZrATcrOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714101689; c=relaxed/simple;
-	bh=ifLlZ5LJ0hSb16Ja09Ib2BXry0sFkEAa7xTKiW4vTM8=;
+	bh=Th7wfQlOJD3VAz87yDG+wvnooy2Nz0wg3MZqiF4tzYY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ON4CEDa75QawY7rh9sUK2ZIzC2g9az27V5rzu+ZDrEmU5EKeg/k/8Ry+pFWh8LMQ8e6MwHQO6Y/0hC3tIx7KyPTB7Q2M3FBHzkfb8bx5TEReEzEscoRSfHYxDH9Epr6hPuNmruZX23pzl6NmlOFkiKQjXI8Blw2QrdG3dYCfp48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+	 MIME-Version:Content-Type; b=I2lsOpJg3GTCInhxz/cFwH5OkMYlr3MRLoRn9sLcZWFyKXadc/qHJJdLwOXC8Y2wXdqsz7KfvjIIe2y5O9AUhRRj6o3N8mG/cIgCql5rTKlv0RBrKtSr7b+X8hEVMxOowTQx9nyl91hYr1Y8oKaI2cfw3xGIt8sWEWSPUp8yq+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VQdGP70DKz1R9jm;
-	Fri, 26 Apr 2024 11:18:21 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VQdJd6F09zcc4M;
+	Fri, 26 Apr 2024 11:20:17 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id B64B614011D;
-	Fri, 26 Apr 2024 11:21:25 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 40E8A180080;
+	Fri, 26 Apr 2024 11:21:23 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
  (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
- 2024 11:21:25 +0800
+ 2024 11:21:23 +0800
 From: Hongbo Li <lihongbo22@huawei.com>
 To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
 CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
-Subject: [PATCH v2 2/2] bcachefs: eliminate the uninitialized compilation warning in __do_six_trylock
-Date: Fri, 26 Apr 2024 11:21:36 +0800
-Message-ID: <20240426032136.2551471-3-lihongbo22@huawei.com>
+Subject: [PATCH v2 1/2] bcachefs: eliminate the uninitialized compilation warning in bch2_reconstruct_snapshots
+Date: Fri, 26 Apr 2024 11:21:35 +0800
+Message-ID: <20240426032136.2551471-2-lihongbo22@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240426032136.2551471-1-lihongbo22@huawei.com>
 References: <20240426032136.2551471-1-lihongbo22@huawei.com>
@@ -46,58 +46,48 @@ X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
 
 When compiling the bcachefs-tools, the following compilation warning
 is reported:
-    libbcachefs/six.c: In function ‘__do_six_trylock’:
-    libbcachefs/six.c:90:12: warning: ‘old’ may be used uninitialized in this function [-Wmaybe-uninitialized]
-       90 |  if (!(old & SIX_LOCK_HELD_intent)) {
-        |       ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+    libbcachefs/snapshot.c: In function ‘bch2_reconstruct_snapshots’:
+    libbcachefs/snapshot.c:915:19: warning: ‘tree_id’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+      915 |  snapshot->v.tree = cpu_to_le32(tree_id);
+    libbcachefs/snapshot.c:903:6: note: ‘tree_id’ was declared here
+      903 |  u32 tree_id;
+       |      ^~~~~~~
 
-This is also a false altert. Only when @type=SIX_LOCK_write and @try=false
-are passed in __do_six_trylock, the second condition branch would enter
-which does not initialize the @old variable. But six_set_owner will not
-use @old if @type is not SIX_LOCK_intent. There should be nothing wrong
-in logical too.
+This is a false alert, because @tree_id is changed in
+bch2_snapshot_tree_create after it returns 0. And if this function
+returns other value, @tree_id wouldn't be used. Thus there should
+be nothing wrong in logical.
 
-Although the report itself is a false alert, we can elimate the unitialize
-compilation warning by assigning @old in front.
+Although the report itself is a false alert, we can still make it more
+explicit by setting the initial value of @tree_id to 0 (an invalid
+tree ID).
 
-Fixes: 84a37cbf62e0 ("six locks: Wakeup now takes lock on behalf of waiter")
+Fixes: a292be3b68f3 ("bcachefs: Reconstruct missing snapshot nodes")
 Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 ---
 v2:
-  - Fix the error about reading lock->state introduced in v1.
+  - Revise the code based on Kent's reviews.
 
-v1: https://lore.kernel.org/all/20240419074851.1583392-3-lihongbo22@huawei.com/T/#u
+v1: https://lore.kernel.org/all/20240419074851.1583392-2-lihongbo22@huawei.com/T/#u
 ---
 ---
- fs/bcachefs/six.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/bcachefs/snapshot.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/six.c b/fs/bcachefs/six.c
-index 3a494c5d1247..8bfd22a6f771 100644
---- a/fs/bcachefs/six.c
-+++ b/fs/bcachefs/six.c
-@@ -118,11 +118,11 @@ static int __do_six_trylock(struct six_lock *lock, enum six_lock_type type,
- 			    struct task_struct *task, bool try)
- {
- 	int ret;
--	u32 old;
-+	u32 old = atomic_read(&lock->state);
+diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
+index 2368218070d4..3aa4686cc71f 100644
+--- a/fs/bcachefs/snapshot.c
++++ b/fs/bcachefs/snapshot.c
+@@ -900,7 +900,8 @@ static int check_snapshot_exists(struct btree_trans *trans, u32 id)
+ 	if (bch2_snapshot_equiv(c, id))
+ 		return 0;
  
- 	EBUG_ON(type == SIX_LOCK_write && lock->owner != task);
- 	EBUG_ON(type == SIX_LOCK_write &&
--		(try != !(atomic_read(&lock->state) & SIX_LOCK_HELD_write)));
-+		(try != !(old & SIX_LOCK_HELD_write)));
- 
- 	/*
- 	 * Percpu reader mode:
-@@ -182,7 +182,6 @@ static int __do_six_trylock(struct six_lock *lock, enum six_lock_type type,
- 				ret = -1 - SIX_LOCK_read;
- 		}
- 	} else {
--		old = atomic_read(&lock->state);
- 		do {
- 			ret = !(old & l[type].lock_fail);
- 			if (!ret || (type == SIX_LOCK_write && !try)) {
+-	u32 tree_id;
++	/* 0 is an invalid tree ID */
++	u32 tree_id = 0;
+ 	int ret = bch2_snapshot_tree_create(trans, id, 0, &tree_id);
+ 	if (ret)
+ 		return ret;
 -- 
 2.34.1
 
