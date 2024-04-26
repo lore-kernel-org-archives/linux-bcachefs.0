@@ -1,94 +1,105 @@
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF70213A889
-	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Apr 2024 06:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B99713AA59
+	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Apr 2024 07:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714113684; cv=none; b=Wz/yz2GpIvrQ2u0Ykda0ojMePrQf1gHKQp37pYayWm6nPxTJJOgqOdFpp8LGDIgP0a0qQQfYaT46fgyofNsGMCQWyGxo4/V0ULOpIPj/fB81/DtZxL6VwYKgEd/TVPqgVSySdG7wdxbiwSGS+MtwEcv1v2TH5QhkJntQF3GPoeE=
+	t=1714116648; cv=none; b=JCW2VH+cXJIIOkcm8/5JloXmXJ7s+pd2+hXVdJSqu19tP76q2irw/BSCNKx0RKsHmdXCLOIFBTCKAskxx77WYGqdAUEYbqAXSVCXjIupQ4kYIyGvI+ZJ/vZQPTHRO+kwN4hlCQEUzT3cV17HVcqqkf78+lZAMRrCGy7W00Q3AG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714113684; c=relaxed/simple;
-	bh=oHpNNMzfaP9NfvfxrV4fyIYYsNQRnwSmSJyNP0t6ci0=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tOiX91/OG+JZnmJm9CKpbTsdZTC5EJa66FP10Z8mel2gpXkXpHp4S6OOv9CgpqX+wmPBRqmSNnSzrZ7K6bM/zZfcTrgaz3hbHvulaufry2MGuXbqIQgepe7/C+yGKjNPAGje2CAoQDxMs7wBgL7q+Xe+XkBTgbhlENAW2hA9fR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VQjjc3qPvzNtqY;
-	Fri, 26 Apr 2024 14:38:44 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id EBE1318009D;
-	Fri, 26 Apr 2024 14:41:17 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
- 2024 14:41:17 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
-Subject: [PATCH v3] bcachefs: eliminate the uninitialized compilation warning in __do_six_trylock
-Date: Fri, 26 Apr 2024 14:41:32 +0800
-Message-ID: <20240426064132.2611169-1-lihongbo22@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714116648; c=relaxed/simple;
+	bh=l5QiBjcOva5LgsCUWVhPHkGb5Db5ByV+PGZtR5LTWAU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=C4N864gqs7395QZQkQMtrUPk1Xbk4JaLDwl13QSDFpb/7r0ughkxG72d78yWhaysoU+lga6TzeDcHK/7/3tNjInXD72/fT23+85CSGWQrpg/vtb21jLuU3MgdNX1MpNfud1FVK0DJQWcnQ4CwuWtJHWICFqJYBNcFz3rDDZaaTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vVEXqZHW; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vVEXqZHW"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714116642;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DQ6r3w+I+fAoQSvNF+oOUgR+CEx6NZvzg3R1b8bRtHg=;
+	b=vVEXqZHWZBWkca8nXxKhI3kfdyqVrZe51H0CXsqaXqAu2wrZY8E2oprdFcwXAYmPksFtrN
+	3fGrsh5ssjLG70trE6v4YTYCDZYN89NJoas3PIKu6wlhcKn/4S4gHp23HN69VxE1ozI7j6
+	KXUq2H24ndtdadz5t3yMi3SguONGZvk=
+From: Youling Tang <youling.tang@linux.dev>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Youling Tang <tangyouling@kylinos.cn>
+Subject: [PATCH] bcachefs: Change destroy_inode to free_inode
+Date: Fri, 26 Apr 2024 15:29:56 +0800
+Message-Id: <20240426072956.7727-1-youling.tang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+X-Migadu-Flow: FLOW_OUT
 
-When compiling the bcachefs-tools, the following compilation warning
-is reported:
-    libbcachefs/six.c: In function ‘__do_six_trylock’:
-    libbcachefs/six.c:90:12: warning: ‘old’ may be used uninitialized in this function [-Wmaybe-uninitialized]
-       90 |  if (!(old & SIX_LOCK_HELD_intent)) {
-        |       ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+From: Youling Tang <tangyouling@kylinos.cn>
 
-This is also a false altert. Only when @type=SIX_LOCK_write and @try=false
-are passed in __do_six_trylock, the second condition branch would enter
-which does not initialize the @old variable. But six_set_owner will not
-use @old if @type is not SIX_LOCK_intent. There should be nothing wrong
-in logical too.
+The vfs[1] documentation describes free_inode as follows:
+```
+free_inode
+    this method is called from RCU callback. If you use call_rcu()
+    in ->destroy_inode to free ‘struct inode’ memory, then it’s
+    better to release memory in this method.
+```
 
-Although the report itself is a false alert, we can elimate the unitialize
-compilation warning by assigning @old in front.
+free_inode will be called by the RCU callback, so it might be better
+to move the inode free operation to destroy_inode.
 
-Fixes: 84a37cbf62e0 ("six locks: Wakeup now takes lock on behalf of waiter")
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+Similar to commit ae6b47b5653e ("fs/ntfs3: Change destroy_inode to
+free_inode").
+
+Link:
+[1]: https://www.kernel.org/doc/html/latest/filesystems/vfs.html
+
+Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
 ---
-v3:
-  - Keep the lock state reading in original branch as Kent's suggestion.
+ fs/bcachefs/fs.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-v2: https://lore.kernel.org/linux-bcachefs/4c7f35f0-29c2-4368-8061-d022b7528469@huawei.com/T/#u
-  - Fix the error about reading lock->state introduced in v1.
-
-v1: https://lore.kernel.org/all/20240419074851.1583392-3-lihongbo22@huawei.com/T/#u
-
- fs/bcachefs/six.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/bcachefs/six.c b/fs/bcachefs/six.c
-index 3a494c5d1247..086f045dbaa9 100644
---- a/fs/bcachefs/six.c
-+++ b/fs/bcachefs/six.c
-@@ -118,11 +118,11 @@ static int __do_six_trylock(struct six_lock *lock, enum six_lock_type type,
- 			    struct task_struct *task, bool try)
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index afb57ea99431..c82ee192a2e2 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -1511,17 +1511,9 @@ static void bch2_vfs_inode_init(struct btree_trans *trans, subvol_inum inum,
+ 	mapping_set_large_folios(inode->v.i_mapping);
+ }
+ 
+-static void bch2_i_callback(struct rcu_head *head)
++static void bch2_free_inode(struct inode *vinode)
  {
- 	int ret;
--	u32 old;
-+	u32 old = atomic_read(&lock->state);
+-	struct inode *vinode = container_of(head, struct inode, i_rcu);
+-	struct bch_inode_info *inode = to_bch_ei(vinode);
+-
+-	kmem_cache_free(bch2_inode_cache, inode);
+-}
+-
+-static void bch2_destroy_inode(struct inode *vinode)
+-{
+-	call_rcu(&vinode->i_rcu, bch2_i_callback);
++	kmem_cache_free(bch2_inode_cache, to_bch_ei(vinode));
+ }
  
- 	EBUG_ON(type == SIX_LOCK_write && lock->owner != task);
- 	EBUG_ON(type == SIX_LOCK_write &&
--		(try != !(atomic_read(&lock->state) & SIX_LOCK_HELD_write)));
-+		(try != !(old & SIX_LOCK_HELD_write)));
+ static int inode_update_times_fn(struct btree_trans *trans,
+@@ -1829,7 +1821,7 @@ static int bch2_unfreeze(struct super_block *sb)
  
- 	/*
- 	 * Percpu reader mode:
+ static const struct super_operations bch_super_operations = {
+ 	.alloc_inode	= bch2_alloc_inode,
+-	.destroy_inode	= bch2_destroy_inode,
++	.free_inode	= bch2_free_inode,
+ 	.write_inode	= bch2_vfs_write_inode,
+ 	.evict_inode	= bch2_evict_inode,
+ 	.sync_fs	= bch2_sync_fs,
 -- 
 2.34.1
 
