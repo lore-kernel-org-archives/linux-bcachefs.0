@@ -1,84 +1,87 @@
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BEC1118C
-	for <linux-bcachefs@vger.kernel.org>; Tue, 30 Apr 2024 04:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C561A129E6E;
+	Tue, 30 Apr 2024 09:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714450446; cv=none; b=uHELup2MntM+j7wtrj3B4br3QnQ8MfjnrXIpzHw0Qwmc1M89Tsd7Ctqj20f6JunVGGyyvefLSHQGSo5nkKF1MmKlHyke6KsbokctDt+oVMpf2IDW64YCiBt1TsRHlDV4e8YzIdDnJpixXSxzDSyDk0AqTI1oIok/Vidw5kladr4=
+	t=1714468751; cv=none; b=Yl2JZSaAIHK0f6Rt+1hc9sjeBHpA4cXDaEWoHK9ED+iUmDt7LB9oqlf4BgyjGnEAris//qEwfJxjoWt7gETtL1uteZpxB4FDy1wd3dMGkTcX6bF0oibDTlYK0ptG9U3XVUvq5ANdBB3kmb63hXtsgpbYCeKfwlfnkIrNFdFwqIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714450446; c=relaxed/simple;
-	bh=Q6DdmJVqJCfws1Srj4jcdR3dRP3+ld8JxaBObjp2YSY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hH1B1IglG2X8c3q0E6I3YDRYYPUqALsSw+OtQn8/YeUlGo+IQjPrr6KE5iGHYPrEf3pfiRWJskG8jpkftT0AX/JXZE65CmYuTHisVB51Qt3OnRco9/YgNv7xLhmcla7Ou+xa4Cd1UbQ6ko+NvmLNnBbv676NK4COT/rSepYFObQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LO6c3VmP; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1714468751; c=relaxed/simple;
+	bh=nJLw8ZzNkHNxUi0RWmfswS2AiqmNNWu4fMk4lAvCziY=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=sbRPBteVbfUpCI2fXJ7LMcLsOgsdkm70TcKFgDtkom9Syok+y8kMXUkvRZu+WGJRwOSYeX3b9LgNn+SqaFEPBzcWGsKf8S3tknHhN5w2GhqSllDEKmbOGBGcZ0qF1MZfiw5KCDb6lPlx36AZTA0SdtASNenhkD93Y4QJVoIvl3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=YA/7nQ35; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LO6c3VmP"
-Message-ID: <2a595561-0a11-4d5e-ac72-a7c3aab9c8f7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714450441;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JMSdFBlDa/50RQbZivm8NN3gqBiYEydcILXMMCleMt4=;
-	b=LO6c3VmPgnDaz1QPrnQoPOe3Fj5Wv+O3ytNuDttKJzxlasHW+UEmqk2z+BZMW+cOhBbTzw
-	DmihLwz3ZvhjnTWnf8x8uuwTtf4ZsAPa75uyuTE5g3mt+DaQ88nrecS9r8T6LGu0c58lu6
-	msSvpTtpQ0y4jVL3aO/Cy/Nv5xAVsDg=
-Date: Tue, 30 Apr 2024 12:13:31 +0800
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="YA/7nQ35"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1714468721; x=1715073521; i=markus.elfring@web.de;
+	bh=nJLw8ZzNkHNxUi0RWmfswS2AiqmNNWu4fMk4lAvCziY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=YA/7nQ35u0kJEg0FSF8UrZNkzte5ooB3jtBpE2Rdi+zYdC3hgcy8exhdzfyApNjY
+	 58hitwap4e8JN6RQmFY9Dlu+yms30IyXqgcL+/a1xWiWGMWgQF0K5Z1lEtoJb7UWj
+	 hYmOL5WXrqGWkbvsh6CBFD7UXUQeL4GBPSG5/HfzYzXFJnewkLeN9x6i1/bIdoxfy
+	 4YuOSxp3HX+q/dpsc3+5LdYDfJs037p1fM3WEc/rxR624GOfxZgQutsJKXZ9orgjS
+	 uaddWT4fKxTILEwNx5ynqbFnJP1GaKUyxooWuGH3wbMI3qMYhHfiFbXjy4XD87RLM
+	 M3aVQOiBt3vyTww0JQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MwjK2-1sqnog3znW-00yQhv; Tue, 30
+ Apr 2024 11:18:40 +0200
+Message-ID: <7d4a29a1-26d2-4b22-8823-ce8e7f9ac534@web.de>
+Date: Tue, 30 Apr 2024 11:18:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bcachefs: Correct the FS_IOC_GETFLAGS to
- FS_IOC32_GETFLAGS in bch2_compat_fs_ioctl()
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
- Youling Tang <tangyouling@kylinos.cn>
-References: <20240430032744.943468-1-youling.tang@linux.dev>
- <penqmxyjpw5jukmqbmsrjbvqxhugrhbk6gruie4pjdoacah5zr@atcvnu6ogksv>
-Content-Language: en-US, en-AU
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Youling Tang <youling.tang@linux.dev>
-In-Reply-To: <penqmxyjpw5jukmqbmsrjbvqxhugrhbk6gruie4pjdoacah5zr@atcvnu6ogksv>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ Youling Tang <tangyouling@kylinos.cn>, linux-bcachefs@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ Youling Tang <youling.tang@linux.dev>
+References: <ww5fcxuzfcgttglsr6cpnrxufeusw4ixe76iqp7mab3djlyfje@zozue6qvxhzy>
+Subject: Re: bcachefs: Fix error path of bch2_link_trans()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <ww5fcxuzfcgttglsr6cpnrxufeusw4ixe76iqp7mab3djlyfje@zozue6qvxhzy>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8JGAxKe1KPyVXekngDfxeASqhnsNJcNDH5Oi18Aw2cRMyhF6Jt3
+ iEPn4suDWuGcgZp7U9kX7SZpuaSz2PtLj9PCd9KWByfLbn0sudLzTEApmkJ8Z5QJEVfVr+Y
+ oarf2KbY23l1hLnQKWf0P2wOIAWwK0NzF2WNuA29iKKW1nKn17bdveWhnVDt+UW1GdslcMS
+ 7EqHUHolqPCCVF9cyHZvg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:kBKqZET/k9s=;aI40zUrPaZ3NOHwVe3EQtPL9N1H
+ /GkmdmvCi5AY9YcgBQ08ZmsUeH3QI8YFvHJTzlyAv/IxOryjtLMQ4nSApcn9Lp90I1XfvFSRQ
+ u4GSol2OxMeW1ixGekmVsNys8n9aG76Z3ooJ3KmTVwo2h+7tBZeemWLDBWxrk9S/lBdRhmMtc
+ 1R0Yu9boNGtBs9ODrAg5v2OlUH1H5HxLVxz3XSuEeimH6g8Ujz+V0ihp4owzBrkoFiEO4uHbQ
+ 0sRbdolTa+gAHThUOpG1ExGOIyV0oKiIAksFZgx8k1yz/VUrLKeMzWdsTJeXMrqcO+hBWHqny
+ xZdBn+UINmy1mZoIwYCuwYEH21G2gj1wOEGWbJhykamWm26xb2JkfE+XGwdOj7S/7IWysr0wO
+ h5cf3vsPpk9WpJaxU2fqhAtHeMRh0D38SV/RkvJxDU6O+Z+Xta0QseHdax8hapz7LytPcxckS
+ uNdxfBtuYpBj69or8gUQ9TwhuLzDWBJQ7DWtU5zIdsY6zLqm1WS0EkpeoCEbLSJBRCXn9I6Qm
+ CZl8NR5rk+RdTLgDRXORyomg7DE+SANCNH8DAairTHrKJovLubZumvphLhBlVjOpMrDBSksJR
+ AV5jbHoKaxyq9Wh1QREfpBsB16tk9rkJX7LAi4Td+UAfoH62y1f0Mgx/6VpZcV2BIjqkBoiYs
+ /TSuSK6l/lEzmx9dG2cMo95biXxql0oGipEnvFEWJNEYYE5TikNWbSEPmWfjJh67ADJ8fYghU
+ LOaMEJ02dxztEsLKOZorvAcIA+jvVBIjZFSByRxafAollnLFVyI7s+bIopS0fCCcZz5Lqt64p
+ mEVSNkWBJo6xLeZ7MJp9hoLjhQfOi/N+oBY73qkI1cuBA=
 
-On 30/04/2024 11:29, Kent Overstreet wrote:
-> On Tue, Apr 30, 2024 at 11:27:44AM +0800, Youling Tang wrote:
->> From: Youling Tang <tangyouling@kylinos.cn>
->>
->> It should be FS_IOC32_GETFLAGS instead of FS_IOC_GETFLAGS in
->> compat ioctl.
-> Do we by chance have a test for this?
-
-Just reading the code found this out.
-
-
+> > In bch2_link_trans(), if bch2_inode_nlink_inc() fails, it needs to
+> > call bch2_trans_iter_exit() in the error path.
 >
->> Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
->> ---
->>   fs/bcachefs/fs-ioctl.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
->> index 3dc8630ff9fe..205a323ffc6d 100644
->> --- a/fs/bcachefs/fs-ioctl.c
->> +++ b/fs/bcachefs/fs-ioctl.c
->> @@ -548,7 +548,7 @@ long bch2_compat_fs_ioctl(struct file *file, unsigned cmd, unsigned long arg)
->>   {
->>   	/* These are just misnamed, they actually get/put from/to user an int */
->>   	switch (cmd) {
->> -	case FS_IOC_GETFLAGS:
->> +	case FS_IOC32_GETFLAGS:
->>   		cmd = FS_IOC_GETFLAGS;
->>   		break;
->>   	case FS_IOC32_SETFLAGS:
->> -- 
->> 2.34.1
->>
+> Thanks - applied.
+
+https://evilpiepirate.org/git/bcachefs.git/commit/?id=3Dd04db1c7653dee5ee5=
+f918ce951c05eefddad7eb
+
+Would it have been nice to add the tag =E2=80=9CFixes=E2=80=9D (besides an=
+ imperative wording) accordingly?
+
+Regards,
+Markus
