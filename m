@@ -1,63 +1,70 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EFF13A3E5;
-	Mon, 29 Apr 2024 19:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3609F14012
+	for <linux-bcachefs@vger.kernel.org>; Tue, 30 Apr 2024 03:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714417804; cv=none; b=oNQ+SZwH+j+mOhTsL2vNWerMjPaXcR9Vd4LWNH2MGUSmFX3FnHBLgBpd3u9zrRO3hdZLRAppgHI374Ti/aaLo3Fl9EcwOhXeJ4Tmt+ut6es0kM6I9w6TYkN9XhNd1Rzbbaj8KtsgMzAtXTdTp6zI5m/Tk3K3vIm3+WEEsXn0c8M=
+	t=1714447694; cv=none; b=fGHso0JoFYybW7i/eKOK88M5CT3wfhNEXS24Wc6ET7YTs9A5xb2Arc23rE7mXuE9KpXih2mDhOz4RqGbuk6xsDClqxTSiSJyk1QTi9BYyrqgfZQEwQ10G+ItHl6AqNX4TzxhiOyGUR+dJ7pBM4HdFqBsGYOXdBEBhcXOU4SIW3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714417804; c=relaxed/simple;
-	bh=OgcptYGgNzxbSsJS+7Njk552s70vhPBsWmfphnd3lnA=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=QQGFcI92+yTeTuGFSzSIiWGPNK/JQCBojVYYbUbFdXy1cCUA8j132ApwdYUmVTjYuZ19CS0p3YhkzhMSGHQf64pBxkwtkLRFpmK0KxqnbLQFHWl5aCxvPT1MOD1kzG+XzZS6lt2RaYj54jurWLgcqy4FoOoT2ks6j5gntnoH42s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gNJGK/xH; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1714447694; c=relaxed/simple;
+	bh=vnByxI1yvhz7cQm2zv+fS4UfkLZ+4Eziu8+SfaJw+2k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UJaH7nA3iNRczvM+lk5xL+CLnA7MpvDrX/rYDtoJ8Djv1NBbPbLIlQxMvE7ZRS/kkQXmY1f0VEJg9gFb6PBdNIzSnuVTIIZYaeu6K8G7vURpvQslcbhqpDtTGpvQg8KZ+HaWdFERTYkKF64Vl6pFhTniuAEAms4TQkHjnD09wpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZHIXm3oW; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gNJGK/xH"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 82DA4C113CD;
-	Mon, 29 Apr 2024 19:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714417803;
-	bh=OgcptYGgNzxbSsJS+7Njk552s70vhPBsWmfphnd3lnA=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=gNJGK/xHDLpamKoCNuKMLJxweEvrehJbe+D9xqTUoTk0iB2CFsJJq8gF0ueV2DICC
-	 /86M4JjIfc+qRBrWnHhEz2FFcRLPoUPBA6nlX9O5pXaK2Ro0IKhYHCgt9lEoLN16Qf
-	 8wmUjpqp7GnBIOKMuXxLgtQzsYp8gWqbIf154m3cKba/vStq6LXE3NWFqaP8+lTaRI
-	 mEUbKkTRT36fVsOMPdH2NniSwAqYpVmmMbdk6IBWJqEpgjVWjJqvtKkGcF+Iygg/Rx
-	 8IV8zv7p7PsCdImEFaCh/rTxNRzJ+wc+d3l9ZraA1pPsfWNO5TvOkAJ5fUoP+kt9Yw
-	 VSgU3cn1BEvZw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6CBAAC54BAD;
-	Mon, 29 Apr 2024 19:10:03 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs fixes for 6.9-rc7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <grwoeqxbwxgunh4cvdp4jy2qctv2yplrjv2hr4wwqyproe6xor@nuehswrkwqaw>
-References: <grwoeqxbwxgunh4cvdp4jy2qctv2yplrjv2hr4wwqyproe6xor@nuehswrkwqaw>
-X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <grwoeqxbwxgunh4cvdp4jy2qctv2yplrjv2hr4wwqyproe6xor@nuehswrkwqaw>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-29
-X-PR-Tracked-Commit-Id: c258c08add1cc8fa7719f112c5db36c08c507f1e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0a2e230514c5f1b09630bab94e457e930ced4cf0
-Message-Id: <171441780343.14808.14014986886216923256.pr-tracker-bot@kernel.org>
-Date: Mon, 29 Apr 2024 19:10:03 +0000
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZHIXm3oW"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714447690;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=u4umKi23uEoIzCMao6IETndhg1LA1WkSNjlJJg1tq54=;
+	b=ZHIXm3oWpT8m+6fZAyjcYFDFIaarFCd7TZuXD/ZkQuaNepvQVhaph0QEPhsijnPfdtlKKe
+	qaeM7Iady1yJWshq7sKGlU56qVfBkH4zZQC53BNkasAs9+7DBIXTsFwE3PUVQFa/2aGk/K
+	ZxVJT99dDoIKA2T482zmvOMex/fPAW8=
+From: Youling Tang <youling.tang@linux.dev>
 To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Youling Tang <tangyouling@kylinos.cn>
+Subject: [PATCH] bcachefs: Correct the FS_IOC_GETFLAGS to FS_IOC32_GETFLAGS in bch2_compat_fs_ioctl()
+Date: Tue, 30 Apr 2024 11:27:44 +0800
+Message-Id: <20240430032744.943468-1-youling.tang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-The pull request you sent on Mon, 29 Apr 2024 12:24:13 -0400:
+From: Youling Tang <tangyouling@kylinos.cn>
 
-> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-29
+It should be FS_IOC32_GETFLAGS instead of FS_IOC_GETFLAGS in
+compat ioctl.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0a2e230514c5f1b09630bab94e457e930ced4cf0
+Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+---
+ fs/bcachefs/fs-ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you!
-
+diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
+index 3dc8630ff9fe..205a323ffc6d 100644
+--- a/fs/bcachefs/fs-ioctl.c
++++ b/fs/bcachefs/fs-ioctl.c
+@@ -548,7 +548,7 @@ long bch2_compat_fs_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+ {
+ 	/* These are just misnamed, they actually get/put from/to user an int */
+ 	switch (cmd) {
+-	case FS_IOC_GETFLAGS:
++	case FS_IOC32_GETFLAGS:
+ 		cmd = FS_IOC_GETFLAGS;
+ 		break;
+ 	case FS_IOC32_SETFLAGS:
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.34.1
+
