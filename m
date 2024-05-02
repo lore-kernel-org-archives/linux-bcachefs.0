@@ -1,243 +1,123 @@
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC1BF2FB2
-	for <linux-bcachefs@vger.kernel.org>; Wed,  1 May 2024 00:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91ABF15B988
+	for <linux-bcachefs@vger.kernel.org>; Thu,  2 May 2024 20:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714523537; cv=none; b=cYsEk4gLgE8pZ1N6MZ/FpZV2PjwWey1Zd7xEePEscSgjXPGMLAbw4uCJ9wLxFF2gHGpZjuu+A3I4Dqz6aD8briZxwkMCPMDCa4yMtSZHiiTfV4yXph3Tw70kdjJBJR7R5aPJWO1I4nbVXOrUmjqYs+sM4QrWG50T1Kl517To0tE=
+	t=1714681737; cv=none; b=Xz3r/5+1J7tacYFQConRuFb+Dp7niOvoZ/64AFhJ93keIOeta3ty+SojiwW9oYZK7MWGzGgF/z1zJnhLVHcN0g+X/t/ClW1hXZkAoT7fbXFygOCj64FjiprsowJSSxWkoOxum/kL7qHklE4RjqnOXmnoQdN2Nnz0TZGI/JYnxAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714523537; c=relaxed/simple;
-	bh=ivoCOO4LbA20ASa83OJ6YMwVduKxwHHgiyTaXOgGJg0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cMi7YmJAek8dJeIUMTco110sOHABxt1/mokINuMHnbBqOAmJ2AY8yl1g3GFz0VX0cQfef/nuAyOb4LQioYgze2qS4zG7ZkNvT0ZBs+gHBG80X6/OMGYIB17BHDUJ3d2RLPhw8C/mGBTfk0rRvvug4JOBw1uIwjXYufIfUNkNWZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W7gVR8uV; arc=none smtp.client-ip=209.85.166.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1714681737; c=relaxed/simple;
+	bh=zLLDTk7xl0de3A0RLseluPNPKN7nj7092t1YKGx/xRU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B9HMAG6Bt88DEBOPzzGj5zcAnSP0x7ePwMl2Omv+cE9dQA04mLADVFhwPACMBvVV1LLtuSGxg9X3Y4s2TUhyBZk+RzlAuM/X5rovj69bQ0+KDb1k3uoxIMNX5MRuWll+EQ4zMqLgqbcBEDPDZFRXvke4XzPaKdiydiuRjTgZXZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nws4kW0X; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W7gVR8uV"
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7daa6bfe4c8so271671339f.1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 30 Apr 2024 17:32:15 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nws4kW0X"
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ec182ab287so10265ad.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 02 May 2024 13:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714523535; x=1715128335; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VqpdcMv+iiz5n7j5KO27d3o7Dl75mkEgBj8NS2TITUw=;
-        b=W7gVR8uVmdPzdD5tfifoNY0Uhm39zq7aAW7ovw2vDVF6aJDG2NvHdo2T9icjLFXSmk
-         UzSNi5RgknqpUWQTS9SHlpGDojh7i1HSdtH2PcsRKN00B68A6kcFzAmCYGe74mzeWoTR
-         KcKXC7CIygifrKxI/TbuJ1DG3SrrkW/6I+RJMsw+wKi9Uut3p2tI/Uci+TasG7R0yomt
-         9KJ8I5zBPKnBrBhRgDtnZaLqmeLxLQ/1h09H8tN2t/AknQ+sFQbETR24sc2oQNqZtlEy
-         9mmqHtyphE84jY0c8MdJTAYAyUax+4IRFcCcMpvm/aGFmmGsuYyol5d41wKR4fh4TTRE
-         ePKw==
+        d=google.com; s=20230601; t=1714681736; x=1715286536; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zLLDTk7xl0de3A0RLseluPNPKN7nj7092t1YKGx/xRU=;
+        b=nws4kW0X1iYRWs5JCYkLhk6hirPdvxtHw9peTN+iWsKCZ/bgFucMUVn0TVwMEObMJU
+         nUlT1lr+LQ+rqj2Bg7x6Po0+C8GRSwyywsfOgLzSFftjDDm8Di+qAdFonMscAU+lBndQ
+         uhSRSQqxxt8CLwc0YiZ0OFqFGVjP374ezu8TbEbpYmglDRckK6sgbWaOwiqYjAzAm3iL
+         Z9rZJQWLcy4TVJjHBJHyREcOcFulA/9dy7BFXsclJ8aQtsxXg6wDpDJzlhUm+gq0gTO2
+         4WyIymri4Q+4sQfIma980cTeq9UW2WUx6/vE4ugDpGVelqo1E8/mKMr7RUkmvvT2TTKT
+         JnUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714523535; x=1715128335;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VqpdcMv+iiz5n7j5KO27d3o7Dl75mkEgBj8NS2TITUw=;
-        b=wdcQNeAHdZ+GPHRp7w4uIAy+nBZEqE8znBnYQidMsIeonxy7CUhXl8imMGTbRIquwG
-         tXxj6G6CSSfWk38tqUAtyrAE8TWvw6KSLuBzlM6+U02ySjyuSc15IHxWCIr7GGd7dwCy
-         8QG7pWxRUSiIWu4+AuFbLXROV/gHCVRPar3IGYFjjq6Cejx1VZpbZbDYRRHLVzy6O3i+
-         Hrfb8cW0Fd61ZeTaLZp0/rcXWr0I23TX/c3+udGuzYsbRwClJ1nxFgfRd5ICUBlqip13
-         2493H5g4xLN0ctf0KnvB8qekSpl5HG+78/CXwxHUaLjnj+Wp6YNqD7Y1RsyBNWN6sthS
-         2LQw==
-X-Forwarded-Encrypted: i=1; AJvYcCXud1yoHWOCm257tXM4v87Xp1TZ7Kh6KTGh44oOOGJbBGaxocn0Vhp/vHLl5I8/6TP57IEQ1fr4Enk3b7+foXFIlD4wgO6KoqQFr/tf3t8=
-X-Gm-Message-State: AOJu0YyDCRwSCupMuH+XbctknCYqbIqeSgQTfGotZdAWnC1V0iFPfZQf
-	zLonnbxFn1tO4VxKDucxpIlKoEEHplXfoDQigZYN32FObQIhBrdw6/RGlw==
-X-Google-Smtp-Source: AGHT+IHCfBsxJxQrVziOcPeh2PnBO+VemWCm9boUpV7C+4oa68DBjNm8JE8dHB5yU8vm+DcVtuRdjQ==
-X-Received: by 2002:a05:6602:13cc:b0:7da:1802:12b9 with SMTP id o12-20020a05660213cc00b007da180212b9mr1986562iov.3.1714523534372;
-        Tue, 30 Apr 2024 17:32:14 -0700 (PDT)
-Received: from fedora-laptop.hsd1.nm.comcast.net (c-73-127-246-43.hsd1.nm.comcast.net. [73.127.246.43])
-        by smtp.gmail.com with ESMTPSA id w17-20020a0566022c1100b007dea5e4e80asm2847242iov.37.2024.04.30.17.32.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 17:32:13 -0700 (PDT)
-From: Thomas Bertschinger <tahbertschinger@gmail.com>
-To: kent.overstreet@linux.dev,
-	linux-bcachefs@vger.kernel.org,
-	bfoster@redhat.com
-Cc: Thomas Bertschinger <tahbertschinger@gmail.com>
-Subject: [PATCH TOOLS] remove redundant "cmd_" prefix from functions in "commands"
-Date: Tue, 30 Apr 2024 18:32:07 -0600
-Message-ID: <20240501003207.56864-1-tahbertschinger@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1714681736; x=1715286536;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zLLDTk7xl0de3A0RLseluPNPKN7nj7092t1YKGx/xRU=;
+        b=opk0WTj5kOCIWaYAIfDuhZVIsQQU1aOMmpdPADpfRteII9utrXGr8it9TEeqRilhPk
+         7R2kFoKE2zWV4fpadhv0oOERXO6TOTvJdTbH24k+02vTo0m9RZarB8cii1DeIHCfRm8i
+         u9XwPdtl/6xrtxYzI/5rbAi2kI6UikRR3pqNYarZZGOs2oADOBkMrfwtaLKgl3gfZa64
+         sc66BfjM/FZ9CgZs68BdY/H5hD4+AoNgkhjClzvNbYuNMccyFJkUmTBN6o32/46KwTHO
+         ufkBNNGGLUyL6VwiRCcmHKrxXfsi4xMSQ24XgcgsikvWioIeVsLJXf5Skn2lsLfFYpMm
+         nZ4g==
+X-Forwarded-Encrypted: i=1; AJvYcCVuYTxIolNb/9WUsrNH++ojhHEScVWA0PfpX8GxMreYhnUeyEiWq8D8aeY3JpNG+TRZb+9tzUJEl1GsPgNhvN3A4/VffIKc6ubHqRqGYiY=
+X-Gm-Message-State: AOJu0YwgDMxT7/eUYFWHm3UkwUDi2YNtk3i/auIsLkHQ2DwKGXvA2ZSt
+	pTDNu3hzlpg02A7VTi+y6CsfScaZyWRwrOuQ/XTluoFkwhJSESpehzwuw/98IdWFBRQTT8vtcjQ
+	fxIldhtPJicaA7i6MhHHl59Aolon5dRLcRmO+
+X-Google-Smtp-Source: AGHT+IGI8LrduAFZb2j97H+0+ezWttyJAQ1jFlOuv4IymRX7JAjmTfhvZqrX6wihOGo5Kx1HZSncvm3L3ma1hDG4yG0=
+X-Received: by 2002:a17:902:e5d1:b0:1e3:d23a:2d5e with SMTP id
+ d9443c01a7336-1ed36dce7bbmr29255ad.21.1714681735575; Thu, 02 May 2024
+ 13:28:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <oxdwygzxpbpwxgl5v5hzaj7er6oxt2rlmaobkov4t23xqptqrn@gxi3nlapfini>
+ <CACT4Y+ZEPWbJsYvWauog95yRFuzZmA=tK-uS+aDT-x=jnc3f7Q@mail.gmail.com>
+ <aw5elbevdhwuqr7ecap6i5hepvkjbgs5xexq7nvu2yvuhh5bpb@tmyjcruysqjf>
+ <CANp29Y5d3cp_YGfy-3bjJYsNfniXFjAm9WfOUVL5zwk=6weALg@mail.gmail.com>
+ <CACT4Y+aNh4oBMpfPdNe7aAJT-hK9WPN5G47d1DN4NkH883OOdA@mail.gmail.com> <yg56oeewdosga5bemxyhku37deglpqjxz5ocg7asyeb2c75kap@5bas2aygiama>
+In-Reply-To: <yg56oeewdosga5bemxyhku37deglpqjxz5ocg7asyeb2c75kap@5bas2aygiama>
+From: Aleksandr Nogikh <nogikh@google.com>
+Date: Thu, 2 May 2024 22:28:42 +0200
+Message-ID: <CANp29Y6wQSb2Zn9Jujhzw4Mij77Nvfo4+2fkpY=ppJ6OCDE6Qw@mail.gmail.com>
+Subject: Re: syzbot for bcachefs?
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Dmitry Vyukov <dvyukov@google.com>, syzkaller@googlegroups.com, 
+	Thomas Bertschinger <tahbertschinger@gmail.com>, Ariel Miculas <ariel.miculas@gmail.com>, 
+	linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-It is more idiomatic to use `commands::mount` than
-`commands::cmd_mount`.
+On Fri, Apr 19, 2024 at 7:19=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Fri, Apr 19, 2024 at 10:35:27AM +0200, Dmitry Vyukov wrote:
+> >
+> > We've enabled the configs, but we don't have good image seeds yet.
+> > Aleksandr tried to generate them, he is currently OOO, but maybe you
+> > can help meanwhile.
+> > He said that running:
+> >
+> > $ mkfs.bcachefs test.img
+> >
+> > gives this error (on a quite big image, I don't know how large exactly =
+it was):
+> >
+> > insufficient space for superblocks: start 8 end 4104 > 4096 size 2048
+> >
+> > Why could it give such an error and how to avoid it?
+>
+> What was the precise size? I'll see if I'm able to reproduce
 
-No functionality changes intended by this patch.
+I think the problem was that I was trying to save the generated files
+to a 9p filesystem (so that I could easily take them out of my VM).
+But now I've set up a proper userspace image with the latest 6.9 RC
+kernel and it worked fine.
 
-Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
----
- src/bcachefs.rs                               | 12 ++++-------
- .../{cmd_completions.rs => completions.rs}    |  2 +-
- src/commands/{cmd_list.rs => list.rs}         |  2 +-
- src/commands/mod.rs                           | 21 ++++++++++++-------
- src/commands/{cmd_mount.rs => mount.rs}       |  6 +++---
- .../{cmd_subvolume.rs => subvolume.rs}        |  2 +-
- 6 files changed, 23 insertions(+), 22 deletions(-)
- rename src/commands/{cmd_completions.rs => completions.rs} (89%)
- rename src/commands/{cmd_list.rs => list.rs} (99%)
- rename src/commands/{cmd_mount.rs => mount.rs} (98%)
- rename src/commands/{cmd_subvolume.rs => subvolume.rs} (97%)
+>
+> > Also what would be a good sets of options to generate seed images?
+> > We try to "sample" space of different images to create seeds. To give
+> > you an idea here is what we do for other file systems:
+> > https://github.com/google/syzkaller/blob/af24b0505c748561efb50f1d03c824=
+d6642f6c0b/tools/syz-imagegen/imagegen.go#L60-L516
+>
+> --encrypted --no_passphrase
+> --compression=3Dlz4
+> --no-checksum
 
-diff --git a/src/bcachefs.rs b/src/bcachefs.rs
-index 079a4155..e8099ffa 100644
---- a/src/bcachefs.rs
-+++ b/src/bcachefs.rs
-@@ -4,10 +4,6 @@ mod key;
- 
- use std::ffi::{c_char, CString};
- 
--use commands::cmd_completions::cmd_completions;
--use commands::cmd_list::cmd_list;
--use commands::cmd_mount::cmd_mount;
--use commands::cmd_subvolume::cmd_subvolumes;
- use commands::logger::SimpleLogger;
- use bch_bindgen::c;
- 
-@@ -110,10 +106,10 @@ fn main() {
-     };
- 
-     let ret = match cmd {
--        "completions" => cmd_completions(args[1..].to_vec()),
--        "list" => cmd_list(args[1..].to_vec()),
--        "mount" => cmd_mount(args, symlink_cmd),
--        "subvolume" => cmd_subvolumes(args[1..].to_vec()),
-+        "completions" => commands::completions(args[1..].to_vec()),
-+        "list" => commands::list(args[1..].to_vec()),
-+        "mount" => commands::mount(args, symlink_cmd),
-+        "subvolume" => commands::subvolume(args[1..].to_vec()),
-         _ => handle_c_command(args, symlink_cmd),
-     };
- 
-diff --git a/src/commands/cmd_completions.rs b/src/commands/completions.rs
-similarity index 89%
-rename from src/commands/cmd_completions.rs
-rename to src/commands/completions.rs
-index 81ee719f..d4e98569 100644
---- a/src/commands/cmd_completions.rs
-+++ b/src/commands/completions.rs
-@@ -12,7 +12,7 @@ fn print_completions<G: Generator>(gen: G, cmd: &mut Command) {
-     generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
- }
- 
--pub fn cmd_completions(argv: Vec<String>) -> i32 {
-+pub fn completions(argv: Vec<String>) -> i32 {
-     let cli = Cli::parse_from(argv);
-     print_completions(cli.shell, &mut super::Cli::command());
-     0
-diff --git a/src/commands/cmd_list.rs b/src/commands/list.rs
-similarity index 99%
-rename from src/commands/cmd_list.rs
-rename to src/commands/list.rs
-index 8af075af..0ed6be05 100644
---- a/src/commands/cmd_list.rs
-+++ b/src/commands/list.rs
-@@ -157,7 +157,7 @@ fn cmd_list_inner(opt: Cli) -> anyhow::Result<()> {
-     }
- }
- 
--pub fn cmd_list(argv: Vec<String>) -> i32 {
-+pub fn list(argv: Vec<String>) -> i32 {
-     let opt = Cli::parse_from(argv);
-     colored::control::set_override(opt.colorize);
-     if let Err(e) = cmd_list_inner(opt) {
-diff --git a/src/commands/mod.rs b/src/commands/mod.rs
-index 70fef82c..c7645926 100644
---- a/src/commands/mod.rs
-+++ b/src/commands/mod.rs
-@@ -1,10 +1,15 @@
- use clap::Subcommand;
- 
- pub mod logger;
--pub mod cmd_mount;
--pub mod cmd_list;
--pub mod cmd_completions;
--pub mod cmd_subvolume;
-+pub mod mount;
-+pub mod list;
-+pub mod completions;
-+pub mod subvolume;
-+
-+pub use mount::mount;
-+pub use list::list;
-+pub use completions::completions;
-+pub use subvolume::subvolume;
- 
- #[derive(clap::Parser, Debug)]
- #[command(name = "bcachefs")]
-@@ -15,11 +20,11 @@ pub struct Cli {
- 
- #[derive(Subcommand, Debug)]
- enum Subcommands {
--    List(cmd_list::Cli),
--    Mount(cmd_mount::Cli),
--    Completions(cmd_completions::Cli),
-+    List(list::Cli),
-+    Mount(mount::Cli),
-+    Completions(completions::Cli),
-     #[command(visible_aliases = ["subvol"])]
--    Subvolume(cmd_subvolume::Cli),
-+    Subvolume(subvolume::Cli),
- }
- 
- #[macro_export]
-diff --git a/src/commands/cmd_mount.rs b/src/commands/mount.rs
-similarity index 98%
-rename from src/commands/cmd_mount.rs
-rename to src/commands/mount.rs
-index 8d0e2e90..3cca0a4c 100644
---- a/src/commands/cmd_mount.rs
-+++ b/src/commands/mount.rs
-@@ -86,7 +86,7 @@ fn parse_mount_options(options: impl AsRef<str>) -> (Option<String>, libc::c_ulo
-     )
- }
- 
--fn mount(
-+fn do_mount(
-     device: String,
-     target: impl AsRef<std::path::Path>,
-     options: impl AsRef<str>,
-@@ -276,7 +276,7 @@ fn cmd_mount_inner(opt: Cli) -> anyhow::Result<()> {
-             &opt.options
-         );
- 
--        mount(devices, mountpoint, &opt.options)?;
-+        do_mount(devices, mountpoint, &opt.options)?;
-     } else {
-         info!(
-             "would mount with params: device: {}, options: {}",
-@@ -288,7 +288,7 @@ fn cmd_mount_inner(opt: Cli) -> anyhow::Result<()> {
-     Ok(())
- }
- 
--pub fn cmd_mount(mut argv: Vec<String>, symlink_cmd: Option<&str>) -> i32 {
-+pub fn mount(mut argv: Vec<String>, symlink_cmd: Option<&str>) -> i32 {
-     // If the bcachefs tool is being called as "bcachefs mount dev ..." (as opposed to via a
-     // symlink like "/usr/sbin/mount.bcachefs dev ...", then we need to pop the 0th argument
-     // ("bcachefs") since the CLI parser here expects the device at position 1.
-diff --git a/src/commands/cmd_subvolume.rs b/src/commands/subvolume.rs
-similarity index 97%
-rename from src/commands/cmd_subvolume.rs
-rename to src/commands/subvolume.rs
-index c77eaacd..5f7cdc76 100644
---- a/src/commands/cmd_subvolume.rs
-+++ b/src/commands/subvolume.rs
-@@ -36,7 +36,7 @@ enum Subcommands {
-     }
- }
- 
--pub fn cmd_subvolumes(argv: Vec<String>) -> i32 {
-+pub fn subvolume(argv: Vec<String>) -> i32 {
-     let args = Cli::parse_from(argv);
- 
-     match args.subcommands {
--- 
-2.44.0
+The mkfs.bcachefs tool that I installed does not know the
+--no-checksum flag, so I used --data_checksum=3Dnone
+--metadata_checksum=3Dnone instead. Does it mean the same thing?
 
+I've pushed my changes to https://github.com/google/syzkaller/pull/4752
+
+--=20
+Aleksandr
+
+>
+> That shousd get us reasonable coverage to start with.
