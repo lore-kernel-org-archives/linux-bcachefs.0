@@ -1,203 +1,91 @@
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9548015748E
-	for <linux-bcachefs@vger.kernel.org>; Fri,  3 May 2024 17:09:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D947315687C
+	for <linux-bcachefs@vger.kernel.org>; Fri,  3 May 2024 17:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714756194; cv=none; b=uEAjZSR4X4p+uwjrAKLQcXDWXUdaX/aqsNKbKOH07KpsBBxk5HZGxrttTqYJ+HQPDWR4KCTSXFX6pPyj613GMWLbxjwY1qWWmXaq82SljsLsUlnveHfEysFTEUDBXrXNMYKbVTK2dvhC+q8sVTBqbv0d2Hu4Fc1Grlh74pZ6AQc=
+	t=1714756706; cv=none; b=fxJYOUgW78UpDGLkIIHTqsHSCj/XoffVoS/vFvJGq3DqoDoVkjpOetGfmftgEIH0ugNTbwm1zwYHHR2REHm/J7Z0jC0gkDDPvn0jFODC48AeywM0LSMXQOgzfuMxDWxuC3ckikpqx0po34svKo9vI8UJEwCDXmOoYac1vMPrUGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714756194; c=relaxed/simple;
-	bh=oYvLlAeSKD1ToLbva0WKmZmZmIQt8CXXHhtPcGZatdo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=HfEj7FZenu36VdgTwDYXz3c9XoIc/QWNad3QYtxHQ7lQ8CeFJRAF+SVeMHZNbnjrBVPixDgvduCWSqfvokbBY+tu7L3pSCuGwVRWG1xyafQXcw6+bR8VdQPAF+/mEUTeF3Hrk8l1J0X9/kxI01LmssIwMZkPS0Ks2X+CZCEIjEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7dd8cd201d6so1008691739f.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 03 May 2024 10:09:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714756192; x=1715360992;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ICVcUESg+fMhAvf0c9alYcYQ0Fp09UV2b119s2qZbFY=;
-        b=c1L3syVZs/R5teIAjfKehYtY5DwW06+5/txmzk3i4NhEdM55yggZapxZaKq29Y1nl2
-         0uNaH1M3PqQcbYVP+nsKLKus+/6UbXp8ZC8MhI3h/KKxISdUkn4/zS2ntdEIYHLt612u
-         OQyzVKETmrnofUM5KUIlfYj9QxxjbkKs1yzRLrRXBPgX0wDND28rStdox5Ew67EpaLS1
-         MKmhavkqfnyHifUZaofwA/dKMvp+4hzWktsCy+96Ay1n3xlDpHg0TITYMSwEqyiK1gip
-         45YYEMtFXU2wCIbN7jOxgtPo0AMv0bYqGCYUv11ykTv0YP40VQapC4pekXjs91Zs4DvO
-         Fs+g==
-X-Forwarded-Encrypted: i=1; AJvYcCUzlQHiTQb1tRCABkHX+cWa6Fjj8qezxWsO/l1+TdxZYMaTC96C1HzyFjM7BQFUpdf7zfopnNP1m9XjiNRX140CDqeMAixP4U8duzX7qCI=
-X-Gm-Message-State: AOJu0YwVeb7s5IPGVSnAkBWEmjt8bXohQjXe9jzeB9dAaS6fEHWKTeWt
-	ud3FwfkjyWkYm9JDJOOJrFT1f7lLnWtChNFvK6Xm3nAllL2QsDQ89fTFn877UrBQHZylCeeHSH3
-	PDV6UcXal0ATD7T1ni+6hZkOt5hG9/3amK+887sKhaLxUQ0vknUABaDs=
-X-Google-Smtp-Source: AGHT+IGTDxWirenmFJgByBWzNigPUKmi5W0WiRwiEA2Q8+rKXEjHYvP+T26CAxC+VtLRzzhIx3lahTYxBT0xHaSaa9DJK+jZ2mfD
+	s=arc-20240116; t=1714756706; c=relaxed/simple;
+	bh=0ZhUR1e/PfgyVNIYRtn810XjlL5Zr5lsRB1FczGJ9WA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oYJAGq9js5Cd3a2wz3q251r4lxUT7Wys0WS5KramHeKmQtoYYA/Ly6zG9rrSY+uV+Qv6iCLNdw4kZh8fafM6TriVFNeTpDHUbGhGTailJFYBMFvGTLOhRyRhHZCWSHvivGmMENqPqa4jKrQy+9kIJM6AaqQ73NQcDBOYkyRMCyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WSYmlIab; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WSYmlIab"
+Date: Fri, 3 May 2024 13:18:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714756702;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p1DHhumvnEuBLtnhXEtVwxXBUnkjdRjMgmgk/tC5Cg0=;
+	b=WSYmlIabKv0aODBK6eQeQkDhPD89uM9o2DfL99rnizVTe9R26QHASue4iVIoJSKK67tbYm
+	2i5XT8DH9lxMPIHccU21ypDB10FfXKn94hVA9EVe+GfHJQ5KbxmjQ+s67BH9U7re/tlT8Z
+	Lvzvi1Vg/qSD2zurEz1dyseIT8g3uwA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Aleksandr Nogikh <nogikh@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>, syzkaller@googlegroups.com, 
+	Thomas Bertschinger <tahbertschinger@gmail.com>, Ariel Miculas <ariel.miculas@gmail.com>, 
+	linux-bcachefs@vger.kernel.org
+Subject: Re: syzbot for bcachefs?
+Message-ID: <2uq2qtikasllo4tfonsyw7q5rrompy7rhw54j3dqezwpfrq4n2@6vaec54ocj3p>
+References: <oxdwygzxpbpwxgl5v5hzaj7er6oxt2rlmaobkov4t23xqptqrn@gxi3nlapfini>
+ <CACT4Y+ZEPWbJsYvWauog95yRFuzZmA=tK-uS+aDT-x=jnc3f7Q@mail.gmail.com>
+ <aw5elbevdhwuqr7ecap6i5hepvkjbgs5xexq7nvu2yvuhh5bpb@tmyjcruysqjf>
+ <CANp29Y5d3cp_YGfy-3bjJYsNfniXFjAm9WfOUVL5zwk=6weALg@mail.gmail.com>
+ <CACT4Y+aNh4oBMpfPdNe7aAJT-hK9WPN5G47d1DN4NkH883OOdA@mail.gmail.com>
+ <yg56oeewdosga5bemxyhku37deglpqjxz5ocg7asyeb2c75kap@5bas2aygiama>
+ <CANp29Y6wQSb2Zn9Jujhzw4Mij77Nvfo4+2fkpY=ppJ6OCDE6Qw@mail.gmail.com>
+ <d6wuvtwgp3z7v7fleewvw6fkjk6d5hpjqpp7p2bmiq5ocf5ib4@ap4iyuhzkpum>
+ <CANp29Y70mqP+4m_OmwORqKVk1hDHBwiZSvV43=nABa9pjMp7dA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:158f:b0:7de:e20c:cd3d with SMTP id
- e15-20020a056602158f00b007dee20ccd3dmr178201iow.0.1714756191873; Fri, 03 May
- 2024 10:09:51 -0700 (PDT)
-Date: Fri, 03 May 2024 10:09:51 -0700
-In-Reply-To: <000000000000636fa106178cd1e4@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b17eb906178fc94b@google.com>
-Subject: Re: [syzbot] [bcachefs?] KASAN: slab-out-of-bounds Read in bch2_varint_decode_fast
-From: syzbot <syzbot+66b9b74f6520068596a9@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANp29Y70mqP+4m_OmwORqKVk1hDHBwiZSvV43=nABa9pjMp7dA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-syzbot has found a reproducer for the following issue on:
+On Fri, May 03, 2024 at 06:31:30PM +0200, Aleksandr Nogikh wrote:
+> On Fri, May 3, 2024 at 5:36 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > On Thu, May 02, 2024 at 10:28:42PM +0200, Aleksandr Nogikh wrote:
+> > >
+> > > I think the problem was that I was trying to save the generated files
+> > > to a 9p filesystem (so that I could easily take them out of my VM).
+> > > But now I've set up a proper userspace image with the latest 6.9 RC
+> > > kernel and it worked fine.
+> > >
+> > > >
+> > > > > Also what would be a good sets of options to generate seed images?
+> > > > > We try to "sample" space of different images to create seeds. To give
+> > > > > you an idea here is what we do for other file systems:
+> > > > > https://github.com/google/syzkaller/blob/af24b0505c748561efb50f1d03c824d6642f6c0b/tools/syz-imagegen/imagegen.go#L60-L516
+> > > >
+> > > > --encrypted --no_passphrase
+> > > > --compression=lz4
+> > > > --no-checksum
+> > >
+> > > The mkfs.bcachefs tool that I installed does not know the
+> > > --no-checksum flag, so I used --data_checksum=none
+> > > --metadata_checksum=none instead. Does it mean the same thing?
+> >
+> > That's the correct flags, I did a brainfart on that one :)
+> 
+> Cool :)
+> I've deployed the changes to syzbot today and it has already reported
+> 8 findings:
+> https://syzkaller.appspot.com/upstream/s/bcachefs
 
-HEAD commit:    6a71d2909427 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=116a9d74980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fca646cf17cc616b
-dashboard link: https://syzkaller.appspot.com/bug?extid=66b9b74f6520068596a9
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12221898980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16758560980000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c77d21fa1405/disk-6a71d290.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/429fcd369816/vmlinux-6a71d290.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d3d8a4b85112/Image-6a71d290.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/3a2e4c986182/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+66b9b74f6520068596a9@syzkaller.appspotmail.com
-
-bcachefs (loop0): resume_logged_ops... done
-bcachefs (loop0): going read-write
-bcachefs (loop0): done starting filesystem
-==================================================================
-BUG: KASAN: slab-out-of-bounds in get_unaligned_le64 include/asm-generic/unaligned.h:37 [inline]
-BUG: KASAN: slab-out-of-bounds in bch2_varint_decode_fast+0x138/0x184 fs/bcachefs/varint.c:114
-Read of size 8 at addr ffff0000d35a5286 by task syz-executor424/6243
-
-CPU: 0 PID: 6243 Comm: syz-executor424 Not tainted 6.9.0-rc4-syzkaller-g6a71d2909427 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:317
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:324
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xe4/0x150 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x198/0x538 mm/kasan/report.c:488
- kasan_report+0xd8/0x138 mm/kasan/report.c:601
- __asan_report_load_n_noabort+0x1c/0x28 mm/kasan/report_generic.c:391
- get_unaligned_le64 include/asm-generic/unaligned.h:37 [inline]
- bch2_varint_decode_fast+0x138/0x184 fs/bcachefs/varint.c:114
- bch2_inode_unpack_v3 fs/bcachefs/inode.c:270 [inline]
- bch2_inode_unpack+0x604/0x1fd0 fs/bcachefs/inode.c:323
- __bch2_inode_invalid+0x118/0x4d0 fs/bcachefs/inode.c:449
- bch2_inode_v3_invalid+0x114/0x1f4 fs/bcachefs/inode.c:529
- bch2_bkey_val_invalid fs/bcachefs/bkey_methods.c:140 [inline]
- bch2_bkey_invalid+0x130/0x1d8 fs/bcachefs/bkey_methods.c:227
- __bch2_trans_commit+0x77c/0x55c4 fs/bcachefs/btree_trans_commit.c:1006
- bch2_trans_commit fs/bcachefs/btree_update.h:168 [inline]
- bch2_extent_update+0x3d0/0x9b4 fs/bcachefs/io_write.c:318
- bch2_write_index_default fs/bcachefs/io_write.c:366 [inline]
- __bch2_write_index+0x6b4/0x1324 fs/bcachefs/io_write.c:520
- bch2_write_data_inline fs/bcachefs/io_write.c:1538 [inline]
- bch2_write+0xd74/0x1520 fs/bcachefs/io_write.c:1606
- closure_queue include/linux/closure.h:257 [inline]
- closure_call include/linux/closure.h:390 [inline]
- bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:468 [inline]
- bch2_writepages+0x224/0x304 fs/bcachefs/fs-io-buffered.c:660
- do_writepages+0x2f8/0x7c4 mm/page-writeback.c:2612
- filemap_fdatawrite_wbc+0x124/0x174 mm/filemap.c:397
- __filemap_fdatawrite_range mm/filemap.c:430 [inline]
- filemap_write_and_wait_range+0x158/0x23c mm/filemap.c:685
- bch2_symlink+0x118/0x1d0 fs/bcachefs/fs.c:584
- vfs_symlink+0x138/0x260 fs/namei.c:4481
- do_symlinkat+0x1bc/0x45c fs/namei.c:4507
- __do_sys_symlinkat fs/namei.c:4523 [inline]
- __se_sys_symlinkat fs/namei.c:4520 [inline]
- __arm64_sys_symlinkat+0xa4/0xbc fs/namei.c:4520
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-
-Allocated by task 6243:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x40/0x78 mm/kasan/common.c:68
- kasan_save_alloc_info+0x40/0x50 mm/kasan/generic.c:565
- poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
- __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:387
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- __do_kmalloc_node mm/slub.c:3966 [inline]
- __kmalloc_node_track_caller+0x2e4/0x544 mm/slub.c:3986
- __do_krealloc mm/slab_common.c:1192 [inline]
- krealloc+0x94/0x148 mm/slab_common.c:1225
- __bch2_trans_kmalloc+0x1dc/0xb28 fs/bcachefs/btree_iter.c:2831
- bch2_trans_kmalloc_nomemzero fs/bcachefs/btree_iter.h:532 [inline]
- __bch2_bkey_make_mut_noupdate fs/bcachefs/btree_update.h:223 [inline]
- __bch2_bkey_get_mut_noupdate fs/bcachefs/btree_update.h:282 [inline]
- bch2_bkey_get_mut_noupdate fs/bcachefs/btree_update.h:293 [inline]
- bch2_extent_update_i_size_sectors+0x5fc/0x854 fs/bcachefs/io_write.c:219
- bch2_extent_update+0x338/0x9b4 fs/bcachefs/io_write.c:314
- bch2_write_index_default fs/bcachefs/io_write.c:366 [inline]
- __bch2_write_index+0x6b4/0x1324 fs/bcachefs/io_write.c:520
- bch2_write_data_inline fs/bcachefs/io_write.c:1538 [inline]
- bch2_write+0xd74/0x1520 fs/bcachefs/io_write.c:1606
- closure_queue include/linux/closure.h:257 [inline]
- closure_call include/linux/closure.h:390 [inline]
- bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:468 [inline]
- bch2_writepages+0x224/0x304 fs/bcachefs/fs-io-buffered.c:660
- do_writepages+0x2f8/0x7c4 mm/page-writeback.c:2612
- filemap_fdatawrite_wbc+0x124/0x174 mm/filemap.c:397
- __filemap_fdatawrite_range mm/filemap.c:430 [inline]
- filemap_write_and_wait_range+0x158/0x23c mm/filemap.c:685
- bch2_symlink+0x118/0x1d0 fs/bcachefs/fs.c:584
- vfs_symlink+0x138/0x260 fs/namei.c:4481
- do_symlinkat+0x1bc/0x45c fs/namei.c:4507
- __do_sys_symlinkat fs/namei.c:4523 [inline]
- __se_sys_symlinkat fs/namei.c:4520 [inline]
- __arm64_sys_symlinkat+0xa4/0xbc fs/namei.c:4520
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-
-The buggy address belongs to the object at ffff0000d35a5200
- which belongs to the cache kmalloc-128 of size 128
-The buggy address is located 6 bytes to the right of
- allocated 128-byte region [ffff0000d35a5200, ffff0000d35a5280)
-
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1135a5
-flags: 0x5ffe00000000800(slab|node=0|zone=2|lastcpupid=0xfff)
-page_type: 0xffffffff()
-raw: 05ffe00000000800 ffff0000c00018c0 fffffdffc33e9200 dead000000000004
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff0000d35a5180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff0000d35a5200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff0000d35a5280: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                   ^
- ffff0000d35a5300: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff0000d35a5380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Nice, already got fixes pushed for most of them :)
