@@ -1,91 +1,174 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D947315687C
-	for <linux-bcachefs@vger.kernel.org>; Fri,  3 May 2024 17:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382B813B593
+	for <linux-bcachefs@vger.kernel.org>; Fri,  3 May 2024 17:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714756706; cv=none; b=fxJYOUgW78UpDGLkIIHTqsHSCj/XoffVoS/vFvJGq3DqoDoVkjpOetGfmftgEIH0ugNTbwm1zwYHHR2REHm/J7Z0jC0gkDDPvn0jFODC48AeywM0LSMXQOgzfuMxDWxuC3ckikpqx0po34svKo9vI8UJEwCDXmOoYac1vMPrUGA=
+	t=1714757561; cv=none; b=jzh26D9qLP8tk3FPt8shxNCHutXoBsThqyxxgzu9IHCtmt/Y+kbouTZrukXo0wCnBRDYRwmM2slah5n9bf2+OQqHAhnrqrbznKy+qTfWuCX1l7vLTvxAsycRSulBzdcLNew93CxFw2lr2Km7aHyW0CvUPuylxNQItsZe7vbrDeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714756706; c=relaxed/simple;
-	bh=0ZhUR1e/PfgyVNIYRtn810XjlL5Zr5lsRB1FczGJ9WA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oYJAGq9js5Cd3a2wz3q251r4lxUT7Wys0WS5KramHeKmQtoYYA/Ly6zG9rrSY+uV+Qv6iCLNdw4kZh8fafM6TriVFNeTpDHUbGhGTailJFYBMFvGTLOhRyRhHZCWSHvivGmMENqPqa4jKrQy+9kIJM6AaqQ73NQcDBOYkyRMCyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WSYmlIab; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WSYmlIab"
-Date: Fri, 3 May 2024 13:18:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714756702;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p1DHhumvnEuBLtnhXEtVwxXBUnkjdRjMgmgk/tC5Cg0=;
-	b=WSYmlIabKv0aODBK6eQeQkDhPD89uM9o2DfL99rnizVTe9R26QHASue4iVIoJSKK67tbYm
-	2i5XT8DH9lxMPIHccU21ypDB10FfXKn94hVA9EVe+GfHJQ5KbxmjQ+s67BH9U7re/tlT8Z
-	Lvzvi1Vg/qSD2zurEz1dyseIT8g3uwA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Aleksandr Nogikh <nogikh@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>, syzkaller@googlegroups.com, 
-	Thomas Bertschinger <tahbertschinger@gmail.com>, Ariel Miculas <ariel.miculas@gmail.com>, 
-	linux-bcachefs@vger.kernel.org
-Subject: Re: syzbot for bcachefs?
-Message-ID: <2uq2qtikasllo4tfonsyw7q5rrompy7rhw54j3dqezwpfrq4n2@6vaec54ocj3p>
-References: <oxdwygzxpbpwxgl5v5hzaj7er6oxt2rlmaobkov4t23xqptqrn@gxi3nlapfini>
- <CACT4Y+ZEPWbJsYvWauog95yRFuzZmA=tK-uS+aDT-x=jnc3f7Q@mail.gmail.com>
- <aw5elbevdhwuqr7ecap6i5hepvkjbgs5xexq7nvu2yvuhh5bpb@tmyjcruysqjf>
- <CANp29Y5d3cp_YGfy-3bjJYsNfniXFjAm9WfOUVL5zwk=6weALg@mail.gmail.com>
- <CACT4Y+aNh4oBMpfPdNe7aAJT-hK9WPN5G47d1DN4NkH883OOdA@mail.gmail.com>
- <yg56oeewdosga5bemxyhku37deglpqjxz5ocg7asyeb2c75kap@5bas2aygiama>
- <CANp29Y6wQSb2Zn9Jujhzw4Mij77Nvfo4+2fkpY=ppJ6OCDE6Qw@mail.gmail.com>
- <d6wuvtwgp3z7v7fleewvw6fkjk6d5hpjqpp7p2bmiq5ocf5ib4@ap4iyuhzkpum>
- <CANp29Y70mqP+4m_OmwORqKVk1hDHBwiZSvV43=nABa9pjMp7dA@mail.gmail.com>
+	s=arc-20240116; t=1714757561; c=relaxed/simple;
+	bh=dVYEm0hHRWJuQDzyhrR26MDHhJDdDLnZW8nfjNm8Fzc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rhMgyIiuf5vnEjtGqYckM/aMUx8D0upX9I5nWzfZB8rZyRhHnkMgupxiXhVjNk+1I6bP97Nonkmv53lkCU+HzvPyXD6NjobXieZyyYx1CzODkaHOphnHPICNcy0IaDKEybJKJI2oyeX0FSrDuJUVyy+ri6b31BQBOBVelvT+OCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7dee81b7e97so344791839f.3
+        for <linux-bcachefs@vger.kernel.org>; Fri, 03 May 2024 10:32:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714757559; x=1715362359;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PaBujB/M/JeYRrKl4YGWAOx8sWeverl2PICTy/te8Ew=;
+        b=qkIdBI4ZQeQxPRzknaAKwZ9BEOEewuzWREaPAz05XZlCjBSzaPIe0hF3el/OFzo2Eo
+         Clty8gmRX+kWEa4GL9vFnd1WCA3VVtRzBAf1Fwfjq+3h4qKbti+CnXgChKpsLxEOmow6
+         EppSYjHX3seSbqUdWF4zvVe1W6Ckz0lPopiI+ApEkDlq6pIYWq0btwNDjxh6I7Kb4yaj
+         BiYtuv4rd4TqqPn4ctJ1NvPBo1f6DzvFbJHqIgmgVZ/+QVnrh7CdiDqndnm3vIMjNX67
+         6xRH1PjdEIrLNG4Ubl8CDJvLN0auz4hk2TnBnHmQzH8+9RZm8mHVcLaJ1pEWiZPiEU/g
+         9gFw==
+X-Forwarded-Encrypted: i=1; AJvYcCXUqJ6DyiA+OTUCRajUS3cp3KxUtbe15wh5urdyGqsEjzeLaTod2Gobhq6P1BM5M3TQLDX72Bx8+gp94dtogMNn5XI96NYIkJYrgsZi2o8=
+X-Gm-Message-State: AOJu0YypdqRwjn/6SQRB8PX83vsBEoUKmE6oVuefacd2uTBFhylpC7eI
+	/0MPBH+tUkAKImOipbOardEzDydDrn/q3jtSMy1SoG/a+68uGhPYzlBZyf/rpqKmGiygQslK99D
+	3jUt/YSYIi+dt6aVGqDqIvi6J7j/sgJFKLcC5S48jcQYcWrCoJOeHOeY=
+X-Google-Smtp-Source: AGHT+IGEagBeVl/Vf/uyy1rm/tGpmJdGFKGs+H0Qm2oWn5GNEedHW27t6/dgtynox9mqvH84JW3/5edHV2wbH6sytTEZL3QgjWKx
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANp29Y70mqP+4m_OmwORqKVk1hDHBwiZSvV43=nABa9pjMp7dA@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6638:4387:b0:487:591e:6df3 with SMTP id
+ bo7-20020a056638438700b00487591e6df3mr116262jab.2.1714757559544; Fri, 03 May
+ 2024 10:32:39 -0700 (PDT)
+Date: Fri, 03 May 2024 10:32:39 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000367c770617901bba@google.com>
+Subject: [syzbot] [bcachefs?] INFO: task hung in __closure_sync
+From: syzbot <syzbot+7bf808f7fe4a6549f36e@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, May 03, 2024 at 06:31:30PM +0200, Aleksandr Nogikh wrote:
-> On Fri, May 3, 2024 at 5:36 PM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Thu, May 02, 2024 at 10:28:42PM +0200, Aleksandr Nogikh wrote:
-> > >
-> > > I think the problem was that I was trying to save the generated files
-> > > to a 9p filesystem (so that I could easily take them out of my VM).
-> > > But now I've set up a proper userspace image with the latest 6.9 RC
-> > > kernel and it worked fine.
-> > >
-> > > >
-> > > > > Also what would be a good sets of options to generate seed images?
-> > > > > We try to "sample" space of different images to create seeds. To give
-> > > > > you an idea here is what we do for other file systems:
-> > > > > https://github.com/google/syzkaller/blob/af24b0505c748561efb50f1d03c824d6642f6c0b/tools/syz-imagegen/imagegen.go#L60-L516
-> > > >
-> > > > --encrypted --no_passphrase
-> > > > --compression=lz4
-> > > > --no-checksum
-> > >
-> > > The mkfs.bcachefs tool that I installed does not know the
-> > > --no-checksum flag, so I used --data_checksum=none
-> > > --metadata_checksum=none instead. Does it mean the same thing?
-> >
-> > That's the correct flags, I did a brainfart on that one :)
-> 
-> Cool :)
-> I've deployed the changes to syzbot today and it has already reported
-> 8 findings:
-> https://syzkaller.appspot.com/upstream/s/bcachefs
+Hello,
 
-Nice, already got fixes pushed for most of them :)
+syzbot found the following issue on:
+
+HEAD commit:    f03359bca01b Merge tag 'for-6.9-rc6-tag' of git://git.kern..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1298e660980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f00edef461175
+dashboard link: https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a7c31f180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16109450980000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e3ee5200440e/disk-f03359bc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c651e70b4ae3/vmlinux-f03359bc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/196f43b316ad/bzImage-f03359bc.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/883314a64ffe/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7bf808f7fe4a6549f36e@syzkaller.appspotmail.com
+
+INFO: task syz-executor334:5078 blocked for more than 143 seconds.
+      Not tainted 6.9.0-rc6-syzkaller-00131-gf03359bca01b #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor334 state:D stack:15856 pid:5078  tgid:5078  ppid:5075   flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5409 [inline]
+ __schedule+0x1796/0x4a00 kernel/sched/core.c:6746
+ __schedule_loop kernel/sched/core.c:6823 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6838
+ __closure_sync+0x259/0x2f0 lib/closure.c:135
+ closure_sync include/linux/closure.h:194 [inline]
+ __bch2_write+0x5458/0x5bd0 fs/bcachefs/io_write.c:1486
+ bch2_write+0x947/0x1590 fs/bcachefs/io_write.c:1610
+ closure_queue include/linux/closure.h:257 [inline]
+ closure_call include/linux/closure.h:390 [inline]
+ bch2_dio_write_loop fs/bcachefs/fs-io-direct.c:531 [inline]
+ bch2_direct_write+0x1a52/0x3050 fs/bcachefs/fs-io-direct.c:652
+ bch2_write_iter+0x206/0x2840 fs/bcachefs/fs-io-buffered.c:1143
+ call_write_iter include/linux/fs.h:2110 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa84/0xcb0 fs/read_write.c:590
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f42713dfdf9
+RSP: 002b:00007ffdf34d9c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f42713dfdf9
+RDX: 00000000175d9003 RSI: 0000000020000200 RDI: 0000000000000004
+RBP: 0000000000000000 R08: 0000555500000000 R09: 0000555500000000
+R10: 0000555500000000 R11: 0000000000000246 R12: 00000000000f4240
+R13: 00007ffdf34d9ec8 R14: 0000000000000001 R15: 00007ffdf34d9c90
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffffffff8e334da0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #0: ffffffff8e334da0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #0: ffffffff8e334da0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
+1 lock held by kworker/u8:3/50:
+ #0: ffff8880b953e658 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
+2 locks held by getty/4827:
+ #0: ffff88802aba90a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002f162f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b5/0x1e10 drivers/tty/n_tty.c:2201
+2 locks held by syz-executor334/5078:
+ #0: ffff8880730de420 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2855 [inline]
+ #0: ffff8880730de420 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x233/0xcb0 fs/read_write.c:586
+ #1: ffff8880779f88b8 (&sb->s_type->i_mutex_key#16){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:795 [inline]
+ #1: ffff8880779f88b8 (&sb->s_type->i_mutex_key#16){+.+.}-{3:3}, at: bch2_direct_write+0x243/0x3050 fs/bcachefs/fs-io-direct.c:598
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 29 Comm: khungtaskd Not tainted 6.9.0-rc6-syzkaller-00131-gf03359bca01b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
+ watchdog+0xfde/0x1020 kernel/hung_task.c:380
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
+NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt+0x21/0x30 drivers/acpi/processor_idle.c:112
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
