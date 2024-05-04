@@ -1,77 +1,165 @@
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E731AACB
-	for <linux-bcachefs@vger.kernel.org>; Sat,  4 May 2024 09:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6030CA7D
+	for <linux-bcachefs@vger.kernel.org>; Sat,  4 May 2024 09:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714816085; cv=none; b=u30LD19CufiFMcosHn2YRG+rZEz8r3mpdNtgIcRMizEw/SP8xubY6fjqx4YjyPjgjxuFXL3e4RsgDNlOGoEjWDc9sfJP0HeR2++oKJpNk127KDExXP0rvj8tkNyoSUze1zWO1LOyrZxy4qCNBaLVqo8MYxwF3BjJ6LIWSX8bS2Y=
+	t=1714816524; cv=none; b=ew2jOR5EtvnkcBrwbWNrSSezh93MUtLI/QZ9VkKL8yMzxKbzfojPcHnozzwv9YqYk3JpowI6yh53W8uW8GZofyswm4ZVwS9FRCw/h1aeRh19svm7NjDqtOxzge9PWxZobDrfWmjnThu+dWU9wJfZ4o8dFkQc+2FMMiRNmdTYBy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714816085; c=relaxed/simple;
-	bh=mhuJM+GfCQH5IMMrJMXVP9OBz/wYR8fa+oIkbwJ0sFM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=fJjNgJiOUUgWXm6egkD8TTSVq2OWMNafIIGYecUjqyaEJNb/isErowWtqUFM2rph1Iy6yPqK5o7KkOqAUBCbeeMm7Bf6J90uoE7DTw16QTJmEBUNl0C1oe7NVl8fK7PMOFn1YgaX8Mj7dShRdyetu06RX38e6qzWIc4CxRvI7Ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+	s=arc-20240116; t=1714816524; c=relaxed/simple;
+	bh=cW7OACxtfs1qddU/4aLJTGIMsX5ozeF6aKLExD6bMRU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=K+zBY7ZTlLNbBYTy2xHT02uRRFaIj/GQO0twD49CBRgiX1U8RXSpYVKppmM3ZtFtv9aPHVdKUfUzIzkg62ZUoe7BQIM/1uQmfgZbX6pytCnjRzGVgWSiZVG1P+N1iioo74Qgi8c3zDT+M0fRjG3L8iwBeHSajzfmlTAV9eU0uyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7da42114485so52221939f.2
-        for <linux-bcachefs@vger.kernel.org>; Sat, 04 May 2024 02:48:04 -0700 (PDT)
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d9fde69c43so43975739f.1
+        for <linux-bcachefs@vger.kernel.org>; Sat, 04 May 2024 02:55:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714816084; x=1715420884;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9vMfvjlUyZ95gb2Bl4Phjw9KVzOE/POZUXc/tMc9CNs=;
-        b=FFhH2H3Hbx1QgYhK4PIjcq2WDAooM0ZRWIgTpec1tKdKR7m66cbxWwpLlYR+qGAjor
-         FV9cmpp2xBxRxQFQWT1cM/TQi2BLqSBtQD+eeOccgACbjfDdelu288MPgVresssyOz+G
-         vTShtCjkzRBQug30+uE7S+BoBSZ7f7XIFKhmvWa3tDdbZmDOEsDXHTmmAHpgziu6rmE8
-         qi2mmG5MKEmyo9nYFVFTX9qZkWIoayq46SIwrdU6mry516eG0as64DMwj9SKQdXdFL2i
-         nGPjQ8MNb5pHsRR6sVBQpkCnUcXALPTqruY/pF/SMPFxB0IcR4OCLyS7+MlGjwmPuSj6
-         0a8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWnia6F/w/DQ+5b0C1HGOfqfXotANTHNnGkNFmS9XpAsWCC+Njo4sxV2SLCNWv0wIIaNEIBI7oEkvmf/6CxgFe6601tm8N1I+6mmf4C6Vg=
-X-Gm-Message-State: AOJu0YxpQuW31/hBDOeAL0TGZhudWqgSD0Xuy3MrKjnwzEawivt95zfU
-	602JHw2PC8p2NMkLF6JqGAeSsFOzhlkuYbHRPeLc+oul3H7Z4q7is3Zcz53icQIubpyt2HAPfsD
-	B1ifK4X8XzZDmxk3ejQJXWMrpVSiiPM9lr1DlzAFoFBHr5+gDDbn7CMg=
-X-Google-Smtp-Source: AGHT+IHQXiciJ6Z11FdD4VBp4JCah2SN9/cx2OFqZQ7b69cg3huTCXgpZXSYi/CyAHP6kwLDQ3n7Nn+vJOJX7J3D0KyvntiXiiQT
+        d=1e100.net; s=20230601; t=1714816522; x=1715421322;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OJOaWMEoqpk+8ScF+/qMX9N+1BGZMwIv53Xitcmi4MU=;
+        b=mZnugpY6pJSRJF3EkOdVnjASpmdQGvaPjeR9TDY/S6Oi6MSTRoXTWx7aXszNxGv2wq
+         mWwhqoLaQNBz0rmde8P2sCNwNaS7umgHL86ge+WnFzfmoWcnJWZLQtLty0fyMMeIse93
+         NWyenVVDC1tG8Ds/L8l9uzLtCxmmlwzffL6fYvUjYnGwu5VJnR7+mKbba+65YxyGBa/A
+         jiFbBHL78aDWptnvmrncnalmNdf89s78aCNpCXS6kCtM9PBcJ6LGbOxj4qKPzS+aZpUg
+         mzj+3mQ00HNhjj81uehcyj7i7Dr5uZYWFLz0O/T77ZscUFHmlvEqakWAV4kmRkKF+HPC
+         Spdg==
+X-Forwarded-Encrypted: i=1; AJvYcCV1SbftOafXkweXbLoYjHuV7I08nrq+kXf5r2Dqt3sNXGgznPygTWmJHuzUotH37YNjqEEeYXIsllxkOsT+AvM0wEdgBgv8mNojw56hYEA=
+X-Gm-Message-State: AOJu0Yy7jSWxXPk+ayhYJgkEdHWFjNw8sukfEsislfeFNsLPw9HShYoP
+	ApvKQ4Ft7NRVqlZLSWKG27I/f1GLUp4B3sF9/4UxWEkbTbeZsRY/dq21tihilcxuw/f/n5D6DF7
+	YrPjLZTzmxuU/tJQGuJQ5PwUn/Mey8S1GKvRhFvnVgnnS2s8JEbwzgLA=
+X-Google-Smtp-Source: AGHT+IEz+D6Qex1NA0StL/fBe1wyM5usF5Gu21Nh5V88IwYc7lO04xoWKDoD3Dfid5taUZgEkUVLmxzNsriMdBl64z0hzly4sCpS
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:a58a:b0:488:59cc:eb41 with SMTP id
- kd10-20020a056638a58a00b0048859cceb41mr36069jab.3.1714816083873; Sat, 04 May
- 2024 02:48:03 -0700 (PDT)
-Date: Sat, 04 May 2024 02:48:03 -0700
-In-Reply-To: <00000000000078baec06178e6601@google.com>
+X-Received: by 2002:a05:6638:868d:b0:487:5a5d:b756 with SMTP id
+ iv13-20020a056638868d00b004875a5db756mr227670jab.4.1714816522169; Sat, 04 May
+ 2024 02:55:22 -0700 (PDT)
+Date: Sat, 04 May 2024 02:55:22 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000088e7bf06179dbbe8@google.com>
-Subject: Re: [syzbot] [bcachefs?] WARNING in bch2_trans_srcu_unlock
-From: syzbot <syzbot+1e515cab343dbe5aa38a@syzkaller.appspotmail.com>
+Message-ID: <000000000000a8be8b06179dd553@google.com>
+Subject: [syzbot] [bcachefs?] general protection fault in check_init_srcu_struct
+From: syzbot <syzbot+747508948da55ff287c2@syzkaller.appspotmail.com>
 To: bfoster@redhat.com, kent.overstreet@linux.dev, 
 	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot has bisected this issue to:
+Hello,
 
-commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Sep 23 22:41:51 2023 +0000
+syzbot found the following issue on:
 
-    bcachefs: Ignore unknown mount options
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=147f3908980000
-start commit:   f03359bca01b Merge tag 'for-6.9-rc6-tag' of git://git.kern..
+HEAD commit:    3d25a941ea50 Merge tag 'block-6.9-20240503' of git://git.k..
 git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=167f3908980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=127f3908980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f00edef461175
-dashboard link: https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d42c70980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15ce8250980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=175e897f180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=45d8db3acdc1ccc6
+dashboard link: https://syzkaller.appspot.com/bug?extid=747508948da55ff287c2
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-Reported-by: syzbot+1e515cab343dbe5aa38a@syzkaller.appspotmail.com
-Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
+Unfortunately, I don't have any reproducer for this issue yet.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-3d25a941.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/49d9f26b0beb/vmlinux-3d25a941.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d2c424c14fff/bzImage-3d25a941.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+747508948da55ff287c2@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000031: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000188-0x000000000000018f]
+CPU: 1 PID: 110 Comm: kswapd0 Not tainted 6.9.0-rc6-syzkaller-00227-g3d25a941ea50 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:check_init_srcu_struct+0x44/0x170 kernel/rcu/srcutree.c:408
+Code: 53 48 89 fb 80 3c 02 00 0f 85 fe 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 6b 38 48 8d bd 88 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ce 00 00 00 48 8b 85 88 01 00 00 a8 03 75 0b 5b
+RSP: 0018:ffffc90001ef7568 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff888026f84240 RCX: ffffffff83ecf098
+RDX: 0000000000000031 RSI: 0000000000000000 RDI: 0000000000000188
+RBP: 0000000000000000 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888026f84278
+R13: ffff888064c22630 R14: 0000000000000000 R15: ffff888026f80000
+FS:  0000000000000000(0000) GS:ffff88802c300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000562dfa8c9e28 CR3: 000000006730a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ srcu_gp_start_if_needed+0x80/0xf00 kernel/rcu/srcutree.c:1221
+ bkey_cached_free fs/bcachefs/btree_key_cache.c:90 [inline]
+ bch2_btree_key_cache_scan+0xae0/0x1740 fs/bcachefs/btree_key_cache.c:893
+ do_shrink_slab+0x44f/0x11c0 mm/shrinker.c:435
+ shrink_slab+0x18a/0x1310 mm/shrinker.c:662
+ shrink_one+0x493/0x7c0 mm/vmscan.c:4774
+ shrink_many mm/vmscan.c:4835 [inline]
+ lru_gen_shrink_node+0x89f/0x1750 mm/vmscan.c:4935
+ shrink_node mm/vmscan.c:5894 [inline]
+ kswapd_shrink_node mm/vmscan.c:6704 [inline]
+ balance_pgdat+0x10d1/0x1a10 mm/vmscan.c:6895
+ kswapd+0x5ea/0xbf0 mm/vmscan.c:7164
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:check_init_srcu_struct+0x44/0x170 kernel/rcu/srcutree.c:408
+Code: 53 48 89 fb 80 3c 02 00 0f 85 fe 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 6b 38 48 8d bd 88 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ce 00 00 00 48 8b 85 88 01 00 00 a8 03 75 0b 5b
+RSP: 0018:ffffc90001ef7568 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff888026f84240 RCX: ffffffff83ecf098
+RDX: 0000000000000031 RSI: 0000000000000000 RDI: 0000000000000188
+RBP: 0000000000000000 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888026f84278
+R13: ffff888064c22630 R14: 0000000000000000 R15: ffff888026f80000
+FS:  0000000000000000(0000) GS:ffff88802c200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffed628afd8 CR3: 000000000d57a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	53                   	push   %rbx
+   1:	48 89 fb             	mov    %rdi,%rbx
+   4:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   8:	0f 85 fe 00 00 00    	jne    0x10c
+   e:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  15:	fc ff df
+  18:	48 8b 6b 38          	mov    0x38(%rbx),%rbp
+  1c:	48 8d bd 88 01 00 00 	lea    0x188(%rbp),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 ce 00 00 00    	jne    0x102
+  34:	48 8b 85 88 01 00 00 	mov    0x188(%rbp),%rax
+  3b:	a8 03                	test   $0x3,%al
+  3d:	75 0b                	jne    0x4a
+  3f:	5b                   	pop    %rbx
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
