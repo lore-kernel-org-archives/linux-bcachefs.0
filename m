@@ -1,51 +1,51 @@
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C9728EA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE97AFBF0
 	for <linux-bcachefs@vger.kernel.org>; Sat,  4 May 2024 07:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714809509; cv=none; b=jtllOWPZog7BaT6pmkYzKjknm/akBxV1byKNU2HrEc3crSje6JAsCkMHEOsNq4DpY9V6SFDAM3Ab/u+WkyRV7ULwCsdXRZRzKN6637pE2ENHdrNfPtoxby+DqITrD/iCUfJoCadmQQ4Bhjjnhp1PRu7Gh0RqKJaps+OSfFOKHPQ=
+	t=1714809509; cv=none; b=k4bQxt/2aUER6oeNaVXANMFShDLZkQlSYiOE42Krinp9O8EiBQKqqFU5BlCJNQstAS6TeBCXt7T4zuzvwaYIPcinQBB5puNxuJ5/0kJJ8altDfcuwUhVABb2ES1hzF18x8/5Qb3w5RDTlBk5aFvfJBbKeHNnnPlz03K81XLb/oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714809509; c=relaxed/simple;
-	bh=vhKsE9nsqfxOf9+LQz19COlJhVq6lk7Bw13Im3yyPlY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Qm1ZvEcRh8PZ7/Yp2C0pvayXN3bMXG+H7KEQcH+V8N4waOQEAdsAzy9Bv2To3w4SF/3b7q8Q6GEXJF/nyPO7WXjE32zXjick+DaPMfx5iB10NjmRhe5wb/6oL5ITXIweE5IWLCx1VHjqHqQk56wzA6MwQaxZZ05FRPSagZc29c0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+	bh=v0LckRLJCLiur/uhpA1uWvTOvmBkqghkuV1G/cLqbYk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=X9OfmGTMQWmZXEX+3nHIhszH01wMLBKm0+dacRuJzLSDMUKpoM55pZlg5lMPZ4hhXzxrH+cAZgFmmXz/N4XzVtUkhr2MLmwP8wyYDMt+sDQSqbkQUVL4cni9Aiu7dblTBvvTmWId/HxENlLdPoT9nA3dN7IKFQcBAS/N5W4mTe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36c74ef7261so5075145ab.3
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7deb999eea4so42859439f.3
         for <linux-bcachefs@vger.kernel.org>; Sat, 04 May 2024 00:58:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1714809507; x=1715414307;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vA5i4KHL0Yd8QTGSNFy0jEQTCNF4LREnEXz70X88j8Y=;
-        b=JAJNWH1Ujz88GEmSK+EnVP8eAwe/akCD18E+WT1cqPAZ7DoGWrTq1H4ld2zrvtTKRH
-         OfYqPMXqc9tvrUXAZG5RYnbfJ6Tk/k+0b4KozrEFHDk3W7mephL1oAVisfjVIs0cDF+6
-         Fw2F7m+qI0gWZH9LEXLejdURpG9/HGvqW7O9wTmR5YSLaS5ZwoXG5e5s3LtVNWg07Fhp
-         +9NOe2YM4sHed3LUHag+OwGs077Kl4zyDdhqSTmlzu6z4muTmJZDcKznTKq9lyGq4zBn
-         MeAkr2rdU6RwPYghZqkrynMuvR+AAC6xU9IHYSelr3zu2uF0movNrpb+vYWo6v+E25vz
-         D8UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWsI490YkbWOEtdn+NmyTG6L/bo68m+sFEc7c/XvHhakxqI2T99FkgDgE7nONj5LxqJ80SisYz5zCOkGRRgu77bkIlu6OEhYYO4Nmfytac=
-X-Gm-Message-State: AOJu0YwSBVX6i2bab6JgOx7zvzwRqZ/pCYg9BiA0hxfNwpCjBge5yJ/Y
-	JLP4n80YSbFLajJId4/RvaWpYVe1y5lIjxvP3Z0RoXT9A1nO9UlAKtL31sWNEaHmQleLVXtK6Ih
-	TGoevuDG/COr+XEd+fgpCEM659GKO96rhSUTvQW1qJdlT12Y5jSgIMJc=
-X-Google-Smtp-Source: AGHT+IEGyO9zZwVgSt4Q42epq8S6QIIvrSXM7TW4Vuh8uLj1vkMof77Bv7c2DSFmH6OvckxGZaXz8qqrasPcn9ua0PZUMFKWKuMA
+        bh=ws0qQ7R8pFUGop3gD0bCH+kqYozjp/S0RlrQQzNV8Bc=;
+        b=Z4PvZOXJofjbl/Q+2Z1raY+xpfnby7hke7icv5lHk4hzyCEvOUZ0qbSRAW5A5mXFEK
+         1WbeTi76MwZz/7Hb9uaArS7Px0pzgZpRNEsSDvxl+7r/8fEOPD+nP8PsfcHAslA2Pve1
+         Qu6n+e/nr/GKpL2kFC+tTSwUD83v6VkiBNT8qvqhgS8W0Z8XbL7OiJmd0AW4Mrr4VuKN
+         1GGegosAftt6KtgLWkZbyhr9cHet+TXHRKUVSZBFzsaekLdwqWWj6blVpEQuR3ayPitX
+         e2/Z5WGzEORFrY9T29MDpKoR001VAZNWa06pPZGVbhHgUUyE+vVuwhO+7bJgNE8X2UfO
+         PIyA==
+X-Forwarded-Encrypted: i=1; AJvYcCXmc+tlsxcVTUhK16lDm93kpVKZKw643r4Ai/i+plgyfOY004eZjgD/1Wq0MQhutVsgjweTeYzYQj1bxRWxyDXbt6NcPqDNa9T3yW5EyUw=
+X-Gm-Message-State: AOJu0Yw5A5yp12k88ArUnFd067ngqcvuLNIVNtOxZzQjD+XnjAURQdDV
+	NMYnSm0yTO4FHvQ/KdTxRrpkSYfJFx34c802++mv6PLWRMDnaghfUlW6oFSk+JzSxvuuGZe9Xoi
+	1f4yJb5rQBJF9324JkKDQJUkcoxZkxj0PgTM5UxX/kCC76il2OJHag38=
+X-Google-Smtp-Source: AGHT+IEYg8J2GUKXNfvCRk9sHvPlUpMwVqElyM4IoTpZg4vUepdiXvrYai5z16l98I6HAguIRsU98uTP63uj9k1Slhn1iAkyCrFn
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b08:b0:36b:26df:cce4 with SMTP id
- i8-20020a056e021b0800b0036b26dfcce4mr233962ilv.6.1714809506922; Sat, 04 May
- 2024 00:58:26 -0700 (PDT)
-Date: Sat, 04 May 2024 00:58:26 -0700
+X-Received: by 2002:a05:6602:6c13:b0:7de:a1dc:bf36 with SMTP id
+ ik19-20020a0566026c1300b007dea1dcbf36mr145723iob.4.1714809507237; Sat, 04 May
+ 2024 00:58:27 -0700 (PDT)
+Date: Sat, 04 May 2024 00:58:27 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000849b0606179c33b7@google.com>
-Subject: [syzbot] [bcachefs?] WARNING in bchfs_truncate
-From: syzbot <syzbot+247ac87eabcb1f8fa990@syzkaller.appspotmail.com>
+Message-ID: <000000000000895ef206179c33e3@google.com>
+Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in __bch2_write_index
+From: syzbot <syzbot+fd3ccb331eb21f05d13b@syzkaller.appspotmail.com>
 To: bfoster@redhat.com, kent.overstreet@linux.dev, 
 	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
@@ -57,66 +57,97 @@ syzbot found the following issue on:
 
 HEAD commit:    3d25a941ea50 Merge tag 'block-6.9-20240503' of git://git.k..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10e71b9b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3310e643b6ef5d69
-dashboard link: https://syzkaller.appspot.com/bug?extid=247ac87eabcb1f8fa990
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+console output: https://syzkaller.appspot.com/x/log.txt?x=1206a590980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bbf567496022057b
+dashboard link: https://syzkaller.appspot.com/bug?extid=fd3ccb331eb21f05d13b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a743748c2da4/disk-3d25a941.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9a51bb4cf9ba/vmlinux-3d25a941.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f4a1ba4b268a/bzImage-3d25a941.xz
+disk image: https://storage.googleapis.com/syzbot-assets/c64084cbf7db/disk-3d25a941.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8250d04a440c/vmlinux-3d25a941.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/244d4cfb55f3/bzImage-3d25a941.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+247ac87eabcb1f8fa990@syzkaller.appspotmail.com
+Reported-by: syzbot+fd3ccb331eb21f05d13b@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-truncate spotted in mem i_size < btree i_size: 4 < 65536
-WARNING: CPU: 0 PID: 29645 at fs/bcachefs/fs-io.c:434 bchfs_truncate+0x7ad/0xd70 fs/bcachefs/fs-io.c:434
-Modules linked in:
-CPU: 0 PID: 29645 Comm: syz-executor.3 Not tainted 6.9.0-rc6-syzkaller-00227-g3d25a941ea50 #0
+bcachefs (loop2): snapshots_read... done
+bcachefs (loop2): journal_replay... done
+bcachefs (loop2): resume_logged_ops... done
+bcachefs (loop2): going read-write
+bcachefs (loop2): done starting filesystem
+=====================================================
+BUG: KMSAN: uninit-value in find_next_bit include/linux/find.h:64 [inline]
+BUG: KMSAN: uninit-value in __bch2_write_index+0x277b/0x2bd0 fs/bcachefs/io_write.c:543
+ find_next_bit include/linux/find.h:64 [inline]
+ __bch2_write_index+0x277b/0x2bd0 fs/bcachefs/io_write.c:543
+ bch2_write_data_inline fs/bcachefs/io_write.c:1538 [inline]
+ bch2_write+0x1a13/0x1b40 fs/bcachefs/io_write.c:1606
+ closure_queue include/linux/closure.h:257 [inline]
+ closure_call include/linux/closure.h:390 [inline]
+ bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:468 [inline]
+ bch2_writepages+0x24a/0x3c0 fs/bcachefs/fs-io-buffered.c:660
+ do_writepages+0x427/0xc30 mm/page-writeback.c:2612
+ filemap_fdatawrite_wbc+0x1d8/0x270 mm/filemap.c:397
+ __filemap_fdatawrite_range mm/filemap.c:430 [inline]
+ filemap_write_and_wait_range+0x169/0x420 mm/filemap.c:685
+ bchfs_truncate+0xa58/0x1420
+ bch2_setattr+0x29f/0x2f0 fs/bcachefs/fs.c:882
+ notify_change+0x1a07/0x1af0 fs/attr.c:497
+ do_truncate+0x22a/0x2b0 fs/open.c:65
+ vfs_truncate+0x5d4/0x680 fs/open.c:111
+ do_sys_truncate+0x107/0x250 fs/open.c:134
+ __do_compat_sys_truncate fs/open.c:152 [inline]
+ __se_compat_sys_truncate fs/open.c:150 [inline]
+ __ia32_compat_sys_truncate+0x6c/0xa0 fs/open.c:150
+ ia32_sys_call+0x24d4/0x40a0 arch/x86/include/generated/asm/syscalls_32.h:93
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0xb4/0x120 arch/x86/entry/common.c:386
+ do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:411
+ do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:449
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+Uninit was created at:
+ __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2175 [inline]
+ allocate_slab mm/slub.c:2338 [inline]
+ new_slab+0x2de/0x1400 mm/slub.c:2391
+ ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
+ __slab_alloc mm/slub.c:3610 [inline]
+ __slab_alloc_node mm/slub.c:3663 [inline]
+ slab_alloc_node mm/slub.c:3835 [inline]
+ kmem_cache_alloc+0x6d3/0xbe0 mm/slub.c:3852
+ mempool_alloc_slab+0x36/0x50 mm/mempool.c:565
+ mempool_init_node+0x202/0x4d0 mm/mempool.c:217
+ mempool_init+0x57/0x70 mm/mempool.c:246
+ mempool_init_slab_pool include/linux/mempool.h:68 [inline]
+ bioset_init+0x271/0xac0 block/bio.c:1752
+ bch2_fs_fs_io_buffered_init+0x4a/0xc0 fs/bcachefs/fs-io-buffered.c:1156
+ bch2_fs_alloc+0x3c71/0x4210 fs/bcachefs/super.c:937
+ bch2_fs_open+0xdde/0x1670 fs/bcachefs/super.c:2081
+ bch2_mount+0x90d/0x1d90 fs/bcachefs/fs.c:1903
+ legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa7/0x570 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3875
+ ia32_sys_call+0x3a9a/0x40a0 arch/x86/include/generated/asm/syscalls_32.h:22
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0xb4/0x120 arch/x86/entry/common.c:386
+ do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:411
+ do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:449
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+CPU: 0 PID: 17163 Comm: syz-executor.2 Not tainted 6.9.0-rc6-syzkaller-00227-g3d25a941ea50 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:bchfs_truncate+0x7ad/0xd70 fs/bcachefs/fs-io.c:434
-Code: 24 38 84 c0 0f 85 d3 fc ff ff e8 7e 4b 8e fd c6 05 91 7f 89 0b 01 90 48 c7 c7 80 52 5f 8b 4c 89 ea 4c 89 fe e8 14 b6 50 fd 90 <0f> 0b 90 90 48 b8 00 00 00 00 00 fc ff df 48 8b 54 24 48 48 c1 ea
-RSP: 0018:ffffc900032d7758 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff888064756cf8 RCX: ffffc9000c7d0000
-RDX: 0000000000040000 RSI: ffffffff81503286 RDI: 0000000000000001
-RBP: ffffc900032d7920 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 000000000008d6b8 R12: ffff8880647567b0
-R13: 0000000000010000 R14: ffffc900032d7a18 R15: 0000000000000004
-FS:  00007fb75c3de6c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020ee5000 CR3: 000000002ac62000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bch2_setattr+0x1ab/0x250 fs/bcachefs/fs.c:882
- notify_change+0x742/0x11c0 fs/attr.c:497
- do_truncate+0x15c/0x220 fs/open.c:65
- handle_truncate fs/namei.c:3300 [inline]
- do_open fs/namei.c:3646 [inline]
- path_openat+0x24b9/0x2990 fs/namei.c:3799
- do_filp_open+0x1dc/0x430 fs/namei.c:3826
- do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_open fs/open.c:1429 [inline]
- __se_sys_open fs/open.c:1425 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1425
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fb75c87dca9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb75c3de0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 00007fb75c9ac050 RCX: 00007fb75c87dca9
-RDX: 0000000000000000 RSI: 000000000014927e RDI: 0000000020000180
-RBP: 00007fb75c8c947e R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007fb75c9ac050 R15: 00007ffdfe29fbb8
- </TASK>
+=====================================================
 
 
 ---
