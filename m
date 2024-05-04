@@ -1,81 +1,85 @@
-Received: from mail-4323.proton.ch (mail-4323.proton.ch [185.70.43.23])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6021684A37
-	for <linux-bcachefs@vger.kernel.org>; Sat,  4 May 2024 22:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAEF1AD2C
+	for <linux-bcachefs@vger.kernel.org>; Sat,  4 May 2024 23:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714860753; cv=none; b=B+yplcS1WCZUJvywIaBV2s3aXTyEZR+SspdV9px40ejFVHpd3FUX/oll+fldZ1m4ojzXl7x3CAT3Jl+GqguDFLZCcIxfDuDjfdkVnJWXR69JV7NCbWEfexcDdZsEB+YLCuV/BLsBykqw/pzLiZGhwa038FsT10QGpmW3JOgMirk=
+	t=1714865725; cv=none; b=VHo85+6Ykwu089NZYm0CVL+ac1PqFN34KBcffhoPCjTGUlbDGWw+PfMC9aCa/jcavEedeVrSSLAWv/kQk8Dnbg0vCy1kcA/uHeVDNMVD8ktMOyXuRxdxauFJmB5EZ1vmd21aTf5sdsYinwDDyFbMVNhmHIY1xUzX4Y46ML1t/sU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714860753; c=relaxed/simple;
-	bh=0piqip4PMiRierau0Sb66dmxmaxnj53asSxngHhF9VI=;
-	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=E3WNXC+tUELg63/meCbGgDuEQrfltRd+kCzarLRhE9QbLFiFChHhFZNmJcXbzkSpBfrgZd40/Gw20DtE3s7Bnt44qO6ngo17qpIiOZldLG1jHj7nk8Vg75IWTlaMWO5gXyWbl1fway2nGkNxx1L19zvCqEgjMmhEc19JsOCIprU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riley.engineer; spf=pass smtp.mailfrom=riley.engineer; dkim=pass (2048-bit key) header.d=riley.engineer header.i=@riley.engineer header.b=XFqf7Bib; arc=none smtp.client-ip=185.70.43.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riley.engineer
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riley.engineer
+	s=arc-20240116; t=1714865725; c=relaxed/simple;
+	bh=lIu68v/43w1401qBlqzoP/iY9yedGzGnDJgG9Mp4xTU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c4BQHiSiCQyKxgDt2E3wSFJ/MqiNGmVlSuttXOg1yyTIrSscUC/EL5ZD8hKbv9wL+LNtH7O+Rb/LhblsjeNMai28/jhwxJGL9c/+b4oGnCFjckEA2cP5RPUyH5nx1wBubYAgkfkNjc5U2xzwBBXPMZ5xnZOfTqffdZ89qEvIruE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lwrT1zX1; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=riley.engineer header.i=@riley.engineer header.b="XFqf7Bib"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=riley.engineer;
-	s=protonmail3; t=1714860746; x=1715119946;
-	bh=HNNw2m1VFKwibVNnz3yDPMK7A++o+WVrDDwwtSjd4t0=;
-	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=XFqf7Bibxi7lCIP25utbcnIi3tZsth981kqcf+zYuPY/wTFl9FQJ44z6EOs5GhskL
-	 zhw/4xuT7BrFqxs4OxHy4WNtOIiHPCfxWeMKSbhU2AA3AxZWFSLnQPZtyud5yBJI6F
-	 Gf1KNJH7fc9ddrEJBQzaZvypuhCsOObYfFJDNj+NBMggjneFAYAjDZ+3vy+T6AYjsB
-	 p5a5OUsZp5aFaF4NwTXjGzob9qiG8u+ih2e4xgf+D5P8c0pv4jJU7NdXM2U2QlK2YP
-	 boSJMCKo9AemqoH4gxeSrVVppN88ej8GwIgvbnK3MZTAp9Stln/gTZJVP/sdQz7bdy
-	 GlzZQjzf2e8Bg==
-Date: Sat, 04 May 2024 22:12:23 +0000
-To: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-From: Reed Riley <reed@riley.engineer>
-Subject: [PATCH] bcachefs: fix overflow in fiemap
-Message-ID: <7qU8xNKAHxFIkSlLrXO1B6kyf-7DvRoJRgZloXK5qHovOzUFYbbCYhe_9Tzv1J6MgiXcakyIFiovCX3HtotUEE9fsV25jYmifgyMz_wa-Ik=@riley.engineer>
-Feedback-ID: 15554401:user:proton
-X-Pm-Message-ID: 345926a19cebd6d058a25da3807695cf764122c3
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lwrT1zX1"
+Date: Sat, 4 May 2024 19:35:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714865718;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Fet3+NvTwRfdfDRLigf+Ncvcni2kYjAwsVuysXQpROs=;
+	b=lwrT1zX1koYGHAYeXFQ3MqzbNJavF7sg7oPyE8YoRpaWI+bGmLBY8ugbVMgY/VHi3ch0J3
+	YzNeAvuH6Ue6r6kxQx+eoA1qV8/yvifNFg0iz2Zu07iGbYPeJYcuSilU4NKNlmf7eb4pnJ
+	HN4fZvhw4cv7V21ktjxqBIlD6ytC0EA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Reed Riley <reed@riley.engineer>
+Cc: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+Subject: Re: [PATCH] bcachefs: fix overflow in fiemap
+Message-ID: <2x2pkl56bpo6ptinyp6kpjgrazbiwzsccw3qxb3jv7u775eesb@3bqc6om37j6f>
+References: <7qU8xNKAHxFIkSlLrXO1B6kyf-7DvRoJRgZloXK5qHovOzUFYbbCYhe_9Tzv1J6MgiXcakyIFiovCX3HtotUEE9fsV25jYmifgyMz_wa-Ik=@riley.engineer>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7qU8xNKAHxFIkSlLrXO1B6kyf-7DvRoJRgZloXK5qHovOzUFYbbCYhe_9Tzv1J6MgiXcakyIFiovCX3HtotUEE9fsV25jYmifgyMz_wa-Ik=@riley.engineer>
+X-Migadu-Flow: FLOW_OUT
 
-filefrag (and potentially other utilities that call fiemap) sometimes
-pass ULONG_MAX as the length.  fiemap_prep clamps excessively large
-lengths - but the calculation of end can overflow if it occurs before
-calling fiemap_prep.  When this happens, filefrag assumes it has read to
-the end and exits.
+On Sat, May 04, 2024 at 10:12:23PM +0000, Reed Riley wrote:
+> filefrag (and potentially other utilities that call fiemap) sometimes
+> pass ULONG_MAX as the length.  fiemap_prep clamps excessively large
+> lengths - but the calculation of end can overflow if it occurs before
+> calling fiemap_prep.  When this happens, filefrag assumes it has read to
+> the end and exits.
+> 
+> Signed-off-by: Reed Riley <reed@riley.engineer>
 
-Signed-off-by: Reed Riley <reed@riley.engineer>
----
- fs/bcachefs/fs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Applied!
 
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 4e4442bc71e3..ff01c954bff8 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -996,7 +996,7 @@ static int bch2_fiemap(struct inode *vinode, struct fie=
-map_extent_info *info,
-        struct btree_iter iter;
-        struct bkey_s_c k;
-        struct bkey_buf cur, prev;
--       struct bpos end =3D POS(ei->v.i_ino, (start + len) >> 9);
-+       struct bpos end;
-        unsigned offset_into_extent, sectors;
-        bool have_extent =3D false;
-        u32 snapshot;
-@@ -1006,6 +1006,7 @@ static int bch2_fiemap(struct inode *vinode, struct f=
-iemap_extent_info *info,
-        if (ret)
-                return ret;
-=20
-+       end =3D POS(ei->v.i_ino, (start + len) >> 9);
-        if (start + len < start)
-                return -EINVAL;
-=20
---=20
-2.44.0
-
+> ---
+>  fs/bcachefs/fs.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index 4e4442bc71e3..ff01c954bff8 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -996,7 +996,7 @@ static int bch2_fiemap(struct inode *vinode, struct fiemap_extent_info *info,
+>         struct btree_iter iter;
+>         struct bkey_s_c k;
+>         struct bkey_buf cur, prev;
+> -       struct bpos end = POS(ei->v.i_ino, (start + len) >> 9);
+> +       struct bpos end;
+>         unsigned offset_into_extent, sectors;
+>         bool have_extent = false;
+>         u32 snapshot;
+> @@ -1006,6 +1006,7 @@ static int bch2_fiemap(struct inode *vinode, struct fiemap_extent_info *info,
+>         if (ret)
+>                 return ret;
+>  
+> +       end = POS(ei->v.i_ino, (start + len) >> 9);
+>         if (start + len < start)
+>                 return -EINVAL;
+>  
+> -- 
+> 2.44.0
+> 
