@@ -1,48 +1,37 @@
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E07158A30
-	for <linux-bcachefs@vger.kernel.org>; Tue,  7 May 2024 14:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523CF15ECD3
+	for <linux-bcachefs@vger.kernel.org>; Tue,  7 May 2024 14:43:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715091406; cv=none; b=ZdkSj1emom5jUbFPYBEzu4t9D4qb9C6Rbgp2ddkkX9KkY5pj/7XsuAIYdwN/BFd/biX5mzdIj930zZeYZx9dOh6PhYFYjYna/JT3seomfsHqXLt0ibiVjIQRZGpMK+HRy4fl5e2caw4JNB9itwVD8fhEMFjmRbFraQevgjKVsV0=
+	t=1715092999; cv=none; b=mf9gCBbnDf5At9F5m0Hig6NonjpdenZz4CUFcXYw1OnHicRE0TSI5ChFskS4SxzkTQGfuILrMrARJ0O+etCF+glER9bfuR3Nz9VxzKtWb+TrfUnChsmixHYLDq5bLQwy7HSXB0c3SrZtn3ZZ9xHRrecNXoWgeg/+YENiIsBkS18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715091406; c=relaxed/simple;
-	bh=Jk32hk5WOhtsPVTKlMP4zvg3sbi3DvnLTqWi+0DfZGo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=It4NoVxvpOZI8TcQbK2VcRTyE4bnk9cMXY1VhZL+72PzbBeWle3Lz7B3YOmPQ3p4YxUD6z/bU3g+tYQhKdnhABdpBRDIlvKSQpCiQshqUVRlpN35VlvGMWSMCYiue6VZzxzdoxOZKYH2SGKz37soERwYvks4MlSkHN3ek9VokNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fJeUKJOF; arc=none smtp.client-ip=95.215.58.177
+	s=arc-20240116; t=1715092999; c=relaxed/simple;
+	bh=yMTYiE0yi2WG4jip/daktPxAKElfeIGSd2hHRBT8yE8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=hl70Nsqp8YJ1mbqFKlEvG43/rDvZbia7Wgcps4augrFf1bMITApa6PGltk94btXi5ewHRfVT2oy/3z6YWxMT4pvodZ4sLfT3SN6OU6G4J3NHFGLdj2lWHlPm0ObscFaCZHkJ/mjfmKKZ8xpa1vf3G8YoBj85gm3HiEkp5+GxOm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DumC/H3K; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fJeUKJOF"
-Date: Tue, 7 May 2024 10:16:39 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DumC/H3K"
+Date: Tue, 7 May 2024 10:43:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1715091402;
+	t=1715092994;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d7uYYjOih6xfXmWBun4mkQeyVXiZPiV6sYGIN/5Ync4=;
-	b=fJeUKJOFGMcERPeeQHQEds9mFJV5TD9DfE6OpNiASci3NGIqJ3eCUxsbI73mZhUTyIRjQD
-	/UZ8hn7tpuZ/NiTckFZCWNSxgT6uXQ4CEb/rA/1fYIGT6yWX1N4CWGkQ3GQ7yqqycNMO2U
-	IZNyok0zDC4qVShz0TBW8B/GFNkIyjc=
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=sha76ykCa1g2wvPF/U7W10Wc8ZjbPd+Jmr0g6Xvn2xk=;
+	b=DumC/H3KXeDU9ZS0hQ2zOM9me2PlDRkxJqlgMbzekLZ4hduOp4YQ/GHabXFnf9Dr8rYJ+d
+	3M87SayNmH5HsjwHTnaR+Wayzrs+fAaV2rfvEA6gYuWsAS8BvRvKgwKRL6mv8qpQxpKGiM
+	g5i85WETeEuW9LMSVFQfx6qMbNFG5vo=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Petr Vorel <pvorel@suse.cz>
-Cc: Cyril Hrubis <chrubis@suse.cz>, Jan Kara <jack@suse.cz>, 
-	Brian Foster <bfoster@redhat.com>, fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	ltp@lists.linux.it, Coly Li <colyli@suse.com>
-Subject: Re: [LTP] [PATCH v2 3/3] statx04: Skip STATX_ATTR_COMPRESSED on
- Bcachefs
-Message-ID: <xlqa5l5si2mp3troac56tq7q3gansgi2fqs57rd2i2xrudiq34@iit2ymv4pzy6>
-References: <20231207194011.273027-1-pvorel@suse.cz>
- <20231207194011.273027-4-pvorel@suse.cz>
- <20231213024617.vx3epsav2n2lxozi@moria.home.lan>
- <ZZvIBO-a1b_nIHJ8@yuki>
- <gjfjylr4bdytdot7ywjispswvgpvjtkdmtsinsbcbc42ik2y3d@ws4tjmwqywrb>
- <ZZ0guBd48WXYapPL@yuki>
- <ZiJtf07WGFJPb_w2@yuki>
- <20240507081846.GA97446@pevik>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.9
+Message-ID: <3x4p5h5f4itasrdylf5cldow6anxie6ixop3o4iaqcucqi7ob4@7ewzp7azzj7i>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -51,33 +40,83 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240507081846.GA97446@pevik>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, May 07, 2024 at 10:18:46AM +0200, Petr Vorel wrote:
-> > Hi!
-> > > > > Quite likely, other filesystems does have an inode flag that is set when
-> > > > > file has been compressed and simply report that in the foo_getattr()
-> > > > > callback. Looking at bcachefs I supose that we need to figure out if the
-> > > > > inode is v3 and then unpack the v3 info to get to the compressed flag,
-> > > > > you probably know best how to do that.
-> 
-> > > > I'm still not clear how we want to map STATX_ATTR_COMPRESSED, since it's
-> > > > extents that are compressed, not entire files - and just reporting the
-> > > > compression option is probably not what we want since it can be flipped
-> > > > off, and existing data will still be compressed.
-> 
-> > > > Do you know anything about the intended use case?
-> 
-> > > As far as I understand the flag it's a hint that the file I/O may be
-> > > slower/need more memory because of the compression.
-> 
-> > Ping.
-> 
-> > Kent we are getting closer to a next LTP release, are you going to add
-> > the compressed flag support into bcachefs or should we add bcachefs to
-> > the test skiplist?
-> 
-> Kent, gentle ping ^.
+Hi Linus, another stack of fixes for you.
 
-Add it to the skiplist for now, thanks
+Apologies for the size of the pull request, it's almost all syzbot stuff
+which we just started receiving, and pretty much all simple validation
+fixes. One user reported bugfix in here, a fix for an integer overflow
+which was preventing returning the full list of extents to filefrag().
+
+The following changes since commit c258c08add1cc8fa7719f112c5db36c08c507f1e:
+
+  bcachefs: fix integer conversion bug (2024-04-28 21:34:29 -0400)
+
+are available in the Git repository at:
+
+  https://evilpiepirate.org/git/bcachefs.git/ tags/bcachefs-2024-05-07
+
+for you to fetch changes up to 536502fc14db1fd3e12e6871828f773bd1ef854e:
+
+  bcachefs: Add missing sched_annotate_sleep() in bch2_journal_flush_seq_async() (2024-05-06 23:12:09 -0400)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.9
+
+- Various syzbot fixes; mainly small gaps in validation
+- Fix an integer overflow in fiemap() which was preventing filefrag from
+  returning the full list of extents
+- Fix a refcounting bug on the device refcount, turned up by new
+  assertions in the development branch
+- Fix a device removal/readd bug; write_super() was repeatedly dropping
+  and retaking bch_dev->io_ref references
+
+----------------------------------------------------------------
+Kent Overstreet (20):
+      bcachefs: Fix a scheduler splat in __bch2_next_write_buffer_flush_journal_buf()
+      bcachefs: don't free error pointers
+      bcachefs: bucket_pos_to_bp_noerror()
+      bcachefs: Fix early error path in bch2_fs_btree_key_cache_exit()
+      bcachefs: Inodes need extra padding for varint_decode_fast()
+      bcachefs: Fix refcount put in sb_field_resize error path
+      bcachefs: Initialize bch_write_op->failed in inline data path
+      bcachefs: Fix bch2_dev_lookup() refcounting
+      bcachefs: Fix lifetime issue in device iterator helpers
+      bcachefs: Add a better limit for maximum number of buckets
+      bcachefs: Fix assert in bch2_alloc_v4_invalid()
+      bcachefs: Add missing validation for superblock section clean
+      bcachefs: Guard against unknown k.k->type in __bkey_invalid()
+      bcachefs: Fix shift-by-64 in bformat_needs_redo()
+      bcachefs: Fix snapshot_t() usage in bch2_fs_quota_read_inode()
+      bcachefs: Add missing skcipher_request_set_callback() call
+      bcachefs: BCH_SB_LAYOUT_SIZE_BITS_MAX
+      bcachefs: Fix sb_field_downgrade validation
+      bcachefs: Fix race in bch2_write_super()
+      bcachefs: Add missing sched_annotate_sleep() in bch2_journal_flush_seq_async()
+
+Reed Riley (1):
+      bcachefs: fix overflow in fiemap
+
+ fs/bcachefs/alloc_background.c |  4 ++--
+ fs/bcachefs/alloc_background.h |  8 +++++--
+ fs/bcachefs/backpointers.c     |  2 +-
+ fs/bcachefs/backpointers.h     | 14 ++++++++----
+ fs/bcachefs/bcachefs_format.h  |  8 +++++++
+ fs/bcachefs/bkey_methods.c     |  4 ++--
+ fs/bcachefs/btree_key_cache.c  | 16 +++++++------
+ fs/bcachefs/checksum.c         |  1 +
+ fs/bcachefs/errcode.h          |  1 +
+ fs/bcachefs/fs.c               |  2 +-
+ fs/bcachefs/io_write.c         | 30 ++++++++++++++++---------
+ fs/bcachefs/journal.c          |  8 +++++++
+ fs/bcachefs/move.c             | 22 +++++++++++-------
+ fs/bcachefs/quota.c            |  8 +++----
+ fs/bcachefs/recovery.c         |  3 ++-
+ fs/bcachefs/sb-clean.c         | 14 ++++++++++++
+ fs/bcachefs/sb-downgrade.c     | 13 +++++++++--
+ fs/bcachefs/sb-members.c       |  6 ++---
+ fs/bcachefs/sb-members.h       |  4 ++--
+ fs/bcachefs/super-io.c         | 51 ++++++++++++++++++++++++++++--------------
+ fs/bcachefs/super.c            | 15 ++++++++-----
+ 21 files changed, 161 insertions(+), 73 deletions(-)
