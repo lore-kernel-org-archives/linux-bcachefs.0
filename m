@@ -1,76 +1,133 @@
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8695E1514F5
-	for <linux-bcachefs@vger.kernel.org>; Tue,  7 May 2024 11:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0876B15ECFD
+	for <linux-bcachefs@vger.kernel.org>; Tue,  7 May 2024 13:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715081407; cv=none; b=TJRxkQxwR0JJWQBjzA/otsCO66zvb726LGneCNRqelpDxoqQAQE+lj1fTB2pSgQzjwlZCvvwRPqvWKSQ7/Qrri0cT1IYFP3VLmQFZHQpUSuswkct3j5OPnGIFKeGQR8QMIv7Oy9q0CQZ93mrlolqpOT2yjb1toCvN/i7nVvqeJM=
+	t=1715088728; cv=none; b=SvPl9shNAxHYTVE1vNbHBJ9nrFlAICqTU4IZRKbCsbx8TgksOCm/xSjNcfsf6Tn1G6dbBnhVdsDn7HZG6W4TPW1LaSlb/3zV6Ga3NSJBnHb6PI5AVL1QaJrNq5pOVNbfbJdjD0RZ7Oxi/NnbATlYI7q7GDVPaAHklu5gXDMF0FY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715081407; c=relaxed/simple;
-	bh=ouPq1ImQr6BwL9gGhpva3sUJq8ov/1/P2vWzjlb0qCM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=AlDp9iAUIOEjN9FoFzuPbVu7VehzvOElQdBYUFEhTmfcv0nbS6eoRjDT6xu0ydO91eGiC4ky1iopyR194q2JL9ueiC2LGSzOJbfkhSnxJD4WE8CbNd2zP1hT2yL+vUd+qlIVHSlMgF+2fJ7IB6NW4EC11AD4aD4mU4sDcaJQmo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36c7533ed44so24581245ab.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 07 May 2024 04:30:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715081405; x=1715686205;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4GUfzj+cOjI3lTKUNiWMDeoLyX1063O2jyJpXjnx1eU=;
-        b=iJqZnUxaiZtK2blmggIk8B6uFHpcj3VLuBOnm/sABXTk0cHtuzIHmZVOI0ERK+pSah
-         xsWluHgN4y7dMeRegUmjQdsO+t1TvCClcWVkkd+lXjjPZpnHH/BqTrgjz493RwuP3v5S
-         9L20TjD4qwfvv1cNsJKZCjOMyqVVcDmyjQ1u5ph2UOUOCHjwqdkK8wpL0sM3hQzXZ+tS
-         N3J40HpzVuF3X8XDMD230abEbVP/K+XDmpqcOmnZPWPoUWf3nrU1j8ww6PLDtmfAaY+0
-         Hbxxf5sMzoGweHG4MCnVYI4zM0bEmnIFBjVQ+pnNnuCOBumbz/4QXETwl9EX6udHiA14
-         dXag==
-X-Forwarded-Encrypted: i=1; AJvYcCUxgvXvenG6QMYBNHMqFGcghR6Qj9Th8Z9R5qHvdokI8Du57Vap1VGlpuSjgFm4Kcn7dM56iB37fjm1Ow0XasVsIXcG+eR1Oh1d+QHiykw=
-X-Gm-Message-State: AOJu0YzLuunXvcvdptBBQXib87vXYCHxfzUp0iQs85gymHQq6BpESLQv
-	ZyuP4DwVmomYZSgLPJTddsj1bMWpEI9doLGgdXUhgp+m0vNfkCfGWcJ0hJLUxaxcNobWCGTPYwl
-	vllH2cdcB/hAjyQJWC11/jx0ZIegUZ6moXgh5h/dkYfHW8hA9vy8j4Oc=
-X-Google-Smtp-Source: AGHT+IEEu+uyAPb5jfl94XXMEfkVdZKh2KktG1jPdpJKDY6RdnOaOMt++iU0b26vxR+0bwAPkh+Xj0GoymWHrPs9skgHW8bkTELT
+	s=arc-20240116; t=1715088728; c=relaxed/simple;
+	bh=sBzFX/sadxZL2cJQXTBg/KJIkDZ/894I5/zI13q8LZo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jTESOaQumOyBI3WLu8wTJa/Q3TsSSC6IPdFLaDlHWpSDznouz+KeA8LGEkb4wjD8Fiua01FRzEkWnokVxO2eF4nSNpHq5UVkxpZ6KzDXvRUFl7yk2D3tmsBT34NlI7tzjYH4FMxQSiEVo+7s4Hr415UlaqroQZ4B2rF+m0iqSR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AnVzAPpg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AnVzAPpg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1715088724;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RIYdM7z5+Xm1S+hITzfLVzD6aDULkUJFC6+y9ilbGSk=;
+	b=AnVzAPpgQpUa8xVQqIRrrzUYkoHu0+jF7bxNBRTQu0Mf2VaemHjp2Mqt61BOP5rcpagN6T
+	FMr7LW1y/UnF1qimGtQjCvdmT8KDUeG5IJlKExsfSESnwNDjoBbse+B5eNhp6qyJWEYxiI
+	3Q0nWnmE2L8iIoRbe0bggJwBLEnkPpI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-614-bPPBVKt9NLmUkqabt3Wgiw-1; Tue, 07 May 2024 09:32:03 -0400
+X-MC-Unique: bPPBVKt9NLmUkqabt3Wgiw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 474F784B16B;
+	Tue,  7 May 2024 13:32:02 +0000 (UTC)
+Received: from bfoster (unknown [10.22.32.146])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id C8C793C35;
+	Tue,  7 May 2024 13:32:01 +0000 (UTC)
+Date: Tue, 7 May 2024 09:34:23 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-bcachefs@vger.kernel.org,
+	Kent Overstreet <kent.overstreet@linux.dev>, Su Yue <l@damenly.org>,
+	Coly Li <colyli@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] bcachefs: Move BCACHEFS_STATFS_MAGIC to UAPI magic.h
+Message-ID: <Zjot36J9negcVlfh@bfoster>
+References: <20240507111124.118520-1-pvorel@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:216e:b0:36c:4cc9:5923 with SMTP id
- s14-20020a056e02216e00b0036c4cc95923mr740783ilv.2.1715081405751; Tue, 07 May
- 2024 04:30:05 -0700 (PDT)
-Date: Tue, 07 May 2024 04:30:05 -0700
-In-Reply-To: <00000000000067ff3c0617c603c2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f370b30617db817b@google.com>
-Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in read_one_super
-From: syzbot <syzbot+a8b0fb419355c91dda7f@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240507111124.118520-1-pvorel@suse.cz>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-syzbot has bisected this issue to:
+On Tue, May 07, 2024 at 01:11:24PM +0200, Petr Vorel wrote:
+> There are other bcachefs magic definitions: BCACHE_MAGIC, BCHFS_MAGIC,
+> which use UUID_INIT() and are used only in libbcachefs. Therefore move
+> to <linux/magic.h> only BCACHEFS_STATFS_MAGIC, which can be used outside
+> of libbcachefs for f_type field in struct statfs in statfs() or fstatfs().
+> 
+> Keeping non-standard name BCACHEFS_STATFS_MAGIC instead of renaming it
+> to more generic BCACHEFS_MAGIC to not confuse with the other bcachefs
+> definitions.
+> 
 
-commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Sep 23 22:41:51 2023 +0000
+Perhaps it would be better to use the standard naming for the global
+header and let the bcachefs subsystem catch up with better names for
+internal defs? Something like BCACHEFS_SUPER_MAGIC also seems like it
+would be generally consistent, FWIW.
 
-    bcachefs: Ignore unknown mount options
+> Suggested-by: Su Yue <l@damenly.org>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  fs/bcachefs/bcachefs_format.h | 2 --
+>  fs/bcachefs/fs.c              | 1 +
+>  include/uapi/linux/magic.h    | 2 ++
+>  3 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+> index f7fbfccd2b1e..52e03f13b780 100644
+> --- a/fs/bcachefs/bcachefs_format.h
+> +++ b/fs/bcachefs/bcachefs_format.h
+> @@ -1275,8 +1275,6 @@ enum bch_compression_opts {
+>  	UUID_INIT(0xc68573f6, 0x66ce, 0x90a9,				\
+>  		  0xd9, 0x6a, 0x60, 0xcf, 0x80, 0x3d, 0xf7, 0xef)
+>  
+> -#define BCACHEFS_STATFS_MAGIC		0xca451a4e
+> -
+>  #define JSET_MAGIC		__cpu_to_le64(0x245235c1a3625032ULL)
+>  #define BSET_MAGIC		__cpu_to_le64(0x90135c78b99e07f5ULL)
+>  
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index fce690007edf..1c856ae2b0e2 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -27,6 +27,7 @@
+>  #include "super.h"
+>  #include "xattr.h"
+>  
+> +#include <uapi/linux/magic.h>
+>  #include <linux/aio.h>
+>  #include <linux/backing-dev.h>
+>  #include <linux/exportfs.h>
+> diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
+> index 1b40a968ba91..45c8f4916167 100644
+> --- a/include/uapi/linux/magic.h
+> +++ b/include/uapi/linux/magic.h
+> @@ -103,4 +103,6 @@
+>  #define SECRETMEM_MAGIC		0x5345434d	/* "SECM" */
+>  #define PID_FS_MAGIC		0x50494446	/* "PIDF" */
+>  
+> +#define BCACHEFS_STATFS_MAGIC		0xca451a4e
+> +
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149d2fff180000
-start commit:   dd5a440a31fa Linux 6.9-rc7
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=169d2fff180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=129d2fff180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9d7ea7de0cb32587
-dashboard link: https://syzkaller.appspot.com/bug?extid=a8b0fb419355c91dda7f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=135bf574980000
+Is there intended to be at least some logical organization to this file?
+It kind of looks like it, but maybe not as a rule. Personally, I'd
+probably stick this somewhere in the first chunk of definitions where
+the other major local/block filesystems are, but just a nit.
 
-Reported-by: syzbot+a8b0fb419355c91dda7f@syzkaller.appspotmail.com
-Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
+Brian
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>  #endif /* __LINUX_MAGIC_H__ */
+> -- 
+> 2.43.0
+> 
+
