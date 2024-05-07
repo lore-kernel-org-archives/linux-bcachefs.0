@@ -1,165 +1,76 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D569914D422;
-	Tue,  7 May 2024 11:11:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8695E1514F5
+	for <linux-bcachefs@vger.kernel.org>; Tue,  7 May 2024 11:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715080299; cv=none; b=jM24PzCwdjOCNHndEFIns4c36gtyFqHwmO2Zh0tPsYj6MEIgNrzMUx3oqtDuhuKeBE0YWAl1tjAPZ9/hwWqEohWafFTwIUseDBV+fxQ5WGtv3iKHaXNfGpjMTyGPIDgygU5Ewnwmo5xZl95jYk6ctW8wAo9civUy1YO1Xup6v+c=
+	t=1715081407; cv=none; b=TJRxkQxwR0JJWQBjzA/otsCO66zvb726LGneCNRqelpDxoqQAQE+lj1fTB2pSgQzjwlZCvvwRPqvWKSQ7/Qrri0cT1IYFP3VLmQFZHQpUSuswkct3j5OPnGIFKeGQR8QMIv7Oy9q0CQZ93mrlolqpOT2yjb1toCvN/i7nVvqeJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715080299; c=relaxed/simple;
-	bh=EPXcVGr6PwUD5WRAgidbvP7YMy/o/6CVibICU7SLOn0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lXguKlcyKg+wBo9tq/tkK882SIH7VK4BYNhbIzYHJa0qeTNfnwXVdiwaiqmSEJVadlnDvGV6pxc92GBK1Z3Ido1bGPiniwl/yKxG/IP/a1tr6CzfOzlM7gGD4GSMS9jysgEcFeOlt2e9F7QsTrnseOHYeEX060Z4vlO7UHLTA0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nAemReb/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wjevTgEp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lNzi4kVX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LBHNSDSO; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nAemReb/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wjevTgEp";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lNzi4kVX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LBHNSDSO"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8D61A20872;
-	Tue,  7 May 2024 11:11:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715080289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=cj2y7/ZChHRcGGAkj7MJnNzcMCYrE/qSziKzgQGJwow=;
-	b=nAemReb/sccs0n4omRlAj9Cz38UdlYA0nxSrerEsLIKn03VteA+kKQvD35b3xYzBun3Z8w
-	3cw8mCLiMuVJJ51nAj/bgvnjRyQc1bTjNqOZ5tVlqfWBBoFLPWitiVBTCCfuY+OYxVql9Z
-	XfW5vgdFUc6vbo6om1gJT9TZvsYScdA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715080289;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=cj2y7/ZChHRcGGAkj7MJnNzcMCYrE/qSziKzgQGJwow=;
-	b=wjevTgEpUnUCtj7EiW48wxK0gY4WxMdVgmtU3YQB+di694IIqJiKjeQYUIpaHlYX2fAr/p
-	njUrZGT20qIuV6Cg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715080288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=cj2y7/ZChHRcGGAkj7MJnNzcMCYrE/qSziKzgQGJwow=;
-	b=lNzi4kVXPlUmDHChd7wQvSpk7qQ1MQLLZYERbB8MkdHbKxDnB750hIfPr9Do76HK96ZMfb
-	Svex3W2pFWqPvZ4iL7tQXom7U1hvBXiDXBw0+ebrDMrmdLDq2O8Gi0VGGOhHBIwIPf5L4H
-	tT8lg56mZ48YREMCmOq9P2CjkNwCrD0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715080288;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=cj2y7/ZChHRcGGAkj7MJnNzcMCYrE/qSziKzgQGJwow=;
-	b=LBHNSDSOqX01lHn+/3vWNN+eB0IbjJxqQpJEL2GCuDIjNxkIjI5lK6R4vMnf1SjZhuGk6C
-	q0MA6Ly7DXspbLDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 50601139CB;
-	Tue,  7 May 2024 11:11:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0JBnEWAMOmazdQAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Tue, 07 May 2024 11:11:28 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: linux-bcachefs@vger.kernel.org
-Cc: Petr Vorel <pvorel@suse.cz>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Su Yue <l@damenly.org>,
-	Brian Foster <bfoster@redhat.com>,
-	Coly Li <colyli@suse.de>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] bcachefs: Move BCACHEFS_STATFS_MAGIC to UAPI magic.h
-Date: Tue,  7 May 2024 13:11:24 +0200
-Message-ID: <20240507111124.118520-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1715081407; c=relaxed/simple;
+	bh=ouPq1ImQr6BwL9gGhpva3sUJq8ov/1/P2vWzjlb0qCM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=AlDp9iAUIOEjN9FoFzuPbVu7VehzvOElQdBYUFEhTmfcv0nbS6eoRjDT6xu0ydO91eGiC4ky1iopyR194q2JL9ueiC2LGSzOJbfkhSnxJD4WE8CbNd2zP1hT2yL+vUd+qlIVHSlMgF+2fJ7IB6NW4EC11AD4aD4mU4sDcaJQmo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36c7533ed44so24581245ab.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 07 May 2024 04:30:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715081405; x=1715686205;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4GUfzj+cOjI3lTKUNiWMDeoLyX1063O2jyJpXjnx1eU=;
+        b=iJqZnUxaiZtK2blmggIk8B6uFHpcj3VLuBOnm/sABXTk0cHtuzIHmZVOI0ERK+pSah
+         xsWluHgN4y7dMeRegUmjQdsO+t1TvCClcWVkkd+lXjjPZpnHH/BqTrgjz493RwuP3v5S
+         9L20TjD4qwfvv1cNsJKZCjOMyqVVcDmyjQ1u5ph2UOUOCHjwqdkK8wpL0sM3hQzXZ+tS
+         N3J40HpzVuF3X8XDMD230abEbVP/K+XDmpqcOmnZPWPoUWf3nrU1j8ww6PLDtmfAaY+0
+         Hbxxf5sMzoGweHG4MCnVYI4zM0bEmnIFBjVQ+pnNnuCOBumbz/4QXETwl9EX6udHiA14
+         dXag==
+X-Forwarded-Encrypted: i=1; AJvYcCUxgvXvenG6QMYBNHMqFGcghR6Qj9Th8Z9R5qHvdokI8Du57Vap1VGlpuSjgFm4Kcn7dM56iB37fjm1Ow0XasVsIXcG+eR1Oh1d+QHiykw=
+X-Gm-Message-State: AOJu0YzLuunXvcvdptBBQXib87vXYCHxfzUp0iQs85gymHQq6BpESLQv
+	ZyuP4DwVmomYZSgLPJTddsj1bMWpEI9doLGgdXUhgp+m0vNfkCfGWcJ0hJLUxaxcNobWCGTPYwl
+	vllH2cdcB/hAjyQJWC11/jx0ZIegUZ6moXgh5h/dkYfHW8hA9vy8j4Oc=
+X-Google-Smtp-Source: AGHT+IEEu+uyAPb5jfl94XXMEfkVdZKh2KktG1jPdpJKDY6RdnOaOMt++iU0b26vxR+0bwAPkh+Xj0GoymWHrPs9skgHW8bkTELT
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,damenly.org:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_TLS_ALL(0.00)[]
+X-Received: by 2002:a05:6e02:216e:b0:36c:4cc9:5923 with SMTP id
+ s14-20020a056e02216e00b0036c4cc95923mr740783ilv.2.1715081405751; Tue, 07 May
+ 2024 04:30:05 -0700 (PDT)
+Date: Tue, 07 May 2024 04:30:05 -0700
+In-Reply-To: <00000000000067ff3c0617c603c2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f370b30617db817b@google.com>
+Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in read_one_super
+From: syzbot <syzbot+a8b0fb419355c91dda7f@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-There are other bcachefs magic definitions: BCACHE_MAGIC, BCHFS_MAGIC,
-which use UUID_INIT() and are used only in libbcachefs. Therefore move
-to <linux/magic.h> only BCACHEFS_STATFS_MAGIC, which can be used outside
-of libbcachefs for f_type field in struct statfs in statfs() or fstatfs().
+syzbot has bisected this issue to:
 
-Keeping non-standard name BCACHEFS_STATFS_MAGIC instead of renaming it
-to more generic BCACHEFS_MAGIC to not confuse with the other bcachefs
-definitions.
+commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Sat Sep 23 22:41:51 2023 +0000
 
-Suggested-by: Su Yue <l@damenly.org>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- fs/bcachefs/bcachefs_format.h | 2 --
- fs/bcachefs/fs.c              | 1 +
- include/uapi/linux/magic.h    | 2 ++
- 3 files changed, 3 insertions(+), 2 deletions(-)
+    bcachefs: Ignore unknown mount options
 
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index f7fbfccd2b1e..52e03f13b780 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -1275,8 +1275,6 @@ enum bch_compression_opts {
- 	UUID_INIT(0xc68573f6, 0x66ce, 0x90a9,				\
- 		  0xd9, 0x6a, 0x60, 0xcf, 0x80, 0x3d, 0xf7, 0xef)
- 
--#define BCACHEFS_STATFS_MAGIC		0xca451a4e
--
- #define JSET_MAGIC		__cpu_to_le64(0x245235c1a3625032ULL)
- #define BSET_MAGIC		__cpu_to_le64(0x90135c78b99e07f5ULL)
- 
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index fce690007edf..1c856ae2b0e2 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -27,6 +27,7 @@
- #include "super.h"
- #include "xattr.h"
- 
-+#include <uapi/linux/magic.h>
- #include <linux/aio.h>
- #include <linux/backing-dev.h>
- #include <linux/exportfs.h>
-diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
-index 1b40a968ba91..45c8f4916167 100644
---- a/include/uapi/linux/magic.h
-+++ b/include/uapi/linux/magic.h
-@@ -103,4 +103,6 @@
- #define SECRETMEM_MAGIC		0x5345434d	/* "SECM" */
- #define PID_FS_MAGIC		0x50494446	/* "PIDF" */
- 
-+#define BCACHEFS_STATFS_MAGIC		0xca451a4e
-+
- #endif /* __LINUX_MAGIC_H__ */
--- 
-2.43.0
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149d2fff180000
+start commit:   dd5a440a31fa Linux 6.9-rc7
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=169d2fff180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=129d2fff180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9d7ea7de0cb32587
+dashboard link: https://syzkaller.appspot.com/bug?extid=a8b0fb419355c91dda7f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=135bf574980000
 
+Reported-by: syzbot+a8b0fb419355c91dda7f@syzkaller.appspotmail.com
+Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
