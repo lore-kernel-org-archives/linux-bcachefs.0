@@ -1,222 +1,193 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6338149C71;
-	Thu,  9 May 2024 06:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8D913C801
+	for <linux-bcachefs@vger.kernel.org>; Thu,  9 May 2024 07:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715235454; cv=none; b=dwze82Y3LIr0aRCjMk4IFmwI4xLOZmgM2wBW6fwYXwsUq0+FSorDG4SMLC4Xt/R0xzhr79V3HZa+bhsqykyYzSJVDO6LplvqUfdHT7d/Vk2+spx0GHks5BCUqcRKu08gSEUCXLeFaXsaDjbBGB+39BRtHVG7XoisaeAQlHZzpA4=
+	t=1715238113; cv=none; b=KTNQTKFZ86w+1/h3FW2PVpampf8vhQYug1bEwsZoBeOU6K4dfQc2nRh1xD5Fcc420/f2vwzJ9G78xrZ6dHTOXiFD4sPUDInFPIDYMpQ+J0gr5qTVFoLpkmc45Xe1Lw+zs/AgEg9oV87uXi1JIYY35joJjClHLjguy/v/zSQMxkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715235454; c=relaxed/simple;
-	bh=bOfBY0JRENHjmcmy2f9640NSh1AJPQ45xTEljPOZTVc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lvO/LH9QfmBLOhTclJfDKOK5CgmXvoFeCtBSERq2YDLzqNKGf7+BhOWnO+Xhhr388TkJZTJ2zo4w1qABncOFQLZdhHyePJEwlXlwLPg+FswMbwFid8BFK934rP543FT/UC5Ar+YKQFltGM/p0jQEITbGNggBcjHHzrwB/g217Og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MBwGDLNX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=x2+cVxy1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MFj2YLUf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lu2L4sDi; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1715238113; c=relaxed/simple;
+	bh=R/YwftwUnrsnD2ekPwpf6DG41P3dbIZt6arqycGLRs0=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=rR7A5R6iDgh9MwUpx+SGZmlAXmmGXsI/nGpDKt22JetVOn16eskswFlCxDZn/p071R+cBagqr9jEu1HgZn587oFGFgnwJ3jMFNtnM0hYkxea03GE79C7nGqKc82Jj5mmvnGiCgR4hbY8q9x55EahhXc1JWDGBaiG+q3zQeNmYhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gdb0OgJO; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MBwGDLNX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="x2+cVxy1";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MFj2YLUf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lu2L4sDi"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 59B9F37E5E;
-	Thu,  9 May 2024 06:17:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715235441;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pDZDLMSsx3H/rJjZy/vs+WtnK86c8QRZBsSMgF8f4SU=;
-	b=MBwGDLNX/eXktk3v4fpiLecLGA9SppHwlDPZ1lZI85e7C+7TTyPfeYGAdVFRCiq6AYcDDt
-	qms4cfR2vqP+8JrzH56MjLD61uEwN20Zbg9XB+3ixSxbi4CEI3Nd0uE7bhz5EEzN7HXGF6
-	6t7Ig0rsJ20Obr+ALgW7+jIRJI8kswA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715235441;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pDZDLMSsx3H/rJjZy/vs+WtnK86c8QRZBsSMgF8f4SU=;
-	b=x2+cVxy1fYHK6+9Dj4gSLrYEpIy1pM7xjSWbjXHt/99S0DZLlwAdSd+G45+3wjGfkWAH51
-	ALfx4gLVWCfnczDA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MFj2YLUf;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lu2L4sDi
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715235440;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pDZDLMSsx3H/rJjZy/vs+WtnK86c8QRZBsSMgF8f4SU=;
-	b=MFj2YLUfIbyelUVzJKz3bM4f+Zi3tngcESqCFKBpSRQizpPJJkGprkb5KxlRzdlIy1Ovsl
-	r4u4QtvhOwiEPPJTL7IipY+/6VtGwIGcpZT2jwPLp/ICfGstxBSMW4GcXdEOpLpde5GxJL
-	UfbyegAkPwT5+pPhvP4ySqmYH6V3lco=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715235440;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pDZDLMSsx3H/rJjZy/vs+WtnK86c8QRZBsSMgF8f4SU=;
-	b=lu2L4sDiyFkQnLarg5PBRkIHMbAHXeaqVONsiKMZ26vCDGFDRIlMtXAbKJIdiSE7bjCe1f
-	z31xsjUl+AH9fYCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2748D13941;
-	Thu,  9 May 2024 06:17:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cW+jCHBqPGZkeQAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Thu, 09 May 2024 06:17:20 +0000
-Date: Thu, 9 May 2024 08:17:18 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Glass Su <glass.su@suse.com>, linux-bcachefs@vger.kernel.org,
-	Su Yue <l@damenly.org>, Brian Foster <bfoster@redhat.com>,
-	Coly Li <colyli@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] bcachefs: Move BCACHEFS_STATFS_MAGIC value to
- UAPI magic.h
-Message-ID: <20240509061718.GA231218@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20240507153757.150891-1-pvorel@suse.cz>
- <6D9FCB08-480D-4CA0-82E2-284B1F2BF8FD@suse.com>
- <20240508211759.GA209026@pevik>
- <fg3cvwvadldeglwrqdeeglswxwupyy2cjki7si7sz3jwsrpzpf@5pkugq7jyzb2>
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gdb0OgJO"
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2e43c481b53so7767311fa.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 09 May 2024 00:01:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1715238109; x=1715842909; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e41S4BwwMsWXaNjFvLtDtQWWdZXnGXjA1B5HEHxantk=;
+        b=gdb0OgJOuJFGRDaLsCqOVeLfakNxtHcd0r3Ghc8IgdMPciMJIdI0sv3N7jib6kI0cv
+         G6p30Q0SQ92Q3UK1BC1daPxgZRRYWWwCBRgXQjbxxjhWSTBE4e14c+jZoOmfSnKWh4yv
+         /156jZd9fey3+a54oe5fA0ndsaiVg/8eDCa3ldDC13SIf8jWfbGNfwzmvlxg6ySykn5m
+         sAqvRtcSPDxTwoUEXzW+TygonQH+gMJoG2JpDnTy0aYaf5G2VfVjeTf/p+K4xrShX9Mb
+         O3YD2FGiQcUN2KgMyXT4hngiiFdBDVc/8IIrozGdVeQ951ue3N6BGpBU13++MWYKm1x4
+         6Ivg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715238109; x=1715842909;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e41S4BwwMsWXaNjFvLtDtQWWdZXnGXjA1B5HEHxantk=;
+        b=G8lSBUokZfHX9Zh+GyEbsg6h+STam/i3YOPx2hsuQnXSvXeSgNSqTggO9Wacn4mvZh
+         Rtc17KQ6O4hdGSYAcDQsEGF8goXUSDTjPghYHEQalup+dLJ+ISBtHo5us040qMbBXSqo
+         VKZePufl43jRvTsdKT0cIxha7cjlms/+dk+aN7xDwK6kLmn3tG201dVK+TDUIqsBSWt+
+         aTuTOcCrlShRHUAbu5T5PQv3Kn+LADb4HqF9hVzVcwOANjHPoPHYKqJWA15PyuL1WQdh
+         axmIOvG43kPt2w+60RRx8zKoergkAPJ5UB948V2N8iqUhYY+ZuJ4pTDggMzo3l8tW2p9
+         cVUw==
+X-Forwarded-Encrypted: i=1; AJvYcCX7/Da4/MTnFXuzCbkP95yYg+N43aGAQ4rz7d5h51zSj9fNB1KoMNIChEIRyeA2zMsg7gBoicJvfz25W1U9XXJTn6RqxE1a7COSRVpeuF4=
+X-Gm-Message-State: AOJu0YxS/PewMkgx7tQ+VfaTQrdmaZZ8XbB9JFNXMcz7obtCDykU3E/R
+	BxAeisX/Wf6wxE6y0UK1GFXhpFj7uORLQFyOdPEto+QRUrDzTZLXFtkCGMcOPi0=
+X-Google-Smtp-Source: AGHT+IF2AYdO2e2kYJO5GoNt5HNgyNTtGqKIN6Haiic+0Yqn/wneiyEuaP3ZswRhhyD8HSCkHjA/qg==
+X-Received: by 2002:a2e:b60a:0:b0:2de:7046:b8f8 with SMTP id 38308e7fff4ca-2e446d86159mr31015791fa.5.1715238109246;
+        Thu, 09 May 2024 00:01:49 -0700 (PDT)
+Received: from smtpclient.apple ([23.247.139.60])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2b671783519sm705720a91.57.2024.05.09.00.01.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 May 2024 00:01:48 -0700 (PDT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fg3cvwvadldeglwrqdeeglswxwupyy2cjki7si7sz3jwsrpzpf@5pkugq7jyzb2>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.71 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:dkim,suse.cz:replyto,suse.cz:email,damenly.org:email,evilpiepirate.org:url];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 59B9F37E5E
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -3.71
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH v3 1/1] bcachefs: Move BCACHEFS_STATFS_MAGIC value to UAPI
+ magic.h
+From: Glass Su <glass.su@suse.com>
+In-Reply-To: <20240509061718.GA231218@pevik>
+Date: Thu, 9 May 2024 15:01:33 +0800
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+ linux-bcachefs@vger.kernel.org,
+ Su Yue <l@damenly.org>,
+ Brian Foster <bfoster@redhat.com>,
+ Coly Li <colyli@suse.de>,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <37665ED1-9929-444F-B9A0-3CC7EADBC064@suse.com>
+References: <20240507153757.150891-1-pvorel@suse.cz>
+ <6D9FCB08-480D-4CA0-82E2-284B1F2BF8FD@suse.com>
+ <20240508211759.GA209026@pevik>
+ <fg3cvwvadldeglwrqdeeglswxwupyy2cjki7si7sz3jwsrpzpf@5pkugq7jyzb2>
+ <20240509061718.GA231218@pevik>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-Hi Kent,
 
-> On Wed, May 08, 2024 at 11:17:59PM +0200, Petr Vorel wrote:
-> > Hi Su, Kent,
 
-> > > > On May 7, 2024, at 23:37, Petr Vorel <pvorel@suse.cz> wrote:
+> On May 9, 2024, at 14:17, Petr Vorel <pvorel@suse.cz> wrote:
+>=20
+> Hi Kent,
+>=20
+>> On Wed, May 08, 2024 at 11:17:59PM +0200, Petr Vorel wrote:
+>>> Hi Su, Kent,
+>=20
+>>>>> On May 7, 2024, at 23:37, Petr Vorel <pvorel@suse.cz> wrote:
+>=20
+>>>>> Move BCACHEFS_STATFS_MAGIC value to UAPI <linux/magic.h> under
+>>>>> BCACHEFS_SUPER_MAGIC definition (use common approach for name) and =
+reuse the
+>>>>> definition in bcachefs_format.h BCACHEFS_STATFS_MAGIC.
+>=20
+>>>>> There are other bcachefs magic definitions: BCACHE_MAGIC, =
+BCHFS_MAGIC,
+>>>>> which use UUID_INIT() and are used only in libbcachefs. Therefore =
+move
+>>>>> only BCACHEFS_STATFS_MAGIC value, which can be used outside of
+>>>>> libbcachefs for f_type field in struct statfs in statfs() or =
+fstatfs().
+>=20
+>>>>> Suggested-by: Su Yue <l@damenly.org>
+>=20
+>>>> Would you kindly amend it to Su Yue <glass.su@suse.com> or
+>>>> Kent can help if the patch is going to be applied.
+>=20
+>>> Unfortunately Kent was faster, it's already merged without your SUSE =
+address
+>>> (and your RBT you added in the end):
+>=20
+>>> =
+https://evilpiepirate.org/git/bcachefs.git/commit/?h=3Dfor-next&id=3Dce8f9=
+355f23be9756e499682d0d642a741db6c3a
+>=20
+>>> @Kent: Maybe it can be even now amended (with Su Yue's RBT).
+>=20
+>> ...sure, make me invalidate my test results :)
+>=20
+> Thank you! FYI there was also his RBT (Reviewed-by: Su Yue =
+<glass.su@suse.com>)
+>=20
+Thanks both for you Petr and Kent :- )  Sorry for inconvenience due to =
+my email quirk...
 
-> > > > Move BCACHEFS_STATFS_MAGIC value to UAPI <linux/magic.h> under
-> > > > BCACHEFS_SUPER_MAGIC definition (use common approach for name) and reuse the
-> > > > definition in bcachefs_format.h BCACHEFS_STATFS_MAGIC.
+=E2=80=94=20
+Su
+> =
+https://lore.kernel.org/linux-bcachefs/6D9FCB08-480D-4CA0-82E2-284B1F2BF8F=
+D@suse.com/
+>=20
+> Kind regards,
+> Petr
+>=20
+>>>>> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+>>>>> ---
+>>>>> Changes v2->v3:
+>>>>> * Align tab with other entries.
+>>> ...
+>>>>> #include <linux/uuid.h>
+>>>>> +#include <uapi/linux/magic.h>
+>>>>> #include "vstructs.h"
+>=20
+>>>>> #ifdef __KERNEL__
+>>>>> @@ -1275,7 +1276,7 @@ enum bch_compression_opts {
+>>>>> UUID_INIT(0xc68573f6, 0x66ce, 0x90a9, \
+>>>>> 0xd9, 0x6a, 0x60, 0xcf, 0x80, 0x3d, 0xf7, 0xef)
+>=20
+>>>>> -#define BCACHEFS_STATFS_MAGIC 0xca451a4e
+>>>>> +#define BCACHEFS_STATFS_MAGIC BCACHEFS_SUPER_MAGIC
+>=20
+>>>>> #define JSET_MAGIC __cpu_to_le64(0x245235c1a3625032ULL)
+>>>>> #define BSET_MAGIC __cpu_to_le64(0x90135c78b99e07f5ULL)
+>>>>> diff --git a/include/uapi/linux/magic.h =
+b/include/uapi/linux/magic.h
+>>>>> index 1b40a968ba91..bb575f3ab45e 100644
+>>>>> --- a/include/uapi/linux/magic.h
+>>>>> +++ b/include/uapi/linux/magic.h
+>>>>> @@ -37,6 +37,7 @@
+>>>>> #define HOSTFS_SUPER_MAGIC 0x00c0ffee
+>>>>> #define OVERLAYFS_SUPER_MAGIC 0x794c7630
+>>>>> #define FUSE_SUPER_MAGIC 0x65735546
+>>>>> +#define BCACHEFS_SUPER_MAGIC 0xca451a4e
+>=20
+>>>> IIUC, due to some historical reasons bcachefs used to switched
+>>>> ondisk sb magic from BCACHE_MAGIC to BCHFS_MAGIC.
+>>>> Other major fses uses  *_SUPER_MAGIC both for ondisk=20
+>>>> sb magic, kstatfs::f_type and super_block::s_magic.
+>>>> However, for bcacehfs there are three magic numbers.
+>=20
+>>> Thanks for info. But for struct statfs in statfs() or fstatfs() only =
+0xca451a4e
+>>> is needed, right? I would not expose the other(s) unless it's really =
+needed.
+>>> Also we'd need to backport UUID_INIT() into UAPI :(.
+>=20
+>>>> Anyway, it looks good to me so far:
+>>>> Reviewed-by: Su Yue <glass.su@suse.com>=20
+>=20
+>>> And also without your RBT.
+>=20
+>>> Kind regards,
+>>> Petr
+>=20
+>>>> =E2=80=94=20
+>>>> Su
 
-> > > > There are other bcachefs magic definitions: BCACHE_MAGIC, BCHFS_MAGIC,
-> > > > which use UUID_INIT() and are used only in libbcachefs. Therefore move
-> > > > only BCACHEFS_STATFS_MAGIC value, which can be used outside of
-> > > > libbcachefs for f_type field in struct statfs in statfs() or fstatfs().
 
-> > > > Suggested-by: Su Yue <l@damenly.org>
-
-> > > Would you kindly amend it to Su Yue <glass.su@suse.com> or
-> > > Kent can help if the patch is going to be applied.
-
-> > Unfortunately Kent was faster, it's already merged without your SUSE address
-> > (and your RBT you added in the end):
-
-> > https://evilpiepirate.org/git/bcachefs.git/commit/?h=for-next&id=ce8f9355f23be9756e499682d0d642a741db6c3a
-
-> > @Kent: Maybe it can be even now amended (with Su Yue's RBT).
-
-> ...sure, make me invalidate my test results :)
-
-Thank you! FYI there was also his RBT (Reviewed-by: Su Yue <glass.su@suse.com>)
-
-https://lore.kernel.org/linux-bcachefs/6D9FCB08-480D-4CA0-82E2-284B1F2BF8FD@suse.com/
-
-Kind regards,
-Petr
-
-> > > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > > > ---
-> > > > Changes v2->v3:
-> > > > * Align tab with other entries.
-> > ...
-> > > > #include <linux/uuid.h>
-> > > > +#include <uapi/linux/magic.h>
-> > > > #include "vstructs.h"
-
-> > > > #ifdef __KERNEL__
-> > > > @@ -1275,7 +1276,7 @@ enum bch_compression_opts {
-> > > > UUID_INIT(0xc68573f6, 0x66ce, 0x90a9, \
-> > > >  0xd9, 0x6a, 0x60, 0xcf, 0x80, 0x3d, 0xf7, 0xef)
-
-> > > > -#define BCACHEFS_STATFS_MAGIC 0xca451a4e
-> > > > +#define BCACHEFS_STATFS_MAGIC BCACHEFS_SUPER_MAGIC
-
-> > > > #define JSET_MAGIC __cpu_to_le64(0x245235c1a3625032ULL)
-> > > > #define BSET_MAGIC __cpu_to_le64(0x90135c78b99e07f5ULL)
-> > > > diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
-> > > > index 1b40a968ba91..bb575f3ab45e 100644
-> > > > --- a/include/uapi/linux/magic.h
-> > > > +++ b/include/uapi/linux/magic.h
-> > > > @@ -37,6 +37,7 @@
-> > > > #define HOSTFS_SUPER_MAGIC 0x00c0ffee
-> > > > #define OVERLAYFS_SUPER_MAGIC 0x794c7630
-> > > > #define FUSE_SUPER_MAGIC 0x65735546
-> > > > +#define BCACHEFS_SUPER_MAGIC 0xca451a4e
-
-> > > IIUC, due to some historical reasons bcachefs used to switched
-> > > ondisk sb magic from BCACHE_MAGIC to BCHFS_MAGIC.
-> > > Other major fses uses  *_SUPER_MAGIC both for ondisk 
-> > > sb magic, kstatfs::f_type and super_block::s_magic.
-> > > However, for bcacehfs there are three magic numbers.
-
-> > Thanks for info. But for struct statfs in statfs() or fstatfs() only 0xca451a4e
-> > is needed, right? I would not expose the other(s) unless it's really needed.
-> > Also we'd need to backport UUID_INIT() into UAPI :(.
-
-> > > Anyway, it looks good to me so far:
-> > > Reviewed-by: Su Yue <glass.su@suse.com> 
-
-> > And also without your RBT.
-
-> > Kind regards,
-> > Petr
-
-> > > — 
-> > > Su
