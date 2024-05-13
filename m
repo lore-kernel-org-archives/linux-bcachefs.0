@@ -1,115 +1,105 @@
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11E814C583
-	for <linux-bcachefs@vger.kernel.org>; Mon, 13 May 2024 11:21:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3E414EC6A;
+	Mon, 13 May 2024 12:18:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715599289; cv=none; b=CUseyXBtXMniaSJiibhuKZQ+2eCZn38N2RscdvyKyOpeG8kMysmn0VTjNKKXhlxrl+Q3TuWRDkCoalVWe6Kekv4U1c8iLqQRHSC46QMfDXAIHynFz3/u7vP9kDNShNiIYlb4Paj85v5rGVjKHZ+PGQPmQ1sVuBwJTWm22RMs1mg=
+	t=1715602729; cv=none; b=kcxNipLrAmGZvGB7rKr9n4/N4WuYBae9hP86uMvCtx8VXTNwQ6Dn/PdOWHiwMFDPymRrf9hv3U4yajreLaHpeIULJKZonzfeJDUWLKSOpazXDMi908B7bgag9S4V4Wkxbwx6QuWBUHaf7j0UvwtmAv0X9/InPuPJT4e5GjCCtoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715599289; c=relaxed/simple;
-	bh=2i1G4Ryfk4/25gD4w2Kl5pRFKJemnMRohe9Xr7JIAW0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ng3WuUEbAEGZoIQs7EO/pWg0Bv7jPqKmCmFzXtNf99ldenkOsgwuqIqS9wrwyYAr3sL7gfEP+5uzY49GAZKdINPF3rqbf/A254+0up+yn43QKAPOimCu0LJGRsOHcyMvTfsM0umHNjZtGUUM8DxL2O3f2d+4T9NIwUFHWBx6wNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-7e17a8bed9eso427917339f.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 13 May 2024 04:21:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715599287; x=1716204087;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZFWNnaWE3XhlFsEY4Xi1pIV03wkj6KtbYqnhCD2A6iQ=;
-        b=SEgk/sTigXZTRWUkxCK2239SYR6z2oQOKGyB3WrFr1D9WT679BXI5mRjKijaFrRV23
-         Hx39Pn0eO/ORTFOmKb9F+cC0crTR4hNnq83hMS4zPcQ+IDNI1AWnLv//+D5nN7f7PsAF
-         1zGleXcFkLDKIJqoeDWzAbCrXij3NelxmekJXP2C5KTlK3rWqQGDRgBx9ncXPkZam7UL
-         wHJfcg6FbOR4v8hDiUXDp7o9HqYldODyGlpIVDfIiEtSL7+k/1DnHOA8yC7GAUWU4X7h
-         MMNWoDs5cHr9rvSs9QQ3p/kSpTK21yy+xS3a2Q4eg96qzlFuGUb9dVLiWfLYtT6AzODy
-         ZqaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVXG3Vs0xS2rgoew87Sl2M+rX6X1MDrpr7lHonLo4emnYFJ8sYV7XzpeFkdXLkGQ0h6BugN0/2btNiza0a/J+l6UMWTFvvTDbFBs+ATJW8=
-X-Gm-Message-State: AOJu0YxE9xZKG3IgQqd4ozDLBrWiBISqjWmT+11Xo6YZqWirE6bhzKyl
-	CDwghWjGIt9FF0e7wQmEkqEyGSoGeC5V2dgXInTMRR2Q/Jf+cZYiqew1a4F8m8Oq8/xV+T9bKJt
-	5UZECK0h8lUnsesscsmVaFLnTsbS1KjSPD+NqfP1xTg7q/yjqJL20C1w=
-X-Google-Smtp-Source: AGHT+IEMZz0TpEVuwJCFFtYBcVKkxPDRiJYvde9XiMABTeUdnHR09RfBSBwYKXPSIsMTzGNPNdABz8knfiXwCLQFzBcz4NPXYQrS
+	s=arc-20240116; t=1715602729; c=relaxed/simple;
+	bh=eTJyGFZuuUTf0Z9OwR7wZgGFFPBjo9/DMFTo6oR/Ncw=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=rM1D2PaOaEgQwsIrYeJ8HXfb/Z6/a8Ztt7YDpjQzzJTw5IEbJisTDonnOupp6voeH/NpZUGbz88rdoN1j58RamTAimXWEeVJam+l97/Ev556CK/dBC9ZU/C0Y+0M91dF3mw1rwK+Uz11dlY7TJplgPB80kyIDDgipBbSVfS0C5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=FBfnzJF7; arc=none smtp.client-ip=162.62.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="FBfnzJF7"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1715602416; bh=xv+9xk6+JmJ0SrgxJjY2cegIbCyOT4cBAO76O1vPTxI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=FBfnzJF7yo5kFg+i/lP4ezMVj/PlZp43R+qepMoMmCj1/eAew618hV8nXhsdEUQ7A
+	 iYpwSIMgqrha0dhSpRIq9PnALbbzc/rqQ7NpdsxXi/0BHLTNIIzBKCZ+YgnRK5rM5J
+	 54jAoJCprxpgV5LVVzCL8Qb0bCpYk2cl4V6+GAw8=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id 1D13ACD5; Mon, 13 May 2024 20:07:17 +0800
+X-QQ-mid: xmsmtpt1715602037tws7b70qy
+Message-ID: <tencent_8BBBDE33A39E011B1B4BFB1B332504BA4808@qq.com>
+X-QQ-XMAILINFO: NvH2zBBgt3uT997bsVhXHWC5QIzHeJNxRUlyXolPdllYLQueIU+6HC1jfqXrDH
+	 zkSAgVyu1yXWNcxU2vyh3aokE5Jx5B53H6KTNBG6jGJnoDIQ7UobGNi6l71ivnZ/GO87z88vd8kx
+	 ZLSua5Kup6S2TZ8J5ZZHvZm7nkjDjWLyssLeGd9ndq4z4aNV2Cj+mIDer2fNoddpO3eA5LD0ntfu
+	 x8K2yzh3TZqVlCpgyoPQNEKqtX9k02TG69wL7sYLWa6GSALywRxGYAQVax10+oXtmKLampK94/2t
+	 437/Icwuk1hqy/kN5L1RWtx24cupN9LxhMk7hnkDFmxHx7fJAiUgomWtUkcF/IDmKlK2pK93pT0s
+	 2XK3FVN7PRbAOEF3fFEoypvNNKtuv72tw8VYd60hA5IjxoYJhcHfHjf9wAmJzi2/WB0QGMhUPVYP
+	 Ba2gSKz60JWHdI9m+2DzJwIZfdoTudxYOYcUfpmQei9uOW45QwllIviXa+Efa6DlCT3QXZ+vJ16c
+	 1L4aKMjSJU5ydZtuwAtr9syhGO5BYU80Q1B7Y79pB3h5AcMiaMKWOJGxccIZK0aShvbvYFwa0dFc
+	 QQI5Puefy9YzYnjkBIVS6EijF2GKNDPsyYiNo+J7z8V+rqs8BrOYAeqbfMDZTh9la6jOdpgkdtLo
+	 LzWs1U7Rb8EzSmzkh0O5q2Cb0gDVkrQ5hU/1o/Gv7nnNzNT5GNNiVdrMa2CEMal6mGjIGlwFlA6f
+	 KxYmtG/L7RE0RmZ2AP+x8lTNZz9ISBTqLocYXMbAlEuQXo1MF2QRUlZhLY4MxWawRgBsEMagYUU8
+	 bn84U1ToQjqnhewfbl59Af7qx5qQM8r3TIAV8H1H7Z4YbtmYrMvhyByFfbysJTxUEQsrme0RoIH4
+	 LmS32iKNx76WlpwaraJ95vAkLzh0P/Cejnmm7SfFN/vazSvzxek3vFTxW66zyfLIohriAmYsDDa6
+	 PyqitKZCg=
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+73414091bd382684ee2b@syzkaller.appspotmail.com
+Cc: bfoster@redhat.com,
+	kent.overstreet@linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] bcachefs: if input options invalid return -BCH_ERR_option_name
+Date: Mon, 13 May 2024 20:07:17 +0800
+X-OQ-MSGID: <20240513120717.3349265-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000001e59c20618455922@google.com>
+References: <0000000000001e59c20618455922@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8625:b0:488:7bb2:c9f6 with SMTP id
- 8926c6da1cb9f-48958c02450mr961209173.3.1715599287003; Mon, 13 May 2024
- 04:21:27 -0700 (PDT)
-Date: Mon, 13 May 2024 04:21:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000143d6f0618541652@google.com>
-Subject: [syzbot] [bcachefs?] [rcu?] WARNING: lock held when returning to user
- space in srcu_lock_acquire
-From: syzbot <syzbot+d797fe78808e968d6c84@syzkaller.appspotmail.com>
-To: jiangshanlai@gmail.com, josh@joshtriplett.org, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	mathieu.desnoyers@efficios.com, paulmck@kernel.org, rcu@vger.kernel.org, 
-	rostedt@goodmis.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+When the input parameter options format is invalid, it will cause the opts object
+to not be set correctly. 
+When a similar situation occurs, it should return -BCH_ERR_option_name and terminate
+the mounting action.
 
-syzbot found the following issue on:
-
-HEAD commit:    1c9135d29e9e Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=14ffaa6c980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7d2d53e64c7e6a4f
-dashboard link: https://syzkaller.appspot.com/bug?extid=d797fe78808e968d6c84
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1705e85c980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11612d04980000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/52dd1b4921ab/disk-1c9135d2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1a4f1788dc25/vmlinux-1c9135d2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b8d8ebd42a80/Image-1c9135d2.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/0471560e01b3/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d797fe78808e968d6c84@syzkaller.appspotmail.com
-
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-================================================
-WARNING: lock held when returning to user space!
-6.9.0-rc7-syzkaller-g1c9135d29e9e #0 Not tainted
-------------------------------------------------
-syz-executor367/6238 is leaving the kernel with locks still held!
-1 lock held by syz-executor367/6238:
- #0: ffff0000dcc84250 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire+0x18/0x54 include/linux/srcu.h:115
-
-
+Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
+Reported-and-tested-by: syzbot+73414091bd382684ee2b@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/bcachefs/opts.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+index e1800c4119b5..2fc59b8aa32d 100644
+--- a/fs/bcachefs/opts.c
++++ b/fs/bcachefs/opts.c
+@@ -443,7 +443,7 @@ int bch2_parse_mount_opts(struct bch_fs *c, struct bch_opts *opts,
+ 			  char *options)
+ {
+ 	char *copied_opts, *copied_opts_start;
+-	char *opt, *name, *val;
++	char *opt, *name, *val, opts_set = 0;
+ 	int ret, id;
+ 	struct printbuf err = PRINTBUF;
+ 	u64 v;
+@@ -498,8 +498,11 @@ int bch2_parse_mount_opts(struct bch_fs *c, struct bch_opts *opts,
+ 			goto bad_val;
+ 
+ 		bch2_opt_set_by_id(opts, id, v);
++		opts_set = 1;
+ 	}
+ 
++	if (!opts_set)
++		goto bad_opt;
+ 	ret = 0;
+ 	goto out;
+ 
+-- 
+2.43.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
