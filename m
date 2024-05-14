@@ -1,205 +1,133 @@
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6216E13B5B0
-	for <linux-bcachefs@vger.kernel.org>; Tue, 14 May 2024 10:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50EB6320F
+	for <linux-bcachefs@vger.kernel.org>; Tue, 14 May 2024 10:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715683169; cv=none; b=taxtlHk49nFAFPEAP9QzXNJvDrpcimglK8byDoMDAyXXd47hIRbU8qieuvrlRx6CJqjPJ0+o3heJ5J1JlnuWaSy+awZptQuP00M3MbNV8oDZBp4RUXGM5B2x+NQzNfbqvm/O6Qvt0oc6WzWP7Ttrt/pZzxtW3o4oo8GhAMYL4oo=
+	t=1715684320; cv=none; b=JslggJ6MM+Yzfwxg0GFSOFJHG5C3MBpVHab59WDFtF5ZmLJ2RaGCr0Cir7d4RQXIbHpoLZN4GV/xajkCelG0otzOwVOgknWOYGESRtUPPK100BE1KChCpZCG0R+cnHHdK8j1vpQ4OU6/Syyo2YBauMfZbHEvC0uJcjJtScLSjSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715683169; c=relaxed/simple;
-	bh=6UPQyeg0/NEklFVQsWYpVDYn6YwqQ616Kg0qAhdUXaQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=V3WtNPGa1WyEtzoMHFH1XoBwRaVT5f45MDZU/PdmFw76m9N6DdoGF6wpEr3a7xSlbR5zJiUU5uSmKKiH+KhamMABn0kgQ6ZiSicyycfUCCYCAGH0AXe8kAyg1JZeFRmlR1Mso1BLNbfG/cohGDd2ciltp3vqa0mzE9QenyiSh/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-7e17a8bed9eso544351539f.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 14 May 2024 03:39:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715683166; x=1716287966;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lPAYknr1g5jVKi+ThJU5ulKyp6rTzheR6mKSF8PP+pk=;
-        b=YcW9rpbosO2xKahet5GgpmBa4mTDLRAHT/fdHVFNu2bZLNu8crIg7V78LGxraD5VjD
-         goNy53j3iTyK5MoRh9EAXmzOoghoELzhffO7EMspdXkW2gU2C928lJGraNmkA0258+Js
-         /fJHEFD6KqokSsmDA825ZBZjNVfUYaUnzR1aEkUVcLnbhzJqSZz03a7fl5jKR0q5b046
-         y4A8/3ECGUFFt8XdIYuEC+zS6z16Ob5DFLOdjQnHzgznwspc1cgT5cw6p8xtEYQGQ0mq
-         3/Bq2+QbYJ/btNEixWP5jfwt0fa4xmdwBK2xOmffWwpyoUEmfN9pAuF4vLQhO2noafNo
-         1zOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXr8M6CrdOLj8gefvQubsGOP4XKCwwbkLfiUKVQ4nStz/LbzHdWm2Pvt/bRRc4Dbm0tpWV5kMhcC+PiolVnGZj34hfB5t7eQBD95gVvN74=
-X-Gm-Message-State: AOJu0YxSPddbr2rs80t0N49sglwKffdrCsQPxvqGY4CkkBbq18X+2a8i
-	bgyWRZfMPZF02WHGgYjy/h8CqPX+Zwx4QS+LrclgLIEkqaWC06MZ/68wMB5k9UqRVqzatRc+PPC
-	HdTtLH5rwAQYf4kOvnVyk+m1tGcptvVwqOWhyjFwbFv/g32IaQZUPZ+g=
-X-Google-Smtp-Source: AGHT+IGhBohnYpxANGC97Cdo3Ti41CFL8EhfzDHVZAoy0td1kuokLJE8mTFG9/f8ADdFOJMjP2QuWBgMmdVA47QZxwttQwHZCnZK
+	s=arc-20240116; t=1715684320; c=relaxed/simple;
+	bh=h3PbAwGakb/t4M79+XxG1vG64LYWcADDoDkEs/KF63o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EHbbOSEgHz/VRlp3Kz1YvlhBZ2a36YBMzSqcYhDzJH4L+xgTXNk4aiNYlud4w8ZsACA+y9yCDmhQJu6OvR+ggbICpQp86IKsG4H4bI7veqXdTZf1w5yKF7voOMH2yVyzTKLYJKOadAQkdYuUivu5RUitUVlOZa+H+pijStyN9Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W7vtoXl5; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W7vtoXl5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1715684318;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uCRsV/xUWg0w7888xFJ6TfC20xrb8PlJnkiONY3cJgg=;
+	b=W7vtoXl5VWWivb7IBMUZYCTAa9LovTsk8r4PRvyu7HX8+th0Szxc8WELSQS7DPLyxrXNVI
+	+HG/4zuWeGSaQHiVjfS5Sbr+UtlGgcIW5ZEIswWTaKdU9ncujrxe2JZPe5EEMkd49GKmq+
+	ppRbTv/+VpEYjdQ6FUwLiH9UswIV0dw=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-139-QFSnbrLWMZCMcsYa_tGPlA-1; Tue,
+ 14 May 2024 06:58:34 -0400
+X-MC-Unique: QFSnbrLWMZCMcsYa_tGPlA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9F8DF3C000A5;
+	Tue, 14 May 2024 10:58:34 +0000 (UTC)
+Received: from bfoster (unknown [10.22.8.96])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 79D372818;
+	Tue, 14 May 2024 10:58:34 +0000 (UTC)
+Date: Tue, 14 May 2024 06:58:53 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Reed Riley <reed@riley.engineer>
+Cc: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+Subject: Re: [PATCH] bcachefs: support REMAP_FILE_DEDUP in
+ bch2_remap_file_range
+Message-ID: <ZkND7a95h3pzCrOq@bfoster>
+References: <yuG-zWAd7xX9SkysCfG2ELC8drJi3bxsagrf03hf2Aeah__0W1exPDJabqC23NyOzt5BXmYEF95045yO2SfCbZMgGkYqbycmlUIBZqk2vyE=@riley.engineer>
+ <ZkIIxvdRKrgCdoC8@bfoster>
+ <45_rwv0SgX9alyYyitLlz7CwOVmZZejtbJRAzqVyVnXjhVDxhPp273Pwd1Lpp3n1T-HsBT9EB1ZeXyoinExuozvfk4LNfTFHxa54NBJojOo=@riley.engineer>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8917:b0:488:9fae:e95c with SMTP id
- 8926c6da1cb9f-48958e02868mr1453317173.4.1715683166680; Tue, 14 May 2024
- 03:39:26 -0700 (PDT)
-Date: Tue, 14 May 2024 03:39:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b2883b0618679d34@google.com>
-Subject: [syzbot] [bcachefs?] general protection fault in __bch2_insert_snapshot_whiteouts
-From: syzbot <syzbot+1c9fca23fe478633b305@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <45_rwv0SgX9alyYyitLlz7CwOVmZZejtbJRAzqVyVnXjhVDxhPp273Pwd1Lpp3n1T-HsBT9EB1ZeXyoinExuozvfk4LNfTFHxa54NBJojOo=@riley.engineer>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Hello,
+On Mon, May 13, 2024 at 11:42:42PM +0000, Reed Riley wrote:
+> On Monday, May 13th, 2024 at 5:34 AM, Brian Foster <bfoster@redhat.com> wrote:
+> 
+> > On Sat, May 11, 2024 at 12:20:12AM +0000, Reed Riley wrote:
+> > 
+> > > By removing the early-exit when REMAP_FILE_DEDUP is set, we should be
+> > > able to support the fideduperange ioctl, albeit less efficiently than if
+> > > we handled some of the extent locking and comparison logic inside
+> > > bcachefs. Extent comparison logic already exists inside of
+> > > `__generic_remap_file_range_prep`.
+> > > 
+> > > Signed-off-by: Reed Riley reed@riley.engineer
+> > > ---
+> > 
+> > 
+> > Seems reasonable:
+> > 
+> > Reviewed-by: Brian Foster bfoster@redhat.com
+> > 
+> > 
+> > Have you run any tests just to make sure there are no surprises? If not,
+> > it looks like xfs_io has a 'dedupe' command that would make it easy to
+> > run a quick test or two from the command line. fstests has a bunch of
+> > tests in the dedupe group (which I presume this patch should now allow
+> > to run on bcachefs) as well.
+> 
+> I worked with Kent to run his CI tests against the patch (https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-fideduperange&commit=1945149c8d7549b924cd88f57f0cd938b3bb7125) and also used xfs_io to do some basic sanity checks.
+> 
 
-syzbot found the following issue on:
+Ah, great. I threw this up on my test branch yesterday as well just to
+see what happens. It looks like it enabled more tests (likely the
+fstests that _require_dedupe), which is good to see.
 
-HEAD commit:    75fa778d74b7 Add linux-next specific files for 20240510
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=131c3100980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ccdd3ebd6715749a
-dashboard link: https://syzkaller.appspot.com/bug?extid=1c9fca23fe478633b305
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e892e4980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118d0fb8980000
+> Specifically, I sanity checked that:
+>  1. fideduperange doesn’t dedupe if file content doesn’t match,
+>  2. fideduperange does dedupe stuff when they do (according to filefrag -v reporting shared extents), and
+>  3. That neither of the above operations changed file checksums.
+> 
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ad9391835bcf/disk-75fa778d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d827b3da9a26/vmlinux-75fa778d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8f32f0182388/bzImage-75fa778d.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/056346e690a7/mount_0.gz
+Makes sense. Thanks!
 
-The issue was bisected to:
+Brian
 
-commit f7643bc9749f270d487c32dc35b578575bf1adb0
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Wed Apr 17 05:26:02 2024 +0000
+> I’d be happy to run more tests if anyone can suggest them?
+> 
+> > 
+> > Brian
+> > 
+> > > fs/bcachefs/fs-io.c | 3 ---
+> > > 1 file changed, 3 deletions(-)
+> > > 
+> > > diff --git a/fs/bcachefs/fs-io.c b/fs/bcachefs/fs-io.c
+> > > index 20b40477425f..4f513f22a66a 100644
+> > > --- a/fs/bcachefs/fs-io.c
+> > > +++ b/fs/bcachefs/fs-io.c
+> > > @@ -857,9 +857,6 @@ loff_t bch2_remap_file_range(struct file *file_src, loff_t pos_src,
+> > > if (remap_flags & ~(REMAP_FILE_DEDUP|REMAP_FILE_ADVISORY))
+> > > return -EINVAL;
+> > > 
+> > > - if (remap_flags & REMAP_FILE_DEDUP)
+> > > - return -EOPNOTSUPP;
+> > > -
+> > > if ((pos_src & (block_bytes(c) - 1)) ||
+> > > (pos_dst & (block_bytes(c) - 1)))
+> > > return -EINVAL;
+> > > --
+> > > 2.44.0
+> 
 
-    bcachefs: make btree read errors silent during scan
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=100ed95c980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=120ed95c980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=140ed95c980000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1c9fca23fe478633b305@syzkaller.appspotmail.com
-Fixes: f7643bc9749f ("bcachefs: make btree read errors silent during scan")
-
-Oops: general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 1 PID: 5094 Comm: syz-executor156 Not tainted 6.9.0-rc7-next-20240510-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-RIP: 0010:bch2_snapshot_has_children fs/bcachefs/snapshot.h:184 [inline]
-RIP: 0010:__bch2_insert_snapshot_whiteouts+0x306/0x15e0 fs/bcachefs/btree_update.c:135
-Code: fb 0f 86 c2 11 00 00 e8 28 d9 7c fd 49 6b c7 38 49 8d 5c 04 18 48 8d 7b 14 48 89 f8 48 c1 e8 03 49 bc 00 00 00 00 00 fc ff df <42> 0f b6 04 20 84 c0 0f 85 3d 12 00 00 44 8b 7b 14 48 83 c3 18 48
-RSP: 0018:ffffc900037be0c0 EFLAGS: 00010203
-RAX: 0000000000000002 RBX: 0000000000000000 RCX: ffff8880296b0000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000014
-RBP: ffffc900037be420 R08: ffffffff841942f8 R09: 1ffffffff25f64b0
-R10: dffffc0000000000 R11: fffffbfff25f64b1 R12: dffffc0000000000
-R13: ffffc900037be380 R14: ffffffff84194214 R15: 00000000ffffffff
-FS:  000055555dcea380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000559e8263e0b0 CR3: 000000006fca6000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bch2_insert_snapshot_whiteouts fs/bcachefs/btree_update.h:95 [inline]
- bch2_trans_update_extent_overwrite+0xfd6/0x3710 fs/bcachefs/btree_update.c:218
- bch2_trans_update_extent fs/bcachefs/btree_update.c:318 [inline]
- bch2_trans_update+0x186f/0x2550 fs/bcachefs/btree_update.c:514
- bch2_extent_update+0x43c/0xbb0 fs/bcachefs/io_write.c:325
- bch2_write_index_default fs/bcachefs/io_write.c:374 [inline]
- __bch2_write_index+0xee9/0x2190 fs/bcachefs/io_write.c:527
- bch2_write_data_inline fs/bcachefs/io_write.c:1551 [inline]
- bch2_write+0xf4d/0x1670 fs/bcachefs/io_write.c:1619
- closure_queue include/linux/closure.h:269 [inline]
- closure_call include/linux/closure.h:402 [inline]
- bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:460 [inline]
- bch2_writepages+0x27d/0x380 fs/bcachefs/fs-io-buffered.c:652
- do_writepages+0x359/0x870 mm/page-writeback.c:2634
- filemap_fdatawrite_wbc+0x125/0x180 mm/filemap.c:397
- __filemap_fdatawrite_range mm/filemap.c:430 [inline]
- file_write_and_wait_range+0x1aa/0x290 mm/filemap.c:788
- bch2_fsync+0x93/0x130 fs/bcachefs/fs-io.c:197
- generic_write_sync include/linux/fs.h:2794 [inline]
- bch2_buffered_write fs/bcachefs/fs-io-buffered.c:1128 [inline]
- bch2_write_iter+0x262e/0x2840 fs/bcachefs/fs-io-buffered.c:1136
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xa72/0xc90 fs/read_write.c:590
- ksys_write+0x1a0/0x2c0 fs/read_write.c:643
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fbe67e38979
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd7ce752c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007fbe67e8104b RCX: 00007fbe67e38979
-RDX: 000000000000000b RSI: 0000000020000680 RDI: 0000000000000004
-RBP: 00007fbe67ebe610 R08: 00007ffd7ce75498 R09: 00007ffd7ce75498
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffd7ce75488 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bch2_snapshot_has_children fs/bcachefs/snapshot.h:184 [inline]
-RIP: 0010:__bch2_insert_snapshot_whiteouts+0x306/0x15e0 fs/bcachefs/btree_update.c:135
-Code: fb 0f 86 c2 11 00 00 e8 28 d9 7c fd 49 6b c7 38 49 8d 5c 04 18 48 8d 7b 14 48 89 f8 48 c1 e8 03 49 bc 00 00 00 00 00 fc ff df <42> 0f b6 04 20 84 c0 0f 85 3d 12 00 00 44 8b 7b 14 48 83 c3 18 48
-RSP: 0018:ffffc900037be0c0 EFLAGS: 00010203
-RAX: 0000000000000002 RBX: 0000000000000000 RCX: ffff8880296b0000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000014
-RBP: ffffc900037be420 R08: ffffffff841942f8 R09: 1ffffffff25f64b0
-R10: dffffc0000000000 R11: fffffbfff25f64b1 R12: dffffc0000000000
-R13: ffffc900037be380 R14: ffffffff84194214 R15: 00000000ffffffff
-FS:  000055555dcea380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000193c CR3: 000000006fca6000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	fb                   	sti
-   1:	0f 86 c2 11 00 00    	jbe    0x11c9
-   7:	e8 28 d9 7c fd       	call   0xfd7cd934
-   c:	49 6b c7 38          	imul   $0x38,%r15,%rax
-  10:	49 8d 5c 04 18       	lea    0x18(%r12,%rax,1),%rbx
-  15:	48 8d 7b 14          	lea    0x14(%rbx),%rdi
-  19:	48 89 f8             	mov    %rdi,%rax
-  1c:	48 c1 e8 03          	shr    $0x3,%rax
-  20:	49 bc 00 00 00 00 00 	movabs $0xdffffc0000000000,%r12
-  27:	fc ff df
-* 2a:	42 0f b6 04 20       	movzbl (%rax,%r12,1),%eax <-- trapping instruction
-  2f:	84 c0                	test   %al,%al
-  31:	0f 85 3d 12 00 00    	jne    0x1274
-  37:	44 8b 7b 14          	mov    0x14(%rbx),%r15d
-  3b:	48 83 c3 18          	add    $0x18,%rbx
-  3f:	48                   	rex.W
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
