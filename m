@@ -1,113 +1,174 @@
-Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4E71D559
-	for <linux-bcachefs@vger.kernel.org>; Mon, 13 May 2024 23:42:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD90917C2
+	for <linux-bcachefs@vger.kernel.org>; Tue, 14 May 2024 01:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715643769; cv=none; b=JWXf74LHI3uOT+5PBVUrrGLEwfDQYdTWTxu7dbJxTJDlSV3jv94s5tqJCVyWhRLfks84M05qfh6+l5IVvug1UsGTpoykw1CSliAZf0KxLn3CsNsp52odtKmmh+ZG3Er6yx0bIYuz/l/5ln7/VTH1HcA+C55fIZGQqYukDMg/EDg=
+	t=1715649029; cv=none; b=bIiH0KnIJcgryYBF300CeKoAKi+31A2eyE7BKnWnv1NvOpQliLBxM2zL66cf4T7H87TZqRxaxOTzDkw5MAqvEiG7EfawZNOEXKGPc0vlW72u7ssSH42u9+qRqR5aCs+LzllY0D2ZvmM33v7ymdYwW3vAlhPNEZ6j9wizgL1502M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715643769; c=relaxed/simple;
-	bh=tZD1//GgzmSUY+fatN+CDnwS14Dz9fAu8Big+X0nB/8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KQLZmZ09u5UIVBHNr9GhqzPgclArtPgF7/V0AIJtUcSAoEAVyr7z3e2cVzVu0DQOzxwoLkLT0fZ8OZuSeIjsqcI7WWFAa75vpKwHyuWG77DwHPetkNOLsZKNezwc6BIJM1kGeMweLVge8DF83/F8YdlKrj5MJs+sckXcN4Q5jG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riley.engineer; spf=pass smtp.mailfrom=riley.engineer; dkim=pass (2048-bit key) header.d=riley.engineer header.i=@riley.engineer header.b=x5xUi6HD; arc=none smtp.client-ip=185.70.40.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riley.engineer
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riley.engineer
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=riley.engineer header.i=@riley.engineer header.b="x5xUi6HD"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=riley.engineer;
-	s=protonmail3; t=1715643765; x=1715902965;
-	bh=tZD1//GgzmSUY+fatN+CDnwS14Dz9fAu8Big+X0nB/8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=x5xUi6HD8Mo/VQgC2Oh820mUQoxILdno0wIK1/prrbRCA1x12sy0zRHyj8Yivon6u
-	 49Zemr8Z+Z7OrjK/t7LfpJZN2JqHYAQ9LeR91Z5sw3i6JxrhmfVN8VUiY8+D8vjeyd
-	 Q5wY1bK60IqC6nJLUD0di3Im2OW3Kit4k5ZWiSNJz5m55ZVehPAEZXan6B9K8nte0i
-	 k6zbzWu3cD9EX5WutFSBQ0NGEmbpVEjBJu9TkSkz8/NOE9yPSikU1MOqhHOEu2eyGd
-	 BDt1eT5Vv7v6Q9+ywDALynyG4DZ9b5YKITr4gwjGtOK9PAVl2snA4esqFfZ+idRFSJ
-	 e6plObXC6F49g==
-Date: Mon, 13 May 2024 23:42:42 +0000
-To: Brian Foster <bfoster@redhat.com>
-From: Reed Riley <reed@riley.engineer>
-Cc: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: [PATCH] bcachefs: support REMAP_FILE_DEDUP in bch2_remap_file_range
-Message-ID: <45_rwv0SgX9alyYyitLlz7CwOVmZZejtbJRAzqVyVnXjhVDxhPp273Pwd1Lpp3n1T-HsBT9EB1ZeXyoinExuozvfk4LNfTFHxa54NBJojOo=@riley.engineer>
-In-Reply-To: <ZkIIxvdRKrgCdoC8@bfoster>
-References: <yuG-zWAd7xX9SkysCfG2ELC8drJi3bxsagrf03hf2Aeah__0W1exPDJabqC23NyOzt5BXmYEF95045yO2SfCbZMgGkYqbycmlUIBZqk2vyE=@riley.engineer> <ZkIIxvdRKrgCdoC8@bfoster>
-Feedback-ID: 15554401:user:proton
-X-Pm-Message-ID: f3b442c0a83b62422aae13cf59d455e0765bbaa6
+	s=arc-20240116; t=1715649029; c=relaxed/simple;
+	bh=9Hc909+0M5FP5KmSKA//JtVHEwXLd4+BakwThkuIvt4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=I7fXdSVzHZ8o4NcIaBeKtVzDBPrhzhFNSxRWuDJ3kDP1liKcLuulXguptNlfdSZRyaIrVwnHHice9zNQ9Eh4OHcFrYOs4vyu2WdLy89/BmD+JsVIBGIKfowj3Aa2MSAR2EOeAu4WL0/qx3GOHl+VgDWjXmGMjcKEBHRwmAJG8E4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-7e1fb54d1e5so436139f.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 13 May 2024 18:10:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715649027; x=1716253827;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zx2V0pQQ05Sh+gNvaZZexhSOOCwudaLNE/A8Hkrvguw=;
+        b=AZ40ylQbZiAV+JB/t7rGCA4DfoH/V///XJTbiXvPekijw/tSNsGK3U94scrQa6WcJh
+         McIjx6DAp1l6EVved35YFvCfNzddQV8hodDmSQ7gjfjzyqy51MR3OmndhRaQ2QAFi0H6
+         Nfukr4ryJYM5U8csGe9/OZoWMuEAOCV3O0egWLBPlKbno7tuCEMEme9C5kkG3BEEFFRC
+         M27ruGSiLsD5ztnKCP9g2Ykpr6byMI5jYX+8kYxvNYZm3SrWtkh0n8+yJCHE7sNmoRWT
+         EvIZw6Ezss+I0UiXebMQU589TrHSnOGzHfNxsoxniSNA4qEbA2Sc8PpT9QBZxi51aYaH
+         IagA==
+X-Forwarded-Encrypted: i=1; AJvYcCX44Tc24u7n+GPBbFeKwxsoVLncyIWJcfLQt5MTsYa+ph25HKnXuMZmYODcIX7jREml8C34rlw609ibTNjkU1U9lLRUfu1k+jvABRoCmuY=
+X-Gm-Message-State: AOJu0Yw775eb+PDcjDEWQ4TO6V7mK+kfJJSv8Qs2gXiXUzlWHtqhWyRX
+	xvwdDwCGKx2d1YsdZ5y5sDbotxoO1v5o7LdPdnWvwrZsNvPSER/glwhntGJcbxFTdoQSXUt0dPy
+	+2FtRClWIx1vmaLa+50z2PPdEUp2M7CJ4XnzxkShHSNsDTBbDXSMTan0=
+X-Google-Smtp-Source: AGHT+IGlumd0Dr4BMELvckwlS9c7grP1zoxjtV4WcQZdUVX94UCZJG5AtlcpJN+jVA89uH/tgY3rBr6YewUDF1q1dTRVqsFEFpck
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6638:150b:b0:488:dd9c:2483 with SMTP id
+ 8926c6da1cb9f-4895912b334mr905078173.5.1715649027090; Mon, 13 May 2024
+ 18:10:27 -0700 (PDT)
+Date: Mon, 13 May 2024 18:10:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d1bc1e06185faac7@google.com>
+Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_dirent_invalid
+From: syzbot <syzbot+84fa6fb8c7f98b93cdea@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Monday, May 13th, 2024 at 5:34 AM, Brian Foster <bfoster@redhat.com> wro=
-te:
+Hello,
 
-> On Sat, May 11, 2024 at 12:20:12AM +0000, Reed Riley wrote:
->=20
-> > By removing the early-exit when REMAP_FILE_DEDUP is set, we should be
-> > able to support the fideduperange ioctl, albeit less efficiently than i=
-f
-> > we handled some of the extent locking and comparison logic inside
-> > bcachefs. Extent comparison logic already exists inside of
-> > `__generic_remap_file_range_prep`.
-> >=20
-> > Signed-off-by: Reed Riley reed@riley.engineer
-> > ---
->=20
->=20
-> Seems reasonable:
->=20
-> Reviewed-by: Brian Foster bfoster@redhat.com
->=20
->=20
-> Have you run any tests just to make sure there are no surprises? If not,
-> it looks like xfs_io has a 'dedupe' command that would make it easy to
-> run a quick test or two from the command line. fstests has a bunch of
-> tests in the dedupe group (which I presume this patch should now allow
-> to run on bcachefs) as well.
+syzbot found the following issue on:
 
-I worked with Kent to run his CI tests against the patch (https://evilpiepi=
-rate.org/~testdashboard/ci?branch=3Dbcachefs-fideduperange&commit=3D1945149=
-c8d7549b924cd88f57f0cd938b3bb7125) and also used xfs_io to do some basic sa=
-nity checks.
+HEAD commit:    45db3ab70092 Merge tag '6.9-rc7-ksmbd-fixes' of git://git...
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=131d2c00980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=617171361dd3cd47
+dashboard link: https://syzkaller.appspot.com/bug?extid=84fa6fb8c7f98b93cdea
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152df3bc980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=130d8f88980000
 
-Specifically, I sanity checked that:
- 1. fideduperange doesn=E2=80=99t dedupe if file content doesn=E2=80=99t ma=
-tch,
- 2. fideduperange does dedupe stuff when they do (according to filefrag -v =
-reporting shared extents), and
- 3. That neither of the above operations changed file checksums.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/232e7c2a73a5/disk-45db3ab7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7e9bf7c936ab/vmlinux-45db3ab7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5e8f98ee02d8/bzImage-45db3ab7.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/ec73bbe3e40c/mount_2.gz
 
-I=E2=80=99d be happy to run more tests if anyone can suggest them?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+84fa6fb8c7f98b93cdea@syzkaller.appspotmail.com
 
->=20
-> Brian
->=20
-> > fs/bcachefs/fs-io.c | 3 ---
-> > 1 file changed, 3 deletions(-)
-> >=20
-> > diff --git a/fs/bcachefs/fs-io.c b/fs/bcachefs/fs-io.c
-> > index 20b40477425f..4f513f22a66a 100644
-> > --- a/fs/bcachefs/fs-io.c
-> > +++ b/fs/bcachefs/fs-io.c
-> > @@ -857,9 +857,6 @@ loff_t bch2_remap_file_range(struct file *file_src,=
- loff_t pos_src,
-> > if (remap_flags & ~(REMAP_FILE_DEDUP|REMAP_FILE_ADVISORY))
-> > return -EINVAL;
-> >=20
-> > - if (remap_flags & REMAP_FILE_DEDUP)
-> > - return -EOPNOTSUPP;
-> > -
-> > if ((pos_src & (block_bytes(c) - 1)) ||
-> > (pos_dst & (block_bytes(c) - 1)))
-> > return -EINVAL;
-> > --
-> > 2.44.0
+=====================================================
+BUG: KMSAN: uninit-value in bch2_dirent_name_bytes fs/bcachefs/dirent.c:24 [inline]
+BUG: KMSAN: uninit-value in bch2_dirent_get_name fs/bcachefs/dirent.c:34 [inline]
+BUG: KMSAN: uninit-value in bch2_dirent_invalid+0x1ea/0xa30 fs/bcachefs/dirent.c:105
+ bch2_dirent_name_bytes fs/bcachefs/dirent.c:24 [inline]
+ bch2_dirent_get_name fs/bcachefs/dirent.c:34 [inline]
+ bch2_dirent_invalid+0x1ea/0xa30 fs/bcachefs/dirent.c:105
+ bch2_bkey_val_invalid+0x24f/0x380 fs/bcachefs/bkey_methods.c:140
+ bset_key_invalid fs/bcachefs/btree_io.c:831 [inline]
+ validate_bset_keys+0x12d8/0x25d0 fs/bcachefs/btree_io.c:904
+ validate_bset_for_write+0x1dd/0x340 fs/bcachefs/btree_io.c:1945
+ __bch2_btree_node_write+0x5383/0x67c0 fs/bcachefs/btree_io.c:2155
+ bch2_btree_node_write+0xa5/0x2e0 fs/bcachefs/btree_io.c:2288
+ btree_node_write_if_need fs/bcachefs/btree_io.h:153 [inline]
+ __btree_node_flush+0x4d0/0x640 fs/bcachefs/btree_trans_commit.c:229
+ bch2_btree_node_flush0+0x35/0x60 fs/bcachefs/btree_trans_commit.c:238
+ journal_flush_pins+0xce6/0x1780 fs/bcachefs/journal_reclaim.c:553
+ __bch2_journal_reclaim+0xd88/0x1610 fs/bcachefs/journal_reclaim.c:685
+ bch2_journal_reclaim_thread+0x18e/0x760 fs/bcachefs/journal_reclaim.c:727
+ kthread+0x3e2/0x540 kernel/kthread.c:388
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Uninit was stored to memory at:
+ memcpy_u64s_small fs/bcachefs/util.h:511 [inline]
+ bkey_p_copy fs/bcachefs/bkey.h:46 [inline]
+ bch2_sort_keys+0x2051/0x2cb0 fs/bcachefs/bkey_sort.c:194
+ __bch2_btree_node_write+0x3acd/0x67c0 fs/bcachefs/btree_io.c:2100
+ bch2_btree_node_write+0xa5/0x2e0 fs/bcachefs/btree_io.c:2288
+ btree_node_write_if_need fs/bcachefs/btree_io.h:153 [inline]
+ __btree_node_flush+0x4d0/0x640 fs/bcachefs/btree_trans_commit.c:229
+ bch2_btree_node_flush0+0x35/0x60 fs/bcachefs/btree_trans_commit.c:238
+ journal_flush_pins+0xce6/0x1780 fs/bcachefs/journal_reclaim.c:553
+ __bch2_journal_reclaim+0xd88/0x1610 fs/bcachefs/journal_reclaim.c:685
+ bch2_journal_reclaim_thread+0x18e/0x760 fs/bcachefs/journal_reclaim.c:727
+ kthread+0x3e2/0x540 kernel/kthread.c:388
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Uninit was created at:
+ __kmalloc_large_node+0x231/0x370 mm/slub.c:3927
+ __do_kmalloc_node mm/slub.c:3960 [inline]
+ __kmalloc_node+0xb10/0x10c0 mm/slub.c:3979
+ kmalloc_node include/linux/slab.h:648 [inline]
+ kvmalloc_node+0xc0/0x2d0 mm/util.c:634
+ kvmalloc include/linux/slab.h:766 [inline]
+ btree_bounce_alloc fs/bcachefs/btree_io.c:118 [inline]
+ bch2_btree_node_read_done+0x4e68/0x75e0 fs/bcachefs/btree_io.c:1185
+ btree_node_read_work+0x8a5/0x1eb0 fs/bcachefs/btree_io.c:1324
+ bch2_btree_node_read+0x3d42/0x4b50
+ __bch2_btree_root_read fs/bcachefs/btree_io.c:1748 [inline]
+ bch2_btree_root_read+0xa6c/0x13d0 fs/bcachefs/btree_io.c:1772
+ read_btree_roots+0x454/0xee0 fs/bcachefs/recovery.c:457
+ bch2_fs_recovery+0x7b6a/0x93e0 fs/bcachefs/recovery.c:785
+ bch2_fs_start+0x7b2/0xbd0 fs/bcachefs/super.c:1043
+ bch2_fs_open+0x152a/0x15f0 fs/bcachefs/super.c:2105
+ bch2_mount+0x90d/0x1d90 fs/bcachefs/fs.c:1903
+ legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa7/0x570 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+ x64_sys_call+0x2bf4/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:166
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 0 PID: 5037 Comm: bch-reclaim/loo Not tainted 6.9.0-rc7-syzkaller-00056-g45db3ab70092 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
