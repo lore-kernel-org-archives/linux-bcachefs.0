@@ -1,105 +1,130 @@
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4874F1FE;
-	Wed, 15 May 2024 01:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3884F1E2;
+	Wed, 15 May 2024 08:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715737779; cv=none; b=mKZpx7qzkfq36EW3JnvvdxEoQvZvUcX20Ce4YfjDiaXa3eNsVWK/vQjqsy46gTH4aKFxFv7t0j2H8ZCDguZMQ70S25h0HhQhWt9hK170PM8Xc7/GVWd/l7xI3lpdTVyvyXBzJSCfrnI1Toiq551VCwMEvZfmZCMkJ+4JoZc7Mjo=
+	t=1715762297; cv=none; b=TgZXhDPhB/gYtMTylpsNxoObW/TmiNLgqamujSMO9ZVaXvOHhMx8Z3E6uDISMBmCb1vQ5PQz6g9PxI6BrEiNMWsznfK7xo/T8h6mwZFrz1MvriZlno49pdOqh8B3hdR4uYmcOXSE6V89xFgGPpTrPrInlvp110puZDGB0D5pcCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715737779; c=relaxed/simple;
-	bh=pvzjn5+bbR0c+haL5/MVAidccpj+9o808LC0Z+cMxlA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Tex4lYlEszIWTCTVI+wzH5xocgkFIWTEGcbiJ9nlBz3+woT4MpjGBH6HjqIs5EFLfG5dtC9mXYcAEiXWJxPGs6rRtr7LKlUGDPTvXFOigop1oxXlguulHf3RnM4So45/a0sypBH/vxTvjydcdGHwaADISMH2A/nqNuYvEeLaYl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kk9X4Fsz; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1715762297; c=relaxed/simple;
+	bh=Tpla7BbjcnmioeU0TB5vZhZhEFVFx+ygWRQ+4ZTjSs8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b+5uQmP7zj4SD2v9/0Sh2FfmsWVoeUfrRB//UB02K1sblLBLI1l+JkwSN9W6CMdNCtW9duOu3ROpbc3ka+HF14XU1L/68BmgTKoLcaH0D23q/0pOLs4vtkBJP4jMAp9excrbJhUR7smCs3+9ty7AwQBkO6HHqFiTYcb7IihhJ/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VC8ZzEVW; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kk9X4Fsz"
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ee0132a6f3so48007805ad.0;
-        Tue, 14 May 2024 18:49:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715737743; x=1716342543; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5kQ1NfQplOskT4B5ZqgIky4P0ExeAiR7M84edP4J3wY=;
-        b=kk9X4Fszq0tV3IL+k7hTWhXPkHh4ka1Kljqs2c+Lds8YnVEw9tNRobHQ2NU0vpHIdq
-         V+nBJ6R1h1NSt0KTMEIT1DflD8LDCmSNxT4ch+/wT3+lGT4KyWshKLTKRwtK3q5n7mtc
-         mDeFUTc8lxxlhgTyBsh8iC+hQp4Xcdt44agxsCiihMt7Qp05TxHOuuB3fMQCt8YxE4Cq
-         J2v1fxh8BuXokHpR7K0R51MsizMWiZ303+ulKbv8yleGftn1nnoP/u2GE+BoovvJMnmL
-         zJknkt94W1TX1uT3nlhSyzVeQcHbc3X1vJa6SF/TjFJKJiEae1bjWRptI2YNyM6QeAAh
-         lsuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715737743; x=1716342543;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5kQ1NfQplOskT4B5ZqgIky4P0ExeAiR7M84edP4J3wY=;
-        b=czpqkvkef9etExJXPi44akYjMTI2WmpevDwBOTwSQySGLonH943GJVTrXJwP0gwtAn
-         VW25c6JAbTO4M0lfAyfgAi43W0Idok0j/rgDA58FSH5KOHouM4Q8tq5EwKx5JBj1mzZF
-         woIB6pkNVzWIW6wdFYw9eN/7ROn042x/CARlIb9lCdUmCfrk9AOSgvLIZX6rPfuOm88J
-         EP2ZuheLjwSCy9JuSDP7xfByvCltNv02D3VPEtmx4DHAV43wIICpnGT+0n1d+wgMyIAt
-         TQh5A8Fcxt94BK8bGhazfAfJa5cOf0ibmJ4yxPEJmK/fd99LGqAqEv0xO3Rb+G1Q+vnT
-         Juzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVxJiood5vmHPTpnEhhHNYLYRAHVjTeJ/jr7JkYg7u5J40biI3mkEp4+aDgrpNaPVQRdPlOlS9jMsD8mDZK+RSvHlYBohkS8doELDm8Ptxcdl4osKudzF29g9p/yY+8K0/05DFhib366e4s09E=
-X-Gm-Message-State: AOJu0Yzh5BLrGxHk5XrKqbpT/EsyeSwrX6JumgIMkwOS2ybm6ySNcrOv
-	RGe8x1vtzIDXyMRxvoINV8QtMzP3aimDQieWKOU0hXemLALECqD6
-X-Google-Smtp-Source: AGHT+IEYhfu4JIQARBLlRTK82jbbq24FhpCzudO3FGRm+9VC8IHIV63l+67Dn1fzRpfFXaPAb+xLfQ==
-X-Received: by 2002:a17:902:82c8:b0:1ec:5f1f:364f with SMTP id d9443c01a7336-1ef43d18196mr132940295ad.26.1715737742825;
-        Tue, 14 May 2024 18:49:02 -0700 (PDT)
-Received: from localhost.localdomain ([190.196.103.34])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0c160b1asm105738195ad.275.2024.05.14.18.49.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 May 2024 18:49:02 -0700 (PDT)
-From: Camila Alvarez <cam.alvarez.i@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Camila Alvarez <cam.alvarez.i@gmail.com>,
-	syzbot+249018ea545364f78d04@syzkaller.appspotmail.com
-Subject: [PATCH] guard against unknown r->data_type in bch2_sb_dev_has_data()
-Date: Tue, 14 May 2024 21:47:22 -0400
-Message-Id: <20240515014720.2482142-1-cam.alvarez.i@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VC8ZzEVW"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Keg0jiSN81Wa3nYaggknvxCwoJj5PEJrMVbonyZKJTw=; b=VC8ZzEVW7pcHbnf3lULvD3cxgN
+	VffP1SHapl/sAgpWcQPzagL8HPWl2CZaISZnehAXQ82tXyFpY9sc3b7/p6VKALiN+/LrwnIMP4RkC
+	MZNzovUkZBgJdk+tj32EjQunWtvsQpMZn/S6qt9NTfLDZh8S2Q4/I9iZbOpBEhQygIA5gkYnOFmom
+	fWyIRpAsJswXfRvuBRYyAcvAn25N7coAP4UyLnzrrKBihNTz7Bodow3MJJurHVN1p6InDTWCmTsdJ
+	I8Nlpkh9Psb98XRsZH1B30ZAlWsgZdlny3xaRngSLGIaid5sNAirBkKujgo3Hg7JTPrXxTv+mAb0K
+	r6d/nqZg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s7A96-000000052j7-1pIs;
+	Wed, 15 May 2024 08:38:00 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 629AA30068B; Wed, 15 May 2024 10:37:55 +0200 (CEST)
+Date: Wed, 15 May 2024 10:37:55 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
+	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com, bagasdotme@gmail.com,
+	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [RESEND PATCH v5 11/16] lib min_heap: Update min_heap_push() and
+ min_heap_pop() to return bool values
+Message-ID: <20240515083755.GB40213@noisy.programming.kicks-ass.net>
+References: <20240514084724.557100-1-visitorckw@gmail.com>
+ <20240514084724.557100-12-visitorckw@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240514084724.557100-12-visitorckw@gmail.com>
 
-Shift is perfomed only when the data type makes sense.
+On Tue, May 14, 2024 at 04:47:19PM +0800, Kuan-Wei Chiu wrote:
+> Modify the min_heap_push() and min_heap_pop() to return a boolean
+> value. They now return false when the operation fails and true when it
+> succeeds.
 
-Fix a missing guard on r->data_type being known.
+But why ?!
 
-Reported-by: syzbot+249018ea545364f78d04@syzkaller.appspotmail.com
-Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
----
- fs/bcachefs/replicas.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/bcachefs/replicas.c b/fs/bcachefs/replicas.c
-index 678b9c20e251..0fa91d0bf951 100644
---- a/fs/bcachefs/replicas.c
-+++ b/fs/bcachefs/replicas.c
-@@ -1006,14 +1006,14 @@ unsigned bch2_sb_dev_has_data(struct bch_sb *sb, unsigned dev)
- 
- 		for_each_replicas_entry(replicas, r)
- 			for (i = 0; i < r->nr_devs; i++)
--				if (r->devs[i] == dev)
-+				if (r->devs[i] == dev && r->data_type < BCH_DATA_NR)
- 					data_has |= 1 << r->data_type;
- 	} else if (replicas_v0) {
- 		struct bch_replicas_entry_v0 *r;
- 
- 		for_each_replicas_entry_v0(replicas_v0, r)
- 			for (i = 0; i < r->nr_devs; i++)
--				if (r->devs[i] == dev)
-+				if (r->devs[i] == dev && r->data_type < BCH_DATA_NR)
- 					data_has |= 1 << r->data_type;
- 	}
- 
--- 
-2.34.1
-
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> ---
+>  include/linux/min_heap.h | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
+> index c94f9d303205..2d080f85ad0d 100644
+> --- a/include/linux/min_heap.h
+> +++ b/include/linux/min_heap.h
+> @@ -147,18 +147,20 @@ void __min_heapify_all(min_heap_char *heap, size_t elem_size,
+>  
+>  /* Remove minimum element from the heap, O(log2(nr)). */
+>  static __always_inline
+> -void __min_heap_pop(min_heap_char *heap, size_t elem_size,
+> +bool __min_heap_pop(min_heap_char *heap, size_t elem_size,
+>  		const struct min_heap_callbacks *func, void *args)
+>  {
+>  	void *data = heap->data;
+>  
+>  	if (WARN_ONCE(heap->nr <= 0, "Popping an empty heap"))
+> -		return;
+> +		return false;
+>  
+>  	/* Place last element at the root (position 0) and then sift down. */
+>  	heap->nr--;
+>  	memcpy(data, data + (heap->nr * elem_size), elem_size);
+>  	__min_heapify(heap, 0, elem_size, func, args);
+> +
+> +	return true;
+>  }
+>  
+>  #define min_heap_pop(_heap, _func, _args)	\
+> @@ -184,7 +186,7 @@ void __min_heap_pop_push(min_heap_char *heap,
+>  
+>  /* Push an element on to the heap, O(log2(nr)). */
+>  static __always_inline
+> -void __min_heap_push(min_heap_char *heap, const void *element, size_t elem_size,
+> +bool __min_heap_push(min_heap_char *heap, const void *element, size_t elem_size,
+>  		const struct min_heap_callbacks *func, void *args)
+>  {
+>  	void *data = heap->data;
+> @@ -192,7 +194,7 @@ void __min_heap_push(min_heap_char *heap, const void *element, size_t elem_size,
+>  	int pos;
+>  
+>  	if (WARN_ONCE(heap->nr >= heap->size, "Pushing on a full heap"))
+> -		return;
+> +		return false;
+>  
+>  	/* Place at the end of data. */
+>  	pos = heap->nr;
+> @@ -207,6 +209,8 @@ void __min_heap_push(min_heap_char *heap, const void *element, size_t elem_size,
+>  			break;
+>  		func->swp(parent, child, args);
+>  	}
+> +
+> +	return true;
+>  }
+>  
+>  #define min_heap_push(_heap, _element, _func, _args)	\
+> -- 
+> 2.34.1
+> 
