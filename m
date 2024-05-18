@@ -1,192 +1,158 @@
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D3965C;
-	Sat, 18 May 2024 01:25:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223BEDDDA
+	for <linux-bcachefs@vger.kernel.org>; Sat, 18 May 2024 20:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715995513; cv=none; b=SX2g7qNzf5P7MK2kHRCw1Z0cEULKD7HqWqcyNHJrwHM8Y0OlvJG1uC2G4QRKqrfsoYOUS5ilbqXp56YSQzk2v0daM15pinEDD0JPqM1IFwp6WPg1/KKe7nDW/WrGHD/6ljvjqqD0qzFZoTnmvnLa81QokYrd8809GvcBQsLOr5M=
+	t=1716065018; cv=none; b=TZyNZ6F0RVbG8Y5pFlQ3LkgbDElDVk5uHpQWPi0gqFa5UqRq6gIb2nCx+KZdVBcBKiEnyJeor4vdyTlL69cxDkKmR9k4fGLg0NODylIBF9X40oddfZeE5fUyFK6vVI7Ht9KoENiBUz8SDFRHsuOLCIXmZTqI6pDm2EzNIiW0OYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715995513; c=relaxed/simple;
-	bh=c5iU4d0KugAsNiJ78E34UP2hhUUvKxnLdWrV/fkAXuI=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ZxTMHPXJnbRKgTAe6Exg/038B6vpvCRiAc+Tq+zyLfLBPAAr7dxjDgF2UGaxwMZIcG0CmnHejuohAE4MTRqm65iZ8uDWwB5SNMmIzkYZsPVYd2USdqcKidou6mNozksVW50UIqePe+LXltcJiKis8cMxCjiqQdXTG9iq378/S1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g0oui8BW; arc=none smtp.client-ip=209.85.161.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g0oui8BW"
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5b2a66dce8fso1468743eaf.1;
-        Fri, 17 May 2024 18:25:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715995511; x=1716600311; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=cJqjedwoYcqSzJKmZSEwT+6hVhtxWLfg/8QtauvSdx4=;
-        b=g0oui8BWmxbItAviDcBucf+JrhEomIE1vGwQe2ELqLIPFBsh7qKucLJ4AgLZa7xvh0
-         1W3qPtqFSP2U66sEdLe5kv7PfumH1wGyKH7hUeXTrpD7yy9yXwLUAzgAQry6dPE0cBSH
-         DUKU0UvEsDymG9eGRGIzaafvBHf1R1BgcYfRwY8xNBNwoK5ITYu5P7ozP8z1Obd64aMw
-         HDjibsZPw3sEhJFk1vYBkclXkZbFbH7ch68uDtHKmZEriNYFZ2oGu+Y631CPgn4d3T35
-         v/UxW7WCm9iW2FRVexEWXEJXgYPnFtfpu9y0Mal+XQTg4u41bz3vy//mrS8TeUEcVKrz
-         ohiA==
+	s=arc-20240116; t=1716065018; c=relaxed/simple;
+	bh=XayhhKs5W56XNIS/yiISSy/ifrpRIakexWRL0yJ8DNM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YVNpAc3niTIvq0/ilB5lwNbKLS5qVa/YUJe5ksDe65lMZbkHIT/mMgX/vAPnbtJjW1Gt/TEg5rSymRmuZvJf0cn6oMyqSGs3uP39lGnaOUH0ji2A86nIFzVMxar8GTMJhop3brvjtCHF1cQahqzPsFnq7ssH68IYhVvmYFY7R4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-7e1de4c052aso838222339f.0
+        for <linux-bcachefs@vger.kernel.org>; Sat, 18 May 2024 13:43:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715995511; x=1716600311;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cJqjedwoYcqSzJKmZSEwT+6hVhtxWLfg/8QtauvSdx4=;
-        b=SzA1QXlIyd+RL5jz2FYFQxXaHU4fZGIxwu6E7xaOgicIZNByhA05MBJvMWBfY5xxGL
-         42ZGzyMkJfKfR7eG/ZrbUtB5OCdagL0f2irFVOIFeKr8n+PXelPemsWnE53pJH4Sr7Fc
-         BW+4pMpON50JmgRs6BC7jJ+YRBhGCk/Ap6T46hYR42iqsPr7L5TPwzGwgvKSowHgh1+N
-         C7LhiDiaUXQHDKtlTfpqBCXZP6VPYQuEWl4BBn/nAGApjqoj5upIJOS7X3MxZzjG8QUs
-         9kTx707HCrDdeIOAsgyhoZ/BII/WcqLysA/rILiY4IVNewfir/2v3CObDD/f4dcyLBTL
-         c1UA==
-X-Forwarded-Encrypted: i=1; AJvYcCVa6CWuh/KqbbccxrWQavFAGBhtRgr0eQ9ztFhgTSHYv38dPRywjYVBOE+N7LjoRmXyCnFLsbSLloG2YI55xbHvJP7ia7FdSiJX5hs/FIdkktXtPJWZO//6Izgw4HOGfg7XsV1MGecqBQTUNkwllHVJevd+Ug5KdVHxfbT8QamKR024WMNeTGfFuRmX7u2sj/WV8dn4on9vzaTZqhWAbD8oOw22l+zbTJmuUKKAoEfUvVnfNKRy3rrvUFZo3v/LIQzZefcO58hLRz3BJXnqqTX6o0RDr/8zVIo5X+lp5CeT+QJ9ciLpgdh8gKS4iVyQXvRDZ/Qk+rNIbN0thKWDVW4Hv+n3U/XgSSsjaYuZBvobm6n/LT7Z+ZoHQFyVzCfNU4ZgqvTIgtpslVQK7TutLW12mv2+zD9y4o6NC+WmPlIHu5lvtYHL7cPRPrWTXRl3v1hlkwpOfT2Vb6R3Uw6GiZ+RG/pNkQoNudXmmHR7235JMmOD1YT30Xt9N+JLoWbsBzOL3DSv7jtRgNA3u4VXWZOZ835u5SdZWRH3qb8EhoVVr3HMM9nmQir6IeFzT3VdcFn88w2Q33gaGr5SPQ4lji5a1qUtiLdqUZMVX9V/yGez+hnCca8W1wRlkLY07xnbFbBQeK+ncJVGWn+cskHf5sxLQPz22lD8Nd0OXP2BIn3dMiEAbRCNxXNFfr6tplgy4hozWAnUvmtAGpqJT3eWVZfzMQUerbfS7BHrLkIRSQR1bv63Kdngg21MQm8VQB+OLZRXeHGKAMwqUumrEXFQXtpMinyzHNyU1eMJ2UfTF+kmP7lQWxQ0N7etUdtonXNjMDreuEOuWQM7wWRDcOIe2I4rTpPMZ1b4c0eGDykBsFnHDVuSTM7biVAM87+V9UkASNPPmmfA0qDdWw8wqLXVFkhiQG8TUdRQRgQ2znQco9QvqxnVxz9nS+fVIwXbSQ==
-X-Gm-Message-State: AOJu0YyStgOonZLR8P9uFPcLec0CPpRmzncZT/8wJvWZV5mgdBy55THl
-	lgC3OOHhwzJQsuQGpa47XsNxatoNdjT/+gRw/11hYZb5Fsx8Kkh2
-X-Google-Smtp-Source: AGHT+IFRaG5+veBhAS+2oO1Mq9a7mnKgK9vX9unu3cCbE/KbyDzrBjSt084GN8tso2cWg108BqN4VA==
-X-Received: by 2002:a05:6870:a3d2:b0:240:c8ff:c96a with SMTP id 586e51a60fabf-241728fc1damr27553351fac.27.1715995510785;
-        Fri, 17 May 2024 18:25:10 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2a66316sm15339938b3a.35.2024.05.17.18.25.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 May 2024 18:25:09 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <64db2b94-edb3-4ea3-87cf-bb91746869e6@roeck-us.net>
-Date: Fri, 17 May 2024 18:25:06 -0700
+        d=1e100.net; s=20230601; t=1716065016; x=1716669816;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j/tRi7J9Dk1JIeQHPlU6XLpuklGtL7VCr0iD1LdQxwk=;
+        b=SEthuuxi7A2cZonsvUb54poJFI87I9OYxTY+QuRK4lSXHFXidLQddB1J14Zs3EQh2c
+         3oNMj4kDHZvKO2F3PcFinLvU+S9JjJUcydRUor0NVdzRgQOaKr6gHfgfppqNZCtVXxO8
+         7wmmhSXn+AqDz9g7iTroK9pqobYxm2xZnraYTpGr4U1qCi6kCN7/NkdnvdWVR9o7I1Ir
+         mFaRB+VrliiBPWr/u+w7l0Srkl8rWFZjHcrGRMuYlPPRWUv7hKUEMDVV22rfeFx55WUm
+         cNhexeyD7PuvIG6FLM2PthNAytDklv6jAHmZ3hrLi0t2CJL87LYe4ObpJnzsPLjzfNl8
+         bkLA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZFmHFn3S1rOgjuBfQHx3Dw/NuF6xVyi7enFCXt9lDO+SSbehFymems3tS27dCIs64ytJym5PzvEu01iH4KG2Ov0h7/oBcSjuEaErEc8I=
+X-Gm-Message-State: AOJu0YyiFFmo+vhBul9PuCNtYIrLRHbNehOziiiGvl6wE676QRM4F7vf
+	zQ4TR/VPF7+H07CKjFUL9ACXJaa27IEwubOBa/Ut6zyFAS6RupOYWonfRkIVkeW2/zOgBT5H9PU
+	LhBDIHeO89Cmn0BSZi+6ZkacenSTvbbpAWvrCThIRvbvwZYxmsKUN8No=
+X-Google-Smtp-Source: AGHT+IHfQe6H1WxHzTcehDR08YuRfc5uMFj3ir5DUP7gq/GTcUz5zqTQKe56rzCHfy2wF2NqT3n3sNksVKk7Iw+DoxvJOwIS4z2o
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing/treewide: Remove second parameter of
- __assign_str()
-From: Guenter Roeck <linux@roeck-us.net>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
- linux-block@vger.kernel.org, linux-cxl@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- intel-xe@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
- freedreno@lists.freedesktop.org, virtualization@lists.linux.dev,
- linux-rdma@vger.kernel.org, linux-pm@vger.kernel.org, iommu@lists.linux.dev,
- linux-tegra@vger.kernel.org, netdev@vger.kernel.org,
- linux-hyperv@vger.kernel.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
- ath12k@lists.infradead.org, brcm80211@lists.linux.dev,
- brcm80211-dev-list.pdl@broadcom.com, linux-usb@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-nfs@vger.kernel.org,
- ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-edac@vger.kernel.org,
- selinux@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-hwmon@vger.kernel.org, io-uring@vger.kernel.org,
- linux-sound@vger.kernel.org, bpf@vger.kernel.org,
- linux-wpan@vger.kernel.org, dev@openvswitch.org, linux-s390@vger.kernel.org,
- tipc-discussion@lists.sourceforge.net, Julia Lawall <Julia.Lawall@inria.fr>
-References: <20240516133454.681ba6a0@rorschach.local.home>
- <5080f4c5-e0b3-4c2e-9732-f673d7e6ca66@roeck-us.net>
- <20240517134834.43e726dd@gandalf.local.home>
- <5cff0ff0-48d1-49f8-84f4-bb33571fdf16@roeck-us.net>
-Content-Language: en-US
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <5cff0ff0-48d1-49f8-84f4-bb33571fdf16@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:3ca:b0:7de:e175:fd2d with SMTP id
+ ca18e2360f4ac-7e1b521f29dmr204930539f.3.1716065016481; Sat, 18 May 2024
+ 13:43:36 -0700 (PDT)
+Date: Sat, 18 May 2024 13:43:36 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b81e880618c085e7@google.com>
+Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_bset_fix_lookup_table
+From: syzbot <syzbot+097987693500c9e31552@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 5/17/24 11:00, Guenter Roeck wrote:
-> On 5/17/24 10:48, Steven Rostedt wrote:
->> On Fri, 17 May 2024 10:36:37 -0700
->> Guenter Roeck <linux@roeck-us.net> wrote:
->>
->>> Building csky:allmodconfig (and others) ... failed
->>> --------------
->>> Error log:
->>> In file included from include/trace/trace_events.h:419,
->>>                   from include/trace/define_trace.h:102,
->>>                   from drivers/cxl/core/trace.h:737,
->>>                   from drivers/cxl/core/trace.c:8:
->>> drivers/cxl/core/./trace.h:383:1: error: macro "__assign_str" passed 2 arguments, but takes just 1
->>>
->>> This is with the patch applied on top of v6.9-8410-gff2632d7d08e.
->>> So far that seems to be the only build failure.
->>> Introduced with commit 6aec00139d3a8 ("cxl/core: Add region info to
->>> cxl_general_media and cxl_dram events"). Guess we'll see more of those
->>> towards the end of the commit window.
->>
->> Looks like I made this patch just before this commit was pulled into
->> Linus's tree.
->>
->> Which is why I'll apply and rerun the above again probably on Tuesday of
->> next week against Linus's latest.
->>
->> This patch made it through both an allyesconfig and an allmodconfig, but on
->> the commit I had applied it to, which was:
->>
->>    1b294a1f3561 ("Merge tag 'net-next-6.10' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next")
->>
->> I'll be compiling those two builds after I update it then.
->>
-> 
-> I am currently repeating my test builds with the above errors fixed.
-> That should take a couple of hours. I'll let you know how it goes.
-> 
+Hello,
 
-There are no more build failures caused by this patch after fixing the above
-errors.
+syzbot found the following issue on:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+HEAD commit:    a5131c3fdf26 Merge tag 'x86-shstk-2024-05-13' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16133182980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=64e100d74625a6a5
+dashboard link: https://syzkaller.appspot.com/bug?extid=097987693500c9e31552
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Guenter
+Unfortunately, I don't have any reproducer for this issue yet.
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/81edac548743/disk-a5131c3f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/42f67aa888e5/vmlinux-a5131c3f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2e5cf5b3704d/bzImage-a5131c3f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+097987693500c9e31552@syzkaller.appspotmail.com
+
+bcachefs (loop0): done starting filesystem
+=====================================================
+BUG: KMSAN: uninit-value in bch2_bset_fix_lookup_table+0x15e1/0x1e90 fs/bcachefs/bset.c:986
+ bch2_bset_fix_lookup_table+0x15e1/0x1e90 fs/bcachefs/bset.c:986
+ bch2_bset_insert+0x1617/0x19f0 fs/bcachefs/bset.c:1042
+ bch2_btree_bset_insert_key+0xf56/0x2b70 fs/bcachefs/btree_trans_commit.c:194
+ bch2_btree_insert_key_leaf+0x276/0x1050 fs/bcachefs/btree_trans_commit.c:277
+ bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:744 [inline]
+ do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:854 [inline]
+ __bch2_trans_commit+0x98e6/0xab10 fs/bcachefs/btree_trans_commit.c:1093
+ bch2_trans_commit fs/bcachefs/btree_update.h:168 [inline]
+ __bch2_create+0xe93/0x15d0 fs/bcachefs/fs.c:327
+ bch2_mknod fs/bcachefs/fs.c:451 [inline]
+ bch2_create+0xdd/0x1e0 fs/bcachefs/fs.c:465
+ lookup_open fs/namei.c:3505 [inline]
+ open_last_lookups fs/namei.c:3574 [inline]
+ path_openat+0x2d74/0x5b00 fs/namei.c:3804
+ do_filp_open+0x20e/0x590 fs/namei.c:3834
+ do_sys_openat2+0x1bf/0x2f0 fs/open.c:1406
+ do_sys_open fs/open.c:1421 [inline]
+ __do_sys_openat fs/open.c:1437 [inline]
+ __se_sys_openat fs/open.c:1432 [inline]
+ __x64_sys_openat+0x2a1/0x310 fs/open.c:1432
+ x64_sys_call+0x3a64/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:258
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Uninit was created at:
+ __kmalloc_large_node+0x231/0x370 mm/slub.c:3994
+ __do_kmalloc_node mm/slub.c:4027 [inline]
+ __kmalloc_node+0xb10/0x10c0 mm/slub.c:4046
+ kmalloc_node include/linux/slab.h:648 [inline]
+ kvmalloc_node+0xc0/0x2d0 mm/util.c:634
+ kvmalloc include/linux/slab.h:766 [inline]
+ btree_bounce_alloc fs/bcachefs/btree_io.c:118 [inline]
+ bch2_btree_node_read_done+0x4e68/0x75e0 fs/bcachefs/btree_io.c:1185
+ btree_node_read_work+0x8a5/0x1eb0 fs/bcachefs/btree_io.c:1324
+ bch2_btree_node_read+0x3d42/0x4b50
+ __bch2_btree_root_read fs/bcachefs/btree_io.c:1748 [inline]
+ bch2_btree_root_read+0xa6c/0x13d0 fs/bcachefs/btree_io.c:1772
+ read_btree_roots+0x454/0xee0 fs/bcachefs/recovery.c:457
+ bch2_fs_recovery+0x7b6a/0x93e0 fs/bcachefs/recovery.c:785
+ bch2_fs_start+0x7b2/0xbd0 fs/bcachefs/super.c:1043
+ bch2_fs_open+0x152a/0x15f0 fs/bcachefs/super.c:2105
+ bch2_mount+0x90d/0x1d90 fs/bcachefs/fs.c:1906
+ legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa7/0x570 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+ x64_sys_call+0x2bf4/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:166
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 0 PID: 6538 Comm: syz-executor.0 Not tainted 6.9.0-syzkaller-01768-ga5131c3fdf26 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
