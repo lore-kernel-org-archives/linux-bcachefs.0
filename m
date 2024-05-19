@@ -1,63 +1,88 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCBE70CC9;
-	Sun, 19 May 2024 21:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6FE22067
+	for <linux-bcachefs@vger.kernel.org>; Sun, 19 May 2024 23:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716153468; cv=none; b=ZNOKynT8m4CmiHXxIQwxJDJnqk4TtyKi8TEvcOBiN1V9yvXMDkNV9S5aCBm1JsRMvlqGD6EnMjUNN6l6xxf0zqbaKzV6nCsn2eoLqTduR9YGFHgJ9cVdZ+d4xWdmFj78xu1CJlJ5SBLWnG70yiSKAVU0KG8jsilgF6qlqotVOKM=
+	t=1716159809; cv=none; b=P8oefcOpGohq9QxsOMSmB14XXoDRsyTAIW2/Y6+Ob+mkXiT31OhsM63kDKbrr2B+DvmrgUxTg8dx7aENzwvkL2UQfDYD2lyOX22u83ey7Qas72vQf6+iyM4cbnJTbC26vbib9nKGOLMqV7juU/BrJDv5RdVQjqX/adzTZT/3LwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716153468; c=relaxed/simple;
-	bh=L9EV97sPt9xWQQld3xm0ssIxE9A+ASUKZG/lw+C6kNA=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=thp2xgdIpLKehnAuDWYtKVLt2FK0/lra6IczKtRXq8pb6NAtJ/nZPQsyxzsHTLe7bCnBhxZaL5Bvn7D3/LkQBtfDchkBdan1cHYF3Owg8P0dZjxLY8QTpHUKZ5vvtLqwCHvggbzEp/lR0SMZvqScGjpoyX6Ij3Q1wWFzu6J/0vM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hrF2eR3o; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1716159809; c=relaxed/simple;
+	bh=f+dqr7wX6Dzc+IEUgIjY13qVsDw6pGhMt1gywjtRTo8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VnL3l4myk6vUIc3TNAxznvz75Eon3LC10Q79HRtul2cKNSvfXIHVMPypXQRsPP6NBymHyPb8AoAqH/BWORpS1psHf3ChfHoWf3DkfpTK9WGb+wCZXWT2ndgQBEvl3gjw8hx+f8aoLUD5ylx1a4TYKEaIZLP2T6iAxiecbflvE3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f4IWLZse; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hrF2eR3o"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0E196C32781;
-	Sun, 19 May 2024 21:17:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716153468;
-	bh=L9EV97sPt9xWQQld3xm0ssIxE9A+ASUKZG/lw+C6kNA=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=hrF2eR3oMjIfn2eWQIXWjbCXqh6PGkVLyVdcLzv1A1icDk7umwb8gvZPLvaZPDK34
-	 eF/d+ltuZwtqeRkQ7p647x9WGWhIgrjhOxP6ZtnenxlDdnkkrw6zzi88rMeEur4iHO
-	 aRCYArfdyESUibgk8GnRs07dQ/HfapNgSg6CXzrMr5f94PPMjW8/1dMAMrIYTtaj7o
-	 RdGIzCs17VxijH18uzQzCL0PxnrzVPixUX6FxU5a/gjI1DcI62rGRHvKf7ZlCUpeKt
-	 szntOI4OjZvfYNjqc4OSjA/umjZSbMFT3EMwUSHJPUgqVUkeF2aue/SyCnLxTohWjU
-	 QBxNCqIYQR5/A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 060A3C54BB7;
-	Sun, 19 May 2024 21:17:48 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs updates fro 6.10-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
-References: <zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
-X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-05-19
-X-PR-Tracked-Commit-Id: 07f9a27f1969764d11374942961d51fee0ab628f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 16dbfae867cdeb32f3d24cea81193793d5decc61
-Message-Id: <171615346802.27435.6337486479236696488.pr-tracker-bot@kernel.org>
-Date: Sun, 19 May 2024 21:17:48 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f4IWLZse"
+X-Envelope-To: peterz@infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1716159805;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+V0S8PCd3+C0VSIsGmhpI47bpGeTogzeC9Uf4DblCds=;
+	b=f4IWLZseKij1P3S6iUqOHooBGx4YmH63N1gk6Db5y9+fNEwSYsB5ZWryj6CL/6Zp1k7KMO
+	SXRrBiH2liO9rphAmazVFlmynGsMBvRp3AVIXqEOFxiO7bO6bM+N2G1qZd/b7Pq4BT2oX9
+	y4a7bSknDHt6o0pyTN4E3oVxsZEC5y0=
+X-Envelope-To: visitorckw@gmail.com
+X-Envelope-To: colyli@suse.de
+X-Envelope-To: msakai@redhat.com
+X-Envelope-To: mingo@redhat.com
+X-Envelope-To: acme@kernel.org
+X-Envelope-To: namhyung@kernel.org
+X-Envelope-To: akpm@linux-foundation.org
+X-Envelope-To: bfoster@redhat.com
+X-Envelope-To: mark.rutland@arm.com
+X-Envelope-To: alexander.shishkin@linux.intel.com
+X-Envelope-To: jolsa@kernel.org
+X-Envelope-To: irogers@google.com
+X-Envelope-To: adrian.hunter@intel.com
+X-Envelope-To: bagasdotme@gmail.com
+X-Envelope-To: jserv@ccns.ncku.edu.tw
+X-Envelope-To: linux-bcache@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: dm-devel@lists.linux.dev
+X-Envelope-To: linux-bcachefs@vger.kernel.org
+X-Envelope-To: linux-perf-users@vger.kernel.org
+Date: Sun, 19 May 2024 19:03:20 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, colyli@suse.de, 
+	msakai@redhat.com, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
+	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	bagasdotme@gmail.com, jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org
+Subject: Re: [RESEND PATCH v5 11/16] lib min_heap: Update min_heap_push() and
+ min_heap_pop() to return bool values
+Message-ID: <tnsqm2iw2qmyll6hmgfadh6bgorpsqjjgefibg2vagopyqurjt@vrix7erg2jp7>
+References: <20240514084724.557100-1-visitorckw@gmail.com>
+ <20240514084724.557100-12-visitorckw@gmail.com>
+ <20240515083755.GB40213@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240515083755.GB40213@noisy.programming.kicks-ass.net>
+X-Migadu-Flow: FLOW_OUT
 
-The pull request you sent on Sun, 19 May 2024 12:14:34 -0400:
+On Wed, May 15, 2024 at 10:37:55AM +0200, Peter Zijlstra wrote:
+> On Tue, May 14, 2024 at 04:47:19PM +0800, Kuan-Wei Chiu wrote:
+> > Modify the min_heap_push() and min_heap_pop() to return a boolean
+> > value. They now return false when the operation fails and true when it
+> > succeeds.
+> 
+> But why ?!
 
-> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-05-19
+like Kuan said, it makes for cleaner code.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/16dbfae867cdeb32f3d24cea81193793d5decc61
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+It's also what the bcache/bcachefs heap (and fifo) implementations do,
+which we're consolidating.
