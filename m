@@ -1,98 +1,63 @@
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30124501B
-	for <linux-bcachefs@vger.kernel.org>; Sun, 19 May 2024 18:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCBE70CC9;
+	Sun, 19 May 2024 21:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716143121; cv=none; b=rkMINtySeLG5qou6kUiJrAis4b1TILyc7Pp7/9WsNIKodvNlKlYXgjsJDGlwEadRtt7kaqoVrIZZnMnnhMtwhsJ8JlX1aF3tFlBfHOFvtpytM0uvWpHJDbrLFYHQUp4C/gay6C2KVP03I20i/PAIsg106p/yj+iofY//LUxCdgk=
+	t=1716153468; cv=none; b=ZNOKynT8m4CmiHXxIQwxJDJnqk4TtyKi8TEvcOBiN1V9yvXMDkNV9S5aCBm1JsRMvlqGD6EnMjUNN6l6xxf0zqbaKzV6nCsn2eoLqTduR9YGFHgJ9cVdZ+d4xWdmFj78xu1CJlJ5SBLWnG70yiSKAVU0KG8jsilgF6qlqotVOKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716143121; c=relaxed/simple;
-	bh=BPkMiBJmFbqc3tij2Xd3XOMpsHnYCTRsmbhkmPPLLfE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LbjuWi8slXERaugxZiHmwxuXZ8VW+wZChUUtRFxEVRiOiVlYvYGSZtGjvZ3eDs+bgtB3NMrUqr1YtHhIoptN0cyymokwwUhSqRTZ2aSv79iteRNuEtpV86VUURyfLtOWd4aXKPqdITl3px6tAgCdDk9QqN7gt0fgJnHU+VUMC84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eb7nYwoJ; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1716153468; c=relaxed/simple;
+	bh=L9EV97sPt9xWQQld3xm0ssIxE9A+ASUKZG/lw+C6kNA=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=thp2xgdIpLKehnAuDWYtKVLt2FK0/lra6IczKtRXq8pb6NAtJ/nZPQsyxzsHTLe7bCnBhxZaL5Bvn7D3/LkQBtfDchkBdan1cHYF3Owg8P0dZjxLY8QTpHUKZ5vvtLqwCHvggbzEp/lR0SMZvqScGjpoyX6Ij3Q1wWFzu6J/0vM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hrF2eR3o; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eb7nYwoJ"
-X-Envelope-To: cam.alvarez.i@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716143113;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CZcRqAT2Hi9yDWO8AgOOTA1HMWZQbltFlns+P+hoiOI=;
-	b=eb7nYwoJyvWNoWkYNPH+CFyEFJ0HVytomFWb0PeZC2uSgdpleQWs4IDXu2+bLMzWv2jguS
-	DP4iRbeMl6da1jVTYnhei4eHdYUjzWoYlos8Yf+f8IaymOQVhGVbF+pTTwPGFeZUbYDoCv
-	QlejPHzVPF2le/OP2jsHfXKI9WHo3AY=
-X-Envelope-To: bfoster@redhat.com
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: syzbot+10b936c5eaee2819b49b@syzkaller.appspotmail.com
-Date: Sun, 19 May 2024 14:25:09 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Camila Alvarez <cam.alvarez.i@gmail.com>
-Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzbot+10b936c5eaee2819b49b@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: fix last_seq and last_empty_seq in
- bch2_fs_journal_start()
-Message-ID: <c7qpzaeqhyvkbgaplvazj6steii5ayta7gtidmy24u7gfnnkuc@nhc2swhzmuff>
-References: <20240516031919.592696-1-cam.alvarez.i@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hrF2eR3o"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0E196C32781;
+	Sun, 19 May 2024 21:17:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716153468;
+	bh=L9EV97sPt9xWQQld3xm0ssIxE9A+ASUKZG/lw+C6kNA=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=hrF2eR3oMjIfn2eWQIXWjbCXqh6PGkVLyVdcLzv1A1icDk7umwb8gvZPLvaZPDK34
+	 eF/d+ltuZwtqeRkQ7p647x9WGWhIgrjhOxP6ZtnenxlDdnkkrw6zzi88rMeEur4iHO
+	 aRCYArfdyESUibgk8GnRs07dQ/HfapNgSg6CXzrMr5f94PPMjW8/1dMAMrIYTtaj7o
+	 RdGIzCs17VxijH18uzQzCL0PxnrzVPixUX6FxU5a/gjI1DcI62rGRHvKf7ZlCUpeKt
+	 szntOI4OjZvfYNjqc4OSjA/umjZSbMFT3EMwUSHJPUgqVUkeF2aue/SyCnLxTohWjU
+	 QBxNCqIYQR5/A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 060A3C54BB7;
+	Sun, 19 May 2024 21:17:48 +0000 (UTC)
+Subject: Re: [GIT PULL] bcachefs updates fro 6.10-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
+References: <zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
+X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
+X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-05-19
+X-PR-Tracked-Commit-Id: 07f9a27f1969764d11374942961d51fee0ab628f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 16dbfae867cdeb32f3d24cea81193793d5decc61
+Message-Id: <171615346802.27435.6337486479236696488.pr-tracker-bot@kernel.org>
+Date: Sun, 19 May 2024 21:17:48 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240516031919.592696-1-cam.alvarez.i@gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Wed, May 15, 2024 at 11:19:20PM -0400, Camila Alvarez wrote:
-> Values were left as the next possible sequence number when there were no
-> entries.
-> 
-> The fix involves updating the last_seq initial value and
-> setting last_empty_seq to cur_seq - 1.
+The pull request you sent on Sun, 19 May 2024 12:14:34 -0400:
 
-I think this is correct, but we should try to come up with some better
-assertions or something to make the code clearer; we don't want off by
-ones to lurk so easily.
+> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-05-19
 
-Could you give it some thought?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/16dbfae867cdeb32f3d24cea81193793d5decc61
 
-> 
-> Reported-by: syzbot+10b936c5eaee2819b49b@syzkaller.appspotmail.com
-> Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
-> ---
->  fs/bcachefs/journal.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
-> index adec8e1ea73e..3835c458eec9 100644
-> --- a/fs/bcachefs/journal.c
-> +++ b/fs/bcachefs/journal.c
-> @@ -1196,7 +1196,7 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
->  	struct journal_replay *i, **_i;
->  	struct genradix_iter iter;
->  	bool had_entries = false;
-> -	u64 last_seq = cur_seq, nr, seq;
-> +	u64 last_seq = cur_seq - 1, nr, seq;
->  
->  	genradix_for_each_reverse(&c->journal_entries, iter, _i) {
->  		i = *_i;
-> @@ -1256,7 +1256,7 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
->  	}
->  
->  	if (!had_entries)
-> -		j->last_empty_seq = cur_seq;
-> +		j->last_empty_seq = cur_seq - 1;
->  
->  	spin_lock(&j->lock);
->  
-> -- 
-> 2.34.1
-> 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
