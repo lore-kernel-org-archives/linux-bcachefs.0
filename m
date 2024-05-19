@@ -1,68 +1,45 @@
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6FE22067
-	for <linux-bcachefs@vger.kernel.org>; Sun, 19 May 2024 23:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88058F4A;
+	Sun, 19 May 2024 23:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716159809; cv=none; b=P8oefcOpGohq9QxsOMSmB14XXoDRsyTAIW2/Y6+Ob+mkXiT31OhsM63kDKbrr2B+DvmrgUxTg8dx7aENzwvkL2UQfDYD2lyOX22u83ey7Qas72vQf6+iyM4cbnJTbC26vbib9nKGOLMqV7juU/BrJDv5RdVQjqX/adzTZT/3LwU=
+	t=1716162536; cv=none; b=DZZ6akIubg9w13WmMrj6XqgttTA10t3CSCZLgFt6O9OFx+D80Uq79BG2v+/EqrjFvwL2xkGcEH7DtyedlWNx+dMVBo5cuuLW/11O3oYZR1UpGVr8VapRzBJEhjcu75FZ6JVyY4OMQcxzyCCqBU6HyBo6l6K1D9u9e4pu7upM5g8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716159809; c=relaxed/simple;
-	bh=f+dqr7wX6Dzc+IEUgIjY13qVsDw6pGhMt1gywjtRTo8=;
+	s=arc-20240116; t=1716162536; c=relaxed/simple;
+	bh=Ocv4cMWN/YJWoYreF+GfL6lTlF1Ai0HbQK1y9mrIcsk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VnL3l4myk6vUIc3TNAxznvz75Eon3LC10Q79HRtul2cKNSvfXIHVMPypXQRsPP6NBymHyPb8AoAqH/BWORpS1psHf3ChfHoWf3DkfpTK9WGb+wCZXWT2ndgQBEvl3gjw8hx+f8aoLUD5ylx1a4TYKEaIZLP2T6iAxiecbflvE3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f4IWLZse; arc=none smtp.client-ip=95.215.58.186
+	 Content-Type:Content-Disposition:In-Reply-To; b=qP34VAkG6KnsJPxtveGO6DWxAXl3De7uyaf8tCaKnTWbjcU2lcHhmSUsKKgEzZqEq0871Tgb8b79rWmX7CTPMManZcLdrEOJ82a2jlorhjXnEyB6o+LlFjPPb8yPsMIAC9Hj6rdMn7uY1I6kLEbbMBWXKUhpfT7RewF6sdpOAdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QUqcSwLG; arc=none smtp.client-ip=95.215.58.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f4IWLZse"
-X-Envelope-To: peterz@infradead.org
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QUqcSwLG"
+X-Envelope-To: cam.alvarez.i@gmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716159805;
+	t=1716162531;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+V0S8PCd3+C0VSIsGmhpI47bpGeTogzeC9Uf4DblCds=;
-	b=f4IWLZseKij1P3S6iUqOHooBGx4YmH63N1gk6Db5y9+fNEwSYsB5ZWryj6CL/6Zp1k7KMO
-	SXRrBiH2liO9rphAmazVFlmynGsMBvRp3AVIXqEOFxiO7bO6bM+N2G1qZd/b7Pq4BT2oX9
-	y4a7bSknDHt6o0pyTN4E3oVxsZEC5y0=
-X-Envelope-To: visitorckw@gmail.com
-X-Envelope-To: colyli@suse.de
-X-Envelope-To: msakai@redhat.com
-X-Envelope-To: mingo@redhat.com
-X-Envelope-To: acme@kernel.org
-X-Envelope-To: namhyung@kernel.org
-X-Envelope-To: akpm@linux-foundation.org
+	bh=YomE77DBn7ISQor+O+BG/IgfWqCbd+m1xARQsjuVbzo=;
+	b=QUqcSwLGLaTlyjcOC8DdjeMsQAyN2/X2pAEyUZ+gbOZX04yBscg1O8IfdZLK10Fu482pcr
+	60lZ6yjxF8iaBDohE9bw7AwrDtiVgEZwIJGpvH/52HKUfd/ZPgbqmytrWgmQ+Xk9J8fSC+
+	qndXyHN4ozf2dqkDTRlsutKRK3Qga1Q=
 X-Envelope-To: bfoster@redhat.com
-X-Envelope-To: mark.rutland@arm.com
-X-Envelope-To: alexander.shishkin@linux.intel.com
-X-Envelope-To: jolsa@kernel.org
-X-Envelope-To: irogers@google.com
-X-Envelope-To: adrian.hunter@intel.com
-X-Envelope-To: bagasdotme@gmail.com
-X-Envelope-To: jserv@ccns.ncku.edu.tw
-X-Envelope-To: linux-bcache@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: dm-devel@lists.linux.dev
 X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-perf-users@vger.kernel.org
-Date: Sun, 19 May 2024 19:03:20 -0400
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: syzbot+249018ea545364f78d04@syzkaller.appspotmail.com
+Date: Sun, 19 May 2024 19:48:47 -0400
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, colyli@suse.de, 
-	msakai@redhat.com, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	bagasdotme@gmail.com, jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Subject: Re: [RESEND PATCH v5 11/16] lib min_heap: Update min_heap_push() and
- min_heap_pop() to return bool values
-Message-ID: <tnsqm2iw2qmyll6hmgfadh6bgorpsqjjgefibg2vagopyqurjt@vrix7erg2jp7>
-References: <20240514084724.557100-1-visitorckw@gmail.com>
- <20240514084724.557100-12-visitorckw@gmail.com>
- <20240515083755.GB40213@noisy.programming.kicks-ass.net>
+To: Camila Alvarez <cam.alvarez.i@gmail.com>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzbot+249018ea545364f78d04@syzkaller.appspotmail.com
+Subject: Re: [PATCH] guard against unknown r->data_type in
+ bch2_sb_dev_has_data()
+Message-ID: <463goq53266oiymf2bpulp2jczyd37boxifqhem3hhhu5vxn3z@xdjdgmx3htsq>
+References: <20240515014720.2482142-1-cam.alvarez.i@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -71,18 +48,106 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240515083755.GB40213@noisy.programming.kicks-ass.net>
+In-Reply-To: <20240515014720.2482142-1-cam.alvarez.i@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, May 15, 2024 at 10:37:55AM +0200, Peter Zijlstra wrote:
-> On Tue, May 14, 2024 at 04:47:19PM +0800, Kuan-Wei Chiu wrote:
-> > Modify the min_heap_push() and min_heap_pop() to return a boolean
-> > value. They now return false when the operation fails and true when it
-> > succeeds.
+On Tue, May 14, 2024 at 09:47:22PM -0400, Camila Alvarez wrote:
+> Shift is perfomed only when the data type makes sense.
 > 
-> But why ?!
+> Fix a missing guard on r->data_type being known.
+> 
+> Reported-by: syzbot+249018ea545364f78d04@syzkaller.appspotmail.com
+> Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
 
-like Kuan said, it makes for cleaner code.
+Sorry I just now saw this, already applied a different fix - BCH_DATA_NR
+isn't the right guard here, because we need to be able to handle unknown
+data types for backwards compatibilicy. 
 
-It's also what the bcache/bcachefs heap (and fifo) implementations do,
-which we're consolidating.
+Here's my version:
+
+commit 85e8b546542c9a1f9050a7f53d92b8bd39c8e9d8
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Sun May 19 17:28:44 2024 -0400
+
+    bcachefs: Fix shift overflows in replicas.c
+    
+    We can't disallow unknown data_types in verify() - we have to preserve
+    them unchanged for backwards compat; that means we have to add a few
+    more guards.
+    
+    Reported-by: syzbot+249018ea545364f78d04@syzkaller.appspotmail.com
+    Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+
+diff --git a/fs/bcachefs/replicas.c b/fs/bcachefs/replicas.c
+index bd1d5d085e23..d45b10bc531c 100644
+--- a/fs/bcachefs/replicas.c
++++ b/fs/bcachefs/replicas.c
+@@ -524,13 +524,16 @@ int bch2_replicas_gc_start(struct bch_fs *c, unsigned typemask)
+ 	c->replicas_gc.nr		= 0;
+ 	c->replicas_gc.entry_size	= 0;
+ 
+-	for_each_cpu_replicas_entry(&c->replicas, e)
+-		if (!((1 << e->data_type) & typemask)) {
++	for_each_cpu_replicas_entry(&c->replicas, e) {
++		/* Preserve unknown data types */
++		if (e->data_type >= BCH_DATA_NR ||
++		    !((1 << e->data_type) & typemask)) {
+ 			c->replicas_gc.nr++;
+ 			c->replicas_gc.entry_size =
+ 				max_t(unsigned, c->replicas_gc.entry_size,
+ 				      replicas_entry_bytes(e));
+ 		}
++	}
+ 
+ 	c->replicas_gc.entries = kcalloc(c->replicas_gc.nr,
+ 					 c->replicas_gc.entry_size,
+@@ -542,7 +545,8 @@ int bch2_replicas_gc_start(struct bch_fs *c, unsigned typemask)
+ 	}
+ 
+ 	for_each_cpu_replicas_entry(&c->replicas, e)
+-		if (!((1 << e->data_type) & typemask))
++		if (e->data_type >= BCH_DATA_NR ||
++		    !((1 << e->data_type) & typemask))
+ 			memcpy(cpu_replicas_entry(&c->replicas_gc, i++),
+ 			       e, c->replicas_gc.entry_size);
+ 
+@@ -998,7 +1002,7 @@ unsigned bch2_sb_dev_has_data(struct bch_sb *sb, unsigned dev)
+ {
+ 	struct bch_sb_field_replicas *replicas;
+ 	struct bch_sb_field_replicas_v0 *replicas_v0;
+-	unsigned i, data_has = 0;
++	unsigned data_has = 0;
+ 
+ 	replicas = bch2_sb_field_get(sb, replicas);
+ 	replicas_v0 = bch2_sb_field_get(sb, replicas_v0);
+@@ -1006,17 +1010,26 @@ unsigned bch2_sb_dev_has_data(struct bch_sb *sb, unsigned dev)
+ 	if (replicas) {
+ 		struct bch_replicas_entry_v1 *r;
+ 
+-		for_each_replicas_entry(replicas, r)
+-			for (i = 0; i < r->nr_devs; i++)
++		for_each_replicas_entry(replicas, r) {
++			if (r->data_type >= sizeof(data_has) * 8)
++				continue;
++
++			for (unsigned i = 0; i < r->nr_devs; i++)
+ 				if (r->devs[i] == dev)
+ 					data_has |= 1 << r->data_type;
++		}
++
+ 	} else if (replicas_v0) {
+ 		struct bch_replicas_entry_v0 *r;
+ 
+-		for_each_replicas_entry_v0(replicas_v0, r)
+-			for (i = 0; i < r->nr_devs; i++)
++		for_each_replicas_entry_v0(replicas_v0, r) {
++			if (r->data_type >= sizeof(data_has) * 8)
++				continue;
++
++			for (unsigned i = 0; i < r->nr_devs; i++)
+ 				if (r->devs[i] == dev)
+ 					data_has |= 1 << r->data_type;
++		}
+ 	}
+ 
+ 
