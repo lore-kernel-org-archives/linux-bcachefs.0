@@ -1,130 +1,152 @@
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8EF0DF51;
-	Mon, 20 May 2024 02:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED014A33;
+	Mon, 20 May 2024 03:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716172978; cv=none; b=dY+d8VkbZsd11F1Iklpx376IZNaxH1VvOo0PHWOqDrEPW3t5torS3LGovWam7e3VPCNAJQ4MsWi9Ou0rHkRnGJh3tH85DLaX4vBKSl10rPan7c5klH7fKDmS5ojNlSazJKSpyF+2TkhjoCdOgpZR9289UIbiBQwpKkchzT5WDfY=
+	t=1716174625; cv=none; b=AoiYOJ+S+k2Vu1LE7yFkRLNk1V1mWfjJKif5/BYKZW3A9zzHWBGH54PDbZf7WVtc1iO6s8DE2k2RvCwb9Vio47i8Y4/yw3qt6lju+bzrLQFZ2olafRwXfICbFyeK+E+HlFhXYWZ7I79d4JPzU7s51TLzzW7p/94flMnyowfCTuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716172978; c=relaxed/simple;
-	bh=u8M29W93CLZk7xFCZDRHfyzapkR9x06WPG1ULAlSECw=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=okoaDjEt5bflGJtyGMUyB01fLgQ81Lzkyu1d1qVfrn4XHV658n7QeBr8gZwfc6N17nROGK1ydlpR/jKBpC7+Vlh3+wnp152GNv67R5dUYnlB4dMILfYkZ4PLTXaUZ/Yhm96XbJoYtbLnFf9wbAtjywEdNVIUxkSKFR6OcAVhgyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c21GpFSB; arc=none smtp.client-ip=209.85.160.50
+	s=arc-20240116; t=1716174625; c=relaxed/simple;
+	bh=4WqhMvI3Pf3B3fMZIlMXwBxz5QbKYJjAVHBs1SLNECg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MO7bGXANqqA5LibOyZmKaD0YyW3wxROPjMYg/YirYK2rlLgqzOdaGpJPZbqjAbaJISIMo746CF50IKjF9QvvWcGQGxf7OPWNvw5HDS+umL7yQIuRoS+Eo47NcahkPc+Pmy/T01IiNOHgTosFnQFXV602zoZdmvb4Exjp3k3HWXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iDGxVKOz; arc=none smtp.client-ip=209.85.167.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c21GpFSB"
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-23d3d092a1bso1761333fac.1;
-        Sun, 19 May 2024 19:42:56 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDGxVKOz"
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c996526c69so1612657b6e.1;
+        Sun, 19 May 2024 20:10:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716172976; x=1716777776; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:date
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tr1T7/XjuQtJAqIemXjuLBVV4b7VY8GatTsfPNLXx4Y=;
-        b=c21GpFSBH/ZaUJgQWp6iniMqns0RdzMsJsdv4upSUPNjvmBiK4C4c8b3UMoWcylo65
-         4eRPaLvDbb4FIyWOOZIe2L6TsdA2e3HN+IOqF4TEdyOo1Oy0xHgOfzwRJDrXWA+Un7ii
-         +g8UJvWNGKyNvnoo+5CVdFSfC8kuGUeCFEbp81LYv4SUrS505PkhuSySqe0KXxttmjC+
-         HScU0l48dCByDkRNdirOQUy8OaxPcmEzR76c2nmL+Dapx52r726uKQxJn6ZMVh8vbRlf
-         7IqHGqK/cSFPFsB4AXEnjK0H/Nvq83hf6CVH3PL/6QRLuo8UueIkwhZLp9gC244+MHDg
-         qJ4Q==
+        d=gmail.com; s=20230601; t=1716174623; x=1716779423; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZVgUzdTRON7x3qceRHjQMiQNT1s+DpVTz0XvEqqtJsY=;
+        b=iDGxVKOzt6mOUEaXu3Ng8R7MIPOVxiRAxwcpVrI5V2n5s1MfM1idawAKLYifyUWMkV
+         JPCUvWj42NhJWd1BYR7GuHM0JVB50yR3qk5+R06MQ76rE90pUJYtX6LojO+VR09G9W06
+         t23wp8bHrwFYwkIot2IbsRFKw8rCp7yqmEovcpj+K1CE3l6HuDyDqNhyogrJvSTrmvgI
+         iVM6yGqSlb2NNMcYu+70fCH34LfsrtlYL5Fpgp8gRn8CVByPHnPrjbLsmNuJ1O+zq+rt
+         wcGV7eT6SnFkwol+mHVrlUus4c/8DjRfUqrL336oh9q6UAu4v0WgwDAi9meu7YiwxOPN
+         6y0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716172976; x=1716777776;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:date
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tr1T7/XjuQtJAqIemXjuLBVV4b7VY8GatTsfPNLXx4Y=;
-        b=U9pWyIYKt7YQLR+HH32AVUIwN3MhxXkBMEsvVB2LAaRjqRQ6YfyqCEf4TyvQ6g+wiC
-         v3QKbJW4LzNBFalGu+yCdxLMQsQ/8n/nHOUCU9iKH79DMKazNqAcGJpgnIE4r9Z2Rexo
-         Yy5WJ43h5TR6z7AHMs/V9smpOvx+25tlMznXCYx62p2lKNfC8j+A2Yr/5tglZakCaDwv
-         UvWyaXVI+YwaD1UhZihxHGTpfjI7nGEAUFCdU/ZMOUyGTKTOPlpx8PtnQqBVRKEDLbdD
-         ho0Zme00Xg9mC0+GMw5Nf+NWnH+9XR6CBwl8iiuoA2l68k7Gn0yM80nCkHaafUOOtXiU
-         HTag==
-X-Forwarded-Encrypted: i=1; AJvYcCXMaXesKPX+hGM4YhTYRo42YR64z/6a3qwQ4R5xljhisipvJLSR75wzK2tdWXN/qb0iA88K2cX82mH5g7l89FfSrZCEZrE4qK4wjFV2oKWejLrYyv6UDIcMxxogAe0b6OJK1PrI9WczYIdDtBI=
-X-Gm-Message-State: AOJu0Yzg8SPfCUbfgc8LmAQi4roY3W34xdBdYvQn3dBjlYsVB38gzmfV
-	IFoOy3LO5SJrQfeHUlVzGPRFCZOQ4cDVXOOPQqyEJLUvvftj0SV/
-X-Google-Smtp-Source: AGHT+IGFCXVEvzoq9XyGC88P+7whkiD3/8oI+PvChhcLN5Tw7aYEULIzaHp9hLUHxfDb3mO0nLV3pA==
-X-Received: by 2002:a05:6870:4191:b0:233:2f5f:9e1 with SMTP id 586e51a60fabf-24172fc5112mr33193967fac.54.1716172975788;
-        Sun, 19 May 2024 19:42:55 -0700 (PDT)
-Received: from [192.168.7.110] ([190.196.103.34])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2a81c8csm18122707b3a.70.2024.05.19.19.42.54
+        d=1e100.net; s=20230601; t=1716174623; x=1716779423;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZVgUzdTRON7x3qceRHjQMiQNT1s+DpVTz0XvEqqtJsY=;
+        b=CvNnwOIdW8LlxsUjFcVPkLY2y4+4903xNSp+hpQCGQn0aIP/OWCIt1Lw/9/kCH6y7Y
+         /lSCuDD0LRCLnR+s1fnZmd3vlZClSj9pk76fFI1cWFNnxEZKqKqZh5ZhDSsPBhGVgrah
+         emKN1inr5JjesaJBlEBbm3/xXC92sj9QYSlSKhCotevz0ua3hkHvgwEijXQD3JEooZ3m
+         QL/x2EBUlSKc6vX/gnqfykdRGmQdhDKeDXMlC+eZD21WhHdgu/EolrqiQHVMAQaVYvz8
+         6Yd1dC/5VWuWMdxATY+iHU6tl6YGOyYT6kXNbMcppNZjjqsK+D39vRac9xy7X874Ntnm
+         2Yww==
+X-Forwarded-Encrypted: i=1; AJvYcCXQl0eQdXphrWS9OhOV5ExIJuo0ZtTCRwmis3+M47F9r5ivyetS8BBRLokF7bQ/eIKZ2UZr/mYatcjh6/SqqKEWzVgJFINBy4ObTgDIOzRfk5Nge31RW65OPplzdSUf0dq0bVcE/jWZu+kaPJ8=
+X-Gm-Message-State: AOJu0Yz6Hn3dlWIPAsFo+TfrAehybSG9ibfjCLdfSDx4dkLyq6RnjgcN
+	9usDgHJUXSgSRBpo1hi33DGgF5j+Bz8aY4AfIun4w8bp5r1prZm+
+X-Google-Smtp-Source: AGHT+IFcNGeYibn9vUd3PD/7IACDV3sLjPwIWkOLh5cZH4E2fUvUZxpCD+PJCEkiIrzBabpjwWNhig==
+X-Received: by 2002:a05:6808:2188:b0:3c9:93f1:c7b0 with SMTP id 5614622812f47-3c99705587fmr35557515b6e.20.1716174623126;
+        Sun, 19 May 2024 20:10:23 -0700 (PDT)
+Received: from localhost.localdomain ([190.196.103.34])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4f2cdedb7sm14541111b3a.52.2024.05.19.20.10.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 May 2024 19:42:55 -0700 (PDT)
-From: Camila Alvarez Inostroza <cam.alvarez.i@gmail.com>
-X-Google-Original-From: Camila Alvarez Inostroza <calvarez@macbook-pro-de-camila.local>
-Date: Sun, 19 May 2024 22:42:52 -0400 (-04)
+        Sun, 19 May 2024 20:10:22 -0700 (PDT)
+From: Camila Alvarez <cam.alvarez.i@gmail.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>
-cc: Camila Alvarez <cam.alvarez.i@gmail.com>, 
-    Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
-    linux-kernel@vger.kernel.org, 
-    syzbot+10b936c5eaee2819b49b@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: fix last_seq and last_empty_seq in
- bch2_fs_journal_start()
-In-Reply-To: <c7qpzaeqhyvkbgaplvazj6steii5ayta7gtidmy24u7gfnnkuc@nhc2swhzmuff>
-Message-ID: <69dde6ef-69d3-047c-c1b2-64ac51ac0302@macbook-pro-de-camila.local>
-References: <20240516031919.592696-1-cam.alvarez.i@gmail.com> <c7qpzaeqhyvkbgaplvazj6steii5ayta7gtidmy24u7gfnnkuc@nhc2swhzmuff>
+Cc: Brian Foster <bfoster@redhat.com>,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Camila Alvarez <cam.alvarez.i@gmail.com>,
+	syzbot+10b936c5eaee2819b49b@syzkaller.appspotmail.com
+Subject: [PATCH v2] bcachefs: fix last_seq and last_empty_seq in bch2_fs_journal_start()
+Date: Sun, 19 May 2024 22:57:34 -0400
+Message-Id: <20240520025733.688425-1-cam.alvarez.i@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 8bit
 
+Values were left as the next possible sequence number when there were no
+entries.
 
+The fix involves updating the last_seq initial value and
+setting last_empty_seq to cur_seq - 1.
 
-On Sun, 19 May 2024, Kent Overstreet wrote:
+Reported-by: syzbot+10b936c5eaee2819b49b@syzkaller.appspotmail.com
+Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
+---
+Changes in v2:
+- Introduce a new variable to distinguish the last sequence number, from
+  the last written sequence number
+- Abstract `cur_seq - 1` into a variable named `last_seq`
+- Reference to the last sequence number are changed from `cur_seq - 1`
+  to `last_seq`
+---
+ fs/bcachefs/journal.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-> On Wed, May 15, 2024 at 11:19:20PM -0400, Camila Alvarez wrote:
->> Values were left as the next possible sequence number when there were no
->> entries.
->>
->> The fix involves updating the last_seq initial value and
->> setting last_empty_seq to cur_seq - 1.
->
-> I think this is correct, but we should try to come up with some better
-> assertions or something to make the code clearer; we don't want off by
-> ones to lurk so easily.
->
-> Could you give it some thought?
->
-You're right. I think the code is written in a confusing way. In 
-particular it seems that cur_seq - 1 is used all over the place.
-I believe we can abstract cur_seq - 1 in an independent variable (since 
-it represents the actual last sequence number), that should make it 
-clearer.
-I'll share an updated version of the patch.
-Thanks for the response!
->>
->> Reported-by: syzbot+10b936c5eaee2819b49b@syzkaller.appspotmail.com
->> Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
->> ---
->>  fs/bcachefs/journal.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
->> index adec8e1ea73e..3835c458eec9 100644
->> --- a/fs/bcachefs/journal.c
->> +++ b/fs/bcachefs/journal.c
->> @@ -1196,7 +1196,7 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
->>  	struct journal_replay *i, **_i;
->>  	struct genradix_iter iter;
->>  	bool had_entries = false;
->> -	u64 last_seq = cur_seq, nr, seq;
->> +	u64 last_seq = cur_seq - 1, nr, seq;
->>
->>  	genradix_for_each_reverse(&c->journal_entries, iter, _i) {
->>  		i = *_i;
->> @@ -1256,7 +1256,7 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
->>  	}
->>
->>  	if (!had_entries)
->> -		j->last_empty_seq = cur_seq;
->> +		j->last_empty_seq = cur_seq - 1;
->>
->>  	spin_lock(&j->lock);
->>
->> --
->> 2.34.1
->>
->
+diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
+index adec8e1ea73e..99fc32f0382d 100644
+--- a/fs/bcachefs/journal.c
++++ b/fs/bcachefs/journal.c
+@@ -1195,8 +1195,8 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
+ 	struct journal_entry_pin_list *p;
+ 	struct journal_replay *i, **_i;
+ 	struct genradix_iter iter;
+-	bool had_entries = false;
+-	u64 last_seq = cur_seq, nr, seq;
++	bool had_entries = false;	
++	u64 last_written_seq = cur_seq - 1, last_seq = cur_seq - 1, nr, seq;
+ 
+ 	genradix_for_each_reverse(&c->journal_entries, iter, _i) {
+ 		i = *_i;
+@@ -1204,11 +1204,11 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
+ 		if (journal_replay_ignore(i))
+ 			continue;
+ 
+-		last_seq = le64_to_cpu(i->j.last_seq);
++		last_written_seq = le64_to_cpu(i->j.last_seq);
+ 		break;
+ 	}
+ 
+-	nr = cur_seq - last_seq;
++	nr = cur_seq - last_written_seq;
+ 
+ 	if (nr + 1 > j->pin.size) {
+ 		free_fifo(&j->pin);
+@@ -1219,14 +1219,14 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
+ 		}
+ 	}
+ 
+-	j->replay_journal_seq	= last_seq;
++	j->replay_journal_seq	= last_written_seq;
+ 	j->replay_journal_seq_end = cur_seq;
+-	j->last_seq_ondisk	= last_seq;
+-	j->flushed_seq_ondisk	= cur_seq - 1;
+-	j->seq_ondisk		= cur_seq - 1;
+-	j->pin.front		= last_seq;
++	j->last_seq_ondisk	= last_written_seq;
++	j->flushed_seq_ondisk	= last_seq;
++	j->seq_ondisk		= last_seq;
++	j->pin.front		= last_written_seq;
+ 	j->pin.back		= cur_seq;
+-	atomic64_set(&j->seq, cur_seq - 1);
++	atomic64_set(&j->seq, last_seq);
+ 
+ 	fifo_for_each_entry_ptr(p, &j->pin, seq)
+ 		journal_pin_list_init(p, 1);
+@@ -1256,7 +1256,7 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
+ 	}
+ 
+ 	if (!had_entries)
+-		j->last_empty_seq = cur_seq;
++		j->last_empty_seq = last_seq;
+ 
+ 	spin_lock(&j->lock);
+ 
+-- 
+2.34.1
+
