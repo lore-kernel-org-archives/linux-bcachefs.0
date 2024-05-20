@@ -1,152 +1,145 @@
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED014A33;
-	Mon, 20 May 2024 03:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59575EAF1
+	for <linux-bcachefs@vger.kernel.org>; Mon, 20 May 2024 03:52:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716174625; cv=none; b=AoiYOJ+S+k2Vu1LE7yFkRLNk1V1mWfjJKif5/BYKZW3A9zzHWBGH54PDbZf7WVtc1iO6s8DE2k2RvCwb9Vio47i8Y4/yw3qt6lju+bzrLQFZ2olafRwXfICbFyeK+E+HlFhXYWZ7I79d4JPzU7s51TLzzW7p/94flMnyowfCTuM=
+	t=1716177165; cv=none; b=sNhKpjJOh5Z03aXs9NoU7M4V+kTfza6fNYfr69Wd/2krbMfbL3N9DdhQy6P/NwSmCc9Hvhrz5h45Xj9cU9iKr3mF6rq1I6OSoJb7rZlylMZyVHM7YuDE8lhzs2/vIzJMGQPNNfM7GCnFmqhwa78fMr8mF37W8fSaT45mhfC2wRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716174625; c=relaxed/simple;
-	bh=4WqhMvI3Pf3B3fMZIlMXwBxz5QbKYJjAVHBs1SLNECg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MO7bGXANqqA5LibOyZmKaD0YyW3wxROPjMYg/YirYK2rlLgqzOdaGpJPZbqjAbaJISIMo746CF50IKjF9QvvWcGQGxf7OPWNvw5HDS+umL7yQIuRoS+Eo47NcahkPc+Pmy/T01IiNOHgTosFnQFXV602zoZdmvb4Exjp3k3HWXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iDGxVKOz; arc=none smtp.client-ip=209.85.167.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1716177165; c=relaxed/simple;
+	bh=rSyboOe5ADA6s/e4vGwvUomLwIG/5xupU4mSFMwTGg4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BB50dEpw4/FGESqGCJmrKCZjDVa8dsx4l6dgtO5B7OnezTYb6Y2YYxSnWDES7FAtoaKmF1vfK52w83qsFcMSQtm/IausSIsLuzlmKQ7B2wVgVS+dG86uXygLVCdcy5VDy63hv83BL4aL5rHWqSUtKpght/lJE/iT45lsAK96kFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ia7d6jVz; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDGxVKOz"
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c996526c69so1612657b6e.1;
-        Sun, 19 May 2024 20:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716174623; x=1716779423; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZVgUzdTRON7x3qceRHjQMiQNT1s+DpVTz0XvEqqtJsY=;
-        b=iDGxVKOzt6mOUEaXu3Ng8R7MIPOVxiRAxwcpVrI5V2n5s1MfM1idawAKLYifyUWMkV
-         JPCUvWj42NhJWd1BYR7GuHM0JVB50yR3qk5+R06MQ76rE90pUJYtX6LojO+VR09G9W06
-         t23wp8bHrwFYwkIot2IbsRFKw8rCp7yqmEovcpj+K1CE3l6HuDyDqNhyogrJvSTrmvgI
-         iVM6yGqSlb2NNMcYu+70fCH34LfsrtlYL5Fpgp8gRn8CVByPHnPrjbLsmNuJ1O+zq+rt
-         wcGV7eT6SnFkwol+mHVrlUus4c/8DjRfUqrL336oh9q6UAu4v0WgwDAi9meu7YiwxOPN
-         6y0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716174623; x=1716779423;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZVgUzdTRON7x3qceRHjQMiQNT1s+DpVTz0XvEqqtJsY=;
-        b=CvNnwOIdW8LlxsUjFcVPkLY2y4+4903xNSp+hpQCGQn0aIP/OWCIt1Lw/9/kCH6y7Y
-         /lSCuDD0LRCLnR+s1fnZmd3vlZClSj9pk76fFI1cWFNnxEZKqKqZh5ZhDSsPBhGVgrah
-         emKN1inr5JjesaJBlEBbm3/xXC92sj9QYSlSKhCotevz0ua3hkHvgwEijXQD3JEooZ3m
-         QL/x2EBUlSKc6vX/gnqfykdRGmQdhDKeDXMlC+eZD21WhHdgu/EolrqiQHVMAQaVYvz8
-         6Yd1dC/5VWuWMdxATY+iHU6tl6YGOyYT6kXNbMcppNZjjqsK+D39vRac9xy7X874Ntnm
-         2Yww==
-X-Forwarded-Encrypted: i=1; AJvYcCXQl0eQdXphrWS9OhOV5ExIJuo0ZtTCRwmis3+M47F9r5ivyetS8BBRLokF7bQ/eIKZ2UZr/mYatcjh6/SqqKEWzVgJFINBy4ObTgDIOzRfk5Nge31RW65OPplzdSUf0dq0bVcE/jWZu+kaPJ8=
-X-Gm-Message-State: AOJu0Yz6Hn3dlWIPAsFo+TfrAehybSG9ibfjCLdfSDx4dkLyq6RnjgcN
-	9usDgHJUXSgSRBpo1hi33DGgF5j+Bz8aY4AfIun4w8bp5r1prZm+
-X-Google-Smtp-Source: AGHT+IFcNGeYibn9vUd3PD/7IACDV3sLjPwIWkOLh5cZH4E2fUvUZxpCD+PJCEkiIrzBabpjwWNhig==
-X-Received: by 2002:a05:6808:2188:b0:3c9:93f1:c7b0 with SMTP id 5614622812f47-3c99705587fmr35557515b6e.20.1716174623126;
-        Sun, 19 May 2024 20:10:23 -0700 (PDT)
-Received: from localhost.localdomain ([190.196.103.34])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4f2cdedb7sm14541111b3a.52.2024.05.19.20.10.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 May 2024 20:10:22 -0700 (PDT)
-From: Camila Alvarez <cam.alvarez.i@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Camila Alvarez <cam.alvarez.i@gmail.com>,
-	syzbot+10b936c5eaee2819b49b@syzkaller.appspotmail.com
-Subject: [PATCH v2] bcachefs: fix last_seq and last_empty_seq in bch2_fs_journal_start()
-Date: Sun, 19 May 2024 22:57:34 -0400
-Message-Id: <20240520025733.688425-1-cam.alvarez.i@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ia7d6jVz"
+X-Envelope-To: keescook@chromium.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1716177161;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H+hVaXU3OLVtnnff/5Lzdg6bnZTvwPprcV1YnanniD0=;
+	b=ia7d6jVzKjdK6FsC6rzouvWzUMOmpf9NbUP98ULlq9BChwXBilKWnTPXP2/4apyoFay3CJ
+	FL9B003cDf8xlYbT0kWVwGjZLhFsyHB++EJNeeDnGhenCjhXCoKGSHxI+cTF26RxkGzE4b
+	RTRy2CzSog75beIl4SjHg/2wGq8ioSY=
+X-Envelope-To: sfr@canb.auug.org.au
+X-Envelope-To: torvalds@linux-foundation.org
+X-Envelope-To: linux-bcachefs@vger.kernel.org
+X-Envelope-To: linux-fsdevel@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+Date: Sun, 19 May 2024 23:52:36 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kees Cook <keescook@chromium.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs updates fro 6.10-rc1
+Message-ID: <2uuhtn5rnrfqvwx7krec6lc57gptqearrwwbtbpedvlbor7ziw@zgbzssfacdbe>
+References: <zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
+ <202405191921.C218169@keescook>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202405191921.C218169@keescook>
+X-Migadu-Flow: FLOW_OUT
 
-Values were left as the next possible sequence number when there were no
-entries.
+On Sun, May 19, 2024 at 07:39:38PM -0700, Kees Cook wrote:
+> On Sun, May 19, 2024 at 12:14:34PM -0400, Kent Overstreet wrote:
+> > [...]
+> > bcachefs changes for 6.10-rc1
+> > [...]
+> >       bcachefs: bch2_btree_path_to_text()
+> 
+> Hi Kent,
+> 
+> I've asked after this before[1], but there continues to be a lot of
+> bcachefs development going on that is only visible when it appears in
+> -next or during the merge window. I cannot find the above commit on
+> any mailing list on lore.kernel.org[2]. The rules for -next are clear:
+> patches _must_ appear on a list _somewhere_ before they land in -next
+> (much less Linus's tree). The point is to get additional reviews, and
+> to serve as a focal point for any discussions that pop up over a given
+> change. Please adjust the bcachefs development workflow to address this.
 
-The fix involves updating the last_seq initial value and
-setting last_empty_seq to cur_seq - 1.
+Over the course of my career, I've found the kind of workflow and level
+of review you seem to asking for to be at best not useful, and at worst
+harmful to productive functioning of a team - to my ability to teach
+people and get them happy and productive.
 
-Reported-by: syzbot+10b936c5eaee2819b49b@syzkaller.appspotmail.com
-Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
----
-Changes in v2:
-- Introduce a new variable to distinguish the last sequence number, from
-  the last written sequence number
-- Abstract `cur_seq - 1` into a variable named `last_seq`
-- Reference to the last sequence number are changed from `cur_seq - 1`
-  to `last_seq`
----
- fs/bcachefs/journal.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+The reality has just been that no one has ever been able to keep up with
+the rate at which I work and write code [0], and attempting to do code
+review of every patch means no one else gets anything done and we get
+sidetracked on irrelevant details. When I do post my patches to the
+list, the majority of what I get ends up being spelling fixes or at best
+the kinds of bugs that shake out quickly in real testing. In short, I've
+had to learn to write code without anyone looking over my shoulder, and
+I take pride in debugging my own code and not saddling other people with
+that.
 
-diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
-index adec8e1ea73e..99fc32f0382d 100644
---- a/fs/bcachefs/journal.c
-+++ b/fs/bcachefs/journal.c
-@@ -1195,8 +1195,8 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
- 	struct journal_entry_pin_list *p;
- 	struct journal_replay *i, **_i;
- 	struct genradix_iter iter;
--	bool had_entries = false;
--	u64 last_seq = cur_seq, nr, seq;
-+	bool had_entries = false;	
-+	u64 last_written_seq = cur_seq - 1, last_seq = cur_seq - 1, nr, seq;
- 
- 	genradix_for_each_reverse(&c->journal_entries, iter, _i) {
- 		i = *_i;
-@@ -1204,11 +1204,11 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
- 		if (journal_replay_ignore(i))
- 			continue;
- 
--		last_seq = le64_to_cpu(i->j.last_seq);
-+		last_written_seq = le64_to_cpu(i->j.last_seq);
- 		break;
- 	}
- 
--	nr = cur_seq - last_seq;
-+	nr = cur_seq - last_written_seq;
- 
- 	if (nr + 1 > j->pin.size) {
- 		free_fifo(&j->pin);
-@@ -1219,14 +1219,14 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
- 		}
- 	}
- 
--	j->replay_journal_seq	= last_seq;
-+	j->replay_journal_seq	= last_written_seq;
- 	j->replay_journal_seq_end = cur_seq;
--	j->last_seq_ondisk	= last_seq;
--	j->flushed_seq_ondisk	= cur_seq - 1;
--	j->seq_ondisk		= cur_seq - 1;
--	j->pin.front		= last_seq;
-+	j->last_seq_ondisk	= last_written_seq;
-+	j->flushed_seq_ondisk	= last_seq;
-+	j->seq_ondisk		= last_seq;
-+	j->pin.front		= last_written_seq;
- 	j->pin.back		= cur_seq;
--	atomic64_set(&j->seq, cur_seq - 1);
-+	atomic64_set(&j->seq, last_seq);
- 
- 	fifo_for_each_entry_ptr(p, &j->pin, seq)
- 		journal_pin_list_init(p, 1);
-@@ -1256,7 +1256,7 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
- 	}
- 
- 	if (!had_entries)
--		j->last_empty_seq = cur_seq;
-+		j->last_empty_seq = last_seq;
- 
- 	spin_lock(&j->lock);
- 
--- 
-2.34.1
+So instead, I prioritize:
+ - real discussion over the work being done, which does tend to happen
+   person to person or in meetings (getting more of that on the list
+   would not be a bad idea; I do need to be spending more time writing
+   documentation and design docs, especially at this point).
+ - good effective test infrastructure
+ - heavy and thoughtful use of assertions; there's a real art to
+   effective use of assertions, where you think about what the
+   correctness proof would look like and write assertions for the
+   invariants (and assertions should be on _state_, not _logic_)
 
+I also do (try to) post patches to the list that are doing something
+interesting and worth discussion; the vast majority this cycle has been
+boring syzbot crap...
+
+IOW, I'm not trying to _flout_ process here, even if I do things
+somewhat differently; I've got quite a few people I'm actively teaching
+and bringing in and that's where most of my energy is going. And we do
+spend a lot of time going over code together, the meetings I run
+(especially with the younger guys) are very much code-and-workflow
+focused.
+
+You'll also find I'm quite responsive, on IRC and the list, should you
+have anything you wish to complain or yell about.
+
+(btw, there's also been some discussions in fs land about other people
+changing their workflows to something that looks more like mine; get the
+important stuff on the list, make the list less spammy, work with each
+other on a quicker timeline than that. They're not quite doing what I'm
+doing, but I do think there's room for the /way/ we do code review and
+the expectations around it to evolve a bit. Personally, I mostly just
+want code to be readable).
+
+I personally approach code review as being primarily about mentorship...
+I don't want people to have the expectation that I'm going to pore over
+their code and find their bugs; I'm not going to do that. I expect
+people to be adults, and take as much time as they need to to get it
+right; if there's something they're not sure about, I expect _them_ to
+bring it up. I personally feel that this mindset teaches more
+responsibility and the "right" kind of defensiveness that it takes to
+write reliable code.
+
+> Anyway, in reference to the above commit, please scrub bcachefs of its
+> %px format string uses. Neither it nor %p should be used[3][4] in new
+> code. (Which is, again, something checkpatch.pl will warn about.)
+
+So that particular code is used in debugfs (root only) or in dumps when
+we're panicing; the reason it's %px and not hashed is because I not
+uncommonly do things like grab addresses from the introspection and then
+use kgdb for further inspection.
+
+Does that alleviate your concern, if it's only exposed that way?
+
+If not, perhaps some sort of config option is appropriate.
+
+[0]: except Linus, who quite frequently leaves my jaw hanging with how
+quickly he can read code and spot real issues.
