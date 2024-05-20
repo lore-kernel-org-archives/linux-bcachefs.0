@@ -1,155 +1,184 @@
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650765337F
-	for <linux-bcachefs@vger.kernel.org>; Mon, 20 May 2024 14:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F071369BE;
+	Mon, 20 May 2024 16:10:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716214725; cv=none; b=ChCeEl6jE1tarArXp8/qnwK7KLmujvdq+clwf6kP1ZBbmvVxGC8HpR7HAsmrZf05XXWrGQTnT1ybRCbDAzT9t3UyZ4Uyr8afUra761zYvQTs2iJuMcDFHqHUAzKKygOCUdRtOb6aqPq9cnx4qurR3QuHtPUNG2p6dlYz/Rm5BiQ=
+	t=1716221436; cv=none; b=lQVsUVFVxKJ/SPqKCn/wLaIsQeElIXLa/iCopavPEYQJc9VSlvSwsswaMOVbYdElKfu2oihF13xb9f4aK3yEAFIj2T1aQ1ppfBfs0nYOPuvJ7zMEe8zC8XxW0hDFqc+c1gSMlW5ihFQr6Mg0F1fphW8Yc6txWUKlOffHPeurU1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716214725; c=relaxed/simple;
-	bh=MmVMKh7UbCxWmdRdTzC2qbOowW7HMoJRuQszlggfMVQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Q+XYLLaoU9GkgGXbZPM5aiTv3EDUbvdxQriDkhpVImGVfUGZ1afWoArU9VCXhbVq9PS/Nh8123nNvp1A2bceGxGcmQrzjq5D/jhHsYr8Y3ZW4JxDNc9YQV+GW3A0HFDoUO8KeLcykMGYXMeXHSE6Qka16hqQv8jV+9+AXYiAB10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-7e1d807cfbaso1034918639f.2
-        for <linux-bcachefs@vger.kernel.org>; Mon, 20 May 2024 07:18:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716214723; x=1716819523;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Al0eT/vifUewppj4Qbeoj56W0sQsrL1KIXvwMav+KbU=;
-        b=tE+gGc1f5iT9O73wkbMRnEr9wt8GP9i0XOJvLUykIvweZI+g5RSa3Z7P1FJPaHNNvN
-         xYhuWwRgKwyCT4lPMpyQZHz9EgFAlXTLl4BQAUlKeNdrUbEuEhzXEonMR0okXIITwOlk
-         pRoiiYPp+soVcNzN/TkO9laqb6G+T4cfHuVWBi1Kh/K6C+ikynuMvkvB2exnqKqsUzaV
-         eRDrRFXTkAd8wAcMd+le/uS2UVqWwg+XKqgyP/tIXgoHzDxPqX2Qxq2V2wTxWAZjJcqH
-         7HsshMkk8VlZ/gcmDc2MwRiwZCtapHcDDkIRkPyXlRaC/AsaJJFYlyXxsBP0FWvH849L
-         ZAtg==
-X-Forwarded-Encrypted: i=1; AJvYcCVDy6RnrM26SOm1dVYgINMm90V8WoyI2wcJJiCpdJ2r+FCPhdcsJTY7tpjz6dBBaE1L2PYEaS68NUuTbwvGeB4NsmJTEib9bdPAO/mMBUE=
-X-Gm-Message-State: AOJu0Ywxr4/f5c7uJ3WEH9c49qDuaoqQQ3j9yM2ZVaiVMqiNgpxEeVj8
-	T0gH26lKa9kZdEIVungoyFBCWROSTRd5jG9dCPo98f9j6ENNvIICSkVzV24QqyuFrWqsVZ8gBrF
-	e3OTpC82CBAUUcjLZqSl9gQ+JlXmeCACTLyKQ7LHw5thngkhrFT8Glss=
-X-Google-Smtp-Source: AGHT+IErAjHM3lXj2RdAK0MbfoezVYSbq053nJeJnh0Kg6nZ89B03IryS0Ti0MdkZKSDCBWoujbTFg2fpnOMWBZFXX3QU6lsXIGL
+	s=arc-20240116; t=1716221436; c=relaxed/simple;
+	bh=IOs4DH5M43q00GczYFv9Oi8cYP+skYziCQpw1joauX4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NvaSV1v8XfxeH8XXt+ffdjqUR+XtgqkoZk1Zf9KyM6gci//fUpgfzRp1q006NUUDkaOZum4yJ+7CmKe8z6I0SoUUIeJpRgJEATxicOdrPJ56msd+pL5vV6oyhrTNDFYJ5mZ87lNfnxZRskvXk3oYEITH0APgMbW1ByaidNM7q9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=mc0vJ9lJ; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=mc0vJ9lJ; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="mc0vJ9lJ";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="mc0vJ9lJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1716221433;
+	bh=IOs4DH5M43q00GczYFv9Oi8cYP+skYziCQpw1joauX4=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=mc0vJ9lJ9uyQHkslbAiOF7LcKLywrCmbXqyLOuJN/rtYUGVMzMXu50NQnOvRaFb2w
+	 c640ichN1OQL0Q1LUA7xfxtKtIF/r5Gv6gtLf8qq3LSuCCWzDTPDAZeSudrk2yRgWi
+	 C2/+gK8V5Q85uDck52PW1+bQ2ILDf1wOM5FBFOE4=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 44D8B1280773;
+	Mon, 20 May 2024 12:10:33 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id 6LAfKhO5IFA9; Mon, 20 May 2024 12:10:33 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1716221433;
+	bh=IOs4DH5M43q00GczYFv9Oi8cYP+skYziCQpw1joauX4=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=mc0vJ9lJ9uyQHkslbAiOF7LcKLywrCmbXqyLOuJN/rtYUGVMzMXu50NQnOvRaFb2w
+	 c640ichN1OQL0Q1LUA7xfxtKtIF/r5Gv6gtLf8qq3LSuCCWzDTPDAZeSudrk2yRgWi
+	 C2/+gK8V5Q85uDck52PW1+bQ2ILDf1wOM5FBFOE4=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 65CE11280728;
+	Mon, 20 May 2024 12:10:32 -0400 (EDT)
+Message-ID: <a1aa10f9d97b2d80048a26f518df2a4b90c90620.camel@HansenPartnership.com>
+Subject: Re: [GIT PULL] bcachefs updates fro 6.10-rc1
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>, Kees Cook
+	 <keescook@chromium.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linus Torvalds
+	 <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Mon, 20 May 2024 12:10:31 -0400
+In-Reply-To: <2uuhtn5rnrfqvwx7krec6lc57gptqearrwwbtbpedvlbor7ziw@zgbzssfacdbe>
+References: 
+	<zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
+	 <202405191921.C218169@keescook>
+	 <2uuhtn5rnrfqvwx7krec6lc57gptqearrwwbtbpedvlbor7ziw@zgbzssfacdbe>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:150b:b0:488:dd9c:2483 with SMTP id
- 8926c6da1cb9f-4895912b334mr2218337173.5.1716214723596; Mon, 20 May 2024
- 07:18:43 -0700 (PDT)
-Date: Mon, 20 May 2024 07:18:43 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f565710618e360b9@google.com>
-Subject: [syzbot] [bcachefs?] WARNING in set_precision (3)
-From: syzbot <syzbot+25cbf9415915b655f11f@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On Sun, 2024-05-19 at 23:52 -0400, Kent Overstreet wrote:
+> On Sun, May 19, 2024 at 07:39:38PM -0700, Kees Cook wrote:
+> > On Sun, May 19, 2024 at 12:14:34PM -0400, Kent Overstreet wrote:
+> > > [...]
+> > > bcachefs changes for 6.10-rc1
+> > > [...]
+> > >       bcachefs: bch2_btree_path_to_text()
+> > 
+> > Hi Kent,
+> > 
+> > I've asked after this before[1], but there continues to be a lot of
+> > bcachefs development going on that is only visible when it appears
+> > in
+> > -next or during the merge window. I cannot find the above commit on
+> > any mailing list on lore.kernel.org[2]. The rules for -next are
+> > clear: patches _must_ appear on a list _somewhere_ before they land
+> > in -next (much less Linus's tree). The point is to get additional
+> > reviews, and to serve as a focal point for any discussions that pop
+> > up over a given change. Please adjust the bcachefs development
+> > workflow to address this.
+> 
+> Over the course of my career, I've found the kind of workflow and
+> level of review you seem to asking for to be at best not useful, and
+> at worst harmful to productive functioning of a team - to my ability
+> to teach people and get them happy and productive.
+> 
+> The reality has just been that no one has ever been able to keep up
+> with the rate at which I work and write code [0], and attempting to
+> do code review of every patch means no one else gets anything done
+> and we get sidetracked on irrelevant details. When I do post my
+> patches to the list, the majority of what I get ends up being
+> spelling fixes or at best the kinds of bugs that shake out quickly in
+> real testing. In short, I've had to learn to write code without
+> anyone looking over my shoulder, and I take pride in debugging my own
+> code and not saddling other people with that.
 
-syzbot found the following issue on:
+I get that in your head you have a superior development methodology but
+if I look at the reasons you advance below: 
 
-HEAD commit:    0cc6f45cecb4 Merge tag 'iommu-updates-v6.10' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13067b84980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f1cd4092753f97c5
-dashboard link: https://syzkaller.appspot.com/bug?extid=25cbf9415915b655f11f
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=131e3c42980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1354b784980000
+> 
+> So instead, I prioritize:
+>  - real discussion over the work being done, which does tend to
+> happen
+>    person to person or in meetings (getting more of that on the list
+>    would not be a bad idea; I do need to be spending more time
+> writing
+>    documentation and design docs, especially at this point).
+>  - good effective test infrastructure
+>  - heavy and thoughtful use of assertions; there's a real art to
+>    effective use of assertions, where you think about what the
+>    correctness proof would look like and write assertions for the
+>    invariants (and assertions should be on _state_, not _logic_)
+> 
+> I also do (try to) post patches to the list that are doing something
+> interesting and worth discussion; the vast majority this cycle has
+> been boring syzbot crap...
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-0cc6f45c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/efa96164e152/vmlinux-0cc6f45c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d56503d42d4e/bzImage-0cc6f45c.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/25e310ed1e40/mount_0.gz
+you still don't say what problem not posting most patches solves?  You
+imply it would slow you down, but getting git-send-email to post to a
+mailing list can actually be automated through a pre-push commit hook
+with no slowdown in the awesome rate at which you apply patches to your
+own tree.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+25cbf9415915b655f11f@syzkaller.appspotmail.com
+Linux kernel process exists because it's been found to work over time.
+That's not to say it can't be changed, but it usually requires at least
+some stab at a reason before that happens.
 
-precision 65535 too large
-WARNING: CPU: 2 PID: 5186 at lib/vsprintf.c:2721 set_precision+0xc0/0x160 lib/vsprintf.c:2721
-Modules linked in:
-CPU: 2 PID: 5186 Comm: syz-executor131 Not tainted 6.9.0-syzkaller-08654-g0cc6f45cecb4 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:set_precision+0xc0/0x160 lib/vsprintf.c:2721
-Code: ff 44 89 e6 e8 d1 dc b5 f6 45 84 e4 75 20 e8 47 e2 b5 f6 c6 05 4c 8b f5 04 01 90 48 c7 c7 80 2e 81 8c 89 de e8 91 f6 77 f6 90 <0f> 0b 90 90 e8 27 e2 b5 f6 31 c0 85 db 48 89 ea 0f 48 d8 b8 ff 7f
-RSP: 0018:ffffc9000336ec48 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 000000000000ffff RCX: ffffffff814ff309
-RDX: ffff888023858000 RSI: ffffffff814ff316 RDI: 0000000000000001
-RBP: ffffc9000336ecc0 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffffc9000336ecc7 R14: ffffc9000336ed98 R15: 0000000000000002
-FS:  0000555570d35380(0000) GS:ffff88806b200000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f9e601f3870 CR3: 000000002ee12000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- vsnprintf+0xa93/0x1880 lib/vsprintf.c:2797
- bch2_prt_printf+0x19f/0x3d0 fs/bcachefs/printbuf.c:75
- bch2_xattr_to_text+0x28b/0x760 fs/bcachefs/xattr.c:121
- bch2_val_to_text fs/bcachefs/bkey_methods.c:300 [inline]
- bch2_bkey_val_to_text+0x1c9/0x210 fs/bcachefs/bkey_methods.c:310
- journal_entry_btree_keys_to_text+0x12f/0x250 fs/bcachefs/journal_io.c:410
- bch2_journal_entry_to_text+0x119/0x170 fs/bcachefs/journal_io.c:835
- bch2_sb_clean_to_text+0x109/0x210 fs/bcachefs/sb-clean.c:316
- __bch2_sb_field_to_text+0x123/0x1e0 fs/bcachefs/super-io.c:1245
- bch2_sb_field_validate+0x248/0x2d0 fs/bcachefs/super-io.c:1228
- bch2_sb_validate.isra.0+0x6d8/0xce0 fs/bcachefs/super-io.c:468
- __bch2_read_super+0x93c/0x12a0 fs/bcachefs/super-io.c:822
- bch2_fs_open+0x3e5/0x1110 fs/bcachefs/super.c:2052
- bch2_mount+0xdcc/0x1130 fs/bcachefs/fs.c:1906
- legacy_get_tree+0x109/0x220 fs/fs_context.c:662
- vfs_get_tree+0x8f/0x380 fs/super.c:1779
- do_new_mount fs/namespace.c:3352 [inline]
- path_mount+0x14e6/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount fs/namespace.c:3875 [inline]
- __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f1d7b3d38fa
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffec78729d8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffec78729f0 RCX: 00007f1d7b3d38fa
-RDX: 0000000020011a00 RSI: 0000000020000080 RDI: 00007ffec78729f0
-RBP: 0000000000000004 R08: 00007ffec7872a30 R09: 0000000000011a09
-R10: 0000000001200014 R11: 0000000000000282 R12: 0000000001200014
-R13: 00007ffec7872a30 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
+> IOW, I'm not trying to _flout_ process here, even if I do things
+> somewhat differently; I've got quite a few people I'm actively
+> teaching and bringing in and that's where most of my energy is going.
+> And we do spend a lot of time going over code together, the meetings
+> I run (especially with the younger guys) are very much code-and-
+> workflow focused.
 
+These are echo chamber reviews.  Even if you echo chamber happens
+produce good reviews there's still no harm in getting them from outside
+it as well.  Plus we can't make this generic workflow because too many
+less awesome contributors would take advantage of the laxity it offers.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> You'll also find I'm quite responsive, on IRC and the list, should
+> you have anything you wish to complain or yell about.
+> 
+> (btw, there's also been some discussions in fs land about other
+> people changing their workflows to something that looks more like
+> mine; get the important stuff on the list, make the list less spammy,
+> work with each other on a quicker timeline than that. They're not
+> quite doing what I'm doing, but I do think there's room for the /way/
+> we do code review and the expectations around it to evolve a bit.
+> Personally, I mostly just want code to be readable).
+> 
+> I personally approach code review as being primarily about
+> mentorship... I don't want people to have the expectation that I'm
+> going to pore over their code and find their bugs; I'm not going to
+> do that.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Just because you won't check others' code for bugs doesn't mean that
+others won't check your code for bugs...
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+> I expect people to be adults, and take as much time as they need to
+> to get it right; if there's something they're not sure about, I
+> expect _them_ to bring it up.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+This is an unknown unknown problem: you can't bring up to others things
+you don't know about yourself. 
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+>  I personally feel that this mindset teaches more responsibility and
+> the "right" kind of defensiveness that it takes to write reliable
+> code.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+So you didn't answer whether you ran checkpatch and ignored the warning
+(in which case a commit comment explaining why would have been useful)
+or didn't run checkpatch (in which case why not?).
 
-If you want to undo deduplication, reply with:
-#syz undup
+James
+
