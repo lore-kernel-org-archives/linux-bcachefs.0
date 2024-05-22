@@ -1,184 +1,167 @@
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F071369BE;
-	Mon, 20 May 2024 16:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5D1875813
+	for <linux-bcachefs@vger.kernel.org>; Wed, 22 May 2024 05:58:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716221436; cv=none; b=lQVsUVFVxKJ/SPqKCn/wLaIsQeElIXLa/iCopavPEYQJc9VSlvSwsswaMOVbYdElKfu2oihF13xb9f4aK3yEAFIj2T1aQ1ppfBfs0nYOPuvJ7zMEe8zC8XxW0hDFqc+c1gSMlW5ihFQr6Mg0F1fphW8Yc6txWUKlOffHPeurU1M=
+	t=1716357514; cv=none; b=HoVK8hXSmR6t9FQ4TJyUvHNs7QNxomYTvVrSjJpTetmMD00YDcgV+vjMCYIECpyi+Eyn8NTwxzlkOmdmAnGXCqzmLxTajqMMdVkl3+8S99807sDU/2lWUWUlfRl6ovfk0CD7+7h6ueE3QRpgJN8FfKbYMZfdeFKwnR6tC3eW4T0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716221436; c=relaxed/simple;
-	bh=IOs4DH5M43q00GczYFv9Oi8cYP+skYziCQpw1joauX4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NvaSV1v8XfxeH8XXt+ffdjqUR+XtgqkoZk1Zf9KyM6gci//fUpgfzRp1q006NUUDkaOZum4yJ+7CmKe8z6I0SoUUIeJpRgJEATxicOdrPJ56msd+pL5vV6oyhrTNDFYJ5mZ87lNfnxZRskvXk3oYEITH0APgMbW1ByaidNM7q9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=mc0vJ9lJ; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=mc0vJ9lJ; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="mc0vJ9lJ";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="mc0vJ9lJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1716221433;
-	bh=IOs4DH5M43q00GczYFv9Oi8cYP+skYziCQpw1joauX4=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=mc0vJ9lJ9uyQHkslbAiOF7LcKLywrCmbXqyLOuJN/rtYUGVMzMXu50NQnOvRaFb2w
-	 c640ichN1OQL0Q1LUA7xfxtKtIF/r5Gv6gtLf8qq3LSuCCWzDTPDAZeSudrk2yRgWi
-	 C2/+gK8V5Q85uDck52PW1+bQ2ILDf1wOM5FBFOE4=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 44D8B1280773;
-	Mon, 20 May 2024 12:10:33 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id 6LAfKhO5IFA9; Mon, 20 May 2024 12:10:33 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1716221433;
-	bh=IOs4DH5M43q00GczYFv9Oi8cYP+skYziCQpw1joauX4=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=mc0vJ9lJ9uyQHkslbAiOF7LcKLywrCmbXqyLOuJN/rtYUGVMzMXu50NQnOvRaFb2w
-	 c640ichN1OQL0Q1LUA7xfxtKtIF/r5Gv6gtLf8qq3LSuCCWzDTPDAZeSudrk2yRgWi
-	 C2/+gK8V5Q85uDck52PW1+bQ2ILDf1wOM5FBFOE4=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 65CE11280728;
-	Mon, 20 May 2024 12:10:32 -0400 (EDT)
-Message-ID: <a1aa10f9d97b2d80048a26f518df2a4b90c90620.camel@HansenPartnership.com>
-Subject: Re: [GIT PULL] bcachefs updates fro 6.10-rc1
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>, Kees Cook
-	 <keescook@chromium.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linus Torvalds
-	 <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Mon, 20 May 2024 12:10:31 -0400
-In-Reply-To: <2uuhtn5rnrfqvwx7krec6lc57gptqearrwwbtbpedvlbor7ziw@zgbzssfacdbe>
-References: 
-	<zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
-	 <202405191921.C218169@keescook>
-	 <2uuhtn5rnrfqvwx7krec6lc57gptqearrwwbtbpedvlbor7ziw@zgbzssfacdbe>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1716357514; c=relaxed/simple;
+	bh=BrAHIEucf6NFI0eHOQWdWy8AGOA4ok3y3h+SS9BvU1g=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=sIbM0nsXNpNbid7KjrBcIM0tF96y5IHHa8HhDfE/j/wdMyt+qXXohi+FscNhBQ4Ls+NY4UfeXkTwDaPzT9pRywGCH2QDDxGTlTKM7YdBlyljVafkcyri+MAJpjcVcm38DHfI1O5JjkNgV/m7keMcgcu3hkOgbQRY+DzJXbKDxC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-7e1db7e5386so1327364539f.3
+        for <linux-bcachefs@vger.kernel.org>; Tue, 21 May 2024 22:58:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716357512; x=1716962312;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QVU2kpvwMDn6k+1lS5g1mfIkWln5txH9V3O8iMO/kow=;
+        b=CQK14gziLamD7zC0KYbT7V0TLbDT2wYt1o4KygKBU/97VyoIstYecQ37sdCzS9NRfl
+         PVBPsL4tML3j0OHsR+ejqrryL7FN4t3nSiWuHHBB7nnS6By+iNAdD1cB1iApcpsye+I6
+         e36fXen0vgXhliKIK13fFEahb/W5sFa2pCj9oK9Se+uV/eLkOLQjOn2tOUpZfMSb7s7W
+         vvn6eOHF7zO/U8GitAr3QbXCNP8Z1Md9k5k3drcUA0PhUokBCAEjIDAOsaYjXy/q7Wd5
+         JdeK1WedHJ781xsEXcOlW2SBCzlY4br1RWkVc+NpZdx7W3GaJNdUoJP9j5HzokjMHwk/
+         WEvw==
+X-Forwarded-Encrypted: i=1; AJvYcCUBlVGOxKFzWnEXMwuRDp5aGVL8l/XCR9ZhDxyj92gqtyb83b1LKwiD3BF/VxyElA4lob9pMPwRoeRY8AFkoa6RBYhCkCnZ/e9tzbgidJQ=
+X-Gm-Message-State: AOJu0YxJfZreIJX7neCjmTgioWOqRNSivb2dlx+rMRzpYLIqj82Qb7sc
+	k0MzqNPziN1EJB0HfqPVb6Jd5Q4kPYFkUpUYz7fV85jjftMK4nsKw0vYD4msDbwjtK93Vby0Y5j
+	BCBRtE1AZ7KJ6Y7Y8fL9/27yD5v8a4w2S62WmUyvG32OjeRj9RBAzGZQ=
+X-Google-Smtp-Source: AGHT+IG6Yns3UyyUE7roYjd/CKL/G/CnZcqmlaS/4d6a6H+ZGRwBakA8QO9EPXEkKg/ADBMAdg4fYcXgj5f080OTx1bwLj3fxWB2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1c02:b0:36d:bf62:9276 with SMTP id
+ e9e14a558f8ab-371fcfa3251mr790495ab.5.1716357511976; Tue, 21 May 2024
+ 22:58:31 -0700 (PDT)
+Date: Tue, 21 May 2024 22:58:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cf30d00619049f93@google.com>
+Subject: [syzbot] [bcachefs?] general protection fault in poll_state_synchronize_srcu
+From: syzbot <syzbot+3af9daea347788b15213@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 2024-05-19 at 23:52 -0400, Kent Overstreet wrote:
-> On Sun, May 19, 2024 at 07:39:38PM -0700, Kees Cook wrote:
-> > On Sun, May 19, 2024 at 12:14:34PM -0400, Kent Overstreet wrote:
-> > > [...]
-> > > bcachefs changes for 6.10-rc1
-> > > [...]
-> > >       bcachefs: bch2_btree_path_to_text()
-> > 
-> > Hi Kent,
-> > 
-> > I've asked after this before[1], but there continues to be a lot of
-> > bcachefs development going on that is only visible when it appears
-> > in
-> > -next or during the merge window. I cannot find the above commit on
-> > any mailing list on lore.kernel.org[2]. The rules for -next are
-> > clear: patches _must_ appear on a list _somewhere_ before they land
-> > in -next (much less Linus's tree). The point is to get additional
-> > reviews, and to serve as a focal point for any discussions that pop
-> > up over a given change. Please adjust the bcachefs development
-> > workflow to address this.
-> 
-> Over the course of my career, I've found the kind of workflow and
-> level of review you seem to asking for to be at best not useful, and
-> at worst harmful to productive functioning of a team - to my ability
-> to teach people and get them happy and productive.
-> 
-> The reality has just been that no one has ever been able to keep up
-> with the rate at which I work and write code [0], and attempting to
-> do code review of every patch means no one else gets anything done
-> and we get sidetracked on irrelevant details. When I do post my
-> patches to the list, the majority of what I get ends up being
-> spelling fixes or at best the kinds of bugs that shake out quickly in
-> real testing. In short, I've had to learn to write code without
-> anyone looking over my shoulder, and I take pride in debugging my own
-> code and not saddling other people with that.
+Hello,
 
-I get that in your head you have a superior development methodology but
-if I look at the reasons you advance below: 
+syzbot found the following issue on:
 
-> 
-> So instead, I prioritize:
->  - real discussion over the work being done, which does tend to
-> happen
->    person to person or in meetings (getting more of that on the list
->    would not be a bad idea; I do need to be spending more time
-> writing
->    documentation and design docs, especially at this point).
->  - good effective test infrastructure
->  - heavy and thoughtful use of assertions; there's a real art to
->    effective use of assertions, where you think about what the
->    correctness proof would look like and write assertions for the
->    invariants (and assertions should be on _state_, not _logic_)
-> 
-> I also do (try to) post patches to the list that are doing something
-> interesting and worth discussion; the vast majority this cycle has
-> been boring syzbot crap...
+HEAD commit:    2a8120d7b482 Merge tag 's390-6.10-2' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b5be58980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5dd4fde1337a9e18
+dashboard link: https://syzkaller.appspot.com/bug?extid=3af9daea347788b15213
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-you still don't say what problem not posting most patches solves?  You
-imply it would slow you down, but getting git-send-email to post to a
-mailing list can actually be automated through a pre-push commit hook
-with no slowdown in the awesome rate at which you apply patches to your
-own tree.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Linux kernel process exists because it's been found to work over time.
-That's not to say it can't be changed, but it usually requires at least
-some stab at a reason before that happens.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-2a8120d7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/78c72ae6bdaf/vmlinux-2a8120d7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/99dbb805b738/bzImage-2a8120d7.xz
 
-> IOW, I'm not trying to _flout_ process here, even if I do things
-> somewhat differently; I've got quite a few people I'm actively
-> teaching and bringing in and that's where most of my energy is going.
-> And we do spend a lot of time going over code together, the meetings
-> I run (especially with the younger guys) are very much code-and-
-> workflow focused.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3af9daea347788b15213@syzkaller.appspotmail.com
 
-These are echo chamber reviews.  Even if you echo chamber happens
-produce good reviews there's still no harm in getting them from outside
-it as well.  Plus we can't make this generic workflow because too many
-less awesome contributors would take advantage of the laxity it offers.
+Oops: general protection fault, probably for non-canonical address 0xdffffc0000000030: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000180-0x0000000000000187]
+CPU: 0 PID: 111 Comm: kswapd0 Not tainted 6.9.0-syzkaller-10713-g2a8120d7b482 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:rcu_seq_done kernel/rcu/rcu.h:156 [inline]
+RIP: 0010:poll_state_synchronize_srcu+0x43/0x90 kernel/rcu/srcutree.c:1543
+Code: 48 83 ec 08 48 c1 ea 03 80 3c 02 00 75 45 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 38 48 8d bb 80 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 32 48 8b 93 80 01 00 00 31 c0 48 39 f2 78 0b f0 83
+RSP: 0018:ffffc90000e6f698 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffff888062204528
+RDX: 0000000000000030 RSI: 0000000000000004 RDI: 0000000000000180
+RBP: dffffc0000000000 R08: 0000000000000000 R09: fffffbfff283f87a
+R10: ffffffff941fc3d7 R11: 0000000000000002 R12: ffff88804bca2cf0
+R13: ffff88804bc3aec8 R14: ffff888062200000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88802c000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000f7f8cea0 CR3: 0000000045b60000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bch2_btree_key_cache_scan+0x3c7/0x1820 fs/bcachefs/btree_key_cache.c:835
+ do_shrink_slab+0x44f/0x11c0 mm/shrinker.c:435
+ shrink_slab+0x18a/0x1310 mm/shrinker.c:662
+ shrink_one+0x493/0x7c0 mm/vmscan.c:4790
+ shrink_many mm/vmscan.c:4851 [inline]
+ lru_gen_shrink_node+0x89f/0x1750 mm/vmscan.c:4951
+ shrink_node mm/vmscan.c:5910 [inline]
+ kswapd_shrink_node mm/vmscan.c:6720 [inline]
+ balance_pgdat+0x1105/0x1970 mm/vmscan.c:6911
+ kswapd+0x5ea/0xbf0 mm/vmscan.c:7180
+ kthread+0x2c1/0x3a0 kernel/kthread.c:389
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:rcu_seq_done kernel/rcu/rcu.h:156 [inline]
+RIP: 0010:poll_state_synchronize_srcu+0x43/0x90 kernel/rcu/srcutree.c:1543
+Code: 48 83 ec 08 48 c1 ea 03 80 3c 02 00 75 45 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 38 48 8d bb 80 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 32 48 8b 93 80 01 00 00 31 c0 48 39 f2 78 0b f0 83
+RSP: 0018:ffffc90000e6f698 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffff888062204528
+RDX: 0000000000000030 RSI: 0000000000000004 RDI: 0000000000000180
+RBP: dffffc0000000000 R08: 0000000000000000 R09: fffffbfff283f87a
+R10: ffffffff941fc3d7 R11: 0000000000000002 R12: ffff88804bca2cf0
+R13: ffff88804bc3aec8 R14: ffff888062200000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88802c100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbbf486e060 CR3: 0000000045a9e000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	48 83 ec 08          	sub    $0x8,%rsp
+   4:	48 c1 ea 03          	shr    $0x3,%rdx
+   8:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   c:	75 45                	jne    0x53
+   e:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  15:	fc ff df
+  18:	48 8b 5b 38          	mov    0x38(%rbx),%rbx
+  1c:	48 8d bb 80 01 00 00 	lea    0x180(%rbx),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	75 32                	jne    0x62
+  30:	48 8b 93 80 01 00 00 	mov    0x180(%rbx),%rdx
+  37:	31 c0                	xor    %eax,%eax
+  39:	48 39 f2             	cmp    %rsi,%rdx
+  3c:	78 0b                	js     0x49
+  3e:	f0                   	lock
+  3f:	83                   	.byte 0x83
 
-> You'll also find I'm quite responsive, on IRC and the list, should
-> you have anything you wish to complain or yell about.
-> 
-> (btw, there's also been some discussions in fs land about other
-> people changing their workflows to something that looks more like
-> mine; get the important stuff on the list, make the list less spammy,
-> work with each other on a quicker timeline than that. They're not
-> quite doing what I'm doing, but I do think there's room for the /way/
-> we do code review and the expectations around it to evolve a bit.
-> Personally, I mostly just want code to be readable).
-> 
-> I personally approach code review as being primarily about
-> mentorship... I don't want people to have the expectation that I'm
-> going to pore over their code and find their bugs; I'm not going to
-> do that.
 
-Just because you won't check others' code for bugs doesn't mean that
-others won't check your code for bugs...
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> I expect people to be adults, and take as much time as they need to
-> to get it right; if there's something they're not sure about, I
-> expect _them_ to bring it up.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-This is an unknown unknown problem: you can't bring up to others things
-you don't know about yourself. 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
->  I personally feel that this mindset teaches more responsibility and
-> the "right" kind of defensiveness that it takes to write reliable
-> code.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-So you didn't answer whether you ran checkpatch and ignored the warning
-(in which case a commit comment explaining why would have been useful)
-or didn't run checkpatch (in which case why not?).
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-James
-
+If you want to undo deduplication, reply with:
+#syz undup
