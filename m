@@ -1,158 +1,104 @@
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD20A3F
-	for <linux-bcachefs@vger.kernel.org>; Wed, 22 May 2024 20:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA4319470;
+	Wed, 22 May 2024 23:10:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716411401; cv=none; b=shnY/ui1HpYkAv+cPQ3XJyDFzE2aleaJwLZK7KLKU4cWXcPw0pa8z5p9RTJM3D+T2o00FCYUJlvoDE5xjWXCer3r00bkFyfWTlpk/KRPpWcevsRbQ0FEKeLKua+qgO80wbEoQ0c2icRRj8J+2x5OIAtKwTtGP+xKITcTWwoOTeM=
+	t=1716419450; cv=none; b=Hmxpg4/bNqXObWs095d0BHnQLtiu8LCGiiBFrkJIkICIPGxHK9n1+Hxsrqf+Mh1MTG39fG5XFPqAafc8DFt7rkOmb312swH8Vvm9hTAVtUDaUEuiAV1VV8gHWe5wD672DKAGA1H/1LzD/BspV+x47FNB39iK5U+FErKag1T1c/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716411401; c=relaxed/simple;
-	bh=xG/iRuQRmc0R8hKO4LOqujjQwBZx+XoxZ9SKOYnTJqY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=oN3X/iioie26UYWUvURScxe49pAGuQL1bf/kqMYbPkkDsdJvpAeGmTNyWR06lkHzsnibWbTiF2742zJFO1QrX1QluGIZ+kORIeODpEa5kS5y0vxUEjwxCRmdgm1GhXrY2kK3+PGveaIbsAxZfSSLVpFpmAychjzzK7l9C2YCf0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-7e261e3e1beso82418539f.3
-        for <linux-bcachefs@vger.kernel.org>; Wed, 22 May 2024 13:56:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716411399; x=1717016199;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y+i+1+h80lc9TXHE9aed5YYpSck4hnJYPhtvgyEQolQ=;
-        b=RSQocFeP/AgoAbKJjOGKajOrTxFEUskuocWYj3XB4Lo5FlKTi7+gcSkvMItftPKFl7
-         cSXXTub81O55Dxqpf0Dr1lF8QtA0fJIJy0QQnGM6kNvq3Ik6Q2Oqkf0H8KPZIup+0NGH
-         mTG9cQ6a34ftGd5tT3eA+cQUW6lI5dox+fpJnC7HckEs7FvC3yrav7tQIPGwvJrs5YKO
-         2MCrs5GiaHlqsENvEuR4uGEYEyCfbFIm/V5kr0O6+6a0TYRLO09qbOJS8ZL3xv/W8bZ4
-         k5UzRhukimWHLKvFSbFMPs8hETpyyu9M62hQCzBQTmEvj80HTrEp3v7vgj/O0zkUHZUR
-         833g==
-X-Forwarded-Encrypted: i=1; AJvYcCV73vxUQ/e1UPfVGDEJqd5gbry9Wn/Iwinxlvw3D6mm13AcwrsvRVRt63JknuJ1jH8zpd+AfZkm6eIf/wK95gFeY2YPwg9Db4FctHUIR5U=
-X-Gm-Message-State: AOJu0YyesvrzIbv7SIbp5qsnEB7b3xwaqrufY4Nfpxl0Js61JqCSAEix
-	CIvw4OaqsUf7lO3AURY8XPfTKAloM7SmumA6JAXkbRrDb8bozmwRx2msl2cnWPsW8H8xKbD74M7
-	mexCOSk6FfPXcLytaM68BdSYHGU7jt/jq6yhbua1ccn95mV9931YTAuY=
-X-Google-Smtp-Source: AGHT+IEUtggJJAso4Y5jVSqudE8MyI4pMbD4AMrPqOixYJr0f3uLgqSEMajw9S4MV/pd2nUejqW+OXF6CRhmOc9zA4nzl7P6aQBq
+	s=arc-20240116; t=1716419450; c=relaxed/simple;
+	bh=Z+7gGIV3RKzOZJXBZDX/o1LgEMBdIQufNV2XJHKqPZ0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=i/snH5C4SiHTSJu+bhBx4sI3ZrkfszzkmtXyTBlq1jvgLEifpt98X23WrSkbZNDZ1lNLm6C8bPC3+jdgpe61+UCeRf8dSG4+KFaPSSW6ni+bE9661J8YZRXnS5/mbahwwZsEOQOc7QJPHZoDiifoN1ge9aX8OxFUG2ehU7/1nSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=a0FbMVid; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="a0FbMVid"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D320CC2BBFC;
+	Wed, 22 May 2024 23:10:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1716419449;
+	bh=Z+7gGIV3RKzOZJXBZDX/o1LgEMBdIQufNV2XJHKqPZ0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=a0FbMVidQyKtR5EjVEFlLSaCMH+Y7NFs/eZtCb3Yxt+VUAje5+LSYtQzarq5Fms70
+	 Y7u/ZzmIe6bDRz9MXy3fNFqpw4HTD4wAJIweTPTD0UTQ54x5A7w8NqMGt7uy4CFU1r
+	 Y55tmBWUa6jgNovthIfsQGUY3prspIdbBitktdYY=
+Date: Wed, 22 May 2024 16:10:48 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
+ peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+ namhyung@kernel.org, bfoster@redhat.com, mark.rutland@arm.com,
+ alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
+ adrian.hunter@intel.com, bagasdotme@gmail.com, jserv@ccns.ncku.edu.tw,
+ linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
+ linux-perf-users@vger.kernel.org
+Subject: Re: [RESEND PATCH v5 04/16] lib min_heap: Add type safe interface
+Message-Id: <20240522161048.8d8bbc7b153b4ecd92c50666@linux-foundation.org>
+In-Reply-To: <20240514084724.557100-5-visitorckw@gmail.com>
+References: <20240514084724.557100-1-visitorckw@gmail.com>
+	<20240514084724.557100-5-visitorckw@gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a02:aa8f:0:b0:488:96c4:9caf with SMTP id
- 8926c6da1cb9f-4afe3dba236mr91796173.6.1716411399389; Wed, 22 May 2024
- 13:56:39 -0700 (PDT)
-Date: Wed, 22 May 2024 13:56:39 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bfd7970619112bec@google.com>
-Subject: [syzbot] [bcachefs?] WARNING in __bch2_truncate_folio
-From: syzbot <syzbot+3d11e35eeafe176a6c5b@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Tue, 14 May 2024 16:47:12 +0800 Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
 
-syzbot found the following issue on:
+> Implement a type-safe interface for min_heap using strong type
+> pointers instead of void * in the data field. This change includes
+> adding small macro wrappers around functions, enabling the use of
+> __minheap_cast and __minheap_obj_size macros for type casting and
+> obtaining element size. This implementation removes the necessity of
+> passing element size in min_heap_callbacks. Additionally, introduce the
+> MIN_HEAP_PREALLOCATED macro for preallocating some elements.
 
-HEAD commit:    b6394d6f7159 Merge tag 'pull-misc' of git://git.kernel.org..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14953df4980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=713476114e57eef3
-dashboard link: https://syzkaller.appspot.com/bug?extid=3d11e35eeafe176a6c5b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c2ef84980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115a1592980000
+I guess it's a nice change, although it's unclear how valuable all this
+is.  Being able to remove the local implementations in bcache and
+bcachefs is good.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e8e1377d4772/disk-b6394d6f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/19fbbb3b6dd5/vmlinux-b6394d6f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4dcce16af95d/bzImage-b6394d6f.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/cff7ebd31dbf/mount_0.gz
+> --- a/drivers/md/dm-vdo/repair.c
+> +++ b/drivers/md/dm-vdo/repair.c
+> @@ -51,6 +51,8 @@ struct recovery_point {
+>  	bool increment_applied;
+>  };
+>  
+> +MIN_HEAP(struct numbered_block_mapping, replay_heap);
+>
+> ...
+>
+> -struct min_heap {
+> -	void *data;
+> -	int nr;
+> -	int size;
+> -};
+> +#define MIN_HEAP_PREALLOCATED(_type, _name, _nr)	\
+> +struct _name {	\
+> +	int nr;	\
+> +	int size;	\
+> +	_type *data;	\
+> +	_type preallocated[_nr];	\
+> +}
 
-The issue was bisected to:
+I think that the MIN_HEAP() macro would be better named
+DEFINE_MIN_HEAP().  There's a lot of precedent for this and it's
+unclear whether "MIN_HEAP" actually implements storage.  I looked at
+the repair.c addition and thought "hm, shouldn't that be static"!
 
-commit f7643bc9749f270d487c32dc35b578575bf1adb0
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Wed Apr 17 05:26:02 2024 +0000
+>  /* Sift the element at pos down the heap. */
+>  static __always_inline
+> -void min_heapify(struct min_heap *heap, int pos,
+> +void __min_heapify(min_heap_char *heap, int pos, size_t elem_size,
+>  		const struct min_heap_callbacks *func)
+>  {
 
-    bcachefs: make btree read errors silent during scan
+It's a separate project, but min_heap.h has some crazily huge inlined
+functions.  I expect we'd have a smaller and faster kernel if those
+were moved into a new lib/min_heap.c.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11f1b784980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13f1b784980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15f1b784980000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3d11e35eeafe176a6c5b@syzkaller.appspotmail.com
-Fixes: f7643bc9749f ("bcachefs: make btree read errors silent during scan")
-
-bcachefs (loop0): resume_logged_ops... done
-bcachefs (loop0): going read-write
-bcachefs (loop0): done starting filesystem
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5083 at fs/bcachefs/fs-io.c:327 __bch2_truncate_folio+0x1a33/0x1d80 fs/bcachefs/fs-io.c:327
-Modules linked in:
-CPU: 0 PID: 5083 Comm: syz-executor322 Not tainted 6.9.0-syzkaller-10729-gb6394d6f7159 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-RIP: 0010:__bch2_truncate_folio+0x1a33/0x1d80 fs/bcachefs/fs-io.c:327
-Code: 41 5f 5d c3 cc cc cc cc e8 3a 00 6f fd 48 c7 c7 fa 04 c0 8d e8 4e 1c ea ff 89 05 18 02 6a 10 e9 ed ea ff ff e8 1e 00 6f fd 90 <0f> 0b 90 e9 0a fa ff ff 44 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c f0
-RSP: 0018:ffffc900033df6c0 EFLAGS: 00010293
-RAX: ffffffff84273a52 RBX: 0000000000000000 RCX: ffff888078fb8000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc900033df950 R08: ffffffff84273457 R09: 1ffffd400014f498
-R10: dffffc0000000000 R11: fffff9400014f499 R12: 1ffff1100ecd900a
-R13: ffff88807420075a R14: 0000000000000000 R15: ffff8880766c8050
-FS:  000055555b7d5380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f47f45440f8 CR3: 0000000077134000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bch2_truncate_folios fs/bcachefs/fs-io.c:366 [inline]
- bchfs_fpunch fs/bcachefs/fs-io.c:520 [inline]
- bch2_fallocate_dispatch+0x6fb/0x3810 fs/bcachefs/fs-io.c:785
- vfs_fallocate+0x564/0x6c0 fs/open.c:330
- ksys_fallocate fs/open.c:353 [inline]
- __do_sys_fallocate fs/open.c:361 [inline]
- __se_sys_fallocate fs/open.c:359 [inline]
- __x64_sys_fallocate+0xbd/0x110 fs/open.c:359
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f47f44c7a99
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffec1ed9828 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f47f44c7a99
-RDX: 0000000000000002 RSI: 0000000000000003 RDI: 0000000000000004
-RBP: 00007f47f45405f0 R08: 000055555b7d64c0 R09: 000055555b7d64c0
-R10: 0000000000010000 R11: 0000000000000246 R12: 00007ffec1ed9850
-R13: 00007ffec1ed9a78 R14: 431bde82d7b634db R15: 00007f47f451003b
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
