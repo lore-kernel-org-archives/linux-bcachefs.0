@@ -1,236 +1,151 @@
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39F514EC43
-	for <linux-bcachefs@vger.kernel.org>; Wed, 22 May 2024 23:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0092B2574D
+	for <linux-bcachefs@vger.kernel.org>; Thu, 23 May 2024 03:51:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716421767; cv=none; b=rlX/hXjHl9fDA9OVBPs63S2wU88NXW7fWRwAe5usDtlLgsYR3ManZV/4VxyhZ5OM+j/1fScdWxJAJUwKgM7rK5UqErNJ6TbIU3udBzgjYGzAngCMYW9HG/+27pduFxmFA6hk704c7aoY8HCCOysYwMwOZ9IDrDFjYgC5/lNV6N0=
+	t=1716436281; cv=none; b=TSXWzXRbRv+ewY1JWbnagYD7qBrF/agLujDEgFNmcXRvLib2s3hywwZCPJTQdkFyHU6Brpyn5lsNqABepY05Rw9lfY5VXpsOC1VrmvAnm7PghxW17NP/Q85y6y65M2oAV3kfiyW+wro43qcssDizK3skR6gREaYjNfUfmByHVpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716421767; c=relaxed/simple;
-	bh=o5DvWYLwxeN3+5gGgxdGr9iU7m0Mz7NtMl0UOhl2tdQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qf4TloWRZmwiC/QWnAJMXl+USEm8NW6x1O22a0Rg04k6ed/nlY2eO/6kntJQeRZKjeA975F8mZlbQDK2PVAb1+sSuyF7cD74mdI+O1rhQq7fChA7W3cySfWClv3ueGp5Flq/fNyIAzueBtOUWqgo2ezSYzxQCpiFXg+lJvvdiP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nD2tEt7Z; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1716436281; c=relaxed/simple;
+	bh=iMGgLAI0RnofLrCqsYJdrGkFEOjJ+L4/MwpJ02XpNdI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bGJCSJJ8jw3A3TFqXPwU9WmrBCE7YtPdjtV3W2VSclyUBZzjuHMouIKt0gTaMERBrOV/ozKFF0SgOJDIu2lAQ/5Qe+kaVWbT77lyW7HYojQWID8oiv0thmT4JfwoVOJ0EdrN3XQLIJVvZuTZR/a+795bC4BkUt7Y0dSHlhXtHhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EXSCWJ1+; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nD2tEt7Z"
-X-Envelope-To: syzbot+eceea46e8838baeeba67@syzkaller.appspotmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716421761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EFnL3passYan85t/4rtCvjnbTvKOxRfIbRInp52tVnQ=;
-	b=nD2tEt7ZgC/+QMFyXZlVgMvmB6RY++dG2RieesbwWmCQfUGLyM5ZtCgYrcSlO2+DFAWgmH
-	+sVVQ1lscTEITOCB2KGCgPRrUJiTtHVnUj69TDY4JCRKIEpcH3lU+JyjT52l45gYrRgA4u
-	DaA5kknGP39wTOI2yKV6flA6exJMRuw=
-X-Envelope-To: glider@google.com
-X-Envelope-To: bfoster@redhat.com
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: syzkaller-bugs@googlegroups.com
-Date: Wed, 22 May 2024 19:49:17 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: syzbot <syzbot+eceea46e8838baeeba67@syzkaller.appspotmail.com>, 
-	Alexander Potapenko <glider@google.com>
-Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in
- bch2_extent_update_i_size_sectors
-Message-ID: <jgtxdyooy6zyettrj53qi7s7z5fs5zpnwdjm7eqpihwo32lxzx@v2234ezsba4d>
-References: <0000000000009f9447061833d477@google.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EXSCWJ1+"
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-43dfe020675so299611cf.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 22 May 2024 20:51:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1716436279; x=1717041079; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b/0+KdIOmws+ZrFm/pd5ZcN2+OOmnR4z08zZunaz/hw=;
+        b=EXSCWJ1+jMbqZ5D5P0+BhX0rk6lftj6jUr6TspddCAEN+64nl2M8LlMEoxs9xID2M5
+         BshFpeYv+1NjtI9xNX1HctpgAilxwr2dhwTRAQjHXUlyWFDbg7QH6lREz6Xr7+2nVxBu
+         ZKH1qBju9ZKhFGsD3KL/C7rj0SBZILBKYlKhDSpi+ae3/QFT5u1Q9YS7elJoFLPsd33h
+         /9ruyJJmYH49pAeOwuJFWv14fbM6Ks3B0SV4zjGV7iYgX6IAg46EC/3qFZrKDbit/Wqt
+         IDVIIu78kE9jTtbWcgzq6DG8nowhf+jBMG8pXU1RmefMdvN0+fYrWr6aTiIF7GoA2yDz
+         tADg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716436279; x=1717041079;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b/0+KdIOmws+ZrFm/pd5ZcN2+OOmnR4z08zZunaz/hw=;
+        b=H5RGly2ewh7uIZ8iMn0EwxTea0zWxrUG3lxya9lhKJr61Uwgw88kEuO9V5JtRroU9r
+         l9y/r043l6iJmIdfYpfdDyUzD9qaof+7j7W6INtPjrakTjacFUdQ2XDeOIqQ+SpNXb4v
+         QGAHEbI9rHecFky5haZK6mHDDJ7858qdFIVYlIMgQWKpEITaLqIFn++JpFZgqcEGmso8
+         eGjjIKux9AIE02azUTecbP2RDLLK3f5U8/o+K9gVuu6/Vlssk6H0nWe/NsjTAjT0NSO3
+         SQviG7McAhwgLWEbBhSmeGIhUnSbp4u0RdoqVLDF3Ffoh84gSnVELjLOkGp2FGQy+WAB
+         8JMg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9lR7ehFcOAjGNvLkC8KM6NdRQCLrlUQ/FFdGXAz62iPXkxyYYQaYubq+yGHxlUtAHSyLzWN0g5y0ubj0lW0xW0wbhNUlLWpJUaVVLyHA=
+X-Gm-Message-State: AOJu0YwvE6yjwBz3EKxwIfOwHYGrULYsovB9E1Iai+aK7nouQUwPOuc1
+	wi6mi/N5uGkodHBvtOeJ8Fd1Obj8yKPqPwaUDvosausjTE+lkxai8UjIemM/p2rePuZrsW0THdg
+	JqYc2m47SV1GeiEfdgiuQQT9DOzZtUKqlmvl7
+X-Google-Smtp-Source: AGHT+IEF7U0eAjRtPE1F4LSZ58RNB/uzqr2Lsi+zESRmuUtZJz08s97jQaPWmV6NfwanHAB+CCDsqLwqgE/Vu0ZL9GY=
+X-Received: by 2002:a05:622a:1b16:b0:43e:cb4:1d10 with SMTP id
+ d75a77b69052e-43fa745b199mr1765661cf.14.1716436278572; Wed, 22 May 2024
+ 20:51:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000009f9447061833d477@google.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20240514084724.557100-1-visitorckw@gmail.com> <20240514084724.557100-5-visitorckw@gmail.com>
+ <20240522161048.8d8bbc7b153b4ecd92c50666@linux-foundation.org> <gch7c2merdegxvqwpbb5ean7uj35tnh62fyviggjglftlfjs3i@jhbnllco5kau>
+In-Reply-To: <gch7c2merdegxvqwpbb5ean7uj35tnh62fyviggjglftlfjs3i@jhbnllco5kau>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 22 May 2024 20:51:06 -0700
+Message-ID: <CAP-5=fWn8AmE=0Y15Y3fm71zK0jsdgvH3UdmKUq5Pe6SAAsKCQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v5 04/16] lib min_heap: Add type safe interface
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Kuan-Wei Chiu <visitorckw@gmail.com>, colyli@suse.de, 
+	msakai@redhat.com, peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
+	namhyung@kernel.org, bfoster@redhat.com, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
+	bagasdotme@gmail.com, jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This (and a few others I've looked at) look more likely to be bugs in
-KMSAN, not bcachefs.
+On Wed, May 22, 2024 at 4:33=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Wed, May 22, 2024 at 04:10:48PM -0700, Andrew Morton wrote:
+> > On Tue, 14 May 2024 16:47:12 +0800 Kuan-Wei Chiu <visitorckw@gmail.com>=
+ wrote:
+> >
+> > > Implement a type-safe interface for min_heap using strong type
+> > > pointers instead of void * in the data field. This change includes
+> > > adding small macro wrappers around functions, enabling the use of
+> > > __minheap_cast and __minheap_obj_size macros for type casting and
+> > > obtaining element size. This implementation removes the necessity of
+> > > passing element size in min_heap_callbacks. Additionally, introduce t=
+he
+> > > MIN_HEAP_PREALLOCATED macro for preallocating some elements.
+> >
+> > I guess it's a nice change, although it's unclear how valuable all this
+> > is.  Being able to remove the local implementations in bcache and
+> > bcachefs is good.
+>
+> Yes, and now the standard kernel version is type safe. I suggested it to
+> Kuan as a good starting project, I find (well picked) refactorings and
+> cleanups are a great place for people to start.
+>
+> >
+> > > --- a/drivers/md/dm-vdo/repair.c
+> > > +++ b/drivers/md/dm-vdo/repair.c
+> > > @@ -51,6 +51,8 @@ struct recovery_point {
+> > >     bool increment_applied;
+> > >  };
+> > >
+> > > +MIN_HEAP(struct numbered_block_mapping, replay_heap);
+> > >
+> > > ...
+> > >
+> > > -struct min_heap {
+> > > -   void *data;
+> > > -   int nr;
+> > > -   int size;
+> > > -};
+> > > +#define MIN_HEAP_PREALLOCATED(_type, _name, _nr)   \
+> > > +struct _name {     \
+> > > +   int nr; \
+> > > +   int size;       \
+> > > +   _type *data;    \
+> > > +   _type preallocated[_nr];        \
+> > > +}
+> >
+> > I think that the MIN_HEAP() macro would be better named
+> > DEFINE_MIN_HEAP().  There's a lot of precedent for this and it's
+> > unclear whether "MIN_HEAP" actually implements storage.  I looked at
+> > the repair.c addition and thought "hm, shouldn't that be static"!
+>
+> Agreed
+>
+> > >  /* Sift the element at pos down the heap. */
+> > >  static __always_inline
+> > > -void min_heapify(struct min_heap *heap, int pos,
+> > > +void __min_heapify(min_heap_char *heap, int pos, size_t elem_size,
+> > >             const struct min_heap_callbacks *func)
+> > >  {
+> >
+> > It's a separate project, but min_heap.h has some crazily huge inlined
+> > functions.  I expect we'd have a smaller and faster kernel if those
+> > were moved into a new lib/min_heap.c.
+>
+> good thought - Kuan, want to do that too? Since we missed the merge
+> window, may as well :)
 
-here, the supposedly uninitialized key was read in from disk, so the key
-couldn't possibly have been legitimately marked uninitialized.
+Just to mention that the perf events use of the min heap is during a
+context switch, so it is somewhat performance sensitive for people
+context switching with perf events opened/enabled.
 
-All the suspicious KMSAN splats I'm looking at involve bkeys, but I'm
-not seeing any other common factors besides that.
-
-On Sat, May 11, 2024 at 01:52:29PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    dccb07f2914c Merge tag 'for-6.9-rc7-tag' of git://git.kern..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14c66e24980000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=617171361dd3cd47
-> dashboard link: https://syzkaller.appspot.com/bug?extid=eceea46e8838baeeba67
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/fdbc7be30633/disk-dccb07f2.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/a9e4c11aa835/vmlinux-dccb07f2.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/43c3a343ea93/bzImage-dccb07f2.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+eceea46e8838baeeba67@syzkaller.appspotmail.com
-> 
-> bcachefs (loop0): snapshots_read... done
-> bcachefs (loop0): journal_replay... done
-> bcachefs (loop0): resume_logged_ops... done
-> bcachefs (loop0): going read-write
-> bcachefs (loop0): done starting filesystem
-> =====================================================
-> BUG: KMSAN: uninit-value in bch2_extent_update_i_size_sectors+0x140f/0x17d0 fs/bcachefs/io_write.c:237
->  bch2_extent_update_i_size_sectors+0x140f/0x17d0 fs/bcachefs/io_write.c:237
->  bch2_extent_update+0x4f5/0xac0 fs/bcachefs/io_write.c:314
->  bch2_write_index_default fs/bcachefs/io_write.c:366 [inline]
->  __bch2_write_index+0x1653/0x2bd0 fs/bcachefs/io_write.c:520
->  bch2_write_data_inline fs/bcachefs/io_write.c:1538 [inline]
->  bch2_write+0x1a13/0x1b40 fs/bcachefs/io_write.c:1606
->  closure_queue include/linux/closure.h:257 [inline]
->  closure_call include/linux/closure.h:390 [inline]
->  bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:468 [inline]
->  bch2_writepages+0x24a/0x3c0 fs/bcachefs/fs-io-buffered.c:660
->  do_writepages+0x427/0xc30 mm/page-writeback.c:2612
->  filemap_fdatawrite_wbc+0x1d8/0x270 mm/filemap.c:397
->  __filemap_fdatawrite_range+0xe3/0x120 mm/filemap.c:430
->  sync_file_range+0x316/0x450 fs/sync.c:292
->  ksys_sync_file_range fs/sync.c:364 [inline]
->  __do_sys_sync_file_range fs/sync.c:373 [inline]
->  __se_sys_sync_file_range fs/sync.c:370 [inline]
->  __x64_sys_sync_file_range+0x15a/0x2a0 fs/sync.c:370
->  x64_sys_call+0xc90/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:278
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> Uninit was stored to memory at:
->  memcpy_u64s_small fs/bcachefs/util.h:511 [inline]
->  bkey_reassemble fs/bcachefs/bkey.h:505 [inline]
->  __bch2_bkey_make_mut_noupdate fs/bcachefs/btree_update.h:225 [inline]
->  __bch2_bkey_get_mut_noupdate fs/bcachefs/btree_update.h:282 [inline]
->  bch2_bkey_get_mut_noupdate fs/bcachefs/btree_update.h:293 [inline]
->  bch2_extent_update_i_size_sectors+0x9a9/0x17d0 fs/bcachefs/io_write.c:219
->  bch2_extent_update+0x4f5/0xac0 fs/bcachefs/io_write.c:314
->  bch2_write_index_default fs/bcachefs/io_write.c:366 [inline]
->  __bch2_write_index+0x1653/0x2bd0 fs/bcachefs/io_write.c:520
->  bch2_write_data_inline fs/bcachefs/io_write.c:1538 [inline]
->  bch2_write+0x1a13/0x1b40 fs/bcachefs/io_write.c:1606
->  closure_queue include/linux/closure.h:257 [inline]
->  closure_call include/linux/closure.h:390 [inline]
->  bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:468 [inline]
->  bch2_writepages+0x24a/0x3c0 fs/bcachefs/fs-io-buffered.c:660
->  do_writepages+0x427/0xc30 mm/page-writeback.c:2612
->  filemap_fdatawrite_wbc+0x1d8/0x270 mm/filemap.c:397
->  __filemap_fdatawrite_range+0xe3/0x120 mm/filemap.c:430
->  sync_file_range+0x316/0x450 fs/sync.c:292
->  ksys_sync_file_range fs/sync.c:364 [inline]
->  __do_sys_sync_file_range fs/sync.c:373 [inline]
->  __se_sys_sync_file_range fs/sync.c:370 [inline]
->  __x64_sys_sync_file_range+0x15a/0x2a0 fs/sync.c:370
->  x64_sys_call+0xc90/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:278
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> Uninit was stored to memory at:
->  memcpy_u64s_small fs/bcachefs/util.h:511 [inline]
->  bkey_reassemble fs/bcachefs/bkey.h:505 [inline]
->  btree_key_cache_fill fs/bcachefs/btree_key_cache.c:454 [inline]
->  bch2_btree_path_traverse_cached_slowpath+0x5f02/0x79f0 fs/bcachefs/btree_key_cache.c:530
->  bch2_btree_path_traverse_cached+0xd1a/0x1140
->  bch2_btree_path_traverse_one+0x737/0x5290 fs/bcachefs/btree_iter.c:1155
->  bch2_btree_path_traverse fs/bcachefs/btree_iter.h:225 [inline]
->  bch2_btree_iter_peek_slot+0x128c/0x3840 fs/bcachefs/btree_iter.c:2473
->  __bch2_bkey_get_iter fs/bcachefs/btree_iter.h:549 [inline]
->  __bch2_bkey_get_mut_noupdate fs/bcachefs/btree_update.h:278 [inline]
->  bch2_bkey_get_mut_noupdate fs/bcachefs/btree_update.h:293 [inline]
->  bch2_extent_update_i_size_sectors+0x404/0x17d0 fs/bcachefs/io_write.c:219
->  bch2_extent_update+0x4f5/0xac0 fs/bcachefs/io_write.c:314
->  bch2_write_index_default fs/bcachefs/io_write.c:366 [inline]
->  __bch2_write_index+0x1653/0x2bd0 fs/bcachefs/io_write.c:520
->  bch2_write_data_inline fs/bcachefs/io_write.c:1538 [inline]
->  bch2_write+0x1a13/0x1b40 fs/bcachefs/io_write.c:1606
->  closure_queue include/linux/closure.h:257 [inline]
->  closure_call include/linux/closure.h:390 [inline]
->  bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:468 [inline]
->  bch2_writepages+0x24a/0x3c0 fs/bcachefs/fs-io-buffered.c:660
->  do_writepages+0x427/0xc30 mm/page-writeback.c:2612
->  filemap_fdatawrite_wbc+0x1d8/0x270 mm/filemap.c:397
->  __filemap_fdatawrite_range+0xe3/0x120 mm/filemap.c:430
->  sync_file_range+0x316/0x450 fs/sync.c:292
->  ksys_sync_file_range fs/sync.c:364 [inline]
->  __do_sys_sync_file_range fs/sync.c:373 [inline]
->  __se_sys_sync_file_range fs/sync.c:370 [inline]
->  __x64_sys_sync_file_range+0x15a/0x2a0 fs/sync.c:370
->  x64_sys_call+0xc90/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:278
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> Uninit was created at:
->  __kmalloc_large_node+0x231/0x370 mm/slub.c:3927
->  __do_kmalloc_node mm/slub.c:3960 [inline]
->  __kmalloc_node+0xb10/0x10c0 mm/slub.c:3979
->  kmalloc_node include/linux/slab.h:648 [inline]
->  kvmalloc_node+0xc0/0x2d0 mm/util.c:634
->  kvmalloc include/linux/slab.h:766 [inline]
->  btree_bounce_alloc fs/bcachefs/btree_io.c:118 [inline]
->  bch2_btree_node_read_done+0x4e68/0x75e0 fs/bcachefs/btree_io.c:1185
->  btree_node_read_work+0x8a5/0x1eb0 fs/bcachefs/btree_io.c:1324
->  bch2_btree_node_read+0x3d42/0x4b50
->  __bch2_btree_root_read fs/bcachefs/btree_io.c:1748 [inline]
->  bch2_btree_root_read+0xa6c/0x13d0 fs/bcachefs/btree_io.c:1772
->  read_btree_roots+0x454/0xee0 fs/bcachefs/recovery.c:457
->  bch2_fs_recovery+0x7adb/0x9310 fs/bcachefs/recovery.c:785
->  bch2_fs_start+0x7b2/0xbd0 fs/bcachefs/super.c:1043
->  bch2_fs_open+0x135f/0x1670 fs/bcachefs/super.c:2102
->  bch2_mount+0x90d/0x1d90 fs/bcachefs/fs.c:1903
->  legacy_get_tree+0x114/0x290 fs/fs_context.c:662
->  vfs_get_tree+0xa7/0x570 fs/super.c:1779
->  do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
->  path_mount+0x742/0x1f20 fs/namespace.c:3679
->  do_mount fs/namespace.c:3692 [inline]
->  __do_sys_mount fs/namespace.c:3898 [inline]
->  __se_sys_mount+0x725/0x810 fs/namespace.c:3875
->  __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
->  x64_sys_call+0x2bf4/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:166
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> CPU: 1 PID: 6218 Comm: syz-executor.0 Not tainted 6.9.0-rc7-syzkaller-00012-gdccb07f2914c #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-> =====================================================
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+Thanks,
+Ian
