@@ -1,135 +1,159 @@
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E982628D;
-	Thu, 23 May 2024 17:53:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C14F3A28D
+	for <linux-bcachefs@vger.kernel.org>; Fri, 24 May 2024 06:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716486793; cv=none; b=QtmpQU1IE7XkfDi9PeAfEaWvjHoY044pn9MsE8wmiv1IIpaBnQq/yhv+5jtdRSNaLugfYmkuP2qjL7K1/chKKGBd45/zZmYe6s/u4lNuznJ26nKkbblkID2wVZbUgKszfJz94ekntX7/KZz+HXvVCAbRY4zE9TW/1GT6DdFdbGo=
+	t=1716531509; cv=none; b=RDXWV8xjpBBh39Lpn+WupSqDOwMaH9CMjPSsV0YfOjCyew7CHp3WjJpq3+jJl7PNV6HMORHzWvgHTr4YeN+VQ4s/0uLH+ddbtrkQrJxfSGjkNEdTAqihrnEZNqJPp7+VDLTc5CA/pvPJmJd7W6+eOEciTJQ13ZyXZOUMDRNtbUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716486793; c=relaxed/simple;
-	bh=eG8U1x4QQ6oumcc1cnDrsvXG+P8ChtqXaLkve5TzQPw=;
-	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=i0aS7XXVOmz2Nc1kLEPqxNeUk4TR7w6MsWemoCEY7ZSzWtUGtnrLo6sn2Qh61Rdpq48z/aJn+LsuCkA1CqaPzB8EGcOErbAgqfRaWfUMT0Lcg/n7A2lCjIeNC6ZCcRP8QG3yiLZnmoFBoVOiApBZM0qHo8uQJQKsyrpha3p1B+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=ARJFYZmC; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ARJFYZmC"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1716486786;
-	bh=eG8U1x4QQ6oumcc1cnDrsvXG+P8ChtqXaLkve5TzQPw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ARJFYZmCYbAkdCd3p5z/igjCc7ZkAZOOSs8k71Th+r0zrlLrf4DRoQpinm8YM6vwg
-	 8QhNU0Pi00NDZj6vqTRVwSne3OYf62I8v7GNaHbSipEvxKwX59C8ZdrNXHEzErUl3+
-	 oHVj42XQCDW8zud5eT7I3reyqfKoOy78zv5zuD+spLbToK5w+zQbZGEh1hYBoqq4kQ
-	 I94qF6TZADNmYhpn0hbOTpuuoGgHQSSGgQX30Q3Qb7mSttRLZ0JTDtE4+Ez1b/KS4D
-	 UWI8V4V9QrArEg4YgKEEC7n55DKvkI2M3FktTlBGkQXvgBSHO6kaZr1AwqTp+W9+C4
-	 0YPOjOrYM+G2A==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4VlbPG3fBRz116b;
-	Thu, 23 May 2024 13:53:06 -0400 (EDT)
-Message-ID: <986294ee-8bb1-4bf4-9f23-2bc25dbad561@efficios.com>
-Date: Thu, 23 May 2024 13:53:42 -0400
+	s=arc-20240116; t=1716531509; c=relaxed/simple;
+	bh=1s1BWPfkrWwqcxTCUmiRYigcKpmViP8RKSyWEeyEcwE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=FALT/Nqcfufwsqkw1ImKbyVMF36TILppDMrtz2s8z8UzCNEHAmX7malEW05wI9k3utoDKNsSkIK/w9GoZRvz03BN+SGBNzCAkQOISBywANSP8Kyiid0h3Oz9Klgc5HTx0+ZUO0Ze4f4Sequal3sVhO9IAQsLigb4a6Y2JXHs3hE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3737b401944so6836775ab.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 23 May 2024 23:18:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716531506; x=1717136306;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/RrFb12gbkLxmMgRGm2nf1bRqPGN6rOAZGz4/1nNHxI=;
+        b=kN/bkOY7lIeVEGYwcILvTm34ak3vOsrrzdqK94c6bb/gng683GL8cQh2hs8FlN80un
+         bjlsAfgsfNTPYd2+6uiQX+V4SuFqobUvUAjahveWCLBM23gfmNjURnmWHsTNsmtIr4XT
+         opN0o1vH4bYMvp+Zd4tgMjSKo10zTjkFOaY7gwQ5dYkFd7WlgQ8ho8Hs0ivV39mYyTW/
+         kaIxL0N3alTtLerUr/L1+8wlpZMTqqaphoA35ZjIkoH+MA82MYjA7k5ZTLC0Hm8QDWV8
+         odoAY2/kSlVbuJE/GXnb9FNu5eWb73/s9pAMCYxr+bvsOvhXyya7C6iRWuPJZUHTsq07
+         tclA==
+X-Forwarded-Encrypted: i=1; AJvYcCXd00J/fQxoC1jB+WAco+iZzzh65TrqqBMhE+e6rrsOQuhnK8t5X5Rs8PuTWFp/zyJ1KtkazhGD0/r7F2IqAZLTLKx1xcoJ47RxY7kVAvU=
+X-Gm-Message-State: AOJu0Yx8Iav5YdEvjvKIKTPtPFlx4qfy3iPUF8e8JEJuB17o7ztqXGux
+	AYRA24egchPV0uyZ0U6PitGHketXJpRJ0qrwQHbbLviHVJLYbL1tJr2SyEK118R3WHyF0DhAOUX
+	jK2ADbWF6drq9ENhtS3Hb6SACoLbMlPYLowq/CxgTeBoEJahMkBWB3a4=
+X-Google-Smtp-Source: AGHT+IFS+VmAnmtIMK6DHu0QoepSfrJaF8oau+10m8Qn9AqBUrCc0gs7iR7OeIB1KkbiUqkpv9n77Qj+1ICnIwWrK7yRNOd9rzB6
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Brian Foster <bfoster@redhat.com>
-Cc: Kees Cook <keescook@chromium.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, linux-bcachefs@vger.kernel.org
-Subject: Use of zero-length arrays in bcachefs structures inner fields
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1a0e:b0:36c:2981:a85a with SMTP id
+ e9e14a558f8ab-3737b2053d1mr1019895ab.0.1716531506757; Thu, 23 May 2024
+ 23:18:26 -0700 (PDT)
+Date: Thu, 23 May 2024 23:18:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b4d66d06192d22d4@google.com>
+Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_dirent_lookup_trans
+From: syzbot <syzbot+b09b7a89937134dc8f93@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Kent,
+Hello,
 
-Looking around in the bcachefs code for possible causes of this KMSAN
-bug report:
+syzbot found the following issue on:
 
-https://lore.kernel.org/lkml/000000000000fd5e7006191f78dc@google.com/
+HEAD commit:    614da38e2f7a Merge tag 'hid-for-linus-2024051401' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12866ab2980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f5d2cbf33633f507
+dashboard link: https://syzkaller.appspot.com/bug?extid=b09b7a89937134dc8f93
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-I notice the following pattern in the bcachefs structures: zero-length
-arrays members are inserted in structures (not always at the end),
-seemingly to achieve a result similar to what could be done with a
-union:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-fs/bcachefs/bcachefs_format.h:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/89eafb874b71/disk-614da38e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/356000512ad9/vmlinux-614da38e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/839c73939115/bzImage-614da38e.xz
 
-struct bkey_packed {
-         __u64           _data[0];
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b09b7a89937134dc8f93@syzkaller.appspotmail.com
 
-         /* Size of combined key and value, in u64s */
-         __u8            u64s;
-[...]
-};
+bcachefs (loop4): snapshots_read... done
+bcachefs (loop4): journal_replay... done
+bcachefs (loop4): resume_logged_ops... done
+bcachefs (loop4): going read-write
+bcachefs (loop4): done starting filesystem
+=====================================================
+BUG: KMSAN: uninit-value in dirent_is_visible fs/bcachefs/dirent.c:85 [inline]
+BUG: KMSAN: uninit-value in is_visible_key fs/bcachefs/str_hash.h:159 [inline]
+BUG: KMSAN: uninit-value in bch2_hash_lookup_in_snapshot fs/bcachefs/str_hash.h:177 [inline]
+BUG: KMSAN: uninit-value in bch2_hash_lookup fs/bcachefs/str_hash.h:202 [inline]
+BUG: KMSAN: uninit-value in bch2_dirent_lookup_trans+0x652/0xfb0 fs/bcachefs/dirent.c:482
+ dirent_is_visible fs/bcachefs/dirent.c:85 [inline]
+ is_visible_key fs/bcachefs/str_hash.h:159 [inline]
+ bch2_hash_lookup_in_snapshot fs/bcachefs/str_hash.h:177 [inline]
+ bch2_hash_lookup fs/bcachefs/str_hash.h:202 [inline]
+ bch2_dirent_lookup_trans+0x652/0xfb0 fs/bcachefs/dirent.c:482
+ bch2_unlink_trans+0x505/0x2190 fs/bcachefs/fs-common.c:264
+ __bch2_unlink+0x3e5/0x9c0 fs/bcachefs/fs.c:529
+ bch2_unlink+0x128/0x1d0 fs/bcachefs/fs.c:563
+ vfs_rmdir+0x5b1/0x790 fs/namei.c:4214
+ do_rmdir+0x630/0x8b0 fs/namei.c:4273
+ __do_sys_rmdir fs/namei.c:4292 [inline]
+ __se_sys_rmdir fs/namei.c:4290 [inline]
+ __x64_sys_rmdir+0x78/0xb0 fs/namei.c:4290
+ x64_sys_call+0x3a8e/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:85
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-likewise:
+Uninit was created at:
+ __kmalloc_large_node+0x231/0x370 mm/slub.c:3994
+ __do_kmalloc_node mm/slub.c:4027 [inline]
+ __kmalloc_node+0xb10/0x10c0 mm/slub.c:4046
+ kmalloc_node include/linux/slab.h:648 [inline]
+ kvmalloc_node+0xc0/0x2d0 mm/util.c:634
+ kvmalloc include/linux/slab.h:766 [inline]
+ btree_bounce_alloc fs/bcachefs/btree_io.c:118 [inline]
+ bch2_btree_node_read_done+0x4e68/0x75e0 fs/bcachefs/btree_io.c:1185
+ btree_node_read_work+0x8a5/0x1eb0 fs/bcachefs/btree_io.c:1324
+ bch2_btree_node_read+0x3d42/0x4b50
+ __bch2_btree_root_read fs/bcachefs/btree_io.c:1748 [inline]
+ bch2_btree_root_read+0xa6c/0x13d0 fs/bcachefs/btree_io.c:1772
+ read_btree_roots+0x454/0xee0 fs/bcachefs/recovery.c:457
+ bch2_fs_recovery+0x7b6a/0x93e0 fs/bcachefs/recovery.c:785
+ bch2_fs_start+0x7b2/0xbd0 fs/bcachefs/super.c:1043
+ bch2_fs_open+0x152a/0x15f0 fs/bcachefs/super.c:2105
+ bch2_mount+0x90d/0x1d90 fs/bcachefs/fs.c:1906
+ legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa7/0x570 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+ x64_sys_call+0x2bf4/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:166
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-struct bkey_i {
-         __u64                   _data[0];
+CPU: 1 PID: 6831 Comm: syz-executor.4 Not tainted 6.9.0-syzkaller-02707-g614da38e2f7a #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+=====================================================
 
-         struct bkey     k;
-         struct bch_val  v;
-};
 
-(and there are many more examples of this pattern in bcachefs)
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-AFAIK, the C11 standard states that array declarator constant expression
-delimited by [ ] shall have a value greater than zero.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Effectively, we can verify that this code triggers an undefined behavior
-with:
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-#include <stdio.h>
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-struct z {
-         int x[0];
-         int y;
-         int z;
-} __attribute__((packed));
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-int main(void)
-{
-         struct z a;
-
-         a.y = 1;
-         printf("%d\n", a.x[0]);
-}
-
-clang-15 -fsanitize=undefined -o a a.c
-./a
-a.c:14:17: runtime error: index 0 out of bounds for type 'int[0]'
-SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior a.c:14:17 in
-1
-
-Also, gcc warns that ISO C forbids zero-size arrays when compiling
-with -pedantic:
-
-gcc -std=c11 -pedantic -o a a.c
-a.c:4:13: warning: ISO C forbids zero-size array ‘x’ [-Wpedantic]
-     4 |         int x[0];
-
-And clang states that this is only supported as an extension, even though
-accessing it seems to be classified as an undefined behavior by UBSAN.
-
-clang-15 -std=c11 -pedantic -o a a.c
-a.c:4:8: warning: zero size arrays are an extension [-Wzero-length-array]
-         int x[0];
-
-So I wonder if the issue reported by KMSAN could be caused by this
-pattern ?
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+If you want to undo deduplication, reply with:
+#syz undup
