@@ -1,69 +1,113 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC381127B5F
-	for <linux-bcachefs@vger.kernel.org>; Sat, 25 May 2024 20:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECE41758E
+	for <linux-bcachefs@vger.kernel.org>; Sun, 26 May 2024 15:26:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716670015; cv=none; b=SiijUWpO7wL4EI/pWYR9wc4AjRhaeEbsFxNsHXrwZJyjRuIzluJ1RfWKKCXn2HfrR0dOrUjNtFDpaJV1npO+Kz4zQjGQ/kMc+20+0QAejvyefzu5pfiK6UAP3ps8lk0EAQu+KMHHPo/SvG1R0wVFxaYFvQKxru4mqxc3tctPb68=
+	t=1716737185; cv=none; b=KGXe0xu6tbtDOT+9AvOH9rWruBC046GFzkMBAM7trWF1KZgHZCeP1/MCBi88FcRZeToQ720zeF4sQN9fMVjTuXZZY3JXpImAhUKkwUvXUPCoLped1TUeIC6a0gpMtOa9PdSU1G2LHHjDrlLE0wU/aYwLi2k5Db6by1Cdhz6LxfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716670015; c=relaxed/simple;
-	bh=Gzjzi/NNX2TCL/9wh9DGiJ+HuPokd4Eg0e9hywr+1JY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i8CjNdRmBi3wqxzVU/t+LbaTU3J+OLu7qnPHJHOZZn52pqT1IzWdZAIIkGvs92ebbE5IgWuIb9L/iofUo0EYdxH5ESgUj3uKErTeTD8ibVw9jZoDkq94ctbcLn8ShB81N7QRkHBwrMyBi5uLGRzWKrHMXkMtqSXnomx0d/m0FJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ja2XokmS; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ja2XokmS"
-X-Envelope-To: tahbertschinger@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716670010;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eOptNKI7RYVgbZu0ZgCL60XuGE/UJDJ8g4q3Oz6B2G4=;
-	b=ja2XokmSEGvvrKEJp7wn3ISxY9/IqEdPD+oPHH+V7MGblJPMhmCSiA1AsWZ8Sa868MUF1h
-	jGRZQvOrcwljwv+z0oXS/ahOTHEqk95EztnH9rv+ApOemATEFH/L09u4UJMgL9gHWN7oL1
-	Gt0zycnEiYcHkfDRuHSlE0z/H9jP5nE=
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: bfoster@redhat.com
-Date: Sat, 25 May 2024 16:46:45 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Thomas Bertschinger <tahbertschinger@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org, bfoster@redhat.com
-Subject: Re: [PATCH] bcachefs: allow passing full device path for target
- options
-Message-ID: <2re33povuucemthvk2yl6243zqnevfgd4kdoqgzxwgzitftork@axtd32kppam7>
-References: <20240525193619.401336-1-tahbertschinger@gmail.com>
+	s=arc-20240116; t=1716737185; c=relaxed/simple;
+	bh=N4QhkZlmhiWBIA76nnMvdwLsXocaeGKo8ROxH4U65Zg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gKiw21l5kFQUZxUTe1y4Q6WKsG/DUoEtrhecsaRnlgRcIStVMyAWP7MzkacV56FvcuYg6hPqPg+eFeU4jPf99ifDNBo0StVkXADRObyMQ/ltXa3yJFQODUkCjiFiKeHdwZXXdiEaAL9zevUzbdqzRwAEMtuDgbGjNCR8Z2e3EAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-37452cea7easo5402485ab.3
+        for <linux-bcachefs@vger.kernel.org>; Sun, 26 May 2024 08:26:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716737183; x=1717341983;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0vvfJnAuJ923mX1QXdJCIt4B8R1jVzhwLu0cni6wyq4=;
+        b=fGq7EwsZfNgqCOs448l9AbnPWhb4VDfvxJshgH/bj7bDsEflGa1U8jISdsp7s2EfKQ
+         bjEChISNtGkUzlLtReAsjyAOQl2784skX641WHH3oUZuvLiYWEfR3MP0hObSoflFwu8J
+         ggFUVD7FBgZYAV2AoeBLwmOcluKlK+xK4edEIkCZ5rJtqA4CuIGfCdCqT6QX3+2Ws2hT
+         EqkWj+U/sJe5xRbCaqpdsEn4IsYl9Nu9PqIrUmlYsjirgW40vMuX+5gkSZdrkwTm0uAD
+         4oma2ivc28csq23abw4aZ57tXJnTbZE/yauxvLw8wF2jqqdzNh4G4yz4xg7P6YssDLz8
+         mE5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXiz2Egj8Y1lZpzbmRjirB2fCqn2QKwNNtfNlEN+0YW80VDChz4F14w3yOumFOBKc3uoTEdU09z2Dap51tIM/sKkrI4y8jFSxymaT7p/2w=
+X-Gm-Message-State: AOJu0YwFLf7sCHmdqxVa8+qd4lbkBGS6Gw0WhPfuiZsY8PIgdfwCoLxo
+	cym3+eczKFXXLAawQrvWpAkmCX2PBcgeFiXMc0Yp2+wfGlFXR5MP7UVpbBj8HyqLWmJrP7GX9p2
+	1otTbOlcSigH61LCnNlNS+LALFKG2EfLe7JRMEv4srrHGB6QG+Cf8hVA=
+X-Google-Smtp-Source: AGHT+IGxckMjc+vVFuHa/WvqrlGNNuCFhKyovWe0vrmGsUE4tHJNm4DXWfk+H/wYtMEXbk3OrAU96TPTkJjpu1SCm79MyuGP/7yw
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240525193619.401336-1-tahbertschinger@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a92:cf0a:0:b0:374:491c:6567 with SMTP id
+ e9e14a558f8ab-374491c6d53mr1121595ab.5.1716737183245; Sun, 26 May 2024
+ 08:26:23 -0700 (PDT)
+Date: Sun, 26 May 2024 08:26:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fafe0906195d0585@google.com>
+Subject: [syzbot] [bcachefs?] INFO: task hung in bch2_fallocate_dispatch
+From: syzbot <syzbot+0527f53d2da9f65d41cb@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, May 25, 2024 at 01:36:19PM -0600, Thomas Bertschinger wrote:
-> The output of mount options such as "metadata_target" in `/proc/mounts`
-> uses the full path to the device.
-> 
-> mount(8) from util-linux uses the output from `/proc/mounts` to pass
-> existing mount options when performing a remount, so bcachefs should
-> accept as input the same form that it prints as output.
-> 
-> Without this change:
-> 
-> $ mount -t bcachefs -o metadata_target=vdb /dev/vdb /mnt
-> $ strace mount -o remount /mnt
-> ...
-> fsconfig(4, FSCONFIG_SET_STRING, "metadata_target", "/dev/vdb", 0) = -1 EINVAL (Invalid argument)
-> ...
-> 
-> Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
+Hello,
 
-Applied
+syzbot found the following issue on:
+
+HEAD commit:    56fb6f92854f Merge tag 'drm-next-2024-05-25' of https://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1566f392980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=34e05c35ec964e75
+dashboard link: https://syzkaller.appspot.com/bug?extid=0527f53d2da9f65d41cb
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/99e44ece48d2/disk-56fb6f92.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2997a3e91a46/vmlinux-56fb6f92.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3f788e8712a0/bzImage-56fb6f92.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0527f53d2da9f65d41cb@syzkaller.appspotmail.com
+
+INFO: task syz-executor.1:11146 blocked for more than 143 seconds.
+      Not tainted 6.9.0-syzkaller-12277-g56fb6f92854f #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.1  state:D stack:26640 pid:11146 tgid:11124 ppid:10161  flags:0x00000006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5408 [inline]
+ __schedule+0x1796/0x49d0 kernel/sched/core.c:6745
+ __schedule_loop kernel/sched/core.c:6822 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6837
+ schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6894
+ rwsem_down_write_slowpath+0xeeb/0x13b0 kernel/locking/rwsem.c:1178
+ __down_write_common+0x1af/0x200 kernel/locking/rwsem.c:1306
+ inode_lock include/linux/fs.h:791 [inline]
+ bch2_fallocate_dispatch+0x295/0x3810 fs/bcachefs/fs-io.c:774
+ vfs_fallocate+0x564/0x6c0 fs/open.c:330
+ do_vfs_ioctl+0x2592/0x2e50 fs/ioctl.c:886
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
