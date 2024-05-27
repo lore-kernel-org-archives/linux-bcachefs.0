@@ -1,53 +1,53 @@
 Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2897E184E
-	for <linux-bcachefs@vger.kernel.org>; Mon, 27 May 2024 04:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E37EC8DD
+	for <linux-bcachefs@vger.kernel.org>; Mon, 27 May 2024 05:46:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716785487; cv=none; b=BcM2zp4k+UNzk8ni6QlSwRqt4NfqjS8Cb4dFlEhLGZOurYDLf3IEB93Cfys5ah4Uolx8Swzn6CFxu+EdXGvAKNiM/qNu4ifJd+Wa45ihWPGA3g4dXqmuf6LZ6DOukyFg0dMQf4Hexqyd6AM1Chbc4oYLsXtQII0Vxd+eCMe86rc=
+	t=1716788794; cv=none; b=aGsKSs3IQgxef0Sj6O2jL4PZbpX0y7Lud7N9X0gAXuNt6S6n8r8x9S40aezBSoLTAoiaH6q25DVoQOMdC10x3EQHAHSFgqofWbesR0J65m8TvNacq2BC/031TmxcFoyyBOXjQTL0ZOm5TNTsKURsKaOcFimFSUCaZ9dCoER71zA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716785487; c=relaxed/simple;
-	bh=ZoE7narg4J1YWIp8aSQpsODB7MpHvESq9E6xWfbz4rQ=;
+	s=arc-20240116; t=1716788794; c=relaxed/simple;
+	bh=JDREHXtA6hrsuq9NcZhGYeSA55DsP9HTCLOFUmES4y8=;
 	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=NNQiWoMN1vtdbm05E7bfSdyukVbvS+Hjky1RcahHpfrSQqO5KwvqnBA3E671iwb6v/OmM4EY1a1yMkGDwcyCHBe7TW2Iay/Y4VOOIecl31HpdbRnIy/uOTQ7lE1JliD2e6oHGbHTkTfuuBYmq/MH8+5fnYmwn069m+3b7PzHdLA=
+	 Content-Type; b=NDfLKYGwJbdHBHDRmR4jo6HmcCBLX7ySzuwC6MCqZJlasZfEtjZZv90kupI+atZg47MgyXrTcqMLvHDiL0OnNCBrYExMtc4AEE06//Dt0daLXQF/1iYyRpIlJFnsO6+1IBIaxV8Xv0uctmPQM2XhS/TYJH3l1ocP2210vq9Q9G4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-7eaa9ddad99so149407039f.2
-        for <linux-bcachefs@vger.kernel.org>; Sun, 26 May 2024 21:51:25 -0700 (PDT)
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-7e1ea8608afso520542139f.2
+        for <linux-bcachefs@vger.kernel.org>; Sun, 26 May 2024 22:46:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716785485; x=1717390285;
+        d=1e100.net; s=20230601; t=1716788792; x=1717393592;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bpUjp5fS64Ntq/6J/v5RR7cXt7c7XY9Z7Qnv9gif+00=;
-        b=JxtG1FS+FZ2i9ZsH72EPhl1a4CmuZfg7N2UBwfaJNqcLiqX+rnbwCY4HRA0mMhKNM0
-         elPNa4p6T0Y9vkpC6sMyi8Z5P9AOR04vFvz9QH596X8p6SgDTZYQh7PZR4wJta+WK+Y4
-         oJhfhXiHLPtqyOA+OIIe89EpmiEHIZN1cjkrqc3odqsUX9UVzIUfeH7hlm1f52TmgviI
-         7wF5Cj5U85kr1LVcXTh0NB1SHLBMB8VWhp5SAVr/xFXc/ZQ3x9F+YlFQ1d0HEjIQEMEl
-         QKQywwuPL2J7Qh+K4j/c7YPqz+WQrsc6fBIMfv29Hvg5MZemH/ZJi2nuJPDZbisyzxTs
-         jxRw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2eMqKpm2HHsIraZs61BIHBh7sYjV5FXu9NSncfhy1Hij1Aw4PbImGKeOLvWyYBzKlHe3qCkXto0cAxPWCtmPdyp52XDrtUGZ8pzG8FBM=
-X-Gm-Message-State: AOJu0Yzcnr5kZbMdSD8tZJW1n0r0UBtemr2y4zMXgWw+b9gYv+0poFkk
-	5elVY5v08QKsuGykdbmcOMfAyQW5ozVRf2mMvEsGcSsStjLq+iFftVeHLuKh4JPRQfh/uEzw1Yh
-	Y+owVwIM4WQ+AE9IDBKtdOKZHF4G6omux25Mb6MjVqKMuTqq3edhrlKY=
-X-Google-Smtp-Source: AGHT+IEuP1KOxwcqbolWlRhggi+ELse9IUArdHOJ8hEoOY5wvt8WC+LQRVMhSLC8vnhX7RwRotUSXU7S1P/R4NswySEoXjY3PUND
+        bh=eoePI8+Uagsc64bsTTkvo3I3ImVsjVcK2iJj9qarNuo=;
+        b=PXu1q94yOcQEeG1klk30AlfDAtB+F5C5vdL9pBk6INPLIIJAqSo/D8AbXAgRhgEp9T
+         vwhv6AaHSvRAdleSLqIdyUnMlyavHJ38dNR/xEw7AJ2SIstBGmGDih5p5P7JxOZrJXhY
+         V/1bgQGWbUuzCgMhtnkGVCwGWgO8PZXDaiupr5hLUPs6yByUou04mccomwC5W6hJK4AT
+         80qINtZ80ai+hsXuWSsMZ4VDwVS03AwElei4ecVEcMEsW7Wdg279+zey3qFaOjOfwKSa
+         WAV/k81QsMExeSCBHQlvAMiCntqP1T4mMsfF5F4M9FD/yYwyzXuFQ2T4gxph4pOsIGy6
+         zVlg==
+X-Forwarded-Encrypted: i=1; AJvYcCUA8wmUllMg02TCC7GehGgAlIsbPzdefeVpQiW72N8W5OfKQ2G2Ekc40EFSb/VJ9+/OMlORhf2CihHOZ7v3gmlXS5Ovz8CllZIYVVvRWxo=
+X-Gm-Message-State: AOJu0YwLmOR/QWy148fAl6PfIOrAYAh741vbCkpnB813MOT6IFf45Gbq
+	Xk8fdq7F5azkj0jM4JVAYa5UJrX2s7NoS9cDcAMdV3CN8lk202q7+UYlj6X1OsLFl1gpFtFbTly
+	eU2hFNKGoTaAQXrJ0F04Tk5ZeZ/c2rXsAmOtWPOQjGWLhFPbgPHuZapA=
+X-Google-Smtp-Source: AGHT+IFL7UobkM013JqxyT1751ArKjZ2jABRaBcbpVFfLFMCm+M2dOsFp+mPuT06zPBHXfw6p74+s698Rzzy7UTtz0QzjOO7uIi0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1563:b0:36d:cef6:7c8c with SMTP id
- e9e14a558f8ab-3737b423053mr6386955ab.5.1716785485308; Sun, 26 May 2024
- 21:51:25 -0700 (PDT)
-Date: Sun, 26 May 2024 21:51:25 -0700
-In-Reply-To: <000000000000fd5e7006191f78dc@google.com>
+X-Received: by 2002:a05:6602:158d:b0:7e2:b00:2277 with SMTP id
+ ca18e2360f4ac-7e8c6933fa2mr41748139f.2.1716788792669; Sun, 26 May 2024
+ 22:46:32 -0700 (PDT)
+Date: Sun, 26 May 2024 22:46:32 -0700
+In-Reply-To: <000000000000e15f4b06193763db@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000001f1c3061968450e@google.com>
-Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_btree_node_iter_init
-From: syzbot <syzbot+f321ecc68453b9ac9bff@syzkaller.appspotmail.com>
+Message-ID: <0000000000002447c40619690af2@google.com>
+Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in rw_aux_tree_set
+From: syzbot <syzbot+681f3c43b6970652376b@syzkaller.appspotmail.com>
 To: bfoster@redhat.com, kent.overstreet@linux.dev, 
 	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	syzkaller-bugs@googlegroups.com
@@ -57,43 +57,40 @@ syzbot has found a reproducer for the following issue on:
 
 HEAD commit:    614da38e2f7a Merge tag 'hid-for-linus-2024051401' of git:/..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11daa71a980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=124e4572980000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=f5d2cbf33633f507
-dashboard link: https://syzkaller.appspot.com/bug?extid=f321ecc68453b9ac9bff
+dashboard link: https://syzkaller.appspot.com/bug?extid=681f3c43b6970652376b
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16de2ee8980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17d696dc980000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b28f42980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142ddb52980000
 
 Downloadable assets:
 disk image: https://storage.googleapis.com/syzbot-assets/89eafb874b71/disk-614da38e.raw.xz
 vmlinux: https://storage.googleapis.com/syzbot-assets/356000512ad9/vmlinux-614da38e.xz
 kernel image: https://storage.googleapis.com/syzbot-assets/839c73939115/bzImage-614da38e.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/73fc1c49d3bd/mount_2.gz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/61af6ba34933/mount_2.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f321ecc68453b9ac9bff@syzkaller.appspotmail.com
+Reported-by: syzbot+681f3c43b6970652376b@syzkaller.appspotmail.com
 
-bcachefs (loop0): shutting down
 bcachefs (loop0): going read-only
 bcachefs (loop0): finished waiting for writes to stop
 bcachefs (loop0): flushing journal and stopping allocators, journal seq 12
 =====================================================
-BUG: KMSAN: uninit-value in bkey_cmp_p_or_unp fs/bcachefs/bset.h:284 [inline]
-BUG: KMSAN: uninit-value in bkey_iter_cmp_p_or_unp fs/bcachefs/bset.h:398 [inline]
-BUG: KMSAN: uninit-value in bch2_bset_search_linear fs/bcachefs/bset.c:1217 [inline]
-BUG: KMSAN: uninit-value in bch2_btree_node_iter_init+0x3237/0x5280 fs/bcachefs/bset.c:1362
- bkey_cmp_p_or_unp fs/bcachefs/bset.h:284 [inline]
- bkey_iter_cmp_p_or_unp fs/bcachefs/bset.h:398 [inline]
- bch2_bset_search_linear fs/bcachefs/bset.c:1217 [inline]
- bch2_btree_node_iter_init+0x3237/0x5280 fs/bcachefs/bset.c:1362
- __btree_path_level_init fs/bcachefs/btree_iter.c:627 [inline]
- bch2_btree_path_level_init+0x821/0xc80 fs/bcachefs/btree_iter.c:647
- btree_path_lock_root fs/bcachefs/btree_iter.c:781 [inline]
- bch2_btree_path_traverse_one+0x46e8/0x5290 fs/bcachefs/btree_iter.c:1178
- bch2_btree_path_traverse fs/bcachefs/btree_iter.h:225 [inline]
- bch2_btree_iter_traverse+0x99f/0xe90 fs/bcachefs/btree_iter.c:1741
- btree_key_cache_flush_pos fs/bcachefs/btree_key_cache.c:667 [inline]
- bch2_btree_key_cache_journal_flush+0xf8d/0x1990 fs/bcachefs/btree_key_cache.c:748
+BUG: KMSAN: uninit-value in bkey_unpack_pos fs/bcachefs/bkey.h:455 [inline]
+BUG: KMSAN: uninit-value in rw_aux_tree_set+0x4d2/0x580 fs/bcachefs/bset.c:521
+ bkey_unpack_pos fs/bcachefs/bkey.h:455 [inline]
+ rw_aux_tree_set+0x4d2/0x580 fs/bcachefs/bset.c:521
+ bch2_bset_fix_lookup_table+0x16b2/0x1e90 fs/bcachefs/bset.c:995
+ bch2_bset_insert+0x1617/0x19f0 fs/bcachefs/bset.c:1042
+ bch2_btree_bset_insert_key+0xf56/0x2b70 fs/bcachefs/btree_trans_commit.c:194
+ bch2_btree_insert_key_leaf+0x276/0x1050 fs/bcachefs/btree_trans_commit.c:277
+ bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:744 [inline]
+ do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:854 [inline]
+ __bch2_trans_commit+0x98e6/0xab10 fs/bcachefs/btree_trans_commit.c:1093
+ bch2_trans_commit fs/bcachefs/btree_update.h:168 [inline]
+ btree_key_cache_flush_pos fs/bcachefs/btree_key_cache.c:672 [inline]
+ bch2_btree_key_cache_journal_flush+0x10f9/0x1990 fs/bcachefs/btree_key_cache.c:748
  journal_flush_pins+0xce6/0x1780 fs/bcachefs/journal_reclaim.c:553
  journal_flush_done+0xe1/0x3f0 fs/bcachefs/journal_reclaim.c:806
  bch2_journal_flush_pins+0xdb/0x3b0 fs/bcachefs/journal_reclaim.c:839
@@ -109,13 +106,11 @@ BUG: KMSAN: uninit-value in bch2_btree_node_iter_init+0x3237/0x5280 fs/bcachefs/
  cleanup_mnt+0x6c6/0x730 fs/namespace.c:1267
  __cleanup_mnt+0x22/0x30 fs/namespace.c:1274
  task_work_run+0x268/0x310 kernel/task_work.c:180
- ptrace_notify+0x304/0x320 kernel/signal.c:2404
- ptrace_report_syscall include/linux/ptrace.h:415 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
- syscall_exit_work+0x14e/0x3e0 kernel/entry/common.c:173
- syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
- syscall_exit_to_user_mode+0x135/0x160 kernel/entry/common.c:218
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0xce/0x160 kernel/entry/common.c:218
  do_syscall_64+0xdc/0x1e0 arch/x86/entry/common.c:89
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
@@ -150,7 +145,7 @@ Uninit was created at:
  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-CPU: 0 PID: 5043 Comm: syz-executor855 Not tainted 6.9.0-syzkaller-02707-g614da38e2f7a #0
+CPU: 0 PID: 5060 Comm: syz-executor338 Not tainted 6.9.0-syzkaller-02707-g614da38e2f7a #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
 =====================================================
 
