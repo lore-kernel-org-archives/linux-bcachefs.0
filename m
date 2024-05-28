@@ -1,105 +1,141 @@
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE11316FF4F;
-	Tue, 28 May 2024 15:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620AD13DBA8
+	for <linux-bcachefs@vger.kernel.org>; Tue, 28 May 2024 22:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716909437; cv=none; b=uolQf8lcPvcxYbyqyU+IFMShmyFg18HqlCXMMPIeOlxyajUAGzDY6Z2en1S0uIRoJiDH13NvpV7oipgrVjj+/5XlHjIGyDvqxSdlygNbSQeb1lzH1O+sVW+Vhi5JLhfSo+5xQjaHvPScm7YjzuyBO8vwlw5SUR9SLJOpTWSvdVg=
+	t=1716934296; cv=none; b=CrCiu4pNoSiOS1mIhEvOW9UH8RVHl/cNfSUg17attoYvcHmu9beBH68qMsoPveHob6wOjqdRcRfYaRSrdPzlOCtF3cpEuFNWtN+JtatVze2UerSjBiCushQ4aGDNdVKjOYISEtpPTVmoOWUhG8xQ5t8f+bDMMos9uqTcg7woMXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716909437; c=relaxed/simple;
-	bh=IJfXyghJCx3n9bOFggphQjk/yccvY0Ys2u/43WwXOVI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Si2Eyfk4JvwljpD2zl/roWKv3RXzEF6vVzXNEVG5uDgGOg7HsPBELaGmLSCME1M+WZ7fndnEVGDtvtciRD2C5/PpsfiA5ps/hFA8NQIp07HX7IrxbocfONz7MEvmU6aCOd7kXRyWcjT1Wgdxtu+NEbIXNs7Y9fLd1J0sphzDxG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-df7607785e9so893214276.2;
-        Tue, 28 May 2024 08:17:15 -0700 (PDT)
+	s=arc-20240116; t=1716934296; c=relaxed/simple;
+	bh=s6gGGoGa28fqfAB8/9ayz7igSKloxSfHhA3lG6vLIng=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=uryCYJ+8pBChyJensoQp+XG7dF2g+77zaFSfVWta56POOPVNU8Dipr9XGrLP/dgHlu53YGtem6p7slu6aw69TgZ6fJT0FAw+Rf7GrL5chiNwQY5eWq5DU50GPn5jVlBaYaBYidG26lIrooDgJFvjECHBoheDU9ORNrypmi8gefo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=GM8b6H/N; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="GM8b6H/N"
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1f47eb2354bso10069585ad.3
+        for <linux-bcachefs@vger.kernel.org>; Tue, 28 May 2024 15:11:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1716934294; x=1717539094; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y/EZSjBSMpKdz0TS6eS7VGV2URZV9D9zcT9BZtnUab0=;
+        b=GM8b6H/NI/J4Qf9kM2wuhid9bqfPp8E5toF/bXilsxb6fd1ucDnvHhFIG6rlrXHKHj
+         7lSWnUYoIoBYChzDyl1SOPrh2aEUFSyLGGjn8keuFlHwG8xNe2Z/HJyIC9pBvkCw9DR4
+         ExDIJuoVDAt2FwfYKLgXzh8Jg2RqrKxDwy0iQED8OUTYJ7YGH9CZP/tyspDgDNNfDKNx
+         jj12Tio7nhH7DbmtucCRpea3IjT6KZ6mQEdAZIimzILqwGkC1pjTaUoY9k6WgZ9VgUNs
+         qjg0/+PA13xi3YFTNgzMUj4C/nmI28WUyreMQ24epQw8GWORAnga+LrAcF5bxk98HjyF
+         zLDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716909434; x=1717514234;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rNi8/BhZqnIF83VuvAuQW5ywgzli2KEyZ1LygFSKuFY=;
-        b=SJvAVu+mYkcWCnH/5GxVVlTp5nePPtgQCS1/WafifvpwrActLbRbhihMBfrKShd5L3
-         ozJ+6FalWrNH8HUD+DXvbOc/JVG8szTPh8VuezlLk6LGn28F4sTk7MhKmI0jm7zmatN4
-         DzcjeUDyEhm6Ci1w4jmyvZORFPgg3PAS4BVPG1crw/8JXoKZZ8eEndiqUtdm93baPoye
-         tnq3hUt5+YDjbwwthqcWZupZZtjPD9zyIM8PgTLlMNKCqN2p3wyBbk2UoTVKh8sbBNH8
-         Z7pxRHwmSScMlB6nujnoNXwT2j9B+Gx5K/hoC1vA3yIpDaU7rrRLBw16Ozna3oUnAoSn
-         TmVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWIL2YkhovvkN7PbkDDaz5Lw+47FDz+or6lI0pS25r0N+G5Rs+NMS/xc5pLgueUx8wijsGc7XaRv0vXISzNYLL7edB4XI1WzHbTUhm8TJZE8BKT58LcYYraZi7bQatkfrWsSx/C5mdBSX67zcr/1TSo7vUPIhBXRXyNJz1BQAoC1s+e61YneOUYMIiY
-X-Gm-Message-State: AOJu0YyGAcN7pABsZlIetS6jsZksh1gj+a+cVcxzeMEviHEglH29S0AR
-	Zu3IqsyXifj/sz4AHgeu2+6m1qVh5a8wEnfiZkrhRRYveppuP+68XUMuITQM7vo=
-X-Google-Smtp-Source: AGHT+IEaNBcEZJtY8k4slGLDYE0OiYxufw2MZ0bZhq6I+vZrnGksYpVwo6N0nVkcLDeulh63poxoNw==
-X-Received: by 2002:a25:81c7:0:b0:df4:ab38:64eb with SMTP id 3f1490d57ef6-df77221c33emr12131997276.40.1716909434392;
-        Tue, 28 May 2024 08:17:14 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-df774741defsm1062636276.54.2024.05.28.08.17.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 May 2024 08:17:14 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-df4e40a3cb6so1024282276.0;
-        Tue, 28 May 2024 08:17:14 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVqALxVhAz4x5iY2wzfqN5tbsqnrlBeFF0RIvJgtSX/5wF3oZS4KgCDDtJOlYF10OgkAsw9kgRrB+yiTsFpt7k66GMH9QMAX4YFn4xbGti96Pup1xBc/QzaeJbygcTRCTTa79q4yZL45D/nG54ltUjVJlhs5lq/7Tp8XbLU01P9zyXn4T6wlNqZ3B69
-X-Received: by 2002:a5b:ecb:0:b0:dcc:d694:b4a6 with SMTP id
- 3f1490d57ef6-df772185be3mr11329083276.15.1716909434046; Tue, 28 May 2024
- 08:17:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716934294; x=1717539094;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y/EZSjBSMpKdz0TS6eS7VGV2URZV9D9zcT9BZtnUab0=;
+        b=ZKaOhtU6nmT2ecCCx0fk2FFGcwo0U7zytWwIf2b5VMvYFr4TI9fF9Z3tyg7tSZUSJ8
+         2Ovgpcfr+FvYSAuxpL6uhHlwZ9mmJeM5fIbWgfT9QFj9i7yBRz0uIX9kSj24+CucbExT
+         2ggn37UT/Vv2E/C6/a4YbqZZccN2kDyAqYlPLEXcIju2Te0Q7oyxfn98/vOlhWnQKzGn
+         dOf265OEOiUdcfrODjwFCeJaMT+FyLgGyAJc7UOKLnJrtR6Oh2P/TslX2K7l5lBCWeam
+         TuX0JK6qNiUf95vV64bcmp+mry95g8Hhb4/2TPP04JBSTpBI5rl1ZiUn2PNJHTMHw/A7
+         /5rA==
+X-Forwarded-Encrypted: i=1; AJvYcCVd3WetvrLovQ61OCGSUtBSMajoQqyUJL/MWsKL8DLcmDtqze5pCCGT8VzswPO72SIAgW9wBftW9X335pXUdFLuvoDz5dpBejVvJfJu3OY=
+X-Gm-Message-State: AOJu0Ywqoy7DFmBGQbauO9hpoYQGKwp7bBJ3Km6M5VjRJ8CLCCuwp6nD
+	7714JOtAzssz2jRXYXg1Zsykd0v84xLABjMP9r5axly+UKKJnBtic4jMMwSHDMk=
+X-Google-Smtp-Source: AGHT+IHTQU8PmmECMD1h64ue4/AGFuh/+UzLJOnETMdIzBo20vXZf/4EqQUrQxxJsMIbVfq9H8iR4w==
+X-Received: by 2002:a17:903:186:b0:1f3:3a05:1adf with SMTP id d9443c01a7336-1f4499092d7mr162326705ad.66.1716934293612;
+        Tue, 28 May 2024 15:11:33 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6822198909bsm8028841a12.25.2024.05.28.15.11.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 May 2024 15:11:32 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <24829B5A-5F68-4B3A-AD4E-1AD9EFDE1D0E@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
- <202405191921.C218169@keescook> <CAMuHMdUUTy7G6fUa7+P+ZionsiYag-ni_K4smcp6j=gFb9RJJg@mail.gmail.com>
- <uetvuew5tmhjeipqlemyuocqtx2yn2t5gkuew4vmxh4tbny7kx@4g2qkhfpwbmg>
-In-Reply-To: <uetvuew5tmhjeipqlemyuocqtx2yn2t5gkuew4vmxh4tbny7kx@4g2qkhfpwbmg>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 28 May 2024 17:17:01 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUd6mz+PhC17zNbacY2iYGdG8Q4UzXuaZvcQ5qHo=mmBw@mail.gmail.com>
-Message-ID: <CAMuHMdUd6mz+PhC17zNbacY2iYGdG8Q4UzXuaZvcQ5qHo=mmBw@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs updates fro 6.10-rc1
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Kees Cook <keescook@chromium.org>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] statx: stx_subvol
+Date: Tue, 28 May 2024 16:11:28 -0600
+In-Reply-To: <b3b02658-ffc4-4bd9-b77a-af65ae359474@oracle.com>
+Cc: Eric Biggers <ebiggers@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ linux-bcachefs@vger.kernel.org,
+ linux-btrfs <linux-btrfs@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Josef Bacik <josef@toxicpanda.com>,
+ Miklos Szeredi <mszeredi@redhat.com>,
+ Christian Brauner <brauner@kernel.org>,
+ David Howells <dhowells@redhat.com>
+To: John Garry <john.g.garry@oracle.com>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <20240312021308.GA1182@sol.localdomain>
+ <b3b02658-ffc4-4bd9-b77a-af65ae359474@oracle.com>
+X-Mailer: Apple Mail (2.3273)
 
-Hi Kent,
 
-On Tue, May 28, 2024 at 4:57=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
-> On Tue, May 28, 2024 at 09:18:24AM +0200, Geert Uytterhoeven wrote:
-> > These are caused by commit 1d34085cde461893 ("bcachefs:
-> > Plumb bkey into __btree_err()"), which is nowhere to be found on
-> > any public mailing list archived by lore.
-> >
-> > +               prt_printf(out, " bset byte offset %zu",
-> > +                          (unsigned long)(void *)k -
-> > +                          ((unsigned long)(void *)i & ~511UL));
-> >
-> > Please stop committing private unreviewed patches to linux-next,
-> > as I have asked before [4].
-> > Thank you!
->
-> You seem to be complaining about test infrastructur eissues - you don't
-> seriously expect code review to be catching 32 bit build isues, do you?
+--Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-I do expect code review to catch (a) wrong printf format specifiers
-(especially when lots of casts are involved), (b) hardcoded constants,
-and (c) opportunities for introducing helper macros,
 
-Gr{oetje,eeting}s,
+> On May 28, 2024, at 6:46 AM, John Garry <john.g.garry@oracle.com> wrote:
+> 
+> On 12/03/2024 02:13, Eric Biggers wrote:
+>> On Thu, Mar 07, 2024 at 09:29:12PM -0500, Kent Overstreet wrote:
+>>>  	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
+>>>  	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
+>>> +	__u64	stx_subvol;	/* Subvolume identifier */
+>>>  	/* 0xa0 */
+>>> -	__u64	__spare3[12];	/* Spare space for future expansion */
+>>> +	__u64	__spare3[11];	/* Spare space for future expansion */
+>>>  	/* 0x100 */
+>> The /* 0xa0 */ comment needs to be updated (or deleted).
+> 
+> I would tend to agree. Was this intentionally not updated (or deleted)?
 
-                        Geert
+More correct would be to add the new stx_subvol field after the "0xa0"
+comment so that it is clear at what offset in the struct this field is.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+Cheers, Andreas
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+
+
+
+
+
+--Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmZWVpAACgkQcqXauRfM
+H+A4QQ/+IFC+ipn32WPm2mM14CNmiYmrhv5RCNPU8Ectk5pHJQGow3HzwXGSGKRv
+M4tj97Xw5Au3K9qP9s3QSNLpDrc3+KumXrr8vzg33XpnRXcSzNMxtcXdht3/DGYO
+zqltGBq7u+Wm2S1yoRZwORU1YS/dq90ec0m6IBhszI3FAvLCH/tMj7dlTrTE3gSu
+xWen9XZBYiTbj3m81J5nlppuqEsr3tF7LtJRyHUw5xqgpe47kv0GFohyCp3pv8et
+r5fbv5I8uCNx6iSBk/o5ORLr8VVZJ4K5/0t96u0sPDLN9wOCV8NpYPXLeSUqPVr7
+KGxIcTSFAUkUMQXi2NGkpkHm5aAGmpXH2QQSdKbQbXrKXEbo4rAe+4jJjNtiYMK4
+vU7R0/6YGT+KBmL9J0/yvfshZNNb5l7ghzAq3x2Wt3TCPFGg0N6em1QKSb67IdbS
+nCmsQ38n589juroHPFs4yEq2Lad+g05CT5Lml7UNVCj5Fg4Wq+2sL0/6tnrx9/Xu
+Sh/knYTEPZy3Yevg0t4eol4TzLVzKm5PlKIVzctm4pAm5mNMXsS0OygEgpV57LXY
+84UCpWL80GT7PHpeo8KzNuN14oYS2BW1aZdBgfSnyxhhSuKGbFDCLcr/N+leNeZr
+M3rRe35/SHqXbzs2kpSz/mlf1m98bHjjsyRMKmPj2/a1tevPQg0=
+=vnHt
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D--
