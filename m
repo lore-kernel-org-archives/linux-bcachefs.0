@@ -1,139 +1,105 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09BE2171082
-	for <linux-bcachefs@vger.kernel.org>; Tue, 28 May 2024 15:02:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE11316FF4F;
+	Tue, 28 May 2024 15:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716908535; cv=none; b=NKGKEm5XPRrD/HPpJOnBOpWLDRCiocFebMOGSrW3hYYWA1ibyt7aeoOwKjQrOezcRMkLUOmpGBt3fuCGFpmdcX/fcCFykNWQvT2W24FeFBTF+nNpGblpnntQdiWKDqRt4HENp9I3zilyjHMmB740DssK898LYYa62wSIcEd3VC8=
+	t=1716909437; cv=none; b=uolQf8lcPvcxYbyqyU+IFMShmyFg18HqlCXMMPIeOlxyajUAGzDY6Z2en1S0uIRoJiDH13NvpV7oipgrVjj+/5XlHjIGyDvqxSdlygNbSQeb1lzH1O+sVW+Vhi5JLhfSo+5xQjaHvPScm7YjzuyBO8vwlw5SUR9SLJOpTWSvdVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716908535; c=relaxed/simple;
-	bh=5ZHpZGACX2Frn3dDPf3fXyWybxr2L7JiyfRf2W2/hW0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P+YuRlbbbLSot7LhsWAeFBXdRfgiBFg3PEgjoBz7RbE0ulB1yIAzIylQffK4AnFUDi3mn9C5CAYVa4A9JyXzbNdsLFu3Iasg464H5N4cOWrdVLuNz81A/LUUkidsfUglTCuZLrw0p2f3y2GT6WL0Ok+h81xSVrjsCNOiWK+nkNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=opoXfCNq; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="opoXfCNq"
-X-Envelope-To: glider@google.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716908532;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dKnPZ9OJHpypgolMUhUxX3o8dY3J/6CO95tM7cGqfv8=;
-	b=opoXfCNqL0eaKrPq9sbb09xqDBlnVf51DlM6AdAAiU/XeLeu4KiMfvs8PGhdiophKkgpNx
-	4GMqFrplyQMupkP+yleNmZRmTkTXWHz5B0AWJMb6bufOkv6bZSG3IUOYbdoG9kCJZwp3/z
-	J71p/VMOEAsFEaZQ3BGiLIx0kDif3Xc=
-X-Envelope-To: mathieu.desnoyers@efficios.com
-X-Envelope-To: bfoster@redhat.com
-X-Envelope-To: keescook@chromium.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: elver@google.com
-X-Envelope-To: dvyukov@google.com
-X-Envelope-To: kasan-dev@googlegroups.com
-X-Envelope-To: nathan@kernel.org
-X-Envelope-To: ndesaulniers@google.com
-X-Envelope-To: morbo@google.com
-X-Envelope-To: justinstitt@google.com
-X-Envelope-To: llvm@lists.linux.dev
-Date: Tue, 28 May 2024 11:02:05 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Alexander Potapenko <glider@google.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Brian Foster <bfoster@redhat.com>, Kees Cook <keescook@chromium.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, linux-bcachefs@vger.kernel.org, Marco Elver <elver@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, llvm@lists.linux.dev
-Subject: Re: Use of zero-length arrays in bcachefs structures inner fields
-Message-ID: <63zx2cnrf5u2slmabde2wptxvq6a3opvrj2zrkcolw3gdkjdpf@bttdonbctura>
-References: <986294ee-8bb1-4bf4-9f23-2bc25dbad561@efficios.com>
- <vu7w6if47tv3kwnbbbsdchu3wpsbkqlvlkvewtvjx5hkq57fya@rgl6bp33eizt>
- <944d79b5-177d-43ea-a130-25bd62fc787f@efficios.com>
- <7236a148-c513-4053-9778-0bce6657e358@efficios.com>
- <jqj6do7lodrrvpjmk6vlhasdigs23jkyvznniudhebcizstsn7@6cetkluh4ehl>
- <CAG_fn=Vp+WoxWw_aA9vr9yf_4qRvu1zqfLDWafR8J41Zd9tX5g@mail.gmail.com>
+	s=arc-20240116; t=1716909437; c=relaxed/simple;
+	bh=IJfXyghJCx3n9bOFggphQjk/yccvY0Ys2u/43WwXOVI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Si2Eyfk4JvwljpD2zl/roWKv3RXzEF6vVzXNEVG5uDgGOg7HsPBELaGmLSCME1M+WZ7fndnEVGDtvtciRD2C5/PpsfiA5ps/hFA8NQIp07HX7IrxbocfONz7MEvmU6aCOd7kXRyWcjT1Wgdxtu+NEbIXNs7Y9fLd1J0sphzDxG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-df7607785e9so893214276.2;
+        Tue, 28 May 2024 08:17:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716909434; x=1717514234;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rNi8/BhZqnIF83VuvAuQW5ywgzli2KEyZ1LygFSKuFY=;
+        b=SJvAVu+mYkcWCnH/5GxVVlTp5nePPtgQCS1/WafifvpwrActLbRbhihMBfrKShd5L3
+         ozJ+6FalWrNH8HUD+DXvbOc/JVG8szTPh8VuezlLk6LGn28F4sTk7MhKmI0jm7zmatN4
+         DzcjeUDyEhm6Ci1w4jmyvZORFPgg3PAS4BVPG1crw/8JXoKZZ8eEndiqUtdm93baPoye
+         tnq3hUt5+YDjbwwthqcWZupZZtjPD9zyIM8PgTLlMNKCqN2p3wyBbk2UoTVKh8sbBNH8
+         Z7pxRHwmSScMlB6nujnoNXwT2j9B+Gx5K/hoC1vA3yIpDaU7rrRLBw16Ozna3oUnAoSn
+         TmVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWIL2YkhovvkN7PbkDDaz5Lw+47FDz+or6lI0pS25r0N+G5Rs+NMS/xc5pLgueUx8wijsGc7XaRv0vXISzNYLL7edB4XI1WzHbTUhm8TJZE8BKT58LcYYraZi7bQatkfrWsSx/C5mdBSX67zcr/1TSo7vUPIhBXRXyNJz1BQAoC1s+e61YneOUYMIiY
+X-Gm-Message-State: AOJu0YyGAcN7pABsZlIetS6jsZksh1gj+a+cVcxzeMEviHEglH29S0AR
+	Zu3IqsyXifj/sz4AHgeu2+6m1qVh5a8wEnfiZkrhRRYveppuP+68XUMuITQM7vo=
+X-Google-Smtp-Source: AGHT+IEaNBcEZJtY8k4slGLDYE0OiYxufw2MZ0bZhq6I+vZrnGksYpVwo6N0nVkcLDeulh63poxoNw==
+X-Received: by 2002:a25:81c7:0:b0:df4:ab38:64eb with SMTP id 3f1490d57ef6-df77221c33emr12131997276.40.1716909434392;
+        Tue, 28 May 2024 08:17:14 -0700 (PDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-df774741defsm1062636276.54.2024.05.28.08.17.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 May 2024 08:17:14 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-df4e40a3cb6so1024282276.0;
+        Tue, 28 May 2024 08:17:14 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVqALxVhAz4x5iY2wzfqN5tbsqnrlBeFF0RIvJgtSX/5wF3oZS4KgCDDtJOlYF10OgkAsw9kgRrB+yiTsFpt7k66GMH9QMAX4YFn4xbGti96Pup1xBc/QzaeJbygcTRCTTa79q4yZL45D/nG54ltUjVJlhs5lq/7Tp8XbLU01P9zyXn4T6wlNqZ3B69
+X-Received: by 2002:a5b:ecb:0:b0:dcc:d694:b4a6 with SMTP id
+ 3f1490d57ef6-df772185be3mr11329083276.15.1716909434046; Tue, 28 May 2024
+ 08:17:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG_fn=Vp+WoxWw_aA9vr9yf_4qRvu1zqfLDWafR8J41Zd9tX5g@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <zhtllemg2gcex7hwybjzoavzrsnrwheuxtswqyo3mn2dlhsxbx@dkfnr5zx3r2x>
+ <202405191921.C218169@keescook> <CAMuHMdUUTy7G6fUa7+P+ZionsiYag-ni_K4smcp6j=gFb9RJJg@mail.gmail.com>
+ <uetvuew5tmhjeipqlemyuocqtx2yn2t5gkuew4vmxh4tbny7kx@4g2qkhfpwbmg>
+In-Reply-To: <uetvuew5tmhjeipqlemyuocqtx2yn2t5gkuew4vmxh4tbny7kx@4g2qkhfpwbmg>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 28 May 2024 17:17:01 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUd6mz+PhC17zNbacY2iYGdG8Q4UzXuaZvcQ5qHo=mmBw@mail.gmail.com>
+Message-ID: <CAMuHMdUd6mz+PhC17zNbacY2iYGdG8Q4UzXuaZvcQ5qHo=mmBw@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs updates fro 6.10-rc1
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Kees Cook <keescook@chromium.org>, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 28, 2024 at 01:36:11PM +0200, Alexander Potapenko wrote:
-> On Fri, May 24, 2024 at 7:30 PM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
+Hi Kent,
+
+On Tue, May 28, 2024 at 4:57=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+> On Tue, May 28, 2024 at 09:18:24AM +0200, Geert Uytterhoeven wrote:
+> > These are caused by commit 1d34085cde461893 ("bcachefs:
+> > Plumb bkey into __btree_err()"), which is nowhere to be found on
+> > any public mailing list archived by lore.
 > >
-> > On Fri, May 24, 2024 at 12:04:11PM -0400, Mathieu Desnoyers wrote:
-> > > On 2024-05-24 11:35, Mathieu Desnoyers wrote:
-> > > > [ Adding clang/llvm and KMSAN maintainers/reviewers in CC. ]
-> > > >
-> > > > On 2024-05-24 11:28, Kent Overstreet wrote:
-> > > > > On Thu, May 23, 2024 at 01:53:42PM -0400, Mathieu Desnoyers wrote:
-> > > > > > Hi Kent,
-> > > > > >
-> > > > > > Looking around in the bcachefs code for possible causes of this KMSAN
-> > > > > > bug report:
-> > > > > >
-> > > > > > https://lore.kernel.org/lkml/000000000000fd5e7006191f78dc@google.com/
-> > > > > >
-> > > > > > I notice the following pattern in the bcachefs structures: zero-length
-> > > > > > arrays members are inserted in structures (not always at the end),
-> > > > > > seemingly to achieve a result similar to what could be done with a
-> > > > > > union:
-> > > > > >
-> > > > > > fs/bcachefs/bcachefs_format.h:
-> > > > > >
-> > > > > > struct bkey_packed {
-> > > > > >          __u64           _data[0];
-> > > > > >
-> > > > > >          /* Size of combined key and value, in u64s */
-> > > > > >          __u8            u64s;
-> > > > > > [...]
-> > > > > > };
-> > > > > >
-> > > > > > likewise:
-> > > > > >
-> > > > > > struct bkey_i {
-> > > > > >          __u64                   _data[0];
-> > > > > >
-> > > > > >          struct bkey     k;
-> > > > > >          struct bch_val  v;
-> > > > > > };
-> 
-> I took a glance at the LLVM IR for fs/bcachefs/bset.c, and it defines
-> struct bkey_packed and bkey_i as:
-> 
->     %struct.bkey_packed = type { [0 x i64], i8, i8, i8, [0 x i8], [37 x i8] }
->     %struct.bkey_i = type { [0 x i64], %struct.bkey, %struct.bch_val }
-> 
-> , which more or less looks as expected, so I don't think it could be
-> causing problems with KMSAN right now.
-> Moreover, there are cases in e.g. include/linux/skbuff.h where
-> zero-length arrays are used for the same purpose, and KMSAN handles
-> them just fine.
-> 
-> Yet I want to point out that even GCC discourages the use of
-> zero-length arrays in the middle of a struct:
-> https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html, so Clang is not
-> unique here.
-> 
-> Regarding the original KMSAN bug, as noted in
-> https://lore.kernel.org/all/0000000000009f9447061833d477@google.com/T/,
-> we might be missing the event of copying data from the disk to
-> bcachefs structs.
-> I'd appreciate help from someone knowledgeable about how disk I/O is
-> implemented in the kernel.
+> > +               prt_printf(out, " bset byte offset %zu",
+> > +                          (unsigned long)(void *)k -
+> > +                          ((unsigned long)(void *)i & ~511UL));
+> >
+> > Please stop committing private unreviewed patches to linux-next,
+> > as I have asked before [4].
+> > Thank you!
+>
+> You seem to be complaining about test infrastructur eissues - you don't
+> seriously expect code review to be catching 32 bit build isues, do you?
 
-If that was missing I'd expect everything to be breaking. What's the
-helper that marks memory as initialized?
+I do expect code review to catch (a) wrong printf format specifiers
+(especially when lots of casts are involved), (b) hardcoded constants,
+and (c) opportunities for introducing helper macros,
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
