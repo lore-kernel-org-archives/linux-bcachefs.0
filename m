@@ -1,151 +1,102 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AFD17BD6
-	for <linux-bcachefs@vger.kernel.org>; Tue, 28 May 2024 04:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D677182B3;
+	Tue, 28 May 2024 04:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716869427; cv=none; b=ZNxWgnFB55P9ajoMWOQQ0eYlgEqoBTrPRq0TmmWKnUdWJj2oFzAyRjy5OBH6aVI+ERGov/0C1nn7bdin7R2CYvwO9mxUwfc7qEqQgJUBjKsw/qV1xT/CVtmnHakW9mjNns795E3qOhWh1oMJZNH/FTzwhAeOcNx5nZi9cnileF0=
+	t=1716871010; cv=none; b=ZxhWq8pPw0xHdUfASNqjrbxKznvhpM7YUff5tXtsQc6PC002EzrVKUwneSjBKGbuDhrHQGirDbvF9Bnl83fAZuzJBRU7iGVJDmPUVHz9a4pgzB3mhG75lk0xj7WKLGlRU9IvrC70CrM34yacEH/frXx2qCOC8x+ItCGdaUZuQfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716869427; c=relaxed/simple;
-	bh=6BMnFEuWeGChFxSyDZ2OuFR5UZxhXp82Y+Rh+dHsGMw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=F6z+4h4mPE9e7fXS1FeYhnSYkhpXg95R8ryWlabOK1ZTJFGSivY2A1bwzT/Ho6QLVmQFbBCb9kk/QQ3K8cLX1rtdM+GAzqsRsMhehJwJX1jibiZ0sCpXUGd4nB5RfYORwX2o9POvO7yei5ddqqHwCH8UHdDUbv7+HIpYQPREHtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-36db4c1ecb3so3365045ab.2
-        for <linux-bcachefs@vger.kernel.org>; Mon, 27 May 2024 21:10:25 -0700 (PDT)
+	s=arc-20240116; t=1716871010; c=relaxed/simple;
+	bh=4Mk4SMAAddY6j9o1WSpALg33xgkQ7ul+F5fqnnH3o1E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mHyAwyQfG9FibAdYt0rUKM2VysckcngaTyCsQhpUrWLEWWB7gXVjRWs46+38o6mqhEHiaSnruN5gyYul839HHMTJVykhgTP3/zWzlcnqG7l2+Py/3DtCCLn3J35bxzePrhWwKVQvAommtg7pKjF6jdLmdQKwfy6Y2/XI4oUikXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NWyahfaH; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NWyahfaH"
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3737b70a74aso10030365ab.0;
+        Mon, 27 May 2024 21:36:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716871008; x=1717475808; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=funHFy4Yfj0AgN0Z8AiKsswEqhqQdmasAv6JVNU9tuo=;
+        b=NWyahfaHOETktTT9adaJV3dWU4bUK8cGsxR1hX8xiIGjo3TzgJcfYYHtAFHK5jhWOI
+         rb5320QQ3OXVDEQIfnf77PNR+gVFUF0vFslMWoCWh0D7NpmLdMdumyHSqOo6BZimA6to
+         nIAOKNbtAZncaLbQIpuwFnvKNf4pPVtvhdNdSudVMTfsi9z0P2oePLvtSSJJxFqSPyXS
+         /y6TiifOybihvuRsgJ0Ww6+jCzMPdxYqxnc7UE2sSTW5y+U43sFdAXHU5rAQ01MHlJvZ
+         2mxp0ymB/1kotF5wRNm1ctkHGcn21LT9BbG1Y97OXIlwVn88coYOFS5Ng77i+06ueehm
+         rjOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716869425; x=1717474225;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rT5Pl0xEGoFaDE9obYD33/VWqvAuRBEYSXPf3W0FSjc=;
-        b=usIVm4NDC1Bet0lDlIqGxiixxPm3f7nMOIvFP0mQqGGPga1yTBLGz3O/COJIoCIQM/
-         M3HbcmWmipn6YorRGyaPTrG5PZONzxwVw7dLMCrPRmwdJ7floUMOZfnwUxGuFMprZJBo
-         BdwvJsaw8mzwtwDhbj3HGqZpOlWgX/qsYfOeneGmV4UB3atgNMuFMD7LzkEsaXlU5v7a
-         WshP6nn+gsiD0j53d5yQ7HXqC8RNw/SMObTodtpggDK0ZhVD5zOdzA7YZOpnF9wkx1g6
-         i0Gyf2jQ8DBCpBNG1JNk4dZ63FgohW8iUbSG4PuQYVbvyH7VjnRo2yPVbHLerygpm+uo
-         r5YA==
-X-Forwarded-Encrypted: i=1; AJvYcCVjwKPGU+f9QnYSqdcQnunf4TEFh9M3oXzo+DSjsRIHOQtn+X9q8zbbDQ7PPtNKaDkksC9RmwH8Oovht6caVBF9ctVUNH8E2Y+kAkSEt9o=
-X-Gm-Message-State: AOJu0Yz/LnSCg6Mm49CSd1WYo2Afg+Bk1N/d+HOZtNo2WPt2x0gi05L6
-	wDn/haGlPaRurrPsR32hCq0ab09Nq64696A8wVr80TJBgGjxOG1czqJWZCV6CRfuXr4cz0/exJU
-	zhKlY0qgqFTOagBB7uLecDRaafx3W3E3TzIlEcmJjriU3AKfw6b6HyIE=
-X-Google-Smtp-Source: AGHT+IFHAJBp+FvS2XWXhjiH8pyko7EJ8ajwhNX85Bdt17F3NcGlR0vnwqUakmjvzjez6+hkWtMra1rD3D0frfcY7MtdAdB3mr+K
+        d=1e100.net; s=20230601; t=1716871008; x=1717475808;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=funHFy4Yfj0AgN0Z8AiKsswEqhqQdmasAv6JVNU9tuo=;
+        b=CFoAWsVEmoX28MTGHgxJJVjbd7Bee9bzGXe04i9gOGSBxfnXeJ4HCsuoSUhh64+XG9
+         85jloNEazQBKOCZsbNDePE4wytLbgPytsfcF2Dic1miTaiFGymBtriiP6fh+jKqaWY2D
+         69yZHLMUgh5fwy10tAnKbQSjw1A9Lb/cvJrZfgKiKOWPK6R8rP8tUvYvy8t6V+KuZXZk
+         VyNyronMVnYVGLmpo3IyDvzb30eCYqqBQz+413CHzmz+Ven5ZvhdtIeGuq4OSOkGcHBU
+         0W+I0FJnK40A7VMF0FzjeGl1L2g1WW3Wfd48IXjHRUJMATp5nb5krq398ZNh9JiohvZv
+         O+Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCUo0w8bx7i9wmWi1Ohy7nzcgWFP/L0oav7OEAytBPQAYVIiQCdAIfxZWRFycyGnDJUWvYrLg9FLv4LMof/YDXjcvS1BpYAHmCjYI73tBGgU/x9k/7tgtUj1CPAuEK+VfUSefqC46+kVrUaiLqnQ
+X-Gm-Message-State: AOJu0YxlGDdegVl/udJpwiOc2Lu0smQV2Dgklj7x9iCVHFnTxKEp9GZs
+	ymGnqIUSCES4Aml/LHFwAby68k3n1OjvRnPKXupCVJHIwPmHWWCQ
+X-Google-Smtp-Source: AGHT+IGN1Am1ld4JyS0Brf6ZSkkvrVRmXk7yomhAQRjE0jxq3I84tJ+CjAYMimRlrqwpSlGx4UMczQ==
+X-Received: by 2002:a05:6e02:1d98:b0:374:5913:1f78 with SMTP id e9e14a558f8ab-37459132078mr36831475ab.0.1716871008474;
+        Mon, 27 May 2024 21:36:48 -0700 (PDT)
+Received: from fedora-laptop.hsd1.nm.comcast.net (c-73-127-246-43.hsd1.nm.comcast.net. [73.127.246.43])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3737d1468b7sm18013605ab.26.2024.05.27.21.36.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 May 2024 21:36:48 -0700 (PDT)
+From: Thomas Bertschinger <tahbertschinger@gmail.com>
+To: kent.overstreet@linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	bfoster@redhat.com,
+	linux-fsdevel@vger.kernel.org,
+	sandeen@redhat.com,
+	dhowells@redhat.com
+Cc: Thomas Bertschinger <tahbertschinger@gmail.com>
+Subject: [PATCH 0/3] use new mount API for bcachefs
+Date: Mon, 27 May 2024 22:36:08 -0600
+Message-ID: <20240528043612.812644-1-tahbertschinger@gmail.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c566:0:b0:36c:5228:462 with SMTP id
- e9e14a558f8ab-3737b31cb5fmr8147455ab.3.1716869425391; Mon, 27 May 2024
- 21:10:25 -0700 (PDT)
-Date: Mon, 27 May 2024 21:10:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000039f54b06197bd063@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in xattr_cmp_key
-From: syzbot <syzbot+915b205d9237d1182095@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+This updates bcachefs to use the new fs_context_operations functions for
+mounting and remounting.
 
-syzbot found the following issue on:
+However, rather than using the parsing utilities defined in fs_parser.h,
+I stick with using the existing options parsing code that bcachefs
+already has. This simplifies the changes, since integrating the bcachefs
+options with the generic parsing utilities in fs_context would otherwise
+involve some tricky macro manipulations.
 
-HEAD commit:    614da38e2f7a Merge tag 'hid-for-linus-2024051401' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1279b784980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f5d2cbf33633f507
-dashboard link: https://syzkaller.appspot.com/bug?extid=915b205d9237d1182095
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Following this series is a new test in Ktest [1] which exercises mount
+and remount functionality to test the new code.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+[1] https://evilpiepirate.org/git/ktest.git/
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/89eafb874b71/disk-614da38e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/356000512ad9/vmlinux-614da38e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/839c73939115/bzImage-614da38e.xz
+Thomas Bertschinger (3):
+  bcachefs: add printbuf arg to bch2_parse_mount_opts()
+  bcachefs: Add error code to defer option parsing
+  bcachefs: use new mount API
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+915b205d9237d1182095@syzkaller.appspotmail.com
+ fs/bcachefs/chardev.c     |   4 +-
+ fs/bcachefs/disk_groups.c |   2 +-
+ fs/bcachefs/errcode.h     |   3 +-
+ fs/bcachefs/fs.c          | 113 ++++++++++++++++++++++++++++-------
+ fs/bcachefs/opts.c        | 120 ++++++++++++++++++++++++--------------
+ fs/bcachefs/opts.h        |  12 +++-
+ 6 files changed, 185 insertions(+), 69 deletions(-)
 
-bcachefs (loop1): going read-write
-bcachefs (loop1): done starting filesystem
-=====================================================
-BUG: KMSAN: uninit-value in xattr_cmp_key+0x2f3/0x390 fs/bcachefs/xattr.c:49
- xattr_cmp_key+0x2f3/0x390 fs/bcachefs/xattr.c:49
- bch2_hash_lookup_in_snapshot fs/bcachefs/str_hash.h:178 [inline]
- bch2_hash_lookup fs/bcachefs/str_hash.h:202 [inline]
- bch2_acl_chmod+0xaa2/0x1590 fs/bcachefs/acl.c:423
- bch2_setattr_nonsize+0x12ef/0x1830 fs/bcachefs/fs.c:797
- bch2_setattr+0x264/0x2f0 fs/bcachefs/fs.c:886
- notify_change+0x1a07/0x1af0 fs/attr.c:497
- chmod_common+0x3b8/0x630 fs/open.c:650
- do_fchmodat fs/open.c:698 [inline]
- __do_sys_fchmodat fs/open.c:717 [inline]
- __se_sys_fchmodat fs/open.c:714 [inline]
- __x64_sys_fchmodat+0x160/0x2b0 fs/open.c:714
- x64_sys_call+0x1d6f/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:269
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+-- 
+2.45.0
 
-Uninit was created at:
- __kmalloc_large_node+0x231/0x370 mm/slub.c:3994
- __do_kmalloc_node mm/slub.c:4027 [inline]
- __kmalloc_node+0xb10/0x10c0 mm/slub.c:4046
- kmalloc_node include/linux/slab.h:648 [inline]
- kvmalloc_node+0xc0/0x2d0 mm/util.c:634
- kvmalloc include/linux/slab.h:766 [inline]
- btree_bounce_alloc fs/bcachefs/btree_io.c:118 [inline]
- bch2_btree_node_read_done+0x4e68/0x75e0 fs/bcachefs/btree_io.c:1185
- btree_node_read_work+0x8a5/0x1eb0 fs/bcachefs/btree_io.c:1324
- bch2_btree_node_read+0x3d42/0x4b50
- __bch2_btree_root_read fs/bcachefs/btree_io.c:1748 [inline]
- bch2_btree_root_read+0xa6c/0x13d0 fs/bcachefs/btree_io.c:1772
- read_btree_roots+0x454/0xee0 fs/bcachefs/recovery.c:457
- bch2_fs_recovery+0x7b6a/0x93e0 fs/bcachefs/recovery.c:785
- bch2_fs_start+0x7b2/0xbd0 fs/bcachefs/super.c:1043
- bch2_fs_open+0x152a/0x15f0 fs/bcachefs/super.c:2105
- bch2_mount+0x90d/0x1d90 fs/bcachefs/fs.c:1906
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1779
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- x64_sys_call+0x2bf4/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:166
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-CPU: 0 PID: 7935 Comm: syz-executor.1 Not tainted 6.9.0-syzkaller-02707-g614da38e2f7a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
