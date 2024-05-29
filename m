@@ -1,141 +1,182 @@
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620AD13DBA8
-	for <linux-bcachefs@vger.kernel.org>; Tue, 28 May 2024 22:11:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DBB6846F
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 May 2024 01:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716934296; cv=none; b=CrCiu4pNoSiOS1mIhEvOW9UH8RVHl/cNfSUg17attoYvcHmu9beBH68qMsoPveHob6wOjqdRcRfYaRSrdPzlOCtF3cpEuFNWtN+JtatVze2UerSjBiCushQ4aGDNdVKjOYISEtpPTVmoOWUhG8xQ5t8f+bDMMos9uqTcg7woMXo=
+	t=1716947190; cv=none; b=kkkthqimZG9g1f2x4MFuhghbznHC9xAuNiAZkqxSvD3MGblq+AmiHBnkwpDUxU7DpLEeallB7eGl8BcrBAWbTvDqpozGPRVFYJTfusVjT5jMZOVOXltH497CzO3WEmsmAQ1QZYDzBVkcqnJolSh0U/DLRsYAs8WtT0VPGAV70dM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716934296; c=relaxed/simple;
-	bh=s6gGGoGa28fqfAB8/9ayz7igSKloxSfHhA3lG6vLIng=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=uryCYJ+8pBChyJensoQp+XG7dF2g+77zaFSfVWta56POOPVNU8Dipr9XGrLP/dgHlu53YGtem6p7slu6aw69TgZ6fJT0FAw+Rf7GrL5chiNwQY5eWq5DU50GPn5jVlBaYaBYidG26lIrooDgJFvjECHBoheDU9ORNrypmi8gefo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=GM8b6H/N; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+	s=arc-20240116; t=1716947190; c=relaxed/simple;
+	bh=rbQEvIL690bkG9IWdLrwGk8ptdFeL9kL/86s8eAzb9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R3sTc6Be8ioSTp+6Kk3z1q0W3Yc1u8KdxBdTBh/9MI3cyigtveNFBUMnmAsZRoYT20PMb1Zo/a3j1AXSN2ZhHiEu2qeb3JEhW6yWsF1zgcEs1bx6eG6HxXRQn78ueMAUhO4RvZE7tyGNzdAYnQWHVfD+8LEmUI1jl17ppcn/BQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pQbVCrRO; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="GM8b6H/N"
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1f47eb2354bso10069585ad.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 28 May 2024 15:11:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1716934294; x=1717539094; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y/EZSjBSMpKdz0TS6eS7VGV2URZV9D9zcT9BZtnUab0=;
-        b=GM8b6H/NI/J4Qf9kM2wuhid9bqfPp8E5toF/bXilsxb6fd1ucDnvHhFIG6rlrXHKHj
-         7lSWnUYoIoBYChzDyl1SOPrh2aEUFSyLGGjn8keuFlHwG8xNe2Z/HJyIC9pBvkCw9DR4
-         ExDIJuoVDAt2FwfYKLgXzh8Jg2RqrKxDwy0iQED8OUTYJ7YGH9CZP/tyspDgDNNfDKNx
-         jj12Tio7nhH7DbmtucCRpea3IjT6KZ6mQEdAZIimzILqwGkC1pjTaUoY9k6WgZ9VgUNs
-         qjg0/+PA13xi3YFTNgzMUj4C/nmI28WUyreMQ24epQw8GWORAnga+LrAcF5bxk98HjyF
-         zLDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716934294; x=1717539094;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y/EZSjBSMpKdz0TS6eS7VGV2URZV9D9zcT9BZtnUab0=;
-        b=ZKaOhtU6nmT2ecCCx0fk2FFGcwo0U7zytWwIf2b5VMvYFr4TI9fF9Z3tyg7tSZUSJ8
-         2Ovgpcfr+FvYSAuxpL6uhHlwZ9mmJeM5fIbWgfT9QFj9i7yBRz0uIX9kSj24+CucbExT
-         2ggn37UT/Vv2E/C6/a4YbqZZccN2kDyAqYlPLEXcIju2Te0Q7oyxfn98/vOlhWnQKzGn
-         dOf265OEOiUdcfrODjwFCeJaMT+FyLgGyAJc7UOKLnJrtR6Oh2P/TslX2K7l5lBCWeam
-         TuX0JK6qNiUf95vV64bcmp+mry95g8Hhb4/2TPP04JBSTpBI5rl1ZiUn2PNJHTMHw/A7
-         /5rA==
-X-Forwarded-Encrypted: i=1; AJvYcCVd3WetvrLovQ61OCGSUtBSMajoQqyUJL/MWsKL8DLcmDtqze5pCCGT8VzswPO72SIAgW9wBftW9X335pXUdFLuvoDz5dpBejVvJfJu3OY=
-X-Gm-Message-State: AOJu0Ywqoy7DFmBGQbauO9hpoYQGKwp7bBJ3Km6M5VjRJ8CLCCuwp6nD
-	7714JOtAzssz2jRXYXg1Zsykd0v84xLABjMP9r5axly+UKKJnBtic4jMMwSHDMk=
-X-Google-Smtp-Source: AGHT+IHTQU8PmmECMD1h64ue4/AGFuh/+UzLJOnETMdIzBo20vXZf/4EqQUrQxxJsMIbVfq9H8iR4w==
-X-Received: by 2002:a17:903:186:b0:1f3:3a05:1adf with SMTP id d9443c01a7336-1f4499092d7mr162326705ad.66.1716934293612;
-        Tue, 28 May 2024 15:11:33 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6822198909bsm8028841a12.25.2024.05.28.15.11.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 May 2024 15:11:32 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <24829B5A-5F68-4B3A-AD4E-1AD9EFDE1D0E@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pQbVCrRO"
+X-Envelope-To: syzbot+fa3fc4c486ec9c342fcc@syzkaller.appspotmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1716947185;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M0+zIhjjjyp5vT+5kLHJh8IZDUmJyjbKFkeg444xOQo=;
+	b=pQbVCrRObxsdSEd0M5F6uGrU5Ar8wRYyiFwZa1yt3VpVEprHVVm6bz2FKekMxipz+EvpSO
+	TvBv5dK2PPMrgGMxBElubdurbflGarXIClNOkBL3y6UxqBo3CoFAROHC8o6Cxu0mwaoipZ
+	+opwucSyRx5TGRDRdfLuAzbQ7RU5FhY=
+X-Envelope-To: bfoster@redhat.com
+X-Envelope-To: linux-bcachefs@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: syzkaller-bugs@googlegroups.com
+Date: Tue, 28 May 2024 21:46:22 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: syzbot <syzbot+fa3fc4c486ec9c342fcc@syzkaller.appspotmail.com>
+Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bcachefs?] UBSAN: array-index-out-of-bounds in
+ bch2_btree_path_traverse_cached_slowpath
+Message-ID: <6yf73ahygmues2ou6khxnyvtktlilbboggfhy4adjfat32dhwz@5azlopa2llt7>
+References: <0000000000001f886b06197f358f@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2] statx: stx_subvol
-Date: Tue, 28 May 2024 16:11:28 -0600
-In-Reply-To: <b3b02658-ffc4-4bd9-b77a-af65ae359474@oracle.com>
-Cc: Eric Biggers <ebiggers@kernel.org>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-bcachefs@vger.kernel.org,
- linux-btrfs <linux-btrfs@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Josef Bacik <josef@toxicpanda.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Christian Brauner <brauner@kernel.org>,
- David Howells <dhowells@redhat.com>
-To: John Garry <john.g.garry@oracle.com>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <20240312021308.GA1182@sol.localdomain>
- <b3b02658-ffc4-4bd9-b77a-af65ae359474@oracle.com>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000001f886b06197f358f@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-
---Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
-
-
-> On May 28, 2024, at 6:46 AM, John Garry <john.g.garry@oracle.com> wrote:
+On Tue, May 28, 2024 at 01:13:23AM -0700, syzbot wrote:
+> Hello,
 > 
-> On 12/03/2024 02:13, Eric Biggers wrote:
->> On Thu, Mar 07, 2024 at 09:29:12PM -0500, Kent Overstreet wrote:
->>>  	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
->>>  	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
->>> +	__u64	stx_subvol;	/* Subvolume identifier */
->>>  	/* 0xa0 */
->>> -	__u64	__spare3[12];	/* Spare space for future expansion */
->>> +	__u64	__spare3[11];	/* Spare space for future expansion */
->>>  	/* 0x100 */
->> The /* 0xa0 */ comment needs to be updated (or deleted).
+> syzbot found the following issue on:
 > 
-> I would tend to agree. Was this intentionally not updated (or deleted)?
+> HEAD commit:    2bfcfd584ff5 Merge tag 'pmdomain-v6.10-rc1' of git://git.k..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1674fd44980000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=733cc7a95171d8e7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=fa3fc4c486ec9c342fcc
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: i386
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-2bfcfd58.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/c7ed3bb80bed/vmlinux-2bfcfd58.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/93acc5bfbaef/bzImage-2bfcfd58.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+fa3fc4c486ec9c342fcc@syzkaller.appspotmail.com
+> 
+> bcachefs (loop2): journal_replay... done
+> bcachefs (loop2): resume_logged_ops... done
+> bcachefs (loop2): going read-write
+> bcachefs (loop2): done starting filesystem
+> ------------[ cut here ]------------
+> UBSAN: array-index-out-of-bounds in fs/bcachefs/btree_key_cache.c:215:16
+> index 66 is out of range for type 'bkey_cached *[16]'
 
-More correct would be to add the new stx_subvol field after the "0xa0"
-comment so that it is clear at what offset in the struct this field is.
+So, this is an odd one - the number of elements on the percpu freelist
+was somehow set to 64.
 
-Cheers, Andreas
+And it wasn't a buffer overrun, 64 isn't a pointer.
 
+Perhaps there's a bug in the percpu allocator and it's not zeroing
+correctly? That would fit, since we're seeing it on startup.
 
-
-
-
-
---Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmZWVpAACgkQcqXauRfM
-H+A4QQ/+IFC+ipn32WPm2mM14CNmiYmrhv5RCNPU8Ectk5pHJQGow3HzwXGSGKRv
-M4tj97Xw5Au3K9qP9s3QSNLpDrc3+KumXrr8vzg33XpnRXcSzNMxtcXdht3/DGYO
-zqltGBq7u+Wm2S1yoRZwORU1YS/dq90ec0m6IBhszI3FAvLCH/tMj7dlTrTE3gSu
-xWen9XZBYiTbj3m81J5nlppuqEsr3tF7LtJRyHUw5xqgpe47kv0GFohyCp3pv8et
-r5fbv5I8uCNx6iSBk/o5ORLr8VVZJ4K5/0t96u0sPDLN9wOCV8NpYPXLeSUqPVr7
-KGxIcTSFAUkUMQXi2NGkpkHm5aAGmpXH2QQSdKbQbXrKXEbo4rAe+4jJjNtiYMK4
-vU7R0/6YGT+KBmL9J0/yvfshZNNb5l7ghzAq3x2Wt3TCPFGg0N6em1QKSb67IdbS
-nCmsQ38n589juroHPFs4yEq2Lad+g05CT5Lml7UNVCj5Fg4Wq+2sL0/6tnrx9/Xu
-Sh/knYTEPZy3Yevg0t4eol4TzLVzKm5PlKIVzctm4pAm5mNMXsS0OygEgpV57LXY
-84UCpWL80GT7PHpeo8KzNuN14oYS2BW1aZdBgfSnyxhhSuKGbFDCLcr/N+leNeZr
-M3rRe35/SHqXbzs2kpSz/mlf1m98bHjjsyRMKmPj2/a1tevPQg0=
-=vnHt
------END PGP SIGNATURE-----
-
---Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D--
+> CPU: 1 PID: 7694 Comm: syz-executor.2 Not tainted 6.10.0-rc1-syzkaller-00013-g2bfcfd584ff5 #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x16c/0x1f0 lib/dump_stack.c:114
+>  ubsan_epilogue lib/ubsan.c:231 [inline]
+>  __ubsan_handle_out_of_bounds+0x110/0x150 lib/ubsan.c:429
+>  bkey_cached_alloc fs/bcachefs/btree_key_cache.c:215 [inline]
+>  btree_key_cache_create fs/bcachefs/btree_key_cache.c:329 [inline]
+>  bch2_btree_path_traverse_cached_slowpath+0x4304/0x4d90 fs/bcachefs/btree_key_cache.c:484
+>  bch2_btree_path_traverse_cached+0x9ec/0xdc0 fs/bcachefs/btree_key_cache.c:587
+>  bch2_btree_path_traverse_one+0x16b4/0x2e40 fs/bcachefs/btree_iter.c:1158
+>  bch2_btree_path_traverse fs/bcachefs/btree_iter.h:229 [inline]
+>  bch2_btree_path_traverse fs/bcachefs/btree_iter.h:221 [inline]
+>  bch2_btree_iter_peek_slot+0x715/0x2450 fs/bcachefs/btree_iter.c:2603
+>  __bch2_bkey_get_iter fs/bcachefs/btree_iter.h:552 [inline]
+>  bch2_bkey_get_iter fs/bcachefs/btree_iter.h:566 [inline]
+>  bch2_inode_peek_nowarn+0x1e3/0x390 fs/bcachefs/inode.c:340
+>  bch2_inode_peek fs/bcachefs/inode.c:366 [inline]
+>  bch2_inode_find_by_inum_trans+0x125/0x2a0 fs/bcachefs/inode.c:939
+>  bch2_vfs_inode_get+0x41f/0x550 fs/bcachefs/fs.c:277
+>  bch2_mount+0xc81/0x1090 fs/bcachefs/fs.c:1999
+>  legacy_get_tree+0x109/0x220 fs/fs_context.c:662
+>  vfs_get_tree+0x8f/0x380 fs/super.c:1780
+>  do_new_mount fs/namespace.c:3352 [inline]
+>  path_mount+0x6e1/0x1f10 fs/namespace.c:3679
+>  do_mount fs/namespace.c:3692 [inline]
+>  __do_sys_mount fs/namespace.c:3898 [inline]
+>  __se_sys_mount fs/namespace.c:3875 [inline]
+>  __ia32_sys_mount+0x295/0x320 fs/namespace.c:3875
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+>  __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
+>  do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
+>  entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+> RIP: 0023:0xf72f3579
+> Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+> RSP: 002b:00000000f5ee5400 EFLAGS: 00000292 ORIG_RAX: 0000000000000015
+> RAX: ffffffffffffffda RBX: 00000000f5ee5460 RCX: 0000000020011a40
+> RDX: 0000000020000040 RSI: 0000000001200014 RDI: 00000000f5ee54a0
+> RBP: 00000000f5ee5460 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+>  </TASK>
+> ---[ end trace ]---
+> ----------------
+> Code disassembly (best guess), 2 bytes skipped:
+>    0:	10 06                	adc    %al,(%rsi)
+>    2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+>    6:	10 07                	adc    %al,(%rdi)
+>    8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+>    c:	10 08                	adc    %cl,(%rax)
+>    e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+>   1e:	00 51 52             	add    %dl,0x52(%rcx)
+>   21:	55                   	push   %rbp
+>   22:	89 e5                	mov    %esp,%ebp
+>   24:	0f 34                	sysenter
+>   26:	cd 80                	int    $0x80
+> * 28:	5d                   	pop    %rbp <-- trapping instruction
+>   29:	5a                   	pop    %rdx
+>   2a:	59                   	pop    %rcx
+>   2b:	c3                   	ret
+>   2c:	90                   	nop
+>   2d:	90                   	nop
+>   2e:	90                   	nop
+>   2f:	90                   	nop
+>   30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+>   37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
