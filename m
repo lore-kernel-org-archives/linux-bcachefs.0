@@ -1,157 +1,157 @@
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967E414AAD
-	for <linux-bcachefs@vger.kernel.org>; Thu, 30 May 2024 08:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11337187558
+	for <linux-bcachefs@vger.kernel.org>; Thu, 30 May 2024 15:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717058790; cv=none; b=jRhKdtmTkqylKeKEaZ9sW5/gqyeS8JoO8w+8YQ6jgZLlTSDRbFQOYlgmA+GbtDOSt4OSBPN+qzDfA2FxrqDwH+U9Ry84yV93RLELoqHsgh23+MxYSe2s8pjCLYOyZ7iaHMwAHkvTHZZm7uNEQNnw8rHAqdpK289ZwBoU7IXHTxs=
+	t=1717084404; cv=none; b=SCyjemAoVd7giLnyiSKcD7j7nq1OAWLOVNFhNg5P2Jbs1gLttV1iZ5VAEx2JhhfE1FuHeJGP3DfDY+sPUxU6kDCnCuiTupq+5w9WjbcPA6xkGN6XtrVVcjrVYwHbrBbr4J/uAPs58bP/pngTY4i/uzL7FgM2GwcXHYmG+vqqles=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717058790; c=relaxed/simple;
-	bh=5+LHasuOIYiWmSTZWOGMNCpGQ1ATSwQT4Ficzma0FdI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=guNdkg34/YRfcyt7wS4jS2jHrcQtPbZGNf1CsXcOe1B3sUs8xfSasioiOVcZhDB3bRiimzys2MQwzOznLBPG8SQX2COY4L+YP4rdEFUfdz6jrvD0H+QJCWFOQHWqBsPxGIrgWtu1a1OJYRCYJG7GZNGrwrtlBM8IbTg7AuDM7VA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3737b6fc28fso8309555ab.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 30 May 2024 01:46:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717058788; x=1717663588;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AOHiZgHlaOGjmg5s/A045cvtq4Ms3VgIs/iP1UczQ2M=;
-        b=GEt6oXYPr6KjgInG3D1F5+EipkxDQhMRmZlkhqPVIRxEw5vSwVwb0pwoymBHna5CxG
-         f/5FkyucUAGkjeR8Sx7e563i4jVWWCzQ+V+s8l1b/2zdM70jNHhT4iPRNNEroePfAuui
-         Z4ypfdRiXbF1T9ieFQJrRWOBUs2LDqCP0LuetKQmFnLS0CjRsW3YFYeFgSp9vY+FFeXO
-         W+51hsNDxtH+MzL7ob2qshlYpdNai1fWfvBjBrpnZnWGcbmOVUzxsyQQu7C5NAnBjZkL
-         ywXog17wQYrN370xKBRV6puDC8R2vHsC+sjm5WpsSIQ3SCDqPlXpO5trTEE6j+OtAA/x
-         fPBg==
-X-Forwarded-Encrypted: i=1; AJvYcCV6OhNYqZ7zbLAqlDW0vu4cljHfL9c2BRO+BgwW6TYlgvTl3KEZfCBAGTaLGdQIggS/HTKW0MY/3QxNW9cHYGmRO6jCxVmX1sYafa+jjXQ=
-X-Gm-Message-State: AOJu0YyZbyTjnwPT1v2xqET9V35uDjaKhNFn2A7DjwDCgRqRIGqVxJTS
-	JoJ+OT7d+g/IdRK8MCXG3QsFlPzfYWuqpKVKhElN6eH6dsBEQVfZYx5/m85xDEfqn3SRt7M+bNH
-	jNANKVFI9Z3ojYUA46lOQg12xKXy0Y5QZNXWv9WU1T40mgyili5D46Ew=
-X-Google-Smtp-Source: AGHT+IH/7Gn/EX/fKTucYomipSI4I2HjJ27JxZ+EGJ/hoUiolaqsTpBPvWYk/ZYLUteUaJLTJlGiKtHEdkDUHNE2hIs207l6chVc
+	s=arc-20240116; t=1717084404; c=relaxed/simple;
+	bh=NSONyl0eiFjI01Ei5b30Lbe/WtgsxxNI98rO5Yb71+o=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=QENVT4oIEX9xsocnCKi6oHqekQcJlsXRlqmEhJjz1R40sK00EJP08YEBuzed9lwCOsEzgCJ1yNONhZG83bgnIhZYs+gDbrZmV3E7Gp7fJXvC7PQUn+Lqe94pk7/W9Of1J6D6ZnPEwGzPb9WL/cvvJlRHGPayOFAS3nzcF1SPJvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PmCK0WEa; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PmCK0WEa"
+X-Envelope-To: torvalds@linux-foundation.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1717084399;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=Lju3hqzSD9daaRrPNdpL2GJx8prw1cj6Sa0j8kjBSHc=;
+	b=PmCK0WEa5bE3ivUVwP3VSqP/jXSOdD1oMKoA6CoUnF1SQ1R7amoJeoqX3eOB6Fq8SKJP09
+	98Xv3/Gqic8sQ3Sj39Vw6zilSp708tj4Pc6GwSDyBemMvD/OMcrtG9Bkman7IWl9zI3ti0
+	Th7l6zvsxSPxwSzPQXOPTrwFlAuoncI=
+X-Envelope-To: linux-bcachefs@vger.kernel.org
+X-Envelope-To: linux-fsdevel@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+Date: Thu, 30 May 2024 11:53:16 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.10-rc2
+Message-ID: <wvw6rfvpz7nfq3dbvy2frovpzrqkgsyke6e45pgh2bntvubxqb@wjanieiymayi>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b0e:b0:371:a225:45b5 with SMTP id
- e9e14a558f8ab-3747e1ee036mr604125ab.1.1717058787873; Thu, 30 May 2024
- 01:46:27 -0700 (PDT)
-Date: Thu, 30 May 2024 01:46:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001c2dac0619a7e77c@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_inode_flush_nocow_writes_async
-From: syzbot <syzbot+917694e2e9db5284865f@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+Hi Linus, assorted odds and ends...
 
-syzbot found the following issue on:
+important note for users: BCH_DATA_unstriped (accounting for unstriped
+data in stripe buckets) is arriving next merge window (which requires
+regenerating alloc info on mount if erasure coding is enabled), and the
+disk accounting rewrite (at long last!) is also in my master branch and
+arriving next merge window - which requires regenerating alloc info for
+everyone.
 
-HEAD commit:    101b7a97143a Merge tag 'acpi-6.10-rc1' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d948f2980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7ac2f8c387a23814
-dashboard link: https://syzkaller.appspot.com/bug?extid=917694e2e9db5284865f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+disk accounting rewrite brings per-snapshot-id accounting, per-btree
+accounting, accounting for pending rebalance work, compression
+type/ratio accounting.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+everything should be in place to make this a smooth upgrade progress,
+except for getting a progress indicator plumbed through so users aren't
+left wondering "why is my mount so slow? is it hung?" which we're going
+to try to do as well.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4f673334a91c/disk-101b7a97.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8e6db59f4091/vmlinux-101b7a97.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7e5782387c9d/bzImage-101b7a97.xz
+The following changes since commit d93ff5fa40b9db5f505d508336bc171f54db862e:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+917694e2e9db5284865f@syzkaller.appspotmail.com
+  bcachefs: Fix race path in bch2_inode_insert() (2024-05-22 20:37:47 -0400)
 
-bcachefs (loop0): snapshots_read... done
-bcachefs (loop0): journal_replay... done
-bcachefs (loop0): resume_logged_ops... done
-bcachefs (loop0): going read-write
-bcachefs (loop0): done starting filesystem
-=====================================================
-BUG: KMSAN: uninit-value in find_first_bit include/linux/find.h:207 [inline]
-BUG: KMSAN: uninit-value in bch2_inode_flush_nocow_writes_async+0x6bd/0x6f0 fs/bcachefs/fs-io.c:64
- find_first_bit include/linux/find.h:207 [inline]
- bch2_inode_flush_nocow_writes_async+0x6bd/0x6f0 fs/bcachefs/fs-io.c:64
- bch2_inode_flush_nocow_writes fs/bcachefs/fs-io.c:99 [inline]
- bch2_flush_inode+0x3d4/0x480 fs/bcachefs/fs-io.c:186
- bch2_fsync+0x1d1/0x2a0 fs/bcachefs/fs-io.c:203
- vfs_fsync_range+0x20d/0x270 fs/sync.c:188
- generic_write_sync include/linux/fs.h:2811 [inline]
- bch2_buffered_write fs/bcachefs/fs-io-buffered.c:1136 [inline]
- bch2_write_iter+0xe59/0x5b30 fs/bcachefs/fs-io-buffered.c:1144
- do_iter_readv_writev+0x7e6/0x960
- vfs_writev+0x574/0x1450 fs/read_write.c:971
- do_pwritev fs/read_write.c:1072 [inline]
- __do_compat_sys_pwritev2 fs/read_write.c:1218 [inline]
- __se_compat_sys_pwritev2+0x2a8/0x490 fs/read_write.c:1210
- __ia32_compat_sys_pwritev2+0x11d/0x1a0 fs/read_write.c:1210
- ia32_sys_call+0x918/0x40a0 arch/x86/include/generated/asm/syscalls_32.h:380
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0xb4/0x120 arch/x86/entry/common.c:386
- do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:411
- do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:449
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+are available in the Git repository at:
 
-Uninit was created at:
- slab_post_alloc_hook mm/slub.c:3877 [inline]
- slab_alloc_node mm/slub.c:3918 [inline]
- kmem_cache_alloc+0x5b9/0xc20 mm/slub.c:3925
- bch2_alloc_inode+0x56/0x280 fs/bcachefs/fs.c:1497
- alloc_inode+0x86/0x460 fs/inode.c:261
- new_inode_pseudo fs/inode.c:1007 [inline]
- new_inode+0x38/0x4f0 fs/inode.c:1033
- bch2_new_inode+0xc8/0x290 fs/bcachefs/fs.c:224
- bch2_lookup_trans fs/bcachefs/fs.c:408 [inline]
- bch2_lookup+0x1993/0x1fc0 fs/bcachefs/fs.c:437
- lookup_open fs/namei.c:3483 [inline]
- open_last_lookups fs/namei.c:3574 [inline]
- path_openat+0x27a9/0x5b00 fs/namei.c:3804
- do_filp_open+0x20e/0x590 fs/namei.c:3834
- do_sys_openat2+0x1bf/0x2f0 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_compat_sys_openat fs/open.c:1481 [inline]
- __se_compat_sys_openat fs/open.c:1479 [inline]
- __ia32_compat_sys_openat+0x298/0x300 fs/open.c:1479
- ia32_sys_call+0x38e1/0x40a0 arch/x86/include/generated/asm/syscalls_32.h:296
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0xb4/0x120 arch/x86/entry/common.c:386
- do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:411
- do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:449
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-05-30
 
-CPU: 0 PID: 15357 Comm: syz-executor.0 Not tainted 6.9.0-syzkaller-02339-g101b7a97143a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-=====================================================
+for you to fetch changes up to 7b038b564b3e2a752d2211e7b0c3c29fd2f6e197:
 
+  bcachefs: Fix failure to return error on misaligned dio write (2024-05-29 16:40:30 -0400)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+----------------------------------------------------------------
+bcachefs fixes for 6.10-rc2
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- two downgrade fixes
+- a couple snapshot deletion and repair fixes, thanks to noradtux for
+  finding these and providing the image to debug them
+- a couple assert fixes
+- convert to folio helper, from Matthew
+- some improved error messages
+- bit of code reorganization (just moving things around); doing this
+  while things are quiet so I'm not rebasing fixes past reorgs
+- don't return -EROFS on inconsistency error in recovery, this confuses
+  util-linux and has it retry the mount
+- fix failure to return error on misaligned dio write; reported as an
+  issue with coreutils shred
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+----------------------------------------------------------------
+Jeff Johnson (1):
+      bcachefs: add missing MODULE_DESCRIPTION()
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Kent Overstreet (19):
+      bcachefs: Fix debug assert
+      bcachefs: Fix sb-downgrade validation
+      bcachefs: Plumb bkey into __btree_err()
+      bcachefs: Fix lookup_first_inode() when inode_generations are present
+      bcachefs: Fix locking assert
+      bcachefs: Refactor delete_dead_snapshots()
+      bcachefs: Run check_key_has_snapshot in snapshot_delete_keys()
+      bcachefs: Fix setting of downgrade recovery passes/errors
+      bcachefs: btree_gc can now handle unknown btrees
+      bcachefs: Better fsck error message for key version
+      bcachefs: split out sb-members_format.h
+      bcachefs: split out sb-downgrade_format.h
+      bcachefs: Split out disk_groups_format.h
+      bcachefs: Split out replicas_format.h
+      bcachefs: Split out journal_seq_blacklist_format.h
+      bcachefs: Split out sb-errors_format.h
+      bcachefs: Fix uninitialized var warning
+      bcachefs: Don't return -EROFS from mount on inconsistency error
+      bcachefs: Fix failure to return error on misaligned dio write
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Matthew Wilcox (Oracle) (1):
+      bcachefs: Use copy_folio_from_iter_atomic()
 
-If you want to undo deduplication, reply with:
-#syz undup
+ fs/bcachefs/backpointers.c                 |   2 +-
+ fs/bcachefs/bcachefs.h                     |  44 +----
+ fs/bcachefs/bcachefs_format.h              | 195 +------------------
+ fs/bcachefs/btree_gc.c                     |  18 +-
+ fs/bcachefs/btree_gc.h                     |  44 ++---
+ fs/bcachefs/btree_gc_types.h               |  29 +++
+ fs/bcachefs/btree_io.c                     |  85 +++++----
+ fs/bcachefs/btree_key_cache.c              |  10 +-
+ fs/bcachefs/buckets.c                      |   2 +-
+ fs/bcachefs/disk_groups_format.h           |  21 ++
+ fs/bcachefs/ec.c                           |   2 +-
+ fs/bcachefs/fs-io-buffered.c               |   6 +-
+ fs/bcachefs/fs-io-direct.c                 |   4 +-
+ fs/bcachefs/fs.c                           |  12 +-
+ fs/bcachefs/fsck.c                         |  51 ++---
+ fs/bcachefs/journal_seq_blacklist_format.h |  15 ++
+ fs/bcachefs/mean_and_variance_test.c       |   1 +
+ fs/bcachefs/replicas_format.h              |  31 +++
+ fs/bcachefs/sb-downgrade.c                 |  13 +-
+ fs/bcachefs/sb-downgrade_format.h          |  17 ++
+ fs/bcachefs/sb-errors_format.h             | 296 +++++++++++++++++++++++++++++
+ fs/bcachefs/sb-errors_types.h              | 281 ---------------------------
+ fs/bcachefs/sb-members_format.h            | 110 +++++++++++
+ fs/bcachefs/snapshot.c                     |  88 +++++----
+ fs/bcachefs/snapshot.h                     |   1 +
+ fs/bcachefs/super-io.c                     |  12 +-
+ fs/bcachefs/super.c                        |   2 +-
+ 27 files changed, 706 insertions(+), 686 deletions(-)
+ create mode 100644 fs/bcachefs/btree_gc_types.h
+ create mode 100644 fs/bcachefs/disk_groups_format.h
+ create mode 100644 fs/bcachefs/journal_seq_blacklist_format.h
+ create mode 100644 fs/bcachefs/replicas_format.h
+ create mode 100644 fs/bcachefs/sb-downgrade_format.h
+ create mode 100644 fs/bcachefs/sb-errors_format.h
+ create mode 100644 fs/bcachefs/sb-members_format.h
