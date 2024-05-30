@@ -1,157 +1,97 @@
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11337187558
-	for <linux-bcachefs@vger.kernel.org>; Thu, 30 May 2024 15:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68970C14F;
+	Thu, 30 May 2024 18:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717084404; cv=none; b=SCyjemAoVd7giLnyiSKcD7j7nq1OAWLOVNFhNg5P2Jbs1gLttV1iZ5VAEx2JhhfE1FuHeJGP3DfDY+sPUxU6kDCnCuiTupq+5w9WjbcPA6xkGN6XtrVVcjrVYwHbrBbr4J/uAPs58bP/pngTY4i/uzL7FgM2GwcXHYmG+vqqles=
+	t=1717092212; cv=none; b=UHU6SX8Ww2OaGWAVsWQuJq3ZrPfZEf0slBsHDQt9VwbMENAPE5evdLVqy8avxzuaqxD97Gz9aPONhGZpb29dJHtl0j6rCNvTmEwByrmCYEYRXlNfUtShc6z3ijeJDAck6magrgR6dGXVga9wSA2hONe02opP9o4sU93pSk3dyIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717084404; c=relaxed/simple;
-	bh=NSONyl0eiFjI01Ei5b30Lbe/WtgsxxNI98rO5Yb71+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=QENVT4oIEX9xsocnCKi6oHqekQcJlsXRlqmEhJjz1R40sK00EJP08YEBuzed9lwCOsEzgCJ1yNONhZG83bgnIhZYs+gDbrZmV3E7Gp7fJXvC7PQUn+Lqe94pk7/W9Of1J6D6ZnPEwGzPb9WL/cvvJlRHGPayOFAS3nzcF1SPJvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PmCK0WEa; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1717092212; c=relaxed/simple;
+	bh=dYwoWT7q/wUT+guv6j7Ne6TG9RdQSAxhGeQm3X860/s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XySed8yKBq/2EZisRgB3xDUlMT7gjQnfmr1BveRCdzCvSN07xweJ1MOtTond0bDlkrq/4i/AcUKTh8f5pJBzZMolwZeE2A0e8zfpRecv4iyyMBsG7SAgZT7WH3/5NFvd3vL9ETRA/Cf8DFSsaivwPLFAyzKEPIcorwdrxJJPG8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K/Qh+m0+; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PmCK0WEa"
-X-Envelope-To: torvalds@linux-foundation.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717084399;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=Lju3hqzSD9daaRrPNdpL2GJx8prw1cj6Sa0j8kjBSHc=;
-	b=PmCK0WEa5bE3ivUVwP3VSqP/jXSOdD1oMKoA6CoUnF1SQ1R7amoJeoqX3eOB6Fq8SKJP09
-	98Xv3/Gqic8sQ3Sj39Vw6zilSp708tj4Pc6GwSDyBemMvD/OMcrtG9Bkman7IWl9zI3ti0
-	Th7l6zvsxSPxwSzPQXOPTrwFlAuoncI=
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-fsdevel@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-Date: Thu, 30 May 2024 11:53:16 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K/Qh+m0+"
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-421208c97a2so11760595e9.1;
+        Thu, 30 May 2024 11:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717092208; x=1717697008; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XTWVCt6/XCS0l83oDcJrI/j9rDkuJpx2ei84/kCHYNc=;
+        b=K/Qh+m0+qTCuYefk2CNrjVooqQZc3dJK2OlLpGYOhga9k7G6AdFB+fj68kbYwng0uu
+         0bp4+uN24vRfd+LieLklFmAbTLHtkZyECiD0CYTXl4FlCoRqJQfbgk3uMN2XBQ8ronXW
+         6WwM7IEZcyULy0mFkgEgq30emjz51BljpPJ/2hMl3Sf4UmXhN5mGLWJ/X8tz4Fc5oA7q
+         z+v0ftDT88e4pJsV2bLfIGTJJdPkMPak/nTQIxQwGcUkutVJWe/4sDbeVly9NxiM9NDd
+         z039POwYN9ZE5b5yYMSzPhMCq4feCCskksPDuMJczBf4ajk5ZmkXzQkqk2hROhzOWYi3
+         JXBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717092208; x=1717697008;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XTWVCt6/XCS0l83oDcJrI/j9rDkuJpx2ei84/kCHYNc=;
+        b=okspOFWdHfotDE6HBSOH+0zBPB7Sa1POuPu37cr/t+6lHe4P6gLPtW8N+oxrqJ68Oo
+         1xIgJDtpQlTciFoSB+MSz0Atj5WgHvrPDVGaV1Ma3hTnIQEi02IsOj46aPEFZg5C9tO8
+         bG2VBfKIEkfHaRGNScZJURMqJLbEfYNBRELUJWH90fjI8gahdYEahbCobw+Vh83wCKZl
+         8NU55gXKscT/3PZ8uJ+lR7pe58PlOKSqNsMqpCmiJFS2uSOHpUYnitvQNsMKXuObt570
+         PwvVRV3qy+XUDRz7Tmq/jc/aZHVrQcGxFEOoWHfE3acewtsEWRwK/ScvxSTcuuReg7r4
+         CtRg==
+X-Forwarded-Encrypted: i=1; AJvYcCVwmeZA+X6O5wyTNjIGc4Mir9Mahr+SVObAWSYvFMrCA9195pT8P3oa+w3xEFgE4/JC2W+spgUhSLJCvUMTexiGYN7o6vbRPzYYo27Q
+X-Gm-Message-State: AOJu0YzKzaixwiHYHz6rUARWhgb7J/9Ybe7tziRl08ZG4xrobmXx6YdU
+	R0qK0Q6yJ9AbWa8qwyRrpiFMaQb/MAdEMQOyHWY3gCP+UuOy0ewyIjsisRo+
+X-Google-Smtp-Source: AGHT+IHRIt9JLA7u5E8hxE19vRUERc8ZUHNnT5bd8joCzqk+J3dW0AZAxQwijT1N6qJNT6vb5C0dTA==
+X-Received: by 2002:a05:600c:1c84:b0:41f:d662:65f6 with SMTP id 5b1f17b1804b1-42127e3c03cmr27306665e9.3.1717092208315;
+        Thu, 30 May 2024 11:03:28 -0700 (PDT)
+Received: from localhost ([2a02:2f0e:516:6100:11c:5ba6:7b12:5dbc])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4212b8b5747sm1630865e9.45.2024.05.30.11.03.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 May 2024 11:03:27 -0700 (PDT)
+From: Ariel Miculas <ariel.miculas@gmail.com>
+To: linux-bcachefs@vger.kernel.org
+Cc: Ariel Miculas <ariel.miculas@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for 6.10-rc2
-Message-ID: <wvw6rfvpz7nfq3dbvy2frovpzrqkgsyke6e45pgh2bntvubxqb@wjanieiymayi>
+Subject: [PATCH] bcachefs: bch2_dir_emit() - fix directory reads in the fuse driver
+Date: Thu, 30 May 2024 21:03:12 +0300
+Message-Id: <20240530180312.921308-1-ariel.miculas@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-Hi Linus, assorted odds and ends...
+Commit 0c0cbfdb84725e9933a24ecf47c61bdeeda06ba2 dropped the ctx->pos
+update before the call to dir_emit. This breaks the userspace
+implementation, causing the directory reads to be stuck in an infinite
+loop. This doesn't happen in the kernel because the vfs handles the
+updates to ctx->pos, but in the fuse implementation nobody updates
+it.
 
-important note for users: BCH_DATA_unstriped (accounting for unstriped
-data in stripe buckets) is arriving next merge window (which requires
-regenerating alloc info on mount if erasure coding is enabled), and the
-disk accounting rewrite (at long last!) is also in my master branch and
-arriving next merge window - which requires regenerating alloc info for
-everyone.
+Signed-off-by: Ariel Miculas <ariel.miculas@gmail.com>
+---
+ fs/bcachefs/dirent.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-disk accounting rewrite brings per-snapshot-id accounting, per-btree
-accounting, accounting for pending rebalance work, compression
-type/ratio accounting.
+diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
+index c67460d8205d..f1d5ee19e5ea 100644
+--- a/fs/bcachefs/dirent.c
++++ b/fs/bcachefs/dirent.c
+@@ -534,6 +534,7 @@ int bch2_empty_dir_trans(struct btree_trans *trans, subvol_inum dir)
+ static int bch2_dir_emit(struct dir_context *ctx, struct bkey_s_c_dirent d, subvol_inum target)
+ {
+ 	struct qstr name = bch2_dirent_get_name(d);
++	ctx->pos = d.k->p.offset;
+ 	bool ret = dir_emit(ctx, name.name,
+ 		      name.len,
+ 		      target.inum,
+-- 
+2.34.1
 
-everything should be in place to make this a smooth upgrade progress,
-except for getting a progress indicator plumbed through so users aren't
-left wondering "why is my mount so slow? is it hung?" which we're going
-to try to do as well.
-
-The following changes since commit d93ff5fa40b9db5f505d508336bc171f54db862e:
-
-  bcachefs: Fix race path in bch2_inode_insert() (2024-05-22 20:37:47 -0400)
-
-are available in the Git repository at:
-
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-05-30
-
-for you to fetch changes up to 7b038b564b3e2a752d2211e7b0c3c29fd2f6e197:
-
-  bcachefs: Fix failure to return error on misaligned dio write (2024-05-29 16:40:30 -0400)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.10-rc2
-
-- two downgrade fixes
-- a couple snapshot deletion and repair fixes, thanks to noradtux for
-  finding these and providing the image to debug them
-- a couple assert fixes
-- convert to folio helper, from Matthew
-- some improved error messages
-- bit of code reorganization (just moving things around); doing this
-  while things are quiet so I'm not rebasing fixes past reorgs
-- don't return -EROFS on inconsistency error in recovery, this confuses
-  util-linux and has it retry the mount
-- fix failure to return error on misaligned dio write; reported as an
-  issue with coreutils shred
-
-----------------------------------------------------------------
-Jeff Johnson (1):
-      bcachefs: add missing MODULE_DESCRIPTION()
-
-Kent Overstreet (19):
-      bcachefs: Fix debug assert
-      bcachefs: Fix sb-downgrade validation
-      bcachefs: Plumb bkey into __btree_err()
-      bcachefs: Fix lookup_first_inode() when inode_generations are present
-      bcachefs: Fix locking assert
-      bcachefs: Refactor delete_dead_snapshots()
-      bcachefs: Run check_key_has_snapshot in snapshot_delete_keys()
-      bcachefs: Fix setting of downgrade recovery passes/errors
-      bcachefs: btree_gc can now handle unknown btrees
-      bcachefs: Better fsck error message for key version
-      bcachefs: split out sb-members_format.h
-      bcachefs: split out sb-downgrade_format.h
-      bcachefs: Split out disk_groups_format.h
-      bcachefs: Split out replicas_format.h
-      bcachefs: Split out journal_seq_blacklist_format.h
-      bcachefs: Split out sb-errors_format.h
-      bcachefs: Fix uninitialized var warning
-      bcachefs: Don't return -EROFS from mount on inconsistency error
-      bcachefs: Fix failure to return error on misaligned dio write
-
-Matthew Wilcox (Oracle) (1):
-      bcachefs: Use copy_folio_from_iter_atomic()
-
- fs/bcachefs/backpointers.c                 |   2 +-
- fs/bcachefs/bcachefs.h                     |  44 +----
- fs/bcachefs/bcachefs_format.h              | 195 +------------------
- fs/bcachefs/btree_gc.c                     |  18 +-
- fs/bcachefs/btree_gc.h                     |  44 ++---
- fs/bcachefs/btree_gc_types.h               |  29 +++
- fs/bcachefs/btree_io.c                     |  85 +++++----
- fs/bcachefs/btree_key_cache.c              |  10 +-
- fs/bcachefs/buckets.c                      |   2 +-
- fs/bcachefs/disk_groups_format.h           |  21 ++
- fs/bcachefs/ec.c                           |   2 +-
- fs/bcachefs/fs-io-buffered.c               |   6 +-
- fs/bcachefs/fs-io-direct.c                 |   4 +-
- fs/bcachefs/fs.c                           |  12 +-
- fs/bcachefs/fsck.c                         |  51 ++---
- fs/bcachefs/journal_seq_blacklist_format.h |  15 ++
- fs/bcachefs/mean_and_variance_test.c       |   1 +
- fs/bcachefs/replicas_format.h              |  31 +++
- fs/bcachefs/sb-downgrade.c                 |  13 +-
- fs/bcachefs/sb-downgrade_format.h          |  17 ++
- fs/bcachefs/sb-errors_format.h             | 296 +++++++++++++++++++++++++++++
- fs/bcachefs/sb-errors_types.h              | 281 ---------------------------
- fs/bcachefs/sb-members_format.h            | 110 +++++++++++
- fs/bcachefs/snapshot.c                     |  88 +++++----
- fs/bcachefs/snapshot.h                     |   1 +
- fs/bcachefs/super-io.c                     |  12 +-
- fs/bcachefs/super.c                        |   2 +-
- 27 files changed, 706 insertions(+), 686 deletions(-)
- create mode 100644 fs/bcachefs/btree_gc_types.h
- create mode 100644 fs/bcachefs/disk_groups_format.h
- create mode 100644 fs/bcachefs/journal_seq_blacklist_format.h
- create mode 100644 fs/bcachefs/replicas_format.h
- create mode 100644 fs/bcachefs/sb-downgrade_format.h
- create mode 100644 fs/bcachefs/sb-errors_format.h
- create mode 100644 fs/bcachefs/sb-members_format.h
