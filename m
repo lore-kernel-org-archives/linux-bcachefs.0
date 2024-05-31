@@ -1,163 +1,256 @@
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800121F16B
-	for <linux-bcachefs@vger.kernel.org>; Fri, 31 May 2024 02:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8C1249F5
+	for <linux-bcachefs@vger.kernel.org>; Fri, 31 May 2024 07:59:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717122937; cv=none; b=prIpCazqxEdF2O86A+0Ctc5K6RR+t7fjUHsI1yP5Sa3ZNWHu6cMkMm+a5fIqrmz9dQkTzxVF0MXz8qDVwjm7942ah2sk4WCIlY3Eil597LYvjS1EVxAlDVlPYHhUM3ngxxKnESnd3zNcjvFGWjEbhhEp2eui3eIsHAAR8Pxla+I=
+	t=1717142368; cv=none; b=JyPVwhQzb81qb8yTJ/l1T1KS4DmGCAYO9myOYHpEBK0wQPp5glY8vs/6sfbGWJBpPts/3VHa1u2CvlRQKXDBLKsOxeQSgWNGzLPtDC+uv/2gEllBGr2pKzIMnopNNww0Rzp2Q+o21YJuN7a/e8QZig20+0YqXjjbysFyikEAOdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717122937; c=relaxed/simple;
-	bh=+S+3Z4sg/PtV/784ZpO2x1NF7WxZqP/12anTbvsYVpg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J9fkI/+fcMcsJJUWJngFWr2dHOembrGyURbRF2pJwjYw2eVealVoC00mInjTwY9+yjoKnTOnQsNIP3BJlM3OW8/mwVn0Vt82H1RCFlQdpEs5kIsOCltnvUhaKlUQAynMLOpdjK3Z9nfgIkFCp7DPjfDYTB4SSvsqwjrIyZgdTu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aQgR4Ulj; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aQgR4Ulj"
-X-Envelope-To: kent.overstreet@linux.dev
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717122933;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=MeS7OizMon/+kVCMifzaTFJG2SOfNtEI6D6D9vCUKmI=;
-	b=aQgR4Ulj7Trya0OLEdjXPfEy7UZUIqKb/j2VZAx2MiLAWxoyBJnq7we8Ov0YceiduTKcw+
-	/9/cN0rURagSQHl184oWHM15WJVMiCVp9NSAms9GWnSpVkDfFwU2LkL0lt6crjA1gnrddL
-	VnisxYwa48jjufdC9LcZSsCwtH1SVS0=
-X-Envelope-To: bfoster@redhat.com
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: tangyouling@kylinos.cn
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Youling Tang <youling.tang@linux.dev>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Youling Tang <tangyouling@kylinos.cn>
-Subject: [PATCH] bcachefs: Add tracepoints for bch2_sync_fs() and bch2_fsync()
-Date: Fri, 31 May 2024 10:35:09 +0800
-Message-Id: <20240531023509.12274-1-youling.tang@linux.dev>
+	s=arc-20240116; t=1717142368; c=relaxed/simple;
+	bh=BG55gKdxOfm3t40y9UIHcYSk4DK+HRHGTfBqeeGfvy8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=szAKjVRpMOffZGXxe+H6YqaX+thW3WARB0INHEBL0bXHs0/MkcSwY6x3Su5uf1KwEUVoHGBPtqelJuzlMFRbNdhNatS3Nb0jiz//g1yjb9Ju9yZy7KE7KPtBIktBBZWNdJNz9fCMw+kd47axHgDu8YEi0+dhJPtLF2v95EydS6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7e25de500d2so99185139f.3
+        for <linux-bcachefs@vger.kernel.org>; Fri, 31 May 2024 00:59:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717142366; x=1717747166;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4pnoK/cK+PGh+SeAZOsDNZAVThFsdQT19Km+HsQZ4/E=;
+        b=SYjIDrWuW2P8NSBbMNKtMpXAscdSpPmw4vaYLJSH+1Mj2D9T2dJoeq2K8925zgf/8M
+         eQ+5SNlLxq4ReIglD11eFxILy5RtdgUI8Mlg6qM3bK7TQblbijE3+svAPZT0IUB/34hP
+         lpfEvsAOLxORFpS0AHhbyfkynlCwZZIerxEX6IH22iukda4HUadT3aaJAB6QU9VGqyZj
+         7zZBg59wC96iX964YZfN7hzC5aWP7LrIEFYerMo55Iakv7rLBeGaGO0jXQGzjyvtSshB
+         mOLoj4CUsTDPvRgWcEPK780wLtla4FwXqMt5tQ995R+91cd89dfQRROs8ZoL/GI6aGxH
+         3ICA==
+X-Forwarded-Encrypted: i=1; AJvYcCXaRNJ6OGk7wPQeUZgypxvxQlO39OpwY9KUPAgjEVftweFzBxzDvTZl2jlf/+Vtod18qMtkW1Gr/UO1RNri4NppZ3rTPgMg5FKk0p0qBh8=
+X-Gm-Message-State: AOJu0YwZf4xzu2zjDyz2NRzLzGjFatZA93ROLFJWPSLGRlb/dkQOBGj9
+	yNWaP19EjsLun0aokMzNLnz6pQUMmmDYRpD/V8FzUqtehcxVq0TEO5ZJN6xgYcv6t7aGqJ6Q266
+	Xk/NgFmMp5fZc7gbxTnkaIVs3nmZo2Ydzh3FRl8HdEinx48lB+nVUbbQ=
+X-Google-Smtp-Source: AGHT+IFdIwHD3X3c+ktobHgfp+mRq2fDHkd9b85dziyG8jWvgDaGJMDoign9smrub6MK805tiEU1Gag/Z3pNZzPriNKpIvtkz51D
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6602:3406:b0:7de:e16b:4b81 with SMTP id
+ ca18e2360f4ac-7eafff2ca2fmr9416539f.2.1717142366312; Fri, 31 May 2024
+ 00:59:26 -0700 (PDT)
+Date: Fri, 31 May 2024 00:59:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c5e7f60619bb5ccb@google.com>
+Subject: [syzbot] [bcachefs?] INFO: task hung in journal_quiesce
+From: syzbot <syzbot+1e1b380ef8d95b36f789@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Youling Tang <tangyouling@kylinos.cn>
+Hello,
 
-Add trace_bch2_sync_fs() and trace_bch2_fsync() implementations.
+syzbot found the following issue on:
 
-The output in trace is as follows:
-  sync-29779   [000] .....   193.700935: bch2_sync_fs: dev 254,16 wait 1
-  <...>-40027  [002] .....   342.535227: bch2_fsync: dev 254,32 ino 4099 parent 4096 datasync 1
+HEAD commit:    6fbf71854e2d Merge tag 'perf-tools-fixes-for-v6.10-1-2024-..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=121a7784980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=62be2ac813b33670
+dashboard link: https://syzkaller.appspot.com/bug?extid=1e1b380ef8d95b36f789
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13612784980000
 
-Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/eab66bf09e4e/disk-6fbf7185.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/232ac0545252/vmlinux-6fbf7185.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2820e679b0ee/bzImage-6fbf7185.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/1b9344a81d37/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1e1b380ef8d95b36f789@syzkaller.appspotmail.com
+
+INFO: task kworker/1:5:5342 blocked for more than 143 seconds.
+      Not tainted 6.9.0-syzkaller-12400-g6fbf71854e2d #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:5     state:D stack:21792 pid:5342  tgid:5342  ppid:2      flags:0x00004000
+Workqueue: events_long bch2_fs_read_only_work
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5408 [inline]
+ __schedule+0x17e8/0x4a20 kernel/sched/core.c:6745
+ __schedule_loop kernel/sched/core.c:6822 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6837
+ journal_quiesce+0x205/0x2e0 fs/bcachefs/journal.c:474
+ bch2_fs_journal_stop+0x33b/0x520 fs/bcachefs/journal.c:1181
+ __bch2_fs_read_only+0x30c/0x430 fs/bcachefs/super.c:291
+ bch2_fs_read_only+0xb52/0x1210 fs/bcachefs/super.c:356
+ bch2_fs_read_only_work+0x2d/0x40 fs/bcachefs/super.c:393
+ process_one_work kernel/workqueue.c:3231 [inline]
+ process_scheduled_works+0xa2e/0x1830 kernel/workqueue.c:3312
+ worker_thread+0x86d/0xd70 kernel/workqueue.c:3393
+ kthread+0x2f2/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+INFO: task syz-executor.5:5431 blocked for more than 143 seconds.
+      Not tainted 6.9.0-syzkaller-12400-g6fbf71854e2d #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.5  state:D stack:18512 pid:5431  tgid:5430  ppid:5255   flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5408 [inline]
+ __schedule+0x17e8/0x4a20 kernel/sched/core.c:6745
+ __schedule_loop kernel/sched/core.c:6822 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6837
+ schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6894
+ rwsem_down_write_slowpath+0xeeb/0x13b0 kernel/locking/rwsem.c:1178
+ __down_write_common+0x1af/0x200 kernel/locking/rwsem.c:1306
+ __bch2_fs_stop+0xfd/0x540 fs/bcachefs/super.c:612
+ bch2_fs_stop fs/bcachefs/super.c:672 [inline]
+ bch2_fs_open+0xb4f/0xdf0 fs/bcachefs/super.c:2139
+ bch2_mount+0x71d/0x1310 fs/bcachefs/fs.c:1917
+ legacy_get_tree+0xf0/0x190 fs/fs_context.c:662
+ vfs_get_tree+0x92/0x2a0 fs/super.c:1780
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f532cc7e5ea
+RSP: 002b:00007f532dab2ef8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f532dab2f80 RCX: 00007f532cc7e5ea
+RDX: 0000000020005d80 RSI: 0000000020005dc0 RDI: 00007f532dab2f40
+RBP: 0000000020005d80 R08: 00007f532dab2f80 R09: 0000000000000400
+R10: 0000000000000400 R11: 0000000000000246 R12: 0000000020005dc0
+R13: 00007f532dab2f40 R14: 0000000000005e05 R15: 0000000020005e00
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by pool_workqueue_/3:
+1 lock held by khungtaskd/30:
+ #0: ffffffff8e333f60 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #0: ffffffff8e333f60 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #0: ffffffff8e333f60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
+2 locks held by kworker/u8:6/1097:
+2 locks held by getty/4846:
+ #0: ffff88802abe40a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900031332f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b5/0x1e10 drivers/tty/n_tty.c:2201
+3 locks held by kworker/1:5/5342:
+ #0: ffff888015079148 ((wq_completion)events_long){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3206 [inline]
+ #0: ffff888015079148 ((wq_completion)events_long){+.+.}-{0:0}, at: process_scheduled_works+0x90a/0x1830 kernel/workqueue.c:3312
+ #1: ffffc9000a217d00 ((work_completion)(&c->read_only_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3207 [inline]
+ #1: ffffc9000a217d00 ((work_completion)(&c->read_only_work)){+.+.}-{0:0}, at: process_scheduled_works+0x945/0x1830 kernel/workqueue.c:3312
+ #2: ffff888064d80278 (&c->state_lock){+.+.}-{3:3}, at: bch2_fs_read_only_work+0x25/0x40 fs/bcachefs/super.c:392
+1 lock held by syz-executor.5/5431:
+ #0: ffff888064d80278 (&c->state_lock){+.+.}-{3:3}, at: __bch2_fs_stop+0xfd/0x540 fs/bcachefs/super.c:612
+1 lock held by kworker/u8:7/6982:
+1 lock held by syz-executor.2/7397:
+2 locks held by syz-executor/7402:
+1 lock held by syz-executor.3/7406:
+ #0: ffffffff8e339200 (rcu_state.barrier_mutex){+.+.}-{3:3}, at: rcu_barrier+0x4c/0x530 kernel/rcu/tree.c:4448
+2 locks held by syz-executor.5/7440:
+2 locks held by syz-executor/7444:
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 30 Comm: khungtaskd Not tainted 6.9.0-syzkaller-12400-g6fbf71854e2d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
+ watchdog+0xfde/0x1020 kernel/hung_task.c:379
+ kthread+0x2f2/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 4532 Comm: klogd Not tainted 6.9.0-syzkaller-12400-g6fbf71854e2d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+RIP: 0010:__kasan_check_read+0xa/0x20 mm/kasan/shadow.c:31
+Code: db eb d0 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 89 f6 48 8b 0c 24 <31> d2 e9 6f e6 ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00
+RSP: 0018:ffffc900036ff658 EFLAGS: 00000056
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81727bc0
+RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffffffff8fad43a8
+RBP: ffffc900036ff788 R08: ffffffff92fa8597 R09: 1ffffffff25f50b2
+R10: dffffc0000000000 R11: fffffbfff25f50b3 R12: 1ffff920006dfed8
+R13: ffffffff81659adb R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007fc3dc3d6380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb38dc96000 CR3: 000000007d38c000 CR4: 0000000000350ef0
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ instrument_atomic_read include/linux/instrumented.h:68 [inline]
+ _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+ cpumask_test_cpu include/linux/cpumask.h:571 [inline]
+ cpu_online include/linux/cpumask.h:1181 [inline]
+ trace_lock_release include/trace/events/lock.h:69 [inline]
+ lock_release+0xb0/0x9f0 kernel/locking/lockdep.c:5765
+ do_write_seqcount_end include/linux/seqlock.h:515 [inline]
+ psi_account_irqtime+0x382/0x5d0 kernel/sched/psi.c:1021
+ update_rq_clock_task kernel/sched/core.c:726 [inline]
+ update_rq_clock+0x22b/0x8a0 kernel/sched/core.c:770
+ ttwu_queue kernel/sched/core.c:4056 [inline]
+ try_to_wake_up+0x86b/0x1470 kernel/sched/core.c:4378
+ autoremove_wake_function+0x16/0x110 kernel/sched/wait.c:384
+ __wake_up_common kernel/sched/wait.c:89 [inline]
+ __wake_up_common_lock+0x132/0x1e0 kernel/sched/wait.c:106
+ sock_def_readable+0x20f/0x5b0 net/core/sock.c:3353
+ unix_dgram_sendmsg+0x1490/0x1f80 net/unix/af_unix.c:2112
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x223/0x270 net/socket.c:745
+ __sys_sendto+0x3a4/0x4f0 net/socket.c:2192
+ __do_sys_sendto net/socket.c:2204 [inline]
+ __se_sys_sendto net/socket.c:2200 [inline]
+ __x64_sys_sendto+0xde/0x100 net/socket.c:2200
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fc3dc5389b5
+Code: 8b 44 24 08 48 83 c4 28 48 98 c3 48 98 c3 41 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 26 45 31 c9 45 31 c0 b8 2c 00 00 00 0f 05 <48> 3d 00 f0 ff ff 76 7a 48 8b 15 44 c4 0c 00 f7 d8 64 89 02 48 83
+RSP: 002b:00007ffd6a24c228 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fc3dc5389b5
+RDX: 000000000000005c RSI: 000055e4b1c92850 RDI: 0000000000000003
+RBP: 000055e4b1c8d910 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000004000 R11: 0000000000000246 R12: 0000000000000013
+R13: 00007fc3dc6c6212 R14: 00007ffd6a24c328 R15: 0000000000000000
+ </TASK>
+
+
 ---
- fs/bcachefs/fs-io.c |  2 ++
- fs/bcachefs/fs.c    |  3 +++
- fs/bcachefs/trace.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 55 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/bcachefs/fs-io.c b/fs/bcachefs/fs-io.c
-index f5b266e51261..e89f01394ccb 100644
---- a/fs/bcachefs/fs-io.c
-+++ b/fs/bcachefs/fs-io.c
-@@ -194,6 +194,8 @@ int bch2_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- 	struct bch_fs *c = inode->v.i_sb->s_fs_info;
- 	int ret, err;
- 
-+	trace_bch2_fsync(file, datasync);
-+
- 	ret = file_write_and_wait_range(file, start, end);
- 	if (ret)
- 		goto out;
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 9b52ac233bf9..0695f478e206 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -26,6 +26,7 @@
- #include "snapshot.h"
- #include "super.h"
- #include "xattr.h"
-+#include "trace.h"
- 
- #include <linux/aio.h>
- #include <linux/backing-dev.h>
-@@ -1681,6 +1682,8 @@ static int bch2_sync_fs(struct super_block *sb, int wait)
- 	struct bch_fs *c = sb->s_fs_info;
- 	int ret;
- 
-+	trace_bch2_sync_fs(sb, wait);
-+
- 	if (c->opts.journal_flush_disabled)
- 		return 0;
- 
-diff --git a/fs/bcachefs/trace.h b/fs/bcachefs/trace.h
-index 362e1fc7ef6a..564e115f4d2e 100644
---- a/fs/bcachefs/trace.h
-+++ b/fs/bcachefs/trace.h
-@@ -200,6 +200,56 @@ DECLARE_EVENT_CLASS(bio,
- 		  (unsigned long long)__entry->sector, __entry->nr_sector)
- );
- 
-+/* fs.c: */
-+TRACE_EVENT(bch2_sync_fs,
-+	TP_PROTO(struct super_block *sb, int wait),
-+
-+	TP_ARGS(sb, wait),
-+
-+	TP_STRUCT__entry(
-+		__field(	dev_t,	dev			)
-+		__field(	int,	wait			)
-+
-+	),
-+
-+	TP_fast_assign(
-+		__entry->dev	= sb->s_dev;
-+		__entry->wait	= wait;
-+	),
-+
-+	TP_printk("dev %d,%d wait %d",
-+		  MAJOR(__entry->dev), MINOR(__entry->dev),
-+		  __entry->wait)
-+);
-+
-+/* fs-io.c: */
-+TRACE_EVENT(bch2_fsync,
-+	TP_PROTO(struct file *file, int datasync),
-+
-+	TP_ARGS(file, datasync),
-+
-+	TP_STRUCT__entry(
-+		__field(	dev_t,	dev			)
-+		__field(	ino_t,	ino			)
-+		__field(	ino_t,	parent			)
-+		__field(	int,	datasync		)
-+	),
-+
-+	TP_fast_assign(
-+		struct dentry *dentry = file->f_path.dentry;
-+
-+		__entry->dev		= dentry->d_sb->s_dev;
-+		__entry->ino		= d_inode(dentry)->i_ino;
-+		__entry->parent		= d_inode(dentry->d_parent)->i_ino;
-+		__entry->datasync	= datasync;
-+	),
-+
-+	TP_printk("dev %d,%d ino %lu parent %lu datasync %d ",
-+		  MAJOR(__entry->dev), MINOR(__entry->dev),
-+		  (unsigned long) __entry->ino,
-+		  (unsigned long) __entry->parent, __entry->datasync)
-+);
-+
- /* super-io.c: */
- TRACE_EVENT(write_super,
- 	TP_PROTO(struct bch_fs *c, unsigned long ip),
--- 
-2.34.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
