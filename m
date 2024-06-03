@@ -1,122 +1,71 @@
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC0F012D754
-	for <linux-bcachefs@vger.kernel.org>; Mon,  3 Jun 2024 13:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D94C626AD5
+	for <linux-bcachefs@vger.kernel.org>; Mon,  3 Jun 2024 14:51:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717421137; cv=none; b=rsYOAPST3o8IO7brJauXmsUjXNYkgbZe4nn4lS2e34bUKxSsS/+SSgFFvUG7nBV89+pE6oIZkKqMHBGPtxilQvj4AqtnZmPdxWlWgQkcIHLIJ+EIgcPwJYIVvbukh4q2RL2mWVISHAKRNVlb93iP9IZpE0xJkJcae/miFoijbJM=
+	t=1717426291; cv=none; b=IbmvsVflrJQTnFajd8SPsSxTRkxnz3wPC39et9aYCgD8eXAUullFbnrwkrpMtoqwPW9sem0mkzNnJ/HCivT32xPUSLqbQlPvnmQVzLDXcPZb5lkjp4dgl9Oj7Bg93/dBYJSNfiO9z0QfNSCjwAeIoeccL+4W7t4Nq4c77RCGIY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717421137; c=relaxed/simple;
-	bh=VW/GPWpa8s+t3NbQpP8lohvhQ1sylnotaa72z9YaRa4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u0tkMEjxPKPa4g8Q6fomXS4P5caw8tK2mERRkMNWkRfIExskYi0DiYUx4sN2dfp8eprzjbnbz993A+r1+zh9ns6GLIyWL+7IUDFakid78A1v7Y4miK0Y3mAoWx+BNjIviXYzuS9BOO9Ukb6jqqYzi7vubeALIxffjgafjlGN2cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VtDrz481rzwRL7;
-	Mon,  3 Jun 2024 21:21:39 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id BA533140382;
-	Mon,  3 Jun 2024 21:25:18 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 3 Jun
- 2024 21:25:04 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
-Subject: [PATCH 3/3] bcachefs: support FS_IOC_SETFSLABEL
-Date: Mon, 3 Jun 2024 21:26:20 +0800
-Message-ID: <20240603132620.4027906-4-lihongbo22@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240603132620.4027906-1-lihongbo22@huawei.com>
-References: <20240603132620.4027906-1-lihongbo22@huawei.com>
+	s=arc-20240116; t=1717426291; c=relaxed/simple;
+	bh=m/Hi0P4dIIjFNHuZZiqbi8stSEkC8P8kgvgPJW9iI4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=atAoPYsR3MQOFshCVVCGZUaC1ey5Tyhqu/jp+oyJRD4k0K6PqSysVTKJn3HXsxktq5P+fOXMDMxHzaUo1JpouE0pGwwACnGDIg89HtlhoTLZKsAuF1or7POeYhP/cFrI7lt6CIIPWmq9yymepesJjSmt6qu81EZJBzVuezM43YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ItDGyxN5; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ItDGyxN5"
+X-Envelope-To: lihongbo22@huawei.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1717426280;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UfG72BsOtmPhExVnYWXp+Mjjoc0D/ygjb6VPx9ZGqqs=;
+	b=ItDGyxN5FggEKv0tZfatv3dDpF0blcRmhfhPFHcqruzBmsnIpQmj6jt+XBW75c+a7esJZV
+	9miKscDFVyIUAx5zCJpSFS2Bika+lj2z/+MOu+DCjlhZIdNiVHF9o2kVKwI1PQ8trRsK9s
+	VPPm6CWm5oq5AImgyNIe+jFXWyYv6O4=
+X-Envelope-To: bfoster@redhat.com
+X-Envelope-To: linux-bcachefs@vger.kernel.org
+Date: Mon, 3 Jun 2024 10:51:15 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Hongbo Li <lihongbo22@huawei.com>
+Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: fix the display format for show-super
+Message-ID: <6mnnkb7cwyguh2blqrgh5myfysbldtvhjezvb64iewazqzoati@tswjilvhlljt>
+References: <20240603132335.4027737-1-lihongbo22@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240603132335.4027737-1-lihongbo22@huawei.com>
+X-Migadu-Flow: FLOW_OUT
 
-Implement support for FS_IOC_SETFSLABEL ioctl to set filesystem
-label.
+On Mon, Jun 03, 2024 at 09:23:35PM +0800, Hongbo Li wrote:
+> There are three keys displayed in non-uniform format.
+> Let's fix them.
+> 
+> [Before]
+> ```
+> Label:	testbcachefs
+> Version:	1.9: (unknown version)
+> Version upgrade complete:	0.0: (unknown version)
+> ```
+> 
+> [After]
+> ```
+> Label:					testbcachefs
+> Version:				1.9: (unknown version)
+> Version upgrade complete:		0.0: (unknown version)
+> ```
+> 
+> Fixes: 7423330e30ab ("bcachefs: prt_printf() now respects \r\n\t")
+> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
----
- fs/bcachefs/fs-ioctl.c | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
-
-diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
-index dace11ae1931..23427a877b9a 100644
---- a/fs/bcachefs/fs-ioctl.c
-+++ b/fs/bcachefs/fs-ioctl.c
-@@ -301,6 +301,41 @@ static int bch2_ioc_getlabel(struct bch_fs *c, char __user *user_label)
- 	return ret ? -EFAULT : 0;
- }
- 
-+static int bch2_ioc_setlabel(struct bch_fs *c,
-+			     struct file *file,
-+			     struct bch_inode_info *inode,
-+			     const char __user *user_label)
-+{
-+	int ret;
-+	char label[BCH_SB_LABEL_SIZE];
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if (copy_from_user(label, user_label, sizeof(label)))
-+		return -EFAULT;
-+
-+	if (strnlen(label, BCH_SB_LABEL_SIZE) == BCH_SB_LABEL_SIZE) {
-+		bch_err(c,
-+			"unable to set label with more than %d bytes",
-+			BCH_SB_LABEL_SIZE - 1);
-+		return -EINVAL;
-+	}
-+
-+	ret = mnt_want_write_file(file);
-+	if (ret)
-+		return ret;
-+
-+	mutex_lock(&c->sb_lock);
-+	strscpy(c->disk_sb.sb->label, label, BCH_SB_LABEL_SIZE);
-+	mutex_unlock(&c->sb_lock);
-+
-+	ret = bch2_write_super(c);
-+
-+	mnt_drop_write_file(file);
-+	return ret;
-+}
-+
- static int bch2_ioc_goingdown(struct bch_fs *c, u32 __user *arg)
- {
- 	u32 flags;
-@@ -546,6 +581,10 @@ long bch2_fs_file_ioctl(struct file *file, unsigned cmd, unsigned long arg)
- 		ret = bch2_ioc_getlabel(c, (void __user *) arg);
- 		break;
- 
-+	case FS_IOC_SETFSLABEL:
-+		ret = bch2_ioc_setlabel(c, file, inode, (const void __user *) arg);
-+		break;
-+
- 	case FS_IOC_GOINGDOWN:
- 		ret = bch2_ioc_goingdown(c, (u32 __user *) arg);
- 		break;
-@@ -591,6 +630,7 @@ long bch2_compat_fs_ioctl(struct file *file, unsigned cmd, unsigned long arg)
- 		cmd = FS_IOC_GETVERSION;
- 		break;
- 	case FS_IOC_GETFSLABEL:
-+	case FS_IOC_SETFSLABEL:
- 		break;
- 	default:
- 		return -ENOIOCTLCMD;
--- 
-2.34.1
-
+Thanks! Applied
