@@ -1,63 +1,85 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0345913AA5E;
-	Wed,  5 Jun 2024 18:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E533E196C65
+	for <linux-bcachefs@vger.kernel.org>; Thu,  6 Jun 2024 13:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717612324; cv=none; b=kN/yf4Z7PRcA+WpLh+pL1W7VQ7fN2e036pB0eOzRt6qONgjPg4+7hVPh7GWzM5w4hPhapnADLOePlI7HcNImToXudWJvGE+WV3wfRNUYXJR+MTnTJz9PI2hV61eiB8SHkmHjQwM07FmymIpFCiv4Ffbtp9dX1I1G75qN18PYOFY=
+	t=1717682295; cv=none; b=Ma3ABK8ZWCQp3W9XUbwqHEB1rfHtQoJgAZzABz+BvExAHYPw+JoIkER+SXgjIZn4lHS7mzuY/jqvqnSpW4sbKe+juDoCLVC36/Meluk0+oCKoj25g6i1NZddS1qZyH83F4IDOivX25j6Dd9DWhZpofTVPrU3ossIYV+rJX4ZLbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717612324; c=relaxed/simple;
-	bh=+L1g5GUcYq1VwF4g1m88YMsxeXzzoG1H9G362VLEEA4=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=A4undr+JfJ81VPAbVaJ/PfgnG0E0KrMvNU/tUyYxM9RiFSCzatJi3vcEsLRS225vf35PeRW2jjdHNMWSH2x75mp5i3/0llPfc08kAkov3j1KpgJqL4Z8W2bWaeQUGIZou6IMXG5uxTif5C3Go0+p2mLflM1cTDFLCmQWJ0pB9x0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gQdZepe5; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1717682295; c=relaxed/simple;
+	bh=3GkRDit6IsitFsgIF/TxZ0OEvo6U1Y4Q+kJhulDvRTM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IgJtgHOsUs+09dN2gWV0dUOHROw+iCnM2ZfKtVat3lQNE0TL5SswGZhmFNjHRozRcHcjKyxArxXsIokjWBd9jkDdmR8OWTZlcqgn1txs5winRFm7+HcyRHs35aMGE7aaouxNcC+6lheHkJf1djaFGnbWmYzKX1Aza9jCBpFvRl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ah06udUc; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gQdZepe5"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CEE24C2BD11;
-	Wed,  5 Jun 2024 18:32:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717612323;
-	bh=+L1g5GUcYq1VwF4g1m88YMsxeXzzoG1H9G362VLEEA4=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=gQdZepe5/bLATmf5ohyaRJBqSa8pgI952pzVqjU5bC2c6ywgaMrE4kvyzwMZdjICr
-	 3StapkrI6l8MFfHVHjAJ4OJumelrpdwD/Yk3RgSr7MCu+nWyJi2BRt7psCRmHXzXlS
-	 yW7Gp9Yxo9/Mre3qgk4A7EngVpq7ACNpLabqfWptpief2hY05FaumUoYviQN9KE+wO
-	 GHyuf3o7F5S1h5fE3UYEL7iaQtay5EqHuarV5BcctCUBmSTQHGDEh1dDoq6tsfvzSN
-	 2W2zCChFdEzNrV3wNSksVVK0ogL3htkPV2ouJ3roFuw23jlY7raC1RCgIN+v0/sICG
-	 wjBLEq4VKLY9g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C4212C4332C;
-	Wed,  5 Jun 2024 18:32:03 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs fixes for 6.10-rc3
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <4a4gssdsaohqqh33hd2i2tavvfsjixngyfsyddy73keqauh3yo@m4vtvrly275m>
-References: <4a4gssdsaohqqh33hd2i2tavvfsjixngyfsyddy73keqauh3yo@m4vtvrly275m>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4a4gssdsaohqqh33hd2i2tavvfsjixngyfsyddy73keqauh3yo@m4vtvrly275m>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-06-05
-X-PR-Tracked-Commit-Id: 319fef29e96524966bb8593117ce0c5867846eea
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e20b269d738b388e24f81fdf537cb4db7c693131
-Message-Id: <171761232379.20262.17923662480382375745.pr-tracker-bot@kernel.org>
-Date: Wed, 05 Jun 2024 18:32:03 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ah06udUc"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1717682292;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Y572SaCTpxdimu0de/dSzCAj14DCjckzezYe8mkX/eE=;
+	b=Ah06udUcyrUE7X0TNoB8Fs0nglb7a8ileIPPHd8Jux/i1bsaKBKcJZIIvpjRv6Hbrsnhip
+	21yXWxkTM+kxxnMnAhlTZN41s/37L90xev8CHWYvjJGwzg35Q/HEcXGh48NL1Dfjns2RIB
+	qy26lD1BgInz1DAawYNTH2rg0B57gjc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-634-CeB_710HNTue02bRYEKWWw-1; Thu,
+ 06 Jun 2024 09:58:09 -0400
+X-MC-Unique: CeB_710HNTue02bRYEKWWw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 550833C00085;
+	Thu,  6 Jun 2024 13:58:07 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.8.96])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 2D9D710139;
+	Thu,  6 Jun 2024 13:58:07 +0000 (UTC)
+From: Brian Foster <bfoster@redhat.com>
+To: linux-bcachefs@vger.kernel.org
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH] bcachefs: fix smatch data leak warning in fs usage ioctl
+Date: Thu,  6 Jun 2024 09:58:26 -0400
+Message-ID: <20240606135826.1684764-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-The pull request you sent on Wed, 5 Jun 2024 11:00:34 -0400:
+smatch warns that the copy of arg to userspace is a potential data
+leak by virtue of arg.pad not being checked or zeroed. This was
+introduced by the commit referenced below that switched arg from
+being a zeroed runtime allocation to living on the stack. Fix by
+simply zero initializing the structure.
 
-> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-06-05
+Fixes: cde738a61e65 ("bcachefs: Convert bch2_ioctl_fs_usage() to new accounting")
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
+ fs/bcachefs/chardev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e20b269d738b388e24f81fdf537cb4db7c693131
-
-Thank you!
-
+diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
+index 70db3a737d71..4248c251fce5 100644
+--- a/fs/bcachefs/chardev.c
++++ b/fs/bcachefs/chardev.c
+@@ -515,7 +515,7 @@ static long bch2_ioctl_data(struct bch_fs *c,
+ static long bch2_ioctl_fs_usage(struct bch_fs *c,
+ 				struct bch_ioctl_fs_usage __user *user_arg)
+ {
+-	struct bch_ioctl_fs_usage arg;
++	struct bch_ioctl_fs_usage arg = {};
+ 	darray_char replicas = {};
+ 	u32 replica_entries_bytes;
+ 	int ret = 0;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.44.0
+
