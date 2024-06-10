@@ -1,182 +1,117 @@
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC20D84A4A
-	for <linux-bcachefs@vger.kernel.org>; Mon, 10 Jun 2024 14:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49635757E3
+	for <linux-bcachefs@vger.kernel.org>; Mon, 10 Jun 2024 18:13:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718029641; cv=none; b=B6il3GuwIf9P8UBorseA2RAu2PPtDRt9G6oCSfyvFUDmlhGmTYuiqWuQ08K7NVxqGaMgfqRlh6sCjaDTobuqPWm5UBIfNJP+zuXSpaB8QiXCgNlASUjBk3Nsu4HHQsXhYOgBm4L+y4KJ5SEve7hQSZFlV4o4KgLSZfqPywLmsNE=
+	t=1718043185; cv=none; b=u5CjKEQOV0vUstd8e7wVHc4Qzb4zWY7Ndx2S5/LbWuywrFjQdRGH6pRWPO3CpGKgUQWQBNe9kXf7SCpQdB1SYGdVGYV2go5+cLa73nVBoqrQSiPiM0BoeZ2tAPYrX3E/OhgkAEFHQ8s2Zn2EQIYWIQ/P+wHrTBodFzDhYIPo6Dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718029641; c=relaxed/simple;
-	bh=qNyY3gPYF2qmEpoo1n4bQF2sh3Dbd56uCGQJ6riwbT8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OILF0gjVMGpqIpdu1MeyisfD3xkejfL6KuZ9xYhvz9FW53lU5kTl1XSkTx9H3IP0m/Ttr/IKkJ0YBUWEerEiStp36Phd2gKnJA1u78dJ85BAPZttXopjQWQT01h/9Fo8g2VVcsaQapULsHPOZqnWdfUESMBcXs5e1tpMuHGFdjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-7eb5f83ae57so279509239f.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 10 Jun 2024 07:27:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718029639; x=1718634439;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7NHf6HxjWuV028m4aYYZAXBcqrsXypChDYMmJJL0QpA=;
-        b=ZWtiixrbiur+hD1KW6M9Xx1Tsh3M1RVA3PqvzGlSIkQLEmWGP35zm3u+BLnyaPxbzj
-         /eQciYZvHLDma39x57rWESFO/0B2LrD2zyadMwMIgDPnvUvAmGJSkQfCEsghlJMvqjyG
-         hbeLDKZWwS4GIpCQzUaF8h2AETp0cevSeKh7lcAaWnQ6yLm322YtOuOLJ+hcHYDJ941H
-         AUyGvfymXzBtMTxuqLb4UuYumbL8c9VEyYxGXVX71qBlsWWzt/NLi5rwUOhOjDwChXDf
-         dKmH1/s3YxWRtgVCD03cDB4/24oagW/7dRmcv5iqSSGaio1uADrDW7gkZw9balqLjd15
-         i9NQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+y+SWy1raDDg9v1ZcxLiaeItILBXEKDdHQf3Ak/BORyz39UK3x+F4ZZ3rqmKj0Vb8EGzWxDgCmCEaIsWN95U5CVumodHpf4p5Q0tL+KY=
-X-Gm-Message-State: AOJu0Yx87/viIw9KGpuNBTvg58h16VyVQV0porIXg+30k6XlTAiMplYk
-	CeBUaX9E4BWgjmQsAKQCuWAWLGy52Cf/9dMTHBvKOYLMScAT8InBKmAHfBTJ+Yq9uYdNwzZ21Ex
-	43O+XFuHw2jp1tNQ1K2klD9CGm76W6nljTUFsSuRjlxNtRSPr2okjTGY=
-X-Google-Smtp-Source: AGHT+IFXPybU/GeR2HByUYofJubKK0OBNNFVNX/PukOjGLzUR8cYHOn6Dzd10MgGaFXAJCIm26RvEaBcdgialvHtRp39clK3/q52
+	s=arc-20240116; t=1718043185; c=relaxed/simple;
+	bh=gNfcIhbrCGMLIvIPqSIa39l1ZFPS9OmnTQs3k/fdcTc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YiR7MOZxcq7lqVrb+rakMZGqfzrMqPxprlQX6oCxA5WMpgt3j3fWcsMGSBTO0jEyDN1r2JT/ZbsbWeEsMjIxzZQvnpBuQNKrU2+LyWkMvyAAY8NHm8viCutWSrF9h3RcZArCCZUaAEW4zTOJocuJgeurvKFzBS/vLjNJCgzsTXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O1cs/lQ2; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O1cs/lQ2"
+X-Envelope-To: mjguzik@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1718043180;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ge7TloVuzWXGD7Le2ll7JnNPaTJFHuTJOvT5SJAvZlI=;
+	b=O1cs/lQ2Y42mSW9u6c1+a/4qpf9OJb3b0HMnMyNsCIVA6vUgW6GhVBqW9iZBTzW39tj+TN
+	8Jj1chQ6alSzJrlZTBp7x2dEnxNVQuRq5iquODX/EZdCihLAlaCIyP7ng76CeFqzQywGkJ
+	s+dO7gaTvheP8y/ER3gPKtuILLqxP2A=
+X-Envelope-To: linux-bcachefs@vger.kernel.org
+Date: Mon, 10 Jun 2024 14:12:56 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: long stalls when creating 20 directory trees of 1 million inodes
+ in parallel
+Message-ID: <gskaw3ud7aicys3kq3j5nlf66ihcisfrnkwo2wlb5hji5svhvf@vvbuomk2fhmm>
+References: <CAGudoHFM1c2QMtbJMFCRw1YUk4p-_0GQBn9MfyFfNdxJbZqQeg@mail.gmail.com>
+ <y3qdwfh7gjs6ykedg4ehrbwsiktabbtgoqloka5nnj5oatkh5k@7evginr2jhsf>
+ <CAGudoHEsFHMG5UYpSyobp1zpm-eOpKdx=b7kL9NFG3_VKE8+Zg@mail.gmail.com>
+ <ln4mfb5iv4kxxjcpm67szq24g6dxfdk36fsxb7shojmhg2fkf2@izeciivj46yw>
+ <CAGudoHGeak9cnG+qE6=zoqbg5KiOZG+aMHksmbvwWTATKhWm-w@mail.gmail.com>
+ <CAGudoHFyJ64SDwUTijSrqeDjXBO3MfFx8D8-DoMaPFEQmzzLDw@mail.gmail.com>
+ <wvpgfberqgnidhzymc5gxsa45vwtrcto45ppcx6bprar5bkg4u@6tmfvbp5xeac>
+ <CAGudoHFDFgAq2--dEubAV4w2ZqdqNY56SdAmmvy1nF8Z5bX6kA@mail.gmail.com>
+ <jsrnek56sgp3stom6nmkfkacsva3iphl2hbmohece2htyrtt7l@hlbezgwrf3hk>
+ <ngsytb3begcqgyfc5tiqjqdj6fp7kdeiwvd2jfq7ahwge2dr7c@fjcawnco7ssk>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1511:b0:7eb:801f:8645 with SMTP id
- ca18e2360f4ac-7eb801f8ab5mr20939639f.2.1718029639184; Mon, 10 Jun 2024
- 07:27:19 -0700 (PDT)
-Date: Mon, 10 Jun 2024 07:27:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005bad63061a89f2a1@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in bch2_journal_replay
-From: syzbot <syzbot+2c4fcb257ce2b6a29d0e@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ngsytb3begcqgyfc5tiqjqdj6fp7kdeiwvd2jfq7ahwge2dr7c@fjcawnco7ssk>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+On Sat, Jun 08, 2024 at 11:24:37AM +0200, Mateusz Guzik wrote:
+> On Fri, Jun 07, 2024 at 02:10:05PM -0400, Kent Overstreet wrote:
+> > Does the following patch help? I think the hammering on the key cache
+> > lock may be correlated with the key cache being mostly empty (and it
+> > looks like the shrinker code is behaving badly and trying very hard to
+> > free from a mostly empty cache)
+> > 
+> > [snip the patch]
+> 
+> I see you committed the patch along with some other stuff.
+> 
+> I git pulled to 46eb7b6c7420c2313bde44ab8f74f303b042e754 ("bcachefs: add
+> might_sleep() annotations for fsck_err()").
+> 
+> For me the problem is still there.
+> 
+> This time around I populated the fs and *rebooted*, then did walktrees
+> test in a loop. So the first run has 0 state cached.
+> 
+> It looked like this:
+> # while true; do sh walktrees /testfs 20; done
+> 3.17s user 605.22s system 1409% cpu 43.150 total
+> 2.77s user 887.92s system 693% cpu 2:08.34 total
+> 3.05s user 726.20s system 777% cpu 1:33.77 total
+> 3.19s user 600.90s system 1476% cpu 40.904 total
+> 3.10s user 956.80s system 599% cpu 2:40.19 total
+> 3.15s user 575.78s system 1331% cpu 43.464 total
+> 3.30s user 865.48s system 1386% cpu 1:02.64 total
+> 2.79s user 470.09s system 1404% cpu 33.666 total
+> 2.78s user 884.00s system 718% cpu 2:03.36 total
+> 2.95s user 568.63s system 1439% cpu 39.714 total
+> 3.02s user 964.90s system 729% cpu 2:12.72 total
+> 2.95s user 829.68s system 703% cpu 1:58.44 total
+> 2.77s user 597.92s system 1486% cpu 40.403 total
+> 
+> So the time varies wildly and there is tons of off cpu time -- with 20
+> workers eating 100% cpu for the duration it would be 2000%.
+> 
+> I also started seeing splats in dmesg (example at the end of the mail).
 
-syzbot found the following issue on:
+this confirms that the SRCU splats we've been seeing are partly caused
+by this, as I suspected
 
-HEAD commit:    2df0193e62cf Merge tag 'thermal-6.10-rc3' of git://git.ker..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10cd4aba980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9a6ac4277fffe3ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=2c4fcb257ce2b6a29d0e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12750c26980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10697422980000
+> That is to say I would suggest you also leave it running in a loop.
+> Expected setting is that it approaches complete CPU usage for the period
+> and takes in the ballpark of 40s (well shorter on your hw, but you get
+> the idea).
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d73510b726a1/disk-2df0193e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8d9331f8840c/vmlinux-2df0193e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/67ff0539bc3c/bzImage-2df0193e.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/013d86d02bf3/mount_0.gz
+Yeah, I do see it with more iterations.
 
-The issue was bisected to:
+I'm redoing the key cache to get rid of the key cache lock - that solves
+it nicely. If you want to take a look at what I'm working on,
 
-commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Sep 23 22:41:51 2023 +0000
+https://evilpiepirate.org/git/bcachefs.git/log/?h=bcachefs-vfs-inodes-rhashtable
 
-    bcachefs: Ignore unknown mount options
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1246820a980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1146820a980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1646820a980000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2c4fcb257ce2b6a29d0e@syzkaller.appspotmail.com
-Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
-
-bcachefs (loop0): recovering from clean shutdown, journal seq 4755801206503243784
-bcachefs (loop0): alloc_read... done
-bcachefs (loop0): stripes_read... done
-bcachefs (loop0): snapshots_read... done
-bcachefs (loop0): going read-write
-bcachefs (loop0): journal_replay...
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/recovery.c:129!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 PID: 5080 Comm: syz-executor177 Not tainted 6.10.0-rc2-syzkaller-00097-g2df0193e62cf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-RIP: 0010:replay_now_at fs/bcachefs/recovery.c:129 [inline]
-RIP: 0010:bch2_journal_replay+0x133d/0x1360 fs/bcachefs/recovery.c:268
-Code: 89 e6 e8 96 86 d6 ff e8 31 8c 45 07 e8 1c 0b 5e fd 90 0f 0b e8 14 0b 5e fd 90 0f 0b e8 0c 0b 5e fd 90 0f 0b e8 04 0b 5e fd 90 <0f> 0b e8 fc 0a 5e fd 90 0f 0b e8 f4 0a 5e fd 90 0f 0b e8 ec 0a 5e
-RSP: 0018:ffffc90002d6efe0 EFLAGS: 00010293
-RAX: ffffffff84381a8c RBX: 4200000000000009 RCX: ffff888017fa0000
-RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 4200000000000009
-RBP: ffffc90002d6f128 R08: ffffffff84381098 R09: ffffffff84a313ec
-R10: 0000000000000004 R11: ffff888017fa0000 R12: dffffc0000000000
-R13: 1ffff1100e65958f R14: 00000000ffffffff R15: ffff8880732cac78
-FS:  000055555ba40380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000559cbf898ff0 CR3: 00000000200f8000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:182
- bch2_run_recovery_passes+0x19e/0x820 fs/bcachefs/recovery_passes.c:225
- bch2_fs_recovery+0x2370/0x3720 fs/bcachefs/recovery.c:807
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1031
- bch2_fs_open+0xa8d/0xdf0 fs/bcachefs/super.c:2123
- bch2_mount+0x6c0/0x1320 fs/bcachefs/fs.c:1917
- legacy_get_tree+0xee/0x190 fs/fs_context.c:662
- vfs_get_tree+0x90/0x2a0 fs/super.c:1780
- do_new_mount+0x2be/0xb40 fs/namespace.c:3352
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f0a5e7c693a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe9296c7c8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffe9296c7e0 RCX: 00007f0a5e7c693a
-RDX: 0000000020005b00 RSI: 0000000020000000 RDI: 00007ffe9296c7e0
-RBP: 0000000000000004 R08: 00007ffe9296c820 R09: 0000000000005b72
-R10: 0000000003000002 R11: 0000000000000282 R12: 0000000003000002
-R13: 00007ffe9296c820 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:replay_now_at fs/bcachefs/recovery.c:129 [inline]
-RIP: 0010:bch2_journal_replay+0x133d/0x1360 fs/bcachefs/recovery.c:268
-Code: 89 e6 e8 96 86 d6 ff e8 31 8c 45 07 e8 1c 0b 5e fd 90 0f 0b e8 14 0b 5e fd 90 0f 0b e8 0c 0b 5e fd 90 0f 0b e8 04 0b 5e fd 90 <0f> 0b e8 fc 0a 5e fd 90 0f 0b e8 f4 0a 5e fd 90 0f 0b e8 ec 0a 5e
-RSP: 0018:ffffc90002d6efe0 EFLAGS: 00010293
-RAX: ffffffff84381a8c RBX: 4200000000000009 RCX: ffff888017fa0000
-RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 4200000000000009
-RBP: ffffc90002d6f128 R08: ffffffff84381098 R09: ffffffff84a313ec
-R10: 0000000000000004 R11: ffff888017fa0000 R12: dffffc0000000000
-R13: 1ffff1100e65958f R14: 00000000ffffffff R15: ffff8880732cac78
-FS:  000055555ba40380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000559cbf898ff0 CR3: 00000000200f8000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+this is unfinished - I'm going to be switching back to the polling srcu
+interface (so we can allocate from pending frees), and the patch to
+switch vfs inodes to an rhashtable currently breaks writeback - but it's
+much faster.
