@@ -1,97 +1,95 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDBB152178
-	for <linux-bcachefs@vger.kernel.org>; Tue, 11 Jun 2024 08:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238BD176AA9;
+	Tue, 11 Jun 2024 12:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718094448; cv=none; b=Cm12J3jT6FWQf2nw+ydIVlNl3xPD+2ixXFaJs3nyWRQCL1P5qesV+6F1vckvBDXHx6dFpqZqtIL96dD07Q2CsCoW5WFYue9RcA8AVJvcdFbx/BK1l/Cog2LMfm9MywXBraFNFrUqQLWBQeBjHbZ0C0/z3EIwdo9AGvPkdDEsNCY=
+	t=1718107597; cv=none; b=Fq/lvyeeMlT0oECKGgWgbfVctplAjYNrcdswrk1aLQkMXzC/x6aYbC5WFU3NdKmzSjxI25gO0dyXwOU9BXLeViMslA+AOyx1VeG8KxTr48A0yvA/WW3tsEjcjiY41y4V7OQw6gy0oaqa+CB8x/mu79px6UHn13rri5YaMdejRAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718094448; c=relaxed/simple;
-	bh=4846dXCi+LLa+oRqvFIzMnMlIKpDWNszKOj8xaC2DZY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YS1AdLMzaXJOow+LHu4y6gskPvrpmuuKGAf3HX00iQYxFfkEjNbutLtPcW+8TBGkWTp2kJRz9lNQM8P/ytrtaVaPcubs+SY6qD8r+K7GAWyhKlSAlWGofl4NnWqr1hgJSNuvKLW3VQYsN1RWcLRaeR8eAaJ++k2/zF4MEbmXke4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-374b2adee08so54652025ab.1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 11 Jun 2024 01:27:26 -0700 (PDT)
+	s=arc-20240116; t=1718107597; c=relaxed/simple;
+	bh=mVCI+A6plNF8BlzT3vnPrJSKKFzlHUVQGh2G4msiTxg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e4GvBI1w0uBLZclJfQp4qdaO32D1i9XaNXkOx5VC0ays9L5KNkEhwQuU6bl7OyXaC3VKLrJ/pul9nSozmVE1fUCz5Pnm71H6LiKs/NMtU0cG12XXIdWIjB4JSmEdeIkg5pt9+8YDnniT2BDhpZV4pfOfJqxBCFFiN9hIRSfZ6K0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H+EgJgZn; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H+EgJgZn"
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-42189d3c7efso21747045e9.2;
+        Tue, 11 Jun 2024 05:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718107594; x=1718712394; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=idFHbfZ1MRRrV9H1nBOmJ4Ddmhdw7U8lBB3oRBpJaoo=;
+        b=H+EgJgZnkDycbTdlSel3b/r1h12f7b+k01zwQjkJruWzQ8YxqfMXnnVqmb9TzL3F/S
+         pOtaKtXSE8NYD08CCVq5qO/oCYMlVlGLn72S9TZ8Ag7DVTF8Xx9vv4j1q37Enffbczvq
+         RpzmqqqT3asJHUBBPzS/NxPXUhh1op83WG2sNiZljq60HR+L1/PTPsKnj5Ep5k3HELhA
+         NzTagKsGdgBq6/5wfI4EI04aQMSzYjy2v+BTceKWFe9cWAnhxEN/YxlPv9wuH2+bSOWT
+         5ank00x8PQNWTZ2yKiY7o3ngX7NfeTttJU1TpyVQYrdvI6v3PsyVyR1xAsvJN+ZyWCr4
+         u60A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718094446; x=1718699246;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i5XKnkHLsIoqOGAS3OERR6bhoari0fo/c4MqVHhGMVA=;
-        b=EZQlGU01XZWbIHQtMvifcs0i64xDx/L01rA4JSAJDU/NDjs7A0ZSfbTxbNdpPQihCO
-         ustNOYwo/e9ZnpU958zh/p+n6qO5vMNX8y1hktY9yeKzYaSTVyIsZNAbx6x/sqH3VAzg
-         0P93z6+gsUpKXl1dxjrZlInI+iqp4iXIl6GVyicrq0fbnGUy0IArnG6YZj2FcnwpEVaJ
-         fr+7L1P5ETIDd1sYyno3CGdmwy9r5QSxA8Y9FbAqMTe7n5hgdxmLyo4cG/201kNnakVT
-         aCQtJYuB6N4+pTxOmP3lGYL+DV2ceNr6kNiUnDBDnwEcV5qXTnt6lVXo7xT/neyMbHK+
-         CVeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/Xh2jBQ/IllL/6t8v7gzMhsSUzzbIjT1ArWCS6fLnE+39VtMtES8jn0oaIUx8nvTwMo5Lw4XWdT32OLTiMaj3OMkVNHu/FQ3zPp6uJyg=
-X-Gm-Message-State: AOJu0YxE5Wdkg+fwDYitO5Ap+mU+q9B2ZxRI3g9PjsUshEf9mTe3f2mp
-	HJBKlafVyzvIpFzxG4SxiRYAW4ZuiJim5oQ20Cay0zCvTS7cFULdzOOrync1oFWm0AXt2uR5+Ng
-	/O+KdBdsd48Knb7BIg9cl6WCQDw2CXkfHWFAuyFfOHxoMJhvWMJtlBm4=
-X-Google-Smtp-Source: AGHT+IHNQFjX7nXtcEGVrCfUjJQTGAwh53HEqyZkAYPKF01NcC8BWO2SzrSRycYpJoEOKitThluVmUtW2DwOM/ljmxzKGAzvXeKU
+        d=1e100.net; s=20230601; t=1718107594; x=1718712394;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=idFHbfZ1MRRrV9H1nBOmJ4Ddmhdw7U8lBB3oRBpJaoo=;
+        b=dEhlFzBO9EHYulldK4NOYIYJOykYCf2IuE9Yy0pL2MYEcmtl9kqtcfD2oX4YlalquE
+         toZhjrhaCX6h0dpvA4luO2II4d/OjEUubU4ULWhKaNUyblIASLoghwxOXDSCbiNuqPVq
+         HlbE8Aw2LGiexV0vPVg03zOjgaBP33XEWB5uW7drlzhtDtV8FunbLLdEKE/Q4A8/GFpi
+         GMATztu/pMpOo1lJcXh1p2xu25bCUwLS7GDLbQRyxMEjX6l7DW8H6Nv3pi+rWlTOFp02
+         WIiy0zcmODqggFwJW2Tiv6on8EgLC8rmg2pOZO1xMR3ReldKs0qMJ4GFVkSAMHFZQn+3
+         9VAw==
+X-Forwarded-Encrypted: i=1; AJvYcCWaTC1Xqpa8f+WwZADkQmA3DSr0oFutTJHo/jqfpeElSzJMcmVl2KZxqyj5P7VmaDiRr3j6py5JlXAYmVvvecBBKSfszAzZm4WyQXQh1rzui8w5gRp7yHkErOVifmZ9nb3vYHpWD5QIh2YTcUGBGSeEm9jjHxByCaKNNO6um5Sn7ElRchgFBbUTsGKljfBXG/R2m6kb5N71TAYI358xdRbNjaPaxbg4
+X-Gm-Message-State: AOJu0YxqWCeLujQvLbi3fXheS+bLh8js39gzDF/aCMU6JfRKGiFn60QT
+	z98Pj/0GUy8V5grlxlL8PTUVDgwbVjBq0LivIxsxEd+iRo9ZC9By
+X-Google-Smtp-Source: AGHT+IEC68uiBdXVZmND7KxbllrA4m4C83/6AJ0FWp8MRWLD10K7Jrw8xbrY7XaD1BX2Rx123rEYCg==
+X-Received: by 2002:a05:600c:1c10:b0:420:78f:3f9b with SMTP id 5b1f17b1804b1-42164a4472amr127843235e9.37.1718107594369;
+        Tue, 11 Jun 2024 05:06:34 -0700 (PDT)
+Received: from f.. (cst-prg-65-249.cust.vodafone.cz. [46.135.65.249])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4215814f141sm209315785e9.42.2024.06.11.05.06.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jun 2024 05:06:33 -0700 (PDT)
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	kent.overstreet@linux.dev,
+	linux-xfs@vger.kernel.org,
+	david@fromorbit.com,
+	Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH v2 0/4] inode_init_always zeroing i_state
+Date: Tue, 11 Jun 2024 14:06:22 +0200
+Message-ID: <20240611120626.513952-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:214a:b0:373:8d04:28b2 with SMTP id
- e9e14a558f8ab-375b30d379dmr1024555ab.0.1718094445998; Tue, 11 Jun 2024
- 01:27:25 -0700 (PDT)
-Date: Tue, 11 Jun 2024 01:27:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002502d7061a9909cf@google.com>
-Subject: [syzbot] Monthly bcachefs report (Jun 2024)
-From: syzbot <syzbot+liste26a67e46fe73e904149@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello bcachefs maintainers/developers,
+As requested by Jan this is a 4-part series.
 
-This is a 31-day syzbot report for the bcachefs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bcachefs
+I diffed this against fs-next + my inode hash patch v3 as it adds one
+i_state = 0 case. Should that hash thing not be accepted this bit is
+trivially droppable from the patch.
 
-During the period, 37 new issues were detected and 15 were fixed.
-In total, 59 issues are still open and 30 have been fixed so far.
+Mateusz Guzik (4):
+  xfs: preserve i_state around inode_init_always in xfs_reinit_inode
+  vfs: partially sanitize i_state zeroing on inode creation
+  xfs: remove now spurious i_state initialization in xfs_inode_alloc
+  bcachefs: remove now spurious i_state initialization
 
-Some of the still happening issues:
+ fs/bcachefs/fs.c    |  1 -
+ fs/inode.c          | 13 +++----------
+ fs/xfs/xfs_icache.c |  5 +++--
+ 3 files changed, 6 insertions(+), 13 deletions(-)
 
-Ref  Crashes Repro Title
-<1>  2800    No    WARNING in cleanup_srcu_struct (4)
-                   https://syzkaller.appspot.com/bug?extid=6cf577c8ed4e23fe436b
-<2>  1722    Yes   WARNING in bch2_trans_srcu_unlock
-                   https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
-<3>  1620    Yes   INFO: task hung in __closure_sync
-                   https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
-<4>  1070    Yes   KMSAN: uninit-value in bch2_inode_v3_invalid
-                   https://syzkaller.appspot.com/bug?extid=d3803303d5b280e059d8
-<5>  578     Yes   BUG: MAX_LOCK_DEPTH too low! (4)
-                   https://syzkaller.appspot.com/bug?extid=46405fa9afa07e6c8c40
-<6>  221     Yes   kernel BUG in gc_bucket
-                   https://syzkaller.appspot.com/bug?extid=246b47da27f8e7e7d6fb
-<7>  187     No    INFO: task hung in bch2_readahead
-                   https://syzkaller.appspot.com/bug?extid=a6060114362257e9798a
-<8>  185     Yes   KMSAN: uninit-value in bch2_alloc_v4_invalid
-                   https://syzkaller.appspot.com/bug?extid=3b2968fa4953885dd66a
-<9>  148     Yes   kernel BUG in bch2_fs_journal_stop
-                   https://syzkaller.appspot.com/bug?extid=10b936c5eaee2819b49b
-<10> 104     Yes   INFO: task hung in bch2_fs_read_only_work
-                   https://syzkaller.appspot.com/bug?extid=8996d8f176cf946ef641
+-- 
+2.43.0
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
