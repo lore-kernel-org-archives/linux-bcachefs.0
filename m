@@ -1,187 +1,94 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E3516D9C6;
-	Wed, 12 Jun 2024 09:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D367216F28F;
+	Wed, 12 Jun 2024 12:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718184427; cv=none; b=ir2g/KHCeSuZx/GGVHGGiKltb8RDM8PazXGOrXpXUM8qpq1Kdb4vo9HpqA+rOUR3O08AWE3Vu2AqI3T42S9LRbsYj0lEUqzjqkKRBjcfh0exNupyeultlIl1vv0KKOw1ONyJcs30OzM+Ak/R8y8vv24yCkatUKkuGz5qRk6yoGk=
+	t=1718194649; cv=none; b=LihkEOpzhWrI9y5xoxKNy7lawpkQNxTH3VoZaOUXDq25tvS0b7N+dcmMdgjGVaBsSPL5fEy9+ezrfhmRMWR+uunQeAVVgkG5dmMjKWubUFSHEClhbklsnQ1/KNbxmVI5ocBW6Spu9IaXZeqQdxPLIDFhagAMDrlRRzRtJr5J2ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718184427; c=relaxed/simple;
-	bh=Xu299l6Ta8mKb4nVWFkojbWgWy2H6Gu131pvTyWxq+4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qVaAu/44apXQVu5dIJtYFYwKA689zAM+CDVm7poHWVLlAErZTTj6gbrKCsusT+TXA0rBaHquYrJKNErHeQBFcy+jBjcginyyUJaOTS4JBjdoCwrphFUW0oFkRnjjXc4gLYiG8uV1GFijUAifZ+pkq1TCMkf8ZWBRl8kBpxzvAAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0eUc1FPJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tdrX+aHq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q0YNd/FY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=c0RJ1UZB; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1718194649; c=relaxed/simple;
+	bh=xEZhoVghiD4MH1Y9FepPtZMXniLWLXIG9q/MjDeoGZQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UxqqnmEFZXyCbP5AKqnUJV2BlIaUXwOfRAG6bqsQMgvUStD1u8YlG3vbX0CheMlr1rTbRmGD03gfqcAE7Lsi5+UEh/WVxgbN+vLVvMY6kpLjR+D9Odf0OazStCWnsIDKXbGlsE3UucdDmlas85q+/RKBHL9DdeFeMecTZliL04g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CZyReB3q; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0eUc1FPJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tdrX+aHq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q0YNd/FY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="c0RJ1UZB"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D6F6D34229;
-	Wed, 12 Jun 2024 09:27:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718184424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gYE6wHsRVZXT/1LfXcwYHZ1w+B8WavL0Dr06xOj6qzs=;
-	b=0eUc1FPJGOj6WoK8oXDEims9dtSdfB4tHJ5NmUgKoG8Qk5osNOiNBK4F5cV+TmttLXb4Le
-	dSk8mqhBYbv0OmvhjPBHY5DtIvxZssoxXjuPs9jwHagI8UHe9BTgkeorPQM9J27DJjT4xR
-	ISU5w32fcbn3R1NIJiU0PE/dzFciU9c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718184424;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gYE6wHsRVZXT/1LfXcwYHZ1w+B8WavL0Dr06xOj6qzs=;
-	b=tdrX+aHqkWE78c9fv8+pVzfCsTeAvy1/VPvtHh2JfTbqVh++eMNuR3bhVjAwIokylspKpg
-	oz5+VuLTTEmBJKAg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="Q0YNd/FY";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=c0RJ1UZB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718184423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gYE6wHsRVZXT/1LfXcwYHZ1w+B8WavL0Dr06xOj6qzs=;
-	b=Q0YNd/FYoLuhXfhES+rir1Y5nkpZ+fg5wrgqDat3NF5TBj6VntjYSKOTCXHBycemuiUWNz
-	r8UUAjA0yW9CdZQZlNg0oljC/AjWE3uki0OHp7r9vzkPKkjtK+Jf0tDgWvImkCVbUvSDkV
-	WNvzIUlSJWPiwlCdfmlwK+Ugx7r6YGo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718184423;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gYE6wHsRVZXT/1LfXcwYHZ1w+B8WavL0Dr06xOj6qzs=;
-	b=c0RJ1UZBQdVp7g62ngUI5LbfCq5ofkcHpZv0C+sCOn75I3cRG505lzvXrExkE9jo1oV1Gu
-	1gSh4weIny6JyqBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C2050137DF;
-	Wed, 12 Jun 2024 09:27:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ZRUcL+dpaWaCbQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 12 Jun 2024 09:27:03 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 847DEA0884; Wed, 12 Jun 2024 11:27:03 +0200 (CEST)
-Date: Wed, 12 Jun 2024 11:27:03 +0200
-From: Jan Kara <jack@suse.cz>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CZyReB3q"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E577C3277B;
+	Wed, 12 Jun 2024 12:17:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718194648;
+	bh=xEZhoVghiD4MH1Y9FepPtZMXniLWLXIG9q/MjDeoGZQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=CZyReB3qwQXWHs1+oOyB2WXLb/ZstQbO/W1VkzOWQsJLgS/GuaMPFL4Wx3ewbZ4md
+	 LXbHilcnlUfNxBpAYcni8ixfllfUMg2QH2LBatg1HMzTvfZECY4SgZyvIO+N3T8Tsu
+	 KGmkJkYZJaapoCSSbqKaCr0+SQNXaMYCm0fjMVLjZY6AF8B47JEqDLmzIKhAjOYcnS
+	 GIcVVMTzGgGBjJcwWve3gBuJoNTucXXgwu9WleuO66eHb/+DK5e9wKbRJPC3xj8Jg1
+	 p9HaPNFKk7+cdKpn4VP9MjOhqnZGDmtSE8mrqo/nJCJ+2rnNeh48TsLefN4LO+UB1z
+	 seGfSDWUfWSAw==
+From: Christian Brauner <brauner@kernel.org>
 To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
-	linux-xfs@vger.kernel.org, david@fromorbit.com
-Subject: Re: [PATCH v2 2/4] vfs: partially sanitize i_state zeroing on inode
- creation
-Message-ID: <20240612092703.u5ialfzz74pfnafk@quack3>
+Cc: Christian Brauner <brauner@kernel.org>,
+	viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	kent.overstreet@linux.dev,
+	linux-xfs@vger.kernel.org,
+	david@fromorbit.com
+Subject: Re: [PATCH v2 0/4] inode_init_always zeroing i_state
+Date: Wed, 12 Jun 2024 14:17:20 +0200
+Message-ID: <20240612-mithelfen-kursziel-780e238b5243@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240611120626.513952-1-mjguzik@gmail.com>
 References: <20240611120626.513952-1-mjguzik@gmail.com>
- <20240611120626.513952-3-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240611120626.513952-3-mjguzik@gmail.com>
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmail.com];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,suse.cz:dkim];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: D6F6D34229
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Spam-Level: 
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1749; i=brauner@kernel.org; h=from:subject:message-id; bh=xEZhoVghiD4MH1Y9FepPtZMXniLWLXIG9q/MjDeoGZQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRlTryoNjvlw9vzXoZPb7bku+7TWn5nhzw7h01A6u+j7 DVsGWt/dJSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEyk5QYjw77IJr1CtXa5aocb TwM2hB4TttqgZ2g5beWhog3fZb5I/GZkaPll8j9vU6yt1p+Yy4Yf5vz382BxPDBl3vP0o+qT1+5 U5gEA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Tue 11-06-24 14:06:24, Mateusz Guzik wrote:
-> new_inode used to have the following:
-> 	spin_lock(&inode_lock);
-> 	inodes_stat.nr_inodes++;
-> 	list_add(&inode->i_list, &inode_in_use);
-> 	list_add(&inode->i_sb_list, &sb->s_inodes);
-> 	inode->i_ino = ++last_ino;
-> 	inode->i_state = 0;
-> 	spin_unlock(&inode_lock);
+On Tue, 11 Jun 2024 14:06:22 +0200, Mateusz Guzik wrote:
+> As requested by Jan this is a 4-part series.
 > 
-> over time things disappeared, got moved around or got replaced (global
-> inode lock with a per-inode lock), eventually this got reduced to:
-> 	spin_lock(&inode->i_lock);
-> 	inode->i_state = 0;
-> 	spin_unlock(&inode->i_lock);
+> I diffed this against fs-next + my inode hash patch v3 as it adds one
+> i_state = 0 case. Should that hash thing not be accepted this bit is
+> trivially droppable from the patch.
 > 
-> But the lock acquire here does not synchronize against anyone.
+> Mateusz Guzik (4):
+>   xfs: preserve i_state around inode_init_always in xfs_reinit_inode
+>   vfs: partially sanitize i_state zeroing on inode creation
+>   xfs: remove now spurious i_state initialization in xfs_inode_alloc
+>   bcachefs: remove now spurious i_state initialization
 > 
-> Additionally iget5_locked performs i_state = 0 assignment without any
-> locks to begin with, the two combined look confusing at best.
-> 
-> It looks like the current state is a leftover which was not cleaned up.
-> 
-> Ideally it would be an invariant that i_state == 0 to begin with, but
-> achieving that would require dealing with all filesystem alloc handlers
-> one by one.
-> 
-> In the meantime drop the misleading locking and move i_state zeroing to
-> inode_init_always so that others don't need to deal with it by hand.
-> 
-> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+> [...]
 
-Just one nit below:
+Applied to the vfs.inode.rcu branch of the vfs/vfs.git tree.
+Patches in the vfs.inode.rcu branch should appear in linux-next soon.
 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 3a4c67bfe085..8f05d79de01d 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -231,6 +231,8 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
->  
->  	if (unlikely(security_inode_alloc(inode)))
->  		return -ENOMEM;
-> +
-> +	inode->i_state = 0;
->  	this_cpu_inc(nr_inodes);
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-This would be more logical above where inode content is initialized (and
-less errorprone just in case security_inode_alloc() grows dependency on
-i_state value) - like just after:
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-	inode->i_flags = 0;
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-With that fixed feel free to add:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.inode.rcu
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+[1/4] xfs: preserve i_state around inode_init_always in xfs_reinit_inode
+      https://git.kernel.org/vfs/vfs/c/f6f496712632
+[2/4] vfs: partially sanitize i_state zeroing on inode creation
+      https://git.kernel.org/vfs/vfs/c/1fddfb5628e4
+[3/4] xfs: remove now spurious i_state initialization in xfs_inode_alloc
+      https://git.kernel.org/vfs/vfs/c/c0a6bf1d02d8
+[4/4] bcachefs: remove now spurious i_state initialization
+      https://git.kernel.org/vfs/vfs/c/9ed6c60e6053
