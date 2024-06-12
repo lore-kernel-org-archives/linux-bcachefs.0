@@ -1,141 +1,187 @@
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE39612D1FE
-	for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jun 2024 07:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E3516D9C6;
+	Wed, 12 Jun 2024 09:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718175863; cv=none; b=uZc6BHVgssIiOo1Bu19f78D3dK0gRSvgg89MzOeZsExFTjjB8q9VkNwC+4e5Cv1D2TT8KxfRNwrLwD8Z7uXEuFxUIrvcvbWoxKoPYqehn4BAFnQXDJv8U1huBOnmDpSfXk3P8ItnzGIrUYD3EdBewpQylu0veTjexQw7BVpuj14=
+	t=1718184427; cv=none; b=ir2g/KHCeSuZx/GGVHGGiKltb8RDM8PazXGOrXpXUM8qpq1Kdb4vo9HpqA+rOUR3O08AWE3Vu2AqI3T42S9LRbsYj0lEUqzjqkKRBjcfh0exNupyeultlIl1vv0KKOw1ONyJcs30OzM+Ak/R8y8vv24yCkatUKkuGz5qRk6yoGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718175863; c=relaxed/simple;
-	bh=zCOfxUMNbTimxoNGyJQ5cLuOQZScXflSS8KPyACMt5c=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=nLEKEecwRmUB4+URSjiiPmdwGVDuZOLYrjZhqaXvTgJxGzDbiY+2QehS+wBDjRA5sBiK3/Q7AjwS+G5iSYnXM7gvWexTq7RdBB6vbSGdcy74d2kWntkZu7ZatPZY+GVITsmiBc2MhXqy+QOOuf/vlvOmjxIzqlfOkt7RrpKpYVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-7eafdb25dbbso701014539f.3
-        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Jun 2024 00:04:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718175861; x=1718780661;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tVP6kzcT3WzYOFPmgYeq/LYhwLDdwDXCf8wJa1aYRy0=;
-        b=VEcvGdnaHmfClERY+qY1WPVEiv5hVxCuoVKJzz3Si1NBuhmjUfD27Xwpuamw7FmcOh
-         McxDaJZGdJNoRK0SCBmFROdiSkw7iUWkeKuWqWHrn+4rS7QYgyEMaDqGVHdG+e8/pyIa
-         XB6+wrOTMhp/Bhud9Ooqp+1ZhsTHj/BNNKcHsNe4O6V28e9bc8Fy6d02omq4KDhYoJeg
-         XGZCj9ZF1DT9yHGGnCzbfUqlqU9zcfuTxYCPJBUZfaONsVQWsS4Ju1HnaZvoUSgOUKyB
-         iXyUcc6vy3+QA6Pa9kKT6qZis8VcCvPoWkHHz/LjrKVYl9BIPNPeIyeLQpREoG/PzUKA
-         OGaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVTqK0NDdyEHG+iC/55KJFDtNqJc9trgIB3iRQVd3+jdZT/OBi98SxsyXxepnFaM8hkl10ylJVkG/8UCZ+BMEz6s9dVAh3xaHExjRb8PjY=
-X-Gm-Message-State: AOJu0Yw0nEFnHCckzkpZRueFlNeHPdujVbrD9QhN2ilUKKnc6HXNV5Ad
-	HUpzHroShZuyI0vvHzs+9JNf5c+FI1WfDQ25PBCRWHYGSYBTJEdbBhW8FLT50T0Q/PRpVD8Qgbw
-	JTV+abS9a9ALGTrqKi/rzx9fYxfDmKmyXPFA6A9WIOruARZJZSR5EOCU=
-X-Google-Smtp-Source: AGHT+IE1L4UGLI+rRwggB1Q4T+ACzMUx5Z8S+02UGk0btw7KxMtFtHCjU1E3BNcomnebOuTvopAinr/yk0o71hsY1dcSoVdo+NYK
+	s=arc-20240116; t=1718184427; c=relaxed/simple;
+	bh=Xu299l6Ta8mKb4nVWFkojbWgWy2H6Gu131pvTyWxq+4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qVaAu/44apXQVu5dIJtYFYwKA689zAM+CDVm7poHWVLlAErZTTj6gbrKCsusT+TXA0rBaHquYrJKNErHeQBFcy+jBjcginyyUJaOTS4JBjdoCwrphFUW0oFkRnjjXc4gLYiG8uV1GFijUAifZ+pkq1TCMkf8ZWBRl8kBpxzvAAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0eUc1FPJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tdrX+aHq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q0YNd/FY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=c0RJ1UZB; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0eUc1FPJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tdrX+aHq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q0YNd/FY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="c0RJ1UZB"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D6F6D34229;
+	Wed, 12 Jun 2024 09:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718184424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gYE6wHsRVZXT/1LfXcwYHZ1w+B8WavL0Dr06xOj6qzs=;
+	b=0eUc1FPJGOj6WoK8oXDEims9dtSdfB4tHJ5NmUgKoG8Qk5osNOiNBK4F5cV+TmttLXb4Le
+	dSk8mqhBYbv0OmvhjPBHY5DtIvxZssoxXjuPs9jwHagI8UHe9BTgkeorPQM9J27DJjT4xR
+	ISU5w32fcbn3R1NIJiU0PE/dzFciU9c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718184424;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gYE6wHsRVZXT/1LfXcwYHZ1w+B8WavL0Dr06xOj6qzs=;
+	b=tdrX+aHqkWE78c9fv8+pVzfCsTeAvy1/VPvtHh2JfTbqVh++eMNuR3bhVjAwIokylspKpg
+	oz5+VuLTTEmBJKAg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="Q0YNd/FY";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=c0RJ1UZB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718184423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gYE6wHsRVZXT/1LfXcwYHZ1w+B8WavL0Dr06xOj6qzs=;
+	b=Q0YNd/FYoLuhXfhES+rir1Y5nkpZ+fg5wrgqDat3NF5TBj6VntjYSKOTCXHBycemuiUWNz
+	r8UUAjA0yW9CdZQZlNg0oljC/AjWE3uki0OHp7r9vzkPKkjtK+Jf0tDgWvImkCVbUvSDkV
+	WNvzIUlSJWPiwlCdfmlwK+Ugx7r6YGo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718184423;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gYE6wHsRVZXT/1LfXcwYHZ1w+B8WavL0Dr06xOj6qzs=;
+	b=c0RJ1UZBQdVp7g62ngUI5LbfCq5ofkcHpZv0C+sCOn75I3cRG505lzvXrExkE9jo1oV1Gu
+	1gSh4weIny6JyqBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C2050137DF;
+	Wed, 12 Jun 2024 09:27:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZRUcL+dpaWaCbQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 12 Jun 2024 09:27:03 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 847DEA0884; Wed, 12 Jun 2024 11:27:03 +0200 (CEST)
+Date: Wed, 12 Jun 2024 11:27:03 +0200
+From: Jan Kara <jack@suse.cz>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
+	linux-xfs@vger.kernel.org, david@fromorbit.com
+Subject: Re: [PATCH v2 2/4] vfs: partially sanitize i_state zeroing on inode
+ creation
+Message-ID: <20240612092703.u5ialfzz74pfnafk@quack3>
+References: <20240611120626.513952-1-mjguzik@gmail.com>
+ <20240611120626.513952-3-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8718:b0:488:d668:d201 with SMTP id
- 8926c6da1cb9f-4b93ec0e1bamr66869173.1.1718175861100; Wed, 12 Jun 2024
- 00:04:21 -0700 (PDT)
-Date: Wed, 12 Jun 2024 00:04:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dce2f1061aabfdfd@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_path_level_init
-From: syzbot <syzbot+dd828a1b596932a42e10@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240611120626.513952-3-mjguzik@gmail.com>
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_TO(0.00)[gmail.com];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,suse.cz:dkim];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: D6F6D34229
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Spam-Level: 
 
-Hello,
+On Tue 11-06-24 14:06:24, Mateusz Guzik wrote:
+> new_inode used to have the following:
+> 	spin_lock(&inode_lock);
+> 	inodes_stat.nr_inodes++;
+> 	list_add(&inode->i_list, &inode_in_use);
+> 	list_add(&inode->i_sb_list, &sb->s_inodes);
+> 	inode->i_ino = ++last_ino;
+> 	inode->i_state = 0;
+> 	spin_unlock(&inode_lock);
+> 
+> over time things disappeared, got moved around or got replaced (global
+> inode lock with a per-inode lock), eventually this got reduced to:
+> 	spin_lock(&inode->i_lock);
+> 	inode->i_state = 0;
+> 	spin_unlock(&inode->i_lock);
+> 
+> But the lock acquire here does not synchronize against anyone.
+> 
+> Additionally iget5_locked performs i_state = 0 assignment without any
+> locks to begin with, the two combined look confusing at best.
+> 
+> It looks like the current state is a leftover which was not cleaned up.
+> 
+> Ideally it would be an invariant that i_state == 0 to begin with, but
+> achieving that would require dealing with all filesystem alloc handlers
+> one by one.
+> 
+> In the meantime drop the misleading locking and move i_state zeroing to
+> inode_init_always so that others don't need to deal with it by hand.
+> 
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
 
-syzbot found the following issue on:
+Just one nit below:
 
-HEAD commit:    8867bbd4a056 mm: arm64: Fix the out-of-bounds issue in con..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1749a2e2980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3b4350cf56c61c80
-dashboard link: https://syzkaller.appspot.com/bug?extid=dd828a1b596932a42e10
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1206d55a980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e839ac980000
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 3a4c67bfe085..8f05d79de01d 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -231,6 +231,8 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
+>  
+>  	if (unlikely(security_inode_alloc(inode)))
+>  		return -ENOMEM;
+> +
+> +	inode->i_state = 0;
+>  	this_cpu_inc(nr_inodes);
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6ea21f50498b/disk-8867bbd4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e2fed09364aa/vmlinux-8867bbd4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4860173c7a18/Image-8867bbd4.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/9f1aae1e19b4/mount_0.gz
+This would be more logical above where inode content is initialized (and
+less errorprone just in case security_inode_alloc() grows dependency on
+i_state value) - like just after:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dd828a1b596932a42e10@syzkaller.appspotmail.com
+	inode->i_flags = 0;
 
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/btree_iter.c:645!
-Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 27 Comm: kworker/1:1 Tainted: G        W          6.10.0-rc2-syzkaller-g8867bbd4a056 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-Workqueue: bcachefs_write_ref bch2_do_invalidates_work
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : bch2_btree_path_level_init+0x820/0x83c fs/bcachefs/btree_iter.c:113
-lr : btree_path_pos_in_node fs/bcachefs/btree_iter.c:113 [inline]
-lr : bch2_btree_path_level_init+0x820/0x83c fs/bcachefs/btree_iter.c:645
-sp : ffff800093f06d30
-x29: ffff800093f06d40 x28: dfff800000000000 x27: 0000000000000000
-x26: 0000000000000000 x25: 0000000000008000 x24: 0000000000000000
-x23: 0000000000000000 x22: 0000000000000000 x21: ffff0000d4718234
-x20: ffff0000d8597800 x19: ffff0000d4718230 x18: ffff800093f079d4
-x17: 000000000000cd7d x16: ffff80008af156e8 x15: ffff7000127e0d94
-x14: ffff80008eff0558 x13: dfff800000000000 x12: 00000000e50ce57d
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : ffff0000c1b7dac0 x7 : ffff80008278cf60 x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : ffff0000d8597800 x1 : 0000000000008000 x0 : 0000000000000000
-Call trace:
- btree_path_pos_in_node fs/bcachefs/btree_iter.c:113 [inline]
- bch2_btree_path_level_init+0x820/0x83c fs/bcachefs/btree_iter.c:645
- btree_path_lock_root fs/bcachefs/btree_iter.c:783 [inline]
- bch2_btree_path_traverse_one+0xd84/0x285c fs/bcachefs/btree_iter.c:1182
- bch2_btree_path_traverse fs/bcachefs/btree_iter.h:229 [inline]
- __bch2_btree_iter_peek fs/bcachefs/btree_iter.c:2185 [inline]
- bch2_btree_iter_peek_upto+0xbd8/0x56e4 fs/bcachefs/btree_iter.c:2285
- bch2_btree_iter_peek_upto_type fs/bcachefs/btree_iter.h:641 [inline]
- bch2_do_invalidates_work+0x454/0x249c fs/bcachefs/alloc_background.c:2010
- process_one_work+0x7b0/0x15e8 kernel/workqueue.c:3231
- process_scheduled_works kernel/workqueue.c:3312 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:3393
- kthread+0x288/0x310 kernel/kthread.c:389
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-Code: d4210000 9777e81c d4210000 9777e81a (d4210000) 
----[ end trace 0000000000000000 ]---
+With that fixed feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
