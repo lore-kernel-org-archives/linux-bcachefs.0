@@ -1,105 +1,68 @@
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97181474C6
-	for <linux-bcachefs@vger.kernel.org>; Fri, 14 Jun 2024 13:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF541EAF0;
+	Fri, 14 Jun 2024 14:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718371465; cv=none; b=EwA4NYBxFkaaLd/KuDATgyl23dNzcRpoucSHbCM8977o1XDOpw0jmNQLU4R4+UojbDs+YqV6iac3QH+HELlWSHPRDsEaPIM1TikfhWrORqcsXIgWxAsx7+6ew0nBexZBVNnAg8pz8LmrWqjtqGLfn5GsYmo6IEo81S4J/Sk8OiI=
+	t=1718375791; cv=none; b=r5oxJQB0/DHu+xN6Lv/JLm2yzbX4MNPCJYIMEryXmjDe8802DVpQ2f898Q0tP2Q6iJ6dxvJv5lv5BpAcfCExsyJ/eCNSf5bWqs0vcHrCHr77n3t3PjHpsDb8KzF0OG8SboU9THsSbG5RwP2a90pcGEBNVIQ4qtlCE+O8hhab2CE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718371465; c=relaxed/simple;
-	bh=zD2HX9Z/cYM56zTCmJKCKii1qWx4gfK4UdglL314bL8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oiGouMNAtH8kMKrMen7DlTCApBvOLfBZRPyDy7dVeoFbZFwl8yjvfvLC3oM8kJNWW9w2r+d9fDBPFsAS/JCcsoYENsDpshd/gkQwrUu2R6odktIHg92ZADqFBfZmhhlL9mQbLzrHoO3zX6u6ddvsvmwHrOp/dYFagPvxmjD/UiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nGQTLpNj; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1718375791; c=relaxed/simple;
+	bh=Zoj/dT5eLtnE7XO/yRCaT4Lj+WnWxVs4b53STnf+ekA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NoKsmXgCtY+6oE64/8SUjokzBDBYOLgkOq1S0K9HOe0aswvzoMHKDs7/qqhOpxqEhACcspzrYgU9ROBBY7rsBqy6k9cDLELGiPuoOhYO8yPBHsg2JIOtZqkX9BowLQXQxQt7sWDCWxMlx7uCDFZ/HZWQbhkvgpNIXdDSzSLO11U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=H6zHWbY/; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nGQTLpNj"
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-52bc121fb1eso2689569e87.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 14 Jun 2024 06:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718371462; x=1718976262; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u1soSqPSQajpbLtai850fWW/qzPCEQEDJjaa9C++4mQ=;
-        b=nGQTLpNj7EpggRTr69fR5k4PVQEFXTqI2VX8mRt96fxUpt0RIQRHNGXW8HQX+XTlDD
-         C4s6xP6HDfN0H4BHcBhMMwlG1kZBNAZTxyJpkcp3Oi646ub21aun2/cOqfYRAqyY7BFV
-         rXq+G/zncx5HSLr/xRFnpt4bd1Ve39JOyasDgcubYv33/yqEu+LoG5bvovlmRcQgVTjz
-         VYDhN1FeimDOlNDWxP069W1NRBgPN9evBNt9i0HpUwOAMl7NIbDB42SwR/Aon2EPuRV7
-         467Ycohw5O6xVkoLcygwEsoyXAWcIhD9NshM4kP8WVhQNTHeqANLtGpERg668AJnBOnK
-         17LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718371462; x=1718976262;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u1soSqPSQajpbLtai850fWW/qzPCEQEDJjaa9C++4mQ=;
-        b=gr4kq9ip5jVUGvVijxORxYyKsFPm8x+SQAQm9gGpDe7N+VXOzhlU6cMj3WHFE5mUb3
-         Qg3cLQbIZ2wrzeUBE+Iu3Gc7xrZ82zzNITtHolJkyHhgJCpS00tTIxt3XCAqgr5XHGIY
-         myqkZLj8IT5fePiHRNp9VYlA5PIATeSpQIxZtnPI5HsbVV0fWHXtOMihgQ5BHHGLoUFB
-         zttvGhIsgdaJ8YbmCYYPYe0g3MjSW963U3tH1RdBphWSN/cvwmq7LKcYIX38VPf4qmlD
-         8/yS+E7vgqvkG32DE00sk/nnkE6gPrqwNnzqhjV0CXcjufOeRwsWlhiRuNkm9LjP2orz
-         kSHA==
-X-Gm-Message-State: AOJu0YwQS73otCk215V3LMqsfb6dqaMiM3Gw0+YykC4EhfOZjIYW7hRH
-	LZLKAsUEkXSemF+y7GvLpNM263yom1B4PRxNwVTP7LSu5hNR0EcbVlEuge7jkJPfti8ITVR2C0E
-	d1uxWrIAOG0PMUBZ8/ecXRZ51ky0skCCa
-X-Google-Smtp-Source: AGHT+IFZch0gpjZjpi3Jd07Lz6DS9dAzUfMU+Mexz1CTXowd7OLegndNxGLiDxDnsDaalLabfgrZK83yNEo5tCVaqss=
-X-Received: by 2002:ac2:546b:0:b0:52b:de5b:1b30 with SMTP id
- 2adb3069b0e04-52ca6e90bbcmr1352895e87.44.1718371461752; Fri, 14 Jun 2024
- 06:24:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="H6zHWbY/"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=7dHUp5GqMpdx5VQ4GQ47gCY1IaP6VkrhDrYeOSheEP8=; b=H6zHWbY/J/BDpzOz7VvVT4wO0v
+	/41ceTTNPqv9ohID07wxX3PTRgT6tiRnqy5QgHoFIdo7LxrDLpnquPOCjbvRnEomg4HD+qdZDWyXw
+	gTG16BO7IsbA31BrOSOl4jCqFlnFXfyW9XuGu6+tH2brQ1534LGOKHxd65iDSBr7yB/3uLLghoDfi
+	iGMN36MHzNC+CDKAsPkTzqwwajpLgQqOsh6+/BQ7gWSw6C0iR3ir7Txg6EGYqTZJXkZqB5CO2yh+w
+	aI4FXEShy/KLeYnd8/m3XT7Jbwec7KaZ94jlEczMfuXR+LFSseNtIOm/Gh09FEFFGA4hE1MP5zrVJ
+	YRMzrD8Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sI82Q-0000000H3Eu-3YK4;
+	Fri, 14 Jun 2024 14:36:23 +0000
+Date: Fri, 14 Jun 2024 15:36:22 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: Brian Foster <bfoster@redhat.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 1/2] bcachefs: use FGP_WRITEBEGIN instead of combining
+ individual flags
+Message-ID: <ZmxVZiveDdzyByTQ@casper.infradead.org>
+References: <20240614105031.57032-1-kernel@pankajraghav.com>
+ <20240614105031.57032-2-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240604074325.798349-1-ariel.miculas@gmail.com> <4ewvaxk6vfogqymbcqiagt6mzcqgq4vbnyjhbfcuoord5ln7q5@skpnxdtsksct>
-In-Reply-To: <4ewvaxk6vfogqymbcqiagt6mzcqgq4vbnyjhbfcuoord5ln7q5@skpnxdtsksct>
-From: Ariel Miculas <ariel.miculas@gmail.com>
-Date: Fri, 14 Jun 2024 16:24:10 +0300
-Message-ID: <CAPDJoNsfiH9db4O1G3=L6n3aA2avL5zt3b_6_UFsT3yqiVXdMA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] bcachefs: allow initializing a bcachefs filesystem
- from a source directory
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240614105031.57032-2-kernel@pankajraghav.com>
 
-On Thu, Jun 13, 2024 at 9:40=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Tue, Jun 04, 2024 at 10:43:22AM +0300, Ariel Miculas wrote:
-> > Add a new source command line argument which specifies the directory
-> > tree that will be copied onto the newly formatted bcachefs filesystem.
-> >
-> > This commit also fixes an issue in copy_link where uninitialized data i=
-s
-> > copied into the symlink because of a round_up of the buffer size.
-> >
-> > Signed-off-by: Ariel Miculas <ariel.miculas@gmail.com>
-> > ---
-> > +enum COPY_TYPE {
-> > +     COPY,
-> > +     MIGRATE
-> > +};
->
-> enums need to be namespaced in C, do
->
-> enum bch_migrate_type {
->         BCH_MIGRATE_copy,
->         BCH_MIGRATE_migrate,
-> };
->
-> this follows existing bcachefs conventions; if we do an enum-to-str
-> table later we don't have to deal with renaming the enum or silly
-> uppercased names in to_text() functions
->
-> Other than that looks good - if you can do that as a fixup patch I'll go
-> ahead and apply the series.
+On Fri, Jun 14, 2024 at 10:50:30AM +0000, Pankaj Raghav (Samsung) wrote:
+>  	ret = bch2_filemap_get_contig_folios_d(mapping, pos, end,
+> -				   FGP_LOCK|FGP_WRITE|FGP_STABLE|FGP_CREAT,
+> -				   mapping_gfp_mask(mapping),
+> -				   &fs);
+> +					       FGP_WRITEBEGIN,
+> +					       mapping_gfp_mask(mapping), &fs);
 
-I can do a fixup patch or send a v2 patch series, which option do you
-prefer?
->
-> Thanks!
+Don't change the indentation here.  In the next patch it makes the
+lines too long.
+
+In general, don't change the indentation.  It's been one of the biggest
+pains of the folio conversion.  "Oh, you changed the name of this
+function and now the arguments don't line up".  Don't line up the
+arguments with the opening paren.
