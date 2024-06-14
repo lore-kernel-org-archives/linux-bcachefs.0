@@ -1,37 +1,39 @@
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC628181B84;
-	Fri, 14 Jun 2024 16:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FA3181CF8;
+	Fri, 14 Jun 2024 16:31:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718382672; cv=none; b=B95HkCLXp7nDjH8TU/rFl+M8AeSpvdgS0WmlDjY9Ucq8dXfuQX/w0BzhXVPjM438bAItCjflngMYkQaGZzuLxes+9lTfCAxo8fDC5QQVRSSG8KmcnoY7qKR71gygQMkeh2LPEYwxyQmpv8+fvVL4zPq0f5lLl/YaUssdrvwb4Xw=
+	t=1718382674; cv=none; b=I9f8KXlCHInwX5IEH7radIDiPIAT+B40Ug2qp19+EFaYj+krYwWElZov0a+rJtaRwj87YQmp317Nacra2uH62UbTAiKJ+rkgREsmrfkYNgelJJhEN3nfafUKxpjHq4LZog5jovdFAdldmfiiQryzncYwdty/q+Ya9HHhFE7Hxjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718382672; c=relaxed/simple;
-	bh=XWPS0m59zcRkwOd/f8gWqUJt6n5YUugq+iGhDd9PIFM=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=MumLMJjdveKVZJSMlxxuoJLPgeybW61Q9v0DWCcK2HdROzP+il/R4aHwE2SlrFVaL8AigJY2bFpgkJy0AG63UErNpcyEleDLwz5LBYYkS6dOfxnpv6+QjGWaxZtnmcCmfJpKroFgRkw6RUby6YUNEXloieXq5VKFehoOXqOsY9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=JkDtGmuM; arc=none smtp.client-ip=80.241.56.161
+	s=arc-20240116; t=1718382674; c=relaxed/simple;
+	bh=xt5XfnvKr1HdXd1fR96PI5PySl8RFgUmzUiZ+WWEJk4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=d1y1KveWybU6+V8JM9ElHQxEz1I/GUnnwcjDj3y3QhHpe6gG/mRSt6B95AxqtJnjjjeL86Me2VhHNn0M7plH05CWydO/kce5MAcb/LFMUDjcAV5QaFQ3ymf1KvCfuKLCAzZsBALzqgrPB3ckJwy9P43U0fbW2TU8GXd/JGhq9Jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=gG3RS66l; arc=none smtp.client-ip=80.241.56.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="JkDtGmuM"
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="gG3RS66l"
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4W14XV0ct3z9scb;
-	Fri, 14 Jun 2024 18:31:06 +0200 (CEST)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4W14XY0P0vz9sQ6;
+	Fri, 14 Jun 2024 18:31:09 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1718382666;
+	s=MBO0001; t=1718382669;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=DGL89AmoQcHYVROUUZ1+SvMJTbjsjJS0Ai2n4W2+2kA=;
-	b=JkDtGmuMJD3CP/sIDexXYLInxsIsCjbvYZEbxnNcRjspd/tM3cyP5NwfQ/DimMFL1CcaLf
-	Jsv5Z1I8jipHhD9T4pCfVGHzCHTD15QNsZkuH3b4q6O9Omhk//8RITEoMriEbRH918ajCm
-	8spDmiWulaqPIl8P6x6kTabl8heYDZXSf5NrOqKxTi5FgmdYTSCpeGSDObxf7TTImaYZSd
-	nhqjWazN74csrVvgljcZ1oQrU0bLoRBEG+lwchADp7M9rxWLtfXS7NJGEqquCOnLAYa7Qj
-	mRmrGt1G7OtgToAZBOxFvU7vmj4q56gORXQcbDqz4+ioiBo+RpnPB6BJOaQ25g==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cuupP3B7G3wbWOUdFc1+5aNfDHyR1Nq4XTj2f2Nf2ww=;
+	b=gG3RS66l47ZyApL9tubs4mWVuizBHCRMI07wGvVzXM1v0oBKdHCj4+cG6FJelnYfGj052n
+	JywkObYhVv/vfMQeX51vohBQK0uP3TBBK8GquqjE4a8xMX1mqltgq4uUFUr40LqmqG+pNd
+	DZx/cUuxp0de9uoa26b3G+ZMzohCxd6z7Rf0eED1EoVzCpf7WwMyI7n7o1hko+EMQHAF4e
+	41L7MutrAcqOxIzeUwfDd1d0iP1682kdrUqSWm2VJnueB3AzwzsfUdhOvGdZmwVdG8+OZq
+	5mSFl/Xm76rphlWaAfxQLhky6i3a3CRtZPYAYF/OzgZ7t5NwTpP0ji8MX6S2EQ==
 From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
 To: Brian Foster <bfoster@redhat.com>,
 	Kent Overstreet <kent.overstreet@linux.dev>
@@ -41,10 +43,11 @@ Cc: gost.dev@samsung.com,
 	mcgrof@kernel.org,
 	linux-kernel@vger.kernel.org,
 	Pankaj Raghav <p.raghav@samsung.com>
-Subject: [PATCH v2 0/2] improve buffered write performance with fgf order hint
-Date: Fri, 14 Jun 2024 16:30:56 +0000
-Message-ID: <20240614163058.74882-1-kernel@pankajraghav.com>
-Content-Type: text/plain; charset="utf-8"
+Subject: [PATCH v2 1/2] bcachefs: use FGP_WRITEBEGIN instead of combining individual flags
+Date: Fri, 14 Jun 2024 16:30:57 +0000
+Message-ID: <20240614163058.74882-2-kernel@pankajraghav.com>
+In-Reply-To: <20240614163058.74882-1-kernel@pankajraghav.com>
+References: <20240614163058.74882-1-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -52,48 +55,40 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4W14XY0P0vz9sQ6
 
 From: Pankaj Raghav <p.raghav@samsung.com>
 
-Filesystems that support large folios can set the fgf order before
-buffered write(see XFS iomap_write_begin()) that can provide as a hint
-to page cache to allocate large folios, if possible.
+Use FGP_WRITEBEGIN to avoid repeating the individual FGP flags before
+starting a buffered write.
 
-The first patch is a minor cleanup.
-The second patch sets fgf order before starting the buffered write.
-
-I tested the performance on Samsung SSD 990 pro on a system with 64GB
-RAM as follows:
-
-$ bcachefs format -f /dev/nvme0n1;
-$ mount -t bcachefs /dev/nvme0n1 /mnt
-$ fio --name=bcachefs --filename=/mnt/test  --size=100G \
-    --ioengine=io_uring --iodepth=16 --rw=write --bs=128k
-
-I measured the BW(MB/s) across three runs on 6.10-rc3:
-Before patches: 2730
-After patches: 3430 (1.25x boost)
-
-With -o no_data_io mount option:
-Before patches: 2920
-After patches: 4630 (1.5x boost)
-
-I was not able to test the patches with ktest due to some issue with
-debian(some broken package issue). Maybe Kent can run it in his CI while
-I try to fix ktest locally?
-
-Changes since v1:
-- Avoid changing the indentation in the first patch.
-
-Pankaj Raghav (2):
-  bcachefs: use FGP_WRITEBEGIN instead of combining individual flags
-  bcachefs: set fgf order hint before starting a buffered write
-
+Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+---
  fs/bcachefs/fs-io-buffered.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-base-commit: 03d44168cbd7fc57d5de56a3730427db758fc7f6
+diff --git a/fs/bcachefs/fs-io-buffered.c b/fs/bcachefs/fs-io-buffered.c
+index 54873ecc635c..3c9a5a8edd1e 100644
+--- a/fs/bcachefs/fs-io-buffered.c
++++ b/fs/bcachefs/fs-io-buffered.c
+@@ -678,7 +678,7 @@ int bch2_write_begin(struct file *file, struct address_space *mapping,
+ 	bch2_pagecache_add_get(inode);
+ 
+ 	folio = __filemap_get_folio(mapping, pos >> PAGE_SHIFT,
+-				FGP_LOCK|FGP_WRITE|FGP_CREAT|FGP_STABLE,
++				FGP_WRITEBEGIN,
+ 				mapping_gfp_mask(mapping));
+ 	if (IS_ERR_OR_NULL(folio))
+ 		goto err_unlock;
+@@ -820,7 +820,7 @@ static int __bch2_buffered_write(struct bch_inode_info *inode,
+ 	darray_init(&fs);
+ 
+ 	ret = bch2_filemap_get_contig_folios_d(mapping, pos, end,
+-				   FGP_LOCK|FGP_WRITE|FGP_STABLE|FGP_CREAT,
++				   FGP_WRITEBEGIN,
+ 				   mapping_gfp_mask(mapping),
+ 				   &fs);
+ 	if (ret)
 -- 
 2.44.1
 
