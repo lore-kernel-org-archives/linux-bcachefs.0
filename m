@@ -1,146 +1,105 @@
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428B9198851
-	for <linux-bcachefs@vger.kernel.org>; Fri, 14 Jun 2024 12:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97181474C6
+	for <linux-bcachefs@vger.kernel.org>; Fri, 14 Jun 2024 13:24:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718367443; cv=none; b=BK2QEFjrGJNdWL3XgjAquQTJwmegrs0J5BdezmudgapnnMXNxD08ROR6Rqpasj+4ooP3UC1/XuUdBm6BFrpPJCuPYpdXkff7aFlicGl/utTW3SimW7bE1j0xt74xcZGKOb108LixJy9ImxoxoahwBBAAutmjpxuOqBgju9dERZA=
+	t=1718371465; cv=none; b=EwA4NYBxFkaaLd/KuDATgyl23dNzcRpoucSHbCM8977o1XDOpw0jmNQLU4R4+UojbDs+YqV6iac3QH+HELlWSHPRDsEaPIM1TikfhWrORqcsXIgWxAsx7+6ew0nBexZBVNnAg8pz8LmrWqjtqGLfn5GsYmo6IEo81S4J/Sk8OiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718367443; c=relaxed/simple;
-	bh=Exj63OoisrZhR8WLJdEruzSEulGzSeKI22HLLV2dkS0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PozFPH7pC1pvxYhK/YIy8NgYxZhCS5suoXrhbZDzmgX/Z42VMqwXq5I7v2QVeWRb0VgzJhCM8+SbgTPNRYZqEdYYrq3AtmE6hK+LKg6RL1njR1sUohNmFJenBNfRAFWnBDw5+W1sDOG7bWerAVeDImKnbfJU4YvceGTAkD28AXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-7ebeebdc580so72283139f.2
-        for <linux-bcachefs@vger.kernel.org>; Fri, 14 Jun 2024 05:17:22 -0700 (PDT)
+	s=arc-20240116; t=1718371465; c=relaxed/simple;
+	bh=zD2HX9Z/cYM56zTCmJKCKii1qWx4gfK4UdglL314bL8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oiGouMNAtH8kMKrMen7DlTCApBvOLfBZRPyDy7dVeoFbZFwl8yjvfvLC3oM8kJNWW9w2r+d9fDBPFsAS/JCcsoYENsDpshd/gkQwrUu2R6odktIHg92ZADqFBfZmhhlL9mQbLzrHoO3zX6u6ddvsvmwHrOp/dYFagPvxmjD/UiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nGQTLpNj; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nGQTLpNj"
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-52bc121fb1eso2689569e87.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 14 Jun 2024 06:24:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718371462; x=1718976262; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u1soSqPSQajpbLtai850fWW/qzPCEQEDJjaa9C++4mQ=;
+        b=nGQTLpNj7EpggRTr69fR5k4PVQEFXTqI2VX8mRt96fxUpt0RIQRHNGXW8HQX+XTlDD
+         C4s6xP6HDfN0H4BHcBhMMwlG1kZBNAZTxyJpkcp3Oi646ub21aun2/cOqfYRAqyY7BFV
+         rXq+G/zncx5HSLr/xRFnpt4bd1Ve39JOyasDgcubYv33/yqEu+LoG5bvovlmRcQgVTjz
+         VYDhN1FeimDOlNDWxP069W1NRBgPN9evBNt9i0HpUwOAMl7NIbDB42SwR/Aon2EPuRV7
+         467Ycohw5O6xVkoLcygwEsoyXAWcIhD9NshM4kP8WVhQNTHeqANLtGpERg668AJnBOnK
+         17LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718367441; x=1718972241;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HnIUaiLobppew0KZWTezY3pR7gs3y0V2DGXixWAfN0g=;
-        b=oFPKNl1L2C7kGPCjAe/Yrai8T+g9ksSLLlejdT9heik5WD3Bk9jDc/4Hx9ex3WE1Gw
-         pViogFERj3YO27R4KdmqrkBXjae8/FmS5WgRXNcyK1y55aW8G8+bqbk86Ev08P7oyQkX
-         gYq02X4326wQGoFbbX5ObvrMtDFu11Hkx4Ni/Ua10JXQpQPkVzjJxmZRxNWC2qf5mPEH
-         TLdz375fM4WflRDMHQqeH2sbw7Mb6wb1DnweuYrQC0nUObK6crxFUNpZdZykNPCLhOm8
-         br67OMTfMmfSIyaSbqO8oHv8UdDxchycaa9rTlwMRFZqa5MUGqasjnLrAyJX+4CoceNs
-         4arQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXp/L7sE9oXRM1nhpGD6OY10o/934rYnlPivC732h3Sl/gdlmjEi2q5LwUofXbxPaqOj5QN7/NuU8eVCysKQ6Sg35DrDKocYjpH8U8cleE=
-X-Gm-Message-State: AOJu0YxnP5hh+QRuuCKqwSd44OIN5uDu7hNktVnBjEw1gpLzEB/hwC2x
-	QH74GkY4MQvpMsFP3/gnAl6josTqBcIO2EMyPQuvGU0wAIFRGT2eXMQvjmIkelw/DL4XoFaWjF9
-	jM5AO2oHM0gmUT9uIqUpuyyrnBNQWkclA/+7EqV9CkFZfSp2xhSzcDT8=
-X-Google-Smtp-Source: AGHT+IHVGxjV8uG6wOLl/zEVzuS7ua50Q6Ux9yP0OAdWjrZn3+sXJGGvxTR9V95Gc//dwaC4Qb12H2sb5BQ+Euj3sefnB3pSuv3z
+        d=1e100.net; s=20230601; t=1718371462; x=1718976262;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u1soSqPSQajpbLtai850fWW/qzPCEQEDJjaa9C++4mQ=;
+        b=gr4kq9ip5jVUGvVijxORxYyKsFPm8x+SQAQm9gGpDe7N+VXOzhlU6cMj3WHFE5mUb3
+         Qg3cLQbIZ2wrzeUBE+Iu3Gc7xrZ82zzNITtHolJkyHhgJCpS00tTIxt3XCAqgr5XHGIY
+         myqkZLj8IT5fePiHRNp9VYlA5PIATeSpQIxZtnPI5HsbVV0fWHXtOMihgQ5BHHGLoUFB
+         zttvGhIsgdaJ8YbmCYYPYe0g3MjSW963U3tH1RdBphWSN/cvwmq7LKcYIX38VPf4qmlD
+         8/yS+E7vgqvkG32DE00sk/nnkE6gPrqwNnzqhjV0CXcjufOeRwsWlhiRuNkm9LjP2orz
+         kSHA==
+X-Gm-Message-State: AOJu0YwQS73otCk215V3LMqsfb6dqaMiM3Gw0+YykC4EhfOZjIYW7hRH
+	LZLKAsUEkXSemF+y7GvLpNM263yom1B4PRxNwVTP7LSu5hNR0EcbVlEuge7jkJPfti8ITVR2C0E
+	d1uxWrIAOG0PMUBZ8/ecXRZ51ky0skCCa
+X-Google-Smtp-Source: AGHT+IFZch0gpjZjpi3Jd07Lz6DS9dAzUfMU+Mexz1CTXowd7OLegndNxGLiDxDnsDaalLabfgrZK83yNEo5tCVaqss=
+X-Received: by 2002:ac2:546b:0:b0:52b:de5b:1b30 with SMTP id
+ 2adb3069b0e04-52ca6e90bbcmr1352895e87.44.1718371461752; Fri, 14 Jun 2024
+ 06:24:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:6424:b0:7eb:76f7:4857 with SMTP id
- ca18e2360f4ac-7ebeaef0783mr2500039f.0.1718367441321; Fri, 14 Jun 2024
- 05:17:21 -0700 (PDT)
-Date: Fri, 14 Jun 2024 05:17:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ef1901061ad898e7@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_readdir
-From: syzbot <syzbot+b6e671a90975c257b802@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240604074325.798349-1-ariel.miculas@gmail.com> <4ewvaxk6vfogqymbcqiagt6mzcqgq4vbnyjhbfcuoord5ln7q5@skpnxdtsksct>
+In-Reply-To: <4ewvaxk6vfogqymbcqiagt6mzcqgq4vbnyjhbfcuoord5ln7q5@skpnxdtsksct>
+From: Ariel Miculas <ariel.miculas@gmail.com>
+Date: Fri, 14 Jun 2024 16:24:10 +0300
+Message-ID: <CAPDJoNsfiH9db4O1G3=L6n3aA2avL5zt3b_6_UFsT3yqiVXdMA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] bcachefs: allow initializing a bcachefs filesystem
+ from a source directory
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Thu, Jun 13, 2024 at 9:40=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Tue, Jun 04, 2024 at 10:43:22AM +0300, Ariel Miculas wrote:
+> > Add a new source command line argument which specifies the directory
+> > tree that will be copied onto the newly formatted bcachefs filesystem.
+> >
+> > This commit also fixes an issue in copy_link where uninitialized data i=
+s
+> > copied into the symlink because of a round_up of the buffer size.
+> >
+> > Signed-off-by: Ariel Miculas <ariel.miculas@gmail.com>
+> > ---
+> > +enum COPY_TYPE {
+> > +     COPY,
+> > +     MIGRATE
+> > +};
+>
+> enums need to be namespaced in C, do
+>
+> enum bch_migrate_type {
+>         BCH_MIGRATE_copy,
+>         BCH_MIGRATE_migrate,
+> };
+>
+> this follows existing bcachefs conventions; if we do an enum-to-str
+> table later we don't have to deal with renaming the enum or silly
+> uppercased names in to_text() functions
+>
+> Other than that looks good - if you can do that as a fixup patch I'll go
+> ahead and apply the series.
 
-syzbot found the following issue on:
-
-HEAD commit:    614da38e2f7a Merge tag 'hid-for-linus-2024051401' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14487874980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f5d2cbf33633f507
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6e671a90975c257b802
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/89eafb874b71/disk-614da38e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/356000512ad9/vmlinux-614da38e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/839c73939115/bzImage-614da38e.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b6e671a90975c257b802@syzkaller.appspotmail.com
-
-dccp_invalid_packet: P.Data Offset(144) too large
-=====================================================
-BUG: KMSAN: uninit-value in bch2_dirent_read_target fs/bcachefs/dirent.c:265 [inline]
-BUG: KMSAN: uninit-value in bch2_readdir+0xad6/0x2110 fs/bcachefs/dirent.c:572
- bch2_dirent_read_target fs/bcachefs/dirent.c:265 [inline]
- bch2_readdir+0xad6/0x2110 fs/bcachefs/dirent.c:572
- bch2_vfs_readdir+0x394/0x840 fs/bcachefs/fs.c:1095
- iterate_dir+0x688/0x870 fs/readdir.c:110
- __do_sys_getdents64 fs/readdir.c:409 [inline]
- __se_sys_getdents64+0x169/0x530 fs/readdir.c:394
- __x64_sys_getdents64+0x96/0xe0 fs/readdir.c:394
- x64_sys_call+0x343d/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:218
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Uninit was created at:
- __kmalloc_large_node+0x231/0x370 mm/slub.c:3994
- __do_kmalloc_node mm/slub.c:4027 [inline]
- __kmalloc_node+0xb10/0x10c0 mm/slub.c:4046
- kmalloc_node include/linux/slab.h:648 [inline]
- kvmalloc_node+0xc0/0x2d0 mm/util.c:634
- kvmalloc include/linux/slab.h:766 [inline]
- btree_bounce_alloc fs/bcachefs/btree_io.c:118 [inline]
- bch2_btree_node_read_done+0x4e68/0x75e0 fs/bcachefs/btree_io.c:1185
- btree_node_read_work+0x8a5/0x1eb0 fs/bcachefs/btree_io.c:1324
- bch2_btree_node_read+0x3d42/0x4b50
- __bch2_btree_root_read fs/bcachefs/btree_io.c:1748 [inline]
- bch2_btree_root_read+0xa6c/0x13d0 fs/bcachefs/btree_io.c:1772
- read_btree_roots+0x454/0xee0 fs/bcachefs/recovery.c:457
- bch2_fs_recovery+0x7b6a/0x93e0 fs/bcachefs/recovery.c:785
- bch2_fs_start+0x7b2/0xbd0 fs/bcachefs/super.c:1043
- bch2_fs_open+0x152a/0x15f0 fs/bcachefs/super.c:2105
- bch2_mount+0x90d/0x1d90 fs/bcachefs/fs.c:1906
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1779
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- x64_sys_call+0x2bf4/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:166
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-CPU: 0 PID: 9936 Comm: syz-executor.2 Not tainted 6.9.0-syzkaller-02707-g614da38e2f7a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+I can do a fixup patch or send a v2 patch series, which option do you
+prefer?
+>
+> Thanks!
