@@ -1,222 +1,184 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2D2381C7
-	for <linux-bcachefs@vger.kernel.org>; Sat, 15 Jun 2024 09:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496BD22067
+	for <linux-bcachefs@vger.kernel.org>; Sat, 15 Jun 2024 10:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718445502; cv=none; b=BKf6IpZ7iwbYKQJ5hW/jr+BuCgRAVwRgtR/A7Zjyfh/F3eDsTh9G/H8QXUR3K1jC2oTcA/lZahPACl/Emid0ZAtZaG9jyaD6ibLAmU0ktFx1iXQzQTHaEmz+H/0yzljUFFwqImiJQyv70AiX4M5nqwtU509zWaMZf1bGWZXAAp4=
+	t=1718446706; cv=none; b=lvWze7nXSXoo3AG+JvOLdiWytLCktIbV/BJeSfrHUUCeSeKyUoIfVYCEzQ0g+uLs+7fI/7XhK1vcl6oqcOnRkXszfnjNic5dTaCMM06q/hksimsCTgec+7wRWhrM8h+G0iBRZeszy/YhxThqlv5vk6NVjYBOlg8hfTXXEyQ7UYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718445502; c=relaxed/simple;
-	bh=nKlN2QBUp9ZR3tphHEwe/c3JF7pOqc8Z3AIvqXvJFr4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gOZ609ixrvQJLI++T+kC2rGsX/GYYh+EA0lYajxrWdgBa0PuXIjfkLGOykGKsuHDzZK8lBIVfdzMC/4gbM4ERJhU3losY6KsACkBpihkb7Jw40Mc8t6tWOZsbOtS2Ng5Ojv1wXz0sp7eLgrAEYbclQHyYylIsQK8I/c0gXU01pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-375da99c867so24976825ab.0
-        for <linux-bcachefs@vger.kernel.org>; Sat, 15 Jun 2024 02:58:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718445500; x=1719050300;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hgAz2JZL22bf7lXOcSE5KeRR5btAdr72+RJxfSbwclc=;
-        b=k0HNrwQQrYl3mHE/AE05Gdqy6lbBi3Ca/HOFermVUCXd/C0xiIB5T0hXEkTs9t6tTi
-         Y231VvDzjv/v0BMKS8KrKfEAvpGyiJjW9o2589oIBaFWlFO4P1mktRB+rPQL3V6uhG5L
-         NQgY3RKIEXB4+V7FC5qQMrsxD0H1F5IIaF3fgTeENWXThuzHCUGeBzCoP1gBtXw4nOL7
-         oUhMKm9mlMCfUInIyZtj0kIoGTTispFfKwAEisQfLECLOYV7HAvoL29/IAHg3HypNkrf
-         XFxPhuxtpXYFtoy8u/GLpIpDcf6hBYbu7Mw42pIp7BMVwcIE1rQrZx7/OFjyW+MeQD5w
-         7v2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVlaQ9akhsV+NbPHQAiDbskPUaproiQ0pEGGyxxkPj/sppXo3lQhCDEMHzangjW+7qGZV4vsuXwbxsjU4npbJLMY71WBE4eewPUPpRB8wQ=
-X-Gm-Message-State: AOJu0YwzTtTHYAXEr5bSwHBBs9wgr6DoaAr8D/X3S2/ls30ApodMoUs1
-	aDndcmdc1OfWuVXT+jkj3YI/msbXoJtvjE1WUVnCAwqLD1OQ4aMstaqlu8Cn49B/WOlM18K/y0G
-	uSvXh9s6e1QUB8RsWlKpwwNMeLSFycDNuoxCAkiBh4SHuC6T0bOr1Zww=
-X-Google-Smtp-Source: AGHT+IEZrC6omejNXLXi/CfuqZ/GLfx9zVRH3zLlJH1LPUVQxCv3dObB+50L1aPcIJ6X+gMD1foDhqVorggn+0Eeyjthsv1qGKX6
+	s=arc-20240116; t=1718446706; c=relaxed/simple;
+	bh=KLnDGDyJNg1rmcjEoTe/j2GGwdbsCh1kpGHCLmTlCSY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JgF4U6+QJ5Z0ehWYr9a6M6gjns2LX+9HvyYisI9+GVwWyZ/tF3eZashfaZgCUQy2q9zsAtI2wybogkVZsSsdLvaVWf0aYMnYvIoHS2X/FdRFnridPi4QraL4Bd4SrGisNuZZCXziPoKlN982BPY7gnkDLwFsGD7R8AWfHNJ1rjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4W1X7731NczxRYp;
+	Sat, 15 Jun 2024 18:14:11 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 25221180060;
+	Sat, 15 Jun 2024 18:18:19 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
+ (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Sat, 15 Jun
+ 2024 18:18:18 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
+CC: <linux-bcachefs@vger.kernel.org>, <christian@brauner.io>,
+	<lihongbo22@huawei.com>
+Subject: [PATCH] bcachefs: support idmap mounts
+Date: Sat, 15 Jun 2024 18:20:38 +0800
+Message-ID: <20240615102038.3110867-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a28:b0:375:8fd0:c939 with SMTP id
- e9e14a558f8ab-375e0e14abamr3267955ab.1.1718445500166; Sat, 15 Jun 2024
- 02:58:20 -0700 (PDT)
-Date: Sat, 15 Jun 2024 02:58:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009a83e9061aeac50d@google.com>
-Subject: [syzbot] [bcachefs?] INFO: task hung in __bch2_fs_stop
-From: syzbot <syzbot+6d3e28b33490b3085412@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-Hello,
+We enable idmapped mounts for bcachefs. Here, we just pass down
+the user_namespace argument from the VFS methods to the relevant
+helpers.
 
-syzbot found the following issue on:
+The idmap test in bcachefs is as following:
 
-HEAD commit:    83a7eefedc9b Linux 6.10-rc3
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=164ac82e980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c79815c08cc14227
-dashboard link: https://syzkaller.appspot.com/bug?extid=6d3e28b33490b3085412
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1653cfba980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1316587a980000
+```
+1. losetup /dev/loop1 bcachefs.img
+2. ./bcachefs format /dev/loop1
+3. mount -t bcachefs /dev/loop1 /mnt/bcachefs/
+4. ./mount-idmapped --map-mount b:0:1000:1 /mnt/bcachefs /mnt/idmapped1/
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b45273014a8f/disk-83a7eefe.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/94cd5708292e/vmlinux-83a7eefe.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a89698812e8b/bzImage-83a7eefe.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/3ef828450a9b/mount_0.gz
+ll /mnt/bcachefs
+total 2
+drwx------. 2 root root    0 Jun 14 14:10 lost+found
+-rw-r--r--. 1 root root 1945 Jun 14 14:12 profile
 
-The issue was bisected to:
+ll /mnt/idmapped1/
 
-commit 267b801fda10b70eca4001a819fcac07f023df6b
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Mon Dec 4 18:45:33 2023 +0000
+total 2
+drwx------. 2 1000 1000    0 Jun 14 14:10 lost+found
+-rw-r--r--. 1 1000 1000 1945 Jun 14 14:12 profile
+```
 
-    bcachefs: BCH_IOCTL_FSCK_ONLINE
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15166a54980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17166a54980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13166a54980000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6d3e28b33490b3085412@syzkaller.appspotmail.com
-Fixes: 267b801fda10 ("bcachefs: BCH_IOCTL_FSCK_ONLINE")
-
-INFO: task syz-executor427:5081 blocked for more than 143 seconds.
-      Not tainted 6.10.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor427 state:D stack:22048 pid:5081  tgid:5081  ppid:5078   flags:0x00004002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5408 [inline]
- __schedule+0x1796/0x49d0 kernel/sched/core.c:6745
- __schedule_loop kernel/sched/core.c:6822 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6837
- __bch2_fs_stop+0x35b/0x540 fs/bcachefs/super.c:628
- generic_shutdown_super+0x136/0x2d0 fs/super.c:642
- bch2_kill_sb+0x41/0x50 fs/bcachefs/fs.c:2034
- deactivate_locked_super+0xc4/0x130 fs/super.c:473
- cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1267
- task_work_run+0x24f/0x310 kernel/task_work.c:180
- ptrace_notify+0x2d2/0x380 kernel/signal.c:2402
- ptrace_report_syscall include/linux/ptrace.h:415 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
- syscall_exit_work+0xc6/0x190 kernel/entry/common.c:173
- syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
- syscall_exit_to_user_mode+0x273/0x370 kernel/entry/common.c:218
- do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f70db0df3c7
-RSP: 002b:00007ffd58b093d8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f70db0df3c7
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffd58b09490
-RBP: 00007ffd58b09490 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffd58b0a4f0
-R13: 000055558a2c86c0 R14: 0000000000000019 R15: 431bde82d7b634db
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/30:
- #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
-2 locks held by kworker/u8:7/1105:
-1 lock held by klogd/4526:
-2 locks held by getty/4836:
- #0: ffff88802f6310a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002f162f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b5/0x1e10 drivers/tty/n_tty.c:2201
-1 lock held by syz-executor427/5081:
- #0: ffff88807e8180e0 (&type->s_umount_key#44){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
- #0: ffff88807e8180e0 (&type->s_umount_key#44){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
- #0: ffff88807e8180e0 (&type->s_umount_key#44){+.+.}-{3:3}, at: deactivate_super+0xb5/0xf0 fs/super.c:505
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 30 Comm: khungtaskd Not tainted 6.10.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
- watchdog+0xfde/0x1020 kernel/hung_task.c:379
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 1105 Comm: kworker/u8:7 Not tainted 6.10.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-Workqueue: events_unbound toggle_allocation_gate
-RIP: 0010:PagePoisoned include/linux/page-flags.h:296 [inline]
-RIP: 0010:PageReserved include/linux/page-flags.h:536 [inline]
-RIP: 0010:__text_poke+0x187/0xd30 arch/x86/kernel/alternative.c:1864
-Code: 00 00 00 00 00 ea ff ff 4c 89 ff e8 13 33 0d 00 49 89 c4 49 c1 ec 06 49 83 e4 c0 49 01 dc 4c 89 e3 48 c1 eb 03 42 80 3c 2b 00 <74> 08 4c 89 e7 e8 ff 88 c3 00 4d 8b 34 24 48 c7 c7 ff ff ff ff 4c
-RSP: 0018:ffffc900043f7740 EFLAGS: 00000246
-RAX: 0000000001ed289c RBX: 1ffffd400000f690 RCX: ffff888022338000
-RDX: 0000000000000000 RSI: 0000000001ed289c RDI: 000000001fffffff
-RBP: ffffc900043f7910 R08: ffffffff81424c05 R09: 1ffffffff1f583d5
-R10: dffffc0000000000 R11: fffffbfff1f583d6 R12: ffffea000007b480
-R13: dffffc0000000000 R14: 0000000000000001 R15: ffffffff81ed289c
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005622c0cea600 CR3: 000000000e132000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- text_poke arch/x86/kernel/alternative.c:1968 [inline]
- text_poke_bp_batch+0x8cd/0xb30 arch/x86/kernel/alternative.c:2357
- text_poke_flush arch/x86/kernel/alternative.c:2470 [inline]
- text_poke_finish+0x30/0x50 arch/x86/kernel/alternative.c:2477
- arch_jump_label_transform_apply+0x1c/0x30 arch/x86/kernel/jump_label.c:146
- static_key_enable_cpuslocked+0x136/0x260 kernel/jump_label.c:205
- static_key_enable+0x1a/0x20 kernel/jump_label.c:218
- toggle_allocation_gate+0xb5/0x250 mm/kfence/core.c:826
- process_one_work kernel/workqueue.c:3231 [inline]
- process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3312
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3393
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.167 msecs
-
-
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/bcachefs/fs.c | 44 +++++++++++++++++++++++++++++++-------------
+ 1 file changed, 31 insertions(+), 13 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 4a3e9f429cf7..70c42911571b 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -304,6 +304,8 @@ __bch2_create(struct mnt_idmap *idmap,
+ 	subvol_inum inum;
+ 	struct bch_subvolume subvol;
+ 	u64 journal_seq = 0;
++	kuid_t kuid;
++	kgid_t kgid;
+ 	int ret;
+ 
+ 	/*
+@@ -330,13 +332,15 @@ __bch2_create(struct mnt_idmap *idmap,
+ retry:
+ 	bch2_trans_begin(trans);
+ 
++	kuid = mapped_fsuid(idmap, i_user_ns(&dir->v));
++	kgid = mapped_fsgid(idmap, i_user_ns(&dir->v));
+ 	ret   = bch2_subvol_is_ro_trans(trans, dir->ei_subvol) ?:
+ 		bch2_create_trans(trans,
+ 				  inode_inum(dir), &dir_u, &inode_u,
+ 				  !(flags & BCH_CREATE_TMPFILE)
+ 				  ? &dentry->d_name : NULL,
+-				  from_kuid(i_user_ns(&dir->v), current_fsuid()),
+-				  from_kgid(i_user_ns(&dir->v), current_fsgid()),
++				  from_kuid(i_user_ns(&dir->v), kuid),
++				  from_kgid(i_user_ns(&dir->v), kgid),
+ 				  mode, rdev,
+ 				  default_acl, acl, snapshot_src, flags) ?:
+ 		bch2_quota_acct(c, bch_qid(&inode_u), Q_INO, 1,
+@@ -757,11 +761,17 @@ static void bch2_setattr_copy(struct mnt_idmap *idmap,
+ {
+ 	struct bch_fs *c = inode->v.i_sb->s_fs_info;
+ 	unsigned int ia_valid = attr->ia_valid;
++	kuid_t kuid;
++	kgid_t kgid;
+ 
+-	if (ia_valid & ATTR_UID)
+-		bi->bi_uid = from_kuid(i_user_ns(&inode->v), attr->ia_uid);
+-	if (ia_valid & ATTR_GID)
+-		bi->bi_gid = from_kgid(i_user_ns(&inode->v), attr->ia_gid);
++	if (ia_valid & ATTR_UID) {
++		kuid = from_vfsuid(idmap, i_user_ns(&inode->v), attr->ia_vfsuid);
++		bi->bi_uid = from_kuid(i_user_ns(&inode->v), kuid);
++	}
++	if (ia_valid & ATTR_GID) {
++		kgid = from_vfsgid(idmap, i_user_ns(&inode->v), attr->ia_vfsgid);
++		bi->bi_gid = from_kgid(i_user_ns(&inode->v), kgid);
++	}
+ 
+ 	if (ia_valid & ATTR_SIZE)
+ 		bi->bi_size = attr->ia_size;
+@@ -796,17 +806,23 @@ int bch2_setattr_nonsize(struct mnt_idmap *idmap,
+ 	struct btree_iter inode_iter = { NULL };
+ 	struct bch_inode_unpacked inode_u;
+ 	struct posix_acl *acl = NULL;
++	kuid_t kuid;
++	kgid_t kgid;
+ 	int ret;
+ 
+ 	mutex_lock(&inode->ei_update_lock);
+ 
+ 	qid = inode->ei_qid;
+ 
+-	if (attr->ia_valid & ATTR_UID)
+-		qid.q[QTYP_USR] = from_kuid(i_user_ns(&inode->v), attr->ia_uid);
++	if (attr->ia_valid & ATTR_UID) {
++		kuid = from_vfsuid(idmap, i_user_ns(&inode->v), attr->ia_vfsuid);
++		qid.q[QTYP_USR] = from_kuid(i_user_ns(&inode->v), kuid);
++	}
+ 
+-	if (attr->ia_valid & ATTR_GID)
+-		qid.q[QTYP_GRP] = from_kgid(i_user_ns(&inode->v), attr->ia_gid);
++	if (attr->ia_valid & ATTR_GID) {
++		kgid = from_vfsgid(idmap, i_user_ns(&inode->v), attr->ia_vfsgid);
++		qid.q[QTYP_GRP] = from_kgid(i_user_ns(&inode->v), kgid);
++	}
+ 
+ 	ret = bch2_fs_quota_transfer(c, inode, qid, ~0,
+ 				     KEY_TYPE_QUOTA_PREALLOC);
+@@ -862,13 +878,15 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+ {
+ 	struct bch_inode_info *inode = to_bch_ei(d_inode(path->dentry));
+ 	struct bch_fs *c = inode->v.i_sb->s_fs_info;
++	vfsuid_t vfsuid = i_uid_into_vfsuid(idmap, &inode->v);
++	vfsgid_t vfsgid = i_gid_into_vfsgid(idmap, &inode->v);
+ 
+ 	stat->dev	= inode->v.i_sb->s_dev;
+ 	stat->ino	= inode->v.i_ino;
+ 	stat->mode	= inode->v.i_mode;
+ 	stat->nlink	= inode->v.i_nlink;
+-	stat->uid	= inode->v.i_uid;
+-	stat->gid	= inode->v.i_gid;
++	stat->uid	= vfsuid_into_kuid(vfsuid);
++	stat->gid	= vfsgid_into_kgid(vfsgid);
+ 	stat->rdev	= inode->v.i_rdev;
+ 	stat->size	= i_size_read(&inode->v);
+ 	stat->atime	= inode_get_atime(&inode->v);
+@@ -2098,7 +2116,7 @@ static struct file_system_type bcache_fs_type = {
+ 	.name			= "bcachefs",
+ 	.init_fs_context	= bch2_init_fs_context,
+ 	.kill_sb		= bch2_kill_sb,
+-	.fs_flags		= FS_REQUIRES_DEV,
++	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
+ };
+ 
+ MODULE_ALIAS_FS("bcachefs");
+-- 
+2.34.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
