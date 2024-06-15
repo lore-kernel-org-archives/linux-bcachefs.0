@@ -1,36 +1,59 @@
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496BD22067
-	for <linux-bcachefs@vger.kernel.org>; Sat, 15 Jun 2024 10:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7407428DD5;
+	Sat, 15 Jun 2024 11:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718446706; cv=none; b=lvWze7nXSXoo3AG+JvOLdiWytLCktIbV/BJeSfrHUUCeSeKyUoIfVYCEzQ0g+uLs+7fI/7XhK1vcl6oqcOnRkXszfnjNic5dTaCMM06q/hksimsCTgec+7wRWhrM8h+G0iBRZeszy/YhxThqlv5vk6NVjYBOlg8hfTXXEyQ7UYk=
+	t=1718452154; cv=none; b=uLhDbQKtpoyiQ4ZySdiue7h7VRwY5P1AqWJtGUNM4NPKZ+5IjU8iJ3YMJBDLYoWYTZddbINQThpOX2yQOVjA5kvbJT2eL8ffEZyMJXlNIsa1h5grpFhIDUGiQmB4MYYmU6SpQL5FhS4hqhQdgKlQtk+0L2yZvZz1D3+aa6G0r4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718446706; c=relaxed/simple;
-	bh=KLnDGDyJNg1rmcjEoTe/j2GGwdbsCh1kpGHCLmTlCSY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JgF4U6+QJ5Z0ehWYr9a6M6gjns2LX+9HvyYisI9+GVwWyZ/tF3eZashfaZgCUQy2q9zsAtI2wybogkVZsSsdLvaVWf0aYMnYvIoHS2X/FdRFnridPi4QraL4Bd4SrGisNuZZCXziPoKlN982BPY7gnkDLwFsGD7R8AWfHNJ1rjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4W1X7731NczxRYp;
-	Sat, 15 Jun 2024 18:14:11 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 25221180060;
-	Sat, 15 Jun 2024 18:18:19 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Sat, 15 Jun
- 2024 18:18:18 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <kent.overstreet@linux.dev>, <bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <christian@brauner.io>,
-	<lihongbo22@huawei.com>
-Subject: [PATCH] bcachefs: support idmap mounts
-Date: Sat, 15 Jun 2024 18:20:38 +0800
-Message-ID: <20240615102038.3110867-1-lihongbo22@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1718452154; c=relaxed/simple;
+	bh=ruLqlnGQm+f4xdxIVdkx2ifiUgj5LizSyB2S5sU5KH4=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=g/mulT2rFEEjAszXW+yTjDnctZEvR0TlKAaJcMQ0UGC4aQE1PCbOxyHtAdSqdAl5FuMAIv6ey2/xSFLZV5RsjML3yqvI4PCTbOK1puj09F5OfITRk4N9jNuEBqbXSD1/Oh5S+02bykrSY/7g3iPmErjGR1SJjKXCdHmvBg98yA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=OCV1qhA2; arc=none smtp.client-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="OCV1qhA2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1718451845; bh=eoJFGXM2xF4IOwu+tTtspFwBzWcyjYzOFEGvvryPvyk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=OCV1qhA2CWhipezswYOuYfRaF7yEnC6SJg9UUnCBAungW//PMoTrwP+a/+X8vUnOO
+	 2vyJ2peYbry6xZmsTEaL/Co6MjGOQ8RCQOj+uc4fbewWlPdB5FEffOPurFlF/1xUAz
+	 BgE4AfB1F7prQx9eHSpENXfp48ZKH5VJZ6S1pFlY=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.103])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id B0337AFE; Sat, 15 Jun 2024 19:44:03 +0800
+X-QQ-mid: xmsmtpt1718451843tz3r2n3i2
+Message-ID: <tencent_724B611BCF250EBAF7BBE333DF9E271BB208@qq.com>
+X-QQ-XMAILINFO: NyTsQ4JOu2J2zOZ5ZNYHLqT+E8AFNcEs6DXo2yNVb+UXeNPB5diAbUnz9GHwqE
+	 zTDpQC3WqgN/d38mDOsQOuBmMnYYBMUCPXzjfkGvA+afBPf6jTfgHDziyqlPlYapRaXr079ramFJ
+	 xGcNUKrTKTQVs7AkI547MGQTz/ZhyXZmG72AJCkB0dOZdUV6FNiNFDI0SyRhV/N7fjNY4Wvbkkah
+	 R/n+6ZVU5Aufl/chDnioaXHEoIHgN4CS2xIZbxqWjJGXsjna5BzaQLCmUM/gTK4Ad+UCp/AVtXzD
+	 1Pcmp6Ig2haNUNg+lU9k5L0MMdyIsHBcQdkegdSsNvHSHuZ+xeIiTmLSB7x5CW4c+KT8wmXJC89Y
+	 q9LYCneVhWbkxK0MXzVRDayy9rikfaiyG1kSJ8DELQs3TU2YAqeyXYCjS0pdravcPpIRl5W9FHgA
+	 tuJuBeqO45HjINimKpzcU4dnlZJUkMMgjYGxaU2TGn9YyoubNHvrRjl+mEfdgQlBU/IWwqv9zzUL
+	 7/MvQ7ALXhRmt5+hGvodGzIlUwazE1wc/8mGAOg7qzHUO0w9gI/FxEaZdjhJ3YWAAZrBOytrcaMO
+	 aNOYOyQIz07q11A678SQX0eA0pdlDPIk9NDF0LRuGp8dYCQOIrXBIF5U4hdYotzzISCy5ZWQVBH2
+	 IUVmsgJOj0Q2Gvrc8JRxJM4bRg7+2obLOi+gCgtxHKA4lXpB6I/auVjqkquKWt0LtuxZV558xA1c
+	 uGMk5VwjmeZO8m3bX+6z2lHl2zneV0maNJTEyU7kELkKvD39DnAJws+3a3X3sfb2znvuXt13ZI0b
+	 xaeMrRy7E8UzN/pclcRzLlovis5xHZYpXpaGIFoPZcZBWsnVtDyAR5TLrTi6jCuVnxKzZxSXWCb6
+	 6jAE/2vnFAq6jEGAU7aSzi0uNXrw6+m47vBw+GlYuvwR4d8NDCXUBp4cIIOHZU7VR0jDWdnN1+
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+4366624c0b5aac4906cf@syzkaller.appspotmail.com
+Cc: bfoster@redhat.com,
+	kent.overstreet@linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] bcachefs: bch2_fs_read_write_early needs to hold write lock
+Date: Sat, 15 Jun 2024 19:44:04 +0800
+X-OQ-MSGID: <20240615114403.3924547-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000053e574061ad89521@google.com>
+References: <00000000000053e574061ad89521@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -38,147 +61,29 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500022.china.huawei.com (7.185.36.66)
 
-We enable idmapped mounts for bcachefs. Here, we just pass down
-the user_namespace argument from the VFS methods to the relevant
-helpers.
+bch2_fs_read_write_early() needs to hold state_lock to pretect and sync data.
 
-The idmap test in bcachefs is as following:
-
-```
-1. losetup /dev/loop1 bcachefs.img
-2. ./bcachefs format /dev/loop1
-3. mount -t bcachefs /dev/loop1 /mnt/bcachefs/
-4. ./mount-idmapped --map-mount b:0:1000:1 /mnt/bcachefs /mnt/idmapped1/
-
-ll /mnt/bcachefs
-total 2
-drwx------. 2 root root    0 Jun 14 14:10 lost+found
--rw-r--r--. 1 root root 1945 Jun 14 14:12 profile
-
-ll /mnt/idmapped1/
-
-total 2
-drwx------. 2 1000 1000    0 Jun 14 14:10 lost+found
--rw-r--r--. 1 1000 1000 1945 Jun 14 14:12 profile
-```
-
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+Reported-by: syzbot+4366624c0b5aac4906cf@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
- fs/bcachefs/fs.c | 44 +++++++++++++++++++++++++++++++-------------
- 1 file changed, 31 insertions(+), 13 deletions(-)
+ fs/bcachefs/snapshot.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 4a3e9f429cf7..70c42911571b 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -304,6 +304,8 @@ __bch2_create(struct mnt_idmap *idmap,
- 	subvol_inum inum;
- 	struct bch_subvolume subvol;
- 	u64 journal_seq = 0;
-+	kuid_t kuid;
-+	kgid_t kgid;
- 	int ret;
+diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
+index 51918acfd726..b27a4327274d 100644
+--- a/fs/bcachefs/snapshot.c
++++ b/fs/bcachefs/snapshot.c
+@@ -1566,7 +1566,9 @@ int bch2_delete_dead_snapshots(struct bch_fs *c)
+ 		return 0;
  
- 	/*
-@@ -330,13 +332,15 @@ __bch2_create(struct mnt_idmap *idmap,
- retry:
- 	bch2_trans_begin(trans);
- 
-+	kuid = mapped_fsuid(idmap, i_user_ns(&dir->v));
-+	kgid = mapped_fsgid(idmap, i_user_ns(&dir->v));
- 	ret   = bch2_subvol_is_ro_trans(trans, dir->ei_subvol) ?:
- 		bch2_create_trans(trans,
- 				  inode_inum(dir), &dir_u, &inode_u,
- 				  !(flags & BCH_CREATE_TMPFILE)
- 				  ? &dentry->d_name : NULL,
--				  from_kuid(i_user_ns(&dir->v), current_fsuid()),
--				  from_kgid(i_user_ns(&dir->v), current_fsgid()),
-+				  from_kuid(i_user_ns(&dir->v), kuid),
-+				  from_kgid(i_user_ns(&dir->v), kgid),
- 				  mode, rdev,
- 				  default_acl, acl, snapshot_src, flags) ?:
- 		bch2_quota_acct(c, bch_qid(&inode_u), Q_INO, 1,
-@@ -757,11 +761,17 @@ static void bch2_setattr_copy(struct mnt_idmap *idmap,
- {
- 	struct bch_fs *c = inode->v.i_sb->s_fs_info;
- 	unsigned int ia_valid = attr->ia_valid;
-+	kuid_t kuid;
-+	kgid_t kgid;
- 
--	if (ia_valid & ATTR_UID)
--		bi->bi_uid = from_kuid(i_user_ns(&inode->v), attr->ia_uid);
--	if (ia_valid & ATTR_GID)
--		bi->bi_gid = from_kgid(i_user_ns(&inode->v), attr->ia_gid);
-+	if (ia_valid & ATTR_UID) {
-+		kuid = from_vfsuid(idmap, i_user_ns(&inode->v), attr->ia_vfsuid);
-+		bi->bi_uid = from_kuid(i_user_ns(&inode->v), kuid);
-+	}
-+	if (ia_valid & ATTR_GID) {
-+		kgid = from_vfsgid(idmap, i_user_ns(&inode->v), attr->ia_vfsgid);
-+		bi->bi_gid = from_kgid(i_user_ns(&inode->v), kgid);
-+	}
- 
- 	if (ia_valid & ATTR_SIZE)
- 		bi->bi_size = attr->ia_size;
-@@ -796,17 +806,23 @@ int bch2_setattr_nonsize(struct mnt_idmap *idmap,
- 	struct btree_iter inode_iter = { NULL };
- 	struct bch_inode_unpacked inode_u;
- 	struct posix_acl *acl = NULL;
-+	kuid_t kuid;
-+	kgid_t kgid;
- 	int ret;
- 
- 	mutex_lock(&inode->ei_update_lock);
- 
- 	qid = inode->ei_qid;
- 
--	if (attr->ia_valid & ATTR_UID)
--		qid.q[QTYP_USR] = from_kuid(i_user_ns(&inode->v), attr->ia_uid);
-+	if (attr->ia_valid & ATTR_UID) {
-+		kuid = from_vfsuid(idmap, i_user_ns(&inode->v), attr->ia_vfsuid);
-+		qid.q[QTYP_USR] = from_kuid(i_user_ns(&inode->v), kuid);
-+	}
- 
--	if (attr->ia_valid & ATTR_GID)
--		qid.q[QTYP_GRP] = from_kgid(i_user_ns(&inode->v), attr->ia_gid);
-+	if (attr->ia_valid & ATTR_GID) {
-+		kgid = from_vfsgid(idmap, i_user_ns(&inode->v), attr->ia_vfsgid);
-+		qid.q[QTYP_GRP] = from_kgid(i_user_ns(&inode->v), kgid);
-+	}
- 
- 	ret = bch2_fs_quota_transfer(c, inode, qid, ~0,
- 				     KEY_TYPE_QUOTA_PREALLOC);
-@@ -862,13 +878,15 @@ static int bch2_getattr(struct mnt_idmap *idmap,
- {
- 	struct bch_inode_info *inode = to_bch_ei(d_inode(path->dentry));
- 	struct bch_fs *c = inode->v.i_sb->s_fs_info;
-+	vfsuid_t vfsuid = i_uid_into_vfsuid(idmap, &inode->v);
-+	vfsgid_t vfsgid = i_gid_into_vfsgid(idmap, &inode->v);
- 
- 	stat->dev	= inode->v.i_sb->s_dev;
- 	stat->ino	= inode->v.i_ino;
- 	stat->mode	= inode->v.i_mode;
- 	stat->nlink	= inode->v.i_nlink;
--	stat->uid	= inode->v.i_uid;
--	stat->gid	= inode->v.i_gid;
-+	stat->uid	= vfsuid_into_kuid(vfsuid);
-+	stat->gid	= vfsgid_into_kgid(vfsgid);
- 	stat->rdev	= inode->v.i_rdev;
- 	stat->size	= i_size_read(&inode->v);
- 	stat->atime	= inode_get_atime(&inode->v);
-@@ -2098,7 +2116,7 @@ static struct file_system_type bcache_fs_type = {
- 	.name			= "bcachefs",
- 	.init_fs_context	= bch2_init_fs_context,
- 	.kill_sb		= bch2_kill_sb,
--	.fs_flags		= FS_REQUIRES_DEV,
-+	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
- };
- 
- MODULE_ALIAS_FS("bcachefs");
+ 	if (!test_bit(BCH_FS_started, &c->flags)) {
++		down_write(&c->state_lock);
+ 		ret = bch2_fs_read_write_early(c);
++		up_write(&c->state_lock);
+ 		bch_err_msg(c, ret, "deleting dead snapshots: error going rw");
+ 		if (ret)
+ 			return ret;
 -- 
-2.34.1
+2.43.0
 
