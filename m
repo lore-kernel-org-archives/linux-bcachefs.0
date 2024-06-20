@@ -1,44 +1,42 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57DE11AC769;
-	Thu, 20 Jun 2024 12:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133EB1AB91C
+	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Jun 2024 12:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718887900; cv=none; b=PE0Kl1Q/mhqXRidrzkXkco+3tQ5wzeNCPJX9nbZjpHSuj9k+/RVSCoAtt66WZ+VF1ehsvYESO6nR3yR+VKFHLyNh9QnQSzKQnLvStrU7U0z6wvAhwZSfMklG3vyBtO4V7jdJvpyCUQX1eKSXhvnu/Fx8z4b4h14LWuCwhEWhwGE=
+	t=1718887970; cv=none; b=e5ybH+hrPQyUZpxO47qtj4twDM7ezKZUrxIKPvNJyDlzR62yhcDZDzYf++bSluxl1cDexqWFQ+RPm7HBE7LXZuArxms+ZqFDHkdfftA6ARt1pesivB+agu1IQCAdc4bXO+hQht0B7d8cpSVAGF2fZvR3ZlNW8V20lmrBKmFl9gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718887900; c=relaxed/simple;
-	bh=rn/xKc0QZnyQyw1/MqaN1bPzDjoef8kwv0cOwEoNu/w=;
+	s=arc-20240116; t=1718887970; c=relaxed/simple;
+	bh=dv1i2TQU0nKuB2IieKXcn7PpqUJZiWJE8IJP51nJzXo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j7wFVlxtSQs3d+VgCYefGZ90cNibM/5fiuJn/tuVHXiV5kyrSWYxDYrVRGY8g80DWPmwIE8M2/oLivckzouoH8tPPDU4jn5xf/hBj+/vNsN/vUmPt1XRsZ1Z/lE9L0avLFRSnq6y9P4LD0mTOxSqXZlYHnhMCQceSEVl8b4OSwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vdbygXFK; arc=none smtp.client-ip=95.215.58.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=b6S/CssnUAADD4tsM1OSw7FPu/1WZCi2TS3+KtNFcp7Hfq4QY0vnQYBBXceE59EiH/ZmBOJEn5b/njyKtlUSSJLcwk2SGfsig4cikxw0ksU1FnCnJQ9jqYf6MM2jzP5bMLxgwhMGkhJj4F1jEyUwyG8XC8QV8XwxZbZnRqHnJCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jKhYcvqi; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vdbygXFK"
-X-Envelope-To: youling.tang@linux.dev
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jKhYcvqi"
+X-Envelope-To: ddiss@suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718887895;
+	t=1718887965;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QYG5eZDYkp3gQEsRvvA/OGgggUaYoDnBXE/aW0ZGwlc=;
-	b=vdbygXFKDLP5mcwftryurjdr7XS4npos/O6d5YOpYhNsbfR7vuGfv/poNO4LwGlkTgg3BF
-	p1ETUDD5j+to2eaXmEo/HJrmZQN5s8fTgQpzdgilrwRlAmT2I2Qtq3AU3kseP6/hJ4aHUN
-	r6wtsAoBf7WSU6zv5035ZYaUXiUocR0=
+	bh=DeqW5qGLeZSHZqZPPWUDA3lMNb0Krxbb27wVAhOXPcE=;
+	b=jKhYcvqiKRY1NRzsnN2qQjYAw7TiXFe81xPf1YOGAlJxw+s+jv1HtYfqzRFdh+OFiDHyL/
+	PFlYT7q3kP4H0O1Y+oI1bRURt2w5dXEgUOcvbbiioJBB7yK/X/nQzCbaRADF7tRjLDNgLJ
+	bpEX4dZ0YjVzimOV1+ZrPx8eN5Axvf0=
 X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: tangyouling@kylinos.cn
-Date: Thu, 20 Jun 2024 08:51:30 -0400
+Date: Thu, 20 Jun 2024 08:52:43 -0400
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Youling Tang <youling.tang@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Youling Tang <tangyouling@kylinos.cn>
-Subject: Re: [PATCH] bcachefs: fix alignment of VMA for memory mapped files
- on THP
-Message-ID: <myw2h2mm7725gegy6pbqf4qpzghrfypnlbn4z6rh6idwfjzpjc@chzxxg47sw77>
-References: <20240620012242.106698-1-youling.tang@linux.dev>
+To: David Disseldorp <ddiss@suse.de>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [tools PATCH 1/1] key: use c_long type for keyctl_search()
+ helper fn
+Message-ID: <d2b4vsppw3tsfmy3rndnf7ah42oes36rypodw2uejqzlw7glpb@oal2dp4ke6zp>
+References: <20240620045804.27888-1-ddiss@suse.de>
+ <20240620045804.27888-2-ddiss@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -47,24 +45,31 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240620012242.106698-1-youling.tang@linux.dev>
+In-Reply-To: <20240620045804.27888-2-ddiss@suse.de>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jun 20, 2024 at 09:22:42AM +0800, Youling Tang wrote:
-> From: Youling Tang <tangyouling@kylinos.cn>
+On Thu, Jun 20, 2024 at 02:58:05PM +1000, David Disseldorp wrote:
+> The keyctl_search() C function returns a long, which is already
+> reflected in the KeyHandle._id type. The search_keyring() helper
+> function currently returns a Result<i64>, which breaks 32-bit builds for
+> e.g. armv7l:
+>   error[E0308]: mismatched types
+>      --> src/key.rs:121:16
+>       |
+>   121 |             Ok(key_id)
+>       |             -- ^^^^^^ expected `i64`, found `i32`
+>       |             |
+>       |             arguments to this enum variant are incorrect
+> ...
+>   error[E0308]: mismatched types
+>      --> src/key.rs:135:24
+>       |
+>   135 |                 _id:   id,
+>       |                        ^^ expected `i32`, found `i64`
 > 
-> With CONFIG_READ_ONLY_THP_FOR_FS, the Linux kernel supports using THPs
-> for read-only mmapped files, such as shared libraries. However, the
-> kernel makes no attempt to actually align those mappings on 2MB
-> boundaries, which makes it impossible to use those THPs most of the
-> time. This issue applies to general file mapping THP as well as
-> existing setups using CONFIG_READ_ONLY_THP_FOR_FS. This is easily
-> fixed by using thp_get_unmapped_area for the unmapped_area function
-> in bcachefs, which is what ext2, ext4, fuse, xfs and btrfs all use.
+> Fix this by changing search_keyring() to return a Result<c_long>.
 > 
-> Similar to commit b0c582233a85 ("btrfs: fix alignment of VMA for
-> memory mapped files on THP").
-> 
-> Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+> Fixes: f72ded6a ("fix(key): search for key in all relevant keyrings")
+> Signed-off-by: David Disseldorp <ddiss@suse.de>
 
-Thanks - applied
+Thanks, applied
