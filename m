@@ -1,96 +1,110 @@
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A671AD9D3
-	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Jun 2024 13:36:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EAF748CCD;
+	Thu, 20 Jun 2024 13:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718890609; cv=none; b=HUkssy0zLdQJENzfotD7ju6TuRJg1iEL53uvGUERrVeccLTmIx5izFyWSwcLHLCKrA2tvry37t5ldiFP/4WmLl+yCs/COB5LVAJeWTGbEmio8zwowYLLJLdr4r9Qv5paIEI8vsa5UE6SOKZvpLKK58a5knJpFjRQ6aGtnQ4O5Uc=
+	t=1718891656; cv=none; b=C97SFtVnQ1uXWdyk6pxUtxz71H1TVQqOwmOyFaUS15O3FxYyIcdOWWthgpmX5k/BqAgWnOsUoXu9bSZMe2KNMMZFg/5p5u8Hr0HmxoReo6kqzGrsDTycoWFcGcuyZYqrkDBx8XVuy+u39BNkTTnEnmr94mILMtqAoF7DbsjTVbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718890609; c=relaxed/simple;
-	bh=+sWTWDC3ikPWsAV1IbSylnunXKZryaaHQW9aHe9Mpo8=;
+	s=arc-20240116; t=1718891656; c=relaxed/simple;
+	bh=NOQGTWXdj9G8iFM3066oMr6y2PwQOndNQ8YChh2uMDg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gKtgSESfRVydauxfa1DfOw45cGMOb0NCQixMBYGv3cNyo6ficHYTaHY5zFKlgdU4OUyWkwSltd/83q6BckuV/K0R5E75MEnGW+/hi7aueynk6VoJl/vpydZ8Kx639+UjQh0WPfWcInSLwyl9tjb2I7ckGabVW28yfb6klmxBXxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lR8yolg9; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=dQ1iYlguL3n3H6VlUAnVuxvxI+GQCmI6c0whBrtj7or9R9DuUOlHTWpu8f7pYqrz6h0/xcklv7nkL6J1vAkhvCvTOjEo8WYdNmjGwEsDe8qYlCAdVH+OWbP5BtIKRoDKBzFwVeizmSgqD/2g+Tp0Nehstl8Zzvw7DJYS+5JYYio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Lo2SxhaN; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lR8yolg9"
-X-Envelope-To: lihongbo22@huawei.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718890605;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=46Y87jZfUvizmkvEkJBUYNPGXnI+S4cKabQ3/FwgEYI=;
-	b=lR8yolg9taBy7u6SE50bHxnsAjDkQO0HDSLKvY1m30IE7QIqiJRVWnRH+wlH8BdwGQ1ZJF
-	HYxBMN63a7+uEDw4vznNxY392+mAopcJUIjJF6/pMKB4iMCHION5ua+z9wcTuM81Xn+PR5
-	XqeTVNljlqcJwXvGwU2EILMz4B3j35o=
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-fsdevel@vger.kernel.org
-X-Envelope-To: linux-block@vger.kernel.org
-X-Envelope-To: axboe@kernel.dk
-X-Envelope-To: hch@lst.de
-Date: Thu, 20 Jun 2024 09:36:42 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Hongbo Li <lihongbo22@huawei.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-block@vger.kernel.org, axboe@kernel.dk, hch@lst.de
-Subject: bvec_iter.bi_sector -> loff_t? (was: Re: [PATCH] bcachefs: allow
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Lo2SxhaN"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=nwO0+HfO+dip8/h67A8BnvwxWh0on9U35/Dl4WuOIfU=; b=Lo2SxhaN0/KQyxYCFidkI/xAp9
+	DFEjgCJIfDlorCZKzKfJG65hYbIY7OmkW3yhLnLJxMsB43CR2rBoqqln1K8R1S+i7nWmZkIBPxOrp
+	T/P7Q0KdNaD50g62HkP06PrX+ugCfcPOZaRfCJZ0C8u/waDheUEBMzrJEeWWSehNC1sxEhE94Xnjn
+	gI2Pzczh99bExFatTf25waUVQmyZAlWFH7+9VHw08wI+F96ypOmZFfp5UzTHrwA7K2ydkH8ne0j4p
+	yru1fLYtX0fKMpf1fOMOsn/DOIyBxQtr6y+VixWy2Ui0q9b1FNO/ZZKrFUujzwSdwZ5WaBGmDt3XM
+	JkHrFh5A==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sKIEr-000000067er-2uG5;
+	Thu, 20 Jun 2024 13:54:09 +0000
+Date: Thu, 20 Jun 2024 14:54:09 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Hongbo Li <lihongbo22@huawei.com>, linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+	axboe@kernel.dk, hch@lst.de
+Subject: Re: bvec_iter.bi_sector -> loff_t? (was: Re: [PATCH] bcachefs: allow
  direct io fallback to buffer io for) unaligned length or offset
-Message-ID: <bbf7lnl2d5sxdzqbv3jcn6gxmtnsnscakqmfdf6vj4fcs3nasx@zvjsxfwkavgm>
+Message-ID: <ZnQ0gdpcplp_-aw7@casper.infradead.org>
 References: <20240620132157.888559-1-lihongbo22@huawei.com>
+ <bbf7lnl2d5sxdzqbv3jcn6gxmtnsnscakqmfdf6vj4fcs3nasx@zvjsxfwkavgm>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240620132157.888559-1-lihongbo22@huawei.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bbf7lnl2d5sxdzqbv3jcn6gxmtnsnscakqmfdf6vj4fcs3nasx@zvjsxfwkavgm>
 
-On Thu, Jun 20, 2024 at 09:21:57PM +0800, Hongbo Li wrote:
-> Support fallback to buffered I/O if the operation being performed on
-> unaligned length or offset. This may change the behavior for direct
-> I/O in some cases.
+On Thu, Jun 20, 2024 at 09:36:42AM -0400, Kent Overstreet wrote:
+> On Thu, Jun 20, 2024 at 09:21:57PM +0800, Hongbo Li wrote:
+> > Support fallback to buffered I/O if the operation being performed on
+> > unaligned length or offset. This may change the behavior for direct
+> > I/O in some cases.
+> > 
+> > [Before]
+> > For length which aligned with 256 bytes (not SECTOR aligned) will
+> > read failed under direct I/O.
+> > 
+> > [After]
+> > For length which aligned with 256 bytes (not SECTOR aligned) will
+> > read the data successfully under direct I/O because it will fallback
+> > to buffer I/O.
+
+This is against the O_DIRECT requirements.
+
+   O_DIRECT
+       The O_DIRECT flag may impose alignment restrictions on  the  length  and
+       address  of  user-space  buffers  and the file offset of I/Os.  In Linux
+       alignment restrictions vary by filesystem and kernel version  and  might
+       be  absent  entirely.   The  handling  of  misaligned O_DIRECT I/Os also
+       varies; they can either fail with EINVAL or fall back to buffered I/O.
+
+       Since Linux 6.1, O_DIRECT support and alignment restrictions for a  file
+       can  be  queried using statx(2), using the STATX_DIOALIGN flag.  Support
+       for STATX_DIOALIGN varies by filesystem; see statx(2).
+
+       Some filesystems provide their  own  interfaces  for  querying  O_DIRECT
+       alignment restrictions, for example the XFS_IOC_DIOINFO operation in xf‐
+       sctl(3).  STATX_DIOALIGN should be used instead when it is available.
+
+       If none of the above is available, then direct I/O support and alignment
+       restrictions  can  only  be  assumed  from  known characteristics of the
+       filesystem, the individual file, the underlying storage  device(s),  and
+       the  kernel  version.  In Linux 2.4, most filesystems based on block de‐
+       vices require that the file offset and the length and memory address  of
+       all  I/O  segments  be multiples of the filesystem block size (typically
+       4096 bytes).  In Linux 2.6.0, this was relaxed to the logical block size
+       of the block device (typically 512 bytes).   A  block  device's  logical
+       block  size  can be determined using the ioctl(2) BLKSSZGET operation or
+       from the shell using the command:
+
+           blockdev --getss
+
+> The catch is that struct bio - bvec_iter - represents addresses with a
+> sector_t, and we'd want that to be a loff_t.
 > 
-> [Before]
-> For length which aligned with 256 bytes (not SECTOR aligned) will
-> read failed under direct I/O.
-> 
-> [After]
-> For length which aligned with 256 bytes (not SECTOR aligned) will
-> read the data successfully under direct I/O because it will fallback
-> to buffer I/O.
-> 
-> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+> That's something we should do anyways; everything else in struct bio can
+> represent a byte-aligned io, bvec_iter.bi_sector is the only exception
+> and fixing that would help in consolidating our various scatter-gather
+> list data structures - but we'd need buy-in from Jens and Christoph
+> before doing that.
 
-I don't think we want to do this in bcachefs - we can't efficiently mix
-buffered and O_DIRECT IO on the same file. This is true on any
-filesystem, but even moreso on bcachefs as we guarantee strict page
-cache consistency (O_DIRECT IO blocks pagecache fills, and vice versa).
+I'm against it.  Block devices only do sector-aligned IO and we should
+not pretend otherwise.
 
-Better way to do that would be to make the bcachefs read path natively
-handle unaligned IO, which conceptually wouldn't be difficult since our
-read path already has support for bouncing when necessary (i.e. reading
-only part of a checksummed or compressed extent).
-
-The catch is that struct bio - bvec_iter - represents addresses with a
-sector_t, and we'd want that to be a loff_t.
-
-That's something we should do anyways; everything else in struct bio can
-represent a byte-aligned io, bvec_iter.bi_sector is the only exception
-and fixing that would help in consolidating our various scatter-gather
-list data structures - but we'd need buy-in from Jens and Christoph
-before doing that.
-
-As an intermediate solution (i.e., I would want it clearly labelled as a
-hack to be removed when the proper solution is merged and an explanation
-of what we actually want), we could add a loff_t to bch_read_bio, and
-only initialize bi_iter.bi_sector right before submit_bio() when we know
-our loff_t is properly aligned. But that'd be pretty ugly, we'd have to
-audit and probably add new helpers for everywhere we use a bvec_iter in
-the read path.
