@@ -1,51 +1,49 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F4A91B010E
-	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Jun 2024 15:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E13519EEBC;
+	Thu, 20 Jun 2024 16:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718898231; cv=none; b=jMNRusjMGv75/Z0G3F2ukvW1MIeuHgpor5cG0jMR0v+D9yMm8elcmjsOn5/XX0XOVrabvvACCt619VoXSCVqzCnXSeacXbWiSzZT5o/AogS7fgC2/Y0HWL0LXX+QKSIMbON27nuxUZuv1rdygx7NeTYovVrSLmp3b3vRFHmQzek=
+	t=1718900791; cv=none; b=YGHojYDEX0llV0GqYco8NSjcC4bjR5BGxhOGG6t0sSxGtVlJ84Y26qERWFKTn9gSFBw6QE4+oF5ifnTTor2olPZkStjYyPRN0d+ViAvTQVv9QP8LaE3aG6kdA8ws87Bp8rdoJgfsVRQoaL983EDFHwVH1GYM8dLC1M9fi1HGGcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718898231; c=relaxed/simple;
-	bh=w84aznMklvTomJKm2B/isoxH6+y5xbG2IWzD5jYKSdM=;
+	s=arc-20240116; t=1718900791; c=relaxed/simple;
+	bh=XxaT3nLSEdsGIJw+4O6ApGSvwQbasNX6lodtpqcsiio=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R2xka+wBUxcN7OZ0pKhhUedlQNIAwktkfjsOqeG2UxSx9eycseoLcxxsTmNKbu1BlIlcai2OqlmoCoTiHRD96r8JRLSzjdb+Qp5TTPAp0ImQRMOB6D/bM3WEtBDcU5oMnLLIQsBdRO1UeE2tRt0rOAyOiu3xVc8UWK6NX6Xv9Us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=m8h4Sn6T; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=BNNQ0BClGbbw+HzXT4fGCTVaQP0cUrZ+jMc/bEZ2Hp4XDVG4ZGCVTb4QfpC5IfB+IkbIA185O5aGTI0vyDvlefeEKN4K7+4udCCaKMaTRLjF5RW8PRdInCI0kreQ2p7JqYfNZjPpQsA6nfera9CXcFhzr9ucTEWL1Qf/8TBqHCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SgoUfhsz; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="m8h4Sn6T"
-X-Envelope-To: hch@lst.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718898228;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KR3OdNe6f+nFOK38PD6sSn1rboAVawph2U2KfmOAbN4=;
-	b=m8h4Sn6TpfyYEIfU43oG7do1ZqE0IVoBCNOvEBg4oxTDcx/PISBU/xTLhhkxhTRit9AWYS
-	RUZPQkm88pX/lfDkWfi+LQDmjq0CzpE4Kkuoc5GbAZD0Fd69KR7ohvCnYd1NR+j2zh3G4N
-	6n0ON49f1X2w2KHsmTjdtmmbUHqR4fE=
-X-Envelope-To: willy@infradead.org
-X-Envelope-To: lihongbo22@huawei.com
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-fsdevel@vger.kernel.org
-X-Envelope-To: linux-block@vger.kernel.org
-X-Envelope-To: axboe@kernel.dk
-Date: Thu, 20 Jun 2024 11:43:44 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Matthew Wilcox <willy@infradead.org>, 
-	Hongbo Li <lihongbo22@huawei.com>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-block@vger.kernel.org, axboe@kernel.dk
-Subject: Re: bvec_iter.bi_sector -> loff_t? (was: Re: [PATCH] bcachefs: allow
- direct io fallback to buffer io for) unaligned length or offset
-Message-ID: <hehodpowajdsfscwf7y3yaqsu2byhzkwpsiaesj5sz722efzg4@gwnod5qe7ed4>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SgoUfhsz"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92BC2C2BD10;
+	Thu, 20 Jun 2024 16:26:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718900791;
+	bh=XxaT3nLSEdsGIJw+4O6ApGSvwQbasNX6lodtpqcsiio=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SgoUfhszSeuAtRk6+Zn1XWS2n7FCvAAyQn9Y5L3snT134zmlwZlrSiUaiFbNM/koo
+	 P2nPD4ng5TcRRfaf3jt2lFncH3nj/SHFLW9+h5bAzvlLEAtizhtBAoRcQeOg6Xlbdv
+	 mhaidGp6xZ3HRj6wFALxONfZ6GtOvsb/akS4mx81jBlRcwjLzgkNavXiBniCy0AtyF
+	 i6VLlcv4fyQ70aejBdTd04dr3tp91XTSpZD8obA6R7MLLZg259a+eBF/Jn+deoRrwZ
+	 QTcF5dHX1l0tpaSlw5gTtLKtV/Ql62Jh3shg91d/vCR5KCvaYmYK026iEG3kF89HPZ
+	 hBotBYOPLT5rw==
+Date: Thu, 20 Jun 2024 10:26:28 -0600
+From: Keith Busch <kbusch@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Hongbo Li <lihongbo22@huawei.com>, linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+	hch@lst.de
+Subject: Re: bvec_iter.bi_sector -> loff_t?
+Message-ID: <ZnRYNKV6DqKAbxDx@kbusch-mbp.dhcp.thefacebook.com>
 References: <20240620132157.888559-1-lihongbo22@huawei.com>
  <bbf7lnl2d5sxdzqbv3jcn6gxmtnsnscakqmfdf6vj4fcs3nasx@zvjsxfwkavgm>
  <ZnQ0gdpcplp_-aw7@casper.infradead.org>
- <20240620153050.GA26369@lst.de>
+ <pfxno4kzdgk6imw7vt2wvpluybohbf6brka6tlx34lu2zbbuaz@khifgy2v2z5n>
+ <ZnRBkr_7Ah8Hj-i-@casper.infradead.org>
+ <0f74318e-2442-4d7d-b839-2277a40ca196@kernel.dk>
+ <ZnRHi3Cfh_w7ZQa1@casper.infradead.org>
+ <861a0926-40bf-4180-8092-c84a3749f1cf@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -54,40 +52,45 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240620153050.GA26369@lst.de>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <861a0926-40bf-4180-8092-c84a3749f1cf@kernel.dk>
 
-On Thu, Jun 20, 2024 at 05:30:50PM +0200, Christoph Hellwig wrote:
-> On Thu, Jun 20, 2024 at 02:54:09PM +0100, Matthew Wilcox wrote:
-> > I'm against it.  Block devices only do sector-aligned IO and we should
-> > not pretend otherwise.
+On Thu, Jun 20, 2024 at 09:18:58AM -0600, Jens Axboe wrote:
+> On 6/20/24 9:15 AM, Matthew Wilcox wrote:
+> > On Thu, Jun 20, 2024 at 08:56:39AM -0600, Jens Axboe wrote:
+> >> On 6/20/24 8:49 AM, Matthew Wilcox wrote:
+> >>> On Thu, Jun 20, 2024 at 10:16:02AM -0400, Kent Overstreet wrote:
+> >>> I'm more sympathetic to "lets relax the alignment requirements", since
+> >>> most IO devices actually can do IO to arbitrary boundaries (or at least
+> >>> reasonable boundaries, eg cacheline alignment or 4-byte alignment).
+> >>> The 512 byte alignment doesn't seem particularly rooted in any hardware
+> >>> restrictions.
+> >>
+> >> We already did, based on real world use cases to avoid copies just
+> >> because the memory wasn't aligned on a sector size boundary. It's
+> >> perfectly valid now to do:
+> >>
+> >> struct queue_limits lim {
+> >> 	.dma_alignment = 3,
+> >> };
+> >>
+> >> disk = blk_mq_alloc_disk(&tag_set, &lim, NULL);
+> >>
+> >> and have O_DIRECT with a 32-bit memory alignment work just fine, where
+> >> before it would EINVAL. The sector size memory alignment thing has
+> >> always been odd and never rooted in anything other than "oh let's just
+> >> require the whole combination of size/disk offset/alignment to be sector
+> >> based".
+> > 
+> > Oh, cool!  https://man7.org/linux/man-pages/man2/open.2.html
+> > doesn't know about this yet; is anyone working on updating it?
 > 
-> While I agree with that, the bvec_iter is actually used in a few other
-> places and could be used in more, and the 512-byte sector unit bi_sector
-> is the only weird thing that's not useful elsewhere.  So turning that
-> into a
-> 
-> 	u64 bi_addr;
-> 
-> that is byte based where the meaning is specific to the user would
-> actually be kinda nice.  For traditional block users we'd need a
-> bio_sector() helpers similar to the existing bio_sectors() one,
-> but a lot of non-trivial drivers actually need to translated to
-> a variable LBA-based addressing, which would be (a tiny little bit)
-> simpler with the byte address.   As bi_size is already in bytes
-> it would also fit in pretty naturally with that.
-> 
-> The only thing that is really off putting is the amount of churn that
-> this would cause.
+> Probably not... At least we do have STATX_DIOALIGN which can be used to
+> figure out what the alignment is, but I don't recall if any man date
+> updates got done. Keith may remember, CC'ed.
 
-I'm being imprecise when I just say 'struct bio'; there's things in
-there that are block layer specific but there are also things in there
-you want that aren't block layer specific (completion callback, write
-flags, s/bi_bdev/bi_inode and that as well, perhaps). It's not at all
-clear to me we'd want to deal with the churn to split that up or make
-bio itself less block layer specific (although, but when I say 'aiming
-for commality with struct bio' that sort of thing is what I have in
-mind.
+The man page already recommends statx if available, which tells you
+everything you need to know about your device's direct io alignment
+requirements. The man only suggests block size alignment for older
+kernels, so I think it's fine as-is, no?
 
-But more immediately, yes - bi_addr as all we need for this, and like
-you said I think it'd be a worthwhile change.
+You can also query the queue's "dma_alignment" sysfs attribute.
