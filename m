@@ -1,113 +1,111 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0957A4D5AB
-	for <linux-bcachefs@vger.kernel.org>; Fri, 21 Jun 2024 01:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5DD8289A;
+	Fri, 21 Jun 2024 02:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718934513; cv=none; b=TMjx+9OcRpJuAxvblh042BPXtW4vHVFroB08TQ/KGaGVdB0fjlAln3zyCp5rYM6Q+5+A2wyo8Rf4DbGhnJLkKeG9TSqu7ig2Egx3orZXRV07ZQWH1OYoJvQMd/ey3FoXHojXEm/ZBlhQkdJxB7FNjt0cwzfgOFrsNzJTvSZ98Qg=
+	t=1718937456; cv=none; b=bAHgqQjScZ4u2Ysc74AlAf3AcywZoSagBBTRhOKzyAiBxZe0/ULnnZC90Cz0eN8BIBHHpkJBBWBwQRg0flNIK6+dmJseQCPgKUXLuEA0vSVqZkvuYbhWX4KsRlECP0Z9dwnSYjDvIkN8bHku0IOP3JLI5yQ8Mzdqzpo3Wh2zE2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718934513; c=relaxed/simple;
-	bh=C20k3nH7o9hsCsIoyQnvr1uaLaVR8FrP/lZwuxvZwY8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fIFKjz5OUahXZsujxoH49gxR63pg0LPMBaK6cG0M2rO11V8pUNHbbEuP3o6HC6P4o5wF3BDmvtrgKT6zVB4IMSH594swSteDeu+a9S1FvS05XcGl8E36PXMAOkFM3oE7w84UfUuxqyrmFk/x4Yn+G2Mc3QHUQRnKvfJOWO960pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EvLayqPT; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EvLayqPT"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1718934511;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZSuWI+jlhsZNGl6NhEeeUG2215lkvYbokyYh4ORxFeM=;
-	b=EvLayqPTeezxvd2u1jTMIYruI+xVYitbXFiLPiRSanCtPyLUbqRFuWYtmJAMMzPmbGFWGR
-	sdWBHGnJUPqjZkJosmqNB6JSBryibDuhblBRk0WPv+coOHpNAhqhkWnU3ubFRRFozfkKNk
-	4FgA5kl+EqyAo0nestqDtmT3fclw7a4=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-335-VMi9FT0aNNGD-M8cDcxcXA-1; Thu,
- 20 Jun 2024 21:48:25 -0400
-X-MC-Unique: VMi9FT0aNNGD-M8cDcxcXA-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C439E195608B;
-	Fri, 21 Jun 2024 01:48:23 +0000 (UTC)
-Received: from fedora (unknown [10.72.112.135])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3A65119560B6;
-	Fri, 21 Jun 2024 01:48:16 +0000 (UTC)
-Date: Fri, 21 Jun 2024 09:48:11 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Christoph Hellwig <hch@lst.de>, Matthew Wilcox <willy@infradead.org>,
-	Hongbo Li <lihongbo22@huawei.com>, linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-	axboe@kernel.dk, ming.lei@redhat.com
-Subject: Re: bvec_iter.bi_sector -> loff_t? (was: Re: [PATCH] bcachefs: allow
- direct io fallback to buffer io for) unaligned length or offset
-Message-ID: <ZnTb25qQxSi+tNOk@fedora>
-References: <20240620132157.888559-1-lihongbo22@huawei.com>
- <bbf7lnl2d5sxdzqbv3jcn6gxmtnsnscakqmfdf6vj4fcs3nasx@zvjsxfwkavgm>
- <ZnQ0gdpcplp_-aw7@casper.infradead.org>
- <20240620153050.GA26369@lst.de>
- <hehodpowajdsfscwf7y3yaqsu2byhzkwpsiaesj5sz722efzg4@gwnod5qe7ed4>
+	s=arc-20240116; t=1718937456; c=relaxed/simple;
+	bh=LfFYFCNK5qm76GnB8FgDfN7JiY7OMy1sPc/cPv+eWeY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DUcv86/kcdOIJqLmzdhFT2IIam+HGRcgHRjzDKxwd0sRblhuz9zsk0ABhRnE7Zr/ZurR7pvL+eGBsR2x8jHbM2X3PYi1acSu9TFPnW4/5KVHtMCZlCR8/jYhGQ/u8+9AvlGIL8oRT+RuKCHx2IO7bJcwUGLJ+d8GIe7R/L3eAoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4W51cX4zjbzxSKr;
+	Fri, 21 Jun 2024 10:33:16 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id A1EF6140158;
+	Fri, 21 Jun 2024 10:37:30 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 21 Jun 2024 10:37:30 +0800
+Message-ID: <d7a104b4-fea8-4c61-b184-ddc89bf007c4@huawei.com>
+Date: Fri, 21 Jun 2024 10:37:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <hehodpowajdsfscwf7y3yaqsu2byhzkwpsiaesj5sz722efzg4@gwnod5qe7ed4>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+User-Agent: Mozilla Thunderbird
+Subject: Re: bvec_iter.bi_sector -> loff_t?
+To: Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>, Kent
+ Overstreet <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-block@vger.kernel.org>, <hch@lst.de>
+References: <20240620132157.888559-1-lihongbo22@huawei.com>
+ <bbf7lnl2d5sxdzqbv3jcn6gxmtnsnscakqmfdf6vj4fcs3nasx@zvjsxfwkavgm>
+ <ZnQ0gdpcplp_-aw7@casper.infradead.org>
+ <pfxno4kzdgk6imw7vt2wvpluybohbf6brka6tlx34lu2zbbuaz@khifgy2v2z5n>
+ <ZnRBkr_7Ah8Hj-i-@casper.infradead.org>
+ <0f74318e-2442-4d7d-b839-2277a40ca196@kernel.dk>
+Content-Language: en-US
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <0f74318e-2442-4d7d-b839-2277a40ca196@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Thu, Jun 20, 2024 at 11:43:44AM -0400, Kent Overstreet wrote:
-> On Thu, Jun 20, 2024 at 05:30:50PM +0200, Christoph Hellwig wrote:
-> > On Thu, Jun 20, 2024 at 02:54:09PM +0100, Matthew Wilcox wrote:
-> > > I'm against it.  Block devices only do sector-aligned IO and we should
-> > > not pretend otherwise.
-> > 
-> > While I agree with that, the bvec_iter is actually used in a few other
-> > places and could be used in more, and the 512-byte sector unit bi_sector
-> > is the only weird thing that's not useful elsewhere.  So turning that
-> > into a
-> > 
-> > 	u64 bi_addr;
-> > 
-> > that is byte based where the meaning is specific to the user would
-> > actually be kinda nice.  For traditional block users we'd need a
-> > bio_sector() helpers similar to the existing bio_sectors() one,
-> > but a lot of non-trivial drivers actually need to translated to
-> > a variable LBA-based addressing, which would be (a tiny little bit)
-> > simpler with the byte address.   As bi_size is already in bytes
-> > it would also fit in pretty naturally with that.
-> > 
-> > The only thing that is really off putting is the amount of churn that
-> > this would cause.
+
+
+On 2024/6/20 22:56, Jens Axboe wrote:
+> On 6/20/24 8:49 AM, Matthew Wilcox wrote:
+>> On Thu, Jun 20, 2024 at 10:16:02AM -0400, Kent Overstreet wrote:
+>> I'm more sympathetic to "lets relax the alignment requirements", since
+>> most IO devices actually can do IO to arbitrary boundaries (or at least
+>> reasonable boundaries, eg cacheline alignment or 4-byte alignment).
+>> The 512 byte alignment doesn't seem particularly rooted in any hardware
+>> restrictions.
 > 
-> I'm being imprecise when I just say 'struct bio'; there's things in
-> there that are block layer specific but there are also things in there
-> you want that aren't block layer specific (completion callback, write
-> flags, s/bi_bdev/bi_inode and that as well, perhaps). It's not at all
-> clear to me we'd want to deal with the churn to split that up or make
-> bio itself less block layer specific (although, but when I say 'aiming
-> for commality with struct bio' that sort of thing is what I have in
-> mind.
+> We already did, based on real world use cases to avoid copies just
+> because the memory wasn't aligned on a sector size boundary. It's
+> perfectly valid now to do:
 > 
-> But more immediately, yes - bi_addr as all we need for this, and like
-> you said I think it'd be a worthwhile change.
-
-Still not clear why you need unaligned bi_addr for bio, if this bio needs
-to call submit_bio(), it has to be aligned. Otherwise, you could invent any
-structure for this purpose, and the structure can be payload of bio for
-avoiding extra allocation, even it can be FS generic structure.
-
+> struct queue_limits lim {
+> 	.dma_alignment = 3,
+> };
+> 
+> disk = blk_mq_alloc_disk(&tag_set, &lim, NULL);
+> 
+> and have O_DIRECT with a 32-bit memory alignment work just fine, where
+Does this mean that file system can relax its alignment restrictions on 
+offset or memory (not 512 or 4096)? Is it necessary to add alignment 
+restrictions in the super block of file system? Because there are 
+different alignment restrictions for different storage hardware driver.
 
 Thanks,
-Ming
-
+Hongbo
+> before it would EINVAL. The sector size memory alignment thing has
+> always been odd and never rooted in anything other than "oh let's just
+> require the whole combination of size/disk offset/alignment to be sector
+> based".
+> 
+>> But size?  Fundamentally, we're asking the device to do IO directly to
+>> this userspace address.  That means you get to do the entire IO, not
+>> just the part of it that you want.  I know some devices have bitbucket
+>> descriptors, but many don't.
+> 
+> We did poke at that a bit for nvme with bitbuckets, but I don't even
+> know how prevalent that support is in hardware. Definitely way iffier
+> and spotty than the alignment, where that limit was never based on
+> anything remotely resembling a hardware restraint.
+> 
+>>>> I'm against it.  Block devices only do sector-aligned IO and we should
+>>>> not pretend otherwise.
+>>>
+>>> Eh?
+>>>
+>>> bio isn't really specific to the block layer anyways, given that an
+>>> iov_iter can be a bio underneath. We _really_ should be trying for
+>>> better commonality of data structures.
+>>
+>> bio is absolutely specific to the block layer.  Look at it:
+> 
+> It's literally "block IO", so would have to concur with that.
+> 
