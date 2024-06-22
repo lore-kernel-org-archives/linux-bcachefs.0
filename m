@@ -1,141 +1,63 @@
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A9579FE
-	for <linux-bcachefs@vger.kernel.org>; Sat, 22 Jun 2024 14:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E703C16F913;
+	Sat, 22 Jun 2024 16:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719064836; cv=none; b=kZorO4nL0iBokSg8j58zAb7Up6qbxMUoUxc03AEmens4gNjRnuiipTWSaaAIHayr7RDgik7orw5FrhbXwtF3T7KzIO+0vTYkQc5IS6Uw3dhFjaUZthzi1FJcq1Bw5fUf3NFaojChpPD3iuI60PLr10FfWwAUdGcYZEBrSgXATNk=
+	t=1719072607; cv=none; b=GqBcwGkeBcmkhH2kSLWyI7+vVXTO/eqZDJOxn0kscgXClHJIOhQ6bsf2j0plO4A/DfaR9kS7D76BoCwakbN2Am9JJ8OYeKMUeWnG8P1h6Dow86X7vYfUbMmyjSxW9Va+dzRxDb+HAUfHWE+gK/486NgBYJ+UAuTtpo7atQ2Oz0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719064836; c=relaxed/simple;
-	bh=fs6lZuo2LUc1dax5XxIA4Tuxi1wzIBvcoBGSs24+ExE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=g7BuAx7/THdzb8WTqJhF1Qch7L0xVSLnBGVIxITUl8f9115gWOLNo1k7j7HH1dmANPIPCd9GGIEEYmvJMXcxUNYFQ06vXhxiAjuCvH5ZaDwiMwJd3aZnCuos3JbADwLEOF4S0JPfTF1qNSsQqOEFE048KEwHnvF1NMQNWSxgjdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M0t2dPWY; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1719072607; c=relaxed/simple;
+	bh=WpxSIouvBFxC9L1AhBoKoMtOGKHeq80LvsCWNT85bvg=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=RTKwN9XYQqm0f6FT0WxmvRYw2fG2XwUc0mK5pSgT0zd2RkIuaw3vI50fYob4MBH35T154wqgyraeF2f5WBK9wGarWGUQFPbzQew3oxOVl+5AjkKZ54kQn2xAfyYB+YyTX8BGoT9DOFQgMn7K38kEFoZX2djMlHT0+i1ryAucczo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q1q57vLr; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M0t2dPWY"
-X-Envelope-To: torvalds@linux-foundation.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1719064830;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=5u24kxgSySrZQXwxrbt603z/pcXZVEqocR9DEgAawuc=;
-	b=M0t2dPWYtgK2mgJU7uhtotSGzpTYNTxfa4vJW428fdsIDouoNqhs98A33dgRyAwOOiDZ8G
-	pqJuWXKRhSecMi57Fc0N7xnoG6VsfdS4yZ8jifN5chygrRVMCaQR+rD7ikK6qyWD1kkmHT
-	vpwT5GcAasmG91mV8mW03xqTaL4jIdw=
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-fsdevel@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-Date: Sat, 22 Jun 2024 10:00:27 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for 6.10-rc5
-Message-ID: <nbed7rrwexwonrtxvv6zmlxrvheicxxx6vlzcq4hzcxhrtm7ps@s5nkcab6f3cp>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q1q57vLr"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C433AC4AF07;
+	Sat, 22 Jun 2024 16:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719072606;
+	bh=WpxSIouvBFxC9L1AhBoKoMtOGKHeq80LvsCWNT85bvg=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=Q1q57vLrDLngc7kshcOQ6/mqNeWL/MNSs2GBG05LJxpN/HIX1CBzsQ6ZK+nSDw7uN
+	 yfsUcvxb1DBfyj/TgZGj1wDGR7hLL8RLVokCgKsGHVC4PuJwvBrxPbYf2nKX4nLVhw
+	 CKGNLeE1CXls9iQyglCGu3ArsDswF095k5+4WzdNrzZFupa6AGdP4I5iBkVxtDMXW/
+	 1Rs/y2a8sUJ44YH7IYuHT+vMec7SXCnX20l/ftBA7JQ1QS1K0xvLhTbd0EUp4g6gSJ
+	 69jIn8nkJvP7ZeJNTp6f0KjZ1ybmndcV7nEVC/gtSbqNO+xA1kgbshCIs5AUJli9Y8
+	 Wx1vHb8QymmJw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A9E1ACF3B81;
+	Sat, 22 Jun 2024 16:10:06 +0000 (UTC)
+Subject: Re: [GIT PULL] bcachefs fixes for 6.10-rc5
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <nbed7rrwexwonrtxvv6zmlxrvheicxxx6vlzcq4hzcxhrtm7ps@s5nkcab6f3cp>
+References: <nbed7rrwexwonrtxvv6zmlxrvheicxxx6vlzcq4hzcxhrtm7ps@s5nkcab6f3cp>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <nbed7rrwexwonrtxvv6zmlxrvheicxxx6vlzcq4hzcxhrtm7ps@s5nkcab6f3cp>
+X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-06-22
+X-PR-Tracked-Commit-Id: bd4da0462ea7bf26b2a5df5528ec20c550f7ec41
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c3de9b572fc2063fb62e53df50cc55156d6bfb45
+Message-Id: <171907260669.30765.11576903904385555925.pr-tracker-bot@kernel.org>
+Date: Sat, 22 Jun 2024 16:10:06 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
 
-Hi Linus, fresh batch of fixes for you,
+The pull request you sent on Sat, 22 Jun 2024 10:00:27 -0400:
 
-Cheers,
-Kent
+> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-06-22
 
-The following changes since commit 6ba59ff4227927d3a8530fc2973b80e94b54d58f:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c3de9b572fc2063fb62e53df50cc55156d6bfb45
 
-  Linux 6.10-rc4 (2024-06-16 13:40:16 -0700)
+Thank you!
 
-are available in the Git repository at:
-
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-06-22
-
-for you to fetch changes up to bd4da0462ea7bf26b2a5df5528ec20c550f7ec41:
-
-  bcachefs: Move the ei_flags setting to after initialization (2024-06-21 10:17:07 -0400)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.10-rc5
-
-Lots of (mostly boring) fixes for syzbot bugs and rare(r) CI bugs.
-
-The LRU_TIME_BITS fix was slightly more involved; we only have 48 bits
-for the LRU position (we would prefer 64), so wraparound is possible for
-the cached data LRUs on a filesystem that has done sufficient
-(petabytes) reads; this is now handled.
-
-One notable user reported bugfix, where we were forgetting to correctly
-set the bucket data type, which should have been BCH_DATA_need_gc_gens
-instead of BCH_DATA_free; this was causing us to go emergency read-only
-on a filesystem that had seen heavy enough use to see bucket gen
-wraparoud.
-
-We're now starting to fix simple (safe) errors without requiring user
-intervention - i.e. a small incremental step towards full self healing.
-This is currently limited to just certain allocation information
-counters, and the error is still logged in the superblock; see that
-patch for more information. ("bcachefs: Fix safe errors by default").
-
-----------------------------------------------------------------
-Kent Overstreet (20):
-      bcachefs: Fix initialization order for srcu barrier
-      bcachefs: Fix array-index-out-of-bounds
-      bcachefs: Fix a locking bug in the do_discard_fast() path
-      bcachefs: Fix shift overflow in read_one_super()
-      bcachefs: Fix btree ID bitmasks
-      bcachefs: Check for invalid btree IDs
-      bcachefs: Fix early init error path in journal code
-      bcachefs: delete_dead_snapshots() doesn't need to go RW
-      bcachefs: Guard against overflowing LRU_TIME_BITS
-      bcachefs: Handle cached data LRU wraparound
-      bcachefs: Fix bch2_sb_downgrade_update()
-      bcachefs: set_worker_desc() for delete_dead_snapshots
-      bcachefs: Fix bch2_trans_put()
-      bcachefs: Fix safe errors by default
-      closures: Change BUG_ON() to WARN_ON()
-      bcachefs: Fix missing alloc_data_type_set()
-      bcachefs: Replace bare EEXIST with private error codes
-      bcachefs: Fix I_NEW warning in race path in bch2_inode_insert()
-      bcachefs: Use bch2_print_string_as_lines for long err
-      bcachefs: Fix a UAF after write_super()
-
-Youling Tang (2):
-      bcachefs: fix alignment of VMA for memory mapped files on THP
-      bcachefs: Move the ei_flags setting to after initialization
-
- fs/bcachefs/alloc_background.c |  76 ++++--
- fs/bcachefs/alloc_background.h |   8 +-
- fs/bcachefs/bcachefs.h         |   5 +
- fs/bcachefs/bcachefs_format.h  |  13 +-
- fs/bcachefs/bkey.c             |   2 +-
- fs/bcachefs/bkey_methods.c     |   6 +-
- fs/bcachefs/bkey_methods.h     |   3 +-
- fs/bcachefs/btree_iter.c       |  11 +-
- fs/bcachefs/btree_types.h      |  16 +-
- fs/bcachefs/errcode.h          |   3 +
- fs/bcachefs/error.c            |  19 +-
- fs/bcachefs/error.h            |   7 -
- fs/bcachefs/fs-ioctl.c         |   2 +-
- fs/bcachefs/fs.c               |  21 +-
- fs/bcachefs/journal.c          |   3 +
- fs/bcachefs/journal_io.c       |  13 +-
- fs/bcachefs/lru.h              |   3 -
- fs/bcachefs/opts.h             |   2 +-
- fs/bcachefs/recovery.c         |  12 +-
- fs/bcachefs/sb-downgrade.c     |   2 +-
- fs/bcachefs/sb-errors_format.h | 559 +++++++++++++++++++++--------------------
- fs/bcachefs/snapshot.c         |   9 +-
- fs/bcachefs/str_hash.h         |   2 +-
- fs/bcachefs/super-io.c         |   7 +-
- fs/bcachefs/super.c            |  13 +-
- lib/closure.c                  |  10 +-
- 26 files changed, 472 insertions(+), 355 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
