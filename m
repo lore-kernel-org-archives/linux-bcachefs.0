@@ -1,52 +1,53 @@
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06A819DF52
-	for <linux-bcachefs@vger.kernel.org>; Mon, 24 Jun 2024 16:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF1749655
+	for <linux-bcachefs@vger.kernel.org>; Mon, 24 Jun 2024 23:21:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719246506; cv=none; b=cLtz9NFMeByZE1XB1u36QiqnT8hbZIlJ5dFH0lsYGnEn6tNc5ClRrji0+32s2M7GDHqJwYkavXzMjs3AAGtWDQc0BzEovS0c3XgCoPhl964q3uA8/FAmaqaALyPlvkR2IKZ3DdXB+TcJzBoVi6WzqOdDowfEELqsR3lwJ7HVXO0=
+	t=1719271294; cv=none; b=BzOA2+jk5wIz0eVNVYZtayja9aGn/dNvDkEwwolqgmRGPZe2KOA0GJQ6O5jZV/loEgatHj630llXUW20AY/mRMI5e0Z3WIy1g5tjwwfks6JiV/HN+BIe9fbPmiFYRYOV+6IoyBgIXMiTbdIlfp0oM3BUVpQWXwN8Su9RSEl8SNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719246506; c=relaxed/simple;
-	bh=5DQv6q/d8Zv4IZcFJrQ5Ej/kkd3Cy1080/mSwVyHRso=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=eXhhMPJcRqVr4XTf/AKdLiy9tcI398parQOKMrtJ3oob4w8o8w8ijjRg9jdYUuWKUn43f3mh3dkOjD1KtpVPQiI+jcJTro3py/dp3jkfE2z+wApTPiyeMElZUuXYLpnFyXQItuirSXiYiliI5EortB2ELCBWgLZOiN6XZArOCbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+	s=arc-20240116; t=1719271294; c=relaxed/simple;
+	bh=jujgC8Gc8P6ID90YBX0LNLxKcoNkikqg7Z+PuO3r7Ew=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=h0LT9e3gZ8YY+hlU1KW8I/jzRMb15RSkHd8hRoe2cypuMA33/rHP9j5LaCZiUaZ6t4ZoJUGEy9DCMjAC6EON+7ZF64NRbCSeNrPk19aopQJYDKR7SVWmeGP3Y/kIGrwOfExmW3P5Uk1uqjCngpbaLIdqzSLbkF68lT843Oz7W1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-37624b27e27so54183285ab.3
-        for <linux-bcachefs@vger.kernel.org>; Mon, 24 Jun 2024 09:28:24 -0700 (PDT)
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-7ec091b556eso663478739f.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 24 Jun 2024 16:21:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719246504; x=1719851304;
+        d=1e100.net; s=20230601; t=1719271291; x=1719876091;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=yXBDcDx7zvPLVQs0LnYcC7eMOxJKuBiX4Pnp+R0ymsc=;
-        b=BaRWiH0m/N207KJL72tQ4vM11eo8X+wBVdI+4uidW80c4x7Fz5/4bKJ7GxsqIFiNam
-         26QmA1EijCtUzQH9yNs054H8KafAZfZPnTkzMr0uoup9dmuJDUIdoTlOt5TiC0+CdWeb
-         2rZjFgo0GlWcvqMVGKCRKIsacr9x82XHqaTSTxApU6SJKo9aTuZlb0ztUqmNCixPTZn1
-         gOC7D58xG4x6Z7vc031jR6vqOI+IrF3qX4yGL22XMPtJ7NxyqaFM3RJHYFPR+hq8o8qQ
-         ZSMQJ6R00ipL6nDL1p3EgHo84uRMNt3YNEYujn8eCYJKbNU4KVm5gMgxszoBn8de+OHF
-         vpRw==
-X-Forwarded-Encrypted: i=1; AJvYcCViqqnDq438A6tLLqjfPHK3u5BO+cnmJQEenjrkIEtJDUpwvn6BC+kSx4JeGZBakkmTDfUKBP1gBWe/Kt4iJUpE6fNAoBGy2GBtU4xvztk=
-X-Gm-Message-State: AOJu0YzXbt1emv4twF+VCWkTx7oPpZ4HQXuXSgVHn3E77jVXD4JBWflT
-	Ho2UsP/0bXGPWaVZ9l0iEDhhQ1UXvVxZJ1CYnAQ9/oA3y3D3+eswRmFXZXtNs8AeVP7j9Hv60xG
-	p8Ab6zKQ8ZpXK2qNovh7sDcyvTLhhMuMTZCilhLa8kzlQXjUdvjd9bRI=
-X-Google-Smtp-Source: AGHT+IGpSgacUnDvzowCijGiB6OzzIZBkIKvs2C/meh1seBg++FXNVS/PVZLbWR5bVqOh+Mnu31fVJuItyYt7E/SJKdcLgkE2Un6
+        bh=WCR7i9SnpTLLYT/QkKabtMlEKHNeVqQdTucfDiXzGvc=;
+        b=o3VzRLnDUbN1vBga9YATAq6I57LPuHAip8nbL0JwGNaY1nRVSgOi1qTVGDyG/b2rdr
+         VqUIDLCkKpjNR+etP2WHvaBJ1dlgeLF4IaSv01Q1j/quROI5qjBA3LrvEUmY3X9FyeZV
+         zA7V3h40c4ij69tbebl5SpMkSq6IUvhrcWPsj3yFGDLgW4apha5fl2wcqsHL3yMeXirY
+         OgUKLoh1XWiF2pHMXuwB6fK4EbnDieTtosLi6Kmh0fhpDc3gu3IqI/4PoOnYrq4PgaDW
+         vsMgTEb6HpSizj3HAotBBxw8WqPDqFp6K4Zg5DS3wC8NDNHmbYJAoCzCzL5UqPenNm/z
+         dO/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV6dJ1I+3EvCAAi5E8ITPafH/oCrQOsFpXKkdPhP6MsKiNz0YxdtEo4Zw/AP4xMD9D3WIQLjPZ5WRQXETdYBh0SIiQv41sodwjMkVsJlP8=
+X-Gm-Message-State: AOJu0YwnoEDlwNZf3wch2ynRuQvLJYDcQofMd6vKT7C6aYer/nf3doKC
+	ZspYeN5sXgqU2eASTGZDCJlX1beyuSXc4fiKrY1fFWtByFPLlnV6bQ87Y3Ay8jYLgvu2zmltndv
+	UwUlbOjXGEEh+zSdMb84q0/qXCa9kFLlrFOC2DKEEOswMKZPVG3nDMec=
+X-Google-Smtp-Source: AGHT+IFTLZ8hH2SxsQBZ1nvip172SSUi07XnvTlIo4JsAWUumhG6MGbbpfVnaF9uDyocekgrkOfBFSosV8grD8YHpTfS6vQwJxRN
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b4f:b0:375:c9f0:527f with SMTP id
- e9e14a558f8ab-3763f6dd87amr5271765ab.3.1719246503994; Mon, 24 Jun 2024
- 09:28:23 -0700 (PDT)
-Date: Mon, 24 Jun 2024 09:28:23 -0700
+X-Received: by 2002:a05:6e02:1a2e:b0:376:11a3:a36b with SMTP id
+ e9e14a558f8ab-3763f4a93a0mr6615065ab.0.1719271291654; Mon, 24 Jun 2024
+ 16:21:31 -0700 (PDT)
+Date: Mon, 24 Jun 2024 16:21:31 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000026f7f2061ba545c2@google.com>
-Subject: [syzbot] [bcachefs?] INFO: task hung in bch2_write_iter
-From: syzbot <syzbot+d8b126a5bfdcd1f3e7c5@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+Message-ID: <0000000000009ca899061bab0a49@google.com>
+Subject: [syzbot] [bcachefs?] [kvm?] general protection fault in
+ detach_if_pending (3)
+From: syzbot <syzbot+f4b2fbba4d8c2e290380@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, kvm@vger.kernel.org, 
 	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -55,49 +56,118 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    2ccbdf43d5e7 Merge tag 'for-linus' of git://git.kernel.org..
+HEAD commit:    626737a5791b Merge tag 'pinctrl-v6.10-2' of git://git.kern..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e2c02a980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c79815c08cc14227
-dashboard link: https://syzkaller.appspot.com/bug?extid=d8b126a5bfdcd1f3e7c5
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+console output: https://syzkaller.appspot.com/x/log.txt?x=117e90d6980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=53ab35b556129242
+dashboard link: https://syzkaller.appspot.com/bug?extid=f4b2fbba4d8c2e290380
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/35e32e9073a7/disk-2ccbdf43.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6c6e34658d16/vmlinux-2ccbdf43.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4417e7ef76ed/bzImage-2ccbdf43.xz
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-626737a5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/03802640516e/vmlinux-626737a5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/09b1b299316b/bzImage-626737a5.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d8b126a5bfdcd1f3e7c5@syzkaller.appspotmail.com
+Reported-by: syzbot+f4b2fbba4d8c2e290380@syzkaller.appspotmail.com
 
-INFO: task syz-executor.4:6221 blocked for more than 143 seconds.
-      Not tainted 6.10.0-rc3-syzkaller-00044-g2ccbdf43d5e7 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.4  state:D stack:27824 pid:6221  tgid:6208  ppid:5618   flags:0x00000006
+bcachefs (loop3): flushing journal and stopping allocators complete, journal seq 14
+bcachefs (loop3): shutdown complete, journal seq 15
+bcachefs (loop3): marking filesystem clean
+bcachefs (loop3): shutdown complete
+Oops: general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 6009 Comm: syz-executor.3 Not tainted 6.10.0-rc5-syzkaller-00012-g626737a5791b #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:__hlist_del include/linux/list.h:988 [inline]
+RIP: 0010:detach_timer kernel/time/timer.c:934 [inline]
+RIP: 0010:detach_if_pending+0x14c/0x450 kernel/time/timer.c:953
+Code: df 4c 89 ea 4c 8b 23 48 c1 ea 03 80 3c 02 00 0f 85 ea 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 6b 08 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 be 02 00 00 4d 85 e4 4d 89 65 00 74 2a e8 9c 5a
+RSP: 0018:ffffc90003f0fb78 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffffe8ffad268390 RCX: ffffffff817b36ca
+RDX: 0000000000000000 RSI: ffffffff817b34ee RDI: 0000000000000001
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000001 R14: 0000000000000001 R15: 000000000003d94c
+FS:  0000000000000000(0000) GS:ffff88802c000000(0063) knlGS:00000000574c8400
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00000000f735bfd0 CR3: 0000000046582000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- context_switch kernel/sched/core.c:5408 [inline]
- __schedule+0x1796/0x49d0 kernel/sched/core.c:6745
- __schedule_loop kernel/sched/core.c:6822 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6837
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6894
- rwsem_down_write_slowpath+0xeeb/0x13b0 kernel/locking/rwsem.c:1178
- __down_write_common+0x1af/0x200 kernel/locking/rwsem.c:1306
- inode_lock include/linux/fs.h:791 [inline]
- bch2_buffered_write fs/bcachefs/fs-io-buffered.c:1012 [inline]
- bch2_write_iter+0x22e/0x2840 fs/bcachefs/fs-io-buffered.c:1136
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xa72/0xc90 fs/read_write.c:590
- ksys_write+0x1a0/0x2c0 fs/read_write.c:643
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7efe64e7cf29
-RSP: 002b:00007efe65bc10c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007efe64fb4050 RCX: 00007efe64e7cf29
-RDX: 0
+ __try_to_del_timer_sync+0xc5/0x170 kernel/time/timer.c:1509
+ __timer_delete_sync+0xf4/0x1b0 kernel/time/timer.c:1665
+ del_timer_sync include/linux/timer.h:185 [inline]
+ cleanup_srcu_struct+0x124/0x520 kernel/rcu/srcutree.c:659
+ bch2_fs_btree_iter_exit+0x479/0x640 fs/bcachefs/btree_iter.c:3411
+ __bch2_fs_free fs/bcachefs/super.c:556 [inline]
+ bch2_fs_release+0x117/0x870 fs/bcachefs/super.c:605
+ kobject_cleanup lib/kobject.c:689 [inline]
+ kobject_release lib/kobject.c:720 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1fa/0x5b0 lib/kobject.c:737
+ deactivate_locked_super+0xbe/0x1a0 fs/super.c:473
+ deactivate_super+0xde/0x100 fs/super.c:506
+ cleanup_mnt+0x222/0x450 fs/namespace.c:1267
+ task_work_run+0x14e/0x250 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
+ __do_fast_syscall_32+0x80/0x120 arch/x86/entry/common.c:389
+ do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+RIP: 0023:0xf72df579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000fff0a178 EFLAGS: 00000292 ORIG_RAX: 0000000000000034
+RAX: 0000000000000000 RBX: 00000000fff0a220 RCX: 0000000000000009
+RDX: 00000000f7435ff4 RSI: 00000000f7386361 RDI: 00000000fff0b2c4
+RBP: 00000000fff0a220 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__hlist_del include/linux/list.h:988 [inline]
+RIP: 0010:detach_timer kernel/time/timer.c:934 [inline]
+RIP: 0010:detach_if_pending+0x14c/0x450 kernel/time/timer.c:953
+Code: df 4c 89 ea 4c 8b 23 48 c1 ea 03 80 3c 02 00 0f 85 ea 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 6b 08 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 be 02 00 00 4d 85 e4 4d 89 65 00 74 2a e8 9c 5a
+RSP: 0018:ffffc90003f0fb78 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffffe8ffad268390 RCX: ffffffff817b36ca
+RDX: 0000000000000000 RSI: ffffffff817b34ee RDI: 0000000000000001
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000001 R14: 0000000000000001 R15: 000000000003d94c
+FS:  0000000000000000(0000) GS:ffff88802c000000(0063) knlGS:00000000574c8400
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00000000f735bfd0 CR3: 0000000046582000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	df 4c 89 ea          	fisttps -0x16(%rcx,%rcx,4)
+   4:	4c 8b 23             	mov    (%rbx),%r12
+   7:	48 c1 ea 03          	shr    $0x3,%rdx
+   b:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   f:	0f 85 ea 02 00 00    	jne    0x2ff
+  15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1c:	fc ff df
+  1f:	4c 8b 6b 08          	mov    0x8(%rbx),%r13
+  23:	4c 89 ea             	mov    %r13,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 be 02 00 00    	jne    0x2f2
+  34:	4d 85 e4             	test   %r12,%r12
+  37:	4d 89 65 00          	mov    %r12,0x0(%r13)
+  3b:	74 2a                	je     0x67
+  3d:	e8                   	.byte 0xe8
+  3e:	9c                   	pushf
+  3f:	5a                   	pop    %rdx
 
 
 ---
