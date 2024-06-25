@@ -1,59 +1,59 @@
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF79C148FE4;
-	Tue, 25 Jun 2024 18:41:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC7617D346;
+	Tue, 25 Jun 2024 20:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719340897; cv=none; b=Ccsr/f71cKbsIJBcsWaibOlE5GKuuR9/1rXRGYAmKZ4+iDlPV3bdH0odNz/4Kcz85DazNV+VnfD7/+iMlNqbtXuw73uIK2+L8OymmC8t4t7aVFI2y15Rh7adJuLZyusXH6Xloa8WR4WrBFfjjb8QhdMkl5o8g4Y6gV0l8pbOqt0=
+	t=1719345913; cv=none; b=sDlP3TBLlLSnObKN3CgpozyvYYcZuyhTqMYrkaN0i0aeOV8MKPlzKTPEHR/cSXhXGfK9PQaOF65a79K5J4V02vjI3POe91j17j/Org3lQoKNBvWsYhobhdgsJaG2F5mAEZS+yFkVfsuA1ieYpq+VeG/40jXGWxEyi04G0jMHjRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719340897; c=relaxed/simple;
-	bh=03Ii5ZBqcDwAxJr2sGNb78vUVrsKGjNeIgOrc7Ld5k8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=o5EczfJkD12M15NFYodnczSQBJq3W342J1RmazJNMyTtmxo9b5KjKN0ragdYFddH3NB2mXgjLPDpK/Ms8odEAOwP7KC14lXh6F81F8iIqtOhSlMVIwN9rIfSe9eLfeDDtwE4g02Mw4ocOKfjv3e1PG6xFTVJMuo5KECNG9W/NOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WR/B5MMc; arc=none smtp.client-ip=209.85.167.169
+	s=arc-20240116; t=1719345913; c=relaxed/simple;
+	bh=0/eIjHFbSJyk0/0Ap89b+YtVz3KGN2zbRA630GUuCwI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=edyRSCfol1T+y7PRdHeagIc7vW1C7k+PYnd+IEqoKa407arJf68VvW7rOL0W4hPd7Tv3Y+dKugm67rXyIbhvNSMiYnmqF5jnCCVeIQcZ99I6ky/DRj6mo+uUk1NQN5pR1pEUdVXwsClM5vzT8p7Rvoj3kgC6+LDfCsu80cPevO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AAbNVICC; arc=none smtp.client-ip=209.85.219.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WR/B5MMc"
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3d55ed47cc6so258377b6e.2;
-        Tue, 25 Jun 2024 11:41:35 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AAbNVICC"
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dfa71ded97bso4917530276.1;
+        Tue, 25 Jun 2024 13:05:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719340895; x=1719945695; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719345911; x=1719950711; darn=vger.kernel.org;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3AMwpyokpH4GrRlIkNJKRT3hzfSS5/ckzDv+QdivD0A=;
-        b=WR/B5MMc/CosmoF2c7kYO/yoQgTNdgkGDg4VNuKkwFc73VnLxWbYryT1SVFcZNmU/f
-         ZSm6grMO18gZjDWkXrrsSeqjB+Wi0DYf+IWqsje/3UJp/caH+GGxZaX16ZgF1y5Rd0pv
-         m570jgyVXbSS1jnbgJXG76hyNTwJczT6q+uAqNOu4jYnJAaI3U9BXWUgYxu36Ql8HSZX
-         c8CXylrUDUFsiPsTxPyjIRzfu0/eqZsals922LRwG3ZUDRBxzgQOfgy3r5AnGiLe5BO2
-         7HnetHs/1uPYfGCYVCkm8ADL1+SjF4iT/upmSkuPsRcwXmDzLDBenQrcq6cthjhiYMr7
-         lxUA==
+        bh=dQ68vY/Wke7mDYwV27cHzfcmwfW5Yu1v8buaPnlZQ+k=;
+        b=AAbNVICC3fuiSnYXm2PxBQg6UPdEDy/rifoGHKt4DHALOGV5mF2p+FJ06c4Yy7HxIp
+         C5Ped8UsIieaQ5wyukxnSBxZZU84HBvBqDbEj8EvjjBFQP/QKLdFp7AsSguZOX7/hQuj
+         OtiSo7k4ebprWKb9ROI7X4MQuFRHywbk0Qs2hfyejBH9quw6+MnmNYQguHArW/BKAx9A
+         B1yFaTwxh6aarU8UP6iQAzDZN2kzguvNI85zF3mnSsyudZEx1T1RJak/wzj0N+HeIKQD
+         46+YDqqZsDQWKT8P3x3BBssjVsferhQ7hK8/Evj5w6jyhSt86GKoHxrpMWo2jO5eXFuG
+         MPiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719340895; x=1719945695;
+        d=1e100.net; s=20230601; t=1719345911; x=1719950711;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3AMwpyokpH4GrRlIkNJKRT3hzfSS5/ckzDv+QdivD0A=;
-        b=UpVhstFHoJ7P44J7fn8EqLhahaXF6XtnxgnE3xbwIO+l3UiSThJMxMyLInHnuTrUxH
-         35xfBdYwxtKehY7MgAPSJmAwCkWkj4WBS7CtqplpbhI/QIjXr087sq52LjPZVi4bHqDl
-         fyGAGq4Yt8FWzRGUIYVHyb3rUOzech5vJm3YTmgkg3F5afaoD+w24MLQfDo17DjC+iwC
-         P3vC9jDpzNgg8HbgX2hbBtCnRZSHVKWgCHx6H/rcMi66Z4lAf+MPAHBLMX2H4qwtRu6q
-         lpGe+UAJKV3PX22vOr5+01nSH+SXI3esD2enBliyHSUTKcjoly5vOGbZDmYCucjtWHzc
-         NOiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUEK+DpmxbMyMNpb8GyznVWLuu53yp8RFCUPOajZ7XR+rFlCHz0zRFvRUuRhJd9+umeh7ZdvUEjc8xydL2nCcNP8J9VreYYwC2cPCrn
-X-Gm-Message-State: AOJu0YwrrpuZckcNHJg+WMTKhFkBG0fJw6ViS5xoOrvndoJroTAw0ifS
-	7JtamI1z3Nbg1PwdLWdVTFFp4TiwQnaDZYcg8tYBoguGA1+UwFUe
-X-Google-Smtp-Source: AGHT+IFTKaLZfKRwqmnD0pPplmH1O0EeZarT8/8Dq/I0YrKP9ivYuQoFSE/W/ZocNdrN0bR+16uSPA==
-X-Received: by 2002:a05:6808:16a1:b0:3d5:1f50:1859 with SMTP id 5614622812f47-3d545958344mr9090166b6e.6.1719340894751;
-        Tue, 25 Jun 2024 11:41:34 -0700 (PDT)
+        bh=dQ68vY/Wke7mDYwV27cHzfcmwfW5Yu1v8buaPnlZQ+k=;
+        b=OLIZUUFKY/KPaiGA905+O9vjEsmlMtqCnnXplt5UI4DS4tTHL0cpsNiJ46NZDYtRvc
+         P5IesZVLnkOBtkm+FAAlOOKxj5UuiM6g3G9BKCQfnG/qLhsK3uViLg4VeT4L5PNzNd9U
+         vYJSCVut+h/fa0fPIoRTvxP1woddWtGJ9ukdQK50BCLll6hQGyTCWnThzr2olMzEflRV
+         BQyghUOaEaH0fd0MPIJkFx4NQ/MR8jrq8aW0EB0/j5FNH978vqi8NNQCiWNlT1RF1vEH
+         q4EblJPSb9W9eYZU9ku9ztRmzHridBUD9hP7ZBPxRQ3EFpycHeuv+hJMUrGweAmIIIh2
+         ec0w==
+X-Forwarded-Encrypted: i=1; AJvYcCU3KOOiBjBtZAJMuXIqjb4io8xyRVQnm8Q6jXSBAMUrjXIbkYOUZdZwPAnooRBMn/SVHVLNh8oJEtDGsGfZV4tZLn5TlaTPh4+4pZet
+X-Gm-Message-State: AOJu0Yxu6O+KDr3xsuKm27AHwVWS+tgurEeJWLTUR6+5jB00xZPre5p7
+	daQ627dGROTZrzmwrSrxReG9ERkTsAhEaMiRvTm7HAaedLz3A+Hv
+X-Google-Smtp-Source: AGHT+IE/n2wyIQ5QaHIPuAeQh2psTxZU+/wsKad+bYlw4eiZy+bXYQ0sXC9bfdWHErC6SiQ/7h7l1Q==
+X-Received: by 2002:a25:d309:0:b0:dfb:b27:adaf with SMTP id 3f1490d57ef6-e031ba98aaamr3691967276.5.1719345910961;
+        Tue, 25 Jun 2024 13:05:10 -0700 (PDT)
 Received: from [127.0.1.1] (107-197-105-120.lightspeed.sntcca.sbcglobal.net. [107.197.105.120])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-3d53886a628sm1826106b6e.13.2024.06.25.11.41.33
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e02e65db5ecsm4068349276.62.2024.06.25.13.05.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jun 2024 11:41:34 -0700 (PDT)
+        Tue, 25 Jun 2024 13:05:10 -0700 (PDT)
 From: Pei Li <peili.dev@gmail.com>
-Date: Tue, 25 Jun 2024 11:41:29 -0700
-Subject: [PATCH] bcachefs: Fix shift-out-of-bounds in
- bch2_blacklist_entries_gc
+Date: Tue, 25 Jun 2024 13:04:59 -0700
+Subject: [PATCH] bcachefs: slab-use-after-free Read in
+ bch2_sb_errors_from_cpu
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -62,80 +62,99 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240625-bug1-v1-1-9344c68582a7@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAFgPe2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDMyNT3aTSdENdEyMzC5PkNMsU89QUJaDSgqLUtMwKsDHRsbW1AAGxHXV
+Message-Id: <20240625-bug2-v1-1-73f89535d3a0@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAOoie2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDMyNT3aTSdCNdSxMTA1MjA8Nkk2QLJaDSgqLUtMwKsDHRsbW1AGt2rix
  WAAAA
 To: Kent Overstreet <kent.overstreet@linux.dev>, 
  Brian Foster <bfoster@redhat.com>
 Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
- syzkaller-bugs@googlegroups.com, skhan@linuxfoundation.org, 
- peili.dev@gmail.com, syzbot+835d255ad6bc7f29ee12@syzkaller.appspotmail.com
+ skhan@linuxfoundation.org, syzkaller-bugs@googlegroups.com, 
+ syzbot+a2bc0e838efd7663f4d9@syzkaller.appspotmail.com, 
+ Pei Li <peili.dev@gmail.com>
 X-Mailer: b4 0.15-dev-13183
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1719340893; l=2371;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1719345909; l=2706;
  i=peili.dev@gmail.com; s=20240625; h=from:subject:message-id;
- bh=03Ii5ZBqcDwAxJr2sGNb78vUVrsKGjNeIgOrc7Ld5k8=;
- b=5+5ziNc8NseuXKZA52LqOO6Ksmth1aDn36am6LuO2UbkNJ3Q36InElEdbAQSdFFAJeYcYPtJ2
- 9gjVVOnHNapBWNGO57CqlJ9rRNtfllw2AlpsEjR17yB32CJz5K/zwWG
+ bh=0/eIjHFbSJyk0/0Ap89b+YtVz3KGN2zbRA630GUuCwI=;
+ b=U3y/GyRB3kQ6al/p8Qtc5pN7VmAWOyuCTSir8ryZKv1k7hjN/1++/oYwl5jzd3jaMiaVKrcNG
+ 0IK3cUrVLokCC8EmgozsrfO2cutjgahUgZxKTby3yPKTRcon7qb8EWe
 X-Developer-Key: i=peili.dev@gmail.com; a=ed25519;
  pk=I6GWb2uGzELGH5iqJTSK9VwaErhEZ2z2abryRD6a+4Q=
 
-This series fix the shift-out-of-bounds issue in
-bch2_blacklist_entries_gc().
-
-Instead of passing 0 to eytzinger0_first() when iterating the entries,
-we explicitly check 0 and initialize i to be 0.
+Acquire fsck_error_counts_lock before accessing the critical section
+protected by this lock.
 
 syzbot has tested the proposed patch and the reproducer did not trigger
-any issue:
+any issue.
 
-Reported-and-tested-by: syzbot+835d255ad6bc7f29ee12@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=835d255ad6bc7f29ee12
+Reported-by: syzbot+a2bc0e838efd7663f4d9@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=a2bc0e838efd7663f4d9
 Signed-off-by: Pei Li <peili.dev@gmail.com>
 ---
-Syzbot reported the following issue:
-UBSAN: shift-out-of-bounds in ./include/linux/log2.h:67:13
-shift exponent 4294967295 is too large for 64-bit type 'long unsigned int'
+Syzbot detected we are accessing free'd memory in
+bch2_sb_errors_from_cpu().
 
-This is because 0 is passed to __rounddown_pow_of_two(), and -1 is
-returned as an unsigned integer. In 32 bit system, it will become
-4294967295.
+It is caused by race condition when another task is freeing the array
+protected by fsck_error_counts_lock.
 
-This patch fixes the issue by adding check in
-bch2_blacklist_entries_gc() to avoid passing 0 into eytzinger0_first().
-If we found out t->nr equals to 0, we directly use 0 to access the root
-of the list.
+This patch acquires fsck_error_counts_lock before accessing the entries
+and get the current number of elements in the array.
+
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
 Tested on:
 
 commit:         55027e68 Merge tag 'input-for-v6.10-rc5' of git://git...
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1191153e980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1790a501980000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=d6b9ee98d841760c
-dashboard link: https://syzkaller.appspot.com/bug?extid=835d255ad6bc7f29ee12
+dashboard link: https://syzkaller.appspot.com/bug?extid=a2bc0e838efd7663f4d9
 compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15ca4301980000
----
- fs/bcachefs/journal_seq_blacklist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1272faae980000
 
-diff --git a/fs/bcachefs/journal_seq_blacklist.c b/fs/bcachefs/journal_seq_blacklist.c
-index ed4846709611..1f25c111c54c 100644
---- a/fs/bcachefs/journal_seq_blacklist.c
-+++ b/fs/bcachefs/journal_seq_blacklist.c
-@@ -232,7 +232,7 @@ bool bch2_blacklist_entries_gc(struct bch_fs *c)
- 	BUG_ON(nr != t->nr);
- 
+Note: testing is done by a robot and is best-effort only.
+---
+ fs/bcachefs/sb-errors.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/fs/bcachefs/sb-errors.c b/fs/bcachefs/sb-errors.c
+index bda33e59e226..c1270d790e43 100644
+--- a/fs/bcachefs/sb-errors.c
++++ b/fs/bcachefs/sb-errors.c
+@@ -110,19 +110,25 @@ void bch2_sb_error_count(struct bch_fs *c, enum bch_sb_error_id err)
+ void bch2_sb_errors_from_cpu(struct bch_fs *c)
+ {
+ 	bch_sb_errors_cpu *src = &c->fsck_error_counts;
+-	struct bch_sb_field_errors *dst =
+-		bch2_sb_field_resize(&c->disk_sb, errors,
+-				     bch2_sb_field_errors_u64s(src->nr));
++	struct bch_sb_field_errors *dst;
  	unsigned i;
--	for (src = bl->start, i = eytzinger0_first(t->nr);
-+	for (src = bl->start, i = t->nr == 0 ? 0 : eytzinger0_first(t->nr);
- 	     src < bl->start + nr;
- 	     src++, i = eytzinger0_next(i, nr)) {
- 		BUG_ON(t->entries[i].start	!= le64_to_cpu(src->start));
+ 
++	mutex_lock(&c->fsck_error_counts_lock);
++
++	dst = bch2_sb_field_resize(&c->disk_sb, errors,
++				   bch2_sb_field_errors_u64s(src->nr));
++
+ 	if (!dst)
+-		return;
++		goto err;
+ 
+ 	for (i = 0; i < src->nr; i++) {
+ 		SET_BCH_SB_ERROR_ENTRY_ID(&dst->entries[i], src->data[i].id);
+ 		SET_BCH_SB_ERROR_ENTRY_NR(&dst->entries[i], src->data[i].nr);
+ 		dst->entries[i].last_error_time = cpu_to_le64(src->data[i].last_error_time);
+ 	}
++
++err:
++	mutex_unlock(&c->fsck_error_counts_lock);
+ }
+ 
+ static int bch2_sb_errors_to_cpu(struct bch_fs *c)
 
 ---
-base-commit: 563a50672d8a86ec4b114a4a2f44d6e7ff855f5b
-change-id: 20240625-bug1-42684cf9d7ed
+base-commit: 66cc544fd75c70b5ee74df87ab99acc45b835e69
+change-id: 20240625-bug2-94405201c4c8
 
 Best regards,
 -- 
