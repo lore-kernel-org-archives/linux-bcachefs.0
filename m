@@ -1,182 +1,287 @@
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEAA21CD24
-	for <linux-bcachefs@vger.kernel.org>; Fri, 28 Jun 2024 03:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833DB481A4
+	for <linux-bcachefs@vger.kernel.org>; Fri, 28 Jun 2024 12:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719546562; cv=none; b=oYLi4fQPLY2TJ0+YuHtQZfwCOgZ2+qyIyOPOHOeWRo84z72IwujWIevxyXTXq2DRGuN8dHGetFJxjxeiziWbW1sPidE8d711CzpcHcRntDC51XDhCqgtwfY4qPvh/HpL2ok7Z2bvLHMr/QwK10J33C+M23UPcOB0IJvvdeLThAs=
+	t=1719576245; cv=none; b=RMea8bOkyKUKGMBL8gQhqsy91XCaNVJwsThSxWda2v9v7e5xBYGjAq4w1881cVlLn88A2T1esSYQj+S7TmOiJt45PrvjkiwSSTanx4z0qNwvSYQRqV0TRY31GCRCOcj6HAbGZsBJojRtzXNa/ckd1FW/+if0hw4cz9Jn/lLb5K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719546562; c=relaxed/simple;
-	bh=4Ez0imzoqhZIdaqAVS88s2ruIY/vU2ZK5QKbU0p7CbY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u4hT49OtZsfrwBTfmwMAjIwnC+7aUUSFeagu09Wr9raZQVRkIFhQeNzRjwbMEcLywTVBvKS0OBScdh27itRO+wSUEJGZLkHaRxFVLu4yIC8EmIEAL7jpWaUhzLPE1ITBEION5ib8cCxSoH1rJaYi59Wa+FpURwP0HU3RV9jg+4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-376282b0e2bso2530875ab.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 27 Jun 2024 20:49:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719546560; x=1720151360;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8JwdNQNfgAC6JzHWGdFGw8Z+WdShuiruUP5M7wkwIME=;
-        b=jeAW6Mk1igSXU2usDpc0uhzY1hMbUfDdv0Bu7p2sz8KQZsRdO88e8gzWzMVlVVID3m
-         nq/y8Vq/Z6pOGgsw2p2XZIED5JtNXL4H1xqquVehyGfU8XZf3/amp3WaX+/sXFwCWZl/
-         T8cPIU4hksYwrs9g4X17DEtI/SHUGFvB0rMbVi+MYs+kd36YTlY5PhgFhYiBP4eC8T7E
-         OxpD85ZMHV8re8APXlkSQ2tqBpunpES1fXDtdA0bpicSTEM+wY3pReC7ewj0wyDv5qsP
-         5tPeOlj9V6LCkq2439B4J6yzudn3eHPRuUwP8KOb+BxxcT4tfmLx6iSKmk9eXBbPut6S
-         SyAA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1Qb/1PN8mQUefyzEDyRnJZ6WmKsXioJmfaLhbacW6jyQtYX/rMdDt77log+okAa/ujk1jZxrYQQsevbhnAlQI5UKftXnDby4iZr4QXZI=
-X-Gm-Message-State: AOJu0Yx81t+V7i+ILn4m62pkuR68HHE3sJQ7xIAP9jbSqy2vdrBeQlEz
-	nCeDPeyxeuEFgel6uNkjRUBOqdfJeOH4YXQ5/dPDxkPMo53v1VxqqhrzsZRT2zoDksnZS/Ialow
-	AZ//yEICFM0n3PB9rrcVTKXuJZiv3o2GcHFt0Ly8iSu2K3rihV3JoCoo=
-X-Google-Smtp-Source: AGHT+IEkL5gP1IvIpaLOnicTHd8Z6eZvBNeImYEDjaKPNLyjvTjKkfkc3XxebFdZD1YGsey8BlMlvF8le/v7EKcIVT5lP1Ba8rbO
+	s=arc-20240116; t=1719576245; c=relaxed/simple;
+	bh=JmJec3boAiSCWjKe4J8rPIjqPac+q66ClE0qVqFKzWM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=msQSc9rdmDL7PlfjPPbEPLwn47Ucp4jBMDa/kO96Gfl8g/KlLLpzmXShrdYrrSBpXJqTAJroS2rT7qYBpNzoIHKSoKpHRrxOutXXjEaVefwJ4Rq18HlLegCiBuWDNi7bf+jnY5Tj7qUAOOWcKRfgyA1dmd212qPGCuSe+hmEGLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id E077B3A784
+	for <linux-bcachefs@vger.kernel.org>; Fri, 28 Jun 2024 11:55:08 +0000 (UTC)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: linux-bcachefs@vger.kernel.org
+Subject:
+ rsync stuck in "D" state short after starting to copy to a newly created
+ filesystem
+Date: Fri, 28 Jun 2024 13:55:08 +0200
+Message-ID: <22338011.EfDdHjke4D@lichtvoll.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ced2:0:b0:379:86a8:e438 with SMTP id
- e9e14a558f8ab-37986a8e630mr1580725ab.2.1719546559890; Thu, 27 Jun 2024
- 20:49:19 -0700 (PDT)
-Date: Thu, 27 Jun 2024 20:49:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e097b1061beb2182@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in bch2_fs_release (2)
-From: syzbot <syzbot+9db8552458d57264a358@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+Hi!
 
-syzbot found the following issue on:
+I am ending a migration from a ThinkPad T14 AMD Gen 1 to a ThinkPad T14
+AMD Gen 5.
 
-HEAD commit:    f2661062f16b Linux 6.10-rc5
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=159df741980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53ab35b556129242
-dashboard link: https://syzkaller.appspot.com/bug?extid=9db8552458d57264a358
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+Last filesystem is a BCacheFS with some larger files that I use for testing
+BCacheFS. rsync was directly pulling from the older laptop over 1 GBit
+link through my local router. All other filesystems are BTRFS and there
+have not been an issue with migrating about 1,8 TiB of data to three
+BTRFS filesystems via rsync.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Standard Debian Unstable Kernel as of today (on Devuan):
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-f2661062.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c8274ddce14a/vmlinux-f2661062.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e3623ed3bb77/bzImage-f2661062.xz
+Linux version 6.9.7-amd64 (debian-kernel@lists.debian.org)
+(x86_64-linux-gnu-gcc-13 (Debian 13.3.0-1) 13.3.0,
+GNU ld (GNU Binutils for Debian) 2.42.50.20240625)
+#1 SMP PREEMPT_DYNAMIC Debian 6.9.7-1 (2024-06-27)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9db8552458d57264a358@syzkaller.appspotmail.com
+% bcachefs version
+1.9.1
 
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/super.c:567!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 PID: 5232 Comm: syz-executor.1 Not tainted 6.10.0-rc5-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:__bch2_fs_free fs/bcachefs/super.c:567 [inline]
-RIP: 0010:bch2_fs_release+0x722/0x870 fs/bcachefs/super.c:605
-Code: 89 ee e8 c1 85 79 fd 4d 85 ed 75 20 e8 87 8a 79 fd 31 ff 4c 89 f6 e8 ad 85 79 fd 4d 85 f6 0f 84 4f fb ff ff e8 6f 8a 79 fd 90 <0f> 0b e8 67 8a 79 fd bf 07 00 00 00 f3 49 0f bc c5 89 c6 41 89 c5
-RSP: 0018:ffffc90002f47d38 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888060900068 RCX: ffffffff84150573
-RDX: ffff888020248000 RSI: ffffffff84150581 RDI: 0000000000000007
-RBP: ffff888060900000 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000607f8106a5d8
-R13: 0000000000000008 R14: 0000000000000001 R15: 0000000000000008
-FS:  0000000000000000(0000) GS:ffff88802c000000(0063) knlGS:0000000057322400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000032434000 CR3: 0000000047630000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1fa/0x5b0 lib/kobject.c:737
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:473
- deactivate_super+0xde/0x100 fs/super.c:506
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
- __do_fast_syscall_32+0x80/0x120 arch/x86/entry/common.c:389
- do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-RIP: 0023:0xf72c2579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000ff88f5f8 EFLAGS: 00000292 ORIG_RAX: 0000000000000034
-RAX: 0000000000000000 RBX: 00000000ff88f6a0 RCX: 0000000000000009
-RDX: 00000000f7418ff4 RSI: 00000000f7369361 RDI: 00000000ff890744
-RBP: 00000000ff88f6a0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__bch2_fs_free fs/bcachefs/super.c:567 [inline]
-RIP: 0010:bch2_fs_release+0x722/0x870 fs/bcachefs/super.c:605
-Code: 89 ee e8 c1 85 79 fd 4d 85 ed 75 20 e8 87 8a 79 fd 31 ff 4c 89 f6 e8 ad 85 79 fd 4d 85 f6 0f 84 4f fb ff ff e8 6f 8a 79 fd 90 <0f> 0b e8 67 8a 79 fd bf 07 00 00 00 f3 49 0f bc c5 89 c6 41 89 c5
-RSP: 0018:ffffc90002f47d38 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888060900068 RCX: ffffffff84150573
-RDX: ffff888020248000 RSI: ffffffff84150581 RDI: 0000000000000007
-RBP: ffff888060900000 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000607f8106a5d8
-R13: 0000000000000008 R14: 0000000000000001 R15: 0000000000000008
-FS:  0000000000000000(0000) GS:ffff88802c000000(0063) knlGS:0000000057322400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000032434000 CR3: 0000000047630000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+SSD is 4 TB Samsung 990 Pro. BCacheFS is on LUKS encrypted LVM as the
+BTRFS filesystems as well.
+
+I created BCacheFS as follows (this is from a subsequent mkfs.bcachefs.
+I do not have initial output anymore as I already overwrote it with the
+new successful attempt in my documentation, but other than UUIDs nothing
+should have changed I bet, the parameters were identical - see below for
+the successful attempt):
+
+% mkfs.bcachefs --data_checksum xxhash --metadata_checksum xxhash
+=2D-compression=3Dlz4 /dev/nvme1/daten2
+[=E2=80=A6 identifiers deleted =E2=80=A6]
+Device index:                              0
+Label:                                    =20
+Version:                                   1.7: mi_btree_bitmap
+Version upgrade complete:                  0.0: (unknown version)
+Oldest version on disk:                    1.7: mi_btree_bitmap
+Created:                                   [=E2=80=A6]
+Sequence number:                           0
+Time of last write:                        Thu Jan  1 01:00:00 1970
+Superblock size:                           976 B/1.00 MiB
+Clean:                                     0
+Devices:                                   1
+Sections:                                  members_v1,members_v2
+=46eatures:                                 =20
+Compat features:                          =20
+
+Options:
+block_size:                              512 B
+btree_node_size:                         256 KiB
+errors:                                  continue [ro] panic=20
+metadata_replicas:                       1
+data_replicas:                           1
+metadata_replicas_required:              1
+data_replicas_required:                  1
+encoded_extent_max:                      64.0 KiB
+metadata_checksum:                       none crc32c crc64 [xxhash]=20
+data_checksum:                           none crc32c crc64 [xxhash]=20
+compression:                             lz4
+background_compression:                  none
+str_hash:                                crc32c crc64 [siphash]=20
+metadata_target:                         none
+foreground_target:                       none
+background_target:                       none
+promote_target:                          none
+erasure_code:                            0
+inodes_32bit:                            1
+shard_inode_numbers:                     1
+inodes_use_key_cache:                    1
+gc_reserve_percent:                      8
+gc_reserve_bytes:                        0 B
+root_reserve_percent:                    0
+wide_macs:                               0
+acl:                                     1
+usrquota:                                0
+grpquota:                                0
+prjquota:                                0
+journal_flush_delay:                     1000
+journal_flush_disabled:                  0
+journal_reclaim_delay:                   100
+journal_transaction_names:               1
+version_upgrade:                         [compatible] incompatible none=20
+nocow:                                   0
+
+members_v2 (size 160):
+Device:                                    0
+Label:                                   (none)
+UUID:                                    [=E2=80=A6]
+Size:                                    300 GiB
+read errors:                             0
+write errors:                            0
+checksum errors:                         0
+seqread iops:                            0
+seqwrite iops:                           0
+randread iops:                           0
+randwrite iops:                          0
+Bucket size:                             256 KiB
+=46irst bucket:                            0
+Buckets:                                 1228800
+Last mount:                              (never)
+Last superblock write:                   0
+State:                                   rw
+Data allowed:                            journal,btree,user
+Has data:                                (none)
+Btree allocated bitmap blocksize:        1.00 B
+Btree allocated bitmap:                  0000000000000000000000000000000000=
+000000000000000000000000000000
+Durability:                              1
+Discard:                                 0
+=46reespace initialized:                   0
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Directly after creating it I mounted it from /etc/fstab:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+/dev/nvme1/daten2 /daten2 bcachefs lazytime 0 0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Soon after the copying process started, rsync got stuck in "D" state.
+It was within the first 500 MiB or so. Nothing in kernel log. I waited
+a bit and then stopped rsync. One rsync process remained in "D" state
+and thus did not go away. I tried another time and one the rsync
+processes was immediately in "D" state.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Thus I rebooted. Runit hung during reboot. Likely due to processes in
+D state. I eventually switched up the laptop by pressing the power
+button long enough.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+I did an fsck.bcachefs and got:
 
-If you want to undo deduplication, reply with:
-#syz undup
+% fsck.bcachefs /dev/nvme1/daten2=20
+fsck binary is version 1.9: disk_accounting_v2 but filesystem is 1.7: mi_bt=
+ree_bitmap and kernel is 1.7: mi_btree_bitmap, using kernel fsck
+bcachefs (dm-5): mounting version 1.7: mi_btree_bitmap opts=3Dro,metadata_c=
+hecksum=3Dxxhash,data_checksum=3Dxxhash,compression=3Dlz4,degraded,fsck,fix=
+_errors=3Dask,read_only
+bcachefs (dm-5): recovering from clean shutdown, journal seq 45
+bcachefs (dm-5): journal read done, replaying entries 45-45
+bcachefs (dm-5): alloc_read... done
+bcachefs (dm-5): stripes_read... done
+bcachefs (dm-5): snapshots_read... done
+bcachefs (dm-5): check_allocations...key version number higher than recorde=
+d: 73014444594 > 0: fix? (y,n, or Y,N for all errors of this type) y
+key version number higher than recorded: 81604378807 > 73014444594: fix? (y=
+,n, or Y,N for all errors of this type) y
+dev 0 has wrong free buckets: got 0, should be 1220580: fix? (y,n, or Y,N f=
+or all errors of this type) y
+dev 0 has wrong sb buckets: got 0, should be 13: fix? (y,n, or Y,N for all =
+errors of this type) y
+dev 0 has wrong sb sectors: got 0, should be 6152: fix? (y,n, or Y,N for al=
+l errors of this type) y
+dev 0 has wrong sb fragmented: got 0, should be 504: fix? (y,n, or Y,N for =
+all errors of this type) y
+dev 0 has wrong journal buckets: got 0, should be 8192: fix? (y,n, or Y,N f=
+or all errors of this type) y
+dev 0 has wrong journal sectors: got 0, should be 4194304: fix? (y,n, or Y,=
+N for all errors of this type) y
+dev 0 has wrong btree buckets: got 0, should be 15: fix? (y,n, or Y,N for a=
+ll errors of this type) y
+dev 0 has wrong btree sectors: got 0, should be 7680: fix? (y,n, or Y,N for=
+ all errors of this type) y
+fs has wrong hidden: got 0, should be 4200960: fix? (y,n, or Y,N for all er=
+rors of this type) y
+fs has wrong btree: got 0, should be 7680: fix? (y,n, or Y,N for all errors=
+ of this type) y
+fs has wrong nr_inodes: got 20, should be 22: fix? (y,n, or Y,N for all err=
+ors of this type) y
+fs has wrong btree: 1/1 [0]: got 0, should be 7680: fix? (y,n, or Y,N for a=
+ll errors of this type) y
+done
+bcachefs (dm-5): going read-write
+bcachefs (dm-5): journal_replay... done
+bcachefs (dm-5): check_alloc_info...y done
+bcachefs (dm-5): check_lrus... done
+bcachefs (dm-5): check_btree_backpointers... done
+bcachefs (dm-5): check_backpointers_to_extents... done
+bcachefs (dm-5): check_extents_to_backpointers... done
+bcachefs (dm-5): check_alloc_to_lru_refs... done
+bcachefs (dm-5): check_snapshot_trees... done
+bcachefs (dm-5): check_snapshots... done
+bcachefs (dm-5): check_subvols... done
+bcachefs (dm-5): check_subvol_children... done
+bcachefs (dm-5): delete_dead_snapshots... done
+bcachefs (dm-5): check_inodes... done
+bcachefs (dm-5): check_extents... done
+bcachefs (dm-5): check_indirect_extents... done
+bcachefs (dm-5): check_dirents... done
+bcachefs (dm-5): check_xattrs... done
+bcachefs (dm-5): check_root... done
+bcachefs (dm-5): check_subvolume_structure... done
+bcachefs (dm-5): check_directory_structure... done
+bcachefs (dm-5): check_nlinks... done
+bcachefs (dm-5): resume_logged_ops... done
+bcachefs (dm-5): delete_dead_inodes... done
+bcachefs (dm-5): shutdown complete, journal seq 47
+dm-5: errors fixed
+
+=46or a regular unclean shutdown I would not have expected any filesystem
+errors. A subsequent call to "fsck.bcachefs" revealed no further errors.
+
+I mounted the filesystem again and tried another time with rsync and
+it did not seem to get stuck as before. However I felt uncomfortable
+with continuing with a filesystem that has had errors already.
+Especially at BCacheFS is still marked experimental.
+
+Also I thought maybe it did not like being mounted without a reboot.
+Does not really make much sense to me, but I thought whatever due to
+lack of a better idea let's try it.
+
+I recreated the filesystem. Then I rebooted.
+
+Then I started the rsync again.
+
+So far it still runs at maximum speed of the GBit link of around
+110 MiB/s.
+
+Let's see whether it completes this time.
+
+It did. Nothing in kernel log. fsck.bcachefs is happy, too.
+
+Wrote about 188 GiB of data without any apparent issues.
+
+I am not sure what to make of this.
+
+The only differences during the second attempt were:
+
+1. I rebooted after mkfs.bcachefs.
+
+2. I did not have a hibernation (suspend to disk) or standby (suspend
+to RAM) cycle after the reboot. I was testing those before, but unlike=20
+with the Gen 1 where both hibernation and standby are broken, I found
+no issues with hibernation and standby on the new Gen 5.
+
+That were the only differences. However I doubt one of these has to do
+with it. Maybe just a strange race condition?
+
+I am not feeling like retrying the whole process at the moment, being
+happy with a completed migration to the new laptop.
+
+Not sure whether this report is of any use. But maybe the fsck output
+gives an idea of what might have been the cause. If not, feel free to
+disregard. I do not have the old filesystem anymore, so in case further
+information is missing it will be lost forever.
+
+Best,
+=2D-=20
+Martin
+
+
