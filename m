@@ -1,30 +1,44 @@
-Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95902C80;
-	Mon,  1 Jul 2024 03:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F0D168C3F;
+	Mon,  1 Jul 2024 14:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719804475; cv=none; b=psk7aJwsgL3odu639VT4E0UjI+Hp8R3sNBHRKc8ijiqP4zWzouTMgxtmBbfYuGqnqvP4CuBZUkQRd318wmTFf9BdN+kJd1S9dv+2T+6IYjT9jeK3cofN0ZqGR1AHZeGr7LBbIk5jfZ8d3fEZTncUDdC6zKmw43wGRv1a4v5Wt2o=
+	t=1719844593; cv=none; b=Q+LZZwBQWzrfEA1Xy5JAlcaqBlyUiXyS4gfVFl6IkaSd57GSEk+Emla4jwrhvv9dNBas4g6WakE0DnXPifMNTYQz8fQsh0hL4WvQtvKETSBZHD7l2EmukdCjiiKd7nEMPXIeoXC+TOvg6m4Cq2yTwhURCgNq+Cq4vhbwVeOVYgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719804475; c=relaxed/simple;
-	bh=U4YKk2/RIAdPOUFT4EWxpHc7mtWD4SYrc8cQnfrDx0s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iay9qy7x3VeM6xfieF9fL80t8WWlVUkhaQuRZTCSP2tYPnfU7XCPNlaWAA1aGcYhV/10aSN5wZyyBWIz+8dVgOCmQvSzocgl5n+OEIMoswNN2V5ZXSDc4gHvXkQUFeDBSZ7KozOehQtUvAHY0b+T9W4dPA13Dm62WU1I7mVe5no=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost (unknown [124.16.138.129])
-	by APP-01 (Coremail) with SMTP id qwCowABXXsotIoJmNz_wAA--.1270S2;
-	Mon, 01 Jul 2024 11:27:41 +0800 (CST)
-From: Chen Ni <nichen@iscas.ac.cn>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] bcachefs: Remove unneeded semicolon
-Date: Mon,  1 Jul 2024 11:27:36 +0800
-Message-Id: <20240701032736.281451-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1719844593; c=relaxed/simple;
+	bh=4Zejmu5jwgS5PZhhVmRTAt0SMf/n5keGcxfejmVxlD4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EvS7nYAslc70xBdZkaDyAIVkDk6OsgoZPNAv/Wj7nAI7oNolbNHmLSTX5++iC66bd6J2/cfCTOhqzXSHYJen9NBZDi4dfuvvR2/St565A/zjzrwZbAVrBrKF73L/04h3mj3JfGSq/elii8s7WmDF2uoQZ0EWrqa/WP+8Z4ipA1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.166.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4614kFmt016105;
+	Mon, 1 Jul 2024 07:36:09 -0700
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 402hsg1h5u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 01 Jul 2024 07:36:09 -0700 (PDT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Mon, 1 Jul 2024 07:36:08 -0700
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2507.39 via Frontend Transport; Mon, 1 Jul 2024 07:36:06 -0700
+From: Lizhi Xu <lizhi.xu@windriver.com>
+To: <syzbot+8996d8f176cf946ef641@syzkaller.appspotmail.com>
+CC: <bfoster@redhat.com>, <kent.overstreet@linux.dev>,
+        <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <syzkaller-bugs@googlegroups.com>
+Subject: [PATCH] bcachefs: fix hung in bch2_fs_read_only_work
+Date: Mon, 1 Jul 2024 22:36:06 +0800
+Message-ID: <20240701143606.3904202-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000d4c7f4061a080a7a@google.com>
+References: <000000000000d4c7f4061a080a7a@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -32,52 +46,47 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qwCowABXXsotIoJmNz_wAA--.1270S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruFW5Gr1rXw1DXw1DXF4DCFg_yoWDJwc_ur
-	n2yF1UJFWrZrnYvr17uw45Xr4093y7Z3W7KFy0kF9xGwsxJw13Zr97Xr1DAr4fXrZ8Gas3
-	GrW3X3sxZryUCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbc8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
-	MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-	0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-	wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-	W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-	cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUnpnQUUUUU
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
+Content-Type: text/plain
+X-Proofpoint-GUID: ogDim0DivcBBcxNWboBHplX92bXR5DQq
+X-Proofpoint-ORIG-GUID: ogDim0DivcBBcxNWboBHplX92bXR5DQq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-01_12,2024-07-01_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=895 bulkscore=0 adultscore=0 priorityscore=1501 malwarescore=0
+ phishscore=0 clxscore=1015 impostorscore=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.21.0-2406140001 definitions=main-2407010112
 
-Remove unneeded semicolon.
-This is detected by coccinelle.
+Error logs:
+[ T5078] invalid journal entry, version=1.7: mi_btree_bitmap type=btree_keys in superblock: k->u64s 0, shutting down
+[ T5078] invalid journal entry, version=1.7: mi_btree_bitmap type=btree_keys in superblock: k->u64s 0, shutting down
+[ T5078] invalid journal entry, version=1.7: mi_btree_bitmap type=btree_keys in superblock: k->u64s 0, shutting down
 
-Fixes: 0d529663f04b ("bcachefs: Split brain detection")
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+When hit -BCH_ERR_fsck_errors_not_fixed in journal_entry_err, it will make
+journal_entry_btree_keys_validate output too many same error log, and it will block
+bch2_fs_start to release state_lock.
+
+Reported-and-tested-by: syzbot+8996d8f176cf946ef641@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=8996d8f176cf946ef641
+Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
 ---
- fs/bcachefs/super.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/bcachefs/journal_io.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index bf7e998603f1..62dfaf60c131 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -1116,12 +1116,12 @@ static int bch2_dev_in_fs(struct bch_sb_handle *fs,
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index 492426c8d869..67c3f09162e4 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -415,6 +415,8 @@ static int journal_entry_btree_keys_validate(struct bch_fs *c,
+ 					       flags|BCH_VALIDATE_journal);
+ 		if (ret == FSCK_DELETED_KEY)
+ 			continue;
++		else if (ret == -BCH_ERR_fsck_errors_not_fixed)
++			break;
  
- 		prt_bdevname(&buf, fs->bdev);
- 		prt_char(&buf, ' ');
--		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));;
-+		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));
- 		prt_newline(&buf);
- 
- 		prt_bdevname(&buf, sb->bdev);
- 		prt_char(&buf, ' ');
--		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));;
-+		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));
- 		prt_newline(&buf);
- 
- 		if (!opts->no_splitbrain_check)
+ 		k = bkey_next(k);
+ 	}
 -- 
-2.25.1
+2.43.0
 
