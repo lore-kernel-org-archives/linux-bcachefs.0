@@ -1,185 +1,204 @@
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1763D16EB6A
-	for <linux-bcachefs@vger.kernel.org>; Mon,  1 Jul 2024 17:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1ADF1CCCCB
+	for <linux-bcachefs@vger.kernel.org>; Tue,  2 Jul 2024 18:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719855151; cv=none; b=ZBaueHEc2rOdFoFN3WynQeXWPIc6FE9asCXzN3dAvONQ6slnLdmM/pH7ayw+eKS6II2DeOmoI5JlbWPINdq2vmfq0VfWY4E5eSQwynEfXONZVasln/Pqli0naHMC6zVoTsZttwaEwYuJDO2wEdrFCfa5EluUpit8aUj06tQcg4Y=
+	t=1719946205; cv=none; b=INHoJlV2ljHIoVepY1XJk+mp5AafXIh/gxHZ3no2XlsaqWywWLfGuJG4Zz9wW95LgVhTw3hvIxHd+uru/KrGpZu3JqYy60rZPr4RcakpZwM+c4c/SyryPKSmkzbNLaTrhKkdurbLZC8MswE8N+83f9QZ+F8c3NMshRk77p3q134=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719855151; c=relaxed/simple;
-	bh=51Kq3gRK+jS3Cu8UCGhkoVM3OSd3sQMg5c/pQd13i4Q=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=aBgA0bgRj6uEVNMozkHPReWmMw8/MDWaDwk2vKwqv3lIrb3ciV0zfZpYZpDuhYepc0KmJ5JF1XVnLmrOoMYQapguZRKB1U7Uq88hOu/XupeGcFyGuAhX+HZZnkqAgSvU5TM26xGyVLX0kxm63FmM/qn6bKxCQrC6ePVLZRVCzdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7f61f4c998bso346558239f.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 01 Jul 2024 10:32:29 -0700 (PDT)
+	s=arc-20240116; t=1719946205; c=relaxed/simple;
+	bh=Kb5zofY5CgGXuxde/qTf5TC35qXKkz8RnMWck6qdQ6Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=twUfsIY1m4cD7059sOzvPudz3NUTcf/rvVHp5Re76V/XFyxZuKTUfZ92L9/ymR1tLudgKCzRCBFPRfXQ53E7Nrr05tkVqY0ZZ+WSFPZ31opzCwkgiWQQxTcJY6J4MtgdSSN1uVq4xDGar2ODmDsAKIJyEku/X8vyAZ0erqChNYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ckyplSgc; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ckyplSgc"
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4255fc43f1cso31831665e9.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 02 Jul 2024 11:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719946201; x=1720551001; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b1WBLg7AmyUCdqAxaTnWc9s0byXZklQmVnoJjWe40fA=;
+        b=ckyplSgceXUtPloGoKr1QwR/DFuN+Il83yDX8IAvwINwdcOQioxImUHi9BvMhr41MH
+         1Z84Gf0zKCyyYSSsTlnmaadsRuQhQ+24h5Ke51nEU78UXVex+iTQS14QAQNcq+dQYr+v
+         dql2zdCVv8rXuwEGv4zZEsvWMPZGoQ4/vyZdtYf6pfoAcuBhjWzAaA4tg4JnQpVC8nh0
+         RvL0qbIbM6ulPd0O6wpTGM3vFlIYIgyH5alyh5JDSVL+7AOiW0F92ZcUllzonITZrqPL
+         labvFwmMX4x4N7kI308o12eh9VeXIDb1cVVUL3iwf8Xxyu2pfL08fkz2h+BnYeKi9FTp
+         +d8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719855149; x=1720459949;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ffa27t3BLrBDQAt47I5b6vb7eILrf+TZVezmh48Gadw=;
-        b=lJaQujoL1NaDsj/SDMGjdEKCqsg1a33U9v5qQXC7w2eyGYCmYQZfRa9WWp+huudIDC
-         iMjd3MpBq0yc2Is7CFiR8TaaT+7w1YDIlObcvSrqX4NRnFx5K+iI3oT0HAP02xn6t+e4
-         ezBf2NqYUV1m9u5NzFxOxYkawYDgl3KEW+oTEwyX5GrpMTmwWLhs51sUj8FVXfAMVZlh
-         Yy7ESdbYAc1cSqLHS0jNJqWpbCNGs8g0Atk3B7IkYQbmi+fraYfnw8GsNztFap//jQeV
-         7TxBdEFb2tvO4M97uk+9yq+Ul0QgKkzPCUHVRAimvJZvw6XT/qTqoNbb75NyWsYQNefJ
-         rPBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVjnXWRPZFvubrv6akfF0CZTAQQM2wbIKhxwvCd8nIRD6OJsG84cRvEtLP/IUTxwD7nU/1e4JocoIKJTVR+AGvgm2OS8PedgiswJSu9Prs=
-X-Gm-Message-State: AOJu0Yzj+TXXNxFIVAaxEDMrrb5g5eO3a+cYSL95XtnF71/kh77IHuNR
-	ORfj8M/zpwlCLrrrG2Da2iqlJIJkwtmpeU/8HkIiNkXd6NsMmuyv5IWIUhRXE6yRIZFo3onRy0j
-	+a4LJw/k4cHodnjHewW6R9gt015Tpn9t+0xs4YMXPTR81OsChqHSoqFw=
-X-Google-Smtp-Source: AGHT+IGsHkpF/sHm10D4ueOGx0LXZnSx/de8pd3wSKZeEB0AuL81ha9X6popDv3dKCdM3xkPYLYae3r5DGjx18oWZ6W+BMxBxJFF
+        d=1e100.net; s=20230601; t=1719946201; x=1720551001;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b1WBLg7AmyUCdqAxaTnWc9s0byXZklQmVnoJjWe40fA=;
+        b=NMs0M2IroFf8XAI8Gze669YRDPhy9hWDmuRQqFUpZoEJOu/dz87L5SsgdZ1tkEfe4u
+         BcxJOqHZPHMXkun01QeAdqM7DjsRIcKZVgnn9E9BOmQyRhPpwkJfin5taTTvz+96VwUC
+         yTHP2uSimAS11lgVnd0iDYhmSGe2f6FlDHNqNVWzHtBtTx8ki2b0KlmbcUmWduC0rSTD
+         2PuH/sbhJxCiHMZ3EGuxfB3rffTTaBz50Bb838i9RZpbnBDdWbZCMwxuuDy5ISHiqnBE
+         8E/A2T3x++vVBSl4WjDWqEjImkHhtrMWRDsgukdXeVCARHNWcjufKNL2cZ8WotVMkGPc
+         5zGQ==
+X-Gm-Message-State: AOJu0YzQ8MRruz58X4Cgs9kHiA4XG0vnAK8mcDdc2GrFIWj+5RGy0EcO
+	zB7sHsL6/qHBAbjNP4Y37kbYDxpDVBiqei0O6WdEBj3rnotcdNzOuXCb8w==
+X-Google-Smtp-Source: AGHT+IGgQwvXADPGZgxDDgBExx71t61jw+WQhxQkiu/FuoFZorsTMPNkB3Ey0tYqp3mc5qdS1FFHHw==
+X-Received: by 2002:a05:600c:492f:b0:425:5f6d:2f3c with SMTP id 5b1f17b1804b1-4257a08907amr64539695e9.39.1719946201142;
+        Tue, 02 Jul 2024 11:50:01 -0700 (PDT)
+Received: from localhost ([2a02:2f0e:615:a300:9dd2:8f0a:1f05:f0f1])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4256af3b8c0sm205557475e9.2.2024.07.02.11.50.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jul 2024 11:50:00 -0700 (PDT)
+From: Ariel Miculas <ariel.miculas@gmail.com>
+To: linux-bcachefs@vger.kernel.org
+Cc: Ariel Miculas <amiculas@cisco.com>
+Subject: [PATCH] tests/puzzlefs: add a ktest for PuzzleFS
+Date: Tue,  2 Jul 2024 21:49:43 +0300
+Message-Id: <20240702184943.1495489-1-ariel.miculas@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:3f8a:b0:7f6:1590:447b with SMTP id
- ca18e2360f4ac-7f62eeaf6c7mr54907839f.4.1719855149319; Mon, 01 Jul 2024
- 10:32:29 -0700 (PDT)
-Date: Mon, 01 Jul 2024 10:32:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003d9ca1061c32fbb7@google.com>
-Subject: [syzbot] [bcachefs?] general protection fault in bch2_fs_btree_key_cache_exit
- (2)
-From: syzbot <syzbot+3093e1444fd7fe5e374a@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Ariel Miculas <amiculas@cisco.com>
 
-syzbot found the following issue on:
+This test builds a PuzzleFS image using the PuzzleFS user space tools,
+builds a Linux kernel with PuzzleFS enabled, mounts the PuzzleFS image
+using the kernel driver and then compares the two filesystems: the
+source filesystem used when building the PuzzleFS image and the final
+PuzzleFS filesystem mounted directly from the PuzzleFS image.
 
-HEAD commit:    55027e689933 Merge tag 'input-for-v6.10-rc5' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d8e561980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53ab35b556129242
-dashboard link: https://syzkaller.appspot.com/bug?extid=3093e1444fd7fe5e374a
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+This test is similar to the build_from_ext4 test in single_device.ktest.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Two packages are added to the root_image: capnproto required for
+building the PuzzleFS user space tools and jq, which is used for
+extracting the PuzzleFS image manifest from index.json.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-55027e68.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a36929b5a065/vmlinux-55027e68.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d72de6f61ddc/bzImage-55027e68.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3093e1444fd7fe5e374a@syzkaller.appspotmail.com
-
-bcachefs (loop2): flushing journal and stopping allocators complete, journal seq 12
-bcachefs (loop2): shutdown complete, journal seq 13
-bcachefs (loop2): marking filesystem clean
-bcachefs (loop2): shutdown complete
-Oops: general protection fault, probably for non-canonical address 0xdffffc000000001b: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: null-ptr-deref in range [0x00000000000000d8-0x00000000000000df]
-CPU: 0 PID: 5266 Comm: syz-executor.2 Not tainted 6.10.0-rc5-syzkaller-00018-g55027e689933 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:__list_add include/linux/list.h:154 [inline]
-RIP: 0010:list_add include/linux/list.h:169 [inline]
-RIP: 0010:bch2_fs_btree_key_cache_exit+0x90a/0x1490 fs/bcachefs/btree_key_cache.c:968
-Code: 00 fc ff df 48 89 f8 48 c1 e8 03 80 3c 08 00 0f 85 7f 08 00 00 4c 89 e0 4d 89 66 08 48 b9 00 00 00 00 00 fc ff df 48 c1 e8 03 <80> 3c 08 00 0f 85 53 08 00 00 49 8d bf e0 00 00 00 4d 89 b7 d8 00
-RSP: 0018:ffffc90002e67c48 EFLAGS: 00010206
-RAX: 000000000000001b RBX: 0000000000000000 RCX: dffffc0000000000
-RDX: ffff88801de2a440 RSI: ffffffff83ef5656 RDI: ffff888000932a48
-RBP: ffffe8ffad043af0 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000003 R12: 00000000000000d8
-R13: ffffc90002e67cc0 R14: ffff888000932a40 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff88802c000000(0063) knlGS:0000000056b3b400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000000002c47f000 CR3: 0000000052d8e000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __bch2_fs_free fs/bcachefs/super.c:554 [inline]
- bch2_fs_release+0x107/0x870 fs/bcachefs/super.c:605
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1fa/0x5b0 lib/kobject.c:737
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:473
- deactivate_super+0xde/0x100 fs/super.c:506
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
- __do_fast_syscall_32+0x80/0x120 arch/x86/entry/common.c:389
- do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-RIP: 0023:0xf7307579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000ff9c55d8 EFLAGS: 00000292 ORIG_RAX: 0000000000000034
-RAX: 0000000000000000 RBX: 00000000ff9c5680 RCX: 0000000000000009
-RDX: 00000000f745dff4 RSI: 00000000f73ae361 RDI: 00000000ff9c6724
-RBP: 00000000ff9c5680 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__list_add include/linux/list.h:154 [inline]
-RIP: 0010:list_add include/linux/list.h:169 [inline]
-RIP: 0010:bch2_fs_btree_key_cache_exit+0x90a/0x1490 fs/bcachefs/btree_key_cache.c:968
-Code: 00 fc ff df 48 89 f8 48 c1 e8 03 80 3c 08 00 0f 85 7f 08 00 00 4c 89 e0 4d 89 66 08 48 b9 00 00 00 00 00 fc ff df 48 c1 e8 03 <80> 3c 08 00 0f 85 53 08 00 00 49 8d bf e0 00 00 00 4d 89 b7 d8 00
-RSP: 0018:ffffc90002e67c48 EFLAGS: 00010206
-RAX: 000000000000001b RBX: 0000000000000000 RCX: dffffc0000000000
-RDX: ffff88801de2a440 RSI: ffffffff83ef5656 RDI: ffff888000932a48
-RBP: ffffe8ffad043af0 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000003 R12: 00000000000000d8
-R13: ffffc90002e67cc0 R14: ffff888000932a40 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff88802c000000(0063) knlGS:0000000056b3b400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000000002c47f000 CR3: 0000000052d8e000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 3 bytes skipped:
-   0:	df 48 89             	fisttps -0x77(%rax)
-   3:	f8                   	clc
-   4:	48 c1 e8 03          	shr    $0x3,%rax
-   8:	80 3c 08 00          	cmpb   $0x0,(%rax,%rcx,1)
-   c:	0f 85 7f 08 00 00    	jne    0x891
-  12:	4c 89 e0             	mov    %r12,%rax
-  15:	4d 89 66 08          	mov    %r12,0x8(%r14)
-  19:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
-  20:	fc ff df
-  23:	48 c1 e8 03          	shr    $0x3,%rax
-* 27:	80 3c 08 00          	cmpb   $0x0,(%rax,%rcx,1) <-- trapping instruction
-  2b:	0f 85 53 08 00 00    	jne    0x884
-  31:	49 8d bf e0 00 00 00 	lea    0xe0(%r15),%rdi
-  38:	4d                   	rex.WRB
-  39:	89                   	.byte 0x89
-  3a:	b7 d8                	mov    $0xd8,%bh
-
-
+Signed-off-by: Ariel Miculas <amiculas@cisco.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ root_image                    |  3 ++
+ tests/puzzlefs/puzzlefs.ktest | 94 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 97 insertions(+)
+ create mode 100755 tests/puzzlefs/puzzlefs.ktest
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/root_image b/root_image
+index 65d0a72..386fdfb 100755
+--- a/root_image
++++ b/root_image
+@@ -117,6 +117,9 @@ PACKAGES+=(cryptsetup)
+ # weird block layer crap
+ PACKAGES+=(multipath-tools sg3-utils srptools)
+ 
++# PuzzleFS support
++PACKAGES+=(capnproto jq)
++
+ # ZFS support
+ #PACKAGES+=("linux-headers-generic" dkms zfsutils-linux zfs-dkms)
+ 
+diff --git a/tests/puzzlefs/puzzlefs.ktest b/tests/puzzlefs/puzzlefs.ktest
+new file mode 100755
+index 0000000..ffe68c4
+--- /dev/null
++++ b/tests/puzzlefs/puzzlefs.ktest
+@@ -0,0 +1,94 @@
++#!/bin/bash
++#
++# PuzzleFS tests
++#
++
++. $(dirname $(readlink -e ${BASH_SOURCE[0]}))/../test-libs.sh
++
++require-git https://github.com/project-machine/puzzlefs
++require-make puzzlefs
++
++config-mem 4G
++config-compiler clang
++require-kernel-config RUST
++require-kernel-config MISC_FILESYSTEMS
++require-kernel-config PUZZLEFS_FS
++config-scratch-devs 4G
++
++check_rsync_log()
++{
++    # rsync itemized output
++    # https://jhpce.jhu.edu/files/rsync-itemize-table/
++    # .: the item is not being updated (though it might have attributes that are being modified)
++    # h: the item is a hard link to another item (requires --hard-links).
++
++    # We don't expect any lines to start with anything other than a dot or h
++    # Ideally the output should be empty, but the lost+found/ directory is
++    # ignored and the mountpoints themselves could have a modified time
++    # Sample expected output:
++    # .d..t...... ./
++    # .d..t...... lost+found/
++    ! grep -E '^[^.h]' $1
++}
++
++prepare_source_fs()
++{
++    local fstype=$1
++
++    if [[ $fstype = ext4 ]]; then
++	run_quiet "" mkfs.$fstype -F ${ktest_scratch_dev[0]}
++	mount -t $fstype -o user_xattr ${ktest_scratch_dev[0]} /mnt
++    else
++	run_quiet "" mkfs.$fstype -f ${ktest_scratch_dev[0]}
++	mount -t $fstype ${ktest_scratch_dev[0]} /mnt
++    fi
++
++    # Copy only /usr/bin until PuzzleFS can handle larger filesystems
++    cp -a /usr/bin /mnt
++
++    for i in /mnt/bin/*; do
++	if [ ! -L $i ]; then
++	    ln $i ${i}-migrate2
++	    setfattr -n user.foo -v test $i
++	fi
++    done
++}
++
++# build a filesystem from a source
++build_from_fs()
++{
++    set_watchdog 180
++
++    prepare_source_fs $1
++
++    puzzlefs build /mnt /tmp/puzzlefs-oci pfs_image
++
++    echo "Attempting to mount puzzlefs filesystem"
++    local image_manifest=$(jq -r ".manifests[] | .digest" /tmp/puzzlefs-oci/index.json | cut -d ':' -f2)
++
++    mkdir -p /mnt2
++    mount -t puzzlefs -o oci_root_dir="/tmp/puzzlefs-oci" -o image_manifest="$image_manifest" none /mnt2
++
++    rsync --archive				\
++	--acls					\
++	--xattrs				\
++	--checksum				\
++	--hard-links				\
++	--dry-run				\
++	--itemize-changes		 	\
++	/mnt/ /mnt2/ > /root/rsynclog-build
++
++    check_rsync_log /root/rsynclog-build
++
++    umount /mnt2
++    echo "rsync passed"
++
++    umount /mnt
++}
++
++test_build_from_ext4()
++{
++    build_from_fs ext4
++}
++
++main "$@"
+-- 
+2.34.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
