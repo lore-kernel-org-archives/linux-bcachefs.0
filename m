@@ -1,108 +1,133 @@
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552913D6A
-	for <linux-bcachefs@vger.kernel.org>; Fri,  5 Jul 2024 01:18:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB28813A3ED
+	for <linux-bcachefs@vger.kernel.org>; Fri,  5 Jul 2024 07:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720142339; cv=none; b=bw3p+rs/0IPnp6nfdevceA63sOtArqYz+N7pqLhstZcFdNrr/eznqo0zRbxddEinAJb48TFVasMkegLWNsEb0DH06dW8GW9AQXEDBRT1LLl8wlxipcZpnSh2ZT0udgCQ+yqoT9T0QbEpvpTDqMAadj5Ub9ycp4VM0F7S5rYlG7c=
+	t=1720163749; cv=none; b=TezwJ34A88YaAASQM4JpJIe+RrKNgPCD9M7njgcelHlWoQo7e1di37vVjXnscUP0hS14LgZvpyg4Rja3azzf8Iogjo149jGANkkAzxOUpAkHc4/p2sbw/g1G2bM6/vf8MqU1nfeRS6/r5I0HGY9DhDv1pFc/Fib61HMDLOjeOfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720142339; c=relaxed/simple;
-	bh=t1/aYkpV7V9HCTNO0YMUZAFhVFpbLpd/1zvnFvlw1jw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=izF+j9yUkz6PCpLViRdTdDdsupwUL8pRAP+J8IePYoO0BF6U4Z+I89Rmb42yoUx4OfjrKgdGPrKiwQ/Qto6T6jBSZzoXkA60eHPjj6IpnC+kk27D9zPE3hOwqPSexoaKmePTjPIUIY9L3cuO7KCP7iFKxuwlgCADmoiDOg5qxRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UNwDwHMI; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UNwDwHMI"
-X-Envelope-To: lizhi.xu@windriver.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720142333;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=85/6LBuQAaBN+mbTKPEBbYAV1KKnq1MLct+EJMapHB0=;
-	b=UNwDwHMIfH48SxXAlMZ/K4dQ2RmOVMo/oyPConYD4nti+49XDlCjWs8dWEWqsb5y060RK7
-	DKX8C4nzPXvQQLynMSWO50EmFx+PGPn1pjQPuJRiUe+DMKBwI12cJseCEClUU73LxQjUTG
-	r7RksZLiFEosEyL6h3kUIeiOXv/ArLY=
-X-Envelope-To: syzbot+8996d8f176cf946ef641@syzkaller.appspotmail.com
-X-Envelope-To: bfoster@redhat.com
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: syzkaller-bugs@googlegroups.com
-Date: Thu, 4 Jul 2024 21:18:49 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Lizhi Xu <lizhi.xu@windriver.com>
-Cc: syzbot+8996d8f176cf946ef641@syzkaller.appspotmail.com, 
-	bfoster@redhat.com, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] bcachefs: fix hung in bch2_fs_read_only_work
-Message-ID: <npvjcsr62mknglu6fp222ga7zmsqzewtrbiuvpuup2s5omu77y@ef6vk35ubzpi>
-References: <000000000000d4c7f4061a080a7a@google.com>
- <20240701143606.3904202-1-lizhi.xu@windriver.com>
+	s=arc-20240116; t=1720163749; c=relaxed/simple;
+	bh=M5b4vL7KG5FajhvXmXpjkLWZXlZtOZgV0rHZJ+0j4jc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Fe+OhG1T/X7XCmMZe8Hu5fLGvpbBfBKXtOP+4SsmPdOha8duZBIauof1ETJAXYuwl+VbJ+rVvbYzXWxeYf1kk5NXzzy6YsQ6BFLhPT2AHQoD6Wc8X10X10z5e/DSyFCUz7AdFZpCJ76+x6/s25ZvO47I4dUIUbe3WbWCOZvvIUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4WFl754NVpz1X4WF;
+	Fri,  5 Jul 2024 15:11:29 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id CDD9E1402C7;
+	Fri,  5 Jul 2024 15:15:37 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
+ (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 5 Jul
+ 2024 15:15:37 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
+Subject: [PATCH] bcachefs: add FS_IOC_SETVERSION support
+Date: Fri, 5 Jul 2024 15:19:30 +0800
+Message-ID: <20240705071930.2768828-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240701143606.3904202-1-lizhi.xu@windriver.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Mon, Jul 01, 2024 at 10:36:06PM GMT, Lizhi Xu wrote:
-> Error logs:
-> [ T5078] invalid journal entry, version=1.7: mi_btree_bitmap type=btree_keys in superblock: k->u64s 0, shutting down
-> [ T5078] invalid journal entry, version=1.7: mi_btree_bitmap type=btree_keys in superblock: k->u64s 0, shutting down
-> [ T5078] invalid journal entry, version=1.7: mi_btree_bitmap type=btree_keys in superblock: k->u64s 0, shutting down
-> 
-> When hit -BCH_ERR_fsck_errors_not_fixed in journal_entry_err, it will make
-> journal_entry_btree_keys_validate output too many same error log, and it will block
-> bch2_fs_start to release state_lock.
-> 
-> Reported-and-tested-by: syzbot+8996d8f176cf946ef641@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=8996d8f176cf946ef641
-> Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
-> ---
->  fs/bcachefs/journal_io.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-> index 492426c8d869..67c3f09162e4 100644
-> --- a/fs/bcachefs/journal_io.c
-> +++ b/fs/bcachefs/journal_io.c
-> @@ -415,6 +415,8 @@ static int journal_entry_btree_keys_validate(struct bch_fs *c,
->  					       flags|BCH_VALIDATE_journal);
->  		if (ret == FSCK_DELETED_KEY)
->  			continue;
-> +		else if (ret == -BCH_ERR_fsck_errors_not_fixed)
-> +			break;
+As i_generation is used in bcachefs, updating this value by ioctl
+(FS_IOC_SETVERSION) should be allowed. Here we implement this cmd
+to support modify i_generation.
 
-Actually, this is wrong: we need to return the error
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+ fs/bcachefs/fs-ioctl.c | 53 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
 
-
-commit b2879202fa55861d05088bbffdb529cf5d5ba7f8
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Thu Jul 4 21:18:06 2024 -0400
-
-    bcachefs: Fix missing error check in journal_entry_btree_keys_validate()
-    
-    Closes: https://syzkaller.appspot.com/bug?extid=8996d8f176cf946ef641
-    Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-
-diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-index 40ed7a619594..7a833a3f1c63 100644
---- a/fs/bcachefs/journal_io.c
-+++ b/fs/bcachefs/journal_io.c
-@@ -415,6 +415,8 @@ static int journal_entry_btree_keys_validate(struct bch_fs *c,
- 					       flags|BCH_VALIDATE_journal);
- 		if (ret == FSCK_DELETED_KEY)
- 			continue;
-+		else if (ret)
-+			return ret;
+diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
+index aea8132d2c40..33728bbab778 100644
+--- a/fs/bcachefs/fs-ioctl.c
++++ b/fs/bcachefs/fs-ioctl.c
+@@ -277,6 +277,54 @@ static int bch2_ioc_getversion(struct bch_inode_info *inode, u32 __user *arg)
+ 	return put_user(inode->v.i_generation, arg);
+ }
  
- 		k = bkey_next(k);
- 	}
++static int bch2_inode_version_set(struct btree_trans *trans,
++				  struct bch_inode_info *inode,
++				  struct bch_inode_unpacked *bi,
++				  void *p)
++{
++	struct bch_fs *c = inode->v.i_sb->s_fs_info;
++	__u32 *generation = p;
++
++	inode->v.i_generation = bi->bi_generation = *generation;
++	bi->bi_ctime = timespec_to_bch2_time(c, current_time(&inode->v));
++
++	return 0;
++}
++
++static int bch2_ioc_setversion(struct bch_fs *c,
++			       struct file *file,
++			       struct bch_inode_info *inode,
++			       void __user *arg)
++{
++	int ret;
++	__u32 generation;
++
++	ret = mnt_want_write_file(file);
++	if (ret)
++		return ret;
++
++	inode_lock(&inode->v);
++	if (!inode_owner_or_capable(file_mnt_idmap(file), &inode->v)) {
++		ret = -EACCES;
++		goto setversion_out;
++	}
++
++	if (get_user(generation, (int __user *) arg)) {
++		ret = -EFAULT;
++		goto setversion_out;
++	}
++
++	mutex_lock(&inode->ei_update_lock);
++	ret = bch2_write_inode(c, inode, bch2_inode_version_set, &generation, ATTR_CTIME);
++	mutex_unlock(&inode->ei_update_lock);
++
++setversion_out:
++	inode_unlock(&inode->v);
++	mnt_drop_write_file(file);
++
++	return ret;
++}
++
+ static int bch2_ioc_getlabel(struct bch_fs *c, char __user *user_label)
+ {
+ 	int ret;
+@@ -567,7 +615,7 @@ long bch2_fs_file_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+ 		break;
+ 
+ 	case FS_IOC_SETVERSION:
+-		ret = -ENOTTY;
++		ret = bch2_ioc_setversion(c, file, inode, (int __user *) arg);
+ 		break;
+ 
+ 	case FS_IOC_GETFSLABEL:
+@@ -622,6 +670,9 @@ long bch2_compat_fs_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+ 	case FS_IOC32_GETVERSION:
+ 		cmd = FS_IOC_GETVERSION;
+ 		break;
++	case FS_IOC32_SETVERSION:
++		cmd = FS_IOC_SETVERSION;
++		break;
+ 	case FS_IOC_GETFSLABEL:
+ 	case FS_IOC_SETFSLABEL:
+ 		break;
+-- 
+2.34.1
+
