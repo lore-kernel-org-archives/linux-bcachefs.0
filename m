@@ -1,145 +1,69 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B4D3F9FB;
-	Tue,  9 Jul 2024 02:27:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD4B13BC30
+	for <linux-bcachefs@vger.kernel.org>; Tue,  9 Jul 2024 08:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720492039; cv=none; b=PWwU/Z2ToTc9oAnoDYXsCdKw4BPBpe/XQ37CLAedpNmB30XBAWVnFl9F+OVPBOchCFtmXyYXo5IGE/QPwdDeOZQiNmfuLF89qNrcRF6/F80LfXRUoR8rQ64NFPbihUVbpL+Qtts/wdIMnTFhOlxdIpBkcxWo4KsrVy9AWajt8Ps=
+	t=1720512376; cv=none; b=pBmGIIn4eDTB6y8nmlejJRUsW1tjGRHw1kjMYUE/f9maRWfa5Z1K4yf1dVi39T5pPhlYCgqdOi8eQlG2IrfED2i/OUYnTUhgKmu5sga9Hx3Yr7utAy+gdBLTZS+kIuEQ99kyMEqCXAM0aRnbcYMGFQ3p/ZeGIlDWAK9CwMo6/QE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720492039; c=relaxed/simple;
-	bh=rYEIDsBMvk3pJE8J5+B3r5kXdomRRqJ7GI/GmRNt184=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=KTgCHHWTBV2rl0KIxBvfEkzCsdw7qNItZbZGmHq270tj44wBfZKF0DmO1bCpM6mvLNbORftw7kPamPnOe5zocaXyd9LBqS6ewkfWgZ6zkAA1NloDLtBawWfLIbQnsxvRbLzkskytSVr7hKloXacNebkNyBbUuGrJfQ59y5zVV/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	s=arc-20240116; t=1720512376; c=relaxed/simple;
+	bh=Av9j6+ZaZF7ujRAD2nBcgdf8EkzdLLGaA1OcFSkRioA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=t0IbPKOhcFfLV06hgY1qBClqYxg1kIRztGvhd3Ku/7WTrdOnhwvadFgwIthLS8J9nE2UBDDSFPe3IZvnRPrLjl7qEu+U90M/V/XYygdprGI/LtLcx3COY8QYl7kTI9VzpIqbi2ipwIaBN7XNWpg83fb1xPNaqoSZQJPqM2M2sBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WJ4Xl2Psjz1yv6V;
-	Tue,  9 Jul 2024 10:23:19 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WJD343ZKqzxVYY;
+	Tue,  9 Jul 2024 16:01:36 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3F3241400D4;
-	Tue,  9 Jul 2024 10:27:13 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 9 Jul 2024 10:27:13 +0800
-Message-ID: <5f5c2087-8508-4ed9-8f47-aba0bd73eca6@huawei.com>
-Date: Tue, 9 Jul 2024 10:27:12 +0800
+	by mail.maildlp.com (Postfix) with ESMTPS id 781FB180AE4;
+	Tue,  9 Jul 2024 16:06:10 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
+ (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 9 Jul
+ 2024 16:06:10 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
+Subject: [PATCH] bcachefs: prevent lookuping excessively long paths
+Date: Tue, 9 Jul 2024 16:10:20 +0800
+Message-ID: <20240709081020.3728942-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] bcachefs: Add support for FS_IOC_GETFSSYSFSPATH
-To: Youling Tang <youling.tang@linux.dev>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Kent
- Overstreet <kent.overstreet@linux.dev>
-References: <20240709011134.79954-1-youling.tang@linux.dev>
- <20240709011134.79954-2-youling.tang@linux.dev>
- <8a1b37b5-450c-4f12-978e-25d691fbf21b@huawei.com>
- <c3471af6-0df7-44a9-8272-ab211f0f1b1b@linux.dev>
-Content-Language: en-US
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <c3471af6-0df7-44a9-8272-ab211f0f1b1b@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggpeml500022.china.huawei.com (7.185.36.66)
 
+The longest name length for file is BCH_NAME_MAX in bcachefs.
+When looking up a longer path, it does not check this limit. So
+we add the validation for this to avoid undetermined risk.
 
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+ fs/bcachefs/fs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On 2024/7/9 10:11, Youling Tang wrote:
-> On 09/07/2024 10:04, Hongbo Li wrote:
->>
->>
->> On 2024/7/9 9:11, Youling Tang wrote:
->>> From: Kent Overstreet <kent.overstreet@linux.dev>
->>>
->>> [TEST]:
->>> ```
->>> $ cat ioctl_getsysfspath.c
->>>   #include <stdio.h>
->>>   #include <stdlib.h>
->>>   #include <fcntl.h>
->>>   #include <sys/ioctl.h>
->>>   #include <linux/fs.h>
->>>   #include <unistd.h>
->>>
->>>   int main(int argc, char *argv[]) {
->>>       int fd;
->>>       struct fs_sysfs_path sysfs_path = {};
->>>
->>>       if (argc != 2) {
->>>           fprintf(stderr, "Usage: %s <path_to_file_or_directory>\n", 
->>> argv[0]);
->>>           exit(EXIT_FAILURE);
->>>       }
->>>
->>>       fd = open(argv[1], O_RDONLY);
->>>       if (fd == -1) {
->>>           perror("open");
->>>           exit(EXIT_FAILURE);
->>>       }
->>>
->>>       if (ioctl(fd, FS_IOC_GETFSSYSFSPATH, &sysfs_path) == -1) {
->>>           perror("ioctl FS_IOC_GETFSSYSFSPATH");
->>>           close(fd);
->>>           exit(EXIT_FAILURE);
->>>       }
->>>
->>>       printf("FS_IOC_GETFSSYSFSPATH: %s\n", sysfs_path.name);
->>>       close(fd);
->>>       return 0;
->>>   }
->>>
->>> $ gcc ioctl_getsysfspath.c
->>> $ sudo bcachefs format /dev/sda
->>> $ sudo mount.bcachefs /dev/sda /mnt
->>> $ sudo ./a.out /mnt
->>>    FS_IOC_GETFSSYSFSPATH: bcachefs/c380b4ab-fbb6-41d2-b805-7a89cae9cadb
->>> ```
->>>
->>> Original patch link:
->>> [1]: 
->>> https://lore.kernel.org/all/20240207025624.1019754-8-kent.overstreet@linux.dev/
->>>
->>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
->>> Signed-off-by: Youling Tang <youling.tang@linux.dev>
->>> ---
->>>   fs/bcachefs/fs.c | 1 +
->>>   1 file changed, 1 insertion(+)
->>>
->>> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
->>> index 011ee5075a52..8699770398d1 100644
->>> --- a/fs/bcachefs/fs.c
->>> +++ b/fs/bcachefs/fs.c
->>> @@ -1978,6 +1978,7 @@ static int bch2_fs_get_tree(struct fs_context *fc)
->>>       sb->s_time_min        = div_s64(S64_MIN, 
->>> c->sb.time_units_per_sec) + 1;
->>>       sb->s_time_max        = div_s64(S64_MAX, 
->>> c->sb.time_units_per_sec);
->>>       super_set_uuid(sb, c->sb.user_uuid.b, sizeof(c->sb.user_uuid));
->>> +    super_set_sysfs_name_uuid(sb);
->>
->> Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
->>
->> It's quite strange that other commits have been merged, but the ones 
->> for bcachefs have not been merged.
-> Because bcachefs was not upstream at the time, [1] described the following:
->    Note, I dropped the bcachefs changes because they're not upstream yet.
->    But once this is a stable branch you can just pull in vfs.uuid and rely
->    on that.
-> 
-Got it! Thank you!
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index fd01a5402c28..f8da598ca9f8 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -474,6 +474,9 @@ static struct dentry *bch2_lookup(struct inode *vdir, struct dentry *dentry,
+ 	struct bch_inode_info *dir = to_bch_ei(vdir);
+ 	struct bch_hash_info hash = bch2_hash_info_init(c, &dir->ei_inode);
+ 
++	if (dentry->d_name.len > BCH_NAME_MAX)
++		return ERR_PTR(-ENAMETOOLONG);
++
+ 	struct bch_inode_info *inode;
+ 	bch2_trans_do(c, NULL, NULL, 0,
+ 		PTR_ERR_OR_ZERO(inode = bch2_lookup_trans(trans, inode_inum(dir),
+-- 
+2.34.1
 
-
-Thanks,
-Hongbo
-> [1]: 
-> https://lore.kernel.org/all/20240208-wecken-nutzen-3df1102a39b2@brauner/
-> 
-> Thanks,
-> Youling.
