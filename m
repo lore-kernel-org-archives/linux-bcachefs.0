@@ -1,42 +1,42 @@
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FDC194081;
-	Wed, 10 Jul 2024 14:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4AEB193085;
+	Wed, 10 Jul 2024 14:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720620105; cv=none; b=cYyibn0CJrdrFBEkJ25U/DtbK0LBB2daDELksLHNhHFpW1UN+KjugFn+Y9/o4CBRsDCfN31IP9KWZAXO2uAwux8zRqD0yW0bjw/Qqejz/2/zr0w54YP4GN2yjn8z8JEJdbp/RKlKr4PJP6MZlVg/rAEI5Nvy9pfWgPP0f2seFik=
+	t=1720620837; cv=none; b=o2u6U1OfczVcO4GWDxD4K18WtHFdiO7/cydVQxLCUHuUeqLvMgn0tFkDNYDI7gtaSVFTyxCpEBRropdGAzJo40w1snpskMMfe6ZTY9C/iUYkp6g5cnOr9OGxB0j5oiz8UiAWwoh9ebJwjNcgrjMJkCU4oTgy29qovbNNXv8GQSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720620105; c=relaxed/simple;
-	bh=Et5l8wbkPTW0SmqvPS5ISuDSY1IwQ9qONGjNBZSNKw8=;
+	s=arc-20240116; t=1720620837; c=relaxed/simple;
+	bh=LYrO5OQB3VkboQ/sNL+F3D+E/WBT/7aRRUdt36KX6Ew=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=StDK6p3gS8kQENoItWxU3hb2y88eFkhHzJKypNXoToOw6WibZIss8jKOpQKvMnBgotrSyeNmN7eeTZjFOs23S1EMMEb2Dj9N2u0AHg9ONIqNpeHs02XrZYxW8tLzy5vcoZszehmDPhJE2dr4xJrZwU6DAApZvvX4rPZ70tVzkzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vnFhuSC2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VKGXipAt; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version:Content-Type; b=oofKV3bFy6sw/7yuabb/heudKqJoAp5DSEOCuEB/vhwVw6aKncXC/Fhl+ond+yLCmCIbnV3fy+WQi7KHMaW415G/xJspqiVzGumTER/bpXPlp/OaWy8QRI+ql8ESDBzZDZ6U4v6hIUuLzeKz3SgNS5OCO9KdVlmxBNSrRU6jIVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TzWt5nXr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wQXY9DNN; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vnFhuSC2";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VKGXipAt"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TzWt5nXr";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wQXY9DNN"
 From: John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1720620101;
+	s=2020; t=1720620833;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Et5l8wbkPTW0SmqvPS5ISuDSY1IwQ9qONGjNBZSNKw8=;
-	b=vnFhuSC2VBqWV9SCWATEZgz7pyFBe16UTJe9kG87ame65DQs7Cpwzd+Ij9ZbnNVeaR/IiT
-	/Oq0DD9eDwsGSTTodj0iebvYq01hcrcMzS8nVuvXWa2Osu3HMINl0QTrsKPNGWxJPKSI5a
-	pH76lB8eyILBpE5x6JzJ0/BWYOVSDaQEx5M5bWVhUpa8Yq6nRfv2VzlShVVKdbAzXhmq9J
-	tLqBek4Bo2enxYjDG/Znjh2Ezj5psXeH4oHsXNRm6FHrWqTnPAUs8tNyX1EFsJbyLwn//6
-	itpGSqTcloqgNM4qAfZTdXuiQKNbjiXc7JZ29RQjAxySdPLvR1duPpzSQolyyA==
+	bh=LYrO5OQB3VkboQ/sNL+F3D+E/WBT/7aRRUdt36KX6Ew=;
+	b=TzWt5nXrBpDWNxyHN/jI2S+nIoIpyTiDtbma0J3o+9Zb+lHqzZnRW/2uMBemZMnmtAgTLi
+	zBl9CImPvIGEspb/4yOvQsGsKQhHjgknJL3TENtQsToxX5Nx7AHQIFGqRXPc95NTki7xEq
+	DRoNbgp4zVzkh0ZaLm2JMnsWblZE+3Xyi6VfIwQw+wjmjtjWoGRj9GrR0m9+Y+CjZ3ZwSV
+	XCZVmveLNjdXsR+JcHiTbWeWDLg6Oq6t+RC3SRwlwTL19sE9vK+kshCzDyf4oktGxHK5Ol
+	4Gn1r4YV+prjTDOYs66YNYRneQtmp4tW2vCFqNyx6WQKMqaZ9Jp2PbQ8WFQs1w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1720620101;
+	s=2020e; t=1720620833;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Et5l8wbkPTW0SmqvPS5ISuDSY1IwQ9qONGjNBZSNKw8=;
-	b=VKGXipAtKYmyYCqcpqINqZlTwQXUNbLuV9OyyCIIf1AjQo0+T0C60xxIM+jLY6x5O1tO8z
-	bhiXrHPkG722RfDA==
+	bh=LYrO5OQB3VkboQ/sNL+F3D+E/WBT/7aRRUdt36KX6Ew=;
+	b=wQXY9DNN22mwdUOMTtS6evo6EdB2eirpaCjBZFieN7kIKoktDdx0IDqXmPGD6FBl11+t18
+	EPixYszvrf055vDA==
 To: Daniel Vetter <daniel.vetter@ffwll.ch>, DRI Development
  <dri-devel@lists.freedesktop.org>, LKML <linux-kernel@vger.kernel.org>
 Cc: Intel Graphics Development <intel-gfx@lists.freedesktop.org>, Daniel
@@ -51,8 +51,8 @@ Subject: Re: [PATCH] bcachefs: no console_lock in bch2_print_string_as_lines
 In-Reply-To: <20240710130335.765885-1-daniel.vetter@ffwll.ch>
 References: <20240710093120.732208-2-daniel.vetter@ffwll.ch>
  <20240710130335.765885-1-daniel.vetter@ffwll.ch>
-Date: Wed, 10 Jul 2024 16:07:40 +0206
-Message-ID: <87o775cpmj.fsf@jogness.linutronix.de>
+Date: Wed, 10 Jul 2024 16:19:53 +0206
+Message-ID: <87jzhtcp26.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -81,10 +81,25 @@ On 2024-07-10, Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
 > https://lore.kernel.org/lkml/87frsh33xp.fsf@jogness.linutronix.de/
 >
 > Do that.
->
-> Reported-by: syzbot+6cebc1af246fe020a2f0@syzkaller.appspotmail.com
-> References: https://lore.kernel.org/dri-devel/00000000000026c1ff061cd0de12@google.com/
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Fixes: a8f354284304 ("bcachefs: bch2_print_string_as_lines()")
 
-Reviewed-by: John Ogness <john.ogness@linutronix.de>
+Note that there is more of this incorrect usage of console lock in:
+
+fs/bcachefs/debug.c:bch2_btree_verify_replica()
+
+fs/bcachefs/bset.c:bch2_dump_btree_node()
+
+from commit 1c6fdbd8f246("bcachefs: Initial commit")
+
+... and its parent bcache:
+
+drivers/md/bcache/debug.c:bch_btree_verify()
+
+drivers/md/bcache/bset.c:bch_dump_bucket()
+
+from commit cafe56359144("bcache: A block layer cache")
+
+These should also be removed. Although Kent should verify that the
+console lock is not providing some sort of necessary side-effect
+synchronization.
+
+John Ogness
