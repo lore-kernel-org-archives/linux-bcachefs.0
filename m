@@ -1,65 +1,65 @@
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC827492
-	for <linux-bcachefs@vger.kernel.org>; Sun, 14 Jul 2024 20:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD87136E37
+	for <linux-bcachefs@vger.kernel.org>; Sun, 14 Jul 2024 20:03:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720987393; cv=none; b=ea4MHCWg7OgAZ5EZ0MEbOB3lkqZzC/BBqI/cTbnL4O49SNzrs8xs5E8HmX1A629DOK45p2P1iWi4Dz5Ns0Lb++IliKcChuM7Cvpj8f3W5LtH7dbsJOzawjZuFIb0svv81RSpLbO7rfHHIm9S2Nid7yoi8av+YqPOqR61xv8gAeE=
+	t=1720987400; cv=none; b=ruZu3tZ1BmRV4A8nltN8S3G9yrps1kgEWPofGFc6jqm+sCS2ch6Y5s3/MTnwHMUuYWJSyDFxOBqVjqwqheJ+pHd663pCJNk5r9Cj1Vw6cFCOsRLGF7MzjDaRbD7mZqLlXOFsAd6e2nxsCJmhdE2QczLkPQKxIWb8KiSaGkQrkCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720987393; c=relaxed/simple;
-	bh=WWOp3kZbg1VcrL5UAXa9xj19DYDcBAyd0mLCQxU6xGY=;
+	s=arc-20240116; t=1720987400; c=relaxed/simple;
+	bh=k/PTbmF5c9aUQ2yLx0X78B5uC34ZUUTGUk0HIRlWILM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tU1Ez/wnF7OgfNvQYo6BHuGsFh2RYnNvHHae5lcpBPzrOXeuFLMFzYZED5KIYv9/H4Z1mx7hJ+cS/T1E0Q9m5SVtqX7z4goGVXme7mU+0moBicNoR/MdQ7pf3G2Sg/i8ZEQ+PDMSgX6Cr7nQz2o8GWc/L3+Y1zKFevQZiytJ7F8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fx5dI7gp; arc=none smtp.client-ip=209.85.166.45
+	 MIME-Version; b=DcL6/4RrqefsyrHN/ivQvdpsehddXzTPyFiOZf08VCh4JVgZfcMbOeC0QN0YAsrlEow7KUOov5l/BpyI6vcPm/QJQpvbGyIjdrgyXF7OfcZQaVK8rERkK5qMHC0CDXlI5tYi1VT9c7DrKxi9XwCgtdhnFu7ChXCbi55MPE2fNyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j/N1aRsQ; arc=none smtp.client-ip=209.85.166.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fx5dI7gp"
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7fd3dbc01deso175118939f.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 14 Jul 2024 13:03:11 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/N1aRsQ"
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7f70a708f8aso161764539f.2
+        for <linux-bcachefs@vger.kernel.org>; Sun, 14 Jul 2024 13:03:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720987390; x=1721592190; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720987397; x=1721592197; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bWhXUYl00dhkYFDDz8rO68TnvxAkfCWQAKs0UYkiD3A=;
-        b=fx5dI7gp4JFC4G3VeKdt7QMT6Na8m84P/kfb4bSQMDGjePZetKKObKpFEcJERfM7oz
-         1d0M9gRm5keDL33/kBk3K4S2LPabPcxXjW8gRGQr6eBLqcHid/3ov7AmXu2YP5T41oIV
-         q576AMrOcPme77Z5amSyP/IaFxXeBzaIfug2UWo4CZq4KOsUEDvebPTSIiWcfXkLcupj
-         t0XrbYqvqIrnoIuzOCxz7Ujir3FoNNr3+7mq2/RRRazJEPK9bGlUmAMOaKVVKBd2p2JV
-         hD+LWKRr8x9LjhBMrH69CsfyKTJ4mDPdP4BWpxbGDWqY3Sb0u2ou99akQ+S0DfF9clx3
-         Te0Q==
+        bh=NojEKfJfD6RjVAuOo25Wfoex1QuQPV6cg7fx9DTumis=;
+        b=j/N1aRsQXCjueAgReQPrhMvuTA6n+OdNpMWwNRbfMM9VcV9oWJ7r+uXLrt5ea0ebiN
+         liNBGOPOIhAcVvpKN0lSZ1uJWmvW2fVmcYj+Gg7Qnv9Ndc9TD6O+cW8WaQXgBXtiFtYg
+         Ki26Ziv87bXQ6uNqUHD1FRGlAm+4QIF+DisCwP3yPi7xR7Ehgvetg3ga1rHg3wYoe0vi
+         QqM/WvNZSPgwTL6yQd7xnDKKFEuLAO6EwqkwLKxVwnupynhO4EBKuj3sl00x6dLCt6Si
+         kCtXDRABmXx2ak1gj6pwZoxHnNaC8/SHshyFqBDbEtaR5FMUQ0xqqSrktnysgoRSuryd
+         ousg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720987390; x=1721592190;
+        d=1e100.net; s=20230601; t=1720987397; x=1721592197;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bWhXUYl00dhkYFDDz8rO68TnvxAkfCWQAKs0UYkiD3A=;
-        b=VFLokG1Q8g1//dSyYtd5u2ZU6mUUdDjBFTXrHZ+8x7C6aeDul9NtAoHIqdmjiQSVoX
-         GiLUPrewzJNqWc3CbAkxaVCSxvar292/WeKNeAVy+WdIIzGEuGGfAb4pUWXG+7+vvfdf
-         DyyQnr2zbCKb5CIa7b+iDWTgyKVYBrMWRgmYZEcxBecZ+iO9crVqerpYTYk3PYsrJdHQ
-         Bg1fmUFR8hFkaZmyyIeQPJrdsPxYlM25atUGY1Qw0XtIMdt5zn/d91spLrUNQnK2vRIc
-         1OAXJvvEUQoyPeU9zoUkDA3DH/h/WMCRI28JkCGluVPAS8uzyUXz/KodxtogBBghAiU3
-         j3GQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXIj0Wd7ZXh+pQ3njcIfL8A9AsCvbtLKICfmlGO0bbs5QY2MaeO2a3mAN79OURhZDg4b+cpq1/C0ZvVg9zci/Zsshe0fozmdgylQtNVO5Y=
-X-Gm-Message-State: AOJu0YxwcD1jySjjpz3IrgB1x1UjxKcDJNk08e0npg3M/PJZHRgkHqyt
-	ephe17Ctc7K4xnFlCumVOVUtB0wpDb+vHq5OWxFEQCIcSzSfEiYo
-X-Google-Smtp-Source: AGHT+IGolEOvYDusAxLx3Hltn3/q93mYO5nDrrrUb1Yfq8SHl3CUpX6FaFZAjXXrGcTMpQLG+W0nPg==
-X-Received: by 2002:a6b:e80f:0:b0:7fa:2902:aec5 with SMTP id ca18e2360f4ac-80004173005mr1753486539f.17.1720987390114;
-        Sun, 14 Jul 2024 13:03:10 -0700 (PDT)
+        bh=NojEKfJfD6RjVAuOo25Wfoex1QuQPV6cg7fx9DTumis=;
+        b=ED/MftnUetPNmwja2f0uZSIKCFO3jscr6dUd0syZjI13QUxkKojTAS9ggw8z+9Pk0J
+         vnhN7ds31fuSBXMdiqXLduwBfrqdggaroPLr/53FvMKppsGAXlHAPELikAMwH6w3j4+v
+         PpSWpVf99hJHtcncHtc8+rbgcdflZdiwM695dAWTsu7YXcYJdmh75LKDz2+CtK+nSBqq
+         ZnOxcDQrzA72DPPco3J4rSSqFXHqhXiXDjjON+0bKSFosIH+H13mEdNDCcGYfsHh7k5F
+         Cs7NZxuH3bQK0ClDL1Mgg7OXQtzkkHBe5IORhwmDZO5mnwDyifuCqGn20ndyhJcdqqXt
+         zRWg==
+X-Forwarded-Encrypted: i=1; AJvYcCUP7EKDtIPY0Zozk6L7bLvjj8HoXTmYychMwZac2zVg+JfNh3oH6S0/n/8yeQxFoI6+KBYbdcxp5VN1C/t73KYvL9oP1wZIDvsjMwB/qPc=
+X-Gm-Message-State: AOJu0YwFuhSogph9KHUAqpt/c6cTaBoMYM8QojMASSBy7q8TQsTVtDo4
+	kyLgbFMJRMOV3hmx6p7njJMBpvSi5DWxF+CXIx9iq5Mc7/w0Qq5Y
+X-Google-Smtp-Source: AGHT+IGCrClb6XTxfiPmRmeI29t8F7VhXCiXUnn5cMAIt5Ko+/fYr2ctk+ty5NLuSmmQPfjKrmwivg==
+X-Received: by 2002:a6b:5a19:0:b0:805:b510:92a2 with SMTP id ca18e2360f4ac-805b51093e0mr1308460839f.19.1720987397068;
+        Sun, 14 Jul 2024 13:03:17 -0700 (PDT)
 Received: from fedora-laptop.hsd1.nm.comcast.net ([2601:8c1:c100:1c70:46d4:8434:9d74:6efc])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4c1e1b2cfb8sm892815173.62.2024.07.14.13.03.09
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4c1e1b2cfb8sm892815173.62.2024.07.14.13.03.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jul 2024 13:03:09 -0700 (PDT)
+        Sun, 14 Jul 2024 13:03:16 -0700 (PDT)
 From: Thomas Bertschinger <tahbertschinger@gmail.com>
 To: kent.overstreet@linux.dev,
 	linux-bcachefs@vger.kernel.org,
 	bfoster@redhat.com
 Cc: Thomas Bertschinger <tahbertschinger@gmail.com>
-Subject: [PATCH TOOLS v2 2/5] update minimum Rust version to 1.74.0
-Date: Sun, 14 Jul 2024 14:02:23 -0600
-Message-ID: <20240714200226.746471-3-tahbertschinger@gmail.com>
+Subject: [PATCH TOOLS v2 3/5] introduce "list_bkeys" command
+Date: Sun, 14 Jul 2024 14:02:24 -0600
+Message-ID: <20240714200226.746471-4-tahbertschinger@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240714200226.746471-1-tahbertschinger@gmail.com>
 References: <20240714200226.746471-1-tahbertschinger@gmail.com>
@@ -71,639 +71,655 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The new debug command needs RFC 2145 [1], "Replace old private-in-public
-diagnostic with type privacy lints", in order to build succesfully. An
-error was reported incorrectly for `parse_command()` in the
-`debug::parser` module. This is fixed in Rust version 1.74.0.
-
-[1] https://rust-lang.github.io/rfcs/2145-type-privacy.html
+This introduces a new command, "list_bkeys", which is used to list the
+known bkey types as well as their fields. This will be used by debug
+tooling introduced in a subsequent change.
 
 Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
 ---
- Cargo.lock | 233 ++++++++++++++++++++++++++++-------------------------
- Cargo.toml |   2 +-
- 2 files changed, 123 insertions(+), 112 deletions(-)
+ Cargo.lock                       | 141 ++++++++++++++
+ Cargo.toml                       |   4 +
+ src/bcachefs.rs                  |   4 +-
+ src/commands/debug/bkey_types.rs | 320 +++++++++++++++++++++++++++++++
+ src/commands/debug/mod.rs        |   9 +
+ src/commands/mod.rs              |   2 +
+ 6 files changed, 478 insertions(+), 2 deletions(-)
+ create mode 100644 src/commands/debug/bkey_types.rs
+ create mode 100644 src/commands/debug/mod.rs
 
 diff --git a/Cargo.lock b/Cargo.lock
-index 1e109998..9b781755 100644
+index 9b781755..b9e35816 100644
 --- a/Cargo.lock
 +++ b/Cargo.lock
-@@ -4,56 +4,57 @@ version = 3
+@@ -2,6 +2,12 @@
+ # It is not intended for manual editing.
+ version = 3
  
++[[package]]
++name = "adler"
++version = "1.0.2"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"
++
  [[package]]
  name = "aho-corasick"
--version = "1.1.2"
-+version = "1.1.3"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "b2969dcb958b36655471fc61f7e416fa76033bdd4bfed0678d8fee1e2d07a1f0"
-+checksum = "8e60d3430d3a69478ad0993f19238d2df97c507009a52b3c10addcd7f6bcb916"
- dependencies = [
-  "memchr",
- ]
- 
- [[package]]
- name = "anstream"
--version = "0.6.11"
-+version = "0.6.14"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "6e2e1ebcb11de5c03c67de28a7df593d32191b44939c482e97702baaaa6ab6a5"
-+checksum = "418c75fa768af9c03be99d17643f93f79bbba589895012a80e3452a19ddda15b"
- dependencies = [
-  "anstyle",
-  "anstyle-parse",
-  "anstyle-query",
-  "anstyle-wincon",
-  "colorchoice",
-+ "is_terminal_polyfill",
-  "utf8parse",
- ]
- 
- [[package]]
- name = "anstyle"
--version = "1.0.6"
-+version = "1.0.7"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "8901269c6307e8d93993578286ac0edf7f195079ffff5ebdeea6a59ffb7e36bc"
-+checksum = "038dfcf04a5feb68e9c60b21c9625a54c2c0616e79b72b0fd87075a056ae1d1b"
- 
- [[package]]
- name = "anstyle-parse"
--version = "0.2.3"
-+version = "0.2.4"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "c75ac65da39e5fe5ab759307499ddad880d724eed2f6ce5b5e8a26f4f387928c"
-+checksum = "c03a11a9034d92058ceb6ee011ce58af4a9bf61491aa7e1e59ecd24bd40d22d4"
- dependencies = [
-  "utf8parse",
- ]
- 
- [[package]]
- name = "anstyle-query"
--version = "1.0.2"
-+version = "1.1.0"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "e28923312444cdd728e4738b3f9c9cac739500909bb3d3c94b43551b16517648"
-+checksum = "ad186efb764318d35165f1758e7dcef3b10628e26d41a44bc5550652e6804391"
- dependencies = [
-  "windows-sys 0.52.0",
- ]
- 
- [[package]]
- name = "anstyle-wincon"
--version = "3.0.2"
-+version = "3.0.3"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "1cd54b81ec8d6180e24654d0b371ad22fc3dd083b6ff8ba325b72e00c87660a7"
-+checksum = "61a38449feb7068f52bb06c12759005cf459ee52bb4adc1d5a7c4322d716fb19"
- dependencies = [
-  "anstyle",
-  "windows-sys 0.52.0",
-@@ -61,15 +62,15 @@ dependencies = [
- 
- [[package]]
- name = "anyhow"
--version = "1.0.79"
-+version = "1.0.86"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "080e9890a082662b09c1ad45f567faeeb47f22b5fb23895fbe1e651e718e25ca"
-+checksum = "b3d1d046238990b9cf5bcde22a3fb3584ee5cf65fb2765f454ed428c7a0063da"
- 
- [[package]]
- name = "autocfg"
--version = "1.1.0"
-+version = "1.3.0"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
-+checksum = "0c4b4d0bd25bd0b74681c0ad21497610ce1b7c91b1022cd21c80c6fbdd9476b0"
- 
- [[package]]
- name = "bcachefs-tools"
-@@ -114,7 +115,7 @@ version = "0.69.4"
- source = "registry+https://github.com/rust-lang/crates.io-index"
- checksum = "a00dc851838a2120612785d195287475a3ac45514741da670b735818822129a0"
- dependencies = [
-- "bitflags 2.4.2",
-+ "bitflags 2.6.0",
-  "cexpr",
-  "clang-sys",
-  "itertools",
-@@ -145,9 +146,9 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
- 
- [[package]]
- name = "bitflags"
--version = "2.4.2"
-+version = "2.6.0"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "ed570934406eb16438a4e976b1b4500774099c13b8cb96eec99f620f05090ddf"
-+checksum = "b048fb63fd8b5923fc5aa7b340d8e156aec7ec02f0c78fa8a6ddc2613f6f71de"
- 
- [[package]]
- name = "byteorder"
-@@ -157,12 +158,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
- 
- [[package]]
- name = "cc"
--version = "1.0.83"
-+version = "1.0.104"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "f1174fb0b6ec23863f8b971027804a42614e347eafb0a95bf0b12cdae21fc4d0"
--dependencies = [
-- "libc",
--]
-+checksum = "74b6a57f98764a267ff415d50a25e6e166f3831a5071af4995296ea97d210490"
- 
- [[package]]
- name = "cexpr"
-@@ -181,9 +179,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
- 
- [[package]]
- name = "clang-sys"
--version = "1.7.0"
-+version = "1.8.1"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "67523a3b4be3ce1989d607a828d036249522dd9c1c8de7f4dd2dae43a37369d1"
-+checksum = "0b023947811758c97c59bf9d1c188fd619ad4718dcaa767947df1cadb14f39f4"
- dependencies = [
-  "glob",
+ version = "1.1.3"
+@@ -84,8 +90,12 @@ dependencies = [
+  "either",
+  "env_logger",
+  "errno 0.2.8",
++ "gimli",
   "libc",
-@@ -192,9 +190,9 @@ dependencies = [
- 
- [[package]]
- name = "clap"
--version = "4.4.18"
-+version = "4.5.8"
+  "log",
++ "memmap2",
++ "nom",
++ "object",
+  "rpassword",
+  "strum",
+  "strum_macros",
+@@ -244,6 +254,26 @@ version = "1.0.1"
  source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "1e578d6ec4194633722ccf9544794b71b1385c3c027efe0c55db226fc880865c"
-+checksum = "84b3edb18336f4df585bc9aa31dd99c036dfa5dc5e9a2939a722a188f3a8970d"
- dependencies = [
-  "clap_builder",
-  "clap_derive",
-@@ -202,9 +200,9 @@ dependencies = [
+ checksum = "0b6a852b24ab71dffc585bcb46eaf7959d175cb865a7152e35b348d1b2960422"
  
- [[package]]
- name = "clap_builder"
--version = "4.4.18"
-+version = "4.5.8"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "4df4df40ec50c46000231c914968278b1eb05098cf8f1b3a518a95030e71d1c7"
-+checksum = "c1c09dd5ada6c6c78075d6fd0da3f90d8080651e2d6cc8eb2f1aaa4034ced708"
- dependencies = [
-  "anstream",
-  "anstyle",
-@@ -215,18 +213,18 @@ dependencies = [
- 
- [[package]]
- name = "clap_complete"
--version = "4.4.10"
-+version = "4.5.7"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "abb745187d7f4d76267b37485a65e0149edd0e91a4cfcdd3f27524ad86cee9f3"
-+checksum = "1d598e88f6874d4b888ed40c71efbcbf4076f1dfbae128a08a8c9e45f710605d"
- dependencies = [
-  "clap",
- ]
- 
- [[package]]
- name = "clap_derive"
--version = "4.4.7"
-+version = "4.5.8"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "cf9804afaaf59a91e75b022a30fb7229a7901f60c755489cc61c9b423b836442"
-+checksum = "2bac35c6dafb060fd4d275d9a4ffae97917c13a6327903a8be2153cd964f7085"
- dependencies = [
-  "heck",
-  "proc-macro2",
-@@ -236,21 +234,21 @@ dependencies = [
- 
- [[package]]
- name = "clap_lex"
--version = "0.6.0"
-+version = "0.7.1"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "702fc72eb24e5a1e48ce58027a675bc24edd52096d5397d4aea7c6dd9eca0bd1"
-+checksum = "4b82cf0babdbd58558212896d1a4272303a57bdb245c2bf1147185fb45640e70"
- 
- [[package]]
- name = "colorchoice"
--version = "1.0.0"
-+version = "1.0.1"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
-+checksum = "0b6a852b24ab71dffc585bcb46eaf7959d175cb865a7152e35b348d1b2960422"
- 
++[[package]]
++name = "crc32fast"
++version = "1.4.2"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "a97769d94ddab943e4510d138150169a2758b5ef3eb191a9ee688de3e23ef7b3"
++dependencies = [
++ "cfg-if",
++]
++
++[[package]]
++name = "derive_more"
++version = "0.99.18"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "5f33878137e4dafd7fa914ad4e259e18a4e8e532b9617a2d0150262bf53abfce"
++dependencies = [
++ "proc-macro2",
++ "quote",
++ "syn",
++]
++
  [[package]]
  name = "either"
--version = "1.9.0"
-+version = "1.13.0"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "a26ae43d7bcc3b814de94796a5e736d4029efb0ee900c12e2d54c993ad1a1e07"
-+checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
+ version = "1.13.0"
+@@ -261,6 +291,12 @@ dependencies = [
+  "termcolor",
+ ]
  
- [[package]]
- name = "env_logger"
-@@ -276,9 +274,9 @@ dependencies = [
- 
++[[package]]
++name = "equivalent"
++version = "1.0.1"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"
++
  [[package]]
  name = "errno"
--version = "0.3.8"
-+version = "0.3.9"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "a258e46cdc063eb8519c00b9fc845fc47bcfca4130e2f08e88665ceda8474245"
-+checksum = "534c5cf6194dfab3db3242765c03bbe257cf92f22b38f6bc0c58d59108a820ba"
- dependencies = [
+ version = "0.2.8"
+@@ -292,12 +328,45 @@ dependencies = [
   "libc",
-  "windows-sys 0.52.0",
-@@ -302,9 +300,9 @@ checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
+ ]
  
++[[package]]
++name = "fallible-iterator"
++version = "0.3.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "2acce4a10f12dc2fb14a218589d4f1f62ef011b2d0cc4b3cb1bba8e94da14649"
++
++[[package]]
++name = "flate2"
++version = "1.0.30"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "5f54427cfd1c7829e2a139fcefea601bf088ebca651d2bf53ebc600eac295dae"
++dependencies = [
++ "crc32fast",
++ "miniz_oxide",
++]
++
++[[package]]
++name = "gimli"
++version = "0.29.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "40ecd4077b5ae9fd2e9e169b102c6c330d0605168eb0e8bf79952b256dbefffd"
++dependencies = [
++ "fallible-iterator",
++ "indexmap",
++ "stable_deref_trait",
++]
++
+ [[package]]
+ name = "glob"
+ version = "0.3.1"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
+ 
++[[package]]
++name = "hashbrown"
++version = "0.14.5"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "e5274423e17b7c9fc20b6e7e208532f9b19825d82dfd615708b70edd83df41f1"
++
  [[package]]
  name = "heck"
--version = "0.4.1"
-+version = "0.5.0"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "95505c38b4572b2d910cecb0281560f54b440a19336cbbcb27bf6ce6adc6f5a8"
-+checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
- 
- [[package]]
- name = "hermit-abi"
-@@ -332,6 +330,12 @@ dependencies = [
+ version = "0.5.0"
+@@ -319,6 +388,16 @@ dependencies = [
   "windows-sys 0.52.0",
  ]
  
 +[[package]]
-+name = "is_terminal_polyfill"
-+version = "1.70.0"
++name = "indexmap"
++version = "2.2.6"
 +source = "registry+https://github.com/rust-lang/crates.io-index"
-+checksum = "f8478577c03552c21db0e2724ffb8986a5ce7af88107e6be5d2ee6e158c12800"
++checksum = "168fb715dda47215e360912c096649d23d58bf392ac62f73919e831745e40f26"
++dependencies = [
++ "equivalent",
++ "hashbrown",
++]
 +
  [[package]]
- name = "itertools"
- version = "0.12.1"
-@@ -343,9 +347,9 @@ dependencies = [
- 
- [[package]]
- name = "lazy_static"
--version = "1.4.0"
-+version = "1.5.0"
+ name = "is-terminal"
+ version = "0.4.12"
+@@ -401,6 +480,15 @@ version = "2.7.4"
  source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
-+checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
+ checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
  
- [[package]]
- name = "lazycell"
-@@ -355,18 +359,18 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
- 
- [[package]]
- name = "libc"
--version = "0.2.153"
-+version = "0.2.155"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "9c198f91728a82281a64e1f4f9eeb25d82cb32a5de251c6bd1b5154d63a8e7bd"
-+checksum = "97b3888a4aecf77e811145cadf6eef5901f4782c53886191b2f693f24761847c"
- 
- [[package]]
- name = "libloading"
--version = "0.8.1"
-+version = "0.8.4"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "c571b676ddfc9a8c12f1f3d3085a7b163966a8fd8098a90640953ce5f6170161"
-+checksum = "e310b3a6b5907f99202fcdb4960ff45b93735d7c7d96b760fcff8db2dc0e103d"
- dependencies = [
-  "cfg-if",
-- "windows-sys 0.48.0",
-+ "windows-targets 0.52.6",
- ]
- 
- [[package]]
-@@ -381,9 +385,9 @@ dependencies = [
- 
- [[package]]
- name = "linux-raw-sys"
--version = "0.4.13"
-+version = "0.4.14"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "01cda141df6706de531b6c46c3a33ecca755538219bd484262fa09410c13539c"
-+checksum = "78b3ae25bc7c8c38cec158d1f2757ee79e9b3740fbc7ccf0e59e4b08d793fa89"
- 
- [[package]]
- name = "log"
-@@ -393,9 +397,9 @@ checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
- 
- [[package]]
- name = "memchr"
--version = "2.7.1"
-+version = "2.7.4"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "523dc4f511e55ab87b694dc30d0f820d60906ef06413f93d4d7a1385599cc149"
-+checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
- 
++[[package]]
++name = "memmap2"
++version = "0.9.4"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "fe751422e4a8caa417e13c3ea66452215d7d63e19e604f4980461212f3ae1322"
++dependencies = [
++ "libc",
++]
++
  [[package]]
  name = "memoffset"
-@@ -430,21 +434,21 @@ checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
- 
- [[package]]
- name = "paste"
--version = "1.0.14"
-+version = "1.0.15"
+ version = "0.8.0"
+@@ -416,6 +504,15 @@ version = "0.2.1"
  source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "de3145af08024dea9fa9914f381a17b8fc6034dfb00f3a84013f7ff43f29ed4c"
-+checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
+ checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
  
++[[package]]
++name = "miniz_oxide"
++version = "0.7.4"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "b8a240ddb74feaf34a79a7add65a741f3167852fba007066dcac1ca548d89c08"
++dependencies = [
++ "adler",
++]
++
  [[package]]
- name = "pkg-config"
--version = "0.3.29"
-+version = "0.3.30"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "2900ede94e305130c13ddd391e0ab7cbaeb783945ae07a279c268cb05109c6cb"
-+checksum = "d231b230927b5e4ad203db57bbcbee2802f6bce620b1e4a9024a07d94e2907ec"
- 
- [[package]]
- name = "prettyplease"
--version = "0.2.16"
-+version = "0.2.20"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "a41cf62165e97c7f814d2221421dbb9afcbcdb0a88068e5ea206e19951c2cbb5"
-+checksum = "5f12335488a2f3b0a83b14edad48dca9879ce89b2edd10e80237e4e852dd645e"
- dependencies = [
-  "proc-macro2",
-  "syn",
-@@ -452,27 +456,27 @@ dependencies = [
- 
- [[package]]
- name = "proc-macro2"
--version = "1.0.78"
-+version = "1.0.86"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "e2422ad645d89c99f8f3e6b88a9fdeca7fabeac836b1002371c4367c8f984aae"
-+checksum = "5e719e8df665df0d1c8fbfd238015744736151d4445ec0836b8e628aae103b77"
- dependencies = [
-  "unicode-ident",
+ name = "nom"
+ version = "7.1.3"
+@@ -426,6 +523,17 @@ dependencies = [
+  "minimal-lexical",
  ]
  
++[[package]]
++name = "object"
++version = "0.35.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "b8ec7ab813848ba4522158d5517a6093db1ded27575b070f4177b8d12b41db5e"
++dependencies = [
++ "flate2",
++ "memchr",
++ "ruzstd",
++]
++
  [[package]]
- name = "quote"
--version = "1.0.35"
-+version = "1.0.36"
+ name = "once_cell"
+ version = "1.19.0"
+@@ -547,12 +655,35 @@ version = "1.0.17"
  source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "291ec9ab5efd934aaf503a6466c5d5251535d108ee747472c3977cc5acc868ef"
-+checksum = "0fa76aaf39101c457836aec0ce2316dbdc3ab723cdda1c6bd4e6ad4208acaca7"
- dependencies = [
-  "proc-macro2",
- ]
+ checksum = "955d28af4278de8121b7ebeb796b6a45735dc01436d898801014aced2773a3d6"
  
++[[package]]
++name = "ruzstd"
++version = "0.6.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "5174a470eeb535a721ae9fdd6e291c2411a906b96592182d05217591d5c5cf7b"
++dependencies = [
++ "byteorder",
++ "derive_more",
++ "twox-hash",
++]
++
  [[package]]
- name = "regex"
--version = "1.10.3"
-+version = "1.10.5"
+ name = "shlex"
+ version = "1.3.0"
  source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "b62dbe01f0b06f9d8dc7d49e05a0785f153b00b2c227856282f671e0318c9b15"
-+checksum = "b91213439dad192326a0d7c6ee3955910425f441d7038e0d6933b0aec5c4517f"
- dependencies = [
-  "aho-corasick",
-  "memchr",
-@@ -482,9 +486,9 @@ dependencies = [
+ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
  
- [[package]]
- name = "regex-automata"
--version = "0.4.5"
-+version = "0.4.7"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "5bb987efffd3c6d0d8f5f89510bb458559eab11e4f869acb20bf845e016259cd"
-+checksum = "38caf58cc5ef2fed281f89292ef23f6365465ed9a41b7a7754eb4e26496c92df"
- dependencies = [
-  "aho-corasick",
-  "memchr",
-@@ -493,9 +497,9 @@ dependencies = [
- 
- [[package]]
- name = "regex-syntax"
--version = "0.8.2"
-+version = "0.8.4"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
-+checksum = "7a66a03ae7c801facd77a29370b4faec201768915ac14a721ba36f20bc9c209b"
- 
- [[package]]
- name = "rpassword"
-@@ -526,12 +530,12 @@ checksum = "08d43f7aa6b08d49f382cde6a7982047c3426db949b1424bc4b7ec9ae12c6ce2"
- 
- [[package]]
- name = "rustix"
--version = "0.38.31"
-+version = "0.38.34"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "6ea3e1a662af26cd7a3ba09c0297a31af215563ecf42817c98df621387f4e949"
-+checksum = "70dc5ec042f7a43c4a73241207cecc9873a06d45debb38b329f8541d85c2730f"
- dependencies = [
-- "bitflags 2.4.2",
-- "errno 0.3.8",
-+ "bitflags 2.6.0",
-+ "errno 0.3.9",
-  "libc",
-  "linux-raw-sys",
-  "windows-sys 0.52.0",
-@@ -551,24 +555,24 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
- 
- [[package]]
- name = "strsim"
--version = "0.10.0"
-+version = "0.11.1"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
-+checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
- 
- [[package]]
- name = "strum"
--version = "0.26.2"
-+version = "0.26.3"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "5d8cec3501a5194c432b2b7976db6b7d10ec95c253208b45f83f7136aa985e29"
-+checksum = "8fec0f0aef304996cf250b31b5a10dee7980c85da9d759361292b8bca5a18f06"
- dependencies = [
-  "strum_macros",
- ]
- 
- [[package]]
- name = "strum_macros"
--version = "0.26.2"
-+version = "0.26.4"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "c6cf59daf282c0a494ba14fd21610a0325f9f90ec9d1231dea26bcb1d696c946"
-+checksum = "4c6bee85a5a24955dc440386795aa378cd9cf82acd5f764469152d2270e581be"
- dependencies = [
-  "heck",
-  "proc-macro2",
-@@ -579,9 +583,9 @@ dependencies = [
- 
- [[package]]
- name = "syn"
--version = "2.0.48"
-+version = "2.0.68"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "0f3531638e407dfc0814761abb7c00a5b54992b849452a0646b7f65c9f770f3f"
-+checksum = "901fa70d88b9d6c98022e23b4136f9f3e54e4662c3bc1bd1d84a42a9a0f0c1e9"
- dependencies = [
-  "proc-macro2",
-  "quote",
-@@ -626,15 +630,15 @@ checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"
- 
- [[package]]
- name = "utf8parse"
--version = "0.2.1"
-+version = "0.2.2"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "711b9620af191e0cdc7468a8d14e709c3dcdb115b36f838e601583af800a370a"
-+checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
- 
- [[package]]
- name = "uuid"
--version = "1.7.0"
-+version = "1.9.1"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "f00cc9702ca12d3c81455259621e676d0f7251cec66a21e98fe2e9a37db93b2a"
-+checksum = "5de17fd2f7da591098415cff336e12965a28061ddace43b59cb3c430179c9439"
- 
- [[package]]
- name = "which"
-@@ -694,7 +698,7 @@ version = "0.52.0"
- source = "registry+https://github.com/rust-lang/crates.io-index"
- checksum = "282be5f36a8ce781fad8c8ae18fa3f9beff57ec1b52cb3de0789201425d9a33d"
- dependencies = [
-- "windows-targets 0.52.0",
-+ "windows-targets 0.52.6",
- ]
- 
- [[package]]
-@@ -714,17 +718,18 @@ dependencies = [
- 
- [[package]]
- name = "windows-targets"
--version = "0.52.0"
-+version = "0.52.6"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "8a18201040b24831fbb9e4eb208f8892e1f50a37feb53cc7ff887feb8f50e7cd"
-+checksum = "9b724f72796e036ab90c1021d4780d4d3d648aca59e491e6b98e725b84e99973"
- dependencies = [
-- "windows_aarch64_gnullvm 0.52.0",
-- "windows_aarch64_msvc 0.52.0",
-- "windows_i686_gnu 0.52.0",
-- "windows_i686_msvc 0.52.0",
-- "windows_x86_64_gnu 0.52.0",
-- "windows_x86_64_gnullvm 0.52.0",
-- "windows_x86_64_msvc 0.52.0",
-+ "windows_aarch64_gnullvm 0.52.6",
-+ "windows_aarch64_msvc 0.52.6",
-+ "windows_i686_gnu 0.52.6",
-+ "windows_i686_gnullvm",
-+ "windows_i686_msvc 0.52.6",
-+ "windows_x86_64_gnu 0.52.6",
-+ "windows_x86_64_gnullvm 0.52.6",
-+ "windows_x86_64_msvc 0.52.6",
- ]
- 
- [[package]]
-@@ -735,9 +740,9 @@ checksum = "2b38e32f0abccf9987a4e3079dfb67dcd799fb61361e53e2882c3cbaf0d905d8"
- 
- [[package]]
- name = "windows_aarch64_gnullvm"
--version = "0.52.0"
-+version = "0.52.6"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "cb7764e35d4db8a7921e09562a0304bf2f93e0a51bfccee0bd0bb0b666b015ea"
-+checksum = "32a4622180e7a0ec044bb555404c800bc9fd9ec262ec147edd5989ccd0c02cd3"
- 
- [[package]]
- name = "windows_aarch64_msvc"
-@@ -747,9 +752,9 @@ checksum = "dc35310971f3b2dbbf3f0690a219f40e2d9afcf64f9ab7cc1be722937c26b4bc"
- 
- [[package]]
- name = "windows_aarch64_msvc"
--version = "0.52.0"
-+version = "0.52.6"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "bbaa0368d4f1d2aaefc55b6fcfee13f41544ddf36801e793edbbfd7d7df075ef"
-+checksum = "09ec2a7bb152e2252b53fa7803150007879548bc709c039df7627cabbd05d469"
- 
- [[package]]
- name = "windows_i686_gnu"
-@@ -759,9 +764,15 @@ checksum = "a75915e7def60c94dcef72200b9a8e58e5091744960da64ec734a6c6e9b3743e"
- 
- [[package]]
- name = "windows_i686_gnu"
--version = "0.52.0"
-+version = "0.52.6"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "a28637cb1fa3560a16915793afb20081aba2c92ee8af57b4d5f28e4b3e7df313"
-+checksum = "8e9b5ad5ab802e97eb8e295ac6720e509ee4c243f69d781394014ebfe8bbfa0b"
++[[package]]
++name = "stable_deref_trait"
++version = "1.2.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 +
 +[[package]]
-+name = "windows_i686_gnullvm"
-+version = "0.52.6"
++name = "static_assertions"
++version = "1.1.0"
 +source = "registry+https://github.com/rust-lang/crates.io-index"
-+checksum = "0eee52d38c090b3caa76c563b86c3a4bd71ef1a819287c19d586d7334ae8ed66"
- 
++checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
++
  [[package]]
- name = "windows_i686_msvc"
-@@ -771,9 +782,9 @@ checksum = "8f55c233f70c4b27f66c523580f78f1004e8b5a8b659e05a4eb49d4166cca406"
+ name = "strsim"
+ version = "0.11.1"
+@@ -611,6 +742,16 @@ dependencies = [
+  "windows-sys 0.48.0",
+ ]
  
++[[package]]
++name = "twox-hash"
++version = "1.6.3"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
++dependencies = [
++ "cfg-if",
++ "static_assertions",
++]
++
  [[package]]
- name = "windows_i686_msvc"
--version = "0.52.0"
-+version = "0.52.6"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "ffe5e8e31046ce6230cc7215707b816e339ff4d4d67c65dffa206fd0f7aa7b9a"
-+checksum = "240948bc05c5e7c6dabba28bf89d89ffce3e303022809e73deaefe4f6ec56c66"
- 
- [[package]]
- name = "windows_x86_64_gnu"
-@@ -783,9 +794,9 @@ checksum = "53d40abd2583d23e4718fddf1ebec84dbff8381c07cae67ff7768bbf19c6718e"
- 
- [[package]]
- name = "windows_x86_64_gnu"
--version = "0.52.0"
-+version = "0.52.6"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "3d6fa32db2bc4a2f5abeacf2b69f7992cd09dca97498da74a151a3132c26befd"
-+checksum = "147a5c80aabfbf0c7d901cb5895d1de30ef2907eb21fbbab29ca94c5b08b1a78"
- 
- [[package]]
- name = "windows_x86_64_gnullvm"
-@@ -795,9 +806,9 @@ checksum = "0b7b52767868a23d5bab768e390dc5f5c55825b6d30b86c844ff2dc7414044cc"
- 
- [[package]]
- name = "windows_x86_64_gnullvm"
--version = "0.52.0"
-+version = "0.52.6"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "1a657e1e9d3f514745a572a6846d3c7aa7dbe1658c056ed9c3344c4109a6949e"
-+checksum = "24d5b23dc417412679681396f2b49f3de8c1473deb516bd34410872eff51ed0d"
- 
- [[package]]
- name = "windows_x86_64_msvc"
-@@ -807,9 +818,9 @@ checksum = "ed94fce61571a4006852b7389a063ab983c02eb1bb37b47f8272ce92d06d9538"
- 
- [[package]]
- name = "windows_x86_64_msvc"
--version = "0.52.0"
-+version = "0.52.6"
- source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "dff9641d1cd4be8d1a070daf9e3773c5f67e78b4d9d42263020c057706765c04"
-+checksum = "589f6da84c646204747d1270a2a5661ea66ed1cced2631d546fdfb155959f9ec"
- 
- [[package]]
- name = "zeroize"
+ name = "udev"
+ version = "0.7.0"
 diff --git a/Cargo.toml b/Cargo.toml
-index d56d6272..d3b0e753 100644
+index d3b0e753..50527ea7 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -3,7 +3,7 @@ name = "bcachefs-tools"
- version = "1.9.1"
- authors = ["Yuxuan Shui <yshuiv7@gmail.com>", "Kayla Firestack <dev@kaylafire.me>", "Kent Overstreet <kent.overstreet@linux.dev>" ]
- edition = "2021"
--rust-version = "1.70"
-+rust-version = "1.74"
+@@ -25,6 +25,10 @@ byteorder = "1.3"
+ strum = { version = "0.26", features = ["derive"] }
+ strum_macros = "0.26"
+ zeroize = { version = "1", features = ["std", "zeroize_derive"] }
++gimli = "0.29.0"
++object = "0.35.0"
++memmap2 = "0.9.4"
++nom = "7.1.3"
  
- [[bin]]
- name = "bcachefs"
+ [dependencies.env_logger]
+ version = "0.10"
+diff --git a/src/bcachefs.rs b/src/bcachefs.rs
+index 26422abd..4b8cef49 100644
+--- a/src/bcachefs.rs
++++ b/src/bcachefs.rs
+@@ -28,9 +28,8 @@ fn handle_c_command(mut argv: Vec<String>, symlink_cmd: Option<&str>) -> i32 {
+ 
+     let argc: i32 = argv.len().try_into().unwrap();
+ 
+-    let argv: Vec<_> = argv.into_iter().map(|s| CString::new(s).unwrap()).collect();
++    let argv = argv.into_iter().map(|s| CString::new(s).unwrap());
+     let mut argv = argv
+-        .into_iter()
+         .map(|s| Box::into_raw(s.into_boxed_c_str()).cast::<c_char>())
+         .collect::<Box<[*mut c_char]>>();
+     let argv = argv.as_mut_ptr();
+@@ -108,6 +107,7 @@ fn main() -> ExitCode {
+             ExitCode::SUCCESS
+         }
+         "list" => commands::list(args[1..].to_vec()).report(),
++        "list_bkeys" => commands::list_bkeys().report(),
+         "mount" => commands::mount(args, symlink_cmd).report(),
+         "subvolume" => commands::subvolume(args[1..].to_vec()).report(),
+         _ => ExitCode::from(u8::try_from(handle_c_command(args, symlink_cmd)).unwrap()),
+diff --git a/src/commands/debug/bkey_types.rs b/src/commands/debug/bkey_types.rs
+new file mode 100644
+index 00000000..680d4410
+--- /dev/null
++++ b/src/commands/debug/bkey_types.rs
+@@ -0,0 +1,320 @@
++//! Representation of the bcachefs bkey types, derived from DWARF debug info.
++
++use anyhow::{anyhow, Result};
++use object::{Object, ObjectSection};
++use std::collections::HashSet;
++use std::{borrow, error, fs};
++
++/// A list of the known bcachefs bkey types.
++#[derive(Debug)]
++pub struct BkeyTypes(Vec<BchStruct>);
++
++impl BkeyTypes {
++    pub fn new() -> Self {
++        BkeyTypes(Vec::new())
++    }
++}
++
++impl std::fmt::Display for BkeyTypes {
++    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
++        for bkey in self.0.iter() {
++            for memb in bkey.members.iter() {
++                writeln!(
++                    f,
++                    "{} {} {} {}",
++                    bkey.name, memb.name, memb.size, memb.offset
++                )?;
++            }
++            writeln!(f)?;
++        }
++        Ok(())
++    }
++}
++
++/// The representation of a struct type. The only information we need
++/// is the type's name and a list of its members.
++#[derive(Debug)]
++pub struct BchStruct {
++    name: String,
++    pub members: Vec<BchMember>,
++}
++
++/// The representation of a struct member. We need its name, size, and offset
++/// within the parent struct.
++#[derive(Debug)]
++pub struct BchMember {
++    name: String,
++    size: u64,
++    offset: u64,
++}
++
++// The section data that will be stored in `DwarfSections` and `DwarfPackageSections`.
++#[derive(Default)]
++struct Section<'data> {
++    data: borrow::Cow<'data, [u8]>,
++}
++
++type Reader<'data> = gimli::EndianSlice<'data, gimli::RunTimeEndian>;
++
++fn process_file(
++    object: &object::File,
++    struct_list: &mut BkeyTypes,
++) -> Result<(), Box<dyn error::Error>> {
++    let endian = if object.is_little_endian() {
++        gimli::RunTimeEndian::Little
++    } else {
++        gimli::RunTimeEndian::Big
++    };
++
++    fn load_section<'data>(
++        object: &object::File<'data>,
++        name: &str,
++    ) -> Result<Section<'data>, Box<dyn error::Error>> {
++        Ok(match object.section_by_name(name) {
++            Some(section) => Section {
++                data: section.uncompressed_data()?,
++            },
++            None => Default::default(),
++        })
++    }
++
++    let dwarf_sections = gimli::DwarfSections::load(|id| load_section(object, id.name()))?;
++
++    let dwarf = dwarf_sections
++        .borrow(|section| gimli::EndianSlice::new(borrow::Cow::as_ref(&section.data), endian));
++
++    let mut bkey_types = HashSet::new();
++    load_bkey_types(&mut bkey_types);
++
++    let mut iter = dwarf.units();
++    while let Some(header) = iter.next()? {
++        let unit = dwarf.unit(header)?;
++        process_unit(&dwarf, &unit, struct_list, &mut bkey_types)?;
++    }
++
++    Ok(())
++}
++
++fn load_bkey_types(bkey_types: &mut HashSet<String>) {
++    let mut ptr: *const *const i8 = unsafe { bch_bindgen::c::bch2_bkey_types.as_ptr() };
++    unsafe {
++        while !(*ptr).is_null() {
++            let mut bkey_name = String::from("bch_");
++            bkey_name.push_str(std::ffi::CStr::from_ptr(*ptr).to_str().unwrap());
++            bkey_types.insert(bkey_name);
++            ptr = ptr.offset(1);
++        }
++    }
++
++    // This key type is not included in BCH2_BKEY_TYPES.
++    bkey_types.insert("bch_inode_unpacked".to_string());
++}
++
++fn process_unit(
++    dwarf: &gimli::Dwarf<Reader>,
++    unit: &gimli::Unit<Reader>,
++    struct_list: &mut BkeyTypes,
++    bkey_types: &mut HashSet<String>,
++) -> Result<(), gimli::Error> {
++    let mut tree = unit.entries_tree(None)?;
++
++    process_tree(dwarf, unit, tree.root()?, struct_list, bkey_types)?;
++
++    Ok(())
++}
++
++#[derive(Clone, Copy)]
++enum CompType {
++    Union,
++    Struct,
++}
++
++/// Used to keep track of info needed for structs that contain
++/// other compound types.
++struct ParentInfo<'a> {
++    ty: CompType,
++    starting_offset: u64,
++    member_prefix: &'a str,
++}
++
++fn entry_name(
++    dwarf: &gimli::Dwarf<Reader>,
++    unit: &gimli::Unit<Reader>,
++    entry: &gimli::DebuggingInformationEntry<Reader>,
++) -> Option<String> {
++    entry.attr(gimli::DW_AT_name).ok()?.and_then(|name| {
++        Some(
++            dwarf
++                .attr_string(unit, name.value())
++                .ok()?
++                .to_string_lossy()
++                .into_owned(),
++        )
++    })
++}
++
++fn process_tree(
++    dwarf: &gimli::Dwarf<Reader>,
++    unit: &gimli::Unit<Reader>,
++    node: gimli::EntriesTreeNode<Reader>,
++    struct_list: &mut BkeyTypes,
++    bkey_types: &mut HashSet<String>,
++) -> gimli::Result<()> {
++    let entry = node.entry();
++    if entry.tag() == gimli::DW_TAG_structure_type {
++        let name = entry_name(dwarf, unit, entry);
++        let Some(name) = name else {
++            return Ok(());
++        };
++
++        if bkey_types.remove(&name) {
++            let mut members: Vec<BchMember> = Vec::new();
++            let parent_info = ParentInfo {
++                ty: CompType::Struct,
++                starting_offset: 0,
++                member_prefix: "",
++            };
++            process_compound_type(dwarf, unit, node, &mut members, &parent_info)?;
++            struct_list.0.push(BchStruct { name, members });
++        }
++    } else {
++        let mut children = node.children();
++        while let Some(child) = children.next()? {
++            process_tree(dwarf, unit, child, struct_list, bkey_types)?;
++        }
++    }
++    Ok(())
++}
++
++fn process_compound_type(
++    dwarf: &gimli::Dwarf<Reader>,
++    unit: &gimli::Unit<Reader>,
++    node: gimli::EntriesTreeNode<Reader>,
++    members: &mut Vec<BchMember>,
++    parent: &ParentInfo,
++) -> gimli::Result<()> {
++    let mut children = node.children();
++    while let Some(child) = children.next()? {
++        process_comp_member(dwarf, unit, child, members, parent)?;
++    }
++
++    Ok(())
++}
++
++/// Given a DIE, checks if that DIE has a reference to a compound type (i.e., struct or union) and
++/// if so, returns the offset in the DIE tree for that type, and the kind of compound type it is.
++fn get_comp_ref(
++    unit: &gimli::Unit<Reader>,
++    entry: &gimli::DebuggingInformationEntry<Reader>,
++) -> Option<(gimli::UnitOffset, CompType)> {
++    let ref_type = entry.attr(gimli::DW_AT_type).ok()??;
++    let ref_offset = match ref_type.value() {
++        gimli::AttributeValue::UnitRef(offset) => offset,
++        _ => return None,
++    };
++
++    let mut ty_entry = unit.entries_at_offset(ref_offset).ok()?;
++    ty_entry.next_entry().ok()??;
++    let ty_entry = ty_entry.current()?;
++
++    match ty_entry.tag() {
++        gimli::DW_TAG_structure_type => Some((ty_entry.offset(), CompType::Struct)),
++        gimli::DW_TAG_union_type => Some((ty_entry.offset(), CompType::Union)),
++        _ => None,
++    }
++}
++
++fn process_comp_member(
++    dwarf: &gimli::Dwarf<Reader>,
++    unit: &gimli::Unit<Reader>,
++    node: gimli::EntriesTreeNode<Reader>,
++    members: &mut Vec<BchMember>,
++    parent: &ParentInfo,
++) -> gimli::Result<()> {
++    let entry = node.entry().clone();
++
++    let Some(offset) = (match parent.ty {
++        CompType::Union => Some(0),
++        CompType::Struct => entry
++            .attr(gimli::DW_AT_data_member_location)?
++            .and_then(|offset| offset.value().udata_value()),
++    }) else {
++        return Ok(());
++    };
++
++    let name = entry_name(dwarf, unit, &entry);
++
++    if let Some((ref_type, comp)) = get_comp_ref(unit, &entry) {
++        let prefix = if let Some(ref name) = name {
++            let mut prefix = name.clone();
++            prefix.push('.');
++            prefix
++        } else {
++            String::from("")
++        };
++        let parent = ParentInfo {
++            ty: comp,
++            starting_offset: offset,
++            member_prefix: &prefix,
++        };
++        let mut tree = unit.entries_tree(Some(ref_type))?;
++        process_compound_type(dwarf, unit, tree.root()?, members, &parent)?;
++
++        return Ok(());
++    };
++
++    let Some(size) = get_size(unit, &entry) else {
++        return Ok(());
++    };
++
++    let Some(name) = name else { return Ok(()) };
++    let mut name_with_prefix = String::from(parent.member_prefix);
++    name_with_prefix.push_str(&name);
++
++    members.push(BchMember {
++        name: name_with_prefix,
++        offset: offset + parent.starting_offset,
++        size,
++    });
++
++    Ok(())
++}
++
++fn get_size(
++    unit: &gimli::Unit<Reader>,
++    entry: &gimli::DebuggingInformationEntry<Reader>,
++) -> Option<u64> {
++    if let Some(size) = entry.attr(gimli::DW_AT_byte_size).ok()? {
++        return size.udata_value();
++    }
++
++    let ref_type = entry.attr(gimli::DW_AT_type).ok()??;
++    if let gimli::AttributeValue::UnitRef(offset) = ref_type.value() {
++        let mut type_entry = unit.entries_at_offset(offset).ok()?;
++        type_entry.next_entry().ok()?;
++        if let Some(t) = type_entry.current() {
++            return get_size(unit, t);
++        }
++    }
++
++    None
++}
++
++/// Return a list of the known bkey types and information on their field layout.
++pub fn get_bkey_type_info() -> Result<BkeyTypes> {
++    let path = fs::read_link("/proc/self/exe").unwrap();
++    let file = fs::File::open(path).unwrap();
++    let mmap = unsafe { memmap2::Mmap::map(&file).unwrap() };
++    let object = object::File::parse(&*mmap).unwrap();
++
++    let mut struct_list = BkeyTypes::new();
++    process_file(&object, &mut struct_list).unwrap();
++
++    if struct_list.0.is_empty() {
++        Err(anyhow!(
++            "Could not find bkey debug info.\nWas the bcachefs binary compiled with debug info?"
++        ))
++    } else {
++        Ok(struct_list)
++    }
++}
+diff --git a/src/commands/debug/mod.rs b/src/commands/debug/mod.rs
+new file mode 100644
+index 00000000..30ffd16b
+--- /dev/null
++++ b/src/commands/debug/mod.rs
+@@ -0,0 +1,9 @@
++mod bkey_types;
++
++use anyhow::Result;
++
++pub fn list_bkeys() -> Result<()> {
++    print!("{}", bkey_types::get_bkey_type_info()?);
++
++    Ok(())
++}
+diff --git a/src/commands/mod.rs b/src/commands/mod.rs
+index 7f466f92..9365f981 100644
+--- a/src/commands/mod.rs
++++ b/src/commands/mod.rs
+@@ -1,11 +1,13 @@
+ use clap::Subcommand;
+ 
+ pub mod completions;
++pub mod debug;
+ pub mod list;
+ pub mod mount;
+ pub mod subvolume;
+ 
+ pub use completions::completions;
++pub use debug::list_bkeys;
+ pub use list::list;
+ pub use mount::mount;
+ pub use subvolume::subvolume;
 -- 
 2.45.2
 
