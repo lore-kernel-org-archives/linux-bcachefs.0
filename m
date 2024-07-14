@@ -1,165 +1,63 @@
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6ADFC11
-	for <linux-bcachefs@vger.kernel.org>; Sun, 14 Jul 2024 19:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D967913C901
+	for <linux-bcachefs@vger.kernel.org>; Sun, 14 Jul 2024 20:00:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720986687; cv=none; b=IIdKAmENsYSduqIdEHFFZoBmK0Yfqo2yjXBI4gjPq6pPq5rfIHwkNIons7T+cXxR3epN+htKCEmtUGE1qgiB+jljbwSZ0a4CJrRM4LfjudDkeCPk1Ti46X9XCIgrE7zY/Jn9aW++fDbWKKCvXANxi8UQUunu6h48c9i0Uo8Aupg=
+	t=1720987242; cv=none; b=ROuHU4NV8a+LyNYBh6u5SMuIfg5PZ0nI0r0nrDms4BXkfzCdo/UJqQ4V/2pDBQjJgT9tyrdtl++b9VzlOOrsuU90HXf/V68+RG5JSwCTBUvBqdaBkq0PFMePTEUeW3GdflaqtSkgmzKPpwPSJogGn7TekRClbl34BluaJG/2h3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720986687; c=relaxed/simple;
-	bh=qwpVMIGILSjH+S1u8ChqE32H7tIdNnojFSNgHK2/z3s=;
+	s=arc-20240116; t=1720987242; c=relaxed/simple;
+	bh=kodX9gLNjcHwzSpbqgwjBjFe3DlpgrS/xs6zr9tENB0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qPpMLXSrOWKEAPoxONWlheRpPcmECbbvHa0vUvjX5FO/jg+Nr+nPP4FcnYtOCLtFbBkvXQ9yhqhcw3O8gv1yhvsCBuprLEuJjUMjpygQS3yK6NcSC9q3NIMlTBLDToECttRbgHUO+U7V0s7JF/AQ2his3wnZ/1MXdHHKz97oQQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YwR9iHLm; arc=none smtp.client-ip=95.215.58.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=T6vDawtBuuea5UnYhPsOFk3P3xzrwwFIOhfI0POpo+J4upAd4nN6oub+uYG/YMdgWgd7YdXwtupNLDSsGxxchsYVivMoj8vP+frqA40NMVrPaZT1XH6mo3qd5pWgiMjivcHYjnS/f5dAYGJ3dKd2U6mJ+ojqOo0eL8BTvr/KRsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mMXjyqOp; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YwR9iHLm"
-X-Envelope-To: mic@digikod.net
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mMXjyqOp"
+X-Envelope-To: syzbot+d79987254280f6484dd2@syzkaller.appspotmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720986681;
+	t=1720987238;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2EDnpxVq2n3pmq5E38ZuOeZNSxkw5vwWED2AUGlzvN8=;
-	b=YwR9iHLmEsJ78v5XGzF5O9i+YAqQMx44BGNYQyXxDBPUu164JSClm1VzVEn3fy//mH/2ti
-	dMm1tqiWg10lYsz6Ob1z7edqJzXb1bf+I9cNYmf4aDwNfinh/1feXYbS/Tppue0TcTUOAE
-	vFttLdiIdKptM6YdIJWv07qxYQTtPNI=
-X-Envelope-To: paul@paul-moore.com
+	bh=DE9/KmBPldiR5jPtC/hC52/zoM7GOm6shUj7s52U40I=;
+	b=mMXjyqOpZ8plRPurgiIGeFYjHpfGtVqSfcDbkAWuUxnKOxOg0yZRsWAq65uE5DUW9Nf2zB
+	54m0ehgibsPBIlt1i1z+9Q8y3P9Ofa2kGV+f10wEKmreEx/rYbfF1/r6odNxSQxN8PpQNs
+	xhLemFQZC6ePJ2rKHCvNhs6P0nhlGOg=
 X-Envelope-To: bfoster@redhat.com
+X-Envelope-To: clm@fb.com
+X-Envelope-To: dsterba@suse.com
+X-Envelope-To: josef@toxicpanda.com
 X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: syzbot+34b68f850391452207df@syzkaller.appspotmail.com
-X-Envelope-To: gnoack@google.com
-X-Envelope-To: jmorris@namei.org
+X-Envelope-To: linux-btrfs@vger.kernel.org
 X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: linux-security-module@vger.kernel.org
-X-Envelope-To: serge@hallyn.com
 X-Envelope-To: syzkaller-bugs@googlegroups.com
-X-Envelope-To: linux-fsdevel@vger.kernel.org
-X-Envelope-To: linux-xfs@vger.kernel.org
-Date: Sun, 14 Jul 2024 15:51:17 -0400
+Date: Sun, 14 Jul 2024 16:00:34 -0400
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc: Paul Moore <paul@paul-moore.com>, Brian Foster <bfoster@redhat.com>, 
-	linux-bcachefs@vger.kernel.org, syzbot <syzbot+34b68f850391452207df@syzkaller.appspotmail.com>, 
-	gnoack@google.com, jmorris@namei.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, serge@hallyn.com, syzkaller-bugs@googlegroups.com, 
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [syzbot] [lsm?] WARNING in current_check_refer_path - bcachefs
- bug
-Message-ID: <4hohnthh54adx35lnxzedop3oxpntpmtygxso4iraiexfdlt4d@6m7ssepvjyar>
-References: <000000000000a65b35061cffca61@google.com>
- <CAHC9VhT_XpUeaxtkz0+4+YbWgK6=NDeDQikmPVYZ=RXDt+NOgw@mail.gmail.com>
- <20240714.iaDuNgieR9Qu@digikod.net>
+To: syzbot <syzbot+d79987254280f6484dd2@syzkaller.appspotmail.com>
+Cc: bfoster@redhat.com, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (5)
+Message-ID: <2fx4cek7oejg72jbsd77fl7bzibd4of7zgzvucpufqac3chmhv@ag6fl2kk2md2>
+References: <000000000000d4795d061d36d825@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240714.iaDuNgieR9Qu@digikod.net>
+In-Reply-To: <000000000000d4795d061d36d825@google.com>
 X-Migadu-Flow: FLOW_OUT
 
-cc'ing linux-xfs, since I'm sure this has come up there and bcachefs and
-xfs verify and fsck are structured similararly at a very high level -
-I'd like to get their input.
+The issue here is that bcachefs can lock many more btree nodes 
+simultaneously, more than lockdep can track. The fix is to switch to a
+single lockdep map in the btree_trans for "we have any btree nodes
+lock"; it's going in this merge window.
 
-On Sun, Jul 14, 2024 at 09:34:01PM GMT, Mickaël Salaün wrote:
-> On Fri, Jul 12, 2024 at 10:55:11AM -0400, Paul Moore wrote:
-> > On Thu, Jul 11, 2024 at 5:53 PM syzbot
-> > <syzbot+34b68f850391452207df@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    8a03d70c27fc Merge remote-tracking branch 'tglx/devmsi-arm..
-> > > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=174b0e6e980000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=15349546db652fd3
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=34b68f850391452207df
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > > userspace arch: arm64
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13cd1b69980000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12667fd1980000
-> > >
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/efb354033e75/disk-8a03d70c.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/c747c205d094/vmlinux-8a03d70c.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/5641f4fb7265/Image-8a03d70c.gz.xz
-> > > mounted in repro: https://storage.googleapis.com/syzbot-assets/4e4d1faacdef/mount_0.gz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+34b68f850391452207df@syzkaller.appspotmail.com
-> > >
-> > > bcachefs (loop0): resume_logged_ops... done
-> > > bcachefs (loop0): delete_dead_inodes... done
-> > > bcachefs (loop0): done starting filesystem
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 0 PID: 6284 at security/landlock/fs.c:971 current_check_refer_path+0x4e0/0xaa8 security/landlock/fs.c:1132
-> > 
-> > I'll let Mickaël answer this for certain, but based on a quick look it
-> > appears that the fs object being moved has a umode_t that Landlock is
-> > not setup to handle?
-> 
-> syzbot found an issue with bcachefs: in some cases umode_t is invalid (i.e.
-> a weird file).
-> 
-> Kend, Brian, you'll find the incorrect filesystem with syzbot's report.
-> Could you please investigate the issue?
-> 
-> Here is the content of the file system:
-> # losetup --find --show mount_0
-> /dev/loop0
-> # mount /dev/loop0 /mnt/
-> # ls -la /mnt/
-> ls: cannot access '/mnt/file2': No such file or directory
-> ls: cannot access '/mnt/file3': No such file or directory
-> total 24
-> drwxr-xr-x 4 root root   0 May  2 20:21 .
-> drwxr-xr-x 1 root root 130 Oct 31  2023 ..
-> drwxr-xr-x 2 root root   0 May  2 20:21 file0
-> ?rwxr-xr-x 1 root root  10 May  2 20:21 file1
-> -????????? ? ?    ?      ?            ? file2
-> -????????? ? ?    ?      ?            ? file3
-> -rwxr-xr-x 1 root root 100 May  2 20:21 file.cold
-> drwx------ 2 root root   0 May  2 20:21 lost+found
-> # stat /mnt/file1
->   File: /mnt/file1
->   Size: 10              Blocks: 8          IO Block: 4096   weird file
-> Device: 7,0     Inode: 1073741824  Links: 1
-> Access: (0755/?rwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
-> Access: 2024-05-02 20:21:07.747039697 +0000
-> Modify: 2024-05-02 20:21:07.747039697 +0000
-> Change: 2024-05-02 20:21:07.747039697 +0000
->  Birth: 2024-05-02 20:21:07.747039697 +0000
-
-Ok, this is an interesting one.
-
-So we don't seem to be checking for invwalid i_mode at all - that's a bug.
-
-But if we don't want to be exposing invalid i_modes at all, that's
-tricky, since we (currently) can only repair when running fsck. "This is
-invalid and we never want to expose this" checks are done in bkey
-.invalid methods, and those can only cause the key to be deleted - we
-can't run complex repair in e.g. btree node read, and that's what would
-be required here (e.g. checking the extents and dirents btrees to guess
-if this should be a regular file or a directory).
-
-Long term I plan on running our existing fsck checks (including repair)
-in our normal runtime paths - whenever we're looking at one or more keys
-and there's a fsck check we can run, just run it.
-
-I wasn't planning on doing that for awhile, because I'm waiting on
-getting comprehensive filesystem error injection merged so we can make
-sure those repair paths are all well tested before running them
-automatically like that, but if this is a security issue perhaps as a
-special case we should do that now.
-
-Thoughts?
+#syz fix: bcachefs: Add lockdep support for btree node locks
