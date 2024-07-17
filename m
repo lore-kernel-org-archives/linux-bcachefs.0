@@ -1,209 +1,164 @@
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79146FC5
-	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jul 2024 03:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7939A23D2
+	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jul 2024 04:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721186543; cv=none; b=KoVTW+GzNLVRz1x57UP7TPLPMBcaDy8pdbOxIr7Ggj5hju6JSmqNR7stINw2aWdwMwp1P2dxhrX+lOVJ/SmfBYm1iMKOow1sliOUrbrVaONtaqrlShogoEFbu+F5HV7NJCfWna0jlCpzmTOV5SR/MXX+NolsgOSIhHWZXaD4d2Y=
+	t=1721190625; cv=none; b=VZemD8FItAPA7fTPooWi2AoH7ZYbBvhQ4/ONDzCs8nv4sg4RMyonSXV2CBLlawmnCoiZeAEdVpyoSoUXTEq6dQwoMkkKp3IQafej3OH3kb5fkHikfK/SPijw8dWobwdXIyFt6ZrEcWHGe2fHMXSg41drvIVTwiR+7LUuPUw/1cA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721186543; c=relaxed/simple;
-	bh=zIA+ydf1PUI1qpLYj7SmRNQxz+1MQKJSvu9wxUSzZ+I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GluNropNCyjeq7+5glk3shN1NAhapHdSzyF/JAUVneT4602Jl/lDB7gWp6FzUgTfTzQ1nE2jawsF7wQI+R/sBaZ+yW6nSzAXiaWCLG4ebdYM3Xy2bSofyaLSZHnmYfg6hAsVSluzwuxMknz56UtX2RbiXMI+egP6K88CXwSDx98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=OO/FJb/M; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="OO/FJb/M"
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-70847d0cb1fso3478828a34.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jul 2024 20:22:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1721186540; x=1721791340; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LTLglTuhYReaAcbeDy1zm24fFRaIm0NH/Z09mXQPel4=;
-        b=OO/FJb/M1H5bdcu3+dsAC1t9Ej7/ZZhHdYoc7nSWpkAXdeE51PwG/RLKAhSQPZLhGj
-         /IdSP0Acikj2lr66Ybzs9kWxVg44XVPbzfVQewD9KfOaAZ0fC2xrS25ggL34VCOrddbo
-         37KA/3xNdNPIZO8T0JMwF/QGIlkdkG3kukMDGkt4Uf1StjE0MRiBXnC7u7VjsNLw3XJt
-         f518cRZVNMaARNKMiP8of3SErQWwbnAJd2J8Kqtl4gjjLUwjs8bgPvCetDKqIyJ6Pl6i
-         lMtcmU0P/v6ZW9JuAr2mj/5aF3xmiY6X47gS9V1kjKtb9a37C2fOzbeOqmFZ4zNVq/pz
-         Rwqw==
+	s=arc-20240116; t=1721190625; c=relaxed/simple;
+	bh=nZe63nGxL/3DNa+AmpyTRTo3AirjJqDxqWHG4L5/h/0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=i+7hFZaIeHTuBwZNvE4m5bygVJv9cOaPj4H24MSdvAeqXMHGMbmwyW3f4HPrRWN1hXMR4+EsohG47gM/z+Jr3rINJeLD6B5LnEAhF/OwJLqJ4EVXGAiiPf2GHhP5njZzq4xZXX+3tmmBC6qjNjAXf3zdfLCqowUUrV36nXjwcG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-804b8301480so76089139f.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 16 Jul 2024 21:30:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721186540; x=1721791340;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LTLglTuhYReaAcbeDy1zm24fFRaIm0NH/Z09mXQPel4=;
-        b=Ydq3dYhqeP4Gdfj62YBOiBG9yqc/gatwh6LP8BLN3O9NWlLVCtwO6OmPhHqdp7ZUWm
-         Bif7g+qGAuqOjMBIYEiDnRJrEiJ43jnEVCI6H51YJHZHrnR57I7/p58kZ5IhzJlMOnXy
-         K2gkDx21f3xVkU8s4GpWKFj1e5kEV/ngueNw/UYO1NW052mDNMjELDsW0MXfWru4JGJ6
-         pHhrEDj4GB4tRwDGQKI9SehvaZlJ8/L97zmL9P5gXmgpTUjsEoXxB6sXRFxXk8/Pvs5I
-         dgtGDk3XMpLfyxNSqeiAnX6XwQ1TC6qi6oiTDw73AdZk4Uzmm15Ky/YXJCPwWeq2utMY
-         lFaw==
-X-Forwarded-Encrypted: i=1; AJvYcCXnRwJZip0GNiWDWXeQcW6f26d4qdTymVpLgCkD0y6QLK7nEGmAlEL3MdRZwaZ89j87yT+spYJPLxm+CPQSf0zSCcmPGHAzdGNhJUKDipw=
-X-Gm-Message-State: AOJu0YwLlbfI3+DkLIXmaRRlhMzJF2kkrjQT1fqZtl20539hp9Op9NWz
-	ftF/5nthvrASAYdHxzCGJdoryMuwQs7VdP/GZwZuM24CH4mhlsibLWMtQxg5zx8zHFRz1TBPOae
-	o
-X-Google-Smtp-Source: AGHT+IFXeHeMuke8lsM6BFPFGdjKJg7M732kbmnVl4P+ExeKXv1Un5svTidVLiv8/kih2WzC5cFrVQ==
-X-Received: by 2002:a05:6830:6a91:b0:704:485b:412b with SMTP id 46e09a7af769-708e37e1ab2mr445196a34.20.1721186539610;
-        Tue, 16 Jul 2024 20:22:19 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7eb9c922sm7096176b3a.40.2024.07.16.20.22.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jul 2024 20:22:19 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1sTvFA-001166-2M;
-	Wed, 17 Jul 2024 13:22:16 +1000
-Date: Wed, 17 Jul 2024 13:22:16 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	Paul Moore <paul@paul-moore.com>, Brian Foster <bfoster@redhat.com>,
-	linux-bcachefs@vger.kernel.org,
-	syzbot <syzbot+34b68f850391452207df@syzkaller.appspotmail.com>,
-	gnoack@google.com, jmorris@namei.org, linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, serge@hallyn.com,
-	syzkaller-bugs@googlegroups.com, linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org
-Subject: Re: [syzbot] [lsm?] WARNING in current_check_refer_path - bcachefs
- bug
-Message-ID: <Zpc46HEacI/wd7Rg@dread.disaster.area>
-References: <000000000000a65b35061cffca61@google.com>
- <CAHC9VhT_XpUeaxtkz0+4+YbWgK6=NDeDQikmPVYZ=RXDt+NOgw@mail.gmail.com>
- <20240714.iaDuNgieR9Qu@digikod.net>
- <4hohnthh54adx35lnxzedop3oxpntpmtygxso4iraiexfdlt4d@6m7ssepvjyar>
+        d=1e100.net; s=20230601; t=1721190622; x=1721795422;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zlgbvL9ssP/qD7Fy3dwnuNqXCPLGo1yG1fZ3TXcZMu8=;
+        b=e3b9pWG6Yvit36npItpy+gZ0tqyJyAn2Ly6WNrHZnvhhWSt/EB2Q97r3V5+tsHrnm5
+         Cb/tjTCKwgtvi8C3vY0dFWmO69+hzqMwEF/ln0KrRMvPwg9U7MSBm0Rcd+IPQykJdgk6
+         EkzcwjGmFp4j/ONsBeQ15BY/YxSywaBLCK2MlCF1wSOxXF9yqs5/Ws6x1qPGbYJ+gT1o
+         xRuqUrmQpTkVlj+YygsB7cEKQyu4ZFmpzAa87bzaqeak2h0Z0xKSt+jMSe8SO1wvcWGL
+         T328+EeGvWBUmbzBgiIH1RDPPHt3VOiIW99Mn+1BFfMG5Oi8yx3u6VSHtXReVT3OrwXe
+         v6Ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUu+o5cUrKPWxcoxFxhpH28KuVwI02qj5VgKklBZ1sfN3v5VrqqwcY+oOs55/lWYIJpppvFDUI+IFSNI1GYHftvyf+GAHqzffe07KcOlzA=
+X-Gm-Message-State: AOJu0YwUM0VeozfWMKCeZ3mCoi3L0btQdYWy77DpEfyPW9Xi7ezDTMyb
+	+NLKe+P2S6IPwMAeCATdqQNRdPf4CWJ43coabe0HSnFepPGILeJusvBxyOXbpq3rhzkNTB2ETJF
+	Zsk2z3nioiIq4MtO8kZEEmhTDq/lA1LOSjni69C+7ohjx55pgWRIQaHM=
+X-Google-Smtp-Source: AGHT+IHtZAZqYcDxGMJFDIAxgloXaccF1jwUzGbiHZgmu+S/xkCB7uB4ixZoY0K+ONKMCOnloYCjhteLRDjWViAfu9eaPerAGrBc
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4hohnthh54adx35lnxzedop3oxpntpmtygxso4iraiexfdlt4d@6m7ssepvjyar>
+X-Received: by 2002:a05:6e02:1c87:b0:375:a55e:f5fc with SMTP id
+ e9e14a558f8ab-395551490d8mr566305ab.1.1721190622675; Tue, 16 Jul 2024
+ 21:30:22 -0700 (PDT)
+Date: Tue, 16 Jul 2024 21:30:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a7d8f1061d69ebd5@google.com>
+Subject: [syzbot] [bcachefs?] WARNING in bch2_fs_journal_stop
+From: syzbot <syzbot+4093905737cf289b6b38@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Jul 14, 2024 at 03:51:17PM -0400, Kent Overstreet wrote:
-> cc'ing linux-xfs, since I'm sure this has come up there and bcachefs and
-> xfs verify and fsck are structured similararly at a very high level -
-> I'd like to get their input.
-> 
-> On Sun, Jul 14, 2024 at 09:34:01PM GMT, Mickaël Salaün wrote:
-> > On Fri, Jul 12, 2024 at 10:55:11AM -0400, Paul Moore wrote:
-> > > On Thu, Jul 11, 2024 at 5:53 PM syzbot
-> > > <syzbot+34b68f850391452207df@syzkaller.appspotmail.com> wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    8a03d70c27fc Merge remote-tracking branch 'tglx/devmsi-arm..
-> > > > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=174b0e6e980000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=15349546db652fd3
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=34b68f850391452207df
-> > > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > > > userspace arch: arm64
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13cd1b69980000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12667fd1980000
-> > > >
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/efb354033e75/disk-8a03d70c.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/c747c205d094/vmlinux-8a03d70c.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/5641f4fb7265/Image-8a03d70c.gz.xz
-> > > > mounted in repro: https://storage.googleapis.com/syzbot-assets/4e4d1faacdef/mount_0.gz
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+34b68f850391452207df@syzkaller.appspotmail.com
-> > > >
-> > > > bcachefs (loop0): resume_logged_ops... done
-> > > > bcachefs (loop0): delete_dead_inodes... done
-> > > > bcachefs (loop0): done starting filesystem
-> > > > ------------[ cut here ]------------
-> > > > WARNING: CPU: 0 PID: 6284 at security/landlock/fs.c:971 current_check_refer_path+0x4e0/0xaa8 security/landlock/fs.c:1132
-> > > 
-> > > I'll let Mickaël answer this for certain, but based on a quick look it
-> > > appears that the fs object being moved has a umode_t that Landlock is
-> > > not setup to handle?
-> > 
-> > syzbot found an issue with bcachefs: in some cases umode_t is invalid (i.e.
-> > a weird file).
-> > 
-> > Kend, Brian, you'll find the incorrect filesystem with syzbot's report.
-> > Could you please investigate the issue?
-> > 
-> > Here is the content of the file system:
-> > # losetup --find --show mount_0
-> > /dev/loop0
-> > # mount /dev/loop0 /mnt/
-> > # ls -la /mnt/
-> > ls: cannot access '/mnt/file2': No such file or directory
-> > ls: cannot access '/mnt/file3': No such file or directory
-> > total 24
-> > drwxr-xr-x 4 root root   0 May  2 20:21 .
-> > drwxr-xr-x 1 root root 130 Oct 31  2023 ..
-> > drwxr-xr-x 2 root root   0 May  2 20:21 file0
-> > ?rwxr-xr-x 1 root root  10 May  2 20:21 file1
-   ^^^
+Hello,
 
-That's an unknown file type. (i.e. i_mode & S_IFMT is invalid)
+syzbot found the following issue on:
 
-> > -????????? ? ?    ?      ?            ? file2
-> > -????????? ? ?    ?      ?            ? file3
-> > -rwxr-xr-x 1 root root 100 May  2 20:21 file.cold
-> > drwx------ 2 root root   0 May  2 20:21 lost+found
-> > # stat /mnt/file1
-> >   File: /mnt/file1
-> >   Size: 10              Blocks: 8          IO Block: 4096   weird file
-> > Device: 7,0     Inode: 1073741824  Links: 1
-> > Access: (0755/?rwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
-> > Access: 2024-05-02 20:21:07.747039697 +0000
-> > Modify: 2024-05-02 20:21:07.747039697 +0000
-> > Change: 2024-05-02 20:21:07.747039697 +0000
-> >  Birth: 2024-05-02 20:21:07.747039697 +0000
-> 
-> Ok, this is an interesting one.
-> 
-> So we don't seem to be checking for invwalid i_mode at all - that's a bug.
+HEAD commit:    975f3b6da180 Merge tag 'for-6.10-rc7-tag' of git://git.ker..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11b17221980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=42a432cfd0e579e0
+dashboard link: https://syzkaller.appspot.com/bug?extid=4093905737cf289b6b38
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17460766980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=130028f6980000
 
-XFS verifies part of the S_IFMT part of the mode when it is read
-from disk.  xfs_dinode_verify() does:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/62ced967be02/disk-975f3b6d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c237fa04e1d4/vmlinux-975f3b6d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/47f6105ecbe2/bzImage-975f3b6d.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/02b246be7736/mount_0.gz
 
-	mode = be16_to_cpu(dip->di_mode);
-        if (mode && xfs_mode_to_ftype(mode) == XFS_DIR3_FT_UNKNOWN)
-                return __this_address;
+The issue was bisected to:
 
-So if the type of the inode is not a valid XFS inode type, the whole
-inode will get rejected as corrupt. i.e. the same issue on XFS
-would return a corruption error for file1, not just file2 and file3.
+commit f7643bc9749f270d487c32dc35b578575bf1adb0
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Wed Apr 17 05:26:02 2024 +0000
 
-> But if we don't want to be exposing invalid i_modes at all, that's
-> tricky, since we (currently) can only repair when running fsck. "This is
-> invalid and we never want to expose this" checks are done in bkey
-> .invalid methods, and those can only cause the key to be deleted - we
-> can't run complex repair in e.g. btree node read, and that's what would
-> be required here (e.g. checking the extents and dirents btrees to guess
-> if this should be a regular file or a directory).
+    bcachefs: make btree read errors silent during scan
 
-Xfs online repair looks up the parent directory dirent for the inode
-and grabs the ftype from the dirent to reset the mode....
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10381495980000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12381495980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14381495980000
 
-> I wasn't planning on doing that for awhile, because I'm waiting on
-> getting comprehensive filesystem error injection merged so we can make
-> sure those repair paths are all well tested before running them
-> automatically like that, but if this is a security issue perhaps as a
-> special case we should do that now.
-> 
-> Thoughts?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4093905737cf289b6b38@syzkaller.appspotmail.com
+Fixes: f7643bc9749f ("bcachefs: make btree read errors silent during scan")
 
-Detect the bad mode on read, flag it as corruption and then the file
-is inaccessible to users. Then you can take you time getting the
-repair side of things right.
+bcachefs (loop0): flushing journal and stopping allocators, journal seq 13
+bcachefs (loop0): flushing journal and stopping allocators complete, journal seq 13
+------------[ cut here ]------------
+journal shutdown error: cur seq 13 but last empty seq 14
+WARNING: CPU: 0 PID: 5081 at fs/bcachefs/journal.c:1191 bch2_fs_journal_stop+0x5f3/0x630 fs/bcachefs/journal.c:1187
+Modules linked in:
+CPU: 0 PID: 5081 Comm: syz-executor334 Not tainted 6.10.0-rc7-syzkaller-00244-g975f3b6da180 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
+RIP: 0010:bch2_fs_journal_stop+0x5f3/0x630 fs/bcachefs/journal.c:1187
+Code: 44 24 18 42 80 3c 20 00 48 8b 5c 24 20 74 08 48 89 df e8 20 a2 c7 fd 48 8b 13 48 c7 c7 a0 34 13 8c 4c 89 f6 e8 8e 51 27 fd 90 <0f> 0b 90 90 e9 e4 fe ff ff 44 89 f1 80 e1 07 38 c1 0f 8c 7f fc ff
+RSP: 0018:ffffc90003cc7780 EFLAGS: 00010246
+RAX: 9ce99195b516ba00 RBX: ffff8880772caaa0 RCX: ffff88801ab3bc00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90003cc78c0 R08: ffffffff815857a2 R09: 1ffff1101728519a
+R10: dffffc0000000000 R11: ffffed101728519b R12: dffffc0000000000
+R13: ffff8880772ca440 R14: 000000000000000d R15: 1ffff1100ee59488
+FS:  000055557822d380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd538a8b68 CR3: 000000002bf54000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __bch2_fs_read_only+0x30c/0x430 fs/bcachefs/super.c:291
+ bch2_fs_read_only+0xb52/0x1210 fs/bcachefs/super.c:356
+ __bch2_fs_stop+0x105/0x540 fs/bcachefs/super.c:617
+ generic_shutdown_super+0x136/0x2d0 fs/super.c:642
+ bch2_kill_sb+0x41/0x50 fs/bcachefs/fs.c:2052
+ deactivate_locked_super+0xc4/0x130 fs/super.c:473
+ cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1267
+ task_work_run+0x24f/0x310 kernel/task_work.c:180
+ ptrace_notify+0x2d2/0x380 kernel/signal.c:2402
+ ptrace_report_syscall include/linux/ptrace.h:415 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
+ syscall_exit_work+0xc6/0x190 kernel/entry/common.c:173
+ syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
+ syscall_exit_to_user_mode+0x273/0x360 kernel/entry/common.c:218
+ do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fa2d3adf307
+Code: 08 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffd538a9318 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fa2d3adf307
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffd538a93d0
+RBP: 00007ffd538a93d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffd538aa430
+R13: 000055557822e6c0 R14: 0000000000000001 R15: 431bde82d7b634db
+ </TASK>
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
