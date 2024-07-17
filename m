@@ -1,31 +1,30 @@
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79CDF17BAF;
-	Tue, 16 Jul 2024 06:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155CA7470
+	for <linux-bcachefs@vger.kernel.org>; Wed, 17 Jul 2024 03:12:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721109793; cv=none; b=jH7lhYq9d+CiC0uktr+yISXEY+fZk8vOiZ42r0YJ+6UsRV4E3wqYmJeyXCrZDQEdnVnFDhSXN9yfn+sfm64399bVsCN5b0DEKcPdgi39cZOTS8n+pLzuQX6i7rcZiclM/6p7idBj1A7/Fnd9+jDY5ljkp0ZinQkBzJ27WM0MMFI=
+	t=1721185943; cv=none; b=I4dtszVo9bVm4bksTyvzjigK3/czoWRNWT4kjBx4In2/wMnAfe+oIdYBtDfPZGeVwiMPpUJZjaoabgotcR9WCvtldehy+QZ6t8Toj5N4PwRUIYqXot9YuzLVoAKdoq+Z1t7TccEHmgUk3GsFYNeFRoULO9McdF8n2CzPyStmXNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721109793; c=relaxed/simple;
-	bh=uO+5Yp6NoxyT/hK1BZMXgDQWFdPsMeek9I4I6d/8FI8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HWsaNYYWgBU9p2xsCYwxB+vM8k9qTeBknxJPLoz44AJZiFPAo78P9v0hmSHI1+M/d3r0T4UFkUoJKNbngmbvwP4JiunGIlMl0v4GpBzur6yMAi95jbeReaxFpNl+/b/uEITsaCRajyIkDIF+mKyLyV4x37Xq14Fl3zK0r39LFNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	s=arc-20240116; t=1721185943; c=relaxed/simple;
+	bh=QFUdsEoTHNvB889Ui2GPOXKgR3ANpQzFumATUVLnsxE=;
+	h=Message-ID:Date:MIME-Version:To:CC:From:Subject:Content-Type; b=MocXLR2YzkqNg5UmQJQw6IHepdutw8C1aK/DoEkw8W+vC0peC7vDQZDBOou+7IwpdhsoEczERnFfzPwrt+wp+i3o3r1iK8q6FWwxISob3p1mOJKxKdUXyWKE6pu+QqQKJsKUz1A2U4g1wXX4w0D3qjnknWHS3J90lI+WAMn3yP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WNT3712Mpzdhwv;
-	Tue, 16 Jul 2024 14:01:23 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WP18X6qXkz2ClD6;
+	Wed, 17 Jul 2024 11:07:56 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 564AC1800A1;
-	Tue, 16 Jul 2024 14:03:06 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 55F06180028;
+	Wed, 17 Jul 2024 11:12:15 +0800 (CST)
 Received: from [10.67.111.104] (10.67.111.104) by
  dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 16 Jul 2024 14:03:06 +0800
-Message-ID: <2335e293-9ef4-46ad-b1bd-4416dfeda604@huawei.com>
-Date: Tue, 16 Jul 2024 14:03:04 +0800
+ 15.1.2507.39; Wed, 17 Jul 2024 11:12:15 +0800
+Message-ID: <bfb96546-cf04-421b-b876-2017d20d323f@huawei.com>
+Date: Wed, 17 Jul 2024 11:12:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -33,45 +32,26 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: Convert comma to semicolon
-To: Chen Ni <nichen@iscas.ac.cn>, <kent.overstreet@linux.dev>,
-	<bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240716040302.684034-1-nichen@iscas.ac.cn>
 Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
 From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20240716040302.684034-1-nichen@iscas.ac.cn>
+Subject: Suggestions for the bcachefs community
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpeml500022.china.huawei.com (7.185.36.66)
 
-
-
-On 2024/7/16 12:03, Chen Ni wrote:
-> Replace a comma between expression statements by a semicolon.
-> 
-> Fixes: 79032b078173 ("bcachefs: Improved topology repair checks")
-> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-> ---
->   fs/bcachefs/btree_update_interior.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
-> index 31ee50184be2..51b43d75ddb6 100644
-> --- a/fs/bcachefs/btree_update_interior.c
-> +++ b/fs/bcachefs/btree_update_interior.c
-> @@ -96,7 +96,7 @@ int bch2_btree_node_check_topology(struct btree_trans *trans, struct btree *b)
->   			bch2_topology_error(c);
->   
->   			printbuf_reset(&buf);
-> -			prt_str(&buf, "end of prev node doesn't match start of next node\n"),
-> +			prt_str(&buf, "end of prev node doesn't match start of next node\n");
-
-Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
+Hi, Kent
+     I've noticed that the main change log for bcachefs has not been 
+included in the release notes for the latest Linux 6.10, which may cause 
+some confusion. I'm not sure if it's because you're too busy to publish 
+some change logs, or if there are other reasons behind it. I thank it's 
+necessary to work together with the bcachefs developers to build up the 
+bcachefs community, keeping it in sync with the community development of 
+other file systems. Of course, this depends on whether you can spare the 
+time to contribute to this, and the efforts of the bcachefs developers 
+can also be leveraged to accomplish this work.
 
 Thanks,
 Hongbo
->   			prt_printf(&buf, "  in btree %s level %u node ",
->   				   bch2_btree_id_str(b->c.btree_id), b->c.level);
->   			bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(&b->key));
