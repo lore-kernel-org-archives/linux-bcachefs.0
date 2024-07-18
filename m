@@ -1,133 +1,101 @@
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9826013A87A
-	for <linux-bcachefs@vger.kernel.org>; Thu, 18 Jul 2024 22:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EA161448EE
+	for <linux-bcachefs@vger.kernel.org>; Thu, 18 Jul 2024 22:27:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721341460; cv=none; b=Ta5Xb2NRBPEyWZz6COqawfu7TFg3HTfSoeCqlaDz65W7XoMeiIYUTZX0hViVup1yEK7kiAM2548TdQqxxOWhNDaRNkVrFusYllGMpRH/pQH2MbrEJ/olpiq7KuvpAb1EP3hgx54NS6M59RRXIr6i+G+bvDq+shoNUu7xyIApGG8=
+	t=1721341637; cv=none; b=UjjyV9ZPlbDAThyOVeAlOwVy5DV3nmVpUThT+AfVXmajZu4MZ/4Z49uWGUWlH/Qwbd5h5jgVgRZsoMpUKa7Lpsd/z3asPLw2qvJHDfsa7v6LaAgEs7RDD+Ogh8Dl708Q5wCIbG3JsHpBOT9z/nGdy5TkrClk6LPFPsVu8C46Bc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721341460; c=relaxed/simple;
-	bh=l1ERU79x0rWVEeuuXc1iu4AW4Co90oq3mVLqBjFPi50=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B6JIRCe6cZ3mFAPsJjAGPhqgmyjZwgEGZPAE3C4wWINgiJBKwB2VyqfqyDH22tmtfmyzrywXaObaqvjS9d7c0JxjlSvToj3PA2t/gx6lP3nI3TgyQht+jX/2WLXUuutEvkHnkx55EZUrnnXdTOxvyjHGmhr0wjW7I5g1gXvvVds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AOFI4+IF; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1721341637; c=relaxed/simple;
+	bh=zDgU2SeIdYUFXxQD+LyyJxHubKApfobdHZJlnZImCX0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GdZdZwtGXoxqc7/y0Xcuu3Z15ggD/VubcYpxV7TYBYGzdYTqhd3hHz+0Q/eAfokiDPY+CVXDk2NL3T+9ZwB+nLJuRqlQ+nDKlOeY/bmM6wD7bvgrI1Js/pcBqthY1ECbA18pqAcajvPmgsR3MIFcQZ48rVeN+n07EGf0IvGYKTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=MuCIw8Z7; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AOFI4+IF"
-X-Envelope-To: torvalds@linux-foundation.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721341451;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t/ZOzuuAVfYpoVsRCrl5has0gH/pZv30+PUlL5NnO4E=;
-	b=AOFI4+IF0cvcPpE82lRFtWdD9xKrlKETu1AJFNmSa7quxc40uxeITUz4G3u76vTAaCX2wH
-	SuKWFcuK91QDLsdh0hOGeEhFUJNGBtZizYGqKHbT6V8qpm8/NsSoN+s6jN8hjwsT+N5LG+
-	BeEJW03Q9bbAjAcmkwwhmGOlIQJNdQY=
-X-Envelope-To: longman@redhat.com
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-fsdevel@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-Date: Thu, 18 Jul 2024 18:24:08 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Waiman Long <longman@redhat.com>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs changes for 6.11
-Message-ID: <4l32ehljkxjavy3d2lwegx3adec25apko3v355tnlnxhrs43r4@efhplbikcoqs>
-References: <r75jqqdjp24gikil2l26wwtxdxvqxpgfaixb2rqmuyzxnbhseq@6k34emck64hv>
- <CAHk-=wigjHuE2OPyuT6GK66BcQSAukSp0sm8vYvVJeB7+V+ecQ@mail.gmail.com>
- <5ypgzehnp2b3z2e5qfu2ezdtyk4dc4gnlvme54hm77aypl3flj@xlpjs7dbmkwu>
- <CAHk-=wgzMxdCRi9Fqhq2Si+HzyKgWEvMupq=Q-QRQ1xgD_7n=Q@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="MuCIw8Z7"
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a77d85f7fa3so218424666b.0
+        for <linux-bcachefs@vger.kernel.org>; Thu, 18 Jul 2024 15:27:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1721341634; x=1721946434; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHdzQrdk/WoOtHbpZ/K+IpYkj14320RN1AlLLGKZG80=;
+        b=MuCIw8Z7fp778RoGRrlwtLWgpqoWzbjS/eOyU9B8ZLT3jM81dubuMrlJlS0yalOA58
+         i4u6RnzArO9qfShEkNhoTC28jr46u45PTYQb13XBFrkbe/oIZlATS0ZkTCJn3ZUQRQm7
+         V6z5zg0syG/jCgGdhh4ydAaJTtI1O/60IjBOo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721341634; x=1721946434;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RHdzQrdk/WoOtHbpZ/K+IpYkj14320RN1AlLLGKZG80=;
+        b=KAnKvQnuO1V5C5I6YO62BqgnqJX3mqKaayPesf/9afLskozaUu85Hd6wMLnewVPkYa
+         AsIyFKouraScp+NhE0ocyNl3ZvYrl286kBWsr2UorwnHIAqpTLEhE/Ic7hrwvA+Q5k1U
+         JrsqbgarlZW90LnE2kk2urO2dJfP/dW8XbOZ/cQLi1wYVA8IQgmrmYrjRwgI4JkySkRx
+         SqMc51cV8q2eFXCHV7PmSiMI+0TFTr29+hfOQ7/0SALrnvCumNQFD89pX+nqTPhCHwUc
+         EKED/QV26Ro5fykKcCMEpv4IMec/QWOMUdK+CrRCVWjwXjM9jmwdBQpPVU4W26kSP919
+         P3jA==
+X-Forwarded-Encrypted: i=1; AJvYcCWqIVktOho0skImhbVViyFea1KGyW8QDMw5OORo9n3Lgec4WYgxruCV8GuUpy9181AG4nmHyA7f+03ET/pg/g/PGrCmzFWkG2ld945hyeA=
+X-Gm-Message-State: AOJu0YxDJQ9+qjX+NlykVksJ7astNQXaA8hYcVVpMAbWYxrw6l6WKadQ
+	BTq3ARTDQKVluTYF9Wa1vZJKyX2PtXOdC/dQz3DTJcDAKeTBbZnSKSeDYcwX62NbnBDiJpPBnlD
+	Fnz7XDQ==
+X-Google-Smtp-Source: AGHT+IGZWhz17be6ABQB/ZXNRyYFbmlgisnmnY2uZiW9IAdxYcRU8TIetfV0kzcsWTMkvVGV0LLbIw==
+X-Received: by 2002:a17:906:2287:b0:a72:4207:479b with SMTP id a640c23a62f3a-a7a0f0c6ca4mr386336166b.5.1721341633617;
+        Thu, 18 Jul 2024 15:27:13 -0700 (PDT)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7a33ac786csm9552766b.54.2024.07.18.15.27.12
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jul 2024 15:27:13 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5a2ffc34722so104319a12.0
+        for <linux-bcachefs@vger.kernel.org>; Thu, 18 Jul 2024 15:27:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVBlICernqQ31m/X21TgHkmE6CZRgXgj3vB+2qcGDwu2k5dWdFH1IN/RLp25J7J+y0rP8Ys4l79jrGqATf4kvp0MQyDa9yt4APe4Oag1dU=
+X-Received: by 2002:a05:6402:358f:b0:57d:4692:ba54 with SMTP id
+ 4fb4d7f45d1cf-5a2d168127emr524937a12.6.1721341632616; Thu, 18 Jul 2024
+ 15:27:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgzMxdCRi9Fqhq2Si+HzyKgWEvMupq=Q-QRQ1xgD_7n=Q@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <r75jqqdjp24gikil2l26wwtxdxvqxpgfaixb2rqmuyzxnbhseq@6k34emck64hv>
+ <CAHk-=wigjHuE2OPyuT6GK66BcQSAukSp0sm8vYvVJeB7+V+ecQ@mail.gmail.com>
+ <5ypgzehnp2b3z2e5qfu2ezdtyk4dc4gnlvme54hm77aypl3flj@xlpjs7dbmkwu>
+ <CAHk-=wgzMxdCRi9Fqhq2Si+HzyKgWEvMupq=Q-QRQ1xgD_7n=Q@mail.gmail.com> <4l32ehljkxjavy3d2lwegx3adec25apko3v355tnlnxhrs43r4@efhplbikcoqs>
+In-Reply-To: <4l32ehljkxjavy3d2lwegx3adec25apko3v355tnlnxhrs43r4@efhplbikcoqs>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 18 Jul 2024 15:26:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgmXpbFKmmk53c8Um7naf-AAwOGU-26RTHiafbGbostCA@mail.gmail.com>
+Message-ID: <CAHk-=wgmXpbFKmmk53c8Um7naf-AAwOGU-26RTHiafbGbostCA@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs changes for 6.11
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Waiman Long <longman@redhat.com>, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jul 18, 2024 at 03:06:07PM GMT, Linus Torvalds wrote:
-> On Thu, 18 Jul 2024 at 14:21, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > But my master branch (previously the same as for-next) will now be
-> > for-next merged with the latest tag from your tree, and I may do
-> > similarly for bcachefs-for-upstream if it's needed.
-> 
-> No. No back-merges. We actually have documentation about this, so I
-> won't repeat the hundreds of emails I've sent out:
+On Thu, 18 Jul 2024 at 15:24, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> Sorry, I must not have been clear. My master branch is a) not where I do
+> development, and b) not not a branch that I will be sending to you -
+> that's simply the primary branch I publish for people testing the latest
+> bcachefs code.
+>
+> So: master will now be just updated by a hook on the server whenever I
+> update for-next.
 
-Sorry, I must not have been clear. My master branch is a) not where I do
-development, and b) not not a branch that I will be sending to you -
-that's simply the primary branch I publish for people testing the latest
-bcachefs code.
+Oh, ok, then that's fine.
 
-So: master will now be just updated by a hook on the server whenever I
-update for-next.
+> > Now, if you want to do _additional_ testing along the lines of "what
+> > happens with my branch and Linus' latest" then that is ok - but that
+> > should be something you see as completely separate from testing your
+> > own work.
+>
+> Yes, that's exactly what I was describing.
 
-> There are valid reasons to rebase, but they are balanced against some
-> VERY valid reasons not to do it, so if you have to rebase, make sure
-> those reasons really outweigh the reasons not to.
-> 
-> And don't do it just before a pull request - and if there is some
-> catastrophic event that caused a recent rebase, let me know in the
-> pull request.
+Good, sounds like we're on the same page.
 
-Yes, this will help with that; last cycle I had to rebase at rc4 because
-of something my testers were hitting, but it wasn't affecting my
-development so with the new setup my development branches will be able
-to stay based on rc1.
-
-> > As a bonus, this means the testing automation will now be automatically
-> > testing my branch + your latest
-> 
-> No. That's what linux-next is about - it does integration testing.
-
-Oh?
-
-Does it now?
-
-I've gotten essentially zero in the way of test feedback from for-next
-(except from Stephen Rothwell directly, the odd build warning or merge
-issue, but 0day mostly catches the build stuff before it hits next).
-
-And I don't think the rest of the filesystem community is any different,
-because a major subject at LSF this year was in fact the need for
-someone to start a fs-next branch for integration testing.
-
-> Your development branch IS NOT FOR TESTING OTHER RANDOM THINGS.
-> 
-> You are actively making things worse if you do: you should worry about
-> YOUR code, not about all the random other things going on.
-> 
-> Now, if you want to do _additional_ testing along the lines of "what
-> happens with my branch and Linus' latest" then that is ok - but that
-> should be something you see as completely separate from testing your
-> own work.
-
-Yes, that's exactly what I was describing.
-> 
-> IOW, you can certainly wear "multiple hats" - your bcachefs developer
-> hat that worries about your bcachefs branch, and if you want to *also*
-> do some integration testing, go right ahead and have another
-> "integration testing branch" that you then test separately.
-> 
-> But I don't want your integration path. When I get a bcachefs pull, I
-> want the *bcachefs* side to be solid and tested. Not something else.
-
-Ditto
-
-> So by all means keep multiple branches for different reasons. If you
-> think you have users that need to test some integration branch (which
-> honestly sounds like a horrible idea, but you do you),
-
-No, the integration branch isn't for testing other code, it's because
-they don't want to be running rc1 if rc4 or rc7 is out.
-
-That's literally all it is.
+            Linus
