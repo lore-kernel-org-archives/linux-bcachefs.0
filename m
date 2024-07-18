@@ -1,116 +1,140 @@
-Received: from mail3.ecloud.global (mail3.ecloud.global [135.181.139.185])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4059F78C93
-	for <linux-bcachefs@vger.kernel.org>; Thu, 18 Jul 2024 12:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=135.181.139.185
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721305835; cv=pass; b=KMA0WUXG4g5RJT+2TWO44QJihc5fr/wCfGRPdhQ9UHW0MyatboVOo661gxRJlnfdFZd1EnSSXlDLpgEC41rBWDkLRuGbcgA1PzjzjnNzzTeUiu5Qzn1sVZfN0ldGEsbtn3JgG+ZUCfd3LXwKRGHY252r1GBNQZ70O+thrPPaX60=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721305835; c=relaxed/simple;
-	bh=Jof/CdmVo6YwxIzK2/ZoSLP5bJTsJ/ipr9R4oggugG8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pHnCpgs+PWaL50BvcWU+Mvj8ixA2B+03PKAuBiuLgelq5UoXcWNEwEmcocSXsWouL7h/bFTb25vpi6QIgJvYzXwX591lQClJb/DeBpHYBrsbZV+KS4qF8eU/3j7VeFuiNnCgl8IcTsPSsfmJ0YfFimL29FvkmuhgyTzUptlrfwY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io; spf=pass smtp.mailfrom=murena.io; dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b=nkunQcOl; arc=pass smtp.client-ip=135.181.139.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=murena.io
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC22548F7
+	for <linux-bcachefs@vger.kernel.org>; Thu, 18 Jul 2024 21:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1721337662; cv=none; b=BmyokDdRKFrySdGJisTtLvorqrzBUCvM2pDTeeSKYvF35I31LDIDCeZl9vM+VmaaVwmCQssP/ZBFVmvouUtK6lfTcaMFgOzrfvcLKk2Uj1+ABUw2BX8saM6+cP6GRzqAzJKYglItIxvlECGSi1D+u4exCDvSLtYkNsLKkBu0duY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1721337662; c=relaxed/simple;
+	bh=RZw2i8UrOi8Q1Fc2pDFx+H4J7Gb9qBN9BWgaz03JJFk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OcTD316abK5EbL4BqIkQb4SntD9wMynOj9wJMqcMtTjuiO1SGN7kIy1RgQ75gynuC22MMtaHankYrgXlhL0mKkgEDFbBB1EFtouwDF6b6DU6AaFP7f+nKG+id9cxH+Eiwq+gmlD4yxVkgkXrKnux/QH+Py9t5FQBVVQpbHXVgHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZEmz38a7; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b="nkunQcOl"
-Received: from authenticated-user (mail3.ecloud.global [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail3.ecloud.global (Postfix) with ESMTPSA id C6CF588467C;
-	Thu, 18 Jul 2024 12:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io; s=mail3;
-	t=1721305828;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZEmz38a7"
+X-Envelope-To: torvalds@linux-foundation.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721337657;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qIhQsHLtS2lA6v82xV+NvFClxNTB5XeRfqKgLIXKPrs=;
-	b=nkunQcOlLaGM9cLEIXiRNL60+h9UhaWFbO1TKJpFZVyTTWyD7Iyb62xnBtpi89GLpwd+ji
-	RHrzT3Tw1/l/SjAX/Em9Y/hL5cwkBk9odkkGjRN5SkRmEzR2qlOouv+zjQ2OC7lAC6P6uC
-	7TI0ZC/SOybauJkWPlSNq+U2iR2XZJU=
-ARC-Seal: i=1; s=mail3; d=murena.io; t=1721305828; a=rsa-sha256; cv=none;
-	b=MG3BPXC8ED83LuctxL9Gyzg/XnRzEDvJaHWF9fndiGGiMT9oQRhj6AShSApBjXmVlQbPNT
-	Bzq2uBXtGU5mVyldoEEzgnrYkGzZ9ZEPp90nfuG33Kgu6omDgtGEtYOvyMxRwusN7cSH0H
-	z4WOIN48Wk9vAsihDZg24u+BkvdFjh8=
-ARC-Authentication-Results: i=1;
-	mail3.ecloud.global;
-	auth=pass smtp.mailfrom=integral@murena.io
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io;
-	s=mail3; t=1721305828;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qIhQsHLtS2lA6v82xV+NvFClxNTB5XeRfqKgLIXKPrs=;
-	b=EeCdhFnMEzoq0RVFLdXSpiva00CZ/3LXSVe/vm6BJQ+PNiVGauFGsDNCFREUAgwYvuHi3N
-	8UP/NaLKHOTSBYrpHA3g75j5ltXzsicjaedWC2KfLsAmO92aQaut67hE+Ul6P2pYpWyPxI
-	02PQlbfnHNJ75oDEQz/CMhYJwQHiXHQ=
-From: Integral <integral@murena.io>
-To: lihongbo22@huawei.com
-Cc: integral@murena.io,
-	kent.overstreet@gmail.com,
-	linux-bcachefs@vger.kernel.org
-Subject: [PATCH] Add support for true/false, yes/no & on/off in bool-type options
-Date: Thu, 18 Jul 2024 20:29:28 +0800
-Message-ID: <20240718122926.99326-3-integral@murena.io>
-In-Reply-To: <7f1b35b2-437c-42b2-950b-556ce272c745@huawei.com>
-References: <7f1b35b2-437c-42b2-950b-556ce272c745@huawei.com>
+	bh=aDTCIKN/tylTX5pn2P0imoeETOT7vhbtEEBcfk2BWhk=;
+	b=ZEmz38a7aQrGm+FWvdowzjd00o06i3IKRy0kjwRXgcYGdd+32Mm+ZN04/hRu8gjaXE6u+w
+	sW4PsUZ7anQzl6YUSaSftageS7z/vbwozYDqEtU/z3zqt2gpKYrFLyjCaToph4xxoTafpx
+	YHsk7GxpqmGrz4UdbbOyawHrRFq7Bwg=
+X-Envelope-To: longman@redhat.com
+X-Envelope-To: linux-bcachefs@vger.kernel.org
+X-Envelope-To: linux-fsdevel@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+Date: Thu, 18 Jul 2024 17:20:54 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Waiman Long <longman@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs changes for 6.11
+Message-ID: <5ypgzehnp2b3z2e5qfu2ezdtyk4dc4gnlvme54hm77aypl3flj@xlpjs7dbmkwu>
+References: <r75jqqdjp24gikil2l26wwtxdxvqxpgfaixb2rqmuyzxnbhseq@6k34emck64hv>
+ <CAHk-=wigjHuE2OPyuT6GK66BcQSAukSp0sm8vYvVJeB7+V+ecQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wigjHuE2OPyuT6GK66BcQSAukSp0sm8vYvVJeB7+V+ecQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Here is the new patch:
+On Wed, Jul 17, 2024 at 11:53:04AM GMT, Linus Torvalds wrote:
+> On Sun, 14 Jul 2024 at 18:26, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > Hi Linus - another opossum for the posse:
+> 
+> (The kernel naming tends to be related to some random event, in this
+> case we had a family of opossums under our shed for a couple of
+> months)
 
-Currently, when using bcachefs-tools to set options, bool-type options can
-only accept 1 or 0. Add support for accepting true/false, yes/no &
-on/off for these options.
+Oh cute :)
 
-Signed-off-by: Integral <integral@murena.io>
----
- fs/bcachefs/opts.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+> > bcachefs changes for 6.11-rc1
+> 
+> As Stephen pointed out, all of this seems to have been rebased
+> basically as the merge window opened, so if it was in linux-next, I
+> certainly can't easily validate it without having to compare patch ids
+> etc. DON'T DO THIS.
 
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index 0770aebef6d8..0e4cd6984eda 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -332,17 +332,21 @@ int bch2_opt_parse(struct bch_fs *c,
- 	switch (opt->type) {
- 	case BCH_OPT_BOOL:
- 		if (val) {
--			ret = kstrtou64(val, 10, res);
-+			if (!strcasecmp(val, "1") || !strcasecmp(val, "true") ||
-+				!strcasecmp(val, "yes") || !strcasecmp(val, "on")) {
-+				*res = 1;
-+			} else if (!strcasecmp(val, "0") || !strcasecmp(val, "false") ||
-+				!strcasecmp(val, "no") || !strcasecmp(val, "off")) {
-+				*res = 0;
-+			} else {
-+				if (err)
-+					prt_printf(err, "%s: must be bool", opt->attr.name);
-+				return -BCH_ERR_option_not_bool;
-+			}
- 		} else {
--			ret = 0;
- 			*res = 1;
- 		}
+I had to give this some thought; the proximate cause was just
+fat fingering/old reflexes, but the real issue that's been causing
+conflicts is that I've got testers running my trees who very much /do/
+need to be on the latest tagged release.
+
+And I can't just leave it for them to do a rebase/merge, because a) they
+don't do that, and b) then I'm looking at logs with commits I can't
+reference.
+
+So - here's how my branches are going to be from now on:
+
+As before:
+
+- bcachefs-testing: code goes here first, until it's passed the testing
+  automation. Don't run this unless you're working with me on something.
+- for-next: the subset of bcachefs-testing that's believed to be stable
+- bcachefs-for-upstream: queue for next pull request, generally just
+  hotfixes
+
+But my master branch (previously the same as for-next) will now be
+for-next merged with the latest tag from your tree, and I may do
+similarly for bcachefs-for-upstream if it's needed.
+
+As a bonus, this means the testing automation will now be automatically
+testing my branch + your latest; this would have caught the breakage
+from Christoph's FUA changes back in 6.7.
+
+> Also, the changes to outside fs/bcachefs had questions that weren't answered.
+
+Yeah, those comments should have been added. Waiman, how's this?
+
+-- >8 --
+
+From 1d8cbc45ef1bab9be7119e0c5a6f8a05d5e2ca7d Mon Sep 17 00:00:00 2001
+From: Kent Overstreet <kent.overstreet@linux.dev>
+Date: Thu, 18 Jul 2024 17:17:10 -0400
+Subject: [PATCH] lockdep: Add comments for lockdep_set_no{validate,track}_class()
+
+Cc: Waiman Long <longman@redhat.com>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index b76f1bcd2f7f..bdfbdb210fd7 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -178,9 +178,22 @@ static inline void lockdep_init_map(struct lockdep_map *lock, const char *name,
+ 			      (lock)->dep_map.wait_type_outer,		\
+ 			      (lock)->dep_map.lock_type)
  
--		if (ret < 0 || (*res != 0 && *res != 1)) {
--			if (err)
--				prt_printf(err, "%s: must be bool", opt->attr.name);
--			return ret < 0 ? ret : -BCH_ERR_option_not_bool;
--		}
- 		break;
- 	case BCH_OPT_UINT:
- 		if (!val) {
--- 
-2.45.2
-
++/**
++ * lockdep_set_novalidate_class: disable checking of lock ordering on a given
++ * lock
++ *
++ * Lockdep will still record that this lock has been taken, and print held
++ * instances when dumping locks
++ */
+ #define lockdep_set_novalidate_class(lock) \
+ 	lockdep_set_class_and_name(lock, &__lockdep_no_validate__, #lock)
+ 
++/**
++ * lockdep_set_notrack_class: disable lockdep tracking of a given lock entirely
++ *
++ * Bigger hammer than lockdep_set_novalidate_class: so far just for bcachefs,
++ * which takes more locks than lockdep is able to track (48).
++ */
+ #define lockdep_set_notrack_class(lock) \
+ 	lockdep_set_class_and_name(lock, &__lockdep_no_track__, #lock)
+ 
