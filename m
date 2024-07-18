@@ -1,46 +1,45 @@
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97176D1B4
-	for <linux-bcachefs@vger.kernel.org>; Thu, 18 Jul 2024 21:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CBF77107;
+	Thu, 18 Jul 2024 21:27:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721337859; cv=none; b=je2pr3U+aLH0BdfGyYct5/Yi45qGZxqUC4MVwEgfFiEkFWQuhXRHvczMO2tFn/HyfLkc0NSfVsVn8nY3v8BmTJ6Lud6R3qiI+ndVU+aNpmW1s2NTxiR7J3SqbNaT7pOWGSw26nN3VT9U2uaiJxWboqDxCtAaKksn76QFKIUpJSg=
+	t=1721338044; cv=none; b=lYkcxlQiie0sMxgUbL0PJpIix4X4ol5SpzUhZNyUMPZzw87TzoZiMBlSttwe591swnmOoUqwW9MzvAbYwGrdQ79dGYpbRTNf+AeOdLNGUUSqCHY8CaKp9JdlHW5vp4oFXaZol3P4gIwKpzVj87PZWRsDBKsAsofntMGwklpnFtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721337859; c=relaxed/simple;
-	bh=N9Fm15ZHn4sSi/OYXTG3vONh+AVr59xOARAhVbXD2Xk=;
+	s=arc-20240116; t=1721338044; c=relaxed/simple;
+	bh=ljF7qPahvmPN+jQ666ak5bdqgC1Rb1vkJsw5r2RDcq8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VnnA6z18UvoDNbjXaB1jcfr4JUkcLhqsdLZWX8lyLfPbi5b1kyD+z5WywG64hl6dmr6prH7UtGmKGPAx1ChpGDeWl0b62xwzdmYXL/nyfe3/9zF7wBFqoxivHWg90oyzaFnKc1WBtgHls9riP35sdhQ4mi/D9S5yj28j/kl4ZMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UoMjAzOH; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZOpmGlqU7pZVqEatGD1VGhgOQUrOXJXDgWpwklpT2Uu4Jw5niNKXH+52mKdzC9awTwUlI3HatJ2a3Gv99UfAnAG2m1INRh3cf/6NS+Ywgj+tCO+ofvbnreGmI011pzqrVDq+PcdUo/4NvFzIRCr9pmixJdPf0xgeOINeYcdipGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NUvhwkVr; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UoMjAzOH"
-X-Envelope-To: cam.alvarez.i@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721337853;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ciX05pLlsnOl0uE9Hgq1AUuDtPjPn53t8UiIVR/hqQk=;
-	b=UoMjAzOHP58jaTQ77Xde0Cagxil7GN24MmHQ/8Os5HAnn5cGLZ6xScoPYuglc99wky+9n/
-	7rAw9UT71sZKjS3+WT1/6irENC3Q6DnZIn5/Lg3qxHpgtnLuarfkXynw2Jhv95IkBOOyEG
-	45mQ04Ou940POcjvP1NFGtLczSFpNj4=
-X-Envelope-To: syzbot+4093905737cf289b6b38@syzkaller.appspotmail.com
-X-Envelope-To: bfoster@redhat.com
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: syzkaller-bugs@googlegroups.com
-Date: Thu, 18 Jul 2024 17:24:11 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Camila Alvarez <cam.alvarez.i@gmail.com>
-Cc: syzbot+4093905737cf289b6b38@syzkaller.appspotmail.com, 
-	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] bcachefs: WARNING in bch2_fs_journal_stop
-Message-ID: <e2oi7a4jj4gjhzcp66rygr5d6wqlock6c5jvuwszxuej3hldmd@tnvbf45nbx2x>
-References: <20240717220237.1246673-1-cam.alvarez.i@gmail.com>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NUvhwkVr"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=4CYbVCprgYBXSc+P4gFK127u7ObHmJCwV+eBXVuumXk=; b=NUvhwkVryN6eFXcYXlKfjExdqu
+	eZAd84/hMuYwLFQRu6i8uGy/x7UIokIUx9eFsE04J7qq8dCz0nG1nyp8iQLqYUUJ0J8PppMSQ4lwX
+	qtzXXuRYrSdaFEij4Xr6M7fdKWXoSsEMDjHp51zaSGv2WTXlxnpQTWhHHSbIfSaTZJ68Wk007b28H
+	0o+MGdMdDn4VjcAMvxAOGgp/nQLWqnvOg7BFbIWwPNPTtpSU5Yisn3iN/niErZL1zpVx3/PifYTBc
+	HIWi1msm6lS39u4/0Rq+ZZCEea/ys31ScNuuUt/3YKARmTYjmBpFTj0/YZGiVRwt69fene16hofK+
+	hwfmSWKg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sUYek-00000002LaN-38XU;
+	Thu, 18 Jul 2024 21:27:18 +0000
+Date: Thu, 18 Jul 2024 22:27:18 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Waiman Long <longman@redhat.com>, linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs changes for 6.11
+Message-ID: <ZpmItplPA5_zmAmC@casper.infradead.org>
+References: <r75jqqdjp24gikil2l26wwtxdxvqxpgfaixb2rqmuyzxnbhseq@6k34emck64hv>
+ <CAHk-=wigjHuE2OPyuT6GK66BcQSAukSp0sm8vYvVJeB7+V+ecQ@mail.gmail.com>
+ <5ypgzehnp2b3z2e5qfu2ezdtyk4dc4gnlvme54hm77aypl3flj@xlpjs7dbmkwu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -49,86 +48,42 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240717220237.1246673-1-cam.alvarez.i@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <5ypgzehnp2b3z2e5qfu2ezdtyk4dc4gnlvme54hm77aypl3flj@xlpjs7dbmkwu>
 
-On Wed, Jul 17, 2024 at 06:02:39PM GMT, Camila Alvarez wrote:
-> last_seq and last_empty_seq suffered from an off by one error when the
-> journal has no entries.
+On Thu, Jul 18, 2024 at 05:20:54PM -0400, Kent Overstreet wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> Date: Thu, 18 Jul 2024 17:17:10 -0400
+> Subject: [PATCH] lockdep: Add comments for lockdep_set_no{validate,track}_class()
 > 
-> The indexes were fixed and an assertion is added to check that the
-> last_empty_seq is always kept under the next valid seq number.
+> Cc: Waiman Long <longman@redhat.com>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index b76f1bcd2f7f..bdfbdb210fd7 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -178,9 +178,22 @@ static inline void lockdep_init_map(struct lockdep_map *lock, const char *name,
+>  			      (lock)->dep_map.wait_type_outer,		\
+>  			      (lock)->dep_map.lock_type)
+>  
+> +/**
+> + * lockdep_set_novalidate_class: disable checking of lock ordering on a given
+> + * lock
+> + *
+> + * Lockdep will still record that this lock has been taken, and print held
+> + * instances when dumping locks
+> + */
 
-oh nice. I'm going to need to stare at this some more, I still feel like
-this code needs to be clearer and less fiddly.
+Might want to run this through kernel-doc.  I'm pretty sure it wants
+macro comments to be formatted like function comments.  ie:
 
-> 
-> Reported-by: syzbot+4093905737cf289b6b38@syzkaller.appspotmail.com
-> Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
-> ---
->  fs/bcachefs/journal.c | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
-> index 10b19791ec98..7bbbf4b149e9 100644
-> --- a/fs/bcachefs/journal.c
-> +++ b/fs/bcachefs/journal.c
-> @@ -1201,7 +1201,7 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
->  	struct journal_replay *i, **_i;
->  	struct genradix_iter iter;
->  	bool had_entries = false;
-> -	u64 last_seq = cur_seq, nr, seq;
-> +        u64 last_written_seq = cur_seq - 1, last_seq = cur_seq - 1, nr, seq;
->  
->  	genradix_for_each_reverse(&c->journal_entries, iter, _i) {
->  		i = *_i;
-> @@ -1209,11 +1209,11 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
->  		if (journal_replay_ignore(i))
->  			continue;
->  
-> -		last_seq = le64_to_cpu(i->j.last_seq);
-> +		last_written_seq = le64_to_cpu(i->j.last_seq);
->  		break;
->  	}
->  
-> -	nr = cur_seq - last_seq;
-> +	nr = cur_seq - last_written_seq;
->  
->  	if (nr + 1 > j->pin.size) {
->  		free_fifo(&j->pin);
-> @@ -1224,14 +1224,14 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
->  		}
->  	}
->  
-> -	j->replay_journal_seq	= last_seq;
-> +	j->replay_journal_seq	= last_written_seq;
->  	j->replay_journal_seq_end = cur_seq;
-> -	j->last_seq_ondisk	= last_seq;
-> -	j->flushed_seq_ondisk	= cur_seq - 1;
-> -	j->seq_ondisk		= cur_seq - 1;
-> -	j->pin.front		= last_seq;
-> +	j->last_seq_ondisk	= last_written_seq;
-> +	j->flushed_seq_ondisk	= last_seq;
-> +	j->seq_ondisk		= last_seq;
-> +	j->pin.front		= last_written_seq;
->  	j->pin.back		= cur_seq;
-> -	atomic64_set(&j->seq, cur_seq - 1);
-> +	atomic64_set(&j->seq, last_seq);
->  
->  	fifo_for_each_entry_ptr(p, &j->pin, seq)
->  		journal_pin_list_init(p, 1);
-> @@ -1261,7 +1261,10 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
->  	}
->  
->  	if (!had_entries)
-> -		j->last_empty_seq = cur_seq;
-> +		j->last_empty_seq = last_seq;
-> +
-> +	WARN(j->last_empty_seq >= cur_seq, "journal startup error: last empty seq %llu is higher or equal than the next seq number to be used (%llu)",
-> +	      j->last_empty_seq, cur_seq);
->  
->  	spin_lock(&j->lock);
->  
-> -- 
-> 2.34.1
-> 
+/**
+ * lockdep_set_novalidate_class - Disable lock order checks on this lock.
+ * @lock: The lock to disable order checks for.
+ *
+ * Lockdep will still record that this lock has been taken, and print held
+ * instances when dumping locks.
+ */
+
+>  #define lockdep_set_novalidate_class(lock) \
+>  	lockdep_set_class_and_name(lock, &__lockdep_no_validate__, #lock)
