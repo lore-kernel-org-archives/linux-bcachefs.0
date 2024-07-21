@@ -1,92 +1,98 @@
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074C96FD3
-	for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jul 2024 12:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE1422D052
+	for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jul 2024 12:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721565954; cv=none; b=iVVOR1WUJ4bNWaBh61Xfb2hOf4zrcKmQ2FfSR+a1e3AO4SwRVcKOaH7zDdqkOtfDUXCCCRAdZ9/SGdDwWeRvFGulNz77fUPNAkALRsESO6NVyrWM0GFVhSyYDUPPOxhfzpx9YprQna/NVhtxDRWhqXb+3yHbgAMCWhurDYUXsJI=
+	t=1721566285; cv=none; b=FsWAhjqzhcO2rINudVPCRNRbSeQ3PxYxabcdrlHOTZFI4UJg4zDziMUjl3WYPbLlPpoVtP60xwHZFKQCYnjEY6VsP9dGKYbYMAsqGop/Psz7pRTYDXz8q7QEzKvfFng3ek2j0NBL8M42YS1Zvnba8alwoBE231xrI+ufvf4bsOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721565954; c=relaxed/simple;
-	bh=Zxnvq/nU9JaRVQVdO5+SVvhs1X/Ji1uTaPevZfLtM6Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KITXPlKKCp9BUSOO+moN4E1hH10IlkXnbhVjNALT27+7BLqyWSRsljipH9z5d82aBAPR3qvnThyYdNSKXF3LzorwemKX0YPwwRoEYrUiD3rScPThWDJeXeLsClNzLILmJLE6ypKCHOwRLX2bROOao/ynxHSYy0Ote/DAFNto4Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hsDEOp8V; arc=none smtp.client-ip=209.85.167.169
+	s=arc-20240116; t=1721566285; c=relaxed/simple;
+	bh=Ygai30Y2Ji2J/Do6cPVjhj/9/2LKNOj0QChedg1ARs0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OKw+c3OaGReYiuSZS6lrYO7zFuUxKjqZMLqZhW+Elf8Hp6iCCoxKgLCOlqKZAxLUeIKPnjULn5Sha3w8uney+5D0myXvByx5uxE8eGr8b+StXmTE+r1h/wRbWlCtTtbEPA41IWrDiysLpIcEGxMKVawhTAptPGBHHJNYoHmFj18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kODFBzdl; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hsDEOp8V"
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3d853e31de8so2098027b6e.2
-        for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jul 2024 05:45:52 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kODFBzdl"
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5a309d1a788so2431886a12.3
+        for <linux-bcachefs@vger.kernel.org>; Sun, 21 Jul 2024 05:51:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721565951; x=1722170751; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jdo2bP/+v32vqfC4zSav+aI/P3Uy0Ha4vJ4GjDQbBJ4=;
-        b=hsDEOp8VHJbapFssMEKBnulZ1P0HAtVwThN5tkFdo66jx/FHoOrXVidm04zCrPKQrA
-         I3V4vS4QE9DN6VyfKp0HZ7byXY9nF3H2eBf6zB9oosDkcW/+QBOi5Kf8tqE6gPob4vaC
-         nF+UdKs+tfHKzSM0pxpi2LxxqW2KMxo8x/ingaoc3eZXlDurFIgQTbKXIq9LWYxZfwc7
-         uIz2w3vOeyJZI79ZpTPHFt7LpNgB07oX7myoEBA0mCm4bMEPzanRgSj0pPO654Jba8+x
-         D6LJqLVRUt3pzF0cqvwB7jyr6KUvM4ww6oJuehsFkSKNGZrNye6tlwnvovxE3LXkwpj1
-         w9Nw==
+        d=gmail.com; s=20230601; t=1721566282; x=1722171082; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qsLpWQHRU37pumABk49a/JNRjqyQxgi3JpQPnotehIU=;
+        b=kODFBzdlgP91/gzuh+TmN3Erktsv1EGypUDD9PcZCubKoDVaSunpZX+gHjC6Y9tdv2
+         7pGTmJDiHVySfFwT75yOoflpL+XmI5BbFEOTRqFiE6pPBjyD1WnUhdVatf+TXYccVH1F
+         CK+0ecBX7hhGjuRxhSWEABV9FkY/fiLGJzMLTROzl3xqYi68TkX+CjUz4BqwSnJbPUBj
+         n1y2Ok/yDFDn1iWTy/KaiG8cXWakcNJbWQ6NUg+1TK6+HyobA9GVpyy5v/FsPtlrcob6
+         1Eff9AJFP69w9yJOswvVbT4pmUNEnZGCmBiTTTa41GIBB2rMSG40a2afyT+ZN4uV3o6C
+         o1xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721565951; x=1722170751;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jdo2bP/+v32vqfC4zSav+aI/P3Uy0Ha4vJ4GjDQbBJ4=;
-        b=XHTgC/fhu5dAfRp6UDVVTf+p1ZBuKvvie04XE5mstfZG1ZGAEqFVznb7zy58uLkCWS
-         9ChKYFkGfUsyoUPqNFH7Bv8q4uWyvBtz7+yfZ2X2t9lvTEi9Qcp583NVdtTY6dhBM8ky
-         s8tJqp8cjD/XcWi625/9GaY4L0cXttgp+QxQZ9fS9eEtHeajSParv00v7VF/SglC+ymn
-         sQkW98TN+Nbwaf8QYyY8pv53RNcF3GWdka/8AdjSHwMxYSMcmELMopaAO2r+Y0vV+G+r
-         czMz/yvB/q0eRnL/o8ZO6tdQnZzVvsUCm1gbXqaVzbOyLF74PY4Tmcg6H7d8Uj2yafJM
-         /u4w==
-X-Gm-Message-State: AOJu0YzmY1qTJYL8aIlkF8mkilZcl6QEGa1tSQWldfbb+wKdLE2Urr+0
-	cvC+dIvAYOZ3yjWzhoC+zi+/wz0V//UubvhoFlTtCx3WHIgn4wd3Ko9RyepZves=
-X-Google-Smtp-Source: AGHT+IF7vdyfJDwy7B6uBYB75VqqWokuxxNhknKPfISaTD/RWzwoaardfYVSU2OJnbBya2a1TNpUGA==
-X-Received: by 2002:a05:6358:419d:b0:1a4:7f4e:d843 with SMTP id e5c5f4694b2df-1acc5c82a39mr503597255d.25.1721565951493;
-        Sun, 21 Jul 2024 05:45:51 -0700 (PDT)
-Received: from localhost ([60.206.64.40])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f42fd1dsm35750865ad.183.2024.07.21.05.45.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jul 2024 05:45:51 -0700 (PDT)
-From: Julian Sun <sunjunchao2870@gmail.com>
-To: linux-bcachefs@vger.kernel.org
-Cc: kent.overstreet@linux.dev,
-	Julian Sun <sunjunchao2870@gmail.com>
-Subject: [PATCH 3/4] bcachefs: fix macro definition allocate_dropping_locks
-Date: Sun, 21 Jul 2024 08:45:47 -0400
-Message-Id: <20240721124548.248742-1-sunjunchao2870@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1721566282; x=1722171082;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qsLpWQHRU37pumABk49a/JNRjqyQxgi3JpQPnotehIU=;
+        b=eRceLcm2wLievOwSyKyTNtKBUwtlOyxEuZuwErvenOUpz26m/yPiCQJUdITOY1JxT/
+         VhFuDk/a0bKXC8uZyZ2GCsheM7uahdIoBkPjIqo+eUR6o3rdxXv11FH9QlKB/r0h1FPE
+         uHhIbqi8FsZWIeerccr5XWS7y3XyGJvW4sArfn6Y2eSIOBXx2hJaz47KzjPzQO0w2vqE
+         eXME2zzdw0HOKLKSOFDJ9mEPdg5hF+1ns9FgX3wFki05vFRlCpMd5eJNqPtWW3UOfMiM
+         2vm8y7g8cKORrKZBPmbxw9dzPK/CvYV9JDuqGdZ0484EbDTKoWrANgPa1/2TvHRpUkHd
+         tIDw==
+X-Gm-Message-State: AOJu0Ywzo6vMCBU58l0SkGa+scBbD93JaX0XMIoSpZoRVIXjBWBbiBRc
+	tNaGN9gIBGJFNANstxndmVOQ9f1+MHe9XLP/x5Ae8j+HzNsEhUF+7mHN2x9iGOI7iXTMqhcFpzv
+	+HsSSuCnQzLvGb4GJoPobaJIpZvsUjxEEGQig9w==
+X-Google-Smtp-Source: AGHT+IHmEM6BkzD9F7biNo+ZEwdPaBJ/6ktpWbBo9xXc6tzGvPfgUNruwQNyLU3mmT5moh/4nhshSag7eI5FTlaTsZE=
+X-Received: by 2002:a50:8e5b:0:b0:5a1:a447:9f9b with SMTP id
+ 4fb4d7f45d1cf-5a3f08930e8mr2691788a12.27.1721566281508; Sun, 21 Jul 2024
+ 05:51:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240721123943.246705-1-sunjunchao2870@gmail.com>
+In-Reply-To: <20240721123943.246705-1-sunjunchao2870@gmail.com>
+From: Julian Sun <sunjunchao2870@gmail.com>
+Date: Sun, 21 Jul 2024 08:51:10 -0400
+Message-ID: <CAHB1NaiUco3Agn2x9GT66xAU4+hGV+MqYGT7nfLvVPQ6ODnJhA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] bcachefs: some cleanups and fix about macro
+To: linux-bcachefs@vger.kernel.org
+Cc: kent.overstreet@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The macro allocate_dropping_locks accepts a parameter _trans,
-but it was not used, rather the variable trans was directly used,
-which may be a local variable inside a function that calls the macros.
+Apologies, the title of patch2 should be =E2=80=98fix macro definition
+allocate_dropping_locks_errcode=E2=80=99; But it is correct in the actual
+patch.
 
-Signed-off-by: Julian Sun <sunjunchao2870@gmail.com>
----
- fs/bcachefs/btree_iter.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Julian Sun <sunjunchao2870@gmail.com> =E4=BA=8E2024=E5=B9=B47=E6=9C=8821=E6=
+=97=A5=E5=91=A8=E6=97=A5 08:39=E5=86=99=E9=81=93=EF=BC=9A
 
-diff --git a/fs/bcachefs/btree_iter.h b/fs/bcachefs/btree_iter.h
-index 489004173d28..b4e71b590bc9 100644
---- a/fs/bcachefs/btree_iter.h
-+++ b/fs/bcachefs/btree_iter.h
-@@ -860,7 +860,7 @@ __bch2_btree_iter_peek_and_restart(struct btree_trans *trans,
- 	_ret = 0;							\
- 	if (unlikely(!_p)) {						\
- 		_gfp = GFP_KERNEL;					\
--		_ret = drop_locks_do(trans, ((_p = _do), 0));		\
-+		_ret = drop_locks_do(_trans, ((_p = _do), 0));		\
- 	}								\
- 	_p;								\
- })
--- 
-2.39.2
+>
+> In the macro definition detection tool I developed,
+> several issues were identified, including unused parameters
+> and unused macro definitions. Let us address these issues.
+>
+> Julian Sun (4):
+>   bcachefs: remove unused macro definition
+>   bcachefs: fix macro definition allocate_dropping_locks
+>   bcachefs: fix macro definition allocate_dropping_locks
+>   bcachefs: remove the unused parameter in macro bkey_crc_next
+>
+>  fs/bcachefs/btree_iter.h | 4 ++--
+>  fs/bcachefs/clock.h      | 9 ---------
+>  fs/bcachefs/extents.h    | 4 ++--
+>  3 files changed, 4 insertions(+), 13 deletions(-)
+>
+> --
+> 2.39.2
+>
 
+
+--
+Julian Sun <sunjunchao2870@gmail.com>
