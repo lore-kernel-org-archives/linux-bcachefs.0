@@ -1,80 +1,78 @@
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE6F1CD37
-	for <linux-bcachefs@vger.kernel.org>; Mon, 22 Jul 2024 21:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316AA14D431
+	for <linux-bcachefs@vger.kernel.org>; Tue, 23 Jul 2024 11:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721682073; cv=none; b=A+OjOqWituUi+Znx1IlYYjZp/1Gjh0R4r42j0zVwD4zufaVmnT4cClikyvVFREe4QZSK8pGm6SIem6cHziQn4hdteNIGuYgKJKgjm5ZCdsl69IzPqHk2uBUpOpQMGPOhB5wcEBsl+AvZB2SMXyfzPygMo6CaDSTOJQ2hQwoqowg=
+	t=1721735990; cv=none; b=lwJJhC76Ry6ku+3s/TAL7dCmf0mSt3RiPG4M6psMaQPkf5VgUetlRHZ1OH8TdrWotpKAnXucKpJiTyCNWzyg/DMAmNFGZFR6oe/T4K7vEU0nBur3SM0FAv7rO/KtzDpQfCY+nGR039zOpFIuQagh8uH4rKWcE1FGPhKbyx1fkQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721682073; c=relaxed/simple;
-	bh=0s/cU3L9WX3PLpyNg9iirymSco4CaAn5s+JUbVuoN8w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MuK2Sjx2M8EmGqqVCuu21VyGny3TweToRR7syPx3yhFSKQB/MeBVIlRFEAc4WmN6UOFwu/JPkiIosWFbpd/lxSSSO2bjFNCRqVMqhkoZ0XScmQx8uu9tZyP0s4lTS45+5r4znw/tf5iTXVfLuCGnRdSEzlHSmkdfATCb7HZt2+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kLMqJMnu; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kLMqJMnu"
-X-Envelope-To: integral@murena.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721682067;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jYVi85O95aR1XZ8j5lo1UfaGA2F/qEjt/HqzgEaPLAk=;
-	b=kLMqJMnuuILhh/2ezKk4RvJ3d1ZHg/8xWS5hWeJdTidAg6VFT9rLBYK/4Z524jOrdE9jmW
-	KU0utvSMhUuc5hNekNb/lbkbDIJ49rFURHaykEiaNEM0TbXo/j6vZrpN8zW4y0WZJwnwEy
-	mYmgY5Hreu/vDg1TnPAkeUQgtWe07Ug=
-X-Envelope-To: linux-bcachefs@vger.kernel.org
-Date: Mon, 22 Jul 2024 17:01:03 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Integral <integral@murena.io>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] Add support for true/false & yes/no in bool-type options
-Message-ID: <25nuibtkw7cpleosdjbpa5bnofluy25x5yxrdoc6sucka3lzor@fisvpldzhemx>
-References: <20240718062835.58037-2-integral@murena.io>
+	s=arc-20240116; t=1721735990; c=relaxed/simple;
+	bh=g72uco3MmDoba/fTTr4AuoEvJFQE5ss204c7ng1Ao5Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DNB56JLif7vUkR0XihckfBEw3iD/WWWF08on3zS9Sht1bCCLBzRhgIjxoqADAde83xcEpVJHFerxZiWhNuGCREdadcnwfwPBH7NqG96ptz2zcG58oeCKQZkjBIRk9sSLez0nXUN6TF6gCA/93SEsEiVXzUzo4Zv6GsGWL2XA7u8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WSwfS1Mt0znbnl;
+	Tue, 23 Jul 2024 19:58:56 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8B8CA1800A2;
+	Tue, 23 Jul 2024 19:59:43 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Tue, 23 Jul 2024 19:59:43 +0800
+Message-ID: <3b4b496d-1ac5-466b-9377-f4bb47af325a@huawei.com>
+Date: Tue, 23 Jul 2024 19:59:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240718062835.58037-2-integral@murena.io>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: prevent lookuping excessively long paths
+To: <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>
+References: <20240709081020.3728942-1-lihongbo22@huawei.com>
+Content-Language: en-US
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240709081020.3728942-1-lihongbo22@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Thu, Jul 18, 2024 at 02:28:36PM GMT, Integral wrote:
-> Currently, when using bcachefs-tools to set options, bool-type options can
-> only accept 1 or 0. Add support for accepting true/false and yes/no for
-> these options.
+Hi, Kent,
 
-this needs to be against the kernel repo, fs/bcachefs/; tools is
-imported from there
+Give you a friendly ping.🙂
 
+Thanks,
+Hongbo
+
+On 2024/7/9 16:10, Hongbo Li wrote:
+> The longest name length for file is BCH_NAME_MAX in bcachefs.
+> When looking up a longer path, it does not check this limit. So
+> we add the validation for this to avoid undetermined risk.
 > 
+> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 > ---
->  libbcachefs/opts.c | 5 +++++
->  1 file changed, 5 insertions(+)
+>   fs/bcachefs/fs.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/libbcachefs/opts.c b/libbcachefs/opts.c
-> index 0770aebe..2c0113fb 100644
-> --- a/libbcachefs/opts.c
-> +++ b/libbcachefs/opts.c
-> @@ -332,6 +332,11 @@ int bch2_opt_parse(struct bch_fs *c,
->  	switch (opt->type) {
->  	case BCH_OPT_BOOL:
->  		if (val) {
-> +			if (!strcmp(val, "true") || !strcmp(val, "yes"))
-> +				val = "1";
-> +			else if (!strcmp(val, "false") || !strcmp(val, "no"))
-> +				val = "0";
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index fd01a5402c28..f8da598ca9f8 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -474,6 +474,9 @@ static struct dentry *bch2_lookup(struct inode *vdir, struct dentry *dentry,
+>   	struct bch_inode_info *dir = to_bch_ei(vdir);
+>   	struct bch_hash_info hash = bch2_hash_info_init(c, &dir->ei_inode);
+>   
+> +	if (dentry->d_name.len > BCH_NAME_MAX)
+> +		return ERR_PTR(-ENAMETOOLONG);
 > +
->  			ret = kstrtou64(val, 10, res);
->  		} else {
->  			ret = 0;
-> -- 
-> 2.45.2
-> 
+>   	struct bch_inode_info *inode;
+>   	bch2_trans_do(c, NULL, NULL, 0,
+>   		PTR_ERR_OR_ZERO(inode = bch2_lookup_trans(trans, inode_inum(dir),
