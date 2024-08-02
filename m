@@ -1,117 +1,80 @@
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F05E17BA4;
-	Fri,  2 Aug 2024 01:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C280F16BE16
+	for <linux-bcachefs@vger.kernel.org>; Fri,  2 Aug 2024 16:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722563517; cv=none; b=iM8l/SqN03m0mVi8laqYR/VPw5VYWF+z2CO4hEl0wGASIwyLNFQaB7FGg/Bc+WqjXkAn0aSESeIbFtH/SUbqGa0E5kgDfex/ggXRGE/IoBEW0/seUxX3Q1QOZJzm6ldMuFdoQ+Um2fG+nbynFBBhS18nfXE43of8rm578vxk3jQ=
+	t=1722616261; cv=none; b=TuyMSW2zU8kD+R/X8XoM92OJ8w8q/WtZ/t3RqTC5KXSfcKWmHuuYTNLeZhuxRwbiTwDQoyBjMaRrDKU7dZh6uR4CAYOTeu6X/55H/D1qQX8OYoGUn+KFI8sJuv19o6V7uX/xrf+Y5+fWCtxU58Ox5DD45/3M8MhXIRh9ilMsazE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722563517; c=relaxed/simple;
-	bh=JBNnV0uADYTtfu4slxKNJ6KUj/8oHz+XS9o+5CxrYYk=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=DuWKHy16k73hX5U+v9wFgphvb++hSuHihepT/Cw4/wevFjY62XKxh3zDci/eVgik2/MwShslkbSknsG6XNmN1R2u8jtCJbW3k1Sk2akitfypca47wzGTaoGsmldPFGHm58Av+FMIIXu8XE0xRKrzL0BRzjgOf3lZgQJJA269uXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CQsDUdi/; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1722616261; c=relaxed/simple;
+	bh=2SxaU0mT12o6Bl2jx2MqiTjKjVwYivXcEsdDw2SUwz8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZBA7ck6aqe9LOxZHeiw/KLXiEEmxGySKkd+3z53hqGA15cyEGgJZ+kVN+UeUW04y7sXzzzn8RX/52Mu3PvY117Ndp/IBGW6ue+fvO2RQDb4nfO8jybIr1eTMur8WBTkdk9HNljmuBqItJAmtFR/bONezuTQoAvMvSWQP9Uso7Hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q6gQAtMQ; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CQsDUdi/"
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7a18ba4143bso5569793a12.2;
-        Thu, 01 Aug 2024 18:51:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722563515; x=1723168315; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:date
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QDmCkGOySC7BUzlBEXHv44zk9Dp2wAsf6i4H4rN57ZM=;
-        b=CQsDUdi/aSjE9NZuT0Jdj3GXIFir4oV+o8LMlc2ytcNrKzSB9j5fIAffdeb8xkvpFm
-         afUpUmilzwHJiBO4PP7Rkcjc88eeNoMvyp6XO3q1a0xD7MDY0/Ja+SBJ1Ds0n/iKFieA
-         TXjU/EEpOdtIZuhhTF4AO0bjFGs/85GRDU1Dz9DI6pPtl7Bh7fE6PJSrPlzQcw8BVOt2
-         z/SrQotuZXpHW0DNOzQ8ar+Pl87914Fv+A+paoN5oqGMke0HuEDtDjXpZCN/7yLUoWVk
-         cjfQ+aEy2dWbXab9W4cjaF7WUju8LuGpMqgDImJ7HP3dEUCZ52nWu39LsXM6+gaogMGt
-         5g1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722563515; x=1723168315;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:date
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QDmCkGOySC7BUzlBEXHv44zk9Dp2wAsf6i4H4rN57ZM=;
-        b=XxPbfkoAL0r+XdospWVjiHxsA6d3W3+9a/XbyVJHeUoW00ZdDQ9Nyuc0x1frRh3IEQ
-         FZlU3bxEsRDUvL5myFgODnh0DNlJ2iPxTU8W3AYgNc3V7/vPSsoplp9NKaFSNorosOXm
-         3XxfwBTvMJUiZPpQgLXx/dE2CAuq0yUqnqF40vOJT1lxp9tQlvCqiAwd8gOuStISVxxO
-         tybI97vMI3zSETpsR/vIoTNjDoJKHbLescbNKlvfTpkstjxzN7Q7RigDlAb5QsRppL57
-         Hy2LSF97I2BhsRSl9SM5BeNDgDCdDAYXV4qWBiRkF2btcPfokFweLz4fFVGnvmHz4xqJ
-         Mo2g==
-X-Forwarded-Encrypted: i=1; AJvYcCUVSDbGBBX39B56QdTRGi32/8fvuOEX0D/TV2I/xh6sszM9pVlMjH1pSaYtKXZm95WgRNRNF9ZZtDcFAZkqFQ==@vger.kernel.org, AJvYcCUbRhLr0df2NEsXcltwHqdUDwZXHH6M/xakW1qAtWeGPVj75T9VtVSjhI49wjpWVtomYeDT87sT7EO1357T@vger.kernel.org
-X-Gm-Message-State: AOJu0YznNzuCMzrG0Zm9tgc27tTC9ci9m+o2ju8JpuYLzS0OeV3O4T5W
-	PYAu3J64ASVTNegT0DA6cjIyTBUypVv4WqlzM/cqXvL3mn3LYXZp
-X-Google-Smtp-Source: AGHT+IE5ADnY+cIlrpWgFEOUgeDHEI30PQdtkXR/15P0nbEwGZyeetr65PqA8GXLIwnRGe4x0Licnw==
-X-Received: by 2002:a05:6a20:8404:b0:1c4:d438:7dd2 with SMTP id adf61e73a8af0-1c6995ccd9dmr3425796637.32.1722563515263;
-        Thu, 01 Aug 2024 18:51:55 -0700 (PDT)
-Received: from [192.168.7.110] ([190.196.134.53])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cfdc406481sm4104020a91.2.2024.08.01.18.51.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Aug 2024 18:51:54 -0700 (PDT)
-From: Camila Alvarez Inostroza <cam.alvarez.i@gmail.com>
-X-Google-Original-From: Camila Alvarez Inostroza <calvarez@macbook-pro-de-camila.local>
-Date: Thu, 1 Aug 2024 21:51:50 -0400 (-04)
-To: Camila Alvarez Inostroza <cam.alvarez.i@gmail.com>
-cc: Kent Overstreet <kent.overstreet@linux.dev>, 
-    syzbot+4093905737cf289b6b38@syzkaller.appspotmail.com, 
-    Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
-    linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] bcachefs: WARNING in bch2_fs_journal_stop
-In-Reply-To: <f3814333-2f49-5563-0673-a3d3cb8354cf@macbook-pro-de-camila.local>
-Message-ID: <7252b968-829b-bc32-6832-8bc132009c64@macbook-pro-de-camila.local>
-References: <20240717220237.1246673-1-cam.alvarez.i@gmail.com> <e2oi7a4jj4gjhzcp66rygr5d6wqlock6c5jvuwszxuej3hldmd@tnvbf45nbx2x> <6d42612b-1c20-0484-ce9f-eac509e6740d@macbook-pro-de-camila.local> <f6lmsdtntfs3ot4jc2waizihayhipszr3iuro3tzyjgbfvjwuw@ms4foq466yiz>
- <d25b7319-5b16-da76-6f07-226d1da11e16@macbook-pro-de-camila.local> <6cysckb2o54lmg27htyr67mogkprkqjfipmws27fp4rhe3wxwm@edgdbatbeahw> <f3814333-2f49-5563-0673-a3d3cb8354cf@macbook-pro-de-camila.local>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q6gQAtMQ"
+Date: Fri, 2 Aug 2024 12:30:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722616255;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5Ozwy6taMQ03I7AoUstgAGU/ke/Rn1/4ce/KBpkiht0=;
+	b=q6gQAtMQKIXlVxRGMVQrZvJ1jqynztP8V5ha/iA7TeinozTgbkfCN6O8f8WCrWYds89pVi
+	3rwgKaMk0Th3JD31NvBq7Z81bv6xL41eFIrPZZJcbDSlTu3GAuunjd31GqoBE/YRCjEIt9
+	Jdrafrx/WDMZnO1+O9XHAzU1VMjh9bY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Camila Alvarez <cam.alvarez.i@gmail.com>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzbot+1e515cab343dbe5aa38a@syzkaller.appspotmail.com
+Subject: Re: [PATCH] bcachefs: WARNING in bch2_trans_srcu_unlock
+Message-ID: <brefgiw6mbvnpg5dmxhuwmoxfrh6upw3zslzn6qa6lfvbvhgi4@7vzwd55illrn>
+References: <20240724010759.1631178-1-cam.alvarez.i@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240724010759.1631178-1-cam.alvarez.i@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
+On Tue, Jul 23, 2024 at 09:08:00PM GMT, Camila Alvarez wrote:
+> bch2_extent_fallocate should not return -BCH_ERR_transaction_restart_nested when there are no buckets available.
+> Returning -BCH_ERR_transaction_restart_nested causes the sector allocation to retry even if there's no space available.
 
+It seems like you're saying this fixes a livelock, but I don't see that:
+if we return operation_blocked, the closure_sync we do before we return
+will still wait.
 
-On Thu, 18 Jul 2024, Camila Alvarez Inostroza wrote:
+More explanation?
 
->
->
-> On Thu, 18 Jul 2024, Kent Overstreet wrote:
->
->> On Thu, Jul 18, 2024 at 06:49:02PM GMT, Camila Alvarez Inostroza wrote:
->>> 
->>> 
->>> On Thu, 18 Jul 2024, Kent Overstreet wrote:
->>> 
->>>> On Thu, Jul 18, 2024 at 06:42:55PM GMT, Camila Alvarez Inostroza wrote:
->>>>> 
->>>>> 
->>>>> On Thu, 18 Jul 2024, Kent Overstreet wrote:
->>>>> 
->>>>>> On Wed, Jul 17, 2024 at 06:02:39PM GMT, Camila Alvarez wrote:
->>>>>>> last_seq and last_empty_seq suffered from an off by one error when the
->>>>>>> journal has no entries.
->>>>>>> 
->>>>>>> The indexes were fixed and an assertion is added to check that the
->>>>>>> last_empty_seq is always kept under the next valid seq number.
->>>>>> 
->>>>>> oh nice. I'm going to need to stare at this some more, I still feel 
->>>>>> like
->>>>>> this code needs to be clearer and less fiddly.
->>>>>> 
->>>>> Sure! Please let me know if there's anything I can do to help.
->>>> 
->>>> I'm just applying it - the warning you added gave me warm fuzzies.
->>>> 
->>>> I'll let you know if anything pops up in the CI (and I should give you
->>>> an account so you can point it at your own branches; email me a username
->>>> and ssh key)
->>>> 
->>> Should I give you the info in this same thread or in a separate email?
->> 
->> doesn't matter, ssh pubkeys aren't secrets
->> 
-> I've attached my pubkey. You can use calvarez as my username. Thanks
-Hi, just wondering if you had any time to take a look at this patch.
-Please let me know if you have any comments!
+> 
+> Reported-by: syzbot+1e515cab343dbe5aa38a@syzkaller.appspotmail.com
+> Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
+> ---
+>  fs/bcachefs/io_misc.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/io_misc.c b/fs/bcachefs/io_misc.c
+> index 82f9170dab3f..b5b92ef030df 100644
+> --- a/fs/bcachefs/io_misc.c
+> +++ b/fs/bcachefs/io_misc.c
+> @@ -90,8 +90,6 @@ int bch2_extent_fallocate(struct btree_trans *trans,
+>  				opts.data_replicas,
+>  				opts.data_replicas,
+>  				BCH_WATERMARK_normal, 0, &cl, &wp);
+> -		if (bch2_err_matches(ret, BCH_ERR_operation_blocked))
+> -			ret = -BCH_ERR_transaction_restart_nested;
+>  		if (ret)
+>  			goto err;
+>  
+> -- 
+> 2.34.1
+> 
