@@ -1,39 +1,38 @@
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C280F16BE16
-	for <linux-bcachefs@vger.kernel.org>; Fri,  2 Aug 2024 16:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B0E16BE11
+	for <linux-bcachefs@vger.kernel.org>; Fri,  2 Aug 2024 16:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722616261; cv=none; b=TuyMSW2zU8kD+R/X8XoM92OJ8w8q/WtZ/t3RqTC5KXSfcKWmHuuYTNLeZhuxRwbiTwDQoyBjMaRrDKU7dZh6uR4CAYOTeu6X/55H/D1qQX8OYoGUn+KFI8sJuv19o6V7uX/xrf+Y5+fWCtxU58Ox5DD45/3M8MhXIRh9ilMsazE=
+	t=1722616299; cv=none; b=k9gO566+Xdzdh5LFsEPZH3x8z45xqapo6Fh8NgBFPDOu94whZ4IrQytyGGwxdFMPim8cF2k4iIzctuzhCfD8qI8YXJO4cqBYNicaKiYrjIJF3CmohhmurhfxUABtndTM8D7QelvKSRLZ2hitOy/g6LBDpP/2oWGSF1z4yyaTaFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722616261; c=relaxed/simple;
-	bh=2SxaU0mT12o6Bl2jx2MqiTjKjVwYivXcEsdDw2SUwz8=;
+	s=arc-20240116; t=1722616299; c=relaxed/simple;
+	bh=y0WY3CunhTZIpnuErHAPRcxtXrpO/GfJZIyorvkYkbU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZBA7ck6aqe9LOxZHeiw/KLXiEEmxGySKkd+3z53hqGA15cyEGgJZ+kVN+UeUW04y7sXzzzn8RX/52Mu3PvY117Ndp/IBGW6ue+fvO2RQDb4nfO8jybIr1eTMur8WBTkdk9HNljmuBqItJAmtFR/bONezuTQoAvMvSWQP9Uso7Hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q6gQAtMQ; arc=none smtp.client-ip=91.218.175.188
+	 Content-Type:Content-Disposition:In-Reply-To; b=GKCLX/0AUwLIs6HmMNl+u9X+pOa17ChozkTqFLRZ/CAVfWyuHFS4HC4qMHBbFmq7th16wRVQ7Q+xYa2eYt7jqwHPfdCVi28+8C4iRcMtUSWwX8WFbCywu0ieqjoP746utpFSiga3rqRw1nK+9E+CidAzX9oBtrzh77UL5l1Qqhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=k94FDO1e; arc=none smtp.client-ip=91.218.175.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q6gQAtMQ"
-Date: Fri, 2 Aug 2024 12:30:50 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="k94FDO1e"
+Date: Fri, 2 Aug 2024 12:31:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722616255;
+	t=1722616295;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5Ozwy6taMQ03I7AoUstgAGU/ke/Rn1/4ce/KBpkiht0=;
-	b=q6gQAtMQKIXlVxRGMVQrZvJ1jqynztP8V5ha/iA7TeinozTgbkfCN6O8f8WCrWYds89pVi
-	3rwgKaMk0Th3JD31NvBq7Z81bv6xL41eFIrPZZJcbDSlTu3GAuunjd31GqoBE/YRCjEIt9
-	Jdrafrx/WDMZnO1+O9XHAzU1VMjh9bY=
+	bh=CoGEWBiX8wuhk2qDLN5YtQAvEg6xRJzEUoyModN35Ng=;
+	b=k94FDO1e0L5uKK7Lwv+iwXpqXrME9UAYCHZVt7gXykYC/o0AjbubXEVcB9IXP44Hk9R8VV
+	tVwzKab7KRC+TTlS7K4658XYaZO2+F0l7qjDwWwiontPz/yG9eDh4lbtctozWGnJitRGVR
+	Yu2rnEti1h1E/+2BS0tGyTZw58ZTZA0=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Camila Alvarez <cam.alvarez.i@gmail.com>
-Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzbot+1e515cab343dbe5aa38a@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: WARNING in bch2_trans_srcu_unlock
-Message-ID: <brefgiw6mbvnpg5dmxhuwmoxfrh6upw3zslzn6qa6lfvbvhgi4@7vzwd55illrn>
-References: <20240724010759.1631178-1-cam.alvarez.i@gmail.com>
+To: Hongbo Li <lihongbo22@huawei.com>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: prevent lookuping excessively long paths
+Message-ID: <nulcwctn566adoyulms773fhpxifop7zoqwbt67dj54wfk6qrp@6pdpcy3xntcv>
+References: <20240709081020.3728942-1-lihongbo22@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -42,39 +41,36 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240724010759.1631178-1-cam.alvarez.i@gmail.com>
+In-Reply-To: <20240709081020.3728942-1-lihongbo22@huawei.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jul 23, 2024 at 09:08:00PM GMT, Camila Alvarez wrote:
-> bch2_extent_fallocate should not return -BCH_ERR_transaction_restart_nested when there are no buckets available.
-> Returning -BCH_ERR_transaction_restart_nested causes the sector allocation to retry even if there's no space available.
+On Tue, Jul 09, 2024 at 04:10:20PM GMT, Hongbo Li wrote:
+> The longest name length for file is BCH_NAME_MAX in bcachefs.
+> When looking up a longer path, it does not check this limit. So
+> we add the validation for this to avoid undetermined risk.
 
-It seems like you're saying this fixes a livelock, but I don't see that:
-if we return operation_blocked, the closure_sync we do before we return
-will still wait.
-
-More explanation?
+What's the actual bug this fixes?
 
 > 
-> Reported-by: syzbot+1e515cab343dbe5aa38a@syzkaller.appspotmail.com
-> Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
+> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 > ---
->  fs/bcachefs/io_misc.c | 2 --
->  1 file changed, 2 deletions(-)
+>  fs/bcachefs/fs.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/fs/bcachefs/io_misc.c b/fs/bcachefs/io_misc.c
-> index 82f9170dab3f..b5b92ef030df 100644
-> --- a/fs/bcachefs/io_misc.c
-> +++ b/fs/bcachefs/io_misc.c
-> @@ -90,8 +90,6 @@ int bch2_extent_fallocate(struct btree_trans *trans,
->  				opts.data_replicas,
->  				opts.data_replicas,
->  				BCH_WATERMARK_normal, 0, &cl, &wp);
-> -		if (bch2_err_matches(ret, BCH_ERR_operation_blocked))
-> -			ret = -BCH_ERR_transaction_restart_nested;
->  		if (ret)
->  			goto err;
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index fd01a5402c28..f8da598ca9f8 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -474,6 +474,9 @@ static struct dentry *bch2_lookup(struct inode *vdir, struct dentry *dentry,
+>  	struct bch_inode_info *dir = to_bch_ei(vdir);
+>  	struct bch_hash_info hash = bch2_hash_info_init(c, &dir->ei_inode);
 >  
+> +	if (dentry->d_name.len > BCH_NAME_MAX)
+> +		return ERR_PTR(-ENAMETOOLONG);
+> +
+>  	struct bch_inode_info *inode;
+>  	bch2_trans_do(c, NULL, NULL, 0,
+>  		PTR_ERR_OR_ZERO(inode = bch2_lookup_trans(trans, inode_inum(dir),
 > -- 
 > 2.34.1
 > 
