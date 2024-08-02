@@ -1,123 +1,117 @@
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855A91BD501
-	for <linux-bcachefs@vger.kernel.org>; Wed, 31 Jul 2024 16:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F05E17BA4;
+	Fri,  2 Aug 2024 01:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722444784; cv=none; b=DMkCxv+9fhXukTNQITLU+fHfVo7gSbdCLviuclFVNKMNIfqZ389290OVpK+hkDmDGfVqexh6VdAWIDboY1Bj7yGlBeZqW4w8mI9uPaGNf0r+bE3rxaT+vlzlrRg6NIyxSBvWU022AjUMNJqDVy6HxErdZKnlpj/fRA9SvoKUIZ4=
+	t=1722563517; cv=none; b=iM8l/SqN03m0mVi8laqYR/VPw5VYWF+z2CO4hEl0wGASIwyLNFQaB7FGg/Bc+WqjXkAn0aSESeIbFtH/SUbqGa0E5kgDfex/ggXRGE/IoBEW0/seUxX3Q1QOZJzm6ldMuFdoQ+Um2fG+nbynFBBhS18nfXE43of8rm578vxk3jQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722444784; c=relaxed/simple;
-	bh=p2sS8yeAfKz1EFKTG0yaZjGwZSGTkLx/gd6yviKg1To=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JbKDoZrabnT08sISmHQgeOPOsqls/chD//h2NUeNmt/ecbbVkrbo07OKo6fni9oRVzLTsXh9ju/MBa1JWXtPQN5obq/mzbMnj42i8u8cY9Z1jinXYWsx0E5h1knUqFk2X9thYo3sRTjVK75NBuIqpdfKi9Ng4SJRD179yZQ+yvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MZVvajiU; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1722563517; c=relaxed/simple;
+	bh=JBNnV0uADYTtfu4slxKNJ6KUj/8oHz+XS9o+5CxrYYk=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=DuWKHy16k73hX5U+v9wFgphvb++hSuHihepT/Cw4/wevFjY62XKxh3zDci/eVgik2/MwShslkbSknsG6XNmN1R2u8jtCJbW3k1Sk2akitfypca47wzGTaoGsmldPFGHm58Av+FMIIXu8XE0xRKrzL0BRzjgOf3lZgQJJA269uXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CQsDUdi/; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MZVvajiU"
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3db14cc9066so3715467b6e.3
-        for <linux-bcachefs@vger.kernel.org>; Wed, 31 Jul 2024 09:53:01 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CQsDUdi/"
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7a18ba4143bso5569793a12.2;
+        Thu, 01 Aug 2024 18:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1722444780; x=1723049580; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tL+HD2Ty8QZCeLBha1Q7mgorf+VkCmmM0sjUkwiPvkQ=;
-        b=MZVvajiUzW4CX6sJ+VyQerBELOIgpiR3dgpz21kVGXur2ylQh0QBWZXInPz9YhKqRU
-         Gzm4ScRh4IF7a+cIO20LPkRv7Ecqr/IVJquGdnOrX96LXJVFSC0TCPeYDQIb018cdFqN
-         q6G2ri6VqU+bNDxDrMXh5rnv7acTifSQ5OWG/EZUH/c6Ym7gkkRTf38pVvAUeFfjnA8x
-         l2zdTn738cAC68wHldbUrUIxyUiZe3Q2otbBlixnqUy3oN+em2MdELJEatCP0APCJl7x
-         LFjObHeU/HyYzcf2gpTTVBYvKdFmySXoEQ8VYzPcV+z8KWO6rAedDNQMYz/mT88Og0Pj
-         tWYA==
+        d=gmail.com; s=20230601; t=1722563515; x=1723168315; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:date
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QDmCkGOySC7BUzlBEXHv44zk9Dp2wAsf6i4H4rN57ZM=;
+        b=CQsDUdi/aSjE9NZuT0Jdj3GXIFir4oV+o8LMlc2ytcNrKzSB9j5fIAffdeb8xkvpFm
+         afUpUmilzwHJiBO4PP7Rkcjc88eeNoMvyp6XO3q1a0xD7MDY0/Ja+SBJ1Ds0n/iKFieA
+         TXjU/EEpOdtIZuhhTF4AO0bjFGs/85GRDU1Dz9DI6pPtl7Bh7fE6PJSrPlzQcw8BVOt2
+         z/SrQotuZXpHW0DNOzQ8ar+Pl87914Fv+A+paoN5oqGMke0HuEDtDjXpZCN/7yLUoWVk
+         cjfQ+aEy2dWbXab9W4cjaF7WUju8LuGpMqgDImJ7HP3dEUCZ52nWu39LsXM6+gaogMGt
+         5g1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722444780; x=1723049580;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tL+HD2Ty8QZCeLBha1Q7mgorf+VkCmmM0sjUkwiPvkQ=;
-        b=YnPSnanya9VX1CyNKx785Y/bGxUrAr8CCEc0qJZM0HdvA6lVK9xycAIkQpjt1j86j7
-         euW1h8Q5erb4hz37HBZCV3IjjkFUi0BqcdiGYJ4xMK+kzHjtAMu5uvWtL8wY/DEISAUe
-         AoVQ1hDyVHCW72hmUE9AQcyJfBLSsCnwX/d316fIJWDT5zW0mRBJWPU4+Cc7R5lsnQg0
-         hsYLjPOls8x3qb1XuQqbNb9dYwnQeJjiidLBWob0UBiZfDi3/99OCffkKW+STZVEfTo5
-         StFlM5T/Ai2Lj9kWlg2IPX2gqYiVGTb9Y4COYJJJ+0DS1qkMHrm+Zk5k1BzBXsFxAQPn
-         vokw==
-X-Forwarded-Encrypted: i=1; AJvYcCVZ1Qg8bYDg2uoX0/09I9TBvbvg2b4KG9rpgAsdjPaLhOb6KA5m/d2NZ7XG6lDv/S3MimwXdeyKefYy30rXAv6w3PMQPfTM7u3YErBnzhI=
-X-Gm-Message-State: AOJu0Yx6SSMepNQr2DaC9ALCgWhdRFcdsCh/Mrtk7Kl6TpOr7yyx7h1u
-	erAalUd60YsF9eD252Vh7xuM3SwLfFLmMQ8kcyh/vaLykMrmX9kF/5zE9/+L+S8=
-X-Google-Smtp-Source: AGHT+IHKBM7a5C9ptGZgwKLnC41lsDOJwwxGZd3BgpTmfrkacVPR3KuytmKPy41jfkQOTPMuaT4IMw==
-X-Received: by 2002:a05:6808:d46:b0:3db:1872:f22a with SMTP id 5614622812f47-3db238a73b5mr18885800b6e.23.1722444780524;
-        Wed, 31 Jul 2024 09:53:00 -0700 (PDT)
-Received: from localhost ([2603:8080:b800:f700:c572:4680:6997:45a1])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-3db418058b7sm746216b6e.24.2024.07.31.09.52.59
+        d=1e100.net; s=20230601; t=1722563515; x=1723168315;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:date
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QDmCkGOySC7BUzlBEXHv44zk9Dp2wAsf6i4H4rN57ZM=;
+        b=XxPbfkoAL0r+XdospWVjiHxsA6d3W3+9a/XbyVJHeUoW00ZdDQ9Nyuc0x1frRh3IEQ
+         FZlU3bxEsRDUvL5myFgODnh0DNlJ2iPxTU8W3AYgNc3V7/vPSsoplp9NKaFSNorosOXm
+         3XxfwBTvMJUiZPpQgLXx/dE2CAuq0yUqnqF40vOJT1lxp9tQlvCqiAwd8gOuStISVxxO
+         tybI97vMI3zSETpsR/vIoTNjDoJKHbLescbNKlvfTpkstjxzN7Q7RigDlAb5QsRppL57
+         Hy2LSF97I2BhsRSl9SM5BeNDgDCdDAYXV4qWBiRkF2btcPfokFweLz4fFVGnvmHz4xqJ
+         Mo2g==
+X-Forwarded-Encrypted: i=1; AJvYcCUVSDbGBBX39B56QdTRGi32/8fvuOEX0D/TV2I/xh6sszM9pVlMjH1pSaYtKXZm95WgRNRNF9ZZtDcFAZkqFQ==@vger.kernel.org, AJvYcCUbRhLr0df2NEsXcltwHqdUDwZXHH6M/xakW1qAtWeGPVj75T9VtVSjhI49wjpWVtomYeDT87sT7EO1357T@vger.kernel.org
+X-Gm-Message-State: AOJu0YznNzuCMzrG0Zm9tgc27tTC9ci9m+o2ju8JpuYLzS0OeV3O4T5W
+	PYAu3J64ASVTNegT0DA6cjIyTBUypVv4WqlzM/cqXvL3mn3LYXZp
+X-Google-Smtp-Source: AGHT+IE5ADnY+cIlrpWgFEOUgeDHEI30PQdtkXR/15P0nbEwGZyeetr65PqA8GXLIwnRGe4x0Licnw==
+X-Received: by 2002:a05:6a20:8404:b0:1c4:d438:7dd2 with SMTP id adf61e73a8af0-1c6995ccd9dmr3425796637.32.1722563515263;
+        Thu, 01 Aug 2024 18:51:55 -0700 (PDT)
+Received: from [192.168.7.110] ([190.196.134.53])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cfdc406481sm4104020a91.2.2024.08.01.18.51.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 09:53:00 -0700 (PDT)
-Date: Wed, 31 Jul 2024 11:52:58 -0500
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [bug report] bcachefs: Kill opts.buckets_nouse
-Message-ID: <2f4977d6-7f57-468c-af17-bc521b1121e1@suswa.mountain>
-References: <31ed13c7-7a14-4693-a9cc-fdb078a3c412@stanley.mountain>
- <x3nici64pxcqqhcngceu2nbtemc64bbirss7fbaeuxk7orjwuc@oxixb5xee5n2>
- <4f8f1e94-2d5f-46e9-8860-af54f522dc94@wanadoo.fr>
+        Thu, 01 Aug 2024 18:51:54 -0700 (PDT)
+From: Camila Alvarez Inostroza <cam.alvarez.i@gmail.com>
+X-Google-Original-From: Camila Alvarez Inostroza <calvarez@macbook-pro-de-camila.local>
+Date: Thu, 1 Aug 2024 21:51:50 -0400 (-04)
+To: Camila Alvarez Inostroza <cam.alvarez.i@gmail.com>
+cc: Kent Overstreet <kent.overstreet@linux.dev>, 
+    syzbot+4093905737cf289b6b38@syzkaller.appspotmail.com, 
+    Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] bcachefs: WARNING in bch2_fs_journal_stop
+In-Reply-To: <f3814333-2f49-5563-0673-a3d3cb8354cf@macbook-pro-de-camila.local>
+Message-ID: <7252b968-829b-bc32-6832-8bc132009c64@macbook-pro-de-camila.local>
+References: <20240717220237.1246673-1-cam.alvarez.i@gmail.com> <e2oi7a4jj4gjhzcp66rygr5d6wqlock6c5jvuwszxuej3hldmd@tnvbf45nbx2x> <6d42612b-1c20-0484-ce9f-eac509e6740d@macbook-pro-de-camila.local> <f6lmsdtntfs3ot4jc2waizihayhipszr3iuro3tzyjgbfvjwuw@ms4foq466yiz>
+ <d25b7319-5b16-da76-6f07-226d1da11e16@macbook-pro-de-camila.local> <6cysckb2o54lmg27htyr67mogkprkqjfipmws27fp4rhe3wxwm@edgdbatbeahw> <f3814333-2f49-5563-0673-a3d3cb8354cf@macbook-pro-de-camila.local>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4f8f1e94-2d5f-46e9-8860-af54f522dc94@wanadoo.fr>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-On Wed, Jul 31, 2024 at 06:46:39PM +0200, Christophe JAILLET wrote:
-> Le 31/07/2024 à 00:23, Kent Overstreet a écrit :
-> > On Tue, Jul 30, 2024 at 02:45:17PM GMT, Dan Carpenter wrote:
-> > > Hello Kent Overstreet,
-> > > 
-> > > Commit ffcbec607613 ("bcachefs: Kill opts.buckets_nouse") from Apr 6,
-> > > 2024 (linux-next), leads to the following Smatch static checker
-> > > warning:
-> > > 
-> > > 	fs/bcachefs/super.c:1202 bch2_dev_free()
-> > > 	warn: 'ca->buckets_nouse' double freed
-> > 
-> > yup, that's a bug
-> > 
-> > -- >8 --
-> > Subject: [PATCH] bcachefs: Fix double free of ca->buckets_nouse
-> > 
-> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > Fixes: ffcbec6076 ("bcachefs: Kill opts.buckets_nouse")
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > 
-> > diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-> > index 0542953a7a..6d0ce3d734 100644
-> > --- a/fs/bcachefs/super.c
-> > +++ b/fs/bcachefs/super.c
-> > @@ -1195,7 +1195,6 @@ static void bch2_dev_free(struct bch_dev *ca)
-> >   	if (ca->kobj.state_in_sysfs)
-> >   		kobject_del(&ca->kobj);
-> > -	kfree(ca->buckets_nouse);
-> 
-> Hi,
-> 
-> unrelated, but apparently this should also have been kvfree().
-> 
-> Dan, do you already have a check for such cases where kvfree() or kfree()
-> are called when the other one should be used instead?
-> 
 
-No.  I don't.  I've been meaning to write one...
 
-KTODO: write a smatch check for calling kfree instead of kvfree()
+On Thu, 18 Jul 2024, Camila Alvarez Inostroza wrote:
 
-I'll probably do it in the next week or two.  The min/max changes are
-higher priority right now.  :P  #painful
-
-regards,
-dan carpenter
-
+>
+>
+> On Thu, 18 Jul 2024, Kent Overstreet wrote:
+>
+>> On Thu, Jul 18, 2024 at 06:49:02PM GMT, Camila Alvarez Inostroza wrote:
+>>> 
+>>> 
+>>> On Thu, 18 Jul 2024, Kent Overstreet wrote:
+>>> 
+>>>> On Thu, Jul 18, 2024 at 06:42:55PM GMT, Camila Alvarez Inostroza wrote:
+>>>>> 
+>>>>> 
+>>>>> On Thu, 18 Jul 2024, Kent Overstreet wrote:
+>>>>> 
+>>>>>> On Wed, Jul 17, 2024 at 06:02:39PM GMT, Camila Alvarez wrote:
+>>>>>>> last_seq and last_empty_seq suffered from an off by one error when the
+>>>>>>> journal has no entries.
+>>>>>>> 
+>>>>>>> The indexes were fixed and an assertion is added to check that the
+>>>>>>> last_empty_seq is always kept under the next valid seq number.
+>>>>>> 
+>>>>>> oh nice. I'm going to need to stare at this some more, I still feel 
+>>>>>> like
+>>>>>> this code needs to be clearer and less fiddly.
+>>>>>> 
+>>>>> Sure! Please let me know if there's anything I can do to help.
+>>>> 
+>>>> I'm just applying it - the warning you added gave me warm fuzzies.
+>>>> 
+>>>> I'll let you know if anything pops up in the CI (and I should give you
+>>>> an account so you can point it at your own branches; email me a username
+>>>> and ssh key)
+>>>> 
+>>> Should I give you the info in this same thread or in a separate email?
+>> 
+>> doesn't matter, ssh pubkeys aren't secrets
+>> 
+> I've attached my pubkey. You can use calvarez as my username. Thanks
+Hi, just wondering if you had any time to take a look at this patch.
+Please let me know if you have any comments!
