@@ -1,21 +1,56 @@
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B078923CE
-	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 15:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F38412C81F
+	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 15:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723042877; cv=none; b=Mkn/+xUATZ+FFZ4cZ5H0hSjLhVm9vpHKqcKFlLYXRHhZiSNyZD/vdS4oKsYlrrjpTzQK4vMTc+eBpywGXXmgGAPHhR3Lopbz/pF4+BQLNLGleOI8phJTjnGFWdiWCVVRDcx6LWOTb0+r4xXEW0U2dJF4jWCslFYVMHaMiQiYj2U=
+	t=1723045336; cv=none; b=cEiX7xZ7ps+IxjkoSAXyNuO6ahr1VbJ1I0GnP2TH/bHxPssPAFKZCmCZmI/Witf+sOEM3MrksOMMDcXHmVx+DeDtFxPjFCPoAR6H+fwWpTMYAlY8S4Xit7o4ElO1gk0tb/so36eMxoy4lRqJH538LEkQmhZ4yAnypmv3/UFcyDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723042877; c=relaxed/simple;
-	bh=elH89L6ITzLicdV7lCUJYANb/DkO67yk0QMvlyeFPn0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=t5vV9BGt/sksEcWXDdsWtIThsNo8Dz+mqs1vyw26i/vI+OXagH4deSn0P1ywx5lAIvEDuS0pYamA3aMo6Qd8P5u6G8EEZQVrGvu/OHweMx6bpDp1x1eEQ5bpG4FD0xS14i9FaZmal8ypdSWBFricxN9XNfCY/0767RTvusP8yDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org; spf=pass smtp.mailfrom=gentoo.org; arc=none smtp.client-ip=140.211.166.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
-Message-ID: <7d05b5af-fed0-4ceb-b320-8a1abf11c18b@gentoo.org>
-Date: Wed, 7 Aug 2024 11:01:12 -0400
+	s=arc-20240116; t=1723045336; c=relaxed/simple;
+	bh=p7PVqR202pLZcsTbDjLFYNgJzn0bloqG+abqcVgvaJU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pQEkR6I2a8sKJNqzMmNAiPRVlfrUTJY/jfBArylt6ltw1I2sHCT9xxaS/1KLSA0zIT9FmmGrHkVQE5okS5fHcx5EMw2JdSOlg9a0PU0qKCqFRNaE7iNWDvc+oBn6KzQzYbRwOFSDQrbwNDd7V/niLvUZSPL4vqXv5Sk/FMkWF8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Lhy9+T+I; arc=none smtp.client-ip=209.85.166.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Lhy9+T+I"
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-39b3c36d429so1256015ab.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 07 Aug 2024 08:42:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1723045334; x=1723650134; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DuwHjHFvIH5yzRbowDpjPZeGCKe893MON8qjCHt6NA8=;
+        b=Lhy9+T+I9SlgQZCWx24/UGQHRvTeLwvMIeRMfwswfx5SfSSA3ytbsYDKCEyGTdLHOv
+         WorBAKpn+AFeEMMni3W6jXM+vSCA9v1f5gUrWZ/me/iGSDGAwRJw/BWSleH/ZOhVlCMd
+         YFWmO8cMjBgCh/ZZv51O7qVoSyNoSdohO0CUE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723045334; x=1723650134;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DuwHjHFvIH5yzRbowDpjPZeGCKe893MON8qjCHt6NA8=;
+        b=Mgk3/IR1rNJQzuNY0yN1vFGdMM/k2VwIgu21tvHIYzzqdki4hlN3D4Vmmfz+AtFMQo
+         oSuruBbBX8LSWOyVjxV+icosGeCDoHSpaSeuT2J/2OUlNUqn7KOkCfOAuLboaMksdug0
+         OooOt/OBK+M9JEfX4LdfHMM6EUJeLBm5WOYe9qiBDoUFb7fSxkkPLqbLE32uTmlfGKbD
+         bFKanGZYhfnenfCaU60OmiPp5qk10gqvIdDxTjut0lBal5lmFGVlECWvD+X3hY8uPsAC
+         9K5UnC8QY2goGQeetRuZ2GmF7AOuHiAuwz4aAikpFoVEzpcvSgodasR0GCsmOjilutZi
+         5mHg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4Lx0g2jSRmVXxv778eSoEM+7aulPaQCdMo5d8qBhiTVeYigWQ/Mu2U7oJbi3LgYRtU086DJ5nkpCb2w92mOmZV0cU1/7wvCZaWiPlusI=
+X-Gm-Message-State: AOJu0Yyl/tyS+uDMAULBxSsnne8sFGpJhPjbUMdcbf8S4EBh94k0R3uu
+	u1m8CnkkZroxQSfZqjNxnE/Anncy4J/GcIA+9u4lBF4ZfQWdNarXgpgVrsPTwTY=
+X-Google-Smtp-Source: AGHT+IENm7ilj2AMmEwQJYpawRWrkgTZs3Cq1oL1+5AjSJCsF6nenoG7T6ZS8wtXFNT1iOwrbP88qQ==
+X-Received: by 2002:a05:6e02:1b0f:b0:38e:cdf9:8878 with SMTP id e9e14a558f8ab-39b1fc6194bmr121613445ab.5.1723045333621;
+        Wed, 07 Aug 2024 08:42:13 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-39b20ab4f73sm45805565ab.39.2024.08.07.08.42.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Aug 2024 08:42:13 -0700 (PDT)
+Message-ID: <2dfa76a7-eeae-4b05-bfcd-684ae7ade963@linuxfoundation.org>
+Date: Wed, 7 Aug 2024 09:42:12 -0600
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -23,123 +58,43 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: PSA: Avoid Debian
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org
-References: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
+Subject: Re: [PATCH] Fix a spelling error in a doc of bcachefs
+To: Xiaxi Shen <shenxiaxi26@gmail.com>, kent.overstreet@linux.dev,
+ corbet@lwn.net
+Cc: javier.carrasco.cruz@gmail.com,
+ "open list:BCACHEFS" <linux-bcachefs@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240807071005.16329-1-shenxiaxi26@gmail.com>
 Content-Language: en-US
-From: Eli Schwartz <eschwartz@gentoo.org>
-Autocrypt: addr=eschwartz@gentoo.org; keydata=
- xjMEZmeRNBYJKwYBBAHaRw8BAQdAYNZ7pUDWhx1i2f3p6L2ZLu4FcY18UoeGC04Gq/khqwfN
- I0VsaSBTY2h3YXJ0eiA8ZXNjaHdhcnR6QGdlbnRvby5vcmc+wpYEExYKAD4WIQTvUdMIsc4j
- CIi+DYTqQj6ToWND8QUCZoRL+gIbAwUJBKKGAAULCQgHAwUVCgkICwUWAgMBAAIeBQIXgAAK
- CRDqQj6ToWND8aB5AP9r4kB691nNtNwKkdRiOdl7/k6WYzokvHvDamXxRJ0I+gEAjZqR5V8y
- mfR3fy2Z+r2Joeqdt3CIv5IwPs64spBvigLOOARmZ5E0EgorBgEEAZdVAQUBAQdATT46Z06b
- 1X9xjXFCYFxmq/Tj3tSEKZInDWTpoHQp4l8DAQgHwn4EGBYKACYWIQTvUdMIsc4jCIi+DYTq
- Qj6ToWND8QUCZmeRNAIbDAUJBKKGAAAKCRDqQj6ToWND8a2RAP40KPfbfoiZAJW5boFmFJ3G
- TUBDJRh9CWHyaPqq2PN+0wD/R07oLzfnJUN209mzi9TuTuHjeZybysyqXSw4MAxkMAY=
-In-Reply-To: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------Iggb1YOQHMY6Zd50Hx2xUV20"
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240807071005.16329-1-shenxiaxi26@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------Iggb1YOQHMY6Zd50Hx2xUV20
-Content-Type: multipart/mixed; boundary="------------vUlyZcLLrKvnld8hRaC3rtoB";
- protected-headers="v1"
-From: Eli Schwartz <eschwartz@gentoo.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org
-Message-ID: <7d05b5af-fed0-4ceb-b320-8a1abf11c18b@gentoo.org>
-Subject: Re: PSA: Avoid Debian
-References: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
-In-Reply-To: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
+On 8/7/24 01:10, Xiaxi Shen wrote:
 
---------------vUlyZcLLrKvnld8hRaC3rtoB
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Missing commit message --
 
-On 8/7/24 12:34 AM, Kent Overstreet wrote:
-> Debian (as well as Fedora) currently have a broken policy of switching
-> Rust dependencies to system packages - which are frequently out of date=
-,
-> and cause real breakage.
->=20
-> As a result, updates that fix multiple critical bugs aren't getting
-> packaged.
->=20
-> (Beyond that, Debian is for some reason shipping a truly ancient
-> bcachefs-tools in stable, for reasons I still cannot fathom, which I've=
+> Signed-off-by: Xiaxi Shen <shenxiaxi26@gmail.com>
+> ---
+>   Documentation/filesystems/bcachefs/CodingStyle.rst | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/filesystems/bcachefs/CodingStyle.rst b/Documentation/filesystems/bcachefs/CodingStyle.rst
+> index 0c45829a4899..01de555e21d8 100644
+> --- a/Documentation/filesystems/bcachefs/CodingStyle.rst
+> +++ b/Documentation/filesystems/bcachefs/CodingStyle.rst
+> @@ -175,7 +175,7 @@ errors in our thinking by running our code and seeing what happens. If your
+>   time is being wasted because your tools are bad or too slow - don't accept it,
+>   fix it.
+>   
+> -Put effort into your documentation, commmit messages, and code comments - but
+> +Put effort into your documentation, commit messages, and code comments - but
+>   don't go overboard. A good commit message is wonderful - but if the information
+>   was important enough to go in a commit message, ask yourself if it would be
+>   even better as a code comment.
 
-> gotten multiple bug reports over as well).
-
-
-I can help you fathom the reason.
-
-The inherent purpose of Debian is to not provide updates to software,
-since the general class of "computer code" contains the general risk of
-"regressions", including "existing config files need to be updated, and
-that regresses my ability to run a box unattended for 10 years without
-ssh'ing in even once".
-
-It is therefore the stated purpose of Debian that:
-
-- if you managed to get a working installation you do not need new
-  versions of the software to maintain a holding pattern in your ability
-  to get the same work done today that you were able to get done
-  yesterday -- whereas upgrading to new features can break that holding
-  pattern.
-
-- if you did NOT manage to get a working installation, you do not need
-  that new stuff, and should stop attempting to have an "off-topic
-  conversation that misses the purpose of Debian"
-
-
-If you want updates to software, you upgrade debian, rather than
-upgrading software. If you want modern software, you either use Debian
-sid rather than stable (bcachefs-tools 1.9.1 may not be the most recent
-version but it's very much not "truly ancient") or you do the sensible
-thing and use a reasonable distro.
-
-"Reasonable distro" meaning a distro that, when faced with the choice
-between:
-
-- allow people who installed the distro in 2017 to pretend it is still
-  2017 and keep using their system the way they did back then
-
-- improve the user experience for users
-
-choose the latter.
-
-In short, it is foolish to criticize Debian for shipping ancient
-software since the answer is "the purpose of Debian is so that users can
-use ancient software".
-
-=2E..
-
-No comment on their switching rust dependencies to system packages.
-Possibly the problem can be mitigated though -- is it possible for Rust
-build systems to declare a minimum required version of dependencies, the
-way pkg-config for C / C++ can do?
-
-
---=20
-Eli Schwartz
-
-
---------------vUlyZcLLrKvnld8hRaC3rtoB--
-
---------------Iggb1YOQHMY6Zd50Hx2xUV20
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wnsEABYIACMWIQTnFNnmK0TPZHnXm3qEp9ErcA0vVwUCZrOMOAUDAAAAAAAKCRCEp9ErcA0vVxKO
-AP9jvKAg8eMV3Gv1LKcPOWeg7gJRVrEPPRbroLTIRS8sNgEAsYN6Ptr9ZUrtIkqn7GA7LrNmPAIy
-Eu1HJGs96kcXIAM=
-=lZOV
------END PGP SIGNATURE-----
-
---------------Iggb1YOQHMY6Zd50Hx2xUV20--
+thanks,
+-- Shuah
