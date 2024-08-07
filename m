@@ -1,59 +1,91 @@
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.241.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0816801
-	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 04:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEFE3250EC
+	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.100.241.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723005271; cv=none; b=gQz6OMJ+FdzX3pQnnTA/1nOavBZEmoZ2V7WuODdwt6K5K7mD/loq33OutzCHi2wgINwEAIl762kr9J3lcdG3QYQ8yUnih3rnq+60Jcp5FqimFZtkXCpeK5UQF6P/Ft9AfJ8FYumzAwX5OJwc0i1yrshWLTvW7xQlte6xtO3mywI=
+	t=1723009069; cv=none; b=m15E8tWqL/r5rttY8KirrlQVsMG2JKQFlDPwW9F/zMTlYI+SllzN27pnrC9O+5RJ0XWpT40p4Kbk31Ei9lCLvbetFYlGXmfPhy6lzTod+pK8rncYoHTL4oNHiM2XFS/6FjnZIVZpTnDMhqkYDgHQFkE5kyHGnfZBL7SyZqTZwKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723005271; c=relaxed/simple;
-	bh=6ID9hZLiQlEgjopIJMCL3GabS001ynrsb9qw5O2SpKw=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=uxaHDjRX8zcWS6nES2y/44ehXFf3viMstRfVIgNeGlvkFQIRa4wq9q5LLm9hA4posFY1mowktaZ45uq9FrRojyxgFweR9jKrgc7gj0zy9x4xpb9y1/Hb9dnGns/2YUrVhDqg1p4Edn+WbwKpwngzfNohrPim7PidHm9bbEvZywQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PLr1dKjC; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1723009069; c=relaxed/simple;
+	bh=JxLD5Pj6TRm51mrCNciNUEu8Pd6b36XkTfO+Y2CUoRQ=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=dTEJBs1QWXUKF6PZZmnhLgmnJ1zukJ+gh0ePcXCO7nKlAkg7iMoA+B2LOXcr+AZ3z2iHj73j9uApKUCRVfox2UoZEAeTNEnKLGj/AipTO9U8S/oweHvlsyJWdjgCdVx92022cuzT6ZNI3K4spXxzX9SBVLFH8PyzPAg2pNS4Xig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pavinjoseph.com; spf=pass smtp.mailfrom=pavinjoseph.com; dkim=pass (1024-bit key) header.d=pavinjoseph.com header.i=@pavinjoseph.com header.b=V7xePBsa; arc=none smtp.client-ip=159.100.241.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pavinjoseph.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pavinjoseph.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PLr1dKjC"
-Date: Wed, 7 Aug 2024 00:34:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723005265;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=6ID9hZLiQlEgjopIJMCL3GabS001ynrsb9qw5O2SpKw=;
-	b=PLr1dKjCupvkn6ELGVuifQ7E7jnFKdxPari3Cje1jxUYH2UJr48o8m5ivOHPh65rBPjdjV
-	it1YG0gavt3BGvf03RMLhCE+JCIm8Tfk54LDAkVZ2fMEhLLhHjZ3v+BNRX3S0trwVYn77p
-	XQZskyR+Qh9CbRb6Xx4F8xox8i/PLR0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Subject: PSA: Avoid Debian
-Message-ID: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
+	dkim=pass (1024-bit key) header.d=pavinjoseph.com header.i=@pavinjoseph.com header.b="V7xePBsa"
+Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.80.155])
+	by relay5.mymailcheap.com (Postfix) with ESMTPS id AAF1420C63
+	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:38 +0000 (UTC)
+Received: from nf2.mymailcheap.com (nf2.mymailcheap.com [54.39.180.165])
+	by relay4.mymailcheap.com (Postfix) with ESMTPS id 535D5202E4
+	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:31 +0000 (UTC)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+	by nf2.mymailcheap.com (Postfix) with ESMTPSA id 67320400B0
+	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pavinjoseph.com;
+	s=default; t=1723009049;
+	bh=JxLD5Pj6TRm51mrCNciNUEu8Pd6b36XkTfO+Y2CUoRQ=;
+	h=Date:To:From:Subject:From;
+	b=V7xePBsaOu0YYlDv11/DAQvW+VTARkFGiMrlrbpkbNkDe4huMZVNJXNcv76A+8M2A
+	 xA0j/4qkfrcu2sm5o6H17SzlHnNAD3BaLQQ5Uquf2/JhHhq6fs9KKodsMIUGAgo6HO
+	 8Zvv1xCXOYfzEA9e3D4FMr6GrTTVvhzd3DdL9/FY=
+Received: from [10.66.66.8] (unknown [139.59.64.216])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail20.mymailcheap.com (Postfix) with ESMTPSA id B9FDA41059
+	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:24 +0000 (UTC)
+Message-ID: <28759521-d0ef-4f56-ad3d-3f07ad670adf@pavinjoseph.com>
+Date: Wed, 7 Aug 2024 11:07:22 +0530
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-bcachefs@vger.kernel.org
+From: Pavin Joseph <me@pavinjoseph.com>
+Subject: Status of rebalance and scrub support
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: nf2.mymailcheap.com
+X-Spamd-Result: default: False [-0.09 / 10.00];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_COUNT_ONE(0.00)[1];
+	ASN(0.00)[asn:16276, ipnet:51.83.0.0/16, country:FR];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-bcachefs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 67320400B0
 
-Debian (as well as Fedora) currently have a broken policy of switching
-Rust dependencies to system packages - which are frequently out of date,
-and cause real breakage.
+Hello everyone,
 
-As a result, updates that fix multiple critical bugs aren't getting
-packaged.
+Is there an ETA available for full rebalance and scrub support?
 
-(Beyond that, Debian is for some reason shipping a truly ancient
-bcachefs-tools in stable, for reasons I still cannot fathom, which I've
-gotten multiple bug reports over as well).
+I recently migrated from btrfs to bcachefs and so far it has been great, 
+mostly due to the performance improvements on pinning metadata to faster 
+drives. But as I started off with 2+1+1 TB background target drives with 
+replicas=2 that had around 70% usage and then added 4+1 TB drives 
+recently, my disk usage are all messed up without a rebalance.
 
-If you're running bcachefs, you'll want to be on a more modern distro -
-or building bcachefs-tools yourself.
+I also perform weekly scrubs on my btrfs and zfs pools, so feeling a bit 
+naked here without it!
 
-If you are building bcachefs-tools yourself, be aware that the mount
-helper does not get run unless you install it into /usr (not
-/usr/local).
+Thank you for the awesome work on bcachefs!
+
+Kind regards,
+Pavin Joseph.
