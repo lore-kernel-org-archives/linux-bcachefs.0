@@ -1,29 +1,29 @@
 Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3472C13CFB8
-	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 17:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27DB313BAE3
+	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 17:51:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723052662; cv=none; b=WHUkO4T43DQ8qyiYbD9ecAS+zwgDKQoNfVuiqBw3Iw/LQO3XVe7wdHh0/WUyBt3XhHsDRUV+SOgsUaa8zDpzE43H1VdHkTGaPiv5ZgSXaGiHUhe6I1S4meEX8ejGtOkfT95MnwsSPxSC5SZ2hJSs/Wt260vMdu52VPLD9Hz1krY=
+	t=1723053075; cv=none; b=iLVyy+UzooRIH3N1P8fEmjUJfuyjg7JnWa2TigfOGawvvQkhYaxq9OAmjEPLNR5f3YN38Y/fHhunM/uFm9aKM3l2EfTfIsRMEMbx/Y9Gy2XtX41Ove8ijgWDGAWtqj5NzX1RyWa60CtbgFvDEjT/DD5vqowfl9VAP6pZU1U2c5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723052662; c=relaxed/simple;
-	bh=YwGpE2bQ306HNE+Qp86JGJwSRd3PdVPRrhWlpfYaWS0=;
+	s=arc-20240116; t=1723053075; c=relaxed/simple;
+	bh=5vO+q7PlPFnyQLBl9MjvHjTcubX9e3ylkmu+RzaNVLw=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=umNk2fjf383onjpYMtwZZs6EGz4jRkN85i4ZtKvaOYpV75sxWh7xqGWx5M6qnPQzM1RPz+HT2zUBnv4CVgdcyQYK0MTAfZYHgumy/Eag0YcXTMYjARwiimlQh4Lcnf6/iq0eAj6yqD37ucrm6y/RG8VNW0f48K+PfK2BNzBpUhM=
+	 MIME-Version:Content-Type; b=VfhE2EnfNYHwU1FvP3D8wTv37/3A+j4tXHDL3+Oq2sQlneEynE8L0UnwJIG1BGjijGvvhbH5SiuaqcIo2Mz0lQp0dX2pSZuvp00NnOYacaHqsMTYvmbEwUnHHBbqMY+V6Vw2n1tK2CNvNSva90ISVyzuybO7nmCKE7Rzeqs6RF4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
 Received: from mail.carlthompson.net (mail.home [10.35.20.252])
 	(Authenticated sender: cet@carlthompson.net)
-	by smtp.carlthompson.net (Postfix) with ESMTPSA id E3616F71B1;
-	Wed,  7 Aug 2024 10:44:19 -0700 (PDT)
-Date: Wed, 7 Aug 2024 10:44:19 -0700 (PDT)
-From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 1A008F71A1;
+	Wed,  7 Aug 2024 10:43:18 -0700 (PDT)
+Date: Wed, 7 Aug 2024 10:43:17 -0700 (PDT)
+From: "Carl E. Thompson" <cet@carlthompson.net>
 To: Kent Overstreet <kent.overstreet@linux.dev>,
 	Eli Schwartz <eschwartz@gentoo.org>
 Cc: linux-bcachefs@vger.kernel.org
-Message-ID: <1705511146.62.1723052659777@mail.carlthompson.net>
+Message-ID: <41409810.56.1723052597872@mail.carlthompson.net>
 In-Reply-To: <wona7sjqodu7jgchtx2lpwqlmsrtbkdhk2gv6df2qdnx3vt7tc@twfs326tgt4r>
 References: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
  <7d05b5af-fed0-4ceb-b320-8a1abf11c18b@gentoo.org>
@@ -47,6 +47,9 @@ X-Originating-Client: open-xchange-appsuite
 Whether or not the concept of Debian is a good idea probably isn't a constructive discussion for this list.
 
 The problem here is that what was essentially an _alpha_ piece of software for what at the time was essentially an _alpha_ filesystem was allowed into the _stable_ release of Debian at all. Whoever on the Debian side allowed its inclusion dropped the ball.
+
+Carl
+
 
 > On 2024-08-07 10:29 AM PDT Kent Overstreet <kent.overstreet@linux.dev> wrote:
 > 
