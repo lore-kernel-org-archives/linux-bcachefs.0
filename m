@@ -1,91 +1,94 @@
-Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.241.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEFE3250EC
-	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.100.241.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF48677F1B;
+	Wed,  7 Aug 2024 07:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723009069; cv=none; b=m15E8tWqL/r5rttY8KirrlQVsMG2JKQFlDPwW9F/zMTlYI+SllzN27pnrC9O+5RJ0XWpT40p4Kbk31Ei9lCLvbetFYlGXmfPhy6lzTod+pK8rncYoHTL4oNHiM2XFS/6FjnZIVZpTnDMhqkYDgHQFkE5kyHGnfZBL7SyZqTZwKY=
+	t=1723014613; cv=none; b=hnuErlChgAEAQ6tWzmvlYHcwIeC3Y/UkxSA0w2bQBT9DUsnxsEdHpHcFZABlaKh8Wai6ej5iJsrpJVQnGedJC8dihGhv0k/sCRTV5X17NoEkebRf6LZ9qdddkg7fLlxAAhA7haxm7Fv/0ArW9WO83D7FvolkDfvexZQi9t0N6QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723009069; c=relaxed/simple;
-	bh=JxLD5Pj6TRm51mrCNciNUEu8Pd6b36XkTfO+Y2CUoRQ=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=dTEJBs1QWXUKF6PZZmnhLgmnJ1zukJ+gh0ePcXCO7nKlAkg7iMoA+B2LOXcr+AZ3z2iHj73j9uApKUCRVfox2UoZEAeTNEnKLGj/AipTO9U8S/oweHvlsyJWdjgCdVx92022cuzT6ZNI3K4spXxzX9SBVLFH8PyzPAg2pNS4Xig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pavinjoseph.com; spf=pass smtp.mailfrom=pavinjoseph.com; dkim=pass (1024-bit key) header.d=pavinjoseph.com header.i=@pavinjoseph.com header.b=V7xePBsa; arc=none smtp.client-ip=159.100.241.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pavinjoseph.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pavinjoseph.com
+	s=arc-20240116; t=1723014613; c=relaxed/simple;
+	bh=uP10GTJglQlvhNVyXNpACB8CNWxdLYPkr2TD5w4Ht80=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u/xzaMiBt0bfnYdE1Izcx5vp/VKV/HN0eE2B3pg0zQuhsrKumtsfJY5yvfUk2/k603dvIe7GQQcNWbCfZP/nZYQpbc7cJK/ayRwn3dngTY7ejWls9BhIcV7s76ijv515MTxfbFELGVxidgJt/R8r2alCUjMfllblGo8NL/A/KRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S4lf/8R4; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=pavinjoseph.com header.i=@pavinjoseph.com header.b="V7xePBsa"
-Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.80.155])
-	by relay5.mymailcheap.com (Postfix) with ESMTPS id AAF1420C63
-	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:38 +0000 (UTC)
-Received: from nf2.mymailcheap.com (nf2.mymailcheap.com [54.39.180.165])
-	by relay4.mymailcheap.com (Postfix) with ESMTPS id 535D5202E4
-	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:31 +0000 (UTC)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-	by nf2.mymailcheap.com (Postfix) with ESMTPSA id 67320400B0
-	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pavinjoseph.com;
-	s=default; t=1723009049;
-	bh=JxLD5Pj6TRm51mrCNciNUEu8Pd6b36XkTfO+Y2CUoRQ=;
-	h=Date:To:From:Subject:From;
-	b=V7xePBsaOu0YYlDv11/DAQvW+VTARkFGiMrlrbpkbNkDe4huMZVNJXNcv76A+8M2A
-	 xA0j/4qkfrcu2sm5o6H17SzlHnNAD3BaLQQ5Uquf2/JhHhq6fs9KKodsMIUGAgo6HO
-	 8Zvv1xCXOYfzEA9e3D4FMr6GrTTVvhzd3DdL9/FY=
-Received: from [10.66.66.8] (unknown [139.59.64.216])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail20.mymailcheap.com (Postfix) with ESMTPSA id B9FDA41059
-	for <linux-bcachefs@vger.kernel.org>; Wed,  7 Aug 2024 05:37:24 +0000 (UTC)
-Message-ID: <28759521-d0ef-4f56-ad3d-3f07ad670adf@pavinjoseph.com>
-Date: Wed, 7 Aug 2024 11:07:22 +0530
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S4lf/8R4"
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7104f93a20eso1150932b3a.1;
+        Wed, 07 Aug 2024 00:10:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723014611; x=1723619411; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4RWP4CLRPK9GI7azts0XFQC+DKEv/lhB1h+1p4SNw0M=;
+        b=S4lf/8R4LcyMwRUYM+NyKPJ8XipZR7+vdBwb7Dr++oZ9ygthA+tlWyEB/8J8kBGTol
+         A3VwxoOSYHJuy7HtQSDgPSGc51/OQNiWExlsL5fUd7KOydg14WGgiuH6obrOtt4mwT4h
+         C9TrvAXohzaO1f8LXyciUIy/EWwvcR49kxtRN3qrGDqeGCGJOtWN6S4gbXrx3AJ2KU5C
+         NVSU2gJpyGuM5oAiSvPOBayhO9YT9ZIHXC44chWI8YPxdG9x2//DwyTQr+nkQeLvhGia
+         mpkhmc7gigHBcSi3canuDgmvMAjXOCipXBxoUMXhKI1KFtk9VvKW+AOoMfmEw/AVDkj7
+         cPhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723014611; x=1723619411;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4RWP4CLRPK9GI7azts0XFQC+DKEv/lhB1h+1p4SNw0M=;
+        b=GXV+grJhs0DqtGl+lbcN9qBb6xec96fE/mpsYQ1QS5WqPX8Ejkz37OfT1ek+AG9SO8
+         A2RmVOoEHAGRFhaGvZVc/hnQicrJEUMDinaJnv3DKx1oH/UwODVPIGESGy0JSbA1TyFZ
+         FFq1u5zRBpZdf8Xy9LJuAwLv6sw3NzRxRAzCQnXzPpWO3bYAuTwDcY5JwxgP2VjB3bh3
+         OjYkrEcp67CxDN9nSY6sDfmSEN4PTwudlDqZklTLUO/olDnvT4p9Z/55/BjTw5O/IkBR
+         2judcjcamegHIcR7GvEobm0MrOuh8entqLAT/QZzOHbdLqk1yNM2ZQnyT6o30ss8xHJP
+         1pJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUyFazCi0L8Mv2G9W0PDsDmKexzRiBIPWYZPTvq60ViDGDp7d1qA1zFNKsVgxS0ij6fVU3Bm+SyVEWaP1WfnQMyxU+kK5jeHQOocmp1nqSEIAPttRatqKtX2FS9v8HsoEPRFRjDtfzEtxe53sZZj0+AAUP27CNyYos/GCcNrM057ldxliARWB8=
+X-Gm-Message-State: AOJu0YwBbWBrlFYfOAR88BVItSVFMwpRnqr1pi1HdRESVyZWnuuyK02R
+	cPjGaqw4pIAsKQ4DOrTVCs0wUQn3EJn9bEYItzSLeOuaso+edojI
+X-Google-Smtp-Source: AGHT+IH9pHfByg2pHXB3Rg7K3BmoD3blolfIFDELyDWPKa7h70VqBxYiV6mZqqsAtdKDLsfAMXyV3g==
+X-Received: by 2002:a05:6a21:329a:b0:1c4:8650:d6db with SMTP id adf61e73a8af0-1c6996240a2mr19272356637.40.1723014610949;
+        Wed, 07 Aug 2024 00:10:10 -0700 (PDT)
+Received: from xiaxiShen-ThinkPad.. ([50.175.126.146])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7106ec41394sm7868749b3a.47.2024.08.07.00.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Aug 2024 00:10:10 -0700 (PDT)
+From: Xiaxi Shen <shenxiaxi26@gmail.com>
+To: kent.overstreet@linux.dev,
+	corbet@lwn.net
+Cc: skhan@linuxfoundation.org,
+	javier.carrasco.cruz@gmail.com,
+	shenxiaxi26@gmail.com,
+	linux-bcachefs@vger.kernel.org (open list:BCACHEFS),
+	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] Fix a spelling error in a doc of bcachefs
+Date: Wed,  7 Aug 2024 00:10:05 -0700
+Message-Id: <20240807071005.16329-1-shenxiaxi26@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-bcachefs@vger.kernel.org
-From: Pavin Joseph <me@pavinjoseph.com>
-Subject: Status of rebalance and scrub support
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: nf2.mymailcheap.com
-X-Spamd-Result: default: False [-0.09 / 10.00];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_COUNT_ONE(0.00)[1];
-	ASN(0.00)[asn:16276, ipnet:51.83.0.0/16, country:FR];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-bcachefs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 67320400B0
+Content-Transfer-Encoding: 8bit
 
-Hello everyone,
+Signed-off-by: Xiaxi Shen <shenxiaxi26@gmail.com>
+---
+ Documentation/filesystems/bcachefs/CodingStyle.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Is there an ETA available for full rebalance and scrub support?
+diff --git a/Documentation/filesystems/bcachefs/CodingStyle.rst b/Documentation/filesystems/bcachefs/CodingStyle.rst
+index 0c45829a4899..01de555e21d8 100644
+--- a/Documentation/filesystems/bcachefs/CodingStyle.rst
++++ b/Documentation/filesystems/bcachefs/CodingStyle.rst
+@@ -175,7 +175,7 @@ errors in our thinking by running our code and seeing what happens. If your
+ time is being wasted because your tools are bad or too slow - don't accept it,
+ fix it.
+ 
+-Put effort into your documentation, commmit messages, and code comments - but
++Put effort into your documentation, commit messages, and code comments - but
+ don't go overboard. A good commit message is wonderful - but if the information
+ was important enough to go in a commit message, ask yourself if it would be
+ even better as a code comment.
+-- 
+2.34.1
 
-I recently migrated from btrfs to bcachefs and so far it has been great, 
-mostly due to the performance improvements on pinning metadata to faster 
-drives. But as I started off with 2+1+1 TB background target drives with 
-replicas=2 that had around 70% usage and then added 4+1 TB drives 
-recently, my disk usage are all messed up without a rebalance.
-
-I also perform weekly scrubs on my btrfs and zfs pools, so feeling a bit 
-naked here without it!
-
-Thank you for the awesome work on bcachefs!
-
-Kind regards,
-Pavin Joseph.
