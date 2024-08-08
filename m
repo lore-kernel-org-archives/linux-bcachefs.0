@@ -1,58 +1,57 @@
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2CD15ECD2
-	for <linux-bcachefs@vger.kernel.org>; Thu,  8 Aug 2024 19:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A541015EFD0
+	for <linux-bcachefs@vger.kernel.org>; Thu,  8 Aug 2024 19:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723145312; cv=none; b=nhaeaT14znGDWkeFHNZbPWVQYh+Gy+OrUqXoT2dv6Y52JdscDA7zw8wIeOoQys+tWqZpZbB8BNWz/Pu2PSgRLuul37VGBkmucBK04MF//Av4CDeNMwtSC1D6sPHF9AU8U+mNvx71xhrMgnozz+UU15iMPu5RMAJx6v58gTJEee8=
+	t=1723145313; cv=none; b=MtoowrlXEXdmJ/WFLPZDX+XXmKMTsW1SVg+3foVweyz1P2UEX3Ey7yDwSJzO0fgOBy6CiltaxDSlYq3disgHHLxbTdJbxMlk4Nb9s9uATdfE1pcAgCBvSzWm/ZmLfL5KWNjhmQM9QPmzQAzUFgkjIlBe0QRtDmElREzV0btiUOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723145312; c=relaxed/simple;
-	bh=fHAWL+liJK7RUemLt/Svh2h8UMEWyBWVNZVgU9u6a6A=;
+	s=arc-20240116; t=1723145313; c=relaxed/simple;
+	bh=4MNVpsyfCXtbAesIGplXT094r1e//DqP/WIiy3n6590=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TWFTbGooJtL7tCszxtOnlPbqWwwB1L5UJW7OiEoNgc0QnxNQz0aiCCBZmYGF9BDuivr0EfeItwMnPOTKc43/UeH2x+OD7pp0jOHA1lG74VPyoU5kGW9ielLR7gFJE9Yz/QacoTIGuOe7NJSq7zFXozI/iFSlQOClOFn65oNYAuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=YRiiPO2S; arc=none smtp.client-ip=209.85.219.41
+	 MIME-Version; b=dS2UrE3SyuXuHLNj7aDRTfFLaeMZgLzPttmxfML5NCCJQ+HH2nva8fGEtbD1ABWBY4QMzCIBLdw4CwVlNJWRviZfE7/chV90hSmvNHbFJCDefBbAbdei0CnlUIGT5zgKAClzIdc1DceTNVXHOxz5JuFZh8C0oewCnUgMV/W6/vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=2we1+z4p; arc=none smtp.client-ip=209.85.219.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="YRiiPO2S"
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6b78c980981so7487126d6.2
-        for <linux-bcachefs@vger.kernel.org>; Thu, 08 Aug 2024 12:28:29 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="2we1+z4p"
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-e0bf677e0feso1309862276.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 08 Aug 2024 12:28:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723145308; x=1723750108; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723145311; x=1723750111; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=t2FDeRCcp9Y/rKgVhAuLqn/dDFHjuK0P8k/Tvh5Gfr4=;
-        b=YRiiPO2S/LfKt7amV2xx1zCZyUicvZq+ASk1SKOp23bnFp2YIdDoocy7LR/wzlK6ed
-         u+MP6htIZPvjQ0mPiwSc/AzoMI3NhTU8HmsMXoUDRLl92ZcwQJFrTIhN5sKeXoW7hvZG
-         s7WhDW9ny4ZjRp9cFDCvQUwPtuXK5OGIADF6HbqoYYHgAwWKGqVI1CGOfMSavh+ZZu+S
-         fwxXpw59WqS/mtpq/UK8Aoyvc5T4h5gOcBEb2ggOlyYvp24DV7ZiC90O3cBGYIPlKWn9
-         hDkSIGUtG0hookXjRBKHmKT3H9Fef3c1dFVkbHSuE/MYK0Riiig9d8kIRYYKXssUggB9
-         JL6g==
+        bh=Vg7JhZ5Svel94ZByv/XfsZ7gyzFgAjs3SwDkqZ+V3Ck=;
+        b=2we1+z4pY6sX0WySI8wotX4SlU3xhM5evV/Oys700n8Hhtk0EbQtDjDwvwuTSpzEZi
+         VytvfXcBIDY0Br2ZOgzuwbIF3XuHmY8sP7N6gqEiegj+L/mIQzZx0cL7CXjVpy+5D9OS
+         6tp9m1KfJuqtIs3zhL1e41LmR6wkc1+g7PwuRRllKkYtD/hv22sHtADqTdkdXw7TVTnN
+         h8034jKOPyovn2tea2po7n7/zQ4y7T9aNqYcXuUlVuA2a4NnToQeAKo2XdM1v+X9hquE
+         eP7ib43ufLYoLUlFtHQYCoxfRgICRkvbUNZPfYNuXjdytZfSYLFscYk+9e0bMO+ucv+d
+         JQKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723145308; x=1723750108;
+        d=1e100.net; s=20230601; t=1723145311; x=1723750111;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t2FDeRCcp9Y/rKgVhAuLqn/dDFHjuK0P8k/Tvh5Gfr4=;
-        b=gO08UjxdY686ObMYK1xn9wr6LyK7LDxLNIlXe5tnfLGnGVXwPwU5GuMsxpOMCFiJd6
-         aOLCXv00rGdWetqbKtF2Uql9X2vmccKnc+HW/KphCvSWIC5AAarpKJMgxHH1KWrmx6Ym
-         AfZzgPGxYNSuacQjq2Fb2XESRHPkinPKU9Jycpy5XcECJe5B6FynZv6PUQIXuSdjSlbb
-         dQIo/OleHoWD/6VObllr7ColEa3NE2dPZ3LxwJ2SnV7lRR635CKhSUvQC71ccUI4lIFx
-         llDf3xAtN7Gm1VFmWov3T3/65F+jV6q2I86Wi8vQzo2i7rlZgH18bPY/zxmwFyJ+Xyc3
-         eBDg==
-X-Forwarded-Encrypted: i=1; AJvYcCXVyRR7GX1Qk7hYxKAfAiAS0L3owQNXIbQCBIRTjm23/86sfIi9Nf8pWhrpyLuRbe/o6Ff3Kvvy6pUYE9p4RCZ8DfkcdwYH+LV9VsR3M2c=
-X-Gm-Message-State: AOJu0YwlAMR4Y9/9sFzoKZwF0CStVbKT6LZ4RDCleOnjZr0xswFltPIh
-	NQ30+A6T1+DSPahMX4EO7fqyNcRox/xqiWkVX+RM9RNV1h4z69msV2tAT0wyAlGfNFzJIDf7bd6
-	d
-X-Google-Smtp-Source: AGHT+IEt65g5+uygOwKtL2lYj+QBCC0ALQODQD+EfR5n9rijzdpvGKarJDG4JHdn+2nYq035wMKfew==
-X-Received: by 2002:a05:6214:3203:b0:6b7:a182:4130 with SMTP id 6a1803df08f44-6bd6bda50d4mr42997116d6.49.1723145308451;
-        Thu, 08 Aug 2024 12:28:28 -0700 (PDT)
+        bh=Vg7JhZ5Svel94ZByv/XfsZ7gyzFgAjs3SwDkqZ+V3Ck=;
+        b=KK37ZIYkhyhtl1bdOiKHPosqOiLiUM9XqhZ0+jojm9xmGGQYsIgXBKhzL2sXYMU0kr
+         QkSn9nUP4uq5qkYzD0MOiPztUx7Py4UjHlfoOm8q0MMfZOzKGZaq+Ys7nkdhlk20fI4J
+         a/aN76l5s4+SZ6e6bZwD/SiPTogPMgemrkuX6+jyjta8XSiMnWuT8satlrosNQzs7kFL
+         4V6nG+x8uRtSjBO7HuQCv2Rej3xERq1SHFaHf0j2NlyZ9Tta3YWxQp418S4xzdTPRz6E
+         9nrRLM8fwY6Gn6N4+blIEtEK0BPWJgLVfcSuyc6UN4OPUrX7VsuacOe2O5ufx2Vc7wLW
+         OZAw==
+X-Forwarded-Encrypted: i=1; AJvYcCX5tUqwQlvMA7NCXVWDfk0ZaQ2HEyVAyXoZ6s9XrHRTJ1zlT9krJY5M2kFIbI/05F7eE8QndkyZN3Y/gpwB5JHgGUvKEZmzLL8Ub3fwhMI=
+X-Gm-Message-State: AOJu0YyAf1TsEsedC3ww2dGFQdsRZ2Xx88krfX4PRKB3Ms9dTU7AYBCw
+	15kFDnEdSl08XxIbo8x1gkhMYlqiPHwYNgm/+nw4d6u4t/cTSp5VNOeC5qUMbnQ=
+X-Google-Smtp-Source: AGHT+IFFeTx74Ds9CwAg9CiYnTBosAK5oHp1F8D1LB3amJF/JdGVkj9ODxJsKT8POKKxshfGvAs+zQ==
+X-Received: by 2002:a05:6902:10c1:b0:e0b:b2a7:d145 with SMTP id 3f1490d57ef6-e0e9dbcc39amr2607498276.55.1723145310633;
+        Thu, 08 Aug 2024 12:28:30 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bb9c83c52esm69183136d6.88.2024.08.08.12.28.28
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a3784ca5fasm190091385a.0.2024.08.08.12.28.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Aug 2024 12:28:28 -0700 (PDT)
+        Thu, 08 Aug 2024 12:28:30 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
@@ -62,9 +61,9 @@ To: kernel-team@fb.com,
 	linux-xfs@vger.kernel.org,
 	gfs2@lists.linux.dev,
 	linux-bcachefs@vger.kernel.org
-Subject: [PATCH v2 09/16] fanotify: allow to set errno in FAN_DENY permission response
-Date: Thu,  8 Aug 2024 15:27:11 -0400
-Message-ID: <a28e072cd17de44133b5bce5b8ee6db880523ebb.1723144881.git.josef@toxicpanda.com>
+Subject: [PATCH v2 11/16] fanotify: disable readahead if we have pre-content watches
+Date: Thu,  8 Aug 2024 15:27:13 -0400
+Message-ID: <fead9acdf32a49c6174dc01f30cf02df642992a5.1723144881.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1723144881.git.josef@toxicpanda.com>
 References: <cover.1723144881.git.josef@toxicpanda.com>
@@ -76,202 +75,87 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Amir Goldstein <amir73il@gmail.com>
+With page faults we can trigger readahead on the file, and then
+subsequent faults can find these pages and insert them into the file
+without emitting an fanotify event.  To avoid this case, disable
+readahead if we have pre-content watches on the file.  This way we are
+guaranteed to get an event for every range we attempt to access on a
+pre-content watched file.
 
-With FAN_DENY response, user trying to perform the filesystem operation
-gets an error with errno set to EPERM.
-
-It is useful for hierarchical storage management (HSM) service to be able
-to deny access for reasons more diverse than EPERM, for example EAGAIN,
-if HSM could retry the operation later.
-
-Allow fanotify groups with priority FAN_CLASSS_PRE_CONTENT to responsd
-to permission events with the response value FAN_DENY_ERRNO(errno),
-instead of FAN_DENY to return a custom error.
-
-Limit custom error values to errors expected on read(2)/write(2) and
-open(2) of regular files. This list could be extended in the future.
-Userspace can test for legitimate values of FAN_DENY_ERRNO(errno) by
-writing a response to an fanotify group fd with a value of FAN_NOFD in
-the fd field of the response.
-
-The change in fanotify_response is backward compatible, because errno is
-written in the high 8 bits of the 32bit response field and old kernels
-reject respose value with high bits set.
-
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/notify/fanotify/fanotify.c      | 18 ++++++++++-----
- fs/notify/fanotify/fanotify.h      | 10 +++++++++
- fs/notify/fanotify/fanotify_user.c | 36 +++++++++++++++++++++++++-----
- include/linux/fanotify.h           |  5 ++++-
- include/uapi/linux/fanotify.h      |  7 ++++++
- 5 files changed, 65 insertions(+), 11 deletions(-)
+ mm/filemap.c   | 12 ++++++++++++
+ mm/readahead.c | 13 +++++++++++++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-index 4e8dce39fa8f..1cbf41b34080 100644
---- a/fs/notify/fanotify/fanotify.c
-+++ b/fs/notify/fanotify/fanotify.c
-@@ -224,7 +224,8 @@ static int fanotify_get_response(struct fsnotify_group *group,
- 				 struct fanotify_perm_event *event,
- 				 struct fsnotify_iter_info *iter_info)
+diff --git a/mm/filemap.c b/mm/filemap.c
+index ca8c8d889eef..8b1684b62177 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3122,6 +3122,14 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
+ 	unsigned long vm_flags = vmf->vma->vm_flags;
+ 	unsigned int mmap_miss;
+ 
++	/*
++	 * If we have pre-content watches we need to disable readahead to make
++	 * sure that we don't populate our mapping with 0 filled pages that we
++	 * never emitted an event for.
++	 */
++	if (fsnotify_file_has_pre_content_watches(file))
++		return fpin;
++
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	/* Use the readahead code, even if readahead is disabled */
+ 	if ((vm_flags & VM_HUGEPAGE) && HPAGE_PMD_ORDER <= MAX_PAGECACHE_ORDER) {
+@@ -3190,6 +3198,10 @@ static struct file *do_async_mmap_readahead(struct vm_fault *vmf,
+ 	struct file *fpin = NULL;
+ 	unsigned int mmap_miss;
+ 
++	/* See comment in do_sync_mmap_readahead. */
++	if (fsnotify_file_has_pre_content_watches(file))
++		return fpin;
++
+ 	/* If we don't want any read-ahead, don't bother */
+ 	if (vmf->vma->vm_flags & VM_RAND_READ || !ra->ra_pages)
+ 		return fpin;
+diff --git a/mm/readahead.c b/mm/readahead.c
+index 817b2a352d78..bc068d9218e3 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -128,6 +128,7 @@
+ #include <linux/blk-cgroup.h>
+ #include <linux/fadvise.h>
+ #include <linux/sched/mm.h>
++#include <linux/fsnotify.h>
+ 
+ #include "internal.h"
+ 
+@@ -674,6 +675,14 @@ void page_cache_sync_ra(struct readahead_control *ractl,
  {
--	int ret;
-+	int ret, errno;
-+	u32 decision;
+ 	bool do_forced_ra = ractl->file && (ractl->file->f_mode & FMODE_RANDOM);
  
- 	pr_debug("%s: group=%p event=%p\n", __func__, group, event);
- 
-@@ -257,20 +258,27 @@ static int fanotify_get_response(struct fsnotify_group *group,
- 		goto out;
- 	}
- 
-+	decision = fanotify_get_response_decision(event->response);
- 	/* userspace responded, convert to something usable */
--	switch (event->response & FANOTIFY_RESPONSE_ACCESS) {
-+	switch (decision & FANOTIFY_RESPONSE_ACCESS) {
- 	case FAN_ALLOW:
- 		ret = 0;
- 		break;
- 	case FAN_DENY:
-+		/* Check custom errno from pre-content events */
-+		errno = fanotify_get_response_errno(event->response);
-+		if (errno) {
-+			ret = -errno;
-+			break;
-+		}
-+		fallthrough;
- 	default:
- 		ret = -EPERM;
- 	}
- 
- 	/* Check if the response should be audited */
--	if (event->response & FAN_AUDIT)
--		audit_fanotify(event->response & ~FAN_AUDIT,
--			       &event->audit_rule);
-+	if (decision & FAN_AUDIT)
-+		audit_fanotify(decision & ~FAN_AUDIT, &event->audit_rule);
- 
- 	pr_debug("%s: group=%p event=%p about to return ret=%d\n", __func__,
- 		 group, event, ret);
-diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
-index 7f06355afa1f..d0722ef13138 100644
---- a/fs/notify/fanotify/fanotify.h
-+++ b/fs/notify/fanotify/fanotify.h
-@@ -528,3 +528,13 @@ static inline unsigned int fanotify_mark_user_flags(struct fsnotify_mark *mark)
- 
- 	return mflags;
- }
++	/*
++	 * If we have pre-content watches we need to disable readahead to make
++	 * sure that we don't find 0 filled pages in cache that we never emitted
++	 * events for.
++	 */
++	if (ractl->file && fsnotify_file_has_pre_content_watches(ractl->file))
++		return;
 +
-+static inline u32 fanotify_get_response_decision(u32 res)
-+{
-+	return res & (FANOTIFY_RESPONSE_ACCESS | FANOTIFY_RESPONSE_FLAGS);
-+}
-+
-+static inline int fanotify_get_response_errno(int res)
-+{
-+	return res >> FAN_ERRNO_SHIFT;
-+}
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index ed56fe6f5ec7..0a37f1c761aa 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -337,11 +337,13 @@ static int process_access_response(struct fsnotify_group *group,
- 	struct fanotify_perm_event *event;
- 	int fd = response_struct->fd;
- 	u32 response = response_struct->response;
-+	u32 decision = fanotify_get_response_decision(response);
-+	int errno = fanotify_get_response_errno(response);
- 	int ret = info_len;
- 	struct fanotify_response_info_audit_rule friar;
- 
--	pr_debug("%s: group=%p fd=%d response=%u buf=%p size=%zu\n", __func__,
--		 group, fd, response, info, info_len);
-+	pr_debug("%s: group=%p fd=%d response=%x errno=%d buf=%p size=%zu\n",
-+		 __func__, group, fd, response, errno, info, info_len);
  	/*
- 	 * make sure the response is valid, if invalid we do nothing and either
- 	 * userspace can send a valid response or we will clean it up after the
-@@ -350,18 +352,42 @@ static int process_access_response(struct fsnotify_group *group,
- 	if (response & ~FANOTIFY_RESPONSE_VALID_MASK)
- 		return -EINVAL;
+ 	 * Even if readahead is disabled, issue this request as readahead
+ 	 * as we'll need it to satisfy the requested range. The forced
+@@ -704,6 +713,10 @@ void page_cache_async_ra(struct readahead_control *ractl,
+ 	if (!ractl->ra->ra_pages)
+ 		return;
  
--	switch (response & FANOTIFY_RESPONSE_ACCESS) {
-+	switch (decision & FANOTIFY_RESPONSE_ACCESS) {
- 	case FAN_ALLOW:
-+		if (errno)
-+			return -EINVAL;
-+		break;
- 	case FAN_DENY:
-+		/* Custom errno is supported only for pre-content groups */
-+		if (errno && group->priority != FSNOTIFY_PRIO_PRE_CONTENT)
-+			return -EINVAL;
++	/* See the comment in page_cache_sync_ra. */
++	if (ractl->file && fsnotify_file_has_pre_content_watches(ractl->file))
++		return;
 +
-+		/*
-+		 * Limit errno to values expected on open(2)/read(2)/write(2)
-+		 * of regular files.
-+		 */
-+		switch (errno) {
-+		case 0:
-+		case EIO:
-+		case EPERM:
-+		case EBUSY:
-+		case ETXTBSY:
-+		case EAGAIN:
-+		case ENOSPC:
-+		case EDQUOT:
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
--	if ((response & FAN_AUDIT) && !FAN_GROUP_FLAG(group, FAN_ENABLE_AUDIT))
-+	if ((decision & FAN_AUDIT) && !FAN_GROUP_FLAG(group, FAN_ENABLE_AUDIT))
- 		return -EINVAL;
- 
--	if (response & FAN_INFO) {
-+	if (decision & FAN_INFO) {
- 		ret = process_access_response_info(info, info_len, &friar);
- 		if (ret < 0)
- 			return ret;
-diff --git a/include/linux/fanotify.h b/include/linux/fanotify.h
-index ae6cb2688d52..547514542669 100644
---- a/include/linux/fanotify.h
-+++ b/include/linux/fanotify.h
-@@ -132,7 +132,10 @@
- /* These masks check for invalid bits in permission responses. */
- #define FANOTIFY_RESPONSE_ACCESS (FAN_ALLOW | FAN_DENY)
- #define FANOTIFY_RESPONSE_FLAGS (FAN_AUDIT | FAN_INFO)
--#define FANOTIFY_RESPONSE_VALID_MASK (FANOTIFY_RESPONSE_ACCESS | FANOTIFY_RESPONSE_FLAGS)
-+#define FANOTIFY_RESPONSE_ERRNO	(FAN_ERRNO_MASK << FAN_ERRNO_SHIFT)
-+#define FANOTIFY_RESPONSE_VALID_MASK \
-+	(FANOTIFY_RESPONSE_ACCESS | FANOTIFY_RESPONSE_FLAGS | \
-+	 FANOTIFY_RESPONSE_ERRNO)
- 
- /* Do not use these old uapi constants internally */
- #undef FAN_ALL_CLASS_BITS
-diff --git a/include/uapi/linux/fanotify.h b/include/uapi/linux/fanotify.h
-index cc28dce5f744..7b746c5fcbd8 100644
---- a/include/uapi/linux/fanotify.h
-+++ b/include/uapi/linux/fanotify.h
-@@ -233,6 +233,13 @@ struct fanotify_response_info_audit_rule {
- /* Legit userspace responses to a _PERM event */
- #define FAN_ALLOW	0x01
- #define FAN_DENY	0x02
-+/* errno other than EPERM can specified in upper byte of deny response */
-+#define FAN_ERRNO_BITS	8
-+#define FAN_ERRNO_SHIFT (32 - FAN_ERRNO_BITS)
-+#define FAN_ERRNO_MASK	((1 << FAN_ERRNO_BITS) - 1)
-+#define FAN_DENY_ERRNO(err) \
-+	(FAN_DENY | ((((__u32)(err)) & FAN_ERRNO_MASK) << FAN_ERRNO_SHIFT))
-+
- #define FAN_AUDIT	0x10	/* Bitmask to create audit record for result */
- #define FAN_INFO	0x20	/* Bitmask to indicate additional information */
- 
+ 	/*
+ 	 * Same bit is used for PG_readahead and PG_reclaim.
+ 	 */
 -- 
 2.43.0
 
