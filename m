@@ -1,57 +1,57 @@
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CB3616A945
-	for <linux-bcachefs@vger.kernel.org>; Fri,  9 Aug 2024 18:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48BCB16A949
+	for <linux-bcachefs@vger.kernel.org>; Fri,  9 Aug 2024 18:45:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723229112; cv=none; b=ICoJd7P6t7+HMhrcxf4wvXzCel586jyQBKACGp8mCDAXSspWN3fZGGTaFNsUoHLo0R3JFPi7mlzOdxdTfBgWFIhJY1vdCFvL14kTz4vyabmX7rU+GXh8UF4NyH4Hq/66IemljATBLiTiN7K0CjmftxJl6ZUTHUkmnJ+TxHYsMks=
+	t=1723229113; cv=none; b=L2W+hc2qU++yUR2QCyRcI00fp0MRinsDrbns5wh5Sx6GG4pxWzglTb90CZLdHKliuJqFk4r8EdE5+kV9q83ez5i3Yyc7DVcdIhlleiTgzuoBn0iPWSrASPQDv5I3d/0meZuAR1LEFXb55Y2P+cPxvJ2GwZ/c2u1c29KwKuA5Qz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723229112; c=relaxed/simple;
-	bh=/ZdKHR4pHjntJYSoUdVRDKcFzv/LrElzLuY8Xsnn2js=;
+	s=arc-20240116; t=1723229113; c=relaxed/simple;
+	bh=NSHxxZRLFbsIgAXbtW5uSuQCtRZde7l6XJ/+Bc0hmhU=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LRk2+nxG/oirBe5wxrw9D8Ytyd5BaOWgE/MKSEFXGyxd0Ofp9s041+Bkik+HtZ+LYGWWe0N5+9v8fTwDIR0cuk0Lvl2xswUNpV5v92GbSdlUf+TVPm+Ypg8QJKA7GsjM2UVgLPti+6H3rOG4GtRPNnu5l+brXP/oVlY0a5iHwjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=k182i0B1; arc=none smtp.client-ip=209.85.222.176
+	 MIME-Version; b=NT1wDEBhyCgv/zt+CxflmtVSlOTTvvYovdwASZ0AK0UGgDdSyTTswcJdaceV0A0eNhc4p1TByc/UTIqTh5b8o9RMKtmub9JQXGSrKP/98UIq/vNRhiFoJPxYcirIROpT8Q7D6E0UdO2o/2qq91W0reF8WoydFhOHNCjS2ZOT6hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=TVfv+QB2; arc=none smtp.client-ip=209.85.222.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="k182i0B1"
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7a1da7cafccso119331385a.3
-        for <linux-bcachefs@vger.kernel.org>; Fri, 09 Aug 2024 11:45:10 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="TVfv+QB2"
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7a1d42da3e9so137158185a.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 09 Aug 2024 11:45:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723229110; x=1723833910; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723229111; x=1723833911; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AN6bShe37d+I+GAe4SQfQZex9z+pcNLPbf8dU2iG5Y0=;
-        b=k182i0B1lft3a2VbsmTWma9o5Iy/fcPHWhwmw6eZL0+I0AdZcvRfBOSW7Aofc4ba57
-         TvhC83SsWoa5JGEa1CCe3pkGvY3Dm22ZKGiM9W23ECcAgdRibn5ACq3kgK/M6PqHcb1Z
-         qBrpaSiGeK+glwZhLjJly5dj41GawvA5crtp/ck6LVV1IP9E169BJIuWIqZTaSs/q+c3
-         FM9UpF5O/nJQVcftKuFPOVhwXeCYdiUQ4rNvo87gqIZyWvkMjzQ9pVMV5LAvvj3liymK
-         RiSAdSYmetyZhHDspKFOaSolG6aV3qzppyqAoUun79jmRpMAV+xGubJxILFlM9TWBEAc
-         1ujg==
+        bh=nOXg5Kh3dRzVUCha6XNrLJPIFEv9dDgQMOq3uyVXRLk=;
+        b=TVfv+QB2INzZZ+2lnzFgdMg7rmfF5rn3WEYUOAPPm1+tfmjCkXLhIlRUtopKWgE9xt
+         DnmrshiCJKbeH+Z4vawUKs5Rku9xTKqRnEsBVbrMiX9Ymmlj/Ix6QDVeC+v4je+Wqjs2
+         IEqySJZolqmAPurVlvI30KuHvrJAXca4i8xwofQcY7XWUv16DRO2e4szO9m1WNBvrpwy
+         NTCvdblih+whXp/s3CJqqzhWvUNULXeTDkq4HxhQDn4t8f5uqtfHPF/Bnq0XwNvo1Nr6
+         KwFjs1IuFta0ctWw9Q22wVB4eB9gLMN7ZISnQBD94Q8nJXbEpEc2Fcg0IDRWFq4rF/PH
+         sVKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723229110; x=1723833910;
+        d=1e100.net; s=20230601; t=1723229111; x=1723833911;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AN6bShe37d+I+GAe4SQfQZex9z+pcNLPbf8dU2iG5Y0=;
-        b=BBZanPee5rIqBYIfHS5udJaLxQItBdhvNjFGOJvIWhKV6GPcc1nD8VguGELYfLyusI
-         x/KuabDC3d/mZPf4lcy4ER85IvQh8JJiJ7ATY8gWsyPVcuDy86eBWW+mqaHQiEdPmQQJ
-         Ofh/zsFtSmFXIb1H1qeHelpXGkAPv9W5nySy/OxeXnPRBOefa3JM6p+w/mA1juDaRrqr
-         AK84e3MfFpHbN4NnENsbbS0pJG7ZY0L+OoOtmRAdjriW3Ajv47kxU4G24hPtIXBpE8Ab
-         xSJKOqnJubxsGTe0eLczXjAH1r3EnLnonejQ5kQvOejl9X7GjWat3Y2YBQGgu27eaivi
-         P9eg==
-X-Forwarded-Encrypted: i=1; AJvYcCULxW1fz/W0ny7SZdwNf5f7rkfHGmNDiUVv3mtnNaL/kBqJyvBeJVxhdNLHfW0CK3VUqGOPcGvOSsVMrJB90K9jIQx2w77Pq9I6RfR3gf8=
-X-Gm-Message-State: AOJu0YxFN0Nvnlotl1ofwvBQQfSoEJokY4GdzkL9CNrUCc6Ms0YG1b/G
-	10lZrhvZc0A3IpRCXffFO+e5IF/OwZbY1JpbxseUyPE+2ufpV7zJs3zdNRdmzKA=
-X-Google-Smtp-Source: AGHT+IGkk+5fyo6NCGpzPleO9dzoJzviklkx5ZKaFGvNslWQvN9ZFJWRDyezozrA8VyzG3HLheVY+A==
-X-Received: by 2002:a05:620a:29d0:b0:79f:dc6:e611 with SMTP id af79cd13be357-7a4c182c4bdmr273891485a.53.1723229110136;
-        Fri, 09 Aug 2024 11:45:10 -0700 (PDT)
+        bh=nOXg5Kh3dRzVUCha6XNrLJPIFEv9dDgQMOq3uyVXRLk=;
+        b=CuLuwqsQzlXSR/faPYozE94VfqpnLCUYWlK956rISmHCE5v9sKVLOxowMnW4z0MaVV
+         jpJCWw5yA42lDtWofQErBbyKFcQ6WJncsnSrMFqstJsW3XprBocj67nIdXMmpAkoapjw
+         5p9u+ktxri1bXeaBNJKLOgZumnEflpwNAlDDg7+xDxUn8XO9kPDs0E1AQPH7xjIHpu7m
+         moszMor3OMGvJ4NB9ZyFp+/nzxCyGX6e4uJbRUKU7lS5bL99F6HLX+XbCDSuL2uaQ7Wm
+         CB4/5/kaGZm+Sq7C3lQruRUeIpuDoKJ9EsiHqZGq8WF/iaHDglysyJQ0t6W1f53X6TTL
+         3uTg==
+X-Forwarded-Encrypted: i=1; AJvYcCX1M6pUOwvA3Fi3XC+IL/Mn7b+FS/51lqVo3bPNtEo2UIDUwrk81Zp3NHO6FCJhaN8dKdJZXp77dqdoTFycXA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyM1kSKVDyTLHGRJp6f7o41ej8VyV+/CxJoSwls4vgPDPLj4+oR
+	dBkJCjsu4/OF8YNaoHwZyz49zNCmu7q9c05L4QxSFCzusiWbM2yUfHXlUjMzgdQ=
+X-Google-Smtp-Source: AGHT+IFUlaCnTLIlVacmXjgmOXF1HYhqS4K6PRCpr55qRtWTp+PAc8BlcRL5nok82sjjl/gCBuRfmw==
+X-Received: by 2002:a05:620a:bcb:b0:79f:b21:cfb2 with SMTP id af79cd13be357-7a4c17edf2dmr278139085a.40.1723229111208;
+        Fri, 09 Aug 2024 11:45:11 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a4c7d8b0fasm4267685a.64.2024.08.09.11.45.09
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a4c7ded208sm3899685a.89.2024.08.09.11.45.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Aug 2024 11:45:09 -0700 (PDT)
+        Fri, 09 Aug 2024 11:45:10 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
@@ -61,9 +61,9 @@ To: kernel-team@fb.com,
 	linux-xfs@vger.kernel.org,
 	gfs2@lists.linux.dev,
 	linux-bcachefs@vger.kernel.org
-Subject: [PATCH v3 14/16] bcachefs: add pre-content fsnotify hook to fault
-Date: Fri,  9 Aug 2024 14:44:22 -0400
-Message-ID: <b3fc6d63e23626033ff2764a82d3e20a059ac8a4.1723228772.git.josef@toxicpanda.com>
+Subject: [PATCH v3 15/16] gfs2: add pre-content fsnotify hook to fault
+Date: Fri,  9 Aug 2024 14:44:23 -0400
+Message-ID: <71aa4357e168f298d18910495da7467eec5fb79c.1723228772.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1723228772.git.josef@toxicpanda.com>
 References: <cover.1723228772.git.josef@toxicpanda.com>
@@ -75,31 +75,30 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-bcachefs has its own locking around filemap_fault, so we have to make
-sure we do the fsnotify hook before the locking.  Add the check to emit
-the event before the locking and return VM_FAULT_RETRY to retrigger the
-fault once the event has been emitted.
+gfs2 takes the glock before calling into filemap fault, so add the
+fsnotify hook for ->fault before we take the glock in order to avoid any
+possible deadlock with the HSM.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/bcachefs/fs-io-pagecache.c | 4 ++++
+ fs/gfs2/file.c | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/fs/bcachefs/fs-io-pagecache.c b/fs/bcachefs/fs-io-pagecache.c
-index a9cc5cad9cc9..1fa1f1ac48c8 100644
---- a/fs/bcachefs/fs-io-pagecache.c
-+++ b/fs/bcachefs/fs-io-pagecache.c
-@@ -570,6 +570,10 @@ vm_fault_t bch2_page_fault(struct vm_fault *vmf)
- 	if (fdm == mapping)
- 		return VM_FAULT_SIGBUS;
+diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
+index 08982937b5df..d4af70d765e0 100644
+--- a/fs/gfs2/file.c
++++ b/fs/gfs2/file.c
+@@ -556,6 +556,10 @@ static vm_fault_t gfs2_fault(struct vm_fault *vmf)
+ 	vm_fault_t ret;
+ 	int err;
  
 +	ret = filemap_maybe_emit_fsnotify_event(vmf);
 +	if (unlikely(ret))
 +		return ret;
 +
- 	/* Lock ordering: */
- 	if (fdm > mapping) {
- 		struct bch_inode_info *fdm_host = to_bch_ei(fdm->host);
+ 	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
+ 	err = gfs2_glock_nq(&gh);
+ 	if (err) {
 -- 
 2.43.0
 
