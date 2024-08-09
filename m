@@ -1,59 +1,124 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4123614D6EB;
-	Fri,  9 Aug 2024 12:13:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E4B194C65;
+	Fri,  9 Aug 2024 13:11:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723205629; cv=none; b=WARpzpc9ylK/12qDkxn6Az3SRp2qF2a6kwvRgFGuD4Kazk1kb6OOU5UaCzmOh2xyLjwQoHH9FC+Om39iyOGsgEl/XA3Dl9khIRv3x2OgGoFurtIBo4R/UXPUQkMDqZWwcyhjvYXY3Ul0+9Ec5l9zygKAJCZjH4ZU0Z5QtX04xIE=
+	t=1723209108; cv=none; b=YZwUkafFDzXZk/7s7XQAbeTIDpZnQyZMsJvW5x8SPqVU1DYFLn4HRcVqmm4aRxiFy4QwBEpZYGggAmIakBByi0tvyu3icypA9K7m6GpH4d8Li1aq4zr6+tUqvZlZUUQYIRtjE4pOys2+dHrpkNp/vRX8UeGXoH5LBY3q2AdJhJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723205629; c=relaxed/simple;
-	bh=mecnKH6bxsPGPVSZQNsg9R4g6jkMdRkKKZhsPTFDgkU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X1cMKp24LMTfCDiw9LamP6XkykmcoTTrGZVk20bQJ1V+ctxPUpUxRUvGS5CyAbBQ8UnD0HD51VuUqQDBrw3f3f70HTq+ULLRR2/973A0390upSWAZrM3LNyWdUGu7+P5yUBdvOH2M4TxMUtLhxxCgTBmFQQDYV9RsWs1QT1/FPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OATaGJNK; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1723209108; c=relaxed/simple;
+	bh=jOXOaRYT4L48wJhp4miCKXU2dG1qcgRd2+ZqF+ia1M4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cp37lg15M5nhoV6sOetonmG8TFHiwrmEuR6KCnKCwCzHDNIvslB+HUsLdk6E135TcK8a+BG+m0nJYHxmOm5irBujEhz2d+GfK+8qcBsA1YU7qdBqVhso56qU6VByGbPbjQKwidrcDMs6QZi2BfiiuJKDZD81x/9zx/yC8P+g7CU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ICb702YT; arc=none smtp.client-ip=209.85.167.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OATaGJNK"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2472C32782;
-	Fri,  9 Aug 2024 12:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723205628;
-	bh=mecnKH6bxsPGPVSZQNsg9R4g6jkMdRkKKZhsPTFDgkU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OATaGJNKRG9fpMKPHNjzyYutGl/gX62jnVMSZThlvhFxjMYDtPPAfbtBC/N0Xp9yT
-	 Rh6L7rmQ40NsbVn7tHsFc9ar/4mJ2oEoVKnZgdZ4gtLFek0Ss4geaAr5O+vpDx3Mie
-	 K6ulhM2I/ZZs6JQVg9xmYs5I+P4W99/iuBB9LpmFe7YmUi26ULI/JZ23Wc2jPBaHpw
-	 Cl5+gOmGDCk8S92knckiPm4xUF3/0LA0itg56z/mS2qrKJV+ZhkzVr+s+sQY6J1ntH
-	 oZrDvoT2fyl34gtY5OGlePW2qcGcBKklB8/z2n+DRV2+9qy5Ip1hwUw7baG21jL5iS
-	 7subFSEWeZhww==
-Date: Fri, 9 Aug 2024 14:13:44 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
-	amir73il@gmail.com, linux-xfs@vger.kernel.org, gfs2@lists.linux.dev, 
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2 12/16] mm: don't allow huge faults for files with pre
- content watches
-Message-ID: <20240809-begnadet-pfosten-55b337ce05fb@brauner>
-References: <cover.1723144881.git.josef@toxicpanda.com>
- <8b4c1abeff52322da354a4df2881ec13b7493fdd.1723144881.git.josef@toxicpanda.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ICb702YT"
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3daf0e73a5bso1577415b6e.0;
+        Fri, 09 Aug 2024 06:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723209106; x=1723813906; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hLy+w1i8+q3J1zYjzqllPpeRDTQRavcNaGacNPXrk+g=;
+        b=ICb702YTG5tmKI1SZimZriqs6eEtC2lJcfGhjB+wxDzKcIGLFjgBTAHHm3pz1lkEPu
+         9QVV2Cj3qFIUW+MlS5WOCwlFAFACNvRBHOJl2bdgXjrVLnlZ7Re8UfT0ptAgOKmWR9vX
+         WpX7Yxpd604BAOclncV34nL3ngDA6N7w1eU97ilsVIjZ+MFz72i1hZKcWom0wGxPf/fh
+         uqkK/eDMPhLXwQS7RTyVRjQbUKOVQceKN9puzT0KEidlI6QDjMJ+dNrn7RgO/4hfyYWZ
+         If+vD+vij+85lzWM26sI20BEaycNLcYyn405nHUxidGqwgx+3uTBj0Czon7OcQaOw6Cg
+         Z+Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723209106; x=1723813906;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hLy+w1i8+q3J1zYjzqllPpeRDTQRavcNaGacNPXrk+g=;
+        b=T9O0+QsvHVFD9JKySkDn+5TbB3xB51x6a4DHN7F2zcHLph+CMp+Ol6NZkN1cKhahRZ
+         ygzIAoeZOiJ8L+Zq8wrk1jFJmvHLN+v8C7ysoo1aPtgekgtwclI8QA1Y3Bpc7H6KHsig
+         MDzUitlhJw2EgPpRjExj25wFq/iHvIN9e683OMQ5pUmdcaGGOhZF3PHR5PqplkuvrLUz
+         CAntiNEGmnz4KphyAFJqaXN/3ibmYSMyr98HQbMYHzh5xAfyuQZphvPE3PLHEjwlAHgg
+         yQvc9/0IdJMtPbVrcYdNtFLGdFiAWkRwMyRVC07aoSdq1AhrnNNZmyKA1z7yVqi3Tdje
+         Qyog==
+X-Forwarded-Encrypted: i=1; AJvYcCVQMcGxLCy3cgPBijkSrwkrOon+kR6tOjW9GP1OsS7Atwg95TrhNXuSR+4cgrmOBJNFnx6WDm8Bjiw/mrmSq4tyZpuEVfqLnP74a/qxiaENmFdqGoc2qIRCJdvjYUq7YIGvwWkXQBq1d7s4cq00F3bJtmx7nXekVp0PRwfzyV759DyWKdCzWhN8
+X-Gm-Message-State: AOJu0Yx658do7FpskGTjMRVli9Dj/OdzEf2DNA82IIQTDm60GmfstfLV
+	5VM/YOT+HaNen24fzfHkbeT1dCgmna4iJR4AWZp0O3dSAsrUAeaxi6U0XEeIN+wFHK7vqLeviEG
+	ug9JYNU7gVyh/mJ23LMUDKpeK+xk=
+X-Google-Smtp-Source: AGHT+IFh+5SDIMKVPJMEfKkArRSdLe+gdR/fEMyRksrtueer4tYEJVyB95v8DzaJtFGvzdhBu6HNqGhWwHIjD6xVK2o=
+X-Received: by 2002:a54:4e93:0:b0:3db:50d9:c6ec with SMTP id
+ 5614622812f47-3dc416f10fbmr1292288b6e.49.1723209105655; Fri, 09 Aug 2024
+ 06:11:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8b4c1abeff52322da354a4df2881ec13b7493fdd.1723144881.git.josef@toxicpanda.com>
+References: <cover.1723144881.git.josef@toxicpanda.com> <bce66af61dd98d4f81032b97c73dce09658ae02d.1723144881.git.josef@toxicpanda.com>
+In-Reply-To: <bce66af61dd98d4f81032b97c73dce09658ae02d.1723144881.git.josef@toxicpanda.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 9 Aug 2024 15:11:34 +0200
+Message-ID: <CAOQ4uxiWJ60Srtep4FiDP_hUd8WU5Mn1kq-dxRz4BpyMc40J2g@mail.gmail.com>
+Subject: Re: [PATCH v2 14/16] bcachefs: add pre-content fsnotify hook to fault
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
+	brauner@kernel.org, linux-xfs@vger.kernel.org, gfs2@lists.linux.dev, 
+	linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 08, 2024 at 03:27:14PM GMT, Josef Bacik wrote:
-> There's nothing stopping us from supporting this, we could simply pass
-> the order into the helper and emit the proper length.  However currently
-> there's no tests to validate this works properly, so disable it until
-> there's a desire to support this along with the appropriate tests.
-> 
+On Thu, Aug 8, 2024 at 9:28=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> w=
+rote:
+>
+> bcachefs has its own locking around filemap_fault, so we have to make
+> sure we do the fsnotify hook before the locking.  Add the check to emit
+> the event before the locking and return VM_FAULT_RETRY to retrigger the
+> fault once the event has been emitted.
+>
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
+>  fs/bcachefs/fs-io-pagecache.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/fs/bcachefs/fs-io-pagecache.c b/fs/bcachefs/fs-io-pagecache.=
+c
+> index a9cc5cad9cc9..359856df52d4 100644
+> --- a/fs/bcachefs/fs-io-pagecache.c
+> +++ b/fs/bcachefs/fs-io-pagecache.c
+> @@ -562,6 +562,7 @@ void bch2_set_folio_dirty(struct bch_fs *c,
+>  vm_fault_t bch2_page_fault(struct vm_fault *vmf)
+>  {
+>         struct file *file =3D vmf->vma->vm_file;
+> +       struct file *fpin =3D NULL;
+>         struct address_space *mapping =3D file->f_mapping;
+>         struct address_space *fdm =3D faults_disabled_mapping();
+>         struct bch_inode_info *inode =3D file_bch_inode(file);
+> @@ -570,6 +571,18 @@ vm_fault_t bch2_page_fault(struct vm_fault *vmf)
+>         if (fdm =3D=3D mapping)
+>                 return VM_FAULT_SIGBUS;
+>
+> +       ret =3D filemap_maybe_emit_fsnotify_event(vmf, &fpin);
+> +       if (unlikely(ret)) {
+> +               if (fpin) {
+> +                       fput(fpin);
+> +                       ret |=3D VM_FAULT_RETRy;
 
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+Typo RETRy
+
+> +               }
+> +               return ret;
+> +       } else if (fpin) {
+> +               fput(fpin);
+> +               return VM_FAULT_RETRY;
+> +       }
+> +
+
+This chunk is almost duplicate in all call sites in filesystems.
+Could it maybe be enclosed in a helper.
+It is bad enough that we have to spray those in filesystem code,
+so at least give the copy&paste errors to the bare minimum?
+
+Thanks,
+Amir.
