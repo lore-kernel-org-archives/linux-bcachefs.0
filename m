@@ -1,157 +1,188 @@
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FBF196455
-	for <linux-bcachefs@vger.kernel.org>; Fri,  9 Aug 2024 14:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 321DA1E49B
+	for <linux-bcachefs@vger.kernel.org>; Fri,  9 Aug 2024 14:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723213116; cv=none; b=os9aPKOaKe/n5ysUzVXyyn9I/acu+iR8bY5ZvBb90GY2iMWkoVN+CVO7Vojv1BdwMH0cvBoMCvc74degOVr6NBICUUHyLDOpmKY6kHV0z4RXvnhiL/0Me+07HrC4gweUJtXdy4trwFB1cuxfozrC4bxJ3aXRq/uZGifXy/V+6pE=
+	t=1723213152; cv=none; b=LEInhv1ZE8oCu0VdMdte8t34ijy3j8AyenHLDx/vvKsFh9FvL5M7ZbbgBr20V+7IAV5rw9Gn3W9pkWnDowH5/wS7vVnfGE3AQsJSYEVmFIAK5WvfPNlqqMAdlmzy5RUvkNXf6Q/x7y3NGSB1ZwemWC5UL+jfWFUfbNzi99wJ+aE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723213116; c=relaxed/simple;
-	bh=J9j7gMV4crRAcUtqWBUJMylJA4Ai3Rzd9IGiwUvJZAM=;
+	s=arc-20240116; t=1723213152; c=relaxed/simple;
+	bh=NeoFK0anLuC0E6HLN+p0AcuRfNRVaUd0EijMDz+f+7w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jn9ZrysBvQwgek1pBRNWfNctowrWKJB+SfVjJ+9ZFdoDHyq61De4wXbqj/Q36RMU+kHKwUhGd1U3ap2IqrkMMIiPhxQ+EoaJN+cREa5r3lSSwGNE9lPzlKmHqWPausxfALy2tL7fXC+/T2zdaiH/idkLmn1ivpWHdt7ffTSj1F0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=b5ZlDEow; arc=none smtp.client-ip=209.85.210.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=PCLeTjLZZMzJdL8fwma6oPAuaTL8RzOnTLKUXoStrFqWmSWozRdDzZxEbOeeD94/i9z2DnQSuCw0HGYKhpj322x7Kh3bnW6hFNSaqPryvu1hkak6G2DjcwjAiFAO2bvTE2ZeKw+rb9tEuNbTGQSktHAs97ZCdryfUSkDNBhdKKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=wNaChya1; arc=none smtp.client-ip=209.85.222.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="b5ZlDEow"
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-70938328a0aso1124380a34.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 09 Aug 2024 07:18:34 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="wNaChya1"
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7a1d7a544e7so135327585a.3
+        for <linux-bcachefs@vger.kernel.org>; Fri, 09 Aug 2024 07:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723213114; x=1723817914; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=liW8GHsvLv8ceoO61HYCI66vuCvp9tZBQZ53iocvxUo=;
-        b=b5ZlDEow7DXVyHI/iHQmnIMnQp6zaOeO8k6StfuwT8ukPXYn2lZu/idZQh/lvZjHA8
-         QN6YOptnv+LBXcVAEj4cHrvO4+DnBbXwbja15FVlcC76JyOW0cmjxqY5MLb/fxJ829TM
-         iCAeBTl5d64iqwyHX8heXIstA1AVrQMHgNwpu7gEOrF97fChiKPFJi6KvJnAEqPWVVrE
-         +kmmVlpKQOe9ZDz4yLbw4DjXYQ5T+A1DJ0jOF48OIZ6M9CW0uHnDWMQdc8mItm3ZMwSd
-         MMEXcaPwTTL82p8XERwFw4B64i2qwzqh4hfepuncmMIPJe3ORsdIR2hNt6qlZ5eVgtlc
-         usZg==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723213149; x=1723817949; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=O5L2Ze254Vx9tD9b2lLp1cqn0rrQxZcwOBmP3YiNFE4=;
+        b=wNaChya1NswosCe6DxNoUAq6od04xjA1i2twzyIttavGyFBWLPU2GQR5nL3g8O/RAU
+         zqwT21KeZlvBOl4Mqtq8D7QhlR8kOR1Px1OYGUedKNZ41DfJSdJ/vS3+GFJI8ddpQelb
+         AQk0av+o6UjxY61f+/FRygHgkqzy7IU60FMTgE+RtJzVjYIS98KHM9MRboLke+e0r3BK
+         /u7uLP7h9O90INnbKS4iYJlh29Zj5CgL3910iNrRxCzPGj85dB+eeyb3BcnKiHNttTyV
+         vkSVsDgGqlzaVUYm+tqntOyd+CtCE15MPR2FdwU1FKPlC9LjapsZimJX72jCH/dGj2Rm
+         8YOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723213114; x=1723817914;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=liW8GHsvLv8ceoO61HYCI66vuCvp9tZBQZ53iocvxUo=;
-        b=h6kjY3ZNxP5jySR3UzMTOEy4TcMpjL/GnLKt+fjU+HYnVTPzLC5YrUy/fPZhlRx0Bw
-         kMLKrvzeFPM1HYeayzp65gMB5hAvyHKWHbzCzmVrFKw1JmmF0S3JriZ859wmvkUa6k3w
-         g/j2gRDMlN8Wfnc8yqEC1wMYkdH65M4iv9sUUTxNccf8bG4vwTlp/XbyPWEHRYm/rlou
-         eyu/PbkZBes46CERZidg3Rgh74vJk2wRVckhUiR0nTkMhOBfBDT263IVa3hlKW+o0vEO
-         WnNXBFjKfZBBMD1cptdFQML82mt5NcbtZlyYd3CiSUXOlbOzs918+jFk0sbb7BElR0Fk
-         AtHw==
-X-Forwarded-Encrypted: i=1; AJvYcCXBQ+FW7f9T4I8/bfXeqokAar58ZIsm3KRKcuPt0NA3s3W9pGk64QvDWTdiFQAgw6us+m8CEagcTlfvjK0FQYhZpCsfrj5C7nsre2UNzaE=
-X-Gm-Message-State: AOJu0Yz7Sf2Ec28zx/AQpTmKMERpo+XvcPzixt7WbE4xERZONAKT8kKv
-	0GhnmaNoLmWr9qrAMEBZM86pPj7xPxVXgekGWc8noNdtwDg1ZrcO0TGHhhg4KxA=
-X-Google-Smtp-Source: AGHT+IEbfmB6veVV29hCIlFv/K0n+2+LP+bWfuPduu/7XMySHRK1soLeThSwWNY+t90YhXvHM8NPyQ==
-X-Received: by 2002:a05:6830:911:b0:709:4fb0:957 with SMTP id 46e09a7af769-70b6b3019b9mr2269913a34.7.1723213113854;
-        Fri, 09 Aug 2024 07:18:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723213149; x=1723817949;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O5L2Ze254Vx9tD9b2lLp1cqn0rrQxZcwOBmP3YiNFE4=;
+        b=BZhOuNe2PHvyqK/vp7glU4aBNufK7ONAh2VsnHyaNNqREiE6so/agdrZ7uMmtueUwR
+         bHE5guNEEcZih8SjqntIcM60fPbS3eKHiXu5l+LDB+aADzMdU+bNtiQ+pyXEHgetXi/l
+         k4kWk9vMrg6upaN/hZ2Gk3N4P113fvwTGQJU8ucywOv36Hj6KYmBRxVVbc3uh3LwlGAe
+         4QJBaNe7gSHYGDCpaPjxU0PHv3y8j9dokd6gJHxzHhqUXwanVh3qKlFzDjO8oACMpDKF
+         N/pMOkMymjqAfJJBUfKhtb2XlspTNbkaHu/SbUvlNuvu4t+yCy9lkhvz/SPf7Bx4qGz2
+         APVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUSsWGAVRlM7BwHhM5cxnWafDS7TUgj+OQHAE8dwlCt8+GExMB4u4epG1vDj2vZr+ALzn5z7pp1mn4u8w6wttLsdDfBSqdZeqvffTOnsWE=
+X-Gm-Message-State: AOJu0YygEFLeBLxhlPj5KfP0RRLhEPnGTtoWKkLhImB9vwhSUPTDC2hI
+	tg/ppg0/ZWST7U4YINdTxlxpNCEXvE5p9IiNsTC7+/QzO572fFXNoRLOACCBhOw=
+X-Google-Smtp-Source: AGHT+IEHcsBi55PERCnEeiqGMU1DAJy4+XEP+O/1/bmYEbY1dbyH2M7XWYBiPqJB2gUhRrs0CmXLRg==
+X-Received: by 2002:a05:620a:2983:b0:79f:504:dead with SMTP id af79cd13be357-7a4c17bbc36mr179568785a.27.1723213149023;
+        Fri, 09 Aug 2024 07:19:09 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a3786c1ed5sm266250485a.118.2024.08.09.07.18.33
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a3786cc6a3sm265893085a.123.2024.08.09.07.19.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Aug 2024 07:18:33 -0700 (PDT)
-Date: Fri, 9 Aug 2024 10:18:32 -0400
+        Fri, 09 Aug 2024 07:19:08 -0700 (PDT)
+Date: Fri, 9 Aug 2024 10:19:07 -0400
 From: Josef Bacik <josef@toxicpanda.com>
-To: Dave Chinner <david@fromorbit.com>
+To: Amir Goldstein <amir73il@gmail.com>
 Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-	amir73il@gmail.com, brauner@kernel.org, linux-xfs@vger.kernel.org,
-	gfs2@lists.linux.dev, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2 00/16] fanotify: add pre-content hooks
-Message-ID: <20240809141832.GC645452@perftesting>
+	brauner@kernel.org, linux-xfs@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v2 13/16] fsnotify: generate pre-content permission event
+ on page fault
+Message-ID: <20240809141907.GD645452@perftesting>
 References: <cover.1723144881.git.josef@toxicpanda.com>
- <ZrVDm+Tjuv6tWlY3@dread.disaster.area>
+ <b8c3f0d9ed6d23f9a636919e28293cdbbe22e0db.1723144881.git.josef@toxicpanda.com>
+ <CAOQ4uxivX+mxfpOUTAsxHVoCGb9YHdi-qHswN9O4EJ53sKUVfw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZrVDm+Tjuv6tWlY3@dread.disaster.area>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxivX+mxfpOUTAsxHVoCGb9YHdi-qHswN9O4EJ53sKUVfw@mail.gmail.com>
 
-On Fri, Aug 09, 2024 at 08:15:55AM +1000, Dave Chinner wrote:
-> On Thu, Aug 08, 2024 at 03:27:02PM -0400, Josef Bacik wrote:
-> > v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxicpanda.com/
-> > 
-> > v1->v2:
-> > - reworked the page fault logic based on Jan's suggestion and turned it into a
-> >   helper.
-> > - Added 3 patches per-fs where we need to call the fsnotify helper from their
-> >   ->fault handlers.
-> > - Disabled readahead in the case that there's a pre-content watch in place.
-> > - Disabled huge faults when there's a pre-content watch in place (entirely
-> >   because it's untested, theoretically it should be straightforward to do).
-> > - Updated the command numbers.
-> > - Addressed the random spelling/grammer mistakes that Jan pointed out.
-> > - Addressed the other random nits from Jan.
-> > 
-> > --- Original email ---
-> > 
-> > Hello,
-> > 
-> > These are the patches for the bare bones pre-content fanotify support.  The
-> > majority of this work is Amir's, my contribution to this has solely been around
-> > adding the page fault hooks, testing and validating everything.  I'm sending it
-> > because Amir is traveling a bunch, and I touched it last so I'm going to take
-> > all the hate and he can take all the credit.
+On Fri, Aug 09, 2024 at 12:34:34PM +0200, Amir Goldstein wrote:
+> On Thu, Aug 8, 2024 at 9:28 PM Josef Bacik <josef@toxicpanda.com> wrote:
+> >
+> > FS_PRE_ACCESS or FS_PRE_MODIFY will be generated on page fault depending
+> > on the faulting method.
+> >
+> > This pre-content event is meant to be used by hierarchical storage
+> > managers that want to fill in the file content on first read access.
+> >
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >  include/linux/mm.h |  2 +
+> >  mm/filemap.c       | 97 ++++++++++++++++++++++++++++++++++++++++++----
+> >  2 files changed, 92 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index ab3d78116043..c33f3b7f7261 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -3503,6 +3503,8 @@ extern vm_fault_t filemap_fault(struct vm_fault *vmf);
+> >  extern vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+> >                 pgoff_t start_pgoff, pgoff_t end_pgoff);
+> >  extern vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf);
+> > +extern vm_fault_t filemap_maybe_emit_fsnotify_event(struct vm_fault *vmf,
+> > +                                                   struct file **fpin);
+> >
+> >  extern unsigned long stack_guard_gap;
+> >  /* Generic expand stack which grows the stack according to GROWS{UP,DOWN} */
+> > diff --git a/mm/filemap.c b/mm/filemap.c
+> > index 8b1684b62177..3d232166b051 100644
+> > --- a/mm/filemap.c
+> > +++ b/mm/filemap.c
+> > @@ -46,6 +46,7 @@
+> >  #include <linux/pipe_fs_i.h>
+> >  #include <linux/splice.h>
+> >  #include <linux/rcupdate_wait.h>
+> > +#include <linux/fsnotify.h>
+> >  #include <asm/pgalloc.h>
+> >  #include <asm/tlbflush.h>
+> >  #include "internal.h"
+> > @@ -3112,13 +3113,13 @@ static int lock_folio_maybe_drop_mmap(struct vm_fault *vmf, struct folio *folio,
+> >   * that.  If we didn't pin a file then we return NULL.  The file that is
+> >   * returned needs to be fput()'ed when we're done with it.
+> >   */
+> > -static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
+> > +static struct file *do_sync_mmap_readahead(struct vm_fault *vmf,
+> > +                                          struct file *fpin)
+> >  {
+> >         struct file *file = vmf->vma->vm_file;
+> >         struct file_ra_state *ra = &file->f_ra;
+> >         struct address_space *mapping = file->f_mapping;
+> >         DEFINE_READAHEAD(ractl, file, ra, mapping, vmf->pgoff);
+> > -       struct file *fpin = NULL;
+> >         unsigned long vm_flags = vmf->vma->vm_flags;
+> >         unsigned int mmap_miss;
+> >
+> > @@ -3190,12 +3191,12 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
+> >   * was pinned if we have to drop the mmap_lock in order to do IO.
+> >   */
+> >  static struct file *do_async_mmap_readahead(struct vm_fault *vmf,
+> > -                                           struct folio *folio)
+> > +                                           struct folio *folio,
+> > +                                           struct file *fpin)
+> >  {
+> >         struct file *file = vmf->vma->vm_file;
+> >         struct file_ra_state *ra = &file->f_ra;
+> >         DEFINE_READAHEAD(ractl, file, ra, file->f_mapping, vmf->pgoff);
+> > -       struct file *fpin = NULL;
+> >         unsigned int mmap_miss;
+> >
+> >         /* See comment in do_sync_mmap_readahead. */
+> > @@ -3260,6 +3261,72 @@ static vm_fault_t filemap_fault_recheck_pte_none(struct vm_fault *vmf)
+> >         return ret;
+> >  }
+> >
+> > +/**
+> > + * filemap_maybe_emit_fsnotify_event - maybe emit a pre-content event.
+> > + * @vmf:       struct vm_fault containing details of the fault.
+> > + * @fpin:      pointer to the struct file pointer that may be pinned.
+> > + *
+> > + * If we have pre-content watches on this file we will need to emit an event for
+> > + * this range.  We will handle dropping the lock and emitting the event.
+> > + *
+> > + * If FAULT_FLAG_RETRY_NOWAIT is set then we'll return VM_FAULT_RETRY.
+> > + *
+> > + * If no event was emitted then *fpin will be NULL and we will return 0.
+> > + *
+> > + * If any error occurred we will return VM_FAULT_SIGBUS, *fpin could still be
+> > + * set and will need to have fput() called on it.
+> > + *
+> > + * If we emitted the event then we will return 0 and *fpin will be set, this
+> > + * must have fput() called on it, and the caller must call VM_FAULT_RETRY after
+> > + * any other operations it does in order to re-fault the page and make sure the
+> > + * appropriate locking is maintained.
+> > + *
+> > + * Return: the appropriate vm_fault_t return code, 0 on success.
+> > + */
+> > +vm_fault_t filemap_maybe_emit_fsnotify_event(struct vm_fault *vmf,
+> > +                                            struct file **fpin)
+> > +{
+> > +       struct file *file = vmf->vma->vm_file;
+> > +       loff_t pos = vmf->pgoff << PAGE_SHIFT;
+> > +       int mask = (vmf->flags & FAULT_FLAG_WRITE) ? MAY_WRITE : MAY_READ;
 > 
-> Brave man. :)
-> 
-> > There is a PoC that I've been using to validate this work, you can find the git
-> > repo here
-> > 
-> > https://github.com/josefbacik/remote-fetch
-> > 
-> > This consists of 3 different tools.
-> > 
-> > 1. populate.  This just creates all the stub files in the directory from the
-> >    source directory.  Just run ./populate ~/linux ~/hsm-linux and it'll
-> >    recursively create all of the stub files and directories.
-> > 2. remote-fetch.  This is the actual PoC, you just point it at the source and
-> >    destination directory and then you can do whatever.  ./remote-fetch ~/linux
-> >    ~/hsm-linux.
-> > 3. mmap-validate.  This was to validate the pagefault thing, this is likely what
-> >    will be turned into the selftest with remote-fetch.  It creates a file and
-> >    then you can validate the file matches the right pattern with both normal
-> >    reads and mmap.  Normally I do something like
-> > 
-> >    ./mmap-validate create ~/src/foo
-> >    ./populate ~/src ~/dst
-> >    ./rmeote-fetch ~/src ~/dst
-> >    ./mmap-validate validate ~/dst/foo
-> 
-> This smells like something that should be added to fstests.
-> 
-> FWIW, fstests used to have a whole "fake-hsm" infrastructure
-> subsystem in it for testing DMAPI events used by HSMs. They were
-> removed in this commit:
-> 
-> commit 6497ede7ad4e9fc8e5a5a121bd600df896b7d9c6
-> Author: Darrick J. Wong <djwong@kernel.org>
-> Date:   Thu Feb 11 13:33:38 2021 -0800
-> 
->     fstests: remove DMAPI tests
-> 
->     Upstream XFS has never supported DMAPI, so remove the tests for this
->     feature.
-> 
->     Signed-off-by: Darrick J. Wong <djwong@kernel.org>
->     Acked-by: Christoph Hellwig <hch@lst.de>
->     Signed-off-by: Eryu Guan <guaneryu@gmail.com>
-> 
-> See ./dmapi/src/sample_hsm/ for the HSM test code that was removed
-> in that patchset - it might provide some infrastructure that can be
-> used to test the fanotify HSM event infrastructure without
-> reinventing the entire wheel...
+> You missed my comment about using MAY_ACCESS here
+> and alter fsnotify hook, so legacy FAN_ACCESS_PERM event
+> won't be generated from page fault.
 
-Yup as soon as this is merged into a tree my first stop is LTP, which is where
-all the fanotify tests currently exist.  It won't cost me anything to add it to
-fstests as well, so I'll follow up with that.
-
-Generally I'd post the tests at the same time, but since it's dependent on what
-we settle on for the implementation behavior I'm holding that stuff back.
-Thanks,
+I did miss that, I'll fix it up in v3, thanks!
 
 Josef
