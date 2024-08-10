@@ -1,117 +1,92 @@
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C246716CD2B
-	for <linux-bcachefs@vger.kernel.org>; Fri,  9 Aug 2024 23:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702A33FBA7
+	for <linux-bcachefs@vger.kernel.org>; Sat, 10 Aug 2024 15:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723244792; cv=none; b=geQ+5Qy9POkHXvxV8vTSMNl3iShZGpOGweYUg0ciy5WAQkCBPbC5YHDOYakT212qvGJPH4cwmx3xNVHm85O0EElCMK4bMmjxaCJlrfxg65m6BmXQNygtpT5QJr4OLc1sK4tMPChPaMKK8g9yvT/RZrG3UzPSXVh+eIoMbvztDwQ=
+	t=1723305124; cv=none; b=RDjK85Qr11lAk/UTAt5agODflsdvS6r1XTpl/Gg6UYB+LxcOgCH2kLO8YPC14BzI/JLJcBe8fF6aQQF5qpKneFVW9GZ7vd1iyA0UonKx+2ja7W4+/XdxmjzZjvg41MreozKb1TaCvKVZfBUbVxQvbFHP8s4686n7NCa4i+AAppw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723244792; c=relaxed/simple;
-	bh=bZwx8Awwb4wvIVQy1/czHFUPIfNr4eP4NZCskia242k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nALN+4CT0KXB4ZY2g+8EFy8PmScSe4Vgscc7nThi8/D4mqVCxb4kILpEc33PAM6IJYig2RzCO/JXDfpeTBPMRl5gCS31ljlsgnhdvmLq0WIO5oGzowXZjJtFiY6Mus7x6jjMXgp/m4m5MEcv1ojhzyT0dBDT62I1GubpowMOjKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=0sAAqdaV; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+	s=arc-20240116; t=1723305124; c=relaxed/simple;
+	bh=5pxlxNJK5y64y2pZ9Qedxxx8eYGH7ev6nzxT5HNs6Lo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OUz+dsMAqVd0JIG6yftLQMc8y2SAiUkBCiNdtCLKJHjc+lDb8TANNIB+0C4aDdAGOLYlt9ITP+FCr9l4wo8Q6TcoH7My3SypaQH6s2sqaxFF+Sht9Bffb6qApFqYWx7MJIuBMbxuod9coBDQzHiGO6xIuo/qHLWWfkOkqbsL20E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Btw9A0y1; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="0sAAqdaV"
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7104f93a20eso2207423b3a.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 09 Aug 2024 16:06:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Btw9A0y1"
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-70d2b921cdfso2729467b3a.0
+        for <linux-bcachefs@vger.kernel.org>; Sat, 10 Aug 2024 08:52:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1723244790; x=1723849590; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qLXIcRQfqVWPyILBS4NCRfPx9XX6KjuIPWCqoJLoWeA=;
-        b=0sAAqdaVpPO3iyjm2HzGDbw8C/23AthllCIdx8Mdw2GRf2bU7a8k0o1b633V6zL7Va
-         s5TqNmnLg4ZsVYMtSAv3KhWXrVq+hiAAZb4Bm88Cewgq/9ChimCJd6ZMQQt3qSu6jFDZ
-         7Yp64wlH/vF6hxzlP5puvWqMlus4RLgLnCIjmSRLnYLYpeLI1wTdeenS41IVLSeQmI+c
-         FtfMVSkmIK2Xod85tY8oMe9MDj4yvitIdCIACP9yrfHCJ1VWRo+jg3Cu2QwbUQMbWEcc
-         ujW/dFCiLheNJrkvz+dHchK0XfhRnxJWle5iM2GlD9PwfBS7OMzLl4cFSGJsB85gF0+B
-         7+6A==
+        d=gmail.com; s=20230601; t=1723305123; x=1723909923; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nyt8rH1ym7YYTuOvVE/uW70AQIZ9D/EJ59SmMGwfF2c=;
+        b=Btw9A0y1w2KIrExPh5r227UT1Oy5QqZW2eyZ+E5HMQuR+yC12BMJT6ailEff9JH8Ka
+         zhwCP3J+ITHClABD+KTMRPG00cWD/dQ1NNqIUiNzHCJtsdYtdlTScNLZRj6GbDFLTZOb
+         WbnVRcAL7uh2ETjkdEoW7R6q3BuEV75uS8BzSV/WuCRTgMHiLy+5YnOfmamOQJUAcY7A
+         rXcHp6cZxyXlpV7CRRy3sAmWCVTKLPC7oR2TIBUvyoATrbSy19m16twNlSMTU+36h7ME
+         MoJSJt/wwzhy7gJ/bzMa/LYbWiQl9WvsELvi1uAsNwar2bWATSCqC2nn08fr3FnKlueP
+         UFXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723244790; x=1723849590;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qLXIcRQfqVWPyILBS4NCRfPx9XX6KjuIPWCqoJLoWeA=;
-        b=ZKzrYd/fplqzmRLDEEEHwf/oWrR8T+BHMg+Mu4DYsk/mmH4+DBffk99bTb5Bjob6bS
-         5JTOE0xywYJfArG1F0D0dKrWRfMA5PZGlX3U7hZFYFLOucukXNhp2maisOWlv/hNs4CE
-         iWdRN+3SsvHpWZawkueo5q0jybf1kLgGBi2fgyXiuFhHMWVjuqprHb6WDbc5+qKWSh+R
-         jgeLJt3oC0KhOgTyrU50Nvh+cX2ajLE/aFpn9yRPj3sMJ0Coq7KCah2Z3tikKvLj7tPJ
-         kknCoAh8+JZICzZZ+cmSa/GZdimtPmzqGo8Tx9+WT5H2fwqAaL7KkX/p43miWK+tVGfY
-         LH+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWFzEXwHH1A6ixfKIGLVKUwb9ZMzF/yNI1xlp3TBrWgUoDGiVYUDU5BszAd0tk2AkrJPOnASdtq3xGjtshRG6VNVFEWEZoWBXK/89QX9O8=
-X-Gm-Message-State: AOJu0YxeHt4lqN1z+tpcV/uKhdJyoqlCkRKWDvsdT8urE6H505ihLSIZ
-	4Nado54A1XeYUQgkqjwUgwU0AnA1xnzCK7YzTIP6kDReivU9Dp0hIxVbBiZ7J2nu5EkB62ETs2s
-	Z
-X-Google-Smtp-Source: AGHT+IEUU8G/DVGE6NlsSYImmjk9rN+qyR0QXuoHxE6GCaGPWCZFRMYYJIt81OTDQfegBeHuVGXukw==
-X-Received: by 2002:a05:6a00:2d97:b0:705:a450:a993 with SMTP id d2e1a72fcca58-710dc762037mr3670855b3a.17.1723244789985;
-        Fri, 09 Aug 2024 16:06:29 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-47-239.pa.nsw.optusnet.com.au. [49.181.47.239])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5ab79casm258567b3a.199.2024.08.09.16.06.29
+        d=1e100.net; s=20230601; t=1723305123; x=1723909923;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nyt8rH1ym7YYTuOvVE/uW70AQIZ9D/EJ59SmMGwfF2c=;
+        b=MFI4qE9D3ZS8khdYcqpQXzYvkONJ3DHLhG93oom5teVC0te3eMKc+ogCk152bMpt0K
+         3vzsCMazQdDXGm1/Gbn0pDJ5/LOOZ1oup8K7uE0rnuw35JX2Q92sW8eLyyufh/xhPp6j
+         2G/OL89HgAtw6/1dzTvg1SH5LXVr5ctYCElpSjININjHl5AwUFXKJaD+OkCvUJiQeoX7
+         Y6CLVoXKK/EblKqsCP0SAAp+2T4MvLun2ZX57uwdAsVbgeu3EtApfFKuHpzVaHJsUJca
+         5Ii9WicEEs2n2awRqsFCTJtlwj77ZbUH2UhmRLPlSJUALBnb3YPG7kXTJRqGjPgB67DE
+         PF+w==
+X-Gm-Message-State: AOJu0YwZylVt349XfE9j7kyz0ExZ4XkCtnTlE1bv9KFXbw/iK3/NG+9g
+	PbUC9hwuh5VI7z8jAVBY1R1c9ihq9qTnBmYFOau0PHxye4kIuazGquLlg6Sj
+X-Google-Smtp-Source: AGHT+IEsAYzs3PC2r5aXsuLOSWdgyCSITDjVw0bzpxHcTCv7n4wPLyhw/I6ZD0+BX5PGs6++Cnzj6g==
+X-Received: by 2002:a05:6a21:920e:b0:1bd:27b9:b63f with SMTP id adf61e73a8af0-1c8a00e2f39mr6567725637.37.1723305122594;
+        Sat, 10 Aug 2024 08:52:02 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5a437c2sm1385468b3a.112.2024.08.10.08.52.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Aug 2024 16:06:29 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1scYgk-00BQOS-1c;
-	Sat, 10 Aug 2024 09:06:26 +1000
-Date: Sat, 10 Aug 2024 09:06:26 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-	amir73il@gmail.com, brauner@kernel.org, linux-xfs@vger.kernel.org,
-	gfs2@lists.linux.dev, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v3 16/16] xfs: add pre-content fsnotify hook for write
- faults
-Message-ID: <Zrag8qezssak5rVY@dread.disaster.area>
-References: <cover.1723228772.git.josef@toxicpanda.com>
- <89eb3a19d19c9b4bc19b6edbc708a8a33a911516.1723228772.git.josef@toxicpanda.com>
+        Sat, 10 Aug 2024 08:52:02 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] bcachefs: Remove dead code in __build_ro_aux_tree
+Date: Sat, 10 Aug 2024 23:51:40 +0800
+Message-ID: <20240810155140.146460-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <89eb3a19d19c9b4bc19b6edbc708a8a33a911516.1723228772.git.josef@toxicpanda.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Aug 09, 2024 at 02:44:24PM -0400, Josef Bacik wrote:
-> xfs has it's own handling for write faults, so we need to add the
-> pre-content fsnotify hook for this case.  Reads go through filemap_fault
-> so they're handled properly there.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/xfs/xfs_file.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 4cdc54dc9686..a00436dd29d1 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -1328,8 +1328,13 @@ __xfs_filemap_fault(
->  
->  	trace_xfs_filemap_fault(XFS_I(inode), order, write_fault);
->  
-> -	if (write_fault)
-> -		return xfs_write_fault(vmf, order);
-> +	if (write_fault) {
-> +		vm_fault_t ret = filemap_maybe_emit_fsnotify_event(vmf);
-> +		if (unlikely(ret))
-> +			return ret;
-> +		xfs_write_fault(vmf, order);
-> +	}
-> +
->  	if (IS_DAX(inode))
->  		return xfs_dax_read_fault(vmf, order);
->  	return filemap_fault(vmf);
+This logic is no longer useful since commit
+3ce8b463e3e0 ("bcachefs: kill bset_tree->max_key"), so remove it.
 
-Looks good now.
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ fs/bcachefs/bset.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Acked-by: Dave Chinner <dchinner@redhat.com>
-
+diff --git a/fs/bcachefs/bset.c b/fs/bcachefs/bset.c
+index 575e1d0b6eeb..b95deeb83071 100644
+--- a/fs/bcachefs/bset.c
++++ b/fs/bcachefs/bset.c
+@@ -754,9 +754,6 @@ static noinline void __build_ro_aux_tree(struct btree *b, struct bset_tree *t)
+ 		EBUG_ON(tree_to_bkey(b, t, j) != k);
+ 	}
+ 
+-	while (k != btree_bkey_last(b, t))
+-		prev = k, k = bkey_p_next(k);
+-
+ 	if (!bkey_pack_pos(bkey_to_packed(&min_key), b->data->min_key, b)) {
+ 		bkey_init(&min_key.k);
+ 		min_key.k.p = b->data->min_key;
 -- 
-Dave Chinner
-david@fromorbit.com
+2.45.2
+
