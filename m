@@ -1,97 +1,99 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B4016DEBD
-	for <linux-bcachefs@vger.kernel.org>; Tue, 13 Aug 2024 08:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C100186E37;
+	Tue, 13 Aug 2024 11:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723539207; cv=none; b=iypdmFKwUEja+oXClYk7T7vzzklhs95M8C7buAgNeds+LTsMmIr2mxYPjFHAOlt+YlzesnessOy2sxKgCwqum9TyokZypUDualt/is/KX91/NDOHMwQCyEUEbnDpE35UZiEKENN4VhV0VKgr5xetuE3DRZYjLqBEzZx6bAhhmMw=
+	t=1723548717; cv=none; b=snCLzz9qlO7XLOxWHJRj4a0cOm5YFa5vgbWsfPrA9xz6z2YYMJg0pKFxyKhr/P++5ceGnHogcyxNH9WXmicNs+W7ZQVeICDwSXxuili8OR1unGDhxjRZAezynSIr+388iAnEAPYc4MagbH+yvDcTl8HdNZiftRJdTpFQLdWf20M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723539207; c=relaxed/simple;
-	bh=YjYGmZ8crfTZIYfPTthho7tbXsQd1/fl/xSECo88FXs=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gVni5GRmBLk+jC5qt4uR2UOvNmQDc5SEpt8A4fT6q/LL9FrYABv2jUQa4vPv4NawuApHoUku4KUj14efOjeETnMW97GR716dZSN7pIBxm9TXTXtmbcY7Y9+NOzPwvdZO9MwHOtUNy0SMceZ57dlvwO9L58QCsSLbLdGQadckM6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-39b3f65b494so69759975ab.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 13 Aug 2024 01:53:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723539205; x=1724144005;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mAMXFIFRKJpj/G/fvrDcZKD/wh5ArnCaafeSsdLbFlU=;
-        b=fyiYFNUSvWvar03e/EeQkY2JIu9kXDlwy3DD4klhA6c46F02Vg5bGxlcBOmsXKw4VD
-         HkCUOREGUZnAcNU7Y1O3lUKd9PkI3N8GiwKsKS7O51wEJSBtSc6krAdl9tv/DLER8QkM
-         isIPK6Ct+HyosZmTLHr3dr2SrscG0lVh+PEwlpie9AAoFOBI2CVeNTBL4MXq6rEYJnvn
-         g1waDhxxeOp2RT0v0m+KhosRilbHAEDktcatt1LVDZu/BA7o5C2YahHK1CrFM2+MsZe4
-         EKv9HGPtRrJbbPHPwQ4GJcMCAsM2zINCo6UyXJJcZ+I8q3biMwu2Rabg59jEXNwBNGs+
-         WfSw==
-X-Forwarded-Encrypted: i=1; AJvYcCVEvMWRm58iNIKBsis5FQXnhwNCk4v9EUuaHupXOer/h8tJhnoP8HyBoEcb6ufnCHUvycuf9KErU7GtfsekLNd5EDtMUhtvE75zaUdAbJM=
-X-Gm-Message-State: AOJu0YyNy/d/F6lZEpGhIHC4F6lHpuiPSFFO8nJuE15/kSRJ+XuwFz7W
-	H9jEsM34D1oT9jLtFKgpYFOukGQsWVtFpkiLHP/lvRLqTelJ8Bfbd4eIxwRSQL1kaBYXUDfwxk9
-	l4SOPbHwsVODMZc2RnolXOWoCa5d7QrQCOh6I4haZelZkvRSwYEGpOyA=
-X-Google-Smtp-Source: AGHT+IGgUBDALvrCrch7SF4UhE1THnJLvppqL5MqTLE/qhTaObGjrIme1a5PEaBE0wlQoNOxDYlfySuDnncaQ2rH5K+aYMwnzddx
+	s=arc-20240116; t=1723548717; c=relaxed/simple;
+	bh=zrjblW4tZJGZS02KKKIzCi8Z3jnHJwQ/UCFoFzmkP0o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=o5hZcfn8kkWNxyZ8mTy2bbh4sUjlKyQjyfjHMfbQP04TJTsp3fNAeAZHowr6+YnA8Pkq5hQ6w1A+DCjlbkE76XbNBBQiwsd8es6vlRKx8MI5KET4+krP/4RK15PuRswri85/8w04PUvoYSrNsiKIsE1Pfrls5FwBa6vOo7/WtxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 988baac0596711efa216b1d71e6e1362-20240813
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_DIGIT_LEN
+	HR_FROM_NAME, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_UNTRUSTED, SRC_UNTRUSTED, IP_UNFAMILIAR, SRC_UNFAMILIAR
+	DN_TRUSTED, SRC_TRUSTED, SA_EXISTED, SN_EXISTED, SPF_NOPASS
+	DKIM_NOPASS, DMARC_NOPASS, CIE_BAD, CIE_GOOD_SPF, CIE_UNKNOWN
+	GTI_FG_BS, GTI_C_CI, GTI_FG_IT, GTI_RG_INFO, GTI_C_PP
+	GTI_C_BU, AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU
+	ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.38,REQID:9b98c4d9-6d46-41ef-b372-383cf6360baa,IP:20,
+	URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:35
+X-CID-INFO: VERSION:1.1.38,REQID:9b98c4d9-6d46-41ef-b372-383cf6360baa,IP:20,UR
+	L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:35
+X-CID-META: VersionHash:82c5f88,CLOUDID:4482d10b48165bdb2116332a68ef9560,BulkI
+	D:240804171638GUAHFMRT,BulkQuantity:2,Recheck:0,SF:66|23|17|19|43|74|200|1
+	02,TC:nil,Content:0,EDM:5,IP:-2,URL:1,File:nil,RT:nil,Bulk:40,QS:nil,BEC:n
+	il,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
+X-UUID: 988baac0596711efa216b1d71e6e1362-20240813
+X-User: zhanghao1@kylinos.cn
+Received: from pve.sebastian [(118.250.0.224)] by mailgw.kylinos.cn
+	(envelope-from <zhanghao1@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1628703220; Tue, 13 Aug 2024 19:31:34 +0800
+From: zhanghao <zhanghao1@kylinos.cn>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	zhanghao <zhanghao1@kylinos.cn>,
+	syzbot+1a11884d9c9f1353942d@syzkaller.appspotmail.com
+Subject: [PATCH] bcachefs: Add check for the size of combined key and value
+Date: Tue, 13 Aug 2024 19:31:19 +0800
+Message-Id: <20240813113119.114475-1-zhanghao1@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:160f:b0:376:417e:c2ab with SMTP id
- e9e14a558f8ab-39c47912e84mr1765715ab.5.1723539205554; Tue, 13 Aug 2024
- 01:53:25 -0700 (PDT)
-Date: Tue, 13 Aug 2024 01:53:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001a9128061f8cbee7@google.com>
-Subject: [syzbot] Monthly bcachefs report (Aug 2024)
-From: syzbot <syzbot+list88c61bedfe3e28153b24@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello bcachefs maintainers/developers,
+The bkey_val_bytes() gets the number of bytes of value
+stored in bkey->u64s.If u64s is smaller than BKEY_U64s,
+it causes a negative number to be converted to an
+unsigned number.
 
-This is a 31-day syzbot report for the bcachefs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bcachefs
+Reported-by: syzbot+1a11884d9c9f1353942d@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=1a11884d9c9f1353942d
+Fixes: ba81523eaac3 ("bcachefs: Split out bkey_types.h")
+Link: https://lore.kernel.org/all/00000000000025321f061d7b62ff@google.com/T/
 
-During the period, 5 new issues were detected and 1 were fixed.
-In total, 71 issues are still open and 52 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  4330    Yes   kernel BUG in bch2_fs_journal_stop
-                   https://syzkaller.appspot.com/bug?extid=10b936c5eaee2819b49b
-<2>  2944    Yes   INFO: task hung in __closure_sync
-                   https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
-<3>  1364    Yes   BUG: MAX_LOCK_DEPTH too low! (4)
-                   https://syzkaller.appspot.com/bug?extid=46405fa9afa07e6c8c40
-<4>  398     Yes   KMSAN: uninit-value in bch2_alloc_v4_invalid
-                   https://syzkaller.appspot.com/bug?extid=3b2968fa4953885dd66a
-<5>  246     No    INFO: task hung in bch2_readahead
-                   https://syzkaller.appspot.com/bug?extid=a6060114362257e9798a
-<6>  221     No    WARNING in bch2_trans_put
-                   https://syzkaller.appspot.com/bug?extid=291aef749c5cbb9ca2fd
-<7>  215     Yes   INFO: task hung in bch2_fs_read_only_work
-                   https://syzkaller.appspot.com/bug?extid=8996d8f176cf946ef641
-<8>  138     Yes   INFO: task hung in __bch2_fs_stop
-                   https://syzkaller.appspot.com/bug?extid=6d3e28b33490b3085412
-<9>  86      Yes   possible deadlock in bch2_gc_mark_key
-                   https://syzkaller.appspot.com/bug?extid=050e797ad21ccc3f5d1a
-<10> 82      Yes   WARNING in __bch2_truncate_folio
-                   https://syzkaller.appspot.com/bug?extid=3d11e35eeafe176a6c5b
-
+Signed-off-by: zhanghao <zhanghao1@kylinos.cn>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/bcachefs/bkey_types.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/fs/bcachefs/bkey_types.h b/fs/bcachefs/bkey_types.h
+index c9ae9e42b385..60fa5af93032 100644
+--- a/fs/bcachefs/bkey_types.h
++++ b/fs/bcachefs/bkey_types.h
+@@ -21,6 +21,8 @@ static inline struct bkey_i *bkey_next(struct bkey_i *k)
+ 
+ static inline size_t bkey_val_bytes(const struct bkey *k)
+ {
++	if (k->u64s < BKEY_U64s)
++		return 0;
+ 	return bkey_val_u64s(k) * sizeof(u64);
+ }
+ 
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+base-commit: d74da846046aeec9333e802f5918bd3261fb5509
+prerequisite-patch-id: 1ec511753fc7aab35ba0e982013cf91ba4403da6
+-- 
+2.39.2
 
-You may send multiple commands in a single email message.
