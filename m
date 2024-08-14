@@ -1,62 +1,68 @@
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970951B3721
-	for <linux-bcachefs@vger.kernel.org>; Wed, 14 Aug 2024 14:20:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B6CD1BF327
+	for <linux-bcachefs@vger.kernel.org>; Wed, 14 Aug 2024 21:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723645217; cv=none; b=X65IBIRvgTG4rY0xPM/wI5E0s5JbJRWlkrjspAQSXmlJjWxx3m120AV6W8v6d4sxpbZ+K2JLgRmHfr+ubFI14MLIrR3EMzGb3hsEsqSdu+7J+nmEqatkhpArCsEJMBQlD51sfT1Y8KcTQyO01sDEv4L3PgHzgA+CC0wWPsgxBhQ=
+	t=1723670767; cv=none; b=YXsrJu2tPG2X7dW+3OrapA89Sl5myR8plTHSb7Km/gC2DWsvJmoAAuAqGPsMfc7F/QZL4wrlckX4HrFxSNeTBEEjO2PYIqRRMfKv1y2/TDxkZ/PE9616JgSpKw9Zl8iR8DX4eivcuAoP0UfP+v88V+P7TtUOBSgliL1pTZCSw7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723645217; c=relaxed/simple;
-	bh=H5L7BuM6j2QBkXZK8Qq060WApcVxWvrusU71uE25Ek0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=thuCU1nwEjFUEHCJ8BKTnnzza/DM+NQ2ZQVUoUiWmklILw8CiiCI+0wTs1N9V/5V3ayswBJkNmJtrNS9i7N5aX5URHJ7tTefp2MMIStX0CDtRIuYNlg4sY/j51t00NVH4mJeuUW2GpeYuOnRt/ft2WzcUdC0QBvvcxmTVsCN7yU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dFbdBTcf; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1723670767; c=relaxed/simple;
+	bh=GWaaaFa5p9YV8pWOdymeo3ub/M+DKWgxitUWjUW2hSU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=g8bv2kutC/WVPVOxKFHIRySiYXTXSMlfXKm1AjXgbUMNTLgqcFgOu1juQBnFKQnOIVLC5xlUtIMRRNsSgXUAHpsjNhtuELItuvDFxUn+Uqj5Sh7cYc45wGooDPOpo9O8J16izkQHuZCCYs7xqlvMW0xkr4COWo6wQtszGtL7Kjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=jVibL81K; arc=none smtp.client-ip=209.85.210.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dFbdBTcf"
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1fc587361b6so56789565ad.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 14 Aug 2024 07:20:15 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="jVibL81K"
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-7093705c708so277048a34.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 14 Aug 2024 14:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723645215; x=1724250015; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=u9YYZBeOW5YQEvGW8tM/IB5F5qW+lea7LWu5dxO2Vsg=;
-        b=dFbdBTcfZZLICWpu/Ko3B22Ze/t4wFjbyjaZtyDPyZ7brdlhvbS8b/AShypr6Jy6AQ
-         TMfeo9jZAGKfeMii2l/bM8LZVS1q74SLRONR2P9SfTlJ3Qcg8eAelfiwZ0mvli/rKAAg
-         G+BS6CK7r/WpencIVzqIxAwoImBwFxWo5X/Ig5nhuI70QZvN3KBWPl6csQVBwymcRwNl
-         /FKEgjgN7wiCb8KOIxu2ZDr0rC4XiVqvDTJK/8ElkT3HFEQP6OLQEbI4Ch6tXJw3yulK
-         FTr9MicwqVmpTeJhIdcG9/5stHR5BDPaPhxz9CkgxQuOXaapwTDg5BZ2U8IefxKzEqRy
-         qepg==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723670764; x=1724275564; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pyau8aOJuyZnZfGNcIVxqfibv2avRjwgFV+ZdZpslNc=;
+        b=jVibL81KoTI+z5PO2jZyD1uBfNfYwaUdOYs+fABzlNFmbGlJK7S5WiNg9ZcY6NG4h6
+         uOdv57E9cSR89XoVQY8dFZ2h4F+7JTESMRwk1CtpO0oFHQlVcpicIkGWkQtwJyc/7uK+
+         A4SeRwJv6z0PiAg659NHE2cMDGDPGbTkRSNkm7p9K9GqKf+lsk75y7t5jrpwFGBKv2DO
+         0xRj9PqqeLGV4fe6/RsjDQLUgKonl77sPVmNz3vTRqDHLwaibilVWl0ocERXEDxRGJCW
+         0sXjkk00e+mqXO99bQhaXIqGzagF9UrMqhE092QYmOzZUJp90tCTw8QNPG3u9usaZHwb
+         3l0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723645215; x=1724250015;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u9YYZBeOW5YQEvGW8tM/IB5F5qW+lea7LWu5dxO2Vsg=;
-        b=t9L1Aryc0OTzDNgE6JYI4AB3hqmUCoT1MCp3nNGzmn8jsPbzLimAUAHeNK6RrsMebo
-         TOIBICRJIgK0BXGOF0sp3YqN8aBQPTlOdE1ksgdilKcloJyXDkydHiBUOWiZR1g+HVsn
-         JgYHgw9f2+aJmPparv7tiIDZQbYKbolOElu1+y4SUTayMTlq8DU4UU8HbxYggHVSWNqw
-         KYPgxGFaiGeS0lkDytpVeDwzX4RrLzMpnrn+S2NfsoBjOhL4dJLAfXZcR5G8qemoCldd
-         djrUWO5l8j5rRA1z6KvbgOmAQxWIwn0olTDWIVljwxGnlJOa99t6sNmgc59BDHyYIGMD
-         P+kw==
-X-Gm-Message-State: AOJu0YzubIB1ENs9gQ77gaxG323SJnGb6fqlAszblG5R7ZqGLr26K/Cl
-	ziICmd/3WaRFEeSUdcQVWNxMrv4HBSkVgsKbfpPPg34NFIzpMNcf
-X-Google-Smtp-Source: AGHT+IFaG31jmC+z0Xs2klYVZ9DHzRsC+N7Tad4I0/y+9znyOfXdyufx13FhKS0znSCTCHCpqvoyfA==
-X-Received: by 2002:a17:902:cec9:b0:1fb:7435:c2c5 with SMTP id d9443c01a7336-201d64a5befmr37801115ad.46.1723645214681;
-        Wed, 14 Aug 2024 07:20:14 -0700 (PDT)
-Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201cd14c58bsm30203925ad.72.2024.08.14.07.20.12
+        d=1e100.net; s=20230601; t=1723670764; x=1724275564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pyau8aOJuyZnZfGNcIVxqfibv2avRjwgFV+ZdZpslNc=;
+        b=E2ux4NCKVyN9or1rO5psHvMuaj6Ux30gq8nyUcsLwKaDaSQWrBRo6/SmYUgF+lRqK9
+         wDsbMjij77/NCFqOSkdRbGtnDJXkzhCGiEt39wIMwEtVJ4/YiM7tgf2TlM0rmJrhH0Nn
+         UFXLZVy21jPCXYLZA9mHNHrGqoV5RbGS0XZwjic9FB9Vith3wrboGdxJ+ecKooamb192
+         jJ1plbTdZVwklR0oWSV47yL8j2yhd1irRQxdX0QPWUB9HTwNuc1gjOvFPcUCwD0Z+UHk
+         MfnBsJemLu0+sriL290cY4WyFeXYbt+fYG8sYJf2sryKSqhp8t0lQJpYqB8TcB5T8/AL
+         E7nA==
+X-Forwarded-Encrypted: i=1; AJvYcCW/tfD10AIIuW93Ngj81okhb8gO7ZxIc+3NVjtTo0kmRWrlBfBIwhyq1S5r1fahvHqNXW9ywou9bvtgOg5doZjp1NSs7gandhbw71Y0jag=
+X-Gm-Message-State: AOJu0YwZABaFZWdRSrMMuEFo76H6WFmAZR4/oN8PIryZF0dVkE78Jo7s
+	3Sfau+bsTpMRMRf6HtYa4z2iG7CtBjndD5slJ/RY/bg9kj/bX7/AwS6ssexyFynAv5UcLhwc6GC
+	A
+X-Google-Smtp-Source: AGHT+IEJyMAMyA8U3woOzIEEj3JSvwjQmFqO5kjZauXzQokagOUrsDyTtU+QTE5PXpZ2YP7fpxx74w==
+X-Received: by 2002:a05:6358:6f15:b0:1b1:a666:2bba with SMTP id e5c5f4694b2df-1b1aad5368dmr492206355d.24.1723670764131;
+        Wed, 14 Aug 2024 14:26:04 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bf6fe06fdfsm642966d6.34.2024.08.14.14.26.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2024 07:20:14 -0700 (PDT)
-From: Alan Huang <mmpgouride@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH] bcachefs: Remove unused parameter
-Date: Wed, 14 Aug 2024 22:20:07 +0800
-Message-ID: <20240814142007.430009-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.45.2
+        Wed, 14 Aug 2024 14:26:03 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org,
+	jack@suse.cz,
+	amir73il@gmail.com,
+	brauner@kernel.org,
+	linux-xfs@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org
+Subject: [PATCH v4 00/16] fanotify: add pre-content hooks
+Date: Wed, 14 Aug 2024 17:25:18 -0400
+Message-ID: <cover.1723670362.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -65,55 +71,150 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-iter here is unused, remove it.
+v3: https://lore.kernel.org/linux-fsdevel/cover.1723228772.git.josef@toxicpanda.com/
+v2: https://lore.kernel.org/linux-fsdevel/cover.1723144881.git.josef@toxicpanda.com/
+v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxicpanda.com/
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
----
- fs/bcachefs/bset.c               | 1 -
- fs/bcachefs/bset.h               | 4 ++--
- fs/bcachefs/btree_trans_commit.c | 2 +-
- 3 files changed, 3 insertions(+), 4 deletions(-)
+v3->v4:
+- Trying to send a final verson Friday at 5pm before you go on vacation is a
+  recipe for silly mistakes, fixed the xfs handling yet again, per Christoph's
+  review.
+- Reworked the file system helper so it's handling of fpin was a little less
+  silly, per Chinner's suggestion.
+- Updated the return values to not or in VM_FAULT_RETRY, as we have a comment
+  in filemap_fault that says if VM_FAULT_ERROR is set we won't have
+  VM_FAULT_RETRY set.
 
-diff --git a/fs/bcachefs/bset.c b/fs/bcachefs/bset.c
-index 0ccc1d962428..1b66b2c7e018 100644
---- a/fs/bcachefs/bset.c
-+++ b/fs/bcachefs/bset.c
-@@ -969,7 +969,6 @@ static void bch2_bset_fix_lookup_table(struct btree *b,
- }
- 
- void bch2_bset_insert(struct btree *b,
--		      struct btree_node_iter *iter,
- 		      struct bkey_packed *where,
- 		      struct bkey_i *insert,
- 		      unsigned clobber_u64s)
-diff --git a/fs/bcachefs/bset.h b/fs/bcachefs/bset.h
-index 5c6c7a14fa0f..6953d55b72cc 100644
---- a/fs/bcachefs/bset.h
-+++ b/fs/bcachefs/bset.h
-@@ -270,8 +270,8 @@ void bch2_bset_init_first(struct btree *, struct bset *);
- void bch2_bset_init_next(struct btree *, struct btree_node_entry *);
- void bch2_bset_build_aux_tree(struct btree *, struct bset_tree *, bool);
- 
--void bch2_bset_insert(struct btree *, struct btree_node_iter *,
--		     struct bkey_packed *, struct bkey_i *, unsigned);
-+void bch2_bset_insert(struct btree *, struct bkey_packed *, struct bkey_i *,
-+		      unsigned);
- void bch2_bset_delete(struct btree *, struct bkey_packed *, unsigned);
- 
- /* Bkey utility code */
-diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
-index ac0c92683aad..8b0b9e5ce72e 100644
---- a/fs/bcachefs/btree_trans_commit.c
-+++ b/fs/bcachefs/btree_trans_commit.c
-@@ -214,7 +214,7 @@ bool bch2_btree_bset_insert_key(struct btree_trans *trans,
- 
- 	k = bch2_btree_node_iter_bset_pos(node_iter, b, bset_tree_last(b));
- overwrite:
--	bch2_bset_insert(b, node_iter, k, insert, clobber_u64s);
-+	bch2_bset_insert(b, k, insert, clobber_u64s);
- 	new_u64s = k->u64s;
- fix_iter:
- 	if (clobber_u64s != new_u64s)
+v2->v3:
+- Fix the pagefault path to do MAY_ACCESS instead, updated the perm handler to
+  emit PRE_ACCESS in this case, so we can avoid the extraneous perm event as per
+  Amir's suggestion.
+- Reworked the exported helper so the per-filesystem changes are much smaller,
+  per Amir's suggestion.
+- Fixed the screwup for DAX writes per Chinner's suggestion.
+- Added Christian's reviewed-by's where appropriate.
+
+v1->v2:
+- reworked the page fault logic based on Jan's suggestion and turned it into a
+  helper.
+- Added 3 patches per-fs where we need to call the fsnotify helper from their
+  ->fault handlers.
+- Disabled readahead in the case that there's a pre-content watch in place.
+- Disabled huge faults when there's a pre-content watch in place (entirely
+  because it's untested, theoretically it should be straightforward to do).
+- Updated the command numbers.
+- Addressed the random spelling/grammer mistakes that Jan pointed out.
+- Addressed the other random nits from Jan.
+
+--- Original email ---
+
+Hello,
+
+These are the patches for the bare bones pre-content fanotify support.  The
+majority of this work is Amir's, my contribution to this has solely been around
+adding the page fault hooks, testing and validating everything.  I'm sending it
+because Amir is traveling a bunch, and I touched it last so I'm going to take
+all the hate and he can take all the credit.
+
+There is a PoC that I've been using to validate this work, you can find the git
+repo here
+
+https://github.com/josefbacik/remote-fetch
+
+This consists of 3 different tools.
+
+1. populate.  This just creates all the stub files in the directory from the
+   source directory.  Just run ./populate ~/linux ~/hsm-linux and it'll
+   recursively create all of the stub files and directories.
+2. remote-fetch.  This is the actual PoC, you just point it at the source and
+   destination directory and then you can do whatever.  ./remote-fetch ~/linux
+   ~/hsm-linux.
+3. mmap-validate.  This was to validate the pagefault thing, this is likely what
+   will be turned into the selftest with remote-fetch.  It creates a file and
+   then you can validate the file matches the right pattern with both normal
+   reads and mmap.  Normally I do something like
+
+   ./mmap-validate create ~/src/foo
+   ./populate ~/src ~/dst
+   ./rmeote-fetch ~/src ~/dst
+   ./mmap-validate validate ~/dst/foo
+
+I did a bunch of testing, I also got some performance numbers.  I copied a
+kernel tree, and then did remote-fetch, and then make -j4
+
+Normal
+real    9m49.709s
+user    28m11.372s
+sys     4m57.304s
+
+HSM
+real    10m6.454s
+user    29m10.517s
+sys     5m2.617s
+
+So ~17 seconds more to build with HSM.  I then did a make mrproper on both trees
+to see the size
+
+[root@fedora ~]# du -hs /src/linux
+1.6G    /src/linux
+[root@fedora ~]# du -hs dst
+125M    dst
+
+This mirrors the sort of savings we've seen in production.
+
+Meta has had these patches (minus the page fault patch) deployed in production
+for almost a year with our own utility for doing on-demand package fetching.
+The savings from this has been pretty significant.
+
+The page-fault hooks are necessary for the last thing we need, which is
+on-demand range fetching of executables.  Some of our binaries are several gigs
+large, having the ability to remote fetch them on demand is a huge win for us
+not only with space savings, but with startup time of containers.
+
+There will be tests for this going into LTP once we're satisfied with the
+patches and they're on their way upstream.  Thanks,
+
+Josef
+
+Amir Goldstein (8):
+  fsnotify: introduce pre-content permission event
+  fsnotify: generate pre-content permission event on open
+  fanotify: introduce FAN_PRE_ACCESS permission event
+  fanotify: introduce FAN_PRE_MODIFY permission event
+  fanotify: pass optional file access range in pre-content event
+  fanotify: rename a misnamed constant
+  fanotify: report file range info with pre-content events
+  fanotify: allow to set errno in FAN_DENY permission response
+
+Josef Bacik (8):
+  fanotify: don't skip extra event info if no info_mode is set
+  fanotify: add a helper to check for pre content events
+  fanotify: disable readahead if we have pre-content watches
+  mm: don't allow huge faults for files with pre content watches
+  fsnotify: generate pre-content permission event on page fault
+  bcachefs: add pre-content fsnotify hook to fault
+  gfs2: add pre-content fsnotify hook to fault
+  xfs: add pre-content fsnotify hook for write faults
+
+ fs/bcachefs/fs-io-pagecache.c      |   4 +
+ fs/gfs2/file.c                     |   4 +
+ fs/namei.c                         |   9 ++
+ fs/notify/fanotify/fanotify.c      |  32 ++++++--
+ fs/notify/fanotify/fanotify.h      |  20 +++++
+ fs/notify/fanotify/fanotify_user.c | 116 +++++++++++++++++++++-----
+ fs/notify/fsnotify.c               |  14 +++-
+ fs/xfs/xfs_file.c                  |   4 +
+ include/linux/fanotify.h           |  20 +++--
+ include/linux/fsnotify.h           |  54 ++++++++++--
+ include/linux/fsnotify_backend.h   |  59 ++++++++++++-
+ include/linux/mm.h                 |   1 +
+ include/uapi/linux/fanotify.h      |  17 ++++
+ mm/filemap.c                       | 128 +++++++++++++++++++++++++++--
+ mm/memory.c                        |  22 +++++
+ mm/readahead.c                     |  13 +++
+ security/selinux/hooks.c           |   3 +-
+ 17 files changed, 469 insertions(+), 51 deletions(-)
+
 -- 
-2.45.2
+2.43.0
 
