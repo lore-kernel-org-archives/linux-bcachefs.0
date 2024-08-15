@@ -1,72 +1,39 @@
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991D81D1F66
-	for <linux-bcachefs@vger.kernel.org>; Wed, 14 Aug 2024 21:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330401DB442
+	for <linux-bcachefs@vger.kernel.org>; Thu, 15 Aug 2024 08:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723670785; cv=none; b=A1wz93Z0b8sqh4IqhdstWT+RHK6T+YrZfOQeF+n5wNx4t9MHxIualGnlfO6mEjXmdhos5FhLMvZ6ETvg3k1r9QareVT28D24DV8UovfMVseBRDq+07GL1bU4vepI49lwL2ListNGvsjKI8RbmUYMKfHSs0oztZBmdRV/9gBDab4=
+	t=1723712291; cv=none; b=BD2sytYekWIrNZaqFBEFsjgmasFCJBcpBsROwa0XHwMfJSZOpwUuGsZoBEuPjWA+B0i+c0xnf2x2HpGI+F47qI/73/iNlMd41gpoFpoJT1ztr6nX8Wiv1g7j/B8hgxEREXuFapr9NjpZP5xQVq+ckwdhvs4F0ihHYN6HHCLSMTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723670785; c=relaxed/simple;
-	bh=S0mezk7lokrHR+8fcU6LAupASbj5zKj9YDRU//oGrc4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R6OKoB842fqrMiFwYPAVWoY6S0P/k+HwYE8GmeD4ObrwhIPjUmNH4ugEgesPFaesyzM61Vkqao8ldWApddxHNDUJT4zElwqKZZRAntuHoEnnLT6MP1C+LeLpZHk+j4jttdh8piMboDH9P80nDCrpxZkvcFFA9hMfwiyfu1GllTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=yKYxjzMI; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+	s=arc-20240116; t=1723712291; c=relaxed/simple;
+	bh=KRx7wmSdhjanM7hrHBPThs8AQLRMQFRVlPAECjcB2PM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LVmBZdwEzKmGfhzfPbnlcaCUGsKDD1WYEUKTKIvbpwT1N0ewpJpbX07MyqHcn1Kwg6ji9P7OwpEW0QpJp9yy+C/2dE2058TICJ8ll7m0kGd/FIKDWa1Rt9tPivI9BEWR9c8oz/If2IPulwbBQAVN7f/KCs4HuYhNBb8MNRHBNA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mCaUsI+2; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="yKYxjzMI"
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-79ef72bb8c8so13893185a.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 14 Aug 2024 14:26:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723670781; x=1724275581; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/g0betjFPlSWGNNLN2rg+et8Qa/vCpguwAUALfab+wk=;
-        b=yKYxjzMIHOKVD7hCfqqDbQ3M9MRTo7yLBD72u9lQJ+mFdhbDV088MXtG8urZrAPysj
-         ybweUtaUr1xYRQjBHW3DQNwKBR6ilAPSyNAAgy4azinX3OB/tADp5lcp+O2Ao76NSl5W
-         s3+SUN7NHq4J3Q3nBYeySTQ3XDRRkzuYWgokHzhhzEyFsSMOrU6fHRmzrADK2UmaS+sw
-         sD5zjeXI7O0VSwDIQ8mbQfa/R0kBM46kV9F1c3m3bkfJgpk3+6b8oinyn11+cihhjfSq
-         p80SBcXJJR6YPvjyS2+u5jPAGMxJqc5jGBkFwGpGNotkYebUJM1fS8IVHF/EZt02H1GS
-         ngOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723670781; x=1724275581;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/g0betjFPlSWGNNLN2rg+et8Qa/vCpguwAUALfab+wk=;
-        b=RM4maV2qtHJgUrvQQ+vsSO8EZ5bICh2HmFcOGinkVThMdiO3hSdhEjVZCGIFmrP6lU
-         VSwN4TQ3utdeyMHOQ577KqUpL5msHfNrK9r9BoERJGHWYVZa1SxGlXCi73f8csdjtylW
-         RTe1/Li5W4qhCaevi56FT6QpYdabFZCUboxNh/GuePZhkJQASlI8MTRVItS1NaIq+ZLA
-         Er0eAW6eFmW71QFWLLgRSi1zBgAEoSYJuF/9If4py92/R96fFRQQhVpVhkOGtG91bj3K
-         NbSFgoZYCcYPOl6FIFyiK1PtY08ObCNcngChcj9f1JvS5R3Uf3+eBSOs+xW8vK+NjsNH
-         4rCA==
-X-Forwarded-Encrypted: i=1; AJvYcCU32v5KkfZF53VgdubyWcLBfVDMZV/jLDOTTosRuQoFOrkW1A691agcGarqBWFgjtjTHjE5MPIVhRU2ONG+fpdhVPzENZ5xBM7h/RBBDII=
-X-Gm-Message-State: AOJu0YxgJDez38S9b57jp2W6wpqTzyNWSTS7qvikH8E2U3uKrx55LKwZ
-	dL7UDhLfFKmFJAZ+vr8DZ7+7fRHVA0UmnVJs4CwAGe8noEhTvZ934QsgMH105fE=
-X-Google-Smtp-Source: AGHT+IEwLYSHYYTuAZJvUuE3hfd+/zuyGZIMkGIICNZLTcaMoU6Cqa81XGFABSQNoiEu298KSeXnZA==
-X-Received: by 2002:a05:620a:288a:b0:79f:17d9:d86b with SMTP id af79cd13be357-7a4ee318773mr448400785a.12.1723670781667;
-        Wed, 14 Aug 2024 14:26:21 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4536a072683sm480751cf.85.2024.08.14.14.26.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2024 14:26:21 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-To: kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org,
-	jack@suse.cz,
-	amir73il@gmail.com,
-	brauner@kernel.org,
-	linux-xfs@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	linux-bcachefs@vger.kernel.org
-Subject: [PATCH v4 16/16] xfs: add pre-content fsnotify hook for write faults
-Date: Wed, 14 Aug 2024 17:25:34 -0400
-Message-ID: <631039816bbac737db351e3067520e85a8774ba1.1723670362.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1723670362.git.josef@toxicpanda.com>
-References: <cover.1723670362.git.josef@toxicpanda.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mCaUsI+2"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723712286;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=oKn02HYe5r+8UUPEpvU95NDzA4gCmR2BDgfjmPF8E7Y=;
+	b=mCaUsI+22EPFq7azpdaN+FYd43ubxN+CYQbKY5eStqBvnmBA4RV0z9WXziY8Zzc3Pui8XB
+	IGka3fBdZhb8QySmUUJxM8iBziT20+Ix6va6NC94Lj5qTs/ngXwVj9FqWoIpFpqrj0Z5jM
+	yB0F6/fA0REe+xWHg+77YzLdYFREgjk=
+From: Youling Tang <youling.tang@linux.dev>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	youling.tang@linux.dev,
+	Youling Tang <tangyouling@kylinos.cn>
+Subject: [PATCH 1/2] bcachefs: drop unused posix acl handlers
+Date: Thu, 15 Aug 2024 16:57:43 +0800
+Message-Id: <20240815085744.224879-1-youling.tang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -74,31 +41,38 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-xfs has it's own handling for write faults, so we need to add the
-pre-content fsnotify hook for this case.  Reads go through filemap_fault
-so they're handled properly there.
+From: Youling Tang <tangyouling@kylinos.cn>
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Remove struct nop_posix_acl_{access,default} for bcachefs filesystem
+that don't depend on the xattr handler in their inode->i_op->listxattr()
+method in any way. There's nothing more to do than to simply remove the
+handler. It's been effectively unused ever since we introduced the new
+posix acl api. See [1] for details.
+
+Link [1]: https://patchwork.kernel.org/project/linux-fsdevel/cover/20230125-fs-acl-remove-generic-xattr-handlers-v3-0-f760cc58967d@kernel.org/
+
+Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
 ---
- fs/xfs/xfs_file.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/bcachefs/xattr.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 4cdc54dc9686..e61c4c389d7d 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -1283,6 +1283,10 @@ xfs_write_fault(
- 	unsigned int		lock_mode = XFS_MMAPLOCK_SHARED;
- 	vm_fault_t		ret;
+diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
+index c11bf6dacc2c..9e77e949a29b 100644
+--- a/fs/bcachefs/xattr.c
++++ b/fs/bcachefs/xattr.c
+@@ -623,10 +623,6 @@ static const struct xattr_handler bch_xattr_bcachefs_effective_handler = {
  
-+	ret = filemap_maybe_emit_fsnotify_event(vmf);
-+	if (unlikely(ret))
-+		return ret;
-+
- 	sb_start_pagefault(inode->i_sb);
- 	file_update_time(vmf->vma->vm_file);
- 
+ const struct xattr_handler *bch2_xattr_handlers[] = {
+ 	&bch_xattr_user_handler,
+-#ifdef CONFIG_BCACHEFS_POSIX_ACL
+-	&nop_posix_acl_access,
+-	&nop_posix_acl_default,
+-#endif
+ 	&bch_xattr_trusted_handler,
+ 	&bch_xattr_security_handler,
+ #ifndef NO_BCACHEFS_FS
 -- 
-2.43.0
+2.34.1
 
