@@ -1,193 +1,162 @@
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3DA1C2316
-	for <linux-bcachefs@vger.kernel.org>; Fri, 16 Aug 2024 18:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CAAC323D
+	for <linux-bcachefs@vger.kernel.org>; Sat, 17 Aug 2024 01:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723833102; cv=none; b=gLL3JvDlTc5ZWScyab0HzE0G0qP43fJVL/nhklcngWuTLwMw8lX8WbFpl72Rp5Uqu+KwjxjLLksK5tNoXjSCRJ93bdTXHKFa8b20vhn/llIqzzhfD+n2YUxtQSxktYMxTy0BL6i6fNCxGrFSklNqP4YCwHzrzN8/lzctKeKF3ME=
+	t=1723857617; cv=none; b=BXjaoykoD9lLJkioTJxA9d2rKRBfCPOckCvZdKOD2VUZXnvHeMl0AKq8vCyu6G0jdLtOXINsKoIO4XCgA5HbBCg3PMT89iQ0KXo9N6Zrcti6kSJNgdA3rBK49kJWk82LhrlBHQLRRAqBmOowKqMn9AC7RKehAZARyJfehDo315w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723833102; c=relaxed/simple;
-	bh=i0zV6lbPPWrGKxZ8cQwpB4ShIYz5hjzjpnBNmNeJRb8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=dn/KA4g/gbJPpF2evxeUgDoX9sJKugHfjNiFwGq5T21JzGayoPPzoSZtu5A4y2mGuS14Qo2AuO8aMY+MKN7jpqXpGmlee9SKPoCO3lBLSTQsX3HlthnbhSYa/Yt7gQu1o/vljoHOpHySObQOm2j2Qlw4uzw9RAyzhicS/lYsd4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2dGktiQh; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	s=arc-20240116; t=1723857617; c=relaxed/simple;
+	bh=6xizN+LbSybSC+qA6Wufiq3CS/S2oVo+OZCVEwpDJNk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=PgGIFoxfBFcfOH1N58K8MCOsAS5/y804HygTuSZtsv6VsajYSPFiEEgj1juQRNqtGsBw94tcICxL7LOPsnBu8+5sZYQYpy52/9mV89+/qnOyDkoLjLhxA+Yb80ogtM147y2S3HnqSTBXKNbpmtn2o3f4bfdcgj59emzCU3OEZT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NbQ+w4oL; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2dGktiQh"
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-7c6a4d99dbdso1844087a12.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 16 Aug 2024 11:31:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723833100; x=1724437900; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=REutRUN9HpiUkRLy4DH4FMjh6GvS15wrUkE7wZN+0aA=;
-        b=2dGktiQhvYvOW74HAQziKgWQSF5uxSKAXwc6wObgHyZI1ZUI6r4rIiA1NDu2F0KLBP
-         gtPbxJjvbP46Q3KQjYrHbWoSiugPvtkdg4zu1vAbCw825PepdO16PIcXZeoeXf1iYWh6
-         640ODvrtxp8fpV6Kd+GY6PwnmL//wS15zuv+T8U5ihEylx0H6akHhXpcQn4U6/6bcHBb
-         JyDeD9jpzL8CL0B3C37ddKbmdX9h0DQCm6I0Y3L5MqHObPREmifA69hTrC90enSXx+zx
-         RnfC06s1j3QqNZAYyXXkVk6ffuP3Q+DByo9cGJwq6DuJzrrJAM5EO/AwWc4HCoWQ+Jbn
-         S9gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723833100; x=1724437900;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=REutRUN9HpiUkRLy4DH4FMjh6GvS15wrUkE7wZN+0aA=;
-        b=VAwwkWVG0zNjpdUKO07RaWNPqNdG/HfxfU4D8kF/BeIaHN68cm3xkWt8HGVkh35DPo
-         eTPUL2/q7GcM886fpc6HvGOe3leIBxKNisKAnqiAQEqAxGtQonapZYMNtBMdjXnrKJy1
-         BOiOubg8QNgjFIqSa6jtMWRLsPQQLUVh3wi/stKltmmQu8BBhj5zUy0qdoGx3ao8ZpSl
-         txjoYJOwF4970Ry08mf4fG5JbExB1L2kvRP6+q0+xM378vZGk8QAMEmV4ca143Kzg+G1
-         pG3rY8sid+1xgOsLSNnFiddRHdCW0MftvRMLKXSiinGp0jYMVv1dhD14pCkeCObfOyzu
-         x0Bg==
-X-Forwarded-Encrypted: i=1; AJvYcCW2QvOKLhMVA/4CAy3sdK67VvL8z0MTKpJC6eN6DJB1wcsmR+KAgYYJAq6wz1jaCveTB2NCWBdUR0Fs9RRgcw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzcDIeraGDzxm4DUScxEpgC1al2t3j8B/uTeHladU4lQb4Vjsin
-	gD7+9dA60z+slHECMrKdvHZ0cEyucX15XkLrTwk+pIiYuor/5t8JkrbAw+SY7xol6LUYSjaT2+k
-	jxg==
-X-Google-Smtp-Source: AGHT+IFBBeZ4mwen6hWtId2WoTKWu3e1hoWuLVAB8Gq1vG68TQp5WX/jLsxLlzL7u/K/Kn+gb4wz0RDmXQY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a02:78b:b0:72b:5113:ec05 with SMTP id
- 41be03b00d2f7-7c979bbfb25mr6548a12.5.1723833100166; Fri, 16 Aug 2024 11:31:40
- -0700 (PDT)
-Date: Fri, 16 Aug 2024 11:31:38 -0700
-In-Reply-To: <0000000000006c777106196a68c1@google.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NbQ+w4oL"
+Date: Fri, 16 Aug 2024 21:20:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723857610;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=iF3eBkejSMN1ED//zc+wduQ2laK1pfoGGnyFLYjXXOU=;
+	b=NbQ+w4oLbZz+M8+ISTcH/2LY2UMabTzanyqI3cX/tMWrHTu4eDd3xg381N+TYXej0rqrKn
+	VIYUZAEkvf45BAkkGzrGCAtVM2eK/ThAlHq/8YFfJNwWjmIrjeEMEUNLQPI2cv5wWNqVWD
+	k1Wb7b/N+enLQOz6S7WNZevfyKAVbzg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.11-rc4
+Message-ID: <xu2afkq5jhn62z3juxkbvs2idoyldruyv3h65ympwx2svbgjia@2qqk5e6pcdoc>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <0000000000006c777106196a68c1@google.com>
-Message-ID: <Zr-bCqSWRS3yob7V@google.com>
-Subject: Re: [syzbot] [kvm?] KASAN: wild-memory-access Read in __timer_delete_sync
-From: Sean Christopherson <seanjc@google.com>
-To: syzbot <syzbot+d74d6f2cf5cb486c708f@syzkaller.appspotmail.com>
-Cc: bfoster@redhat.com, kent.overstreet@linux.dev, kvm@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, May 27, 2024, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    1613e604df0c Linux 6.10-rc1
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10672b3f180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=733cc7a95171d8e7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d74d6f2cf5cb486c708f
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: i386
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-1613e604.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/bdfe02141e4c/vmlinux-1613e604.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/9e655c2629f1/bzImage-1613e604.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d74d6f2cf5cb486c708f@syzkaller.appspotmail.com
-> 
-> bcachefs (loop0): shutting down
-> bcachefs (loop0): shutdown complete
-> ==================================================================
-> BUG: KASAN: wild-memory-access in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-> BUG: KASAN: wild-memory-access in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
-> BUG: KASAN: wild-memory-access in __lock_acquire+0xeba/0x3b30 kernel/locking/lockdep.c:5107
-> Read of size 8 at addr 1fffffff8763e898 by task syz-executor.0/11675
-> 
-> CPU: 0 PID: 11675 Comm: syz-executor.0 Not tainted 6.10.0-rc1-syzkaller #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
->  kasan_report+0xd9/0x110 mm/kasan/report.c:601
->  check_region_inline mm/kasan/generic.c:183 [inline]
->  kasan_check_range+0xef/0x1a0 mm/kasan/generic.c:189
->  instrument_atomic_read include/linux/instrumented.h:68 [inline]
->  _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
->  __lock_acquire+0xeba/0x3b30 kernel/locking/lockdep.c:5107
->  lock_acquire kernel/locking/lockdep.c:5754 [inline]
->  lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
->  __timer_delete_sync+0x152/0x1b0 kernel/time/timer.c:1647
->  del_timer_sync include/linux/timer.h:185 [inline]
->  cleanup_srcu_struct+0x124/0x520 kernel/rcu/srcutree.c:659
->  bch2_fs_btree_iter_exit+0x46e/0x630 fs/bcachefs/btree_iter.c:3410
->  __bch2_fs_free fs/bcachefs/super.c:556 [inline]
->  bch2_fs_release+0x11b/0x810 fs/bcachefs/super.c:603
->  kobject_cleanup lib/kobject.c:689 [inline]
->  kobject_release lib/kobject.c:720 [inline]
->  kref_put include/linux/kref.h:65 [inline]
->  kobject_put+0x1fa/0x5b0 lib/kobject.c:737
->  deactivate_locked_super+0xbe/0x1a0 fs/super.c:473
->  deactivate_super+0xde/0x100 fs/super.c:506
->  cleanup_mnt+0x222/0x450 fs/namespace.c:1267
->  task_work_run+0x14e/0x250 kernel/task_work.c:180
->  resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
->  exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
->  syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
->  __do_fast_syscall_32+0x80/0x120 arch/x86/entry/common.c:389
->  do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
->  entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-> RIP: 0023:0xf731b579
-> Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-> RSP: 002b:00000000ffc4e538 EFLAGS: 00000292 ORIG_RAX: 0000000000000034
-> RAX: 0000000000000000 RBX: 00000000ffc4e5e0 RCX: 0000000000000009
-> RDX: 00000000f7471ff4 RSI: 00000000f73c2361 RDI: 00000000ffc4f684
-> RBP: 00000000ffc4e5e0 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->  </TASK>
-> ==================================================================
+Hi Linus, fresh batch of fixes for you.
 
-Re-labeling this to bcachefs, as only one of the splats directly involves KVM,
-there were past failures in KVM that were likely caused by bcachesfs, and in the
-one splat that hit KVM, squashfs complained about possible data corruption between
-bcachefs unmounting and KVM dying (see below).
+We still have one regression from the disk accounting rewrite
+outstanding: we have a user reporting that the checks in
+bch2_accounting_validate() are firing, and in a codepath where that
+shouldn't be possible. Something funny is going on.
 
-#syz set subsystems: bcachefs
+Aside from that, everything is looking good for 6.11, and I expect we'll
+have that one resolved soon.
 
+The following changes since commit 8a2491db7bea6ad88ec568731eafd583501f1c96:
 
-[  212.712001][ T5229] bcachefs (loop2): shutting down
-[  212.714390][ T5229] bcachefs (loop2): going read-only
-[  212.716673][ T5229] bcachefs (loop2): finished waiting for writes to stop
-[  212.724653][ T5229] bcachefs (loop2): flushing journal and stopping allocators, journal seq 12
-[  212.740723][ T5229] bcachefs (loop2): flushing journal and stopping allocators complete, journal seq 14
-[  212.746964][ T5229] bcachefs (loop2): shutdown complete, journal seq 15
-[  212.750429][ T5229] bcachefs (loop2): marking filesystem clean
+  bcachefs: bcachefs_metadata_version_disk_accounting_v3 (2024-08-09 19:21:28 -0400)
 
-...
+are available in the Git repository at:
 
-[  212.875663][ T9117] loop1: detected capacity change from 0 to 8
-[  212.899637][ T9117] SQUASHFS error: zlib decompression failed, data probably corrupt
-[  212.903051][ T9117] SQUASHFS error: Failed to read block 0x4e8: -5
-[  213.053013][ T9115] ==================================================================
-[  213.056197][ T9115] BUG: KASAN: wild-memory-access in __lock_acquire+0xeba/0x3b30
-[  213.059059][ T9115] Read of size 8 at addr 1fffffff905a0b18 by task syz-executor.1/9115
-[  213.061962][ T9115] 
-[  213.062917][ T9115] CPU: 2 PID: 9115 Comm: syz-executor.1 Not tainted 6.10.0-rc5-syzkaller-00012-g626737a5791b #0
-[  213.068867][ T9115] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[  213.072893][ T9115] Call Trace:
-[  213.074033][ T9115]  <TASK>
-[  213.075190][ T9115]  dump_stack_lvl+0x116/0x1f0
-[  213.076947][ T9115]  kasan_report+0xd9/0x110
-[  213.082231][ T9115]  kasan_check_range+0xef/0x1a0
-[  213.083875][ T9115]  __lock_acquire+0xeba/0x3b30
-[  213.089050][ T9115]  lock_acquire+0x1b1/0x560
-[  213.096435][ T9115]  __timer_delete_sync+0x152/0x1b0
-[  213.100058][ T9115]  cleanup_srcu_struct+0x124/0x520
-[  213.102146][ T9115]  kvm_put_kvm+0x8d3/0xb80
-[  213.105999][ T9115]  kvm_vm_release+0x42/0x60
-[  213.107840][ T9115]  __fput+0x408/0xbb0
-[  213.109579][ T9115]  __fput_sync+0x47/0x50
-[  213.111404][ T9115]  __ia32_sys_close+0x86/0x100
-[  213.113458][ T9115]  __do_fast_syscall_32+0x73/0x120
-[  213.115472][ T9115]  do_fast_syscall_32+0x32/0x80
-[  213.117549][ T9115]  entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-[  213.146118][ T9115]  </TASK>
-[  213.147157][ T9115] ==================================================================
+  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-08-16
+
+for you to fetch changes up to 0e49d3ff12501adaafaf6fdb19699f021d1eda1c:
+
+  bcachefs: Fix locking in __bch2_trans_mark_dev_sb() (2024-08-16 20:45:15 -0400)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.11-rc4
+
+- New on disk format version, bcachefs_metadata_version_disk_accounting_inum
+
+This adds one more disk accounting counter, which counts disk usage and
+number of extents per inode number. This lets us track fragmentation,
+for implementing defragmentation later, and it also counts disk usage
+per inode in all snapshots, which will be a useful thing to expose to
+users.
+
+- One performance issue we've observed is threads spinning when they
+should be waiting for dirty keys in the key cache to be flushed by
+journal reclaim, so we now have hysteresis for the waiting thread, as
+well as improving the tracepoint and a new time_stat, for tracking time
+blocked waiting on key cache flushing.
+
+And, various assorted smaller fixes.
+
+----------------------------------------------------------------
+Kent Overstreet (19):
+      bcachefs: delete faulty fastpath in bch2_btree_path_traverse_cached()
+      bcachefs: Fix bch2_trigger_alloc when upgrading from old versions
+      bcachefs: bch2_accounting_invalid() fixup
+      bcachefs: disk accounting: ignore unknown types
+      bcachefs: Add missing downgrade table entry
+      bcachefs: Convert for_each_btree_node() to lockrestart_do()
+      lib/generic-radix-tree.c: Fix rare race in __genradix_ptr_alloc()
+      bcachefs: Add hysteresis to waiting on btree key cache flush
+      bcachefs: Improve trans_blocked_journal_reclaim tracepoint
+      bcachefs: Add a time_stat for blocked on key cache flush
+      bcachefs: Fix warning in __bch2_fsck_err() for trans not passed in
+      bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()
+      bcachefs: Kill __bch2_accounting_mem_mod()
+      bcachefs: bcachefs_metadata_version_disk_accounting_inum
+      bcachefs: Increase size of cuckoo hash table on too many rehashes
+      bcachefs: Fix forgetting to pass trans to fsck_err()
+      bcachefs: avoid overflowing LRU_TIME_BITS for cached data lru
+      bcachefs: fix incorrect i_state usage
+      bcachefs: Fix locking in __bch2_trans_mark_dev_sb()
+
+ fs/bcachefs/alloc_background.c            |  77 ++++++++--------
+ fs/bcachefs/alloc_background.h            |  30 +++----
+ fs/bcachefs/backpointers.c                |  23 ++---
+ fs/bcachefs/backpointers.h                |   5 +-
+ fs/bcachefs/bcachefs.h                    |   1 +
+ fs/bcachefs/bcachefs_format.h             |   3 +-
+ fs/bcachefs/bkey.h                        |   7 +-
+ fs/bcachefs/bkey_methods.c                | 109 +++++++++++-----------
+ fs/bcachefs/bkey_methods.h                |  21 +++--
+ fs/bcachefs/btree_gc.c                    |   5 +-
+ fs/bcachefs/btree_io.c                    |  69 +++++---------
+ fs/bcachefs/btree_iter.c                  |   1 +
+ fs/bcachefs/btree_iter.h                  |  42 +++++----
+ fs/bcachefs/btree_key_cache.c             |   5 --
+ fs/bcachefs/btree_key_cache.h             |  18 +++-
+ fs/bcachefs/btree_node_scan.c             |   2 +-
+ fs/bcachefs/btree_trans_commit.c          |  82 +++++------------
+ fs/bcachefs/btree_update_interior.c       |  16 +---
+ fs/bcachefs/buckets.c                     |  30 +++++--
+ fs/bcachefs/buckets_waiting_for_journal.c |  11 ++-
+ fs/bcachefs/data_update.c                 |   6 +-
+ fs/bcachefs/debug.c                       |  38 ++------
+ fs/bcachefs/dirent.c                      |  33 ++++---
+ fs/bcachefs/dirent.h                      |   5 +-
+ fs/bcachefs/disk_accounting.c             |  34 ++++---
+ fs/bcachefs/disk_accounting.h             |  60 ++++++-------
+ fs/bcachefs/disk_accounting_format.h      |   8 +-
+ fs/bcachefs/ec.c                          |  15 ++--
+ fs/bcachefs/ec.h                          |   5 +-
+ fs/bcachefs/errcode.h                     |   1 +
+ fs/bcachefs/error.c                       |  22 +++++
+ fs/bcachefs/error.h                       |  39 ++++----
+ fs/bcachefs/extents.c                     | 144 +++++++++++++++---------------
+ fs/bcachefs/extents.h                     |  24 ++---
+ fs/bcachefs/fs.c                          |   2 +-
+ fs/bcachefs/inode.c                       |  77 ++++++++--------
+ fs/bcachefs/inode.h                       |  24 ++---
+ fs/bcachefs/journal_io.c                  |  24 ++---
+ fs/bcachefs/lru.c                         |   9 +-
+ fs/bcachefs/lru.h                         |   5 +-
+ fs/bcachefs/quota.c                       |   8 +-
+ fs/bcachefs/quota.h                       |   5 +-
+ fs/bcachefs/reflink.c                     |  19 ++--
+ fs/bcachefs/reflink.h                     |  22 ++---
+ fs/bcachefs/sb-downgrade.c                |   6 +-
+ fs/bcachefs/snapshot.c                    |  42 +++++----
+ fs/bcachefs/snapshot.h                    |  11 ++-
+ fs/bcachefs/subvolume.c                   |  16 ++--
+ fs/bcachefs/subvolume.h                   |   5 +-
+ fs/bcachefs/trace.c                       |   1 +
+ fs/bcachefs/trace.h                       |  27 +++++-
+ fs/bcachefs/xattr.c                       |  21 +++--
+ fs/bcachefs/xattr.h                       |   5 +-
+ lib/generic-radix-tree.c                  |   2 +
+ 54 files changed, 650 insertions(+), 672 deletions(-)
