@@ -1,247 +1,209 @@
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049B28005B
-	for <linux-bcachefs@vger.kernel.org>; Sat, 17 Aug 2024 07:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87468D530
+	for <linux-bcachefs@vger.kernel.org>; Sat, 17 Aug 2024 16:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723880054; cv=none; b=ZsUPfdP+aZUo6Si/vcis6peCWu9tlXMddOM/JTw0HZnqQlebf0TCia+tUx2yKPqz2Y5F+xpSbUu62Ws4IpX0rbhCwdUGhQFBRd/9hYWhnq8XKAfEEkcklmaMAYmg1H48MY4Sol5xk7xMhfftXZjytPIgC9GsV2DfIci9LXVnHvM=
+	t=1723913432; cv=none; b=My5mzuIN88e6tueDEJLSnKZojXXKcWIV3HEvdVhno/EOETOtKtKhWMBCHcSCf2g+hoguaF0+rL9tqmBJxLaLrH4PeUL+kR77RJA0KLlt8n/045nSxxySE8lMjY5sYqLI5TVLsI207fQPBKBPzxsyjIRW/TIhb067rHiPYq+oU+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723880054; c=relaxed/simple;
-	bh=n4AR1Yc9SWav4A01JK9xLON835HdIUbjlJcLEwT1Pog=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XwkgomO0M4wIRNKaOP50bSNNbItA3BfGwapKhS880l4b0SJMzakabYcbEuD5KoRfi4ZT7FmZroo8EarMOZ6Butd9ZghngOxfkChNg6hTk1QeqbT3/Fb+tX9dyTWEJZdPojV/1WXyEXPGOiL8YzvLPwhnMD2XT4TjlNCPMLdP07I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OAYUBzaa; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OAYUBzaa"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20202df1c2fso11914435ad.1
-        for <linux-bcachefs@vger.kernel.org>; Sat, 17 Aug 2024 00:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723880052; x=1724484852; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vxZq5c3hEzcQXS8iioh1+Xp19Yf0D00NB35iRPmShNc=;
-        b=OAYUBzaa9Iz6VMC8qsKSJK9iW0V/JSBdVtNEuRzGZ6HUflvrV7zG7Ii/cXaV8b4Z3+
-         /AZYChWb72SPhy+qz6VlVyS3W0usgu2vy/Y5AKtqoirYkxpbJvS2m5iuY6vxSjqOQCmY
-         g8tuEn3EZdryKyaGEprW7Wi6BPQe+1Qb5LaQ4SUu3gxKlIDMNERkyZH9djF044ap8wRE
-         8N8D0vQJ0J5lc0Sxui8kn3uy4LIRoEqEKF1uO6oI9tPcQc458lEYuG6E+/+4OUKa3uf1
-         YCFMBfsGanMF/+hf0e+OKZ9kw9b6VDcf5lTuNXPYYHrSq8VqCnXRBFyq+WaJSUfTqYsI
-         zQJQ==
+	s=arc-20240116; t=1723913432; c=relaxed/simple;
+	bh=K78HzGd0jKFk7ukR56CQN1mMlgjGCLEiGvSEGC/1IIE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hLFhrZhTnbN1EUEzl8xmCTL8Uz8pXtK/09HJRYVXNJCqt2h83Uz60IxjuvKwWC98iMtzAzYYvKHuIsHrLuGGjzPWXp8pKTTDDQdFeVL0cJU2bFxd5P0Cyyc2MepSRMUao65geGtjydDTDYdc3PdaPeWiG9Gqmc2QgYnc4EdX71Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-81f87635cc1so297547039f.0
+        for <linux-bcachefs@vger.kernel.org>; Sat, 17 Aug 2024 09:50:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723880052; x=1724484852;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vxZq5c3hEzcQXS8iioh1+Xp19Yf0D00NB35iRPmShNc=;
-        b=WinvWeI3zYSR+UJU/0jgArk/6xqFh9AxCOO1TMx/FAcQRj2Sn1RAU0HVJTdmTSgY6o
-         /Y2L9IPlFTqruSmuwBzWa2oO9N5k1LQQywd8aDBua26jQOcUOPMgmYBj1LMWRX5WSoru
-         Ui+z2HuIbbp68tQbzfmZA6oQ70DrRNlssuembm8/9nlsN+55r+ogYr/Goh7q1cj7edW+
-         IFwsyjR9+Srf+hC9AaoobONmxFFOIB511/rBCmcLCBmdIaNSylBwPw3LWOm7V/P7CrCO
-         OHJEvf+MMAUsiyYlqOztdzEIIrkzPJcm6/ayEo1VMVkbnSHnNDfel4l6AacHgF53dYxo
-         0BPw==
-X-Gm-Message-State: AOJu0Yx8FPgyRb8Y7BjQxJoAylNcZYWFHT2gTmItuJaE86UGUI7B+mDZ
-	Uma1VlRRbZHwV3k1r2sR95pGYYgoEhGngm0pg9859c+DkWGr5LKQ
-X-Google-Smtp-Source: AGHT+IH9y0kfcUaM+8NLvAJn1RRo9Sgbj3rUGBj9L0qbYWKohyrT4jT8C48pLGrJhHyX2Bth1/oxjQ==
-X-Received: by 2002:a17:90a:67ce:b0:2c8:2cd1:881b with SMTP id 98e67ed59e1d1-2d3c3a8acefmr12580450a91.20.1723880051808;
-        Sat, 17 Aug 2024 00:34:11 -0700 (PDT)
-Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e2f633absm3185225a91.23.2024.08.17.00.34.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Aug 2024 00:34:11 -0700 (PDT)
-From: Alan Huang <mmpgouride@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH v2] bcachefs: Refactor bch2_bset_fix_lookup_table
-Date: Sat, 17 Aug 2024 15:34:01 +0800
-Message-ID: <20240817073401.517429-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.45.2
+        d=1e100.net; s=20230601; t=1723913429; x=1724518229;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WHSRz5XXTUnRmGfgXLWOeFUnFKr08MMs70Tz97IA3HM=;
+        b=R9vWhLow8gWrqLZQ90MjRwpXVFxsbcVz+rvngLNnYsTQT2tFdVkBAW5urQqIJfguvF
+         wRlJvvG40kxBeQJBmlOho79OxEsobKAQU2lmrZISm8njCh7wH8CdbVncJBBLJl597DOF
+         Zg0sEwwtq4f1Aku9J9S1H3S3O81T9RYZJtO1xA+GmE3jS+YTghPzLoprppg+cw8/d8FI
+         RMIFHK+5/qkk8O0HNA4UVI7/lufeJuBL4XGxTnYrdlvEg9hbErP587nkCd9yngAAS/5E
+         TsJgLeL5lBVk2Cs3M8teK5Cb24JxzL+XW01vmQ247ctmZugnYtm3eAlnJ6szru07Nf/Y
+         F+bw==
+X-Forwarded-Encrypted: i=1; AJvYcCWGFP/DIK+nVe8yi7p02OkbOrwaOSwVbt2EspFvraxHZwUikXgyWW1MyHkpJqWoTO9NshRlfuVPNSOKmFycGofvFa+z/IOm0AO+KrOnY30=
+X-Gm-Message-State: AOJu0YxrIi8c4BVe6k4H3S17T2IFLNlGvNRDBRmI7DUy8jMSdT3cCIlr
+	sCXh+N4BuDbTJ8r2tlA0amRHpfJpQAsk7cNo/4CWejVvGySYGBi7oVPGvQkJwMAwJz3vIzlq/V4
+	PV5e+ZTpN4qmrzTU3yvUJlE3SJr2CjFIKV5zZnpg7Q2c7FWAjCaQzqrM=
+X-Google-Smtp-Source: AGHT+IHCM1FhTeYc1KgYCBeY5Eo9pcXn1lcefNh8MEYcWyOzJSHJVZYWfq2AjFQGi83iwTtdd4azrtosyNFY7FFtLVwMV49uzT5Q
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:8917:b0:4c1:b049:25f with SMTP id
+ 8926c6da1cb9f-4cce15cc51dmr322833173.1.1723913429594; Sat, 17 Aug 2024
+ 09:50:29 -0700 (PDT)
+Date: Sat, 17 Aug 2024 09:50:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000983fad061fe3df80@google.com>
+Subject: [syzbot] [bcachefs?] WARNING in __virt_to_phys (5)
+From: syzbot <syzbot+e199425e3ce5a18d178c@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-bch2_bset_fix_lookup_table is too complicated to be easily understood,
-the comment "l now > where" there is also incorrect when where ==
-t->end_offset. This patch therefore refactor the function, the idea is
-that when where >= rw_aux_tree(b, t)[t->size - 1].offset, we don't need
-to adjust the rw aux tree.
+Hello,
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    8867bbd4a056 mm: arm64: Fix the out-of-bounds issue in con..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=14240e91980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1bc88a9f65787e86
+dashboard link: https://syzkaller.appspot.com/bug?extid=e199425e3ce5a18d178c
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/5ef30d34e749/disk-8867bbd4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a21c2389ebfb/vmlinux-8867bbd4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9720b12c3f99/Image-8867bbd4.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e199425e3ce5a18d178c@syzkaller.appspotmail.com
+
+bcachefs (loop4): done starting filesystem
+------------[ cut here ]------------
+virt_to_phys used for non-linear address: fffffffffffffff2 (0xfffffffffffffff2)
+WARNING: CPU: 0 PID: 6849 at arch/arm64/mm/physaddr.c:15 __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
+Modules linked in:
+CPU: 0 PID: 6849 Comm: syz.4.112 Tainted: G        W          6.10.0-rc2-syzkaller-g8867bbd4a056 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
+pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
+lr : __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
+sp : ffff8000a03b6c00
+x29: ffff8000a03b6c00 x28: 0000000000000002 x27: 1ffff00014076d98
+x26: 1ffff00014076d94 x25: dfff800000000000 x24: fffffffffffffff2
+x23: ffff0000c96a2220 x22: 000f600000000000 x21: 000000000000002d
+x20: fffffffffffffff2 x19: 000ffffffffffff2 x18: 1fffe000367a01de
+x17: ffff80008f3bd000 x16: ffff80008033878c x15: 0000000000000001
+x14: 1fffe000367a2e00 x13: 0000000000000000 x12: 0000000000000003
+x11: 0000000000000001 x10: 0000000000000003 x9 : c187ea6d31d9c500
+x8 : c187ea6d31d9c500 x7 : ffff8000802aebf8 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : ffff0000dc418000 x1 : ffff80008b3800a0 x0 : ffff8001249f9000
+Call trace:
+ __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
+ virt_to_phys arch/arm64/include/asm/memory.h:368 [inline]
+ virt_to_pfn arch/arm64/include/asm/memory.h:382 [inline]
+ virt_to_folio include/linux/mm.h:1313 [inline]
+ kfree+0xa4/0x3f4 mm/slub.c:4549
+ bch2_ioctl_fsck_online+0x358/0x580 fs/bcachefs/chardev.c:853
+ bch2_fs_ioctl+0x23ec/0x3980 fs/bcachefs/chardev.c:927
+ bch2_fs_file_ioctl+0x7b8/0x2460 fs/bcachefs/fs-ioctl.c:539
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl fs/ioctl.c:893 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:893
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+irq event stamp: 80570
+hardirqs last  enabled at (80569): [<ffff8000802aec98>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1418 [inline]
+hardirqs last  enabled at (80569): [<ffff8000802aec98>] finish_lock_switch+0xbc/0x1e4 kernel/sched/core.c:5162
+hardirqs last disabled at (80570): [<ffff80008b1fe010>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
+softirqs last  enabled at (80550): [<ffff8000801ea530>] softirq_handle_end kernel/softirq.c:400 [inline]
+softirqs last  enabled at (80550): [<ffff8000801ea530>] handle_softirqs+0xa60/0xc34 kernel/softirq.c:582
+softirqs last disabled at (80541): [<ffff800080020de8>] __do_softirq+0x14/0x20 kernel/softirq.c:588
+---[ end trace 0000000000000000 ]---
+Unable to handle kernel paging request at virtual address ffffffffc375ffc8
+KASAN: maybe wild-memory-access in range [0x0003fffe1baffe40-0x0003fffe1baffe47]
+Mem abort info:
+  ESR = 0x0000000096000006
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x06: level 2 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000001ac6da000
+[ffffffffc375ffc8] pgd=0000000000000000, p4d=00000001afff8003, pud=00000001afff9003, pmd=0000000000000000
+Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 0 PID: 6849 Comm: syz.4.112 Tainted: G        W          6.10.0-rc2-syzkaller-g8867bbd4a056 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : _compound_head include/linux/page-flags.h:245 [inline]
+pc : virt_to_folio include/linux/mm.h:1315 [inline]
+pc : kfree+0xbc/0x3f4 mm/slub.c:4549
+lr : virt_to_phys arch/arm64/include/asm/memory.h:368 [inline]
+lr : virt_to_pfn arch/arm64/include/asm/memory.h:382 [inline]
+lr : virt_to_folio include/linux/mm.h:1313 [inline]
+lr : kfree+0xa4/0x3f4 mm/slub.c:4549
+sp : ffff8000a03b6c30
+x29: ffff8000a03b6c40 x28: 0000000000000002 x27: 1ffff00014076d98
+x26: 1ffff00014076d94 x25: dfff800000000000 x24: fffffffffffffff2
+x23: ffff0000c96a2220 x22: ffff0000ef24a2d0 x21: fffffffffffffff2
+x20: ffffffffc375ffc0 x19: ffff8000828128a8 x18: 1fffe000367a01de
+x17: ffff80008f3bd000 x16: ffff80008033878c x15: 0000000000000001
+x14: 1fffe000367a2e00 x13: 0000000000000000 x12: 0000000000000003
+x11: 0000000000040000 x10: 0000000000015b3d x9 : 00003e000375ffc0
+x8 : ffffc1ffc0000000 x7 : ffff8000802aebf8 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : ffff0000dc418000 x1 : ffff80008b3800a0 x0 : 000080011d7ffff2
+Call trace:
+ virt_to_folio include/linux/mm.h:1313 [inline]
+ kfree+0xbc/0x3f4 mm/slub.c:4549
+ bch2_ioctl_fsck_online+0x358/0x580 fs/bcachefs/chardev.c:853
+ bch2_fs_ioctl+0x23ec/0x3980 fs/bcachefs/chardev.c:927
+ bch2_fs_file_ioctl+0x7b8/0x2460 fs/bcachefs/fs-ioctl.c:539
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl fs/ioctl.c:893 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:893
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+Code: 927acd29 f2d83fe8 cb141929 8b080134 (f9400688) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	927acd29 	and	x9, x9, #0x3ffffffffffffc0
+   4:	f2d83fe8 	movk	x8, #0xc1ff, lsl #32
+   8:	cb141929 	sub	x9, x9, x20, lsl #6
+   c:	8b080134 	add	x20, x9, x8
+* 10:	f9400688 	ldr	x8, [x20, #8] <-- trapping instruction
+
+
 ---
-Changes in v2:
-- rw_aux_tree_build_entry is renamed to rw_aux_tree_insert_entry
-- l is renamed to idx
-- two comments are removed since there are assertions
-- two parameters of the helper function are removed since they can be
-  computed through idx
-- goto verify instead of return directly
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- fs/bcachefs/bset.c | 128 ++++++++++++++++++++++++---------------------
- 1 file changed, 68 insertions(+), 60 deletions(-)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-diff --git a/fs/bcachefs/bset.c b/fs/bcachefs/bset.c
-index 1b66b2c7e018..d1f6092624d8 100644
---- a/fs/bcachefs/bset.c
-+++ b/fs/bcachefs/bset.c
-@@ -885,6 +885,38 @@ struct bkey_packed *bch2_bkey_prev_filter(struct btree *b,
- 
- /* Insert */
- 
-+static void rw_aux_tree_insert_entry(struct btree *b,
-+				     struct bset_tree *t,
-+				     unsigned idx)
-+{
-+	EBUG_ON(!idx || idx > t->size);
-+	struct bkey_packed *start = rw_aux_to_bkey(b, t, idx - 1);
-+	struct bkey_packed *end = idx < t->size
-+				  ? rw_aux_to_bkey(b, t, idx)
-+				  : btree_bkey_last(b, t);
-+
-+	if (t->size < bset_rw_tree_capacity(b, t) &&
-+	    (void *) end - (void *) start > L1_CACHE_BYTES) {
-+		struct bkey_packed *k = start;
-+
-+		while (1) {
-+			k = bkey_p_next(k);
-+			if (k == end)
-+				break;
-+
-+			if ((void *) k - (void *) start >= L1_CACHE_BYTES) {
-+				memmove(&rw_aux_tree(b, t)[idx + 1],
-+					&rw_aux_tree(b, t)[idx],
-+					(void *) &rw_aux_tree(b, t)[t->size] -
-+					(void *) &rw_aux_tree(b, t)[idx]);
-+				t->size++;
-+				rw_aux_tree_set(b, t, idx, k);
-+				break;
-+			}
-+		}
-+	}
-+}
-+
- static void bch2_bset_fix_lookup_table(struct btree *b,
- 				       struct bset_tree *t,
- 				       struct bkey_packed *_where,
-@@ -892,78 +924,54 @@ static void bch2_bset_fix_lookup_table(struct btree *b,
- 				       unsigned new_u64s)
- {
- 	int shift = new_u64s - clobber_u64s;
--	unsigned l, j, where = __btree_node_key_to_offset(b, _where);
-+	unsigned idx, j, where = __btree_node_key_to_offset(b, _where);
- 
- 	EBUG_ON(bset_has_ro_aux_tree(t));
- 
- 	if (!bset_has_rw_aux_tree(t))
- 		return;
- 
-+	if (where > rw_aux_tree(b, t)[t->size - 1].offset) {
-+		rw_aux_tree_insert_entry(b, t, t->size);
-+		goto verify;
-+	}
-+
- 	/* returns first entry >= where */
--	l = rw_aux_tree_bsearch(b, t, where);
--
--	if (!l) /* never delete first entry */
--		l++;
--	else if (l < t->size &&
--		 where < t->end_offset &&
--		 rw_aux_tree(b, t)[l].offset == where)
--		rw_aux_tree_set(b, t, l++, _where);
--
--	/* l now > where */
--
--	for (j = l;
--	     j < t->size &&
--	     rw_aux_tree(b, t)[j].offset < where + clobber_u64s;
--	     j++)
--		;
--
--	if (j < t->size &&
--	    rw_aux_tree(b, t)[j].offset + shift ==
--	    rw_aux_tree(b, t)[l - 1].offset)
--		j++;
--
--	memmove(&rw_aux_tree(b, t)[l],
--		&rw_aux_tree(b, t)[j],
--		(void *) &rw_aux_tree(b, t)[t->size] -
--		(void *) &rw_aux_tree(b, t)[j]);
--	t->size -= j - l;
--
--	for (j = l; j < t->size; j++)
--		rw_aux_tree(b, t)[j].offset += shift;
-+	idx = rw_aux_tree_bsearch(b, t, where);
-+
-+	if (rw_aux_tree(b, t)[idx].offset == where) {
-+		if (!idx) { /* never delete first entry */
-+			idx++;
-+		} else if (where < t->end_offset) {
-+			rw_aux_tree_set(b, t, idx++, _where);
-+		} else {
-+			EBUG_ON(where != t->end_offset);
-+			rw_aux_tree_insert_entry(b, t, --t->size);
-+			goto verify;
-+		}
-+	}
- 
--	EBUG_ON(l < t->size &&
--		rw_aux_tree(b, t)[l].offset ==
--		rw_aux_tree(b, t)[l - 1].offset);
-+	EBUG_ON(idx < t->size && rw_aux_tree(b, t)[idx].offset <= where);
-+	if (idx < t->size &&
-+	    rw_aux_tree(b, t)[idx].offset + shift ==
-+	    rw_aux_tree(b, t)[idx - 1].offset) {
-+		memmove(&rw_aux_tree(b, t)[idx],
-+			&rw_aux_tree(b, t)[idx + 1],
-+			(void *) &rw_aux_tree(b, t)[t->size] -
-+			(void *) &rw_aux_tree(b, t)[idx + 1]);
-+		t->size -= 1;
-+	}
- 
--	if (t->size < bset_rw_tree_capacity(b, t) &&
--	    (l < t->size
--	     ? rw_aux_tree(b, t)[l].offset
--	     : t->end_offset) -
--	    rw_aux_tree(b, t)[l - 1].offset >
--	    L1_CACHE_BYTES / sizeof(u64)) {
--		struct bkey_packed *start = rw_aux_to_bkey(b, t, l - 1);
--		struct bkey_packed *end = l < t->size
--			? rw_aux_to_bkey(b, t, l)
--			: btree_bkey_last(b, t);
--		struct bkey_packed *k = start;
-+	for (j = idx; j < t->size; j++)
-+		rw_aux_tree(b, t)[j].offset += shift;
- 
--		while (1) {
--			k = bkey_p_next(k);
--			if (k == end)
--				break;
-+	EBUG_ON(idx < t->size &&
-+		rw_aux_tree(b, t)[idx].offset ==
-+		rw_aux_tree(b, t)[idx - 1].offset);
- 
--			if ((void *) k - (void *) start >= L1_CACHE_BYTES) {
--				memmove(&rw_aux_tree(b, t)[l + 1],
--					&rw_aux_tree(b, t)[l],
--					(void *) &rw_aux_tree(b, t)[t->size] -
--					(void *) &rw_aux_tree(b, t)[l]);
--				t->size++;
--				rw_aux_tree_set(b, t, l, k);
--				break;
--			}
--		}
--	}
-+	rw_aux_tree_insert_entry(b, t, idx);
- 
-+verify:
- 	bch2_bset_verify_rw_aux_tree(b, t);
- 	bset_aux_tree_verify(b);
- }
--- 
-2.45.2
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
