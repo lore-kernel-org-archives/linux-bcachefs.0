@@ -1,32 +1,62 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BA916C6A3;
-	Mon, 19 Aug 2024 13:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEFD4EB38;
+	Mon, 19 Aug 2024 15:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724074012; cv=none; b=eLkaVDiqRaP8egV5slpozehUDxAtJWvyG2dieqhjrhEfKa/GyuuuqJZUgJABvg2+wRXy0SbynjVOlUq1EFSIj3hDOmzqdnV8Dje0Oo7b1cey87RqYLVk+D4DutdFJLlKQYvZPGYsuzp594V4k0WIckBXRzwDKfIE8Lmryzbl9XM=
+	t=1724080672; cv=none; b=YhiCyxhlJ9z9+Zb7x2FOzBUiRTzOSaE8H23lgg4ePJKFM7zkJ+OMg1DgIu4L96/1gNYitjGzoI4KcsmINdqP+ZnNBO5iw97/sJHL/BOmx/NfKX4s9PYDUgFnimBDhL2xOdIKdB8NB98kTgvCucEXPwNrzOu7Xoc4qlZ/18XtQ1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724074012; c=relaxed/simple;
-	bh=+0ol8U+5f4hpIwi2SBjnSUTDnRxgf4ARDPozjyJxXDI=;
+	s=arc-20240116; t=1724080672; c=relaxed/simple;
+	bh=mkTCGq2+1aSfwLXdPG5/078ftqbnfz5IVxvOhv3syUU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tOfv3zLU6/QITHiWXv2E9Zh8x2TDOVmsg/hslWtuVO0LHGQkHnu23aFoBhZrdwHTIIC/5zwrju7GNZ/IEGErT3XfnumfHNnmybEUbjHPmCmyjuTyg0QTxR1yESb6uZbVtSeQ5FB9L2zgRswH+bdVPzztCz21aJIK6f9IT43V0zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39923339;
-	Mon, 19 Aug 2024 06:27:16 -0700 (PDT)
-Received: from J2N7QTR9R3.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 241DC3F73B;
-	Mon, 19 Aug 2024 06:26:49 -0700 (PDT)
-Date: Mon, 19 Aug 2024 14:26:43 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: syzbot <syzbot+e199425e3ce5a18d178c@syzkaller.appspotmail.com>
-Cc: bfoster@redhat.com, kent.overstreet@linux.dev,
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bcachefs?] WARNING in __virt_to_phys (5)
-Message-ID: <ZsNIEyMZFlpaQtPr@J2N7QTR9R3.cambridge.arm.com>
-References: <000000000000983fad061fe3df80@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ImVLak5Mt1bfIsGcskK1nP+9Z64j9r/AczZJ71Xamne/MzFaQMvV7ThkXV0Rh/fN33zW97/GJ/whAQEIEcPvaduibmSbxuBrfPCPpNaI7xoo3uGIaGl+gXLSG4B9+Ip3eqTPKhsrB+y6doyY+dRMJqx5r8nYKjclWBfRFyBtwPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RNi4VT/0; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RNi4VT/0"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724080671; x=1755616671;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mkTCGq2+1aSfwLXdPG5/078ftqbnfz5IVxvOhv3syUU=;
+  b=RNi4VT/0pK7iiYZvsLQLbdE+0v64yma1gzPj59k768cXfARb2aXpFHuq
+   13FSNQE7/F4/X1+4pWUJLTbrIRIPNFIY3fsaiXNnMvOGMgYvWcnHo2H1A
+   U5cOfnC30R3ymYxbDfuQK0cUwy8pADdnXg7rjv208oyA158Xn0RdCJJpC
+   5TdEON+UF+KxoXpfKBUAIam5G8eIztLM/JxSIy1S09z1Mvp3vDmFJBhIx
+   Izzx/yO5PSAh/ljsC63fNzgmzEKFDyXxG5zfY097sqnwuQYd471njovOV
+   QO7UsKsh4JF7L3MYPgchBltXcGyxTnguu9ldqBuyH6Wcls84IHDG0W52r
+   A==;
+X-CSE-ConnectionGUID: hhdhzNJ1TPSRlHKwqZXiRw==
+X-CSE-MsgGUID: 7YGAmmA8TzG4mRnEJpsnag==
+X-IronPort-AV: E=McAfee;i="6700,10204,11169"; a="26201819"
+X-IronPort-AV: E=Sophos;i="6.10,159,1719903600"; 
+   d="scan'208";a="26201819"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 08:17:50 -0700
+X-CSE-ConnectionGUID: qg6M0GTMS7S3LueENvsLmw==
+X-CSE-MsgGUID: bwKcB7YoSYOagBFtT56AkQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,159,1719903600"; 
+   d="scan'208";a="64803975"
+Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 19 Aug 2024 08:17:48 -0700
+Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sg48f-000976-39;
+	Mon, 19 Aug 2024 15:17:45 +0000
+Date: Mon, 19 Aug 2024 23:17:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Lizhi Xu <lizhi.xu@windriver.com>,
+	syzbot+47ecc948aadfb2ab3efc@syzkaller.appspotmail.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] bcachefs: Fix oob in bch2_dev_journal_init
+Message-ID: <202408192244.CGhqCzQ3-lkp@intel.com>
+References: <20240819064754.35606-1-lizhi.xu@windriver.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -35,192 +65,121 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000983fad061fe3df80@google.com>
+In-Reply-To: <20240819064754.35606-1-lizhi.xu@windriver.com>
 
-On Sat, Aug 17, 2024 at 09:50:29AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    8867bbd4a056 mm: arm64: Fix the out-of-bounds issue in con..
+Hi Lizhi,
 
-It looks like that's somewhat stale; that commit no longer exists in the
-arm64/linux.git for-kernelci branch.
+kernel test robot noticed the following build warnings:
 
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14240e91980000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1bc88a9f65787e86
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e199425e3ce5a18d178c
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm64
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/5ef30d34e749/disk-8867bbd4.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/a21c2389ebfb/vmlinux-8867bbd4.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/9720b12c3f99/Image-8867bbd4.gz.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+e199425e3ce5a18d178c@syzkaller.appspotmail.com
-> 
-> bcachefs (loop4): done starting filesystem
-> ------------[ cut here ]------------
-> virt_to_phys used for non-linear address: fffffffffffffff2 (0xfffffffffffffff2)
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.11-rc4 next-20240819]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-That address looks like an error pointer (it's -14 AKA -EFAULT), though
-it's also possible that this is just an offset of -14 from a NULL
-pointer.
+url:    https://github.com/intel-lab-lkp/linux/commits/Lizhi-Xu/bcachefs-Fix-oob-in-bch2_dev_journal_init/20240819-145031
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20240819064754.35606-1-lizhi.xu%40windriver.com
+patch subject: [PATCH] bcachefs: Fix oob in bch2_dev_journal_init
+config: arm-randconfig-003-20240819 (https://download.01.org/0day-ci/archive/20240819/202408192244.CGhqCzQ3-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240819/202408192244.CGhqCzQ3-lkp@intel.com/reproduce)
 
-> WARNING: CPU: 0 PID: 6849 at arch/arm64/mm/physaddr.c:15 __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
-> Modules linked in:
-> CPU: 0 PID: 6849 Comm: syz.4.112 Tainted: G        W          6.10.0-rc2-syzkaller-g8867bbd4a056 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-> pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
-> lr : __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
-> sp : ffff8000a03b6c00
-> x29: ffff8000a03b6c00 x28: 0000000000000002 x27: 1ffff00014076d98
-> x26: 1ffff00014076d94 x25: dfff800000000000 x24: fffffffffffffff2
-> x23: ffff0000c96a2220 x22: 000f600000000000 x21: 000000000000002d
-> x20: fffffffffffffff2 x19: 000ffffffffffff2 x18: 1fffe000367a01de
-> x17: ffff80008f3bd000 x16: ffff80008033878c x15: 0000000000000001
-> x14: 1fffe000367a2e00 x13: 0000000000000000 x12: 0000000000000003
-> x11: 0000000000000001 x10: 0000000000000003 x9 : c187ea6d31d9c500
-> x8 : c187ea6d31d9c500 x7 : ffff8000802aebf8 x6 : 0000000000000000
-> x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
-> x2 : ffff0000dc418000 x1 : ffff80008b3800a0 x0 : ffff8001249f9000
-> Call trace:
->  __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
->  virt_to_phys arch/arm64/include/asm/memory.h:368 [inline]
->  virt_to_pfn arch/arm64/include/asm/memory.h:382 [inline]
->  virt_to_folio include/linux/mm.h:1313 [inline]
->  kfree+0xa4/0x3f4 mm/slub.c:4549
->  bch2_ioctl_fsck_online+0x358/0x580 fs/bcachefs/chardev.c:853
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408192244.CGhqCzQ3-lkp@intel.com/
 
-AFAICT that's the kfree in the following block:
+All warnings (new ones prefixed by >>):
 
-	char *optstr = strndup_user((char __user *)(unsigned long) arg.opts, 1 << 16);
+>> fs/bcachefs/journal.c:1317:6: warning: format specifies type 'unsigned long' but the argument has type '__u64' (aka 'unsigned long long') [-Wformat]
+    1316 |                                 prt_printf(&buf, "journal v2 entry d[%u].nr %lu overflow!\n", i,
+         |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                                                             %llu
+    1317 |                                         le64_to_cpu(journal_buckets_v2->d[i].nr));
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/byteorder/generic.h:87:21: note: expanded from macro 'le64_to_cpu'
+      87 | #define le64_to_cpu __le64_to_cpu
+         |                     ^
+   include/uapi/linux/byteorder/little_endian.h:33:26: note: expanded from macro '__le64_to_cpu'
+      33 | #define __le64_to_cpu(x) ((__force __u64)(__le64)(x))
+         |                          ^
+   fs/bcachefs/util.h:78:54: note: expanded from macro 'prt_printf'
+      78 | #define prt_printf(_out, ...)           bch2_prt_printf(_out, __VA_ARGS__)
+         |                                                               ^~~~~~~~~~~
+   1 warning generated.
 
-	ret =   PTR_ERR_OR_ZERO(optstr) ?:
-		bch2_parse_mount_opts(c, &thr->opts, NULL, optstr);
-	if (!IS_ERR(optstr))
-		kfree(optstr);
 
-... where (in v6.11-rc4) that kfree(optstr) is on line 853, and the
-prior strndup_user() can return -EFAULT, but that *should* be caught by
-the '!IS_ERR(optstr)' check.
+vim +1317 fs/bcachefs/journal.c
 
-Another possibility is that the kfree is a tail-call at the end of
-bch2_parse_mount_opts(), and somehow 'copied_opts_start' there is -EFAULT, but
-I cannot immeditately see how that could be the case either.
+  1297	
+  1298	int bch2_dev_journal_init(struct bch_dev *ca, struct bch_sb *sb)
+  1299	{
+  1300		struct journal_device *ja = &ca->journal;
+  1301		struct bch_sb_field_journal *journal_buckets =
+  1302			bch2_sb_field_get(sb, journal);
+  1303		struct bch_sb_field_journal_v2 *journal_buckets_v2 =
+  1304			bch2_sb_field_get(sb, journal_v2);
+  1305	
+  1306		ja->nr = 0;
+  1307	
+  1308		if (journal_buckets_v2) {
+  1309			unsigned nr = bch2_sb_field_journal_v2_nr_entries(journal_buckets_v2);
+  1310	
+  1311			for (unsigned i = 0; i < nr; i++) {
+  1312				ja->nr += le64_to_cpu(journal_buckets_v2->d[i].nr);
+  1313				if (le64_to_cpu(journal_buckets_v2->d[i].nr) > UINT_MAX) {
+  1314					struct bch_fs *c = ca->fs;
+  1315					struct printbuf buf = PRINTBUF;
+  1316					prt_printf(&buf, "journal v2 entry d[%u].nr %lu overflow!\n", i,
+> 1317						le64_to_cpu(journal_buckets_v2->d[i].nr));
+  1318					bch_info(c, "%s", buf.buf);
+  1319					printbuf_exit(&buf);
+  1320					return -BCH_ERR_ENOMEM_dev_journal_init;
+  1321				}
+  1322			}
+  1323		} else if (journal_buckets) {
+  1324			ja->nr = bch2_nr_journal_buckets(journal_buckets);
+  1325		}
+  1326	
+  1327		ja->bucket_seq = kcalloc(ja->nr, sizeof(u64), GFP_KERNEL);
+  1328		if (!ja->bucket_seq)
+  1329			return -BCH_ERR_ENOMEM_dev_journal_init;
+  1330	
+  1331		unsigned nr_bvecs = DIV_ROUND_UP(JOURNAL_ENTRY_SIZE_MAX, PAGE_SIZE);
+  1332	
+  1333		for (unsigned i = 0; i < ARRAY_SIZE(ja->bio); i++) {
+  1334			ja->bio[i] = kmalloc(struct_size(ja->bio[i], bio.bi_inline_vecs,
+  1335					     nr_bvecs), GFP_KERNEL);
+  1336			if (!ja->bio[i])
+  1337				return -BCH_ERR_ENOMEM_dev_journal_init;
+  1338	
+  1339			ja->bio[i]->ca = ca;
+  1340			ja->bio[i]->buf_idx = i;
+  1341			bio_init(&ja->bio[i]->bio, NULL, ja->bio[i]->bio.bi_inline_vecs, nr_bvecs, 0);
+  1342		}
+  1343	
+  1344		ja->buckets = kcalloc(ja->nr, sizeof(u64), GFP_KERNEL);
+  1345		if (!ja->buckets)
+  1346			return -BCH_ERR_ENOMEM_dev_journal_init;
+  1347	
+  1348		if (journal_buckets_v2) {
+  1349			unsigned nr = bch2_sb_field_journal_v2_nr_entries(journal_buckets_v2);
+  1350			unsigned dst = 0;
+  1351	
+  1352			for (unsigned i = 0; i < nr; i++)
+  1353				for (unsigned j = 0; j < le64_to_cpu(journal_buckets_v2->d[i].nr); j++)
+  1354					ja->buckets[dst++] =
+  1355						le64_to_cpu(journal_buckets_v2->d[i].start) + j;
+  1356		} else if (journal_buckets) {
+  1357			for (unsigned i = 0; i < ja->nr; i++)
+  1358				ja->buckets[i] = le64_to_cpu(journal_buckets->buckets[i]);
+  1359		}
+  1360	
+  1361		return 0;
+  1362	}
+  1363	
 
-Mark.
-
->  bch2_fs_ioctl+0x23ec/0x3980 fs/bcachefs/chardev.c:927
->  bch2_fs_file_ioctl+0x7b8/0x2460 fs/bcachefs/fs-ioctl.c:539
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:907 [inline]
->  __se_sys_ioctl fs/ioctl.c:893 [inline]
->  __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:893
->  __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
->  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
->  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
->  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
->  el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
->  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
->  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-> irq event stamp: 80570
-> hardirqs last  enabled at (80569): [<ffff8000802aec98>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1418 [inline]
-> hardirqs last  enabled at (80569): [<ffff8000802aec98>] finish_lock_switch+0xbc/0x1e4 kernel/sched/core.c:5162
-> hardirqs last disabled at (80570): [<ffff80008b1fe010>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-> softirqs last  enabled at (80550): [<ffff8000801ea530>] softirq_handle_end kernel/softirq.c:400 [inline]
-> softirqs last  enabled at (80550): [<ffff8000801ea530>] handle_softirqs+0xa60/0xc34 kernel/softirq.c:582
-> softirqs last disabled at (80541): [<ffff800080020de8>] __do_softirq+0x14/0x20 kernel/softirq.c:588
-> ---[ end trace 0000000000000000 ]---
-> Unable to handle kernel paging request at virtual address ffffffffc375ffc8
-> KASAN: maybe wild-memory-access in range [0x0003fffe1baffe40-0x0003fffe1baffe47]
-> Mem abort info:
->   ESR = 0x0000000096000006
->   EC = 0x25: DABT (current EL), IL = 32 bits
->   SET = 0, FnV = 0
->   EA = 0, S1PTW = 0
->   FSC = 0x06: level 2 translation fault
-> Data abort info:
->   ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
->   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
->   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000001ac6da000
-> [ffffffffc375ffc8] pgd=0000000000000000, p4d=00000001afff8003, pud=00000001afff9003, pmd=0000000000000000
-> Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 0 PID: 6849 Comm: syz.4.112 Tainted: G        W          6.10.0-rc2-syzkaller-g8867bbd4a056 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-> pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : _compound_head include/linux/page-flags.h:245 [inline]
-> pc : virt_to_folio include/linux/mm.h:1315 [inline]
-> pc : kfree+0xbc/0x3f4 mm/slub.c:4549
-> lr : virt_to_phys arch/arm64/include/asm/memory.h:368 [inline]
-> lr : virt_to_pfn arch/arm64/include/asm/memory.h:382 [inline]
-> lr : virt_to_folio include/linux/mm.h:1313 [inline]
-> lr : kfree+0xa4/0x3f4 mm/slub.c:4549
-> sp : ffff8000a03b6c30
-> x29: ffff8000a03b6c40 x28: 0000000000000002 x27: 1ffff00014076d98
-> x26: 1ffff00014076d94 x25: dfff800000000000 x24: fffffffffffffff2
-> x23: ffff0000c96a2220 x22: ffff0000ef24a2d0 x21: fffffffffffffff2
-> x20: ffffffffc375ffc0 x19: ffff8000828128a8 x18: 1fffe000367a01de
-> x17: ffff80008f3bd000 x16: ffff80008033878c x15: 0000000000000001
-> x14: 1fffe000367a2e00 x13: 0000000000000000 x12: 0000000000000003
-> x11: 0000000000040000 x10: 0000000000015b3d x9 : 00003e000375ffc0
-> x8 : ffffc1ffc0000000 x7 : ffff8000802aebf8 x6 : 0000000000000000
-> x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
-> x2 : ffff0000dc418000 x1 : ffff80008b3800a0 x0 : 000080011d7ffff2
-> Call trace:
->  virt_to_folio include/linux/mm.h:1313 [inline]
->  kfree+0xbc/0x3f4 mm/slub.c:4549
->  bch2_ioctl_fsck_online+0x358/0x580 fs/bcachefs/chardev.c:853
->  bch2_fs_ioctl+0x23ec/0x3980 fs/bcachefs/chardev.c:927
->  bch2_fs_file_ioctl+0x7b8/0x2460 fs/bcachefs/fs-ioctl.c:539
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:907 [inline]
->  __se_sys_ioctl fs/ioctl.c:893 [inline]
->  __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:893
->  __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
->  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
->  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
->  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
->  el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
->  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
->  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-> Code: 927acd29 f2d83fe8 cb141929 8b080134 (f9400688) 
-> ---[ end trace 0000000000000000 ]---
-> ----------------
-> Code disassembly (best guess):
->    0:	927acd29 	and	x9, x9, #0x3ffffffffffffc0
->    4:	f2d83fe8 	movk	x8, #0xc1ff, lsl #32
->    8:	cb141929 	sub	x9, x9, x20, lsl #6
->    c:	8b080134 	add	x20, x9, x8
-> * 10:	f9400688 	ldr	x8, [x20, #8] <-- trapping instruction
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
