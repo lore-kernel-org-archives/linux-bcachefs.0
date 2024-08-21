@@ -1,45 +1,67 @@
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18F81803E;
-	Wed, 21 Aug 2024 03:31:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C05614F9DA
+	for <linux-bcachefs@vger.kernel.org>; Wed, 21 Aug 2024 16:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724211076; cv=none; b=GR2jKFfKAlbSsnybLgJzET0MCXY6KpnZXHnCjPQ1k5qBbKFnFFJLgwHN347biOxEYGuDfvrQ4y9Tkoz5pvMKO82tLTtY+bSEQ9rb7y65NxAiIToAobNBtzuwG4KHsZra6RjErN3lJ7G3i0LIyeK35oBQ94BCM6JFcMbSC/FW9Oo=
+	t=1724257793; cv=none; b=dqZLfTg4MBAQdWB5784L//H5saf/lfsJSY1BAF307vztjsYE2LmVQmEwUIARpQMt9BTII1bc9zTq7rqh2rCols2Ytn7v/j0ahxlrFciI578zSs3Ep+ENEjK8s+ZNZTWhhs3glDIoM26R87n1Us7bX2G4dMsNc6Fw0KCx2ZjHkMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724211076; c=relaxed/simple;
-	bh=ULGGJTYhv2rwWZc4fenX5GKTGSd0gEW+tpujNdJUQdU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nHMYc3VlkJDs2w0nv55Ol7YgY0wx7uX63h/QWBbP38cJw0SW13XFmyKDCuzPLtNYkzqbkou/wvCCbyAgv95q6ZmqES0djA/Ce8Go/PnAmEhp+waOSU2ciTVLmPMJr3FVkIOOfgMm0FAMNoxSC+Bdt4moMsP032nA9v2JRYQqNsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47L3UUuD022800;
-	Wed, 21 Aug 2024 03:31:04 GMT
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 412ju6unmu-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Wed, 21 Aug 2024 03:31:04 +0000 (GMT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 20 Aug 2024 20:31:02 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.39 via Frontend Transport; Tue, 20 Aug 2024 20:31:00 -0700
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <kent.overstreet@linux.dev>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lizhi.xu@windriver.com>,
-        <syzbot+47ecc948aadfb2ab3efc@syzkaller.appspotmail.com>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: Re: [PATCH V3] bcachefs: Add journal v2 entry nr value check
-Date: Wed, 21 Aug 2024 11:30:59 +0800
-Message-ID: <20240821033059.2244258-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <vr4n6n25sq5dtcr3njl44ev2dxrawpz6s6xwv6cpjfm33uqmay@uhieqhcxeuns>
-References: <vr4n6n25sq5dtcr3njl44ev2dxrawpz6s6xwv6cpjfm33uqmay@uhieqhcxeuns>
+	s=arc-20240116; t=1724257793; c=relaxed/simple;
+	bh=+2F3YQaCGLitcTbNdWyuZTbsn8oeYp3wyShw7o+4Dfc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b2oFTTf+x3xukih0AZ6hXPtkqcjddVsWKTNBIXrVX7MYN0VNUrfYhdEg1HBo+x3oEKfEJYjulJ67/vSFXGkun45PBVMVpkfSoyw0/PcI92T3FVLlUKLnvtKCU8wIDgNaC/WgjVD+IiLhNEW8YmZ+TOlCLTErx8LQZUb3Nu3wwGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=Dntg5lUS; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="Dntg5lUS"
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-53345fe848eso176920e87.2
+        for <linux-bcachefs@vger.kernel.org>; Wed, 21 Aug 2024 09:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1724257790; x=1724862590; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mQiMkF2LHLJ8ofvZ2BWlH/LDX2/cHbFn/G18VRaMIA0=;
+        b=Dntg5lUSgD1wAJz+cQ0HICy+qFPjL26LwdcYD0DNIwJMeefaTInW2LCnWEIEI2mz74
+         R/S645kfbW3SbXEtXOeI+BHv7L+eznTVFKj4Xraf0JSnCiXRJYE+WdNZfkJGRMCkHjuM
+         KYRyCyQ5MwAyrLgZqeHKf8oDmgN1owmaKxgUEdArrAykAil5dOealcVWSzp1O9FgI5aM
+         fJBQT0wlAWx7lMkE9VCvjVJfwB2NvjQ7LSGwZizs2ldvTIchDAnM+MyK3Eht9/2T3u3s
+         YGuUVEzhG7oXvvRHjqi9ncCIjvPQeecT5uKHd/bg5poF2ncRBRV2pMaFEdG0l0PgyjOP
+         AZYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724257790; x=1724862590;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mQiMkF2LHLJ8ofvZ2BWlH/LDX2/cHbFn/G18VRaMIA0=;
+        b=PGozbCSL84glbXtdb6eMEL7LB3LK912+16nq/7NJmwar6CH8Z7NQdAB0DFy0Rkkq/I
+         //Ge0YGjcTynC4DAeB/Te1Xi2vFgkLEAx1g8qsnJhiI+4X0q5IUA1Qy7ZMuJYLhKkDTj
+         MG819kksj/N4s1md0fzBT7tEvJtUVAMP1+ZxXfOH+/HYAfelpSoSvOUUkuUSBamzWsfA
+         05wParaKd9VKTTCo16bO1GEX1/19GWMoRCs8ujqObsJNVg7zkzLJe5lHpMlwn8F5p0EL
+         483obu8y85mf6gaKQVKhssf4hDtDVfgKyVp8uMU1GRombudwbGx7LlCWG4gB58vTl/iX
+         6HAg==
+X-Gm-Message-State: AOJu0Yy4L/cJsnd54gGqa4/4jjcswNFmd/hKhMY47t77vrPlu2eCjHJN
+	2pXFxzU3qDk6E6uQ9LtVoXxO+OXoC6piAJe9m6mG0Ydv9wJtEhPbTs/A/azKFM7ZEfuh3XqLxbR
+	YmJg=
+X-Google-Smtp-Source: AGHT+IFHDSmUWk0dq5DuUAdcENAjlQn2DZw21ZX5ZsRsgXG0sXCieYPYQNvWnKVi23rjGRAUfxcBeA==
+X-Received: by 2002:a05:6512:b99:b0:52f:c438:883c with SMTP id 2adb3069b0e04-5334854a5cemr1026987e87.1.1724257789262;
+        Wed, 21 Aug 2024 09:29:49 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-228.dynamic.mnet-online.de. [82.135.80.228])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8678ae3ee8sm105515666b.25.2024.08.21.09.29.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2024 09:29:48 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: kent.overstreet@linux.dev,
+	kees@kernel.org,
+	gustavoars@kernel.org
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] bcachefs: Annotate struct bucket_array with __counted_by()
+Date: Wed, 21 Aug 2024 18:29:22 +0200
+Message-ID: <20240821162921.86767-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -47,72 +69,29 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ywKoFpMpWX82AjYd9oAP2yhNPsI6gLuo
-X-Authority-Analysis: v=2.4 cv=VdWlP0p9 c=1 sm=1 tr=0 ts=66c55f78 cx=c_pps a=/ZJR302f846pc/tyiSlYyQ==:117 a=/ZJR302f846pc/tyiSlYyQ==:17 a=yoJbH4e0A30A:10 a=hSkVLCK3AAAA:8 a=t7CeM3EgAAAA:8 a=e9QManfWWoWEGbeKLPEA:9 a=cQPPKAXgyycSBL8etih5:22
- a=FdTzh2GWekK77mhwV6Dw:22
-X-Proofpoint-GUID: ywKoFpMpWX82AjYd9oAP2yhNPsI6gLuo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-21_03,2024-08-19_03,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- spamscore=0 malwarescore=0 impostorscore=0 mlxscore=0 suspectscore=0
- mlxlogscore=999 lowpriorityscore=0 bulkscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.21.0-2407110000 definitions=main-2408210023
 
-On Tue, 20 Aug 2024 23:16:50 -0400, Lizhi Xu wrote:
-> > On Tue, 20 Aug 2024 23:00:05 -0400, Kent Overstreet wrote:
-> > > > When the nr value of a signle entry or their sum overflows, it will
-> > > > cause the value of ja->nr to be incorrect, this will result in the
-> > > > allocated memory to ja->buckets being too small, leading to out of
-> > > > bounds access in bch2_dev_journal_init.
-> > > >
-> > > > Reported-by: syzbot+47ecc948aadfb2ab3efc@syzkaller.appspotmail.com
-> > > > Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
-> > > > ---
-> > > >  fs/bcachefs/journal_sb.c | 16 +++++++++++++++-
-> > > >  1 file changed, 15 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/fs/bcachefs/journal_sb.c b/fs/bcachefs/journal_sb.c
-> > > > index db80e506e3ab..230ed99130e4 100644
-> > > > --- a/fs/bcachefs/journal_sb.c
-> > > > +++ b/fs/bcachefs/journal_sb.c
-> > > > @@ -107,6 +107,7 @@ static int bch2_sb_journal_v2_validate(struct bch_sb *sb, struct bch_sb_field *f
-> > > >  	unsigned nr;
-> > > >  	unsigned i;
-> > > >  	struct u64_range *b;
-> > > > +	u64 total_nr = 0, entry_nr;
-> > > >
-> > > >  	nr = bch2_sb_field_journal_v2_nr_entries(journal);
-> > > >  	if (!nr)
-> > > > @@ -117,8 +118,21 @@ static int bch2_sb_journal_v2_validate(struct bch_sb *sb, struct bch_sb_field *f
-> > > >  		return -BCH_ERR_ENOMEM_sb_journal_v2_validate;
-> > > >
-> > > >  	for (i = 0; i < nr; i++) {
-> > > > +		entry_nr = le64_to_cpu(journal->d[i].nr);
-> > > > +		if (entry_nr > UINT_MAX) {
-> > > > +			prt_printf(err, "Journal v2 entry d[%u] nr %llu overflow\n",
-> > > > +				i, entry_nr);
-> > > > +			goto err;
-> > > > +		}
-> > >
-> > > This check is unnecessary; we know the sum can't overflow a u64 because
-> > > we're also checking that the entries are nonoverlapping.
-> > You didn't read my previous email carefully.
-> > In this issue, journal->d[0] is 7, journal->d[1] is 18446744073709551615,
-> > so the sum of their u64 type values will definitely overflow.
-> 
-> It doesn't matter. We're already checking that the entries are
-> nonoverlapping, and within the range of [1, nbuckets), so total_nr can't
-> overflow nbuckets, much less an s64 (not that that matters).
-Are you sure? Or did I not express myself clearly? See the actual running results below:
-le64_to_cpu(journal->d[1].nr) + le64_to_cpu(journal->d[0].nr) = 7 + 18446744073709551615 will overflow.
+Add the __counted_by compiler attribute to the flexible array member
+bucket to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
+CONFIG_FORTIFY_SOURCE.
 
-When a u64 overflow occurs, total_nr will not be greater than UINT_MAX,
-so it is not enough to only calculate the total nr of entry to determine.
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ fs/bcachefs/buckets_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Note: u64 contains 0 ~ 18446744073709551616.
+diff --git a/fs/bcachefs/buckets_types.h b/fs/bcachefs/buckets_types.h
+index c9698cdf866f..a19460a1bb7c 100644
+--- a/fs/bcachefs/buckets_types.h
++++ b/fs/bcachefs/buckets_types.h
+@@ -24,7 +24,7 @@ struct bucket_array {
+ 	u16			first_bucket;
+ 	size_t			nbuckets;
+ 	size_t			nbuckets_minus_first;
+-	struct bucket		b[];
++	struct bucket		b[] __counted_by(nbuckets);
+ };
+ 
+ struct bucket_gens {
+-- 
+2.46.0
 
-BR,
-Lizhi
