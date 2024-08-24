@@ -1,98 +1,96 @@
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B876558B7
-	for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 11:48:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDD6156F42
+	for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 13:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724500116; cv=none; b=JTtA3ME9dKBIdhtnddXkAgxcE0zAdGZGcLEexVgIp357dkyALe1NQ0KwZo8hf/a6aABcGn28OCvCtG3N+T2IYyRnv4o2o0uZI+SIfdCEHy8XmLTfWZdLotZYpXP5kwunQe4+GcCW7kiDrg4t8RyDDq+5XHszhjfn+LIuWYt+7pc=
+	t=1724507913; cv=none; b=COchnaTxjupddkVEkxQm4w8HZ1waqUvkLOX8JqyAmSbCQO/TyLL8CwTs5IWbXZd1zJxFe0oTGD7m4OxLPJ3qGgx5+BsEbY90Hoy6ohCy2iUMMsez/6pUAxbd/4psTxuDrlwUw0xqXP7kRwcgCxc1AqEFyGe2GUI2ODozyJg3OTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724500116; c=relaxed/simple;
-	bh=weh4v49Y8RDcsT98terEAy02b7b0x/RdxZoa+N/uwY8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lj0VzcL28vJbz7aHul7lLTIam+zh4aldNSqX7MyfdvMm8EXmcR0kd/hurg2EBp9OZsv1tAgxtfle1qzb11eMrcgDYb3QXUL+AYCqdZkTmp9xP8nEJO/dYHgNXOngsGLMxeDMNx8NlwAMrQbij5Cx+pqDAYh1mlWKBksDHqAytmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fiLzNgkT; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1724507913; c=relaxed/simple;
+	bh=P1qjlgra+xKuf75uKY++0mLXCHBirUzdlkoC/xqdFlY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=co4DExF2cxPzxydm0XDeaF4u//IAcYPmB/7Mt4M3WHz9gkndOjP9FGDysjMvBq/Cw4YhIynC72p/gJw+Zib7GkSWwTsyzUpEJdTcfhmS6miees97ebhAPcQdZpKMnaQbKpDWRMGuTuoY+lhX2spmwJqVkspSy9PvRahsDngz14Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=a9ThtCyY; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fiLzNgkT"
-Date: Sat, 24 Aug 2024 07:48:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724500112;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=weh4v49Y8RDcsT98terEAy02b7b0x/RdxZoa+N/uwY8=;
-	b=fiLzNgkTkKmthEsPyMorc+MC3akPLmXVoObq0LCbhpe9U34oZQR8pEaDO3r6oH2JGrifBU
-	vfxbcR+zD2lJmDZKW29Ii8UDAuJb5ImrOQT54s6UT94VrFmsDduVVDT2Gmi91oQ9NWjwo+
-	SDX7c4/ePHnN4/YvF3tZ3NfqLkg0JmM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5
-Message-ID: <7dwjsfnrxyxewrxsyznkl6kbgilnfisom7igpeyesmihktejqt@njz4xjtpcgw5>
-References: <sctzes5z3s2zoadzldrpw3yfycauc4kpcsbpidjkrew5hkz7yf@eejp6nunfpin>
- <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com>
- <kj5vcqbx5ztolv5y3g4csc6te4qmi7y7kmqfora2sxbobnrbrm@rcuffqncku74>
- <CAHk-=wjuLtz5F12hgCb1Yp1OVr4Bbo481m-k3YhheHWJQLpA0g@mail.gmail.com>
- <nxyp62x2ruommzyebdwincu26kmi7opqq53hbdv53hgqa7zsvp@dcveluxhuxsd>
- <CAHk-=wgpb0UPYYSe6or8_NHKQD+VooTxpfgSpHwKydhm3GkS0A@mail.gmail.com>
- <CAHk-=wghvQQyWKg50XL1LRxc+mg25mSTypGNrRsX3ptm+aKF3w@mail.gmail.com>
- <ihakmznu2sei3wfx2kep3znt7ott5bkvdyip7gux35gplmnptp@3u26kssfae3z>
- <1816164937.417.1724473375169@mail.carlthompson.net>
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="a9ThtCyY"
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4281da2cdaeso4579825e9.2
+        for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 06:58:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1724507909; x=1725112709; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VRYjLQs0r26czWvaNx2T4sLxT7Rxn58hBdTuSAcDUEE=;
+        b=a9ThtCyYkCv+Ath02d6XsiNSHQdeSZ8JcuH14czfAYVO05Dxj4IMNLRfx+8ZMsGnyB
+         ddyaz/OG10wxpTGsqOnOh6pdi+TWZENkXqfSKcv2vVA8wjUwAhcYAUDE6fKTSaYMfuRG
+         BXxhJFH+vkddEDkhk4+91nWBhmtIcD9UKfXs0TgvPt+hkpAoQvqsP+y7pDLrUzjQ8yI1
+         vnFm6GArUUv436DIOdSzMog0shAwQq2CvF04c5VhLpCzQtN2sXnY/oSuWHdf7+FrB2lU
+         JXa1S0/i82hWRwYMILo7+3Nw06Ab1OARkyLIRm9E5fzQP2PtLVxxtyx/gXAwoxFcd/zn
+         Whbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724507909; x=1725112709;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VRYjLQs0r26czWvaNx2T4sLxT7Rxn58hBdTuSAcDUEE=;
+        b=V36z2kWz6ohMwaeEmAXCypcW5oVSTlfFfeGa2h2+6DoqW8tn3RoL2qVascew/Pcp1O
+         tCZ3n1nNWpXgGdbtlxSOfKnA3KuJecmSj5mxXwlNPpT59e/hh0hKNA5FLZWn9w4FvuTA
+         XMci32Iw/0hwnKyiVOUYH+BjBEt+hidTOxId2QEhPZuDVJB3T1MLhVfwoz2K4XTk+pG8
+         ySlVj2fJGpNIRI05nPISP/W/L0L9/5V11lAib4+Jnqdr5w2LYJ9Y8sDdvW84scmecuyI
+         7IZzUEBGF7LQYbbEwWRhb9XLpGOorBJLUU3g0qlnqIoF9lov33vjjknuAuoi/y/P5wKm
+         FrhA==
+X-Gm-Message-State: AOJu0YzOfK7GZxFCvPqqiFZ+deU8lQTXmsp7D/dSZiS0qzsnSMdI3RAG
+	1bvWrJjfXW1sbRHegoOm0HBK1dXeGV6zcsbwOI12iyM08thTbqcT83/rdtUawZU=
+X-Google-Smtp-Source: AGHT+IHrCGLci+4IDEpg/zrkzk9St5ONWrFr4kGJ5L2dzDRmvf2ZTLHku/dUdt5itzrehd3Jbt/Azg==
+X-Received: by 2002:a05:6000:402a:b0:367:95e3:e4c6 with SMTP id ffacd0b85a97d-373118310a2mr1933615f8f.1.1724507908944;
+        Sat, 24 Aug 2024 06:58:28 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-228.dynamic.mnet-online.de. [82.135.80.228])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a868f48a5ffsm407956166b.177.2024.08.24.06.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Aug 2024 06:58:28 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: kent.overstreet@linux.dev,
+	kees@kernel.org,
+	gustavoars@kernel.org
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] bcachefs: Annotate struct bch_xattr with __counted_by()
+Date: Sat, 24 Aug 2024 15:57:41 +0200
+Message-ID: <20240824135740.1971-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1816164937.417.1724473375169@mail.carlthompson.net>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Fri, Aug 23, 2024 at 09:22:55PM GMT, Carl E. Thompson wrote:
-> Kent, I'm not a kernel developer I'm just a user that is impressed with b=
-cachefs, uses it on his personal systems, and eagerly waits for new feature=
-s. I am one of the users who's been using bcachefs for years and has never =
-lost any data using it.
->=20
-> However I am going to be blunt: as someone who designs and builds Linux-b=
-ased storage servers (well, I used to) as part of their job I would never, =
-ever consider using bcachefs professionally as it is now and the way it app=
-ears to be developed currently. It is simply too much changed too fast with=
-out any separation between what is currently stable and working for custome=
-rs and new development. Your work is excellent but **process** is equally a=
-nd sometimes even more important. Some of the other hats I've worn professi=
-onally include as a lead C/C++ developer and as a product release manager s=
-o I've learned from very painful experience that large projects absolutely =
-**must** have strict rules for process. I'm sure you realize that. Linus is=
- not being a jerk about this. Just a couple of months ago Linus had to tell=
- you the exact same thing he's telling you again here. And that wasn't the =
-first time. Is your plan to just continue to break the rules and do whateve=
-r the heck you want until
+Add the __counted_by compiler attribute to the flexible array member
+x_name to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
+CONFIG_FORTIFY_SOURCE.
 
-You guys are freaked out because I'm moving quickly and you don't have
-visibility into my own internal process, that's all.
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ fs/bcachefs/xattr_format.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I've got a test clusture, a community testing my code before I send it
-to Linus, and a codebase that I own and know like the back of my hand
-that's stuffed with assertions. And, the changes in question are
-algorithmically fairly simple and things that I have excellent test
-coverage for. These are all factors that let me say, with confidence,
-that there really aren't any bugs in this this pull request.
+diff --git a/fs/bcachefs/xattr_format.h b/fs/bcachefs/xattr_format.h
+index e9f810539552..c7916011ef34 100644
+--- a/fs/bcachefs/xattr_format.h
++++ b/fs/bcachefs/xattr_format.h
+@@ -13,7 +13,7 @@ struct bch_xattr {
+ 	__u8			x_type;
+ 	__u8			x_name_len;
+ 	__le16			x_val_len;
+-	__u8			x_name[];
++	__u8			x_name[] __counted_by(x_name_len);
+ } __packed __aligned(8);
+ 
+ #endif /* _BCACHEFS_XATTR_FORMAT_H */
+-- 
+2.46.0
 
-Look, there will always be a natural tension between "strict rules and
-processes" vs. "weighing the situations and using your judgement". There
-isn't a right or wrong answer as to where on the spectrum we should be,
-we just all have to use our brains.
-
-No one is being jerks here, Linus and I are just sitting in different
-places with different perspectives. He has a resonsibility as someone
-managing a huge project to enforce rules as he sees best, while I have a
-responsibility to support users with working code, and to do that to the
-best of my abilities.
