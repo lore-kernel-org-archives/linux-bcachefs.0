@@ -1,114 +1,108 @@
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039B222309
-	for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 02:14:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE74EF4ED
+	for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 02:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724465644; cv=none; b=mnpwong4/MM6cNvJo120zl52DaI9UacgxlwISVCx16QWs7DM3Y2LAazkjIJiPl2QBXbILzVVeX9QbxGn0D/0aWJbIeaT0mYcoRLKUe3WeCvtAjbaZYhvs1N0WdCJxUa6oZIMm/ehkI4eF/S5cHJOjAN8pHDqcDz9nDnnF+Yb0Sc=
+	t=1724466323; cv=none; b=lMBW1tcOv73jLFJfwM2nHrcoQ5YwksNilPoB6h2OIs/SDYEYBdpfK7DP2n1RV9Y31KjPyNRRDC6HLES/qywdcLImi4LX+ueTRwfH9HIY5HWnKK5oSqPdgdhG/hhn2HGtw4syCzHJ/oS1iBuIrEqjCF6idpiHV34fyx8Y151Uml8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724465644; c=relaxed/simple;
-	bh=wsggU1i1mlRkcevrebSeFBbAZvFYZY1rrXSz5oqh/vY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sAdmrMAdemUO85ZRPjR21DQ5cKjwS5UUskT8RQ9dGXGeGOivWWu6GGPRRdjrnHm0Kb/RJg0a3H+CwU+UUh0EEgLaRtalyc3+B+gZ1IKyniW3U+y/9u3KZ0+vXtjHvu304WY9d51Kxu4/p0ka+3XHPcjtdT83eqvk6kF/jyAxN6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pZDkD1iU; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1724466323; c=relaxed/simple;
+	bh=Qqf15j6v2yiLLe8CF3OCSjA/vKpAkg09Fp7KgnUeagw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LnoWU0Mdh/ryKCnMIpCBC6vOF8KMC3BWSKzRe4XBpvoF86vW1Dfhjqkyt3pCtLb9he6DZt+NswwERmPxU+C+aqUicRWYFd/pLhrEA1qNO6XByayAlIlMvMkLbp+UbVLr2iApUbeSeJ11y+jM8zjC571D8TszEhLTiZgl1mB8cUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YwL2qKBU; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pZDkD1iU"
-Date: Fri, 23 Aug 2024 22:13:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724465640;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9m8pwLxr3o6YtqvfL2u6T8+1Sb9ci9wPW6mDAFX1ExE=;
-	b=pZDkD1iUfuADBOyJjt7TUmSM3EYJwFOHhKlp7lHHkz5RrY14pO3hR3gkggf8cGflFFxLhy
-	rniL8VU61bZ8oV5rYWnj4yQIVgiedcVtrBgk+TWg7oZ6eFWF2dYt0uOwx3P6ZVhtwmu3uH
-	nAKZo1xEoft+rz8pIiDZkFZJFGrjnek=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5
-Message-ID: <kj5vcqbx5ztolv5y3g4csc6te4qmi7y7kmqfora2sxbobnrbrm@rcuffqncku74>
-References: <sctzes5z3s2zoadzldrpw3yfycauc4kpcsbpidjkrew5hkz7yf@eejp6nunfpin>
- <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YwL2qKBU"
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a86acbaddb4so123892466b.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 23 Aug 2024 19:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1724466320; x=1725071120; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2xKPzNyZISPiEHK/cpzIhG4H3Lo5I0AHNFIjgfYtaa8=;
+        b=YwL2qKBUS/r0SNnrw7mB1sx0+KXpvOHNmsKeM/YQpjspukQlK5OPy6fey2wtH75G7o
+         HVgb2GTQ4UbICMTLrgAugiDZp3P7KtLTMrg+k8tGbzpFghJ9o0I7E88pV/JwMSDNkLm7
+         okK21cPYeqmfUptWTPIJ1/O8YWU3k6GXW/POU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724466320; x=1725071120;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2xKPzNyZISPiEHK/cpzIhG4H3Lo5I0AHNFIjgfYtaa8=;
+        b=DKwsDbuSy6RllwvKoi5+v0HojXOSAUR2R59ZU0JZin1mXwVQGIo89mOCBQYUTlJNLo
+         4pwW5T/o0csUyY9SUvu0WZ1eo2aGSxgm2DL6nwAfDhRl3/ZhT08j21DulG+Fr0gcT1FF
+         6l8dhVgUgPHLnOcfh0BV/9MwyyxBrQaTXa/N0hmt8q/wWyJmCRgP6gbtnze7v8DUPz/h
+         W7dXxyD/fmvwqRrEGP8GMCsRuYcYpwzWw+aOA843v9JWQzNNwHiAETnbsotSt3ue7VO4
+         q8woTWqQT3/R0nkeS0P+FeCxnVyEMN8CieI91w2TGPuHYkc60FPXpSBembp5R/Wec5yb
+         kncQ==
+X-Gm-Message-State: AOJu0YxeKbjWCYCl4dd2Wm5bpCyJGGiMgn3fukQOlC55VXtVtLwAL8To
+	t8nS4PEZQe3UQ3pouYljr0nrT3ZB0EjKBV+SFIr4PrEMfpdcIzT5OzjeE7js6m6tbZdgiJdvF20
+	xl9GnAQ==
+X-Google-Smtp-Source: AGHT+IEa/wRLw3txBMH6YS+ssc1473SdmqdvYEwIJzt+V2UudwACHECvuJc+MjUXBifHatBfqCx8/Q==
+X-Received: by 2002:a17:907:d89:b0:a80:7ce0:8b2a with SMTP id a640c23a62f3a-a86a52b6a3amr209640366b.19.1724466319441;
+        Fri, 23 Aug 2024 19:25:19 -0700 (PDT)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a868f4ebdc6sm337759666b.188.2024.08.23.19.25.18
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Aug 2024 19:25:18 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5bed83487aeso2874268a12.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 23 Aug 2024 19:25:18 -0700 (PDT)
+X-Received: by 2002:a05:6402:43cc:b0:5bf:8f3:7869 with SMTP id
+ 4fb4d7f45d1cf-5c0891791e4mr2666131a12.21.1724466318472; Fri, 23 Aug 2024
+ 19:25:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <sctzes5z3s2zoadzldrpw3yfycauc4kpcsbpidjkrew5hkz7yf@eejp6nunfpin>
+ <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com> <kj5vcqbx5ztolv5y3g4csc6te4qmi7y7kmqfora2sxbobnrbrm@rcuffqncku74>
+In-Reply-To: <kj5vcqbx5ztolv5y3g4csc6te4qmi7y7kmqfora2sxbobnrbrm@rcuffqncku74>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 24 Aug 2024 10:25:02 +0800
+X-Gmail-Original-Message-ID: <CAHk-=wjuLtz5F12hgCb1Yp1OVr4Bbo481m-k3YhheHWJQLpA0g@mail.gmail.com>
+Message-ID: <CAHk-=wjuLtz5F12hgCb1Yp1OVr4Bbo481m-k3YhheHWJQLpA0g@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Aug 24, 2024 at 09:23:00AM GMT, Linus Torvalds wrote:
-> On Sat, 24 Aug 2024 at 02:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+On Sat, 24 Aug 2024 at 10:14, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> On Sat, Aug 24, 2024 at 09:23:00AM GMT, Linus Torvalds wrote:
+> > On Sat, 24 Aug 2024 at 02:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > >
+> > > Hi Linus, big one this time...
 > >
-> > Hi Linus, big one this time...
-> 
-> Yeah, no, enough is enough. The last pull was already big.
-> 
-> This is too big, it touches non-bcachefs stuff, and it's not even
-> remotely some kind of regression.
-> 
-> At some point "fix something" just turns into development, and this is
-> that point.
-> 
-> Nobody sane uses bcachefs and expects it to be stable, so every single
-> user is an experimental site.
+> > Yeah, no, enough is enough. The last pull was already big.
+> >
+> > This is too big, it touches non-bcachefs stuff, and it's not even
+> > remotely some kind of regression.
+> >
+> > At some point "fix something" just turns into development, and this is
+> > that point.
+> >
+> > Nobody sane uses bcachefs and expects it to be stable, so every single
+> > user is an experimental site.
+>
+> Eh?
+>
+> Universal consensus has been that bcachefs is _definitely_ more
+> trustworthy than brtfs,
 
-Eh?
+I'll believe that when there are major distros that use it and you
+have lots of varied use.
 
-Universal consensus has been that bcachefs is _definitely_ more
-trustworthy than brtfs, in terms of "will this filesystem ever go
-unrecoverable or lose my data" - I've seen many reports of people who've
-put it through the same situations where btrfs falls.
+But it doesn't even change the issue: you aren't fixing a regression,
+you are doing new development to fix some old probl;em, and now you
+are literally editing non-bcachefs files too.
 
-I've ever seen people compare bcachefs's robustness in positive terms
-vs. /xfs/; and that's the result of a *hell* of a lot of work with the
-#1 goal of having a robust filesystem that _never_ loses data.
+Enough is enough.
 
-Syzbot dashboard bears this out as well, bcachefs is starting to look
-better than btrfs there as well...
-
-(Peanut gallery: Please don't rush out and switch to bcachefs just yet.
-I still have a backlog of bugs and issues - some of them serious, as in
-your filessystem will go emergency read only - and I don't want people
-getting bit. There's still a ton to do; I'm not taking EXPERIMENTAL off
-until at least the fuzz testing for on disk corruption is in play).
-
-Look, I've been doing this for a long time, I've had people running my
-code in production for a long time, and I'm working with my users on a
-daily basis to address issues. I don't throw code over the wall; I do
-everything I can to support it and make sure it's working well. 
-
-And - the "srcu held for 10+s warnings" really were bad, there are going
-to be a long tail of those that need to be fixed - to get to the rest,
-we need the primary causes fixed first.
-
-And when I ship code, I'm _always_ weighing "how much do we want this"
-vs. "risk of regression/risk in general" - I'm not just throwing out
-whatever I feel like.
-
-Look, this is the filesystem you're all going to want to be running in -
-knock on wood - just a year or two, because I'm working to to make it
-more robust and reliable than xfs and ext4 (and yes, it will be) with
-_end to end data integrity_.
-
-We need this. there's still tons of people with "btrfs just crapped
-itself and now I'm fucked" horror stories, and running a non
-checksumming filesystem is like buying non ECC ram. I've got users with
-100+ TB filesystems who trust my code, and I haven't lost anyone's
-filesystem who was patient and willing to work with me.
-
-But I've got to get this done, and right now that does mean moving fast
-and grinding through a lot of issues.
-
-(again for the peanut gallery: _please_ do not rush to install it yet
-unless you are willing and able to report issues, I'll say when the bugs
-have been worked through and the hardening is done).
+                   Linus
