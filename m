@@ -1,100 +1,114 @@
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7433D320C
-	for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 01:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039B222309
+	for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 02:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724462603; cv=none; b=BfuCuY5x7vn8kb+5tHZkMTY4eGR6hiHTZ/lKlvwhhYkT+ufaq0GXx+bpGXdaegc3wv75K1aGPiXt0rXbpSN0lErh2I0slhW4Aa9jlClpILFtlm8goHJRCNUGtku3bK9xbwcuApCrt4sE3TK3ZseDxKpr5FbeDNLQXaJWHtVRMtw=
+	t=1724465644; cv=none; b=mnpwong4/MM6cNvJo120zl52DaI9UacgxlwISVCx16QWs7DM3Y2LAazkjIJiPl2QBXbILzVVeX9QbxGn0D/0aWJbIeaT0mYcoRLKUe3WeCvtAjbaZYhvs1N0WdCJxUa6oZIMm/ehkI4eF/S5cHJOjAN8pHDqcDz9nDnnF+Yb0Sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724462603; c=relaxed/simple;
-	bh=pFBmn1b8HGmxiNAzjHuI1t8iCFvWlQvq1ax4yTVhtWc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MeKApIuAr2hnkt4MuqdQofLCO17AHubfOm8TNHggG5mGD59+yQFqU14s1+hHE+cY23aTlpqZYWCS9J3n/8k0UD+MW88TRgHRtVV/T4/mTVCJ9PCaiVTAmZ5DapqXBjJP8rKXsj6nMdkzEffBjguuR/mPHqVWx7Y7xntn5dLUOrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=KDtEMk6n; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1724465644; c=relaxed/simple;
+	bh=wsggU1i1mlRkcevrebSeFBbAZvFYZY1rrXSz5oqh/vY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sAdmrMAdemUO85ZRPjR21DQ5cKjwS5UUskT8RQ9dGXGeGOivWWu6GGPRRdjrnHm0Kb/RJg0a3H+CwU+UUh0EEgLaRtalyc3+B+gZ1IKyniW3U+y/9u3KZ0+vXtjHvu304WY9d51Kxu4/p0ka+3XHPcjtdT83eqvk6kF/jyAxN6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pZDkD1iU; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="KDtEMk6n"
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-533496017f8so3427371e87.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 23 Aug 2024 18:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1724462599; x=1725067399; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hS0PlIghB31D9UEMBMHujKkEVm4tXs1uqCiHkuDkoqU=;
-        b=KDtEMk6nuI2F12uxqL2oxrKKtfpPaoT5FBEU6JIi99X+0H5aisnt2AYeFAgqiU5okV
-         ASgMgLDDoRY9gUWzwRru0rCrTmRan0oq10Kj/kl2T9f/5JXlWccyfZwMvc4sLHxEuC1W
-         vHnHM0INEQX4y9oLxyGy37u8OC7HRN1pqr7AE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724462599; x=1725067399;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hS0PlIghB31D9UEMBMHujKkEVm4tXs1uqCiHkuDkoqU=;
-        b=FLET0pyNFiyol9MzJH9c7+2N1nQChndOMa3d8YIvQJJ+kM3XV661UpifiVnn7xX7fV
-         lmbyjGS72A6GeVNsCrI0ofBMF603BWEU96aJVGA/JhM9AgVZZGtBqIKpR5P9+7GL25zN
-         S1RHW0lXuiybLcTdFVYcVPeFcCc19RvAO08mXy67wYwAJxAOHgXB5mQ/3FCP9oYmna22
-         dfPLG7+ywa/nd8cm7KIquWC3gWV5lPN462UaqoMfX23g0yrDclYRSiCKeQGjLxVSBk6S
-         VgpdTINOeaY4vddVhuDeH5RMvqMpAkK98xuSxJMkhzo7X1hzes5svK88Fy4E1836+G/J
-         3ung==
-X-Gm-Message-State: AOJu0Yyx2meuvjOndJfXHge4SysuwCvN1pvAL1h1QW5WvUG2faWX/RYo
-	KdTdmBdLwXYMyA54CxmbQ1E9BafCSS1p0GLa7FIpDR6pIL616ByJHMEzBk6sC0s7Z3JInVU5SXr
-	VBfvq6A==
-X-Google-Smtp-Source: AGHT+IGZkb2oMaeplAollXtUK89/bfp0dbp+6pTVHNxEma6eEGGs+sb+I1Gu6/HOQXlkjo9ErkcKXQ==
-X-Received: by 2002:a05:6512:3d24:b0:52c:e3ad:3fbf with SMTP id 2adb3069b0e04-5343885f866mr2272036e87.42.1724462598686;
-        Fri, 23 Aug 2024 18:23:18 -0700 (PDT)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a868f2200f3sm331974966b.45.2024.08.23.18.23.17
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Aug 2024 18:23:17 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5bf01bdaff0so2910900a12.3
-        for <linux-bcachefs@vger.kernel.org>; Fri, 23 Aug 2024 18:23:17 -0700 (PDT)
-X-Received: by 2002:a05:6402:430c:b0:58b:585b:42a2 with SMTP id
- 4fb4d7f45d1cf-5c0891a92a6mr2273293a12.38.1724462597330; Fri, 23 Aug 2024
- 18:23:17 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pZDkD1iU"
+Date: Fri, 23 Aug 2024 22:13:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724465640;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9m8pwLxr3o6YtqvfL2u6T8+1Sb9ci9wPW6mDAFX1ExE=;
+	b=pZDkD1iUfuADBOyJjt7TUmSM3EYJwFOHhKlp7lHHkz5RrY14pO3hR3gkggf8cGflFFxLhy
+	rniL8VU61bZ8oV5rYWnj4yQIVgiedcVtrBgk+TWg7oZ6eFWF2dYt0uOwx3P6ZVhtwmu3uH
+	nAKZo1xEoft+rz8pIiDZkFZJFGrjnek=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5
+Message-ID: <kj5vcqbx5ztolv5y3g4csc6te4qmi7y7kmqfora2sxbobnrbrm@rcuffqncku74>
+References: <sctzes5z3s2zoadzldrpw3yfycauc4kpcsbpidjkrew5hkz7yf@eejp6nunfpin>
+ <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <sctzes5z3s2zoadzldrpw3yfycauc4kpcsbpidjkrew5hkz7yf@eejp6nunfpin>
-In-Reply-To: <sctzes5z3s2zoadzldrpw3yfycauc4kpcsbpidjkrew5hkz7yf@eejp6nunfpin>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 24 Aug 2024 09:23:00 +0800
-X-Gmail-Original-Message-ID: <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com>
-Message-ID: <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, 24 Aug 2024 at 02:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> Hi Linus, big one this time...
+On Sat, Aug 24, 2024 at 09:23:00AM GMT, Linus Torvalds wrote:
+> On Sat, 24 Aug 2024 at 02:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > Hi Linus, big one this time...
+> 
+> Yeah, no, enough is enough. The last pull was already big.
+> 
+> This is too big, it touches non-bcachefs stuff, and it's not even
+> remotely some kind of regression.
+> 
+> At some point "fix something" just turns into development, and this is
+> that point.
+> 
+> Nobody sane uses bcachefs and expects it to be stable, so every single
+> user is an experimental site.
 
-Yeah, no, enough is enough. The last pull was already big.
+Eh?
 
-This is too big, it touches non-bcachefs stuff, and it's not even
-remotely some kind of regression.
+Universal consensus has been that bcachefs is _definitely_ more
+trustworthy than brtfs, in terms of "will this filesystem ever go
+unrecoverable or lose my data" - I've seen many reports of people who've
+put it through the same situations where btrfs falls.
 
-At some point "fix something" just turns into development, and this is
-that point.
+I've ever seen people compare bcachefs's robustness in positive terms
+vs. /xfs/; and that's the result of a *hell* of a lot of work with the
+#1 goal of having a robust filesystem that _never_ loses data.
 
-Nobody sane uses bcachefs and expects it to be stable, so every single
-user is an experimental site.
+Syzbot dashboard bears this out as well, bcachefs is starting to look
+better than btrfs there as well...
 
-The bcachefs patches have become these kinds of "lots of development
-during the release cycles rather than before it", to the point where
-I'm starting to regret merging bcachefs.
+(Peanut gallery: Please don't rush out and switch to bcachefs just yet.
+I still have a backlog of bugs and issues - some of them serious, as in
+your filessystem will go emergency read only - and I don't want people
+getting bit. There's still a ton to do; I'm not taking EXPERIMENTAL off
+until at least the fuzz testing for on disk corruption is in play).
 
-If bcachefs can't work sanely within the normal upstream kernel
-release schedule, maybe it shouldn't *be* in the normal upstream
-kernel.
+Look, I've been doing this for a long time, I've had people running my
+code in production for a long time, and I'm working with my users on a
+daily basis to address issues. I don't throw code over the wall; I do
+everything I can to support it and make sure it's working well. 
 
-This is getting beyond ridiculous.
+And - the "srcu held for 10+s warnings" really were bad, there are going
+to be a long tail of those that need to be fixed - to get to the rest,
+we need the primary causes fixed first.
 
-               Linus
+And when I ship code, I'm _always_ weighing "how much do we want this"
+vs. "risk of regression/risk in general" - I'm not just throwing out
+whatever I feel like.
+
+Look, this is the filesystem you're all going to want to be running in -
+knock on wood - just a year or two, because I'm working to to make it
+more robust and reliable than xfs and ext4 (and yes, it will be) with
+_end to end data integrity_.
+
+We need this. there's still tons of people with "btrfs just crapped
+itself and now I'm fucked" horror stories, and running a non
+checksumming filesystem is like buying non ECC ram. I've got users with
+100+ TB filesystems who trust my code, and I haven't lost anyone's
+filesystem who was patient and willing to work with me.
+
+But I've got to get this done, and right now that does mean moving fast
+and grinding through a lot of issues.
+
+(again for the peanut gallery: _please_ do not rush to install it yet
+unless you are willing and able to report issues, I'll say when the bugs
+have been worked through and the hardening is done).
