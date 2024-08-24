@@ -1,78 +1,97 @@
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD12A5F
-	for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 03:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154ED1E4B2;
+	Sat, 24 Aug 2024 04:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724469054; cv=none; b=HYvs/cIQ1LCH7SiD5hwXWvIgemiGyIno+T+v5MjFz0RijTYtVXtXRbTFCuCm4+QdBKIwx++cAcUY6NHp2j0MYorjZEbODcGxCjtFlQ2p4WC71g+Nw+lbSpkdwNct1zhvU6YtoZVkfP2pAdnnZ8/wD0UUn2TgDp2WTobYqZYVgPc=
+	t=1724473690; cv=none; b=kwuc58i6wPWdDp8cGMG1lCFwutq1lMFHvfGpWXmk5/i2Kvr3fj3onfMqEqslYk8bR+i/EmTNhU443rFKnVtpJsNJNyfyYCxWjDceR+ZXRPekVaZ7lpIqPltps3LC3MLsJAjGdVjRCz0JWKDHY2lJuILsQpaZaNOij1mHa0GLS7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724469054; c=relaxed/simple;
-	bh=g4X3Hb4vfdtWyWtPp5CWavlSwSPr8PtlG5+nqb5GJCs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pLcEOHlGa8nnKj6cFYE0SB+gKh/AC5tz6TVsXI2b8tDiv68+ec0iW+6cC4da6KdZyeT/Fpkgi86tjXjH4x2uwRD73uopjDM7S6Dup/8ZELhwUQKhkXGS49tFaEOI5I6bpNIfrtvLcM3cp2Bi9WbHY66H1kpsqs1qap7O3upzquI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F8XDiF/6; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F8XDiF/6"
-Date: Fri, 23 Aug 2024 23:10:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724469050;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qsKf7xaMGjFVrdl2D6G/nv0LFUdX9aXChE7927Dm9XM=;
-	b=F8XDiF/6rgSvMsBJrp4dU/GBW4H1GLfCvn2LwUPjD/2IdYjh0H2XGDfhnqbJmYzFtrChDx
-	Zkev2OpCEBqHoe97IbFlIQ5eov034nFIBEB50vgspShPm4gAQFnVule/6rs3nBUUWaBmea
-	MjhPntMGkKbnn7/Yu1cpUlgagK1o1Rw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	s=arc-20240116; t=1724473690; c=relaxed/simple;
+	bh=Hi71OaJteC/N9IfhmdoVU8bV7ZIddzlMy5w19qoPLcI=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=XLiAQR+SwR1UKMNpWrwRPJH+LE1CY3QCixlYTiJd6Bwn8G8dmI6+BU+Rw//FvwIYV64QgD5cpwEVkgJv0l+mTvMwWzb/1gyNW3/vxWeSOzjSDJeo+t770wa/v2ZjPcnynUpJGQ59qXIGgldBMFGXJY94JAeVLKMxhk9ma0GtP+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 5869C100EB1D4;
+	Fri, 23 Aug 2024 21:22:55 -0700 (PDT)
+Date: Fri, 23 Aug 2024 21:22:55 -0700 (PDT)
+From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5
-Message-ID: <bczhy3gwlps24w3jwhpztzuvno7uk7vjjk5ouponvar5qzs3ye@5fckvo2xa5cz>
+Message-ID: <1816164937.417.1724473375169@mail.carlthompson.net>
+In-Reply-To: <ihakmznu2sei3wfx2kep3znt7ott5bkvdyip7gux35gplmnptp@3u26kssfae3z>
 References: <sctzes5z3s2zoadzldrpw3yfycauc4kpcsbpidjkrew5hkz7yf@eejp6nunfpin>
  <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com>
  <kj5vcqbx5ztolv5y3g4csc6te4qmi7y7kmqfora2sxbobnrbrm@rcuffqncku74>
  <CAHk-=wjuLtz5F12hgCb1Yp1OVr4Bbo481m-k3YhheHWJQLpA0g@mail.gmail.com>
  <nxyp62x2ruommzyebdwincu26kmi7opqq53hbdv53hgqa7zsvp@dcveluxhuxsd>
  <CAHk-=wgpb0UPYYSe6or8_NHKQD+VooTxpfgSpHwKydhm3GkS0A@mail.gmail.com>
- <wdxl2l4h2k3ady73fb4wiyzhmfoszeelmr2vs5h36xz3nl665s@n4qzgzsdekrg>
- <CAHk-=wjwn-YAJpSNo57+BB10fZjsG6OYuoL0XToaYwyz4fi1MA@mail.gmail.com>
+ <CAHk-=wghvQQyWKg50XL1LRxc+mg25mSTypGNrRsX3ptm+aKF3w@mail.gmail.com>
+ <ihakmznu2sei3wfx2kep3znt7ott5bkvdyip7gux35gplmnptp@3u26kssfae3z>
+Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjwn-YAJpSNo57+BB10fZjsG6OYuoL0XToaYwyz4fi1MA@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
+X-Originating-Client: open-xchange-appsuite
 
-On Sat, Aug 24, 2024 at 10:57:55AM GMT, Linus Torvalds wrote:
-> On Sat, 24 Aug 2024 at 10:48, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > Sure, which is why I'm not sending you anything here that isn't a fix
-> > for a real issue.
+Kent, I'm not a kernel developer I'm just a user that is impressed with bcachefs, uses it on his personal systems, and eagerly waits for new features. I am one of the users who's been using bcachefs for years and has never lost any data using it.
+
+However I am going to be blunt: as someone who designs and builds Linux-based storage servers (well, I used to) as part of their job I would never, ever consider using bcachefs professionally as it is now and the way it appears to be developed currently. It is simply too much changed too fast without any separation between what is currently stable and working for customers and new development. Your work is excellent but **process** is equally and sometimes even more important. Some of the other hats I've worn professionally include as a lead C/C++ developer and as a product release manager so I've learned from very painful experience that large projects absolutely **must** have strict rules for process. I'm sure you realize that. Linus is not being a jerk about this. Just a couple of months ago Linus had to tell you the exact same thing he's telling you again here. And that wasn't the first time. Is your plan to just continue to break the rules and do whatever the heck you want until
+  Linus stops bothering you? I don't think that's a good plan.
+
+
+Since I'm already being blunt I'm going to be even more blunt: you have a serious problem working with others. In the past and in this thread I've read where you seem to imply that other kernel developers are gatekeeping and resist some of your ideas because you've created something that (in your opinion) is already better in some ways than some of things they've created. But from where I'm sitting the problems you've experienced are 90% because of **you**. You're an adult and you need to understand that about yourself so you can do something about it.
+
+
+I get that I've way overstepped my bounds here. If the kernel developers wish to ban me from the kernel lists I understand.
+
+Carl
+
+
+> On 2024-08-23 7:59 PM PDT Kent Overstreet <kent.overstreet@linux.dev> wrote:
 > 
-> Kent, bugs happen.
-
-I _know_.
-
-Look, filesystem development is as high stakes as it gets. Normal kernel
-development, you fuck up - you crash the machine, you lose some work,
-you reboot, people are annoyed but generally it's ok.
-
-In filesystem land, you can corrupt data and not find out about it until
-weeks later, or _worse_. I've got stories to give people literal
-nightmares. Hell, that stuff has fueled my own nightmares for years. You
-know how much grey my beard has now?
-
-Which is why I have spent many years of my life building a codebase and
-development process where I can work productively where I can not just
-catch but recover from pretty much any fuckup imaginable.
-
-Because peace of mind is priceless...
+>  
+> On Sat, Aug 24, 2024 at 10:40:33AM GMT, Linus Torvalds wrote:
+> > On Sat, 24 Aug 2024 at 10:35, Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > What is to be gained by having release rules and a stable development
+> > > environment? I wonder.
+> > 
+> > But seriously - thinking that "I changed a thousand lines, there's no
+> > way that introduces new bugs" is the kind of thinking that I DO NOT
+> > WANT TO HEAR from a maintainer.
+> > 
+> > What planet ARE you from? Stop being obtuse.
+> 
+> Heh.
+> 
+> No, I can't write 1000 lines of bug free code (I think when I was
+> younger I pulled it off a few times...).
+> 
+> But I do have really good automated testing (I put everything through
+> lockdep, kasan, ubsan, and other variants now), and a bunch of testers
+> willing to run my git branches on their crazy (and huge) filesystems.
+> 
+> And enough experience to know when code is likely to be solid and when I
+> should hold back on it.
+> 
+> Are you seeing a ton of crazy last minute fixes for regressions in my
+> pull requests? No, there's a few fixes for recent regressions here and
+> there, but nothing that would cause major regrets. The worst in terms of
+> needing last minute fixes was the member info btree bitmap stuff, and
+> the superblock downgrade section... but those we did legitimately need.
