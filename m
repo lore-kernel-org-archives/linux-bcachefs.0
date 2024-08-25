@@ -1,93 +1,63 @@
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 659CB3839C
-	for <linux-bcachefs@vger.kernel.org>; Sun, 25 Aug 2024 05:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A488C28F1
+	for <linux-bcachefs@vger.kernel.org>; Sun, 25 Aug 2024 05:44:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724563943; cv=none; b=U+C+7ekPd6YpC1Mc9eg+pu/ye9FN2oP5qZ+IPCl/ZZzIC68lpvTBnx1ObuRV57agbtMLAy94fI2WPiizBfaPPkW/6k2LxMp09LXm6emLKCBuRIQNSYArKySQTM1SVpy7W3CbIW7fyk3dHc+fFh7sf6m6iMbTayIWTGdJDoJCeTI=
+	t=1724564687; cv=none; b=JB0PseaNcEWz+qNv6doDj1jmLWMFcVSiBPoSkrzZQE9reV9FizFpXYLPfUYcn2n/Vf+jgR0mOPK50xywWcJycSGMStR/lfoAE2s9VjHgvlnEp3j4DZALj4KVqi6Cz1+AvFafuElxL7mIQEI5+rmw09/9It16sSIjWcmsmvujc1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724563943; c=relaxed/simple;
-	bh=lIR4PJJpr22txE+7KQe1ZrS/bPwv/MRC3jdthL9V4Og=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eW89F2+P8k3Gu8129UsxpWzUJGWA8P1yN2U/OZTQfyrGqe/6kTxLqQP0TtGIYS4Ca48spLT58ANShX3rNzDiN3JOGWIi7lLF8m4sN940M3offj3p2/3ma0ivOxeiym6+1SOhH8M3uvaCFzng6C18RpGhOLdmXbgflceBbbrdsO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ELI44AvM; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1724564687; c=relaxed/simple;
+	bh=LK85LEnCs9RSp8zIbcMVl4BrVWLV9VhK6rv1VZq/sT8=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=sEJoOqvShwRY0awql+FaVGV+DJTWOKG20n+GsdnNCG2TZzf35gDMdD+2jt5KW8cWGwi4ze1Eu2nIzmixUmEwmdgBVwYDpYkh3pwCOntIFFtovLJF4TPD+kU9/7441EaqfkBcjniE2QNsgQc8QgdUVZ23YbTtzbj8ArBqNfeGXlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxET3xqM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ELI44AvM"
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a868831216cso384653066b.3
-        for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 22:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1724563939; x=1725168739; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8p3CsgOEStsbClYt9Jy8K8E742+g05Oei9CruGd2jsk=;
-        b=ELI44AvMs+wfX1skmKVK4frbiRPznmlOFCHpcCSospEEgUDO1rBiqn1GrRBN1KyLiI
-         eLvvXH1Iu55gCyQVIeMcKjN//v/dp5r9iemn1WR5eh4MhfCpFDN3cMnaOYwHqLR8pEHq
-         kPRnprRHCHcptcZC2SYlpn0M7/mpii/oXBFyg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724563939; x=1725168739;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8p3CsgOEStsbClYt9Jy8K8E742+g05Oei9CruGd2jsk=;
-        b=QZeEUJl+CjXe/NYDnJE4wBIhzzfAovswPOYC73++xBJ9zBKDeLQp6cGHLS0p8BS9bX
-         nYZ62JwDIWovW5VzxOwSfYPWYb3Sfb5VbAbbB64vg2OBAhfHzeImdeQkxhxMZgGqdF3o
-         I+XtbLiECItPPRM2HAG+uK5jXRiM83XOl1v8oQQgNPlVSDtzy63IKQq+zVm1kBHwyH3Q
-         7rF6ViM1SDrVEGa+0tJPyZrqRI98b0vedJ47bAow9STM1BjjduP3M8h2qh4d4aaY0RKd
-         kptV/J5OnZRMsEbHusHVXHcMp56ZL3LSJlp7zUdyOwECR9vyLs7FdaLYWvsLOXI3TCii
-         JMSA==
-X-Gm-Message-State: AOJu0Yz0wDTOypcbrYrCM2hTSGpr0jnelZ/g/ZHya3vpNWjx8uHK7e8L
-	syKfbmslMyFYJqMBOPSzUP4ds+4tUAK+QJdyuQnYa2NWMZkCch7fNl7Y5OfBV6c1bBZ+ftC9iGB
-	u8JSm2Q==
-X-Google-Smtp-Source: AGHT+IEnOUT21KfPlE65EXzoshqynYb9ZYUssV+EC/DIJlTYegfunhYshtSm9OaDU+r5x6EdSrsjag==
-X-Received: by 2002:a17:907:d8c:b0:a86:6807:6c34 with SMTP id a640c23a62f3a-a86a52c60fdmr457489266b.39.1724563939075;
-        Sat, 24 Aug 2024 22:32:19 -0700 (PDT)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a868f28f134sm491894966b.52.2024.08.24.22.32.18
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Aug 2024 22:32:18 -0700 (PDT)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5bede548f7cso4020949a12.2
-        for <linux-bcachefs@vger.kernel.org>; Sat, 24 Aug 2024 22:32:18 -0700 (PDT)
-X-Received: by 2002:a05:6402:3550:b0:5c0:9fca:9352 with SMTP id
- 4fb4d7f45d1cf-5c09fca944emr708670a12.36.1724563938103; Sat, 24 Aug 2024
- 22:32:18 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxET3xqM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85D2AC32782;
+	Sun, 25 Aug 2024 05:44:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724564687;
+	bh=LK85LEnCs9RSp8zIbcMVl4BrVWLV9VhK6rv1VZq/sT8=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=kxET3xqMYFc4DO3LYmUKaZgkNeq036TkGKOwa/ozyuHfHZ4mIsjh71CxS5W0bV/V1
+	 aQyHr+AHMLjkC2jj/S7PtKfx6/8Lv0mJ9K9Ylus94cYHqZ8K1QJCX7yIJ/tiHjejxK
+	 shyAZfx9suVgALi2zD40qHHT2bKrp4/BHeJYvbzMMK8WL0soHINSTi3kYl4QnZGMo5
+	 MfnEiTKAMDneDzQay1hzTJTG8hcRTr6s83YGJHEKK09Y7WC9Nwmy89Jx4DqWzN+Zir
+	 7zxyLrbu/MjATz6RKNJ80rrz3VLr6rPMoGOxGCQTfswZu6/RQKDd2X2HL8KMszoVPQ
+	 OBvFDGpyKZ1uA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADFDD39EF65D;
+	Sun, 25 Aug 2024 05:44:48 +0000 (UTC)
+Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5 v2
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <awwxatomvqsjf3uao64qm3b4jq34tvdfpobe22wouydgzc534j@c6h7l4k7447c>
+References: <awwxatomvqsjf3uao64qm3b4jq34tvdfpobe22wouydgzc534j@c6h7l4k7447c>
+X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <awwxatomvqsjf3uao64qm3b4jq34tvdfpobe22wouydgzc534j@c6h7l4k7447c>
+X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-08-24
+X-PR-Tracked-Commit-Id: 49aa7830396bce33b00fa7ee734c35de36521138
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 72bea05cb1ad486b1a850f584cc93b651579ad2f
+Message-Id: <172456468741.3337397.1567020839517567383.pr-tracker-bot@kernel.org>
+Date: Sun, 25 Aug 2024 05:44:47 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <awwxatomvqsjf3uao64qm3b4jq34tvdfpobe22wouydgzc534j@c6h7l4k7447c>
-In-Reply-To: <awwxatomvqsjf3uao64qm3b4jq34tvdfpobe22wouydgzc534j@c6h7l4k7447c>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 25 Aug 2024 17:32:01 +1200
-X-Gmail-Original-Message-ID: <CAHk-=wh3eEa-X6wAXpVLrh+i5a3dK0atBDPUf_XhFmhs7pKwZA@mail.gmail.com>
-Message-ID: <CAHk-=wh3eEa-X6wAXpVLrh+i5a3dK0atBDPUf_XhFmhs7pKwZA@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5 v2
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 25 Aug 2024 at 04:20, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> - rhashtable conversion for vfs inodes
-> - rcu_pending, btree key cache conversion
-> + nocow deadlock fix
-> + fix for new rebalance_work accounting
+The pull request you sent on Sat, 24 Aug 2024 12:19:59 -0400:
 
-I'd have preferred to get a proper list. I edited something together.
+> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-08-24
 
->       fs/super.c: improve get_tree() error message
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/72bea05cb1ad486b1a850f584cc93b651579ad2f
 
-Ugh. Please use '%d' instead of '%i'. Yes, yes, we use both, because
-some people seem to think that 'i' makes more sense. but %d is
-*hugely* more common by over an order of magnitude, and '%i' only
-makes sense for sscanf (and then has magic properties that it does
-*NOT* have on output).
+Thank you!
 
-I've pulled this, but reacted to it because it was to generic vfs code.
-
-            Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
