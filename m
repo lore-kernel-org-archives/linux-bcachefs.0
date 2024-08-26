@@ -1,82 +1,78 @@
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760153B78D
-	for <linux-bcachefs@vger.kernel.org>; Sun, 25 Aug 2024 23:15:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E10918027;
+	Mon, 26 Aug 2024 08:53:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724627740; cv=none; b=QxTlxlrbiG2p87rYrs6pefyI533n/KqRPE3QIsbujSeBXhzUntVjqHHvc+263eYrQ49J53mJ5/ZPInWYSkUKJV6CEFGTH0OWZC0YlLnCvW4tngN+AxItFkGeigiYV7xXWhsHOIL/8gAlDIPBEqjHMCmc2sTt3P3EHrDhlKYQsJA=
+	t=1724662438; cv=none; b=IW9EFmca9eI8q82Kb/WrBXL/T/2xWDl0pSJ7nJ0EDjnjUqxWzKg5uFpSmeA9wWHufZUNVK0CxeRYhluASG5wSeQVLVjE9/8sAhBmZTo/du7WCWmnqI/KkMErdBV2jFr2Z220sldeYNUOj9qKz8uoTlKLYQNVk4cVlyFnoSCslxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724627740; c=relaxed/simple;
-	bh=wkdCUQtZAAJn1WOZeW+h1ed+flXOdZxdw9ge6oP+g8A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OGheYBp7QnzVzb2cEWQPqZeV1nA2QWOo+phpAKZC+PGpLQBkTgCuor6PNmSP7BZDZiw/e0/cz514/wLApnJPFn3DjqOteDolDepZ4RoVYn3ZwF4TEwXyEqZv2d+ugOxRjTcqhT+g5bsbS0LoquYosYHc3aXyzt7afSCjgukGf9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UX3f6rCV; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UX3f6rCV"
-Date: Sun, 25 Aug 2024 19:15:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724627736;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L/PoZpPqS/s7Yg5HYF/cFLzcMfwRwTedQTVO5RuCotk=;
-	b=UX3f6rCVOE1FrPRWMrhdCGNFaHS38OdV20H9e/ni9aAEXcYu0LquYhf4shrWJ/388gPlQ4
-	L/Pl9J3Wwil2ZZpb6AqLOw2k9KY97V8hhdU2+EAwhO5zqO1neKpv+KYMoAc3ByUNqn4ILq
-	C8+5rs10zQM+fc+gLnLgThEQKIlhc8g=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Kees Cook <kees@kernel.org>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, linux-bcachefs@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Annotate bch_replicas_entry_{v0,v1} with
- __counted_by()
-Message-ID: <mr6kpl4zyqqalahxc7s574kc3xemlzfvp423z57yzt6j2nddcj@dx75kkxhi4ch>
-References: <20240825133601.24036-2-thorsten.blum@toblux.com>
- <cqyrlfpjprkwdteljmtcnl3z2etzitvodrlv7v57tuizvklpcx@gg7dbstowwd6>
- <4911B345-A37E-4FB9-9339-83029033EE4D@toblux.com>
- <b7eqkyfv4nvxlserwuknw73y4c4n25b2i36xfsn4cfhjg4yc2n@oawo2z4ye6lo>
- <6B15FD73-8FD5-4180-9190-FA8ABF7E88BB@toblux.com>
+	s=arc-20240116; t=1724662438; c=relaxed/simple;
+	bh=38PYgfBDOgmNZ6SWVY3f4zWpCuTfdX6HwO52RgcsoAc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QR0wyKZtOhnpP4LVUjsJ3dOIz7cd/00ZjBKnrcfP5zfIQbijyizRPj1WpKSVfrRKp4c9YZRcCxhxHjJs4fHiIk8MKxWB2R1rV7ZmOLApBEWidNHlryS3jn1XvEp3c/YUBkXX0MNclPxo4qEzINlmY5lodbnFoh5SA7ckJUh9VYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5bed83488b3so4712765a12.0;
+        Mon, 26 Aug 2024 01:53:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724662436; x=1725267236;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OoJCp3I2BA9KRjpRd6U32PSSLO6IqLbkxDMlM0I2ct8=;
+        b=WuhS1JunozL4UP2sGVriKvJsHoIAHUbaDaRIGGRAt5gfJp1aIwzQe6Gm3/TH8wrQv/
+         kHLLDGWz95sAs+wFWlH4rTCOcFkqjaTeAW8AgxtzYd30QwT8kS9Dyho1ky5yBUcBCNhI
+         ajBoSI6ERij/48nTQxb2Dsk7A11cH3E+WPPqGR+QO6/mCpmF2zbP8Ak8v2DH2Y93iVI+
+         cTXVcxUHqlfEmXdqrIWzimAiOT3UOBZqH5SlYjX3F3cYXpZ/geVc+XFOBVTNnfnsiVR/
+         Olj2DXeCvmMa+CRtz3cKo2La6MzB3UjyxqzLpPNHsrVlllUPO/XLyVDICrPDZHEHDgyr
+         L2iA==
+X-Forwarded-Encrypted: i=1; AJvYcCUujoWp2p5BJjB7p+GI7gkDlwWcYcJXNuDci8YFA9niaKdvDbQ8GT84IpMn4jsllltcWj3lFEPbwdcCTWxQiw==@vger.kernel.org, AJvYcCVDCtuRPKjlJHqesxWyRSiyKLr/0f++DE13o5hfjxi8K9pvW7fMYO1U3q9C9F6kUVA4VQu4HXUp5Mz8l0jj@vger.kernel.org, AJvYcCWw13IxGUw76BF3yl0zSwWzz4eN0o/eV8+MNCqP1EnfJRlWEAMuyFd7OuUN0eMb8Ckex7p3XlywgXmFfP1o204GFsJ8EHWD@vger.kernel.org, AJvYcCXlJoAanGWTnd02cVpjNfYWj8SqxTNmvgUZJ5/zhcoWMonu9rC87Gf/E0BLipAu+FddY02+tZaw0RlvV213JA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzlxhQVQEVXaJbkHVKGCPNPlNAHRzymFQREOtaOZgFwP0kEmGOE
+	RhaVLKHjMwLM6vSKpvXhWRJX9xKpotEgYA24f5lLIW2a1MBX46Gq
+X-Google-Smtp-Source: AGHT+IEGem3Ufu8tZwQeokdMzmP3eaFZqmvIML5mh8Xq54tW+A+yVSA/vBHoHsP+JHd+JsIfra7TMw==
+X-Received: by 2002:a17:907:31cb:b0:a86:b00a:7a27 with SMTP id a640c23a62f3a-a86b00a7cfbmr511137966b.60.1724662434947;
+        Mon, 26 Aug 2024 01:53:54 -0700 (PDT)
+Received: from localhost.localdomain ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a868f21fe18sm630636866b.29.2024.08.26.01.53.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Aug 2024 01:53:54 -0700 (PDT)
+From: Michal Hocko <mhocko@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Yafang Shao <laoar.shao@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	jack@suse.cz,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] get rid of PF_MEMALLOC_NORECLAIM
+Date: Mon, 26 Aug 2024 10:47:11 +0200
+Message-ID: <20240826085347.1152675-1-mhocko@kernel.org>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6B15FD73-8FD5-4180-9190-FA8ABF7E88BB@toblux.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 26, 2024 at 01:08:29AM GMT, Thorsten Blum wrote:
-> On 26. Aug 2024, at 00:56, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > On Sun, Aug 25, 2024 at 10:41:55PM GMT, Thorsten Blum wrote:
-> >> On 25. Aug 2024, at 20:43, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >>> On Sun, Aug 25, 2024 at 03:36:02PM GMT, Thorsten Blum wrote:
-> >>>> Add the __counted_by compiler attribute to the flexible array members
-> >>>> devs to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-> >>>> CONFIG_FORTIFY_SOURCE.
-> >>>> 
-> >>>> Increment nr_devs before adding a new device to the devs array and
-> >>>> adjust the array indexes accordingly.
-> >>> 
-> >>> The nr_devs changes are pretty gross - please add a helper for that
-> >> 
-> >> How about a macro in replicas_format.h like this:
-> >> 
-> >> #define replicas_entry_add_dev(e, d) ({
-> >> 	(e)->nr_devs++;
-> >> 	(e)->devs[(e)->nr_devs - 1] = (d);
-> >> })
-> > 
-> > Does it need to be a macro?
-> 
-> It could also be two functions, one for each struct.
-> 
-> Which one do you prefer?
+https://lore.kernel.org/all/20240812090525.80299-1-laoar.shao@gmail.com/T/#u
+attempted to build on top of PF_MEMALLOC_NORECLAIM introduced by 
+eab0af905bfc ("mm: introduce PF_MEMALLOC_NORECLAIM,
+PF_MEMALLOC_NOWARN"). This flag has been merged even though there was an
+explicit push back from the MM people - https://lore.kernel.org/all/ZcM0xtlKbAOFjv5n@tiehlicka/
 
-I suppose the macro fits with what we're doing for
-replicas_entry_bytes() - that's alright then
+These two patches are dropping the flag and use an explicit GFP_NOWAIT
+allocation context in the bcache inode allocation code. This required to
+push gfp mask down to inode_init_always and its LSM hooks. I am not really
+familiar with this code so please give it a thorough review.
+
