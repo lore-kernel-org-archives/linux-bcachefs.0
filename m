@@ -1,31 +1,31 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D7F1991AF
-	for <linux-bcachefs@vger.kernel.org>; Mon, 26 Aug 2024 19:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F9B1993BD;
+	Mon, 26 Aug 2024 19:44:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724701387; cv=none; b=cYraL8/5k8/xbPW45E479T9Jmm4j98ypYeEF1FfUTMfN/fGawsZ3tevLGISaUvsoLqobAuLbRFKsaj3/YEe5JOLKQeQKUZapDyLsOABnEoGouipi2DDUs9YwhQ3itjGs2eCmLluPQxjPKpzQUTaYL885/7H/ItUnuRVjPZh2ES0=
+	t=1724701464; cv=none; b=oBXWEaXTiWGep/4GXksbuER8TaDcPfUXFiLel0mPkkMAZcej0O4mu6XYW/RxlmBo/X1AxmEtCXZoLpCrcnA5GPN83Zr1y5UXSc8LWcPts6NR6zQCEyiwJ7rgYz4zmxF/t6ZlAD5x9at0u845oYrRi6QFqRajJa4cXX47JaqlW5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724701387; c=relaxed/simple;
-	bh=j0XA0dwEhOG2x7CuCx33e8PmSFEXJYbNGaWVBiSjOu0=;
+	s=arc-20240116; t=1724701464; c=relaxed/simple;
+	bh=4igx5teOukkMacDOV/PFpTCBebtak/4C2EERBn9gDyM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NmK1jfwTwTcmPMkk593CImF4fFgOunPvqfH5h6qJkBL3TJNO4WzST8argtOz+Eu0TcYBAPSGidjrn4n5liNbp5ud/dGtyuITQD7Osammjb9JI+CP9xCKmTXYBo6hpQNknDDk6sWyuwIhyFja4wTzZrpX32HU2U2nFgfG+l97nz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Dc1AOO/q; arc=none smtp.client-ip=91.218.175.179
+	 Content-Type:Content-Disposition:In-Reply-To; b=D8kDEuNVn96Shute5g71Qt7CgmmW7E8x4NSXAN0f8jg2x2ju3PygGCi5pETI/2rzSztnUdZyPShjhIkhuDdUP/5TFVIjmT8jhqQ+sGgx8CkechUZY8ppB1/f8yDUJBGAqz2W65KKTfv/TH4ncrsOKZJio0geWEqfvR3Mo6PHatw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w4Xk4Ryg; arc=none smtp.client-ip=91.218.175.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Dc1AOO/q"
-Date: Mon, 26 Aug 2024 15:42:59 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w4Xk4Ryg"
+Date: Mon, 26 Aug 2024 15:44:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724701383;
+	t=1724701459;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2ZkPXD2IYKOfAOOldbpX3VURfwiKgu7CQydh9Ux0uo8=;
-	b=Dc1AOO/qri2M8aPstAypVWRa+KJNmbPOTYol3+KKZhRV/wbhP6yTLSnGSpij/VarO3cI8P
-	WIB78ZPkpJV2r3XMn4fhNj0JXkqjdV9xZQCW7GogWWDs1lM9E34n0Y1ubTtI8PeVLInCxj
-	B24jIisCjGpZFYA+w0YUTrIaALfKue0=
+	bh=LDMGFe13GlJh0NWv8nNP4lXHShXehj8hyHhCkAKKMRg=;
+	b=w4Xk4Rygb3gnraQzMrgeOnd5VokpeCG7H3A7QIdNjDHjxKCeD5EhqU4+HWXH1iQIr0caj4
+	97D01bGu5X2qPnkm6H4dh02SZR6ePcPKIM/pUKjlavT39UrrsSL1SaB3gW9XjMNr7VAVCs
+	59kbaU5PcOTAhootz5lVSuIhPCqP1W0=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Matthew Wilcox <willy@infradead.org>
@@ -37,7 +37,7 @@ Cc: Michal Hocko <mhocko@kernel.org>,
 	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-bcachefs@vger.kernel.org, 
 	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
 Subject: Re: [PATCH 1/2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
-Message-ID: <rwqusvtkwzbr2pc2hwmt2lkpffzivrlaw3xfrnrqxze6wmpsex@s3eavvieveld>
+Message-ID: <3rfzqzmzzq5lvti3wndvctwi46ovntwume3h6nlvyfkym7b2md@is7sdli3ucaa>
 References: <20240826085347.1152675-1-mhocko@kernel.org>
  <20240826085347.1152675-2-mhocko@kernel.org>
  <egma4j7om4jcrxwpks6odx6wu2jc5q3qdboncwsja32mo4oe7r@qmiviwad32lm>
@@ -66,8 +66,5 @@ On Mon, Aug 26, 2024 at 08:41:42PM GMT, Matthew Wilcox wrote:
 > The problem with vmalloc is that the page table allocation _doesn't_
 > take a GFP parameter.
 
-yeah, I know. I posted patches to plumb it through, which were nacked by
-Linus.
-
-And we're trying to get away from passing gfp flags directly, are we
-not? I just don't buy the GFP_NOFAIL unsafety argument.
+and given the increasing usage of kvmalloc() this is something we really
+should be thinking about
