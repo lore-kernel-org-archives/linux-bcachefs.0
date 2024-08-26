@@ -1,122 +1,170 @@
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52766196D98
-	for <linux-bcachefs@vger.kernel.org>; Mon, 26 Aug 2024 16:54:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438AA198E6C
+	for <linux-bcachefs@vger.kernel.org>; Mon, 26 Aug 2024 17:12:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724691248; cv=none; b=cSR9v8Y4tj/txPFzB3ktB7VEa/aI/hD3yDRXt7maI1ernCRNqOWyUSivLpPzwE55eWYih4yJWO3e1slgsodnFWESOLj1/nE+LNZIFoFkxmUzHKuSOMJoJWjNLJS1Zxz3JXHXeI/eer2ydsjwGbRXeq+befyrpJmn3WnDNBkR7v0=
+	t=1724692324; cv=none; b=MB+zpAxjHL2jOCH5WA/cdrYAfPIaHtsVV3AeFqVzLs59Lw1ChzsWBKQPLQAsDhKkXQChjEZG2RYLOia4yIy3SGO5yaVwCGwl8/CPjTZqrAk3PpgoNYQPJsiTW9GJLOV43GTJnTILm1V64DZdeyVHpyOtNgSek9D+DhWjq3rV7hQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724691248; c=relaxed/simple;
-	bh=SrrYymcdbDLizvS79/RRUElJG4frmyAuzrjQG6kpUYg=;
+	s=arc-20240116; t=1724692324; c=relaxed/simple;
+	bh=tlHm13fgtMH8ly1SsTRgtIahTsWSmWRhdvxw3HaNPVE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NwCx4seQpkbyE8MXNJLS24Mv9dCGAP2vfHBIqF//Zd1CSm2LgJfFPJeY03GwnyJ8JNKWyuBnYVFDTT/vIGHazL2py22ykHq+7y+4gl90s7T5pigCk9SrYpSglXVHtj0t4ei7eE69yoeG0KR2odZYCNstYpwWi2bli6bjUGpAhZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NqB7pnFI; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=nYKqnte0SFHKRB3F4DazNF/cK6DEagRVdRWxD6ILdw5vOoiuFSN7OUA/SImiWF05LJ7FiW3jRVsmX3mMA/RrIU1nevNi0jnXrs38S5trHA9AkaMq+QTkUTm/Wo4/6phvOVYw/2POt5h5nMoQbQ5ND+JEyCSpNlPKK8mBn7d1to8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MKdWwRY2; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NqB7pnFI"
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a83562f9be9so413656066b.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 26 Aug 2024 09:54:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1724691244; x=1725296044; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AuNkNTNASSkVHyZwptKwTsvU1aOshMXolrmNLp6jKyI=;
-        b=NqB7pnFInPxLsopP4yeDHM3L5xm7QFZkJ5UteTNfoADN7u95ugBbLEbUGFXYiGYdYg
-         +as1d0i1H2RIVsr8P2YrX6AR0+FEBLrm87xN1l2XGJU1N1lN4j1CbGXih/ZuyybGYiGT
-         vo1Uv3Hl1eV+Z+vFBxQ4hQ7dxalGJZJg3qIM3PlrHWuSGV9HljD/S+/8A44EhvhZO+ue
-         YlBOtqW5kbAkqPoP050njWJgOv+bmgDbD1YiBLvFu7EuE5QwDaLrCYm9s2Ob11g3GKb7
-         AsIRKBui3RFELkLkrr/rs1QAq3iIX7D8WGiVdCdxDLm7e3/n9XClRkZriSe15u+PSwIR
-         291g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724691244; x=1725296044;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AuNkNTNASSkVHyZwptKwTsvU1aOshMXolrmNLp6jKyI=;
-        b=hEKslrbG9qizBO3iviBCBotCO6BpgQGlTyBRKkFRoqhpvnN9LeWKlBhen1ST464IKt
-         nTwRqMOQCg5cf91+I5q6yqcNpUQ7OP6EfGaDXeWMQ/vpR3ZSGb4FNwlWuNtSeS9kLQgu
-         416bWa/YaXJMNd3s6DcIcwhLkgK9s/XwI3uHW1xdjQDJGXK5Gs/Nsi0Wk6aEaoYWDHun
-         cm4Vy0ZSVtzRKTyIzw4dsfiD1mLHQfYDh5LC42yneJQbDdnDYAw3sfCPOFr/mH122zXW
-         geG+imGe2PtGFbe6lDJoutBRai5+OfezIMIeW869ZP2wuyqM81+PSJXfm1+wODRa2Ikz
-         bklw==
-X-Forwarded-Encrypted: i=1; AJvYcCW+R8KBTMXEHzVw7C+vIzsGAwz9BlkIeVScR5oAhU3PY221CFyfwjF4VNDeLu7l16vUc6z6pzteMBfuRcgIvw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyxts+qpO1MTTLcZS267GlpciIjkrGa/NQRH2duZsBxPhWUsU9d
-	EDLznWIaIJdPKdQ5Ci8BEHw9usR2LqaVUHaxXZVgU4tn/bIZD3/4eQD+W3qKbnE=
-X-Google-Smtp-Source: AGHT+IGqicfaj3+0I5vKnr31dtF3PG61H07IprF3n2t7ZPxM1+pfgLfSyChrmgA9n5aCTBY9B2eIuA==
-X-Received: by 2002:a17:907:2d0a:b0:a77:f2c5:84b3 with SMTP id a640c23a62f3a-a86a5199093mr691568166b.22.1724691243592;
-        Mon, 26 Aug 2024 09:54:03 -0700 (PDT)
-Received: from localhost (109-81-92-122.rct.o2.cz. [109.81.92.122])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a868f2e66eesm687492566b.97.2024.08.26.09.54.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Aug 2024 09:54:03 -0700 (PDT)
-Date: Mon, 26 Aug 2024 18:54:02 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@lst.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>, jack@suse.cz,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm: drop PF_MEMALLOC_NORECLAIM
-Message-ID: <ZsyzKmbmNs06Zrt9@tiehlicka>
-References: <20240826085347.1152675-1-mhocko@kernel.org>
- <20240826085347.1152675-3-mhocko@kernel.org>
- <CALOAHbAU6XwN9ti0A1_KywpPqzgKxykWTxHYcYPQOywJo7FePQ@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MKdWwRY2"
+Date: Mon, 26 Aug 2024 13:11:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724692319;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vc3eD739P9v0p0HMmCHQneJWpFHCNMD2wlv0iI6W7R8=;
+	b=MKdWwRY26aViDAXinmokETST9r/D0vANUfTI8c3HK/PumRcvtpZJUSqLJjJMPjXJ35I6J+
+	DRFUuNtZw0NI6wGdZIV6iLuxMaLVxMIIfXnyW3fzcgbuUIIxAbjiLU5V+igdnParCmseik
+	iaoEudgUPp4VbOTG84qR20ho4x3JGg8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: kees@kernel.org, gustavoars@kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] bcachefs: Annotate bch_replicas_entry_{v0,v1} with
+ __counted_by()
+Message-ID: <rhiuwwxo3yfr6gpltzqraenammvpfzohdjavhacng6bxec62cj@sklevlpi5mto>
+References: <20240826101135.31482-2-thorsten.blum@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALOAHbAU6XwN9ti0A1_KywpPqzgKxykWTxHYcYPQOywJo7FePQ@mail.gmail.com>
+In-Reply-To: <20240826101135.31482-2-thorsten.blum@toblux.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon 26-08-24 21:48:34, Yafang Shao wrote:
-> On Mon, Aug 26, 2024 at 4:53 PM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > From: Michal Hocko <mhocko@suse.com>
-> >
-> > There is no existing user of the flag and the flag is dangerous because
-> > a nested allocation context can use GFP_NOFAIL which could cause
-> > unexpected failure. Such a code would be hard to maintain because it
-> > could be deeper in the call chain.
-> >
-> > PF_MEMALLOC_NORECLAIM has been added even when it was pointed out [1]
-> > that such a allocation contex is inherently unsafe if the context
-> > doesn't fully control all allocations called from this context.
-> >
-> > [1] https://lore.kernel.org/all/ZcM0xtlKbAOFjv5n@tiehlicka/
-> >
-> > Signed-off-by: Michal Hocko <mhocko@suse.com>
-> > ---
-> >  include/linux/sched.h    | 1 -
-> >  include/linux/sched/mm.h | 7 ++-----
-> >  2 files changed, 2 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index f8d150343d42..72dad3a6317a 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -1657,7 +1657,6 @@ extern struct pid *cad_pid;
-> >                                                  * I am cleaning dirty pages from some other bdi. */
-> >  #define PF_KTHREAD             0x00200000      /* I am a kernel thread */
-> >  #define PF_RANDOMIZE           0x00400000      /* Randomize virtual address space */
-> > -#define PF_MEMALLOC_NORECLAIM  0x00800000      /* All allocation requests will clear __GFP_DIRECT_RECLAIM */
+On Mon, Aug 26, 2024 at 12:11:36PM GMT, Thorsten Blum wrote:
+> Add the __counted_by compiler attribute to the flexible array members
+> devs to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
+> CONFIG_FORTIFY_SOURCE.
 > 
-> To maintain consistency with the other unused bits, it would be better
-> to define PF__HOLE__00800000 instead.
+> Increment nr_devs before adding a new device to the devs array and
+> adjust the array indexes accordingly. Add a helper macro for adding a
+> new device.
+> 
+> In bch2_journal_read(), explicitly set nr_devs to 0.
+> 
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 
-OK
+Applied
 
--- 
-Michal Hocko
-SUSE Labs
+> ---
+>  fs/bcachefs/buckets.c         | 2 +-
+>  fs/bcachefs/journal_io.c      | 3 ++-
+>  fs/bcachefs/replicas.c        | 6 +++---
+>  fs/bcachefs/replicas_format.h | 9 +++++++--
+>  4 files changed, 13 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
+> index be2bbd248631..eda397c562f5 100644
+> --- a/fs/bcachefs/buckets.c
+> +++ b/fs/bcachefs/buckets.c
+> @@ -740,7 +740,7 @@ static int __trigger_extent(struct btree_trans *trans,
+>  				return ret;
+>  		} else if (!p.has_ec) {
+>  			replicas_sectors       += disk_sectors;
+> -			acc_replicas_key.replicas.devs[acc_replicas_key.replicas.nr_devs++] = p.ptr.dev;
+> +			replicas_entry_add_dev(&acc_replicas_key.replicas, p.ptr.dev);
+>  		} else {
+>  			ret = bch2_trigger_stripe_ptr(trans, k, p, data_type, disk_sectors, flags);
+>  			if (ret)
+> diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+> index 32b886feb2ca..30460bce04be 100644
+> --- a/fs/bcachefs/journal_io.c
+> +++ b/fs/bcachefs/journal_io.c
+> @@ -1353,6 +1353,7 @@ int bch2_journal_read(struct bch_fs *c,
+>  	genradix_for_each(&c->journal_entries, radix_iter, _i) {
+>  		struct bch_replicas_padded replicas = {
+>  			.e.data_type = BCH_DATA_journal,
+> +			.e.nr_devs = 0,
+>  			.e.nr_required = 1,
+>  		};
+>  
+> @@ -1379,7 +1380,7 @@ int bch2_journal_read(struct bch_fs *c,
+>  			goto err;
+>  
+>  		darray_for_each(i->ptrs, ptr)
+> -			replicas.e.devs[replicas.e.nr_devs++] = ptr->dev;
+> +			replicas_entry_add_dev(&replicas.e, ptr->dev);
+>  
+>  		bch2_replicas_entry_sort(&replicas.e);
+>  
+> diff --git a/fs/bcachefs/replicas.c b/fs/bcachefs/replicas.c
+> index 12b1d28b7eb4..e0880cb79345 100644
+> --- a/fs/bcachefs/replicas.c
+> +++ b/fs/bcachefs/replicas.c
+> @@ -122,7 +122,7 @@ static void extent_to_replicas(struct bkey_s_c k,
+>  			continue;
+>  
+>  		if (!p.has_ec)
+> -			r->devs[r->nr_devs++] = p.ptr.dev;
+> +			replicas_entry_add_dev(r, p.ptr.dev);
+>  		else
+>  			r->nr_required = 0;
+>  	}
+> @@ -139,7 +139,7 @@ static void stripe_to_replicas(struct bkey_s_c k,
+>  	for (ptr = s.v->ptrs;
+>  	     ptr < s.v->ptrs + s.v->nr_blocks;
+>  	     ptr++)
+> -		r->devs[r->nr_devs++] = ptr->dev;
+> +		replicas_entry_add_dev(r, ptr->dev);
+>  }
+>  
+>  void bch2_bkey_to_replicas(struct bch_replicas_entry_v1 *e,
+> @@ -180,7 +180,7 @@ void bch2_devlist_to_replicas(struct bch_replicas_entry_v1 *e,
+>  	e->nr_required	= 1;
+>  
+>  	darray_for_each(devs, i)
+> -		e->devs[e->nr_devs++] = *i;
+> +		replicas_entry_add_dev(e, *i);
+>  
+>  	bch2_replicas_entry_sort(e);
+>  }
+> diff --git a/fs/bcachefs/replicas_format.h b/fs/bcachefs/replicas_format.h
+> index b97208195d06..b7eff904acdb 100644
+> --- a/fs/bcachefs/replicas_format.h
+> +++ b/fs/bcachefs/replicas_format.h
+> @@ -5,7 +5,7 @@
+>  struct bch_replicas_entry_v0 {
+>  	__u8			data_type;
+>  	__u8			nr_devs;
+> -	__u8			devs[];
+> +	__u8			devs[] __counted_by(nr_devs);
+>  } __packed;
+>  
+>  struct bch_sb_field_replicas_v0 {
+> @@ -17,7 +17,7 @@ struct bch_replicas_entry_v1 {
+>  	__u8			data_type;
+>  	__u8			nr_devs;
+>  	__u8			nr_required;
+> -	__u8			devs[];
+> +	__u8			devs[] __counted_by(nr_devs);
+>  } __packed;
+>  
+>  struct bch_sb_field_replicas {
+> @@ -28,4 +28,9 @@ struct bch_sb_field_replicas {
+>  #define replicas_entry_bytes(_i)					\
+>  	(offsetof(typeof(*(_i)), devs) + (_i)->nr_devs)
+>  
+> +#define replicas_entry_add_dev(e, d) ({					\
+> +	(e)->nr_devs++;							\
+> +	(e)->devs[(e)->nr_devs - 1] = (d);				\
+> +})
+> +
+>  #endif /* _BCACHEFS_REPLICAS_FORMAT_H */
+> -- 
+> 2.46.0
+> 
