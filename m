@@ -1,49 +1,73 @@
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18B9D198E9B
-	for <linux-bcachefs@vger.kernel.org>; Mon, 26 Aug 2024 19:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C4F199250
+	for <linux-bcachefs@vger.kernel.org>; Mon, 26 Aug 2024 19:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724702108; cv=none; b=DNWEqtfSfQX1rTbkSlPfEjsGCrJ05584mKjvA5q+YudWL5HUwkyrxALDmdrrsgaDMKcCh3vwrL2sl0hjSE65tG3DPKh1DG2ifXR0qDPn9DSRbhcXv2GeroE3QK6L+dbhLOCMDtyAnoDGDxz66LyZFp+yZVOFgGX39oQLuzR+RxM=
+	t=1724702293; cv=none; b=OK/LfqAKpwZeI9awite+VFgWED9vWpFi1Y82pTdpHhF6S4NTQIAAOXhWCaUhKa+O9rVEMSUuDv8qZLILmbPFL7HCFFpYj2LWwF1cbYTtTPmFdvGsu14NGc/VGlzYVtBPyOutsJl4ANBqxKd3sxbHgIKEIdTZj4gN+vecg6r7ntM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724702108; c=relaxed/simple;
-	bh=fl1HE77D3fhTLgBU4l1vqYLWZb4UBEzK0A+Mzspb6bY=;
+	s=arc-20240116; t=1724702293; c=relaxed/simple;
+	bh=bNvj7bgWyh7vEonATRHC/EAvCzNu3EdpeAkNK3jCDPs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WkSCLR+u5MaqEuNrQnDheSW3HbG9IppnQNvZPgPu/xwUkDnZz904+qV8B/Vrgw0imInvO+DO7BMQ5+niHT3328aiUnF6/pFbT0/9O5zAje3qaXGCJ4oQNlhAJ8ER7thXzLLu9r9AgmKxH82yNCJGkG5NGCijPlkJaiXOLO4dv7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pdkoi/S/; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=bD/JANAPeVb0vMj51IF9w0PW4HiWkOczr+D0B2UM16ec/ypawzqcgVxFkKIQTede+5IiZkZOv79HWGT8bkj7n+xM+vz94vszAC1Xp7GuVOgU2TiyRcxkQDJw090Ifh2pj5dct9IsWxQrapKRN4NsWgBNJ+TDelQoIMvAxEPG7ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=LQzkH7Up; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pdkoi/S/"
-Date: Mon, 26 Aug 2024 15:54:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724702101;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/ruExyvd6gxPtiLXw8MJ5M67mJMswkxY6U+zhoDHwHI=;
-	b=pdkoi/S/Dr0rAlm9V4YVflbW7gKVDBKd4If8UuxbhWUQR/EWStR1Rp582L6Vs7jgi1Z+7b
-	RNayvFgXNk/M/EtErDYgpws+rHSVzvnKBmrxYYlXH+P7/agdeTqPGznkpzN5Z2upBuolTe
-	z0X0oRQwESYT95iJ/a6tZQgWTSi2SZo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Michal Hocko <mhocko@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, 
-	Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, Christian Brauner <brauner@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-bcachefs@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LQzkH7Up"
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5befe420fc2so5806726a12.3
+        for <linux-bcachefs@vger.kernel.org>; Mon, 26 Aug 2024 12:58:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1724702290; x=1725307090; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xh14Sdlc2n6IxKjJ6RlYGRrhImnkQmnSBBa6O3qnYnE=;
+        b=LQzkH7Upij0y1HqegxuGUK1QLMUWfJVj8+d7e4sbpJ11wRS3aEGYebhtTv8xdVmd9H
+         u9LsUDqHC9Ym6/FawQYakWubVnIPyUZ2w8t6C59/1jGUmYHRUNDuSzpIO4DhUgFCeKdn
+         ZiCANADj9F7DGAP4hDWJq8M/m2rw67ouoAzBasyVZQYmiqHr/jhsk/W6IIr8/hUdi0Dn
+         7+QlDZ93wy9Ee0X/C8CjJo1ofTeIogYYMVBgySy8/bUb9b5hNDW1EZnE+/PIbSzxnuWI
+         s8eSw5ndhSg841aFTDhEEavBqiZnKLXYCTFgYtcQnEfEk/+Gg3UMz7JFHMcue4N7cL0r
+         Bd2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724702290; x=1725307090;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xh14Sdlc2n6IxKjJ6RlYGRrhImnkQmnSBBa6O3qnYnE=;
+        b=pCvPkea1WieZZxOuv/hihJk0wBCUQ1s3Gw+p3lEJtp83F0Gxenc6PtkD0cwS0bEpbS
+         EJ5yMnVVR/0GkwDL2h2rF/k9rV5rwYzYSTIYwrH6Vh0C2vJ659Mcm7QfHCdh2o29ofB6
+         iqsDaN1oIxPXnOs3BvEo15sX2We3Vt5e/W2YrnyZJA2ajakUIfyf6H87RU9AlpHT9JVE
+         c8ucoclKFFHWbOiI2nNcHy6TSTO9xCVbysr6wpCHYChFNuN/ltr5VkUX0Jy9h7mpWD7Q
+         3hCQ+kGRNjyyY2a89LKTPJ1dC3s5yhhNDnQFDLQwTPyNf0y7Ok4YDq3MCskvr+ZXDHQG
+         fjaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWuswWuMFqAxzmLRxoScOyU5HV3OvB3l5DNfQ8LrgaXOlXDYugStbXF8Z6+dBqksMhwnIplevorvLHlhnpCyg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YylhM/IsSblWpIl5S5g7wJRBwx2mIWPQsUScEw6gw5cLmeblS7K
+	av81CCE9hmrFOKO5BeppxQn5olKAKojA5eEjjl2ovpM5zCAMrWXo7cDMwUI6xPR+KNrpOY1wSlx
+	Y
+X-Google-Smtp-Source: AGHT+IEqLDw4bnaGQwfVtxUnt5R+nT/cvXOLGueUtNtCDMXl1cKCg9G27paLPy3+tFp8unGIxIOggQ==
+X-Received: by 2002:a17:907:2d8e:b0:a86:83f9:bc1f with SMTP id a640c23a62f3a-a86a54de2cdmr683406666b.61.1724702289954;
+        Mon, 26 Aug 2024 12:58:09 -0700 (PDT)
+Received: from localhost (109-81-92-122.rct.o2.cz. [109.81.92.122])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a86e582d896sm13574466b.131.2024.08.26.12.58.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Aug 2024 12:58:09 -0700 (PDT)
+Date: Mon, 26 Aug 2024 21:58:08 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
+	jack@suse.cz, Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 1/2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
-Message-ID: <5m5qksxkvj4cvfzczqzleyortpe5selbrzkwlgbdc4ia5btg5d@mcaycdzfn6x3>
+Message-ID: <ZszeUAMgGkGNz8H9@tiehlicka>
 References: <20240826085347.1152675-1-mhocko@kernel.org>
  <20240826085347.1152675-2-mhocko@kernel.org>
  <egma4j7om4jcrxwpks6odx6wu2jc5q3qdboncwsja32mo4oe7r@qmiviwad32lm>
- <Zszado75SnObVKG5@casper.infradead.org>
- <rwqusvtkwzbr2pc2hwmt2lkpffzivrlaw3xfrnrqxze6wmpsex@s3eavvieveld>
- <Zszbt8M5mUPZjbFq@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -52,47 +76,41 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zszbt8M5mUPZjbFq@casper.infradead.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <egma4j7om4jcrxwpks6odx6wu2jc5q3qdboncwsja32mo4oe7r@qmiviwad32lm>
 
-On Mon, Aug 26, 2024 at 08:47:03PM GMT, Matthew Wilcox wrote:
-> On Mon, Aug 26, 2024 at 03:42:59PM -0400, Kent Overstreet wrote:
-> > On Mon, Aug 26, 2024 at 08:41:42PM GMT, Matthew Wilcox wrote:
-> > > On Mon, Aug 26, 2024 at 03:39:47PM -0400, Kent Overstreet wrote:
-> > > > Given the amount of plumbing required here, it's clear that passing gfp
-> > > > flags is the less safe way of doing it, and this really does belong in
-> > > > the allocation context.
-> > > > 
-> > > > Failure to pass gfp flags correctly (which we know is something that
-> > > > happens today, e.g. vmalloc -> pte allocation) means you're introducing
-> > > > a deadlock.
-> > > 
-> > > The problem with vmalloc is that the page table allocation _doesn't_
-> > > take a GFP parameter.
+On Mon 26-08-24 15:39:47, Kent Overstreet wrote:
+> On Mon, Aug 26, 2024 at 10:47:12AM GMT, Michal Hocko wrote:
+> > From: Michal Hocko <mhocko@suse.com>
 > > 
-> > yeah, I know. I posted patches to plumb it through, which were nacked by
-> > Linus.
+> > bch2_new_inode relies on PF_MEMALLOC_NORECLAIM to try to allocate a new
+> > inode to achieve GFP_NOWAIT semantic while holding locks. If this
+> > allocation fails it will drop locks and use GFP_NOFS allocation context.
 > > 
-> > And we're trying to get away from passing gfp flags directly, are we
-> > not? I just don't buy the GFP_NOFAIL unsafety argument.
+> > We would like to drop PF_MEMALLOC_NORECLAIM because it is really
+> > dangerous to use if the caller doesn't control the full call chain with
+> > this flag set. E.g. if any of the function down the chain needed
+> > GFP_NOFAIL request the PF_MEMALLOC_NORECLAIM would override this and
+> > cause unexpected failure.
+> > 
+> > While this is not the case in this particular case using the scoped gfp
+> > semantic is not really needed bacause we can easily pus the allocation
+> > context down the chain without too much clutter.
 > 
-> The problem with the giant invasive change of "getting away from passing
-> GFP flags directly" is that you need to build consensus for what it
-> looks like and convince everyone that you have a solution that solves
-> all the problems, or at least doesn't make any of those problems worse.
-> You haven't done that, you've just committed code that the MM people hate
-> (indeed already rejected), and set back the idea.
+> yeah, eesh, nack.
 
-Err, what? I'm not the one who originated the idae of getting away from
-passing gfp flags directly. That's been the consensus for _awhile_;
-you've been talking about it, Linus talked about it re: vmalloc pte
-allocation.
+Sure, you can NAK this but then deal with the lack of the PF flag by
+other means. We have made it clear that PF_MEMALLOC_NORECLAIM is not we
+are going to support at the MM level. 
 
-So this looks to me like the mm people just trying to avoid having to
-deal with that. GFP_NOFAIL conflicting with other memalloc/gfp flags is
-not a new issue (you really shouldn't be combining GFP_NOFAIL with
-GFP_NOFS or GFP_NOIO!), and it's something we have warnings for.
+I have done your homework and shown that it is really easy
+to use gfp flags directly. The net result is passing gfp flag down to
+two functions. Sure part of it is ugglier by having several different
+callbacks implementing it but still manageable. Without too much churn.
 
-But the issue of gfp flags not being passed correctly is not something
-we can check for at runtime with any reliability - which means this
-patchset look like a net negative to me.
+So do whatever you like in the bcache code but do not rely on something
+that is unsupported by the MM layer which you have sneaked in without an
+agreement.
+
+-- 
+Michal Hocko
+SUSE Labs
