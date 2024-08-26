@@ -1,84 +1,95 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80A5149018;
-	Mon, 26 Aug 2024 10:32:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A7713C695;
+	Mon, 26 Aug 2024 13:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724668342; cv=none; b=QMyVPF4e9JBDuxA0IkxWv/dBTip2QM0QJsUpPBLs9KdeutL6PS5nnqnndKOQ2pV5NuE5JcN4dSTib4Ygq/Kfzl2XBPpUjfIwTZUrvJBTIugDVa6Gd1Rl0Hif/nPQmeTrKatJM5dXe9oPB6PgDnk960wT0IjpAYOMyfGv+er4E6o=
+	t=1724677921; cv=none; b=FY3D3ucbfs4TZNJujs/oPNK0aCes3vBImZdTEt0HqwaMp5rLzSuStmRWgW8VRLNw+MSoZjnIO8VtbQF21xLSE5Nea2FCZw7dFC6xyMFQLwUdZ7vMxquqCZlvPQVLzVI1NhsKyqEFJBZSgdMCt+PVQVBNO4qDrhboOTkSsUzgVDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724668342; c=relaxed/simple;
-	bh=Y1cnD9STJhkr0k/+sXYYFc+IhgrFb5H9XTB3O1sCqaU=;
+	s=arc-20240116; t=1724677921; c=relaxed/simple;
+	bh=ivF/jbpHiVz5xnl0u7eRNCvvm7IVCf7GHqjOdoyEiJ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qddeGNcIPKg0EtPmR6cRs/u0dni5eRGT6EELIQkPCmTS7FjcV9KiQEGwCEpKLoMebtiWSXioMamnpB6El4Qm8+2wiEO1aOtb8gBSuqwQJ53KBIk8RQi8MFYjdzJQT3NpyJPZRbWacbBdCJszLjJPsacwVq6zHeUzh9pGdfwDATo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F2vP3Vg/; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=FYu5O0bMaTDpm3cnYDh1waqo05FxFKSXgiwr8Al9X6jdK0yV9SFDEuHYl4sEttcq+WxGeS+lpG/WMQoyO/vilwKNINcZE7Aacxw6s//I6JypqwkMY9lqHaJ7m/O2AucAxlw8Ap4+jUqAAxp18YwBLrUeIvZ8kpLmR2N4+2+ok8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kcRs0Up6; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F2vP3Vg/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E134EC51404;
-	Mon, 26 Aug 2024 10:32:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724668342;
-	bh=Y1cnD9STJhkr0k/+sXYYFc+IhgrFb5H9XTB3O1sCqaU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F2vP3Vg/9xKzev4sJ1LcAxGZz3jG7fPg90AxXFpfnbOZoFs8eRFkCHAggBtJtJL8l
-	 UtFoLZUniGA7bSbjdd0iGLzAphovK+9ct88uDW2e4cS9lwFeAi0OyU+weRJ1HGknkB
-	 OUK50OEqmnn92GxNCjIwRb48va6A3nHfbE1D21aL78qcuB3iZmgibmUYUokC71E+xp
-	 RQtKiY4hTvEj28AaQyz3ODw7rtQSilJ33LKghh2G1/pbconU6DNi1EGIO4bDWDloLD
-	 +2eLlfd6M0zK1Zz+GiVbgGQz1ZpUEdGdUvQDde/6M4ztKyQKs5FCegF8WnTe7/eOQm
-	 27GLHYXYYbdEw==
-Date: Mon, 26 Aug 2024 12:32:18 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Hongbo Li <lihongbo22@huawei.com>
-Cc: kent.overstreet@linux.dev, sforshee@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2] bcachefs: support idmap mounts
-Message-ID: <20240826-mitnichten-zerfallen-f9a348cecb46@brauner>
-References: <20240824012724.1256722-1-lihongbo22@huawei.com>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kcRs0Up6"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=CnEqIrJf/5Uvl3Jm/q/BrEQtwg9oxHJd/L725YJbtSg=; b=kcRs0Up6Cpe13NcGd7CsxcTXEg
+	wfUx33ph4ytvCOW5PBAgqcDvh4o1EGSJoK5TGxQCgPNeuG/v3D6JkU/rF2hdYZcbDhu6XmX0Y461C
+	LZZ8BwGkStTknZyAzOa9dQgtUckbdxeGFNrcU3twnz5o7iteGmZ3xjv70tJkt3u7oT/lbuXQlLbzO
+	oSF3vL64NTiTdj3Z70gPw8W2W86zGz3Rd9OF/5fwwtq68NRPdXcEq+NKFk1zhI15jjtzu+HtZn8pt
+	H5KbjDahvkUiYuDiMfOr8HwTsFriXnImrEp4FssGplhuGTpXTswtIQPfYPK+il474iHx5lr1OO8mC
+	ZMNhtxgw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1siZVT-0000000FQMj-2njG;
+	Mon, 26 Aug 2024 13:11:39 +0000
+Date: Mon, 26 Aug 2024 14:11:39 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>, jack@suse.cz,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH 1/2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
+Message-ID: <Zsx_C0QuecO1C0dB@casper.infradead.org>
+References: <20240826085347.1152675-1-mhocko@kernel.org>
+ <20240826085347.1152675-2-mhocko@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240824012724.1256722-1-lihongbo22@huawei.com>
+In-Reply-To: <20240826085347.1152675-2-mhocko@kernel.org>
 
-On Sat, Aug 24, 2024 at 09:27:24AM GMT, Hongbo Li wrote:
-> We enable idmapped mounts for bcachefs. Here, we just pass down
-> the user_namespace argument from the VFS methods to the relevant
+On Mon, Aug 26, 2024 at 10:47:12AM +0200, Michal Hocko wrote:
+> @@ -258,12 +258,10 @@ static struct bch_inode_info *__bch2_new_inode(struct bch_fs *c)
+>   */
+>  static struct bch_inode_info *bch2_new_inode(struct btree_trans *trans)
+>  {
+> -	struct bch_inode_info *inode =
+> -		memalloc_flags_do(PF_MEMALLOC_NORECLAIM|PF_MEMALLOC_NOWARN,
+> -				  __bch2_new_inode(trans->c));
+> +	struct bch_inode_info *inode = __bch2_new_inode(trans->c, GFP_NOWARN | GFP_NOWAIT);
 
-Fwiw, you're not passing a user namespace, you're passing an idmapping.
+GFP_NOWAIT include GFP_NOWARN these days (since 16f5dfbc851b)
 
-> helpers.
-> 
-> The idmap test in bcachefs is as following:
+> +++ b/fs/inode.c
+> @@ -153,7 +153,7 @@ static int no_open(struct inode *inode, struct file *file)
+>   * These are initializations that need to be done on every inode
+>   * allocation as the fields are not initialised by slab allocation.
+>   */
+> -int inode_init_always(struct super_block *sb, struct inode *inode)
+> +int inode_init_always(struct super_block *sb, struct inode *inode, gfp_t gfp)
 
-I saw that you tested this with xfstests because that has all the
-important testing. Below is just really a "ok, that _looks_ like what
-we'd expect" kind of test.
+Did you send the right version of this patch?  There should be a "_gfp"
+appended to this function name.
 
-> 
-> ```
-> 1. losetup /dev/loop1 bcachefs.img
-> 2. ./bcachefs format /dev/loop1
-> 3. mount -t bcachefs /dev/loop1 /mnt/bcachefs/
-> 4. ./mount-idmapped --map-mount b:0:1000:1 /mnt/bcachefs /mnt/idmapped1/
-> 
-> ll /mnt/bcachefs
-> total 2
-> drwx------. 2 root root    0 Jun 14 14:10 lost+found
-> -rw-r--r--. 1 root root 1945 Jun 14 14:12 profile
-> 
-> ll /mnt/idmapped1/
-> 
-> total 2
-> drwx------. 2 1000 1000    0 Jun 14 14:10 lost+found
-> -rw-r--r--. 1 1000 1000 1945 Jun 14 14:12 profile
-> 
-> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
-> 
-> ---
+> +++ b/include/linux/fs.h
+> @@ -3027,7 +3027,12 @@ extern loff_t default_llseek(struct file *file, loff_t offset, int whence);
+>  
+>  extern loff_t vfs_llseek(struct file *file, loff_t offset, int whence);
+>  
+> -extern int inode_init_always(struct super_block *, struct inode *);
+> +extern int inode_init_always_gfp(struct super_block *, struct inode *, gfp_t);
 
-Seems good to me,
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+You can drop the "extern" while you're changing this line.
+
+> +static inline int inode_init_always(struct super_block *sb, struct inode *inode)
+> +{
+> +	return inode_init_always_gfp(sb, inode, GFP_NOFS);
+> +}
