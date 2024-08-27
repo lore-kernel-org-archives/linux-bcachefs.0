@@ -1,50 +1,70 @@
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2468413CABC
-	for <linux-bcachefs@vger.kernel.org>; Mon, 26 Aug 2024 21:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A9EDDAB;
+	Tue, 27 Aug 2024 02:23:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724706638; cv=none; b=SS567SuriE2L8mrLTAMUxIXBrB3vVpDwAedEG7jvSOjJ3XgWJVmA8A/Kjhn2O6bbXZAk6DnA3yHKBMEqY3QscxDMm01mo+8oIZh2M0EA97fbNrsoFZ/LhkRWCryweWSyZy+PPLGYwn1gpLK7YXhAGb9FJXe0IPh4o/JjIjOTHWM=
+	t=1724725428; cv=none; b=D+LQiyiRBRk83bA5TnJub+ubjZjqM9Rt9kPs9w3wRPIoyFDn8X1GNi23KUiCal9fWIQoPAiUJTCNa/pgAB8HVtBUTxwOPqw6wflXnJy8rS8dDtbyHw6XFvuu28qbM1LfX4F4jv6h7aTKlC2A+KW4hSK2KMapSt+poZgbIqKMEBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724706638; c=relaxed/simple;
-	bh=/YtAljW6FyyCqwibkLo/DqUDbvDheWGWuWNA6OLT48c=;
+	s=arc-20240116; t=1724725428; c=relaxed/simple;
+	bh=1+sHOJGfAv3d8ge8kXJJwvkdj5TiGGUN6rNeh4kdWzM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ITjbiCBY16uTHHjh9IN6uq92UYfwTIAcEuhJCKMoBJqa9VUxoxD3a9vEqzTzB9aaPdy80rvkctwZLVXSb7yud0IRwVMMq8TeQK83XsHdOipU3GdwpQb57GikvGg5a9Z5DFyoa0nZOYhsy7E2xUSChdXRllCRo/gMXJstKqo8BfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B4x3oswD; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jv3XuUaGzICdx89PxMsY09Cl+2WLI6OUOwlGSh/GfUq9wj0XFvlj3Nj1pDWl4KLO+S+G+2+cQjiVJ89MA7weqgXB7uVY2J2OqxZo5pwdrSXaC2+p0H9MN3KMTIyHF8fhKpsb2rrnylXfzEI89xCn9Gn4xPkc73ccVYPjuZ7akmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M1A4zhe3; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B4x3oswD"
-Date: Mon, 26 Aug 2024 17:10:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724706635;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zaC8aYnnshYDuXB3xkqDStpn4QcjqPwT2qzAlFZm4bw=;
-	b=B4x3oswDfTQKT5G32KZlZvBiJs4+mierzENSMOLxZqtGz0ZXwgY7VcpSr8oJ8+4GIfGY0I
-	zzu5vsDPI7Q6k46Dg5g4e4evPMhvcTMFBUTOmJLNS7cGeefTjJSh9dXrWB0qlWlNwPG0or
-	Mh9AbSxrs2fzaatiW0LPKlxSx+sYluM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, 
-	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-bcachefs@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M1A4zhe3"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724725427; x=1756261427;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1+sHOJGfAv3d8ge8kXJJwvkdj5TiGGUN6rNeh4kdWzM=;
+  b=M1A4zhe3yTZNflLhbG7GSdsVzujX9nL9sUuOi8ZGQU/cMInAKriu32pG
+   RmfS998aIAWecf66wksr4UoN8SEKC44/UKpV4imJ9ls80hPlM+FSbhGPm
+   nQU5E9Dwu24NJ/q1Ky6lEdJ2k49gBhu2mzTJZtyPva5R2skSybNnMW3yP
+   WB0URQsHfd1eUoGhrRPcrd4ZQBgGKohh7g4jSmRSaRjP77bk7yTk5rWRJ
+   Vp3KxH4FYsa2h7FrAVQnLT/CU6JbyJH/nkArIs43ZwcYOmYB57vV9VfyI
+   ureM/1wq3Amas4crp77qmYLA1QDXFbVlOEp7Hv55m/i6qWY9rlqiZfC1O
+   g==;
+X-CSE-ConnectionGUID: u66o9mkAQOGQP1YquD/rkg==
+X-CSE-MsgGUID: 89UwY8CeQE6FzCLIiKLTwg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11176"; a="34588685"
+X-IronPort-AV: E=Sophos;i="6.10,179,1719903600"; 
+   d="scan'208";a="34588685"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 19:23:46 -0700
+X-CSE-ConnectionGUID: YwZL9LciQSqndo2/dXftPg==
+X-CSE-MsgGUID: t1P2njC9S/CqMPyGYv+p4w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,179,1719903600"; 
+   d="scan'208";a="85898308"
+Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 26 Aug 2024 19:23:43 -0700
+Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1silrw-000HnO-0L;
+	Tue, 27 Aug 2024 02:23:40 +0000
+Date: Tue, 27 Aug 2024 10:23:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Michal Hocko <mhocko@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>, jack@suse.cz,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Michal Hocko <mhocko@suse.com>
 Subject: Re: [PATCH 1/2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
-Message-ID: <jf6dh7icf4vt4dgt4o2h6xvvdlyjewa5wmtn6brumh2tqzlrts@lb7xxthxh7uc>
-References: <20240826085347.1152675-1-mhocko@kernel.org>
- <20240826085347.1152675-2-mhocko@kernel.org>
- <egma4j7om4jcrxwpks6odx6wu2jc5q3qdboncwsja32mo4oe7r@qmiviwad32lm>
- <ZszeUAMgGkGNz8H9@tiehlicka>
- <d5zorhk2dmgjjjta2zyqpyaly66ykzsnje4n4j4t5gjxzt57ty@km5j4jktn7fh>
- <ZszlQEqdDl4vt43M@tiehlicka>
- <ut5zfyvpkigjqev43kttxhxmpgnbkfs4vdqhe4dpxr6wnsx6ct@qmrazzu3fxyx>
+Message-ID: <202408271041.5IWf4ZQC-lkp@intel.com>
+References: <20240826085347.1152675-2-mhocko@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -53,31 +73,63 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ut5zfyvpkigjqev43kttxhxmpgnbkfs4vdqhe4dpxr6wnsx6ct@qmrazzu3fxyx>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240826085347.1152675-2-mhocko@kernel.org>
 
-On Mon, Aug 26, 2024 at 04:44:01PM GMT, Kent Overstreet wrote:
-> No, I explained why GFP_NORECLAIM/PF_MEMALLOC_NORECLAIM can absolutely
-> apply to a context, not a callsite, and why vmalloc() and kvmalloc()
-> ignoring gfp flags is a much more serious issue.
-> 
-> If you want to do something useful, figure out what we're going to do
-> about _that_. If you really don't want PF_MEMALLOC_NORECLAIM to exist,
-> then see if Linus will let you plumb gfp flags down to pte allocation -
-> and beware, that's arch code that you'll have to fix.
-> 
-> Reminder: kvmalloc() is a thing, and it's steadily seeing wider use.
-> 
-> Otherwise, PF_MEMALLOC_NORECLAIM needs to stay; and thank you for
-> bringing this to my attention, because it's made me realize all the
-> other places in bcachefs that use gfp flags for allocating memory with
-> btree locks held need to be switch to memalloc_flags_do().
+Hi Michal,
 
-Additionally: plumbing gfp flags to pte allocation is something we do
-need to do. I proposed it before kvmalloc() was a thing, but now it's
-become much more of a lurking landmine.
+kernel test robot noticed the following build warnings:
 
-Even with that I'd still be against this series, though. GFP_NOFAIL
-interacting badly with other gfp/memalloc flags is going to continue to
-be an issue, and I think the only answer to that is stricter runtime
-checks (which, thank you mm guys for adding recently).
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on tip/sched/core brauner-vfs/vfs.all linus/master v6.11-rc5]
+[cannot apply to next-20240826]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Michal-Hocko/bcachefs-do-not-use-PF_MEMALLOC_NORECLAIM/20240826-171013
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20240826085347.1152675-2-mhocko%40kernel.org
+patch subject: [PATCH 1/2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
+config: i386-buildonly-randconfig-003-20240827 (https://download.01.org/0day-ci/archive/20240827/202408271041.5IWf4ZQC-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240827/202408271041.5IWf4ZQC-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408271041.5IWf4ZQC-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> security/security.c:664: warning: Function parameter or struct member 'gfp' not described in 'lsm_inode_alloc'
+>> security/security.c:1586: warning: Function parameter or struct member 'gfp' not described in 'security_inode_alloc'
+
+
+vim +664 security/security.c
+
+33bf60cabcc768 Casey Schaufler 2018-11-12  654  
+afb1cbe37440c7 Casey Schaufler 2018-09-21  655  /**
+afb1cbe37440c7 Casey Schaufler 2018-09-21  656   * lsm_inode_alloc - allocate a composite inode blob
+afb1cbe37440c7 Casey Schaufler 2018-09-21  657   * @inode: the inode that needs a blob
+afb1cbe37440c7 Casey Schaufler 2018-09-21  658   *
+afb1cbe37440c7 Casey Schaufler 2018-09-21  659   * Allocate the inode blob for all the modules
+afb1cbe37440c7 Casey Schaufler 2018-09-21  660   *
+afb1cbe37440c7 Casey Schaufler 2018-09-21  661   * Returns 0, or -ENOMEM if memory can't be allocated.
+afb1cbe37440c7 Casey Schaufler 2018-09-21  662   */
+b2ce84652b3193 Michal Hocko    2024-08-26  663  int lsm_inode_alloc(struct inode *inode, gfp_t gfp)
+afb1cbe37440c7 Casey Schaufler 2018-09-21 @664  {
+afb1cbe37440c7 Casey Schaufler 2018-09-21  665  	if (!lsm_inode_cache) {
+afb1cbe37440c7 Casey Schaufler 2018-09-21  666  		inode->i_security = NULL;
+afb1cbe37440c7 Casey Schaufler 2018-09-21  667  		return 0;
+afb1cbe37440c7 Casey Schaufler 2018-09-21  668  	}
+afb1cbe37440c7 Casey Schaufler 2018-09-21  669  
+b2ce84652b3193 Michal Hocko    2024-08-26  670  	inode->i_security = kmem_cache_zalloc(lsm_inode_cache, gfp);
+afb1cbe37440c7 Casey Schaufler 2018-09-21  671  	if (inode->i_security == NULL)
+afb1cbe37440c7 Casey Schaufler 2018-09-21  672  		return -ENOMEM;
+afb1cbe37440c7 Casey Schaufler 2018-09-21  673  	return 0;
+afb1cbe37440c7 Casey Schaufler 2018-09-21  674  }
+afb1cbe37440c7 Casey Schaufler 2018-09-21  675  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
