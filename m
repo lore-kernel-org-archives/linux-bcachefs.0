@@ -1,153 +1,136 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059BD13B588;
-	Tue, 27 Aug 2024 09:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA7819EEB4
+	for <linux-bcachefs@vger.kernel.org>; Tue, 27 Aug 2024 10:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724752212; cv=none; b=usaMZqNyxnZ7vFJcRDyuovFQpN+X3a43RPuB7gs7SjNdPvyi747Bgy5uv3GW9m1zs4wuj5pst6hMCBegkgCHHAOoQ/7LKSlOxecTOqD0KqTBy0cCNJwwdT2zRKM/Hqgb7j8H4S3AY1isnCrIA/COrJPE4dMSAMIlAK2qOCdPP9Q=
+	t=1724756043; cv=none; b=bPFhlKvGwABng2ZyC7ANlG6H2xKdnTK733Sp4NvF4uEVnwbAil5ovRrJhF+LnvLv7CG7kpi1DESV5uClJ/aynLK9BgV8QDUKr8DHxb7amqZFcZJcCW+XKyxRsNzvZC7qdU8F1PvoqybUV0xeHLXbImcj1vAjhoNG/XWSgta6nrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724752212; c=relaxed/simple;
-	bh=3WspzH0ayXuzmye4TMFTA5SKabG1smPbMSDk8Oo6bjk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=O4Nbp+9sMvkdeAmP0MTs3pP6Xt5bsJknnvHZ6Ym6zCd8O92dWpKz4b93w4z5bX8AsoS4Vzd33IcNw24VTn5yBCh20Rs6JX8BpAFbh77mb/8ggfaQo3Bx2cU6/MrTWxp8UqxK/Sqv81qrhCeXJgkMDksakEItJRXYIamltssjZ1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=DJPz1CDV; arc=none smtp.client-ip=220.197.31.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1724756043; c=relaxed/simple;
+	bh=OIj58p9z7PV/B67T6gypj3fNfOS7T78tyJTwBuw4LCo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ijEp/vx9Kng/D9WIxpzE6yFoEXOEmQotV/YonOYotfZBBJVs5XrE5vDGd/+IhOJUQETgTtMR157PdF3vUydvBytUMOZr8VQfT+b4GgphZz3Gs3DKKZeOBtmsB2c6+/cK9oXHsZSthfiEPAPd3oZXjrhF5239drW5OuZx6JbAnL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BBbMK35P; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="DJPz1CDV"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=jk20T
-	b3e+CGSiqUnBq3as4wi/rgAW0Z861vyIyF0Keo=; b=DJPz1CDVlYtOeHiUFBWqb
-	V/JEwif7E134kJ+0v/ddSToeJlzvuiN65k0BqwAPcbzTErG4cg2cGMUa0V2wUGqj
-	aKpViXiVm4MBA6us0742b8Lcz2Fgy67m7aoVWINSFN51jowF+szjUdFFSZoiX4dU
-	xTBK7ZriwSMu4HFS6Rm2n0=
-Received: from localhost.localdomain (unknown [111.35.190.113])
-	by gzga-smtp-mta-g2-2 (Coremail) with SMTP id _____wDnTwotoc1mnl1vEA--.38326S4;
-	Tue, 27 Aug 2024 17:49:50 +0800 (CST)
-From: David Wang <00107082@163.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BBbMK35P"
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a869332c2c2so800704566b.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 27 Aug 2024 03:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1724756040; x=1725360840; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=e2+li/AcO6Ae1QDTZoYlXn07+RgNIMHrKujTKXnZVo0=;
+        b=BBbMK35PkxYByELaBa1CGWfW9sUlRE+9B/LnbIXN5AWLvxMQK3BPMntBo/VmTs6oAH
+         gxARpSAkgitHumIzpyyV+CyGwoqj7/GUj2UZZ+xYIAJd3MpLfzkBEWDofKBM/MQASu1M
+         0/ngdfKRABPBHK2PSF3rcS26Wx/SrAKSJXfg4C3ne27pYq5NG3/lfE7oR1Js3//bw+60
+         OKSOFAVcWhF7gIMKySc2rSwI4VTA6cEJAfBDxvH82U2FFUKUirUMSzj7Db2cfyweXy4Y
+         BdEsabvVW3cINJr7TBmikcbY1j0yzNyc7iZzNpC9a1m1oolv9kDUSM2uAn6xyCUv5wBZ
+         uy9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724756040; x=1725360840;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e2+li/AcO6Ae1QDTZoYlXn07+RgNIMHrKujTKXnZVo0=;
+        b=WZRzdFauVYLFPXOWRLueKM7uK98S6JsWnTg0WBU2W18m3YedOBnjc2vwL35YhWoJlD
+         D019QWTQVznwZrhWLdPHe9HX8MrlDcUmR/IEnOFjbEHcbCQnO+4AHSmFkxrAr2AtZ46B
+         gLtoRDkIEXlv/ZxyQporXkpBfTfKySuWiJjJT1qZ6rGgQ8IB2EQSrDfh+HWHiHREW5wl
+         FTOa5UV/Sm2StOmb5On0Rudaq7yiIQq8yLbW2favUWfKS4xWZKm6ZDNMuwwbQyPzn1bi
+         3ZVuCZdx55HhIsgtp6dWcdBQkZcarBMOwkIm9yVBaw0NmjOvwG8Ur2fqAyK5MDlr4B1I
+         o2zA==
+X-Forwarded-Encrypted: i=1; AJvYcCUyhHWAW9raFizXu20tIxAcezzd45IlmQ3TTtQBx74dKOQY6OcMdJlmMdZ+mfNm7xFlQMRaEjp925oTARzKqA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YybuN1KZFY4tuv1OU+7leVDuLV6WoWlEpRijqpUHMl5cGu0MPqu
+	ylbCNNMEWIc7o2yg+8lcSfg6nE9RC7m5w0J9MbAhzX3WBCTcVqJ1NGfxyxmjNRs=
+X-Google-Smtp-Source: AGHT+IEjFrTYI+AqR+e7VmGfKsN/nVI/pn6+NZveY9Op2DOsbXHXpZ55OtFZDF3A7ozw2wnssRp8JA==
+X-Received: by 2002:a17:907:94d0:b0:a6e:f869:d718 with SMTP id a640c23a62f3a-a86e29be930mr257003266b.21.1724756039983;
+        Tue, 27 Aug 2024 03:53:59 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a86e58a57f1sm93454166b.187.2024.08.27.03.53.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Aug 2024 03:53:59 -0700 (PDT)
+Date: Tue, 27 Aug 2024 13:53:55 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [BUG?] bcachefs: keep writing to device when there is no high-level I/O activity.
-Date: Tue, 27 Aug 2024 17:49:33 +0800
-Message-Id: <20240827094933.6363-1-00107082@163.com>
-X-Mailer: git-send-email 2.39.2
+Subject: Re: [GIT PULL] bcachefs changes for 6.11, v2
+Message-ID: <d0da8ba5-e73e-454a-bbd7-a4e11886ea8b@stanley.mountain>
+References: <73rweeabpoypzqwyxa7hld7tnkskkaotuo3jjfxnpgn6gg47ly@admkywnz4fsp>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnTwotoc1mnl1vEA--.38326S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAry7AFy8GryfGr45JF13Jwb_yoWrZw4kpr
-	yfJry7GF4kJryUJFWDCayxtryxGrnxtw1DJryUJ348Crs5Zr1UtF42qFyvqFy5JFy8XFy7
-	XF48Jw15Grn2vr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UDrcfUUUUU=
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/xtbB0gFIqmWXz+r2hQAAsV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73rweeabpoypzqwyxa7hld7tnkskkaotuo3jjfxnpgn6gg47ly@admkywnz4fsp>
 
-Hi,
+On Thu, Jul 19, 2024 at 06:36:50PM -0400, Kent Overstreet wrote:
+>       bcachefs: Unlock trans when waiting for user input in fsck
 
-I was using two partitions on same nvme device to compare filesystem performance,
-and I consistantly observed a strange behavior:
+Hello Kent Overstreet,
 
-After 10 minutes fio test with bcachefs on one partition, performance degrade
-significantly for other filesystems on other partition (same device).
+ommit 889fb3dc5d6f ("bcachefs: Unlock trans when waiting for user
+input in fsck") from May 29, 2024 (linux-next), leads to the
+following (UNPUBLISHED) Smatch static checker warning:
 
-	ext4  150M/s --> 143M/s
-	xfs   150M/s --> 134M/s
-	btrfs 127M/s --> 108M/s
+fs/bcachefs/error.c:129 bch2_fsck_ask_yn() error: double unlocked 'trans' (orig line 113)
 
-Several round tests show the same pattern that bcachefs seems occupy some device resource
-even when there is no high-level I/O.
+fs/bcachefs/error.c
+   102  static enum ask_yn bch2_fsck_ask_yn(struct bch_fs *c, struct btree_trans *trans)
+   103  {
+   104          struct stdio_redirect *stdio = c->stdio;
+   105  
+   106          if (c->stdio_filter && c->stdio_filter != current)
+   107                  stdio = NULL;
+   108  
+   109          if (!stdio)
+   110                  return YN_NO;
+   111  
+   112          if (trans)
+   113                  bch2_trans_unlock(trans);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+Unlock
 
-I monitor /proc/diskstats, and it confirmed that bcachefs do keep writing the device.
-Following is the time serial samples for "writes_completed" on my bcachefs partition:
+   114  
+   115          unsigned long unlock_long_at = trans ? jiffies + HZ * 2 : 0;
+   116          darray_char line = {};
+   117          int ret;
+   118  
+   119          do {
+   120                  unsigned long t;
+   121                  bch2_print(c, " (y,n, or Y,N for all errors of this type) ");
+   122  rewait:
+   123                  t = unlock_long_at
+   124                          ? max_t(long, unlock_long_at - jiffies, 0)
+   125                          : MAX_SCHEDULE_TIMEOUT;
+   126  
+   127                  int r = bch2_stdio_redirect_readline_timeout(stdio, &line, t);
+   128                  if (r == -ETIME) {
+   129                          bch2_trans_unlock_long(trans);
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Double unlock
 
-writes_completed @timestamp
-	       0 @1724748233.712
-	       4 @1724748248.712    <--- mkfs
-	       4 @1724748263.712
-	      65 @1724748278.712
-	   25350 @1724748293.712
-	   63839 @1724748308.712    <--- fio started
-  	  352228 @1724748323.712
-	  621350 @1724748338.712
-	  903487 @1724748353.712
-        ...
-	12790311 @1724748863.712
-	13100041 @1724748878.712
-	13419642 @1724748893.712
-	13701685 @1724748908.712    <--- fio done (10minutes)
-	13701769 @1724748923.712    <--- from here, average 5~7writes/second for 2000 seconds
-	13701852 @1724748938.712
-	13701953 @1724748953.712
-	13702032 @1724748968.712
-	13702133 @1724748983.712
-	13702213 @1724748998.712
-	13702265 @1724749013.712
-	13702357 @1724749028.712
-        ...
-	13712984 @1724750858.712
-	13713076 @1724750873.712
-	13713196 @1724750888.712
-	13713299 @1724750903.712
-	13713386 @1724750918.712
-	13713463 @1724750933.712
-	13713501 @1724750948.712   <--- writes stopped here
-	13713501 @1724750963.712
-	13713501 @1724750978.712
-	...
+   130                          unlock_long_at = 0;
+   131                          goto rewait;
+   132                  }
+   133  
+   134                  if (r < 0) {
+   135                          ret = YN_NO;
+   136                          break;
+   137                  }
+   138  
+   139                  darray_last(line) = '\0';
+   140          } while ((ret = parse_yn_response(line.data)) < 0);
+   141  
+   142          darray_exit(&line);
+   143          return ret;
+   144  }
 
-Is this behavior expected? 
-
-My test script:
-	set -e
-	for fsa in "btrfs" "ext4" "bcachefs" "xfs"
-	do
-		if [ $fsa == 'ext4' ]; then
-			mkfs -t ext4 -F /dev/nvme0n1p1
-		else
-			mkfs -t $fsa -f /dev/nvme0n1p1
-		fi
-		mount -t $fsa /dev/nvme0n1p1 /disk02/dir1
-		for fsb in "ext4" "bcachefs" "xfs" "btrfs"
-		do
-			if [ $fsb == 'ext4' ]; then
-				mkfs -t ext4 -F /dev/nvme0n1p2
-			else
-				mkfs -t $fsb -f /dev/nvme0n1p2
-			fi
-			mount -t $fsb /dev/nvme0n1p2 /disk02/dir2
-
-			cd /disk02/dir1 && fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test  --bs=4k --iodepth=64 --size=1G --readwrite=randrw  --runtime=600 --numjobs=8 --time_based=1 --output=/disk02/fio.${fsa}.${fsb}.0
-			sleep 30
-			cd /disk02/dir2 && fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test  --bs=4k --iodepth=64 --size=1G --readwrite=randrw  --runtime=600 --numjobs=8 --time_based=1 --output=/disk02/fio.${fsa}.${fsb}.1
-			sleep 30
-			cd /disk02
-			umount /disk02/dir2
-		done
-		umount /disk02/dir1
-	done
-
-And here is a report for one round of test matrix:
-+----------+-----------------------------+-----------------------------+-----------------------------+-----------------------------+
-|   R|W    |             ext4            |           bcachefs          |             xfs             |            btrfs            |
-+----------+-----------------------------+-----------------------------+-----------------------------+-----------------------------+
-|   ext4   |    [ext4]147MB/s|147MB/s    |    [ext4]146MB/s|146MB/s    |    [ext4]150MB/s|150MB/s    |    [ext4]149MB/s|149MB/s    |
-|          |    [ext4]146MB/s|146MB/s    | [bcachefs]72.2MB/s|72.2MB/s |     [xfs]149MB/s|149MB/s    |    [btrfs]132MB/s|132MB/s   |
-| bcachefs | [bcachefs]71.9MB/s|71.9MB/s | [bcachefs]65.1MB/s|65.1MB/s | [bcachefs]69.6MB/s|69.6MB/s | [bcachefs]65.8MB/s|65.8MB/s |
-|          |    [ext4]143MB/s|143MB/s    | [bcachefs]71.5MB/s|71.5MB/s |     [xfs]134MB/s|133MB/s    |    [btrfs]108MB/s|108MB/s   |
-|   xfs    |     [xfs]148MB/s|148MB/s    |     [xfs]147MB/s|147MB/s    |     [xfs]152MB/s|152MB/s    |     [xfs]151MB/s|151MB/s    |
-|          |    [ext4]147MB/s|147MB/s    | [bcachefs]71.3MB/s|71.3MB/s |     [xfs]148MB/s|148MB/s    |    [btrfs]127MB/s|127MB/s   |
-|  btrfs   |    [btrfs]132MB/s|132MB/s   |    [btrfs]112MB/s|111MB/s   |    [btrfs]110MB/s|110MB/s   |    [btrfs]110MB/s|110MB/s   |
-|          |    [ext4]147MB/s|146MB/s    | [bcachefs]69.7MB/s|69.7MB/s |     [xfs]146MB/s|146MB/s    |    [btrfs]125MB/s|125MB/s   |
-+----------+-----------------------------+-----------------------------+-----------------------------+-----------------------------+
-(The rows are for the FS on the first partition, and the cols are on the second partition)
-
-The version of bcachefs-tools on my system is 1.9.1.
-(The impact is worse, ext4 dropped to 80M/s, when I was using bcachefs-tools from debian repos which is too *old*,
-and known to cause bcachefs problems. And that is the reason that I do this kind of test.)
-
-
-Thanks
-David
-
+regards,
+dan carpenter
