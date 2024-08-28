@@ -1,133 +1,108 @@
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A050642A8F
-	for <linux-bcachefs@vger.kernel.org>; Wed, 28 Aug 2024 04:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C23416BE35
+	for <linux-bcachefs@vger.kernel.org>; Wed, 28 Aug 2024 12:04:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724818308; cv=none; b=NvswQZIFw6nk0naVQawGb+RF6VJgQazinS/b7EPVdl2gwTrIGhPo7/pWeQ0KMBXdlrWDXDGv/30oAVD7w53s05TzR+UNPk8RjxMuIVgwalFu8mkxFttmSQc3c/l12AQWMDvU+VQmZJK90yrc9TwzRgMjwmbhNhkfWBbFjzRAey8=
+	t=1724846700; cv=none; b=kJPa3mFehNryQovwl+UZYpS+00iIHRyJ13iKltnVr5/O515md4zpL87V/zDOdWb8F+QURkaMNNiCEtDYRBiTUm5DTKYyPQC/Rgb0d/UXFrOJFofC2Z3NaHWd37gy1Rcjx2DhBC908zH8RDsFgctqZ8P/Uq3nDvJONrMwtT9YLHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724818308; c=relaxed/simple;
-	bh=pzeoG0rGlcrMy0uwS6ASDe/iLtJVTfCYkQ0364ipMj4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hfSd2SVwRYVmkr8aORsMQwowdh46AtpJSKPkJ4iOmEGAvZbb+AZZro6oUDNlqb63+14Ddm0bIYJrXWb2YuBMW7CEsxKUpUJn5IeVQrA/zaHr7hpXQt/p3dn4IUQQ6Q8osBAPMx4+RJwV1ekES/jxf9g5P7zdegyHG0Q2PESsAWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=zU1dUMbe; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+	s=arc-20240116; t=1724846700; c=relaxed/simple;
+	bh=kDtERYYG0MpcuVRV7IycEdWcCS9KfVRKzDoFjL1R11o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gRgnzW/zEFeOT5asqCV6GthpHtOzpR48QYuQDyp5gk6K8qcXVxiTaTS3l0D4FC22KfYbbCuaeoMRfB5lhdw6/TpnKbkajTMxdYLblPkdEQ4tiCaAbhZoth71lN7CEXNQcoOeozAQwzw/8lhmbepwnKTJSl3rNmeH83BdBYKXWHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NThi+uCV; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="zU1dUMbe"
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-202508cb8ebso42354005ad.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 27 Aug 2024 21:11:46 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NThi+uCV"
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7142a30e3bdso412489b3a.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 28 Aug 2024 05:04:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1724818306; x=1725423106; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QyONyGAsfyIYBth/dRKW+A3KYVHfTY8AXbPDXDua9oY=;
-        b=zU1dUMbe34rV2B98hA9Qj+Kdw2Prcp/nT0OYYfgi4vU0lsVfOf01HkRm5U7tcNxkW1
-         GyMmyazwfS3f5+ubWlR6UDCcQJ5RN94SVxtEZRLJ0D0WCCZgnuDRcSU1Fg/hG96pXsyr
-         zFdvEDhYL+qMW3QfWcI4BWgv+GwLT2gtPCyDkya8kTbHw/qGNZDZUClEy09sTgidxesz
-         x75bAOodPqUonz/7jLW69QV2CWeO0F6+LRLoNRrH0rJwa9dvAjkoeqZAUQ+xrcAQHOQV
-         MB0lBUAMx/1yexkQtw7IwuZgRJpJcdr/nUbjw3Yscwiy25tGzPLkrlyDZbc1skdudLxu
-         Dfog==
+        d=gmail.com; s=20230601; t=1724846697; x=1725451497; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lhb10m9GJcPcXsiWtRJAxrDbcOxMaxelYsEm/7234+c=;
+        b=NThi+uCVju1ROSw6PQmen9UUt80vfooKFcGDpOzKbXdA3ZTpp+MBJ6lf100RA8JIrE
+         B1VrKerH5wba0wgJ9ZSensGvuyVE8fOsyS/rRPoryOVNII1J0owejB+iQtPhGfKooDJE
+         J9kTR3mvd26MqFmsHC++i41ZHQF127LElh2sw48mJ7Khqq7h0c367dp19ASYiPc70F2s
+         ZzxUJDetmBV/qdG4WfmMZkcavGiFS4cNPVHewwjX9ALG07uaCRAv696oI4t0Nb5Ni+gU
+         dMoZFBx+dhNX7NfnOjAEtWmkECr0gadVRcnEyZypCxY+5RNMJkUMjwfUG/eRnIxsXQgv
+         rqYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724818306; x=1725423106;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QyONyGAsfyIYBth/dRKW+A3KYVHfTY8AXbPDXDua9oY=;
-        b=S8AV5tZ0yZPCcgD+L5BfTyRoX+c5JqYF8QdoHK87tvbj28DcPPu3JwvArEr0EY523h
-         bF6HqzHGz5IPZpB/A+wAhYBQYpI/Ukt3tnGzvD0OnQe0IgabSMghr0aApdYwD5UTwJbU
-         mHvSmsoRNlmfGiASLbF6aSyDj8mrsJXV4YKKi3ncFfQLIakbi5l0lLa7pFkTIdf8cTlF
-         5LHiMczXWmmS5Ki1Qp5uTFrl9hR+5DAZ4zItS4yQqe5927wZaG/wxPbfZYlk38fTSemb
-         iuFO7EgkWqEDPgaxmTCnhS566jzrUD2MDu+0438pg8Cu/ix0Mw7tJmU93VRc5wJnSqX/
-         it0A==
-X-Forwarded-Encrypted: i=1; AJvYcCVMdILzOtQ9mW/Ky1UZw1yCXPAqq8ikFZIpjpVNh7KBU1HXVjzYb4zFLyT5tKaVbZ3sdxWeCtnjIF5S2lyaxg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHUnNgXkK7McNUh1O595LQ+gh+amjMtTglsXWgp1Rqa+APYxAd
-	bUU8Uq4qW3e7dy3+KcvevzgZCcF1UK3qXaAa4L5EFke1P/YR9san/JFGbmsbDZY=
-X-Google-Smtp-Source: AGHT+IHm6WjwDbR9jtAJuUU7LlUIPXWdDZCgm3DSqdlOs82lwk7RhW7LXL4hVMztYI1OEuh4ZaU3nw==
-X-Received: by 2002:a17:902:e5c1:b0:1fc:f65:cd8a with SMTP id d9443c01a7336-204f9b7978dmr10468715ad.18.1724818305827;
-        Tue, 27 Aug 2024 21:11:45 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-0-65.pa.nsw.optusnet.com.au. [49.179.0.65])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20385fc6c26sm90399215ad.297.2024.08.27.21.11.45
+        d=1e100.net; s=20230601; t=1724846697; x=1725451497;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Lhb10m9GJcPcXsiWtRJAxrDbcOxMaxelYsEm/7234+c=;
+        b=NZzRYOZ4mWIz5pRmmlerji5QMGBLcBA3HSI+v8NtxRnwpleEWfe/fmqngtZuxWUtqL
+         ntxP0vIpUHWwDhPnJHJyiY7GxBtzKJrGZgIfnaWSWQW4NtMqsgbnWeyuxMBenGQgsZKX
+         ImgP00YiKx9YZKlZMicEe9ZQPiu627ZJkFEDgcJwzZ1zuckY2uw94y8Y2+YDwLBXKfFU
+         T0R13um8WH6fsMfhJKsylKO74XOncHB9NpeTDhN4eBiQ72KqcAOONRbA29BJN5Bf7Cqe
+         WOvthY57eEwPwpNUl+xDBd37QrQklg5aRqZ4jGbjeFSQhFLNB0CeM+z0G8XDIqbmippn
+         IjCw==
+X-Gm-Message-State: AOJu0YyTZd/fc+pnmQHfq9Dwt5m45RDFveeYxBVAc1gyQutiv1QlaMHC
+	dNoqtlRbdt6MGl5QMF4Ckjb4aQrtB89D6bcWSIwPFvMnPzZ96+TQjv75dnh/
+X-Google-Smtp-Source: AGHT+IGUQTABrXTyrfqaEPOjCyrOsmqbjZY7h0feJMJ05JqaEsngwpuAvtZ8Ns6wp2XpUmQbs+SxGQ==
+X-Received: by 2002:a05:6a20:439f:b0:1c0:f114:100c with SMTP id adf61e73a8af0-1ccd1a9e22fmr3198416637.17.1724846697305;
+        Wed, 28 Aug 2024 05:04:57 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-714351aee10sm10178965b3a.93.2024.08.28.05.04.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2024 21:11:45 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1sjA22-00FK14-2a;
-	Wed, 28 Aug 2024 14:11:42 +1000
-Date: Wed, 28 Aug 2024 14:11:42 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Matthew Wilcox <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>, jack@suse.cz,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm: drop PF_MEMALLOC_NORECLAIM
-Message-ID: <Zs6jfv2MrubpIckX@dread.disaster.area>
-References: <20240826085347.1152675-1-mhocko@kernel.org>
- <20240826085347.1152675-3-mhocko@kernel.org>
- <ZsyKQSesqc5rDFmg@casper.infradead.org>
- <ZsyyqxSv3-IbaAAO@tiehlicka>
- <ZszAI7oYsh7FvGgg@casper.infradead.org>
- <ZszU6dTOJYmujMPd@tiehlicka>
+        Wed, 28 Aug 2024 05:04:56 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] bcachefs: Remove the second call to these function
+Date: Wed, 28 Aug 2024 20:04:51 +0800
+Message-ID: <20240828120451.700518-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZszU6dTOJYmujMPd@tiehlicka>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 26, 2024 at 09:18:01PM +0200, Michal Hocko wrote:
-> On Mon 26-08-24 18:49:23, Matthew Wilcox wrote:
-> > On Mon, Aug 26, 2024 at 06:51:55PM +0200, Michal Hocko wrote:
-> [...]
-> > > If a plan revert is preferably, I will go with it.
-> > 
-> > There aren't any other users of PF_MEMALLOC_NOWARN and it definitely
-> > seems like something you want at a callsite rather than blanket for every
-> > allocation below this point.  We don't seem to have many PF_ flags left,
-> > so let's not keep it around if there's no immediate plans for it.
-> 
-> Good point. What about this?
-> --- 
-> From 923cd429d4b1a3520c93bcf46611ae74a3158865 Mon Sep 17 00:00:00 2001
-> From: Michal Hocko <mhocko@suse.com>
-> Date: Mon, 26 Aug 2024 21:15:02 +0200
-> Subject: [PATCH] Revert "mm: introduce PF_MEMALLOC_NORECLAIM,
->  PF_MEMALLOC_NOWARN"
-> 
-> This reverts commit eab0af905bfc3e9c05da2ca163d76a1513159aa4.
-> 
-> There is no existing user of those flags. PF_MEMALLOC_NOWARN is
-> dangerous because a nested allocation context can use GFP_NOFAIL which
-> could cause unexpected failure. Such a code would be hard to maintain
-> because it could be deeper in the call chain.
-> 
-> PF_MEMALLOC_NORECLAIM has been added even when it was pointed out [1]
-> that such a allocation contex is inherently unsafe if the context
-> doesn't fully control all allocations called from this context.
-> 
-> While PF_MEMALLOC_NOWARN is not dangerous the way PF_MEMALLOC_NORECLAIM
-> is it doesn't have any user and as Matthew has pointed out we are
-> running out of those flags so better reclaim it without any real users.
-> 
-> [1] https://lore.kernel.org/all/ZcM0xtlKbAOFjv5n@tiehlicka/
-> 
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
+If the lock has been acquired and unlocked, we don't have to do clear
+and wakeup again, though harmless since we hold the intent lock. Merge
+the condition might be clearer.
 
-Looks good to me.
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ fs/bcachefs/six.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
-
+diff --git a/fs/bcachefs/six.c b/fs/bcachefs/six.c
+index b3583c50ef04..8fb44a5d1406 100644
+--- a/fs/bcachefs/six.c
++++ b/fs/bcachefs/six.c
+@@ -491,8 +491,12 @@ static int six_lock_slowpath(struct six_lock *lock, enum six_lock_type type,
+ 				list_del(&wait->list);
+ 			raw_spin_unlock(&lock->wait_lock);
+ 
+-			if (unlikely(acquired))
++			if (unlikely(acquired)) {
+ 				do_six_unlock_type(lock, type);
++			} else if (type == SIX_LOCK_write) {
++				six_clear_bitmask(lock, SIX_LOCK_HELD_write);
++				six_lock_wakeup(lock, atomic_read(&lock->state), SIX_LOCK_read);
++			}
+ 			break;
+ 		}
+ 
+@@ -501,10 +505,6 @@ static int six_lock_slowpath(struct six_lock *lock, enum six_lock_type type,
+ 
+ 	__set_current_state(TASK_RUNNING);
+ out:
+-	if (ret && type == SIX_LOCK_write) {
+-		six_clear_bitmask(lock, SIX_LOCK_HELD_write);
+-		six_lock_wakeup(lock, atomic_read(&lock->state), SIX_LOCK_read);
+-	}
+ 	trace_contention_end(lock, 0);
+ 
+ 	return ret;
 -- 
-Dave Chinner
-david@fromorbit.com
+2.45.2
+
