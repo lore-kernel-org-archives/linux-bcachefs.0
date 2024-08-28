@@ -1,67 +1,77 @@
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3E81C688E
-	for <linux-bcachefs@vger.kernel.org>; Tue, 27 Aug 2024 18:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21641DA21
+	for <linux-bcachefs@vger.kernel.org>; Wed, 28 Aug 2024 04:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724783164; cv=none; b=UrWk3RH73/XGmm606UCPmpiwj/+UvMCkLQAPN6vYe/Bfip/86AYCyKQPAiwYDWnXAaOb+TMvuo2Mvx57e6/w1ondJc2bkvZrMPh6F+IqW3JiCC4u1bOBOzF6p9moQOKeXfFR0/7e/1kWlioJznWoHBZRWKqoq7PYAj8oOFdBSdA=
+	t=1724818204; cv=none; b=oV7a0YioAbrdYQM5/MasgDC4NPcKuys+ZyWtIasUh7sTu3XQpZ2O9uKH8OLAZ36VmDXUjLp3LPaYjINTZN0S4mEPKtA53Yz1QBVAuCSQor5Rnpa6OmBzTb8KNQxEWd9jKuuyM2n1Ruieyiv/jzkujJDto2u7l9i0jcxUN9XifSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724783164; c=relaxed/simple;
-	bh=nxcMUPkBKykb3i5RJjQJ5czkCAct+wxS2Ut+p+S66Ek=;
+	s=arc-20240116; t=1724818204; c=relaxed/simple;
+	bh=zNlNxjFW08JSSEcyMPvi4h5DZH3WzzFkawQQUbG3njo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pE2fh1xe0fJO98c7jdxUi5AwwbJRzACybMhPxfz6k+mJWo38hjK6aRQL184ZCeBdrx1wqyoKsMVjo8ENVBVWr4RVC4234Lo83+mbTpWEkkZTp/UoMWNLwUvBlnR8ngFeLXbDnQ75fmYbNMlXrbwkUzLNlUPSq8OfMRZ/y6uqfyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eG0lNHWj; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=AYN1Bt0rJQM5h1IykWaPV947KH96tV0H2diPSutI8YTqJsZM2KQhmaiJ4Y1HM+rY3envoiKKRkcTYiGQJdfuU1Vz2JPLwy3Hiit/CHKIjo/t/sqydA8pjMaywOhj3lQNscG4qWNM30F20eD6AxpVPVSNZuVGnpsf1JV+eETewiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=ogYpZJeJ; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eG0lNHWj"
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-37196229343so3597711f8f.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 27 Aug 2024 11:26:02 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="ogYpZJeJ"
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5d5e97b84fbso4810386eaf.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 27 Aug 2024 21:10:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1724783161; x=1725387961; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1724818201; x=1725423001; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=taToXkOoFI4dvSDRErd9uMqfnQgFfJ+8kZ6b29LeX7w=;
-        b=eG0lNHWj6O0ShOFvp61MEY1/u6bUy/AH4hMo6vOnc7qF/9vu/o5g7Ts9xKes68u3OU
-         c1VhWq3GnImef/X0dTpY6eNRDxf6ZT2OESI0hJU9sLMCCODydgJE7Kk1YWUn9QSoXg93
-         drzeI35YncCdJmQgpyqbfK0L0u5VtZmaP1l/aAlavpDi9mZfs5CPAyIxjOP645djen2A
-         s7n6Fz+ns/WYqxRAr+8H7PzIGOnndmUpDimWrYVEYrkS/9Ob9/y8nvY9HpaYZhsWocEq
-         DtlCINkLrJ9pBqYa++3eosorS63CfVikfjYM6xHjQ2oB1KROTknLPs6XxjQtQojBB8gS
-         rOzw==
+        bh=TbUlXEtla2rVUESWfqavCUSiACHVI6vmcJ0NsirDOl4=;
+        b=ogYpZJeJCWC26f4eswjmffJffjMHzY7WOGWDv/8n3yhN5BLJuWqGRQvRrBKEX7NuEJ
+         YkIZmgbgv0Xv9ICerTAjo0Nd5L03a47n+kZ6rYRhKx+x2YKSwY9ScjB+y/Ui8pWYzZt8
+         vJBqoRpCB4lpK+luMv7d2kZ7uGzSLNglH1WB9yeQnnChIamUmjJ9D8eatMxnbqhpab3Y
+         UnMtG3pZXam98GJBpdydDC7t8jkhbntMcc3KKthNzv+JpHakYz3Hlg5mKUZQnOGydQEK
+         qzKtJnB3zAAP+kyRpzaw38L6jKcsXIZXFIVFTrMEVUISarq/4IzjG4pl+9jUOxkS8IZh
+         WInA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724783161; x=1725387961;
+        d=1e100.net; s=20230601; t=1724818201; x=1725423001;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=taToXkOoFI4dvSDRErd9uMqfnQgFfJ+8kZ6b29LeX7w=;
-        b=NOpwdkVanGjz6KB8L/kdesPNeBxUFKKcL6fcmuP0JGgTsc8Iklzu1bJPSNmSCt2XWk
-         lA3WjmFK2GJnpr+kUdngGG2TyoPRpWUxrE+A82i3o8uDBg+oiOELnwg+2xHhxrsAl4C6
-         LDnFCAT53Cco1gcuejlAtaK5uEfybYvRp+CGy9OM3f48Rsli/drNYX81oMLEc9u4HddL
-         LxxhnSdmIYPya0wchqUmSZjg4VHBxMxi7jPqBYNjecpSQZ6+CwWNSOexNxi3+mSm5wdm
-         HVbEEOm27Lzb7MATLeWDF+aCuZZCgOW/ZPrXSYd4t2/ashO0vlSNoYA5hRFXPRGqaX0x
-         5Pnw==
-X-Forwarded-Encrypted: i=1; AJvYcCX44gy1f4IfpGBZDn2GkGVxFe4a9IaTZtrpdCovZFHFV9gJnH/Rz5X6a9HfqmgZoxD0Ds3nAajjM3f1oYC/lA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwXHZC8cqeWdaOvCshtzBNiDX/0MJsI8X3KYuZYTnh23AnI9iSj
-	AH/AdhyZ5QxBXWVEcQfSNsFnljhTlYKWkT0xOyi2H/krWMU8rNI9MocrGAuddK4=
-X-Google-Smtp-Source: AGHT+IFQ8lUlRu+aDZKavRPPMRony6coPOxIyBtzcUISjTEWst8RDFfV+iVgU1oEURVQjv6ZAhuIGA==
-X-Received: by 2002:a05:6000:8:b0:371:7d84:9bef with SMTP id ffacd0b85a97d-3731187d118mr10030791f8f.28.1724783160648;
-        Tue, 27 Aug 2024 11:26:00 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3730810fb76sm13842509f8f.8.2024.08.27.11.25.59
+        bh=TbUlXEtla2rVUESWfqavCUSiACHVI6vmcJ0NsirDOl4=;
+        b=tyq1+OSo8/3jbt+gndhko6NgcxCXOJvOJSQtDV2URlVFPehbYMDpnVeUCcenXjgoGJ
+         sCjB3xzwRKutiM0MjQYYhqbCWQ1OiJvtExkbpCNY47SjwFbJbnnXUPl6u5cve9YHEfCr
+         5d7Oidl+lP+cJUXg2RdSCemYTVIMUwhiTOAhlu3osZCHeFuvfjlkuHlDkhl44rZEuOha
+         PCEREWtzlBh1C07D6+pSJdK+I+f0TYZy11QTzEK2hdyYqBrWLlboAoCvqBH4rFNUZ921
+         oXE/jd4BlVsg4wzfJKTjsFCl2O9bcpoF9jFyKJ5Jgd5hzaUnq32VAZvt4Oc1t0jX+UNB
+         StLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVgg5l6v9RyYyjrdYTnzGxUOkRAPDSC1zHIg6d6K9hZ/Y//tuYJHmQmiRVkF+cawRSZGxtEQOOw1d4cl6me/g==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz/s9FjPpgnvH+ZSLhpeSmpgpKgi9V2GUMGE7TvIX0/JEgkFyCx
+	Dg+pVPDPjPJBAMtWeK/2h6tCbCg8a4YoazGZSuwFd1BVkblYKxqPq6q7JbvNQkM=
+X-Google-Smtp-Source: AGHT+IFfFN76jaKMmeyJLYLrAmGyGf6VTmFCJDdjyeumUMkRB244pfXxTGN0Cua4OLIg1wtsh8Hazg==
+X-Received: by 2002:a05:6358:9143:b0:1b1:a961:7977 with SMTP id e5c5f4694b2df-1b5fad71e17mr97610355d.29.1724818200852;
+        Tue, 27 Aug 2024 21:10:00 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-0-65.pa.nsw.optusnet.com.au. [49.179.0.65])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7143432ee26sm9279075b3a.188.2024.08.27.21.10.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2024 11:26:00 -0700 (PDT)
-Date: Tue, 27 Aug 2024 21:25:56 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs changes for 6.11, v2
-Message-ID: <da03e2a7-0293-4b28-9a08-6c0fad51b9a3@stanley.mountain>
-References: <73rweeabpoypzqwyxa7hld7tnkskkaotuo3jjfxnpgn6gg47ly@admkywnz4fsp>
- <d0da8ba5-e73e-454a-bbd7-a4e11886ea8b@stanley.mountain>
- <ltl35vocjtma5an2yo7digcdpcsvf6clrvcd4vdkf67gwabogf@syqzgnw5rodw>
+        Tue, 27 Aug 2024 21:10:00 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1sjA0L-00FJwC-3A;
+	Wed, 28 Aug 2024 14:09:58 +1000
+Date: Wed, 28 Aug 2024 14:09:57 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>, jack@suse.cz,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH 1/2 v2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
+Message-ID: <Zs6jFb953AR2Raec@dread.disaster.area>
+References: <20240826085347.1152675-2-mhocko@kernel.org>
+ <20240827061543.1235703-1-mhocko@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -70,72 +80,32 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ltl35vocjtma5an2yo7digcdpcsvf6clrvcd4vdkf67gwabogf@syqzgnw5rodw>
+In-Reply-To: <20240827061543.1235703-1-mhocko@kernel.org>
 
-On Tue, Aug 27, 2024 at 12:23:22PM -0400, Kent Overstreet wrote:
-> On Tue, Aug 27, 2024 at 01:53:55PM GMT, Dan Carpenter wrote:
-> > On Thu, Jul 19, 2024 at 06:36:50PM -0400, Kent Overstreet wrote:
-> > >       bcachefs: Unlock trans when waiting for user input in fsck
-> > 
-> > Hello Kent Overstreet,
-> > 
-> > ommit 889fb3dc5d6f ("bcachefs: Unlock trans when waiting for user
-> > input in fsck") from May 29, 2024 (linux-next), leads to the
-> > following (UNPUBLISHED) Smatch static checker warning:
-> > 
-> > fs/bcachefs/error.c:129 bch2_fsck_ask_yn() error: double unlocked 'trans' (orig line 113)
-> > 
-> > fs/bcachefs/error.c
-> >    102  static enum ask_yn bch2_fsck_ask_yn(struct bch_fs *c, struct btree_trans *trans)
-> >    103  {
-> >    104          struct stdio_redirect *stdio = c->stdio;
-> >    105  
-> >    106          if (c->stdio_filter && c->stdio_filter != current)
-> >    107                  stdio = NULL;
-> >    108  
-> >    109          if (!stdio)
-> >    110                  return YN_NO;
-> >    111  
-> >    112          if (trans)
-> >    113                  bch2_trans_unlock(trans);
-> >                         ^^^^^^^^^^^^^^^^^^^^^^^^^
-> > Unlock
-> > 
-> >    114  
-> >    115          unsigned long unlock_long_at = trans ? jiffies + HZ * 2 : 0;
-> >    116          darray_char line = {};
-> >    117          int ret;
-> >    118  
-> >    119          do {
-> >    120                  unsigned long t;
-> >    121                  bch2_print(c, " (y,n, or Y,N for all errors of this type) ");
-> >    122  rewait:
-> >    123                  t = unlock_long_at
-> >    124                          ? max_t(long, unlock_long_at - jiffies, 0)
-> >    125                          : MAX_SCHEDULE_TIMEOUT;
-> >    126  
-> >    127                  int r = bch2_stdio_redirect_readline_timeout(stdio, &line, t);
-> >    128                  if (r == -ETIME) {
-> >    129                          bch2_trans_unlock_long(trans);
-> >                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > Double unlock
+On Tue, Aug 27, 2024 at 08:15:43AM +0200, Michal Hocko wrote:
+> From: Michal Hocko <mhocko@suse.com>
 > 
-> Those are different types of unlocks.
+> bch2_new_inode relies on PF_MEMALLOC_NORECLAIM to try to allocate a new
+> inode to achieve GFP_NOWAIT semantic while holding locks. If this
+> allocation fails it will drop locks and use GFP_NOFS allocation context.
 > 
+> We would like to drop PF_MEMALLOC_NORECLAIM because it is really
+> dangerous to use if the caller doesn't control the full call chain with
+> this flag set. E.g. if any of the function down the chain needed
+> GFP_NOFAIL request the PF_MEMALLOC_NORECLAIM would override this and
+> cause unexpected failure.
+> 
+> While this is not the case in this particular case using the scoped gfp
+> semantic is not really needed bacause we can easily pus the allocation
+> context down the chain without too much clutter.
+> 
+> Acked-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
 
-What tripped the static checker up is that bch2_trans_unlock_long() calls
-bch2_trans_unlock().
+Looks good to me.
 
-fs/bcachefs/btree_locking.c
-   815  void bch2_trans_unlock_long(struct btree_trans *trans)
-   816  {
-   817          bch2_trans_unlock(trans);
-   818          bch2_trans_srcu_unlock(trans);
-   819  }
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 
-But looking at it now, I guess if we call bch2_trans_unlock() twice the second
-unlock is a no-op.  Thanks!
-
-regards,
-dan carpenter
-
+-- 
+Dave Chinner
+david@fromorbit.com
