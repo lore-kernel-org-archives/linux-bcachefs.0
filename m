@@ -1,46 +1,87 @@
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E53C18DF90;
-	Thu, 29 Aug 2024 10:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4948B15FA93;
+	Thu, 29 Aug 2024 10:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724925764; cv=none; b=Dbk8CyZUbBOC+FefhqpQ+L84pA1duyOYnAkxUSIn+ahFO8N8twnim5r7Tr2hRTex41rBfrIilIPPDGnbAR/dv9WsBM8BRdjnZ0bmEW/Mcpw15AdXnTqJFDfb4djh5DeZ/ADIOi41QYrcwmO4qObBUIuqOmdC/4vmzWnFbGhfD38=
+	t=1724926413; cv=none; b=WeyyZoul4z5fWVZGrZT/h43ibe+J5RyP+HdpCCSNGTrajDW0Cw+d2oxz0AryFKSIZpuel2Nawpvt+U9fic3mdNG7KfXJyMXTuenYn0cVstAAK447K3AZtCoyhqk9Tsg8UoqSQ6hShbgXhSyCOuiy1OIHawzoPEMsBnzteQxyS6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724925764; c=relaxed/simple;
-	bh=n5jwzTlQBzJwUMoT60JpIvPeggiARsC0Q1xJHRBuss4=;
+	s=arc-20240116; t=1724926413; c=relaxed/simple;
+	bh=ij8F03JTbxpCN1aNxCZRXXFALiaRJUYBVCod53CD064=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iho8jMLYCQG3BE+JuhQqg2cDvLP0PLOyZEMcdEQIfWVCx4NHmlC7VP0paXSZRA5GCvPKKBHdYuA6430dDJOcvbtjo2ZRsbycz+2pmF1QGEZj/CP2d5eGnNqr23WfppxmHcwR0SREmhRcj3WeGlEVNRLhE3XtB3X9307u2RnfkR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dBfg8s78; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=F3+twMBQ3pEfXT7AZRqmDKoqhOeYccPtuCDqXsC1wNWOQjbIkfMwH6sopcv+uDc4JwQQJX84/K5MH6TKK+6Zdt4y2dRAfKXTyWvYZ3e2hC7TtTvXvuEdc/fVjulYEhcXwwjK47ChJU2DTIE/hj/IBg1/o4ioQOVFrrY2fw2bO+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cu6b4CGk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EiXRhKlb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IVOFurtJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=P2eZQo1X; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dBfg8s78"
-Date: Thu, 29 Aug 2024 06:02:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724925759;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cu6b4CGk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EiXRhKlb";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IVOFurtJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="P2eZQo1X"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8643A21BC0;
+	Thu, 29 Aug 2024 10:13:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724926409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vCHet4RZcs0kzetPKYvg5pHpi0wGxVpQFJgUua5GPMM=;
-	b=dBfg8s78XD0nKKh3fhBzSsLjvpxP0HZmNBFpY8rQfHhOjWt9wcWxj5eRjCuMaRb4l/mbX1
-	fOrnuwxhjP1j+pTPiTiS684piwt/S1W69rAJ7g5aESrwkXPWBZrRaeO1AIPwJs0mFQAAlr
-	brODC8Os+KdfdyG0h5OGTXWwEUS07JQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Michal Hocko <mhocko@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, 
-	Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, Christian Brauner <brauner@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-bcachefs@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 1/2 v2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
-Message-ID: <ylycajqc6yx633f4sh5g3mdbco7zrjdc5bg267sox2js6ok4qb@7j7zut5drbyy>
-References: <20240826085347.1152675-2-mhocko@kernel.org>
- <20240827061543.1235703-1-mhocko@kernel.org>
- <Zs6jFb953AR2Raec@dread.disaster.area>
+	bh=A5QvPK4aT73dpyW2LhWF8Vjybmp95Gd9EsVVIvVHWbQ=;
+	b=Cu6b4CGkAcInRXZM2roANTnQcG+LLHiqX2cNSwJT5QXZNGYUvvf4hYxElnUcJe1NYftKj+
+	RineeeS28gH+kqH3FoLtsNM2/CunbWFQe+YMI44VnFbcGlHU/2gY1ga8acFbmy8PjoWF5w
+	adMuhKIRztS/DRxwZwVHWigkH7KqFUI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724926409;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A5QvPK4aT73dpyW2LhWF8Vjybmp95Gd9EsVVIvVHWbQ=;
+	b=EiXRhKlbnshSnaPzeuFnsItIZaudLNhghlYepqyX7gRV3Ie0feA7Ei9VMXmsV4fYAUyawN
+	5MOBc5glWICu0LBg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724926408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A5QvPK4aT73dpyW2LhWF8Vjybmp95Gd9EsVVIvVHWbQ=;
+	b=IVOFurtJnoU0Q2KyoSZ6OC3MtN2XXWWsqOkJnPxJ0kvZ2BuLqPDerc1RSMzPFs4H6ycaoY
+	KwiFbUdQDFJVcQJsEb46H7ABzF+Li2wYXWy7Hbg7R6jajpdu3BFLYzF8cx/+/QkynGHI8k
+	FweBeDw685ef7zZvp8pe62aoSTVbwF0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724926408;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A5QvPK4aT73dpyW2LhWF8Vjybmp95Gd9EsVVIvVHWbQ=;
+	b=P2eZQo1XIasLHdjqQlziXDm+gpyLzRqZU5a6m3O1LfP74+ZTwVpDh93m/IGdGkybtuo39n
+	TTrPlnv93+GPMUBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C03C13408;
+	Thu, 29 Aug 2024 10:13:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qhxCHshJ0GZAAQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 29 Aug 2024 10:13:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D163CA0965; Thu, 29 Aug 2024 12:13:23 +0200 (CEST)
+Date: Thu, 29 Aug 2024 12:13:23 +0200
+From: Jan Kara <jack@suse.cz>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	amir73il@gmail.com, brauner@kernel.org, linux-xfs@vger.kernel.org,
+	gfs2@lists.linux.dev, linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v4 08/16] fanotify: report file range info with
+ pre-content events
+Message-ID: <20240829101323.coocz3kuscxtbsj4@quack3>
+References: <cover.1723670362.git.josef@toxicpanda.com>
+ <b72ac7d8171570eaa9adf05e5a55f6ea8ba41ac2.1723670362.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -49,52 +90,69 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zs6jFb953AR2Raec@dread.disaster.area>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <b72ac7d8171570eaa9adf05e5a55f6ea8ba41ac2.1723670362.git.josef@toxicpanda.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[fb.com,vger.kernel.org,suse.cz,gmail.com,kernel.org,lists.linux.dev];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-On Wed, Aug 28, 2024 at 02:09:57PM GMT, Dave Chinner wrote:
-> On Tue, Aug 27, 2024 at 08:15:43AM +0200, Michal Hocko wrote:
-> > From: Michal Hocko <mhocko@suse.com>
-> > 
-> > bch2_new_inode relies on PF_MEMALLOC_NORECLAIM to try to allocate a new
-> > inode to achieve GFP_NOWAIT semantic while holding locks. If this
-> > allocation fails it will drop locks and use GFP_NOFS allocation context.
-> > 
-> > We would like to drop PF_MEMALLOC_NORECLAIM because it is really
-> > dangerous to use if the caller doesn't control the full call chain with
-> > this flag set. E.g. if any of the function down the chain needed
-> > GFP_NOFAIL request the PF_MEMALLOC_NORECLAIM would override this and
-> > cause unexpected failure.
-> > 
-> > While this is not the case in this particular case using the scoped gfp
-> > semantic is not really needed bacause we can easily pus the allocation
-> > context down the chain without too much clutter.
-> > 
-> > Acked-by: Christoph Hellwig <hch@lst.de>
-> > Signed-off-by: Michal Hocko <mhocko@suse.com>
+On Wed 14-08-24 17:25:26, Josef Bacik wrote:
+> From: Amir Goldstein <amir73il@gmail.com>
 > 
-> Looks good to me.
+> With group class FAN_CLASS_PRE_CONTENT, report offset and length info
+> along with FAN_PRE_ACCESS and FAN_PRE_MODIFY permission events.
 > 
-> Reviewed-by: Dave Chinner <dchinner@redhat.com>
+> This information is meant to be used by hierarchical storage managers
+> that want to fill partial content of files on first access to range.
+> 
+> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 
-Reposting what I wrote in the other thread:
+...
 
-This series is based on a fundamental misunderstanding of what a safe
-API is: a safe API is not one that doesn't return errors, it's one that
-never invokes undefined behaviour.
+> @@ -191,6 +192,12 @@ struct fanotify_event_info_error {
+>  	__u32 error_count;
+>  };
+>  
+> +struct fanotify_event_info_range {
+> +	struct fanotify_event_info_header hdr;
 
-It was decided years ago that the scoped APIs were the better
-replacement for the gfp APIs, and they need to exist.
+There will be 32-bits of padding here and for UAPI, I prefer to keep that
+explicit by adding:
 
-This "GFP_NOFAIL exists therefore we can't tell the memory allocator
-about situations wehre it would have to fail" is utter insanity - it's
-the exact opposite of defining a safe API.
+	__u32 pad;
 
-A safe API would be one where we /did/ always tell the memory allocator
-when we're in non-sleepable context, and the allocator always returned
-failure instead of context switching.
+here. I can fix it on commit...
 
-This is utter brain damage; rule #1 of kernel programming is that _you
-check for errors_. If you don't know that your GFP_NOFAIL usage is in a
-safe context (and that's not just memory reclaim context, it's also the
-size of your alloction) then you have to check for errors.
+> +	__u64 offset;
+> +	__u64 count;
+> +};
+> +
+>  /*
+>   * User space may need to record additional information about its decision.
+>   * The extra information type records what kind of information is included.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
