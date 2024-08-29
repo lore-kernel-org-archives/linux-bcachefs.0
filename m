@@ -1,31 +1,31 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA9219005B;
-	Thu, 29 Aug 2024 13:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4431AC883;
+	Thu, 29 Aug 2024 13:32:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724937754; cv=none; b=P8vfQD6TbohZRiI3JYfso/OImIXuzTi4MQtdxaqOXJ6eSUDrwwGWJlbqVQ6XHOnGEmgbHwp1mlYv3rCzAPQTp+yXV4FubT/D5Jy3q+rGD6iMZew/3adOR3wGZi9AxJuiKvLibbqcBtcgpoR/dxYlmU/NqCJ95sZmOWZIo0Sbj10=
+	t=1724938381; cv=none; b=FE8DW+/YzT7afkkRCifi3lb+Ta6RvIXMYX67ClXl3HjNqXAp8301tP7d1A571KR5IHy7+oyprONzjQObGZ3dMi2O3v7GOXrfQjnSKW0TmKC+42gypPBk5xIvtnAXfz02EnASIJTP+0x1QqtvIpHb1QZsMS4OmbS6V01T/Mx9v00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724937754; c=relaxed/simple;
-	bh=U7Uj34iBOjQIBL8+79QqBquW11A3bDevTr4B/urbcY4=;
+	s=arc-20240116; t=1724938381; c=relaxed/simple;
+	bh=Ei5nGh3aP7XlmeeonQ5fBYgrdr2m+tmjjLP1aSXD12Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q/Gp1yHIgnJ4IZLQObib1zZDHo4JyHsct6pMdxGOttYmkXxFHuyfKXw5qfnzp3yo2xYgYvdzXoLdy47Y71O+CwcVpIxyvcZorRuzzZgi2uKtywAkwyo7mTccgWmYyG5XWpW11QwQCqCCgoPfoJXa0rdmcWhLSeL9RAj4AH/vJzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XVPUdueT; arc=none smtp.client-ip=95.215.58.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=eWcQIyA9ZhEPJGTOsxStnDXkB0CqKjko7j95Ch4J30WIJt8lwY3kqBLXIZYmhik0cgR44rwKosMk01nIE5kqZpX6GYYiAYiSvKHtS/l4HlYNPpVn3HM1HuCEPvUBRu7ht8SL3UD6msHk6LsuJuFOBVoWd4lWm2Tsya41xbZxFu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T6TED+FM; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XVPUdueT"
-Date: Thu, 29 Aug 2024 09:22:26 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T6TED+FM"
+Date: Thu, 29 Aug 2024 09:32:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724937750;
+	t=1724938377;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Wj903jW2TKogKU1SK5gHYnTDCZ4LBZZEeqojtBImNhA=;
-	b=XVPUdueTCc06z491GnDzWivlRjmdKoWWAkMdowwA4gngYbWqqd1X6LEGoWcNjSo64SlLE1
-	4dnZxSnYvS/GENkr+38UeUoF+3xU8b9ajFn9urUVP+g5kVCiSJU+bTfSQ5Zy5Z6eF/REV3
-	BFxDTcbSJQKSJ0WCgwmjsWNsSxKtI9I=
+	bh=FMYh2t/Xz06IccaIYuj8PThdY4q4wdLBkOxrHA87gG0=;
+	b=T6TED+FMht0q0Dk5tidPaathkn2+ohL6nI1MGeFi5us1haLo+ggRUNhu0qAUGwtH9Hp5rB
+	eblF+eWaDFMMxxJhCwe7KQxVGHZu9wXtip0wmFtBgOyjN5F06V9a+PM/SQlwjlcOeId2Ek
+	UUUYcOya0qr4wKo+OFZ0keJMADwF7dg=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Dave Chinner <david@fromorbit.com>
@@ -37,7 +37,7 @@ Cc: Michal Hocko <mhocko@kernel.org>,
 	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-bcachefs@vger.kernel.org, 
 	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
 Subject: Re: [PATCH 1/2 v2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
-Message-ID: <a53xyedoraogetttff7e2afxx3bcomjh4j2r5qaxxl2v66adlx@4fexbinton3g>
+Message-ID: <myb6fw5v2l2byxn4raxlaqozwfdpezdmn3mnacry3y2qxmdxtl@bxbsf4v4qbmg>
 References: <20240826085347.1152675-2-mhocko@kernel.org>
  <20240827061543.1235703-1-mhocko@kernel.org>
  <Zs6jFb953AR2Raec@dread.disaster.area>
@@ -96,13 +96,17 @@ On Thu, Aug 29, 2024 at 11:12:18PM GMT, Dave Chinner wrote:
 > 
 > That's all there is to it. This is not a hill you need to die on.
 
-If you use GFP_NOFAIL in a context where you're not allowed to sleep,
-that's a bug, same as any other bug where you get the gfp flags wrong
-(e.g. GFP_KERNEL in non sleepable context).
+And more than that, this is coming from you saying "We didn't have to
+handle memory allocation failures in IRIX, why can't we be like IRIX?
+All those error paths are a pain to test, why can't we get rid of them?"
 
-This isn't going to affect you unless you start going around inserting
-PF_MEMALLOC_NORECLAIM where it doesn't need to be. Why would you do
-that?
+Except that's bullshit; at the very least any dynamically sized
+allocation _definitely_ has to have an error path that's tested, and if
+there's questions about the context a code path might run in, that
+that's another reason.
 
-But the lack of gfp flags for pte allocation means that this actually is
-a serious gap we need to be fixing.
+GFP_NOFAIL is the problem here, and if it's encouraging this brain
+damaged "why can't we just get rid of error paths?" thinking, then it
+should be removed.
+
+Error paths have to exist, and they have to be tested.
