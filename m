@@ -1,82 +1,112 @@
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F95481AB;
-	Fri, 30 Aug 2024 03:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501FC132105;
+	Fri, 30 Aug 2024 03:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724987306; cv=none; b=AuCE6C94DLlTJzFctEchmx+kmC4dcg0plStIQLjt/6+h6LlpUC1Sb3Qk20W48y/BGCD9bj4Jxbg9nznK5c+3jY/5tPxHaoKC+7x+Uhl6Ldsn8F4oVbyeYC7XkgepzxN9fSI7/zFry9pxTIJy10ildjBfLnlGe8dMKAwbMSwaojI=
+	t=1724989737; cv=none; b=GCSQ+YY+OOi+p1xt3CTvW/zQ9iq5NVmrj6SfxBc9tkDYNb/8fIH2ki7E0kZqwzV+c1/XQrr2zinwIDwD031HMNb+TVTTXh1rnK4xLK2I1Ryf+w700Bq7uc3GdvaJm7I5B8n5PQvJ0y/8OWZVodjb1ahp8AeWituqYCvrhpOLuKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724987306; c=relaxed/simple;
-	bh=5ixJunBE8y+Kj6i0hhw2cohe7nD9zRu7+vWcZYif9aE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=Olm5WSlpu22w3lFAZ/ljPFiwNYkCUdEFocAYqNKga0ufEpJH4z1gSCakYse/Yx2K9Pl2hwzpaSprT8J1F26j0g7SEwVfzuMMR52CmKLtf8W/0TvUhWGLW/MPefsGKXPNF5HTh0mJXB7/ePuWSgLOtpTM8iMoYEjY09XWTinxB+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=kKyaOBzY reason="signature verification failed"; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="kKyaOBzY"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=9MmQwQUdKpfDgkcA2ZVUpT1iPlD+2kyrSpDicx4p2XY=; b=k
-	KyaOBzYjECnaq5WD6UFIriD46uoAz7pwBXhNRy/qu6Fvz06AcaYtbGlQlGUOV7eH
-	19t/SSBbWaO7Y3BO5w2OYApiB52kkAc3R3Kx5T5m/t0NnBfJioHOWbB2mhNl6ZTa
-	oqbYETBHosmFy9Lw/XmTTZzpRB/yBmA880eenFPhyQ=
-Received: from 00107082$163.com ( [111.35.190.113] ) by
- ajax-webmail-wmsvr-40-114 (Coremail) ; Fri, 30 Aug 2024 11:08:10 +0800
- (CST)
-Date: Fri, 30 Aug 2024 11:08:10 +0800 (CST)
-From: "David Wang" <00107082@163.com>
-To: "Kent Overstreet" <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re:Re: [BUG?] bcachefs: keep writing to device when there is no
- high-level I/O activity.
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <y336p7vehwl6rpi5lfht6znaosnaqk3tvigzxcda7oi6ukk3o4@p4imj4wzcxjb>
-References: <20240827094933.6363-1-00107082@163.com>
- <y336p7vehwl6rpi5lfht6znaosnaqk3tvigzxcda7oi6ukk3o4@p4imj4wzcxjb>
-X-NTES-SC: AL_Qu2ZBvWTuEoi5iGcZekXn0oTju85XMCzuv8j3YJeN500oyTy/xAkZW9eNkPH+ceVNiCjoAiXQClr+vR3Z7lHQq1UOAHQbzjInozLXdfo8g3o
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+	s=arc-20240116; t=1724989737; c=relaxed/simple;
+	bh=OODoAO5RyAAZ+GFyrOkN67LUf07/kZ8+UBas76p9pTc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=e5CStNYqB2ldORKPKhwQiX5KM1gJq8RppsSCGSH9Nx0/zS8mTJ60pUqQncAi3S4Po6jYMYSYcTBSPTv2NQp91LS47d2gD4EQn3VR4gZFYgzU33eJn73c4TsGBwmf3YDcqvf3RznV9aWFY446QZgYpVaU3OArrLx9nzoN2LgbDkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ww3yj3CZSzyR6p;
+	Fri, 30 Aug 2024 11:48:13 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id A9482180AE6;
+	Fri, 30 Aug 2024 11:48:45 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 30 Aug 2024 11:48:45 +0800
+Message-ID: <0293d72e-8d57-42c2-bb11-a7a553675ae6@huawei.com>
+Date: Fri, 30 Aug 2024 11:48:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <51c30c17.3440.191a141321f.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:_____wD33yabN9FmVrdOAA--.58957W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiqQxKqmVOCh0U0wAGs4
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: Remove the handling of bch2_trans_iter_exit()
+ in __bch2_bkey_get_iter()
+Content-Language: en-US
+To: Youling Tang <youling.tang@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Youling
+ Tang <tangyouling@kylinos.cn>, Kent Overstreet <kent.overstreet@linux.dev>
+References: <20240823031955.202795-1-youling.tang@linux.dev>
+ <f2uohiy7zaaiv33r7xhofaprv6tk5mumvzzf7plvagdtavrini@3orfgcehid7q>
+ <f9f50184-364c-4082-bf19-ea953c3c1429@linux.dev>
+ <dcutapnlzvglzlbta2tzcvch26g2nnptluykgz5gabcoolxywu@fwq3u7jzd3y2>
+ <3d5e6272-1283-4b43-a30c-d5c4fad88946@linux.dev>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <3d5e6272-1283-4b43-a30c-d5c4fad88946@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-SGksIApBdCAyMDI0LTA4LTI4IDAwOjE3OjEyLCAiS2VudCBPdmVyc3RyZWV0IiA8a2VudC5vdmVy
-c3RyZWV0QGxpbnV4LmRldj4gd3JvdGU6Cj5PbiBUdWUsIEF1ZyAyNywgMjAyNCBhdCAwNTo0OToz
-M1BNIEdNVCwgRGF2aWQgV2FuZyB3cm90ZToKPj4gSGksCj4+IAo+PiBJIHdhcyB1c2luZyB0d28g
-cGFydGl0aW9ucyBvbiBzYW1lIG52bWUgZGV2aWNlIHRvIGNvbXBhcmUgZmlsZXN5c3RlbSBwZXJm
-b3JtYW5jZSwKPj4gYW5kIEkgY29uc2lzdGFudGx5IG9ic2VydmVkIGEgc3RyYW5nZSBiZWhhdmlv
-cjoKPj4gCj4+IEFmdGVyIDEwIG1pbnV0ZXMgZmlvIHRlc3Qgd2l0aCBiY2FjaGVmcyBvbiBvbmUg
-cGFydGl0aW9uLCBwZXJmb3JtYW5jZSBkZWdyYWRlCj4+IHNpZ25pZmljYW50bHkgZm9yIG90aGVy
-IGZpbGVzeXN0ZW1zIG9uIG90aGVyIHBhcnRpdGlvbiAoc2FtZSBkZXZpY2UpLgo+PiAKPj4gCWV4
-dDQgIDE1ME0vcyAtLT4gMTQzTS9zCj4+IAl4ZnMgICAxNTBNL3MgLS0+IDEzNE0vcwo+PiAJYnRy
-ZnMgMTI3TS9zIC0tPiAxMDhNL3MKPj4gCj4+IFNldmVyYWwgcm91bmQgdGVzdHMgc2hvdyB0aGUg
-c2FtZSBwYXR0ZXJuIHRoYXQgYmNhY2hlZnMgc2VlbXMgb2NjdXB5IHNvbWUgZGV2aWNlIHJlc291
-cmNlCj4+IGV2ZW4gd2hlbiB0aGVyZSBpcyBubyBoaWdoLWxldmVsIEkvTy4KPgo+VGhpcyBpcyBp
-cyBhIGtub3duIGlzc3VlLCBpdCBzaG91bGQgYmUgZWl0aGVyIGpvdXJuYWwgcmVjbGFpbSBvcgo+
-cmViYWxhbmNlLgo+Cj4oV2UgY291bGQgdXNlIHNvbWUgYmV0dGVyIHN0YXRzIHRvIHNlZSBleGFj
-dGx5IHdoaWNoIGl0IGlzKQo+CgoKSSBrcHJvYmUgYmNoMl9zdWJtaXRfd2Jpb19yZXBsaWNhcyBh
-bmQgdGhlbiBiY2gyX2J0cmVlX25vZGVfd3JpdGUsIGNvbmZpcm1lZCB0aGF0CnRoZSBiYWNrZ3Jv
-dW5kIHdyaXRlcyB3ZXJlIGZyb20gYmNoMl9qb3VybmFsX3JlY2xhaW1fdGhyZWFkLgooQW5kIHRo
-ZW4sIGJ5IHNraW1taW5nIHRoZSBjb2RlIGluIF9fYmNoMl9qb3VybmFsX3JlY2xhaW0sIEkgbm90
-aWNlZCB0aG9zZSB0cmFjZV9hbmRfY291bnQgc3RhdHMpCgoKCj5UaGUgYWxnb3JpdGhtIGZvciBo
-b3cgd2UgZG8gYmFja2dyb3VuZCB3b3JrIG5lZWRzIHRvIGNoYW5nZTsgSSd2ZQo+d3JpdHRlbiB1
-cCBhIG5ldyBvbmUgYnV0IEknbSBhIHdheXMgb2ZmIGZyb20gaGF2aW5nIHRpbWUgdG8gaW1wbGVt
-ZW50IGl0Cj4KPmh0dHBzOi8vZXZpbHBpZXBpcmF0ZS5vcmcvZ2l0L2JjYWNoZWZzLmdpdC9jb21t
-aXQvP2g9YmNhY2hlZnMtZ2FyYmFnZSZpZD00N2E0YjU3NGZiNDIwYWE4MjRhYWQyMjI0MzZmNGMy
-OTRkYWY2NmFlCj4KPkNvdWxkIGJlIGEgZnVuIG9uZSBmb3Igc29tZW9uZSBuZXcgdG8gdGFrZSBv
-bi4KPgo+PiAKCkEgRnVuIGFuZCBzY2FyeSBvbmUuLi4uCkZvciB0aGUgaXNzdWUgaW4gdGhpcyB0
-aHJlYWQsIApJIHRoaW5rICppZGxlKiBzaG91bGQgYmUgZGVmaW5lZCB0byBiZSBkZXZpY2Ugd2lk
-ZToKd2hlbiBiY2FjaGVmcyBpcyBpZGxlIHdoaWxlIG90aGVyIEZTIG9uIHRoZSBzYW1lIGJsb2Nr
-IGRldmljZSBpcyBidXN5LCB0aG9zZSBiYWNrZ3JvdW5kIHRocmVhZHMgc2hvdWxkIGJlIHRocm90
-dGxlZCB0byBzb21lIGRlZ3JlZS4KCgpUaGFua3MKRGF2aWQKCgoK
+
+
+On 2024/8/30 9:19, Youling Tang wrote:
+> On 2024/8/23 22:51, Kent Overstreet wrote:
+> 
+>> On Fri, Aug 23, 2024 at 02:07:20PM GMT, Youling Tang wrote:
+>>> On 23/08/2024 11:55, Kent Overstreet wrote:
+>>>> On Fri, Aug 23, 2024 at 11:19:55AM GMT, Youling Tang wrote:
+>>>>> From: Youling Tang <tangyouling@kylinos.cn>
+>>>>>
+>>>>> - Reduces bkey_err() calls.
+>>>>> - Avoid redundant calls to bch2_trans_iter_exit() in some functions.
+>>>> no, a function that returns an error should clean up after itself
+>>> Yes, functions should self-clean when they fail.
+>>>
+>>> However, there are repeated calls to bch2_trans_iter_exit in
+>>> some functions, take lookup_inode() as an example,
+>>>
+>>> When bkey_err(k) returns a non-zero, call bch2_trans_iter_exit()
+>>> once in bch2_bkey_get_iter(). It is then called again in
+>>> lookup_inode() via 'goto err'. (We can correct it by simply changing
+>>> it to 'return ret', but there are many similar cases.)
+>> I'm aware, but I'm not looking to microoptimize at the expense of making
+>> the code more fragile and less clear, especially right now when the
+>> priority is stabilizing and fixing bugs.
+>>
+>> If you were also doing performance testing and could show that it
+>> makes a measurable difference I'd consider it. Did you even look at the
+>> assembly output for any of these functions? CSE might be optimizing away
+>> the redundant calls.
+> I haven't performed the corresponding performance testing. Looking at
+> the assembly code, taking `lookup_inode()` as an example,
+> 
+I think his point is that your modification is error-free, but improving 
+readability is not a high priority at the moment unless it actually 
+affects performance. There might currently be a shortage of manpower, 
+with many features to be completed and bugs to be fixed.
+> Before the patch,
+>      142f:       74 96 je     13c7 <lookup_inode+0x117>
+>      1431:       48 8d b5 68 ff ff ff lea    -0x98(%rbp),%rsi
+>      1438:       4c 89 e7 mov    %r12,%rdi
+>      143b:       e8 00 00 00 00 call   1440 <lookup_inode+0x190>
+>      1440:       eb b4 jmp    13f6 <lookup_inode+0x146>
+>      1442:       e8 00 00 00 00 call   1447 <lookup_inode+0x197>
+>      1447:       66 0f 1f 84 00 00 00 nopw   0x0(%rax,%rax,1)
+>      144e:       00 00
+> 
+> After,
+>      111f:       74 96 je     10b7 <lookup_inode+0x117>
+>      1121:       eb c3 jmp    10e6 <lookup_inode+0x146>
+>      1123:       e8 00 00 00 00 call   1128 <lookup_inode+0x188>
+>      1128:       0f 1f 84 00 00 00 00 nopl   0x0(%rax,%rax,1)
+>      112f:       00
+> 
+> The following three assembly instructions have been reduced,
+>      1431:       48 8d b5 68 ff ff ff lea    -0x98(%rbp),%rsi
+>      1438:       4c 89 e7 mov    %r12,%rdi
+>      143b:       e8 00 00 00 00 call   1440 <lookup_inode+0x190>
+> 
