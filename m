@@ -1,76 +1,77 @@
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 664C21E51D
-	for <linux-bcachefs@vger.kernel.org>; Mon,  2 Sep 2024 10:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E48183CA6;
+	Mon,  2 Sep 2024 11:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725274386; cv=none; b=OqR5EzdYwlqFwKWqdBBX1tLvL9ks0lm+uqUKClYYN2NKLWvkfY2IiuEvKhN5kb6nGuFuvG7OnNhLKJVeRKuHRAkE0ggdzwBcHvUhqHnKFssXMUxg7olPgGjjTAG57hqfv+NG4GZAIVyXw7UUK1WCrJXnWwB0xpP6uQvHkc24PDQ=
+	t=1725275975; cv=none; b=O6Ivxl/fqbSi7IDZE8M63vBZmY0gMRd0d83OaL4qGVjnMbNHeibPWqJgSuhR0IJ0+LHYIz2Lzdh8QXIyA/tqMqYRg6hBCr5l2t2lo4Ar6+koYM3Pq5BNmCVbdmIGyVbqtB4q1lkm8eoWwohjOwRdKWTbmhHKz4dVjamDvslBtWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725274386; c=relaxed/simple;
-	bh=oWhd4Rf0zHHpbpst9n9x+vifq8Bnir5pNyheMKTt/fQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=rqFg2XvO7Q+ZwIHgS5aQnQM/H/DrogBEXOmy5Jn248gOZDaugVdcFp0mGTXp3kl8ZIQOqm0pSyhfTieY+KCY2DiPfLGi6AZX4g/3ykxWZPS/E900ekCpNwnStbiJS0IHJDj0IFCGruSaa8nlfIEe3h5G/ln3ULQQqx14rdRdX0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-82a217cec33so424657139f.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 02 Sep 2024 03:53:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725274384; x=1725879184;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KRPnLHsiu9UwQQIF05EoEjumpQG8FgwHNRyv/yjcl8I=;
-        b=vUGfy6oiA9QYz5a8ZWMs/qP6+BjG6bFYgW7ONqp9dthzXRiIOg2UaIWLaLx2zvfPs3
-         14OttSqlmf8jHSbFhabD6O8ZNw3c/insQaqVlXRBjvA/OC/23zneVK9AJkVz3fRUP7zZ
-         EXZQa40MznZo34w8a6qHfMDm5N8XdfWUwrEAlkJyzu4k/At/VYd2TeLOFUSJb80Bl/nT
-         mVRjxoRdm3PTHcaL6p9PSxJYYLqdg2TiEhNFPj2NlknVk8VsKM9O6pmOcNBE5MbmmWso
-         q5a67kdmn5H1Mhrw6hKEuo/f/716W6lMd37YM967VohOUiafDuNMISUt9hyzruHf+0Yk
-         VI6g==
-X-Forwarded-Encrypted: i=1; AJvYcCWm5dM6UbuGHq2jDmMXNdmOv3ahAe5CF1mSP1NNrjYbWH2ftmRKeiDlAQYuRgfTM6Xao7mBOUuHdD7jLt14PA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzeFDxYGSBW70Cc6fM2p07xVRb527UvDV5/otJFaeX7DNhpkkiz
-	fdCPxNMCeDcU8ATy0nhSeDExb/IbMoEvipodhVWdzMbQqwBGNTeXn3UUtbwRpwV8tS3ORfojscv
-	f7Qs5ULICbCHq5GAOAgqEd37/G1NJRYxaE9t/TAOTiA0Eia0OFV6wiMw=
-X-Google-Smtp-Source: AGHT+IHZrX5x+ddAmSe22mb55IktNZwUNEVFFkWhX/k6jYUcdMLP4AIIqXZgJiGhfVkY/uP4CjKDxwJZ4R27HzDpYzvkC1APeXZu
+	s=arc-20240116; t=1725275975; c=relaxed/simple;
+	bh=jZSPsbRDeYfAIjFSccAJD5W2bOgGFFO+iX0qP5NmWsU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ngm8Hy9HICsUr0pjXpfj6LsvXZmUjOkXvAahAJobHfAWjVCNtuGugesYXauANd/2mNLBxSuYpKzg+WhlMWVdA/nM8XWmLk3HZbW7Q8aL5cI5rTru6jQy9usL/lFoZrH9GusSRn92GuSvlAshZjHK4KvVRKj8TRZdSP1RPTd1gHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VhXEWN2E; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VhXEWN2E"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B508C4CEC2;
+	Mon,  2 Sep 2024 11:19:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725275974;
+	bh=jZSPsbRDeYfAIjFSccAJD5W2bOgGFFO+iX0qP5NmWsU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VhXEWN2E9SZrEYGDgIOUaT6c13AO0YRmKmHoqVijmCSyZ8uqynj5AEHoRptLZb12b
+	 pbR8f9WKDnb/cL4nuK7thjEmvBWtX2QHgL1zJgPivib3zS6qzKEU5S3CoLPB8t/qK0
+	 T/B6XRjOKcpHehkTYh6xEA9pZDOI6sVufsQUKfJ6+SiEN1Wnj7E9fW/ccF3jyzczyz
+	 uI7PPmsaEhEIeGSQfc+XzDNRU34GYY281uCtHBY/dbL+yXo+bgUue2+nUqPkaHFsLH
+	 riu7ESgI1nbpMVMDUV2/2yQW3N1iAfrvJUhTSLlfVPj8SCkbjmKQL5RYsDZ/SJ/LPh
+	 NPe8lBliBijxA==
+Date: Mon, 2 Sep 2024 13:19:29 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, 
+	Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+	amir73il@gmail.com, linux-xfs@vger.kernel.org, gfs2@lists.linux.dev, 
+	linux-bcachefs@vger.kernel.org, Dave Chinner <david@fromorbit.com>, 
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v4 16/16] xfs: add pre-content fsnotify hook for write
+ faults
+Message-ID: <20240902-kollidieren-geldbeschaffung-ba4bb1b038d0@brauner>
+References: <cover.1723670362.git.josef@toxicpanda.com>
+ <631039816bbac737db351e3067520e85a8774ba1.1723670362.git.josef@toxicpanda.com>
+ <20240829111753.3znmdajndwwfwh6n@quack3>
+ <20240830232833.GR6216@frogsfrogsfrogs>
+ <20240902102344.evvpipetu6zghrwz@quack3>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1489:b0:397:ca8e:d377 with SMTP id
- e9e14a558f8ab-39f40e1f884mr10470655ab.0.1725274384455; Mon, 02 Sep 2024
- 03:53:04 -0700 (PDT)
-Date: Mon, 02 Sep 2024 03:53:04 -0700
-In-Reply-To: <0000000000004169f9061ceadd8a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d369bd062120bed7@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_journal_noflush_seq
-From: syzbot <syzbot+85700120f75fc10d4e18@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240902102344.evvpipetu6zghrwz@quack3>
 
-syzbot suspects this issue was fixed by commit:
+On Mon, Sep 02, 2024 at 12:23:44PM GMT, Jan Kara wrote:
+> On Fri 30-08-24 16:28:33, Darrick J. Wong wrote:
+> > On Thu, Aug 29, 2024 at 01:17:53PM +0200, Jan Kara wrote:
+> > > On Wed 14-08-24 17:25:34, Josef Bacik wrote:
+> > > > xfs has it's own handling for write faults, so we need to add the
+> > > > pre-content fsnotify hook for this case.  Reads go through filemap_fault
+> > > > so they're handled properly there.
+> > > > 
+> > > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > > 
+> > > Looks good to me but it would be great to get explicit ack from some XFS
+> > > guy...  Some selection CCed :)
+> > 
+> > Looks decent to me, but I wonder why xfs_write_fault has to invoke
+> > filemap_maybe_emit_fsnotify_event itself?  Can that be done from
+> > whatever calls ->page_mkwrite and friends?
+> 
+> So we were discussing this already here [1]. The options we have:
+> 
+> 1) Call filemap_maybe_emit_fsnotify_event() from filesystem hooks
 
-commit 2744e5c9eb1a1090b5f61c955e934c70bfe6b04c
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Wed Dec 27 23:31:46 2023 +0000
-
-    bcachefs: KEY_TYPE_accounting
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10761263980000
-start commit:   1dd28064d416 Merge tag 'integrity-v6.10-fix' of ssh://ra.k..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1ace69f521989b1f
-dashboard link: https://syzkaller.appspot.com/bug?extid=85700120f75fc10d4e18
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120f9c9e980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158b8d69980000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: bcachefs: KEY_TYPE_accounting
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Sidenote: Can that be renamed to filemap_fsnotify() or something
+similar. Especially that "maybe" in there really doesn't add value imho.
