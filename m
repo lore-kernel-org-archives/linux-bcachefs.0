@@ -1,71 +1,43 @@
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14145176AC3
-	for <linux-bcachefs@vger.kernel.org>; Mon,  2 Sep 2024 08:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75262156C4D
+	for <linux-bcachefs@vger.kernel.org>; Mon,  2 Sep 2024 08:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725266496; cv=none; b=QtdadojjyYpmQZ6VxVc1SXWDZCMoD6EI7Tw7ymgVhhwZ+FWjXBlojJCfo5Lcv5zDmjtSZNYdtl+00CMxTcsCfP6Q1CsN0vWm0W5VJEUS9JuT77p5ghRQ//Lg6nnQzUaGolXnVK+sBmKOaUj8ae7ynhVwJyapzv8EUKY0+TwvCy8=
+	t=1725267179; cv=none; b=F27r6RxFXNI1VY42kg84Y+GACSc0EHZ4BhQzDOIC11/gEPUgCLV0dGqPQcO82fABQFaubp5MgISJpu7MLvTGYLAGQMTWXMjE2py9KZZFDGqPizQXUkpdTWA7bhCklh3MgQnMhx7sQZvsUkHM3y4JcgtkrwB4I68iVXzJ7HKqvVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725266496; c=relaxed/simple;
-	bh=U4pH9n5opeXrTqy96OEvKqqGlgFtHFsAUi+KLg73r+o=;
+	s=arc-20240116; t=1725267179; c=relaxed/simple;
+	bh=iQvkUn2Nhr1UXo9usbJRjDLExq1ujEiflVlc38Ctw78=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FcpnvTCHy62y55kGQFSSF7LiE3hMyNnrwlPuC46e0mpxT/MovDC+5oT9401K+Z0Pj36Gkb5w8nzytuDd0eKdQnmu6vpcmVSJ9EwpTuIAJ2RGebUVMKKbb+ayUOau9TLlzIrnP53s8dwS+EOv7zXDtOk5JrDos5QQQAi4vvCPTBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GO/WB/vC; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=FTYfTnMiYbcvQ3jdJdIrZrdmei/4QbN7r1dM+ilbOcMqshii1CkYoZWpJ0nDCG/FmCqc3i3Y638n1tcxad48393JaM5xpFP2U+PFNN/MHKjBVy9fc8EaMMsBP7i/JRozTMVXs/blWEMpeCoKQN7HN1DoDYKyYuFcDeEpBAG7PGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hjuz4cMy; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GO/WB/vC"
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5c210e23573so4011478a12.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 02 Sep 2024 01:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1725266493; x=1725871293; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Utp1RoWfhaGakPbnKMVk3xSbFrGMSY4DPD6Mxcnr7vM=;
-        b=GO/WB/vCGGjNzm79oYQK5rjK14AoxVVXyRbSHsv+UDfpqclVn2OXYVfU0mT4Un6ATu
-         E9ikzfDEiM8/b60Rxp5ByyPv8kMv+1tAQCf2do9qpF8MoXa9Ks4W/wQQcYE9gjO/8pI2
-         HI2p7tCZTrXM9OGLI8UGhkaMj9zHjEg99SDnQy8sj+2RRswxa7RE7ny3pMBAebsza0fa
-         q3OFXxILxNuRgK2Ldqbj56nCd0qbsaSivRp1Ut/K1o6XE6u3sDBUatpBGHd4SrAz3Aa6
-         i0VnIziTb/CP4w6oSKlMCILJexkykGQf7VbCJIieezvN9x78c81dUFlcZGMYlxOq+lpi
-         nZyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725266493; x=1725871293;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Utp1RoWfhaGakPbnKMVk3xSbFrGMSY4DPD6Mxcnr7vM=;
-        b=rxz8l0bwRg/1YrADiJMyQsjiXYobiftwh6SwUqWksnUjsEwnnic1kDb0E3MQUxh6H+
-         ODBXodADLhKO0h8GUPCowB3+nzG3lgE81Cnxo0DdRUWDacAPf7DzxWpXuqryfVFXcIVu
-         zj7beZP8FQUiBJYiOLYvkVz+r1RiAGLDs9uU0aBy3i6hknif1hXJa9scOCkkHG83i+7D
-         Wfzc8EqI2ieeF+GASguOD4es7jB7P2eVBUpGyBjQCs3rzrcaPRCDUsjFY4UbfXT6ewOP
-         zR3L0JNSUA2kwfGdm9YBNw22YHVCN6l0BOCu8PTYRoLNuEC2FXXU3iF0k11T4Ryu7CbC
-         7HpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXE6NBOixPFhKo/fzW9dFvI4vsh1ibGGGGqOSDhBUZ6KqSbZsgK+3SnC+tk4ahk/0ZowCXjQmL4JSsPwkyqVw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFxjKiJclADu77VQobEWG2d7dvR08u8QzMoGm8ogz1Twuuv7c+
-	iilO1+leVka1Yqk9V4/PBy4t7/NrC5e78esmgoN3ttUnElW/mk8SOREqTnYQw4dy70GgY5TMtKT
-	P
-X-Google-Smtp-Source: AGHT+IH0oa4HGDBaWmEW2YFqYs/c/VIYcD3KLgtz3Ns27MTTgp0m3AKBLw/5R/bF6mlCHND1zKa/NA==
-X-Received: by 2002:a17:907:60cb:b0:a86:8169:f3d6 with SMTP id a640c23a62f3a-a897fa6bb2fmr1161343566b.49.1725266493202;
-        Mon, 02 Sep 2024 01:41:33 -0700 (PDT)
-Received: from localhost (109-81-82-19.rct.o2.cz. [109.81.82.19])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a89891d6d36sm535496866b.149.2024.09.02.01.41.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Sep 2024 01:41:32 -0700 (PDT)
-Date: Mon, 2 Sep 2024 10:41:31 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Dave Chinner <david@fromorbit.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
-	jack@suse.cz, Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hjuz4cMy"
+Date: Mon, 2 Sep 2024 04:52:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725267175;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d/FrV6PursYjofC+mwM2z5mlo6l3AN755IMJVDkbYFA=;
+	b=hjuz4cMyIyyjAYdtheod8ofxwcBo9WxTFhWMfgcs2kqFegQQ+xz/8VwQ9bAYgTopPnIuwx
+	yrD2CsSuUehbY5mpOe4cqCx+7IHIH95VxkXtjlwWzc2rqVta46V68CYe/3or7Xz4IsToG3
+	1kiqUMmEomibDJqL0MhByGz12PbfyqI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Dave Chinner <david@fromorbit.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, 
+	Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, Christian Brauner <brauner@kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore <paul@paul-moore.com>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-bcachefs@vger.kernel.org, 
 	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 1/2 v2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
-Message-ID: <ZtV6OwlFRu4ZEuSG@tiehlicka>
+Message-ID: <v664cj6evwv7zu3b77gf2lx6dv5sp4qp2rm7jjysddi2wc2uzl@qvnj4kmc6xhq>
 References: <20240826085347.1152675-2-mhocko@kernel.org>
  <20240827061543.1235703-1-mhocko@kernel.org>
  <Zs6jFb953AR2Raec@dread.disaster.area>
@@ -74,6 +46,7 @@ References: <20240826085347.1152675-2-mhocko@kernel.org>
  <myb6fw5v2l2byxn4raxlaqozwfdpezdmn3mnacry3y2qxmdxtl@bxbsf4v4qbmg>
  <ZtUFaq3vD+zo0gfC@dread.disaster.area>
  <nawltogcoffous3zv4kd2eerrrwhihbulz7pi2qyfjvslp6g3f@j3qkqftra2qm>
+ <ZtV6OwlFRu4ZEuSG@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -82,40 +55,40 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <nawltogcoffous3zv4kd2eerrrwhihbulz7pi2qyfjvslp6g3f@j3qkqftra2qm>
+In-Reply-To: <ZtV6OwlFRu4ZEuSG@tiehlicka>
+X-Migadu-Flow: FLOW_OUT
 
-On Sun 01-09-24 21:35:30, Kent Overstreet wrote:
-[...]
-> But I am saying that kmalloc(__GFP_NOFAIL) _should_ fail and return NULL
-> in the case of bugs, because that's going to be an improvement w.r.t.
-> system robustness, in exactly the same way we don't use BUG_ON() if it's
-> something that we can't guarantee won't happen in the wild - we WARN()
-> and try to handle the error as best we can.
+On Mon, Sep 02, 2024 at 10:41:31AM GMT, Michal Hocko wrote:
+> On Sun 01-09-24 21:35:30, Kent Overstreet wrote:
+> [...]
+> > But I am saying that kmalloc(__GFP_NOFAIL) _should_ fail and return NULL
+> > in the case of bugs, because that's going to be an improvement w.r.t.
+> > system robustness, in exactly the same way we don't use BUG_ON() if it's
+> > something that we can't guarantee won't happen in the wild - we WARN()
+> > and try to handle the error as best we can.
+> 
+> We have discussed that in a different email thread. And I have to say
+> that I am not convinced that returning NULL makes a broken code much
+> better. Why? Because we can expect that broken NOFAIL users will not have a
+> error checking path. Even valid NOFAIL users will not have one because
+> they _know_ they do not have a different than retry for ever recovery
+> path. 
 
-We have discussed that in a different email thread. And I have to say
-that I am not convinced that returning NULL makes a broken code much
-better. Why? Because we can expect that broken NOFAIL users will not have a
-error checking path. Even valid NOFAIL users will not have one because
-they _know_ they do not have a different than retry for ever recovery
-path. 
+You mean where I asked you for a link to the discussion and rationale
+you claimed had happened? Still waiting on that
 
-That means that an unexpected NULL return either means OOPS or a subtle
-silent error - e.g. memory corruption. The former is a actually a saner
-recovery model because the execution is stopped before more harm can be
-done. I suspect most of those buggy users will simply OOPS but
-systematically checking for latter is a lot of work and needs to be
-constantly because code evolves...
+> That means that an unexpected NULL return either means OOPS or a subtle
+> silent error - e.g. memory corruption. The former is a actually a saner
+> recovery model because the execution is stopped before more harm can be
+> done. I suspect most of those buggy users will simply OOPS but
+> systematically checking for latter is a lot of work and needs to be
+> constantly because code evolves...
+> 
+> I have tried to argue that if allocator cannot or refuse to satisfy
+> GFP_NOFAIL request because it is trying to use unsupported allocation
+> mode or size then we should terminate the allocation context. That would
+> make the API more predictable and therefore safer to use.
 
-I have tried to argue that if allocator cannot or refuse to satisfy
-GFP_NOFAIL request because it is trying to use unsupported allocation
-mode or size then we should terminate the allocation context. That would
-make the API more predictable and therefore safer to use.
+You're arguing that we treat it like an oops?
 
-This is not what the allocator does today though. Atomic NOFAIL
-allocations fail same as kvmalloc requests which are clearly overflows.
-Especially the later could become a risk if they are reachable from the
-userspace with controlable allocation size.
-
--- 
-Michal Hocko
-SUSE Labs
+Yeah, enough of this insanity.
