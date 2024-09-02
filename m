@@ -1,77 +1,80 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E48183CA6;
-	Mon,  2 Sep 2024 11:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D9D19E992;
+	Mon,  2 Sep 2024 14:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725275975; cv=none; b=O6Ivxl/fqbSi7IDZE8M63vBZmY0gMRd0d83OaL4qGVjnMbNHeibPWqJgSuhR0IJ0+LHYIz2Lzdh8QXIyA/tqMqYRg6hBCr5l2t2lo4Ar6+koYM3Pq5BNmCVbdmIGyVbqtB4q1lkm8eoWwohjOwRdKWTbmhHKz4dVjamDvslBtWY=
+	t=1725286061; cv=none; b=TMzMBPhDub67m5ExAFA2I3lOCuoNOjy9XhW6Kat/o87DLAfFxRZyYP9MOFK/H1yRwnevw+8QXF3trYa0S3OYtO66DbQh4gXPfTBt5o6EvYBuCxm2rZVbXwAZe0Y+2pq4tgksazV+BksYecuZ6NxbsZ9xasbqg/O2fmiapX3X/vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725275975; c=relaxed/simple;
-	bh=jZSPsbRDeYfAIjFSccAJD5W2bOgGFFO+iX0qP5NmWsU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ngm8Hy9HICsUr0pjXpfj6LsvXZmUjOkXvAahAJobHfAWjVCNtuGugesYXauANd/2mNLBxSuYpKzg+WhlMWVdA/nM8XWmLk3HZbW7Q8aL5cI5rTru6jQy9usL/lFoZrH9GusSRn92GuSvlAshZjHK4KvVRKj8TRZdSP1RPTd1gHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VhXEWN2E; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1725286061; c=relaxed/simple;
+	bh=+/UPlFMaAq5gLKfLwgisGqB+Y16NZKUz6wSMIpBVEnI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RrOWL7vn4TcJ6vAJ1QjrKDhDC8SwDKh40qnh22cHcxOpByDRp60Z5Smz4J+l2OcTP3CrmMxSXBWIralprZoT0NdaREzfL/n6p8zIUhzCaOCy5UTLOHRplI9OHnB9nByPQO2oR4vK32ddR8SUiCoIHqVYDoNvDknR4REypTWuNiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=PX6JQw+N; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VhXEWN2E"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B508C4CEC2;
-	Mon,  2 Sep 2024 11:19:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725275974;
-	bh=jZSPsbRDeYfAIjFSccAJD5W2bOgGFFO+iX0qP5NmWsU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VhXEWN2E9SZrEYGDgIOUaT6c13AO0YRmKmHoqVijmCSyZ8uqynj5AEHoRptLZb12b
-	 pbR8f9WKDnb/cL4nuK7thjEmvBWtX2QHgL1zJgPivib3zS6qzKEU5S3CoLPB8t/qK0
-	 T/B6XRjOKcpHehkTYh6xEA9pZDOI6sVufsQUKfJ6+SiEN1Wnj7E9fW/ccF3jyzczyz
-	 uI7PPmsaEhEIeGSQfc+XzDNRU34GYY281uCtHBY/dbL+yXo+bgUue2+nUqPkaHFsLH
-	 riu7ESgI1nbpMVMDUV2/2yQW3N1iAfrvJUhTSLlfVPj8SCkbjmKQL5RYsDZ/SJ/LPh
-	 NPe8lBliBijxA==
-Date: Mon, 2 Sep 2024 13:19:29 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, 
-	Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	amir73il@gmail.com, linux-xfs@vger.kernel.org, gfs2@lists.linux.dev, 
-	linux-bcachefs@vger.kernel.org, Dave Chinner <david@fromorbit.com>, 
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v4 16/16] xfs: add pre-content fsnotify hook for write
- faults
-Message-ID: <20240902-kollidieren-geldbeschaffung-ba4bb1b038d0@brauner>
-References: <cover.1723670362.git.josef@toxicpanda.com>
- <631039816bbac737db351e3067520e85a8774ba1.1723670362.git.josef@toxicpanda.com>
- <20240829111753.3znmdajndwwfwh6n@quack3>
- <20240830232833.GR6216@frogsfrogsfrogs>
- <20240902102344.evvpipetu6zghrwz@quack3>
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="PX6JQw+N"
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net DF6FA418A0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1725286055; bh=QWc1Y13ydYZB7h7+cUcpghnJ2c0RtmcenUjX78aFysM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=PX6JQw+NC0k3lK4CM+m6IAaXsrQb33IN0FRC6zoplOWRFcXR/uraR6FHkZokKoaql
+	 chcVWy5Dvet0nkcqGXdVRdWdQpVMz88ygoJZJvOIkmv7kU5W5YzU5c+5Hixl8JM+EK
+	 QswM3xSZksU5aCvjysMyOALQiChqWui0zDTBuVZJxy/QM/5jT/AHnBDC/x9rI/nIPb
+	 04CmZcX9kuNstEK4rL2IsQonk4rM/qKXWPFiB8m9A+PJcvMOBat/UZw7GA9U/RhodN
+	 PTfZ+au+v1126wrzmke7Ssl/4JTLHoYypq6O63YpDKT6Tk/v+0N+mfCNqGF+uK9a3k
+	 Q2T3PBFHAlYgQ==
+Received: from localhost (unknown [IPv6:2601:280:5e00:625::1fe])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id DF6FA418A0;
+	Mon,  2 Sep 2024 14:07:34 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Kent Overstreet <kent.overstreet@linux.dev>, Michal Hocko <mhocko@suse.com>
+Cc: Dave Chinner <david@fromorbit.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, Yafang Shao
+ <laoar.shao@gmail.com>, jack@suse.cz, Christian Brauner
+ <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore
+ <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn"
+ <serge@hallyn.com>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-bcachefs@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2 v2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
+In-Reply-To: <citv2v6f33hoidq75xd2spaqxf7nl5wbmmzma4wgmrwpoqidhj@k453tmq7vdrk>
+References: <20240827061543.1235703-1-mhocko@kernel.org>
+ <Zs6jFb953AR2Raec@dread.disaster.area>
+ <ylycajqc6yx633f4sh5g3mdbco7zrjdc5bg267sox2js6ok4qb@7j7zut5drbyy>
+ <ZtBzstXltxowPOhR@dread.disaster.area>
+ <myb6fw5v2l2byxn4raxlaqozwfdpezdmn3mnacry3y2qxmdxtl@bxbsf4v4qbmg>
+ <ZtUFaq3vD+zo0gfC@dread.disaster.area>
+ <nawltogcoffous3zv4kd2eerrrwhihbulz7pi2qyfjvslp6g3f@j3qkqftra2qm>
+ <ZtV6OwlFRu4ZEuSG@tiehlicka>
+ <v664cj6evwv7zu3b77gf2lx6dv5sp4qp2rm7jjysddi2wc2uzl@qvnj4kmc6xhq>
+ <ZtWH3SkiIEed4NDc@tiehlicka>
+ <citv2v6f33hoidq75xd2spaqxf7nl5wbmmzma4wgmrwpoqidhj@k453tmq7vdrk>
+Date: Mon, 02 Sep 2024 08:07:33 -0600
+Message-ID: <8734mitahm.fsf@trenco.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240902102344.evvpipetu6zghrwz@quack3>
+Content-Type: text/plain
 
-On Mon, Sep 02, 2024 at 12:23:44PM GMT, Jan Kara wrote:
-> On Fri 30-08-24 16:28:33, Darrick J. Wong wrote:
-> > On Thu, Aug 29, 2024 at 01:17:53PM +0200, Jan Kara wrote:
-> > > On Wed 14-08-24 17:25:34, Josef Bacik wrote:
-> > > > xfs has it's own handling for write faults, so we need to add the
-> > > > pre-content fsnotify hook for this case.  Reads go through filemap_fault
-> > > > so they're handled properly there.
-> > > > 
-> > > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > > 
-> > > Looks good to me but it would be great to get explicit ack from some XFS
-> > > guy...  Some selection CCed :)
-> > 
-> > Looks decent to me, but I wonder why xfs_write_fault has to invoke
-> > filemap_maybe_emit_fsnotify_event itself?  Can that be done from
-> > whatever calls ->page_mkwrite and friends?
-> 
-> So we were discussing this already here [1]. The options we have:
-> 
-> 1) Call filemap_maybe_emit_fsnotify_event() from filesystem hooks
+Kent Overstreet <kent.overstreet@linux.dev> writes:
 
-Sidenote: Can that be renamed to filemap_fsnotify() or something
-similar. Especially that "maybe" in there really doesn't add value imho.
+> You're arguing against basic precepts of kernel programming.
+>
+> Get your head examined. And get the fuck out of here with this shit.
+
+Kent, this is not the way to deal with your peers in this community, no
+matter how strongly you disagree with them.  Might I suggest calming
+down a bit, followed by an apology?
+
+Thanks,
+
+jon
