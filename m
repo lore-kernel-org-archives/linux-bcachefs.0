@@ -1,72 +1,55 @@
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D8524211
-	for <linux-bcachefs@vger.kernel.org>; Tue,  3 Sep 2024 02:34:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB2A1CE6EA;
+	Tue,  3 Sep 2024 05:13:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725330848; cv=none; b=eSrcn4dt8fOCr93ANtPj9r/voPy2S/f6glXC0B/ROHZ9zxV/HkfhzNB/XC0ZQk6T5/5VDV/bGzQVjhejGqsCmC2lWCr15jKsifa9q1i9SOjNWy6Qkb0oK9AZTF/btaMb0kJRpEGGwZ9MBcKX1DbqI35ot8n0pPq3/AGwiIp5Qms=
+	t=1725340431; cv=none; b=si5NOJ704wMe+V8NRETu+c5eLvaxNRzjrQPGdf7ruKdxzBqF7eks9OeGthLb0lsJb3xzG7pcE/J4atSVzWhXGltKmOkC976B/OnoI7rO0PQITyW/lBCDbmEcudduCwP45nydQ8KGOkR3wbHYlahcP6xGcHsB7dVhZq9hT1vSlOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725330848; c=relaxed/simple;
-	bh=UOHCw+cF8tvj2KpTUAWgY9p9yXNgf8o6wkUC9wx1Xk4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=bF+ToV3zO4J2IZun2LFcax92qAFBxcxEWOP5sQeCWPBeoFZ7oQY2SGOpdPJ2r0q+meLb6aC55qa50BtD63ROAzWzR3crlAK0y1LWnB6Tc8pWXFElJYTjOW3htjIdVND6gLW50EZ1yLIs9nh8WiniaN63mi4SCOEjUKGLJafQf6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-82a22983440so460621939f.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 02 Sep 2024 19:34:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725330845; x=1725935645;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v4drJsG4cIDr3I5NkQbnYT/k0mpZe+PZ2n49CNlnX0w=;
-        b=Y5qihezLuDeGmA5bJUagNJW79NxI9aW7iekIbwtpAQA6aZsmdGT99lF3EqpZRgxWBv
-         cvcBDZgozJHudIpuvdCP45aduBpo3q4tp/9bzOXee7M9aQXxoW+H99bVATpxA5dzt24+
-         0ufM7hqLJPLeur6eg30ZnA7dAe+t0qWDEin9yLkszG3GKB66wLzO2PZX0k1hCtTgYF/Z
-         CuV6miD6LFHAG1J4/Nt/NtCJ7Z9xWEHy0RybXF0yTdFIqgUGNoTYH3hZP58aW/fXmDPD
-         pKhXGZG7fUXMTtEGDbXF6eyLquFSAJ5jBxk/iLIeRWeJQRNfuA1+7+T4TXkN7FIhZ7Tm
-         Z5Lg==
-X-Forwarded-Encrypted: i=1; AJvYcCVc3gLw/1/vchL/nOCHRHK4wznRZ7QINhFlZk7J4Ze5E0kz7B77Y30Kbo/gKd9UzL09w9hkRGDFYTWOAsPE1g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwTf6NN3ZJD7xJ82ceW5wax+EERA3c2y87b8XNbOc//Ob9ug8F3
-	j6Z+QXgNQTd8aJUuBINpF8RMsQS2sAAOgu/oK3EXx3bgeceJrYzLeD92EXrbycwx/u0dD2cua7z
-	iAY8i4yp+idefmcCgn3VRp53icivrqXHYxtXG6sod2ioKr0d1lYVW3zk=
-X-Google-Smtp-Source: AGHT+IF6HRzmy3uAMKL6AxsBzVXEuNxaW8HWHTEdIl0EaLq704Fu+i3tq1TMG6e307FJmdpipFE/HFCiLkBYLYV5Y5unhue/5r53
+	s=arc-20240116; t=1725340431; c=relaxed/simple;
+	bh=UTCB+Gvyv58ypWV0P8un7bNHXVqYfBpJxOjR5WL9hiQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rxyhhU4ItngbAxU/GUL0HRitayA8oO7DBLnKi9OV6aIOYAUjgx2lgp/QDvUm6+JfRXjm0G1kzp9vHrifPc4rvcA0Rl362XIEsCndFdpZ8aT+9i3EcNfIR0OjstwMfhPlaAialbHrjoV+YDdNjB4hPV9/DC/aF80Bhaa6MGbFWGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id B3BD8227A87; Tue,  3 Sep 2024 07:13:42 +0200 (CEST)
+Date: Tue, 3 Sep 2024 07:13:42 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Michal Hocko <mhocko@kernel.org>, Christoph Hellwig <hch@lst.de>,
+	Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Dave Chinner <dchinner@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
+Message-ID: <20240903051342.GA31046@lst.de>
+References: <20240902095203.1559361-1-mhocko@kernel.org> <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur> <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4be8:b0:4d0:51aa:f250 with SMTP id
- 8926c6da1cb9f-4d051ab4928mr14181173.3.1725330844993; Mon, 02 Sep 2024
- 19:34:04 -0700 (PDT)
-Date: Mon, 02 Sep 2024 19:34:04 -0700
-In-Reply-To: <tencent_6ECC3C5D37B696EC36DE4A4C759B770B6709@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000022db4706212de4ac@google.com>
-Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in member_to_text
-From: syzbot <syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com>
-To: eadavis@qq.com, kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Hello,
+On Mon, Sep 02, 2024 at 02:52:52PM -0700, Andrew Morton wrote:
+> It would be helpful to summarize your concerns.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+And that'd better be a really good argument for a change that was
+pushed directly to Linus bypassing the maintainer after multiple
+reviewers pointed out it was broken.  This series simply undoes the
+damage done by that, while also keeping the code dependend on it
+working.
 
-Reported-by: syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com
-Tested-by: syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         67784a74 Merge tag 'ata-6.11-rc7' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=135f0f33980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=660f6eb11f9c7dc5
-dashboard link: https://syzkaller.appspot.com/bug?extid=064ce437a1ad63d3f6ef
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=140dcb1f980000
-
-Note: testing is done by a robot and is best-effort only.
