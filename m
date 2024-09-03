@@ -1,99 +1,114 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from pfhigh4-smtp.messagingengine.com (fhigh4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EE96F315;
-	Tue,  3 Sep 2024 17:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA231917D9
+	for <linux-bcachefs@vger.kernel.org>; Tue,  3 Sep 2024 17:35:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725383833; cv=none; b=fYmah9bRkU0jbshqaXB4VNajmFe5ejOGlUwYimVuzZQG+K8D08Ee417aTFQUkwOWLi9jpYNsHE2mSij+OqGoAXhEbnVq78CoscV51lo9QlIOQbHXwDlelV2s0MebZocoayUeRAN0rbnJTEncDD74AQ5uH+HTZthJ5iiz/Pzp2wM=
+	t=1725384931; cv=none; b=SaLh7VQwuf6BqGl4/ux+0QNidN8aSCog/89xETWdzxZ+Gjg9/GbLhKvqzjRMR2yIGLbmWbSr/zPWgNJfzAGadlsaNV7igWhDRYhL3eL8NJdmef9snuUas3jyJEoVE3c93pgoi3BSPzCpuJJbSHMz5LyMrMN/6H6YDZz965MJJ7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725383833; c=relaxed/simple;
-	bh=fqmTGz8O7zkXIZo/mwtdtQWoFNMOlT/1uVo0v7jeQfw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I3Zymv3z2f5rB+R01VrNechMNWOXxvojBZK9rVQARKmj8iCFNKggAzij0T+XeQYxoVtkIMpDlwo+/9F6ByuY+yZOBTrm9xyFia0G5CKO5YMFh9OCx9jEGA1IhaVSdBeRAJqPBAwBSaR+YHJiA8WMEFF33ZWdN0In2HrABn7+q8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYpH3V/M; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1725384931; c=relaxed/simple;
+	bh=P6MZMb46rTMCS79ENaog2lshKU7f6+n8ufQvmRO//LA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=HMUaz9h+HcGGla+6oApOok/VWh5gOscdazQx99l9raqqAfhAv69jOIz2cS00UdGgAnimVt/zhmCklW59u5uG+JomGBv3mLrxhgixuRaWmRFyRWFMOXuJhbYFnonglAIfc6sd2MJ6T1n9gaMiWR6OH8oKVeaLloCR9R5stUTp9VA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alyssa.is; spf=pass smtp.mailfrom=alyssa.is; dkim=pass (2048-bit key) header.d=alyssa.is header.i=@alyssa.is header.b=aZ5l089w; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hcL0r3ex; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alyssa.is
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alyssa.is
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYpH3V/M"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 704C7C4CEC4;
-	Tue,  3 Sep 2024 17:17:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725383832;
-	bh=fqmTGz8O7zkXIZo/mwtdtQWoFNMOlT/1uVo0v7jeQfw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KYpH3V/MFR5Jkqe8hCAQOprPhrvuE53hh4mycQBMYTL9usRUFqBhst9A9u5rmqejD
-	 8e0uC6YsuB1VB4D0C5ttbp79llNj1JWYC5uGpasoleuPUtV039UOzmITDcjLwvXbaV
-	 hcg483CQhhmdWccBL0C+odZTZ75guiLXVnwrR/aj47skDiqZ5aTgFnDaEhVY5meILP
-	 k39JOrVB5KERg+eXtCDbPx0Ym5+BKxm0jbTUOGhkst3oSU/J5ImuVKwgOX1OJfiQ0F
-	 5p6l9BxFXmNpPUJ4PEW7pYHM7+C7pdlzq+Rqu88s6fQoI/h/nZFU1Mm1SLy7flammT
-	 Lh6zeZq5WP0dQ==
-Date: Tue, 3 Sep 2024 10:17:10 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc6
-Message-ID: <20240903171710.GA1164261@thelio-3990X>
-References: <erydumpfxcjakfllmh3y4d7wtgwz7omkg44pyvpesoisolt44v@kfa4jcpo7i73>
- <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=alyssa.is header.i=@alyssa.is header.b="aZ5l089w";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hcL0r3ex"
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id D15581140431
+	for <linux-bcachefs@vger.kernel.org>; Tue,  3 Sep 2024 13:35:26 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Tue, 03 Sep 2024 13:35:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1725384926; x=1725471326; bh=M9nl7IjApWgOdaFZFj6d+
+	IlDvFB/GmcnudSJOTs1W28=; b=aZ5l089wf8YWpTlSzpsa/z/HXQUaYk1UFuWrM
+	VtsNzRTXVHGjMrzAfoJF7yJ2c3WvxjqB4u5fmMN9gdm16zPzdtUMATFm6Yp0Ppvu
+	bHXlxtdirq1RLSYfLlv0MuY74ANPWYpK/PxgH3BCG3hwW6AexpdUxKC6fZBqKB1Y
+	Z23gUSEoZwBEpRoFnHhJV2OPYjpo8vq66fz69LQSpBl/NJRnMmSIFOVTMdszZoxE
+	Enp8hIs+BTSIWAy7p7lI3/rkYB1X8HtYD4ptPAeYgWI5/t7M4JUDoncxqcu6FeIP
+	tk+sWEaUzqfUgc2JDyg4gwX1TKAirWjle3QRiIRZmUb5/O/vw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1725384926; x=1725471326; bh=M9nl7IjApWgOdaFZFj6d+IlDvFB/
+	GmcnudSJOTs1W28=; b=hcL0r3exn45w9bssptswXUKbm8OKrWitOsqZ8pNEqjS1
+	+WEvaEnOg+SrkThTFq5AdZ/HYJLX3epUGVtHUm0u8Qk4xwFeTTXohHm0ndF7GO78
+	n23vSrfPRb3rxkl/5jH5+UNu5nMXHPsB1lkoFngjbW4cdSz659dapsY9cvzwyTYU
+	XbDqAONax5O4ul4MIbGZuquDuAGItVbs981AGrfWNs8mkeyTSmoSh478j1gcdpy1
+	eQLkebcbaaTt07YLZ15y4QnvmUFYDZq80D2/L/u2tvFVUh/lsuOYQrndJAtlUF0J
+	neNamjguv3qM/dbceHzLCF94g4Z2ueX/AL2Z0F74YA==
+X-ME-Sender: <xms:3kjXZlZGt2SUVO1IdzbsCrD4lDtHVGJDpK6R_gqnw8tFNf9ZK-sAcg>
+    <xme:3kjXZsZSeD4-izYQNb4ktBraSw0zrbLrbRUTc4UVzqgUsiY_oxICTuGbCaUABBEMT
+    70lTE3Lna4YGaRaCQ>
+X-ME-Received: <xmr:3kjXZn96ga3dRXpLb3jLzCM9kkhMfEXHYxx8FHR6S_aFZ-0xMXzpNqfBH5Tk9C_v00F1IwnXn6EYMt46vtUuKaB3Kc8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudehhedgudduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhephffvuf
+    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeetlhihshhsrgcutfhoshhsuceohhhi
+    segrlhihshhsrgdrihhsqeenucggtffrrghtthgvrhhnpeehvdffgffhteeijefgteeftd
+    fghfdvheeuhedvjedugfeggfeljefgleefvefgfeenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpehhihesrghlhihsshgrrdhishdpnhgspghrtg
+    hpthhtohepuddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidqsggt
+    rggthhgvfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:3kjXZjquJojf0NfGBAVJN1RTWaOwdykeR9561HXIRUQVFqduYcKwDA>
+    <xmx:3kjXZgoPvN4k6FVGDxP84dy31Phk3Pw8wKJR162n9BBfuFwF7kihfw>
+    <xmx:3kjXZpT_s9U3qfUdp8ozSYMBWZe5TmdqJgBaAOudn7W2Bc9jmP4icg>
+    <xmx:3kjXZopbUByXwFSjNxUU-_hN_6zcjbwFtgOWi4Yi03OJ-f3yGir8SQ>
+    <xmx:3kjXZtCG6-KFFyPV0fkOCKU-U4DD5blpAN_ZQdhKE7hbZpRxKNXgYoMM>
+Feedback-ID: i12284293:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-bcachefs@vger.kernel.org>; Tue, 3 Sep 2024 13:35:26 -0400 (EDT)
+Received: by sf.qyliss.net (Postfix, from userid 1000)
+	id 62B282C3BD5CE; Tue, 03 Sep 2024 19:35:24 +0200 (CEST)
+From: Alyssa Ross <hi@alyssa.is>
+To: linux-bcachefs@vger.kernel.org
+Subject: [PATCH bcachefs-tools] Remove udev from PKGCONFIG_LIBS in Makefile
+Date: Tue,  3 Sep 2024 19:35:22 +0200
+Message-ID: <20240903173522.496756-1-hi@alyssa.is>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
 
-On Tue, Sep 03, 2024 at 03:53:56PM +0200, Geert Uytterhoeven wrote:
-> Hi Kent,
-> 
-> Replying here, as there is (again) no patch email to reply to to report issues.
-> 
-> noreply@ellerman.id.au is reporting several build failures[1] in linux-next:
-> 
->     fs/bcachefs/sb-members.c: In function ‘bch2_sb_member_alloc’:
->     fs/bcachefs/sb-members.c:503:2: error: a label can only be part of
-> a statement and a declaration is not a statement
->       503 |  unsigned nr_devices = max_t(unsigned, dev_idx + 1,
-> c->sb.nr_devices);
->           |  ^~~~~~~~
->     fs/bcachefs/sb-members.c:505:2: error: expected expression before ‘struct’
->       505 |  struct bch_sb_field_members_v2 *mi =
-> bch2_sb_field_get(c->disk_sb.sb, members_v2);
->           |  ^~~~~~
-> 
-> Apparently this fails with gcc-10 and older, but builds with gcc-11
-> and gcc-12.
+libudev.pc is the pkg-config file for the udev libraries.  udev.pc is
+just there to define the directory that rules etc. should be installed
+into.  It therefore doesn't need to be included in the list of libraries
+passed to pkg-config --cflags or pkg-config --libs.
 
-Just noting this also happens with clang. Depending on the version, it
-is either a hard error like this or a warning (that gets upgraded to an
-error with CONFIG_WERROR).
+At least one implementation of the libudev API, libudev-zero, does not
+provide a udev.pc file, because it does not implement the udev rules
+language, just the library API.  With this change, it's possible to
+build bcachefs-tools against libudev-zero by pointing PKGCONFIG_UDEVDIR
+somewhere on the make command line.
 
-Clang 15:
+Signed-off-by: Alyssa Ross <hi@alyssa.is>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  fs/bcachefs/sb-members.c:503:2: error: expected expression
-          unsigned nr_devices = max_t(unsigned, dev_idx + 1, c->sb.nr_devices);
-          ^
-  fs/bcachefs/sb-members.c:507:42: error: use of undeclared identifier 'nr_devices'
-                                       le16_to_cpu(mi->member_bytes) * nr_devices, sizeof(u64));
-                                                                       ^
-  include/linux/math.h:37:22: note: expanded from macro 'DIV_ROUND_UP'
-  #define DIV_ROUND_UP __KERNEL_DIV_ROUND_UP
-                       ^
-  fs/bcachefs/sb-members.c:513:30: error: use of undeclared identifier 'nr_devices'
-          c->disk_sb.sb->nr_devices = nr_devices;
-                                      ^
+diff --git a/Makefile b/Makefile
+index 23122fd6..c0261c35 100644
+--- a/Makefile
++++ b/Makefile
+@@ -74,7 +74,7 @@ CFLAGS+=$(call cc-disable-warning, shift-overflow)
+ CFLAGS+=$(call cc-disable-warning, enum-conversion)
+ CFLAGS+=$(call cc-disable-warning, gnu-variable-sized-type-not-at-end)
+ 
+-PKGCONFIG_LIBS="blkid uuid liburcu libsodium zlib liblz4 libzstd libudev libkeyutils udev"
++PKGCONFIG_LIBS="blkid uuid liburcu libsodium zlib liblz4 libzstd libudev libkeyutils"
+ ifdef BCACHEFS_FUSE
+ 	PKGCONFIG_LIBS+="fuse3 >= 3.7"
+ 	CFLAGS+=-DBCACHEFS_FUSE
+-- 
+2.45.2
 
-Clang 19:
-
-  fs/bcachefs/sb-members.c:503:2: error: label followed by a declaration is a C23 extension [-Werror,-Wc23-extensions]
-    503 |         unsigned nr_devices = max_t(unsigned, dev_idx + 1, c->sb.nr_devices);
-        |         ^
-
-Cheers,
-Nathan
