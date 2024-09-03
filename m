@@ -1,232 +1,147 @@
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7E9126BE1
-	for <linux-bcachefs@vger.kernel.org>; Tue,  3 Sep 2024 23:44:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD311EBFFA
+	for <linux-bcachefs@vger.kernel.org>; Tue,  3 Sep 2024 23:53:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725407098; cv=none; b=dgukQWQM5Y8RbXsMWN82DJEqjHUQyEl/qsJMcHVfvjqVslMD+DNwFTXIi68nUuoUYz85wrRpSJQSk+/mc0a0cCf4IovTP9CjTGDD0tH6sl/qtl8QalF4yDz3GeNmLMu7glL+x4RM3POTKDxZPVHsCJian5pBgy/Mh62ndMkbgQs=
+	t=1725407631; cv=none; b=itcLDl0c1qX8BdmozWyVk2nCNTVRM9/9kvDw2lGyIbL0A0yMyrQzB9InmYyCLV5ApU7BH53BrKnNhWGweQN2YPZecC/g0uFKN5aeKsgfq1lWiA49xNp74RYXup9KA3SkXB6z8dyVXOOWLgmJH7Dpp8q76oSW2owQfv0QnBRzGok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725407098; c=relaxed/simple;
-	bh=5LMmNQRgXtjdPLQcKfpTwXT0EgosnNoHrbLqigEHZYU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EwGfpytkj9CFiUSm5qqxvZnEdFD/GdoMATxD0L+d5xdPicPphcP2D/5TvIKsdzVL7/tONbM+ErsS/21FziiZIRnt8G2mVNd+stHkzZBSgT9rkyoMpUDrZg4RJTKO0sybpvub9fsSvyYzJ3Q06tCTziXJZmDMf0Nj3pjvhgfv/dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org; spf=pass smtp.mailfrom=gentoo.org; arc=none smtp.client-ip=140.211.166.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
-Message-ID: <683718c1-98c9-4b28-a301-15c4668b1476@gentoo.org>
-Date: Tue, 3 Sep 2024 19:44:52 -0400
+	s=arc-20240116; t=1725407631; c=relaxed/simple;
+	bh=X3asc9AUtZ5RGKcxdf+XMkzOIMZf7QXdviF+ggzC3Ck=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DiWH/OKD0PxgTxl0mYbgh+n8Tzl+7bnm+zpEuOv7ldOGXT6UybzSBpioQgw/bsm72WpIiooy749zNkZBvTe4m1upoVASy6yM0SDKlhcM/QqrmuRUD/K3Zm9ghZF5dKjJtZQ9mYJWGVlZSz7hKd4R3uBcNZI4mK94zRBmXdcZQbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hrUItIpq; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hrUItIpq"
+Date: Tue, 3 Sep 2024 19:53:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725407627;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X6EYjF5RW8jhRsqnvywWRVkgXq/RsPBX3XbDK1ZCeIo=;
+	b=hrUItIpqCMHs0ZwSqX3d6Cog07XIbIbkabXOH6dINQk1DaIRS0cqUjk2LcYTcQ9qhghNMI
+	pfSq8RJ946z7zYHtCAu2ETRyKQcjOivZjXmPIRYpapN7IILKqa6n/qvdTqqPSJUoSU5+m0
+	g2BkWPLHOIAw4m+r2z2gO0We1OQUXPs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@kernel.org>, Christoph Hellwig <hch@lst.de>, 
+	Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, Vlastimil Babka <vbabka@suse.cz>, 
+	Dave Chinner <dchinner@redhat.com>, Christian Brauner <brauner@kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore <paul@paul-moore.com>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-bcachefs@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
+Message-ID: <qlkjvxqdm72ijaaiauifgsnyzx3mw4edl2hexfabnsdncvpyhd@dvxliffsmkl6>
+References: <20240902095203.1559361-1-mhocko@kernel.org>
+ <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
+ <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
+ <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: PSA: Avoid Debian Stable
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Martin Steigerwald <martin@lichtvoll.de>
-Cc: "Carl E. Thompson" <cet@carlthompson.net>, linux-bcachefs@vger.kernel.org
-References: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
- <4609869.LvFx2qVVIh@lichtvoll.de>
- <sdmildnu2r55ale4pi4qywu2fjgd323izex6lxmkzde34dixsb@cuzsmplhlek7>
- <2197543.irdbgypaU6@lichtvoll.de>
- <sq35zfsryexuqu2vmpvxj3gxv3kja5wv2nqqbtbyu5catvylho@wkaootfi2zhw>
-Content-Language: en-US
-From: Eli Schwartz <eschwartz@gentoo.org>
-Autocrypt: addr=eschwartz@gentoo.org; keydata=
- xjMEZmeRNBYJKwYBBAHaRw8BAQdAYNZ7pUDWhx1i2f3p6L2ZLu4FcY18UoeGC04Gq/khqwfN
- I0VsaSBTY2h3YXJ0eiA8ZXNjaHdhcnR6QGdlbnRvby5vcmc+wpYEExYKAD4WIQTvUdMIsc4j
- CIi+DYTqQj6ToWND8QUCZoRL+gIbAwUJBKKGAAULCQgHAwUVCgkICwUWAgMBAAIeBQIXgAAK
- CRDqQj6ToWND8aB5AP9r4kB691nNtNwKkdRiOdl7/k6WYzokvHvDamXxRJ0I+gEAjZqR5V8y
- mfR3fy2Z+r2Joeqdt3CIv5IwPs64spBvigLOOARmZ5E0EgorBgEEAZdVAQUBAQdATT46Z06b
- 1X9xjXFCYFxmq/Tj3tSEKZInDWTpoHQp4l8DAQgHwn4EGBYKACYWIQTvUdMIsc4jCIi+DYTq
- Qj6ToWND8QUCZmeRNAIbDAUJBKKGAAAKCRDqQj6ToWND8a2RAP40KPfbfoiZAJW5boFmFJ3G
- TUBDJRh9CWHyaPqq2PN+0wD/R07oLzfnJUN209mzi9TuTuHjeZybysyqXSw4MAxkMAY=
-In-Reply-To: <sq35zfsryexuqu2vmpvxj3gxv3kja5wv2nqqbtbyu5catvylho@wkaootfi2zhw>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------yvK0ecXUp04QsOjpH8gztNQC"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
+X-Migadu-Flow: FLOW_OUT
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------yvK0ecXUp04QsOjpH8gztNQC
-Content-Type: multipart/mixed; boundary="------------BMSc9nbBmJUNsvQpK2L4okoG";
- protected-headers="v1"
-From: Eli Schwartz <eschwartz@gentoo.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Martin Steigerwald <martin@lichtvoll.de>
-Cc: "Carl E. Thompson" <cet@carlthompson.net>, linux-bcachefs@vger.kernel.org
-Message-ID: <683718c1-98c9-4b28-a301-15c4668b1476@gentoo.org>
-Subject: Re: PSA: Avoid Debian Stable
-References: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
- <4609869.LvFx2qVVIh@lichtvoll.de>
- <sdmildnu2r55ale4pi4qywu2fjgd323izex6lxmkzde34dixsb@cuzsmplhlek7>
- <2197543.irdbgypaU6@lichtvoll.de>
- <sq35zfsryexuqu2vmpvxj3gxv3kja5wv2nqqbtbyu5catvylho@wkaootfi2zhw>
-In-Reply-To: <sq35zfsryexuqu2vmpvxj3gxv3kja5wv2nqqbtbyu5catvylho@wkaootfi2zhw>
+On Mon, Sep 02, 2024 at 06:32:40PM GMT, Kent Overstreet wrote:
+> On Mon, Sep 02, 2024 at 02:52:52PM GMT, Andrew Morton wrote:
+> > On Mon, 2 Sep 2024 05:53:59 -0400 Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > 
+> > > On Mon, Sep 02, 2024 at 11:51:48AM GMT, Michal Hocko wrote:
+> > > > The previous version has been posted in [1]. Based on the review feedback
+> > > > I have sent v2 of patches in the same threat but it seems that the
+> > > > review has mostly settled on these patches. There is still an open
+> > > > discussion on whether having a NORECLAIM allocator semantic (compare to
+> > > > atomic) is worthwhile or how to deal with broken GFP_NOFAIL users but
+> > > > those are not really relevant to this particular patchset as it 1)
+> > > > doesn't aim to implement either of the two and 2) it aims at spreading
+> > > > PF_MEMALLOC_NORECLAIM use while it doesn't have a properly defined
+> > > > semantic now that it is not widely used and much harder to fix.
+> > > > 
+> > > > I have collected Reviewed-bys and reposting here. These patches are
+> > > > touching bcachefs, VFS and core MM so I am not sure which tree to merge
+> > > > this through but I guess going through Andrew makes the most sense.
+> > > > 
+> > > > Changes since v1;
+> > > > - compile fixes
+> > > > - rather than dropping PF_MEMALLOC_NORECLAIM alone reverted eab0af905bfc
+> > > >   ("mm: introduce PF_MEMALLOC_NORECLAIM, PF_MEMALLOC_NOWARN") suggested
+> > > >   by Matthew.
+> > > 
+> > > To reiterate:
+> > > 
+> > 
+> > It would be helpful to summarize your concerns.
+> > 
+> > What runtime impact do you expect this change will have upon bcachefs?
+> 
+> For bcachefs: I try really hard to minimize tail latency and make
+> performance robust in extreme scenarios - thrashing. A large part of
+> that is that btree locks must be held for no longer than necessary.
+> 
+> We definitely don't want to recurse into other parts of the kernel,
+> taking other locks (i.e. in memory reclaim) while holding btree locks;
+> that's a great way to stack up (and potentially multiply) latencies.
+> 
+> But gfp flags don't work with vmalloc allocations (and that's unlikely
+> to change), and we require vmalloc fallbacks for e.g. btree node
+> allocation. That's the big reason we want MEMALLOC_PF_NORECLAIM.
+> 
+> Besides that, it's just cleaner, memalloc flags are the direction we
+> want to be moving in, and it's going to be necessary if we ever want to
+> do a malloc() that doesn't require a gfp flags parameter. That would be
+> a win for safety and correctness in the kernel, and it's also likely
+> required for proper Rust support.
+> 
+> And the "GFP_NOFAIL must not fail" argument makes no sense, because a
+> failing a GFP_NOFAIL allocation is the only sane thing to do if the
+> allocation is buggy (too big, i.e. resulting from an integer overflow
+> bug, or wrong context). The alternatives are at best never returning
+> (stuck unkillable process), or a scheduling while atomic bug, or Michal
+> was even proposing killing the process (handling it like a BUG()!).
+> 
+> But we don't use BUG_ON() for things that we can't prove won't happen in
+> the wild if we can write an error path.
+> 
+> That is, PF_MEMALLOC_NORECLAIM lets us turn bugs into runtime errors.
 
---------------BMSc9nbBmJUNsvQpK2L4okoG
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+BTW, one of the reasons I've been giving this issue so much attention is
+because of filesystem folks mentioning that they want GFP_NOFAIL
+semantics more widely, and I actually _don't_ think that's a crazy idea,
+provided we go about it the right way.
 
-On 9/3/24 6:15 PM, Kent Overstreet wrote:
-> I still have not yet heard a single good reason for this policy.
->=20
-> The rust dependencies are statically linked, and that's not going to
-> change because dynamic linking that works with the full Rust typesystem=
+Not having error paths is right out; many allocations when you start to
+look through more obscure code have sizes that are controlled by
+userspace, so we'd be opening ourselves up to trivially expoitable
+security bugs.
 
-> is, simply, a _really_ hard problem that's going to take a massive
-> enginering effort to solve. Swift was able to do it - but I'm quite
-> familiar with what it took to do that, and they were only able to
-> because Apple invested significantly into it.
->=20
-> So, given that they're statically linked, why?
->=20
-> It can't be for security updates, because to update a dependency we
-> _still_ have to update and spin a new release of bcachefs-tools. And
-> that's not such a big deal, because nodays there's bots that notify me
-> if I need to do that.
->=20
-> So it seems to me that Debian people just aren't thinking things
-> through.
+However, if we agreed that GFP_NOFAIL meant "only fail if it is not
+possible to satisfy this allocation" (and I have been arguing that that
+is the only sane meaning) - then that could lead to a lot of error paths
+getting simpler.
 
+Because there are a lot of places where there's essentially no good
+reason to bubble up an -ENOMEM to userspace; if we're actually out of
+memory the current allocation is just one out of many and not
+particularly special, better to let the oom killer handle it...
 
-There's an interesting conversation to be had here about distfiles,
-duplication, and offline building.
+So the error paths would be more along the lines of "there's a bug, or
+userspace has requested something crazy, just shut down gracefully".
 
-Probably the biggest single requirement here is the offline building.
-It's not enough to download the bcachefs-tools source tarball and build
-that, since you also need crates downloaded from crates.io and added to
-a local registry. Most (sane) distros build packages with the network
-disabled for security reasons, because you want to verify that all the
-code you are building is code which was included in the original source
-checksumming which is part of the build manifest (and the build manifest
-in turn is probably PGP-signed by the distro developer that processed
-the update).
-
-And the Debian packaging format involves converting every package into
-an "orig" tarball with the debian build recipes installed inside as
-debian/ and then running the dpkg package building tools from inside
-there. The key to a successful packaging experience is somehow getting
-to run the build tools from that source tarball.
-
-The packaging formats used by most other distros work differently: a
-package can have multiple (checksummed) source tarballs and one of the
-build phases is unpacking each listed distfile. Alpine, Arch, CRUX,
-Fedora, Gentoo, Void, all list urls to download the source(s) from and
-the checksums to validate against as part of the build recipe, and
-unpack those into a temporary directory.
-
-So for example that means that Gentoo can list 90 different crate
-dependencies, plus one primary bcachefs tarball, and download each of
-those files into /var/cache/distfiles, then unpack them into a fake
-cargo registry. Of course, this is pretty slow if you don't have
-parallel downloads -- not usually a problem for most packages that have
-only one or two sources, but there you have it. And they can be shared
-between multiple packages, or multiple versions of bcachefs-tools,
-assuming that packages use exactly identical versions.
-
-In theory, one can also specify a different crate version to use instead
-of basing the versions on Cargo.lock. The update tool (pycargoebuild)
-always builds the list based on Cargo.lock, though.
-
-Now you have a 90-line package recipe, so have fun with that! :) Of
-course, since any solution for bcachefs-tools is logically consistent
-with handling other rust software, keep in mind that some packages have
-1,000+ crates. Even more fun!
+While we're at it, the definition of what allocation size is "too big"
+is something we'd want to look at. Right now it's hardcoded to INT_MAX
+for non GFP_NOFAIL and (I believe) 2 pages for GFP_NOFAL, we might want
+to consider doing something based on total memory in the machine and
+have the same limit apply to both...
 
 
-Back to Debian. Since each package can only have one source
-*.orig.tar.xz, I would assume that Debian has basically two choices as a
-result of their packaging format:
-
-- package each crate as a system dependency
-- repack each program source after running `cargo vendor`, and upload
-  *that* as the canonical source code
-
-Option 2 tends to not become great, e.g. due to the complete inability
-to deduplicate between packages. Option 1 is entirely workable, *iff*
-you assume that each crate and each crate *version* forms a unique
-package *name* within Debian. For example, byteorder version 1.5.0 would
-become a Debian package "librust-byteorder-1.5.0-dev (1.5.0)", and then
-you could install as many versions of the "byteorder" crate as you like,
-and depend on whichever one you need. Except... oops! Debian does this a
-bit different. They depend on librust-byteorder-1-dev (>=3D 1.3), because=
-
-the package name is based on semver and the package restriction is >=3D
-your Cargo.toml
-
-[dependencies]
-byteorder =3D "1.3"
-
-
-One possible reason why they bind the name to the semver might be
-because they, as noted, "have" to install the resulting -dev package to
-/usr/share/cargo/registry/byteorder-1.3.0 or whatever, and by using a
-global registry it's possibly impractical for *cargo* to determine the
-"correct" version to use when both byteorder-1.3.0 and byteorder-1.5.0
-are there.
-
-
-Since the rust ecosystem takes great pride in semver and cargo is
-designed to work this way (Cargo.lock even when checked into git is not
-necessarily respected by ordinary commands) that probably feels like a
-reasonable solution for the average use case of the rust ecosystem
-within Debian. And it has some advantages, such as the ability to have
-packages depend on only their direct dependencies, and have *those*
-depend in turn on their dependencies, for great simplification of the
-manifest of crates needed. Or, provide a patch to a crate *once* and
-have all packages using that crate respect the patch. Anyone who thinks
-that distros shouldn't ever patch software is unfortunately a fool. :)
-It tends to be especially urgent for users of alt-arches where software
-wasn't tested on e.g. mips or ppc64 or sparc or hppa and miserably
-fails, while the maintainers have disappeared, but there are other fun
-examples such as software with a build.rs that builds its own private
-copy of a C library and should use the system one instead. Clowns that
-insist on building their own private openssl version and ignoring the
-system copy are the bane of computing.
-
-Again, this is all about why a linux distro might have a *general
-policy* for handling rust crates in one place per crate.
-
-I suppose it's pretty unfortunate for rust software that isn't
-compatible with the ^1.2.3 style versions described in Cargo.toml,
-though that is a bit of an easy fix -- upgrade them.
-
-It's unclear to me if bcachefs-tools was having bugs on Debian due to
-following the strictures of Cargo.toml, or due to the patch "Relax build
-dependencies to match what's available in Debian":
-
-https://salsa.debian.org/debian/bcachefs-tools/-/blob/master/debian/patch=
-es/relax-build-dependencies
-
-e.g.
-
--rustix =3D { version =3D "0.38.34", features =3D ["termios"] }
-+rustix =3D { version =3D ">=3D 0.35 , < 1", features =3D ["termios"] }
-
-
-Because Debian Stable has 0.35.12 and Debian Testing has 0.38.32 and
-neither of those are sufficient.
-
-
---=20
-Eli Schwartz
-
-
---------------BMSc9nbBmJUNsvQpK2L4okoG--
-
---------------yvK0ecXUp04QsOjpH8gztNQC
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wnsEABYIACMWIQTnFNnmK0TPZHnXm3qEp9ErcA0vVwUCZtefdAUDAAAAAAAKCRCEp9ErcA0vV/yx
-APwOCSYxsWrLGd7jaGl0GqOTgenniyadVaqYqCHXWzghRAEA+zhzEa9F18eGPPBr665DGDkhUFY+
-L0LT5MtOWcMstQ8=
-=i4yJ
------END PGP SIGNATURE-----
-
---------------yvK0ecXUp04QsOjpH8gztNQC--
