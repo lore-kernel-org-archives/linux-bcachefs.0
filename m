@@ -1,100 +1,72 @@
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9616E1CCEDF;
-	Tue,  3 Sep 2024 02:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D8524211
+	for <linux-bcachefs@vger.kernel.org>; Tue,  3 Sep 2024 02:34:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725329589; cv=none; b=BTguBsRTMeG1o+e4SDVQ4jWz7VSDYKtlN9f07YJ8jp78pulrHPSZM7tTBHAQpFcn8FKZNhpwD2ndy8p2fzJlGgwom6SO5Lk5Jm/DZ1uH6WAl1X+4dMyIorygQCwkH6TaoXuZMdjbNGsfq5a9dbyybGO2ljv4hx3LSnVlTI1g5Xs=
+	t=1725330848; cv=none; b=eSrcn4dt8fOCr93ANtPj9r/voPy2S/f6glXC0B/ROHZ9zxV/HkfhzNB/XC0ZQk6T5/5VDV/bGzQVjhejGqsCmC2lWCr15jKsifa9q1i9SOjNWy6Qkb0oK9AZTF/btaMb0kJRpEGGwZ9MBcKX1DbqI35ot8n0pPq3/AGwiIp5Qms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725329589; c=relaxed/simple;
-	bh=GQfPyA/K7p414Vqf+JW+xWVAOD95RF0BlKhao2Y7ez4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=kZBW9xK/7YhUPH9YVMRaCIq/ulBB6JTWR28+rNcm/Vuk3pmvtsd0hTWEOeCYSdjQhBTXkC3WANCc8f8paz9cmlSMWgyFzA+CkzkushkpcCwJnEDHntd2/cAPK6TeEHgyFHGnL6rVlP+1APxJC/O0EcNsm/pWH27My5/0w6DSN8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=fhCwdvsx; arc=none smtp.client-ip=203.205.221.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="fhCwdvsx"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1725329584; bh=pBMh/lRqkgDgcFwzfKRuq4u2YfMu4QR8UX6graWcUsU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=fhCwdvsxHGuCAbXzWDY0zd2gwEHvwHxD07C1HoP0mfGoRC8ma32/Rv1TkicU1pi1n
-	 1CYVYw+Cs593kFnYN7Q0w2lG6lXT0lg6TgBekqCF+gUUL3nE7j2wzQbZ7giDCrXl/y
-	 c4ml6tOiRp0TABOgoDHnCn5T33PXHxtgB+i4SQ6A=
-Received: from pek-lxu-l1.wrs.com ([111.198.224.50])
-	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
-	id 3419B22F; Tue, 03 Sep 2024 10:13:01 +0800
-X-QQ-mid: xmsmtpt1725329581tuvi45o3g
-Message-ID: <tencent_6ECC3C5D37B696EC36DE4A4C759B770B6709@qq.com>
-X-QQ-XMAILINFO: NyTsQ4JOu2J2dyjoxmi2UiETfu3GcAO1sOoWv9PV9n8oBpHog5VNwdngiF0YLt
-	 AyKV5zfc2VCSYlDkw5fgHBlRwTF5uoUbjU6FzJ7++3D4fk7M0iafbY7IPuiqso2pMuj+uwvdSAr8
-	 F6qQqOKAoTdXujvbyOmCykOZ27N4l0QDdb+lA4PeIwUhn2iHgECpFdCwQnyBORrHoqPiBvkeMeeN
-	 zZM4ILgxuV5CH2Dtr0UixmlgJ9ndwF/inu+AzrhMOOXG3ZVMqiPQhZl6j10JdP5Uxg25YN+ezOVS
-	 I55TT0pgiN2t93AHvvrI3tAoW2fHd6oq69crvtz40xtbpdEMeQX+PzMD78FIvcK1XmJwL2QOnRVv
-	 S4Zwu8KoQBNUvpKFC5EFjdbANqyQtjPSWTQbERh3K0mZpeMOpeUY1ltp/DZvolFc0epg9OJsF5kC
-	 fCRpmrK6b4A9/8kJ9aO/K2Kn9Lwi71IQCmUzxRJUjUTdUv6Dk1hS6JCvP04TFWe8yaYcpfBaAvgv
-	 vBgNNCWmxq52CZ2ljG2911DzV8djCcnage3b44SGZdcRxBnO/bazKq4pxNHJ4KD3wnEiKf4o9EIK
-	 ShXRv6xQ9lXOXBKI8r44IM6li+qTTjkThJURQ+6IstILFtNuXG6cwz5DSdl6d1Qn7moPgchby9Bp
-	 oSY6CweztGqJfn+T2gEcdUyuxDR0pam/XZvW60McUNi882+dbGq/UsJBnCMxmiySD3SqfI7PmTLq
-	 34lS9HbDVYnnayGhsI7uu/XWhy71766Bic02KmJMvKloahQldavhXgS14opbGXK0rF/6CHj1xqUy
-	 82lWm28OybiSwYtBRp8/qxmmmajmKK0Ii3qklAATGhf3p8pUr61EOSCkhBpXGKjS48vYTlEdqg6t
-	 6O/eADxOzC0XfrWqpUgiH1aX2SSzmrGrSS1TpFLFgz
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com
-Cc: kent.overstreet@linux.dev,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in member_to_text
-Date: Tue,  3 Sep 2024 10:13:02 +0800
-X-OQ-MSGID: <20240903021301.2616960-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <00000000000005e6c90621278371@google.com>
-References: <00000000000005e6c90621278371@google.com>
+	s=arc-20240116; t=1725330848; c=relaxed/simple;
+	bh=UOHCw+cF8tvj2KpTUAWgY9p9yXNgf8o6wkUC9wx1Xk4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=bF+ToV3zO4J2IZun2LFcax92qAFBxcxEWOP5sQeCWPBeoFZ7oQY2SGOpdPJ2r0q+meLb6aC55qa50BtD63ROAzWzR3crlAK0y1LWnB6Tc8pWXFElJYTjOW3htjIdVND6gLW50EZ1yLIs9nh8WiniaN63mi4SCOEjUKGLJafQf6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-82a22983440so460621939f.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 02 Sep 2024 19:34:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725330845; x=1725935645;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v4drJsG4cIDr3I5NkQbnYT/k0mpZe+PZ2n49CNlnX0w=;
+        b=Y5qihezLuDeGmA5bJUagNJW79NxI9aW7iekIbwtpAQA6aZsmdGT99lF3EqpZRgxWBv
+         cvcBDZgozJHudIpuvdCP45aduBpo3q4tp/9bzOXee7M9aQXxoW+H99bVATpxA5dzt24+
+         0ufM7hqLJPLeur6eg30ZnA7dAe+t0qWDEin9yLkszG3GKB66wLzO2PZX0k1hCtTgYF/Z
+         CuV6miD6LFHAG1J4/Nt/NtCJ7Z9xWEHy0RybXF0yTdFIqgUGNoTYH3hZP58aW/fXmDPD
+         pKhXGZG7fUXMTtEGDbXF6eyLquFSAJ5jBxk/iLIeRWeJQRNfuA1+7+T4TXkN7FIhZ7Tm
+         Z5Lg==
+X-Forwarded-Encrypted: i=1; AJvYcCVc3gLw/1/vchL/nOCHRHK4wznRZ7QINhFlZk7J4Ze5E0kz7B77Y30Kbo/gKd9UzL09w9hkRGDFYTWOAsPE1g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwTf6NN3ZJD7xJ82ceW5wax+EERA3c2y87b8XNbOc//Ob9ug8F3
+	j6Z+QXgNQTd8aJUuBINpF8RMsQS2sAAOgu/oK3EXx3bgeceJrYzLeD92EXrbycwx/u0dD2cua7z
+	iAY8i4yp+idefmcCgn3VRp53icivrqXHYxtXG6sod2ioKr0d1lYVW3zk=
+X-Google-Smtp-Source: AGHT+IF6HRzmy3uAMKL6AxsBzVXEuNxaW8HWHTEdIl0EaLq704Fu+i3tq1TMG6e307FJmdpipFE/HFCiLkBYLYV5Y5unhue/5r53
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:4be8:b0:4d0:51aa:f250 with SMTP id
+ 8926c6da1cb9f-4d051ab4928mr14181173.3.1725330844993; Mon, 02 Sep 2024
+ 19:34:04 -0700 (PDT)
+Date: Mon, 02 Sep 2024 19:34:04 -0700
+In-Reply-To: <tencent_6ECC3C5D37B696EC36DE4A4C759B770B6709@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022db4706212de4ac@google.com>
+Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in member_to_text
+From: syzbot <syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com>
+To: eadavis@qq.com, kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Because the value of m.btree_bitmap_shift is 69 in this case, it cause 
-shift-out-of-bounds in member_to_text.
+Hello,
 
-Add a check for btree_bitmap_shift in validate_member, when it bigger than 64
-return -BCH_ERR_invalid_sb_members.
-Simultaneously adjust the output mode of btree_bitmap_shift in member_to_text. 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-#syz test
+Reported-by: syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com
+Tested-by: syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com
 
-diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
-index 39196f2a4197..85a4245ea6a3 100644
---- a/fs/bcachefs/sb-members.c
-+++ b/fs/bcachefs/sb-members.c
-@@ -162,6 +162,12 @@ static int validate_member(struct printbuf *err,
- 		return -BCH_ERR_invalid_sb_members;
- 	}
- 
-+	if (m.btree_bitmap_shift > 64) {
-+		prt_printf(err, "device %u: too many big bitmap shift (got %u, max 64)",
-+			   i, m.btree_bitmap_shift);
-+		return -BCH_ERR_invalid_sb_members;
-+	}
-+
- 	return 0;
- }
- 
-@@ -245,8 +251,7 @@ static void member_to_text(struct printbuf *out,
- 		prt_printf(out, "(none)");
- 	prt_newline(out);
- 
--	prt_printf(out, "Btree allocated bitmap blocksize:\t");
--	prt_units_u64(out, 1ULL << m.btree_bitmap_shift);
-+	prt_printf(out, "Btree allocated bitmap shift: %d\t", m.btree_bitmap_shift);
- 	prt_newline(out);
- 
- 	prt_printf(out, "Btree allocated bitmap:\t");
+Tested on:
 
+commit:         67784a74 Merge tag 'ata-6.11-rc7' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=135f0f33980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=660f6eb11f9c7dc5
+dashboard link: https://syzkaller.appspot.com/bug?extid=064ce437a1ad63d3f6ef
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=140dcb1f980000
+
+Note: testing is done by a robot and is best-effort only.
