@@ -1,112 +1,99 @@
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06F391CA6AD;
-	Tue,  3 Sep 2024 13:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EE96F315;
+	Tue,  3 Sep 2024 17:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725371653; cv=none; b=gxGlAgQQI8HhPAUJKkoH6V5JZBTkLPA9PAhPj1cZ5MdKkK0q1inb7KFKoBeZay9uwQ22r/7r6xpcy6PSQh0tfu7hD9AwcvQfvCMUuRKHyMHIk36lU/kT5pv8s4wKvNdM/HrXuN1VtyuqOxxgzoWJHKxM3wJe8Q5P1/AdGifxcIw=
+	t=1725383833; cv=none; b=fYmah9bRkU0jbshqaXB4VNajmFe5ejOGlUwYimVuzZQG+K8D08Ee417aTFQUkwOWLi9jpYNsHE2mSij+OqGoAXhEbnVq78CoscV51lo9QlIOQbHXwDlelV2s0MebZocoayUeRAN0rbnJTEncDD74AQ5uH+HTZthJ5iiz/Pzp2wM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725371653; c=relaxed/simple;
-	bh=LW2aFcZJH14Q1kEXlseBIgZHNW2q6kUp7VYzJkVVKs8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cZHp3vsDEvsW9yE/TyqX3CYi3LZhhCUQfIPy1UQi7eR+fZKOy30tZUPYxN5uoHCw6JvvYx1eYZrX9/+NvB2KkjMzwtZiJ/5JNo8eQyWjclOnzu7cGl7ALwVchOXxwsJUssmEY5r8SfYaq6Y/KstnuQOGHDZ1MA9z0lEwKeBZyek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-691bb56eb65so47041577b3.0;
-        Tue, 03 Sep 2024 06:54:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725371650; x=1725976450;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mqZiEh+o6sfWJuXgzKi0L8anYlIdqwzIKuWOXeuoMnQ=;
-        b=EUj89AIo3DW3yVfoC1jZvW6l1z0QH0q0J5ql+yPr4laTt2+ahkMjmcio+7Flca+7Q9
-         m0McHE+rXk36/KPTJjXc4Fe2rcm2+wTjpuNolJLwN8qo8uInbNQ5ckta5cXZM4HknHPC
-         78bHUtWbliHB/gzGcD7uH7INo1ntfj9i7NPf2k5PmhTkUOaHNe8T+Axi8zuHYsbaFdYK
-         ukny7fx2SwCT2KUUzHyADrg9i8qCPJiJWxhQxk6btb0EIsIqC3NusQGngAHFOhPnTAad
-         0FsdJraLiBLlL2BWm0VOdVjGBkyPMCNJ7VjZS4ZXdeS3Ak4h8MttWHlTHZ0SqPeckFck
-         SZ4w==
-X-Forwarded-Encrypted: i=1; AJvYcCUVoTzxxnWDMqSQevl6C2a1YC1bwe7UXd7avk9ogywiRFMmXR7ZbhDnK3mGwXKSCCngxpNa3nUKmWTtXsSA@vger.kernel.org, AJvYcCX5gSUJqLmYYcOlMobb7qGVFoWceb2+gA7XBmGXKlAzgdBW8EG2Yfg6/iIWM8MNUXJiTpjej/vftczJppo6IA==@vger.kernel.org, AJvYcCXDRJ5ffddfrhwu3CC1fh2csk5ZZDpSstzlzDlWqPdtHKBlGhmVBsqtbJ3+7zVV+H696NRwk9g3oCbaEz0D6A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCykBD8sZ1+Tr5eXklBq22ghMQFEaO6VloKR6qD3amHKRvy/vY
-	pzqnvoOXqPUpfPll9ct3ZajG9YOSoVOHckvFFJnmiZ3H/5zU3uEnPG/7uEA4
-X-Google-Smtp-Source: AGHT+IH1EEs71yyN4QvmXcCeh/VZvOCftE1Jb6CJ0quGKYOD+39epwfs8DO+4cSDyP+KXqpZU9wazQ==
-X-Received: by 2002:a05:690c:e1b:b0:6d4:4cb:e453 with SMTP id 00721157ae682-6d40df802eemr155752407b3.17.1725371649359;
-        Tue, 03 Sep 2024 06:54:09 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6d2d57de3e5sm20083137b3.77.2024.09.03.06.54.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Sep 2024 06:54:09 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6d6891012d5so21436017b3.2;
-        Tue, 03 Sep 2024 06:54:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUYoNleSPBCCRaphC+l+3fEkLVS1slTuIEgt8d228oma7Kwpk1OhEhi4iDKtrnYCuBO0pblKvcr47Yp8mcTTg==@vger.kernel.org, AJvYcCV/+D7aQ8mty/7Jxr2yBcv7QfQX15m1lnrcKon48De44yqEtt4lm953NH3Bhbw3l4nlG3kklh7RX/68hSti@vger.kernel.org, AJvYcCV0jYLQW3MDY1l7154RES3Vxno7Jyr/VevgEOrIzSMrw//O61Vx4jzKeTgo0siAX8+NfGdSt7m6a9eDtLRiig==@vger.kernel.org
-X-Received: by 2002:a05:690c:893:b0:6b1:4eb6:345e with SMTP id
- 00721157ae682-6d40e7824cemr173350047b3.26.1725371648843; Tue, 03 Sep 2024
- 06:54:08 -0700 (PDT)
+	s=arc-20240116; t=1725383833; c=relaxed/simple;
+	bh=fqmTGz8O7zkXIZo/mwtdtQWoFNMOlT/1uVo0v7jeQfw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I3Zymv3z2f5rB+R01VrNechMNWOXxvojBZK9rVQARKmj8iCFNKggAzij0T+XeQYxoVtkIMpDlwo+/9F6ByuY+yZOBTrm9xyFia0G5CKO5YMFh9OCx9jEGA1IhaVSdBeRAJqPBAwBSaR+YHJiA8WMEFF33ZWdN0In2HrABn7+q8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYpH3V/M; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYpH3V/M"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 704C7C4CEC4;
+	Tue,  3 Sep 2024 17:17:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725383832;
+	bh=fqmTGz8O7zkXIZo/mwtdtQWoFNMOlT/1uVo0v7jeQfw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KYpH3V/MFR5Jkqe8hCAQOprPhrvuE53hh4mycQBMYTL9usRUFqBhst9A9u5rmqejD
+	 8e0uC6YsuB1VB4D0C5ttbp79llNj1JWYC5uGpasoleuPUtV039UOzmITDcjLwvXbaV
+	 hcg483CQhhmdWccBL0C+odZTZ75guiLXVnwrR/aj47skDiqZ5aTgFnDaEhVY5meILP
+	 k39JOrVB5KERg+eXtCDbPx0Ym5+BKxm0jbTUOGhkst3oSU/J5ImuVKwgOX1OJfiQ0F
+	 5p6l9BxFXmNpPUJ4PEW7pYHM7+C7pdlzq+Rqu88s6fQoI/h/nZFU1Mm1SLy7flammT
+	 Lh6zeZq5WP0dQ==
+Date: Tue, 3 Sep 2024 10:17:10 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc6
+Message-ID: <20240903171710.GA1164261@thelio-3990X>
+References: <erydumpfxcjakfllmh3y4d7wtgwz7omkg44pyvpesoisolt44v@kfa4jcpo7i73>
+ <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <erydumpfxcjakfllmh3y4d7wtgwz7omkg44pyvpesoisolt44v@kfa4jcpo7i73>
-In-Reply-To: <erydumpfxcjakfllmh3y4d7wtgwz7omkg44pyvpesoisolt44v@kfa4jcpo7i73>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 3 Sep 2024 15:53:56 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
-Message-ID: <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc6
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
 
-Hi Kent,
+On Tue, Sep 03, 2024 at 03:53:56PM +0200, Geert Uytterhoeven wrote:
+> Hi Kent,
+> 
+> Replying here, as there is (again) no patch email to reply to to report issues.
+> 
+> noreply@ellerman.id.au is reporting several build failures[1] in linux-next:
+> 
+>     fs/bcachefs/sb-members.c: In function ‘bch2_sb_member_alloc’:
+>     fs/bcachefs/sb-members.c:503:2: error: a label can only be part of
+> a statement and a declaration is not a statement
+>       503 |  unsigned nr_devices = max_t(unsigned, dev_idx + 1,
+> c->sb.nr_devices);
+>           |  ^~~~~~~~
+>     fs/bcachefs/sb-members.c:505:2: error: expected expression before ‘struct’
+>       505 |  struct bch_sb_field_members_v2 *mi =
+> bch2_sb_field_get(c->disk_sb.sb, members_v2);
+>           |  ^~~~~~
+> 
+> Apparently this fails with gcc-10 and older, but builds with gcc-11
+> and gcc-12.
 
-Replying here, as there is (again) no patch email to reply to to report iss=
-ues.
+Just noting this also happens with clang. Depending on the version, it
+is either a hard error like this or a warning (that gets upgraded to an
+error with CONFIG_WERROR).
 
-noreply@ellerman.id.au is reporting several build failures[1] in linux-next=
-:
+Clang 15:
 
-    fs/bcachefs/sb-members.c: In function =E2=80=98bch2_sb_member_alloc=E2=
-=80=99:
-    fs/bcachefs/sb-members.c:503:2: error: a label can only be part of
-a statement and a declaration is not a statement
-      503 |  unsigned nr_devices =3D max_t(unsigned, dev_idx + 1,
-c->sb.nr_devices);
-          |  ^~~~~~~~
-    fs/bcachefs/sb-members.c:505:2: error: expected expression before =E2=
-=80=98struct=E2=80=99
-      505 |  struct bch_sb_field_members_v2 *mi =3D
-bch2_sb_field_get(c->disk_sb.sb, members_v2);
-          |  ^~~~~~
+  fs/bcachefs/sb-members.c:503:2: error: expected expression
+          unsigned nr_devices = max_t(unsigned, dev_idx + 1, c->sb.nr_devices);
+          ^
+  fs/bcachefs/sb-members.c:507:42: error: use of undeclared identifier 'nr_devices'
+                                       le16_to_cpu(mi->member_bytes) * nr_devices, sizeof(u64));
+                                                                       ^
+  include/linux/math.h:37:22: note: expanded from macro 'DIV_ROUND_UP'
+  #define DIV_ROUND_UP __KERNEL_DIV_ROUND_UP
+                       ^
+  fs/bcachefs/sb-members.c:513:30: error: use of undeclared identifier 'nr_devices'
+          c->disk_sb.sb->nr_devices = nr_devices;
+                                      ^
 
-Apparently this fails with gcc-10 and older, but builds with gcc-11
-and gcc-12.
+Clang 19:
 
-The failure is due to commit 4e7795eda4459bf3 ("bcachefs:
-bch2_sb_member_alloc()"), which is nowhere to be found on
-lore.kernel.org.  Please stop committing private unreviewed patches
-to linux-next, as several people have asked before.
-Thank you!
+  fs/bcachefs/sb-members.c:503:2: error: label followed by a declaration is a C23 extension [-Werror,-Wc23-extensions]
+    503 |         unsigned nr_devices = max_t(unsigned, dev_idx + 1, c->sb.nr_devices);
+        |         ^
 
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linux-next/head/6804f0edbe77=
-47774e6ae60f20cec4ee3ad7c187/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Cheers,
+Nathan
