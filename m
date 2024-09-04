@@ -1,101 +1,76 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A961E4119
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 18:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEFC1E5015
+	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 19:15:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725476121; cv=none; b=rAH6V88IX2fzRUgw9VQ9v1L0Ln1r/kLPB/+Hx7HKidT3Pa9IBaq7afxiaPhqiqN+eB+WOMoM7itj0BiMLLHZ9Gxr95BoI1UStC16EFlHen3AWkLHdlnJEnnXwU8smn/bJIu56EsTUUGjCda1XDiByC89VRV5zexQCfq2zWitd/g=
+	t=1725477326; cv=none; b=RzQCCoJry5oROHwfAyRzCPrHfmULTf5JjH9L1EPyhSmcZe5e+SzpeDgJVmWGTecXGMgtWojPN8cgbrQos2GfyYv/b+ZPuBV8T2Em84uAZltZnca4//haP13gf8J+bViOyVhPUVrU0qvy8sv6Vu4r1lRw/y1hGYIyrd3U0UmHYI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725476121; c=relaxed/simple;
-	bh=XvcPlCNKOyAOcO2sDqDCAH3Ue4gDGxj5iEp625GeZWY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hCTnKEIWZIHnWwxDzp0UTxz8N/nQur3HD71bVzw+IFVlBBIoDVIIDuzmNN5ELTP3vJb0mnwyI4/Pem5TUvQkJpE3s4GKennx3kNFECFzhfW3xHbF0oXQo+dg3oSX8Y5EBUVzwiUjC8vnS3TWVHsyHeJyg/9UH70ioXX74M6z2Zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eriXzhsA; arc=none smtp.client-ip=91.218.175.177
+	s=arc-20240116; t=1725477326; c=relaxed/simple;
+	bh=7eKFCS+deXpzM5jOO60xa8yg4fleUzi0kR5d0HtYZo8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GBN/cgq/tm7hk5NVWD+1v8+iJxpVZKbx144FNh9fCsK9QoHMRW1x1VVr7cDT6TsQDdSlALcZFYwIg7hArYwerM8Mql76HT/1XDXQ4JiAchAAI14w3h8sm3cF7HNepOg1W2D5CphxescDzs9SutrNJisUYCrGMx/eRItcVac37nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aLNyBGM2; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eriXzhsA"
-Date: Wed, 4 Sep 2024 14:55:13 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aLNyBGM2"
+Date: Wed, 4 Sep 2024 15:15:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725476117;
+	t=1725477321;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VN5t1C2oeejKjejG+tL9rtMscYiZsZ0/XuO7UFNOY8w=;
-	b=eriXzhsALVVtShspOtIV4NqrhZHSPMQoc/ClzxDimkxw5liPYru692WxFhqQdskN9R3gzH
-	b875RZa3YZQ94FA2zl6B4Zr3Wkhb2fauqim5MfQ/PvlZyySpa5zlDbWKHAlzK+Py9bL7Ei
-	rklKoe/tjUiAqKkXRo9qVd7w4wiPpQw=
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=u8kpNsKSZ3uqQLjXloSdeinlpG3I+j+7gjEL1plsaXE=;
+	b=aLNyBGM2GzqCDnPPc5Lp9dLpwaUlizi9R5lzZNyqzNGWyz4EW/Gl78bjBiLtcPW+otV3R6
+	voCUhc5I8x3bwOI5WVWQZ3h/WLTX9ogIv8ui//zFbzQfE8hsgys97r0icMzaYLY89Jp9ui
+	DE8O3pyn2CMVC8BfDw+XCSK/ErvpYpA=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc6
-Message-ID: <fvk7vjfz4f2c2x5hxjajiwz5doxeg54owgpzob2kskkftshcoo@5sl5lu6nenyu>
-References: <erydumpfxcjakfllmh3y4d7wtgwz7omkg44pyvpesoisolt44v@kfa4jcpo7i73>
- <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.11-rc7
+Message-ID: <45wxyfvbqm76vqbdjkasy3a4pxtbnza5qiukvcougseosx4qnt@uqosw6rkccxi>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 03, 2024 at 03:53:56PM GMT, Geert Uytterhoeven wrote:
-> Hi Kent,
-> 
-> Replying here, as there is (again) no patch email to reply to to report issues.
-> 
-> noreply@ellerman.id.au is reporting several build failures[1] in linux-next:
-> 
->     fs/bcachefs/sb-members.c: In function ‘bch2_sb_member_alloc’:
->     fs/bcachefs/sb-members.c:503:2: error: a label can only be part of
-> a statement and a declaration is not a statement
->       503 |  unsigned nr_devices = max_t(unsigned, dev_idx + 1,
-> c->sb.nr_devices);
->           |  ^~~~~~~~
->     fs/bcachefs/sb-members.c:505:2: error: expected expression before ‘struct’
->       505 |  struct bch_sb_field_members_v2 *mi =
-> bch2_sb_field_get(c->disk_sb.sb, members_v2);
->           |  ^~~~~~
-> 
-> Apparently this fails with gcc-10 and older, but builds with gcc-11
-> and gcc-12.
+Hi Linus - just two little ones.
 
-Thanks for the report - it's fixed now (thanks, Hongbo)
+The following changes since commit 3d3020c461936009dc58702e267ff67b0076cbf2:
 
-> The failure is due to commit 4e7795eda4459bf3 ("bcachefs:
-> bch2_sb_member_alloc()"), which is nowhere to be found on
-> lore.kernel.org.  Please stop committing private unreviewed patches
-> to linux-next, as several people have asked before.
+  bcachefs: Mark more errors as autofix (2024-08-31 19:27:01 -0400)
 
-They're still in git; I'd suggest just doing a git send-email and
-tweaking the output if you want to start a review on a patch you find.
+are available in the Git repository at:
 
-There's been some discussions in filesystem land about how/when we want
-patches to hit the list - I'm not a huge fan of the patch bombs that
-drown everything else out on the list, which is what it would be if I
-did mail everything.
+  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-09-04
 
-But if the email workflow is really what you want, and if it's going to
-be generating useful review (list activity is growing...), I could be
-convinced...
+for you to fetch changes up to 53f6619554fb1edf8d7599b560d44dbea085c730:
 
-We're getting past the "just fix all the stupid shit" phase, and my
-output is (I hope) trending toward something more stustainable, with a
-stream of more _interesting_ patches to talk about, so - yeah, it's
-starting to sound more reasonable, if that's what people want.
+  bcachefs: BCH_SB_MEMBER_INVALID (2024-09-03 20:43:14 -0400)
 
-My priority is just going to be on fostering _useful_ technical
-discussion. If the only reason you're wanting patches on the list is
-because of trivial shit automated tests can and do catch - that's not a
-win, to me. If I start posting patch series and we seem to be learning
-from it, I'll stick with it.
+----------------------------------------------------------------
+bcachefs fixes for 6.11-rc1
+
+- Fix a typo in the rebalance accounting changes
+- BCH_SB_MEMBER_INVALID: small on disk format feature which will be
+  needed for full erasure coding support; this is only the minimum so
+  that 6.11 can handle future versions without barfing.
+
+----------------------------------------------------------------
+Kent Overstreet (2):
+      bcachefs: fix rebalance accounting
+      bcachefs: BCH_SB_MEMBER_INVALID
+
+ fs/bcachefs/buckets.c           | 2 +-
+ fs/bcachefs/replicas.c          | 3 ++-
+ fs/bcachefs/sb-members.c        | 3 ++-
+ fs/bcachefs/sb-members_format.h | 5 +++++
+ 4 files changed, 10 insertions(+), 3 deletions(-)
