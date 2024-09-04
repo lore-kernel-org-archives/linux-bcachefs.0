@@ -1,193 +1,136 @@
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1B17E1
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 00:31:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC04646
+	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 00:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725409881; cv=none; b=AZyJM7NJA6EMeaCkYnn27lUnV/EuIlN6wqTYe0JSDuIVu6S4PFtcb+VY3Sk7IBuSqYwrxAxMJLrU+Pi6azt/tNRYAkFNJHQtqQbIAfcD9gZ4d4YcjX2DTGuV2DXltleNlMit+CufSfjNs48+yDoIOKGsOP+BYNOWRypNgf1j2Oo=
+	t=1725410331; cv=none; b=PDwzwLPjYYSBmRGptOjRSCqhznc/s9rLxV0DPJcZ20d0U+Kt5/fXn6zX+BoPordS9A+QFbUQP4QBy+c+gJguZQshA0RAj8vpIOQSIg6kzii3oKEo3plxUOKFQ3baYQ9F3+Cfti2JNzOHAHJ12HWrDa+m9egguSj25S/fAYCsUCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725409881; c=relaxed/simple;
-	bh=aSQbts5GhZsFPK6IMq1LullBoGx2BzOaKo4gmHhgss4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=guOA2IjQ1LgNSMnBEXKbsPp8N+WdItSqggnTgCLRFj79WiHnM6cZk5L7c9Q3deBL/t8p3QazpzQQKkc0tNibzgTX8P+Kekm45LEcCUn7uBOFLsYtbV+LzOhNGBoMZYD1UwD3LT9xYju564CxHyxA2B3nRmZA76yEoDSLXY7t50k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org; spf=pass smtp.mailfrom=gentoo.org; arc=none smtp.client-ip=140.211.166.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
-Message-ID: <3d737289-9c3b-4596-8c3d-de8b0cb5c9af@gentoo.org>
-Date: Tue, 3 Sep 2024 20:31:16 -0400
+	s=arc-20240116; t=1725410331; c=relaxed/simple;
+	bh=1lpbbm4Tm9sfCZZhVW94hR8ZxozzN24gapQZ/c9WH+w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GtEe+V/CRLF0C24CbNr4+0IJAnP6LprkFqVp3feGPvRrt6VXRMsW54xurtlmzYmqRpRoHwmy9e/PDXhy9I7Xyh0rolVwkxP54ozcv86KXzyg6Uv3G1zWJq0b8i9IoTPyn/BvTla0weapcCXxXL6rl3JK7936L9W0K5dmGG/p3tc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=m6KMsqjO; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="m6KMsqjO"
+Date: Tue, 3 Sep 2024 20:38:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725410326;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fdP8nnVbPa5YhD37l7B+42mFDXmRnBHijxxjCyR/3BI=;
+	b=m6KMsqjOqL3F1h3jn/W0pIGTH7B08XN8ZfbHaeSVxqGTqGChx6/JKKjujJ4zphmDQ4kbzD
+	l18aN0+wSNNncDO5XcaA7ZwaOy/dtJDPZpFRhATPGNjjaSDxx1JvYNE9vkV3B6WK/jpaS1
+	2HOLtZWqPDynzWu9o8eNNrJrHOinePY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Eli Schwartz <eschwartz@gentoo.org>
+Cc: Martin Steigerwald <martin@lichtvoll.de>, 
+	"Carl E. Thompson" <cet@carlthompson.net>, linux-bcachefs@vger.kernel.org
+Subject: Re: PSA: Avoid Debian Stable
+Message-ID: <urrfdzixaxhhihnri4awsddghdajnfk46nrodvknuisjjuk56l@qx424lg4jg4n>
+References: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
+ <4609869.LvFx2qVVIh@lichtvoll.de>
+ <sdmildnu2r55ale4pi4qywu2fjgd323izex6lxmkzde34dixsb@cuzsmplhlek7>
+ <2197543.irdbgypaU6@lichtvoll.de>
+ <sq35zfsryexuqu2vmpvxj3gxv3kja5wv2nqqbtbyu5catvylho@wkaootfi2zhw>
+ <683718c1-98c9-4b28-a301-15c4668b1476@gentoo.org>
+ <wuhq6flzorkw5hgzx5h557ddroekbzt27z3pzs6uyhjhik5kls@76iojjqrczuq>
+ <3d737289-9c3b-4596-8c3d-de8b0cb5c9af@gentoo.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: PSA: Avoid Debian Stable
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Martin Steigerwald <martin@lichtvoll.de>,
- "Carl E. Thompson" <cet@carlthompson.net>, linux-bcachefs@vger.kernel.org
-References: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
- <4609869.LvFx2qVVIh@lichtvoll.de>
- <sdmildnu2r55ale4pi4qywu2fjgd323izex6lxmkzde34dixsb@cuzsmplhlek7>
- <2197543.irdbgypaU6@lichtvoll.de>
- <sq35zfsryexuqu2vmpvxj3gxv3kja5wv2nqqbtbyu5catvylho@wkaootfi2zhw>
- <683718c1-98c9-4b28-a301-15c4668b1476@gentoo.org>
- <wuhq6flzorkw5hgzx5h557ddroekbzt27z3pzs6uyhjhik5kls@76iojjqrczuq>
-Content-Language: en-US
-From: Eli Schwartz <eschwartz@gentoo.org>
-Autocrypt: addr=eschwartz@gentoo.org; keydata=
- xjMEZmeRNBYJKwYBBAHaRw8BAQdAYNZ7pUDWhx1i2f3p6L2ZLu4FcY18UoeGC04Gq/khqwfN
- I0VsaSBTY2h3YXJ0eiA8ZXNjaHdhcnR6QGdlbnRvby5vcmc+wpYEExYKAD4WIQTvUdMIsc4j
- CIi+DYTqQj6ToWND8QUCZoRL+gIbAwUJBKKGAAULCQgHAwUVCgkICwUWAgMBAAIeBQIXgAAK
- CRDqQj6ToWND8aB5AP9r4kB691nNtNwKkdRiOdl7/k6WYzokvHvDamXxRJ0I+gEAjZqR5V8y
- mfR3fy2Z+r2Joeqdt3CIv5IwPs64spBvigLOOARmZ5E0EgorBgEEAZdVAQUBAQdATT46Z06b
- 1X9xjXFCYFxmq/Tj3tSEKZInDWTpoHQp4l8DAQgHwn4EGBYKACYWIQTvUdMIsc4jCIi+DYTq
- Qj6ToWND8QUCZmeRNAIbDAUJBKKGAAAKCRDqQj6ToWND8a2RAP40KPfbfoiZAJW5boFmFJ3G
- TUBDJRh9CWHyaPqq2PN+0wD/R07oLzfnJUN209mzi9TuTuHjeZybysyqXSw4MAxkMAY=
-In-Reply-To: <wuhq6flzorkw5hgzx5h557ddroekbzt27z3pzs6uyhjhik5kls@76iojjqrczuq>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------Btanv1z0ake3F13M0esInNht"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d737289-9c3b-4596-8c3d-de8b0cb5c9af@gentoo.org>
+X-Migadu-Flow: FLOW_OUT
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------Btanv1z0ake3F13M0esInNht
-Content-Type: multipart/mixed; boundary="------------pjr7dA0NRFLD94Fv0drbEL0V";
- protected-headers="v1"
-From: Eli Schwartz <eschwartz@gentoo.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Martin Steigerwald <martin@lichtvoll.de>,
- "Carl E. Thompson" <cet@carlthompson.net>, linux-bcachefs@vger.kernel.org
-Message-ID: <3d737289-9c3b-4596-8c3d-de8b0cb5c9af@gentoo.org>
-Subject: Re: PSA: Avoid Debian Stable
-References: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
- <4609869.LvFx2qVVIh@lichtvoll.de>
- <sdmildnu2r55ale4pi4qywu2fjgd323izex6lxmkzde34dixsb@cuzsmplhlek7>
- <2197543.irdbgypaU6@lichtvoll.de>
- <sq35zfsryexuqu2vmpvxj3gxv3kja5wv2nqqbtbyu5catvylho@wkaootfi2zhw>
- <683718c1-98c9-4b28-a301-15c4668b1476@gentoo.org>
- <wuhq6flzorkw5hgzx5h557ddroekbzt27z3pzs6uyhjhik5kls@76iojjqrczuq>
-In-Reply-To: <wuhq6flzorkw5hgzx5h557ddroekbzt27z3pzs6uyhjhik5kls@76iojjqrczuq>
+On Tue, Sep 03, 2024 at 08:31:16PM GMT, Eli Schwartz wrote:
+> On 9/3/24 8:04 PM, Kent Overstreet wrote:
+> >> Back to Debian. Since each package can only have one source
+> >> *.orig.tar.xz, I would assume that Debian has basically two choices as a
+> >> result of their packaging format:
+> >>
+> >> - package each crate as a system dependency
+> >> - repack each program source after running `cargo vendor`, and upload
+> >>   *that* as the canonical source code
+> > 
+> > I already provide 'cargo vendor' tarballs. Yes, it's big (thanks to
+> > bindgen), but it's not _enormous_.
+> 
+> 
+> Sure. Debian was probably working with the notion that using vendor
+> tarballs makes individual packages a "special snowflake", which is a
+> tempting rationale until you realize you're patching to allow versions
+> that are way too low.
+> 
+> 
+> > And bindgen is unfortunately the problematic one (and the one that broke
+> > the build) - the semantics of the packed and aligned attributes are
+> > subtle, and bindgen has had difficulty getting them right (due in part
+> > to differences between gcc and microsoft).
+> 
+> 
+> Heh, no doubt. :)
+> 
+> -bindgen = "0.69.4"
+> +bindgen = "0.66"
+> 
+> Really makes you think about the wisdom of allowing versions that
+> upstream specifically marked as incompatible (downgrading, not upgrading!)
+> 
+> Especially since binding between two languages will inherently tend to
+> violate rust's safety semantics! The entire point of bindgen is to
+> create a "safe" description of C types...
 
---------------pjr7dA0NRFLD94Fv0drbEL0V
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Yeah, I think it's been pretty well established by this point that
+mistakes were made.
 
-On 9/3/24 8:04 PM, Kent Overstreet wrote:
->> Back to Debian. Since each package can only have one source
->> *.orig.tar.xz, I would assume that Debian has basically two choices as=
- a
->> result of their packaging format:
->>
->> - package each crate as a system dependency
->> - repack each program source after running `cargo vendor`, and upload
->>   *that* as the canonical source code
->=20
-> I already provide 'cargo vendor' tarballs. Yes, it's big (thanks to
-> bindgen), but it's not _enormous_.
+Hopefully we're finally on a track to doing better :)
 
+> > Don't unbundle the other dependencies. They're tiny, and it's not worth
+> > the pain it could potentially cause.
+> 
+> 
+> Yeah but again this has nothing to do with unbundling, rather, it's
+> about modifying version and disrespecting:
+> 
+> - the lockfile
+> - the Cargo.toml
+> 
+> If the debian packages were simply the same version as all the
+> Cargo.lock entries, then it would be *unbundling*, but not *modification*.
+> '
+> It's the modification that's a problem, and specifically, the
+> modification of *required lower bounds*. It might be safe to upgrade a
+> crate, to get a "better" version, but downgrading to get a worse version
+> generally feels pretty silly.
 
-Sure. Debian was probably working with the notion that using vendor
-tarballs makes individual packages a "special snowflake", which is a
-tempting rationale until you realize you're patching to allow versions
-that are way too low.
+But given that different packages probably won't be specifying the exact
+same versions of dependencies, so debian isn't going to have the right
+one, and most of these dependencies are _tiny_ - why bother with the
+enormous hassle?
 
+Not everything tiny bit of code needs to be a distro-level package...
 
-> And bindgen is unfortunately the problematic one (and the one that brok=
-e
-> the build) - the semantics of the packed and aligned attributes are
-> subtle, and bindgen has had difficulty getting them right (due in part
-> to differences between gcc and microsoft).
+> Again, Simply running `cargo install --git
+> https://github.com/koverstreet/bcachefs-tools` will totally ignore your
+> lockfile and feel free to update to "newer == better" versions. Perhaps
+> bindgen would even fix more attribute issues. :D
+> 
+> But it would always, always, always respect Cargo.toml, which is why
+> Debian did NOT bother doing anything to the lockfile, but did apply a
+> patch to Cargo.toml
 
+Yeah, cargo still has some bugs: the modern thinking on how to do this
+style of packaging 'right' has been evolving fairly recently.
 
-Heh, no doubt. :)
-
--bindgen =3D "0.69.4"
-+bindgen =3D "0.66"
-
-Really makes you think about the wisdom of allowing versions that
-upstream specifically marked as incompatible (downgrading, not upgrading!=
-)
-
-Especially since binding between two languages will inherently tend to
-violate rust's safety semantics! The entire point of bindgen is to
-create a "safe" description of C types...
-
-
-> Don't unbundle the other dependencies. They're tiny, and it's not worth=
-
-> the pain it could potentially cause.
-
-
-Yeah but again this has nothing to do with unbundling, rather, it's
-about modifying version and disrespecting:
-
-- the lockfile
-- the Cargo.toml
-
-If the debian packages were simply the same version as all the
-Cargo.lock entries, then it would be *unbundling*, but not *modification*=
-=2E
-'
-It's the modification that's a problem, and specifically, the
-modification of *required lower bounds*. It might be safe to upgrade a
-crate, to get a "better" version, but downgrading to get a worse version
-generally feels pretty silly.
-
-Again, Simply running `cargo install --git
-https://github.com/koverstreet/bcachefs-tools` will totally ignore your
-lockfile and feel free to update to "newer =3D=3D better" versions. Perha=
-ps
-bindgen would even fix more attribute issues. :D
-
-But it would always, always, always respect Cargo.toml, which is why
-Debian did NOT bother doing anything to the lockfile, but did apply a
-patch to Cargo.toml
-
-
-> The cargo dependency model is _really good_ because it means dependency=
-
-> updates happen in commits in the consuming package, meaning it's
-> actually possible to bisect for breakage caused by a dependency update =
--
-> that's not something we've had before.
-
-
-And you can do the same with any C build system that isn't "I like
-Makefiles because I think they are simple to write". You do a dependency
-update in commits in the consuming package as an update to the version
-specification of the url+checksum used to download and build C libraries
-as vendored dependencies. Just like Cargo.lock
-
-And like Cargo.toml, you can do the *other* kind of dependency update
-(also as commits in the consuming package) by updating the *minimum*
-version permissible (e.g. when consuming a system package).
-
-This really is a solved problem in C/C++ and has been for a decade. It
-has to be, if for no other reason than that Windows developers ***do not
-have a choice*** as there is no such thing as system dependencies. That
-is why vcpkg exists (and using it involves adding a manifest to your
-Windows project describing the exact pinned versions of your
-dependencies to go ahead and build).
-
-
---=20
-Eli Schwartz
-
-
---------------pjr7dA0NRFLD94Fv0drbEL0V--
-
---------------Btanv1z0ake3F13M0esInNht
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wnsEABYIACMWIQTnFNnmK0TPZHnXm3qEp9ErcA0vVwUCZteqVAUDAAAAAAAKCRCEp9ErcA0vV9ax
-AQCeGxSY+43OOMHZVTvHpbKlR9nf0U8T9knUjmk+LJEPwQD/dawCw+kqY9EvqA5RnZtYt9VfNurr
-3QX3PWKT/bC0twA=
-=Fjny
------END PGP SIGNATURE-----
-
---------------Btanv1z0ake3F13M0esInNht--
+Cargo.lock should really not be changed by anything but 'cargo update',
+and if I was less lazy I'd file a bug about htat.
