@@ -1,57 +1,57 @@
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A111E1309
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 16:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 537D61E00AD
+	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 16:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725468365; cv=none; b=tTTIuxzMeE4gKhZu3+LDpKAQnsbjllOfVb+Mk9E+ULvgInPH7PREDF50XaMBRVCK98aAUiMkNoXNBcRLIgwXoBi5QE6cmsDWWYZ2XaXczWvoAtxtdWRSxX3SrNTtGxR3DystNbepPyoQ7r3iv3KG8Cqs7hq2EZOlSim2Gcd8Xf8=
+	t=1725468663; cv=none; b=AKygkiWCDjODl1vKm18swGKMP4XUySzMUVDjaPuJTr77VMLatopNM7Ox+XxsPGtayiY+PaLB0XEibuBHsDzs/bcbzsMa7NSbyVzrpBlzP5eqpHWL1v2vJ/AkWoRs/pBVgT2V0AiDWk/w+uKa/8qOuP6Uf0k7yWN0ipRbvC1Gi/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725468365; c=relaxed/simple;
-	bh=dFhS4dE8uedw1cXPhdYDcbjHlnz46XsrbzBFKCVKkYU=;
+	s=arc-20240116; t=1725468663; c=relaxed/simple;
+	bh=WwVr4F4mSwbuuwBtGzRHAzok6+2DiB0wAP1mGFWeJ0w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VlGivrTn4cmegvjKZQJ7fQMCqGl/TCqwClaa7SDDXn283NRdlBi462PBxopTLnAoZeouBCCymr8uphOWkylAO0Nhl0ABVG9ztL7z4HrgEW6w5GbEdsXbLfFbQkHJSrS2BzaFriJjPVU6nX/GSV/6sv/SLNwQu05iucvecGVecBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TWW6zgwB; arc=none smtp.client-ip=209.85.218.42
+	 Content-Type:Content-Disposition:In-Reply-To; b=J/2BgJ2tcdns9MBC8KjdUTwrA+1wdgSp2HEQ1oB/61FNQ/mxXQx/qvdEjsvJfQ5DQCRReFi6vc6Az5gDi0yl1ugPd4YTsyqAFM1CuCkR1DGZX9lZWWxHEMvlmWOkEpo2seT1ZBwJRqyHsNOYfKH/OQiqyyu+viBLQt7nYnKTaL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gXfvhCAj; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TWW6zgwB"
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a89c8db505bso501053466b.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 04 Sep 2024 09:46:03 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gXfvhCAj"
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5c24c92f699so4684568a12.2
+        for <linux-bcachefs@vger.kernel.org>; Wed, 04 Sep 2024 09:51:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1725468362; x=1726073162; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1725468660; x=1726073460; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mxgCn6iAecAxYp2unFwUyhJKU6UBoBh4bFD7TaZBxYs=;
-        b=TWW6zgwBjAkSrMpnh2tC2DA8pXNlBIl5ImbCm0HixiGW0LSK0/ePsjK34+k3kNPLIx
-         qmdOq7fo6xPkfjz+0kJvYpq603enrd6lGHSkb52B4tWIL33Wa12RZV5GXFssroLcNF7A
-         AswvnzWcsNTCIuThAyTSkYPc62FQ4Ec4jKp2KbqJ1DsxBy03qhKb+y5Cw2Vb9hD6easL
-         /BLj88kZc4EJJcK4cfS+Gdiylm0utojsHa450/7f53op865vprXI7mQHzEkyKhZicuDc
-         E6BdOSrvqSSlxAJ4sOguEC9zGma5Hp9jBu7055eKjt+LU94PzdtWu53Levq99C0CX9aY
-         O+kA==
+        bh=n7rWeV+NWCdRf81fBZfPtxM1G+LxfG7gp5nBcYV4V5A=;
+        b=gXfvhCAjOyqQ0FZRYVWS4+qUu77o8Mkc0zsELc/C/piYH0JETtKGQYiknR6Vlp+ic8
+         W6+xnSvTWTCKGd9G8z42Gj+taeSkR4xalftE48UTaT/2Sp/B2LE1oLMGCjzYkUIvSNKj
+         3GnerN2W69yhvaQ4r8VpXLZJx+n8gJegb0SGlYxIdyUYLRDDrMX+j96mD64VXfErIR1C
+         7olRGNF9vUrdEOvWyASHqYlPcAT6ac0a5DUCAFCJ024SAuLwuLXpU81My7UK5k7m820i
+         xKsZUvIWgBEuHgiwULzGEG9uO5zuK9GOar3VGfwZ0NZiQzVLurXQWgkn8pI1S7E4lk+c
+         pAPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725468362; x=1726073162;
+        d=1e100.net; s=20230601; t=1725468660; x=1726073460;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mxgCn6iAecAxYp2unFwUyhJKU6UBoBh4bFD7TaZBxYs=;
-        b=Ki4l9Qpb/VQvAbgrN0LFzG3aA6adRIkPRThrMmUydLLkBSWtSk8x9/dFfIkfpU1AxD
-         stR6N/y2auwO+8LH4JIClR1GppRt4RdMl0CEovlYypAzjqdGVccdozVMIzIaiUroPyLM
-         8xLmmZzAc7qM+YIuH3xpP6m7TDqkXsf2CpLRx7m+Vj2RVR9VF32KWiCeplBwBynzJPjr
-         wLpZ2qZv/LKNM2NN2pqDf+YW6yXbteIljdjR2caj37K80Bfg9MCwro8w+XIpjfvAnBUl
-         AgyLUf27iZJlijAyXc3DIDuHnKPcEVueYiZGUD1L6iVupPPNiyCDfnm0dNvv+1NDn472
-         PpSw==
-X-Forwarded-Encrypted: i=1; AJvYcCVYUj3o60GdABC19Jxj/mizdfbviUryrnGHmQi6/B92McDase8C0675FUcQHx7puP4pd/78ZVey26zs3uM0+g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6dJi6gD9GGZYVR/mFHttDL6H9/TM1Mn8TVN8ABBOeer2oGzT1
-	pj9EAwRD7bfcuJkHsPsJ8QBWWapr64YgGFb5vbdhrNkfkZM18edcbE7aq9xw/Ag=
-X-Google-Smtp-Source: AGHT+IGRz0ziFAeppg2o5paJw6XE1KSt3WjvRwb7zjZiymqFUfXvnLBXV+d9kgfP3Swh5wb5XF0BCg==
-X-Received: by 2002:a17:907:e8d:b0:a86:899d:6459 with SMTP id a640c23a62f3a-a8a32eda727mr377230566b.38.1725468361792;
-        Wed, 04 Sep 2024 09:46:01 -0700 (PDT)
+        bh=n7rWeV+NWCdRf81fBZfPtxM1G+LxfG7gp5nBcYV4V5A=;
+        b=a20mCTU9ZlHq344kjhYkkKZNuQJp5aORh2+aBGcBSUjhgF5SwwqMPW1ZUpu5iXQtSv
+         b+/m6vHs1DgBshX9I1pBA2wp0xASO119p4fFuWtO3ndfZdYXoj1b8Wo+7jwwXy0xsikr
+         9UFSNn8BHGqbfVu5S0Z+13ENLX3Oy04q1Dg5c8j7MtA50AJlTuUf92NwF3Hy9Kvwuh/c
+         +UWo4CuNlMBsMyKA7ML3WOfXwKEIxs/cH3wPKWVAbgqAAv0wc/Y+gTq2AfUbwVFMHv4N
+         enitT52C0cM45svdPjbgiPjQWWHUatsOXZdpxo7wiAEyNCoxkdNjFSgFnxRK/E5yvMOa
+         hcoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWqamFk9zDIO8IOIRZiElq66L6IRMQZQQz4LZqnyY0tV+t0e3vxXkEUcfOkOvc6xccso/lME8DFDUj93gvkOg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxsx8q5wBvsg2XU/jv3wN4DHecFvjAMA+Iu6lOnHhrdVE21u+Yq
+	06HrWULS5a8g20DfeLNQffVAYU2thiLQskhR4yI4nLj72+ygJAvSD4cQAGcjvoE=
+X-Google-Smtp-Source: AGHT+IFALtAoVHEjAWS0GLsxnXTvv0LRQZ1z3Mh6tmtAzZy/u4Bi8AQyayThPfA0wkbnRHgLuqmbGA==
+X-Received: by 2002:a17:907:2da1:b0:a72:69e8:f039 with SMTP id a640c23a62f3a-a8a32df36f9mr369433266b.12.1725468659495;
+        Wed, 04 Sep 2024 09:50:59 -0700 (PDT)
 Received: from localhost (109-81-94-33.rct.o2.cz. [109.81.94.33])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8a61fbaf5bsm13498066b.23.2024.09.04.09.46.01
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8a6236d089sm13263566b.123.2024.09.04.09.50.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Sep 2024 09:46:01 -0700 (PDT)
-Date: Wed, 4 Sep 2024 18:46:00 +0200
+        Wed, 04 Sep 2024 09:50:59 -0700 (PDT)
+Date: Wed, 4 Sep 2024 18:50:58 +0200
 From: Michal Hocko <mhocko@suse.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -65,14 +65,13 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
 	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
-Message-ID: <ZtiOyJ1vjY3OjAUv@tiehlicka>
+Message-ID: <ZtiP8h4U7X_XV-yI@tiehlicka>
 References: <20240902095203.1559361-1-mhocko@kernel.org>
  <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
  <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
  <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
- <qlkjvxqdm72ijaaiauifgsnyzx3mw4edl2hexfabnsdncvpyhd@dvxliffsmkl6>
- <ZtgI1bKhE3imqE5s@tiehlicka>
- <xjtcom43unuubdtzj7pudew3m5yk34jdrhim5nynvoalk3bgbu@4aohsslg5c5m>
+ <Zta1aZA4u8PCHQae@tiehlicka>
+ <zdrwzpzbe5oqawyklyb4gmdf6evhvmw3on5w2ewjyqfmdv2ndy@w7kdgpakbqv3>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -81,120 +80,47 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <xjtcom43unuubdtzj7pudew3m5yk34jdrhim5nynvoalk3bgbu@4aohsslg5c5m>
+In-Reply-To: <zdrwzpzbe5oqawyklyb4gmdf6evhvmw3on5w2ewjyqfmdv2ndy@w7kdgpakbqv3>
 
-On Wed 04-09-24 12:05:56, Kent Overstreet wrote:
-> On Wed, Sep 04, 2024 at 09:14:29AM GMT, Michal Hocko wrote:
-> > On Tue 03-09-24 19:53:41, Kent Overstreet wrote:
-> > [...]
-> > > However, if we agreed that GFP_NOFAIL meant "only fail if it is not
-> > > possible to satisfy this allocation" (and I have been arguing that that
-> > > is the only sane meaning) - then that could lead to a lot of error paths
-> > > getting simpler.
-> > >
-> > > Because there are a lot of places where there's essentially no good
-> > > reason to bubble up an -ENOMEM to userspace; if we're actually out of
-> > > memory the current allocation is just one out of many and not
-> > > particularly special, better to let the oom killer handle it...
-> > 
-> > This is exactly GFP_KERNEL semantic for low order allocations or
-> > kvmalloc for that matter. They simply never fail unless couple of corner
-> > cases - e.g. the allocating task is an oom victim and all of the oom
-> > memory reserves have been consumed. This is where we call "not possible
-> > to allocate".
-> 
-> *nod*
-> 
-> Which does beg the question of why GFP_NOFAIL exists.
-
-Exactly for the reason that even rare failure is not acceptable and
-there is no way to handle it other than keep retrying. Typical code was 
-	while (!(ptr = kmalloc()))
-		;
-
-Or the failure would be much more catastrophic than the retry loop
-taking unbound amount of time.
-
-> > > So the error paths would be more along the lines of "there's a bug, or
-> > > userspace has requested something crazy, just shut down gracefully".
-> > 
-> > How do you expect that to be done? Who is going to go over all those
-> > GFP_NOFAIL users? And what kind of guide lines should they follow? It is
-> > clear that they believe they cannot handle the failure gracefully
-> > therefore they have requested GFP_NOFAIL. Many of them do not have
-> > return value to return.
-> 
-> They can't handle the allocatian failure and continue normal operation,
-> but that's entirely different from not being able to handle the
-> allocation failure at all - it's not hard to do an emergency shutdown,
-> that's a normal thing for filesystems to do.
-> 
-> And if you scan for GFP_NOFAIL uses in the kernel, a decent number
-> already do just that.
-
-It's been quite some time since I've looked the last time. And I am not
-saying all the existing ones really require something as strong as
-GFP_NOFAIL semantic. If they could be dropped then great! The fewer we
-have the better.
-
-But the point is there are some which _do_ need this. We have discussed
-that in other email thread where you have heard why XFS and EXT4 does
-that and why they are not going to change that model. 
-
-For those users we absolutely need a predictable and well defined
-behavior because they know what they are doing.
-
+On Wed 04-09-24 12:15:15, Kent Overstreet wrote:
+> On Tue, Sep 03, 2024 at 09:06:17AM GMT, Michal Hocko wrote:
+> > On Mon 02-09-24 18:32:33, Kent Overstreet wrote:
 [...]
-
-> But as a matter of policy going forward, yes we should be saying that
-> even GFP_NOFAIL allocations should be checking for -ENOMEM.
-
-I argue that such NOFAIL semantic has no well defined semantic and legit
-users are forced to do
-	while (!(ptr = kmalloc(GFP_NOFAIL))) ;
-or
-	BUG_ON(!(ptr = kmalloc(GFP_NOFAIL)));
-
-So it has no real reason to exist.
-
-We at the allocator level have 2 choices.  Either we tell users they
-will not get GFP_NOFAIL and you just do the above or we provide NOFAIL
-which really guarantees that there is no failure even if that means the
-allocation gets unbounded amount of time. The latter have a slight
-advantage because a) you can identify those callers more easily and b)
-the allocator can do some heuristics to help those allocations.
-
-We can still discuss how to handle unsupported cases (like GFP_ATOMIC |
-__GFP_NOFAIL or kmalloc($UNCHECKED_USER_INPUT_THAT_IS_TOO_LARGE, __GFP_NOFAIL))
-but the fact of the Linux kernel is that we have legit users and we need
-to optimize for them.
-
-> > Yes, we need to define some reasonable maximum supported sizes. For the
-> > page allocator this has been order > 1 and we considering we have a
-> > warning about those requests for years without a single report then we
-> > can assume we do not have such abusers. for kvmalloc to story is
-> > different. Current INT_MAX is just not any practical limit. Past
-> > experience says that anything based on the amount of memory just doesn't
-> > work (e.g. hash table sizes that used to that scaling and there are
-> > other examples). So we should be practical here and look at existing
-> > users and see what they really need and put a cap above that.
+> > > For bcachefs: I try really hard to minimize tail latency and make
+> > > performance robust in extreme scenarios - thrashing. A large part of
+> > > that is that btree locks must be held for no longer than necessary.
+> > > 
+> > > We definitely don't want to recurse into other parts of the kernel,
+> > > taking other locks (i.e. in memory reclaim) while holding btree locks;
+> > > that's a great way to stack up (and potentially multiply) latencies.
+> > 
+> > OK, these two patches do not fail to do that. The only existing user is
+> > turned into GFP_NOWAIT so the final code works the same way. Right?
 > 
-> Not following what you're saying about hash tables? Hash tables scale
-> roughly with the amount of system memory/workingset.
+> https://lore.kernel.org/linux-mm/20240828140638.3204253-1-kent.overstreet@linux.dev/
 
-I do not have sha handy but I do remember dcache hashtable scaling with
-the amount of memory in the past and that led to GBs of memory allocated
-on TB systems. This is not the case anymore I just wanted to mention
-that scaling with the amount of memory can get really wrong easily.
+https://lore.kernel.org/linux-mm/Zs9xC3OJPbkMy25C@casper.infradead.org/
 
-> But it seems to me that the limit should be lower if you're on e.g. a 2
-> GB machine (not failing with a warning, just failing immediately rather
-> than oom killing a bunch of stuff first) - and it's going to need to be
-> raised above INT_MAX as large memory machines keep growing, I keep
-> hitting it in bcachefs fsck code.
+> > > But gfp flags don't work with vmalloc allocations (and that's unlikely
+> > > to change), and we require vmalloc fallbacks for e.g. btree node
+> > > allocation. That's the big reason we want MEMALLOC_PF_NORECLAIM.
+> > 
+> > Have you even tried to reach out to vmalloc maintainers and asked for
+> > GFP_NOWAIT support for vmalloc? Because I do not remember that. Sure
+> > kernel page tables are have hardcoded GFP_KERNEL context which slightly
+> > complicates that but that doesn't really mean the only potential
+> > solution is to use a per task flag to override that. Just from top of my
+> > head we can consider pre-allocating virtual address space for
+> > non-sleeping allocations. Maybe there are other options that only people
+> > deeply familiar with the vmalloc internals can see.
+> 
+> That sounds really overly complicated.
 
-Do we actual usecase that would require more than couple of MB? The
-amount of memory wouldn't play any actual role then.
+Let vmalloc people discuss viable ways to deal with that. You as vmalloc
+consumer want to get NOWAIT support. Ask them and see what kind of
+solution they can offer to you as a user. This is how we develop kernel
+in a collaborative way. We do not enforce solutions we work with domain
+experts to work out a maintainable solution.
 
 -- 
 Michal Hocko
