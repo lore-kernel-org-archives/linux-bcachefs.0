@@ -1,58 +1,57 @@
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F02E1E9762
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 20:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3622E1E9778
+	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 20:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725481786; cv=none; b=XRZTQdqfVsx18UqYcjfxzObQxTizsNeJYRiaclWjVld6h2j6kPdN0SJFO4qHkTSCQSy+fqoZkVF2SpXBE1pBjLPpFU1Y679iWz+C8clr0MJcHKxX0ITdMXQM6Z5oLAZCJbNSnnXWkMXFOobJRfik6ST92w5MtgpNTD8evkCbalU=
+	t=1725481786; cv=none; b=CEG2Y54lu/OWIE/8aPGD6UGsrYclutDnoOSnyOdb7bcq4djRSotNFJAHyVXYQw/fQAWIBEAsdqy/JjCNKVvB0oMR8n2TOE8gC+e5p7S1f0OqwwHicK7K1Nldg4uvHrWLFJ7wWYr4gfh492lTaglXX4UPVTpFsJkwrGW46S+0lDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725481786; c=relaxed/simple;
-	bh=mlpkxER5ZXbhWxBFWH/+nNlNrq7abJQvDN93xPwV0N0=;
+	bh=gMZpVewk5XvpBsYlFMNDabJsDOEQn4P/spwMBIBwxlA=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BdbKBdasAsfFXf5wP5DE1GcLzEq9F5DCeczBVfgVi1YfdlJif/Nrqqq+biv1OfXOD4ASl5pkfHU/xpZRCsfkCRO9wiOYuRUwO9NCBq8xvi12z4+aiYaVKA3OA8J4lrHxny6oKn8hXPZ8blCjcPyZaNjDebOk1jaGRSHgLD3LR4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Kxe1sZSB; arc=none smtp.client-ip=209.85.219.54
+	 MIME-Version; b=nB3cqQ2xojmY/2RROMmsqGxcyor+OV8bjbdexKuLsfXEFszUoTkW8DCGm4JOrwbrq9syEwmBEX1TI/3yYia/hYhwuBZ0Rvbxd1fOYiCZKTLp2zU/yvaQyd8epjUU91prtIsmridxJe+Wgni137cffQjc3EQ9FSFJuFI5bpdLkHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=WP7o3YDW; arc=none smtp.client-ip=209.85.160.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Kxe1sZSB"
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6bf9ddfc2dcso86716d6.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 04 Sep 2024 13:29:43 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="WP7o3YDW"
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-457d46ea04dso210981cf.2
+        for <linux-bcachefs@vger.kernel.org>; Wed, 04 Sep 2024 13:29:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1725481782; x=1726086582; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1725481784; x=1726086584; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=k2g5nWsdtLhh4I3qKZ9kVR48Zxv3ldXz3E9kfB37E8o=;
-        b=Kxe1sZSBe9bkdYZJnRALn/HAAAEZMTeKx5eO5AvTJ1D3YwSVfn+q5BILaNQW8ER2gI
-         mRsqj+KUHJ9z66im7l1ciGFzt9X9oXD3q4FjbbQeStUTGAd6/HYPBSW8vY3KM3CkbRJG
-         Hqfe5P+PTSnrLsdQJr1+s9qkv/NAD7V7PMQtg3S94IcnTfuviqT7TkqwJTke7gTzi0K9
-         ggVWsakCpTAaB6upon39dRx8Qqe245H8JgVEmnUuvRcNqde+hkeUQXMJUvWslK2tB1UV
-         SnFSr76ju62cmfyRuo5JBgN0ZxMAN/PxBuPJeqtog6yIzIehwqBwFtxPE+Z4TEVlM9op
-         3pRg==
+        bh=Eq+9jML2+1Z0SY+HFrzR7GffDKDG9jp4/RSk9gnr/bU=;
+        b=WP7o3YDWx4d2AEcbHWUemYHqy2KcYbp4F/W73qz7k/eGQrFuLVMCTseNBMISFnAqig
+         8OKEKWyuM6reaNGQkDiafQmpjqEXDBLyuCPt5z1YMFvDYFPsUg0qRYltUFCM5IkMbEI3
+         NkTeHSLNTir2erN7Fj6NGkL7m7zv2KpZ9kGWB/Yj2vxcyyaHSu0HTuMSG56nvSn4kX/5
+         +cQpmRgedx/LNfNeHIZgIEPVW1wAcuAMWqQS/NnhZU4Qn7g6YqgItx0wmOMvAMrPgz6m
+         6+3MSBfAZqm8TbulyxLPeyNVlzgzzDSBpj6jWGiTQCscIqvghf2D5RvTiyNUORLi7sur
+         I2pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725481782; x=1726086582;
+        d=1e100.net; s=20230601; t=1725481784; x=1726086584;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=k2g5nWsdtLhh4I3qKZ9kVR48Zxv3ldXz3E9kfB37E8o=;
-        b=os21961r5g52aBCRZqT3YuUxNpULwuDXGZAFxTUJ935z8PqEVm1kKSzlomP55RbUWr
-         3POQzS4vu8EYHLau0UK5zwKbFDrGwwIO2VgpFkh7/V/zg9e5zUFeNhwa70zhDLwyLFam
-         6IiVrdMJhuM5gHtYYNvcKtbF4LyAlhsOGHSbFR0Xx7jxGdJ+hhg4XWQqYbTEBb2rexHk
-         961hKYnS4QYJgKqEJ3kiAAeAnJIYcEyfYWt2TJERsUeS8xHQFIgGL0r+Lxk7kEFVKNq/
-         usumowUev7aRASSFXLeCt9RlxSv5zk9zZWNN5LKTBW6uNOzPvxEdrWdFW7eiaWQmHfHM
-         OP0g==
-X-Forwarded-Encrypted: i=1; AJvYcCUm/n/42MWjcZiYORWwmXTJmv6cSrp5vNx+rTCsv2UOKn1CpPg5eFfqyiT9Rps+epmx13hLXiLpPKuIjVbEww==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz30GitOgksie1og/NyDfsVq6rXoDPpi22EyB2j60jeG6FFL53N
-	ZWimfgW7ZofQe1kDlNgmjtDdJuirK6WlTjana/rMZxvZ21xHXSqZ/J4CJJV5YliyU0lzKceKoH8
-	l
-X-Google-Smtp-Source: AGHT+IGcGqc27V/yp+/MPiFXZlq6o8dH/S56y18i5ffiw87nR/uugOanZlUMV6j8hRmZXaYyxJ0xkA==
-X-Received: by 2002:a05:6214:4a09:b0:6c3:5ebb:9524 with SMTP id 6a1803df08f44-6c35ebb9733mr193501086d6.48.1725481782473;
-        Wed, 04 Sep 2024 13:29:42 -0700 (PDT)
+        bh=Eq+9jML2+1Z0SY+HFrzR7GffDKDG9jp4/RSk9gnr/bU=;
+        b=sNH94CsSw/V61Fc3S+Hd2AWsoRMv+A9e/WyW4X4V3t+7aUyW3yG+vngRErMgRhPBMa
+         QXln7pMt9bJWjqwRUTtFhETEqP9PzpjFHHQJ+eXVvIsyZ2eKjC49g5FaP6vS0N5HOLu7
+         bOyrV1WaB6ToS+ZmWEeXi/lPe2oTDefD67oqfe9W3sja2lJgBMxKiiT9AeKSTr+hr4XQ
+         bDeYo3NZCz+Wgn/J33s908d8VAhRUssOOJuHvHHyENoZsZef1H9CQBBtEohXkMZidVW+
+         f05S8MTtk7bAvZ8bqQ9cJN35mb3vV54R65hHQJyQoqgh6qu93ItnQ+vRKwi+yFXdEMO6
+         l3Jg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3AHUGr5B1dlZe1g6r39bPxiWdI2fsF9ST8MN38RcDzdB6aS0AsZoyXccM0FkE7bk6VnSnBHVRoov1DBZFDA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwD5ldOqNkb89VTF0UeVjI0MIl0YiSKo/84edFAKQN+rztaDh3R
+	s95buPdj4rguX125+JB3gpZoKc+a+TdLySeL2XNw51xDO9yfazIIY0oi0pKqLKg=
+X-Google-Smtp-Source: AGHT+IEW2/ZH57qdIHT1xYE99y1ro7rMeuspqZzclDk+WG9y2YYBgpGHJd3Dr2WZ9zk9cnANiDJM0Q==
+X-Received: by 2002:a05:622a:993:b0:456:87c1:59c7 with SMTP id d75a77b69052e-4571a013180mr198617071cf.57.1725481784189;
+        Wed, 04 Sep 2024 13:29:44 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c520419ecfsm1552666d6.126.2024.09.04.13.29.41
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-45801b5312bsm1502351cf.44.2024.09.04.13.29.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Sep 2024 13:29:42 -0700 (PDT)
+        Wed, 04 Sep 2024 13:29:43 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
@@ -63,9 +62,9 @@ To: kernel-team@fb.com,
 	linux-bcachefs@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	linux-mm@kvack.org
-Subject: [PATCH v5 17/18] btrfs: disable defrag on pre-content watched files
-Date: Wed,  4 Sep 2024 16:28:07 -0400
-Message-ID: <367fe83ae53839b1e88dc00b5b420035496d28ff.1725481503.git.josef@toxicpanda.com>
+Subject: [PATCH v5 18/18] fs: enable pre-content events on supported file systems
+Date: Wed,  4 Sep 2024 16:28:08 -0400
+Message-ID: <33151057684a62a89b45466d53671c6232c34a68.1725481503.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1725481503.git.josef@toxicpanda.com>
 References: <cover.1725481503.git.josef@toxicpanda.com>
@@ -77,39 +76,89 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We queue up inodes to be defrag'ed asynchronously, which means we do not
-have their original file for readahead.  This means that the code to
-skip readahead on pre-content watched files will not run, and we could
-potentially read in empty pages.
-
-Handle this corner case by disabling defrag on files that are currently
-being watched for pre-content events.
+Now that all the code has been added for pre-content events, and the
+various file systems that need the page fault hooks for fsnotify have
+been updated, add FS_ALLOW_HSM to the currently tested file systems.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ioctl.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/bcachefs/fs.c   | 2 +-
+ fs/btrfs/super.c   | 3 ++-
+ fs/ext4/super.c    | 6 +++---
+ fs/xfs/xfs_super.c | 2 +-
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index e0a664b8a46a..529f7416814f 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2640,6 +2640,15 @@ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
- 			goto out;
- 		}
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 3a5f49affa0a..f889a105643b 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -2124,7 +2124,7 @@ static struct file_system_type bcache_fs_type = {
+ 	.name			= "bcachefs",
+ 	.init_fs_context	= bch2_init_fs_context,
+ 	.kill_sb		= bch2_kill_sb,
+-	.fs_flags		= FS_REQUIRES_DEV,
++	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_HSM,
+ };
  
-+		/*
-+		 * Don't allow defrag on pre-content watched files, as it could
-+		 * populate the page cache with 0's via readahead.
-+		 */
-+		if (fsnotify_file_has_pre_content_watches(file)) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
- 		if (argp) {
- 			if (copy_from_user(&range, argp, sizeof(range))) {
- 				ret = -EFAULT;
+ MODULE_ALIAS_FS("bcachefs");
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 0eda8c21d861..201ed90a6083 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2193,7 +2193,8 @@ static struct file_system_type btrfs_fs_type = {
+ 	.init_fs_context	= btrfs_init_fs_context,
+ 	.parameters		= btrfs_fs_parameters,
+ 	.kill_sb		= btrfs_kill_super,
+-	.fs_flags		= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_ALLOW_IDMAP,
++	.fs_flags		= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA |
++				  FS_ALLOW_IDMAP | FS_ALLOW_HSM,
+  };
+ 
+ MODULE_ALIAS_FS("btrfs");
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index e72145c4ae5a..a042216fb370 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -137,7 +137,7 @@ static struct file_system_type ext2_fs_type = {
+ 	.init_fs_context	= ext4_init_fs_context,
+ 	.parameters		= ext4_param_specs,
+ 	.kill_sb		= ext4_kill_sb,
+-	.fs_flags		= FS_REQUIRES_DEV,
++	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_HSM,
+ };
+ MODULE_ALIAS_FS("ext2");
+ MODULE_ALIAS("ext2");
+@@ -153,7 +153,7 @@ static struct file_system_type ext3_fs_type = {
+ 	.init_fs_context	= ext4_init_fs_context,
+ 	.parameters		= ext4_param_specs,
+ 	.kill_sb		= ext4_kill_sb,
+-	.fs_flags		= FS_REQUIRES_DEV,
++	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_HSM,
+ };
+ MODULE_ALIAS_FS("ext3");
+ MODULE_ALIAS("ext3");
+@@ -7298,7 +7298,7 @@ static struct file_system_type ext4_fs_type = {
+ 	.init_fs_context	= ext4_init_fs_context,
+ 	.parameters		= ext4_param_specs,
+ 	.kill_sb		= ext4_kill_sb,
+-	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
++	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_ALLOW_HSM,
+ };
+ MODULE_ALIAS_FS("ext4");
+ 
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index 27e9f749c4c7..04a6ec7bc2ae 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -2052,7 +2052,7 @@ static struct file_system_type xfs_fs_type = {
+ 	.init_fs_context	= xfs_init_fs_context,
+ 	.parameters		= xfs_fs_parameters,
+ 	.kill_sb		= xfs_kill_sb,
+-	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
++	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_ALLOW_HSM,
+ };
+ MODULE_ALIAS_FS("xfs");
+ 
 -- 
 2.43.0
 
