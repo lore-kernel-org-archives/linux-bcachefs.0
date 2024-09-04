@@ -1,31 +1,31 @@
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90D41DC73E
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 16:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E9A40C03
+	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 16:15:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725465965; cv=none; b=cr8ZqljeFA7xsU+CAEKfYfvTUJctyevC8mxnMYBron8tKxeEbg/pWkEvyZQ8fzt1e4E3kYQhWm/hs3h/Rre787qEO9uQAUxy199xvCKwGeDnMwRhzOsbDiPJrK+megjkktLANdtDKyFQ/AnyGou/IJZzXB8w/aB5qE7VfLyXd4s=
+	t=1725466526; cv=none; b=KydSO0c/psapzhQWA3vL3nMuOJJ9sMo0Ev/C/Pm5nQ78WHLdse8F5Btd2PFdPdVE4rNDR5cS7aBkRMSeJhmxHLdAqz0ozUyUKGfGqehAlUfVsuEJ0vGBy0T0RStTAG6g22AeIrPuyCLCXASb+aH9x9KVQ9GumWwBtYGtRp+9V40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725465965; c=relaxed/simple;
-	bh=QIflG+i8erExsjaJTRapdmZ9iJ5ADKBmshHOtaz9yhw=;
+	s=arc-20240116; t=1725466526; c=relaxed/simple;
+	bh=i24P1pP2DSRPvREOe+kgy1xDpWGvVqGe7mo8BMTbudg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aZR338BxHjFQROCbjCOa2bcNlR2l+yqaAecC1WI2gf6365AnpBb1feovBTMmVfnaA3AP0GzPhSLp+YjErUnueKnuX5N/A/tKhbTPHiJ6FQpG6vLe+7YzhwgEq+vs/yJn+acy2PMLa121Cwb55UAKbVDKFsBEgvv6Qka8ptqGaDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YTpVAvFL; arc=none smtp.client-ip=95.215.58.175
+	 Content-Type:Content-Disposition:In-Reply-To; b=b8uXxu5w67wO+BHimbE5Lx2VkahN3PFYZPK1XyAwu64t2Qgpax8ErQhnm6SPmJevrFHa2q8WmTPu7SEnsMtzqjWsWHJ2sEB3aytxQhxufpQTpJ0Fqm2eytSplxPyoXKrq26gj85EpD0LfBZC5bbsxZ9jm/k41czcnYAl5X+uefY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OSWlWl0y; arc=none smtp.client-ip=91.218.175.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YTpVAvFL"
-Date: Wed, 4 Sep 2024 12:05:56 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OSWlWl0y"
+Date: Wed, 4 Sep 2024 12:15:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725465961;
+	t=1725466521;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ip+NUzeK1lPkO63WxoY3xZeS3dUaxlsqa4wf8CU79LU=;
-	b=YTpVAvFLLAL9Kaycf2+c0fuJYxA48DNH0nyRJqZurESU3J6LejkXX7JVSTATMlGJHqO6Ou
-	97Z3YC0DUd44mJfdGzvqnH0PNE9X0qDygOkNCwrMuxh1lR7CQoPBIwvDW9APfu2shQXRvQ
-	hCv6X8qdcMIc+uFjtqUGIAOPtqldyAM=
+	bh=gFEcuTW9GDd5R6/s9Ksgowfe9BJ1JWP/ZMXulaxqbcg=;
+	b=OSWlWl0yQRlbiZ0Q2PnP/1MUfPHPqQY2Vtmznt8DU97IsUs2JjjIyV45FCjfImOpyIQECz
+	F+8Qul2/k8BAWHy8aJ1wqdv5cDJOXlXprRVoO4U7WY+VlIRCxyuwZJmUVVN+bH99o0dT9s
+	0z1NTY1JvtiD6Q/WC4XdwboIullwJAc=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Michal Hocko <mhocko@suse.com>
@@ -38,13 +38,12 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-bcachefs@vger.kernel.org, linux-security-module@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
-Message-ID: <xjtcom43unuubdtzj7pudew3m5yk34jdrhim5nynvoalk3bgbu@4aohsslg5c5m>
+Message-ID: <zdrwzpzbe5oqawyklyb4gmdf6evhvmw3on5w2ewjyqfmdv2ndy@w7kdgpakbqv3>
 References: <20240902095203.1559361-1-mhocko@kernel.org>
  <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
  <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
  <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
- <qlkjvxqdm72ijaaiauifgsnyzx3mw4edl2hexfabnsdncvpyhd@dvxliffsmkl6>
- <ZtgI1bKhE3imqE5s@tiehlicka>
+ <Zta1aZA4u8PCHQae@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -53,81 +52,66 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZtgI1bKhE3imqE5s@tiehlicka>
+In-Reply-To: <Zta1aZA4u8PCHQae@tiehlicka>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Sep 04, 2024 at 09:14:29AM GMT, Michal Hocko wrote:
-> On Tue 03-09-24 19:53:41, Kent Overstreet wrote:
-> [...]
-> > However, if we agreed that GFP_NOFAIL meant "only fail if it is not
-> > possible to satisfy this allocation" (and I have been arguing that that
-> > is the only sane meaning) - then that could lead to a lot of error paths
-> > getting simpler.
-> >
-> > Because there are a lot of places where there's essentially no good
-> > reason to bubble up an -ENOMEM to userspace; if we're actually out of
-> > memory the current allocation is just one out of many and not
-> > particularly special, better to let the oom killer handle it...
+On Tue, Sep 03, 2024 at 09:06:17AM GMT, Michal Hocko wrote:
+> On Mon 02-09-24 18:32:33, Kent Overstreet wrote:
+> > On Mon, Sep 02, 2024 at 02:52:52PM GMT, Andrew Morton wrote:
+> > > On Mon, 2 Sep 2024 05:53:59 -0400 Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > > 
+> > > > On Mon, Sep 02, 2024 at 11:51:48AM GMT, Michal Hocko wrote:
+> > > > > The previous version has been posted in [1]. Based on the review feedback
+> > > > > I have sent v2 of patches in the same threat but it seems that the
+> > > > > review has mostly settled on these patches. There is still an open
+> > > > > discussion on whether having a NORECLAIM allocator semantic (compare to
+> > > > > atomic) is worthwhile or how to deal with broken GFP_NOFAIL users but
+> > > > > those are not really relevant to this particular patchset as it 1)
+> > > > > doesn't aim to implement either of the two and 2) it aims at spreading
+> > > > > PF_MEMALLOC_NORECLAIM use while it doesn't have a properly defined
+> > > > > semantic now that it is not widely used and much harder to fix.
+> > > > > 
+> > > > > I have collected Reviewed-bys and reposting here. These patches are
+> > > > > touching bcachefs, VFS and core MM so I am not sure which tree to merge
+> > > > > this through but I guess going through Andrew makes the most sense.
+> > > > > 
+> > > > > Changes since v1;
+> > > > > - compile fixes
+> > > > > - rather than dropping PF_MEMALLOC_NORECLAIM alone reverted eab0af905bfc
+> > > > >   ("mm: introduce PF_MEMALLOC_NORECLAIM, PF_MEMALLOC_NOWARN") suggested
+> > > > >   by Matthew.
+> > > > 
+> > > > To reiterate:
+> > > > 
+> > > 
+> > > It would be helpful to summarize your concerns.
+> > > 
+> > > What runtime impact do you expect this change will have upon bcachefs?
+> > 
+> > For bcachefs: I try really hard to minimize tail latency and make
+> > performance robust in extreme scenarios - thrashing. A large part of
+> > that is that btree locks must be held for no longer than necessary.
+> > 
+> > We definitely don't want to recurse into other parts of the kernel,
+> > taking other locks (i.e. in memory reclaim) while holding btree locks;
+> > that's a great way to stack up (and potentially multiply) latencies.
 > 
-> This is exactly GFP_KERNEL semantic for low order allocations or
-> kvmalloc for that matter. They simply never fail unless couple of corner
-> cases - e.g. the allocating task is an oom victim and all of the oom
-> memory reserves have been consumed. This is where we call "not possible
-> to allocate".
+> OK, these two patches do not fail to do that. The only existing user is
+> turned into GFP_NOWAIT so the final code works the same way. Right?
 
-*nod*
+https://lore.kernel.org/linux-mm/20240828140638.3204253-1-kent.overstreet@linux.dev/
 
-Which does beg the question of why GFP_NOFAIL exists.
-
-> > So the error paths would be more along the lines of "there's a bug, or
-> > userspace has requested something crazy, just shut down gracefully".
+> > But gfp flags don't work with vmalloc allocations (and that's unlikely
+> > to change), and we require vmalloc fallbacks for e.g. btree node
+> > allocation. That's the big reason we want MEMALLOC_PF_NORECLAIM.
 > 
-> How do you expect that to be done? Who is going to go over all those
-> GFP_NOFAIL users? And what kind of guide lines should they follow? It is
-> clear that they believe they cannot handle the failure gracefully
-> therefore they have requested GFP_NOFAIL. Many of them do not have
-> return value to return.
+> Have you even tried to reach out to vmalloc maintainers and asked for
+> GFP_NOWAIT support for vmalloc? Because I do not remember that. Sure
+> kernel page tables are have hardcoded GFP_KERNEL context which slightly
+> complicates that but that doesn't really mean the only potential
+> solution is to use a per task flag to override that. Just from top of my
+> head we can consider pre-allocating virtual address space for
+> non-sleeping allocations. Maybe there are other options that only people
+> deeply familiar with the vmalloc internals can see.
 
-They can't handle the allocatian failure and continue normal operation,
-but that's entirely different from not being able to handle the
-allocation failure at all - it's not hard to do an emergency shutdown,
-that's a normal thing for filesystems to do.
-
-And if you scan for GFP_NOFAIL uses in the kernel, a decent number
-already do just that.
-
-> So really what do you expect proper GFP_NOFAIL users to do and what
-> should happen to those that are requesting unsupported size or
-> allocation mode?
-
-Emergency shutdwon.
-
-And I'm not saying we have to rush to fix all the existing callers;
-they're clearly in existing well tested code, there's not much point to
-that.
-
-Additionally most of them are deep in the guts of filesystem transaction
-code where call paths to that site are limited - they're not library
-code that gets called by anything.
-
-But as a matter of policy going forward, yes we should be saying that
-even GFP_NOFAIL allocations should be checking for -ENOMEM.
-
-> Yes, we need to define some reasonable maximum supported sizes. For the
-> page allocator this has been order > 1 and we considering we have a
-> warning about those requests for years without a single report then we
-> can assume we do not have such abusers. for kvmalloc to story is
-> different. Current INT_MAX is just not any practical limit. Past
-> experience says that anything based on the amount of memory just doesn't
-> work (e.g. hash table sizes that used to that scaling and there are
-> other examples). So we should be practical here and look at existing
-> users and see what they really need and put a cap above that.
-
-Not following what you're saying about hash tables? Hash tables scale
-roughly with the amount of system memory/workingset.
-
-But it seems to me that the limit should be lower if you're on e.g. a 2
-GB machine (not failing with a warning, just failing immediately rather
-than oom killing a bunch of stuff first) - and it's going to need to be
-raised above INT_MAX as large memory machines keep growing, I keep
-hitting it in bcachefs fsck code.
+That sounds really overly complicated.
