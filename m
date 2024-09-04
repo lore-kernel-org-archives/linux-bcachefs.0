@@ -1,164 +1,63 @@
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3622E1E9778
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 20:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E6917E6;
+	Wed,  4 Sep 2024 20:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725481786; cv=none; b=CEG2Y54lu/OWIE/8aPGD6UGsrYclutDnoOSnyOdb7bcq4djRSotNFJAHyVXYQw/fQAWIBEAsdqy/JjCNKVvB0oMR8n2TOE8gC+e5p7S1f0OqwwHicK7K1Nldg4uvHrWLFJ7wWYr4gfh492lTaglXX4UPVTpFsJkwrGW46S+0lDc=
+	t=1725483393; cv=none; b=IPZeEoRk6trzMx/h5yyF+Fdny+7QMAitQZZ8zx8GNMGjo8Kvd/4eigpSQNPRF+FYARq1zG8Du0cHpv1EpPLXyT+IRBgfSsuCZUJUGm2A2RbyKFBacDOM0TRgKXHtGO1hVhEJ5IGNjkz7bDkuQWvKza3TtDrylcbQ+3VnEO6i2wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725481786; c=relaxed/simple;
-	bh=gMZpVewk5XvpBsYlFMNDabJsDOEQn4P/spwMBIBwxlA=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nB3cqQ2xojmY/2RROMmsqGxcyor+OV8bjbdexKuLsfXEFszUoTkW8DCGm4JOrwbrq9syEwmBEX1TI/3yYia/hYhwuBZ0Rvbxd1fOYiCZKTLp2zU/yvaQyd8epjUU91prtIsmridxJe+Wgni137cffQjc3EQ9FSFJuFI5bpdLkHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=WP7o3YDW; arc=none smtp.client-ip=209.85.160.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+	s=arc-20240116; t=1725483393; c=relaxed/simple;
+	bh=H5Z1lGuMmRiuMFtVKd05d+cAhGrXu1iVsn+NIbVfEhU=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=jGXbje9T/9WLL3eCJrRuZdyORoc99IOahAn3AsONAKuQ3B43jbzuX3VLUnfPVVmZ8yhbgbz2pNuvSnA8Opi18LJQdvOASsBxfHGrxl2AD0x87i4pkrwDlJ6pPBzXTXtahnnhBHgRUOw8vj3IGrZYvffIHH0rNCufnn6MTwk8wSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XVKfvekW; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="WP7o3YDW"
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-457d46ea04dso210981cf.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 04 Sep 2024 13:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1725481784; x=1726086584; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Eq+9jML2+1Z0SY+HFrzR7GffDKDG9jp4/RSk9gnr/bU=;
-        b=WP7o3YDWx4d2AEcbHWUemYHqy2KcYbp4F/W73qz7k/eGQrFuLVMCTseNBMISFnAqig
-         8OKEKWyuM6reaNGQkDiafQmpjqEXDBLyuCPt5z1YMFvDYFPsUg0qRYltUFCM5IkMbEI3
-         NkTeHSLNTir2erN7Fj6NGkL7m7zv2KpZ9kGWB/Yj2vxcyyaHSu0HTuMSG56nvSn4kX/5
-         +cQpmRgedx/LNfNeHIZgIEPVW1wAcuAMWqQS/NnhZU4Qn7g6YqgItx0wmOMvAMrPgz6m
-         6+3MSBfAZqm8TbulyxLPeyNVlzgzzDSBpj6jWGiTQCscIqvghf2D5RvTiyNUORLi7sur
-         I2pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725481784; x=1726086584;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Eq+9jML2+1Z0SY+HFrzR7GffDKDG9jp4/RSk9gnr/bU=;
-        b=sNH94CsSw/V61Fc3S+Hd2AWsoRMv+A9e/WyW4X4V3t+7aUyW3yG+vngRErMgRhPBMa
-         QXln7pMt9bJWjqwRUTtFhETEqP9PzpjFHHQJ+eXVvIsyZ2eKjC49g5FaP6vS0N5HOLu7
-         bOyrV1WaB6ToS+ZmWEeXi/lPe2oTDefD67oqfe9W3sja2lJgBMxKiiT9AeKSTr+hr4XQ
-         bDeYo3NZCz+Wgn/J33s908d8VAhRUssOOJuHvHHyENoZsZef1H9CQBBtEohXkMZidVW+
-         f05S8MTtk7bAvZ8bqQ9cJN35mb3vV54R65hHQJyQoqgh6qu93ItnQ+vRKwi+yFXdEMO6
-         l3Jg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3AHUGr5B1dlZe1g6r39bPxiWdI2fsF9ST8MN38RcDzdB6aS0AsZoyXccM0FkE7bk6VnSnBHVRoov1DBZFDA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwD5ldOqNkb89VTF0UeVjI0MIl0YiSKo/84edFAKQN+rztaDh3R
-	s95buPdj4rguX125+JB3gpZoKc+a+TdLySeL2XNw51xDO9yfazIIY0oi0pKqLKg=
-X-Google-Smtp-Source: AGHT+IEW2/ZH57qdIHT1xYE99y1ro7rMeuspqZzclDk+WG9y2YYBgpGHJd3Dr2WZ9zk9cnANiDJM0Q==
-X-Received: by 2002:a05:622a:993:b0:456:87c1:59c7 with SMTP id d75a77b69052e-4571a013180mr198617071cf.57.1725481784189;
-        Wed, 04 Sep 2024 13:29:44 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-45801b5312bsm1502351cf.44.2024.09.04.13.29.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Sep 2024 13:29:43 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-To: kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org,
-	jack@suse.cz,
-	amir73il@gmail.com,
-	brauner@kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [PATCH v5 18/18] fs: enable pre-content events on supported file systems
-Date: Wed,  4 Sep 2024 16:28:08 -0400
-Message-ID: <33151057684a62a89b45466d53671c6232c34a68.1725481503.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1725481503.git.josef@toxicpanda.com>
-References: <cover.1725481503.git.josef@toxicpanda.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XVKfvekW"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 313E3C4CEC2;
+	Wed,  4 Sep 2024 20:56:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725483393;
+	bh=H5Z1lGuMmRiuMFtVKd05d+cAhGrXu1iVsn+NIbVfEhU=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=XVKfvekWDBLozmK2HWTwuctFugYUD8v4VVjh+H/z1zVAwuJCzy7VdW6uNyUMi0fGA
+	 XD+E44qxJyzEO6QiP8zVDDPGjuG2CLdB0GbycIOcUh2pD+ErXQkOKHlmnNC3O4pzhV
+	 +493SMzTjKD8vU4mZtgXlQAG7Rcx2C3mhGfjN3C0NKjkOGHinNRhr0BscaIIcebU0E
+	 jedqGyyjgXOMxqOR4+5n/FGxH+myzAi1qH0u4m2vlpSC8aUGar2ebVdEVv8FR/3zJV
+	 PUaSpl3r248hMwvIHVMT95lJJo4oZxA9OxiTHk583CLsnBhn1yaPYWhacyNMTbVwPR
+	 Rj8rL8ZeaH0Ew==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 341663822D30;
+	Wed,  4 Sep 2024 20:56:34 +0000 (UTC)
+Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc7
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <45wxyfvbqm76vqbdjkasy3a4pxtbnza5qiukvcougseosx4qnt@uqosw6rkccxi>
+References: <45wxyfvbqm76vqbdjkasy3a4pxtbnza5qiukvcougseosx4qnt@uqosw6rkccxi>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <45wxyfvbqm76vqbdjkasy3a4pxtbnza5qiukvcougseosx4qnt@uqosw6rkccxi>
+X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-09-04
+X-PR-Tracked-Commit-Id: 53f6619554fb1edf8d7599b560d44dbea085c730
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c763c43396883456ef57e5e78b64d3c259c4babc
+Message-Id: <172548339266.1166715.18322603051182120164.pr-tracker-bot@kernel.org>
+Date: Wed, 04 Sep 2024 20:56:32 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Now that all the code has been added for pre-content events, and the
-various file systems that need the page fault hooks for fsnotify have
-been updated, add FS_ALLOW_HSM to the currently tested file systems.
+The pull request you sent on Wed, 4 Sep 2024 15:15:18 -0400:
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/bcachefs/fs.c   | 2 +-
- fs/btrfs/super.c   | 3 ++-
- fs/ext4/super.c    | 6 +++---
- fs/xfs/xfs_super.c | 2 +-
- 4 files changed, 7 insertions(+), 6 deletions(-)
+> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-09-04
 
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 3a5f49affa0a..f889a105643b 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -2124,7 +2124,7 @@ static struct file_system_type bcache_fs_type = {
- 	.name			= "bcachefs",
- 	.init_fs_context	= bch2_init_fs_context,
- 	.kill_sb		= bch2_kill_sb,
--	.fs_flags		= FS_REQUIRES_DEV,
-+	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_HSM,
- };
- 
- MODULE_ALIAS_FS("bcachefs");
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 0eda8c21d861..201ed90a6083 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2193,7 +2193,8 @@ static struct file_system_type btrfs_fs_type = {
- 	.init_fs_context	= btrfs_init_fs_context,
- 	.parameters		= btrfs_fs_parameters,
- 	.kill_sb		= btrfs_kill_super,
--	.fs_flags		= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_ALLOW_IDMAP,
-+	.fs_flags		= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA |
-+				  FS_ALLOW_IDMAP | FS_ALLOW_HSM,
-  };
- 
- MODULE_ALIAS_FS("btrfs");
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index e72145c4ae5a..a042216fb370 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -137,7 +137,7 @@ static struct file_system_type ext2_fs_type = {
- 	.init_fs_context	= ext4_init_fs_context,
- 	.parameters		= ext4_param_specs,
- 	.kill_sb		= ext4_kill_sb,
--	.fs_flags		= FS_REQUIRES_DEV,
-+	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_HSM,
- };
- MODULE_ALIAS_FS("ext2");
- MODULE_ALIAS("ext2");
-@@ -153,7 +153,7 @@ static struct file_system_type ext3_fs_type = {
- 	.init_fs_context	= ext4_init_fs_context,
- 	.parameters		= ext4_param_specs,
- 	.kill_sb		= ext4_kill_sb,
--	.fs_flags		= FS_REQUIRES_DEV,
-+	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_HSM,
- };
- MODULE_ALIAS_FS("ext3");
- MODULE_ALIAS("ext3");
-@@ -7298,7 +7298,7 @@ static struct file_system_type ext4_fs_type = {
- 	.init_fs_context	= ext4_init_fs_context,
- 	.parameters		= ext4_param_specs,
- 	.kill_sb		= ext4_kill_sb,
--	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
-+	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_ALLOW_HSM,
- };
- MODULE_ALIAS_FS("ext4");
- 
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index 27e9f749c4c7..04a6ec7bc2ae 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -2052,7 +2052,7 @@ static struct file_system_type xfs_fs_type = {
- 	.init_fs_context	= xfs_init_fs_context,
- 	.parameters		= xfs_fs_parameters,
- 	.kill_sb		= xfs_kill_sb,
--	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
-+	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_ALLOW_HSM,
- };
- MODULE_ALIAS_FS("xfs");
- 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c763c43396883456ef57e5e78b64d3c259c4babc
+
+Thank you!
+
 -- 
-2.43.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
