@@ -1,89 +1,239 @@
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F0C284A27
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 19:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E781386A7
+	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 20:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725478784; cv=none; b=QDYtxtSc+Ytm11X6ROu8S+c9a3CNJ/yNWJI7Rmm5CWLjQqwbv/U6ulgVVr9jkao5sMMVznOLOqVwIL11g8dBQZx7AWf4Wkh59sx0hgB9Q+oJvmXi+u0zkxLSGM3hOQAghh0hrrmYRXh7xKpZV1Y6g1CvozD8doT8fec40K77k48=
+	t=1725481758; cv=none; b=dpOLYdGmNi9q1Xi1a8hfaj0pp31LkCHaXq6UVbA2DW1BhTrmReQ+rzGfn0bskC40xR8/vxNbEYJ7gnpq+TX6atxA8U6SV/iezRL/NW1ye7TU+zSTP14FTw+V/yVkJDatPs/Ryb2cq9K0d3QDiTHWii3874pcQns9N5KHIYMvuC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725478784; c=relaxed/simple;
-	bh=Yb/E+J+/esr8u42OuIfGkgTyVW9WUZnN2EVrLKZt8pI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ByBGAv7U6hrMFGXIbUOVXUYo/UMMQVVPMxVh/KdBINRjb3c2HStw6iAe4d9JkODALCfl8QXZ03BSMKXajs4KiN5F35fVJt9NLKQuyH7RzQmithF6Fj3mAjsJabMVorF6zbT+5oSmIPXkASAhsj3gzN23wA4UfGnzWgAAANE9Mu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KapLDVsy; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1725481758; c=relaxed/simple;
+	bh=X/+7n7wsj5xpe1PdRF9BB/jHscCZj22UtqdZAg/JuoA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=DXV/FNP3gUG6jzcKqEljTKiM177bUhPr8YYuHU8vcMgRj2cgbTODISB9J9/JyOvfhu/N9z6q1awn9Cn3oPn++Codiw5pNGACqmacKvthufaUxHrjqamJ5peHO/FFXJu/ZvBjVvYTAto8FEcu1jdNeunEDcjn4NRhwR0nrf+N2Xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=hMVDxt2k; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KapLDVsy"
-Date: Wed, 4 Sep 2024 15:39:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725478780;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IAe0DsjfS098LTlrXGBxc7ZFT5ujdMHD3fVRDFmSe5M=;
-	b=KapLDVsyqBJ3EAR9fSk1od3o4xIRz7Om8YBYGDmzvrUYOu7rVf5y9qNCeqOOY7N5cOxVFK
-	rs2jGWEnIrgP7ZigWj24nm/TBrIXMq+E8XgnU7mmDSuzawWQKeVEMRq4M2kdOX3wxJZKwp
-	5C0CNf5xeVFoPhMwBZQZPBdqynD1o3Y=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in member_to_text
-Message-ID: <hqzhbzxbp3rjbal3z4kdwygvus76h22o2br3iwuzohgniivw5q@etyntoz75vyp>
-References: <00000000000005e6c90621278371@google.com>
- <tencent_6ECC3C5D37B696EC36DE4A4C759B770B6709@qq.com>
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="hMVDxt2k"
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3df04cf5135so776323b6e.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 04 Sep 2024 13:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1725481754; x=1726086554; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TwI5ZE+LxT3KOam/eAsyKw/n5tLnh1lq4qUNxruKGbU=;
+        b=hMVDxt2ko6i/1bohPZsNKSrb0tM/HywRSQN1nI4H2pvo5NeNSoTQJYpsb7blvQwy70
+         Z1Zjq+GX/oNNm53uLgAxhNYHplffcwm7lYY6tv1LDKYEJvi50PG3twZo4ZHJvIhTeRTK
+         bwyDnxM0pz9mDZ8Yuf/ZbOieWBCw3Kg6VF9D1/dvvwS7gBwUXTOwuxHNX8rJ4Z/En/EZ
+         ESosX7tK++2ANo2CejIU+GYwV94+tU7hDmhzzZ4aUOmm9IkQyog9tWzr0KcVj+ubMsM4
+         pzLwmI0Z//dQ8U5l4bBP5u/0DBCiEM9AjIbx445zwxBNpBWRF+eR/5PJK3IXn5M0CYNn
+         uRyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725481754; x=1726086554;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TwI5ZE+LxT3KOam/eAsyKw/n5tLnh1lq4qUNxruKGbU=;
+        b=LXHtyMnWrPeW3y/lETYP27lQ+UVsVFPZk9VXwluzRY9qoO6mbc09MXkSBFk6tiJMog
+         QR6GnPyUEIN5eWo2f41LfeUJwRbvjhbLIXCfnC6HoKoIgOq7gKoeNxxwqB8UUJAjtwIR
+         S+6fxySTrNK1bpedPH0r94j02NaQAI6fIILiMCA60HW3VX7FecFDjNy6ARMMh9k+9Vae
+         W0GVvSIXogd1oD+LxrrC2a8UAneERM7nxr11FUJIvrzSjiZob+Ea8XSz988qBBPVW5Dj
+         c2t6++ICSpNbwO4TZHdi3KScHujb7P/djL32HEDuw+BtvuXJD9THk7wyAlDYghZtQIXk
+         TH+A==
+X-Forwarded-Encrypted: i=1; AJvYcCW76Iz2oZAI7YET72+vv9aCDyYZx+KpbIRqW48sBx6sr3I7JqOTeI4vlLOhYXuyWvJdP4qZUAv0feLWIRFURg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyy4bo3lpqqsar8F3ZuSQZ/CoDD2qeMWckxRr3uPNkqRXpztB+D
+	hxsJYa0qOBx1gASBr+tEqlwxY4ndMjzDxvvm9PfZKBvECUyj+cc7YFhApCDkH00=
+X-Google-Smtp-Source: AGHT+IFmCKTcgpMbWnOZWSrhQNjNJKeds3Qcec7gu/SaeTJ7YoWz86ymksmS0VUDnwj3EKHmpboMHg==
+X-Received: by 2002:a05:6808:14d2:b0:3d9:2319:48ac with SMTP id 5614622812f47-3df05c2fa79mr25098859b6e.9.1725481754097;
+        Wed, 04 Sep 2024 13:29:14 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-45801dce63esm1429311cf.95.2024.09.04.13.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Sep 2024 13:29:13 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org,
+	jack@suse.cz,
+	amir73il@gmail.com,
+	brauner@kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v5 00/18] fanotify: add pre-content hooks
+Date: Wed,  4 Sep 2024 16:27:50 -0400
+Message-ID: <cover.1725481503.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_6ECC3C5D37B696EC36DE4A4C759B770B6709@qq.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 03, 2024 at 10:13:02AM GMT, Edward Adam Davis wrote:
-> Because the value of m.btree_bitmap_shift is 69 in this case, it cause 
-> shift-out-of-bounds in member_to_text.
-> 
-> Add a check for btree_bitmap_shift in validate_member, when it bigger than 64
-> return -BCH_ERR_invalid_sb_members.
-> Simultaneously adjust the output mode of btree_bitmap_shift in member_to_text. 
-> 
-> #syz test
-> 
-> diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
-> index 39196f2a4197..85a4245ea6a3 100644
-> --- a/fs/bcachefs/sb-members.c
-> +++ b/fs/bcachefs/sb-members.c
-> @@ -162,6 +162,12 @@ static int validate_member(struct printbuf *err,
->  		return -BCH_ERR_invalid_sb_members;
->  	}
->  
-> +	if (m.btree_bitmap_shift > 64) {
+v4: https://lore.kernel.org/linux-fsdevel/cover.1723670362.git.josef@toxicpanda.com/
+v3: https://lore.kernel.org/linux-fsdevel/cover.1723228772.git.josef@toxicpanda.com/
+v2: https://lore.kernel.org/linux-fsdevel/cover.1723144881.git.josef@toxicpanda.com/
+v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxicpanda.com/
 
-should be >=, no?
+v4->v5:
+- Cleaned up the various "I'll fix it on commit" notes that Jan made since I had
+  to respin the series anyway.
+- Renamed the filemap pagefault helper for fsnotify per Christians suggestion.
+- Added a FS_ALLOW_HSM flag per Jan's comments, based on Amir's rough sketch.
+- Added a patch to disable btrfs defrag on pre-content watched files.
+- Added a patch to turn on FS_ALLOW_HSM for all the file systems that I tested.
+- Added two fstests (which will be posted separately) to validate everything,
+  re-validated the series with btrfs, xfs, ext4, and bcachefs to make sure I
+  didn't break anything.
 
-> +		prt_printf(err, "device %u: too many big bitmap shift (got %u, max 64)",
-> +			   i, m.btree_bitmap_shift);
-> +		return -BCH_ERR_invalid_sb_members;
-> +	}
-> +
->  	return 0;
->  }
->  
-> @@ -245,8 +251,7 @@ static void member_to_text(struct printbuf *out,
->  		prt_printf(out, "(none)");
->  	prt_newline(out);
->  
-> -	prt_printf(out, "Btree allocated bitmap blocksize:\t");
-> -	prt_units_u64(out, 1ULL << m.btree_bitmap_shift);
-> +	prt_printf(out, "Btree allocated bitmap shift: %d\t", m.btree_bitmap_shift);
->  	prt_newline(out);
->  
->  	prt_printf(out, "Btree allocated bitmap:\t");
-> 
+v3->v4:
+- Trying to send a final verson Friday at 5pm before you go on vacation is a
+  recipe for silly mistakes, fixed the xfs handling yet again, per Christoph's
+  review.
+- Reworked the file system helper so it's handling of fpin was a little less
+  silly, per Chinner's suggestion.
+- Updated the return values to not or in VM_FAULT_RETRY, as we have a comment
+  in filemap_fault that says if VM_FAULT_ERROR is set we won't have
+  VM_FAULT_RETRY set.
+
+v2->v3:
+- Fix the pagefault path to do MAY_ACCESS instead, updated the perm handler to
+  emit PRE_ACCESS in this case, so we can avoid the extraneous perm event as per
+  Amir's suggestion.
+- Reworked the exported helper so the per-filesystem changes are much smaller,
+  per Amir's suggestion.
+- Fixed the screwup for DAX writes per Chinner's suggestion.
+- Added Christian's reviewed-by's where appropriate.
+
+v1->v2:
+- reworked the page fault logic based on Jan's suggestion and turned it into a
+  helper.
+- Added 3 patches per-fs where we need to call the fsnotify helper from their
+  ->fault handlers.
+- Disabled readahead in the case that there's a pre-content watch in place.
+- Disabled huge faults when there's a pre-content watch in place (entirely
+  because it's untested, theoretically it should be straightforward to do).
+- Updated the command numbers.
+- Addressed the random spelling/grammer mistakes that Jan pointed out.
+- Addressed the other random nits from Jan.
+
+--- Original email ---
+
+Hello,
+
+These are the patches for the bare bones pre-content fanotify support.  The
+majority of this work is Amir's, my contribution to this has solely been around
+adding the page fault hooks, testing and validating everything.  I'm sending it
+because Amir is traveling a bunch, and I touched it last so I'm going to take
+all the hate and he can take all the credit.
+
+There is a PoC that I've been using to validate this work, you can find the git
+repo here
+
+https://github.com/josefbacik/remote-fetch
+
+This consists of 3 different tools.
+
+1. populate.  This just creates all the stub files in the directory from the
+   source directory.  Just run ./populate ~/linux ~/hsm-linux and it'll
+   recursively create all of the stub files and directories.
+2. remote-fetch.  This is the actual PoC, you just point it at the source and
+   destination directory and then you can do whatever.  ./remote-fetch ~/linux
+   ~/hsm-linux.
+3. mmap-validate.  This was to validate the pagefault thing, this is likely what
+   will be turned into the selftest with remote-fetch.  It creates a file and
+   then you can validate the file matches the right pattern with both normal
+   reads and mmap.  Normally I do something like
+
+   ./mmap-validate create ~/src/foo
+   ./populate ~/src ~/dst
+   ./rmeote-fetch ~/src ~/dst
+   ./mmap-validate validate ~/dst/foo
+
+I did a bunch of testing, I also got some performance numbers.  I copied a
+kernel tree, and then did remote-fetch, and then make -j4
+
+Normal
+real    9m49.709s
+user    28m11.372s
+sys     4m57.304s
+
+HSM
+real    10m6.454s
+user    29m10.517s
+sys     5m2.617s
+
+So ~17 seconds more to build with HSM.  I then did a make mrproper on both trees
+to see the size
+
+[root@fedora ~]# du -hs /src/linux
+1.6G    /src/linux
+[root@fedora ~]# du -hs dst
+125M    dst
+
+This mirrors the sort of savings we've seen in production.
+
+Meta has had these patches (minus the page fault patch) deployed in production
+for almost a year with our own utility for doing on-demand package fetching.
+The savings from this has been pretty significant.
+
+The page-fault hooks are necessary for the last thing we need, which is
+on-demand range fetching of executables.  Some of our binaries are several gigs
+large, having the ability to remote fetch them on demand is a huge win for us
+not only with space savings, but with startup time of containers.
+
+There will be tests for this going into LTP once we're satisfied with the
+patches and they're on their way upstream.  Thanks,
+
+Josef
+
+Amir Goldstein (8):
+  fsnotify: introduce pre-content permission event
+  fsnotify: generate pre-content permission event on open
+  fanotify: introduce FAN_PRE_ACCESS permission event
+  fanotify: introduce FAN_PRE_MODIFY permission event
+  fanotify: pass optional file access range in pre-content event
+  fanotify: rename a misnamed constant
+  fanotify: report file range info with pre-content events
+  fanotify: allow to set errno in FAN_DENY permission response
+
+Josef Bacik (10):
+  fanotify: don't skip extra event info if no info_mode is set
+  fs: add a flag to indicate the fs supports pre-content events
+  fanotify: add a helper to check for pre content events
+  fanotify: disable readahead if we have pre-content watches
+  mm: don't allow huge faults for files with pre content watches
+  fsnotify: generate pre-content permission event on page fault
+  bcachefs: add pre-content fsnotify hook to fault
+  xfs: add pre-content fsnotify hook for write faults
+  btrfs: disable defrag on pre-content watched files
+  fs: enable pre-content events on supported file systems
+
+ fs/bcachefs/fs-io-pagecache.c      |   4 +
+ fs/bcachefs/fs.c                   |   2 +-
+ fs/btrfs/ioctl.c                   |   9 ++
+ fs/btrfs/super.c                   |   3 +-
+ fs/ext4/super.c                    |   6 +-
+ fs/namei.c                         |   9 ++
+ fs/notify/fanotify/fanotify.c      |  33 ++++++--
+ fs/notify/fanotify/fanotify.h      |  15 ++++
+ fs/notify/fanotify/fanotify_user.c | 119 ++++++++++++++++++++++-----
+ fs/notify/fsnotify.c               |  17 +++-
+ fs/xfs/xfs_file.c                  |   4 +
+ fs/xfs/xfs_super.c                 |   2 +-
+ include/linux/fanotify.h           |  20 +++--
+ include/linux/fs.h                 |   1 +
+ include/linux/fsnotify.h           |  58 +++++++++++--
+ include/linux/fsnotify_backend.h   |  59 ++++++++++++-
+ include/linux/mm.h                 |   1 +
+ include/uapi/linux/fanotify.h      |  18 ++++
+ mm/filemap.c                       | 128 +++++++++++++++++++++++++++--
+ mm/memory.c                        |  22 +++++
+ mm/readahead.c                     |  13 +++
+ security/selinux/hooks.c           |   3 +-
+ 22 files changed, 489 insertions(+), 57 deletions(-)
+
+-- 
+2.43.0
+
