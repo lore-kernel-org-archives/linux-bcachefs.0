@@ -1,224 +1,101 @@
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23A21DFE2D
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 18:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A961E4119
+	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 18:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725473006; cv=none; b=V9gM1oVrOf9eqCAELWTmKI5VlnNCZy/L+6u51uupNjPXZXYqBIuBd23uY1bMXn0p21tBDdZ2Al9Op+t0Os7kX1KLBLyyPd1o3g9X7wTOqswWWmdqqTyUOkboOpavyoEJ0iFR1asw+oprefpppSeYPsEAiSFRbCB+tNc59stfT7k=
+	t=1725476121; cv=none; b=rAH6V88IX2fzRUgw9VQ9v1L0Ln1r/kLPB/+Hx7HKidT3Pa9IBaq7afxiaPhqiqN+eB+WOMoM7itj0BiMLLHZ9Gxr95BoI1UStC16EFlHen3AWkLHdlnJEnnXwU8smn/bJIu56EsTUUGjCda1XDiByC89VRV5zexQCfq2zWitd/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725473006; c=relaxed/simple;
-	bh=kezW3hxgZleY+3rBgw6V29J9jFR6G7T1cr6q/Vqr81g=;
+	s=arc-20240116; t=1725476121; c=relaxed/simple;
+	bh=XvcPlCNKOyAOcO2sDqDCAH3Ue4gDGxj5iEp625GeZWY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SODgAgrJjdDAYexBe+oH0mfYNyX5zYVpOEZdOz9WHCKk9Xw6N0L+kMLCsP9ldx8BUuUqYCngqWnjrjGVhcCwSbFKwRqWBFT5zn78sDr9rxCBIx/9ERos5+SIV0xVGQ2JCTrf2qdwq/LaysE1JRkxDQHk71mGFEoT6VK0ZO2rC/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wU9yIYF8; arc=none smtp.client-ip=95.215.58.187
+	 Content-Type:Content-Disposition:In-Reply-To; b=hCTnKEIWZIHnWwxDzp0UTxz8N/nQur3HD71bVzw+IFVlBBIoDVIIDuzmNN5ELTP3vJb0mnwyI4/Pem5TUvQkJpE3s4GKennx3kNFECFzhfW3xHbF0oXQo+dg3oSX8Y5EBUVzwiUjC8vnS3TWVHsyHeJyg/9UH70ioXX74M6z2Zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eriXzhsA; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wU9yIYF8"
-Date: Wed, 4 Sep 2024 14:03:13 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eriXzhsA"
+Date: Wed, 4 Sep 2024 14:55:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725473000;
+	t=1725476117;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WD4ErxPHxDTsEan3mK+kbR66xt5pTLcNQUyAHMP5/Rk=;
-	b=wU9yIYF8S465+O10fQv/FL6kMdtyDtJolnB/naccAGhtDYrN8izylYMUxWBSUPMBx+wvaH
-	9y1MP9IZtynVJIDHFyeu0l0Wghhsy2Z2VKJE8TQJKQdXupbdpeEGlqElxlOKyp0tVHWH1B
-	Cdd0/Njjlkvfm//EDlRYEkWxBk3mJks=
+	bh=VN5t1C2oeejKjejG+tL9rtMscYiZsZ0/XuO7UFNOY8w=;
+	b=eriXzhsALVVtShspOtIV4NqrhZHSPMQoc/ClzxDimkxw5liPYru692WxFhqQdskN9R3gzH
+	b875RZa3YZQ94FA2zl6B4Zr3Wkhb2fauqim5MfQ/PvlZyySpa5zlDbWKHAlzK+Py9bL7Ei
+	rklKoe/tjUiAqKkXRo9qVd7w4wiPpQw=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, 
-	Vlastimil Babka <vbabka@suse.cz>, Dave Chinner <dchinner@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-bcachefs@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
-Message-ID: <pmvxqqj5e6a2hdlyscmi36rcuf4kn37ry4ofdsp4aahpw223nk@lskmdcwkjeob>
-References: <20240902095203.1559361-1-mhocko@kernel.org>
- <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
- <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
- <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
- <qlkjvxqdm72ijaaiauifgsnyzx3mw4edl2hexfabnsdncvpyhd@dvxliffsmkl6>
- <ZtgI1bKhE3imqE5s@tiehlicka>
- <xjtcom43unuubdtzj7pudew3m5yk34jdrhim5nynvoalk3bgbu@4aohsslg5c5m>
- <ZtiOyJ1vjY3OjAUv@tiehlicka>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc6
+Message-ID: <fvk7vjfz4f2c2x5hxjajiwz5doxeg54owgpzob2kskkftshcoo@5sl5lu6nenyu>
+References: <erydumpfxcjakfllmh3y4d7wtgwz7omkg44pyvpesoisolt44v@kfa4jcpo7i73>
+ <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZtiOyJ1vjY3OjAUv@tiehlicka>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdWknzcmc1DZ3HSB9qp4poaEO5_ViCESvQChuAaiOBdr7Q@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Sep 04, 2024 at 06:46:00PM GMT, Michal Hocko wrote:
-> On Wed 04-09-24 12:05:56, Kent Overstreet wrote:
-> > On Wed, Sep 04, 2024 at 09:14:29AM GMT, Michal Hocko wrote:
-> > > On Tue 03-09-24 19:53:41, Kent Overstreet wrote:
-> > > [...]
-> > > > However, if we agreed that GFP_NOFAIL meant "only fail if it is not
-> > > > possible to satisfy this allocation" (and I have been arguing that that
-> > > > is the only sane meaning) - then that could lead to a lot of error paths
-> > > > getting simpler.
-> > > >
-> > > > Because there are a lot of places where there's essentially no good
-> > > > reason to bubble up an -ENOMEM to userspace; if we're actually out of
-> > > > memory the current allocation is just one out of many and not
-> > > > particularly special, better to let the oom killer handle it...
-> > > 
-> > > This is exactly GFP_KERNEL semantic for low order allocations or
-> > > kvmalloc for that matter. They simply never fail unless couple of corner
-> > > cases - e.g. the allocating task is an oom victim and all of the oom
-> > > memory reserves have been consumed. This is where we call "not possible
-> > > to allocate".
-> > 
-> > *nod*
-> > 
-> > Which does beg the question of why GFP_NOFAIL exists.
+On Tue, Sep 03, 2024 at 03:53:56PM GMT, Geert Uytterhoeven wrote:
+> Hi Kent,
 > 
-> Exactly for the reason that even rare failure is not acceptable and
-> there is no way to handle it other than keep retrying. Typical code was 
-> 	while (!(ptr = kmalloc()))
-> 		;
-
-But is it _rare_ failure, or _no_ failure?
-
-You seem to be saying (and I just reviewed the code, it looks like
-you're right) that there is essentially no difference in behaviour
-between GFP_KERNEL and GFP_NOFAIL.
-
-So given that - why the wart?
-
-I think we might be able to chalk it up to history; I'd have to go
-spunking through the history (or ask Dave or Ted, maybe they'll chime
-in), but I suspect GFP_KERNEL didn't provide such strong guarantees when
-the allocation loops & GFP_NOFAIL were introduced.
-
-> Or the failure would be much more catastrophic than the retry loop
-> taking unbound amount of time.
-
-But if GFP_KERNEL has the retry loop...
-
-> > And if you scan for GFP_NOFAIL uses in the kernel, a decent number
-> > already do just that.
+> Replying here, as there is (again) no patch email to reply to to report issues.
 > 
-> It's been quite some time since I've looked the last time. And I am not
-> saying all the existing ones really require something as strong as
-> GFP_NOFAIL semantic. If they could be dropped then great! The fewer we
-> have the better.
+> noreply@ellerman.id.au is reporting several build failures[1] in linux-next:
 > 
-> But the point is there are some which _do_ need this. We have discussed
-> that in other email thread where you have heard why XFS and EXT4 does
-> that and why they are not going to change that model. 
-
-No, I agree that they need the strong guarantees.
-
-But if there's an actual bug, returning an error is better than killing
-the task. Killing the task is really bad; these allocations are deep in
-contexts where locks and refcounts are held, and the system will just
-grind to a halt.
-
-> > But as a matter of policy going forward, yes we should be saying that
-> > even GFP_NOFAIL allocations should be checking for -ENOMEM.
+>     fs/bcachefs/sb-members.c: In function ‘bch2_sb_member_alloc’:
+>     fs/bcachefs/sb-members.c:503:2: error: a label can only be part of
+> a statement and a declaration is not a statement
+>       503 |  unsigned nr_devices = max_t(unsigned, dev_idx + 1,
+> c->sb.nr_devices);
+>           |  ^~~~~~~~
+>     fs/bcachefs/sb-members.c:505:2: error: expected expression before ‘struct’
+>       505 |  struct bch_sb_field_members_v2 *mi =
+> bch2_sb_field_get(c->disk_sb.sb, members_v2);
+>           |  ^~~~~~
 > 
-> I argue that such NOFAIL semantic has no well defined semantic and legit
-> users are forced to do
-> 	while (!(ptr = kmalloc(GFP_NOFAIL))) ;
-> or
-> 	BUG_ON(!(ptr = kmalloc(GFP_NOFAIL)));
-> 
-> So it has no real reason to exist.
+> Apparently this fails with gcc-10 and older, but builds with gcc-11
+> and gcc-12.
 
-I'm arguing that it does, provided when it returns NULL is defined to
-be:
- - invalid allocation context
- - a size that is so big that it will never be possible to satisfy.
+Thanks for the report - it's fixed now (thanks, Hongbo)
 
-Returning an error is better than not returning at all, and letting the
-system grind to a halt.
+> The failure is due to commit 4e7795eda4459bf3 ("bcachefs:
+> bch2_sb_member_alloc()"), which is nowhere to be found on
+> lore.kernel.org.  Please stop committing private unreviewed patches
+> to linux-next, as several people have asked before.
 
-Let's also get Dave or Ted to chime in here if we can, because I
-strongly suspect the situation was different when those retry loops were
-introduced.
+They're still in git; I'd suggest just doing a git send-email and
+tweaking the output if you want to start a review on a patch you find.
 
-> We at the allocator level have 2 choices.  Either we tell users they
-> will not get GFP_NOFAIL and you just do the above or we provide NOFAIL
-> which really guarantees that there is no failure even if that means the
-> allocation gets unbounded amount of time. The latter have a slight
-> advantage because a) you can identify those callers more easily and b)
-> the allocator can do some heuristics to help those allocations.
+There's been some discussions in filesystem land about how/when we want
+patches to hit the list - I'm not a huge fan of the patch bombs that
+drown everything else out on the list, which is what it would be if I
+did mail everything.
 
-Or option 3: recognize that this is a correctness/soundness issue, and
-that if there are buggy callers they need to be fixed.
+But if the email workflow is really what you want, and if it's going to
+be generating useful review (list activity is growing...), I could be
+convinced...
 
-To give a non-kernel correlary, in the Rust world, soundness issues are
-taken very seriously, and they are the only situation in which existing
-code will be broken if necessary to fix them. Probably with equal amount
-of fighting as these threads, heh.
+We're getting past the "just fix all the stupid shit" phase, and my
+output is (I hope) trending toward something more stustainable, with a
+stream of more _interesting_ patches to talk about, so - yeah, it's
+starting to sound more reasonable, if that's what people want.
 
-> > > Yes, we need to define some reasonable maximum supported sizes. For the
-> > > page allocator this has been order > 1 and we considering we have a
-> > > warning about those requests for years without a single report then we
-> > > can assume we do not have such abusers. for kvmalloc to story is
-> > > different. Current INT_MAX is just not any practical limit. Past
-> > > experience says that anything based on the amount of memory just doesn't
-> > > work (e.g. hash table sizes that used to that scaling and there are
-> > > other examples). So we should be practical here and look at existing
-> > > users and see what they really need and put a cap above that.
-> > 
-> > Not following what you're saying about hash tables? Hash tables scale
-> > roughly with the amount of system memory/workingset.
-> 
-> I do not have sha handy but I do remember dcache hashtable scaling with
-> the amount of memory in the past and that led to GBs of memory allocated
-> on TB systems. This is not the case anymore I just wanted to mention
-> that scaling with the amount of memory can get really wrong easily.
-
-Was the solution then to change the dcache hash table implementation,
-rather than lifting the INT_MAX allocation size limit?
-
-> > But it seems to me that the limit should be lower if you're on e.g. a 2
-> > GB machine (not failing with a warning, just failing immediately rather
-> > than oom killing a bunch of stuff first) - and it's going to need to be
-> > raised above INT_MAX as large memory machines keep growing, I keep
-> > hitting it in bcachefs fsck code.
-> 
-> Do we actual usecase that would require more than couple of MB? The
-> amount of memory wouldn't play any actual role then.
-
-Which "amount of memory?" - not parsing that.
-
-For large allocations in bcachefs: in journal replay we read all the
-keys in the journal, and then we create a big flat array with references
-to all of those keys to sort and dedup them.
-
-We haven't hit the INT_MAX size limit there yet, but filesystem sizes
-being what they are, we will soon. I've heard of users with 150 TB
-filesystems, and once the fsck scalability issues are sorted we'll be
-aiming for petabytes. Dirty keys in the journal scales more with system
-memory, but I'm leasing machines right now with a quarter terabyte of
-ram.
-
-Another more pressing one is the extents -> backpointers and
-backpointers -> extents passes of fsck; we do a linear scan through one
-btree checking references to another btree. For the btree we're checking
-references to the lookups are random, so we need to cache and pin the
-entire btree in ram if possible, or if not whatever will fit and we run
-in multiple passes.
-
-This is the #1 scalability issue hitting a number of users right now, so
-I may need to rewrite it to pull backpointers into an eytzinger array
-and do our random lookups for backpointers on that - but that will be
-"the biggest vmalloc array we can possible allocate", so the INT_MAX
-size limit is clearly an issue there...
-
-Q: Why isn't this in userspace?
-A: Has to be in the kernel for online fsck to work, and these are fsck
-passes we can already run online...
+My priority is just going to be on fostering _useful_ technical
+discussion. If the only reason you're wanting patches on the list is
+because of trivial shit automated tests can and do catch - that's not a
+win, to me. If I start posting patch series and we seem to be learning
+from it, I'll stick with it.
