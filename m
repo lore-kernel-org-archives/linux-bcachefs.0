@@ -1,36 +1,36 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E9A40C03
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 16:15:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8FD71DFE15
+	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 16:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725466526; cv=none; b=KydSO0c/psapzhQWA3vL3nMuOJJ9sMo0Ev/C/Pm5nQ78WHLdse8F5Btd2PFdPdVE4rNDR5cS7aBkRMSeJhmxHLdAqz0ozUyUKGfGqehAlUfVsuEJ0vGBy0T0RStTAG6g22AeIrPuyCLCXASb+aH9x9KVQ9GumWwBtYGtRp+9V40=
+	t=1725467232; cv=none; b=JtmwOiPWVSMlzbFlYOoiAcjzO6LTeSOHWz2v3n8+mm9lcAbGKGF08xVDeHg+5g0ktou3dGvjtLeG9uLhjof8D/MS7YGheJosKfLWlhg2BYJutfLugXKIWLqG4Haf6iBcX0cGmsFWoVakhtRb9OMrpuYdGDkCr1S9HO1OAhjov34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725466526; c=relaxed/simple;
-	bh=i24P1pP2DSRPvREOe+kgy1xDpWGvVqGe7mo8BMTbudg=;
+	s=arc-20240116; t=1725467232; c=relaxed/simple;
+	bh=8CM+ER6jT6WN3Myh785kYSCtSEAyLTkTXwTJgmUn8VU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b8uXxu5w67wO+BHimbE5Lx2VkahN3PFYZPK1XyAwu64t2Qgpax8ErQhnm6SPmJevrFHa2q8WmTPu7SEnsMtzqjWsWHJ2sEB3aytxQhxufpQTpJ0Fqm2eytSplxPyoXKrq26gj85EpD0LfBZC5bbsxZ9jm/k41czcnYAl5X+uefY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OSWlWl0y; arc=none smtp.client-ip=91.218.175.179
+	 Content-Type:Content-Disposition:In-Reply-To; b=n/jGWB3CD2VvlNLWt7ADtzc4mtTfQaDHy/JDeMJ2bBwj5E2kExp7VeFUUNafaPVqxaRsBTHnCpIuWdVzfJIPMqPEZkM9ShskW2yk1KW1Tj45CZPyr2dISnWdsFZMo7tdPPAwvDs2GNb8s1i3ZXGp99u4OeWoxUnhGU6JZQvFujs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Fgd9jWhK; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OSWlWl0y"
-Date: Wed, 4 Sep 2024 12:15:15 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Fgd9jWhK"
+Date: Wed, 4 Sep 2024 12:27:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725466521;
+	t=1725467228;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gFEcuTW9GDd5R6/s9Ksgowfe9BJ1JWP/ZMXulaxqbcg=;
-	b=OSWlWl0yQRlbiZ0Q2PnP/1MUfPHPqQY2Vtmznt8DU97IsUs2JjjIyV45FCjfImOpyIQECz
-	F+8Qul2/k8BAWHy8aJ1wqdv5cDJOXlXprRVoO4U7WY+VlIRCxyuwZJmUVVN+bH99o0dT9s
-	0z1NTY1JvtiD6Q/WC4XdwboIullwJAc=
+	bh=Uf/mkXIK3Bv8nG/HByUgMnT8fjINIkgAQjXvtIV+Ba8=;
+	b=Fgd9jWhKnrgYi5m4PD5uSb1Hk/QHINynu/oAUGS724gNEz/iK7YYQvO1SK2E2FrelY3N3F
+	/090wgIgZCkYoLOcmLzFv/xcIn+Dw5R/xKaBG29E2IBvh4ctTGbQevntMxta+qk+gDfSLQ
+	7FnVruthDocgRD9Ac8uByWEoyKyUhiw=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
+To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, 
+	Michal Hocko <mhocko@kernel.org>, Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, 
 	Vlastimil Babka <vbabka@suse.cz>, Dave Chinner <dchinner@redhat.com>, 
 	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
 	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
@@ -38,12 +38,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-bcachefs@vger.kernel.org, linux-security-module@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
-Message-ID: <zdrwzpzbe5oqawyklyb4gmdf6evhvmw3on5w2ewjyqfmdv2ndy@w7kdgpakbqv3>
+Message-ID: <l3dngdjyglhpnlcmjxerpmiyw4euodb6sxsxe3mwtyd2z3uopu@amisj3chjfqe>
 References: <20240902095203.1559361-1-mhocko@kernel.org>
  <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
  <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
- <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
- <Zta1aZA4u8PCHQae@tiehlicka>
+ <20240903051342.GA31046@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -52,66 +51,25 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zta1aZA4u8PCHQae@tiehlicka>
+In-Reply-To: <20240903051342.GA31046@lst.de>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 03, 2024 at 09:06:17AM GMT, Michal Hocko wrote:
-> On Mon 02-09-24 18:32:33, Kent Overstreet wrote:
-> > On Mon, Sep 02, 2024 at 02:52:52PM GMT, Andrew Morton wrote:
-> > > On Mon, 2 Sep 2024 05:53:59 -0400 Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > > 
-> > > > On Mon, Sep 02, 2024 at 11:51:48AM GMT, Michal Hocko wrote:
-> > > > > The previous version has been posted in [1]. Based on the review feedback
-> > > > > I have sent v2 of patches in the same threat but it seems that the
-> > > > > review has mostly settled on these patches. There is still an open
-> > > > > discussion on whether having a NORECLAIM allocator semantic (compare to
-> > > > > atomic) is worthwhile or how to deal with broken GFP_NOFAIL users but
-> > > > > those are not really relevant to this particular patchset as it 1)
-> > > > > doesn't aim to implement either of the two and 2) it aims at spreading
-> > > > > PF_MEMALLOC_NORECLAIM use while it doesn't have a properly defined
-> > > > > semantic now that it is not widely used and much harder to fix.
-> > > > > 
-> > > > > I have collected Reviewed-bys and reposting here. These patches are
-> > > > > touching bcachefs, VFS and core MM so I am not sure which tree to merge
-> > > > > this through but I guess going through Andrew makes the most sense.
-> > > > > 
-> > > > > Changes since v1;
-> > > > > - compile fixes
-> > > > > - rather than dropping PF_MEMALLOC_NORECLAIM alone reverted eab0af905bfc
-> > > > >   ("mm: introduce PF_MEMALLOC_NORECLAIM, PF_MEMALLOC_NOWARN") suggested
-> > > > >   by Matthew.
-> > > > 
-> > > > To reiterate:
-> > > > 
-> > > 
-> > > It would be helpful to summarize your concerns.
-> > > 
-> > > What runtime impact do you expect this change will have upon bcachefs?
-> > 
-> > For bcachefs: I try really hard to minimize tail latency and make
-> > performance robust in extreme scenarios - thrashing. A large part of
-> > that is that btree locks must be held for no longer than necessary.
-> > 
-> > We definitely don't want to recurse into other parts of the kernel,
-> > taking other locks (i.e. in memory reclaim) while holding btree locks;
-> > that's a great way to stack up (and potentially multiply) latencies.
+On Tue, Sep 03, 2024 at 07:13:42AM GMT, Christoph Hellwig wrote:
+> On Mon, Sep 02, 2024 at 02:52:52PM -0700, Andrew Morton wrote:
+> > It would be helpful to summarize your concerns.
 > 
-> OK, these two patches do not fail to do that. The only existing user is
-> turned into GFP_NOWAIT so the final code works the same way. Right?
+> And that'd better be a really good argument for a change that was
+> pushed directly to Linus bypassing the maintainer after multiple
+> reviewers pointed out it was broken.  This series simply undoes the
+> damage done by that, while also keeping the code dependend on it
+> working.
 
-https://lore.kernel.org/linux-mm/20240828140638.3204253-1-kent.overstreet@linux.dev/
+Well, to be blunt, I thought the "we don't want the allocator to even
+know if we're in a non-sleepable context" argument was too crazy to have
+real support, and moving towards PF_MEMALLOC flags is something we've
+been talking about quite a bit going back years.
 
-> > But gfp flags don't work with vmalloc allocations (and that's unlikely
-> > to change), and we require vmalloc fallbacks for e.g. btree node
-> > allocation. That's the big reason we want MEMALLOC_PF_NORECLAIM.
-> 
-> Have you even tried to reach out to vmalloc maintainers and asked for
-> GFP_NOWAIT support for vmalloc? Because I do not remember that. Sure
-> kernel page tables are have hardcoded GFP_KERNEL context which slightly
-> complicates that but that doesn't really mean the only potential
-> solution is to use a per task flag to override that. Just from top of my
-> head we can consider pre-allocating virtual address space for
-> non-sleeping allocations. Maybe there are other options that only people
-> deeply familiar with the vmalloc internals can see.
+Little did I know the minefield I was walking into...
 
-That sounds really overly complicated.
+But the disccussion seems to finally be cooling off and going in a more
+productive direction.
