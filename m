@@ -1,47 +1,44 @@
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD311EBFFA
-	for <linux-bcachefs@vger.kernel.org>; Tue,  3 Sep 2024 23:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF1A173
+	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 00:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725407631; cv=none; b=itcLDl0c1qX8BdmozWyVk2nCNTVRM9/9kvDw2lGyIbL0A0yMyrQzB9InmYyCLV5ApU7BH53BrKnNhWGweQN2YPZecC/g0uFKN5aeKsgfq1lWiA49xNp74RYXup9KA3SkXB6z8dyVXOOWLgmJH7Dpp8q76oSW2owQfv0QnBRzGok=
+	t=1725408268; cv=none; b=GbdYYYYP+8qYlXCbr/tUNDbJfPyohZ9waAjzjEZCvODRkibkiGHhPL6VK0K3tT0kQtjj+EbnrmC3TFZ5tWJDwW4nBOKaYue1lw/FvnHkuC0GezFsAgfucRcK0eR8+aSv51HzeyKtwigy27ASn0QkFFbc3F9LwWvS/ptPdRGUX98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725407631; c=relaxed/simple;
-	bh=X3asc9AUtZ5RGKcxdf+XMkzOIMZf7QXdviF+ggzC3Ck=;
+	s=arc-20240116; t=1725408268; c=relaxed/simple;
+	bh=NiZ+L4Kb4JYAbcCtAUZcaBKpUt639VYvh5hxr9OazyA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DiWH/OKD0PxgTxl0mYbgh+n8Tzl+7bnm+zpEuOv7ldOGXT6UybzSBpioQgw/bsm72WpIiooy749zNkZBvTe4m1upoVASy6yM0SDKlhcM/QqrmuRUD/K3Zm9ghZF5dKjJtZQ9mYJWGVlZSz7hKd4R3uBcNZI4mK94zRBmXdcZQbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hrUItIpq; arc=none smtp.client-ip=91.218.175.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=kggFxF2zwd3/PJzuRMptdR3eu+K77c41U1KA+coCoVBfLw+xvJVh7b6h/tnH34ndo/qVCIsX2KUJrVTZHwPQgzpgjtIB+oSBBYtAUhu8gW4VktKTAFqGVLFAQzQ+V4oD6KqwekhIMyOsKwpnLCpIekzycFVwmWKbywEvm5Q76I4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AF0qIqLp; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hrUItIpq"
-Date: Tue, 3 Sep 2024 19:53:41 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AF0qIqLp"
+Date: Tue, 3 Sep 2024 20:04:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725407627;
+	t=1725408263;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=X6EYjF5RW8jhRsqnvywWRVkgXq/RsPBX3XbDK1ZCeIo=;
-	b=hrUItIpqCMHs0ZwSqX3d6Cog07XIbIbkabXOH6dINQk1DaIRS0cqUjk2LcYTcQ9qhghNMI
-	pfSq8RJ946z7zYHtCAu2ETRyKQcjOivZjXmPIRYpapN7IILKqa6n/qvdTqqPSJUoSU5+m0
-	g2BkWPLHOIAw4m+r2z2gO0We1OQUXPs=
+	bh=99RWSif1h4pLVwS1QNf/p7YwSYSOM/ZHQ8ZIta62BlE=;
+	b=AF0qIqLpLxMgHKlP2ZlZIi0gO9FY8o4kuPW+VjNoXruo2kxO6jH67vQk2k5VyjqGaRFwgu
+	YFHowQZq6+I2dezmW8Z2a/J3+rY4/jgTjnyt4cEsVhfi/rVjdZErB+jp4TROCvQzFHPmyx
+	zmYQ3ZILMLXO6NwBPu5oCW3xyVohVTU=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@kernel.org>, Christoph Hellwig <hch@lst.de>, 
-	Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, Vlastimil Babka <vbabka@suse.cz>, 
-	Dave Chinner <dchinner@redhat.com>, Christian Brauner <brauner@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-bcachefs@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
-Message-ID: <qlkjvxqdm72ijaaiauifgsnyzx3mw4edl2hexfabnsdncvpyhd@dvxliffsmkl6>
-References: <20240902095203.1559361-1-mhocko@kernel.org>
- <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
- <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
- <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
+To: Eli Schwartz <eschwartz@gentoo.org>
+Cc: Martin Steigerwald <martin@lichtvoll.de>, 
+	"Carl E. Thompson" <cet@carlthompson.net>, linux-bcachefs@vger.kernel.org
+Subject: Re: PSA: Avoid Debian Stable
+Message-ID: <wuhq6flzorkw5hgzx5h557ddroekbzt27z3pzs6uyhjhik5kls@76iojjqrczuq>
+References: <36xhap5tafvm4boiy3acu5kxlhkvnp32wp3oknbfbkxbdkeq7r@galecvidi3bn>
+ <4609869.LvFx2qVVIh@lichtvoll.de>
+ <sdmildnu2r55ale4pi4qywu2fjgd323izex6lxmkzde34dixsb@cuzsmplhlek7>
+ <2197543.irdbgypaU6@lichtvoll.de>
+ <sq35zfsryexuqu2vmpvxj3gxv3kja5wv2nqqbtbyu5catvylho@wkaootfi2zhw>
+ <683718c1-98c9-4b28-a301-15c4668b1476@gentoo.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -50,98 +47,107 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
+In-Reply-To: <683718c1-98c9-4b28-a301-15c4668b1476@gentoo.org>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Sep 02, 2024 at 06:32:40PM GMT, Kent Overstreet wrote:
-> On Mon, Sep 02, 2024 at 02:52:52PM GMT, Andrew Morton wrote:
-> > On Mon, 2 Sep 2024 05:53:59 -0400 Kent Overstreet <kent.overstreet@linux.dev> wrote:
+On Tue, Sep 03, 2024 at 07:44:52PM GMT, Eli Schwartz wrote:
+> On 9/3/24 6:15 PM, Kent Overstreet wrote:
+> > I still have not yet heard a single good reason for this policy.
 > > 
-> > > On Mon, Sep 02, 2024 at 11:51:48AM GMT, Michal Hocko wrote:
-> > > > The previous version has been posted in [1]. Based on the review feedback
-> > > > I have sent v2 of patches in the same threat but it seems that the
-> > > > review has mostly settled on these patches. There is still an open
-> > > > discussion on whether having a NORECLAIM allocator semantic (compare to
-> > > > atomic) is worthwhile or how to deal with broken GFP_NOFAIL users but
-> > > > those are not really relevant to this particular patchset as it 1)
-> > > > doesn't aim to implement either of the two and 2) it aims at spreading
-> > > > PF_MEMALLOC_NORECLAIM use while it doesn't have a properly defined
-> > > > semantic now that it is not widely used and much harder to fix.
-> > > > 
-> > > > I have collected Reviewed-bys and reposting here. These patches are
-> > > > touching bcachefs, VFS and core MM so I am not sure which tree to merge
-> > > > this through but I guess going through Andrew makes the most sense.
-> > > > 
-> > > > Changes since v1;
-> > > > - compile fixes
-> > > > - rather than dropping PF_MEMALLOC_NORECLAIM alone reverted eab0af905bfc
-> > > >   ("mm: introduce PF_MEMALLOC_NORECLAIM, PF_MEMALLOC_NOWARN") suggested
-> > > >   by Matthew.
-> > > 
-> > > To reiterate:
-> > > 
+> > The rust dependencies are statically linked, and that's not going to
+> > change because dynamic linking that works with the full Rust typesystem
+> > is, simply, a _really_ hard problem that's going to take a massive
+> > enginering effort to solve. Swift was able to do it - but I'm quite
+> > familiar with what it took to do that, and they were only able to
+> > because Apple invested significantly into it.
 > > 
-> > It would be helpful to summarize your concerns.
+> > So, given that they're statically linked, why?
 > > 
-> > What runtime impact do you expect this change will have upon bcachefs?
+> > It can't be for security updates, because to update a dependency we
+> > _still_ have to update and spin a new release of bcachefs-tools. And
+> > that's not such a big deal, because nodays there's bots that notify me
+> > if I need to do that.
+> > 
+> > So it seems to me that Debian people just aren't thinking things
+> > through.
 > 
-> For bcachefs: I try really hard to minimize tail latency and make
-> performance robust in extreme scenarios - thrashing. A large part of
-> that is that btree locks must be held for no longer than necessary.
 > 
-> We definitely don't want to recurse into other parts of the kernel,
-> taking other locks (i.e. in memory reclaim) while holding btree locks;
-> that's a great way to stack up (and potentially multiply) latencies.
+> There's an interesting conversation to be had here about distfiles,
+> duplication, and offline building.
 > 
-> But gfp flags don't work with vmalloc allocations (and that's unlikely
-> to change), and we require vmalloc fallbacks for e.g. btree node
-> allocation. That's the big reason we want MEMALLOC_PF_NORECLAIM.
+> Probably the biggest single requirement here is the offline building.
+> It's not enough to download the bcachefs-tools source tarball and build
+> that, since you also need crates downloaded from crates.io and added to
+> a local registry. Most (sane) distros build packages with the network
+> disabled for security reasons, because you want to verify that all the
+> code you are building is code which was included in the original source
+> checksumming which is part of the build manifest (and the build manifest
+> in turn is probably PGP-signed by the distro developer that processed
+> the update).
 > 
-> Besides that, it's just cleaner, memalloc flags are the direction we
-> want to be moving in, and it's going to be necessary if we ever want to
-> do a malloc() that doesn't require a gfp flags parameter. That would be
-> a win for safety and correctness in the kernel, and it's also likely
-> required for proper Rust support.
+> And the Debian packaging format involves converting every package into
+> an "orig" tarball with the debian build recipes installed inside as
+> debian/ and then running the dpkg package building tools from inside
+> there. The key to a successful packaging experience is somehow getting
+> to run the build tools from that source tarball.
 > 
-> And the "GFP_NOFAIL must not fail" argument makes no sense, because a
-> failing a GFP_NOFAIL allocation is the only sane thing to do if the
-> allocation is buggy (too big, i.e. resulting from an integer overflow
-> bug, or wrong context). The alternatives are at best never returning
-> (stuck unkillable process), or a scheduling while atomic bug, or Michal
-> was even proposing killing the process (handling it like a BUG()!).
+> The packaging formats used by most other distros work differently: a
+> package can have multiple (checksummed) source tarballs and one of the
+> build phases is unpacking each listed distfile. Alpine, Arch, CRUX,
+> Fedora, Gentoo, Void, all list urls to download the source(s) from and
+> the checksums to validate against as part of the build recipe, and
+> unpack those into a temporary directory.
 > 
-> But we don't use BUG_ON() for things that we can't prove won't happen in
-> the wild if we can write an error path.
+> So for example that means that Gentoo can list 90 different crate
+> dependencies, plus one primary bcachefs tarball, and download each of
+> those files into /var/cache/distfiles, then unpack them into a fake
+> cargo registry. Of course, this is pretty slow if you don't have
+> parallel downloads -- not usually a problem for most packages that have
+> only one or two sources, but there you have it. And they can be shared
+> between multiple packages, or multiple versions of bcachefs-tools,
+> assuming that packages use exactly identical versions.
 > 
-> That is, PF_MEMALLOC_NORECLAIM lets us turn bugs into runtime errors.
+> In theory, one can also specify a different crate version to use instead
+> of basing the versions on Cargo.lock. The update tool (pycargoebuild)
+> always builds the list based on Cargo.lock, though.
+> 
+> Now you have a 90-line package recipe, so have fun with that! :) Of
+> course, since any solution for bcachefs-tools is logically consistent
+> with handling other rust software, keep in mind that some packages have
+> 1,000+ crates. Even more fun!
+> 
+> 
+> Back to Debian. Since each package can only have one source
+> *.orig.tar.xz, I would assume that Debian has basically two choices as a
+> result of their packaging format:
+> 
+> - package each crate as a system dependency
+> - repack each program source after running `cargo vendor`, and upload
+>   *that* as the canonical source code
 
-BTW, one of the reasons I've been giving this issue so much attention is
-because of filesystem folks mentioning that they want GFP_NOFAIL
-semantics more widely, and I actually _don't_ think that's a crazy idea,
-provided we go about it the right way.
+I already provide 'cargo vendor' tarballs. Yes, it's big (thanks to
+bindgen), but it's not _enormous_.
 
-Not having error paths is right out; many allocations when you start to
-look through more obscure code have sizes that are controlled by
-userspace, so we'd be opening ourselves up to trivially expoitable
-security bugs.
+And bindgen is unfortunately the problematic one (and the one that broke
+the build) - the semantics of the packed and aligned attributes are
+subtle, and bindgen has had difficulty getting them right (due in part
+to differences between gcc and microsoft).
 
-However, if we agreed that GFP_NOFAIL meant "only fail if it is not
-possible to satisfy this allocation" (and I have been arguing that that
-is the only sane meaning) - then that could lead to a lot of error paths
-getting simpler.
+So if you want to unbundle bindgen:
+- you get to fix it if it breaks, I don't want to see a log of a build
+  error months later that you didn't try to debug
 
-Because there are a lot of places where there's essentially no good
-reason to bubble up an -ENOMEM to userspace; if we're actually out of
-memory the current allocation is just one out of many and not
-particularly special, better to let the oom killer handle it...
+- you really should be testing it as well (e.g. create an image with
+  bcachefs format --source; verify that it fscks with kernel fsck
+  implementation, i.e. that they agree); the stuff in bindgen that's
+  been causing issues is absolutely the sort of thing that could cause
+  miscompilation and if that ever happens it's going to be a really,
+  really bad day.
 
-So the error paths would be more along the lines of "there's a bug, or
-userspace has requested something crazy, just shut down gracefully".
+Don't unbundle the other dependencies. They're tiny, and it's not worth
+the pain it could potentially cause.
 
-While we're at it, the definition of what allocation size is "too big"
-is something we'd want to look at. Right now it's hardcoded to INT_MAX
-for non GFP_NOFAIL and (I believe) 2 pages for GFP_NOFAL, we might want
-to consider doing something based on total memory in the machine and
-have the same limit apply to both...
-
-
+The cargo dependency model is _really good_ because it means dependency
+updates happen in commits in the consuming package, meaning it's
+actually possible to bisect for breakage caused by a dependency update -
+that's not something we've had before.
