@@ -1,74 +1,54 @@
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638ED19DFB6
-	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 14:12:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340EB1DFF5
+	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 15:25:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725545578; cv=none; b=QnwXIeeHkRXSAzwnK9ANNmbMOghl21+/MzHk+SM619z3BJLh0OTk+0UXbvpTsPyBbQMph54UuDTC69IaNrvyXUUAR4kpIZHLchosSf8qj2HUhYbSjBcu3lyVhGlULidt7OyATpE3jcd+F5WZBUM7pyQSVFrQJTicqMFTmjkgZCI=
+	t=1725549937; cv=none; b=NDncU/37ZBpce6NxRLlF19tcdR5cV6yFrMNBEyV7ZllMrTx7/g7gul/1b37yAv/plSERju2ZcWKwVEGd+0GPFspxBFcuD0eJXYWEgdEcVwbQ7uedZDPLTWgXkAsVA0CNxftkS9Ur0328wb8e6igAXzQaGa0b7xTRbZg7EL62Sdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725545578; c=relaxed/simple;
-	bh=gIpwCb6OV6UwPMTwnRjpauWp1JHz59zzWwEgm74aOlM=;
+	s=arc-20240116; t=1725549937; c=relaxed/simple;
+	bh=tRDExfH+y9+CgN5f/5JvA9eKbZD5FR0+/v//qGc1pb4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QKP0v7Fe+R/2fj3FHjCGL02015C9OmUkZwbnCaBfqx91X+cMVH9g2Mm+QDLJmlw/hmWQwp+uw7MfYvF7Tl8gWPV9KSG2UoJS8iowSQ8t8DRyC3EIpOF7lDUxBJptE7IPclJD3Z7z6sqvEN56OXwRGpdpBk5s0T+Q7tu/+5/t+qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fzkBDS/8; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=pSPv+1lC30CeH9PnZuGiuaK9j6ZljXaD2HrBHLnB4BuOyJjienNzXoJWqn+HGHttY/Da2/qC0ZcO+9+tiyfuO8wSQj/5N7JDPVir3SmWwVAAWy+5r2WB1k21nPUcNIZONVYNHQSa70fAWv6XPzrMEu8L0ZVmDcSW0OxI4p5VBv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=bC90hOhN; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fzkBDS/8"
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5343617fdddso1289368e87.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 05 Sep 2024 07:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1725545574; x=1726150374; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gwYsBihYTyfOkMwcrQ2PgVwPBmg+Ta54Eew3ioB7SiQ=;
-        b=fzkBDS/8pvFq4Xc8f/Fa2RY3BiXmomhg0qoazjTcSjQXm/YO48sC4nMS+/dZJmrFbM
-         Yhd4jGUFonnzfk1cWfmKUILW7d9OwsbSSvnb0AA44rNsdcEAg/IvdfB5zJmR0bS45+Bw
-         27FsoiC9HRTJth/KITNi8Dq9n1kx/ueWUdninPQfhhj00Po/QviTMSO2+o4ttYItdreV
-         uxQjUDzofWmqJ6+hoArSW6TSQZt+XzVBU6maC2kUohbxWsBDX27DbKFIIPMr5kSGmZw7
-         zL18ZVt3lzrXxfmHnnz3V6F8bWLA+/e1MXul+HWl9OlOIXADIdXF4Mxs9JttIKeaWdLK
-         06zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725545574; x=1726150374;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gwYsBihYTyfOkMwcrQ2PgVwPBmg+Ta54Eew3ioB7SiQ=;
-        b=iPpc1hVrxIvesVqCPx/y8NUVpDC4J+E6iqwqz/zTEBesLfFj62uucSRYvU1+XYM+nk
-         ybyCqqowuF/EOdBtso0hGyFKgjB+Xt+0sonV+fvjxm9L3ZwkgAnUHCa1/ohbPAwXJM2f
-         y20r1U3Vi5S4wKiA4/Rte3eoORSRPEOmD11Tf1tQfE/Msa+3emfNKK90WKydH/lzTZTf
-         ogDo5LpLUwAhX4IH/l4GQqGz9ycBRsMeYiobFeUTM8A7Yb1OnqNmDwJ3pyZd8a3ASSjO
-         Bhjb8O1coOPmQynpyHjlxb1+iAU3UPhuHKkC22fvY5l/+Vg8oAjlF7sb1seHBNRlbH2p
-         zLRA==
-X-Forwarded-Encrypted: i=1; AJvYcCWkHgKtZN4poFTMAhAaox+jHrpLaDqG6A1MiqKYL+d4S+7eBk24XTCRjaQiyb+09Apot1HdB68ikHdmHghwlw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyjq8vrReSkcHgZN//nSWAcxRSQj2c3b75n3Uc7DLNxAD7aCmIl
-	jVk/DtSSmaejQFovhhx6s5bcggnS4puHRRls9R8nya6ZdTATm/gzi8eAL8q1tVc=
-X-Google-Smtp-Source: AGHT+IGsTyoQo5r21FHK64nbduDdB0RMk5Y4ciVDsCqSQ9O4YP1mPL/j+bbkh4RnUZCAoKKWGupTJg==
-X-Received: by 2002:a05:6512:a8b:b0:536:54ff:51c8 with SMTP id 2adb3069b0e04-53654ff53dbmr1077754e87.17.1725545574270;
-        Thu, 05 Sep 2024 07:12:54 -0700 (PDT)
-Received: from localhost ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8a623c2fa2sm142182366b.183.2024.09.05.07.12.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2024 07:12:54 -0700 (PDT)
-Date: Thu, 5 Sep 2024 16:12:53 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
-	jack@suse.cz, Vlastimil Babka <vbabka@suse.cz>,
-	Dave Chinner <dchinner@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="bC90hOhN"
+Received: from cwcc.thunk.org (pool-173-48-102-194.bstnma.fios.verizon.net [173.48.102.194])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 485FOuO8022670
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 5 Sep 2024 11:24:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1725549900; bh=ZMAwb0TTSWq5wGxMOGxbhqvtzOXca35VpaiLmpGkZyk=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=bC90hOhNVtGBzISUHWFA+vIPMEGufqK81VfNH++gBMimSDmzUIT2PO9/60HtmWG/C
+	 ay6hQ5QICOiWGGLsW++Qk+XPO3OldLATfDxqLz0EpmlN3ctQ5rw318he2Nk5dSMcKL
+	 FXiLh524vPNJlMTH3JGUWLeOG6XGKmsZF9o6WJfzVZb2kWHQJmzyeXRqFcXbHEkW4D
+	 twc1UWEWXcapIVFpNUXjqA/vX/Nc2Y50RydPKQW7Wv7RrZKqLJpWw7rsYHyhzfb36n
+	 iwTYS4i3eF2n2EQtqjNjZDEltZvduFIX1ojyg2BtOfg8vhq+pVi0sDqjEv6spTD3Sx
+	 w51KAAhY8aqrA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 5C30415C02C6; Thu, 05 Sep 2024 11:24:56 -0400 (EDT)
+Date: Thu, 5 Sep 2024 11:24:56 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Michal Hocko <mhocko@suse.com>, Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
+        jack@suse.cz, Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <dchinner@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
-Message-ID: <Ztm8ZY0kXWLFspYJ@tiehlicka>
-References: <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
- <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
+Message-ID: <20240905152456.GW9627@mit.edu>
+References: <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
  <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
  <qlkjvxqdm72ijaaiauifgsnyzx3mw4edl2hexfabnsdncvpyhd@dvxliffsmkl6>
  <ZtgI1bKhE3imqE5s@tiehlicka>
@@ -77,6 +57,7 @@ References: <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
  <pmvxqqj5e6a2hdlyscmi36rcuf4kn37ry4ofdsp4aahpw223nk@lskmdcwkjeob>
  <ZtmVej0fbVxrGPVz@tiehlicka>
  <20240905135326.GU9627@mit.edu>
+ <4ty2psn26sergqax6yhcs3htt2tsg3wuvrfyvfdvseom22zhqk@yppva6vxpmjz>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -85,51 +66,30 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240905135326.GU9627@mit.edu>
+In-Reply-To: <4ty2psn26sergqax6yhcs3htt2tsg3wuvrfyvfdvseom22zhqk@yppva6vxpmjz>
 
-On Thu 05-09-24 09:53:26, Theodore Ts'o wrote:
-> On Thu, Sep 05, 2024 at 01:26:50PM +0200, Michal Hocko wrote:
-> > > > > > This is exactly GFP_KERNEL semantic for low order allocations or
-> > > > > > kvmalloc for that matter. They simply never fail unless couple of corner
-> > > > > > cases - e.g. the allocating task is an oom victim and all of the oom
-> > > > > > memory reserves have been consumed. This is where we call "not possible
-> > > > > > to allocate".
-> > > > > 
-> > > > > Which does beg the question of why GFP_NOFAIL exists.
-> > > > 
-> > > > Exactly for the reason that even rare failure is not acceptable and
-> > > > there is no way to handle it other than keep retrying. Typical code was 
-> > > > 	while (!(ptr = kmalloc()))
-> > > > 		;
-> > > 
-> > > But is it _rare_ failure, or _no_ failure?
-> > >
-> > > You seem to be saying (and I just reviewed the code, it looks like
-> > > you're right) that there is essentially no difference in behaviour
-> > > between GFP_KERNEL and GFP_NOFAIL.
+On Thu, Sep 05, 2024 at 10:05:15AM -0400, Kent Overstreet wrote:
+> > That may be the currrent state of affiars; but is it
+> > ****guaranteed**** forever and ever, amen, that GFP_KERNEL will never
+> > fail if the amount of memory allocated was lower than a particular
+> > multiple of the page size?  If so, what is that size?  I've checked,
+> > and this is not documented in the formal interface.
 > 
-> That may be the currrent state of affiars; but is it
-> ****guaranteed**** forever and ever, amen, that GFP_KERNEL will never
-> fail if the amount of memory allocated was lower than a particular
-> multiple of the page size?
+> Yeah, and I think we really need to make that happen, in order to head
+> off a lot more sillyness in the future.
 
-No, GFP_KERNEL is not guaranteed. Allocator tries as hard as it can to
-satisfy those allocations for order <= PAGE_ALLOC_COSTLY_ORDER.
+I don't think there's any "sillyness"; I hear that you believe that
+it's silly, but I think what we have is totally fine.
 
-GFP_NOFAIL is guaranteed for order <= 1 for page allocator and there is
-no practical limit for vmalloc currently. This is what our documentation
-says
- * The default allocator behavior depends on the request size. We have a concept
- * of so-called costly allocations (with order > %PAGE_ALLOC_COSTLY_ORDER).
- * !costly allocations are too essential to fail so they are implicitly
- * non-failing by default (with some exceptions like OOM victims might fail so
- * the caller still has to check for failures) while costly requests try to be
- * not disruptive and back off even without invoking the OOM killer.
- * The following three modifiers might be used to override some of these
- * implicit rules.
+I've done a quick check of ext4, and we do check the error returns in
+most if not all of the calls where we pass in __GFP_NOFAIL and/or are
+small allocations less than the block size.  We won't crash if someone
+sends a patch which violates the documented guarantee of __GFP_NOFAIL.
 
-There is no guarantee this will be that way for ever. This is unlikely
-to change though.
--- 
-Michal Hocko
-SUSE Labs
+So what's the sillynesss?
+
+In any case, Michal has said ix-nay on making GFP_KERNEL == GFP_NOFAIL
+for small allocations as documented guarantee, as opposed to the way
+things work today, so as far as I'm concerned, the matter is closed.
+
+	       	    	      	     	- Ted
