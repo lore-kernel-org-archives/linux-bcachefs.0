@@ -1,56 +1,45 @@
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078AA145B10
-	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 13:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400CA19E7DF
+	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 14:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725544465; cv=none; b=pnD3jAZ+rsewtPUii8wQto5d/cBHfIj7scJGMJxEYj+PcP8+KIIqhrE4PxA0aZ6KZO+4IWhb7Bl+k+LQTo5HPkcFEAEDuyS14fsS73Xf4ADkznfFNhEr0YBYY/P3Nqau1I/LZv1O5QWzEwh26j12bMYwWnP8+Z2uqRz3qgQl/3E=
+	t=1725545126; cv=none; b=jyKFF5Us+RobzebJC4Cb7aNXLQ8ZWt4EfbqbSArJYyFLil/go3RVHH1lcoxDELFAuxhnfnXQMph+iaov6y0hE0jmKBoik5SPCyu7SyS5mrXdXl0zNHQo5UuL/fF8arwFeNhYWSJDCAZd8WI9iSnUF/tUb2KSGmHZgTglbVCLiO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725544465; c=relaxed/simple;
-	bh=89eTR3ds69z8RUvRwzGHLCMj5E0DqW6ePx39Zak+vtc=;
+	s=arc-20240116; t=1725545126; c=relaxed/simple;
+	bh=ZVg1DAg6N5h7F/0RkaxUxwzQhYejrBYDgjgdlUgE5mQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CCK5Jl6EV7G5xdmsf3j+L/lbtwn5iA75soOqhouVN6H8PwFiuvJln410jN6UCl2dga8iSDVKM7YWGgry1U67osZSB3UVU2h/NGcXzxD1K1EkwEVAz7v/0K2VhoQSU/WZPF+emHg3aGv6+5e+A9NbDiAjw1L5MlLtlTCk6A5ELlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=h1S+UO08; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZmhkgJ9RmoZ2Y6/GTI7Rakq6VBQdixUZYjXOyHLXVZUR0fMoZO7I9UMlF3AKhbhUSWKkAuDeeBqom7Lroay5LJ9mArGfGIyN4vH6n2J6ddHWBnETz1Z2DZE5Q1hhD3Uem9oZjDMSbBy1C74AGyQRyqDtbruk7uX8fcVwrophfQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hW2nI1Il; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="h1S+UO08"
-Received: from cwcc.thunk.org (pool-173-48-102-194.bstnma.fios.verizon.net [173.48.102.194])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 485DrQUd030840
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 5 Sep 2024 09:53:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1725544412; bh=XBNj3KHe7DuZpKVxVCA9zURNDJAF8QFjg3YArsA6zRA=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=h1S+UO08dOUuPvbuUYg4xCtN3hwTpd8U8iHTnZ57kQtu3ngdZyMQCrpxb0cVl1hnO
-	 kAnh0KhRN6gOt/MKk2OzgdPPZ6JcXoVdichJUmxDnCgZ9L9Dzi7YxTUZcKKCxDp+go
-	 TNSKBU696FyLxDtUULiBYhT7JSyEaHO9FBP1mQOb9aRmdGbh25Qt9ISUgVS48X2nk0
-	 mJ6bowqneHcB9SZu+dxoYfOYPOrf7cGeCKq9YjTkAgkoBxYW7jBMjacelHLhkBu4QH
-	 sxLy0OBwi7QsAUdbWSLkct+8+Xls9RBw/tcEjLCNt/OYnbL6t3na9M4BU7jQsIc6PA
-	 pTfxwI1xAeGyQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 7501415C02C6; Thu, 05 Sep 2024 09:53:26 -0400 (EDT)
-Date: Thu, 5 Sep 2024 09:53:26 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
-        jack@suse.cz, Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <dchinner@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hW2nI1Il"
+Date: Thu, 5 Sep 2024 10:05:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725545121;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MyCjQthpFJhnYK6tEfReEkQ3UbH/LJW1l4f9CWgc5Fc=;
+	b=hW2nI1IlY8C3UAhbNifysoKIq+TJeJoVcizmcoRH4fUejSVQruyq6fk04012lwnxvEmkah
+	i6tgXPD4QgRXHbE89wQ9Oi65yCi54TneuQAxZ2EXNJMLMmiwRCniBHRBc0ZN1fsRO3obE8
+	NS2TA/IPKHrlBcNkankYN8VfXh17UOY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Michal Hocko <mhocko@suse.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, 
+	Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, Vlastimil Babka <vbabka@suse.cz>, 
+	Dave Chinner <dchinner@redhat.com>, Christian Brauner <brauner@kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore <paul@paul-moore.com>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-bcachefs@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
-Message-ID: <20240905135326.GU9627@mit.edu>
-References: <20240902095203.1559361-1-mhocko@kernel.org>
- <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
+Message-ID: <4ty2psn26sergqax6yhcs3htt2tsg3wuvrfyvfdvseom22zhqk@yppva6vxpmjz>
+References: <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
  <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
  <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
  <qlkjvxqdm72ijaaiauifgsnyzx3mw4edl2hexfabnsdncvpyhd@dvxliffsmkl6>
@@ -59,6 +48,7 @@ References: <20240902095203.1559361-1-mhocko@kernel.org>
  <ZtiOyJ1vjY3OjAUv@tiehlicka>
  <pmvxqqj5e6a2hdlyscmi36rcuf4kn37ry4ofdsp4aahpw223nk@lskmdcwkjeob>
  <ZtmVej0fbVxrGPVz@tiehlicka>
+ <20240905135326.GU9627@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -67,56 +57,63 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZtmVej0fbVxrGPVz@tiehlicka>
+In-Reply-To: <20240905135326.GU9627@mit.edu>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Sep 05, 2024 at 01:26:50PM +0200, Michal Hocko wrote:
-> > > > > This is exactly GFP_KERNEL semantic for low order allocations or
-> > > > > kvmalloc for that matter. They simply never fail unless couple of corner
-> > > > > cases - e.g. the allocating task is an oom victim and all of the oom
-> > > > > memory reserves have been consumed. This is where we call "not possible
-> > > > > to allocate".
+On Thu, Sep 05, 2024 at 09:53:26AM GMT, Theodore Ts'o wrote:
+> On Thu, Sep 05, 2024 at 01:26:50PM +0200, Michal Hocko wrote:
+> > > > > > This is exactly GFP_KERNEL semantic for low order allocations or
+> > > > > > kvmalloc for that matter. They simply never fail unless couple of corner
+> > > > > > cases - e.g. the allocating task is an oom victim and all of the oom
+> > > > > > memory reserves have been consumed. This is where we call "not possible
+> > > > > > to allocate".
+> > > > > 
+> > > > > Which does beg the question of why GFP_NOFAIL exists.
 > > > > 
-> > > > Which does beg the question of why GFP_NOFAIL exists.
+> > > > Exactly for the reason that even rare failure is not acceptable and
+> > > > there is no way to handle it other than keep retrying. Typical code was 
+> > > > 	while (!(ptr = kmalloc()))
+> > > > 		;
 > > > 
-> > > Exactly for the reason that even rare failure is not acceptable and
-> > > there is no way to handle it other than keep retrying. Typical code was 
-> > > 	while (!(ptr = kmalloc()))
-> > > 		;
-> > 
-> > But is it _rare_ failure, or _no_ failure?
-> >
-> > You seem to be saying (and I just reviewed the code, it looks like
-> > you're right) that there is essentially no difference in behaviour
-> > between GFP_KERNEL and GFP_NOFAIL.
+> > > But is it _rare_ failure, or _no_ failure?
+> > >
+> > > You seem to be saying (and I just reviewed the code, it looks like
+> > > you're right) that there is essentially no difference in behaviour
+> > > between GFP_KERNEL and GFP_NOFAIL.
+> 
+> That may be the currrent state of affiars; but is it
+> ****guaranteed**** forever and ever, amen, that GFP_KERNEL will never
+> fail if the amount of memory allocated was lower than a particular
+> multiple of the page size?  If so, what is that size?  I've checked,
+> and this is not documented in the formal interface.
 
-That may be the currrent state of affiars; but is it
-****guaranteed**** forever and ever, amen, that GFP_KERNEL will never
-fail if the amount of memory allocated was lower than a particular
-multiple of the page size?  If so, what is that size?  I've checked,
-and this is not documented in the formal interface.
+Yeah, and I think we really need to make that happen, in order to head
+off a lot more sillyness in the future.
 
-> The fundamental difference is that (appart from unsupported allocation
-> mode/size) the latter never returns NULL and you can rely on that fact.
-> Our docummentation says:
->  * %__GFP_NOFAIL: The VM implementation _must_ retry infinitely: the caller
->  * cannot handle allocation failures. The allocation could block
->  * indefinitely but will never return with failure. Testing for
->  * failure is pointless.
+We'd also be documenting at the same time _exactly_ when it is required
+to check for errors:
+- small, fixed sized allocation in a known sleepable context, safe to skip
+- anything else, i.e. variable sized allocation or library code that can
+  be called from different contexts: you check for errors (and probably
+  that's just "something crazy has happened, emergency shutdown" for the
+  xfs/ext4 paths
 
-So if the documentation is going to give similar guarantees, as
-opposed to it being an accident of the current implementation that is
-subject to change at any time, then sure, we can probably get away
-with all or most of ext4's uses of __GFP_NOFAIL.  But I don't want to
-do that and then have a "Lucy and Charlie Brown" moment from the
-Peanuts comics strip where the football suddenly gets snatched away
-from us[1] (and many file sytem users will be very, very sad and/or
-angry).
+> > The fundamental difference is that (appart from unsupported allocation
+> > mode/size) the latter never returns NULL and you can rely on that fact.
+> > Our docummentation says:
+> >  * %__GFP_NOFAIL: The VM implementation _must_ retry infinitely: the caller
+> >  * cannot handle allocation failures. The allocation could block
+> >  * indefinitely but will never return with failure. Testing for
+> >  * failure is pointless.
+> 
+> So if the documentation is going to give similar guarantees, as
+> opposed to it being an accident of the current implementation that is
+> subject to change at any time, then sure, we can probably get away
+> with all or most of ext4's uses of __GFP_NOFAIL.  But I don't want to
+> do that and then have a "Lucy and Charlie Brown" moment from the
+> Peanuts comics strip where the football suddenly gets snatched away
+> from us[1] (and many file sytem users will be very, very sad and/or
+> angry).
 
-[1] https://www.cracked.com/article_37831_good-grief-how-lucy-pulling-the-football-away-from-charlie-brown-became-a-signature-peanuts-gag.html
-
-It might be that other file systems have requirements which isblarger
-than the not-formally-defined GFP_KMALLOC guarantee, but it's true we
-can probably reduce the usage of GFP_NOFAIL if this guarantee is
-formalized.
-
-						- Ted
+yeah absolutely, and the "what is a small allocation" limit needs to be
+nailed down as well
