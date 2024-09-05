@@ -1,80 +1,86 @@
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB3F19924A
-	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 11:26:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06659199FB4;
+	Thu,  5 Sep 2024 12:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725535615; cv=none; b=SUJfwYvNVyCjb6Hrjq1pJ/RANBG0ypZR6iZDmhAUy5YRNO8nuksCVPynFGzMEU2kYRBlbdvcHFXhRvtuon1hd75IPDRCg4NKunx1q1oEl4uBFnxhRgWsPP6iGDUlRjJiL05fP/7n6SdB+ggCuSFLi+OrFfBiXbvqTx13KBsEtBQ=
+	t=1725538100; cv=none; b=DynmsdZyqE8JoqKVIQYpGjasCRzi4jJI9o3c0w57NwYcL8bSlt1DUsfrS2NP+/3RvLJtZxAuWNZVjWu3qw6y58ja+xwoo7u9+YT4edeZICqXwKDAfHNKuGawaVTaD7rJRe9i0RQiM2B5ElAtJ+Peubkt84m2OboiIGc/2oDd59I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725535615; c=relaxed/simple;
-	bh=uDHN9oD3ymzNoKqucZVNQadRU4ImbE+RLTgFQhaenkc=;
+	s=arc-20240116; t=1725538100; c=relaxed/simple;
+	bh=pnup+PjNdWYL01f6Vj8DyxDxFFGWiNQX79oCLmQV2cU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MVxuffypbR4xngS39g4Y7oWd4ImRtKypx2CvsBanvK6bR+YmXL5xuTYg92hBijs+ubr1gu920nqX1NqwIo8hRRR0YsY21cFxdiOV8dEKLYi4pfeYGIfw7+twxJM6vY+Bc58q16X7w5px/pqvRvNRTOl4Ktc2BySgzUCOgzZJhH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BEu8qjzB; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=WALUXvsADid7f3LOT1CkN6+0yRm8uSi3OZXy4lYcrcBDYY9AQ/BrkZikgHnIMMWodj3bFCZJI9xdDbaKOFwn1AgF3i3zWYiziUTx82kt/wTih02H9LGytWno5HW45kXLc7VifCKc+7C6f9Ff8KMXoGVzwIZM2MyJiI/LfV968sI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZUBIhauk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DjnIceNR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZUBIhauk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DjnIceNR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BEu8qjzB"
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5356ab89665so735386e87.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 05 Sep 2024 04:26:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1725535611; x=1726140411; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MT1b/AWbDQ4Zc2FSXLwenhXbbMScTqyTjSATBO5zm2Q=;
-        b=BEu8qjzBcMUR56NsccopP84Ny24P/QojRgTGrRGCOueAi+bw9q1+swNtnNE1g4MOYt
-         cM+xo/+/RpRjGLjkc/L3mnWGAdttToWfGZjfo9J3dVG3QJj7Y2+/oHfL8ifAordAnf28
-         +MwrvqMyAu1t/UKHB7P6rGE7HX0PPetS4N9vczFGrepUi4xw7ozG3trsYs9SSfsD7jJ6
-         sBO9MGmBgHLFIpNGE9t3LbwmHH3Bm33RLg7C4CI1IFYc8KYvBlC4LtPuR0y0cvt5bsr/
-         Rk4AZCzxD/LK7Q6yTOS8GTV92VKWvNE31tfF480i4clqfOHNhZ9U+2t1hPswLN4dWTVF
-         lHcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725535611; x=1726140411;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MT1b/AWbDQ4Zc2FSXLwenhXbbMScTqyTjSATBO5zm2Q=;
-        b=qVXgm85B2crGSesGSSilsGE1R4zO6O6qYHO2sLz4E5gS7jW9oZUZv0aEKJLeoC8M1D
-         tok4f7NpXqW+Ui5GcE781EkQKIt3Ruvm3RtqGLhZqdbFii9pW5Qz8UcOtQTlHK3jQr0w
-         mU2yRvMWq8si+YskMleyMUXXglhCQ/tkgEvzgSrvte/b8QxKr9fV15ZJHXpNlbp3u71X
-         XJGtOJP9hByVQqIezL1OrS2u3Ns4AHVwAxP3tFADGgUgPVbIllOgtWEf/Z1OmcIND4hl
-         2W7qJyqN4G0ERcM4VYELditEMUDOz9MyrZABgQ1pBMybs98cez1AGwijV0KLwzimVlPn
-         Gv9w==
-X-Forwarded-Encrypted: i=1; AJvYcCWlv5At8eHgQnz9Rhcc3fIfN8hvlkxgEd5gwvnwYuFmfkRElh8MUiOHUlRLKz5oawD4omjN0xKMHzkruSA/rQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4nt+lQ4Xtoqqe3VnJtYRFNnYSKQ68Dml49GWTe12hbLWaqoUf
-	yG2vW+x2XNF/RN8gN1gfCu/W3dgoFUTz3kpGVsypA628aSFfgq6ZbU07Fgce5Ss=
-X-Google-Smtp-Source: AGHT+IEtrnolfEptjFfOHaUd4JcPGLaKbwZaBjtKbHZL9CqfOihD83PJlSp/4jz+xU32g7o2FRHYcQ==
-X-Received: by 2002:a05:6512:230c:b0:530:ad7d:8957 with SMTP id 2adb3069b0e04-53546bb3b33mr14872842e87.49.1725535611082;
-        Thu, 05 Sep 2024 04:26:51 -0700 (PDT)
-Received: from localhost ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8a764794c9sm55307966b.1.2024.09.05.04.26.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2024 04:26:50 -0700 (PDT)
-Date: Thu, 5 Sep 2024 13:26:50 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>,
-	jack@suse.cz, Vlastimil Babka <vbabka@suse.cz>,
-	Dave Chinner <dchinner@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-bcachefs@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
-Message-ID: <ZtmVej0fbVxrGPVz@tiehlicka>
-References: <20240902095203.1559361-1-mhocko@kernel.org>
- <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
- <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
- <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
- <qlkjvxqdm72ijaaiauifgsnyzx3mw4edl2hexfabnsdncvpyhd@dvxliffsmkl6>
- <ZtgI1bKhE3imqE5s@tiehlicka>
- <xjtcom43unuubdtzj7pudew3m5yk34jdrhim5nynvoalk3bgbu@4aohsslg5c5m>
- <ZtiOyJ1vjY3OjAUv@tiehlicka>
- <pmvxqqj5e6a2hdlyscmi36rcuf4kn37ry4ofdsp4aahpw223nk@lskmdcwkjeob>
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZUBIhauk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DjnIceNR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZUBIhauk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DjnIceNR"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2205421A81;
+	Thu,  5 Sep 2024 12:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725538097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4WJ4nFRla3E237+ALZbePBMCha1Jx0LA7680EWIZ9qA=;
+	b=ZUBIhauk9pLBn+4LtJzsocMf/RdTLy24lmCpQqShpi8SbBM/cNVVG2D4BUnJnHTyV6NuNo
+	Xc2FU8Q2CA8TL4E1kWdxYz6g86k7fiDmM9MnDHAA8X4fbZEMqEKBvEbKCqLvnxXIgWWB5l
+	0KzppmFnuC1nIEfCnB5bP/djulDphLc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725538097;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4WJ4nFRla3E237+ALZbePBMCha1Jx0LA7680EWIZ9qA=;
+	b=DjnIceNRdWP15oYi6DsfMSICUce41R5WBJZXVfFmhDi3YmzSQR+qRyG0QJhu7wLGzfRbqi
+	Lwpq7LY9iCpx6KDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725538097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4WJ4nFRla3E237+ALZbePBMCha1Jx0LA7680EWIZ9qA=;
+	b=ZUBIhauk9pLBn+4LtJzsocMf/RdTLy24lmCpQqShpi8SbBM/cNVVG2D4BUnJnHTyV6NuNo
+	Xc2FU8Q2CA8TL4E1kWdxYz6g86k7fiDmM9MnDHAA8X4fbZEMqEKBvEbKCqLvnxXIgWWB5l
+	0KzppmFnuC1nIEfCnB5bP/djulDphLc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725538097;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4WJ4nFRla3E237+ALZbePBMCha1Jx0LA7680EWIZ9qA=;
+	b=DjnIceNRdWP15oYi6DsfMSICUce41R5WBJZXVfFmhDi3YmzSQR+qRyG0QJhu7wLGzfRbqi
+	Lwpq7LY9iCpx6KDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1653613419;
+	Thu,  5 Sep 2024 12:08:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dP5sBTGf2WbLawAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 05 Sep 2024 12:08:17 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id B2A12A0968; Thu,  5 Sep 2024 14:08:08 +0200 (CEST)
+Date: Thu, 5 Sep 2024 14:08:08 +0200
+From: Jan Kara <jack@suse.cz>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	amir73il@gmail.com, brauner@kernel.org, linux-xfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH v5 00/18] fanotify: add pre-content hooks
+Message-ID: <20240905120808.7fcsnv7nslqsq4t6@quack3>
+References: <cover.1725481503.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -83,127 +89,169 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <pmvxqqj5e6a2hdlyscmi36rcuf4kn37ry4ofdsp4aahpw223nk@lskmdcwkjeob>
+In-Reply-To: <cover.1725481503.git.josef@toxicpanda.com>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[fb.com,vger.kernel.org,suse.cz,gmail.com,kernel.org,kvack.org];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Wed 04-09-24 14:03:13, Kent Overstreet wrote:
-> On Wed, Sep 04, 2024 at 06:46:00PM GMT, Michal Hocko wrote:
-> > On Wed 04-09-24 12:05:56, Kent Overstreet wrote:
-> > > On Wed, Sep 04, 2024 at 09:14:29AM GMT, Michal Hocko wrote:
-> > > > On Tue 03-09-24 19:53:41, Kent Overstreet wrote:
-> > > > [...]
-> > > > > However, if we agreed that GFP_NOFAIL meant "only fail if it is not
-> > > > > possible to satisfy this allocation" (and I have been arguing that that
-> > > > > is the only sane meaning) - then that could lead to a lot of error paths
-> > > > > getting simpler.
-> > > > >
-> > > > > Because there are a lot of places where there's essentially no good
-> > > > > reason to bubble up an -ENOMEM to userspace; if we're actually out of
-> > > > > memory the current allocation is just one out of many and not
-> > > > > particularly special, better to let the oom killer handle it...
-> > > > 
-> > > > This is exactly GFP_KERNEL semantic for low order allocations or
-> > > > kvmalloc for that matter. They simply never fail unless couple of corner
-> > > > cases - e.g. the allocating task is an oom victim and all of the oom
-> > > > memory reserves have been consumed. This is where we call "not possible
-> > > > to allocate".
-> > > 
-> > > *nod*
-> > > 
-> > > Which does beg the question of why GFP_NOFAIL exists.
-> > 
-> > Exactly for the reason that even rare failure is not acceptable and
-> > there is no way to handle it other than keep retrying. Typical code was 
-> > 	while (!(ptr = kmalloc()))
-> > 		;
+Hello!
+
+On Wed 04-09-24 16:27:50, Josef Bacik wrote:
+> These are the patches for the bare bones pre-content fanotify support.  The
+> majority of this work is Amir's, my contribution to this has solely been around
+> adding the page fault hooks, testing and validating everything.  I'm sending it
+> because Amir is traveling a bunch, and I touched it last so I'm going to take
+> all the hate and he can take all the credit.
 > 
-> But is it _rare_ failure, or _no_ failure?
->
-> You seem to be saying (and I just reviewed the code, it looks like
-> you're right) that there is essentially no difference in behaviour
-> between GFP_KERNEL and GFP_NOFAIL.
-
-The fundamental difference is that (appart from unsupported allocation
-mode/size) the latter never returns NULL and you can rely on that fact.
-Our docummentation says:
- * %__GFP_NOFAIL: The VM implementation _must_ retry infinitely: the caller
- * cannot handle allocation failures. The allocation could block
- * indefinitely but will never return with failure. Testing for
- * failure is pointless.
-
-> So given that - why the wart?
+> There is a PoC that I've been using to validate this work, you can find the git
+> repo here
 > 
-> I think we might be able to chalk it up to history; I'd have to go
-> spunking through the history (or ask Dave or Ted, maybe they'll chime
-> in), but I suspect GFP_KERNEL didn't provide such strong guarantees when
-> the allocation loops & GFP_NOFAIL were introduced.
+> https://github.com/josefbacik/remote-fetch
 
-Sure, go ahead. If you manage to remove all existing users of
-__GFP_NOFAIL (without replacing them with retry loops in the caller)
-then I would be more than happy to remove __GFP_NOFAIL in the allocator. 
+The test tool seems to be a bit outdated wrt the current series. It took me
+quite a while to debug why HSM isn't working with it (eventually I've
+tracked it down to the changes in struct fanotify_event_info_range...).
+Anyway all seems to be working (after fixing up some missing export), I've
+pushed out the result I have to:
 
-[...]
-> > But the point is there are some which _do_ need this. We have discussed
-> > that in other email thread where you have heard why XFS and EXT4 does
-> > that and why they are not going to change that model. 
+https://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fsnotify
+
+and will push it to linux-next as well so that it gets some soaking before
+the merge window. That being said I'd still like to get explicit ack from
+XFS folks (hint) so don't patches may still rebase due to that.
+
+								Honza
+
+ 
+> This consists of 3 different tools.
 > 
-> No, I agree that they need the strong guarantees.
+> 1. populate.  This just creates all the stub files in the directory from the
+>    source directory.  Just run ./populate ~/linux ~/hsm-linux and it'll
+>    recursively create all of the stub files and directories.
+> 2. remote-fetch.  This is the actual PoC, you just point it at the source and
+>    destination directory and then you can do whatever.  ./remote-fetch ~/linux
+>    ~/hsm-linux.
+> 3. mmap-validate.  This was to validate the pagefault thing, this is likely what
+>    will be turned into the selftest with remote-fetch.  It creates a file and
+>    then you can validate the file matches the right pattern with both normal
+>    reads and mmap.  Normally I do something like
 > 
-> But if there's an actual bug, returning an error is better than killing
-> the task. Killing the task is really bad; these allocations are deep in
-> contexts where locks and refcounts are held, and the system will just
-> grind to a halt.
+>    ./mmap-validate create ~/src/foo
+>    ./populate ~/src ~/dst
+>    ./rmeote-fetch ~/src ~/dst
+>    ./mmap-validate validate ~/dst/foo
 
-Not sure what you mean by these allocations but I am not aware that any
-of the existing user would be really buggy. Also as I've said elsewhere,
-there is simply no good way to handle a buggy caller. Killing the buggy
-context has some downsides, returning NULL has others. I have argued
-that the former has better predictable behavior than potentially silent
-failure. We can clearly disagree on this but I also do not see why that
-is relevant to the original discussion because my argument against
-PF_MEMALLOC_NORECLAIM was focused on correct GPF_NOFAIL nested context
-that would get an unexpected failure mode. No matter what kind of
-failure mode that is it would be unexpected for those users.
 
-> > > But as a matter of policy going forward, yes we should be saying that
-> > > even GFP_NOFAIL allocations should be checking for -ENOMEM.
-> > 
-> > I argue that such NOFAIL semantic has no well defined semantic and legit
-> > users are forced to do
-> > 	while (!(ptr = kmalloc(GFP_NOFAIL))) ;
-> > or
-> > 	BUG_ON(!(ptr = kmalloc(GFP_NOFAIL)));
-> > 
-> > So it has no real reason to exist.
+
 > 
-> I'm arguing that it does, provided when it returns NULL is defined to
-> be:
->  - invalid allocation context
->  - a size that is so big that it will never be possible to satisfy.
-
-Those are not really important situations because you are arguing about
-a buggy code that needs fixing. As said above we can argue how to deal
-with those users to get a predictable behavior but as the matter of
-fact, correct users can expect never seeing the failure so handling
-failure might be a) impossible and b) unfeasible (i.e. you are adding a
-dead code that is never tested).
-
-[...]
-
-> For large allocations in bcachefs: in journal replay we read all the
-> keys in the journal, and then we create a big flat array with references
-> to all of those keys to sort and dedup them.
+> I did a bunch of testing, I also got some performance numbers.  I copied a
+> kernel tree, and then did remote-fetch, and then make -j4
 > 
-> We haven't hit the INT_MAX size limit there yet, but filesystem sizes
-> being what they are, we will soon. I've heard of users with 150 TB
-> filesystems, and once the fsck scalability issues are sorted we'll be
-> aiming for petabytes. Dirty keys in the journal scales more with system
-> memory, but I'm leasing machines right now with a quarter terabyte of
-> ram.
-
-I thought you were arguing about bcachefs handling failure mode so
-presumably you do not need to use __GFP_NOFAIL for those.
-
-I am sorry but I am getting lost in these arguments.
+> Normal
+> real    9m49.709s
+> user    28m11.372s
+> sys     4m57.304s
+> 
+> HSM
+> real    10m6.454s
+> user    29m10.517s
+> sys     5m2.617s
+> 
+> So ~17 seconds more to build with HSM.  I then did a make mrproper on both trees
+> to see the size
+> 
+> [root@fedora ~]# du -hs /src/linux
+> 1.6G    /src/linux
+> [root@fedora ~]# du -hs dst
+> 125M    dst
+> 
+> This mirrors the sort of savings we've seen in production.
+> 
+> Meta has had these patches (minus the page fault patch) deployed in production
+> for almost a year with our own utility for doing on-demand package fetching.
+> The savings from this has been pretty significant.
+> 
+> The page-fault hooks are necessary for the last thing we need, which is
+> on-demand range fetching of executables.  Some of our binaries are several gigs
+> large, having the ability to remote fetch them on demand is a huge win for us
+> not only with space savings, but with startup time of containers.
+> 
+> There will be tests for this going into LTP once we're satisfied with the
+> patches and they're on their way upstream.  Thanks,
+> 
+> Josef
+> 
+> Amir Goldstein (8):
+>   fsnotify: introduce pre-content permission event
+>   fsnotify: generate pre-content permission event on open
+>   fanotify: introduce FAN_PRE_ACCESS permission event
+>   fanotify: introduce FAN_PRE_MODIFY permission event
+>   fanotify: pass optional file access range in pre-content event
+>   fanotify: rename a misnamed constant
+>   fanotify: report file range info with pre-content events
+>   fanotify: allow to set errno in FAN_DENY permission response
+> 
+> Josef Bacik (10):
+>   fanotify: don't skip extra event info if no info_mode is set
+>   fs: add a flag to indicate the fs supports pre-content events
+>   fanotify: add a helper to check for pre content events
+>   fanotify: disable readahead if we have pre-content watches
+>   mm: don't allow huge faults for files with pre content watches
+>   fsnotify: generate pre-content permission event on page fault
+>   bcachefs: add pre-content fsnotify hook to fault
+>   xfs: add pre-content fsnotify hook for write faults
+>   btrfs: disable defrag on pre-content watched files
+>   fs: enable pre-content events on supported file systems
+> 
+>  fs/bcachefs/fs-io-pagecache.c      |   4 +
+>  fs/bcachefs/fs.c                   |   2 +-
+>  fs/btrfs/ioctl.c                   |   9 ++
+>  fs/btrfs/super.c                   |   3 +-
+>  fs/ext4/super.c                    |   6 +-
+>  fs/namei.c                         |   9 ++
+>  fs/notify/fanotify/fanotify.c      |  33 ++++++--
+>  fs/notify/fanotify/fanotify.h      |  15 ++++
+>  fs/notify/fanotify/fanotify_user.c | 119 ++++++++++++++++++++++-----
+>  fs/notify/fsnotify.c               |  17 +++-
+>  fs/xfs/xfs_file.c                  |   4 +
+>  fs/xfs/xfs_super.c                 |   2 +-
+>  include/linux/fanotify.h           |  20 +++--
+>  include/linux/fs.h                 |   1 +
+>  include/linux/fsnotify.h           |  58 +++++++++++--
+>  include/linux/fsnotify_backend.h   |  59 ++++++++++++-
+>  include/linux/mm.h                 |   1 +
+>  include/uapi/linux/fanotify.h      |  18 ++++
+>  mm/filemap.c                       | 128 +++++++++++++++++++++++++++--
+>  mm/memory.c                        |  22 +++++
+>  mm/readahead.c                     |  13 +++
+>  security/selinux/hooks.c           |   3 +-
+>  22 files changed, 489 insertions(+), 57 deletions(-)
+> 
+> -- 
+> 2.43.0
+> 
 -- 
-Michal Hocko
-SUSE Labs
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
