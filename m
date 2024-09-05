@@ -1,145 +1,153 @@
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC57114BF85
-	for <linux-bcachefs@vger.kernel.org>; Wed,  4 Sep 2024 23:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7498F507
+	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 02:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725491137; cv=none; b=eQGM7Dlqi1womqQpqPLTdHZ+OJproJq0VE8eZQyXBLDDa+WLwHxyexRyPPvqqfw97YG4W9KqdjLkBG+s1NgyNO+l1yAFONt+GXruOa2eDNWrxT/P61gV/ki36KKDBU/mE7v4M6DQfR/vOtUnZWX1gzMyc6gNSYP2m2SdiCxGHo0=
+	t=1725502288; cv=none; b=YpDOBHMPUX2/oGAlVWaFTldvdrgl3UuMCV0YT9i3LpedgoZ9Gv4tMaeAJpNCOi64UzC4osLqslvFFxF+esW3PVsd5oTvB2C+y9GN90R0BsDSQN2dz/tMwtvvnD/BSPlXUILCqq0TNiH8U0J4hpwLn4C8E18bf0aQ+aTfOGzmskw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725491137; c=relaxed/simple;
-	bh=AL7jBf/oj0Cd/KEMZtrNE6Gk35+GwCCya7UV9FRkstA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n15CxvIkiSmNQWlb/GeAzinyypJMZkbfURZphMlKp3ZL3vJq3jJuIH1Fc+Jhit00nkdCVf3uGmyMuXJ221Pjgv4yH4OpHfB7W60xiajkmSJKs6ITiCuiOQkd0Z1okUYwNxRSgzX0RhlqcGf0ROo7mCkgRjvcQDVONa3t00VfJik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qldlD+ML; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1725502288; c=relaxed/simple;
+	bh=cRz3MRM7m7YUfhVubLwnq/DbmNgMy8INFBDvEvE1aUo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RoPMxZkzkbkfCkuhYEaJfe2uTvTOiXodjP4tS/iB4t4cWFxh6SaRT+dcw8GINnUhqJSzkNh6o1gQJKEHu/rancYVLiStifVR+zZZd2SYPM/mZE2Skm0KZWY5PeFrFV9EW1Crzdeb8JaPhzWJk4gn3EocfWEXzX+9NGlTBRwA6Lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=D4/U8hMq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=o5LtT2SN; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=D4/U8hMq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=o5LtT2SN; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qldlD+ML"
-Date: Wed, 4 Sep 2024 19:05:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725491134;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KcVsx2vDwlHG4tKH3VNsA9AGL8ypQbgKqlGsi88qPzs=;
-	b=qldlD+MLY/awoHP6h9eDQb6YaviSGzhThCweSL040WEvRSqzzpwPqgx4HAaievFjLWZKJt
-	nQkeee2r7E5VxY5DhvIDWaXMdorCngIxHzEpFVSmRe+B0DEzFquLXaGVZsRk0xBPM5/Bz8
-	Nd8G9AiWuM4qKc/av28TbAlF1hyYCF0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Michal Hocko <mhocko@suse.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, 
-	Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, Vlastimil Babka <vbabka@suse.cz>, 
-	Dave Chinner <dchinner@redhat.com>, Christian Brauner <brauner@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-bcachefs@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
-Message-ID: <hebnghkaytxb5djjsh6w7eddl7czrbnd7duobwisauffs5ax2q@4itp76zkzsf7>
-References: <20240902095203.1559361-1-mhocko@kernel.org>
- <ggrt5bn2lvxnnebqtzivmge3yjh3dnepqopznmjmkrcllb3b35@4vnnapwr36ur>
- <20240902145252.1d2590dbed417d223b896a00@linux-foundation.org>
- <yewfyeumr2vj3o6dqcrv6b2giuno66ki7vzib3syitrstjkksk@e2k5rx3xbt67>
- <qlkjvxqdm72ijaaiauifgsnyzx3mw4edl2hexfabnsdncvpyhd@dvxliffsmkl6>
- <ZtgI1bKhE3imqE5s@tiehlicka>
- <xjtcom43unuubdtzj7pudew3m5yk34jdrhim5nynvoalk3bgbu@4aohsslg5c5m>
- <ZtiOyJ1vjY3OjAUv@tiehlicka>
- <pmvxqqj5e6a2hdlyscmi36rcuf4kn37ry4ofdsp4aahpw223nk@lskmdcwkjeob>
- <Ztjgf/mzdnhj/szl@dread.disaster.area>
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="D4/U8hMq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="o5LtT2SN";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="D4/U8hMq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="o5LtT2SN"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B3E4921904;
+	Thu,  5 Sep 2024 02:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1725502283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0pJU2dfm2YP4OelIPL+5Y8QXYjagi1JmQDO9ggWbC1c=;
+	b=D4/U8hMqnRQyvU9bXZRTXfDAz4r/5iDXq5xKbI6f6xBOmTkM6MXdARgb6d6gwD84Pl7gob
+	3H5JTM3NAcLmSnqSEPIFcQzzXz0OasvrnPdqkADNfK+ZDrTioV0NJDZoNXncUHj66uQbW7
+	YTSOTjKlypI0XAVvLVnnMvemkwebzYc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1725502283;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0pJU2dfm2YP4OelIPL+5Y8QXYjagi1JmQDO9ggWbC1c=;
+	b=o5LtT2SNUbMFzebwr49y29kvRfgh4d8mC3CeTKz/zy/tAP7HNaR3450i2XYWEKexLGxGWU
+	jAPEqe99dgar45Dw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="D4/U8hMq";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=o5LtT2SN
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1725502283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0pJU2dfm2YP4OelIPL+5Y8QXYjagi1JmQDO9ggWbC1c=;
+	b=D4/U8hMqnRQyvU9bXZRTXfDAz4r/5iDXq5xKbI6f6xBOmTkM6MXdARgb6d6gwD84Pl7gob
+	3H5JTM3NAcLmSnqSEPIFcQzzXz0OasvrnPdqkADNfK+ZDrTioV0NJDZoNXncUHj66uQbW7
+	YTSOTjKlypI0XAVvLVnnMvemkwebzYc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1725502283;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0pJU2dfm2YP4OelIPL+5Y8QXYjagi1JmQDO9ggWbC1c=;
+	b=o5LtT2SNUbMFzebwr49y29kvRfgh4d8mC3CeTKz/zy/tAP7HNaR3450i2XYWEKexLGxGWU
+	jAPEqe99dgar45Dw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DD55139D2;
+	Thu,  5 Sep 2024 02:11:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id TPjBL0kT2WZ3OgAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Thu, 05 Sep 2024 02:11:21 +0000
+From: David Disseldorp <ddiss@suse.de>
+To: linux-bcachefs@vger.kernel.org
+Cc: David Disseldorp <ddiss@suse.de>,
+	Martin Doucha <martin.doucha@suse.com>
+Subject: [PATCH] Revert "bcachefs: Ignore unknown mount options"
+Date: Thu,  5 Sep 2024 02:09:56 +0000
+Message-ID: <20240905020956.29821-1-ddiss@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ztjgf/mzdnhj/szl@dread.disaster.area>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: B3E4921904
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:email,suse.de:dkim,suse.de:mid,opensuse.org:url];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
 
-On Thu, Sep 05, 2024 at 08:34:39AM GMT, Dave Chinner wrote:
-> I've seen xfs_repair require a couple of TB of RAM to repair
-> metadata heavy filesystems of relatively small size (sub-20TB).
-> Once you get about a few hundred GB of metadata in the filesystem,
-> the fsck cross-reference data set size can easily run into the TBs.
-> 
-> So 256GB might *seem* like a lot of memory, but we were seeing
-> xfs_repair exceed that amount of RAM for metadata heavy filesystems
-> at least a decade ago...
-> 
-> Indeed, we recently heard about a 6TB filesystem with 15 *billion*
-> hardlinks in it.  The cross reference for resolving all those
-> hardlinks would require somewhere in the order of 1.5TB of RAM to
-> hold. The only way to reliably handle random access data sets this
-> large is with pageable memory....
+This reverts commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b.
 
-Christ...
+Contrary to the commit message, unknown mount options do result in
+failure on other filesystems such as xfs, btrfs, ext4, etc.
 
-This is also where space efficiency of metadata starts to really matter. 
+Ignoring unknown options may result in unexpected behaviour: e.g. if
+an application requires future-workload-specific-mount-option to work
+and is run on a system without future-workload-specific-mount-option
+kernel support, then it may fail without indication of the missing
+kernel functionality.
 
-Of course you store full backreferences for every hardlink, which is
-nice in some ways and a pain in others.
+This reversion may cause failures for existing users reliant on the
+ignore-unknown behaviour, but it should be bearable given bcachefs is
+still flagged experimental.
 
-> > Another more pressing one is the extents -> backpointers and
-> > backpointers -> extents passes of fsck; we do a linear scan through one
-> > btree checking references to another btree. For the btree we're checking
-> > references to the lookups are random, so we need to cache and pin the
-> > entire btree in ram if possible, or if not whatever will fit and we run
-> > in multiple passes.
-> > 
-> > This is the #1 scalability issue hitting a number of users right now, so
-> > I may need to rewrite it to pull backpointers into an eytzinger array
-> > and do our random lookups for backpointers on that - but that will be
-> > "the biggest vmalloc array we can possible allocate", so the INT_MAX
-> > size limit is clearly an issue there...
-> 
-> Given my above comments, I think you are approaching this problem
-> the wrong way. It is known that the data set that can exceed
-> physical kernel memory size, hence it needs to be swappable. That
-> way users can extend the kernel memory capacity via swapfiles when
-> bcachefs.fsck needs more memory than the system has physical RAM.
+Reported-by: Martin Doucha <martin.doucha@suse.com>
+Closes: https://bugzilla.opensuse.org/show_bug.cgi?id=1230065
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+---
+ fs/bcachefs/opts.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Well, it depends on the locality of the cross references - I don't think
-we want to go that route here, because if there isn't any locality in
-the cross references we'll just be thrashing; better to run in multiple
-passes, constraining each pass to what _will_ fit in ram...
+diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+index e10fc1da71b1..bc5c18087821 100644
+--- a/fs/bcachefs/opts.c
++++ b/fs/bcachefs/opts.c
+@@ -482,9 +482,8 @@ int bch2_parse_one_mount_opt(struct bch_fs *c, struct bch_opts *opts,
+ 		val = "0";
+ 	}
+ 
+-	/* Unknown options are ignored: */
+ 	if (id < 0)
+-		return 0;
++		goto bad_opt;
+ 
+ 	if (!(bch2_opt_table[id].flags & OPT_MOUNT))
+ 		goto bad_opt;
+-- 
+2.43.0
 
-It would be nice if we had a way to guesstimate locality in extents <->
-backpointers references - if there is locality, then it's better to just
-run in one pass - and we wouldn't bother with building up new tables,
-we'd just rely on the btree node cache.
-
-Perhaps that's what we'll do when online fsck is finished and we're
-optimizing more for "don't disturb the rest of the system too much" than
-"get it done as quick as possible".
-
-I do need to start making use of Darrick's swappable memory code in at
-least one other place though - the bucket tables when we're checking
-basic allocation info. That one just exceeded the INT_MAX limit for a
-user with a 30 TB hard drive, so I switched it to a radix tree for now,
-but it really should be swappable memory.
-
-Fortunately there's more locality in the accesses there.
-
-> Hence Darrick designed and implemented pageable shmem backed memory
-> files (xfiles) to hold these data sets. Hence the size limit of the
-> online repair data set is physical RAM + swap space, same as it is
-> for offline repair. You can find the xfile code in
-> fs/xfs/scrub/xfile.[ch].
-> 
-> Support for large, sortable arrays of fixed size records built on
-> xfiles can be found in xfarray.[ch], and blob storage in
-> xfblob.[ch].
-
-*nod*
-
-I do wish we had normal virtually mapped swappable memory though - the
-thing I don't like about xfarray is that it requires a radix tree walk
-on every access, and we have _hardware_ that's meant to do that for
-us.
-
-But if you still care about 32 bit then that does necessitate Darrick's
-approach. I'm willing to consider 32 bit legacy for bcachefs, though.
