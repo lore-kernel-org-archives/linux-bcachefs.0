@@ -1,113 +1,95 @@
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932CC2F44
-	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 04:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E973683CC1
+	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 07:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725510575; cv=none; b=OQMjbIkt/2xk2cgre1zJn06SXplf4Ggc7fXIyr1/PgYtI5XBUF3AIWCvtZsCp/jB5+QvbDcMz0T92oXfkuoWw6mFAPGjubzECv4hv0Hq901PkdfL+xa9BW27bKFNzDWfl9pU8XmNidY8JbN2x5ExoORuLsM9odhE+YuCU+Kf5AQ=
+	t=1725521328; cv=none; b=fBVMnxKywfuFyNXEIPPHoYsbQVJC23fV7HKAzeZfVzcSJKc6NeZJ1w4sA2yKJPS1XIaWvyIpn/0WITCV381zrIkdesCrAtoyw/o7M0LHK0rVOXvV4sRL5o0cVtNBFvte1cQVGs+br9w8J6wuM27azomCmEo5nmrwRP5Z+NG3+ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725510575; c=relaxed/simple;
-	bh=HY9r8TLNRQbcgYLJcARe5fGG9eVMaaiiLWiW+9HzwrU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ctMi2tAvSo2nujhMhCwm8BAyRQeAFv9TGE1Z9q+c3lkqre3Ygxzt9tpCpzKRHkYz8GGZIPRJdAvPY/mvUMSqFqLoA31N2QrcS0vjtEt72u2GvCA8MGGX8oCRGDemMb3ZGQ1jEksoeWytvhyH5SuVf36AAa4MPU8DzamwtX+HabI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lB+o4STI; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lB+o4STI"
-Date: Thu, 5 Sep 2024 00:29:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725510571;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wXwXOGS5exQ+0KdoKiUUba4QLknrVZhhx1HlkjlZT60=;
-	b=lB+o4STI5V9dwzcP1oMZSFWqcJECD7eV8YFbQWg+6R4uz1Q1pn34UYLKz13j5Alar8U94o
-	Db6N2VR5nKc6k5S5rV5UVzTtysS+qE6tKMtHBGHRVeUNoi+fLxSkHS6oCSheCSOZxWpQnj
-	S4jGf05lnpjZ2QZ4Fo/35ZY4cfeuy9Y=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Gerhard Wiesinger <lists@wiesinger.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: Corrupt bcachefs can't be transferred into a consistent state
-Message-ID: <ppqn3gvkjjsbg4sprijlqbldkuetnaco5orl4wxapsydee65g5@3nwlodfwjwcx>
-References: <aa613c37-153c-43e4-b68e-9d50744be7de@wiesinger.com>
+	s=arc-20240116; t=1725521328; c=relaxed/simple;
+	bh=QW8+D6WMjJkLB2imbVv6KdvjI7lN05NJQX56hfcVlis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=YsX5Koln7ZXy7tJ5vrNbYRenbwnZarh7jLrNwSSFeRrBQv17w+nE+WyBbHpccYBk9fl7bsNBdG83NSyI4yH0HZMqIi2bEfVZBRwLcGOBlDbryLiaJpQT3jCzhqAMivJ7dIJjBibvx+W9/jNXotDBXHnn9sHnzMtOjGyFIyJaadY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WzrWv5c2Qzfbhv;
+	Thu,  5 Sep 2024 15:26:35 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6EC5A18005F;
+	Thu,  5 Sep 2024 15:28:43 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 5 Sep 2024 15:28:43 +0800
+Message-ID: <b696e5c8-6f79-492d-8b66-fd012f5d69c5@huawei.com>
+Date: Thu, 5 Sep 2024 15:28:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa613c37-153c-43e4-b68e-9d50744be7de@wiesinger.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Revert "bcachefs: Ignore unknown mount options"
+Content-Language: en-US
+To: David Disseldorp <ddiss@suse.de>, <linux-bcachefs@vger.kernel.org>
+CC: Martin Doucha <martin.doucha@suse.com>
+References: <20240905020956.29821-1-ddiss@suse.de>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240905020956.29821-1-ddiss@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Sun, Sep 01, 2024 at 02:01:25PM GMT, Gerhard Wiesinger wrote:
-> Hello,
-> 
-> I'm having some Fedora Linux VMs (actual versions, latest updates) in a
-> virtual test infrastructure on Virtualbox. There I run different VMs with
-> different filesystems (ext4, xfs, zfs, bcachefs and btrfs).
-> 
-> I had a hardware problem on the underlying hardware where around 1000 4k
-> blocks could not be read anymore. I migrated with ddrescure the whole disk
-> which worked well.
-> 
-> Of course I was expecting some data loss in the VMs but wanted to get them
-> in a consistent state.
-> 
-> The following file systems got very easy in a consistent state with the
-> corresponding repair/scrub tools of the filesystems:
-> - ext4
-> - xfs
-> - zfs
-> 
-> Unfortunately 2 filesystem can't get into a state, where the filesystem
-> repair tools report "everything fine" (of course with some loss data, but
-> that's fine):
-> - btrfs
-> - bcachefs
-> 
-> commands run with bcachefs (git version):
-> git log -n1 | head -n1
-> commit 1e058db4b603f8992b781b4654b48221dd04407a
-> ./bcachefs version
-> 1.12.0
-> 
-> But bcachefs never got into a consistent state, also with newer versions.
-> Also check with older versions (1.7.0) run for a long time.
-> 
-> To reproduce the problem I created a new filesystem and copied some files
-> there:
-> mkfs.bcachefs -f /dev/sdb
-> time cp -Rap /usr /mnt
-> 
-> Afterwards I created a (quick&dirty) script "corrupt_device.sh" to corrupt
-> the device in the same manner as the original failure (1000 4k blocks will
-> be randomly overwritten).
-> Script: see below
-> 
-> ~/corrupt_device.sh
-> ./bcachefs fsck -pf /dev/sdb
-> ./bcachefs fsck -pfR /dev/sdb
-> 
-> Result: It can be reproduced, that bcachefs can't be brought into a
-> consistent state even after several runs of the repair.
-> 
-> You can also try to reproduce it and create a testcase out of it.
-> 
-> Any ideas how to repair and what can be done to get it into a consistent
-> state?
 
-If you've got a filesystem you want data off of - send me a metadata
-dump (join the IRC channel, send it via magic wormhole) and I'll debug.
 
-We still haven't comprehensively torture tested all the repair paths
-(which is probably the biggest reason it's still marked as
-experimental); all the repair paths are there, but there's still bugs to
-shake out.
+On 2024/9/5 10:09, David Disseldorp wrote:
+> This reverts commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b.
+> 
+May be the subject should be Fix .... The original commit 
+03ef80b469d5d83530ce1ce15be78a40e5300f9b has been changed by other change.
+> Contrary to the commit message, unknown mount options do result in
+> failure on other filesystems such as xfs, btrfs, ext4, etc.
+> 
+> Ignoring unknown options may result in unexpected behaviour: e.g. if
+> an application requires future-workload-specific-mount-option to work
+> and is run on a system without future-workload-specific-mount-option
+> kernel support, then it may fail without indication of the missing
+> kernel functionality.
+> 
+> This reversion may cause failures for existing users reliant on the
+> ignore-unknown behaviour, but it should be bearable given bcachefs is
+> still flagged experimental.
+> 
+> Reported-by: Martin Doucha <martin.doucha@suse.com>
+> Closes: https://bugzilla.opensuse.org/show_bug.cgi?id=1230065
+> Signed-off-by: David Disseldorp <ddiss@suse.de>
+> ---
+>   fs/bcachefs/opts.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+> index e10fc1da71b1..bc5c18087821 100644
+> --- a/fs/bcachefs/opts.c
+> +++ b/fs/bcachefs/opts.c
+> @@ -482,9 +482,8 @@ int bch2_parse_one_mount_opt(struct bch_fs *c, struct bch_opts *opts,
+>   		val = "0";
+>   	}
+>   
+> -	/* Unknown options are ignored: */
+>   	if (id < 0)
+> -		return 0;
+> +		goto bad_opt;
+As other filesystem done, for unknown options, it prints the `Unknown 
+parameter` to hint the user. May be goto bad_opt is not reasonable.
 
-Thanks for the test - I'll try to make use of it when I'm working in
-that area again.
+Thanks,
+Hongbo
+
+>   
+>   	if (!(bch2_opt_table[id].flags & OPT_MOUNT))
+>   		goto bad_opt;
