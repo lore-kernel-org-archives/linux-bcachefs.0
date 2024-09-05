@@ -1,137 +1,111 @@
-Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1821A0AF4
-	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 16:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7219C18E032
+	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Sep 2024 19:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725555578; cv=none; b=gVXjUZ1aQHFb2Ux5HAQSEB0P+6lojSciu9uLEkgaGRBE7qVcGc1J/Sm0i/CzT49QKCsw4OA28wKEnoHyuUmBVQuI5AzOF3LI/TpkM+SGHDY4eaI8p6N6zzNlbE+F3nPNlVPIf/ziKb7MMMUV7Ou8l2dFiUtfYHt8DkxeoP9Djdg=
+	t=1725564604; cv=none; b=Md3hltM9TuKc5dJwaOy6R4k4m/6Ucv7fY/+JsuUoWz7aQjzA5z9KvHAWFWJz89KeugBR3S8HOFOl13MvFIar5G169nxUKlyBiYO8GcTAGLEu8ON6KoU6wa4cHg5eDvwRM4X6e1JoMir3LqMTSXUVq3P60kO/sN4kJ2xXCLuXdlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725555578; c=relaxed/simple;
-	bh=aalIeKIVnFQPDuJvNWq+jF4I7vNcO+UGe9+3LDZVirk=;
-	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=uP3b+u8Uq2OPfR1eSaODryjJKEFRUsgEK/56tcAi3CgJuqN7p0vj/R7k6TYHdvWWNngrk82Oo1IEBbA+EsPFhUyKhDEJcNlARyavAFArRIr9xdqp0XG+VdJYh8Rut/cr66+K5aoO4rDHJNv1jxGxFoUXh2okhLCHjE6d5oEnCtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riley.engineer; spf=pass smtp.mailfrom=riley.engineer; dkim=pass (2048-bit key) header.d=riley.engineer header.i=@riley.engineer header.b=KFZopqDp; arc=none smtp.client-ip=185.70.43.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riley.engineer
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riley.engineer
+	s=arc-20240116; t=1725564604; c=relaxed/simple;
+	bh=h+GztmK06ua0ItOo5xyNb+uFSPQwlQl1O+khIF189xA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kS8jcOuwaAWAqbzAXkOzUOxzNkpmFoOUx5UwHVuzOStOOPS/x/oEOAvrN5yfP+IX8v2YFLhT9TYL4S9j+gjbnWuWr8NDNxGydlENA+JiwZXVRUs5CBayYSRxSfB0qHGHekpPNrtZj9Pvgpy26eN88/ZhDkezHhALFTRZwN4QyJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Z3/T92iC; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=riley.engineer header.i=@riley.engineer header.b="KFZopqDp"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=riley.engineer;
-	s=protonmail; t=1725555571; x=1725814771;
-	bh=5LPN1YgnrLqSImm1H0HpotUJy+wL1qR4YDreDK+8BMg=;
-	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=KFZopqDpf6jV5mRxFrb+yF2TLKPo1Y6SSvSLxS6Y2iAwmBBQEcBEBXj24I2ey2K6J
-	 FwOIe4MbDthPRctSu6XTFQ/H3AoYEuKmFGi/PeTvFrNJ9ea/Ab9T8Zt16KqBczHsto
-	 fDWWAKpyAjgj1ozP74BQX9/AP8L3FIN407ia46tjJwspysRh2hN9TKQyZRdKILPxQd
-	 MTg4YWdvlOvKzqmCQoI7JBoZ4sj03pfMMontHhR0hbP2m4hiAK+KtaPCeWCmPeFlmb
-	 CwavvsOOTYa7Z8tif1cMITQumlAy3zmZa25PbuBmKdRl+YI1hoErKh9GpiBYBnxS79
-	 cXQ4Px9qmY9tQ==
-Date: Thu, 05 Sep 2024 16:59:29 +0000
-To: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-From: Reed Riley <reed@riley.engineer>
-Subject: [PATCH] Replace div_u64 with div64_u64 where second param is u64
-Message-ID: <4sKBZZw48nEZjT1jQupVR2UFURIlwWmUkFK5KtEPZosBIeWn00r0lcENgqQiGqzfOgOvnvi_xhOR_-P8aHiY_KtW4ANW_Awf7xUjCEpEMUY=@riley.engineer>
-Feedback-ID: 15554401:user:proton
-X-Pm-Message-ID: 7a533b5aad93a35e8150f2386ffa840682697a84
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Z3/T92iC"
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7a8134aefe8so86119485a.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 05 Sep 2024 12:30:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1725564601; x=1726169401; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uLq88qKC5eEOv6jE9dMcoyRYpwT+k6ZKS0lrxy9sSsE=;
+        b=Z3/T92iC/Fj+/Cia06bnr5Xwx1xqgKpVwu0CnncHmhc/EuaCDuXE1YbsTZT0gknmM2
+         Ku1Y8gBvzZTsGRFAmeATiWCoh5PVX1h2cORqMX2Ii57fV4Juetf9BuPjEThIET2wV2Yb
+         G7I+Wq+sLEpo2sd6hGboa45C3vYQP89JbLNlkKt+1p9bd0o9Pwq2g8eMSEtlMqwPa53Q
+         e9FeFzxH3dJQoGNYjUxg7AH2jY4+W6nCrKVWACOQyH/QxpRZ0VEnh7sJnE0+9oeXQBNc
+         hcwD83qYlCjnUz6PMtyk/iBJ2u0XNtRQeeBOWPNnI/pM3Dy0AbGtIR8eJGk4bBCy5jX/
+         k3bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725564601; x=1726169401;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uLq88qKC5eEOv6jE9dMcoyRYpwT+k6ZKS0lrxy9sSsE=;
+        b=t2xROJHFS4VnUk69euOt+qo1lQARS0cInBseE5A/Qelvp9rXOMsbw+itX1z2YLRNII
+         GeIL8vORW0Z+yNg9SgO6arC6iclAtT4F41d6uXqEypUjvb11eIoDoUWPP4ac/Ri2totR
+         wyJ+n1XvWFnsLK8HFkz4GK3RDIVMEhuwLXRDQ7ILoTgbtZ6aCP+tjHv8LxvZNh8xN429
+         OLG7kJhVKW1d4TYs7hXsr+9YzhG61OnWOvbyTZCIvaIhWIGhXi0iKAttcMSzdvEeJvKh
+         HBRVKEyshv0r1dobCOS8jbdlElo1xpKdVBuZec8TkcTroydSURk96FApGNlu9hpQnzz+
+         SDng==
+X-Forwarded-Encrypted: i=1; AJvYcCW84j0tofSaVLzW7Tj0iSc7Jzl3yIau+wdnXQmiSJZlMQo00J1t2tZGZnUfee0uta+fMozL+zVChVByL0sG2A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTPVcT8tTCvsl8fyXrWVnCBAQBtF9tSz3MhUHCJzqtdH659car
+	tySHLZUDNRbCrR4oR/KuRHryXZRwL/apVvTwYC6Yuzmv+u7ChfAqHfw2dsKiZFtCVGikOUfg8ah
+	L
+X-Google-Smtp-Source: AGHT+IH/jKRTwmHj2A0Fw8hBIQQEYZheGvncMyz59vEBTim/gY8yU8p+bmOgT7GJ5npitcpK4cA+uw==
+X-Received: by 2002:a05:620a:29d0:b0:7a2:275:4841 with SMTP id af79cd13be357-7a99733aef1mr14265285a.34.1725564601247;
+        Thu, 05 Sep 2024 12:30:01 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a98ef1f9a4sm101960785a.2.2024.09.05.12.30.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Sep 2024 12:30:00 -0700 (PDT)
+Date: Thu, 5 Sep 2024 15:29:59 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Jan Kara <jack@suse.cz>
+Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, amir73il@gmail.com,
+	brauner@kernel.org, linux-xfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH v5 00/18] fanotify: add pre-content hooks
+Message-ID: <20240905192959.GA3710628@perftesting>
+References: <cover.1725481503.git.josef@toxicpanda.com>
+ <20240905120808.7fcsnv7nslqsq4t6@quack3>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240905120808.7fcsnv7nslqsq4t6@quack3>
 
-Bcachefs often uses this function to divide by nanosecond times - which
-can easily cause problems when cast to u32.  For example, `cat
-/sys/fs/bcachefs/*/internal/rebalance_status` would return invalid data
-in the `duration waited` field because dividing by the number of
-nanoseconds in a minute requires the divisor parameter to be u64.
+On Thu, Sep 05, 2024 at 02:08:08PM +0200, Jan Kara wrote:
+> Hello!
+> 
+> On Wed 04-09-24 16:27:50, Josef Bacik wrote:
+> > These are the patches for the bare bones pre-content fanotify support.  The
+> > majority of this work is Amir's, my contribution to this has solely been around
+> > adding the page fault hooks, testing and validating everything.  I'm sending it
+> > because Amir is traveling a bunch, and I touched it last so I'm going to take
+> > all the hate and he can take all the credit.
+> > 
+> > There is a PoC that I've been using to validate this work, you can find the git
+> > repo here
+> > 
+> > https://github.com/josefbacik/remote-fetch
+> 
+> The test tool seems to be a bit outdated wrt the current series. It took me
+> quite a while to debug why HSM isn't working with it (eventually I've
+> tracked it down to the changes in struct fanotify_event_info_range...).
+> Anyway all seems to be working (after fixing up some missing export), I've
+> pushed out the result I have to:
 
-Signed-off-by: Reed Riley <reed@riley.engineer>
----
- fs/bcachefs/super-io.c |  2 +-
- fs/bcachefs/sysfs.c    |  2 +-
- fs/bcachefs/util.c     | 12 ++++++------
- 3 files changed, 8 insertions(+), 8 deletions(-)
+Eesh sorry, I updated it for the fstests and used that as the source of truth
+for this stuff, which is how I validated all of the fs'es that got the
+FS_ALLOW_HSM flag.
 
-diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-index c8c2ccbdfbb5..6f71e8cef7ea 100644
---- a/fs/bcachefs/super-io.c
-+++ b/fs/bcachefs/super-io.c
-@@ -521,7 +521,7 @@ static void bch2_sb_update(struct bch_fs *c)
- =09c->sb.time_units_per_sec =3D NSEC_PER_SEC / c->sb.nsec_per_time_unit;
-=20
- =09/* XXX this is wrong, we need a 96 or 128 bit integer type */
--=09c->sb.time_base_lo=09=3D div_u64(le64_to_cpu(src->time_base_lo),
-+=09c->sb.time_base_lo=09=3D div64_u64(le64_to_cpu(src->time_base_lo),
- =09=09=09=09=09  c->sb.nsec_per_time_unit);
- =09c->sb.time_base_hi=09=3D le32_to_cpu(src->time_base_hi);
-=20
-diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
-index f393023a3ae2..561998b2b5dc 100644
---- a/fs/bcachefs/sysfs.c
-+++ b/fs/bcachefs/sysfs.c
-@@ -288,7 +288,7 @@ static int bch2_compression_stats_to_text(struct printb=
-uf *out, struct bch_fs *c
- =09=09prt_tab_rjust(out);
-=20
- =09=09prt_human_readable_u64(out, nr_extents
--=09=09=09=09       ? div_u64(sectors_uncompressed << 9, nr_extents)
-+=09=09=09=09       ? div64_u64(sectors_uncompressed << 9, nr_extents)
- =09=09=09=09       : 0);
- =09=09prt_tab_rjust(out);
- =09=09prt_newline(out);
-diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-index 1b8554460af4..144d8df48b1e 100644
---- a/fs/bcachefs/util.c
-+++ b/fs/bcachefs/util.c
-@@ -64,7 +64,7 @@ static int bch2_pow(u64 n, u64 p, u64 *res)
- =09*res =3D 1;
-=20
- =09while (p--) {
--=09=09if (*res > div_u64(U64_MAX, n))
-+=09=09if (*res > div64_u64(U64_MAX, n))
- =09=09=09return -ERANGE;
- =09=09*res *=3D n;
- =09}
-@@ -140,14 +140,14 @@ static int __bch2_strtou64_h(const char *cp, u64 *res=
-)
-=20
- =09parse_or_ret(cp, parse_unit_suffix(cp, &b));
-=20
--=09if (v > div_u64(U64_MAX, b))
-+=09if (v > div64_u64(U64_MAX, b))
- =09=09return -ERANGE;
- =09v *=3D b;
-=20
--=09if (f_n > div_u64(U64_MAX, b))
-+=09if (f_n > div64_u64(U64_MAX, b))
- =09=09return -ERANGE;
-=20
--=09f_n =3D div_u64(f_n * b, f_d);
-+=09f_n =3D div64_u64(f_n * b, f_d);
- =09if (v + f_n < v)
- =09=09return -ERANGE;
- =09v +=3D f_n;
-@@ -360,7 +360,7 @@ void bch2_pr_time_units(struct printbuf *out, u64 ns)
- {
- =09const struct time_unit *u =3D bch2_pick_time_units(ns);
-=20
--=09prt_printf(out, "%llu %s", div_u64(ns, u->nsecs), u->name);
-+=09prt_printf(out, "%llu %s", div64_u64(ns, u->nsecs), u->name);
- }
-=20
- static void bch2_pr_time_units_aligned(struct printbuf *out, u64 ns)
-@@ -477,7 +477,7 @@ void bch2_time_stats_to_text(struct printbuf *out, stru=
-ct bch2_time_stats *stats
- =09=09=09bool is_last =3D eytzinger0_next(i, NR_QUANTILES) =3D=3D -1;
-=20
- =09=09=09u64 q =3D max(quantiles->entries[i].m, last_q);
--=09=09=09prt_printf(out, "%llu ", div_u64(q, u->nsecs));
-+=09=09=09prt_printf(out, "%llu ", div64_u64(q, u->nsecs));
- =09=09=09if (is_last)
- =09=09=09=09prt_newline(out);
- =09=09=09last_q =3D q;
---=20
-2.46.0
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fsnotify
+> 
+> and will push it to linux-next as well so that it gets some soaking before
+> the merge window. That being said I'd still like to get explicit ack from
+> XFS folks (hint) so don't patches may still rebase due to that.
+> 
+
+Awesome, thanks!
+
+Josef
