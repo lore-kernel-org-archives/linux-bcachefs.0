@@ -1,154 +1,160 @@
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8FE14A629
-	for <linux-bcachefs@vger.kernel.org>; Fri,  6 Sep 2024 07:51:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA0914D29D
+	for <linux-bcachefs@vger.kernel.org>; Fri,  6 Sep 2024 08:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725609063; cv=none; b=IPanwM0UJee5yglxdfvrRC12hG2VedvfzT+WXNHr6mjpoZTHruySxzTU1GMOrCJAMZH/OGNLUIwojslgk8frF2t5wlyEZS3yPQGSKx9WiAhqs28XYnxjr8YbTk3fo0T7FftEsL9Cim+E3bm8kfSPDmRPcbdI2QlTzHcaxnY1hjI=
+	t=1725609726; cv=none; b=bkQF1P1TH8j5LZ4wf6yO98qfotgCm5iUckDQjLG8bAxGhBmGBVWRLcf/6/c1ILphUuEOv5FJzhAwONm3JNryLIiJm+6Ryp+V6S5cEE4Qma6oYwxomX8aboH35wY/7zVmdrWxyNVe8FmIkW6Eyfkf9LN2IgdlZqeYjChVUM/J924=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725609063; c=relaxed/simple;
-	bh=wD19amo2g4diYkaR+wM0BDj3uhwHMg7ctui+1OFkYtw=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=tpRoadX6OFTFkiDz04roPsxSzLIYB4QoYU1U9WwDcOpEqm/fPKQCSFdW/N9boMvrwV2+8z0Axy8HX4MVS4rR0XK8god+ijzBJFC7CNoNbMvE1x9wmWttc2f9zg/0W6DoTTVarG8ShGaZidY6M24xMMufBWzQkJoxcTavICboZGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=EJ6g3j2q; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+	s=arc-20240116; t=1725609726; c=relaxed/simple;
+	bh=tbP3sQ56skraJ2LBjRk5LlczHyKqRHi2CaLaabaemWc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kWypar7BvZznfvUtyhZ20QbPrd2eUNJy20y7wmqQM8BhSkKx2KXfpWs+2nkYyV6LbKYNZ7/wnopmvyMfwGLkazBN+OUzZP3wwlx56Q6183KQzcnV9On7kWJPubcVZlXQNrg87hsaE2LBAKk/s5ZU2K0elYeqOb26mpBK7JHzzdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=COcpiAuK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CwXlPXPa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gNqgrTUm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yGpJXjv2; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="EJ6g3j2q"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=iho5zugydncillcokazyce2k2y.protonmail; t=1725609053; x=1725868253;
-	bh=VVxmZMlnrbulCOpYgicmWJL7Hjrf6qlakYElzAYVcx8=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=EJ6g3j2ql6dS53qy+DUJpHYtxWeg/k2Q+PdJXM9Dxeh7imx/Y+2pAfa22tIl3XxiD
-	 fHxvw3NckWeDq5vksr0qLvfdySYrsyFo76Z2hy8iAFDuD78ze1EF1tObNg/9Y49cXx
-	 MqvKaDWS89PpSea5jlL7SOxb8w/Ob8B97xRpAo/EtQmrQrIn0o1D3iRSwJuNAJBBFa
-	 2sG6EXkJOyllwnNgpGeE8koXB6GM3BJ7+/UZD1H8ieOTkwdbQ0oPGPC5VW4j5O3L/d
-	 jkV4exXSGWeMCbdHvzbiFIfJs4dhoDh/JfNiQoqx8CJEq7NBSQi9kpDVpvCpyFiRh9
-	 0jIuNoDWwzw7A==
-Date: Fri, 06 Sep 2024 07:50:46 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>, Linus Torvalds <torvalds@linux-foundation.org>
-From: Nathan Owens <ndowens08@proton.me>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5
-Message-ID: <01252d3a-1856-4e9e-a395-3f15c0a3afd0@proton.me>
-Feedback-ID: 104529665:user:proton
-X-Pm-Message-ID: 67c5618fa3ee3272c816ec8cd41028e86b003fd0
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="COcpiAuK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CwXlPXPa";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gNqgrTUm";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yGpJXjv2"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 43B8821AAC;
+	Fri,  6 Sep 2024 08:02:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725609723;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DVb3IiRm+FSHbq2sk7ThqBrhfqulb2BuynE5kXDXM5k=;
+	b=COcpiAuKdkrmHuSI3evd7Ut36eY1WxAa76f+R5hfI1RKzSyPaPnClZOPOtTQ21kWWBgFoj
+	GQVr1MFUTBdVpuySxHDB53bRJmU/1XYFk3ixMClLaukdzQ/H1bM0jDQ+N3djS7/N0A5TPI
+	6pbYwVoVOWwj1u8NfkblKrq/2IF1lt4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725609723;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DVb3IiRm+FSHbq2sk7ThqBrhfqulb2BuynE5kXDXM5k=;
+	b=CwXlPXPaEp89DQpsQmD5KEux/VdCztin5VvxxNrvTcZUpEiMlzmIrdRxlHjIisKwFtHxXZ
+	D2yuXY7zNyvoGEDg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725609722;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DVb3IiRm+FSHbq2sk7ThqBrhfqulb2BuynE5kXDXM5k=;
+	b=gNqgrTUmYAcAkWKuYrwFmMkbzhlcZ5YGtOnbTtcYZipfDdpeznMj0ZFnX9mI2QY2MsFHZv
+	3clI4/UxXbeH44MTP7mAhFkx9PEpj7l9ycNtpEWZzdXnXZPAAa5pH9oqTjc6LKVwwo4PO7
+	t7kdgfctzUNle8TEzXy6tiIL4GGgZj0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725609722;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DVb3IiRm+FSHbq2sk7ThqBrhfqulb2BuynE5kXDXM5k=;
+	b=yGpJXjv22qg4sImATIv8uHzWeZ0TB0ZbPGc2ufMkeQe8zI+8wC5bdbueOJO6P1esxdb6nc
+	ra0GIXqppWUBpwAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 041E3136A8;
+	Fri,  6 Sep 2024 08:02:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id cR85Ovm22mZ2PwAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Fri, 06 Sep 2024 08:02:01 +0000
+Date: Fri, 6 Sep 2024 10:02:00 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Cc: ltp@lists.linux.it, Li Wang <liwang@redhat.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org
+Subject: Re: [LTP] [PATCH 2/2] fallocate05: Deallocate whole file on bcachefs
+Message-ID: <20240906080200.GA985598@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20240905134502.33759-1-mdoucha@suse.cz>
+ <20240905134502.33759-2-mdoucha@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha256; boundary="------db22c30af5b7d01c9653c4dabb75cf791da2b320a6affc106f90ce0e3bbe0e08"; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240905134502.33759-2-mdoucha@suse.cz>
+X-Spam-Score: -3.50
+X-Spamd-Result: default: False [-3.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:url,suse.cz:replyto,suse.cz:email];
+	REPLYTO_EQ_FROM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------db22c30af5b7d01c9653c4dabb75cf791da2b320a6affc106f90ce0e3bbe0e08
-Content-Type: multipart/mixed;
- boundary=c95c0d4fd079171dbe7160a3b7232914832ed911c964f39bff6d90f0d38f
-Message-ID: <01252d3a-1856-4e9e-a395-3f15c0a3afd0@proton.me>
-Date: Fri, 6 Sep 2024 02:50:41 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc5
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <sctzes5z3s2zoadzldrpw3yfycauc4kpcsbpidjkrew5hkz7yf@eejp6nunfpin>
- <CAHk-=wj1Oo9-g-yuwWuHQZU8v=VAsBceWCRLhWxy7_-QnSa1Ng@mail.gmail.com>
- <kj5vcqbx5ztolv5y3g4csc6te4qmi7y7kmqfora2sxbobnrbrm@rcuffqncku74>
- <CAHk-=wjuLtz5F12hgCb1Yp1OVr4Bbo481m-k3YhheHWJQLpA0g@mail.gmail.com>
- <nxyp62x2ruommzyebdwincu26kmi7opqq53hbdv53hgqa7zsvp@dcveluxhuxsd>
- <CAHk-=wgpb0UPYYSe6or8_NHKQD+VooTxpfgSpHwKydhm3GkS0A@mail.gmail.com>
- <wdxl2l4h2k3ady73fb4wiyzhmfoszeelmr2vs5h36xz3nl665s@n4qzgzsdekrg>
- <CAHk-=wjwn-YAJpSNo57+BB10fZjsG6OYuoL0XToaYwyz4fi1MA@mail.gmail.com>
- <bczhy3gwlps24w3jwhpztzuvno7uk7vjjk5ouponvar5qzs3ye@5fckvo2xa5cz>
-Content-Language: en-US
-From: Nathan Owens <ndowens08@proton.me>
-In-Reply-To: <bczhy3gwlps24w3jwhpztzuvno7uk7vjjk5ouponvar5qzs3ye@5fckvo2xa5cz>
+Hi Martin, all,
 
---c95c0d4fd079171dbe7160a3b7232914832ed911c964f39bff6d90f0d38f
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+[ Cc Kent and Bcachefs ML ]
 
-Will say both Linus and Kent has their points and reasoning, but I must 
-ask, Kent please stick with the guidelines of submitting fixes, 
-features, etc. I would like that Bcachefs to stay in the kernel and see 
-how well Bcachefs comes along in the future and when it has your 
-features and ideas. One day I would like to maybe switch from BTRFS to 
-Bcachefs when it gets more features and some of the things I would like 
-to be able to do, like restore from snapshot and eventually boot to 
-snapshots to restore a messed up system. If it gets taken out of the 
-tree, less people will know about it, nor likely take the trouble of 
-compiling a kernel for Bcachefs.
+> The default deallocation size is likely too small for bcachefs
+> to actually release the blocks. Since it is also a copy-on-write
+> filesystem, deallocated the whole file like on Btrfs.
 
-This comment is not bash either Linus or you Kent, but just a thought in 
-hopes that more people will possibly switch to it and encourage 
-production keeps happening as well.
+Make sense.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-On 8/23/24 10:10 PM, Kent Overstreet wrote:
-> On Sat, Aug 24, 2024 at 10:57:55AM GMT, Linus Torvalds wrote:
->> On Sat, 24 Aug 2024 at 10:48, K
-ent Overstreet <kent.overstreet@linux.dev> wrote:
->>> Sure, which is why I'm not sending you anything here that isn't a fix
->>> for a real issue.
->> Kent, bugs happen.
-> I _know_.
->
-> Look, filesystem development is as high stakes as it gets. Normal kernel
-> development, you fuck up - you crash the machine, you lose some work,
-> you reboot, people are annoyed but generally it's ok.
->
-> In filesystem land, you can corrupt data and not find out about it until
-> weeks later, or _worse_. I've got stories to give people literal
-> nightmares. Hell, that stuff has fueled my own nightmares for years. You
-> know how much grey my beard has now?
->
-> Which is why I have spent many years of my life building a codebase and
-> development process where I can work productively where I can not just
-> catch but recover from pretty much any fuckup imaginable.
->
-> Because peace of mind is priceless...
->
+Kind regards,
+Petr
 
---c95c0d4fd079171dbe7160a3b7232914832ed911c964f39bff6d90f0d38f
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="publickey - ndowens08@proton.me -
- 0x227C5078.asc"; name="publickey - ndowens08@proton.me - 0x227C5078.asc"
-Content-Type: application/pgp-keys; filename="publickey -
- ndowens08@proton.me - 0x227C5078.asc"; name="publickey -
- ndowens08@proton.me - 0x227C5078.asc"
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
 
-LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCkNvbW1lbnQ6IGh0dHBzOi8vZ29w
-ZW5wZ3Aub3JnClZlcnNpb246IEdvcGVuUEdQIDIuNy40Cgp4ak1FWmZubzBoWUpLd1lCQkFIYVJ3
-OEJBUWRBRlJwRGNwSFNmUUExMXR4MGpmNWtheFZJVVJydzY0YklIMllZCkdJVFRRTjdOS1c1a2Iz
-ZGxibk13T0VCd2NtOTBiMjR1YldVZ1BHNWtiM2RsYm5Nd09FQndjbTkwYjI0dWJXVSsKd293RUVC
-WUtBRDRGZ21YNTZOSUVDd2tIQ0FtUUhDdWw3M0lpR01FREZRZ0tCQllBQWdFQ0dRRUNtd01DSGdF
-VwpJUVFpZkZCNGppWDY3WU5wYURnY0s2WHZjaUlZd1FBQVdwd0JBTG5oVzd6Snh1MDhiWjAwUE83
-cFZkMk1TQTVQCnozTGMzYWpXYjkzZHkwUzhBUUNiUG4xeTJ6YXVGT1doM2lKNGk5QzRlWC9IWXFi
-b0ZlV3BrVTl4SDlSK0NzNDQKQkdYNTZOSVNDaXNHQVFRQmwxVUJCUUVCQjBBcVNkNVFHVVJWR3F3
-QWNjemlJRTd6SjQxMER6WnIrRkRQVzVLRQpzM2kwWEFNQkNBZkNlQVFZRmdvQUtnV0NaZm5vMGdt
-UUhDdWw3M0lpR01FQ213d1dJUVFpZkZCNGppWDY3WU5wCmFEZ2NLNlh2Y2lJWXdRQUF1RU1CQU1F
-ZGdqRGxVazlNRG5PYzlqaHVGSnEwcC9aenhsMFNGVVpDYW0zazlUMk4KQVA5eHJrZnpKaXhOV1dt
-RUwvdDhaNGNQYldGdHhMUjB4MzFTMXlZckljMGdEZz09Cj1YNjgxCi0tLS0tRU5EIFBHUCBQVUJM
-SUMgS0VZIEJMT0NLLS0tLS0=
---c95c0d4fd079171dbe7160a3b7232914832ed911c964f39bff6d90f0d38f--
+> AFAICT Bcachefs uses 512 byte data blocks by default but 256KB inode
+> blocks. The whole file will be 128KB and 32KB gets deallocated which may
+> be too small. However, I'm not entirely sure whether this is the best
+> solution.
 
---------db22c30af5b7d01c9653c4dabb75cf791da2b320a6affc106f90ce0e3bbe0e08
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+> See also https://bugzilla.suse.com/show_bug.cgi?id=1230155
 
------BEGIN PGP SIGNATURE-----
-Version: ProtonMail
+>  testcases/kernel/syscalls/fallocate/fallocate05.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-wnUEARYIACcFAmbatFUJEBwrpe9yIhjBFiEEInxQeI4l+u2DaWg4HCul73Ii
-GMEAAJO5AQDsuQo4Nv0WUG9zL9MNOWlUwRtsc0BYxfmCNTJK9HS40wD/UjKn
-bh5aQ/fw+v4TJ2E7n17BX+uUpvk/S1ZFTG2a/gA=
-=lifC
------END PGP SIGNATURE-----
+> diff --git a/testcases/kernel/syscalls/fallocate/fallocate05.c b/testcases/kernel/syscalls/fallocate/fallocate05.c
+> index 979c70d6e..732a2f15d 100644
+> --- a/testcases/kernel/syscalls/fallocate/fallocate05.c
+> +++ b/testcases/kernel/syscalls/fallocate/fallocate05.c
+> @@ -114,7 +114,8 @@ static void run(void)
+>  	tst_res(TPASS, "fallocate() on full FS");
 
-
---------db22c30af5b7d01c9653c4dabb75cf791da2b320a6affc106f90ce0e3bbe0e08--
-
+>  	/* Btrfs deallocates only complete extents, not individual blocks */
+> -	if (!strcmp(tst_device->fs_type, "btrfs"))
+> +	if (!strcmp(tst_device->fs_type, "btrfs") ||
+> +		!strcmp(tst_device->fs_type, "bcachefs"))
+>  		holesize = bufsize + extsize;
+>  	else
+>  		holesize = DEALLOCATE_BLOCKS * blocksize;
