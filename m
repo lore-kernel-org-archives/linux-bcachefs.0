@@ -1,138 +1,144 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29301B85EF
-	for <linux-bcachefs@vger.kernel.org>; Sat,  7 Sep 2024 07:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9713D0A9;
+	Sat,  7 Sep 2024 10:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725692436; cv=none; b=sDJ0SD5NKTaaG5soSpW4qci5SRCRKuAB3qBjyhxLPun5zFVukerL1kVCxvB2feZaTujmdRbzXJfNi6YvaKjLpFY7GB8JhERfKteKwP2/X7rAANxNTwQVKXZrI9zo/58mtrWpCiXgYKDboZ4AJ9vn0U2SqMvipyDmCVqRZhKn6U0=
+	t=1725705321; cv=none; b=IiScl0kNiWMfyITyQ+/ndJ62oHbwfxZyX3SWbLVi3IuJ/0NwfBu7Y1WtYUjyaQBfgLAmr6+f/FO6Ov7QgNP6Bg9wVz4i+WFwskAQgW2rHgXZb9J6QXEXfCcpK+Zi8zIdrkMh5xvhmGY5IAHP71VjvLLk5fMPKvQIjVG69OchVH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725692436; c=relaxed/simple;
-	bh=BYwOU6JgnAfh4+zibbxiF2f1ezIPNh5tRuy/8ctOhXg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=bWpDQ8G9noRTtfjawApJLDKn8ek+v/Jt282zOLaEzLrDJTvXw9bbjBmsb09UveN/dZJKu6QAKlC001felAGYWWBK2W+44pv4Zane0n9Jb185w4mAWbP4RKZzv/2rWOD/zk9yRVmHMv96RmEmuoVBz6U1pn6UTr0fs5mlFU9kXzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4X13rP6250z2DbqB;
-	Sat,  7 Sep 2024 15:00:05 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id D41321A016C;
-	Sat,  7 Sep 2024 15:00:29 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Sat, 7 Sep 2024 15:00:29 +0800
-Message-ID: <c1a567b2-b066-4f45-870b-900324fc2df6@huawei.com>
-Date: Sat, 7 Sep 2024 15:00:29 +0800
+	s=arc-20240116; t=1725705321; c=relaxed/simple;
+	bh=fStTyIXrXS6LxZ3OfDuTGxq3cQrSD60MHobAr22TQSM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=W6hW2Ac3plwU13BF1nfTtsybE44dsCaJvjJDG1lDqeIslUdJrHmS6oCXRQrWn5wKMrn0v1T7T8V85ZfDuw4KHaUdjpTWDO19yF0WRawWjVsMRLjDT9j//VnW1Ao63Vddc3gudRGVjGhXBr9Pm2/wNpB1DYYF42/DAk+5m6D7vi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=nplw0cc+; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="nplw0cc+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=EylXd
+	0u/HEKVMslUIcbQfRlcGaWZZaHFbPx9fuLDqyg=; b=nplw0cc+Zr56K8QR54+Az
+	QVMSP2P+41V4qEWQ5kt2teWThqE4jIBF5qbFUnPICypxhtjdJhbFpmCSkIzoHZyL
+	zyhWOscHDFsVn/KRLG3UWvtqaezZb2tAGYLLMMxjWdXn/CkMBuG4DP+9Rx4rUdJx
+	fi9FMTdWN/A26YofRZlB1s=
+Received: from localhost.localdomain (unknown [111.35.190.113])
+	by gzga-smtp-mta-g2-1 (Coremail) with SMTP id _____wDnF7c9LNxmaUrfEg--.45805S4;
+	Sat, 07 Sep 2024 18:34:51 +0800 (CST)
+From: David Wang <00107082@163.com>
+To: kent.overstreet@linux.dev
+Cc: 00107082@163.com,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [BUG?] bcachefs performance: read is way too slow when a file has no overwrite.
+Date: Sat,  7 Sep 2024 18:34:37 +0800
+Message-Id: <20240907103437.71139-1-00107082@163.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <ka3sjrka6dugdaab2bvewfbonc3ksixumue3hs2juhajhjm37w@bnxvz5mozpgr>
+References: <ka3sjrka6dugdaab2bvewfbonc3ksixumue3hs2juhajhjm37w@bnxvz5mozpgr>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bcachefs: Replace div_u64 with div64_u64 where second
- param is u64
-To: Reed Riley <reed@riley.engineer>, "linux-bcachefs@vger.kernel.org"
-	<linux-bcachefs@vger.kernel.org>
-References: <K-lc38swD0bEueNP7QM-SeiuQ5wMms8wsydEpirWuaAKMX3oFFI4kxWIGzqzYGcsjLzP6SmKgBASsXd8BBvg9d45rSzUo3npVyrGU5D2Tb8=@riley.engineer>
-Content-Language: en-US
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <K-lc38swD0bEueNP7QM-SeiuQ5wMms8wsydEpirWuaAKMX3oFFI4kxWIGzqzYGcsjLzP6SmKgBASsXd8BBvg9d45rSzUo3npVyrGU5D2Tb8=@riley.engineer>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+X-CM-TRANSID:_____wDnF7c9LNxmaUrfEg--.45805S4
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZr13JFWxKw17Kw1kXF4DXFb_yoWrZF4kpr
+	ySyF13JFnrJr15CwsrAw4UtF18Jr1rJwnxJFyUtry8WF15Cry5tayUJFZ5KrWUGryxJr1U
+	JFZYqw17try8Xw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUfl1DUUUUU=
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiqQ5TqmVOCuEPwwAAsS
+
+At 2024-09-07 01:38:11, "Kent Overstreet" <kent.overstreet@linux.dev> wrote:
+>On Fri, Sep 06, 2024 at 11:43:54PM GMT, David Wang wrote:
+>> 
+>> Hi,
+>> 
+>> I notice a very strange performance issue:
+>> When run `fio direct randread` test on a fresh new bcachefs, the performance is very bad:
+>> 	fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test  --bs=4k --iodepth=64 --size=1G --readwrite=randread  --runtime=600 --numjobs=8 --time_based=1
+>> 	...
+>> 	Run status group 0 (all jobs):
+>> 	   READ: bw=87.0MiB/s (91.2MB/s), 239B/s-14.2MiB/s (239B/s-14.9MB/s), io=1485MiB (1557MB), run=15593-17073msec
+>> 
+>> But if the files already exist and have alreay been thoroughly overwritten, the read performance is about 850MB+/s,
+>> almost 10-times better!
+>> 
+>> This means, if I copy some file from somewhere else, and make read access only afterwards, I would get really bad performance.
+>> (I copy files from other filesystem, and run fio read test on those files, the performance is indeed bad.)
+>> Copy some prepared files, and make readonly usage afterwards, this usage scenario is quite normal for lots of apps, I think.
+>
+>That's because checksums are at extent granularity, not block: if you're
+>doing O_DIRECT reads that are smaller than the writes the data was
+>written with, performance will be bad because we have to read the entire
+>extent to verify the checksum.
+
+
+>
+>block granular checksums will come at some point, as an optional feature
+>(most of the time you don't want them, and you'd prefer more compact
+>metadata)
+
+Hi, I made further tests combining different write and read size, the results
+are not confirming the explanation for O_DIRECT.
+
+Without O_DIRECT (fio  --direct=0....), the average read bandwidth
+is improved, but with a very big standard deviation:
++--------------------+----------+----------+----------+----------+
+| prepare-write\read |    1k    |    4k    |    8K    |   16K    |
++--------------------+----------+----------+----------+----------+
+|         1K         | 328MiB/s | 395MiB/s | 465MiB/s |          |
+|         4K         | 193MiB/s | 219MiB/s | 274MiB/s | 392MiB/s |
+|         8K         | 251MiB/s | 280MiB/s | 368MiB/s | 435MiB/s |
+|        16K         | 302MiB/s | 380MiB/s | 464MiB/s | 577MiB/s |
++--------------------+----------+----------+----------+----------+
+(Rows are write size when preparing the test files, and columns are read size for fio test.)
+
+And with O_DIRECT, the result is:
++--------------------+-----------+-----------+----------+----------+
+| prepare-write\read |     1k    |     4k    |    8K    |   16K    |
++--------------------+-----------+-----------+----------+----------+
+|         1K         | 24.1MiB/s | 96.5MiB/s | 193MiB/s |          |
+|         4K         | 14.4MiB/s | 57.6MiB/s | 116MiB/s | 230MiB/s |
+|         8K         | 24.6MiB/s | 97.6MiB/s | 192MiB/s | 309MiB/s |
+|        16K         | 26.4MiB/s |  104MiB/s | 206MiB/s | 402MiB/s |
++--------------------+-----------+-----------+----------+----------+
+
+code to prepare the test files:
+	#define KN 8 //<- adjust this for each row
+	char name[32];
+	char buf[1024*KN];
+	int main() {
+		int i, m = 1024*1024/KN, k, df;
+		for (i=0; i<8; i++) {
+			sprintf(name, "test.%d.0", i);
+			fd = open(name, O_CREAT|O_DIRECT|O_SYNC|O_TRUNC|O_WRONLY);
+			for (k=0; k<m; k++) write(fd, buf, sizeof(buf));
+			close(fd);
+		}
+		return 0;
+	}
+
+Based on the result:
+1. The row with prepare-write size 4K stands out, here.
+When files were prepaired with write size 4K, the afterwards
+ read performance is worse.  (I did double check the result,
+but it is possible that I miss some affecting factors.);
+2. Without O_DIRECT, read performance seems correlated with the difference
+ between read size and prepare write size, but with O_DIRECT, correlation is not obvious.
+
+And, to mention it again, if I overwrite the files **thoroughly** with fio write test
+(using same size), the read performance afterwards would be very good:
+
+	# overwrite the files with randwrite, block size 8k
+	$ fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test  --bs=8k --iodepth=64 --size=1G --readwrite=randwrite  --runtime=300 --numjobs=8 --time_based=1
+	# test the read performance with randread, block size 8k
+	$ fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test  --bs=8k --iodepth=64 --size=1G --readwrite=randread  --runtime=300 --numjobs=8 --time_based=1
+	...
+	Run status group 0 (all jobs):
+	   READ: bw=964MiB/s (1011MB/s), 116MiB/s-123MiB/s (121MB/s-129MB/s), io=283GiB (303GB), run=300004-300005msec
 
 
 
-On 2024/9/7 12:06, Reed Riley wrote:
-> Bcachefs often uses this function to divide by nanosecond times - which
-> can easily cause problems when cast to u32. For example, `cat
-> /sys/fs/bcachefs/*/internal/rebalance_status` would return invalid data
-> in the `duration waited` field because dividing by the number of
-> nanoseconds in a minute requires the divisor parameter to be u64.
-> 
-> Signed-off-by: Reed Riley <reed@riley.engineer>
-> ---
-> fs/bcachefs/sysfs.c | 2 +-
-> fs/bcachefs/util.c | 12 ++++++------
-> 2 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
-> index f393023a3ae2..561998b2b5dc 100644
-> --- a/fs/bcachefs/sysfs.c
-> +++ b/fs/bcachefs/sysfs.c
-> @@ -288,7 +288,7 @@ static int bch2_compression_stats_to_text(struct printbuf *out, struct bch_fs *c
-> prt_tab_rjust(out);
-> 
-> prt_human_readable_u64(out, nr_extents
-> - ? div_u64(sectors_uncompressed << 9, nr_extents)
-> + ? div64_u64(sectors_uncompressed << 9, nr_extents)
-> : 0);
+FYI
+David
 
-ah, it seems that your code lacks indentation. But the changes you've 
-made appear to be fine. May be you could add some comments in the commit 
-message to explain what has been modified in v2 (just separate it with 
----) to make it more clearer. But I see that Kent has already merged 
-your code. 😄
-
-Thanks,
-Hongbo
-
-> prt_tab_rjust(out);
-> prt_newline(out);
-> diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-> index 1b8554460af4..144d8df48b1e 100644
-> --- a/fs/bcachefs/util.c
-> +++ b/fs/bcachefs/util.c
-> @@ -64,7 +64,7 @@ static int bch2_pow(u64 n, u64 p, u64 *res)
-> *res = 1;
-> 
-> while (p--) {
-> - if (*res > div_u64(U64_MAX, n))
-> + if (*res > div64_u64(U64_MAX, n))
-> return -ERANGE;
-> *res *= n;
-> }
-> @@ -140,14 +140,14 @@ static int __bch2_strtou64_h(const char *cp, u64 *res)
-> 
-> parse_or_ret(cp, parse_unit_suffix(cp, &b));
-> 
-> - if (v > div_u64(U64_MAX, b))
-> + if (v > div64_u64(U64_MAX, b))
-> return -ERANGE;
-> v *= b;
-> 
-> - if (f_n > div_u64(U64_MAX, b))
-> + if (f_n > div64_u64(U64_MAX, b))
-> return -ERANGE;
-> 
-> - f_n = div_u64(f_n * b, f_d);
-> + f_n = div64_u64(f_n * b, f_d);
-> if (v + f_n < v)
-> return -ERANGE;
-> v += f_n;
-> @@ -360,7 +360,7 @@ void bch2_pr_time_units(struct printbuf *out, u64 ns)
-> {
-> const struct time_unit *u = bch2_pick_time_units(ns);
-> 
-> - prt_printf(out, "%llu %s", div_u64(ns, u->nsecs), u->name);
-> + prt_printf(out, "%llu %s", div64_u64(ns, u->nsecs), u->name);
-> }
-> 
-> static void bch2_pr_time_units_aligned(struct printbuf *out, u64 ns)
-> @@ -477,7 +477,7 @@ void bch2_time_stats_to_text(struct printbuf *out, struct bch2_time_stats *stats
-> bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-> 
-> u64 q = max(quantiles->entries[i].m, last_q);
-> - prt_printf(out, "%llu ", div_u64(q, u->nsecs));
-> + prt_printf(out, "%llu ", div64_u64(q, u->nsecs));
-> if (is_last)
-> prt_newline(out);
-> last_q = q;
-> --
-> 2.46.0
-> 
