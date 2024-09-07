@@ -1,97 +1,123 @@
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555261CBE8C;
-	Fri,  6 Sep 2024 19:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D7FEEDD
+	for <linux-bcachefs@vger.kernel.org>; Sat,  7 Sep 2024 04:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725652653; cv=none; b=e6TffipUFXrspBTd3wl5yLqtInpMdnR2sHf2lNZDOwicMDoCSjY1SmzTvbJj3sdUnBtJtGtBR4w2jqMQ0LlnJ+34QRlETr+PQGAzxALx4WgR655VdjvuCZPOcEuc8VOKlj4wGb04bgX7mgQutg60cUgUiegBXBxLIqDKCX8StnE=
+	t=1725682003; cv=none; b=YmlXOarXgf2YhLqzKo7LyxrzVZTgQAZsq9OWWONOA/kArkqtpAkWdTmNNg8k1rSwS90BoAYsHJMx+Ao/Vos6lCjJdgbWo3bZUBSnc2xosMXpsXhwzwzfmMWwL5NEOG65caHjWBAE+oH+SGhzrOgROeDp2LU/wEw229dwWxOR6RA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725652653; c=relaxed/simple;
-	bh=xgb8RdA+IbqrFjakhWLWKazxC3vqtLJDMg7U8lNtgac=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Bo9JF+1vlnFnTCmGMYy5PJD8eMjEEP0dcOo2sO8sG1lTCdwmFYBz+WULW+EephS/cUhCF1IXCqtbR+ybNtjxe44U+i5Vzc3JTwxg+U2Y6ATtQtYoS2cAjBN4bRSc+W8aeyJmtHZ9bQH0+XzLCI5EXl2hI37Som4ajIth1hdJkD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PLbJE8za; arc=none smtp.client-ip=209.85.166.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1725682003; c=relaxed/simple;
+	bh=0Ds2NIyhfZ5lp8WNYlsxBsbFTQc3gKfzT0HGfAdkc1k=;
+	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=PoHFahytNKEXTUvsmXJtfRJWvVUL0FLZZMFGkc7YOqNlMS2llRD4T4yK7eF9CGrS/WJevEX3Ep2MUmQPoQDR1qMbaiR6rQjEAfq/N1xygDN1A9hi80apmr90+0O/E5dV4lfu8gY6DRBrh+x/mIqig3pRLrEnEr2zBU1OweH+jEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riley.engineer; spf=pass smtp.mailfrom=riley.engineer; dkim=pass (2048-bit key) header.d=riley.engineer header.i=@riley.engineer header.b=oc6tDSH9; arc=none smtp.client-ip=185.70.40.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riley.engineer
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riley.engineer
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PLbJE8za"
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3a018296fffso9494205ab.2;
-        Fri, 06 Sep 2024 12:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725652650; x=1726257450; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U4H5uqiK1lmCZLuR+QM9RaiOR/S50itqCPBhQCgAPtA=;
-        b=PLbJE8zanNjhYF/3m5niVU4yxZK9MjI2gTYrtUa+16oghxuyOoLBnjgEK22CvZc4Us
-         sqeuggJ/nKO0KjARkn8jkXoTu7AQuNDcYGveTSA31CnFH/88Z2/nCV7kkuCY9FGLw00S
-         4kuSK+mjsldd0alLzVLlTPaTBcfFS1BYqY1sc4rDohq9tWQHTNgeQ3tQ2vwVOToQaEFd
-         fSWYiqCHOzMVpXfIcpHCZKTjpEK+RRG15rc01jn89fpR6Jx04clkBQH/CgucNQnnKx2T
-         /1O0NKfcyeH5Bye/gPiB1PI6btUHUp7BowYf0lJh0id84gwupIWl03hJHUeT6ho6EYTh
-         tEMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725652650; x=1726257450;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U4H5uqiK1lmCZLuR+QM9RaiOR/S50itqCPBhQCgAPtA=;
-        b=p3z4QdjGfqQXkT9J1mnKNenEav4zOMarMT8+B5hgiCh8HqgpJlgmHPkdHWYmV8Xo0U
-         Nj6c8aZSOhk/WxKgXxBRp0fD7A4jrenneqYYjRwObnpJVrZzoCO3QWLBn8N2utZCywux
-         3ULmDF7HdVEMkqyrMpfLC9HQgVAWKZVoH42eespcuImL2025coaV/ZLfCNP22FHMdLO9
-         EH7c5qa/IwZ6v2t3G4Rk3sAZeD+5MGsDLI5ajEHcpZXPmMJbVwbbhlRYWHeOV6VXxbdv
-         ItHiNkA7t8gq0mEE07VhnmTOjAQJUZfmtmwt6NTOPh5JPDdP4eiwcHhhciZHJlc0hAAN
-         Kj/w==
-X-Forwarded-Encrypted: i=1; AJvYcCVq1GRIv3bd1rmnX1t+EjKnmw7rznzUnqD2FeBEgITA7jxguCBnxRwRBIjOn6cCa7cj/K1bn+XoBSYGWuVEIA==@vger.kernel.org, AJvYcCWAsKUMyvWB9exnOh2XcAOMubjH4iI8MhZdTJm/pAdUj6kHV2EUDbVPuY8bnI5UD0Ej8aS6oBfbaahO@vger.kernel.org, AJvYcCXsOFBGd7xm7qHm6MuAm4VEydUBuoPcK1A9IkRT5BTfMDu40d6pb2TbswU/yVZo2Sx87HjKi+epfjvi66EB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzor8djLdVTXpUNxamVOHjfwM97//PVzrQSZQeGi8mOGMq58Q8z
-	lAMps57mS0GKKB81F2eaPMiBmIAI52WUeKDWfsXkUz23sANDYcfGzaeTWofQ
-X-Google-Smtp-Source: AGHT+IEG8OLXGpAN9hbjGJpcG+GcKeU1qLL0CTyrnUIbcoOfmRVOUN5wKT3GoIhHIczbJuRvohqtMg==
-X-Received: by 2002:a05:6e02:20ce:b0:398:39f:8b4d with SMTP id e9e14a558f8ab-3a05744e20amr5109605ab.5.1725652650221;
-        Fri, 06 Sep 2024 12:57:30 -0700 (PDT)
-Received: from localhost.localdomain (d24-150-189-55.home.cgocable.net. [24.150.189.55])
-        by smtp.googlemail.com with ESMTPSA id 8926c6da1cb9f-4d05252ae35sm1968378173.168.2024.09.06.12.57.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Sep 2024 12:57:29 -0700 (PDT)
-From: Dennis Lam <dennis.lamerice@gmail.com>
-To: kent.overstreet@linux.dev,
-	corbet@lwn.net
-Cc: Dennis Lam <dennis.lamerice@gmail.com>,
-	linux-bcachefs@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] docs:fs:fixed some spelling mistakes in the bcachefs coding style page
-Date: Fri,  6 Sep 2024 15:57:19 -0400
-Message-ID: <20240906195720.40315-1-dennis.lamerice@gmail.com>
-X-Mailer: git-send-email 2.46.0
+	dkim=pass (2048-bit key) header.d=riley.engineer header.i=@riley.engineer header.b="oc6tDSH9"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=riley.engineer;
+	s=protonmail; t=1725681991; x=1725941191;
+	bh=0Ds2NIyhfZ5lp8WNYlsxBsbFTQc3gKfzT0HGfAdkc1k=;
+	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=oc6tDSH9lvu5D/PeeUx/a2OwXxzA6v0k8BHMkNmsh0ABEHJWcrJAYGV6wxOJ2oICG
+	 l7JcrP5MLTbEEfq+r4Qv93j7bXctMqN7K6IsyCgfFOhPYdsoZ30BH02DAfvE5wnGxK
+	 UkIBqllGzIwkoqRT/UBclKLcWZR4zuNshlHVygBz5XNcbwE8NBD1opkoYrvcryB3CM
+	 ovGtSjzbk1WTpw2UBy7w4bX9fevMP+J4V9NcuIWGLN/Gf6OP3+qN9/9lDqev2YRFEY
+	 oO+bH6i1HJ8CHYktQzuZWqVXcYm/jJ8+tB4e6dRbp5uwyAB9DQy15UQEdOmFVxTIm3
+	 k8QhjYhqjfddg==
+Date: Sat, 07 Sep 2024 04:06:30 +0000
+To: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+From: Reed Riley <reed@riley.engineer>
+Subject: [PATCH v2] bcachefs: Replace div_u64 with div64_u64 where second param is u64
+Message-ID: <K-lc38swD0bEueNP7QM-SeiuQ5wMms8wsydEpirWuaAKMX3oFFI4kxWIGzqzYGcsjLzP6SmKgBASsXd8BBvg9d45rSzUo3npVyrGU5D2Tb8=@riley.engineer>
+Feedback-ID: 15554401:user:proton
+X-Pm-Message-ID: 77d2153c5887b928b9b6ec9bc6b347ccb424f501
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Bcachefs often uses this function to divide by nanosecond times - which
+can easily cause problems when cast to u32. For example, `cat
+/sys/fs/bcachefs/*/internal/rebalance_status` would return invalid data
+in the `duration waited` field because dividing by the number of
+nanoseconds in a minute requires the divisor parameter to be u64.
+
+Signed-off-by: Reed Riley <reed@riley.engineer>
 ---
- Documentation/filesystems/bcachefs/CodingStyle.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+fs/bcachefs/sysfs.c | 2 +-
+fs/bcachefs/util.c | 12 ++++++------
+2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/filesystems/bcachefs/CodingStyle.rst b/Documentation/filesystems/bcachefs/CodingStyle.rst
-index 0c45829a4899..b29562a6bf55 100644
---- a/Documentation/filesystems/bcachefs/CodingStyle.rst
-+++ b/Documentation/filesystems/bcachefs/CodingStyle.rst
-@@ -175,7 +175,7 @@ errors in our thinking by running our code and seeing what happens. If your
- time is being wasted because your tools are bad or too slow - don't accept it,
- fix it.
- 
--Put effort into your documentation, commmit messages, and code comments - but
-+Put effort into your documentation, commit messages, and code comments - but
- don't go overboard. A good commit message is wonderful - but if the information
- was important enough to go in a commit message, ask yourself if it would be
- even better as a code comment.
-@@ -183,4 +183,4 @@ even better as a code comment.
- A good code comment is wonderful, but even better is the comment that didn't
- need to exist because the code was so straightforward as to be obvious;
- organized into small clean and tidy modules, with clear and descriptive names
--for functions and variable, where every line of code has a clear purpose.
-+for functions and variables, where every line of code has a clear purpose.
--- 
+diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
+index f393023a3ae2..561998b2b5dc 100644
+--- a/fs/bcachefs/sysfs.c
++++ b/fs/bcachefs/sysfs.c
+@@ -288,7 +288,7 @@ static int bch2_compression_stats_to_text(struct printb=
+uf *out, struct bch_fs *c
+prt_tab_rjust(out);
+
+prt_human_readable_u64(out, nr_extents
+- ? div_u64(sectors_uncompressed << 9, nr_extents)
++ ? div64_u64(sectors_uncompressed << 9, nr_extents)
+: 0);
+prt_tab_rjust(out);
+prt_newline(out);
+diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
+index 1b8554460af4..144d8df48b1e 100644
+--- a/fs/bcachefs/util.c
++++ b/fs/bcachefs/util.c
+@@ -64,7 +64,7 @@ static int bch2_pow(u64 n, u64 p, u64 *res)
+*res =3D 1;
+
+while (p--) {
+- if (*res > div_u64(U64_MAX, n))
++ if (*res > div64_u64(U64_MAX, n))
+return -ERANGE;
+*res *=3D n;
+}
+@@ -140,14 +140,14 @@ static int __bch2_strtou64_h(const char *cp, u64 *res=
+)
+
+parse_or_ret(cp, parse_unit_suffix(cp, &b));
+
+- if (v > div_u64(U64_MAX, b))
++ if (v > div64_u64(U64_MAX, b))
+return -ERANGE;
+v *=3D b;
+
+- if (f_n > div_u64(U64_MAX, b))
++ if (f_n > div64_u64(U64_MAX, b))
+return -ERANGE;
+
+- f_n =3D div_u64(f_n * b, f_d);
++ f_n =3D div64_u64(f_n * b, f_d);
+if (v + f_n < v)
+return -ERANGE;
+v +=3D f_n;
+@@ -360,7 +360,7 @@ void bch2_pr_time_units(struct printbuf *out, u64 ns)
+{
+const struct time_unit *u =3D bch2_pick_time_units(ns);
+
+- prt_printf(out, "%llu %s", div_u64(ns, u->nsecs), u->name);
++ prt_printf(out, "%llu %s", div64_u64(ns, u->nsecs), u->name);
+}
+
+static void bch2_pr_time_units_aligned(struct printbuf *out, u64 ns)
+@@ -477,7 +477,7 @@ void bch2_time_stats_to_text(struct printbuf *out, stru=
+ct bch2_time_stats *stats
+bool is_last =3D eytzinger0_next(i, NR_QUANTILES) =3D=3D -1;
+
+u64 q =3D max(quantiles->entries[i].m, last_q);
+- prt_printf(out, "%llu ", div_u64(q, u->nsecs));
++ prt_printf(out, "%llu ", div64_u64(q, u->nsecs));
+if (is_last)
+prt_newline(out);
+last_q =3D q;
+--
 2.46.0
-
