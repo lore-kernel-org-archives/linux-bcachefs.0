@@ -1,174 +1,185 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh7-smtp.messagingengine.com (fhigh7-smtp.messagingengine.com [103.168.172.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA74D175D2D
-	for <linux-bcachefs@vger.kernel.org>; Tue, 10 Sep 2024 08:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F6818595E;
+	Tue, 10 Sep 2024 10:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725956193; cv=none; b=O/svamzKjM2cxi0tWbnfi9C3P650YWH9a9zLtMbkcylQyoF56cTBUobtIMHPgNvsxwk0JZxqgHQWjRPg2Q7M3QpanX13xDGFmdOu2BxQjxiIhUKHCZDslZmo8/iYjsrdccSNDaWf7FSlm2hzHJuqHen4gIY6gfLwQXsdnOqnzbg=
+	t=1725962541; cv=none; b=kfvnwEf0FiVQzeig12Ko4HtibX0R5KJq/J3v0Xe5thE1p+Hqj8BgqPX8Vy8asclU37vYUK4giWFPiazdC31Aq+PUGwNgfNNJjUJcpDLtIKTVvt7T+0HxXN1ASZmKWY/0UeXVkFQ/WyCSVnS9/4NHa15F1xWnGfr1jplPiFmL4r4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725956193; c=relaxed/simple;
-	bh=JT0uGObE3hHGkn69SZSYQqxGHGrhfUswQE6UB+tMF3g=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ues7B7dcUspp1y/5QBiG9SAdRPCnzMzxNZgT+3cG66F1iRytQnEVAEC2e7jm6TdiMPg4jgka8KFCxN3FuHGF/KKXBE2n9EYa4HbfbQMk0Gy9llfpVhk/4KPNYsnbBNDS+Gz0wwszEHL9I4fAHaPVaZHUon/2fGtyQFosTELi3aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-39f5605c674so112452585ab.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 10 Sep 2024 01:16:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725956190; x=1726560990;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2MSZ4LEhGE4vBmKibLXslNqADaXwvSq8BlZCfD0Pb14=;
-        b=Z7NNdNrPR7gIJVAnfQexxLSKimNO6zMj+LcBaLN2jpdCckE/+sUhpiJqX4u2YcX0mB
-         0iWUbRpYmo6YH4LsAaywkN5MWYKVPgDUHdMhzfm9tTuwMv/qpuKNFImUtqSZCmhQD/Z5
-         avAdxPUnIvqCvch8XfZoxahVlQ+rsfxrgEPYhY493cHSOaILNQbAP/zZifYbX5XuiAtq
-         OlqFn/8GOl4h6GWGfmVLLvsEAdqxJbvZkhagGYKvs+jd59LcSJNE0gP4EZ8BrpovmW7c
-         Iu7ers9UIjId0QVNnPWq3U95DFpaRTmTMiVm3Hd5DZ/sq0UwV/VgnC8ncy6d72lgB5S0
-         rzzg==
-X-Forwarded-Encrypted: i=1; AJvYcCUmcC75q0mBbOO3Ze9jv59lUSGD538DRcijghQjdD9fQMbgV1ZXGoMAqiE0N3Oqk64FDHExg8izmOpSOrXRFw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsZfW/GkBlCQAPaYmzEV5JDrBT4A2TEOayx3jC+sUNIEaYYest
-	hiN5MpixJuMRv2QvBOtFFi/evREzVlNrJ2TajYn2g0IAejIX3pjs8y4t1BEd8x+IMzB1mwsDZHU
-	5xw9R5fr3nxOiePovWyPISv9Sx7+0R8TbkH5N3XJRzstdsknDCOCn5fE=
-X-Google-Smtp-Source: AGHT+IFLrGSpH6bukg7AFXjeHV/rB5H7JypPdwx7pr7PyihDLwvg+PYqkW0755CZRnpF8ExmTPwEwwj6OihoCFEzyvg8srJYPC0k
+	s=arc-20240116; t=1725962541; c=relaxed/simple;
+	bh=+/nf0XKWilX+Q5Wc5/xlM7AwCbvLCKEIxkHcn7FhO8g=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=p3jy2Lv9jV8sdqgLkaJ3JXfWsYj+YetKbUsjsnmvdn0MdOdez96KhsVHrVIzPRlbEgbwMY8cWtSHzgtzVx1Dp11g4IbGZ9ZZvVgLQpw7S5RirsjrFzMtrxMmL+ZTl46hSUwvkBdkYaTy4H8bAPx6MoitNuHGssdbRDOX5EdZC0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alyssa.is; spf=pass smtp.mailfrom=alyssa.is; dkim=pass (2048-bit key) header.d=alyssa.is header.i=@alyssa.is header.b=n0lOn8ds; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=tXX2XE1X; arc=none smtp.client-ip=103.168.172.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alyssa.is
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alyssa.is
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=alyssa.is header.i=@alyssa.is header.b="n0lOn8ds";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tXX2XE1X"
+Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 968F51140122;
+	Tue, 10 Sep 2024 06:02:16 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-07.internal (MEProxy); Tue, 10 Sep 2024 06:02:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1725962536; x=1726048936; bh=gJHPpgFAZa
+	8vt4W8j4/yb/MNCYdgVfpC/cRhv6oPxTw=; b=n0lOn8ds4IBWLsAvZwtelWPwP3
+	4nexO5RDT5hlDpJM7gw8zP8ul2ntbp3OGznk3N12o6UKOIQAzKL8E524cA5oQh76
+	ckGIaW8Hd4m0Vc2xRkuorCWctX240AcAvqf7fqY0RagEHsiwFMFAbc/BEoXlwyh4
+	orVnpVzFUp9Fu1x2jnHqmEvhfKXzgFrvqzDwPtL+GutagHM6BQJzJNTcqxq7wbAH
+	88IBLxm42Y31KPJyFcaDr1N7bc8dONA55s5lrPsGAjpDRYeXp05Ms9EjqlXb6s1+
+	MRVcb5yZV27hvX4nC5ThWga4rQjkoN0WHflpTL3J3YRx1BUsRTWyTZBBi7Bg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1725962536; x=1726048936; bh=gJHPpgFAZa8vt4W8j4/yb/MNCYdg
+	VfpC/cRhv6oPxTw=; b=tXX2XE1XdcVCGeHuPoxHd07U3zb+yFulFj0cYlXMyc5v
+	nXSTyoOkxKfZ2wBltMksjEx8rvAASjCyOKJ6dY9CunRaiyWfhbKfWc59SF4ao7cX
+	VClh6yARDiOnNKKa58X36RmuV03dy/Wzj4X3PDDh9ZlqLur9fhs0kcMgbUM7RX41
+	XgA3Wj+JSZv6Q/TyGJuCkieO/6x0Ii6ULykz+BOjK1UafMzvECFCGFkgbqt+1uNL
+	VA5bOIkrJ4E3d7O7pI+vKYTVFwl64Va4GOeOdeGS+2tgkKDG+/avy3j8I0R5wrfK
+	01J87n6vVIHjW5ERtUTmHUzumGTzsXOmS6eQey4ayQ==
+X-ME-Sender: <xms:KBngZjqMPVAEkXA6mq38DhFiFDY4-W4Fs7dzh2W55cKzSrQRN3bV6Q>
+    <xme:KBngZtrsnk-4xQZl-W-7MKtEyuxsUall-R3ba9J5y4uf7jErW-Y4unQ6p7CCfuueX
+    beG8u52JB8x9E1EUg>
+X-ME-Received: <xmr:KBngZgMNzwuRY0obPxh-XTIhuU2z99eARXT9D4gO71Izj983NeYz7H78WuL_Y3lsxWW-ULP_GxFDv08rOlRqrgF6T4I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeiledgvddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhephffvvefujghffffkgggtsehgtderredttddtnecu
+    hfhrohhmpeetlhihshhsrgcutfhoshhsuceohhhisegrlhihshhsrgdrihhsqeenucggtf
+    frrghtthgvrhhnpeejtdetffdtveffheejhfeiudfgudeuveetvdelfeeuffehuedvueff
+    ffetgeffueenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdrohhrgh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehhihes
+    rghlhihsshgrrdhishdpnhgspghrtghpthhtohepfedpmhhouggvpehsmhhtphhouhhtpd
+    hrtghpthhtohepiihlrghnghesrhgvughhrghtrdgtohhmpdhrtghpthhtohepfhhsthgv
+    shhtshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgstg
+    grtghhvghfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:KBngZm6ogOot0nuup4vdWQgufeqpbzLN5w-NQdES7Z_BBCSFU5-FLQ>
+    <xmx:KBngZi5PxlVHfuSR8KYTEsCY9KKcNHO-YTzfxw_MAYng31N18S_VZA>
+    <xmx:KBngZuim4RNlE8s0gnmIX0k_Vd9B4-UQtP9VlrxbVmacQhZJkQum6w>
+    <xmx:KBngZk4ShrOo6NQU2omg9GD45ZIG3KLG1-euQdf7ojKorN1fWDFakg>
+    <xmx:KBngZokB8dMoCbmE40hUbqOfMRUtGKpE9yW5QPsLCiv1UhOb3OqyTHqm>
+Feedback-ID: i12284293:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 10 Sep 2024 06:02:15 -0400 (EDT)
+Received: by sf.qyliss.net (Postfix, from userid 1000)
+	id 01F4920427F0F; Tue, 10 Sep 2024 12:02:13 +0200 (CEST)
+From: Alyssa Ross <hi@alyssa.is>
+To: Zorro Lang <zlang@redhat.com>
+Cc: fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org
+Subject: Re: [RFC PATCH] generic: test negative timespecs are accurate
+In-Reply-To: <20240909080132.4wliimcb2y4bt7u3@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20240907154527.604864-2-hi@alyssa.is>
+ <20240909080132.4wliimcb2y4bt7u3@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Date: Tue, 10 Sep 2024 12:02:05 +0200
+Message-ID: <8734m7hlnm.fsf@alyssa.is>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c246:0:b0:37a:a9f0:f263 with SMTP id
- e9e14a558f8ab-3a04f0cce6cmr160358415ab.20.1725956190074; Tue, 10 Sep 2024
- 01:16:30 -0700 (PDT)
-Date: Tue, 10 Sep 2024 01:16:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009b8cd30621bf7d02@google.com>
-Subject: [syzbot] [bcachefs?] general protection fault in bch2_fs_recovery
-From: syzbot <syzbot+1cecc37d87c4286e5543@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha256; protocol="application/pgp-signature"
 
-Hello,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-syzbot found the following issue on:
+Zorro Lang <zlang@redhat.com> writes:
 
-HEAD commit:    bc83b4d1f086 Merge tag 'bcachefs-2024-09-09' of git://evil..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15f7449f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=61d235cb8d15001c
-dashboard link: https://syzkaller.appspot.com/bug?extid=1cecc37d87c4286e5543
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10083f29980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=144da807980000
+> On Sat, Sep 07, 2024 at 05:45:28PM +0200, Alyssa Ross wrote:
+>> Link: https://github.com/koverstreet/bcachefs/issues/743
+>
+> Great, a bcachefs regression test case :)
+>
+> Can you add a bit more details in commit log, not only a link.
+>
+>> Signed-off-by: Alyssa Ross <hi@alyssa.is>
+>> ---
+>> This is an adapted version of generic/258, but it tests that the stored=
+=20
+>> timestamp is accurate to the second, rather than just testing the=20
+>> timestamp remains negative.  I created a new test rather than just
+>> making 258 more precise, because I understand that there may be
+>> filesystems that don't store timestamps that accurately by design.
+>> As an example, I've heard that FAT only has 2 second precision, so this
+>> patch is an RFC because I'm not sure how I should write a _require
+>> function (if at all) that restricts the test to filesystems that are
+>> expected to be able to do this.
+>>=20
+>>  tests/generic/363     | 26 ++++++++++++++++++++++++++
+>>  tests/generic/363.out |  2 ++
+>
+> The g/363 has been taken, please rebase to latest for-next branch.
+> You can use `xfstests/tools/mvtest generic/363 generic/365` to change
+> the case number, before rebasing.
+>
+>>  2 files changed, 28 insertions(+)
+>>  create mode 100755 tests/generic/363
+>>  create mode 100644 tests/generic/363.out
+>>=20
+>> diff --git a/tests/generic/363 b/tests/generic/363
+>> new file mode 100755
+>> index 00000000..50459d01
+>> --- /dev/null
+>> +++ b/tests/generic/363
+>> @@ -0,0 +1,26 @@
+>> +#! /bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright (c) 2011 Red Hat, Inc.  All Rights Reserved.
+>> +# Copyright (c) 2024 Alyssa Ross.  All Rights Reserved.
+>> +#
+>> +# FS QA Test 363
+>> +#
+>> +# Test timestamps prior to epoch with nanosecond components are
+>> +# accurate to the second.
+>> +# bcachefs was slightly off.
+>> +#
+>> +. ./common/preamble
+>> +_begin_fstest auto quick bigtime
+>> +
+>
+> As this's a bcachefs regression test:
+> https://lore.kernel.org/linux-bcachefs/20240907160024.605850-3-hi@alyssa.=
+is/
+>
+> So better to mark as:
+> if [ "$FSTYP" =3D "bcachefs" ];then
+> 	_fixed_by_kernel_commit xxxxxxxxxxxx "bcachefs: Fix negative timespecs"
+> fi
+> (replace the xxxxxxx if it's merged on mainline linux)
+>
+> Others looks good to me, with above changes, I'd like to
+>
+> Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-bc83b4d1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a07cb707943e/vmlinux-bc83b4d1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/35f99272bee1/bzImage-bc83b4d1.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/1483a93cc3a3/mount_0.gz
+Thanks!  So you don't think the test needs to express any extra
+requirement that filesystems support to-the-second precision?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1cecc37d87c4286e5543@syzkaller.appspotmail.com
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-bcachefs (loop0): starting version 1.7: mi_btree_bitmap opts=errors=continue,metadata_checksum=xxhash,data_checksum=none,compression=lz4,background_compression=lz4,erasure_code,noinodes_use_key_cache,grpquota,nojournal_transaction_names,nocow
-superblock marked clean but clean section not present, fixing
-Oops: general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 0 UID: 0 PID: 5108 Comm: syz-executor340 Not tainted 6.11.0-rc7-syzkaller-00017-gbc83b4d1f086 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:bch2_fs_recovery+0x274/0x38b0 fs/bcachefs/recovery.c:644
-Code: 00 00 4c 89 f7 48 c7 c6 20 72 54 8c e8 85 d6 05 00 eb 41 e8 6e 55 55 fd 49 8d 9d cc 01 00 00 49 83 c7 10 4c 89 f8 48 c1 e8 03 <42> 80 3c 20 00 74 08 4c 89 ff e8 fd 9c bc fd 49 8b 0f 4c 89 ef 48
-RSP: 0018:ffffc90002e4f5c0 EFLAGS: 00010202
-RAX: 0000000000000002 RBX: ffff8880441801cc RCX: ffff88801fd34880
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc90002e4f968 R08: ffffffff843e3700 R09: 1ffff920005c9e9c
-R10: dffffc0000000000 R11: fffff520005c9e9d R12: dffffc0000000000
-R13: ffff888044180000 R14: ffff888044180777 R15: 0000000000000010
-FS:  000055555e2a1380(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000561b4e028808 CR3: 0000000036192000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1036
- bch2_fs_get_tree+0xd61/0x1700 fs/bcachefs/fs.c:1954
- vfs_get_tree+0x90/0x2b0 fs/super.c:1800
- do_new_mount+0x2be/0xb40 fs/namespace.c:3472
- do_mount fs/namespace.c:3812 [inline]
- __do_sys_mount fs/namespace.c:4020 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:3997
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f6adfe3626a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff810bb308 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fff810bb320 RCX: 00007f6adfe3626a
-RDX: 00000000200058c0 RSI: 0000000020000080 RDI: 00007fff810bb320
-RBP: 0000000000000004 R08: 00007fff810bb360 R09: 0000000000005905
-R10: 0000000000008000 R11: 0000000000000282 R12: 0000000000008000
-R13: 00007fff810bb360 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bch2_fs_recovery+0x274/0x38b0 fs/bcachefs/recovery.c:644
-Code: 00 00 4c 89 f7 48 c7 c6 20 72 54 8c e8 85 d6 05 00 eb 41 e8 6e 55 55 fd 49 8d 9d cc 01 00 00 49 83 c7 10 4c 89 f8 48 c1 e8 03 <42> 80 3c 20 00 74 08 4c 89 ff e8 fd 9c bc fd 49 8b 0f 4c 89 ef 48
-RSP: 0018:ffffc90002e4f5c0 EFLAGS: 00010202
-RAX: 0000000000000002 RBX: ffff8880441801cc RCX: ffff88801fd34880
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc90002e4f968 R08: ffffffff843e3700 R09: 1ffff920005c9e9c
-R10: dffffc0000000000 R11: fffff520005c9e9d R12: dffffc0000000000
-R13: ffff888044180000 R14: ffff888044180777 R15: 0000000000000010
-FS:  000055555e2a1380(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000561b4e028808 CR3: 0000000036192000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	00 00                	add    %al,(%rax)
-   2:	4c 89 f7             	mov    %r14,%rdi
-   5:	48 c7 c6 20 72 54 8c 	mov    $0xffffffff8c547220,%rsi
-   c:	e8 85 d6 05 00       	call   0x5d696
-  11:	eb 41                	jmp    0x54
-  13:	e8 6e 55 55 fd       	call   0xfd555586
-  18:	49 8d 9d cc 01 00 00 	lea    0x1cc(%r13),%rbx
-  1f:	49 83 c7 10          	add    $0x10,%r15
-  23:	4c 89 f8             	mov    %r15,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	4c 89 ff             	mov    %r15,%rdi
-  34:	e8 fd 9c bc fd       	call   0xfdbc9d36
-  39:	49 8b 0f             	mov    (%r15),%rcx
-  3c:	4c 89 ef             	mov    %r13,%rdi
-  3f:	48                   	rex.W
+-----BEGIN PGP SIGNATURE-----
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+iQIzBAEBCAAdFiEEH9wgcxqlHM/ARR3h+dvtSFmyccAFAmbgGR0ACgkQ+dvtSFmy
+ccAvGg//Zd2D0L1jBJZoYgd6As1MHCEVDjAo/ZYcmEbvoRhIL6VTC6V/LcnyUwfW
+GKlZrhEV8c99CXYI+uCaLJfCSuh+DWxlJx62tfrGnXhGquxJQxmux8fUG5mPkTMl
+JbRbit19cdGXi0qUMbd9ULiEcmMXtzsHwixgx8UkWilbnbJjMF/zmjQRPcorpV4Q
+GCnF8eBpQwrArJljWS9rDoQtv3kmsblZ6WBaifAug8scjvrdYqVn2UMCwM6QJR2L
+jz04EG8rYzDAcmpxO0cXEM5ngkoQgYFFw8qolvZRPJWXmbl328Q9o1RrIWnKylm1
+qFMGruKiAGpGQ89QTR8Zxnty2HGTHRxJ6To/VU6PlNQkIYxXKu4HQV3DiyJJAosd
+qDpXlrcEYoqgFo/6X47vop5USnk/ZUhfqp6yFlaIWYNSvWrN2vLk1J4fHU9nnWzz
+5WO3Elq0Qm1rhTvmQu1kdIhIGNkqBW6j8A7zzcaLbEMWVn3DPaHRaVTwCV+GTr3d
+2r5ghx47VfHNDQ8cr41QWacfvpsCAT6OWqsO/gnukDSASSNYTYtezameom/6ppcv
+Z97KmN24oImGUEw5j5UIxVQsrAC6WP68wTHPX2xY/62Pj3KY/Y6lqDvRizBYwkJI
+SHwNSD3dVpVrny9hSjJSLKW8ZydQnIJaXlXBpcWITq+AitdA7hk=
+=ykvt
+-----END PGP SIGNATURE-----
+--=-=-=--
