@@ -1,73 +1,56 @@
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33DA2194C77
-	for <linux-bcachefs@vger.kernel.org>; Tue, 10 Sep 2024 19:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3745197A6B;
+	Tue, 10 Sep 2024 19:29:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725995161; cv=none; b=Epw44vJBK9zLiljIO6H48m753iyLe1pZywKrJ1bb2e7Td1NmiiX9cqo3a5qFsJHlvsLM4TY4KnrGcFfpyObAHzzhg47SZTQrUGup0ftmpjIX6XA7xOIQsabpw/DzjNHGhJ3KCUONomqtxmDgkh6pibybNx9JdTBIeyKlWDzXPFk=
+	t=1725996553; cv=none; b=NEdyURIaqKhLaJlyh6fGgPwErrsjzQ3665uo2q/KfNfOjIjQZXanbBBFvhEB+mFsvYWFNAmHc3CEQX29+EK/96U9cZcRUW7BWi7J/68DK2PeR0DQTCkGu5HjIRkxGb3TNyjCQVa14YsLjoOSKIm5Y7f2VNcThkp33j0guh/xYOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725995161; c=relaxed/simple;
-	bh=SLV+XYn6nBs2t9meQ3KO1h4sWaLFdMza/UJh7pcED8s=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=II//WW6jfcOizSVI6BOwdwRaGHtng6tdsFBcqHA7pjlorAwy6ZtPRbKYj6lJnNkJsmRNPwYMpflfMLlQOVLEIu0WyIjyqeh8HLJwMfKmQjYBpZZ6o6CNYHmWNclUYrhBUVAmgYPiU68yJ1+5z7Y0rWgeJOutPdEtkSt3r9E2oSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SnaPKb/1; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1725996553; c=relaxed/simple;
+	bh=eVJOBrGIgKMsQ9dRJJ17aRlya2kVlQB7lhg8bZJyxrA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=syBR6FkYiB4lhhTHwSspI3oNNFFwYHxfPKHZal5UN22SFHf2b7NieYXlryDZbIt0i/UbO1BISRuAJrxZ6i8FA11oJHZ2gbdST0kGVic38krngHMx+9/RrfLKjB1B5mlOh/6K7hVJcAtM2D9gIyYssMGz7qwBjKMXUlNOdB8Stjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=2OIFb3CY; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SnaPKb/1"
-Date: Tue, 10 Sep 2024 15:05:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725995157;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=wrDNV0GgXZMc30bnmbuGsHXq9dkPpuKdk+3TqbVzVJw=;
-	b=SnaPKb/1M1LDbQj9Oy4xpNbg56/HJL+GuYsgOQVUV9zp/QNmVP06AmcM1dEnQ11ict1TwJ
-	0IWypLju1KnU6Oz+Omzh2sFb6hXVRXPxfAoQTDcySLhg7eb9PsOIzYfO0RFax+yphra8Gg
-	liS0k0GMITqvpeN/1iyKEqWQGQIRrUg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for 6.10.y
-Message-ID: <6ykag7fdhv7m4hr2urwlhlf2owm3keq7gsiijeiyh6gd45kcxr@jfmqoqrfqqfa>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="2OIFb3CY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1CA3C4CEC3;
+	Tue, 10 Sep 2024 19:29:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1725996553;
+	bh=eVJOBrGIgKMsQ9dRJJ17aRlya2kVlQB7lhg8bZJyxrA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=2OIFb3CY+9jlZVXS1NcMNPiJCPu5Kh1+AilRZqnQGcZ69nKHdj8KJLRM8hHngKZRJ
+	 pScE3yPfr0BBraPSsoGwnWHDr3biGc8lAswjgNDxWvA+0cDFQCQc7wSpFs9z06zoBN
+	 v6FzUbHEqSqWqH8RuGw6dQo2vvkh36Wm50RGEmvs=
+Date: Tue, 10 Sep 2024 12:29:12 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>, Kent
+ Overstreet <kent.overstreet@linux.dev>, jack@suse.cz, Vlastimil Babka
+ <vbabka@suse.cz>, Dave Chinner <dchinner@redhat.com>, Christian Brauner
+ <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore
+ <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn"
+ <serge@hallyn.com>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-bcachefs@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2 v2] remove PF_MEMALLOC_NORECLAIM
+Message-Id: <20240910122912.e7abfa39b0fd7683fbaf2325@linux-foundation.org>
+In-Reply-To: <20240902095203.1559361-1-mhocko@kernel.org>
+References: <20240902095203.1559361-1-mhocko@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hey Greg, couple critical fixes for you:
+Thanks, I have queued this for 6.12-rc1.
 
-The following changes since commit 1611860f184a2c9e74ed593948d43657734a7098:
+Kent, if this results in observable runtime issues with bcachefs,
+please report those and let's see what we can come up with to address
+them.
 
-  Linux 6.10.9 (2024-09-08 07:56:41 +0200)
-
-are available in the Git repository at:
-
-  git://evilpiepirate.org/bcachefs.git tags/bcachefs-v6.10.9-fixes
-
-for you to fetch changes up to ee64e00984ec3ea3fbf9b4331cbd073690ff8765:
-
-  bcachefs: Don't delete open files in online fsck (2024-09-10 10:52:16 -0400)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.10.10
-
-----------------------------------------------------------------
-Kent Overstreet (3):
-      bcachefs: Fix bch2_extents_match() false positive
-      bcachefs: Revert lockless buffered IO path
-      bcachefs: Don't delete open files in online fsck
-
- fs/bcachefs/extents.c        |  23 ++++++-
- fs/bcachefs/fs-io-buffered.c | 149 ++++++++++++-------------------------------
- fs/bcachefs/fs.c             |   8 +++
- fs/bcachefs/fs.h             |   7 ++
- fs/bcachefs/fsck.c           |  18 ++++++
- 5 files changed, 95 insertions(+), 110 deletions(-)
