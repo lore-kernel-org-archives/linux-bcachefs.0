@@ -1,63 +1,68 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D50F282E2;
-	Mon,  9 Sep 2024 17:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B10383A1;
+	Tue, 10 Sep 2024 00:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725902447; cv=none; b=ttCJZH8gdImoYG3QGeYbiRd9+doJRjcAC55dfeEc0ZlNzLyzYLklMCvDeoBZHWpAlzzy5CXxPZrkxm3EyQhkiZZF5e0aNUx/qU2etOBHOJu+Ji0dD9458ldjs6lvUeJPab7fqGd+3b9HedU1n4LOnd34DH0NctP0n+8JBtDdGqE=
+	t=1725929352; cv=none; b=bsXdmYJmweovLkSOb2jDZ5n78tFeonhoEXVCGuTkqtVxX07RT89JiQExr3UZ+8fqNp6Gut30Lk6mC2/O9wFFr7/fs0ruxf8w9YoxqL4HxUqUOOnV4Ribos6czlJgL8Fdj/HTNX290/J28VswCL5mNnRMQ2YDO3vINwPgFBL1ho8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725902447; c=relaxed/simple;
-	bh=rBdBjn0XNlpSEcc4ZAMVvdALnrEyMDqllQKDkkADKBw=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=MgM/3+mq6hR1zT0Iyd4x9d8yiH9GVvy0ntNZNhMegHrPtnfBKe9S9AmltWrGa30tJe8amHPMAC0bIPzrhKIsJ+l62YLdbOxdW3DSEfFab4BhXFkLiQXm9idwPtZlOgEYToYYgF16OPRlU9t0L9lMrS3NbV0jzGVaEeS7UGamHAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OBLJTSv4; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1725929352; c=relaxed/simple;
+	bh=0Pq34FGLz5PDpqHXwIu6shwPkRhwzZRLFooS7lU80j0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=o7bf1dBpALlttQkwWxD4SPADvF6AI0t6t9VGYAhmispQ8LgesMIXsR+r0qcE0v4tsiv8HJjLM+2sN+myCNprXJHe5mbGWTXheXEz9gqg2YVjeiFU/vkETFe+mtkeXp36Oz2oIXQrKtQAQpH3EH3PU6uy6kDhP8cREbdju8g4ZMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=M5XSzYAU; arc=none smtp.client-ip=115.124.30.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OBLJTSv4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F286DC4CEC5;
-	Mon,  9 Sep 2024 17:20:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725902447;
-	bh=rBdBjn0XNlpSEcc4ZAMVvdALnrEyMDqllQKDkkADKBw=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=OBLJTSv4gNLFub4vNmRSbWeamu9M3t8ugYKeFzEeUbZN0xFWU555U3aGUIHl3xFWs
-	 ktuVAuahwy9wxYZlzNFZ/bP2p73OXvSVabtu86Tg3qRbv4i9hE+xo2ry+D3dGxFTbx
-	 s428mX2gblcXBnj0p4YtdMgMJaiSJegLaURYqYF1n5ibfTgt3gpnyvz2dJSigqxx5N
-	 OOy+Mbi0zy2cDzMwgnZ8guVdjM1Bms9Nw4eizG86tm+I3FztNMIFlrZwXOkXi0UWc+
-	 BN9pmHs5YWlDAsUDAEm37d6nBYVHCaGRuUs59O78QXSv5flLA3pQbn2qXUrJmLmq0B
-	 pBmsXQpVrzG2w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3424E3806654;
-	Mon,  9 Sep 2024 17:20:49 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs fixes for 6.11-rc8/final
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <uyzlav7jahhammvvx2eymn4thh5vvpo3ngu7tdmkmyygdwim6c@3b7dyx3tbqyo>
-References: <uyzlav7jahhammvvx2eymn4thh5vvpo3ngu7tdmkmyygdwim6c@3b7dyx3tbqyo>
-X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <uyzlav7jahhammvvx2eymn4thh5vvpo3ngu7tdmkmyygdwim6c@3b7dyx3tbqyo>
-X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-09-09
-X-PR-Tracked-Commit-Id: 16005147cca41a0f67b5def2a4656286f8c0db4a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bc83b4d1f08695e85e85d36f7b803da58010161d
-Message-Id: <172590244775.3867163.120052155906121188.pr-tracker-bot@kernel.org>
-Date: Mon, 09 Sep 2024 17:20:47 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="M5XSzYAU"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1725929346; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=ngTG0x9JjXf9xOSVJ5quw1HFve2xFpS9Tn58NkPkKns=;
+	b=M5XSzYAU4Ju7Qni+xmLil0PLgPmKXzY2SVa7mILINVZ/oOnPTVePs9BizzJl2bBkQlIiaIgHq3RMkY1ZISjHR5hnTooFtakc54Va/cJ7eSQK9EzDn2fZ3aTLbDH71JOiyyyo9KEthij1b7ltOd5lw5hISZdccUC0y6+PdKYYaBw=
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0WEhwU3Z_1725929345)
+          by smtp.aliyun-inc.com;
+          Tue, 10 Sep 2024 08:49:05 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] bcachefs: Remove unneeded semicolon
+Date: Tue, 10 Sep 2024 08:49:03 +0800
+Message-Id: <20240910004903.26693-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Mon, 9 Sep 2024 09:52:26 -0400:
+./fs/bcachefs/btree_cache.c:502:13-14: Unneeded semicolon
 
-> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-09-09
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=10821
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/bcachefs/btree_cache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bc83b4d1f08695e85e85d36f7b803da58010161d
-
-Thank you!
-
+diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+index 7b951b273306..bfd4cec70744 100644
+--- a/fs/bcachefs/btree_cache.c
++++ b/fs/bcachefs/btree_cache.c
+@@ -499,7 +499,7 @@ static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+ 		if (btree_node_accessed(b)) {
+ 			clear_btree_node_accessed(b);
+ 			bc->not_freed[BCH_BTREE_CACHE_NOT_FREED_access_bit]++;
+-			--touched;;
++			--touched;
+ 		} else if (!btree_node_reclaim(c, b, true)) {
+ 			bch2_btree_node_hash_remove(bc, b);
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.32.0.3.g01195cf9f
+
