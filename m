@@ -1,98 +1,164 @@
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EE823A6
-	for <linux-bcachefs@vger.kernel.org>; Tue, 10 Sep 2024 10:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4405418CBE0
+	for <linux-bcachefs@vger.kernel.org>; Tue, 10 Sep 2024 13:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725965422; cv=none; b=Mj49QJc0IYncVP2clyG3cH0hIktJkC+cHVJW8SNooXk2b7YEMoA2UOSFP3E1emMPrL6jgikiI2yDc/dV+kGtnM7yODwUwvzlWkAN6aklNeUJLWsNci/yUlkE/yyFOActpR0KXyq3pE1kdvYHVblazeHqRBiM4uAYotLKnGL5naw=
+	t=1725976356; cv=none; b=YAjdwyrx+MOMwQA2NujkYFPZ6ikB+krGrfu+ioclw96ja8rd3geldMoagEQ0voGALOGoSHg5oNVmZAusaL2sqqzXC6Ewf+r8CfjMKV7RViAv5kiNnEf4FzOW8UEDDPQU4ewUeiNgbZpZFsoaxWauCNZ2ukKaNtm7mvMyNuQV1uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725965422; c=relaxed/simple;
-	bh=j660FIt2LkNBUOlAD8fG6i3s65RXTVA5vEPHfgPW6AY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pYC7V9lYw6+unl+Zzka0g1XhEL/QTPAD5KLrZxjlk4KD94lGIIzv1eGSDVIuBJiUyETuhVeEqhkXKhlWMPY7Eph3iVV5N8rlFkLjKX8sG5PL/oW+F6p9NlYGcjVkalvBHHCGrGSWMuR0R3b0ICyrTjWM1qRU+6SUl47snX2JP+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=gUnACpx1; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+	s=arc-20240116; t=1725976356; c=relaxed/simple;
+	bh=WYj+KNiX2/tFP68pOZTvj5fhWVZOyRDJV7ArUgpxzgQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rEk6DDZGJPi2oZN+Dp2JIwEzwcddOqVgjYZ2+79WaqCMZP2WYw3yJ0crQaAz/z1bIk7VESkTwtP7M3mL6kJcRSFAt2YpogR5L+HUmSzLInXzfber1PFBV/49A4B+dBJinOVnRWfHJzRk8SzCutINBBVAupFWBjUA40EO622lXEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O7waGRPa; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="gUnACpx1"
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-374b37bfbf2so194033f8f.2
-        for <linux-bcachefs@vger.kernel.org>; Tue, 10 Sep 2024 03:50:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1725965419; x=1726570219; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kTCp9nY7FQEM3AmaK7gIs2eZ38YLpBmTnUOj1/n38Xo=;
-        b=gUnACpx1upy7ki8K8G0dcz8z5s3wfzO/u5YA+s+0rF0xjiVa3KmGC6tiNIsKsCjrpe
-         V98AVVp1r9mmdCX7fP3RqhUGcJBKZ0wZ8tchVWJd+Q/2glcBqRGpxqBVRsc9t6gsdSdC
-         2aHPNHnY4OBdJU/u67gbDrs5VijJcuAXP7fc2m6z/yoROhTFJwYNNTAmPpYOXQ5mkJ1s
-         edwMpnayapQa3d9B7zrWxAgRmCWSKMeKmwLf6LcUI1CIfroCfDLZf7rCEBkeF1R/QbM4
-         06qvpK4SX4Hh5k2cy81ObcgfYrUukMNpVBpNwXxUDZ3e7aIZNM9b3d5bWWlzU4PgHemq
-         uvhg==
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O7waGRPa"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1725976353;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OsHFRXX7atMxb08TJUDPlTcebLtW5BAVtzXT0e3prLA=;
+	b=O7waGRPaeQ/y8Hxj2qEyV56lYNfCWQa0NDE6FNzVaLw1eDpMy7JnwzBlsti1cGl3kS1S8W
+	9ENh7fTbIxVn025GAgHMaSs8LsiA7o/Ob7rjq51EbnBJTsED0YG81wH8GXV+leN8W4rCT7
+	CKgG5cmKtJNDqEJzPeSKbmad2Lf523Y=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-462-HiJIYkBlMgmQTRV_e_kXZw-1; Tue, 10 Sep 2024 09:52:32 -0400
+X-MC-Unique: HiJIYkBlMgmQTRV_e_kXZw-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-207332f7c17so8120485ad.2
+        for <linux-bcachefs@vger.kernel.org>; Tue, 10 Sep 2024 06:52:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725965419; x=1726570219;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kTCp9nY7FQEM3AmaK7gIs2eZ38YLpBmTnUOj1/n38Xo=;
-        b=msOjrtjNhAihHxSulfA1Tf7ukoXezoLN+LxC7QeBUXPq0ybBfIplaA8ETg3Sr3OzHu
-         nUTvgn7GbvFv9pfW/cWkhA/ml1ww2PESgsoDttqKUIgSIZte5cWvcxCZhmNEZprHjUWE
-         KBCImKqOoFchBiE2lyaqA28M7BWXTlWijo9EFCGhxgZRDXCGlogzD0ErLgZqDnAkyvG0
-         6mdDJbX2PMDBz6ByupKkRPAUALxMnBENFE2MzOpAg6aOndvZzp+Ul1ZRDSSI31M0VHgR
-         6hZ+OOrFk/OO0tiPuTzbmW3Pxs/k0G9+5V/U1pUogs2KAnt3ZyQjSRia8X/vDGA4C8D1
-         nMiw==
-X-Gm-Message-State: AOJu0YwqbIJ/liP4r+93+wGBpzYB4h398Mm0yklf1aHbtz1U8PblqW88
-	3LS5ihXP3vzCNK0ITYzl8qbVTViNWKAy+5vhR1zzZwIVRKoygjtmrjB55idYQ3c=
-X-Google-Smtp-Source: AGHT+IEWUdW0zk8adQ4t2k43BCT3ytMYT82ahbXEVJ7Mir9v+q7r+D14fxbNeEjwHcI8FM7pRrG09Q==
-X-Received: by 2002:a5d:5f87:0:b0:376:8378:2a60 with SMTP id ffacd0b85a97d-378895c5ab1mr4746018f8f.1.1725965418704;
-        Tue, 10 Sep 2024 03:50:18 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-62-216-208-91.dynamic.mnet-online.de. [62.216.208.91])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37895676117sm8509673f8f.60.2024.09.10.03.50.17
+        d=1e100.net; s=20230601; t=1725976351; x=1726581151;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OsHFRXX7atMxb08TJUDPlTcebLtW5BAVtzXT0e3prLA=;
+        b=MS7GPXvl39fGfRGP3zTVsg4CmoReyC7ExAm8fX98sd35Jq3yt3z8X1bOr/GjjXVJ2s
+         WdkxgbL8VKABz+M8la4FpaEb6YYa5ZKTF1TdyaAuvrcQ12Z2T0mL8bxOaosGKHR1vxmm
+         GeMLNpMsJH/pi4Us48D9FB+VZ/wEopmgxV+uRzWc258A6nKaymmZmDIAYRDHV4JvMY0F
+         mfa6kSwXxQlboxWDyqKCZN/DRXGOCqgOzWE4QT2I5gnzveItQ8hlpF1YMnXn5KeDRxeH
+         ILsrUimHaG968OjrRcw0MXXLsepLOWrm6Fr9deo6mnhGovnDnmSLkpjr7LC6v6iKZAlp
+         DlgA==
+X-Forwarded-Encrypted: i=1; AJvYcCXt93TxDF57zVwiJQE7PZU7utNvh/Ayo734+GbHwLbXxDO2qk28NJG3toOC1MzD0RAPNm4vZ2ELOKufn0oPuA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdIDcmu2wdNf4KFmsygeyYNUwxC0qk5hGY5BWRYhApWQjAHim0
+	3B2scBiLTMb7MJUCUWIDAFP2NCWpQ9Bq0l9mEtidGjsxT0iuiW/WbEUgJNgIBSIAO/olnNoBx2k
+	silsVdx93Ipdxz2UreF5z4xVt/kP3TpWE3O9fDDx3fa5UDg8/VgT5XwQJKFNwgcdkeZ1rrr27f6
+	8=
+X-Received: by 2002:a17:902:e549:b0:207:1828:82fd with SMTP id d9443c01a7336-2074c5f4a70mr9738525ad.28.1725976350745;
+        Tue, 10 Sep 2024 06:52:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEmCih3+lW6+N+izEA6riY6zhdE7QMXdAIe/jJPGry8gOGWU4t30rI9w3wDRN+Tw1Va38Hadw==
+X-Received: by 2002:a17:902:e549:b0:207:1828:82fd with SMTP id d9443c01a7336-2074c5f4a70mr9738155ad.28.1725976350028;
+        Tue, 10 Sep 2024 06:52:30 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20710f1f614sm48856725ad.211.2024.09.10.06.52.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Sep 2024 03:50:18 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>,
-	Hongbo Li <lihongbo22@huawei.com>
-Subject: [RESEND PATCH] bcachefs: Remove duplicate included headers
-Date: Tue, 10 Sep 2024 12:50:08 +0200
-Message-ID: <20240910105007.4882-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.46.0
+        Tue, 10 Sep 2024 06:52:29 -0700 (PDT)
+Date: Tue, 10 Sep 2024 21:52:26 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Alyssa Ross <hi@alyssa.is>
+Cc: fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org
+Subject: Re: [RFC PATCH] generic: test negative timespecs are accurate
+Message-ID: <20240910135226.hfwk774mdzztqdxv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20240907154527.604864-2-hi@alyssa.is>
+ <20240909080132.4wliimcb2y4bt7u3@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <8734m7hlnm.fsf@alyssa.is>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8734m7hlnm.fsf@alyssa.is>
 
-The header files dirent_format.h and disk_groups_format.h are included
-twice. Remove the redundant includes and the following warnings reported
-by make includecheck:
+On Tue, Sep 10, 2024 at 12:02:05PM +0200, Alyssa Ross wrote:
+> Zorro Lang <zlang@redhat.com> writes:
+> 
+> > On Sat, Sep 07, 2024 at 05:45:28PM +0200, Alyssa Ross wrote:
+> >> Link: https://github.com/koverstreet/bcachefs/issues/743
+> >
+> > Great, a bcachefs regression test case :)
+> >
+> > Can you add a bit more details in commit log, not only a link.
+> >
+> >> Signed-off-by: Alyssa Ross <hi@alyssa.is>
+> >> ---
+> >> This is an adapted version of generic/258, but it tests that the stored 
+> >> timestamp is accurate to the second, rather than just testing the 
+> >> timestamp remains negative.  I created a new test rather than just
+> >> making 258 more precise, because I understand that there may be
+> >> filesystems that don't store timestamps that accurately by design.
+> >> As an example, I've heard that FAT only has 2 second precision, so this
+> >> patch is an RFC because I'm not sure how I should write a _require
+> >> function (if at all) that restricts the test to filesystems that are
+> >> expected to be able to do this.
+> >> 
+> >>  tests/generic/363     | 26 ++++++++++++++++++++++++++
+> >>  tests/generic/363.out |  2 ++
+> >
+> > The g/363 has been taken, please rebase to latest for-next branch.
+> > You can use `xfstests/tools/mvtest generic/363 generic/365` to change
+> > the case number, before rebasing.
+> >
+> >>  2 files changed, 28 insertions(+)
+> >>  create mode 100755 tests/generic/363
+> >>  create mode 100644 tests/generic/363.out
+> >> 
+> >> diff --git a/tests/generic/363 b/tests/generic/363
+> >> new file mode 100755
+> >> index 00000000..50459d01
+> >> --- /dev/null
+> >> +++ b/tests/generic/363
+> >> @@ -0,0 +1,26 @@
+> >> +#! /bin/bash
+> >> +# SPDX-License-Identifier: GPL-2.0
+> >> +# Copyright (c) 2011 Red Hat, Inc.  All Rights Reserved.
+> >> +# Copyright (c) 2024 Alyssa Ross.  All Rights Reserved.
+> >> +#
+> >> +# FS QA Test 363
+> >> +#
+> >> +# Test timestamps prior to epoch with nanosecond components are
+> >> +# accurate to the second.
+> >> +# bcachefs was slightly off.
+> >> +#
+> >> +. ./common/preamble
+> >> +_begin_fstest auto quick bigtime
+> >> +
+> >
+> > As this's a bcachefs regression test:
+> > https://lore.kernel.org/linux-bcachefs/20240907160024.605850-3-hi@alyssa.is/
+> >
+> > So better to mark as:
+> > if [ "$FSTYP" = "bcachefs" ];then
+> > 	_fixed_by_kernel_commit xxxxxxxxxxxx "bcachefs: Fix negative timespecs"
+> > fi
+> > (replace the xxxxxxx if it's merged on mainline linux)
+> >
+> > Others looks good to me, with above changes, I'd like to
+> >
+> > Reviewed-by: Zorro Lang <zlang@redhat.com>
+> 
+> Thanks!  So you don't think the test needs to express any extra
+> requirement that filesystems support to-the-second precision?
 
-  disk_groups_format.h is included more than once
-  dirent_format.h is included more than once
+Oh, does this test needs 1 second precision? I thought you concerned some
+filesystems cannot be the epoch you set. The _require_negative_timestamps
+will skip the test from exfat and ceph. It doesn't help the FAT, maybe you
+want to add vfat to _require_negative_timestamps.
 
-Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- fs/bcachefs/bcachefs_format.h | 2 --
- 1 file changed, 2 deletions(-)
+I thought you might want to output the stored timestamp (accurate to the
+second) to reproduce this bug, if not, why you hope to write this new one,
+not use the g/258 to be the reproducer directly?
 
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index 14ce726bf5a3..b97fd0f75831 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -499,8 +499,6 @@ struct bch_sb_field {
- #include "disk_groups_format.h"
- #include "extents_format.h"
- #include "ec_format.h"
--#include "dirent_format.h"
--#include "disk_groups_format.h"
- #include "inode_format.h"
- #include "journal_seq_blacklist_format.h"
- #include "logged_ops_format.h"
--- 
-2.46.0
+Thanks,
+Zorro
+
+
+
 
