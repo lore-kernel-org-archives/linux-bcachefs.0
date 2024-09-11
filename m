@@ -1,24 +1,24 @@
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF7017C68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 297D617BA6
 	for <linux-bcachefs@vger.kernel.org>; Wed, 11 Sep 2024 01:02:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726016565; cv=none; b=GkOwH3iGQocv/jVivhiJH3k5HED8GSK5NRJ2BA9el8dtuP7Bee+6pkPBtmQsG77hcoPwdIH5Z0fs7x3vo3L1rVUSJ0pW6f31by2e46bc2C1AFnK9I1PwjfDkNCm7JO11UCmhqSEzQYDcL1vQFqm9EhXefdLR+4ZwtaP/vxn7YAc=
+	t=1726016566; cv=none; b=FwJlTx/NjkRlOxG2w9qKHoxY5DIp5OdH8OV4OYAXUz+a8SLzDr4Mi9w2j5Fi9GL9/zjWBlFKMgfhzMhJJGiBIczsh8r6GRVQWFMUEh5WbwLxTdcNHJpRXRHUjg6V/x2wHR7kh4d73N3vSPaUI/qSjcCPvbU1iHH0b3zuAnoMbW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726016565; c=relaxed/simple;
-	bh=5yts8GZ0O8lZbPzyMJu6Pcru4K+5EcCooFGyFSmlF28=;
+	s=arc-20240116; t=1726016566; c=relaxed/simple;
+	bh=Omf82UHP3tfLxDYuMk3oZuKuoKSl7kzj44yxhiNmOJI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hLsVKPwLkypgYGZo8vwccE8Rz75RD6NWyBaEoicqBzE/IYA0RCqUKavPbNkXPeW+A6icd8Wz0Q0tP20elyGQn8M47y9bpLs2X0It6Jy2rA/y4ap6VxCqsWykTXPAcW0rqqHhqhQlr13aVovM5ydX6dSde29KIx/zfP9WVwA3wTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=iEw3AD9cMbB8RCC6HND4SXp0sjMMHOUVvW7TqVS8vE7BWFWzr2IjDu5juk7XIWpFAQuGKU7ObndhP4mRvpKWjcrSHcqlCHPiLF59sgZPS+zgNpxXxUYE6WUwIsHDcrYpaPCJADIvfUFkKa3xAR3wUdrr8hu0p8HnLSvQZZR+5WA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4X3Mgp5v9ZzpVb4;
-	Wed, 11 Sep 2024 09:00:38 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4X3Mjc3b0Jz2Cp1J;
+	Wed, 11 Sep 2024 09:02:12 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 77D4F180AE6;
+	by mail.maildlp.com (Postfix) with ESMTPS id 520841402E1;
 	Wed, 11 Sep 2024 09:02:41 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
  (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
@@ -28,9 +28,9 @@ From: Hongbo Li <lihongbo22@huawei.com>
 To: <kent.overstreet@linux.dev>
 CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>,
 	<chris.zjh@huawei.com>
-Subject: [PATCH v2 2/2] bcachefs: bcachefs_metadata_version_directory_size
-Date: Wed, 11 Sep 2024 09:11:42 +0800
-Message-ID: <20240911011142.741429-3-lihongbo22@huawei.com>
+Subject: [PATCH v2 1/2] bcachefs: make directory i_size meaningful
+Date: Wed, 11 Sep 2024 09:11:41 +0800
+Message-ID: <20240911011142.741429-2-lihongbo22@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240911011142.741429-1-lihongbo22@huawei.com>
 References: <20240911011142.741429-1-lihongbo22@huawei.com>
@@ -45,122 +45,136 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpeml500022.china.huawei.com (7.185.36.66)
 
-This adds another metadata version for accounting directory size.
-For the new version of the filesystem, when new subdirectory items
-are created or deleted, the parent directory's size will change
-accordingly. For the old version of the existed file system, running
-fsck will automatically upgrade the metadata version, and it will
-do the check and recalculationg of the directory size.
+The isize of directory is 0 in bcachefs if the directory is empty.
+With more child dirents created, its size ought to change. Many
+other filesystems changed as that (ie. xfs and btrfs). And many of
+them changed as the size of child dirent name. Although the directory
+size may not seem to convey much, we can still give it some meaning.
+
+The formula of dentry size as follow:
+    occupied_size = 40 + ALIGN(9 + namelen, 8)
 
 Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 ---
- fs/bcachefs/bcachefs_format.h  |  3 ++-
- fs/bcachefs/fsck.c             | 41 ++++++++++++++++++++++++++++++++++
- fs/bcachefs/sb-downgrade.c     |  5 ++++-
- fs/bcachefs/sb-errors_format.h |  1 +
- 4 files changed, 48 insertions(+), 2 deletions(-)
+ fs/bcachefs/dirent.h    |  5 +++++
+ fs/bcachefs/fs-common.c | 11 +++++++++++
+ fs/bcachefs/fs.c        | 13 ++++++++-----
+ 3 files changed, 24 insertions(+), 5 deletions(-)
 
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index 8c4addddd07e..ef838b47c53d 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -678,7 +678,8 @@ struct bch_sb_field_ext {
- 	x(disk_accounting_v2,		BCH_VERSION(1,  9))		\
- 	x(disk_accounting_v3,		BCH_VERSION(1, 10))		\
- 	x(disk_accounting_inum,		BCH_VERSION(1, 11))		\
--	x(rebalance_work_acct_fix,	BCH_VERSION(1, 12))
-+	x(rebalance_work_acct_fix,	BCH_VERSION(1, 12))		\
-+	x(directory_size,		BCH_VERSION(1, 13))
- 
- enum bcachefs_metadata_version {
- 	bcachefs_metadata_version_min = 9,
-diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index 9b3470a97546..7c831495fb96 100644
---- a/fs/bcachefs/fsck.c
-+++ b/fs/bcachefs/fsck.c
-@@ -979,6 +979,37 @@ static bool bch2_inode_open(struct bch_fs *c, struct bpos p)
- 	return __bch2_inode_hash_find(c, inum) != NULL;
+diff --git a/fs/bcachefs/dirent.h b/fs/bcachefs/dirent.h
+index 8945145865c5..3b9987e1c727 100644
+--- a/fs/bcachefs/dirent.h
++++ b/fs/bcachefs/dirent.h
+@@ -31,6 +31,11 @@ static inline unsigned dirent_val_u64s(unsigned len)
+ 			    sizeof(u64));
  }
  
-+static int check_directory_size(struct btree_trans *trans,
-+				struct bch_inode_unpacked *inode_u,
-+				struct bkey_s_c inode_k, bool *write_inode)
++static inline unsigned int dirent_occupied_size(const struct qstr *name)
 +{
-+	struct btree_iter iter;
-+	struct bkey_s_c k;
-+	u64 new_size = 0;
-+	int ret;
-+
-+	for_each_btree_key_upto_norestart(trans, iter, BTREE_ID_dirents,
-+				SPOS(inode_k.k->p.offset, 0, inode_k.k->p.snapshot),
-+				POS(inode_k.k->p.offset, U64_MAX),
-+				0, k, ret) {
-+		if (k.k->type != KEY_TYPE_dirent)
-+			continue;
-+
-+		struct bkey_s_c_dirent dirent = bkey_s_c_to_dirent(k);
-+		struct qstr name = bch2_dirent_get_name(dirent);
-+
-+		new_size += dirent_occupied_size(&name);
-+	}
-+	bch2_trans_iter_exit(trans, &iter);
-+
-+	if (!ret && inode_u->bi_size != new_size) {
-+		inode_u->bi_size = new_size;
-+		*write_inode = true;
-+	}
-+
-+	return ret;
++	return (BKEY_U64s + dirent_val_u64s(name->len)) * sizeof(u64);
 +}
 +
- static int check_inode(struct btree_trans *trans,
- 		       struct btree_iter *iter,
- 		       struct bkey_s_c k,
-@@ -1170,6 +1201,16 @@ static int check_inode(struct btree_trans *trans,
- 			do_update = true;
- 		}
+ int bch2_dirent_read_target(struct btree_trans *, subvol_inum,
+ 			    struct bkey_s_c_dirent, subvol_inum *);
+ 
+diff --git a/fs/bcachefs/fs-common.c b/fs/bcachefs/fs-common.c
+index 7e10a9ddcfd9..b71f712e0471 100644
+--- a/fs/bcachefs/fs-common.c
++++ b/fs/bcachefs/fs-common.c
+@@ -154,6 +154,7 @@ int bch2_create_trans(struct btree_trans *trans,
+ 		if (is_subdir_for_nlink(new_inode))
+ 			dir_u->bi_nlink++;
+ 		dir_u->bi_mtime = dir_u->bi_ctime = now;
++		dir_u->bi_size += dirent_occupied_size(name);
+ 
+ 		ret = bch2_inode_write(trans, &dir_iter, dir_u);
+ 		if (ret)
+@@ -218,6 +219,7 @@ int bch2_link_trans(struct btree_trans *trans,
  	}
-+
-+	if (S_ISDIR(u.bi_mode)) {
-+		ret = check_directory_size(trans, &u, k, &do_update);
-+
-+		fsck_err_on(ret,
-+			    trans, directory_size_mismatch,
-+			    "directory inode %llu:%u with the mismatch directory size",
-+			    u.bi_inum, k.k->p.snapshot);
-+		ret = 0;
+ 
+ 	dir_u->bi_mtime = dir_u->bi_ctime = now;
++	dir_u->bi_size += dirent_occupied_size(name);
+ 
+ 	dir_hash = bch2_hash_info_init(c, dir_u);
+ 
+@@ -320,6 +322,7 @@ int bch2_unlink_trans(struct btree_trans *trans,
+ 
+ 	dir_u->bi_mtime = dir_u->bi_ctime = inode_u->bi_ctime = now;
+ 	dir_u->bi_nlink -= is_subdir_for_nlink(inode_u);
++	dir_u->bi_size	-= dirent_occupied_size(name);
+ 
+ 	ret =   bch2_hash_delete_at(trans, bch2_dirent_hash_desc,
+ 				    &dir_hash, &dirent_iter,
+@@ -458,6 +461,14 @@ int bch2_rename_trans(struct btree_trans *trans,
+ 		goto err;
+ 	}
+ 
++	if (mode == BCH_RENAME) {
++		src_dir_u->bi_size -= dirent_occupied_size(src_name);
++		dst_dir_u->bi_size += dirent_occupied_size(dst_name);
 +	}
- do_update:
- 	if (do_update) {
- 		ret = __bch2_fsck_write_inode(trans, &u, iter->pos.snapshot);
-diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
-index c7e4cdd3f6a5..9d12359aecb9 100644
---- a/fs/bcachefs/sb-downgrade.c
-+++ b/fs/bcachefs/sb-downgrade.c
-@@ -78,7 +78,10 @@
- 	  BCH_FSCK_ERR_accounting_mismatch)			\
- 	x(rebalance_work_acct_fix,				\
- 	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
--	  BCH_FSCK_ERR_accounting_mismatch)
-+	  BCH_FSCK_ERR_accounting_mismatch)			\
-+	x(directory_size,					\
-+	  BIT_ULL(BCH_RECOVERY_PASS_check_inodes),		\
-+	  BCH_FSCK_ERR_directory_size_mismatch)
++
++	if (mode == BCH_RENAME_OVERWRITE)
++		src_dir_u->bi_size -= dirent_occupied_size(src_name);
++
+ 	if (src_inode_u->bi_parent_subvol)
+ 		src_inode_u->bi_parent_subvol = dst_dir.subvol;
  
- #define DOWNGRADE_TABLE()					\
- 	x(bucket_stripe_sectors,				\
-diff --git a/fs/bcachefs/sb-errors_format.h b/fs/bcachefs/sb-errors_format.h
-index f0c14702f9e6..380f5f34efc6 100644
---- a/fs/bcachefs/sb-errors_format.h
-+++ b/fs/bcachefs/sb-errors_format.h
-@@ -292,6 +292,7 @@ enum bch_fsck_flags {
- 	x(accounting_key_replicas_nr_devs_0,			278,	FSCK_AUTOFIX)	\
- 	x(accounting_key_replicas_nr_required_bad,		279,	FSCK_AUTOFIX)	\
- 	x(accounting_key_replicas_devs_unsorted,		280,	FSCK_AUTOFIX)	\
-+	x(directory_size_mismatch,				281,	FSCK_AUTOFIX)	\
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index e774cb3e6b1a..23ca2f29330b 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -65,6 +65,9 @@ void bch2_inode_update_after_write(struct btree_trans *trans,
+ 	i_gid_write(&inode->v, bi->bi_gid);
+ 	inode->v.i_mode	= bi->bi_mode;
  
- enum bch_sb_error_id {
- #define x(t, n, ...) BCH_FSCK_ERR_##t = n,
++	if (fields & ATTR_SIZE)
++		i_size_write(&inode->v, bi->bi_size);
++
+ 	if (fields & ATTR_ATIME)
+ 		inode_set_atime_to_ts(&inode->v, bch2_time_to_timespec(c, bi->bi_atime));
+ 	if (fields & ATTR_MTIME)
+@@ -438,7 +441,7 @@ __bch2_create(struct mnt_idmap *idmap,
+ 
+ 	if (!(flags & BCH_CREATE_TMPFILE)) {
+ 		bch2_inode_update_after_write(trans, dir, &dir_u,
+-					      ATTR_MTIME|ATTR_CTIME);
++					      ATTR_MTIME|ATTR_CTIME|ATTR_SIZE);
+ 		mutex_unlock(&dir->ei_update_lock);
+ 	}
+ 
+@@ -595,7 +598,7 @@ static int __bch2_link(struct bch_fs *c,
+ 
+ 	if (likely(!ret)) {
+ 		bch2_inode_update_after_write(trans, dir, &dir_u,
+-					      ATTR_MTIME|ATTR_CTIME);
++					      ATTR_MTIME|ATTR_CTIME|ATTR_SIZE);
+ 		bch2_inode_update_after_write(trans, inode, &inode_u, ATTR_CTIME);
+ 	}
+ 
+@@ -648,7 +651,7 @@ int __bch2_unlink(struct inode *vdir, struct dentry *dentry,
+ 		goto err;
+ 
+ 	bch2_inode_update_after_write(trans, dir, &dir_u,
+-				      ATTR_MTIME|ATTR_CTIME);
++				      ATTR_MTIME|ATTR_CTIME|ATTR_SIZE);
+ 	bch2_inode_update_after_write(trans, inode, &inode_u,
+ 				      ATTR_MTIME);
+ 
+@@ -826,11 +829,11 @@ static int bch2_rename2(struct mnt_idmap *idmap,
+ 	       dst_inode->v.i_ino != dst_inode_u.bi_inum);
+ 
+ 	bch2_inode_update_after_write(trans, src_dir, &src_dir_u,
+-				      ATTR_MTIME|ATTR_CTIME);
++				      ATTR_MTIME|ATTR_CTIME|ATTR_SIZE);
+ 
+ 	if (src_dir != dst_dir)
+ 		bch2_inode_update_after_write(trans, dst_dir, &dst_dir_u,
+-					      ATTR_MTIME|ATTR_CTIME);
++					      ATTR_MTIME|ATTR_CTIME|ATTR_SIZE);
+ 
+ 	bch2_inode_update_after_write(trans, src_inode, &src_inode_u,
+ 				      ATTR_CTIME);
 -- 
 2.34.1
 
