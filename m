@@ -1,117 +1,92 @@
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB721BA263;
-	Wed, 11 Sep 2024 20:03:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E891877;
+	Thu, 12 Sep 2024 00:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726084987; cv=none; b=MUiLynN2Y19f5eOLzz+YxxBXKaj4f1GsHCI/J8FX41fWZUznzK3PSI/RSggLsZoUheTNqHeRcp4vJdgA8DGsH0dpYk9jrU2zqgf1TlpLTeM+8aDWBMKr4DCdZC/4s0Qq2IPh/WimCjvP/tSbUwDQq21fJ+cc2FZEZJhltJrdJJk=
+	t=1726100250; cv=none; b=tgQwUvvzZRGx4IVtybpoIMIv04kHdshSiiP9w0Ne7cwWPulQcosKu2imvhkHrivV67NhzZASWCfB6tSf1xv9tHZ6AUxHhbLP8PxgEY6pZ3m7DdACkKZqn1GngEu1a5RUsJ59KupaVYoadcVdairESunSyZidK6bjN+RCZLkpdRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726084987; c=relaxed/simple;
-	bh=Ua2dyT0bhSolwHUdXhnJ62p4G9dhMQk2hp7qVP5oi2I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eRWigY6vsBQjAXrwOz1kfZpgh6i4nQfbONZ8SWQUeplhYh3G33geis7lryhJ3a28nqZlfbI0JRhReRPw6wEjC6dU8KBBF2tBd7DX5cbBxA89Mq6zrm7IFC2PE8se7Nq5Wj5BD8+27+vuEpgTTW2rVtKeqjLY7kzY+HNSZmRWV5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R7QxJN3i; arc=none smtp.client-ip=209.85.160.49
+	s=arc-20240116; t=1726100250; c=relaxed/simple;
+	bh=YZHMhqK6IvNbneE7mkJUhxiiA4ltQmGRXyb2p52vTZs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AqzwqfllCV9IIKNGX6k/f6mPvgu8Snd10QfOfKL1L6i2+045qgEN59FkW7Psue1jOYVT+COCXbeTHEtjpBCsmLTZPINwgfrjBGaXDfc33jzaneQ/2uJcdDMQU2C2Axv9LNU874eBWiGuk5wuVAGbfzPPnn8Lzvqp9Nfayypd04U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eqTCxzI5; arc=none smtp.client-ip=209.85.217.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R7QxJN3i"
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-2705d31a35cso114382fac.0;
-        Wed, 11 Sep 2024 13:03:05 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eqTCxzI5"
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-49be785fa29so740904137.1;
+        Wed, 11 Sep 2024 17:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726084985; x=1726689785; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HQHsFhjPJ4u+X/sv7+YjlA9uC7lJnoJfGgxEewlbqwE=;
-        b=R7QxJN3iZ7SUPQMLbjgQeTGh8yfky1ftIy6Keo/glCzRJi9Ec8pZdplkB+Cm8rqd9N
-         /oIjTyvOxgyeMaaG9i14SkKJhkb8pzZy2FiOR6keB7JMFcnRbghR6FYGcqT4QaQf8naM
-         ODolX9a4mdmXYZ8RCNsPp5Shjb6xhqPCnWOVHjD/s54RlnoOAyx+8tmMK/I4vqMZumGz
-         Nub1b/xFb3SlobWM5jhdctiOzteqn6nH1Rfji+12QKHy7lLZLpn175V6db5mLwEf7EpZ
-         C/lIE22croo76jS9liHStBRVj0w9VlPXGCYYDkvd2jycq/b+m0p0i2V4B9dmEMVh12h1
-         GjTA==
+        d=gmail.com; s=20230601; t=1726100248; x=1726705048; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YZHMhqK6IvNbneE7mkJUhxiiA4ltQmGRXyb2p52vTZs=;
+        b=eqTCxzI5LxOD/E3kRqKWOw8544DWygBajRLOCOb5Onu6nvCfYhUUZJU57Y9QE1tSeV
+         j7NtbiiQHrhc89DrDFYsn0msw/7MHF4H+L3rdRLu+pAgdoyS0Qs612GGy6bZEsk2UFPH
+         V+M1/pLqQtvbc+ZxE7ffjRt9zCaKOsCq8mQUFkHf/QLWpT0sUlF5zxt9V2u26FHhnEyu
+         UH8n+Sjz2PYeXabAwdI0Khd4nfiP3S1uJ80G2KxISWvxF49N23utyV9KNM4Gnv/M2t6O
+         Rg7+lY12Vk8IIgWzu6UR/P5FSZL76eZVGCCnqul7FI6+p4izTQqrHwfflwIOiD1MUZfr
+         um7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726084985; x=1726689785;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HQHsFhjPJ4u+X/sv7+YjlA9uC7lJnoJfGgxEewlbqwE=;
-        b=Uvk0p3DcXDkJE8pFY/qVv7lyVYg7/t1cU7bWVB/j81xRWKSC2547TeBW7KCc6PgWeo
-         YipeK89EbOVKkXR3LUJuC0tHdsPE/DXDAIeYNiRhwNoKRzP7qPrxeUCECzP1Rjt9t1PK
-         n0/B3FcuayYqa/0+jVlwHF077ZjES3Y+ExNc0NfyGQtJHeQzNl9vEOWwKS6hrEpF91u3
-         lchDcI/zogZvMhmNoLXoJM5JIcc+rqXgNAoz+QBJpm8qi3sz38xmzb+Hp/PDekfRosaL
-         nHcgF0VHO7XyfYkYmmGyi+dG69C/STUuuD7wJacShgme7HNGgaC25/ocB+UuVwQ4yq7b
-         JcIw==
-X-Forwarded-Encrypted: i=1; AJvYcCV8rq1IgHJCv25HUES5Q1ukTi63MUu7XQHxCEKjVkPHZvi76WMVrKBaVPgYHwF+nlw7+pNveiYVHaYUjKkn@vger.kernel.org, AJvYcCXrUKtokBPA25s317D8keQPNZBAmEaK60RuldopIrhlueSHWdHhTeuREcaJ7P0hg/WqLRpXgXsMBJ0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1tJTPEbgk/dBj+ZmitfbK/NCa/QKHTWksMF1l11cy8LJXUpU8
-	ZqsNyc8RjfqYVzH28aYx/FpbDi+AWTOf65B+0hfpU5HlKRh9LBdk
-X-Google-Smtp-Source: AGHT+IGoEN7tjp8D0vGuh4GjGOzfj9HpsxK+4aKeSYIebuZstvT9U6+BsV6Ie18HdRlFYsfu54Zeog==
-X-Received: by 2002:a05:6870:b296:b0:261:211:9d0d with SMTP id 586e51a60fabf-27c3f6a6e05mr399337fac.40.1726084984794;
-        Wed, 11 Sep 2024 13:03:04 -0700 (PDT)
-Received: from ?IPV6:2603:8080:7400:36da:dff5:4180:2562:4c1e? ([2603:8080:7400:36da:dff5:4180:2562:4c1e])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-710d9d6fb1bsm2515215a34.48.2024.09.11.13.03.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Sep 2024 13:03:04 -0700 (PDT)
-Message-ID: <200ce66b-845f-4f20-8838-619646f5f44d@gmail.com>
-Date: Wed, 11 Sep 2024 15:03:03 -0500
+        d=1e100.net; s=20230601; t=1726100248; x=1726705048;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YZHMhqK6IvNbneE7mkJUhxiiA4ltQmGRXyb2p52vTZs=;
+        b=wWFCjXOA/RdEmgWv9HN9u3MKD3CzSLjciqevgQWT+4AAb7jdzhtQt9QvOJgwR01ZEx
+         nv4gF/I8pwluVr4KkMfX6LDbh1OM0/6QpkpCkZlBMrwQMYuKM7igqCQyr43CA+GMpCsm
+         iIzkra/WSRybhEEda4tpvNmaozfOkTdk9eGDrI6fU3CnQ7SWbuDZgsLkQx21kEL1D2af
+         l5OzhmU3E/sqmdQDyrN84GLXvZ8hMYfsFqNVZTjoYBdZRAXwo25VDQZ/6OdlXRMKufhG
+         vc0Pc7sRNn/adDtaA3iTdDsArpxH5ti/NZc6IFgC0g3rI4zZ03j+5Q69wJ7FPvcrZTah
+         XJaw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/yB6ZRiiNQSOT4fOsr7/iVuLr/Qxk3B3NYWFzYph4wvTe/ywxFmhm8HVM0SQCwicnu3CXjJBsXHVj@vger.kernel.org, AJvYcCWyqAk7Kqsm46ucZQTwWDJrIS9O2zl1Q4U7eOnodYvscRVZBVCfdwA76L8rnto/fGi6140UmaXu4hggvORKdA==@vger.kernel.org, AJvYcCXq3DlUE+am2TktOdaJgL6RcRs2quHGkJAyAeIYSHN4zITKGlhQX0pxCqhr8g8YcfYNVMu91pLlQA8rl/Eu@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZgxDSAa/sux5gTTFeSA13eghi6LWl2BveM+qEZIu7rRqdPDA+
+	hIF3FzUXc/KhYEMqb3imXTIV4gtjWMnRIIaBppM0vTWoNHNGwh3lu/a+4d0coCNVnSsKTj9vkUC
+	TRuCNeeqpVjHV7e+2XwBiYk0DP8zr8pJ3
+X-Google-Smtp-Source: AGHT+IEkh27HxdqVER7tRynhKIYr3KL/M1tG+CpPDUb6YOmsaK/NZ+iJaz5OLyB1yhoOkN3XQOsXgEpR3NTbHxQ2ZHI=
+X-Received: by 2002:a05:6102:32cd:b0:498:cbd8:286 with SMTP id
+ ada2fe7eead31-49d4213d904mr860202137.3.1726100247709; Wed, 11 Sep 2024
+ 17:17:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20240906195720.40315-1-dennis.lamerice@gmail.com> <200ce66b-845f-4f20-8838-619646f5f44d@gmail.com>
+In-Reply-To: <200ce66b-845f-4f20-8838-619646f5f44d@gmail.com>
+From: Dennis Lam <dennis.lamerice@gmail.com>
+Date: Wed, 11 Sep 2024 20:17:16 -0400
+Message-ID: <CAGZfcd=MZbt94__wek3v5e5DUfLZbgZ2uyw6i+gRWRXXrbDX3A@mail.gmail.com>
 Subject: Re: [PATCH] docs:fs:fixed some spelling mistakes in the bcachefs
  coding style page
-To: Dennis Lam <dennis.lamerice@gmail.com>, kent.overstreet@linux.dev,
- corbet@lwn.net
-Cc: linux-bcachefs@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240906195720.40315-1-dennis.lamerice@gmail.com>
-Content-Language: en-US
-From: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
-In-Reply-To: <20240906195720.40315-1-dennis.lamerice@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+Cc: kent.overstreet@linux.dev, corbet@lwn.net, linux-bcachefs@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
-
-On 9/6/24 14:57, Dennis Lam wrote:
-> ---
-
-
-Change the subject, it needs spaces to be readable:
-
-"docs: fs: fixed spelling mistakes [...]"
-
-Also, you need a body in the commit which includes an explanation of what
-the patch does (even if it is almost the same as the Subject) and your
-signature. See: https://docs.kernel.org/process/submitting-patches.html
-
-
->  Documentation/filesystems/bcachefs/CodingStyle.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, Sep 11, 2024 at 4:03=E2=80=AFPM Carlos Bilbao
+<carlos.bilbao.osdev@gmail.com> wrote:
 >
-> diff --git a/Documentation/filesystems/bcachefs/CodingStyle.rst b/Documentation/filesystems/bcachefs/CodingStyle.rst
-> index 0c45829a4899..b29562a6bf55 100644
-> --- a/Documentation/filesystems/bcachefs/CodingStyle.rst
-> +++ b/Documentation/filesystems/bcachefs/CodingStyle.rst
-> @@ -175,7 +175,7 @@ errors in our thinking by running our code and seeing what happens. If your
->  time is being wasted because your tools are bad or too slow - don't accept it,
->  fix it.
->  
-> -Put effort into your documentation, commmit messages, and code comments - but
-> +Put effort into your documentation, commit messages, and code comments - but
->  don't go overboard. A good commit message is wonderful - but if the information
->  was important enough to go in a commit message, ask yourself if it would be
->  even better as a code comment.
-> @@ -183,4 +183,4 @@ even better as a code comment.
->  A good code comment is wonderful, but even better is the comment that didn't
->  need to exist because the code was so straightforward as to be obvious;
->  organized into small clean and tidy modules, with clear and descriptive names
-> -for functions and variable, where every line of code has a clear purpose.
-> +for functions and variables, where every line of code has a clear purpose.
+> Hello,
+>
+> On 9/6/24 14:57, Dennis Lam wrote:
+> > ---
+>
+>
+> Change the subject, it needs spaces to be readable:
+>
+> "docs: fs: fixed spelling mistakes [...]"
+>
+> Also, you need a body in the commit which includes an explanation of what
+> the patch does (even if it is almost the same as the Subject) and your
+> signature. See: https://docs.kernel.org/process/submitting-patches.html
+>
 
+Thanks for the response, I'll be sure to send a new better formatted patch.
 
-Thanks, Carlos
-
+Dennis
