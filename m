@@ -1,38 +1,66 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CCFC18890E;
-	Thu, 12 Sep 2024 07:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C101BC09F
+	for <linux-bcachefs@vger.kernel.org>; Thu, 12 Sep 2024 18:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726127610; cv=none; b=UsiGZ3UNzQ/1PF9ikU5sGWRlgrWucHBTJvkITn3Lg7KvSkS41fldtS1t6CIDWx4sDJpWqyHvvqFvavLU5jH+gkOdEBa3g8f2KUiRIl2LtVUVqisHIp0YMuxABt1R+6vviw/o+syM6Ntj8KIktrteIZFgbt7uAic+GNQFSTLcye8=
+	t=1726164338; cv=none; b=dENxkCcA9hI4Q9KY5QI6oxT+dY1MXuOqOKSeC0TPk7X2gbCZTeCcsVOy/CfJ4J+ePH2JZCrpN1obUAsLRVu7eWVo9byq2EmhZ9hGz7yXws1j2GQ4Hh3YpAdnvzrQDEvVlz+sMOzITPw7L1FXuHYmMO7soL3UQyQFXgZ4K5Vo7f8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726127610; c=relaxed/simple;
-	bh=/aRQSdSoUzmofDObR818YvbEyGDSFtOn6CKgE8h2F7s=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lLuCgVgOFsMg7SmDwLMRobl65kdCZx+0G6Z9agkdxPuUsxKJORcTciIGeTRjp0/oip32fROcP5XL0lljYWfwDuhBVH7TGnEsDJ+Supe2VwLnlckcQWt8zH7RgEhQyBe+ql3EyqhrBxerY3PcDsZ2LA+doiDBYDtg2KvFidvs740=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ezeEtbe5; arc=none smtp.client-ip=220.197.31.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1726164338; c=relaxed/simple;
+	bh=RV2uWN8soq+fqpNsT0C8IJeLAsSUXVvFEfelGbTZnco=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N7zYGkzaLY/O9UwSqw3qlK2f0k4gNx8BV7B9rUQrzQb0vvTsKV2uXHEbyVYLvbtl+VL4pfztjrvH9AR8MkxLgrqb7hO6sV74Cxf45IH6QsEO87gm2tNZlKmwN04AWsbv2KAnkD1DSuXX15/PqcU3Bp6mlccEnknKPKne6of/9po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=QzBGhaXr; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ezeEtbe5"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=eYuz3
-	1bH0CjNUsYyIVrv4KGMsrjrng9lixjsn5eVDEs=; b=ezeEtbe5QSPbVtjZUKK6S
-	pi87kq53Yer8lgbooq6mRcLlBb1rfu88WCX1mPtAUuAUzWjGnkuC4zRnsm2ifmYT
-	kfVBDyuBSlLkDEB9KMqqgqvXb2XS8cpbiInyQdOQcwmHCkJNpDs2Skyjormjuask
-	mvkcqDg+y7IJfgeEyrox8k=
-Received: from localhost.localdomain (unknown [111.35.191.143])
-	by gzga-smtp-mta-g3-4 (Coremail) with SMTP id _____wD3P7fOneJmyoVFDg--.56236S4;
-	Thu, 12 Sep 2024 15:53:02 +0800 (CST)
-From: David Wang <00107082@163.com>
-To: kent.overstreet@linux.dev
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="QzBGhaXr"
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-42cb3c6c353so2096405e9.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 12 Sep 2024 11:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1726164335; x=1726769135; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tTvQ0neig09rznvCNXv5+GeGKEb4Q79dd3N/fQCyhE4=;
+        b=QzBGhaXrieXC9BReBy+dqqlstJmWYMxAFZ0qEQ7T3KaiyHBdonWJZ6nts9CkUa2/H3
+         bA78dcKRQAGVIMWdIEQQgUcj639EGMRqIQMIYkT6TIOkywDf2nygnFs4D5mYjx4Ug/U3
+         VMaedeXsM9U1LNx/5z7IOkbfTGAvagm9cWVotGrZBxkScI4SWUusNBEHfat6ZC4lmHv3
+         IXcmPPH2QiqIEUhUGPLO/eEK1ewqBBhDnCnk05q3KKcA+YqjGNZsFTVKs19ljcEpb9y0
+         cR1PnXBXEBf39X8kJvnfokTU+q5W3Gnlyh2WFS6Aaaw/JOGH4JucvMx2qXyip4k0fSGy
+         bexA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726164335; x=1726769135;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tTvQ0neig09rznvCNXv5+GeGKEb4Q79dd3N/fQCyhE4=;
+        b=MRDK2REU9ZloJV+PScYoiGSlC3pYUGlRLR1Qv3K2lJnXv48uxM0ltcbvctqY6WGD2B
+         GK+uaBmyG7k5uoXqohJCOK3Qs2owbQW1juGmww4p3IZARKkd7tM4deOaJkkLJ+o64Zc6
+         Tdoc03n+4TuNruPHkDPaXiz8ipB2EfLY47cceMN3kqXq5FY86kFh+7CjUhLUfgb9TJbH
+         0hLKg19XOD5mAhDbiLFGohQ2gXLSvz39n1iU+3OQ1ASXrOSuF0PhgvvEo+t9p2WnTK53
+         UvdK1q+egIoMMRGEoHsQ+RidiRTwGBxr21R6LavSSB1FyqPT90PYEqEA7Ch3utRpd5DA
+         XVPg==
+X-Gm-Message-State: AOJu0Yy9fKnOv3A4ntFKY6KOec4DDpVSgELUhVNM2nhTgbp2Y0jNvgGl
+	stc71FbcbW/ZnxJvT/sNc1LP5aIOQDZ/Zu8Vvs5ojH3efro+2czMaTe0RRYhdOU=
+X-Google-Smtp-Source: AGHT+IGI3Bj8ICk5AfYRfmtbq2hL2SaATJflcUcHDHijwEfXwXqS0qpG6ijSsUG04+DM1VV9SB4CnQ==
+X-Received: by 2002:a05:6000:2a8:b0:374:bfd1:a786 with SMTP id ffacd0b85a97d-378c2cfbae9mr1356222f8f.4.1726164334620;
+        Thu, 12 Sep 2024 11:05:34 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-62-216-208-212.dynamic.mnet-online.de. [62.216.208.212])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c3ebd41c36sm6819472a12.2.2024.09.12.11.05.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Sep 2024 11:05:34 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: kent.overstreet@linux.dev,
+	kees@kernel.org,
+	gustavoars@kernel.org
 Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [BUG?] bcachefs performance: read is way too slow when a file has no overwrite.
-Date: Thu, 12 Sep 2024 15:52:46 +0800
-Message-Id: <20240912075246.5810-1-00107082@163.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <f69544.2e70.191e419e656.Coremail.00107082@163.com>
-References: <f69544.2e70.191e419e656.Coremail.00107082@163.com>
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] bcachefs: Annotate struct bucket_gens with __counted_by()
+Date: Thu, 12 Sep 2024 19:51:24 +0200
+Message-ID: <20240912175122.112625-3-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,64 +68,70 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3P7fOneJmyoVFDg--.56236S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7KFy5uF4UXr1ktw1UXFW3Awb_yoW8uF4Upr
-	WSgr13Jr1xKrn5Zw4jk3y0gw43Jw1rAF12yFy8try8Zrn8AwnYvFZ5tryrWFWkCrZ7XF1k
-	Z3yqk3s5Ja4Fvw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRF38OUUUUU=
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiqQRYqmVOC1MgYAAAss
 
+Add the __counted_by compiler attribute to the flexible array member b
+to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
+CONFIG_FORTIFY_SOURCE.
 
-Hi, 
+Use struct_size() to calculate the number of bytes to be allocated.
 
-> I made some debug, when performance is bad, the conditions
-> bvec_iter_sectors(iter) != pick.crc.uncompressed_size and 
-> bvec_iter_sectors(iter) != pick.crc.live_size are "almost" always both "true",
-> while when performance is good (after "thorough" write), they are only little
-> percent (~350 out of 1000000)  to be true.
-> 
-> And if those conditions are "true", "bounce" would be set and code seems to run
-> on a time consuming path.
-> 
-> I suspect "merely read" could never change those conditions, but "write" can?
-> 
+Update bucket_gens->nbuckets and bucket_gens->nbuckets_minus_first when
+resizing.
 
-More update: 
+Compile-tested only.
 
-1. Without a "thorough" write, it seems no matter what the prepare write size is,
-crc.compressed_size is always 128 sectors = 64K?
-2. With a "thorough" write with 4K block size, crc.compressed_size mostly descreases to 4K,
-only a few crc.compressed_size left with 8/12/16/20K...
-3. If a 4K-thorough-write followed by 40K-thorough-write, crc.compressed_size then 
-increases to 40K, and 4K direct read suffers again....
-4. A 40K-through-write followed by 256K-thorough-write, crc.compressed_size only
-increase to 64K, I guess 64K is maximum crc.compressed_size.
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ fs/bcachefs/buckets.c       | 13 ++++++++-----
+ fs/bcachefs/buckets_types.h |  2 +-
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-
-So I think current conclusion is:
-1. The initial crc.compressed_size is always 64K when file was created/prepared.
-2. Afterward writes can change crc size based on write size. (optimized for write?)
-3. Direct read performance is sensitive to this crc size, more test result:
-	+-----------+--------+----------+
-	| rand read |  IOPS  |    BW    |
-	+-----------+--------+----------+
-	|   4K !E   | 24.7K  | 101MB/s  |
-	|   16K !E  | 24.7K  | 404MB/s  |
-	|   64K !E  | 24.7K  | 1617MB/s |
-	|    4K E   | ~220K  | ~900MB/s |
-	|   16K E   |  ~55K  | ~900MB/s |
-	|   64K E   | ~13.8K | ~900MB/s |
-	+-----------+--------+----------+
-E stands for the event that a "thorough" 4k write happened before the test.
-Or put it more specific:
-E: lots of rand 4k-write, crc.compressed_size = 4K
-!E: file was just created, crc.compressed_size = 64K
-
-
-The behavior seems reasonable from write's point of view, but for read it
-dose not sounds good....If a mmaped readonly file, page in less than
-16 pages, those extra data would waste lots of disk bandwidth.
-
-
-David
+diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
+index 721bbe1dffc1..8e8ec400b9ec 100644
+--- a/fs/bcachefs/buckets.c
++++ b/fs/bcachefs/buckets.c
+@@ -1252,8 +1252,9 @@ int bch2_dev_buckets_resize(struct bch_fs *c, struct bch_dev *ca, u64 nbuckets)
+ 
+ 	BUG_ON(resize && ca->buckets_nouse);
+ 
+-	if (!(bucket_gens	= kvmalloc(sizeof(struct bucket_gens) + nbuckets,
+-					   GFP_KERNEL|__GFP_ZERO))) {
++	bucket_gens = kvmalloc(struct_size(bucket_gens, b, nbuckets),
++			       GFP_KERNEL|__GFP_ZERO);
++	if (!bucket_gens) {
+ 		ret = -BCH_ERR_ENOMEM_bucket_gens;
+ 		goto err;
+ 	}
+@@ -1271,11 +1272,13 @@ int bch2_dev_buckets_resize(struct bch_fs *c, struct bch_dev *ca, u64 nbuckets)
+ 	old_bucket_gens = rcu_dereference_protected(ca->bucket_gens, 1);
+ 
+ 	if (resize) {
+-		size_t n = min(bucket_gens->nbuckets, old_bucket_gens->nbuckets);
+-
++		bucket_gens->nbuckets = min(bucket_gens->nbuckets,
++					    old_bucket_gens->nbuckets);
++		bucket_gens->nbuckets_minus_first =
++			bucket_gens->nbuckets - bucket_gens->first_bucket;
+ 		memcpy(bucket_gens->b,
+ 		       old_bucket_gens->b,
+-		       n);
++		       bucket_gens->nbuckets);
+ 	}
+ 
+ 	rcu_assign_pointer(ca->bucket_gens, bucket_gens);
+diff --git a/fs/bcachefs/buckets_types.h b/fs/bcachefs/buckets_types.h
+index c9698cdf866f..139292e3f2fa 100644
+--- a/fs/bcachefs/buckets_types.h
++++ b/fs/bcachefs/buckets_types.h
+@@ -32,7 +32,7 @@ struct bucket_gens {
+ 	u16			first_bucket;
+ 	size_t			nbuckets;
+ 	size_t			nbuckets_minus_first;
+-	u8			b[];
++	u8			b[] __counted_by(nbuckets);
+ };
+ 
+ struct bch_dev_usage {
+-- 
+2.46.0
 
