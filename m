@@ -1,95 +1,117 @@
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3AA1D86EF
-	for <linux-bcachefs@vger.kernel.org>; Fri, 13 Sep 2024 10:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B2B1D58A8;
+	Fri, 13 Sep 2024 10:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726221805; cv=none; b=WbWZFhNMiYMep74RxURwAnTajL1AhNxw3rDQBO4dz2IEA7FmiB2PsdYlhaCBh6VYeIEl2cdsQdvNfu+ZNPEk2fq+g06mL61chTmE9GTRnirs3pY99FkZKirSNMil8OuAy5/coCahWOHhJB+6BCQr83cx/Ql17IwBOSg94HQ05UM=
+	t=1726224610; cv=none; b=rWLrYQXIeTonX4ANFFkmgEFgRUFJHPGWXADiRz0R7jSdzNfKuSeYSyVlPWje1zukGswWacgzTLkwq78+CEf05XjmdGTVgQHl+xzyl6mqz6b6eMepPQmM+gIae2XBD/V890d8h58hE0FjRoazcSPspZAVJPJu6Td5bz64pLnXnVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726221805; c=relaxed/simple;
-	bh=zYymGv12Tr78xYvb+Qs99O7J3EKDyeUWnGG27aGtl8M=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=h1M9nKNtWIflWnK5E5/C5bWA/Shn1eE2XfDDVHoTQRloeJlJyZ09T1CVCY8LHTCkcs+weIW151tYMLjqxCPT+Y3Fpo6nnfvb8hTeGEToFRzLpN2xKXS9974TFwhsWwA5y795aqamlIs6+R0jDzxPx0Wt9CqsfPEIXhfZKU7u5og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-82ced069d94so268444939f.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 13 Sep 2024 03:03:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726221802; x=1726826602;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hTW7fffnT0NAUWKKmZ5rWaFaiySrf4ux2bUW8dDX0HQ=;
-        b=aHGDFEtvFZZZGawJmOVIWfJ9dMn+E5RTIWY8/7fsp0xWn8h16ZaRdi4SdMvsoaLPGO
-         q8C9b4Ztjc5Np/MIA5BecYt1Xp39d+syB+E9yuuwDHlW1JmvQ4xB2QedwU1Krg9rdlGO
-         7ieg+5aFVq/jeXhqQscsKTFYJ4W1uURDZyA97H6CBk9+lHT6IYk1/Y22ii/UlPLtikVi
-         ChcN9CuhwZCc3c1dp8Pa9OzhulhVCaID5UL/pm/MN3FR0UTbiJG8kK5jSHNVqCJelWMC
-         WBnCcBGShiBR0aFVQBZ81lptjEhHhpYfrc56wWwTRv4Q0JP15AFirB8lmRNiuc5vhr/X
-         jwfg==
-X-Forwarded-Encrypted: i=1; AJvYcCUT09IZZstvCGiPn6cSh0qJX+FXP6qMHoGF9S1TtpAWwwkS7v3/oZsBk9Pn7ly9HrnuDZ51iCJdXmZ5M/TfMQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxaJq7E9Jry2VNB+i8DmTbDgejc3DiPIHjsqs14MjucKBZDrbdu
-	/45ydU+6mJsR3M3DK4L7MVyGpKm1cjfjjQGlK6YY40oJNvC06smMRZ+xR+NRd2T/YIs/H/BDcx4
-	X5xl/ZF54ZN6TwFdKysAVKnUFrJe8JwUxJHPlwXvTYYYcQRmAy0XR0vM=
-X-Google-Smtp-Source: AGHT+IH2R+pS60StlaslZLR48bc2alPFnYOcBdqDHxhZY1GTuvoe2w2GtsVarKkEZdjwNzsufsDePd8rqNWP2DehEibd1gm+J5ts
+	s=arc-20240116; t=1726224610; c=relaxed/simple;
+	bh=L83lR63io4j6s3xsgeWE51cq/fz1EEAeJRfd02TCykM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=GC/7ilBbXbyeuSMLd1rkg7mL97LXMH33j6XYh8QGb8NA4HLo773SUTWM0c9ucEO5lPbC5xdxOV5KngFOxWUxyPtNTkfubms3f7JUAg0FnV1Fbd6Io2E8BIZ1tXwoXIBIVMdN6DsD5XQAPZddIHTyPvgFQHNHj4Qthv2NIiM40Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4X4rdy1j1mzyRyb;
+	Fri, 13 Sep 2024 18:49:10 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2B89B18010B;
+	Fri, 13 Sep 2024 18:49:58 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 13 Sep 2024 18:49:57 +0800
+Message-ID: <e4cb7950-c88b-478a-80cc-ef2f244bf484@huawei.com>
+Date: Fri, 13 Sep 2024 18:49:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:13a2:b0:39f:6180:afca with SMTP id
- e9e14a558f8ab-3a08491196bmr69740715ab.13.1726221802378; Fri, 13 Sep 2024
- 03:03:22 -0700 (PDT)
-Date: Fri, 13 Sep 2024 03:03:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000055a86f0621fd552d@google.com>
-Subject: [syzbot] Monthly bcachefs report (Sep 2024)
-From: syzbot <syzbot+list670a74b4fb1089527ea1@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: Change opts param to const pointer in
+ bch2_opts_to_text
+To: Riyan Dhiman <riyandhiman14@gmail.com>, <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240912183545.41669-2-riyandhiman14@gmail.com>
+Content-Language: en-US
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240912183545.41669-2-riyandhiman14@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-Hello bcachefs maintainers/developers,
 
-This is a 31-day syzbot report for the bcachefs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bcachefs
 
-During the period, 3 new issues were detected and 9 were fixed.
-In total, 34 issues are still open and 77 have been fixed so far.
+On 2024/9/13 2:35, Riyan Dhiman wrote:
+> Convert struct bch_opts opts to const struct bch_opts *opts in
+> bch2_opts_to_text() function paramter. This improves efficiency by
+> avoiding structure copying and reflects the function's read-only
+> access to opts.
+> 
+> Fixes: 283ba1b92b1c (bcachefs: bch2_opts_to_text())
+> Signed-off-by: Riyan Dhiman <riyandhiman14@gmail.com>
+> ---
+> Compile tested only.
+> 
+>   fs/bcachefs/fs.c   | 2 +-
+>   fs/bcachefs/opts.c | 4 ++--
+>   fs/bcachefs/opts.h | 2 +-
+>   3 files changed, 4 insertions(+), 4 deletions(-)
+> 
 
-Some of the still happening issues:
+Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
 
-Ref Crashes Repro Title
-<1> 2992    Yes   WARNING in bch2_trans_srcu_unlock
-                  https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
-<2> 2953    Yes   INFO: task hung in __closure_sync
-                  https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
-<3> 224     No    WARNING in bch2_trans_put
-                  https://syzkaller.appspot.com/bug?extid=291aef749c5cbb9ca2fd
-<4> 84      Yes   WARNING in __bch2_truncate_folio
-                  https://syzkaller.appspot.com/bug?extid=3d11e35eeafe176a6c5b
-<5> 55      Yes   kernel BUG in vfs_get_tree
-                  https://syzkaller.appspot.com/bug?extid=c0360e8367d6d8d04a66
-<6> 18      Yes   WARNING in bch2_prt_printf
-                  https://syzkaller.appspot.com/bug?extid=4e41a25632658c77b441
-<7> 5       Yes   general protection fault in bch2_checksum
-                  https://syzkaller.appspot.com/bug?extid=dd3d9835055dacb66f35
-<8> 4       Yes   KASAN: slab-out-of-bounds Read in journal_entry_dev_usage_to_text
-                  https://syzkaller.appspot.com/bug?extid=05d7520be047c9be86e0
-<9> 2       Yes   BUG: unable to handle kernel paging request in bch2_dirent_to_text
-                  https://syzkaller.appspot.com/bug?extid=1a11884d9c9f1353942d
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index e44794f7c6a0..1a2ba8472cb1 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -1924,7 +1924,7 @@ static int bch2_show_options(struct seq_file *seq, struct dentry *root)
+>   	struct bch_fs *c = root->d_sb->s_fs_info;
+>   	struct printbuf buf = PRINTBUF;
+>   
+> -	bch2_opts_to_text(&buf, c->opts, c, c->disk_sb.sb,
+> +	bch2_opts_to_text(&buf, &c->opts, c, c->disk_sb.sb,
+>   			  OPT_MOUNT, OPT_HIDDEN, OPT_SHOW_MOUNT_STYLE);
+>   	printbuf_nul_terminate(&buf);
+>   	seq_puts(seq, buf.buf);
+> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+> index 232be8a44051..6216ab5d5c81 100644
+> --- a/fs/bcachefs/opts.c
+> +++ b/fs/bcachefs/opts.c
+> @@ -444,7 +444,7 @@ void bch2_opt_to_text(struct printbuf *out,
+>   }
+>   
+>   void bch2_opts_to_text(struct printbuf *out,
+> -		       struct bch_opts opts,
+> +		       const struct bch_opts *opts,
+>   		       struct bch_fs *c, struct bch_sb *sb,
+>   		       unsigned show_mask, unsigned hide_mask,
+>   		       unsigned flags)
+> @@ -457,7 +457,7 @@ void bch2_opts_to_text(struct printbuf *out,
+>   		if ((opt->flags & hide_mask) || !(opt->flags & show_mask))
+>   			continue;
+>   
+> -		u64 v = bch2_opt_get_by_id(&opts, i);
+> +		u64 v = bch2_opt_get_by_id(opts, i);
+>   		if (v == bch2_opt_get_by_id(&bch2_opts_default, i))
+>   			continue;
+>   
+> diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
+> index cb2e244a2429..78e1991dc4be 100644
+> --- a/fs/bcachefs/opts.h
+> +++ b/fs/bcachefs/opts.h
+> @@ -606,7 +606,7 @@ int bch2_opt_parse(struct bch_fs *, const struct bch_option *,
+>   void bch2_opt_to_text(struct printbuf *, struct bch_fs *, struct bch_sb *,
+>   		      const struct bch_option *, u64, unsigned);
+>   void bch2_opts_to_text(struct printbuf *,
+> -		       struct bch_opts,
+> +		       const struct bch_opts *,
+>   		       struct bch_fs *, struct bch_sb *,
+>   		       unsigned, unsigned, unsigned);
+>   
