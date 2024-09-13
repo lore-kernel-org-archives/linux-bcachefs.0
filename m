@@ -1,107 +1,221 @@
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 948B82B9C6;
-	Fri, 13 Sep 2024 15:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B5F155A34
+	for <linux-bcachefs@vger.kernel.org>; Fri, 13 Sep 2024 21:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726241966; cv=none; b=VA+xPouuXtZEQnjXna2BsvEwVfJiO5V9t6VRCnue77Io+XvmCIgcY/dINe1nizrkZ5oWBNnkt0hxrNU6SSD6yxFYntTBycKVpgfjBOmHyGO/Ro0hGtbJsgkRA+MM4y2dIyh94gsn3Gs5YQu1tdjRvSydKNSuVV7PuMBNgR2mUt0=
+	t=1726263597; cv=none; b=PXWKIJD+dQD5u21C/qOc9/+Bd/zU2oi64syqxM8mU1HJ71Xk4iooObZ3fNWnQUZPz3IIMAFENAt2dZC2lp5PaCj+RM4fLEovbmaurD9GuuYTDzGcgSpDZAqW6XY3tdCjHQVScDmGU8STDIq2vuk0uuL+w/dQP51G6Yf6I42MN0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726241966; c=relaxed/simple;
-	bh=tVkTgk+LeTaa5RpxrUvJK0VmFnJFAl1Lszvb2A/94Hs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mrCTCv96UsNsu9WGtWN1rVoj9TmbHwHe2qTsooWDmuzRKtHmgAHv9pbANX8SaunpPLsg8lOD1QRzm8cYZFZhinDAwL9c+xesxt91rn3MnzwtLbkd+6szuNiH7lZXYJGaYk128FU+4xH/cMi0v4hQF4teGv9AHc0dmm2A2mCGxdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jCkXYRzP; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1726263597; c=relaxed/simple;
+	bh=p5Y1GNMEqpIh+SzjXZmSX/U//7TwhuSLPRQxuJ3A3ds=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=poNWTfJogQJlThkiiKAILOM7k8cUjzt2wNttAKU658aKNmjZaIqG5AF8VhhrR4Rx0kIlkNhK2CzwBeITSMBfGsZS0aQqaS4sXj3PyVqRAwhJSVy9QYM7tYReQeVccH60CnEZBBkEU3kJBC1FsB4aXlnIEitb8Xm/PNfAIWv2zlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=badat.dev; spf=pass smtp.mailfrom=badat.dev; dkim=pass (2048-bit key) header.d=badat.dev header.i=@badat.dev header.b=W8MRvb8/; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=badat.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=badat.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jCkXYRzP"
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-709340f1cb1so254676a34.3;
-        Fri, 13 Sep 2024 08:39:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726241964; x=1726846764; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tVkTgk+LeTaa5RpxrUvJK0VmFnJFAl1Lszvb2A/94Hs=;
-        b=jCkXYRzPPvWMiyAB1rWPQf5XixPQ3toeYY4qIbFXsDJyTRUUEYLIhcWzF6pRIcRzJq
-         XPPrQx7ztT3XNesWtlPrsfsZ4kp4tcif6E3CUs0k++L6vik/STbWsEsR/tmLyB5b+yOR
-         z4VnfFVs1H10EKT0B9hq2PdWFj8TPbRbzsxsHw9znhi7fM+iFZuufbhp8wy56PsV6ePv
-         vgAdZTzGpvt0tDgON1F23mLjyWheAcY0rCvsrM8vXRLwno45vi5xiKULKtUDg0TWLWbO
-         D2U/eIXO0Iv7QvJUHSCie4F56HQ7ZMHrhmV+itfHtZLEyCMQ7Y3zQ53Dgc0oDYyVxNOp
-         sRMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726241964; x=1726846764;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tVkTgk+LeTaa5RpxrUvJK0VmFnJFAl1Lszvb2A/94Hs=;
-        b=ueaX0hFlm9sbElNubIvKuUWC6kZuH95JYozXk0kSIpVG8VTnkzLfEAc6Ql1G3HoOEP
-         Nct12tmn8EtYoJ5m9Y8zICyqQANF1ZfXX64zMsimXn5Zhomy2omXf0+4PrHxCxABeq7y
-         G4qglPfIdYdT6GnNqS37TCPnosxBG6HqFIw1jPOFGWjIDhFXSBHKPkOaOs/8ur0RZCwl
-         bXhDskoaZ6XoaqL23p+uwErtKNylhT3UIVFofev7RfJdhMVIvka92f11fnCTMXwpO1qy
-         X6+8bVAFGKd/+M7Jl71d8F4+Flkjrostla342y5guT8Pq/bxiJVatboqxJuKJl9fHryW
-         Hdqw==
-X-Forwarded-Encrypted: i=1; AJvYcCVaupt1YDhOrMzOtdnA5kcqNL8wDJ5LMdKUuJZIp7II8yBvP9lUw03plpm7K9pzPpGQwNzB8DCrdk1oYCHrww==@vger.kernel.org, AJvYcCVh6h7jmM6UfkS7J5JjREz2eK7oKyzXMi448nXN4KKpOaL6BcOonB7ZsYLA2GExYeE+AqrA5Z3NvqS8@vger.kernel.org, AJvYcCXwWXi3vLq8KPxxWnjUUPuSCr8IpHSeME2vnk22KFxWpVt2ltRyWF33Gsp1Fu5FngJXKLgR9+uLoFY2Tymw@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLGGYPiACsB1shCurjpUg9SRDFepKJvCq4iYCmcaWzGcp2Uxwe
-	vp+m8ECwLgXF32fOkPL6mIYXQ/Vx1ffJRYCR/FuV6tTn+0OhAMl0
-X-Google-Smtp-Source: AGHT+IG9tEow0/ffMRBLGDbvZjNd48PgUXS2fL1HCRd1QL3UHQ60Ee0i8iP9mguf0Vh8UsoT/0KBMQ==
-X-Received: by 2002:a05:6830:90d:b0:710:e987:2659 with SMTP id 46e09a7af769-71116c67ac7mr2287118a34.22.1726241964635;
-        Fri, 13 Sep 2024 08:39:24 -0700 (PDT)
-Received: from ?IPV6:2603:8080:7400:36da:dff5:4180:2562:4c1e? ([2603:8080:7400:36da:dff5:4180:2562:4c1e])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5e1bf2f5bc4sm2863461eaf.38.2024.09.13.08.39.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Sep 2024 08:39:23 -0700 (PDT)
-Message-ID: <d3e30736-4396-4a53-afbc-243a2f64c909@gmail.com>
-Date: Fri, 13 Sep 2024 10:39:22 -0500
+	dkim=pass (2048-bit key) header.d=badat.dev header.i=@badat.dev header.b="W8MRvb8/"
+Message-ID: <cfd27003-7d88-447f-a4b0-c353444e03e4@badat.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=badat.dev; s=key1;
+	t=1726263588;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uP+2XRMjzLRUoKLU23HYOlVQBJlL6Fh+7OmFP33zKd4=;
+	b=W8MRvb8/yx3hhET+Vbhh1fwc3LC1+9y98/+AUVxxUWloZHFo0F8s1Xtz9/Rxb43yhPngoF
+	J6FPNSa1m+b327adAzNcHj85WukfyhMbeyrQfQrxqMxE5seTC5n9T3a0lJkAy5CFyDiVPc
+	ODRRcO5FW8yZzZxgDEphgu0FkGZhy3153U8zYd+Ajl4pxyU/BoSn5Y0vMEWPk4hrc4nL7V
+	hc0Z/1F6yfLg90wxnIXH1Wph5A94Hjfg96eo5M6yS3H0jyo3NrZEFwY2IJ4FVD2ccFANms
+	J/ctM2n3dHKfWV9TuImrEaYiudjqlrCy6wW251sVCsBGO0nO08y3rBA4ne3zbg==
+Date: Fri, 13 Sep 2024 23:39:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] docs:fs:fixed some spelling mistakes in the bcachefs
- coding style page
-To: Dennis Lam <dennis.lamerice@gmail.com>
-Cc: kent.overstreet@linux.dev, corbet@lwn.net,
- linux-bcachefs@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240906195720.40315-1-dennis.lamerice@gmail.com>
- <200ce66b-845f-4f20-8838-619646f5f44d@gmail.com>
- <CAGZfcd=MZbt94__wek3v5e5DUfLZbgZ2uyw6i+gRWRXXrbDX3A@mail.gmail.com>
+Subject: Re: [PATCH] cmd_set_passphrase: initialize KDF parameters
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Mae Kasza <git@badat.dev>
+To: Hongbo Li <lihongbo22@huawei.com>, Mae Kasza <git@badat.dev>,
+ Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org
+References: <20240811214152.86593-2-git@badat.dev>
+ <20240811214152.86593-3-git@badat.dev>
+ <el5uhxcjrvo5pusy2yuptyxx3olzwaipzrdcqgcyoq65hpthhd@c2gegzjmqcmx>
+ <9aca486e-ed70-4826-9cae-024fb64b12a8@huawei.com>
+ <5252a768-7abe-4af1-8d78-9cbfbd1c9186@badat.dev>
+ <68c4ce8a-c904-4d71-9a8b-480e8d37a0e3@huawei.com>
+ <b31673a7-dddd-45c5-9e55-798a2ff65407@badat.dev>
 Content-Language: en-US
-From: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
-In-Reply-To: <CAGZfcd=MZbt94__wek3v5e5DUfLZbgZ2uyw6i+gRWRXXrbDX3A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <b31673a7-dddd-45c5-9e55-798a2ff65407@badat.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 9/11/24 19:17, Dennis Lam wrote:
+Hi,
 
-> On Wed, Sep 11, 2024 at 4:03 PM Carlos Bilbao
-> <carlos.bilbao.osdev@gmail.com> wrote:
->> Hello,
->>
->> On 9/6/24 14:57, Dennis Lam wrote:
->>> ---
->>
->> Change the subject, it needs spaces to be readable:
->>
->> "docs: fs: fixed spelling mistakes [...]"
->>
->> Also, you need a body in the commit which includes an explanation of what
->> the patch does (even if it is almost the same as the Subject) and your
->> signature. See: https://docs.kernel.org/process/submitting-patches.html
->>
-> Thanks for the response, I'll be sure to send a new better formatted patch.
+Appologies if this is bad etiquette, but I haven't gotten any review 
+feedback and it seems like fixing this is relatively important to 
+users(https://github.com/koverstreet/bcachefs-tools/pull/329#issuecomment-2336787443). 
+Any chance someone(Kent) could look at this and merge the patch?
 
+Thanks,
 
-Awesome! Feel free to CC me :)
+Mae
 
-
+On 8/14/24 14:25, Mae Kasza wrote:
 >
-> Dennis
-
-
-Thanks, Carlos
-
+> On 8/14/24 04:10, Hongbo Li wrote:
+>>
+>>
+>> On 2024/8/13 21:16, Mae Kasza wrote:
+>>>
+>>> On 8/12/24 04:50, Hongbo Li wrote:
+>>>>
+>>>>
+>>>> On 2024/8/12 9:41, Kent Overstreet wrote:
+>>>>> On Sun, Aug 11, 2024 at 11:40:38PM GMT, Mae Kasza wrote:
+>>>>>> From: mae <git@badat.dev>
+>>>>>>
+>>>>>> The set-passphrase command failed to derive the key for disks 
+>>>>>> initially
+>>>>>> formatted with --encrypted and --no_passphrase.
+>>>>>>
+>>>>>> This happened because bch_sb_crypt_init only configures the KDF 
+>>>>>> params
+>>>>>> if a passphrase is specified.
+>>>>>> This commit makes the command initialize the KDF with the same 
+>>>>>> parameters
+>>>>>> as bch_sb_crypt_init if the key wasn't encrypted before.
+>>>>>>
+>>>>>> Signed-off-by: Mae Kasza <git@badat.dev>
+>>>>>
+>>>>> This looks good to me, but I'm in the middle of a 20 hour drive 
+>>>>> and not
+>>>>> feeling super confident to review crypto stuff tonight, so maybe 
+>>>>> someone
+>>>>> else can go over it too before I pull it in..
+>>>>>
+>>>>>> ---
+>>>>>>   c_src/cmd_key.c |  9 +++++++--
+>>>>>>   c_src/crypto.c  | 13 ++++++++-----
+>>>>>>   c_src/crypto.h  |  1 +
+>>>>>>   3 files changed, 16 insertions(+), 7 deletions(-)
+>>>>>>
+>>>>>> diff --git a/c_src/cmd_key.c b/c_src/cmd_key.c
+>>>>>> index adb0ac8d..2da83758 100644
+>>>>>> --- a/c_src/cmd_key.c
+>>>>>> +++ b/c_src/cmd_key.c
+>>>>>> @@ -104,7 +104,8 @@ int cmd_set_passphrase(int argc, char *argv[])
+>>>>>>       if (IS_ERR(c))
+>>>>>>           die("Error opening %s: %s", argv[1], 
+>>>>>> bch2_err_str(PTR_ERR(c)));
+>>>>>>   -    struct bch_sb_field_crypt *crypt = 
+>>>>>> bch2_sb_field_get(c->disk_sb.sb, crypt);
+>>>>>> +    struct bch_sb *sb = c->disk_sb.sb;
+>>>>>> +    struct bch_sb_field_crypt *crypt = bch2_sb_field_get(sb, 
+>>>>>> crypt);
+>>>>>>       if (!crypt)
+>>>>>>           die("Filesystem does not have encryption enabled");
+>>>>>>   @@ -116,9 +117,13 @@ int cmd_set_passphrase(int argc, char 
+>>>>>> *argv[])
+>>>>>>           die("Error getting current key");
+>>>>>>         char *new_passphrase = read_passphrase_twice("Enter new 
+>>>>>> passphrase: ");
+>>>>>> +    if (!bch2_key_is_encrypted(&crypt->key)) {
+>>>>>> +        bch_crypt_default_kdf_init(crypt);
+>>>> It works, but using bch_sb_crypt_init to reinitialize crypt may be 
+>>>> better. In bch_sb_crypt_init, it has initialized the crypt and also 
+>>>> cleaned new_passphrase.
+>>>>
+>>>> Thanks
+>>>> Hongbo
+>>>>
+>>> bch_sb_crypt_init also reinitializes the crypt->key, so I can't just 
+>>> reuse it here.
+>>>
+>> Yeah, it will change crypt->key. It seems the main point is not clean 
+>> the password.
+>> Do we need keep the crypt->key even the password is changed? Or does 
+>> the crypt->key like a random seed and need to be kept in the whole 
+>> lifecycle? Sorry I am a bit confused about this.
+>>
+>> Thanks,
+>> Hongbo
+>
+> crypt->key does need to stay constant for the entire lifetime of a 
+> partition, since that's what's actually used to encrypt the data on 
+> the partition. The passphrase is just used to encrypt the crypt->key
+>
+> Thanks,
+>
+> Mae
+>
+>>
+>>> I could extract it into a bch_crypt_update_passphrase function. 
+>>> Originally I wanted to avoid doing that to limit the scope of this 
+>>> patchset, but I'll give it a shot
+>>>
+>>> Thanks for the review!
+>>>
+>>> Mae
+>>>
+>>>>>> +    }
+>>>>>> +
+>>>>>>       struct bch_key passphrase_key = derive_passphrase(crypt, 
+>>>>>> new_passphrase);
+>>>>>>   -    if (bch2_chacha_encrypt_key(&passphrase_key, 
+>>>>>> __bch2_sb_key_nonce(c->disk_sb.sb),
+>>>>>> +    if (bch2_chacha_encrypt_key(&passphrase_key, 
+>>>>>> __bch2_sb_key_nonce(sb),
+>>>>>>                       &new_key, sizeof(new_key)))
+>>>>>>           die("error encrypting key");
+>>>>>>       crypt->key = new_key;
+>>>>>> diff --git a/c_src/crypto.c b/c_src/crypto.c
+>>>>>> index 32671bd8..30ad92d4 100644
+>>>>>> --- a/c_src/crypto.c
+>>>>>> +++ b/c_src/crypto.c
+>>>>>> @@ -180,11 +180,7 @@ void bch_sb_crypt_init(struct bch_sb *sb,
+>>>>>>       get_random_bytes(&crypt->key.key, sizeof(crypt->key.key));
+>>>>>>         if (passphrase) {
+>>>>>> -
+>>>>>> -        SET_BCH_CRYPT_KDF_TYPE(crypt, BCH_KDF_SCRYPT);
+>>>>>> -        SET_BCH_KDF_SCRYPT_N(crypt, ilog2(16384));
+>>>>>> -        SET_BCH_KDF_SCRYPT_R(crypt, ilog2(8));
+>>>>>> -        SET_BCH_KDF_SCRYPT_P(crypt, ilog2(16));
+>>>>>> +        bch_crypt_default_kdf_init(crypt);
+>>>>>>             struct bch_key passphrase_key = 
+>>>>>> derive_passphrase(crypt, passphrase);
+>>>>>>   @@ -199,3 +195,10 @@ void bch_sb_crypt_init(struct bch_sb *sb,
+>>>>>>           memzero_explicit(&passphrase_key, sizeof(passphrase_key));
+>>>>>>       }
+>>>>>>   }
+>>>>>> +
+>>>>>> +void bch_crypt_default_kdf_init(struct bch_sb_field_crypt *crypt) {
+>>>>>> +        SET_BCH_CRYPT_KDF_TYPE(crypt, BCH_KDF_SCRYPT);
+>>>>>> +        SET_BCH_KDF_SCRYPT_N(crypt, ilog2(16384));
+>>>>>> +        SET_BCH_KDF_SCRYPT_R(crypt, ilog2(8));
+>>>>>> +        SET_BCH_KDF_SCRYPT_P(crypt, ilog2(16));
+>>>>>> +}
+>>>>>> diff --git a/c_src/crypto.h b/c_src/crypto.h
+>>>>>> index baea6d86..846a8931 100644
+>>>>>> --- a/c_src/crypto.h
+>>>>>> +++ b/c_src/crypto.h
+>>>>>> @@ -18,5 +18,6 @@ void bch2_passphrase_check(struct bch_sb *, 
+>>>>>> const char *,
+>>>>>>   void bch2_add_key(struct bch_sb *, const char *, const char *, 
+>>>>>> const char *);
+>>>>>>   void bch_sb_crypt_init(struct bch_sb *sb, struct 
+>>>>>> bch_sb_field_crypt *,
+>>>>>>                  const char *);
+>>>>>> +void bch_crypt_default_kdf_init(struct bch_sb_field_crypt *);
+>>>>>>     #endif /* _CRYPTO_H */
+>>>>>> -- 
+>>>>>> 2.45.2
+>>>>>>
+>>>>>
+>>>>>
+>>>>
