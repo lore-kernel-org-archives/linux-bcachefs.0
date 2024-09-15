@@ -1,193 +1,360 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5428118B09
-	for <linux-bcachefs@vger.kernel.org>; Sat, 14 Sep 2024 04:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401197E0E4
+	for <linux-bcachefs@vger.kernel.org>; Sun, 15 Sep 2024 23:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726289897; cv=none; b=A11e7kRBrsaprdquAzoQ5tr4+p+kvL/PRk/hy8ilsxbK0WxiQqlH7Z9Qeoi1m7pTcMEhq/NEEMy2YqPKjEuLxEizXGaj6OMYS3GEG6pIsSU5XyETRhvUumSsyEBtRGkeZNX5Iwc9bjVHVMITm5qSb8P8hfy3v26zJNxqbY/9imw=
+	t=1726443631; cv=none; b=gj7lhz0tz7VSdwS3GzQKogfO38b4GBLGRrGdiOjU0szoXrXTMMla87DVMRDgrlA7tGfHU9UEXVNrSoadUKFtGUHU3cxHQ68pBug/F7auF9w8/r8cRmJvf0n0jyCevdTk2NIxibtDzELuyL8cHJJanQAVe0Rwe+zhgNnZASCWYyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726289897; c=relaxed/simple;
-	bh=ExqbsHYW5CWOyuYZgCevMm5VAMvWKDwA9H1WBjjyLT0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gdYAy/9ACJaZBBFUdHT7ncZ54g6ljH0nmQ4Oh+gmy/meW3c7buH+6XOpn2EQ8lMV8PIDjn45JqVe9Bl6ok4BCEcYi/0HIYlKihqYlT9r7RK63iu9Uy4HGSHpoB4RGhGQZjobzkl8FqPDsGkD+5CD2lOCuTN2beQyI0+pfc6zkK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KL+EOVrL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KL+EOVrL"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1726289893;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M56LrAmwkApLC8iN+C8xdLKdu0WwTZ3zB5sb1jAVOaM=;
-	b=KL+EOVrLLaj6+vkGPYw3FA4Ojwvw8MdyNjYRn+2LJI8LUONmfpWIvnuEQeMKj3CORRhWlB
-	O4nc4RprjN2jlbYFP3mR2AuCxv3q/Anr36Y0Lz9leSlAQK6JkK03E5Ws+wLJkv8LCd2+y4
-	pG1gL/LfyDw7u5jDblWffn7sN2louUw=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-428-qyWl_HAhO9SoMqzixAwj3g-1; Sat, 14 Sep 2024 00:58:11 -0400
-X-MC-Unique: qyWl_HAhO9SoMqzixAwj3g-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-7163489149fso3574281a12.3
-        for <linux-bcachefs@vger.kernel.org>; Fri, 13 Sep 2024 21:58:10 -0700 (PDT)
+	s=arc-20240116; t=1726443631; c=relaxed/simple;
+	bh=UADqDOWg2vNjBxQtXisbtTzPr15gXwB/1xlgwf09S6U=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=aDICIrvVAFzSGYM2f7GrX2/hCtkrE10hBKRTGpH2QCWn+8vl33Ke7EbXKQU9ntgNlC24KhqoNYquY7zjcfd9G1dfwV5Zx/4ZPpnphE5btC2ta5K4d2rPpI1yqh6da3PbUItlylZZupONZnPczzMMy4AE2oscoDyjgUJspYOvLAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-82aac437083so620163139f.2
+        for <linux-bcachefs@vger.kernel.org>; Sun, 15 Sep 2024 16:40:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726289890; x=1726894690;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1726443628; x=1727048428;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M56LrAmwkApLC8iN+C8xdLKdu0WwTZ3zB5sb1jAVOaM=;
-        b=VddWWQLnaMxNf91Csz/YdtilcERrykgvBQkRVvXymrK4Ad8PpaYrtZUIXyJYTzQDxR
-         7F7NwdBqhyVCL5jJZFS2AWAaDPHl7qPkwL1mlPjelypmcjnQehgUf814VhU7DSpk0EFz
-         pTz+4m59ufGR+OecYMhpQmZArZyzivaEy3SR82nrtnjGIXdyNqevVOK25dobqdS/5c2Q
-         ytfWpojVhHKd2pu4smzwfBRMe02ffC9zpW1VYdBBdHzYDRC2XlIYoRC+mFIp9KPKJv/X
-         UxQpuEOLZFF5FlYNFJKwh4iqZWihZFe8DuBEz7sppWPCuvIDqKM+jAk4CdgeaCXnP4Wj
-         j5vw==
-X-Forwarded-Encrypted: i=1; AJvYcCWSirj7RFnWsVVJxe/FRM+QWPLNJh8DLhEEKq5W9xS2+OKy4avqFPDNa84xNEHUEcWcPiOeg5VGbClB1VkVAA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/GWl9hp3p8WdbgOObsE5+tVSnCO4tR1+1txKUL9C5oLcVzS17
-	dCDgIfl71ht1YregrYZLa88K1C4tTSZkJ6Za6MVzxcQwgt4V480xIQc/a+gGQJbI2iYVKSsHekb
-	sG3SZdRJw+iJPxuuCnCEKcJH9TvopyEWImdBWt9eYm++Y3vbtq3h8x/5KNENrodfluLdsoE4BDk
-	0=
-X-Received: by 2002:a17:90b:111:b0:2da:d2a2:4a71 with SMTP id 98e67ed59e1d1-2dba0082efamr9188265a91.40.1726289889659;
-        Fri, 13 Sep 2024 21:58:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGoyRN8TqnptNO64VjJu3ITC4mxSXMhAKYujRIs0cD01yIivmnevAIV4aorD0PypZCy3lfV0A==
-X-Received: by 2002:a17:90b:111:b0:2da:d2a2:4a71 with SMTP id 98e67ed59e1d1-2dba0082efamr9188235a91.40.1726289888834;
-        Fri, 13 Sep 2024 21:58:08 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2dbcfdc0ac3sm552050a91.53.2024.09.13.21.58.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Sep 2024 21:58:08 -0700 (PDT)
-Date: Sat, 14 Sep 2024 12:58:05 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Alyssa Ross <hi@alyssa.is>
-Cc: fstests@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [RFC PATCH] generic: test negative timespecs are accurate
-Message-ID: <20240914045805.2htdxbt5bmd2hh6u@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20240907154527.604864-2-hi@alyssa.is>
- <20240909080132.4wliimcb2y4bt7u3@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <8734m7hlnm.fsf@alyssa.is>
- <20240910135226.hfwk774mdzztqdxv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <87zfofczz0.fsf@alyssa.is>
+        bh=OuTsin3t/zjnDx2v8xco0kSnYd/minFvsz4MWr53674=;
+        b=JRbpv79xGyAsgtaMEXhiA0dkKigaORuiWFMRKHtUsWO4wwE1oP+azUDdzG+F3SCFtI
+         s3KVzUaP0tQbjoN1WyqJ4zYWrmmsPEkhFCpRrf6SVfvxHS6p9XqKwGbhg8lQUGcynh1l
+         3FXO9UOr1hagMbn2vLUy4uVoIHwWR2Zsis0P9xiKWVlg6JQmwp10nnJdPO+i5Zo9bCea
+         5yTtIUfUqz6F25F/PgLV7kP06peiHRi4ZdYv7nODSYAxcZJK/0zSB43RVVe/4K8cwnY2
+         w8RwtHP8xE09Iy3Z6k/dOBi3DX8UJ5hI5iuUCoNUKXPNeZsfHYnlH2LCdquLYc0wE6vA
+         PIfg==
+X-Forwarded-Encrypted: i=1; AJvYcCX/EODdkP6clJiHnroxcDjhbZhEx2L19xrxP/uMVbXBcwMS9iOyvHcnr8IXd+Fkj8rlJEynS3em4iZjTn/O1Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1s30oEEBX17Aop/zayqXON38bjd8AwDlCqawfJrnqrHeM+zlJ
+	oS5vtW/8GEoGJZ3RxWtosXtoa14etb0UIldcZ+wCa+oWgp50XjNmfcpIWQ4zVacE+SncDwEq9Rh
+	Ed8/wbclFxs9EWjRx9Qr5OzAS3pRw8okCGu0UMP4wd+D62kmtKRXKY7o=
+X-Google-Smtp-Source: AGHT+IGFBSaAaHNwbJqGrYcGlUuyB3jF4StpIVgouDSQddEG+l2ceLq1ndIowxR87lh0H00mjo2LCPD/6xi1qEpFcmSZW7CEiXSb
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87zfofczz0.fsf@alyssa.is>
+X-Received: by 2002:a05:6e02:1a04:b0:3a0:a1d7:791d with SMTP id
+ e9e14a558f8ab-3a0a1d77ab5mr11921285ab.25.1726443628305; Sun, 15 Sep 2024
+ 16:40:28 -0700 (PDT)
+Date: Sun, 15 Sep 2024 16:40:28 -0700
+In-Reply-To: <0000000000002408bb0621fb8f8b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000030ae8a062230fbff@google.com>
+Subject: Re: [syzbot] [bcachefs?] possible deadlock in __bch2_disk_reservation_add
+From: syzbot <syzbot+089ffc4307915afa0da7@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Sep 10, 2024 at 05:04:03PM +0200, Alyssa Ross wrote:
-> Zorro Lang <zlang@redhat.com> writes:
-> 
-> > On Tue, Sep 10, 2024 at 12:02:05PM +0200, Alyssa Ross wrote:
-> >> Zorro Lang <zlang@redhat.com> writes:
-> >> 
-> >> > On Sat, Sep 07, 2024 at 05:45:28PM +0200, Alyssa Ross wrote:
-> >> >> Link: https://github.com/koverstreet/bcachefs/issues/743
-> >> >
-> >> > Great, a bcachefs regression test case :)
-> >> >
-> >> > Can you add a bit more details in commit log, not only a link.
-> >> >
-> >> >> Signed-off-by: Alyssa Ross <hi@alyssa.is>
-> >> >> ---
-> >> >> This is an adapted version of generic/258, but it tests that the stored 
-> >> >> timestamp is accurate to the second, rather than just testing the 
-> >> >> timestamp remains negative.  I created a new test rather than just
-> >> >> making 258 more precise, because I understand that there may be
-> >> >> filesystems that don't store timestamps that accurately by design.
-> >> >> As an example, I've heard that FAT only has 2 second precision, so this
-> >> >> patch is an RFC because I'm not sure how I should write a _require
-> >> >> function (if at all) that restricts the test to filesystems that are
-> >> >> expected to be able to do this.
-> >> >> 
-> >> >>  tests/generic/363     | 26 ++++++++++++++++++++++++++
-> >> >>  tests/generic/363.out |  2 ++
-> >> >
-> >> > The g/363 has been taken, please rebase to latest for-next branch.
-> >> > You can use `xfstests/tools/mvtest generic/363 generic/365` to change
-> >> > the case number, before rebasing.
-> >> >
-> >> >>  2 files changed, 28 insertions(+)
-> >> >>  create mode 100755 tests/generic/363
-> >> >>  create mode 100644 tests/generic/363.out
-> >> >> 
-> >> >> diff --git a/tests/generic/363 b/tests/generic/363
-> >> >> new file mode 100755
-> >> >> index 00000000..50459d01
-> >> >> --- /dev/null
-> >> >> +++ b/tests/generic/363
-> >> >> @@ -0,0 +1,26 @@
-> >> >> +#! /bin/bash
-> >> >> +# SPDX-License-Identifier: GPL-2.0
-> >> >> +# Copyright (c) 2011 Red Hat, Inc.  All Rights Reserved.
-> >> >> +# Copyright (c) 2024 Alyssa Ross.  All Rights Reserved.
-> >> >> +#
-> >> >> +# FS QA Test 363
-> >> >> +#
-> >> >> +# Test timestamps prior to epoch with nanosecond components are
-> >> >> +# accurate to the second.
-> >> >> +# bcachefs was slightly off.
-> >> >> +#
-> >> >> +. ./common/preamble
-> >> >> +_begin_fstest auto quick bigtime
-> >> >> +
-> >> >
-> >> > As this's a bcachefs regression test:
-> >> > https://lore.kernel.org/linux-bcachefs/20240907160024.605850-3-hi@alyssa.is/
-> >> >
-> >> > So better to mark as:
-> >> > if [ "$FSTYP" = "bcachefs" ];then
-> >> > 	_fixed_by_kernel_commit xxxxxxxxxxxx "bcachefs: Fix negative timespecs"
-> >> > fi
-> >> > (replace the xxxxxxx if it's merged on mainline linux)
-> >> >
-> >> > Others looks good to me, with above changes, I'd like to
-> >> >
-> >> > Reviewed-by: Zorro Lang <zlang@redhat.com>
-> >> 
-> >> Thanks!  So you don't think the test needs to express any extra
-> >> requirement that filesystems support to-the-second precision?
-> >
-> > Oh, does this test needs 1 second precision? I thought you concerned some
-> > filesystems cannot be the epoch you set. The _require_negative_timestamps
-> > will skip the test from exfat and ceph. It doesn't help the FAT, maybe you
-> > want to add vfat to _require_negative_timestamps.
-> >
-> > I thought you might want to output the stored timestamp (accurate to the
-> > second) to reproduce this bug, if not, why you hope to write this new one,
-> > not use the g/258 to be the reproducer directly?
-> 
-> I'm sorry, I don't understand the question.  I explained why I created a
-> new test in my commentary — g/258 doesn't require 1 second precision,
-> and this test does.
+syzbot has found a reproducer for the following issue on:
 
-Sorry, I mixed several questions together. I mean:
+HEAD commit:    5f5673607153 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=113dc8a9980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dedbcb1ff4387972
+dashboard link: https://syzkaller.appspot.com/bug?extid=089ffc4307915afa0da7
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1761229f980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14a2f407980000
 
-1) Can g/258 reproduce this bug. If not, that means you need the accurate
-"-14245441" output, which might break the test on fs not support to-the-second
-precision, right?
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/40172aed5414/disk-5f567360.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/58372f305e9d/vmlinux-5f567360.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d2aae6fa798f/Image-5f567360.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/e8a95bcc5612/mount_3.gz
 
-2) If the 1) is yes. Then I think this case doesn't need to care about
-"fs not support to-the-second", as you say you don't have a good way to
-"_require" that.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+089ffc4307915afa0da7@syzkaller.appspotmail.com
 
-3) If you agree 2). I think most of filesystems (fstests supports) support
-the to-the-second precision. And the _require_negative_timestamps() helper
-can help to skip this test from some improper filesystems for this test.
-If you concern vfat, you can add it beside the exfat in that helper.
+bcachefs (loop0): resume_logged_ops... done
+bcachefs (loop0): delete_dead_inodes... done
+bcachefs (loop0): done starting filesystem
+======================================================
+WARNING: possible circular locking dependency detected
+6.11.0-rc7-syzkaller-g5f5673607153 #0 Not tainted
+------------------------------------------------------
+syz-executor358/6408 is trying to acquire lock:
+ffff0000e0f04990 (&c->mark_lock){++++}-{0:0}, at: __bch2_disk_reservation_add+0xc4/0x99c fs/bcachefs/buckets.c:1158
 
-4) If the 1) is right, the fs which doesn't support to-the-second precision
-also can be added into the blacklist of "_supported_fs" now or later, e.g.
-_supported_fs ^cifs.
+but task is already holding lock:
+ffff0000c537e518 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
 
-Hope I explain clearly this time :)
+which lock already depends on the new lock.
 
-Thanks,
-Zorro
 
+the existing dependency chain (in reverse order) is:
+
+-> #8 (sb_pagefaults){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1676 [inline]
+       sb_start_pagefault include/linux/fs.h:1841 [inline]
+       bch2_page_mkwrite+0x280/0xe54 fs/bcachefs/fs-io-pagecache.c:614
+       do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
+       wp_page_shared mm/memory.c:3545 [inline]
+       do_wp_page+0x1fb8/0x3a34 mm/memory.c:3695
+       handle_pte_fault+0xca0/0x56f4 mm/memory.c:5537
+       __handle_mm_fault mm/memory.c:5664 [inline]
+       handle_mm_fault+0xee8/0x1784 mm/memory.c:5832
+       do_page_fault+0x3cc/0xfa8 arch/arm64/mm/fault.c:607
+       do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:879
+       el0_da+0x60/0x178 arch/arm64/kernel/entry-common.c:580
+       el0t_64_sync_handler+0xcc/0xfc arch/arm64/kernel/entry-common.c:733
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+-> #7 (&vma->vm_lock->lock){++++}-{3:3}:
+       down_write+0x50/0xc0 kernel/locking/rwsem.c:1579
+       vma_start_write include/linux/mm.h:751 [inline]
+       vma_link+0x238/0x484 mm/mmap.c:457
+       insert_vm_struct+0x284/0x378 mm/mmap.c:3484
+       __bprm_mm_init fs/exec.c:291 [inline]
+       bprm_mm_init fs/exec.c:395 [inline]
+       alloc_bprm+0x68c/0xb68 fs/exec.c:1623
+       kernel_execve+0xa4/0x820 fs/exec.c:2052
+       run_init_process+0x1bc/0x1ec init/main.c:1388
+       try_to_run_init_process init/main.c:1395 [inline]
+       kernel_init+0xdc/0x2a0 init/main.c:1523
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+
+-> #6 (&mm->mmap_lock){++++}-{3:3}:
+       __might_fault+0xc4/0x124 mm/memory.c:6387
+       _inline_copy_to_user include/linux/uaccess.h:176 [inline]
+       copy_to_user include/linux/uaccess.h:207 [inline]
+       drm_mode_getconnector+0xaa4/0x1214 drivers/gpu/drm/drm_connector.c:3185
+       drm_ioctl_kernel+0x26c/0x368 drivers/gpu/drm/drm_ioctl.c:745
+       drm_ioctl+0x5e4/0xae4 drivers/gpu/drm/drm_ioctl.c:842
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:907 [inline]
+       __se_sys_ioctl fs/ioctl.c:893 [inline]
+       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:893
+       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+-> #5 (&dev->mode_config.mutex){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
+       __mutex_lock kernel/locking/mutex.c:752 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+       drm_client_modeset_probe+0x32c/0x3f78 drivers/gpu/drm/drm_client_modeset.c:834
+       __drm_fb_helper_initial_config_and_unlock+0xf0/0x19a4 drivers/gpu/drm/drm_fb_helper.c:1852
+       drm_fb_helper_initial_config+0x48/0x64 drivers/gpu/drm/drm_fb_helper.c:1940
+       drm_fbdev_shmem_client_hotplug+0x158/0x22c drivers/gpu/drm/drm_fbdev_shmem.c:250
+       drm_client_register+0x144/0x1e0 drivers/gpu/drm/drm_client.c:141
+       drm_fbdev_shmem_setup+0x11c/0x2cc drivers/gpu/drm/drm_fbdev_shmem.c:309
+       vkms_create drivers/gpu/drm/vkms/vkms_drv.c:226 [inline]
+       vkms_init+0x4f0/0x600 drivers/gpu/drm/vkms/vkms_drv.c:252
+       do_one_initcall+0x24c/0x9c0 init/main.c:1267
+       do_initcall_level+0x154/0x214 init/main.c:1329
+       do_initcalls+0x58/0xac init/main.c:1345
+       do_basic_setup+0x8c/0xa0 init/main.c:1364
+       kernel_init_freeable+0x324/0x478 init/main.c:1578
+       kernel_init+0x24/0x2a0 init/main.c:1467
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+
+-> #4 (&client->modeset_mutex){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
+       __mutex_lock kernel/locking/mutex.c:752 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+       drm_client_modeset_probe+0x318/0x3f78 drivers/gpu/drm/drm_client_modeset.c:832
+       __drm_fb_helper_initial_config_and_unlock+0xf0/0x19a4 drivers/gpu/drm/drm_fb_helper.c:1852
+       drm_fb_helper_initial_config+0x48/0x64 drivers/gpu/drm/drm_fb_helper.c:1940
+       drm_fbdev_shmem_client_hotplug+0x158/0x22c drivers/gpu/drm/drm_fbdev_shmem.c:250
+       drm_client_register+0x144/0x1e0 drivers/gpu/drm/drm_client.c:141
+       drm_fbdev_shmem_setup+0x11c/0x2cc drivers/gpu/drm/drm_fbdev_shmem.c:309
+       vkms_create drivers/gpu/drm/vkms/vkms_drv.c:226 [inline]
+       vkms_init+0x4f0/0x600 drivers/gpu/drm/vkms/vkms_drv.c:252
+       do_one_initcall+0x24c/0x9c0 init/main.c:1267
+       do_initcall_level+0x154/0x214 init/main.c:1329
+       do_initcalls+0x58/0xac init/main.c:1345
+       do_basic_setup+0x8c/0xa0 init/main.c:1364
+       kernel_init_freeable+0x324/0x478 init/main.c:1578
+       kernel_init+0x24/0x2a0 init/main.c:1467
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+
+-> #3 (&helper->lock){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
+       __mutex_lock kernel/locking/mutex.c:752 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+       __drm_fb_helper_restore_fbdev_mode_unlocked+0xb4/0x178 drivers/gpu/drm/drm_fb_helper.c:235
+       drm_fb_helper_set_par+0xc4/0x110 drivers/gpu/drm/drm_fb_helper.c:1351
+       fbcon_init+0xf34/0x1eb8 drivers/video/fbdev/core/fbcon.c:1093
+       visual_init+0x27c/0x548 drivers/tty/vt/vt.c:1011
+       do_bind_con_driver+0x7dc/0xe04 drivers/tty/vt/vt.c:3833
+       do_take_over_console+0x4ac/0x5f0 drivers/tty/vt/vt.c:4399
+       do_fbcon_takeover+0x158/0x260 drivers/video/fbdev/core/fbcon.c:531
+       do_fb_registered drivers/video/fbdev/core/fbcon.c:2968 [inline]
+       fbcon_fb_registered+0x370/0x4ec drivers/video/fbdev/core/fbcon.c:2988
+       do_register_framebuffer drivers/video/fbdev/core/fbmem.c:449 [inline]
+       register_framebuffer+0x470/0x610 drivers/video/fbdev/core/fbmem.c:515
+       __drm_fb_helper_initial_config_and_unlock+0x13b0/0x19a4 drivers/gpu/drm/drm_fb_helper.c:1875
+       drm_fb_helper_initial_config+0x48/0x64 drivers/gpu/drm/drm_fb_helper.c:1940
+       drm_fbdev_shmem_client_hotplug+0x158/0x22c drivers/gpu/drm/drm_fbdev_shmem.c:250
+       drm_client_register+0x144/0x1e0 drivers/gpu/drm/drm_client.c:141
+       drm_fbdev_shmem_setup+0x11c/0x2cc drivers/gpu/drm/drm_fbdev_shmem.c:309
+       vkms_create drivers/gpu/drm/vkms/vkms_drv.c:226 [inline]
+       vkms_init+0x4f0/0x600 drivers/gpu/drm/vkms/vkms_drv.c:252
+       do_one_initcall+0x24c/0x9c0 init/main.c:1267
+       do_initcall_level+0x154/0x214 init/main.c:1329
+       do_initcalls+0x58/0xac init/main.c:1345
+       do_basic_setup+0x8c/0xa0 init/main.c:1364
+       kernel_init_freeable+0x324/0x478 init/main.c:1578
+       kernel_init+0x24/0x2a0 init/main.c:1467
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+
+-> #2 (console_lock){+.+.}-{0:0}:
+       console_lock+0x19c/0x1f4 kernel/printk/printk.c:2735
+       __bch2_print_string_as_lines fs/bcachefs/util.c:267 [inline]
+       bch2_print_string_as_lines+0x2c/0xd4 fs/bcachefs/util.c:286
+       __bch2_fsck_err+0x16c0/0x278c fs/bcachefs/error.c:388
+       __bch2_bkey_fsck_err+0x7b0/0xea8 fs/bcachefs/error.c:436
+       bch2_alloc_v4_validate+0x9c4/0xd24
+       bch2_bkey_val_validate+0x114/0x1dc fs/bcachefs/bkey_methods.c:143
+       bch2_btree_node_read_done+0x36ec/0x4ab4 fs/bcachefs/btree_io.c:1219
+       btree_node_read_work+0x50c/0xe04 fs/bcachefs/btree_io.c:1323
+       bch2_btree_node_read+0x1f50/0x280c fs/bcachefs/btree_io.c:1708
+       __bch2_btree_root_read fs/bcachefs/btree_io.c:1749 [inline]
+       bch2_btree_root_read+0x2b0/0x53c fs/bcachefs/btree_io.c:1773
+       read_btree_roots+0x250/0x798 fs/bcachefs/recovery.c:523
+       bch2_fs_recovery+0x3278/0x5514 fs/bcachefs/recovery.c:851
+       bch2_fs_start+0x30c/0x53c fs/bcachefs/super.c:1036
+       bch2_fs_get_tree+0x938/0x1030 fs/bcachefs/fs.c:1946
+       vfs_get_tree+0x90/0x28c fs/super.c:1800
+       do_new_mount+0x278/0x900 fs/namespace.c:3472
+       path_mount+0x590/0xe04 fs/namespace.c:3799
+       do_mount fs/namespace.c:3812 [inline]
+       __do_sys_mount fs/namespace.c:4020 [inline]
+       __se_sys_mount fs/namespace.c:3997 [inline]
+       __arm64_sys_mount+0x45c/0x5a8 fs/namespace.c:3997
+       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+-> #1 (&c->fsck_error_msgs_lock){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
+       __mutex_lock kernel/locking/mutex.c:752 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+       __bch2_fsck_err+0x344/0x278c fs/bcachefs/error.c:267
+       bch2_check_fix_ptr fs/bcachefs/buckets.c:127 [inline]
+       bch2_check_fix_ptrs+0x1364/0x47f8 fs/bcachefs/buckets.c:256
+       bch2_trigger_extent+0x71c/0x814 fs/bcachefs/buckets.c:844
+       bch2_key_trigger fs/bcachefs/bkey_methods.h:87 [inline]
+       bch2_gc_mark_key+0x4b4/0xb70 fs/bcachefs/btree_gc.c:633
+       bch2_gc_btree fs/bcachefs/btree_gc.c:669 [inline]
+       bch2_gc_btrees fs/bcachefs/btree_gc.c:728 [inline]
+       bch2_check_allocations+0x110c/0x4f64 fs/bcachefs/btree_gc.c:1135
+       bch2_run_recovery_pass+0xe4/0x1d4 fs/bcachefs/recovery_passes.c:183
+       bch2_run_recovery_passes+0x258/0x6e0 fs/bcachefs/recovery_passes.c:230
+       bch2_fs_recovery+0x32c8/0x5514 fs/bcachefs/recovery.c:859
+       bch2_fs_start+0x30c/0x53c fs/bcachefs/super.c:1036
+       bch2_fs_get_tree+0x938/0x1030 fs/bcachefs/fs.c:1946
+       vfs_get_tree+0x90/0x28c fs/super.c:1800
+       do_new_mount+0x278/0x900 fs/namespace.c:3472
+       path_mount+0x590/0xe04 fs/namespace.c:3799
+       do_mount fs/namespace.c:3812 [inline]
+       __do_sys_mount fs/namespace.c:4020 [inline]
+       __se_sys_mount fs/namespace.c:3997 [inline]
+       __arm64_sys_mount+0x45c/0x5a8 fs/namespace.c:3997
+       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+-> #0 (&c->mark_lock){++++}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3133 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3252 [inline]
+       validate_chain kernel/locking/lockdep.c:3868 [inline]
+       __lock_acquire+0x33d8/0x779c kernel/locking/lockdep.c:5142
+       lock_acquire+0x240/0x728 kernel/locking/lockdep.c:5759
+       percpu_down_read+0x5c/0x2e8 include/linux/percpu-rwsem.h:51
+       __bch2_disk_reservation_add+0xc4/0x99c fs/bcachefs/buckets.c:1158
+       bch2_disk_reservation_add+0x29c/0x460 fs/bcachefs/buckets.h:375
+       bch2_folio_reservation_get+0x2c4/0x5bc fs/bcachefs/fs-io-pagecache.c:445
+       bch2_page_mkwrite+0xa68/0xe54 fs/bcachefs/fs-io-pagecache.c:637
+       do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
+       wp_page_shared mm/memory.c:3545 [inline]
+       do_wp_page+0x1fb8/0x3a34 mm/memory.c:3695
+       handle_pte_fault+0xca0/0x56f4 mm/memory.c:5537
+       __handle_mm_fault mm/memory.c:5664 [inline]
+       handle_mm_fault+0xee8/0x1784 mm/memory.c:5832
+       do_page_fault+0x3cc/0xfa8 arch/arm64/mm/fault.c:607
+       do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:879
+       el0_da+0x60/0x178 arch/arm64/kernel/entry-common.c:580
+       el0t_64_sync_handler+0xcc/0xfc arch/arm64/kernel/entry-common.c:733
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+other info that might help us debug this:
+
+Chain exists of:
+  &c->mark_lock --> &vma->vm_lock->lock --> sb_pagefaults
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(sb_pagefaults);
+                               lock(&vma->vm_lock->lock);
+                               lock(sb_pagefaults);
+  rlock(&c->mark_lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor358/6408:
+ #0: ffff0000d91609b8 (&vma->vm_lock->lock){++++}-{3:3}, at: vma_start_read include/linux/mm.h:698 [inline]
+ #0: ffff0000d91609b8 (&vma->vm_lock->lock){++++}-{3:3}, at: lock_vma_under_rcu+0x28c/0x5e4 mm/memory.c:5998
+ #1: ffff0000c537e518 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
+
+stack backtrace:
+CPU: 1 UID: 0 PID: 6408 Comm: syz-executor358 Not tainted 6.11.0-rc7-syzkaller-g5f5673607153 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:319
+ show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:326
+ __dump_stack lib/dump_stack.c:93 [inline]
+ dump_stack_lvl+0xe4/0x150 lib/dump_stack.c:119
+ dump_stack+0x1c/0x28 lib/dump_stack.c:128
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2059
+ check_noncircular+0x310/0x404 kernel/locking/lockdep.c:2186
+ check_prev_add kernel/locking/lockdep.c:3133 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3252 [inline]
+ validate_chain kernel/locking/lockdep.c:3868 [inline]
+ __lock_acquire+0x33d8/0x779c kernel/locking/lockdep.c:5142
+ lock_acquire+0x240/0x728 kernel/locking/lockdep.c:5759
+ percpu_down_read+0x5c/0x2e8 include/linux/percpu-rwsem.h:51
+ __bch2_disk_reservation_add+0xc4/0x99c fs/bcachefs/buckets.c:1158
+ bch2_disk_reservation_add+0x29c/0x460 fs/bcachefs/buckets.h:375
+ bch2_folio_reservation_get+0x2c4/0x5bc fs/bcachefs/fs-io-pagecache.c:445
+ bch2_page_mkwrite+0xa68/0xe54 fs/bcachefs/fs-io-pagecache.c:637
+ do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
+ wp_page_shared mm/memory.c:3545 [inline]
+ do_wp_page+0x1fb8/0x3a34 mm/memory.c:3695
+ handle_pte_fault+0xca0/0x56f4 mm/memory.c:5537
+ __handle_mm_fault mm/memory.c:5664 [inline]
+ handle_mm_fault+0xee8/0x1784 mm/memory.c:5832
+ do_page_fault+0x3cc/0xfa8 arch/arm64/mm/fault.c:607
+ do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:879
+ el0_da+0x60/0x178 arch/arm64/kernel/entry-common.c:580
+ el0t_64_sync_handler+0xcc/0xfc arch/arm64/kernel/entry-common.c:733
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
