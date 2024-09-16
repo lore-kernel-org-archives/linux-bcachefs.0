@@ -1,357 +1,213 @@
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401197E0E4
-	for <linux-bcachefs@vger.kernel.org>; Sun, 15 Sep 2024 23:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E91F146586
+	for <linux-bcachefs@vger.kernel.org>; Mon, 16 Sep 2024 09:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726443631; cv=none; b=gj7lhz0tz7VSdwS3GzQKogfO38b4GBLGRrGdiOjU0szoXrXTMMla87DVMRDgrlA7tGfHU9UEXVNrSoadUKFtGUHU3cxHQ68pBug/F7auF9w8/r8cRmJvf0n0jyCevdTk2NIxibtDzELuyL8cHJJanQAVe0Rwe+zhgNnZASCWYyA=
+	t=1726478908; cv=none; b=T8TIxB9LPQ8wJmK5kSzvNZis4DDLFJNGrsDrL/OMM57fJBLMdNmoWYulNiBFi9WnDMxGtI0ySfNuFFGSxKIxNP1ZXS+iMjLICCBigsWzNjZD9rnF8cX7Iqecv3mctQbfhWrUsSvIE2gQfaZUB3EZcdQEi4d3YvzWsfHvQwL+a90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726443631; c=relaxed/simple;
-	bh=UADqDOWg2vNjBxQtXisbtTzPr15gXwB/1xlgwf09S6U=;
+	s=arc-20240116; t=1726478908; c=relaxed/simple;
+	bh=z8giI9/ZdlFf5+J23njLUMDGdqAsxhZYL7sgn4H9onA=;
 	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=aDICIrvVAFzSGYM2f7GrX2/hCtkrE10hBKRTGpH2QCWn+8vl33Ke7EbXKQU9ntgNlC24KhqoNYquY7zjcfd9G1dfwV5Zx/4ZPpnphE5btC2ta5K4d2rPpI1yqh6da3PbUItlylZZupONZnPczzMMy4AE2oscoDyjgUJspYOvLAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+	 Content-Type; b=Y9iPqahd/alCGu9bzaH1an5I5dst4EqMAR/jSLy5o2XFWDT/PRMiJMGZdQoIL/+LQHmUueYLXun5SLzebSxMXFuyqesVuyGKXeXFIaPs6bw8wqIIB0llcOQaqaX5xUUkqXoudbq8nUHazfO9Jg/NKbiXr4H8GVT/Vjj4yqEsslE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-82aac437083so620163139f.2
-        for <linux-bcachefs@vger.kernel.org>; Sun, 15 Sep 2024 16:40:29 -0700 (PDT)
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-82ced069d94so960573839f.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 16 Sep 2024 02:28:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726443628; x=1727048428;
+        d=1e100.net; s=20230601; t=1726478905; x=1727083705;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OuTsin3t/zjnDx2v8xco0kSnYd/minFvsz4MWr53674=;
-        b=JRbpv79xGyAsgtaMEXhiA0dkKigaORuiWFMRKHtUsWO4wwE1oP+azUDdzG+F3SCFtI
-         s3KVzUaP0tQbjoN1WyqJ4zYWrmmsPEkhFCpRrf6SVfvxHS6p9XqKwGbhg8lQUGcynh1l
-         3FXO9UOr1hagMbn2vLUy4uVoIHwWR2Zsis0P9xiKWVlg6JQmwp10nnJdPO+i5Zo9bCea
-         5yTtIUfUqz6F25F/PgLV7kP06peiHRi4ZdYv7nODSYAxcZJK/0zSB43RVVe/4K8cwnY2
-         w8RwtHP8xE09Iy3Z6k/dOBi3DX8UJ5hI5iuUCoNUKXPNeZsfHYnlH2LCdquLYc0wE6vA
-         PIfg==
-X-Forwarded-Encrypted: i=1; AJvYcCX/EODdkP6clJiHnroxcDjhbZhEx2L19xrxP/uMVbXBcwMS9iOyvHcnr8IXd+Fkj8rlJEynS3em4iZjTn/O1Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1s30oEEBX17Aop/zayqXON38bjd8AwDlCqawfJrnqrHeM+zlJ
-	oS5vtW/8GEoGJZ3RxWtosXtoa14etb0UIldcZ+wCa+oWgp50XjNmfcpIWQ4zVacE+SncDwEq9Rh
-	Ed8/wbclFxs9EWjRx9Qr5OzAS3pRw8okCGu0UMP4wd+D62kmtKRXKY7o=
-X-Google-Smtp-Source: AGHT+IGFBSaAaHNwbJqGrYcGlUuyB3jF4StpIVgouDSQddEG+l2ceLq1ndIowxR87lh0H00mjo2LCPD/6xi1qEpFcmSZW7CEiXSb
+        bh=nTvfKB2iP8TnE6cOWy6EnWdltzrpMIfOIwhP9EUB/sw=;
+        b=N5jCNnNNVZcoT+rwTVtBm+qN2fi3ytbS039oyma18MaGxHxe2nAtsfaSSh87I99/FX
+         VbSYLriC7YWGrSJl5tLkxW4Ufjck0cnAIK342td7Hg0Ygq5nv9blMf0nE4AfQPSbE5In
+         zZ45gbJRnV72ZlqSdQJcIY/V8VZS95yh3pBWAm5s5bgvhTDC3LG0O5kSaPQv4UGAJJpg
+         cx1r58jmrfQuXfyYF4VFyLXV+LBApbsBC2e6C42Zl4nhWrm/A0pi4fjVTuM8Dpa0bf2m
+         kzUYIwZGQwkD8Ue5PUnSol31bX4bjBytFVJlUrkVQrPKH7ZzPqbbT6vEzeHLIUeyyWE0
+         i+aw==
+X-Forwarded-Encrypted: i=1; AJvYcCXVPxHqO/0zcFg9Jl2nIaiTsAjc9sdz0N5CzE4IfantnaO5Q4xt3JXtj/zX1le4D+5SF1gmllbZFWJnD+Zo7Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwC690kTi5ntipfOm1O18KDf/b/L3oQg3vRuEISp+TuBdd4nYFM
+	mVHhyHpB7ZiNSEElaHk30tHPEVpVx0U7GddeWwOGmXdMQeV4GcTY771KfPHFkyfsVyQxCZTYCJM
+	XhZrEbg+kq6nXiOxVxAHdpugc4xviuHD8mtub53mdS+URa6hvdVohgGU=
+X-Google-Smtp-Source: AGHT+IFGLqZ9h8gbjyDB/vCCPxROYK+H2Z/YFGelbgEVqmucfs4vxeAIgKRT1Qv2QZNfVtvotK5oHE/a92M/7Wp6O+FiNMDmPGrg
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a04:b0:3a0:a1d7:791d with SMTP id
- e9e14a558f8ab-3a0a1d77ab5mr11921285ab.25.1726443628305; Sun, 15 Sep 2024
- 16:40:28 -0700 (PDT)
-Date: Sun, 15 Sep 2024 16:40:28 -0700
-In-Reply-To: <0000000000002408bb0621fb8f8b@google.com>
+X-Received: by 2002:a05:6602:6207:b0:82a:2143:8 with SMTP id
+ ca18e2360f4ac-82d1f93f807mr1637332539f.10.1726478905471; Mon, 16 Sep 2024
+ 02:28:25 -0700 (PDT)
+Date: Mon, 16 Sep 2024 02:28:25 -0700
+In-Reply-To: <0000000000006304400619bbfae2@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000030ae8a062230fbff@google.com>
-Subject: Re: [syzbot] [bcachefs?] possible deadlock in __bch2_disk_reservation_add
-From: syzbot <syzbot+089ffc4307915afa0da7@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000df862e0622393137@google.com>
+Subject: Re: [syzbot] [bcachefs?] INFO: task hung in bch2_copygc_stop
+From: syzbot <syzbot+c6fd966ebbdea1e8ff08@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    5f5673607153 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=113dc8a9980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dedbcb1ff4387972
-dashboard link: https://syzkaller.appspot.com/bug?extid=089ffc4307915afa0da7
+HEAD commit:    98f7e32f20d2 Linux 6.11
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=147c9c07980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c78874575ba70f27
+dashboard link: https://syzkaller.appspot.com/bug?extid=c6fd966ebbdea1e8ff08
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1761229f980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14a2f407980000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=156928a9980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e0d7c7980000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/40172aed5414/disk-5f567360.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/58372f305e9d/vmlinux-5f567360.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d2aae6fa798f/Image-5f567360.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/e8a95bcc5612/mount_3.gz
+disk image: https://storage.googleapis.com/syzbot-assets/5d74d59e4416/disk-98f7e32f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/aa8ddac249b8/vmlinux-98f7e32f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e275b6573f40/bzImage-98f7e32f.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/d48bbd071463/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+089ffc4307915afa0da7@syzkaller.appspotmail.com
+Reported-by: syzbot+c6fd966ebbdea1e8ff08@syzkaller.appspotmail.com
 
-bcachefs (loop0): resume_logged_ops... done
-bcachefs (loop0): delete_dead_inodes... done
-bcachefs (loop0): done starting filesystem
-======================================================
-WARNING: possible circular locking dependency detected
-6.11.0-rc7-syzkaller-g5f5673607153 #0 Not tainted
-------------------------------------------------------
-syz-executor358/6408 is trying to acquire lock:
-ffff0000e0f04990 (&c->mark_lock){++++}-{0:0}, at: __bch2_disk_reservation_add+0xc4/0x99c fs/bcachefs/buckets.c:1158
+INFO: task syz-executor378:5242 blocked for more than 143 seconds.
+      Not tainted 6.11.0-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor378 state:D stack:23872 pid:5242  tgid:5242  ppid:5239   flags:0x00004002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5188 [inline]
+ __schedule+0x17ae/0x4a10 kernel/sched/core.c:6529
+ __schedule_loop kernel/sched/core.c:6606 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6621
+ schedule_timeout+0xb0/0x310 kernel/time/timer.c:2557
+ do_wait_for_common kernel/sched/completion.c:95 [inline]
+ __wait_for_common kernel/sched/completion.c:116 [inline]
+ wait_for_common kernel/sched/completion.c:127 [inline]
+ wait_for_completion+0x355/0x620 kernel/sched/completion.c:148
+ kthread_stop+0x19e/0x640 kernel/kthread.c:710
+ bch2_copygc_stop+0x4f/0x150 fs/bcachefs/movinggc.c:405
+ __bch2_fs_read_only+0x47/0x430 fs/bcachefs/super.c:264
+ bch2_fs_read_only+0xb57/0x1220 fs/bcachefs/super.c:354
+ __bch2_fs_stop+0x105/0x540 fs/bcachefs/super.c:618
+ generic_shutdown_super+0x136/0x2d0 fs/super.c:642
+ bch2_kill_sb+0x41/0x50 fs/bcachefs/fs.c:2062
+ deactivate_locked_super+0xc4/0x130 fs/super.c:473
+ cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1373
+ task_work_run+0x24f/0x310 kernel/task_work.c:228
+ ptrace_notify+0x2d2/0x380 kernel/signal.c:2402
+ ptrace_report_syscall include/linux/ptrace.h:415 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
+ syscall_exit_work+0xc6/0x190 kernel/entry/common.c:173
+ syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
+ syscall_exit_to_user_mode+0x279/0x370 kernel/entry/common.c:218
+ do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f04a0768507
+RSP: 002b:00007ffc704dd048 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f04a0768507
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffc704dd100
+RBP: 00007ffc704dd100 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffc704de170
+R13: 00005555852866c0 R14: 431bde82d7b634db R15: 00007ffc704de190
+ </TASK>
 
-but task is already holding lock:
-ffff0000c537e518 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
+Showing all locks held in the system:
+1 lock held by khungtaskd/30:
+ #0: ffffffff8e738320 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:326 [inline]
+ #0: ffffffff8e738320 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:838 [inline]
+ #0: ffffffff8e738320 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6626
+2 locks held by getty/4978:
+ #0: ffff888030d7f0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900031332f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6ac/0x1e00 drivers/tty/n_tty.c:2211
+2 locks held by syz-executor378/5242:
+ #0: ffff888011a3e0e0 (&type->s_umount_key#44){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
+ #0: ffff888011a3e0e0 (&type->s_umount_key#44){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
+ #0: ffff888011a3e0e0 (&type->s_umount_key#44){+.+.}-{3:3}, at: deactivate_super+0xb5/0xf0 fs/super.c:505
+ #1: ffff888077100278 (&c->state_lock){+.+.}-{3:3}, at: __bch2_fs_stop+0xfd/0x540 fs/bcachefs/super.c:617
 
-which lock already depends on the new lock.
+=============================================
 
-
-the existing dependency chain (in reverse order) is:
-
--> #8 (sb_pagefaults){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1676 [inline]
-       sb_start_pagefault include/linux/fs.h:1841 [inline]
-       bch2_page_mkwrite+0x280/0xe54 fs/bcachefs/fs-io-pagecache.c:614
-       do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
-       wp_page_shared mm/memory.c:3545 [inline]
-       do_wp_page+0x1fb8/0x3a34 mm/memory.c:3695
-       handle_pte_fault+0xca0/0x56f4 mm/memory.c:5537
-       __handle_mm_fault mm/memory.c:5664 [inline]
-       handle_mm_fault+0xee8/0x1784 mm/memory.c:5832
-       do_page_fault+0x3cc/0xfa8 arch/arm64/mm/fault.c:607
-       do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:879
-       el0_da+0x60/0x178 arch/arm64/kernel/entry-common.c:580
-       el0t_64_sync_handler+0xcc/0xfc arch/arm64/kernel/entry-common.c:733
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-
--> #7 (&vma->vm_lock->lock){++++}-{3:3}:
-       down_write+0x50/0xc0 kernel/locking/rwsem.c:1579
-       vma_start_write include/linux/mm.h:751 [inline]
-       vma_link+0x238/0x484 mm/mmap.c:457
-       insert_vm_struct+0x284/0x378 mm/mmap.c:3484
-       __bprm_mm_init fs/exec.c:291 [inline]
-       bprm_mm_init fs/exec.c:395 [inline]
-       alloc_bprm+0x68c/0xb68 fs/exec.c:1623
-       kernel_execve+0xa4/0x820 fs/exec.c:2052
-       run_init_process+0x1bc/0x1ec init/main.c:1388
-       try_to_run_init_process init/main.c:1395 [inline]
-       kernel_init+0xdc/0x2a0 init/main.c:1523
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-
--> #6 (&mm->mmap_lock){++++}-{3:3}:
-       __might_fault+0xc4/0x124 mm/memory.c:6387
-       _inline_copy_to_user include/linux/uaccess.h:176 [inline]
-       copy_to_user include/linux/uaccess.h:207 [inline]
-       drm_mode_getconnector+0xaa4/0x1214 drivers/gpu/drm/drm_connector.c:3185
-       drm_ioctl_kernel+0x26c/0x368 drivers/gpu/drm/drm_ioctl.c:745
-       drm_ioctl+0x5e4/0xae4 drivers/gpu/drm/drm_ioctl.c:842
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:907 [inline]
-       __se_sys_ioctl fs/ioctl.c:893 [inline]
-       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:893
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
-       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
-       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-
--> #5 (&dev->mode_config.mutex){+.+.}-{3:3}:
-       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
-       __mutex_lock kernel/locking/mutex.c:752 [inline]
-       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
-       drm_client_modeset_probe+0x32c/0x3f78 drivers/gpu/drm/drm_client_modeset.c:834
-       __drm_fb_helper_initial_config_and_unlock+0xf0/0x19a4 drivers/gpu/drm/drm_fb_helper.c:1852
-       drm_fb_helper_initial_config+0x48/0x64 drivers/gpu/drm/drm_fb_helper.c:1940
-       drm_fbdev_shmem_client_hotplug+0x158/0x22c drivers/gpu/drm/drm_fbdev_shmem.c:250
-       drm_client_register+0x144/0x1e0 drivers/gpu/drm/drm_client.c:141
-       drm_fbdev_shmem_setup+0x11c/0x2cc drivers/gpu/drm/drm_fbdev_shmem.c:309
-       vkms_create drivers/gpu/drm/vkms/vkms_drv.c:226 [inline]
-       vkms_init+0x4f0/0x600 drivers/gpu/drm/vkms/vkms_drv.c:252
-       do_one_initcall+0x24c/0x9c0 init/main.c:1267
-       do_initcall_level+0x154/0x214 init/main.c:1329
-       do_initcalls+0x58/0xac init/main.c:1345
-       do_basic_setup+0x8c/0xa0 init/main.c:1364
-       kernel_init_freeable+0x324/0x478 init/main.c:1578
-       kernel_init+0x24/0x2a0 init/main.c:1467
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-
--> #4 (&client->modeset_mutex){+.+.}-{3:3}:
-       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
-       __mutex_lock kernel/locking/mutex.c:752 [inline]
-       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
-       drm_client_modeset_probe+0x318/0x3f78 drivers/gpu/drm/drm_client_modeset.c:832
-       __drm_fb_helper_initial_config_and_unlock+0xf0/0x19a4 drivers/gpu/drm/drm_fb_helper.c:1852
-       drm_fb_helper_initial_config+0x48/0x64 drivers/gpu/drm/drm_fb_helper.c:1940
-       drm_fbdev_shmem_client_hotplug+0x158/0x22c drivers/gpu/drm/drm_fbdev_shmem.c:250
-       drm_client_register+0x144/0x1e0 drivers/gpu/drm/drm_client.c:141
-       drm_fbdev_shmem_setup+0x11c/0x2cc drivers/gpu/drm/drm_fbdev_shmem.c:309
-       vkms_create drivers/gpu/drm/vkms/vkms_drv.c:226 [inline]
-       vkms_init+0x4f0/0x600 drivers/gpu/drm/vkms/vkms_drv.c:252
-       do_one_initcall+0x24c/0x9c0 init/main.c:1267
-       do_initcall_level+0x154/0x214 init/main.c:1329
-       do_initcalls+0x58/0xac init/main.c:1345
-       do_basic_setup+0x8c/0xa0 init/main.c:1364
-       kernel_init_freeable+0x324/0x478 init/main.c:1578
-       kernel_init+0x24/0x2a0 init/main.c:1467
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-
--> #3 (&helper->lock){+.+.}-{3:3}:
-       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
-       __mutex_lock kernel/locking/mutex.c:752 [inline]
-       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
-       __drm_fb_helper_restore_fbdev_mode_unlocked+0xb4/0x178 drivers/gpu/drm/drm_fb_helper.c:235
-       drm_fb_helper_set_par+0xc4/0x110 drivers/gpu/drm/drm_fb_helper.c:1351
-       fbcon_init+0xf34/0x1eb8 drivers/video/fbdev/core/fbcon.c:1093
-       visual_init+0x27c/0x548 drivers/tty/vt/vt.c:1011
-       do_bind_con_driver+0x7dc/0xe04 drivers/tty/vt/vt.c:3833
-       do_take_over_console+0x4ac/0x5f0 drivers/tty/vt/vt.c:4399
-       do_fbcon_takeover+0x158/0x260 drivers/video/fbdev/core/fbcon.c:531
-       do_fb_registered drivers/video/fbdev/core/fbcon.c:2968 [inline]
-       fbcon_fb_registered+0x370/0x4ec drivers/video/fbdev/core/fbcon.c:2988
-       do_register_framebuffer drivers/video/fbdev/core/fbmem.c:449 [inline]
-       register_framebuffer+0x470/0x610 drivers/video/fbdev/core/fbmem.c:515
-       __drm_fb_helper_initial_config_and_unlock+0x13b0/0x19a4 drivers/gpu/drm/drm_fb_helper.c:1875
-       drm_fb_helper_initial_config+0x48/0x64 drivers/gpu/drm/drm_fb_helper.c:1940
-       drm_fbdev_shmem_client_hotplug+0x158/0x22c drivers/gpu/drm/drm_fbdev_shmem.c:250
-       drm_client_register+0x144/0x1e0 drivers/gpu/drm/drm_client.c:141
-       drm_fbdev_shmem_setup+0x11c/0x2cc drivers/gpu/drm/drm_fbdev_shmem.c:309
-       vkms_create drivers/gpu/drm/vkms/vkms_drv.c:226 [inline]
-       vkms_init+0x4f0/0x600 drivers/gpu/drm/vkms/vkms_drv.c:252
-       do_one_initcall+0x24c/0x9c0 init/main.c:1267
-       do_initcall_level+0x154/0x214 init/main.c:1329
-       do_initcalls+0x58/0xac init/main.c:1345
-       do_basic_setup+0x8c/0xa0 init/main.c:1364
-       kernel_init_freeable+0x324/0x478 init/main.c:1578
-       kernel_init+0x24/0x2a0 init/main.c:1467
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-
--> #2 (console_lock){+.+.}-{0:0}:
-       console_lock+0x19c/0x1f4 kernel/printk/printk.c:2735
-       __bch2_print_string_as_lines fs/bcachefs/util.c:267 [inline]
-       bch2_print_string_as_lines+0x2c/0xd4 fs/bcachefs/util.c:286
-       __bch2_fsck_err+0x16c0/0x278c fs/bcachefs/error.c:388
-       __bch2_bkey_fsck_err+0x7b0/0xea8 fs/bcachefs/error.c:436
-       bch2_alloc_v4_validate+0x9c4/0xd24
-       bch2_bkey_val_validate+0x114/0x1dc fs/bcachefs/bkey_methods.c:143
-       bch2_btree_node_read_done+0x36ec/0x4ab4 fs/bcachefs/btree_io.c:1219
-       btree_node_read_work+0x50c/0xe04 fs/bcachefs/btree_io.c:1323
-       bch2_btree_node_read+0x1f50/0x280c fs/bcachefs/btree_io.c:1708
-       __bch2_btree_root_read fs/bcachefs/btree_io.c:1749 [inline]
-       bch2_btree_root_read+0x2b0/0x53c fs/bcachefs/btree_io.c:1773
-       read_btree_roots+0x250/0x798 fs/bcachefs/recovery.c:523
-       bch2_fs_recovery+0x3278/0x5514 fs/bcachefs/recovery.c:851
-       bch2_fs_start+0x30c/0x53c fs/bcachefs/super.c:1036
-       bch2_fs_get_tree+0x938/0x1030 fs/bcachefs/fs.c:1946
-       vfs_get_tree+0x90/0x28c fs/super.c:1800
-       do_new_mount+0x278/0x900 fs/namespace.c:3472
-       path_mount+0x590/0xe04 fs/namespace.c:3799
-       do_mount fs/namespace.c:3812 [inline]
-       __do_sys_mount fs/namespace.c:4020 [inline]
-       __se_sys_mount fs/namespace.c:3997 [inline]
-       __arm64_sys_mount+0x45c/0x5a8 fs/namespace.c:3997
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
-       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
-       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-
--> #1 (&c->fsck_error_msgs_lock){+.+.}-{3:3}:
-       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
-       __mutex_lock kernel/locking/mutex.c:752 [inline]
-       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
-       __bch2_fsck_err+0x344/0x278c fs/bcachefs/error.c:267
-       bch2_check_fix_ptr fs/bcachefs/buckets.c:127 [inline]
-       bch2_check_fix_ptrs+0x1364/0x47f8 fs/bcachefs/buckets.c:256
-       bch2_trigger_extent+0x71c/0x814 fs/bcachefs/buckets.c:844
-       bch2_key_trigger fs/bcachefs/bkey_methods.h:87 [inline]
-       bch2_gc_mark_key+0x4b4/0xb70 fs/bcachefs/btree_gc.c:633
-       bch2_gc_btree fs/bcachefs/btree_gc.c:669 [inline]
-       bch2_gc_btrees fs/bcachefs/btree_gc.c:728 [inline]
-       bch2_check_allocations+0x110c/0x4f64 fs/bcachefs/btree_gc.c:1135
-       bch2_run_recovery_pass+0xe4/0x1d4 fs/bcachefs/recovery_passes.c:183
-       bch2_run_recovery_passes+0x258/0x6e0 fs/bcachefs/recovery_passes.c:230
-       bch2_fs_recovery+0x32c8/0x5514 fs/bcachefs/recovery.c:859
-       bch2_fs_start+0x30c/0x53c fs/bcachefs/super.c:1036
-       bch2_fs_get_tree+0x938/0x1030 fs/bcachefs/fs.c:1946
-       vfs_get_tree+0x90/0x28c fs/super.c:1800
-       do_new_mount+0x278/0x900 fs/namespace.c:3472
-       path_mount+0x590/0xe04 fs/namespace.c:3799
-       do_mount fs/namespace.c:3812 [inline]
-       __do_sys_mount fs/namespace.c:4020 [inline]
-       __se_sys_mount fs/namespace.c:3997 [inline]
-       __arm64_sys_mount+0x45c/0x5a8 fs/namespace.c:3997
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
-       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
-       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-
--> #0 (&c->mark_lock){++++}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3133 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3252 [inline]
-       validate_chain kernel/locking/lockdep.c:3868 [inline]
-       __lock_acquire+0x33d8/0x779c kernel/locking/lockdep.c:5142
-       lock_acquire+0x240/0x728 kernel/locking/lockdep.c:5759
-       percpu_down_read+0x5c/0x2e8 include/linux/percpu-rwsem.h:51
-       __bch2_disk_reservation_add+0xc4/0x99c fs/bcachefs/buckets.c:1158
-       bch2_disk_reservation_add+0x29c/0x460 fs/bcachefs/buckets.h:375
-       bch2_folio_reservation_get+0x2c4/0x5bc fs/bcachefs/fs-io-pagecache.c:445
-       bch2_page_mkwrite+0xa68/0xe54 fs/bcachefs/fs-io-pagecache.c:637
-       do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
-       wp_page_shared mm/memory.c:3545 [inline]
-       do_wp_page+0x1fb8/0x3a34 mm/memory.c:3695
-       handle_pte_fault+0xca0/0x56f4 mm/memory.c:5537
-       __handle_mm_fault mm/memory.c:5664 [inline]
-       handle_mm_fault+0xee8/0x1784 mm/memory.c:5832
-       do_page_fault+0x3cc/0xfa8 arch/arm64/mm/fault.c:607
-       do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:879
-       el0_da+0x60/0x178 arch/arm64/kernel/entry-common.c:580
-       el0t_64_sync_handler+0xcc/0xfc arch/arm64/kernel/entry-common.c:733
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-
-other info that might help us debug this:
-
-Chain exists of:
-  &c->mark_lock --> &vma->vm_lock->lock --> sb_pagefaults
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(sb_pagefaults);
-                               lock(&vma->vm_lock->lock);
-                               lock(sb_pagefaults);
-  rlock(&c->mark_lock);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor358/6408:
- #0: ffff0000d91609b8 (&vma->vm_lock->lock){++++}-{3:3}, at: vma_start_read include/linux/mm.h:698 [inline]
- #0: ffff0000d91609b8 (&vma->vm_lock->lock){++++}-{3:3}, at: lock_vma_under_rcu+0x28c/0x5e4 mm/memory.c:5998
- #1: ffff0000c537e518 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
-
-stack backtrace:
-CPU: 1 UID: 0 PID: 6408 Comm: syz-executor358 Not tainted 6.11.0-rc7-syzkaller-g5f5673607153 #0
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.11.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:319
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:326
+Call Trace:
+ <TASK>
  __dump_stack lib/dump_stack.c:93 [inline]
- dump_stack_lvl+0xe4/0x150 lib/dump_stack.c:119
- dump_stack+0x1c/0x28 lib/dump_stack.c:128
- print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2059
- check_noncircular+0x310/0x404 kernel/locking/lockdep.c:2186
- check_prev_add kernel/locking/lockdep.c:3133 [inline]
- check_prevs_add kernel/locking/lockdep.c:3252 [inline]
- validate_chain kernel/locking/lockdep.c:3868 [inline]
- __lock_acquire+0x33d8/0x779c kernel/locking/lockdep.c:5142
- lock_acquire+0x240/0x728 kernel/locking/lockdep.c:5759
- percpu_down_read+0x5c/0x2e8 include/linux/percpu-rwsem.h:51
- __bch2_disk_reservation_add+0xc4/0x99c fs/bcachefs/buckets.c:1158
- bch2_disk_reservation_add+0x29c/0x460 fs/bcachefs/buckets.h:375
- bch2_folio_reservation_get+0x2c4/0x5bc fs/bcachefs/fs-io-pagecache.c:445
- bch2_page_mkwrite+0xa68/0xe54 fs/bcachefs/fs-io-pagecache.c:637
- do_page_mkwrite+0x140/0x2dc mm/memory.c:3142
- wp_page_shared mm/memory.c:3545 [inline]
- do_wp_page+0x1fb8/0x3a34 mm/memory.c:3695
- handle_pte_fault+0xca0/0x56f4 mm/memory.c:5537
- __handle_mm_fault mm/memory.c:5664 [inline]
- handle_mm_fault+0xee8/0x1784 mm/memory.c:5832
- do_page_fault+0x3cc/0xfa8 arch/arm64/mm/fault.c:607
- do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:879
- el0_da+0x60/0x178 arch/arm64/kernel/entry-common.c:580
- el0t_64_sync_handler+0xcc/0xfc arch/arm64/kernel/entry-common.c:733
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
+ watchdog+0xff4/0x1040 kernel/hung_task.c:379
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 4665 Comm: klogd Not tainted 6.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+RIP: 0010:__free_one_page+0x4/0x8a0 mm/page_alloc.c:767
+Code: ff ff 4c 89 e7 48 c7 c6 00 f5 f5 8b e8 a5 8b f1 ff 90 0f 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa <55> 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 e4 e0 48 81 ec c0 00
+RSP: 0018:ffffc900030bf310 EFLAGS: 00000046
+RAX: 0000000000000004 RBX: ffffea00018c4010 RCX: 0000000000000002
+RDX: ffff88813fffa740 RSI: 0000000000063100 RDI: ffffea00018c4000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffff52000617e40 R12: 0000000000000006
+R13: ffff8880b8944a00 R14: 0000000000063100 R15: ffffea00018c4000
+FS:  00007f38fcd19380(0000) GS:ffff8880b8900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557211fbc680 CR3: 0000000063e60000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ free_pcppages_bulk+0x3d3/0x5e0 mm/page_alloc.c:1194
+ free_unref_page_commit+0x582/0x1140 mm/page_alloc.c:2594
+ free_unref_page+0x622/0xea0 mm/page_alloc.c:2642
+ discard_slab mm/slub.c:2587 [inline]
+ __put_partials+0xeb/0x130 mm/slub.c:3055
+ put_cpu_partial+0x17c/0x250 mm/slub.c:3130
+ __slab_free+0x2ea/0x3d0 mm/slub.c:4347
+ qlink_free mm/kasan/quarantine.c:163 [inline]
+ qlist_free_all+0x9e/0x140 mm/kasan/quarantine.c:179
+ kasan_quarantine_reduce+0x14f/0x170 mm/kasan/quarantine.c:286
+ __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:322
+ kasan_slab_alloc include/linux/kasan.h:201 [inline]
+ slab_post_alloc_hook mm/slub.c:3992 [inline]
+ slab_alloc_node mm/slub.c:4041 [inline]
+ kmem_cache_alloc_node_noprof+0x16b/0x320 mm/slub.c:4084
+ __alloc_skb+0x1c3/0x440 net/core/skbuff.c:664
+ alloc_skb include/linux/skbuff.h:1320 [inline]
+ alloc_skb_with_frags+0xc3/0x770 net/core/skbuff.c:6526
+ sock_alloc_send_pskb+0x91a/0xa60 net/core/sock.c:2815
+ unix_dgram_sendmsg+0x6d3/0x1f80 net/unix/af_unix.c:2030
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ __sys_sendto+0x3a4/0x4f0 net/socket.c:2204
+ __do_sys_sendto net/socket.c:2216 [inline]
+ __se_sys_sendto net/socket.c:2212 [inline]
+ __x64_sys_sendto+0xde/0x100 net/socket.c:2212
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f38fce7b9b5
+Code: 8b 44 24 08 48 83 c4 28 48 98 c3 48 98 c3 41 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 26 45 31 c9 45 31 c0 b8 2c 00 00 00 0f 05 <48> 3d 00 f0 ff ff 76 7a 48 8b 15 44 c4 0c 00 f7 d8 64 89 02 48 83
+RSP: 002b:00007ffd24115ca8 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f38fce7b9b5
+RDX: 0000000000000053 RSI: 00005650827b8f60 RDI: 0000000000000003
+RBP: 00005650827b4910 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000004000 R11: 0000000000000246 R12: 0000000000000013
+R13: 00007f38fd009212 R14: 00007ffd24115da8 R15: 0000000000000000
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.623 msecs
 
 
 ---
