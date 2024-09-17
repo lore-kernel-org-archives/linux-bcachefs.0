@@ -1,150 +1,77 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C4B1803E
-	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Sep 2024 01:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03BDC170828
+	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Sep 2024 09:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726537237; cv=none; b=WiI9qObW87fFS7bzcp+24QUOTkzc1tZHEV6qEUqWeA8oY/d9lkxg4z/c+l7et5PZELDTPLx9+LaW2d1euKH76V/sOkBn5gzq1bu/BxDSfC7sLlZQiOU3ylVJLDAmqI6QT3hrDhS9GuLX/GI7weTZ8zlnlKMg3K2xyLBJ+oxnmsU=
+	t=1726566664; cv=none; b=uTP4c/3L6qnrt54P+7bS8oyqEp1M569Y4NeXB3ou4C+LUHjqjPWc2OYuAGJlcgaNfL55gi+3o+jahJfCZNDdWlkF4idDGjyfSXPQu5cdAYGj+ptcP3Al97p8LD0FVddSo/4jIUD49sLQ6xZKqA2DgTlchWRjDYLE/aidF0c+ZK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726537237; c=relaxed/simple;
-	bh=fgJ8hmWxmO6lyYwJXw3FAr8Ai0bOM+qZ15SsovrBFvw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A0jhnX6xR4Zb7pCW2A3eqatcVZ1N6AWjNDUQ8qegj2hAf6ajbvmGXHiL0mODZOhDVPpeN1SYOef9BRxbjE2QDV1BYxEH1QJp4ZJDX6ZlqHrjR/Vm/Le4IEDoMxhJDfTr3dbd1XprqTIZD4og/QG0z8eZ2xXnaJ7lbCTRG8nLegA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eYEzKE6o; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=aMq0ywUM; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eYEzKE6o; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=aMq0ywUM; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eYEzKE6o";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="aMq0ywUM";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eYEzKE6o";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="aMq0ywUM"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7DEA321E36;
-	Tue, 17 Sep 2024 01:40:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1726537233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=MooUwaWJN+Lz29AXTiDZtMp00GCO36VGBDqmzsWShYk=;
-	b=eYEzKE6oKj2T9QrELfWdVOND05QXagszK2tx2kyFRw79Uv2ky9xTclvppVLf2B5fFN7r/n
-	EmYFQjDidQvxyQhX6kYSPQRThmZ9yWT9J4wR0NHE2ohIOC6zjcEODC8hfUkgYuo7tDQGDJ
-	1AIQQGeLDZ3ZTPN+GufSQ6l6VMXOhpc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1726537233;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=MooUwaWJN+Lz29AXTiDZtMp00GCO36VGBDqmzsWShYk=;
-	b=aMq0ywUMmkferMehA/+GmdiLAXElFAk3GwFxF+dJjGJn4/r04TyGXkqpr1gsEMKvCrzkvh
-	CjVKpmrBIzJaLwBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1726537233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=MooUwaWJN+Lz29AXTiDZtMp00GCO36VGBDqmzsWShYk=;
-	b=eYEzKE6oKj2T9QrELfWdVOND05QXagszK2tx2kyFRw79Uv2ky9xTclvppVLf2B5fFN7r/n
-	EmYFQjDidQvxyQhX6kYSPQRThmZ9yWT9J4wR0NHE2ohIOC6zjcEODC8hfUkgYuo7tDQGDJ
-	1AIQQGeLDZ3ZTPN+GufSQ6l6VMXOhpc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1726537233;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=MooUwaWJN+Lz29AXTiDZtMp00GCO36VGBDqmzsWShYk=;
-	b=aMq0ywUMmkferMehA/+GmdiLAXElFAk3GwFxF+dJjGJn4/r04TyGXkqpr1gsEMKvCrzkvh
-	CjVKpmrBIzJaLwBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9487813A79;
-	Tue, 17 Sep 2024 01:40:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JiGGEQ/e6GYGaAAAD6G6ig
-	(envelope-from <ddiss@suse.de>); Tue, 17 Sep 2024 01:40:31 +0000
-From: David Disseldorp <ddiss@suse.de>
-To: linux-bcachefs@vger.kernel.org
-Cc: David Disseldorp <ddiss@suse.de>,
-	Martin Doucha <martin.doucha@suse.com>,
-	Hongbo Li <lihongbo22@huawei.com>
-Subject: [PATCH resend v2] bcachefs: reject unknown mount options
-Date: Tue, 17 Sep 2024 01:39:57 +0000
-Message-ID: <20240917013957.13353-1-ddiss@suse.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1726566664; c=relaxed/simple;
+	bh=d+BFDkFojviuUYyTlF8lf53Jk7wMgz/eph+lTUjGNJw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=s/X7rJZIspktyeOm5hcC/vCKDgKKdxi/VruTwkJtPZHK+xuv5QhSU28SRRC4B5KexbhC9EroYcpNEIzsVvBVug9MzTKcbQS9XTmk6LnxIG/cb7cxAbtH2RTBwCVawVb+9KeIwE+Ib+v83Up5uxk924sr2OzF05RsMz0LhsqjJdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a0a2c95e81so18110015ab.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 17 Sep 2024 02:51:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726566662; x=1727171462;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1WAEizX9Y1SMbjSDqtNh8j+ktqk2hMLvxIFTpNMvgJ8=;
+        b=wUUxVnx1kzJLSUqKE23okpGgn6NfeU94dLuw/JBbcTPTIyT+WXk1gIUrmb1HZrWBM3
+         V6j2p7m10l4WKvWAMHsZNBmn5XtlDikh6vesqvZVa/ASpnLx4ZzNlif2DEtwZx4CPsCF
+         p2+Mlem2hpPBmVY2CS+CYrKAjiwWFbIcZ9Au0R+LwovlnAw4Y4nQxJaqRbn4hB4sppVk
+         eStaVu8alRjXZHGhD1qj3MyZpzm2uoSkprcpb5ETqsr33LKkwRqAU++KNYCqNB4o+nSb
+         L46vs1QtiFwb7TO8JvYbNSvd302+feoj3Y+au/3MMbUk7EDJN5A36u/aNm5UL7ohy/be
+         To6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWZTA9CPahX3DLg+xvvQvFOp/+aX5XtOo1xGNTLlGuPNb55jzEpUzHFDFXMEEXBEYAoyQUstlao947S6h1wVg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzn5WjY2iKgQtD1odpULg4cjj2/ZINYU8vcbsNF9G5s4xnWIWKx
+	zT1SceixsUQHH9LIaeefdC3gql2qD711Pfzp2VIdrsEM7hrQFJ/d+AGKscWu05DXHcV4ZM+F0je
+	+VPATVOARF+SyjyHnz0Zw2+CRVWFz8lunOglI9XFpAgrPLLsokB9fK6Y=
+X-Google-Smtp-Source: AGHT+IElAEl5pwEDniwyOyW0Nf1KrDJxFTCIQQfsNBJMaH4x60gTb1RTLqMDHomFXNXjut1/m+HvyRhTOj6ZfZj3XtZ3uDcCjebb
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[opensuse.org:url,suse.de:mid,suse.de:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+X-Received: by 2002:a05:6e02:12c5:b0:39f:5efe:ae73 with SMTP id
+ e9e14a558f8ab-3a0848eb2admr187448595ab.5.1726566662251; Tue, 17 Sep 2024
+ 02:51:02 -0700 (PDT)
+Date: Tue, 17 Sep 2024 02:51:02 -0700
+In-Reply-To: <0000000000006304400619bbfae2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000095b8f806224da030@google.com>
+Subject: Re: [syzbot] [bcachefs?] INFO: task hung in bch2_copygc_stop
+From: syzbot <syzbot+c6fd966ebbdea1e8ff08@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-This is effectively a revert of commit 03ef80b469d5 ("bcachefs: Ignore
-unknown mount options"), rebased atop commit 929d954330142 ("bcachefs:
-use new mount API").
+syzbot has bisected this issue to:
 
-Contrary to the 03ef80b469d5 commit message, unknown mount options do
-result in failure on other filesystems such as xfs, btrfs, ext4, etc.
+commit f5095b9f85a1674a92d00e7ab466499a8ba49ce1
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Tue Jan 2 00:42:37 2024 +0000
 
-Ignoring unknown options may result in unexpected behaviour: e.g. if
-an application requires future-workload-specific-mount-option to work
-and is run on a system without future-workload-specific-mount-option
-kernel support, then it may fail without indication of the missing
-kernel functionality.
+    bcachefs: dev_usage updated by new accounting
 
-This reversion may cause failures for existing users reliant on the
-ignore-unknown behaviour, but it should be bearable given bcachefs is
-still flagged experimental.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1256e29f980000
+start commit:   adfc3ded5c33 Merge tag 'for-6.12/io_uring-discard-20240913..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1156e29f980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1656e29f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6f94136b4da4e897
+dashboard link: https://syzkaller.appspot.com/bug?extid=c6fd966ebbdea1e8ff08
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10936a8b980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10bdd7c7980000
 
-Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
-Reported-by: Martin Doucha <martin.doucha@suse.com>
-Closes: https://bugzilla.opensuse.org/show_bug.cgi?id=1230065
-Signed-off-by: David Disseldorp <ddiss@suse.de>
-Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
----
- fs/bcachefs/opts.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Reported-by: syzbot+c6fd966ebbdea1e8ff08@syzkaller.appspotmail.com
+Fixes: f5095b9f85a1 ("bcachefs: dev_usage updated by new accounting")
 
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index e10fc1da71b19..bc5c180878212 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -482,9 +482,8 @@ int bch2_parse_one_mount_opt(struct bch_fs *c, struct bch_opts *opts,
- 		val = "0";
- 	}
- 
--	/* Unknown options are ignored: */
- 	if (id < 0)
--		return 0;
-+		goto bad_opt;
- 
- 	if (!(bch2_opt_table[id].flags & OPT_MOUNT))
- 		goto bad_opt;
--- 
-2.43.0
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
