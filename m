@@ -1,86 +1,74 @@
-Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917B32746C;
-	Thu, 19 Sep 2024 15:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634EC200B5
+	for <linux-bcachefs@vger.kernel.org>; Thu, 19 Sep 2024 18:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726759079; cv=none; b=qp+p1DR2Gb3QD1t4fjRuocLTrBXjXRlzNAQcN8k2st42GL209NzOA/LLYKumrTobXLDf3xrdAk6GRXZJul0en+oeOVnQCMKkW+GmCAaMHMs5bwCSC/WCqwF9G1vo5bYu7Di/lGyf85nrkCCftLOCKi8W++fVjNTjyrixa0b/EwA=
+	t=1726771384; cv=none; b=QzutFI5j1MwoYE0uhwiyW1YAMvhPqhKtyMz3cmohm32xOd3fdBoctuRcaJLVRrTzLv7z9MaXfKrBy+yh7pRjIM+sngU2/HW58byuw0I8ic00n5NmuneNxMZa+z3T+rxfPdHD7tmFLIDduDbnq1OweCAScssWwIMsgydxhW2ZTp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726759079; c=relaxed/simple;
-	bh=8e1qIlw1/RHOl6SNU+FwAk2nDYlxZ0kqjgZGoDnkwzc=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=eC7snhJb3H05r02R4XI2DaawP+1dSUIkLfOVZc2ViOAtu46zVVC3SygTcfe07iBkSpuuvJlWm2FnqWwf/unj7FlVs+PLCH2sf3AVTewXGeA+THw/h/B+fbBxbiW7KaTW3blNyUQg1wYnUZFaUdKqkINEo7AVzETGUutxEpXYQcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=j9PPwqGP; arc=none smtp.client-ip=162.62.58.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="j9PPwqGP"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1726759072; bh=adl1pm0YMKYb3oWFKe+zH9DtTttrIh+DhbVpZnCd3gE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=j9PPwqGPmx2qKcxqaIF1MM01IO5MoetIcfWH4Yt9h6AipGrueppHPqnv5BWaFNXOF
-	 VOvuhJw3waoggah5hzBUd04IBzScS9o2ncxpq3GymHezpq2A2L7+/adBzKYFEhp52I
-	 rVjGCaX/oC3S1tFEgg/fY6sYIIZlXSkswLQw5n24=
-Received: from pek-lxu-l1.wrs.com ([111.198.224.50])
-	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
-	id 2E7BCE88; Thu, 19 Sep 2024 23:11:39 +0800
-X-QQ-mid: xmsmtpt1726758699t9305bfku
-Message-ID: <tencent_50B5A5988DAD922A5D9B5DC9190C4FB08D07@qq.com>
-X-QQ-XMAILINFO: No84gL0ijbqcYLvTBmcx4cSABjAsh9xinR+FSEen+LmVMm6jaTeFEz7Vdo/xCo
-	 gFsqYrEFNuv1bd8zFecFd9mbuWQ1hTVq1CU6YAtciKCDNgGRTMwCTgz5U4Q/etuRAvCPsMjDnqWA
-	 8mQr37JoPdLwgSw8fhv0lE2ef0zuU0MlMfoUA2w/vkLpvi0cbNuyMUrTvtFfGsve+bmEbchBXXql
-	 q0zRtHpFASuatmak45N0hUm/mt0NC33q5M8a/P6+vr/+x1s7Cdzzn57NcN2+A0EHsCk7LwnfuD4u
-	 iuhlYTzhi+TFOowa0citGxAbCo+IbQdxiWpSLk/1W4CeDGUUaxgKKgGpdy8Bg+aeYzvvoVqm3Pnc
-	 kg9MTSt3ddXRUcdXGLTk1BYcYu1Xo0jbiLlR7+yupOiFgSyEFfDRGOnCwuD635qHDH2MlYjvJNN7
-	 ApvXy/mAnchBpqUr5bAz3fTdPze97KRCiDri6+t7LS3d/6WZgICztA5yvEUDSKCFICAaT4j1TIU/
-	 AcwRezcv1ge+cwT6V0QSuUnlu6Pqmzd27TScQZGKKzuCs+d6gb5emgzydG6/OLeazLAzVRptYZC/
-	 roe1gh4Xzf3my4h9thtRGAQ3VSmsMZga1TjpsL3lsUrVBvE74WZfw4rPHQMiNFXzg3uyzrv8ePB9
-	 chtew2JgppJjfBii0WrMfnM5/o/+4NgRSUOHhmzlleh/iAWGXgWHYYo3XMUt1ejCFfrrLYHBgpv6
-	 xeeRPAnWy7vNxK9I67J85ZD1zxyX+e6lAq5cQu9yM6EcnpsnJck0WNjFIKZgmtaR6hP+qduFtMhO
-	 ld0SFgtjFFkiPysPgBM2aaK7UADVTgmEIRP6GdDDFgc+l0Dt3KEiDZ3YDLff2SlF8a4tflaQpnJt
-	 qAuIlP5nzjanau66DW51qCl2HuNbcWpoF+wKBPbUhjcYN/2vf/d3Q=
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+294f528e56138c357a48@syzkaller.appspotmail.com
-Cc: kent.overstreet@linux.dev,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bcachefs?] BUG: unable to handle kernel paging request in bch2_opt_to_text
-Date: Thu, 19 Sep 2024 23:11:40 +0800
-X-OQ-MSGID: <20240919151139.151892-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <66eb6254.050a0220.92ef1.0009.GAE@google.com>
-References: <66eb6254.050a0220.92ef1.0009.GAE@google.com>
+	s=arc-20240116; t=1726771384; c=relaxed/simple;
+	bh=17v9D7ewN9kAL3cNO0vf9+Ecs7x5/yWbSuqDJSadNTs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=JpxwkKaisa8WCnkG8O1iTG3bbFrclQxQnSsRjmK02yO93sH9uCpUS2Her0CI2J+wX4Zt2YeeleTjLBb74wekUq4B7cokrzlkYwqCZmIvBCkgA2mZavs1pW5D6K0uFSbr1KwPVx2Eaa0br/FDdB8bNsEAxceE19nWr83W472HC0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a08c7d4273so15328835ab.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Sep 2024 11:43:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726771382; x=1727376182;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o7lIsnCpfZQSVA6F2fRePR9yCTuruPmP5F+EBeyS/UE=;
+        b=FOq5I4vgYuO+s9lkhGfLiZeLV1A6VU4Q8c4YvZC2yzJizMaUdJEA+NdmRDGpPc3DmR
+         J2DJTDlMKlekugF2J+A7/6rP1x/NyrpTElSvnc/bn6M5XJwQH7Y0oI9XyAbzk3M9iESC
+         /R7SdBz7bFa26F0qtpz4yLc9nvHF/PGPslQ58aLRki6IDMN54o6/KqufxmZYPVSbA0Yx
+         q+7CpmEnfEySvqNET2jpDkkd658NI6mYRxmeZ6wZBY5YHXlUQMvgiohhD390p6ahJ2jm
+         HAxXBpwip5oaeD08AMjIxXGgZusLzjkFdm45/mQx1zIsUS7D6irIfPOQwXMe8YJIwA7E
+         cJwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXgYJXBLPsqd1YlxjGof4Zygte6J4jh2U/4RRc59qcMo8zo5z2+jkAGfYxyw3NRpBvqMrX1XWZhFXIx9DdJTQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3fgSeEl7fM3rRIia9Kvp/c0dAfGIcka9XxqLTcXHX/zACNAY8
+	dJnr4nMUVW1VAsTp4SHrKYTfZeIjA7WVHM4qksYRzmAkk9uu2pbxYbuQhJEruzjV4yrBLVEnetc
+	Jo6yes50+riz9kIYGfIivCh6CXUj0a9mxZ4LyiBapY4Kpnx58ynqs4P0=
+X-Google-Smtp-Source: AGHT+IENVGnXGP/szTaOFF3l8ixExEmfJzeszZrzEhNQFtrf0zBmFjgffCW64RLFf/aFcQsEEXsez6wa/Qx4m0ea8LQt6sj57l/5
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:180f:b0:3a0:98b2:8f3b with SMTP id
+ e9e14a558f8ab-3a0c8ca77d2mr5551235ab.7.1726771382551; Thu, 19 Sep 2024
+ 11:43:02 -0700 (PDT)
+Date: Thu, 19 Sep 2024 11:43:02 -0700
+In-Reply-To: <tencent_50B5A5988DAD922A5D9B5DC9190C4FB08D07@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66ec70b6.050a0220.29194.003f.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] BUG: unable to handle kernel paging request
+ in bch2_opt_to_text
+From: syzbot <syzbot+294f528e56138c357a48@syzkaller.appspotmail.com>
+To: eadavis@qq.com, kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The format of the 'name=value' key value pair included in the options is
-incorrect, if only name is present.
+Hello,
 
-#syz test
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index e10fc1da71b1..5616dc8570fa 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -472,6 +472,12 @@ int bch2_parse_one_mount_opt(struct bch_fs *c, struct bch_opts *opts,
- 	u64 v;
- 	int ret, id;
- 
-+	if (!val) {
-+		pr_err("Bad mount option, value is NULL");
-+		ret = -BCH_ERR_option_value;
-+		goto out;
-+	}
-+
- 	id = bch2_mount_opt_lookup(name);
- 
- 	/* Check for the form "noopt", negation of a boolean opt: */
+Reported-by: syzbot+294f528e56138c357a48@syzkaller.appspotmail.com
+Tested-by: syzbot+294f528e56138c357a48@syzkaller.appspotmail.com
 
+Tested on:
+
+commit:         5f567360 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c8bb00580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dedbcb1ff4387972
+dashboard link: https://syzkaller.appspot.com/bug?extid=294f528e56138c357a48
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11886607980000
+
+Note: testing is done by a robot and is best-effort only.
