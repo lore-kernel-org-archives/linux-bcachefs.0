@@ -1,368 +1,148 @@
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929FB1392
-	for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 19:28:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BB113C69E
+	for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 22:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726946890; cv=none; b=bYKPykrOuWc5jm02kQaDCdVn4eo14aBqkccQNPPGEQfA7RV2dRVTigN5LENtvlzCfXGc932ffQod6Xlpsc5CrlKLBXpYyt6AtGB1ICiak6Z/6YoRZkx4zN7Qbvun6Y1HtrcMDWK9TyISzIOf+bxvt/nU9w6kGx+GE/y/aUncYhY=
+	t=1726957043; cv=none; b=S0nrgr9rrTyL3Cqm8QkB8IypD20Jf01ND6idYvfsD3wWhATzSt690qA/xBlIFsNJc8pl74wkLYBv6fthSvuDdyDm1EcoWvOXPUwj38XxQo7vrtgsaap0lTADKir2LjIP8ebHSy6tReLh90Jwj0frx/Ye0/u0HgFDAk45Em4E8X0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726946890; c=relaxed/simple;
-	bh=yJRE5a9yv1MoadkgcUX1MA9cZ1ciGYxfDxwQ5Sz7YbE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=VyMS/2ogALw6rkFkGKojlWr07BchLbnV7QX8kxAjO9IQci0YE0PEXmKDfrjKTqWYT1FOHKWpF41EUc3rkrJqV3fcIWqQQ73INMCoa3X24PnjPlKZck4FUORl8Uy2E3LVNQDDPRL4gbz7E8aruw5gzAz5HAJOS8HUIvkeBBY5f3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NabXvlP+; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NabXvlP+"
-Date: Sat, 21 Sep 2024 15:27:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726946883;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=QvN+A4k/j4uBbpGNGBjBwlpS9XEVr9N8qPafYhHwVvc=;
-	b=NabXvlP+sCmXCLQ+f+jRvwXjtEijuHIA/2OQouI6avWjSvSiIvUKwbYkARp50r0tmb4dId
-	OwZhw7Sw+o+ki/nG/B5I1SU7iS6VfvxSF+jbsQCJmqyzMPTgaBLZLoN9I4TRnQ7BrnQtsD
-	hlWe2GRkjWXCIHYp7kq/ngeBD1u73vg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs changes for 6.12-rc1
-Message-ID: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
+	s=arc-20240116; t=1726957043; c=relaxed/simple;
+	bh=IFh4Maj6UW5RQOm/qPtBr9XXOIvoJz+mSd3EUAtYbok=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mZ0Ajtn98j0Z2LW1bu0LqJZivpC/ki7/A8djXSkbnIx7UJi7Dqntuo/KWpQgImhAQzBYeKBEKpUjD9gIuyyY/A6RcqXaclh2zVbCHBqBQjZCp1bkrAVSrGqGjo9B6c6K7nzF0konl2BLfKU4k+owbmkXQbu2hZxutoaOmKjgOlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a1957c7cf3so3917485ab.2
+        for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 15:17:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726957041; x=1727561841;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lKEaZ3XUYzDkpvxFCKTLsuZp4TPmFkXohdjsHzPWWys=;
+        b=SJzIIbdDFqhbx74nFJgpeMr9s6ttbATJohEqkOCpobEhPjsEo19GIrLVBExUgxhNrN
+         Hbeds5XKT/o8JqYuIr7LzN2gtDS0VIvOBxcigsq7ZrWDS97aXLF3wlONnzBqyowA1og4
+         HBBqJKmCNV29ileZcfe+p9tiMnOGoO6M9G65XPieX+IbyHefqAIm7Hah+WqGYKH4Uoy/
+         F5U0oV88YKb8B/n9qvoi/ygMuH7KZho+Itn5lB3b+5LIWJaUMrUfg+CZYgsCAC4GZNfr
+         u6uMM2NxrxQuILQYPG0hctKFxm4B6zOul5/NhxPRLZcnBZgpbWZYJhxsH/h9u/z1Wk0u
+         WiyA==
+X-Forwarded-Encrypted: i=1; AJvYcCWYnWj5gMPDfDR/jCCTBDZZNfvcRJSVEHUnU52o+Druz4umw3+jtnUt6SPcQfep8bPUWZU9Ow108Jj6MMURQA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzl0Myuv//AFPGgiXK/+LPiB06BDBOSYIiccD079G8uARC+6cXM
+	t14bW12v3InHphdtQKhTrKINQzbwwS41TUkgNUSP+9WGSJJk4NbCJw+AM7N0uMT0n/+SeuEShJK
+	9ddTS8x9uEGYPYN4KhJua1+aFQDCX8mHaslF35WQMu3oaUB3iXkhHs70=
+X-Google-Smtp-Source: AGHT+IG4YkzFZmYXrTvyeOyU7sGRS+Xv1+JyJgn602d4bdKPOA4Bn/DiIhoLr9thMjr5uyzLccXtxub8ygEYIjhTvjTvOHVDF3Eu
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:12ee:b0:3a0:aac2:a0a4 with SMTP id
+ e9e14a558f8ab-3a0c8c926e7mr52957165ab.9.1726957040938; Sat, 21 Sep 2024
+ 15:17:20 -0700 (PDT)
+Date: Sat, 21 Sep 2024 15:17:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66ef45f0.050a0220.3195df.006d.GAE@google.com>
+Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_pos_to_text
+From: syzbot <syzbot+cf7b2215b5d70600ec00@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Relatively quiet cycle here - which is good, because 6.11 was huge.
+Hello,
 
-I think we'll be able to take off EXPERIMENTAL in inside of a year, see
-below for more.
+syzbot found the following issue on:
 
-Cheers,
-Kent
+HEAD commit:    a940d9a43e62 Merge tag 'soc-arm-6.12' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ac44a9980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1653f803fffa3848
+dashboard link: https://syzkaller.appspot.com/bug?extid=cf7b2215b5d70600ec00
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1276469f980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17731207980000
 
-The following changes since commit 16005147cca41a0f67b5def2a4656286f8c0db4a:
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-a940d9a4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/371e11b6a9e5/vmlinux-a940d9a4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/920eb0c53785/bzImage-a940d9a4.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/613a2d63144c/mount_0.gz
 
-  bcachefs: Don't delete open files in online fsck (2024-09-09 09:41:47 -0400)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cf7b2215b5d70600ec00@syzkaller.appspotmail.com
 
-are available in the Git repository at:
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/btree_cache.h:126!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5111 Comm: read_btree_node Not tainted 6.11.0-syzkaller-03917-ga940d9a43e62 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:bch2_btree_id_root fs/bcachefs/btree_cache.h:126 [inline]
+RIP: 0010:bch2_btree_pos_to_text+0x1ee/0x1f0 fs/bcachefs/btree_cache.c:1295
+Code: 00 00 fc ff df e9 70 ff ff ff 89 d9 80 e1 07 38 c1 0f 8c 7a ff ff ff 48 89 df e8 2d 90 ec fd e9 6d ff ff ff e8 b3 4b 85 fd 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa
+RSP: 0018:ffffc9000315f448 EFLAGS: 00010293
+RAX: ffffffff840ede8d RBX: 00000000000000de RCX: ffff88801e138000
+RDX: 0000000000000000 RSI: 00000000000000de RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff840edd7a R09: 0000000000000000
+R10: ffffc9000315f5e0 R11: fffff5200062bec1 R12: ffff8880410b0000
+R13: ffff888041280000 R14: ffff888041280000 R15: ffffc9000315f5e0
+FS:  0000000000000000(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000559507bd4640 CR3: 000000003f78a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btree_node_read_work+0x486/0x1260 fs/bcachefs/btree_io.c:1308
+ bch2_btree_node_read+0x2433/0x2a10
+ bch2_btree_node_fill+0xcd1/0x1320 fs/bcachefs/btree_cache.c:886
+ bch2_btree_node_get_noiter+0x9b3/0xf50 fs/bcachefs/btree_cache.c:1155
+ found_btree_node_is_readable fs/bcachefs/btree_node_scan.c:85 [inline]
+ try_read_btree_node fs/bcachefs/btree_node_scan.c:190 [inline]
+ read_btree_nodes_worker+0x122c/0x20b0 fs/bcachefs/btree_node_scan.c:239
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bch2_btree_id_root fs/bcachefs/btree_cache.h:126 [inline]
+RIP: 0010:bch2_btree_pos_to_text+0x1ee/0x1f0 fs/bcachefs/btree_cache.c:1295
+Code: 00 00 fc ff df e9 70 ff ff ff 89 d9 80 e1 07 38 c1 0f 8c 7a ff ff ff 48 89 df e8 2d 90 ec fd e9 6d ff ff ff e8 b3 4b 85 fd 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa
+RSP: 0018:ffffc9000315f448 EFLAGS: 00010293
+RAX: ffffffff840ede8d RBX: 00000000000000de RCX: ffff88801e138000
+RDX: 0000000000000000 RSI: 00000000000000de RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff840edd7a R09: 0000000000000000
+R10: ffffc9000315f5e0 R11: fffff5200062bec1 R12: ffff8880410b0000
+R13: ffff888041280000 R14: ffff888041280000 R15: ffffc9000315f5e0
+FS:  0000000000000000(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000559507bd4640 CR3: 0000000011a04000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-09-21
 
-for you to fetch changes up to 025c55a4c7f11ea38521c6e797f3192ad8768c93:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-  bcachefs: return err ptr instead of null in read sb clean (2024-09-21 11:39:49 -0400)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-----------------------------------------------------------------
-bcachefs changes for 6.12-rc1
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-rcu_pending, btree key cache rework: this solves lock contenting in the
-key cache, eliminating the biggest source of the srcu lock hold time
-warnings, and drastically improving performance on some metadata heavy
-workloads - on multithreaded creates we're now 3-4x faster than xfs.
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-We're now using an rhashtable instead of the system inode hash table;
-this is another significant performance improvement on multithreaded
-metadata workloads, eliminating more lock contention.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-for_each_btree_key_in_subvolume_upto(): new helper for iterating over
-keys within a specific subvolume, eliminating a lot of open coded
-"subvolume_get_snapshot()" and also fixing another source of srcu lock
-time warnings, by running each loop iteration in its own transaction (as
-the existing for_each_btree_key() does).
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-More work on btree_trans locking asserts; we now assert that we don't
-hold btree node locks when trans->locked is false, which is important
-because we don't use lockdep for tracking individual btree node locks.
-
-Some cleanups and improvements in the bset.c btree node lookup code,
-from Alan.
-
-Rework of btree node pinning, which we use in backpointers fsck. The old
-hacky implementation, where the shrinker just skipped over nodes in the
-pinned range, was causing OOMs; instead we now use another shrinker with
-a much higher seeks number for pinned nodes.
-
-Rebalance now uses BCH_WRITE_ONLY_SPECIFIED_DEVS; this fixes an issue
-where rebalance would sometimes fall back to allocating from the full
-filesystem, which is not what we want when it's trying to move data to a
-specific target.
-
-Use __GFP_ACCOUNT, GFP_RECLAIMABLE for btree node, key cache
-allocations.
-
-Idmap mounts are now supported - Hongbo.
-
-Rename whiteouts are now supported - Hongbo.
-
-Erasure coding can now handle devices being marked as failed, or
-forcibly removed. We still need the evacuate path for erasure coding,
-but it's getting very close to ready for people to start using.
-
-Status, and when will we be taking off experimental:
-----------------------------------------------------
-
-Going by critical, user facing bugs getting found and fixed, we're
-nearly there. There are a couple key items that need to be finished
-before we can take off the experimental label:
-
-- The end-user experience is still pretty painful when the root
-  filesystem needs a fsck; we need some form of limited self healing so
-  that necessary repair gets run automatically. Errors (by type) are
-  recorded in the superblock, so what we need to do next is convert
-  remaining inconsistent() errors to fsck() errors (so that all runtime
-  inconsistencies are logged in the superblock), and we need to go
-  through the list of fsck errors and classify them by which fsck passes
-  are needed to repair them.
-
-- We need comprehensive torture testing for all our repair paths, to
-  shake out remaining bugs there. Thomas has been working on the tooling
-  for this, so this is coming soonish.
-
-Slightly less critical items:
-
-- We need to improve the end-user experience for degraded mounts: right
-  now, a degraded root filesystem means dropping to an initramfs shell
-  or somehow inputting mount options manually (we don't want to allow
-  degraded mounts without some form of user input, except on unattended
-  servers) - we need the mount helper to prompt the user to allow
-  mounting degraded, and make sure this works with systemd.
-
-- Scalabiity: we have users running 100TB+ filesystems, and that's
-  effectively the limit right now due to fsck times. We have some
-  reworks in the pipeline to address this, we're aiming to make petabyte
-  sized filesystems practical.
-
-----------------------------------------------------------------
-Alan Huang (8):
-      bcachefs: Remove unused parameter of bkey_mantissa
-      bcachefs: Remove unused parameter of bkey_mantissa_bits_dropped
-      bcachefs: Remove dead code in __build_ro_aux_tree
-      bcachefs: Convert open-coded extra computation to helper
-      bcachefs: Minimize the search range used to calculate the mantissa
-      bcachefs: Remove the prev array stuff
-      bcachefs: Remove unused parameter
-      bcachefs: Refactor bch2_bset_fix_lookup_table
-
-Alyssa Ross (1):
-      bcachefs: Fix negative timespecs
-
-Chen Yufan (1):
-      bcachefs: Convert to use jiffies macros
-
-Diogo Jahchan Koike (1):
-      bcachefs: return err ptr instead of null in read sb clean
-
-Feiko Nanninga (1):
-      bcachefs: Fix sysfs rebalance duration waited formatting
-
-Hongbo Li (2):
-      bcachefs: support idmap mounts
-      bcachefs: Fix compilation error for bch2_sb_member_alloc
-
-Julian Sun (4):
-      bcachefs: remove the unused macro definition
-      bcachefs: fix macro definition allocate_dropping_locks_errcode
-      bcachefs: fix macro definition allocate_dropping_locks
-      bcachefs: remove the unused parameter in macro bkey_crc_next
-
-Kent Overstreet (68):
-      inode: make __iget() a static inline
-      bcachefs: switch to rhashtable for vfs inodes hash
-      bcachefs: Fix deadlock in __wait_on_freeing_inode()
-      lib/generic-radix-tree.c: genradix_ptr_inlined()
-      lib/generic-radix-tree.c: add preallocation
-      bcachefs: rcu_pending
-      bcachefs: rcu_pending now works in userspace
-      bcachefs: Rip out freelists from btree key cache
-      bcachefs: key cache can now allocate from pending
-      bcachefs: data_allowed is now an opts.h option
-      bcachefs: bch2_opt_set_sb() can now set (some) device options
-      bcachefs: Opt_durability can now be set via bch2_opt_set_sb()
-      bcachefs: Add check for btree_path ref overflow
-      bcachefs: Btree path tracepoints
-      bcachefs: kill bch2_btree_iter_peek_and_restart()
-      bcachefs: bchfs_read(): call trans_begin() on every loop iter
-      bcachefs: bch2_fiemap(): call trans_begin() on every loop iter
-      bcachefs: for_each_btree_key_in_subvolume_upto()
-      bcachefs: bch2_readdir() -> for_each_btree_key_in_subvolume_upto
-      bcachefs: bch2_xattr_list() -> for_each_btree_key_in_subvolume_upto
-      bcachefs: bch2_seek_data() -> for_each_btree_key_in_subvolume_upto
-      bcachefs: bch2_seek_hole() -> for_each_btree_key_in_subvolume_upto
-      bcachefs: range_has_data() -> for_each_btree_key_in_subvolume_upto
-      bcachefs: bch2_folio_set() -> for_each_btree_key_in_subvolume_upto
-      bcachefs: quota_reserve_range() -> for_each_btree_key_in_subvolume_upto
-      bcachefs: Move rebalance_status out of sysfs/internal
-      bcachefs: promote_whole_extents is now a normal option
-      bcachefs: trivial open_bucket_add_buckets() cleanup
-      bcachefs: bch2_sb_nr_devices()
-      bcachefs: Drop memalloc_nofs_save() in bch2_btree_node_mem_alloc()
-      bcachefs: bch2_time_stats_reset()
-      bcachefs: Assert that we don't lock nodes when !trans->locked
-      bcachefs: darray: convert to alloc_hooks()
-      bcachefs: Switch gc bucket array to a genradix
-      bcachefs: Add pinned to btree cache not freed counters
-      bcachefs: do_encrypt() now handles allocation failures
-      bcachefs: convert __bch2_encrypt_bio() to darray
-      bcachefs: kill redundant is_vmalloc_addr()
-      bcachefs: fix prototype to bch2_alloc_sectors_start_trans()
-      bcachefs: BCH_WRITE_ALLOC_NOWAIT no longer applies to open bucket allocation
-      bcachefs: rebalance writes use BCH_WRITE_ONLY_SPECIFIED_DEVS
-      bcachefs: Use __GFP_ACCOUNT for reclaimable memory
-      bcachefs: Use mm_account_reclaimed_pages() when freeing btree nodes
-      bcachefs: Options for recovery_passes, recovery_passes_exclude
-      bcachefs: Move tabstop setup to bch2_dev_usage_to_text()
-      bcachefs: bch2_dev_remove_alloc() -> alloc_background.c
-      bcachefs: bch2_sb_member_alloc()
-      bcachefs: improve "no device to read from" message
-      bcachefs: bch2_opts_to_text()
-      bcachefs: Progress indicator for extents_to_backpointers
-      bcachefs: bch2_dev_rcu_noerror()
-      bcachefs: Failed devices no longer require mounting in degraded mode
-      bcachefs: Don't count "skipped access bit" as touched in btree cache scan
-      bcachefs: btree cache counters should be size_t
-      bcachefs: split up btree cache counters for live, freeable
-      bcachefs: Rework btree node pinning
-      bcachefs: EIO errcode cleanup
-      bcachefs: stripe_to_mem()
-      bcachefs: bch_stripe.disk_label
-      bcachefs: ec_stripe_head.nr_created
-      bcachefs: improve bch2_new_stripe_to_text()
-      bcachefs: improve error message on too few devices for ec
-      bcachefs: improve error messages in bch2_ec_read_extent()
-      bcachefs: bch2_trigger_ptr() calculates sectors even when no device
-      bcachefs: bch2_dev_remove_stripes()
-      bcachefs: bch_fs.rw_devs_change_count
-      bcachefs: bch2_ec_stripe_head_get() now checks for change in rw devices
-      bcachefs: Don't drop devices with stripe pointers
-
-Matthew Wilcox (Oracle) (1):
-      bcachefs: Do not check folio_has_private()
-
-Nathan Chancellor (1):
-      bcachefs: Fix format specifier in bch2_btree_key_cache_to_text()
-
-Reed Riley (1):
-      bcachefs: Replace div_u64 with div64_u64 where second param is u64
-
-Sasha Finkelstein (1):
-      bcachefs: Hook up RENAME_WHITEOUT in rename.
-
-Thorsten Blum (3):
-      bcachefs: Annotate struct bucket_array with __counted_by()
-      bcachefs: Annotate struct bch_xattr with __counted_by()
-      bcachefs: Annotate bch_replicas_entry_{v0,v1} with __counted_by()
-
-Xiaxi Shen (1):
-      bcachefs: Fix a spelling error in docs
-
-Yang Li (1):
-      bcachefs: Remove duplicated include in backpointers.c
-
-Youling Tang (4):
-      bcachefs: allocate inode by using alloc_inode_sb()
-      bcachefs: Mark bch_inode_info as SLAB_ACCOUNT
-      bcachefs: drop unused posix acl handlers
-      bcachefs: Simplify bch2_xattr_emit() implementation
-
- Documentation/filesystems/bcachefs/CodingStyle.rst |   2 +-
- fs/bcachefs/Kconfig                                |   7 +
- fs/bcachefs/Makefile                               |   1 +
- fs/bcachefs/acl.c                                  |   2 +-
- fs/bcachefs/alloc_background.c                     |  45 +-
- fs/bcachefs/alloc_background.h                     |   3 +-
- fs/bcachefs/alloc_foreground.c                     |  59 +-
- fs/bcachefs/alloc_foreground.h                     |   5 +-
- fs/bcachefs/backpointers.c                         | 106 +++-
- fs/bcachefs/backpointers.h                         |  23 +-
- fs/bcachefs/bcachefs.h                             |  14 +-
- fs/bcachefs/bcachefs_format.h                      |   2 +
- fs/bcachefs/bset.c                                 | 182 +++---
- fs/bcachefs/bset.h                                 |   4 +-
- fs/bcachefs/btree_cache.c                          | 273 ++++++---
- fs/bcachefs/btree_cache.h                          |   3 +
- fs/bcachefs/btree_gc.c                             |  21 +-
- fs/bcachefs/btree_io.c                             |   8 +-
- fs/bcachefs/btree_io.h                             |   4 +-
- fs/bcachefs/btree_iter.c                           |  63 +-
- fs/bcachefs/btree_iter.h                           |  52 +-
- fs/bcachefs/btree_key_cache.c                      | 405 +++----------
- fs/bcachefs/btree_key_cache_types.h                |  18 +-
- fs/bcachefs/btree_locking.h                        |  13 +-
- fs/bcachefs/btree_trans_commit.c                   |   2 +-
- fs/bcachefs/btree_types.h                          |  60 +-
- fs/bcachefs/btree_update.c                         |  12 +-
- fs/bcachefs/btree_update_interior.c                |  37 +-
- fs/bcachefs/btree_update_interior.h                |   2 +
- fs/bcachefs/buckets.c                              |  35 +-
- fs/bcachefs/buckets.h                              |  15 +-
- fs/bcachefs/buckets_types.h                        |   8 -
- fs/bcachefs/checksum.c                             | 101 ++--
- fs/bcachefs/clock.h                                |   9 -
- fs/bcachefs/darray.c                               |   4 +-
- fs/bcachefs/darray.h                               |  26 +-
- fs/bcachefs/data_update.c                          |   2 +-
- fs/bcachefs/dirent.c                               |  66 +--
- fs/bcachefs/ec.c                                   | 303 +++++++---
- fs/bcachefs/ec.h                                   |  11 +-
- fs/bcachefs/ec_format.h                            |   9 +-
- fs/bcachefs/ec_types.h                             |   1 +
- fs/bcachefs/errcode.h                              |  14 +-
- fs/bcachefs/extents.c                              |  33 +-
- fs/bcachefs/extents.h                              |  24 +-
- fs/bcachefs/fs-common.c                            |   5 +-
- fs/bcachefs/fs-io-buffered.c                       |  41 +-
- fs/bcachefs/fs-io-direct.c                         |   2 +-
- fs/bcachefs/fs-io-pagecache.c                      |  90 ++-
- fs/bcachefs/fs-io-pagecache.h                      |   4 +-
- fs/bcachefs/fs-io.c                                | 178 ++----
- fs/bcachefs/fs-ioctl.c                             |   4 +-
- fs/bcachefs/fs.c                                   | 427 +++++++++-----
- fs/bcachefs/fs.h                                   |  18 +-
- fs/bcachefs/inode.c                                |   2 +-
- fs/bcachefs/io_read.c                              |  18 +-
- fs/bcachefs/io_write.c                             |   7 +-
- fs/bcachefs/journal_io.c                           |   6 +-
- fs/bcachefs/journal_reclaim.c                      |   7 +-
- fs/bcachefs/opts.c                                 |  85 ++-
- fs/bcachefs/opts.h                                 |  61 +-
- fs/bcachefs/rcu_pending.c                          | 650 +++++++++++++++++++++
- fs/bcachefs/rcu_pending.h                          |  27 +
- fs/bcachefs/rebalance.c                            |   3 +
- fs/bcachefs/recovery.c                             |  22 +-
- fs/bcachefs/recovery_passes.c                      |  10 +-
- fs/bcachefs/replicas.c                             |  10 +-
- fs/bcachefs/replicas_format.h                      |   9 +-
- fs/bcachefs/sb-clean.c                             |   2 +-
- fs/bcachefs/sb-members.c                           |  57 ++
- fs/bcachefs/sb-members.h                           |  22 +-
- fs/bcachefs/str_hash.h                             |   2 +-
- fs/bcachefs/subvolume.h                            |  45 ++
- fs/bcachefs/subvolume_types.h                      |   3 +-
- fs/bcachefs/super-io.c                             |  12 +-
- fs/bcachefs/super.c                                |  85 +--
- fs/bcachefs/sysfs.c                                |  55 +-
- fs/bcachefs/thread_with_file.c                     |   2 +-
- fs/bcachefs/time_stats.c                           |  14 +
- fs/bcachefs/time_stats.h                           |   3 +-
- fs/bcachefs/trace.h                                | 465 ++++++++++++++-
- fs/bcachefs/util.c                                 |  16 +-
- fs/bcachefs/util.h                                 |   2 +-
- fs/bcachefs/xattr.c                                |  81 +--
- fs/bcachefs/xattr_format.h                         |   2 +-
- fs/inode.c                                         |   8 -
- include/linux/fs.h                                 |   9 +-
- include/linux/generic-radix-tree.h                 | 105 +++-
- lib/generic-radix-tree.c                           |  80 +--
- 89 files changed, 3155 insertions(+), 1690 deletions(-)
- create mode 100644 fs/bcachefs/rcu_pending.c
- create mode 100644 fs/bcachefs/rcu_pending.h
+If you want to undo deduplication, reply with:
+#syz undup
