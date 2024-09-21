@@ -1,71 +1,78 @@
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 986825227;
-	Sat, 21 Sep 2024 16:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44F8175D4A
+	for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 16:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726934550; cv=none; b=AUQnRSbN1A7Sy0hUQv4IXHuOHegX78L0JKGucArxeAKgybMyUi7PvX39AfTaiiug8NtzYIi8E2tXAkNS3oVi+I7na55fengTV1KhfR6DTBPzzOQ5bBXZNmRSuz3c1lr+zRuRmWkskO/Khzd0AGyu1X4+bAW3gBE0laTeZ3AL5x8=
+	t=1726935137; cv=none; b=NGNBX9d7qeIlAYc7ee+L6QTc3LMJJwFNDA3eOvOOYPy8b2QDKSkPleosOVZtOkp6QqcXmGg839OAYO5yve6o7KX0NHDrHYsa6yEvEwPP/te5nmZyW/XOTX0IzOrYxkJD+dKW8uaxNt+fSoeRS2STv4+TDRMCw49xw9+UlNW9tac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726934550; c=relaxed/simple;
-	bh=Bm8R3Wt+uUVdSVP2rFVOGIhwgPKqxsQ3yG9KOsmFdyc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=k0TCXdT9K8o/olK4z2m+L6+K1MZj83bo7y48C+Xo7vJSbbe+ctqWp1v6QwMAx6XT9lFtmSl15zNWn8aylJgutirIWqxZgU//4bewa28v7GONSHUNL+EIxZQiCryN+ll1xmtpX5Cy+9P3we48sznB6yrjZAIJs13qT4mFfJaQ4t8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=H2w2FOud reason="signature verification failed"; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1726935137; c=relaxed/simple;
+	bh=wnUAzHE51MAj3Np4uvoAkqzGcmUs1B905iYI1q4uCqY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HnBwiytzBHOURC55AlYvqyCV4UDSdcfDfI8/pfrkjXD5/ry/9zfVIO+WMtBhG2swqQ3xxUyNIhSyGUGJeTfa4iAKEvX9A6Ac4sbmB/C2/roqN4PBDnQjV25T1fC/jGfSrIh2FSMv2OI9kvoOzdBBRcLqvVgP2pTp9aLLLnLJnNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e2SAnVp0; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="H2w2FOud"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=J+IQdLfVB87ckETRJ35/zMdh9Xs/hl6oJzJ4fMVRUxc=; b=H
-	2w2FOudzyxSL8mhg7CXkg9IByXFpBGK8clkPhd4kI+wJ5NPHRgRBnh0HbiZFzywH
-	MlK5yasqJn+GYi3ddCzI/IkVCcdf9nMb1M4WFVK7J+sV+iXY8H39VKR7RfQ2ZsOS
-	85XmwzixOZCGauzIu06frJVvuOb1KjpqZ50TfInDUY=
-Received: from 00107082$163.com ( [111.35.191.143] ) by
- ajax-webmail-wmsvr-40-113 (Coremail) ; Sun, 22 Sep 2024 00:02:07 +0800
- (CST)
-Date: Sun, 22 Sep 2024 00:02:07 +0800 (CST)
-From: "David Wang" <00107082@163.com>
-To: "Kent Overstreet" <kent.overstreet@linux.dev>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e2SAnVp0"
+Date: Sat, 21 Sep 2024 12:12:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1726935132;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Vm/3YfNAdiY98KQ4jw68VIADaqbq9dRlSfZfNb2kIMs=;
+	b=e2SAnVp0UKYsfVqjR2nxFaljK2RvCZhcVsn331OhDp66eH+ZI73KI1kn0DuUBLbShqux36
+	WGm98TGPSekqmouGi+r8wJYQve7387SGBkXapoiyDQcMrIC/E/xX5XgT87R9u3AIuky96R
+	Tu618ztUc3AGXh/xVEoOP5Qw1IDQePg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: David Wang <00107082@163.com>
 Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [BUG?] bcachefs performance: read is way too slow when a file
  has no overwrite.
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <ebqvaqme76nrgr2dh7avy7yjwxsgnnybxuybgxejahupgbrqw5@a6d244ghjqis>
+Message-ID: <p4kifs3bwqe2ibq5ezx26c6jse7cjtkourlmkectx4sznrpqjk@ncvqp7rqjt6v>
 References: <ka3sjrka6dugdaab2bvewfbonc3ksixumue3hs2juhajhjm37w@bnxvz5mozpgr>
  <20240907103437.71139-1-00107082@163.com>
  <ebqvaqme76nrgr2dh7avy7yjwxsgnnybxuybgxejahupgbrqw5@a6d244ghjqis>
-X-NTES-SC: AL_Qu2ZBPWYu00p4SORZekXn0oTju85XMCzuv8j3YJeN500oiTR2woPbW9YDFLx+s6tJiehoAiUcjttxNhnRaJxYaID++1WZBUXEPtmXeuzf5YH
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+ <531cddb2.430d.1921551ada4.Coremail.00107082@163.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <531cddb2.430d.1921551ada4.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:cSgvCgD3v4sA7u5mzFcAAA--.4551W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/xtbB0hFhqmWX0jhMngADsB
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <531cddb2.430d.1921551ada4.Coremail.00107082@163.com>
+X-Migadu-Flow: FLOW_OUT
 
-SGksIAoKQXQgMjAyNC0wOS0wOSAyMTozNzozNSwgIktlbnQgT3ZlcnN0cmVldCIgPGtlbnQub3Zl
-cnN0cmVldEBsaW51eC5kZXY+IHdyb3RlOgo+T24gU2F0LCBTZXAgMDcsIDIwMjQgYXQgMDY6MzQ6
-MzdQTSBHTVQsIERhdmlkIFdhbmcgd3JvdGU6Cgo+Cj5CaWcgc3RhbmRhcmQgZGV2aWF0aW9uICho
-aWdoIHRhaWwgbGF0ZW5jeT8pIGlzIHNvbWV0aGluZyB3ZSdkIHdhbnQgdG8KPnRyYWNrIGRvd24u
-IFRoZXJlJ3MgYSBidW5jaCBvZiB0aW1lX3N0YXRzIGluIHN5c2ZzLCBidXQgdGhleSdyZSBtb3N0
-bHkKPmZvciB0aGUgd3JpdGUgcGF0aHMuIElmIHlvdSdyZSB0cnlpbmcgdG8gaWRlbnRpZnkgd2hl
-cmUgdGhlIGxhdGVuY2llcwo+YXJlIGNvbWluZyBmcm9tLCB3ZSBjYW4gbG9vayBhdCBhZGRpbmcg
-c29tZSBuZXcgdGltZSBzdGF0cyB0byBpc29sYXRlLgoKQWJvdXQgcGVyZm9ybWFuY2UsIEkgaGF2
-ZSBhIHRoZW9yeSBiYXNlZCBvbiBzb21lIG9ic2VydmF0aW9uIEkgbWFkZSByZWNlbnRseToKV2hl
-biB1c2VyIHNwYWNlIGFwcCBtYWtlIGEgNGsoOCBzZWN0b3JzKSBkaXJlY3Qgd3JpdGUsIApiY2Fj
-aGVmcyB3b3VsZCBpbml0aWF0ZSBhIHdyaXRlIHJlcXVlc3Qgb2YgfjExIHNlY3RvcnMsIGluY2x1
-ZGluZyB0aGUgY2hlY2tzdW0gZGF0YSwgcmlnaHQ/ClRoaXMgbWF5IG5vdCBiZSBhIGdvb2Qgb2Zm
-c2V0K3NpemUgcGF0dGVybiBvZiBibG9jayBsYXllciBmb3IgcGVyZm9ybWFuY2UuICAKKEkgZGlk
-IGdldCBhIHZlcnktdmVyeSBiYWQgcGVyZm9ybWFuY2Ugb24gZXh0NCBpZiB3cml0ZSB3aXRoIDVL
-IHNpemUuKQoKU28gSSB0aGluaywgd291bGQgaXQgYmUgZmVhc2libGUgdG8gbWFrZSBjaGVja3N1
-bSBzZWN0b3JzIG9uIGEgNC84IHNlY3RvciBib3VuZGFyeT8KVGhpcyB3aWxsIHdhc3RlIG1vcmUg
-ZGlza3NwYWNlLCBidXQgbWF5IG1ha2UgYmxvY2sgbGF5ZXIgaGFwcHk/CgoKVGhhbmtzCkRhdmlk
-ICAK
+On Sun, Sep 22, 2024 at 12:02:07AM GMT, David Wang wrote:
+> Hi, 
+> 
+> At 2024-09-09 21:37:35, "Kent Overstreet" <kent.overstreet@linux.dev> wrote:
+> >On Sat, Sep 07, 2024 at 06:34:37PM GMT, David Wang wrote:
+> 
+> >
+> >Big standard deviation (high tail latency?) is something we'd want to
+> >track down. There's a bunch of time_stats in sysfs, but they're mostly
+> >for the write paths. If you're trying to identify where the latencies
+> >are coming from, we can look at adding some new time stats to isolate.
+> 
+> About performance, I have a theory based on some observation I made recently:
+> When user space app make a 4k(8 sectors) direct write, 
+> bcachefs would initiate a write request of ~11 sectors, including the checksum data, right?
+> This may not be a good offset+size pattern of block layer for performance.  
+> (I did get a very-very bad performance on ext4 if write with 5K size.)
+
+The checksum isn't inline with the data, it's stored with the pointer -
+so if you're seeing 11 sector writes, something really odd is going
+on...
+
+I would suggest doing some testing with data checksums off first, to
+isolate the issue; then it sounds like that IO pattern needs to be
+looked at.
+
+Check the extents btree in debugfs as well, to make sure the extents are
+getting written out as you think they are.
