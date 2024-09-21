@@ -1,101 +1,109 @@
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9ED29406
-	for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 23:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329DD23D7;
+	Sat, 21 Sep 2024 23:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726960419; cv=none; b=lsIOktBz7F8DldERbI+QlOsS8c/nDjy0E/hpE9US5S1SQFJZlGRbPJJjhluaytIt6tLP6MtDbQEaA0oIM/3Qk9eMfKrpY3H3aoOqHpDwnL9q4ySjt/RLa4upjgHEUb0/rXkkoAiTmaRCK8d4JKyAd+vdG/zFJo65gDRTSOlaxIk=
+	t=1726961117; cv=none; b=rodYYgeIQc+aV2TuofFy7f2YH/Exw2rxGseYsEJ+nzr+Nhor0vTkMKy092NmP+TZahZBPTOkbgsPtS7CYen/SrNdijWWsARpA3OEZGtdnAumYj/8OcPxk+XoMDDDrDSl1+ycEcT8AbXJtsLjjCSk4Ozqo8Qndd0FILFdFuSbRYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726960419; c=relaxed/simple;
-	bh=JP7N9yo7IocGxy674ZuoPcj+KRTvUq9c8h+fWJyawyE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FDIS5afTRd8GlKUDHjoypTG5SRFji7IMrfGl+7Z3R7NAuuGSU11crPGpQ48CdtE6GHQYubKwfX6AEGMEwUteMDkoduYR1vxKuctBRaBKxv8v0KI7kHsQaLmNaFZUoGOGJzDjhYjAq2tcgFmuyagPNtGUOBtrVIRUoLpxLcIzkuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YOB9i5Ef; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1726961117; c=relaxed/simple;
+	bh=Kw0B5QzOzJBQ0IF/o9VwkaYv0et0rFziqzDm6dE0Qg4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fyUiY8reOas2a3QoS8MifRpuVJIQNf/RfJxzLgc3A8jSqhuKBOVvReKHKSHnV1MeI6BStUpxCDQac8qWuD2GmRFGgVNYYg3rc612oHhT8WMp+HmF6fu2Gr+HBxAoRZyNMk+Gk1tW1tXQXoLpzrS+jdISHQLJRFCB5P4xJKPMEQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nAn7uOTw; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YOB9i5Ef"
-Date: Sat, 21 Sep 2024 19:13:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726960415;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FhxIRNJn3+wOktd4Wcety7rglVvl6O+KIKTls4uARvk=;
-	b=YOB9i5EfxQQ2XatepMPn1vmXgUX4n9jruttEKmLL9hhVtl7ISFArfPZe5wKiD1uGb8lcp+
-	CZqVQBoL6ecflgAOLidue4vA4Etrj1KYdgmkv6fYycxp+l82ROy9O2eIFQjY4amUJdgYVw
-	EYeG/9HiPGYv6q1Bjtb7ZzeuiImuirg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: David Disseldorp <ddiss@suse.de>
-Cc: linux-bcachefs@vger.kernel.org, Martin Doucha <martin.doucha@suse.com>, 
-	Hongbo Li <lihongbo22@huawei.com>
-Subject: Re: [PATCH resend v2] bcachefs: reject unknown mount options
-Message-ID: <fiwda3johielxusg2ab73km7xo6f3skobw7c7rv3mc4g6epgtf@vo5urbm7nb6a>
-References: <20240917013957.13353-1-ddiss@suse.de>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nAn7uOTw"
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-206b9455460so24356445ad.0;
+        Sat, 21 Sep 2024 16:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726961114; x=1727565914; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dbCLsnFHMaE8G7zUK6m1hWys4//SsxdDZWAMbhtl+yk=;
+        b=nAn7uOTwYVQwOlvMPcMTKbt22AZOozW8ZCsW4uij0cfufEkU89CDGzKXFTkVTMj+LG
+         kqTrQE03EHPlb6RlwjCwII1AIuNa4g9lWAdqssUszoetI6JPqXuv19z8Taf/Y/IdD035
+         pzKP4A/9sKlAe90rnqo8E7rXcNNEPK7I4Q4YPMUX/HuYBTw4uAR1lGRE2W8XIqeOOlpT
+         Mr/jfWDPI/E1GTnZUf2vLNwYOPrsrfd7cIK7ZU7VWygILsNJ+1hvPmeEIRMX3OnChC9N
+         /Y2WepE0991zPhLZpF31SZ1AGpd7aLlAsYrRy3COHvm072BmFN+6CpH58WmMufQRuarN
+         we4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726961114; x=1727565914;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dbCLsnFHMaE8G7zUK6m1hWys4//SsxdDZWAMbhtl+yk=;
+        b=RkuHPeDs4cHSFoq5RbU4Y6VxrvItW0WB+lSXUoPZMOS/cx1k0qkbU4ORi+znsdbU9z
+         aJ0oPlL5TU/rbAy5sag116ksEk8JDaeZDA5Y9/GIauBHDgNNYVENG9TG5N2/JhMKu3FL
+         rPsMkXHdeFaRYFoi9O+d449v2e4HYbXwp4CJV3SWFjdeMrf8A0otFlySMAlxjCRU8E8b
+         ANJp/6D7cGcDUPnOngts+UGMjM5MSCKsQGyMIHVvQhxN5MIqplwaRmnaA6XLAo66nR4T
+         jSlLtaL0nfozCsmrcEHjrrZG28WVwyLpqnVQpITFUHX/zTHt648qUAUlk9C1nATl7DTK
+         PTmg==
+X-Forwarded-Encrypted: i=1; AJvYcCUpXqx1fn9tgD6+qzm7ogJrsD3msWt0tGVdCs8ckH/zsqHTUsQlQ2ebaXQeA72M9bFD7lPdXX0V3k1ZyTw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVYVGsobq8hFwosUDPJhMssBTxdbMM9FgOeJdRAs0tMl3JKPGb
+	fjNKmlgissH1/qniIWKnyhUpLsduIRKMqP5HmodvdLOfP/LO9ni0G8zHipYY
+X-Google-Smtp-Source: AGHT+IHSRso88Ntdk4YnuyWKPUqfMRA4w018Y3mjoscqPFLyow11wnofxOzlOQmMOQiu1G6mkGTD2A==
+X-Received: by 2002:a17:903:1211:b0:1fd:6ca4:f987 with SMTP id d9443c01a7336-208d77adc10mr117180135ad.15.1726961114380;
+        Sat, 21 Sep 2024 16:25:14 -0700 (PDT)
+Received: from archlinux.. ([2405:201:e00c:517f:5e87:9cff:fe63:6000])
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2079473c85fsm112480055ad.285.2024.09.21.16.25.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Sep 2024 16:25:13 -0700 (PDT)
+From: Mohammed Anees <pvmohammedanees2003@gmail.com>
+To: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Mohammed Anees <pvmohammedanees2003@gmail.com>,
+	syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
+Subject: [PATCH v2] bcachefs: Fix NULL pointer dereference in bch2_opt_to_text
+Date: Sat, 21 Sep 2024 23:24:54 +0000
+Message-ID: <20240921232454.42975-1-pvmohammedanees2003@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240917013957.13353-1-ddiss@suse.de>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 17, 2024 at 01:39:57AM GMT, David Disseldorp wrote:
-> This is effectively a revert of commit 03ef80b469d5 ("bcachefs: Ignore
-> unknown mount options"), rebased atop commit 929d954330142 ("bcachefs:
-> use new mount API").
-> 
-> Contrary to the 03ef80b469d5 commit message, unknown mount options do
-> result in failure on other filesystems such as xfs, btrfs, ext4, etc.
-> 
-> Ignoring unknown options may result in unexpected behaviour: e.g. if
-> an application requires future-workload-specific-mount-option to work
-> and is run on a system without future-workload-specific-mount-option
-> kernel support, then it may fail without indication of the missing
-> kernel functionality.
-> 
-> This reversion may cause failures for existing users reliant on the
-> ignore-unknown behaviour, but it should be bearable given bcachefs is
-> still flagged experimental.
-> 
-> Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
-> Reported-by: Martin Doucha <martin.doucha@suse.com>
-> Closes: https://bugzilla.opensuse.org/show_bug.cgi?id=1230065
-> Signed-off-by: David Disseldorp <ddiss@suse.de>
-> Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
+In this patch, I added a proper bounds check to avoid a potential NULL
+pointer dereference when opt->choices[v] is accessed in the
+bch2_opt_to_text function. This ensures that v is within the valid
+range of choices.
 
-I applied this and got some new failures in the CI - it seems something
-is broken in remount.
+Reported-and-tested-by: syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=37186860aa7812b331d5
+Signed-off-by: Mohammed Anees <pvmohammedanees2003@gmail.com>
+---
 
-00162 ========= TEST   ec_small
-00162 
-00162 WATCHDOG 60
-00163 bcachefs (857683e6-ef4f-41f5-abdd-dca191c38fff): starting version 1.12: rebalance_work_acct_fix opts=errors=panic,metadata_replicas=2,data_replicas=2,erasure_code
-00163 bcachefs (857683e6-ef4f-41f5-abdd-dca191c38fff): initializing new filesystem
-00163 bcachefs (857683e6-ef4f-41f5-abdd-dca191c38fff): going read-write
-00163 bcachefs (857683e6-ef4f-41f5-abdd-dca191c38fff): marking superblocks
-00163 bcachefs (857683e6-ef4f-41f5-abdd-dca191c38fff): initializing freespace
-00163 bcachefs (857683e6-ef4f-41f5-abdd-dca191c38fff): done initializing freespace
-00163 bcachefs (857683e6-ef4f-41f5-abdd-dca191c38fff): reading snapshots table
-00163 bcachefs (857683e6-ef4f-41f5-abdd-dca191c38fff): reading snapshots done
-00163 bcachefs (857683e6-ef4f-41f5-abdd-dca191c38fff): done starting filesystem
-00163 1+0 records in
-00163 1+0 records out
-00163 1048576 bytes (1.0 MB, 1.0 MiB) copied, 0.0115145 s, 91.1 MB/s
-00163 bcachefs: bch2_parse_one_mount_opt() Bad mount option rwerrors
-00163 Error: Invalid argument
-00163 Error 1 at /host//home/testdashboard/ktest/tests/fs/bcachefs/ec.ktest 32 from: mount -o remount,ro /mnt, exiting
-00163 Error 1 at /host/home/testdashboard/ktest/tests/prelude.sh 269 from: ( set -e; run_test $i ), exiting
-00163 
-00163 ========= FAILED ec_small in 2s
+v2:
+- Replaced pr_err with prt_printf as suggested.
+- Added the bounds check on opt->choices before accessing it.
 
-The test is just doing
-mount -o remount,ro /mnt
+ fs/bcachefs/opts.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Thomas, this is likely something you introduced, think you could take a
-look?
+diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+index e10fc1da7..9bb15694d 100644
+--- a/fs/bcachefs/opts.c
++++ b/fs/bcachefs/opts.c
+@@ -420,8 +420,12 @@ void bch2_opt_to_text(struct printbuf *out,
+ 	case BCH_OPT_STR:
+ 		if (flags & OPT_SHOW_FULL_LIST)
+ 			prt_string_option(out, opt->choices, v);
+-		else
+-			prt_str(out, opt->choices[v]);
++		else {
++			if (v < opt->min || v >= opt->max - 1)
++				prt_printf(out, "(invalid option %lli)", v);
++			else
++				prt_str(out, opt->choices[v]);
++		}
+ 		break;
+ 	case BCH_OPT_FN:
+ 		opt->fn.to_text(out, c, sb, v);
+-- 
+2.46.0
+
