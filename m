@@ -1,119 +1,97 @@
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882FD219F3;
-	Sat, 21 Sep 2024 18:03:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B8F1F957
+	for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 18:47:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726941829; cv=none; b=rAlOpkAr8PlRFwcOEIIXleMvg8Y5cse0jM0Vj3tlZqrfgPpDzYPZ7D6D+zUS0b+IKjdhs/EmRxRrVkop2rOarm09YpuVDmBxxNfDegdnjXW40OqBJGylG1Tmjgb44ATM28JVgx/sHOUBMHDHaTkzJHcvVoV9N9ndVHLHlPlJhn0=
+	t=1726944455; cv=none; b=SrFynVnZR1dGItbn4lqgcEaNHlrGBRmJUJHukcY4cJ/cYQfrAtUNJeYgNvD6UzAf2BqiFc4w2658UouyGClpCuWm1wLuyR7K8FxN1tVp3SMGJATkakwRWpnGMVJXNBdciBBT2M1wVN/MZrsbMHB8yNMkVhPaxSRkK3rFh1RhofI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726941829; c=relaxed/simple;
-	bh=s6BjKCoD7TPdj9u/yS7RACblpJxlkNmvxGungZsxtrY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XmofXDI+NX5frAjwY4KkUVMXn0rHuyrmmLP7QTozHj+O1T9ZLhAlce6anYsjWPgOpkw/S+e4x5KTmJ57sws64+7A0CrD/Krm/IdqZEn4r2obLBlFtkuJ/J451US3KL7SG1XnHeIBR0Y7rBqrI1z96Ri4jgAfjRTssbnRqloXOvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d/Pr6gsI; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1726944455; c=relaxed/simple;
+	bh=7cfx5tCkGc7zfwaJh93vtOWLZ3JbMAGGKDDBGOj2Gqo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hNYZgKUZAUww+3bGO8nQx8MECTneiENgZUAFLEFP/GT2YuKsez/JFHBnQQ8yhzXAw+UnAApUfFejDUD/5KVJe+bH14v2KTVPwNuaH6of4ylcdTKSs3sjwaPJhdQm1aUDH7EtQ2gx2g5OKxk/oVPR678Xbxt7jdVm/8w0tPqza+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r0NeH4Vv; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d/Pr6gsI"
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-374c3400367so2666644f8f.2;
-        Sat, 21 Sep 2024 11:03:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726941824; x=1727546624; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9gdSn6YCnACdNv8YtrHPPBixkkVDSovFugzuG0GyV4I=;
-        b=d/Pr6gsIV0XK/4jgcVZoiSOj7pR4Lk+AtWFD//0y28oSmLuoRuw/q9/g9homhEBiJd
-         G1OHkYbukhBf20eGqrcsSckE4L5tEfdF2UClELQWbmasquWCZYLQ9ns8t5j9P8btfQuf
-         AlDJWMqrYUaKdmoqokeCh4Z/upu56bqxCXJTM5Zhca2yW992VyBdM6/4BuM/nK1m1g6y
-         hvT+kd/9sizkd5radJKdMf9wM+rTfoTs8oShLcpO7n0OFb9zO3xd4b4e3qNMy1coUOix
-         NQGx05lqpiRf4zsF5TObr3e3nT5XQVK1GDDjLH1I2MXxS60ld+dzu6nT3gmuI5OplLwO
-         o9Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726941824; x=1727546624;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9gdSn6YCnACdNv8YtrHPPBixkkVDSovFugzuG0GyV4I=;
-        b=uxcMu6jid5vc/9LxomfyxelxWjTAzSjdUL5vdeZi5p1Rc9PALbjE0gVc3kIjqEk9Gt
-         FREGkHTWtdp6pzR8UkEN7c1kOSKcC32LzXtRydk4E9PYsQnMCKQf8/1GjMW7VuI9FhbI
-         l7kFnn0xNr2uRguOIVRD68bonI0Cga+k+Zfdu8S0DwOyuIj/pdILLInkAnWfY7MBqFae
-         IPnbhOlmIaAKCzbOQD3Kzk6WyZ/eQy0w+uKsHjElxUTh0yo1lg9zDAAdb0V7J/m4ZUmp
-         naiti9SLY6xGD4ar5/ANG/3mf7GgsGSrDcDXn3DZzpLGZt6Bd5UPC9rQHvP3wmmqAab7
-         Imjw==
-X-Forwarded-Encrypted: i=1; AJvYcCUfAckeNvm05ePU7Dy/TZXJGddzpZ5qcT4cmCnsa35XJAUesXqYUzqlA99JvKFXndR3F70QTAc0VhnbJBzGKw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9USseKsoQtDqMgc/SDy6C6bXj/v69pAQ1QXhqZHD6R4KyIpjm
-	gzeSecni42hz0+mkg5dOAaHKxXgc2AKu+L9BW2Nnmc/rjMTlMJvppzzwmqAav3I=
-X-Google-Smtp-Source: AGHT+IEUVShpep7FB5qP3858nspjeNeWb4i1eezbpNHrFUbpIMvWW37/2Os6UThLjuGUetpvKNvskw==
-X-Received: by 2002:a5d:5447:0:b0:368:3f6a:1dea with SMTP id ffacd0b85a97d-37a42253629mr5747995f8f.6.1726941824186;
-        Sat, 21 Sep 2024 11:03:44 -0700 (PDT)
-Received: from localhost.localdomain ([197.35.194.67])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378e73f99b0sm20461496f8f.60.2024.09.21.11.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Sep 2024 11:03:43 -0700 (PDT)
-From: Ahmed Ehab <bottaawesome633@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org,
-	syzkaller@googlegroups.com,
-	syzbot+f7c41a878676b72c16a6@syzkaller.appspotmail.com
-Subject: [PATCH] Hold read lock in bch2_snapshot_tree_oldest_subvol()
-Date: Sun, 22 Sep 2024 00:00:36 +0300
-Message-ID: <20240921210036.99386-1-bottaawesome633@gmail.com>
-X-Mailer: git-send-email 2.46.0
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r0NeH4Vv"
+Date: Sat, 21 Sep 2024 14:47:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1726944450;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rvxa6KYGFv8Y/A02rpKkgoV4akVO6+7XDKnGOTjf4RE=;
+	b=r0NeH4Vv6USFHMMStmcpvTQ/Svq6l96NGHnNJJtTda3M2RmB/nApkPkgv//SUaOLu5/fqs
+	fo9tH9j6YBjdX90+J/8rAkPPUm2udrs1AIBIsJ9uAqsAQPg07K4KUmOxXdwsuryI+tWkzf
+	M54vh8ZsEbKBDIMtVc+dbUwca1DRP6M=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Piotr Zalewski <pZ010001011111@proton.me>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	skhan@linuxfoundation.org
+Subject: Re: [PATCH] bcachefs: add GFP_ZERO flag in btree_bounce_alloc
+Message-ID: <frpohbqgpyhd6fkwkd5h6efqiph27mgmcbex3bipmksyc2vocp@tfz6oynigmgi>
+References: <20240916224746.692973-1-pZ010001011111@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240916224746.692973-1-pZ010001011111@proton.me>
+X-Migadu-Flow: FLOW_OUT
 
-Syzbot reports a problem that a warning is triggered due to suspicious
-use of rcu_dereference_check(). That is triggered by a call of
-bch2_snapshot_tree_oldest_subvol().
+On Mon, Sep 16, 2024 at 10:47:57PM GMT, Piotr Zalewski wrote:
+> Add __GFP_ZERO flag to kvmalloc call in btree_bounce_alloc to mitigate
+> later uinit-value use KMSAN warning[1].
+> 
+> After applying the patch reproducer still triggers stack overflow[2] but
+> it seems unrelated to the uninit-value use warning. After further
+> investigation it was found that stack overflow occurs because KMSAN adds
+> additional function calls. Backtrace of where the stack magic number gets 
+> smashed was added as a reply to syzkaller thread[3].
+> 
+> I confirmed that task's stack magic number gets smashed after the code path
+> where KSMAN detects uninit-value use is executed, so it can be assumed that
+> it doesn't contribute in any way to uninit-value use detection.
+> 
+> [1] https://syzkaller.appspot.com/bug?extid=6f655a60d3244d0c6718
+> [2] https://lore.kernel.org/lkml/66e57e46.050a0220.115905.0002.GAE@google.com
+> [3] https://lore.kernel.org/all/rVaWgPULej8K7HqMPNIu8kVNyXNjjCiTB-QBtItLFBmk0alH6fV2tk4joVPk97Evnuv4ZRDd8HB5uDCkiFG6u81xKdzDj-KrtIMJSlF6Kt8=@proton.me
+> 
+> Signed-off-by: Piotr Zalewski <pZ010001011111@proton.me>
 
-The cause of the warning is that inside
-bch2_snapshot_tree_oldest_subvol(), snapshot_t() is called which calls
-rcu_dereference() that requires a read lock to be held. Also, the call
-of bch2_snapshot_tree_next() eventually calls snapshot_t().
+Oh hey, nice find :)
 
-To fix this, call rcu_read_lock() before calling snapshot_t(). Then,
-release the lock after the termination of the while loop.
+We should be able to fix this in a more performant way, though; btree
+node resort is a path where we do care about performance, we don't want
+to touch the whole buffer more times than necessary.
 
-Reported-by: <syzbot+f7c41a878676b72c16a6@syzkaller.appspotmail.com>
-Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
----
- fs/bcachefs/snapshot.c | 3 +++
- 1 file changed, 3 insertions(+)
+Can you try zeroing out the portion after what we consumed, after we
+sort into the bounce buffer?
 
-diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
-index 8b18a9b483a4..678e9fdee348 100644
---- a/fs/bcachefs/snapshot.c
-+++ b/fs/bcachefs/snapshot.c
-@@ -8,6 +8,7 @@
- #include "errcode.h"
- #include "error.h"
- #include "fs.h"
-+#include "linux/rcupdate.h"
- #include "recovery_passes.h"
- #include "snapshot.h"
- 
-@@ -469,6 +470,7 @@ static u32 bch2_snapshot_tree_oldest_subvol(struct bch_fs *c, u32 snapshot_root)
- 	u32 id = snapshot_root;
- 	u32 subvol = 0, s;
- 
-+	rcu_read_lock();
- 	while (id) {
- 		s = snapshot_t(c, id)->subvol;
- 
-@@ -477,6 +479,7 @@ static u32 bch2_snapshot_tree_oldest_subvol(struct bch_fs *c, u32 snapshot_root)
- 
- 		id = bch2_snapshot_tree_next(c, id);
- 	}
-+	rcu_read_unlock();
- 
- 	return subvol;
- }
--- 
-2.46.0
-
+> ---
+>  fs/bcachefs/btree_io.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+> index 56ea9a77cd4a..3ac8b37f97d7 100644
+> --- a/fs/bcachefs/btree_io.c
+> +++ b/fs/bcachefs/btree_io.c
+> @@ -121,7 +121,7 @@ static void *btree_bounce_alloc(struct bch_fs *c, size_t size,
+>  	BUG_ON(size > c->opts.btree_node_size);
+>  
+>  	*used_mempool = false;
+> -	p = kvmalloc(size, __GFP_NOWARN|GFP_NOWAIT);
+> +	p = kvmalloc(size, __GFP_ZERO|__GFP_NOWARN|GFP_NOWAIT);
+>  	if (!p) {
+>  		*used_mempool = true;
+>  		p = mempool_alloc(&c->btree_bounce_pool, GFP_NOFS);
+> -- 
+> 2.46.0
+> 
+> 
