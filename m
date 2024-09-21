@@ -1,39 +1,40 @@
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B8F1F957
-	for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 18:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D94A2AF16
+	for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 18:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726944455; cv=none; b=SrFynVnZR1dGItbn4lqgcEaNHlrGBRmJUJHukcY4cJ/cYQfrAtUNJeYgNvD6UzAf2BqiFc4w2658UouyGClpCuWm1wLuyR7K8FxN1tVp3SMGJATkakwRWpnGMVJXNBdciBBT2M1wVN/MZrsbMHB8yNMkVhPaxSRkK3rFh1RhofI=
+	t=1726944750; cv=none; b=IZnG6oZkgya6nD5xYVSCXCfnNpe/hj49E43hMAAofaWbP1USfRG20x8I4Y1txMhtUtBvfVxoFiukO3chD3ELvEyT/W1zRntgVMILjYEZPc5yEegNUqX+2cFnd8TR6YtK4FPvedKhM20T5pdQyFrx0UFLcxnGCpeUoS9e9B1pnPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726944455; c=relaxed/simple;
-	bh=7cfx5tCkGc7zfwaJh93vtOWLZ3JbMAGGKDDBGOj2Gqo=;
+	s=arc-20240116; t=1726944750; c=relaxed/simple;
+	bh=y0vAhj+gJuLQudmeoh9YJwu94U8sUi5+oxqlubJ7LKI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hNYZgKUZAUww+3bGO8nQx8MECTneiENgZUAFLEFP/GT2YuKsez/JFHBnQQ8yhzXAw+UnAApUfFejDUD/5KVJe+bH14v2KTVPwNuaH6of4ylcdTKSs3sjwaPJhdQm1aUDH7EtQ2gx2g5OKxk/oVPR678Xbxt7jdVm/8w0tPqza+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r0NeH4Vv; arc=none smtp.client-ip=91.218.175.183
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZXXCk9mBZWEwvbdCmsnhP2BJyjQ0C0Y7/oE6A/1vG5BGfLL6EseFa68zygLsYh0Yz/E1gBQ6qu3Ub9PIOgPk4856S2xsZ+xDwiTZjNhb6YwKnNCNc2z0d9Jxg5OILAs5gmedDynFIY3WT52HKMKV/4h6g5A3dPOZzev+T3/Frf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qZTm9SwR; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r0NeH4Vv"
-Date: Sat, 21 Sep 2024 14:47:27 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qZTm9SwR"
+Date: Sat, 21 Sep 2024 14:52:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726944450;
+	t=1726944745;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Rvxa6KYGFv8Y/A02rpKkgoV4akVO6+7XDKnGOTjf4RE=;
-	b=r0NeH4Vv6USFHMMStmcpvTQ/Svq6l96NGHnNJJtTda3M2RmB/nApkPkgv//SUaOLu5/fqs
-	fo9tH9j6YBjdX90+J/8rAkPPUm2udrs1AIBIsJ9uAqsAQPg07K4KUmOxXdwsuryI+tWkzf
-	M54vh8ZsEbKBDIMtVc+dbUwca1DRP6M=
+	bh=HIx0jmfjYu+XHxpUO64KOWWTIAZrIVAT4metLc5p5p4=;
+	b=qZTm9SwRiG24At1Xtl/MMXuVAyIRFnMOyOZtNugsXy8H1E5bHTs1K0VPEangX/9URaLNCj
+	uC5imfNVOycp20CSzhsM/eMJhWQaKSOUsmZxq6hh7r04YGiJiHS1qf4NpqYi5iXDzu6cni
+	uo1MZNWW3JMCHC6twt4/srN7krk0Z/w=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Piotr Zalewski <pZ010001011111@proton.me>
+To: Mohammed Anees <pvmohammedanees2003@gmail.com>
 Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	skhan@linuxfoundation.org
-Subject: Re: [PATCH] bcachefs: add GFP_ZERO flag in btree_bounce_alloc
-Message-ID: <frpohbqgpyhd6fkwkd5h6efqiph27mgmcbex3bipmksyc2vocp@tfz6oynigmgi>
-References: <20240916224746.692973-1-pZ010001011111@proton.me>
+	syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
+Subject: Re: [PATCH] bcachefs: Fix NULL pointer dereference in
+ bch2_opt_to_text
+Message-ID: <vhgla2z2s2mlsjiniqs6no5d6p7ksq5ipgogd2covx3wejeys7@ha32mumxipi3>
+References: <20240916210310.14014-1-pvmohammedanees2003@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -42,56 +43,55 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240916224746.692973-1-pZ010001011111@proton.me>
+In-Reply-To: <20240916210310.14014-1-pvmohammedanees2003@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Sep 16, 2024 at 10:47:57PM GMT, Piotr Zalewski wrote:
-> Add __GFP_ZERO flag to kvmalloc call in btree_bounce_alloc to mitigate
-> later uinit-value use KMSAN warning[1].
+On Mon, Sep 16, 2024 at 09:03:10PM GMT, Mohammed Anees wrote:
+> syzbot has found an general protection fault in prt_str [1].
 > 
-> After applying the patch reproducer still triggers stack overflow[2] but
-> it seems unrelated to the uninit-value use warning. After further
-> investigation it was found that stack overflow occurs because KMSAN adds
-> additional function calls. Backtrace of where the stack magic number gets 
-> smashed was added as a reply to syzkaller thread[3].
+> In the prt_str function, a NULL pointer dereference occurs when the
+> parameter str is NULL, which is called in bch2_opt_to_text when
+> opt->type is BCH_OPT_STR. If an invalid index v or incorrect
+> flag is passed to ptr_str, then this could lead to this issue.
+
+this fix looks wrong; if opt->choices[v] is NULL it's almost definitely
+because of a missing bounds check - I don't believe there are any string
+lists where we have gaps in the options.
+
+Can you add a proper bounds check?
+
 > 
-> I confirmed that task's stack magic number gets smashed after the code path
-> where KSMAN detects uninit-value use is executed, so it can be assumed that
-> it doesn't contribute in any way to uninit-value use detection.
+> [1] https://syzkaller.appspot.com/bug?extid=37186860aa7812b331d5
 > 
-> [1] https://syzkaller.appspot.com/bug?extid=6f655a60d3244d0c6718
-> [2] https://lore.kernel.org/lkml/66e57e46.050a0220.115905.0002.GAE@google.com
-> [3] https://lore.kernel.org/all/rVaWgPULej8K7HqMPNIu8kVNyXNjjCiTB-QBtItLFBmk0alH6fV2tk4joVPk97Evnuv4ZRDd8HB5uDCkiFG6u81xKdzDj-KrtIMJSlF6Kt8=@proton.me
-> 
-> Signed-off-by: Piotr Zalewski <pZ010001011111@proton.me>
-
-Oh hey, nice find :)
-
-We should be able to fix this in a more performant way, though; btree
-node resort is a path where we do care about performance, we don't want
-to touch the whole buffer more times than necessary.
-
-Can you try zeroing out the portion after what we consumed, after we
-sort into the bounce buffer?
-
+> Reported-and-tested-by: syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=37186860aa7812b331d5
+> Signed-off-by: Mohammed Anees <pvmohammedanees2003@gmail.com>
 > ---
->  fs/bcachefs/btree_io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/bcachefs/opts.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
-> index 56ea9a77cd4a..3ac8b37f97d7 100644
-> --- a/fs/bcachefs/btree_io.c
-> +++ b/fs/bcachefs/btree_io.c
-> @@ -121,7 +121,7 @@ static void *btree_bounce_alloc(struct bch_fs *c, size_t size,
->  	BUG_ON(size > c->opts.btree_node_size);
->  
->  	*used_mempool = false;
-> -	p = kvmalloc(size, __GFP_NOWARN|GFP_NOWAIT);
-> +	p = kvmalloc(size, __GFP_ZERO|__GFP_NOWARN|GFP_NOWAIT);
->  	if (!p) {
->  		*used_mempool = true;
->  		p = mempool_alloc(&c->btree_bounce_pool, GFP_NOFS);
+> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+> index e10fc1da7..72b87251c 100644
+> --- a/fs/bcachefs/opts.c
+> +++ b/fs/bcachefs/opts.c
+> @@ -420,8 +420,12 @@ void bch2_opt_to_text(struct printbuf *out,
+>  	case BCH_OPT_STR:
+>  		if (flags & OPT_SHOW_FULL_LIST)
+>  			prt_string_option(out, opt->choices, v);
+> -		else
+> -			prt_str(out, opt->choices[v]);
+> +		else {
+> +			if (opt->choices[v] == NULL)
+> +				pr_err("Invalid flags or index v passed to the function\n");
+
+Also, don't use pr_err(); just do prt_printf(out, "(invalid option %u)", v);
+
+> +			else
+> +				prt_str(out, opt->choices[v]);
+> +		}
+>  		break;
+>  	case BCH_OPT_FN:
+>  		opt->fn.to_text(out, c, sb, v);
 > -- 
 > 2.46.0
-> 
 > 
