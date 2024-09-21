@@ -1,148 +1,135 @@
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BB113C69E
-	for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 22:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268292AEF1
+	for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 23:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726957043; cv=none; b=S0nrgr9rrTyL3Cqm8QkB8IypD20Jf01ND6idYvfsD3wWhATzSt690qA/xBlIFsNJc8pl74wkLYBv6fthSvuDdyDm1EcoWvOXPUwj38XxQo7vrtgsaap0lTADKir2LjIP8ebHSy6tReLh90Jwj0frx/Ye0/u0HgFDAk45Em4E8X0=
+	t=1726959783; cv=none; b=I3dh5qeg7+8LJ5bm09YrBNQ1WyJcq0d2EG87FggTv8dxw3Gqi3bSASKzizOQK4bJmIf7KGA8SUvF9nGMzYwbvsZgCOsAKh5EHmblysrMF2AkZTJ6vohlaXnB6/Ng/JwxJ+75NwYegKVr0KuJih2K4LtCv5xUeBXyKA+733sXOvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726957043; c=relaxed/simple;
-	bh=IFh4Maj6UW5RQOm/qPtBr9XXOIvoJz+mSd3EUAtYbok=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mZ0Ajtn98j0Z2LW1bu0LqJZivpC/ki7/A8djXSkbnIx7UJi7Dqntuo/KWpQgImhAQzBYeKBEKpUjD9gIuyyY/A6RcqXaclh2zVbCHBqBQjZCp1bkrAVSrGqGjo9B6c6K7nzF0konl2BLfKU4k+owbmkXQbu2hZxutoaOmKjgOlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a1957c7cf3so3917485ab.2
-        for <linux-bcachefs@vger.kernel.org>; Sat, 21 Sep 2024 15:17:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726957041; x=1727561841;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lKEaZ3XUYzDkpvxFCKTLsuZp4TPmFkXohdjsHzPWWys=;
-        b=SJzIIbdDFqhbx74nFJgpeMr9s6ttbATJohEqkOCpobEhPjsEo19GIrLVBExUgxhNrN
-         Hbeds5XKT/o8JqYuIr7LzN2gtDS0VIvOBxcigsq7ZrWDS97aXLF3wlONnzBqyowA1og4
-         HBBqJKmCNV29ileZcfe+p9tiMnOGoO6M9G65XPieX+IbyHefqAIm7Hah+WqGYKH4Uoy/
-         F5U0oV88YKb8B/n9qvoi/ygMuH7KZho+Itn5lB3b+5LIWJaUMrUfg+CZYgsCAC4GZNfr
-         u6uMM2NxrxQuILQYPG0hctKFxm4B6zOul5/NhxPRLZcnBZgpbWZYJhxsH/h9u/z1Wk0u
-         WiyA==
-X-Forwarded-Encrypted: i=1; AJvYcCWYnWj5gMPDfDR/jCCTBDZZNfvcRJSVEHUnU52o+Druz4umw3+jtnUt6SPcQfep8bPUWZU9Ow108Jj6MMURQA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzl0Myuv//AFPGgiXK/+LPiB06BDBOSYIiccD079G8uARC+6cXM
-	t14bW12v3InHphdtQKhTrKINQzbwwS41TUkgNUSP+9WGSJJk4NbCJw+AM7N0uMT0n/+SeuEShJK
-	9ddTS8x9uEGYPYN4KhJua1+aFQDCX8mHaslF35WQMu3oaUB3iXkhHs70=
-X-Google-Smtp-Source: AGHT+IG4YkzFZmYXrTvyeOyU7sGRS+Xv1+JyJgn602d4bdKPOA4Bn/DiIhoLr9thMjr5uyzLccXtxub8ygEYIjhTvjTvOHVDF3Eu
+	s=arc-20240116; t=1726959783; c=relaxed/simple;
+	bh=xOHb1+cDcoaugQo2SmeYNgv9ywf2IOExG0eNy6thMD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=kV9tRz0Nyoaxt87gyBiXc8mtPgqr92+8Rq0FS6fLeeTyVJBjWkUsCaCXoCG+IFM5vg4UN6saaxBDm6ND6hLAQ0l4fR/yFWvZqOPKC6uaIDy0vYH+gcWBThjvydOBQc2BZ6ybKkRC+SCKaqOZeNvemXo7Kn41APlr8izGNrIeaB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rurPnkPF; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rurPnkPF"
+Date: Sat, 21 Sep 2024 19:02:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1726959778;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=UT7Rox1ZPcS4JOm3wspSy1yWoABHikamMD3mgcBRds4=;
+	b=rurPnkPFzQS/5u+BGUPfHRLx54bRJU/72H5iagG+xH0tXRAL1bHxTUCi1q6LsucE/SBAcC
+	cKT7sBtQro0O4UDwj7jhh+B/LlybMg93SvfRVAjNGrhOq+RXIDeWuOq/CPjArhny37ZzFQ
+	YB0mfWXfKDLkH6LSmixT0vHo4umlzbY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org
+Cc: "Darrick J. Wong" <djwong@kernel.org>, 
+	Thomas Bertschinger <tahbertschinger@gmail.com>
+Subject: [bcachefs] self healing design doc
+Message-ID: <h63p6m5snken2ps7lvnmxmgnjrkzeegprjdweghw4styticya5@obigqaasdwyc>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12ee:b0:3a0:aac2:a0a4 with SMTP id
- e9e14a558f8ab-3a0c8c926e7mr52957165ab.9.1726957040938; Sat, 21 Sep 2024
- 15:17:20 -0700 (PDT)
-Date: Sat, 21 Sep 2024 15:17:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66ef45f0.050a0220.3195df.006d.GAE@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_pos_to_text
-From: syzbot <syzbot+cf7b2215b5d70600ec00@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+So, I'm sketching out self healing for bcachefs - that is, repairing
+errors automatically, instead of requiring the user to run fsck
+manually.
 
-syzbot found the following issue on:
+This can be divided up into two different categories, or strategies:
 
-HEAD commit:    a940d9a43e62 Merge tag 'soc-arm-6.12' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ac44a9980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1653f803fffa3848
-dashboard link: https://syzkaller.appspot.com/bug?extid=cf7b2215b5d70600ec00
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1276469f980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17731207980000
+ - Repairing errors/damage as they are noticed in normal operation: i.e.
+   follow a backpointer to an extent, notice that there is no extent,
+   and then simply delete the backpointer and continue
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-a940d9a4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/371e11b6a9e5/vmlinux-a940d9a4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/920eb0c53785/bzImage-a940d9a4.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/613a2d63144c/mount_0.gz
+ - Flagging in the superblock that either there's an unfixed error, or
+   that a fsck pass is required, and then running it automatically
+   either on next mount or scheduling it for some later time
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cf7b2215b5d70600ec00@syzkaller.appspotmail.com
+The first is going to be a big focus in the future, as on larger
+filesystems we _really_ want to avoid running full fsck passes unless
+absolutely required.
 
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/btree_cache.h:126!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5111 Comm: read_btree_node Not tainted 6.11.0-syzkaller-03917-ga940d9a43e62 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:bch2_btree_id_root fs/bcachefs/btree_cache.h:126 [inline]
-RIP: 0010:bch2_btree_pos_to_text+0x1ee/0x1f0 fs/bcachefs/btree_cache.c:1295
-Code: 00 00 fc ff df e9 70 ff ff ff 89 d9 80 e1 07 38 c1 0f 8c 7a ff ff ff 48 89 df e8 2d 90 ec fd e9 6d ff ff ff e8 b3 4b 85 fd 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa
-RSP: 0018:ffffc9000315f448 EFLAGS: 00010293
-RAX: ffffffff840ede8d RBX: 00000000000000de RCX: ffff88801e138000
-RDX: 0000000000000000 RSI: 00000000000000de RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff840edd7a R09: 0000000000000000
-R10: ffffc9000315f5e0 R11: fffff5200062bec1 R12: ffff8880410b0000
-R13: ffff888041280000 R14: ffff888041280000 R15: ffffc9000315f5e0
-FS:  0000000000000000(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000559507bd4640 CR3: 000000003f78a000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btree_node_read_work+0x486/0x1260 fs/bcachefs/btree_io.c:1308
- bch2_btree_node_read+0x2433/0x2a10
- bch2_btree_node_fill+0xcd1/0x1320 fs/bcachefs/btree_cache.c:886
- bch2_btree_node_get_noiter+0x9b3/0xf50 fs/bcachefs/btree_cache.c:1155
- found_btree_node_is_readable fs/bcachefs/btree_node_scan.c:85 [inline]
- try_read_btree_node fs/bcachefs/btree_node_scan.c:190 [inline]
- read_btree_nodes_worker+0x122c/0x20b0 fs/bcachefs/btree_node_scan.c:239
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bch2_btree_id_root fs/bcachefs/btree_cache.h:126 [inline]
-RIP: 0010:bch2_btree_pos_to_text+0x1ee/0x1f0 fs/bcachefs/btree_cache.c:1295
-Code: 00 00 fc ff df e9 70 ff ff ff 89 d9 80 e1 07 38 c1 0f 8c 7a ff ff ff 48 89 df e8 2d 90 ec fd e9 6d ff ff ff e8 b3 4b 85 fd 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa
-RSP: 0018:ffffc9000315f448 EFLAGS: 00010293
-RAX: ffffffff840ede8d RBX: 00000000000000de RCX: ffff88801e138000
-RDX: 0000000000000000 RSI: 00000000000000de RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff840edd7a R09: 0000000000000000
-R10: ffffc9000315f5e0 R11: fffff5200062bec1 R12: ffff8880410b0000
-R13: ffff888041280000 R14: ffff888041280000 R15: ffffc9000315f5e0
-FS:  0000000000000000(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000559507bd4640 CR3: 0000000011a04000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+For now though, getting the second mode implemented is higher priority;
+we need that so that users aren't having to jump through hoops in order
+to get their filesystem working if their root filesystem encounters
+corruption - i.e. this is needed before we can take the EXPERIMENTAL
+label off.
 
+(I recently had to dig out my nixos recovery usb stick to recovery from
+the bug where online fsck was deleting inodes that were unlinked but
+still in use - whoops, don't want normal users to have to do that).
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Background, things we already have:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- Recovery passes are enumerated, with stable identifiers. This is used
+  for upgrades and downgrades: upgrades and downgrades may specify
+  recovery passes to run and errors to silently fix, and those are
+  listed in the superblock until complete - in case of an interrupted
+  upgrade/downgrade.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+- fsck errors are also enumerated. This is currently used by the
+  superblock 'errors' section, which lists counts and date of last error
+  of every error the filesystem has ever seen. This section is purely
+  informational (it's highly useful in bug reports) - it doesn't (yet?)
+  have fields for whether a given error type has unfixed errors.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Todo items:
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+- Convert 'bch2_fs_inconsistent()' calls to fsck_err() calls.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+  bch2_fs_inconsistent() just goes emergency read-only (or panics, or
+  does nothing, according to options). fsck_err() logs the error (by
+  type) in the superblock, and returns true/false/error if we should fix
+  the error, just continue, or shut down.
 
-If you want to undo deduplication, reply with:
-#syz undup
+  One of the goals here is that any time there's a serious error that
+  causes us to go ERO/offline or needs repair, it should be logged in
+  the superblock.
+
+  I'm also hoping to get an opt-in telemetry tool written to upload
+  superblocks once a week (a bit like debian popcon); since many users
+  don't report bugs if they can work around them, this will give us some
+  valuable info on how buggy or not buggy bcachefs is in the wild, and
+  where to hunt for bugs.
+
+- Add a field to BCH_SB_ERRS() in sb-errors_format.h for which recovery
+  pass(es?) are required to fix each error.
+
+New superblock fields for self healing:
+
+The existing sb_ext.recovery_passes_required field that is used for
+upgrades/downgrades probably isn't what we want here - some errors need
+to be fixed right away, for others we just want to schedule fsck for at
+some point in the future.
+
+Q: What determines which errors need to be fixed right away, and should
+this get a bit in the superblock? Or is it static per-error-type?
+
+Not sure on this one yet.
+
+Q: In the superblock, should we be listing
+ A: unfixed errors, or
+ B: recovery passes we need to run (immediately or when scheduled), or
+ C: perhaps both
+
+I think we'll be going with option A, which means we can just add a bit
+or two to the sb_errors superblock section - this works provided the
+sb_err -> recovery passing mapping is static, and I believe the sb_err
+enum is fine grained enough that it is.
+
+Once I've added the 'recovery passes to repair' field to BCH_SB_ERRS()
+I'll have a better feeling on this.
+
+Thoughts? Corner cases?
