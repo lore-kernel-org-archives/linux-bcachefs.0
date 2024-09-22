@@ -1,39 +1,42 @@
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 466E88827
-	for <linux-bcachefs@vger.kernel.org>; Sun, 22 Sep 2024 15:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C39A5579F
+	for <linux-bcachefs@vger.kernel.org>; Sun, 22 Sep 2024 20:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727018293; cv=none; b=M4VmTGmCi2iovFWyo8tptwFDi3Db7Jjoks7IG/IawSVRjaLn9kfuttiq/6deOkofOQ4ErDtKKLMVjPfIrr7GIEuZF0LHEEnDZog1TKGzajI6/awMli6zetzpjq13++c7M5yzD7/ctHZ5rLGReUrLZalHTmQEEyIqfLMkOtjH+Sg=
+	t=1727037373; cv=none; b=poT3qHHBe/XnME1wv1Ws/ufsfn/S477FVzYLDjqkP3oSicHL1JnvIqOJuH6zrrhAMrinil/RiNkpqESGXk8/oCiCdAtBlE+n+b0NdNP7vnvN2NAlRzZDHJX/n1jKz/4xoag1/51SseHFgVT75bd82OZytbXPOx3iKCvVcUBUzPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727018293; c=relaxed/simple;
-	bh=o0PCcxHd82z4EJ9oGJMyN1wlnE2UuTApJQqxJ3pdQKI=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=fImImXQ+JR0TOepLbvNKPVP8sy9sThBHpEPGbqun/fjeNHA4zh8iNiwWPmBOFxFEVgsQZ/gU7Z5+ctaebsKV5n23HnWup3ukCphKCUU6NTm8TAPfhcI4XuJ1Ex7hdIx4301HvZE4FZik8aUoFXZXo8hT3kHVzA8LF/NPhMmlK2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=QqX3Y5mI; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+	s=arc-20240116; t=1727037373; c=relaxed/simple;
+	bh=rI6bXw6V2zfI+VhzT2ECp/Fa+q3QtrALfg5WAAPwYjY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pniqfb7gDcwKa/N1faKIylseng1XXdHi+x3tAR1MwYjaAOpspWXLNwL5MFoJFw0HFcchyVBOK6jfkTK/knpeAwm5/8bik81h78xrAyCSgd5YCRU0uTkoKvFUbeh+/ErnRfchfdIxyUL4ENOfY9HnvDjAkXV8qj/9QI7wXBhPxtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=W/XFr+eF; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="QqX3Y5mI"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1727018284; x=1727277484;
-	bh=sBZ5bv5Sk1lAmqEu/dz72AECosQNyacTBI4VFrqpdGc=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=QqX3Y5mI6ecSBfeaAGaXq0aMaWviwdsMQr7OapyLbOnczRQzyX6fH6VzjQhoSi6ur
-	 o8UbwJOQfH3Jj/IjfFfKgrVFBPeFbocl6Sv1r7CfSaeuvfBelU7aEf+ulnc5K0F/8P
-	 adXw9hK+7RQBu+FKOgUyK+SVPQg11t/aK+vixLhbQheAeM5fLYf7EaTZ2KTXlBkEJP
-	 1JhuHz3tA38nRm0701MDMxs+hWWrEMQ43fstsHm1bhLnj4pkaBmu2rG0y6flS/vbW1
-	 5PMnyOerDavXBQ+9TA8PNl/efS2LTTWaa+N+RDpjvEWIi+xJabmUINS1kMiXuKQpMb
-	 vcdDq5t6Ke8JQ==
-Date: Sun, 22 Sep 2024 15:18:01 +0000
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-From: Piotr Zalewski <pZ010001011111@proton.me>
-Cc: skhan@linuxfoundation.org, Piotr Zalewski <pZ010001011111@proton.me>, syzbot+6f655a60d3244d0c6718@syzkaller.appspotmail.com
-Subject: [PATCH v2] bcachefs: memset bounce buffer portion to 0 after key_sort_fix_overlapping
-Message-ID: <20240922151618.737458-2-pZ010001011111@proton.me>
-Feedback-ID: 53478694:user:proton
-X-Pm-Message-ID: cffce745d57c7a4e63db1d1f825e76f04c99ff52
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="W/XFr+eF"
+Date: Sun, 22 Sep 2024 16:36:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727037368;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8i4ZbW+AJjV/JkG8lWXhPeWGFq3c6CnqcF50KqL/Ob8=;
+	b=W/XFr+eFbLbvNOBgeOt/OWeuvXFReq29oiJojE0UWw6RRZL9DyBn4W447NpnmS1XQlYjZy
+	aGSoxSqN3nHGx8ao1kjVFF4U2FfORaIs4YgVacqtlK4j5g7PUhqw7a8ORkZ0Xz4/ddD5dB
+	3lbMQl+tJxHeJOJcOtfzlOr8Vcv39z0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Hanno =?utf-8?B?QsO2Y2s=?= <hanno@hboeck.de>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: mount hangs / kernel BUG on attempt to mount or fsck /
+ bch2_accounting_read
+Message-ID: <pvga5sgp4vejnnr5ojgiuwte6qeve4x7ld4dhdmzb625l367fq@q4td2cutlfvu>
+References: <20240917142815.3c1c3c95.hanno@hboeck.de>
+ <vn5klwwam3pvalfkexq3uroryx4t6ixpeldjjjm6zl6rmbp3tx@ftthpbbpttzf>
+ <20240922185941.7b9680de.hanno@hboeck.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -41,68 +44,24 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240922185941.7b9680de.hanno@hboeck.de>
+X-Migadu-Flow: FLOW_OUT
 
-Zero-initialize part of allocated bounce buffer which wasn't touched by
-subsequent bch2_key_sort_fix_overlapping to mitigate later uinit-value
-use KMSAN bug[1].
+On Sun, Sep 22, 2024 at 06:59:41PM GMT, Hanno Böck wrote:
+> On Sat, 21 Sep 2024 19:45:12 -0400
+> Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> 
+> > Fixing the BUG_ON() and getting you going again will be easy, but I
+> > want to know what the underlying bug was...
+> > 
+> > Could you run 'bcachefs list_journal -a -k accounting <device>'?
+> 
+> Off-list, not sure whether this contains any confidential info. 
+> The file was 178 MB, but highly compressable, see attachment.
 
-After applying the patch reproducer still triggers stack overflow[2] but
-it seems unrelated to the uninit-value use warning. After further
-investigation it was found that stack overflow occurs because KMSAN adds
-too many function calls[3]. Backtrace of where the stack magic number gets
-smashed was added as a reply to syzkaller thread[3].
+Thanks!
 
-It was confirmed that task's stack magic number gets smashed after the code
-path where KSMAN detects uninit-value use is executed, so it can be assumed
-that it doesn't contribute in any way to uninit-value use detection.
-
-[1] https://syzkaller.appspot.com/bug?extid=3D6f655a60d3244d0c6718
-[2] https://lore.kernel.org/lkml/66e57e46.050a0220.115905.0002.GAE@google.c=
-om
-[3] https://lore.kernel.org/all/rVaWgPULej8K7HqMPNIu8kVNyXNjjCiTB-QBtItLFBm=
-k0alH6fV2tk4joVPk97Evnuv4ZRDd8HB5uDCkiFG6u81xKdzDj-KrtIMJSlF6Kt8=3D@proton.=
-me
-
-Reported-by: syzbot+6f655a60d3244d0c6718@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=3D6f655a60d3244d0c6718
-Fixes: ec4edd7b9d20 ("bcachefs: Prep work for variable size btree node buff=
-ers")
-Suggested-by: Kent Overstreet <kent.overstreet@linux.dev>
-Signed-off-by: Piotr Zalewski <pZ010001011111@proton.me>
----
-
-Notes:
-    changes in v2:
-        - instead of adding __GFP_ZERO flag to bounce buffer alloc,
-          zero initialize only the part untouched by subsequent
-          bch2_key_sort_fix_overlapping to make the solution more
-=09=09  performant
-
-    link to v1: https://lore.kernel.org/linux-bcachefs/20240916224746.69297=
-3-1-pZ010001011111@proton.me/
-
----
- fs/bcachefs/btree_io.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
-index cb48a9477514..2a0420605bd7 100644
---- a/fs/bcachefs/btree_io.c
-+++ b/fs/bcachefs/btree_io.c
-@@ -1195,6 +1195,10 @@ int bch2_btree_node_read_done(struct bch_fs *c, stru=
-ct bch_dev *ca,
- =09set_btree_bset(b, b->set, &b->data->keys);
-=20
- =09b->nr =3D bch2_key_sort_fix_overlapping(c, &sorted->keys, iter);
-+=09memset((uint8_t *)(sorted + 1) + b->nr.live_u64s * sizeof(u64), 0,
-+=09=09=09btree_buf_bytes(b) -
-+=09=09=09sizeof(struct btree_node) -
-+=09=09=09b->nr.live_u64s * sizeof(u64));
-=20
- =09u64s =3D le16_to_cpu(sorted->keys.u64s);
- =09*sorted =3D *b->data;
---=20
-2.46.0
-
-
+You've got accounting keys in there with version=0 - _that's_
+interesting...
