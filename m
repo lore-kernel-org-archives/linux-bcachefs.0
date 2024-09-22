@@ -1,96 +1,191 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69645192B84;
-	Sun, 22 Sep 2024 01:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2653D11712;
+	Sun, 22 Sep 2024 08:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726969176; cv=none; b=Y7M2LKCv0D0va/YMdmWchMF54MpdMN/IGt+aFkr31iSKGFmkxhQgrAXJ9z0MsAPFXzFsXm+O7CymvDDSIWcdG0CG6dG4vXVdQk0bOPYgixxqDE41So96xfO3wnio1Xe+IQ5cgKDVtt3nVaWkCovemQ3tIoEfY5vL1FTCpgzj6qc=
+	t=1726993946; cv=none; b=Blr8UiAB+quxALyA1FRp17xZ2jajq4Ui6eKVmET40LnnBqFjiZHJLVzfk51CwbAF3tVG+xjwSw7LUmou40RLcNRh5baMKk1YXWa1+4kmjx/SiMM1Vzx+HHi7swyZi4Lp7HjIniy2FMmnl5V5Jt2WAGSbD13kNsA/UZwkr6E4i0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726969176; c=relaxed/simple;
-	bh=/CB0pbJTt5AxdFF4FVnla8ZJPR5ccRumczUHLSvyq3E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=L1IELRUYdaqLAJc5wZqkkGcGkvrvYF8gep0zGRZHvC3G92qZ+Z+gIDjhzGqKgmQ7cdFyaSYx0o7W0xPG7Am42HK0Cv78UCmGQhFoEJw3dUTjwW93svrMjZbcV+E1kvcBL3z7Ppni06pGCucbfquUnT4KQM/WWjuodn5zSA2T26E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=V2wtZrPg reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.2
+	s=arc-20240116; t=1726993946; c=relaxed/simple;
+	bh=oL+f5U7YY9hatXIInWS9SLc68gfI4L7TBW7ym0eTR/g=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tg/RsR+Mozdllc66M4C8vtZrlupYGKss5ySYeQxo4s2FJJSzA8+GAV/QGXmZS+tSl8pojWNXYCR2wuZF+czlZ37BJinl9kZyQy35Yl9TkVNPHDuabeuB+O2/dhToyr5JE4YWr5TSsQbjZmKGCei8CHnqvlTxwE+1qrGl3PvzMAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=JBNsHMf9; arc=none smtp.client-ip=220.197.31.3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="V2wtZrPg"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="JBNsHMf9"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=5IsNAlKLM0kNqMNoH8sJdkmxMHDYlo7/74w7aM1lxj8=; b=V
-	2wtZrPgeJ1fvA9U3iVGBdDCriXWfqXY2uem8Y5M87wSX6MsOo9FH4yfVpWtE/RG4
-	5BlFt12epyM7PQ2CKCVGq4teli7j/8xATA0lhiefois10yA/o6tBUAhGORLnNaEP
-	BK6Y5OQT5CVz3tVF0FHwqgwDf87FESY3jCMy3zmi1U=
-Received: from 00107082$163.com ( [111.35.191.143] ) by
- ajax-webmail-wmsvr-40-130 (Coremail) ; Sun, 22 Sep 2024 09:39:18 +0800
- (CST)
-Date: Sun, 22 Sep 2024 09:39:18 +0800 (CST)
-From: "David Wang" <00107082@163.com>
-To: "Kent Overstreet" <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [BUG?] bcachefs performance: read is way too slow when a file
- has no overwrite.
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <p4kifs3bwqe2ibq5ezx26c6jse7cjtkourlmkectx4sznrpqjk@ncvqp7rqjt6v>
-References: <ka3sjrka6dugdaab2bvewfbonc3ksixumue3hs2juhajhjm37w@bnxvz5mozpgr>
- <20240907103437.71139-1-00107082@163.com>
- <ebqvaqme76nrgr2dh7avy7yjwxsgnnybxuybgxejahupgbrqw5@a6d244ghjqis>
- <531cddb2.430d.1921551ada4.Coremail.00107082@163.com>
- <p4kifs3bwqe2ibq5ezx26c6jse7cjtkourlmkectx4sznrpqjk@ncvqp7rqjt6v>
-X-NTES-SC: AL_Qu2ZBPWdtkku7ieZbOkZnEYQheY4XMKyuPkg1YJXOp80mCXC8wkabG5cI1rK9fmDMiSmoQm1UCZS1OVje4xTc5hYDN+4hhIik5xi0rDHRTg6
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=zlY7L
+	q1dnJyZFIkSt+8e9U8ixq0ZLA70ykIaPVGE5D4=; b=JBNsHMf94WVconweA9u93
+	L/3K4MwHae2BWC5UmGaSdyb0171ZFwgwwG481UNBm8i4unrK3aIYZcMTOFbuXtZS
+	l7FVThYuwQOAUnvXqWNMn9aA0XfS/teqUd8pGVZY9kuoWhQhJFZ1ZiO/eVg57JJ2
+	4nVvlx2Y2ucs2atzNcwnGU=
+Received: from localhost.localdomain (unknown [111.35.191.143])
+	by gzga-smtp-mta-g3-5 (Coremail) with SMTP id _____wBXrQj11e9mUA8cOQ--.26753S4;
+	Sun, 22 Sep 2024 16:32:07 +0800 (CST)
+From: David Wang <00107082@163.com>
+To: 00107082@163.com,
+	kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [BUG?] bcachefs performance: read is way too slow when a file has no overwrite
+Date: Sun, 22 Sep 2024 16:31:48 +0800
+Message-Id: <20240922083148.10070-1-00107082@163.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <79f17c7a.65f.19217621c47.Coremail.00107082@163.com>
+References: <79f17c7a.65f.19217621c47.Coremail.00107082@163.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <79f17c7a.65f.19217621c47.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:gigvCgD3H5tHde9m9XgBAA--.14383W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/xtbB0gliqmWX0j8wDwAEs3
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBXrQj11e9mUA8cOQ--.26753S4
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCr4kZrykCr18Zr45ZFWkZwb_yoWrurWxpF
+	ySkF12vr98JryUCwnrta1UKa1FvrWrAry3Xrn8G3y0grn8ury3tF1jqrWF9a97Cr93KF4j
+	q3yYq34xGwn5JFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUfl1DUUUUU=
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiMxViqmbvz7duPgAAsP
 
-SGksIAoKQXQgMjAyNC0wOS0yMiAwMDoxMjowMSwgIktlbnQgT3ZlcnN0cmVldCIgPGtlbnQub3Zl
-cnN0cmVldEBsaW51eC5kZXY+IHdyb3RlOgo+T24gU3VuLCBTZXAgMjIsIDIwMjQgYXQgMTI6MDI6
-MDdBTSBHTVQsIERhdmlkIFdhbmcgd3JvdGU6Cj4+IEhpLCAKPj4gCj4+IEF0IDIwMjQtMDktMDkg
-MjE6Mzc6MzUsICJLZW50IE92ZXJzdHJlZXQiIDxrZW50Lm92ZXJzdHJlZXRAbGludXguZGV2PiB3
-cm90ZToKPj4gPk9uIFNhdCwgU2VwIDA3LCAyMDI0IGF0IDA2OjM0OjM3UE0gR01ULCBEYXZpZCBX
-YW5nIHdyb3RlOgo+PiAKPj4gPgo+PiA+QmlnIHN0YW5kYXJkIGRldmlhdGlvbiAoaGlnaCB0YWls
-IGxhdGVuY3k/KSBpcyBzb21ldGhpbmcgd2UnZCB3YW50IHRvCj4+ID50cmFjayBkb3duLiBUaGVy
-ZSdzIGEgYnVuY2ggb2YgdGltZV9zdGF0cyBpbiBzeXNmcywgYnV0IHRoZXkncmUgbW9zdGx5Cj4+
-ID5mb3IgdGhlIHdyaXRlIHBhdGhzLiBJZiB5b3UncmUgdHJ5aW5nIHRvIGlkZW50aWZ5IHdoZXJl
-IHRoZSBsYXRlbmNpZXMKPj4gPmFyZSBjb21pbmcgZnJvbSwgd2UgY2FuIGxvb2sgYXQgYWRkaW5n
-IHNvbWUgbmV3IHRpbWUgc3RhdHMgdG8gaXNvbGF0ZS4KPj4gCj4+IEFib3V0IHBlcmZvcm1hbmNl
-LCBJIGhhdmUgYSB0aGVvcnkgYmFzZWQgb24gc29tZSBvYnNlcnZhdGlvbiBJIG1hZGUgcmVjZW50
-bHk6Cj4+IFdoZW4gdXNlciBzcGFjZSBhcHAgbWFrZSBhIDRrKDggc2VjdG9ycykgZGlyZWN0IHdy
-aXRlLCAKPj4gYmNhY2hlZnMgd291bGQgaW5pdGlhdGUgYSB3cml0ZSByZXF1ZXN0IG9mIH4xMSBz
-ZWN0b3JzLCBpbmNsdWRpbmcgdGhlIGNoZWNrc3VtIGRhdGEsIHJpZ2h0Pwo+PiBUaGlzIG1heSBu
-b3QgYmUgYSBnb29kIG9mZnNldCtzaXplIHBhdHRlcm4gb2YgYmxvY2sgbGF5ZXIgZm9yIHBlcmZv
-cm1hbmNlLiAgCj4+IChJIGRpZCBnZXQgYSB2ZXJ5LXZlcnkgYmFkIHBlcmZvcm1hbmNlIG9uIGV4
-dDQgaWYgd3JpdGUgd2l0aCA1SyBzaXplLikKPgo+VGhlIGNoZWNrc3VtIGlzbid0IGlubGluZSB3
-aXRoIHRoZSBkYXRhLCBpdCdzIHN0b3JlZCB3aXRoIHRoZSBwb2ludGVyIC0KPnNvIGlmIHlvdSdy
-ZSBzZWVpbmcgMTEgc2VjdG9yIHdyaXRlcywgc29tZXRoaW5nIHJlYWxseSBvZGQgaXMgZ29pbmcK
-Pm9uLi4uCj4KCi4uLi4gVGhpcyBpcyByZWFsbHkgY29udHJhZGljdCB3aXRoIG15IG9ic2VydmF0
-aW9uOgoxLiBmaW8gc3RhdHMgeWllbGRzIGEgYXZlcmFnZSA1MEsgSU9QUyBmb3IgYSA0MDAgc2Vj
-b25kcyByYW5kb20gZGlyZWN0IHdyaXRlIHRlc3QuCjIuIGZyb20gL3Byb2MvZGlza3N0YXRhcywg
-YXZlcmFnZSAiRmllbGQgNSAtLSAjIG9mIHdyaXRlcyBjb21wbGV0ZWQiICBwZXIgc2Vjb25kIGlz
-IGFsc28gNTBLCihIZXJlIEkgY29uY2x1ZGUgdGhlIHBlcmZvcm1hbmNlIGlzc3VlIGlzIG5vdCBj
-YXVzZWQgYnkgZXh0cmEgSU9QUyBmb3IgY2hlY2tzdW0uKQozLiAgZnJvbSAiRmllbGQgMTAgLS0g
-IyBvZiBtaWxsaXNlY29uZHMgc3BlbnQgZG9pbmcgSS9PcyIsICBhdmVyYWdlIGRpc2sgImJ1c3ki
-IHRpbWUgcGVyIHNlY29uZCBpcyBhYm91dCB+MC45c2Vjb25kLCBzaW1pbGFyIHRvIHRoZSByZXN1
-bHQgb2YgZXh0NCB0ZXN0LgooSGVyZSBJIGNvbmNsdWRlIHRoZSBwZXJmb3JtYW5jZSBpc3N1ZSBp
-dCBub3QgY2F1c2VkIGJ5IG5vdCBwdXNoaW5nIGRpc2sgZGV2aWNlIHRvbyBoYXJkLikKNC4gZGVs
-dGEoRmllbGQgNyAtLSAjIG9mIHNlY3RvcnMgd3JpdHRlbikgLyBkZWx0YShGaWVsZCA1IC0tICMg
-b2Ygd3JpdGVzIGNvbXBsZXRlZCkgIGZvciA1IG1pbnV0ZXMgaW50ZXJ2YWwgaXMgMTEgc2VjdG9y
-cy93cml0ZS4KKFRoaXMgaXMgd2h5IEkgZHJhdyB0aGUgdGhlb3J5IHRoYXQgdGhlIGNoZWNrc3Vt
-IGlzIHdpdGggcmF3IGRhdGEuLi4uLi5JIHRob3VnaHQgaXMgd2FzIGEgcmVhc29uYWJsZS4uLikK
-Ckkgd2lsbCBtYWtlIHNvbWUgZGVidWcgY29kZSB0byBjb2xsZWN0IHNlY3RvciBudW1iZXIgcGF0
-dGVybnMuCgogCgoKPkkgd291bGQgc3VnZ2VzdCBkb2luZyBzb21lIHRlc3Rpbmcgd2l0aCBkYXRh
-IGNoZWNrc3VtcyBvZmYgZmlyc3QsIHRvCj5pc29sYXRlIHRoZSBpc3N1ZTsgdGhlbiBpdCBzb3Vu
-ZHMgbGlrZSB0aGF0IElPIHBhdHRlcm4gbmVlZHMgdG8gYmUKPmxvb2tlZCBhdC4KCkkgd2lsbCB0
-cnkgaXQuIAogCj4KPkNoZWNrIHRoZSBleHRlbnRzIGJ0cmVlIGluIGRlYnVnZnMgYXMgd2VsbCwg
-dG8gbWFrZSBzdXJlIHRoZSBleHRlbnRzIGFyZQo+Z2V0dGluZyB3cml0dGVuIG91dCBhcyB5b3Ug
-dGhpbmsgdGhleSBhcmUuCgoKClRoYW5rcwpEYXZpZAo=
+>Hi, 
+>
+>At 2024-09-22 00:12:01, "Kent Overstreet" <kent.overstreet@linux.dev> wrote:
+>>On Sun, Sep 22, 2024 at 12:02:07AM GMT, David Wang wrote:
+>>> Hi, 
+>>> 
+>>> At 2024-09-09 21:37:35, "Kent Overstreet" <kent.overstreet@linux.dev> wrote:
+>>> >On Sat, Sep 07, 2024 at 06:34:37PM GMT, David Wang wrote:
+>>> 
+>>> >
+>>> >Big standard deviation (high tail latency?) is something we'd want to
+>>> >track down. There's a bunch of time_stats in sysfs, but they're mostly
+>>> >for the write paths. If you're trying to identify where the latencies
+>>> >are coming from, we can look at adding some new time stats to isolate.
+>>> 
+>>> About performance, I have a theory based on some observation I made recently:
+>>> When user space app make a 4k(8 sectors) direct write, 
+>>> bcachefs would initiate a write request of ~11 sectors, including the checksum data, right?
+>>> This may not be a good offset+size pattern of block layer for performance.  
+>>> (I did get a very-very bad performance on ext4 if write with 5K size.)
+>>
+>>The checksum isn't inline with the data, it's stored with the pointer -
+>>so if you're seeing 11 sector writes, something really odd is going
+>>on...
+>>
+>
+>.... This is really contradict with my observation:
+>1. fio stats yields a average 50K IOPS for a 400 seconds random direct write test.
+>2. from /proc/diskstatas, average "Field 5 -- # of writes completed"  per second is also 50K
+>(Here I conclude the performance issue is not caused by extra IOPS for checksum.)
+>3.  from "Field 10 -- # of milliseconds spent doing I/Os",  average disk "busy" time per second is about ~0.9second, similar to the result of ext4 test.
+>(Here I conclude the performance issue it not caused by not pushing disk device too hard.)
+>4. delta(Field 7 -- # of sectors written) / delta(Field 5 -- # of writes completed)  for 5 minutes interval is 11 sectors/write.
+>(This is why I draw the theory that the checksum is with raw data......I thought is was a reasonable...)
+>
+>I will make some debug code to collect sector number patterns.
+>
+
+I collected sector numbers at the beginning of submit_bio in block/blk-core.c,
+It turns out my guess was totally wrong, the user data is 8-sectors clean, the ~11 sectors
+I observed was just average sector per write. Sorry, I assumed too much, I thought each user write
+would be companied by a checksum-write.....
+And during a stress direct-4K-write test, the top-20 write sector number pattern is:
+	+---------+------------+
+	| sectors | percentage |
+	+---------+------------+
+	|    8    |  97.637%   |
+	|    1    |   0.813%   |   
+	|   510   |   0.315%   |  <== large <--journal_write_submit
+	|    4    |   0.123%   |
+	|    3    |   0.118%   |
+	|    2    |   0.117%   |
+	|   508   |   0.113%   |  <==
+	|   509   |   0.094%   |  <==
+	|    5    |   0.075%   |
+	|    6    |   0.037%   |
+	|   507   |   0.032%   |  <==
+	|    14   |   0.024%   |
+	|    13   |   0.020%   |
+	|    11   |   0.020%   |
+	|    15   |   0.020%   |
+	|    10   |   0.020%   |
+	|    16   |   0.018%   |
+	|    12   |   0.018%   |
+	|    7    |   0.017%   |
+	|    20   |   0.017%   |
+	+---------+------------+
+
+btree_io write pattern, collected from btree_node_write_endio, 
+is kind of uniform/flat distributed, not on block-friendly size
+boundaries (I think):
+	+---------+------------+
+	| sectors | percentage |
+	+---------+------------+
+	|    1    |   9.021%   |
+	|    3    |   1.440%   |
+	|    4    |   1.249%   |
+	|    2    |   1.157%   |
+	|    5    |   0.804%   |
+	|    6    |   0.409%   |
+	|    14   |   0.259%   |
+	|    15   |   0.253%   |
+	|    16   |   0.228%   |
+	|    7    |   0.226%   |
+	|    11   |   0.223%   |
+	|    10   |   0.223%   |
+	|    13   |   0.222%   |
+	|    9    |   0.213%   |
+	|    12   |   0.202%   |
+	|    41   |   0.194%   |
+	|    17   |   0.183%   |
+	|    8    |   0.182%   |
+	|    18   |   0.167%   |
+	|    20   |   0.167%   |
+	|    19   |   0.163%   |
+	|    21   |   0.160%   |
+	|   205   |   0.158%   |
+	|    22   |   0.145%   |
+	|    23   |   0.117%   |
+	|    24   |   0.093%   |
+	|    51   |   0.089%   |
+	|    25   |   0.080%   |
+	|   204   |   0.079%   |
+	+---------+------------+
+
+
+Now, it seems to be that journal_io's big trunk of IO and btree_io's
+irregular IO size would be the main causing factors for halving direct-4K-write
+ user-io bandwidth, compared with ext4.
+
+
+Maybe btree_io's irregular IO size could be regularized?
+
+> 
+>
+>
+>>I would suggest doing some testing with data checksums off first, to
+>>isolate the issue; then it sounds like that IO pattern needs to be
+>>looked at.
+>
+>I will try it. 
+
+I format  partition with
+`sudo bcachefs format --metadata_checksum=none --data_checksum=none /dev/nvme0n1p1`
+
+It dosen't have significant help with write performance:
+"IOPS=53.3k, BW=208MiB/s" --> "IOPS=55.3k, BW=216MiB/s",
+and btree write's irregular IO size pattern still shows up.
+
+But it help improve direct-4k-read performance significantly, I guess that would be expected
+considering no extra data needs to be fetched for each read.
+
+> 
+>>
+>>Check the extents btree in debugfs as well, to make sure the extents are
+>>getting written out as you think they are.
+
+
+Thanks
+David
+
