@@ -1,88 +1,115 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFCC176AC3;
-	Sun, 22 Sep 2024 08:47:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7CA229A2;
+	Sun, 22 Sep 2024 12:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726994877; cv=none; b=ttSjG220Q+gjE5jFQ/CMa2zHn/ADVKsJv3HJ93g7yJ8wd0JZaC1gBxSJuDC2dO9gg0k3db+aLAssNWdNW9ulnas93CfN8LtxZWvY1Qz4NcABmTOyRdWfwIUWgOul4LN+ChWL9m9umz20NBig/qOPFElPVq1O5qD3yGlaZHxBRsg=
+	t=1727008821; cv=none; b=RrBN3KFz9SXW1//fYHlxifh/pBZ3wyCuzczos/tAtuWcQD9teenHniniJI4fvTjQkTX7WAmayV6jqRmZi5sADUN2RDgJ9mrbeWWC2Zj5KifZxjvyYZLUdeBensvY+9ns8/NRcRKeANccVK8uLyklq6EuoxEns1wVErn7hlsjQ8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726994877; c=relaxed/simple;
-	bh=A9QRinL2AqDGsnSuFzchYLYIA5QIF5TFYfI4vFEGbG8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=UGk+gLlOcHLUmZuuxvOwJCP8kn9TKrnQRP0O5UvRfoYX5eGyZ0Sq0VuEMr8v956aZHdcUmhrSosALskWBMf84rFL9hbpZ1X4MyxQTsSo5v3/B2zrwlorzjvjpgQG0KQS2EfdzP7w4/bxoQ3Q90RgqOUvvA4zH9t2TlM0A13kFrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=XmVPvsdp reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1727008821; c=relaxed/simple;
+	bh=Q82WXYZ1Yurqa08Ojwhm3K3sxc3I/U7IlnVxJYW7yXo=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O8gFWznPzE5gEuhjiJBQxLG+SMQmoWweBgii+KduvqR+s3G4LhDC5A10D5Of7nPkgru7MEM3zLHHWInzzVWNjhYbh97TdoEwebjRNty6i1J4A/IpfszGXl6qWyXK6SsPxLKugCqUrSMF6ILItTENuP2bmwGGrJCHrM6xxAMUKTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=FJ1CaB3V; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="XmVPvsdp"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=lg0wJWyar9THY53fKkciHpwQH2L/jJMZlVEM8o1rz1s=; b=X
-	mVPvsdp6k9NERp0+PK9YwrBNw+bldEgPU750LM8G/LXiWn04lTIFwhfAjdqduaPZ
-	LIJZv6MZw9bErYw0UIsZ1+KL00t/CPVERbA2x7p/SPnJO2rYgVC2FrBNUhbJmex/
-	DHQwxOkWvUCqTvAOny7Ms3wFNmNOxNulKDHNQBjlXY=
-Received: from 00107082$163.com ( [111.35.191.143] ) by
- ajax-webmail-wmsvr-40-140 (Coremail) ; Sun, 22 Sep 2024 16:47:25 +0800
- (CST)
-Date: Sun, 22 Sep 2024 16:47:25 +0800 (CST)
-From: "David Wang" <00107082@163.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [BUG?] bcachefs performance: read is way too slow when a file
- has no overwrite
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <20240922083148.10070-1-00107082@163.com>
-References: <79f17c7a.65f.19217621c47.Coremail.00107082@163.com>
- <20240922083148.10070-1-00107082@163.com>
-X-NTES-SC: AL_Qu2ZBPWSu0Av4yeYZ+kXn0oTju85XMCzuv8j3YJeN500hyX/8xgmcnBuOXvk4sOPLhGSvxe4fyJl+MlZT4xGdLLpf0YaJlFpAJf5Y3zAafAL
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="FJ1CaB3V"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1727008810; x=1727268010;
+	bh=Q82WXYZ1Yurqa08Ojwhm3K3sxc3I/U7IlnVxJYW7yXo=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=FJ1CaB3VO2YsO4SzQiPFm7gV/fD/0/k3Cm1LIjsVa0bGFH4AWfQF4cU23ekPairWr
+	 sgXIlUnQ2TWRox3HWVbwF1cCH45jHW0sNzgIPySPWH7A93EUXKjPtxqKOE4jZRuXWN
+	 cEhnA+SxqYJPp+fsntDms1nm6Pjvqe3WqL9xDZHzBqJZe1mGeFp9QG0PBpT0BgkkeF
+	 IOh2d1CI4IfElC4k5s9jKaIXBo0qoRcEf+Smfal8pGi6v56sQJK6ZYwvO4VH8TGnf7
+	 2kkLXg+81YYyXaTX+o5WJHR4Y4ev6HqTNQVio8CPTN8bHVA7myzGdc2HQG9f9DLlEt
+	 W5aWRpem5mSFw==
+Date: Sun, 22 Sep 2024 12:40:07 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+From: Piotr Zalewski <pZ010001011111@proton.me>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, skhan@linuxfoundation.org
+Subject: Re: [PATCH] bcachefs: add GFP_ZERO flag in btree_bounce_alloc
+Message-ID: <uDWtvpxzXCkjTZVPdrrhrF_wVv8J6JS1gb1Cy_l6uM6houxjn23qXxT4u8YxzVRJrh0LnMIBOa8Zl_NIVyWZPblDTblYi_VJ357130uk0q4=@proton.me>
+In-Reply-To: <frpohbqgpyhd6fkwkd5h6efqiph27mgmcbex3bipmksyc2vocp@tfz6oynigmgi>
+References: <20240916224746.692973-1-pZ010001011111@proton.me> <frpohbqgpyhd6fkwkd5h6efqiph27mgmcbex3bipmksyc2vocp@tfz6oynigmgi>
+Feedback-ID: 53478694:user:proton
+X-Pm-Message-ID: 81ca371211f693f2249cf64c737d9b8403da2e63
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <3fcdf5b3.203d.19218ea100b.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:jCgvCgD3n02e2e9m+90CAA--.27548W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiMxpiqmbvz7duQQABs+
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-CkF0IDIwMjQtMDktMjIgMTY6MzE6NDgsICJEYXZpZCBXYW5nIiA8MDAxMDcwODJAMTYzLmNvbT4g
-d3JvdGU6Cj4+SGksIAo+PgoKPmJ0cmVlX2lvIHdyaXRlIHBhdHRlcm4sIGNvbGxlY3RlZCBmcm9t
-IGJ0cmVlX25vZGVfd3JpdGVfZW5kaW8sIAo+aXMga2luZCBvZiB1bmlmb3JtL2ZsYXQgZGlzdHJp
-YnV0ZWQsIG5vdCBvbiBibG9jay1mcmllbmRseSBzaXplCj5ib3VuZGFyaWVzIChJIHRoaW5rKToK
-PgkrLS0tLS0tLS0tKy0tLS0tLS0tLS0tLSsKPgl8IHNlY3RvcnMgfCBwZXJjZW50YWdlIHwKPgkr
-LS0tLS0tLS0tKy0tLS0tLS0tLS0tLSsKPgl8ICAgIDEgICAgfCAgIDkuMDIxJSAgIHwKPgl8ICAg
-IDMgICAgfCAgIDEuNDQwJSAgIHwKPgl8ICAgIDQgICAgfCAgIDEuMjQ5JSAgIHwKPgl8ICAgIDIg
-ICAgfCAgIDEuMTU3JSAgIHwKPgl8ICAgIDUgICAgfCAgIDAuODA0JSAgIHwKPgl8ICAgIDYgICAg
-fCAgIDAuNDA5JSAgIHwKPgl8ICAgIDE0ICAgfCAgIDAuMjU5JSAgIHwKPgl8ICAgIDE1ICAgfCAg
-IDAuMjUzJSAgIHwKPgl8ICAgIDE2ICAgfCAgIDAuMjI4JSAgIHwKPgl8ICAgIDcgICAgfCAgIDAu
-MjI2JSAgIHwKPgl8ICAgIDExICAgfCAgIDAuMjIzJSAgIHwKPgl8ICAgIDEwICAgfCAgIDAuMjIz
-JSAgIHwKPgl8ICAgIDEzICAgfCAgIDAuMjIyJSAgIHwKPgl8ICAgIDkgICAgfCAgIDAuMjEzJSAg
-IHwKPgl8ICAgIDEyICAgfCAgIDAuMjAyJSAgIHwKPgl8ICAgIDQxICAgfCAgIDAuMTk0JSAgIHwK
-Pgl8ICAgIDE3ICAgfCAgIDAuMTgzJSAgIHwKPgl8ICAgIDggICAgfCAgIDAuMTgyJSAgIHwKPgl8
-ICAgIDE4ICAgfCAgIDAuMTY3JSAgIHwKPgl8ICAgIDIwICAgfCAgIDAuMTY3JSAgIHwKPgl8ICAg
-IDE5ICAgfCAgIDAuMTYzJSAgIHwKPgl8ICAgIDIxICAgfCAgIDAuMTYwJSAgIHwKPgl8ICAgMjA1
-ICAgfCAgIDAuMTU4JSAgIHwKPgl8ICAgIDIyICAgfCAgIDAuMTQ1JSAgIHwKPgl8ICAgIDIzICAg
-fCAgIDAuMTE3JSAgIHwKPgl8ICAgIDI0ICAgfCAgIDAuMDkzJSAgIHwKPgl8ICAgIDUxICAgfCAg
-IDAuMDg5JSAgIHwKPgl8ICAgIDI1ICAgfCAgIDAuMDgwJSAgIHwKPgl8ICAgMjA0ICAgfCAgIDAu
-MDc5JSAgIHwKPgkrLS0tLS0tLS0tKy0tLS0tLS0tLS0tLSsKPgoKT29wcy4uLndyb25nIHdlaWdo
-dCB1c2VkIHRvIGNhbGN1bGF0ZSBwZXJjZW50YWdlLCBpdCBzaG91bGQgYmUKKy0tLS0tLS0tLSst
-LS0tLS0tLS0tLS0rCnwgc2VjdG9ycyB8IHBlcmNlbnRhZ2UgfAorLS0tLS0tLS0tKy0tLS0tLS0t
-LS0tLSsKfCAgICAxICAgIHwgIDQ1LjEwNSUgICB8CnwgICAgMyAgICB8ICAgNy4yMDAlICAgfAp8
-ICAgIDQgICAgfCAgIDYuMjQ0JSAgIHwKfCAgICAyICAgIHwgICA1Ljc4NSUgICB8CnwgICAgNSAg
-ICB8ICAgNC4wMTglICAgfAp8ICAgIDYgICAgfCAgIDIuMDQ1JSAgIHwKfCAgICAxNCAgIHwgICAx
-LjI5NiUgICB8CnwgICAgMTUgICB8ICAgMS4yNjQlICAgfAp8ICAgIDE2ICAgfCAgIDEuMTQxJSAg
-IHwKfCAgICA3ICAgIHwgICAxLjEyOSUgICB8CnwgICAgMTEgICB8ICAgMS4xMTclICAgfAp8ICAg
-IDEwICAgfCAgIDEuMTEzJSAgIHwKfCAgICAxMyAgIHwgICAxLjExMSUgICB8CnwgICAgOSAgICB8
-ICAgMS4wNjUlICAgfAp8ICAgIDEyICAgfCAgIDEuMDExJSAgIHwKfCAgICA0MSAgIHwgICAwLjk3
-MSUgICB8CnwgICAgMTcgICB8ICAgMC45MTMlICAgfAp8ICAgIDggICAgfCAgIDAuOTEyJSAgIHwK
-fCAgICAxOCAgIHwgICAwLjgzNiUgICB8CnwgICAgMjAgICB8ICAgMC44MzUlICAgfAp8ICAgIDE5
-ICAgfCAgIDAuODEyJSAgIHwKfCAgICAyMSAgIHwgICAwLjc5OSUgICB8CnwgICAyMDUgICB8ICAg
-MC43OTElICAgfAp8ICAgIDIyICAgfCAgIDAuNzI0JSAgIHwKfCAgICAyMyAgIHwgICAwLjU4NyUg
-ICB8CnwgICAgMjQgICB8ICAgMC40NjUlICAgfAp8ICAgIDUxICAgfCAgIDAuNDQzJSAgIHwKfCAg
-ICAyNSAgIHwgICAwLjM5OCUgICB8CnwgICAyMDQgICB8ICAgMC4zOTYlICAgfAorLS0tLS0tLS0t
-Ky0tLS0tLS0tLS0tLSsKCgpEYXZpZAo=
+
+On Saturday, September 21st, 2024 at 8:47 PM, Kent Overstreet <kent.overstr=
+eet@linux.dev> wrote:
+
+> On Mon, Sep 16, 2024 at 10:47:57PM GMT, Piotr Zalewski wrote:
+>=20
+> > Add __GFP_ZERO flag to kvmalloc call in btree_bounce_alloc to mitigate
+> > later uinit-value use KMSAN warning[1].
+> >=20
+> > After applying the patch reproducer still triggers stack overflow[2] bu=
+t
+> > it seems unrelated to the uninit-value use warning. After further
+> > investigation it was found that stack overflow occurs because KMSAN add=
+s
+> > additional function calls. Backtrace of where the stack magic number ge=
+ts
+> > smashed was added as a reply to syzkaller thread[3].
+> >=20
+> > I confirmed that task's stack magic number gets smashed after the code =
+path
+> > where KSMAN detects uninit-value use is executed, so it can be assumed =
+that
+> > it doesn't contribute in any way to uninit-value use detection.
+> >=20
+> > [1] https://syzkaller.appspot.com/bug?extid=3D6f655a60d3244d0c6718
+> > [2] https://lore.kernel.org/lkml/66e57e46.050a0220.115905.0002.GAE@goog=
+le.com
+> > [3] https://lore.kernel.org/all/rVaWgPULej8K7HqMPNIu8kVNyXNjjCiTB-QBtIt=
+LFBmk0alH6fV2tk4joVPk97Evnuv4ZRDd8HB5uDCkiFG6u81xKdzDj-KrtIMJSlF6Kt8=3D@pro=
+ton.me
+> >=20
+> > Signed-off-by: Piotr Zalewski pZ010001011111@proton.me
+>=20
+>=20
+> Oh hey, nice find :)
+
+Hi!
+
+> We should be able to fix this in a more performant way, though; btree
+> node resort is a path where we do care about performance, we don't want
+> to touch the whole buffer more times than necessary.
+>=20
+> Can you try zeroing out the portion after what we consumed, after we
+> sort into the bounce buffer?
+
+Do you mean something like this? :
+diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+index 56ea9a77cd4a..c737ece6f628 100644
+--- a/fs/bcachefs/btree_io.c
++++ b/fs/bcachefs/btree_io.c
+@@ -1195,6 +1195,10 @@ int bch2_btree_node_read_done(struct bch_fs *c, stru=
+ct bch_dev *ca,
+ =09set_btree_bset(b, b->set, &b->data->keys);
+=20
+ =09b->nr =3D bch2_key_sort_fix_overlapping(c, &sorted->keys, iter);
++=09memset((uint8_t*)(sorted + 1) + b->nr.live_u64s * sizeof(u64), 0,
++=09=09=09btree_buf_bytes(b) -
++=09=09=09sizeof(struct btree_node) -
++=09=09=09b->nr.live_u64s * sizeof(u64));
+=20
+ =09u64s =3D le16_to_cpu(sorted->keys.u64s);
+ =09*sorted =3D *b->data;
+
+I tested that above doesn't trigger uinit-value usage.
+
+Best regards, Piotr Zalewski
