@@ -1,171 +1,151 @@
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E702737703
-	for <linux-bcachefs@vger.kernel.org>; Sun, 22 Sep 2024 22:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD79A768E7;
+	Sun, 22 Sep 2024 23:35:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727044580; cv=none; b=Kbt0wFWud4Mff70UhiSaM/LvFMxX2Jh9+USbM1GTLwfrJFDafDaMYSNJtgj4iUC/hzVUTewR+86QwphgaU6OlX+C195YlcaL77L+mGUoO0sRAnVjGb/mjHQqnlfxUfGb0uGo4MJTGDXIJjO12uGmCgRkqlb7t2upxVg5lFMpmgM=
+	t=1727048143; cv=none; b=kwZOL47c98QLY5qWNWGKfI+RG5S1Btk2iGBakI1sWks1nmN234/OX6suXxEslPomdeIIvdPMt/N87Ls+DWPnegC1q7ogRnzyq1HmSNOYD9kwyoKnjkILVjYIXoVnZDIj4YosNUxjfFiIszTjb4o3I87y2GG1oN7XBq5iXhmpA/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727044580; c=relaxed/simple;
-	bh=rrztqsF7OwV8X/8o/MH2nesdKEqI0oNje9Kh9RGNGfQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=btWnwySvswtRddZoT9hxAQxaoJPROpQ55r0RcTiLAjqdyiM3gPapRXAxEefJk4LsTFizEzOhm6QXhlu6O5EBcjAI72k+7pqWLKVLHtO3nTrlx0+NuvkXGNuMGIG77u025V2yL6ZuNbivkiIeiu/CwLFT+3Vmk8Ak9rBGoOtwyPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-39f4e119c57so36879005ab.2
-        for <linux-bcachefs@vger.kernel.org>; Sun, 22 Sep 2024 15:36:18 -0700 (PDT)
+	s=arc-20240116; t=1727048143; c=relaxed/simple;
+	bh=9E9Vd3oqfcEY88ItHZvQHnivGZTM4ubhD0H+LkTPPDw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QWqlGvQXZNNfFEao9OO+6VxG4gCq/D1b9XpVy10Vsdei6F6g3NBu2GqiiWH4u7u5sLFa2cpDUOGhyKDRAs/il/tZ1kidTUTCLi0cYcO504T/O97MssDvkEoV1buIDGDbbfv7HnbpdJlWL6sWSm6R6vw1W2c6ihZIiyaTNNP16U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PspyYap1; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PspyYap1"
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4585e250f9dso23830611cf.1;
+        Sun, 22 Sep 2024 16:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727048141; x=1727652941; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/PEJwHOdY7wkPp0EG+MaZgMxqJRwsEBUudUxGaSPXa0=;
+        b=PspyYap17PQO9+U8giO3G8FgkNf4a0xQLynMHr1xNibE7g7bP30s0G3m1BRM9yOfKq
+         5zpEvzf0Yqaep1pFQDD4laRFjmXIEBRedpcEVJiZysk1fk0lKJnIZxFWeZmjADEflTB5
+         NPBmRCDCRXmVjJ9QedB/Q7v01LGTzqe55EHqx8NhNFUwrSP4XWTZbnHodT3ctA2UmUty
+         z+MmNa8ephbviz5oxxTDyq487Zq+insZhS2+SQLHOrsONkZpKmPKPTGFhOm/9vwqJerD
+         Rt7sbGK3CevsgvdPVqX/Uo5YUkl5i43wBG6kVUVY0NpSm1ZvRkySyCyjrNHlBMFYbDqT
+         jKsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727044578; x=1727649378;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iL62wxxyf2BpRpsU5hflOQFY9hc2nxQLvKroPtdHQxE=;
-        b=TSLClskTnK7oFoEDatuGhsOscByFvf8ZTkYPulGySxK7a8phb6H7bH5QK/UZEDymmH
-         z0a0hiJ/n8qvloInH/rRCls7Yz6XGjKlFCz+etMlilehVy7Nn9haO5NP4YAfXhIo2bY2
-         mcF2E7YawuBNQ+iRa6cpBO5vSUC19u+Q7lQIMNh3XYu1peAHANrj1zeCveAa/V8SZrWo
-         l5q6G8UBQeiIrsdkVUixgo2BkDFbfVFmp5ZjrlRNFo2/XZmFSHMf1OcJ5exUUtOdmvkp
-         dp/FTQEzpgqz1WExcGA8giF+nB/YLzU/z5Ce7cZiR51r39lJu7CpZD/eV/p4Ppz+KNzX
-         vqVg==
-X-Forwarded-Encrypted: i=1; AJvYcCVcVgNW7K9vjxEBdg+BU4cN0pteJ1HSDUAtKLIXMNNYMNK+aFI58MyMRfrh//1o29qQGdTL4uJzTYjSq3hLtw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqNPU76F0QpvaVvuQDya5AyE0v7y7WanFkDbFFxNXxCo9jpbxJ
-	N9/ExE324q+9Lx694/rlQ0PTCJ47r5dLdCmOiBr9CN2We2LrDVO/tGlOmdFiNqTjUvIBvWfmGwi
-	T5q+COg+bpaw0rHOaSkWyfn2mpEjc9nJOqwTQBwZnGVvdKFB2zEfgo8M=
-X-Google-Smtp-Source: AGHT+IH9jWsMkXxh99DaVhP2wGXf9XeHPJzHQmMixq0twgjJbVBWeGbGgFkzeauvMQJbn3iEZOuiuTv5RlHFs6t+4DKFYhXfKeb7
+        d=1e100.net; s=20230601; t=1727048141; x=1727652941;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/PEJwHOdY7wkPp0EG+MaZgMxqJRwsEBUudUxGaSPXa0=;
+        b=gFMb3zut557DVhxE2+eUR4LY5Wb4TNaAUqwQVD3VIXyWt+I8td8crYIyEU49f/U42C
+         goVYR9CRhWYdXgvI/QrFkTbzSE6T2Gw/GHEF/NsdbOeX5AWbMVAhcguSQaanbjIQhTwS
+         NGiMJHujTAq20m0zfaZDwjtV0OGjSddJ5ujY0zvFIXCKr9sgBiVk26/sy4wAR5H/gxcG
+         o2eTh7UhW5RHtP9YIF+tFMBJp5WuSbgPbA79W3QEuOc9sVxS6WzLEJdncTKDdDACvtN0
+         IDg9vUgdWTsfdP5/ZtZri4Lsc3Q4lRChoGmpiwPxqqtz8unVSMSjtOLyPQxLw9S74ck9
+         5paQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWLGDGGUXkl4S2sRjBgL1MpO/yrpjy+XBBdNWf6vz77vzQyYOBCvCe/rqaambtfPOKzsYHhd1H8jpREdws=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywr/y6N6+3GSdG6zxzGfc/Vt/4k2dhoLIEK2bbTzXxB+pZYBqHL
+	A0GNsRQYv8tZ/buxH59qcd+UZ+7tr8kOJSge5JoUkbBEq6rldcIp
+X-Google-Smtp-Source: AGHT+IHCNMlo2XNAIETIqPMq0YQaisDQ+va5DNyj6dh95cu537MVSDNcpnQLCfcAI9GJRE8a4CBp1w==
+X-Received: by 2002:ac8:5914:0:b0:455:9ef:8895 with SMTP id d75a77b69052e-45b204e0575mr144933911cf.11.1727048140583;
+        Sun, 22 Sep 2024 16:35:40 -0700 (PDT)
+Received: from localhost.localdomain (d24-150-189-55.home.cgocable.net. [24.150.189.55])
+        by smtp.googlemail.com with ESMTPSA id d75a77b69052e-45b17919f40sm41426341cf.79.2024.09.22.16.35.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Sep 2024 16:35:40 -0700 (PDT)
+From: Dennis Lam <dennis.lamerice@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+24beef64217854da05a4@syzkaller.appspotmail.com,
+	Dennis Lam <dennis.lamerice@gmail.com>
+Subject: [PATCH] bcachefs: fix divide by zero error in util.c
+Date: Sun, 22 Sep 2024 19:33:44 -0400
+Message-ID: <20240922233343.121427-2-dennis.lamerice@gmail.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1648:b0:39f:7a06:2a62 with SMTP id
- e9e14a558f8ab-3a0c8c5d451mr84764035ab.5.1727044578080; Sun, 22 Sep 2024
- 15:36:18 -0700 (PDT)
-Date: Sun, 22 Sep 2024 15:36:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66f09be2.050a0220.a27de.0008.GAE@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_iter_verify_entry_exit (2)
-From: syzbot <syzbot+dc1f3e7147b8fc81e0ac@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+This patch aims to fix a bug found by syzbot where a crash occurs due to
+a divide by zero error in the bcachefs subsystem [1].
 
-syzbot found the following issue on:
+Bcachefs has a file called util.c that uses the function div_u64 to perform
+division using 64-bit values. The function's parameters uses a 64-bit dividend
+and a 32-bit divisor to perform its division, however sometimes in this file
+a 64-bit divisor is passed using this function. When in use, the 64-bit value
+is passed as a 32-bit value, creating the possibility of a division by zero error.
 
-HEAD commit:    4a39ac5b7d62 Merge tag 'random-6.12-rc1-for-linus' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12caffc7980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dd14c10ec1b6af25
-dashboard link: https://syzkaller.appspot.com/bug?extid=dc1f3e7147b8fc81e0ac
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=130c4b00580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=129f269f980000
+Therefore, this fix replaces the function div_u64 with div64_u64 where the
+dividend and divisor is a 64-bit value to perform the correct division.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-4a39ac5b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e77a3b8ac098/vmlinux-4a39ac5b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f8ee7a5fea46/bzImage-4a39ac5b.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/01f24a788ecc/mount_0.gz
+[1] https://syzkaller.appspot.com/bug?extid=24beef64217854da05a4
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dc1f3e7147b8fc81e0ac@syzkaller.appspotmail.com
-
-  u64s 7 type reflink_p POS_MIN len 0 ver 0: idx 18446744069414584320 front_pad 4096 back_pad 0
-  missing range 18446744069414580224-18446744069414584320, fixing
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/btree_iter.c:268!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5096 Comm: syz-executor359 Not tainted 6.11.0-syzkaller-05319-g4a39ac5b7d62 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:bch2_btree_iter_verify_entry_exit+0x51b/0x550 fs/bcachefs/btree_iter.c:267
-Code: c1 fd ff ff 44 89 e1 80 e1 07 38 c1 0f 8c c6 fd ff ff be 08 00 00 00 4c 89 e7 e8 30 01 e7 fd e9 b4 fd ff ff e8 b6 7c 7f fd 90 <0f> 0b e8 ae 7c 7f fd 90 0f 0b e8 a6 7c 7f fd 90 0f 0b e8 9e 7c 7f
-RSP: 0018:ffffc90002e5d958 EFLAGS: 00010293
-RAX: ffffffff8414624a RBX: 0000000000000992 RCX: ffff88801edbc880
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff84145db0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffc90002e5dfd0
-R13: 0000000000000000 R14: ffffc90002e5dfe0 R15: dffffc0000000000
-FS:  000055559175c380(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005572bbd324a8 CR3: 0000000000b40000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bch2_btree_iter_peek_upto+0x600/0x6f90 fs/bcachefs/btree_iter.c:2281
- bch2_trans_update_extent fs/bcachefs/btree_update.c:299 [inline]
- bch2_trans_update+0x5f9/0x2550 fs/bcachefs/btree_update.c:514
- bch2_btree_insert_trans+0x26f/0x550 fs/bcachefs/btree_update.c:646
- gc_trigger_reflink_p_segment fs/bcachefs/reflink.c:195 [inline]
- __trigger_reflink_p+0x2a08/0x2ec0 fs/bcachefs/reflink.c:234
- bch2_trigger_reflink_p+0x297/0x380 fs/bcachefs/reflink.c:253
- bch2_key_trigger fs/bcachefs/bkey_methods.h:87 [inline]
- bch2_gc_mark_key+0x6b5/0x10e0 fs/bcachefs/btree_gc.c:633
- bch2_gc_btree fs/bcachefs/btree_gc.c:669 [inline]
- bch2_gc_btrees fs/bcachefs/btree_gc.c:728 [inline]
- bch2_check_allocations+0x1d1b/0x7870 fs/bcachefs/btree_gc.c:1135
- bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:183
- bch2_run_recovery_passes+0x19e/0x820 fs/bcachefs/recovery_passes.c:230
- bch2_fs_recovery+0x24f9/0x38b0 fs/bcachefs/recovery.c:859
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1036
- bch2_fs_get_tree+0xd61/0x1700 fs/bcachefs/fs.c:1956
- vfs_get_tree+0x90/0x2b0 fs/super.c:1800
- do_new_mount+0x2be/0xb40 fs/namespace.c:3507
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4055 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4032
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fea8a61c1ea
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd032097c8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffd032097e0 RCX: 00007fea8a61c1ea
-RDX: 0000000020005d80 RSI: 0000000020000000 RDI: 00007ffd032097e0
-RBP: 0000000000000004 R08: 00007ffd03209820 R09: 0000000000005d93
-R10: 0000000000000008 R11: 0000000000000282 R12: 0000000000000008
-R13: 00007ffd03209820 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bch2_btree_iter_verify_entry_exit+0x51b/0x550 fs/bcachefs/btree_iter.c:267
-Code: c1 fd ff ff 44 89 e1 80 e1 07 38 c1 0f 8c c6 fd ff ff be 08 00 00 00 4c 89 e7 e8 30 01 e7 fd e9 b4 fd ff ff e8 b6 7c 7f fd 90 <0f> 0b e8 ae 7c 7f fd 90 0f 0b e8 a6 7c 7f fd 90 0f 0b e8 9e 7c 7f
-RSP: 0018:ffffc90002e5d958 EFLAGS: 00010293
-RAX: ffffffff8414624a RBX: 0000000000000992 RCX: ffff88801edbc880
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff84145db0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffc90002e5dfd0
-R13: 0000000000000000 R14: ffffc90002e5dfe0 R15: dffffc0000000000
-FS:  000055559175c380(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055c54a0790f8 CR3: 0000000000b40000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Reported-and-tested-by: syzbot+24beef64217854da05a4@syzkaller.appspotmail.com
+Signed-off-by: Dennis Lam <dennis.lamerice@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/bcachefs/util.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
+index 1b8554460af4..cea162b99864 100644
+--- a/fs/bcachefs/util.c
++++ b/fs/bcachefs/util.c
+@@ -64,7 +64,7 @@ static int bch2_pow(u64 n, u64 p, u64 *res)
+ 	*res = 1;
+ 
+ 	while (p--) {
+-		if (*res > div_u64(U64_MAX, n))
++		if (*res > div64_u64(U64_MAX, n))
+ 			return -ERANGE;
+ 		*res *= n;
+ 	}
+@@ -140,14 +140,14 @@ static int __bch2_strtou64_h(const char *cp, u64 *res)
+ 
+ 	parse_or_ret(cp, parse_unit_suffix(cp, &b));
+ 
+-	if (v > div_u64(U64_MAX, b))
++	if (v > div64_u64(U64_MAX, b))
+ 		return -ERANGE;
+ 	v *= b;
+ 
+-	if (f_n > div_u64(U64_MAX, b))
++	if (f_n > div64_u64(U64_MAX, b))
+ 		return -ERANGE;
+ 
+-	f_n = div_u64(f_n * b, f_d);
++	f_n = div64_u64(f_n * b, f_d);
+ 	if (v + f_n < v)
+ 		return -ERANGE;
+ 	v += f_n;
+@@ -360,7 +360,7 @@ void bch2_pr_time_units(struct printbuf *out, u64 ns)
+ {
+ 	const struct time_unit *u = bch2_pick_time_units(ns);
+ 
+-	prt_printf(out, "%llu %s", div_u64(ns, u->nsecs), u->name);
++	prt_printf(out, "%llu %s", div64_u64(ns, u->nsecs), u->name);
+ }
+ 
+ static void bch2_pr_time_units_aligned(struct printbuf *out, u64 ns)
+@@ -477,7 +477,7 @@ void bch2_time_stats_to_text(struct printbuf *out, struct bch2_time_stats *stats
+ 			bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
+ 
+ 			u64 q = max(quantiles->entries[i].m, last_q);
+-			prt_printf(out, "%llu ", div_u64(q, u->nsecs));
++			prt_printf(out, "%llu ", div64_u64(q, u->nsecs));
+ 			if (is_last)
+ 				prt_newline(out);
+ 			last_q = q;
+@@ -511,7 +511,7 @@ void bch2_ratelimit_increment(struct bch_ratelimit *d, u64 done)
+ {
+ 	u64 now = local_clock();
+ 
+-	d->next += div_u64(done * NSEC_PER_SEC, d->rate);
++	d->next += div64_u64(done * NSEC_PER_SEC, d->rate);
+ 
+ 	if (time_before64(now + NSEC_PER_SEC, d->next))
+ 		d->next = now + NSEC_PER_SEC;
+-- 
+2.46.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
