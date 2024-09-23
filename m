@@ -1,36 +1,39 @@
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3CCD528
-	for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 09:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67CB181749
+	for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 14:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727084411; cv=none; b=Rd/uC6vN8uOGsHus4BNIQ7hSE9KRKdIrbsOIuRf5RcZM5MoKT9UfIwPeZEXCzW0lthcQFBa4GeioH90uDOmOrjSQ/v1XAkblc879m567oXuEj2E1PxWQApCjujVJ63FN7ATx576NnX1wixlehit2IH77g91Q9lOq91QZmwYToY8=
+	t=1727101303; cv=none; b=M+rwY0NOY8Fl34+eldLBQb92PFujy4Zo+izWlO41pRQOl3t7+pVLIXc4PY2qldaLpn42Z/4sQYIeLlvLGnmPEdtP15X6mgLHPGe98P02xodQD1OBFoJU13hs4qjlDSAE6oadfuUWWwd8h1JT0KjIfQE+6WzmEsOmL1wS2Rbt0+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727084411; c=relaxed/simple;
-	bh=p/Ta7Ks0vEqc1ykflQRoiq+RQCWWA8CQ/Am3Vl5HKLk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ExGm+ldUPa1TzDkR3iMaajRC1YFNztd1o8x58VB7BC93JMGimhE8R2dHgXOD3ZfTvrqQigE7NMcIRseKpIuF6h1HMBW5m4bURp2zd3iTm4nEGi0Sfkcb4rNvDJt2UaFhormlnnJuIoCIdsAtUYBV/6MaojkM17hUsVCKOc2tzJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4XBybG4V9mzpWFW;
-	Mon, 23 Sep 2024 17:38:02 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id A8782180106;
-	Mon, 23 Sep 2024 17:40:05 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 23 Sep
- 2024 17:40:05 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <kent.overstreet@linux.dev>
-CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>,
-	<liaochang1@huawei.com>
-Subject: [PATCH] bcachefs: fix incorrect show_options results
-Date: Mon, 23 Sep 2024 17:50:03 +0800
-Message-ID: <20240923095003.3559171-1-lihongbo22@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1727101303; c=relaxed/simple;
+	bh=+toSuw+73TBKSfr7QVZr9PZMzXt7BLaXCEUsLRd196U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l3wHOcl8LBr3nyCsf7MuAYkxQO2ryRfCbMTQGOuRj7uih/yWqI7KGN+H/oDUokCcraSvjRCW/3XPEkxDUbfP7e2Mco3zJRYs0rzSZuG8gfTUxCqIn2F2P6NLxlRnVs3hOGWNRq0HjvY/xtbmCxVk9jSvGPrW1t9J3/g3Ii9wxIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ltx3Yfe5; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ltx3Yfe5"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727101298;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=YrXhasMZTPNLx7yJ0WgCizNLa3DnzJZY8Ov+16wH9aw=;
+	b=ltx3Yfe5CF5giL/8T0DPe72jIo64EFbozaGakezG09DLUfCT++WaWTbYQ/gDBnKco5rXGK
+	7msPAW22T/OroKHHAcIOAIPKVYT7G4hZKWARpcVduWrCJ/lprEjcN7d63n0RKkAotzeEdC
+	R6EpnMNOHIMF3OSPT4RqNuPukHFD948=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Thorsten Blum <thorsten.blum@toblux.com>,
+	Hongbo Li <lihongbo22@huawei.com>,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] bcachefs: Remove duplicate included headers
+Date: Mon, 23 Sep 2024 16:20:29 +0200
+Message-ID: <20240923142028.232365-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -38,34 +41,36 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+X-Migadu-Flow: FLOW_OUT
 
-When call show_options in bcachefs, the options buffer is appeneded
-to the seq variable. In fact, it requires an additional comma to be
-appended first. This will affect the remount process when reading
-existing mount options.
+From: Thorsten Blum <thorsten.blum@toblux.com>
 
-Fixes: 9305cf91d05e ("bcachefs: bch2_opts_to_text()")
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+The header files dirent_format.h and disk_groups_format.h are included
+twice. Remove the redundant includes and the following warnings reported
+by make includecheck:
+
+  disk_groups_format.h is included more than once
+  dirent_format.h is included more than once
+
+Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 ---
- fs/bcachefs/fs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/bcachefs/bcachefs_format.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index e774cb3e6b1a..79c3a650b714 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -1927,7 +1927,7 @@ static int bch2_show_options(struct seq_file *seq, struct dentry *root)
- 	bch2_opts_to_text(&buf, c->opts, c, c->disk_sb.sb,
- 			  OPT_MOUNT, OPT_HIDDEN, OPT_SHOW_MOUNT_STYLE);
- 	printbuf_nul_terminate(&buf);
--	seq_puts(seq, buf.buf);
-+	seq_printf(seq, ",%s", buf.buf);
- 
- 	int ret = buf.allocation_failure ? -ENOMEM : 0;
- 	printbuf_exit(&buf);
+diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+index 14ce726bf5a3..b97fd0f75831 100644
+--- a/fs/bcachefs/bcachefs_format.h
++++ b/fs/bcachefs/bcachefs_format.h
+@@ -499,8 +499,6 @@ struct bch_sb_field {
+ #include "disk_groups_format.h"
+ #include "extents_format.h"
+ #include "ec_format.h"
+-#include "dirent_format.h"
+-#include "disk_groups_format.h"
+ #include "inode_format.h"
+ #include "journal_seq_blacklist_format.h"
+ #include "logged_ops_format.h"
 -- 
-2.34.1
+2.46.1
 
