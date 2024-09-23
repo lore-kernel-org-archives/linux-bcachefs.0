@@ -1,94 +1,98 @@
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0521946AA
-	for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 19:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C45F1CA84
+	for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 19:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727118465; cv=none; b=pwEWVgnpvXZe0FRlL0Tiv+EOxNeh+DOv2W3wZTOb3LXeUUIvr0mKMExztrHJZKsxxgoCULW3yT20wwShHQo5jbrxcBjmWUbR9rZPydQNEMmTpq8k77SRcTVpe0YvHs3XZSRpRjxpyyrSBCPbN1IpSfIVWxbxQjNece/743KrBbQ=
+	t=1727121419; cv=none; b=FoNbdEE+ko9rmuIZGquc8uUVZmGxEcRKbHfFm0XP39mWw0Deact/iZA9NI3ReAPI7AKLrv1Xh0UsF1uGgYoaBOBjI2irIVHyLTgPfxxfnq87DYj2orCb/8Cyu3pJdcNGAe2QccukmMqlFTm6FQW03NOHTwJgSuhEqbPsGpb2wEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727118465; c=relaxed/simple;
-	bh=6oA7gDJzUeZfHw/vFTOmEelPMtY95bHTlj5TQt3Oydc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SC8+SG11F0EluNniZLEl4AAunYO4GQj13pONoAqF5sVx4L3ASI2udrGLg7gVAtOwFHHnruZMw3liV3OxfbZzCYXZk0xPsJV5t2ZOZ6YtA4/sh2RtvS/9xiKOmq1dB9LY+kR04fJ+ml6FcfLpFnoidJcPYVu6gzovcZbxqBxiLZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=fSb0V6Z+; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1727121419; c=relaxed/simple;
+	bh=yioyKrHUsrhpPPufYVkl6oLIP1GDj9d1PKWTIrF1+zA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=spUCo/nEayrCTeNAgxPrkgqNQ1QbWJFPRouaPwu8slRW95IabhJs8uYNGw2G9uvjDKsx2Khxu81atlrtE48rqOsao4xFGy86GYXpLKnP93Z36OM1spggE1EIql+Nwa7pSFSenHrWWn0iVd9Y10Of8qDK/v14cuEgkNpdfvNDLLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hH0lD9XK; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="fSb0V6Z+"
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-53659867cbdso6526906e87.3
-        for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 12:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1727118462; x=1727723262; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FdJ3u8jesj1qGHjIV/QOFO/xQy5KMIpe78wId6CJClM=;
-        b=fSb0V6Z+5CAymzLG/YbVjfXGwdHMAE2Idf1I6NOz35i4H/2YgO/PBATDvIAmdqTBay
-         v00+0l8I6SoO/4ZSx1vn/yOxsLw3HCpmw+97+RX3JmikAEnaUnMGN+tSS/ROca4NQueW
-         0Kheq3rVM7M0fC6OXTQ3hHSHmwxNEl4WtxjzA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727118462; x=1727723262;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FdJ3u8jesj1qGHjIV/QOFO/xQy5KMIpe78wId6CJClM=;
-        b=ifJp3Ke+Urox2MdAkr73m7T/b5Y3GNARabtAhO/ZLgs48fTSucuT+8lW4TkJDGjb5c
-         YfdMbXslb6lOW+2sRkQMtemxhq7dsgGIkp6qm8A8EcT2ogjv6WKqj+QHH8mSHQJuwkF+
-         jCjcybRwzrRt0hmx/IaUeJyFdyyOFW/UGOuqH2ztw3qA/Z9RZ+Swh0KABSklJtA7tcRt
-         UuGb0ct01JLTSoMnQaZeZk29ot8/GmdkHU33F2JnZh76ZGoyMD9QbR3Wohy+1ugPW7Cm
-         sNYnPqpzJXVzXhf+G5ksLARqPcQ27CBziJTXyMldHu8MxiwCNuIMjVoRc9uwnZ0c3o0e
-         wb4w==
-X-Gm-Message-State: AOJu0YywaDpVl/14/jqWmnpLk+jqXqM18pzIw0RydniD5TBFfOx11q8s
-	wQFTwtLte1rbc3ghDvP9iJC25CztoemTA06o0XGjyT4W0wYZy0ghC9RHLpjk/8IHSunK3pfp+5I
-	OGs4=
-X-Google-Smtp-Source: AGHT+IF1io1FkGJMGMEJ/taWQa/ZqD/TDQfMC6/p7cZ0WYTFonZjpzB8yv+PXHlfWSjG6uBjjAXSUA==
-X-Received: by 2002:a05:6512:280d:b0:533:4505:5b2a with SMTP id 2adb3069b0e04-536ac2f5b48mr8252940e87.28.1727118461576;
-        Mon, 23 Sep 2024 12:07:41 -0700 (PDT)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9061096979sm1279676866b.18.2024.09.23.12.07.40
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Sep 2024 12:07:41 -0700 (PDT)
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-378c16a4d3eso5122052f8f.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 12:07:40 -0700 (PDT)
-X-Received: by 2002:a5d:5e0d:0:b0:37a:4713:3de5 with SMTP id
- ffacd0b85a97d-37a47133f2emr9049324f8f.26.1727118460522; Mon, 23 Sep 2024
- 12:07:40 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hH0lD9XK"
+Date: Mon, 23 Sep 2024 15:56:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727121415;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3e4DCekOHk5Rai6aJWYF2CY+CpXsl/gUdUFSHk9AhaQ=;
+	b=hH0lD9XKymoDizKVyS5DIxZfDl7bMP0NwKRvN4Jo5JH9x012Bu3UVZM2LIje/hA5yKVInH
+	sQDlqZrhTeIZlOLrqUCwyvjb7FK/tKiH+3xB54YGHJ9aXA6qmIg9HNkJ/xd/rgR8WGc4hI
+	yyazIzMSA/IgXZkiEc04luPcKVYg8Q0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Dave Chinner <dchinner@redhat.com>
+Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
+Message-ID: <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg>
+References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
+ <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm> <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 23 Sep 2024 12:07:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjEDDexH4DQdmzQMipPPABVoHmXBx_byHkWC3qUM3uamw@mail.gmail.com>
-Message-ID: <CAHk-=wjEDDexH4DQdmzQMipPPABVoHmXBx_byHkWC3qUM3uamw@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 23 Sept 2024 at 10:18, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
+On Mon, Sep 23, 2024 at 10:18:57AM GMT, Linus Torvalds wrote:
 > On Sat, 21 Sept 2024 at 12:28, Kent Overstreet
 > <kent.overstreet@linux.dev> wrote:
 > >
 > > We're now using an rhashtable instead of the system inode hash table;
 > > this is another significant performance improvement on multithreaded
 > > metadata workloads, eliminating more lock contention.
->
+> 
 > So I've pulled this, but I reacted to this issue - what is the load
 > where the inode hash table is actually causing issues?
+> 
+> Because honestly, the reason we're using that "one single lock" for
+> the inode hash table is that nobody has ever bothered.
+> 
+> In particular, it *should* be reasonably straightforward (lots of
+> small details, but not fundamentally hard) to just make the inode hash
+> table be a "bl" hash - with the locking done per-bucket, not using one
+> global lock.
 
-Oh, and I also only now noticed that a third of the commits are fairly
-recent and from after the merge window even started.
+Dave was working on that - he posted patches and it seemed like they
+were mostly done, not sure what happened with those.
 
-Maybe there's a good reason for that, but it sure wasn't explained in
-the pull request. Grr.
+> But nobody has ever seemed to care before. Because the inode hash just
+> isn't all that heavily used, since normal loads don't look up inodes
+> directly (they look up dentries, and you find the inodes off those -
+> and the *dentry* hash scales well thanks to both RCU and doing the
+> bucket lock thing).
+> 
+> So the fact that bcachefs cares makes me go "Why?"
 
-                 Linus
+I've seen benchmarks (not just on bcachefs, ext4 as well) where it was
+actually _really_ heavy. They were synthetics, but I'd expect to see the
+same effect from workloads where we're streaming a lot of inodes through
+the cache - think rsync.
+
+Another data point is that the btree key cache work I just did was also
+for exactly this type of situation - it addressed lock contention when
+streaming items into and out of the key cache, which are mostly inodes
+(it's also used for the alloc btree) - and I had reports from multiple
+users it was a drastic improvement, much more than expected, and
+eliminated the main source of our "srcu lock held too long" warnings -
+and if lock contention is bad enough to trip a 10 second warning, you
+know it's bad, heh.
+
+I try to really jump on these sorts of lock contention issues because
+I've seen many instances where they caused performance cliffs - in
+practice they're often O(n^2) issues because as your workload scales up
+it's usually not just number of instances where you take the lock that
+increases, usually something else is scaling too - even just increased
+cacheline bouncing from the lock contention itself will be problematic.
