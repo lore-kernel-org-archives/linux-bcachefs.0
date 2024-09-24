@@ -1,70 +1,86 @@
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E6417BBF
-	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 11:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD9E52907;
+	Tue, 24 Sep 2024 12:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727178924; cv=none; b=tN7uGeyghksgxFCvRejVjBcfLc7e+ZeATbp7yvigXLPJ49o/RZCByRhhPUIQTlmiFRvLHYQ4HRXcZk43M80j6GVBIEW3tt1bgAw7Rc0M6s77pCO0m0If/GWKzy+Jk9BtLgADdW3M3hmUa6iCjJWSmBez8N8s+tK16PIqWoy7pKE=
+	t=1727181534; cv=none; b=QLj0xmQgNueZiFH3poravN64GBsTlEDfEet8j8J8x1YsEEFjEeu94KRRGx/AZ8l5hzbSpgCYVCUiR01Ju0se5jGfw1QtATTWPNJDEtwp0OebAjsIqMdLoYfr2SsWwMoFz+V5dO4KIP7BTEDsvU3l7i5oUoA+7lSAbQ/8D0q89gY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727178924; c=relaxed/simple;
-	bh=Bl2qzzEHgpGdJKV0zGc3PMz9DFh7mAtoqj4IPeX/p/Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cemEHI05WC2X0zMmYeMA+HusW279Gjfhoos2TxS75i1P53+y+BXvr3+FubkHXv1t03XBIU6wdNSnUJiBjhqPonBqKDQTGeYgpHfJf8cl1iDptWxgegZ5shZxZU54d1qWJgeKXPeyzSu21iJ0NgjzX582B24OexjdxisuDuTVOLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:beb3:bbd4:b9cd:84ae])
-	by xavier.telenet-ops.be with cmsmtp
-	id GBvL2D00N3rtkie01BvLdZ; Tue, 24 Sep 2024 13:55:21 +0200
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1st48S-000Su2-Qp;
-	Tue, 24 Sep 2024 13:55:20 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1st48W-005iAg-MA;
-	Tue, 24 Sep 2024 13:55:20 +0200
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] bcachefs: BCACHEFS_PATH_TRACEPOINTS should depend on TRACING
-Date: Tue, 24 Sep 2024 13:55:15 +0200
-Message-Id: <b8436d9d368d1436a2d7e156a879bac5e31a799d.1727178847.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1727181534; c=relaxed/simple;
+	bh=faa6imd7lE6BcMFqO48/o3cyjsA9elv/WkwLO0G3rGU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=mrSe+elOZZOeUAdOsz/PULrqPBsUFHCWtBgblFdxApNPIozZgJ8C4PxO+86q7QwOfHxDYvmlZfql+N8FXZxqqF1NmQBxqpEbvOHMJ4owFOk+ZqUedVqWe7UPkRWU28x/Q9xbSTkzp9quJV3ZkTPn0Bj6dwVQbGUUUHzRf4zigao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=Qf2HxapK reason="signature verification failed"; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="Qf2HxapK"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=DIfNVk5CauZ6NK2yNcaBXApRTZBwvdPRcS24YcB8ZlY=; b=Q
+	f2HxapKSw5RvNjGLAWQ0IhQg+k4PxwUsoPF/Ck9rzaw0AG7QNzNp0ubx2T75v/NN
+	4BZ3k9QEndoMaw+UVBwzQTxFdixZNyrn6BPKHaVPMKvAqC0SFH1QlBeQF6Rv7Yuu
+	a8nwnwdCz0F0J1ubG7So/S8j5LoQY1/o1GzWn5BF9Y=
+Received: from 00107082$163.com ( [111.35.191.143] ) by
+ ajax-webmail-wmsvr-40-136 (Coremail) ; Tue, 24 Sep 2024 20:38:29 +0800
+ (CST)
+Date: Tue, 24 Sep 2024 20:38:29 +0800 (CST)
+From: "David Wang" <00107082@163.com>
+To: "Kent Overstreet" <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [BUG?] bcachefs performance: read is way too slow when a file
+ has no overwrite.
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+In-Reply-To: <q4jjkhgpahmrr3z7d5qn7qhml3kqtj3roybuykkhfefxlezdbf@y4lbf6ut4siw>
+References: <20240907103437.71139-1-00107082@163.com>
+ <20240924110807.28788-1-00107082@163.com>
+ <q4jjkhgpahmrr3z7d5qn7qhml3kqtj3roybuykkhfefxlezdbf@y4lbf6ut4siw>
+X-NTES-SC: AL_Qu2ZBf2Tvk0r7ymbZekXn0oTju85XMCzuv8j3YJeN500sSbm9woBcnBPI0rd4sO3LQmSvxeHTDFj9MBTbZFxdKRiQxhXPHdX4AuZULBqA4TO
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <6aecd8b7.bb5e.192240a5533.Coremail.00107082@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:iCgvCgD333HGsvJm_QwAAA--.716W
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiMwRkqmbyorkFCAAFs+
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
-When tracing is disabled, there is no point in asking the user about
-enabling extra btree_path tracepoints in bcachefs.
-
-Fixes: 32ed4a620c5405be ("bcachefs: Btree path tracepoints")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- fs/bcachefs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/bcachefs/Kconfig b/fs/bcachefs/Kconfig
-index 5bac803ea367c034..e8549d04dcb8dd1b 100644
---- a/fs/bcachefs/Kconfig
-+++ b/fs/bcachefs/Kconfig
-@@ -89,7 +89,7 @@ config BCACHEFS_SIX_OPTIMISTIC_SPIN
- 
- config BCACHEFS_PATH_TRACEPOINTS
- 	bool "Extra btree_path tracepoints"
--	depends on BCACHEFS_FS
-+	depends on BCACHEFS_FS && TRACING
- 	help
- 	Enable extra tracepoints for debugging btree_path operations; we don't
- 	normally want these enabled because they happen at very high rates.
--- 
-2.34.1
-
+CgpBdCAyMDI0LTA5LTI0IDE5OjMwOjQ0LCAiS2VudCBPdmVyc3RyZWV0IiA8a2VudC5vdmVyc3Ry
+ZWV0QGxpbnV4LmRldj4gd3JvdGU6Cj5PbiBUdWUsIFNlcCAyNCwgMjAyNCBhdCAwNzowODowN1BN
+IEdNVCwgRGF2aWQgV2FuZyB3cm90ZToKPj4gSGksIAo+PiAKPj4gQXQgMjAyNC0wOS0wNyAxODoz
+NDozNywgIkRhdmlkIFdhbmciIDwwMDEwNzA4MkAxNjMuY29tPiB3cm90ZToKPj4gPkF0IDIwMjQt
+MDktMDcgMDE6Mzg6MTEsICJLZW50IE92ZXJzdHJlZXQiIDxrZW50Lm92ZXJzdHJlZXRAbGludXgu
+ZGV2PiB3cm90ZToKPj4gPj5UaGF0J3MgYmVjYXVzZSBjaGVja3N1bXMgYXJlIGF0IGV4dGVudCBn
+cmFudWxhcml0eSwgbm90IGJsb2NrOiBpZiB5b3UncmUKPj4gPj5kb2luZyBPX0RJUkVDVCByZWFk
+cyB0aGF0IGFyZSBzbWFsbGVyIHRoYW4gdGhlIHdyaXRlcyB0aGUgZGF0YSB3YXMKPj4gPj53cml0
+dGVuIHdpdGgsIHBlcmZvcm1hbmNlIHdpbGwgYmUgYmFkIGJlY2F1c2Ugd2UgaGF2ZSB0byByZWFk
+IHRoZSBlbnRpcmUKPj4gPj5leHRlbnQgdG8gdmVyaWZ5IHRoZSBjaGVja3N1bS4KPj4gPgo+PiA+
+Cj4+IAo+PiA+QmFzZWQgb24gdGhlIHJlc3VsdDoKPj4gPjEuIFRoZSByb3cgd2l0aCBwcmVwYXJl
+LXdyaXRlIHNpemUgNEsgc3RhbmRzIG91dCwgaGVyZS4KPj4gPldoZW4gZmlsZXMgd2VyZSBwcmVw
+YWlyZWQgd2l0aCB3cml0ZSBzaXplIDRLLCB0aGUgYWZ0ZXJ3YXJkcwo+PiA+IHJlYWQgcGVyZm9y
+bWFuY2UgaXMgd29yc2UuICAoSSBkaWQgZG91YmxlIGNoZWNrIHRoZSByZXN1bHQsCj4+ID5idXQg
+aXQgaXMgcG9zc2libGUgdGhhdCBJIG1pc3Mgc29tZSBhZmZlY3RpbmcgZmFjdG9ycy4pOwo+PiA+
+Mi4gV2l0aG91dCBPX0RJUkVDVCwgcmVhZCBwZXJmb3JtYW5jZSBzZWVtcyBjb3JyZWxhdGVkIHdp
+dGggdGhlIGRpZmZlcmVuY2UKPj4gPiBiZXR3ZWVuIHJlYWQgc2l6ZSBhbmQgcHJlcGFyZSB3cml0
+ZSBzaXplLCBidXQgd2l0aCBPX0RJUkVDVCwgY29ycmVsYXRpb24gaXMgbm90IG9idmlvdXMuCj4+
+ID4KPj4gPkFuZCwgdG8gbWVudGlvbiBpdCBhZ2FpbiwgaWYgSSBvdmVyd3JpdGUgdGhlIGZpbGVz
+ICoqdGhvcm91Z2hseSoqIHdpdGggZmlvIHdyaXRlIHRlc3QKPj4gPih1c2luZyBzYW1lIHNpemUp
+LCB0aGUgcmVhZCBwZXJmb3JtYW5jZSBhZnRlcndhcmRzIHdvdWxkIGJlIHZlcnkgZ29vZDoKPj4g
+Pgo+PiAKPj4gVXBkYXRlIHNvbWUgSU8gcGF0dGVybiAoYmlvIHN0YXJ0IGFkZHJlc3MgYW5kIHNp
+emUsIGluIHNlY3RvcnMsIGFkZHJlc3MmPS1hZGRyZXNzKSwKPj4gYmV0d2VlbiBiY2FjaGVmcyBh
+bmQgYmxvY2sgbGF5ZXI6Cj4+IAo+PiA0Sy1EaXJlY3QtUmVhZCBhIGZpbGUgY3JlYXRlZCBieSBs
+b29wIG9mIGB3cml0ZShmZCwgYnVmLCAxMDI0KjQpYDoKPgo+WW91J3JlIHN0aWxsIHRlc3Rpbmcg
+c21hbGwgcmVhZHMgdG8gYmlnIGV4dGVudHMuIEZsaXAgb2ZmIGRhdGEKPmNoZWNrc3VtbWluZyBp
+ZiB5b3Ugd2FudCB0byB0ZXN0IHRoYXQsIG9yIHdhaXQgZm9yIGJsb2NrIGdyYW51bGFyCj5jaGVj
+a3N1bXMgdG8gbGFuZC4KPgo+SSBhbHJlYWR5IGV4cGxhaW5lZCB3aGF0J3MgZ29pbmcgb24sIHNv
+IHRoaXMgaXNuJ3QgdmVyeSBoZWxwZnVsLgoKSGksIAoKSSBkbyB1bmRlcnN0YW5kIGl0IG5vdywg
+c29ycnkgZm9yIGJvdGhlcmluZy4KTW9zdGx5IEkgd2FudGVkIHRvIGV4cGxhaW4gdG8gbXlzZWxm
+IHdoeSB0aGUgZGlmZmVyZW5jZS4uLi4gCgpCZXNpZGUgdGhhdCwganVzdCB3YW50IHRvIG1lbnRp
+b24gdGhlcmUgaXMgc29tZSBpbyBzaXplIG9mICcxIHNlY3RvcicsIGZlZWwgc3RyYW5nZSBhYm91
+dCBpdC4uLgoKCkRhdmlkCg==
