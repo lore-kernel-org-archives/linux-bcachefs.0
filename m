@@ -1,82 +1,70 @@
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2361AAE3D
-	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 11:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E6417BBF
+	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 11:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727177452; cv=none; b=q6MbIV2EW09Rbp3n+3WziaYTLzxHbtLg7XitR0TFuhs9WMsZR1R1LaRQZBHM+I9E5/2uyK6S7mZFQsbCO2WPCdmZ1fbUw9S9EmxBUyaqqrjdpFGaYSLTPl2AytBZjgh1K/IqqlKI21ikGKCHyuq1Ih5g3PmWrbeis2Jo+XL6iMc=
+	t=1727178924; cv=none; b=tN7uGeyghksgxFCvRejVjBcfLc7e+ZeATbp7yvigXLPJ49o/RZCByRhhPUIQTlmiFRvLHYQ4HRXcZk43M80j6GVBIEW3tt1bgAw7Rc0M6s77pCO0m0If/GWKzy+Jk9BtLgADdW3M3hmUa6iCjJWSmBez8N8s+tK16PIqWoy7pKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727177452; c=relaxed/simple;
-	bh=Shdw5+tuYhqBZZnfhahbhFln3ahbwdhU6psYPvqOax4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yq5AOu4mOxetUXjP23ZGR+UTF4Nh4MJSr513rejBxZgeOsh96PsdNQKduJ7e0fzUlcQOrZGnKrlbFQOZueH1LK5dilhfGR0nnzYRBQxfANGEffrAPzSE4CHHDowXPcT+5QJHlXh8/6IhqjRxVXwIlLlEIvj2v8KB6sNGkSbCRHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qc4XrnvM; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qc4XrnvM"
-Date: Tue, 24 Sep 2024 07:30:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727177448;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NSx3Xo84OH/LH1yr/oPGKWLdMOfPbNYZydCjHW4ozKI=;
-	b=qc4XrnvMRuL6995S/MFuIHmqJBUfbTlAaZ4qr7UZ/EI1+5vEQAEOFdU9/EHpL3I88La/r4
-	JMY9BBz2IQFk/trmOfpurfjIa+7FY+4ois7UGVyznQ9lNOYN/5AKpTJevxXpFRRwOykciY
-	xnYR/3tUOvNMjpgFfEBTBu04KAdSr80=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: David Wang <00107082@163.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [BUG?] bcachefs performance: read is way too slow when a file
- has no overwrite.
-Message-ID: <q4jjkhgpahmrr3z7d5qn7qhml3kqtj3roybuykkhfefxlezdbf@y4lbf6ut4siw>
-References: <20240907103437.71139-1-00107082@163.com>
- <20240924110807.28788-1-00107082@163.com>
+	s=arc-20240116; t=1727178924; c=relaxed/simple;
+	bh=Bl2qzzEHgpGdJKV0zGc3PMz9DFh7mAtoqj4IPeX/p/Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cemEHI05WC2X0zMmYeMA+HusW279Gjfhoos2TxS75i1P53+y+BXvr3+FubkHXv1t03XBIU6wdNSnUJiBjhqPonBqKDQTGeYgpHfJf8cl1iDptWxgegZ5shZxZU54d1qWJgeKXPeyzSu21iJ0NgjzX582B24OexjdxisuDuTVOLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:beb3:bbd4:b9cd:84ae])
+	by xavier.telenet-ops.be with cmsmtp
+	id GBvL2D00N3rtkie01BvLdZ; Tue, 24 Sep 2024 13:55:21 +0200
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1st48S-000Su2-Qp;
+	Tue, 24 Sep 2024 13:55:20 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1st48W-005iAg-MA;
+	Tue, 24 Sep 2024 13:55:20 +0200
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] bcachefs: BCACHEFS_PATH_TRACEPOINTS should depend on TRACING
+Date: Tue, 24 Sep 2024 13:55:15 +0200
+Message-Id: <b8436d9d368d1436a2d7e156a879bac5e31a799d.1727178847.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240924110807.28788-1-00107082@163.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 24, 2024 at 07:08:07PM GMT, David Wang wrote:
-> Hi, 
-> 
-> At 2024-09-07 18:34:37, "David Wang" <00107082@163.com> wrote:
-> >At 2024-09-07 01:38:11, "Kent Overstreet" <kent.overstreet@linux.dev> wrote:
-> >>That's because checksums are at extent granularity, not block: if you're
-> >>doing O_DIRECT reads that are smaller than the writes the data was
-> >>written with, performance will be bad because we have to read the entire
-> >>extent to verify the checksum.
-> >
-> >
-> 
-> >Based on the result:
-> >1. The row with prepare-write size 4K stands out, here.
-> >When files were prepaired with write size 4K, the afterwards
-> > read performance is worse.  (I did double check the result,
-> >but it is possible that I miss some affecting factors.);
-> >2. Without O_DIRECT, read performance seems correlated with the difference
-> > between read size and prepare write size, but with O_DIRECT, correlation is not obvious.
-> >
-> >And, to mention it again, if I overwrite the files **thoroughly** with fio write test
-> >(using same size), the read performance afterwards would be very good:
-> >
-> 
-> Update some IO pattern (bio start address and size, in sectors, address&=-address),
-> between bcachefs and block layer:
-> 
-> 4K-Direct-Read a file created by loop of `write(fd, buf, 1024*4)`:
+When tracing is disabled, there is no point in asking the user about
+enabling extra btree_path tracepoints in bcachefs.
 
-You're still testing small reads to big extents. Flip off data
-checksumming if you want to test that, or wait for block granular
-checksums to land.
+Fixes: 32ed4a620c5405be ("bcachefs: Btree path tracepoints")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ fs/bcachefs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I already explained what's going on, so this isn't very helpful.
+diff --git a/fs/bcachefs/Kconfig b/fs/bcachefs/Kconfig
+index 5bac803ea367c034..e8549d04dcb8dd1b 100644
+--- a/fs/bcachefs/Kconfig
++++ b/fs/bcachefs/Kconfig
+@@ -89,7 +89,7 @@ config BCACHEFS_SIX_OPTIMISTIC_SPIN
+ 
+ config BCACHEFS_PATH_TRACEPOINTS
+ 	bool "Extra btree_path tracepoints"
+-	depends on BCACHEFS_FS
++	depends on BCACHEFS_FS && TRACING
+ 	help
+ 	Enable extra tracepoints for debugging btree_path operations; we don't
+ 	normally want these enabled because they happen at very high rates.
+-- 
+2.34.1
+
