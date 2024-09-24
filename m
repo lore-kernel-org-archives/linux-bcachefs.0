@@ -1,99 +1,141 @@
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D8D1B85C2
-	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 02:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043711B85C2
+	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 02:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727146106; cv=none; b=iqCODHYD7xTduD/4SckTtrs/Z3qZyYB9E60c9LyRau5DLXzWm3B6HNA3OPstFDSnVemuNZSFbkApgp4hpT/5zGaA2zdEkFukAEOBDwfljbYdn/oBU2PYIA/ptL6W1FNkgvBSBPSPTePOjGQtJ+OT6xNFOMdZekdItPE6PdUoF5c=
+	t=1727146358; cv=none; b=tSx9+akNvH9+hmkhvVaI3rRah1GiKXJ4gdURN+s0+HmF/7NkRRjWnM/8Pnyxy8pZZTHEBN6DUS6TKOkjws2mx/c/cUpXBDaMrxg0E+GTnlGAaQOX223AnuJsFnuq4S5OBHAvlA4OD80Nnz8f2ixQXWVyYFrBarVxTJ9nMKo5bEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727146106; c=relaxed/simple;
-	bh=eHzafNxabmGSIs26LY/np3HBRImQLK5VxqnoAlmffCQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sDJaV6Xm0l267gRJxYuJAMDW/kHgP72SwizTgzfx5z+fk+QXhNeRPG1efGxk1a1d2brR/qxpQRGfGBuKa3k2bvzhd5GGeGUXDYEqwbRoyB9pFb2KZIbvbsr9+xM3lm77xNqy9J2Y3En4xaEheSwPOBC7620INMNctXxPKW8hAd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PB494Vuv; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1727146358; c=relaxed/simple;
+	bh=/AMTC+LFv3NnH4++XwGOj8dYdE+MOw0Bkn/TlGWF1v4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q1tyyN6H9cp9ibitQ+Mawno4yZ3DMc625iLe9it+L/ptvj5TUW8llKxLOnMdEa3dp3pzcNiXb9y/L+fo+I0ovxidg7nYfcUY5PdFGeRdMh4/c8rT0oOO/ogcO8DwUenWELTEQ91QiJwUquf7nBeT8021nIB7vazJVfrAlwH6dkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=z0jxAapP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=E4XZcD8J; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=z0jxAapP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=E4XZcD8J; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PB494Vuv"
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5356aa9a0afso7819592e87.2
-        for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 19:48:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1727146102; x=1727750902; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LRazYseFwv7HnZyxXE3fGsm1aCnICLJvDr/BBHvdERY=;
-        b=PB494VuvmDiwjjQhMIkF43qMikkmeLUqsqwkt/vEIkhnNNc9RypO+9BFMU/wMFAvF1
-         Rg5c9S2NxEXoGeqzWFBqGOMllgaSPpVs3k6AvE2ZQLaEhDZunqsm1Xdan+sO0OYsmoDp
-         vKKVdydYB+uwhcXuFVAieco54jNJffyK9AhFM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727146102; x=1727750902;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LRazYseFwv7HnZyxXE3fGsm1aCnICLJvDr/BBHvdERY=;
-        b=JHGghy4ZVr1VCXNNsbBQCroZgdPgYB/OjgtobgPabc8fx92hK6MLT7bN0qFcgJyS2J
-         OOu5pMlDquuoEUMGv9Rwv7HMYHLGbo/O+78WnV9coHQKDcPOAXD43FZY1VmafU1PXRyI
-         UeiuN98XrWF/JEPaOcln6WQTfr1wdvqRO7gNhNpx9CaE+TCA2zeHIspT8ooK/R9beUZP
-         qxERVnIT686q4w8M3XYKy1nQLxWBi+mwNyHi4S55GT1imCmEzgIDHungVRjGAzJctPIh
-         aOwSHOpfqISzQTYX01sGDhJaX8OcG3ggTnEpNGjFHYvNen3Z22cBVCZX0kwY8+1F0HBS
-         vz/A==
-X-Forwarded-Encrypted: i=1; AJvYcCWwZU3c99S9Tz2tGkCy7G4LsXiuHNOI2SrVhD1DX2qdccGmV3joDeubfCkPucV8SFEMLPOLBdUd+0oOBl1UhQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvL+y49e/TXM+gsMW1GGxgIREB0GPdQs6SfmRFVHnbZ1fyGZ3+
-	pkKyLMpsY4NFHOn38H8WFKWAqsG6docXLqPWRsBRdmE9PZNoFVviNt0X28fQlXmFnqGFz6Bjibp
-	GxIXaeg==
-X-Google-Smtp-Source: AGHT+IFedccuiegtVxK/Nz5zLNMQYSaGxDQgT8UChQqJFs2hcbO+JhFB/uw0ilcQ9I6jmfgFC5FFCg==
-X-Received: by 2002:a05:6512:1095:b0:530:e0fd:4a97 with SMTP id 2adb3069b0e04-536ac17ba54mr9463676e87.0.1727146101720;
-        Mon, 23 Sep 2024 19:48:21 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-537a85e0bf9sm65694e87.37.2024.09.23.19.48.20
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Sep 2024 19:48:20 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5365a9574b6so6951966e87.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 19:48:20 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUFG1hLDAmnE1QaG1JEWgFcgcgRuhtia0OrsuPbLPL7b13+TFcJ9Ri7ZcJTETBZB92dfhd91rldU/pxYFn02Q==@vger.kernel.org
-X-Received: by 2002:a05:6512:1095:b0:530:e0fd:4a97 with SMTP id
- 2adb3069b0e04-536ac17ba54mr9463642e87.0.1727146100293; Mon, 23 Sep 2024
- 19:48:20 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="z0jxAapP";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="E4XZcD8J";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="z0jxAapP";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="E4XZcD8J"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 638A01FBB7;
+	Tue, 24 Sep 2024 02:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1727146348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=CH8FkDKc0Zbt1fHLGksHLScDLcfTyBcdgV5ak+FThs4=;
+	b=z0jxAapPrf+ZxYxcQFfzTrhbFtb0LfKNOEMxAW9ygl8R/sY0Ig1KpdH/hyQUAh+QKU0SbT
+	nxRLwWx8torE23A2VsTNdzywuST7B34zx0/omTtDTxpUkL2s1JFdbvKJXqbOOoOplDS5ji
+	B8+H7mgdOWUCMXzP/3hKJ5ClO/OMp1M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1727146348;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=CH8FkDKc0Zbt1fHLGksHLScDLcfTyBcdgV5ak+FThs4=;
+	b=E4XZcD8JQNPm8fAEbD/fPfjPoluSdTovDnPaO/C3SE/SNdvYDdRMN05jxrMJybTxL8LbZj
+	Es5SlT34pHkpsbDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1727146348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=CH8FkDKc0Zbt1fHLGksHLScDLcfTyBcdgV5ak+FThs4=;
+	b=z0jxAapPrf+ZxYxcQFfzTrhbFtb0LfKNOEMxAW9ygl8R/sY0Ig1KpdH/hyQUAh+QKU0SbT
+	nxRLwWx8torE23A2VsTNdzywuST7B34zx0/omTtDTxpUkL2s1JFdbvKJXqbOOoOplDS5ji
+	B8+H7mgdOWUCMXzP/3hKJ5ClO/OMp1M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1727146348;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=CH8FkDKc0Zbt1fHLGksHLScDLcfTyBcdgV5ak+FThs4=;
+	b=E4XZcD8JQNPm8fAEbD/fPfjPoluSdTovDnPaO/C3SE/SNdvYDdRMN05jxrMJybTxL8LbZj
+	Es5SlT34pHkpsbDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1F6F61386E;
+	Tue, 24 Sep 2024 02:52:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5xOFMGop8mZtIQAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Tue, 24 Sep 2024 02:52:26 +0000
+From: David Disseldorp <ddiss@suse.de>
+To: linux-bcachefs@vger.kernel.org
+Cc: David Disseldorp <ddiss@suse.de>
+Subject: [PATCH] bcachefs: avoid copy from NULL printbuf
+Date: Tue, 24 Sep 2024 02:52:15 +0000
+Message-ID: <20240924025215.29891-1-ddiss@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
- <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
- <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg>
- <ZvIHUL+3iO3ZXtw7@dread.disaster.area> <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 23 Sep 2024 19:48:03 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh+atcBWa34mDdG1bFGRc28eJas3tP+9QrYXX6C7BX0JQ@mail.gmail.com>
-Message-ID: <CAHk-=wh+atcBWa34mDdG1bFGRc28eJas3tP+9QrYXX6C7BX0JQ@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
-To: Dave Chinner <david@fromorbit.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Dave Chinner <dchinner@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:email];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Mon, 23 Sept 2024 at 19:26, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> And I had missed the issue with PREEMPT_RT and the fact that right now
-> the inode hash lock is outside the inode lock, which is problematic.
+printbuf.buf may be NULL if allocation_failure is set. Check for this
+prior to using it as a seq_puts() source.
 
-.. although I guess that could be solved by just making the spinlock
-be external to the hash list, rather than part of the list like
-list_bh.
+Fixes: fa8e94faeece1 ("bcachefs: Heap allocate printbufs")
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+---
+test test
 
-You wouldn't need to do one lock per list head, you could just do some
-grouping of the hash.
+ fs/bcachefs/fs.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-That said, the vfs inode hash code really is pretty disgusting and has
-been accumulating these warts for a long time. So maybe a "filesystems
-do their own thing" together with some helper infrastructure (like
-using rhashtable) is actually the right thing to do.
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 1aee5bafaae54..6e270bf24591d 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -1931,13 +1931,16 @@ static int bch2_show_options(struct seq_file *seq, struct dentry *root)
+ {
+ 	struct bch_fs *c = root->d_sb->s_fs_info;
+ 	struct printbuf buf = PRINTBUF;
++	int ret = 0;
+ 
+ 	bch2_opts_to_text(&buf, c->opts, c, c->disk_sb.sb,
+ 			  OPT_MOUNT, OPT_HIDDEN, OPT_SHOW_MOUNT_STYLE);
+ 	printbuf_nul_terminate(&buf);
+-	seq_puts(seq, buf.buf);
++	if (buf.allocation_failure)
++		ret = -ENOMEM;
++	else
++		seq_puts(seq, buf.buf);
+ 
+-	int ret = buf.allocation_failure ? -ENOMEM : 0;
+ 	printbuf_exit(&buf);
+ 	return ret;
+ }
+-- 
+2.46.1
 
-              Linus
