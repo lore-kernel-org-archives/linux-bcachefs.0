@@ -1,139 +1,99 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DEAB1B85C2
-	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 02:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A1C17C7C
+	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 02:54:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727146378; cv=none; b=AOGlI7gukQko3y8FjqtZoZX2VTuvRD3MgIQ5YDSm2X4P7RHPYlgj3+soIWWFZERkx565moXN7tB4Kbm66i/eoWiH/2HnUcuo2LDrFGTiIYYrBg9ZahzGJw49ZOEVeAiJV8G/HgZwhsWLJwtb0fYDpU6qwBcSuz45SxL+SMBX6Cs=
+	t=1727146477; cv=none; b=Z4Ddq80a/us+qDWzkbc9K7pwtySNJwlcThyyvty3L+XJ15CwlXLa+dnk/V7B2XkKQy9uZmvhTdO7ooXPOqnM3/1lJG1URJXnvQXW98qlmKSxZuTsacp8pumIJu13E30XDfkpd0V/Ov21x5Zz/vS6yHpmTQWIrwl1t2gP4kPsTy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727146378; c=relaxed/simple;
-	bh=L3HAST4JleeE3SzTlEGrqiBBW4LUYlv9tmAX1cMyIZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cvAO02oc+ehRIzEis8MfjWNXRB4/LZExVXIVwWE4zGdWPO1qj+saVSG2PHTf5NbXHLgD6drQQE+RXNcO8uBqHc4FOP1L72yLRBZiI6o0xmyf725qLd9k7HfTqN1YnIgcQI95ichB4iMNjRUvufPd4euAHgFM0TrzLV0BZ4BXbCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KQ5yUqF9; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7Uk+0QrU; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=udYW1zY9; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=cTnknbsQ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	s=arc-20240116; t=1727146477; c=relaxed/simple;
+	bh=QG8A+aj8+qiVIJXQDatc0psJO1nQixSoI1HYpErTnGQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s0BR1aidxADISwbLXQ+Cl9wAiRtARraspDZI1CX99xcIADi3w70ZFvUfRSGiVSkbozqHRMnZ3R+s76NIdSgOtr/dgj5BjFAN6zkl+I3xariYwJR/47DatcZwdlARko1nGUO6+zs5yb9XJGya7vq3VSzz5x8vIN/xHb8xZzo+zzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DmDceVBf; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KQ5yUqF9";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7Uk+0QrU";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="udYW1zY9";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="cTnknbsQ"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C4C321FBB7;
-	Tue, 24 Sep 2024 02:52:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1727146374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pYqe9kHfvQFZPrGXV0wIekNM34NxflpOQSSK5+0vJmQ=;
-	b=KQ5yUqF9pbhvTertXDPTj49gaBU9bQmQjY6QAweSoY4a8ZI/2qV68bmo8PPJVIXrTxPSiG
-	Jzt2RsRxHovis0PVdJnGOe8f+zmLVger0A25ITWkjKRfTaPMJBc3JljtV0kaUKFyROSjhU
-	TWNUKZDrJ76/mXn9OWJeYADJIe01KIQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1727146374;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pYqe9kHfvQFZPrGXV0wIekNM34NxflpOQSSK5+0vJmQ=;
-	b=7Uk+0QrUZ5Xvk2Hzz4sytWxUjERXbyOJmN5N5DYidxfsURys4JR8U1fPgqoVp1inJhsFg1
-	wXB6s5+WOzV4Z1Cg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=udYW1zY9;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=cTnknbsQ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1727146373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pYqe9kHfvQFZPrGXV0wIekNM34NxflpOQSSK5+0vJmQ=;
-	b=udYW1zY9sC5SU2MmOtE9vj6OjZLhroTuMqEE62ehxqodRU2axJK7kl0VwSMwphI4mkEUgJ
-	+JVQx/NbR+2iFFzqevuUdRpYfgG3zRsHJ3ZEl2PsCL3BwxpDzqRDrzOIrYA1+EpXt3svlz
-	WjTKdnKIDJXwlYmGMDZuhELB5T3q9ls=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1727146373;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pYqe9kHfvQFZPrGXV0wIekNM34NxflpOQSSK5+0vJmQ=;
-	b=cTnknbsQc4wUfBfFjWYMMUfrvNogyJCv6x1tOeOgS+6wjOPtF1vbF19MHbfwbQzg0cIPem
-	/fx542x4FWMLsACw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CDFA71386E;
-	Tue, 24 Sep 2024 02:52:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id lXFmH4Mp8maJIQAAD6G6ig
-	(envelope-from <ddiss@suse.de>); Tue, 24 Sep 2024 02:52:51 +0000
-Date: Tue, 24 Sep 2024 02:52:42 +0000
-From: David Disseldorp <ddiss@suse.de>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DmDceVBf"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727146473;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=hX0ICgYkWPwpFSHu/i9gdiyiwv3g0dDgwMMYMEyidkA=;
+	b=DmDceVBfX9SESHXUBGftAb6BfR7yv9cs8yq4nTTEo8pRejjAUPLHr0mxPDXJKjUvV+3+zH
+	5LcVwOd7jL3bTo/xBnlMTAdoB4wooRfB9MAJQw19TiF0HVXVHdiZCGw7qKsfsM3gU8TG4V
+	kU//CcZJa45piq2Q/CiFKrrQrsh1z5E=
+From: Youling Tang <youling.tang@linux.dev>
 To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Hongbo Li <lihongbo22@huawei.com>, linux-bcachefs@vger.kernel.org,
- liaochang1@huawei.com
-Subject: Re: [PATCH] bcachefs: fix incorrect show_options results
-Message-ID: <20240924025242.39f29fe8.ddiss@suse.de>
-In-Reply-To: <sufy3jfju76sqh4eplc5hmsrfrpa4dtt3bocovfeygxclkvgql@ukd2pvvxn5jr>
-References: <20240923095003.3559171-1-lihongbo22@huawei.com>
-	<20240923143931.3a24e3c9.ddiss@suse.de>
-	<sufy3jfju76sqh4eplc5hmsrfrpa4dtt3bocovfeygxclkvgql@ukd2pvvxn5jr>
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	youling.tang@linux.dev,
+	Youling Tang <tangyouling@kylinos.cn>
+Subject: [PATCH] bcachefs: Removes NULL pointer checks for __filemap_get_folio return values
+Date: Tue, 24 Sep 2024 10:53:50 +0800
+Message-Id: <20240924025350.3948674-1-youling.tang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: C4C321FBB7
-X-Spam-Level: 
-X-Spamd-Result: default: False [-5.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -5.51
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 23 Sep 2024 17:40:05 -0400, Kent Overstreet wrote:
-> On Mon, Sep 23, 2024 at 02:39:31PM GMT, David Disseldorp wrote:
-...
-> > >  	int ret = buf.allocation_failure ? -ENOMEM : 0;  
-> > 
-> > Should the copy from buf into seq occur if allocation_failure
-> > is already flagged? I'd expect seq_puts() to have oopsed.
-> 
-> That's a good point; it might be the first allocation that fails, not a
-> realloc. It won't be in practice, buuuut....
+From: Youling Tang <tangyouling@kylinos.cn>
 
-I've sent a follow-up patch to avoid the seq_puts(seq, NULL). Feel free
-to squash it in with this if you like.
+__filemap_get_folio the return value cannot be NULL, so unnecessary checks
+are removed.
+
+Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+---
+ fs/bcachefs/fs-io-buffered.c  | 2 +-
+ fs/bcachefs/fs-io-pagecache.c | 2 +-
+ fs/bcachefs/fs-io.c           | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/bcachefs/fs-io-buffered.c b/fs/bcachefs/fs-io-buffered.c
+index 48a1ab9a649b..9742aae87017 100644
+--- a/fs/bcachefs/fs-io-buffered.c
++++ b/fs/bcachefs/fs-io-buffered.c
+@@ -669,7 +669,7 @@ int bch2_write_begin(struct file *file, struct address_space *mapping,
+ 	folio = __filemap_get_folio(mapping, pos >> PAGE_SHIFT,
+ 				    FGP_WRITEBEGIN | fgf_set_order(len),
+ 				    mapping_gfp_mask(mapping));
+-	if (IS_ERR_OR_NULL(folio))
++	if (IS_ERR(folio))
+ 		goto err_unlock;
+ 
+ 	offset = pos - folio_pos(folio);
+diff --git a/fs/bcachefs/fs-io-pagecache.c b/fs/bcachefs/fs-io-pagecache.c
+index af3a24546aa3..972092906100 100644
+--- a/fs/bcachefs/fs-io-pagecache.c
++++ b/fs/bcachefs/fs-io-pagecache.c
+@@ -29,7 +29,7 @@ int bch2_filemap_get_contig_folios_d(struct address_space *mapping,
+ 			break;
+ 
+ 		f = __filemap_get_folio(mapping, pos >> PAGE_SHIFT, fgp_flags, gfp);
+-		if (IS_ERR_OR_NULL(f))
++		if (IS_ERR(f))
+ 			break;
+ 
+ 		BUG_ON(fs->nr && folio_pos(f) != pos);
+diff --git a/fs/bcachefs/fs-io.c b/fs/bcachefs/fs-io.c
+index 71d0fa387509..5025e70ab6b2 100644
+--- a/fs/bcachefs/fs-io.c
++++ b/fs/bcachefs/fs-io.c
+@@ -256,7 +256,7 @@ static int __bch2_truncate_folio(struct bch_inode_info *inode,
+ 
+ 		folio = __filemap_get_folio(mapping, index,
+ 					    FGP_LOCK|FGP_CREAT, GFP_KERNEL);
+-		if (IS_ERR_OR_NULL(folio)) {
++		if (IS_ERR(folio)) {
+ 			ret = -ENOMEM;
+ 			goto out;
+ 		}
+-- 
+2.34.1
+
