@@ -1,96 +1,100 @@
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623347E9;
-	Tue, 24 Sep 2024 01:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55F1D2FF
+	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 02:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727142920; cv=none; b=k7lKjlIck0KTkOP38Yhcj/b4P3vEdtWDZjXmSkPSgZYs/e0rBrBlruK99fbHKrv9yo1Klx4BEr9cCzLnw5REap7cKTVe1wD3t2cbqkTcpU27gFVgpQNSdfYTyO0V6FwZPK5HHygtulhRJ4zvpDPSvUpKLfYLkBv8bW9P/S8kgjA=
+	t=1727144814; cv=none; b=EzoHTaU0GOgwRZSX0V6WKOgDs8BRKEM3kFigrjSFzU2HWWzGvtAURz5m8lxj3S8iZiiTJUtFPIyLu4NqjOhXgaNX+t2VRagBkr0E/tEvaIi/7gtP9X1/6/BVAJez8dkvrgKbxy23FrMj9NAtSMXo/pJP7J/U0wwsOS5Xzg/i/aI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727142920; c=relaxed/simple;
-	bh=Sc71BkRLfCBqVpCP+o2wncwSaYE3lC0Q0jV8ULOXTjU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OmdQ43Ug8Fv7gwHFYL1qR6RNcX5MjrYi+DAMsTMtSPmX08MOD6JrhRoi9sKapKQ2vKHKauTa1vKGBAhhZa45Cp+FVDPqsInwnA5shw1pI8W5o7ft/f/8Tv5cxWYTgPUlf94gpWJSxwPWLESsY+NeQ8d0FgjyetEd1ENWt+CmiBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aO0tSfN4; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1727144814; c=relaxed/simple;
+	bh=bxOnn9+awkw8sN8GOkoGhDOBqS/M5kXNIzc8Ou4SrO8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N/crXpSHJNWDnRcAGGt3Ptd5//T4uQrlVBbv4F/JWpkZ6WfwEqMKEw54WM+LI9RqUtl9HPDEvLyf4qBfbBdINifPHFSsgik2NWc2VkTFnsD7rZYS5lBDeQnQJpLyAnqfBqLHYExmAR+fmLycrG5TIWSYq8W4q3HU7lzJRJe0VFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Mib6P9mW; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aO0tSfN4"
-Date: Mon, 23 Sep 2024 21:55:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727142916;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pR5RK0YvQc1KSwqY8lWXGQUTZLyx4J/IMgSUde5kNws=;
-	b=aO0tSfN4RdKAlRni+fHjYeZ/nLLcK3LNYmNjQYygCD3DNnBjUA/MM8z9Du21ZJWNNWTBpC
-	7OEg+l6c+YqcqqbDHqS/lA1rgTsOi/O+kfeh5o03k66ZjdyWhE7NKy2eCZIo9ZLuvG1e3e
-	8CNSrffYvsC+qP45Y+1XFSJZukksZ58=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Dave Chinner <dchinner@redhat.com>
-Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
-Message-ID: <xxxxcj5ijhcvluoqybzdrwfthigbq5t7r6q4nypbubr2rlcvst@hrhg5gxqmgyn>
-References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
- <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
- <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg>
- <ZvIHUL+3iO3ZXtw7@dread.disaster.area>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Mib6P9mW"
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-535be093a43so6062567e87.3
+        for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 19:26:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1727144811; x=1727749611; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rzKZqwNvBPW3pytUWUsUv/7tI4XFMgW7ZP3i5FQGL2s=;
+        b=Mib6P9mW/eQzgMkGI8g7D92CP0SWshZSQQNTawKYca2pDS9erj+WsYKcm5FhNVXphJ
+         LXq5U3iXGt1IFx/lVUDOoN6Qrl+uj6AGk/Db++PIG9NXsvatXOXs5R5zoFIWWI8Qxxue
+         6tWrs/5lveI0f5OwFWz3Jd/U4zLkg9C/G7eTo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727144811; x=1727749611;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rzKZqwNvBPW3pytUWUsUv/7tI4XFMgW7ZP3i5FQGL2s=;
+        b=jsi6eJguvAsERIwJN5AceFVgBaoq+Km/d5/Sft7K9D4cP1JAFmmDX1i+9KOsPkn0qr
+         kzlSR/ZbfnwEO9Jd9cPiPfuRQiFU/+LNsHz+Sk6n7ry7tsn1PjUoTPoyzQ8xQxqU59gL
+         1yb9ylPOdulp23uV3PSEhdypTle9LeI730dwgP6pQUIHAR/e4yiWdiZfRxX3ULvjYctO
+         xkXuJqrmpLMsqhT751+LdOpWWr/ZX3xn3CIXDx7kAbQu4DVucTfFGnTvX7FPxLXKDy85
+         7qIqaTQkZKfqZXx0AJaUMQCXALlToCxHVLlGz6wL+Cjq99ouCFmyv2GtPRgu7CAksIfN
+         mepA==
+X-Forwarded-Encrypted: i=1; AJvYcCXivhzVcBmNYY3EMpE0eqiIdYUposOcuiyq6jUKx62klRKxQB+VBCSrm7TxQin16xsk1O2kcaDW3UwDMIy4Eg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjGDVPeRv+1zhYFU2mlu12bgcvc9OTvenJm+wdUtzNPzlHkcF6
+	o3Kzp/5gJtsZcsjf2bs/a45WW6uHbY4gJjTW5rgAixO/ZyGF+FtGKmMwjFi0j8cjEt3lu6kbtdq
+	gtACswg==
+X-Google-Smtp-Source: AGHT+IGdDzFB7HxDKIoTKmq6c53sNxN8wdxnyi7T6dwFU2bXpAL/Zja6AQKkKwQLA+42FUdT7HgVOw==
+X-Received: by 2002:a05:6512:3192:b0:52e:7656:a0f4 with SMTP id 2adb3069b0e04-536ac32012emr6847637e87.41.1727144810570;
+        Mon, 23 Sep 2024 19:26:50 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-537a8648c3fsm60195e87.229.2024.09.23.19.26.48
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Sep 2024 19:26:49 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-535be093a43so6062545e87.3
+        for <linux-bcachefs@vger.kernel.org>; Mon, 23 Sep 2024 19:26:48 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUbMDRKkNj0arVtmOShXcM4tIUX4bL7e6OuQNVCjK25sZrU9TI1tppay/PQm5EG361HxabWJqzqCsxSzjDgng==@vger.kernel.org
+X-Received: by 2002:a05:6512:3f01:b0:52c:dfa2:5ac1 with SMTP id
+ 2adb3069b0e04-536ac2e51c8mr7222689e87.24.1727144808378; Mon, 23 Sep 2024
+ 19:26:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
+ <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
+ <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg> <ZvIHUL+3iO3ZXtw7@dread.disaster.area>
 In-Reply-To: <ZvIHUL+3iO3ZXtw7@dread.disaster.area>
-X-Migadu-Flow: FLOW_OUT
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 23 Sep 2024 19:26:31 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
+Message-ID: <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
+To: Dave Chinner <david@fromorbit.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Dave Chinner <dchinner@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Sep 24, 2024 at 10:26:56AM GMT, Dave Chinner wrote:
-> On Mon, Sep 23, 2024 at 03:56:50PM -0400, Kent Overstreet wrote:
-> > On Mon, Sep 23, 2024 at 10:18:57AM GMT, Linus Torvalds wrote:
-> > > On Sat, 21 Sept 2024 at 12:28, Kent Overstreet
-> > > <kent.overstreet@linux.dev> wrote:
-> > > >
-> > > > We're now using an rhashtable instead of the system inode hash table;
-> > > > this is another significant performance improvement on multithreaded
-> > > > metadata workloads, eliminating more lock contention.
-> > > 
-> > > So I've pulled this, but I reacted to this issue - what is the load
-> > > where the inode hash table is actually causing issues?
-> > > 
-> > > Because honestly, the reason we're using that "one single lock" for
-> > > the inode hash table is that nobody has ever bothered.
-> > > 
-> > > In particular, it *should* be reasonably straightforward (lots of
-> > > small details, but not fundamentally hard) to just make the inode hash
-> > > table be a "bl" hash - with the locking done per-bucket, not using one
-> > > global lock.
-> > 
-> > Dave was working on that - he posted patches and it seemed like they
-> > were mostly done, not sure what happened with those.
-> 
-> I lost interest in that patchset a long while ago. The last posting
-> I did was largely as a community service to get the completed,
-> lockdep and RTPREEMPT compatible version of the hashbl
-> infrastructure it needed out there for other people to be able to
-> easily push this forward if they needed it. That was here:
-> 
-> https://lore.kernel.org/linux-fsdevel/20231206060629.2827226-1-david@fromorbit.com/
-> 
-> and I posted it because Kent was asking about it because his
-> attempts to convert the inode hash to use rhashtables wasn't
-> working.
-> 
-> I've suggested multiple times since then when people have asked me
-> about that patch set that they are free to pick it up and finish it
-> off themselves. Unfortunately, that usually results in silence, a
-> comment of "I don't have time for that", and/or they go off and hack
-> around the issue in some other way....
+On Mon, 23 Sept 2024 at 17:27, Dave Chinner <david@fromorbit.com> wrote:
+>
+> However, the problematic workload is cold cache operations where
+> the dentry cache repeatedly misses. This places all the operational
+> concurrency directly on the inode hash as new inodes are inserted
+> into the hash. Add memory reclaim and that adds contention as it
+> removes inodes from the hash on eviction.
 
-Looking over that thread I'm not clear on what was missing - you
-mentioned RTPREEMPT/lockdep but you had a patch for that, which looked
-servicable enough?
+Yeah, and then we spend all the time just adding the inodes to the
+hashes, and probably fairly seldom use them. Oh well.
+
+And I had missed the issue with PREEMPT_RT and the fact that right now
+the inode hash lock is outside the inode lock, which is problematic.
+
+So it's all a bit nasty.
+
+But I also assume most of the bad issues end up mainly showing up on
+just fairly synthetic benchmarks with ramdisks, because even with a
+good SSD I suspect the IO for the cold cache would still dominate?
+
+               Linus
