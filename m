@@ -1,112 +1,113 @@
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349BE127E01;
-	Wed, 25 Sep 2024 15:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D053554757
+	for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 16:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727277618; cv=none; b=QItQpZB7pmwQVN6tDd7V7NLP1lSNmFOX0cA69UQ6G3jWK2NWlyQsVaa3qsd/w3g5PpMD45xRqj0u5VXyhUAlqW6ByhF8attBY6/MiKetk6GqaZHVt7ZudNShfX6IcSFpHwqhsS0UXivsUdkNukFzeE64sC0RnkxRllJo7PC1RCU=
+	t=1727282707; cv=none; b=jwMlVQqv0jKHbBwfminl3gIvyjd3qhYVOE47iNs5vlHstoG7ibBxyssS1AppBqW87TDpKvKS2Q2PVEmRIx/8xRlEcK9qthjLBM+BMG7GDIyRtO2sUasidvH96AjKVTW/zpsu6HbcOvg67QjGhxQ3RiAqFQX3j6+ex5O7ChntpZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727277618; c=relaxed/simple;
-	bh=2OzWc76CJ5Bsdr55197joKnim82KEQLgiZs3sWvyAuA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KcICDikE8iOEDRFy5OWhT4I1n5joVz8teahmi6v0lGeaNWyJLUn8RDClTyTSxG3HsJIa0vttRMsGlQEOIrCRqAX6cSpotpWJlf4pbDr2iNP5WJAYAyuD+RImC9iQNJbrkfRH3uIuKYnX42XX3cqUmHyTa9GTfDZKlvAtiNLV98Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tQZCg/98; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1727282707; c=relaxed/simple;
+	bh=+DUdQBvqtVvAtwFJrrAxbaenWEE93KU9c2ixTaCt6p4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=O7LtCTatF/nZJNbdKZDSLFQ6UuSQFtxOoQf+poLrxahu+k6wAakLOjdMpZBFBYqSEC4eM+f8fD6EQf9wu+YP7jTqjF4c0BAXjm4TPW5LzW35NmYf7HAcds5RgfHHhiDcYVe8/NPLy6D6aAvbXTLBcZzqbMzuw79RKiAYh08J7Yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TyA8qgf3; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tQZCg/98"
-Date: Wed, 25 Sep 2024 11:20:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727277614;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aiHBYW61Q99lbPSaV3HFKFXGi8oz8BK9hAfEMY5UgxM=;
-	b=tQZCg/98FFy29MUkAxwsbzmf8AF1oEoXBMLojN/+ZjZYOa1tHJZbz3oL0DfOnQlSiVteru
-	EHfuraK3s6oGhieaq/Jp9xGDoGbN4N2+es2xxuW/cKTAHxHnZwAPqejT2gF46hF6rGG0Ax
-	ULXMvYRDez98G852BeNmHa8uTm+5r2E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: syzbot+c0360e8367d6d8d04a66@syzkaller.appspotmail.com, 
-	brauner@kernel.org, jack@suse.cz, jfs-discussion@lists.sourceforge.net, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	shaggy@kernel.org, syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH] bcachefs: return the error code instead of the return
- value of IS_ERR_OR_NULL
-Message-ID: <ywccsi7uqqnsfha4yvg6lycsbafeqwylwabwvkjprjrv66q4sb@kxuz3ygc5qp7>
-References: <66f33aad.050a0220.457fc.0030.GAE@google.com>
- <tencent_4A8FBB4133EA9E461B0C4B2C1B2425FFBA08@qq.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TyA8qgf3"
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7198de684a7so83445b3a.2
+        for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 09:45:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727282705; x=1727887505; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xsteog8D/C+nWj2OgHkM1HZ++Q3B4bbZAnt5yHXsab0=;
+        b=TyA8qgf3KSt+tAmutloDMFCBdHkcZjJkdSOVrxMXFz6GnqhEEnyK8+iGuVPfTUrpcA
+         41IrfxqaaVSBs3esfh1GVDiu8MDwvWMq8cLRX2wBFsY3+SolUclGcnVSKFfjxVredSSL
+         lJQhRpVX33tQ9jpamOCqF0ygEEn6E4hQxdopi3TKCJc9R5Q7qxlRaJuIx5qoc+Ll9HSR
+         381dcPZFehCvYkbanxmWdEuw2FvCI8jAf2LSOTA8oYAZ1VLpI4LP1Mgv7yTZBeSZRx7V
+         hMXZoFqsAvep5zf+uMh6jnfuagT8W2fmB0EJK2eeqZdPEp6moMGYmz3/qLhKw4Wgj7WZ
+         iC8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727282705; x=1727887505;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xsteog8D/C+nWj2OgHkM1HZ++Q3B4bbZAnt5yHXsab0=;
+        b=bq+Igzv6IQBiXnUO2ckSaxcWZf15BtwimKXlERWEbT/+fa3lsmQl0AS9TXmnwyV0gY
+         sqAQWaZYrrkJ/TlIEmRGdg/ey9QEur+jJNcZwNQzdATxm+WiD68Xfjsc7r+JRHU1SI8k
+         aCR7CEyMOrEPBLR+nG+RxwhmxQrcUv+ok5cJq3eALWcEbRmkug6nwhRgVXNKK2JZCkIZ
+         XNhhNjtgBiKjrkl6g73UUd46HlSeV7t/zU+p9EZo6ax2bynDyKqygs15oeT4TGptSpQi
+         uY3elQeMehTLP6qVKLzZTkVmN9MIYzsQS+1SgOt+4cseMq3NHRY92Sy3oRojPbFjVSer
+         7cdw==
+X-Gm-Message-State: AOJu0YwzBclOIGznS3RMMdGEPkmFzqIbdUfzLHlB6bFyjJDAP9fGSUOD
+	8P73pMbnDApA5nnU8K56ZziET2qh6Lf5ReT2tOWhUP+U9aAjAe4n
+X-Google-Smtp-Source: AGHT+IHHYdRVUAJhC+qSwx761qwi6qDPBxFCkiNKPc8LheNwXzd9wKIGkZl/KzE0puEVsK/vtbBrmA==
+X-Received: by 2002:a05:6a21:3941:b0:1c6:a65f:299 with SMTP id adf61e73a8af0-1d4d4ac640emr4467863637.21.1727282704890;
+        Wed, 25 Sep 2024 09:45:04 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71afc846dbfsm2938147b3a.80.2024.09.25.09.45.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Sep 2024 09:45:04 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH v2] bcachefs: Merge the condition to avoid additional invocation
+Date: Thu, 26 Sep 2024 00:45:00 +0800
+Message-ID: <20240925164500.1178107-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_4A8FBB4133EA9E461B0C4B2C1B2425FFBA08@qq.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 25, 2024 at 09:53:00PM GMT, Edward Adam Davis wrote:
-> Syzbot report a kernel BUG in vfs_get_tree.
-> The root cause is that read_btree_nodes() returned 1 and returned -EINTR
-> due to kthread_run() execution failure.
-> 
-> The -EINTR needs to be returnned to bch2_fs_recovery(), not return to
-> "ret = IS_ERR_OR_NULL(t)".
-> 
-> Reported-and-tested-by: syzbot+c0360e8367d6d8d04a66@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=c0360e8367d6d8d04a66
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> ---
->  fs/bcachefs/btree_node_scan.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/bcachefs/btree_node_scan.c b/fs/bcachefs/btree_node_scan.c
-> index b28c649c6838..df7090ca1e81 100644
-> --- a/fs/bcachefs/btree_node_scan.c
-> +++ b/fs/bcachefs/btree_node_scan.c
-> @@ -281,6 +281,10 @@ static int read_btree_nodes(struct find_btree_nodes *f)
->  			closure_put(&cl);
->  			f->ret = ret;
->  			bch_err(c, "error starting kthread: %i", ret);
-> +			if (IS_ERR(t)) {
-> +				closure_sync(&cl);
-> +				return PTR_ERR(t);
-> +			}
->  			break;
->  		}
->  	}
-> -- 
-> 2.43.0
-> 
+If the lock has been acquired and unlocked, we don't have to do clear
+and wakeup again, though harmless since we hold the intent lock. Merge
+the condition might be clearer.
 
-I fixed this last night with the patch below...
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+Only the title is changed in this version.
 
-commit c1a6f5ca052b7f8609917d13cd11fc60c94396aa
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Tue Sep 24 19:31:22 2024 -0400
+The original one is "bcachefs: Remove the second call to these function"
 
-    bcachefs: Fix incorrect IS_ERR_OR_NULL usage
-    
-    Returning a positive integer instead of an error code causes error paths
-    to become very confused.
-    
-    Closes: syzbot+c0360e8367d6d8d04a66@syzkaller.appspotmail.com
-    Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-diff --git a/fs/bcachefs/btree_node_scan.c b/fs/bcachefs/btree_node_scan.c
-index b28c649c6838..1e694fedc5da 100644
---- a/fs/bcachefs/btree_node_scan.c
-+++ b/fs/bcachefs/btree_node_scan.c
-@@ -275,7 +275,7 @@ static int read_btree_nodes(struct find_btree_nodes *f)
- 		w->ca		= ca;
+ fs/bcachefs/six.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/fs/bcachefs/six.c b/fs/bcachefs/six.c
+index b3583c50ef04..8fb44a5d1406 100644
+--- a/fs/bcachefs/six.c
++++ b/fs/bcachefs/six.c
+@@ -491,8 +491,12 @@ static int six_lock_slowpath(struct six_lock *lock, enum six_lock_type type,
+ 				list_del(&wait->list);
+ 			raw_spin_unlock(&lock->wait_lock);
  
- 		t = kthread_run(read_btree_nodes_worker, w, "read_btree_nodes/%s", ca->name);
--		ret = IS_ERR_OR_NULL(t);
-+		ret = PTR_ERR_OR_ZERO(t);
- 		if (ret) {
- 			percpu_ref_put(&ca->io_ref);
- 			closure_put(&cl);
+-			if (unlikely(acquired))
++			if (unlikely(acquired)) {
+ 				do_six_unlock_type(lock, type);
++			} else if (type == SIX_LOCK_write) {
++				six_clear_bitmask(lock, SIX_LOCK_HELD_write);
++				six_lock_wakeup(lock, atomic_read(&lock->state), SIX_LOCK_read);
++			}
+ 			break;
+ 		}
+ 
+@@ -501,10 +505,6 @@ static int six_lock_slowpath(struct six_lock *lock, enum six_lock_type type,
+ 
+ 	__set_current_state(TASK_RUNNING);
+ out:
+-	if (ret && type == SIX_LOCK_write) {
+-		six_clear_bitmask(lock, SIX_LOCK_HELD_write);
+-		six_lock_wakeup(lock, atomic_read(&lock->state), SIX_LOCK_read);
+-	}
+ 	trace_contention_end(lock, 0);
+ 
+ 	return ret;
+-- 
+2.45.2
+
