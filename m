@@ -1,104 +1,107 @@
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65CE2907
-	for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 02:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CD1946F
+	for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 02:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727230389; cv=none; b=bHjk1FQMZWbMsWbA1lUMLzhr0xn+7OZCbbmpf3TufUpVQw6Czs5i8qdXi7BLHobSmxwA7qR0B5OOB1EFqI4de9VsatThtFOk6GBjdibds1W4c2ehfJ7G11Jc2du95bwPRUWeyL45+GPfrDgDwW/xzmzYbUXI3GCvkDD/lo6pZSg=
+	t=1727230681; cv=none; b=ER6sIktnnCc4Gv5eoEkAE73T8iP2stS/f7jKHfbi2C3tzoM/hXv1zQbuiVHyok/wt4UDZxZyskY7dWTLZ0/YR0nrttjbrSu5wCIBNRtwzUyjmM2ZkocedhyrYFHeONctdqepQiTN3xYDN6FbmDyHtCST10dRjuTcbOCqKmLBcBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727230389; c=relaxed/simple;
-	bh=80X2Gp24nNMX8cXLPZsZvliNWxzeYD78Zp8JZk8dOng=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kUZnE3tpJkhyWc3QrzPYuFvwyNH+JOSOOWJNXXZTU2sNJaG5rQe6Flbgjoo9aqcTD79l4BGDHXT5CLOSxCY0hBSlk6jvi+m+X0DfpifrPoe7xPESQ5gvW9KrVS7gmipyyN5nDMycgBJMBg1eorwT5USOPHQEFX+eJfKHDX5F9+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dKfgOgVd; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dKfgOgVd"
-Date: Tue, 24 Sep 2024 22:13:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727230386;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hBkMp/0eODCP6liVuxv3l7JuWVErFP5s89WUrTpn8/s=;
-	b=dKfgOgVdYMp8dbkclyYFcyazgNGRS2mgqFwJkwWIUg4o4iBZbkmEmt8s8jBYaiRM8qxFcw
-	IKpCHY9kzGlZFMnL3sc56kSDJXCqrl/78cyNyM/LoUNtUsssrnvE2aWfXhMd0iRWzr9/5z
-	amWebubHMpGQw50NZNEEhqgllvST3gk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Dave Chinner <dchinner@redhat.com>
-Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
-Message-ID: <v5lvhjauvcx27fcsyhyugzexdk7sik7an2soyxtx5dxj3oxjqa@gbvyu2kc7vpy>
-References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
- <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
- <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg>
- <ZvIHUL+3iO3ZXtw7@dread.disaster.area>
- <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
- <74sgzrvtnry4wganaatcmxdsfwauv6r33qggxo27yvricrzxvq@77knsf6cfftl>
- <ZvIzNlIPX4Dt8t6L@dread.disaster.area>
- <dia6l34faugmuwmgpyvpeeppqjwmv2qhhvu57nrerc34qknwlo@ltwkoy7pstrm>
- <ZvNgmoKgWF0TBXP8@dread.disaster.area>
+	s=arc-20240116; t=1727230681; c=relaxed/simple;
+	bh=1tL1zQqCSMkYofgqCYvPMdhWjbyoymaMq4H4A+xKFOM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NWZc8LtM/5lM6Q3Z8AmduYNj1C02OaxHDnU239qKmaPBjEqzFHsDO1EEG8rOVcbkxycIPf/AZFXKbdDNYwWSQZJJ7Ud3Zd6uyGfHU5Zh1ROHg6GtOoGZo2DE/DB2rQvUAnugo7h4WYWBT19BnX3MIiCDYzYb7ibccYexYtSXxM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4XD0hn11Zhz1T7tT;
+	Wed, 25 Sep 2024 10:16:25 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id A60FC180AE8;
+	Wed, 25 Sep 2024 10:17:49 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
+ (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 25 Sep
+ 2024 10:17:49 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>,
+	<chris.zjh@huawei.com>
+Subject: [PATCH] bcachefs: check the return code when set upgrade extra
+Date: Wed, 25 Sep 2024 10:27:59 +0800
+Message-ID: <20240925022759.3819978-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZvNgmoKgWF0TBXP8@dread.disaster.area>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Wed, Sep 25, 2024 at 11:00:10AM GMT, Dave Chinner wrote:
-> > Eh? Of course it'd have to be coherent, but just checking if an inode is
-> > present in the VFS cache is what, 1-2 cache misses? Depending on hash
-> > table fill factor...
-> 
-> Sure, when there is no contention and you have CPU to spare. But the
-> moment the lookup hits contention problems (i.e. we are exceeding
-> the cache lookup scalability capability), we are straight back to
-> running a VFS cache speed instead of uncached speed.
+In bch2_sb_set_upgrade_extra, it checks the metadata version for
+stripes. If it needs to write super, bch2_write_super will be done.
+But this pharse may be incorrect, and the original code didn't keep
+the error code. We should check the return code in this case.
 
-The cache lookups are just reads; they don't introduce scalability
-issues, unless they're contending with other cores writing to those
-cachelines - checking if an item is present in a hash table is trivial
-to do locklessly.
+Fixes: 7773df19c35f ("bcachefs: metadata version bucket_stripe_sectors")
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+ fs/bcachefs/recovery.c     | 2 ++
+ fs/bcachefs/sb-downgrade.c | 8 ++++----
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-But pulling an inode into and then evicting it from the inode cache
-entails a lot more work - just initializing a struct inode is
-nontrivial, and then there's the (multiple) shared data structures you
-have to manipulate.
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index be1e7ca4362f..31e33f93055f 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -855,6 +855,8 @@ int bch2_fs_recovery(struct bch_fs *c)
+ 	set_bit(BCH_FS_btree_running, &c->flags);
+ 
+ 	ret = bch2_sb_set_upgrade_extra(c);
++	if (ret)
++		goto err;
+ 
+ 	ret = bch2_run_recovery_passes(c);
+ 	if (ret)
+diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
+index 6f0493f79959..2acb52d107be 100644
+--- a/fs/bcachefs/sb-downgrade.c
++++ b/fs/bcachefs/sb-downgrade.c
+@@ -138,7 +138,7 @@ UPGRADE_TABLE()
+ #undef x
+ };
+ 
+-static int have_stripes(struct bch_fs *c)
++static bool have_stripes(struct bch_fs *c)
+ {
+ 	return !btree_node_fake(c->btree_roots_known[BTREE_ID_stripes].b);
+ }
+@@ -155,7 +155,7 @@ int bch2_sb_set_upgrade_extra(struct bch_fs *c)
+ 
+ 	if (old_version <  bcachefs_metadata_version_bucket_stripe_sectors &&
+ 	    new_version >= bcachefs_metadata_version_bucket_stripe_sectors &&
+-	    (ret = have_stripes(c) > 0)) {
++	    have_stripes(c)) {
+ 		__set_bit_le64(BCH_RECOVERY_PASS_STABLE_check_allocations, ext->recovery_passes_required);
+ 		__set_bit_le64(BCH_FSCK_ERR_alloc_key_dirty_sectors_wrong, ext->errors_silent);
+ 		__set_bit_le64(BCH_FSCK_ERR_alloc_key_stripe_sectors_wrong, ext->errors_silent);
+@@ -163,10 +163,10 @@ int bch2_sb_set_upgrade_extra(struct bch_fs *c)
+ 	}
+ 
+ 	if (write_sb)
+-		bch2_write_super(c);
++		ret = bch2_write_super(c);
+ 	mutex_unlock(&c->sb_lock);
+ 
+-	return ret < 0 ? ret : 0;
++	return ret;
+ }
+ 
+ void bch2_sb_set_upgrade(struct bch_fs *c,
+-- 
+2.34.1
 
-> Keep in mind that not having a referenced inode opens up the code to
-> things like pre-emption races. i.e. a cache miss doesn't prevent
-> the current task from being preempted before it reads the inode
-> information into the user buffer. The VFS inode could bei
-> instantiated and modified before the uncached access runs again and
-> pulls stale information from the underlying buffer and returns that
-> to userspace.
-
-Yeah, if you're reading from a buffer cache that doesn't have a lock
-that does get dicy - but for bcachefs where we're reading from a btree
-node that does have a lock it's quite manageable.
-
-And incidentally this sort of "we have a cache on top of the btree, but
-sometimes we have to do direct access" is already something that comes
-up a lot in bcachefs, primarily for the alloc btree. _Tons_ of fun, but
-doesn't actually come up here for us since we don't use the vfs inode
-cache as a writeback cache.
-
-Now, for some completely different sillyness, there's actually _three_
-levels of caching for inodes in bcachefs: btree node cache, btree key
-cache, then the vfs cache. In the first two inodes are packed down to
-~100 bytes so it's not that bad, but it does make you go "...what?". It
-would be nice in theory to collapse - but the upside is that we don't
-have the interactions between the vfs inode cache and journalling that
-xfs has.
-
-But if vfs inodes no longer have their own lifetime like you've been
-talking about, that might open up interesting possibilities.
