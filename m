@@ -1,83 +1,102 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B152718C336;
-	Wed, 25 Sep 2024 11:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4EEF17E00C;
+	Wed, 25 Sep 2024 13:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727264506; cv=none; b=EfoMEXynAvXKNlc6XDpKb9PXrH3lI10Nx+cgWF3lcO3Ch3UjEfwl3YRT8Y1tX/gH7IRjUUY3SRlUrxDxggujWUsYxqiXuQP+rO5qOWsieeIFvi9huDWOxyCVOgz3/Rh5vUVy2w79h9Cia0Irjc942Lc+Newdx8SuFV0ikiAv6dw=
+	t=1727272698; cv=none; b=ZOeImoPlHZ17vrBOuy+2bO/XDOFIQL2zqr9k4IOL0HfZcLer58zvdSmrUxHZLbzPMs6LclPoT9vVXqzqSitLJerSKqfzs72b5LRwB+3qnjmrEsFju4QZYtCboScJxDxKTQUvWOGX4CPLOBs6FcZ4DJQADEGbYBILSprNkTWVQfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727264506; c=relaxed/simple;
-	bh=AWU8ag6TsRORY9WiQaZ4/YUhKGR80CvIOUpQt2DeNjk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E+htitufC4vCSmtaW33W/BBg7Bqc1aclnyRsWwq6SnfDBuB/8pY0miJdI9k5V5PxlaCIH9mpNRHjmxkV5uLGMLC43uvhveVGHEppDuotRlBA+IjPRGO/FqNCvNqaMA2vMAIpEs19THlMlSQCVcoHvjD4ZRz9d3ibvQhY2YoOHfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BMqSyEKQ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1727272698; c=relaxed/simple;
+	bh=24MQxyf9XU7dt8p5pJ4zrnOq+YqSfpDo/gZcai/d4jo=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=DsIYWP1IXnohejJpWznYcEPTBWBtiNPPWF01UxnuQKYMBkGBi17sWifl1ZM/hFVSxyhndeMb6EwrU9Htu6GXlIyPPCzgAsJRdAu6fq/P30OlaiRNYwqPIDUyd5CZTQJG3+xDwsbhPZwLJGTyhktjv+/nABe3baCc90xDOrpL1fk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=dIUEdKsi; arc=none smtp.client-ip=162.62.58.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BMqSyEKQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 991EAC4CEC3;
-	Wed, 25 Sep 2024 11:41:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727264506;
-	bh=AWU8ag6TsRORY9WiQaZ4/YUhKGR80CvIOUpQt2DeNjk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BMqSyEKQdTHXTpv62L73HXYSvQNqQCCC6WXcWoiFvSvBOcWofXPkE9mTyNkwsAJ5G
-	 Fn37LYLx4ZI4BMShvsoHvKhcs6Ax4UC+lgnx8mkmswE5Z5sshjh/p2mg3e5gnOe//C
-	 s2ku5F3EY/t4X+ulBkBMZrum31RizsxHElTTDZYG/H2Rr3lFvdO4Snr5dDhduUOvex
-	 xAYkBNveXeBhHlQSwfqm538TkkFlnBnCbh+tTICpcr4Un0ut0S0Ym9FFTAA1G6+lbL
-	 L5rr0LUAGRIKL1o/yE7Jwg8+bipIuVHfVuVXI+WNAYmg30OHTMU7uv3lWAESkKLfmT
-	 Dba3TmvQzXN/A==
-Date: Wed, 25 Sep 2024 13:41:42 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Dave Chinner <david@fromorbit.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Dave Chinner <dchinner@redhat.com>
-Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
-Message-ID: <20240925-aufdrehen-zuzug-43c74793e4bf@brauner>
-References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
- <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
- <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg>
- <ZvIHUL+3iO3ZXtw7@dread.disaster.area>
- <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
- <CAHk-=wh+atcBWa34mDdG1bFGRc28eJas3tP+9QrYXX6C7BX0JQ@mail.gmail.com>
- <ZvI4N55fzO7kg0W/@dread.disaster.area>
- <CAHk-=wjNPE4Oz2Qn-w-mo1EJSUCQ+XJfeR3oSgQtM0JJid2zzg@mail.gmail.com>
- <ZvNWqhnUgqk5BlS4@dread.disaster.area>
- <CAHk-=wh+zqs3CYOiua3qLeGkqfDXQ0kPiNUWTmXLr_4dWjLSDw@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="dIUEdKsi"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1727272384; bh=xDQ/047YH46qDRI7w0LS7iGSEzIWbAIopOEzW3KNye8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=dIUEdKsibdJ9eB6mwGiMepFV+OHk5tdw69lrvlVAIY59UO9kMKFsqmajSpNh/ScC9
+	 KLXq6Dl6cM7gl08G3UUCNI3J1l9rp33ObVUMzuOjISnkwB7kOBQgt57uiWxJam4oNK
+	 j/z7MB4p/nLhR2AquYRvBwex8IdhRJHxNOlpZdyc=
+Received: from pek-lxu-l1.wrs.com ([111.198.224.50])
+	by newxmesmtplogicsvrsza29-0.qq.com (NewEsmtp) with SMTP
+	id D402DE7B; Wed, 25 Sep 2024 21:53:00 +0800
+X-QQ-mid: xmsmtpt1727272380tbx63wbr1
+Message-ID: <tencent_4A8FBB4133EA9E461B0C4B2C1B2425FFBA08@qq.com>
+X-QQ-XMAILINFO: NY3HYYTs4gYSCD4BjJa3oLj2wgetdTniRHGpPBJX6dm2difxmsv/fwTkOwmJY5
+	 jt6PpNTqYy5rI38TJLLAuCSkY9gVU7Q9eiFK6tOPRHW+31HToo0IeL9lZyo0XXXcimsazmvxSkDU
+	 XsppQQ+lej3dGDsGYjcz9Z08yBJUjda5SL4rMt1d1cXVHFgfCSPofoHQAMIwwua3bZgglf/2fTJw
+	 xuva/rW5nYj7cLej6f+agYfo1K4Jd8lmwlDaz90B6FatPhiCWahiQQMk5syEUo1GtcCAtBSS7Rgw
+	 rBSa8TEPCMvN1MavC1SapZm9spMn/wQqFM033aokDKbrrPktRBuHT8AZSPSkSDRVgWboMxmvBxMX
+	 ekLHmFDkJEeDNKscbmtad1u3WHrP5TcGft0y06HnSDNW+y0AYGL1b49jWnDtiZRdJW50hntyYd0N
+	 sOpUrOaR0n9yKJc+YykZIdNC2gl1yL0noZWUlgWkw0cQ0etXcVT6NUlA8JOPM6UlmYJjkaLdq85R
+	 x4lcUzbzuewh0jinBtzNh19RyTs282HQ1RIFzFor4QViHsDAf/WtbTzR1bpk5X9s7k/HcWIDy185
+	 lygJYt2/BZCw0Cf9LlNZVdop+HbUSXAXbduPEy3s53lwUdYzELuE72EXJkYfrS7DYoWz48HEz5Jc
+	 IN6eB9GzQO/fjMGyo0ejV53kUdAU35ydnwuYV0FH3Ve3siXTDuqhGJMD5J5VHTjj814m3n7Hkbx7
+	 fdfR+id0RUI/Dg5gA35pOZHciygL2fMkXpUGuCIIYuZM3UhXsdEKMA4W9VdxgJSh4OcGqUUPBFUB
+	 vKYjJ1FNJFlQ9ShemPz6QYdIPX4C4dxThAuTeQe7gceAyVgGfkcE4XwNJQqGYNGjPJ5Jr9aJh9RN
+	 K1BcHgb5UrMqPm28AnpE8Z1NLhhBjFLGC/rI9hrf8e6BDFb31tb9YjGQ2In0U8WL2M9OS/fwlG+L
+	 Fr9Wtq65s=
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+c0360e8367d6d8d04a66@syzkaller.appspotmail.com
+Cc: brauner@kernel.org,
+	jack@suse.cz,
+	jfs-discussion@lists.sourceforge.net,
+	kent.overstreet@linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	shaggy@kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	viro@zeniv.linux.org.uk
+Subject: [PATCH] bcachefs: return the error code instead of the return value of IS_ERR_OR_NULL
+Date: Wed, 25 Sep 2024 21:53:00 +0800
+X-OQ-MSGID: <20240925135259.1575815-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <66f33aad.050a0220.457fc.0030.GAE@google.com>
+References: <66f33aad.050a0220.457fc.0030.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh+zqs3CYOiua3qLeGkqfDXQ0kPiNUWTmXLr_4dWjLSDw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 24, 2024 at 06:45:55PM GMT, Linus Torvalds wrote:
-> On Tue, 24 Sept 2024 at 17:17, Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > FWIW, I think all this "how do we cache inodes better" discussion is
-> > somehwat glossing over a more important question we need to think
-> > about first: do we even need a fully fledged inode cache anymore?
-> 
-> I'd be more than happy to try. I have to admit that it's largely my
-> mental picture (ie "inode caches don't really matter"), and why I was
-> surprised that the inode locks even show up on benchmarks.
-> 
-> If we just always drop inodes when the refcount goes to zero and never
-> have any cached inodes outside of other references, I think most of
-> the reasons for the superblock inode list just disappear. Most of the
-> heavy lifting has long since been moved to the dentry shrinking.
-> 
-> I'd worry that we have a lot of tuning that depends on the whole inode
-> LRU thing (that iirc takes the mapping size etc into account).
-> 
-> But maybe it would be worth trying to make I_DONTCACHE the default,
-> with the aim of removing the independent inode lifetimes entirely...
+Syzbot report a kernel BUG in vfs_get_tree.
+The root cause is that read_btree_nodes() returned 1 and returned -EINTR
+due to kthread_run() execution failure.
 
-I would be rather surprised if we didn't see regressions for some
-workloads but who knows. If we wanted to test this then one easy way
-would be to add a FS_INODE_NOCACHE fs_flag and have inode_init_always()
-raise I_DONTCACHE based on that. That way we can experiment with this on
-a per-fs basis.
+The -EINTR needs to be returnned to bch2_fs_recovery(), not return to
+"ret = IS_ERR_OR_NULL(t)".
+
+Reported-and-tested-by: syzbot+c0360e8367d6d8d04a66@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=c0360e8367d6d8d04a66
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/bcachefs/btree_node_scan.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/fs/bcachefs/btree_node_scan.c b/fs/bcachefs/btree_node_scan.c
+index b28c649c6838..df7090ca1e81 100644
+--- a/fs/bcachefs/btree_node_scan.c
++++ b/fs/bcachefs/btree_node_scan.c
+@@ -281,6 +281,10 @@ static int read_btree_nodes(struct find_btree_nodes *f)
+ 			closure_put(&cl);
+ 			f->ret = ret;
+ 			bch_err(c, "error starting kthread: %i", ret);
++			if (IS_ERR(t)) {
++				closure_sync(&cl);
++				return PTR_ERR(t);
++			}
+ 			break;
+ 		}
+ 	}
+-- 
+2.43.0
+
