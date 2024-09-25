@@ -1,105 +1,104 @@
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231A72E83F
-	for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 01:46:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65CE2907
+	for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 02:13:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727228779; cv=none; b=F81pbA4aH376zS5lfR+jsa9T4ndtvoQn1SuNUtB+l8fVvp7DqnM9DiSe6CgPEhMaXbQCk+PAskSVp9US1hRPmfF+Yv/oaTf6rX/aUfED76CKJ7RlL8x6sfPwOTpNtTgdzCT4OS53PqICHAcX/PIqzprQYhKWijqiyUE6wIsSrrc=
+	t=1727230389; cv=none; b=bHjk1FQMZWbMsWbA1lUMLzhr0xn+7OZCbbmpf3TufUpVQw6Czs5i8qdXi7BLHobSmxwA7qR0B5OOB1EFqI4de9VsatThtFOk6GBjdibds1W4c2ehfJ7G11Jc2du95bwPRUWeyL45+GPfrDgDwW/xzmzYbUXI3GCvkDD/lo6pZSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727228779; c=relaxed/simple;
-	bh=xUF69c+JXEl4NVUwF1HduHLgeTxgdRww8qHXpky5/BE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DRxtTfw3/IztHh42HxH2xFNWy7d+FEgEhi83VJzEBWlACMy2Xt182GJXrEXnox1MKoyVQ+hudsR4fEhDrf2pxlSlDeSbQ6KbYCaNwci/16HSGpv/OPMkE8tmFQKUWuzbecGOqTW+a1F8zoSI/LjBXwCy8WUno2nXDoZdhQyvGeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=DVfxL+tO; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1727230389; c=relaxed/simple;
+	bh=80X2Gp24nNMX8cXLPZsZvliNWxzeYD78Zp8JZk8dOng=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kUZnE3tpJkhyWc3QrzPYuFvwyNH+JOSOOWJNXXZTU2sNJaG5rQe6Flbgjoo9aqcTD79l4BGDHXT5CLOSxCY0hBSlk6jvi+m+X0DfpifrPoe7xPESQ5gvW9KrVS7gmipyyN5nDMycgBJMBg1eorwT5USOPHQEFX+eJfKHDX5F9+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dKfgOgVd; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="DVfxL+tO"
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5c721803a89so66906a12.1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 18:46:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1727228775; x=1727833575; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WPyihdkphzHjYHkiFltgJ2kdLQLirrIMMdhZ8LE0uX0=;
-        b=DVfxL+tOdPFWW4PVOXFe6V3R1x20HQrmE6C7eUXEpqjVGKcrWOAI9XeHVSagCbGb55
-         vwF/kuYhw1WdHJZM4ov9ZLQ/RZiCnR+Oxlun3dQmXCdKkYomTB3upwLZx+iQ5UZcMp/W
-         krXsje5rUn9v7tuvVYP8tPuyzfJ+ce6mlehAg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727228775; x=1727833575;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WPyihdkphzHjYHkiFltgJ2kdLQLirrIMMdhZ8LE0uX0=;
-        b=k3NO4b67DoaPxhZmYArC5z86RYhwXDkWs9gqdCMNTbZNTSW3/RtmeCYda5G9wGuPVh
-         3+x6IRMlNG95+YlsjhY6R45hfH4fIuQOyoJ9vm7BaWL+NpwImp/8jM5d+BP9Lhwln5OZ
-         sYzEBFpXCkhBo3ctWP+8eJM1Yl5mjUXUyTbQts+5mOfqEOoYFYR5yI2sh7tMa298fLR/
-         PA2qSQot2YOM70BoAqG7seJCqRqstu1kD2BaMRIzcU1UsUpu/T7XlkW5a0geyl92U+K+
-         z+OQPSMyybSxPLF480+yrM9odEAkLpjaIzn65yuWAbVA3BSiqyo6PLbQX2T7+yGc4U+D
-         qF2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVY9h+heoWhs+2kfKSRm1D3NI9WZ1qdrF0ZaX6mZr9c62+qXhDLG5fS1PnLclgQQE64ydo4EODlqWoMD3500A==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6XG6CyCnrGtjpbunRbC8F9mtZKB/XtjJ38NDG93l1Nd/O5c2I
-	6rpnt+LJ4YLxNXC0KJNcBJwXdG6rbQ+0M3OECnuxGLWLBG99tU0/fK6gOSwqa5Lmy9qhx1T5gFf
-	vwuB1Mg==
-X-Google-Smtp-Source: AGHT+IEvTtkjH4BBOUGWM1J2OfslrlJxoYPbB8CBOMHqBxUE9lePGbxNkXOJgnIoYU/vH+/KwHY2aA==
-X-Received: by 2002:a17:907:f1c9:b0:a86:7514:e646 with SMTP id a640c23a62f3a-a93a05d63dcmr89337766b.42.1727228775104;
-        Tue, 24 Sep 2024 18:46:15 -0700 (PDT)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9392f4f62bsm153277366b.47.2024.09.24.18.46.12
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Sep 2024 18:46:13 -0700 (PDT)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5c4146c7d5dso7908747a12.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 24 Sep 2024 18:46:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXnDamFnmvSATr+JD2ThiemfrPRmHHmsfSi80W3v3pqBKl91g9YeXWuylPIV2N2wqelkfKSkFz2rQVeglDeKA==@vger.kernel.org
-X-Received: by 2002:a17:907:e6ca:b0:a8a:8915:6bf7 with SMTP id
- a640c23a62f3a-a93a05de3a2mr90554066b.51.1727228771898; Tue, 24 Sep 2024
- 18:46:11 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dKfgOgVd"
+Date: Tue, 24 Sep 2024 22:13:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727230386;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hBkMp/0eODCP6liVuxv3l7JuWVErFP5s89WUrTpn8/s=;
+	b=dKfgOgVdYMp8dbkclyYFcyazgNGRS2mgqFwJkwWIUg4o4iBZbkmEmt8s8jBYaiRM8qxFcw
+	IKpCHY9kzGlZFMnL3sc56kSDJXCqrl/78cyNyM/LoUNtUsssrnvE2aWfXhMd0iRWzr9/5z
+	amWebubHMpGQw50NZNEEhqgllvST3gk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Dave Chinner <dchinner@redhat.com>
+Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
+Message-ID: <v5lvhjauvcx27fcsyhyugzexdk7sik7an2soyxtx5dxj3oxjqa@gbvyu2kc7vpy>
+References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
+ <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
+ <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg>
+ <ZvIHUL+3iO3ZXtw7@dread.disaster.area>
+ <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
+ <74sgzrvtnry4wganaatcmxdsfwauv6r33qggxo27yvricrzxvq@77knsf6cfftl>
+ <ZvIzNlIPX4Dt8t6L@dread.disaster.area>
+ <dia6l34faugmuwmgpyvpeeppqjwmv2qhhvu57nrerc34qknwlo@ltwkoy7pstrm>
+ <ZvNgmoKgWF0TBXP8@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
- <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
- <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg>
- <ZvIHUL+3iO3ZXtw7@dread.disaster.area> <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
- <CAHk-=wh+atcBWa34mDdG1bFGRc28eJas3tP+9QrYXX6C7BX0JQ@mail.gmail.com>
- <ZvI4N55fzO7kg0W/@dread.disaster.area> <CAHk-=wjNPE4Oz2Qn-w-mo1EJSUCQ+XJfeR3oSgQtM0JJid2zzg@mail.gmail.com>
- <ZvNWqhnUgqk5BlS4@dread.disaster.area>
-In-Reply-To: <ZvNWqhnUgqk5BlS4@dread.disaster.area>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 24 Sep 2024 18:45:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh+zqs3CYOiua3qLeGkqfDXQ0kPiNUWTmXLr_4dWjLSDw@mail.gmail.com>
-Message-ID: <CAHk-=wh+zqs3CYOiua3qLeGkqfDXQ0kPiNUWTmXLr_4dWjLSDw@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
-To: Dave Chinner <david@fromorbit.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Dave Chinner <dchinner@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZvNgmoKgWF0TBXP8@dread.disaster.area>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 24 Sept 2024 at 17:17, Dave Chinner <david@fromorbit.com> wrote:
->
-> FWIW, I think all this "how do we cache inodes better" discussion is
-> somehwat glossing over a more important question we need to think
-> about first: do we even need a fully fledged inode cache anymore?
+On Wed, Sep 25, 2024 at 11:00:10AM GMT, Dave Chinner wrote:
+> > Eh? Of course it'd have to be coherent, but just checking if an inode is
+> > present in the VFS cache is what, 1-2 cache misses? Depending on hash
+> > table fill factor...
+> 
+> Sure, when there is no contention and you have CPU to spare. But the
+> moment the lookup hits contention problems (i.e. we are exceeding
+> the cache lookup scalability capability), we are straight back to
+> running a VFS cache speed instead of uncached speed.
 
-I'd be more than happy to try. I have to admit that it's largely my
-mental picture (ie "inode caches don't really matter"), and why I was
-surprised that the inode locks even show up on benchmarks.
+The cache lookups are just reads; they don't introduce scalability
+issues, unless they're contending with other cores writing to those
+cachelines - checking if an item is present in a hash table is trivial
+to do locklessly.
 
-If we just always drop inodes when the refcount goes to zero and never
-have any cached inodes outside of other references, I think most of
-the reasons for the superblock inode list just disappear. Most of the
-heavy lifting has long since been moved to the dentry shrinking.
+But pulling an inode into and then evicting it from the inode cache
+entails a lot more work - just initializing a struct inode is
+nontrivial, and then there's the (multiple) shared data structures you
+have to manipulate.
 
-I'd worry that we have a lot of tuning that depends on the whole inode
-LRU thing (that iirc takes the mapping size etc into account).
+> Keep in mind that not having a referenced inode opens up the code to
+> things like pre-emption races. i.e. a cache miss doesn't prevent
+> the current task from being preempted before it reads the inode
+> information into the user buffer. The VFS inode could bei
+> instantiated and modified before the uncached access runs again and
+> pulls stale information from the underlying buffer and returns that
+> to userspace.
 
-But maybe it would be worth trying to make I_DONTCACHE the default,
-with the aim of removing the independent inode lifetimes entirely...
+Yeah, if you're reading from a buffer cache that doesn't have a lock
+that does get dicy - but for bcachefs where we're reading from a btree
+node that does have a lock it's quite manageable.
 
-                Linus
+And incidentally this sort of "we have a cache on top of the btree, but
+sometimes we have to do direct access" is already something that comes
+up a lot in bcachefs, primarily for the alloc btree. _Tons_ of fun, but
+doesn't actually come up here for us since we don't use the vfs inode
+cache as a writeback cache.
+
+Now, for some completely different sillyness, there's actually _three_
+levels of caching for inodes in bcachefs: btree node cache, btree key
+cache, then the vfs cache. In the first two inodes are packed down to
+~100 bytes so it's not that bad, but it does make you go "...what?". It
+would be nice in theory to collapse - but the upside is that we don't
+have the interactions between the vfs inode cache and journalling that
+xfs has.
+
+But if vfs inodes no longer have their own lifetime like you've been
+talking about, that might open up interesting possibilities.
