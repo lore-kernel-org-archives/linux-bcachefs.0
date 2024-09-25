@@ -1,184 +1,157 @@
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 594121482ED
-	for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 02:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B80C2AD11
+	for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 04:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727232498; cv=none; b=nS0pTLnwWVPmRZVk5GlrS8QZ2w7QrSUAeyFUEFkRGvXLpzbSGr1RwUFqq34qEou7syP/0X7GoZJXqcTUNs1r1pprwWAihTcLvxPAc8ejrkD+3BkmZ43j7aW+FhMqMBOt4BU6P/EQcPYcpQutMdW4Evdt37HxAmRYwSHPJm8E8dA=
+	t=1727238295; cv=none; b=kVbUvDggP1Yl1kLIa85V/+ZLwhbSzD3GFvDn1Ubqqclymg4dOCTLpHE3o/rZZpJVUgroFIs0AVb1s+xRzkjocO+iTmImiP8D2GEzssIPDA/4j4ssCoZwJUx77aMuH5ULYIj8SNYfviNh2ZXLszICurbt1vglbBuy6jGOjOu/lnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727232498; c=relaxed/simple;
-	bh=gugZapi3cZAYta1HiNuZBSd/zAeX7lJQFf0IfUkZ4Mg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qINQwZL+qSdSwftre7tXahX1WvWfdY235dwG8AYMYi8BU+ua0oiTzvqmNDpk9LdMYDRlKcIcUXmGlrOGoWML5sp0ZTQ5YAgsSUAurCMDoqwbUXfLlpMa8vHFz6j+ZOSNTIfXrzZgmqQaWBWJV7EbncP78xrfIirOkMfFIfhdIMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lzckW9eu; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1727238295; c=relaxed/simple;
+	bh=idJhXEhjUxBPOP+5UxB+Mjh8nh5Yj1/3Y8m2TrgJbRg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tipeGB2QTGMBrF+dh62gDsUaFakIdlfsXjjZQLjaemXjMKRGL3OG/cEkMn2nIAa9YQNX3caBJS8OLmbSLX95p84jXiCymtjlewW5YkdX2uEJTdqkTtqqte7/uUblrQvWZCZ2G34L50kAuFjq7/FWLLZpG/Z2Hds8N3OAtfafPLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YRu6joq7; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+09Ftszv; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YRu6joq7; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+09Ftszv; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lzckW9eu"
-Date: Tue, 24 Sep 2024 22:48:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727232494;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YRu6joq7";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+09Ftszv";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YRu6joq7";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+09Ftszv"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8D1A521A75;
+	Wed, 25 Sep 2024 04:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1727238291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yKijGDqskvNDbN8KDSCURpOXQD6HJdnMiOeP2iC+QNg=;
-	b=lzckW9euTuzFv0w7nskTFoh97KGubTQCnlUGdB7tfN7bO7KFlQ2He3//6nPauvI7zFlB9s
-	N0ohG1new579m0NP6sKob9/gdSUCCauPqygVlWbm42/F0w3atobxVFHnK5uSljMl32xWRf
-	A4IKVbBrgV3jUkN0c1y5bG1go9wAbCY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Dave Chinner <dchinner@redhat.com>, Thomas Graf <tgraf@suug.ch>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, netdev@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
-Message-ID: <jeyayqez34guxgvzf4unzytbfgjv2thgrha5miul25y4eearp2@33junxiz2o7f>
-References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
- <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
- <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg>
- <ZvIHUL+3iO3ZXtw7@dread.disaster.area>
- <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
- <CAHk-=wh+atcBWa34mDdG1bFGRc28eJas3tP+9QrYXX6C7BX0JQ@mail.gmail.com>
- <ZvI4N55fzO7kg0W/@dread.disaster.area>
- <CAHk-=wjNPE4Oz2Qn-w-mo1EJSUCQ+XJfeR3oSgQtM0JJid2zzg@mail.gmail.com>
- <ZvNWqhnUgqk5BlS4@dread.disaster.area>
+	bh=Y8kvLlXfAEBntM33j6pzMdixC6MqMc0DEA9+WB4DL5I=;
+	b=YRu6joq7+3zGIHgxc1m7sM0wh1tzo0uyUMP9Ew1fYYgNIkxLhTn51eyqqdUlTxCvsE3spc
+	PsD5X6FOqCSwZOjhwSOUlaOREMVYBsxVtYS0WUL13Gi+WYtN+nnaguz31xdOPlfMbm9AKb
+	BvqEQrknhoiCJWzwk3h7whq8tWZNkc4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1727238291;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y8kvLlXfAEBntM33j6pzMdixC6MqMc0DEA9+WB4DL5I=;
+	b=+09FtszvDHbTnFaLNnAazVMPUn/fz6nyIs1mHgSKeWMex9vmvmYrJFQzjRGEEQCqp+viV4
+	Mu50bXnlucUEAxAA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1727238291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y8kvLlXfAEBntM33j6pzMdixC6MqMc0DEA9+WB4DL5I=;
+	b=YRu6joq7+3zGIHgxc1m7sM0wh1tzo0uyUMP9Ew1fYYgNIkxLhTn51eyqqdUlTxCvsE3spc
+	PsD5X6FOqCSwZOjhwSOUlaOREMVYBsxVtYS0WUL13Gi+WYtN+nnaguz31xdOPlfMbm9AKb
+	BvqEQrknhoiCJWzwk3h7whq8tWZNkc4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1727238291;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y8kvLlXfAEBntM33j6pzMdixC6MqMc0DEA9+WB4DL5I=;
+	b=+09FtszvDHbTnFaLNnAazVMPUn/fz6nyIs1mHgSKeWMex9vmvmYrJFQzjRGEEQCqp+viV4
+	Mu50bXnlucUEAxAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B55413A66;
+	Wed, 25 Sep 2024 04:24:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZE5hO5GQ82Y3QQAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Wed, 25 Sep 2024 04:24:49 +0000
+Date: Wed, 25 Sep 2024 04:24:40 +0000
+From: David Disseldorp <ddiss@suse.de>
+To: Hongbo Li <lihongbo22@huawei.com>
+Cc: <linux-bcachefs@vger.kernel.org>
+Subject: Re: [PATCH] bcachefs: avoid copy from NULL printbuf
+Message-ID: <20240925042440.1b26f58a.ddiss@suse.de>
+In-Reply-To: <9136cbac-7603-4732-b8fe-b0cc89cb9e50@huawei.com>
+References: <20240924025215.29891-1-ddiss@suse.de>
+	<9136cbac-7603-4732-b8fe-b0cc89cb9e50@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZvNWqhnUgqk5BlS4@dread.disaster.area>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:email,suse.de:mid]
+X-Spam-Score: -3.30
+X-Spam-Flag: NO
 
-+cc rhashtable folks for bug report
+On Wed, 25 Sep 2024 10:21:58 +0800, Hongbo Li wrote:
 
-On Wed, Sep 25, 2024 at 10:17:46AM GMT, Dave Chinner wrote:
-> On Tue, Sep 24, 2024 at 09:57:13AM -0700, Linus Torvalds wrote:
-> > On Mon, 23 Sept 2024 at 20:55, Dave Chinner <david@fromorbit.com> wrote:
-> > >
-> > > That's effectively what the patch did - it added a spinlock per hash
-> > > list.
+> On 2024/9/24 10:52, David Disseldorp wrote:
+> > printbuf.buf may be NULL if allocation_failure is set. Check for this
+> > prior to using it as a seq_puts() source.
 > > 
-> > Yeah, no, I like your patches, they all seem to be doing sane things
-> > and improve the code.
+> > Fixes: fa8e94faeece1 ("bcachefs: Heap allocate printbufs")
+> > Signed-off-by: David Disseldorp <ddiss@suse.de>
+> > ---
+> > test test
 > > 
-> > The part I don't like is how the basic model that your patches improve
-> > seems quite a bit broken.
+> >   fs/bcachefs/fs.c | 7 +++++--
+> >   1 file changed, 5 insertions(+), 2 deletions(-)
 > > 
-> > For example, that whole superblock list lock contention just makes me
-> > go "Christ, that's stupid". Not because your patches to fix it with
-> > Waiman's fancy list would be wrong or bad, but because the whole pain
-> > is self-inflicted garbage.
-> 
-> I'm not about to disagree with that assessment.
-> 
-> > And it's all historically very very understandable. It wasn't broken
-> > when it was written.
-> > 
-> > That singly linked list is 100% sane in the historical context of "we
-> > really don't want anything fancy for this". The whole list of inodes
-> > for a superblock is basically unimportant, and it's main use (only
-> > use?) is for the final "check that we don't have busy inodes at umount
-> > time, remove any pending stuff".
-> > 
-> > So using a stupid linked list was absolutely the right thing to do,
-> > but now that just the *locking* for that list is a pain, it turns out
-> > that we probably shouldn't use a list at all. Not because the list was
-> > wrong, but because a flat list is such a pain for locking, since
-> > there's no hierarchy to spread the locking out over.
-> 
-> Right, that's effectively what the dlist infrastructure has taught
-> us - we need some kind of heirarchy to spread the locking over. But
-> what that heirachy is for a "iterate every object" list looks like
-> isn't really clear cut...
+> > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> > index 1aee5bafaae54..6e270bf24591d 100644
+> > --- a/fs/bcachefs/fs.c
+> > +++ b/fs/bcachefs/fs.c
+> > @@ -1931,13 +1931,16 @@ static int bch2_show_options(struct seq_file *seq, struct dentry *root)
+> >   {
+> >   	struct bch_fs *c = root->d_sb->s_fs_info;
+> >   	struct printbuf buf = PRINTBUF;
+> > +	int ret = 0;
+> >   
+> >   	bch2_opts_to_text(&buf, c->opts, c, c->disk_sb.sb,
+> >   			  OPT_MOUNT, OPT_HIDDEN, OPT_SHOW_MOUNT_STYLE);
+> >   	printbuf_nul_terminate(&buf);
+> > -	seq_puts(seq, buf.buf);
+> > +	if (buf.allocation_failure)
+> > +		ret = -ENOMEM;
+> > +	else
+> > +		seq_puts(seq, buf.buf);
+> >     
+> May I fix here in the last patch "bcachefs: fix incorrect show_options 
+> results" in v2, and add you as co-author?
 
-If you think of dlist as just "faster lru list", I think that's a
-completely viable approach.
+I'm fine with this being squashed in with or without a co-author tag.
+However, I think they deserve separate commits given that they address
+separate regressions, and fixing show_options is more critical.
 
-So one thing I've been mulling over is a data structure for efficiently
-tracking async op structs - "some async op went out to lunch" is
-something that we still have crap debug tooling for, and those bugs take
-forever to get fixed. There seems to be an outstanding bug in compaction
-or migration that I've seen multiple reports for, and I doubt it's
-bcachefs (we're quite standard there) - and it's some async op that
-should've released a folio lock but isn't.
-
-And all we need for that is, roughly, an idr with a percpu buffer for
-allocating/freeing slots in front. Which would be perfect for shrinker
-lists, too: walking the list is a lockless radix tree walk, and
-adding/removing entries mostly just hits the percpu buffers.
-
-So now we have another use case for that data structure, so I'll try to
-get that done in the near future and see how it does.
-
-> > (We used to have that kind of "flat lock" for the dcache too, but
-> > "dcache_lock" went away many moons ago, and good riddance - but the
-> > only reason it could go away is that the dcache has a hierarchy, so
-> > that you can always lock just the local dentry (or the parent dentry)
-> > if you are just careful).
-> 
-> > 
-> > > [ filesystems doing their own optimized thing ]
-> > >
-> > > IOWs, it's not clear to me that this is a caching model we really
-> > > want to persue in general because of a) the code duplication and b)
-> > > the issues such an inode life-cycle model has interacting with the
-> > > VFS life-cycle expectations...
-> > 
-> > No, I'm sure you are right, and I'm just frustrated with this code
-> > that probably _should_ look a lot more like the dcache code, but
-> > doesn't.
-> > 
-> > I get the very strong feeling that we should have a per-superblock
-> > hash table that we could also traverse the entries of. That way the
-> > superblock inode list would get some structure (the hash buckets) that
-> > would allow the locking to be distributed (and we'd only need one lock
-> > and just share it between the "hash inode" and "add it to the
-> > superblock list").
-> 
-> The only problem with this is the size of the per-sb hash tables
-> needed for scalability - we can't allocate system sized hash tables
-> for every superblock just in case a superblock might be asked to
-> cache 100 million inodes. That's why Kent used rhashtables for the
-> bcachefs implementation - they resize according to how many objects
-> are being indexed, and hence scale both up and down.
-
-I've been noticing rhashtable resize is surprisingly heavy (the default
-parameters don't ever shrink the table, which is why it's not seen as
-much).
-
-And, when I was torture testing that code I tripped over what appeared
-to be an infinite loop in rht_bucket() when a rehsah is in progress,
-which I worked around in
-
-  a592cdf5164d bcachefs: don't use rht_bucket() in btree_key_cache_scan()
-
-(because it makes more sense to just not run while rehashing and avoid
-the function call overhead of rht_bucket()). If rhashtable folks are
-interested in looking at that I have a test that reproduces it.
-
-> So: should we be looking towards gutting the inode cache and so the
-> in-memory VFS inode lifecycle tracks actively referenced inodes? If
-> so, then the management of the VFS inodes becomes a lot simpler as
-> the LRU lock, maintenance and shrinker-based reclaim goes away
-> entirely. Lots of code gets simpler if we trim down the VFS inode
-> life cycle to remove the caching of unreferenced inodes...
-
-Sounds completely legit to me - except for the weird filesystems. I just
-started cscoping and afs at least seems to do iget() without ever
-attaching it to a dentry, I didn't look further.
-
-So...
-
-If fs/inode.c is grotty, perhaps it makes sense to start a
-fs/inode_rhashtable.c with all the new semantics and convert filesystems
-one by one, like we've been doing with the dio code and iomap.
-
-I finally have my head sufficiently around all the weird inode lifetime
-rules that I could do it, although it'll be a bit before I'm not
-swamped.
+Thanks, David
