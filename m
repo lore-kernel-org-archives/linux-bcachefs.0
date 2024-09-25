@@ -1,78 +1,83 @@
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA02915DBAE
-	for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 07:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B152718C336;
+	Wed, 25 Sep 2024 11:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727249044; cv=none; b=gyWJGqiWEQdz9y07MWJSf4f49fzDjOC8egiLsIVkOqueJ5tnh4Joh3hQNy462wbIktXjuz+Wf+d1bh3BCADlYSp2997gp5zrFLt0GffcPy1xN0bTJ3ftp/MYvkE3zjDyTMPX32fqmOyyyWz4pL5GcBx1DEaBS+pYmavOR+C3UBo=
+	t=1727264506; cv=none; b=EfoMEXynAvXKNlc6XDpKb9PXrH3lI10Nx+cgWF3lcO3Ch3UjEfwl3YRT8Y1tX/gH7IRjUUY3SRlUrxDxggujWUsYxqiXuQP+rO5qOWsieeIFvi9huDWOxyCVOgz3/Rh5vUVy2w79h9Cia0Irjc942Lc+Newdx8SuFV0ikiAv6dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727249044; c=relaxed/simple;
-	bh=cwBW1nZexvrkSpRRMNUvQRu4cEa3POxXfYqsqy+WG5U=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=F/WTj6CblaiM2kMvwu7QleL2Bl48frWkk87xuSuMy1nj/repcv3uoYwSqzaMQ8eZjuErtbYPo9d9sVo4nsX0MsW4CTl9yDdE/Qay/19hX/osITRZWgMe0Dw5jb+a7KaI0zAoMgFaO/3gjLJ9A1Itme81KLIxHq4faTMGKdfOwnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-82aa467836eso1066562439f.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 00:24:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727249042; x=1727853842;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z/A3o4UVQs5NAn318rkcVw0SNvHvy2CSk8QVGSxPhsQ=;
-        b=Y4afnIpP28oIK/R/4+IDmx7czyzmT0Z7luSdJa8HFaGGXXH17QVrXwVeXAuoa+uJ5B
-         Xv9usGFJfhZ5Ud9D8ewKbZ7SMWZ7E5krKwZ+6CGgJMTWOSqpaWl2CizMFRANWpLLKnwu
-         XIftA38Dx8aZQz0cKaaij7LXT07wA/Vf2wHe4L6brzzQt/O1xjPIugTQbe2/qc5pJPcP
-         gUqSdyvGa3cP9E96SvBieqIlDVgNSbKmeonhCux5J9/2e4TC3EHDJRTYY2biu41rNGK6
-         VoRMx6c8dGchz2zXW6ZEOU4rHCz+KgmUL9BsDSZWud1qAUS9UvboObpbsZX9xaku5qkW
-         ZtdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX7lh0VPI1k6uMdhF2X6gWZICmI71d7CIM9OopimVakqIY2BlN77eCh+Ceb1JE1B+AGJxr48zeO/GIbBSqD9Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy529MtJid8BD0skOa4h1iZCTyF3T3Yxn91Djg8LEUBf8196EtI
-	afSxGNDI+LObs7U7Dv8gMp4EFA0gKTCAtMtj8n1mZrfTYEOUC5fg5yISAY5MLmeFx+A5ItC7iXI
-	6Vc+d24YErBd7DL7XuWNOjH7jnJqo9O838l6ust0BDnpPSnA81eN7D10=
-X-Google-Smtp-Source: AGHT+IEPpJLOMCaCb92K68J/cy1pD5OdA22rcpbcvYEB5cQSsPAy9r/VXZbw5kMVeJw+fKgDc5Tgm4uxiRh5RTa1mGOndjSeboQb
+	s=arc-20240116; t=1727264506; c=relaxed/simple;
+	bh=AWU8ag6TsRORY9WiQaZ4/YUhKGR80CvIOUpQt2DeNjk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E+htitufC4vCSmtaW33W/BBg7Bqc1aclnyRsWwq6SnfDBuB/8pY0miJdI9k5V5PxlaCIH9mpNRHjmxkV5uLGMLC43uvhveVGHEppDuotRlBA+IjPRGO/FqNCvNqaMA2vMAIpEs19THlMlSQCVcoHvjD4ZRz9d3ibvQhY2YoOHfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BMqSyEKQ; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BMqSyEKQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 991EAC4CEC3;
+	Wed, 25 Sep 2024 11:41:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727264506;
+	bh=AWU8ag6TsRORY9WiQaZ4/YUhKGR80CvIOUpQt2DeNjk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BMqSyEKQdTHXTpv62L73HXYSvQNqQCCC6WXcWoiFvSvBOcWofXPkE9mTyNkwsAJ5G
+	 Fn37LYLx4ZI4BMShvsoHvKhcs6Ax4UC+lgnx8mkmswE5Z5sshjh/p2mg3e5gnOe//C
+	 s2ku5F3EY/t4X+ulBkBMZrum31RizsxHElTTDZYG/H2Rr3lFvdO4Snr5dDhduUOvex
+	 xAYkBNveXeBhHlQSwfqm538TkkFlnBnCbh+tTICpcr4Un0ut0S0Ym9FFTAA1G6+lbL
+	 L5rr0LUAGRIKL1o/yE7Jwg8+bipIuVHfVuVXI+WNAYmg30OHTMU7uv3lWAESkKLfmT
+	 Dba3TmvQzXN/A==
+Date: Wed, 25 Sep 2024 13:41:42 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Dave Chinner <david@fromorbit.com>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Dave Chinner <dchinner@redhat.com>
+Subject: Re: [GIT PULL] bcachefs changes for 6.12-rc1
+Message-ID: <20240925-aufdrehen-zuzug-43c74793e4bf@brauner>
+References: <dtolpfivc4fvdfbqgmljygycyqfqoranpsjty4sle7ouydycez@aw7v34oibdhm>
+ <CAHk-=whQTx4xmWp9nGiFofSC-T0U_zfZ9L8yt9mG5Qvx8w=_RQ@mail.gmail.com>
+ <6vizzdoktqzzkyyvxqupr6jgzqcd4cclc24pujgx53irxtsy4h@lzevj646ccmg>
+ <ZvIHUL+3iO3ZXtw7@dread.disaster.area>
+ <CAHk-=whbD0zwn-0RMNdgAw-8wjVJFQh4o_hGqffazAiW7DwXSQ@mail.gmail.com>
+ <CAHk-=wh+atcBWa34mDdG1bFGRc28eJas3tP+9QrYXX6C7BX0JQ@mail.gmail.com>
+ <ZvI4N55fzO7kg0W/@dread.disaster.area>
+ <CAHk-=wjNPE4Oz2Qn-w-mo1EJSUCQ+XJfeR3oSgQtM0JJid2zzg@mail.gmail.com>
+ <ZvNWqhnUgqk5BlS4@dread.disaster.area>
+ <CAHk-=wh+zqs3CYOiua3qLeGkqfDXQ0kPiNUWTmXLr_4dWjLSDw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1566:b0:3a1:a179:bb54 with SMTP id
- e9e14a558f8ab-3a26d5e8bf2mr23514285ab.0.1727249041866; Wed, 25 Sep 2024
- 00:24:01 -0700 (PDT)
-Date: Wed, 25 Sep 2024 00:24:01 -0700
-In-Reply-To: <000000000000dbda9806203851ba@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66f3ba91.050a0220.30ac7d.0010.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in vfs_get_tree
-From: syzbot <syzbot+c0360e8367d6d8d04a66@syzkaller.appspotmail.com>
-To: brauner@kernel.org, eadavis@qq.com, jack@suse.cz, 
-	jfs-discussion@lists.sourceforge.net, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh+zqs3CYOiua3qLeGkqfDXQ0kPiNUWTmXLr_4dWjLSDw@mail.gmail.com>
 
-syzbot has bisected this issue to:
+On Tue, Sep 24, 2024 at 06:45:55PM GMT, Linus Torvalds wrote:
+> On Tue, 24 Sept 2024 at 17:17, Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > FWIW, I think all this "how do we cache inodes better" discussion is
+> > somehwat glossing over a more important question we need to think
+> > about first: do we even need a fully fledged inode cache anymore?
+> 
+> I'd be more than happy to try. I have to admit that it's largely my
+> mental picture (ie "inode caches don't really matter"), and why I was
+> surprised that the inode locks even show up on benchmarks.
+> 
+> If we just always drop inodes when the refcount goes to zero and never
+> have any cached inodes outside of other references, I think most of
+> the reasons for the superblock inode list just disappear. Most of the
+> heavy lifting has long since been moved to the dentry shrinking.
+> 
+> I'd worry that we have a lot of tuning that depends on the whole inode
+> LRU thing (that iirc takes the mapping size etc into account).
+> 
+> But maybe it would be worth trying to make I_DONTCACHE the default,
+> with the aim of removing the independent inode lifetimes entirely...
 
-commit d97de0d017cde0d442c3d144b4f969f43064cc0f
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Tue Aug 13 01:31:25 2024 +0000
-
-    bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=147a0989980000
-start commit:   2004cef11ea0 Merge tag 'sched-core-2024-09-19' of git://gi..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=167a0989980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=127a0989980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=38d475ce6711b8b4
-dashboard link: https://syzkaller.appspot.com/bug?extid=c0360e8367d6d8d04a66
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171f769f980000
-
-Reported-by: syzbot+c0360e8367d6d8d04a66@syzkaller.appspotmail.com
-Fixes: d97de0d017cd ("bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+I would be rather surprised if we didn't see regressions for some
+workloads but who knows. If we wanted to test this then one easy way
+would be to add a FS_INODE_NOCACHE fs_flag and have inode_init_always()
+raise I_DONTCACHE based on that. That way we can experiment with this on
+a per-fs basis.
