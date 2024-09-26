@@ -1,64 +1,102 @@
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D69C125
-	for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 01:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3B1170A29
+	for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 01:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727315402; cv=none; b=ofDngLvHRYpdSoKGi/WYyktJ4Qp4Fwd5lYHncsNRtiK35T9Tjgq6xyDgi+seIqpdfj+85ubP3uHBvPcKfGBw7k5Kd8KNrCACx1hzx1pigaWc7NlOfR60tSKCzb7xQmjgUanEQsa366gM0V66kFJ5ZgcPfhsytSAud9XYDUBZ0SA=
+	t=1727315629; cv=none; b=CdDMcVCvoWRBPXFWWWJn+tTMxvceweRxTl24opO+GTLOq+/jw0nuhvSEiL4ca6lB+wQz7fzFCOizHwQ+onm/jdHNjdocRdrOo8x8y2gBk+CchvVH52ZLvuD+eJYGQ6QPAGiV2z5dR0xfuZWTAQZvH101Vk0Iyk0jS7eb1z5fx8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727315402; c=relaxed/simple;
-	bh=hps61kIJ3jXmQn1B81acS1jhStieSHfK0stHh1ZuX4o=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZlKdYs3kisnyYwLM4f9GuMOyTUQpDvQh41WRrZrLRLNOzLmpW2NylIWtt76XeA9WNuFb4eoYfGMmo9UwczdlAZ5Qeopx5BLk06HGNRtPF0eWJO/H64Ft0oOMRNMr3bk3kCssQ0FOf95SrToya8bD9M+J34Lh/16eEHhs7MlH01M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+	s=arc-20240116; t=1727315629; c=relaxed/simple;
+	bh=XwwUXOdOT2UwZI+/kOvEobAvKc1FnOLTmjJbyMKfDSw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UYxIr/TNhfHJInouX+ayh9fpi4y5uANNhyg91IjUZ6Y8Ph4agnTBuH/pw578uVupLlxznQVdRSf93appeoVhQVF1cG7nhL/iLfW6GW+cb35ZKE0LcjOyo0JBJK50Zk8RGeyNGoYH+4/tez8YcXwIQigXm+S9zpBYCb4Yz5KbckU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4XDc2l6Jk2z1SBsD;
-	Thu, 26 Sep 2024 09:49:03 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XDc7C4WKFz2QTxF
+	for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 09:52:55 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9E713180043;
-	Thu, 26 Sep 2024 09:49:52 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 26 Sep
- 2024 09:49:52 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <kent.overstreet@linux.dev>
-CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>,
-	<chris.zjh@huawei.com>, <ddiss@suse.de>
-Subject: [PATCH v2 0/2] bcachefs: fixes in show_options helper
-Date: Thu, 26 Sep 2024 09:59:59 +0800
-Message-ID: <20240926020002.1746333-1-lihongbo22@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	by mail.maildlp.com (Postfix) with ESMTPS id 99BF61A0188
+	for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 09:53:43 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 26 Sep 2024 09:53:43 +0800
+Message-ID: <5fa35b76-5bef-4178-9b3e-d9d02797e35a@huawei.com>
+Date: Thu, 26 Sep 2024 09:53:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: avoid copy from NULL printbuf
+Content-Language: en-US
+To: David Disseldorp <ddiss@suse.de>
+CC: <linux-bcachefs@vger.kernel.org>
+References: <20240924025215.29891-1-ddiss@suse.de>
+ <9136cbac-7603-4732-b8fe-b0cc89cb9e50@huawei.com>
+ <20240925042440.1b26f58a.ddiss@suse.de>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240925042440.1b26f58a.ddiss@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpeml500022.china.huawei.com (7.185.36.66)
 
-There are two bug in show_options. The one is when printbuf
-is allocated failed, no need to copy buffer to seq. Another
-is when the option is filled into seqfile, an additional comma
-should be appended first. Considering these are two distinct
-issues, they have been divided into two separate commits here.
 
-Changes since v1:
-  - Put the two related patches together and do the rebase.
-  - Adjust the commit msg ahout Fixes tag.
 
-Hongbo Li (2):
-  bcachefs: avoid copy from NULL printbuf
-  bcachefs: fix incorrect show_options results
+On 2024/9/25 12:24, David Disseldorp wrote:
+> On Wed, 25 Sep 2024 10:21:58 +0800, Hongbo Li wrote:
+> 
+>> On 2024/9/24 10:52, David Disseldorp wrote:
+>>> printbuf.buf may be NULL if allocation_failure is set. Check for this
+>>> prior to using it as a seq_puts() source.
+>>>
+>>> Fixes: fa8e94faeece1 ("bcachefs: Heap allocate printbufs")
+>>> Signed-off-by: David Disseldorp <ddiss@suse.de>
+>>> ---
+>>> test test
+>>>
+>>>    fs/bcachefs/fs.c | 7 +++++--
+>>>    1 file changed, 5 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+>>> index 1aee5bafaae54..6e270bf24591d 100644
+>>> --- a/fs/bcachefs/fs.c
+>>> +++ b/fs/bcachefs/fs.c
+>>> @@ -1931,13 +1931,16 @@ static int bch2_show_options(struct seq_file *seq, struct dentry *root)
+>>>    {
+>>>    	struct bch_fs *c = root->d_sb->s_fs_info;
+>>>    	struct printbuf buf = PRINTBUF;
+>>> +	int ret = 0;
+>>>    
+>>>    	bch2_opts_to_text(&buf, c->opts, c, c->disk_sb.sb,
+>>>    			  OPT_MOUNT, OPT_HIDDEN, OPT_SHOW_MOUNT_STYLE);
+>>>    	printbuf_nul_terminate(&buf);
+>>> -	seq_puts(seq, buf.buf);
+>>> +	if (buf.allocation_failure)
+>>> +		ret = -ENOMEM;
+>>> +	else
+>>> +		seq_puts(seq, buf.buf);
+>>>      
+>> May I fix here in the last patch "bcachefs: fix incorrect show_options
+>> results" in v2, and add you as co-author?
+> 
+> I'm fine with this being squashed in with or without a co-author tag.
+> However, I think they deserve separate commits given that they address
+> separate regressions, and fixing show_options is more critical.
+> 
 
- fs/bcachefs/fs.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+I collect these two patch in [1] with separated commits. :)
 
--- 
-2.34.1
+[1] 
+https://lore.kernel.org/linux-bcachefs/20240926020002.1746333-1-lihongbo22@huawei.com/T/#t
 
+Thanks,
+Hongbo
+
+> Thanks, David
