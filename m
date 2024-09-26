@@ -1,120 +1,213 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887891D5ABA
-	for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 04:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2151ABEBC
+	for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 10:27:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727323349; cv=none; b=g99qUuLuIlWS7yQ/rcxC4EwMKBeaKO1hiMkjXO+pETIZYH3g4NVeZa2XUp2WQSP3Y3xtkYQrGClnWl+CYMDQjlS0DJ55l5QypxTJMyu8sZ3RGaAPUb8Pj9Tl3CM3GUW9+/hL8rN3XY3vcTJbuaChV7ET9r/TZ2wmiakQJKobKns=
+	t=1727346444; cv=none; b=UA2pzUueEhZGHeXwlWEpgAr4q19E5OW+BrrBixvaqaQacRuNDSTCOiH7hijL9Cv1l8AJ7QuPlJLVbGH7snaCPPasy6AcqcyVKaDJUU+5R8c2iCkigOibGpfch/aVntde+4f9yT7kJSdl7e/KutkF2c8beMO/GkvkKFhlxLfB7Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727323349; c=relaxed/simple;
-	bh=fMWPfu9FJkZxYnNqK6kp/28nndQp0mqwMK8Hlmf7660=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=TIxGJuBPNiplWeGGhrfjzL5FCzBHDIiaxVFpE5+2DeoV/dTugT4eDTNxOhxskYjGgle1i6Jf0a90HEyoNb5FoidEfmfQU4VcRDHxUqvqDbH1rXqbXFFt0N9cm4VMhZTiQYWaQAwGW4vkPTIQU5iKuEU2CJ0PQtSxNFRuKodlDb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+	s=arc-20240116; t=1727346444; c=relaxed/simple;
+	bh=RfGLQ2Aaewn4d4r+KOXGIABi2h2jaXvnG74eRLDRiqA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GQcTHGbF1GoscX58qNe/W54bhBVnvqAFu5ayzQB7NyATDooA6zRHoySTW9ugw5JxLcvg/4/ctjk9bcOxVuBTgPTYzaTeFqI/VzeDUxy0pJSHND5mmYNJjPDusruVtnPfPvBrs24rXas9rEFMHmB9hN7Oz2z9VuWirlJ8QyyB4zU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a1957c7cf3so6237275ab.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 25 Sep 2024 21:02:27 -0700 (PDT)
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-39f56ac8d88so10660835ab.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 03:27:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727323346; x=1727928146;
+        d=1e100.net; s=20230601; t=1727346442; x=1727951242;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=m6AHITBFcHYLvt7nE1Q6Ch127vP6+FBh72zrJdlA9Uw=;
-        b=aTUPaf+zSGRe3LTovmD2Kz8x5Whimxk3gssooZ9w/6lpPJoEO8rJ/tafcruMNbpxal
-         KMO1BQPuTHGlasX9y4UI42oYWVecI4QfGJz493Y6EP/dkJQXySVOR2U1ZRwvUkt1Sehj
-         IVwWQiKOpomeFkFLMOBQ9tINZt+fUVQj6QKpmfRRJagwxlJpqvf793LHehTBO0S+6bF6
-         MtPObfgqMhqnPTBUR8FCyGqH0u6WuHw7pnFgrCPmBnOkWpRA2nrqueEOUjhcjJm6d6sL
-         qZjt9ShrXVsfqVeTHjKFM/ROGYBNguxERjIPS8lw26AnR4kcAFzUcNkhd5eI21dY/MT5
-         gadA==
-X-Forwarded-Encrypted: i=1; AJvYcCVEWHejuE9XHUd8Gh4VR7tXkN6Z6Malh0+Hz1hb4mJOpbtJ5kkZe6PgRhOcv1GW8p7leRXn2YHGxv4FgR4UYg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMfZBs49iWx6vduIPu6QyV+vNBIAwNO7Rl7auBR7JXZzJp4/zJ
-	60oZTYwHFdRyKz7BjR1Oersv4otUSRABzFnZcw6X5TjTB9HUkDexirKan0hxqQusbuIKb1etZ3q
-	4cizIS01Em1jT3S7T6WvZ9iXqcstetuga2KHb6ye4rqMCa2nVZIgICCg=
-X-Google-Smtp-Source: AGHT+IEeM7Xdo3aXQnKZvPp9KJctY4UnXNoVObnXe8akTQMzAgghX9EM4hQkFEhbm7X1twlsHPsp0rRwej8gswt/w2pDCnynjHsV
+        bh=9A2C4JqlBvXcXy6tg9QhkVzgwPP47FEacCMaF7rh+jM=;
+        b=iNNfSPba18OiYuqWNc/+bY6+STuNcxkIHXabbPqh7IXRref/eXUm42OMm9qnKZ1W3x
+         AyxF7RO7OJngLHPojsUL0jMoqrA+c9xjgax2uHkTjX8E9q9gaiUK63gqOYpPS/bbs9Cs
+         AV3BMh5knQdjNbmJDrwPO5WOfEGrhT9ZIRTSTbT13/BuFyfbVpcv0IQRX27DTVboY3dt
+         nebGyTpdy2+B5DJ80S4w5T7/8aLYLfMnStoKQ2Sig+Nxs0MXl65PEgiOnOzI6/tLNldv
+         1AM909RQ0W2k0ALDT+evbw2gFm4ciV3zGq0IhpYDfgqHvmw3+02hLRiqCVfs4NEvJ6b4
+         xMtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVsgMTPYjgRsE9LjoMFXvJXvyeYzU1QhoAMu3LdOyhyKoA2QE+OlWb3DnFksbPI8JGeKJb7niLulY8Y/cRnvA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAqLt8TFkyZ5Eus2lt0GGzE0RweJPbNzRhT3lNaliTbQrxP7fy
+	L+RqNMa+ZRmXqQixBMaQJQ335wHG8zk+sJCVP3gdBsjhTkfVd5UyShqZb9OcwnHcP16lLdTiRYm
+	eBeWlLokJO86C7YZ/dYYVOGwpyiR4P1cv+uWsOuj9TDDtGoESdcTrkcQ=
+X-Google-Smtp-Source: AGHT+IF3kavnIUZ/fQIQPUBzfVcrRJHqH4jovNob9BKTDM5flUX79dkV1qGhAgCZ6MoTcL+BYZ+73nzsZTX3J3NbMWeF+f4iFGJI
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1448:b0:3a0:8c5f:90d8 with SMTP id
- e9e14a558f8ab-3a26d732381mr48110885ab.6.1727323346613; Wed, 25 Sep 2024
- 21:02:26 -0700 (PDT)
-Date: Wed, 25 Sep 2024 21:02:26 -0700
+X-Received: by 2002:a92:ca4c:0:b0:3a3:4164:eec9 with SMTP id
+ e9e14a558f8ab-3a34164f2f4mr10040345ab.14.1727346441906; Thu, 26 Sep 2024
+ 03:27:21 -0700 (PDT)
+Date: Thu, 26 Sep 2024 03:27:21 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66f4dcd2.050a0220.211276.003a.GAE@google.com>
-Subject: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in bch2_stripe_to_text
-From: syzbot <syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <66f53709.050a0220.211276.0068.GAE@google.com>
+Subject: [syzbot] [bcachefs?] INFO: task hung in bch2_fs_read_only
+From: syzbot <syzbot+c7aacacf99dcfd3475a7@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    1ec6d097897a Merge tag 's390-6.12-1' of git://git.kernel.o..
+HEAD commit:    88264981f208 Merge tag 'sched_ext-for-6.12' of git://git.k..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14c0b080580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6265dd30e362bb47
-dashboard link: https://syzkaller.appspot.com/bug?extid=f8c98a50c323635be65d
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=16f9de9f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=74ffdb3b3fad1a43
+dashboard link: https://syzkaller.appspot.com/bug?extid=c7aacacf99dcfd3475a7
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e58e07980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c0b080580000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b24e07980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17dfb080580000
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-1ec6d097.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0b74fa2b2b4e/vmlinux-1ec6d097.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1ed852a3c5d1/bzImage-1ec6d097.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/19c2305bd0ee/mount_0.gz
+disk image: https://storage.googleapis.com/syzbot-assets/87eaf0ad6d60/disk-88264981.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/30c01cf8bc82/vmlinux-88264981.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a1407424ea54/bzImage-88264981.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/24e9b0679e2e/mount_0.gz
+
+The issue was bisected to:
+
+commit 359571c327a726d622786aef3833637dacfd5d38
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Tue Apr 9 04:02:47 2024 +0000
+
+    bcachefs: Fix check_topology() when using node scan
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11203880580000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13203880580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15203880580000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
+Reported-by: syzbot+c7aacacf99dcfd3475a7@syzkaller.appspotmail.com
+Fixes: 359571c327a7 ("bcachefs: Fix check_topology() when using node scan")
 
-bcachefs (loop0): Doing compatible version upgrade from 1.7: mi_btree_bitmap to 1.12: rebalance_work_acct_fix
-  running recovery passes: check_allocations
-------------[ cut here ]------------
-UBSAN: shift-out-of-bounds in fs/bcachefs/ec.c:147:2
-shift exponent 108 is too large for 32-bit type 'unsigned int'
-CPU: 0 UID: 0 PID: 5088 Comm: syz-executor278 Not tainted 6.11.0-syzkaller-08068-g1ec6d097897a #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+INFO: task syz-executor380:5235 blocked for more than 143 seconds.
+      Not tainted 6.11.0-syzkaller-08481-g88264981f208 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor380 state:D stack:23872 pid:5235  tgid:5235  ppid:5232   flags:0x00004002
 Call Trace:
  <TASK>
- __dump_stack lib/dump_stack.c:93 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
- ubsan_epilogue lib/ubsan.c:231 [inline]
- __ubsan_handle_shift_out_of_bounds+0x3c8/0x420 lib/ubsan.c:468
- bch2_stripe_to_text+0x899/0x8c0 fs/bcachefs/ec.c:147
- __bch2_bkey_fsck_err+0x11f/0x230 fs/bcachefs/error.c:429
- bch2_stripe_validate+0x3ca/0x630 fs/bcachefs/ec.c:116
- bch2_btree_node_read_done+0x3dc6/0x5d60 fs/bcachefs/btree_io.c:1219
- btree_node_read_work+0x68b/0x1260 fs/bcachefs/btree_io.c:1323
- bch2_btree_node_read+0x2433/0x2a10
- __bch2_btree_root_read fs/bcachefs/btree_io.c:1749 [inline]
- bch2_btree_root_read+0x626/0x980 fs/bcachefs/btree_io.c:1773
- read_btree_roots+0x296/0x840 fs/bcachefs/recovery.c:523
- bch2_fs_recovery+0x24ac/0x38b0 fs/bcachefs/recovery.c:851
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1036
- bch2_fs_get_tree+0xd61/0x1700 fs/bcachefs/fs.c:1956
- vfs_get_tree+0x90/0x2b0 fs/super.c:1800
- do_new_mount+0x2be/0xb40 fs/namespace.c:3507
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4055 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4032
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ context_switch kernel/sched/core.c:5315 [inline]
+ __schedule+0x1843/0x4ae0 kernel/sched/core.c:6674
+ __schedule_loop kernel/sched/core.c:6751 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6766
+ bch2_fs_read_only+0xa86/0x1220 fs/bcachefs/super.c:346
+ __bch2_fs_stop+0x105/0x540 fs/bcachefs/super.c:618
+ generic_shutdown_super+0x139/0x2d0 fs/super.c:642
+ bch2_kill_sb+0x41/0x50 fs/bcachefs/fs.c:2064
+ deactivate_locked_super+0xc4/0x130 fs/super.c:473
+ cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1373
+ task_work_run+0x24f/0x310 kernel/task_work.c:228
+ ptrace_notify+0x2d2/0x380 kernel/signal.c:2403
+ ptrace_report_syscall include/linux/ptrace.h:415 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
+ syscall_exit_work+0xc6/0x190 kernel/entry/common.c:173
+ syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
+ syscall_exit_to_user_mode+0x279/0x370 kernel/entry/common.c:218
+ do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fbcc7b8a8fa
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc0febe3f8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffc0febe410 RCX: 00007fbcc7b8a8fa
-RDX: 0000000020005d80 RSI: 0000000020005dc0 RDI: 00007ffc0febe410
-RBP: 0000000000000004 R08: 00007ffc0febe450 R09: 0000000000005d9a
-R10: 0000000000200400 R11: 0000000000000282 R12: 0000000000200400
-R13: 00007ffc0febe450 R14: 0000000000000003 R15: 0000000001000000
+RIP: 0033:0x7f5044059387
+RSP: 002b:00007fffa46cc3a8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f5044059387
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fffa46cc460
+RBP: 00007fffa46cc460 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000202 R12: 00007fffa46cd4c0
+R13: 0000555568abe6c0 R14: 0000000000000001 R15: 431bde82d7b634db
  </TASK>
----[ end trace ]---
+
+Showing all locks held in the system:
+5 locks held by kworker/u8:0/11:
+1 lock held by khungtaskd/30:
+ #0: ffffffff8e937ee0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
+ #0: ffffffff8e937ee0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
+ #0: ffffffff8e937ee0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6701
+4 locks held by kworker/u8:4/61:
+ #0: ffff888012bc9148 ((wq_completion)btree_node_rewrite){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
+ #0: ffff888012bc9148 ((wq_completion)btree_node_rewrite){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1850 kernel/workqueue.c:3310
+ #1: ffffc900015c7d00 ((work_completion)(&a->work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
+ #1: ffffc900015c7d00 ((work_completion)(&a->work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1850 kernel/workqueue.c:3310
+ #2: ffff8880724042c0 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:151 [inline]
+ #2: ffff8880724042c0 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:250 [inline]
+ #2: ffff8880724042c0 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bch2_trans_get+0x7de/0xd20 fs/bcachefs/btree_iter.c:3200
+ #3: ffff888072426690 (&c->gc_lock){.+.+}-{3:3}, at: bch2_btree_update_start+0x682/0x14e0 fs/bcachefs/btree_update_interior.c:1197
+2 locks held by getty/4976:
+ #0: ffff88803298a0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6a6/0x1e00 drivers/tty/n_tty.c:2211
+2 locks held by syz-executor380/5235:
+ #0: ffff88802e0f20e0 (&type->s_umount_key#44){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
+ #0: ffff88802e0f20e0 (&type->s_umount_key#44){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
+ #0: ffff88802e0f20e0 (&type->s_umount_key#44){+.+.}-{3:3}, at: deactivate_super+0xb5/0xf0 fs/super.c:505
+ #1: ffff888072400278 (&c->state_lock){+.+.}-{3:3}, at: __bch2_fs_stop+0xfd/0x540 fs/bcachefs/super.c:617
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.11.0-syzkaller-08481-g88264981f208 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
+ watchdog+0xff4/0x1040 kernel/hung_task.c:379
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 11 Comm: kworker/u8:0 Not tainted 6.11.0-syzkaller-08481-g88264981f208 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+Workqueue: events_unbound toggle_allocation_gate
+RIP: 0010:arch_atomic_read arch/x86/include/asm/atomic.h:23 [inline]
+RIP: 0010:raw_atomic_read include/linux/atomic/atomic-arch-fallback.h:457 [inline]
+RIP: 0010:rcu_is_watching_curr_cpu include/linux/context_tracking.h:128 [inline]
+RIP: 0010:rcu_is_watching+0x5a/0xb0 kernel/rcu/tree.c:737
+Code: f0 48 c1 e8 03 42 80 3c 38 00 74 08 4c 89 f7 e8 ec 56 80 00 48 c7 c3 98 7e 03 00 49 03 1e 48 89 d8 48 c1 e8 03 42 0f b6 04 38 <84> c0 75 22 8b 03 65 ff 0d 11 3f 89 7e 74 10 83 e0 04 c1 e8 02 5b
+RSP: 0018:ffffc90000107618 EFLAGS: 00000802
+RAX: 0000000000000000 RBX: ffff8880b8637e98 RCX: ffffffff8142d66f
+RDX: 0000000000000000 RSI: ffffffff8c5ffc60 RDI: ffffffff8c5ffc20
+RBP: ffffc90000107730 R08: ffffffff901b4b2f R09: 1ffffffff2036965
+R10: dffffc0000000000 R11: fffffbfff2036966 R12: 0000000000000000
+R13: dffffc0000000000 R14: ffffffff8e2faa50 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557aa7895600 CR3: 000000000e734000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ trace_tlb_flush+0x3e/0x140 include/trace/events/tlb.h:38
+ switch_mm_irqs_off+0x7b0/0xb00
+ unuse_temporary_mm arch/x86/kernel/alternative.c:1831 [inline]
+ __text_poke+0x8f0/0xd30 arch/x86/kernel/alternative.c:1941
+ text_poke arch/x86/kernel/alternative.c:1984 [inline]
+ text_poke_bp_batch+0x59c/0xb30 arch/x86/kernel/alternative.c:2317
+ text_poke_flush arch/x86/kernel/alternative.c:2486 [inline]
+ text_poke_finish+0x30/0x50 arch/x86/kernel/alternative.c:2493
+ arch_jump_label_transform_apply+0x1c/0x30 arch/x86/kernel/jump_label.c:146
+ static_key_disable_cpuslocked+0xd2/0x1c0 kernel/jump_label.c:240
+ static_key_disable+0x1a/0x20 kernel/jump_label.c:248
+ toggle_allocation_gate+0x1bf/0x260 mm/kfence/core.c:854
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.548 msecs
 
 
 ---
@@ -124,6 +217,7 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
