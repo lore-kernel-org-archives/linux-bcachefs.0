@@ -1,54 +1,54 @@
-Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
+Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BA915ADAB;
-	Thu, 26 Sep 2024 16:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB3313B5B4;
+	Thu, 26 Sep 2024 17:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727368665; cv=none; b=neHXw3gyvGx22CikNk5eH2N0IRalcA7/eRZKjUM9LJKS3AndblrVVexj5FAyYOG/f8qEQHt54UFrfieUZvppULjkihYHKvs6t2cPPoi5t4yucXmoKW5ghqwcDGdB5dxsTTWX+5O7+vHG7ANNHCo3LQVk3PORN47COnNh542+grI=
+	t=1727370083; cv=none; b=KzesHh1XEusd+jNCHpUzndV5qNBGgu5XeLYSb7K1guGK9Lc/JG7ft0R0Y+GWve4vvHGVbGuGkToMelEtIrKz+mFU4FoaoB39gOS3CB+/UlIaQWN9caw15qGQV9q2QoNf4IMjReFLYS+9N8BLu61Wi7kS4nTz7GpaRcGyYJLUMM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727368665; c=relaxed/simple;
-	bh=oz+lYM+EkWVywx6E9fnRXj4zNtat3zCLX3uIzsVcoME=;
+	s=arc-20240116; t=1727370083; c=relaxed/simple;
+	bh=LMAchIt46jsNMmWdOpmkfAkCZl4l1fWbdJ7aeUS5LRo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q7IBPVMYnSwlnl4pZDqGYRUB7Mdop0bL9nWvWYBpIkGp5r5NDkvlfukKhaeTwrUzjAx8WgxdO/ihZ0XtacoAsdcJjxSOXmyOmGSdQjCF6FY39IoCRUBEs9+fjjH1CZe+aVdZrU4+75eCW2TTZWwALbVPphkMAMjK/y1N+7y8TzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=QosA5XwM; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SJAcF2ka; arc=none smtp.client-ip=103.168.172.153
+	 Content-Type:Content-Disposition:In-Reply-To; b=ci/lMZrqvZ78t5Ar4oFiCc5ox3xH1ZuhWsTKRnjuY7SYoFvdTxQlz8JPZom5MiGA8dQD75gNtnSC739/FPLaIyErNrK+S8NViC+RTdTFoY9nfaWW+VifuXRtyufwltUTtiPD7fBbgX2pc3ZF2EBb0s7FXL2nj0kN3L1d0VPDGtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=qjEw/0pq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ll8OmUtD; arc=none smtp.client-ip=103.168.172.147
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="QosA5XwM";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SJAcF2ka"
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 23BBB1140241;
-	Thu, 26 Sep 2024 12:37:42 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Thu, 26 Sep 2024 12:37:42 -0400
+	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="qjEw/0pq";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ll8OmUtD"
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailfout.phl.internal (Postfix) with ESMTP id AF747138010C;
+	Thu, 26 Sep 2024 13:01:20 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Thu, 26 Sep 2024 13:01:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
 	:cc:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1727368662; x=1727455062; bh=hHIKWyu2/q
-	Mhery1L62FElkIPRTac/2wNOgB/fcecso=; b=QosA5XwMxohr8O3qkQ9qCKPuEr
-	YhhIjnJ6IJr6tOIQYQjlTgPAPzRfVPlAaKgdeB5tOopUfYc6K3W03fD4VteMA9Ao
-	3EZA0gOa8iU3QfUiqsbGV1K1hdIkRHuXtmkm5r/xWM5ESzVopJUphf5HBaDUFz5G
-	4PeZHcGLCg2EQ0QaGKAgLXUFExcbGbk1XquGllilB1uheHl6uEP0PZfAWVeJeC29
-	4n0WO2ZiIbcVKvAxDVjCBkRVJVirXf23BBS9qZHc8VKaO1+xZ7Bv786P2nsLljOn
-	E23RnSTsbEr2L6wdvE6MKpJ0v56bmpd950bhBE7UySSkz5JcjSaOet7N9GSg==
+	:subject:to:to; s=fm1; t=1727370080; x=1727456480; bh=4fSFLCINFt
+	7cgtytZlqcRKAfL/4/3naIxELDwHMAFDw=; b=qjEw/0pqiTsCj+Rkhy3M1seuNn
+	yL70lXfKUllFAHEgxdHshheMPKp5wm9D6uSez/zjMRRZMW7qcRvjfO8wi68F93MI
+	KQ7ht+mCHdauxB+9ppj/K/SSYeW9GU+kLPFVrcyrqcJSvv2S/8QxTcBKmQDuvQX5
+	I8zBdbbuq/+7ojZcLG8EMi80pM6B801Bj6b8Ee1y4D86CJy5fDeZBg/zAMxxMQS1
+	rJBYXf6EnLbWdLCAGfm0cC67CFToFRg0l25Mc8wKw/e10f+1VOpD4A2Kdy0UF218
+	UtFd9HF60GX27IhjxVijpr26JWGDFBDqBpo9W4dQ9+qzk5641c0zxFPbz/0g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1727368662; x=1727455062; bh=hHIKWyu2/qMhery1L62FElkIPRTa
-	c/2wNOgB/fcecso=; b=SJAcF2kal+2KDzOOO8hNqtunr9mhjKPjBQg7OIu4vu/G
-	cjJ9HveTkwJtwT/DB42HI5Yr5v95OqflrOWBGGxyM/jdVbMsoZ7ACBbqynIWIdKg
-	Nfz7h1WtcPeMZY+jpgeyfZNkb4jodGRbJxZre+S9DZJK3trrHoTuBiEgmL68iVG2
-	8tislWHzondIh12qXo0SKlsFAwjhRb6pDBqr7agMHV6KiZGSC/Ljahw2BgueExdb
-	5bjGld8gRQmXY24xoTLtmT+Dit140xVVqQiG6h7ggvSFM2FjHaSFChp3qgLxBs2w
-	WdQzNeDYjmeA71ttbfy9BR/7bV7hTNv+94bewPs1WQ==
-X-ME-Sender: <xms:1Y31ZuAIlKn3zyJE3rwQOu1SNjWBdAk7EwiTB55Gr4j3ECz6cxUJBg>
-    <xme:1Y31Zogjd-pVB9gBolgvt4902ncZ9ji883sWBFKF6LS4E22FTVt4khbgN4JAxaRJn
-    -_A4pJPkt0Cuchnvp0>
-X-ME-Received: <xmr:1Y31ZhmpZocd6FTxPbyNq0OUjm2Ep2u_OkZcG4kiLjbzvazIixbpTo1Ou7gn7cA4YDcPDAGH3B3OGEKaVSIsoVFmqRUY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddtjedguddtgecutefuodetggdotefrod
+	fm2; t=1727370080; x=1727456480; bh=4fSFLCINFt7cgtytZlqcRKAfL/4/
+	3naIxELDwHMAFDw=; b=ll8OmUtDJb7yptTkfe/Pfeb2NkuWJqdxtX0fwgKs48hs
+	z6RZAyj7t0AhOC6ldvLQOzYZ8/HdaaU8bXBFkRMQ1BiOISBqY6NyFSFxQMXKbHub
+	V+vpIhZz7a5jS79OPZjPE5s7SHC5VQwd6iNX0BXDW1M8XySdfofsUwA45UWi5Dp0
+	YNE1w0RnzhPT9jqBPvJpVl6EZX7N8BqfAF7P1ejk8HPq6zTZ//s0Ae5meSs8rGFB
+	3eBijOlogjz3T2zfewGtlRVyodjC6R2OYMfZv/k6wnUV/O8oem+XjwA/8OY4+dov
+	Wj+yg+iWkEEoduAuXBQItfqINCq/wz5u8m3GalOe6Q==
+X-ME-Sender: <xms:YJP1ZjQlPi9qUxQ_JIwTV-R5kjKN1FZMoz2f6f84IB3pVXkqhd9G-A>
+    <xme:YJP1ZkyryJ5Q6yNt9_pe6h-FEwvFbU-20UkRQ81G6yfuFMkKg3UgKiYNSQ-Iy9Kh4
+    mRWiLusU2vVyV00WwQ>
+X-ME-Received: <xmr:YJP1Zo2Px66EnqAhGY7XQnuxuotukpT9dKhMZxCx82TjPvEOVijB-Bmj9ur40sTLBvcMepJI8BFTuhA04dE6Ra0e9NyQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddtjedguddtlecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
     hnthhsucdlqddutddtmdenfghrlhcuvffnffculddutddmnecujfgurhepfffhvfevuffk
@@ -64,15 +64,15 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddtjedguddtgecutefuodetgg
     gtrggthhgvfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhu
     gidqhhgrrhguvghnihhnghesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhope
     hlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:1Y31Zszhkbj7q7p_QgbTETH4rPXzgh25Z378KUmwvQebiMklredb5A>
-    <xmx:1Y31ZjQwTvMmHejwSCZ5Bqw2tl9pktZ8bVLIWgSAtmwD7nR8bdY89w>
-    <xmx:1Y31Znbab-BTe8ggHaphkK3Z-qDj5SlV6ajJ9D2QRMM-qPrKeHRypg>
-    <xmx:1Y31ZsSZSzk6Oyg5xyuCo-hCqOSFgT3BVU6lmW1gTHzu-J_7IW4JEw>
-    <xmx:1o31ZiFmlefy2toW8zdhzz1loPs1fIHnzYMdpKYiRYmI26rnBR7bhwSo>
+X-ME-Proxy: <xmx:YJP1ZjA50JbPmn11HOaGx90eg5l2A_HqJ_cXA65O7YiwdCFKJM3tRw>
+    <xmx:YJP1Zsg9jd54JyZMmJyvWWWQ-Z3gMZ3HPzYZlaypnzb-rRnxNNj7OQ>
+    <xmx:YJP1Znqa64xuBCBB-QnK2FR8Hl4_gQ_hXxiaK4ZcyYr-F7NzYRPVOg>
+    <xmx:YJP1ZnjzL1RCZc1dXAI2NJnJIqLbN1bgVkTtpscV3eUKlT2LhDBvBg>
+    <xmx:YJP1ZnU_D4I5uTIGwx3eIaL5ka9OK4nm1VfVyp82D99TysISGgnQ39hp>
 Feedback-ID: i01d149f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 26 Sep 2024 12:37:40 -0400 (EDT)
-Date: Thu, 26 Sep 2024 18:37:39 +0200
+ 26 Sep 2024 13:01:19 -0400 (EDT)
+Date: Thu, 26 Sep 2024 19:01:17 +0200
 From: Jan Hendrik Farr <kernel@jfarr.cc>
 To: Thorsten Blum <thorsten.blum@toblux.com>
 Cc: kent.overstreet@linux.dev, regressions@lists.linux.dev,
@@ -80,7 +80,7 @@ Cc: kent.overstreet@linux.dev, regressions@lists.linux.dev,
 	linux-kernel@vger.kernel.org
 Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
  bch2_xattr_validate
-Message-ID: <ZvWN0_FNCCJ7Y6d7@archlinux>
+Message-ID: <ZvWTXaqkmxP2E2dc@archlinux>
 References: <ZvV6X5FPBBW7CO1f@archlinux>
  <3E304FB2-799D-478F-889A-CDFC1A52DCD8@toblux.com>
  <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com>
@@ -301,11 +301,61 @@ On 26 18:09:57, Thorsten Blum wrote:
 >  #else
 > 
 
-Weirdly enough it does not. If I print the result of __struct_size
-before the call to memchr I get 0xFFFF... though, so it should work. But
-in memchr it still get's 0.
+Alright after looking at it in the debugger the code it generates now is
+just wild.
 
-I'll fire up the debugger...
+I added one more printk before the call to memchr like so:
 
-> Thanks,
-> Thorsten
+diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
+index 56c8d3fe55a4..3c7c479ea3a8 100644
+--- a/fs/bcachefs/xattr.c
++++ b/fs/bcachefs/xattr.c
+@@ -96,6 +96,7 @@ int bch2_xattr_validate(struct bch_fs *c, struct bkey_s_c k,
+ 			 c, xattr_invalid_type,
+ 			 "invalid type (%u)", xattr.v->x_type);
+ 
++	pr_info("__struct_size(x_name): %lu", __struct_size(xattr.v->x_name));
+ 	bkey_fsck_err_on(memchr(xattr.v->x_name, '\0', xattr.v->x_name_len),
+ 			 c, xattr_name_invalid_chars,
+ 			 "xattr name has invalid characters");
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index f14c275950b5..43ac0bca485d 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -413,7 +413,7 @@ struct ftrace_likely_data {
+  * When the size of an allocated object is needed, use the best available
+  * mechanism to find it. (For cases where sizeof() cannot be used.)
+  */
+-#if __has_builtin(__builtin_dynamic_object_size)
++#if __has_builtin(__builtin_dynamic_object_size) && !defined(__clang__)
+ #define __struct_size(p)	__builtin_dynamic_object_size(p, 0)
+ #define __member_size(p)	__builtin_dynamic_object_size(p, 1)
+ #else
+
+
+Here's the generated assembly for this:
+
+	mov	rdi, offset .L.str.3
+	mov	rsi, offset .L__func__.bch2_xattr_validate
+	mov	r12, rdx
+	mov	rdx, -1
+	call	_printk
+	mov	rax, r12
+	movzx	esi, ah
+	movzx	edx, byte ptr [r12 + 1]
+	cmp	rsi, rdx
+	jb	.LBB4_15
+# %bb.11:
+	lea	rdi, [rax + 4]
+	xor	ebx, ebx
+	xor	esi, esi
+	call	memchr
+
+So for the printk it hardcoded -1 (aka 0xFFFFF... 64 bit long int max)
+as the result of __struct_size. But then for before call to memchr it does
+the same stuff again and puts the second least significant byte of the memory
+address of x_type in esi, only to then load the correct value of x_name_len
+into edx and compares them for the bounds-check.
+
+Best Regards
+Jan
