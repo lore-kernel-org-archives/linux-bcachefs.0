@@ -1,73 +1,82 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA40C2F2E
-	for <linux-bcachefs@vger.kernel.org>; Fri, 27 Sep 2024 05:04:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 689BF175D5C;
+	Fri, 27 Sep 2024 05:54:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727413444; cv=none; b=hExDgK9CQfWxCXuoHm0Ku/T2kp45DyClDACZKsulTOuv7WVfISahkI8KYhCdwowJkugK2eUXaXNiFaCJIyrBL2tMa49enis5tTrwQZnKMOP9Of9na5nOgnqVP7g78z+y6P7c7+bz72WAa546Qlnj/BNIGRyICB36MXtESdLDqZg=
+	t=1727416462; cv=none; b=j2G3iMvgXRpZCYUjwQ2fGPmnM/erd9NkZstqm17WXBcuRiyhsLKeqIMiWRPJHoZMJXg5YShfEMXal/QMo4WcPIbNeQNqfRVYeYTNza6Bbs6bi13uOx62nFsfZKiHxw+c5PLNvvV9sNydczd8pRlSKzUTfbLKSB+mlKydQZoit+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727413444; c=relaxed/simple;
-	bh=SjGBYvz7T0qkxE6kg8zLeZ7KNqVwseOD+H9h9Z901w0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=SHPwD8ziMBlmHUva+x7SBSj6za641HdkM7lQlHRgnMa3Vi66MCiwAOvJ6pPiRPjQV3oZhxlJqx0pEsee3lCO1YTRCuu4aZDRYIzhDbzzjaolSTTP+3P0gZ49xKDFoTQxEAOFtshLtlIJilc6fdLqbCth9VnXWKwIqe8zNrOS77A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a34205e146so14173315ab.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 22:04:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727413442; x=1728018242;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+9q+IZMEdWfJPC4uwcDTgpH54G/AY8V67uzGME3VoSs=;
-        b=wLeM6HJcyFS6ux5Bsf51TbaVFZk+z298PDrifgmYBV71A0L/ytw1NJSrZlDfVpXlFq
-         TBOMHJ4P/94JYtOcSUoK4kF37BHinroutZR4HVb6lYuYxuoqxIHTiYCKboncq3DMyPkb
-         N5ynrcQ7+ZXITkrVkFTwTuxZ//plS6vfZQb3/RqLVQpX1LQfrSjLviGe5Q6dDolVr9kz
-         NRLuCZm2PnV1u/c0WVwq9omnm8+lcV3yoIad2W4u6qmIsgmTBrICzxc9wYzHahc2E2pU
-         IAAzhSmuI7mKjg3tDeiQsKn4h1K3Igpn7CR5iwLzZYmVYj0mZNBiiSfFkd4K+/oZ3gxh
-         NG4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWDbP9unBB3l/rzuZui9iQGsqJApmcjnXLpiDi3lyUeSUpEkWjHqRBCTzxfimoVFvYEhvguT2HSSSjVb8oahA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0OB/TCvkBpFIUobwa9nRuEcFhpQf7HpKj/NNNd9Jf6vamgXYY
-	7li5tbCZwWVBiDvGslRtYZG5D0pBBUwzI0fq4g7pCBKhnyXvjoh6Uyq3dTVcqZcSLzjiFEjiQbU
-	7ceMeJw6gYefLxOttgr5TbkkI21eU3HmBG/NIBertPAjWgZCnjIKAe5U=
-X-Google-Smtp-Source: AGHT+IEuIThoMfjHlJmdIPHZix02yslTIlQF5/nyPzFqxMKfMlXxvSWsMpN3ijXL9qngDDvHLVpsU1YjSMkNcm8WIdZfwHbLF/CC
+	s=arc-20240116; t=1727416462; c=relaxed/simple;
+	bh=21rOeuMWyci86tNah9ibRwCxMwI2ErAuGlKdNAI0jDo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tWpuql13SaIlhbceMDOlnOFJ4N8IodW4GdW/FSQUgFslDLUvT+bMRvVPcep4maACCX9O7eJUq19TOKhFj9aiqOknYyaPK5I4Nc8IU2ZAopYgIWT/eKRw7yxm8ekSqHQHrhV4fBMQAat7wRz4Htr33QZvXcOTlK6Vs4w6Lqqdwkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=GAF/FYc+; arc=none smtp.client-ip=220.197.31.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="GAF/FYc+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=x+7q0
+	iNAF8LoQw1qQBNKiDgLjE3xgT7R/4y/zLi7CZ0=; b=GAF/FYc+tccHrbjNxGHjf
+	QR8jAQXYvymcaw5vREfx6AYDNIqbiu+TL1qud07RE2KvDHAuZoNAb4uUBdKYxVEm
+	BD3awaXtbwtUx5I2LC1ctL0r8ASMoN0CtRqhweL3V0MzeWFlHwkBMwZxbfU7a0Ed
+	iF356sofSA9PO2+Y/QYPGo=
+Received: from localhost.localdomain (unknown [123.149.251.210])
+	by gzga-smtp-mta-g2-2 (Coremail) with SMTP id _____wDXf+XsRPZm3wiQBg--.39077S2;
+	Fri, 27 Sep 2024 13:38:52 +0800 (CST)
+From: Zhao Mengmeng <zhaomzhao@126.com>
+To: kent.overstreet@linux.dev,
+	zhaomengmeng@kylinos.cn
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] bcachefs: Fix shift-out-of-bounds in bch2_stripe_to_text
+Date: Fri, 27 Sep 2024 13:38:49 +0800
+Message-ID: <20240927053849.3740994-1-zhaomzhao@126.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a2e:b0:3a1:a20f:c09c with SMTP id
- e9e14a558f8ab-3a3451b9f82mr17499385ab.22.1727413441951; Thu, 26 Sep 2024
- 22:04:01 -0700 (PDT)
-Date: Thu, 26 Sep 2024 22:04:01 -0700
-In-Reply-To: <a2f49743-4617-4655-ab4e-d94928368647@kylinos.cn>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66f63cc1.050a0220.46d20.000d.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in bch2_stripe_to_text
-From: syzbot <syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	zhaomengmeng@kylinos.cn
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDXf+XsRPZm3wiQBg--.39077S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AFy3Wr13CF48CrWrXw47Jwb_yoW8GryUp3
+	y3tF1xGanY9w12vryjvw1UA34rJ3y5t3yrC3y2vr1jyFZFvw17Jw17tFZYqFW09rWxJFZ8
+	Zryayry5X3Z5ua7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U-TmhUUUUU=
+X-CM-SenderInfo: 52kd0zp2kd0qqrswhudrp/1tbimh5nd2b2PTBShwAAsc
 
-Hello,
+From: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+syzbot report a shift-out-of-bounds issue:
+------------[ cut here ]------------
+UBSAN: shift-out-of-bounds in fs/bcachefs/ec.c:147:2
+shift exponent 108 is too large for 32-bit type 'unsigned int'
+----
+Here s.csum_granularity_bits = 108, shift is impossible for unsigned
+int, so modify the prt_printf() output to dump csum_granularity_bits
+rather than the actual value.
 
 Reported-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
 Tested-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=f8c98a50c323635be65d
+Signed-off-by: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
+---
+ fs/bcachefs/ec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested on:
+diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
+index 141a4c63142f..2d5cd9d837f2 100644
+--- a/fs/bcachefs/ec.c
++++ b/fs/bcachefs/ec.c
+@@ -144,7 +144,7 @@ void bch2_stripe_to_text(struct printbuf *out, struct bch_fs *c,
+ 		   nr_data,
+ 		   s.nr_redundant);
+ 	bch2_prt_csum_type(out, s.csum_type);
+-	prt_printf(out, " gran %u", 1U << s.csum_granularity_bits);
++	prt_printf(out, " gran 1<<%u", s.csum_granularity_bits);
+ 
+ 	for (unsigned i = 0; i < s.nr_blocks; i++) {
+ 		const struct bch_extent_ptr *ptr = sp->ptrs + i;
+-- 
+2.43.0
 
-commit:         1ec6d097 Merge tag 's390-6.12-1' of git://git.kernel.o..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=11e94507980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6265dd30e362bb47
-dashboard link: https://syzkaller.appspot.com/bug?extid=f8c98a50c323635be65d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1503f627980000
-
-Note: testing is done by a robot and is best-effort only.
