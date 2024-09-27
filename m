@@ -1,73 +1,73 @@
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.9])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D68616D4E5;
-	Fri, 27 Sep 2024 02:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.9
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C38B61FCE
+	for <linux-bcachefs@vger.kernel.org>; Fri, 27 Sep 2024 03:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727405650; cv=none; b=D27wlZDaTkkuFnBEtHle0B0Dmsage/XSUXrjbZWwvhkulBJqbJKpkULfzZCVOgJIHzEkp0rX493IRBXHGMNCC8Q5/GyW7lsiFCfIRsjYCD5tFsXyLESDEztMPrv6TLSYJUKhklBmDiibQhyHde7qWuD5oRGAjzrkM7Dtb574c/M=
+	t=1727406907; cv=none; b=ECRwZ0btrfdeO1lxQ1aMsWkwc7Sa0iuM/VmzSrPccPzGKKE7I72Oi+v5moGmwg0z7vUY6eSg81Zuq+5LihIeJJ4PFWrFbmt8SLYmdrjGbRZLmejBeUwnZl/Ctb+PPRq8vFbch5eeUe2LvL36yx2Y6eoQ5C+SBfIwMbMyYTBdmTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727405650; c=relaxed/simple;
-	bh=deZe+N4U+auJ8F5+Irr8j62mvltmBrklrtHWPecmQT8=;
-	h=Content-Type:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To; b=tBHPzcxek9HrFY2UdIMuZKFIMuHjeQc92ER5Sa+q2xuwhG3sbo4Vli0ADcoXBQ7kT5CLQtJGhA4QkwnG1AvXwL4EWlA05rgE8Z/dBS4WocQEJllHQ8J0K87U82KNeUocGcsOVsdos+D3ZLNWqPrkkuFee+99a+pKE1vvF++uros=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=JP+Md7IL; arc=none smtp.client-ip=220.197.31.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="JP+Md7IL"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=Content-Type:Message-ID:Date:MIME-Version:Subject:
-	From; bh=deZe+N4U+auJ8F5+Irr8j62mvltmBrklrtHWPecmQT8=; b=JP+Md7I
-	LbT0TQ5JXKQrGbsnz6HTWFBEaFLMXj9Kl7mxkkwnJUEi+eaMTpZ57rtMiSV6CKHz
-	dm7Sf29bAj/dTT98KrGWrR0RvtEa9V+mDUVfrR4zW2VZYbelkSH1V9HPJHHpRDDj
-	O5tov1kOWEuN/+CpEbk0dDhtV1Kkop5ZpA5w=
-Received: from [192.168.109.86] (unknown [123.149.251.210])
-	by gzsmtp4 (Coremail) with SMTP id qCkvCgDH9p83HvZmXWKPAQ--.51340S2;
-	Fri, 27 Sep 2024 10:53:47 +0800 (CST)
-Content-Type: multipart/mixed; boundary="------------yPj2x5Wxl5NSyNcKBiwTj5Xx"
-Message-ID: <c3d3c52e-ec5b-4238-aac7-284a3838be90@126.com>
-Date: Fri, 27 Sep 2024 10:53:42 +0800
+	s=arc-20240116; t=1727406907; c=relaxed/simple;
+	bh=IfVUnQzvsU3erRjtyBu275kBik322qL9HgyBtPj5+e0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=iLDq/3H6RQSUXJ2i99dD9KuQ/7AztvPy0xv1qPQFnpLGmZWETPe5XRlYKkkZhApQTw5W+UH3NwTHSrOkyCK4+D6WFLUy67O+Yg4NFwb9x43SUlx6zj/2SdKd2FVx8047mObTy5azRHLlLBDhSj0yt53xK89ZDK7qct30RmCdxdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a0cadb1536so18347455ab.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 20:15:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727406905; x=1728011705;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vtM/9D39coALiNrlEfJyi9fXiC+6RfG7FZwDHO74uRk=;
+        b=gDk2dv6D698jcrWe8xoYE4ta4puMGVvLK/45uDvZw/CYIiOBJ90gkly0QfaOYP748F
+         9FBW33mmkIUASXh6axFT4TnLDzXwBSMw1ajiJxtYrO4rit8V9TsaQu61Zt0MV5oEHYMQ
+         Z9S6kBEDvNr8fe/3MpWyS0kpY+ghDo0SlmwAnrQPtzCg4xckUVynBrAFZzEmi89H3+++
+         WvLUtCR2R7JTJIJPDoamxTje3llRrVMYj8IHbcf/vhzzNA+SLZWEEtDEKzAfUZ36aLbv
+         n8T8xlwODqraWvqo41ATIklPxtuLAK8q96lQYNHDKXTpDDuxeQMtrC5FfL6fvMVPYgRl
+         AWLg==
+X-Forwarded-Encrypted: i=1; AJvYcCW1spU9jkL+pq+nN8mm/i3zUaGiu5ETw/Pmm0j2YHkuTzajx0rztLt2ODOtrS9eg21XwBBHHGCvvzllKV4SRA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx37rgrOdDtIfQR1jynw2iHqILNuaJWMWq8XhbAxu78QVrhwBXE
+	5Eg+CBeSJGuHDn6Kinc3y22Vq2kdwVASn5dHaY0C5+Efj/yOxatKjwLurOPZE5AQ4uOO1YZsBaG
+	kbdFZmX3RAqF1xbVsvtP3NFVakkErrgf55cwW+2gWvDExOS9/34JwI3U=
+X-Google-Smtp-Source: AGHT+IEGTqjsQ/oJn0hD8jsSMGmR0OsAiQuVDLHvFz7nHX7qFlEYhJSBTm3BXyVIJl2UHJPPKpQQN5NyVhSvM9iZaIEwTd+rMxZl
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
-Cc: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <66f4dcd2.050a0220.211276.003a.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in
- bch2_stripe_to_text
-From: Zhao Mengmeng <zhaomzhao@126.com>
-In-Reply-To: <66f4dcd2.050a0220.211276.003a.GAE@google.com>
-X-CM-TRANSID:qCkvCgDH9p83HvZmXWKPAQ--.51340S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUzrWrUUUUU
-X-CM-SenderInfo: 52kd0zp2kd0qqrswhudrp/1tbimhNnd2b2GWtUhwAAso
+X-Received: by 2002:a05:6e02:1582:b0:39f:5521:2cd4 with SMTP id
+ e9e14a558f8ab-3a3452bf444mr15452985ab.26.1727406904713; Thu, 26 Sep 2024
+ 20:15:04 -0700 (PDT)
+Date: Thu, 26 Sep 2024 20:15:04 -0700
+In-Reply-To: <c3d3c52e-ec5b-4238-aac7-284a3838be90@126.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66f62338.050a0220.46d20.0009.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in bch2_stripe_to_text
+From: syzbot <syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	zhaomzhao@126.com
+Content-Type: text/plain; charset="UTF-8"
 
-This is a multi-part message in MIME format.
---------------yPj2x5Wxl5NSyNcKBiwTj5Xx
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Hello,
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1ec6d097897a
---------------yPj2x5Wxl5NSyNcKBiwTj5Xx
-Content-Type: text/x-patch; charset=UTF-8; name="test.patch"
-Content-Disposition: attachment; filename="test.patch"
-Content-Transfer-Encoding: base64
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-ZGlmZiAtLWdpdCBhL2ZzL2JjYWNoZWZzL2VjLmMgYi9mcy9iY2FjaGVmcy9lYy5jCmluZGV4
-IDE0MWE0YzYzMTQyZi4uYzcxN2Q4MGZkZmQ2IDEwMDY0NAotLS0gYS9mcy9iY2FjaGVmcy9l
-Yy5jCisrKyBiL2ZzL2JjYWNoZWZzL2VjLmMKQEAgLTE0NCw3ICsxNDQsOCBAQCB2b2lkIGJj
-aDJfc3RyaXBlX3RvX3RleHQoc3RydWN0IHByaW50YnVmICpvdXQsIHN0cnVjdCBiY2hfZnMg
-KmMsCiAJCSAgIG5yX2RhdGEsCiAJCSAgIHMubnJfcmVkdW5kYW50KTsKIAliY2gyX3BydF9j
-c3VtX3R5cGUob3V0LCBzLmNzdW1fdHlwZSk7Ci0JcHJ0X3ByaW50ZihvdXQsICIgZ3JhbiAl
-dSIsIDFVIDw8IHMuY3N1bV9ncmFudWxhcml0eV9iaXRzKTsKKwlwcnRfcHJpbnRmKG91dCwg
-IiBncmFuIGJpdCAldSwgbWF4IGdyYW4gYml0ICV1IiwKKwkJICAgcy5jc3VtX2dyYW51bGFy
-aXR5X2JpdHMsIFU4X01BWCk7CiAKIAlmb3IgKHVuc2lnbmVkIGkgPSAwOyBpIDwgcy5ucl9i
-bG9ja3M7IGkrKykgewogCQljb25zdCBzdHJ1Y3QgYmNoX2V4dGVudF9wdHIgKnB0ciA9IHNw
-LT5wdHJzICsgaTsK
+Reported-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
+Tested-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
 
---------------yPj2x5Wxl5NSyNcKBiwTj5Xx--
+Tested on:
 
+commit:         1ec6d097 Merge tag 's390-6.12-1' of git://git.kernel.o..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=13ffe59f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6265dd30e362bb47
+dashboard link: https://syzkaller.appspot.com/bug?extid=f8c98a50c323635be65d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=151daaa9980000
+
+Note: testing is done by a robot and is best-effort only.
