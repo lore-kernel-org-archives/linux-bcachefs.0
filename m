@@ -1,438 +1,299 @@
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1732186E25
-	for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 22:18:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E75CBA29
+	for <linux-bcachefs@vger.kernel.org>; Fri, 27 Sep 2024 00:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727389114; cv=none; b=LzNrbODR6kLb5hIw6+qKesbX0/w//byJhjmRWVUmPH4mBKvWNxwkfRaMp62ENChqJE+bSqui0j7H/fFr+XfthoVLmVX46aidJKZ2X+DL8jIKR7GNVHI97FHzhAYor8FNhlMVQ61BUnnYHsUx8dXN+sreoFMgYAADR0b215aDq04=
+	t=1727395953; cv=none; b=TyhJ75AIZ/cafUYSySlYSfQTgsPOFxGN5VmG68zqhT8d56UPVFgEa1wI4dB86EfybT2J7ukTH4rgEtEuUrrcnCwAYx/mYHSzjG0XZULMT49wP/GYms9qvpDSjDWxBlIq6a87O7ATyxHM/Bbs6EpX2gkUNEVFWkxGffp2np815Qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727389114; c=relaxed/simple;
-	bh=3r09Dih5T0ytfcvEwFadweD7t20yr9F1Y+awQB8GP3Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YqtL3RVwezz80pIfpXB+f0c9Qz+1heQcYMi6GUiMlLuIdDmvlHHvfMscmpz0M/rk9hDCSaAKjW2oOWk49LhGF47B9WnVrAofNudGO/nZcZ75sOqqHUrRQixToDoe1EMz++7lrKCo5yA4f713PJg9SBxz9gof0xyQ0N3+zi3X7Uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=r1QhlAkr; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="r1QhlAkr"
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2f761461150so23035401fa.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 15:18:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1727389111; x=1727993911; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4UCl+uWy8nsfmy4BXRVymw9lD+6K7iWgD6U9RalzAQk=;
-        b=r1QhlAkrmuMl4n/5+nzOVRm3EsghsBu9XeS9ypRTl2n64a9XbrKUluCo+lIRZpy7Db
-         SNJV8BGr3PHbX1F7UgSQtYTVUsEDshhuRNIkevHOWmnFo8jW9np0jOMB2BuP0ataDwbm
-         P3rhJVPnxiQ20XE7h2etAiP7AviV6UqCiv/Jj4UOyuuwj2x5pGsM2RdJhr74+QAcp1oT
-         0lvwWEsVOjQ/GBzu0u7ywkTR6M/7+CE4LGBfHJw5L6CLYXRruVuT7T5giiTVul9TivA+
-         TzF88IIi81m7wGc4KDrLt/448+rfcOBROIzp8E6D5wD7y27uKpMILTomonJbZze82pd1
-         UlAA==
+	s=arc-20240116; t=1727395953; c=relaxed/simple;
+	bh=o/EdALRI5mBrxMJucSTiPiGsjVGJhN/bEKVsgGwV1Jk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YDqzqXQX/XRfY0A1wCd/+nhhlbcqdip+N+64jz4nxq1KJqM/RvmzYKsvuxMao7ROCzjvD/50sr9eR/8ce3HtLIVUJlAshHkx0S3GGXsHqCP2ltkZDQ/2HISsOEm5FTdvcJ+dYxMCQetXeiy4f4VejVptRMxP4CnVpR4s0GKLMzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a3453139c0so4347965ab.0
+        for <linux-bcachefs@vger.kernel.org>; Thu, 26 Sep 2024 17:12:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727389111; x=1727993911;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4UCl+uWy8nsfmy4BXRVymw9lD+6K7iWgD6U9RalzAQk=;
-        b=X7apnPYGZAYSF2i50n5cay4xOb4/CS052eriN+JjfRWnn8o1bQVYGng2iAds+FNjAv
-         jgFhX/j4EJFxMRMTWPb1s+rSjVXfERNEZxHiSjWy+wWJqCjevRdtspUIj1xjT2kLq0VN
-         GdVpHZPBd+Tsv5Xhh/YLT3OqKMRZUlWbPlSQbSgTVe7cXESjxRnmz/BKRQ2zeNsxgM33
-         EEFT6hWagVLEmHAaoTC2T07deecAYgAnknnuscaqFcKnczan8XzKYeqJNGZPbFF0vJig
-         S8YI7P0hv0HC9mSpIOgnk2JvgMi0o5syxAp4/py0XLaFuMBw0x+K0rait8C6XBEJusnb
-         U55g==
-X-Forwarded-Encrypted: i=1; AJvYcCVvJPb0EUM8nKAvlcLkfNxgWOJf5tZqm09oHk6vSxEZ2sJg9xVUxo0U+GrLXEUIWV+2DubiyaHOW4EUTUXmcg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLYASztfcmNE5r4U+v5m07RKYslqmjv/RKWYiF2AOlhKAvlVx+
-	kVBdLRVXHlUo2/IhxrVT/hnYetUPLbWf3dQFXQJw4bjUfrqDvDFxbm/gp1a/zr/5qvNZQMMJT7a
-	UirRYEWr/ren+INKhg7gAhI/JxqJKyu7w6bs=
-X-Google-Smtp-Source: AGHT+IHxsc/TTJb/YbObEDpcBwS08fhpE2e87VBW4nuuZRdcHz6UgyPx2oE26iacTGr8W87HUwL0jpxf5Nscv/CTewU=
-X-Received: by 2002:a05:6512:acd:b0:52c:8342:6699 with SMTP id
- 2adb3069b0e04-5389fca3accmr1068861e87.55.1727389110426; Thu, 26 Sep 2024
- 15:18:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727395950; x=1728000750;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sS5DXyIvLAbuX5hsaFzSKBBlNZRUZz7S05SX4YRwSJM=;
+        b=Vur7CHfUWD7eYGpJd9Eggdv//gkNBHqPo16T/xlzzIXY4N619U+SBMziCTQGA8N9u4
+         i41o6ebQk7Soj352M0GnqCAg4SefokZxqDU4sOQ1F3x1rtcp/jwTNhqi4RCRzXOODJdb
+         YL7L9CCCbjQxnkAImStaP4kjaXiH1Mt+IGLIUHw94YNpvBDT/eURtcSeCcNvr3Csp/Wi
+         FtkWfEWfkA3IVN7DxANb0sx4Zb8OiTk4oGjbHMfYvz5jqZozk7n1Z83bmZQD1lw+2lZI
+         d8PaWalL91bqn7Vg/JZvkblV59fVvpolWfeC7aL/QxlrRnzINuMRkzy3gh/YTPLHX5HR
+         oChQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEpoutwfv9X59OX1uT7M8hx7RPrLOYeuFZAp/JRlougfmFp+Zgb9+X5bmFHNlRA4DkFi8W++gikxKWqxNLsg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjCcobrMDcIgE+bphZOjsiQN8EAkAFJ28WO7nR4eXSl/1izPxX
+	7IPgyPdwDjebs2xH5PVqmZ+FU6TyveM7dSDMK8Ud0hpVjaGZ4YWlcLddqm4IdjubhL+FTETVf8f
+	FnNFnX/ellpOfc7rcVJEEi0DivRG54aO/Tp26y2xu2bY0eCyqTmPlpck=
+X-Google-Smtp-Source: AGHT+IEOmZOX8tlOnMMtKqnJEm3hm7r49RL+H8CWGxFubTelPZPLAy6HzwV4swQyMLb93ossNgfQnViu96JaBLbhm/LcfrqFcEyW
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZvV6X5FPBBW7CO1f@archlinux> <3E304FB2-799D-478F-889A-CDFC1A52DCD8@toblux.com>
- <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com> <ZvWTXaqkmxP2E2dc@archlinux>
- <ZvWd0aK7p_1rkb7E@archlinux> <CAMj1kXFV+Jck9Yf4w18rOzHckXvpXkhPhL-KrpBC8hqgXusw2g@mail.gmail.com>
-In-Reply-To: <CAMj1kXFV+Jck9Yf4w18rOzHckXvpXkhPhL-KrpBC8hqgXusw2g@mail.gmail.com>
-From: Bill Wendling <morbo@google.com>
-Date: Thu, 26 Sep 2024 15:18:12 -0700
-Message-ID: <CAGG=3QXG+Vsm7mjLV42Q-uA-EvgfOehSUeNQjKA3QQbw8vqSCg@mail.gmail.com>
-Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in bch2_xattr_validate
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Jan Hendrik Farr <kernel@jfarr.cc>, Kees Cook <kees@kernel.org>, 
-	Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev, 
-	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6e02:1d10:b0:3a0:98b2:8f3b with SMTP id
+ e9e14a558f8ab-3a3451652eamr11475775ab.7.1727395950093; Thu, 26 Sep 2024
+ 17:12:30 -0700 (PDT)
+Date: Thu, 26 Sep 2024 17:12:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66f5f86e.050a0220.38ace9.0004.GAE@google.com>
+Subject: [syzbot] [bcachefs?] KASAN: slab-use-after-free Read in bch2_direct_write
+From: syzbot <syzbot+19ad84d5133871207377@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 26, 2024 at 12:58=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> w=
-rote:
->
-> (cc Kees and Bill)
->
-> On Thu, 26 Sept 2024 at 19:46, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-> >
-> > On 26 19:01:20, Jan Hendrik Farr wrote:
-> > > On 26 18:09:57, Thorsten Blum wrote:
-> > > > On 26. Sep 2024, at 17:28, Thorsten Blum <thorsten.blum@toblux.com>=
- wrote:
-> > > > > On 26. Sep 2024, at 17:14, Jan Hendrik Farr <kernel@jfarr.cc> wro=
-te:
-> > > > >>
-> > > > >> Hi Kent,
-> > > > >>
-> > > > >> found a strange regression in the patch set for 6.12.
-> > > > >>
-> > > > >> First bad commit is: 86e92eeeb23741a072fe7532db663250ff2e726a
-> > > > >> bcachefs: Annotate struct bch_xattr with __counted_by()
-> > > > >>
-> > > > >> When compiling with clang 18.1.8 (also with latest llvm main bra=
-nch) and
-> > > > >> CONFIG_FORTIFY_SOURCE=3Dy my rootfs does not mount because there=
- is an erroneous
-> > > > >> detection of a buffer overflow.
-> > > > >>
-> > > > >> The __counted_by attribute is supposed to be supported starting =
-with gcc 15,
-> > > > >> not sure if it is implemented yet so I haven't tested with gcc t=
-runk yet.
-> > > > >>
-> > > > >> Here's the relevant section of dmesg:
-> > > > >>
-> > > > >> [    6.248736] bcachefs (nvme1n1p2): starting version 1.12: reba=
-lance_work_acct_fix
-> > > > >> [    6.248744] bcachefs (nvme1n1p2): recovering from clean shutd=
-own, journal seq 1305969
-> > > > >> [    6.252374] ------------[ cut here ]------------
-> > > > >> [    6.252375] memchr: detected buffer overflow: 12 byte read of=
- buffer size 0
-> > > > >> [    6.252379] WARNING: CPU: 18 PID: 511 at lib/string_helpers.c=
-:1033 __fortify_report+0x45/0x50
-> > > > >> [    6.252383] Modules linked in: bcachefs lz4hc_compress lz4_co=
-mpress hid_generic usbhid btrfs crct10dif_pclmul libcrc32c crc32_pclmul crc=
-32c_generic polyval_clmulni crc32c_intel polyval_generic raid6_pq ghash_clm=
-ulni_intel xor sha512_ssse3 sha256_ssse3 sha1_ssse3 aesni_intel gf128mul nv=
-me crypto_simd ccp xhci_pci cryptd sp5100_tco xhci_pci_renesas nvme_core nv=
-me_auth video wmi ip6_tables ip_tables x_tables i2c_dev
-> > > > >> [    6.252404] CPU: 18 UID: 0 PID: 511 Comm: mount Not tainted 6=
-.11.0-10065-g6fa6588e5964 #98 d8e0beb515d91b387aa60970de7203f35ddd182c
-> > > > >> [    6.252406] Hardware name: Micro-Star International Co., Ltd.=
- MS-7D78/PRO B650-P WIFI (MS-7D78), BIOS 1.C0 02/06/2024
-> > > > >> [    6.252407] RIP: 0010:__fortify_report+0x45/0x50
-> > > > >> [    6.252409] Code: 48 8b 34 c5 30 92 21 87 40 f6 c7 01 48 c7 c=
-0 75 1b 0a 87 48 c7 c1 e1 93 07 87 48 0f 44 c8 48 c7 c7 ef 03 10 87 e8 0b c=
-2 9b ff <0f> 0b e9 cf 5d 9e 00 cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90
-> > > > >> [    6.252410] RSP: 0018:ffffbb3d03aff350 EFLAGS: 00010246
-> > > > >> [    6.252412] RAX: 4ce590fb7c372800 RBX: ffff98d559a400e8 RCX: =
-0000000000000027
-> > > > >> [    6.252413] RDX: 0000000000000002 RSI: 00000000ffffdfff RDI: =
-ffff98e43db21a08
-> > > > >> [    6.252414] RBP: ffff98d559a400d0 R08: 0000000000001fff R09: =
-ffff98e47ddcd000
-> > > > >> [    6.252415] R10: 0000000000005ffd R11: 0000000000000004 R12: =
-ffff98d559a40000
-> > > > >> [    6.252416] R13: ffff98d54abf1320 R14: ffffbb3d03aff430 R15: =
-0000000000000000
-> > > > >> [    6.252417] FS:  00007efc82117800(0000) GS:ffff98e43db00000(0=
-000) knlGS:0000000000000000
-> > > > >> [    6.252418] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > >> [    6.252419] CR2: 000055d96658ea80 CR3: 000000010a12c000 CR4: =
-0000000000f50ef0
-> > > > >> [    6.252420] PKRU: 55555554
-> > > > >> [    6.252421] Call Trace:
-> > > > >> [    6.252423]  <TASK>
-> > > > >> [    6.252425]  ? __warn+0xd5/0x1d0
-> > > > >> [    6.252427]  ? __fortify_report+0x45/0x50
-> > > > >> [    6.252429]  ? report_bug+0x144/0x1f0
-> > > > >> [    6.252431]  ? __fortify_report+0x45/0x50
-> > > > >> [    6.252433]  ? handle_bug+0x6a/0x90
-> > > > >> [    6.252435]  ? exc_invalid_op+0x1a/0x50
-> > > > >> [    6.252436]  ? asm_exc_invalid_op+0x1a/0x20
-> > > > >> [    6.252440]  ? __fortify_report+0x45/0x50
-> > > > >> [    6.252441]  __fortify_panic+0x9/0x10
-> > > > >> [    6.252443]  bch2_xattr_validate+0x13b/0x140 [bcachefs 836117=
-9bbfcc59e669df38aec976f02d7211a659]
-> > > > >> [    6.252463]  bch2_btree_node_read_done+0x125a/0x17a0 [bcachef=
-s 8361179bbfcc59e669df38aec976f02d7211a659]
-> > > > >> [    6.252482]  btree_node_read_work+0x202/0x4a0 [bcachefs 83611=
-79bbfcc59e669df38aec976f02d7211a659]
-> > > > >> [    6.252499]  bch2_btree_node_read+0xa8d/0xb20 [bcachefs 83611=
-79bbfcc59e669df38aec976f02d7211a659]
-> > > > >> [    6.252514]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > > > >> [    6.252515]  ? pcpu_alloc_noprof+0x741/0xb50
-> > > > >> [    6.252517]  ? srso_alias_return_thunk+0x5/0xfbef5
-> > > > >> [    6.252519]  ? time_stats_update_one+0x75/0x1f0 [bcachefs 836=
-1179bbfcc59e669df38aec976f02d7211a659]
-> > > > >>
-> > > > >> ...
-> > > > >>
-> > > > >>
-> > > > >> The memchr in question is at:
-> > > > >> https://github.com/torvalds/linux/blob/11a299a7933e03c83818b431e=
-6a1c53ad387423d/fs/bcachefs/xattr.c#L99
-> > > > >>
-> > > > >> There is not actually a buffer overflow here, I checked with gdb=
- that
-> > > > >> xattr.v->x_name does actually contain a string of the correct le=
-ngth and
-> > > > >> xattr.v->x_name_len contains the correct length and should be us=
-ed to determine
-> > > > >> the length when memchr uses __struct_size for bounds-checking du=
-e to the
-> > > > >> __counted_by annotation.
-> > > > >>
-> > > > >> I'm at the point where I think this is probably a bug in clang. =
-I have a patch
-> > > > >> that does fix (more like bandaid) the problem and adds some prin=
-t statements:
-> > > > >>
-> > > > >> --
-> > > > >> diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
-> > > > >> index 56c8d3fe55a4..8d7e749b7dda 100644
-> > > > >> --- a/fs/bcachefs/xattr.c
-> > > > >> +++ b/fs/bcachefs/xattr.c
-> > > > >> @@ -74,6 +74,7 @@ int bch2_xattr_validate(struct bch_fs *c, stru=
-ct bkey_s_c k,
-> > > > >>      enum bch_validate_flags flags)
-> > > > >> {
-> > > > >> struct bkey_s_c_xattr xattr =3D bkey_s_c_to_xattr(k);
-> > > > >> + const struct bch_xattr *v =3D (void *)k.v;
-> > > > >> unsigned val_u64s =3D xattr_val_u64s(xattr.v->x_name_len,
-> > > > >>  le16_to_cpu(xattr.v->x_val_len));
-> > > > >> int ret =3D 0;
-> > > > >> @@ -94,9 +95,12 @@ int bch2_xattr_validate(struct bch_fs *c, str=
-uct bkey_s_c k,
-> > > > >>
-> > > > >> bkey_fsck_err_on(!bch2_xattr_type_to_handler(xattr.v->x_type),
-> > > > >> c, xattr_invalid_type,
-> > > > >> - "invalid type (%u)", xattr.v->x_type);
-> > > > >> + "invalid type (%u)", v->x_type);
-> > > > >>
-> > > > >> - bkey_fsck_err_on(memchr(xattr.v->x_name, '\0', xattr.v->x_name=
-_len),
-> > > > >> + pr_info("x_name_len: %d", v->x_name_len);
-> > > > >> + pr_info("__struct_size(x_name): %ld", __struct_size(v->x_name)=
-);
-> > > > >> + pr_info("__struct_size(x_name): %ld", __struct_size(xattr.v->x=
-_name));
-> > > > >> + bkey_fsck_err_on(memchr(v->x_name, '\0', v->x_name_len),
-> > > > >> c, xattr_name_invalid_chars,
-> > > > >> "xattr name has invalid characters");
-> > > > >> fsck_err:
-> > > > >> --
-> > > > >>
-> > > > >>
-> > > > >> Making memchr access via a pointer created with
-> > > > >> const struct bch_xattr *v =3D (void *)k.v fixes it. From the pri=
-nt statements I
-> > > > >> can see that __struct_size(xattr.v->x_name) incorrectly returns =
-0, while
-> > > > >> __struct_size(v->x_name) correctly returns 10 in this case (the =
-value of
-> > > > >> x_name_len).
-> > > > >>
-> > > > >> The generated assembly illustrates what is going wrong. Below is=
- an excerpt
-> > > > >> of the assembly clang generated for the bch2_xattr_validate func=
-tion:
-> > > > >>
-> > > > >> mov r13d, ecx
-> > > > >> mov r15, rdi
-> > > > >> mov r14, rsi
-> > > > >> mov rdi, offset .L.str.3
-> > > > >> mov rsi, offset .L__func__.bch2_xattr_validate
-> > > > >> mov rbx, rdx
-> > > > >> mov edx, eax
-> > > > >> call _printk
-> > > > >> movzx edx, byte ptr [rbx + 1]
-> > > > >> mov rdi, offset .L.str.4
-> > > > >> mov rsi, offset .L__func__.bch2_xattr_validate
-> > > > >> call _printk
-> > > > >> movzx edx, bh
-> > > > >> mov rdi, offset .L.str.4
-> > > > >> mov rsi, offset .L__func__.bch2_xattr_validate
-> > > > >> call _printk
-> > > > >> lea rdi, [rbx + 4]
-> > > > >> mov r12, rbx
-> > > > >> movzx edx, byte ptr [rbx + 1]
-> > > > >> xor ebx, ebx
-> > > > >> xor esi, esi
-> > > > >> call memchr
-> > > > >>
-> > > > >> At the start of this rdx contains k.v (and is moved into rbx). T=
-he three calls
-> > > > >> to printk are the ones you can see in my patch. You can see that=
- for the
-> > > > >> print that uses __struct_size(v->x_name) the compiler correctly =
-uses
-> > > > >> movzx edx, byte ptr [rbx + 1]
-> > > > >> to load x_name_len into edx.
-> > > > >>
-> > > > >> For the printk call that uses __struct_size(xattr.v->x_name) how=
-ever the
-> > > > >> compiler uses
-> > > > >> movzx edx, bh
-> > > > >> So it will print the high 8 bits of the lower 16 bits (second le=
-ast
-> > > > >> significant byte) of the memory address of xattr.v->x_type. This=
- is obviously
-> > > > >> completely wrong.
-> > > > >>
-> > > > >> It is then doing the correct call of memchr because this is usin=
-g my patch.
-> > > > >> Without my patch it would be doing the same thing for the call t=
-o memchr where
-> > > > >> it uses the second least significant byte of the memory address =
-of x_type as the
-> > > > >> length used for the bounds-check.
-> > > > >>
-> > > > >>
-> > > > >>
-> > > > >> The LLVM IR also shows the same problem:
-> > > > >>
-> > > > >> define internal zeroext i1 @xattr_cmp_key(ptr nocapture readnone=
- %0, ptr %1, ptr nocapture noundef readonly %2) #0 align 16 {
-> > > > >> [...]
-> > > > >> %51 =3D ptrtoint ptr %2 to i64
-> > > > >> %52 =3D lshr i64 %51, 8
-> > > > >> %53 =3D and i64 %52, 255
-> > > > >>
-> > > > >> This is the IR for the incorrect behavior. It simply converts th=
-e pointer to an
-> > > > >> int, shifts right by 8 bits, then and with 0xFF. If it did a loa=
-d (to i64)
-> > > > >> instead of ptrtoint this would actually work, as the second leas=
-t significant
-> > > > >> bit of an i64 loaded from that memory address does contain the v=
-alue of
-> > > > >> x_name_len. It's as if clang forgot to dereference a pointer her=
-e.
-> > > > >>
-> > > > >> Correct IR does this (for the other printk invocation):
-> > > > >>
-> > > > >> define internal zeroext i1 @xattr_cmp_key(ptr nocapture readnone=
- %0, ptr %1, ptr nocapture noundef readonly %2) #0 align 16 {
-> > > > >> [...]
-> > > > >> %4 =3D getelementptr inbounds %struct.bch_xattr, ptr %1, i64 0, =
-i32 1
-> > > > >> %5 =3D load i8, ptr %4, align 8
-> > > > >> [...]
-> > > > >> %48 =3D load i8, ptr %5, align 4
-> > > > >> %49 =3D zext i8 %48 to i64
-> > > > >>
-> > > > >> Best Regards
-> > > > >> Jan
-> > > > >
-> > > > > I suspect it's the same Clang __bdos() "bug" as in [1] and [2].
-> > > > >
-> > > > > [1] https://lore.kernel.org/linux-kernel/3D0816D1-0807-4D37-8D5F-=
-3C55CA910FAA@linux.dev/
-> > > > > [2] https://lore.kernel.org/all/20240913164630.GA4091534@thelio-3=
-990X/
-> > > >
-> > > > Could you try this and see if it resolves the problem?
-> > > >
-> > > > diff --git a/include/linux/compiler_types.h b/include/linux/compile=
-r_types.h
-> > > > index 1a957ea2f4fe..b09759f31789 100644
-> > > > --- a/include/linux/compiler_types.h
-> > > > +++ b/include/linux/compiler_types.h
-> > > > @@ -413,7 +413,7 @@ struct ftrace_likely_data {
-> > > >   * When the size of an allocated object is needed, use the best av=
-ailable
-> > > >   * mechanism to find it. (For cases where sizeof() cannot be used.=
-)
-> > > >   */
-> > > > -#if __has_builtin(__builtin_dynamic_object_size)
-> > > > +#if __has_builtin(__builtin_dynamic_object_size) && !defined(__cla=
-ng__)
-> > > >  #define __struct_size(p)   __builtin_dynamic_object_size(p, 0)
-> > > >  #define __member_size(p)   __builtin_dynamic_object_size(p, 1)
-> > > >  #else
-> > > >
-> > >
-> > > Alright after looking at it in the debugger the code it generates now=
- is
-> > > just wild.
-> > >
-> > > I added one more printk before the call to memchr like so:
-> > >
-> > > diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
-> > > index 56c8d3fe55a4..3c7c479ea3a8 100644
-> > > --- a/fs/bcachefs/xattr.c
-> > > +++ b/fs/bcachefs/xattr.c
-> > > @@ -96,6 +96,7 @@ int bch2_xattr_validate(struct bch_fs *c, struct bk=
-ey_s_c k,
-> > >                        c, xattr_invalid_type,
-> > >                        "invalid type (%u)", xattr.v->x_type);
-> > >
-> > > +     pr_info("__struct_size(x_name): %lu", __struct_size(xattr.v->x_=
-name));
-> > >       bkey_fsck_err_on(memchr(xattr.v->x_name, '\0', xattr.v->x_name_=
-len),
-> > >                        c, xattr_name_invalid_chars,
-> > >                        "xattr name has invalid characters");
-> > > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_=
-types.h
-> > > index f14c275950b5..43ac0bca485d 100644
-> > > --- a/include/linux/compiler_types.h
-> > > +++ b/include/linux/compiler_types.h
-> > > @@ -413,7 +413,7 @@ struct ftrace_likely_data {
-> > >   * When the size of an allocated object is needed, use the best avai=
-lable
-> > >   * mechanism to find it. (For cases where sizeof() cannot be used.)
-> > >   */
-> > > -#if __has_builtin(__builtin_dynamic_object_size)
-> > > +#if __has_builtin(__builtin_dynamic_object_size) && !defined(__clang=
-__)
-> > >  #define __struct_size(p)     __builtin_dynamic_object_size(p, 0)
-> > >  #define __member_size(p)     __builtin_dynamic_object_size(p, 1)
-> > >  #else
-> > >
-> > >
-> > > Here's the generated assembly for this:
-> > >
-> > >       mov     rdi, offset .L.str.3
-> > >       mov     rsi, offset .L__func__.bch2_xattr_validate
-> > >       mov     r12, rdx
-> > >       mov     rdx, -1
-> > >       call    _printk
-> > >       mov     rax, r12
-> > >       movzx   esi, ah
-> > >       movzx   edx, byte ptr [r12 + 1]
-> > >       cmp     rsi, rdx
-> > >       jb      .LBB4_15
-> > > # %bb.11:
-> > >       lea     rdi, [rax + 4]
-> > >       xor     ebx, ebx
-> > >       xor     esi, esi
-> > >       call    memchr
-> > >
-> > > So for the printk it hardcoded -1 (aka 0xFFFFF... 64 bit long int max=
-)
-> > > as the result of __struct_size. But then for before call to memchr it=
- does
-> > > the same stuff again and puts the second least significant byte of th=
-e memory
-> > > address of x_type in esi, only to then load the correct value of x_na=
-me_len
-> > > into edx and compares them for the bounds-check.
-> > >
-> >
-> >
-> > __builtin_object_size should only ever be compile time known, right? So
-> > it looks like this is pretty broken atm.
-> >
-> > I think until this stuff is fixed in clang the only real option is:
-> >
-There seems to be an issue with how the offset to the flexible array
-member is calculated internally. I'm looking into it now.
+Hello,
 
--bw
+syzbot found the following issue on:
+
+HEAD commit:    68e5c7d4cefb Merge tag 'kbuild-v6.12' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=175fd2a9980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d7be1e8a7715109f
+dashboard link: https://syzkaller.appspot.com/bug?extid=19ad84d5133871207377
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-68e5c7d4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/27acf8bc9a01/vmlinux-68e5c7d4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/fa422750cd74/bzImage-68e5c7d4.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+19ad84d5133871207377@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 32768
+bcachefs (loop0): starting version 1.7: mi_btree_bitmap opts=errors=continue,compression=lz4,nojournal_transaction_names
+bcachefs (loop0): recovering from clean shutdown, journal seq 7
+bcachefs (loop0): Doing compatible version upgrade from 1.7: mi_btree_bitmap to 1.12: rebalance_work_acct_fix
+  running recovery passes: check_allocations
+invalid bkey u64s 11 type alloc_v4 0:14:0 len 0 ver 0: 
+  gen 0 oldest_gen 0 data_type journal
+  journal_seq       1
+  need_discard      1
+  need_inc_gen      1
+  dirty_sectors     256
+  stripe_sectors    0
+  cached_sectors    0
+  stripe            67108864
+  stripe_redundancy 0
+  io_time[READ]     1
+  io_time[WRITE]    1
+  fragmentation     0
+  bp_start          8
+  invalid data type (got 2 should be 7): delete?, fixing
+bcachefs (loop0): accounting_read... done
+bcachefs (loop0): alloc_read... done
+bcachefs (loop0): stripes_read... done
+bcachefs (loop0): snapshots_read... done
+bcachefs (loop0): check_allocations...
+btree ptr not marked in member info btree allocated bitmap
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 75277f57b0c8c24 written 32 min_key POS_MIN durability: 1 ptr: 0:26:0 gen 0, fixing
+btree ptr not marked in member info btree allocated bitmap
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 19bc58a6c09b6540 written 24 min_key POS_MIN durability: 1 ptr: 0:38:0 gen 0, fixing
+btree ptr not marked in member info btree allocated bitmap
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c18f4a4face03c6 written 24 min_key POS_MIN durability: 1 ptr: 0:41:0 gen 0, fixing
+btree ptr not marked in member info btree allocated bitmap
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 7675f41d391e5d36 written 16 min_key POS_MIN durability: 1 ptr: 0:35:0 gen 0, fixing
+btree ptr not marked in member info btree allocated bitmap
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq bcb9905dfb2993d5 written 16 min_key POS_MIN durability: 1 ptr: 0:32:0 gen 0, fixing
+btree ptr not marked in member info btree allocated bitmap
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 9a831b4a3f983356 written 32 min_key POS_MIN durability: 1 ptr: 0:29:0 gen 0, fixing
+bucket 0:14 gen 0 has wrong data_type: got free, should be journal, fixing
+bucket 0:14 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
+ done
+bcachefs (loop0): going read-write
+bcachefs (loop0): journal_replay...
+ done
+bcachefs (loop0): resume_logged_ops... done
+bcachefs (loop0): delete_dead_inodes... done
+bcachefs (loop0): Fixed errors, running fsck a second time to verify fs is clean
+bcachefs (loop0): resume_logged_ops... done
+bcachefs (loop0): delete_dead_inodes... done
+bcachefs (loop0): done starting filesystem
+==================================================================
+BUG: KASAN: slab-use-after-free in bch2_dio_write_done fs/bcachefs/fs-io-direct.c:390 [inline]
+BUG: KASAN: slab-use-after-free in bch2_dio_write_loop fs/bcachefs/fs-io-direct.c:544 [inline]
+BUG: KASAN: slab-use-after-free in bch2_direct_write+0x2a60/0x3140 fs/bcachefs/fs-io-direct.c:654
+Read of size 8 at addr ffff8880332890a0 by task syz.0.0/5109
+
+CPU: 0 UID: 0 PID: 5109 Comm: syz.0.0 Not tainted 6.11.0-syzkaller-10392-g68e5c7d4cefb #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x169/0x550 mm/kasan/report.c:488
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ bch2_dio_write_done fs/bcachefs/fs-io-direct.c:390 [inline]
+ bch2_dio_write_loop fs/bcachefs/fs-io-direct.c:544 [inline]
+ bch2_direct_write+0x2a60/0x3140 fs/bcachefs/fs-io-direct.c:654
+ bch2_write_iter+0x18e/0x23f0 fs/bcachefs/fs-io-buffered.c:1030
+ aio_write+0x56b/0x7c0 fs/aio.c:1633
+ io_submit_one+0x8a7/0x18a0 fs/aio.c:2052
+ __do_sys_io_submit fs/aio.c:2111 [inline]
+ __se_sys_io_submit+0x179/0x2f0 fs/aio.c:2081
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7faa7fd7def9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007faa80b10038 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
+RAX: ffffffffffffffda RBX: 00007faa7ff35f80 RCX: 00007faa7fd7def9
+RDX: 0000000020001d00 RSI: 0000000000000001 RDI: 00007faa80acc000
+RBP: 00007faa80b10090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 00007faa7ff35f80 R15: 00007fff53efb458
+ </TASK>
+
+Allocated by task 5109:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ unpoison_slab_object mm/kasan/common.c:319 [inline]
+ __kasan_mempool_unpoison_object+0x9e/0x160 mm/kasan/common.c:547
+ remove_element+0x129/0x1a0 mm/mempool.c:150
+ mempool_alloc_noprof+0x54e/0x5a0 mm/mempool.c:408
+ bio_alloc_bioset+0x26f/0x1130 block/bio.c:554
+ bch2_direct_write+0x5a0/0x3140 fs/bcachefs/fs-io-direct.c:626
+ bch2_write_iter+0x18e/0x23f0 fs/bcachefs/fs-io-buffered.c:1030
+ aio_write+0x56b/0x7c0 fs/aio.c:1633
+ io_submit_one+0x8a7/0x18a0 fs/aio.c:2052
+ __do_sys_io_submit fs/aio.c:2111 [inline]
+ __se_sys_io_submit+0x179/0x2f0 fs/aio.c:2081
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Freed by task 5109:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:579
+ poison_slab_object mm/kasan/common.c:247 [inline]
+ __kasan_mempool_poison_object+0xaa/0x120 mm/kasan/common.c:522
+ kasan_mempool_poison_object include/linux/kasan.h:357 [inline]
+ kasan_poison_element mm/mempool.c:118 [inline]
+ add_element mm/mempool.c:141 [inline]
+ mempool_free+0x1c8/0x390 mm/mempool.c:541
+ bch2_dio_write_done fs/bcachefs/fs-io-direct.c:388 [inline]
+ bch2_dio_write_loop fs/bcachefs/fs-io-direct.c:544 [inline]
+ bch2_direct_write+0x2a49/0x3140 fs/bcachefs/fs-io-direct.c:654
+ bch2_write_iter+0x18e/0x23f0 fs/bcachefs/fs-io-buffered.c:1030
+ aio_write+0x56b/0x7c0 fs/aio.c:1633
+ io_submit_one+0x8a7/0x18a0 fs/aio.c:2052
+ __do_sys_io_submit fs/aio.c:2111 [inline]
+ __se_sys_io_submit+0x179/0x2f0 fs/aio.c:2081
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff888033288fc0
+ which belongs to the cache bio-119 of size 1192
+The buggy address is located 224 bytes inside of
+ freed 1192-byte region [ffff888033288fc0, ffff888033289468)
+
+The buggy address belongs to the physical page:
+page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x33288
+head: order:2 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0x4fff00000000040(head|node=1|zone=1|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 04fff00000000040 ffff88803d006dc0 dead000000000122 0000000000000000
+raw: 0000000000000000 00000000800c000c 00000001f5000000 0000000000000000
+head: 04fff00000000040 ffff88803d006dc0 dead000000000122 0000000000000000
+head: 0000000000000000 00000000800c000c 00000001f5000000 0000000000000000
+head: 04fff00000000002 ffffea0000cca201 ffffffffffffffff 0000000000000000
+head: 0000000000000004 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5109, tgid 5108 (syz.0.0), ts 72169226459, free_ts 71873280046
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1537
+ prep_new_page mm/page_alloc.c:1545 [inline]
+ get_page_from_freelist+0x3045/0x3190 mm/page_alloc.c:3457
+ __alloc_pages_noprof+0x256/0x6c0 mm/page_alloc.c:4733
+ alloc_pages_mpol_noprof+0x3e8/0x680 mm/mempolicy.c:2265
+ alloc_slab_page+0x6a/0x120 mm/slub.c:2413
+ allocate_slab+0x5a/0x2f0 mm/slub.c:2579
+ new_slab mm/slub.c:2632 [inline]
+ ___slab_alloc+0xcd1/0x14b0 mm/slub.c:3819
+ __slab_alloc+0x58/0xa0 mm/slub.c:3909
+ __slab_alloc_node mm/slub.c:3962 [inline]
+ slab_alloc_node mm/slub.c:4123 [inline]
+ kmem_cache_alloc_noprof+0x1c1/0x2a0 mm/slub.c:4142
+ mempool_init_node+0x1ee/0x4e0 mm/mempool.c:217
+ mempool_init_noprof+0x3a/0x50 mm/mempool.c:246
+ bioset_init+0x2e8/0x820 block/bio.c:1857
+ bch2_fs_fs_io_direct_init+0x67/0x90 fs/bcachefs/fs-io-direct.c:681
+ bch2_fs_alloc fs/bcachefs/super.c:932 [inline]
+ bch2_fs_open+0x2d77/0x2f80 fs/bcachefs/super.c:2050
+ bch2_fs_get_tree+0x738/0x1710 fs/bcachefs/fs.c:2058
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1800
+page last free pid 9 tgid 9 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1108 [inline]
+ free_unref_page+0xcfb/0xf20 mm/page_alloc.c:2638
+ discard_slab mm/slub.c:2678 [inline]
+ __put_partials+0xeb/0x130 mm/slub.c:3146
+ put_cpu_partial+0x17c/0x250 mm/slub.c:3221
+ __slab_free+0x2ea/0x3d0 mm/slub.c:4450
+ qlink_free mm/kasan/quarantine.c:163 [inline]
+ qlist_free_all+0x9a/0x140 mm/kasan/quarantine.c:179
+ kasan_quarantine_reduce+0x14f/0x170 mm/kasan/quarantine.c:286
+ __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:329
+ kasan_slab_alloc include/linux/kasan.h:247 [inline]
+ slab_post_alloc_hook mm/slub.c:4086 [inline]
+ slab_alloc_node mm/slub.c:4135 [inline]
+ __kmalloc_cache_noprof+0x132/0x2c0 mm/slub.c:4291
+ kmalloc_noprof include/linux/slab.h:878 [inline]
+ kzalloc_noprof include/linux/slab.h:1014 [inline]
+ nsim_fib4_rt_create drivers/net/netdevsim/fib.c:280 [inline]
+ nsim_fib4_rt_insert drivers/net/netdevsim/fib.c:426 [inline]
+ nsim_fib4_event drivers/net/netdevsim/fib.c:464 [inline]
+ nsim_fib_event drivers/net/netdevsim/fib.c:884 [inline]
+ nsim_fib_event_work+0xe1a/0x4130 drivers/net/netdevsim/fib.c:1492
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Memory state around the buggy address:
+ ffff888033288f80: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+ ffff888033289000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888033289080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff888033289100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888033289180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
