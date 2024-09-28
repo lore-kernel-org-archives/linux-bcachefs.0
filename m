@@ -1,89 +1,41 @@
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187311DDC9;
-	Sat, 28 Sep 2024 17:49:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26A5800;
+	Sat, 28 Sep 2024 20:34:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727545796; cv=none; b=lTqc244ASKKnKdYFX955De56ivbafkXD7EMXDmfZY+7oy6+s78Dc0E4wPbc1GeOyec7e5KI/dEoIO+mlT8yk5OUNK3Ar+t9jczs/CPcaWdIrgHorZzUOMZPs2QyOBHFQfrBQOVX6PJvkevkGU1w1QyBh9/FisdnHS6XggQAWhzU=
+	t=1727555653; cv=none; b=lIIHTqPKxYeBeXY3ICCGL5iv2xoDn1Od6DYiBwZeoZXbcyFZuhUsTnrwJlmc0WuZTZ+Jee/hXk4wdODDxvgkq7oICNvzjSBCfLWp7R3Icr/C2UyjQutOQv2xyH1OVQ0mYv/SbWRtPzAeERIfFLqaPnutUBsehuut1hkijqh2C3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727545796; c=relaxed/simple;
-	bh=ZmHyWgTZ6f578nAFPCapPQS0yGp6scQWRlvv80p6/FE=;
+	s=arc-20240116; t=1727555653; c=relaxed/simple;
+	bh=T8UwSWJRZ6br6AGBbJFruPF3C6xfU0XMPpxn4ylzjN8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SPjJ1n1uhonFlbD6cXoRpy5bKBx7ldlTtabjAalLNqt2xeWpXBehYpYlaXdCeWuxaPNZoTH8nAwFQjC1wRz4UKUYSIX6N1R0yYKfBZTztLejXyKp59jRphTeu7lfFsHoJC1z92dKIEzrqXAR/PAihh3YW3hwTagMfY7H/OdyNNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=xCiPKmEM; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qRCD/UEZ; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
+	 Content-Type:Content-Disposition:In-Reply-To; b=tTle1KQOgmfqpfJ8tpoPpuwVyRchQIwE7LL9nS615Z0IiBjrkiMp/CNjOe+CK0EAZ5eSxzNiI65mFCVLwTq2QoeezzQaZcpc4LMFSkMr/ICnv0GFxF4MhS/jPWftQfOgdwLgutfh1G3LYsWBL428NboEUdbO6yff3McpHoLWH/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nMwPDKcq; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="xCiPKmEM";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qRCD/UEZ"
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id 3886213801DC;
-	Sat, 28 Sep 2024 13:49:53 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Sat, 28 Sep 2024 13:49:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1727545793; x=1727632193; bh=zVhuv8ayXo
-	6PvtvFMboib5FvnLtF4iOySMxwwGYV6u4=; b=xCiPKmEM9jlxNgQgLd/Ay3VW4K
-	iTsvKy/sI2EvbILWa0mg/1o02sYwoErO61YAq3hOUVFYSKzg47BLZkzDCDG/Uqlx
-	cKQ7Z67EfU9IiC6qOUhwuGzY97IuLgHUmVXxt/lw/wiqxmkaUY486nmYl0bxU3/+
-	3ZSIPhE7I6o+sdG760vtYyu4WMXzPJ+o84g6rZJtJXLRA2FVtvXlP8R1tLAoezVX
-	pYccjdw8BOKlKLBrOU8yivacDbKQbzA0A9mXErcTjcg+ErG2TTceXuTUoocw1ywM
-	JgNdfLnYEllFa1C4zdzLSnY8UQnlfxWAdGGqj9X7WUbOf3wwz+rOjrMfd3wg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1727545793; x=1727632193; bh=zVhuv8ayXo6PvtvFMboib5FvnLtF
-	4iOySMxwwGYV6u4=; b=qRCD/UEZ0glQcdeOEyr1A0HBU+cZGkjBR83aVz2Lm8fy
-	9E9fnA/L2Fn6W/vWcbmX1PdctgUEFE06NJButZkcNs5veAMAcYLxOSSYPlxPc3zP
-	2F8uG5KKoWFFGXbi7hERQum2XwWG1eZn4lNHAO7i1QclG0s6Fuoe+FKwVvh91ibS
-	s8f+0OCYTtrk4H/CMxG/czghvfsdrISJmMxeYiHcgGuzpxhxKRGTT/LmVdOgOR7M
-	/A/9jThbTE1YyeppQWuJh3G+pXeGBZeGxjdBthO5fXCT3YppbDToFihQ9KWPtuqY
-	n8dlFzPaktdXRuK1HPdHZ278kWC/JEW9dX8utubrpQ==
-X-ME-Sender: <xms:wEH4ZoI4bHnZWwuAFex1g5qLxb7SZi5Q7dQqpSByzz5T9gnmXIPNCQ>
-    <xme:wEH4ZoL3pgngpqw4fG7pU4ncHN3lcE4uYSvyH6L9FNJGnD-FUxQXTXi0yQlJ9wXMA
-    KHh2XjlcvTKGZ_2j4M>
-X-ME-Received: <xmr:wEH4ZouGrv2_EydU9_dBwRMs009GUM1TzQ3qBIYK4DyP-0tjsln8jkFmS7VtGT7xp5inMpoaMDM40CwBkDWxthfDFnUo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdduuddgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdluddtmdenucfjughrpeffhffvvefukfhf
-    gggtuggjsehttdertddttddvnecuhfhrohhmpeflrghnucfjvghnughrihhkucfhrghrrh
-    cuoehkvghrnhgvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpeffudettdei
-    udduteejgeejueejgeejueehtedtteeivedvveffkeejjeeuheeghfenucffohhmrghinh
-    epghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkvghrnhgvlhesjhhfrghrrhdrtggtpd
-    hnsggprhgtphhtthhopeelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehthhho
-    rhhsthgvnhdrsghluhhmsehtohgslhhugidrtghomhdprhgtphhtthhopehkvghnthdroh
-    hvvghrshhtrhgvvghtsehlihhnuhigrdguvghvpdhrtghpthhtoheprhgvghhrvghsshhi
-    ohhnsheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopehlihhnuhigqdgstg
-    grtghhvghfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhig
-    qdhhrghruggvnhhinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
-    hinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
-    khgvvghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrhgusgeskhgvrhhnvghlrd
-    horhhgpdhrtghpthhtohepmhhorhgsohesghhoohhglhgvrdgtohhm
-X-ME-Proxy: <xmx:wEH4ZlaXN6fM1_7uCt4W5nNgDczOYm1km4JicHI7dxjea2gqTKoC_w>
-    <xmx:wEH4ZvZ3Lnh4E6gFtKTjIlCV1YiMfb2V4go7Bm5VHNHuEaqePif4WQ>
-    <xmx:wEH4ZhC0Pld9LXiQCsXRXkw9GlXQGpEdJzeOpY2r-pz66TKcqnE_ww>
-    <xmx:wEH4Zlac1sz2nW1FzEsfO8z46Nncv3FMnp-KXznKoKMaz64RgvyOjw>
-    <xmx:wUH4Zpk5WdSsIvLh3SWbJrsKqEqyjA7kLXFuJFYSLeVL8ZkOSSIJCx-f>
-Feedback-ID: i01d149f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 28 Sep 2024 13:49:51 -0400 (EDT)
-Date: Sat, 28 Sep 2024 19:49:50 +0200
-From: Jan Hendrik Farr <kernel@jfarr.cc>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: kent.overstreet@linux.dev, regressions@lists.linux.dev,
-	linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kees@kernel.org, ardb@kernel.org,
-	morbo@google.com
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nMwPDKcq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49267C4CEC3;
+	Sat, 28 Sep 2024 20:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727555653;
+	bh=T8UwSWJRZ6br6AGBbJFruPF3C6xfU0XMPpxn4ylzjN8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nMwPDKcqgST/Kqxuaa54fEoULxhYPE6wupQfs2MuYhPfW1JG41524tan0jHxNKt7L
+	 WFs3zrvmNz99kvgqafEfKpEUTfeWmkTIkPsFKHA9WgnSLOAIFusnfaUshUjz+gRux1
+	 CJSaYWNMEPsqbK1gK8lWpaNtXbnNbXAhUcXhquSS7Bgb46gqJBrkwozYQ+JouIguEu
+	 +BObX84BgjZgcDih8ydMPQmH7cBKKVDi+WHUzsiks1yUNkYCBj/XMGwKtOGc2hE+pz
+	 Ngy0GixpdiF7v86OVt3wq2oY/NVmsunILVH/N0NQoxxz/YMHFwFi4Dx1xnROATeywV
+	 ZpAc7Mfh247Qw==
+Date: Sat, 28 Sep 2024 13:34:12 -0700
+From: Kees Cook <kees@kernel.org>
+To: Jan Hendrik Farr <kernel@jfarr.cc>
+Cc: Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev,
+	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ardb@kernel.org, morbo@google.com
 Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
  bch2_xattr_validate
-Message-ID: <ZvhBvht3Cn6sHCVA@archlinux>
+Message-ID: <202409281331.1F04259@keescook>
 References: <ZvV6X5FPBBW7CO1f@archlinux>
  <3E304FB2-799D-478F-889A-CDFC1A52DCD8@toblux.com>
  <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com>
@@ -98,7 +50,7 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <Zvg-mDsvvOueGpzs@archlinux>
 
-On 28 19:36:27, Jan Hendrik Farr wrote:
+On Sat, Sep 28, 2024 at 07:36:24PM +0200, Jan Hendrik Farr wrote:
 > On 26 18:09:57, Thorsten Blum wrote:
 > > On 26. Sep 2024, at 17:28, Thorsten Blum <thorsten.blum@toblux.com> wrote:
 > > > On 26. Sep 2024, at 17:14, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
@@ -313,10 +265,6 @@ On 28 19:36:27, Jan Hendrik Farr wrote:
 > The POS0 is the culprit. It's defined as __pass_object_size(0), which
 > leads to the call to __builtin_object_size being upgraded to
 > __builtin_dynamic_object_size.
-
-Correction: POS0 is defined as __pass_dynamic_object_size(0) of course.
-The below patch changes it to be defined as __pass_object_size(0).
-
 > 
 > So to make this work the POS0 definition needs the same
 > !defined(__clang__) on it. There's also two more
@@ -353,3 +301,15 @@ The below patch changes it to be defined as __pass_object_size(0).
 >  #define POS			__pass_dynamic_object_size(1)
 >  #define POS0			__pass_dynamic_object_size(0)
 >  #else
+
+Sorry, I've been out of commission with covid. Globally disabling this
+macro for clang is not the right solution (way too big a hammer).
+
+Until Bill has a fix, we can revert commit
+86e92eeeb23741a072fe7532db663250ff2e726a, as the problem is limited to
+certain situations where 'counted_by' is in use.
+
+-Kees
+
+-- 
+Kees Cook
