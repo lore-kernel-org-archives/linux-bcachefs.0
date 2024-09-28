@@ -1,282 +1,349 @@
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0054D157E9F
-	for <linux-bcachefs@vger.kernel.org>; Sat, 28 Sep 2024 04:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982A813E40F;
+	Sat, 28 Sep 2024 17:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727496873; cv=none; b=D4BukBEqJQJ14H2Mt/rDkMZ6Qd83vL1DjtqYbxiWy/RzScDj97+CtOPSGCzxhSiL8f394V3z3kf3VsVu/Wm+Q2ENIQaLlZRxzChVaKU0UEfYiHvNMsu7mvXDQuFizZOgMB7yUbAiNE1lcZ8gWwVuCYob4dSTTmUb1PbdKTgNlSo=
+	t=1727544990; cv=none; b=rZwmDm6Djciecvn9rJu4xoEVntbeTJ4fexv5PJMnINeMpJx69e6VuuSv92t9Qer6fyS356rFPNBIPGdg+0YOWuPQtV+eWLxsTCqUPdRFbfrckUo6BxQFqahoisNndnsVxxXcLYmQ9/l/cp3aRn9SSq+0UmunyBwRMATcGOF4pxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727496873; c=relaxed/simple;
-	bh=4kTQ0VtkW01UPHkx2OEX1qryS8JIxux1g4LQtyxFQiU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Ho1+qpl0FpupE8jfmFBBoZVZI5UsP7Lx3POorsXExbCJwIVC0Us/n0bxgDgxt7BG+L/X4qwlI7s2sf3frZOEkyJZtwpWH0b4c6hgtleqJb4RM09v72h1x7Qv/oGIae1Fi8pOV4zoWs6+D3J/KsFs731LQk7zLgbb1DKvS+gRfgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-82ad9fca5fcso268784839f.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 27 Sep 2024 21:14:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727496870; x=1728101670;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kXCWBXYZGxgdVBHFNvrXbluP5sin25gdWrE6XoVT9xE=;
-        b=hz/skPomEFcp5SKTAo8+c4jFmy+YeBqu98y6ymq7QW+cRiG6gOTrsq2m0hYbnSm+dH
-         Q1PHsPXiqErHMIGrhgmkFaoCOHPClX2dqPHhAplcQ6x7YmX9rtiU3xgBsjhAspMPUJPD
-         UBMNgcvH3hZTe9rk8K7NNpzGk/aJLy1J8AsMq3V40CasXtrEV339oUZHbU8RRWdUaYi6
-         bRJpyNAGyfEW9DloDdsxO5no5xJdcWSW9NEowczmCy3+wW9H/e0INU5fcmeygFdjbvBR
-         EwGpwZyeCnBnjNx8E4Ag/mFz2V07DWgBKSGc83VgiWEENoc9df1COuEOfSbeZC9l3lSJ
-         H72A==
-X-Forwarded-Encrypted: i=1; AJvYcCVPjE8+YiiC+RDFN5+CkcPB/IbX9E34kO3IHJgS5mOfJSCy5mTzA/eejuyx0GuElcePovMQbmd9M3IRlrdMYg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywy8fjzsEbEyWomiaI1tpR4ajvZCXf3rkXopWcR0vtpQOR9wIEr
-	2kjxxP80Nal8JY0E2Iw4F3wQgWBIXuaNulRbNNFHPAsjwh2lSAaSVjzfXG2HJnCixMiCepW3wig
-	+8HBoaJ5w4prhC2DXLQPU7LqrBQrggi/49XZwp7PfJRgxF9auG6KqnwE=
-X-Google-Smtp-Source: AGHT+IEEJI33O+0OBEX0+yftGlQ1d8gexaDiWKYSxgz6946CWwrdFUOZl231CJZFt7VN8w7ttbU2/uOstbzfEAT0nfIiMdyW4xlD
+	s=arc-20240116; t=1727544990; c=relaxed/simple;
+	bh=HXGhUK8FrKk0WuWa4qJqST0XST+En12lPnXxvx8pW74=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tGzN5vYNdGDYkhZ4JV3BAzvvsjhQxGeOO/Xh63357u+K8/N4yOL5TpCF++ejmkkX52tUnHI50oGrO/z4U4DLkxVMGKhs6NWd3C6KpaTywGlA6RSJ4kbw79XZ7jLRXWm9zmKp+nrmVpjC3UiAb5tlSNYi0tcAVdfdaV4geIWwtW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=FFTUc8tW; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=FFnNkRbP; arc=none smtp.client-ip=103.168.172.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="FFTUc8tW";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FFnNkRbP"
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id C646811400F8;
+	Sat, 28 Sep 2024 13:36:27 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-05.internal (MEProxy); Sat, 28 Sep 2024 13:36:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1727544987; x=1727631387; bh=JnumIukBSe
+	ev0nlJ/SGcgw51UJmk81utBDPPldgQUR0=; b=FFTUc8tWqjfaNyYE6D4arxZoTD
+	wisZzlR7FPBGCXWzKueXHoLfoKxtFFsW3oth2fDO5uupss1ELZ2VMuM0gQsFQGTK
+	enbn91eElhb0ukYxqzleUPRMsXR+GrGftmA5J8gbVIrw9LWVpOSNFIhTF5idKM/u
+	DheFdNis1/CmK2sGfhE8sikSB6Hog87jjeyB26d5ARxLFTfZ+empoNlB/oVpSo8i
+	JvL0/K4TmiPduaAfiCH39BTXW6s8WTrzBiGMGphta4YDBnSGzotbDYx36/woBjNc
+	G5ByIUGjjXzOgJeIlm1fNhz6ArVJthINn88iXfHGb+yFvUTdQHOlI1d8/uyw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1727544987; x=1727631387; bh=JnumIukBSeev0nlJ/SGcgw51UJmk
+	81utBDPPldgQUR0=; b=FFnNkRbP31a65+B5mdSUHfqfkz6BxwH2nXuHcUvopJDo
+	GxTFtsLWKkvTGTomfn4JyPNtqpHLC4ME63rLpRzFY9iKAiGHgcmYZXmCnU5cxJCf
+	EgdXYJjJQkKWBE91ivfUiO9AfkAtHmdhvwXg9oU/Ms8mm1BPD7y6DlByXdTPDIOZ
+	12PgAlU6sgghr8gOp35EVVO6GvMLYn3r0YXJvTyVWzkq5930y7srE8PRyHNBR5l8
+	6ZXxSt25Rk+QyfJbSKcwAzxKeqhnL1wJLIlT0DXclHJCwI/djlJTzgyFLW4V0qHt
+	NGxAjOj2p7qdy1cFFcrGIkobNiLmKgVMIRosZbeAdA==
+X-ME-Sender: <xms:mz74ZhOUOfoeagD1XC-Y8abx4Zsm-y_FLVeIrU60x3m_scG0hwofCg>
+    <xme:mz74Zj86B4nupxGZgDgt0vr2_4FdksN90BYK7q6UqQJeXnguLTH2vy3CsMLW2LJQS
+    VWVxQbuKqcLiVdyEOE>
+X-ME-Received: <xmr:mz74ZgS_3CH-YO7NY-3FxgQ9pULaALswU1s6trD6wZ07Yq23tUPkcTd_NuJCsR_68TwFJb3mlCzmIoBJV9Vlfmr_LGvp>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdduuddgledtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdluddtmdenucfjughrpeffhffvvefukfhf
+    gggtuggjsehttdertddttddvnecuhfhrohhmpeflrghnucfjvghnughrihhkucfhrghrrh
+    cuoehkvghrnhgvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpeffudettdei
+    udduteejgeejueejgeejueehtedtteeivedvveffkeejjeeuheeghfenucffohhmrghinh
+    epghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkvghrnhgvlhesjhhfrghrrhdrtggtpd
+    hnsggprhgtphhtthhopeelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehthhho
+    rhhsthgvnhdrsghluhhmsehtohgslhhugidrtghomhdprhgtphhtthhopehkvghnthdroh
+    hvvghrshhtrhgvvghtsehlihhnuhigrdguvghvpdhrtghpthhtoheprhgvghhrvghsshhi
+    ohhnsheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopehlihhnuhigqdgstg
+    grtghhvghfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhig
+    qdhhrghruggvnhhinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
+    hinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    khgvvghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrhgusgeskhgvrhhnvghlrd
+    horhhgpdhrtghpthhtohepmhhorhgsohesghhoohhglhgvrdgtohhm
+X-ME-Proxy: <xmx:mz74ZttYLpOf5GxB9Lph7ToXdH6_DJ6p0oj6cSAFFucVYa-2qyjkug>
+    <xmx:mz74ZpdbuF7m5enR3JqZhWOHckuTavGEy0_Wiekz8VzTCvhTQBJz3A>
+    <xmx:mz74Zp1F49gdMfn1a0BajruwTcrKYrpZxdyK6tirP_e1YYYXtezJSw>
+    <xmx:mz74Zl9DqU7vXEIJFyK6RkhdHLUD-5XesH3DE5M1idrrVHVet2zHpw>
+    <xmx:mz74Zl5mxztye5GycLtfSZaNFUCvA4ojJz_p4NX2eGNYds2_ES0pztRK>
+Feedback-ID: i01d149f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 28 Sep 2024 13:36:25 -0400 (EDT)
+Date: Sat, 28 Sep 2024 19:36:24 +0200
+From: Jan Hendrik Farr <kernel@jfarr.cc>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: kent.overstreet@linux.dev, regressions@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kees@kernel.org, ardb@kernel.org,
+	morbo@google.com
+Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
+ bch2_xattr_validate
+Message-ID: <Zvg-mDsvvOueGpzs@archlinux>
+References: <ZvV6X5FPBBW7CO1f@archlinux>
+ <3E304FB2-799D-478F-889A-CDFC1A52DCD8@toblux.com>
+ <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12c7:b0:3a0:92e5:af68 with SMTP id
- e9e14a558f8ab-3a345188ecemr45269505ab.15.1727496870094; Fri, 27 Sep 2024
- 21:14:30 -0700 (PDT)
-Date: Fri, 27 Sep 2024 21:14:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66f782a6.050a0220.46d20.0030.GAE@google.com>
-Subject: [syzbot] [bcachefs?] INFO: task hung in do_ftruncate
-From: syzbot <syzbot+e48ce9d7b41255fe347c@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com>
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    aa486552a110 Merge tag 'memblock-v6.12-rc1' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12f63627980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bad8b2899350fd0b
-dashboard link: https://syzkaller.appspot.com/bug?extid=e48ce9d7b41255fe347c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/30a23c12e28d/disk-aa486552.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/abcc297fee6c/vmlinux-aa486552.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8a45329353f7/bzImage-aa486552.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e48ce9d7b41255fe347c@syzkaller.appspotmail.com
-
-INFO: task syz.3.45:5605 blocked for more than 143 seconds.
-      Not tainted 6.11.0-syzkaller-10622-gaa486552a110 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz.3.45        state:D stack:22560 pid:5605  tgid:5586  ppid:5216   flags:0x00000004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5315 [inline]
- __schedule+0x1843/0x4ae0 kernel/sched/core.c:6675
- __schedule_loop kernel/sched/core.c:6752 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6767
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6824
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1178
- __down_write_common kernel/locking/rwsem.c:1306 [inline]
- __down_write kernel/locking/rwsem.c:1315 [inline]
- down_write+0x1d7/0x220 kernel/locking/rwsem.c:1580
- inode_lock include/linux/fs.h:815 [inline]
- do_truncate fs/open.c:63 [inline]
- do_ftruncate+0x44e/0x580 fs/open.c:181
- do_sys_ftruncate fs/open.c:199 [inline]
- __do_sys_ftruncate fs/open.c:207 [inline]
- __se_sys_ftruncate fs/open.c:205 [inline]
- __x64_sys_ftruncate+0x95/0xf0 fs/open.c:205
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7faa8237df39
-RSP: 002b:00007faa81dde038 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
-RAX: ffffffffffffffda RBX: 00007faa82536058 RCX: 00007faa8237df39
-RDX: 0000000000000000 RSI: 00000000000096ef RDI: 0000000000000005
-RBP: 00007faa823f0216 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007faa82536058 R15: 00007fffc6927418
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/30:
- #0: ffffffff8e937ee0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #0: ffffffff8e937ee0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #0: ffffffff8e937ee0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6701
-2 locks held by kworker/u8:2/35:
- #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1850 kernel/workqueue.c:3310
- #1: ffffc90000ab7d00 ((reaper_work).work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc90000ab7d00 ((reaper_work).work){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1850 kernel/workqueue.c:3310
-2 locks held by kworker/u8:3/57:
- #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1850 kernel/workqueue.c:3310
- #1: ffff8880b8728948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x441/0x770 kernel/sched/psi.c:989
-3 locks held by kworker/u8:6/1064:
- #0: ffff8880202fa148 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff8880202fa148 ((wq_completion)writeback){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1850 kernel/workqueue.c:3310
- #1: ffffc900040f7d00 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc900040f7d00 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1850 kernel/workqueue.c:3310
- #2: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: super_trylock_shared+0x22/0xf0 fs/super.c:562
-2 locks held by kworker/u8:7/1080:
- #0: ffff88814769c948 ((wq_completion)iou_exit){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88814769c948 ((wq_completion)iou_exit){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1850 kernel/workqueue.c:3310
- #1: ffffc900041a7d00 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc900041a7d00 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1850 kernel/workqueue.c:3310
-3 locks held by kworker/u8:8/2926:
- #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1850 kernel/workqueue.c:3310
- #1: ffffc90009d57d00 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc90009d57d00 ((linkwatch_work).work){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1850 kernel/workqueue.c:3310
- #2: ffffffff8fcbf408 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xe/0x60 net/core/link_watch.c:276
-2 locks held by getty/4973:
- #0: ffff88814b3270a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6a6/0x1e00 drivers/tty/n_tty.c:2211
-5 locks held by syz.3.45/5587:
- #0: ffff88801cb1a420 (sb_writers#23){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff8880560308c0 (&sb->s_type->i_mutex_key#28){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:815 [inline]
- #1: ffff8880560308c0 (&sb->s_type->i_mutex_key#28){+.+.}-{3:3}, at: do_truncate+0x20c/0x310 fs/open.c:63
- #2: ffff888064980a38 (&c->snapshot_create_lock){.+.+}-{3:3}, at: bch2_truncate+0x16d/0x2c0 fs/bcachefs/io_misc.c:290
- #3: ffff888064984398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:151 [inline]
- #3: ffff888064984398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:250 [inline]
- #3: ffff888064984398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bch2_trans_get+0x7de/0xd20 fs/bcachefs/btree_iter.c:3215
- #4: ffff8880649a66d0 (&c->gc_lock){.+.+}-{3:3}, at: bch2_btree_update_start+0x682/0x14e0 fs/bcachefs/btree_update_interior.c:1202
-2 locks held by syz.3.45/5605:
- #0: ffff88801cb1a420 (sb_writers#23){.+.+}-{0:0}, at: do_ftruncate+0x28b/0x580 fs/open.c:178
- #1: ffff8880560308c0 (&sb->s_type->i_mutex_key#28){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:815 [inline]
- #1: ffff8880560308c0 (&sb->s_type->i_mutex_key#28){+.+.}-{3:3}, at: do_truncate fs/open.c:63 [inline]
- #1: ffff8880560308c0 (&sb->s_type->i_mutex_key#28){+.+.}-{3:3}, at: do_ftruncate+0x44e/0x580 fs/open.c:181
-3 locks held by bch-reclaim/loo/5600:
-2 locks held by syz.1.58/5865:
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: super_lock+0x27c/0x400 fs/super.c:120
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:388 [inline]
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x26e/0xb50 fs/fs-writeback.c:2797
-2 locks held by syz.1.58/5866:
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: super_lock+0x27c/0x400 fs/super.c:120
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:388 [inline]
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x26e/0xb50 fs/fs-writeback.c:2797
-2 locks held by syz.1.58/5867:
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: super_lock+0x27c/0x400 fs/super.c:120
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:388 [inline]
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x26e/0xb50 fs/fs-writeback.c:2797
-2 locks held by syz.1.58/5869:
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: super_lock+0x27c/0x400 fs/super.c:120
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:388 [inline]
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x26e/0xb50 fs/fs-writeback.c:2797
-2 locks held by syz.1.100/6093:
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff88801cb1a0e0 (&type->s_umount_key#80){.+.+}-{3:3}, at: super_lock+0x27c/0x400 fs/super.c:120
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:388 [inline]
- #1: ffff88801cb1c7d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x26e/0xb50 fs/fs-writeback.c:2797
-2 locks held by kworker/u8:10/6245:
- #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1850 kernel/workqueue.c:3310
- #1: ffffc90004707d00 ((reaper_work).work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc90004707d00 ((reaper_work).work){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1850 kernel/workqueue.c:3310
-1 lock held by syz-executor/6714:
- #0: ffffffff8fcbf408 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8fcbf408 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6643
-2 locks held by syz.3.255/6897:
-2 locks held by syz.0.256/6903:
- #0: ffff888049000908 (&c->sb_lock){+.+.}-{3:3}, at: bch2_fs_alloc fs/bcachefs/super.c:827 [inline]
- #0: ffff888049000908 (&c->sb_lock){+.+.}-{3:3}, at: bch2_fs_open+0x1683/0x2f80 fs/bcachefs/super.c:2050
- #1: ffff8880490049d0 (&c->mark_lock){++++}-{0:0}, at: bch2_sb_replicas_to_cpu_replicas+0x1e0/0x2e0 fs/bcachefs/replicas.c:572
-2 locks held by syz.4.259/6910:
- #0: ffffffff8eec3708 (uuid_mutex){+.+.}-{3:3}, at: btrfs_get_tree_super fs/btrfs/super.c:1835 [inline]
- #0: ffffffff8eec3708 (uuid_mutex){+.+.}-{3:3}, at: btrfs_get_tree+0x2dc/0x1920 fs/btrfs/super.c:2114
- #1: ffff8880b873ea58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:593
-2 locks held by dhcpcd/6915:
- #0: ffff888078636e08 (&sb->s_type->i_mutex_key#9){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:815 [inline]
- #0: ffff888078636e08 (&sb->s_type->i_mutex_key#9){+.+.}-{3:3}, at: __sock_release net/socket.c:658 [inline]
- #0: ffff888078636e08 (&sb->s_type->i_mutex_key#9){+.+.}-{3:3}, at: sock_close+0x90/0x240 net/socket.c:1427
- #1: ffffffff8e93d478 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:329 [inline]
- #1: ffffffff8e93d478 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x451/0x830 kernel/rcu/tree_exp.h:976
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.11.0-syzkaller-10622-gaa486552a110 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
- watchdog+0xff4/0x1040 kernel/hung_task.c:379
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 5600 Comm: bch-reclaim/loo Not tainted 6.11.0-syzkaller-10622-gaa486552a110 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
-RIP: 0010:check_wait_context kernel/locking/lockdep.c:4865 [inline]
-RIP: 0010:__lock_acquire+0x974/0x2050 kernel/locking/lockdep.c:5149
-Code: 40 84 ed 74 32 0f b6 44 24 08 40 0f b6 cd 40 38 e8 0f 42 c8 89 4c 24 08 48 81 c3 c6 00 00 00 48 89 d8 48 c1 e8 03 0f b6 04 10 <84> c0 0f 85 a8 00 00 00 80 3b 02 74 31 49 ff c6 48 8b 44 24 38 0f
-RSP: 0018:ffffc90004167490 EFLAGS: 00000807
-RAX: 0000000000000000 RBX: ffffffff93c78b66 RCX: 0000000000000003
-RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffffffff942358f8
-RBP: 0000000000000003 R08: ffffffff942358ff R09: 1ffffffff2846b1f
-R10: dffffc0000000000 R11: fffffbfff2846b20 R12: 0000000000000000
-R13: ffff88802975a900 R14: 0000000000000000 R15: ffff88802975a900
-FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2502490000 CR3: 0000000067a02000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5822
- __mutex_lock_common kernel/locking/mutex.c:608 [inline]
- __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
- __bch2_next_write_buffer_flush_journal_buf+0x60/0x2a0 fs/bcachefs/journal.c:870
- bch2_next_write_buffer_flush_journal_buf+0xa3/0x1b0 fs/bcachefs/journal.c:904
- fetch_wb_keys_from_journal fs/bcachefs/btree_write_buffer.c:486 [inline]
- btree_write_buffer_flush_seq+0x18c/0x1bc0 fs/bcachefs/btree_write_buffer.c:503
- bch2_btree_write_buffer_journal_flush+0x4e/0x80 fs/bcachefs/btree_write_buffer.c:525
- journal_flush_pins+0x5f7/0xb20 fs/bcachefs/journal_reclaim.c:565
- __bch2_journal_reclaim+0x789/0xdc0 fs/bcachefs/journal_reclaim.c:698
- bch2_journal_reclaim_thread+0x174/0x560 fs/bcachefs/journal_reclaim.c:740
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
+On 26 18:09:57, Thorsten Blum wrote:
+> On 26. Sep 2024, at 17:28, Thorsten Blum <thorsten.blum@toblux.com> wrote:
+> > On 26. Sep 2024, at 17:14, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
+> >> 
+> >> Hi Kent,
+> >> 
+> >> found a strange regression in the patch set for 6.12.
+> >> 
+> >> First bad commit is: 86e92eeeb23741a072fe7532db663250ff2e726a
+> >> bcachefs: Annotate struct bch_xattr with __counted_by()
+> >> 
+> >> When compiling with clang 18.1.8 (also with latest llvm main branch) and
+> >> CONFIG_FORTIFY_SOURCE=y my rootfs does not mount because there is an erroneous
+> >> detection of a buffer overflow.
+> >> 
+> >> The __counted_by attribute is supposed to be supported starting with gcc 15,
+> >> not sure if it is implemented yet so I haven't tested with gcc trunk yet.
+> >> 
+> >> Here's the relevant section of dmesg:
+> >> 
+> >> [    6.248736] bcachefs (nvme1n1p2): starting version 1.12: rebalance_work_acct_fix
+> >> [    6.248744] bcachefs (nvme1n1p2): recovering from clean shutdown, journal seq 1305969
+> >> [    6.252374] ------------[ cut here ]------------
+> >> [    6.252375] memchr: detected buffer overflow: 12 byte read of buffer size 0
+> >> [    6.252379] WARNING: CPU: 18 PID: 511 at lib/string_helpers.c:1033 __fortify_report+0x45/0x50
+> >> [    6.252383] Modules linked in: bcachefs lz4hc_compress lz4_compress hid_generic usbhid btrfs crct10dif_pclmul libcrc32c crc32_pclmul crc32c_generic polyval_clmulni crc32c_intel polyval_generic raid6_pq ghash_clmulni_intel xor sha512_ssse3 sha256_ssse3 sha1_ssse3 aesni_intel gf128mul nvme crypto_simd ccp xhci_pci cryptd sp5100_tco xhci_pci_renesas nvme_core nvme_auth video wmi ip6_tables ip_tables x_tables i2c_dev
+> >> [    6.252404] CPU: 18 UID: 0 PID: 511 Comm: mount Not tainted 6.11.0-10065-g6fa6588e5964 #98 d8e0beb515d91b387aa60970de7203f35ddd182c
+> >> [    6.252406] Hardware name: Micro-Star International Co., Ltd. MS-7D78/PRO B650-P WIFI (MS-7D78), BIOS 1.C0 02/06/2024
+> >> [    6.252407] RIP: 0010:__fortify_report+0x45/0x50
+> >> [    6.252409] Code: 48 8b 34 c5 30 92 21 87 40 f6 c7 01 48 c7 c0 75 1b 0a 87 48 c7 c1 e1 93 07 87 48 0f 44 c8 48 c7 c7 ef 03 10 87 e8 0b c2 9b ff <0f> 0b e9 cf 5d 9e 00 cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90
+> >> [    6.252410] RSP: 0018:ffffbb3d03aff350 EFLAGS: 00010246
+> >> [    6.252412] RAX: 4ce590fb7c372800 RBX: ffff98d559a400e8 RCX: 0000000000000027
+> >> [    6.252413] RDX: 0000000000000002 RSI: 00000000ffffdfff RDI: ffff98e43db21a08
+> >> [    6.252414] RBP: ffff98d559a400d0 R08: 0000000000001fff R09: ffff98e47ddcd000
+> >> [    6.252415] R10: 0000000000005ffd R11: 0000000000000004 R12: ffff98d559a40000
+> >> [    6.252416] R13: ffff98d54abf1320 R14: ffffbb3d03aff430 R15: 0000000000000000
+> >> [    6.252417] FS:  00007efc82117800(0000) GS:ffff98e43db00000(0000) knlGS:0000000000000000
+> >> [    6.252418] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> [    6.252419] CR2: 000055d96658ea80 CR3: 000000010a12c000 CR4: 0000000000f50ef0
+> >> [    6.252420] PKRU: 55555554
+> >> [    6.252421] Call Trace:
+> >> [    6.252423]  <TASK>
+> >> [    6.252425]  ? __warn+0xd5/0x1d0
+> >> [    6.252427]  ? __fortify_report+0x45/0x50
+> >> [    6.252429]  ? report_bug+0x144/0x1f0
+> >> [    6.252431]  ? __fortify_report+0x45/0x50
+> >> [    6.252433]  ? handle_bug+0x6a/0x90
+> >> [    6.252435]  ? exc_invalid_op+0x1a/0x50
+> >> [    6.252436]  ? asm_exc_invalid_op+0x1a/0x20
+> >> [    6.252440]  ? __fortify_report+0x45/0x50
+> >> [    6.252441]  __fortify_panic+0x9/0x10
+> >> [    6.252443]  bch2_xattr_validate+0x13b/0x140 [bcachefs 8361179bbfcc59e669df38aec976f02d7211a659]
+> >> [    6.252463]  bch2_btree_node_read_done+0x125a/0x17a0 [bcachefs 8361179bbfcc59e669df38aec976f02d7211a659]
+> >> [    6.252482]  btree_node_read_work+0x202/0x4a0 [bcachefs 8361179bbfcc59e669df38aec976f02d7211a659]
+> >> [    6.252499]  bch2_btree_node_read+0xa8d/0xb20 [bcachefs 8361179bbfcc59e669df38aec976f02d7211a659]
+> >> [    6.252514]  ? srso_alias_return_thunk+0x5/0xfbef5
+> >> [    6.252515]  ? pcpu_alloc_noprof+0x741/0xb50
+> >> [    6.252517]  ? srso_alias_return_thunk+0x5/0xfbef5
+> >> [    6.252519]  ? time_stats_update_one+0x75/0x1f0 [bcachefs 8361179bbfcc59e669df38aec976f02d7211a659]
+> >> 
+> >> ...
+> >> 
+> >> 
+> >> The memchr in question is at:
+> >> https://github.com/torvalds/linux/blob/11a299a7933e03c83818b431e6a1c53ad387423d/fs/bcachefs/xattr.c#L99
+> >> 
+> >> There is not actually a buffer overflow here, I checked with gdb that
+> >> xattr.v->x_name does actually contain a string of the correct length and
+> >> xattr.v->x_name_len contains the correct length and should be used to determine
+> >> the length when memchr uses __struct_size for bounds-checking due to the
+> >> __counted_by annotation.
+> >> 
+> >> I'm at the point where I think this is probably a bug in clang. I have a patch
+> >> that does fix (more like bandaid) the problem and adds some print statements:
+> >> 
+> >> --
+> >> diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
+> >> index 56c8d3fe55a4..8d7e749b7dda 100644
+> >> --- a/fs/bcachefs/xattr.c
+> >> +++ b/fs/bcachefs/xattr.c @@ -74,6 +74,7 @@ int bch2_xattr_validate(struct bch_fs *c, struct bkey_s_c k,
+> >>      enum bch_validate_flags flags)
+> >> {
+> >> struct bkey_s_c_xattr xattr = bkey_s_c_to_xattr(k);
+> >> + const struct bch_xattr *v = (void *)k.v;
+> >> unsigned val_u64s = xattr_val_u64s(xattr.v->x_name_len,
+> >>  le16_to_cpu(xattr.v->x_val_len));
+> >> int ret = 0;
+> >> @@ -94,9 +95,12 @@ int bch2_xattr_validate(struct bch_fs *c, struct bkey_s_c k,
+> >> 
+> >> bkey_fsck_err_on(!bch2_xattr_type_to_handler(xattr.v->x_type),
+> >> c, xattr_invalid_type,
+> >> - "invalid type (%u)", xattr.v->x_type);
+> >> + "invalid type (%u)", v->x_type);
+> >> 
+> >> - bkey_fsck_err_on(memchr(xattr.v->x_name, '\0', xattr.v->x_name_len),
+> >> + pr_info("x_name_len: %d", v->x_name_len);
+> >> + pr_info("__struct_size(x_name): %ld", __struct_size(v->x_name));
+> >> + pr_info("__struct_size(x_name): %ld", __struct_size(xattr.v->x_name));
+> >> + bkey_fsck_err_on(memchr(v->x_name, '\0', v->x_name_len),
+> >> c, xattr_name_invalid_chars,
+> >> "xattr name has invalid characters");
+> >> fsck_err:
+> >> --
+> >> 
+> >> 
+> >> Making memchr access via a pointer created with
+> >> const struct bch_xattr *v = (void *)k.v fixes it. From the print statements I
+> >> can see that __struct_size(xattr.v->x_name) incorrectly returns 0, while
+> >> __struct_size(v->x_name) correctly returns 10 in this case (the value of
+> >> x_name_len).
+> >> 
+> >> The generated assembly illustrates what is going wrong. Below is an excerpt
+> >> of the assembly clang generated for the bch2_xattr_validate function:
+> >> 
+> >> mov r13d, ecx
+> >> mov r15, rdi
+> >> mov r14, rsi
+> >> mov rdi, offset .L.str.3
+> >> mov rsi, offset .L__func__.bch2_xattr_validate
+> >> mov rbx, rdx
+> >> mov edx, eax
+> >> call _printk
+> >> movzx edx, byte ptr [rbx + 1]
+> >> mov rdi, offset .L.str.4
+> >> mov rsi, offset .L__func__.bch2_xattr_validate
+> >> call _printk
+> >> movzx edx, bh
+> >> mov rdi, offset .L.str.4
+> >> mov rsi, offset .L__func__.bch2_xattr_validate
+> >> call _printk
+> >> lea rdi, [rbx + 4]
+> >> mov r12, rbx
+> >> movzx edx, byte ptr [rbx + 1]
+> >> xor ebx, ebx
+> >> xor esi, esi
+> >> call memchr
+> >> 
+> >> At the start of this rdx contains k.v (and is moved into rbx). The three calls
+> >> to printk are the ones you can see in my patch. You can see that for the
+> >> print that uses __struct_size(v->x_name) the compiler correctly uses
+> >> movzx edx, byte ptr [rbx + 1]
+> >> to load x_name_len into edx.
+> >> 
+> >> For the printk call that uses __struct_size(xattr.v->x_name) however the
+> >> compiler uses
+> >> movzx edx, bh
+> >> So it will print the high 8 bits of the lower 16 bits (second least
+> >> significant byte) of the memory address of xattr.v->x_type. This is obviously
+> >> completely wrong.
+> >> 
+> >> It is then doing the correct call of memchr because this is using my patch.
+> >> Without my patch it would be doing the same thing for the call to memchr where
+> >> it uses the second least significant byte of the memory address of x_type as the
+> >> length used for the bounds-check.
+> >> 
+> >> 
+> >> 
+> >> The LLVM IR also shows the same problem:
+> >> 
+> >> define internal zeroext i1 @xattr_cmp_key(ptr nocapture readnone %0, ptr %1, ptr nocapture noundef readonly %2) #0 align 16 {
+> >> [...]
+> >> %51 = ptrtoint ptr %2 to i64
+> >> %52 = lshr i64 %51, 8
+> >> %53 = and i64 %52, 255
+> >> 
+> >> This is the IR for the incorrect behavior. It simply converts the pointer to an
+> >> int, shifts right by 8 bits, then and with 0xFF. If it did a load (to i64)
+> >> instead of ptrtoint this would actually work, as the second least significant
+> >> bit of an i64 loaded from that memory address does contain the value of
+> >> x_name_len. It's as if clang forgot to dereference a pointer here.
+> >> 
+> >> Correct IR does this (for the other printk invocation):
+> >> 
+> >> define internal zeroext i1 @xattr_cmp_key(ptr nocapture readnone %0, ptr %1, ptr nocapture noundef readonly %2) #0 align 16 {
+> >> [...]
+> >> %4 = getelementptr inbounds %struct.bch_xattr, ptr %1, i64 0, i32 1
+> >> %5 = load i8, ptr %4, align 8
+> >> [...]
+> >> %48 = load i8, ptr %5, align 4
+> >> %49 = zext i8 %48 to i64
+> >> 
+> >> Best Regards
+> >> Jan
+> > 
+> > I suspect it's the same Clang __bdos() "bug" as in [1] and [2].
+> > 
+> > [1] https://lore.kernel.org/linux-kernel/3D0816D1-0807-4D37-8D5F-3C55CA910FAA@linux.dev/
+> > [2] https://lore.kernel.org/all/20240913164630.GA4091534@thelio-3990X/
+> 
+> Could you try this and see if it resolves the problem?
+> 
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 1a957ea2f4fe..b09759f31789 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -413,7 +413,7 @@ struct ftrace_likely_data {
+>   * When the size of an allocated object is needed, use the best available
+>   * mechanism to find it. (For cases where sizeof() cannot be used.)
+>   */
+> -#if __has_builtin(__builtin_dynamic_object_size)
+> +#if __has_builtin(__builtin_dynamic_object_size) && !defined(__clang__)
+>  #define __struct_size(p)	__builtin_dynamic_object_size(p, 0)
+>  #define __member_size(p)	__builtin_dynamic_object_size(p, 1)
+>  #else
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Alright, figured out why this fix doesn't work. The function signature
+of memchr is:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+void *memchr(const void * const POS0 p, int c, __kernel_size_t size)
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+The POS0 is the culprit. It's defined as __pass_object_size(0), which
+leads to the call to __builtin_object_size being upgraded to
+__builtin_dynamic_object_size.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+So to make this work the POS0 definition needs the same
+!defined(__clang__) on it. There's also two more
+__has_builtin(__builtin_dynamic_object_size) checks in
+lib/fortify_kunit.c. But they have no impact.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Now the fix works:
 
-If you want to undo deduplication, reply with:
-#syz undup
+
+--
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index f14c275950b5..43ac0bca485d 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -413,7 +413,7 @@ struct ftrace_likely_data {
+  * When the size of an allocated object is needed, use the best available
+  * mechanism to find it. (For cases where sizeof() cannot be used.)
+  */
+-#if __has_builtin(__builtin_dynamic_object_size)
++#if __has_builtin(__builtin_dynamic_object_size) && !defined(__clang__)
+ #define __struct_size(p)	__builtin_dynamic_object_size(p, 0)
+ #define __member_size(p)	__builtin_dynamic_object_size(p, 1)
+ #else
+diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
+index 0d99bf11d260..7235655d9b80 100644
+--- a/include/linux/fortify-string.h
++++ b/include/linux/fortify-string.h
+@@ -148,7 +148,7 @@ extern char *__underlying_strncpy(char *p, const char *q, __kernel_size_t size)
+  * size, rather than struct size), but there remain some stragglers using
+  * type 0 that will be converted in the future.
+  */
+-#if __has_builtin(__builtin_dynamic_object_size)
++#if __has_builtin(__builtin_dynamic_object_size) && !defined(__clang__)
+ #define POS			__pass_dynamic_object_size(1)
+ #define POS0			__pass_dynamic_object_size(0)
+ #else
