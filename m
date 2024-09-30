@@ -1,113 +1,87 @@
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87FF91F95A;
-	Mon, 30 Sep 2024 10:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF0A2D613
+	for <linux-bcachefs@vger.kernel.org>; Mon, 30 Sep 2024 10:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727690701; cv=none; b=n5mxSMjAGdHjJPt1clvoQ8GBfjwPpXDQnpBozEt40pj/MX6MF0g+A1ni+JXp9Fr5mlYL4KddDVIEBwISiY4zf0+OG8Qhe2Fo7IjqjrkuC5dgqceCpOUu1a6a4tQVGg8LerxYQpUJAL3o5QOOJt6grkKolYCQ15UKkkqDQiZ5eJc=
+	t=1727691123; cv=none; b=JGmvj0TuvN9iHaMD3q7QALOCYdo3kEv9kBBd0RSApWBLVov/d5KydxVCnpLio9UQl+rnjz/sf2Spgoj49EdTeiqJGT1lqWkEvKWUOs+luKiToV06H6xtgbSgGiG3HO7x/1+F22eZNZM9oO1l0kGx1+oF74ByLClO9CdRrwezanM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727690701; c=relaxed/simple;
-	bh=ka5HXDF6ap/w3nzyZz2ai7ZzSVirj0C57Rf7qLccddg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rc9+H8YkqHC+5wMKGwq7HOLn4xwEBelf3tT4Jp1y9o7mkRm90qlIEzkwIgfx1fb1iMNGC+SNFHDMK68kCvtR53Dlyt8dqsS6RTti/Qn8pbREUmQz5aet6BKhCGbgsB6gu5/od9a7S+hJ5MPl++qjTgaWza3bST4TXyOXQaia3fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dff1ccdc17bso4083868276.0;
-        Mon, 30 Sep 2024 03:04:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727690697; x=1728295497;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bwL7nI0rxd6T20AR3+geyPsofbKfCMhK1gUqxYpKa84=;
-        b=jZj2IBCH1lrXYV4wCNTBGYMyLZ9jXcpfrUBk8llbcAF+TBA9nBHxEt7LhGadk2/tJO
-         +OKGYSTOndMXFrKGjDohJLG/U+WKPVyVQUHYK/hETjZ1HyQ5O1XTiaWUTBhvlgHEpDhc
-         ee0WEToBhyGoEwL8Cf0jnuVURQqYBql3mT0yn+M8sNaYLICxJcTBiTWnYkkq3J0HrkNb
-         TbvIXpadjrDoxv3tpN9srySgRtwO5iPaG9Lg4qHwRQe4J2MPgh1uJ94KxqFzo0dKEJcu
-         ItVzUHCApCWgnOZHIsqCkvDSDLgYsnEz2IrnNYgz+urW1edxv96ogYwDNVdVQ7owlXjj
-         sDvA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFN15hesH3jtQHW13TmOSDlGmOYd35GfpNGvGhRyuOCN+AUocdO3em5OXwSyyfHD6+n4EWQg6mAFwbHI2E@vger.kernel.org, AJvYcCVtqBLXXxbD/68dUZT0DgVLb7gc6MG+XFXuYgdJCQs46OcTTgyCW7g+eqJcRPkyFRmhjxsG3ASLZ2WwqldrcQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqgGtjSuOUHKxv9DZeGsjQFNMXRNPuby9HNzkPwgMs+4+CvxjG
-	5LAITSffLY8uHxGGc+a1jQHZocs564Ilystib3JoL3rArn1ST+ISO5SxhXhW
-X-Google-Smtp-Source: AGHT+IFQbSOVMCBQwuspGK0NiCQzUnED3hg9e4o5HKA5SG9bnn+mxlC/4/TaaDIUMDYak4beu+wYyQ==
-X-Received: by 2002:a05:690c:6612:b0:65f:dfd9:b672 with SMTP id 00721157ae682-6e24754aecemr86084037b3.11.1727690697135;
-        Mon, 30 Sep 2024 03:04:57 -0700 (PDT)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e245308923sm13145267b3.34.2024.09.30.03.04.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Sep 2024 03:04:56 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6db836c6bd7so38928507b3.3;
-        Mon, 30 Sep 2024 03:04:55 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW31Bu8wEJt2KmMUCj5FEduwZMahZwKdFnPq18NqiMNG//QNQ4z3tygEq2hQA6Lm2Cb2gMT0uoh6rXpFDGPMA==@vger.kernel.org, AJvYcCXg9xyzOt+4J8UPtT2Bc1VCK0cBYXLxha1JHg/M1pGVRwEqlqjMh6zTni4nfprAu7fZYifx90i454qKRwrI@vger.kernel.org
-X-Received: by 2002:a05:690c:6612:b0:65f:dfd9:b672 with SMTP id
- 00721157ae682-6e24754aecemr86083517b3.11.1727690695768; Mon, 30 Sep 2024
- 03:04:55 -0700 (PDT)
+	s=arc-20240116; t=1727691123; c=relaxed/simple;
+	bh=mvMp1cfrgRErkBTHgkQd06z417VNMxn4Pp6PsZR9Ink=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IHsOsh4Sch4P6LZY3erytTsGK7l9uBtpoWHV3o5PddExMdMxYXNXgIbeoEkCAennrd6AiVeDMe4VEahhNPnJSjTqrI6Klw2vVh+o/L8/+v+PobD4M/uwk/TkC+czpXiO38gEOUQU8OzHknqyHOvvF1ZrAvA6m9CwKkU2/49xY5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kxn1lB80; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kxn1lB80"
+Date: Mon, 30 Sep 2024 06:11:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727691117;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lwjQXfaoEArCHX8Me75J2cpE/c/nfg9+6nxbmi9kJJM=;
+	b=kxn1lB80JmZyc2+0HcxV6lVI2djPnTAeVTmVem3WJcr1kc3jlF9qEj7uBPk6i/M/M3nJIx
+	uKaa2Jt30LjNGP39C3Q62A3UG6spoRoIdAOhxbSkuuVhiDP496X3X8mq5iSfxczHKJwRWf
+	KFJd9L43/Oz30EX2e1ukLknHe3e7qq0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] bcachefs: rename version -> bversion for big endian
+ builds
+Message-ID: <obpogbufu5awsn2a6olh2ondrgwl7bgdowjcpv6jcpm2ey4s5h@obcml2w3csap>
+References: <20240930003902.4127294-1-linux@roeck-us.net>
+ <CAMuHMdWcPpBgsK0r0U=k8NyjTjUTwBTLe6Bg_ORD2zmSNoRgJA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240930003902.4127294-1-linux@roeck-us.net>
-In-Reply-To: <20240930003902.4127294-1-linux@roeck-us.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 30 Sep 2024 12:04:42 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWcPpBgsK0r0U=k8NyjTjUTwBTLe6Bg_ORD2zmSNoRgJA@mail.gmail.com>
-Message-ID: <CAMuHMdWcPpBgsK0r0U=k8NyjTjUTwBTLe6Bg_ORD2zmSNoRgJA@mail.gmail.com>
-Subject: Re: [PATCH] bcachefs: rename version -> bversion for big endian builds
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdWcPpBgsK0r0U=k8NyjTjUTwBTLe6Bg_ORD2zmSNoRgJA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Sep 30, 2024 at 2:39=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
-wrote:
-> Builds on big endian systems fail as follows.
->
-> fs/bcachefs/bkey.h: In function 'bch2_bkey_format_add_key':
-> fs/bcachefs/bkey.h:557:41: error:
->         'const struct bkey' has no member named 'bversion'
->
-> The original commit only renamed the variable for little endian builds.
-> Rename it for big endian builds as well to fix the problem.
->
-> Fixes: cf49f8a8c277 ("bcachefs: rename version -> bversion")
+On Mon, Sep 30, 2024 at 12:04:42PM GMT, Geert Uytterhoeven wrote:
+> On Mon, Sep 30, 2024 at 2:39 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> > Builds on big endian systems fail as follows.
+> >
+> > fs/bcachefs/bkey.h: In function 'bch2_bkey_format_add_key':
+> > fs/bcachefs/bkey.h:557:41: error:
+> >         'const struct bkey' has no member named 'bversion'
+> >
+> > The original commit only renamed the variable for little endian builds.
+> > Rename it for big endian builds as well to fix the problem.
+> >
+> > Fixes: cf49f8a8c277 ("bcachefs: rename version -> bversion")
+> 
+> Which is (again) not found on any mailing list, and has never been in
+> linux-next before it hit upstream...
+> 
+> > Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> > --- a/fs/bcachefs/bcachefs_format.h
+> > +++ b/fs/bcachefs/bcachefs_format.h
+> > @@ -223,7 +223,7 @@ struct bkey {
+> >  #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+> >         struct bpos     p;
+> >         __u32           size;           /* extent size, in sectors */
+> > -       struct bversion version;
+> > +       struct bversion bversion;
+> >
+> >         __u8            pad[1];
+> >  #endif
+> 
+> BTW, how does this work when accessing a non-native file system?
+> Didn't we stop doing bi-endian file systems in v2.1.10, when ext2 was
+> converted from a bi-endian to a little-endian file system?
 
-Which is (again) not found on any mailing list, and has never been in
-linux-next before it hit upstream...
-
-> Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-
-> --- a/fs/bcachefs/bcachefs_format.h
-> +++ b/fs/bcachefs/bcachefs_format.h
-> @@ -223,7 +223,7 @@ struct bkey {
->  #elif __BYTE_ORDER__ =3D=3D __ORDER_BIG_ENDIAN__
->         struct bpos     p;
->         __u32           size;           /* extent size, in sectors */
-> -       struct bversion version;
-> +       struct bversion bversion;
->
->         __u8            pad[1];
->  #endif
-
-BTW, how does this work when accessing a non-native file system?
-Didn't we stop doing bi-endian file systems in v2.1.10, when ext2 was
-converted from a bi-endian to a little-endian file system?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+we byte swab if necessary
