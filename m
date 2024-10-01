@@ -1,63 +1,92 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D8A47F53;
-	Mon, 30 Sep 2024 20:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556331BDABB
+	for <linux-bcachefs@vger.kernel.org>; Tue,  1 Oct 2024 07:56:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727727695; cv=none; b=YjlRtp5nCtuAy4jVMV00O/0C6HOlf9eF1NObS2OcGws1MLqXdT0WNDWfCXTtoJ46hbwp1NcWZuDLE2UrNdv3GXmQHQ4dXxR00cTPzu9YetD1uCNUZqmsIptbd5VrAY4fKon2WAPbNBSy692yPtGEXkii752zr/Ipuzw0iFKjt8w=
+	t=1727769417; cv=none; b=nh/yrzx6DmAbwBxGKyTidOmPILtahaBzg0FXMiDqKrNsRRq8FrEA4UwiXec1D+0KbokmXX47Wc3iOnhEU1qMr+0rrJB8izVIMHoYsDdmxqW2duDwCIIQpzzvsy9z7xinK6CLoafRfYwsjUTDqLqqZaI6Unea9o9M39sdQVkynVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727727695; c=relaxed/simple;
-	bh=M3d7GRd5Mrju/ZeF8INiV25mUxMIVvG1eA0gS06GfYk=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ON9EVGr+9YJRVFiCfzfGXWZEM+/v9qcaf4dFrpzURIfxkTgAgmvzo1OPCehUx+Ug1J8gx59gzDortEIl4CRXMD0ZpoO35cXVs5iMuGZDwruNAj1pENPDyVmFAUSagt26MURSbbn7q1WV4fNLncBhssJza+LxohuuzkLknERcF1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OeWou5Nz; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1727769417; c=relaxed/simple;
+	bh=hmIbj7+XZLgOhFGw4RWPf9oczxfFz+dePLL7WvINzf0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=IlzYinytM7AYCIVm73L4lkbydQtPGZ8yzfvWx8ymibH0+XsO7DZBQdOyVbu6GOYaO8hL8jZQIt9qcBxlcZ+j37czm/WLm6ELHl7KflJj+PauMoyLpxEXyIFount4ImD7Towc0pcAV05olc0G/VynkL/fTQebQJ1p81UxkteSF1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OUnzRH9p; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OeWou5Nz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7019EC4CEC7;
-	Mon, 30 Sep 2024 20:21:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727727694;
-	bh=M3d7GRd5Mrju/ZeF8INiV25mUxMIVvG1eA0gS06GfYk=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=OeWou5NzGEOuxhw42B9S0HurWPk6sH+DgDcOZsJQ1CWVEQTn8LtocCIZQiRuEGC/2
-	 6Tws7xp7yTBSIFblHy6KUi2CQ7f/DnR6+bmWXgoIOitZ4iNx3oZrgAKtr4sAxpDBk+
-	 p95tFUUn+ocMi/FujM400o5xgq6H1ZFOd1oTNjA2j1KTdtJZPrlLZNvr86aR50ltxq
-	 OjDxp8foL6yixE++mcJQhbRXCcpUm4DBCaaRFlaFv5RevKQ3/ufW4y7bVecHxpPnAb
-	 JG1Zs8QQj1pn2hsPJR4MUTTPyZmZRs+xAeYUyTp+dD80Eq+kq1IoP8OySZbKas+7xt
-	 CHCRi5K1xb1Cw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADE893804CB9;
-	Mon, 30 Sep 2024 20:21:38 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs big endian fixup
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <afdmrsibtwc655t55tnlysfbetlb57nrdmk3k2ke6o6aebssqh@3g3mhqsvaswx>
-References: <afdmrsibtwc655t55tnlysfbetlb57nrdmk3k2ke6o6aebssqh@3g3mhqsvaswx>
-X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <afdmrsibtwc655t55tnlysfbetlb57nrdmk3k2ke6o6aebssqh@3g3mhqsvaswx>
-X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-09-30
-X-PR-Tracked-Commit-Id: 2007d28ec0095c6db0a24fd8bb8fe280c65446cd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a5f24c795513ff098dc8e350e5733aec8796fbf8
-Message-Id: <172772769736.3918229.15606464507414950885.pr-tracker-bot@kernel.org>
-Date: Mon, 30 Sep 2024 20:21:37 +0000
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OUnzRH9p"
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a7a843bef98so753102666b.2
+        for <linux-bcachefs@vger.kernel.org>; Tue, 01 Oct 2024 00:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1727769413; x=1728374213; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dwcb6VuEvI+0FzELUSegKsWZkuaxWi+9GQQVFOMXlTc=;
+        b=OUnzRH9pWd+8K/S0kfzqN/Wqo+/gaBwyFHJJBfZOoez6A0Y+E6ifwWSRKZA09N7pbQ
+         cAspXxlFM5yQjzL1W2dFoIwNT6hMYQazdZB9H57wnHIwh/lyl4iSvWqcu5JVUZ7IdOM6
+         scL3DCrZgOIFzfr15xK5EB3U3JnWA5zf+Mq7oKrTCMMeoZ4sWrqRINUoskGQdhcY9Uk/
+         c3KkViNO13/nPmUSOzUDClzlT7zllFy0aEng8G0K2ZpVrBgtyUC+jVtrwYVOYjWNoSUO
+         Pe5aea+kehYrsQ6OeZkBA7G+ZV3P3O7wLmprsEv+qOCGuzy2mi9iwWKSkT0fMkwFNjo2
+         fX8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727769413; x=1728374213;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dwcb6VuEvI+0FzELUSegKsWZkuaxWi+9GQQVFOMXlTc=;
+        b=KEoporFpX7Fja59K7iKIBgB++Ad0hPWeCQW30TlbXg/d+YVEuD4kvvuvmutBzCzjo6
+         CscuU+Iza/ETVprSAKnm4N1KIjpMAGRcSy86r9yVpbSY0ZTSIWLjvmysBYMt5OZZmdKg
+         HrqszsFajzULfAeu/MOyKcVF8/UsMNzLRVMrSurWbaKDHC1SaWpdl4iL1c6D6gbfFick
+         x9ppKD3LrstnXKtUyL/9kI0iM5eyQxYpf/ht0oihhf9MGbJk4+vB5EzozOZu3Xs00Sle
+         5z6vC8A7j7laUJQTUhAYT9wMn2q2nmxGzj7aAesCEjJuQx4VV+Wy3IaGQw5kt59sCwfN
+         w29w==
+X-Gm-Message-State: AOJu0Yz+IIwvwbXotMlCe/kD70t9vLsZ3dn2O2qWaXebrXuRo+Dpu/yO
+	6Cz5CF7cPaFy5AIU6jJUTAC52ZdO+UPDLtSbNuoFxWheMLmFEuR7PMUcBYYgQL0=
+X-Google-Smtp-Source: AGHT+IEJO48ZE282a9evyTP+1urVkdk/EVu0RYwlX0+WBPWlBPqMHrl7ErtBC39W+YorMTsptuQkjQ==
+X-Received: by 2002:a17:906:794f:b0:a80:f840:9004 with SMTP id a640c23a62f3a-a93c48eea6emr1581772666b.12.1727769413543;
+        Tue, 01 Oct 2024 00:56:53 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c27c5b45sm658859966b.49.2024.10.01.00.56.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Oct 2024 00:56:50 -0700 (PDT)
+Date: Tue, 1 Oct 2024 10:56:45 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
 To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: linux-bcachefs@vger.kernel.org
+Subject: [bug report] bcachefs: dirent_points_to_inode() now warns on mismatch
+Message-ID: <9a704bd8-d227-4663-b160-7265bc31e507@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The pull request you sent on Mon, 30 Sep 2024 00:59:51 -0400:
+Hello Kent Overstreet,
 
-> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-09-30
+Commit a6508079b1b6 ("bcachefs: dirent_points_to_inode() now warns on
+mismatch") from Sep 23, 2024 (linux-next), leads to the following
+Smatch static checker warning:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a5f24c795513ff098dc8e350e5733aec8796fbf8
+	fs/bcachefs/fsck.c:38 dirent_points_to_inode_nowarn()
+	warn: signedness bug returning '(-2157)'
 
-Thank you!
+fs/bcachefs/fsck.c
+    31 static bool dirent_points_to_inode_nowarn(struct bkey_s_c_dirent d,
+              ^^^^
+This is bool
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+    32                                    struct bch_inode_unpacked *inode)
+    33 {
+    34         if (d.v->d_type == DT_SUBVOL
+    35             ? le32_to_cpu(d.v->d_child_subvol)        == inode->bi_subvol
+    36             : le64_to_cpu(d.v->d_inum)                == inode->bi_inum)
+    37                 return 0;
+--> 38         return -BCH_ERR_ENOENT_dirent_doesnt_match_inode;
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    39 }
+
+regards,
+dan carpenter
