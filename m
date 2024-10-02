@@ -1,151 +1,99 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463621CF7A2
-	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Oct 2024 12:35:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65579433A9
+	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Oct 2024 19:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727872504; cv=none; b=mU2c06jTpkP6ppNXUa+Ha5mgJ0ayYYQURVTS1m4oR7iI6Fh99ElcFHSuKAuKkrCA0f8uL7Zb1zfgRhks9CA/qCRs5mFRKtIErQcldC3KonfZhk2ib5FCAq7McrX7HHM09cTaWHpZTWFgtnCu+RsSlNRMABobpJ+ynEVZUonabgA=
+	t=1727895999; cv=none; b=EQMCZKy0gE4cCIsdDDTbg5XSBqeunIg9BPwYtXuXzTtwDSV9XlfaGJG+gICokbvLwZIJfqKSdDeh3v47EEKxnhIen89aDEJCRuLRtgETcIEoihwF5izP2GhJ2xPbYfUrs1K8a3f6D2rQZoMfKP0LJFtOGYHtscADslnb0Pe/oSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727872504; c=relaxed/simple;
-	bh=iIykYlQAQBQN7DtszllePlXcuEVlfgXmcBsdIhggSW4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bbnrur6yVQIVVkYooyabFgx+ZRs/ctg1fogcLuDGi339wL+rzzP+mfInbaHW4KAMmH1H2SznzdYMilabvcOG9Iw6aaarHMhzMSNG8b/R/lOHVpNrvAHI85CVSXSY1fvkWOrcUJozyfHEZ3RaKQ5iWVJqo9wHqjDS+as8PHFrvrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=AhZ2kDle; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+	s=arc-20240116; t=1727895999; c=relaxed/simple;
+	bh=2jCsnchFiJDKPsjmiRia0b1POb0p41oXVSJ98nmj3k8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Qc4vHfN3m1fnqas6oP9dwfnz5ORMBIiJk/hRF4BMFnDbtcwBLCvGbOMCpuGqat0XUEV0+htAZyVAzQDPe9jl9q59ws5JD69Zx3Fijxl0Ntu3WeL+5N5lSsd+Tod9cnR9t2YNOkzG9FiKqRSgTedBUlnlkaJ1bTIyDPxL+VWqVWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DuUi0bWe; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="AhZ2kDle"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20b01da232aso6034555ad.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 02 Oct 2024 05:35:03 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DuUi0bWe"
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-71788bfe60eso167235b3a.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 02 Oct 2024 12:06:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1727872502; x=1728477302; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6E9XJDJSIE/rmejLoIrGrThAVKnoTdwPvPdz5g1SSNA=;
-        b=AhZ2kDlecWSbMoIMf2t5ByyrggMIJMtUIcYKq3wcF1yN+sRNsvm7sRBvyszLHW9cSn
-         bj4MfIsDwRlGaP3LLfQfqFJkfHssrwXnw3BEPBtiKR1YJh1a5iJHZ4dqfkM/QNr15BXM
-         dXOqp4qiO7Q92dOj1+r9EERP1N2WRwyH8OwyfocrrfA/iaeH/ymJwC9UiYJCYarHJD0j
-         0d+r8NlJnb9psuY2ZgJhrOvbRWEBZJyj2eUvtgq802CoKRVW1s+miedvAFOG6J1LBZpa
-         274Zh1yax9tjiQJ4lNEge0IfOJ3O03ix7LOh7p4qnrsYzahUEMRUad0NVOgIRtotGAxV
-         kBRw==
+        d=gmail.com; s=20230601; t=1727895998; x=1728500798; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EVpys+9PmDd+oxUXzYz6ugE6lNzdqGIoh29HNno5An8=;
+        b=DuUi0bWetwsfJ9TGUTBIC4jjFb7T5KQ3WDfy0YKP8hXJaIrPiuNf/fCiBxTVYAGybB
+         Dn+95/XmzFBUiilhh2DQbquVWc3W54jrGoUYRaXBqbPfJzUA2VSjWgOu9PffzFcudI82
+         xe1EOsi4PQY7tjZ2ZLbNHaLo3uJibdbLZtikrDdcas9isPD3yWEqMN2Vc13MgJGXEj+e
+         EeSzEUjkKf3WrqffBzwAaRyq912pLY5Dwl90MAk5HYy9q+GlmZIVX18lNHhDqzB62Rvb
+         dpvhiX3TgUHUfP6N/eSiXnCW8DBqlKpJX4mQ+WoOi04nekBQycv+URX6B6BbV5tHKPHK
+         athQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727872502; x=1728477302;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6E9XJDJSIE/rmejLoIrGrThAVKnoTdwPvPdz5g1SSNA=;
-        b=M7bK6px1tr1w83KVMRRbUv6ncaZpYROhVn2qPtsnDMaStdA3f/O/NwF4uBFmAIBCM3
-         HOCtDe5fh3G05eTs+b9WIoQ2jAkBoK6Hdx17EIlsCPWoduKU010pVqEv2W9OZPxBl8KE
-         qIi9w660lYVTCQhyzHATo3/hEJx8Cz3GqM9cVHb5kGYFkY40JD8xFBwIVwRFJ44ixefe
-         KAgaDLuqEca9eWmn/fYOkgs3/ecjHLoZOVCkudknW/zINlADoUMaqDRHAAQ89vHhlQIt
-         j2qVwLDREx9XUSXnY5ku/GAa0W8eERn+K3yydjN3r9uHRmNqU6iKcgx3CynIJpBp5G/d
-         REcA==
-X-Forwarded-Encrypted: i=1; AJvYcCXz2pfIlS4KoxYeP2W/jUgG0bzT2eOVUP0IFBOxh2nNonSutnt0ujHuxc3ZdKp4KxvtLgOwliCPtWjis2wZBQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzObwdT6dUworymwMJM58LJlMj/9F/eb4wFy0r/BEoDzneZdQ2i
-	gWe0QIQVbF9HWdks9KEPE7qDmCNpDpCRIqKXac/K9yeEM1pIoPROfWTfdRQN8Ew=
-X-Google-Smtp-Source: AGHT+IGRepjT6EONm519qNvFVatwdjtoHygVk65CVuxZwoZSUutpYOsWKPjw/omJyTOMx8u7eYBS2w==
-X-Received: by 2002:a17:903:184:b0:205:5d71:561e with SMTP id d9443c01a7336-20bc5bf1574mr44093105ad.26.1727872502452;
-        Wed, 02 Oct 2024 05:35:02 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-78-197.pa.nsw.optusnet.com.au. [49.179.78.197])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20b37e61b00sm83299965ad.275.2024.10.02.05.35.01
+        d=1e100.net; s=20230601; t=1727895998; x=1728500798;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EVpys+9PmDd+oxUXzYz6ugE6lNzdqGIoh29HNno5An8=;
+        b=smYddmFbvaexfOgTEFqpv23ixswe1nCkX0eFmaOXE6RkIuzUMecgl2cP5jV1qhF0lx
+         biI3Yg8U0LR4upcVzbN96PSXgMGOKLKsAwR2eVYlQu94+X7bffqiX1p7fSA6Iyv6Jrmw
+         jCf05r3pN9La5URFyJDqxsgtY3hMA0qHJ2idKo3XnIacv3tPNhEl4FNt+qk7rlcrZRXw
+         s+YxW5RQeMb3jRj/XFhDvAiLqP56vx9xKewns9wMybwjFl1HXQV6E4Ju6pFG+5WSCCx3
+         8xP4RAZ0P8RJ9Wp2+GG1HXduneHAZzNsNODlX5ZnKeEREyJvZfdMyN47mZ/DEQgvpvbd
+         w4Xg==
+X-Gm-Message-State: AOJu0YyNvPwTQY5ofyWkL2umC+dgVbepULv8i9zoQFjesUdnNAhWnql5
+	78nC7z/zjAeF5SwvKnNs+l33nJXha2xY0Un6rDQxOnQFH+HaQqDIsEhA0r1o
+X-Google-Smtp-Source: AGHT+IHB9CTbnvNvmjkoALpnIfc41bJOTSm7ByZ+KZtCFNU1f1jz9Su/Oq9/4X3l6lBWWNC4nYLqKA==
+X-Received: by 2002:a05:6a00:4fcb:b0:714:241d:a323 with SMTP id d2e1a72fcca58-71dc5d5102bmr6486894b3a.17.1727895997652;
+        Wed, 02 Oct 2024 12:06:37 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71b2649bed5sm10190692b3a.24.2024.10.02.12.06.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2024 05:35:01 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1svyZG-00CwWg-2I;
-	Wed, 02 Oct 2024 22:34:58 +1000
-Date: Wed, 2 Oct 2024 22:34:58 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
-	torvalds@linux-foundation.org
-Subject: Re: [RFC PATCH 0/7] vfs: improving inode cache iteration scalability
-Message-ID: <Zv098heGHOtGfw1R@dread.disaster.area>
-References: <20241002014017.3801899-1-david@fromorbit.com>
- <20241002-lethargisch-hypnose-fd06ae7a0977@brauner>
+        Wed, 02 Oct 2024 12:06:37 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH 1/4] bcachefs: Convert open-coded lock_graph_pop_all to helper
+Date: Thu,  3 Oct 2024 03:06:30 +0800
+Message-ID: <20241002190633.1454448-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241002-lethargisch-hypnose-fd06ae7a0977@brauner>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 02, 2024 at 12:00:01PM +0200, Christian Brauner wrote:
-> On Wed, Oct 02, 2024 at 11:33:17AM GMT, Dave Chinner wrote:
-> > What do people think of moving towards per-sb inode caching and
-> > traversal mechanisms like this?
-> 
-> Patches 1-4 are great cleanups that I would like us to merge even
-> independent of the rest.
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ fs/bcachefs/btree_locking.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Yes, they make it much easier to manage the iteration code.
-
-> I don't have big conceptual issues with the series otherwise. The only
-> thing that makes me a bit uneasy is that we are now providing an api
-> that may encourage filesystems to do their own inode caching even if
-> they don't really have a need for it just because it's there.  So really
-> a way that would've solved this issue generically would have been my
-> preference.
-
-Well, that's the problem, isn't it? :/
-
-There really isn't a good generic solution for global list access
-and management.  The dlist stuff kinda works, but it still has
-significant overhead and doesn't get rid of spinlock contention
-completely because of the lack of locality between list add and
-remove operations.
-
-i.e. dlist is optimised for low contention add operations (i.e.
-local to the CPU). However, removal is not a local operation - it
-almsot always happens on a different CPU to the add operation.
-Hence removal always pulls the list and lock away from the CPU that
-"owns" them, and hence there is still contention when inodes are
-streaming through memory. This causes enough overhead that dlist
-operations are still very visible in CPU profiles during scalability
-testing...
-
-XFS (and now bcachefs) have their own per-sb inode cache
-implementations, and hence for them the sb->s_inodes list is pure
-overhead.  If we restructure the generic inode cache infrastructure
-to also be per-sb (this suggestion from Linus was what lead me to
-this patch set), then they will also likely not need the
-sb->s_inodes list, too.
-
-That's the longer term "generic solution" to the sb->s_inodes list
-scalability problem (i.e. get rid of it!), but it's a much larger
-and longer term undertaking. Once we know what that new generic
-inode cache infrastructure looks like, we'll probably only want to
-be converting one filesystem at a time to the new infrastucture.
-
-We'll need infrastructure to allow alternative per-sb iteration
-mechanisms for such a conversion take place - the converted
-filesystems will likely call a generic ->iter_vfs_inodes()
-implementation based on the per-sb inode cache infrastructure rather
-than iterating sb->s_inodes. Eventually, we'll end up with that
-generic method replacing the sb->s_inodes iteration, we'll end up
-with only a couple of filesystems using the callout again.
-
-> But the reality is that xfs has been doing that private inode cache for
-> a long time and reading through 5/7 and 6/7 it clearly provides value
-> for xfs. So I find it hard to object to adding ->iter_vfs_inodes()
-> (Though I would like to s/iter_vfs_inodes/iter_inodes/g).
-
-I named it that way because, from my filesystem centric point of
-view, there is a very distinct separation between VFS and filesystem
-inodes. The VFS inode (struct inode) is a subset of the filesystem
-inode structure and, in XFS's case, a subset of the filesystem inode
-life cycle, too.
-
-i.e. this method should not iterate cached filesystem inodes that
-exist outside the VFS inode lifecycle or VFS visibility even though
-they may be present in the filesystem's internal inode cache.
-
--Dave.
+diff --git a/fs/bcachefs/btree_locking.c b/fs/bcachefs/btree_locking.c
+index 617478fd5351..50d9366d49bd 100644
+--- a/fs/bcachefs/btree_locking.c
++++ b/fs/bcachefs/btree_locking.c
+@@ -229,8 +229,7 @@ static noinline int break_cycle(struct lock_graph *g, struct printbuf *cycle)
+ 	ret = abort_lock(g, abort);
+ out:
+ 	if (ret)
+-		while (g->nr)
+-			lock_graph_up(g);
++		lock_graph_pop_all(g);
+ 	return ret;
+ }
+ 
+@@ -252,8 +251,7 @@ static int lock_graph_descend(struct lock_graph *g, struct btree_trans *trans,
+ 		if (orig_trans->lock_may_not_fail)
+ 			return 0;
+ 
+-		while (g->nr)
+-			lock_graph_up(g);
++		lock_graph_pop_all(g);
+ 
+ 		if (cycle)
+ 			return 0;
 -- 
-Dave Chinner
-david@fromorbit.com
+2.45.2
+
