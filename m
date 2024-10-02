@@ -1,149 +1,151 @@
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB7519D07D
-	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Oct 2024 10:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463621CF7A2
+	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Oct 2024 12:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727866469; cv=none; b=BuxFmJHTUZMwaZhBJNUIlio87Rep0pe0toUDyeRlHsfHrxLuQqXR3OeKVLCHGIatgLueEQ/Wm5NMbKQtxQ1KLwSD2D4ppHYjuyLyUMvLJyu2n8TaCEyCKlA3JxOuGn8PQ52ANGBXNf56wqeVxNqVje+SYY3VfRbSAvkz4KHLf4A=
+	t=1727872504; cv=none; b=mU2c06jTpkP6ppNXUa+Ha5mgJ0ayYYQURVTS1m4oR7iI6Fh99ElcFHSuKAuKkrCA0f8uL7Zb1zfgRhks9CA/qCRs5mFRKtIErQcldC3KonfZhk2ib5FCAq7McrX7HHM09cTaWHpZTWFgtnCu+RsSlNRMABobpJ+ynEVZUonabgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727866469; c=relaxed/simple;
-	bh=Jn2w8KbCtODWjc90Pe9cF1uEbew1QeRsgtJCVjrREZU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=s7jG7lp99MiLzs8AsHaXEsPO9iDfk+KZWCZpXz+6KW96F/CvinR1/lp9Nb49OgxAs999Wjl+EdmCV2KuQmL7bd/YIsDnc3rgcx38LfyHo7ot+TEPWRDrviMapkYU0Ph4QG4qwI9d0WyVonj8+EcQxQ56DBNvPnut78kNtAFG4r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a19534ac2fso97115595ab.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 02 Oct 2024 03:54:28 -0700 (PDT)
+	s=arc-20240116; t=1727872504; c=relaxed/simple;
+	bh=iIykYlQAQBQN7DtszllePlXcuEVlfgXmcBsdIhggSW4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bbnrur6yVQIVVkYooyabFgx+ZRs/ctg1fogcLuDGi339wL+rzzP+mfInbaHW4KAMmH1H2SznzdYMilabvcOG9Iw6aaarHMhzMSNG8b/R/lOHVpNrvAHI85CVSXSY1fvkWOrcUJozyfHEZ3RaKQ5iWVJqo9wHqjDS+as8PHFrvrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=AhZ2kDle; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="AhZ2kDle"
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20b01da232aso6034555ad.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 02 Oct 2024 05:35:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1727872502; x=1728477302; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6E9XJDJSIE/rmejLoIrGrThAVKnoTdwPvPdz5g1SSNA=;
+        b=AhZ2kDlecWSbMoIMf2t5ByyrggMIJMtUIcYKq3wcF1yN+sRNsvm7sRBvyszLHW9cSn
+         bj4MfIsDwRlGaP3LLfQfqFJkfHssrwXnw3BEPBtiKR1YJh1a5iJHZ4dqfkM/QNr15BXM
+         dXOqp4qiO7Q92dOj1+r9EERP1N2WRwyH8OwyfocrrfA/iaeH/ymJwC9UiYJCYarHJD0j
+         0d+r8NlJnb9psuY2ZgJhrOvbRWEBZJyj2eUvtgq802CoKRVW1s+miedvAFOG6J1LBZpa
+         274Zh1yax9tjiQJ4lNEge0IfOJ3O03ix7LOh7p4qnrsYzahUEMRUad0NVOgIRtotGAxV
+         kBRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727866467; x=1728471267;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RoAmgCGX6l11CJrPMpadAIjDi4yqQdtg+my/4u5cLJc=;
-        b=baVuD5+lmLsIx7w8xRC73Bgl1m6YY2ow7DjDkJHymW2IWHXubvMJS4Uizzbrbhn0gH
-         7MMgUClBHg9yKO0hVElVagbHC/dhCkFOCadRJfnbT0SbdZpVAsp1lKrKAom/r7Hnkix2
-         H8CgI5RNx3TEJBbISDIVtV8mvPbr4JxvLXtOfsb1ETuxGso163fvdq5YvKAXcCYTkB3C
-         yUH7hrxEEwbbYwfM6tNUWVIe16eYIg34ZXno/ylnrnldfRCcAe2rFNvY6tAHWgNjzhE1
-         k50gEoa6zQXNEqUHJdey4olE2hPEcfnp4+I/7uh1gzabw45Bfu4g7vMSOQ/h16cQzO2j
-         Rtvw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ9Urn3pe0cYEjG5UZkxX+Z4jVeWTqumgBNVVlhQvthw4e7i/ARa9TUhtORlP+YuwJ6GB2F7IfLMvUxDl0kg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLV4YeEvl8ybVqcTg2imuJ+Zc/EtvCYZIvGPKtsi8aD2n+AJdk
-	7plT58nVjeUUXafu8GQ0/dn5J3zxnE7es1z61xpPSghJdD6lmp7kvz/HMd4DN3VXmnK6GGucZ2I
-	hsePUq+QePjSu56i+6rk8uBZkvzOxVC/WQHdAuWr71l5TTRLoAN94clo=
-X-Google-Smtp-Source: AGHT+IFSdZLEVX0XsSeTY+JX4BnJvLpGs7RPfv1RodEHrYWIWyVQQLXTjxkqWD6LhGiDLU0sCvTv6ixUirPUevizRy6LNnoCk66+
+        d=1e100.net; s=20230601; t=1727872502; x=1728477302;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6E9XJDJSIE/rmejLoIrGrThAVKnoTdwPvPdz5g1SSNA=;
+        b=M7bK6px1tr1w83KVMRRbUv6ncaZpYROhVn2qPtsnDMaStdA3f/O/NwF4uBFmAIBCM3
+         HOCtDe5fh3G05eTs+b9WIoQ2jAkBoK6Hdx17EIlsCPWoduKU010pVqEv2W9OZPxBl8KE
+         qIi9w660lYVTCQhyzHATo3/hEJx8Cz3GqM9cVHb5kGYFkY40JD8xFBwIVwRFJ44ixefe
+         KAgaDLuqEca9eWmn/fYOkgs3/ecjHLoZOVCkudknW/zINlADoUMaqDRHAAQ89vHhlQIt
+         j2qVwLDREx9XUSXnY5ku/GAa0W8eERn+K3yydjN3r9uHRmNqU6iKcgx3CynIJpBp5G/d
+         REcA==
+X-Forwarded-Encrypted: i=1; AJvYcCXz2pfIlS4KoxYeP2W/jUgG0bzT2eOVUP0IFBOxh2nNonSutnt0ujHuxc3ZdKp4KxvtLgOwliCPtWjis2wZBQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzObwdT6dUworymwMJM58LJlMj/9F/eb4wFy0r/BEoDzneZdQ2i
+	gWe0QIQVbF9HWdks9KEPE7qDmCNpDpCRIqKXac/K9yeEM1pIoPROfWTfdRQN8Ew=
+X-Google-Smtp-Source: AGHT+IGRepjT6EONm519qNvFVatwdjtoHygVk65CVuxZwoZSUutpYOsWKPjw/omJyTOMx8u7eYBS2w==
+X-Received: by 2002:a17:903:184:b0:205:5d71:561e with SMTP id d9443c01a7336-20bc5bf1574mr44093105ad.26.1727872502452;
+        Wed, 02 Oct 2024 05:35:02 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-78-197.pa.nsw.optusnet.com.au. [49.179.78.197])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20b37e61b00sm83299965ad.275.2024.10.02.05.35.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2024 05:35:01 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1svyZG-00CwWg-2I;
+	Wed, 02 Oct 2024 22:34:58 +1000
+Date: Wed, 2 Oct 2024 22:34:58 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
+	torvalds@linux-foundation.org
+Subject: Re: [RFC PATCH 0/7] vfs: improving inode cache iteration scalability
+Message-ID: <Zv098heGHOtGfw1R@dread.disaster.area>
+References: <20241002014017.3801899-1-david@fromorbit.com>
+ <20241002-lethargisch-hypnose-fd06ae7a0977@brauner>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:180b:b0:39f:60d7:813b with SMTP id
- e9e14a558f8ab-3a365954717mr24003675ab.22.1727866467591; Wed, 02 Oct 2024
- 03:54:27 -0700 (PDT)
-Date: Wed, 02 Oct 2024 03:54:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66fd2663.050a0220.f28ec.0510.GAE@google.com>
-Subject: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in __btree_node_pinned
-From: syzbot <syzbot+9f41e4b255897d99d4e9@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241002-lethargisch-hypnose-fd06ae7a0977@brauner>
 
-Hello,
+On Wed, Oct 02, 2024 at 12:00:01PM +0200, Christian Brauner wrote:
+> On Wed, Oct 02, 2024 at 11:33:17AM GMT, Dave Chinner wrote:
+> > What do people think of moving towards per-sb inode caching and
+> > traversal mechanisms like this?
+> 
+> Patches 1-4 are great cleanups that I would like us to merge even
+> independent of the rest.
 
-syzbot found the following issue on:
+Yes, they make it much easier to manage the iteration code.
 
-HEAD commit:    ad46e8f95e93 Merge tag 'pm-6.12-rc1-2' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13b3d507980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=62086b2fd100a029
-dashboard link: https://syzkaller.appspot.com/bug?extid=9f41e4b255897d99d4e9
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11b69e80580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1567c6a9980000
+> I don't have big conceptual issues with the series otherwise. The only
+> thing that makes me a bit uneasy is that we are now providing an api
+> that may encourage filesystems to do their own inode caching even if
+> they don't really have a need for it just because it's there.  So really
+> a way that would've solved this issue generically would have been my
+> preference.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-ad46e8f9.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/72b7539cbeb1/vmlinux-ad46e8f9.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/73c9b9cebaf4/bzImage-ad46e8f9.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/54e2032c8f9d/mount_0.gz
+Well, that's the problem, isn't it? :/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9f41e4b255897d99d4e9@syzkaller.appspotmail.com
+There really isn't a good generic solution for global list access
+and management.  The dlist stuff kinda works, but it still has
+significant overhead and doesn't get rid of spinlock contention
+completely because of the lack of locality between list add and
+remove operations.
 
-------------[ cut here ]------------
-UBSAN: shift-out-of-bounds in fs/bcachefs/btree_cache.c:198:18
-shift exponent 227 is too large for 64-bit type 'unsigned long long'
-CPU: 0 UID: 0 PID: 5109 Comm: read_btree_node Not tainted 6.11.0-syzkaller-11728-gad46e8f95e93 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- ubsan_epilogue lib/ubsan.c:231 [inline]
- __ubsan_handle_shift_out_of_bounds+0x3c8/0x420 lib/ubsan.c:468
- __btree_node_pinned+0x80b/0x850 fs/bcachefs/btree_cache.c:198
- __bch2_btree_node_hash_insert+0xcfd/0x13e0 fs/bcachefs/btree_cache.c:270
- bch2_btree_node_hash_insert fs/bcachefs/btree_cache.c:287 [inline]
- bch2_btree_node_fill+0x94e/0x1200 fs/bcachefs/btree_cache.c:932
- bch2_btree_node_get_noiter+0x9d5/0xf70 fs/bcachefs/btree_cache.c:1238
- found_btree_node_is_readable fs/bcachefs/btree_node_scan.c:85 [inline]
- try_read_btree_node fs/bcachefs/btree_node_scan.c:190 [inline]
- read_btree_nodes_worker+0x122c/0x20b0 fs/bcachefs/btree_node_scan.c:239
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
----[ end trace ]---
-Kernel panic - not syncing: UBSAN: panic_on_warn set ...
-CPU: 0 UID: 0 PID: 5109 Comm: read_btree_node Not tainted 6.11.0-syzkaller-11728-gad46e8f95e93 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- panic+0x349/0x880 kernel/panic.c:354
- check_panic_on_warn+0x86/0xb0 kernel/panic.c:243
- ubsan_epilogue lib/ubsan.c:236 [inline]
- __ubsan_handle_shift_out_of_bounds+0x3e7/0x420 lib/ubsan.c:468
- __btree_node_pinned+0x80b/0x850 fs/bcachefs/btree_cache.c:198
- __bch2_btree_node_hash_insert+0xcfd/0x13e0 fs/bcachefs/btree_cache.c:270
- bch2_btree_node_hash_insert fs/bcachefs/btree_cache.c:287 [inline]
- bch2_btree_node_fill+0x94e/0x1200 fs/bcachefs/btree_cache.c:932
- bch2_btree_node_get_noiter+0x9d5/0xf70 fs/bcachefs/btree_cache.c:1238
- found_btree_node_is_readable fs/bcachefs/btree_node_scan.c:85 [inline]
- try_read_btree_node fs/bcachefs/btree_node_scan.c:190 [inline]
- read_btree_nodes_worker+0x122c/0x20b0 fs/bcachefs/btree_node_scan.c:239
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+i.e. dlist is optimised for low contention add operations (i.e.
+local to the CPU). However, removal is not a local operation - it
+almsot always happens on a different CPU to the add operation.
+Hence removal always pulls the list and lock away from the CPU that
+"owns" them, and hence there is still contention when inodes are
+streaming through memory. This causes enough overhead that dlist
+operations are still very visible in CPU profiles during scalability
+testing...
 
+XFS (and now bcachefs) have their own per-sb inode cache
+implementations, and hence for them the sb->s_inodes list is pure
+overhead.  If we restructure the generic inode cache infrastructure
+to also be per-sb (this suggestion from Linus was what lead me to
+this patch set), then they will also likely not need the
+sb->s_inodes list, too.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+That's the longer term "generic solution" to the sb->s_inodes list
+scalability problem (i.e. get rid of it!), but it's a much larger
+and longer term undertaking. Once we know what that new generic
+inode cache infrastructure looks like, we'll probably only want to
+be converting one filesystem at a time to the new infrastucture.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+We'll need infrastructure to allow alternative per-sb iteration
+mechanisms for such a conversion take place - the converted
+filesystems will likely call a generic ->iter_vfs_inodes()
+implementation based on the per-sb inode cache infrastructure rather
+than iterating sb->s_inodes. Eventually, we'll end up with that
+generic method replacing the sb->s_inodes iteration, we'll end up
+with only a couple of filesystems using the callout again.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+> But the reality is that xfs has been doing that private inode cache for
+> a long time and reading through 5/7 and 6/7 it clearly provides value
+> for xfs. So I find it hard to object to adding ->iter_vfs_inodes()
+> (Though I would like to s/iter_vfs_inodes/iter_inodes/g).
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+I named it that way because, from my filesystem centric point of
+view, there is a very distinct separation between VFS and filesystem
+inodes. The VFS inode (struct inode) is a subset of the filesystem
+inode structure and, in XFS's case, a subset of the filesystem inode
+life cycle, too.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+i.e. this method should not iterate cached filesystem inodes that
+exist outside the VFS inode lifecycle or VFS visibility even though
+they may be present in the filesystem's internal inode cache.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
