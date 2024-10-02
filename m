@@ -1,65 +1,66 @@
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC667FD
-	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Oct 2024 01:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77A45228
+	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Oct 2024 01:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727833226; cv=none; b=oq5+ryUnsozA4Rma9W7d5GUUoKqzZrgxXnMyERaCb+DJCiEWAa6QjvsoCn5dMqVx7YhF5lWp42EnEVYCGUNNZPJUaUBm5l7Ow4CN45UsszrrmOahN8Ok4NkoHN9L3XukcjU/o70XHU+R3GJRvCjWpy1w5OkWzRxliRiLeAfZVu4=
+	t=1727833226; cv=none; b=pN73nxZ/0bsX5G+Gz6alH2YSd0K4lAG4xf7YhZ5Hz3XUvBnTnCqAlAu8gB8/dJlptshVRuHlxiGgZ2DUuEaVOXAbdqVUwAZHF5+immU81wsANrUpLbTy3eIm8aoDpahbdODngRBE/qahLCjYG09N5aYLbi34ZIeKrcIY45N6WMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1727833226; c=relaxed/simple;
-	bh=octIU91dvJC7QTSpf1g04NsSgkp/76SSEC+udarKgpw=;
+	bh=x4VXB9HOsPl6CApEgyrJMBzKsAJyIhcNcEvpxp9sYPU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Srrubvgp5GViz2gblTsocFE/4cvbe8hpGiEpi1izmDMUjDhiRGHoa3KjCXp+d7jKqFMFXeBSriX4r4xLSZM68LU3nlm6a8CRIXvLtFKOOv3cfCe5IDj0AvdWX/1OxbegdbqbkjSS7z7s3B3oTTITscvWLAEL2UZe4l2NbvwbBkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=Hyimm1kj; arc=none smtp.client-ip=209.85.210.169
+	 MIME-Version; b=HmuGcswT33thYiF0PsVun7QPGYJZ5WgQBKW9RLarCT6i9txBORk0nHofJywZq6SdmIr4qBVlWGmsnA11+U55EEn0oK+/D06RYzVPOqkvY7gUocQGDrN/PKG+as7hJSBh/4vXVXgQUcOTwtIXpW/vc4w0QsxxGrLFaT6YSYFd+fI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=vWYaAS7d; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Hyimm1kj"
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-71b8d10e990so2971946b3a.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 01 Oct 2024 18:40:23 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="vWYaAS7d"
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2e0afd945d4so4066011a91.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 01 Oct 2024 18:40:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1727833223; x=1728438023; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1727833224; x=1728438024; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ADEbyi31TdRw5PkbTTqYB4v7r+R49eetqXpO/YsbAKY=;
-        b=Hyimm1kjtLEdszTLDvcxRmc2fkYCEPYH6uCdPJmz/dB0d9W5Nipv8x8rIX8c9c6ZnY
-         7J7J5uut3rrc7cAZNEPCWpZtrm51mgAM6HwUK43P7MC/zLFXvCCKG++mg06KH8LZRymS
-         ulFC3qNrZfVdRGMwgYZh986OCAK1D+qptPc9v3a8nGTF/X5KDw+wDmAxfEh1lrt5MtzL
-         4P8TE0YmkT70bw4gEJplHK7hr/0sfpvYCon7P0kiSYfSHWE+YURNtGzhSXhxm+XBzYQv
-         GWFqIt2v8qCkA+/jqQg68LWHOCtEbhOj5Oq4aOjnMQJwZ0yWCFkLeGG9jRkdZOr++RVJ
-         FQmw==
+        bh=78eie/LLOelu1UXuQO5bRLoa7IK7mnMlbWGf/OPUPFU=;
+        b=vWYaAS7d9j8okrBpmU4GGWbrYQRf4NnvKU4CmfbnPbfM0VjLM5v1w4eTykDHwTm9ri
+         hZUFN6vXvTZwqJ47FgaMtgApfeqiWiKxSIQGJc5GhllA5jcTKdWMFJoVKaB/acz9IZ9m
+         m5rnqhpcB8idMf/vJLjNtVnlN69lb2qXrzFJG1xaTtzUnuWnVG3LTZaRtthdXrG75L3t
+         fJtozMHSjtAeL5YbVkFHZKiE45RNCBZvlzbXbshsIpF0R/jB1IEfofE71yXMTA7YNq8O
+         oKTmz/XUwCcRJhn9i3EPGTOxUZvYGkQIF0PNQvr24HuibkFS5VOcisg6nyAc0kZdkQu1
+         vaoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727833223; x=1728438023;
+        d=1e100.net; s=20230601; t=1727833224; x=1728438024;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ADEbyi31TdRw5PkbTTqYB4v7r+R49eetqXpO/YsbAKY=;
-        b=h44/S+UXSqGc0o9WHhQiOW90278s3692CQHV9g/sWySVn+BO9fdBtgOXrUI+Rfz1oq
-         clg/ItoKIduJUTuUDIK3LJyeff9OXNNpA7nQBaJx27QrQxz3t4fmMJwtdxguvpMBcgox
-         Nm7IQrv2ABRHaFh10cwdpmpHHw/aHAeTI0gztzkH2aR8abcFbIHkOFRA7LxsuRKOcJiH
-         u+/4bvFJUTvF5qxZMFNM+twMcPlQ2bNQyP5B3g3x5denNNTxB+Xrjblut6E95KkSvOPK
-         TyH8+y2RzM6VSfwnm6v7/vuZdxejB0doSKBpb/u5Bg4VNnTwWpS+s3p+FQjnKyOktFlq
-         98+A==
-X-Forwarded-Encrypted: i=1; AJvYcCX6HyxJvClBuWgnVEkdaPcmYf51Esq2ry4mfS7uCSnWh+WpPU98MyGBYuzqqaY296al7y7X0phNNfoAu2rrEQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxPpdtppc0pr5ZIJD8Cb8oNKrTcGtxkL7TWc6Gr/Gbso3g1XKI
-	lU/x8+c638I/AebZvhKj9oq+fsKodiNTxKgSS9ASZ/1+dmmFeQVjG5DgOR2c30k=
-X-Google-Smtp-Source: AGHT+IEZkPzavG/0ctUXSwBmb+RiGkcau7gELiXN8VvFFwrvg3zoqeGa50a7ZkffoAiN7R5hu1C+6Q==
-X-Received: by 2002:a05:6a00:1496:b0:713:e3f9:b58e with SMTP id d2e1a72fcca58-71dc5d590e3mr2822396b3a.17.1727833222634;
-        Tue, 01 Oct 2024 18:40:22 -0700 (PDT)
+        bh=78eie/LLOelu1UXuQO5bRLoa7IK7mnMlbWGf/OPUPFU=;
+        b=wP7r0SdK8NjcecF0WT32R/eHa0uLxwla5oYulll1ND5MT2IMjEqnVooo8ZpttgzCet
+         SDX4eZcMMV6r2a+ab68OHmf0d3S+4o9rmAAwpF1/W5SLpFT13punEKRxtKXXNfhuYV4U
+         5bcSEdgPt+1qhpyUQZhbaTaD8HpU41SeZF7G0uXv3zFaiAEr1qmFhaS0xs2KCnHFHibd
+         Cbh9klfBhQcjVR0k5Q1u4MUHIufKtN9OQynRIowQsH49uCxsh9xKjr/t2xxvNNibZ32d
+         CmY+4I8wu5hbYEcBbuucmNHyKPoEMDQnmrcuGuEDR4ZXdh1h2ltdlWWjdIPTV7jUnpmU
+         KLSA==
+X-Forwarded-Encrypted: i=1; AJvYcCVLv/dZwNBMRXyMHzHRZviY+G1RmOK84rUrQ1oVMc4UJmTrBFcMVWFbMT2RL6xJJAHJ3bd3t4Ixesq2R8E8PQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YygAf7je6WOSkEC4PPoalsWhCUzU/a+q+Xw2p1Mr3+8mgAobq22
+	fbvKYvHFkLpGptPSp1aiLd53HT+rGrqc3r0rZ8liuGK+pVgBFKefw6IT5T3sV+voddkK9S3E/UM
+	R
+X-Google-Smtp-Source: AGHT+IGe1/8W+T6DPLuQCgARfncRvysLkH9GHOcsLNaf6AkJBBkqfdn93VL2stU4zGFnBlbPjsCQgw==
+X-Received: by 2002:a17:90a:f284:b0:2d8:d58b:52c8 with SMTP id 98e67ed59e1d1-2e1846b764cmr2159859a91.19.1727833223881;
+        Tue, 01 Oct 2024 18:40:23 -0700 (PDT)
 Received: from dread.disaster.area (pa49-179-78-197.pa.nsw.optusnet.com.au. [49.179.78.197])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71b2649b08csm9091868b3a.11.2024.10.01.18.40.22
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e18f8cda33sm329076a91.44.2024.10.01.18.40.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 01 Oct 2024 18:40:22 -0700 (PDT)
 Received: from [192.168.253.23] (helo=devoid.disaster.area)
 	by dread.disaster.area with esmtp (Exim 4.96)
 	(envelope-from <dave@fromorbit.com>)
-	id 1svoLj-00Ck8R-06;
+	id 1svoLj-00Ck8T-0I;
 	Wed, 02 Oct 2024 11:40:19 +1000
 Received: from dave by devoid.disaster.area with local (Exim 4.98)
 	(envelope-from <dave@devoid.disaster.area>)
-	id 1svoLj-0000000FxGC-1zbh;
+	id 1svoLj-0000000FxGG-297f;
 	Wed, 02 Oct 2024 11:40:19 +1000
 From: Dave Chinner <david@fromorbit.com>
 To: linux-fsdevel@vger.kernel.org
@@ -67,9 +68,9 @@ Cc: linux-xfs@vger.kernel.org,
 	linux-bcachefs@vger.kernel.org,
 	kent.overstreet@linux.dev,
 	torvalds@linux-foundation.org
-Subject: [PATCH 1/7] vfs: replace invalidate_inodes() with evict_inodes()
-Date: Wed,  2 Oct 2024 11:33:18 +1000
-Message-ID: <20241002014017.3801899-2-david@fromorbit.com>
+Subject: [PATCH 2/7] vfs: add inode iteration superblock method
+Date: Wed,  2 Oct 2024 11:33:19 +1000
+Message-ID: <20241002014017.3801899-3-david@fromorbit.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241002014017.3801899-1-david@fromorbit.com>
 References: <20241002014017.3801899-1-david@fromorbit.com>
@@ -83,94 +84,194 @@ Content-Transfer-Encoding: 8bit
 
 From: Dave Chinner <dchinner@redhat.com>
 
-As of commit e127b9bccdb0 ("fs: simplify invalidate_inodes"),
-invalidate_inodes() is functionally identical to evict_inodes().
-Replace calls to invalidate_inodes() with a call to
-evict_inodes() and kill the former.
+Add a new superblock method for iterating all cached inodes in the
+inode cache.
+
+This will be used to replace the explicit sb->s_inodes iteration,
+and the caller will supply a callback function and a private data
+pointer that gets passed to the callback along with each inode that
+is iterated.
+
+There are two iteration functions provided. The first is the
+interface that everyone should be using - it provides an valid,
+unlocked and referenced inode that any inode operation (including
+blocking operations) is allowed on. The iterator infrastructure is
+responsible for lifecycle management, hence the subsystem callback
+only needs to implement the operation it wants to perform on all
+inodes.
+
+The second iterator interface is the unsafe variant for internal VFS
+use only. It simply iterates all VFS inodes without guaranteeing
+any state or taking references. This iteration is done under a RCU
+read lock to ensure that the VFS inode is not freed from under
+the callback. If the operation wishes to block, it must drop the
+RCU context after guaranteeing that the inode will not get freed.
+This unsafe iteration mechanism is needed for operations that need
+tight control over the state of the inodes they need to operate on.
+
+This mechanism allows the existing sb->s_inodes iteration models
+to be maintained, allowing a generic implementation for iterating
+all cached inodes on the superblock to be provided.
 
 Signed-off-by: Dave Chinner <dchinner@redhat.com>
 ---
- fs/inode.c    | 40 ----------------------------------------
- fs/internal.h |  1 -
- fs/super.c    |  2 +-
- 3 files changed, 1 insertion(+), 42 deletions(-)
+ fs/internal.h      |   2 +
+ fs/super.c         | 105 +++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/fs.h |  12 ++++++
+ 3 files changed, 119 insertions(+)
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 471ae4a31549..0a53d8c34203 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -827,46 +827,6 @@ void evict_inodes(struct super_block *sb)
- }
- EXPORT_SYMBOL_GPL(evict_inodes);
- 
--/**
-- * invalidate_inodes	- attempt to free all inodes on a superblock
-- * @sb:		superblock to operate on
-- *
-- * Attempts to free all inodes (including dirty inodes) for a given superblock.
-- */
--void invalidate_inodes(struct super_block *sb)
--{
--	struct inode *inode, *next;
--	LIST_HEAD(dispose);
--
--again:
--	spin_lock(&sb->s_inode_list_lock);
--	list_for_each_entry_safe(inode, next, &sb->s_inodes, i_sb_list) {
--		spin_lock(&inode->i_lock);
--		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
--			spin_unlock(&inode->i_lock);
--			continue;
--		}
--		if (atomic_read(&inode->i_count)) {
--			spin_unlock(&inode->i_lock);
--			continue;
--		}
--
--		inode->i_state |= I_FREEING;
--		inode_lru_list_del(inode);
--		spin_unlock(&inode->i_lock);
--		list_add(&inode->i_lru, &dispose);
--		if (need_resched()) {
--			spin_unlock(&sb->s_inode_list_lock);
--			cond_resched();
--			dispose_list(&dispose);
--			goto again;
--		}
--	}
--	spin_unlock(&sb->s_inode_list_lock);
--
--	dispose_list(&dispose);
--}
--
- /*
-  * Isolate the inode from the LRU in preparation for freeing it.
-  *
 diff --git a/fs/internal.h b/fs/internal.h
-index 8c1b7acbbe8f..37749b429e80 100644
+index 37749b429e80..7039d13980c6 100644
 --- a/fs/internal.h
 +++ b/fs/internal.h
-@@ -207,7 +207,6 @@ bool in_group_or_capable(struct mnt_idmap *idmap,
-  * fs-writeback.c
-  */
- extern long get_nr_dirty_inodes(void);
--void invalidate_inodes(struct super_block *sb);
+@@ -127,6 +127,8 @@ struct super_block *user_get_super(dev_t, bool excl);
+ void put_super(struct super_block *sb);
+ extern bool mount_capable(struct fs_context *);
+ int sb_init_dio_done_wq(struct super_block *sb);
++void super_iter_inodes_unsafe(struct super_block *sb, ino_iter_fn iter_fn,
++		void *private_data);
  
  /*
-  * dcache.c
+  * Prepare superblock for changing its read-only state (i.e., either remount
 diff --git a/fs/super.c b/fs/super.c
-index 1db230432960..a16e6a6342e0 100644
+index a16e6a6342e0..20a9446d943a 100644
 --- a/fs/super.c
 +++ b/fs/super.c
-@@ -1417,7 +1417,7 @@ static void fs_bdev_mark_dead(struct block_device *bdev, bool surprise)
- 	if (!surprise)
- 		sync_filesystem(sb);
- 	shrink_dcache_sb(sb);
--	invalidate_inodes(sb);
-+	evict_inodes(sb);
- 	if (sb->s_op->shutdown)
- 		sb->s_op->shutdown(sb);
+@@ -167,6 +167,111 @@ static void super_wake(struct super_block *sb, unsigned int flag)
+ 	wake_up_var(&sb->s_flags);
+ }
  
++/**
++ * super_iter_inodes - iterate all the cached inodes on a superblock
++ * @sb: superblock to iterate
++ * @iter_fn: callback to run on every inode found.
++ *
++ * This function iterates all cached inodes on a superblock that are not in
++ * the process of being initialised or torn down. It will run @iter_fn() with
++ * a valid, referenced inode, so it is safe for the caller to do anything
++ * it wants with the inode except drop the reference the iterator holds.
++ *
++ */
++int super_iter_inodes(struct super_block *sb, ino_iter_fn iter_fn,
++		void *private_data, int flags)
++{
++	struct inode *inode, *old_inode = NULL;
++	int ret = 0;
++
++	spin_lock(&sb->s_inode_list_lock);
++	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
++		spin_lock(&inode->i_lock);
++		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
++			spin_unlock(&inode->i_lock);
++			continue;
++		}
++
++		/*
++		 * Skip over zero refcount inode if the caller only wants
++		 * referenced inodes to be iterated.
++		 */
++		if ((flags & INO_ITER_REFERENCED) &&
++		    !atomic_read(&inode->i_count)) {
++			spin_unlock(&inode->i_lock);
++			continue;
++		}
++
++		__iget(inode);
++		spin_unlock(&inode->i_lock);
++		spin_unlock(&sb->s_inode_list_lock);
++		iput(old_inode);
++
++		ret = iter_fn(inode, private_data);
++
++		old_inode = inode;
++		if (ret == INO_ITER_ABORT) {
++			ret = 0;
++			break;
++		}
++		if (ret < 0)
++			break;
++
++		cond_resched();
++		spin_lock(&sb->s_inode_list_lock);
++	}
++	spin_unlock(&sb->s_inode_list_lock);
++	iput(old_inode);
++	return ret;
++}
++
++/**
++ * super_iter_inodes_unsafe - unsafely iterate all the inodes on a superblock
++ * @sb: superblock to iterate
++ * @iter_fn: callback to run on every inode found.
++ *
++ * This is almost certainly not the function you want. It is for internal VFS
++ * operations only. Please use super_iter_inodes() instead. If you must use
++ * this function, please add a comment explaining why it is necessary and the
++ * locking that makes it safe to use this function.
++ *
++ * This function iterates all cached inodes on a superblock that are attached to
++ * the superblock. It will pass each inode to @iter_fn unlocked and without
++ * having performed any existences checks on it.
++
++ * @iter_fn must perform all necessary state checks on the inode itself to
++ * ensure safe operation. super_iter_inodes_unsafe() only guarantees that the
++ * inode exists and won't be freed whilst the callback is running.
++ *
++ * @iter_fn must not block. It is run in an atomic context that is not allowed
++ * to sleep to provide the inode existence guarantees. If the callback needs to
++ * do blocking operations it needs to track the inode itself and defer those
++ * operations until after the iteration completes.
++ *
++ * @iter_fn must provide conditional reschedule checks itself. If rescheduling
++ * or deferred processing is needed, it must return INO_ITER_ABORT to return to
++ * the high level function to perform those operations. It can then restart the
++ * iteration again. The high level code must provide forwards progress
++ * guarantees if they are necessary.
++ *
++ */
++void super_iter_inodes_unsafe(struct super_block *sb, ino_iter_fn iter_fn,
++		void *private_data)
++{
++	struct inode *inode;
++	int ret;
++
++	rcu_read_lock();
++	spin_lock(&sb->s_inode_list_lock);
++	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
++		ret = iter_fn(inode, private_data);
++		if (ret == INO_ITER_ABORT)
++			break;
++	}
++	spin_unlock(&sb->s_inode_list_lock);
++	rcu_read_unlock();
++}
++
+ /*
+  * One thing we have to be careful of with a per-sb shrinker is that we don't
+  * drop the last active reference to the superblock from within the shrinker.
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index eae5b67e4a15..0a6a462c45ab 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2213,6 +2213,18 @@ enum freeze_holder {
+ 	FREEZE_MAY_NEST		= (1U << 2),
+ };
+ 
++/* Inode iteration callback return values */
++#define INO_ITER_DONE		0
++#define INO_ITER_ABORT		1
++
++/* Inode iteration control flags */
++#define INO_ITER_REFERENCED	(1U << 0)
++#define INO_ITER_UNSAFE		(1U << 1)
++
++typedef int (*ino_iter_fn)(struct inode *inode, void *priv);
++int super_iter_inodes(struct super_block *sb, ino_iter_fn iter_fn,
++		void *private_data, int flags);
++
+ struct super_operations {
+    	struct inode *(*alloc_inode)(struct super_block *sb);
+ 	void (*destroy_inode)(struct inode *);
 -- 
 2.45.2
 
