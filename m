@@ -1,98 +1,155 @@
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56E1C19ABC3
-	for <linux-bcachefs@vger.kernel.org>; Tue,  1 Oct 2024 21:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1F12F43
+	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Oct 2024 01:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727819076; cv=none; b=Gwc833pyoKMcB8z2kxrGK9aPBXQR7t0kSGEJv2umxALppcbu5yPOICY5Kq/FfOjI3nOrPJBJOZmVzYfh3aYLiPaGZ8he3QKJAY/I+X1ink2nH64Id9KfuXSzJZakB+ceGmbYR+Dzi5njO+IjntOtZt35lyyMoyxV4UjIzlVTUDY=
+	t=1727833225; cv=none; b=A79lYP1EZZBVX03cExM1QvWaIEsVulaRkeqzTkdoPkGhVTRkqFlvJ1prmHOzn9L8FqwkCPnJ1kwHw6PnytGv1EzfouOQ7Bbtwix1HQF+2dXvWuLwhDhEBSm+s9N0UeUkHqERdib12hEA4XExo5S2HEKoA4AK3u1hcTCCSmfU2VQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727819076; c=relaxed/simple;
-	bh=dsjUD1VJV0y4eQ2Lt8bPXZYGGRS2Pi6aVOcRWav+mdU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sh5ECXAfeHqg/xqTvneYjimC5bOrqHYmrfEEywhhumdHGFS2SCJV8Imjzu0EyupfrcW9F0E0dYlKPiStDOidNOv7n/8c1hNHEivIXgc7KfQFkZq/R6RmVJijOjOEwT8bUmoifSzjYbOtCsAJSoToUYYrm+g+bWG/ooKZsCPTViE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Zf3vPyeH; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1727833225; c=relaxed/simple;
+	bh=QzJZcYuJqvu4t2qF3uS7a40qvoBvPZsRghW4Ip08npo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=he+nLz4lNzVOF1n9Ln/gmuSHEYGsTRpBeE9WyGGMokUpGoFcNU6TiIe9+YOUQllpGP9Xq3nWC9ypwnNFrkWfXbrJZEN7MOvLKz607+yBUgu+QRD/GR3LAz8znVVp+n4c0UST0A0EP4vfwYTtefljTTY3jXAxUD6O7p9IYFsXhqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=mqYWq7x1; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Zf3vPyeH"
-Date: Tue, 1 Oct 2024 17:44:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727819071;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0id0PyIFpJ9sUWilf6k5bBY4kR0lcP6zF5JucLA/h7M=;
-	b=Zf3vPyeHZttcsXXJ9jC2Pep5E9yGggIJS2EirfGsBTkxZAT3YA4nh2MZjOjtPqZLtu9HPV
-	ha5NcNAJV78Jq751iwuCxM/1QQaCv/PXf7Ofi+xHafNrGrsG62qjXc1Ad3iEbVI+/S3D3A
-	GNfHPk2W1fotvjmvxGLxt9fQdZThCKE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [bug report] bcachefs: dirent_points_to_inode() now warns on
- mismatch
-Message-ID: <l3zvg3xpwfnh4qzoyifv3o2s66qyot3elfv2vgt2arlfagnv3a@apedd44qzsq7>
-References: <9a704bd8-d227-4663-b160-7265bc31e507@stanley.mountain>
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="mqYWq7x1"
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2e077a4b8c0so272970a91.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 01 Oct 2024 18:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1727833223; x=1728438023; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t1rJUH/mWxXjOpXgbWGlZQXMWgJmvd7aMaDMpndP2yo=;
+        b=mqYWq7x1xbf1Ifrw7l1y2hhb9uvYjvNPSTW1iORI8rCU2XEsl+XY/vOeenwwhuh/gY
+         ajpJIWehMuzEXqo8GoU0SwcE6EjcUK+/obMFHEa5HIBTDnN44tZMziodmtPWVDDg44oS
+         liGh0o9dM1n4SBN5ZanO4+Atj/FQLwPgu+9nPP0tO/wB658yECd2nYb1eK4tpCJrIIyu
+         Umi/Ogw0B1sjExbsJdPofoexikFkJ9xIhVPNFzXe7zyJe1GTGvRq532XyL3D4IFnQX76
+         ixifH88l8GT6DzppfqRVwkDy1lgnwuPn76+vleoRSMchGFMuoaqFJkSKob3fscTt9W3d
+         sTwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727833223; x=1728438023;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t1rJUH/mWxXjOpXgbWGlZQXMWgJmvd7aMaDMpndP2yo=;
+        b=UAEmLF4+RIAPpon0e8s7Krgb/8vmEmaEWjvlBvorgkOQ13vYS/O+uYeh6aXs4oA5qo
+         51QMTkvjbOzDboIJCs74zQGEgi7JpMCRlilY/bNOfgnD8lFVupXTOY3upZY6Fp/1DyS5
+         rdFyEyxBBERN2QAEP0q+F72PgsPAu0LHjb+UGwCMqojYRhjr84D7GeiYH8S5goU7AgJV
+         xp58UqR2QFyVxc320wZfkC5zcpLtevlruyqSJZbuX4ZiACh9cUg9toWtiTnbeXtLAeqT
+         xkE4iPHt6xTmmjY8fKw2ylJC/is2y54CFQHczknoWYADDAHLl+5atKlg97OcvVVu7Iqs
+         iohA==
+X-Forwarded-Encrypted: i=1; AJvYcCWgpi2V6oQCYfEWw+3uWGs0b52Ty0o/L2Hf/XDdb/niUn6iq8AYsYAg9dJkqShps6YN1UFKvuiUcZMXtdDKmg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOdo22WqSW3G+pc7yN4k67mVZBDjmxSN33ZxOWVv65n838uo7d
+	NBYNH8uv2FLQBgAoolqiXzFRCrSnBHonayXHSmFxQ0IJ4GC4sI3HdjTfkoCLgo0=
+X-Google-Smtp-Source: AGHT+IER4Kb2iLiz3Cn70aHvpLUJtA0lkyIz83+tDTqx83rbjBv6L7OqRmyXU9lvlCTDvJmi8BZfWg==
+X-Received: by 2002:a17:90a:dc0d:b0:2d8:85fc:464c with SMTP id 98e67ed59e1d1-2e15a253ae9mr8067492a91.11.1727833223299;
+        Tue, 01 Oct 2024 18:40:23 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-78-197.pa.nsw.optusnet.com.au. [49.179.78.197])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e18fa54fe3sm317590a91.54.2024.10.01.18.40.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Oct 2024 18:40:22 -0700 (PDT)
+Received: from [192.168.253.23] (helo=devoid.disaster.area)
+	by dread.disaster.area with esmtp (Exim 4.96)
+	(envelope-from <dave@fromorbit.com>)
+	id 1svoLj-00Ck8r-0v;
+	Wed, 02 Oct 2024 11:40:19 +1000
+Received: from dave by devoid.disaster.area with local (Exim 4.98)
+	(envelope-from <dave@devoid.disaster.area>)
+	id 1svoLj-0000000FxGf-2yhr;
+	Wed, 02 Oct 2024 11:40:19 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	kent.overstreet@linux.dev,
+	torvalds@linux-foundation.org
+Subject: [PATCH 7/7] bcachefs: implement sb->iter_vfs_inodes
+Date: Wed,  2 Oct 2024 11:33:24 +1000
+Message-ID: <20241002014017.3801899-8-david@fromorbit.com>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20241002014017.3801899-1-david@fromorbit.com>
+References: <20241002014017.3801899-1-david@fromorbit.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a704bd8-d227-4663-b160-7265bc31e507@stanley.mountain>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Tue, Oct 01, 2024 at 10:56:45AM GMT, Dan Carpenter wrote:
-> Hello Kent Overstreet,
-> 
-> Commit a6508079b1b6 ("bcachefs: dirent_points_to_inode() now warns on
-> mismatch") from Sep 23, 2024 (linux-next), leads to the following
-> Smatch static checker warning:
-> 
-> 	fs/bcachefs/fsck.c:38 dirent_points_to_inode_nowarn()
-> 	warn: signedness bug returning '(-2157)'
-> 
-> fs/bcachefs/fsck.c
->     31 static bool dirent_points_to_inode_nowarn(struct bkey_s_c_dirent d,
->               ^^^^
-> This is bool
-> 
->     32                                    struct bch_inode_unpacked *inode)
->     33 {
->     34         if (d.v->d_type == DT_SUBVOL
->     35             ? le32_to_cpu(d.v->d_child_subvol)        == inode->bi_subvol
->     36             : le64_to_cpu(d.v->d_inum)                == inode->bi_inum)
->     37                 return 0;
-> --> 38         return -BCH_ERR_ENOENT_dirent_doesnt_match_inode;
+From: Dave Chinner <dchinner@redhat.com>
 
-Thanks! Applied the following:
+Untested, probably doesn't work, just a quick hack to indicate
+how this could be done with the new bcachefs inode cache.
 
+Signed-off-by: Dave Chinner <dchinner@redhat.com>
+---
+ fs/bcachefs/fs.c | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-From 6bd7310a9b1c19e10b0f116c07c8b6abfd4e165f Mon Sep 17 00:00:00 2001
-From: Kent Overstreet <kent.overstreet@linux.dev>
-Date: Tue, 1 Oct 2024 17:43:36 -0400
-Subject: [PATCH] bcachefs: Fix return type of dirent_points_to_inode_nowarn()
-
-we're returning an error code now, not a bool
-
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-
-diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index 0d8b782b63fb..c6c98ee87ec9 100644
---- a/fs/bcachefs/fsck.c
-+++ b/fs/bcachefs/fsck.c
-@@ -28,8 +28,8 @@ static bool inode_points_to_dirent(struct bch_inode_unpacked *inode,
- 		inode->bi_dir_offset	== d.k->p.offset;
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 4a1bb07a2574..7708ec2b68c1 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -1814,6 +1814,46 @@ void bch2_evict_subvolume_inodes(struct bch_fs *c, snapshot_id_list *s)
+ 	darray_exit(&grabbed);
  }
  
--static bool dirent_points_to_inode_nowarn(struct bkey_s_c_dirent d,
--				   struct bch_inode_unpacked *inode)
-+static int dirent_points_to_inode_nowarn(struct bkey_s_c_dirent d,
-+					 struct bch_inode_unpacked *inode)
++static int
++bch2_iter_vfs_inodes(
++        struct super_block      *sb,
++        ino_iter_fn             iter_fn,
++        void                    *private_data,
++        int                     flags)
++{
++	struct bch_inode_info *inode, *old_inode = NULL;
++	int ret = 0;
++
++	mutex_lock(&c->vfs_inodes_lock);
++	list_for_each_entry(inode, &c->vfs_inodes_list, ei_vfs_inode_list) {
++		if (!super_iter_iget(&inode->v, flags))
++			continue;
++
++		if (!(flags & INO_ITER_UNSAFE))
++			mutex_unlock(&c->vfs_inodes_lock);
++
++		ret = iter_fn(VFS_I(ip), private_data);
++		cond_resched();
++
++		if (!(flags & INO_ITER_UNSAFE)) {
++			if (old_inode)
++				iput(&old_inode->v);
++			old_inode = inode;
++			mutex_lock(&c->vfs_inodes_lock);
++		}
++
++		if (ret == INO_ITER_ABORT) {
++			ret = 0;
++			break;
++		}
++		if (ret < 0)
++			break;
++	}
++	if (old_inode)
++		iput(&old_inode->v);
++	return ret;
++}
++
+ static int bch2_statfs(struct dentry *dentry, struct kstatfs *buf)
  {
- 	if (d.v->d_type == DT_SUBVOL
- 	    ? le32_to_cpu(d.v->d_child_subvol)	== inode->bi_subvol
+ 	struct super_block *sb = dentry->d_sb;
+@@ -1995,6 +2035,7 @@ static const struct super_operations bch_super_operations = {
+ 	.put_super	= bch2_put_super,
+ 	.freeze_fs	= bch2_freeze,
+ 	.unfreeze_fs	= bch2_unfreeze,
++	.iter_vfs_inodes = bch2_iter_vfs_inodes
+ };
+ 
+ static int bch2_set_super(struct super_block *s, void *data)
+-- 
+2.45.2
+
