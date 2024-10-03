@@ -1,163 +1,183 @@
-Received: from fout-a3-smtp.messagingengine.com (fout-a3-smtp.messagingengine.com [103.168.172.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B3762E419;
-	Thu,  3 Oct 2024 16:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875E3DDCD
+	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 17:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727973154; cv=none; b=eq2oVkBpnKJ+uUnXvCXNovEYq3UPTuuf22Bwf4oWGDjs7nm2pfjRoSGW6MWKeX3ZKWoQ9sDuqxkovwAneCkN0hI+GOdnqFN9+TsG21XXyl+Kz1KU9CdfnLM0sIZcSRay7Y0/8SAapJ7bHdhpWjyTg8mb6R5wiBnMu8kT9BCDQhE=
+	t=1727977350; cv=none; b=h+QFEDKGWmaobVi9Xx2dmLWkaBPoVUt8aIdqxca4EMwK07DYtT3JvQK0VcU1LMR4PxoMdKyQ9/g+VbOkm/TsBXWjeHPvkaRjCXfuHhxFK+hijP1RregpK8xfeI7NC6lmzVQPsajSGMA1T3JiXDyuoXyYtt2PC48/WF8X1HZKAFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727973154; c=relaxed/simple;
-	bh=vA2Cy/7P7JfH+wjtmjOh/gr9jc0vnrkloCauPlJY0m0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mGvwmAhCtTABn2515oTbFR786nUJHVevFa/Ir/WM6w5bK5/bCQQIdx+HaD9Hz7d3GjppAJNEG5JIaqxppsQg/aW8ed/cvYTJbydbzucpt1aJ4J72bbAX7ye7x4HHTJMtzU8Q5vdUDOlyXzd3729bZ1qnQSeLHMmHFAAgmaqw/bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=cwJXE9OB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NneG5Ywb; arc=none smtp.client-ip=103.168.172.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="cwJXE9OB";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NneG5Ywb"
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailfout.phl.internal (Postfix) with ESMTP id 76FCF1380174;
-	Thu,  3 Oct 2024 12:32:30 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-10.internal (MEProxy); Thu, 03 Oct 2024 12:32:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1727973150; x=1728059550; bh=YmrQJ6jNp9
-	LjHSMYxtSFGmXVtl03FcagGzbyRt+tUEY=; b=cwJXE9OBbVCUaRr+jbnhTb43mp
-	0Gb6dluHKJhq6MfpOxJtc2RozuJBAS48hJYZ7XKPxG7nW40iGhzE0Mrc1EXG/dMU
-	FtNLEg+qxadoX0CBTgq/gm5N59KOpPzYJUdC5Bpzywfa8g4HuHgtAOwkkOHfqvgu
-	m4sY73xHydWnUB8fQh0YeuqQSBt0Pf9mScLjrQDmGQx0t8hV7rSY+tS4pl7M9XbP
-	rOcs2XSKUl+T108KqsmZZsNSheFz9yu3VYzOkQ992wRNl3FyhaLuGarT1nPo1G6l
-	QJTSpZl/WtAF4TfFmKBMNUp4SXhAxy3pn/9QHrtEusfi2Ctx75/z0Zfjtg1g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1727973150; x=1728059550; bh=YmrQJ6jNp9LjHSMYxtSFGmXVtl03
-	FcagGzbyRt+tUEY=; b=NneG5YwbcWL9X6YHPadZFN1CSrYo+KZLLP4DhbBmfM+d
-	dmlob2DgbcHpiZHMxeNvY16nooSxcx2uFqGSb66F/D8H61NVUWDo742jFpipL2kw
-	PZD2P15vq9UDNkQ5RjmHTvRsdPJPFeH9rkft45sAV7ZNOZRTh85LQhg0ZE0NTAhW
-	PXuNmy/WQnDWuwSHdyMd26oEE9njtYJ9+EIYCWh135dQfU5gld8gjan4ztQln9fW
-	QdEugXKmmnRjyN4m/4mhgoESudEPRorjP7VCKpqsYFHx24b3U9F1uP78fW9OHCny
-	5MmHXgztBu0YQlxPuIIyOX8OiGHoDExUxvky14Bckg==
-X-ME-Sender: <xms:Hsf-ZqNjmP6Lkddi7FlZNr5B_5pgIWtI3CcT1GWOscqeraebvxLq3w>
-    <xme:Hsf-Zo_6oMyaHEUxAFwQXFtqXey8C-YibyZuPrwrS_8G1Xfgf9II01ShXr0pbZWCZ
-    fm5UBgb2U4Say-0-wg>
-X-ME-Received: <xmr:Hsf-ZhSB27aweV2oTucBKzafkRs1_zBD9Is0EDUfJZpGRK5YTaD9DRsbdtwNwrAMOwclHQZ0Z08-WpSCBWolRS2KDg5q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvuddguddtvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenfghrlhcuvffnffculddutddmnecujfgurhepfffhvfevuffk
-    fhggtggujgesthdtredttddtvdenucfhrhhomheplfgrnhcujfgvnhgurhhikhcuhfgrrh
-    hruceokhgvrhhnvghlsehjfhgrrhhrrdgttgeqnecuggftrfgrthhtvghrnhepfedtffdu
-    vdegkeeuiedvgeduvdeufeefveegtefgieeuuefhveffuedtvdfgkedvnecuffhomhgrih
-    hnpehgihhthhhusgdrtghomhdpghhouggsohhlthdrohhrghenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkvghrnhgvlhesjhhfrghrrhdrtg
-    gtpdhnsggprhgtphhtthhopeelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopeht
-    hhhorhhsthgvnhdrsghluhhmsehtohgslhhugidrtghomhdprhgtphhtthhopehkvggvsh
-    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvnhhtrdhovhgvrhhsthhrvggvthes
-    lhhinhhugidruggvvhdprhgtphhtthhopehrvghgrhgvshhsihhonhhssehlihhsthhsrd
-    hlihhnuhigrdguvghvpdhrtghpthhtoheplhhinhhugidqsggtrggthhgvfhhssehvghgv
-    rhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqhhgrrhguvghnihhngh
-    esvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgv
-    lhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrhgusgeskhgvrhhnvg
-    hlrdhorhhgpdhrtghpthhtohepmhhorhgsohesghhoohhglhgvrdgtohhm
-X-ME-Proxy: <xmx:Hsf-ZqtZwaxfob-isKE2mGMAaBnXppa7ec_g43PRTMLulG_EULfm2Q>
-    <xmx:Hsf-ZieUynQTA3utJTySrDceRCmwxY5yWLc8bFX0FPWyeLbZvi_PSA>
-    <xmx:Hsf-Zu26NqIcTfs0d29-y7x6B9b5f6Mp5pBELhY4_PZ25wypteXwvw>
-    <xmx:Hsf-Zm8WWIgjHE5P5feQKbuiNLkNydGNaHq8FEdzkShIK2XLwJWdUQ>
-    <xmx:Hsf-Zi47XD4nDzsXxN7bvvMEpF3iFcB7V2EtBRIcjuRh3rKzEYdWFIjt>
-Feedback-ID: i01d149f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Oct 2024 12:32:28 -0400 (EDT)
-Date: Thu, 3 Oct 2024 18:32:27 +0200
-From: Jan Hendrik Farr <kernel@jfarr.cc>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Kees Cook <kees@kernel.org>, kent.overstreet@linux.dev,
-	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ardb@kernel.org, morbo@google.com
-Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
- bch2_xattr_validate
-Message-ID: <Zv7HG8tR-Fdvb1SZ@archlinux>
-References: <202409281331.1F04259@keescook>
- <21D2A2BB-F442-480D-8B66-229E8C4A63D3@toblux.com>
- <Zv6BEO-1Y0oJ3krr@archlinux>
- <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
- <Zv6YInHiwjLeBC3D@archlinux>
- <63D4756D-31B7-4EA9-A92F-181A680206EF@toblux.com>
- <Zv62pi1VVbpkvoDM@archlinux>
- <83834AC8-0109-40C5-A80C-8BFFA8F16B19@toblux.com>
- <Zv65p8f4sxT4gKYs@archlinux>
- <78AAE4F3-1C2B-4EE8-AC7A-B5F3730D1DB6@toblux.com>
+	s=arc-20240116; t=1727977350; c=relaxed/simple;
+	bh=Tw3sYx3H7J3gzvQ37HaTe+udynk3ZScYULN3rC42aNI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=P9bHUIFOiU2UiEIP/U64ZHOSEmr97xvkl0H9MFMVIMeFDfzENKz5IMUQkFiEAT0q5KjEh7vyvxV/7DWHt7wblBv5OU1yZ5cWJaFKAh3VKk1MNs+v2qab77SM73GLEeD+ZtyJKmbINFJjN451hWEnRl5alTYawNB8+OudGQiau9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-82ad9fca614so172465639f.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 03 Oct 2024 10:42:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727977347; x=1728582147;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nsN0MDOsLKpxRqmM7P1rmtNrYKam7fStwhypmlPwGuA=;
+        b=V7k85jfxGFIN2ReGuwFOLUOn7y1ba769jVDsPjl5scwRcUhanqCpu32FY1dX1O34Q4
+         fZAqt5WBqgIUoi37fl+WnKNUYZQKOybZx2WPvQo7mFIB715KzIc54LYEiA3QEqlNv1v8
+         2h67LZeDZO1+6RSdfocelq7qLe9rnEx3t7YfIjOhHcH2HnMVc1mxEvJZlG9h4sVj4lFS
+         x8umWK+4+NFK259Zg/gdiV7lh/BQbCXqaDuMflDdkFuktgl1GTj6KgpigPK9p7QW5sAl
+         tA9TKhOyQg1NfyEF+L0x3hj8IMi+2ZzHxFkrJUpHmRKxfPR/Y5Yw6kpK9eQihSsh8KMu
+         Mk5A==
+X-Forwarded-Encrypted: i=1; AJvYcCUtzpM9VWcf2A9/t97l81F7ylbNsbZy7LYYaKU+wxApsyv8ak+QuXs0urJitNdzjVADNvIzdmwAuPHRZX2PMw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxU4sfZn/H1NRx+lluHgj7SD0rw1nxsx07LQodO4GXutuzkr/Ds
+	Xspo9eSvnzNd9Vjr1PNBzNYtRsb6Ebmya/CTVjTqis1p40dlFPxfAhv9cY3GRJ5eioll2H3NNoJ
+	chDjfSGXr4cmEUsbo0L2H3U0fqRdJI+3cf6Y6oR1m7K5zAQiCiHkyiu0=
+X-Google-Smtp-Source: AGHT+IEdj9gaVqPS1TGvP+/aml1Sba0BY9AKFBFwz2CsHJeHImwtKseSj1VEaflTLjATmmhYYhTuuXhg3Ao0jO0akEYt2R/c9iaJ
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78AAE4F3-1C2B-4EE8-AC7A-B5F3730D1DB6@toblux.com>
+X-Received: by 2002:a05:6e02:1e06:b0:3a0:5642:c78 with SMTP id
+ e9e14a558f8ab-3a36592b550mr78097885ab.15.1727977347619; Thu, 03 Oct 2024
+ 10:42:27 -0700 (PDT)
+Date: Thu, 03 Oct 2024 10:42:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66fed783.050a0220.9ec68.0051.GAE@google.com>
+Subject: [syzbot] [bcachefs?] possible deadlock in bch2_replicas_entry_validate
+From: syzbot <syzbot+4d24267b490e2b68a5fa@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 03 17:43:02, Thorsten Blum wrote:
-> On 3. Oct 2024, at 17:35, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-> > On 03 17:30:28, Thorsten Blum wrote:
-> >> On 3. Oct 2024, at 17:22, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-> >>> On 03 17:02:07, Thorsten Blum wrote:
-> >>>> On 3. Oct 2024, at 15:12, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-> >>>>> On 03 15:07:52, Thorsten Blum wrote:
-> >>>>>> On 3. Oct 2024, at 13:33, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-> >>>>>>>> [...]
-> >>>>>>> 
-> >>>>>>> This issue is now fixed on the llvm main branch:
-> >>>>>>> https://github.com/llvm/llvm-project/commit/882457a2eedbe6d53161b2f78fcf769fc9a93e8a
-> >>>>>> 
-> >>>>>> Thanks!
-> >>>>>> 
-> >>>>>> Do you know if it also fixes the different sizes here:
-> >>>>>> https://godbolt.org/z/vvK9PE1Yq
-> > 
-> > Do you already have an open issue on the llvm github? Otherwise I'll
-> > open one and submit the PR shortly.
-> 
-> No, feel free to open one. Thanks!
+Hello,
 
-Here's the issue:
-https://github.com/llvm/llvm-project/issues/111009
+syzbot found the following issue on:
 
-Here's the PR:
-https://github.com/llvm/llvm-project/pull/111015
+HEAD commit:    e32cde8d2bd7 Merge tag 'sched_ext-for-6.12-rc1-fixes-1' of..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=105b939f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1f009dd80b3799c2
+dashboard link: https://syzkaller.appspot.com/bug?extid=4d24267b490e2b68a5fa
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1366e927980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111c7dd0580000
 
-(Looks like I violated the code formatting rules somewhere, will fix)
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/08f3ba449e03/disk-e32cde8d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/17bcace1ab90/vmlinux-e32cde8d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/da9183ac0145/bzImage-e32cde8d.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4c7b8b3c4819/mount_0.gz
 
-> 
-> >>>>> 
-> >>>>> Unfortunately this still prints 36.
-> >>>> 
-> >>>> I just realized that the counted_by attribute itself causes the 4 bytes
-> >>>> difference. When you remove the attribute, the sizes are equal again.
-> >>> 
-> >>> But we want these attributes to be in the kernel, so that
-> >>> bounds-checking can be done in more scenarios, right?
-> >> 
-> >> Yes
-> >> 
-> >>> This changes clang to print 40, right? gcc prints 40 in the example
-> >>> whether the attribute is there or not.
-> >> 
-> >> Yes, clang prints 36 with and 40 without the attribute; gcc always 40.
-> >> 
-> >>>>>> I ran out of disk space when compiling llvm :0
-> >>>>>> 
-> >>>>>>> So presumably this will go into 19.1.2, not sure what this means for
-> >>>>>>> distros that ship clang 18. Will they have to be notified to backport
-> >>>>>>> this?
-> >>>>>>> 
-> >>>>>>> Best Regards
-> >>>>>>> Jan
-> 
+The issue was bisected to:
+
+commit 49fd90b2cc332b8607a616d99d4bb792f18208b9
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Wed Sep 25 22:17:31 2024 +0000
+
+    bcachefs: Fix unlocked access to c->disk_sb.sb in bch2_replicas_entry_validate()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14b8a3d0580000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16b8a3d0580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b8a3d0580000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4d24267b490e2b68a5fa@syzkaller.appspotmail.com
+Fixes: 49fd90b2cc33 ("bcachefs: Fix unlocked access to c->disk_sb.sb in bch2_replicas_entry_validate()")
+
+WARNING: The mand mount option has been deprecated and
+         and is ignored by this kernel. Remove the mand
+         option from the mount to silence this warning.
+=======================================================
+bcachefs (loop0): starting version 1.7: mi_btree_bitmap opts=errors=continue,compression=zstd,norecovery,recovery_pass_last=check_dirents,nojournal_transaction_names,version_upgrade=none
+============================================
+WARNING: possible recursive locking detected
+6.12.0-rc1-syzkaller-00031-ge32cde8d2bd7 #0 Not tainted
+--------------------------------------------
+syz-executor340/5221 is trying to acquire lock:
+ffff888078a80908 (&c->sb_lock){+.+.}-{3:3}, at: bch2_replicas_entry_validate+0x2a/0x80 fs/bcachefs/replicas.c:101
+
+but task is already holding lock:
+ffff888078a80908 (&c->sb_lock){+.+.}-{3:3}, at: bch2_read_superblock_clean+0x36/0x520 fs/bcachefs/sb-clean.c:149
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&c->sb_lock);
+  lock(&c->sb_lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+2 locks held by syz-executor340/5221:
+ #0: ffff888078a80278 (&c->state_lock){+.+.}-{3:3}, at: bch2_fs_start+0x45/0x5b0 fs/bcachefs/super.c:1007
+ #1: ffff888078a80908 (&c->sb_lock){+.+.}-{3:3}, at: bch2_read_superblock_clean+0x36/0x520 fs/bcachefs/sb-clean.c:149
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 5221 Comm: syz-executor340 Not tainted 6.12.0-rc1-syzkaller-00031-ge32cde8d2bd7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_deadlock_bug+0x483/0x620 kernel/locking/lockdep.c:3037
+ check_deadlock kernel/locking/lockdep.c:3089 [inline]
+ validate_chain+0x15e2/0x5920 kernel/locking/lockdep.c:3891
+ __lock_acquire+0x1384/0x2050 kernel/locking/lockdep.c:5202
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5825
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+ bch2_replicas_entry_validate+0x2a/0x80 fs/bcachefs/replicas.c:101
+ journal_entry_data_usage_validate+0x2b6/0x690 fs/bcachefs/journal_io.c:608
+ bch2_sb_clean_validate_late fs/bcachefs/sb-clean.c:40 [inline]
+ bch2_read_superblock_clean+0x207/0x520 fs/bcachefs/sb-clean.c:168
+ bch2_fs_recovery+0x1f4/0x39c0 fs/bcachefs/recovery.c:639
+ bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1037
+ bch2_fs_get_tree+0xd68/0x1710 fs/bcachefs/fs.c:2071
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1800
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3507
+ do_mount fs/namespace.c:3847 [inline]
+ __do_sys_mount fs/namespace.c:4055 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4032
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f2478bb0c3a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffecc9ae478 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffecc9ae490 RCX: 00007f2478bb0c3a
+RDX: 0000000020005d80 RSI: 0000000020000240 RDI: 00007ffecc9ae490
+RBP: 0000000000000004 R08: 00007ffecc9ae4d0 R09: 0000000000005daf
+R10: 0000000000000044 R11: 0000000000000282 R12: 0000000000000044
+R13: 00007ffecc9ae4d0 R14: 0000000000000003 R15: 0000000001000000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
