@@ -1,117 +1,210 @@
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0E31A00CB
-	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 15:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6971CFBC;
+	Thu,  3 Oct 2024 15:17:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727967743; cv=none; b=rHKQ84owJbpmHfrUvrcnbS9AIGsVbQUVJLh8DApBTufRyXiL2uDTWWCL1+sLWOOanoH7GW28dNnyYPpA7ROH9pZanC6XAoj1XeoNxi0qLIpthSGmCqjtncAHQt7MBu+OwTya3s8ZONI/5y960awLxSvecrBong6SokIljsvrwgQ=
+	t=1727968634; cv=none; b=d3kkYKcYSuKDiEoSnPsjeJg2uzvTxN6D29ec1ARpuHt+pwN4mkAcScr0JkskTGWeMIMHU5GDn2fIDnHoHiEY3/Ex3l0UcXXfMgld6hF7DqOwIDTFu8o4z633lTNAlZscgIPvMqgxUtMIF+W1i1vqowgbIPn/x28eIOIb1xtixeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727967743; c=relaxed/simple;
-	bh=0o4zGq1l8dC78VSp0hLET3Oej+NTqvrr3gSjrM5DOQA=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=sLXPK6kVCES2FsRaZNNuLukD8sUI2K4+DIx/WEPHxiTSQlO7ia4fZxusfquxSDNhtWK/L4NjFXAQlOjKZK0Com5IkwtoOE1Va8q2/OiBnFDuHRrYEd8crhSYIolZzleBDMJVo+TWPmKLygXBs+aXgLvdLAU/NT46lIXX68PVJZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=PPnUN4Qe; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+	s=arc-20240116; t=1727968634; c=relaxed/simple;
+	bh=QPLylLtyYkLfzTsbDmxLEfA31cTvatRW12QwLlJBq8s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RyWjOegWK/GL/2yts3fXyOXnIGi2glmQsG5TK4NaYHBlNIXvHPBHba8cSU8Sy2c+ea/sza2JHkVM+9HxgP4UX7pgwJw+khUY+nvY1uF1g2L4ETlS79o30+xM3fo2jf+w3tCznRir1E6dS7f5Xc/9cRfyF1EdtlYeZptodRs89W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=MIdZNFj2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=T6U2LqQ8; arc=none smtp.client-ip=103.168.172.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="PPnUN4Qe"
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-42f7e1fcb8dso1560725e9.2
-        for <linux-bcachefs@vger.kernel.org>; Thu, 03 Oct 2024 08:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1727967740; x=1728572540; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0o4zGq1l8dC78VSp0hLET3Oej+NTqvrr3gSjrM5DOQA=;
-        b=PPnUN4Qez86O089vD7a8sJNhsX9tMJH7zcGs+TYQBoItiEL+5wwcnzr2fvEjGEMNBE
-         uX4pev5xIaR0JeBLwTP5efirmXrcBRTWh5tCRGx8ija5Xd0ATN4wzH4k821y62RYPWFI
-         S6h9Q1r+6LTjLKIjABIidSs+71sO6elHTRqvOG7GV3tBf3SQBUbktaabnetybQxbrV/Y
-         m6AMrPv7Q/W1JS4hysnmxETfjg9I6p5+DebN/c/P4ELnuEzgw5Au6al7iBw3/upvOLQg
-         pULPc+LxpujHEeHc866jZFOKdseyJjxsECI/7GIhjmEvAzMbxJjDdXOhMx335MiH3Miq
-         33uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727967740; x=1728572540;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0o4zGq1l8dC78VSp0hLET3Oej+NTqvrr3gSjrM5DOQA=;
-        b=c2APxaeNPXQccP0pjL/++lkZGsfZpbjn+GzSHRP70dKOOiUBVB2+yDNS82Ij3VmLfu
-         6QLcYYDme7no3DTzu7snMpyVmfBdQoiez08K7qGaTbcnEO2DEoNzy8cKJLnqwE8e4UCt
-         r5Iqd9XAV/biTptGJa7qOrv28KvlWW5IohSIRpiRChCd6YtNDVSrjDW4Kc6Wce+OhBmn
-         JgP6YQeJM1ZqBXBq7xA0S/r6zgHfViih2qisOyKMVEJT1//GgRCH2MRd7pR+9kFhmeaF
-         ejlVhLpvghT68LbCXLhSOGgHA/aDZnERv27VAjh0UAM3NJbhLu0FwtT7gcCwiofD5zQl
-         Yqqg==
-X-Forwarded-Encrypted: i=1; AJvYcCX+iRHyYTlSTcpd0b7S9rcW0+51zyvV7qp64Lv7favfpb+jN8rrNANd0wWyFm3MjgAdeJQI67piZxUz1s6swA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSFkMp9zYyc4pjqjQkGnCsEUWxnYt+TDtUVoe3epRstTZcxrB5
-	0Vcmxjdm/yk7KNz5+2OoMzu6FB/rXiRL5SSFTfvP77C2vDXRO+GkADbW31mTK/g=
-X-Google-Smtp-Source: AGHT+IFkImjjIUquq+gA7uxKoSKuU17rdWrRxPkQdJ+pAAJ+j4djTiCNVLXTTtRJsnFkETuOUvqxoA==
-X-Received: by 2002:a05:600c:358f:b0:425:6dfa:c005 with SMTP id 5b1f17b1804b1-42f777af26amr26043395e9.2.1727967740138;
-        Thu, 03 Oct 2024 08:02:20 -0700 (PDT)
-Received: from smtpclient.apple ([2001:a61:a4f:301:1558:85f1:4dd0:3ea9])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f79ead1absm46665475e9.17.2024.10.03.08.02.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Oct 2024 08:02:18 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="MIdZNFj2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="T6U2LqQ8"
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailfout.phl.internal (Postfix) with ESMTP id 8760C1380237;
+	Thu,  3 Oct 2024 11:17:11 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Thu, 03 Oct 2024 11:17:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1727968631; x=1728055031; bh=NbJK2XRbco
+	OTqZvfd13nuSSHJGSlT5A6o8ZtRYgV9vc=; b=MIdZNFj2gbMARNLQ8W/Cn9JtYi
+	TpTG+nskS21Ae7Q12SxBwMIPJ9fu+iAOYVSQjaTtLMyzpRKJc5YgvRvy/oj34cow
+	YrNcFWsKkyfOqGn+mWBZqAJRZRBu/cRUz+fbx17aIPNjCCENuOSFsEFXu598u+Yt
+	BoxyzDYaQMKa7nI1B1cWaWvVOv6CMOFVxt5MXDx4D8Lhd2zu/UH+XyR5tl9bft88
+	17FqhVYSfJru0DREUo686vbTtSrl2ErRSHQOLBNnyjkZaAkJgQIig6OVJIvN7mgb
+	WtcOrW7EJ3qMIssKWy35GdGgJyjZ1mfftomU6rE8cT3F6974sPffArWDaYDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1727968631; x=1728055031; bh=NbJK2XRbcoOTqZvfd13nuSSHJGSl
+	T5A6o8ZtRYgV9vc=; b=T6U2LqQ8fYE8g4fb42XZId6h5ZQA/RU+iys5AN8OIafb
+	sug/QeX5INCkDfZtNSUmMZ4L4z20WkRXqieuqT1cp/J/h7K7IjiXCANL7F+wYoYJ
+	zsPPZjeCw5mtBm9KOJuaeevT35e4gok3veLvueD5Eib4FmhKXf5Z2XTbw78DxinY
+	QP6Tbs9bVLMHb1FUVWaqz5Vy0Ksq1jvgLE1FS6RREASEVeya/Yz4U+ZvwPW+Kbjz
+	2B0Brp9F+a0zJ0yS2A5P12VPvVBhJep1Tv1jKFpesDU2Cecuq4zyjXerEKhyqA+0
+	ZIZbMsT1b6M/iYKUFsc+ThJxiIjCCSlpUbj3lfF5ZQ==
+X-ME-Sender: <xms:d7X-ZoVJurDRkw9hNSY6R39nO9ro74XT__akaTHlNjAmAddZPzqh1w>
+    <xme:d7X-Zsnn8AGYFa2SR9R2R9Qvql71YvxUllV_JOuHRcACnRcIzth5CK_X5yL44R2fz
+    F9QXjv7x19IOfFuJEY>
+X-ME-Received: <xmr:d7X-ZsaefTYOl9URL4JAt-U2wws3YbEZ9tYyoX1i72tBoW8fOYa_qOhi-Tda4FDWG-Mdk-stQO-yU2nH2sd5H12PEJwt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvuddgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdluddtmdenucfjughrpeffhffvvefukfhf
+    gggtuggjsehttdertddttddvnecuhfhrohhmpeflrghnucfjvghnughrihhkucfhrghrrh
+    cuoehkvghrnhgvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpefhudffjeev
+    tedtteejleekkeekgfeuudetueelvedtgedtueejvdffieeltdegueenucffohhmrghinh
+    epghhithhhuhgsrdgtohhmpdhgohgusgholhhtrdhorhhgpdhkvghrnhgvlhdrohhrghdp
+    ohhpvghnqdhsthgurdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepkhgvrhhnvghlsehjfhgrrhhrrdgttgdpnhgspghrtghpthhtohep
+    ledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepthhhohhrshhtvghnrdgslhhumh
+    esthhosghluhigrdgtohhmpdhrtghpthhtohepkhgvvghssehkvghrnhgvlhdrohhrghdp
+    rhgtphhtthhopehkvghnthdrohhvvghrshhtrhgvvghtsehlihhnuhigrdguvghvpdhrtg
+    hpthhtoheprhgvghhrvghsshhiohhnsheslhhishhtshdrlhhinhhugidruggvvhdprhgt
+    phhtthhopehlihhnuhigqdgstggrtghhvghfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+    dprhgtphhtthhopehlihhnuhigqdhhrghruggvnhhinhhgsehvghgvrhdrkhgvrhhnvghl
+    rdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvg
+    hlrdhorhhgpdhrtghpthhtoheprghruggssehkvghrnhgvlhdrohhrghdprhgtphhtthho
+    pehmohhrsghosehgohhoghhlvgdrtghomh
+X-ME-Proxy: <xmx:d7X-ZnXqjWdrNvC8jNWfQytAvO3_iaK6RcTqfbvWwYkXyoKosymgFg>
+    <xmx:d7X-Zim2MW5LCcoJgQPnYu2fte2UTTQAhaHscMX6M3Z0qB2r8xHYmw>
+    <xmx:d7X-ZscBhpGCjS01XOJ5N06-snzZypQn0ptLEM2lbw2EiyOfKsPx0g>
+    <xmx:d7X-ZkEduQMp-oMS2c-UuWW3b0kmF_9_LS4p0VocTnWBByYRCMebcg>
+    <xmx:d7X-ZniS9qBbS8QPpRXjk9vdJ1dB7zrVi4E-0xM15FelmpLsmNrDmkfU>
+Feedback-ID: i01d149f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 3 Oct 2024 11:17:09 -0400 (EDT)
+Date: Thu, 3 Oct 2024 17:17:08 +0200
+From: Jan Hendrik Farr <kernel@jfarr.cc>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: Kees Cook <kees@kernel.org>, kent.overstreet@linux.dev,
+	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ardb@kernel.org, morbo@google.com
+Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
+ bch2_xattr_validate
+Message-ID: <Zv61dCaxScXuOjZg@archlinux>
+References: <ZvV6X5FPBBW7CO1f@archlinux>
+ <3E304FB2-799D-478F-889A-CDFC1A52DCD8@toblux.com>
+ <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com>
+ <Zvg-mDsvvOueGpzs@archlinux>
+ <202409281331.1F04259@keescook>
+ <21D2A2BB-F442-480D-8B66-229E8C4A63D3@toblux.com>
+ <Zv6BEO-1Y0oJ3krr@archlinux>
+ <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
-Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
- bch2_xattr_validate
-From: Thorsten Blum <thorsten.blum@toblux.com>
-In-Reply-To: <Zv6YInHiwjLeBC3D@archlinux>
-Date: Thu, 3 Oct 2024 17:02:07 +0200
-Cc: Kees Cook <kees@kernel.org>,
- kent.overstreet@linux.dev,
- regressions@lists.linux.dev,
- linux-bcachefs@vger.kernel.org,
- linux-hardening@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- ardb@kernel.org,
- morbo@google.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <63D4756D-31B7-4EA9-A92F-181A680206EF@toblux.com>
-References: <ZvV6X5FPBBW7CO1f@archlinux>
- <3E304FB2-799D-478F-889A-CDFC1A52DCD8@toblux.com>
- <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com>
- <Zvg-mDsvvOueGpzs@archlinux> <202409281331.1F04259@keescook>
- <21D2A2BB-F442-480D-8B66-229E8C4A63D3@toblux.com>
- <Zv6BEO-1Y0oJ3krr@archlinux>
- <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
- <Zv6YInHiwjLeBC3D@archlinux>
-To: Jan Hendrik Farr <kernel@jfarr.cc>
-X-Mailer: Apple Mail (2.3776.700.51)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
 
-On 3. Oct 2024, at 15:12, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-> On 03 15:07:52, Thorsten Blum wrote:
->> On 3. Oct 2024, at 13:33, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
->>>> [...]
->>>=20
->>> This issue is now fixed on the llvm main branch:
->>> =
-https://github.com/llvm/llvm-project/commit/882457a2eedbe6d53161b2f78fcf76=
-9fc9a93e8a
->>=20
->> Thanks!
->>=20
->> Do you know if it also fixes the different sizes here:
->> https://godbolt.org/z/vvK9PE1Yq
->=20
-> Unfortunately this still prints 36.
+On 03 15:07:52, Thorsten Blum wrote:
+> On 3. Oct 2024, at 13:33, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
+> >> [...]
+> > 
+> > This issue is now fixed on the llvm main branch:
+> > https://github.com/llvm/llvm-project/commit/882457a2eedbe6d53161b2f78fcf769fc9a93e8a
+> 
+> Thanks!
+> 
+> Do you know if it also fixes the different sizes here:
+> https://godbolt.org/z/vvK9PE1Yq
 
-I just realized that the counted_by attribute itself causes the 4 bytes
-difference. When you remove the attribute, the sizes are equal again.
+I have a patch for clang that changes the behavior to what gcc does and
+what the kernel seems to be expecting right now, you can find it below.
 
->> I ran out of disk space when compiling llvm :0
->>=20
->>> So presumably this will go into 19.1.2, not sure what this means for
->>> distros that ship clang 18. Will they have to be notified to =
-backport
->>> this?
->>>=20
->>> Best Regards
->>> Jan
+I'm not 100% sure what if the gcc or the clang behavior is currently
+correct. However, I'm gonna argue that gcc has it correct.
+
+gcc currently says that the __bdos of struct containing a flexible array
+member is:
+
+sizeof(<whole struct>) + sizeof(<flexible array element>) * <count>
+
+clang however does the following:
+
+max(sizeof(<whole struct>), offsetof(<flexible array member>) + sizeof(<flexible array element>) * <count>)
+
+
+The kernel assumes the gcc behvaior in places like linux/fs/posix_acl.c:
+
+struct posix_acl *
+posix_acl_clone(const struct posix_acl *acl, gfp_t flags)
+{
+	struct posix_acl *clone = NULL;
+
+	if (acl) {
+		int size = sizeof(struct posix_acl) + acl->a_count *
+		           sizeof(struct posix_acl_entry);
+		clone = kmemdup(acl, size, flags);
+		if (clone)
+			refcount_set(&clone->a_refcount, 1);
+	}
+	return clone;
+}
+EXPORT_SYMBOL_GPL(posix_acl_clone);
+
+This is the code that triggers the problem in [1]. The way I see it, this
+code should work, as you also allocate struct posix_acl with the same
+sizeof(struct posix_acl) + acl->a_count * sizeof(struct posix_acl_entry)
+as an argument to malloc (or in-kernel equivalent).
+
+Based on the C standard the size of that object is the size passed to
+malloc. See bottom of page 348 [2].
+
+
+I'll put together another PR to llvm with this fix, just need to
+add/change tests.
+
+[1] https://lore.kernel.org/linux-kernel/3D0816D1-0807-4D37-8D5F-3C55CA910FAA@linux.dev/
+[2] https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1548.pdf
+
+
+--
+diff --git a/clang/lib/CodeGen/CGBuiltin.cpp b/clang/lib/CodeGen/CGBuiltin.cpp
+index d739597de4c8..1d112aededbd 100644
+--- a/clang/lib/CodeGen/CGBuiltin.cpp
++++ b/clang/lib/CodeGen/CGBuiltin.cpp
+@@ -919,8 +919,7 @@ CodeGenFunction::emitFlexibleArrayMemberSize(const Expr *E, unsigned Type,
+   //   2) bdos of the whole struct, including the flexible array:
+   //
+   //     __builtin_dynamic_object_size(p, 1) ==
+-  //        max(sizeof(struct s),
+-  //            offsetof(struct s, array) + p->count * sizeof(*p->array))
++  //        sizeof(struct s) + p->count * sizeof(*p->array))
+   //
+   ASTContext &Ctx = getContext();
+   const Expr *Base = E->IgnoreParenImpCasts();
+@@ -1052,22 +1051,13 @@ CodeGenFunction::emitFlexibleArrayMemberSize(const Expr *E, unsigned Type,
+     // The whole struct is specificed in the __bdos.
+     const ASTRecordLayout &Layout = Ctx.getASTRecordLayout(OuterRD);
+ 
+-    // Get the offset of the FAM.
+-    llvm::Constant *FAMOffset = ConstantInt::get(ResType, Offset, IsSigned);
+-    Value *OffsetAndFAMSize =
+-        Builder.CreateAdd(FAMOffset, Res, "", !IsSigned, IsSigned);
+ 
+     // Get the full size of the struct.
+     llvm::Constant *SizeofStruct =
+         ConstantInt::get(ResType, Layout.getSize().getQuantity(), IsSigned);
+ 
+-    // max(sizeof(struct s),
+-    //     offsetof(struct s, array) + p->count * sizeof(*p->array))
+-    Res = IsSigned
+-              ? Builder.CreateBinaryIntrinsic(llvm::Intrinsic::smax,
+-                                              OffsetAndFAMSize, SizeofStruct)
+-              : Builder.CreateBinaryIntrinsic(llvm::Intrinsic::umax,
+-                                              OffsetAndFAMSize, SizeofStruct);
++    // Add full size of struct and fam size
++    Res = Builder.CreateAdd(SizeofStruct, Res, "", !IsSigned, IsSigned);
+   }
+ 
+   // A negative \p IdxInst or \p CountedByInst means that the index lands
+
+
+
