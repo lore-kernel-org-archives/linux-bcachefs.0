@@ -1,205 +1,142 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail3.ecloud.global (mail3.ecloud.global [135.181.139.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E4313D245;
-	Thu,  3 Oct 2024 11:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727955968; cv=none; b=DL1s6jAVrkvZbConfRBz4WuEI9v7Lct3k/dc58xZPjTM9RPU+HXMbZE8LIE/dTc4Xsi77fQK9D97+sXM/RYka9cqBT827crw8qzub84iPtp/GtXA5M1YUWvNTV7Eu+A6a5xb0oCCqT3YCFdcIbjRMJga5ro3Swj0n+qMpu6M7/Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727955968; c=relaxed/simple;
-	bh=uYxntOLomNurH/glEymVuBYbQJqrhAopyIorvKSj8zQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z4CBAGstm//0rstAPbypd/AepsVeIuuaTOPprbqG4K3l/fowJLJwUpd1kCSWFrJp0OiwM4cL9rsfDnb7eCYccdQK6XL7N/tGMSdSgNxLvJY45qjP5qx3MISaYjfjJle0bie1bon0eCyxWygtkMic8LxgDjzTp4x2eGl/G+n//b4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=feY+wyL9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sz6F9+5Z; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=feY+wyL9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sz6F9+5Z; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C1913D245
+	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 11:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=135.181.139.185
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727956084; cv=pass; b=h9C1hSIr4dRdeEjlvKwgQV6mkRTNYxsTxTl7nihhjDEuU0ufmar4ADW9K08UnNQp8DyNcv4vEH82CZX7g2afkn+dBq9NqC6O9gMjKrLQsV+AEFniVgbGzyMj+7JYARNVSJ0sStgcoC6XqTybKVLrrS013AZB7FP7mYFTDp9O6Wk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727956084; c=relaxed/simple;
+	bh=QYGW1h0SeFTwtBqapyZNfmvnLiMEf4Re4hlqzmQbWpA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=A8jD3sm3q/lySfy2e+wo8lWb3VEEMa8KVHJOb+ilpG6UBgcN45NRjxjfwJgqD6Hi1o2ZVb0p7EIT8bV26qCSy3+Xv+T5ThNx70yWD5ME5rxVFt7Vhbt3/i0eMWGwUDhHPfY8ZppQ1KHY/EP3U1kWckRBhOVdVYdyQiYREvXkjio=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io; spf=pass smtp.mailfrom=murena.io; dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b=nom6Y16M; arc=pass smtp.client-ip=135.181.139.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=murena.io
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="feY+wyL9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sz6F9+5Z";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="feY+wyL9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sz6F9+5Z"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b="nom6Y16M"
+Received: from authenticated-user (mail3.ecloud.global [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9047F1FDE6;
-	Thu,  3 Oct 2024 11:46:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727955964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	by mail3.ecloud.global (Postfix) with ESMTPSA id AF7F48831B0;
+	Thu,  3 Oct 2024 11:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io; s=mail3;
+	t=1727955624;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YcC68ZzlwFoukPB1up1folji2OO+BVaGy0P+ZZAdd5Y=;
-	b=feY+wyL94AZGixecMwLvGBEloL+wvtyZGZlf6Da4/pw0GOWAYk+9bElFoMMIUzIaBksBFt
-	IktvpH7NuVDiCD7/w2V8AXkoHL78X1yKvSZU9/y8u4r2cHcGQNuoUO9awhjvlXhrdoU3Rf
-	MedlNd8WYcmzI2/u9d0tuwQxTeCcLtE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727955964;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	bh=o+waN2lRr07uhpPtle/Qv7BsRwY+hOXEKCs6pM9hQoQ=;
+	b=nom6Y16MTKkgIwlAZubaaGwGx8z1dlQGZrY90wFa9gQfGk4lNqEZmvIybwcDFW6FOCbhkl
+	nqNPLhHaSdg9yD/7vrAWaU/02U20qdBHanOPp6iWOLQeBTODijop8I74IGRnSNDo4aB6KE
+	fa5J5VSty7un/3kPKa0lAQfcMu8M+Yg=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io;
+	s=mail3; t=1727955624;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YcC68ZzlwFoukPB1up1folji2OO+BVaGy0P+ZZAdd5Y=;
-	b=sz6F9+5Za9PWzZFXOsZGjNi9C9aj46at2HjHlbluoZ4/HWH+eLHQRGMC/zRJZFiDuQ5YGO
-	Jeke18qX0qlVLECQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727955964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YcC68ZzlwFoukPB1up1folji2OO+BVaGy0P+ZZAdd5Y=;
-	b=feY+wyL94AZGixecMwLvGBEloL+wvtyZGZlf6Da4/pw0GOWAYk+9bElFoMMIUzIaBksBFt
-	IktvpH7NuVDiCD7/w2V8AXkoHL78X1yKvSZU9/y8u4r2cHcGQNuoUO9awhjvlXhrdoU3Rf
-	MedlNd8WYcmzI2/u9d0tuwQxTeCcLtE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727955964;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YcC68ZzlwFoukPB1up1folji2OO+BVaGy0P+ZZAdd5Y=;
-	b=sz6F9+5Za9PWzZFXOsZGjNi9C9aj46at2HjHlbluoZ4/HWH+eLHQRGMC/zRJZFiDuQ5YGO
-	Jeke18qX0qlVLECQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7DAD2139CE;
-	Thu,  3 Oct 2024 11:46:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id f8GoHvyD/mZ+GgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 03 Oct 2024 11:46:04 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0B8AAA086F; Thu,  3 Oct 2024 13:45:56 +0200 (CEST)
-Date: Thu, 3 Oct 2024 13:45:55 +0200
-From: Jan Kara <jack@suse.cz>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
-	torvalds@linux-foundation.org
-Subject: Re: [RFC PATCH 0/7] vfs: improving inode cache iteration scalability
-Message-ID: <20241003114555.bl34fkqsja4s5tok@quack3>
-References: <20241002014017.3801899-1-david@fromorbit.com>
+	bh=o+waN2lRr07uhpPtle/Qv7BsRwY+hOXEKCs6pM9hQoQ=;
+	b=pf1d1qK/qt7A5nunObl+Z+MrwpyZfyUyd+q1s0RRtF+hlKCQNY8mgeuq+oUpBrFnUKgHEV
+	ZZ6QohZNaeB0pFbUm2DUa0LvGAC49Gu6eJ16bQbZamz5sRTNwk9i8aIBUcoLdxT2GbqDqF
+	7vFBJwAFF95ABztYUxhHiWCAavOPYNs=
+ARC-Authentication-Results: i=1;
+	mail3.ecloud.global;
+	auth=pass smtp.mailfrom=integral@murena.io
+ARC-Seal: i=1; s=mail3; d=murena.io; t=1727955624; a=rsa-sha256; cv=none;
+	b=ktzVpkrZnQETETcfLbRJ0kHWfW00zB9jGhlSIswfvCKkfiWs4B1MgSEdiomXiMe3j9rjqB
+	gqtNwImJkNzzvH9gQRN0BWJawET4j6TzkpUGbT4P0RjMInCjTcDF/BRDfcEaJaSXiunQ8r
+	vrZm3L+n/SRvD6c+c7DQ62pVa22OKIY=
+From: Integral <integral@murena.io>
+To: mmpgouride@gmail.com
+Cc: integral@murena.io,
+	kent.overstreet@gmail.com,
+	kent.overstreet@linux.dev,
+	lihongbo22@huawei.com,
+	linux-bcachefs@vger.kernel.org
+Subject: [PATCH v2] bcachefs: add support for true/false & yes/no in bool-type options
+Date: Thu,  3 Oct 2024 19:40:13 +0800
+Message-ID: <20241003114012.297236-2-integral@murena.io>
+In-Reply-To: <21B6E9C0-9A84-4B54-9FC8-307E82AB6006@gmail.com>
+References: <21B6E9C0-9A84-4B54-9FC8-307E82AB6006@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241002014017.3801899-1-david@fromorbit.com>
-X-Spam-Score: -3.79
-X-Spamd-Result: default: False [-3.79 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.19)[-0.967];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 
-Hi Dave!
+Here is my new patch:
 
-On Wed 02-10-24 11:33:17, Dave Chinner wrote:
-> There are two superblock iterator functions provided. The first is a
-> generic iterator that provides safe, reference counted inodes for
-> the callback to operate on. This is generally what most sb->s_inodes
-> iterators use, and it allows the iterator to drop locks and perform
-> blocking operations on the inode before moving to the next inode in
-> the sb->s_inodes list.
-> 
-> There is one quirk to this interface - INO_ITER_REFERENCE - because
-> fsnotify iterates the inode cache -after- evict_inodes() has been
-> called during superblock shutdown to evict all non-referenced
-> inodes. Hence it should only find referenced inodes, and it has
-> a check to skip unreferenced inodes. This flag does the same.
+Currently, when using bcachefs-tools to set options, bool-type options can
+only accept 1 or 0. Add support for accepting true/false and yes/no for
+these options.
 
-Overall I really like the series. A lot of duplicated code removed and
-scalability improved, we don't get such deals frequently :) Regarding
-INO_ITER_REFERENCE I think that after commit 1edc8eb2e9313 ("fs: call
-fsnotify_sb_delete after evict_inodes") the check for 0 i_count in
-fsnotify_unmount_inodes() isn't that useful anymore so I'd be actually fine
-dropping it (as a separate patch please).
+Signed-off-by: Integral <integral@murena.io>
+---
+ fs/bcachefs/opts.c | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
 
-That being said I'd like to discuss one thing: As you have surely noticed,
-some of the places iterating inodes perform additional checks on the inode
-to determine whether the inode is interesting or not (e.g. the Landlock
-iterator or iterators in quota code) to avoid the unnecessary iget / iput
-and locking dance. The inode refcount check you've worked-around with
-INO_ITER_REFERENCE is a special case of that. Have you considered option to
-provide callback for the check inside the iterator?
-
-Also maybe I'm went a *bit* overboard here with macro magic but the code
-below should provide an iterator that you can use like:
-
-	for_each_sb_inode(sb, inode, inode_eligible_check(inode)) {
-		do my stuff here
-	}
-
-that will avoid any indirect calls and will magically handle all the
-cleanup that needs to be done if you break / jump out of the loop or
-similar. I actually find such constructs more convenient to use than your
-version of the iterator because there's no need to create & pass around the
-additional data structure for the iterator body, no need for special return
-values to abort iteration etc.
-
-								Honza
-
-/* Find next inode on the inode list eligible for processing */
-#define sb_inode_iter_next(sb, inode, old_inode, inode_eligible) 	\
-({									\
-	struct inode *ret = NULL;					\
-									\
-	cond_resched();							\
-	spin_lock(&(sb)->s_inode_list_lock);				\
-	if (!(inode))							\
-		inode = list_first_entry((sb)->s_inodes, struct inode,	\
-					 i_sb_list);			\
-	while (1) {							\
-		if (list_entry_is_head(inode, (sb)->s_inodes, i_sb_list)) { \
-			spin_unlock(&(sb)->s_inode_list_lock);		\
-			break;						\
-		}							\
-		spin_lock(&inode->i_lock);				\
-		if ((inode)->i_state & (I_NEW | I_FREEING | I_WILL_FREE) || \
-		    !inode_eligible) {					\
-			spin_unlock(&(inode)->i_lock);			\
-			continue;					\
-		}							\
-		__iget(inode);						\
-		spin_unlock(&(inode)->i_lock);				\
-		spin_unlock(&(sb)->s_inode_list_lock);			\
-		iput(*old_inode);					\
-		*old_inode = inode;					\
-		ret = inode;						\
-		break;							\
-	}								\
-	ret;								\
-})
-
-#define for_each_sb_inode(sb, inode, inode_eligible)			\
-	for (DEFINE_FREE(old_inode, struct inode *, if (_T) iput(_T)),	\
-	     inode = NULL;						\
-	     inode = sb_inode_iter_next((sb), inode, &old_inode,	\
-					 inode_eligible);		\
-	    )
-	     
-
+diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+index 232be8a44051..659536d00cb9 100644
+--- a/fs/bcachefs/opts.c
++++ b/fs/bcachefs/opts.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+ #include <linux/kernel.h>
++#include <linux/fs_parser.h>
+ 
+ #include "bcachefs.h"
+ #include "compress.h"
+@@ -322,6 +323,18 @@ int bch2_opt_validate(const struct bch_option *opt, u64 v, struct printbuf *err)
+ 	return 0;
+ }
+ 
++static const struct constant_table bch2_opt_bool_names[] = {
++	{ "0",		false },
++	{ "false",	false },
++	{ "no",		false },
++	{ "off",	false },
++	{ "1",		true },
++	{ "true",	true },
++	{ "yes",	true },
++	{ "on",		true },
++	{ },
++};
++
+ int bch2_opt_parse(struct bch_fs *c,
+ 		   const struct bch_option *opt,
+ 		   const char *val, u64 *res,
+@@ -332,17 +345,18 @@ int bch2_opt_parse(struct bch_fs *c,
+ 	switch (opt->type) {
+ 	case BCH_OPT_BOOL:
+ 		if (val) {
+-			ret = kstrtou64(val, 10, res);
++			ret = lookup_constant(bch2_opt_bool_names, val, BCH_ERR_option_not_bool);
++			if (ret != BCH_ERR_option_not_bool) {
++				*res = ret;
++			} else {
++				if (err)
++					prt_printf(err, "%s: must be bool", opt->attr.name);
++				return ret;
++			}
+ 		} else {
+-			ret = 0;
+ 			*res = 1;
+ 		}
+ 
+-		if (ret < 0 || (*res != 0 && *res != 1)) {
+-			if (err)
+-				prt_printf(err, "%s: must be bool", opt->attr.name);
+-			return ret < 0 ? ret : -BCH_ERR_option_not_bool;
+-		}
+ 		break;
+ 	case BCH_OPT_UINT:
+ 		if (!val) {
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.46.2
+
