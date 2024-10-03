@@ -1,69 +1,72 @@
 Received: from mail2.ecloud.global (mail2.ecloud.global [135.181.6.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C73147C96
-	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 09:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27404139D07
+	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 09:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=135.181.6.248
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727947985; cv=pass; b=YUdnWoVj4jHIL7GPlUzQXE7QRos4zFJWPDPekQipPQBtXkGLvVg9z4AmMPMk5BUvKptLfXDL2evpL6GpuZKkYoSy8GXMFRKDD7pS3Z+r+B5Mhr2iUUo5vIzT4GYiGt1v9uD0Ueg6zsasd0f7aiiaJEwlOnV18Rf7zvhd5ThW//s=
+	t=1727948150; cv=pass; b=qrVnpP3UbmQ5etJG/AYRnG0ZQNfHQUTUPA+ghAye3ccL9iEmqyf44NyN4ZL6NCYwlhwgbOHaq6XPiJ4qGGoeEqS2tPoZ/Mt32whKCNqLLwFOBaAyZschVedsF/NohI16VfKdpCzUZUv7k08VRa+kplnMcE96F6M8Qb0lAr/KpAk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727947985; c=relaxed/simple;
-	bh=QgD+sOr2EGE01DptbZEjvNNtI9yYxcoedcVCDETg0iU=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=VRmlwZQUaW62rZ/iRfU9RuDMbLpyNP68b5muVXH67zPt096tiYJ3AkdaXKZz6At1ksMJXwriFdBx1eIkviqJZ+0eCT2wl2DiknbI5aZLfKFpDB2uw1E8aciSp0IXVvHeZgTnGnYygL5gxox6DZ1OdKbg/oIA/hygZjRNbk+tOJs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io; spf=pass smtp.mailfrom=murena.io; dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b=MSaLHFrb; arc=pass smtp.client-ip=135.181.6.248
+	s=arc-20240116; t=1727948150; c=relaxed/simple;
+	bh=geN1Qw2lncYb5HAN342pfyJgiTNclFFBhLpbZQCvpwc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=fRzCnGA8WYHgs7nOzFPinCY68q7mOTFenrV0LJR+0RrWRotIEnNCeIJd3CZM98WAqRvTfr0HMt0rTZv4ie3vyWsFjRcW4p45r+DV6b3BGbMo4rApJ5QhO96ULDaGW2XU8cgre+eB4gXW0yPduh1y1MEtHduD03HT2jEfQOSO04s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io; spf=pass smtp.mailfrom=murena.io; dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b=dwR65hUY; arc=pass smtp.client-ip=135.181.6.248
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=murena.io
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b="MSaLHFrb"
+	dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b="dwR65hUY"
 Received: from authenticated-user (mail2.ecloud.global [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail2.ecloud.global (Postfix) with ESMTPSA id A13C77201A9;
-	Thu,  3 Oct 2024 09:18:28 +0000 (UTC)
+	by mail2.ecloud.global (Postfix) with ESMTPSA id 1B53072059C;
+	Thu,  3 Oct 2024 09:35:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io; s=mail2;
-	t=1727947110;
+	t=1727948147;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QgD+sOr2EGE01DptbZEjvNNtI9yYxcoedcVCDETg0iU=;
-	b=MSaLHFrbpvB/k9YkgbpIBb+JEiFyxlcMUW+NQKxWXAbzXVzpVyslSsba24F0wf3T/fuPGe
-	h7fbCM9azvIz9lzr0qjVTPOymkuPzGgC+BlCNRvTzMsriGr8CCQ0Mi8qlx4OJL8oHpRCES
-	f0quh26rXRDUQ7vJAZvMTgI2KWa+xhI=
+	bh=wJvncHPlELH+SXdxjY5fW9A/7fwy8kMaJIN5iytgybk=;
+	b=dwR65hUYhzXeJBOFO52PZHX1A2eDDiILUDbTamUXtCxzgscJcPd08oodG8Ygy5W7gAIsSn
+	dEYViOl033szNxeU7h4+NEzp1++s2YL/ZQ2/vOVepI/RVG497Vcem0b7SzvS82BMNxO2mo
+	c0wbyw0gbGk9BqPGenXfPUq2AJ5qrnc=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io;
-	s=mail2; t=1727947110;
+	s=mail2; t=1727948147;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QgD+sOr2EGE01DptbZEjvNNtI9yYxcoedcVCDETg0iU=;
-	b=Jo38R2o5CDuAqLMhWnK/cxUzqja5ED35V9VARBXZ1EfBeyYdmFBPhG6Lmv1wsLrbEEMGa6
-	1ZNSkNFixMrmAyIe2mnld2bFiEPKItIA2d+0GTfhgkaQu1ol6YV93HCXDWSXq6FFUASBGJ
-	NPvXyyoo4/PsMiwQFlE/gxgNlOXfbUs=
+	bh=wJvncHPlELH+SXdxjY5fW9A/7fwy8kMaJIN5iytgybk=;
+	b=Gw/qXE0LNOmhUu6WoppMfqeWrNoyrPd0TyoOiocO2NATqAW1bUYrMJO/Ywty2GlK+qmVcq
+	fTAVBGoKBPcjMJzRUBfAEzczqCW1Y3pm0/lKjqjcO/d3nBl3ppdtWW42ZR8Mk0ewawMQPf
+	gc4hi/0c86WFZuaIZGgvaRHsk+L4tkA=
 ARC-Authentication-Results: i=1;
 	mail2.ecloud.global;
 	auth=pass smtp.mailfrom=integral@murena.io
-ARC-Seal: i=1; s=mail2; d=murena.io; t=1727947110; a=rsa-sha256; cv=none;
-	b=OifKOiG6uv0fVia3XcucTeb3sTb26uwtafcYalosLpLEm009YaT/+F1HpmZYQy0O8rZHVs
-	0sG9ZBp9MICR5Bz5uQoIDUDHF/iMwF1mRsDhkej4H5Litv50UHoxG1Te/0vxbMBCIguSRw
-	4SoPlXr9ANCW8rIggLeBn23tU2V2hyc=
-Message-ID: <d22be502-5b7a-4da7-80c3-340fcbb5b121@murena.io>
-Date: Thu, 3 Oct 2024 17:18:24 +0800
+ARC-Seal: i=1; s=mail2; d=murena.io; t=1727948147; a=rsa-sha256; cv=none;
+	b=YS2ho0xWdLcOjsoPL3PIxUn7zcUhe4z1HXkZO9RZ3KdzP52ay8xliXxuazNjMbtWoNnRS9
+	y5AABfWanJilOkHNV/8/2QOIJWjC+/caHlon/Djxw8APON+buGhUncq8N6jLE7oXcx0jDV
+	YSPAc2k7VyTqrHX5DV37yr50Z9sXgKs=
+Message-ID: <a6da5ca3-5698-4934-8213-b52cfcd59bb9@murena.io>
+Date: Thu, 3 Oct 2024 17:35:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-To: lihongbo22@huawei.com
-Cc: integral@murena.io, kent.overstreet@gmail.com, kent.overstreet@linux.dev,
- linux-bcachefs@vger.kernel.org
-References: <55b29fbb-3aa8-4ba7-9668-aa19dbb02e78@huawei.com>
 Subject: Re: [PATCH] Add support for true/false, yes/no & on/off in bool-type
  options
+To: Hongbo Li <lihongbo22@huawei.com>
+References: <7f1b35b2-437c-42b2-950b-556ce272c745@huawei.com>
+ <20240718122926.99326-3-integral@murena.io>
+ <u3wl6277ljmgqlbjw5pxu3oeljgftekeati6xcsyfden25umo6@p3z3z4yc6drg>
+ <55b29fbb-3aa8-4ba7-9668-aa19dbb02e78@huawei.com>
 Content-Language: en-US
+Cc: integral@murena.io, kent.overstreet@gmail.com, kent.overstreet@linux.dev,
+ linux-bcachefs@vger.kernel.org
 From: Integral <integral@murena.io>
 Autocrypt: addr=integral@murena.io; keydata=
  xsFNBGQNSAUBEADAehBstFWW6fnnO3CgZhb6kpVUK9AcwoNPwgRHVFA/EbBw4/1Ke/WrlLDT
@@ -110,7 +113,7 @@ Autocrypt: addr=integral@murena.io; keydata=
  2Lp/iMqPYhCOxSQfOQwGeZrUsECt+KxwtEPRIJS0EMGBf9Pnybh5/zXnj73GTAA=
 In-Reply-To: <55b29fbb-3aa8-4ba7-9668-aa19dbb02e78@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 Therefore, if my original patch is okay, could you merge it?
 
@@ -119,3 +122,66 @@ Thanks,
 
 Integral
 
+
+On 7/22/24 12:03 PM, Hongbo Li wrote:
+>
+>
+> On 2024/7/19 6:50, Kent Overstreet wrote:
+>> On Thu, Jul 18, 2024 at 08:29:28PM GMT, Integral wrote:
+>>> Here is the new patch:
+>>>
+>>> Currently, when using bcachefs-tools to set options, bool-type 
+>>> options can
+>>> only accept 1 or 0. Add support for accepting true/false, yes/no &
+>>> on/off for these options.
+>>>
+>>> Signed-off-by: Integral <integral@murena.io>
+>>> ---
+>>>   fs/bcachefs/opts.c | 18 +++++++++++-------
+>>>   1 file changed, 11 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+>>> index 0770aebef6d8..0e4cd6984eda 100644
+>>> --- a/fs/bcachefs/opts.c
+>>> +++ b/fs/bcachefs/opts.c
+>>> @@ -332,17 +332,21 @@ int bch2_opt_parse(struct bch_fs *c,
+>>>       switch (opt->type) {
+>>>       case BCH_OPT_BOOL:
+>>>           if (val) {
+>>> -            ret = kstrtou64(val, 10, res);
+>>> +            if (!strcasecmp(val, "1") || !strcasecmp(val, "true") ||
+>>> +                !strcasecmp(val, "yes") || !strcasecmp(val, "on")) {
+>>> +                *res = 1;
+>>> +            } else if (!strcasecmp(val, "0") || !strcasecmp(val, 
+>>> "false") ||
+>>> +                !strcasecmp(val, "no") || !strcasecmp(val, "off")) {
+> Sorry, may be I was wrong.
+>>> +                *res = 0;
+>>> +            } else {
+>>> +                if (err)
+>>> +                    prt_printf(err, "%s: must be bool", 
+>>> opt->attr.name);
+>>> +                return -BCH_ERR_option_not_bool;
+>>> +            }
+>>
+>> There _should_ be something more standard in the kernel for parsing bool
+>> options (commandline options, module options) - please hunt around for
+>> that and see if it works; report back on what you find.
+> I find in Documentation/filesystems/mount_api.rst, it give an 
+> explanation.
+>
+> ```
+> Note that if the value is of fs_param_is_bool type, fs_parse() will try
+>
+> to match any string value against "0", "1", "no", "yes", "false", "true".
+> ```
+>
+> But this has been handled in fs_param_is_bool with macro fsparam_bool. 
+> Many file systems do this in fs_parse. I think the original patch 
+> seems ok.
+>
+> Thanks,
+> Hongbo
+>
+>>
+>> We want to be consistent on how we parse bools throughout the kernel.
