@@ -1,142 +1,169 @@
-Received: from mail3.ecloud.global (mail3.ecloud.global [135.181.139.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C1913D245
-	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 11:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=135.181.139.185
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727956084; cv=pass; b=h9C1hSIr4dRdeEjlvKwgQV6mkRTNYxsTxTl7nihhjDEuU0ufmar4ADW9K08UnNQp8DyNcv4vEH82CZX7g2afkn+dBq9NqC6O9gMjKrLQsV+AEFniVgbGzyMj+7JYARNVSJ0sStgcoC6XqTybKVLrrS013AZB7FP7mYFTDp9O6Wk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727956084; c=relaxed/simple;
-	bh=QYGW1h0SeFTwtBqapyZNfmvnLiMEf4Re4hlqzmQbWpA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A8jD3sm3q/lySfy2e+wo8lWb3VEEMa8KVHJOb+ilpG6UBgcN45NRjxjfwJgqD6Hi1o2ZVb0p7EIT8bV26qCSy3+Xv+T5ThNx70yWD5ME5rxVFt7Vhbt3/i0eMWGwUDhHPfY8ZppQ1KHY/EP3U1kWckRBhOVdVYdyQiYREvXkjio=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io; spf=pass smtp.mailfrom=murena.io; dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b=nom6Y16M; arc=pass smtp.client-ip=135.181.139.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=murena.io
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D8D515573B;
+	Thu,  3 Oct 2024 11:57:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727956650; cv=none; b=M0uRyImmYyVZlAX5bGydbRxGCAMv9wTH6B4Q/MQioPFMAuZb+8CrIH2PqBmCf3Qy7UjTZ6rvUCqY7dwqdiFfRhREllukrjZcfRv3U2Sld6eVGzfqQ5qpbOaf6vG9U4IjWRIPDbFFV0T3UxYRHIlWuhplw70xVBN7lngG8ek5XjY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727956650; c=relaxed/simple;
+	bh=JZVvikQJZ5BFhUB7aOPfTjOX9OwufknPp9hudMSsxrA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GYZr7fIc7/v2vRQH9+umBW3PaC1R1KPIUZKB9QsdjBQcqrD4H0xc+Osskb2JDng36byRTFEICQboUmkp6TRlplOQp9hzrxuPjF7HnhGTTNEI/mSYi6SI48L/+r8bJZ/9BnNzjoum9UzDv6hSuqxCGas7tl/tZdgcekY203QHEEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dnN+Xzz6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cnFWgQY6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dnN+Xzz6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cnFWgQY6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b="nom6Y16M"
-Received: from authenticated-user (mail3.ecloud.global [127.0.0.1])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dnN+Xzz6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cnFWgQY6";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dnN+Xzz6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cnFWgQY6"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail3.ecloud.global (Postfix) with ESMTPSA id AF7F48831B0;
-	Thu,  3 Oct 2024 11:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io; s=mail3;
-	t=1727955624;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 76BC11F7CE;
+	Thu,  3 Oct 2024 11:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727956646; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=o+waN2lRr07uhpPtle/Qv7BsRwY+hOXEKCs6pM9hQoQ=;
-	b=nom6Y16MTKkgIwlAZubaaGwGx8z1dlQGZrY90wFa9gQfGk4lNqEZmvIybwcDFW6FOCbhkl
-	nqNPLhHaSdg9yD/7vrAWaU/02U20qdBHanOPp6iWOLQeBTODijop8I74IGRnSNDo4aB6KE
-	fa5J5VSty7un/3kPKa0lAQfcMu8M+Yg=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io;
-	s=mail3; t=1727955624;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	bh=4VdL/fRqrsdriBW6pXJN6cZZ3u/9359xzFOhfjWyBnk=;
+	b=dnN+Xzz6m1OdqwYQMa2ExYiZg4hHmfo86iGRJcQcnyGraK1U8J/iTw3r7TW0NBErULqZuM
+	xOLNbGDVYc7KYkQn4j2VB27jmqO20KoenDre5Veiuc4pUn5N59nApPx8mbYGFZoqkwaaN0
+	tXDUmKGmf9SGWyS8i/Pj4pGJGwYTkAs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727956646;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=o+waN2lRr07uhpPtle/Qv7BsRwY+hOXEKCs6pM9hQoQ=;
-	b=pf1d1qK/qt7A5nunObl+Z+MrwpyZfyUyd+q1s0RRtF+hlKCQNY8mgeuq+oUpBrFnUKgHEV
-	ZZ6QohZNaeB0pFbUm2DUa0LvGAC49Gu6eJ16bQbZamz5sRTNwk9i8aIBUcoLdxT2GbqDqF
-	7vFBJwAFF95ABztYUxhHiWCAavOPYNs=
-ARC-Authentication-Results: i=1;
-	mail3.ecloud.global;
-	auth=pass smtp.mailfrom=integral@murena.io
-ARC-Seal: i=1; s=mail3; d=murena.io; t=1727955624; a=rsa-sha256; cv=none;
-	b=ktzVpkrZnQETETcfLbRJ0kHWfW00zB9jGhlSIswfvCKkfiWs4B1MgSEdiomXiMe3j9rjqB
-	gqtNwImJkNzzvH9gQRN0BWJawET4j6TzkpUGbT4P0RjMInCjTcDF/BRDfcEaJaSXiunQ8r
-	vrZm3L+n/SRvD6c+c7DQ62pVa22OKIY=
-From: Integral <integral@murena.io>
-To: mmpgouride@gmail.com
-Cc: integral@murena.io,
-	kent.overstreet@gmail.com,
-	kent.overstreet@linux.dev,
-	lihongbo22@huawei.com,
-	linux-bcachefs@vger.kernel.org
-Subject: [PATCH v2] bcachefs: add support for true/false & yes/no in bool-type options
-Date: Thu,  3 Oct 2024 19:40:13 +0800
-Message-ID: <20241003114012.297236-2-integral@murena.io>
-In-Reply-To: <21B6E9C0-9A84-4B54-9FC8-307E82AB6006@gmail.com>
-References: <21B6E9C0-9A84-4B54-9FC8-307E82AB6006@gmail.com>
+	bh=4VdL/fRqrsdriBW6pXJN6cZZ3u/9359xzFOhfjWyBnk=;
+	b=cnFWgQY64NPIDGd4Q2ZeT4qYjuUN8ZdPWKgyg7NjZ96Ot/JlKG0WALKVR4gOylfOsNBSlc
+	Lg/XsKGO5jlEtGAg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dnN+Xzz6;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=cnFWgQY6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727956646; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4VdL/fRqrsdriBW6pXJN6cZZ3u/9359xzFOhfjWyBnk=;
+	b=dnN+Xzz6m1OdqwYQMa2ExYiZg4hHmfo86iGRJcQcnyGraK1U8J/iTw3r7TW0NBErULqZuM
+	xOLNbGDVYc7KYkQn4j2VB27jmqO20KoenDre5Veiuc4pUn5N59nApPx8mbYGFZoqkwaaN0
+	tXDUmKGmf9SGWyS8i/Pj4pGJGwYTkAs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727956646;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4VdL/fRqrsdriBW6pXJN6cZZ3u/9359xzFOhfjWyBnk=;
+	b=cnFWgQY64NPIDGd4Q2ZeT4qYjuUN8ZdPWKgyg7NjZ96Ot/JlKG0WALKVR4gOylfOsNBSlc
+	Lg/XsKGO5jlEtGAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 67F4913882;
+	Thu,  3 Oct 2024 11:57:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zcZZGaaG/mYHHgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 03 Oct 2024 11:57:26 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id E1C47A086F; Thu,  3 Oct 2024 13:57:21 +0200 (CEST)
+Date: Thu, 3 Oct 2024 13:57:21 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	kent.overstreet@linux.dev, torvalds@linux-foundation.org,
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>,
+	Kees Cook <keescook@chromium.org>,
+	linux-security-module@vger.kernel.org, Jan Kara <jack@suse.cz>,
+	Amir Goldstein <amir73il@gmail.com>
+Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
+ sb->s_inodes iteration to super_iter_inodes()
+Message-ID: <20241003115721.kg2caqgj2xxinnth@quack3>
+References: <20241002014017.3801899-1-david@fromorbit.com>
+ <20241002014017.3801899-5-david@fromorbit.com>
+ <Zv5GfY1WS_aaczZM@infradead.org>
+ <Zv5J3VTGqdjUAu1J@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zv5J3VTGqdjUAu1J@infradead.org>
+X-Rspamd-Queue-Id: 76BC11F7CE
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[fromorbit.com,vger.kernel.org,linux.dev,linux-foundation.org,linux.microsoft.com,google.com,hallyn.com,chromium.org,suse.cz,gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-Here is my new patch:
+On Thu 03-10-24 00:38:05, Christoph Hellwig wrote:
+> On Thu, Oct 03, 2024 at 12:23:41AM -0700, Christoph Hellwig wrote:
+> > On Wed, Oct 02, 2024 at 11:33:21AM +1000, Dave Chinner wrote:
+> > > --- a/security/landlock/fs.c
+> > > +++ b/security/landlock/fs.c
+> > > @@ -1223,109 +1223,60 @@ static void hook_inode_free_security_rcu(void *inode_security)
+> > >  
+> > >  /*
+> > >   * Release the inodes used in a security policy.
+> > > - *
+> > > - * Cf. fsnotify_unmount_inodes() and invalidate_inodes()
+> > >   */
+> > > +static int release_inode_fn(struct inode *inode, void *data)
+> > 
+> > Looks like this is called from the sb_delete LSM hook, which
+> > is only implemented by landlock, and only called from
+> > generic_shutdown_super, separated from evict_inodes only by call
+> > to fsnotify_sb_delete.  Why did LSM not hook into that and instead
+> 
+> An the main thing that fsnotify_sb_delete does is yet another inode
+> iteration..
+> 
+> Ay chance you all could get together an figure out how to get down
+> to a single sb inode iteration per unmount?
 
-Currently, when using bcachefs-tools to set options, bool-type options can
-only accept 1 or 0. Add support for accepting true/false and yes/no for
-these options.
+Fair enough. If we go with the iterator variant I've suggested to Dave in
+[1], we could combine the evict_inodes(), fsnotify_unmount_inodes() and
+Landlocks hook_sb_delete() into a single iteration relatively easily. But
+I'd wait with that convertion until this series lands.
 
-Signed-off-by: Integral <integral@murena.io>
----
- fs/bcachefs/opts.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
+								Honza
 
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index 232be8a44051..659536d00cb9 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include <linux/kernel.h>
-+#include <linux/fs_parser.h>
- 
- #include "bcachefs.h"
- #include "compress.h"
-@@ -322,6 +323,18 @@ int bch2_opt_validate(const struct bch_option *opt, u64 v, struct printbuf *err)
- 	return 0;
- }
- 
-+static const struct constant_table bch2_opt_bool_names[] = {
-+	{ "0",		false },
-+	{ "false",	false },
-+	{ "no",		false },
-+	{ "off",	false },
-+	{ "1",		true },
-+	{ "true",	true },
-+	{ "yes",	true },
-+	{ "on",		true },
-+	{ },
-+};
-+
- int bch2_opt_parse(struct bch_fs *c,
- 		   const struct bch_option *opt,
- 		   const char *val, u64 *res,
-@@ -332,17 +345,18 @@ int bch2_opt_parse(struct bch_fs *c,
- 	switch (opt->type) {
- 	case BCH_OPT_BOOL:
- 		if (val) {
--			ret = kstrtou64(val, 10, res);
-+			ret = lookup_constant(bch2_opt_bool_names, val, BCH_ERR_option_not_bool);
-+			if (ret != BCH_ERR_option_not_bool) {
-+				*res = ret;
-+			} else {
-+				if (err)
-+					prt_printf(err, "%s: must be bool", opt->attr.name);
-+				return ret;
-+			}
- 		} else {
--			ret = 0;
- 			*res = 1;
- 		}
- 
--		if (ret < 0 || (*res != 0 && *res != 1)) {
--			if (err)
--				prt_printf(err, "%s: must be bool", opt->attr.name);
--			return ret < 0 ? ret : -BCH_ERR_option_not_bool;
--		}
- 		break;
- 	case BCH_OPT_UINT:
- 		if (!val) {
+[1] https://lore.kernel.org/all/20241003114555.bl34fkqsja4s5tok@quack3
 -- 
-2.46.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
