@@ -1,77 +1,72 @@
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A0B14AD02
-	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 09:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63659136338
+	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 10:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727949575; cv=none; b=Xe4KAcJqe18TuPLkeri1V61G1+gmKM2p0dVPMqb7K3BQ5UhYw1TNZ64dANWHC6aQ79sqqEKJkAv5yRaLvsn/ZXrBxQkZjWJFsnfHGINzt4eX59nRnc2+hrf/ocSleHrg3cPc+uuysH0DfTSdueXsCbhEVDWGyvnFG0cjqs+bKq4=
+	t=1727951766; cv=none; b=Q0c/nAf07ko/x97+KvgG25fURzGFYhLnhrNKmuf9DAMOii42GbucinFWFceYJFE2vFdo9dJOHJItSH5H+BFqPpDWoAfqwLoCMB89U5YzenyQ+84jvBMezSO8G6wmsfG7c6FX/Hi4JPTeMadFN6/PUuqBLrZW48t/MCE3xJFAtu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727949575; c=relaxed/simple;
-	bh=ws++fftyryHhCAETNNzTX0HjvxlfudjsCorBxr25E9Y=;
+	s=arc-20240116; t=1727951766; c=relaxed/simple;
+	bh=8oK4I+JBIU/DL1qfcLk0wLwR/KnTVzyuzZnecZa4deU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VuBqFUGKqSxwfRzlKrnLzHYJ25+JZ1rwwJJtrnJBBvBrK5oP7EUrmzGnVe8/ETh70cFxRdlg+sRWmXBgYPvpbM3ZsbNdMl4GC5dmRq9q6L5GLjAIX/SHJI6dxBbgosTfwsJJfA9ddfGv9HU9w7h/wfYNXmaOyF8iXk/J/C4ZxLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=ixkIPFsQ; arc=none smtp.client-ip=209.85.215.181
+	 Content-Type:Content-Disposition:In-Reply-To; b=smkYD/UVYP2fNif6FsPj39+drfhr3sn3dnvbJuyVB4jhXSSMrTxlztTZp4Nfl/OxzHtobECcsz4OcKd0GAXzrrp1QddReyiCNQxCr7OC5oVbOtSAE14yl1weBpDMXI5d/M8s+u5zwAfu/UqN/SnzLyPq/OfZPlGl//HF+Wa6/YU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=tBT6MHGK; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="ixkIPFsQ"
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7db908c9c83so418931a12.2
-        for <linux-bcachefs@vger.kernel.org>; Thu, 03 Oct 2024 02:59:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="tBT6MHGK"
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-20b64584fd4so7067415ad.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 03 Oct 2024 03:36:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1727949573; x=1728554373; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1727951764; x=1728556564; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FZoVePEjRG3urznVwj0SIfeUiNk8Ws/Gg0iUzR96R7c=;
-        b=ixkIPFsQcNrsGNxCOjHKFh2AFYRm6FRDqg2JkLijTz9+X1TrczYA0uAqvoOXekDvtG
-         uc1VgRBOBHwZpTGKoDmUqRRmKo8j2AE6uL+NaAAdRxQaEyTlFy2wsgBNOScunA/XjWNH
-         gemZhcos3TMMn3L9O6yIbHxpGeU3FbusIxMUhH7KBKexdojjF5c+d5yRtMR0+OxnPCPi
-         gSc4pL5GgIgL46/ZL30Ztb7k+v/X3eNBx0FFpFeqZ3vDnqLiHolbYnYjbiUZJMhIvmIE
-         S6urCvkJLyqxU+zcC7f6KGJDUpZ3mElBOM+RBG7NiD1IR1I27Vd2ikpJxaEmZaqZtSFM
-         Uxuw==
+        bh=meBlkFYSu8tQQG8fzuHlW0Llugrqw0c4D3dP4w0sd0k=;
+        b=tBT6MHGKDoVN6TKilxvrhHMf7tMu/9GjUI4PWr7im5rMk0zLW4UlNJrW+jSCGXKZts
+         rdeprrrtJMFXrOMbKIwFdcTJE/W6ihpZdbq19h3ZAqJNpALTWR1Fim6/8i2JOYD6/x7+
+         fgL5KHJFVKRH798UKo9r1KTlkc1ggz0Quw7kD3wKhel+IcdaeamNrsLA675i7hGq32rW
+         jbmOAoPavdiyq808JBj4Ft3cx2HwpKtXCb+DVr2GdMa/nOiygJHDcCvjXqXYzUvbY4RX
+         uYwaSZv0cwZfWrin/onvdeT5iOS4+xV7IY/VMxtil+UWy1A9XownGQKDfx8yf1PBX8QQ
+         1+mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727949573; x=1728554373;
+        d=1e100.net; s=20230601; t=1727951764; x=1728556564;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FZoVePEjRG3urznVwj0SIfeUiNk8Ws/Gg0iUzR96R7c=;
-        b=tnZyOYpIJV/Ya6FlgwMyR3CFNzcMHl+RJyl/kxG3FKCzgFBnOckjqeBU81GUdWBQmj
-         FqctKhMwn0BGkzLU+c5GLb3fhSmLftminmL6Lg4BhBhgFZbNpz6khBSN72QjfFBDXayd
-         PcKgggGn9dhw1fIDovSY02uiuRdGu0LqZSvUoAd+B0mOI33ymhdKc1ctSH3dzWu3C7oG
-         MEKAPXJf8rUxbnLOmts120s8X3JxYPJUrUQS4j6wF8q4hGee/WXWPP0atBSpeyqnw895
-         vJih4jkA8HkIVlaqroJQZLkLtcPnqzonv2fB0PrXqsyxDol1W0Msi4CdIt65bUgXLr0V
-         USkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUsjFMvNhPKG0tSCkTSKyu4nU010JHE1zSw27jobj7VPCRAiOGhPgJqxBSpMkcEZ/R8pOXbptCD1VpZ/A98Yg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4RFAOy8lpM4ahVoJDrf7MC2N6b5ARwZ5pXLZZwG+MJIi+7TXa
-	Hzm4yrf3nPd+U/auajDkXTGAK9PAumZqRpUoU3iT9hJR/7dPo4lfVAlJorHrijA=
-X-Google-Smtp-Source: AGHT+IHRE80iIS0vtT8WICPYgmm1vV8aDhQHpiTupQ0As/uP52it766oR+Cw0QAYw1lPazD0ArHY1g==
-X-Received: by 2002:a05:6a21:1643:b0:1d5:14ff:a15f with SMTP id adf61e73a8af0-1d5db20a5c0mr10402698637.11.1727949573106;
-        Thu, 03 Oct 2024 02:59:33 -0700 (PDT)
+        bh=meBlkFYSu8tQQG8fzuHlW0Llugrqw0c4D3dP4w0sd0k=;
+        b=WD9hKp6eoHKRma4uVTb6X8SwgJOAgWjIlUY5cnKRq1dZsuOzfpYyLOpNvTZbzafWa7
+         qphoHcn7HR4uW/d+nwEj9nurb9nBJnykHZC/gnCs2NaBXhDstLeV+7VYoJtp5Z7ih4rz
+         3GVV3QslUyLK1n6mCBZ3NYiGd8ABeCw36aT1P3IbKH57rXFnEDabqYF5wK82miKwI/hz
+         uGhXMjIa1HrhoFihJs8XC6+Px8Ju8aRCqkOSqRpIAwkucOAn95vRCHQKxoTDwADlFlNi
+         EGdtTvwCIhfqURar/uBqWBcE4/LFt7lkaLIjoBLCeEosj5j/k8XzxkTyh3huQDEIcnXp
+         YDtA==
+X-Forwarded-Encrypted: i=1; AJvYcCUCtn9iuN+nbvDXlYOS+/UqlI0jMYRL+EH8ocZBLazUViJwNmZf+rwPoyn+SVnPE2uAfq6UH+flbBo8OEF4/g==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6/nDKGZ5MOqx3oimUo7+nVhCxMCBStWwjcwxfgeA0TasalkDZ
+	5B4bZDDRjf3dVpOTjEP6UkbNZYpNe9Cw16Z6SYKjwW7A56DLO445i5oB8N2sNZbrdzyUNRy8LpL
+	u
+X-Google-Smtp-Source: AGHT+IHAbmLCjTe9ucPXUjhaOkLLAkmHqYr94XYuHe2VWk7hgIGyvqHOxEgqNzNISkYi8RQMpJxqkg==
+X-Received: by 2002:a17:902:f68d:b0:206:8acc:8871 with SMTP id d9443c01a7336-20bc5a13640mr66308755ad.31.1727951763533;
+        Thu, 03 Oct 2024 03:36:03 -0700 (PDT)
 Received: from dread.disaster.area (pa49-179-78-197.pa.nsw.optusnet.com.au. [49.179.78.197])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71dd9dee6adsm974968b3a.144.2024.10.03.02.59.32
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20beeca2256sm6720985ad.91.2024.10.03.03.36.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Oct 2024 02:59:32 -0700 (PDT)
+        Thu, 03 Oct 2024 03:36:02 -0700 (PDT)
 Received: from dave by dread.disaster.area with local (Exim 4.96)
 	(envelope-from <david@fromorbit.com>)
-	id 1swIcL-00DL4k-2o;
-	Thu, 03 Oct 2024 19:59:29 +1000
-Date: Thu, 3 Oct 2024 19:59:29 +1000
+	id 1swJBf-00DLiE-2H;
+	Thu, 03 Oct 2024 20:35:59 +1000
+Date: Thu, 3 Oct 2024 20:35:59 +1000
 From: Dave Chinner <david@fromorbit.com>
-To: Jan Kara <jack@suse.cz>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, torvalds@linux-foundation.org
-Subject: Re: [RFC PATCH 0/7] vfs: improving inode cache iteration scalability
-Message-ID: <Zv5rAYEgY3o7Rhju@dread.disaster.area>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
+	torvalds@linux-foundation.org
+Subject: Re: [PATCH 2/7] vfs: add inode iteration superblock method
+Message-ID: <Zv5zj2k8X3ZasfYB@dread.disaster.area>
 References: <20241002014017.3801899-1-david@fromorbit.com>
- <20241002-lethargisch-hypnose-fd06ae7a0977@brauner>
- <Zv098heGHOtGfw1R@dread.disaster.area>
- <3lukwhxkfyqz5xsp4r7byjejrgvccm76azw37pmudohvxcxqld@kiwf5f5vjshk>
- <Zv3H8BxJX2GwNW2Y@dread.disaster.area>
- <lngs2n3kfwermwuadhrfq2loff3k4psydbjullhecuutthpqz3@4w6cybx7boxw>
- <Zv32Vow1YdYgB8KC@dread.disaster.area>
- <20241003091741.vmw3muqt5xagjion@quack3>
+ <20241002014017.3801899-3-david@fromorbit.com>
+ <Zv5D3ag3HlYFsCAX@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -80,59 +75,84 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241003091741.vmw3muqt5xagjion@quack3>
+In-Reply-To: <Zv5D3ag3HlYFsCAX@infradead.org>
 
-On Thu, Oct 03, 2024 at 11:17:41AM +0200, Jan Kara wrote:
-> On Thu 03-10-24 11:41:42, Dave Chinner wrote:
-> > On Wed, Oct 02, 2024 at 07:20:16PM -0400, Kent Overstreet wrote:
-> > > A couple things that help - we've already determined that the inode LRU
-> > > can go away for most filesystems,
+On Thu, Oct 03, 2024 at 12:12:29AM -0700, Christoph Hellwig wrote:
+> On Wed, Oct 02, 2024 at 11:33:19AM +1000, Dave Chinner wrote:
+> > From: Dave Chinner <dchinner@redhat.com>
 > > 
-> > We haven't determined that yet. I *think* it is possible, but there
-> > is a really nasty inode LRU dependencies that has been driven deep
-> > down into the mm page cache writeback code.  We have to fix that
-> > awful layering violation before we can get rid of the inode LRU.
-> > 
-> > I *think* we can do it by requiring dirty inodes to hold an explicit
-> > inode reference, thereby keeping the inode pinned in memory whilst
-> > it is being tracked for writeback. That would also get rid of the
-> > nasty hacks needed in evict() to wait on writeback to complete on
-> > unreferenced inodes.
-> > 
-> > However, this isn't simple to do, and so getting rid of the inode
-> > LRU is not going to happen in the near term.
+> > Add a new superblock method for iterating all cached inodes in the
+> > inode cache.
 > 
-> Yeah. I agree the way how writeback protects from inode eviction is not the
-> prettiest one but the problem with writeback holding normal inode reference
-> is that then flush worker for the device can end up deleting unlinked
-> inodes which was causing writeback stalls and generally unexpected lock
-> ordering issues for some filesystems (already forgot the details).
+> The method is added later, this just adds an abstraction.
 
-Yeah, if we end up in evict() on ext4 it will can then do all sorts
-of whacky stuff that involves blocking, running transactions and
-doing other IO. XFS, OTOH, has been changed to defer all that crap
-to background threads (the xfs_inodegc infrastructure) that runs
-after the VFS thinks the inode is dead and destroyed. There are some
-benefits to having the filesystem inode exist outside the VFS inode
-life cycle....
+Ah, I forgot to remove that from the commit message when I split the
+patch up....
 
-> Now this
-> was more that 12 years ago so maybe we could find a better solution to
-> those problems these days (e.g. interactions between page writeback and
-> page reclaim are very different these days) but I just wanted to warn there
-> may be nasty surprises there.
+> > +/**
+> > + * super_iter_inodes - iterate all the cached inodes on a superblock
+> > + * @sb: superblock to iterate
+> > + * @iter_fn: callback to run on every inode found.
+> > + *
+> > + * This function iterates all cached inodes on a superblock that are not in
+> > + * the process of being initialised or torn down. It will run @iter_fn() with
+> > + * a valid, referenced inode, so it is safe for the caller to do anything
+> > + * it wants with the inode except drop the reference the iterator holds.
+> > + *
+> > + */
+> 
+> Spurious empty comment line above.
+> 
+> > +void super_iter_inodes_unsafe(struct super_block *sb, ino_iter_fn iter_fn,
+> > +		void *private_data)
+> > +{
+> > +	struct inode *inode;
+> > +	int ret;
+> > +
+> > +	rcu_read_lock();
+> > +	spin_lock(&sb->s_inode_list_lock);
+> > +	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+> > +		ret = iter_fn(inode, private_data);
+> > +		if (ret == INO_ITER_ABORT)
+> > +			break;
+> > +	}
+> 
+> Looking at the entire series, splitting the helpers for the unsafe
+> vs safe iteration feels a bit of an odd API design given that the
+> INO_ITER_REFERENCED can be passed to super_iter_inodes, but is an
+> internal flag pass here to the file system method.
 
-I don't think the situation has improved with filesytsems like ext4.
-I think they've actually gotten worse - I recently learnt that ext4
-inode eviction can recurse back into the inode cache to instantiate
-extended attribute inodes so they can be truncated to allow inode
-eviction to make progress.
+The INO_ITER_REFERENCED flag is a hack to support the whacky
+fsnotify and landlock iterators that are run after evict_inodes()
+(which you already noticed...).  i.e.  there should not be any
+unreferenced inodes at this point, so if any are found they should
+be skipped.
 
-I suspect the ext4 eviction behaviour is unfixable in any reasonable
-time frame, so the only solution I can come up with is to run the
-iput() call from a background thread context.  (e.g. defer it to a
-workqueue). That way iput_final() and eviction processing will not
-interfere with other writeback operations....
+I think it might be better to remove that flag and replace the
+iterator implementation with some kind of SB flag and
+WARN_ON_ONCE that fires if a referenced inode is found. With that,
+the flags field for super_iter_inodes() can go away...
+
+> Not sure what
+> the best way to do it, but maybe just make super_iter_inodes
+> a wrapper that calls into the method if available, or
+> a generic_iter_inodes_unsafe if the unsafe flag is set, else
+> a plain generic_iter_inodes?
+
+Perhaps. I'll look into it.
+
+> > +/* Inode iteration callback return values */
+> > +#define INO_ITER_DONE		0
+> > +#define INO_ITER_ABORT		1
+> > +
+> > +/* Inode iteration control flags */
+> > +#define INO_ITER_REFERENCED	(1U << 0)
+> > +#define INO_ITER_UNSAFE		(1U << 1)
+> 
+> Please adjust the naming a bit to make clear these are different
+> namespaces, e.g. INO_ITER_RET_ and INO_ITER_F_.
+
+Will do.
 
 -Dave.
 -- 
