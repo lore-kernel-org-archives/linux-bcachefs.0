@@ -1,99 +1,70 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AA21990AA;
-	Thu,  3 Oct 2024 12:56:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0A7199936
+	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 13:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727960218; cv=none; b=c99FcwQ9+VR+HTFsUh/o2SpnRlh3GSYSgPNH1CCl6olkVcyqZfn0WaKTiXygbTox8biajyznKHcX/8wdqHNk+pAohubW0QaVcRoJAEHAGXL9nl00NDZAs9TNeq5M3F1QB7xRxYKnM0ZU02dNyOjP2FpYRBhFoaBK/RwGCuHZ3Gw=
+	t=1727960608; cv=none; b=Q8kGqNv0JLLD+qmKKOzjHaT3cy4EK4VCMm+QrBpTQS9lzYCHjU94UfJYN8Lwju2zjWCVDlHMZNamuGCKCjqMx1wdnjDNFahN7tTBQ+5jziytmrZ/YULE/tlec60eQCYWmIPeLSPu2QgGkYKgC8dGx88flevEhVY8ddTHDC9W7Zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727960218; c=relaxed/simple;
-	bh=dEZHhcRNHJtuOhkSpO6M3dhjaBz4/Tpq4sVRICVXuOM=;
+	s=arc-20240116; t=1727960608; c=relaxed/simple;
+	bh=cFecOIy8+7/6v3XpNNPKZuX5SpWYIpwMGimiHsJvsjg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FkG828ClLTyvnb85p2Ln3Iv+rxwC2uIHt1h5dUumTCtIk9jKMm2oQh/Xs5IeRUF/s93Ym/fKw/xKpj96UwXS2jwASTXHxagNzMYPReROiMwOYFjOx5pUdKnnthTOfSvpaJKtxsSzWA2K6QCKPygY9H0xqkpbnbaahZ0Qz38NMaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FbSPJOOe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0kGkmGl2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FbSPJOOe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0kGkmGl2; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cbvmgd5ZFgwp5cjhIp1VyudDRZgkzsJPwW1pKijw9xNvDFGtNruB/pW1gIcJJP2Vk7OwhBj0i7jtGj+i089nd4Q2Fg2gWkKJ35KutsOh1fO3PeihLQluhskHuRyGPQultWfcxjwrmMuCgnjmG54uSwSrfBG9P6yrLf76P4/OPjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=dXy/8Ps6; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FbSPJOOe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0kGkmGl2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FbSPJOOe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0kGkmGl2"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4AEBC21C9D;
-	Thu,  3 Oct 2024 12:56:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727960215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0dGDk1/DJLFq+x5VU+voSc3Ss2+GN3kBk9KS/GGlynY=;
-	b=FbSPJOOeij35aJIjFMvpWcHvY0J6DaXjUTwe32eHbNbjN09KBZXUGhqu6luFuK7kmPK+IU
-	uMgD7ZdBBCzWAQ81qbjOSVrjOoWpm5ctLaDNvWAd3IiXPx30481VI1kY6Y4UDiZqf2c+cf
-	AcpIcT0m3rIQD8TDV+8FgQG3nN/4zVw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727960215;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0dGDk1/DJLFq+x5VU+voSc3Ss2+GN3kBk9KS/GGlynY=;
-	b=0kGkmGl2gsRpceSfQWu2fBd7sd3Jgq/uaWTEyOryxrDebUIsw3FuyaPeE5lX96K5vSTjpw
-	4xO1mnSNx8tK2DCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727960215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0dGDk1/DJLFq+x5VU+voSc3Ss2+GN3kBk9KS/GGlynY=;
-	b=FbSPJOOeij35aJIjFMvpWcHvY0J6DaXjUTwe32eHbNbjN09KBZXUGhqu6luFuK7kmPK+IU
-	uMgD7ZdBBCzWAQ81qbjOSVrjOoWpm5ctLaDNvWAd3IiXPx30481VI1kY6Y4UDiZqf2c+cf
-	AcpIcT0m3rIQD8TDV+8FgQG3nN/4zVw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727960215;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0dGDk1/DJLFq+x5VU+voSc3Ss2+GN3kBk9KS/GGlynY=;
-	b=0kGkmGl2gsRpceSfQWu2fBd7sd3Jgq/uaWTEyOryxrDebUIsw3FuyaPeE5lX96K5vSTjpw
-	4xO1mnSNx8tK2DCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C68D13882;
-	Thu,  3 Oct 2024 12:56:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id USa2DpeU/mbbMAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 03 Oct 2024 12:56:55 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E9745A086F; Thu,  3 Oct 2024 14:56:50 +0200 (CEST)
-Date: Thu, 3 Oct 2024 14:56:50 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="dXy/8Ps6"
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-20b78ee6298so5312165ad.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 03 Oct 2024 06:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1727960606; x=1728565406; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=I6WsCn5kQnr/M8pyra1nEENH4i5MfxsBdvPAgp8YWfY=;
+        b=dXy/8Ps6wW60z17VLFkeDIortaYCVEwIQMt7xYkrfB93puA0ibNaYc9zyneco8kLHz
+         b1+NyDd/YEpUHUgCmMFVfLV3yhqeFHn3jlgyfwdI3eE76n5K9jmCOq+EbGg+m2uoWz0E
+         ILV3/zPd7yxQ5mwQbJexmkKY2Of8RIOOxAClu4+tvBP/iLNdr6fd7FZKwYZA1xHs30kU
+         ndC0822XtE076rLqzCEiMD1zyOjPwJrOXpdVioGDNOwamUHd44Xck37kJH8mRgvEg3ji
+         CoIRKKGn1ciaWQtCIA/+k7qzXD5Yvm2jYA3DFadjlpBkdIEUBrIAhR2Ba1M1ma9/LaEg
+         xxag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727960606; x=1728565406;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I6WsCn5kQnr/M8pyra1nEENH4i5MfxsBdvPAgp8YWfY=;
+        b=Qd7/vu5ZLx6LR8It0PlFDxgTvw0CsvRQFE4KZPNiT43CjqV2Z37Lou9STxsJ4FA7pE
+         gCHszs+Yw0eEaHFpemHmOrjMALPgumSBQyYrMm283lyu3nFeopBNBZE6ToUMweDn0pd3
+         oxiQjZjQGeCGbI8vYnas7oBlNve5jq42jUtk4s8yCEiQtLyc/STGHqc/4YvLLEQN1KI7
+         rRuTuQ49S85ly6Q+UCq+S1Db8aI3evMsHDLg8ntxzC+FXEb1z0zbH8QJbNr32LbJBnpl
+         CE0mtx4GtM9UZkU9nBVB+sx+TALhx63FvppI3sJ9yUppv0NHTzJHRe9uIaT4UvkJtE28
+         bJdw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2xmdQcDMn203S4CAjI+6hX6Cx4gvyP24Nc2dJ2UnOsU16ImN5r4+BKhdJvMCOuZ/tRQDzXZwsztkWSjFBNA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUkt8g2ut2F8TqtWak+TS8WdRxtpagSiQ7pXS3bc+AgXa1wYP0
+	uVhGMxWrxgpu5vGVFtBYqZqH/8s7JwtM8Spp7Noq7oNl7e8JJ9MOZqybsk59eV0=
+X-Google-Smtp-Source: AGHT+IEiwb3qcvI21LtzL2rMLicqK87raMpVn88xvdwX6PVd2P5nGiqQOFJ7fHf8sEPKX8HgqeiYJA==
+X-Received: by 2002:a17:902:e743:b0:20b:7e1e:7337 with SMTP id d9443c01a7336-20bc5a0a46bmr106414435ad.13.1727960605658;
+        Thu, 03 Oct 2024 06:03:25 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-78-197.pa.nsw.optusnet.com.au. [49.179.78.197])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20beead29b9sm8710455ad.22.2024.10.03.06.03.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2024 06:03:25 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1swLUI-00DOXS-2V;
+	Thu, 03 Oct 2024 23:03:22 +1000
+Date: Thu, 3 Oct 2024 23:03:22 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
 	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
-	torvalds@linux-foundation.org,
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>,
-	Kees Cook <keescook@chromium.org>,
-	linux-security-module@vger.kernel.org,
-	Amir Goldstein <amir73il@gmail.com>
-Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
- sb->s_inodes iteration to super_iter_inodes()
-Message-ID: <20241003125650.jtkqezmtnzfoysb2@quack3>
+	torvalds@linux-foundation.org
+Subject: Re: [RFC PATCH 0/7] vfs: improving inode cache iteration scalability
+Message-ID: <Zv6WGoNWMsnTWxza@dread.disaster.area>
 References: <20241002014017.3801899-1-david@fromorbit.com>
- <20241002014017.3801899-5-david@fromorbit.com>
- <Zv5GfY1WS_aaczZM@infradead.org>
- <Zv5J3VTGqdjUAu1J@infradead.org>
- <20241003115721.kg2caqgj2xxinnth@quack3>
- <Zv6J34fwj3vNOrIH@infradead.org>
- <20241003122657.mrqwyc5tzeggrzbt@quack3>
- <Zv6Qe-9O44g6qnSu@infradead.org>
+ <20241003114555.bl34fkqsja4s5tok@quack3>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -102,99 +73,90 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zv6Qe-9O44g6qnSu@infradead.org>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,fromorbit.com,vger.kernel.org,linux.dev,linux-foundation.org,linux.microsoft.com,google.com,hallyn.com,chromium.org,gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <20241003114555.bl34fkqsja4s5tok@quack3>
 
-On Thu 03-10-24 05:39:23, Christoph Hellwig wrote:
-> On Thu, Oct 03, 2024 at 02:26:57PM +0200, Jan Kara wrote:
-> > On Thu 03-10-24 05:11:11, Christoph Hellwig wrote:
-> > > On Thu, Oct 03, 2024 at 01:57:21PM +0200, Jan Kara wrote:
-> > > > Fair enough. If we go with the iterator variant I've suggested to Dave in
-> > > > [1], we could combine the evict_inodes(), fsnotify_unmount_inodes() and
-> > > > Landlocks hook_sb_delete() into a single iteration relatively easily. But
-> > > > I'd wait with that convertion until this series lands.
-> > > 
-> > > I don't see how that has anything to do with iterators or not.
+On Thu, Oct 03, 2024 at 01:45:55PM +0200, Jan Kara wrote:
+> Hi Dave!
+> 
+> On Wed 02-10-24 11:33:17, Dave Chinner wrote:
+> > There are two superblock iterator functions provided. The first is a
+> > generic iterator that provides safe, reference counted inodes for
+> > the callback to operate on. This is generally what most sb->s_inodes
+> > iterators use, and it allows the iterator to drop locks and perform
+> > blocking operations on the inode before moving to the next inode in
+> > the sb->s_inodes list.
 > > 
-> > Well, the patches would obviously conflict
+> > There is one quirk to this interface - INO_ITER_REFERENCE - because
+> > fsnotify iterates the inode cache -after- evict_inodes() has been
+> > called during superblock shutdown to evict all non-referenced
+> > inodes. Hence it should only find referenced inodes, and it has
+> > a check to skip unreferenced inodes. This flag does the same.
 > 
-> Conflict with what?
-
-I thought you wanted the interations to be unified in current state of
-code. If you meant after Dave's series, then we are in agreement.
-
-> > which seems pointless if we
-> > could live with three iterations for a few years until somebody noticed :).
-> > And with current Dave's version of iterators it will not be possible to
-> > integrate evict_inodes() iteration with the other two without a layering
-> > violation. Still we could go from 3 to 2 iterations.
+> Overall I really like the series. A lot of duplicated code removed and
+> scalability improved, we don't get such deals frequently :) Regarding
+> INO_ITER_REFERENCE I think that after commit 1edc8eb2e9313 ("fs: call
+> fsnotify_sb_delete after evict_inodes") the check for 0 i_count in
+> fsnotify_unmount_inodes() isn't that useful anymore so I'd be actually fine
+> dropping it (as a separate patch please).
 > 
-> What layering violation?
+> That being said I'd like to discuss one thing: As you have surely noticed,
+> some of the places iterating inodes perform additional checks on the inode
+> to determine whether the inode is interesting or not (e.g. the Landlock
+> iterator or iterators in quota code) to avoid the unnecessary iget / iput
+> and locking dance.
+
+Yes, but we really don't care. None of these cases are performance
+critical, and I'd much prefer that we have a consistent behaviour.
+
+> The inode refcount check you've worked-around with
+> INO_ITER_REFERENCE is a special case of that. Have you considered option to
+> provide callback for the check inside the iterator?
+
+I did. I decided that it wasn't necessary just to avoid the
+occasional iget/iput. It's certainly not necessary for the
+fsnotify/landlock cases where INO_ITER_REFERENCE was used because
+at that point there are only landlock and fsnotify inodes left in
+the cache. We're going to be doing iget/iput on all of them
+anyway.
+
+Really, subsystems should be tracking inodes they have references to
+themselves, not running 'needle in haystack' searches for inodes
+they hold references to. That would get rid of both the fsnotify and
+landlock iterators completely...
+
+> Also maybe I'm went a *bit* overboard here with macro magic but the code
+> below should provide an iterator that you can use like:
 > 
-> Below is quick compile tested part to do the fsnotify side and
-> get rid of the fsnotify iteration, which looks easily worth it.
+> 	for_each_sb_inode(sb, inode, inode_eligible_check(inode)) {
+> 		do my stuff here
+> 	}
 
-...
+As I explained to Kent: wrapping the existing code in a different
+iterator defeats the entire purpose of the change to the iteration
+code.
 
-> @@ -789,11 +789,23 @@ static bool dispose_list(struct list_head *head)
->   */
->  static int evict_inode_fn(struct inode *inode, void *data)
->  {
-> +	struct super_block *sb = inode->i_sb;
->  	struct list_head *dispose = data;
-> +	bool post_unmount = !(sb->s_flags & SB_ACTIVE);
->  
->  	spin_lock(&inode->i_lock);
-> -	if (atomic_read(&inode->i_count) ||
-> -	    (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE))) {
-> +	if (atomic_read(&inode->i_count)) {
-> +		spin_unlock(&inode->i_lock);
-> +
-> +		/* for each watch, send FS_UNMOUNT and then remove it */
-> +		if (post_unmount && fsnotify_sb_info(sb)) {
-> +			fsnotify_inode(inode, FS_UNMOUNT);
-> +			fsnotify_inode_delete(inode);
-> +		}
+> that will avoid any indirect calls and will magically handle all the
+> cleanup that needs to be done if you break / jump out of the loop or
+> similar. I actually find such constructs more convenient to use than your
+> version of the iterator because there's no need to create & pass around the
+> additional data structure for the iterator body, no need for special return
+> values to abort iteration etc.
 
-This will not work because you are in unsafe iterator holding
-sb->s_inode_list_lock. To be able to call into fsnotify, you need to do the
-iget / iput dance and releasing of s_inode_list_lock which does not work
-when a filesystem has its own inodes iterator AFAICT... That's why I've
-called it a layering violation.
+I'm not introducing the callback-based iterator function to clean
+the code up - I'm introducing it as infrastructure that allows the
+*iteration mechanism to be completely replaced* by filesystems that
+have more efficient, more scalable  inode iterators already built
+in.
 
-									Honza
+This change of iterator model also allows seamless transition of
+indivudal filesystems to new iterator mechanisms. Macro based
+iterators do not allow for different iterator implementations to
+co-exist, but that's exactly what I'm trying to acheive here.
+I'm not trying to clean the code up - I'm trying to lay the
+ground-work for new functionality....
 
-> +		return INO_ITER_DONE;
-> +	}
-> +
-> +	if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
->  		spin_unlock(&inode->i_lock);
->  		return INO_ITER_DONE;
->  	}
+
+-Dave.
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Dave Chinner
+david@fromorbit.com
