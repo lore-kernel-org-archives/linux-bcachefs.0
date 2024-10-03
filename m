@@ -1,89 +1,99 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD0F1E49B;
-	Thu,  3 Oct 2024 12:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AA21990AA;
+	Thu,  3 Oct 2024 12:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727959584; cv=none; b=cmpyNGyE11nJBMxOvdEPIPzEMBJ9StXKIwbV7mI6oqax/R2JnkBH8LD7svGhunSXhdM95e6BUrfxR7BSc2JczyRWGr9301ohfw6rFlIufxuBq5L7VhBWiYPOXZFtgO5VJyVBrDku+FIbKKEvHsDWZ/JJZjmk9OhdMLaObAtK5Os=
+	t=1727960218; cv=none; b=c99FcwQ9+VR+HTFsUh/o2SpnRlh3GSYSgPNH1CCl6olkVcyqZfn0WaKTiXygbTox8biajyznKHcX/8wdqHNk+pAohubW0QaVcRoJAEHAGXL9nl00NDZAs9TNeq5M3F1QB7xRxYKnM0ZU02dNyOjP2FpYRBhFoaBK/RwGCuHZ3Gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727959584; c=relaxed/simple;
-	bh=diNN3+BTex0PZzvfNw6DP2nN8r5isx0QAbixk2TVPjw=;
+	s=arc-20240116; t=1727960218; c=relaxed/simple;
+	bh=dEZHhcRNHJtuOhkSpO6M3dhjaBz4/Tpq4sVRICVXuOM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A41wKqSl8VcLA6zDyIRFaZG1RWS8tSbtzKoc/g3VIOZfB6Bq8xY2EWQP45gNrJVm3e6WFdguof/TmFtUv6h5KpENNQZNOt2TZI7I38BExoCGWRPPtJb/HrdOe/fZ2lb/V9PG1dgNHD555OmKr3/QYYRHHa8ijcPPPqlZK9LJhGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=S2pbBl2f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=73ruBQXY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=S2pbBl2f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=73ruBQXY; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=FkG828ClLTyvnb85p2Ln3Iv+rxwC2uIHt1h5dUumTCtIk9jKMm2oQh/Xs5IeRUF/s93Ym/fKw/xKpj96UwXS2jwASTXHxagNzMYPReROiMwOYFjOx5pUdKnnthTOfSvpaJKtxsSzWA2K6QCKPygY9H0xqkpbnbaahZ0Qz38NMaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FbSPJOOe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0kGkmGl2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FbSPJOOe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0kGkmGl2; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="S2pbBl2f";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="73ruBQXY";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="S2pbBl2f";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="73ruBQXY"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FbSPJOOe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0kGkmGl2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FbSPJOOe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0kGkmGl2"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 49C721FBB9;
-	Thu,  3 Oct 2024 12:46:20 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4AEBC21C9D;
+	Thu,  3 Oct 2024 12:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727959580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1727960215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=E3jkwMlW4Nzu9ZOQ1CrOnsF8aordmiDmFPu97oWZxp4=;
-	b=S2pbBl2fwCE3ouKitZ+yIr33Bn6iJtMogB+ehHYN6zKXbzRZBQaKiLiZORhM/juwbtJN2y
-	gRy6jjJA+MpuAzBz20/WPxaf30Qy2FKXJcydQVoGfMFnjBx7V2ZnApeED5JQtJ3dRr4vTX
-	Rsa59yG7poNk9F0T3acFARvC2KPTcpM=
+	bh=0dGDk1/DJLFq+x5VU+voSc3Ss2+GN3kBk9KS/GGlynY=;
+	b=FbSPJOOeij35aJIjFMvpWcHvY0J6DaXjUTwe32eHbNbjN09KBZXUGhqu6luFuK7kmPK+IU
+	uMgD7ZdBBCzWAQ81qbjOSVrjOoWpm5ctLaDNvWAd3IiXPx30481VI1kY6Y4UDiZqf2c+cf
+	AcpIcT0m3rIQD8TDV+8FgQG3nN/4zVw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727959580;
+	s=susede2_ed25519; t=1727960215;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=E3jkwMlW4Nzu9ZOQ1CrOnsF8aordmiDmFPu97oWZxp4=;
-	b=73ruBQXYYTucM3oUn1lk8UfvQyK/ChocKJVSDmWgNNTJjbENalxCyMx4HQglKaAVbM9bOJ
-	sa2ENYHSOcZ2QUBg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=S2pbBl2f;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=73ruBQXY
+	bh=0dGDk1/DJLFq+x5VU+voSc3Ss2+GN3kBk9KS/GGlynY=;
+	b=0kGkmGl2gsRpceSfQWu2fBd7sd3Jgq/uaWTEyOryxrDebUIsw3FuyaPeE5lX96K5vSTjpw
+	4xO1mnSNx8tK2DCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727959580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1727960215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=E3jkwMlW4Nzu9ZOQ1CrOnsF8aordmiDmFPu97oWZxp4=;
-	b=S2pbBl2fwCE3ouKitZ+yIr33Bn6iJtMogB+ehHYN6zKXbzRZBQaKiLiZORhM/juwbtJN2y
-	gRy6jjJA+MpuAzBz20/WPxaf30Qy2FKXJcydQVoGfMFnjBx7V2ZnApeED5JQtJ3dRr4vTX
-	Rsa59yG7poNk9F0T3acFARvC2KPTcpM=
+	bh=0dGDk1/DJLFq+x5VU+voSc3Ss2+GN3kBk9KS/GGlynY=;
+	b=FbSPJOOeij35aJIjFMvpWcHvY0J6DaXjUTwe32eHbNbjN09KBZXUGhqu6luFuK7kmPK+IU
+	uMgD7ZdBBCzWAQ81qbjOSVrjOoWpm5ctLaDNvWAd3IiXPx30481VI1kY6Y4UDiZqf2c+cf
+	AcpIcT0m3rIQD8TDV+8FgQG3nN/4zVw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727959580;
+	s=susede2_ed25519; t=1727960215;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=E3jkwMlW4Nzu9ZOQ1CrOnsF8aordmiDmFPu97oWZxp4=;
-	b=73ruBQXYYTucM3oUn1lk8UfvQyK/ChocKJVSDmWgNNTJjbENalxCyMx4HQglKaAVbM9bOJ
-	sa2ENYHSOcZ2QUBg==
+	bh=0dGDk1/DJLFq+x5VU+voSc3Ss2+GN3kBk9KS/GGlynY=;
+	b=0kGkmGl2gsRpceSfQWu2fBd7sd3Jgq/uaWTEyOryxrDebUIsw3FuyaPeE5lX96K5vSTjpw
+	4xO1mnSNx8tK2DCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D8B813882;
-	Thu,  3 Oct 2024 12:46:20 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C68D13882;
+	Thu,  3 Oct 2024 12:56:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id N3HQChyS/maHLQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 03 Oct 2024 12:46:20 +0000
+	id USa2DpeU/mbbMAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 03 Oct 2024 12:56:55 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CA600A086F; Thu,  3 Oct 2024 14:46:19 +0200 (CEST)
-Date: Thu, 3 Oct 2024 14:46:19 +0200
+	id E9745A086F; Thu,  3 Oct 2024 14:56:50 +0200 (CEST)
+Date: Thu, 3 Oct 2024 14:56:50 +0200
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@infradead.org>
 Cc: Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
 	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
 	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
-	torvalds@linux-foundation.org
-Subject: Re: [RFC PATCH 0/7] vfs: improving inode cache iteration scalability
-Message-ID: <20241003124619.wfgozqj4yoyl4xbu@quack3>
+	torvalds@linux-foundation.org,
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>,
+	Kees Cook <keescook@chromium.org>,
+	linux-security-module@vger.kernel.org,
+	Amir Goldstein <amir73il@gmail.com>
+Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
+ sb->s_inodes iteration to super_iter_inodes()
+Message-ID: <20241003125650.jtkqezmtnzfoysb2@quack3>
 References: <20241002014017.3801899-1-david@fromorbit.com>
- <20241003114555.bl34fkqsja4s5tok@quack3>
- <Zv6Llgzj7_Se1m7H@infradead.org>
+ <20241002014017.3801899-5-david@fromorbit.com>
+ <Zv5GfY1WS_aaczZM@infradead.org>
+ <Zv5J3VTGqdjUAu1J@infradead.org>
+ <20241003115721.kg2caqgj2xxinnth@quack3>
+ <Zv6J34fwj3vNOrIH@infradead.org>
+ <20241003122657.mrqwyc5tzeggrzbt@quack3>
+ <Zv6Qe-9O44g6qnSu@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -92,85 +102,99 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zv6Llgzj7_Se1m7H@infradead.org>
-X-Rspamd-Queue-Id: 49C721FBB9
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.01 / 50.00];
+In-Reply-To: <Zv6Qe-9O44g6qnSu@infradead.org>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
 	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,fromorbit.com,vger.kernel.org,linux.dev,linux-foundation.org,linux.microsoft.com,google.com,hallyn.com,chromium.org,gmail.com];
 	TO_DN_SOME(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Thu 03-10-24 05:18:30, Christoph Hellwig wrote:
-> On Thu, Oct 03, 2024 at 01:45:55PM +0200, Jan Kara wrote:
-> > /* Find next inode on the inode list eligible for processing */
-> > #define sb_inode_iter_next(sb, inode, old_inode, inode_eligible) 	\
-> > ({									\
-> > 	struct inode *ret = NULL;					\
+On Thu 03-10-24 05:39:23, Christoph Hellwig wrote:
+> On Thu, Oct 03, 2024 at 02:26:57PM +0200, Jan Kara wrote:
+> > On Thu 03-10-24 05:11:11, Christoph Hellwig wrote:
+> > > On Thu, Oct 03, 2024 at 01:57:21PM +0200, Jan Kara wrote:
+> > > > Fair enough. If we go with the iterator variant I've suggested to Dave in
+> > > > [1], we could combine the evict_inodes(), fsnotify_unmount_inodes() and
+> > > > Landlocks hook_sb_delete() into a single iteration relatively easily. But
+> > > > I'd wait with that convertion until this series lands.
+> > > 
+> > > I don't see how that has anything to do with iterators or not.
+> > 
+> > Well, the patches would obviously conflict
 > 
-> <snip>
-> 
-> > 	ret;								\
-> > })
-> 
-> How is this going to interact with calling into the file system
-> to do the interaction, which is kinda the point of this series?
+> Conflict with what?
 
-Yeah, I was concentrated on the VFS bits and forgot why Dave wrote this
-series in the first place. So this style of iterator isn't useful for what
-Dave wants to achieve. Sorry for the noise. Still the possibility to have a
-callback under inode->i_lock being able to do stuff and decide whether we
-should grab a reference or continue would be useful (and would allow us to
-combine the three iterations on unmount into one without too much hassle).
+I thought you wanted the interations to be unified in current state of
+code. If you meant after Dave's series, then we are in agreement.
 
-> > #define for_each_sb_inode(sb, inode, inode_eligible)			\
-> > 	for (DEFINE_FREE(old_inode, struct inode *, if (_T) iput(_T)),	\
-> > 	     inode = NULL;						\
-> > 	     inode = sb_inode_iter_next((sb), inode, &old_inode,	\
-> > 					 inode_eligible);		\
-> > 	    )
+> > which seems pointless if we
+> > could live with three iterations for a few years until somebody noticed :).
+> > And with current Dave's version of iterators it will not be possible to
+> > integrate evict_inodes() iteration with the other two without a layering
+> > violation. Still we could go from 3 to 2 iterations.
 > 
-> And while I liked:
+> What layering violation?
 > 
-> 	obj = NULL;
-> 
-> 	while ((obj = get_next_object(foo, obj))) {
-> 	}
-> 
-> style iterators, magic for_each macros that do magic cleanup are just
-> a nightmare to read.  Keep it simple and optimize for someone actually
-> having to read and understand the code, and not for saving a few lines
-> of code.
+> Below is quick compile tested part to do the fsnotify side and
+> get rid of the fsnotify iteration, which looks easily worth it.
 
-Well, I agree the above is hard to read but I don't know how to write it in
-a more readable way while keeping the properties of the iterator (like
-auto-cleanup when you break out of the loop - which is IMO a must for a
-sane iterator). Anyway, this is now mostly academic since I agree this
-iterator isn't really useful for the situation here.
+...
 
-								Honza
+> @@ -789,11 +789,23 @@ static bool dispose_list(struct list_head *head)
+>   */
+>  static int evict_inode_fn(struct inode *inode, void *data)
+>  {
+> +	struct super_block *sb = inode->i_sb;
+>  	struct list_head *dispose = data;
+> +	bool post_unmount = !(sb->s_flags & SB_ACTIVE);
+>  
+>  	spin_lock(&inode->i_lock);
+> -	if (atomic_read(&inode->i_count) ||
+> -	    (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE))) {
+> +	if (atomic_read(&inode->i_count)) {
+> +		spin_unlock(&inode->i_lock);
+> +
+> +		/* for each watch, send FS_UNMOUNT and then remove it */
+> +		if (post_unmount && fsnotify_sb_info(sb)) {
+> +			fsnotify_inode(inode, FS_UNMOUNT);
+> +			fsnotify_inode_delete(inode);
+> +		}
+
+This will not work because you are in unsafe iterator holding
+sb->s_inode_list_lock. To be able to call into fsnotify, you need to do the
+iget / iput dance and releasing of s_inode_list_lock which does not work
+when a filesystem has its own inodes iterator AFAICT... That's why I've
+called it a layering violation.
+
+									Honza
+
+> +		return INO_ITER_DONE;
+> +	}
+> +
+> +	if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
+>  		spin_unlock(&inode->i_lock);
+>  		return INO_ITER_DONE;
+>  	}
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
