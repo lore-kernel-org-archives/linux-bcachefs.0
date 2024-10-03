@@ -1,97 +1,72 @@
-Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91A5C19993F;
-	Thu,  3 Oct 2024 13:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7F719924A
+	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Oct 2024 13:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727961128; cv=none; b=kCgGgMSM/8issKkT+XnLguFr1FyJcCUVJfLgfCTSEJS9W4k81G0jcyCUvkQQBsM8uqK1XPE7R94HQ0vA+Zj4tqKweg7CnR6Y3hKWnbsrAjQc0FmG8ugZeqVtFwrU4OnGgIuhHA+hkTUgMcQ86qyoJ+0FSyE+IgEtABd+wYjDzxg=
+	t=1727962561; cv=none; b=Oy3LsQLn5Bpm2UVgo4vlnCEyzBrhj/hdaZf86bKSPy+uIjFLktfqh0w5c5S4xac1VoUwTDCTB5ZN4elaHVS2UaD+qafytEktinwtCN46ebiTFZmN2qMAJ3zsX0sk3BlUax8FDwb+goqaR8czxn7QUnga1TubguSORmRRKbhciJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727961128; c=relaxed/simple;
-	bh=anPbyQlBgh9VpTHjRNAUTppoGA6/xk4P7jIPoVh1bC4=;
+	s=arc-20240116; t=1727962561; c=relaxed/simple;
+	bh=IYUWfu1GPkk7tW+imquhNZ2H55pgGP4BiuyjLAcXJi4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l0YYl49QG3XN1QYn+NmKrcQ8V4vEDx5w379Xbolp4LDCmENyfa4UAkT4Bp4R3eu+8NGt2zoJTOIM43Z80/6WOv/FnegBf2qouEDO3rI2Rs0kKJnIpf+dVGYuvjZkvVijDSegrzas13/2jlT/2jBCbDwHg4UwUt/R0lO2RDPfKvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=n7ahmMHf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kk2buC7w; arc=none smtp.client-ip=103.168.172.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
+	 Content-Type:Content-Disposition:In-Reply-To; b=bllx0MYKyoY/2gKCJ9tdOJY1QsAtJf8U5tD4zW2Jzp6Di483lPjFbEHTgxV0/TLgOZQAm7wzpB5+WeRqmgxE70tt9TcVT5X7EAjNZMsHZoWhz+VSCV1u1XkxbnfowQOqucqcNkCoRYqDit+1D0SQbUanPm0Q46V/+8rOAts+9/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=0Z3oQEyK; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="n7ahmMHf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kk2buC7w"
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfout.phl.internal (Postfix) with ESMTP id C054E138024F;
-	Thu,  3 Oct 2024 09:12:05 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-08.internal (MEProxy); Thu, 03 Oct 2024 09:12:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1727961125; x=1728047525; bh=Q5l4C3MPLh
-	Nagoi/hfCHiiMD9hszfuXKcIBy0Z/kEpc=; b=n7ahmMHfQhciEkHutSmwxCDeMO
-	camtxzI5v/65etjb6r8YLBYZCfz/BF40Z1mz8zFP4caVO2MfpksvzbcfJRlgkimX
-	UGjS8guVkPT/E76Tjc+xeG6H1Gpwrvrz4sKmsmHCnwBAfXvPRGzVdNRJrdP56QE9
-	XK1VBgcnQvJ+cBEgilbyJk44k6C071EbLJXDJAxS1Sw5lqGho+kek1QHigPPToZz
-	qncHklgZoMcWTs+oBaAZ0K+ZJr8yukX1hjBWCl6wr+kox0EUdvommfR6UvVXviqm
-	zIXbl+zSxSpWfJ3ceDn6ELtiZ+6QYXYGTUBrnE3YLDZJ3qgUnkkvsAqBRxlA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1727961125; x=1728047525; bh=Q5l4C3MPLhNagoi/hfCHiiMD9hsz
-	fuXKcIBy0Z/kEpc=; b=kk2buC7wrmtEB2AIuUu7PBSTaahtGpQ4SQkJDe9J8Rqt
-	ygvSeOafNQGZJEFs3vCuEnEg9nXu+tPIqiiB02DIwu45VxQkX9tW/q9+vOFAzWJ6
-	MmdgqtK3JqJZ61nv8RlivmOq5lyUDQisWo3Ug8rm57JN/vMZsLzyVc8fU9NTWv1t
-	t25PMUNcqE4ZOjbJ2hX2pmlTFZ05Sqq3I4FEepnhdJ4Apr87vImFB/eGL6ILBqTS
-	Ua79XaHURpCB1pyjoKGm2nNXaB+hxi68Dg+ukUHq+ouJ0tSa06wTFnCUNlSmJG3Z
-	/pzFJxcvh3+WvPiex1zECSpNgmKkNuVtbG0jDxx2WQ==
-X-ME-Sender: <xms:JZj-Zh7Ot7tz0lH9WC8kVQ18RN0GoE6gu1LCTpov4uzQz75EalcF-A>
-    <xme:JZj-Zu7SD2B2OjYRvY8bnCJoTAd9vbmhRD1eFsJYg27cFr8L7dcRJIh1MBcq550bE
-    vczrSLztdiWgjSKw-w>
-X-ME-Received: <xmr:JZj-Zof7Bu3_FZHu98cy7GZkocIE2Pl43uGUn1UhhlgCIKrBsdwiYY96A0qwnxr_1ONXVrRCrpzyrGWjyAFX75vLnt-o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvuddgieduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdluddtmdenucfjughrpeffhffvvefukfhf
-    gggtuggjsehttdertddttddvnecuhfhrohhmpeflrghnucfjvghnughrihhkucfhrghrrh
-    cuoehkvghrnhgvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpeeftdffuddv
-    geekueeivdeguddvueeffeevgeetgfeiueeuhfevffeutddvgfekvdenucffohhmrghinh
-    epghhithhhuhgsrdgtohhmpdhgohgusgholhhtrdhorhhgnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepkhgvrhhnvghlsehjfhgrrhhrrdgttg
-    dpnhgspghrtghpthhtohepledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepthhh
-    ohhrshhtvghnrdgslhhumhesthhosghluhigrdgtohhmpdhrtghpthhtohepkhgvvghsse
-    hkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghnthdrohhvvghrshhtrhgvvghtsehl
-    ihhnuhigrdguvghvpdhrtghpthhtoheprhgvghhrvghsshhiohhnsheslhhishhtshdrlh
-    hinhhugidruggvvhdprhgtphhtthhopehlihhnuhigqdgstggrtghhvghfshesvhhgvghr
-    rdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhhrghruggvnhhinhhgse
-    hvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghl
-    sehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghruggssehkvghrnhgvlh
-    drohhrghdprhgtphhtthhopehmohhrsghosehgohhoghhlvgdrtghomh
-X-ME-Proxy: <xmx:JZj-ZqLOS2moWssrXhgOdaNuT4T2FXOx2aO57NZAaCu4h86xIHpJmg>
-    <xmx:JZj-ZlJLiCYvXvLxTIINRntJElKr2bd7EV6aWFmyGUdotyGTvzXtFg>
-    <xmx:JZj-ZjxaMuiTGQKwspIxxXf4dJyvF7o8J-7cLSe_j_1FWWjdUO0rsg>
-    <xmx:JZj-ZhLlb8S9ms1BWCNjorX0UES7Sjp3eoltDjXocGu0ho5uXfcGSg>
-    <xmx:JZj-ZuXbWdJ1fF298xeAlsMAokO2EBTh0olLMzcUPlaeLWTeJYuHUEJ9>
-Feedback-ID: i01d149f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Oct 2024 09:12:04 -0400 (EDT)
-Date: Thu, 3 Oct 2024 15:12:02 +0200
-From: Jan Hendrik Farr <kernel@jfarr.cc>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Kees Cook <kees@kernel.org>, kent.overstreet@linux.dev,
-	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ardb@kernel.org, morbo@google.com
-Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
- bch2_xattr_validate
-Message-ID: <Zv6YInHiwjLeBC3D@archlinux>
-References: <ZvV6X5FPBBW7CO1f@archlinux>
- <3E304FB2-799D-478F-889A-CDFC1A52DCD8@toblux.com>
- <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com>
- <Zvg-mDsvvOueGpzs@archlinux>
- <202409281331.1F04259@keescook>
- <21D2A2BB-F442-480D-8B66-229E8C4A63D3@toblux.com>
- <Zv6BEO-1Y0oJ3krr@archlinux>
- <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="0Z3oQEyK"
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-7e6afa8baeaso790929a12.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 03 Oct 2024 06:35:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1727962559; x=1728567359; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mZAKL7EAiCi/gQr9jLemKWgPvKxknL4IDkDRFsgw4LM=;
+        b=0Z3oQEyKLI/5nzyn+vn/DAX4anHdqvdn+32u5TOInBbxpXEKOjGUUX8vgP1vwvPBbv
+         E2V7nSEt+Ci7YHEbIsVyV4jEhZIhBwIHhPvu6pjUugi/YfOBT+C5eQisBRMIQtWq6q+o
+         hTzncH7M8fe7cBQIQ4WdYQuqhXL4tdDyU/8lAu1whP+4eoIwCM0v6FoNbhNd2uwqHhy9
+         KkPbYC0d5OC+JnPWrV/x9oNHZYP9lcrZ76egLAroRyYEBOQuYGhYhRC7xpYLHIY0p8AM
+         i85PVFy9PZY+TyNUKq4lJS/rQRJ8eWisLd84bDWj9vsGKCFAq6JYBRjGobyuVeaByhbf
+         5WFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727962559; x=1728567359;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mZAKL7EAiCi/gQr9jLemKWgPvKxknL4IDkDRFsgw4LM=;
+        b=HlSU0rCSvuhwgLh/cEOGnNt+u4q0xupUv2fMMSTqMsddXclDWfATMwSgDzKSLUgM1K
+         QKVbVTS8yZxBhDPWQiCpryHhE/n92QMQTPP6JegM4oEj2m0et73oBrEJYh/JbXp8cej7
+         OGCg5jo09RrLKCSux0nAmHgWimqscQ5BhvEs9JzomwfbPrSPmXxovNMd2wcio663zd/q
+         q7ILazwv7cbeLpDusDQiKknDX1QEKIDe2xgCpKvD9Qele3g6epcU4ANADsN8MEoPM70Y
+         YJNAv3IXIyiVD1VH80cpZdG9ysnXQHDiFJcXeq3oeINpAuugsjAB9xrYfUrgnCcqazOl
+         H8rA==
+X-Forwarded-Encrypted: i=1; AJvYcCXM6whNC4WmWRzDoBO40YltIV5WE6nrMowVAtjI2B63B4G8VBJuAPR3hffE7q8dPqAdoe80/EZWrgkpVHIUcA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOOUOyOjFnFMG1+nqfwj5X06yEif11anGtBglK41QbTQvH6aQJ
+	IVfEW/lpr7I7445s0G3Rckuu31B5+GQRN9oCFT2Ef4ui+ET7uzB+ZrmH/SEI9O8=
+X-Google-Smtp-Source: AGHT+IHDxoI0gNIAwGJf4C3QsyVQPomEeY43/JpCrdta+TjkXgvhmW2gsnZ4m/Ving6k2wsvslo/Pg==
+X-Received: by 2002:a17:90a:d250:b0:2d8:27c1:1d4a with SMTP id 98e67ed59e1d1-2e1847f3928mr8644873a91.24.1727962559235;
+        Thu, 03 Oct 2024 06:35:59 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-78-197.pa.nsw.optusnet.com.au. [49.179.78.197])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e1bfad7d0esm1588006a91.8.2024.10.03.06.35.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2024 06:35:58 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1swLzo-00DP8E-0o;
+	Thu, 03 Oct 2024 23:35:56 +1000
+Date: Thu, 3 Oct 2024 23:35:56 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Jan Kara <jack@suse.cz>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	kent.overstreet@linux.dev, torvalds@linux-foundation.org
+Subject: Re: [RFC PATCH 0/7] vfs: improving inode cache iteration scalability
+Message-ID: <Zv6dvCpGIqOr9IPw@dread.disaster.area>
+References: <20241002014017.3801899-1-david@fromorbit.com>
+ <20241003114555.bl34fkqsja4s5tok@quack3>
+ <Zv6Llgzj7_Se1m7H@infradead.org>
+ <20241003124619.wfgozqj4yoyl4xbu@quack3>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -100,28 +75,60 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
+In-Reply-To: <20241003124619.wfgozqj4yoyl4xbu@quack3>
 
-On 03 15:07:52, Thorsten Blum wrote:
-> On 3. Oct 2024, at 13:33, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-> >> [...]
+On Thu, Oct 03, 2024 at 02:46:19PM +0200, Jan Kara wrote:
+> On Thu 03-10-24 05:18:30, Christoph Hellwig wrote:
+> > On Thu, Oct 03, 2024 at 01:45:55PM +0200, Jan Kara wrote:
+> > > /* Find next inode on the inode list eligible for processing */
+> > > #define sb_inode_iter_next(sb, inode, old_inode, inode_eligible) 	\
+> > > ({									\
+> > > 	struct inode *ret = NULL;					\
 > > 
-> > This issue is now fixed on the llvm main branch:
-> > https://github.com/llvm/llvm-project/commit/882457a2eedbe6d53161b2f78fcf769fc9a93e8a
-> 
-> Thanks!
-> 
-> Do you know if it also fixes the different sizes here:
-> https://godbolt.org/z/vvK9PE1Yq
-
-Unfortunately this still prints 36.
-
-> 
-> I ran out of disk space when compiling llvm :0
-> 
-> > So presumably this will go into 19.1.2, not sure what this means for
-> > distros that ship clang 18. Will they have to be notified to backport
-> > this?
+> > <snip>
 > > 
-> > Best Regards
-> > Jan
+> > > 	ret;								\
+> > > })
+> > 
+> > How is this going to interact with calling into the file system
+> > to do the interaction, which is kinda the point of this series?
+> 
+> Yeah, I was concentrated on the VFS bits and forgot why Dave wrote this
+> series in the first place. So this style of iterator isn't useful for what
+> Dave wants to achieve. Sorry for the noise. Still the possibility to have a
+> callback under inode->i_lock being able to do stuff and decide whether we
+
+I did that first, and turned into an utter mess the moment we step
+outside the existing iterator mechanism.
+
+I implemented a separate XFS icwalk function because having to hold
+the inode->i_lock between inode lookup and the callback function
+means we cannot do batched inode lookups from the radix tree.
+
+The existing icwalk code grabs 32 inodes at a time from the radix
+tree and validates them all, then runs the callback on them one at a
+time, then it drops them all.
+
+If the VFS inode callback requires the inode i_lock to be held and
+be atomic with the initial state checks, then we have to nest 32
+spinlocks in what is effectively a random lock order.
+
+So I implemented a non-batched icwalk method, and it didn't get that
+much cleaner. It wasn't until I dropped the inode->i_lock from the
+callback API that everything cleaned up and the offload mechanism
+started to make sense. And it was this change that also makes it
+possible for XFs to use it's existing batched lookup mechanisms
+instead of the special case implementation that I wrote for this
+patch set.
+
+IOWs, we can't hold the inode->i_lock across lookup validation to
+callback if we want to provide freedom of implementation to the
+filesystem specific code. We aren't really concerned about
+performance of traversals, so I went with freedom of implementation
+over clunky locking semantics to optimise away a couple of atomic
+ops per inode for iget/iput calls.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
