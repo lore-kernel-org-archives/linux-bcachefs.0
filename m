@@ -1,104 +1,133 @@
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-1909.mail.infomaniak.ch (smtp-1909.mail.infomaniak.ch [185.125.25.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057E514884C;
-	Sat,  5 Oct 2024 13:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9501537C3
+	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 15:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728133363; cv=none; b=sLCD0zJKuzZ8NNez5iaI1wOgoEuNLp0hPjLeutnpUMPCvJtIvLoNdA3BaKqTqfSrzkvAj76A2KaOpurDMucESB0nyD0ETL+eDEjbwwdUxxTZ1XF+XtXV4PsEVgzfe450ofCoIinKcm6N9weg1WfAqINWjNFkKgQppmxTwMDl5rI=
+	t=1728142771; cv=none; b=OLgTG6WFPL0gNxevGJCGbJ0g/Tt5s0knePPNhw3Hz3S+IMtAm4BI3hw6wv3Ifq74KdYNfl+4sfsB854t9jIwG1HQ8/oNo3xtEvjP6bapiZA7o2+VKJhqj3L+ATZDGweq0x0KtvbF5GdNgUAVryNvqyRyqajNiW+jaxTLJTqT2I0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728133363; c=relaxed/simple;
-	bh=ZY+d7MhAztwIvVEagBWrn2xOpFQ0PqgC9xBBdBe0kxw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NoGbn/ZaALIxtuBfP/n4kSyVWW39+mgLq9eqJcZwNM43AMPdogJ6PJ/vrsolPP/60G4yM/M1KuknP8i1ksqHqWid6VDX1MayIC/nJiOkTX6rv8axm1zFfkx1DX2SNhGvmvN1nnM4MhdcnuFUJa4u2qcv/BmqdiD/P6yprZeZjlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KMTySzre; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1728142771; c=relaxed/simple;
+	bh=4SrFSSF687gJVku8Rtojdn3GUU4nta+vaSjYHgNmc+4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JBKhn2U9VhdC5qjfcig6Dmj630JmGnBE9hk1Il07aodLn2hzWc9kC5kgEI+zfj53loNUbKS7/ZzJ+VUXkHl3O2OlnCITajz/shbHkyp529YtO2VvNYlOIqqiB0vdgL8bvkrnwMeHPxj8Bxy8FXoReMVYXjLpC/mi/uLoUlswaUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=CZ6yMY04; arc=none smtp.client-ip=185.125.25.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KMTySzre"
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-71df8585a42so163717b3a.3;
-        Sat, 05 Oct 2024 06:02:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728133360; x=1728738160; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z1u+AXQc3KShsKJXgs5fNJnOH5KwvpIrHXiX2ZuvgOI=;
-        b=KMTySzreqo2/kVdK4NtVaWOC7itw2KqdbsUSrHAAEBkG00ug7aoNl2kWycJ83psbqh
-         +MTYknzXwOtEUmY2CVB9CKl8xyfXnpYx9wQq5txWeIEpjjQc6lLrvfFO4cXH7hDwc7Wg
-         gJZzTDpE7PJ1HoU3eaRGm3vU7A7f87CeHtZCte2KEZf0SoJz8zPf07NSKWhahvGSHrFy
-         dPV+jtH6KO6uRVdHpJBxw7LROK1hfb37KnmnOZZJdwWcSvj2GjK65B5Vw8N2RICD/JGF
-         2CtnOIWz2vFmHYoal7Si27FirZjeM1khZenF+RLEsSMfqRJk6m57TzJpfoX1CNgExbA5
-         8yuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728133360; x=1728738160;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z1u+AXQc3KShsKJXgs5fNJnOH5KwvpIrHXiX2ZuvgOI=;
-        b=BBjPquqmC0bnKzeE3WuFZXBKcFyLouuZqfGXxanDZLqJAFb/0xiLV6ezPzYkvxkEv7
-         I9tewEiAhh87a5QebkzJqwq6wX/GDwDkacaEkknVDzPD1x+Ilvhz2PG9f3QFYAHVyOrE
-         itlhqpoVRGCXIESRHTQFSptBt3EYYaJh29kVDCN0TRQziJ6P6+I7kq6hQ2gIogo63Wb1
-         aWxoXNBrBkhLSByGWjJdSgFbEWkEC8TBix413oPsmD3/0aqaZ+kEMHlONPtUYFqAmj+k
-         mZOVDcmx9yhG0rQNeDzNRAd1j7UrwxTmvq2r5NSIjrN22U5Jz3S1kEtfrKgDabH4P6HC
-         rdlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXYF9/JFHRq0oqsSAxUJ1XWvYkZfh2G/vdAiu6Ck35syCrOSdXBrS673/Zb2O86JZGJFbrmFuOTrpkQFAk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yya3d6choM90QFlF3lsy2/3NhKsv3auYrPT6KZOTfOVuiLOQWLA
-	pkgp1336WEPSYT2agpSkqOpTDBNk6hzKtJJqAWRHON4AeeZV5brzyBRg4hRo
-X-Google-Smtp-Source: AGHT+IE9BRwbL20vaX1wK+ntTJ+1n0jkM6UDK+1IYtndVsJYRETcsfqipm7h8akeMbSWanOaG0L2lA==
-X-Received: by 2002:a05:6a20:6d13:b0:1d6:e635:5c5e with SMTP id adf61e73a8af0-1d6e6355d6emr3848295637.9.1728133360187;
-        Sat, 05 Oct 2024 06:02:40 -0700 (PDT)
-Received: from archlinux.. ([2405:201:e00c:517f:5e87:9cff:fe63:6000])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-71df0d46347sm1487896b3a.99.2024.10.05.06.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Oct 2024 06:02:39 -0700 (PDT)
-From: Mohammed Anees <pvmohammedanees2003@gmail.com>
-To: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Mohammed Anees <pvmohammedanees2003@gmail.com>,
-	syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
-Subject: [PATCH resend v3] bcachefs: Fix NULL pointer dereference in bch2_opt_to_text
-Date: Sat,  5 Oct 2024 18:32:29 +0530
-Message-ID: <20241005130229.9290-1-pvmohammedanees2003@gmail.com>
-X-Mailer: git-send-email 2.46.0
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="CZ6yMY04"
+Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4XLTf7420Rz88R;
+	Sat,  5 Oct 2024 17:21:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1728141695;
+	bh=TMmKMveFTVlLxU+hFC0f2OEpfMZOkNIAwt3exPPn9rA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CZ6yMY04Dd5KWkDXa7rH9PMe3wawomnxfM97NRMOyhWqlvqduq/XHbJY0sUZTi3K9
+	 u+lU0gZcPIo5PQG1dqsQnCNid75MXGb/ckXr/Ul9f6wuezUJS4+JSmrWbItZAAwTbe
+	 LkuQpiqkhCu9s0YtHz9TdtXY7Klu9qGilyNHxXfQ=
+Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4XLTf50tYZzSvN;
+	Sat,  5 Oct 2024 17:21:33 +0200 (CEST)
+Date: Sat, 5 Oct 2024 17:21:30 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev, torvalds@linux-foundation.org, 
+	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>, 
+	Kees Cook <keescook@chromium.org>, linux-security-module@vger.kernel.org, 
+	Amir Goldstein <amir73il@gmail.com>, Paul Moore <paul@paul-moore.com>, 
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>
+Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
+ sb->s_inodes iteration to super_iter_inodes()
+Message-ID: <20241005.phah4Yeiz4oo@digikod.net>
+References: <20241003115721.kg2caqgj2xxinnth@quack3>
+ <Zv6J34fwj3vNOrIH@infradead.org>
+ <20241003122657.mrqwyc5tzeggrzbt@quack3>
+ <Zv6Qe-9O44g6qnSu@infradead.org>
+ <20241003125650.jtkqezmtnzfoysb2@quack3>
+ <Zv6jV40xKIJYuePA@dread.disaster.area>
+ <20241003161731.kwveypqzu4bivesv@quack3>
+ <Zv8648YMT10TMXSL@dread.disaster.area>
+ <20241004-abgemacht-amortisieren-9d54cca35cab@brauner>
+ <ZwBy3H/nR626eXSL@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZwBy3H/nR626eXSL@dread.disaster.area>
+X-Infomaniak-Routing: alpha
 
-This patch adds a bounds check to the bch2_opt_to_text function to prevent
-NULL pointer dereferences when accessing the opt->choices array. This
-ensures that the index used is within valid bounds before dereferencing.
-The new version enhances the readability.
+On Sat, Oct 05, 2024 at 08:57:32AM +1000, Dave Chinner wrote:
+> On Fri, Oct 04, 2024 at 09:21:19AM +0200, Christian Brauner wrote:
+> > On Fri, Oct 04, 2024 at 10:46:27AM GMT, Dave Chinner wrote:
+> > > On Thu, Oct 03, 2024 at 06:17:31PM +0200, Jan Kara wrote:
+> > > > On Thu 03-10-24 23:59:51, Dave Chinner wrote:
+> > > > > As for the landlock code, I think it needs to have it's own internal
+> > > > > tracking mechanism and not search the sb inode list for inodes that
+> > > > > it holds references to. LSM cleanup should be run before before we
+> > > > > get to tearing down the inode cache, not after....
+> > > > 
+> > > > Well, I think LSM cleanup could in principle be handled together with the
+> > > > fsnotify cleanup but I didn't check the details.
+> > > 
+> > > I'm not sure how we tell if an inode potentially has a LSM related
+> > > reference hanging off it. The landlock code looks to make an
+> > > assumption in that the only referenced inodes it sees will have a
+> > > valid inode->i_security pointer if landlock is enabled. i.e. it
+> > > calls landlock_inode(inode) and dereferences the returned value
+> > > without ever checking if inode->i_security is NULL or not.
 
-Reported-and-tested-by: syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=37186860aa7812b331d5
-Signed-off-by: Mohammed Anees <pvmohammedanees2003@gmail.com>
----
-v3:
-- Moved bounds check above as default case.
-- Removed the nesterd if clauses.
----
- fs/bcachefs/opts.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Correct, i_security should always be valid when this hook is called
+because it means that at least Landlock is enabled and then i_security
+refers to a valid LSM blob.
 
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index 232be8a44051..84097235eea9 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -427,7 +427,9 @@ void bch2_opt_to_text(struct printbuf *out,
- 			prt_printf(out, "%lli", v);
- 		break;
- 	case BCH_OPT_STR:
--		if (flags & OPT_SHOW_FULL_LIST)
-+		if (v < opt->min || v >= opt->max - 1)
-+			prt_printf(out, "(invalid option %lli)", v);
-+		else if (flags & OPT_SHOW_FULL_LIST)
- 			prt_string_option(out, opt->choices, v);
- 		else
- 			prt_str(out, opt->choices[v]);
--- 
-2.46.0
+> > > 
+> > > I mean, we could do a check for inode->i_security when the refcount
+> > > is elevated and replace the security_sb_delete hook with an
+> > > security_evict_inode hook similar to the proposed fsnotify eviction
+> > > from evict_inodes().
 
+That would be nice.
+
+> > > 
+> > > But screwing with LSM instructure looks ....  obnoxiously complex
+> > > from the outside...
+> > 
+> > Imho, please just focus on the immediate feedback and ignore all the
+> > extra bells and whistles that we could or should do. I prefer all of
+> > that to be done after this series lands.
+> 
+> Actually, it's not as bad as I thought it was going to be. I've
+> already moved both fsnotify and LSM inode eviction to
+> evict_inodes() as preparatory patches...
+
+Good, please Cc me and Günther on related patch series.
+
+FYI, we have the two release_inodes tests to check this hook in
+tools/testing/selftests/landlock/fs_test.c
+
+> 
+> Dave Chinner (2):
+>       vfs: move fsnotify inode eviction to evict_inodes()
+>       vfs, lsm: rework lsm inode eviction at unmount
+> 
+>  fs/inode.c                    |  52 +++++++++++++---
+>  fs/notify/fsnotify.c          |  60 -------------------
+>  fs/super.c                    |   8 +--
+>  include/linux/lsm_hook_defs.h |   2 +-
+>  include/linux/security.h      |   2 +-
+>  security/landlock/fs.c        | 134 ++++++++++--------------------------------
+>  security/security.c           |  31 ++++++----
+> 7 files changed, 99 insertions(+), 190 deletions(-)
+> 
+> -Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
