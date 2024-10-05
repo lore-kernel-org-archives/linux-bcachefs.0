@@ -1,146 +1,95 @@
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABAA916130C
-	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 22:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4FB1153BF6
+	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 23:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728168868; cv=none; b=Ul+1r65Og3o2IRord9fFXroUkPt6qQ6O1temv6q9Hgx7lN6PCSKuBut8VPWi31uq1Jyune5mTTNy3mL+GPLeIRaky0yNNkcdv2HMQ2FSHoCABvtAUt202xQTaU6mb2Yg3C/6F1K9NGl9nV/pm1osz9/DTIdwost8jxr7q98fa18=
+	t=1728170147; cv=none; b=AkF1lfbS9neSoRbUOW5bBXj9Qnlh9kJZWU38clCg72A1amI5NtQ94OIlBrn7LrlOH9PAf3SHF2/96zRhoIW9rPMBNf5Xd/LkHCYNhtbj/LV5TcBA8E8aNGZXvDyJZ5oeM8PpYmlm4BKTOaS+fvvYMAEojvk3+cenFblM0M2E+G0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728168868; c=relaxed/simple;
-	bh=FeV7YQD/aXL95iV4idM4e669wjt5NsYJxr4nuBrTGrs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FLmwMWbDqjW+dRlq7m93/hZD0yyFiKjlxV1TED1xiZRPZKU+gx6kUbxG7g3u/nGURLfY1GjetXwnIb9unZL8MF/HcP7L6dEkNo9/WyCC2ISZPr9OpdFxQFJOe4J94hhHDpWFWsGp0tbwk1Z2gpAiw9aWLuFCOFl77SGvBBj4e2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FhvwGWEt; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1728170147; c=relaxed/simple;
+	bh=cW9voHQW5KDncJFUKsCyNd2iDsh+IZlwySB2TQy6Ai0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LAgyvdYQCAMUZK18obdtLXzfYOMKXOSLW9D4KN+zLE4MZ/k7iObhoAuIxiDfUqhlo8diD0Vs2cZy8TuPGZF69XXcue8+1WOkq3rz/PDCF6PsMn7qh08JuRyADr6MmP7FUUUvzgaz/95s7XGYRso1PE2rwjELgiUqNjqXdkVSyjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=HLVYUAVC; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FhvwGWEt"
-Date: Sat, 5 Oct 2024 18:54:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728168863;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y+M3sEo5jrIzIGfIg+yt1bfUXNU4+0FblBb6q+YIsb0=;
-	b=FhvwGWEt74rEGjEeBwrC+BHGDD7gyBBxB8UEEK7AHKb5kjOagABgW7SmrCye0y1Fw/VRE0
-	wEXg1jctoemlxucNOaR/vKl/Z0ghkE2f2wf1OykkzVsBddWW7dhADpr0qv9mA39rMdrJaj
-	4qonLZERRN/zyQTtKTQXNzCRdNvYtN8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-Message-ID: <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
-References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
- <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="HLVYUAVC"
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a99388e3009so113695766b.3
+        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 16:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1728170144; x=1728774944; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NhjXXWdst9jlpC/rp/tuj7IYcehyrssGedcgZn1fDGA=;
+        b=HLVYUAVCfMvlFaBG8X00YA0Dw37bZ3CyDKhANJFMm1ziyYzwJcOZJ9Pk9fICoyBXqG
+         sB8UWjYXjtJiyCkA70PniFlJAxwFHaXXzkn4q3Ge2nC0KNk3395wKoWDU7lEGOSfekqS
+         +ITCsKKB1K01JcX3/czr0JG4r4YeU5pfKO4Sc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728170144; x=1728774944;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NhjXXWdst9jlpC/rp/tuj7IYcehyrssGedcgZn1fDGA=;
+        b=MfrZGq6qF0spznkBwwXOsVaxoxVVi485JUK3Ro3tfb9vsLjQU3E26Km18CW/R8F4Dq
+         yOYMRoub0kvCl5WPq6zuKTnMsjSq0i6dDmaHkznt6TSpy6/KqTcWHiF4J165qXTy7Bke
+         Oea6cmj/D2Wa/xlIeQAdrZWUPU/eNE+QYngA+GOCN94TVQI19KpdGlGIb5oYSMWJvBAG
+         scpYcdHe1MpY9uRYOWfmg79fX81qYwLSFMeweH6/7x26buE/0tda03lfoqa1JwFBcxBq
+         zEhl9Nj/MBH3w6S/JiwKzBsur69vlLCCO3I+Ly2NKtIcO8HHUgCV0uwhS8aqriGN/BUu
+         Z2rw==
+X-Gm-Message-State: AOJu0YwG0ruDm64nKQ+7bFM3smcQFtJz7mIuAY3js+s0nAvfuJSY1QqZ
+	nES6wtxmmK6dMjWbESjxiBfb2M+yD+RfyAAqvhrLnEcQPmcnpqNEXmfsrgkud5808C6NSDmRVBF
+	orJz4Sw==
+X-Google-Smtp-Source: AGHT+IE900UeD/GUake8Pe9c1UpJ9aMKbj6LkQdA3g2tf3atC+kMB+KnbpBkLH33YrHRtZYlstGxGA==
+X-Received: by 2002:a17:906:df46:b0:a99:40e6:1569 with SMTP id a640c23a62f3a-a9940e6160dmr146684666b.21.1728170143914;
+        Sat, 05 Oct 2024 16:15:43 -0700 (PDT)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9943603297sm81434966b.64.2024.10.05.16.15.42
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Oct 2024 16:15:43 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5c5cf26b95aso4278764a12.3
+        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 16:15:42 -0700 (PDT)
+X-Received: by 2002:a17:907:3e22:b0:a8c:d6a3:d025 with SMTP id
+ a640c23a62f3a-a991bd6ae43mr732521166b.32.1728170142480; Sat, 05 Oct 2024
+ 16:15:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
+ <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com> <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
+In-Reply-To: <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 5 Oct 2024 16:15:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
+Message-ID: <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Oct 05, 2024 at 03:34:56PM GMT, Linus Torvalds wrote:
-> On Sat, 5 Oct 2024 at 11:35, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > Several more filesystems repaired, thank you to the users who have been
-> > providing testing. The snapshots + unlinked fixes on top of this are
-> > posted here:
-> 
-> I'm getting really fed up here Kent.
-> 
-> These have commit times from last night. Which makes me wonder how
-> much testing they got.
+On Sat, 5 Oct 2024 at 15:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> The vast majority of those fixes are all ~2 weeks old.
 
-The /commit/ dates are from last night, because I polish up commit
-messages and reorder until the last might (I always push smaller fixes
-up front and fixes that are likely to need rework to the back).
+With the patches not appearing on the list, that seems entirely irrelevant.
 
-The vast majority of those fixes are all ~2 weeks old.
+Apparently they are 2 weeks on IN YOUR TREE.
 
-> And before you start whining - again - about how you are fixing bugs,
-> let me remind you about the build failures you had on big-endian
-> machines because your patches had gotten ZERO testing outside your
-> tree.
+And absolutely nowhere else.
 
-No, there simply aren't that many people running big endian. I have
-users building and running my trees on a daily basis. If I push
-something broken before I go to bed I have bug reports waiting for me
-_the next morning_ when I wake up.
+> Let that sink in.
 
-> That was just last week, and I'm getting the strong feeling that
-> absolutely nothing was learnt from the experience.
-> 
-> I have pulled this, but I searched for a couple of the commit messages
-> on the lists, and found *nothing* (ok, I found your pull request,
-> which obviously mentioned the first line of the commit messages).
-> 
-> I'm seriously thinking about just stopping pulling from you, because I
-> simply don't see you improving on your model. If you want to have an
-> experimental tree, you can damn well have one outside the mainline
-> kernel. I've told you before, and nothing seems to really make you
-> understand.
+Seriously.
 
-At this point, it's honestly debatable whether the experimental label
-should apply. I'm getting bug reports that talk about production use and
-working on metadata dumps where the superblock indicates the filesystem
-has been in continuous use for years.
+You completely dodged my actual argument, except for pointing at how
+we didn't have process two decades ago.
 
-And many, many people talking about how even at this relatively early
-point it doesn't fall over like btrfs does.
+If you can't actually even face this, what's the point any more?
 
-Let that sink in.
-
-Btrfs has been mainline for years, and it still craps out on people. I
-was just in a meeting two days ago, closing funding, and a big reason it
-was an easy sell was because they have to run btrfs in _read only_ mode
-because otherwise it craps out.
-
-So if the existing process, the existing way of doing things, hasn't
-been able to get btrfs to a point where people can rely on it after 10
-years - perhaps you and the community don't know quite as much as you
-think you do about the realities of what it takes to ship a working
-filesystem.
-
-And from where I sit, on the bcachefs side of things, things are going
-smoothly and quickly. Bug reports are diminishing in frequency and
-severity, even as userbase is going up; distros are picking it up (just
-not Debian and Fedora); the timeline I laid out at LSF is still looking
-reasonable.
-
-> I was hoping and expecting that bcachefs being mainlined would
-> actually help development.  It has not. You're still basically the
-> only developer, there's no real sign that that will change, and you
-> seem to feel like sending me untested stuff that nobody else has ever
-> seen the day before the next rc release is just fine.
-
-I've got a team lined up, just secured funding to start paying them and
-it looks like I'm about to secure more.
-
-And the community is growing, I'm reviewing and taking patches from more
-people, and regularly mentoring them on the codebase.
-
-And on top of all that, you shouting about "process" rings pretty hollow
-when I _remember_ the days when you guys were rewriting core mm code in
-rc kernels.
-
-Given where bcachefs is at in the lifecycle of a big codebase being
-stabilized, you should be expecting to see stuff like that here. Stuff
-is getting found and fixed, and then we ship those fixes so we can find
-the next stuff.
-
-> You're a smart person. I feel like I've given you enough hints. Why
-> don't you sit back and think about it, and let's make it clear: you
-> have exactly two choices here:
-> 
->  (a) play better with others
-> 
->  (b) take your toy and go home
-
-You've certainly yelled a lot...
+               Linus
