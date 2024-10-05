@@ -1,122 +1,120 @@
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963BE15C15B
-	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 18:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8873A1B813
+	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 22:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728153326; cv=none; b=sK5B+Xf39QMtWPMRhtxUgTrRuGrbsEog8/+h2szfUOAatM9lSn/qrRPm5NLxohNFa6PoeSOpfGRWpLIxlCIpdiW6Xh0j9g69lxdiMBmi2vl6S5ATHN8lJYHbX17YNQAy676VoBNSFVUxnaqAk3fsx7TSDXgJjDVJ+DRKZtn8XnA=
+	t=1728167718; cv=none; b=F6AS7zdRb3X8t4vK5it5GoXWwyklWB6pUyzz+Oo/v3DNwId6j7JyE3IBJQkTeJZz2iPSP/zWEzMIb373gVllXxtc7AyZPl+zk6Ifq6FWvDFZ0uXtcOPnzKknTVCiOd55Q0cC1N0j+eTNm9u73sK9qS+dvHStwze9grM8HTFtuHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728153326; c=relaxed/simple;
-	bh=lCw7vnpXDNzWRzBIGJZ41zjrjyexnOuB98d+jyGedFI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=LkrFBWkx06gFlvC8I1IWD89nrg7mPIvSJYNOL5xP8+tgERMOyRieSigeaErCSzvt0XVAlWXrEpiSrmOtlsrdbrWTvvd5qeeS0hHaN+cE6V7U5C/V1SShU6QrZooPpsdExRAGggM/25TWdHBjAwlH/Lk1Yf/OT/NfM95m2I+ly8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P3NpJU6Z; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1728167718; c=relaxed/simple;
+	bh=b+AWARzu8Thd5FUOfHILFpuGGWUetHMUNgu/HGN6+q0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LJz+vxh5iRDs90yMf1ZO4rhLbdZ3M+MWxmZ+zZ0gm5PmUuI0BRM5iYW9VSf5gnWmnKuByObV6pCfZYdpvtARhWvdS2cIPUNWVDtGnZ5K4dizBx8rGtrlqqjXgAafG+RdXLzMH3zhywYxU9rakmC0uNEChjUNJtGblshYjQrpLaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XfSfr+eS; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P3NpJU6Z"
-Date: Sat, 5 Oct 2024 14:35:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728153322;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=AM7Qw3VEFLcUwcLSiVIWVKX76u7BUc/+Zwgd/c7iThE=;
-	b=P3NpJU6ZrZKZbyYAeE5f7UeFsOkC94I+Ui/Gbm2VLC5AfWpwzzs62ek+PIbF0Hm9mPznkP
-	0odq9ONjU+BWa14vIkwUfbdZpoyikVaggyuHtLwZsBxwOXHKk3hbAGIrqKJYpITWd7smz3
-	6KSIhpm0MKCDO/o7AbuNHpz/reet6Yw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for 6.12-rc2
-Message-ID: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XfSfr+eS"
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-37ce14ab7eeso2776123f8f.2
+        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 15:35:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1728167715; x=1728772515; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HQI/L/s5ZU/jfp6TpSnEQe99W437IW863hAyq7v8534=;
+        b=XfSfr+eSiEQ/Qspd1oBC0qCBq8NW5phC31rDtzKlkc3DzCE+K/Ifbhv2E3iwOQtpiQ
+         imsIxe2Jsh64N+3Icxy7TBghfnNo2iFsc67AMfiDhV7nbqCsAR/GxVb/2q7fio5+Uzn7
+         J5rfFIj4lF5u5b5YwAWU3v7aD6RMPm4ANn0iY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728167715; x=1728772515;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HQI/L/s5ZU/jfp6TpSnEQe99W437IW863hAyq7v8534=;
+        b=uw+21c8jPo7UCqJ9RL/1H6x9e9E2KMwWEyqpEUE09T51pDYYxGg0NAbIgCUfD2zJx+
+         UEoULdEq35T4qYDQTxlGvSv9BuXffUYGO1JApDw3oHXwI7+FBar+bcPwSFrna9JOTxff
+         Nt8HGkQP5KzlmTNOhfWpszJt8paMkkB2S3qWp70IrmblyFpMHpJVOnlZ/hrDip7feZ1a
+         4W8ft2TToYRAFOYhIO/muEV8YbPG5LzzaMc8cIokntw4BIEPowmOggvMbpaPdW6qPGkL
+         4FVPYejR9R1CXRzYYCFz0lLEaD92K/KrRg3rMSflzpcipMe42O+PJ49rhxPYZdFu933K
+         OOdw==
+X-Gm-Message-State: AOJu0YyOlUbuD+/2l5138LN6avqv5y3oHs7sfd3r9rAIZxjDvlZp/P+z
+	44TooZGs+eawRFrh2lWxcdvy14TH8nwtxQN1nt9W203cubX7Ow5RDC1lEiJtis1oKQPFQenetZB
+	0QG3z5A==
+X-Google-Smtp-Source: AGHT+IEmPq9q3dtM2lqyhpG+SaO9f28wlqnP5egKxtk+TdHxmNI84C9pfw345A6gCUdjy+daaUj7bA==
+X-Received: by 2002:adf:cd06:0:b0:37c:d270:e5cf with SMTP id ffacd0b85a97d-37d0e779b4emr5978603f8f.33.1728167714524;
+        Sat, 05 Oct 2024 15:35:14 -0700 (PDT)
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a992e5bbc51sm182990166b.40.2024.10.05.15.35.13
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Oct 2024 15:35:13 -0700 (PDT)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5c46c2bf490so1982731a12.3
+        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 15:35:13 -0700 (PDT)
+X-Received: by 2002:a05:6402:27c9:b0:5c8:9529:1b59 with SMTP id
+ 4fb4d7f45d1cf-5c8d2e48716mr7992911a12.20.1728167713376; Sat, 05 Oct 2024
+ 15:35:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
+In-Reply-To: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 5 Oct 2024 15:34:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
+Message-ID: <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Several more filesystems repaired, thank you to the users who have been
-providing testing. The snapshots + unlinked fixes on top of this are
-posted here:
+On Sat, 5 Oct 2024 at 11:35, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> Several more filesystems repaired, thank you to the users who have been
+> providing testing. The snapshots + unlinked fixes on top of this are
+> posted here:
 
-https://lore.kernel.org/linux-bcachefs/20241005182955.1588763-1-kent.overstreet@linux.dev/T/#t
+I'm getting really fed up here Kent.
 
-The following changes since commit 2007d28ec0095c6db0a24fd8bb8fe280c65446cd:
+These have commit times from last night. Which makes me wonder how
+much testing they got.
 
-  bcachefs: rename version -> bversion for big endian builds (2024-09-29 23:55:52 -0400)
+And before you start whining - again - about how you are fixing bugs,
+let me remind you about the build failures you had on big-endian
+machines because your patches had gotten ZERO testing outside your
+tree.
 
-are available in the Git repository at:
+That was just last week, and I'm getting the strong feeling that
+absolutely nothing was learnt from the experience.
 
-  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-10-05
+I have pulled this, but I searched for a couple of the commit messages
+on the lists, and found *nothing* (ok, I found your pull request,
+which obviously mentioned the first line of the commit messages).
 
-for you to fetch changes up to 0f25eb4b60771f08fbcca878a8f7f88086d0c885:
+I'm seriously thinking about just stopping pulling from you, because I
+simply don't see you improving on your model. If you want to have an
+experimental tree, you can damn well have one outside the mainline
+kernel. I've told you before, and nothing seems to really make you
+understand.
 
-  bcachefs: Rework logged op error handling (2024-10-04 20:25:32 -0400)
+I was hoping and expecting that bcachefs being mainlined would
+actually help development.  It has not. You're still basically the
+only developer, there's no real sign that that will change, and you
+seem to feel like sending me untested stuff that nobody else has ever
+seen the day before the next rc release is just fine.
 
-----------------------------------------------------------------
-bcachefs fixes for 6.12-rc2
+You're a smart person. I feel like I've given you enough hints. Why
+don't you sit back and think about it, and let's make it clear: you
+have exactly two choices here:
 
-A lot of little fixes, bigger ones include:
+ (a) play better with others
 
-- bcachefs's __wait_on_freeing_inode() was broken in rc1 due to vfs
-  changes, now fixed along with another lost wakeup
-- fragmentation LRU fixes; fsck now repairs successfully (this is the
-  data structure copygc uses); along with some nice simplification.
-- Rework logged op error handling, so that if logged op replay errors
-  (due to another filesystem error) we delete the logged op instead of
-  going into an infinite loop)
-- Various small filesystem connectivitity repair fixes
+ (b) take your toy and go home
 
-The final part of this patch series, fixing snapshots + unlinked file
-handling, is now out on the list - I'm giving that part of the series
-more time for user testing.
+Those are the choices.
 
-----------------------------------------------------------------
-Kent Overstreet (18):
-      bcachefs: Fix bad shift in bch2_read_flag_list()
-      bcachefs: Fix return type of dirent_points_to_inode_nowarn()
-      bcachefs: Fix bch2_inode_is_open() check
-      bcachefs: Fix trans_commit disk accounting revert
-      bcachefs: Add missing wakeup to bch2_inode_hash_remove()
-      bcachefs: Fix reattach_inode()
-      bcachefs: Create lost+found in correct snapshot
-      bcachefs: bkey errors are only AUTOFIX during read
-      bcachefs: Make sure we print error that causes fsck to bail out
-      bcachefs: Mark more errors AUTOFIX
-      bcachefs: minor lru fsck fixes
-      bcachefs: Kill alloc_v4.fragmentation_lru
-      bcachefs: Check for directories with no backpointers
-      bcachefs: Check for unlinked inodes with dirents
-      bcachefs: Check for unlinked, non-empty dirs in check_inode()
-      bcachefs: Kill snapshot arg to fsck_write_inode()
-      bcachefs: Add warn param to subvol_get_snapshot, peek_inode
-      bcachefs: Rework logged op error handling
-
- fs/bcachefs/alloc_background.c        |  30 ++++--
- fs/bcachefs/alloc_background_format.h |   2 +-
- fs/bcachefs/btree_gc.c                |   3 -
- fs/bcachefs/btree_trans_commit.c      |   3 +-
- fs/bcachefs/error.c                   |  23 +++-
- fs/bcachefs/error.h                   |   9 +-
- fs/bcachefs/fs.c                      |  33 +++---
- fs/bcachefs/fsck.c                    | 194 ++++++++++++++++++++++------------
- fs/bcachefs/inode.c                   |  44 +++-----
- fs/bcachefs/inode.h                   |  28 +++--
- fs/bcachefs/io_misc.c                 |  63 +++++++----
- fs/bcachefs/logged_ops.c              |  16 +--
- fs/bcachefs/logged_ops.h              |   2 +-
- fs/bcachefs/lru.c                     |  34 +++---
- fs/bcachefs/move.c                    |   2 +-
- fs/bcachefs/movinggc.c                |  12 ++-
- fs/bcachefs/sb-errors_format.h        |  33 +++---
- fs/bcachefs/subvolume.c               |  16 ++-
- fs/bcachefs/subvolume.h               |   2 +
- fs/bcachefs/util.c                    |   2 +-
- 20 files changed, 342 insertions(+), 209 deletions(-)
+                Linus
