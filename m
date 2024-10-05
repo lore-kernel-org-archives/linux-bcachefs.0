@@ -1,95 +1,100 @@
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4FB1153BF6
-	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 23:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A6013632B
+	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 23:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728170147; cv=none; b=AkF1lfbS9neSoRbUOW5bBXj9Qnlh9kJZWU38clCg72A1amI5NtQ94OIlBrn7LrlOH9PAf3SHF2/96zRhoIW9rPMBNf5Xd/LkHCYNhtbj/LV5TcBA8E8aNGZXvDyJZ5oeM8PpYmlm4BKTOaS+fvvYMAEojvk3+cenFblM0M2E+G0=
+	t=1728171667; cv=none; b=oZYyyq+WTyxKnOU64vZAf5u4iCetPVw5CLaQ2+k60uh6+4vnzWGAaZ7xZK9q4BmDkMjq4+No4CgtXyQqA5RAngvCXm7cr3da8TGKOdxfCBnwI066EBTqweGgMS13zvXBt1XB+n79pXYWGeY8ngFyXtrhyLGo+e8bFr4a2YlVE9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728170147; c=relaxed/simple;
-	bh=cW9voHQW5KDncJFUKsCyNd2iDsh+IZlwySB2TQy6Ai0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LAgyvdYQCAMUZK18obdtLXzfYOMKXOSLW9D4KN+zLE4MZ/k7iObhoAuIxiDfUqhlo8diD0Vs2cZy8TuPGZF69XXcue8+1WOkq3rz/PDCF6PsMn7qh08JuRyADr6MmP7FUUUvzgaz/95s7XGYRso1PE2rwjELgiUqNjqXdkVSyjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=HLVYUAVC; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1728171667; c=relaxed/simple;
+	bh=HRFm4/t2t9NRoBAlYcqFtrp/N0q2veNV8kygHa6Kfro=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MkTM+ryVZ0Te9u366ukA3qU6WKRl+AoqrKqDKto59W/QMowfW7KP201UgKf/mC47V6rQTUwVwEyaYYv2He3wcuDTtKGHcIgw0elEH09IoT82XDsApR/EBWZZO3z2n/toSIWpjUaeqRMCB6XZmGGHdfELm9lDpQMvPt8sDwFPDgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IBDTV5eJ; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="HLVYUAVC"
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a99388e3009so113695766b.3
-        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 16:15:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1728170144; x=1728774944; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NhjXXWdst9jlpC/rp/tuj7IYcehyrssGedcgZn1fDGA=;
-        b=HLVYUAVCfMvlFaBG8X00YA0Dw37bZ3CyDKhANJFMm1ziyYzwJcOZJ9Pk9fICoyBXqG
-         sB8UWjYXjtJiyCkA70PniFlJAxwFHaXXzkn4q3Ge2nC0KNk3395wKoWDU7lEGOSfekqS
-         +ITCsKKB1K01JcX3/czr0JG4r4YeU5pfKO4Sc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728170144; x=1728774944;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NhjXXWdst9jlpC/rp/tuj7IYcehyrssGedcgZn1fDGA=;
-        b=MfrZGq6qF0spznkBwwXOsVaxoxVVi485JUK3Ro3tfb9vsLjQU3E26Km18CW/R8F4Dq
-         yOYMRoub0kvCl5WPq6zuKTnMsjSq0i6dDmaHkznt6TSpy6/KqTcWHiF4J165qXTy7Bke
-         Oea6cmj/D2Wa/xlIeQAdrZWUPU/eNE+QYngA+GOCN94TVQI19KpdGlGIb5oYSMWJvBAG
-         scpYcdHe1MpY9uRYOWfmg79fX81qYwLSFMeweH6/7x26buE/0tda03lfoqa1JwFBcxBq
-         zEhl9Nj/MBH3w6S/JiwKzBsur69vlLCCO3I+Ly2NKtIcO8HHUgCV0uwhS8aqriGN/BUu
-         Z2rw==
-X-Gm-Message-State: AOJu0YwG0ruDm64nKQ+7bFM3smcQFtJz7mIuAY3js+s0nAvfuJSY1QqZ
-	nES6wtxmmK6dMjWbESjxiBfb2M+yD+RfyAAqvhrLnEcQPmcnpqNEXmfsrgkud5808C6NSDmRVBF
-	orJz4Sw==
-X-Google-Smtp-Source: AGHT+IE900UeD/GUake8Pe9c1UpJ9aMKbj6LkQdA3g2tf3atC+kMB+KnbpBkLH33YrHRtZYlstGxGA==
-X-Received: by 2002:a17:906:df46:b0:a99:40e6:1569 with SMTP id a640c23a62f3a-a9940e6160dmr146684666b.21.1728170143914;
-        Sat, 05 Oct 2024 16:15:43 -0700 (PDT)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9943603297sm81434966b.64.2024.10.05.16.15.42
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Oct 2024 16:15:43 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5c5cf26b95aso4278764a12.3
-        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 16:15:42 -0700 (PDT)
-X-Received: by 2002:a17:907:3e22:b0:a8c:d6a3:d025 with SMTP id
- a640c23a62f3a-a991bd6ae43mr732521166b.32.1728170142480; Sat, 05 Oct 2024
- 16:15:42 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IBDTV5eJ"
+Date: Sat, 5 Oct 2024 19:40:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728171663;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=N94jXO8rXgw/sYZ7EbL/8D5WR9t7A3fqzLTeq3yNnDY=;
+	b=IBDTV5eJfSgYxkLZAkwuZbh9fg6OzYQ0A3NV3bSva58ItNuu82TqgC3Nj2WSu5cNYdoDqF
+	FQ8S52wfBumnVVVHqBw36dk77TDAuTa7X9K3OS6Bi1aWBXy1Wwyz0pllYZdZsDkHke+qZF
+	M0mOKxLhjnEaEPnVi1v6gwdL7JHIct4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
+Message-ID: <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
+References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
+ <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
+ <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
+ <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
- <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com> <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
-In-Reply-To: <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 5 Oct 2024 16:15:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
-Message-ID: <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, 5 Oct 2024 at 15:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> The vast majority of those fixes are all ~2 weeks old.
+On Sat, Oct 05, 2024 at 04:15:25PM GMT, Linus Torvalds wrote:
+> On Sat, 5 Oct 2024 at 15:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > The vast majority of those fixes are all ~2 weeks old.
+> 
+> With the patches not appearing on the list, that seems entirely irrelevant.
+> 
+> Apparently they are 2 weeks on IN YOUR TREE.
+> 
+> And absolutely nowhere else.
 
-With the patches not appearing on the list, that seems entirely irrelevant.
+If what you want is patches appearing on the list, I'm not unwilling to
+make that change.
 
-Apparently they are 2 weeks on IN YOUR TREE.
+I take issue, and indeed even dig my heels in, when the only people
+asking for that are _only_ yelling about that and aren't involved
+otherwise.
 
-And absolutely nowhere else.
+But you will find that if you talk to me as one human being to another,
+where we can share and listen to each other's concerns, I'm more than
+happy to be reasonable.
 
-> Let that sink in.
+But I'm not going to just toe the line when it's just yelling.
 
 Seriously.
 
-You completely dodged my actual argument, except for pointing at how
-we didn't have process two decades ago.
+Because the last time you flipped out over a pull request, I spent the
+rest of the cycle telling people "x y and z are fixed, but you'll have
+to build my tree instead of running a released kernel". And that gets
+tiresome; some of the bugs were significant - and no issues to date have
+been found in the stuff you kicked back, which tells me my process is
+just fine.
 
-If you can't actually even face this, what's the point any more?
+So let _that_ sink in. In order to support my userbase, as well as
+iterate to find the _next_ set of bugs, I have to be able to ship
+bugfixes in a timely manner, and if that's going to keep being an issue
+perhaps I should be having those conversations with distro kernel
+maintainers now, instead of later.
 
-               Linus
+> > Let that sink in.
+> 
+> Seriously.
+> 
+> You completely dodged my actual argument, except for pointing at how
+> we didn't have process two decades ago.
+> 
+> If you can't actually even face this, what's the point any more?
+
+Face _what_ exactly? Because at this point, I can't even tell what it is
+you want, what you're reacting to keeps shifting.
