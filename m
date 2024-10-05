@@ -1,99 +1,98 @@
-Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [83.166.143.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57ECE155CB0
-	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 16:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973C4156F41
+	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 16:03:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728144215; cv=none; b=UfRXVYYusmNreL8hJzuGb/zIOkuAcO4U5/HfkCKe9Y5ZTk31QoOVyW3FFWBk2YOqRSWboBKPXJZgQFZvNpq0lssdXyCAO1TL0OTdijfSB8UJa6Y6//qTMU0sM/g6IwB0nKT6DYPLw05y9HGD3KEL5OBbFQtUTHj6+htEhGtYezU=
+	t=1728144218; cv=none; b=HR9cq1vZElN2Kuovd3FyGTlTdLqYf5XfJfPk6kDlDPrIQ2m9cU8Tw54DdZIhvUTU91YB6A34YPOTO8/eCwgG8CPGcNKQQYbdhhlqHWeEPxbGkESO6ruZvdna19Cen5d6PeaxPj3rmf7i08WBtizvayGjf6iZXzZ6fBcydAZNerE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728144215; c=relaxed/simple;
-	bh=K7O/IKTj7JAMERpvVB67YoFT1tQi7t3qQXWQjya8WlY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ux2uWNaLKghXNJNbEk0nsdzZ8VnniF/pKRavZBuZIIaGLTsxj2rXdjbeVI2/yDMVP22+cZtBxq5K9lbLhvBl5aXrLQAudCzR1d8roqi0/irSUJwe/0kwYPCoJbrbJt5TRPo16qDP5XQdVlB/FR0sqWyQZa20Z2hlbl/TU1aZE+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=r0yKtELM; arc=none smtp.client-ip=83.166.143.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+	s=arc-20240116; t=1728144218; c=relaxed/simple;
+	bh=afLfDz2LMbMFzCD0MAX500Y++/4ZAEd5aGdOtlCfVLg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=okmN90pbDhcySFN29fmMV69Vin3W8wjQLUHAPzzHXQMrzC9Ri5gtSWyDLZ5s7UxluaK7PmA1snYc2kEVy45vsAk4trB5QC45XN7MndGATdFTDB6szCHhuuGFQ96DtcxLD7+ntBi6DfvF8bd57BZY+1MJ32DRIvRJ2CSVyYx3+M4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=P39vyas+; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="r0yKtELM"
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [IPv6:2001:1600:4:17::246b])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4XLVZL4w5fzKsf;
-	Sat,  5 Oct 2024 18:03:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1728144202;
-	bh=/46zxzMRhFBNtUJv6VsdBeWbXBpEeOG8UcnJk197lAw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r0yKtELM42JYTUJHwjJVGNIObv/XXq/xn76mfKNMKw/7gdEw6mspsa0b6BKLhb9rS
-	 mWRmC7jxob/xQSv6N/3wqhdaj197blHI0ym8O/lvVFimxJcsUFNryymB80w9k8Eimg
-	 /JDZZiYJ+Do4jh08pFEqM+oL6U6ne1J2XNL4N710=
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4XLVZK4W6tzN2w;
-	Sat,  5 Oct 2024 18:03:21 +0200 (CEST)
-Date: Sat, 5 Oct 2024 18:03:19 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev, torvalds@linux-foundation.org, 
-	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>, 
-	Kees Cook <keescook@chromium.org>, linux-security-module@vger.kernel.org, 
-	Amir Goldstein <amir73il@gmail.com>, Paul Moore <paul@paul-moore.com>, 
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>
-Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
- sb->s_inodes iteration to super_iter_inodes()
-Message-ID: <20241005.euDithie4Ue0@digikod.net>
-References: <Zv6J34fwj3vNOrIH@infradead.org>
- <20241003122657.mrqwyc5tzeggrzbt@quack3>
- <Zv6Qe-9O44g6qnSu@infradead.org>
- <20241003125650.jtkqezmtnzfoysb2@quack3>
- <Zv6jV40xKIJYuePA@dread.disaster.area>
- <20241003161731.kwveypqzu4bivesv@quack3>
- <Zv8648YMT10TMXSL@dread.disaster.area>
- <20241004-abgemacht-amortisieren-9d54cca35cab@brauner>
- <ZwBy3H/nR626eXSL@dread.disaster.area>
- <20241005.phah4Yeiz4oo@digikod.net>
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="P39vyas+"
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6e2e41bd08bso2275177b3.2
+        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 09:03:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1728144215; x=1728749015; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=afLfDz2LMbMFzCD0MAX500Y++/4ZAEd5aGdOtlCfVLg=;
+        b=P39vyas++zjRnLQc/qE3vNOpSKQXYvjwbPf0ZRQ0CuC+oQdQ9OH9219naRhU3pYXFp
+         HzzFIwfKK9psmKekcud/Z/GhDyvf4ciDa5h8BYG8n0OpMqMNeEEECM68DKjekG2yzKRA
+         rPmxTFbEvHLfOgfDIqhw/FlUPzEgIGQlvXml3fFGOtRq6yVPRq8I9UXuPspi0nvyZ3nN
+         6wi78kZ4ljAaoK49mwY/ENr34yPJMjAoUy3sGMoeS7mFvd0vEPLaLhT0KK6122TipQ11
+         +EeFmb7iF9Yn/H6q16u611ErDKXIVb83dNssCZvULsZ8hfNTWjYV1P77nZDmrxwQubKg
+         Wm/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728144215; x=1728749015;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=afLfDz2LMbMFzCD0MAX500Y++/4ZAEd5aGdOtlCfVLg=;
+        b=cmPgNbKV7Gu1IlK1vMpLYM8RgbRAxWrk4xy/mS/3VpLHEecFiKO089YQv+jTS6najP
+         ENzbp/MnasQR/ZThPpqXVh+bDRTa9kg991OblywOgMhsRBgn7Q3jCXp6vc0waa80TiWU
+         Dr2EFzSHgdndZ2PEZkJS8QerPSJhUVUpW+DGgO4Srfui/RLWztLJ5AeP5rdQb2IoMEDO
+         /M4tNdf102CDdp8JqC7j8PMPl07JlB0bWT1EXVQgASmzIEJxY7MXzxBoHI8PjdWxafW2
+         wKgbv8k0sGnqQtk35OgbOMnUpstpjDKLuKi+31h77XinE6iZD8VqlHungCBJxbqDESG4
+         ctNw==
+X-Forwarded-Encrypted: i=1; AJvYcCXq+dCRkSvoNLpXZWK+wD4UJu2erisE3RMfSCe7KD/XaTGVTpBd4qtTKKyuwDdlVPcnOByjTvxprqP6yYKlyw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPBDhV04dVXVS+uSbZIaeELzqxa/W/YM9vG+Z92ltd6II/VT/2
+	WxlM5O6jNebIKH/KSwzeZ5krCLqVyLwBVqtgUgwrag44Xj9BMPAnL5qvnMAMKmyJML7B0GICBvY
+	gN1LCPAhcIDta3FzXkPff4lPs0QcNEu/TXEjMf+Drr8jxOzo=
+X-Google-Smtp-Source: AGHT+IEdpMf02ohYl8IhwAq+Ru4wGZW5LUDHwBhGAhrwPR3/SE2UTgRkrrKq7s6/EhFWBhahRlsnUl3DXE9lZ5Ft2U8=
+X-Received: by 2002:a05:690c:4706:b0:6db:deb7:d693 with SMTP id
+ 00721157ae682-6e2c72334b9mr34986467b3.22.1728144215581; Sat, 05 Oct 2024
+ 09:03:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20241003115721.kg2caqgj2xxinnth@quack3> <Zv6J34fwj3vNOrIH@infradead.org>
+ <20241003122657.mrqwyc5tzeggrzbt@quack3> <Zv6Qe-9O44g6qnSu@infradead.org>
+ <20241003125650.jtkqezmtnzfoysb2@quack3> <Zv6jV40xKIJYuePA@dread.disaster.area>
+ <20241003161731.kwveypqzu4bivesv@quack3> <Zv8648YMT10TMXSL@dread.disaster.area>
+ <20241004-abgemacht-amortisieren-9d54cca35cab@brauner> <ZwBy3H/nR626eXSL@dread.disaster.area>
+ <20241005.phah4Yeiz4oo@digikod.net>
 In-Reply-To: <20241005.phah4Yeiz4oo@digikod.net>
-X-Infomaniak-Routing: alpha
+From: Paul Moore <paul@paul-moore.com>
+Date: Sat, 5 Oct 2024 12:03:24 -0400
+Message-ID: <CAHC9VhSwx9DAEB2SS3_Kfa_03UJf92Embi8Oo9yspsZvRi0MUQ@mail.gmail.com>
+Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert sb->s_inodes
+ iteration to super_iter_inodes()
+To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: Dave Chinner <david@fromorbit.com>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	kent.overstreet@linux.dev, torvalds@linux-foundation.org, 
+	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>, Kees Cook <keescook@chromium.org>, 
+	linux-security-module@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Oct 05, 2024 at 05:21:30PM +0200, Mickaël Salaün wrote:
+On Sat, Oct 5, 2024 at 11:21=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digik=
+od.net> wrote:
 > On Sat, Oct 05, 2024 at 08:57:32AM +1000, Dave Chinner wrote:
+
+...
 
 > > Actually, it's not as bad as I thought it was going to be. I've
 > > already moved both fsnotify and LSM inode eviction to
 > > evict_inodes() as preparatory patches...
-> 
-> Good, please Cc me and Günther on related patch series.
-> 
-> FYI, we have the two release_inodes tests to check this hook in
-> tools/testing/selftests/landlock/fs_test.c
-> 
-> > 
-> > Dave Chinner (2):
-> >       vfs: move fsnotify inode eviction to evict_inodes()
-> >       vfs, lsm: rework lsm inode eviction at unmount
-> > 
-> >  fs/inode.c                    |  52 +++++++++++++---
-> >  fs/notify/fsnotify.c          |  60 -------------------
-> >  fs/super.c                    |   8 +--
-> >  include/linux/lsm_hook_defs.h |   2 +-
-> >  include/linux/security.h      |   2 +-
-> >  security/landlock/fs.c        | 134 ++++++++++--------------------------------
+>
+> Good, please Cc me and G=C3=BCnther on related patch series.
 
-Please run clang-format -i security/landlock/fs.c
+As well as the LSM list since the LSM framework looks to have some
+changes as well.
 
-> >  security/security.c           |  31 ++++++----
-> > 7 files changed, 99 insertions(+), 190 deletions(-)
-> > 
-> > -Dave.
-> > -- 
-> > Dave Chinner
-> > david@fromorbit.com
-> > 
+--=20
+paul-moore.com
