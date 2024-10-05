@@ -1,98 +1,74 @@
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973C4156F41
-	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 16:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B3C15AAD6
+	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 18:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728144218; cv=none; b=HR9cq1vZElN2Kuovd3FyGTlTdLqYf5XfJfPk6kDlDPrIQ2m9cU8Tw54DdZIhvUTU91YB6A34YPOTO8/eCwgG8CPGcNKQQYbdhhlqHWeEPxbGkESO6ruZvdna19Cen5d6PeaxPj3rmf7i08WBtizvayGjf6iZXzZ6fBcydAZNerE=
+	t=1728153010; cv=none; b=Ux5/nCEiGdMCtH1IwBXQrX2/RylRJJ0unBQtdiYSwZDJ9wDLg/j622zLgfplyFkOUy9Hw1LOXh0qMHz5iFCE+mY0ImbIE3a8tNhdxUu9RdU2WaI6lsj1fLM+oWHfYxYdM6+9BTmyjsvu7p+IAiBfgi3XjxIwsCHbJUnliIYu/sQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728144218; c=relaxed/simple;
-	bh=afLfDz2LMbMFzCD0MAX500Y++/4ZAEd5aGdOtlCfVLg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=okmN90pbDhcySFN29fmMV69Vin3W8wjQLUHAPzzHXQMrzC9Ri5gtSWyDLZ5s7UxluaK7PmA1snYc2kEVy45vsAk4trB5QC45XN7MndGATdFTDB6szCHhuuGFQ96DtcxLD7+ntBi6DfvF8bd57BZY+1MJ32DRIvRJ2CSVyYx3+M4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=P39vyas+; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+	s=arc-20240116; t=1728153010; c=relaxed/simple;
+	bh=yCtEnSzT7le1Bo2lN4IaWIUs79OKvrVeO9xfS6L9PME=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ey6JjPnNVEbjQtT8JaHt1lyLZSNe6cPwwWbQs0jo95Pz2sr9cofigUqREO47ohXxz/uF1UZrqcHWLAqfI3fMvY5WSZaP5jhNxDB2JnO5lVwkav2WpEFYZaHrMcoMJVUBkttx4FPtaUos0WhftHejvCbNuJE4VQGFDNxETxBROZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CjQvMQP7; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="P39vyas+"
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6e2e41bd08bso2275177b3.2
-        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 09:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1728144215; x=1728749015; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=afLfDz2LMbMFzCD0MAX500Y++/4ZAEd5aGdOtlCfVLg=;
-        b=P39vyas++zjRnLQc/qE3vNOpSKQXYvjwbPf0ZRQ0CuC+oQdQ9OH9219naRhU3pYXFp
-         HzzFIwfKK9psmKekcud/Z/GhDyvf4ciDa5h8BYG8n0OpMqMNeEEECM68DKjekG2yzKRA
-         rPmxTFbEvHLfOgfDIqhw/FlUPzEgIGQlvXml3fFGOtRq6yVPRq8I9UXuPspi0nvyZ3nN
-         6wi78kZ4ljAaoK49mwY/ENr34yPJMjAoUy3sGMoeS7mFvd0vEPLaLhT0KK6122TipQ11
-         +EeFmb7iF9Yn/H6q16u611ErDKXIVb83dNssCZvULsZ8hfNTWjYV1P77nZDmrxwQubKg
-         Wm/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728144215; x=1728749015;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=afLfDz2LMbMFzCD0MAX500Y++/4ZAEd5aGdOtlCfVLg=;
-        b=cmPgNbKV7Gu1IlK1vMpLYM8RgbRAxWrk4xy/mS/3VpLHEecFiKO089YQv+jTS6najP
-         ENzbp/MnasQR/ZThPpqXVh+bDRTa9kg991OblywOgMhsRBgn7Q3jCXp6vc0waa80TiWU
-         Dr2EFzSHgdndZ2PEZkJS8QerPSJhUVUpW+DGgO4Srfui/RLWztLJ5AeP5rdQb2IoMEDO
-         /M4tNdf102CDdp8JqC7j8PMPl07JlB0bWT1EXVQgASmzIEJxY7MXzxBoHI8PjdWxafW2
-         wKgbv8k0sGnqQtk35OgbOMnUpstpjDKLuKi+31h77XinE6iZD8VqlHungCBJxbqDESG4
-         ctNw==
-X-Forwarded-Encrypted: i=1; AJvYcCXq+dCRkSvoNLpXZWK+wD4UJu2erisE3RMfSCe7KD/XaTGVTpBd4qtTKKyuwDdlVPcnOByjTvxprqP6yYKlyw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPBDhV04dVXVS+uSbZIaeELzqxa/W/YM9vG+Z92ltd6II/VT/2
-	WxlM5O6jNebIKH/KSwzeZ5krCLqVyLwBVqtgUgwrag44Xj9BMPAnL5qvnMAMKmyJML7B0GICBvY
-	gN1LCPAhcIDta3FzXkPff4lPs0QcNEu/TXEjMf+Drr8jxOzo=
-X-Google-Smtp-Source: AGHT+IEdpMf02ohYl8IhwAq+Ru4wGZW5LUDHwBhGAhrwPR3/SE2UTgRkrrKq7s6/EhFWBhahRlsnUl3DXE9lZ5Ft2U8=
-X-Received: by 2002:a05:690c:4706:b0:6db:deb7:d693 with SMTP id
- 00721157ae682-6e2c72334b9mr34986467b3.22.1728144215581; Sat, 05 Oct 2024
- 09:03:35 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CjQvMQP7"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728153005;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=LO8637Se1Q8C4mKvEkUmNkcsBXGDwsDN/b2s4YU6DbA=;
+	b=CjQvMQP7txuJTzGS4r33a8EjXcg6prmnrTpFHUz3wNaJ3CpZCGE7+SLaD95tgkVMNEIKnv
+	A2ohfwBksfp5PwWjiRv/5KXi/336HW0M7X81CfXo1RPri6fbXn58BZUZ6ySzUD4ntXpBlP
+	a7qmHNz6urXy9Ntd40NTAw/sEgpEL/I=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 0/5] Fixes for snapshots + unlink
+Date: Sat,  5 Oct 2024 14:29:47 -0400
+Message-ID: <20241005182955.1588763-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241003115721.kg2caqgj2xxinnth@quack3> <Zv6J34fwj3vNOrIH@infradead.org>
- <20241003122657.mrqwyc5tzeggrzbt@quack3> <Zv6Qe-9O44g6qnSu@infradead.org>
- <20241003125650.jtkqezmtnzfoysb2@quack3> <Zv6jV40xKIJYuePA@dread.disaster.area>
- <20241003161731.kwveypqzu4bivesv@quack3> <Zv8648YMT10TMXSL@dread.disaster.area>
- <20241004-abgemacht-amortisieren-9d54cca35cab@brauner> <ZwBy3H/nR626eXSL@dread.disaster.area>
- <20241005.phah4Yeiz4oo@digikod.net>
-In-Reply-To: <20241005.phah4Yeiz4oo@digikod.net>
-From: Paul Moore <paul@paul-moore.com>
-Date: Sat, 5 Oct 2024 12:03:24 -0400
-Message-ID: <CAHC9VhSwx9DAEB2SS3_Kfa_03UJf92Embi8Oo9yspsZvRi0MUQ@mail.gmail.com>
-Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert sb->s_inodes
- iteration to super_iter_inodes()
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Dave Chinner <david@fromorbit.com>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	kent.overstreet@linux.dev, torvalds@linux-foundation.org, 
-	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>, Kees Cook <keescook@chromium.org>, 
-	linux-security-module@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Oct 5, 2024 at 11:21=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digik=
-od.net> wrote:
-> On Sat, Oct 05, 2024 at 08:57:32AM +1000, Dave Chinner wrote:
+The handling of unlinked files with snapshots was a bit fubar -
+especially if an unlinked file was then reattached in a newer snapshot.
+This adds an inode flag so that we can track when an inode should, or
+should not be deleted due to snapshots, when a newer snapshot still
+refers to data in an unlinked file.
 
-...
+Kent Overstreet (5):
+  bcachefs: Split out check_unreachable_inodes() pass
+  bcachefs: reattach_inode() now correctly handles interior snapshot
+    nodes
+  bcachefs: btree_iter_peek_upto() now handles BTREE_ITER_all_snapshots
+  bcachefs: Delete vestigal check_inode() checks
+  bcachefs: bcachefs_metadata_version_inode_has_child_snapshots
 
-> > Actually, it's not as bad as I thought it was going to be. I've
-> > already moved both fsnotify and LSM inode eviction to
-> > evict_inodes() as preparatory patches...
->
-> Good, please Cc me and G=C3=BCnther on related patch series.
+ fs/bcachefs/bcachefs_format.h       |   3 +-
+ fs/bcachefs/btree_iter.c            |   6 +-
+ fs/bcachefs/btree_iter.h            |   8 +
+ fs/bcachefs/fs.c                    |  21 +-
+ fs/bcachefs/fs.h                    |   9 +-
+ fs/bcachefs/fsck.c                  | 377 +++++++++++++++++-----------
+ fs/bcachefs/fsck.h                  |   1 +
+ fs/bcachefs/inode.c                 | 233 ++++++++++++++---
+ fs/bcachefs/inode.h                 |  10 +
+ fs/bcachefs/inode_format.h          |   3 +-
+ fs/bcachefs/recovery_passes_types.h |   1 +
+ fs/bcachefs/sb-downgrade.c          |   5 +-
+ fs/bcachefs/sb-errors_format.h      |   4 +-
+ 13 files changed, 482 insertions(+), 199 deletions(-)
 
-As well as the LSM list since the LSM framework looks to have some
-changes as well.
+-- 
+2.45.2
 
---=20
-paul-moore.com
