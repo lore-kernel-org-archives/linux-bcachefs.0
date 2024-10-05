@@ -1,140 +1,104 @@
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE3010A18
-	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 02:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057E514884C;
+	Sat,  5 Oct 2024 13:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728096566; cv=none; b=IrX306u2iWkHGH4HNJrVepaEveNE33ut4VZygbK6W8JUM6MLeC3c5+ZOGoxupyqVmi6JnSw+7hitF33b6Qf/Pt9AwyCThwXMtvfZXG5qb5kGR9/IGOX5hpW7ZQAZK7wFjg7yY7SR9G02KsMxv/Bm1RL8rvqEg1zLpHXRbCMr3PQ=
+	t=1728133363; cv=none; b=sLCD0zJKuzZ8NNez5iaI1wOgoEuNLp0hPjLeutnpUMPCvJtIvLoNdA3BaKqTqfSrzkvAj76A2KaOpurDMucESB0nyD0ETL+eDEjbwwdUxxTZ1XF+XtXV4PsEVgzfe450ofCoIinKcm6N9weg1WfAqINWjNFkKgQppmxTwMDl5rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728096566; c=relaxed/simple;
-	bh=8S/UmiyqCQa2HIR2BB5d03bbOsZyF8Jl/GRAVJFpnmo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IY6SxSul39pUjmizLBUdS9u2ykfY3PFddDbBNCBF6wovrRE4FBNm2aMyn4Rf9ecdprLH8tVl0sdgnkAroevcuc7tNDgbN9xZOjCnBxKitf5xrSF2gynSPs+B9AUvY2rajfRIt+a0NDbfL9K5r+r+2I+Q190bgM79jL776vhKVWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pNcE+2OO; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1728133363; c=relaxed/simple;
+	bh=ZY+d7MhAztwIvVEagBWrn2xOpFQ0PqgC9xBBdBe0kxw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NoGbn/ZaALIxtuBfP/n4kSyVWW39+mgLq9eqJcZwNM43AMPdogJ6PJ/vrsolPP/60G4yM/M1KuknP8i1ksqHqWid6VDX1MayIC/nJiOkTX6rv8axm1zFfkx1DX2SNhGvmvN1nnM4MhdcnuFUJa4u2qcv/BmqdiD/P6yprZeZjlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KMTySzre; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pNcE+2OO"
-Date: Fri, 4 Oct 2024 22:49:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728096556;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=monea4kTU2Uvxq8WBxsdjOBXCgND6pdtVbuHihxXg+M=;
-	b=pNcE+2OObFyEwF0LpqtFFpZmoqQS1tX9iPtB//64jJ3nJEGDJq80VMEHxyxWXM1q8o0gmD
-	okYheYpNc2UKnZKg6tgB1vHU/fofQHPQrgFki3aSsWN1CKjkBrOI0spXwKgrAWiM05ZlJX
-	TgKQjeKFZBjLMR2NDqAoYbveJZR9U9k=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Thomas Bertschinger <tahbertschinger@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH TOOLS] fuse: graceful shutdown when startup fails
-Message-ID: <3g73btmophoy52qdhmtlaqpbycirdnd5uudsojnrgf2j4jn7wk@3h3bqn2reh4k>
-References: <20241005020654.93862-1-tahbertschinger@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KMTySzre"
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-71df8585a42so163717b3a.3;
+        Sat, 05 Oct 2024 06:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728133360; x=1728738160; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z1u+AXQc3KShsKJXgs5fNJnOH5KwvpIrHXiX2ZuvgOI=;
+        b=KMTySzreqo2/kVdK4NtVaWOC7itw2KqdbsUSrHAAEBkG00ug7aoNl2kWycJ83psbqh
+         +MTYknzXwOtEUmY2CVB9CKl8xyfXnpYx9wQq5txWeIEpjjQc6lLrvfFO4cXH7hDwc7Wg
+         gJZzTDpE7PJ1HoU3eaRGm3vU7A7f87CeHtZCte2KEZf0SoJz8zPf07NSKWhahvGSHrFy
+         dPV+jtH6KO6uRVdHpJBxw7LROK1hfb37KnmnOZZJdwWcSvj2GjK65B5Vw8N2RICD/JGF
+         2CtnOIWz2vFmHYoal7Si27FirZjeM1khZenF+RLEsSMfqRJk6m57TzJpfoX1CNgExbA5
+         8yuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728133360; x=1728738160;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z1u+AXQc3KShsKJXgs5fNJnOH5KwvpIrHXiX2ZuvgOI=;
+        b=BBjPquqmC0bnKzeE3WuFZXBKcFyLouuZqfGXxanDZLqJAFb/0xiLV6ezPzYkvxkEv7
+         I9tewEiAhh87a5QebkzJqwq6wX/GDwDkacaEkknVDzPD1x+Ilvhz2PG9f3QFYAHVyOrE
+         itlhqpoVRGCXIESRHTQFSptBt3EYYaJh29kVDCN0TRQziJ6P6+I7kq6hQ2gIogo63Wb1
+         aWxoXNBrBkhLSByGWjJdSgFbEWkEC8TBix413oPsmD3/0aqaZ+kEMHlONPtUYFqAmj+k
+         mZOVDcmx9yhG0rQNeDzNRAd1j7UrwxTmvq2r5NSIjrN22U5Jz3S1kEtfrKgDabH4P6HC
+         rdlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXYF9/JFHRq0oqsSAxUJ1XWvYkZfh2G/vdAiu6Ck35syCrOSdXBrS673/Zb2O86JZGJFbrmFuOTrpkQFAk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yya3d6choM90QFlF3lsy2/3NhKsv3auYrPT6KZOTfOVuiLOQWLA
+	pkgp1336WEPSYT2agpSkqOpTDBNk6hzKtJJqAWRHON4AeeZV5brzyBRg4hRo
+X-Google-Smtp-Source: AGHT+IE9BRwbL20vaX1wK+ntTJ+1n0jkM6UDK+1IYtndVsJYRETcsfqipm7h8akeMbSWanOaG0L2lA==
+X-Received: by 2002:a05:6a20:6d13:b0:1d6:e635:5c5e with SMTP id adf61e73a8af0-1d6e6355d6emr3848295637.9.1728133360187;
+        Sat, 05 Oct 2024 06:02:40 -0700 (PDT)
+Received: from archlinux.. ([2405:201:e00c:517f:5e87:9cff:fe63:6000])
+        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-71df0d46347sm1487896b3a.99.2024.10.05.06.02.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Oct 2024 06:02:39 -0700 (PDT)
+From: Mohammed Anees <pvmohammedanees2003@gmail.com>
+To: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Mohammed Anees <pvmohammedanees2003@gmail.com>,
+	syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
+Subject: [PATCH resend v3] bcachefs: Fix NULL pointer dereference in bch2_opt_to_text
+Date: Sat,  5 Oct 2024 18:32:29 +0530
+Message-ID: <20241005130229.9290-1-pvmohammedanees2003@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241005020654.93862-1-tahbertschinger@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 04, 2024 at 08:06:54PM GMT, Thomas Bertschinger wrote:
-> When FUSE startup encounters an error after opening the filesystem--for
-> example because of a bad mountpoint--it exited uncleanly, which is a
-> bit unfriendly.
-> 
-> Signed-off-by: Thomas Bertschinger <tahbertschinger@gmail.com>
-> ---
-> 
-> Another mitigation could be to check access(2) for the mountpoint before
-> doing any work...
+This patch adds a bounds check to the bch2_opt_to_text function to prevent
+NULL pointer dereferences when accessing the opt->choices array. This
+ensures that the index used is within valid bounds before dereferencing.
+The new version enhances the readability.
 
-I don't like relying on access(2) because that's racy - this looks nice.
+Reported-and-tested-by: syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=37186860aa7812b331d5
+Signed-off-by: Mohammed Anees <pvmohammedanees2003@gmail.com>
+---
+v3:
+- Moved bounds check above as default case.
+- Removed the nesterd if clauses.
+---
+ fs/bcachefs/opts.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Applied
+diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+index 232be8a44051..84097235eea9 100644
+--- a/fs/bcachefs/opts.c
++++ b/fs/bcachefs/opts.c
+@@ -427,7 +427,9 @@ void bch2_opt_to_text(struct printbuf *out,
+ 			prt_printf(out, "%lli", v);
+ 		break;
+ 	case BCH_OPT_STR:
+-		if (flags & OPT_SHOW_FULL_LIST)
++		if (v < opt->min || v >= opt->max - 1)
++			prt_printf(out, "(invalid option %lli)", v);
++		else if (flags & OPT_SHOW_FULL_LIST)
+ 			prt_string_option(out, opt->choices, v);
+ 		else
+ 			prt_str(out, opt->choices[v]);
+-- 
+2.46.0
 
-> 
->  c_src/cmd_fusemount.c | 39 +++++++++++++++++++++++++--------------
->  1 file changed, 25 insertions(+), 14 deletions(-)
-> 
-> diff --git a/c_src/cmd_fusemount.c b/c_src/cmd_fusemount.c
-> index f43d29f5..50d35832 100644
-> --- a/c_src/cmd_fusemount.c
-> +++ b/c_src/cmd_fusemount.c
-> @@ -1203,6 +1203,7 @@ int cmd_fusemount(int argc, char *argv[])
->  	struct bch_opts bch_opts = bch2_opts_empty();
->  	struct bf_context ctx = { 0 };
->  	struct bch_fs *c = NULL;
-> +	struct fuse_session *se = NULL;
->  	int ret = 0, i;
->  
->  	/* Parse arguments. */
-> @@ -1263,17 +1264,22 @@ int cmd_fusemount(int argc, char *argv[])
->  		    bch2_err_str(PTR_ERR(c)));
->  
->  	/* Fuse */
-> -	struct fuse_session *se =
-> -		fuse_session_new(&args, &bcachefs_fuse_ops,
-> -				 sizeof(bcachefs_fuse_ops), c);
-> -	if (!se)
-> -		die("fuse_lowlevel_new err: %m");
-> +	se = fuse_session_new(&args, &bcachefs_fuse_ops,
-> +				sizeof(bcachefs_fuse_ops), c);
-> +	if (!se) {
-> +		fprintf(stderr, "fuse_lowlevel_new err: %m\n");
-> +		goto err;
-> +	}
->  
-> -	if (fuse_set_signal_handlers(se) < 0)
-> -		die("fuse_set_signal_handlers err: %m");
-> +	if (fuse_set_signal_handlers(se) < 0) {
-> +		fprintf(stderr, "fuse_set_signal_handlers err: %m\n");
-> +		goto err;
-> +	}
->  
-> -	if (fuse_session_mount(se, fuse_opts.mountpoint))
-> -		die("fuse_mount err: %m");
-> +	if (fuse_session_mount(se, fuse_opts.mountpoint)) {
-> +		fprintf(stderr, "fuse_mount err: %m\n");
-> +		goto err;
-> +	}
->  
->  	/* This print statement is a trigger for tests. */
->  	printf("Fuse mount initialized.\n");
-> @@ -1287,17 +1293,22 @@ int cmd_fusemount(int argc, char *argv[])
->  
->  	ret = fuse_session_loop(se);
->  
-> -	/* Cleanup */
-> -	fuse_session_unmount(se);
-> -	fuse_remove_signal_handlers(se);
-> -	fuse_session_destroy(se);
-> -
->  out:
-> +	if (se) {
-> +		fuse_session_unmount(se);
-> +		fuse_remove_signal_handlers(se);
-> +		fuse_session_destroy(se);
-> +	}
-> +
->  	free(fuse_opts.mountpoint);
->  	fuse_opt_free_args(&args);
->  	bf_context_free(&ctx);
->  
->  	return ret ? 1 : 0;
-> +
-> +err:
-> +	bch2_fs_stop(c);
-> +	goto out;
->  }
->  
->  #endif /* BCACHEFS_FUSE */
-> -- 
-> 2.46.0
-> 
