@@ -1,42 +1,43 @@
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A6013632B
-	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 23:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E7F13DBBC
+	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Oct 2024 23:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728171667; cv=none; b=oZYyyq+WTyxKnOU64vZAf5u4iCetPVw5CLaQ2+k60uh6+4vnzWGAaZ7xZK9q4BmDkMjq4+No4CgtXyQqA5RAngvCXm7cr3da8TGKOdxfCBnwI066EBTqweGgMS13zvXBt1XB+n79pXYWGeY8ngFyXtrhyLGo+e8bFr4a2YlVE9c=
+	t=1728172080; cv=none; b=W/ynfKtbSj2VRKOCId5VONPdGNMJ1EQIXXRyOOzFHFj4JCMsajtxsokfA4SXKS4JKruB0HifY2VgF6099YiHx2HbHVZkwoanEWgvqqHZCeaEskgTILM673OPk974iMpDb+RS0+GjgdStdHBM3ZtMfYjiePTRnJS3VMXDK1h7pdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728171667; c=relaxed/simple;
-	bh=HRFm4/t2t9NRoBAlYcqFtrp/N0q2veNV8kygHa6Kfro=;
+	s=arc-20240116; t=1728172080; c=relaxed/simple;
+	bh=CU43C7lMcoFOEc9idglBpjRwCPRbGUE7aTXz/bbYE20=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MkTM+ryVZ0Te9u366ukA3qU6WKRl+AoqrKqDKto59W/QMowfW7KP201UgKf/mC47V6rQTUwVwEyaYYv2He3wcuDTtKGHcIgw0elEH09IoT82XDsApR/EBWZZO3z2n/toSIWpjUaeqRMCB6XZmGGHdfELm9lDpQMvPt8sDwFPDgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IBDTV5eJ; arc=none smtp.client-ip=95.215.58.183
+	 Content-Type:Content-Disposition:In-Reply-To; b=suIg3OonqjNjNPD5dYOSdr/Org1V3xw1o2cShZcVhav9bnMJiPzl4161geaAJQOC6UOCuqUvBF7hPIyMPV69Wit1xfGX29/dXmlmH1kMTQakhQDw+iAruuza1SsY0pzRpsWs4MPZh9ckl9/SCrFaBS1di0vL2BcHLlwxEIYOex8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JL/uaEmk; arc=none smtp.client-ip=95.215.58.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IBDTV5eJ"
-Date: Sat, 5 Oct 2024 19:40:59 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JL/uaEmk"
+Date: Sat, 5 Oct 2024 19:47:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728171663;
+	t=1728172076;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N94jXO8rXgw/sYZ7EbL/8D5WR9t7A3fqzLTeq3yNnDY=;
-	b=IBDTV5eJfSgYxkLZAkwuZbh9fg6OzYQ0A3NV3bSva58ItNuu82TqgC3Nj2WSu5cNYdoDqF
-	FQ8S52wfBumnVVVHqBw36dk77TDAuTa7X9K3OS6Bi1aWBXy1Wwyz0pllYZdZsDkHke+qZF
-	M0mOKxLhjnEaEPnVi1v6gwdL7JHIct4=
+	bh=CU43C7lMcoFOEc9idglBpjRwCPRbGUE7aTXz/bbYE20=;
+	b=JL/uaEmkLLFEaQoRuYJZcgRl7MstL//5asZ0o3XjLR2iX+8YUd9rU19KSwmZqNf8ovAs9m
+	hQ9OpUmyBL5C6MZYdwAEAwdpN+gbZiPsPO22TERH+hH1RVqYQGAFFoL3l51kY17Cn3ZSbn
+	EzQL8D6MnMqN6FHOPcBzSUafbMi6wPQ=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-Message-ID: <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
+Message-ID: <flykuujdisx6t2pmqykm6h4bpchgpcggbqsqviulvsiutlyh36@exltovne4jy4>
 References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
  <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
  <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
  <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
+ <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -45,56 +46,17 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
+In-Reply-To: <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
 X-Migadu-Flow: FLOW_OUT
 
-On Sat, Oct 05, 2024 at 04:15:25PM GMT, Linus Torvalds wrote:
-> On Sat, 5 Oct 2024 at 15:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > The vast majority of those fixes are all ~2 weeks old.
-> 
-> With the patches not appearing on the list, that seems entirely irrelevant.
-> 
-> Apparently they are 2 weeks on IN YOUR TREE.
-> 
-> And absolutely nowhere else.
+On Sat, Oct 05, 2024 at 07:41:03PM GMT, Kent Overstreet wrote:
+> Face _what_ exactly? Because at this point, I can't even tell what it is
+> you want, what you're reacting to keeps shifting.
 
-If what you want is patches appearing on the list, I'm not unwilling to
-make that change.
+And more than that, I'm done with trying to cater, and I'm done with
+these long winded rants. Look, I quite enjoy the direct approach, but
+I'm done with having to apologize for you in order to calm people down
+every time this happens.
 
-I take issue, and indeed even dig my heels in, when the only people
-asking for that are _only_ yelling about that and aren't involved
-otherwise.
-
-But you will find that if you talk to me as one human being to another,
-where we can share and listen to each other's concerns, I'm more than
-happy to be reasonable.
-
-But I'm not going to just toe the line when it's just yelling.
-
-Seriously.
-
-Because the last time you flipped out over a pull request, I spent the
-rest of the cycle telling people "x y and z are fixed, but you'll have
-to build my tree instead of running a released kernel". And that gets
-tiresome; some of the bugs were significant - and no issues to date have
-been found in the stuff you kicked back, which tells me my process is
-just fine.
-
-So let _that_ sink in. In order to support my userbase, as well as
-iterate to find the _next_ set of bugs, I have to be able to ship
-bugfixes in a timely manner, and if that's going to keep being an issue
-perhaps I should be having those conversations with distro kernel
-maintainers now, instead of later.
-
-> > Let that sink in.
-> 
-> Seriously.
-> 
-> You completely dodged my actual argument, except for pointing at how
-> we didn't have process two decades ago.
-> 
-> If you can't actually even face this, what's the point any more?
-
-Face _what_ exactly? Because at this point, I can't even tell what it is
-you want, what you're reacting to keeps shifting.
+If you're so convinced you know best, I invite you to start writing your
+own filesystem. Go for it.
