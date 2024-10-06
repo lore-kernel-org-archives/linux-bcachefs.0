@@ -1,149 +1,81 @@
-Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7274C74;
-	Sun,  6 Oct 2024 01:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E000F1662E9
+	for <linux-bcachefs@vger.kernel.org>; Sun,  6 Oct 2024 01:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728178050; cv=none; b=f4vLZ9n3P+T7dRkpcrRqIF1GkP3GnXLRBdl2xnFvdElh6/hFFyPFkt65l2MUyEx/iCJQT6aCpSZD33aJhFR+vSZkuQnGCWEM+VWP4wPm50b2Dgaguj2BPNZv6ELNRP2lruo5tltgcLL9kVs0t3yR0RDSU428Gkgv0p7tA8SlDQM=
+	t=1728179804; cv=none; b=WFuJY+2tyNfO+gJQ+v1cxgIMx0XARFAQiwbFUfVwNHEdzjGNxJCwK9BbOPmmLBufdRojetA4pCALaqAh1a+RmthLQgUp1AXigPmDBpn4lGuF9p81WbYaRzDwFOrcuTTD/8JE3+J5sChg0urFjRFRC9jz/a1KQsA0Gie0mrxAkJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728178050; c=relaxed/simple;
-	bh=AjcyHu2H/NRbcIb6sXYJSlea2CQS0l+v/PIIAVpCZj8=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=VplkTr1EXuLHo39J+fLylGt16Pqz/QJgDBhTY7tkSEYe6G98OtsS4fX4vzCZ4hqWS6J5qsUXn9J3LnB4O40jtCjcXMcC1514QSHVNAzW80UJXYsl7+udOd4m3R8CVazzSSJhqowOjyky2s5Rl2VA4JOCF0I3wz30a8dWa7tOxJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
-Received: from mail.carlthompson.net (mail.home [10.35.20.252])
-	(Authenticated sender: cet@carlthompson.net)
-	by smtp.carlthompson.net (Postfix) with ESMTPSA id E9AA41014EFB1;
-	Sat,  5 Oct 2024 18:20:53 -0700 (PDT)
-Date: Sat, 5 Oct 2024 18:20:53 -0700 (PDT)
-From: "Carl E. Thompson" <cet@carlthompson.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Message-ID: <345264611.558.1728177653590@mail.carlthompson.net>
-In-Reply-To: <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
+	s=arc-20240116; t=1728179804; c=relaxed/simple;
+	bh=W5n2YU4QYClAkBUY46U5PjuC1TvuyQDbXqJIUIDs8QM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LMqTNtqFtziQ7SB7tJuteoYeO4K16FwkpJUNjfexgp5sQvVvjrE+9S3a6MlP/zmVFncmEBB5bKvfJfZ2/lkZ9GoQ6GKcvvDqexTM3MxVSo8/Ztb7Zpe4X+CQ74Nq80xcLd+nJuu1xWmE6OVNasx2UEaLj0vhfltMwFsV6yAGAfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DHvG1uzh; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DHvG1uzh"
+Date: Sat, 5 Oct 2024 21:56:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728179799;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BnnHTDOn4QrAu1ULVkfdeQk3x6v9dEhgIZ7d2QgOsVc=;
+	b=DHvG1uzha+RVUdKvfClOmkw4ftOPlaP1pEp2dR6pDiSim1fKwT8xMuk1a9LuumSwqCCol4
+	mDQlaFwaIY29deO50w0wxl16dAIsFJd8tT1Z+rHTU7bqs+VdD7OmnpmPs1ujzM6LGNocSF
+	o6epLVNwqmMnNP53/g8Srag7xu0JVWs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Carl E. Thompson" <cet@carlthompson.net>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
+Message-ID: <coczqmiqvuy4h74j462mjyro3skeybyt2y3kcqdcuwy4bwibjy@pquinazt4h22>
 References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
  <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
  <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
  <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
  <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
  <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
+ <345264611.558.1728177653590@mail.carlthompson.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
-X-Originating-Client: open-xchange-appsuite
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <345264611.558.1728177653590@mail.carlthompson.net>
+X-Migadu-Flow: FLOW_OUT
 
-Here is a user's perspective from someone who's built a career from Linux (=
-thanks to all of you)...
+On Sat, Oct 05, 2024 at 06:20:53PM GMT, Carl E. Thompson wrote:
+> Here is a user's perspective from someone who's built a career from Linux (thanks to all of you)...
+> 
+> The big hardship with testing bcachefs before it was merged into the kernel was that it couldn't be built as an out-of-tree module and instead a whole other kernel tree needed to be built. That was a pain.
+> 
+> Now, the core kernel infrastructure changes that bcachefs relies on are in the kernel and bcachefs can very easily and quickly be built as an out-of-tree module in just a few seconds. I submit to all involved that maybe that's the best way to go **for now**. 
+> 
+> Switching to out of tree for now would make it much easier for Kent to have the fast-paced development model he desires for this stage in bcachefs' development. It would also make using and testing bcachefs much easier for power users like me because when an issue is detected we could get a fix or new feature much faster than having to wait for a distribution to ship the next kernel version and with less ancillary risk than building and using a less-tested kernel tree. Distributions themselves also are very familiar with packaging up out-of-tree modules and distribution tools like dkms make using them dead simple even for casual users.
+> 
+> The way things are now isn't great for me as a Linux power user. I
+> often want to use the latest or even RC kernels on my systems to get
+> some new hardware support or other feature and I'm used to being able
+> to do that without too many problems. But recently I've had to skip
+> cutting-edge kernel versions that I otherwise wanted to try because
+> there have been issues in bcachefs that I didn't want to have to face
+> or work around. Switching to an out of tree module for now would be
+> the best of all worlds for me because I could pick and choose which
+> combination of kernel / bcachefs to use for each system and situation.
 
-The big hardship with testing bcachefs before it was merged into the kernel=
- was that it couldn't be built as an out-of-tree module and instead a whole=
- other kernel tree needed to be built. That was a pain.
+Carl - thanks, I wasn't aware of this.
 
-Now, the core kernel infrastructure changes that bcachefs relies on are in =
-the kernel and bcachefs can very easily and quickly be built as an out-of-t=
-ree module in just a few seconds. I submit to all involved that maybe that'=
-s the best way to go **for now**.=20
+Can you give me details? 6.11 had the disk accounting rewrite, which was
+huge and (necessarily) had some fallout, if you're seeing regressions
+otherwise that are slipping through then - yes it's time to slow down
+and reevaluate.
 
-Switching to out of tree for now would make it much easier for Kent to have=
- the fast-paced development model he desires for this stage in bcachefs' de=
-velopment. It would also make using and testing bcachefs much easier for po=
-wer users like me because when an issue is detected we could get a fix or n=
-ew feature much faster than having to wait for a distribution to ship the n=
-ext kernel version and with less ancillary risk than building and using a l=
-ess-tested kernel tree. Distributions themselves also are very familiar wit=
-h packaging up out-of-tree modules and distribution tools like dkms make us=
-ing them dead simple even for casual users.
-
-The way things are now isn't great for me as a Linux power user. I often wa=
-nt to use the latest or even RC kernels on my systems to get some new hardw=
-are support or other feature and I'm used to being able to do that without =
-too many problems. But recently I've had to skip cutting-edge kernel versio=
-ns that I otherwise wanted to try because there have been issues in bcachef=
-s that I didn't want to have to face or work around. Switching to an out of=
- tree module for now would be the best of all worlds for me because I could=
- pick and choose which combination of kernel / bcachefs to use for each sys=
-tem and situation.
-
-Just my 2=C2=A2.
-
-Carl
-
-
-
-> On 2024-10-05 5:14 PM PDT Linus Torvalds <torvalds@linux-foundation.org> =
-wrote:
->=20
-> =20
-> On Sat, 5 Oct 2024 at 16:41, Kent Overstreet <kent.overstreet@linux.dev> =
-wrote:
-> >
-> > If what you want is patches appearing on the list, I'm not unwilling to
-> > make that change.
->=20
-> I want you to WORK WITH OTHERS. Including me - which means working
-> with the rules and processes we have in place.
->=20
-> Making the argument that we didn't have those rules twenty years ago
-> is just stupid.  We have them NOW, because we learnt better. You don't
-> get to say "look, you didn't have rules 20 years ago, so why should I
-> have them now?"
->=20
-> Patches appearing on the list is not some kind of sufficient thing.
-> It's the absolute minimal requirement. The fact that absolutely *NONE*
-> of the patches in your pull request showed up when I searched just
-> means that you clearly didn't even attempt to have others involved
-> (ok, I probably only searched for half of them and then I gave up in
-> disgust).
->=20
-> We literally had a bcachefs build failure last week. It showed up
-> pretty much immediately after I pulled your tree. And because you sent
-> in the bcachefs "fixes" with the bug the day before I cut rc1, we
-> ended up with a broken rc1.
->=20
-> And hey, mistakes happen. But when the *SAME* absolute disregard for
-> testing happens the very next weekend, do you really expect me to be
-> happy about it?
->=20
-> It's this complete disregard for anybody else that I find problematic.
-> You don't even try to get other developers involved, or follow
-> upstream rules.
->=20
-> And then you don't seem to even understand why I then complain.
->=20
-> In fact, you in the next email say:
->=20
-> > If you're so convinced you know best, I invite you to start writing you=
-r
-> > own filesystem. Go for it.
->=20
-> Not at all. I'm not interested in creating another bcachefs.
->=20
-> I'm contemplating just removing bcachefs entirely from the mainline
-> tree. Because you show again and again that you have no interest in
-> trying to make mainline work.
->=20
-> You can do it out of mainline. You did it for a decade, and that
-> didn't cause problems. I thought it would be better if it finally got
-> mainlined, but by all your actions you seem to really want to just
-> play in your own sandbox and not involve anybody else.
->=20
-> So if this is just your project and nobody else is expected to
-> participate, and you don't care about the fact that you break the
-> mainline build, why the hell did you want to be in the mainline tree
-> in the first place?
->=20
->                    Linus
+Details would be extremely helpful, so we can improve our regression
+testing.
