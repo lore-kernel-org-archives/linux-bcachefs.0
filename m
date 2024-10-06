@@ -1,92 +1,155 @@
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 694957F6
-	for <linux-bcachefs@vger.kernel.org>; Sun,  6 Oct 2024 04:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91165364A0;
+	Sun,  6 Oct 2024 11:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728189242; cv=none; b=MSQ36rlVox287OgKhyijrROai3akvMQIHH5wvFsGXghcVdB6vD+zj35oOUYO76CVZUcIM7GoyBEAhLq/NBp5EgW8zT3b76r8NmegGLZD3VCIkQ7KzklovJtceH/T6YDIyzBLz4VfjE1nE1spSbs9OpNGXbEHZPQKo4XI9wxg1t0=
+	t=1728215795; cv=none; b=WqEY92OOBt59zseCJGCa5RyQdWGYAOvX71bK3BqEZA9lcFQDZwzEjCzXh+OQ7S6reCG2oTPIZMjFzvmFv6PJ4/WvEif7r7vlhvsb/Y4QRgNMM/dUiwVK5A7cwqEGbmQ+a065QFYjmZdOUurYTbRhwtQOIG3c4/3AKtaNS3Dwers=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728189242; c=relaxed/simple;
-	bh=WVcCE2sim6v+IZFNjDwjs5bsLKqaeRgzWiRtf4qAB1I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rmUgUOLPgOSUIuqJuaOtJMIv3674THJ87nL4MKSNrsppmoBUpigKuhYfVZzXUcUWmAp80ZQoY2JEGmwwJmI9G8y3JqP9SeIUTih2Is+epDFcF1VESK+Lil/GPnHBAvA3RFT1gqwuL9e+99Qi3scPva0Gp/pcebORRK6jJSC9Yvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gj+RNT/+; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gj+RNT/+"
-Date: Sun, 6 Oct 2024 00:33:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728189234;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnfhMk/3cBVNeBtBJ/GLOCkJvZam9zsro2DCVrs52v8=;
-	b=gj+RNT/+1CkLanzJq9x7++ZSoiIUPco7dne5G7WleTjPXYp7fcfaC3UDXZ+KpdrKhz44F3
-	YeuITZUBkRXnSacaAcOt6a5r+WQBu6KEeniUJiCjvZl9zy+43FWjEMXgMcBPVDc9qzDCo6
-	15ruFLC6lGo/d1dk3iy72lvQxj4Ijso=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1728215795; c=relaxed/simple;
+	bh=fYm8XZM7szcIecmiSvIW0b+adLjsjNfHN8DO3gDpkPA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qxPbkzXW39NXLHCwk1fAMO9fUqihA36OW/dVNHThwb9RGqAgJ2qIxr+bq0L8MeobRSlNmM2EY6eb+R3RxdxPGu030e4yIF5134rvvsxSpjkzf6Q0vLdmHxkFb8GrZjV0GureG2SKYY0JCQx7f3sDlm9ZCnV5XMRDhv74MeqicLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id 9E79A73FD6;
+	Sun, 06 Oct 2024 11:49:23 +0000 (UTC)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-Message-ID: <jhvwp3wgm6avhzspf7l7nldkiy5lcdzne5lekpvxugbb5orcci@mkvn5n7z2qlr>
-References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
- <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
- <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
- <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
- <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
+Date: Sun, 06 Oct 2024 13:49:23 +0200
+Message-ID: <5987583.MhkbZ0Pkbq@lichtvoll.de>
+In-Reply-To: <2nyd5xfm765iklvzjxvn2nx3onhtdntqrnmvlg2panhtdbff7i@evgk5ecmkuoo>
+References:
+ <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
  <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
  <2nyd5xfm765iklvzjxvn2nx3onhtdntqrnmvlg2panhtdbff7i@evgk5ecmkuoo>
- <20241006043002.GE158527@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241006043002.GE158527@mit.edu>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Oct 06, 2024 at 12:30:02AM GMT, Theodore Ts'o wrote:
-> On Sat, Oct 05, 2024 at 08:54:32PM -0400, Kent Overstreet wrote:
-> > But I also have to remind you that I'm one of the few people who's
-> > actually been pushing for more and better automated testing (I now have
-> > infrastructure for the communty that anyone can use, just ask me for an
-> > account) - and that's been another solo effort because so few people are
-> > even interested, so the fact that this even came up grates on me. This
-> > is a problem with a technical solution, and instead we're all just
-> > arguing.
-> 
-> Um, hello?  All of the file system developers have our own automated
-> testing, and my system, {kvm,gce,android}-xfstests[1][[2] and Luis's
-> kdevops[3] are both availble for others to use.  We've done quite a
-> lot in terms of doumentations and making it easier for others to use.
-> (And that's not incluing the personal test runners used by folks like
-> Josef, Cristoph, Dave, and Darrick.)
-> 
-> [1] https://thunk.org/gce-xfstest
-> [2] https://github.com/tytso/xfstests-bld
-> [3] https://github.com/linux-kdevops/kdevops
-> 
-> That's why we're not particularly interested in yours --- my system
-> has been in active use since 2011, and it's been well-tuned for me and
-> others to use.  (For example, Leah has been using it for XFS stable
-> backports, and it's also used for testing Google's Data Center
-> kernels, and GCE's Cloud Optimized OS.)
-> 
-> You may believe that yours is better than anyone else's, but with
-> respect, I disagree, at least for my own workflow and use case.  And
-> if you look at the number of contributors in both Luis and my xfstests
-> runners[2][3], I suspect you'll find that we have far more
-> contributors in our git repo than your solo effort....
+Hi Kent, hi Linus.
 
-Correct me if I'm wrong, but your system isn't available to the
-community, and I haven't seen a CI or dashboard for kdevops?
+Kent Overstreet - 06.10.24, 02:54:32 CEST:
+> On Sat, Oct 05, 2024 at 05:14:31PM GMT, Linus Torvalds wrote:
+> > On Sat, 5 Oct 2024 at 16:41, Kent Overstreet=20
+<kent.overstreet@linux.dev> wrote:
+> > > If what you want is patches appearing on the list, I'm not unwilling
+> > > to
+> > > make that change.
+> >=20
+> > I want you to WORK WITH OTHERS. Including me - which means working
+> > with the rules and processes we have in place.
+>=20
+> That has to work both ways.
 
-Believe me, I would love to not be sinking time into this as well, but
-we need to standardize on something everyone can use.
+Exactly, Kent.
+
+And it is my impression from reading the whole thread up to now and from=20
+reading previous threads it is actually about: Having your way and your=20
+way only.
+
+That is not exactly "work both ways".
+
+Quite similarly regarding your stand towards distributions like Debian.
+
+Sure you can question well established rules all the way you want and=20
+maybe you are even right about it. I do not feel qualified enough to judge=
+=20
+on that. I am all for challenging well established rules on justified=20
+grounds=E2=80=A6
+
+But=E2=80=A6 even if that is the case it is still a negotiation process. Ex=
+pecting=20
+that communities change well established rules on the spot just cause you=20
+are asking for it=E2=80=A6 quite bold if you ask me. It would be a negotiat=
+ion=20
+process and work both ways would mean to agree on some kind of middle=20
+ground. But it appears to me you do not seem to have the patience for such=
+=20
+a process. So it is arguing on both sides which costs a lot of energy of=20
+everyone involved.
+
+=46rom what I perceive you are actually actively working against well=20
+established rules. And you are surprised on the reaction? That is kind of=20
+naive if you ask me.
+
+At least you wrote you are willing to post patches to the mailing list: So=
+=20
+why not start with at least that *minimal* requirement according to Linus=20
+as a step you do? Maybe even just as a sign of good will towards the=20
+kernel community? That has been asked of you concretely, so why not just=20
+do it?
+
+Maybe this can work out by negotiating a middle ground going one little=20
+step at a time?
+
+
+I still do have a BCacheFS on my laptop for testing, but meanwhile I=20
+wonder whether some of the crazy kernel regressions I have seen with the=20
+last few kernels where exactly related to having mounted that BCacheFS=20
+test filesystem. I am tempted to replace the BCacheFS with a BTRFS just to=
+=20
+find out.
+
+Lastly 6.10.12-1 Debian kernel crashes on a pool-spawner thread when I=20
+enter the command =E2=80=9Ereboot=E2=80=9C. That is right a reboot crashes =
+the system =E2=80=93 I=20
+never have seen anything this crazy with any Linux kernel so far! I have=20
+made a photo of it but after that long series of regressions I am even too=
+=20
+tired to post a bug report about it just to be told again to bisect the=20
+issue. And it is not the first work queue related issue I found between 6.8=
+=20
+and 6.11 kernels.
+
+Actually I think I just replace that BCacheFS with another BTRFS in order=20
+to see whether it reduces the amount of crazy regressions I got so fed up=20
+with recently. Especially its not fair to report all of this to the Lenovo=
+=20
+Linux community guy Mark Pearson in case its not even related to the new=20
+ThinkPad T14 AMD Gen 5 I am using. Mind you that series of regressions=20
+started with a T14 AMD Gen 1 roughly at the time I started testing=20
+BCacheFS and I had hoped they go away with the new laptop. Additionally I=20
+have not seen a single failure with BTRFS on any on my systems =E2=80=93 in=
+cluding=20
+quite some laptops and several servers, even using LXC containers =E2=80=93=
+ for=E2=80=A6 I=20
+don't remember when. Since kernel 4.6 BTRFS at least for me is rock=20
+stable. And I agree, it took a huge lot of time until it was stable. But=20
+whether that is due to the processes you criticize or other reasons or a=20
+combination thereof=E2=80=A6 do you know for sure?
+
+I am wondering: did the mainline kernel just get so much more unstable in=20
+the last 3-6 months or may there be a relationship to the test BCacheFS=20
+filesystem I was using that eluded me so far. Of course, I do not know for=
+=20
+now, but reading Carl's mails really made me wonder.
+
+Maybe there is none, so don't get me wrong=E2=80=A6 but reading this thread=
+ got me=20
+suspicious now. I am happily proven wrong on that suspicion and I commit=20
+to report back on it. Especially when the amount of regressions does not=20
+decline and I got suspicious of BCacheFS unjustly.
+
+Best,
+=2D-=20
+Martin
+
+
