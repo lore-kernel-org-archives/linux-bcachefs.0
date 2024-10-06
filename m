@@ -1,134 +1,182 @@
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B42233F9
-	for <linux-bcachefs@vger.kernel.org>; Sun,  6 Oct 2024 00:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70730A939
+	for <linux-bcachefs@vger.kernel.org>; Sun,  6 Oct 2024 00:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728173692; cv=none; b=NiUDBdqH9txVMeP4sICFfZNYh509eVj3RtuWDzBYei0HRd3i7pW85rrH5JidcG7Lf4b+3xKMyCN6sRrU2OYw+S75t7h4C0jfQ9PGmAiiDDh4pLuJOfv3if61quoU2MsVhzWHo+jq/eIW450iWxfHm2aPMc8rrBtwReU22t53U0A=
+	t=1728176086; cv=none; b=tWXzx5xmKeOahn8KZcKO/jOQt6FmZyfyedF9KhuV58+VwYvYLG7mM5PR4MnhGcDI8PiKcP8yNZsqQadPanKl3qGPnGqefEK4lHA2wBbKwoSEc/6vHbIeDNbzRo9eUoFlea7DXeF2eMlHA0VBdtsPcphdWoLfDnSQ2MeuO9khS04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728173692; c=relaxed/simple;
-	bh=HgtCN7iIuMmkaNV3I4PdNrx0uSYLvra8kQ82Jy6qi+g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iAfrrAmt4tOE7zURl9ir3zesQ/LZFOoSTa88I/cveSTj7bWGSpYxbVDuyKK0qUOnyLogZkgcRqX8E4SOkyKDnhFFcs5AIkNb5vMFnePDpE/+fiI/4fPG1VDOEXdUl0j8XGoKwRF0LsBQX9YVzBRiVPgRK2AHkNiLK3xio0OPoPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=dC4iCoVg; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1728176086; c=relaxed/simple;
+	bh=zd5x3q3iXlFjQy2ZXqLZf2Fg3QPYCCucg1PgrZ8v5ZQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UifW3emuLBIZ0UNbDU8dQxJBgp8/kDqmIxHZSoqQyCo8q51LaPGysVQJ/sEZQ3tXAAvXjY3WzTwQng0SkIciy63YxmVdPg/yTpDQZ6rVFWNM8H86mo4ONQvL8fy7+tm8y03xJrzxUGbIHQIQJfwv9FKJzp8yeb4y9IpqSVdcR8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UIVLUQqT; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="dC4iCoVg"
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5c88e6926e5so3628781a12.3
-        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 17:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1728173689; x=1728778489; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nzL6PAghOW3KzpclFbijO5KDwmQqxWPsUEDBX6EEH4c=;
-        b=dC4iCoVgo4hvZqT/yL64jw6Fs+Cq8iZu79PEdu1Ph8fdTB/mA6eAX5dBW8aidmdxFn
-         h0LivbzR5kkgR7AEN8YZtPlxwI+kRahhTpnmJWEWYa52I0ua3OMtGfUFFpdNgQU1gDza
-         ajoqgHQfLKWwKzWY0V1dsUoUWSTjbkI4UwXQI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728173689; x=1728778489;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nzL6PAghOW3KzpclFbijO5KDwmQqxWPsUEDBX6EEH4c=;
-        b=Rmlf98/E+om1r9Jwgp955RIjBkHmvfLFxu5uw9kBC9KJNhgcaXBxBh6bfnmA/TFJMU
-         Q76SS5mnGNRwxwtKNnbfVi0ly64bpzyOHGV5chwkcWlfbR27nmfY/PMqskQeQ3MgFadr
-         3jxO7fshBlIuGjaVZS2uPD51nY969yfP3DiSQ1gq9KVTrd1z9ubvJiCpqM94zWjF9ccJ
-         lMMVkWHLmDXUI1j+1qmnRViA36j+kW+JQmsc7hH9WsOQCau3b1BqXZVTqnVJl4mItZzO
-         zxNpTWB8qcqxg99EbqaO/o/z5dLIz65cqUlwNMcPnZ/znMy7OHe2tdvdQUG8b4+ihdOG
-         RrAA==
-X-Gm-Message-State: AOJu0YyV3uKLw2KjVaNW306qdbyfqeNNwrgKpDTJlR1plQSKRrHJTCwr
-	zTHDDyovsnlK24lvR7FaqJI6/XY/cEefE9SPIeTIA4b6M1l8aAZylLKEq9PH1WEsvxqA6Tlyrq1
-	vTmMv9Q==
-X-Google-Smtp-Source: AGHT+IHAt8LX9Sgsf7g7YSjU56670Vtx5uatsd5SqfjgCGu03WOi3ZWAhcPTEnebwDp85F/b/BD1lQ==
-X-Received: by 2002:a17:907:7e8d:b0:a86:ac91:a571 with SMTP id a640c23a62f3a-a991c072851mr810992266b.56.1728173688670;
-        Sat, 05 Oct 2024 17:14:48 -0700 (PDT)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a992e5c8f02sm191198466b.33.2024.10.05.17.14.47
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Oct 2024 17:14:47 -0700 (PDT)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5c89bdb9019so3937196a12.0
-        for <linux-bcachefs@vger.kernel.org>; Sat, 05 Oct 2024 17:14:47 -0700 (PDT)
-X-Received: by 2002:a17:907:c7cf:b0:a8d:286f:7b5c with SMTP id
- a640c23a62f3a-a991bd71ec5mr611797066b.27.1728173687316; Sat, 05 Oct 2024
- 17:14:47 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UIVLUQqT"
+Date: Sat, 5 Oct 2024 20:54:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728176078;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5ANbMm2vpRjIu7wF5S2mm9W4M4SuN2KC2/rhtvgUEpE=;
+	b=UIVLUQqTN4Rm4jspkESyVbuWELlY8OTv3pxY0JsX8AM/oGLtVSeCRB8C1TzVu+J+wh8lOe
+	diQR9dN5QiI10/fLBkmJAXQNEhQ9X5+ikvDLh4iQhswV2BdYMRlrZ+wYxRv8mHmlb+UUnT
+	ELmCjVEYNimQFy77yRhg95/obCuSvWY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
+Message-ID: <2nyd5xfm765iklvzjxvn2nx3onhtdntqrnmvlg2panhtdbff7i@evgk5ecmkuoo>
+References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
+ <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
+ <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
+ <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
+ <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
+ <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
- <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
- <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
- <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com> <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
-In-Reply-To: <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 5 Oct 2024 17:14:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
-Message-ID: <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, 5 Oct 2024 at 16:41, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> If what you want is patches appearing on the list, I'm not unwilling to
-> make that change.
+On Sat, Oct 05, 2024 at 05:14:31PM GMT, Linus Torvalds wrote:
+> On Sat, 5 Oct 2024 at 16:41, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > If what you want is patches appearing on the list, I'm not unwilling to
+> > make that change.
+> 
+> I want you to WORK WITH OTHERS. Including me - which means working
+> with the rules and processes we have in place.
 
-I want you to WORK WITH OTHERS. Including me - which means working
-with the rules and processes we have in place.
+That has to work both ways.
 
-Making the argument that we didn't have those rules twenty years ago
-is just stupid.  We have them NOW, because we learnt better. You don't
-get to say "look, you didn't have rules 20 years ago, so why should I
-have them now?"
+Because when I explain my reasoning and processes, and it's ignored and
+the same basic stuff is repeatedly yelled back, I'm just going to tune
+it out.
 
-Patches appearing on the list is not some kind of sufficient thing.
-It's the absolute minimal requirement. The fact that absolutely *NONE*
-of the patches in your pull request showed up when I searched just
-means that you clearly didn't even attempt to have others involved
-(ok, I probably only searched for half of them and then I gave up in
-disgust).
+I'm more than happy to work with people, but that's got to be a
+conversation, and one based on mutual respect.
 
-We literally had a bcachefs build failure last week. It showed up
-pretty much immediately after I pulled your tree. And because you sent
-in the bcachefs "fixes" with the bug the day before I cut rc1, we
-ended up with a broken rc1.
+> Making the argument that we didn't have those rules twenty years ago
+> is just stupid.  We have them NOW, because we learnt better. You don't
+> get to say "look, you didn't have rules 20 years ago, so why should I
+> have them now?"
 
-And hey, mistakes happen. But when the *SAME* absolute disregard for
-testing happens the very next weekend, do you really expect me to be
-happy about it?
+That wasn't my argument.
 
-It's this complete disregard for anybody else that I find problematic.
-You don't even try to get other developers involved, or follow
-upstream rules.
+My point was that a codebase at an earlier phase of development, that
+hasn't had as long to stabilize, is inherently going to be more in flux.
+Earlier in development fixing bugs is going to be a high prioritity,
+relatively speaking, vs. avoiding regressions; sometimes the important
+thing is to make forward progress, iterate, and ship and get feedback
+from users.
 
-And then you don't seem to even understand why I then complain.
+I think the way you guys were doing development 20 years ago was
+entirely appropriate at that time, and that's what I need to be doing
+now; I need to be less conservative than the kernel as a whole.
 
-In fact, you in the next email say:
+That isn't to say that there aren't things we can and should be doing
+to mitigate that (i.e. improving build testing, which now that I'm
+finishing up with the current project I can do), or that there isn't
+room for discussion on the particulars.
 
-> If you're so convinced you know best, I invite you to start writing your
-> own filesystem. Go for it.
+But seriously; bcachefs is shaping up far better than btrfs (which,
+afaik _did_ try to play by all the rules), and process has _absolutely_
+been a factor in that.
 
-Not at all. I'm not interested in creating another bcachefs.
+> Patches appearing on the list is not some kind of sufficient thing.
+> It's the absolute minimal requirement. The fact that absolutely *NONE*
+> of the patches in your pull request showed up when I searched just
+> means that you clearly didn't even attempt to have others involved
+> (ok, I probably only searched for half of them and then I gave up in
+> disgust).
 
-I'm contemplating just removing bcachefs entirely from the mainline
-tree. Because you show again and again that you have no interest in
-trying to make mainline work.
+Those fixes were all pretty basic, and broadly speaking I know what
+everyone else who's working on bcachefs is doing and what they're
+working on. Hongbo has been quite helpful with a bunch of things (and
+starting to help out in the bug tracker and IRC channel), Alan has been
+digging around in six locks and most recently the cycle detector code,
+and I've been answering questions as he learns his way around, Thomas
+has been getting started on some backpointers scalability work.
 
-You can do it out of mainline. You did it for a decade, and that
-didn't cause problems. I thought it would be better if it finally got
-mainlined, but by all your actions you seem to really want to just
-play in your own sandbox and not involve anybody else.
+Nothing will be served by having them review thoroughly a big stream of
+small uninteresting fixes, it'd suck up all their time and prevent them
+from doing anything productive. I have, quite literally, tried this and
+had it happen on multiple occasions in the past.
 
-So if this is just your project and nobody else is expected to
-participate, and you don't care about the fact that you break the
-mainline build, why the hell did you want to be in the mainline tree
-in the first place?
+I do post when I've got something more interesting going on, and I'd
+been anticipating posting more as the stabilizing slows down.
 
-                   Linus
+> We literally had a bcachefs build failure last week. It showed up
+> pretty much immediately after I pulled your tree. And because you sent
+> in the bcachefs "fixes" with the bug the day before I cut rc1, we
+> ended up with a broken rc1.
+> 
+> And hey, mistakes happen. But when the *SAME* absolute disregard for
+> testing happens the very next weekend, do you really expect me to be
+> happy about it?
+
+And I do apologize for the build failure, and I will get on the
+automated multi-arch build testing - that needed to happen anyways.
+
+But I also have to remind you that I'm one of the few people who's
+actually been pushing for more and better automated testing (I now have
+infrastructure for the communty that anyone can use, just ask me for an
+account) - and that's been another solo effort because so few people are
+even interested, so the fact that this even came up grates on me. This
+is a problem with a technical solution, and instead we're all just
+arguing.
+
+> It's this complete disregard for anybody else that I find problematic.
+> You don't even try to get other developers involved, or follow
+> upstream rules.
+
+Linus, just because you don't see it doesn't mean it doesn't exist. I
+spend a significant fraction of my day on IRC and the phone with both
+users and other developers.
+
+And "upstream rules" has always been a fairly ad-hoc thing, which even
+you barely seem able to spell out.
+
+It's taken _forever_ to get to "yes, you do want patches on the list",
+and you seem to have some feeling that the volume of fixes is an issue
+for you, but god only knows if that's more than a hazy feeling for you.
+
+> > If you're so convinced you know best, I invite you to start writing your
+> > own filesystem. Go for it.
+> 
+> Not at all. I'm not interested in creating another bcachefs.
+> 
+> I'm contemplating just removing bcachefs entirely from the mainline
+> tree. Because you show again and again that you have no interest in
+> trying to make mainline work.
+
+You can do that, and it won't be the end of the world for me (although a
+definite inconvenience) - but it's going to suck for a lot of users.
+
+> You can do it out of mainline. You did it for a decade, and that
+> didn't cause problems. I thought it would be better if it finally got
+> mainlined, but by all your actions you seem to really want to just
+> play in your own sandbox and not involve anybody else.
+> 
+> So if this is just your project and nobody else is expected to
+> participate, and you don't care about the fact that you break the
+> mainline build, why the hell did you want to be in the mainline tree
+> in the first place?
+
+Honestly?
+
+Because I want Linux to have a filesystem we can all be proud of, that
+users can rely on, that has a level of robustness and polish that we can
+all aspire to.
