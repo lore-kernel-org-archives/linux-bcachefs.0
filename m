@@ -1,38 +1,31 @@
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E000F1662E9
-	for <linux-bcachefs@vger.kernel.org>; Sun,  6 Oct 2024 01:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B81628EC;
+	Sun,  6 Oct 2024 03:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728179804; cv=none; b=WFuJY+2tyNfO+gJQ+v1cxgIMx0XARFAQiwbFUfVwNHEdzjGNxJCwK9BbOPmmLBufdRojetA4pCALaqAh1a+RmthLQgUp1AXigPmDBpn4lGuF9p81WbYaRzDwFOrcuTTD/8JE3+J5sChg0urFjRFRC9jz/a1KQsA0Gie0mrxAkJY=
+	t=1728183995; cv=none; b=bbPJlITUfbdaa6ry8rbj/f8OUGj+r1s1a/DMw9fCIoGYoZsh1l78qqKk2ZXZ5Ha089F45VxncsZvieqG0FQLg025/nXzRsY6FTn4oIoaYESA2jaDT2nnxWZJYB48CMTlxNfnpPCowaPjFF8pesNKO3FZvjRJ8WXlQkilxvNTdBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728179804; c=relaxed/simple;
-	bh=W5n2YU4QYClAkBUY46U5PjuC1TvuyQDbXqJIUIDs8QM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LMqTNtqFtziQ7SB7tJuteoYeO4K16FwkpJUNjfexgp5sQvVvjrE+9S3a6MlP/zmVFncmEBB5bKvfJfZ2/lkZ9GoQ6GKcvvDqexTM3MxVSo8/Ztb7Zpe4X+CQ74Nq80xcLd+nJuu1xWmE6OVNasx2UEaLj0vhfltMwFsV6yAGAfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DHvG1uzh; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DHvG1uzh"
-Date: Sat, 5 Oct 2024 21:56:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728179799;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BnnHTDOn4QrAu1ULVkfdeQk3x6v9dEhgIZ7d2QgOsVc=;
-	b=DHvG1uzha+RVUdKvfClOmkw4ftOPlaP1pEp2dR6pDiSim1fKwT8xMuk1a9LuumSwqCCol4
-	mDQlaFwaIY29deO50w0wxl16dAIsFJd8tT1Z+rHTU7bqs+VdD7OmnpmPs1ujzM6LGNocSF
-	o6epLVNwqmMnNP53/g8Srag7xu0JVWs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Carl E. Thompson" <cet@carlthompson.net>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-Message-ID: <coczqmiqvuy4h74j462mjyro3skeybyt2y3kcqdcuwy4bwibjy@pquinazt4h22>
+	s=arc-20240116; t=1728183995; c=relaxed/simple;
+	bh=sU5PrTKMwVrIYv9TM+OplCdzFx5vQ/ct6h42t3ydNOQ=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=YCGgQUuoOPTWSmKciSZEtKCVAiE5Aj3Q+kZ09FXuYRo3/QNgvz6sIFKk1OIFi1Kikq8k4GUBoOEwK4nraNZg8WwM3ItNLFjGvdnPhJUlzKt+/SgqcxtAOTOdtC9501M39v2dsRxIf9b54O+LCHWgPZYoaL5yHrJbb/OTMGAKx1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 92A3B60195EDA;
+	Sat,  5 Oct 2024 20:06:31 -0700 (PDT)
+Date: Sat, 5 Oct 2024 20:06:31 -0700 (PDT)
+From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Message-ID: <941798317.650.1728183991400@mail.carlthompson.net>
+In-Reply-To: <coczqmiqvuy4h74j462mjyro3skeybyt2y3kcqdcuwy4bwibjy@pquinazt4h22>
 References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
  <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
  <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
@@ -40,42 +33,64 @@ References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
  <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
  <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
  <345264611.558.1728177653590@mail.carlthompson.net>
+ <coczqmiqvuy4h74j462mjyro3skeybyt2y3kcqdcuwy4bwibjy@pquinazt4h22>
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <345264611.558.1728177653590@mail.carlthompson.net>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
+X-Originating-Client: open-xchange-appsuite
 
-On Sat, Oct 05, 2024 at 06:20:53PM GMT, Carl E. Thompson wrote:
-> Here is a user's perspective from someone who's built a career from Linux (thanks to all of you)...
-> 
-> The big hardship with testing bcachefs before it was merged into the kernel was that it couldn't be built as an out-of-tree module and instead a whole other kernel tree needed to be built. That was a pain.
-> 
-> Now, the core kernel infrastructure changes that bcachefs relies on are in the kernel and bcachefs can very easily and quickly be built as an out-of-tree module in just a few seconds. I submit to all involved that maybe that's the best way to go **for now**. 
-> 
-> Switching to out of tree for now would make it much easier for Kent to have the fast-paced development model he desires for this stage in bcachefs' development. It would also make using and testing bcachefs much easier for power users like me because when an issue is detected we could get a fix or new feature much faster than having to wait for a distribution to ship the next kernel version and with less ancillary risk than building and using a less-tested kernel tree. Distributions themselves also are very familiar with packaging up out-of-tree modules and distribution tools like dkms make using them dead simple even for casual users.
-> 
-> The way things are now isn't great for me as a Linux power user. I
-> often want to use the latest or even RC kernels on my systems to get
-> some new hardware support or other feature and I'm used to being able
-> to do that without too many problems. But recently I've had to skip
-> cutting-edge kernel versions that I otherwise wanted to try because
-> there have been issues in bcachefs that I didn't want to have to face
-> or work around. Switching to an out of tree module for now would be
-> the best of all worlds for me because I could pick and choose which
-> combination of kernel / bcachefs to use for each system and situation.
+Yeah, of course there were the disk accounting issues and before that was the kernel upgrade-downgrade bug going from 6.8 back to 6.7. Currently over on Reddit at least one user is mention read errors and / or performance regressions on the current RC version that I'd rather avoid.
 
-Carl - thanks, I wasn't aware of this.
+There were a number of other issues that cropped up in some earlier versions but not others such as deadlocks when using compression (particularly zstd), weirdness when using compression with 4k blocks and suspend / resume failures when using bcachefs. 
 
-Can you give me details? 6.11 had the disk accounting rewrite, which was
-huge and (necessarily) had some fallout, if you're seeing regressions
-otherwise that are slipping through then - yes it's time to slow down
-and reevaluate.
+None of those things were a big deal to me as I mostly only use bcachefs on root filesystems which are of course easy to recreate. But I do currently use bcachefs for all the filesystems on my main laptop so issues there can be more of a pain.
 
-Details would be extremely helpful, so we can improve our regression
-testing.
+As an example of potential issues I'd like to avoid I often upgrade my laptop and swap the old SSD in and am currently considering pulling the trigger on a Ryzen AI laptop such as the ProArt P16. However, this new processor has some cutting edge features only fully supported in 6.12 so I'd prefer to use that kernel if I can. But... because according to Reddit there are apparently issues with bcachefs in the 6.12RC kernels that means I am hesitant to buy the laptop and use the RC kernel the carefree manor I normally would. Yeah, first world problems!
+
+Speaking of Reddit, I don't know if you saw it but a user there quotes you as saying users who use release candidates should expect them to be "dangerous as crap." I could not find a post where you said that in the thread that user pointed to but if you **did** say something like that then I guess I have a different concept of what "release candidate" means.
+
+So for me it would be a lot easier if bcachefs versions were decoupled from kernel versions. 
+
+Thanks,
+Carl
+
+> On 2024-10-05 6:56 PM PDT Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> 
+>  
+> On Sat, Oct 05, 2024 at 06:20:53PM GMT, Carl E. Thompson wrote:
+> > Here is a user's perspective from someone who's built a career from Linux (thanks to all of you)...
+> > 
+> > The big hardship with testing bcachefs before it was merged into the kernel was that it couldn't be built as an out-of-tree module and instead a whole other kernel tree needed to be built. That was a pain.
+> > 
+> > Now, the core kernel infrastructure changes that bcachefs relies on are in the kernel and bcachefs can very easily and quickly be built as an out-of-tree module in just a few seconds. I submit to all involved that maybe that's the best way to go **for now**. 
+> > 
+> > Switching to out of tree for now would make it much easier for Kent to have the fast-paced development model he desires for this stage in bcachefs' development. It would also make using and testing bcachefs much easier for power users like me because when an issue is detected we could get a fix or new feature much faster than having to wait for a distribution to ship the next kernel version and with less ancillary risk than building and using a less-tested kernel tree. Distributions themselves also are very familiar with packaging up out-of-tree modules and distribution tools like dkms make using them dead simple even for casual users.
+> > 
+> > The way things are now isn't great for me as a Linux power user. I
+> > often want to use the latest or even RC kernels on my systems to get
+> > some new hardware support or other feature and I'm used to being able
+> > to do that without too many problems. But recently I've had to skip
+> > cutting-edge kernel versions that I otherwise wanted to try because
+> > there have been issues in bcachefs that I didn't want to have to face
+> > or work around. Switching to an out of tree module for now would be
+> > the best of all worlds for me because I could pick and choose which
+> > combination of kernel / bcachefs to use for each system and situation.
+> 
+> Carl - thanks, I wasn't aware of this.
+> 
+> Can you give me details? 6.11 had the disk accounting rewrite, which was
+> huge and (necessarily) had some fallout, if you're seeing regressions
+> otherwise that are slipping through then - yes it's time to slow down
+> and reevaluate.
+> 
+> Details would be extremely helpful, so we can improve our regression
+> testing.
