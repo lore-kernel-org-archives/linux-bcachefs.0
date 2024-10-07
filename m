@@ -1,87 +1,101 @@
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E92313A40D;
-	Mon,  7 Oct 2024 19:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27C21DE3D4
+	for <linux-bcachefs@vger.kernel.org>; Mon,  7 Oct 2024 19:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728328542; cv=none; b=njgDwf4nIbjj+2mK0XDjJ8+4BCxG5QFiGbv11HXBNDD1T3A9rrwMIHAlXaBO++V/FZi4wAUkmLwlvITr1uGM4aj1tMNNnlGKhbbH8ftlMbMiyHw0pfsbGcXhS5t3+/7wQfooOwdO8z1yJ4lUyt9DQHLeRZmKWb7//Y3PbmGwwmw=
+	t=1728331169; cv=none; b=a+GGYkhEVXlxsevOua0r0vi610Qk092xB8ZDwZ6jYOfalXplAXapefeZD0fLSz8y4uEatctUxMzmilFSWQKUWQNjPzHuG8/FuLp7TWRAk/CNd/8caaNtxTwhlNYGlRiANPZ++SrFhgwQDbDxkaiWh/LQ2rNpTy2bAS5R+xoI73A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728328542; c=relaxed/simple;
-	bh=DQS82RjBN3HvITOXFCpiTqjfE6j4bhj7PhZlljv7tD4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tCEByLCCFAuU9/fG/32wt9mrVCvegi1SeI4rWS85F7KdfcxuIu7KKVvfUzW4xLadn+U9tLsB6tXvIjUyo050eyNyz9JTlR98QqClt9AxbSuz7aWZb9fJCUt68BYL5zf3fkhdQEqXnyone7zomLx+Q/U1aB3qbMji0Kde6DQtCzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=a2dzfkXH; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+	s=arc-20240116; t=1728331169; c=relaxed/simple;
+	bh=zyS2MoYrjjDRv7zTLdZVaJsOLMtAdkXuonDPik1JNlE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oTtAUHK5iNrY3gftaKOF0oLSh2aePJ2ee5zt3maQCUdnh3HRmPOHqXpcFB6g8YY4hBRJ2mqnoHC+K9JM7JGK0vEMAld0F25eEzOgvB7fsTWOJE8bnqhZnX73L01yd3KixqnMwVmXeaR3lnGX1Lzyg72UcCpXqkeIV43mwYYCPwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CPJ/NhI7; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="a2dzfkXH"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=s32t4fuewfdp7kz73kroomwn4i.protonmail; t=1728328532; x=1728587732;
-	bh=DQS82RjBN3HvITOXFCpiTqjfE6j4bhj7PhZlljv7tD4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=a2dzfkXHy5fEcQGb0pAp8M9IV5yTa/opCStftxokTddjl5sGKIh/OIS6S0d2VYRVR
-	 6HE8spV9nFDCADZywsAAIJr9oibjloza22gnPmftFU6Bi39t/mFsy7lQpyAwt5QzY2
-	 9ErTQLO3sTUdQ+TLKTvsXVLJ3A0EEzdKr56O88KEnbJGZuDP/CRPPILWyxNZFBtfY1
-	 jcU4egShMvE14m28Fa1m3xKvkiIBakW5I/tsMKoSdGlr1c/J6YBTQk6/HIwc3yA1au
-	 L1vkas/CjxzPv3QVU1z9wrUTfPzaw5Im32ksbcYqoTm0bPlTUmJ4GB5gBUxZCR9+Hg
-	 qBhK3uIjik8ag==
-Date: Mon, 07 Oct 2024 19:15:27 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-From: Piotr Zalewski <pZ010001011111@proton.me>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, syzbot+cf7b2215b5d70600ec00@syzkaller.appspotmail.com
-Subject: Re: [PATCH v1] bcachefs: add check for btree id against max in try read node
-Message-ID: <YYqtQ3LHwPRNwdc7cnA2de3ng6TXMh5UQZ5DbBC1gT4K7Ksd9n7zI6h9saJ7KAQDaBOQ7T1EVo9eEkTELyGsloBLPJqOH8eo9JrqaSEDDs0=@proton.me>
-In-Reply-To: <lxq42z72rrcoqmcj6z4rvesjvxoxf3q7dss666pjyzao4gaftt@tiayr4siis3z>
-References: <20240929142348.4028284-2-pZ010001011111@proton.me> <O4rJH-M2oslervXHx_G8BgaihhTfNDOLBvBL3_-k-xQ5v3RLnZ1m8WfhBENbliRTjeQV-22K7tqvKJzgLNeV2A72qKLNmFl5KBa_Y65unyo=@proton.me> <lxq42z72rrcoqmcj6z4rvesjvxoxf3q7dss666pjyzao4gaftt@tiayr4siis3z>
-Feedback-ID: 53478694:user:proton
-X-Pm-Message-ID: 2d1b13fbc6ca7069a1fe1d27e6c6418b599d0b0a
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CPJ/NhI7"
+Date: Mon, 7 Oct 2024 15:59:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728331164;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fTaQ+JHHJBLPhVTk8LqtlupUHTo1DQk5ZQd2/or6P1k=;
+	b=CPJ/NhI7G1WI4w70Bx3ha9RF0NvYnCQY0D0ZiOoFqY1/LocP2azX5UvCHqwK8rsEW6Yng/
+	ftTXZC79VnvaYRaq2J6MzrXXzsF9RggST1zgj3u6O8SPEtbPltAgE4iC5CJqfJNDIQgrJO
+	cache0/8aHuNCdZHPwMDpntoPLWzocY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Theodore Ts'o <tytso@mit.edu>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
+Message-ID: <6hjoiumgl3sljhjtmgvsifgu2kdmydlykib3ejlm5pui6zjla4@u7g2bjk4kcau>
+References: <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
+ <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
+ <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
+ <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
+ <2nyd5xfm765iklvzjxvn2nx3onhtdntqrnmvlg2panhtdbff7i@evgk5ecmkuoo>
+ <20241006043002.GE158527@mit.edu>
+ <jhvwp3wgm6avhzspf7l7nldkiy5lcdzne5lekpvxugbb5orcci@mkvn5n7z2qlr>
+ <CAHk-=wh_oAnEY3if4fRC6sJsZxZm=OhULV_9hUDVFm5n7UZ3eA@mail.gmail.com>
+ <dcfwznpfogbtbsiwbtj56fa3dxnba4aptkcq5a5buwnkma76nc@rjon67szaahh>
+ <ZwP341bZ9eQ0Qyej@zx2c4.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZwP341bZ9eQ0Qyej@zx2c4.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Monday, October 7th, 2024 at 5:05 AM, Kent Overstreet <kent.overstreet@l=
-inux.dev> wrote:
+On Mon, Oct 07, 2024 at 05:01:55PM GMT, Jason A. Donenfeld wrote:
+> On Sun, Oct 06, 2024 at 03:29:51PM -0400, Kent Overstreet wrote:
+> > But - a big gap right now is endian /portability/, and that one is a
+> > pain to cover with automated tests because you either need access to
+> > both big and little endian hardware (at a minumm for creating test
+> > images), or you need to run qemu in full-emulation mode, which is pretty
+> > unbearably slow.
+> 
+> It's really not that bad, at least for my use cases:
+> 
+>     https://www.wireguard.com/build-status/
+> 
+> This thing sends pings to my cellphone too. You can poke around in
+> tools/testing/selftests/wireguard/qemu/ if you're curious. It's kinda
+> gnarly but has proven very very flexible to hack up for whatever
+> additional testing I need. For example, I've been using it for some of
+> my recent non-wireguard work here: https://git.zx2c4.com/linux-rng/commit/?h=jd/vdso-test-harness
+> 
+> Taking this straight-up probably won't fit for your filesystem work, but
+> maybe it can act as a bit of motivation that automated qemu'ing can
+> generally work. It has definitely caught a lot of silly bugs during
+> development time.
 
-> On Mon, Oct 07, 2024 at 02:53:13AM GMT, Piotr Zalewski wrote:
->=20
-> > > Add check for read node's btree_id against BTREE_ID_NR_MAX in
-> > > try_read_btree_node to prevent triggering EBUG_ON condition in
-> > > bch2_btree_id_root[1].
-> >=20
-> > There seems to be some kind of (pro)regression regarding this issue. No=
-w it
-> > triggers a deadlock. I also found related bug detected by syzbot[2] for
-> > which someone supplied the same patch recently and it triggered the sam=
-e
-> > deadlock. I will look into it (perhaps simple check isn't a proper fix
-> > here).
-> >=20
-> > > [1] https://syzkaller.appspot.com/bug?extid=3Dcf7b2215b5d70600ec00
-> >=20
-> > [2] https://syzkaller.appspot.com/bug?extid=3D9f41e4b255897d99d4e9
->=20
->=20
-> Your patch looks correct, [2] shouldn't be possible with it - and it
-> appears to only be reported on upstream commits. I'll apply your patch.
+I have all the qemu automation:
+https://evilpiepirate.org/git/ktest.git/
 
-Hi Kent,
+That's what I use for normal interactive development, i.e. I run
+something like
 
-Today I sat down to the other bug found by syzbot and retested it on
-master, it triggers the same deadlock warning[3]. It seems like in
-bch2_replicas_entry_validate mutex doesn't have to be always acquired?=20
-Also, I found the issue for specifically that warning[4]. The "count" is
-high for the issue, is there some patch for that already pending? I=20
-couldn't find any.
+build-test-kernel -I ~/ktest/tests/fs/bcachefs/replication.ktest rereplicate
 
-[3] https://syzkaller.appspot.com/bug?extid=3Da1b59c8e1a3f022fd301
-[4] https://syzkaller.appspot.com/bug?extid=3D4d24267b490e2b68a5fa
+which builds a kernel, launches a VM and starts running a test; test
+output on stdout, I can ssh in, ctrl-c kills it like any other test.
 
-Best regards, Piotr Zalewski
+And those same tests are run automatically by my CI, which watches
+various git branches and produces results here:
+https://evilpiepirate.org/~testdashboard/ci?user=kmo&branch=bcachefs-testing
+
+(Why yes, thas is a lot of failing tests still.)
+
+I'm giving out accounts on this to anyone in the community doing kernel
+development, we've got fstests wrappers for every local filesystem, plus
+nfs, plus assorted other tests. Can always use more hardware if anyone
+wants to provide more machines.
