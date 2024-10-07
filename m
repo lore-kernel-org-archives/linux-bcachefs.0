@@ -1,49 +1,43 @@
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27C21DE3D4
-	for <linux-bcachefs@vger.kernel.org>; Mon,  7 Oct 2024 19:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05971DE4D1
+	for <linux-bcachefs@vger.kernel.org>; Mon,  7 Oct 2024 20:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728331169; cv=none; b=a+GGYkhEVXlxsevOua0r0vi610Qk092xB8ZDwZ6jYOfalXplAXapefeZD0fLSz8y4uEatctUxMzmilFSWQKUWQNjPzHuG8/FuLp7TWRAk/CNd/8caaNtxTwhlNYGlRiANPZ++SrFhgwQDbDxkaiWh/LQ2rNpTy2bAS5R+xoI73A=
+	t=1728332482; cv=none; b=g2aDqrA3/Hq+PfajQ+DMpJ2imw69IsIjB3NhBJP6sqLDm4lgsgWjAUZRGgmWmtvdllb8DyJd8SQHOUUSVZamyEwvTWlUQHjDeUC98gQMlsLksZ71uDqM+5plMukhFuqeOIvWLbj2UONBCXMsrFmuWM3nJDS8sLjTNtAO+dFqFoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728331169; c=relaxed/simple;
-	bh=zyS2MoYrjjDRv7zTLdZVaJsOLMtAdkXuonDPik1JNlE=;
+	s=arc-20240116; t=1728332482; c=relaxed/simple;
+	bh=c4a30u6REFUzrAsoAQwDjsVAZw5JYJBEWWtd09jMs5w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oTtAUHK5iNrY3gftaKOF0oLSh2aePJ2ee5zt3maQCUdnh3HRmPOHqXpcFB6g8YY4hBRJ2mqnoHC+K9JM7JGK0vEMAld0F25eEzOgvB7fsTWOJE8bnqhZnX73L01yd3KixqnMwVmXeaR3lnGX1Lzyg72UcCpXqkeIV43mwYYCPwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CPJ/NhI7; arc=none smtp.client-ip=91.218.175.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=OnZR3fprOnR/ZgFLW0+1Otkd9iypOmsygvqvtsoZFHbAPnEtz/vBUZTcAvW+u6mDWyuP9DeACYqOrcov55CliWgFYFOONM+6qCQD8/yB1AMCff4t/0RsjgVYl2CQp2WrSP6LHbAYb0P3r2UfxEk4brzBWPeTmdrf5Lu8SMZi51Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=d7RUNUBh; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CPJ/NhI7"
-Date: Mon, 7 Oct 2024 15:59:17 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="d7RUNUBh"
+Date: Mon, 7 Oct 2024 16:21:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728331164;
+	t=1728332477;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fTaQ+JHHJBLPhVTk8LqtlupUHTo1DQk5ZQd2/or6P1k=;
-	b=CPJ/NhI7G1WI4w70Bx3ha9RF0NvYnCQY0D0ZiOoFqY1/LocP2azX5UvCHqwK8rsEW6Yng/
-	ftTXZC79VnvaYRaq2J6MzrXXzsF9RggST1zgj3u6O8SPEtbPltAgE4iC5CJqfJNDIQgrJO
-	cache0/8aHuNCdZHPwMDpntoPLWzocY=
+	bh=Dq8JvnD9tzMMx6q54o7Cvi4gHmHlyDT4zjfEUm1ieqo=;
+	b=d7RUNUBhxcjAVCJTzWcmfZ/fB9XCDnpJxlrgRmQvtrXRB4BM7BWUz8xIz4UV3rTIjTiHWN
+	883bnt5baC77psLPAMIMRzRQcWkLM6eGlgQ6X4j9+fNu5kXJwQ8ZXLUw80ffsg/OEni79E
+	7CbM+gl62PlVQlx+DjLCPh0NL8Bt7Bk=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Josef Bacik <josef@toxicpanda.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	Theodore Ts'o <tytso@mit.edu>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-team@fb.com
 Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-Message-ID: <6hjoiumgl3sljhjtmgvsifgu2kdmydlykib3ejlm5pui6zjla4@u7g2bjk4kcau>
-References: <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
- <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
- <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
- <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
- <2nyd5xfm765iklvzjxvn2nx3onhtdntqrnmvlg2panhtdbff7i@evgk5ecmkuoo>
- <20241006043002.GE158527@mit.edu>
- <jhvwp3wgm6avhzspf7l7nldkiy5lcdzne5lekpvxugbb5orcci@mkvn5n7z2qlr>
- <CAHk-=wh_oAnEY3if4fRC6sJsZxZm=OhULV_9hUDVFm5n7UZ3eA@mail.gmail.com>
- <dcfwznpfogbtbsiwbtj56fa3dxnba4aptkcq5a5buwnkma76nc@rjon67szaahh>
- <ZwP341bZ9eQ0Qyej@zx2c4.com>
+Message-ID: <u266iwml67vr2zrkhebfr3zwak5k7mebk4grhavnujf2wodwkz@eyksfejhgve2>
+References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
+ <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
+ <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
+ <20241007145847.GA1898642@perftesting>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -52,50 +46,90 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZwP341bZ9eQ0Qyej@zx2c4.com>
+In-Reply-To: <20241007145847.GA1898642@perftesting>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 07, 2024 at 05:01:55PM GMT, Jason A. Donenfeld wrote:
-> On Sun, Oct 06, 2024 at 03:29:51PM -0400, Kent Overstreet wrote:
-> > But - a big gap right now is endian /portability/, and that one is a
-> > pain to cover with automated tests because you either need access to
-> > both big and little endian hardware (at a minumm for creating test
-> > images), or you need to run qemu in full-emulation mode, which is pretty
-> > unbearably slow.
+On Mon, Oct 07, 2024 at 10:58:47AM GMT, Josef Bacik wrote:
+> I tend to ignore these kind of emails, it's been a decade and weirdly the file
+> system development community likes to use btrfs as a punching bag.  I honestly
+> don't care what anybody else thinks, but I've gotten feedback from others in the
+> community that they wish I'd say something when somebody says things so patently
+> false.  So I'm going to respond exactly once to this, and it'll be me satisfying
+> my quota for this kind of thing for the rest of the year.
 > 
-> It's really not that bad, at least for my use cases:
+> Btrfs is used by default in the desktop spin of Fedora, openSuse, and maybe some
+> others.  Our development community is actively plugged into those places, we
+> drop everything to help when issues arise there.  Btrfs is the foundation of the
+> Meta fleet.  We rely on its capabilities and, most importantly of all, its
+> stability for our infrastructure.
 > 
->     https://www.wireguard.com/build-status/
+> Is it perfect?  Absolutely not.  You will never hear me say that.  I have often,
+> and publicly, said that Meta also uses XFS in our database workloads, because it
+> simply is just better than Btrfs at that.
 > 
-> This thing sends pings to my cellphone too. You can poke around in
-> tools/testing/selftests/wireguard/qemu/ if you're curious. It's kinda
-> gnarly but has proven very very flexible to hack up for whatever
-> additional testing I need. For example, I've been using it for some of
-> my recent non-wireguard work here: https://git.zx2c4.com/linux-rng/commit/?h=jd/vdso-test-harness
+> Yes, XFS is better at Btrfs at some things.  I'm not afraid to admit that,
+> because my personal worth is not tied to the software projects I'm involved in.
+> Dave Chinner, Darrick Wong, Christoph Hellwig, Eric Sandeen, and many others have
+> done a fantastic job with XFS.  I have a lot of respect for them and the work
+> they've done.  I've learned a lot from them.
 > 
-> Taking this straight-up probably won't fit for your filesystem work, but
-> maybe it can act as a bit of motivation that automated qemu'ing can
-> generally work. It has definitely caught a lot of silly bugs during
-> development time.
+> Ext4 is better at Btrfs in a lot of those same things.  Ted T'so, Andreas
+> Dilger, Jan Kara, and many others have done a fantastic job with ext4.
+> 
+> I have learned a lot from all of these developers, all of these file systems,
+> and many others in this community.
+> 
+> Bcachefs is doing new and interesting things.  There are many things that I see
+> you do that I wish we had the foresight to know were going to be a problem with
+> Btrfs and done it differently.  You, along with the wider file system community,
+> have a lot of the same ideals, same practices, and same desire to do your
+> absolute best work.  That is an admirable trait, one that we all share.
+> 
+> But dragging other people and their projects down is not the sort of behavior
+> that I think should have a place in this community.  This is not the kind of
+> community I want to exist in.  You are not the only person who does this, but
+> you are the most vocal and constant example of it.  Just like I tell my kids,
+> just because somebody else is doing something wrong doesn't mean you get to do
+> it too.
 
-I have all the qemu automation:
-https://evilpiepirate.org/git/ktest.git/
+Josef, I've got to be honest with you, if 10 years in one filesystem
+still has a lot of user reports that clearly aren't being addressed
+where the filesystem is wedging itself, that's a pretty epic fail and
+that really is the main reason why I'm here.
 
-That's what I use for normal interactive development, i.e. I run
-something like
+#1 priority in filesystem land has to be robustness. Not features, not
+performance; it has to simply work.
 
-build-test-kernel -I ~/ktest/tests/fs/bcachefs/replication.ktest rereplicate
+The bar for "acceptably good" is really, really high when you're
+responsible for user's data. In the rest of the kernel, if you screw up,
+generally the worst that happens is you crash the machine - users are
+annoyed, whatever they were doing gets interrupted, but nothing
+drastically bad happens.
 
-which builds a kernel, launches a VM and starts running a test; test
-output on stdout, I can ssh in, ctrl-c kills it like any other test.
+In filesystem land, fairly minor screwups can lead to the entire machine
+being down for extended periods of time if the filesystem has wedged
+itself and really involved repair procedures that users _should not_
+have to do, or worst real data loss. And you need to be thinking about
+the trust that users are placing in you; that's people's _lives_ they're
+storing on their machines.
 
-And those same tests are run automatically by my CI, which watches
-various git branches and produces results here:
-https://evilpiepirate.org/~testdashboard/ci?user=kmo&branch=bcachefs-testing
+So no, based on the feedback I still _regularly_ get I don't think btrfs
+hit an acceptable level of reliability, and if it's taking this long I
+doubt it will.
 
-(Why yes, thas is a lot of failing tests still.)
+"Mostly works" is just not good enough.
 
-I'm giving out accounts on this to anyone in the community doing kernel
-development, we've got fstests wrappers for every local filesystem, plus
-nfs, plus assorted other tests. Can always use more hardware if anyone
-wants to provide more machines.
+To be fair, bcachefs isn't "good enough" yet either, I'm still getting
+bug reports where bcachefs wedges itself too.
+
+But I've also been pretty explicit about that, and I'm not taking the
+experimental label off until those reports have stopped and we've
+addressed _every_ known way it can wedge itself and we've torture tested
+the absolute crap out of repair.
+
+And I think you've set the bar too low, by just accepting that btrfs
+isn't going to be as good as xfs in some situations.
+
+I don't think there's any reason a modern COW filesystem has to be
+crappier in _any_ respect than ext4/xfs. It's just a matter of
+prioritizing the essentials and working at it until it's done.
