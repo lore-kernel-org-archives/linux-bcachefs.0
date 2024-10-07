@@ -1,94 +1,87 @@
-Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BC81E520;
-	Mon,  7 Oct 2024 15:13:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E92313A40D;
+	Mon,  7 Oct 2024 19:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728313996; cv=none; b=GDr2bOiHHoebYDrWm3kQIZFFadG0EaI6OW32vofunvYrL3mULcRfXWxh/p5PTHvu9D8d6eoZ0mFVg0IccCB4b8yDheoovPHaloyoJ1yX508YxjygcAm2jRWD1j2PPU+4QR756TzQ0Czl1VoAs7R22KDQAuwhsGm/LpEda/8LCMY=
+	t=1728328542; cv=none; b=njgDwf4nIbjj+2mK0XDjJ8+4BCxG5QFiGbv11HXBNDD1T3A9rrwMIHAlXaBO++V/FZi4wAUkmLwlvITr1uGM4aj1tMNNnlGKhbbH8ftlMbMiyHw0pfsbGcXhS5t3+/7wQfooOwdO8z1yJ4lUyt9DQHLeRZmKWb7//Y3PbmGwwmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728313996; c=relaxed/simple;
-	bh=oaaLkpOG0AT8mgOnXKIXzciDAGxaG0My0xFLbu4xLvY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z+ssRBN5WY9qH88RDPuGJ+edOa6UXc2vU3/jGap9bRAClYPmIanWi0AukDx5QwdXIJeDQoOlxonnrNBUr/qsOgpHiC/+/HND8mr4Cns7AvPPdmx0fNyIOlU7TrbaRUdulV5/mOQG/8/acumkV/Dy5qk3W5nJOlL+LItur2sKxKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-	(No client certificate requested)
-	by mail.lichtvoll.de (Postfix) with ESMTPSA id B325674980;
-	Mon, 07 Oct 2024 15:13:03 +0000 (UTC)
-Authentication-Results: mail.lichtvoll.de;
-	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
-From: Martin Steigerwald <martin@lichtvoll.de>
+	s=arc-20240116; t=1728328542; c=relaxed/simple;
+	bh=DQS82RjBN3HvITOXFCpiTqjfE6j4bhj7PhZlljv7tD4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tCEByLCCFAuU9/fG/32wt9mrVCvegi1SeI4rWS85F7KdfcxuIu7KKVvfUzW4xLadn+U9tLsB6tXvIjUyo050eyNyz9JTlR98QqClt9AxbSuz7aWZb9fJCUt68BYL5zf3fkhdQEqXnyone7zomLx+Q/U1aB3qbMji0Kde6DQtCzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=a2dzfkXH; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="a2dzfkXH"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=s32t4fuewfdp7kz73kroomwn4i.protonmail; t=1728328532; x=1728587732;
+	bh=DQS82RjBN3HvITOXFCpiTqjfE6j4bhj7PhZlljv7tD4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=a2dzfkXHy5fEcQGb0pAp8M9IV5yTa/opCStftxokTddjl5sGKIh/OIS6S0d2VYRVR
+	 6HE8spV9nFDCADZywsAAIJr9oibjloza22gnPmftFU6Bi39t/mFsy7lQpyAwt5QzY2
+	 9ErTQLO3sTUdQ+TLKTvsXVLJ3A0EEzdKr56O88KEnbJGZuDP/CRPPILWyxNZFBtfY1
+	 jcU4egShMvE14m28Fa1m3xKvkiIBakW5I/tsMKoSdGlr1c/J6YBTQk6/HIwc3yA1au
+	 L1vkas/CjxzPv3QVU1z9wrUTfPzaw5Im32ksbcYqoTm0bPlTUmJ4GB5gBUxZCR9+Hg
+	 qBhK3uIjik8ag==
+Date: Mon, 07 Oct 2024 19:15:27 +0000
 To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-Date: Mon, 07 Oct 2024 17:13:03 +0200
-Message-ID: <6091333.lOV4Wx5bFT@lichtvoll.de>
-In-Reply-To: <v2k6atl7hlaxw4ktu4e2j7mj67sbz63vzrqk6pnxmntrkuzwut@3k4knhrlnqeb>
-References:
- <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
- <5987583.MhkbZ0Pkbq@lichtvoll.de>
- <v2k6atl7hlaxw4ktu4e2j7mj67sbz63vzrqk6pnxmntrkuzwut@3k4knhrlnqeb>
+From: Piotr Zalewski <pZ010001011111@proton.me>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, syzbot+cf7b2215b5d70600ec00@syzkaller.appspotmail.com
+Subject: Re: [PATCH v1] bcachefs: add check for btree id against max in try read node
+Message-ID: <YYqtQ3LHwPRNwdc7cnA2de3ng6TXMh5UQZ5DbBC1gT4K7Ksd9n7zI6h9saJ7KAQDaBOQ7T1EVo9eEkTELyGsloBLPJqOH8eo9JrqaSEDDs0=@proton.me>
+In-Reply-To: <lxq42z72rrcoqmcj6z4rvesjvxoxf3q7dss666pjyzao4gaftt@tiayr4siis3z>
+References: <20240929142348.4028284-2-pZ010001011111@proton.me> <O4rJH-M2oslervXHx_G8BgaihhTfNDOLBvBL3_-k-xQ5v3RLnZ1m8WfhBENbliRTjeQV-22K7tqvKJzgLNeV2A72qKLNmFl5KBa_Y65unyo=@proton.me> <lxq42z72rrcoqmcj6z4rvesjvxoxf3q7dss666pjyzao4gaftt@tiayr4siis3z>
+Feedback-ID: 53478694:user:proton
+X-Pm-Message-ID: 2d1b13fbc6ca7069a1fe1d27e6c6418b599d0b0a
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
 
-Kent Overstreet - 06.10.24, 19:18:00 MESZ:
-> > I still do have a BCacheFS on my laptop for testing, but meanwhile I
-> > wonder whether some of the crazy kernel regressions I have seen with
-> > the last few kernels where exactly related to having mounted that
-> > BCacheFS test filesystem. I am tempted to replace the BCacheFS with a
-> > BTRFS just to find out.
+On Monday, October 7th, 2024 at 5:05 AM, Kent Overstreet <kent.overstreet@l=
+inux.dev> wrote:
+
+> On Mon, Oct 07, 2024 at 02:53:13AM GMT, Piotr Zalewski wrote:
 >=20
-> I think you should be looking elsewhere - there have been zero reports
-> of random crashes or anything like what you're describing. Even in
-> syzbot testing we've been pretty free from the kind of memory safety
-> issues that would cause random crashes
+> > > Add check for read node's btree_id against BTREE_ID_NR_MAX in
+> > > try_read_btree_node to prevent triggering EBUG_ON condition in
+> > > bch2_btree_id_root[1].
+> >=20
+> > There seems to be some kind of (pro)regression regarding this issue. No=
+w it
+> > triggers a deadlock. I also found related bug detected by syzbot[2] for
+> > which someone supplied the same patch recently and it triggered the sam=
+e
+> > deadlock. I will look into it (perhaps simple check isn't a proper fix
+> > here).
+> >=20
+> > > [1] https://syzkaller.appspot.com/bug?extid=3Dcf7b2215b5d70600ec00
+> >=20
+> > [2] https://syzkaller.appspot.com/bug?extid=3D9f41e4b255897d99d4e9
+>=20
+>=20
+> Your patch looks correct, [2] shouldn't be possible with it - and it
+> appears to only be reported on upstream commits. I'll apply your patch.
 
-Okay.
+Hi Kent,
 
-=46rom what I saw of the backtrace I am not sure it is a memory safety bug.=
-=20
-It could be a deadlock thing with work queues. Anyway=E2=80=A6 as you can r=
-ead=20
-below it is not BCacheFS related. But I understand too little about all of=
-=20
-this to say for sure.
+Today I sat down to the other bug found by syzbot and retested it on
+master, it triggers the same deadlock warning[3]. It seems like in
+bch2_replicas_entry_validate mutex doesn't have to be always acquired?=20
+Also, I found the issue for specifically that warning[4]. The "count" is
+high for the issue, is there some patch for that already pending? I=20
+couldn't find any.
 
-> The closest bugs to what you're describing would be the
-> __wait_on_freeing_inode() deadlock in 6.12-rc1, and the LZ4HC crash that
-> I've yet to triage - but you specifically have to be using lz4:15
-> compression to hit that path.
+[3] https://syzkaller.appspot.com/bug?extid=3Da1b59c8e1a3f022fd301
+[4] https://syzkaller.appspot.com/bug?extid=3D4d24267b490e2b68a5fa
 
-Well a crash on reboot happened again, without BCacheFS. I wrote that I=20
-report back, either case.
-
-I think I will wait whether this goes away with a newer kernel as some of=20
-the other regressions I saw before. It was not in all of the 6.11 series=20
-of Debian kernels but just in the most recent one. In case it doesn't I=20
-may open a kernel bug report with Debian directly.
-
-=46or extra safety I did a memory test with memtest86+ 7.00. Zero errors.
-
-As for one of the other regressions I cannot tell yet, whether they have=20
-gone away. So far they did not occur again.
-
-But so far it looks that replacing BCacheFS with BTRFS does not make a=20
-difference. And I wanted to report that back.
-
-Best,
-=2D-=20
-Martin
-
-
+Best regards, Piotr Zalewski
