@@ -1,128 +1,182 @@
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5E8187332;
-	Mon,  7 Oct 2024 08:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29D85338D
+	for <linux-bcachefs@vger.kernel.org>; Mon,  7 Oct 2024 14:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728288686; cv=none; b=YWO00qWZPKXnrzZnifaR+WO5TPvFxQlbxA2T/RpQhKRiao0RBOUn5TWIPn56T6KXzUIjukbeffr1tpxXCjRlafWjNCPj37CHO97oD0/jweUrS7f90+dymrXvG33lple9L00erN1jcrPS4I3rX5P7tLNkep0AYxAsuhpvV6iVgBI=
+	t=1728313132; cv=none; b=r61eVRJ5H9wR1bmPgbYkElMxOCHUIScF96i80atB2HynjoUwBisR6RJIOL1JSPcu2XX5YO2I90LGvIY+MHhia78dcEg9FtkgfeUloe1nhi7/UsMlry0E0GeMvrtQAQ8odrc5jenfQoqb1efKunF0oW7hVWth482cAygTVysXwgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728288686; c=relaxed/simple;
-	bh=3sqmMeubWK8c+VIiH5OXyMZqgtPt8xlcut+1tWOMtZ4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=DEc5PQShSkTW9PZ6pyYGer66DrLLvja7lkdB5yGbxV39HFhmnKsrdjZWcnuSy2SAhU0GMa/WvzJcGl37NryZN3H9vG8wBtzf/K4JaFE8JxVmxj21Vv4iHoeSnzTRoK9TExDmdGsYPWiyXYris1bB8q9mJrM/0Tqa57sIpyYF+MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eOqnrMh3; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1728313132; c=relaxed/simple;
+	bh=QBsQhjUyUz1tCiHen3Lowcz+ZZiBnQZMx/wX5smwJVE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mdhtMRuMur8IC7dRqA7i1eX1HLMtIViTYKJM4gHNMchZxTDSDfCg1YPVmKJl82zV0mVO2cfp1Rm0yXQ5gA3i6xZhSyTpWQRJU/nhL1dLi5bLQlRTYHbGufYk/hDQDamdN0qp5royKAYN2hBnBvt5HUfWpwn6RoAzTnWJ4jdISv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Hko1MCZ/; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eOqnrMh3"
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5c8784e3bc8so5743224a12.1;
-        Mon, 07 Oct 2024 01:11:24 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Hko1MCZ/"
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7ae6f8956baso410419785a.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 07 Oct 2024 07:58:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728288683; x=1728893483; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=geqeaUFO7KX1Ee2XSQkPu7NYB2zlplkOMmq6CUE7T/s=;
-        b=eOqnrMh3hVNvJne0KZUlNtsYrUVg+K+1KrK0t4dcv2hvPs48BUAmNXg3lQJoDxvRaw
-         8VSVQQiYoKuJjPCFj5Q3rIVwWMYbXPJxrtgte8Bcn2iToNBB6spPLMiuvP1zg0A7dVB4
-         +DLlz/g8ai50l0TXYYcbhIsPC4wBkI07ZmanIB0gBXbpSvSr0qFgjuwD8gsHPv777Avm
-         uypzzOfr1wzH0+c9LsCSJhRIVUKxKOL8oOIlo7aqtfV6wnM5GKyi64cBGz07q4gRhNtI
-         ns1gLUGUQ1BM83fwD5khmPCE4G3X58CFVnErLpEjh4r/zPWWtFBKjxLZYKcT8pyuOn80
-         Ozsg==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1728313130; x=1728917930; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kKkXYRf3CazOv0yTJuEZUWEXywOPV0BtkaPCj1lqhQI=;
+        b=Hko1MCZ//HE39ANamy3pyJhHUMnNwQTupHMwZjneBzA6QQ2J/Emnaaxkl9KjSbjBx0
+         FJAjXlQJ2tIv1IZylirfAXaEGJGuKE5x0xZIhOudSky9+ONNxFHEb+WyYwGPUnyNzrmE
+         F7YsITBu7uziHEQ4tg6tPbZ1nVMwro1LBGUHb4PVlLtzvimd/ur+SwQONPCR7xf8qg3p
+         ooUx2rV56R+EXJ4zhHrTFjj27IdSEu1SG3RrY59q9OutnJlDpNCQD9fHxKdr02mPnmXx
+         NmJ52WwLzZWONHyQEr1dgdPLbwlYPt1lqFmw2Vf4xQFYWCiZ3CfSAFzBEJMLZhGDkkJq
+         fh2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728288683; x=1728893483;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=geqeaUFO7KX1Ee2XSQkPu7NYB2zlplkOMmq6CUE7T/s=;
-        b=Zi+jdCKlNvHBZI5qr3+/LcZtRIIFOpME1WbCBtoaxxQzRtUkeDbgSGLaIryPek3h4d
-         Olxrg79xAvC6ZCR+/4vg9YKasMj4qXlNS2z/WLM24HSrUURTjgTg5yjfh+gfsyZ2mcLi
-         6wq5qE1bIZVwlumREixtAGRlVw4D4Gvxmb1nou4UX4Dt+KvqY7SJ9uu88NpfeBsiX6D2
-         weIPeRSZ2utzwDiG2VjXQEkimwsJU5DQBCpH7t778H54o48QBUgmPGsXStGUfBBDn6d4
-         a+FwsMVbSL4etXMxI/fG1SwEoUeo48Wk8YfogPhi6XeePW91u7LpXpgi1XjDHt5tVXSJ
-         qaUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWLNsmelSX2v8IUASQU7KwdB2btCkDIM3tO8kNsg9p1JZ8OH/Kau/0K/xFaLhQJbNXgGhcxfA4QTAsgmq5LCQ==@vger.kernel.org, AJvYcCWZdLl7G4JWaJCpPw16NIL+Op/4OMNKyZGr9O2ydIphPYg01SfeoJbAzqjS3DJ1ouNbUWYs/WoEAsRoVakS@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdjL7BPuxvzCTvlz20WKSzmni3Q95m2brxCbF6+5pyNekDgv5L
-	Kze7poxx6hPkMkFIWnoqeYSm2jyqYUQFfjPJTkRFyYFvLHbsBosG
-X-Google-Smtp-Source: AGHT+IGzM8UejuTiQAumZPmn6GXZ43ToodEeHdSc4nLatypqtcMe2yCCCq1OxC0Qazaw0HgsP53T6A==
-X-Received: by 2002:a17:907:3f96:b0:a99:4262:cc16 with SMTP id a640c23a62f3a-a994262cce4mr658311166b.27.1728288682713;
-        Mon, 07 Oct 2024 01:11:22 -0700 (PDT)
-Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9935ee4594sm324632166b.189.2024.10.07.01.11.22
+        d=1e100.net; s=20230601; t=1728313130; x=1728917930;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kKkXYRf3CazOv0yTJuEZUWEXywOPV0BtkaPCj1lqhQI=;
+        b=YmcNhbUkoRpK0J1eiaalnjs+Y1fMFhW943y9xlpnPk/xyojOtJjrY1n/bUKiokCFeh
+         dSXxkHUeC14ke9jfO63oXuITHvIM6dC1a8bKHnWo7VLSYB8FDqOeb8QtsGPbOxNbclQZ
+         4xlTn0VZeof6graca4naqIU0lKxuihdNX11+R6TWFhfsb12gkWLh1mZrMSUHfHu152t+
+         2ZgmmGBPsOZsJK/AKJtaKbNH5hUW1tYtsuYfXkgkw1gjZ8H87SydvSv5aZl0kfPhqDUd
+         aT4RHKlcKBApCeomL9GNFNRwW2kfURfumCtI6hJv1lCJrR1wTk3tyUGKFyAdzBgCGanS
+         bF7w==
+X-Forwarded-Encrypted: i=1; AJvYcCUlZGyXkNQBar9oD6uyNVBZ2VvD3lKMOEU4NIRS9xb66solv0LWaybgNcx5xBaCM93XttImoZrLtZMPIXPC4w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoCKyeEqUGBQLq5q3wCH3j4CTkTu3KGmizX2YdIxplqZBqEX7/
+	19Jj72rfbaQUwBq0dflV4J3521xcyn4E3QE71ZjbAboeaRA1p2qdtoY/JyhQVN0=
+X-Google-Smtp-Source: AGHT+IHsLuu+g/YCiRe1EnQsVxFfrwZ3QXsTNYIeeeF4z1PpU/nBB4QTE1vrQPg0iOfC0ehh2vgNow==
+X-Received: by 2002:a05:6214:5889:b0:6c7:c645:f0fb with SMTP id 6a1803df08f44-6cb9a3096aemr206595996d6.18.1728313129677;
+        Mon, 07 Oct 2024 07:58:49 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6cba4751520sm26304086d6.83.2024.10.07.07.58.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2024 01:11:22 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org
-Subject: [PATCH][next] bcachefs: remove superfluous ; after statements
-Date: Mon,  7 Oct 2024 09:11:21 +0100
-Message-Id: <20241007081121.1166346-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.5
+        Mon, 07 Oct 2024 07:58:49 -0700 (PDT)
+Date: Mon, 7 Oct 2024 10:58:47 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
+Message-ID: <20241007145847.GA1898642@perftesting>
+References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
+ <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
+ <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
 
-There are a several statements with two following semicolons, replace
-these with just one semicolon.
+On Sat, Oct 05, 2024 at 06:54:19PM -0400, Kent Overstreet wrote:
+> On Sat, Oct 05, 2024 at 03:34:56PM GMT, Linus Torvalds wrote:
+> > On Sat, 5 Oct 2024 at 11:35, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > >
+> > > Several more filesystems repaired, thank you to the users who have been
+> > > providing testing. The snapshots + unlinked fixes on top of this are
+> > > posted here:
+> > 
+> > I'm getting really fed up here Kent.
+> > 
+> > These have commit times from last night. Which makes me wonder how
+> > much testing they got.
+> 
+> The /commit/ dates are from last night, because I polish up commit
+> messages and reorder until the last might (I always push smaller fixes
+> up front and fixes that are likely to need rework to the back).
+> 
+> The vast majority of those fixes are all ~2 weeks old.
+> 
+> > And before you start whining - again - about how you are fixing bugs,
+> > let me remind you about the build failures you had on big-endian
+> > machines because your patches had gotten ZERO testing outside your
+> > tree.
+> 
+> No, there simply aren't that many people running big endian. I have
+> users building and running my trees on a daily basis. If I push
+> something broken before I go to bed I have bug reports waiting for me
+> _the next morning_ when I wake up.
+> 
+> > That was just last week, and I'm getting the strong feeling that
+> > absolutely nothing was learnt from the experience.
+> > 
+> > I have pulled this, but I searched for a couple of the commit messages
+> > on the lists, and found *nothing* (ok, I found your pull request,
+> > which obviously mentioned the first line of the commit messages).
+> > 
+> > I'm seriously thinking about just stopping pulling from you, because I
+> > simply don't see you improving on your model. If you want to have an
+> > experimental tree, you can damn well have one outside the mainline
+> > kernel. I've told you before, and nothing seems to really make you
+> > understand.
+> 
+> At this point, it's honestly debatable whether the experimental label
+> should apply. I'm getting bug reports that talk about production use and
+> working on metadata dumps where the superblock indicates the filesystem
+> has been in continuous use for years.
+> 
+> And many, many people talking about how even at this relatively early
+> point it doesn't fall over like btrfs does.
+> 
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- fs/bcachefs/btree_update.c | 2 +-
- fs/bcachefs/ec.c           | 2 +-
- fs/bcachefs/super.c        | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+I tend to ignore these kind of emails, it's been a decade and weirdly the file
+system development community likes to use btrfs as a punching bag.  I honestly
+don't care what anybody else thinks, but I've gotten feedback from others in the
+community that they wish I'd say something when somebody says things so patently
+false.  So I'm going to respond exactly once to this, and it'll be me satisfying
+my quota for this kind of thing for the rest of the year.
 
-diff --git a/fs/bcachefs/btree_update.c b/fs/bcachefs/btree_update.c
-index 514df618548e..39fc7778f15f 100644
---- a/fs/bcachefs/btree_update.c
-+++ b/fs/bcachefs/btree_update.c
-@@ -144,7 +144,7 @@ int __bch2_insert_snapshot_whiteouts(struct btree_trans *trans,
- 	       !(ret = bkey_err(old_k)) &&
- 	       bkey_eq(old_pos, old_k.k->p)) {
- 		struct bpos whiteout_pos =
--			SPOS(new_pos.inode, new_pos.offset, old_k.k->p.snapshot);;
-+			SPOS(new_pos.inode, new_pos.offset, old_k.k->p.snapshot);
- 
- 		if (!bch2_snapshot_is_ancestor(c, old_k.k->p.snapshot, old_pos.snapshot) ||
- 		    snapshot_list_has_ancestor(c, &s, old_k.k->p.snapshot))
-diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-index 1587c6e1866a..f4fc4f08a2de 100644
---- a/fs/bcachefs/ec.c
-+++ b/fs/bcachefs/ec.c
-@@ -900,7 +900,7 @@ int bch2_ec_read_extent(struct btree_trans *trans, struct bch_read_bio *rbio,
- 	bch2_bkey_val_to_text(&msgbuf, c, orig_k);
- 	bch_err_ratelimited(c,
- 			    "error doing reconstruct read: %s\n  %s", msg, msgbuf.buf);
--	printbuf_exit(&msgbuf);;
-+	printbuf_exit(&msgbuf);
- 	ret = -BCH_ERR_stripe_reconstruct;
- 	goto out;
- }
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index 873e4be7e1dc..32cc7a4bfa25 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -1120,12 +1120,12 @@ static int bch2_dev_in_fs(struct bch_sb_handle *fs,
- 
- 		prt_bdevname(&buf, fs->bdev);
- 		prt_char(&buf, ' ');
--		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));;
-+		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));
- 		prt_newline(&buf);
- 
- 		prt_bdevname(&buf, sb->bdev);
- 		prt_char(&buf, ' ');
--		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));;
-+		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));
- 		prt_newline(&buf);
- 
- 		if (!opts->no_splitbrain_check)
--- 
-2.39.5
+Btrfs is used by default in the desktop spin of Fedora, openSuse, and maybe some
+others.  Our development community is actively plugged into those places, we
+drop everything to help when issues arise there.  Btrfs is the foundation of the
+Meta fleet.  We rely on its capabilities and, most importantly of all, its
+stability for our infrastructure.
 
+Is it perfect?  Absolutely not.  You will never hear me say that.  I have often,
+and publicly, said that Meta also uses XFS in our database workloads, because it
+simply is just better than Btrfs at that.
+
+Yes, XFS is better at Btrfs at some things.  I'm not afraid to admit that,
+because my personal worth is not tied to the software projects I'm involved in.
+Dave Chinner, Darrick Wong, Christoph Hellwig, Eric Sandeen, and many others have
+done a fantastic job with XFS.  I have a lot of respect for them and the work
+they've done.  I've learned a lot from them.
+
+Ext4 is better at Btrfs in a lot of those same things.  Ted T'so, Andreas
+Dilger, Jan Kara, and many others have done a fantastic job with ext4.
+
+I have learned a lot from all of these developers, all of these file systems,
+and many others in this community.
+
+Bcachefs is doing new and interesting things.  There are many things that I see
+you do that I wish we had the foresight to know were going to be a problem with
+Btrfs and done it differently.  You, along with the wider file system community,
+have a lot of the same ideals, same practices, and same desire to do your
+absolute best work.  That is an admirable trait, one that we all share.
+
+But dragging other people and their projects down is not the sort of behavior
+that I think should have a place in this community.  This is not the kind of
+community I want to exist in.  You are not the only person who does this, but
+you are the most vocal and constant example of it.  Just like I tell my kids,
+just because somebody else is doing something wrong doesn't mean you get to do
+it too.
+
+We can improve our own projects, we can collaborate, and we can support
+each others work.  Christian and I tag-teamed the mount namespace work.  Amir
+and I tag-teamed the Fanotify HSM work.  Those two projects are the most fun and
+rewarding experiences I've had in the last few years.  This work is way more fun
+when we can work together, and the relationships I've built in this community
+through this collaboration around solving problems are my most cherished
+professional relationships.
+
+Or we can keep doing this, randomly throwing mud at each other, pissing each
+other off, making ourselves into unhireable pariahs.  I've made my decision, and
+honestly I think it's better.
+
+But what the fuck do I know, I work on btrfs.  Thanks,
+
+Josef
