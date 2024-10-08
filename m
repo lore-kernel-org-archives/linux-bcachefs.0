@@ -1,106 +1,173 @@
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7629BEEBA
-	for <linux-bcachefs@vger.kernel.org>; Mon,  7 Oct 2024 23:34:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68B6AD2F
+	for <linux-bcachefs@vger.kernel.org>; Tue,  8 Oct 2024 00:29:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728344052; cv=none; b=G821BfyqpNr6/p13zTZyzr5CaYfl47e3ZaLRoYpUC2Szzh1cSzqAz/D9M8IAf1VU9yBOuRtcnYiF6wgRao/CoRZmymLe3rPqzPnWWBkZgNPSqcJH/KqERZASbA/ZbtmipP5H3EwFaLGi7LNn0hAHOqdFZsVHDhbRZPUgPBA1x94=
+	t=1728347361; cv=none; b=QT79z3DKcsxhxnrxrDelRkDMCL8An1Jvob+nIVh09/MaIMtodLkshegvpFTHqo6C33SKA0IcgHKtUGHJBHUV66x7Zf+iztTP8k/JZw8UiqaHen5f3LgzcAEn5UrP/20wctim/Ext8d3uESE+c2j8Tgc96L4S5mlFbEan5fRP0uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728344052; c=relaxed/simple;
-	bh=31i13373D7hjydGNkXUzyHoWoEZHSJM+HBCGF/6GeLg=;
+	s=arc-20240116; t=1728347361; c=relaxed/simple;
+	bh=Tke8szf/tF+Zw53GGM7FveqgBu9sg0bXcPAEsM0e6AA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hakcqn+KxkXBI2Sj/OTbf1QIteKeLPsvaGWdkK/Y0SeAj2CNEO4n1tEPNVB8NeOSvp7vDCx2BArF+stHs18SeyXUNNEc6jD3pVwyjFyK6pMw9FRqxuZfoE0ZGDuf49z8oIKMFZ1IqmsRuHyi7HLeujQ6ckJ9h6HzA+FKQIAFOXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CuZVWghx; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	 To:Cc:Content-Type; b=Uh90jaK2xSK3Q+H/AytvagzIvP/7WClrceUzEWsi4cJDauoFh3XpFxBxg3JmTYFYB42Esb6ZDy6F1iVsZT45kd0INZHfcLMKdhob8c89NCuNfmJDPOFZa8cpfbOpdYYqRpsWhIMvrfMNpH/vqUyOGMz44EviPu4gSX6o4vv4SGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=AR2tTX9H; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CuZVWghx"
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-42cbe8ec7dbso47205e9.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 07 Oct 2024 16:34:10 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="AR2tTX9H"
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a83562f9be9so538668166b.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 07 Oct 2024 17:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1728344049; x=1728948849; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=31i13373D7hjydGNkXUzyHoWoEZHSJM+HBCGF/6GeLg=;
-        b=CuZVWghxLC/z9FWdKa4DXebixUXU35dd0kGSjmtEg/jMMOK2nQZs/Y+fGOJ6nbaqpD
-         aLKzhakr7m/XJvCLWMy2gqYrpRIn+tpsx243yyHuSkaAWh++xS6R/DrBa5AMu3s2zD4l
-         /z3d1STBfKxzqrOgYoCr9351CPiHRfmVnjWIrCQyjM7CO6SWPJu7WCJWVWu2LkjV+zmq
-         GlvzKQc/mJkQErd6H9lO+Djb16q5/LrzxAw79dwQ5zJrH38SzLQYpOsSnUaJq/GxPMe2
-         SMe+BR6rfXOA9y038HKdBw0TOOXT+yD/rSv+zrZInbff02fO4yWmFqEYGO/8x/rfTHYd
-         /gdA==
+        d=linux-foundation.org; s=google; t=1728347357; x=1728952157; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nsQ1lX9RfNwwbE7U1ME2PBLb06zd6P+Kklt61iLJfEw=;
+        b=AR2tTX9HBlL/W9yjK2piwlcap/02uEM9V0f8UNjlhxk4xePTbvIBWL3IZk1RN4my9t
+         w1C/JByxdAQ3AHHZ+OjWV1PrCDadN6sKLBjqhjycwuF7B5M607bOUOAWpdpjwFnwrRrI
+         uLBBkrOSfVJyGQ0K8KyvBzaZ5r3aIpTKtk6hQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728344049; x=1728948849;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=31i13373D7hjydGNkXUzyHoWoEZHSJM+HBCGF/6GeLg=;
-        b=GTYnmHO1q80wIVNKwqofH5fNn6SNWbDhMOcjkSjs/ucuQ/+7hiFtEoqc11WCdPLpyU
-         +ufyxnKMYMLuavFlNcrymez55dsbKDmRRJlmKpdWJpWfXOuCuQuVUTpBpyM1po2rZ73U
-         V2ELXRQZ2HFF7JebSwrb/ry4r561dDZep3kE1law/rkZVyyPOg9g6qTMxSZ3RYtZqmDL
-         q1OUTLG5bhHkvJYa97oO8qB191x9AXOagGN4RPn3njznPgwilKpjubp1nGvUM65dsUI3
-         C0O5LZ7Gxr9Lu07wDnY69/FH9X+nyi0ksfgsJThT8ED1jnyoFo4dmRBVgPOlAcTDLI4r
-         GCrw==
-X-Forwarded-Encrypted: i=1; AJvYcCUz0kH4VUjd154vdg2mU39RM/aZ/p8w+W4d2K8bqzZTo47EV7ierxRtl9MCMUZgwzrfczBZZPaitoIDtijaUA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMtmSfJFgV/MI1x8hrymMJqHwgVMWG1qWG0HWb/alDjBChJQms
-	mVHBgsjcM20LcvRaE3rjgf9OMMFdaIfFWXnqWNemKbx5id83fYH+AS0lwKnvGM3AYZOisTcHXxO
-	TRSsewA4JG+a0Or4xmj26pfZDicZLVc3tnjHyLRAU+i6r6/p8Lp6S
-X-Google-Smtp-Source: AGHT+IGIt7Fwqy3Pp7BHopSoM+TcDYPhYnnQ4DFKz14Gm8T6iB9xp1mSDJ2OSyz3D9vFqJOGu81NMdE2fTX+gXKnSJ8=
-X-Received: by 2002:a05:600c:5010:b0:428:e6eb:1340 with SMTP id
- 5b1f17b1804b1-42fcdcddf49mr2008895e9.4.1728344048449; Mon, 07 Oct 2024
- 16:34:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1728347357; x=1728952157;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nsQ1lX9RfNwwbE7U1ME2PBLb06zd6P+Kklt61iLJfEw=;
+        b=VUBgPQ27Ta3+cnWTEG5X15Ela7b/RE18bNon1nJYsF8i8hAE8eu/zKCgwce+V+U3B4
+         xRTuiUFF+mGsc5mQLVsm0jTk7kZg3SrlzdFnPWVk5VSf8xFaKiS6CAuxM1FnLH0ay1Pd
+         m8wqodvGU6ftnw61qPv2UbUhEve4g8B2QcSOtRGGQ4Bylmb3hxldnAxV8kans2tYI/q6
+         6iy0qMKFaZKrw5LJfPTXr5at0VZQ3FCghjlsHfu335HJd543JsCcj36ih8yS54NgvAts
+         dfIXtm9kP44kCKVrBTlt3vwchL1Cmkk+yngE/x7q90fwqL48ZGnLz+R5RC6jRwu9Cfkt
+         3zkw==
+X-Forwarded-Encrypted: i=1; AJvYcCWf11tXarKUc8o7sSZXPZ2tjnv0GnI4fMdJOqiV93NNs8kgXMLgZrd6X6B7L3wYUwkLh9QSML8hwTg6g8nlxQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzlgwSa1+duNXl8/3+RQWALnzJJ0TUApbHxQ2+nejp3XgQh+5jx
+	8p5kDbjCD7IWcx0oSifB1DObHoCck343Xa59gKhU3GiHyNLogJ0J9HbVpNVsZXfIMde/FCsLiWI
+	NOVCkEQ==
+X-Google-Smtp-Source: AGHT+IHmWVbqY0WApeuYhjqc+Me0DtbTU0ZDpayTad9c5kDDqdsLGAQW8jyfuIqfu7elRrepBglVMA==
+X-Received: by 2002:a17:907:2687:b0:a8d:fa3:bb24 with SMTP id a640c23a62f3a-a991bd1f7damr1459370566b.23.1728347356729;
+        Mon, 07 Oct 2024 17:29:16 -0700 (PDT)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a992e5d0a32sm445938066b.19.2024.10.07.17.29.14
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Oct 2024 17:29:14 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5c89668464cso6707347a12.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 07 Oct 2024 17:29:14 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVtFJfXVw7xqriuUui2R+la4cvbBBMakEOnqu9HryrSNUcARkfyA6wg6ry9Gsdj/RLNZzDOj8k1shocRaC4sg==@vger.kernel.org
+X-Received: by 2002:a17:906:6a19:b0:a99:762f:b296 with SMTP id
+ a640c23a62f3a-a99762fbb7fmr20741966b.59.1728347354279; Mon, 07 Oct 2024
+ 17:29:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
- <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
- <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
- <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
- <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
- <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
- <2nyd5xfm765iklvzjxvn2nx3onhtdntqrnmvlg2panhtdbff7i@evgk5ecmkuoo>
- <20241006043002.GE158527@mit.edu> <jhvwp3wgm6avhzspf7l7nldkiy5lcdzne5lekpvxugbb5orcci@mkvn5n7z2qlr>
- <CAHk-=wh_oAnEY3if4fRC6sJsZxZm=OhULV_9hUDVFm5n7UZ3eA@mail.gmail.com> <dcfwznpfogbtbsiwbtj56fa3dxnba4aptkcq5a5buwnkma76nc@rjon67szaahh>
-In-Reply-To: <dcfwznpfogbtbsiwbtj56fa3dxnba4aptkcq5a5buwnkma76nc@rjon67szaahh>
-From: Jann Horn <jannh@google.com>
-Date: Tue, 8 Oct 2024 01:33:31 +0200
-Message-ID: <CAG48ez3S-COLHLR37LA_XyPxMQLCYpT+H68heA3yfBxKpyhuLg@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, "Theodore Ts'o" <tytso@mit.edu>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20241002014017.3801899-1-david@fromorbit.com> <20241002014017.3801899-5-david@fromorbit.com>
+ <Zv5GfY1WS_aaczZM@infradead.org> <Zv5J3VTGqdjUAu1J@infradead.org>
+ <20241003115721.kg2caqgj2xxinnth@quack3> <CAHk-=whg7HXYPV4wNO90j22VLKz4RJ2miCe=s0C8ZRc0RKv9Og@mail.gmail.com>
+ <ZwRvshM65rxXTwxd@dread.disaster.area>
+In-Reply-To: <ZwRvshM65rxXTwxd@dread.disaster.area>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 7 Oct 2024 17:28:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
+Message-ID: <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
+Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert sb->s_inodes
+ iteration to super_iter_inodes()
+To: Dave Chinner <david@fromorbit.com>
+Cc: Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	kent.overstreet@linux.dev, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>, 
+	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>, Kees Cook <keescook@chromium.org>, 
+	linux-security-module@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 6, 2024 at 9:29=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
-> On Sun, Oct 06, 2024 at 12:04:45PM GMT, Linus Torvalds wrote:
-> > But build and boot testing? All those random configs, all those odd
-> > architectures, and all those odd compilers *do* affect build testing.
-> > So you as a filesystem maintainer should *not* generally strive to do
-> > your own basic build test, but very much participate in the generic
-> > build test that is being done by various bots (not just on linux-next,
-> > but things like the 0day bot on various patch series posted to the
-> > list etc).
-> >
-> > End result: one size does not fit all. But I get unhappy when I see
-> > some subsystem that doesn't seem to participate in what I consider the
-> > absolute bare minimum.
+On Mon, 7 Oct 2024 at 16:33, Dave Chinner <david@fromorbit.com> wrote:
 >
-> So the big issue for me has been that with the -next/0day pipeline, I
-> have no visibility into when it finishes; which means it has to go onto
-> my mental stack of things to watch for and becomes yet another thing to
-> pipeline, and the more I have to pipeline the more I lose track of
-> things.
+> There may be other inode references being held that make
+> the inode live longer than the dentry cache. When should the
+> fsnotify marks be removed from the inode in that case? Do they need
+> to remain until, e.g, writeback completes?
 
-FWIW, my understanding is that linux-next is not just infrastructure
-for CI bots. For example, there is also tooling based on -next that
-doesn't have such a thing as "done with processing" - my understanding
-is that syzkaller (https://syzkaller.appspot.com/upstream) has
-instances that fuzz linux-next
-("ci-upstream-linux-next-kasan-gce-root").
+Note that my idea is to just remove the fsnotify marks when the dentry
+discards the inode.
+
+That means that yes, the inode may still have a lifetime after the
+dentry (because of other references, _or_ just because I_DONTCACHE
+isn't set and we keep caching the inode).
+
+BUT - fsnotify won't care. There won't be any fsnotify marks on that
+inode any more, and without a dentry that points to it, there's no way
+to add such marks.
+
+(A new dentry may be re-attached to such an inode, and then fsnotify
+could re-add new marks, but that doesn't change anything - the next
+time the dentry is detached, the marks would go away again).
+
+And yes, this changes the timing on when fsnotify events happen, but
+what I'm actually hoping for is that Jan will agree that it doesn't
+actually matter semantically.
+
+> > Then at umount time, the dentry shrinking will deal with all live
+> > dentries, and at most the fsnotify layer would send the FS_UNMOUNT to
+> > just the root dentry inodes?
+>
+> I don't think even that is necessary, because
+> shrink_dcache_for_umount() drops the sb->s_root dentry after
+> trimming the dentry tree. Hence the dcache drop would cleanup all
+> inode references, roots included.
+
+Ahh - even better.
+
+I didn't actually look very closely at the actual umount path, I was
+looking just at the fsnotify_inoderemove() place in
+dentry_unlink_inode() and went "couldn't we do _this_ instead?"
+
+> > Wouldn't that make things much cleaner, and remove at least *one* odd
+> > use of the nasty s_inodes list?
+>
+> Yes, it would, but someone who knows exactly when the fsnotify
+> marks can be removed needs to chime in here...
+
+Yup. Honza?
+
+(Aside: I don't actually know if you prefer Jan or Honza, so I use
+both randomly and interchangeably?)
+
+> > I have this feeling that maybe we can just remove the other users too
+> > using similar models. I think the LSM layer use (in landlock) is bogus
+> > for exactly the same reason - there's really no reason to keep things
+> > around for a random cached inode without a dentry.
+>
+> Perhaps, but I'm not sure what the landlock code is actually trying
+> to do.
+
+Yeah, I wouldn't be surprised if it's just confused - it's very odd.
+
+But I'd be perfectly happy just removing one use at a time - even if
+we keep the s_inodes list around because of other users, it would
+still be "one less thing".
+
+> Hence, to me, the lifecycle and reference counting of inode related
+> objects in landlock doesn't seem quite right, and the use of the
+> security_sb_delete() callout appears to be papering over an internal
+> lifecycle issue.
+>
+> I'd love to get rid of it altogether.
+
+Yeah, I think the inode lifetime is just so random these days that
+anything that depends on it is questionable.
+
+The quota case is probably the only thing where the inode lifetime
+*really* makes sense, and that's the one where I looked at the code
+and went "I *hope* this can be converted to traversing the dentry
+tree", but at the same time it did look sensible to make it be about
+inodes.
+
+If we can convert the quota side to be based on dentry lifetimes, it
+will almost certainly then have to react to the places that do
+"d_add()" when re-connecting an inode to a dentry at lookup time.
+
+So yeah, the quota code looks worse, but even if we could just remove
+fsnotify and landlock, I'd still be much happier.
+
+             Linus
