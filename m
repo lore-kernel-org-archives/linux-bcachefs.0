@@ -1,198 +1,244 @@
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521A014A82;
-	Tue,  8 Oct 2024 08:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498F81D0BAE;
+	Tue,  8 Oct 2024 11:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728377857; cv=none; b=WcPbE0Eu/IjSBmE/djk1iuk1nfKglkm9yzPlWs9ToLRpshIJr5wD+dnHQU/9JmxKDfJ9jNEvFJM9b8t+5uByHCGdUAJRjpEFDetEjI0Gp6OhEs+see+GpMEXkr7lq7dELDisLcZ5FN9dCfjpDQlPdF00LtTZEmoHQvwxA+YIIBk=
+	t=1728386629; cv=none; b=I0gp/kugT6YY9wq/jo+9NBMzxyPCiZuUq3x78AdPThLYNHLiIOM8M0qfinQJU+lb/31xWT3DQHTKGgUsDTGxwmfXbqhCZCqimD4fs48Nbo4G3IfKzhC7s6ODINYJoChhpMnKeuqZpFMT72UVdVFhltHbMzb+iwjx1DUUvnm0nrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728377857; c=relaxed/simple;
-	bh=zjSwpKSamL/oaVYFaBilZq7b5Csh6FwSM6IroSnQ7pY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q9Eu/k2+f1pa6n0KdB8bcK39AGTKNpZQpFJelW2lLG5DnxAlmtYeu9dv2Ww5oH7yLYdOowV+ZTdZFYzlBwoeeyVqVlFo/emwRZ1PlYlwMA4OHHAtVOhkHKpRIxCuCMgnsEy6JEgqZaA0g8YsVJXw6xU5mDDzQe/cj7ONtCMjZ/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L29s8qM3; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1728386629; c=relaxed/simple;
+	bh=hYdtROrYP/bEVNFJahX1QKAU4GyQcc9i+//1GTNu+0k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eymJbbZpIsC1TKSoY5O2ThSE5Q2ps9iQ3FzQVp/xCc3c9UfSwq8AD+XJeaByWwN1uBUtHSLlEgYKEEXvad/kH0EkjiWuCRv69drqaJAuDQ8YpojJ+YHz5eVoaBx+fY0hUTTmHs5MZbGReT4zQO9c0X794qnqXQCxWXVny/DUA5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=v+4e7ZpL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=y+KXu5ot; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=v+4e7ZpL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=y+KXu5ot; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L29s8qM3"
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7ae3e3db294so308048985a.2;
-        Tue, 08 Oct 2024 01:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728377854; x=1728982654; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oSiZA2g8NuCGsh8+CWZXtusESif7cpDAvfOKhygbhTs=;
-        b=L29s8qM37nSQ0BnF7hGJKa/dRBRnmTKbXiPdTRN+8TL5mEgqz2muTuaKxUG2C3AX7E
-         3WGK5q1zU5VrATMZMmhbwkz1WZEewAz5WULb84NFO42+BXpXWlV2yn5tJMbXNpe2zTVu
-         BReblqtyQ62ZaFC8QBtCcvclWfqbZmz7x/LBsw14YUAZIsMBTslTbcTAaaDL0S/ZnsfW
-         dQmR2V0mO/gnLXHzt2MqpTnKOavJhVosmd0VdV/YN54cikLRU0LrNqlA9NE63l+Q2xp7
-         WAjT9q/nq2rODi6cvM9Cz9aS5IAt5H8KJ1/3V79Erg0+uac9uxfXrGb/10wCk38eQrAW
-         3DYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728377854; x=1728982654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oSiZA2g8NuCGsh8+CWZXtusESif7cpDAvfOKhygbhTs=;
-        b=DB8CN/PgPoEhMhBa/p/qcKdTKScU80gENKsH5gKc0BbDAAAjxUWB5dpQAB+RWWlliK
-         LFAFbsPShV2cfRxHdUVpqG/QcWt3sMdrGJWv+/t1BWu8pvQQXNkmgg7X0B8u/CHM13C9
-         usf6zDs7okAlhuQ1+nxckSuKky2twoMQfTPTUHX/mZgs/ipU4TzfTVy6ExZ5W2He7vCc
-         JwbAIb2sSgC5hzjJJGw90q0MlIZUK+vHzSEMEQ6PVpwj90VP5MkWnk1M7S3cfrksPiS+
-         uEbaDH4omWiN22LXp6J0kohrtgYCM+2dMU8C6Ujn9E74Fe9YqWpIxYClsWE19hxVyi6J
-         /Gkw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2mQnObKI3siZi4ptvroCJp/JPS6Z4lva7dD3AVHGw8DExYZZxxNJZkopNQTO6gF04kg005moQAv71ND/Sww==@vger.kernel.org, AJvYcCWJwerMr1LTNeb9HsrztDOlCwIrIMWf1HVWH4dpNozwMfucotXPqXWs9gDYcRdx/tgzzCcY7AeqZWrT@vger.kernel.org, AJvYcCWiQcM/VUC7tU12z18VzfOtJWDIGYdI6dgQHi4TulakGaTRyOBiB7NnBQOIHJqpvYawDDkWn2OvdA3xL51gKZH6B3jQ2LyC@vger.kernel.org, AJvYcCXkYKD39+OvxILbpvPxJLAxUb5DmWAi9wVTHwLUYZ0nOMyk934lavJYQsHrv+ssKMKmkqW12PKkr+DyWlnPjw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/7wB3vhev0NM6QG8f983NX9aF/npFEQQljIuqQe3VpPB43iEW
-	7ckPC9YJdloodLnv2sJUpZCAMOFyswJADdG4Fv0Z8BC0OXHazZkJVzPL8ukt8FZqYqiJBo+g4xd
-	tuVVj2ou5GX5c9wNqmoSgtTsuts8=
-X-Google-Smtp-Source: AGHT+IGyUy4LRGOpbCvoasZRQSP2dmC4WlY6qXQ/VCE3WYJa800SCIs9IYs3KTeh7/Puyqv+pCrRSAP4UIBx9Xwdwpg=
-X-Received: by 2002:a05:620a:400d:b0:7ac:a0a5:9bf4 with SMTP id
- af79cd13be357-7ae6f48604fmr2483131085a.40.1728377854081; Tue, 08 Oct 2024
- 01:57:34 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="v+4e7ZpL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y+KXu5ot";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="v+4e7ZpL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y+KXu5ot"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 339B821CE4;
+	Tue,  8 Oct 2024 11:23:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728386625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IXgVBUemQdrxxP01R5PokGPlWKDzV/xnrwqUaIFFHT8=;
+	b=v+4e7ZpLfn+SyG6XIaZw/19TplVltpzFln/dMVAy3JJpiP0PKqyS5u1SmoIM9cR60jjXr9
+	Sh3eqtOTMEJ9f9lgZ4Xxlb1xCOEtW7FNnQmWoS4P8/EOoJ9WUgbqaZAXIdVk3dvOwJWOEh
+	Q+QIq1uCchuwMHOWc1ok8knmS+X5gwA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728386625;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IXgVBUemQdrxxP01R5PokGPlWKDzV/xnrwqUaIFFHT8=;
+	b=y+KXu5ot5dLsjkWuiEWG/lRb7Pech7RhVHcKhlwdfnNeEEN+PcFzWdRVPuYPIFRVIMQR3Q
+	x83ya3j9umg5fyCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728386625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IXgVBUemQdrxxP01R5PokGPlWKDzV/xnrwqUaIFFHT8=;
+	b=v+4e7ZpLfn+SyG6XIaZw/19TplVltpzFln/dMVAy3JJpiP0PKqyS5u1SmoIM9cR60jjXr9
+	Sh3eqtOTMEJ9f9lgZ4Xxlb1xCOEtW7FNnQmWoS4P8/EOoJ9WUgbqaZAXIdVk3dvOwJWOEh
+	Q+QIq1uCchuwMHOWc1ok8knmS+X5gwA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728386625;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IXgVBUemQdrxxP01R5PokGPlWKDzV/xnrwqUaIFFHT8=;
+	b=y+KXu5ot5dLsjkWuiEWG/lRb7Pech7RhVHcKhlwdfnNeEEN+PcFzWdRVPuYPIFRVIMQR3Q
+	x83ya3j9umg5fyCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 242611340C;
+	Tue,  8 Oct 2024 11:23:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iW/NCEEWBWcGXwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 08 Oct 2024 11:23:45 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id BC177A086F; Tue,  8 Oct 2024 13:23:44 +0200 (CEST)
+Date: Tue, 8 Oct 2024 13:23:44 +0200
+From: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Dave Chinner <david@fromorbit.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>,
+	Kees Cook <keescook@chromium.org>,
+	linux-security-module@vger.kernel.org
+Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
+ sb->s_inodes iteration to super_iter_inodes()
+Message-ID: <20241008112344.mzi2qjpaszrkrsxg@quack3>
+References: <20241002014017.3801899-1-david@fromorbit.com>
+ <20241002014017.3801899-5-david@fromorbit.com>
+ <Zv5GfY1WS_aaczZM@infradead.org>
+ <Zv5J3VTGqdjUAu1J@infradead.org>
+ <20241003115721.kg2caqgj2xxinnth@quack3>
+ <CAHk-=whg7HXYPV4wNO90j22VLKz4RJ2miCe=s0C8ZRc0RKv9Og@mail.gmail.com>
+ <ZwRvshM65rxXTwxd@dread.disaster.area>
+ <CAOQ4uxgzPM4e=Wc=UVe=rpuug=yaWwu5zEtLJmukJf6d7MUJow@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241002014017.3801899-1-david@fromorbit.com> <20241002014017.3801899-5-david@fromorbit.com>
- <Zv5GfY1WS_aaczZM@infradead.org> <Zv5J3VTGqdjUAu1J@infradead.org>
- <20241003115721.kg2caqgj2xxinnth@quack3> <CAHk-=whg7HXYPV4wNO90j22VLKz4RJ2miCe=s0C8ZRc0RKv9Og@mail.gmail.com>
- <ZwRvshM65rxXTwxd@dread.disaster.area>
-In-Reply-To: <ZwRvshM65rxXTwxd@dread.disaster.area>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 8 Oct 2024 10:57:22 +0200
-Message-ID: <CAOQ4uxgzPM4e=Wc=UVe=rpuug=yaWwu5zEtLJmukJf6d7MUJow@mail.gmail.com>
-Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert sb->s_inodes
- iteration to super_iter_inodes()
-To: Dave Chinner <david@fromorbit.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Jan Kara <jack@suse.cz>, 
-	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	kent.overstreet@linux.dev, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>, 
-	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>, Kees Cook <keescook@chromium.org>, 
-	linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxgzPM4e=Wc=UVe=rpuug=yaWwu5zEtLJmukJf6d7MUJow@mail.gmail.com>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-0.998];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Tue, Oct 8, 2024 at 1:33=E2=80=AFAM Dave Chinner <david@fromorbit.com> w=
-rote:
->
-> On Mon, Oct 07, 2024 at 01:37:19PM -0700, Linus Torvalds wrote:
-> > On Thu, 3 Oct 2024 at 04:57, Jan Kara <jack@suse.cz> wrote:
-> > >
-> > > Fair enough. If we go with the iterator variant I've suggested to Dav=
-e in
-> > > [1], we could combine the evict_inodes(), fsnotify_unmount_inodes() a=
-nd
-> > > Landlocks hook_sb_delete() into a single iteration relatively easily.=
- But
-> > > I'd wait with that convertion until this series lands.
+On Tue 08-10-24 10:57:22, Amir Goldstein wrote:
+> On Tue, Oct 8, 2024 at 1:33 AM Dave Chinner <david@fromorbit.com> wrote:
 > >
-> > Honza, I looked at this a bit more, particularly with an eye of "what
-> > happens if we just end up making the inode lifetimes subject to the
-> > dentry lifetimes" as suggested by Dave elsewhere.
->
-> ....
->
-> > which makes the fsnotify_inode_delete() happen when the inode is
-> > removed from the dentry.
->
-> There may be other inode references being held that make
-> the inode live longer than the dentry cache. When should the
-> fsnotify marks be removed from the inode in that case? Do they need
-> to remain until, e.g, writeback completes?
->
+> > On Mon, Oct 07, 2024 at 01:37:19PM -0700, Linus Torvalds wrote:
+> > > On Thu, 3 Oct 2024 at 04:57, Jan Kara <jack@suse.cz> wrote:
+> > > >
+> > > > Fair enough. If we go with the iterator variant I've suggested to Dave in
+> > > > [1], we could combine the evict_inodes(), fsnotify_unmount_inodes() and
+> > > > Landlocks hook_sb_delete() into a single iteration relatively easily. But
+> > > > I'd wait with that convertion until this series lands.
+> > >
+> > > Honza, I looked at this a bit more, particularly with an eye of "what
+> > > happens if we just end up making the inode lifetimes subject to the
+> > > dentry lifetimes" as suggested by Dave elsewhere.
+> >
+> > ....
+> >
+> > > which makes the fsnotify_inode_delete() happen when the inode is
+> > > removed from the dentry.
+> >
+> > There may be other inode references being held that make
+> > the inode live longer than the dentry cache. When should the
+> > fsnotify marks be removed from the inode in that case? Do they need
+> > to remain until, e.g, writeback completes?
+> >
+> 
+> fsnotify inode marks remain until explicitly removed or until sb
+> is unmounted (*), so other inode references are irrelevant to
+> inode mark removal.
+> 
+> (*) fanotify has "evictable" inode marks, which do not hold inode
+> reference and go away on inode evict, but those mark evictions
+> do not generate any event (i.e. there is no FAN_UNMOUNT).
 
-fsnotify inode marks remain until explicitly removed or until sb
-is unmounted (*), so other inode references are irrelevant to
-inode mark removal.
+Yes. Amir beat me with the response so let me just add that FS_UMOUNT event
+is for inotify which guarantees that either you get an event about somebody
+unlinking the inode (e.g. IN_DELETE_SELF) or event about filesystem being
+unmounted (IN_UMOUNT) if you place mark on some inode. I also don't see how
+we would maintain this behavior with what Linus proposes.
 
-(*) fanotify has "evictable" inode marks, which do not hold inode
-reference and go away on inode evict, but those mark evictions
-do not generate any event (i.e. there is no FAN_UNMOUNT).
+> > > Then at umount time, the dentry shrinking will deal with all live
+> > > dentries, and at most the fsnotify layer would send the FS_UNMOUNT to
+> > > just the root dentry inodes?
+> >
+> > I don't think even that is necessary, because
+> > shrink_dcache_for_umount() drops the sb->s_root dentry after
+> > trimming the dentry tree. Hence the dcache drop would cleanup all
+> > inode references, roots included.
+> >
+> > > Wouldn't that make things much cleaner, and remove at least *one* odd
+> > > use of the nasty s_inodes list?
+> >
+> > Yes, it would, but someone who knows exactly when the fsnotify
+> > marks can be removed needs to chime in here...
 
-> > Then at umount time, the dentry shrinking will deal with all live
-> > dentries, and at most the fsnotify layer would send the FS_UNMOUNT to
-> > just the root dentry inodes?
->
-> I don't think even that is necessary, because
-> shrink_dcache_for_umount() drops the sb->s_root dentry after
-> trimming the dentry tree. Hence the dcache drop would cleanup all
-> inode references, roots included.
->
-> > Wouldn't that make things much cleaner, and remove at least *one* odd
-> > use of the nasty s_inodes list?
->
-> Yes, it would, but someone who knows exactly when the fsnotify
-> marks can be removed needs to chime in here...
->
-> > I have this feeling that maybe we can just remove the other users too
-> > using similar models. I think the LSM layer use (in landlock) is bogus
-> > for exactly the same reason - there's really no reason to keep things
-> > around for a random cached inode without a dentry.
->
-> Perhaps, but I'm not sure what the landlock code is actually trying
-> to do. It seems to be trying to avoid races between syscalls
-> releasing inode references and unmount calling security_sb_delete()
-> to clean up inode references that it has leaked. This implies that
-> it's not a) tracking inodes itself, and b) not cleaning up internal
-> state early enough in unmount.
->
-> Hence, to me, the lifecycle and reference counting of inode related
-> objects in landlock doesn't seem quite right, and the use of the
-> security_sb_delete() callout appears to be papering over an internal
-> lifecycle issue.
->
-> I'd love to get rid of it altogether.
->
-> > And I wonder if the quota code (which uses the s_inodes list to enable
-> > quotas on already mounted filesystems) could for all the same reasons
-> > just walk the dentry tree instead (and remove_dquot_ref similarly
-> > could just remove it at dentry_unlink_inode() time)?
->
-> I don't think that will work because we have to be able to modify
-> quota in evict() processing. This is especially true for unlinked
-> inodes being evicted from cache, but also the dquots need to stay
-> attached until writeback completes.
->
-> Hence I don't think we can remove the quota refs from the inode
-> before we call iput_final(), and so I think quotaoff (at least)
-> still needs to iterate inodes...
->
-> > It really feels like most (all?) of the s_inode list users are
-> > basically historical, and shouldn't use that list at all. And there
-> > aren't _that_ many of them. I think Dave was right in just saying that
-> > this list should go away entirely (or was it somebody else who made
-> > that comment?)
->
-> Yeah, I said that it should go away entirely.
->
-> My view of this whole s_inodes list is that subsystems that are
-> taking references to inodes *must* track or manage the references to
-> the inodes themselves.
->
-> The canonical example is the VFS itself: evict_inodes() doesn't need
-> to iterate s_inodes at all. It can walk the inode LRU to purge all
-> the unreferenced cached inodes from memory. iput_final() guarantees
-> that all unreferenced inodes are either put on the LRU or torn down
-> immediately.
->
-> Hence I think that it is a poor architectural decision to require
-> superblock teardown to clean up inode references random subsystems
-> have *leaked* to prevent UAFs.  It forces the sb to track all
-> inodes whether the VFS actually needs to track them or not.
->
+So fsnotify needs a list of inodes for the superblock which have marks
+attached and for which we hold inode reference. We can keep it inside
+fsnotify code although it would practically mean another list_head for the
+inode for this list (probably in our fsnotify_connector structure which
+connects list of notification marks to the inode). If we actually get rid
+of i_sb_list in struct inode, this will be a win for the overall system,
+otherwise it is a net loss IMHO. So if we can figure out how to change
+other s_inodes owners we can certainly do this fsnotify change.
 
-For fsnotify, I think we can/should maintain a list of marked inodes
-inside sb->s_fsnotify_info, we can iterate this private list in
-fsnotify_unmount_inodes() to remove the marks.
+> > > And I wonder if the quota code (which uses the s_inodes list to enable
+> > > quotas on already mounted filesystems) could for all the same reasons
+> > > just walk the dentry tree instead (and remove_dquot_ref similarly
+> > > could just remove it at dentry_unlink_inode() time)?
+> >
+> > I don't think that will work because we have to be able to modify
+> > quota in evict() processing. This is especially true for unlinked
+> > inodes being evicted from cache, but also the dquots need to stay
+> > attached until writeback completes.
+> >
+> > Hence I don't think we can remove the quota refs from the inode
+> > before we call iput_final(), and so I think quotaoff (at least)
+> > still needs to iterate inodes...
 
-TBH, I am not sure I understand the suggested change for inode
-lifetime. An inode can have a reference from dentry or from some
-subsystem (e.g. fsnotify) which is responsible for putting their held
-reference before unmount. What is the alternative?
+Yeah, I'm not sure how to get rid of the s_inodes use in quota code. One of
+the things we need s_inodes list for is during quotaoff on a mounted
+filesystem when we need to iterate all inodes which are referencing quota
+structures and free them.  In theory we could keep a list of inodes
+referencing quota structures but that would require adding list_head to
+inode structure for filesystems that support quotas. Now for the sake of
+full context I'll also say that enabling / disabling quotas on a mounted
+filesystem is a legacy feature because it is quite easy that quota
+accounting goes wrong with it. So ext4 and f2fs support for quite a few
+years a mode where quota tracking is enabled on mount and disabled on
+unmount (if appropriate fs feature is enabled) and you can only enable /
+disable enforcement of quota limits during runtime.  So I could see us
+deprecating this functionality altogether although jfs never adapted to
+this new way we do quotas so we'd have to deal with that somehow.  But one
+way or another it would take a significant amount of time before we can
+completely remove this so it is out of question for this series.
 
-Thanks,
-Amir.
+I see one problem with the idea "whoever has a need to iterate inodes needs
+to keep track of inodes it needs to iterate through". It is fine
+conceptually but with s_inodes list we pay the cost only once and multiple
+users benefit. With each subsystem tracking inodes we pay the cost for each
+user (both in terms of memory and CPU). So if you don't use any of the
+subsystems that need iteration, you win, but if you use two or more of
+these subsystems, in particular those which need to track significant
+portion of all inodes, you are losing.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
