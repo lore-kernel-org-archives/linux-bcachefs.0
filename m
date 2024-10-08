@@ -1,167 +1,116 @@
-Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [84.16.66.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4021DEFD6
-	for <linux-bcachefs@vger.kernel.org>; Tue,  8 Oct 2024 12:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2649A1DF27A;
+	Tue,  8 Oct 2024 13:51:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728392358; cv=none; b=WxGiin+yva4a6PEjvGo+vRb4gzrnnqZqTp71sABBmPRY0IP8IBK12uQ1P+OOle+0jiG6NCW4e5JBNu87P4vN3Ks8ajC1GfEbEOFv+b9LSxHHyssoEDDiPA39AWL8s6Nc7v5JQyaZnEtsVni3D+ltOe70b3TybpbpM7AQLHUfBSU=
+	t=1728395483; cv=none; b=cuM1fxp2Cw7q5QUKOSIw1td/AsNTpHeUwlmmii7MVWjUo+Fi0yW897tlbr34Mh/fP1pQ78pBX01QVzDtcO2xFSo7HJUqmoeZIv8xkVPF9bi3577SvqTAk4wZJRTmCt+gL1OVUX5cphQoFH8sp35bREh4nN4OTJcVRCYHQ2ii7m0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728392358; c=relaxed/simple;
-	bh=XEQ84zSaVaFCcNhIzuJn6oUzj6Js6KHVuGb3P1chFyM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JfukeAsOMhz+JDGiSw/GRCnLLlBNZFAyrxEA4YBGz5NgE8SPfwTfDjzSmTig27CiiG/Umyec+7CheO/3c49MicAoQmW9bFoeIxDXuvLuAl2qHJwcTnFWte6WhvVOPJyTtkXr/jS0DNleCQI2vaXx/90iKUNnXFhP2AYSbbNL9ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=pEre8go+; arc=none smtp.client-ip=84.16.66.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+	s=arc-20240116; t=1728395483; c=relaxed/simple;
+	bh=VzJFo+8uqXUzzrk1WEUSIrzQWWSHt1xF+WPul/s4wcM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=o0dweKWeXIGyezii1m0LAtbvcr0/gihAOBnFCaesnYCgQyF1aoV5AopPCYrdE7EW2PcXxLy4ZRyeBlcM0TBG+nhfYjDIxsjiiYJxqC2sOo58ijoDhcm4jiC/Xyb9OmEAtJOOnDt1gxrQ9cNvH/J/VpsJ+6n2qE5zo/fG7UhaV3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSM9ozmj; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="pEre8go+"
-Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4XNGLS0FSsz4X7;
-	Tue,  8 Oct 2024 14:59:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1728392351;
-	bh=lubKm596ajxruAowyOac0GqBl8F51f/htwsSzeT4WHY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pEre8go+mybnR8ts9txJRzOFe7SezCcGaT0Pca6Uro5RQz3NmFZstJNFsr1yAZiiD
-	 zdu4NDVN38vP5KFqwymW4L2skhrA9eQN1UkeP547Rfi34OyNw8IjMTzk9AU7SX3sMN
-	 p05+vrFJtJvzdlox7dQDOowI6oDXivNjkPFjhy7U=
-Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4XNGLQ6mfKzMvr;
-	Tue,  8 Oct 2024 14:59:10 +0200 (CEST)
-Date: Tue, 8 Oct 2024 14:59:07 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>, 
-	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev, Jann Horn <jannh@google.com>, 
-	Serge Hallyn <serge@hallyn.com>, Kees Cook <keescook@chromium.org>, 
-	linux-security-module@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, 
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>
-Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
- sb->s_inodes iteration to super_iter_inodes()
-Message-ID: <20241008.Pohc0dixeiZ8@digikod.net>
-References: <20241002014017.3801899-1-david@fromorbit.com>
- <20241002014017.3801899-5-david@fromorbit.com>
- <Zv5GfY1WS_aaczZM@infradead.org>
- <Zv5J3VTGqdjUAu1J@infradead.org>
- <20241003115721.kg2caqgj2xxinnth@quack3>
- <CAHk-=whg7HXYPV4wNO90j22VLKz4RJ2miCe=s0C8ZRc0RKv9Og@mail.gmail.com>
- <ZwRvshM65rxXTwxd@dread.disaster.area>
- <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSM9ozmj"
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7c1324be8easo4805566a12.1;
+        Tue, 08 Oct 2024 06:51:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728395481; x=1729000281; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1vzk3vCg0rxS9DOJpEPR6JO/PGgmLpGq1a9xYGVzUtc=;
+        b=iSM9ozmj3kJMvZSMRERCQxv7swN77bRmDBaDPYcPZqAEnY5Qjp7r0aBaRsGz5xTHj7
+         dQCApu4FUbPWMTzvWQqRCpyPQVwtjSoyo+gJUJw7gTc/IMgznD/4yMesqn20XxhTGLsW
+         w45KWYUOAg5PtMwhNJ9rtapS/hLgEjjzw4F8Sc1xPUdGkFJGcFRtlW8iwCA6e3rhr+CE
+         tkj88Vk4z6gXdE55PSK27oANy25/pizhiYSlBCw4a3aM3nRTbaS7and6iZJmKBzqcQ9h
+         nwDN/JmLYwzy8PgjLiACHZRjo64kpbr85I6b3aaMXlfZS0xencEbUeGrPDCj82ghKes/
+         PAlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728395481; x=1729000281;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1vzk3vCg0rxS9DOJpEPR6JO/PGgmLpGq1a9xYGVzUtc=;
+        b=poDZnk5jnqGaY8iSwLVj/tlMXNABYy8hlPIZnyVGVgOPnS1kI2yEZvJ/YK9fX8MACL
+         X8qOzSI+IT5itMi3feAIKKX1OcAZsERkpq2/Wyssg9F7gMCOf1emiSKsbCYLSYoAlMw2
+         GKlrCPsPFPNm8VsAuScRtBpPdp7KPBj2yaKoqcoiqovyxV8rRkap3DFssY1OFG/2rU1j
+         j0Dtt0Ezwzj4BvaoQ8gv9J+wKg/oJDkX1CQc0O+FobmLYHbdxns2snxnDw2VeIkYHqM4
+         r72NoONkFAXMRPAMBoLMaaOBaYoi5KSyfYzJaGdcQ2oPpZziZeFMzPS4+6c+qDlv/7zC
+         y4DQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVX/cXEBrSZeyN5AewlWOWMoJPygTq+I+QD43NCbahrxaspSB6eXuRz3tUNfGYTPrs6srjVWaQAxhcw8dUY@vger.kernel.org, AJvYcCXESUsbZ5Thdj5+xpURoQAPdf0EkFo9qORnD04ZgS1PpUARTb/ieFXAmxiEa86jH1CjLZ/Sv/gTbamUO8levA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YykabpoJR8qOTmO3SA88+8Rt8UmK4cnaHfED4beTIRMOllj/qRf
+	36B/ssdP3tYa6bcIG6ZFDJZqfgdPQbxmkHETHW4jS0DrBV4EMa+V
+X-Google-Smtp-Source: AGHT+IGj6j8eYFd8B7NmtYfswZhmSxO4Ztxbe61Zqh9QSjhnSsUJtGPGPgy6iJZqrwCY2HkAvvSfcg==
+X-Received: by 2002:a17:902:d482:b0:1fd:9648:2d66 with SMTP id d9443c01a7336-20c5fb340c4mr1565055ad.17.1728395481238;
+        Tue, 08 Oct 2024 06:51:21 -0700 (PDT)
+Received: from archlinux.. ([2405:201:e00c:517f:5e87:9cff:fe63:6000])
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-20c138cec10sm55769705ad.65.2024.10.08.06.51.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Oct 2024 06:51:20 -0700 (PDT)
+From: Mohammed Anees <pvmohammedanees2003@gmail.com>
+To: lihongbo22@huawei.com
+Cc: kent.overstreet@linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	pvmohammedanees2003@gmail.com,
+	syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
+Subject: Re: [PATCH resend v3] bcachefs: Fix NULL pointer dereference in bch2_opt_to_text
+Date: Tue,  8 Oct 2024 19:21:05 +0530
+Message-ID: <20241008135105.7426-1-pvmohammedanees2003@gmail.com>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <f8fcc1e6-6de6-4d60-83a7-83e95a7d6b6e@huawei.com>
+References: <f8fcc1e6-6de6-4d60-83a7-83e95a7d6b6e@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
-X-Infomaniak-Routing: alpha
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 07, 2024 at 05:28:57PM -0700, Linus Torvalds wrote:
-> On Mon, 7 Oct 2024 at 16:33, Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > There may be other inode references being held that make
-> > the inode live longer than the dentry cache. When should the
-> > fsnotify marks be removed from the inode in that case? Do they need
-> > to remain until, e.g, writeback completes?
-> 
-> Note that my idea is to just remove the fsnotify marks when the dentry
-> discards the inode.
-> 
-> That means that yes, the inode may still have a lifetime after the
-> dentry (because of other references, _or_ just because I_DONTCACHE
-> isn't set and we keep caching the inode).
-> 
-> BUT - fsnotify won't care. There won't be any fsnotify marks on that
-> inode any more, and without a dentry that points to it, there's no way
-> to add such marks.
-> 
-> (A new dentry may be re-attached to such an inode, and then fsnotify
-> could re-add new marks, but that doesn't change anything - the next
-> time the dentry is detached, the marks would go away again).
-> 
-> And yes, this changes the timing on when fsnotify events happen, but
-> what I'm actually hoping for is that Jan will agree that it doesn't
-> actually matter semantically.
-> 
-> > > Then at umount time, the dentry shrinking will deal with all live
-> > > dentries, and at most the fsnotify layer would send the FS_UNMOUNT to
-> > > just the root dentry inodes?
-> >
-> > I don't think even that is necessary, because
-> > shrink_dcache_for_umount() drops the sb->s_root dentry after
-> > trimming the dentry tree. Hence the dcache drop would cleanup all
-> > inode references, roots included.
-> 
-> Ahh - even better.
-> 
-> I didn't actually look very closely at the actual umount path, I was
-> looking just at the fsnotify_inoderemove() place in
-> dentry_unlink_inode() and went "couldn't we do _this_ instead?"
-> 
-> > > Wouldn't that make things much cleaner, and remove at least *one* odd
-> > > use of the nasty s_inodes list?
-> >
-> > Yes, it would, but someone who knows exactly when the fsnotify
-> > marks can be removed needs to chime in here...
-> 
-> Yup. Honza?
-> 
-> (Aside: I don't actually know if you prefer Jan or Honza, so I use
-> both randomly and interchangeably?)
-> 
-> > > I have this feeling that maybe we can just remove the other users too
-> > > using similar models. I think the LSM layer use (in landlock) is bogus
-> > > for exactly the same reason - there's really no reason to keep things
-> > > around for a random cached inode without a dentry.
-> >
-> > Perhaps, but I'm not sure what the landlock code is actually trying
-> > to do.
+Hi Hongbo,
 
-In Landlock, inodes (see landlock_object) may be referenced by several
-rulesets, either tied to a task's cred or a ruleset's file descriptor.
-A ruleset may outlive its referenced inodes, and this should not block
-related umounts.  security_sb_delete() is used to gracefully release
-such references.
+> As definition, max is the right bound for value. opt->max - 1 is valid. 
+> May be you should remove the equals sign.
 
-> 
-> Yeah, I wouldn't be surprised if it's just confused - it's very odd.
-> 
-> But I'd be perfectly happy just removing one use at a time - even if
-> we keep the s_inodes list around because of other users, it would
-> still be "one less thing".
-> 
-> > Hence, to me, the lifecycle and reference counting of inode related
-> > objects in landlock doesn't seem quite right, and the use of the
-> > security_sb_delete() callout appears to be papering over an internal
-> > lifecycle issue.
-> >
-> > I'd love to get rid of it altogether.
+This is not true, max is not the right upper bound when it comes to
+this but rather the size of the array instead, therefore opt->max - 1
+is where we should stop.
 
-I'm not sure to fully understand the implications for now, but it would
-definitely be good to simplify this lifetime management.  The only
-requirement for Landlock is that inodes references should live as long
-as the related inodes are accessible by user space or already in use.
-The sooner these references are removed from related ruleset, the
-better.
+const struct bch_option bch2_opt_table[] = {
+#define OPT_BOOL()		.type = BCH_OPT_BOOL, .min = 0, .max = 2
+#define OPT_UINT(_min, _max)	.type = BCH_OPT_UINT,			\
+				.min = _min, .max = _max
+#define OPT_STR(_choices)	.type = BCH_OPT_STR,			\
+				.min = 0, .max = ARRAY_SIZE(_choices),	\
+				.choices = _choices
+...
 
-> 
-> Yeah, I think the inode lifetime is just so random these days that
-> anything that depends on it is questionable.
-> 
-> The quota case is probably the only thing where the inode lifetime
-> *really* makes sense, and that's the one where I looked at the code
-> and went "I *hope* this can be converted to traversing the dentry
-> tree", but at the same time it did look sensible to make it be about
-> inodes.
-> 
-> If we can convert the quota side to be based on dentry lifetimes, it
-> will almost certainly then have to react to the places that do
-> "d_add()" when re-connecting an inode to a dentry at lookup time.
-> 
-> So yeah, the quota code looks worse, but even if we could just remove
-> fsnotify and landlock, I'd still be much happier.
-> 
->              Linus
+Here if you look at OPT_STR you see that it is indeed the size
+of the array.
+
+> It should be no problem to just solve this null pointer issue() (How is 
+> this stack triggered, may be I lost something.), but this should be a 
+
+The reason this is triggered is because in bch2_opt_to_text,
+the parameter v passed is beyond the number of options available 
+to Opt_str_hash.
+
+#define BCH_STR_HASH_OPTS()		\
+	x(crc32c,		0)	\
+	x(crc64,		1)	\
+	x(siphash,		2)
+
+Passing a value v of 3 attempts to access a non-existent fourth element.
+This value v corresponds to str_hash in the bch_opts structure within the 
+bch_fs struct. Since print_mount_opts checks each option, it seems 
+appropriate to add the validation there. Please let me know if 
+I've misunderstood anything.
+
+Thanks!
+
