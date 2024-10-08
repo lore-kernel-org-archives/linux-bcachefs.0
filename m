@@ -1,99 +1,96 @@
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66ED8DF71
-	for <linux-bcachefs@vger.kernel.org>; Tue,  8 Oct 2024 00:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB15208A7;
+	Tue,  8 Oct 2024 02:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728348878; cv=none; b=gTcS6VZqPHwBxSs0F5jum/7LH+rN48ThbXLb7NG5oiQ4Yg25Y1Hoh5lNx9Hwk7e8T21y/rOZVXRZNAuJw4XO54Tcw6J3sghUrPm1ZN5Bt7rklEE1iKtpBFymOrIUXkQUUIj1RlpZln18Abe65fxRON3VxgMDdwZmAljcvDog+YI=
+	t=1728354193; cv=none; b=ZS9wEJaSoL62C0yyzljrQginH1NMh74rNGWpAM3i3Onb1AJGX5FcS/thxJO9Zj1cieuvsX6jfubI9R2WnsFzcUEAjKmi3R+D18dV5tXu/9ZLPbOEWCycNjsIWf2eSWrz/FK+8ztZn82Yg1jKlF/ONTBJivw22ELNOSMD75fjX40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728348878; c=relaxed/simple;
-	bh=NqYO63ftG4Vh81Um6zsjfmC5SEgFzFYHUlSf+opM8ws=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b4LzzznWe+5dr1gl90C2yMRhgjHwiFP2agYIJaZxPHmAR5O2k3BK/3dhG2C7ne42e4usR+wkjcxJtzaYT1gxPFLKWTodiiBMk/PeQPwshh0abgerCYJi/iRC6fE2ZrPhEJj+UHx/sZtiJ8s5RoP74mTZV/S3LC0PDal/d85+53Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NdaZhrdV; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NdaZhrdV"
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5398b589032so7584454e87.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 07 Oct 2024 17:54:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1728348874; x=1728953674; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tnmN82gruhjoauaDPVFxp6c7gOVhPQGFyw+79HJzqU8=;
-        b=NdaZhrdVGnvC+ynbG0T9KCf7DMjktaeRH4d4I6bNUmXk6Ilf1uLQo+62QMJeoeYD/O
-         t/anE2EUJPZC+Jg3HfplLd1VxFoiK1cbfEqGiVFasyiWbSZH9caf/Y2rwIbjw0BG4tR8
-         e4AvmBDn0+VOW6eArHhZ20eckBBH4xwa3Qdec=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728348874; x=1728953674;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tnmN82gruhjoauaDPVFxp6c7gOVhPQGFyw+79HJzqU8=;
-        b=mX/locGkhcOBHsTBW+zn74+xfkQRoIf1Rfb/b94ccYezuDyTsNXBlcYwK/uL95VF6m
-         UBIF/L9eWqKEJWtslJfFpMK95gPNIgpyumBdgOacY3y5ANg5yq1hdjoPHZn72I47vk+F
-         gArad4rJ6y5ixWVwi+updfYYM/lOWkkK/tTIfQFIrTV33f9Za5SeIVQtC1h+6j4QhORZ
-         LLfJGBxQuiVDBqmb3MaFUDkEpxN90r6NLzaX1MEO/OpGCpSuvEEROncdcjTJCMGUHnJK
-         8FrS3xxxJndZRp80XI1CCQg86sB/L23MAd0+vUCUbqaXtF81ER5YRAfzmoGQ9UCbuDly
-         34oA==
-X-Forwarded-Encrypted: i=1; AJvYcCWMcRCYM4hF6eanwprvBvQG0FkArr6eqaEIo0l7fhaGzqI4gmQFk9yxIEy+g8IupsrcUAWS4pBxp9JqrvWcOw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9Xeg26Hhc6zAL7QxujZBFHZwQpo8UzXt+waemal2OA+UkCwY6
-	UFjzIQA8Zr2DgiSDxf3gwV4T018DfN1qyXpPNOzpisB3TaMtWZe1lDzIAqTXmMMbPir/oOTtfXN
-	ZOefHRA==
-X-Google-Smtp-Source: AGHT+IGbPSy/tVQDyaBgxKqhgPhfOXO3AgoXjhPrjRcroUN2yKKIm+3pDY/ehDiUU95mTMwlx7YH6w==
-X-Received: by 2002:a05:6512:1256:b0:536:741a:6bc5 with SMTP id 2adb3069b0e04-539ab84e0ebmr7385100e87.12.1728348874183;
-        Mon, 07 Oct 2024 17:54:34 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-539aff28077sm1022909e87.255.2024.10.07.17.54.32
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Oct 2024 17:54:32 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-53991d05416so6069372e87.2
-        for <linux-bcachefs@vger.kernel.org>; Mon, 07 Oct 2024 17:54:32 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXyG+P9pNu/dOlWEWY+vta1GrunA73Xkkl+JSaPmncd5a2+IZBYniyTSThU0StuW7wua/m1aYcoTOoTxLAiNA==@vger.kernel.org
-X-Received: by 2002:a05:6512:3d07:b0:52e:fa5f:b6a7 with SMTP id
- 2adb3069b0e04-539ab8659c5mr8118408e87.13.1728348872429; Mon, 07 Oct 2024
- 17:54:32 -0700 (PDT)
+	s=arc-20240116; t=1728354193; c=relaxed/simple;
+	bh=GHOHUfEjrbXGfCPTDqxLXpRVTda3CoPXrBP5nxkil+A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=JgnsiuT8Po/Xj5619mNb7WiiTjPHIX+bXY6MjTYzjfrEDGhBUI3xk67SGoTO/VfC95/3kQDkWcyXFajnXbUMOOG402SsaDgjvl+S9fCaloEK67eXplCyuB6B9TUdjfzluF9KhfhDSsy2Pgf+WqiJVBEaprSxPrb0W7REDhc0iNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XN07s0Mvmz1HKKG;
+	Tue,  8 Oct 2024 10:19:05 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5224D180044;
+	Tue,  8 Oct 2024 10:23:09 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Tue, 8 Oct 2024 10:23:09 +0800
+Message-ID: <f8fcc1e6-6de6-4d60-83a7-83e95a7d6b6e@huawei.com>
+Date: Tue, 8 Oct 2024 10:23:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241002014017.3801899-1-david@fromorbit.com> <20241002014017.3801899-5-david@fromorbit.com>
- <Zv5GfY1WS_aaczZM@infradead.org> <Zv5J3VTGqdjUAu1J@infradead.org>
- <20241003115721.kg2caqgj2xxinnth@quack3> <CAHk-=whg7HXYPV4wNO90j22VLKz4RJ2miCe=s0C8ZRc0RKv9Og@mail.gmail.com>
- <ZwRvshM65rxXTwxd@dread.disaster.area> <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
-In-Reply-To: <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 7 Oct 2024 17:54:16 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgW0RspdggU630JYUe5CyzNi5MHT4UEfx2+yZKoeezawg@mail.gmail.com>
-Message-ID: <CAHk-=wgW0RspdggU630JYUe5CyzNi5MHT4UEfx2+yZKoeezawg@mail.gmail.com>
-Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert sb->s_inodes
- iteration to super_iter_inodes()
-To: Dave Chinner <david@fromorbit.com>
-Cc: Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	kent.overstreet@linux.dev, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>, 
-	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>, Kees Cook <keescook@chromium.org>, 
-	linux-security-module@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH resend v3] bcachefs: Fix NULL pointer dereference in
+ bch2_opt_to_text
+Content-Language: en-US
+To: Mohammed Anees <pvmohammedanees2003@gmail.com>, Kent Overstreet
+	<kent.overstreet@linux.dev>
+CC: <syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com>, LKML
+	<linux-kernel@vger.kernel.org>, "linux-bcachefs@vger.kernel.org"
+	<linux-bcachefs@vger.kernel.org>
+References: <20241005130229.9290-1-pvmohammedanees2003@gmail.com>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20241005130229.9290-1-pvmohammedanees2003@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Mon, 7 Oct 2024 at 17:28, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> And yes, this changes the timing on when fsnotify events happen, but
-> what I'm actually hoping for is that Jan will agree that it doesn't
-> actually matter semantically.
 
-.. and yes, I realize it might actually matter. fsnotify does do
-'ihold()' to hold an inode ref, and with this that would actually be
-more or less pointless, because the mark would be removed _despite_
-such a ref.
 
-So maybe it's not an option to do what I suggested. I don't know the
-users well enough.
+On 2024/10/5 21:02, Mohammed Anees wrote:
+> This patch adds a bounds check to the bch2_opt_to_text function to prevent
+> NULL pointer dereferences when accessing the opt->choices array. This
+> ensures that the index used is within valid bounds before dereferencing.
+> The new version enhances the readability.
+> 
+> Reported-and-tested-by: syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=37186860aa7812b331d5
+> Signed-off-by: Mohammed Anees <pvmohammedanees2003@gmail.com>
+> ---
+> v3:
+> - Moved bounds check above as default case.
+> - Removed the nesterd if clauses.
+> ---
+>   fs/bcachefs/opts.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+> index 232be8a44051..84097235eea9 100644
+> --- a/fs/bcachefs/opts.c
+> +++ b/fs/bcachefs/opts.c
+> @@ -427,7 +427,9 @@ void bch2_opt_to_text(struct printbuf *out,
+>   			prt_printf(out, "%lli", v);
+>   		break;
+>   	case BCH_OPT_STR:
+> -		if (flags & OPT_SHOW_FULL_LIST)
+> +		if (v < opt->min || v >= opt->max - 1)
+As definition, max is the right bound for value. opt->max - 1 is valid. 
+May be you should remove the equals sign.
 
-         Linus
+It should be no problem to just solve this null pointer issue() (How is 
+this stack triggered, may be I lost something.), but this should be a 
+general boundary check condition, strictly speaking, it's a check for 
+the validity of the options' value.
+
+Thanks,
+Hongbo
+
+> +			prt_printf(out, "(invalid option %lli)", v);
+> +		else if (flags & OPT_SHOW_FULL_LIST)
+>   			prt_string_option(out, opt->choices, v);
+>   		else
+>   			prt_str(out, opt->choices[v]);
