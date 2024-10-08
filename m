@@ -1,43 +1,45 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [84.16.66.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB12A1DDA36;
-	Tue,  8 Oct 2024 12:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4021DEFD6
+	for <linux-bcachefs@vger.kernel.org>; Tue,  8 Oct 2024 12:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728389770; cv=none; b=TSGnwWcEz/aVigB8eMaW7xSZK98lyhW6K1AooScwfEYU39zaWJbcyrEVOcgEk1hvfZDvjVmk8x+HcY5+ta/23kEUPXvPh3J5bcXg1Hw4VFDcJISBeD0V6X9yXuxgIqb6v8jp2funNW9FWKHmxLKIkDbZ+6PN3DTk/lBzhxtEG7Y=
+	t=1728392358; cv=none; b=WxGiin+yva4a6PEjvGo+vRb4gzrnnqZqTp71sABBmPRY0IP8IBK12uQ1P+OOle+0jiG6NCW4e5JBNu87P4vN3Ks8ajC1GfEbEOFv+b9LSxHHyssoEDDiPA39AWL8s6Nc7v5JQyaZnEtsVni3D+ltOe70b3TybpbpM7AQLHUfBSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728389770; c=relaxed/simple;
-	bh=JR6+VGh4CArZqCoRYObFOhv7Sd/FBRfMfr2vlpfToZI=;
+	s=arc-20240116; t=1728392358; c=relaxed/simple;
+	bh=XEQ84zSaVaFCcNhIzuJn6oUzj6Js6KHVuGb3P1chFyM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tEXPTtB6Ut6ycIxbMZie5sQKX0jVWvLgVhq22bQTDCxqnGknOxZ8ZAaDQ4EYMXOobY5FWpdpX8cgrPB383gbvzoN+slRUCjfcr7pInmUPeUBfHKrjZ9/pIFkePi2gAU1pElCDfJz/8ww9/z2CKwOacKXB+1SY/gUmE0xdjWIegA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Inln1iza; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=JfukeAsOMhz+JDGiSw/GRCnLLlBNZFAyrxEA4YBGz5NgE8SPfwTfDjzSmTig27CiiG/Umyec+7CheO/3c49MicAoQmW9bFoeIxDXuvLuAl2qHJwcTnFWte6WhvVOPJyTtkXr/jS0DNleCQI2vaXx/90iKUNnXFhP2AYSbbNL9ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=pEre8go+; arc=none smtp.client-ip=84.16.66.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Inln1iza"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5AC6C4CEC7;
-	Tue,  8 Oct 2024 12:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728389769;
-	bh=JR6+VGh4CArZqCoRYObFOhv7Sd/FBRfMfr2vlpfToZI=;
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="pEre8go+"
+Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4XNGLS0FSsz4X7;
+	Tue,  8 Oct 2024 14:59:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1728392351;
+	bh=lubKm596ajxruAowyOac0GqBl8F51f/htwsSzeT4WHY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Inln1izaHcBVmlOAdchRyn4Ruq/9ep3amvz0JpuhRz5yiQkvkzSWa4IGWb2s/AKAb
-	 tViBIB2dxeFAonrdPf/uzRajGXf+nBWTJe6dm/64KSVrnb+o5gwKYh81GT7xSJfu9J
-	 IBpJKUOvIGp73lQ9orbhqaSGiS5iBCTOyE1pbmnt4GqxFVMqYhNUDN0AuN6NRZtWpW
-	 aCFnqOOGAweMxlyJbtvvgfnaROGyh/+q+MK+X2K6Kay0IrU/vz9AsNIi/nFT9TONww
-	 N+fQF3PyHJ+dE8IN6oESKy9uiHRIOWJ+S4UJEYFY5i36EufcecMlNdAJM9pCM05vLy
-	 AMvfkdGQwLgkg==
-Date: Tue, 8 Oct 2024 14:16:04 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Amir Goldstein <amir73il@gmail.com>, 
-	Dave Chinner <david@fromorbit.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	b=pEre8go+mybnR8ts9txJRzOFe7SezCcGaT0Pca6Uro5RQz3NmFZstJNFsr1yAZiiD
+	 zdu4NDVN38vP5KFqwymW4L2skhrA9eQN1UkeP547Rfi34OyNw8IjMTzk9AU7SX3sMN
+	 p05+vrFJtJvzdlox7dQDOowI6oDXivNjkPFjhy7U=
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4XNGLQ6mfKzMvr;
+	Tue,  8 Oct 2024 14:59:10 +0200 (CEST)
+Date: Tue, 8 Oct 2024 14:59:07 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>, 
 	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>, Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>, 
-	Kees Cook <keescook@chromium.org>, linux-security-module@vger.kernel.org
+	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev, Jann Horn <jannh@google.com>, 
+	Serge Hallyn <serge@hallyn.com>, Kees Cook <keescook@chromium.org>, 
+	linux-security-module@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, 
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>
 Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
  sb->s_inodes iteration to super_iter_inodes()
-Message-ID: <20241008-kanuten-tangente-8a7f35f58031@brauner>
+Message-ID: <20241008.Pohc0dixeiZ8@digikod.net>
 References: <20241002014017.3801899-1-david@fromorbit.com>
  <20241002014017.3801899-5-david@fromorbit.com>
  <Zv5GfY1WS_aaczZM@infradead.org>
@@ -45,8 +47,7 @@ References: <20241002014017.3801899-1-david@fromorbit.com>
  <20241003115721.kg2caqgj2xxinnth@quack3>
  <CAHk-=whg7HXYPV4wNO90j22VLKz4RJ2miCe=s0C8ZRc0RKv9Og@mail.gmail.com>
  <ZwRvshM65rxXTwxd@dread.disaster.area>
- <CAOQ4uxgzPM4e=Wc=UVe=rpuug=yaWwu5zEtLJmukJf6d7MUJow@mail.gmail.com>
- <20241008112344.mzi2qjpaszrkrsxg@quack3>
+ <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -55,104 +56,112 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241008112344.mzi2qjpaszrkrsxg@quack3>
+In-Reply-To: <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
+X-Infomaniak-Routing: alpha
 
-On Tue, Oct 08, 2024 at 01:23:44PM GMT, Jan Kara wrote:
-> On Tue 08-10-24 10:57:22, Amir Goldstein wrote:
-> > On Tue, Oct 8, 2024 at 1:33 AM Dave Chinner <david@fromorbit.com> wrote:
-> > >
-> > > On Mon, Oct 07, 2024 at 01:37:19PM -0700, Linus Torvalds wrote:
-> > > > On Thu, 3 Oct 2024 at 04:57, Jan Kara <jack@suse.cz> wrote:
-> > > > >
-> > > > > Fair enough. If we go with the iterator variant I've suggested to Dave in
-> > > > > [1], we could combine the evict_inodes(), fsnotify_unmount_inodes() and
-> > > > > Landlocks hook_sb_delete() into a single iteration relatively easily. But
-> > > > > I'd wait with that convertion until this series lands.
-> > > >
-> > > > Honza, I looked at this a bit more, particularly with an eye of "what
-> > > > happens if we just end up making the inode lifetimes subject to the
-> > > > dentry lifetimes" as suggested by Dave elsewhere.
-> > >
-> > > ....
-> > >
-> > > > which makes the fsnotify_inode_delete() happen when the inode is
-> > > > removed from the dentry.
-> > >
-> > > There may be other inode references being held that make
-> > > the inode live longer than the dentry cache. When should the
-> > > fsnotify marks be removed from the inode in that case? Do they need
-> > > to remain until, e.g, writeback completes?
-> > >
-> > 
-> > fsnotify inode marks remain until explicitly removed or until sb
-> > is unmounted (*), so other inode references are irrelevant to
-> > inode mark removal.
-> > 
-> > (*) fanotify has "evictable" inode marks, which do not hold inode
-> > reference and go away on inode evict, but those mark evictions
-> > do not generate any event (i.e. there is no FAN_UNMOUNT).
+On Mon, Oct 07, 2024 at 05:28:57PM -0700, Linus Torvalds wrote:
+> On Mon, 7 Oct 2024 at 16:33, Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > There may be other inode references being held that make
+> > the inode live longer than the dentry cache. When should the
+> > fsnotify marks be removed from the inode in that case? Do they need
+> > to remain until, e.g, writeback completes?
 > 
-> Yes. Amir beat me with the response so let me just add that FS_UMOUNT event
-> is for inotify which guarantees that either you get an event about somebody
-> unlinking the inode (e.g. IN_DELETE_SELF) or event about filesystem being
-> unmounted (IN_UMOUNT) if you place mark on some inode. I also don't see how
-> we would maintain this behavior with what Linus proposes.
+> Note that my idea is to just remove the fsnotify marks when the dentry
+> discards the inode.
 > 
-> > > > Then at umount time, the dentry shrinking will deal with all live
-> > > > dentries, and at most the fsnotify layer would send the FS_UNMOUNT to
-> > > > just the root dentry inodes?
-> > >
-> > > I don't think even that is necessary, because
-> > > shrink_dcache_for_umount() drops the sb->s_root dentry after
-> > > trimming the dentry tree. Hence the dcache drop would cleanup all
-> > > inode references, roots included.
-> > >
-> > > > Wouldn't that make things much cleaner, and remove at least *one* odd
-> > > > use of the nasty s_inodes list?
-> > >
-> > > Yes, it would, but someone who knows exactly when the fsnotify
-> > > marks can be removed needs to chime in here...
+> That means that yes, the inode may still have a lifetime after the
+> dentry (because of other references, _or_ just because I_DONTCACHE
+> isn't set and we keep caching the inode).
 > 
-> So fsnotify needs a list of inodes for the superblock which have marks
-> attached and for which we hold inode reference. We can keep it inside
-> fsnotify code although it would practically mean another list_head for the
-> inode for this list (probably in our fsnotify_connector structure which
-> connects list of notification marks to the inode). If we actually get rid
-> of i_sb_list in struct inode, this will be a win for the overall system,
-> otherwise it is a net loss IMHO. So if we can figure out how to change
-> other s_inodes owners we can certainly do this fsnotify change.
+> BUT - fsnotify won't care. There won't be any fsnotify marks on that
+> inode any more, and without a dentry that points to it, there's no way
+> to add such marks.
 > 
-> > > > And I wonder if the quota code (which uses the s_inodes list to enable
-> > > > quotas on already mounted filesystems) could for all the same reasons
-> > > > just walk the dentry tree instead (and remove_dquot_ref similarly
-> > > > could just remove it at dentry_unlink_inode() time)?
-> > >
-> > > I don't think that will work because we have to be able to modify
-> > > quota in evict() processing. This is especially true for unlinked
-> > > inodes being evicted from cache, but also the dquots need to stay
-> > > attached until writeback completes.
-> > >
-> > > Hence I don't think we can remove the quota refs from the inode
-> > > before we call iput_final(), and so I think quotaoff (at least)
-> > > still needs to iterate inodes...
+> (A new dentry may be re-attached to such an inode, and then fsnotify
+> could re-add new marks, but that doesn't change anything - the next
+> time the dentry is detached, the marks would go away again).
 > 
-> Yeah, I'm not sure how to get rid of the s_inodes use in quota code. One of
-> the things we need s_inodes list for is during quotaoff on a mounted
-> filesystem when we need to iterate all inodes which are referencing quota
-> structures and free them.  In theory we could keep a list of inodes
-> referencing quota structures but that would require adding list_head to
-> inode structure for filesystems that support quotas. Now for the sake of
-> full context I'll also say that enabling / disabling quotas on a mounted
-> filesystem is a legacy feature because it is quite easy that quota
-> accounting goes wrong with it. So ext4 and f2fs support for quite a few
-> years a mode where quota tracking is enabled on mount and disabled on
-> unmount (if appropriate fs feature is enabled) and you can only enable /
-> disable enforcement of quota limits during runtime.  So I could see us
-> deprecating this functionality altogether although jfs never adapted to
-> this new way we do quotas so we'd have to deal with that somehow.  But one
-> way or another it would take a significant amount of time before we can
-> completely remove this so it is out of question for this series.
+> And yes, this changes the timing on when fsnotify events happen, but
+> what I'm actually hoping for is that Jan will agree that it doesn't
+> actually matter semantically.
+> 
+> > > Then at umount time, the dentry shrinking will deal with all live
+> > > dentries, and at most the fsnotify layer would send the FS_UNMOUNT to
+> > > just the root dentry inodes?
+> >
+> > I don't think even that is necessary, because
+> > shrink_dcache_for_umount() drops the sb->s_root dentry after
+> > trimming the dentry tree. Hence the dcache drop would cleanup all
+> > inode references, roots included.
+> 
+> Ahh - even better.
+> 
+> I didn't actually look very closely at the actual umount path, I was
+> looking just at the fsnotify_inoderemove() place in
+> dentry_unlink_inode() and went "couldn't we do _this_ instead?"
+> 
+> > > Wouldn't that make things much cleaner, and remove at least *one* odd
+> > > use of the nasty s_inodes list?
+> >
+> > Yes, it would, but someone who knows exactly when the fsnotify
+> > marks can be removed needs to chime in here...
+> 
+> Yup. Honza?
+> 
+> (Aside: I don't actually know if you prefer Jan or Honza, so I use
+> both randomly and interchangeably?)
+> 
+> > > I have this feeling that maybe we can just remove the other users too
+> > > using similar models. I think the LSM layer use (in landlock) is bogus
+> > > for exactly the same reason - there's really no reason to keep things
+> > > around for a random cached inode without a dentry.
+> >
+> > Perhaps, but I'm not sure what the landlock code is actually trying
+> > to do.
 
-I still maintain that we don't need to solve the fsnotify and lsm rework
-as part of this particular series.
+In Landlock, inodes (see landlock_object) may be referenced by several
+rulesets, either tied to a task's cred or a ruleset's file descriptor.
+A ruleset may outlive its referenced inodes, and this should not block
+related umounts.  security_sb_delete() is used to gracefully release
+such references.
+
+> 
+> Yeah, I wouldn't be surprised if it's just confused - it's very odd.
+> 
+> But I'd be perfectly happy just removing one use at a time - even if
+> we keep the s_inodes list around because of other users, it would
+> still be "one less thing".
+> 
+> > Hence, to me, the lifecycle and reference counting of inode related
+> > objects in landlock doesn't seem quite right, and the use of the
+> > security_sb_delete() callout appears to be papering over an internal
+> > lifecycle issue.
+> >
+> > I'd love to get rid of it altogether.
+
+I'm not sure to fully understand the implications for now, but it would
+definitely be good to simplify this lifetime management.  The only
+requirement for Landlock is that inodes references should live as long
+as the related inodes are accessible by user space or already in use.
+The sooner these references are removed from related ruleset, the
+better.
+
+> 
+> Yeah, I think the inode lifetime is just so random these days that
+> anything that depends on it is questionable.
+> 
+> The quota case is probably the only thing where the inode lifetime
+> *really* makes sense, and that's the one where I looked at the code
+> and went "I *hope* this can be converted to traversing the dentry
+> tree", but at the same time it did look sensible to make it be about
+> inodes.
+> 
+> If we can convert the quota side to be based on dentry lifetimes, it
+> will almost certainly then have to react to the places that do
+> "d_add()" when re-connecting an inode to a dentry at lookup time.
+> 
+> So yeah, the quota code looks worse, but even if we could just remove
+> fsnotify and landlock, I'd still be much happier.
+> 
+>              Linus
