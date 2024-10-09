@@ -1,104 +1,118 @@
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B1C1A00C9;
-	Wed,  9 Oct 2024 15:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.8
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BDA1A2562
+	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Oct 2024 17:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728488335; cv=none; b=uyqnmHxwnKn4AGNtrqILeN8PeKVx3vJcE/pHKQ0PSybHzwT5bW1Ek1X2N617a8hlxZ5qTfpatTTb45o8QiDWJjeDkAZkWYbDvy6C7B76Cbne28j25aA4b5esDePfnSeM1s3YIo7bfVXHkBSIDvDcd4XGW1vuWlxcLjxSLnjvNXo=
+	t=1728496503; cv=none; b=Dtc16lzFeQLJgxgfLXll+0Z51I5za2frrKLhw/IHiWTt9pPhraeeNDd38PIlEAZeDOWSSo5EicCrbJFm2ZxweWObBhminfQm456FJYGX43nEDEV3OoG3fnQVLQiZpjXR1e21C3SkGUN1Bmmf1PNo3Rjd3FILMflx57lXMU2XcFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728488335; c=relaxed/simple;
-	bh=CpHDIofX8IuDq2Rqrc+T1cYEiHetNnbosu7d/9ERJ8c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DT6uqYw05kThlXhi6ZF5xwl0cHJna9aYYYQe++UN+LPbI2BGQicZ17mjrast/lG18XM6XxWr2ql0ttK96uBvXHUP9ifmIn8Y75dVrnU5JSFSp5qH3H9S1W97wn6qe5ouYNrhKW09WjMq6wDmDngE7VdrfsQmGUFbNVA55/jP6+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=LJDB7LgX; arc=none smtp.client-ip=220.197.31.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+	s=arc-20240116; t=1728496503; c=relaxed/simple;
+	bh=tXBCiljZc7dPJp8Zq2q+dmiW2dnqRJkmkmYaxWWS4WQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p98uk//aJb8MzQcmP/hS/wKNolnC40blKKNX1DTWmQWwGGfcTWABfLY+xaIIlhPH5EB6qDpGIh4DQjGTCDxDCU3NHH1hyb7ROVBcyjdfFKqVwt9r6lLFLerY0/Pt2ouTXcll2wNK1xHwyXUmn8QgL6O1aQRy6peyWLRzoBum6jE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=MEhjNNHo; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="LJDB7LgX"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=A/LkJ
-	/OjEIQAsiNGfrhwR/O5Vcm/vxghw0XRfSkCdyE=; b=LJDB7LgXqynT/jXKG4OIP
-	YeDjWMaOiJPNn1A/qeJAu/y1CzVXH3csD0FnseyU/+3jir0xBFzLNo6HK3zCgTIK
-	HNzOw3Go+Pib43tisBTmduq71vJTjZEshf7T8dCiMc9X/vc5x2yD5sfc3C6HLq+9
-	TOsPqbLHdkRGqC090HpMGQ=
-Received: from localhost.localdomain (unknown [1.198.30.91])
-	by gzsmtp4 (Coremail) with SMTP id qCkvCgA31o8+jgZnCNzKAw--.43236S2;
-	Wed, 09 Oct 2024 22:07:59 +0800 (CST)
-From: Zhao Mengmeng <zhaomzhao@126.com>
-To: kent.overstreet@linux.dev,
-	zhaomengmeng@kylinos.cn,
-	lihongbo22@huawei.com
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] bcachefs: Fix shift-out-of-bounds in bch2_stripe_to_text
-Date: Wed,  9 Oct 2024 22:07:55 +0800
-Message-ID: <20241009140755.725629-1-zhaomzhao@126.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="MEhjNNHo"
+Received: from macsyma.thunk.org (c-73-9-28-129.hsd1.il.comcast.net [73.9.28.129])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 499HsmdJ024877
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 9 Oct 2024 13:54:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1728496490; bh=nvWtdn2mNbMqxmG3UQgWF2lcjXKOoW/g6h07k68F3tM=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=MEhjNNHoAALMYqWTbMQXO8h2k3qhEIbtOo+iVjYG7Ot08k9cojDLwp7Sp97GSqMrP
+	 AQyRHGQGT7KLSC08cYMZUtjZs9IY8LBYUDQw6IGVH3aERk/4xtFWTJDeAmWc78e052
+	 BTn1E55ZoAuMJmgmQQtVPwUtTdU30HAp9HHN2OA4RAA+9JJIj4S4N49agprIE2JUFR
+	 dp2Nn/zy+Hi+moccDrwfXehIL/T44Vu+aZKEO14REFEGDO6OeJi37jLt8QJokdup+Y
+	 wTeAgteUAofE/6DZKEgXU48nxZ7NVHPw6Cykz3fbUcrLT6UHYRzRwPtG3X2T5hGUHq
+	 ids0w7vew873A==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id D8E7034058D; Wed, 09 Oct 2024 12:54:47 -0500 (CDT)
+Date: Wed, 9 Oct 2024 12:54:47 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
+Message-ID: <20241009175447.GC167360@mit.edu>
+References: <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
+ <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
+ <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
+ <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
+ <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
+ <2nyd5xfm765iklvzjxvn2nx3onhtdntqrnmvlg2panhtdbff7i@evgk5ecmkuoo>
+ <20241006043002.GE158527@mit.edu>
+ <jhvwp3wgm6avhzspf7l7nldkiy5lcdzne5lekpvxugbb5orcci@mkvn5n7z2qlr>
+ <20241009035139.GB167360@mit.edu>
+ <kxi6m3gi7xqv52bupvb7iskyk6e3spq6bbhq4il5pmfieacfmf@5iwcnsfkmfq4>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qCkvCgA31o8+jgZnCNzKAw--.43236S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7AFy3Wr13CF48Cw1kGr1kuFg_yoW8ur43p3
-	yfKF4fGFZ5uw42vry0kw17X348J345KrZxCw4aq3W5ZFZI93y7Jr17tF95XFW0yrW8tay5
-	Zr1Skr15XFn8ua7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UFtCcUUUUU=
-X-CM-SenderInfo: 52kd0zp2kd0qqrswhudrp/1tbiEBRzd2cGgACUFQAAsg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <kxi6m3gi7xqv52bupvb7iskyk6e3spq6bbhq4il5pmfieacfmf@5iwcnsfkmfq4>
 
-From: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
+On Wed, Oct 09, 2024 at 12:17:35AM -0400, Kent Overstreet wrote:
+> How many steps are required, start to finish, to test a git branch and
+> get the results?
 
-syzbot report a shift-out-of-bounds issue:
-------------[ cut here ]------------
-UBSAN: shift-out-of-bounds in fs/bcachefs/ec.c:147:2
-shift exponent 108 is too large for 32-bit type 'unsigned int'
-----
-Here s.csum_granularity_bits = 108, so shift is impossible for unsigned
-int. To fix, add a check in bch2_stripe_validate() to bail out, it has
-same checking logic with ec_stripe_key_init().
+See the quickstart doc.  The TL;DR is (1) do the git clone, (2) "make
+; make install" (this is just to set up the paths in the shell scripts
+and then copying it to your ~/bin directory, so this takes a second or
+so)", and then (3) "install-kconfig ; kbuild ; kvm-xfstests smoke" in
+your kernel tree.
 
-Reported-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
-Tested-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=f8c98a50c323635be65d
-Suggested-by: Hongbo Li <lihongbo22@huawei.com>
-Signed-off-by: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
----
- fs/bcachefs/ec.c      | 6 ++++++
- fs/bcachefs/errcode.h | 4 +++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+> But dashboards are important, as well. And the git log based dashboard
+> I've got drastically reduces time spent manually bisecting.
 
-diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-index 564841e5a24b..f6a02123144d 100644
---- a/fs/bcachefs/ec.c
-+++ b/fs/bcachefs/ec.c
-@@ -114,6 +114,12 @@ int bch2_stripe_validate(struct bch_fs *c, struct bkey_s_c k,
- 	const struct bch_stripe *s = bkey_s_c_to_stripe(k).v;
- 	int ret = 0;
- 
-+	if (s->csum_granularity_bits >= ilog2(le16_to_cpu(s->sectors))) {
-+		bch_err_ratelimited(c, "stripe csum gran bits %u too big",
-+				    s->csum_granularity_bits);
-+		return -BCH_ERR_stripe_csum_granularity_bits_too_big;
-+	}
-+
- 	bkey_fsck_err_on(bkey_eq(k.k->p, POS_MIN) ||
- 			 bpos_gt(k.k->p, POS(0, U32_MAX)),
- 			 c, stripe_pos_bad,
-diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
-index 26990ad584d5..83659cdb93c8 100644
---- a/fs/bcachefs/errcode.h
-+++ b/fs/bcachefs/errcode.h
-@@ -270,7 +270,9 @@
- 	x(BCH_ERR_nopromote,		nopromote_enomem)			\
- 	x(0,				invalid_snapshot_node)			\
- 	x(0,				option_needs_open_fs)			\
--	x(0,				remove_disk_accounting_entry)
-+	x(0,				remove_disk_accounting_entry)		\
-+	x(EINVAL,			stripe_csum_granularity_bits_too_big)
-+
- 
- enum bch_errcode {
- 	BCH_ERR_START		= 2048,
--- 
-2.43.0
+gce-xfstests ltm -c ext4/1k generic/750 --repo ext4.git \
+	     --bisect-bad dev --bisect-good origin
+
+With automated bisecting, I don't have to spend any of my personal
+time; I just wait for the results to show up in my inbox, without
+needing to refer to any dashboards.  :-)
+
+
+> > In any case, that's why I haven't been interesting in working with
+> > your test infrastructure; I have my own, and in my opinion, my
+> > approach is the better one to make available to the community, and so
+> > when I have time to improve it, I'd much rather work on
+> > {kvm,gce,android}-xfstests.
+> 
+> Well, my setup also isn't tied to xfstests, and it's fairly trivial to
+> wrap all of our other (mm, block) tests.
+
+Neither is mine; the name {kvm,gce,qemu,android}-xfstests is the same
+for historical reasons.  I have blktests, ltp, stress-ng and the
+Phoronix Test Suites wired up (although using comparing against
+historical baselines with PTS is a bit manual at the moment).
+
+> But like I said before, I don't particularly care which one wins, as
+> long as we're pushing forward with something.
+
+I'd say that in the file system development community there has been a
+huge amount of interest in testing, because we all have a general
+consensus that testing is support important[1].  Most of us decided
+that the "There Can Be Only One" from the Highlander Movie is just not
+happening, because everyone's test infrastructures is optimized for
+their particular workflow, just as there's a really good reason why
+there are 75+ file systems in Linux, and half-dozen or so very popular
+general-purpose file systems.
+
+And that's a good thing.
+
+Cheers,
+
+						- Ted
+
+[1] https://docs.google.com/presentation/d/14MKWxzEDZ-JwNh0zNUvMbQa5ZyArZFdblTcF5fUa7Ss/edit#slide=id.g1635d98056_0_45
 
