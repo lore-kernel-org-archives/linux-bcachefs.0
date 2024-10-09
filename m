@@ -1,203 +1,109 @@
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B8F79D2
-	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Oct 2024 00:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC6C81F947;
+	Wed,  9 Oct 2024 01:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728433277; cv=none; b=hImIy/hUG8p8sqhj2Cl1t1pfSmi9kbGwj9eswZ8so/uQPqN2MO7SRZ20LiB51okhaqeGhFByxTbDnE/4zwzo8YdCngsjfeFwI19lOOnn+sguouAMWMc8W7OKwMBW06hND8y4YY+s57MNhg7yc/Y0FPGye5aqf+nmWXOPavrAqdk=
+	t=1728437291; cv=none; b=stDW8FRqjZXKdiL5lcasbGAQjU8cZkI/3PHa/Oyutrn/S5y5tY1zbT5TxTgwuLrqIG+jlVNUnc/9Qw7/3TbBu2PjaYQp6IxR9YBg7EX/dWXpfbs4cjLVkwgc+iH78EzUYEN1AnLZOnZShxufpkDSinKcpJGI39vOZ4csMLGPmTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728433277; c=relaxed/simple;
-	bh=QxNxZYTvr88oZBW8tXV32j7iOvCttb9aax9zzHHT9bQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u9PQ23o2zuqfVnQ3BdFlx5MuhXwBGLRMrbINAH4IL+Js8v+dSCCuMaMRl+Eb7nXYV4/oQskrHoUKL+Ca+eNB5c3ZYXSl8tZLnOCJPq1kgBT3nxGhfzActkD21HO9yyehyJNAgHQjDRDhv9DX7Ngb6SkAJ9GoAStQHO5aG2TtiNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=iA2/dyuq; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="iA2/dyuq"
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7e9f8d67df9so2524368a12.1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 08 Oct 2024 17:21:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1728433275; x=1729038075; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=EJPtnGLGvHHQGnAYTKd4lp510zIDOVQ9LBt2hd+4AdY=;
-        b=iA2/dyuqdrPpEQL3osmkh356D9Ui7DSwvErf834km0KsV1nhP0BSnFWs7VzzZU/mdj
-         +7tEGnasOihBP96DPTU1zU6LYzxXyLdwT6N/BK6cPyF6/PPHeB/w+s7kKxhPgIu0PYj1
-         j8ObHrOkhEutrVq78PKtG+Omskl2CdVQDpoIO/bo4M31ngZsbOJiJvRJuQn2OIq2JI9p
-         bPrgacM5JlPAp4mj7YOX1le5VCMb4lxsPVhe5g+FMIwUBfxJUDzUyxP1ET8aLddcdq4z
-         Q9ekRo1xDTekTsjNw6/x2x0D8c83P16XS7uWrNqZ+nqPGHSgiIiEphjxBrNQQk4Zc0lV
-         FlZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728433275; x=1729038075;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EJPtnGLGvHHQGnAYTKd4lp510zIDOVQ9LBt2hd+4AdY=;
-        b=tzp3dBQ4zL82JXP+VMocLQQCb417RAc8OIk4AabOwZw3ggduG3eVnjvffW8MAZXKbI
-         qSt+jwENRivMYhK88MRTdc3M26n9RCN66UXiE/DUlKqH4a+LBnAFl1X7UbH2LywW1a1j
-         k/LaVtPBZNcWr3+VVZTk0V+zaNBfZawYhSefK799p6has/w2d0BzWYnI9LWKcmvZPlK3
-         R+0Cf+jmZnt2BPKuT2pInqifkcY5G2T+cO8CltzVsZaDAO6adBaWOziOpZU0fnbkUUtq
-         RcLNkS4V3akIMl+UMyxdF3Iz/obmCrP9eNup6LtM7VFKby67niBGR6sS4+RAlmicBqAR
-         R3fw==
-X-Forwarded-Encrypted: i=1; AJvYcCV970CuTtfq61RPnL+sYNNeGZHJ/IYFlytJ35VsUci6OhVSxSLNSHYbtYFOiYDeBzcxKiKqFiBFnUxBeTcFxA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz6RHmXGVX1AKkRZkCo3pPKqCkDx+lJuCbMVx1PJgVHeyw8AoBA
-	DDBxYqohTgGVcEr5RehK+yr/1gml0gFszk6HCR1d8tgC7xvs6n+qzwzzktLNcPc=
-X-Google-Smtp-Source: AGHT+IHvr5o7m8dqYTgImRHjogsPdDBCxEnQw5TDLXHAqwX0YLpeTdEi1YjY4Zrk6gKuHELbwTvODw==
-X-Received: by 2002:a05:6a20:6f8c:b0:1cf:573a:bb58 with SMTP id adf61e73a8af0-1d8a3c4b85dmr1155691637.40.1728433275128;
-        Tue, 08 Oct 2024 17:21:15 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-78-197.pa.nsw.optusnet.com.au. [49.179.78.197])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e9f6821c32sm7447947a12.33.2024.10.08.17.21.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2024 17:21:14 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1syKRy-00FoLs-0N;
-	Wed, 09 Oct 2024 11:21:10 +1100
-Date: Wed, 9 Oct 2024 11:21:10 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Jan Kara <jack@suse.cz>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
-	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>,
-	Kees Cook <keescook@chromium.org>,
-	linux-security-module@vger.kernel.org,
-	Amir Goldstein <amir73il@gmail.com>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>
-Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
- sb->s_inodes iteration to super_iter_inodes()
-Message-ID: <ZwXMdqxz5PWNjW3C@dread.disaster.area>
-References: <20241002014017.3801899-1-david@fromorbit.com>
- <20241002014017.3801899-5-david@fromorbit.com>
- <Zv5GfY1WS_aaczZM@infradead.org>
- <Zv5J3VTGqdjUAu1J@infradead.org>
- <20241003115721.kg2caqgj2xxinnth@quack3>
- <CAHk-=whg7HXYPV4wNO90j22VLKz4RJ2miCe=s0C8ZRc0RKv9Og@mail.gmail.com>
- <ZwRvshM65rxXTwxd@dread.disaster.area>
- <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
- <20241008.Pohc0dixeiZ8@digikod.net>
+	s=arc-20240116; t=1728437291; c=relaxed/simple;
+	bh=Zt+WvHMFV+vq/afMTD+xu/ynJMNR45HNAScKN6fRejY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=r/HaZMoOUGlsyYOWqPpBTnC9imFp9cvWHfa2JT5QD3LWNBIjjpxIdA+4Lepiue6m5vc4nbfeppC0YEVI5zBw+fBXtR0vnow79deiNX/eQnPo57tAyoJ5NVtmdtCyANGjB8Qg0nuQ7tAXkTW0qNVoJiYKTwwxBpFZBtFcxP88AS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XNZxm3CtFz20q26;
+	Wed,  9 Oct 2024 09:27:24 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 90A2D1A016C;
+	Wed,  9 Oct 2024 09:28:00 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Wed, 9 Oct 2024 09:28:00 +0800
+Message-ID: <d7604803-a26b-448e-a4d8-7247f8ca7bf2@huawei.com>
+Date: Wed, 9 Oct 2024 09:28:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241008.Pohc0dixeiZ8@digikod.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH resend v3] bcachefs: Fix NULL pointer dereference in
+ bch2_opt_to_text
+To: Mohammed Anees <pvmohammedanees2003@gmail.com>
+CC: <kent.overstreet@linux.dev>, <linux-bcachefs@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<syzbot+37186860aa7812b331d5@syzkaller.appspotmail.com>
+References: <f8fcc1e6-6de6-4d60-83a7-83e95a7d6b6e@huawei.com>
+ <20241008135105.7426-1-pvmohammedanees2003@gmail.com>
+Content-Language: en-US
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20241008135105.7426-1-pvmohammedanees2003@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-On Tue, Oct 08, 2024 at 02:59:07PM +0200, Mickaël Salaün wrote:
-> On Mon, Oct 07, 2024 at 05:28:57PM -0700, Linus Torvalds wrote:
-> > On Mon, 7 Oct 2024 at 16:33, Dave Chinner <david@fromorbit.com> wrote:
-> > >
-> > > There may be other inode references being held that make
-> > > the inode live longer than the dentry cache. When should the
-> > > fsnotify marks be removed from the inode in that case? Do they need
-> > > to remain until, e.g, writeback completes?
-> > 
-> > Note that my idea is to just remove the fsnotify marks when the dentry
-> > discards the inode.
-> > 
-> > That means that yes, the inode may still have a lifetime after the
-> > dentry (because of other references, _or_ just because I_DONTCACHE
-> > isn't set and we keep caching the inode).
-> > 
-> > BUT - fsnotify won't care. There won't be any fsnotify marks on that
-> > inode any more, and without a dentry that points to it, there's no way
-> > to add such marks.
-> > 
-> > (A new dentry may be re-attached to such an inode, and then fsnotify
-> > could re-add new marks, but that doesn't change anything - the next
-> > time the dentry is detached, the marks would go away again).
-> > 
-> > And yes, this changes the timing on when fsnotify events happen, but
-> > what I'm actually hoping for is that Jan will agree that it doesn't
-> > actually matter semantically.
-> > 
-> > > > Then at umount time, the dentry shrinking will deal with all live
-> > > > dentries, and at most the fsnotify layer would send the FS_UNMOUNT to
-> > > > just the root dentry inodes?
-> > >
-> > > I don't think even that is necessary, because
-> > > shrink_dcache_for_umount() drops the sb->s_root dentry after
-> > > trimming the dentry tree. Hence the dcache drop would cleanup all
-> > > inode references, roots included.
-> > 
-> > Ahh - even better.
-> > 
-> > I didn't actually look very closely at the actual umount path, I was
-> > looking just at the fsnotify_inoderemove() place in
-> > dentry_unlink_inode() and went "couldn't we do _this_ instead?"
-> > 
-> > > > Wouldn't that make things much cleaner, and remove at least *one* odd
-> > > > use of the nasty s_inodes list?
-> > >
-> > > Yes, it would, but someone who knows exactly when the fsnotify
-> > > marks can be removed needs to chime in here...
-> > 
-> > Yup. Honza?
-> > 
-> > (Aside: I don't actually know if you prefer Jan or Honza, so I use
-> > both randomly and interchangeably?)
-> > 
-> > > > I have this feeling that maybe we can just remove the other users too
-> > > > using similar models. I think the LSM layer use (in landlock) is bogus
-> > > > for exactly the same reason - there's really no reason to keep things
-> > > > around for a random cached inode without a dentry.
-> > >
-> > > Perhaps, but I'm not sure what the landlock code is actually trying
-> > > to do.
+
+
+On 2024/10/8 21:51, Mohammed Anees wrote:
+> Hi Hongbo,
 > 
-> In Landlock, inodes (see landlock_object) may be referenced by several
-> rulesets, either tied to a task's cred or a ruleset's file descriptor.
-> A ruleset may outlive its referenced inodes, and this should not block
-> related umounts.  security_sb_delete() is used to gracefully release
-> such references.
-
-Ah, there's the problem. The ruleset is persistent, not the inode.
-Like fsnotify, the life cycle and reference counting is upside down.
-The inode should cache the ruleset rather than the ruleset pinning
-the inode.
-
-See my reply to Jan about fsnotify.
-
-> > Yeah, I wouldn't be surprised if it's just confused - it's very odd.
-> > 
-> > But I'd be perfectly happy just removing one use at a time - even if
-> > we keep the s_inodes list around because of other users, it would
-> > still be "one less thing".
-> > 
-> > > Hence, to me, the lifecycle and reference counting of inode related
-> > > objects in landlock doesn't seem quite right, and the use of the
-> > > security_sb_delete() callout appears to be papering over an internal
-> > > lifecycle issue.
-> > >
-> > > I'd love to get rid of it altogether.
+>> As definition, max is the right bound for value. opt->max - 1 is valid.
+>> May be you should remove the equals sign.
 > 
-> I'm not sure to fully understand the implications for now, but it would
-> definitely be good to simplify this lifetime management.  The only
-> requirement for Landlock is that inodes references should live as long
-> as the related inodes are accessible by user space or already in use.
-> The sooner these references are removed from related ruleset, the
-> better.
+> This is not true, max is not the right upper bound when it comes to
+> this but rather the size of the array instead, therefore opt->max - 1
+> is where we should stop.
+> 
+> const struct bch_option bch2_opt_table[] = {
+> #define OPT_BOOL()		.type = BCH_OPT_BOOL, .min = 0, .max = 2
+> #define OPT_UINT(_min, _max)	.type = BCH_OPT_UINT,			\
+> 				.min = _min, .max = _max
+> #define OPT_STR(_choices)	.type = BCH_OPT_STR,			\
+> 				.min = 0, .max = ARRAY_SIZE(_choices),	\
+> 				.choices = _choices
+> ...
+> 
+> Here if you look at OPT_STR you see that it is indeed the size
+> of the array.
+> 
+>> It should be no problem to just solve this null pointer issue() (How is
+>> this stack triggered, may be I lost something.), but this should be a
+> 
+> The reason this is triggered is because in bch2_opt_to_text,
+> the parameter v passed is beyond the number of options available
+> to Opt_str_hash.
+> 
+> #define BCH_STR_HASH_OPTS()		\
+> 	x(crc32c,		0)	\
+> 	x(crc64,		1)	\
+> 	x(siphash,		2)
+> 
 
-I'm missing something.  Inodes are accessible to users even when
-they are not in cache - we just read them from disk and instantiate
-a new VFS inode.
+ok, got! the length of bch2_str_hash_types is bigger than 
+BCH_STR_HASH_OPTS, I miss this. Thank you.
 
-So how do you attach the correct ruleset to a newly instantiated
-inode?
+> Passing a value v of 3 attempts to access a non-existent fourth element.
+> This value v corresponds to str_hash in the bch_opts structure within the
+> bch_fs struct. Since print_mount_opts checks each option, it seems
+> appropriate to add the validation there. Please let me know if
+> I've misunderstood anything.
 
-i.e. If you can find the ruleset for any given inode that is brought
-into cache (e.g. opening an existing, uncached file), then why do
-you need to take inode references so they are never evicted?
+This situation is due to syzbot constructing abnormal data, for example, 
+in the case of bool type option, there may not be an exception here, but 
+the printed values may no longer be 0 or 1, this will not cause program 
+failure, but it does not match the expected value. Moreover, for 
+BITFIELD type option, the value may also exceed the number of bits, 
+which should also pose a risk of overflow when printing in prt_bitflags.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Hongbo
+> 
+> Thanks!
+> 
