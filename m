@@ -1,97 +1,161 @@
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5027F18C91A;
-	Wed,  9 Oct 2024 09:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC92328EF;
+	Wed,  9 Oct 2024 09:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728465951; cv=none; b=lfFYf0Kx7agOA4RpknUJTrhXXJXB4atSgjAN9ToeFF7DKWPtRzOJgK8hojc9B2wk0/9je9GIvmgx0CNTfd92D6XWlJCbgPY77mJJHyzQQYeVydllrcmUg3zbFlrkmOSluSKKabeiBY8QNLNrVVXDK/lfYlREO+BPBEQ4kI8ISQ0=
+	t=1728467350; cv=none; b=I7Eisqkjh4fUb277+4vjSkGeKgJ90HHSZjrTrEVtZUoDdj1qho4FgGWOKzB1h6Uyzsh8mGvA++LaQbYpmCTyJJMNEtFV/g+/99MYXtCxeREENzAwSEOmsQ6ut6vANrSkcAAYl15G3mYV9fJqaTTU2mYV060BZy8OQauWl94LA14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728465951; c=relaxed/simple;
-	bh=i8qUuPXl72YM42vqEQZlOG+NYGtUNHsRsQ5E7hgzw8U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ml3iY/Wc0BKvvAoTTZU5S+6gWs+1+vtOwi9XYFjYiL3vBJr0YEhNrHz0vSMuyqK1OCmC15s559CNostv4MOlU5Gu+L5DyT9AmF8PQM0kAbLJQv6CbuXO6N9IyltUJ7tgrZvSJLZNH6na6OZblB3Fxn5Yhx92w4NFI7w2+iaRgoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4XNnXQ49wHz1SCJJ;
-	Wed,  9 Oct 2024 17:24:38 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5D3991A0188;
-	Wed,  9 Oct 2024 17:25:44 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Wed, 9 Oct 2024 17:25:44 +0800
-Message-ID: <45174791-f446-4edf-9ccd-c0021eec2895@huawei.com>
-Date: Wed, 9 Oct 2024 17:25:45 +0800
+	s=arc-20240116; t=1728467350; c=relaxed/simple;
+	bh=eh4BxI52PQAK5fm5qC88knwJADaCMCLFIaEWxNMBKoM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=roa6csdQkFxrEYpZDl7Y05Kb22zvB+k8I+DZ0ZDaczTHm+0GZZ/Y/hm8AQBLvYHnM1kSIQZco954UMd6SEr0Mb7Q4z8BMkcXNto3fwJ9m4OD943X8Dgfv/PIAuC0esPG1us2wmv23mMtvAgZ4y23iSKl/eUlxlIsmjoSfZj72q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=j+mCq6vY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=L+MgORri; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=j+mCq6vY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=L+MgORri; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="j+mCq6vY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="L+MgORri";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="j+mCq6vY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="L+MgORri"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 186DB1FB93;
+	Wed,  9 Oct 2024 09:49:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728467347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i2qdj0Nc8sTi+dG8p4WXxx/mzAKRX5B8QIkHtbq6ptU=;
+	b=j+mCq6vYSQXmGdJs1sZBPLyqdZvd0QBxNAJqW+0x87Qcgbt19i2gG+9A81/3++u6wRCU+9
+	m7CB2sOSLYdz/Onx1ufSgH1PR8BMOu7rH82eksGdAao39CMrqX/NsylyMxb1XjYotyBv9/
+	DTT6NEtE287SlTqaGbHpdLL5XCUMeEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728467347;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i2qdj0Nc8sTi+dG8p4WXxx/mzAKRX5B8QIkHtbq6ptU=;
+	b=L+MgORrigHEYPjH9RYa+KbOcnIOChPh03lkHOxD8n+7i9LfAQ0yCjEFp3Peds44o07gqtd
+	XWVYh3K+gCbCmiCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728467347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i2qdj0Nc8sTi+dG8p4WXxx/mzAKRX5B8QIkHtbq6ptU=;
+	b=j+mCq6vYSQXmGdJs1sZBPLyqdZvd0QBxNAJqW+0x87Qcgbt19i2gG+9A81/3++u6wRCU+9
+	m7CB2sOSLYdz/Onx1ufSgH1PR8BMOu7rH82eksGdAao39CMrqX/NsylyMxb1XjYotyBv9/
+	DTT6NEtE287SlTqaGbHpdLL5XCUMeEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728467347;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i2qdj0Nc8sTi+dG8p4WXxx/mzAKRX5B8QIkHtbq6ptU=;
+	b=L+MgORrigHEYPjH9RYa+KbOcnIOChPh03lkHOxD8n+7i9LfAQ0yCjEFp3Peds44o07gqtd
+	XWVYh3K+gCbCmiCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B7FB13A58;
+	Wed,  9 Oct 2024 09:49:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ewvLApNRBmfwZwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 09 Oct 2024 09:49:07 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id BA7A0A0851; Wed,  9 Oct 2024 11:49:06 +0200 (CEST)
+Date: Wed, 9 Oct 2024 11:49:06 +0200
+From: Jan Kara <jack@suse.cz>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, kent.overstreet@linux.dev,
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+	Jann Horn <jannh@google.com>, Serge Hallyn <serge@hallyn.com>,
+	Kees Cook <keescook@chromium.org>,
+	linux-security-module@vger.kernel.org,
+	Amir Goldstein <amir73il@gmail.com>
+Subject: Re: lsm sb_delete hook, was Re: [PATCH 4/7] vfs: Convert
+ sb->s_inodes iteration to super_iter_inodes()
+Message-ID: <20241009094906.m3e2ye4oo7qhhbax@quack3>
+References: <20241002014017.3801899-1-david@fromorbit.com>
+ <20241002014017.3801899-5-david@fromorbit.com>
+ <Zv5GfY1WS_aaczZM@infradead.org>
+ <Zv5J3VTGqdjUAu1J@infradead.org>
+ <20241003115721.kg2caqgj2xxinnth@quack3>
+ <CAHk-=whg7HXYPV4wNO90j22VLKz4RJ2miCe=s0C8ZRc0RKv9Og@mail.gmail.com>
+ <ZwRvshM65rxXTwxd@dread.disaster.area>
+ <CAHk-=wi5ZpW73nLn5h46Jxcng6wn_bCUxj6JjxyyEMAGzF5KZg@mail.gmail.com>
+ <CAHk-=wgW0RspdggU630JYUe5CyzNi5MHT4UEfx2+yZKoeezawg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bcachefs: Fix shift-out-of-bounds in
- bch2_stripe_to_text
-To: Zhao Mengmeng <zhaomengmeng@kylinos.cn>, Zhao Mengmeng
-	<zhaomzhao@126.com>, <kent.overstreet@linux.dev>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20241009054325.438556-1-zhaomzhao@126.com>
- <b1c2154d-189a-43fa-84ff-a0d96787ff60@huawei.com>
- <633662aa-120c-40e0-a836-da5faa7ed312@kylinos.cn>
-Content-Language: en-US
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <633662aa-120c-40e0-a836-da5faa7ed312@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgW0RspdggU630JYUe5CyzNi5MHT4UEfx2+yZKoeezawg@mail.gmail.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[fromorbit.com,suse.cz,infradead.org,vger.kernel.org,linux.dev,linux.microsoft.com,google.com,hallyn.com,chromium.org,gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-
-
-On 2024/10/9 17:16, Zhao Mengmeng wrote:
-> On 2024/10/9 17:10, Hongbo Li wrote:
->>
->>
->> On 2024/10/9 13:43, Zhao Mengmeng wrote:
->>> From: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
->>>
->>> syzbot report a shift-out-of-bounds issue:
->>> ------------[ cut here ]------------
->>> UBSAN: shift-out-of-bounds in fs/bcachefs/ec.c:147:2
->>> shift exponent 108 is too large for 32-bit type 'unsigned int'
->>> ----
->>> Here s.csum_granularity_bits = 108, so shift is impossible for unsigned
->>> int. To fix, add a check in bch2_stripe_validate() to bail out, it has
->>> same checking logic with ec_stripe_key_init().
->>>
->>> Reported-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
->>> Tested-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
->>> Closes: https://syzkaller.appspot.com/bug?extid=f8c98a50c323635be65d
->>> Suggested-by: Hongbo Li <lihongbo22@huawei.com>
->>> Signed-off-by: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
->>> ---
->>>    fs/bcachefs/ec.c      | 6 ++++++
->>>    fs/bcachefs/errcode.h | 3 ++-
->>>    2 files changed, 8 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
->>> index 141a4c63142f..bc5ff1331c6f 100644
->>> --- a/fs/bcachefs/ec.c
->>> +++ b/fs/bcachefs/ec.c
->>> @@ -113,6 +113,12 @@ int bch2_stripe_validate(struct bch_fs *c, struct bkey_s_c k,
->>>        const struct bch_stripe *s = bkey_s_c_to_stripe(k).v;
->>>        int ret = 0;
->>>    +    if (s->csum_granularity_bits >= ilog2(le16_to_cpu(s->sectors))) {
->>
->> csum_granularity_bits should do the left shift.
+On Mon 07-10-24 17:54:16, Linus Torvalds wrote:
+> On Mon, 7 Oct 2024 at 17:28, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > And yes, this changes the timing on when fsnotify events happen, but
+> > what I'm actually hoping for is that Jan will agree that it doesn't
+> > actually matter semantically.
 > 
-> If use `1 << s->csum_granularity_bits(108)` to do the check, syzbot will still trigger shift-out-of
-> bounds warning. So better check the bits directly.
+> .. and yes, I realize it might actually matter. fsnotify does do
+> 'ihold()' to hold an inode ref, and with this that would actually be
+> more or less pointless, because the mark would be removed _despite_
+> such a ref.
 > 
-You are right! :)
+> So maybe it's not an option to do what I suggested. I don't know the
+> users well enough.
 
-Thanks
-Hongbo
+Yeah, we need to keep the notification mark alive either until the inode is
+deleted or until the filesystem is unmounted to maintain behavior of
+inotify and fanotify APIs.
+
+That being said we could rework lifetime rules inside fsnotify subsystem as
+Dave suggests so that fsnotify would not pin inodes, detach it's structures
+from inodes on inode reclaim and associate notification marks with inodes
+when they are loaded from disk.  But it's a relatively big overhaul.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
