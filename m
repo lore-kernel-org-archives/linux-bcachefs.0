@@ -1,97 +1,106 @@
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D56768E1
-	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Oct 2024 03:26:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EF022119;
+	Wed,  9 Oct 2024 03:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728444392; cv=none; b=KkUfQnCMBKePJ0fJ+SJu6+Z7SAONN86OE1/XlsmsZlbGcZFzIjeyICgs1Pd7XzA1yRKIlCIHlJDUPeVllBSAA+eLT7SkNJUFXWvCHQt68wtSZmNmKiKVsOeRqK2FPk8l5MmTSSmln/nh2ebJgAsU8bvpjGwmZHKIo2numT5bLAg=
+	t=1728444500; cv=none; b=pvhT6OuUBQhwxe9PkntIbC0LISZNrvJo1NwFoh0NAb0SxjDZBqzeTGiu69pVdE81Ca1kZefs+CqYVXT+dBPhsrpZuZ3bbs85K2KIlfxJ5fA2Xcqo36zZArpvWSYMaFoIy+tQ6MoXsO20CPXrOosV5ih5WCn/oKWmO75MWqTFYF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728444392; c=relaxed/simple;
-	bh=ouEJngheKe5e9mW6KzZjeu3T83k8lZjvjgljLOZzTYc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dSeVV2L5ebMNsbUEJYE2zGxVh0LLyTrzODWsrE1b6St3SCTH0C/YWZtlDullaJQlJibga9APHG9vBA6CG2hqrW54IBZfp/sbAFjnLbL4acoD0CHCTwRRKMMFz7O3j4OO8v7oJEi0Ckyp9IWXU7ZCW6FQVF/Tv8ZHhabiMoEPpB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F7mysZny; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1728444500; c=relaxed/simple;
+	bh=NJYeforn/nzTpAxT8hESCKJ5eIg+ydlPeOiIcSSWuzM=;
+	h=Content-Type:Message-ID:Date:MIME-Version:From:Subject:To:Cc:
+	 References:In-Reply-To; b=nSS8ja9FiqIDVxlPEwji8e9oDJT/fXTOy5alk8HTSeLpS8V5QtsEXMu8FA3XUD0eVHD1dlWki0HmD3VRw18zmQtontpt9xDQLFUrnpDeKIkPQUAo7cUmuFE7qwzodrW0uL30fdWVKG+N9WkMONnpBTed5oenA73X1GXPxP3sRs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=msjHwymI; arc=none smtp.client-ip=220.197.31.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F7mysZny"
-Date: Tue, 8 Oct 2024 23:26:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728444387;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rii8unwi8VCQubUffVJvFqzCKFc258V/enM+WWZQJZo=;
-	b=F7mysZnyki3YjW0ULfsY+9SfI311UjJoFRsZGzVqRmOXu6dcs3TahOMTynuOiEjOpQJN0X
-	teujQnSNqEY1GgIiw0YXIeQP/pBoAJqHlZWlHmx4Zo/Ex0l557bl+ZIo7b/4NESnB4QT5K
-	WDmN4r0AfqY4Eidk6scM4xDLODa9oyU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Hongbo Li <lihongbo22@huawei.com>
-Cc: linux-bcachefs@vger.kernel.org, chris.zjh@huawei.com, ddiss@suse.de
-Subject: Re: [PATCH v2 1/2] bcachefs: avoid copy from NULL printbuf
-Message-ID: <xksp6ra4b4zsc4v373pquzikklhjqnssmcvh46bajcq6cfxd75@i4jhyomvmcyd>
-References: <20240926020002.1746333-1-lihongbo22@huawei.com>
- <20240926020002.1746333-2-lihongbo22@huawei.com>
- <zahnaoa6rppe7niu3erezprogadzdym5rbktqpgp7cseqqqp65@dylrno7fewka>
- <023e82ad-a6d8-4d76-aceb-273d6bffe724@huawei.com>
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="msjHwymI"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=Content-Type:Message-ID:Date:MIME-Version:From:
+	Subject; bh=NJYeforn/nzTpAxT8hESCKJ5eIg+ydlPeOiIcSSWuzM=; b=msjH
+	wymIQ5jVSzjI45PdFGBmF0o3H9ldEcnSwlB/CXy8xAxppe0BiXgcCcmKuUOcOGRB
+	eBiU4NofrvdTVNS6BIZ15tqjvg+It8RVS2q/zk8WSrhJerJWKErpqBc8ULrTaWZK
+	uzoXFPzt+ziVeINjSeUnHLcuh7HrYaSXegfzwxc=
+Received: from [192.168.109.86] (unknown [1.198.30.91])
+	by gzsmtp5 (Coremail) with SMTP id qSkvCgAHvjoE+AVndsCrAw--.55725S2;
+	Wed, 09 Oct 2024 11:27:01 +0800 (CST)
+Content-Type: multipart/mixed; boundary="------------NhoYU3pvcmbBYB5mVuOO0lVU"
+Message-ID: <4cd7f0c2-a6e8-4bc6-b9fc-4b0edc99f63f@126.com>
+Date: Wed, 9 Oct 2024 11:27:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <023e82ad-a6d8-4d76-aceb-273d6bffe724@huawei.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+From: Zhao Mengmeng <zhaomzhao@126.com>
+Subject: Re: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in
+ bch2_stripe_to_text
+To: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
+Cc: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <66f4dcd2.050a0220.211276.003a.GAE@google.com>
+In-Reply-To: <66f4dcd2.050a0220.211276.003a.GAE@google.com>
+X-CM-TRANSID:qSkvCgAHvjoE+AVndsCrAw--.55725S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUoZ2-DUUUU
+X-CM-SenderInfo: 52kd0zp2kd0qqrswhudrp/1tbimhRzd2cF8emMAAAAs8
 
-On Wed, Oct 09, 2024 at 11:24:06AM GMT, Hongbo Li wrote:
-> 
-> 
-> On 2024/10/9 11:13, Kent Overstreet wrote:
-> > On Thu, Sep 26, 2024 at 10:00:00AM GMT, Hongbo Li wrote:
-> > > printbuf.buf may be NULL if allocation_failure is true. Check
-> > > for this prior to using it as a seq_puts() source.
-> > > 
-> > > Fixes: fa8e94faeece ("bcachefs: Heap allocate printbufs")
-> > > Signed-off-by: David Disseldorp <ddiss@suse.de>
-> > > Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
-> > 
-> > Let's do this by adding a proper printbuf_err() helper - have it return
-> > -ENOMEM on allocation failure, and do a normal
-> > if (ret)
-> > 	goto err;
-> > 
-> > so it looks more standard.
-> > 
-> > > ---
-> > >   fs/bcachefs/fs.c | 7 +++++--
-> > >   1 file changed, 5 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> > > index e774cb3e6b1a..d6e26b5056f3 100644
-> > > --- a/fs/bcachefs/fs.c
-> > > +++ b/fs/bcachefs/fs.c
-> > > @@ -1923,13 +1923,16 @@ static int bch2_show_options(struct seq_file *seq, struct dentry *root)
-> > >   {
-> > >   	struct bch_fs *c = root->d_sb->s_fs_info;
-> > >   	struct printbuf buf = PRINTBUF;
-> > > +	int ret = 0;
-> > >   	bch2_opts_to_text(&buf, c->opts, c, c->disk_sb.sb,
-> > >   			  OPT_MOUNT, OPT_HIDDEN, OPT_SHOW_MOUNT_STYLE);
-> > >   	printbuf_nul_terminate(&buf);
-> > > -	seq_puts(seq, buf.buf);
-> 
-> like this?:
->         ret = printbuf_err(buf);
->         if (ret)
->             goto err:
->         seq_printf(seq, ",%s", buf.buf);
->         printbuf_exit(&buf);
-> 
-> err:
->         return ret;
+This is a multi-part message in MIME format.
+--------------NhoYU3pvcmbBYB5mVuOO0lVU
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Just so
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1ec6d097897a
+--------------NhoYU3pvcmbBYB5mVuOO0lVU
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-bcachefs-Fix-shift-out-of-bounds-in-bch2_stripe_to_t.patch"
+Content-Disposition: attachment;
+ filename*0="0001-bcachefs-Fix-shift-out-of-bounds-in-bch2_stripe_to_t.pa";
+ filename*1="tch"
+Content-Transfer-Encoding: base64
+
+RnJvbSBmZDQ4MTk2NTc3N2Q4YTRmYTY3N2VjODMxOGQyNTYyNzM3YjJkNzQ1IE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBaaGFvIE1lbmdtZW5nIDx6aGFvbWVuZ21lbmdAa3ls
+aW5vcy5jbj4KRGF0ZTogV2VkLCA5IE9jdCAyMDI0IDExOjE4OjA0ICswODAwClN1YmplY3Q6
+IFtQQVRDSF0gYmNhY2hlZnM6IEZpeCBzaGlmdC1vdXQtb2YtYm91bmRzIGluIGJjaDJfc3Ry
+aXBlX3RvX3RleHQKCnN5emJvdCByZXBvcnQgYSBzaGlmdC1vdXQtb2YtYm91bmRzIGlzc3Vl
+OgotLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KVUJTQU46IHNoaWZ0LW91
+dC1vZi1ib3VuZHMgaW4gZnMvYmNhY2hlZnMvZWMuYzoxNDc6MgpzaGlmdCBleHBvbmVudCAx
+MDggaXMgdG9vIGxhcmdlIGZvciAzMi1iaXQgdHlwZSAndW5zaWduZWQgaW50JwotLS0tCkhl
+cmUgcy5jc3VtX2dyYW51bGFyaXR5X2JpdHMgPSAxMDgsIHNvIHNoaWZ0IGlzIGltcG9zc2li
+bGUgZm9yIHVuc2lnbmVkCmludC4gVG8gZml4LCBhZGQgYSBjaGVjayBpbiBiY2gyX3N0cmlw
+ZV92YWxpZGF0ZSgpIHRvIGJhaWwgb3V0LCBpdCBoYXMKc2FtZSBjaGVja2luZyBsb2dpYyB3
+aXRoIGVjX3N0cmlwZV9rZXlfaW5pdCgpLgoKUmVwb3J0ZWQtYnk6IHN5emJvdCtmOGM5OGE1
+MGMzMjM2MzViZTY1ZEBzeXprYWxsZXIuYXBwc3BvdG1haWwuY29tClRlc3RlZC1ieTogc3l6
+Ym90K2Y4Yzk4YTUwYzMyMzYzNWJlNjVkQHN5emthbGxlci5hcHBzcG90bWFpbC5jb20KQ2xv
+c2VzOiBodHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS9idWc/ZXh0aWQ9ZjhjOThhNTBj
+MzIzNjM1YmU2NWQKU3VnZ2VzdGVkLWJ5OiBIb25nYm8gTGkgPGxpaG9uZ2JvMjJAaHVhd2Vp
+LmNvbT4KU2lnbmVkLW9mZi1ieTogWmhhbyBNZW5nbWVuZyA8emhhb21lbmdtZW5nQGt5bGlu
+b3MuY24+Ci0tLQogZnMvYmNhY2hlZnMvZWMuYyAgICAgIHwgNiArKysrKysKIGZzL2JjYWNo
+ZWZzL2VycmNvZGUuaCB8IDMgKystCiAyIGZpbGVzIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygr
+KSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2ZzL2JjYWNoZWZzL2VjLmMgYi9mcy9i
+Y2FjaGVmcy9lYy5jCmluZGV4IDE0MWE0YzYzMTQyZi4uYmM1ZmYxMzMxYzZmIDEwMDY0NAot
+LS0gYS9mcy9iY2FjaGVmcy9lYy5jCisrKyBiL2ZzL2JjYWNoZWZzL2VjLmMKQEAgLTExMyw2
+ICsxMTMsMTIgQEAgaW50IGJjaDJfc3RyaXBlX3ZhbGlkYXRlKHN0cnVjdCBiY2hfZnMgKmMs
+IHN0cnVjdCBia2V5X3NfYyBrLAogCWNvbnN0IHN0cnVjdCBiY2hfc3RyaXBlICpzID0gYmtl
+eV9zX2NfdG9fc3RyaXBlKGspLnY7CiAJaW50IHJldCA9IDA7CiAKKwlpZiAocy0+Y3N1bV9n
+cmFudWxhcml0eV9iaXRzID49IGlsb2cyKGxlMTZfdG9fY3B1KHMtPnNlY3RvcnMpKSkgewor
+CQliY2hfZXJyX3JhdGVsaW1pdGVkKGMsICJzdHJpcGUgY3N1bSBncmFuIGJpdHMgJXUgdG9v
+IGJpZyIsCisJCQkJICAgIHMtPmNzdW1fZ3JhbnVsYXJpdHlfYml0cyk7CisJCXJldHVybiAt
+QkNIX0VSUl9zdHJpcGVfY3N1bV9ncmFudWxhcml0eV9iaXRzX3Rvb19iaWc7CisJfQorCiAJ
+YmtleV9mc2NrX2Vycl9vbihia2V5X2VxKGsuay0+cCwgUE9TX01JTikgfHwKIAkJCSBicG9z
+X2d0KGsuay0+cCwgUE9TKDAsIFUzMl9NQVgpKSwKIAkJCSBjLCBzdHJpcGVfcG9zX2JhZCwK
+ZGlmZiAtLWdpdCBhL2ZzL2JjYWNoZWZzL2VycmNvZGUuaCBiL2ZzL2JjYWNoZWZzL2VycmNv
+ZGUuaAppbmRleCA3NDJkY2RkM2U1ZDcuLjE0YmE2YmM3YTAyOSAxMDA2NDQKLS0tIGEvZnMv
+YmNhY2hlZnMvZXJyY29kZS5oCisrKyBiL2ZzL2JjYWNoZWZzL2VycmNvZGUuaApAQCAtMjU4
+LDcgKzI1OCw4IEBACiAJeChCQ0hfRVJSX25vcHJvbW90ZSwJCW5vcHJvbW90ZV9ub193cml0
+ZXMpCQkJXAogCXgoQkNIX0VSUl9ub3Byb21vdGUsCQlub3Byb21vdGVfZW5vbWVtKQkJCVwK
+IAl4KDAsCQkJCWludmFsaWRfc25hcHNob3Rfbm9kZSkJCQlcCi0JeCgwLAkJCQlvcHRpb25f
+bmVlZHNfb3Blbl9mcykKKwl4KDAsCQkJCW9wdGlvbl9uZWVkc19vcGVuX2ZzKQkJCVwKKwl4
+KEVJTlZBTCwJCQlzdHJpcGVfY3N1bV9ncmFudWxhcml0eV9iaXRzX3Rvb19iaWcpCiAKIGVu
+dW0gYmNoX2VycmNvZGUgewogCUJDSF9FUlJfU1RBUlQJCT0gMjA0OCwKLS0gCjIuNDMuMAoK
+
+
+--------------NhoYU3pvcmbBYB5mVuOO0lVU--
+
