@@ -1,132 +1,103 @@
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A0913FD72
-	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Oct 2024 04:17:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46BCC2AF1D;
+	Wed,  9 Oct 2024 05:59:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728447465; cv=none; b=hiGt5ZHMUqfcBzhn6sNbp6vdh3w2bAjajkb9EhRsJLU36jcQdhymX8Z2tcbSr2JpJBOkb/itojonnXH9pP95sBYDNVHJF581yNVDNsEy1YZT7/erB5cg5/A2Pmx0oDbCGIn7PELf8TB+0bG0hGHxiRefYvEE0eRaQAqA+aWx8jc=
+	t=1728453546; cv=none; b=AH9mTaaOXJzso9gB/aNhTgn0ef5ZRh/z5HKXPRjBBr6jovCUm7TGBuVQMIyS6EWFNxysOmIsugr/Vbj6466YFOgJ1JdNYuCqs6SdDIoRSl/633wan17ke+pqvnaEYYm1wEPJYspJNVXJnuOFE6sU9OQqT3UhF3x5l+F5pW+BMQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728447465; c=relaxed/simple;
-	bh=RrXe6DklimFgZhHmkQOPQtwb2z7G/EVgyyPTR9aeyDY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wke0uEx5h3BYIe0sd7HMuHC/6X1eGKumY5kxxqeIfMP3x3YDn1C+7xme+6BKfwhqCUmQW6oxCszRmBW8ZgLrfRA8VBm3GvPwNDOxseSrw25FjOw0hzn2ftzTdzbgZFy094xOtbix0LGk59aqWKZ6ajPzst5KHimCKQCVxurSF2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ePqjztGC; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1728453546; c=relaxed/simple;
+	bh=fKfUy0cg1zAwSarzk7q5hw4n86dEih8UksVoAgIT0t4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pMIk81ty6RlQILfkM5sRpr+tZoCVCnRjQGrgMJ+DR6NVKRQ88/zcMScGrxZw+BpZnnkylrNmsPwaqUhsX5pwCfKpN0H6jtRehB0dFShgR+1eEcjqGENu85dPxiCwk0f7jyx51VMeI/PFOxkMRtOLPlvLXMq23ypcwR8hFslLPpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=leyVQejR; arc=none smtp.client-ip=117.135.210.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ePqjztGC"
-Date: Wed, 9 Oct 2024 00:17:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728447461;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GmUha6NmBXATpud6bD8r/lO+t7OtcRYkqayYgW/HEsM=;
-	b=ePqjztGCI/E6efxQ3EOWD3Gnme9CmKvHxUfeziBVce9iaz7yyICXlthWJ6DUCEUGCbdm2F
-	LggmfVIW0O/zxMIOUmM+n3sVMqMA0vvyA7ldTo+q6J/j0dCMjxbDvkQaNudD1Op9ReuGec
-	hGB6pRTthFrdiyGSciNhNWVPzydhUaE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc2
-Message-ID: <kxi6m3gi7xqv52bupvb7iskyk6e3spq6bbhq4il5pmfieacfmf@5iwcnsfkmfq4>
-References: <cphtxla2se4gavql3re5xju7mqxld4rp6q4wbqephb6by5ibfa@5myddcaxerpb>
- <CAHk-=wjit-1ETRxCBrQAw49AUcE5scEM5O++M=793bDWnQktmw@mail.gmail.com>
- <x7w7lr3yniqrgcuy7vzor5busql2cglirhput67pjk6gtxtbfc@ghb46xdnjvgw>
- <CAHk-=wi-nKcOEnvX3RX+ovpsC4GvsHz1f6iZ5ZeD-34wiWvPgA@mail.gmail.com>
- <e3qmolajxidrxkuizuheumydigvzi7qwplggpd2mm2cxwxxzvr@5nkt3ylphmtl>
- <CAHk-=wjns3i5bm++338SrfJhrDUt6wyzvUPMLrEvMZan5ezmxQ@mail.gmail.com>
- <2nyd5xfm765iklvzjxvn2nx3onhtdntqrnmvlg2panhtdbff7i@evgk5ecmkuoo>
- <20241006043002.GE158527@mit.edu>
- <jhvwp3wgm6avhzspf7l7nldkiy5lcdzne5lekpvxugbb5orcci@mkvn5n7z2qlr>
- <20241009035139.GB167360@mit.edu>
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="leyVQejR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=MmpSn
+	LkXYEOfi1Rg4Kx4z9fZ134udGn2F6e6pjgL6ro=; b=leyVQejRy0odVUKqUFriU
+	1JRSUiXvTK1p4PlTIYUXzejYtldsx8JrGsYVSpr0/WhbtnQ24lrc0rzt5qkRG+1f
+	FaWFqiOp6LDvhYT6LO8kQts9FRh4SR04ZJoNjEd4SqnpZ5mdHYciPxbcq0oQaaVd
+	jxca/3GwnLmJ4uFQ2U7ovk=
+Received: from localhost.localdomain (unknown [1.198.30.91])
+	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wD3X0sAGAZnkCkFAA--.15931S2;
+	Wed, 09 Oct 2024 13:43:28 +0800 (CST)
+From: Zhao Mengmeng <zhaomzhao@126.com>
+To: kent.overstreet@linux.dev,
+	zhaomengmeng@kylinos.cn,
+	lihongbo22@huawei.com
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] bcachefs: Fix shift-out-of-bounds in bch2_stripe_to_text
+Date: Wed,  9 Oct 2024 13:43:25 +0800
+Message-ID: <20241009054325.438556-1-zhaomzhao@126.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241009035139.GB167360@mit.edu>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3X0sAGAZnkCkFAA--.15931S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AFy3Wr13CF48Cw1kGr1kuFg_yoW8ur4rp3
+	yfKF4xGrWkuw42yryUAw17J348G345KrW3Cw4Yq3W5ZFZI934UGr12qF93XFW0yrW8tay5
+	Zw1Fyr15XFn8ua7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UweOAUUUUU=
+X-CM-SenderInfo: 52kd0zp2kd0qqrswhudrp/1tbi6BBzd2cGE+I6GgAAsM
 
-On Tue, Oct 08, 2024 at 10:51:39PM GMT, Theodore Ts'o wrote:
-> On Sun, Oct 06, 2024 at 12:33:51AM -0400, Kent Overstreet wrote:
-> > 
-> > Correct me if I'm wrong, but your system isn't available to the
-> > community, and I haven't seen a CI or dashboard for kdevops?
-> 
-> It's up on github for anyone to download, and I've provided pre-built
-> test appliance so people don't have to have downloaded xfstests and
-> all of its dependencies and build it from scratch.  (That's been
-> automated, of course, but the build infrastructure is setup to use a
-> Debian build chroot, and with the precompiled test appliances, you can
-> use my test runner on pretty much any Linux distribution; it will even
-> work on MacOS if you have qemu built from macports, although for now
-> you have to build the kernel on Linux distro using Parallels VM[1].)
+From: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
 
-How many steps are required, start to finish, to test a git branch and
-get the results?
+syzbot report a shift-out-of-bounds issue:
+------------[ cut here ]------------
+UBSAN: shift-out-of-bounds in fs/bcachefs/ec.c:147:2
+shift exponent 108 is too large for 32-bit type 'unsigned int'
+----
+Here s.csum_granularity_bits = 108, so shift is impossible for unsigned
+int. To fix, add a check in bch2_stripe_validate() to bail out, it has
+same checking logic with ec_stripe_key_init().
 
-Compare that to my setup, where I give you an account, we set up the
-config file that lists tests to run and git branches to test, and then
-results show up in the dashboard.
+Reported-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
+Tested-by: syzbot+f8c98a50c323635be65d@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=f8c98a50c323635be65d
+Suggested-by: Hongbo Li <lihongbo22@huawei.com>
+Signed-off-by: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
+---
+ fs/bcachefs/ec.c      | 6 ++++++
+ fs/bcachefs/errcode.h | 3 ++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-> I'll note that IMHO making testing resources available to the
-> community isn't really the bottleneck.  Using cloud resources,
-> especially if you spin up the VM's only when you need to run the
-> tests, and shut them down once the test is complete, which
-> gce-xfstests does, is actually quite cheap.  At retail prices, running
-> a dozen ext4 file system configurations against xfstests's "auto"
-> group will take about 24 hours of VM time, and including the cost of
-> the block devices, costs just under two dollars USD.  Because the
-> tests are run in parallel, the total wall clock time to run all of the
-> tests is about two and a half hours.  Running the "quick" group on a
-> single file system configuration costs pennies.  So the $300 of free
-> GCE credits will actually get someone pretty far!
+diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
+index 141a4c63142f..bc5ff1331c6f 100644
+--- a/fs/bcachefs/ec.c
++++ b/fs/bcachefs/ec.c
+@@ -113,6 +113,12 @@ int bch2_stripe_validate(struct bch_fs *c, struct bkey_s_c k,
+ 	const struct bch_stripe *s = bkey_s_c_to_stripe(k).v;
+ 	int ret = 0;
+ 
++	if (s->csum_granularity_bits >= ilog2(le16_to_cpu(s->sectors))) {
++		bch_err_ratelimited(c, "stripe csum gran bits %u too big",
++				    s->csum_granularity_bits);
++		return -BCH_ERR_stripe_csum_granularity_bits_too_big;
++	}
++
+ 	bkey_fsck_err_on(bkey_eq(k.k->p, POS_MIN) ||
+ 			 bpos_gt(k.k->p, POS(0, U32_MAX)),
+ 			 c, stripe_pos_bad,
+diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
+index 742dcdd3e5d7..14ba6bc7a029 100644
+--- a/fs/bcachefs/errcode.h
++++ b/fs/bcachefs/errcode.h
+@@ -258,7 +258,8 @@
+ 	x(BCH_ERR_nopromote,		nopromote_no_writes)			\
+ 	x(BCH_ERR_nopromote,		nopromote_enomem)			\
+ 	x(0,				invalid_snapshot_node)			\
+-	x(0,				option_needs_open_fs)
++	x(0,				option_needs_open_fs)			\
++	x(EINVAL,			stripe_csum_granularity_bits_too_big)
+ 
+ enum bch_errcode {
+ 	BCH_ERR_START		= 2048,
+-- 
+2.43.0
 
-That's the same argument that I've been making - machine resources are
-cheap these days.
-
-And using bare metal machines significantly simplifies the backend
-(watchdogs, catching full kernel and test output, etc.).
-
-> No, the bottleneck is having someone knowledgeable enough to interpret
-> the test results and then finding the root cause of the failures.
-> This is one of the reasons why I haven't stressed all that much about
-> dashboards.  Dashboards are only useful if the right person(s) is
-> looking at them.  That's why I've been much more interested in making
-> it stupidly easy to run tests on someone's local resources, e.g.:
-> 
->      https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
-
-Yes, it needs to be trivial to run the same test locally that gets run
-by the automated infrastructure, I've got that as well.
-
-But dashboards are important, as well. And the git log based dashboard
-I've got drastically reduces time spent manually bisecting.
-
-> In fact, for most people, the entry point that I envision as being
-> most interesting is that they download the kvm-xfstests, and following
-> the instructions in the quickstart, so they can run "kvm-xfstests
-> smoke" before sending me an ext4 patch.  Running the smoke test only
-> takes 15 minutes using qemu, and it's much more convenient for them to
-> run that on their local machine than to trigger the test on some
-> remote machine, whether it's in the cloud or someone's remote test
-> server.
-> 
-> In any case, that's why I haven't been interesting in working with
-> your test infrastructure; I have my own, and in my opinion, my
-> approach is the better one to make available to the community, and so
-> when I have time to improve it, I'd much rather work on
-> {kvm,gce,android}-xfstests.
-
-Well, my setup also isn't tied to xfstests, and it's fairly trivial to
-wrap all of our other (mm, block) tests.
-
-But like I said before, I don't particularly care which one wins, as
-long as we're pushing forward with something.
