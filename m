@@ -1,36 +1,36 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEAE1149C4F
-	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Oct 2024 23:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3317D1E493C
+	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Oct 2024 23:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728518035; cv=none; b=bTKvcG4j5bCyOS1a+14RNm/XlVLfUq55X3iyRF+YHg2sTA8HWzxCeWoWQvkC6FZgC+Lut4TKLptcHlq2JE98cBZnY0UAprLOfb62iQ3SO+Xi79KVQYDNilQcSIPST+Jghou55vNKkEsCfz0MzEXTXA9DO/guVd2ohb74kNXp1SU=
+	t=1728518083; cv=none; b=cC6HS7uVcd/nAU+kSYoKWtyoIS/vSenoTrTsWoB+ZjszeEY/65m2rNvxdGtmMJn7/r8JBQpkr8Aqj/r1dLT5JXRbRNtDhY6ZU3pc5SwHhN5yOxMNUGTLb1/beQkz0zl0tx04LB4ddWAKg0PdcsvUGn6ftYeyV7ujf3hz/G+TsYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728518035; c=relaxed/simple;
-	bh=ArLhJePNKvcN+XzY5ILFyLfJ3MW5yzFo3O7Jn/aRWwM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ESVt25nK+N3yUM5Bw6s+9l57/aa/WpK4k6K84Uxi4GMt4mhAXxAJIrnN/WPw+exLzrcrqB2v4vJKCC5e2v6o3pcOiJ6xhHHNXYoweWubRVrLvfhP/PBOiKXadEzQzDnvklcmdM8XpT2tXHmWAgtuUTEkf7JLQJg4YlCz4hwTV2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OLyFx8TT; arc=none smtp.client-ip=95.215.58.172
+	s=arc-20240116; t=1728518083; c=relaxed/simple;
+	bh=l2Xvu3/JDLOv91zB4zXmu3zjwUdRRPdMw7zdrVNV90o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IEOAiUYrjPU7xdvK24QIl8TLDEBARhFK+tGlWlPna0f0L4ucyN7kjndqMlzvEuVOMZfHkrcJ/XWWHqv6HgxGZKxmLzuVLfv1JOEwMJYYM+D8oL5uDf1wWKE0IRQOE283h7K7sm3s7YDRYjNPQUXKxkO0B1A85zODkN2V1TEl9ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Hiku7mUn; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OLyFx8TT"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Hiku7mUn"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728518031;
+	t=1728518078;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=uAXBiJCx05V2cSkkgiW+msDSz4SC+RVhWS9+DTyhrAs=;
-	b=OLyFx8TTOrpFv7mFQJ0DSLdZZNI+pPisnxWMOi9891lylFAw9KR/UFaZUu5irUFmXQkzdl
-	Seq1NpuJxsSginydT0sjBooKhVRPwYrEfq7VXdtolA579sv4z5x0MRDD0f/J/nTPNgZtFD
-	Od7nBGpDD3R9Q+fWwFtRdlPEOBU/BcE=
+	bh=3fHqoe2Qa6hIj43D6ndPVcxxc8TymzqkxZhnaV6kTlc=;
+	b=Hiku7mUnZZko5Lu8XQmIFKdY8s3j1NAuMBDlHxbowKds79v3SoaIPMtH8K468tBcvq8UpZ
+	Vk31DhTTAu05Ki7DYfJGS9doFaAraJIFlCY4v3x7i+otNVIS1jiuyQpioiEMha/TbHalnv
+	LCrjKDFy7x8UHoSOjc6232ffz6KlKeM=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] bcachefs: bch2_inode_or_descendents_is_open()
-Date: Wed,  9 Oct 2024 19:53:42 -0400
-Message-ID: <20241009235342.2249766-1-kent.overstreet@linux.dev>
+Subject: [PATCH] bcachefs: Disk accounting device validation fixes
+Date: Wed,  9 Oct 2024 19:54:15 -0400
+Message-ID: <20241009235415.2249794-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,240 +40,260 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-fsck can now correctly check if inodes in interior snapshot nodes are
-open/in use.
+- Fix failure to validate that accounting replicas entries point to
+  valid devices: this wasn't a real bug since they'd be cleaned up by
+  GC, but is still something we should know about
 
-- Tweak the vfs inode rhashtable so that the subvolume ID isn't hashed,
-  meaning inums in different subvolumes will hash to the same slot. Note
-  that this is a hack, and will cause problems if anyone ever has the
-  same file in many different snapshots open all at the same time.
+- Fix failure to validate that dev_data_type entries point to valid
+  devices: this does fix a real bug, since bch2_accounting_read() would
+  then try to copy the counters to that device and pop an inconsistent
+  error when the device didn't exist
 
-- Then check if any of those subvolumes is a descendent of the snapshot
-  ID being checked
+- Remove accounting entries that are zeroed or invalid: if we're not
+  validating them we need to get rid of them: they might not exist in
+  the superblock, so we need the to trigger the superblock mark path
+  when they're readded.
+
+  This fixes the replication.ktest rereplicate test, which was failing
+  with "superblock not marked for replicas..."
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/fs.c    | 106 +++++++++++++++++++++++++++++++++++++-------
- fs/bcachefs/fs.h    |   6 +--
- fs/bcachefs/fsck.c  |   7 ++-
- fs/bcachefs/inode.c |   5 ++-
- 4 files changed, 103 insertions(+), 21 deletions(-)
+ fs/bcachefs/disk_accounting.c  | 149 +++++++++++++++++++++++++--------
+ fs/bcachefs/errcode.h          |   3 +-
+ fs/bcachefs/sb-errors_format.h |   3 +-
+ 3 files changed, 118 insertions(+), 37 deletions(-)
 
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 23cae92d313d..e9e32d21f82d 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -157,6 +157,20 @@ static bool subvol_inum_eq(subvol_inum a, subvol_inum b)
- 	return a.subvol == b.subvol && a.inum == b.inum;
+diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+index 9f3133e3e7e5..e309fb78529b 100644
+--- a/fs/bcachefs/disk_accounting.c
++++ b/fs/bcachefs/disk_accounting.c
+@@ -242,6 +242,14 @@ void bch2_accounting_swab(struct bkey_s k)
+ 		*p = swab64(*p);
  }
  
-+static u32 bch2_vfs_inode_hash_fn(const void *data, u32 len, u32 seed)
++static inline void __accounting_to_replicas(struct bch_replicas_entry_v1 *r,
++					    struct disk_accounting_pos acc)
 +{
-+	const subvol_inum *inum = data;
-+
-+	return jhash(&inum->inum, sizeof(inum->inum), seed);
++	unsafe_memcpy(r, &acc.replicas,
++		      replicas_entry_bytes(&acc.replicas),
++		      "variable length struct");
 +}
 +
-+static u32 bch2_vfs_inode_obj_hash_fn(const void *data, u32 len, u32 seed)
-+{
-+	const struct bch_inode_info *inode = data;
-+
-+	return bch2_vfs_inode_hash_fn(&inode->ei_inum, sizeof(inode->ei_inum), seed);
-+}
-+
- static int bch2_vfs_inode_cmp_fn(struct rhashtable_compare_arg *arg,
- 				 const void *obj)
+ static inline bool accounting_to_replicas(struct bch_replicas_entry_v1 *r, struct bpos p)
  {
-@@ -170,32 +184,93 @@ static const struct rhashtable_params bch2_vfs_inodes_params = {
- 	.head_offset		= offsetof(struct bch_inode_info, hash),
- 	.key_offset		= offsetof(struct bch_inode_info, ei_inum),
- 	.key_len		= sizeof(subvol_inum),
-+	.hashfn			= bch2_vfs_inode_hash_fn,
-+	.obj_hashfn		= bch2_vfs_inode_obj_hash_fn,
- 	.obj_cmpfn		= bch2_vfs_inode_cmp_fn,
- 	.automatic_shrinking	= true,
- };
+ 	struct disk_accounting_pos acc_k;
+@@ -249,9 +257,7 @@ static inline bool accounting_to_replicas(struct bch_replicas_entry_v1 *r, struc
  
--static struct bch_inode_info *__bch2_inode_hash_find(struct bch_fs *c, subvol_inum inum)
-+int bch2_inode_or_descendents_is_open(struct btree_trans *trans, struct bpos p)
- {
--	return rhashtable_lookup_fast(&c->vfs_inodes_table, &inum, bch2_vfs_inodes_params);
--}
-+	struct bch_fs *c = trans->c;
-+	struct rhashtable *ht = &c->vfs_inodes_table;
-+	subvol_inum inum = (subvol_inum) { .inum = p.offset };
-+	DARRAY(u32) subvols;
-+	int ret = 0;
- 
--bool bch2_inode_is_open(struct bch_fs *c, struct bpos p)
--{
- 	if (!test_bit(BCH_FS_started, &c->flags))
+ 	switch (acc_k.type) {
+ 	case BCH_DISK_ACCOUNTING_replicas:
+-		unsafe_memcpy(r, &acc_k.replicas,
+-			      replicas_entry_bytes(&acc_k.replicas),
+-			      "variable length struct");
++		__accounting_to_replicas(r, acc_k);
+ 		return true;
+ 	default:
  		return false;
- 
--	subvol_inum inum = {
--		.subvol = snapshot_t(c, p.snapshot)->subvol,
--		.inum	= p.offset,
--	};
-+	darray_init(&subvols);
-+restart_from_top:
-+
-+	/*
-+	 * Tweaked version of __rhashtable_lookup(); we need to get a list of
-+	 * subvolumes in which the given inode number is open.
-+	 *
-+	 * For this to work, we don't include the subvolume ID in the key that
-+	 * we hash - all inodes with the same inode number regardless of
-+	 * subvolume will hash to the same slot.
-+	 *
-+	 * This will be less than ideal if the same file is ever open
-+	 * simultaneously in many different snapshots:
-+	 */
-+	rcu_read_lock();
-+	struct rhash_lock_head __rcu *const *bkt;
-+	struct rhash_head *he;
-+	unsigned int hash;
-+	struct bucket_table *tbl = rht_dereference_rcu(ht->tbl, ht);
-+restart:
-+	hash = rht_key_hashfn(ht, tbl, &inum, bch2_vfs_inodes_params);
-+	bkt = rht_bucket(tbl, hash);
-+	do {
-+		struct bch_inode_info *inode;
-+
-+		rht_for_each_entry_rcu_from(inode, he, rht_ptr_rcu(bkt), tbl, hash, hash) {
-+			if (inode->ei_inum.inum == inum.inum) {
-+				ret = darray_push_gfp(&subvols, inode->ei_inum.subvol,
-+						      GFP_NOWAIT|__GFP_NOWARN);
-+				if (ret) {
-+					rcu_read_unlock();
-+					ret = darray_make_room(&subvols, 1);
-+					if (ret)
-+						goto err;
-+					subvols.nr = 0;
-+					goto restart_from_top;
-+				}
-+			}
-+		}
-+		/* An object might have been moved to a different hash chain,
-+		 * while we walk along it - better check and retry.
-+		 */
-+	} while (he != RHT_NULLS_MARKER(bkt));
-+
-+	/* Ensure we see any new tables. */
-+	smp_rmb();
-+
-+	tbl = rht_dereference_rcu(tbl->future_tbl, ht);
-+	if (unlikely(tbl))
-+		goto restart;
-+	rcu_read_unlock();
-+
-+	darray_for_each(subvols, i) {
-+		u32 snap;
-+		ret = bch2_subvolume_get_snapshot(trans, *i, &snap);
-+		if (ret)
-+			goto err;
- 
--	/* snapshot tree interior node, can't safely delete while online (yet) */
--	if (!inum.subvol) {
--		bch_warn_ratelimited(c, "%s(): snapshot %u has no subvol, unlinked but can't safely delete", __func__, p.snapshot);
--		return true;
-+		ret = bch2_snapshot_is_ancestor(c, snap, p.snapshot);
-+		if (ret)
-+			break;
- 	}
-+err:
-+	darray_exit(&subvols);
-+	return ret;
-+}
- 
--	return __bch2_inode_hash_find(c, inum) != NULL;
-+static struct bch_inode_info *__bch2_inode_hash_find(struct bch_fs *c, subvol_inum inum)
-+{
-+	return rhashtable_lookup_fast(&c->vfs_inodes_table, &inum, bch2_vfs_inodes_params);
+@@ -608,6 +614,81 @@ static int accounting_read_key(struct btree_trans *trans, struct bkey_s_c k)
+ 	return ret;
  }
  
- static void __wait_on_freeing_inode(struct bch_fs *c,
-@@ -271,7 +346,8 @@ static struct bch_inode_info *bch2_inode_hash_insert(struct bch_fs *c,
- 
- 	set_bit(EI_INODE_HASHED, &inode->ei_flags);
- retry:
--	if (unlikely(rhashtable_lookup_insert_fast(&c->vfs_inodes_table,
-+	if (unlikely(rhashtable_lookup_insert_key(&c->vfs_inodes_table,
-+					&inode->ei_inum,
- 					&inode->hash,
- 					bch2_vfs_inodes_params))) {
- 		old = bch2_inode_hash_find(c, trans, inode->ei_inum);
-diff --git a/fs/bcachefs/fs.h b/fs/bcachefs/fs.h
-index 40dbd5774d0b..59f9f7ae728d 100644
---- a/fs/bcachefs/fs.h
-+++ b/fs/bcachefs/fs.h
-@@ -146,6 +146,8 @@ struct bch_inode_info *
- __bch2_create(struct mnt_idmap *, struct bch_inode_info *,
- 	      struct dentry *, umode_t, dev_t, subvol_inum, unsigned);
- 
-+int bch2_inode_or_descendents_is_open(struct btree_trans *trans, struct bpos p);
++static int bch2_disk_accounting_validate_late(struct btree_trans *trans,
++					      struct disk_accounting_pos acc,
++					      u64 *v, unsigned nr)
++{
++	struct bch_fs *c = trans->c;
++	struct printbuf buf = PRINTBUF;
++	int ret = 0, invalid_dev = -1;
 +
- int bch2_fs_quota_transfer(struct bch_fs *,
- 			   struct bch_inode_info *,
- 			   struct bch_qid,
-@@ -179,8 +181,6 @@ void bch2_inode_update_after_write(struct btree_trans *,
- int __must_check bch2_write_inode(struct bch_fs *, struct bch_inode_info *,
- 				  inode_set_fn, void *, unsigned);
- 
--bool bch2_inode_is_open(struct bch_fs *c, struct bpos p);
--
- int bch2_setattr_nonsize(struct mnt_idmap *,
- 			 struct bch_inode_info *,
- 			 struct iattr *);
-@@ -198,7 +198,7 @@ int bch2_vfs_init(void);
- 
- #define bch2_inode_update_after_write(_trans, _inode, _inode_u, _fields)	({ do {} while (0); })
- 
--static inline bool bch2_inode_is_open(struct bch_fs *c, struct bpos p) { return false; }
-+static inline int bch2_inode_or_descendents_is_open(struct btree_trans *trans, struct bpos p) { return 0; }
- 
- static inline void bch2_evict_subvolume_inodes(struct bch_fs *c,
- 					       snapshot_id_list *s) {}
-diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index f00a36f62323..a1087fd292e4 100644
---- a/fs/bcachefs/fsck.c
-+++ b/fs/bcachefs/fsck.c
-@@ -1213,7 +1213,11 @@ static int check_inode(struct btree_trans *trans,
- 			if (ret)
- 				goto err;
- 		} else {
--			if (fsck_err_on(!bch2_inode_is_open(c, k.k->p),
-+			ret = bch2_inode_or_descendents_is_open(trans, k.k->p);
-+			if (ret < 0)
-+				goto err;
++	switch (acc.type) {
++	case BCH_DISK_ACCOUNTING_replicas: {
++		struct bch_replicas_padded r;
++		__accounting_to_replicas(&r.e, acc);
 +
-+			if (fsck_err_on(!ret,
- 					trans, inode_unlinked_and_not_open,
- 				      "inode %llu%u unlinked and not open",
- 				      u.bi_inum, u.bi_snapshot)) {
-@@ -1221,6 +1225,7 @@ static int check_inode(struct btree_trans *trans,
- 				bch_err_msg(c, ret, "in fsck deleting inode");
- 				goto err_noprint;
- 			}
++		for (unsigned i = 0; i < r.e.nr_devs; i++)
++			if (r.e.devs[i] != BCH_SB_MEMBER_INVALID &&
++			    !bch2_dev_exists(c, r.e.devs[i])) {
++				invalid_dev = r.e.devs[i];
++				goto invalid_device;
++			}
++
++		/*
++		 * All replicas entry checks except for invalid device are done
++		 * in bch2_accounting_validate
++		 */
++		BUG_ON(bch2_replicas_entry_validate(&r.e, c, &buf));
++
++		if (fsck_err_on(!bch2_replicas_marked_locked(c, &r.e),
++				trans, accounting_replicas_not_marked,
++				"accounting not marked in superblock replicas\n  %s",
++				(printbuf_reset(&buf),
++				 bch2_accounting_key_to_text(&buf, &acc),
++				 buf.buf))) {
++			/*
++			 * We're not RW yet and still single threaded, dropping
++			 * and retaking lock is ok:
++			 */
++			percpu_up_write(&c->mark_lock);
++			ret = bch2_mark_replicas(c, &r.e);
++			if (ret)
++				goto fsck_err;
++			percpu_down_write(&c->mark_lock);
++		}
++		break;
++	}
++
++	case BCH_DISK_ACCOUNTING_dev_data_type:
++		if (!bch2_dev_exists(c, acc.dev_data_type.dev)) {
++			invalid_dev = acc.dev_data_type.dev;
++			goto invalid_device;
++		}
++		break;
++	}
++
++fsck_err:
++	printbuf_exit(&buf);
++	return ret;
++invalid_device:
++	if (fsck_err(trans, accounting_to_invalid_device,
++		     "accounting entry points to invalid device %i\n  %s",
++		     invalid_dev,
++		     (printbuf_reset(&buf),
++		      bch2_accounting_key_to_text(&buf, &acc),
++		      buf.buf))) {
++		for (unsigned i = 0; i < nr; i++)
++			v[i] = -v[i];
++
++		ret = commit_do(trans, NULL, NULL, 0,
++				bch2_disk_accounting_mod(trans, &acc, v, nr, false)) ?:
++			-BCH_ERR_remove_disk_accounting_entry;
++	} else {
++		ret = -BCH_ERR_remove_disk_accounting_entry;
++	}
++	goto fsck_err;
++}
++
+ /*
+  * At startup time, initialize the in memory accounting from the btree (and
+  * journal)
+@@ -666,44 +747,42 @@ int bch2_accounting_read(struct bch_fs *c)
+ 	}
+ 	keys->gap = keys->nr = dst - keys->data;
+ 
+-	percpu_down_read(&c->mark_lock);
+-	for (unsigned i = 0; i < acc->k.nr; i++) {
+-		u64 v[BCH_ACCOUNTING_MAX_COUNTERS];
+-		bch2_accounting_mem_read_counters(acc, i, v, ARRAY_SIZE(v), false);
++	percpu_down_write(&c->mark_lock);
++	unsigned i = 0;
++	while (i < acc->k.nr) {
++		unsigned idx = inorder_to_eytzinger0(i, acc->k.nr);
+ 
+-		if (bch2_is_zero(v, sizeof(v[0]) * acc->k.data[i].nr_counters))
+-			continue;
++		struct disk_accounting_pos acc_k;
++		bpos_to_disk_accounting_pos(&acc_k, acc->k.data[idx].pos);
+ 
+-		struct bch_replicas_padded r;
+-		if (!accounting_to_replicas(&r.e, acc->k.data[i].pos))
+-			continue;
++		u64 v[BCH_ACCOUNTING_MAX_COUNTERS];
++		bch2_accounting_mem_read_counters(acc, idx, v, ARRAY_SIZE(v), false);
+ 
+ 		/*
+-		 * If the replicas entry is invalid it'll get cleaned up by
+-		 * check_allocations:
++		 * If the entry counters are zeroed, it should be treated as
++		 * nonexistent - it might point to an invalid device.
++		 *
++		 * Remove it, so that if it's re-added it gets re-marked in the
++		 * superblock:
+ 		 */
+-		if (bch2_replicas_entry_validate(&r.e, c, &buf))
++		ret = bch2_is_zero(v, sizeof(v[0]) * acc->k.data[idx].nr_counters)
++			? -BCH_ERR_remove_disk_accounting_entry
++			: bch2_disk_accounting_validate_late(trans, acc_k,
++							v, acc->k.data[idx].nr_counters);
++
++		if (ret == -BCH_ERR_remove_disk_accounting_entry) {
++			free_percpu(acc->k.data[idx].v[0]);
++			free_percpu(acc->k.data[idx].v[1]);
++			darray_remove_item(&acc->k, &acc->k.data[idx]);
++			eytzinger0_sort(acc->k.data, acc->k.nr, sizeof(acc->k.data[0]),
++					accounting_pos_cmp, NULL);
 +			ret = 0;
+ 			continue;
+-
+-		struct disk_accounting_pos k;
+-		bpos_to_disk_accounting_pos(&k, acc->k.data[i].pos);
+-
+-		if (fsck_err_on(!bch2_replicas_marked_locked(c, &r.e),
+-				trans, accounting_replicas_not_marked,
+-				"accounting not marked in superblock replicas\n  %s",
+-				(printbuf_reset(&buf),
+-				 bch2_accounting_key_to_text(&buf, &k),
+-				 buf.buf))) {
+-			/*
+-			 * We're not RW yet and still single threaded, dropping
+-			 * and retaking lock is ok:
+-			 */
+-			percpu_up_read(&c->mark_lock);
+-			ret = bch2_mark_replicas(c, &r.e);
+-			if (ret)
+-				goto fsck_err;
+-			percpu_down_read(&c->mark_lock);
  		}
++
++		if (ret)
++			goto fsck_err;
++		i++;
  	}
  
-diff --git a/fs/bcachefs/inode.c b/fs/bcachefs/inode.c
-index 9d6040d4ba39..2c037e84fbae 100644
---- a/fs/bcachefs/inode.c
-+++ b/fs/bcachefs/inode.c
-@@ -1244,8 +1244,9 @@ static int delete_ancestor_snapshot_inodes(struct btree_trans *trans, struct bpo
- 	if (!unlinked)
- 		return 0;
+ 	preempt_disable();
+@@ -742,7 +821,7 @@ int bch2_accounting_read(struct bch_fs *c)
+ 	}
+ 	preempt_enable();
+ fsck_err:
+-	percpu_up_read(&c->mark_lock);
++	percpu_up_write(&c->mark_lock);
+ err:
+ 	printbuf_exit(&buf);
+ 	bch2_trans_put(trans);
+diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
+index 60b7875adada..649263516ab1 100644
+--- a/fs/bcachefs/errcode.h
++++ b/fs/bcachefs/errcode.h
+@@ -268,7 +268,8 @@
+ 	x(BCH_ERR_nopromote,		nopromote_no_writes)			\
+ 	x(BCH_ERR_nopromote,		nopromote_enomem)			\
+ 	x(0,				invalid_snapshot_node)			\
+-	x(0,				option_needs_open_fs)
++	x(0,				option_needs_open_fs)			\
++	x(0,				remove_disk_accounting_entry)
  
--	if (bch2_inode_is_open(trans->c, pos))
--		return 0;
-+	ret = lockrestart_do(trans, bch2_inode_or_descendents_is_open(trans, pos));
-+	if (ret)
-+		return ret < 0 ? ret : 0;
+ enum bch_errcode {
+ 	BCH_ERR_START		= 2048,
+diff --git a/fs/bcachefs/sb-errors_format.h b/fs/bcachefs/sb-errors_format.h
+index 4cdddf15d752..62ad25f91b78 100644
+--- a/fs/bcachefs/sb-errors_format.h
++++ b/fs/bcachefs/sb-errors_format.h
+@@ -291,6 +291,7 @@ enum bch_fsck_flags {
+ 	x(alloc_key_stripe_sectors_wrong,			271,	FSCK_AUTOFIX)	\
+ 	x(accounting_mismatch,					272,	FSCK_AUTOFIX)	\
+ 	x(accounting_replicas_not_marked,			273,	0)		\
++	x(accounting_to_invalid_device,				289,	0)		\
+ 	x(invalid_btree_id,					274,	0)		\
+ 	x(alloc_key_io_time_bad,				275,	0)		\
+ 	x(alloc_key_fragmentation_lru_wrong,			276,	FSCK_AUTOFIX)	\
+@@ -300,7 +301,7 @@ enum bch_fsck_flags {
+ 	x(accounting_key_replicas_devs_unsorted,		280,	FSCK_AUTOFIX)	\
+ 	x(accounting_key_version_0,				282,	FSCK_AUTOFIX)	\
+ 	x(logged_op_but_clean,					283,	FSCK_AUTOFIX)	\
+-	x(MAX,							289,	0)
++	x(MAX,							290,	0)
  
- 	ret = __bch2_inode_rm_snapshot(trans, pos.offset, pos.snapshot);
- 	if (ret)
+ enum bch_sb_error_id {
+ #define x(t, n, ...) BCH_FSCK_ERR_##t = n,
 -- 
 2.45.2
 
