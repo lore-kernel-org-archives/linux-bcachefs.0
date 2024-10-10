@@ -1,94 +1,127 @@
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay-b03.edpnet.be (relay-b03.edpnet.be [212.71.1.220])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BADE1F4FB9
-	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 18:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86FD19ABA3
+	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 18:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.71.1.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728585361; cv=none; b=PGGi7shMV0odkxcje0vvYyOdb9Mefq3frXg+2QDGBRii7lcm7/GSx8exyxLvLiuY/eltToY21XJjSfbinj/sqmibC5qFpLPZ6ZIkaTipzm/+c9ZaZXzUL5g5Zdk09ytevyGEz7ge4WqTaWyTD6YS+vSGPVuWTOkzM7qiFN5AVOQ=
+	t=1728586089; cv=none; b=X/uRYhEFI6rcpHjOTUPaOYzNdWxPezJvanh7be6YWs/YdvCHpTvHZ2s8/OlCPENnBWLAcrUFghMzsVoOvt7BLPy3Ob8wR5ksqD/p6S55ArRXj/HHN3QXMPg4HBd4KDvbF+TtYsmwqHci02bmWhVBSdGrLAHV5hEPeY8XTZN23vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728585361; c=relaxed/simple;
-	bh=Bh4cvu1KBjW7YtQl14oFIxFTSqYuZw+pwe4eb5TK9RQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=CulFBpxmv0qVMYxwTVzbLTJPNTJMAs1q8lW6Cddhz+gVD2NMuuNIQwv1d0eZrSbUhqune30aI2/pa/RQbxw8Pn/Jx+pyhxh/Z9IFG/sLwfV+NRmD5vFmsPKulrQ+aCeMeGME2BZ21GEnUT6ttoXVpSLBDcINtplJXTMnDAIYXm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AP70HdO2; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AP70HdO2"
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43118c9a955so7738515e9.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 11:35:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1728585358; x=1729190158; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YA/CbfE7oxW6xiw64WZhXy0TMYqF8Jc951OtJehnsTQ=;
-        b=AP70HdO2WgYs4mtiY47qMoh4ExyATqxZtJ1xM7PHWMIc6ej/IQWK5+rLFooYxYJG4U
-         qx1/zGiZIF51nSNfWlHA3xqBhyF09ps4jnT3ebNgcOMy8fRz96s+tfGhfZN61IhxLszc
-         MowzFggilWe+kKnBmm5RnArwc8dvUinyM0/JvKAXjL2LyL21NebDf3+t5kXjYWnUWzv0
-         MtIYbiNERdGeV7VfUaef3Ug7mK6H2CE35M427o8RlfJj/SQKhANuWi6BQAkZcwtiJ23/
-         C71nsXmjrt8uHY8HK6GBXwyu3reacq13t6i6hXYqFI2uiwUiL4M3UUx3SudJwew2xwDQ
-         ilTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728585358; x=1729190158;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YA/CbfE7oxW6xiw64WZhXy0TMYqF8Jc951OtJehnsTQ=;
-        b=BmcHIIMTbDpSC7usf3heiUepOCs4MsN/e9mjhrtii5AcPz7Fao89cFZM+keof9lJg9
-         faoBqIQIz6Bq/ktmj6L4UP5Zru763DBPwuUHarQDQOZRgU/UFXlGZpzeDZ90/XT4Q2F/
-         amKq+8RnoQ3RdACEZUxme+U3cTWSfziV32L/8p99YjFF0VDcklbgVajGybMvBx5cZihB
-         nvm2E92P9KQv/6D5ROds8pD3ONWQNFZsr7uHTFBIgVzH6tRRI9+ZASg2oXZbZXeoolXQ
-         lSS7i/fG2WOF8CQ/9ev6JDgZH0qaGAr8ymLIrCsfySkKE91FbAIbUg0Bz9DGG+PFfCci
-         Q0CA==
-X-Gm-Message-State: AOJu0YwSkFuId9rO1IH8UqNU9I7KEBJy0WaOopMp8mxcQ9FSayekJFV3
-	06ERrlrJmDJzgUxJRpeT5yOfH0yeVVeasEAii6f2SJzWQobYX49BemfBFag5cRSWMsCHleARrXw
-	B
-X-Google-Smtp-Source: AGHT+IFG8EfIChDBnUNVC980rwXGS/R5Il/K4CbHJ0vE0tN5ohD5eVdklojXnnH8sToLawmLAcUlog==
-X-Received: by 2002:a05:600c:511b:b0:42f:8515:e47d with SMTP id 5b1f17b1804b1-4311ce5dae9mr3567145e9.11.1728585357623;
-        Thu, 10 Oct 2024 11:35:57 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431183567c8sm22744465e9.38.2024.10.10.11.35.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2024 11:35:57 -0700 (PDT)
-Date: Thu, 10 Oct 2024 21:35:53 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH next] bcachefs: Fix bitwise math on 32 bit systems
-Message-ID: <78e06425-2c26-4977-97eb-577ce8268d2a@stanley.mountain>
+	s=arc-20240116; t=1728586089; c=relaxed/simple;
+	bh=L2H/A5g+ca8SZB7UWz2ZJ0fj9FZcHcMtHWhEFLRMPnk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=agCS+g67yID/J8NpnExMECbfX/QwgDrke8NNmaQh5DaxEBpPkJeVc/9uuaoR9DEj+li8cfOTR7W/Ltkids8+ROX95lcDVI/gPDimwSb53s5bXAKPZf05vVvmEp0g+R9YX/54rrbDCYUkzNygytVPvDLSLfMQi7eNnNgwBoIufoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kabelmail.de; spf=fail smtp.mailfrom=kabelmail.de; arc=none smtp.client-ip=212.71.1.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kabelmail.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kabelmail.de
+X-ASG-Debug-ID: 1728585259-24639c1dac1642160001-qsCQDO
+Received: from [192.168.177.53] (94.105.112.108.dyn.edpnet.net [94.105.112.108]) by relay-b03.edpnet.be with ESMTP id RpMAc61jCaSgro3y; Thu, 10 Oct 2024 20:34:19 +0200 (CEST)
+X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
+X-Barracuda-Effective-Source-IP: 94.105.112.108.dyn.edpnet.net[94.105.112.108]
+X-Barracuda-Apparent-Source-IP: 94.105.112.108
+Message-ID: <5ce26939-a6d3-469b-8bc8-f622cd270315@kabelmail.de>
+Date: Thu, 10 Oct 2024 20:33:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH resend v2] bcachefs: reject unknown mount options
+To: David Disseldorp <ddiss@suse.de>, linux-bcachefs@vger.kernel.org
+X-ASG-Orig-Subj: Re: [PATCH resend v2] bcachefs: reject unknown mount options
+Cc: Martin Doucha <martin.doucha@suse.com>, Hongbo Li
+ <lihongbo22@huawei.com>, Kent Overstreet <kent.overstreet@linux.dev>
+References: <20240917013957.13353-1-ddiss@suse.de>
+Content-Language: nl
+From: Janpieter Sollie <janpieter.sollie@kabelmail.de>
+Autocrypt: addr=janpieter.sollie@kabelmail.de; keydata=
+ xsBNBFhRXM0BCADnifwYnfbhQtJso1eeT+fjEDJh8OY5rwfvAbOhHyy003MJ82svXPmM/hUS
+ C6hZjkE4kR7k2O2r+Ev6abRSlM6s6rJ/ZftmwOA7E8vdSkrFDNqRYL7P18+Iq/jM/t/6lsZv
+ O+YcjF/gGmzfOCZ5AByQyLGmh5ZI3vpqJarXskrfi1QiZFeCG4H5WpMInml6NzeTpwFMdJaM
+ JCr3BwnCyR+zeev7ROEWyVRcsj8ufW8ZLOrML9Q5QVjH7tkwzoedOc5UMv80uTaA5YaC1GcZ
+ 57dAna6S1KWy5zx8VaHwXBwbXhDHWvZP318um2BxeTZbl21yXJrUMbYpaoLJzA5ZaoCFABEB
+ AAHNMEphbnBpZXRlciBTb2xsaWUgPGphbnBpZXRlci5zb2xsaWVAa2FiZWxtYWlsLmRlPsLA
+ pwQTAQgAUQIbIwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAUJD6DYHRYhBGBBYpsrUd7LDG6r
+ UrFUjEUPH5JbBQJlAXcQEhhoa3A6Ly9wZ3AubWl0LmVkdQAKCRCxVIxFDx+SW3oXB/9A4g3v
+ /Mq6uZlBDWBrQ98AFhlkRLwI2mDiNOlP4zJlejqt8S2GvCvhiQAtXV0BSl42sHo9Uxda8sZM
+ d1eOU+oPexaK9iryCEYvOj+IK+n/rR8kyH5P7lzdpHIKYGtZ2y2NtpEuIA9A28MvliGjutJ2
+ QIAdUaO1GdFVHXvHConuXvBfpmJsBhJeVfoTdzrTlloFTloCC+00a6Q6ndGnwzQQVgfgzRtq
+ +x3O8smVnzsHb7Wu25+sbJl55GONAqyxuRmAF8IB4HAQ9gjgiCxTfjhCt9rhXQgPlT8EAuKT
+ 9MohNtqpXXZFpuQUYRMEqpM7mPfbm4L8fXiPv/szVM0ZIwVCzsBNBFhRXM0BCAD2fJkCQE6L
+ UjUpVltzXjxeRTNQK/W3PC1i3EsjHFSJT04MY12zmXWI0ItNqnRaB2c/X/rtWTuYazSsgQTQ
+ P/qZSts2890GD51y3BAw443rN0plVp4dX6JG/p3V0ha7rXwFjn4Hzgt4IDJSVuNa9nGEceId
+ qTnvZO+F4ukgzV2YVAUWcuDowCBDfRm3yU0GU3rxOHfBTpYwljqFWbGqijsTjF1/Le4ULF+q
+ HUQqwTDY1ijpxRCIeu46WoQEf5Dv0aTIwOJgPK8229uRDHlHhMPvXpqtBYKwQ/rOCz7EfITD
+ lPsHhjnqR+mjeLy7tK/qIyaE7A8HTdoxYoYhAR+AqylRABEBAAHCwHwEGAEIACYCGwwWIQRg
+ QWKbK1Heywxuq1KxVIxFDx+SWwUCXowzcAUJD6DYIwAKCRCxVIxFDx+SW1J3CADK79k3T1La
+ jEHZGkxWPoAuixN8F6pf7hnofoR2KFkMbQk+9WYfiGsOcZwJjiUyQgiaSZcdz6QGkGPDjfLL
+ iNDKvGGGAgRT99ruA4uyfAXjObbrMp8VGr0fI6eRF3nWuh5Rk4W2DY/wjaygA0FJ/vpw8XFs
+ 9NycYvk7yPcXW29N6/56TIc1I7SxmsEzwriGxvuRNZBzuNsEvdgzkF0kTL4nMhH/olPFW1+f
+ 2Y0kA3aAa1ZyjzHsgDUBSKyv35MJRxPLkLK4I/5DisNfjfygE/gvSh+Iss+ZqtZhYzR9oA6k
+ mg7rIQaHeVNOBwFsmkHmXDmH5beCJsgB6hwxiQAUaOaO
+In-Reply-To: <20240917013957.13353-1-ddiss@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Barracuda-Connect: 94.105.112.108.dyn.edpnet.net[94.105.112.108]
+X-Barracuda-Start-Time: 1728585259
+X-Barracuda-URL: https://212.71.1.220:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at edpnet.be
+X-Barracuda-Scan-Msg-Size: 1953
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Spam-Score: 0.00
+X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=MAILTO_TO_SPAM_ADDR
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.131632
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
+	0.00 MAILTO_TO_SPAM_ADDR    Includes a link to a likely spammer email
 
-The ~0UL needs to be ~0ULL for this mask and shift to work correctly on
-32 bit systems.
+Op 17/09/2024 om 03:39 schreef David Disseldorp:
+> This is effectively a revert of commit 03ef80b469d5 ("bcachefs: Ignore
+> unknown mount options"), rebased atop commit 929d954330142 ("bcachefs:
+> use new mount API").
+>
+> Contrary to the 03ef80b469d5 commit message, unknown mount options do
+> result in failure on other filesystems such as xfs, btrfs, ext4, etc.
+>
+> Ignoring unknown options may result in unexpected behaviour: e.g. if
+> an application requires future-workload-specific-mount-option to work
+> and is run on a system without future-workload-specific-mount-option
+> kernel support, then it may fail without indication of the missing
+> kernel functionality.
+>
+> This reversion may cause failures for existing users reliant on the
+> ignore-unknown behaviour, but it should be bearable given bcachefs is
+> still flagged experimental.
+>
+> Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
+> Reported-by: Martin Doucha <martin.doucha@suse.com>
+> Closes: https://bugzilla.opensuse.org/show_bug.cgi?id=1230065
+> Signed-off-by: David Disseldorp <ddiss@suse.de>
+> Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
+> ---
+>   fs/bcachefs/opts.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+> index e10fc1da71b19..bc5c180878212 100644
+> --- a/fs/bcachefs/opts.c
+> +++ b/fs/bcachefs/opts.c
+> @@ -482,9 +482,8 @@ int bch2_parse_one_mount_opt(struct bch_fs *c, struct bch_opts *opts,
+>   		val = "0";
+>   	}
+>   
+> -	/* Unknown options are ignored: */
+>   	if (id < 0)
+> -		return 0;
+> +		goto bad_opt;
+>   
+>   	if (!(bch2_opt_table[id].flags & OPT_MOUNT))
+>   		goto bad_opt;
+Testing this patch caused my bcachefs mount command to fail:
+the "user" and "nofail" attributes in /etc/fstab are not recognised.
+I'd love the "nofail" attribute on a "experimental" filesystem. IMO it is even a soft requirement
 
-Fixes: bad8626ae088 ("bcachefs: CONFIG_BCACHEFS_INJECT_TRANSACTION_RESTARTS")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- fs/bcachefs/btree_iter.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/bcachefs/btree_iter.h b/fs/bcachefs/btree_iter.h
-index 6c9bc09c0597..f5f19340654a 100644
---- a/fs/bcachefs/btree_iter.h
-+++ b/fs/bcachefs/btree_iter.h
-@@ -362,7 +362,7 @@ static int btree_trans_restart(struct btree_trans *trans, int err)
- static inline int trans_maybe_inject_restart(struct btree_trans *trans, unsigned long ip)
- {
- #ifdef CONFIG_BCACHEFS_INJECT_TRANSACTION_RESTARTS
--	if (!(ktime_get_ns() & ~(~0UL << min(63, (10 + trans->restart_count_this_trans))))) {
-+	if (!(ktime_get_ns() & ~(~0ULL << min(63, (10 + trans->restart_count_this_trans))))) {
- 		trace_and_count(trans->c, trans_restart_injected, trans, ip);
- 		return btree_trans_restart_ip(trans,
- 					BCH_ERR_transaction_restart_fault_inject, ip);
--- 
-2.45.2
-
+Janpieter Sollie
