@@ -1,137 +1,94 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0318E1953AD
-	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 16:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BADE1F4FB9
+	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 18:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728578400; cv=none; b=Fytx7JgcefHsNarINVJ96Za+8bbr36x9kWVfvFiLmf1iEtCBlo0mR1z1G/PelAEhliTefVTADh7w+t2Sw98PDyCjs/wi894d3g8cyrwgOzk15MKUXq1ux6t3e0rGyU0p/1GicTCmUQIcsdthyXFGToI9LbXZJlhHCPdF3nQhYPM=
+	t=1728585361; cv=none; b=PGGi7shMV0odkxcje0vvYyOdb9Mefq3frXg+2QDGBRii7lcm7/GSx8exyxLvLiuY/eltToY21XJjSfbinj/sqmibC5qFpLPZ6ZIkaTipzm/+c9ZaZXzUL5g5Zdk09ytevyGEz7ge4WqTaWyTD6YS+vSGPVuWTOkzM7qiFN5AVOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728578400; c=relaxed/simple;
-	bh=z9/Z9eosGs73eqPcI3xxbL+eKrchlqfQ2+7PYsST1Xw=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=iVLDpCITXzX8g3r1k+mW6ZoOJBf/7cDJi4z8Ihlb91DmJohEv1+x6GM6JLRj43kBRjcLpkSDgyHy59+CIWfNC0b8pXcq3RJetimC+lmuDSERzmpk6FcBxw4+PfCCn3wgsNQWN7BAOb7IO41xoqvk/qcXoedG/08tmOMQiQcvIx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HkXntOdQ; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1728585361; c=relaxed/simple;
+	bh=Bh4cvu1KBjW7YtQl14oFIxFTSqYuZw+pwe4eb5TK9RQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=CulFBpxmv0qVMYxwTVzbLTJPNTJMAs1q8lW6Cddhz+gVD2NMuuNIQwv1d0eZrSbUhqune30aI2/pa/RQbxw8Pn/Jx+pyhxh/Z9IFG/sLwfV+NRmD5vFmsPKulrQ+aCeMeGME2BZ21GEnUT6ttoXVpSLBDcINtplJXTMnDAIYXm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AP70HdO2; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HkXntOdQ"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20c7edf2872so9794105ad.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 09:39:58 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AP70HdO2"
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43118c9a955so7738515e9.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 11:35:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728578398; x=1729183198; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iCZLkBjZ3d134lTld0cXB5MqLxpPLshQ3ANehJL/xl8=;
-        b=HkXntOdQvyqUIRNMZWhWsyM2Bke6TnrguUpzn+0YO0kgDoy8smIdmFpMPyPvxIvaXe
-         73D+itOyZZwK5NmzkSgbLPmmgkW005TRQYRPOfGaarb0gHluOXmb8UqNZEnWMBfnbJNx
-         6IHMOXvGCcEFvHwLjRyTjOoXc97ASRHYKkMwwN7PPgO3an+gspPn7BjttftHmApQaWmD
-         6K5H25Gt3MFKeltxtzbyaeabftqXuQdv16hgVPizNtFREWFRHIUpWQ1VXKKgVkTU9J2I
-         7Tw5aPtfIu+go1gV2z4Mjro0l0/N2JhJeNSgSdmBJwcvhKYVYUi3r0sqXFpIB8shzQfa
-         kPbQ==
+        d=linaro.org; s=google; t=1728585358; x=1729190158; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YA/CbfE7oxW6xiw64WZhXy0TMYqF8Jc951OtJehnsTQ=;
+        b=AP70HdO2WgYs4mtiY47qMoh4ExyATqxZtJ1xM7PHWMIc6ej/IQWK5+rLFooYxYJG4U
+         qx1/zGiZIF51nSNfWlHA3xqBhyF09ps4jnT3ebNgcOMy8fRz96s+tfGhfZN61IhxLszc
+         MowzFggilWe+kKnBmm5RnArwc8dvUinyM0/JvKAXjL2LyL21NebDf3+t5kXjYWnUWzv0
+         MtIYbiNERdGeV7VfUaef3Ug7mK6H2CE35M427o8RlfJj/SQKhANuWi6BQAkZcwtiJ23/
+         C71nsXmjrt8uHY8HK6GBXwyu3reacq13t6i6hXYqFI2uiwUiL4M3UUx3SudJwew2xwDQ
+         ilTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728578398; x=1729183198;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iCZLkBjZ3d134lTld0cXB5MqLxpPLshQ3ANehJL/xl8=;
-        b=OB553pFwXqfMbfPsuLNfZfzgK70Bm2EveKuBnRWomks4fOZq18y9HKPqOEeoQ5PBQT
-         B6h+6xD0IYkmbL/D0b620fnXBgRRMAU7OJxW+29/8w4Ig0ofW0kxAfeYEUYjfDEo3hHa
-         EGXz6RHTI0VVLERVr0t7/kWM9/qhc9r1gysIchziSw1Vnkd9kpOnE725R+KdHMr+kxAP
-         voLtiJI6vdazarm/XwqvD/wbeL/zZ69dBb7COu7a3owSmjg54o/CvjMdSajqPOlLwrnM
-         93TJLCnNBNlo6q1BCh/Wd7jazcQJcw0fD39VJ1ulol8BqLxNaLfgoq3PWKf5ZObGzRPH
-         cJZQ==
-X-Gm-Message-State: AOJu0Yz6/LUlz3xuqFo3gaQBw4TP4G/JkGNDG4qgzhaagAZwrekH4lXj
-	OY5/l9sLrSPUwHU6+CiqYbii6ge9SMMb2fR0kSKUkoUAAo0V1tU54xOCWyXq
-X-Google-Smtp-Source: AGHT+IGeSTQYVZqR3aMPE6pliethT4IJiA6hwC5TYZdHHeXkgqf/adRfnwhquCbJi6WpoATmwa27dQ==
-X-Received: by 2002:a17:903:1c9:b0:20b:9df1:54d5 with SMTP id d9443c01a7336-20c80531f49mr52802985ad.29.1728578398167;
-        Thu, 10 Oct 2024 09:39:58 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8bc00dcesm11260645ad.64.2024.10.10.09.39.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Oct 2024 09:39:57 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+        d=1e100.net; s=20230601; t=1728585358; x=1729190158;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YA/CbfE7oxW6xiw64WZhXy0TMYqF8Jc951OtJehnsTQ=;
+        b=BmcHIIMTbDpSC7usf3heiUepOCs4MsN/e9mjhrtii5AcPz7Fao89cFZM+keof9lJg9
+         faoBqIQIz6Bq/ktmj6L4UP5Zru763DBPwuUHarQDQOZRgU/UFXlGZpzeDZ90/XT4Q2F/
+         amKq+8RnoQ3RdACEZUxme+U3cTWSfziV32L/8p99YjFF0VDcklbgVajGybMvBx5cZihB
+         nvm2E92P9KQv/6D5ROds8pD3ONWQNFZsr7uHTFBIgVzH6tRRI9+ZASg2oXZbZXeoolXQ
+         lSS7i/fG2WOF8CQ/9ev6JDgZH0qaGAr8ymLIrCsfySkKE91FbAIbUg0Bz9DGG+PFfCci
+         Q0CA==
+X-Gm-Message-State: AOJu0YwSkFuId9rO1IH8UqNU9I7KEBJy0WaOopMp8mxcQ9FSayekJFV3
+	06ERrlrJmDJzgUxJRpeT5yOfH0yeVVeasEAii6f2SJzWQobYX49BemfBFag5cRSWMsCHleARrXw
+	B
+X-Google-Smtp-Source: AGHT+IFG8EfIChDBnUNVC980rwXGS/R5Il/K4CbHJ0vE0tN5ohD5eVdklojXnnH8sToLawmLAcUlog==
+X-Received: by 2002:a05:600c:511b:b0:42f:8515:e47d with SMTP id 5b1f17b1804b1-4311ce5dae9mr3567145e9.11.1728585357623;
+        Thu, 10 Oct 2024 11:35:57 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431183567c8sm22744465e9.38.2024.10.10.11.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Oct 2024 11:35:57 -0700 (PDT)
+Date: Thu, 10 Oct 2024 21:35:53 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH next] bcachefs: Fix bitwise math on 32 bit systems
+Message-ID: <78e06425-2c26-4977-97eb-577ce8268d2a@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
-Subject: Re: [PATCH] bcachefs: Do not allow no fail lock request to fail
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <fdu4feezls66tsqjf5hgegnthczntpj3jfl2mo62rcyvekk56u@w32hjbtyvqax>
-Date: Fri, 11 Oct 2024 00:39:44 +0800
-Cc: linux-bcachefs@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B0F9A8E3-F19D-4660-881F-14C40D740910@gmail.com>
-References: <20241010132150.1814411-1-mmpgouride@gmail.com>
- <fdu4feezls66tsqjf5hgegnthczntpj3jfl2mo62rcyvekk56u@w32hjbtyvqax>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3776.700.51)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-On Oct 11, 2024, at 00:20, Kent Overstreet <kent.overstreet@linux.dev> =
-wrote:
->=20
-> On Thu, Oct 10, 2024 at 09:21:50PM GMT, Alan Huang wrote:
->> If the transaction chose itself as a victim before and restarted, it
->> might request a no fail lock request this time. But it might be added =
-to
->> others' lock graph and be chose as the victim again, it's no longer =
-safe
->> without additional check. We can also convert the cycle detector to =
-be
->> fully RCU-based to solve that unsoundness, but the latency added to =
-trans_put
->> and additional memory required may not worth it.
->=20
-> This is going to need ascii art diagrams...
+The ~0UL needs to be ~0ULL for this mask and shift to work correctly on
+32 bit systems.
 
-Assume (txn represents transaction):
-=09
-	txn1 owns lock1 and requests lock2
-	txn2 owns lock2 and requests lock1
+Fixes: bad8626ae088 ("bcachefs: CONFIG_BCACHEFS_INJECT_TRANSACTION_RESTARTS")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ fs/bcachefs/btree_iter.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-txn2 runs cycle detector first, so it has added itself to lock1=E2=80=99s =
-wait list,
-txn1 now requests lock2, since txn2 haven=E2=80=99t lock lock2=E2=80=99s =
-waitlist lock, so txn1 added itself to lock2=E2=80=99s waitlist.
-txn1 now runs cycle detector and detects it will have a cycle and choose =
-txn2 as the victim.
-txn2 now also detects a cycle, and choose itself as the victim, so it =
-restarts.
-txn2 now requests a no fail lock and runs cycle detector again and sleep
-txn1 sets txn2=E2=80=99s lock_must_abort to true and wake up txn2.
-
-So txn2 is going to abort.
-
->=20
-> I would expect the lock waitlist locks and sequence numbers to protect
-> against this kind of race, do they not?
->=20
->>=20
->> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
->> ---
->> fs/bcachefs/btree_locking.c | 2 +-
->> 1 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->> diff --git a/fs/bcachefs/btree_locking.c =
-b/fs/bcachefs/btree_locking.c
->> index bf25fd0a1cca..fff176382e30 100644
->> --- a/fs/bcachefs/btree_locking.c
->> +++ b/fs/bcachefs/btree_locking.c
->> @@ -293,7 +293,7 @@ int bch2_check_for_deadlock(struct btree_trans =
-*trans, struct printbuf *cycle)
->>=20
->> g.nr =3D 0;
->>=20
->> - if (trans->lock_must_abort) {
->> + if (trans->lock_must_abort && !trans->lock_may_not_fail) {
->> if (cycle)
->> return -1;
->>=20
->> --=20
->> 2.45.2
->>=20
+diff --git a/fs/bcachefs/btree_iter.h b/fs/bcachefs/btree_iter.h
+index 6c9bc09c0597..f5f19340654a 100644
+--- a/fs/bcachefs/btree_iter.h
++++ b/fs/bcachefs/btree_iter.h
+@@ -362,7 +362,7 @@ static int btree_trans_restart(struct btree_trans *trans, int err)
+ static inline int trans_maybe_inject_restart(struct btree_trans *trans, unsigned long ip)
+ {
+ #ifdef CONFIG_BCACHEFS_INJECT_TRANSACTION_RESTARTS
+-	if (!(ktime_get_ns() & ~(~0UL << min(63, (10 + trans->restart_count_this_trans))))) {
++	if (!(ktime_get_ns() & ~(~0ULL << min(63, (10 + trans->restart_count_this_trans))))) {
+ 		trace_and_count(trans->c, trans_restart_injected, trans, ip);
+ 		return btree_trans_restart_ip(trans,
+ 					BCH_ERR_transaction_restart_fault_inject, ip);
+-- 
+2.45.2
 
