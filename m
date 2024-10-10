@@ -1,127 +1,55 @@
-Received: from relay-b03.edpnet.be (relay-b03.edpnet.be [212.71.1.220])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86FD19ABA3
-	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 18:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.71.1.220
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1FFE1E1A32
+	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 21:52:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728586089; cv=none; b=X/uRYhEFI6rcpHjOTUPaOYzNdWxPezJvanh7be6YWs/YdvCHpTvHZ2s8/OlCPENnBWLAcrUFghMzsVoOvt7BLPy3Ob8wR5ksqD/p6S55ArRXj/HHN3QXMPg4HBd4KDvbF+TtYsmwqHci02bmWhVBSdGrLAHV5hEPeY8XTZN23vE=
+	t=1728597145; cv=none; b=IP3FmiSz79xEU7f4gbOFtNkXgIcKdhPIdBMR89tNxh1UCV19HyTd5KDSvYV8uEJATjUYLmqwPzgDoOAB4FAtXTnJuHdB4Io46U36CodrZ9tioqUYuSEzpM5Yt1ebAC/1+lBIfvHBTuQgmxlbhD5lZ0GzG+GO+MePFnyNOP2fapU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728586089; c=relaxed/simple;
-	bh=L2H/A5g+ca8SZB7UWz2ZJ0fj9FZcHcMtHWhEFLRMPnk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=agCS+g67yID/J8NpnExMECbfX/QwgDrke8NNmaQh5DaxEBpPkJeVc/9uuaoR9DEj+li8cfOTR7W/Ltkids8+ROX95lcDVI/gPDimwSb53s5bXAKPZf05vVvmEp0g+R9YX/54rrbDCYUkzNygytVPvDLSLfMQi7eNnNgwBoIufoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kabelmail.de; spf=fail smtp.mailfrom=kabelmail.de; arc=none smtp.client-ip=212.71.1.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kabelmail.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kabelmail.de
-X-ASG-Debug-ID: 1728585259-24639c1dac1642160001-qsCQDO
-Received: from [192.168.177.53] (94.105.112.108.dyn.edpnet.net [94.105.112.108]) by relay-b03.edpnet.be with ESMTP id RpMAc61jCaSgro3y; Thu, 10 Oct 2024 20:34:19 +0200 (CEST)
-X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
-X-Barracuda-Effective-Source-IP: 94.105.112.108.dyn.edpnet.net[94.105.112.108]
-X-Barracuda-Apparent-Source-IP: 94.105.112.108
-Message-ID: <5ce26939-a6d3-469b-8bc8-f622cd270315@kabelmail.de>
-Date: Thu, 10 Oct 2024 20:33:12 +0200
+	s=arc-20240116; t=1728597145; c=relaxed/simple;
+	bh=WAu2X9b0jDIlw7lYMLRAf5KhZ1VHRSFcIumgJWzFBlk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vGc9LKcm4ZEwFplSEHRBf4MHA9HbCmMGZN0RvskA5Ge8pZbBDLMYxTHGetBJBSoYGARPxORb1+44GXFUTMcFs/KWP0GX2ZATsYtSlhwQr/7vHrvTSyIRpQzo125JjReUMu8LXrW3HispEDWTDU/4sCBZpgmxwYaiYWitpSwzmBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Yhs7w8LH; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Yhs7w8LH"
+Date: Thu, 10 Oct 2024 17:52:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728597141;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CfqRvVZ7yaWX6z/yUFY6whDPAJmAFk8EJGLq8dpIsG4=;
+	b=Yhs7w8LHaV0FMh8DpReGx9AO6f9vFweuZwSL271vuzWFXxcit+UbjByTA37i68GmvdaXjj
+	7vUAGFWrUHNhByeKUPLCfZ6Dqi7bME22e60nbRAu64178SPd88AJqYelWC8DbAwc5zvnwq
+	iWNHOSJfWchZK/78Jm1kSdmIdd84ZmU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH next] bcachefs: Fix bitwise math on 32 bit systems
+Message-ID: <wmdklwq2z6z2ssrwq3z4inxtgzvq3dwk2l3a4yxln3gillcfcq@eeitm7jievjw>
+References: <78e06425-2c26-4977-97eb-577ce8268d2a@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH resend v2] bcachefs: reject unknown mount options
-To: David Disseldorp <ddiss@suse.de>, linux-bcachefs@vger.kernel.org
-X-ASG-Orig-Subj: Re: [PATCH resend v2] bcachefs: reject unknown mount options
-Cc: Martin Doucha <martin.doucha@suse.com>, Hongbo Li
- <lihongbo22@huawei.com>, Kent Overstreet <kent.overstreet@linux.dev>
-References: <20240917013957.13353-1-ddiss@suse.de>
-Content-Language: nl
-From: Janpieter Sollie <janpieter.sollie@kabelmail.de>
-Autocrypt: addr=janpieter.sollie@kabelmail.de; keydata=
- xsBNBFhRXM0BCADnifwYnfbhQtJso1eeT+fjEDJh8OY5rwfvAbOhHyy003MJ82svXPmM/hUS
- C6hZjkE4kR7k2O2r+Ev6abRSlM6s6rJ/ZftmwOA7E8vdSkrFDNqRYL7P18+Iq/jM/t/6lsZv
- O+YcjF/gGmzfOCZ5AByQyLGmh5ZI3vpqJarXskrfi1QiZFeCG4H5WpMInml6NzeTpwFMdJaM
- JCr3BwnCyR+zeev7ROEWyVRcsj8ufW8ZLOrML9Q5QVjH7tkwzoedOc5UMv80uTaA5YaC1GcZ
- 57dAna6S1KWy5zx8VaHwXBwbXhDHWvZP318um2BxeTZbl21yXJrUMbYpaoLJzA5ZaoCFABEB
- AAHNMEphbnBpZXRlciBTb2xsaWUgPGphbnBpZXRlci5zb2xsaWVAa2FiZWxtYWlsLmRlPsLA
- pwQTAQgAUQIbIwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAUJD6DYHRYhBGBBYpsrUd7LDG6r
- UrFUjEUPH5JbBQJlAXcQEhhoa3A6Ly9wZ3AubWl0LmVkdQAKCRCxVIxFDx+SW3oXB/9A4g3v
- /Mq6uZlBDWBrQ98AFhlkRLwI2mDiNOlP4zJlejqt8S2GvCvhiQAtXV0BSl42sHo9Uxda8sZM
- d1eOU+oPexaK9iryCEYvOj+IK+n/rR8kyH5P7lzdpHIKYGtZ2y2NtpEuIA9A28MvliGjutJ2
- QIAdUaO1GdFVHXvHConuXvBfpmJsBhJeVfoTdzrTlloFTloCC+00a6Q6ndGnwzQQVgfgzRtq
- +x3O8smVnzsHb7Wu25+sbJl55GONAqyxuRmAF8IB4HAQ9gjgiCxTfjhCt9rhXQgPlT8EAuKT
- 9MohNtqpXXZFpuQUYRMEqpM7mPfbm4L8fXiPv/szVM0ZIwVCzsBNBFhRXM0BCAD2fJkCQE6L
- UjUpVltzXjxeRTNQK/W3PC1i3EsjHFSJT04MY12zmXWI0ItNqnRaB2c/X/rtWTuYazSsgQTQ
- P/qZSts2890GD51y3BAw443rN0plVp4dX6JG/p3V0ha7rXwFjn4Hzgt4IDJSVuNa9nGEceId
- qTnvZO+F4ukgzV2YVAUWcuDowCBDfRm3yU0GU3rxOHfBTpYwljqFWbGqijsTjF1/Le4ULF+q
- HUQqwTDY1ijpxRCIeu46WoQEf5Dv0aTIwOJgPK8229uRDHlHhMPvXpqtBYKwQ/rOCz7EfITD
- lPsHhjnqR+mjeLy7tK/qIyaE7A8HTdoxYoYhAR+AqylRABEBAAHCwHwEGAEIACYCGwwWIQRg
- QWKbK1Heywxuq1KxVIxFDx+SWwUCXowzcAUJD6DYIwAKCRCxVIxFDx+SW1J3CADK79k3T1La
- jEHZGkxWPoAuixN8F6pf7hnofoR2KFkMbQk+9WYfiGsOcZwJjiUyQgiaSZcdz6QGkGPDjfLL
- iNDKvGGGAgRT99ruA4uyfAXjObbrMp8VGr0fI6eRF3nWuh5Rk4W2DY/wjaygA0FJ/vpw8XFs
- 9NycYvk7yPcXW29N6/56TIc1I7SxmsEzwriGxvuRNZBzuNsEvdgzkF0kTL4nMhH/olPFW1+f
- 2Y0kA3aAa1ZyjzHsgDUBSKyv35MJRxPLkLK4I/5DisNfjfygE/gvSh+Iss+ZqtZhYzR9oA6k
- mg7rIQaHeVNOBwFsmkHmXDmH5beCJsgB6hwxiQAUaOaO
-In-Reply-To: <20240917013957.13353-1-ddiss@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Barracuda-Connect: 94.105.112.108.dyn.edpnet.net[94.105.112.108]
-X-Barracuda-Start-Time: 1728585259
-X-Barracuda-URL: https://212.71.1.220:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 1953
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=MAILTO_TO_SPAM_ADDR
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.131632
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
-	0.00 MAILTO_TO_SPAM_ADDR    Includes a link to a likely spammer email
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78e06425-2c26-4977-97eb-577ce8268d2a@stanley.mountain>
+X-Migadu-Flow: FLOW_OUT
 
-Op 17/09/2024 om 03:39 schreef David Disseldorp:
-> This is effectively a revert of commit 03ef80b469d5 ("bcachefs: Ignore
-> unknown mount options"), rebased atop commit 929d954330142 ("bcachefs:
-> use new mount API").
->
-> Contrary to the 03ef80b469d5 commit message, unknown mount options do
-> result in failure on other filesystems such as xfs, btrfs, ext4, etc.
->
-> Ignoring unknown options may result in unexpected behaviour: e.g. if
-> an application requires future-workload-specific-mount-option to work
-> and is run on a system without future-workload-specific-mount-option
-> kernel support, then it may fail without indication of the missing
-> kernel functionality.
->
-> This reversion may cause failures for existing users reliant on the
-> ignore-unknown behaviour, but it should be bearable given bcachefs is
-> still flagged experimental.
->
-> Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
-> Reported-by: Martin Doucha <martin.doucha@suse.com>
-> Closes: https://bugzilla.opensuse.org/show_bug.cgi?id=1230065
-> Signed-off-by: David Disseldorp <ddiss@suse.de>
-> Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
-> ---
->   fs/bcachefs/opts.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-> index e10fc1da71b19..bc5c180878212 100644
-> --- a/fs/bcachefs/opts.c
-> +++ b/fs/bcachefs/opts.c
-> @@ -482,9 +482,8 @@ int bch2_parse_one_mount_opt(struct bch_fs *c, struct bch_opts *opts,
->   		val = "0";
->   	}
->   
-> -	/* Unknown options are ignored: */
->   	if (id < 0)
-> -		return 0;
-> +		goto bad_opt;
->   
->   	if (!(bch2_opt_table[id].flags & OPT_MOUNT))
->   		goto bad_opt;
-Testing this patch caused my bcachefs mount command to fail:
-the "user" and "nofail" attributes in /etc/fstab are not recognised.
-I'd love the "nofail" attribute on a "experimental" filesystem. IMO it is even a soft requirement
+On Thu, Oct 10, 2024 at 09:35:53PM GMT, Dan Carpenter wrote:
+> The ~0UL needs to be ~0ULL for this mask and shift to work correctly on
+> 32 bit systems.
+> 
+> Fixes: bad8626ae088 ("bcachefs: CONFIG_BCACHEFS_INJECT_TRANSACTION_RESTARTS")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Janpieter Sollie
+Thanks! Applied.
