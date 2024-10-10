@@ -1,49 +1,62 @@
-Received: from www3564.sakura.ne.jp (www3564.sakura.ne.jp [49.212.243.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF401BBBC0
-	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 09:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.212.243.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C501C3316
+	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 13:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728553209; cv=none; b=bB9dynO6q1kVOa3iVWoyeBTjAqjlNPRXsa4qfRMo7pS6IEdmZ2DMoY082rWG60tWhW9yForCMhT59SfGjNXTC11e0heoQ9SFWJgRAkKgcEbj82mqF3F66GrHdECPqoE/t26LnhW0jjSQY/yW093wkvZU5e+BW2yQ1ullqclqII4=
+	t=1728566517; cv=none; b=m3lOjet9P2cAEjAYtoo8Ra7cayGh2nn4xGwnIClEnkSQvcpgTJSi20En3FRd+sl163DISu0twv2NnfNf/l5ANzkGw2z4v+gAd5FiUgcUktqjRLxaG6Obkl/2gazn0rgdWfJD07tt5JgGdywu3n5wb6eMj+mSY6J0LNfG1QnOH/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728553209; c=relaxed/simple;
-	bh=6vYICqJNO8O+We9XdZ5Uxmp2c0oQrw7BOhG2eOF71pM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AflQFpa42fVvaMlo/dXgpaLU3PKHryDXQk11VRXNEf45qGiGUCcPL8szE7RJHJxmeHEC/RkfV68QsudaiwRHoX7JJTEKrVfXHim+sQxLFdl2eP7Fh91+xZjsmmS6geIE/EL19QxiWHR9Qn8l8Sjd6OyQ8JAexy1e+kMKHdbA7FA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=anyfrog.net; spf=pass smtp.mailfrom=anyfrog.net; dkim=pass (2048-bit key) header.d=anyfrog.net header.i=@anyfrog.net header.b=Ff4D7F6o; arc=none smtp.client-ip=49.212.243.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=anyfrog.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=anyfrog.net
+	s=arc-20240116; t=1728566517; c=relaxed/simple;
+	bh=HvycsQLOELlTrtsvonbemGU8lh7eK1/FDYVyHxjlRbY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rSIsNXfjnQ+vdEREy43R2btqZX/2E1Pv9y03Au6dfZVxvAv4Tg/lMZexF7Xr6lnt6mJxVXK5bJTXooZNDQT59uKqTQn1RoN5Z7WAgZUPEEL2v0JiOvtsw995nFxD8hdeA7o3ratn+i14JU4mXWeGlMROY3tLkollwlk6Jj+/jds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d7X2pC5U; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=anyfrog.net header.i=@anyfrog.net header.b="Ff4D7F6o"
-Received: from fsav314.sakura.ne.jp (fsav314.sakura.ne.jp [153.120.85.145])
-	by www3564.sakura.ne.jp (8.16.1/8.16.1) with ESMTP id 49A98mtU062353;
-	Thu, 10 Oct 2024 18:08:48 +0900 (JST)
-	(envelope-from kznrluk@anyfrog.net)
-Received: from www3564.sakura.ne.jp (49.212.243.74)
- by fsav314.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp);
- Thu, 10 Oct 2024 18:08:48 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp)
-Received: from aqua.. (27-89-54-24.v6plus.kamome.or.jp [27.89.54.24])
-	(authenticated bits=0)
-	by www3564.sakura.ne.jp (8.16.1/8.16.1) with ESMTPSA id 49A98mLJ062344
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Thu, 10 Oct 2024 18:08:48 +0900 (JST)
-	(envelope-from kznrluk@anyfrog.net)
-DKIM-Signature: a=rsa-sha256; bh=zIpTvsOOtINT66u9NLpzolz6ABqrlRarHX2LvU7sV5U=;
-        c=relaxed/relaxed; d=anyfrog.net; h=Date:Message-ID:From:To:Subject;
-        s=rs20240131; t=1728551328; v=1;
-        b=Ff4D7F6oEM09Dy7qptXpUhtcTCKfs5APNyMr0cB4tNug0hQ4edkZ2HRjqdjif3g9I5vENwB6
-        Rq29P3qVqFtuFL4Ag/GsV5Wu7jFWwLJ9nqGyCrLmd06tUp+TMp8tAe0h7vDwWRwBrA9NubFGa6/
-        2+kyKVvxvY9kUT0C0djMVvww3niO/uIAeavOOo5s4IO+eKN2H4lOmzPiUHLkn44OuTR/kkFBqtl
-        9jtPJSzVvzepca8PntAIT5u3Fpt65zpuU2gwY6br9OhJTzZCkPpr3c2nsqNpbbyp4zFCG9/Ieif
-        W5M/KzB0/2YzAXu00EqamVuMERdWKh5vzoziu0Ug3me/w==
-From: Kazunari Sasa <kznrluk@anyfrog.net>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kazunari Sasa <kznrluk@anyfrog.net>
-Subject: [PATCH] cmd_device_add: Allow setting durability when adding a device
-Date: Thu, 10 Oct 2024 09:07:40 +0000
-Message-ID: <20241010090739.31893-2-kznrluk@anyfrog.net>
-X-Mailer: git-send-email 2.47.0
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d7X2pC5U"
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-20c544d345cso6403805ad.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 10 Oct 2024 06:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728566515; x=1729171315; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4bFaXFUiqmyQDLS25LetGM3WmPC1TTq5PD/TQMNOxQA=;
+        b=d7X2pC5UZi6ncd3Ze0AB2bjfwMKagCZ1aonGWSfhY5kPsbhl8HkKDw7txca5Wyk0eN
+         H5bE8shTvb/yjWKOXY7qQCn44yCQ74jP0kd/kCSNkNm7UojGqFncUryz63rNxEQbSP79
+         TIUYHmChbhTaJE3kXlrJw/uR/maIXHNFR0Og0paI9i7AUyWaLz0nurETB06KVC9PhVbc
+         vUb8SgeMQPNDDHAKyLuOIP0uLVsxB04fstlMV3Kx4lSplalWU+/WlUSYEaaXDZncZww1
+         LvxSY/YXPqU/RjJf0wNB/wOM+A+e8yNfkQ8ioL948LrW5X1HN4XvMXsxcxiK12GfxhGX
+         5alA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728566515; x=1729171315;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4bFaXFUiqmyQDLS25LetGM3WmPC1TTq5PD/TQMNOxQA=;
+        b=Bfm0Dp7NN2wgP0nE77ZQbXJX+9J4I8PFRCg8piIwsfyBp8ws7S+DWozm5b+QwAtCz/
+         7jktQqmEhjm5H0FUqxcYBPkdI4IRYcVfBHWnqQTJ9QiT7EDLcW9oPfjn6xY1D7/doaPq
+         YNshAMPTZhDINXKKDaPUq6lRXwdjrtfqHQH4viBdR/Tn9dISJj4vnQVlt5bWgOc5T3zc
+         yuRa1TW0qkHFsUH+yjn++IPM9f7tXUIzKGseAIAbFLDIbJL29MtmUkhv9CP40vMo1dDk
+         di0fnFxG2KG1eLdzvfp6gZw60qElvtrx2h5Ic1EMuanJeP4FuPmNLTOL7bmrYRfZQlm8
+         YsLw==
+X-Gm-Message-State: AOJu0YzWzJSNdK8++yMZ0U9fz7MBib1p5YfU9mFXpyFjZKqlW9Y2yCAn
+	qLI14kNIPX1TUMYQFx94MKZUUpZWFN3qh4V4beCscy08+cEgf41OlmmmCPYc
+X-Google-Smtp-Source: AGHT+IGAyxIVOs62Us09D6cR2LVLPe5QMOopYx/GYaFmNqeetlCcJYf+phwDepdAUG5GpH2WDlV8jQ==
+X-Received: by 2002:a17:902:c406:b0:20b:6c1e:1e13 with SMTP id d9443c01a7336-20c804ee35dmr47075865ad.23.1728566514768;
+        Thu, 10 Oct 2024 06:21:54 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c0eb7a2sm9365965ad.157.2024.10.10.06.21.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Oct 2024 06:21:54 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] bcachefs: Do not allow no fail lock request to fail
+Date: Thu, 10 Oct 2024 21:21:50 +0800
+Message-ID: <20241010132150.1814411-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -52,55 +65,31 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Added a new --durability option to the device add command, allowing
-users to specify the durability level for a new device.
+If the transaction chose itself as a victim before and restarted, it
+might request a no fail lock request this time. But it might be added to
+others' lock graph and be chose as the victim again, it's no longer safe
+without additional check. We can also convert the cycle detector to be
+fully RCU-based to solve that unsoundness, but the latency added to trans_put
+and additional memory required may not worth it.
 
-Signed-off-by: Kazunari Sasa <kznrluk@anyfrog.net>
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 ---
- c_src/cmd_device.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ fs/bcachefs/btree_locking.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/c_src/cmd_device.c b/c_src/cmd_device.c
-index c86fb7f1..86265214 100644
---- a/c_src/cmd_device.c
-+++ b/c_src/cmd_device.c
-@@ -52,6 +52,7 @@ static void device_add_usage(void)
- 	     "  -B, --bucket=size           Bucket size\n"
- 	     "  -D, --discard               Enable discards\n"
- 	     "  -l, --label=label           Disk label\n"
-+	     "  -d, --durability=value      Set durability level\n"
- 	     "  -f, --force                 Use device even if it appears to already be formatted\n"
- 	     "  -h, --help                  Display this help and exit\n"
- 	     "\n"
-@@ -65,6 +66,7 @@ int cmd_device_add(int argc, char *argv[])
- 		{ "bucket",		required_argument,	NULL, 'B' },
- 		{ "discard",		no_argument,		NULL, 'D' },
- 		{ "label",		required_argument,	NULL, 'l' },
-+		{ "durability",		required_argument,	NULL, 'd' },
- 		{ "force",		no_argument,		NULL, 'f' },
- 		{ "help",		no_argument,		NULL, 'h' },
- 		{ NULL }
-@@ -74,7 +76,7 @@ int cmd_device_add(int argc, char *argv[])
- 	bool force = false;
- 	int opt;
+diff --git a/fs/bcachefs/btree_locking.c b/fs/bcachefs/btree_locking.c
+index bf25fd0a1cca..fff176382e30 100644
+--- a/fs/bcachefs/btree_locking.c
++++ b/fs/bcachefs/btree_locking.c
+@@ -293,7 +293,7 @@ int bch2_check_for_deadlock(struct btree_trans *trans, struct printbuf *cycle)
  
--	while ((opt = getopt_long(argc, argv, "S:B:Dl:fh",
-+	while ((opt = getopt_long(argc, argv, "S:B:Dl:d:f:h",
- 				  longopts, NULL)) != -1)
- 		switch (opt) {
- 		case 'S':
-@@ -88,6 +90,11 @@ int cmd_device_add(int argc, char *argv[])
- 		case 'D':
- 			dev_opts.discard = true;
- 			break;
-+		case 'd':
-+			if (kstrtouint(optarg, 10, &dev_opts.durability) ||
-+				dev_opts.durability > BCH_REPLICAS_MAX)
-+				die("invalid durability");
-+			break;
- 		case 'l':
- 			dev_opts.label = strdup(optarg);
- 			break;
+ 	g.nr = 0;
+ 
+-	if (trans->lock_must_abort) {
++	if (trans->lock_must_abort && !trans->lock_may_not_fail) {
+ 		if (cycle)
+ 			return -1;
+ 
 -- 
-2.47.0
+2.45.2
 
