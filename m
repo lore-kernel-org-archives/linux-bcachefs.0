@@ -1,37 +1,36 @@
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5E71B95B
-	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Oct 2024 02:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C432DC133
+	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Oct 2024 02:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728699012; cv=none; b=JI7r8V/jp29odbtDSQUPnC8j59oa3oJ8CCn/ZB6FbjFOdUhv9G8Hw1s6YM4fHIvgpr010PH3dbRwn2jp1jTQICHDF3euEE5TIjNLXF6WnUmzbVjr4sKK+RvPqtMlsGMIiglJMacYd08R25lH6EOlIG4/wH07qT8GP1j7ic4zcIw=
+	t=1728699036; cv=none; b=DruK5Paw0GFm4yaDhPnx6c2ldjfWpYAJguDexhqfFApNdeoAqGwFDXU+zFN6jwndbxhXSmeQPBhg3WJ9SRAwA7Hy5+mROpZBPEc/+yzFnHN3nxe5F3hrGia1eZLtkv/2vlhDJqcFvez6N2FZuubLEct3ZvPQxOQzYO7lDGxYemo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728699012; c=relaxed/simple;
-	bh=5EkInnmhQs9LkavqpJ4K08cC6g2TWdZ+hcm036ZBnl4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LVJRtIpEEJYGh0ZNadY8dsfPlv7vk4j7NOF9LoTZkl1TM3/1a4gofRRBqY6n+AqivbNgxQFG+Zua5v0Nq6nhf+ul0N6a6J2QpaU6ii6CD+ovm0tSOcueazb1+rahYDk6z91TNQNUK/8C79jOtp7B36R2U9J8qh2DmP/C94DyMoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wByaPyrG; arc=none smtp.client-ip=95.215.58.170
+	s=arc-20240116; t=1728699036; c=relaxed/simple;
+	bh=g+n8C8JdqCpw3jvxfTkRmAWjis9WTaetRI8EdZ3M0oc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y8jpPJPDgWTmc/kAPdhkH2q62/F6CHXmKKUhhB3rhX2NZQFG+CWiwcXP7WoZT7v23iunD9mjJ3FlB31mc2g4wDPZ6k/JnkbNctnE9dVe+9+FEA4CJ7/3fpwSQ8dO8wYIWnbqqO/QLUQxGeN0TPrTKUyPFnWheMMaCFB31W+cY3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AY6ANiMQ; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wByaPyrG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AY6ANiMQ"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728699006;
+	t=1728699030;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=NREuQuSOBmO8pku5yOlKbW1ZAlcefeqkvESxEOyWbtU=;
-	b=wByaPyrGbSs0cnW0xFXWsIzjjqi/7OtP080m2j7C2GND/cPh/Wo56x4JcvBAncVXfYAbBO
-	DhT/syuJ8pu865aKPudcx1A74U6pbwcxWMD6QogAIAy40OTdTkJ58yMkzWegjm1on697fo
-	5e2+M7mrO/Xtc0HycS/CU3SL/AIOo8c=
+	bh=koRdYKoZ+x5HiMhprBPanEgR3SD4Gy/ydWTjNa6LiXQ=;
+	b=AY6ANiMQTr1XxnbE3cz5ANn2uXQd4/zYF82GE/oIjq7gHqMD5R4PN7F+3YFePkS67STZeS
+	jHuXKLl8dcJ1ggHyYVq2clQCDbiY4yS16h/cBvfZ88YkZsRYHfC/c6DKDMU1GUPC7I4soM
+	MscuTIt6x7UDnjNTeIN/DArCxT6R/Oo=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com
-Subject: [PATCH] bcachefs: Fix invalid shift in member_to_text()
-Date: Fri, 11 Oct 2024 22:09:53 -0400
-Message-ID: <20241012020953.3306834-1-kent.overstreet@linux.dev>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH] bcachefs: Fix bch2_have_enough_devs() for BCH_SB_MEMBER_INVALID
+Date: Fri, 11 Oct 2024 22:10:19 -0400
+Message-ID: <20241012021019.3306874-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -41,28 +40,29 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Reported-by: syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com
+This fixes a kasan splat in the ec device removal tests.
+
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/sb-members.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/bcachefs/replicas.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
-index 02bcde3c1b02..b06ba1d0d037 100644
---- a/fs/bcachefs/sb-members.c
-+++ b/fs/bcachefs/sb-members.c
-@@ -247,7 +247,10 @@ static void member_to_text(struct printbuf *out,
- 	prt_newline(out);
+diff --git a/fs/bcachefs/replicas.c b/fs/bcachefs/replicas.c
+index 797da1032318..477ef0997949 100644
+--- a/fs/bcachefs/replicas.c
++++ b/fs/bcachefs/replicas.c
+@@ -821,6 +821,11 @@ bool bch2_have_enough_devs(struct bch_fs *c, struct bch_devs_mask devs,
  
- 	prt_printf(out, "Btree allocated bitmap blocksize:\t");
--	prt_units_u64(out, 1ULL << m.btree_bitmap_shift);
-+	if (m.btree_bitmap_shift < 64)
-+		prt_units_u64(out, 1ULL << m.btree_bitmap_shift);
-+	else
-+		prt_printf(out, "(invalid shift %u)", m.btree_bitmap_shift);
- 	prt_newline(out);
+ 		rcu_read_lock();
+ 		for (unsigned i = 0; i < e->nr_devs; i++) {
++			if (e->devs[i] == BCH_SB_MEMBER_INVALID) {
++				nr_failed++;
++				continue;
++			}
++
+ 			nr_online += test_bit(e->devs[i], devs.d);
  
- 	prt_printf(out, "Btree allocated bitmap:\t");
+ 			struct bch_dev *ca = bch2_dev_rcu_noerror(c, e->devs[i]);
 -- 
 2.45.2
 
