@@ -1,40 +1,37 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D22C768FD
-	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Oct 2024 18:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2149012C549
+	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Oct 2024 21:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728758573; cv=none; b=AD6Z5IpO+ppiiB9yTHethK8CVtWlsogQDRNiyJob4/nFj+CU4hYjFL6vKd1ZybSGFuE38E0lU0BU1bQTbim959R36kjg+OdYhZD8lGxioIN7jLVk+ho8d8bsSEgL9py+hydB8NfPMZvYZnVWWAbvX8559YHBdVK2eh/z4q2/R8U=
+	t=1728767218; cv=none; b=uKdR553jHhtL2hSFkcDm8KOa4F5jCOWbbU2MDxnRJyKddkdUVi0pxdkQkoU0pbhzOvkQ58ZuGt8RmDJMtySWq05mKHFXg3zF8OnK6x58RVdv8TIVYoz8MXOb8ICTjzc6Ky90QWhn06GCXB/K0FiftVJIwuCukzPFADmop7zhBl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728758573; c=relaxed/simple;
-	bh=rNaAzK1QA47pnaAoe8F69BGleQCAHGxwvNQMvAl4/yg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qmm6oS6j+Mz7+W7cRS+NLYb5TiiDCq29xYm7vYeIcdG7fjsEEOzDUcMfFAEybnBZBaL0KNqh7vKOYE4pdBgi4/3IGKKXL1+y9SQ31iVrnXxPW5HiLmcXZKnGKTi2dh6A60x2Ig8o8omliTuy71672sj7Uu0iMdHtmw9hMexm4Oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bF1A27KI; arc=none smtp.client-ip=95.215.58.173
+	s=arc-20240116; t=1728767218; c=relaxed/simple;
+	bh=JsF3Z8ikzFPRW4UJT1LcYKkLhtaIByKK4oEof7WYiYQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JNyZu2cgCwDsc9t2i87tyBnMnPI0NWqbPl9EqdX6pOMEhJ+HRgmmQiEU4Qm1t6r+S2zkgeJN4/Ab0bxHCZjT3S6v57G7dHVVKRkR8ss2J/Verb+/dRrgeTr3cR5UZIh/G2kDnYJ01m4l21mvaoNVmMLmSvC8vWngNXG/jlVx70E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UCfjEGhB; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bF1A27KI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UCfjEGhB"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728758568;
+	t=1728767212;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=op+lPm3NAWju6hQm59ucRMw5qO4FBhJZsP6B74qdwq8=;
-	b=bF1A27KIRO2AJLZI5bJbs4KKT3HokW9iWIwtcPhptZOxSZMl9F4Qb5cGb9IUdcIjnyoMeE
-	BWL14es5xZhBw1uS2fEW7BsA7aU9iXRp3g6jDtMlqw8prbJDrxI4OA1u6JCUAinhgvJAXZ
-	ClfnsTEkrooGrX1FSRxtg2KtffjdCd0=
+	bh=OrcA22SUR1/k8/9s78dnXfu4raEkjtdYphge2uWUkns=;
+	b=UCfjEGhB5fZVIhypgrA3TSpA6HxKCUIAsOWMMWyqbuBIcjl2YbUBEAR4K2Vs3IpQeVvdEY
+	ked+chXgsBNfF2qcPtLpnRpRBS0QKue/F1nNqCsLKK21f3P7BJKiTsLg9V3dqHee14u4QB
+	/95HZkrh/wrp5kcHwu/A0CC2jQPJoGs=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
+To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] bcachefs: Fix sysfs warning in fstests generic/730,731
-Date: Sat, 12 Oct 2024 14:42:39 -0400
-Message-ID: <20241012184239.3785089-1-kent.overstreet@linux.dev>
+	syzbot+19ad84d5133871207377@syzkaller.appspotmail.com
+Subject: [PATCH] bcachefs: fix uaf in bch2_dio_write_done()
+Date: Sat, 12 Oct 2024 17:06:43 -0400
+Message-ID: <20241012210643.3913472-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -44,103 +41,33 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-sysfs warns if we're removing a symlink from a directory that's no
-longer in sysfs; this is triggered by fstests generic/730, which
-simulates hot removal of a block device.
-
-This patch is however not a correct fix, since checking
-kobj->state_in_sysfs on a kobj owned by another subsystem is racy.
-
-A better fix would be to add the appropriate check to
-sysfs_remove_link() - and sysfs_create_link() as well.
-
-But kobject_add_internal()/kobject_del() do not as of today have locking
-that would support that.
-
-Note that the block/holder.c code appears to be subject to this race as
-well.
-
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:  Christoph Hellwig <hch@lst.de>
+Reported-by: syzbot+19ad84d5133871207377@syzkaller.appspotmail.com
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/super.c | 34 ++++++++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 10 deletions(-)
+ fs/bcachefs/fs-io-direct.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index 843431e58cf5..f96355ecb296 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -184,6 +184,7 @@ static DEFINE_MUTEX(bch_fs_list_lock);
+diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
+index ee1c0325f313..6d3a05ae5da8 100644
+--- a/fs/bcachefs/fs-io-direct.c
++++ b/fs/bcachefs/fs-io-direct.c
+@@ -369,6 +369,7 @@ static noinline void bch2_dio_write_flush(struct dio_write *dio)
  
- DECLARE_WAIT_QUEUE_HEAD(bch2_read_only_wait);
- 
-+static void bch2_dev_unlink(struct bch_dev *);
- static void bch2_dev_free(struct bch_dev *);
- static int bch2_dev_alloc(struct bch_fs *, unsigned);
- static int bch2_dev_sysfs_online(struct bch_fs *, struct bch_dev *);
-@@ -620,9 +621,7 @@ void __bch2_fs_stop(struct bch_fs *c)
- 	up_write(&c->state_lock);
- 
- 	for_each_member_device(c, ca)
--		if (ca->kobj.state_in_sysfs &&
--		    ca->disk_sb.bdev)
--			sysfs_remove_link(bdev_kobj(ca->disk_sb.bdev), "bcachefs");
-+		bch2_dev_unlink(ca);
- 
- 	if (c->kobj.state_in_sysfs)
- 		kobject_del(&c->kobj);
-@@ -1188,9 +1187,7 @@ static void bch2_dev_free(struct bch_dev *ca)
+ static __always_inline long bch2_dio_write_done(struct dio_write *dio)
  {
- 	cancel_work_sync(&ca->io_error_work);
++	struct bch_fs *c = dio->op.c;
+ 	struct kiocb *req = dio->req;
+ 	struct bch_inode_info *inode = dio->inode;
+ 	bool sync = dio->sync;
+@@ -387,7 +388,7 @@ static __always_inline long bch2_dio_write_done(struct dio_write *dio)
+ 	ret = dio->op.error ?: ((long) dio->written << 9);
+ 	bio_put(&dio->op.wbio.bio);
  
--	if (ca->kobj.state_in_sysfs &&
--	    ca->disk_sb.bdev)
--		sysfs_remove_link(bdev_kobj(ca->disk_sb.bdev), "bcachefs");
-+	bch2_dev_unlink(ca);
+-	bch2_write_ref_put(dio->op.c, BCH_WRITE_REF_dio_write);
++	bch2_write_ref_put(c, BCH_WRITE_REF_dio_write);
  
- 	if (ca->kobj.state_in_sysfs)
- 		kobject_del(&ca->kobj);
-@@ -1227,10 +1224,7 @@ static void __bch2_dev_offline(struct bch_fs *c, struct bch_dev *ca)
- 	percpu_ref_kill(&ca->io_ref);
- 	wait_for_completion(&ca->io_ref_completion);
- 
--	if (ca->kobj.state_in_sysfs) {
--		sysfs_remove_link(bdev_kobj(ca->disk_sb.bdev), "bcachefs");
--		sysfs_remove_link(&ca->kobj, "block");
--	}
-+	bch2_dev_unlink(ca);
- 
- 	bch2_free_super(&ca->disk_sb);
- 	bch2_dev_journal_exit(ca);
-@@ -1252,6 +1246,26 @@ static void bch2_dev_io_ref_complete(struct percpu_ref *ref)
- 	complete(&ca->io_ref_completion);
- }
- 
-+static void bch2_dev_unlink(struct bch_dev *ca)
-+{
-+	struct kobject *b;
-+
-+	/*
-+	 * This is racy w.r.t. the underlying block device being hot-removed,
-+	 * which removes it from sysfs.
-+	 *
-+	 * It'd be lovely if we had a way to handle this race, but the sysfs
-+	 * code doesn't appear to provide a good method and block/holder.c is
-+	 * susceptible as well:
-+	 */
-+	if (ca->kobj.state_in_sysfs &&
-+	    ca->disk_sb.bdev &&
-+	    (b = bdev_kobj(ca->disk_sb.bdev))->state_in_sysfs) {
-+		sysfs_delete_link(b, &ca->kobj, "bcachefs");
-+		sysfs_delete_link(&ca->kobj, b, "block");
-+	}
-+}
-+
- static int bch2_dev_sysfs_online(struct bch_fs *c, struct bch_dev *ca)
- {
- 	int ret;
+ 	/* inode->i_dio_count is our ref on inode and thus bch_fs */
+ 	inode_dio_end(&inode->v);
 -- 
 2.45.2
 
