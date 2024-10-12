@@ -1,143 +1,121 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F28AD517;
-	Sat, 12 Oct 2024 08:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB3A1805A
+	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Oct 2024 16:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728723477; cv=none; b=PYtJK8kqEz+534MaySpL+o2hcrpzuk87Gjk2fIUv93ED8spkEhfYJ12Rp0I96iMbbw+SPdp625/Vvgqc0ejekO2N4/Bh0EAtftGS7LfC42AgAtiyzDr9ZNdqO6IxMf3Q8pIzVU8h58fLi9vRlLdpjSOpNLWPvO7EOtLyZtcwW/U=
+	t=1728749127; cv=none; b=MJisGy0ojQ9VPK+A2lFO0TIIQB4om9usyztCGU6HhfwSj3WCXz3PS66iRkxIYcQBmtN5b+b2NttnSDr8Xt7uMazNluw8Rx5MgjCqG8+CmupnPzneIkYjCEabqlzmq0YtvxBOKPV8BxXHY6JHx051D+ycdE1Fah/lS0H2SXr1LGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728723477; c=relaxed/simple;
-	bh=svtSclBz9u/qrG2oa7Ec/7nKqnQY51mTitmUQpOR/0Q=;
-	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=GqmCm06GF5MLHHweppG61Bc0jeV/TIPGxZf+7XwQZt0nAtfQtQOzzzwL+TtzuPjfbbv9H+YqjjJoxQrHsJ2ByWFbnGdXf4YWZ/lT0ucRGiN0pTBbQKKw6KOjusJt2s2ol2oHeCrdzmWlsBVFMI2W9vd3es5xyYJY27JJ33dWaK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S3mpKjcV; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1728749127; c=relaxed/simple;
+	bh=DPtLE54kzLpFrHWIKNkTeRdEPoZWKS4VWUdS+vjudio=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=HvdjZrAmRL3a6nf5gieccHOsjNInBTrZCOQrhQC9XN9L9D7ZCi6rUJ07DFYQbANJY+lBwMOgihiDoR43WIrsuPheiqEcxpuS+CoEgHZZgUBFsrsXukAmsfj+TldR/ndM06XREVpuQ0FlESRbEO9Vdm8B1IZfBdvbFYG9JLWnFuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alyssa.is; spf=pass smtp.mailfrom=alyssa.is; dkim=pass (2048-bit key) header.d=alyssa.is header.i=@alyssa.is header.b=miNP1/e6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Y0YL0oON; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alyssa.is
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alyssa.is
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S3mpKjcV"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20c8c50fdd9so15320905ad.0;
-        Sat, 12 Oct 2024 01:57:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728723475; x=1729328275; darn=vger.kernel.org;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KyfF37ymaVo+9RotRE+iXjYSIUoLMLM+SfYp3V/ZJcU=;
-        b=S3mpKjcVXSDOA73n2kDgfh5h7sdklNCJKYJ2FpqwjlvKMjz+zA4zG5lX+YbYS2gU4w
-         gx9CNNyHIISpQxgUoQjzSZCZyIhJFVXhvh/DKoRvtoFLiWf/BECa5tbPMdixR5460hHq
-         JZqovNQDlA6DbvnHtKPbrdbP6XJ8Aatbh2iM+WCh3CMRsg5+KkqPUZPxiytXROgGSQeC
-         PxD5pxF/fWzmwMxqn9105QBxunMav+UhSQcELbGmPvkXpSQT6gdEp+wiYfezVxdrbF5H
-         QP3vHCJxwbqDHcx3ptmDwjKUiC29PHxFj3j9xGfHj7MLI6RJVeoyrADo26VAm8W//xp+
-         8/3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728723475; x=1729328275;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KyfF37ymaVo+9RotRE+iXjYSIUoLMLM+SfYp3V/ZJcU=;
-        b=FJCXIAw26HvUMWr1zzyqEf+yV1ZkST/nRG+vN1+x54CeKfg6j4uJdUrjdbY3ZB2XF7
-         bjYP6L2QDFbnMoznMjFSxHVnrnzoeDSv+KT+8mp5BlrJd2OlK2Fs/QexsSKuka/EGyy7
-         r3Kx1ojDOblN/jXXJF0seQ+bMWm78oBqudz+eCNpGPYuapR9YAEbzH10p4IyRVs5btIZ
-         yalMlTnyGl9nvQL6+SBkP4cJb0GZPT/NW/dVgbLJYyn36OcegfmxoyVGxXXo4LC4qnsX
-         DQYljVnI5DXOAumusRkZp27dCl+Jpwxcnr9ohcbhwQ/DigbouyGv4crqr8EpmiZfi1H5
-         zZmA==
-X-Forwarded-Encrypted: i=1; AJvYcCVQg/LX5IHNxPPtuoMTzTs87OCh0Y4gNySQtwoooJe55PVewTUz9xo6IflYeqa64xVN3gh3sj6ZTDSY0jRgeQ==@vger.kernel.org, AJvYcCW0E1FdKoXT2s6agkB8TrZ7EwlaX9jD3yi+j10DxdfZQisgwyb++ldaoAGwoO0PdfJa935QaP3dBtY+@vger.kernel.org
-X-Gm-Message-State: AOJu0Yybn7vlRU43NYIyyhAqs164K2TCB40rCK3qL5wyK6Bg4JHU7mu0
-	TQqOn0glQe7laqc+Mo6ufU0c6L/8dmFnF3yg1cnbmywNFdswCdcM
-X-Google-Smtp-Source: AGHT+IF5crCEIiWB7Wp5ggs4Q4kZZSy4b20GsXIA2qB3AhBUtt91hc4QbaMLEFyecf/SMCu6FUxj0Q==
-X-Received: by 2002:a17:902:d2c8:b0:20b:a73b:3f5 with SMTP id d9443c01a7336-20ca0399c9amr90304055ad.14.1728723475446;
-        Sat, 12 Oct 2024 01:57:55 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c375d86sm34054685ad.309.2024.10.12.01.57.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 12 Oct 2024 01:57:54 -0700 (PDT)
-From: Alan Huang <mmpgouride@gmail.com>
-Content-Type: text/plain;
-	charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key) header.d=alyssa.is header.i=@alyssa.is header.b="miNP1/e6";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Y0YL0oON"
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.phl.internal (Postfix) with ESMTP id 2D38D138006B
+	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Oct 2024 12:05:23 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Sat, 12 Oct 2024 12:05:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1728749123; x=1728835523; bh=NCLI39LosraG2dPuC18P9
+	FGw7KSR9F0hiDXN6ULHFro=; b=miNP1/e6HSjC27vbLYY/sDIHoOWOR8HTtDWb8
+	JMM9SeeW/mfqkMoUXlFh9lV6dQs7KK92H43IszPPu0WKKVZmnb5cKMcCWbFt4m0c
+	CO6ZH92Rr0E6XzIQLHm5kQ8yLEu9XMxT5HHiJ5uf+9mSUxGoR62RebqwTQoKBzrZ
+	+IUsC2ChbwGPYuhDrdPb4Y2Lxn00eV2eizY7Z9NfaOUR+qBt3UH4/1nWDpnlySYv
+	l8r6LVIgQ1KDkVBAbEF+xd8UDTnusXRNVAysJJ0dHLvgecAs+q1VDIE08xm4NmAW
+	3ZpkkkCHpwOqb5n8MpV0tGM4xO8XGaplOw8xfiKlob24RpF/Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1728749123; x=1728835523; bh=NCLI39LosraG2dPuC18P9FGw7KSR
+	9F0hiDXN6ULHFro=; b=Y0YL0oONeeRY1MPIBXRWoZgP143v8uMOl8/eO5JhGphN
+	YPbxfACrRNLzyEnePtwT8LI8mosV5lGwaUdL1WyI25+uv5f8aS36WUvsDTyzTxoV
+	7AW0RUPrpXOQIvwSp7s7WQo2htCyNq5rk2mWoW5+fzZDya5HmCntbBa5dHFvxnoL
+	HlPRXfk4KOOnXg4PA8rIVkoe1+KZf6kzRSEYsOjcTd23GA83TF+u23tLv59enCvW
+	VomwUv7HlfWPKLSbw1s8eIkeWRzMQbG6Y3P2g1cGT6ZlL9fAYfLSJn3l/EDnRL1H
+	+pKrMUIJougowptoHG5EB0rgzKxYwO9hH9ov9exx4A==
+X-ME-Sender: <xms:Qp4KZ1plHKAF1PwvPcoNOTySM9ASv9SHrCNMtZZgnBJVfUVQIKPCeg>
+    <xme:Qp4KZ3ofFHJcTw67DWyjEV82xx11kgHALv7yonQwNDAC1VPlOoIWn7KE2ZKCbc41T
+    0-BY4k8dwXu66szaA>
+X-ME-Received: <xmr:Qp4KZyNbsW6eSTAs_ZGfbTEYG41b4yurnRFHQcWeIKhkyKkoB0ssEwG9qCYNBcHxtdCM4U17hsCt4pAU-PDVpBiM3to>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdeguddgleeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvffuff
+    fkofgggfestdekredtredttdenucfhrhhomheptehlhihsshgrucftohhsshcuoehhihes
+    rghlhihsshgrrdhisheqnecuggftrfgrthhtvghrnhepleejtdeiffegveejuedvkeevie
+    etkefgleeuleehfeduleekueejffeikeeggfeinecuffhomhgrihhnpehgihhthhhusgdr
+    tghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hhihesrghlhihsshgrrdhishdpnhgspghrtghpthhtohepuddpmhhouggvpehsmhhtphho
+    uhhtpdhrtghpthhtoheplhhinhhugidqsggtrggthhgvfhhssehvghgvrhdrkhgvrhhnvg
+    hlrdhorhhg
+X-ME-Proxy: <xmx:Qp4KZw6sjBxc3k_lSnNZXw1PZIzbFMAuPvMub5MZuL3o27Y98pe_bA>
+    <xmx:Qp4KZ06apYe11SN0ZWCAkkKZLH-5DCPInarxEny3GPe6_TXeXsPNlw>
+    <xmx:Qp4KZ4hj8-5MbM90DqVmZKz-F-n66GM-jOYsuFkN0Wi7ZFPoCEHXKQ>
+    <xmx:Qp4KZ24iC432y4BaYyg6gwMtDGxifvRi_ukCKrxqdINBQXQSKW7SBg>
+    <xmx:Q54KZyTrW7jJnHH3LAMneM-i8dqf_ruTtgkGkP-OImRDoYbzh6qCx9IX>
+Feedback-ID: i12284293:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-bcachefs@vger.kernel.org>; Sat, 12 Oct 2024 12:05:22 -0400 (EDT)
+Received: by sf.qyliss.net (Postfix, from userid 1000)
+	id F255B382357FE; Sat, 12 Oct 2024 18:05:19 +0200 (CEST)
+From: Alyssa Ross <hi@alyssa.is>
+To: linux-bcachefs@vger.kernel.org
+Subject: [PATCH bcachefs-tools] Avoid static linking conflicts with libblkid
+Date: Sat, 12 Oct 2024 18:03:44 +0200
+Message-ID: <20241012160343.239143-2-hi@alyssa.is>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
-Subject: Libmount bug ?
-Message-Id: <14ADF290-5B46-44D5-83BC-9AE3732B192C@gmail.com>
-Date: Sat, 12 Oct 2024 16:57:39 +0800
-Cc: util-linux@vger.kernel.org,
- linux-bcachefs@vger.kernel.org,
- Kent Overstreet <kent.overstreet@linux.dev>,
- Hongbo Li <lihongbo22@huawei.com>,
- "Darrick J. Wong" <djwong@kernel.org>,
- xfs <linux-xfs@vger.kernel.org>
-To: kzak@redhat.com
-X-Mailer: Apple Mail (2.3776.700.51)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hello Karel,
+When static linking, it's not possible to have two functions with the
+same name in different libraries:
 
-The bcachefs has the helper called mount.bcachefs.
+	= note: /nix/store/s2cjhni3s6shh0n35ay1hpj8d85k44qk-x86_64-unknown-linux-musl-binutils-2.43.1/bin/x86_64-unknown-linux-musl-ld: /nix/store/zwid05lzfy46k32xljb2alh0gq7ys58a-util-linux-minimal-static-x86_64-unknown-linux-musl-2.39.4-lib/lib/libblkid.a(libcommon_la-crc32c.o): in function `crc32c':
+	        (.text+0x0): multiple definition of `crc32c'; ./libbcachefs.a(tools-util.o):/build/source/c_src/tools-util.c:484: first defined here
+	        collect2: error: ld returned 1 exit status
 
-Currently, there are users using fstab with nofail/user fail to mount,
-we would like to know whether other filesystems using similar helper
-properly handle this.
+Work around this by avoiding a known name collision with a function in
+libblkid.
 
-This is like commit 06e05eb0f78566b68c44328c37d7c28d8655e9df=20
-(=E2=80=9Clibmount: don't pass option "defaults" to helper")
+Closes: https://github.com/koverstreet/bcachefs-tools/issues/311
+Signed-off-by: Alyssa Ross <hi@alyssa.is>
+---
+If this is too clever we could also just rename the function without a 
+macro, but I thought it would be confusing if callers had to remember 
+that this one function needs a bch_ prefix but none of the others do.
 
-Or would you like something like this? This might be incomplete though =
-(e.g. owner, noowner etc.)
+ c_src/tools-util.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/libmount/src/optmap.c b/libmount/src/optmap.c
-index d7569a0f0..c13b9ba19 100644
---- a/libmount/src/optmap.c
-+++ b/libmount/src/optmap.c
-@@ -152,11 +152,11 @@ static const struct libmnt_optmap =
-userspace_opts_map[] =3D
-    { "auto",    MNT_MS_NOAUTO, MNT_NOHLPS | MNT_INVERT | MNT_NOMTAB },  =
-/* Can be mounted using -a */
-    { "noauto",  MNT_MS_NOAUTO, MNT_NOHLPS | MNT_NOMTAB },  /* Can only =
-be mounted explicitly */
+diff --git a/c_src/tools-util.h b/c_src/tools-util.h
+index 269d589b..572aca05 100644
+--- a/c_src/tools-util.h
++++ b/c_src/tools-util.h
+@@ -174,6 +174,8 @@ struct fiemap_extent fiemap_iter_next(struct fiemap_iter *);
+ 
+ char *strcmp_prefix(char *, const char *);
+ 
++/* Avoid conflicts with libblkid's crc32 function in static builds */
++#define crc32c bch_crc32c
+ u32 crc32c(u32, const void *, size_t);
+ 
+ char *dev_to_name(dev_t);
 
--   { "user[=3D]", MNT_MS_USER },                             /* Allow =
-ordinary user to mount (mtab) */
--   { "nouser",  MNT_MS_USER, MNT_INVERT | MNT_NOMTAB },    /* Forbid =
-ordinary user to mount */
-+   { "user[=3D]", MNT_MS_USER, MNT_NOHLPS},                             =
-/* Allow ordinary user to mount (mtab) */
-+   { "nouser",  MNT_MS_USER, MNT_INVERT | MNT_NOMTAB | MNT_NOHLPS},    =
-/* Forbid ordinary user to mount */
-
--   { "users",   MNT_MS_USERS, MNT_NOMTAB },                /* Allow =
-ordinary users to mount */
--   { "nousers", MNT_MS_USERS, MNT_INVERT | MNT_NOMTAB },   /* Forbid =
-ordinary users to mount */
-+   { "users",   MNT_MS_USERS, MNT_NOMTAB | MNT_NOHLPS},                =
-/* Allow ordinary users to mount */
-+   { "nousers", MNT_MS_USERS, MNT_INVERT | MNT_NOMTAB | MNT_NOHLPS},   =
-/* Forbid ordinary users to mount */
-
-    { "owner",   MNT_MS_OWNER, MNT_NOMTAB },                /* Let the =
-owner of the device mount */
-    { "noowner", MNT_MS_OWNER, MNT_INVERT | MNT_NOMTAB },   /* Device =
-owner has no special privs */
-@@ -180,7 +180,7 @@ static const struct libmnt_optmap =
-userspace_opts_map[] =3D
-    { "sizelimit=3D", MNT_MS_SIZELIMIT, MNT_NOHLPS | MNT_NOMTAB },	 =
-  /* loop device size limit */
-    { "encryption=3D", MNT_MS_ENCRYPTION, MNT_NOHLPS | MNT_NOMTAB },	 =
-  /* loop device encryption */
-
--   { "nofail",  MNT_MS_NOFAIL, MNT_NOMTAB },               /* Do not =
-fail if ENOENT on dev */
-+   { "nofail",  MNT_MS_NOFAIL, MNT_NOMTAB | MNT_NOHLPS},               =
-/* Do not fail if ENOENT on dev */
-
-    { "uhelper=3D", MNT_MS_UHELPER },			   /* =
-/sbin/umount.<helper> */
-
-
-Thanks,
-Alan
-
-
+base-commit: b34d1341919c4edd3251c7f69c2588acd1196d71
+-- 
+2.45.2
 
