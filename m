@@ -1,68 +1,80 @@
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C432DC133
-	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Oct 2024 02:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7BF41C6E
+	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Oct 2024 03:37:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728699036; cv=none; b=DruK5Paw0GFm4yaDhPnx6c2ldjfWpYAJguDexhqfFApNdeoAqGwFDXU+zFN6jwndbxhXSmeQPBhg3WJ9SRAwA7Hy5+mROpZBPEc/+yzFnHN3nxe5F3hrGia1eZLtkv/2vlhDJqcFvez6N2FZuubLEct3ZvPQxOQzYO7lDGxYemo=
+	t=1728704258; cv=none; b=BC/D7Tj6KWORt6vcNZFnbfKliVp+FpgrjHiHIoAlTv7zTesVRAwADp2hdSPCe59phRYipTmgqyYhTArLiM9Pd9M56VlPoq+XzD6bZwRAbMysihv8uOPhcYYMCMyvG9ZV8CL4UwuOCzAzgXqwPkbmJZujzrYFoYm4fQ4pOG+E/Ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728699036; c=relaxed/simple;
-	bh=g+n8C8JdqCpw3jvxfTkRmAWjis9WTaetRI8EdZ3M0oc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y8jpPJPDgWTmc/kAPdhkH2q62/F6CHXmKKUhhB3rhX2NZQFG+CWiwcXP7WoZT7v23iunD9mjJ3FlB31mc2g4wDPZ6k/JnkbNctnE9dVe+9+FEA4CJ7/3fpwSQ8dO8wYIWnbqqO/QLUQxGeN0TPrTKUyPFnWheMMaCFB31W+cY3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AY6ANiMQ; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AY6ANiMQ"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728699030;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=koRdYKoZ+x5HiMhprBPanEgR3SD4Gy/ydWTjNa6LiXQ=;
-	b=AY6ANiMQTr1XxnbE3cz5ANn2uXQd4/zYF82GE/oIjq7gHqMD5R4PN7F+3YFePkS67STZeS
-	jHuXKLl8dcJ1ggHyYVq2clQCDbiY4yS16h/cBvfZ88YkZsRYHfC/c6DKDMU1GUPC7I4soM
-	MscuTIt6x7UDnjNTeIN/DArCxT6R/Oo=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] bcachefs: Fix bch2_have_enough_devs() for BCH_SB_MEMBER_INVALID
-Date: Fri, 11 Oct 2024 22:10:19 -0400
-Message-ID: <20241012021019.3306874-1-kent.overstreet@linux.dev>
+	s=arc-20240116; t=1728704258; c=relaxed/simple;
+	bh=Ty3fSbVQwFvxelSpLbInp4ii2L8l1adukIfbZFVv9Bk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UtbVLE5Ye8K3QEZvzDlFwbQSLPO8hBL3pgfrUhHv8xBoZuh802clhd9v83U5mT7l4T6tw5KVWB9ViVHbpjUjR04neh24splBTMroZkO41W4ei4cvsi3i4BuNsVMP482kmvpduwROgVr+tgFZw3JJSjiIJyARZpKNqZE3SJ+ZNHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4XQTfN07Xlz1T7xV;
+	Sat, 12 Oct 2024 11:35:40 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id DBF7614011F;
+	Sat, 12 Oct 2024 11:37:26 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Sat, 12 Oct 2024 11:37:26 +0800
+Message-ID: <e15d904d-1a0b-4492-94e4-8fe6db6a22ac@huawei.com>
+Date: Sat, 12 Oct 2024 11:37:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: Fix invalid shift in member_to_text()
+Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	<linux-bcachefs@vger.kernel.org>
+CC: <syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com>
+References: <20241012020953.3306834-1-kent.overstreet@linux.dev>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20241012020953.3306834-1-kent.overstreet@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-This fixes a kasan splat in the ec device removal tests.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/replicas.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/fs/bcachefs/replicas.c b/fs/bcachefs/replicas.c
-index 797da1032318..477ef0997949 100644
---- a/fs/bcachefs/replicas.c
-+++ b/fs/bcachefs/replicas.c
-@@ -821,6 +821,11 @@ bool bch2_have_enough_devs(struct bch_fs *c, struct bch_devs_mask devs,
- 
- 		rcu_read_lock();
- 		for (unsigned i = 0; i < e->nr_devs; i++) {
-+			if (e->devs[i] == BCH_SB_MEMBER_INVALID) {
-+				nr_failed++;
-+				continue;
-+			}
-+
- 			nr_online += test_bit(e->devs[i], devs.d);
- 
- 			struct bch_dev *ca = bch2_dev_rcu_noerror(c, e->devs[i]);
--- 
-2.45.2
+On 2024/10/12 10:09, Kent Overstreet wrote:
+> Reported-by: syzbot+064ce437a1ad63d3f6ef@syzkaller.appspotmail.com
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
+>   fs/bcachefs/sb-members.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
+> index 02bcde3c1b02..b06ba1d0d037 100644
+> --- a/fs/bcachefs/sb-members.c
+> +++ b/fs/bcachefs/sb-members.c
+> @@ -247,7 +247,10 @@ static void member_to_text(struct printbuf *out,
+>   	prt_newline(out);
+>   
+>   	prt_printf(out, "Btree allocated bitmap blocksize:\t");
+> -	prt_units_u64(out, 1ULL << m.btree_bitmap_shift);
+> +	if (m.btree_bitmap_shift < 64)
+> +		prt_units_u64(out, 1ULL << m.btree_bitmap_shift);
+> +	else
+> +		prt_printf(out, "(invalid shift %u)", m.btree_bitmap_shift);
 
+I wonder why we don't check in .validate, like the former 
+csum_granularity_bits does.
+
+Thanks,
+Hongbo
+
+>   	prt_newline(out);
+>   
+>   	prt_printf(out, "Btree allocated bitmap:\t");
