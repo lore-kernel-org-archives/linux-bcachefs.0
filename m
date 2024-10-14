@@ -1,73 +1,54 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72CA200A0
-	for <linux-bcachefs@vger.kernel.org>; Mon, 14 Oct 2024 02:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696C42D600;
+	Mon, 14 Oct 2024 06:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728872414; cv=none; b=uIMduKd1WATrK8zCGdTjV7n6phhfuZsWZzsYo5O2IyVM7/xWSiDNzzzrK72s4WLlMjlhYkS53C+OwEVZtzEdSE2zyPTIZi/YYeRDEC0pWcxCThBAeZKri+XGqXsVthHD51aNzC3OOmXdCEmZj+h/MAMS8mLxSdEZWXDP+FPuoCg=
+	t=1728886224; cv=none; b=kmbj2HAajPb8aD4sHTvvpkjDBGEQf19OcuJd3kafojM6s49YUX3Nf1NYcAv2ZizuJhk3sNn+CQMBuyO/28lZqAb82NC2fkIXNMLaLY7R267kHKyNJHqlA5DgsVRY8n3HvsEEkllnoAwaVDmyYPFEzJe1/F9SrOPiSd+dQATk8hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728872414; c=relaxed/simple;
-	bh=zbM9ykRYnW7JL25ms1vWQPnUkDmYbRh41FPAU7fPYIg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sFUrP6rzz6N251Qe1ThAINUab1pdSOBsWiYj7/G/Dxrnb3UGgFkqUP1OGDgs+EvOTX0QPs6KoSA7y3sqoSWrgyFphEnxN1kZxsoYpsVeCJwKK7IygHXF/Dgi5JwjWi86aCX4S9abTBdKge7i5rPGIF0CzvJ9RQPrJU0zKGOU8eY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PehwnhEs; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PehwnhEs"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728872406;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=sQjN7ZzwYByw4pjbd15m1Z0FsS5st2MN2PL9RgsKKHk=;
-	b=PehwnhEstr89XwLviufgW8Naw0b0BgT4ktbcAJzYXHDeLJVvKwO4QTYwzl2UCzJWdFfjk+
-	IEqHoeKm3VVbsb7iDEinX50abjC2YOhHxKZGkDNmmvfswH2IcZpIehM4hGrSsMf5dCyA9H
-	qWdDSScwvDLvJ7lRcgpe5p8A7tjpi3A=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 1/2] bcachefs: Fix kasan splat in new_stripe_alloc_buckets()
-Date: Sun, 13 Oct 2024 22:19:56 -0400
-Message-ID: <20241014021957.746617-1-kent.overstreet@linux.dev>
+	s=arc-20240116; t=1728886224; c=relaxed/simple;
+	bh=GpQFIiBqe63XJeYE1y6uc75KtkEhwgax+gTxtBh9Kl4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rFa1ofksQzYUuCf013IGdGtYjVRVS9Ij6Z/oxzjjIsTqvalgGIh8JeeTaOdhZv9gLYwodvq9ARwFS+POyUXBdgmCUk/huSAVFDKrIzLbHIr3/AVpcXNJtooAXnDmIrNDd4yecKwE8Ys23xblbL8sX+PHup9PIPs9muXnA0jy7uM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 5ED12227AA8; Mon, 14 Oct 2024 08:10:19 +0200 (CEST)
+Date: Mon, 14 Oct 2024 08:10:19 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] bcachefs: Fix sysfs warning in fstests generic/730,731
+Message-ID: <20241014061019.GA20775@lst.de>
+References: <20241012184239.3785089-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241012184239.3785089-1-kent.overstreet@linux.dev>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Update for BCH_SB_MEMBER_INVALID.
+On Sat, Oct 12, 2024 at 02:42:39PM -0400, Kent Overstreet wrote:
+> sysfs warns if we're removing a symlink from a directory that's no
+> longer in sysfs; this is triggered by fstests generic/730, which
+> simulates hot removal of a block device.
+> 
+> This patch is however not a correct fix, since checking
+> kobj->state_in_sysfs on a kobj owned by another subsystem is racy.
+> 
+> A better fix would be to add the appropriate check to
+> sysfs_remove_link() - and sysfs_create_link() as well.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/ec.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-index b29838083f1f..668d013cc97f 100644
---- a/fs/bcachefs/ec.c
-+++ b/fs/bcachefs/ec.c
-@@ -1885,7 +1885,15 @@ static int new_stripe_alloc_buckets(struct btree_trans *trans, struct ec_stripe_
- 	bitmap_and(devs.d, devs.d, c->rw_devs[BCH_DATA_user].d, BCH_SB_MEMBERS_MAX);
- 
- 	for_each_set_bit(i, h->s->blocks_gotten, v->nr_blocks) {
--		__clear_bit(v->ptrs[i].dev, devs.d);
-+		/*
-+		 * Note: we don't yet repair invalid blocks (failed/removed
-+		 * devices) when reusing stripes - we still need a codepath to
-+		 * walk backpointers and update all extents that point to that
-+		 * block when updating the stripe
-+		 */
-+		if (v->ptrs[i].dev != BCH_SB_MEMBER_INVALID)
-+			__clear_bit(v->ptrs[i].dev, devs.d);
-+
- 		if (i < h->s->nr_data)
- 			nr_have_data++;
- 		else
--- 
-2.45.2
+The proper fix is to not link to random other subsystems with
+object lifetimes you can't know.  I'm not sure why you think adding
+this link was ever allowed.
 
