@@ -1,41 +1,54 @@
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E911E145346
-	for <linux-bcachefs@vger.kernel.org>; Mon, 14 Oct 2024 06:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0312C14AD2E;
+	Mon, 14 Oct 2024 08:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728888691; cv=none; b=UDOSL0uqD9lBzQ+HIxxj5UueuhfX+syVHbn2c+DRjPYgrCdFzI0RgUBla+4d6iENeTT34xMPNHmwNACt2tdKewxykqZ47PE1U0O9gto4NCKYqTY2aRJtiVuoBpQGY508PIQH+Y6eBJpzikzhZlu3dXDn2HUbpcWCTHZqEtEw5KU=
+	t=1728893651; cv=none; b=qEcXD+BmQJQNHL0hUV9WDEzYhJcW6eit4iS5ZZiEXa+31HyKVxwXMgm/SGeaUqsGcqSBKMP7Fs9jWm70GGV+gyZZvqZCVesdR4ad7gUSEywibPXbc04+wspP+IEKioaL/zP/Y1sHGI1bkY5U4hNg1pi1bsvWFRloVqcSIPUQ9mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728888691; c=relaxed/simple;
-	bh=qnsUnlV73v4zNOIo78pUcFKwtyG4f1FbjArRnu2tg/E=;
+	s=arc-20240116; t=1728893651; c=relaxed/simple;
+	bh=EKD07Qj6JcVqClDp8w5hX4Ow8T50FvUf1cSyUeXs/8M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lz0WYnA7UcdexJodJWVU6Yd/9UR2lgGHXNj9WmTADOKQlNrP0k2+Fmp8bT/NxiIpKdhiOb96Esnfts+UEr7FdXklPn/+4/uxMcK0Cd34ujUfIQDHqk292vSKCL5UdaGyHWr7bBafIl0u3sRYqJShRB56ng6Mpe31Wlb+nBjI4/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uIEtZZuh; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=c45AFVKCq7T+Nwk7sDDdi6aFa/C5IEwBLJeztYWvZKV6QIsp/fa3qvSiPHosWXM0ipWl4rcP+az0CQNHQFOi5XLLO7/sFBO3Zy4GTLh14Wdbx6M2ZXC+G55U1kolLj2cwHSM3TNOzSO/zoeONGAjIvPbqoV9byYxH3PyVG107FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ceH6GsK0; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uIEtZZuh"
-Date: Mon, 14 Oct 2024 02:51:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728888687;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EHSBhZCpcgyB4w8AIuTjUDpg1rpWx0hAt2uVhJfIjUU=;
-	b=uIEtZZuhbKdFYjKbnFCF3yuBDvFYfrbiYc8T5bW7uBlRfl8SymNkQwfZS8sY9XNft1a/0X
-	VhuEHxidJ3QIMjZiefbip4miEyw7Cfbi+mSi9QN13eiAhimGx1sNCQQKHlq/khRRPSSlLk
-	9JYBH1R2L9QJ4QRnHdSz23K1wlQBUvI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christoph Hellwig <hch@lst.de>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] bcachefs: Fix sysfs warning in fstests generic/730,731
-Message-ID: <xboxb6r7ggimmzvwpfxqbzt3gsocwujbzkolostwhe777yo4mt@5uo65x6hh6qb>
-References: <20241012184239.3785089-1-kent.overstreet@linux.dev>
- <20241014061019.GA20775@lst.de>
- <2024101421-panning-challenge-c159@gregkh>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ceH6GsK0"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Wk8EcJ/7b4OEG+IFikYEtXUWa6XJYMvqVFBhG68Lv7Q=; b=ceH6GsK0E6q43xq2xtT81K5DtF
+	3Nv2eWGdf1mapppB0kDWQVaJ2UaTYBDWU2VnALi+jCZfOvEhbOubKwj/k5GWwIl5Z/L5pVgoLCA2v
+	fl1ZNnPuY4jH12qm20XvZgXEFuKOj55yxd5DeypDIOTvRr2DLZhLuYgojbFs3ZWKwj8I9vsjhh9Yz
+	t4rN/M1l8bCR4Lb49UiBA46djQowVK5t4LppB3HjTqDLEdGvZA82l15S8xI8ainkw+9UBJvjsk37Z
+	19vllUQfPQ48dNNu2iJMCGmfvBPSlWj5GdivVduMjfRslZoROENMKpnk4b64wT3K3Bi9ieN16NbUp
+	GeSC4EKw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1t0GDG-000000012qw-0aZ2;
+	Mon, 14 Oct 2024 08:13:58 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 1C7BB300777; Mon, 14 Oct 2024 10:13:58 +0200 (CEST)
+Date: Mon, 14 Oct 2024 10:13:58 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
+	corbet@lwn.net, mingo@redhat.com, acme@kernel.org,
+	namhyung@kernel.org, akpm@linux-foundation.org,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, jserv@ccns.ncku.edu.tw,
+	linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
+	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/3] lib/min_heap: Introduce non-inline versions of min
+ heap API functions
+Message-ID: <20241014081358.GS17263@noisy.programming.kicks-ass.net>
+References: <20241013184703.659652-1-visitorckw@gmail.com>
+ <20241013184703.659652-2-visitorckw@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -44,73 +57,29 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2024101421-panning-challenge-c159@gregkh>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20241013184703.659652-2-visitorckw@gmail.com>
 
-On Mon, Oct 14, 2024 at 08:34:06AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Oct 14, 2024 at 08:10:19AM +0200, Christoph Hellwig wrote:
-> > On Sat, Oct 12, 2024 at 02:42:39PM -0400, Kent Overstreet wrote:
-> > > sysfs warns if we're removing a symlink from a directory that's no
-> > > longer in sysfs; this is triggered by fstests generic/730, which
-> > > simulates hot removal of a block device.
-> > > 
-> > > This patch is however not a correct fix, since checking
-> > > kobj->state_in_sysfs on a kobj owned by another subsystem is racy.
-> > > 
-> > > A better fix would be to add the appropriate check to
-> > > sysfs_remove_link() - and sysfs_create_link() as well.
-> > 
-> > The proper fix is to not link to random other subsystems with
-> > object lifetimes you can't know.  I'm not sure why you think adding
-> > this link was ever allowed.
-> > 
+On Mon, Oct 14, 2024 at 02:47:01AM +0800, Kuan-Wei Chiu wrote:
+> All current min heap API functions are marked with '__always_inline'.
+> However, as the number of users increases, inlining these functions
+> everywhere leads to a significant increase in kernel size.
 > 
-> Odd, I never got the original patch that was sent here in the first
-> place...
-> 
-> Anyway, Christoph is right, this patch isn't ok.  You can't link outside
-> of the subdirectory in which you control in sysfs without a whole lot of
-> special cases and control.  The use of sysfs for filesystems is almost
-> always broken and tricky and full of race conditions (see many past
-> threads about this.)  Ideally we would fix this up by offering common
-> code for filesystems to use for sysfs (like we do for the driver
-> subsystems), but no one has gotten around to it for various reasons.
+> In performance-critical paths, such as when perf events are enabled and
+> min heap functions are called on every context switch, it is important
+> to retain the inline versions for optimal performance. To balance this,
+> the original inline functions are kept, and additional non-inline
+> versions of the functions have been added in lib/min_heap.c.
 
-There was already past precedent with the block/holder.c code, and
-userspace does depend on that for determining the topology of virtual
-block devices.
+The reason it is all __always_inline is because then the whole
+min_heap_callbacks thing can be constant propagated and the func->less()
+etc calls become direct calls.
 
-And that really is what sysfs is for, determining the actual topology
-and relationships between various devices - so if there's a relationship
-between devices we need to be able to expose that.
+Doing out of line for this stuff, makes them indirect calls, and
+indirect calls are super retarded expensive ever since spectre. But also
+things like kCFI add significant cost to indirect calls.
 
-I don't know why bcache never used the block/holder.c code (predates it,
-perhaps?) - but that code has been carried over basically unchanged, and
-we likely still depend on it (I'd have to dig around in tools...).
+Something that would be a trivial subtract instruction becomes this
+giant mess of an indirect function call.
 
-Re: the safety issues, I don't agree - provided you have a stable
-reference to the underlying kobject, which we do, since we have the
-block device open. The race is only w.r.t. kobj->state_in_sysfs, and
-that could be handled easily within the sysfs/kobject code.
- 
-> The only filesystem that I can see that attempts to do much like what
-> bcachefs does in sysfs is btrfs, but btrfs only seems to have one
-> symlink, while you have multiple ones pointing to the same block device.
-
-Not sure where you're seeing that? It's just a single backreference from
-the block device to the filesystem object.
-
-> I can't find any sysfs documentation in Documentation/ABI/ so I don't
-> really understand what it's attempting to do (and why isn't the tools
-> that check this screaming about that lack of documentation, that's
-> odd...)  Any hints as to what you are wishing to show here?
-
-Basically, it's the cleanest way (by far) for userspace to look up the
-filesystem from the block device: given a path to a block device, stat
-it to get the major:minor, then try to open
-/sys/dev/block/major:minor/bcachefs/.
-
-The alternative would be scanning through /proc/mounts, which is really
-nasty - the format isn't particularly cleanly specified, it's racy, and
-with containers systems are getting into the thousands of mounts these
-days.
+Given the whole min_heap thing is basically a ton of less() and swp()
+calls, I really don't think this trade off makes any kind of sense.
