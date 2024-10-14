@@ -1,137 +1,151 @@
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606C3156678;
-	Mon, 14 Oct 2024 10:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B581AD3E1
+	for <linux-bcachefs@vger.kernel.org>; Mon, 14 Oct 2024 15:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728900249; cv=none; b=aTbz+R9alkQ+q+ayRD1+fuuSx9shddAkpP8qInJIWbsDKfJo2S6xBu9BQq2j5HD0pURkzOspj8iJBTOjdneolUbvsIofIEtNKggQDiFUBJjELcD9IHESok2hADBC/ZAzbjiW4zsYiBepy/zwbej1u/1XTANCSiyjr2J1stqYFiY=
+	t=1728921467; cv=none; b=HjS7ZjvMoJJ7KPivAfPE9RAEJGpWmPy2VWU3DqXUdyFBU5RwqJ9h1gUHMAL7/ojwCEqmUrH4n2dShlY6QweLikiyy7J6oeBRl/Z2XzmTDQvPHlIZD0p+xJp5ncbCG8W15f4nfuzvKkUOMX+jnJSfqzCprcUXgkYQe6OwJhQei/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728900249; c=relaxed/simple;
-	bh=gxRDnZwXl/5mrp9SDbutci1G7aNGYTG5SqDg7ifmzpY=;
+	s=arc-20240116; t=1728921467; c=relaxed/simple;
+	bh=+buNy0g+JjO6nwiBeYM0jRkXzzScx/l1b0NrsWUBKB8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I4kc/5XxA4sTXquRhyqwLPZ2OKEH6ex1QsHavv3rKq8BFVKfulwBzy6TztkI+DeoJAsSsw1T4Rtx7KcefQrKnVPOtWR6gR5Vi9+9xgBT4NtYtH8AsBDAtM8Z38QtkNq01Yqpq+uHLrTBX+4pmKgmmSc87pFg5vChFIzj1R3lRck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DjvPewfQ; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=C2FgrxXagJ88iP//Lwq0CQnYqeUuH4jeGOHBP+SN8DtmdRUtLms93qHynKFr0SAxzCZX09R9kZVZdqk2xGN+CLjaV87SO6FMrJZQi0JIS5POpFAWr9y4nhoXSz209JdWwFI9DEj3yQBsvg2hsFUeQITs1ZjSLDgrXQWRh1py3l8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hxzlKCYG; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DjvPewfQ"
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-71e5b2814f6so958099b3a.2;
-        Mon, 14 Oct 2024 03:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728900248; x=1729505048; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f1UpkN6G+I3ynXmvcvmHYVqtSomW6VaVjxkgmMaS5WQ=;
-        b=DjvPewfQFzmS9ITwHux7KjFJ2WKUE/EbuGK5bEOZB2Q8Se2khJLxrF8Nq+QQu590kY
-         bGoUE/5ZU0RFcug4L3DlnQ9Y8dtj18/6AuAji4yVCyGhLa4ex2cmXjsSmVMCeTPrnAvJ
-         O7oebe/1UzNbo526FglNDOmyoXId/1QDVvneAKwoAWe+Vqy6kcY4G5IDxTNF+irNNBv5
-         uuRJK+yOnBV0n3lB9NP8Tq9u9GTFIzCwOtnlPwViytSxZ7eHQj0K+oCcu/fhk96yvwfw
-         0SfEx8xV6COEp4wKH1ZQG9THVFPlH9k+WWi3kZKzQLpE5op87ubAuLwNypLHvYC/vAdq
-         b7KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728900248; x=1729505048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f1UpkN6G+I3ynXmvcvmHYVqtSomW6VaVjxkgmMaS5WQ=;
-        b=IpR9JeDG7ZK+Xw+dOWegF2lyyAm9AKEvc/hzloSBvuWxVLsoWBRtw3PLsjZWMxGoTO
-         INTCYG4S27Gt7bKAmrAAEojs1G88E9N/TgwB25EDgb4Uy1RewmDAfvblsG8U4yGUak6T
-         WXLaWhus8XrCrDAhPoKnueZoT/dcie/4zt2pt7CDTdRx7nWQzmpRmKnZ/E2VEtR0sjXF
-         4CuHv4AANQOWwwsc9bojRpx+0zNSMVa3HKpdFDdnjLiYi2dB8bRPf8fYZ4gMuALXH5gE
-         RIQkczFYu7QF/RtYHtNeO2xvJqxwHTND+pmKk75AEtz2Ods9OYto4lrA4HO56iowQXFv
-         NSvw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1QI42gwMA660pGLuSnoaW5WFT0t67484ERYBLHBfQbN2nuGVBvNVX7FbEIMkoNQa22aQPIUboqZJ8YgBiKjqaUw==@vger.kernel.org, AJvYcCVOXcnJXaprcn4z4uNhyV+O/Esh5wK2puG2MLH0Ee0FHtsLHh4LZO8AXLeSY5vea205cHdlCTN0KcJs+Wq8qLw=@vger.kernel.org, AJvYcCVTWc3jjz2BIvEsTTjeUtpSBkc0NZOKuirgZ7XQvS0LfAUFNZFHFdNb/NqvZtEKyl7IFed+Pyu5btFZgFo=@vger.kernel.org, AJvYcCVf/M9WfppDwMeJASyHLbLrPPIKlHjFWoxW1pHQmDPjyRetQBHuXJ1YMStIT9g/JYL/se/AX5yXWssDHViN@vger.kernel.org, AJvYcCXCauLOnH4ftuQ7ZCONpz+79UqHiphIyjwQzL96te8BuuuokSayYUYIIbKs1W4t9zzlQM8jDD/s88Af@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZbxYwJekPURCIblmaLPZbcJxcoWwX1raRCm4z+4GcRBpT/cXY
-	qi4Ai1KY2L6M+/eas4FVs+HbnnLyycxez94XZehcv2zqNRWrveHB
-X-Google-Smtp-Source: AGHT+IGgEa3bpvndU2jxBEWa1yPYBEP7dBrWvI/1I6n9qW/VRreLiILNdpVJ/aCiWYGC5lADcN/4KA==
-X-Received: by 2002:a05:6a21:6e41:b0:1cc:e43e:3a01 with SMTP id adf61e73a8af0-1d8bcfa53ebmr16834401637.33.1728900247665;
-        Mon, 14 Oct 2024 03:04:07 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e618318d3sm2226638b3a.42.2024.10.14.03.04.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Oct 2024 03:04:07 -0700 (PDT)
-Date: Mon, 14 Oct 2024 18:04:01 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
-	corbet@lwn.net, peterz@infradead.org, mingo@redhat.com,
-	acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org,
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, jserv@ccns.ncku.edu.tw,
-	linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
-	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 3/3] Documentation/core-api: Add min heap API introduction
-Message-ID: <ZwzskczB85bGKWO/@visitorckw-System-Product-Name>
-References: <20241013184703.659652-1-visitorckw@gmail.com>
- <20241013184703.659652-4-visitorckw@gmail.com>
- <ZwzcnHmtRFISI9Ua@casper.infradead.org>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hxzlKCYG"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1728921464;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pF6h7VhHHBGfGvVXA7QvUSygCzoMMI9fdNXh9FBZTJw=;
+	b=hxzlKCYGwNUtIHwP+RvpHNQGmAl0pQnfjiVcheRyex7O+DJwjHjpTVaZb2qFhYIw+rdAv+
+	h5G4TXUFTs4OckgD2bKp094aj/oxbW2ycrc/vGVxg5OoQVAVovnxtZKnkeZ4UiWvye06ol
+	fLJQzdPcvOc1rNDFAuoJcJdLMV1GGsE=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-124-SqwDTzCJPqi9hleh9Jd4EQ-1; Mon,
+ 14 Oct 2024 11:57:41 -0400
+X-MC-Unique: SqwDTzCJPqi9hleh9Jd4EQ-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AFFF71955EB3;
+	Mon, 14 Oct 2024 15:57:39 +0000 (UTC)
+Received: from ws.net.home (unknown [10.45.224.59])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6323D19560AA;
+	Mon, 14 Oct 2024 15:57:37 +0000 (UTC)
+Date: Mon, 14 Oct 2024 17:57:34 +0200
+From: Karel Zak <kzak@redhat.com>
+To: Alan Huang <mmpgouride@gmail.com>
+Cc: util-linux@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Hongbo Li <lihongbo22@huawei.com>, 
+	"Darrick J. Wong" <djwong@kernel.org>, xfs <linux-xfs@vger.kernel.org>
+Subject: Re: Libmount bug ?
+Message-ID: <iipuwlnf73x3zjj4kgpgqqvu4u5t4iefg3qawqgzvl546rrbz5@w7tvj3jr5h2v>
+References: <14ADF290-5B46-44D5-83BC-9AE3732B192C@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZwzcnHmtRFISI9Ua@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <14ADF290-5B46-44D5-83BC-9AE3732B192C@gmail.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-On Mon, Oct 14, 2024 at 09:55:56AM +0100, Matthew Wilcox wrote:
-> On Mon, Oct 14, 2024 at 02:47:03AM +0800, Kuan-Wei Chiu wrote:
-> > Introduce an overview of the min heap API, detailing its usage and
-> > functionality. The documentation aims to provide developers with a
-> > clear understanding of how to implement and utilize min heaps within
-> > the Linux kernel, enhancing the overall accessibility of this data
-> > structure.
-> 
-> Please format this text to 80 columns.  Just pass it through 'fmt'.
-> 
-> > +This API supports efficient insertion, deletion, and access to the minimum element. It is optimized
-> > +for use in systems with performance constraints and is suitable for scenarios where the minimum
-> > +element needs to be accessed or updated frequently.
-> 
-> All systems have "performance constraints".  I'm not sure what that
-> means in this context.
-> 
-> > +This document provides a guide to the Min Heap API, detailing how to define and use min-heaps.
-> > +Please note that users should not directly call functions with **__min_heap_*()** names, but should
-> > +instead use the provided macro wrappers.
-> 
-> You can always remove "Please note that".  It has no meaning.  Just say
-> "You should not call functions with **__min_heap_** prefixes; use the
-> functions documented here instead.
-> 
-> > +Min-Heap Definition
-> > +-------------------
-> > +
-> > +The core data structure for representing a min-heap is defined using the **MIN_HEAP_PREALLOCATED**
-> > +and **DEFINE_MIN_HEAP** macros. These macros allow you to define a min-heap with a preallocated
-> > +buffer or dynamically allocated memory.
-> > +
-> > +Example:
-> > +
-> > +.. code-block:: c
-> > +
-> > +    #define MIN_HEAP_PREALLOCATED(_type, _name, _nr)
-> > +    struct _name {
-> > +        int nr;         /* Number of elements in the heap */
-> > +        int size;       /* Maximum number of elements that can be held */
-> > +        _type *data;    /* Pointer to the heap data */
-> > +        _type preallocated[_nr];  /* Static preallocated array */
-> > +    }
-> 
-> This isn't an example of code the reader of this document would write
-> though, is it?  This looks like code already provided.  An example
-> should be something like:
-> 
-> MIN_HEAP_PREALLOCATED(struct page, my_pages, 23);
-> 
-> ... or whatever would actually make sense.
 
-Thank you for the review. I'll wait for the decision on whether to keep
-the non-inline API before sending a v2 patch to address these comments.
+ Hi Alan,
 
-Regards,
-Kuan-Wei
+On Sat, Oct 12, 2024 at 04:57:39PM GMT, Alan Huang wrote:
+> The bcachefs has the helper called mount.bcachefs.
+
+do you mean the following script?
+https://evilpiepirate.org/git/bcachefs-tools.git/tree/mount.bcachefs.sh
+
+I believe that if you call the regular mount(8) from the script, then
+it's probably fine to not worry about the options. mount(8) will be
+able to ignore them.
+
+> Currently, there are users using fstab with nofail/user fail to mount,
+> we would like to know whether other filesystems using similar helper
+> properly handle this.
+
+The mount.nfs command uses libmount internally to generate the
+mount(2) syscall flags, so it is not affected by any additional
+options.
+
+The mount.fuse command has a list of unwanted mount options:
+https://github.com/libfuse/libfuse/blob/master/util/mount.fuse.c#L318-L326
+
+Please note that the "EXTERNAL HELPERS" section in the mount(8) man
+page describes which options are ignored.
+
+Also, if your mount helper is setuid (like mount.nfs), you still need
+to parse fstab to obtain mount options from a safe source. This is
+because options from the command line should be ignored as they are
+considered unsafe.
+
+> 
+> This is like commit 06e05eb0f78566b68c44328c37d7c28d8655e9df 
+> (“libmount: don't pass option "defaults" to helper")
+> 
+> Or would you like something like this? This might be incomplete though (e.g. owner, noowner etc.)
+> 
+> diff --git a/libmount/src/optmap.c b/libmount/src/optmap.c
+> index d7569a0f0..c13b9ba19 100644
+> --- a/libmount/src/optmap.c
+> +++ b/libmount/src/optmap.c
+> @@ -152,11 +152,11 @@ static const struct libmnt_optmap userspace_opts_map[] =
+>     { "auto",    MNT_MS_NOAUTO, MNT_NOHLPS | MNT_INVERT | MNT_NOMTAB },  /* Can be mounted using -a */
+>     { "noauto",  MNT_MS_NOAUTO, MNT_NOHLPS | MNT_NOMTAB },  /* Can only be mounted explicitly */
+> 
+> -   { "user[=]", MNT_MS_USER },                             /* Allow ordinary user to mount (mtab) */
+> -   { "nouser",  MNT_MS_USER, MNT_INVERT | MNT_NOMTAB },    /* Forbid ordinary user to mount */
+> +   { "user[=]", MNT_MS_USER, MNT_NOHLPS},                             /* Allow ordinary user to mount (mtab) */
+
+This may cause issues with certain helpers (e.g. cifs) where "user="
+is a standard option. However, this is something that needs to be
+addressed in libmount, as it already handles this use-case for cifs.
+The use of MNT_NOHLPS may override this.
+
+> +   { "nouser",  MNT_MS_USER, MNT_INVERT | MNT_NOMTAB | MNT_NOHLPS},    /* Forbid ordinary user to mount */
+> 
+> -   { "users",   MNT_MS_USERS, MNT_NOMTAB },                /* Allow ordinary users to mount */
+> -   { "nousers", MNT_MS_USERS, MNT_INVERT | MNT_NOMTAB },   /* Forbid ordinary users to mount */
+> +   { "users",   MNT_MS_USERS, MNT_NOMTAB | MNT_NOHLPS},                /* Allow ordinary users to mount */
+> +   { "nousers", MNT_MS_USERS, MNT_INVERT | MNT_NOMTAB | MNT_NOHLPS},   /* Forbid ordinary users to mount */
+> 
+>     { "owner",   MNT_MS_OWNER, MNT_NOMTAB },                /* Let the owner of the device mount */
+>     { "noowner", MNT_MS_OWNER, MNT_INVERT | MNT_NOMTAB },   /* Device owner has no special privs */
+> @@ -180,7 +180,7 @@ static const struct libmnt_optmap userspace_opts_map[] =
+>     { "sizelimit=", MNT_MS_SIZELIMIT, MNT_NOHLPS | MNT_NOMTAB },	   /* loop device size limit */
+>     { "encryption=", MNT_MS_ENCRYPTION, MNT_NOHLPS | MNT_NOMTAB },	   /* loop device encryption */
+> 
+> -   { "nofail",  MNT_MS_NOFAIL, MNT_NOMTAB },               /* Do not fail if ENOENT on dev */
+> +   { "nofail",  MNT_MS_NOFAIL, MNT_NOMTAB | MNT_NOHLPS},               /* Do not fail if ENOENT on dev */
+
+Could this option be usable for some helpers?
+
+I believe the best solution is to follow the Fuse way and define a
+list of options to ignore in your fs-specific helper.
+
+The ideal solution would be to implement a better libmount (perhaps
+libmount2) where the /sbin/mount.<type> helpers are replaced with
+dlopen() modules. This way, the library would handle all the details
+such as command line and fstab options.
+
+    Karel
+
+-- 
+ Karel Zak  <kzak@redhat.com>
+ http://karelzak.blogspot.com
+
