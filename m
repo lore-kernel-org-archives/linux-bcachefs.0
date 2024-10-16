@@ -1,110 +1,111 @@
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1702076D5
-	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Oct 2024 09:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2A32170D5;
+	Wed, 16 Oct 2024 20:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729072176; cv=none; b=pNe+uW8YOvqmi9qkBFhr5a38KDsX/jvbmuMSMujjAQVZJMU+9uCXwtn0EfUa8omI67DK+mvsZ50RQa+LjXR++yB3JvyhxX6u+PlnqWK1MaqcGH/7YbmzelyCrr60MTYArRw6QUCzJRZ8gndlBexL0ez/jBkZwupHGwyvPZCUcNo=
+	t=1729111404; cv=none; b=KLDM1dTdDrX2GbkU2y8SF7W6Z2PeG0nWMLB1WqqnuKgRZbEpH/cEXvmSgLp1Lre/V68Y0o3jOXkpmmQ1fLnNn4gFKRShcqSnXpEJwCoU8X92qDNR96Zshhnq9QAQ8LM5GzX7g14v/9rbx5iqc/4OZczCTOlkPVI5V3UqEASKHFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729072176; c=relaxed/simple;
-	bh=D/iOdkl0AW9qhMSlWYQfIhAtgrWHo82x23P8cBcPkdc=;
+	s=arc-20240116; t=1729111404; c=relaxed/simple;
+	bh=qo/iVoYCKv6clO7FRi1PwRL1hqwG01g25YyRsbCYQ00=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gS58AmnanQJxTbTeGlhGmzxyDu3QkmG8vHzkhYsD7IYUwNQuQ1+yi6q4+0+n8u3NgzfhEZQNtd2R82IIoRBUHJH/op2JOdHMdAi4d2XGjOxPt+sd6y4ukHHbD/EPId+CHItxjWIBCBNlar4iZR05RCPk87dlcZeleWsj3QsjnKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dTeO47Nh; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=YG17SS4uBsDB/OGfy7+k48BKcUa4rqpwk56+5PPu1JgAvcgMQAB+Ls5YB6becCB928Voxgk9kqHdXkcuybcg+ONhThR8GWBfDh5f6WRra3oXL6KJ4KEWW4t6kfSp5bV7jfFIrGEqjOGQ340jXpOiY0zRdikL2GZ4fAdYGy+Lb5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AJZq1F2d; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dTeO47Nh"
-Date: Wed, 16 Oct 2024 05:49:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729072171;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rnzrshuwWz3tauk6FeHaVI1gp0KPdigX4+rB6qCSRZw=;
-	b=dTeO47Nhkcg8mztLMxhBXHX7YEk7CUP+IKOsN1hHxHBqq48TKpEwG+gJ60+Wz7btwAjLH7
-	VmwiRqg6zCRbIcr5U54sxVVIAMiyr0rpm1sC34EEjt7LseBYNYTqlMSj7JhurVfqBgzlAm
-	EoKj9NGmhyS3KvWXhuOypHwvNh5rSik=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christoph Hellwig <hch@lst.de>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] bcachefs: Fix sysfs warning in fstests generic/730,731
-Message-ID: <qjrvr2icigrhft3fma7en4stlunwlna4262bdbzqbrr4tjl4vb@3sqgjoymzz3m>
-References: <20241012184239.3785089-1-kent.overstreet@linux.dev>
- <20241014061019.GA20775@lst.de>
- <2024101421-panning-challenge-c159@gregkh>
- <xboxb6r7ggimmzvwpfxqbzt3gsocwujbzkolostwhe777yo4mt@5uo65x6hh6qb>
- <2024101637-approval-repossess-7a3a@gregkh>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AJZq1F2d"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57E29C4CECD;
+	Wed, 16 Oct 2024 20:43:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729111404;
+	bh=qo/iVoYCKv6clO7FRi1PwRL1hqwG01g25YyRsbCYQ00=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AJZq1F2dulcRjkSp/MnZnzLjHNPn3ZptXhO7JV7B3NrGDtMWpHuPHDzKBFv2U9Owq
+	 6zDdDSEn2+ZcGf3f8ciCWjuUgHtgy3lwetxKCoauF6g00b220IlNk2dIcod9jxWLrh
+	 7VhZQnFmSmfeWrAh5IYhhuOe3IyU3zIclimupa0sRSH9zRQ6vNWno4qkoxPIPz5wZ6
+	 NCV7qT1DCHVesCR/hEnE/SZ3Yixt3z9Knw2JuTM+bY2itrLyNrNqskP5UHKhmAC5s0
+	 nsk5UI4oR4DRmtXNImEDJOXplbCeiCkexpL5qUnDWJjYzSxuLrYl64ErstZVcIBlZl
+	 dIfIyjuNJqs8w==
+Date: Wed, 16 Oct 2024 13:43:21 -0700
+From: Kees Cook <kees@kernel.org>
+To: Jan Hendrik Farr <kernel@jfarr.cc>
+Cc: Bill Wendling <morbo@google.com>,
+	Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev,
+	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ardb@kernel.org
+Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
+ bch2_xattr_validate
+Message-ID: <202410161342.53075D369C@keescook>
+References: <ZvV6X5FPBBW7CO1f@archlinux>
+ <3E304FB2-799D-478F-889A-CDFC1A52DCD8@toblux.com>
+ <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com>
+ <Zvg-mDsvvOueGpzs@archlinux>
+ <202409281331.1F04259@keescook>
+ <21D2A2BB-F442-480D-8B66-229E8C4A63D3@toblux.com>
+ <Zv6BEO-1Y0oJ3krr@archlinux>
+ <CAGG=3QVecaZfoRrjToToq8=Azh8M0vQ5Q=V8dfhdBnDR8GWy5A@mail.gmail.com>
+ <Zw8iawAF5W2uzGuh@archlinux>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2024101637-approval-repossess-7a3a@gregkh>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zw8iawAF5W2uzGuh@archlinux>
 
-On Wed, Oct 16, 2024 at 09:00:42AM +0200, Greg Kroah-Hartman wrote:
-> [meta comment, Kent, I'm not getting your emails sent to me at all, they
-> aren't even showing up in the gmail spam box, so something is really off
-> on your server such that google is just rejecting them all?]
-
-I'm just using Migadu, if it persists it'll have to be escalated with
-both Google and Migadu to get anything done, most likely.
-
-On Wed, Oct 16, 2024 at 09:00:42AM +0200, Greg Kroah-Hartman wrote:
-> > There was already past precedent with the block/holder.c code, and
-> > userspace does depend on that for determining the topology of virtual
-> > block devices.
+On Wed, Oct 16, 2024 at 04:18:19AM +0200, Jan Hendrik Farr wrote:
+> On 15 18:22:50, Bill Wendling wrote:
+> > On Thu, Oct 3, 2024 at 4:33 AM Jan Hendrik Farr <kernel@jfarr.cc> wrote:
+> > > On 02 11:18:57, Thorsten Blum wrote:
+> > > > On 28. Sep 2024, at 22:34, Kees Cook <kees@kernel.org> wrote:
+> > > > > [...]
+> > > > >
+> > > > > Sorry, I've been out of commission with covid. Globally disabling this
+> > > > > macro for clang is not the right solution (way too big a hammer).
+> > > > >
+> > > > > Until Bill has a fix, we can revert commit
+> > > > > 86e92eeeb23741a072fe7532db663250ff2e726a, as the problem is limited to
+> > > > > certain situations where 'counted_by' is in use.
+> > > >
+> > > > I already encountered two other related __counted_by() issues [1][2]
+> > > > that are now being reverted. Would it be an option to disable it
+> > > > globally, but only for Clang < v19 (where it looks like it'll be fixed)?
+> > > >
+> > > > Otherwise adding __counted_by() might be a slippery slope for a long
+> > > > time and the edge cases don't seem to be that rare anymore.
+> > > >
+> > > > Thanks,
+> > > > Thorsten
+> > > >
+> > > > [1] https://lore.kernel.org/all/20240909162725.1805-2-thorsten.blum@toblux.com/
+> > > > [2] https://lore.kernel.org/all/20240923213809.235128-2-thorsten.blum@linux.dev/
+> > >
+> > > This issue is now fixed on the llvm main branch:
+> > > https://github.com/llvm/llvm-project/commit/882457a2eedbe6d53161b2f78fcf769fc9a93e8a
+> > >
+> > > So presumably this will go into 19.1.2, not sure what this means for
+> > > distros that ship clang 18. Will they have to be notified to backport
+> > > this?
+> > >
+> > FYI, Clang 19.1.2 shipped with your fix in it.
+> > 
 > 
-> What tools use that?  What sysfs links are being created for it?
+> Thx for the info.
 > 
-> And yes, filesystems do poke around in sysfs, but they almost always do
-> so in a racy way, see this old link for examples of common problems:
-> 	https://lore.kernel.org/all/20230406120716.80980-1-frank.li@vivo.com/#r
+> How should we continue with the "off by 4" issue? The way I see it either
+> the kernel has to change struct_size (lots of work) or clang has to get
+> an option to follow the kernels behavior. I'm in favor of adding an
+> option to clang.
 
-That doesn't appear to be at all relevant to this discussion. Most/all
-of the major filesystems today do have objects in sysfs under /sys/fs,
-which is what that thread was describing, and I know some of those
-people are going to take issue if you're calling their code buggy.
+I'm planning on checking how much impact there is on the kernel to fix
+struct_size() to be precise. It really does need to match __bdos for
+Clang and GCC.
 
-> > And that really is what sysfs is for, determining the actual topology
-> > and relationships between various devices - so if there's a relationship
-> > between devices we need to be able to expose that.
-> 
-> I totally agree, that is what sysfs is for, but at the filesystem layer
-> you all are having to deal with "raw" kobjects and doing that gets
-> tricky and is easy to get wrong.
+-Kees
 
-Well, you're the person who created the API.
-
-> > Re: the safety issues, I don't agree - provided you have a stable
-> > reference to the underlying kobject, which we do, since we have the
-> > block device open. The race is only w.r.t. kobj->state_in_sysfs, and
-> > that could be handled easily within the sysfs/kobject code.
-> 
-> Handled how?
-
-Per-kobject lock, taken by kobject_add() and kobject_del(), to
-synchronize kobj->state_in_sysfs and the actual VFS state;
-sysfs_create_link() and sysfs_remove_link() takes the same lock. It's
-not hard...
-
-> > The alternative would be scanning through /proc/mounts, which is really
-> > nasty - the format isn't particularly cleanly specified, it's racy, and
-> > with containers systems are getting into the thousands of mounts these
-> > days.
-> 
-> How does all other filesystems do this?  Surely we are not relying on
-> each filesystem to create these symlinks, that's just not going to
-> work...
-
-Sysfs code is currently in no way standardized across filesystems. I
-recently introduced standard vfs-layer ioctls for getting the UUID and
-sysfs paths of mounted filesystems, but we're a long ways from any real
-standardization.
+-- 
+Kees Cook
