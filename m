@@ -1,234 +1,143 @@
-Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A432321E3BA
-	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Oct 2024 04:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484D4FC0C;
+	Wed, 16 Oct 2024 07:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729054716; cv=none; b=acFl1gb2TfM+A/crZRIc9cqAXiknyEbZ8gETAQYEeI6yETs5rddwlw356qPbG3NeDoub6fAUGGmTdJxfk3l2uYqhNfLhajlK6F7ltT+fjpeXjjzrAtFS/dkO20QcQlCGVNmUkbzpwFEWtYc5dQ1K654Gcu4rCawpZ3NstiuK+H4=
+	t=1729062047; cv=none; b=sksM4Aa7S3R4822bXXm39k6ZN9cpMcrZyR1JEtlAGpYe8eGpxELcM1uAYztXry8btq7szJvCgE04wGYpfVXPIO5Okl8oeugQZFFBUTSFxe0A4Fm5ay1bwOWI8nJh6ucDmA+3h8MYpMz3F8ESTmY2J9WNPgptn+68soIrLwliPsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729054716; c=relaxed/simple;
-	bh=2FeP+9UGdLb9/C9jE1ClycDXE34R13pCS64DVe39SeI=;
-	h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type; b=E9CKMumyGK9ZOg+VKN//JKX7TdSRV294py88IMwg4zrv2PzU/a0B25ZnMYnoT87ZEGqHsuwIKwZJMqmRJ8Om1AJ4Jc+LYPjANAbm32NOzHjK1xc04oQkdhzR13/Up/PwpRC6NHIym1YnM4aQulpNWnoZivX3pbr3iWJBTrhV18Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
-Received: from mail.carlthompson.net (mail.home [10.35.20.252])
-	(Authenticated sender: cet@carlthompson.net)
-	by smtp.carlthompson.net (Postfix) with ESMTPSA id C7C9E201838B2
-	for <linux-bcachefs@vger.kernel.org>; Tue, 15 Oct 2024 21:51:16 -0700 (PDT)
-Date: Tue, 15 Oct 2024 21:51:16 -0700 (PDT)
-From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
-To: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Message-ID: <873903780.802.1729054276600@mail.carlthompson.net>
-Subject: Another bcachefs version downgrade bug
+	s=arc-20240116; t=1729062047; c=relaxed/simple;
+	bh=3G4HKc0AElPjZ/Lh8bA17t0DqAVtp8trD3Hap4zH1pQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xh1HIEeyaOHETBeNsVRp8yavuX3xj0c46HSnVcv+SzSiiRfSYElJIiX84/+QGwujRiG1jzIhWLfeAPewTE/DmiF00aSsROQRWZe71qS+ihptF3GmejVHv3PYhtVcFx5h/95H8mDLaoMxfk5Z4BR4nFWj3Dp+oawu9G0QNXaBx6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=bp1GeTbv; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="bp1GeTbv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226A3C4CEC5;
+	Wed, 16 Oct 2024 07:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1729062046;
+	bh=3G4HKc0AElPjZ/Lh8bA17t0DqAVtp8trD3Hap4zH1pQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bp1GeTbvtx4fxl/SytSbAd6A71Vi1d3KA9ZFcHUBxciHqQlI8mLlDJ2eMJQ0i7glr
+	 QgOVUqEchf2YFv2TXORgRLbQg9B3dfEvRjCuYfDh5QjAbNB74V6H9Gp4D/t5zvi37a
+	 5IpHeweHg2qnf4gUiJxwxCruwgCS+IcnolThjPNY=
+Date: Wed, 16 Oct 2024 09:00:42 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Christoph Hellwig <hch@lst.de>, linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH] bcachefs: Fix sysfs warning in fstests generic/730,731
+Message-ID: <2024101637-approval-repossess-7a3a@gregkh>
+References: <20241012184239.3785089-1-kent.overstreet@linux.dev>
+ <20241014061019.GA20775@lst.de>
+ <2024101421-panning-challenge-c159@gregkh>
+ <xboxb6r7ggimmzvwpfxqbzt3gsocwujbzkolostwhe777yo4mt@5uo65x6hh6qb>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
-X-Originating-Client: open-xchange-appsuite
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xboxb6r7ggimmzvwpfxqbzt3gsocwujbzkolostwhe777yo4mt@5uo65x6hh6qb>
 
-Hi,
+[meta comment, Kent, I'm not getting your emails sent to me at all, they
+aren't even showing up in the gmail spam box, so something is really off
+on your server such that google is just rejecting them all?]
 
-     I believe there is another newer version downgrade bug in bcachefs (tested versions: 6.9.4 <--> 6.11.3).
+On Mon, Oct 14, 2024 at 02:51:23AM -0400, Kent Overstreet wrote:
+> On Mon, Oct 14, 2024 at 08:34:06AM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 14, 2024 at 08:10:19AM +0200, Christoph Hellwig wrote:
+> > > On Sat, Oct 12, 2024 at 02:42:39PM -0400, Kent Overstreet wrote:
+> > > > sysfs warns if we're removing a symlink from a directory that's no
+> > > > longer in sysfs; this is triggered by fstests generic/730, which
+> > > > simulates hot removal of a block device.
+> > > > 
+> > > > This patch is however not a correct fix, since checking
+> > > > kobj->state_in_sysfs on a kobj owned by another subsystem is racy.
+> > > > 
+> > > > A better fix would be to add the appropriate check to
+> > > > sysfs_remove_link() - and sysfs_create_link() as well.
+> > > 
+> > > The proper fix is to not link to random other subsystems with
+> > > object lifetimes you can't know.  I'm not sure why you think adding
+> > > this link was ever allowed.
+> > > 
+> > 
+> > Odd, I never got the original patch that was sent here in the first
+> > place...
+> > 
+> > Anyway, Christoph is right, this patch isn't ok.  You can't link outside
+> > of the subdirectory in which you control in sysfs without a whole lot of
+> > special cases and control.  The use of sysfs for filesystems is almost
+> > always broken and tricky and full of race conditions (see many past
+> > threads about this.)  Ideally we would fix this up by offering common
+> > code for filesystems to use for sysfs (like we do for the driver
+> > subsystems), but no one has gotten around to it for various reasons.
+> 
+> There was already past precedent with the block/holder.c code, and
+> userspace does depend on that for determining the topology of virtual
+> block devices.
 
-     My laptop runs kernel 6.9.4 normally with 4 bcachefs filesystems on LVM2 logical volumes mounted including the root filesystem. I needed to test something under 6.11 so I booted kernel 6.11.3 and used the system normally from the console (bcachefs worked fine under 6.11.3). After attempting to boot back into 6.9.4 my laptop no longer starts and hangs when trying to mount and manipulate the root filesystem. The kernel log shows kernel traces due to hung copygc tasks (see dmesg output below). This happens every time I try to start 6.9.4 now. The kernel log reveals that the bcachefs filesystem seems to complete the version downgrade and initial mount successfully but it starts hanging as soon as the filesystem is used. Booting back into the 6.11.3 kernel causes the filesystems to work again but I can't run 6.11 on my laptop normally because 6.11 (and 6.10) have amdgpu issues that cause irrecoverable graphical desktop lockups. So right now I can either choose to boot with filesystem
- s that don't work or with periodic hard graphical desktop crashes neither of which is ideal.
+What tools use that?  What sysfs links are being created for it?
 
-     On my laptop and some of my other computers I boot multiple Linux distributions which usually run different kernels and mount the same filesystems on all of them (except root). So I do need to be able to switch back and forth between kernels as needed on all of my systems and these types of issues give me some pause. I will disable bcachefs use on my dev systems and servers for now until I am more confident that there is a solid testing plan in place to make sure there can be no more of these kind of issues in the future when booting multiple kernels. I will keep bcachefs on my laptop for testing. A fix for my laptop isn't urgent for me personally as I can recreate the filesystems under 6.9.4 and restore from backups. Of course others people might need a fix more quickly. Next time I need to boot a different kernel I'll make sure to create LVM snapshots of the devices first to which I can revert if needed. 
+And yes, filesystems do poke around in sysfs, but they almost always do
+so in a racy way, see this old link for examples of common problems:
+	https://lore.kernel.org/all/20230406120716.80980-1-frank.li@vivo.com/#r
 
-Thanks,
-Carl
+> And that really is what sysfs is for, determining the actual topology
+> and relationships between various devices - so if there's a relationship
+> between devices we need to be able to expose that.
 
-show-super from one affected filesystem:
----
-[clip carl]# bcachefs show-super /dev/clip/root-alpine 
-Device:                                     (unknown device)
-External UUID:                             c992a5de-c9b3-4fd1-82ed-4d2f66bc11cb
-Internal UUID:                             43b4fe97-f5a4-48b3-8d99-3a3dda25211a
-Magic number:                              c68573f6-66ce-90a9-d96a-60cf803df7ef
-Device index:                              0
-Label:                                     (none)
-Version:                                   1.12: (unknown version)
-Version upgrade complete:                  1.12: (unknown version)
-Oldest version on disk:                    1.4: member_seq
-Created:                                   Fri Mar 22 19:19:01 2024
-Sequence number:                           249
-Time of last write:                        Tue Oct 15 20:23:34 2024
-Superblock size:                           4.45 KiB/1.00 MiB
-Clean:                                     0
-Devices:                                   1
-Sections:                                  members_v1,replicas_v0,clean,journal_seq_blacklist,journal_v2,counters,members_v2,errors,ext,downgrade
-Features:                                  lz4,journal_seq_blacklist_v3,reflink,new_siphash,inline_data,new_extent_overwrite,btree_ptr_v2,extents_above_btree_updates,btree_updates_journalled,reflink_inline_data,new_varint,journal_no_flush,alloc_v2,extents_across_btree_nodes
-Compat features:                           alloc_info,alloc_metadata,extents_above_btree_updates_done,bformat_overflow_done
+I totally agree, that is what sysfs is for, but at the filesystem layer
+you all are having to deal with "raw" kobjects and doing that gets
+tricky and is easy to get wrong.
 
-Options:
-  block_size:                              4.00 KiB
-  btree_node_size:                         256 KiB
-  errors:                                  continue [fix_safe] panic ro 
-  metadata_replicas:                       1
-  data_replicas:                           1
-  metadata_replicas_required:              1
-  data_replicas_required:                  1
-  encoded_extent_max:                      64.0 KiB
-  metadata_checksum:                       none [crc32c] crc64 xxhash 
-  data_checksum:                           none [crc32c] crc64 xxhash 
-  compression:                             lz4
-  background_compression:                  none
-  str_hash:                                crc32c crc64 [siphash] 
-  metadata_target:                         none
-  foreground_target:                       none
-  background_target:                       none
-  promote_target:                          none
-  erasure_code:                            0
-  inodes_32bit:                            1
-  shard_inode_numbers:                     1
-  inodes_use_key_cache:                    1
-  gc_reserve_percent:                      8
-  gc_reserve_bytes:                        0 B
-  root_reserve_percent:                    0
-  wide_macs:                               0
-  promote_whole_extents:                   0
-  acl:                                     1
-  usrquota:                                0
-  grpquota:                                0
-  prjquota:                                0
-  journal_flush_delay:                     1000
-  journal_flush_disabled:                  0
-  journal_reclaim_delay:                   100
-  journal_transaction_names:               1
-  allocator_stuck_timeout:                 30
-  version_upgrade:                         [compatible] incompatible none 
-  nocow:                                   0
+> Re: the safety issues, I don't agree - provided you have a stable
+> reference to the underlying kobject, which we do, since we have the
+> block device open. The race is only w.r.t. kobj->state_in_sysfs, and
+> that could be handled easily within the sysfs/kobject code.
 
-members_v2 (size 160):
-Device:                                    0
-  Label:                                   (none)
-  UUID:                                    352e33b9-dde4-48da-8fe2-255ae78c6320
-  Size:                                    24.0 GiB
-  read errors:                             0
-  write errors:                            0
-  checksum errors:                         2
-  seqread iops:                            0
-  seqwrite iops:                           0
-  randread iops:                           0
-  randwrite iops:                          0
-  Bucket size:                             256 KiB
-  First bucket:                            0
-  Buckets:                                 98304
-  Last mount:                              Tue Oct 15 20:23:32 2024
-  Last superblock write:                   249
-  State:                                   rw
-  Data allowed:                            journal,btree,user
-  Has data:                                journal,btree,user
-  Btree allocated bitmap blocksize:        1.00 MiB
-  Btree allocated bitmap:                  0000000000000000000000000000011111111111111111111111111111111111
-  Durability:                              1
-  Discard:                                 1
-  Freespace initialized:                   1
+Handled how?
 
-errors (size 24):
-bset_bad_csum                               1               Sat Jul  6 07:43:37 2024
+> > The only filesystem that I can see that attempts to do much like what
+> > bcachefs does in sysfs is btrfs, but btrfs only seems to have one
+> > symlink, while you have multiple ones pointing to the same block device.
+> 
+> Not sure where you're seeing that? It's just a single backreference from
+> the block device to the filesystem object.
 
+I see multiple symlinks being created in the code, I don't know what it
+looks like on a running system, sorry.
 
-dmesg output:
----
+> > I can't find any sysfs documentation in Documentation/ABI/ so I don't
+> > really understand what it's attempting to do (and why isn't the tools
+> > that check this screaming about that lack of documentation, that's
+> > odd...)  Any hints as to what you are wishing to show here?
+> 
+> Basically, it's the cleanest way (by far) for userspace to look up the
+> filesystem from the block device: given a path to a block device, stat
+> it to get the major:minor, then try to open
+> /sys/dev/block/major:minor/bcachefs/.
 
-...
+Can you document this properly in Documentation/ABI/ which is where all
+sysfs files and symlinks are supposed to be documented?  We have a tool
+that you can run at runtime to show all missing documentation entries,
+scripts/get_abi.pl
 
-[  230.456893] bcachefs (dm-7): mounting version 1.12: (unknown version) opts=compression=lz4
-[  230.456911] bcachefs (dm-7): recovering from clean shutdown, journal seq 4901
-[  230.456915] bcachefs (dm-7): Version downgrade required:
-[  230.469098] bcachefs (dm-7): alloc_read... done
-[  230.469111] bcachefs (dm-7): stripes_read... done
-[  230.469115] bcachefs (dm-7): snapshots_read... done
-[  230.469436] bcachefs (dm-7): journal_replay... done
-[  230.469441] bcachefs (dm-7): resume_logged_ops... done
-[  230.469450] bcachefs (dm-7): going read-write
-[  368.351326] INFO: task bch-copygc/dm-7:547 blocked for more than 122 seconds.
-[  368.351336]       Not tainted 6.9.4-arch1-1 #1
-[  368.351338] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  368.351340] task:bch-copygc/dm-7 state:D stack:0     pid:547   tgid:547   ppid:2      flags:0x00004000
-[  368.351345] Call Trace:
-[  368.351348]  <TASK>
-[  368.351354]  __schedule+0x3c7/0x1510
-[  368.351368]  schedule+0x27/0xf0
-[  368.351372]  __closure_sync+0x7e/0x140
-[  368.351382]  __bch2_write+0x136b/0x1660 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351436]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  368.351440]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  368.351441]  ? __kmalloc+0x1a7/0x440
-[  368.351446]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  368.351448]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  368.351452]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  368.351454]  ? local_clock_noinstr+0xd/0xd0
-[  368.351456]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  368.351457]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  368.351460]  ? bch2_moving_ctxt_do_pending_writes+0x11a/0x220 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351489]  bch2_moving_ctxt_do_pending_writes+0x11a/0x220 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351511]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  368.351512]  ? bch2_btree_path_traverse_one+0x958/0xcf0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351539]  bch2_data_update_init+0x68b/0x1420 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351573]  ? bch2_move_extent+0x3da/0xed0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351602]  bch2_move_extent+0x3da/0xed0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351631]  ? bch2_evacuate_bucket+0x9d4/0xc00 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351652]  bch2_evacuate_bucket+0x9d4/0xc00 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351681]  ? bch2_copygc+0x210/0x880 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351702]  bch2_copygc+0x210/0x880 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351732]  bch2_copygc_thread+0x152/0x3d0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351775]  ? bch2_copygc_thread+0xcf/0x3d0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351828]  ? __pfx_bch2_copygc_thread+0x10/0x10 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  368.351868]  kthread+0xcf/0x100
-[  368.351876]  ? __pfx_kthread+0x10/0x10
-[  368.351882]  ret_from_fork+0x31/0x50
-[  368.351889]  ? __pfx_kthread+0x10/0x10
-[  368.351894]  ret_from_fork_asm+0x1a/0x30
-[  368.351905]  </TASK>
-[  491.230894] INFO: task bch-copygc/dm-7:547 blocked for more than 245 seconds.
-[  491.230914]       Not tainted 6.9.4-arch1-1 #1
-[  491.230920] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  491.230924] task:bch-copygc/dm-7 state:D stack:0     pid:547   tgid:547   ppid:2      flags:0x00004000
-[  491.230939] Call Trace:
-[  491.230944]  <TASK>
-[  491.230955]  __schedule+0x3c7/0x1510
-[  491.230984]  schedule+0x27/0xf0
-[  491.230993]  __closure_sync+0x7e/0x140
-[  491.231011]  __bch2_write+0x136b/0x1660 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.231160]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  491.231169]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  491.231174]  ? __kmalloc+0x1a7/0x440
-[  491.231186]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  491.231192]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  491.231206]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  491.231211]  ? local_clock_noinstr+0xd/0xd0
-[  491.231218]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  491.231223]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  491.231232]  ? bch2_moving_ctxt_do_pending_writes+0x11a/0x220 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.231340]  bch2_moving_ctxt_do_pending_writes+0x11a/0x220 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.231412]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  491.231418]  ? bch2_btree_path_traverse_one+0x958/0xcf0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.231509]  bch2_data_update_init+0x68b/0x1420 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.231625]  ? bch2_move_extent+0x3da/0xed0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.231732]  bch2_move_extent+0x3da/0xed0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.231823]  ? bch2_evacuate_bucket+0x9d4/0xc00 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.231883]  bch2_evacuate_bucket+0x9d4/0xc00 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.231963]  ? bch2_copygc+0x210/0x880 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.232022]  bch2_copygc+0x210/0x880 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.232089]  bch2_copygc_thread+0x152/0x3d0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.232148]  ? bch2_copygc_thread+0xcf/0x3d0 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.232217]  ? __pfx_bch2_copygc_thread+0x10/0x10 [bcachefs 8d6f6bf430dcfbb124cd4a016333997e24e1fc8a]
-[  491.232271]  kthread+0xcf/0x100
-[  491.232282]  ? __pfx_kthread+0x10/0x10
-[  491.232289]  ret_from_fork+0x31/0x50
-[  491.232298]  ? __pfx_kthread+0x10/0x10
-[  491.232304]  ret_from_fork_asm+0x1a/0x30
-[  491.232319]  </TASK>
+> The alternative would be scanning through /proc/mounts, which is really
+> nasty - the format isn't particularly cleanly specified, it's racy, and
+> with containers systems are getting into the thousands of mounts these
+> days.
 
-...
+How does all other filesystems do this?  Surely we are not relying on
+each filesystem to create these symlinks, that's just not going to
+work...
+
+thanks,
+
+greg k-h
