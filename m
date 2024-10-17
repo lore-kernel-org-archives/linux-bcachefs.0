@@ -1,76 +1,64 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD251DA60D
-	for <linux-bcachefs@vger.kernel.org>; Thu, 17 Oct 2024 10:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A271DEFE5
+	for <linux-bcachefs@vger.kernel.org>; Thu, 17 Oct 2024 16:49:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729161985; cv=none; b=IC9PphI3mK+C1HPSp6PRQ/NCDXCl7+viZFbbpR+ycHHGIWERnQrntmZY1r3WbpP6BYiNbdoC840FCyimtA6NfcgbfNrFjCu4AR/fLiDM69wAqJvS6naTRkytAOJdf/lDMNHRmc3+MYXvxBBjqU5HcrbLXGcGXthq+vlsW1P13D0=
+	t=1729183779; cv=none; b=kHg3srw8ScNDzphFyzYGTxNhMMbix+C0gmgwW/8UtgfzYGrjgekXr7llvFLAiDSvS5ZxYfyvaaCRcfgpfLFZAqsyaJgfj2RWlHaUvnPFzZkR8mLgVF0ABhVfNR9mSiQ250rVJOE3TnVm2yrrwp8PuVR61I95pWWeZypLjLP1eJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729161985; c=relaxed/simple;
-	bh=ksJfOqZ0F+aqfgOXPTdsDbbytvSSQ9OVM/xbZDl3uy8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=syvLsPVPugca8LqI3WwD+SIj0LyTlBCfWZrHCAtn6tgmWnZeID8eH2RZep0HCxp3TC+3BdJ/bJQRMmw/XiIkJgDRbquSnbxS7NnJ55gKbIjyAM6C6suvjPNNEDWE8wAxeqnjbyyOcQBR5/E2bdEbeAcZbS3IxeUxPmTXhwXucbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NyNYbsHD; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NyNYbsHD"
-Date: Thu, 17 Oct 2024 06:46:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729161981;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TuEkyXRK4a+z24nUqtPTb40oaVXyvk6oaPG3UBwJUew=;
-	b=NyNYbsHDJQPkgXNY5JdRUA7Zh5I4863hzQEO7Dmv0Pc1JnNfmFBiE0GU89OHQ0JZkRtGAD
-	u74yRbmA1j782KQL4lIBEySIJKlhXPHoeEHDtPRxh/nDRf/7SYcgbI4bonoeLaDIGvDsQI
-	W9trTM7Iw3OYTp34mGWXyCqzAedPDsc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, colyli@suse.de, 
-	msakai@redhat.com, corbet@lwn.net, mingo@redhat.com, acme@kernel.org, 
-	namhyung@kernel.org, akpm@linux-foundation.org, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	kan.liang@linux.intel.com, jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org, 
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 1/3] lib/min_heap: Introduce non-inline versions of min
- heap API functions
-Message-ID: <zne3invtehte3ym34ufnydtggigxazdb2ltfa26ca4tykvprls@rcawukx5hhcn>
-References: <20241013184703.659652-1-visitorckw@gmail.com>
- <20241013184703.659652-2-visitorckw@gmail.com>
- <20241014081358.GS17263@noisy.programming.kicks-ass.net>
- <ZwznQzdZsg82KNT4@visitorckw-System-Product-Name>
- <xb2gihmastm3wjn2o2sufvtglvjkelhiiwhnlzoiz4qncywyga@txf4vvnyxhvu>
- <20241017095520.GV16066@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1729183779; c=relaxed/simple;
+	bh=VBF8q7vrnsF9n4+xcz+tytFj8D8SZmc7jjz6Hua3ht0=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=uTYZu6c1l2D3GvABvoDPRvfuPjbnmGrh6ZdyYwYF00+EAiZNDF8/0Q4MkNh4gttAdUxu/M8ViKhq9w4Z0hLazifUyqhGpmGOd6Bvfeb3huAmdz9N7un5aREHMUIhrSMf7CFK2HylMSF1ls5EWvBejp2SiAsZFvkSDU/nD3AYbAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 52E7630192CD0;
+	Thu, 17 Oct 2024 09:49:33 -0700 (PDT)
+Date: Thu, 17 Oct 2024 09:49:33 -0700 (PDT)
+From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+Message-ID: <504302838.942.1729183773058@mail.carlthompson.net>
+In-Reply-To: <tklgk7y5drm5idjqogdccdciodtgwwjuaa6ziel5uxezeaws7u@fwbthprkau3e>
+References: <873903780.802.1729054276600@mail.carlthompson.net>
+ <46uitwudetmmygddpxufepddca7azsim6trqj4o2ivsccdeavz@uztkfyqtjgks>
+ <1823582410.854.1729153747302@mail.carlthompson.net>
+ <xcdedhwtm4aajc4fhpb2d2urtvss7bxxzdtt2hw73hewjgr2o5@4vyurjq5v5mq>
+ <724749266.890.1729156527639@mail.carlthompson.net>
+ <6hoo4ruf7fzgjyx5t4vazuj6bi7fx6ahmoof4wbuc3d6xeolmq@c4n7gvcj7bfv>
+ <884724407.902.1729158319260@mail.carlthompson.net>
+ <tklgk7y5drm5idjqogdccdciodtgwwjuaa6ziel5uxezeaws7u@fwbthprkau3e>
+Subject: Re: Another bcachefs version downgrade bug
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241017095520.GV16066@noisy.programming.kicks-ass.net>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
+X-Originating-Client: open-xchange-appsuite
 
-On Thu, Oct 17, 2024 at 11:55:20AM +0200, Peter Zijlstra wrote:
-> On Wed, Oct 16, 2024 at 11:26:30PM -0400, Kent Overstreet wrote:
-> 
-> > yeah, I think we would prefer smaller codesize, by default.
-> > 
-> > it'd be well worth checking the code size difference on inlined vs. not,
-> > and then the really think to do would be to provide optional _inlined()
-> > helpers that we can switch to if/when a particular codepath shows up in
-> > a profile
-> 
-> Make sure to build with kCFI and IBT enabled when you do this and enjoy
-> seeing ec_stripes_heap_cmp turn into this:
 
-I wouldn't worry too much about the stripes heap, I'm going to replace
-that with a persistent LRU.
 
-After that it looks like the only heap left in bcachefs will be in the
-clock code. Shame, they're one of my favorite data structures...
+> On 2024-10-17 3:13 AM PDT Kent Overstreet <kent.overstreet@linux.dev> wrote:
+
+> ...
+
+> Carl, I'm happy to fix bugs that you find, but the attitude and the
+> unnecessary advice - that I don't enjoy.
+
+Seriously, Kent? **You're** talking to **me** about attitude?
+
+**You're** giving **me** passive-aggressive attitude about how I'm reporting a bug when using a kernel which is only 4 months old. And how about that crack about about how I should have just done an fsck when you knew (should have known) that a fsck doesn't fix the problem? I don't doubt that in your mind those are subtle insults that would fly right over my head and I wouldn't notice but I might suggest that other people aren't quite the idiots you seem to always assume we are.
+
+I'm trying to **help** you, Kent. And that includes the reminder about how long it takes to put mostly-done software into a usable state. That's not attitude, that's just reality.
+
+Carl
