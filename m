@@ -1,250 +1,126 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7739F1DFDB4;
-	Thu, 17 Oct 2024 16:55:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70681DF991;
+	Thu, 17 Oct 2024 17:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729184125; cv=none; b=NrmiseTEhisdFmYrP4xYDnT0YGPk7oDiE3YPcIVY3aTtqdY6/mi31xbHuegVgg7KMcx7nCdlauCObHaV1KUOz+7nD1uDkN4FrAS8ngYfJdOfWdVhhWoHTcBeMfOD3l0uDEUsDB/wJCFj1eChD8ID4c6/g95Xsi5tbdyY3Xc+33g=
+	t=1729186799; cv=none; b=CN3LfGuhFiTSOZKhq5U9C7mbaBzb9ADjEhAOOm83X2NyVZYWmaKe6JRj5AIRngBsqFqNnYRgrRX4oDnM2etT5W8UESImG4sPSxQyvm7nxbodWwVsJBbJd2+Md1GgwPvryKUctBv08+PIY+D9J7G2M7dMI7ADyVGESg8qujsznGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729184125; c=relaxed/simple;
-	bh=+FlDwpL8JrTw5+TUWtRBZr+ozEoLG4mlZiWyNJ3zjGs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dtKrLNF8YSE0bp/QNz415n4aYohk8gkLaqzhUfQNEE9qBQeLrbapYXnIjcHaF60OOjWRtb2BVKXihbPD7FZLOAKm21YPyKks1AAxC2rAidswCUIPxoag8tpESsqmb7sYbSk/hCL85ynvwdDB59fnTrVt/7BnFy5vuQyn089Gq9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pnPeft3/; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1729186799; c=relaxed/simple;
+	bh=XNhYFcnBb2qAtLDWT7ob6Tja21YLROu8fBAm57b1QQM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nrjE6iUN9gGBlQL6N7HpzWt9u+3SN3OEVWv0XvDHkpPmU5tHCUuXCaqebF6SiEol8KzdjgCgfceet2FL3Mf27gz+rSqVY4JzNyfiVlQYsR4wSYqdUk9nwExkSNYJfdzyREHAYcGDMt7/IqTmgIn2UhEoErHoINFzYDikyJ2P80g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MDuQEAAg; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pnPeft3/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B501C4CEC3;
-	Thu, 17 Oct 2024 16:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729184125;
-	bh=+FlDwpL8JrTw5+TUWtRBZr+ozEoLG4mlZiWyNJ3zjGs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pnPeft3/fS3pgWcKxCJ0r/xY5PX9YelddMZ5RGP128nEgDTNsVpON9bRH1m2WJnXj
-	 mjvobpU1sadlfSHjVMQhAf+RvRy/cSm0stmqiRxRbiwK8xuL8Su4dm2U4u5Jq8h7Hu
-	 0NtXxLN3pvTsZk2wydO0CCPD3JqDEDyEjjMipKnnJotpKuCJDh1GxSh9CnwdjePw+E
-	 X4bjOU35mUTXA99YI9CFG43jn/aPyvFn6RwgwXiePId45vRhBXiC/Q2n+QRdBz4DH1
-	 miqNqZlOlAJiBgRUAnzkpzQVswbSjiq/bNZNfR96TUYxP5U1CL/w4wJ3H9DRJcw5Iv
-	 V/3/2OI30JO9g==
-Date: Thu, 17 Oct 2024 09:55:22 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Jan Hendrik Farr <kernel@jfarr.cc>
-Cc: Bill Wendling <morbo@google.com>, Kees Cook <kees@kernel.org>,
-	Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev,
-	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ardb@kernel.org, ojeda@kernel.org
-Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
- bch2_xattr_validate
-Message-ID: <20241017165522.GA370674@thelio-3990X>
-References: <Zv6BEO-1Y0oJ3krr@archlinux>
- <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
- <Zv61dCaxScXuOjZg@archlinux>
- <202410031424.45E5D19@keescook>
- <Zv8RIs-htdc-PtXB@archlinux>
- <202410040958.C19D3B9E48@keescook>
- <ZwNb-_UPL9BPSg9N@archlinux>
- <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
- <CAGG=3QVcsuN0Sk79oZWjY_nNTo_XfGYsDT3gc7vEmLyS8OK3rA@mail.gmail.com>
- <ZxB-uh1KzfD4ww2a@archlinux>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MDuQEAAg"
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2e2da8529e1so185980a91.1;
+        Thu, 17 Oct 2024 10:39:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729186797; x=1729791597; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DVbAzyc9I6m3RIJUQ1MXWzv3RJTPsyczSm1xKWtX5dw=;
+        b=MDuQEAAgfyDkC2YOc+Fi0cXVxZ3vG8Qye3uL0KFNtl5HBkE7vACZTRCpV+SmtYU3bN
+         39yZH+1MNxb2dQxwQOjtCgJ/EJCvxGJnLx+mVh/f8gI8EipBWwoRiDt2aPt+0r1OfmSS
+         grFJ2JVQOVBQvPhCUwKJOrU0FVaKXL0ieBQB6uPrMLMwbot2EVIWJFs6NgfBKUCp8JaH
+         l8CwB6WHOdCDarVMQesT95ekneb00F39O+hT/xG1Le30PWy0u7FU7Ml1+OILpHgbl6t1
+         gtoxi73hVbgTXMPpoxHNE7t7+MkKJgViNt0hAaFHqIrr9P0Vq98VUcIzqLOZbQ/FfmnA
+         rV4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729186797; x=1729791597;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DVbAzyc9I6m3RIJUQ1MXWzv3RJTPsyczSm1xKWtX5dw=;
+        b=UaaOShfeYGPdTnBx6cYeHkrzmuaRiermaVqcpnd7t1yHPu55Gyqq81Ft4fi2gP6KVd
+         Z1kKrnlQluRhlVbpeNtt4A7XnTeFGECJgONUe0p/2zasvrNT33ErTcGeJn6ryjXUf0kb
+         OhWI0/m60LM2d8JRt19IqEiQs7zBcuwAWu1jwPplmJ9f19VvMX/KMLYqxeA88JhqvHsA
+         AzOACIE5SC0Z1qrl4XaLYVUGRs5WxpfE84gtWXu+TPYoJa7L6UmZ0CiC2fOC2nv3VDTE
+         oKoeoiNTOT+sodSBk0SiJWSLwwgLfxYaqv2LcgAgDVsC217fLa/U/WsgXPNBQb8+NbaA
+         wZnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUaU+PYY1exmNnqjyZwxWZ+SSYdjWWZrUhWA78a6qeRe4ATopxfq1Uv/IRpA3pREov6I7+fKYQ5VCishng2rA==@vger.kernel.org, AJvYcCV6uVyTagIrexJILOo+lU73A7ZITaBMbhcfxLB1m6zwQj8xQ4xyvKTFfasvON8q6lDrEpp+6pjNQT/IVATE@vger.kernel.org, AJvYcCW0FP7sfvVXO7EqkPH+HNGfPaEERzNFHpPDfuHrjKjfs9qdCiY3aXsFyBIB4F4JuVAYWEOs8ro1MTrZN9Ym5p+I@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIN7AfRfZ2ANA1o8p3V28KmqHfZcTVeGsxzYabrtXFpNhdNQT5
+	+R2WDBNUBJ9Rl6NK/GAQlv4/BfK6DB3A2A/U9wV7CvgKt7XEdwdopxcVyxfbIZKCTc6Zerum5F/
+	Xp6oZNE8JlA7TXUh5mwGaPlk7i3s=
+X-Google-Smtp-Source: AGHT+IFKzPCfniyRQAO3KPKy/OOw3FuLREb1jofve8Ca+H1mRB5ShgyM2jfaUY0+oY9BlPJVrOG307sYawNQmU4mkPo=
+X-Received: by 2002:a17:90b:784:b0:2e2:da69:e3fa with SMTP id
+ 98e67ed59e1d1-2e3dc135040mr2166896a91.2.1729186797074; Thu, 17 Oct 2024
+ 10:39:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZxB-uh1KzfD4ww2a@archlinux>
+References: <Zv6BEO-1Y0oJ3krr@archlinux> <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
+ <Zv61dCaxScXuOjZg@archlinux> <202410031424.45E5D19@keescook>
+ <Zv8RIs-htdc-PtXB@archlinux> <202410040958.C19D3B9E48@keescook>
+ <ZwNb-_UPL9BPSg9N@archlinux> <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
+ <CAGG=3QVcsuN0Sk79oZWjY_nNTo_XfGYsDT3gc7vEmLyS8OK3rA@mail.gmail.com>
+ <ZxB-uh1KzfD4ww2a@archlinux> <20241017165522.GA370674@thelio-3990X>
+In-Reply-To: <20241017165522.GA370674@thelio-3990X>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 17 Oct 2024 19:39:43 +0200
+Message-ID: <CANiq72=cUS4GRzuU0WAWn9owttU-L4UpV1Dip6QjUdudCoT8VA@mail.gmail.com>
+Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in bch2_xattr_validate
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Jan Hendrik Farr <kernel@jfarr.cc>, Bill Wendling <morbo@google.com>, Kees Cook <kees@kernel.org>, 
+	Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev, 
+	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	ardb@kernel.org, ojeda@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jan,
+On Thu, Oct 17, 2024 at 6:55=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
+g> wrote:
+>
+> Should this include a Fixes tag to give the stable folks a hint about
+> how far back this should go? Maybe
+>
+> Fixes: c8248faf3ca2 ("Compiler Attributes: counted_by: Adjust name and id=
+entifier expansion")
 
-On Thu, Oct 17, 2024 at 05:04:26AM +0200, Jan Hendrik Farr wrote:
-> On 16 17:09:42, Bill Wendling wrote:
-> > Here's a potential fix:
-> > 
-> >   https://github.com/llvm/llvm-project/pull/112636
-> 
-> Here's the patch to disable __counted_by for clang < 19.1.3. I'll submit
-> it properly when your PR is merged. I hope I got all the correct tags in
-> there as there were multiple reports of these issues. Let me know if
-> anything should be added, I'm new to the process.
-> 
-> From: Jan Hendrik Farr <kernel@jfarr.cc>
-> Date: Thu, 17 Oct 2024 04:39:40 +0200
-> Subject: [PATCH] Compiler Attributes: disable __counted_by for clang < 19.1.3
-> 
-> This patch disables __counted_by for clang versions < 19.1.3 because of
-> two issues.
-> 
-> 1. clang versions < 19.1.2 have a bug that can lead to __bdos returning 0:
-> https://github.com/llvm/llvm-project/pull/110497
-> 
-> 2. clang versions < 19.1.3 have a bug that can lead to __bdos being off by 4:
-> https://github.com/llvm/llvm-project/pull/112636
-> 
-> Cc: stable@vger.kernel.org
+Yeah, I am not sure -- it does not really fix that commit, but if it
+helps the stable team...
 
-Should this include a Fixes tag to give the stable folks a hint about
-how far back this should go? Maybe
+> compiler_attributes.h is intended to be free from compiler and version
+> checks, so adding a version check means that __counted_by() needs to be
 
-Fixes: c8248faf3ca2 ("Compiler Attributes: counted_by: Adjust name and identifier expansion")
+Yeah, ideally we should avoid that since the goal was to have a file
+with the straightforward ones.
 
-It won't pick clean without 16c31dd7fdf6 or 2993eb7a8d34 but those are
-easy enough to apply before taking this one.
+Though if we do go for `CC_HAS_*`, I guess it would be simple enough
+too, i.e. similar to `has_attribute` (but on our side), but it also
+loses the simplicity of knowing those do not have arbitrarily complex
+conditions which `CC_HAS_*` could hide.
 
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202409260949.a1254989-oliver.sang@intel.com
-> Link: https://lore.kernel.org/all/Zw8iawAF5W2uzGuh@archlinux/T/#m204c09f63c076586a02d194b87dffc7e81b8de7b
-> Signed-off-by: Jan Hendrik Farr <kernel@jfarr.cc>
+> moved into compiler_types.h. This might be a good opportunity to
+> introduce something like CC_HAS_COUNTED_BY in Kconfig, so that we can
+> keep the checks unified (since there are already multiple places that
+> want to know about __counted_by support for the sake of testing) and
+> adjust versions like this easily in the future if something else comes
+> up, especially since __counted_by() is not available in a released GCC
+> version yet.
 
-Thanks for all of your help driving getting this fixed. The commit
-message looks good to me aside my small nit above. I do have a
-suggestion on the actual patch itself.
+Sounds good to me (even if we did the unification somewhere else).
+Using `CLANG_VERSION` looks better too.
 
-> ---
->  include/linux/compiler_attributes.h | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-> index 32284cd26d52..7966a533aaec 100644
-> --- a/include/linux/compiler_attributes.h
-> +++ b/include/linux/compiler_attributes.h
-> @@ -100,8 +100,17 @@
->   *
->   *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
->   * clang: https://github.com/llvm/llvm-project/pull/76348
-> + *
-> + * clang versions < 19.1.2 have a bug that can lead to __bdos returning 0:
-> + * https://github.com/llvm/llvm-project/pull/110497
-> + *
-> + * clang versions < 19.1.3 have a bug that can lead to __bdos being off by 4:
-> + * https://github.com/llvm/llvm-project/pull/112636
->   */
-> -#if __has_attribute(__counted_by__)
-> +#if __has_attribute(__counted_by__) && \
-> +	(!defined(__clang__) || (__clang_major__ > 19) || \
-> +	(__clang_major__ == 19 && (__clang_minor__ > 1 || \
-> +	(__clang_minor__ == 1 && __clang_patchlevel__ >= 3))))
->  # define __counted_by(member)		__attribute__((__counted_by__(member)))
->  #else
->  # define __counted_by(member)
-> -- 
-> 2.47.0
-> 
+> +config CC_HAS_COUNTED_BY
+> +       def_bool $(success,echo 'struct flex { int count; int array[] __a=
+ttribute__((__counted_by__(count))); };' | $(CC) $(CLANG_FLAGS) -x c - -c -=
+o /dev/null -Werror)
 
-compiler_attributes.h is intended to be free from compiler and version
-checks, so adding a version check means that __counted_by() needs to be
-moved into compiler_types.h. This might be a good opportunity to
-introduce something like CC_HAS_COUNTED_BY in Kconfig, so that we can
-keep the checks unified (since there are already multiple places that
-want to know about __counted_by support for the sake of testing) and
-adjust versions like this easily in the future if something else comes
-up, especially since __counted_by() is not available in a released GCC
-version yet.
+I am probably missing some context, but what is the reason for the
+build test? i.e. is there a reason we cannot test the GCC version too?
+If the reason it is that it is not released, should we change it
+later?
 
-Perhaps something like this? Feel free to take it wholesale if you would
-like or tweak it however you see fit.
+Thanks! (and for the Cc).
 
 Cheers,
-Nathan
-
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index 62ba01525479..376047beea3d 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -445,7 +445,7 @@ static void lkdtm_FAM_BOUNDS(void)
- 
- 	pr_err("FAIL: survived access of invalid flexible array member index!\n");
- 
--	if (!__has_attribute(__counted_by__))
-+	if (!IS_ENABLED(CONFIG_CC_HAS_COUNTED_BY))
- 		pr_warn("This is expected since this %s was built with a compiler that does not support __counted_by\n",
- 			lkdtm_kernel_info);
- 	else if (IS_ENABLED(CONFIG_UBSAN_BOUNDS))
-diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-index 32284cd26d52..c16d4199bf92 100644
---- a/include/linux/compiler_attributes.h
-+++ b/include/linux/compiler_attributes.h
-@@ -94,19 +94,6 @@
- # define __copy(symbol)
- #endif
- 
--/*
-- * Optional: only supported since gcc >= 15
-- * Optional: only supported since clang >= 18
-- *
-- *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
-- * clang: https://github.com/llvm/llvm-project/pull/76348
-- */
--#if __has_attribute(__counted_by__)
--# define __counted_by(member)		__attribute__((__counted_by__(member)))
--#else
--# define __counted_by(member)
--#endif
--
- /*
-  * Optional: not supported by gcc
-  * Optional: only supported since clang >= 14.0
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 1a957ea2f4fe..639be0f30b45 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -323,6 +323,25 @@ struct ftrace_likely_data {
- #define __no_sanitize_or_inline __always_inline
- #endif
- 
-+/*
-+ * Optional: only supported since gcc >= 15
-+ * Optional: only supported since clang >= 18
-+ *
-+ *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
-+ * clang: https://github.com/llvm/llvm-project/pull/76348
-+ *
-+ * __bdos on clang < 19.1.2 can erroneously return 0:
-+ * https://github.com/llvm/llvm-project/pull/110497
-+ *
-+ * __bdos on clang < 19.1.3 can be off by 4:
-+ * https://github.com/llvm/llvm-project/pull/112636
-+ */
-+#ifdef CONFIG_CC_HAS_COUNTED_BY
-+# define __counted_by(member)		__attribute__((__counted_by__(member)))
-+#else
-+# define __counted_by(member)
-+#endif
-+
- /*
-  * Apply __counted_by() when the Endianness matches to increase test coverage.
-  */
-diff --git a/init/Kconfig b/init/Kconfig
-index 1aa95a5dfff8..6da1a8c3d99d 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -120,6 +120,13 @@ config CC_HAS_ASM_INLINE
- config CC_HAS_NO_PROFILE_FN_ATTR
- 	def_bool $(success,echo '__attribute__((no_profile_instrument_function)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
- 
-+config CC_HAS_COUNTED_BY
-+	def_bool $(success,echo 'struct flex { int count; int array[] __attribute__((__counted_by__(count))); };' | $(CC) $(CLANG_FLAGS) -x c - -c -o /dev/null -Werror)
-+	# clang needs to be at least 19.1.3 to avoid __bdos miscalculations
-+	# https://github.com/llvm/llvm-project/pull/110497
-+	# https://github.com/llvm/llvm-project/pull/112636
-+	depends on CC_IS_GCC || CLANG_VERSION >= 190103
-+
- config PAHOLE_VERSION
- 	int
- 	default $(shell,$(srctree)/scripts/pahole-version.sh $(PAHOLE))
-diff --git a/lib/overflow_kunit.c b/lib/overflow_kunit.c
-index 2abc78367dd1..5222c6393f11 100644
---- a/lib/overflow_kunit.c
-+++ b/lib/overflow_kunit.c
-@@ -1187,7 +1187,7 @@ static void DEFINE_FLEX_test(struct kunit *test)
- {
- 	/* Using _RAW_ on a __counted_by struct will initialize "counter" to zero */
- 	DEFINE_RAW_FLEX(struct foo, two_but_zero, array, 2);
--#if __has_attribute(__counted_by__)
-+#ifdef CONFIG_CC_HAS_COUNTED_BY
- 	int expected_raw_size = sizeof(struct foo);
- #else
- 	int expected_raw_size = sizeof(struct foo) + 2 * sizeof(s16);
+Miguel
