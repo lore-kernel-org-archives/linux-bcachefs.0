@@ -1,129 +1,135 @@
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 403A32CA8
-	for <linux-bcachefs@vger.kernel.org>; Thu, 17 Oct 2024 00:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE0D23A6;
+	Thu, 17 Oct 2024 00:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729123803; cv=none; b=i3qfO1oUZrYBHt3gzOgK5cluGZEzg8z7CGrqaBcVMKtnhvJH2DEarC/Te8MMZsf+Ha2QCu7TV/oCld22sUAQeydUg5aecJ1vpdzbQzswi+CdRUpUJOTHVl5EHBdA53v3qqFSa3hIOdqW2dlYXVVyt3RsVPRtlZB8tNsXl3ndbqc=
+	t=1729125711; cv=none; b=IkRNauYSfKzzTapNfAyHeqL2J6xzmOtgzsOvewuS1JjBcV8WG255Vsiw6DhxNNLfz71iveJCa7hNs/Zddbag/MT+zmILP5NoHUWu/Ai+8usJIVNKB3+xCJWOlht855NhMr4zlW2pyiOBFJyPmN9xo0oBXjU6mvho7MY/juGebb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729123803; c=relaxed/simple;
-	bh=IlO6uTCwFsYUVRbfNrr8hXDOR6fAvnjyaa8Rrpvdxnc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BH3AeaHBkOVji19kjv4vy0hA2Bmzd1kvJeRL2fgyqO9Rv97d7WL7ZzXs7TtMPqDx6F4F/3Xn+SBT+V6FpO6loF5C7vX9KeQb3FSxqyK58NRkEBOm0p1e7UD+ZO3b41gUlFCghVJz9w9XzCMEc7Z9ubs/cXrIe8xli7t1hWHq+oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qlcmjviz; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1729125711; c=relaxed/simple;
+	bh=7QkoQYQX3zTw7nHF+GB459hVBusGgSOd7/jSBdPBJD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=guz150GljGh9Tq40mKuX0ocXvs1BENU664TOlSMoz2djwvsv2U2bzpLmbc3XhDj/S3qH2y1mCeGRMNsbJmAmeeCrLKp7R2Nck5Htk4MwJSYOQ5nr4zv2cSkPNlTUsCoDLHVMmeR2K4Gtkl6cCcaomOwJ0BIf+LJFTTC6XTBz8zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=BH+Qo8Cw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GZaU02+l; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qlcmjviz"
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a9a156513a1so43509766b.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 16 Oct 2024 17:10:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1729123800; x=1729728600; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5zLK8NZJ63lThqHunA+xhjqEZN8qClvg0Kr82H/Gl4Y=;
-        b=qlcmjvizg6klgvLUDXhjyP0tTSs4xWDeHji6vzzlXipZRANQhes7aK0uxSdOLwNk+x
-         mQUwJQTX2qo6Ubt2Xd+bBp/gAfesqkqa6Np0j05exT4LxxFnv3HTfa7hh0RRlc9McpEd
-         +aqeatd4QtGTeOiiEL6bgL9zEDXMEDadp3hmHFepLYiKqX6iNmw4ic2aJq37aDczRjuR
-         837oZYVD2/4QPZEvk8VqHybGuZfGv92rw17rziugm1gtxJgscyJnw/53prn3gfqy/S4W
-         x4C7/r0fTOvXUHXUtbQThxtgXepdzENrQqLad3LDz1uXcMkayTwRGFQhNHstA/0IoZpv
-         hfBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729123800; x=1729728600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5zLK8NZJ63lThqHunA+xhjqEZN8qClvg0Kr82H/Gl4Y=;
-        b=ls1sOBidB02AU9UVnNQq/0ACy/kYBBnuBD09FLa8oWWopqk+qLyuacv2ZjwsKH3nZM
-         96HoKfZ7ya9754/2v7pP6puMw+wx0fK5cNIMybC0rkdc221zFRlXrzoSjlAzCueyna1k
-         pt026uySUugLeW5zwmFUa2yGCVVOZfBc+ZbptxLsZ/zZVhDQ99/XlpPNbq14h3RgIu5Z
-         OZM6lMWjAABEXMlg3/G/UMF9lN58dwm9dG47PVrWz5ZKEwXwrhd1L4eQ/8g53Lfcs6lh
-         rpQnW5fqTr0Ue//loJ1ryL9byX0Cg68IrEc5D80ttLGTk9po9jcrE+MjQa3OrJyCRA//
-         EkfA==
-X-Forwarded-Encrypted: i=1; AJvYcCUTTcjbSHeohFaX+nCYM2JZVh7JixbS/qYFE/mtGXFgon1G1Q+MNBr+sjv08ivUn5NUOEPlv2JfhIV+SypwmA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbV42LMz5MtINsMsF5V96Q/QjzVEJVVcscUjRYIv/CNEIGH0FL
-	ihHyV53bRcUAKdn0shhiJMTERpdQCtJ1iRuTF6mIUY3Xbs5Bm/TnOjc2Tgn76FuN0o1Sf7MyN6E
-	7YfRAT9g7SP08lQZHcZe7nmzx2mvn/zaO4qY=
-X-Google-Smtp-Source: AGHT+IGMVkShiuutDs4xn/HxU/SXYSXezquXUEdikNqROO75/WvPvitz2eCesf0/uCyp+8GS9LoyAmdByQLs5DB4RTA=
-X-Received: by 2002:a17:906:c113:b0:a99:60c8:f2c4 with SMTP id
- a640c23a62f3a-a9a34cbc527mr492691766b.15.1729123800140; Wed, 16 Oct 2024
- 17:10:00 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="BH+Qo8Cw";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GZaU02+l"
+Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
+	by mailfout.phl.internal (Postfix) with ESMTP id 66ED913800F6;
+	Wed, 16 Oct 2024 20:41:48 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-08.internal (MEProxy); Wed, 16 Oct 2024 20:41:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1729125708; x=1729212108; bh=7QkoQYQX3z
+	Tw7nHF+GB459hVBusGgSOd7/jSBdPBJD8=; b=BH+Qo8CwQbiGXvse6CHyuR0zbi
+	mHg7VF39duGWH9HnpYPS1dDFhxVs66wXBVSfDRQzUiMWO61PHxTjKDlBQakQy7XP
+	4MEDxwsKHzDtTBm67KqFEheWcZMoEEqzUzZE7XUaRfGQjBNVI/fEkJXfNDwsDlxM
+	e+6mRcqjXyZcLCOw3I/juNErPbo98bWs8uD0Mwm53Jwch11bJlcNXw+48pJGgvrp
+	7LnnQFfk7o5ffAzv/IOQkGb54zjSjYyj44wOUx5ujwVszVjZZtgWRZkeo2s0Kn7x
+	u846ZigQPBuKNpeJVTRcpM5AKBUSeWYn11Nsch7IIBw2CpwXJyQNpxDoH7Hw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1729125708; x=1729212108; bh=7QkoQYQX3zTw7nHF+GB459hVBusG
+	gSOd7/jSBdPBJD8=; b=GZaU02+lMQGSBhjhgsOnTQlWffn6SlfIOffOqHbT/NjO
+	2L3vg0TSJW9drvrpeRRbeCwuU+8Yfm1om/mtJiQ8ArK35b/6xNRTCb4sS7rv6C69
+	CaH/C4IqxIE7yUhVBStKaaXcVoFCRSUAVS5XAkbr1G/xYbN/aL/OcJA34j14Y9+8
+	MBTlCRlRvbZLRT5F6HYWHLOwK2bgm7gqTzZINefYdpqkNNr/JUq1P5mZpY7PXprS
+	yK6Qd1hXDXkB8nVOLRLpM7Oh23P0hVo4DdmyCHd6pafesN7FbQ7XVAIglJH9SgKx
+	IaB8c12GvyXD0mX1QlCydYwqVqABYvTtsQrZrTj9eQ==
+X-ME-Sender: <xms:S10QZzvo8wLPjxy06WB9SaJh8H3bsW2iMuGo7avw0eY5EM9R5Ep4XA>
+    <xme:S10QZ0f_2OyRtD45auHV1dhhNNMY31CuzEu0eH5iVuGd1wXww7A19-BLRg5-0Kx3T
+    bniHuKPezik7yNeGy8>
+X-ME-Received: <xmr:S10QZ2zTkqy1gnSC7xB9Qd5V0iUzjiBR3-zZcVKyey-66hGmqPv24cPAgNBWpzSXoWO4SkQi5-IFbUYy5Ve6IEuXUl4y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehtddgfeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdludehmdenucfjughrpeffhffvvefukfhf
+    gggtuggjsehttdertddttddvnecuhfhrohhmpeflrghnucfjvghnughrihhkucfhrghrrh
+    cuoehkvghrnhgvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpefffeejffev
+    geejudeiveektdeiveefgefghfffveeujeefhfefffdvvdfgiedvheenucffohhmrghinh
+    epghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepkhgvrhhnvghlsehjfhgrrhhrrdgttgdpnhgspghrtghpthhtoheple
+    dpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepmhhorhgsohesghhoohhglhgvrdgt
+    ohhmpdhrtghpthhtohepkhgvvghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehthh
+    horhhsthgvnhdrsghluhhmsehtohgslhhugidrtghomhdprhgtphhtthhopehkvghnthdr
+    ohhvvghrshhtrhgvvghtsehlihhnuhigrdguvghvpdhrtghpthhtoheprhgvghhrvghssh
+    hiohhnsheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopehlihhnuhigqdgs
+    tggrtghhvghfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
+    igqdhhrghruggvnhhinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
+    eprghruggssehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:S10QZyN56jgDuy0MUeD44oE83BxlpO46fFS4j8MFpaOMSIRLQIk-9w>
+    <xmx:S10QZz_KMie2o9TWgU-MjdMIFHYE4KvYTAjYMx3_4Tl6BEe8NmXi1w>
+    <xmx:S10QZyVTT-fc4lkbLBKDevoRaIDx3guDWGfYVcQ42p5IzUuNFS9FFg>
+    <xmx:S10QZ0c2M_BetIcQrf4dBFaDgM-_NBrde7Ok9Hg7khFTsOTYBD1_HQ>
+    <xmx:TF0QZ6YobGkUYnu5XwrXbeM5DZwK5zkw2LwiacGgpvHLfj8miwqEVHQq>
+Feedback-ID: i01d149f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Oct 2024 20:41:46 -0400 (EDT)
+Date: Thu, 17 Oct 2024 02:41:44 +0200
+From: Jan Hendrik Farr <kernel@jfarr.cc>
+To: Bill Wendling <morbo@google.com>
+Cc: Kees Cook <kees@kernel.org>, Thorsten Blum <thorsten.blum@toblux.com>,
+	kent.overstreet@linux.dev, regressions@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ardb@kernel.org
+Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
+ bch2_xattr_validate
+Message-ID: <ZxBdSKuDWh6w_w-z@archlinux>
+References: <202409281331.1F04259@keescook>
+ <21D2A2BB-F442-480D-8B66-229E8C4A63D3@toblux.com>
+ <Zv6BEO-1Y0oJ3krr@archlinux>
+ <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
+ <Zv61dCaxScXuOjZg@archlinux>
+ <202410031424.45E5D19@keescook>
+ <Zv8RIs-htdc-PtXB@archlinux>
+ <202410040958.C19D3B9E48@keescook>
+ <ZwNb-_UPL9BPSg9N@archlinux>
+ <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <A499F119-5F0C-43FC-9058-7AB92057F9B3@toblux.com>
- <Zvg-mDsvvOueGpzs@archlinux> <202409281331.1F04259@keescook>
- <21D2A2BB-F442-480D-8B66-229E8C4A63D3@toblux.com> <Zv6BEO-1Y0oJ3krr@archlinux>
- <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com> <Zv61dCaxScXuOjZg@archlinux>
- <202410031424.45E5D19@keescook> <Zv8RIs-htdc-PtXB@archlinux>
- <202410040958.C19D3B9E48@keescook> <ZwNb-_UPL9BPSg9N@archlinux> <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
-From: Bill Wendling <morbo@google.com>
-Date: Wed, 16 Oct 2024 17:09:42 -0700
-Message-ID: <CAGG=3QVcsuN0Sk79oZWjY_nNTo_XfGYsDT3gc7vEmLyS8OK3rA@mail.gmail.com>
-Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in bch2_xattr_validate
-To: Jan Hendrik Farr <kernel@jfarr.cc>
-Cc: Kees Cook <kees@kernel.org>, Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev, 
-	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	ardb@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 16, 2024 at 4:41=E2=80=AFPM Bill Wendling <morbo@google.com> wr=
-ote:
->
-> On Sun, Oct 6, 2024 at 8:56=E2=80=AFPM Jan Hendrik Farr <kernel@jfarr.cc>=
- wrote:
-> > > I want to separate several easily confused issues. Instead of just
-> > > saying __bdos, let's clearly refer to what calculation within bdos is
-> > > being used. There are 3 choices currently:
-> > > - alloc_size attribute
-> > > - counted_by attribute
-> > > - fallback to __bos (which is similar to sizeof(), except that FAMs a=
-re 0 sized)
-> > >
-> > > Additionally there are (for all intents and purposes) 2 size
-> > > determinations to be made by __bos and __bdos, via argument 2:
-> > > - containing object size (type 0) ("maximum size")
-> > > - specific object size (type 1) ("minimum size")
-> >
-> > "maximum" vs "minimum" size would by type 0 vs type 2, but I think you
-> > do mean type 0 and type 1 as those are the types currently used by
-> > __struct_size and __member_size. Those are both "maximum" sizes.
-> >
-> > >
-> > > For example, consider:
-> > >
-> > > struct posix_acl *acl =3D malloc(1024);
-> > > acl->a_count =3D 1;
-> > >
-> > > what should these return:
-> > >
-> > >       __bos(acl, 0)
-> > >       __bos(acl, 1)
-> > >       __bdos(acl, 0)
-> > >       __bdos(acl, 1)
-> > >       __bos(acl->a_entries, 0)
-> > >       __bos(acl->a_entries, 1)
-> > >       __bdos(acl->a_entries, 0)
-> > >       __bdos(acl->a_entries, 1)
-> > >
-> >
-> Thank you for this detailed write-up! I'm sorry for my late response.
->
-[snip]
->
-> So in conclusion, if turning off the calculation for a pointer to the
-> whole struct works, then I'm okay with it.
->
-Here's a potential fix:
+> I would be in favor of disabling __bdos on a whole struct pointer if
+> it will match the functionality between the compilers. I don't think
+> Qing has that on her plate at the moment, but when / if she revisits
+> that we can discuss exactly how to perform the calculations then.
 
-  https://github.com/llvm/llvm-project/pull/112636
+That's a good approach from my perspective.
 
--bw
+To get this done we would:
+
+Now:
+1. Disable the __counted_by attribute calculation in clang for whole
+struct __bdos cases like in [1] and get this into the next clang point
+release (19.1.3)
+
+2. In the kernel, disable __counted_by for clang versions < 19.1.3. Also
+backport that into the stable kernels
+
+In the future:
+3. Try and figure out what the correct counted_by calculation for whole
+structs should be in conjunction with gcc and clang. Either provide an
+option in clang and gcc to follow the kernels expectations or change
+struct_size in the kernel to match gcc's and clang's future behavior.
+
+
+[1] https://github.com/llvm/llvm-project/pull/112636
+
+Best Regards
+Jan
+
