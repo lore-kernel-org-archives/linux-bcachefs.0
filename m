@@ -1,112 +1,166 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1039217DFF2
-	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Oct 2024 19:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F0514F9D9
+	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Oct 2024 23:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729278752; cv=none; b=k4a6QSltgaV04nIYDG1P31YPqCU53QEi2x3YNr603ivgfesA8VeDpyyVJxQjlhpNT3Ky774mqqXiCmHkEHRIw0OxQvkdLgg6Ro7w3liu53KxkGPlTiHMyN2ZMGHR4OAZsJyigDJSJzJP3ogDWsDhsVbyA9tVHtEGpQcE+vHRuTk=
+	t=1729294540; cv=none; b=rknu9jUQmsHb5ufZSNRK29MTmphvciOfUMMLrudhPiWToZLbSZkj3eUmp1vIy1wqjpjFd3uZ2k+TchWOce87Pvt6rM3ahApwstKV0LnrXe4A5Ynsc6eW/d0oXZzlT5W6EAiG8huM9/AOD3fmZVleVsojFMc1/VkjkbQgb6Uqs1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729278752; c=relaxed/simple;
-	bh=PpxlN4p+JI5pCO8lG/tiDRMgz6ZHZCozIGgqcF5KUIQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AzjNj18pmQsXgU54hN8qpo0vL0ASP1GYyztp7pEcktAyhw6Xun5HzoguRHg3jGqNvxRvEZUVpOs49ztBoIWbbLVuaIULzqnJlqxpWzgiBbIEwXazjk9xk9RmYTUl+syoS4sYSZ2sc+5R+mF6A63apvF5DgeoU1OLQULWUT+Lf94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kyeYInOE; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1729294540; c=relaxed/simple;
+	bh=4H6/2XF11SN1tjXCDsonmAjioOjjMj2T1xcvYyFy/yI=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To; b=YI1mZrSaCJGrfVNIfjgoQXUx3RvTr9fvnE9yMeZRF8jKQ+++AZYyMbX+lHIddsW6ejmCo142GlvC0LPEyWMuKfKdLOw3KGQJyM1fG6HASpy7JgxeuiwUuBJnICVBVeC0J73Gae2Y/i99XlRcR6WJ64j2gCEauLVLzA9gPshp1pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kwiius.com; spf=pass smtp.mailfrom=kwiius.com; dkim=pass (2048-bit key) header.d=kwiius.com header.i=@kwiius.com header.b=kNS+Nk7c; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bMWmEeVI; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kwiius.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kwiius.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kyeYInOE"
-Date: Fri, 18 Oct 2024 15:12:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729278745;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R2K+u9Nv1dCswotaotDELHb67BqbFZEPs7m+tUNToPI=;
-	b=kyeYInOEdr1gmDokaJ8Ls65+3aGQkft9+Hmf81RWdGq7A4iFCuIuQ7cFrrywkMQ2Gc96Zs
-	0jYPvSobjG/rMwjDx2wTC596IYsWuG0+m/KUKE7k0im/JPDcbmvwqN8J/76dARPEkYMfRE
-	9zZKUMKHtMIHcZLq9nTrbBy3IA10NoM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
-Cc: Christopher Snowhill <chris@kode54.net>, 
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: Another bcachefs version downgrade bug
-Message-ID: <od4yumygu66vn6hi2ptykbayrqeelqdciwvfrsbmthso7rzbqy@v4ba3bzceluw>
-References: <46uitwudetmmygddpxufepddca7azsim6trqj4o2ivsccdeavz@uztkfyqtjgks>
- <1823582410.854.1729153747302@mail.carlthompson.net>
- <xcdedhwtm4aajc4fhpb2d2urtvss7bxxzdtt2hw73hewjgr2o5@4vyurjq5v5mq>
- <724749266.890.1729156527639@mail.carlthompson.net>
- <6hoo4ruf7fzgjyx5t4vazuj6bi7fx6ahmoof4wbuc3d6xeolmq@c4n7gvcj7bfv>
- <884724407.902.1729158319260@mail.carlthompson.net>
- <tklgk7y5drm5idjqogdccdciodtgwwjuaa6ziel5uxezeaws7u@fwbthprkau3e>
- <504302838.942.1729183773058@mail.carlthompson.net>
- <D4YS7TRT48VG.3LCDBSZGAVBSZ@kode54.net>
- <537913254.1059.1729273074517@mail.carlthompson.net>
+	dkim=pass (2048-bit key) header.d=kwiius.com header.i=@kwiius.com header.b="kNS+Nk7c";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bMWmEeVI"
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 2E6B511401CD
+	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Oct 2024 19:35:36 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Fri, 18 Oct 2024 19:35:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiius.com; h=cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to; s=fm3; t=1729294536; x=1729380936; bh=lz/DoGpu6L
+	vlGfUa5BSdfpyWAfn1EuZYJpBQIjeLOZo=; b=kNS+Nk7cHjXohB2HAh4ab1/Tbf
+	xE2ZAMiVTbgJtt+QPwKArX/uzr5nTYrsyZ4epl7xi0iXdkFEEJoVv5piyw2KETKT
+	JJ+eljeIttykGS+Qt36yzWBy6Th7slSGcQMcgiIlDVeJz/Vi/2GXAUR7+BiP4VpP
+	nJuFjZD0FblCRxNZi8RTomupVx30gtd4lYnwfhI/Bqbu5RYhQAjKYdShV270ov1G
+	E0xgklK9+zAUhQp0FPyCNiS88wRzkrVMyyHcrmlMgFhl0/BYVHsjlnbCzG5EPBbv
+	q2emYnzGMrPt37Z42JS73cC9h54lauucj3R6g6Qo4An5mM5yftYDqRYA0bYQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1729294536; x=1729380936; bh=lz/DoGpu6LvlGfUa5BSdfpyWAfn1
+	EuZYJpBQIjeLOZo=; b=bMWmEeVIIcHO2jKICvY2IJ/NoCLGxgRz/xFF3F4ddAnh
+	fGe+kNNZdWovi8T9uM4oq9aAawbsF0QUOMwNA9zNT/2xCryKCV2ccXmBxAO9YThJ
+	cqB7ZR86v2HHDoEEMGZXbqIvm+K5fKSk5uVMvv4/O3sm5s+hDnuXdl/EHhgtCVXA
+	HASEzmlpLQgz7wQdbW84Wn3TJGg9ypQUo2AvJEjI1LpAY+YeM2OE5KD6IALOFo5h
+	w6GmLr0H2M9Bf0WQBcGSe5F6LX/bfwAgyIr6il0VCg+69pDBvrtQOKay4x/tjhWp
+	rigZJv855nvLW5BnofRaC47z478NG7D7LO5O7bIseg==
+X-ME-Sender: <xms:x_ASZx3SpAebJZTsCe1eD4O15nbr0TsSTzk-461fGFH0R4PtYu6-wQ>
+    <xme:x_ASZ4GgpXa7-2kbbl18qbYPc-82UfkoeiJNSaYlJwEVPO9uppTwopqFAHSYAX2yx
+    AR_erC5SpCnq1K2-g>
+X-ME-Received: <xmr:x_ASZx6VBR9B0SMlxIwIHvtuL5Ao7WX1UNQ6UOSAgFpRrYpMWlHTz5yVn-QnVxzk-20>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehgedgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhtgfggg
+    fukfffvffosehtqhhmtdhhtddvnecuhfhrohhmpeflrghmihgvucfotgevlhihmhhonhht
+    uceojhgrmhhivgeskhifihhiuhhsrdgtohhmqeenucggtffrrghtthgvrhhnpedtudevge
+    ejkefhjeeuvddufeegudehffefvddtgeejleejtedttdegveejhfejvdenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjrghmihgvsehkfihiih
+    hushdrtghomhdpnhgspghrtghpthhtohepuddpmhhouggvpehsmhhtphhouhhtpdhrtghp
+    thhtoheplhhinhhugidqsggtrggthhgvfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:x_ASZ-3d5PnFvG2l6MjPkOH-yrOkj_L9EVI-HGLoAGYNeOZulAgN8A>
+    <xmx:x_ASZ0EwlV5dxGH7bXz1MEx6iCGzfW8szXWhdBMGkMpDa0dK4yrgmg>
+    <xmx:x_ASZ_-NsqlTnfSZHDT3L6Px3EeZ4VDMm4o1P2PEzVV_sZCQMixqsg>
+    <xmx:x_ASZxkhSyjYtBwDsMFo-5qMMEP4RyNYA7EI-IbXwe3bJDJCHKsgQA>
+    <xmx:yPASZ-PZ7r0b3QiNxOqugVq2mvcN5L1dkjfFznzQ6BJNtwlwiwxmJzlX>
+Feedback-ID: i0a19459c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-bcachefs@vger.kernel.org>; Fri, 18 Oct 2024 19:35:34 -0400 (EDT)
+From: Jamie McClymont <jamie@kwiius.com>
+Content-Type: text/plain;
+	charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <537913254.1059.1729273074517@mail.carlthompson.net>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
+Subject: "accounting not marked in superblock replicas"
+Message-Id: <2C607C54-0D65-458B-83B2-9C769216CC23@kwiius.com>
+Date: Sat, 19 Oct 2024 10:35:21 +1100
+To: linux-bcachefs@vger.kernel.org
+X-Mailer: Apple Mail (2.3818.100.11.1.3)
 
-On Fri, Oct 18, 2024 at 10:37:54AM -0700, Carl E. Thompson wrote:
-> 
-> > On 2024-10-18 1:17 AM PDT Christopher Snowhill <chris@kode54.net> wrote:
-> 
-> > ...
-> 
-> > FYI, 6.9 was first released in May, and is already EOL now. In fact, so
-> > is 6.10, at 6.10.14.
-> 
-> I'm on 6.9.4 which was released in June. It's not really by choice; there are some nasty stability issues in the amdgpu driver in 6.10 and 6.11 which cause my laptop to hang multiple times per day if I use a graphical environment under them.
-> 
-> > There are no LTS kernels with bcachefs support yet
-> > at this point. All further development is going into 6.12 now, with bug
-> > fixes being backported into 6.11.
-> 
-> True. I understand that and accept it. I am not at all suggesting that Kent should make fixes for unsupported kernels. I'm just reporting a bug. But I also think that this sort of issue is one that really, **REALLY** should not happen in the first place. A filesystem silently modifying itself so that it no longer works on earlier kernels without warning is a very bad thing in my opinion. There should be processes in place to catch that sort of problem **before** a new kernel is released. And remember this isn't a one-time thing. It's happened before.
-> 
-> I'd also say that a filesystem design that requires that an older
-> driver be able to successfully automatically discover and undo random
-> on-disk modifications automatically made by a newer driver is probably
-> a bad design (my personal opinion). It's sounds great until it doesn't
-> work (as in this case). And I mean that as constructive criticism and
-> not something that Kent should take personally. I think that
-> particular design decision should be reevaluated.
+Hello Kent et al.
 
-It sounds like you should go back to ZFS then.
+My machine running 6.12-rc1 has a failing data-only (no btree) drive.
 
-> It's just dumb luck that in this case the older kernel is no longer
-> supported so it doesn't need to be fixed.
-> 
-> As for my particular case, I should probably see if I can get the
-> older, stable amdgpu driver to compile under the current kernel.
-> Barring that, I should see if I can get the current bcachefs driver to
-> compile under the older kernel. I guess I'll find time to do that this
-> evening.
+The failure seems to occur while seeking while appearing to run smoothly =
+on linear reads, so after listening to some awful noises while running =
+the `evacuate` subcommand for a few minutes I decided it would be wise =
+to instead mount the rest of the filesystem as very_degraded without the =
+failing drive, and image the disk into a file on the filesystem =
+(allowing me to later loop this image for a non-degraded =
+mount+evacuate).
 
-I have been hearing a lot of people complain about regressions in
-amdgpu. Have you taken that up with them?
+During this imaging process, the machine crashed and rebooted of its own =
+accord (journalctl recorded `watchdog: Watchdog detected hard LOCKUP on =
+cpu 6`; unclear if this is related to bcachefs), and since the reboot, =
+the filesystem cannot mount (neither as `-o very_degraded,fix_errors` =
+without the bad drive, nor `-o fix_errors` with the failing drive):
 
-The capability of doing seamless, automatic upgrades and downgrades, to
-the extent that bcachefs can, is something new that other filesystems
-don't have.
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): starting version 1.12: =
+rebalance_work_acct_fix =
+opts=3Dmetadata_replicas=3D2,data_replicas=3D2,metadata_target=3Doptane,fo=
+reground_target=3Doptane,background_target=3Dhdd,promote_target=3Doptane,n=
+opromote_whole_extents,ver>
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): recovering from unclean =
+shutdown
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): journal read done, =
+replaying entries 9096592-9098738
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): dropped unflushed =
+entries 9098739-9098745
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): accounting_read...
+accounting not marked in superblock replicas
+  replicas btree: 1/2 [2 6], shutting down
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): inconsistency detected =
+- emergency read only at journal seq 9098753
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): bch2_accounting_read(): =
+error fsck_errors_not_fixed
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): bch2_fs_recovery(): =
+error fsck_errors_not_fixed
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): bch2_fs_start(): error =
+starting filesystem fsck_errors_not_fixed
+bcachefs: bch2_fs_get_tree() error: fsck_errors_not_fixed=20
 
-And it's been incredibly useful. Without it, rolling out the disk
-accounting rewrite wouldn't have been possible - and that got us per
-snapshot ID accounting, compression type accounting, per-btree
-accounting, and per-inode fragmentation accounting (not all of these are
-exposed to the user yet, but they're there).
+I updated to the latest torvalds/linux.git to catch the recent =
+`bcachefs: Disk accounting device validation fixes` you sent in for -rc4 =
+which looked potentially relevant, but no improvement:
 
-While bcachefs is still marked experimental, doing these upgrades
-automatically makes sense because it gets us better test coverage of
-codepaths that will need to be rock solid later, and it drastically
-reduces the amount of compat code I have to carry around. I'm hoping to
-get several more on disk format features done while we're still in the
-experimental phase - for inode allocation improvements, fsck performance
-improvements, and assorted other odds and ends.
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): starting version 1.13: =
+inode_has_child_snapshots =
+opts=3Dmetadata_replicas=3D2,data_replicas=3D2,metadata_target=3Doptane,fo=
+reground_target=3Doptane,background_target=3Dhdd,promote_target=3Doptane,n=
+opromote_whole_extents,very_degraded,journal_flush_disabled,journal_reclai=
+m_delay=3D200,fix_errors=3Dyes
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): recovering from unclean =
+shutdown
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): superblock requires =
+following recovery passes to be run:
+  check_inodes
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): Version upgrade from =
+1.12: rebalance_work_acct_fix to 1.13: inode_has_child_snapshots =
+incomplete
+Doing compatible version upgrade from 1.12: rebalance_work_acct_fix to =
+1.13: inode_has_child_snapshots
+
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): journal read done, =
+replaying entries 9096592-9098738
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): dropped unflushed =
+entries 9098739-9098745
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): accounting_read...
+accounting not marked in superblock replicas
+  replicas btree: 1/2 [2 6], shutting down
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): inconsistency detected =
+- emergency read only at journal seq 9098753
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): bch2_accounting_read(): =
+error fsck_errors_not_fixed
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): bch2_fs_recovery(): =
+error fsck_errors_not_fixed
+bcachefs (b7f3ad1a-1a17-487d-a670-333e0aaee6e2): bch2_fs_start(): error =
+starting filesystem fsck_errors_not_fixed
+bcachefs: bch2_fs_get_tree() error: fsck_errors_not_fixed
+
+Any ideas?
+
+Thanks
+- Jamie McClymont=
