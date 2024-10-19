@@ -1,94 +1,87 @@
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B1520E33E
-	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Oct 2024 23:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D885863D5
+	for <linux-bcachefs@vger.kernel.org>; Sat, 19 Oct 2024 00:15:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729295409; cv=none; b=qOT7iUn77yosnw+dfEpAValBz0amNKkALsZyFRvLexnZBVr0kSo+jDRRUdowlqH96NnqhYPEJkOYGK10bIgEetqJ93nUZ7y7r/AW81G60Iv4HWGH61d/9HurxIUfo811cLfTSioyGEWE/oO8s05FrnM6Nnzt2GSQAwYwNaU1BwA=
+	t=1729296909; cv=none; b=KEivAx+IqZBLS+DG/YmAHP3OGUo8MyaJtIi/cRQzJTOGtcwsaOaecpERvj2+t2ooRF44+4GKGXT0mDlpvfvvE83VXVopamf3R0+3/IFSYuUdlNAjJ9IQ9HXcH3oWt8UPsnqT8evkft5NeRg1J4mRVkLY6e05NCacjqkgB5O6lS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729295409; c=relaxed/simple;
-	bh=HsEG6Iu8yauhZwix3zTx/fRiGSwC4B9riLlKK7/Pjdc=;
-	h=From:Content-Type:Mime-Version:Subject:Date:References:To:
-	 In-Reply-To:Message-Id; b=WuygBr9GGXjW5rnfiZ3K6m3HNlg33tKCELMRXm2DTZGSiTC2r4SR57D58AIWyvlF+lzOJc/zMYzaCdmXeZHRn9Qe22uFRqcDy3HTXO6+Rc7O5AyogSX3wrPrtEvaYtU4ItSAQHPEi2hhs5tOxJ1jvOLXonfPQbtppFL1VhyR+rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kwiius.com; spf=pass smtp.mailfrom=kwiius.com; dkim=pass (2048-bit key) header.d=kwiius.com header.i=@kwiius.com header.b=Uvjl9f5W; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=FQwnD6l6; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kwiius.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kwiius.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kwiius.com header.i=@kwiius.com header.b="Uvjl9f5W";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FQwnD6l6"
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id BEA011380277
-	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Oct 2024 19:50:05 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Fri, 18 Oct 2024 19:50:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiius.com; h=cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1729295405;
-	 x=1729381805; bh=HsEG6Iu8yauhZwix3zTx/fRiGSwC4B9riLlKK7/Pjdc=; b=
-	Uvjl9f5WFfO7zgITRCjN4BbhdM3T9l7NFISbKQY7MJEHTnFSwfLE2loIfwwsVGs9
-	uq+eHoI53MxdInHrBQkdTkgx012IIyVdSsDTdL0yxQGsUCUhx+XMxQ7g7E1SSrQV
-	0TLN3OZxlnpI1UIUhQNNyLhvrICCo+GC3LLFmOvzkfz/mzozauD+LM8A2Ba2cG82
-	cNdZM2B4m3TuPS/suK+mJCqA3RpNQDLYIJU1f5k3OB52PTSqlhgQCTjEumXHxj7m
-	fndgjVroprv4/bnwFZSvV54upEV2DwJehkGPtnyRRohJNRhsHYBuY4yXHip1K90j
-	9C8zBQywlmJoGPkDt9Pgdw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1729295405; x=
-	1729381805; bh=HsEG6Iu8yauhZwix3zTx/fRiGSwC4B9riLlKK7/Pjdc=; b=F
-	QwnD6l6T1Rp9TR9+f+3fE7X9OsZcZJgUDkMJYcSDwPnda9L8Qft51AkWVMgZ4Gj3
-	cSKM2IxtbUGSfn1RDfAsM3BYnMMFv2QYFWLo5RZmRY8mA2/7a0t8BYNlaDit0bIF
-	WPwFnlUeQukIH+8YJA2Cmjy0jU00ncvZsO7t7SdgfY6jNRoUflAyXcY2Sy2XaQ//
-	bIN/QbdPPEOkBf8WS/giU+ygOVmSUcCOtWXlfTXzOOZsmMlKQ63WHcbS+Gf1emIz
-	A7TWl7D40OszwZVUHKybJzknH9mP5MYBdzJu/eXDaS76vka9omgWn2NLzUzKd2AQ
-	xh4/ToID9lWSInA7szrag==
-X-ME-Sender: <xms:LfQSZ7zgFKfSFySxo0xw4WEbgIPRQnJezsf-HUDxRjvElTyv1gKgxw>
-    <xme:LfQSZzS0EmOQcSaZNTAU0Vt1UjiHOhCxjxD8BIC6Jqg2uQlZU1NG-IAvU9mMcUb6J
-    tvN7OLpN_N945dDsQ>
-X-ME-Received: <xmr:LfQSZ1XKLSyZUGLhocfmTXk9DrmXfaM-mOD8ByGvxAXI-axvAgk3rOpDq6051EREntQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehgedgvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhtgfggg
-    fuffhfvfgjkffosehtqhhmtdhhtdejnecuhfhrohhmpeflrghmihgvucfotgevlhihmhho
-    nhhtuceojhgrmhhivgeskhifihhiuhhsrdgtohhmqeenucggtffrrghtthgvrhhnpeffle
-    dtjeeggfegtdeggeegudeugfetteeuvdeitedvhfekudehffdthfffffefffenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjrghmihgvsehkfi
-    hiihhushdrtghomhdpnhgspghrtghpthhtohepuddpmhhouggvpehsmhhtphhouhhtpdhr
-    tghpthhtoheplhhinhhugidqsggtrggthhgvfhhssehvghgvrhdrkhgvrhhnvghlrdhorh
-    hg
-X-ME-Proxy: <xmx:LfQSZ1jwhnQP81tkIZFtruVvODX1q45wgwjESuWo9lTUbrPV7eSj6g>
-    <xmx:LfQSZ9Apx_Z3w2BTfKyXw_vCbrZ2d5D9AvXS4CzrJLMY3I8Vy0-C7w>
-    <xmx:LfQSZ-JJBG9nGRUun9yRTW67GGHVvj69ENu_WjLo5MEqNRNdJ1VNqQ>
-    <xmx:LfQSZ8ASKqoxwr5YsM9h1zRvziSWm_qRQhGO0gbPZ4mzzFpRq5Mlfg>
-    <xmx:LfQSZ66uulT9WBD6qA-ssyXCbJ2Q3meqwbj6kPr2CEl71aNzAvu1CB79>
-Feedback-ID: i0a19459c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA for
- <linux-bcachefs@vger.kernel.org>; Fri, 18 Oct 2024 19:50:04 -0400 (EDT)
-From: Jamie McClymont <jamie@kwiius.com>
-Content-Type: text/plain;
-	charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1729296909; c=relaxed/simple;
+	bh=0pgDg79iF+OHbqG6dOdut7fO+hljklTgaDEDpjmXMB8=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=jtojDo1Qs+TMLsAMZ1m1P6dRQP3LregAZ6hDn47QtuWXMCWJO6W7Z+Fnsepr9xfDncOr9VPn2wUnLKDCwTi7RdLj9+r5+VRRCx9HUXSUE16iEnhuXGoW6E1vWOWt6FFG6FYsnG6WZ7iTuz3bTnchsGuCCPbFJOLQp+zLZKAjBQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 76AF81A2351;
+	Fri, 18 Oct 2024 17:15:06 -0700 (PDT)
+Date: Fri, 18 Oct 2024 17:15:06 -0700 (PDT)
+From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Christopher Snowhill <chris@kode54.net>,
+	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
+Message-ID: <1249157619.1105.1729296906241@mail.carlthompson.net>
+In-Reply-To: <od4yumygu66vn6hi2ptykbayrqeelqdciwvfrsbmthso7rzbqy@v4ba3bzceluw>
+References: <46uitwudetmmygddpxufepddca7azsim6trqj4o2ivsccdeavz@uztkfyqtjgks>
+ <1823582410.854.1729153747302@mail.carlthompson.net>
+ <xcdedhwtm4aajc4fhpb2d2urtvss7bxxzdtt2hw73hewjgr2o5@4vyurjq5v5mq>
+ <724749266.890.1729156527639@mail.carlthompson.net>
+ <6hoo4ruf7fzgjyx5t4vazuj6bi7fx6ahmoof4wbuc3d6xeolmq@c4n7gvcj7bfv>
+ <884724407.902.1729158319260@mail.carlthompson.net>
+ <tklgk7y5drm5idjqogdccdciodtgwwjuaa6ziel5uxezeaws7u@fwbthprkau3e>
+ <504302838.942.1729183773058@mail.carlthompson.net>
+ <D4YS7TRT48VG.3LCDBSZGAVBSZ@kode54.net>
+ <537913254.1059.1729273074517@mail.carlthompson.net>
+ <od4yumygu66vn6hi2ptykbayrqeelqdciwvfrsbmthso7rzbqy@v4ba3bzceluw>
+Subject: Re: Another bcachefs version downgrade bug
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
-Subject: Re: "accounting not marked in superblock replicas"
-Date: Sat, 19 Oct 2024 10:49:52 +1100
-References: <2C607C54-0D65-458B-83B2-9C769216CC23@kwiius.com>
-To: linux-bcachefs@vger.kernel.org
-In-Reply-To: <2C607C54-0D65-458B-83B2-9C769216CC23@kwiius.com>
-Message-Id: <B33B574D-B679-4C8D-B7CB-317A0AFF0C17@kwiius.com>
-X-Mailer: Apple Mail (2.3818.100.11.1.3)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev53
+X-Originating-Client: open-xchange-appsuite
 
-Nevermind, looks like this is something userspace fsck can fix =E2=80=93 =
-I had falsely come to the understanding that the kernel could now fix =
-all the same errors :)
 
-Thanks
-- Jamie=
+> On 2024-10-18 12:12 PM PDT Kent Overstreet <kent.overstreet@linux.dev> wrote:
+
+> ...
+
+> It sounds like you should go back to ZFS then.
+
+If you tell me you don't want me testing bcachefs anymore it won't hurt my feelings and I'll respect your wishes. There are plenty of quality filesystems for me to use where I'll have less hassle. But I'd suggest to you that pushing out testers who point out bugs and try to offer constructive criticism isn't the best way to make quality software.
+
+> I have been hearing a lot of people complain about regressions in
+> amdgpu. Have you taken that up with them?
+
+I personally have not because other people already have. They're aware of the issues and I'm confident they'll fix them.
+
+> The capability of doing seamless, automatic upgrades and downgrades, to
+> the extent that bcachefs can, is something new that other filesystems
+> don't have.
+> 
+> And it's been incredibly useful. Without it, rolling out the disk
+> accounting rewrite wouldn't have been possible - and that got us per
+> snapshot ID accounting, compression type accounting, per-btree
+> accounting, and per-inode fragmentation accounting (not all of these are
+> exposed to the user yet, but they're there).
+> 
+> While bcachefs is still marked experimental, doing these upgrades
+> automatically makes sense because it gets us better test coverage of
+> codepaths that will need to be rock solid later, and it drastically
+> reduces the amount of compat code I have to carry around. I'm hoping to
+> get several more on disk format features done while we're still in the
+> experimental phase - for inode allocation improvements, fsck performance
+> improvements, and assorted other odds and ends.
+
+What you say here makes perfect sense. But I also think it's risky. That's the point I was trying to make.
+
+Carl
