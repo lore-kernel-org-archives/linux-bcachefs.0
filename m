@@ -1,76 +1,114 @@
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from se.sotapeli.fi (se.sotapeli.fi [206.168.212.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 755F41E04AE
-	for <linux-bcachefs@vger.kernel.org>; Sat, 19 Oct 2024 12:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 064FD188CB5
+	for <linux-bcachefs@vger.kernel.org>; Sat, 19 Oct 2024 20:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.168.212.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729340787; cv=none; b=ogdEWVJpArjEOengBlWj+vmRhX5YovbDpWwFUQVB1JkzcCz+LrCFqOcPFDPxWhbbn79I7/ZFQU4NjCJZjEk5heUM8b0Q59J/iGHYxSvid4WXD/8qnZ70RBW4gTTEN6G6Mogprr58bSdjKmbzdgvwNNTkbT1l53YImw/EiHv075g=
+	t=1729369122; cv=none; b=qdtWZkka9e3bBXS6oYIttLIIDONOAOifFtj/N8eVdUWl8/nXsJa9KGiWsDJldO/uLAzvOXcNY8hrTeNvEzdlbC92uK0hEM6GXYAeDI1FM79JXBz+zUjVBEcf4iPAb4pDuGpJ9UWdrjsQF46lrxQJXjKX9wERVJrkYyYb8C0wvGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729340787; c=relaxed/simple;
-	bh=TPPqJ0NmPL4E/VoFBUo0djk7VWetDY3ISarvN6BlR/o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d6QfEkvooAQxz9SUYSL09wu5Vwtu/qEVLtdQfAFRjDC5Lgu98gvtPuyRkvZqGGQvVRxk1ANHQD5cg+zGV4kfRNcflFjMiXB2qXjpW8d8H9mH9TlQBAB+eO9QzRRXfKGkcAgXF8hlKpfInLR4wEyfyJlCZ3xWxUdXMQfT8XvKoA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U20d6OcS; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1729369122; c=relaxed/simple;
+	bh=VZMSBKFGD4AX0hDN2c6EwkmdvMsGkdZNmgHgXLyXABA=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
+	 In-Reply-To:Content-Type; b=gpwo7a5xgDM4upKxKehdAD6Ax4zjAR4XWTFFXUAPVQ7tOt5rIzjGlPPy3/xSjSl7DtsFRDbYCRRQufPQNO9Oz8Pa0CCzjwiDrfa1xelpoaK8Qx34jY8L9LY6LEd3xXgMmhV11NYC8API5/9S+wu0cUE+Rvzwe/rCwGL4x/r4T3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi; spf=pass smtp.mailfrom=sotapeli.fi; dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b=iNmHOZuH; arc=none smtp.client-ip=206.168.212.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sotapeli.fi
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U20d6OcS"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729340782;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=PLY+s3Nc2BlIMQaSEKQErw4KcQTV95CxN6tP27JoM10=;
-	b=U20d6OcSxF0YqMeOWJy+13sewVbtnvy6F6RXAmgN3scdLVSDu5xPodxLCMPEsq/7kV+C4e
-	441HEZRTqlAf3kV4y4B87BZy+phUsAmpvUKPlC7/cBS3Pnf7mDUqe7NFMeYVj7i8syp4NP
-	7PgcGHLa7qV/ayh6xJ4+VhBQSL1ezmU=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] bcachefs: Use str_write_read() helper function
-Date: Sat, 19 Oct 2024 14:25:27 +0200
-Message-ID: <20241019122526.42563-2-thorsten.blum@linux.dev>
+	dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b="iNmHOZuH"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E52CE181BA24
+	for <linux-bcachefs@vger.kernel.org>; Sat, 19 Oct 2024 22:18:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sotapeli.fi; s=dkim;
+	t=1729369115; h=from:subject:date:message-id:to:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references:autocrypt;
+	bh=L/eZ4Nmdm1fLghmB0LsBhpiJarWwXPbYlwMx1eYrMys=;
+	b=iNmHOZuHED58FC7JGyea/wTfP/og96cVav8PyP+XxtIX0I8Q7wRXdWwj0js0Wvd+PQG53w
+	+znqNhT/pm5IjmfXwAd8DWmCs+FM4e+1ARVD/GKZ6sjBvxmxTKdWsq33lSOGHQu/MLWVj8
+	EfRx5QJqn62gbdVMQFiUZwLyFfOCOp5wBiE/b4FpQcVabFAF6B+A9WAV5fcOPjORvwOy3d
+	0Vt90s/Hrp/rYJYU9Sim1sFqyggCBAEVd2n/yioDuqRQGYzpBfrgupbTwOZV6OQe8xiDuC
+	AOd0FQykrUh74jCjIQ/eHQrJp5Ze/52ZJOIS/rs471m6c3Vgp6vapdCQllX0DQ==
+Message-ID: <89e7e2d1-6c1f-4ff0-a645-5d9308dc81db@sotapeli.fi>
+Date: Sat, 19 Oct 2024 23:18:29 +0300
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+From: Jani Partanen <jiipee@sotapeli.fi>
+Subject: Re: Another bcachefs version downgrade bug
+To: linux-bcachefs@vger.kernel.org
+References: <46uitwudetmmygddpxufepddca7azsim6trqj4o2ivsccdeavz@uztkfyqtjgks>
+ <1249157619.1105.1729296906241@mail.carlthompson.net>
+ <1af6fd38-7ecf-451a-9be3-fa7b9447fa43@tnxip.de>
+ <4958287.GXAFRqVoOG@lichtvoll.de>
+Content-Language: en-GB
+Autocrypt: addr=jiipee@sotapeli.fi; keydata=
+ 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
+In-Reply-To: <4958287.GXAFRqVoOG@lichtvoll.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-Remove hard-coded strings by using the helper function str_write_read().
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- fs/bcachefs/journal_io.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On 19/10/2024 11.31, Martin Steigerwald wrote:
+> BCacheFS is marked experimental. My take with that is: As long as it is
+> marked experimental and you like to test it and give feedback, it is
+> important to move quickly enough to new kernel versions. It was and partly
+> still is the same with BTRFS. Developers often asked users to use a newer
+> kernel. Feedback on BCacheFS on 6.9 is quite likely not very useful to
+> Kent and other BCacheFS developers while they already work on what to
+> bring in for 6.13.
 
-diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
-index 954f6a96e0f4..325c39f90f65 100644
---- a/fs/bcachefs/journal_io.c
-+++ b/fs/bcachefs/journal_io.c
-@@ -17,6 +17,8 @@
- #include "sb-clean.h"
- #include "trace.h"
- 
-+#include <linux/string_choices.h>
-+
- void bch2_journal_pos_from_member_info_set(struct bch_fs *c)
- {
- 	lockdep_assert_held(&c->sb_lock);
-@@ -665,7 +667,7 @@ static void journal_entry_clock_to_text(struct printbuf *out, struct bch_fs *c,
- 	struct jset_entry_clock *clock =
- 		container_of(entry, struct jset_entry_clock, entry);
- 
--	prt_printf(out, "%s=%llu", clock->rw ? "write" : "read", le64_to_cpu(clock->time));
-+	prt_printf(out, "%s=%llu", str_write_read(clock->rw), le64_to_cpu(clock->time));
- }
- 
- static int journal_entry_dev_usage_validate(struct bch_fs *c,
--- 
-2.47.0
+Issue is that normal user have no idea that bcachefs is experimental 
+because it is only told to be experimental IF you are building building 
+kernel yourself.
+
+- modinfo does not say anything about experimental
+
+- bcachefs user tool does not say anything about experimental. iirc 
+btrfs user tool warns that you are going to use experimental stuff when 
+you select raid5
 
