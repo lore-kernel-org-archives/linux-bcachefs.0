@@ -1,48 +1,44 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340E0BA33
-	for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 16:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C42173
+	for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 17:04:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729443591; cv=none; b=XX+XFypx+mVpV90heLzpGAG4av6LuC13rHwqyuakBbfIs/7T/DCyZxPyN/lsVu1aDEJ+7Ubn/hyjul3+++XjVSZ3TU9bqQmTNJL+albpqGl/Uo+EseM6fvk6Lv01W2JrARCgyV+4kv2EASi10Vi9gDI8AVHd2O+DFKSvG3zKkSQ=
+	t=1729443845; cv=none; b=F+OHDjfZlG06BpNR8F69+5M5ym5Yd0tZkrS6YigQDU/grqDllnPawWHm1cbKQ+9kSZifwNIuCCX0QeBYFmRxAkdw6uWd6nQN73lRXP3WQ7TYp93tQR8IwqXqJzViTrcH3PHkLV6uDwX1bAg6p615pWT0P/maM26kTW96EOFYlPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729443591; c=relaxed/simple;
-	bh=jSrHq3ebqLxlZ8HFdjLtoaGBwdoXxg9J5hSF5TyMbcQ=;
+	s=arc-20240116; t=1729443845; c=relaxed/simple;
+	bh=b7DQ8V9V21PvzOoEqXVXREPrY2ZkPBYAoTF1zX/aYh8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=panKqVv0eXeHW7mlhhGOfnzlJsgh/voDeVzqu+sCTD1YkzPNEpIQxVvF0/xBo9n4e8U0kAR4vaBfxtMfNxBG1Rc09kbJLPPlXHLZLrGQkRGoh2PgY2TFUBSxLhOfZ82JILsetkFChD6Sl9zEuvS9crRRco+C1jA+m5F/81N7MYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kBo/FG4F; arc=none smtp.client-ip=91.218.175.185
+	 Content-Type:Content-Disposition:In-Reply-To; b=kS8fMErR0HA72ngvbaoZVGz4sxXvEWHbU8iTui++22Q3eTfDlACzJtgZVsMLwvfPy/QHEAv7V0vRB4b9mkXmYn1X9EKNhiU0kRPI5DMXpwaXl+PxVBQd8gnhfzyp4U0WKwz00LC+W85t2Y2dodCYAozMDbsC8WKpHjIPyR9KqUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j4VxDE8o; arc=none smtp.client-ip=91.218.175.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kBo/FG4F"
-Date: Sun, 20 Oct 2024 12:59:40 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j4VxDE8o"
+Date: Sun, 20 Oct 2024 13:03:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729443584;
+	t=1729443840;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jELXNVp0eae9rWddz0phgrsODaZzM456Ru8UX+mPe+Q=;
-	b=kBo/FG4FsBibJ2+wz/JHnASdFdQT6iadYgGAXEa26JAszeXt7PQHKpUIjd9PvB4YEaG3sz
-	Lh6N7zFH3wR6F9MrrGFgdbwJMoHHMctauzGDGHVYSIbHGGzw0fTT7QO0UMYcLN3z88xu9y
-	gL3IS8o6Vx9UQkI1KSrJHlhLt6LfDj4=
+	bh=Uw3xUFK25TlZ9Go2lt1IJL62U2UkNYtZDEVjz3Sg4H0=;
+	b=j4VxDE8ogvW0AMlOwC2lxb/0oYjRiAhaBhU9HbgmlKkW7xTWgPaHkXJIhVdEM7tSoS38z0
+	bdYfwlaNuuC85Cn0SVJJqihS545RNBOiXTDW4qBQmaeyZdze8YfkvcF3MPJq8ChrS4X9N+
+	5XLKDvLJEfoW859cRDzG69S6fbz4YKM=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
-Cc: Christopher Snowhill <chris@kode54.net>, 
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: Another bcachefs version downgrade bug
-Message-ID: <kadahbpbnfzxck7a5peye2rdvoi5w5omvhcloocqr5lypxrvse@tdddqahswipx>
-References: <xcdedhwtm4aajc4fhpb2d2urtvss7bxxzdtt2hw73hewjgr2o5@4vyurjq5v5mq>
- <724749266.890.1729156527639@mail.carlthompson.net>
- <6hoo4ruf7fzgjyx5t4vazuj6bi7fx6ahmoof4wbuc3d6xeolmq@c4n7gvcj7bfv>
- <884724407.902.1729158319260@mail.carlthompson.net>
- <tklgk7y5drm5idjqogdccdciodtgwwjuaa6ziel5uxezeaws7u@fwbthprkau3e>
- <504302838.942.1729183773058@mail.carlthompson.net>
- <D4YS7TRT48VG.3LCDBSZGAVBSZ@kode54.net>
- <537913254.1059.1729273074517@mail.carlthompson.net>
- <od4yumygu66vn6hi2ptykbayrqeelqdciwvfrsbmthso7rzbqy@v4ba3bzceluw>
- <1249157619.1105.1729296906241@mail.carlthompson.net>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, 
+	Vlastimil Babka <vbabka@suse.cz>, Andrew Morton <akpm@linux-foundation.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] mm: Drop INT_MAX limit from kvmalloc()
+Message-ID: <zfr4sh3wtzi4viladlgwyon6voqhcj5fe3fv2nc3hqyyxdw5wd@onyj3r2m3usz>
+References: <20241019210037.146825-1-kent.overstreet@linux.dev>
+ <90bc0794-4cab-415f-a442-4af85a32eed8@lucifer.local>
+ <ucbcmk4kr7tbvj6uqnjke5662kerawbr4ghtlbw4zim7mdm3fg@vjawfne5rdkp>
+ <ebe58a08-2371-403c-a0d7-6280160b6848@lucifer.local>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -51,81 +47,77 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1249157619.1105.1729296906241@mail.carlthompson.net>
+In-Reply-To: <ebe58a08-2371-403c-a0d7-6280160b6848@lucifer.local>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Oct 18, 2024 at 05:15:06PM -0700, Carl E. Thompson wrote:
+On Sun, Oct 20, 2024 at 05:44:37PM +0100, Lorenzo Stoakes wrote:
+> +cc Linus, vmalloc reviewers
 > 
-> > On 2024-10-18 12:12 PM PDT Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> On Sun, Oct 20, 2024 at 09:00:07AM -0400, Kent Overstreet wrote:
+> > On Sun, Oct 20, 2024 at 12:45:33PM +0100, Lorenzo Stoakes wrote:
+> > > On Sat, Oct 19, 2024 at 05:00:37PM -0400, Kent Overstreet wrote:
+> > > > A user with a 75 TB filesystem reported the following journal replay
+> > > > error:
+> > > > https://github.com/koverstreet/bcachefs/issues/769
+> > > >
+> > > > In journal replay we have to sort and dedup all the keys from the
+> > > > journal, which means we need a large contiguous allocation. Given that
+> > > > the user has 128GB of ram, the 2GB limit on allocation size has become
+> > > > far too small.
+> > > >
+> > > > Cc: Vlastimil Babka <vbabka@suse.cz>
+> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > ---
+> > > >  mm/util.c | 6 ------
+> > > >  1 file changed, 6 deletions(-)
+> > > >
+> > > > diff --git a/mm/util.c b/mm/util.c
+> > > > index 4f1275023eb7..c60df7723096 100644
+> > > > --- a/mm/util.c
+> > > > +++ b/mm/util.c
+> > > > @@ -665,12 +665,6 @@ void *__kvmalloc_node_noprof(DECL_BUCKET_PARAMS(size, b), gfp_t flags, int node)
+> > > >  	if (!gfpflags_allow_blocking(flags))
+> > > >  		return NULL;
+> > > >
+> > > > -	/* Don't even allow crazy sizes */
+> > > > -	if (unlikely(size > INT_MAX)) {
+> > > > -		WARN_ON_ONCE(!(flags & __GFP_NOWARN));
+> > > > -		return NULL;
+> > > > -	}
+> > > > -
+> > >
+> > > Err, and not replace it with _any_ limit? That seems very unwise.
+> >
+> > large allocations will go to either the page allocator or vmalloc, and
+> > they have their own limits.
 > 
-> > ...
+> Ah actually I misread it here, I see the allocation gets immediately sent
+> off to __kmalloc_node_noprof() and thus that'll apply its own limits before
+> doing this check prior to the vmalloc call.
 > 
-> > It sounds like you should go back to ZFS then.
-> 
-> If you tell me you don't want me testing bcachefs anymore it won't
-> hurt my feelings and I'll respect your wishes. There are plenty of
-> quality filesystems for me to use where I'll have less hassle. But I'd
-> suggest to you that pushing out testers who point out bugs and try to
-> offer constructive criticism isn't the best way to make quality
-> software.
+> We actually do have a basic check in __vmalloc_node_range_noprof() that
+> prevents _totally_ insane requests, checking that size >> PAGE_SHIFT <=
+> totalram_pages(), so we shouldn't get anything too stupid here (I am
+> thinking especially of ptr + size overflow type situations).
 
-Testing is fine.
+Yep, exactly.
 
-I have a lot of users and testers that I work with, and will bend over
-backwards for if something is broken, and to make sure data isn't lost.
+> But Linus explicitly introduced this INT_MAX check in commit 7661809d493b
+> ("mm: don't allow oversized kvmalloc() calls"), presumably for a reason, so
+> have cc'd him here in case he has an objection to this which amounts to a
+> revert of that patch.
 
-But I do draw a line at being demanding, or all the "constructive
-criticism" that comes with an attitude of "I know your job better than
-you do". You wouldn't walk into someone's office and immediately start
-telling them how to do things, would you?
+Ah, thanks for adding him.
 
-I don't suscribe to the modern theories about how we all have to be nice
-to each other and always use nice words, if you're legitimately pissed
-off because I screwed up and shipped something broken and it ate your
-data and now you're screwed if it's not recovered - that's one thing.
+Yeah, the concern historically has been that integer truncation bugs are
+really nasty and entirely too common, and we have little in the way of
+tooling that can catch that.
 
-Making sure your data is safe is why I'm here, and if you want help with
-recovering a filesystem, I'll always help with that.
+Unfortunately that's still the case today. Kees has been doing work on
+catching integer overflow, but I don't think we have anything coming yet
+for catching integer truncation.
 
-But you're complaining about an EOL kernel, where the issues have long
-been fixed, so in this case there's just not a lot I can do. I could ask
-Greg to cut a new 6.9 release, but all the distros have been told that
-6.9 is EOL so it's not likely it would be widely deployed.
-
-> > I have been hearing a lot of people complain about regressions in
-> > amdgpu. Have you taken that up with them?
-> 
-> I personally have not because other people already have. They're aware of the issues and I'm confident they'll fix them.
-> 
-> > The capability of doing seamless, automatic upgrades and downgrades, to
-> > the extent that bcachefs can, is something new that other filesystems
-> > don't have.
-> > 
-> > And it's been incredibly useful. Without it, rolling out the disk
-> > accounting rewrite wouldn't have been possible - and that got us per
-> > snapshot ID accounting, compression type accounting, per-btree
-> > accounting, and per-inode fragmentation accounting (not all of these are
-> > exposed to the user yet, but they're there).
-> > 
-> > While bcachefs is still marked experimental, doing these upgrades
-> > automatically makes sense because it gets us better test coverage of
-> > codepaths that will need to be rock solid later, and it drastically
-> > reduces the amount of compat code I have to carry around. I'm hoping to
-> > get several more on disk format features done while we're still in the
-> > experimental phase - for inode allocation improvements, fsck performance
-> > improvements, and assorted other odds and ends.
-> 
-> What you say here makes perfect sense. But I also think it's risky.
-> That's the point I was trying to make.
-
-Anyone can build a bridge that doesn't fall down, it takes an engineer
-to build one that just barely doesn't fall down.
-
-There's is always some level of risk to developing new capabilities and
-deploying new code, and we have to balance those risks against the worth
-of those capabalities, along with all of our priorities.
-
-The ability to upgrade to a new on disk format, and then seamlessly
-downgrade - that hasn't been done before, keep that in mind, and that's
-an enormously useful capability that makes it dramatically _less_ risky
-to deploy new features.
+But given that vmalloc() already supports > INT_MAX requests, and memory
+sizes keep growing so 2GB is getting pretty small - I think it's time,
+this is going to come up in other places sooner or later.
