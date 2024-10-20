@@ -1,118 +1,115 @@
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.af.tnxip.de (mail.af.tnxip.de [212.53.203.118])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CB5747F;
-	Sun, 20 Oct 2024 05:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F3B6BA2D
+	for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 08:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.53.203.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729401328; cv=none; b=ZxjvICL1AwaC2cgvat+7POd/HUdLClB9MJXkAoDsBaFAqjmEImJZfopI3yWTQCRaQArLUYUlQunFUK88+b76dszCLLum45x33LuGZA7/9Hs42cCUzdcQ0v37HKcjpEOytVlh5jwb45k8aB/MT3qlM7QUcR782j7WCp2ausAQGvA=
+	t=1729411497; cv=none; b=oduvu5wFHpqL9W4gYRzKDGgVFUu+YGDif+iJyfufqmGfuXTQNDCbiBeSHBp+TVOd5qzD8t5HW4WldUunVyiDdK/3o0lKpM7ZaWrjYzivL+SKjyzW3x7Gj2O+/jky1v+dQIRtqjQfD67Ogsr2MKXSVfRGn21BROXTeCUtsBlbQc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729401328; c=relaxed/simple;
-	bh=EiS1xJd1Mm5kFjrRr9U5CfecgYtGUDFHb98U0Psae/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hfbQOXx46+ZoGlR4eZqV48PQjGsuUY3EfB2iC8glfltz05l3hVvefuVJ1qSy+2VoiC4uc27fhBzTt2Nb2wCEnUFKlfFp5nVifWv5AMDibog8dsS3QU1+24JmOdDV/rLJPAC2rN+wpDVpQswsoVWZmZgvt5lKNCXr9zX9cC5pIOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QKTtG7Tj; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1729411497; c=relaxed/simple;
+	bh=UCDQrzJxWeAh45S+4mojOa6wSnbIe9VwUvYRP469bgY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=B8FP0fLuRQoBeJkyFxKI9jEkDs+/v18KpV8sAwsKsZMgk5Ssg0zLCtW9HV5/WOexgAPWoFm/KMoBsouCQ/V11Ss5bxAOCgT0cStYvJ+VHNZ30yxEKCili0LeClkAoXfAXE6Wd7qoLyxAe4Gldn6e90ve+IpqHmoy/Xc6e1kOG2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de; spf=pass smtp.mailfrom=tnxip.de; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=n9D856TD; dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=oF5wPu1k; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=pcuzsABH; dkim=neutral (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=E75rhja2; arc=none smtp.client-ip=212.53.203.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tnxip.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QKTtG7Tj"
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-20cceb8d8b4so20015995ad.1;
-        Sat, 19 Oct 2024 22:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729401326; x=1730006126; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mPLTUkSwRn/ADCNGu4AGpEmYT7rtlb2CMdwqNdOxpTA=;
-        b=QKTtG7TjOstHNeIvKZ3umi8kdnWBls6FPY1U4KIZpeDb6CwQ2LpjEltMFQAuyNcEvX
-         fgQXWDsAa4o9CbeOyrmbIxzM5tVFLAJwjAL5lc2q5PDkz010JNlqp9ursrPz28M6YTkl
-         ZIha354g2WaVFeKHkGh1Qkev58tZ6dOHJUH2JMKDP03T8dCg2in1Nm05OWyd+D8mMlxs
-         +ZXfZJIIubl0bHXZ7Y2R2/RXrk9DNost0DgaLG2YJaXfuqKyWo/p+yBn/HUZm2TqdozK
-         5Ge7IwRCznCP5xlvPkA0vHTsgjn2/uBFV6Hy9CNTn2VXqlg1oQXh9StNrfKceAvMegPL
-         YJ9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729401326; x=1730006126;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mPLTUkSwRn/ADCNGu4AGpEmYT7rtlb2CMdwqNdOxpTA=;
-        b=wJx0IPOGaYzYxohIDgFKrTejasMXZhwpai0HFytJJ31QEFUPqo/7vWba5AZbAUb/YD
-         YqoaZNtBWB3LCLNFLSNDd+gV6h7+TLh+68psdLqnhdARK5GQSBAKejxXhT9oWo3FpEG0
-         u4FuSHaxgYVTMJMCWaUKFxwnEdFnor8nUwfX2u5ttG0JCkdV7Cn5vqCrZCH8cEyroFMJ
-         4Qxg3MMGZWfNsuhR8RhEeOf2fprfFRw7mMN4QJAoZjzkuggv4VYl0PZuW/mmT+t+YqED
-         K5zfUkkLBU7kbt8JkURa4aAC6LJ6zSlrWL+oWoO5o19mB36UfgTxlM6am41vmnCI/Ape
-         hPWw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjrU6i6CTyaKkIDzuGU8rL9yMntdPoDvMG6iR2mAyIEvPG+FYdR7z6nhMmuBEzh3IIL8GliH5tnPEW@vger.kernel.org, AJvYcCWS1S4RnVsFLtqfziCKymX9dhTwk0sQwsW+CmLCR38lG/MfanQTdJy27M4RzUKAH889BNzOhiOUCA8655Vm@vger.kernel.org, AJvYcCXLyRZwQBR+TZwJfAvovZAgDiNVCcpOiY6JHpdrDxMxUA9Qe9NJuLfmE0PCC2g/vMKVrmh3UAUAWrSgXzw=@vger.kernel.org, AJvYcCXMWtU6YraYQQ2WvRwfbbk3TNckgituUls2EZEgOY/IetL1deKImGLooTI0zgoiXUS54/oyB7BNaXvQS8xs+5U=@vger.kernel.org, AJvYcCXP9b9B5Wke35+YC7La4vKRTJ3HfpBPt2ERDHTxoT/qv24yoxmWkiwkg8W7z+oTZ/TCauj/NuB5FheyVFImSfhpwQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBkDwb3gophCq+V3OljVPK2BnljDrL3Wo87ISP8rWEUQdwxQyp
-	QvlKNT8FkMazjxua27WhdtamnglobE8eUqTy166wXLvOe+l9EfUckJQtpA==
-X-Google-Smtp-Source: AGHT+IE2fzzFACXVkzcnLBp5pcAmsooXt9koAwUC1XLg/0exaP+5fY0FgX9aH1MGPibSba2Conm9sg==
-X-Received: by 2002:a17:902:d4c9:b0:20b:c043:3873 with SMTP id d9443c01a7336-20e5c29ab00mr108315935ad.21.1729401326147;
-        Sat, 19 Oct 2024 22:15:26 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7f0de39fsm4857465ad.206.2024.10.19.22.15.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Oct 2024 22:15:24 -0700 (PDT)
-Date: Sun, 20 Oct 2024 13:15:19 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
-	corbet@lwn.net, mingo@redhat.com, acme@kernel.org,
-	namhyung@kernel.org, akpm@linux-foundation.org,
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, jserv@ccns.ncku.edu.tw,
-	linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
-	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 1/3] lib/min_heap: Introduce non-inline versions of min
- heap API functions
-Message-ID: <ZxSR50u0qLYPUeH+@visitorckw-System-Product-Name>
-References: <20241013184703.659652-1-visitorckw@gmail.com>
- <20241013184703.659652-2-visitorckw@gmail.com>
- <20241014081358.GS17263@noisy.programming.kicks-ass.net>
+	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="n9D856TD";
+	dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="oF5wPu1k";
+	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="pcuzsABH";
+	dkim=neutral (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="E75rhja2"
+Received: from gw.tnxip.de (unknown [IPv6:fdc7:1cc3:ec03:1:3105:6f5:383f:9aa1])
+	by mail.af.tnxip.de (Postfix) with ESMTPS id D2AEE20185;
+	Sun, 20 Oct 2024 10:04:39 +0200 (CEST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
+	s=mail-vps-ed; t=1729411479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aEbGHDw+A61Ib3JiwbSVYsKe+HDCy8J4c8zZhZ2wyak=;
+	b=n9D856TDJcrc2c1BimWK1vXgU6/loOHF5SrAyjkt2QosgrKI5OVPzqIET7y7e0AwemHxXW
+	UocQa2VkkoZ4aBAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-vps;
+	t=1729411479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aEbGHDw+A61Ib3JiwbSVYsKe+HDCy8J4c8zZhZ2wyak=;
+	b=oF5wPu1kWnp9w5jKphdNsC+i25Lxcsieqq+CYDuAndaMlODro2yZ2FKKoRXZVB3Ri5nsH8
+	AXLil0ipcCZFc6q6UAK0OlbgctBJtmFhEaDRLybvufZF61sQ8GmRdzA7+1Y7N/fwpDDuet
+	dhgZWRghs6t9wfO9vtD2iCJqMsXvyKE=
+Received: from [IPV6:2a04:4540:8c02:ed01:9fce:adea:e603:6044] (highlander.local [IPv6:2a04:4540:8c02:ed01:9fce:adea:e603:6044])
+	by gw.tnxip.de (Postfix) with ESMTPSA id 892CD20085B34;
+	Sun, 20 Oct 2024 10:04:36 +0200 (CEST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
+	s=mail-gw-ed; t=1729411479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aEbGHDw+A61Ib3JiwbSVYsKe+HDCy8J4c8zZhZ2wyak=;
+	b=pcuzsABHETAOBGbPd765DSGlJOYuwiLibMi1X1+vYenm3gc4pKhOeVdpLMJMIoV7l7XCms
+	zI5qqLw4X1u1ucBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-gw;
+	t=1729411479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aEbGHDw+A61Ib3JiwbSVYsKe+HDCy8J4c8zZhZ2wyak=;
+	b=E75rhja2H7Tm7GHQ+NehmR4T/8BQ/a2s3w5TILBajf64J13LYeRCXOY2UOgRUsDQP5qfOy
+	HKPcAQ1RbYdxMGUQig15XA3RQ85NDPF+QPdY38TIG8dhce1Xj24fBzgLDMVYZl/dlRq/io
+	Uvs3ONeafkOrAEOyQFan8dHVhO18FHA=
+Message-ID: <ad14ee04-1e41-437d-be46-ac736a0292e4@tnxip.de>
+Date: Sun, 20 Oct 2024 10:04:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241014081358.GS17263@noisy.programming.kicks-ass.net>
+User-Agent: Betterbird (Linux)
+Subject: Re: Another bcachefs version downgrade bug
+To: Jani Partanen <jiipee@sotapeli.fi>, linux-bcachefs@vger.kernel.org
+References: <46uitwudetmmygddpxufepddca7azsim6trqj4o2ivsccdeavz@uztkfyqtjgks>
+ <1249157619.1105.1729296906241@mail.carlthompson.net>
+ <1af6fd38-7ecf-451a-9be3-fa7b9447fa43@tnxip.de>
+ <4958287.GXAFRqVoOG@lichtvoll.de>
+ <89e7e2d1-6c1f-4ff0-a645-5d9308dc81db@sotapeli.fi>
+Content-Language: de-DE, en-GB
+From: =?UTF-8?Q?Malte_Schr=C3=B6der?= <malte.schroeder@tnxip.de>
+In-Reply-To: <89e7e2d1-6c1f-4ff0-a645-5d9308dc81db@sotapeli.fi>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Oct 14, 2024 at 10:13:58AM +0200, Peter Zijlstra wrote:
-> On Mon, Oct 14, 2024 at 02:47:01AM +0800, Kuan-Wei Chiu wrote:
-> > All current min heap API functions are marked with '__always_inline'.
-> > However, as the number of users increases, inlining these functions
-> > everywhere leads to a significant increase in kernel size.
-> > 
-> > In performance-critical paths, such as when perf events are enabled and
-> > min heap functions are called on every context switch, it is important
-> > to retain the inline versions for optimal performance. To balance this,
-> > the original inline functions are kept, and additional non-inline
-> > versions of the functions have been added in lib/min_heap.c.
-> 
-> The reason it is all __always_inline is because then the whole
-> min_heap_callbacks thing can be constant propagated and the func->less()
-> etc calls become direct calls.
-> 
-> Doing out of line for this stuff, makes them indirect calls, and
-> indirect calls are super retarded expensive ever since spectre. But also
-> things like kCFI add significant cost to indirect calls.
-> 
-> Something that would be a trivial subtract instruction becomes this
-> giant mess of an indirect function call.
-> 
-> Given the whole min_heap thing is basically a ton of less() and swp()
-> calls, I really don't think this trade off makes any kind of sense.
-
-BTW, Regarding the concerns about the efficiency impact of indirect
-function calls, should we also consider converting some calls to
-sort()/list_sort() into inline function calls? The comparison functions
-they require could lead to a significant number of indirect calls.
-
-For instance, the comparison function passed to list_sort() in ubifs
-calls cond_resched(), which implies that the linked list could be
-lengthy, further increasing the likelihood of numerous indirect calls.
-
-Regards,
-Kuan-Wei
+On 19/10/2024 22:18, Jani Partanen wrote:
+>
+> On 19/10/2024 11.31, Martin Steigerwald wrote:
+>> BCacheFS is marked experimental. My take with that is: As long as it is
+>> marked experimental and you like to test it and give feedback, it is
+>> important to move quickly enough to new kernel versions. It was and 
+>> partly
+>> still is the same with BTRFS. Developers often asked users to use a 
+>> newer
+>> kernel. Feedback on BCacheFS on 6.9 is quite likely not very useful to
+>> Kent and other BCacheFS developers while they already work on what to
+>> bring in for 6.13.
+>
+> Issue is that normal user have no idea that bcachefs is experimental 
+> because it is only told to be experimental IF you are building 
+> building kernel yourself.
+>
+> - modinfo does not say anything about experimental
+>
+> - bcachefs user tool does not say anything about experimental. iirc 
+> btrfs user tool warns that you are going to use experimental stuff 
+> when you select raid5
+>
+>
+I think the only place where that can be done sensibly (even 
+retroactively) is in the distro's package manager when one installs the 
+tools. Might have been something that could have been in the format 
+sub-command, but it's way too late for that now.
