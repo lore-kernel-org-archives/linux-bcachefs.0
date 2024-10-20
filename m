@@ -1,40 +1,67 @@
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BBCB2F43
-	for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 21:29:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620AB1DFD1
+	for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 21:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729459762; cv=none; b=IlOLwyaxSmbDfcKoA3pGc7AJ6jWUJxBsE20n9tfaCd51yvPNWJhOY7SPYMs9D/YPxg5fJk+2117UYVM6Ho+a3LrJRXomqWmg/LNDe10FKj+4vZ9ySqYMDpX10QraZfTfwVKtxxdfOvsuVKWYEcsK9TugrQAf9KcZdz88TLOuXpc=
+	t=1729459864; cv=none; b=h8YG3GNGcfHz9oAu5fq11ZFGx6gBaFhVAgyEo6n4Heb/zUSw3jIV542JFSLMRi+gohYNmxH81B5bukhoOxNeHGvH+CwtPaItzUAB6/8oOPeIlIbsjNgy2BI9vhW95CENJyrstTnuPpKDr8kus0KMCo72YrdzMuVHC8du34Dwn4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729459762; c=relaxed/simple;
-	bh=BMvgOYcJ+pKuxW+WDR3U+FEvmlNNyO7BTbakG337yYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i7WObb6hXQZJqDXOGeytx644wcBtvFFUGhDZeyhRxoHM6++WdZ0ZcEoRGwa1ltNZeLbSnuyel8QPu5DIKn4lLrWSkXk/6R79/AGhTUogU1lrMirNf/VNq62s1xGSD8KTf43h7QpvfmCKzfS/0sYXYtqsoyLf4FfnatywuTPrnB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RQADfpaJ; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1729459864; c=relaxed/simple;
+	bh=ykaFoPzGaMCoE7bj6EsoDwlvaRxZGvoiIAX2PsLNjm0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dzngoF9hBPRgCb2I2K4XjRjvbumgSCElPaIgI07CL27BRb4zP1A8PNwSScaBO6+XDchmvDA+Ok4w+f9x1aQp1b355KISfzbYNa3DYe1XPiDUay/aVo/YinQ/IR2tMIgUOfxEc9tCBtLZbVpiJ0LFRaUwzdHzFwjAqcG5bou5b5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Q64lVzq5; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RQADfpaJ"
-Date: Sun, 20 Oct 2024 17:29:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729459752;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H+x1QYWsKIp+/U+DoH74I4GoWs22ZXBV1HmFZFT8djc=;
-	b=RQADfpaJF+2TXDO5NdSVmDQSbpPrrwULz8iwL10zEJdaQ6jJi8w4SOCmFxjl0H9Er64Ke/
-	WNdqggYOS6Jv4PuKOaX1I6giVe6kur1wGpMZZgQu/RWZpmf+xbcTd9vWX9PS29r9JWLa6g
-	gUJ7qnFYMwDZEPAh74CbBD51pYQi7j4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>, 
-	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] mm: Drop INT_MAX limit from kvmalloc()
-Message-ID: <zsx7jruj2lefbippol3zgagkw3sk33pgli476y2rumq3k25xkm@rt6ady5gnkrv>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Q64lVzq5"
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a99f629a7aaso676325066b.1
+        for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 14:31:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1729459860; x=1730064660; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3gsbLturYiOoejv++RiooxZpHIdZVaSyoFSqS3AiQqI=;
+        b=Q64lVzq5M496W6TZUtDyydCdhO3tEqN92vkxjIHjsvTyRc8fxrQq/lSbrs1FcTLOOe
+         1Mh/w0+IEPaGpj/10s2GMQg9ihtZbmvPnQWqllgdPSxsCothX+oiNxUqDCQaGOjmzty1
+         dLZR4XL7D3BZ86ODDI3JcKUz0YaMy1olHJicE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729459860; x=1730064660;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3gsbLturYiOoejv++RiooxZpHIdZVaSyoFSqS3AiQqI=;
+        b=VR9OzAMqUIdl/QcEykZDXntTiYZrQudDHtAHuLcfyTkz3efr8aQSSl2jf4rtgGIBEy
+         kqCdvKZ/XYc+bMarmGWZFmEJEAS78sXC/I4rK/fExZXB5ifOpsslAOtFk4WnIt4Z9jIW
+         eseikh5ISOQPXd9pt29XGBYA/xYTkvMP0HCLwu6Erk8WXuaa/ZVd6IgUD5KG90zgE0he
+         +Rx4rGv7hVeFaNbrXx4zjFD26cE5afd2ZMhlz71Lk2Z0SCEKqiqcaBjtF+3/CvoCQJ1F
+         kibsRW/6KWXW6qXCfWoLPILeoGk/yjrNH7n2Q/JBzvsbdsfamojjCLJr5clmOar+FS22
+         B3ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXU91PR52J2zB5OGvk4A45Gqg/d+z3GnscKScrkvq+Yoke9YL2PWld0A5l9FGWA2cT68JmJOpUS4JejcUZcig==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyzWCMowNg8J5k0aNQQ2QaR8X3gicx5GtgizmXYNaRqokIHds3
+	LImy5OLcZ0HZw42tiJn1dbh9n/o+1gZdYxkpLsGBT0lTMnw0e28i6RcdI9TdNIZ4KWGgG+34W+O
+	trgRmmw==
+X-Google-Smtp-Source: AGHT+IFIK46uEp9BYtfU9u5MOo9FISFFkysfrluo/wN5x7Y/5cIsQfiHADI74QEgjWxz/YD7AVgosQ==
+X-Received: by 2002:a17:907:d16:b0:a99:5f65:fd9a with SMTP id a640c23a62f3a-a9a4cc3c202mr1573094066b.21.1729459860358;
+        Sun, 20 Oct 2024 14:31:00 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a912edff8sm126977266b.59.2024.10.20.14.30.59
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Oct 2024 14:30:59 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a99f629a7aaso676322766b.1
+        for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 14:30:59 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXgBHEZLnXtlY+F/MuG3YCmuG7yYhn8eF1plyq2acUYzNh7UexI3welYws7G0z7kNsCpkEo8GbnK28V4czGwQ==@vger.kernel.org
+X-Received: by 2002:a17:906:7955:b0:a99:ef65:50e with SMTP id
+ a640c23a62f3a-a9a4c2ed7f6mr1568592766b.11.1729459859390; Sun, 20 Oct 2024
+ 14:30:59 -0700 (PDT)
+Precedence: bulk
+X-Mailing-List: linux-bcachefs@vger.kernel.org
+List-Id: <linux-bcachefs.vger.kernel.org>
+List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 References: <ebe58a08-2371-403c-a0d7-6280160b6848@lucifer.local>
  <zfr4sh3wtzi4viladlgwyon6voqhcj5fe3fv2nc3hqyyxdw5wd@onyj3r2m3usz>
  <CAHk-=wi=PrbZnwnvhKEF6UUQNCZdNsUbr+hk-jOWGr-q4Mmz=Q@mail.gmail.com>
@@ -44,110 +71,30 @@ References: <ebe58a08-2371-403c-a0d7-6280160b6848@lucifer.local>
  <6eo3gekf6twbnzhpsi2emz2s6sgtof6iba2rvbor7himmejoq5@qbfwtpbpvqoe>
  <CAHk-=wga3FXReWVhU2eid8+sXhBF1QgP1iMJu1jnSX6fapoyXQ@mail.gmail.com>
  <ikaf72w2oap3crjrybbd5jp267slnb7dygz4m62dfw3edu2ppj@f7dv2qdx3yga>
- <CAHk-=wggLED-UmxS0gXrtOXBVWexCkyudYCr5zXNh8p5PB9bng@mail.gmail.com>
-Precedence: bulk
-X-Mailing-List: linux-bcachefs@vger.kernel.org
-List-Id: <linux-bcachefs.vger.kernel.org>
-List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wggLED-UmxS0gXrtOXBVWexCkyudYCr5zXNh8p5PB9bng@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+ <CAHk-=wggLED-UmxS0gXrtOXBVWexCkyudYCr5zXNh8p5PB9bng@mail.gmail.com> <zsx7jruj2lefbippol3zgagkw3sk33pgli476y2rumq3k25xkm@rt6ady5gnkrv>
+In-Reply-To: <zsx7jruj2lefbippol3zgagkw3sk33pgli476y2rumq3k25xkm@rt6ady5gnkrv>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 20 Oct 2024 14:30:43 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh5o2ZEk=H_fy=1nZzUxTR8djjDhPp7yV7_5YCA8xQUXw@mail.gmail.com>
+Message-ID: <CAHk-=wh5o2ZEk=H_fy=1nZzUxTR8djjDhPp7yV7_5YCA8xQUXw@mail.gmail.com>
+Subject: Re: [PATCH] mm: Drop INT_MAX limit from kvmalloc()
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, linux-bcachefs@vger.kernel.org, 
+	linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>, 
+	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Oct 20, 2024 at 01:54:17PM -0700, Linus Torvalds wrote:
-> On Sun, 20 Oct 2024 at 13:30, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > Latency for journal replay?
-> 
-> No, latency for the journaling itself.
-> 
-> You're the one who claimed that a 2G cap on just the *index* to the
-> journal would be an "artificial cap on performance" when I suggested
-> just limiting the amount of memory you use on the journaling.
+On Sun, 20 Oct 2024 at 14:29, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> That's the same as limiting the amount of dirty metadata.
 
-That's the same as limiting the amount of dirty metadata.
+Exactly.
 
-Any filesystem wouldn't want an artificial cap on dirty metadata,
-because so long as it's dirty you can buffer up more updates, but for
-bcachefs it's a bit different.
+We limit dirty data for a reason. That was what I said, and that was my point.
 
-Btree nodes are log structured: this was a dumb idea that turned out to
-be utterly brilliant, because it enabled eytzinger search trees, and
-because pure b-trees and pure compacting data structures (the leveldb
-lineage) have weakness. Pure b-trees (with a more typical 4k node size)
-mean you have no opportunity to compact random updates, so writing them
-out to disk is inefficient. The compacting data structures solve that at
-the cost of terrible multithreaded update performance, and the resort
-overhead also in practice becomes quite costly.
+Excessive dirty data is a huge latency concern. It's a latency concern
+not just for journal replay, it's a latency concern for anybody who
+then does a "sync" or whatever.
 
-So, log structured btree nodes mean we can _reasonably_ efficiently
-write out just the 4k/8k/whatever out of a 256k btree node - i.e. we can
-spray random updates across an enormous btree and serialize them with
-decent efficiency, and because the compacting only happens within a
-btree node it doesn't destroy multithreaded update performance, the
-resorts are much cheaper (they fit in cache), and we get to use
-eytzinger search trees for most lookups.
-
-But: it's still much better if we can do btree node writes that are as
-big as possible, for all the obvious reasons - and journal size is a
-major factor on real world performance. All the performance testing I do
-where we're filling up a filesystem with mostly metadata, the first
-thing the tests do is increase the journal size...
-
-> Other filesystems happily limit the amount of dirty data because of
-> latency concerns. And yes, it shows in benchmarks, where the
-> difference between having huge amounts of data pending in memory and
-> actually writing it back in a timely manner can be a noticeable
-> performance penalty.
-
-Well, ext3 historically had major architectural issues with journal
-latency - I never really studied that but from what I gather there were
-lots of issues around dependent write ordering. bcachefs doesn't have
-any of that - broadly speaking, dirty stuff can just be written out, and
-i.e. memory reclaim might flush dirty btree nodes before the journal
-does.
-
-(The one exception being interior nodes that have pointers to btree
-nodes that have just been created but not yet written).
-
-The only real latency concern we have with the journal is if it fills
-up entirely. That will cause latency spikes, because journal reclaim has
-to free up entire buckets at a time. They shouldn't be massive ones,
-because of the lack of dependent write issues (journal reclaim itself
-can run full tilt and won't be getting blocked, and it starts running
-full tilt once the journal is more than half full), and with the default
-journal size I doubt it'll happen much in real world usage.
-
-But it is something people looking at performance should watch for, and
-we've got time stats in sysfs for this:
-/sys/fs/bcachefs/<uuid>/time_stats/blocked_journal_low_on_space
-
-Also worth watching is 
-/sys/fs/bcachefs/<uuid>/time_stats/blocked_journal_max_in_flight
-
-This one tracks when we can't open a new journal entry because we
-already have the max (4) in flight, closing or writing - it'll happen if
-something is doing constant fsyncs, forcing us to write much smaller
-journal entries than we'd like. That was coming up in conversation the
-other day, and I might be doing another XFS-like thing to address it if
-it starts becoming an issue in real world usage.
-
-If latency due to the journal filling up starts being an issue for
-people, the first thing to do will be to just resize the journal (we can
-do that online, and I might make that happen automatically at some
-point) - and if for some reason that's not an option we'll need to add
-more intelligent throttling, so that the latencies happen bit by bit
-instead of all at once.
-
-But the next thing I need to do in that area has nothing to with
-throughput: a common complaint has been that we trickle out writes when
-the system is idle, and that behaviour dates from the days when bcache
-was designed for servers optimized for throughput and smoothing out
-bursty workloads. Nowadays, a lot of people are running it on their
-desktops or laptops, and we need to be able to do a "rush to idle" type
-thing.
-
-I have a design doc for that I wrote fully a year ago and haven't gotten
-to yet... https://github.com/koverstreet/bcachefs/commit/98a70eef3d46397a085069531fc503dae20d63fb
+               Linus
