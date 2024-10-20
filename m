@@ -1,96 +1,76 @@
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFB2137E
-	for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 18:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D353193425
+	for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 18:53:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729449994; cv=none; b=aGJf79KxbFrkieu4jfviQZe/laLRwc66j6qXxzj25f7ooAk6+r7hIh060HHgt0GFRnPhucEvUa2rVM2kqFZKK7udvkvGxlj3bSalT23LSG21GFBqTF3FSfJ3IGLwwBQpJdGKmBA9tlu0EJaQfVqgLTG85FxI/tRvGQKg1UR7BjE=
+	t=1729450440; cv=none; b=rbSpD7d53SHkZby1uhhCq2U4BdVaax1MS19/oZEeZ1kYI/In1rfnVPxlegzgUGziSxAcvLtl6B+rxmgMpLYNOd86v9Xw9Q3L2+gLqMNYy72i6FjRXpPjlGesoXHcOjjAQtatXij+7cFKmxIdCoHY7a0MiOD26FvjxToLvVJyJrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729449994; c=relaxed/simple;
-	bh=xiwYvqbiEeMl/0AlfbQ7y5WQrl00vZigFYAY8H9nbT4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L6cCFbeAbPcgpyGV8lBrkFyb9CLyJWEk/NpefnTwloAGuoLVrl39LQFKtQAv/CqDuHYMptGiLMphPclQHTdDjkDlamyGKo1ZKehrKBqNpJg3vce05Vq9K3pMKprE75qwC0gDtrzBU1bGk9vai0HPvkAaYN3ms3I5XfFmd5M7g6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Sg/KGm0D; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1729450440; c=relaxed/simple;
+	bh=RMGfGbWGRSKaof+xJGvInP8h0PRUFrmT9ymCvzOqlE4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ImrX/vj4f9v5fPrroPgL5G/Sc0n1xlqhLZbuCreQWTwhwUlYYYLDxXbS2lvfGJStBNHAdjzjsTkyrKbqgK6g6Ehr7q1sBV3C0PgrSbXH6efnRZFOC5d1TXcvPklCiqlRMZhFKFK04xkhyZk1UEdgAACaZjSrp9Kj5Nz3H7HgO1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HQEtbAp2; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Sg/KGm0D"
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a9a0c40849cso584826866b.3
-        for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 11:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1729449990; x=1730054790; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0PLJqukBfD4fHf2ztQUKQIxZkUV+Rj9iZfPkEtdHboU=;
-        b=Sg/KGm0DmNycBswHZ+dd9caMdMNGNMFJzBX4Yd8Yqr+RFS7dALbQ7mUt9qGB3YA3Hz
-         hhTkzqLbbmB8JEBTtQyPFmwxsvEAlUYFysmguRYqTCyCxYUH7GUhSIIoHCQ35HrGHDjk
-         R7QjqqdKJ8sE6lji90g9TmXbDbPn2n4AhvHfM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729449990; x=1730054790;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0PLJqukBfD4fHf2ztQUKQIxZkUV+Rj9iZfPkEtdHboU=;
-        b=wTK2sQIUIIOGtlrfGX8c61rLcQGOalQyD33tS8O7Y15I2ldToQA7Hg4YpFZPobFudD
-         n9SWHsWTJzUEr79eUg1k5mG036xMkd6UiKb/tmDK+q18ysitLG/J+GIoQNRSrRS78m9+
-         8TbzJ5EI+30pH5239UbtT4CGlSfOF+rfF0KBkIsfWlFjKD22h/8JU0Vud8ZB60qwvN4/
-         cTSdu0NPJ3GEJo47DE3nkB6/qUKpIUXk23BLSHymTJAoHAHGx/Gta4+tljGeXD4WsF+g
-         vbGbGtVHTsGEzgbIQjq4Dw4pM4/6oxZaGS67IajT3q9voS6mMafKzM3lBCyWxDIm+Jz2
-         q2mg==
-X-Forwarded-Encrypted: i=1; AJvYcCU/c0bMDkW+RcweRXaOd/CRHSLKZBGAznoEraePE5+m7wYvKPkSkoEfT/d6YvfL2SUpTBaB3bSC38ibM+fMkQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8B3Dd7/Pp+pOlACoAoL4fwhYWN0Q/3PH/cC7UYMJIvBKyyAjc
-	9InpylR4SziaacS2red30y83lufB5TsZojA2nnE9c+oRHQydgDTm5JbDHPsNGAv11J+aPTxbLDa
-	T//yfqw==
-X-Google-Smtp-Source: AGHT+IFzN4n1ih9jB52akfwCNgylgdeXHCE1gmfnYcq2VZdBaDJvGB/SVeh1/FR3Kurrjm5qZeYtnQ==
-X-Received: by 2002:a17:907:2cc6:b0:a9a:2a56:91e with SMTP id a640c23a62f3a-a9a6996b20dmr1051624966b.6.1729449989919;
-        Sun, 20 Oct 2024 11:46:29 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a912ee077sm115776066b.65.2024.10.20.11.46.28
-        for <linux-bcachefs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Oct 2024 11:46:28 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a9a1b71d7ffso597461666b.1
-        for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 11:46:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXbbeC/mwW2UVaWgJrCuczoPTheK+Q5yzoCbTxXUX9neuKkKwI6Wy93oXYht4LteoivxylzqaDRv4Wqd1m5mQ==@vger.kernel.org
-X-Received: by 2002:a17:907:2d86:b0:a9a:29a9:70bb with SMTP id
- a640c23a62f3a-a9a69a7866amr846780366b.14.1729449988270; Sun, 20 Oct 2024
- 11:46:28 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HQEtbAp2"
+Date: Sun, 20 Oct 2024 14:53:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729450435;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=88nKpjSii+8FZBtg4/D+7ialdSkZyzZjLExZxeMz0+U=;
+	b=HQEtbAp2YII6KOCVbkhQnqSll79ia4rsR4rQ0zM5XKRYQzMsNI28ELPmCtcwNCiqq11hye
+	6hrBbn7S7Yp1dDXKn0uz55NuahiT35+5FnLDhuiOILOMZBJrowGgJSEeVWdcvDCkPqXMTd
+	Wd3mtzwlt/swTU4zp6KaVyf0tsWJitI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
+	linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>, 
+	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] mm: Drop INT_MAX limit from kvmalloc()
+Message-ID: <m46mlvv57oypstekojhkdwpts6mi4r63l4kugs4lpry3d2r7dq@kbmied6nzsc3>
+References: <20241019210037.146825-1-kent.overstreet@linux.dev>
+ <90bc0794-4cab-415f-a442-4af85a32eed8@lucifer.local>
+ <ucbcmk4kr7tbvj6uqnjke5662kerawbr4ghtlbw4zim7mdm3fg@vjawfne5rdkp>
+ <ebe58a08-2371-403c-a0d7-6280160b6848@lucifer.local>
+ <zfr4sh3wtzi4viladlgwyon6voqhcj5fe3fv2nc3hqyyxdw5wd@onyj3r2m3usz>
+ <CAHk-=wi=PrbZnwnvhKEF6UUQNCZdNsUbr+hk-jOWGr-q4Mmz=Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241019210037.146825-1-kent.overstreet@linux.dev>
- <90bc0794-4cab-415f-a442-4af85a32eed8@lucifer.local> <ucbcmk4kr7tbvj6uqnjke5662kerawbr4ghtlbw4zim7mdm3fg@vjawfne5rdkp>
- <ebe58a08-2371-403c-a0d7-6280160b6848@lucifer.local> <zfr4sh3wtzi4viladlgwyon6voqhcj5fe3fv2nc3hqyyxdw5wd@onyj3r2m3usz>
-In-Reply-To: <zfr4sh3wtzi4viladlgwyon6voqhcj5fe3fv2nc3hqyyxdw5wd@onyj3r2m3usz>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 20 Oct 2024 11:46:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi=PrbZnwnvhKEF6UUQNCZdNsUbr+hk-jOWGr-q4Mmz=Q@mail.gmail.com>
-Message-ID: <CAHk-=wi=PrbZnwnvhKEF6UUQNCZdNsUbr+hk-jOWGr-q4Mmz=Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: Drop INT_MAX limit from kvmalloc()
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, linux-bcachefs@vger.kernel.org, 
-	linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>, 
-	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wi=PrbZnwnvhKEF6UUQNCZdNsUbr+hk-jOWGr-q4Mmz=Q@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, 20 Oct 2024 at 10:04, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> But given that vmalloc() already supports > INT_MAX requests, and memory
-> sizes keep growing so 2GB is getting pretty small - I think it's time,
-> this is going to come up in other places sooner or later.
+On Sun, Oct 20, 2024 at 11:46:11AM -0700, Linus Torvalds wrote:
+> On Sun, 20 Oct 2024 at 10:04, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > But given that vmalloc() already supports > INT_MAX requests, and memory
+> > sizes keep growing so 2GB is getting pretty small - I think it's time,
+> > this is going to come up in other places sooner or later.
+> 
+> No.
+> 
+> If you need 2GB+ memory for filesystem operations, you fix your code.
 
-No.
+This is for journal replay, where we've got a big array of keys and we
+need to sort them.
 
-If you need 2GB+ memory for filesystem operations, you fix your code.
+The keys have to fit in memory (and had to fit in memory previously, for
+them to be dirty in the journal); this array is just _references_ to
+those keys.
 
-2GB is more than you *can* allocate on 32-bit platforms, and even on
-64-bit ones it is often quite a lot.
+> 2GB is more than you *can* allocate on 32-bit platforms, and even on
+> 64-bit ones it is often quite a lot.
 
-So even aside from the *fact* of integer overflows, that check isn't going away.
-
-             Linus
+This came up on a machine with 128GB of ram.
