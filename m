@@ -1,127 +1,126 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA511F6681;
-	Mon, 21 Oct 2024 14:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57CD26AD4;
+	Mon, 21 Oct 2024 15:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729522347; cv=none; b=RCzVTtiLzYdI+/9P7GUuKAv8FNpsxyflT2V4eS67XqechxQO2qH2sunqaySXR4Zls1C6oXagmsEzmLnfE9gulSwcDrVU2027mhEvBolQ70zvOfre6jObCxF0jt+aUbm/LQvz+gLZHiS2LgIQVi/gqJNztzztpr7Jx87KKIk+gnU=
+	t=1729522827; cv=none; b=agiGYOyMkXJUG1gGETXh5Mq/t6RcfDKT5wgsVxgECgJ2XrlJVsU5+adHAbnfPCWzFsddJS1NurJuxLU2hZjdXisjInLoO0L+25N1H+3Q84/LNMq5twjvh/4qNEy3TOMyRmgCOwxgv61UBzUhu7AIb4fyIbe2VZndR1XCYHZ2c4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729522347; c=relaxed/simple;
-	bh=FowACoN2b+0Ge0RZ36VFhGeMwK+RM4hKXl9ttJGBZgY=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=OA6/rnBgYcL61dNUxfxNjUfynVJh1LdyAbKjcOrH3Bh412EB8YnyOnlfevHKeVgg6gnao00d5CGBBxMiwQ0mzMEJnGNCvus3K9LykyZIjco6hZRtiMKJrXmjMGqDRPx2DNyhTTaYl79EqPSgUOfiBMmVG1neNNXXWeycLKdqVZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nCc2KfDr; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1729522827; c=relaxed/simple;
+	bh=pEfKWsFTW4FYaTDGRuCUeH7Kc/Wh8WFIHAE028fHyAg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I2zeEVGI1HVOEU/YvgnfPvuzvh9qQ3sRPk60G+pwNB8mo3ur39CfrNhSzkx8HNLcw4508iMqLqRQaTLHXmE1oKiD75ljKvtDnp3qnmuXQHQaeCoCcALkyt7VIkxKkEcdNeCp3bWCW3nDAC7xloOoET0AyqNlI6mSer7bx6pQOaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S8cY1uVq; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nCc2KfDr"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-20c70abba48so36474685ad.0;
-        Mon, 21 Oct 2024 07:52:25 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S8cY1uVq"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71e681bc315so2924234b3a.0;
+        Mon, 21 Oct 2024 08:00:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729522345; x=1730127145; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9ERo6rITP6HUIczBUz1Hheo3MKjLwe9uWSn3gY/EEL4=;
-        b=nCc2KfDr6A7NLfooLdROoRKjC4vsr0JxCBgrDpbkNrDbxrrVX5X1zTmefnJ6yRXaju
-         RYcXE2yyK6Y4m6/LovmKenxEosHTMjmuuZ3bQsJLs9JePvct8qE7+dCN/PhDgN86Ul1P
-         6jmEwD3a6a8rl8fp8/JvA9fnmrW8uMwYuKnKlQRPU0S1RtdsvP14qppWxGxUF505cTgD
-         eeqt8ivCu/RkVObY9fut9WFC2RBuoqRAluqBDo9+zYIXU6+svUKM/f+eZJ47+QvkR3d1
-         ZkUYP+0RYJ/l48y2/cLHRlv9S5uTeA8unrKHxcJ3xPZYS6AWPEnU6fAeixeCRMKoUOFH
-         dyOA==
+        d=gmail.com; s=20230601; t=1729522823; x=1730127623; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RSAIOiWwIxBudP7zxML2M02m9mK4Z7nv2h4A6V98HKE=;
+        b=S8cY1uVqDxVA+cj9UFAsxwx2Jt4UoEtLKRQBlde1R3fAOGrTQ8/ZSKBf00Fh0gpja/
+         3IUKvm6HtWaCTeaNXnpKDjJJkZ6zIdZnTFRQPLtNYX3x1WZC+7VEO5bVXdFSaB9KvN8t
+         ch0ufZp4UyTZjfjvOydrBBwDi5PfDAl9XqQxs7QzV/KAEBdV1Wp+fEcU9syB1aeSNLcl
+         dL4HONyN+LDh28NHC0uL5j/WIeUDxv7LjLokgD+UapI7PRkrEO843JJV6ABTF9puZNbl
+         wxIAAyY4+np3y0AiWMt+/9pVBiFW6L+6CKOkNOZMYFQVCrmSstmNIlEs5gNhKD00v72u
+         4cew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729522345; x=1730127145;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9ERo6rITP6HUIczBUz1Hheo3MKjLwe9uWSn3gY/EEL4=;
-        b=IdSfUDndaziP5zB+bfxp5ERbvCZ7PdPb04OnECkkXJ5EzwQkAoJspT//STiyqHyx1F
-         9RhNItbFQTWuAp6LSh5WURhdqAoagSK3gFv2rxU1r7sli1vRMgj+9XXpSKAN3/zDDE+r
-         hZ2ydtTd13IIFEHuvVaIxg+guMhQXNz54qnn8xEfu5HtYI7y53UJ9+tbxLn3HER42g67
-         ZiQNe1XEd8f57YczJMhWDedROKH7/AmgCSeb6Ur8PADQOoq4BlgaNpiXFLPYZlxNRGUs
-         bfdmRqrE3wUYMbrIOgRk39AlH5yF0ZREbAB0u2sy042oBvnuPxP3chxvHjOrQSncZziS
-         EcbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUYS52IbJpSXiik7kgTPGoH8PH9w2IcEr+ojgV5WbZT9sXY2oAQCK4bOD35Pl1n5B2TmkXw6JMu+XlI2qU/@vger.kernel.org, AJvYcCXC+r3Urg82Xc6vNL+ykZj1iRIQg2wzxjkCFRSlFfGZ9yABrQLJ0PHt9Bq21o+qxQtIBOjzKFlTmcpwbbHeFg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxcqG6yRVVhRAs0iAswAlwn7TSWyGUhpPvmNUtNbhgWMiPLKpqQ
-	zcdt1AFbOcHlAAzi3M629NFhd7Iu0NCMEqNl1/oI/yHv6HKHXB4REbJujG85
-X-Google-Smtp-Source: AGHT+IEQpfinzGbZ9bbZ6wqp+SETYR3+MaQZQf07P8pgWWxOTCceOVOn0hvPZzXD2jYaYpD4Qd99FA==
-X-Received: by 2002:a17:902:ea0a:b0:20c:a189:c006 with SMTP id d9443c01a7336-20e5a91f162mr141998065ad.45.1729522344562;
-        Mon, 21 Oct 2024 07:52:24 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7f0f36e6sm26799735ad.258.2024.10.21.07.52.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Oct 2024 07:52:24 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+        d=1e100.net; s=20230601; t=1729522823; x=1730127623;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RSAIOiWwIxBudP7zxML2M02m9mK4Z7nv2h4A6V98HKE=;
+        b=WH7cBH5z9XFR9ym0Qd+YWn+w/H15zkQMYIxmEXJp13kz6ekdC+ZwgFqsm/rxiiUvb7
+         kL5OReuo00JlT5AptBEbKUVv/qBeKeWbEi6B+o7lGEYtlNABXote3qjOov9vpqOPPKYS
+         twFdpLHJN2V/j+RXQA8j0w3unpa5q40KSUU3pLt/1GLaWjkN6998sVj85PAy1h2LNjKi
+         lGyn5Psot6W5gnRenRQOcJGIuheeB0PHo2ngOd0HBjHpkTUi6RXBEBz6FEJk7OoaIuLA
+         kFHIVGzDvZy/bt/AlC1ayCOpdjAdgSFOeETNvVyxShyDwKJQw1IZfS4FkaaFC4JsHMSh
+         z4PQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUooxtacE8zuyK48V1Fsjt9yaLwShDLL2kQc7GN6Kl15jMSYysvVUSWag8QwPTFM1RXlW7sFw5X35l0LR+x@vger.kernel.org, AJvYcCXf/Dmo6wk8rWLVR+UvwUrwLEcOSRwYM7WqoYs1T5WMaqehpy+1NvaRFtR0MYd+WLoLZkK193GaGZtbKf8sSw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8YbA+mD87UpN9eC7ym3Ck1sHf6KRvN5H0RlDEq+6nUx+AAqSf
+	Abu5PP2S9A79TUpS5i+fXiN+WJRqHrVoH2zUbydCl2HSDNC0EFnzqP4p0B+sb69wDTJRHBunM8H
+	lfb94WoA1T6CatSpE9XBbjIQhSt4=
+X-Google-Smtp-Source: AGHT+IEQrIFcJCd39MJGH/OmL70uE7OgnIieisdNAd7R0SqAMScaNNPq5ec8nilSDk6yXIHOff3OhSuE9vOHH5+dmeY=
+X-Received: by 2002:a05:6a00:1d15:b0:71e:591d:cb4c with SMTP id
+ d2e1a72fcca58-71e8fd43bc5mr29388132b3a.1.1729522822525; Mon, 21 Oct 2024
+ 08:00:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+MIME-Version: 1.0
+References: <20241021140949.29204-1-aha310510@gmail.com> <656AA7DA-D2FB-447A-9491-781880D79A4B@gmail.com>
+In-Reply-To: <656AA7DA-D2FB-447A-9491-781880D79A4B@gmail.com>
+From: Jeongjun Park <aha310510@gmail.com>
+Date: Tue, 22 Oct 2024 00:00:12 +0900
+Message-ID: <CAO9qdTEyduW6U7OsaK8tPLW6jQVgVSYPvszNRXUVxjwjAY4eVA@mail.gmail.com>
 Subject: Re: [PATCH] bcachefs: fix shift oob in alloc_lru_idx_fragmentation
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <20241021140949.29204-1-aha310510@gmail.com>
-Date: Mon, 21 Oct 2024 22:52:09 +0800
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>,
- syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <656AA7DA-D2FB-447A-9491-781880D79A4B@gmail.com>
-References: <20241021140949.29204-1-aha310510@gmail.com>
-To: Jeongjun Park <aha310510@gmail.com>
-X-Mailer: Apple Mail (2.3776.700.51)
+To: Alan Huang <mmpgouride@gmail.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Oct 21, 2024, at 22:09, Jeongjun Park <aha310510@gmail.com> wrote:
->=20
-> The size of a.data_type is set abnormally large, causing =
-shift-out-of-bounds.
-> To fix this, we need to add validation on a.data_type in=20
-> alloc_lru_idx_fragmentation().
->=20
-> Reported-by: syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
-> Fixes: 260af1562ec1 ("bcachefs: Kill alloc_v4.fragmentation_lru")
-> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
-> ---
-> fs/bcachefs/alloc_background.h       | 3 +++
-> fs/bcachefs/disk_accounting_format.h | 2 ++
-> 2 files changed, 5 insertions(+)
->=20
-> diff --git a/fs/bcachefs/alloc_background.h =
-b/fs/bcachefs/alloc_background.h
-> index f8e87c6721b1..66a334e2edcd 100644
-> --- a/fs/bcachefs/alloc_background.h
-> +++ b/fs/bcachefs/alloc_background.h
-> @@ -168,6 +168,9 @@ static inline bool data_type_movable(enum =
-bch_data_type type)
-> static inline u64 alloc_lru_idx_fragmentation(struct bch_alloc_v4 a,
->   struct bch_dev *ca)
-> {
-> + if (a.data_type > BCH_DATA_TYPE_MAX)
-> + return 0;
-> +=20
-> if (!data_type_movable(a.data_type) ||
->    !bch2_bucket_sectors_fragmented(ca, a))
-> return 0;
-> diff --git a/fs/bcachefs/disk_accounting_format.h =
-b/fs/bcachefs/disk_accounting_format.h
-> index 7b6e6c97e6aa..0232bc9f590d 100644
-> --- a/fs/bcachefs/disk_accounting_format.h
-> +++ b/fs/bcachefs/disk_accounting_format.h
-> @@ -72,6 +72,8 @@ enum bch_data_type {
-> BCH_DATA_NR
-> };
->=20
-> +#define BCH_DATA_TYPE_MAX 10
+Alan Huang <mmpgouride@gmail.com> wrote:
+>
+> On Oct 21, 2024, at 22:09, Jeongjun Park <aha310510@gmail.com> wrote:
+> >
+> > The size of a.data_type is set abnormally large, causing shift-out-of-bounds.
+> > To fix this, we need to add validation on a.data_type in
+> > alloc_lru_idx_fragmentation().
+> >
+> > Reported-by: syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
+> > Fixes: 260af1562ec1 ("bcachefs: Kill alloc_v4.fragmentation_lru")
+> > Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+> > ---
+> > fs/bcachefs/alloc_background.h       | 3 +++
+> > fs/bcachefs/disk_accounting_format.h | 2 ++
+> > 2 files changed, 5 insertions(+)
+> >
+> > diff --git a/fs/bcachefs/alloc_background.h b/fs/bcachefs/alloc_background.h
+> > index f8e87c6721b1..66a334e2edcd 100644
+> > --- a/fs/bcachefs/alloc_background.h
+> > +++ b/fs/bcachefs/alloc_background.h
+> > @@ -168,6 +168,9 @@ static inline bool data_type_movable(enum bch_data_type type)
+> > static inline u64 alloc_lru_idx_fragmentation(struct bch_alloc_v4 a,
+> >   struct bch_dev *ca)
+> > {
+> > + if (a.data_type > BCH_DATA_TYPE_MAX)
+> > + return 0;
+> > +
+> > if (!data_type_movable(a.data_type) ||
+> >    !bch2_bucket_sectors_fragmented(ca, a))
+> > return 0;
+> > diff --git a/fs/bcachefs/disk_accounting_format.h b/fs/bcachefs/disk_accounting_format.h
+> > index 7b6e6c97e6aa..0232bc9f590d 100644
+> > --- a/fs/bcachefs/disk_accounting_format.h
+> > +++ b/fs/bcachefs/disk_accounting_format.h
+> > @@ -72,6 +72,8 @@ enum bch_data_type {
+> > BCH_DATA_NR
+> > };
+> >
+> > +#define BCH_DATA_TYPE_MAX 10
+>
+> Use BCH_DATA_NR instead.
 
-Use BCH_DATA_NR instead.
+Thanks for letting us know. It's a simple change, so we'll send out a v2 patch
+right away.
 
-> +
-> static inline bool data_type_is_empty(enum bch_data_type type)
-> {
-> switch (type) {
-> --
->=20
+Regards,
 
+Jeongjun Park
+
+>
+> > +
+> > static inline bool data_type_is_empty(enum bch_data_type type)
+> > {
+> > switch (type) {
+> > --
+> >
+>
