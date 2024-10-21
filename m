@@ -1,155 +1,127 @@
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAAB634
-	for <linux-bcachefs@vger.kernel.org>; Mon, 21 Oct 2024 04:31:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2389148FF9;
+	Mon, 21 Oct 2024 06:04:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729485095; cv=none; b=CEjxds9QNGg2EbIFoZswmV+HZaKFYxsqyCyYzWN7xBo1oDjm/7AAo3K4osc5u72sxzv61thMDP7IoPSM7We2kywFCqKn6ix94yCphtApC3m8AzuDFwnQ8FWW7hvWQFNs/EAucnY9ZmbbOOXmCMzP8w31hSm3Xyc8pKYl95MqUyg=
+	t=1729490659; cv=none; b=oAfEPmY/rr9M1tJaGQMzOBJySe5pHJkiR+Q3Sa/tQXcZIozYC/+hhgL9O1KfncQEnHYyH523ipBfscSar0YuMBscwdyEzKjQmEjLA4Gr96SSJvkLuUD9ct7nhmcJuGJuVXmAtZ7zIxoW3jcnrUl0Jua2nTNe/CLqC/74cYeSOOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729485095; c=relaxed/simple;
-	bh=84gzpIFyB5+3DljQK5nHfmTdEO9qvUXCbMKNqVGJq7c=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Sj34PwhdDZb91hRjt/AVcu5DUkWFaZhUhbCHwzXqIAtu4xNSTWNpzmez4iVgJYFcClBydyGI2hJ05wW5dpAzVo+op7Tk7xGzLtImLg/8xjI2y1NjsZYvwRyXMOxrOcy4dS5TKOl4DXKrH01hitNiqYilVav61Tjv3EdQ6MNTlmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-83ab369a523so389148839f.3
-        for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 21:31:33 -0700 (PDT)
+	s=arc-20240116; t=1729490659; c=relaxed/simple;
+	bh=2fsWYvEi0IK73sUTq74gKefon2ZTtdpF9s5+XTn6UtY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ub4LaHjd5udBayINQ4EexrnXUkt8pDSPJT8qELDxVENkrUcPKj+lXvP0ddLDYkCSfhtYXmAyRqXmwDJiCf3g1Yt6tXuuaOg03sPW+ybea6hmleY4riYSYqr17meR8Uscphcb9yYNKgQhf3OcfbEv//iTpdhbgfQ8x7Nm81cagkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bw3CfYMO; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bw3CfYMO"
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e2b720a0bbso840068a91.1;
+        Sun, 20 Oct 2024 23:04:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729490657; x=1730095457; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pg0JsnBu9cMvcgcmJc1G+uprIvIAEsIzBiz3R+FFLKw=;
+        b=bw3CfYMOnrcFF5cjS4i+Qh2P2w3wlxGCoaTu9xHYeHx2GiqGgxg8i7Nh9kJk/JdjLB
+         LHBHWbm70xL4nnx4crrVUPBCJvmH1pWT9j08BN46hfmpC+9hyU/ChwaVTBEbQzqWdDnK
+         fleNQ4nmfinUSYHs6PW7jJMvxVC3HFWNqFwld2wMQVMEjKWM6/W0/US2kW7UUifW7HGK
+         6FJsXinIr3f6J01uusQUSz2wed6D9pU+zeCLtHnH4HWDKCK/rzm6EWBZneqBlv8YOdd1
+         ZeyBwe3wJltRcSmLUyDSrKA8By+9VJozK9aRsHWOAill6zLuKLSCkdJinb8HTpYQMnXR
+         /Aqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729485093; x=1730089893;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aLYiM8y/B2Cv75nG0jidFAm4gU309fO5gyqPvxjsbGE=;
-        b=ih9st9a1yPVjRav7Pdl4N5n6xSvteoLoYS+fzxMkgNpKJNNqdIj+ajqXRosjBr9Yuv
-         Y27htmU/UCl2dUABSkLqzgWFd65P0GR5Wy5AMfkvkljkJf2Uc01I9LpW38oALTiWR2eT
-         bEa0HnR5eh4eolGHru57pts2PWfs4djq7b+88LtRIHJcsxAjmEf5oAtII0NiU4tjvtLT
-         mHPR6kcySSSFdknzoWtHzP1tMIn0uHw3keu6A8cPhcAJ8MBQx2ZHAet2kDlmhf2zXujx
-         2HFAoG4f+hS+WpemhIOJm27shb/c2gW8YAKv1/anD3okYSWlPl2IaOjCiTssgpoJOL7Y
-         gXKg==
-X-Forwarded-Encrypted: i=1; AJvYcCWoJRTCGeHuBHAE+e2It23qw+GlwNG74yvjc5X2mYdNoybv/KJoypQxHmOzdS2uihqwWr3PMR0uZ+jI3DIBYw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2iV1JT1kz0a02tDk2JHMU+g3+sVZ10MZYys0m8ACMD03hfsEl
-	tQfP8uemG4QMnQ2fvg1rABrOV3BBEE2dt/314MnTOa4HE6hoTZ5AkQARzTD23Rp0bVA5xZRBtk+
-	xuv0A9F8R/yRzReKHCUQ7oBVLYBB+NeWJh/AqNACfGn8cZSE1rwnApII=
-X-Google-Smtp-Source: AGHT+IGxDY3JsK9gI8O8uovCqeuQZyosLW9LRfuErtayDUgvr9A0FSMsrRndI2Us+3vujGo/gpTbFEWuddnNZy1CrO1aFI/Xf6ZD
+        d=1e100.net; s=20230601; t=1729490657; x=1730095457;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pg0JsnBu9cMvcgcmJc1G+uprIvIAEsIzBiz3R+FFLKw=;
+        b=g5WyX2sNWAaRs0VZBJSH9kpJq4y4BEgWtuQ8nMF0mH//pMdKhYgYx445eJ9svRG3KP
+         NVveTfjEF5weLHR2geLWw+LJ9b9Q5uhrsgOv0un5dJeHERHTC/yAd/Yl8EY+HJFXVusz
+         ms2dFZPq9tUXcZgHn4SY6oTNF/DxnpfdkpvdnNwMQpRaHMav7r8s1QTxKheEgwnoP3Lc
+         D0X7Hn8rZv8CQdQ4hzWV7jIrklVAKgN12m0W91qZF3cbiBNf/xAKW4TkMcA6xfW6mo+f
+         NHwjfnzZ/dHZlG3bFePbDeQ1nWi0vc74y1hDUDE5ab4u7kMRpISwGDKsXfsLsF4snZdP
+         nExw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXnVaR+beYOKHZw/YCMN2qVqhA0T4Lkcc7fTF5plf3Twl0bLXMu/mwVeOeP23oO5wnooVH4Kv+yLJW0slB3A==@vger.kernel.org, AJvYcCV6uAKwXLef0qT3MfH5isB04aVzEc7OovDveHuo0UCxpbrYvFhsiwKmhTdTTRoOjlmBOFJlBGbNZZd4QVj5@vger.kernel.org, AJvYcCWaPVqNhXJMZinNEQdabn7iVA/83/N062Vysy9mNlo2Yp1SMAjGtqponDu0n6wQssQ6cPPKkdmtyQ5CV7eCcROG@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxr47xcTFH/TIhxJJ8Q7/muYtUOQbAB1v5blAPDzD+qOd0IF8tI
+	v6YbhD/JQSfvv0XS9hEJOX/WcUYqGMRm6abr3vHG9Qe7Pk6BpNczvBegfTtsp3Ui8akSCNI4kyW
+	YYKo4EnJPyZMQPfFr3CK4eHoSmyQ=
+X-Google-Smtp-Source: AGHT+IFTn6AyaH521mGGVsrVLQ1r+PtN4Lem3tmtd4HDqCECIc/0C2xjgjebgZGML6ZwL4dc7ldcwVwVP3BNKEybmnw=
+X-Received: by 2002:a17:902:d4c9:b0:20c:959e:f706 with SMTP id
+ d9443c01a7336-20e5a76117dmr62142145ad.1.1729490656749; Sun, 20 Oct 2024
+ 23:04:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:190e:b0:3a0:5642:c78 with SMTP id
- e9e14a558f8ab-3a3f4073e06mr79264655ab.15.1729485092771; Sun, 20 Oct 2024
- 21:31:32 -0700 (PDT)
-Date: Sun, 20 Oct 2024 21:31:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6715d924.050a0220.10f4f4.003d.GAE@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in __bch2_trans_commit
-From: syzbot <syzbot+f074d2e31d8d35a6a38c@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
+ <Zv61dCaxScXuOjZg@archlinux> <202410031424.45E5D19@keescook>
+ <Zv8RIs-htdc-PtXB@archlinux> <202410040958.C19D3B9E48@keescook>
+ <ZwNb-_UPL9BPSg9N@archlinux> <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
+ <CAGG=3QVcsuN0Sk79oZWjY_nNTo_XfGYsDT3gc7vEmLyS8OK3rA@mail.gmail.com>
+ <ZxB-uh1KzfD4ww2a@archlinux> <20241017165522.GA370674@thelio-3990X> <ZxWvcAPHPaRxp9UE@archlinux>
+In-Reply-To: <ZxWvcAPHPaRxp9UE@archlinux>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Mon, 21 Oct 2024 08:04:03 +0200
+Message-ID: <CANiq72=yYDcG=ef9TxCCECwjSgW-5zFoTJqcjrWGOALCvaW0SA@mail.gmail.com>
+Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in bch2_xattr_validate
+To: Jan Hendrik Farr <kernel@jfarr.cc>
+Cc: Nathan Chancellor <nathan@kernel.org>, Bill Wendling <morbo@google.com>, Kees Cook <kees@kernel.org>, 
+	Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev, 
+	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	ardb@kernel.org, ojeda@kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Mon, Oct 21, 2024 at 3:33=E2=80=AFAM Jan Hendrik Farr <kernel@jfarr.cc> =
+wrote:
+>
+> I think I prefer
+>
+>         depends on !(CC_IS_CLANG && CLANG_VERSION < 190103)
+>
+> to make it more clear that the purpose is to disable this for clang
+> versions below 19.1.3, but keep it enabled for every other compiler
+> including pre-release gcc versions that pass the compile test.
 
-syzbot found the following issue on:
+Do we want other tooling to see the attribute? i.e. if the build check
+gets removed, then that `depends on` would mean other tooling would
+see it, right?
 
-HEAD commit:    715ca9dd687f Merge tag 'io_uring-6.12-20241019' of git://g..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=113e6430580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=78db40d8379956d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=f074d2e31d8d35a6a38c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110560a7980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17bdc25f980000
+> Also after gcc 15 is released I don't think a version check for gcc
+> should be necessary. I only see an explicit version check as required
+> when we know a certain version is broken. Otherwise I would prefer using
+> the build test.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bf3787869b5a/disk-715ca9dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b938d885bc17/vmlinux-715ca9dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9c039de0dde2/bzImage-715ca9dd.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/b049575f12e2/mount_0.gz
+Yeah, build tests are nice, although they require spawning a process
+and so on, which (as far as I understand) we try to minimize. Version
+checks also have the advantage that it is easy to remember/check when
+we can remove the checks themselves when we upgrade the minimum
+versions.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f074d2e31d8d35a6a38c@syzkaller.appspotmail.com
+> I guess an alternative would be to just create a
+> CC_COUNTED_BY_BROKEN that is enabled for clang versions below 19.1.3
+> and continue to use __has_attribute together with that option. That
+> would make the build test unnecesarry. The downside is that it
+> will require checking both __has_attribute and
+> CONFIG_CC_COUNTED_BY_BROKEN for __counted_by support. So I think
+> CC_HAS_COUNTED_BY is better.
 
-bcachefs (loop1): fatal error - emergency read only
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/journal.h:375!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 UID: 0 PID: 11 Comm: kworker/u8:0 Not tainted 6.12.0-rc3-syzkaller-00420-g715ca9dd687f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Workqueue: btree_update btree_interior_update_work
-RIP: 0010:bch2_journal_res_get fs/bcachefs/journal.h:375 [inline]
-RIP: 0010:bch2_trans_journal_res_get fs/bcachefs/btree_trans_commit.c:350 [inline]
-RIP: 0010:bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:668 [inline]
-RIP: 0010:do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:900 [inline]
-RIP: 0010:__bch2_trans_commit+0x9232/0x93c0 fs/bcachefs/btree_trans_commit.c:1121
-Code: fd 90 0f 0b e8 3f bb 78 fd 90 0f 0b e8 37 bb 78 fd 90 0f 0b e8 2f bb 78 fd 90 0f 0b e8 27 bb 78 fd 90 0f 0b e8 1f bb 78 fd 90 <0f> 0b e8 17 bb 78 fd 90 0f 0b e8 0f bb 78 fd 90 0f 0b e8 07 bb 78
-RSP: 0018:ffffc900001076c0 EFLAGS: 00010293
-RAX: ffffffff841c2c91 RBX: 0000000000000000 RCX: ffff88801cebbc00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc90000107890 R08: ffffffff841bcfc8 R09: 1ffff1100cd494a8
-R10: dffffc0000000000 R11: ffffed100cd494a9 R12: ffff888066a00000
-R13: ffff888066a4a500 R14: 0000000000000044 R15: ffff88803060c0d0
-FS:  0000000000000000(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff942fe8000 CR3: 000000007bcb8000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bch2_trans_commit fs/bcachefs/btree_update.h:184 [inline]
- btree_update_nodes_written fs/bcachefs/btree_update_interior.c:728 [inline]
- btree_interior_update_work+0x1492/0x2b10 fs/bcachefs/btree_update_interior.c:866
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
- worker_thread+0x870/0xd30 kernel/workqueue.c:3391
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bch2_journal_res_get fs/bcachefs/journal.h:375 [inline]
-RIP: 0010:bch2_trans_journal_res_get fs/bcachefs/btree_trans_commit.c:350 [inline]
-RIP: 0010:bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:668 [inline]
-RIP: 0010:do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:900 [inline]
-RIP: 0010:__bch2_trans_commit+0x9232/0x93c0 fs/bcachefs/btree_trans_commit.c:1121
-Code: fd 90 0f 0b e8 3f bb 78 fd 90 0f 0b e8 37 bb 78 fd 90 0f 0b e8 2f bb 78 fd 90 0f 0b e8 27 bb 78 fd 90 0f 0b e8 1f bb 78 fd 90 <0f> 0b e8 17 bb 78 fd 90 0f 0b e8 0f bb 78 fd 90 0f 0b e8 07 bb 78
-RSP: 0018:ffffc900001076c0 EFLAGS: 00010293
-RAX: ffffffff841c2c91 RBX: 0000000000000000 RCX: ffff88801cebbc00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc90000107890 R08: ffffffff841bcfc8 R09: 1ffff1100cd494a8
-R10: dffffc0000000000 R11: ffffed100cd494a9 R12: ffff888066a00000
-R13: ffff888066a4a500 R14: 0000000000000044 R15: ffff88803060c0d0
-FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff942fff000 CR3: 000000002ce04000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Yeah, if we are going to need a new Kconfig symbol anyway, then let's
+make that the only thing to check. Otherwise we are in the "worst of
+both worlds", I would say.
 
+> I'll submit it once Bill's fix is in the release/19.x branch. Which
+> maintainer should I address this too? You (Nathan), Miguel, Kees, or
+> someone else?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Sounds good -- if you want, you can send it to all of us and we can
+figure that out later.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks!
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Cheers,
+Miguel
