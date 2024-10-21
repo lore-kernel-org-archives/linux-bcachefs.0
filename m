@@ -1,129 +1,104 @@
-Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63151C330C;
-	Mon, 21 Oct 2024 17:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F941FA24A;
+	Mon, 21 Oct 2024 18:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729530100; cv=none; b=umxL/qsppxN59ayZd0akUNRkCTjTW69Whaw/n3OOJ65zf/o25llR5J2FCAY3LnuVfJv6o/6dHIq5XEjel7LbujY19dZcJgSImZFufkws0tkYTebtp8thMZ4miBsUBClX/ziw7iGjhYKITTtY/kHjFHpEorsiApS2SwlULeynCws=
+	t=1729534249; cv=none; b=JOCEEcF+omaZE7YIPW6U6U0nzBktyZvvygI5awF6zZncroUFt7brYiNd1/6N7o0Reu4ql1ieJuOVlqmYuf1nCMnIXabVj+gotC07mik078ejYVpuEpMR4PKc4zMRV+e+TgV6YQzP+WxCS3OhMSXYbQt0Ho2hGeAsLNNPnvGjgmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729530100; c=relaxed/simple;
-	bh=EdrW4QyQlhTewuPVfOLFcxOIGlObb6XfUuBmUv9yjPI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=spNbk9bKoraGFDyH3wf48fAyl6xtulL/5kZZ0eicXraU74FTkzxTjOyY/THK2d4jUwYYNZSjlDobUn/NKJ2+1/J9PnAwpywnw2vzTWXwT/O15+e3HORcj5soLGClfV/LEuFE5kKO8jDaWoqnwYnk424l4kH7BqAIubOA89RbKGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=kA3gMl4h; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MTLizXYG; arc=none smtp.client-ip=202.12.124.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
+	s=arc-20240116; t=1729534249; c=relaxed/simple;
+	bh=Ge2nrC7MFJDyNA/W1z9790rySUXfow//XCU/mTYaGPU=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=pDLkTepAxVpH06kmXMtKvUJUFw8sQSbRXICdLPDew4m3/hiVI97I5k4g0DSXGphRZ4+GdDNZT3rvhisISegAHCPNLFFl2ViqyhKAzJBMgPGj+iMQmjE0Azvorw5GMpXg7zhR8umxhAXagRbSQ5BKpedN6rdTGNpzEA+tUTP4/Mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=luJdRIGR; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="kA3gMl4h";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MTLizXYG"
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 92B6E25400DF;
-	Mon, 21 Oct 2024 13:01:37 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-11.internal (MEProxy); Mon, 21 Oct 2024 13:01:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1729530097; x=1729616497; bh=0Cp/HfzuQ/
-	MdndVSy8g4lWxf16i11f2fUzT7z2EWKY0=; b=kA3gMl4hNlwQUJBN0El7vPwZmb
-	tHNQEyh8XFScbu4/dKOAZKsJ/znUd5g9YaXVDJ08hZVXzUGeOEVhSgvVvPculIvZ
-	9Hob6qPNMq2H50lkS6IukZQ/Yp7kOZGJKkQKl8d0b+yhfFeFkS/zXfVZst/jftLW
-	aAwlJd0LaXSA4xAYv3KZiMmo4SM+8FZ7/cfEiawfR4Yn//PWYki31yGhF2LvxNmQ
-	JwFCImqTX5sXW7MOQnggjH6fKf6v0A+R83Qt38yFyUwI7ai2StkrpZjOiFixDih2
-	fFfFt5k7OJKx9D3L+zDMIfiJcFhTQwWzX8d6hgPZzqj0cDZNKAOx4KfbPmdA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1729530097; x=1729616497; bh=0Cp/HfzuQ/MdndVSy8g4lWxf16i1
-	1f2fUzT7z2EWKY0=; b=MTLizXYGUWuhuuU/jMFO7jL8+HFW3oNzCoLcTiFeeQIu
-	0PszXAa2/JI8o+npKACIgFtw2ErBC8xFGVO4qpBouQGZdXZv8aFfPpDqlcqza0kp
-	0NZPm4ey035NyASqfy6irrhn10R25ABcd94JGPdIlSMHsuGU8IKRR0ow6Id7ZCoJ
-	D/Zm4L6SfLPwVsMABITYKYXGQazU4z6dEK+SAG/wHpDPI8m7sttTLM6M9ZPp/nkt
-	T59c7TaZus8kwn61EUQpVVSmC2h2E99vYH40+i8C4wBZTYJERvnk2+eVtZ/Ey28A
-	GhdYGNKX3AdEkGHOweFCZPnCHHqULOCRar6pujWLRA==
-X-ME-Sender: <xms:8YgWZxi6EBu8QHK7JK8e0L8DEENnALhA4lYvrOOEtAxn8oJCtP7I7A>
-    <xme:8YgWZ2DoZjNXWfX-BTZklWzria2DPobpI8PeIVYVQeRpVoYXFgQybjb6AKmrAd5AF
-    T-rZlpgmx3q0biNagY>
-X-ME-Received: <xmr:8YgWZxGJd8d48xSgawyFbcjW6UykXpduMiaYrwmwyn1loG0s6sNV8godW5BTmwsCcGTRP0C5U3NEEmgsIlN7NJYc0Hwz>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehledguddtkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdeftddmnecujfgurhepfffhvfevuffk
-    fhggtggujgesthdtredttddtvdenucfhrhhomheplfgrnhcujfgvnhgurhhikhcuhfgrrh
-    hruceokhgvrhhnvghlsehjfhgrrhhrrdgttgeqnecuggftrfgrthhtvghrnhepudekgeff
-    tdefiefhheetvedvieeuteetlefgfedvhfelueefgeeiudeiudfhkeeinecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepkhgvrhhnvghlsehjfhgr
-    rhhrrdgttgdpnhgspghrtghpthhtohepuddvpdhmohguvgepshhmthhpohhuthdprhgtph
-    htthhopehmihhguhgvlhdrohhjvggurgdrshgrnhguohhnihhssehgmhgrihhlrdgtohhm
-    pdhrtghpthhtohepnhgrthhhrghnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmoh
-    hrsghosehgohhoghhlvgdrtghomhdprhgtphhtthhopehkvggvsheskhgvrhhnvghlrdho
-    rhhgpdhrtghpthhtohepthhhohhrshhtvghnrdgslhhumhesthhosghluhigrdgtohhmpd
-    hrtghpthhtohepkhgvnhhtrdhovhgvrhhsthhrvggvtheslhhinhhugidruggvvhdprhgt
-    phhtthhopehrvghgrhgvshhsihhonhhssehlihhsthhsrdhlihhnuhigrdguvghvpdhrtg
-    hpthhtoheplhhinhhugidqsggtrggthhgvfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-    pdhrtghpthhtoheplhhinhhugidqhhgrrhguvghnihhnghesvhhgvghrrdhkvghrnhgvlh
-    drohhrgh
-X-ME-Proxy: <xmx:8YgWZ2QOmrGfUKvIGQOhXPzkCkUkA5WQZWwAtqxnP5vfdWY7Ua79Ug>
-    <xmx:8YgWZ-y8-T8y4LGPB-fX5aS-l_a45_qUu7cG23eHMVk9M5z33qQRiA>
-    <xmx:8YgWZ84UiO9Dmon_rS2AhGrMK7fkPNOQma_aXQ05akDKqwyof0drEg>
-    <xmx:8YgWZzyBJ4Te7--8i8aHmuovxDme4klsNLJsQFiXndKRPAkZG_Nm_A>
-    <xmx:8YgWZ5pI5pLNLilpi0V_sU7_PJFarjt7RUm_rtTKX8VicfY4LkxckR7T>
-Feedback-ID: i01d149f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 21 Oct 2024 13:01:35 -0400 (EDT)
-Date: Mon, 21 Oct 2024 19:01:32 +0200
-From: Jan Hendrik Farr <kernel@jfarr.cc>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, Bill Wendling <morbo@google.com>,
-	Kees Cook <kees@kernel.org>,
-	Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev,
-	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ardb@kernel.org, ojeda@kernel.org
-Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
- bch2_xattr_validate
-Message-ID: <ZxaI7EcpK3HIm0by@archlinux>
-References: <202410031424.45E5D19@keescook>
- <Zv8RIs-htdc-PtXB@archlinux>
- <202410040958.C19D3B9E48@keescook>
- <ZwNb-_UPL9BPSg9N@archlinux>
- <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
- <CAGG=3QVcsuN0Sk79oZWjY_nNTo_XfGYsDT3gc7vEmLyS8OK3rA@mail.gmail.com>
- <ZxB-uh1KzfD4ww2a@archlinux>
- <20241017165522.GA370674@thelio-3990X>
- <ZxWvcAPHPaRxp9UE@archlinux>
- <CANiq72=yYDcG=ef9TxCCECwjSgW-5zFoTJqcjrWGOALCvaW0SA@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="luJdRIGR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=7gspbwr7pvdfhc2vd4vclq3x6y.protonmail; t=1729534239; x=1729793439;
+	bh=wutsRmZGLwRCQ8Ztmh5WTQAwGgnDBZjcHoDlibWncKA=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=luJdRIGR6FmS3zi6mgky63AcdSnXeh/21cbXFWtpNbZgnqrTvfgYZWlAFyY7fbIq6
+	 fSXQKAXOH7+SxIIX49yXYKCyYYhC32hhtVW8gCiK05DKhfFqELSpRMuc2BetrQSn6b
+	 NQu1pM8BNi4nxvVgGj2zzaO4l5YLEHOo2SPC1YAWGYMffeLQNXiX8QNNj6Xaa3OqCI
+	 /29GLlEemfTRMUD0Pa9++Nx5DGWjsY7oS4UltAIFHkAH0crwo1r3xI2emSO2EO3DwO
+	 0iLbf2twxbsJpzi+SMMWme9H6fRIOXdSq2FXX+yNesKHB9UznVYI1dCUteULmt4AIU
+	 2Ql1TUJjLaAQA==
+Date: Mon, 21 Oct 2024 18:10:36 +0000
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Piotr Zalewski <pZ010001011111@proton.me>
+Cc: skhan@linuxfoundation.org, Piotr Zalewski <pZ010001011111@proton.me>, syzbot+2b6a17991a6af64f9489@syzkaller.appspotmail.com
+Subject: [PATCH v2] bcachefs: init freespace inited bits to 0 in bch2_fs_initialize
+Message-ID: <20241021174151.37692-2-pZ010001011111@proton.me>
+Feedback-ID: 53478694:user:proton
+X-Pm-Message-ID: 9f54eb99fe7fbed3b91dbc5acba2312d81a37194
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72=yYDcG=ef9TxCCECwjSgW-5zFoTJqcjrWGOALCvaW0SA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 21 08:04:03, Miguel Ojeda wrote:
-> > Also after gcc 15 is released I don't think a version check for gcc
-> > should be necessary. I only see an explicit version check as required
-> > when we know a certain version is broken. Otherwise I would prefer using
-> > the build test.
-> 
-> Yeah, build tests are nice, although they require spawning a process
-> and so on, which (as far as I understand) we try to minimize. Version
-> checks also have the advantage that it is easy to remember/check when
-> we can remove the checks themselves when we upgrade the minimum
-> versions.
-> 
+Initialize freespace_initialized bits to 0 in member's flags and update
+member's cached version for each device in bch2_fs_initialize.
 
-If the goal is to minimize the need for build tests, I think we should
-go with Nathan's suggestion of keeping the build test for now (to
-support pre-release gcc versions) and remove it and just go with
-versions checks for both gcc and clang once gcc 15 is released.
+It's possible for the bits to be set to 1 before fs is initialized and if
+call to bch2_trans_mark_dev_sbs (just before bch2_fs_freespace_init) fails
+bits remain to be 1 which can later indirectly trigger BUG condition in
+bch2_bucket_alloc_freelist during shutdown.
 
-Best Regards
-Jan
+Reported-by: syzbot+2b6a17991a6af64f9489@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=3D2b6a17991a6af64f9489
+Fixes: bbe682c76789 ("bcachefs: Ensure devices are always correctly initial=
+ized")
+Suggested-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Piotr Zalewski <pZ010001011111@proton.me>
+---
+
+Notes:
+    changes in v2:
+        - unconditionally set freespace initialized bits to false at
+          the top of bch2_fs_initialized instead of only if
+          bch2_trans_mark_dev_sbs fails
+
+    Link to v1: https://lore.kernel.org/linux-bcachefs/20241020170708.67044=
+-2-pZ010001011111@proton.me/
+
+ fs/bcachefs/recovery.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index 67bba156cce9..ed3dbe5802b5 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -1030,6 +1030,7 @@ int bch2_fs_initialize(struct bch_fs *c)
+ =09struct bch_inode_unpacked root_inode, lostfound_inode;
+ =09struct bkey_inode_buf packed_inode;
+ =09struct qstr lostfound =3D QSTR("lost+found");
++=09struct bch_member *m;
+ =09int ret;
+=20
+ =09bch_notice(c, "initializing new filesystem");
+@@ -1046,6 +1047,13 @@ int bch2_fs_initialize(struct bch_fs *c)
+ =09=09SET_BCH_SB_VERSION_UPGRADE_COMPLETE(c->disk_sb.sb, bcachefs_metadata=
+_version_current);
+ =09=09bch2_write_super(c);
+ =09}
++
++=09for_each_member_device(c, ca) {
++=09=09m =3D bch2_members_v2_get_mut(c->disk_sb.sb, ca->dev_idx);
++=09=09SET_BCH_MEMBER_FREESPACE_INITIALIZED(m, false);
++=09=09ca->mi =3D bch2_mi_to_cpu(m);
++=09}
++
+ =09mutex_unlock(&c->sb_lock);
+=20
+ =09c->curr_recovery_pass =3D BCH_RECOVERY_PASS_NR;
+--=20
+2.47.0
+
 
