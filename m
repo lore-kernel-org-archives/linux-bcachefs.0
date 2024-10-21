@@ -1,127 +1,146 @@
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2389148FF9;
-	Mon, 21 Oct 2024 06:04:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56071CFEC9
+	for <linux-bcachefs@vger.kernel.org>; Mon, 21 Oct 2024 06:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729490659; cv=none; b=oAfEPmY/rr9M1tJaGQMzOBJySe5pHJkiR+Q3Sa/tQXcZIozYC/+hhgL9O1KfncQEnHYyH523ipBfscSar0YuMBscwdyEzKjQmEjLA4Gr96SSJvkLuUD9ct7nhmcJuGJuVXmAtZ7zIxoW3jcnrUl0Jua2nTNe/CLqC/74cYeSOOg=
+	t=1729493070; cv=none; b=oVevXrdceT+yGUg9s9EFqHVoJHNDq6hRr9AkjPbQMRXgBHLV18NPYyun8dnzIOrOyxVa0m9k4mXCi4W5f3y8Ey49nkwLOloH3zb6J1CVsre3FqDQARpO6aOMuj26EznxxoX9RxIobpmSSP95Vi/a/P8sUY7PBID6pnOERjhxW6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729490659; c=relaxed/simple;
-	bh=2fsWYvEi0IK73sUTq74gKefon2ZTtdpF9s5+XTn6UtY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ub4LaHjd5udBayINQ4EexrnXUkt8pDSPJT8qELDxVENkrUcPKj+lXvP0ddLDYkCSfhtYXmAyRqXmwDJiCf3g1Yt6tXuuaOg03sPW+ybea6hmleY4riYSYqr17meR8Uscphcb9yYNKgQhf3OcfbEv//iTpdhbgfQ8x7Nm81cagkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bw3CfYMO; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bw3CfYMO"
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e2b720a0bbso840068a91.1;
-        Sun, 20 Oct 2024 23:04:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729490657; x=1730095457; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pg0JsnBu9cMvcgcmJc1G+uprIvIAEsIzBiz3R+FFLKw=;
-        b=bw3CfYMOnrcFF5cjS4i+Qh2P2w3wlxGCoaTu9xHYeHx2GiqGgxg8i7Nh9kJk/JdjLB
-         LHBHWbm70xL4nnx4crrVUPBCJvmH1pWT9j08BN46hfmpC+9hyU/ChwaVTBEbQzqWdDnK
-         fleNQ4nmfinUSYHs6PW7jJMvxVC3HFWNqFwld2wMQVMEjKWM6/W0/US2kW7UUifW7HGK
-         6FJsXinIr3f6J01uusQUSz2wed6D9pU+zeCLtHnH4HWDKCK/rzm6EWBZneqBlv8YOdd1
-         ZeyBwe3wJltRcSmLUyDSrKA8By+9VJozK9aRsHWOAill6zLuKLSCkdJinb8HTpYQMnXR
-         /Aqg==
+	s=arc-20240116; t=1729493070; c=relaxed/simple;
+	bh=pPqt3RugRon24hNfN+Wo0Qd2b7xX+v0scX0th/xtPVk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mgehdq9gu4Vn5CDPSdKLVV3eTbabuuIu93/RM/r/R3HDyFiUwnMvZwi+N7I6Al0Wi7bAUwICg5daCFbbxc9tyi4SCvzwHup1PP+mFAQYcC2VxKsjW+HwNZv5/as5btlyH1GL2FVk+LzI4puG6HBnLAHzOOxwYZjUzZz13LAFYhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a3da2d46b9so32482755ab.0
+        for <linux-bcachefs@vger.kernel.org>; Sun, 20 Oct 2024 23:44:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729490657; x=1730095457;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pg0JsnBu9cMvcgcmJc1G+uprIvIAEsIzBiz3R+FFLKw=;
-        b=g5WyX2sNWAaRs0VZBJSH9kpJq4y4BEgWtuQ8nMF0mH//pMdKhYgYx445eJ9svRG3KP
-         NVveTfjEF5weLHR2geLWw+LJ9b9Q5uhrsgOv0un5dJeHERHTC/yAd/Yl8EY+HJFXVusz
-         ms2dFZPq9tUXcZgHn4SY6oTNF/DxnpfdkpvdnNwMQpRaHMav7r8s1QTxKheEgwnoP3Lc
-         D0X7Hn8rZv8CQdQ4hzWV7jIrklVAKgN12m0W91qZF3cbiBNf/xAKW4TkMcA6xfW6mo+f
-         NHwjfnzZ/dHZlG3bFePbDeQ1nWi0vc74y1hDUDE5ab4u7kMRpISwGDKsXfsLsF4snZdP
-         nExw==
-X-Forwarded-Encrypted: i=1; AJvYcCUXnVaR+beYOKHZw/YCMN2qVqhA0T4Lkcc7fTF5plf3Twl0bLXMu/mwVeOeP23oO5wnooVH4Kv+yLJW0slB3A==@vger.kernel.org, AJvYcCV6uAKwXLef0qT3MfH5isB04aVzEc7OovDveHuo0UCxpbrYvFhsiwKmhTdTTRoOjlmBOFJlBGbNZZd4QVj5@vger.kernel.org, AJvYcCWaPVqNhXJMZinNEQdabn7iVA/83/N062Vysy9mNlo2Yp1SMAjGtqponDu0n6wQssQ6cPPKkdmtyQ5CV7eCcROG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxr47xcTFH/TIhxJJ8Q7/muYtUOQbAB1v5blAPDzD+qOd0IF8tI
-	v6YbhD/JQSfvv0XS9hEJOX/WcUYqGMRm6abr3vHG9Qe7Pk6BpNczvBegfTtsp3Ui8akSCNI4kyW
-	YYKo4EnJPyZMQPfFr3CK4eHoSmyQ=
-X-Google-Smtp-Source: AGHT+IFTn6AyaH521mGGVsrVLQ1r+PtN4Lem3tmtd4HDqCECIc/0C2xjgjebgZGML6ZwL4dc7ldcwVwVP3BNKEybmnw=
-X-Received: by 2002:a17:902:d4c9:b0:20c:959e:f706 with SMTP id
- d9443c01a7336-20e5a76117dmr62142145ad.1.1729490656749; Sun, 20 Oct 2024
- 23:04:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729493068; x=1730097868;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OoBkKRTOllHFi8zTnZEUwNteyoiy7CSSHa8XM1jHGKE=;
+        b=LTMGkMJJYaLjRs0BwrPPc4QtYsltqEIzJrc2AJQpJeLcgQCivteUr+Lw3wKVJ9HXWL
+         w4PS5dKQPXRJWa7/jiW4urS6A5e3RUxzUnm3UX6KvwBw2AShTuhDmn/Rz8Kody+HfMbw
+         KC1n6kOjou8D8MNw1sxbWhJ+FlDQ/c79VPWg8wgcgAnVmCQ4/nRctDk8ZUf0lextnqkp
+         hFhrQfaxqXrL7G4Ay8N9FJ5R3MttSrCmMZHUuMaE/vtsLzX9dK2BgeiKQ7o0xkyrovkh
+         F8RYfbuV4k9+4JG1NsX6LbaRq8SSlxmB5tAlE/cnaRBPsHtEBojtqWciwjBAhcuEXI/Q
+         /pOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUHtMc9zAPM+xksKJm5uGQQVpgCFh/7aHEizJgVURmoBDk8oo95YVpyMNDlxIWhjH3lg6fMWfNBR59MkAaEMA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsWcWfr19SBRX/SfnNteYxJRJDcxCit3AIUXiYhXkdyi5Y/xAT
+	O+nNIO5RDDZxaqkxErYfClG4vW3yg2eoH/Ohs15T7uCJA0CTLdjs4t2lYNyaOnhnXoCct7vZ8BL
+	ddRtl9yFcAKH2rxD2JFWPQrVZk3QwLWKk4oFVhqjQVl2w1zArAlEs+uo=
+X-Google-Smtp-Source: AGHT+IEDdJroIBNPT80drRkeuVN/w+F8f240nebGk8Hd5ZyrQnwZcTdIC1pgng7jRcNQ2RP83LQ78irISg30pkvTMyCT/laljQ4b
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
- <Zv61dCaxScXuOjZg@archlinux> <202410031424.45E5D19@keescook>
- <Zv8RIs-htdc-PtXB@archlinux> <202410040958.C19D3B9E48@keescook>
- <ZwNb-_UPL9BPSg9N@archlinux> <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
- <CAGG=3QVcsuN0Sk79oZWjY_nNTo_XfGYsDT3gc7vEmLyS8OK3rA@mail.gmail.com>
- <ZxB-uh1KzfD4ww2a@archlinux> <20241017165522.GA370674@thelio-3990X> <ZxWvcAPHPaRxp9UE@archlinux>
-In-Reply-To: <ZxWvcAPHPaRxp9UE@archlinux>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Mon, 21 Oct 2024 08:04:03 +0200
-Message-ID: <CANiq72=yYDcG=ef9TxCCECwjSgW-5zFoTJqcjrWGOALCvaW0SA@mail.gmail.com>
-Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in bch2_xattr_validate
-To: Jan Hendrik Farr <kernel@jfarr.cc>
-Cc: Nathan Chancellor <nathan@kernel.org>, Bill Wendling <morbo@google.com>, Kees Cook <kees@kernel.org>, 
-	Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev, 
-	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	ardb@kernel.org, ojeda@kernel.org
+X-Received: by 2002:a05:6e02:2192:b0:3a0:985b:ddb4 with SMTP id
+ e9e14a558f8ab-3a3f404ff3amr86757085ab.2.1729493067862; Sun, 20 Oct 2024
+ 23:44:27 -0700 (PDT)
+Date: Sun, 20 Oct 2024 23:44:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6715f84b.050a0220.10f4f4.003e.GAE@google.com>
+Subject: [syzbot] [bcachefs?] UBSAN: shift-out-of-bounds in bch2_alloc_to_text
+From: syzbot <syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 21, 2024 at 3:33=E2=80=AFAM Jan Hendrik Farr <kernel@jfarr.cc> =
-wrote:
->
-> I think I prefer
->
->         depends on !(CC_IS_CLANG && CLANG_VERSION < 190103)
->
-> to make it more clear that the purpose is to disable this for clang
-> versions below 19.1.3, but keep it enabled for every other compiler
-> including pre-release gcc versions that pass the compile test.
+Hello,
 
-Do we want other tooling to see the attribute? i.e. if the build check
-gets removed, then that `depends on` would mean other tooling would
-see it, right?
+syzbot found the following issue on:
 
-> Also after gcc 15 is released I don't think a version check for gcc
-> should be necessary. I only see an explicit version check as required
-> when we know a certain version is broken. Otherwise I would prefer using
-> the build test.
+HEAD commit:    c964ced77262 Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12d9745f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cfbd94c114a3d407
+dashboard link: https://syzkaller.appspot.com/bug?extid=7f45fa9805c40db3f108
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12637887980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12a1e830580000
 
-Yeah, build tests are nice, although they require spawning a process
-and so on, which (as far as I understand) we try to minimize. Version
-checks also have the advantage that it is easy to remember/check when
-we can remove the checks themselves when we upgrade the minimum
-versions.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-c964ced7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e937ef58569a/vmlinux-c964ced7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f1df9880ca4b/bzImage-c964ced7.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/00439b875347/mount_0.gz
 
-> I guess an alternative would be to just create a
-> CC_COUNTED_BY_BROKEN that is enabled for clang versions below 19.1.3
-> and continue to use __has_attribute together with that option. That
-> would make the build test unnecesarry. The downside is that it
-> will require checking both __has_attribute and
-> CONFIG_CC_COUNTED_BY_BROKEN for __counted_by support. So I think
-> CC_HAS_COUNTED_BY is better.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
 
-Yeah, if we are going to need a new Kconfig symbol anyway, then let's
-make that the only thing to check. Otherwise we are in the "worst of
-both worlds", I would say.
+bcachefs (loop0): fatal error - emergency read only
+bcachefs (loop0): insufficient writeable journal devices available: have 0, need 1
+rw journal devs: loop0
+------------[ cut here ]------------
+UBSAN: shift-out-of-bounds in fs/bcachefs/alloc_background.h:165:13
+shift exponent 129 is too large for 32-bit type 'unsigned int'
+CPU: 0 UID: 0 PID: 5104 Comm: syz-executor159 Not tainted 6.12.0-rc3-syzkaller-00087-gc964ced77262 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ ubsan_epilogue lib/ubsan.c:231 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x3c8/0x420 lib/ubsan.c:468
+ data_type_movable fs/bcachefs/alloc_background.h:165 [inline]
+ alloc_lru_idx_fragmentation fs/bcachefs/alloc_background.h:171 [inline]
+ bch2_alloc_to_text+0xc79/0xce0 fs/bcachefs/alloc_background.c:369
+ __bch2_bkey_fsck_err+0x1c8/0x280 fs/bcachefs/error.c:454
+ bch2_alloc_v4_validate+0x931/0xef0 fs/bcachefs/alloc_background.c:259
+ bch2_btree_node_read_done+0x3e7e/0x5e90 fs/bcachefs/btree_io.c:1223
+ btree_node_read_work+0x68b/0x1260 fs/bcachefs/btree_io.c:1327
+ bch2_btree_node_read+0x2433/0x2a10
+ __bch2_btree_root_read fs/bcachefs/btree_io.c:1753 [inline]
+ bch2_btree_root_read+0x617/0x7a0 fs/bcachefs/btree_io.c:1775
+ read_btree_roots+0x296/0x840 fs/bcachefs/recovery.c:524
+ bch2_fs_recovery+0x2585/0x39c0 fs/bcachefs/recovery.c:854
+ bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1036
+ bch2_fs_get_tree+0xd68/0x1710 fs/bcachefs/fs.c:2174
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1800
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3507
+ do_mount fs/namespace.c:3847 [inline]
+ __do_sys_mount fs/namespace.c:4055 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4032
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f7b61a11dea
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffff7f9a888 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffff7f9a8a0 RCX: 00007f7b61a11dea
+RDX: 00000000200058c0 RSI: 0000000020000100 RDI: 00007ffff7f9a8a0
+RBP: 0000000000000004 R08: 00007ffff7f9a8e0 R09: 00000000000058c6
+R10: 0000000000000000 R11: 0000000000000282 R12: 0000000000000000
+R13: 00007ffff7f9a8e0 R14: 0000000000000003 R15: 0000000001000000
+ </TASK>
+---[ end trace ]---
 
-> I'll submit it once Bill's fix is in the release/19.x branch. Which
-> maintainer should I address this too? You (Nathan), Miguel, Kees, or
-> someone else?
 
-Sounds good -- if you want, you can send it to all of us and we can
-figure that out later.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks!
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Cheers,
-Miguel
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
