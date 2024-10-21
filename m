@@ -1,48 +1,101 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3ED171CD
-	for <linux-bcachefs@vger.kernel.org>; Mon, 21 Oct 2024 01:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3598F58;
+	Mon, 21 Oct 2024 01:33:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729473357; cv=none; b=BETR63Yl4uHdlpYhbjahUNxaG0UMyfp8iWe2JnygkhHRza6Xnpaw0w39tHS/EnohuYcsvlmC0gjTuEbaTCkSC0r2hKMLohHh5cJnZ/e8orOWKCyF4hx6xoZGhzK/xeFX3q3z7WmTNyQxsXtkvdTZiWm2s1tBfn8r+VxjUj8SmUw=
+	t=1729474423; cv=none; b=VDAbWlRJIwxt/f/aYk+TiEgIS3Wy5KJNsxtFEaSOURQwsOBb5TcKlnN88tPiLgQsyiKNYV/7P17sQCDAEoTJbDW9WqgLxUruYn5Oc7dAiDL6uAlX2kIIZgv+l4yiEyC+HL0iw6WDwczI/9RfO6VKgLRF9dkGyj8YUJlIgabcbos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729473357; c=relaxed/simple;
-	bh=lNO8mGurnLTYYG+/mBwWBNoDKQK+FIk5iFIrcZC3uvY=;
+	s=arc-20240116; t=1729474423; c=relaxed/simple;
+	bh=vg53as/IlqXin1fTadmwJLGLM558DxMUNk55pqXRXO8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EC3GDd10EQQMlKYXbqs3PKAcNbfbPBba0evub9PgPfOk4nvtV/e3htUBh6a6WA1ES+tALeDq/oIzlmrVHJdBCd1lsvXVsTneOR26B1WpkIM9nvEemX/9b7a1c/RI7pz4zYymGc4hAucq+nLfxWD3hycdeZCGcwPpwU4SDHnjoZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sJPJHLWh; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=lyI9G+iSJOuBG7QEsUD58OTEdCk5asQlfDoelM8+DTHfOiyMqajESrsfG89Djxtz8+SZrRmAx1S5IicO/bLRP7coBQbzD83RtICj5t0V5aWW9axy8a88/lOFbKibVzXJrjA1c7Dnh4+SngKBUv6easQy+cOqvXI/W1qV/byQGek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=Nm++2zMl; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MHjciiUp; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sJPJHLWh"
-Date: Sun, 20 Oct 2024 21:15:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729473350;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wIGwHd+nE6wRtpiqT7olYpYkv3EnJodauY4RZZZjQiI=;
-	b=sJPJHLWhkkyTHD0GgX7MUmAolkpq+1bCjhrko85IvTO2CzbvIM+NayQnuZdYPk43m2qMtM
-	i88A2lc6+MUg9wlkk/2d32dcES7CYsjYan73S4vWUPzOADhCZnAzFgkamibSKsgU84q5Zs
-	EULgBnRr7Oth1Zlm/bb4SDU7uAQRFV0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
-Cc: Christopher Snowhill <chris@kode54.net>, 
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: Another bcachefs version downgrade bug
-Message-ID: <nvs2h7qmf3fsffrnh4rus7hhdkxh7fjfjnzfv7rgqrb43udzyj@lutkh4gkoiya>
-References: <6hoo4ruf7fzgjyx5t4vazuj6bi7fx6ahmoof4wbuc3d6xeolmq@c4n7gvcj7bfv>
- <884724407.902.1729158319260@mail.carlthompson.net>
- <tklgk7y5drm5idjqogdccdciodtgwwjuaa6ziel5uxezeaws7u@fwbthprkau3e>
- <504302838.942.1729183773058@mail.carlthompson.net>
- <D4YS7TRT48VG.3LCDBSZGAVBSZ@kode54.net>
- <537913254.1059.1729273074517@mail.carlthompson.net>
- <od4yumygu66vn6hi2ptykbayrqeelqdciwvfrsbmthso7rzbqy@v4ba3bzceluw>
- <1249157619.1105.1729296906241@mail.carlthompson.net>
- <kadahbpbnfzxck7a5peye2rdvoi5w5omvhcloocqr5lypxrvse@tdddqahswipx>
- <216190573.1599.1729470893479@mail.carlthompson.net>
+	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="Nm++2zMl";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MHjciiUp"
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfout.phl.internal (Postfix) with ESMTP id A2C0A138029C;
+	Sun, 20 Oct 2024 21:33:39 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Sun, 20 Oct 2024 21:33:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1729474419; x=1729560819; bh=clIPsP/X+D
+	MGbfBBBez55p5htxiiuvak7zJmmrjpmW0=; b=Nm++2zMloaB7J0HcXVbZAev0Zk
+	rdM2mVr0bL5RA5oelZFEgCWobLIHzCpkDs5u5Y3rGDK0yixMPOHJGZuqzWNnl49G
+	lVt5bcNgS6vKogXs/C1lLrPxbOABRgkleIhXK9akAF4L7assRKgbBA8eKF34WZMI
+	bheBtQHWHBxAnj8deyR6C69ZVpmkgL7xaFNc1SXjIjlB4PAWh0wOygU+7tIxqezi
+	hYG9Tg86bUFWl4tSu/fySOki8kCHLedSJ4StnMI6ThHZ/QImxST8MiT5ILMwWUIA
+	NbOljkoBVCeaJ8LgX4P3b4ME3JFM7ix/Q6I0sPr062EaqQ5OL4xQwjud5L0A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1729474419; x=1729560819; bh=clIPsP/X+DMGbfBBBez55p5htxii
+	uvak7zJmmrjpmW0=; b=MHjciiUpAfY6wpJeRCyMB8ZR751cOy2YQFrLn56sNibU
+	RRU8L4WoJvl9C2ANZ8m59dYM9TA3sNkmFOnUPPY8qvuXQVXeitgd3ajDYA5zaR2I
+	DoTlpXwOTeTp9OgoDZG24J0qDzmwyoW94/RCm+wcVDiHn9pRHgx06eL56+NPV9TB
+	NJ7NTK4x9Nl8nbv2E9RgprdqSUv7BcvT71sOiGrAIV4ZVcSYquF0q4sYvMX5zGux
+	jaHDISDv+lhV0/FyruQrIrWr6KXAcHzWecKEkjiE4xKOFreVt0MFv6Mgr6GZ6nMn
+	dteTbxS+B6KXEhgFmF9NkWpo+38ehL1AWHPwyyPojw==
+X-ME-Sender: <xms:c68VZ_UySR8kuTacb4Oeie9AbY388FkE-JvRYSnByyMBLIpOTB1YWg>
+    <xme:c68VZ3nsxM3uqrnrvmFRuiLWBaovNz8QUOlaIhFxrXFQl4wAiPWY0HTby4OfLUvtt
+    BAMg8P_FQNe501sMyI>
+X-ME-Received: <xmr:c68VZ7a9OW7obbqJOjyY6EewhuXL-9f8J6yzMsvUFgX6CrmIpqMqizYCVFqfQ3DjX1Y2mM2L9sly_5_7edSuEhwZH6ck>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehkedggeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdluddtmdenucfjughrpeffhffvvefukfhf
+    gggtuggjsehttdertddttddvnecuhfhrohhmpeflrghnucfjvghnughrihhkucfhrghrrh
+    cuoehkvghrnhgvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpeeffffgleev
+    keduffevffffueelueevheduiedukeetuedvfeegfeelheekteejieenucffohhmrghinh
+    epghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdrohhrghdpghhnuhdrohhrghenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkvghrnhgvlhesjh
+    hfrghrrhdrtggtpdhnsggprhgtphhtthhopeduuddpmhhouggvpehsmhhtphhouhhtpdhr
+    tghpthhtohepnhgrthhhrghnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmohhrsg
+    hosehgohhoghhlvgdrtghomhdprhgtphhtthhopehkvggvsheskhgvrhhnvghlrdhorhhg
+    pdhrtghpthhtohepthhhohhrshhtvghnrdgslhhumhesthhosghluhigrdgtohhmpdhrtg
+    hpthhtohepkhgvnhhtrdhovhgvrhhsthhrvggvtheslhhinhhugidruggvvhdprhgtphht
+    thhopehrvghgrhgvshhsihhonhhssehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpth
+    htoheplhhinhhugidqsggtrggthhgvfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhr
+    tghpthhtoheplhhinhhugidqhhgrrhguvghnihhnghesvhhgvghrrdhkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdr
+    ohhrgh
+X-ME-Proxy: <xmx:c68VZ6W2sssmHtdkK11SPz7aR4U817AJwork9SCMapllwS9h1GwNQA>
+    <xmx:c68VZ5nGj_2LXUnGzZ9zjAr1R9coNTLna-5w13A4K07xp5IVhLSIYA>
+    <xmx:c68VZ3ehl2ZScvzjP3dPdPkf4cY_h3nhql0mAXS0Lvd7LSJFjCYAXw>
+    <xmx:c68VZzE78mcXUDalEVS0cnmQq2VXy1S3uYEaV0o0ikdh_8RINJ9HZA>
+    <xmx:c68VZ_f_RET9a8IbIKlYRIbbYDJOs7d2JVmDaQjYWN2A7_129mbMsQ9G>
+Feedback-ID: i01d149f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 20 Oct 2024 21:33:37 -0400 (EDT)
+Date: Mon, 21 Oct 2024 03:33:36 +0200
+From: Jan Hendrik Farr <kernel@jfarr.cc>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Bill Wendling <morbo@google.com>, Kees Cook <kees@kernel.org>,
+	Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev,
+	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ardb@kernel.org, ojeda@kernel.org
+Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
+ bch2_xattr_validate
+Message-ID: <ZxWvcAPHPaRxp9UE@archlinux>
+References: <E8E64A72-3C1C-40D2-9F07-415F6B8F476E@toblux.com>
+ <Zv61dCaxScXuOjZg@archlinux>
+ <202410031424.45E5D19@keescook>
+ <Zv8RIs-htdc-PtXB@archlinux>
+ <202410040958.C19D3B9E48@keescook>
+ <ZwNb-_UPL9BPSg9N@archlinux>
+ <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
+ <CAGG=3QVcsuN0Sk79oZWjY_nNTo_XfGYsDT3gc7vEmLyS8OK3rA@mail.gmail.com>
+ <ZxB-uh1KzfD4ww2a@archlinux>
+ <20241017165522.GA370674@thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -51,138 +104,241 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <216190573.1599.1729470893479@mail.carlthompson.net>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20241017165522.GA370674@thelio-3990X>
 
-On Sun, Oct 20, 2024 at 05:34:53PM -0700, Carl E. Thompson wrote:
+On 17 09:55:22, Nathan Chancellor wrote:
+
+Hi Nathan,
+
+Thanks for the feedback.
+
+> Hi Jan,
 > 
-> > On 2024-10-20 9:59 AM PDT Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> On Thu, Oct 17, 2024 at 05:04:26AM +0200, Jan Hendrik Farr wrote:
+> > On 16 17:09:42, Bill Wendling wrote:
+> > > Here's a potential fix:
+> > > 
+> > >   https://github.com/llvm/llvm-project/pull/112636
+> > 
+> > Here's the patch to disable __counted_by for clang < 19.1.3. I'll submit
+> > it properly when your PR is merged. I hope I got all the correct tags in
+> > there as there were multiple reports of these issues. Let me know if
+> > anything should be added, I'm new to the process.
+> > 
+> > From: Jan Hendrik Farr <kernel@jfarr.cc>
+> > Date: Thu, 17 Oct 2024 04:39:40 +0200
+> > Subject: [PATCH] Compiler Attributes: disable __counted_by for clang < 19.1.3
+> > 
+> > This patch disables __counted_by for clang versions < 19.1.3 because of
+> > two issues.
+> > 
+> > 1. clang versions < 19.1.2 have a bug that can lead to __bdos returning 0:
+> > https://github.com/llvm/llvm-project/pull/110497
+> > 
+> > 2. clang versions < 19.1.3 have a bug that can lead to __bdos being off by 4:
+> > https://github.com/llvm/llvm-project/pull/112636
+> > 
+> > Cc: stable@vger.kernel.org
 > 
-> > ...
+> Should this include a Fixes tag to give the stable folks a hint about
+> how far back this should go? Maybe
 > 
-> > I have a lot of users and testers that I work with, and will bend over
-> > backwards for if something is broken, and to make sure data isn't lost.
+> Fixes: c8248faf3ca2 ("Compiler Attributes: counted_by: Adjust name and identifier expansion")
 > 
-> Absolutely. We've all seen you do that over the years. That's a big part of the reason why users like me spend so much of our own time and resources testing and supporting your work.
+> It won't pick clean without 16c31dd7fdf6 or 2993eb7a8d34 but those are
+> easy enough to apply before taking this one.
+
+Yes, I'll add this. I agree that c8248faf3ca2 is the correct commit for
+the Fixes tag, as this fix is not needed before this commit.
+
 > 
-> > But I do draw a line at being demanding, or all the "constructive
-> > criticism" that comes with an attitude of "I know your job better than
-> > you do". 
+> > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Closes: https://lore.kernel.org/oe-lkp/202409260949.a1254989-oliver.sang@intel.com
+> > Link: https://lore.kernel.org/all/Zw8iawAF5W2uzGuh@archlinux/T/#m204c09f63c076586a02d194b87dffc7e81b8de7b
+> > Signed-off-by: Jan Hendrik Farr <kernel@jfarr.cc>
 > 
-> And I'm not doing that. I'm simply reporting bugs and offering perspectives that you may not have thought of for your consideration. I don't demand that you do anything because I **can't** demand that you do anything. 
+> Thanks for all of your help driving getting this fixed. The commit
+> message looks good to me aside my small nit above. I do have a
+> suggestion on the actual patch itself.
 > 
-> I'll give you an example. More than a year ago I raised the issue that
-> bcachefs does not allow multiple versions/images of a filesystem to be
-> mounted at the same time. I pointed out that there are several
-> professional workflows that require this (forensics, auditing, etc)
-> and non-professional workflows too (retrieving a previous version of a
-> file from an LVM snapshot, etc). I pointed out that other modern
-> filesystems allow it and argued that it is a needed feature. You
-> disagreed that it is that important and have never (to date)
-> implemented the feature. This causes me to have to create special-case
-> workarounds specific to bcachefs which operate differently than what I
-> do for every other filesystem. Despite this extra work and
-> inconvenience for me I have never brought it up again, never nagged
-> you and never demanded that you listen to me and change your mind. I
-> made my pitch, you made your decision and I accept your decision even
-> if I don't like it.
-
-If I came across as strongly disagreeing on that issue, I apologize.
-
-On that issue, it's just that it's a really problematic feature for a
-multi device filesystem - we have to have a unique identifier for
-identifying the filesystem, separate from the block device, and if it's
-not actually unique - what do we do?
-
-Even for single device filesystems it's a problem, because some of our
-userspace interfaces use that same unique identifier (sysfs, debugfs)
-and a single device filesystem can become a multidevice filesystem at
-any time.
-
-So it's not impossible, but genuinely messy, and it's the kind of thing
-I could see leading to landmines later, which makes me not particularly
-eager to touch it. But if it keeps coming up, I may end up giving it
-more study in the future.
-
-> I'll also make the self-serving point that Linux isn't successfully
-> only because of kernel developers like you it's just as much due to
-> users like me. Back in the 90s I was once **literally** laughed out of
-> a boardroom for presenting rationale for why my company should pivot
-> from developing products on traditional Unices and start focusing our
-> efforts on the new Linux thing. They disagreed; I left the company and
-> within months they were out of business so I guess I got the last
-> laugh. I didn't write fancy papers and become famous the way some
-> people did back then but I have ever since relentlessly done my part
-> by pushing every company I've worked for to be more successful by more
-> fully leveraging the benefits of Linux. Now, of course, pretty much
-> every company gets it. I advocate for Linux in my personal life too.
-> And there are countless millions of other users who also contribute in
-> their own ways big and small most of whom will never be known or even
-> have conversations on kernel mailing lists but who are just as
-> important and integral to the success of Linux.
-
-Oh, absolutely. And if you come to the IRC channel, you'll see me
-interacting with those users every day.
-
-I could not have accomplished all this without their help.
-
-But I'm the one writing the code, and I have a lot of demands on my
-time, so sometimes I do ask people to chill out or be patient.
-
-> > But you're complaining about an EOL kernel, where the issues have long
-> > been fixed, so in this case there's just not a lot I can do. I could ask
-> > Greg to cut a new 6.9 release, but all the distros have been told that
-> > 6.9 is EOL so it's not likely it would be widely deployed.
+> > ---
+> >  include/linux/compiler_attributes.h | 11 ++++++++++-
+> >  1 file changed, 10 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> > index 32284cd26d52..7966a533aaec 100644
+> > --- a/include/linux/compiler_attributes.h
+> > +++ b/include/linux/compiler_attributes.h
+> > @@ -100,8 +100,17 @@
+> >   *
+> >   *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
+> >   * clang: https://github.com/llvm/llvm-project/pull/76348
+> > + *
+> > + * clang versions < 19.1.2 have a bug that can lead to __bdos returning 0:
+> > + * https://github.com/llvm/llvm-project/pull/110497
+> > + *
+> > + * clang versions < 19.1.3 have a bug that can lead to __bdos being off by 4:
+> > + * https://github.com/llvm/llvm-project/pull/112636
+> >   */
+> > -#if __has_attribute(__counted_by__)
+> > +#if __has_attribute(__counted_by__) && \
+> > +	(!defined(__clang__) || (__clang_major__ > 19) || \
+> > +	(__clang_major__ == 19 && (__clang_minor__ > 1 || \
+> > +	(__clang_minor__ == 1 && __clang_patchlevel__ >= 3))))
+> >  # define __counted_by(member)		__attribute__((__counted_by__(member)))
+> >  #else
+> >  # define __counted_by(member)
+> > -- 
+> > 2.47.0
+> > 
 > 
-> I am **not** complaining about an EOL kernel. I explicitly stated that
-> I **didn't** need a fix. I simply reported a bug that affected me
-> which I was unaware had been fixed.
+> compiler_attributes.h is intended to be free from compiler and version
+> checks, so adding a version check means that __counted_by() needs to be
+> moved into compiler_types.h. This might be a good opportunity to
+> introduce something like CC_HAS_COUNTED_BY in Kconfig, so that we can
+> keep the checks unified (since there are already multiple places that
+> want to know about __counted_by support for the sake of testing) and
+> adjust versions like this easily in the future if something else comes
+> up, especially since __counted_by() is not available in a released GCC
+> version yet.
 > 
-> I do think that if you find and fix a bug like that it would be nice
-> for you to document it and let users know about it so we can possibly
-> avoid wasting a lot of our time and effort unnecessarily.
+> Perhaps something like this? Feel free to take it wholesale if you would
+> like or tweak it however you see fit.
 
-The best practice for users, while it's still experimental, is to stay
-on Linus's tree. A lot of users are running the latest rc kernel these
-days.
+Thanks, I only have one tweak below:
 
-Not because of upgrade/downgrade shenanigans, aside from 6.9 that's been
-generally working (I haven't tried 6.7 - perhaps someone could do that)
-- but just because of all the fixes and improvements that are rapidly
-happening. If you're testing you want to be testing and reporting bugs
-on the latest, right? And because the rate of bugfixing makes
-backporting anything but the most critical stuff infeasible for now.
-
-(Seriously, the best way to support older kernels for now would be to
-just periodically backport /all/ of fs/bcachefs/ to older kernels, and
-if I thought Greg would be ok with that that's what I'd be doing).
-
-Note that I do explicitly support users with old, even ancient
-filesystems (someone just popped up with a 0.11 filesystem today! with
-some seriously crazy corruption), it's just that adding old kernels to
-that just adds a bit much to the matrix of things to keep track of for
-now.
-
-> > The ability to upgrade to a new on disk format, and then seamlessly
-> > downgrade - that hasn't been done before, keep that in mind, and that's
-> > an enormously useful capability that makes it dramatically _less_ risky
-> > to deploy new features.
 > 
-> As I said previously I understand and accept your reasoning here. I
-> think it's risky to believe you can ahead of time code in the ability
-> to understand and correctly revert any possible format change you'll
-> come up with in the future especially since the only reason we're
-> talking about it is because it's already failed at least once. It's
-> also a system that I believe can't be meaningfully tested without a
-> time machine.
+> Cheers,
+> Nathan
+> 
+> diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
+> index 62ba01525479..376047beea3d 100644
+> --- a/drivers/misc/lkdtm/bugs.c
+> +++ b/drivers/misc/lkdtm/bugs.c
+> @@ -445,7 +445,7 @@ static void lkdtm_FAM_BOUNDS(void)
+>  
+>  	pr_err("FAIL: survived access of invalid flexible array member index!\n");
+>  
+> -	if (!__has_attribute(__counted_by__))
+> +	if (!IS_ENABLED(CONFIG_CC_HAS_COUNTED_BY))
+>  		pr_warn("This is expected since this %s was built with a compiler that does not support __counted_by\n",
+>  			lkdtm_kernel_info);
+>  	else if (IS_ENABLED(CONFIG_UBSAN_BOUNDS))
+> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> index 32284cd26d52..c16d4199bf92 100644
+> --- a/include/linux/compiler_attributes.h
+> +++ b/include/linux/compiler_attributes.h
+> @@ -94,19 +94,6 @@
+>  # define __copy(symbol)
+>  #endif
+>  
+> -/*
+> - * Optional: only supported since gcc >= 15
+> - * Optional: only supported since clang >= 18
+> - *
+> - *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
+> - * clang: https://github.com/llvm/llvm-project/pull/76348
+> - */
+> -#if __has_attribute(__counted_by__)
+> -# define __counted_by(member)		__attribute__((__counted_by__(member)))
+> -#else
+> -# define __counted_by(member)
+> -#endif
+> -
+>  /*
+>   * Optional: not supported by gcc
+>   * Optional: only supported since clang >= 14.0
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 1a957ea2f4fe..639be0f30b45 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -323,6 +323,25 @@ struct ftrace_likely_data {
+>  #define __no_sanitize_or_inline __always_inline
+>  #endif
+>  
+> +/*
+> + * Optional: only supported since gcc >= 15
+> + * Optional: only supported since clang >= 18
+> + *
+> + *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
+> + * clang: https://github.com/llvm/llvm-project/pull/76348
+> + *
+> + * __bdos on clang < 19.1.2 can erroneously return 0:
+> + * https://github.com/llvm/llvm-project/pull/110497
+> + *
+> + * __bdos on clang < 19.1.3 can be off by 4:
+> + * https://github.com/llvm/llvm-project/pull/112636
+> + */
+> +#ifdef CONFIG_CC_HAS_COUNTED_BY
+> +# define __counted_by(member)		__attribute__((__counted_by__(member)))
+> +#else
+> +# define __counted_by(member)
+> +#endif
+> +
+>  /*
+>   * Apply __counted_by() when the Endianness matches to increase test coverage.
+>   */
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 1aa95a5dfff8..6da1a8c3d99d 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -120,6 +120,13 @@ config CC_HAS_ASM_INLINE
+>  config CC_HAS_NO_PROFILE_FN_ATTR
+>  	def_bool $(success,echo '__attribute__((no_profile_instrument_function)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
+>  
+> +config CC_HAS_COUNTED_BY
+> +	def_bool $(success,echo 'struct flex { int count; int array[] __attribute__((__counted_by__(count))); };' | $(CC) $(CLANG_FLAGS) -x c - -c -o /dev/null -Werror)
+> +	# clang needs to be at least 19.1.3 to avoid __bdos miscalculations
+> +	# https://github.com/llvm/llvm-project/pull/110497
+> +	# https://github.com/llvm/llvm-project/pull/112636
+> +	depends on CC_IS_GCC || CLANG_VERSION >= 190103
 
-I'm not writing dedicated upgrade/downgrade code for every new feature -
-that would be crazy. The upgrade/downgrade process just works by noting
-which fsck passes have to be run, and which errors should be silently
-corrected, which means it's quite robust (fsck has to work, after all).
+I think I prefer
 
-The 6.9 bug was that the superblock downgrade section was being read
-incorrectly and the latest entry was skipped - there was some trickyness
-with the superblock section due to alignment, kasan popped up some
-things and then the fixes were incorrect, whoops. 6.7/6.8/6.9 was a bit
-crazy.
+	depends on !(CC_IS_CLANG && CLANG_VERSION < 190103)
+
+to make it more clear that the purpose is to disable this for clang
+versions below 19.1.3, but keep it enabled for every other compiler
+including pre-release gcc versions that pass the compile test.
+
+Also after gcc 15 is released I don't think a version check for gcc
+should be necessary. I only see an explicit version check as required
+when we know a certain version is broken. Otherwise I would prefer using
+the build test.
+
+
+I guess an alternative would be to just create a
+CC_COUNTED_BY_BROKEN that is enabled for clang versions below 19.1.3
+and continue to use __has_attribute together with that option. That
+would make the build test unnecesarry. The downside is that it
+will require checking both __has_attribute and
+CONFIG_CC_COUNTED_BY_BROKEN for __counted_by support. So I think
+CC_HAS_COUNTED_BY is better.
+
+> +
+>  config PAHOLE_VERSION
+>  	int
+>  	default $(shell,$(srctree)/scripts/pahole-version.sh $(PAHOLE))
+> diff --git a/lib/overflow_kunit.c b/lib/overflow_kunit.c
+> index 2abc78367dd1..5222c6393f11 100644
+> --- a/lib/overflow_kunit.c
+> +++ b/lib/overflow_kunit.c
+> @@ -1187,7 +1187,7 @@ static void DEFINE_FLEX_test(struct kunit *test)
+>  {
+>  	/* Using _RAW_ on a __counted_by struct will initialize "counter" to zero */
+>  	DEFINE_RAW_FLEX(struct foo, two_but_zero, array, 2);
+> -#if __has_attribute(__counted_by__)
+> +#ifdef CONFIG_CC_HAS_COUNTED_BY
+>  	int expected_raw_size = sizeof(struct foo);
+>  #else
+>  	int expected_raw_size = sizeof(struct foo) + 2 * sizeof(s16);
+
+I'll submit it once Bill's fix is in the release/19.x branch. Which
+maintainer should I address this too? You (Nathan), Miguel, Kees, or
+someone else?
+
+
+Best Regards
+Jan
+
