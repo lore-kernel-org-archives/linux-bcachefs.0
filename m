@@ -1,111 +1,113 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378A71F9400;
-	Mon, 21 Oct 2024 15:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F01815666C;
+	Mon, 21 Oct 2024 15:29:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729523636; cv=none; b=NB9WaKWBUBkAJ6WBaXB/5y7PStJssmOTJtiH6Zio35WCn+dGfmF9OeQcTDr2k+jNyEzCwfFP0Rgw2l5OgMPkQrTuR2N/MvpKuKkKMTSqPMb4mu5uyL5jHJYrXFdUJS6ikAguAk0kTphaLKUnsYq0aBNIE8FHYN4IR7hdbGxBxts=
+	t=1729524554; cv=none; b=A2oiqBOwT+FJ0B9F+Y//bnsAOyJK09UwqTFRFLE0Y9FCB5burvr/ThSeyEwRIsynfvdocs4VJ7Vk7AepLwQRdvyDNsmrj/xFLrhFpP8lkGYGyleC739xsHWoMO0a1QfPPbyxCpvYb1j+XNv9+eBWj3pFzPyW9xibEc7EUkEWa0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729523636; c=relaxed/simple;
-	bh=49N5VKSySbtliRwXOzIYpfzoQzjDrQP7uCdd295VepQ=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=r/C1t51QB3AZ2PxQ8LK4K3fL5l3Ek0Tio7sfVuZh1s97weFeD9+SZSsBLwLsVGaAAR3OUG6G2qz4xrBbU6D8ASz+ztfIvVbR2xsD5A182xKnAZWpu1ocWuHBpIuggSZneJV1VPrMGfGw0wfu1XzFOWkffhLwLgVaAOFPk2vgV0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bgk9sQT2; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1729524554; c=relaxed/simple;
+	bh=djjbLzgO5ZMu5YQoFhWKRk/U8zzfkcKjEWieuZBAClY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ttgqfbeq09/8Ijyi5mN8DD6IQt9cqqSlTKovHOfp51v+FHl+9ZZ51D3RyDiXxmCCvkciVDXXQR2O4fr2lLIwm/reg3HadVLcuiUkE/Wleo7Xfnr8ENRTMS4EKW+LFMYPwvAWe5UxwuWuEAn8DLda6GeFWLKH/WJSZQd1hak14o0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IO7rNIDL; arc=none smtp.client-ip=209.85.215.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bgk9sQT2"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-20c6f492d2dso53183455ad.0;
-        Mon, 21 Oct 2024 08:13:54 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IO7rNIDL"
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7ea8ecacf16so3143942a12.1;
+        Mon, 21 Oct 2024 08:29:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729523634; x=1730128434; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pxYG0K82tGIikDdAvIHwwgggZl99rm7a6utz2gNU0e8=;
-        b=Bgk9sQT2Ynrq1C3bYcinyV+zmGExcKIf+5Jyrr1pv7LPnZK03D5KdpBjUUu0E98pTE
-         nEyjRDWNGrjR4XSNOkCJWZqfUDhrh2/YFyr2GXp18idwlGFtn6j8wWJGCpDB5Tt4xeyS
-         3wzS2pcq8+XMc1wFSTyHNb86jIGB17ITlKbTo6lMd4J/ebYb3v8K5KoF9PQeuLrP6E3B
-         oaIjYOZGHvZWOtYqebpNce5KkiFBkaru6cEC/V90QTdYouJV0bczHaeRynulMHT1w3CF
-         FYAj4UThOLgcb7jvUELH4KnmKemruTApWGhgCkZlaQj4iQvXM6tGmaVlY6vaHl226FSe
-         lMRA==
+        d=gmail.com; s=20230601; t=1729524551; x=1730129351; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OxtlyOqwd5QS2va759UuCoBJi2MrqRuIrYTgMMaR/b4=;
+        b=IO7rNIDLWncvvdsXHPxdrnY5GcTg+G44GfCr7yChLpvrERFfVHseljB1GfTkH7CNdk
+         /JF+KT3xIdLDwsNFoN7VID1YswBba4axz3PUn9+qAKDcbHHMHCb/PKkxcpMbbUwcBMkh
+         c6IHS69fhVp30KQslcfwGVN9yYyEm12VKlI87UbR1cPjACRVH7KcVficCZKPZyNjnz1B
+         W5RsEd3BE0/PzQHM3Rr4yzQ3mkc5EYY6okWJTcDBBPLY3DScB/BK0i4RTPtoZzLSuR4d
+         U2hIE4RnyCcDkfrxRjq9OYffCFsAzYDb1yvd39LYPHjv3i1KWb8itQA+vjtVA8YApmAo
+         kbHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729523634; x=1730128434;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pxYG0K82tGIikDdAvIHwwgggZl99rm7a6utz2gNU0e8=;
-        b=lz8H9JmD1MP4OMyGArfcgsB+HiwGmrYFocKAM0JuyHMtkrAPen7cyN9m63+IS7Mrpi
-         +Z7bSYJseIaqJEdQrRotwdMF+C1LFVB2h1WAfdBU57bdN5/C7Z7WzAlNMaLdw1Ju3KHZ
-         CYrvStkNDS+S6B5F2Zy0M/KxRSkLxzvr4iO7QwWQYN8KP0Fkvwx4PKfL9AlIqNDW1RMv
-         +8Qg02ri3DKcXJd9g+TLQlFT1eH+mtQov5idoSz8UDDpuCtzCgRQ8ENWNDI8NeFLCC4N
-         4MBzITqszH6RBA4LSwp44ZzudQSz+jpBe4scBUCcwn92GvYQppwtDUa/vv8+OdGjqBqc
-         P3UA==
-X-Forwarded-Encrypted: i=1; AJvYcCWVPBz2OWqeFat/03R0DH89QweHJoDLlbEiJJx68R1rQZw03Xyl3tRyGvzc+1A2jZ7//VcM2jHimp2jDTAN@vger.kernel.org, AJvYcCXfGdf/xqAsnLKjRnsOi8Sh9TjVGtUg6Ji8fhvyH5IvyBQFCgG8UeKTf+fn3zKZnDAQD+2No1/5OdgdBW/gZA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWTe1sykcRqCGEk7dIRe4eJMVeVG9GLgKNixofe9LQCUYlockQ
-	YjB7Hi2GuY9UDdvJgU/0IjTPTDUm6tbpAUHiZ0OLn0bWlkvgDUS10c/9vRfP
-X-Google-Smtp-Source: AGHT+IF1xmuPRiFmthIiN+NHjFojO2ALGYc5pakgdevqHg7LKpXEuBfV1fcpi4mGORPshWWn/pyeQA==
-X-Received: by 2002:a17:903:2a90:b0:205:8407:6321 with SMTP id d9443c01a7336-20e5a70d669mr160210395ad.9.1729523634259;
-        Mon, 21 Oct 2024 08:13:54 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7eee6583sm27348195ad.8.2024.10.21.08.13.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Oct 2024 08:13:53 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+        d=1e100.net; s=20230601; t=1729524551; x=1730129351;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OxtlyOqwd5QS2va759UuCoBJi2MrqRuIrYTgMMaR/b4=;
+        b=Rz9iXDdvlBg4+DdyzvzeJ1xMcZnH8N7HAaV5NjZdW669t5KKZO8wPLWwh+t/JXV21m
+         vkQ5q/xR9OMYoqWoNZk5MyEo8VBfxYuUtJJoH4VjcKOKemt6tGfccaPzy/vsFeZBO5tQ
+         8vwD21KWFBsv4Lh+ZEyb3tOE/Fl11vdvrK4kc+T2sAbM0s3rP5TvOff59q/O2necYiA+
+         AKT8wrOkCVcZBrzWRXj6So3Gj7VXoZryR/SQRkcbl03knLyA9in8TttNEIVN368HoDK/
+         aSTdoDCqbPtf539WKx9VhvS6g3ExaK72S//rwvIAXwU0bpxKmp3atXSysjU5TG0/QUIi
+         QUrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW0sSN5brhAUc6CouIPp3nKgxYsEPef5DkErMmoTi6ZjrGM0FgoNgE5UGbxi94l2Np2SbbzqYGW2oWNUQf9fA==@vger.kernel.org, AJvYcCXqRKIg402sYT2bNF90mXfOD8ygavZqvQt2P96HJbz7erAhZzuU7bNZkLk/NZO6xQTDkLXnFXH/M6Ts590i@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywdb5NQTlW4GbxVj4E3lJIWnAQg8envCZLGl+BZsp3qHC3SBQDs
+	NEL5gAoXYH2v3mYYxfWwMBf6yqibMsf3EMNuQ2cFWNs7wlIs/H739LbZAMwx/9SHGocoCIJunZU
+	LS7lKsx3573qvYv7/N7zOTJyoN3g=
+X-Google-Smtp-Source: AGHT+IFAHg5lxUbwjuA68v6eKNTB7ETnc5cSGTv3ajBN8pBqKTJGGulmN6cIpeuwYwUVOLdoIKqdrrR2BgDFamzakSw=
+X-Received: by 2002:a05:6300:4041:b0:1d9:2bed:c7e8 with SMTP id
+ adf61e73a8af0-1d92c56cd8dmr18534677637.35.1729524551544; Mon, 21 Oct 2024
+ 08:29:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+MIME-Version: 1.0
+References: <20241021151036.34383-1-aha310510@gmail.com> <E6F9687B-700A-4A02-8A7F-4C9ED648D746@gmail.com>
+In-Reply-To: <E6F9687B-700A-4A02-8A7F-4C9ED648D746@gmail.com>
+From: Jeongjun Park <aha310510@gmail.com>
+Date: Tue, 22 Oct 2024 00:29:01 +0900
+Message-ID: <CAO9qdTHjjJ53F0Vw=SSnLka1B5QLD1Sj6ZRM6g=AFtiLGKQ-+A@mail.gmail.com>
 Subject: Re: [PATCH v2] bcachefs: fix shift oob in alloc_lru_idx_fragmentation
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <20241021151036.34383-1-aha310510@gmail.com>
-Date: Mon, 21 Oct 2024 23:13:39 +0800
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>,
- syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E6F9687B-700A-4A02-8A7F-4C9ED648D746@gmail.com>
-References: <20241021151036.34383-1-aha310510@gmail.com>
-To: Jeongjun Park <aha310510@gmail.com>
-X-Mailer: Apple Mail (2.3776.700.51)
+To: Alan Huang <mmpgouride@gmail.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Oct 21, 2024, at 23:10, Jeongjun Park <aha310510@gmail.com> wrote:
->=20
-> The size of a.data_type is set abnormally large, causing =
-shift-out-of-bounds.
-> To fix this, we need to add validation on a.data_type in=20
-> alloc_lru_idx_fragmentation().
->=20
-> Reported-by: syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
-> Fixes: 260af1562ec1 ("bcachefs: Kill alloc_v4.fragmentation_lru")
-> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
-> ---
-> fs/bcachefs/alloc_background.h | 3 +++
-> 1 file changed, 3 insertions(+)
->=20
-> diff --git a/fs/bcachefs/alloc_background.h =
-b/fs/bcachefs/alloc_background.h
-> index f8e87c6721b1..91eb96b19a76 100644
-> --- a/fs/bcachefs/alloc_background.h
-> +++ b/fs/bcachefs/alloc_background.h
-> @@ -168,6 +168,9 @@ static inline bool data_type_movable(enum =
-bch_data_type type)
-> static inline u64 alloc_lru_idx_fragmentation(struct bch_alloc_v4 a,
->      struct bch_dev *ca)
-> {
-> + if (a.data_type > BCH_DATA_NR)
+Alan Huang <mmpgouride@gmail.com> wrote:
+>
+> On Oct 21, 2024, at 23:10, Jeongjun Park <aha310510@gmail.com> wrote:
+> >
+> > The size of a.data_type is set abnormally large, causing shift-out-of-bounds.
+> > To fix this, we need to add validation on a.data_type in
+> > alloc_lru_idx_fragmentation().
+> >
+> > Reported-by: syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
+> > Fixes: 260af1562ec1 ("bcachefs: Kill alloc_v4.fragmentation_lru")
+> > Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+> > ---
+> > fs/bcachefs/alloc_background.h | 3 +++
+> > 1 file changed, 3 insertions(+)
+> >
+> > diff --git a/fs/bcachefs/alloc_background.h b/fs/bcachefs/alloc_background.h
+> > index f8e87c6721b1..91eb96b19a76 100644
+> > --- a/fs/bcachefs/alloc_background.h
+> > +++ b/fs/bcachefs/alloc_background.h
+> > @@ -168,6 +168,9 @@ static inline bool data_type_movable(enum bch_data_type type)
+> > static inline u64 alloc_lru_idx_fragmentation(struct bch_alloc_v4 a,
+> >      struct bch_dev *ca)
+> > {
+> > + if (a.data_type > BCH_DATA_NR)
+>
+> This should be  >= ?
 
-This should be  >=3D ?
+Oh, that's right. I checked it myself and it's the maximum value + 1, so
+I think I should use >=.
 
-> + return 0;
-> +
-> if (!data_type_movable(a.data_type) ||
->    !bch2_bucket_sectors_fragmented(ca, a))
-> return 0;
-> --
+Thanks for letting me know!
 
+Regards,
+
+Jeongjun Park
+
+>
+> > + return 0;
+> > +
+> > if (!data_type_movable(a.data_type) ||
+> >    !bch2_bucket_sectors_fragmented(ca, a))
+> > return 0;
+> > --
+>
