@@ -1,112 +1,120 @@
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8224C14A90
-	for <linux-bcachefs@vger.kernel.org>; Mon, 21 Oct 2024 16:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B02D1C7B81;
+	Mon, 21 Oct 2024 16:49:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729527358; cv=none; b=B0nx3egUxp8y3I/pXghNx9VvAWlpzlhxdKsl9W5iaKzJZGemZxT5wIvWqpP/nO+Vb3j8ZNX34MflP7lCDGpaZVzABMWtXs+vKVklkBYG+GA2X7R4INxc6VLwpOYAo0yj9Tb6mq6e55NwvJ6hlIaK0LJl7RGGWme2hTeeauO/sas=
+	t=1729529346; cv=none; b=ffCAl9xl/HocewL7YVhgertj/ixwbg7YPjsS/doUJhd/TsutTTc36Dq+rTMActl2kaHXHqGKbxRTzrXpCrEEAXytKaMO3+fShsFn0xX0vvafIoc7qmVWBYMb8actPq1HBHhvf+KkXJ5keDPRRxGzG5PT8M0T/wqyRhCesQWYCGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729527358; c=relaxed/simple;
-	bh=6adyUM6nfaN8g8a4EEfc51Tkd7RRLjvEbzfepYxcQlI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oKP/+ZjQ9aquOeY7VYhJevLiWhTJrJs2/jtr9sF7y95JZkUaGssrDeopoPaTn50bqHLmqZ0mjtitLMGCgS8Z/QS6HI4UyB2DjFx9edV0QaxdMu03JB0bBfXE3yHaC5dr+qeeERHxkuciuwAzaP0o/TR+BUy3+6AfypWXnQCojEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ipf4uboe; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1729529346; c=relaxed/simple;
+	bh=Xhmz2Yd3SwGpseR8dLR4yXNrCUFWeAR1BlGSfk79iDc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=B5rdRn0d9bphCaDAq7NaUz++kFGSKc7l6n2oFO3W+XxDTY5FqtUYH9TNrk/ZkEwgD2o6ZMCEuAJCiB4ZrwGcDopWuB+VFI9ZolChkSO1VBnGBFSQkg9XLyC8Gu7xHd/SH/KfS3I+uhINcPFGBkcgWCNY6iOPeEnQ5dtbHRyezXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QQMC3Ib1; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ipf4uboe"
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2f75c56f16aso45055881fa.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 21 Oct 2024 09:15:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729527354; x=1730132154; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hDCkRXzZMsmC9OcdH/PJ2FucYewOH9vBwnV76xL3TNM=;
-        b=Ipf4uboeYNBYATD7htyFKQ+XAD3w1+3W060i9FczmbOe2u6PbW9bVEy+d1GsBhzMcv
-         hQz31KHRdwwrRpPQKtwo/mgt/RDJcP5HwJEvQDw4hlCg1UawIxhjMpIyoMZ7EhmF9Cr5
-         9reGHNO4gkkuBmJo+Oaqjj6TKTUETe7+CIkOE27TvIRJWJqmVUrII3dzpjknMQaTPFf9
-         k8Du4YpDywE4dMPzO/zMuQwiIxX+Eoo6mL9kl0ZIiCDxoSsx7x/VJXCK/heDEX+UbDN5
-         b7ZwJQpRBQMR2KH6Rdshv33mFlYWLURDtQIq8gE3sCvRUq1qjqmM5j9eORZ0JkC04hvl
-         hnaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729527354; x=1730132154;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hDCkRXzZMsmC9OcdH/PJ2FucYewOH9vBwnV76xL3TNM=;
-        b=KhKGkXd7oNSL86RAajKgjRphTy11/glZV5rRcSCIPgmL7V3d8wUBMW2gPBkv045fGg
-         h9eRv0gpVHpa1TDIPd9Bj6yeonJCvN5C3uc+MfQZ9ot+LgxxjfMBA54naFhFjmzAYwvP
-         xIBoZFugvdQGzX4upt2kM6m8owe23GCvEG0CFFDr+wdZRZGfQ907Rvn36897Kaim9vK4
-         eWWwl625CTxFuZHnqFci6If010+709rJeCZZi56SCf0E8TPX5bMhtGYFY4yXRT1n3+49
-         fYOiejqo3bwk1QhQfq08NyagR76pRIBMgvjt8Qx0KMCQcnV4a6R7/XbH2xccjjHf5Lyg
-         C34A==
-X-Forwarded-Encrypted: i=1; AJvYcCV7fPzpiJKCLFwFeGZqYT/VvZgcu/3Exxxl5bFlbFdTPQnGL/4rAIhZgXAZSdrf+CbFnh1q9xLxnQu9qmcGeg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxG7vBDFsvDzmE/hYZ7wMBXdXxMN5iO8gwYD7Hv+E2qjK2egzQx
-	OLxEKUwViSC2TUGeJ0zCkx1jnTYxzXxJydz4c3g7G6mK0l9x3jpo
-X-Google-Smtp-Source: AGHT+IG2h1dAnakaDzA9jqhK0kzf0ExHRZDYTYVZSzXXU1tOMfyuMkFIlh/zpiO3wAsQhBR/2UjqXw==
-X-Received: by 2002:a2e:d01:0:b0:2fb:b59:8167 with SMTP id 38308e7fff4ca-2fb8320ba5emr44846581fa.39.1729527354158;
-        Mon, 21 Oct 2024 09:15:54 -0700 (PDT)
-Received: from pc636 (host-90-233-222-236.mobileonline.telia.com. [90.233.222.236])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2fb9ad4b843sm5296961fa.4.2024.10.21.09.15.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Oct 2024 09:15:53 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Mon, 21 Oct 2024 18:15:50 +0200
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	linux-bcachefs@vger.kernel.org, linux-mm@kvack.org,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] mm: Drop INT_MAX limit from kvmalloc()
-Message-ID: <ZxZ-NmNAft1Xk0Cy@pc636>
-References: <20241019210037.146825-1-kent.overstreet@linux.dev>
- <90bc0794-4cab-415f-a442-4af85a32eed8@lucifer.local>
- <ucbcmk4kr7tbvj6uqnjke5662kerawbr4ghtlbw4zim7mdm3fg@vjawfne5rdkp>
- <ebe58a08-2371-403c-a0d7-6280160b6848@lucifer.local>
- <zfr4sh3wtzi4viladlgwyon6voqhcj5fe3fv2nc3hqyyxdw5wd@onyj3r2m3usz>
- <CAHk-=wi=PrbZnwnvhKEF6UUQNCZdNsUbr+hk-jOWGr-q4Mmz=Q@mail.gmail.com>
- <m46mlvv57oypstekojhkdwpts6mi4r63l4kugs4lpry3d2r7dq@kbmied6nzsc3>
- <CAHk-=wg8iZWDbX_MAujGtqHJYQneKBwDJnVAY94siNr1gLmtaA@mail.gmail.com>
- <CAHk-=wiW_QZ9VS3Ho2Ff8ZDp-T6SomDFrVPWG3abs45LMZpxZQ@mail.gmail.com>
- <axcfs66ldwl4okyhndkcz2vkfmshuoady5cxe76h6qvcfqt326@wvlkewrvbrxm>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QQMC3Ib1"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C1592C4CEC3;
+	Mon, 21 Oct 2024 16:49:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729529345;
+	bh=Xhmz2Yd3SwGpseR8dLR4yXNrCUFWeAR1BlGSfk79iDc=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=QQMC3Ib1hWtzksS58Xr0QSMETCSd3FBsbK4KEPcfRcbKxITTHSFBxd/U3uA9Cyo2F
+	 oJL4+uMvhEuqCGNrkfZtav/8y8HTygCo5VOOuQodW3IxVQfEON+gyd+1W1t9smhkah
+	 zS2iTHDBhXI08upVYblWsl59bfeIf86yMi1Gif1hCenvPuHZQqMekEAwWbTfiPSrYJ
+	 sqmOfrk1QwrjKv/CWf6pNYBBUlnErv8HqCh3TF/qLh8wuE/qNnBn1YrEZCrLzQ9oyr
+	 JFZzQIQDyM/pxW3wjVdA4tNlh8Ph8uHDceKBbAcFEfpLipp/CzHjg9rtUkptReMvl4
+	 jtJSzJxiY1lLA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC49FD15DB2;
+	Mon, 21 Oct 2024 16:49:05 +0000 (UTC)
+From: Manas via B4 Relay <devnull+manas18244.iiitd.ac.in@kernel.org>
+Date: Mon, 21 Oct 2024 22:18:57 +0530
+Subject: [PATCH] Revert "bcachefs: Add asserts to
+ bch2_dev_btree_bitmap_marked_sectors()"
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <axcfs66ldwl4okyhndkcz2vkfmshuoady5cxe76h6qvcfqt326@wvlkewrvbrxm>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20241021-revert-assert-bch2-v1-1-e869c7c55bb6@iiitd.ac.in>
+X-B4-Tracking: v=1; b=H4sIAPmFFmcC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxNDAyNDXaCi1KIS3cTiYhCVlJxhpGtkamJukpZqYWCZYqgE1FhQlJqWWQE
+ 2NDq2thYAFnuBOGQAAAA=
+X-Change-ID: 20241021-revert-assert-bch2-25474fe809d1
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Anup Sharma <anupnewsmail@gmail.com>, 
+ Shuah Khan <skhan@linuxfoundation.org>, Manas <manas18244@iiitd.ac.in>, 
+ syzbot+e8eff054face85d7ea41@syzkaller.appspotmail.com
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1729529344; l=1877;
+ i=manas18244@iiitd.ac.in; s=20240813; h=from:subject:message-id;
+ bh=M5hbMLylF0b+ZchbJH4bBirAx8QVk4kpDgu8JqXEiG0=;
+ b=WgevtVQ8IzkqKxDmL4PPt4x+pwzKgX51dRXKIkpi/bHg+qtl1U1+wYlMsvhRz3aI+SKqx7uQJ
+ /moCqOYxegOAir9iBXGhNInRIgLvsv2CRck4KxE2nrWm2swoQTEIXd3
+X-Developer-Key: i=manas18244@iiitd.ac.in; a=ed25519;
+ pk=pXNEDKd3qTkQe9vsJtBGT9hrfOR7Dph1rfX5ig2AAoM=
+X-Endpoint-Received: by B4 Relay for manas18244@iiitd.ac.in/20240813 with
+ auth_id=196
+X-Original-From: Manas <manas18244@iiitd.ac.in>
+Reply-To: manas18244@iiitd.ac.in
 
-On Sun, Oct 20, 2024 at 03:16:11PM -0400, Kent Overstreet wrote:
-> On Sun, Oct 20, 2024 at 12:09:58PM -0700, Linus Torvalds wrote:
-> > On Sun, 20 Oct 2024 at 12:09, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > How about you limit the amount of memory you use in the first place instead?
-> > 
-> > .. and to clarify: we're not making other parts of the kernel less
-> > robust because *you* are doing something stupid and odd.
-> 
-> Except, vmalloc() already behaves this way - so it seems to me you
-> already have.
-> 
-> I've already added a stupid workaround to the darray code to switch to
-> calling vmalloc() directly, when necessary; this patch was a courtesy
-> because if bcachefs is hitting this limit no doubt other things will be
-> soon as well.
->
-I was thinking to prevent "big" allocations to limit the vmalloc() by
-the INT_MAX sizes, i.e. to apply same limitation as kvmalloc() has.
-vmalloc() is stick to totalram_pages() which is way a lot.
+From: Manas <manas18244@iiitd.ac.in>
 
-But it would break bcachefs, as i see it.
+This reverts commit 60f2b1bcf519416dbffee219132aa949d0c39d0e.
 
---
-Uladzislau Rezki
+This syzbot bug[1] is triggered due to the BUG_ON assertions added in
+__bch2_dev_btree_bitmap_mark. During runtime, m->btree_bitmap_shift is
+63 '?'. This triggers both the assertions.
+
+Reverting the commit does not reproduce the said bug.
+
+[1] https://syzkaller.appspot.com/bug?extid=e8eff054face85d7ea41
+
+Signed-off-by: Manas <manas18244@iiitd.ac.in>
+Reported-by: syzbot+e8eff054face85d7ea41@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=e8eff054face85d7ea41
+---
+This syzbot bug[1] is triggered due to the BUG_ON assertions added in
+__bch2_dev_btree_bitmap_mark. During runtime, m->btree_bitmap_shift is
+63 '?'. This triggers both the assertions.
+
+I am unfamiliar with the codebase, and there wasn't a lore discussion
+about the assertions in the commit, so I am unsure about the relevance
+of these assertions.
+
+Reverting the commit does not reproduce the said bug.
+
+[1] https://syzkaller.appspot.com/bug?extid=e8eff054face85d7ea41
+---
+ fs/bcachefs/sb-members.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
+index fb08dd680dacf82bca414f424024e4a00bf432de..9790fd47338c46d2af30547e1f41a1e578b71aa4 100644
+--- a/fs/bcachefs/sb-members.c
++++ b/fs/bcachefs/sb-members.c
+@@ -450,9 +450,6 @@ static void __bch2_dev_btree_bitmap_mark(struct bch_sb_field_members_v2 *mi, uns
+ 		m->btree_bitmap_shift += resize;
+ 	}
+ 
+-	BUG_ON(m->btree_bitmap_shift > 57);
+-	BUG_ON(end > 64ULL << m->btree_bitmap_shift);
+-
+ 	for (unsigned bit = start >> m->btree_bitmap_shift;
+ 	     (u64) bit << m->btree_bitmap_shift < end;
+ 	     bit++)
+
+---
+base-commit: 42f7652d3eb527d03665b09edac47f85fb600924
+change-id: 20241021-revert-assert-bch2-25474fe809d1
+
+Best regards,
+-- 
+Manas <manas18244@iiitd.ac.in>
+
+
