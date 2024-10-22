@@ -1,77 +1,85 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716F71CCB41
-	for <linux-bcachefs@vger.kernel.org>; Tue, 22 Oct 2024 22:39:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 189C81CEE94;
+	Tue, 22 Oct 2024 22:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729636746; cv=none; b=YIfGA5ZhSps3UnsZLKNbv+EbV8ZDo0FAr4Qvj9hClULJeVYpqA3VnXNfJABhp5OhDUYBKng7R7HAKn4dIeRQqYft87szwFGHbmHWYe4hLN66fyI+RYsl/7lzS3dfH+RcBDnJVekwnX0ets08XEQZc7LGlM5F0KSPkbTMDaHWrtA=
+	t=1729637901; cv=none; b=dHqkCHXBw/jFnwFUlMi0R7STt1tWSaUBCy7NuQhwp/ykkzE6qXsYzEcfjuigyknFIVn0w8uebsYv4S2vWT11FXXZCJL0vbMJr0sT2Y0+dlaZNY42W+l7NZG7SjE4neJ3fcVPwS9fF+MHGDiT0SZ2hoU7z6cbkhp/ptXW5fS96mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729636746; c=relaxed/simple;
-	bh=qluEbLL/61JnFJJ+1HrJtCML4J7G6Oi0jEbUGJwD6O0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=rVk+6UcKaPDjYieght2Yu4GVgr+bwcOBtiIZu1DTqDV2MEWbWMNkbYxnpWD9xnTUIrYVWZEUC9Jd574MUxvLnOkjcMBZxWtEKlhF04okjXrcuIVS8akPE96RCvuCieNllLHxT8eSW+mQNN81UTMrAKbOAT8NjU8dooqKd94/GHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a3c70e58bfso53078045ab.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 22 Oct 2024 15:39:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729636744; x=1730241544;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ou3ZSS8VXdcc2i16wGFKqFwy4n6TY8ZsZEapadHZyfM=;
-        b=k90BjpxrFZEmF3Llot3Q6+H+yTeoHVCxSll4wedyVzW1Kgbuv/jTMfRSuNcS1AC45z
-         GCNixMKF+0CFPjKBRNIOHhQZJuzhrz4h2tZEK+pYxuRapfcfF0+Lsz+ufqCDv6cVwIit
-         lQPF6LUzFPlXBeLyseMnaceHjSpbwCxeUmKEdY5ZJvBT/mVEAZvNyrl6a7NUYFD/rOhw
-         503j0CDr0iLDjulcZxJ1Rn2OihhRT2/TnQaehaoePFQ2VSa4cCSkDD9aUfKQYpMsmIBQ
-         HFqeXqiPSN7H4eJcb40a0vadr7nr3lMXUiC0YEuz2bjsN5/uEn8/XpThYbdTb/Es6Imp
-         S49w==
-X-Forwarded-Encrypted: i=1; AJvYcCWfbUFLAkMkRIlfRA3Ssk635nW4V4RE+tTvDEp4dkuu30/YI02hCyfeT9K2u92f1mqQo/PjqMIsRQNgGMHkSQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvyGgbROfxvLI54VPR67vUDop6vKreJ2z41OJu6Qeohc2j+/JD
-	fFXaDOeYlzEcn8FJiAHD7HhKRJvZOlBO2l0T8UYBNQmwVswqSUJXhFhOMd+G9zHeZqRt1BbyT1y
-	80+6hVVZ/6EtzqizhRw4E1Ar3QlfpOSZ3t9nTObvPBWWnzwknBo52B24=
-X-Google-Smtp-Source: AGHT+IFOQm2zWuPY/iTsaUu2kI12hYW4zsOaIt6XeZET0rc7gdHnow318GkCuavuJN36Cgl7ruV9Pe5MyCWkd6+Iedn36f9J4nLR
+	s=arc-20240116; t=1729637901; c=relaxed/simple;
+	bh=LppYdUsMIER80LrBQvaZektPYyEGIeG/zNXB8jqSRZQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aLe6fl/QOBoG5w5Yryw4XUyV5Um9lsoZ4iTgU6ApOvkDPDI+ddGo5EFNw9bYKkrAiBVgVchIM1xMGT+C1Xr3rgSakJUye/jHrPYHN0ITIowxsigpAtrFvPmrAfAo3vFCb+RPoTGjAs7T43YVz9EB3jX2E5smD+8J6yY/cma/irs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XANmPJLB; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XANmPJLB"
+Date: Tue, 22 Oct 2024 18:58:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729637894;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2D9SnjSf1zOnS6WF2Ttzy/TgN5LLfpg5eh2hw1wYNIE=;
+	b=XANmPJLBEPn4hEezpWvRgQBQg+/w0HaOqzQKCVPDtB+Zk8OIYKspVk3MYyFMFWvAHGmr7F
+	XInKAWc6yYFJ53FLi9pH9bBFHHejP0hpPRkMQq2kurIZCwGyMJjeWnRS1qkhujqNtRxj+P
+	5kcozFx299bvXG7k2WJTrFIDFUGJkrk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kees@kernel.org, hch@infradead.org, broonie@kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc5
+Message-ID: <dctt3tf65qsvwyr5exvee7bkmwh6aejqcd4t7uwfzvjiowqtzk@fncmtmgdbg5b>
+References: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
+ <Zxf3vp82MfPTWNLx@sashalap>
+ <20241022204931.GL21836@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1446:b0:3a0:9c99:32d6 with SMTP id
- e9e14a558f8ab-3a4d59d179bmr7359755ab.24.1729636744550; Tue, 22 Oct 2024
- 15:39:04 -0700 (PDT)
-Date: Tue, 22 Oct 2024 15:39:04 -0700
-In-Reply-To: <6717a66e.050a0220.10f4f4.0127.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67182988.050a0220.1e4b4d.007c.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] INFO: task hung in __closure_sync_timeout
-From: syzbot <syzbot+43d0c6eb00a26a41ec60@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241022204931.GL21836@frogsfrogsfrogs>
+X-Migadu-Flow: FLOW_OUT
 
-syzbot has bisected this issue to:
+On Tue, Oct 22, 2024 at 01:49:31PM -0700, Darrick J. Wong wrote:
+> On Tue, Oct 22, 2024 at 03:06:38PM -0400, Sasha Levin wrote:
+> > On Tue, Oct 22, 2024 at 01:39:10PM -0400, Kent Overstreet wrote:
+> > > 
+> > > The following changes since commit 5e3b72324d32629fa013f86657308f3dbc1115e1:
+> > > 
+> > >  bcachefs: Fix sysfs warning in fstests generic/730,731 (2024-10-14 05:43:01 -0400)
+> > > 
+> > > are available in the Git repository at:
+> > > 
+> > >  https://github.com/koverstreet/bcachefs tags/bcachefs-2024-10-22
+> > 
+> > Hi Linus,
+> > 
+> > There was a sub-thread on the linus-next discussion around improving
+> > telemetry around -next/lore w.r.t soaking time and mailing list reviews
+> > (https://lore.kernel.org/all/792F4759-EA33-48B8-9AD0-FA14FA69E86E@kernel.org/).
+> > 
+> > I've prototyped a set of scripts based on suggestions in the thread, and
+> > wanted to see if you'd find it useful. A great way to test it out is with
+> > a random pull request you'd review anyway :)
+> > 
+> > Is the below useful in any way? Or do you already do something like this
+> > locally and I'm just wasting your time?
+> > 
+> > If it's useful, is bot reply to PRs the best way to share this? Any
+> > other information that would be useful?
+> 
+> As a maintainer I probably would've found this to be annoying, but with
+> all my other outside observer / participant hats on, I think it's very
+> good to have a bot to expose maintainers not following the process.
 
-commit f7643bc9749f270d487c32dc35b578575bf1adb0
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Wed Apr 17 05:26:02 2024 +0000
+That's the interesting about face...
 
-    bcachefs: make btree read errors silent during scan
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1374a640580000
-start commit:   c2ee9f594da8 KVM: selftests: Fix build on on non-x86 archi..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10f4a640580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1774a640580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=41330fd2db03893d
-dashboard link: https://syzkaller.appspot.com/bug?extid=43d0c6eb00a26a41ec60
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12265430580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1105c640580000
-
-Reported-by: syzbot+43d0c6eb00a26a41ec60@syzkaller.appspotmail.com
-Fixes: f7643bc9749f ("bcachefs: make btree read errors silent during scan")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Personally, I'm curious what people are trying to achieve here.
