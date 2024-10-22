@@ -1,128 +1,164 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56DD319D881;
-	Tue, 22 Oct 2024 15:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5701BDA9B
+	for <linux-bcachefs@vger.kernel.org>; Tue, 22 Oct 2024 17:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729610736; cv=none; b=Div2Sy0Wbui8/OMEHZ6OgqlVivsaUhXrZJfUeuXMrDwgKPo9YOioX5CflBqt6qBLrjnFFt/DzUt6gxUGKNLQWs8BQEygt3b+ghQBjbIB1RMHe/hm9Bz5MrpkPEo5Vjt0CLB9Gbo7Xvkv4GBG9+xNgqjHWr9ot4MZt2siz0tPIF0=
+	t=1729618761; cv=none; b=bgfP2cO8rhNVHCBcBCwBxi1ka+ShyaqwyQHjG4SvmdJeaTIpRcdHSuVLReEP9X4/0IyHqD2z4LZweT1Cyew0WlPhRoeJtlFQFU4a3e+HZ1Qyl2/kvc5rlnwL4fUOSDZphA0CFj9ZBaOh+cUo3ftYtqhUiwz5uWbGxEc2LVIFO1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729610736; c=relaxed/simple;
-	bh=seJ9EZ22cEDevUVxu+OvqKQxCYUy8PExIx11DQC0kHs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=SOCEwxFLkTMTuVF2VT8AiX3Lachd1SpcbxdjnhtIL9ez2Utq3qHpWuiGN5u7TMig2ogJHT7itrMvIDCM3QgrTbPZfVZ/u78IUhcU+O0IeyyC4yHiTpng2C09pYvAoD5B70lF7FMKXTNMED6WOztEt6vNHfMZK59e7oCT4LdqP9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EbANo26p; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1729618761; c=relaxed/simple;
+	bh=5nYBuq8flg0IclcEtqjui0Y8ymtQtA0o/gQ3AaI5Ayk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=l3GnHR+K6OrRGX8V5xHCG0KM2pzWTb+3oeQYHisAVyoXHrR+PHeym7xtzmW1yHwx3ttV88qUN7Y6owlI3K2gVwdaQDdYJ2YqaWTr2GSsD71+RujuEE4NAVc0PNTXD8LK0jbM1jk4pxxoNyTAFvsR2w2ItaltYpUhtSobu5wpcaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VlLe/KFg; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EbANo26p"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D0F11C4CEC3;
-	Tue, 22 Oct 2024 15:25:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729610735;
-	bh=seJ9EZ22cEDevUVxu+OvqKQxCYUy8PExIx11DQC0kHs=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=EbANo26p9Mx/7/Rq1Vo2zvuXqowjBXHpSPqBVDN2EckVyWcti2CkAv2py1+AtLBms
-	 U893DqbwT5pfZ/hiUojPl2NhdBrklS4pQQVUFb9gfd/V0ODpiQyDdIBYaJ1cHeF2y2
-	 te1dsa/iqmJqtnl83emc8IvFW1ugYvNlN0mD9phS47VPA0DDXh2qpJwmrzE5XCkEXe
-	 DNa9EzzWmutx6FdLJ8lE7HXtUa/ABY3q9Kc18N81wgnvf/xFtxuo62Q9izAwSmxGQc
-	 Z84wWJy7ICT7eZBSOrZcLP/5vkpuo1ZJWSpNx/3BoHWJlXUbK9jbDeBQ2Rxt/+mI6B
-	 iNu3wfGTMrLHA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4DB9D2C56D;
-	Tue, 22 Oct 2024 15:25:35 +0000 (UTC)
-From: Manas via B4 Relay <devnull+manas18244.iiitd.ac.in@kernel.org>
-Date: Tue, 22 Oct 2024 20:55:32 +0530
-Subject: [PATCH] bcachefs: Add missing btree_bitmap_shift check in
- bch2_dev_btree_bitmap_marked_sectors
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VlLe/KFg"
+Date: Tue, 22 Oct 2024 13:39:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729618756;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=nFfwM9REuPvTQaQq5UTnE7bd6ms89tAFZaS8hK6Mt6w=;
+	b=VlLe/KFggxObBc8y8RewF50LrIxdfpQZsKaHN1dbMAz2mBQub0lPVBcVUWpJcNLEn0T9D3
+	ykp/d7VQtIXsXVyrXA1m0JFY7HomLjB7Rx9b0vzY3XXb2mMS/604lEuxSG2uGFfJ8YW483
+	lX3RW0nuDC0dXZTpN4oiG+Lw8D27Sx0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.12-rc5
+Message-ID: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241022-fix-missing-cond-bcachefs-v1-1-064a40e55610@iiitd.ac.in>
-X-B4-Tracking: v=1; b=H4sIAOvDF2cC/x2MQQqAMAzAviI9W3BFYfoV8VBnpz04ZQURxL87P
- AaSPGCSVQyG6oEsl5oeqYCrKwgbp1VQl8JADbWuIcKoN+5qpmnFcKQF58Bhk2jI3vexc+KZCUp
- /Ziny/x6n9/0A2B8oKWsAAAA=
-X-Change-ID: 20241022-fix-missing-cond-bcachefs-a889f51e8aa2
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Hongbo Li <lihongbo22@huawei.com>, linux-bcachefs@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Anup Sharma <anupnewsmail@gmail.com>, 
- Shuah Khan <skhan@linuxfoundation.org>, 
- linux-kernel-mentees@lists.linuxfoundation.org, 
- syzbot+e8eff054face85d7ea41@syzkaller.appspotmail.com, 
- Manas <manas18244@iiitd.ac.in>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1729610734; l=2170;
- i=manas18244@iiitd.ac.in; s=20240813; h=from:subject:message-id;
- bh=NGrI/M2/WyNTfN55jNdw37iuKR8z9suYfRj2qkDzA8E=;
- b=BGWbWB7uVb+YRHyrS+si0zmvjxu3ypdpqlixw+iXJ1cuktYtCNYYpc/DgJ0bIV40PN3NL1hv/
- s7C5v41YqdZBIBgcpie7iEA49J2qevrmUO/LypEiD4F+7tvvLVkOGJE
-X-Developer-Key: i=manas18244@iiitd.ac.in; a=ed25519;
- pk=pXNEDKd3qTkQe9vsJtBGT9hrfOR7Dph1rfX5ig2AAoM=
-X-Endpoint-Received: by B4 Relay for manas18244@iiitd.ac.in/20240813 with
- auth_id=196
-X-Original-From: Manas <manas18244@iiitd.ac.in>
-Reply-To: manas18244@iiitd.ac.in
-
-From: Manas <manas18244@iiitd.ac.in>
-
-The syzkaller bug triggers BUG_ON assertions in
-__bch2_dev_btree_bitmap_mark. btree_bitmap_shift is checked in
-bch2_dev_btree_bitmap_marked_sectors prior to this. But only one out of
-two assertions is checked. This patch adds the other as conditional.
-
-Reported-by: syzbot+e8eff054face85d7ea41@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=e8eff054face85d7ea41
-Signed-off-by: Manas <manas18244@iiitd.ac.in>
----
-The syzkaller bug[1] triggers BUG_ON assertions in
-__bch2_dev_btree_bitmap_mark.
-
-btree_bitmap_shift is checked in bch2_dev_btree_bitmap_marked_sectors
-prior to this. But only one out of two assertions is checked. This patch
-adds the other as conditional.
-
-A previous discussion about adding conditional in
-bch2_dev_btree_bitmap_marked_sectors is here[2].
-
-[1] https://syzkaller.appspot.com/bug?extid=e8eff054face85d7ea41
-[2] https://lore.kernel.org/all/9ec25394-3d89-41b3-b62e-2d522cdc7319@huawei.com/
----
- fs/bcachefs/sb-members.h | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/fs/bcachefs/sb-members.h b/fs/bcachefs/sb-members.h
-index 762083b564ee5909071eb4235c3d5cd6e72ee519..3141791491928930a707a6a16579c6d2e11e3700 100644
---- a/fs/bcachefs/sb-members.h
-+++ b/fs/bcachefs/sb-members.h
-@@ -347,12 +347,16 @@ void bch2_dev_errors_reset(struct bch_dev *);
- static inline bool bch2_dev_btree_bitmap_marked_sectors(struct bch_dev *ca, u64 start, unsigned sectors)
- {
- 	u64 end = start + sectors;
-+	u8 bitmap_shift = ca->mi.btree_bitmap_shift;
- 
--	if (end > 64ULL << ca->mi.btree_bitmap_shift)
-+	if (bitmap_shift > 57)
-+		return true;
-+
-+	if (end > 64ULL << bitmap_shift)
- 		return false;
- 
--	for (unsigned bit = start >> ca->mi.btree_bitmap_shift;
--	     (u64) bit << ca->mi.btree_bitmap_shift < end;
-+	for (unsigned bit = start >> bitmap_shift;
-+	     (u64) bit << bitmap_shift < end;
- 	     bit++)
- 		if (!(ca->mi.btree_allocated_bitmap & BIT_ULL(bit)))
- 			return false;
-
----
-base-commit: 42f7652d3eb527d03665b09edac47f85fb600924
-change-id: 20241022-fix-missing-cond-bcachefs-a889f51e8aa2
-
-Best regards,
--- 
-Manas <manas18244@iiitd.ac.in>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
 
+The following changes since commit 5e3b72324d32629fa013f86657308f3dbc1115e1:
+
+  bcachefs: Fix sysfs warning in fstests generic/730,731 (2024-10-14 05:43:01 -0400)
+
+are available in the Git repository at:
+
+  https://github.com/koverstreet/bcachefs tags/bcachefs-2024-10-22
+
+for you to fetch changes up to a069f014797fdef8757f3adebc1c16416271a599:
+
+  bcachefs: Set bch_inode_unpacked.bi_snapshot in old inode path (2024-10-20 18:09:09 -0400)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.12-rc5
+
+Lots of hotfixes:
+- transaction restart injection has been shaking out a few things
+
+- fix a data corruption in the buffered write path on -ENOSPC, found by
+  xfstests generic/299
+
+- Some small show_options fixes
+
+- Repair mismatches in inode hash type, seed: different snapshot
+  versions of an inode must have the same hash/type seed, used for
+  directory entries and xattrs. We were checking the hash seed, but not
+  the type, and a user contributed a filesystem where the hash type on
+  one inode had somehow been flipped; these fixes allow his filesystem
+  to repair.
+
+  Additionally, the hash type flip made some directory entries
+  invisible, which were then recreated by userspace; so the hash check
+  code now checks for duplicate non dangling dirents, and renames one of
+  them if necessary.
+
+- Don't use wait_event_interruptible() in recovery: this fixes some
+  filesystems failing to mount with -ERESTARTSYS
+
+- Workaround for kvmalloc not supporting > INT_MAX allocations, causing
+  an -ENOMEM when allocating the sorted array of journal keys: this
+  allows a 75 TB filesystem to mount
+
+- Make sure bch_inode_unpacked.bi_snapshot is set in the old inode
+  compat path: this alllows Marcin's filesystem (in use since before
+  6.7) to repair and mount.
+
+----------------------------------------------------------------
+Hongbo Li (2):
+      bcachefs: fix incorrect show_options results
+      bcachefs: skip mount option handle for empty string.
+
+Kent Overstreet (24):
+      bcachefs: fix restart handling in bch2_rename2()
+      bcachefs: fix bch2_hash_delete() error path
+      bcachefs: fix restart handling in bch2_fiemap()
+      bcachefs: fix missing restart handling in bch2_read_retry_nodecode()
+      bcachefs: fix restart handling in bch2_do_invalidates_work()
+      bcachefs: fix restart handling in bch2_alloc_write_key()
+      bcachefs: fix restart handling in __bch2_resume_logged_op_finsert()
+      bcachefs: handle restarts in bch2_bucket_io_time_reset()
+      bcachefs: Don't use commit_do() unnecessarily
+      bcachefS: ec: fix data type on stripe deletion
+      bcachefs: fix disk reservation accounting in bch2_folio_reservation_get()
+      bcachefs: bch2_folio_reservation_get_partial() is now better behaved
+      bcachefs: Fix data corruption on -ENOSPC in buffered write path
+      bcachefs: Run in-kernel offline fsck without ratelimit errors
+      bcachefs: INODE_STR_HASH() for bch_inode_unpacked
+      bcachefs: Add hash seed, type to inode_to_text()
+      bcachefs: Repair mismatches in inode hash seed, type
+      bcachefs: bch2_hash_set_or_get_in_snapshot()
+      bcachefs: fsck: Improve hash_check_key()
+      bcachefs: Fix __bch2_fsck_err() warning
+      bcachefs: Don't use wait_event_interruptible() in recovery
+      bcachefs: Workaround for kvmalloc() not supporting > INT_MAX allocations
+      bcachefs: Mark more errors as AUTOFIX
+      bcachefs: Set bch_inode_unpacked.bi_snapshot in old inode path
+
+ fs/bcachefs/alloc_background.c      |  37 +++--
+ fs/bcachefs/alloc_foreground.c      |   2 +-
+ fs/bcachefs/btree_gc.c              |  12 +-
+ fs/bcachefs/btree_io.c              |   2 +-
+ fs/bcachefs/btree_iter.h            |   2 +
+ fs/bcachefs/btree_update.c          |   4 +-
+ fs/bcachefs/btree_update.h          |   2 +-
+ fs/bcachefs/btree_update_interior.c |   4 +-
+ fs/bcachefs/buckets.c               |   7 +-
+ fs/bcachefs/buckets.h               |  12 +-
+ fs/bcachefs/chardev.c               |   1 +
+ fs/bcachefs/darray.c                |  15 +-
+ fs/bcachefs/dirent.c                |   7 -
+ fs/bcachefs/dirent.h                |   7 +
+ fs/bcachefs/disk_accounting.c       |   6 +-
+ fs/bcachefs/ec.c                    |  22 +--
+ fs/bcachefs/error.c                 |   5 +-
+ fs/bcachefs/fs-io-buffered.c        |   6 +
+ fs/bcachefs/fs-io-pagecache.c       |  70 +++++----
+ fs/bcachefs/fs-io.c                 |   2 +-
+ fs/bcachefs/fs.c                    |  18 +--
+ fs/bcachefs/fsck.c                  | 281 +++++++++++++++++++++++++++++-------
+ fs/bcachefs/inode.c                 |  27 ++--
+ fs/bcachefs/inode.h                 |   1 +
+ fs/bcachefs/inode_format.h          |   6 +-
+ fs/bcachefs/io_misc.c               |   2 +-
+ fs/bcachefs/io_read.c               |   8 +-
+ fs/bcachefs/io_write.c              |   4 +-
+ fs/bcachefs/journal.c               |  10 +-
+ fs/bcachefs/journal.h               |   2 +-
+ fs/bcachefs/opts.c                  |   6 +-
+ fs/bcachefs/opts.h                  |   3 +-
+ fs/bcachefs/quota.c                 |   2 +-
+ fs/bcachefs/rebalance.c             |   4 +-
+ fs/bcachefs/recovery.c              |   2 +-
+ fs/bcachefs/sb-errors_format.h      |   4 +-
+ fs/bcachefs/str_hash.h              |  60 +++++---
+ fs/bcachefs/subvolume.c             |   7 +-
+ fs/bcachefs/super.c                 |   2 +-
+ fs/bcachefs/tests.c                 |   4 +-
+ fs/bcachefs/xattr.c                 |   2 +-
+ 41 files changed, 475 insertions(+), 205 deletions(-)
