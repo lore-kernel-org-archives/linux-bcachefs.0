@@ -1,31 +1,31 @@
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF8083CD6;
-	Tue, 22 Oct 2024 02:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E487E59A;
+	Tue, 22 Oct 2024 02:26:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729562459; cv=none; b=BoP6Mts+unyGjrvULpZ+fSbmpxkwC7PaeLkFPLJIntSvrIycuq1RX+EwzzTIDVD837aJk/f18+V1odjEEx64wAl7LJYmjYj1nQM4z/9vvZRO11uN/2oTXHFDxGesehrmRvX5iUgpbcWGyR9/QnJT+lzH0pJAaJY0xc04dswRT2w=
+	t=1729563987; cv=none; b=MHo5wabNPKxcpMFuHRioPztvfheif7+JBqEbBzla4VhHOz6leRbGHrYnwyz/XgFVNTz+y7Crh5aOxRCBNL1MGqD7E9kz+AiWIp9s+oQ6cJNwO+nn2JGtfTolWwpsUwx5wDm6677E7edcK+mKhUEeW142AOTkuCUl1sqL+UC2T4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729562459; c=relaxed/simple;
-	bh=kQK1Re3ZgQEEXEdfeHfZBw2YULtsSH5KlE9GvVpFH6Y=;
+	s=arc-20240116; t=1729563987; c=relaxed/simple;
+	bh=0hlYTnNTnCF4BX/BH09e+Ij5K2036mUnfhKmC6OSMQg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mvIff7MpDIg83tqlKW+4MERP08Jh2NEpiCsrG09ChkD+vYY+Yoma3/Fs0EYFtR5WO1kdsgYWfmf9UlQchOaLE5dD2e6ZueHMijUElmO+JzIeEFsmKF6jOLwcIC+8UweE6PFpRlbFKntWQcVhrIbISqiPRyS807UNsBBEBEV2weU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+	 In-Reply-To:Content-Type; b=OUjrMs6CptQPgXYf9VX/0TZsliXQ2/9d88XfoyCmo47ZO3f49po+9R/7geuTLGW3x3u0MP4o+0gU0W9jxATJFDzT5j8BJv05z6CtLklpveXsN1w2/SRkqaKUjh4Dqtp+/3wnQtvK91P//NZqAY2tmbxzdaDKI0WXUpRP0rkhP/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4XXZgm2LdYzQs4q;
-	Tue, 22 Oct 2024 09:43:00 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XXbcp2T59z20qjm;
+	Tue, 22 Oct 2024 10:25:30 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id C78F61800DB;
-	Tue, 22 Oct 2024 09:43:50 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id A0BD8140360;
+	Tue, 22 Oct 2024 10:26:20 +0800 (CST)
 Received: from [10.67.111.104] (10.67.111.104) by
  dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 22 Oct 2024 09:43:50 +0800
-Message-ID: <9ec25394-3d89-41b3-b62e-2d522cdc7319@huawei.com>
-Date: Tue, 22 Oct 2024 09:43:49 +0800
+ 15.1.2507.39; Tue, 22 Oct 2024 10:26:20 +0800
+Message-ID: <1e46f070-3e78-4a81-b7c7-ea021271b12b@huawei.com>
+Date: Tue, 22 Oct 2024 10:26:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -33,80 +33,59 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Revert "bcachefs: Add asserts to
- bch2_dev_btree_bitmap_marked_sectors()"
+Subject: Re: [PATCH v3] bcachefs: fix shift oob in alloc_lru_idx_fragmentation
 Content-Language: en-US
-To: <manas18244@iiitd.ac.in>, Kent Overstreet <kent.overstreet@linux.dev>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Anup
- Sharma <anupnewsmail@gmail.com>, Shuah Khan <skhan@linuxfoundation.org>,
-	<syzbot+e8eff054face85d7ea41@syzkaller.appspotmail.com>
-References: <20241021-revert-assert-bch2-v1-1-e869c7c55bb6@iiitd.ac.in>
+To: Jeongjun Park <aha310510@gmail.com>, <kent.overstreet@linux.dev>,
+	<mmpgouride@gmail.com>
+CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com>
+References: <20241021154356.38221-1-aha310510@gmail.com>
 From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20241021-revert-assert-bch2-v1-1-e869c7c55bb6@iiitd.ac.in>
+In-Reply-To: <20241021154356.38221-1-aha310510@gmail.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpeml500022.china.huawei.com (7.185.36.66)
 
 
 
-On 2024/10/22 0:48, Manas via B4 Relay wrote:
-> From: Manas <manas18244@iiitd.ac.in>
+On 2024/10/21 23:43, Jeongjun Park wrote:
+> The size of a.data_type is set abnormally large, causing shift-out-of-bounds.
+> To fix this, we need to add validation on a.data_type in
+> alloc_lru_idx_fragmentation().
 > 
-> This reverts commit 60f2b1bcf519416dbffee219132aa949d0c39d0e.
-> 
-> This syzbot bug[1] is triggered due to the BUG_ON assertions added in
-> __bch2_dev_btree_bitmap_mark. During runtime, m->btree_bitmap_shift is
-> 63 '?'. This triggers both the assertions.
-> 
-> Reverting the commit does not reproduce the said bug.
-> 
-> [1] https://syzkaller.appspot.com/bug?extid=e8eff054face85d7ea41
-> 
-> Signed-off-by: Manas <manas18244@iiitd.ac.in>
-> Reported-by: syzbot+e8eff054face85d7ea41@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=e8eff054face85d7ea41
+> Reported-by: syzbot+7f45fa9805c40db3f108@syzkaller.appspotmail.com
+> Fixes: 260af1562ec1 ("bcachefs: Kill alloc_v4.fragmentation_lru")
+> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
 > ---
-> This syzbot bug[1] is triggered due to the BUG_ON assertions added in
-> __bch2_dev_btree_bitmap_mark. During runtime, m->btree_bitmap_shift is
-> 63 '?'. This triggers both the assertions.
+>   fs/bcachefs/alloc_background.h | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> I am unfamiliar with the codebase, and there wasn't a lore discussion
-> about the assertions in the commit, so I am unsure about the relevance
-> of these assertions.
-> 
-> Reverting the commit does not reproduce the said bug.
-> 
-> [1] https://syzkaller.appspot.com/bug?extid=e8eff054face85d7ea41
-> ---
->   fs/bcachefs/sb-members.c | 3 ---
->   1 file changed, 3 deletions(-)
-> 
-> diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
-> index fb08dd680dacf82bca414f424024e4a00bf432de..9790fd47338c46d2af30547e1f41a1e578b71aa4 100644
-> --- a/fs/bcachefs/sb-members.c
-> +++ b/fs/bcachefs/sb-members.c
-> @@ -450,9 +450,6 @@ static void __bch2_dev_btree_bitmap_mark(struct bch_sb_field_members_v2 *mi, uns
->   		m->btree_bitmap_shift += resize;
->   	}
->   
-> -	BUG_ON(m->btree_bitmap_shift > 57);
-> -	BUG_ON(end > 64ULL << m->btree_bitmap_shift);
-> -
-May be this is not good way by just removing the BUG_ON. In my humble 
-opinion, the former code have checked m->btree_bitmap_shift in 
-bch2_dev_btree_bitmap_marked_sectors. May be add the similar condition 
-in this helper will be better.
+> diff --git a/fs/bcachefs/alloc_background.h b/fs/bcachefs/alloc_background.h
+> index f8e87c6721b1..163a67b97a40 100644
+> --- a/fs/bcachefs/alloc_background.h
+> +++ b/fs/bcachefs/alloc_background.h
+> @@ -168,6 +168,9 @@ static inline bool data_type_movable(enum bch_data_type type)
+>   static inline u64 alloc_lru_idx_fragmentation(struct bch_alloc_v4 a,
+>   					      struct bch_dev *ca)
+>   {
+> +	if (a.data_type >= BCH_DATA_NR)
+> +		return 0;
+> +
+
+oh, I found I have done the same thing in [1]("Re: [syzbot] [bcachefs?] 
+UBSAN: shift-out-of-bounds in bch2_alloc_to_text"). But in my humble 
+opinion, the validation changes also should be added. And in addition, 
+move the condition about a.data_type into data_type_movable will be 
+better. Just my personal opinion.:)
+
+[1] https://www.spinics.net/lists/kernel/msg5412619.html
 
 Thanks,
 Hongbo
 
->   	for (unsigned bit = start >> m->btree_bitmap_shift;
->   	     (u64) bit << m->btree_bitmap_shift < end;
->   	     bit++)
+>   	if (!data_type_movable(a.data_type) ||
+>   	    !bch2_bucket_sectors_fragmented(ca, a))
+>   		return 0;
+> --
 > 
-> ---
-> base-commit: 42f7652d3eb527d03665b09edac47f85fb600924
-> change-id: 20241021-revert-assert-bch2-25474fe809d1
-> 
-> Best regards,
