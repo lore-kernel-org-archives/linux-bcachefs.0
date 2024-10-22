@@ -1,73 +1,120 @@
-Received: from mail2.ecloud.global (mail2.ecloud.global [135.181.6.248])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6438319E833
-	for <linux-bcachefs@vger.kernel.org>; Tue, 22 Oct 2024 18:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=135.181.6.248
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729620168; cv=pass; b=jA1mnkTrg7mTKVDkKRGdXbkFW3jZb3x0ty8s/GN4iDx00/GhMn2y9iipAtwdW0S4o/IUKBbSSUfO8ZMLnwnsV6KKsfh73clTcui8O0v8q8UGr+h1Tv3D9rX47vf3sFP/0PfSIPwvT+ltDh5jM6pQL5ptFbM/DHHgtyr5fcClNSw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729620168; c=relaxed/simple;
-	bh=45d+aplBGCnkcluUN+HKUYKBAEaZvT1uZMdFHXRBdv4=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=C7jKf3zU+VrNGXe13hXLfy1nf6HlaAjx5+OeXQ6vdX68N1jxqTXCQUvzEMgU0KfOajVUT5CC5CGmmK+ZV24xNMQdt5sOG6shH5j/hBto1s4Lzng028VbZ5xxOH6t58jU2+07o1iDi2voDD3Mt/xC3c4mvClFqUhZUxXog5uQA88=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io; spf=pass smtp.mailfrom=murena.io; dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b=cJVZ9GsU; arc=pass smtp.client-ip=135.181.6.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=murena.io
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252D312F5B3;
+	Tue, 22 Oct 2024 19:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729624000; cv=none; b=uzEUWcN9D9cUF8uwWW05f4n4+FO0LoMSiI8MGCP9T3g1lWHa1b+mb0KWbRDyRHs4DSaXiM+sLyRwlN/9p1RkBRHc46j+Xd/ccHvQsWDcUSzoXoU3pTnlJ0JtVUIjnCG4/hpvohBoV0fGnxohxaWAfaIQPuOQ1fE1zlOrVsyBDEY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729624000; c=relaxed/simple;
+	bh=2r8dbf+RtDRpeSNbb/i/tnd/Q2HwhxAktt5rsBh//Kg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GuIBjHfMKLLTUlvgf4VMVKAMM+uGssfUPe2KPaC1pY18MY9V9NTbiQGAxA2/rTToZWv0W6a+Fne9pZnTynjahX5aINZz0zSGm4/AdWIeW/0lGuJi5BeruZos/UwtIMOxpiYI8mDSkd0lsmX0hjLq8YmEriD8EvpQG1k3LSiXBFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R6EXzXHk; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b="cJVZ9GsU"
-Received: from authenticated-user (mail2.ecloud.global [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail2.ecloud.global (Postfix) with ESMTPSA id BEA2E720090;
-	Tue, 22 Oct 2024 18:02:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io; s=mail2;
-	t=1729620164;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=45d+aplBGCnkcluUN+HKUYKBAEaZvT1uZMdFHXRBdv4=;
-	b=cJVZ9GsUIPRb3D56EVWB/rQyPhsOnKytXflWNnz/wcn5aPFnp1xCIB+SMH3jdTvmhiuPWf
-	pNYJHGHOc0QEgO6rTX0OXSeYiqLYgq9AyxY5ql+WLNVuuyulWkOJIEPe7ZRixaFTEMbOHO
-	ix2/2ZRHNOIllOs/fyTXox1GibSQl9I=
-ARC-Seal: i=1; s=mail2; d=murena.io; t=1729620164; a=rsa-sha256; cv=none;
-	b=Rqdq/LPfqxFvYIYD4bzPRd1WkF8ihO4Uunvm/bYAkbVC/gd5ZFGM5XpMFN/ss4hxxj3QJA
-	1PGhgm8fYSG07Av2Zx5RG7jakIcBn0GlowbkFg3xOMzYu+tOXj6XSTWHiklX2dlc7xoCkY
-	MoHOsuA8w6qrYosf8lLCvwHL8S2crkc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io;
-	s=mail2; t=1729620164;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=45d+aplBGCnkcluUN+HKUYKBAEaZvT1uZMdFHXRBdv4=;
-	b=XlXkXbc5iiV3hysH0CKtQmmEJJoH1AKEWVc9607hqjvoor3tY4We90Sa5KZ4L1xVHdLj9O
-	iCk/8HieDq7owKC6j1buD/Hf4kkX9plAeuOln0Z7dF+AjiC3yElMQL0v60O0SCfaVVyA+j
-	joUbLo+0r/NSL8Y6k8dSA5FLw/0FAbc=
-ARC-Authentication-Results: i=1;
-	mail2.ecloud.global;
-	auth=pass smtp.mailfrom=integral@murena.io
-Message-ID: <80532d31-cce2-4146-9247-a78f7d5ef025@murena.io>
-Date: Wed, 23 Oct 2024 02:02:38 +0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R6EXzXHk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B918C4CEC3;
+	Tue, 22 Oct 2024 19:06:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729623999;
+	bh=2r8dbf+RtDRpeSNbb/i/tnd/Q2HwhxAktt5rsBh//Kg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R6EXzXHkmzJfXvqwR0odji6s7x0VG8I4jxa8KaSCLN1NltJuOyGzquOkk5qDEQNzn
+	 gVWEalspVP4gugAkdN/mnwbrB9QlRTSBfblGbrWR03PmOzHnftGMKHHu8iGm1LifBe
+	 iBlj7JhN2itiXxEIz6K9od8qMN/7xI00/kYdOMSpCi529MfAkIeEDTVrs1YWsYM6pI
+	 MBwdBRdA+7PKDZOMENAZnskJ6m0I7VpvFeUXbgVWWC9/5SqKgi0TCQiRWIiuKPxDok
+	 M3FNpdrGSSJ+XylDUOOyslVupuTaddOfOc1dIKi2kRMgC2vA1ZXUuGVU+wsHFbC7jw
+	 mWJMqZ/qp3JWg==
+Date: Tue, 22 Oct 2024 15:06:38 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kees@kernel.org, hch@infradead.org,
+	broonie@kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc5
+Message-ID: <Zxf3vp82MfPTWNLx@sashalap>
+References: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-To: integral@murena.io
-Cc: kent.overstreet@gmail.com, kent.overstreet@linux.dev,
- lihongbo22@huawei.com, linux-bcachefs@vger.kernel.org, mmpgouride@gmail.com
-References: <20241022131218.300195-3-integral@murena.io>
-Subject: Re: [PATCH v3] bcachefs: add support for true/false & yes/no in
- bool-type options
-Content-Language: en-US
-From: Integral <integral@murena.io>
-In-Reply-To: <20241022131218.300195-3-integral@murena.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
 
-Is my new patch acceptable?
+On Tue, Oct 22, 2024 at 01:39:10PM -0400, Kent Overstreet wrote:
+>
+>The following changes since commit 5e3b72324d32629fa013f86657308f3dbc1115e1:
+>
+>  bcachefs: Fix sysfs warning in fstests generic/730,731 (2024-10-14 05:43:01 -0400)
+>
+>are available in the Git repository at:
+>
+>  https://github.com/koverstreet/bcachefs tags/bcachefs-2024-10-22
 
+Hi Linus,
+
+There was a sub-thread on the linus-next discussion around improving
+telemetry around -next/lore w.r.t soaking time and mailing list reviews
+(https://lore.kernel.org/all/792F4759-EA33-48B8-9AD0-FA14FA69E86E@kernel.org/).
+
+I've prototyped a set of scripts based on suggestions in the thread, and
+wanted to see if you'd find it useful. A great way to test it out is with
+a random pull request you'd review anyway :)
+
+Is the below useful in any way? Or do you already do something like this
+locally and I'm just wasting your time?
+
+If it's useful, is bot reply to PRs the best way to share this? Any
+other information that would be useful?
+
+Here it goes:
+
+
+Days in -next:
+----------------------------------------
+  0  | ███████████ (5)
+  1  |
+  2  | █████████████████████████████████████████████████ (21)
+  3  |
+  4  |
+  5  |
+  6  |
+  7  |
+  8  |
+  9  |
+10  |
+11  |
+12  |
+13  |
+14+ |
+
+Commits that didn't spend time in -next:
+--------------------
+a069f014797fd bcachefs: Set bch_inode_unpacked.bi_snapshot in old inode path
+e04ee8608914d bcachefs: Mark more errors as AUTOFIX
+f0d3302073e60 bcachefs: Workaround for kvmalloc() not supporting > INT_MAX allocations
+3956ff8bc2f39 bcachefs: Don't use wait_event_interruptible() in recovery
+eb5db64c45709 bcachefs: Fix __bch2_fsck_err() warning
+
+
+Commits that weren't found on lore.kernel.org/all:
+--------------------
+e04ee8608914d bcachefs: Mark more errors as AUTOFIX
+f0d3302073e60 bcachefs: Workaround for kvmalloc() not supporting > INT_MAX allocations
+bc6d2d10418e1 bcachefs: fsck: Improve hash_check_key()
+dc96656b20eb6 bcachefs: bch2_hash_set_or_get_in_snapshot()
+15a3836c8ed7b bcachefs: Repair mismatches in inode hash seed, type
+d8e879377ffb3 bcachefs: Add hash seed, type to inode_to_text()
+78cf0ae636a55 bcachefs: INODE_STR_HASH() for bch_inode_unpacked
+b96f8cd3870a1 bcachefs: Run in-kernel offline fsck without ratelimit errors
+4007bbb203a0c bcachefS: ec: fix data type on stripe deletion
+
+-- 
+Thanks,
+Sasha
