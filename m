@@ -1,57 +1,57 @@
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1008913AA31
-	for <linux-bcachefs@vger.kernel.org>; Wed, 23 Oct 2024 07:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3388A73451;
+	Wed, 23 Oct 2024 07:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729668630; cv=none; b=q4k0xxERW4wjvloQYIjtqQc1MqxWQW5sLgpYGWi/88g6rz4dOGq8XCGSiUsPe22JgYlm4W2Ew5Pv3CsS1Ww3H+kHxbiNf6Rv5Ezx9H8/KmPNJJ5DSCSr8wh5dC5ccuPnvySuxVG5RR4y+KyU3mCsuZrvyEz2i3+HMbO8Zo+vtAg=
+	t=1729668820; cv=none; b=j2cUZzgwJtk1EeJcSxNmza/2Ogt0mknchwMZEZPQa2aNotgSW4aDFbGFoRFb7QULPXMWZUVUC71ed0tk7+/DKiLLkTmgIQH2IQOc2ThaqBb8YQaH0CInOTsaXNBNXue/6q3rLR4KoHnL/sr2JTvJXo3e1ou3kZHch31ESqgeako=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729668630; c=relaxed/simple;
-	bh=VS+rhmjPdrvCRvmzMilx12EZqPOXIlZ93ZoCYUnKA/o=;
+	s=arc-20240116; t=1729668820; c=relaxed/simple;
+	bh=7/XKigXuC97EO4hBvGCC9fyMB0r05484l5DDM24QqE0=;
 	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=sFwtseN1SJpCef29+Pgmn0f8/EvnlVI4+dPMJQdTo8Ku+JFA50DKnYD1W8MIt+sgNt6LAclkT4NCXjQHybRqMxTVlCrXWs/wq+Llk5FilDbygEKroGvp8CaIM6mSi9F0NXSPn7lPjWmD0eE4b3/7DwwCDzD+Kp6E5UB6Zy3Cq14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W8t0DvAS; arc=none smtp.client-ip=209.85.216.43
+	 Message-Id:References:To; b=PhIsJIqDR2FVFigd/4gKa/PgE7RoPQKQVSc3k7JhHMg7tsLlRXLeX0NED5z8EDF62XQ4PssMcBTyBV5pwNd+9f/pDtbIlJ2BKJSWqe0QXmagdzZjZ4b9uF8ovWrQ+1LgpRgkgj5lnb/LPH6vKCxMQzKkoUELpOTkH11Mf5i0hKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/PdG6ci; arc=none smtp.client-ip=209.85.210.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W8t0DvAS"
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2e2cc469c62so4373177a91.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 23 Oct 2024 00:30:28 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/PdG6ci"
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-718065d6364so3050588a34.3;
+        Wed, 23 Oct 2024 00:33:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729668628; x=1730273428; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729668817; x=1730273617; darn=vger.kernel.org;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=owbnBqcAOdbgKaq+xfV9htpf34eXRTrfUlCl69M+kN8=;
-        b=W8t0DvASJ5ZhmdJA0h368AYX9TWRP9khYDjPHTskrQb0/J2wEgJ5A/w08OMHDBIikX
-         aCLG6QnBWJvSTLbYYd/bnjtJBBZTNfZA3RRW6d4N5IDwNs3xnfboTTfA3vOSnWIDuQfN
-         7N1Zr9kVRUqCdoJZfIrHQHQiORe//H6+LCdhXs4o6B4xOU4oV8Sw/4hb/5YqUjLZyVzc
-         WP/oYYKCv20kb78wlbHkImSZkSnQSnaPMczVO2fXB0kUurfGejS9TMoUJkBDjdnjaGVI
-         BjCYCqydB0ihSbFVQwYzYR8YU8zs4aXbiY1q686hhVFNPvA7yv35L+WeLkjAEPfmDuEs
-         V8bQ==
+        bh=ZAjqjr6bU9AHssEjGBws6avXM1iyDJeINARZbx3wDCo=;
+        b=I/PdG6ciimqmN47yBEzqSpe7sY9iQXuBBScKKjUe6ZN5j303GRn1zo1mtttAR00v+w
+         ieVI2W68E0U60R0r1vv9/ptoCOE4DiPP0nE4nIlOUDVX3DwNPjq9w/VCkjC1nIIKVuEB
+         tl4/xqGtVJ3lIaIIYh0ACK4zGnj4O82wf7tsve4YRg/Mb9CxAC2wJQ6gs//kQUofxEDS
+         4Kxys7opoIaF/GkNxH6Te7yGQQm9OHuXT1c5YEXUv2A+LQh+UCANEJK7Hjd5vjdW343X
+         dVIXmRF2MciJfxA5ed5p4ozAW3cBt8NPzHyLHXXMiRI+xOg0HTo0+2pQesFisJwQ047N
+         GDwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729668628; x=1730273428;
+        d=1e100.net; s=20230601; t=1729668817; x=1730273617;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=owbnBqcAOdbgKaq+xfV9htpf34eXRTrfUlCl69M+kN8=;
-        b=FqVUk7aQbYFfEm7pycx2nGfXk55DFU64e/6Gki2+Z47VH+cPf3AFeUzs2XaaArv8Rd
-         Brb6COwtghCw+uQZl2NBfFsrXTDguPf226nljLZYCIsypk/5cMEFxgPM7d77sCirXPl4
-         sEXwRSCieqxUPXjJqWM6XvLgivONZvpoOmASpQA06SMdtiHcTstOvqL0/jwJkcWkRZFK
-         qB0gRBsO0msoJPUbye1xQ72f8uCzqe0QxOOuJNtwp0rtt/oGrXAMmTVWCAni4cNQ20b3
-         85IhLm31Ng63hcLQfvt0bCGc+dgYhVeJrZ4tmWwLIPNGWCOXz3UpS8DDBBXF7IwhDxLh
-         aj/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW/16dxV1AIbTnlol9Wrx5mgAEERMjNY5ZsDIDpW+565MwYzupNnQISjKtpg9l0itDXb50+7hHwwaZ2w/9hWQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8oMtfBuQv3Gz7liLui9apf2kKlyVwp2oV1TG9EMTGxTBvDF4j
-	JPeB+71VzyACl/wsTqOGXSo3eitSiYiMaS2hpaYSGam7gialuUe4fPKBgN5v
-X-Google-Smtp-Source: AGHT+IHMx4DNGQrIuSmT9xbh41c9r4QGZa2nIKbc7gl6ujyTPPm6rPJctiXFqUt2DQoIVu0KGHHjsw==
-X-Received: by 2002:a17:90a:d80e:b0:2e2:bb22:eb59 with SMTP id 98e67ed59e1d1-2e76b74362amr1506195a91.41.1729668628135;
-        Wed, 23 Oct 2024 00:30:28 -0700 (PDT)
+        bh=ZAjqjr6bU9AHssEjGBws6avXM1iyDJeINARZbx3wDCo=;
+        b=R2WuPPZmm90nVWH5i9qIgSziDb6FpmAi1NFz2Ma72JzmUGrcWRTXxQ2BOMrSy5Mzsu
+         CRzrqyc36G1FT/ItMvfUXaFpGrkOdjBQUGn/BYudMRjLRwN4AHxTToeGifhwnLmBy5Wr
+         IMvc1TaNscN838ymJXYki9iRCO/fuTgo2KdmgnLchfphuE2mnhjMzekgytsKqV4qxcfQ
+         hW264PC4swT3TEvqF8Svg6rwMUcssSiENP3mFD6CXckZ/WqkXCwLFcFygN2uQ5JPpuzi
+         dOYwESnVvRgO7n6jv4bwayDJqcxcfkZVn4f6+/eAyERT6eja3ahf9P87qjTIzuAd/A15
+         w6KQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVAlh/2yu8c7V1a6IwqcDJwLvwnePPiGOIArulgSgB93uZa1+R9fyJ39c45f+x893uobXzkgN1ZRN+YirXY@vger.kernel.org, AJvYcCXHS6dqXdPYSjQP+P1AIRkSQcIR7p07vaD8y6w0GbWnhbzk4ri7NwWCNo0I8+iuTkBHQdEhZiG5BhBkwYhg+w==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3MIhCfAtMmJfbeOIW4EV+U/NqpO4axlcHdLyCl6aQlGvyq91m
+	9WaTiORv0mdVVxEuer84fuzTdmFEioQEBf26pW5xcjPBpBhEjDHG
+X-Google-Smtp-Source: AGHT+IHGxoTpmD1Fn7QShAC5ShitKn/rp54NuZPzOSOHSvD6BGqTyHGxlj2B9f8Elw4flKB3CQ6bVw==
+X-Received: by 2002:a05:6830:6489:b0:710:f223:3e32 with SMTP id 46e09a7af769-7184b3771aemr1585741a34.10.1729668817120;
+        Wed, 23 Oct 2024 00:33:37 -0700 (PDT)
 Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e76df714f5sm673902a91.33.2024.10.23.00.30.25
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7eaeabde7d5sm6128596a12.93.2024.10.23.00.33.34
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Oct 2024 00:30:27 -0700 (PDT)
+        Wed, 23 Oct 2024 00:33:36 -0700 (PDT)
 Content-Type: text/plain;
 	charset=us-ascii
 Precedence: bulk
@@ -60,97 +60,69 @@ List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
-Subject: Re: [PATCH v4] libbcachefs: add support for true/false & yes/no in
- bool-type options
+Subject: Re: [PATCH] bcachefs: Fix NULL ptr dereference in
+ btree_node_iter_and_journal_peek
 From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <20241023051504.59321-2-integral@murena.io>
-Date: Wed, 23 Oct 2024 15:30:13 +0800
-Cc: Hongbo Li <lihongbo22@huawei.com>,
- Kent Overstreet <kent.overstreet@gmail.com>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org
+In-Reply-To: <20241023072024.98915-3-pZ010001011111@proton.me>
+Date: Wed, 23 Oct 2024 15:33:22 +0800
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+ linux-bcachefs@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>,
+ skhan@linuxfoundation.org,
+ syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <C427A74E-0AE3-48F6-A47C-633E54949379@gmail.com>
-References: <916cace5-ecf5-426d-a215-17e1107fef88@huawei.com>
- <20241023051504.59321-2-integral@murena.io>
-To: Integral <integral@murena.io>
+Message-Id: <09A7740A-3113-4ABF-8587-8E0A4231DD61@gmail.com>
+References: <20241023072024.98915-3-pZ010001011111@proton.me>
+To: Piotr Zalewski <pZ010001011111@proton.me>
 X-Mailer: Apple Mail (2.3776.700.51)
 
-On Oct 23, 2024, at 13:15, Integral <integral@murena.io> wrote:
+On Oct 23, 2024, at 15:21, Piotr Zalewski <pZ010001011111@proton.me> =
+wrote:
 >=20
-> Here is my latest patch:
+> Add NULL check for key returned from bch2_btree_and_journal_iter_peek =
+in
+> btree_node_iter_and_journal_peek to avoid NULL ptr dereference in
+> bch2_bkey_buf_reassemble.
+
+It would be helpful if the commit message explained why k.k is null in =
+this case
+
 >=20
-> Currently, when using bcachefs-tools to set options, bool-type options
-> can only accept 1 or 0. Add support for accepting true/false and =
-yes/no
-> for these options.
->=20
-> Signed-off-by: Integral <integral@murena.io>
+> Reported-by: syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3D005ef9aa519f30d97657
+> Fixes: 5222a4607cd8 ("bcachefs: BTREE_ITER_WITH_JOURNAL")
+> Signed-off-by: Piotr Zalewski <pZ010001011111@proton.me>
 > ---
-> fs/bcachefs/opts.c | 26 +++++++++++++++++++-------
-> 1 file changed, 19 insertions(+), 7 deletions(-)
+> fs/bcachefs/btree_iter.c | 3 +++
+> 1 file changed, 3 insertions(+)
 >=20
-> diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-> index 68d240126522..2d81e39ddd73 100644
-> --- a/fs/bcachefs/opts.c
-> +++ b/fs/bcachefs/opts.c
-> @@ -1,6 +1,7 @@
-> // SPDX-License-Identifier: GPL-2.0
+> diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
+> index 0883cf6e1a3e..625167ce191f 100644
+> --- a/fs/bcachefs/btree_iter.c
+> +++ b/fs/bcachefs/btree_iter.c
+> @@ -882,6 +882,8 @@ static noinline int =
+btree_node_iter_and_journal_peek(struct btree_trans *trans,
+> __bch2_btree_and_journal_iter_init_node_iter(trans, &jiter, l->b, =
+l->iter, path->pos);
 >=20
-> #include <linux/kernel.h>
-> +#include <linux/fs_parser.h>
+> k =3D bch2_btree_and_journal_iter_peek(&jiter);
+> + if (!k.k)
+> + goto err;
 >=20
-> #include "bcachefs.h"
-> #include "compress.h"
-> @@ -322,6 +323,16 @@ int bch2_opt_validate(const struct bch_option =
-*opt, u64 v, struct printbuf *err)
-> return 0;
+> bch2_bkey_buf_reassemble(out, c, k);
+>=20
+> @@ -889,6 +891,7 @@ static noinline int =
+btree_node_iter_and_journal_peek(struct btree_trans *trans,
+>    c->opts.btree_node_prefetch)
+> ret =3D btree_path_prefetch_j(trans, path, &jiter);
+>=20
+> +err:
+> bch2_btree_and_journal_iter_exit(&jiter);
+> return ret;
 > }
->=20
-> +static const struct constant_table bch2_opt_bool_names[] =3D {
-> + { "0", false },
-> + { "false", false },
-> + { "no", false },
-> + { "1", true },
-> + { "true", true },
-> + { "yes", true },
-> + { },
-> +};
-> +
-
-Can you use the existing constant table?
-
-> int bch2_opt_parse(struct bch_fs *c,
->   const struct bch_option *opt,
->   const char *val, u64 *res,
-> @@ -332,17 +343,18 @@ int bch2_opt_parse(struct bch_fs *c,
-> switch (opt->type) {
-> case BCH_OPT_BOOL:
-> if (val) {
-> - ret =3D kstrtou64(val, 10, res);
-> + ret =3D lookup_constant(bch2_opt_bool_names, val, =
--BCH_ERR_option_not_bool);
-> + if (ret !=3D -BCH_ERR_option_not_bool) {
-> + *res =3D ret;
-> + } else {
-> + if (err)
-> + prt_printf(err, "%s: must be bool", opt->attr.name);
-> + return ret;
-> + }
-> } else {
-> - ret =3D 0;
-> *res =3D 1;
-> }
->=20
-> - if (ret < 0 || (*res !=3D 0 && *res !=3D 1)) {
-> - if (err)
-> - prt_printf(err, "%s: must be bool", opt->attr.name);
-> - return ret < 0 ? ret : -BCH_ERR_option_not_bool;
-> - }
-> break;
-> case BCH_OPT_UINT:
-> if (!val) {
 > --=20
 > 2.47.0
+>=20
+>=20
 >=20
 
