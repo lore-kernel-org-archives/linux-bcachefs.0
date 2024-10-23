@@ -1,154 +1,103 @@
-Received: from mail2.ecloud.global (mail2.ecloud.global [135.181.6.248])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622B21487D6
-	for <linux-bcachefs@vger.kernel.org>; Wed, 23 Oct 2024 10:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=135.181.6.248
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729677653; cv=pass; b=Jk+XwF5NQlMxSSRGB7lfe18d60jxKdzSdzcLeI+LQW/UXdNaBSZdvD//MsflAon7Po85kHbqr2pZ2c7w10vA4WynJk6O3kX/JZ3I+6RVxXqEBXte73eEUtJdNw03rjb/mWv/gs16PZSz4WQEGHR52ZBqNITYm+qzzGRXJcZb7RE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729677653; c=relaxed/simple;
-	bh=Hzl1IpvuLnP1buw24z+kIcyvRQqZLOlzxcb9m/z0/C8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=umcGxM9JQsMh6zNUc8thkoLF3ZcS39qEqPMttrlgVi3MCf9cyaFIabifalL232QECy4d+iWeYC46lJGJe027he68lpH50+TKynB3v/UHjbFxPkyAxVZO2ON+OoxQ+uzbot3xcmHcTKke5pOthl0ACYj3WVB3QCJm/5ZdeMUqpa4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io; spf=pass smtp.mailfrom=murena.io; dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b=sWsYJY9+; arc=pass smtp.client-ip=135.181.6.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=murena.io
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38483136331;
+	Wed, 23 Oct 2024 10:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729680187; cv=none; b=avCyFtdMBzfhjT+GD9fqRWbkHOt4lS73xPGrXw92wqA9s+I7UtkdqP1Gm1NiQT/hfmF3ql/Tat/OqtkAxWlr5PFcEIbRleG8EyJ3U5N+onNWRsVZcagbPmm3byy/dYBd4fiMQMIr+wp+aT7rCQKc8bVNAQetQaZYuje7aqryaTA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729680187; c=relaxed/simple;
+	bh=d6NEfppfDlfC61zIqpllXBJMb1Ukgbu81UT9i6+T9Hg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=cSJFy96GpDbq9l+32m0rspOVvgo9cP0AdNfaRMaYRNQJj3EBGL8A0dX6u4x07zoho8hEn80judeKXyTCw+Z7CEZQzmXNJwVMlhQLmFni4T1kKEpy1FJ2JsgUrzTtuexU/bgBZWSqMZAJXKyS2oV7JhNLDn1vvdjdaeyPt9KHynQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=X1QTC3h4; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b="sWsYJY9+"
-Received: from authenticated-user (mail2.ecloud.global [127.0.0.1])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="X1QTC3h4"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1729680180;
+	bh=d6NEfppfDlfC61zIqpllXBJMb1Ukgbu81UT9i6+T9Hg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=X1QTC3h4hqMN6S8z2D7EYOljvNpYiovXWFf82Yi9sAAl7sBRU60Hle/zrmYVOxz8w
+	 3eXCjinuYr7NkCcukIDJ3sEHVKueDku3Nm+lNbbt5YMDoZ6aL5o5/fs818moDrA5xB
+	 qPK3q0t5evDeCN3lqGUQJMV5PvgQ4A2U4RTz4Axm+ebRsflC8ajkCfrh3jSm3ltvP4
+	 Ud3vIEFoFvQCmRUyYRjLvCMxx7ytjofAIZRaUfUhpk/0ocp/7O46XXfgPenI0MlPUG
+	 BKXtd3gzH5L1WmqpWFRxs05cFl0XyF+/tdEMCZD7T8no1J8un6kXmMe60oHW0rFfyp
+	 MP5b14Watz/0w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail2.ecloud.global (Postfix) with ESMTPSA id 179C77205FA;
-	Wed, 23 Oct 2024 10:00:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io; s=mail2;
-	t=1729677648;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xbV/81pJQUFeVNvITNOiBdJo9NzRtzSJOGcRWC2BCWU=;
-	b=sWsYJY9+pGsMNAGBsMT3wqAhLILJuIph6Frocjy/l2+4kUpIorYyvm6VXUKbrMPmBmRZ8b
-	dRhgWVfRha2Rg2u5uNYi7s4tHpVbXJYXNEDcAAy3eXHvvcWzbg3Q/dGUhfsneXZgUQtQ66
-	/TlAimLFXlcc2naJiSwsIM90KwrLJ2I=
-ARC-Seal: i=1; s=mail2; d=murena.io; t=1729677648; a=rsa-sha256; cv=none;
-	b=nb2OrmdWHz4WKzvwmmIXXagmyfqj4tg3C+NMTg3YLTjOsnZ4zIdw5IVy7hXDB41tnktLZ+
-	93twFzktF2+P3/ur9sMWApsTa/H7JDOkwe8QG+XA+acql84qRzG/JO5ozb9c2LXFmo40lK
-	0HY6C+ERpH+ZbI7SRjvjDg+3GiPGXiI=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io;
-	s=mail2; t=1729677648;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xbV/81pJQUFeVNvITNOiBdJo9NzRtzSJOGcRWC2BCWU=;
-	b=rDeXYyK1TQyE+ZFh/pB8xy5YBor3V9/UoYYSmdekG0Ok4JTHSP7pSRFUY25Co1JAUbjjxb
-	8cBmFMeq4ms9VSF7qfzfnFAjuZfTLRluWMJ/pKl4lr21fLv52QaYnBDg86TRFECJxzdM3y
-	BJlQLGyrKjv/dPSvzcg9gtG4yo8mzRw=
-ARC-Authentication-Results: i=1;
-	mail2.ecloud.global;
-	auth=pass smtp.mailfrom=integral@murena.io
-From: Integral <integral@murena.io>
-To: mmpgouride@gmail.com
-Cc: integral@murena.io,
-	kent.overstreet@gmail.com,
-	kent.overstreet@linux.dev,
-	lihongbo22@huawei.com,
-	linux-bcachefs@vger.kernel.org
-Subject: [PATCH v5] bcachefs: add support for true/false & yes/no in bool-type options
-Date: Wed, 23 Oct 2024 18:00:33 +0800
-Message-ID: <20241023100033.166289-1-integral@murena.io>
-In-Reply-To: <C427A74E-0AE3-48F6-A47C-633E54949379@gmail.com>
-References: <C427A74E-0AE3-48F6-A47C-633E54949379@gmail.com>
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4XYQcN0vFlz4w2K;
+	Wed, 23 Oct 2024 21:43:00 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Sasha Levin <sashal@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Linus Torvalds
+ <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kees@kernel.org, hch@infradead.org, broonie@kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc5
+In-Reply-To: <ZxgXO_uhxhZYtuRZ@sashalap>
+References: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
+ <Zxf3vp82MfPTWNLx@sashalap> <20241022204931.GL21836@frogsfrogsfrogs>
+ <ZxgXO_uhxhZYtuRZ@sashalap>
+Date: Wed, 23 Oct 2024 21:42:59 +1100
+Message-ID: <87iktj2j7w.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Here is the patch which uses existing constant table:
+Hi Sasha,
 
-Currently, when using bcachefs-tools to set options, bool-type options
-can only accept 1 or 0. Add support for accepting true/false and yes/no
-for these options.
+This is awesome.
 
-Signed-off-by: Integral <integral@murena.io>
----
- fs/bcachefs/opts.c | 18 +++++++++++-------
- fs/fs_parser.c     |  3 ++-
- 2 files changed, 13 insertions(+), 8 deletions(-)
+Sasha Levin <sashal@kernel.org> writes:
+> On Tue, Oct 22, 2024 at 01:49:31PM -0700, Darrick J. Wong wrote:
+>>On Tue, Oct 22, 2024 at 03:06:38PM -0400, Sasha Levin wrote:
+>>> other information that would be useful?
+>>
+>>As a maintainer I probably would've found this to be annoying, but with
+>>all my other outside observer / participant hats on, I think it's very
+>>good to have a bot to expose maintainers not following the process.
+>
+> This was my thinking too. Maybe it makes sense for the bot to shut up if
+> things look good (i.e. >N days in stable, everything on the mailing
+> list). Or maybe just a simple "LGTM" or a "Reviewed-by:..."?
 
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index 68d240126522..b564c42d62f8 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include <linux/kernel.h>
-+#include <linux/fs_parser.h>
- 
- #include "bcachefs.h"
- #include "compress.h"
-@@ -322,6 +323,8 @@ int bch2_opt_validate(const struct bch_option *opt, u64 v, struct printbuf *err)
- 	return 0;
- }
- 
-+extern const struct constant_table bool_names[];
-+
- int bch2_opt_parse(struct bch_fs *c,
- 		   const struct bch_option *opt,
- 		   const char *val, u64 *res,
-@@ -332,17 +335,18 @@ int bch2_opt_parse(struct bch_fs *c,
- 	switch (opt->type) {
- 	case BCH_OPT_BOOL:
- 		if (val) {
--			ret = kstrtou64(val, 10, res);
-+			ret = lookup_constant(bool_names, val, -BCH_ERR_option_not_bool);
-+			if (ret != -BCH_ERR_option_not_bool) {
-+				*res = ret;
-+			} else {
-+				if (err)
-+					prt_printf(err, "%s: must be bool", opt->attr.name);
-+				return ret;
-+			}
- 		} else {
--			ret = 0;
- 			*res = 1;
- 		}
- 
--		if (ret < 0 || (*res != 0 && *res != 1)) {
--			if (err)
--				prt_printf(err, "%s: must be bool", opt->attr.name);
--			return ret < 0 ? ret : -BCH_ERR_option_not_bool;
--		}
- 		break;
- 	case BCH_OPT_UINT:
- 		if (!val) {
-diff --git a/fs/fs_parser.c b/fs/fs_parser.c
-index 24727ec34e5a..6521e9a9d6ef 100644
---- a/fs/fs_parser.c
-+++ b/fs/fs_parser.c
-@@ -13,7 +13,7 @@
- #include <linux/namei.h>
- #include "internal.h"
- 
--static const struct constant_table bool_names[] = {
-+const struct constant_table bool_names[] = {
- 	{ "0",		false },
- 	{ "1",		true },
- 	{ "false",	false },
-@@ -22,6 +22,7 @@ static const struct constant_table bool_names[] = {
- 	{ "yes",	true },
- 	{ },
- };
-+EXPORT_SYMBOL(bool_names);
- 
- static const struct constant_table *
- __lookup_constant(const struct constant_table *tbl, const char *name)
--- 
-2.47.0
+I think it has to reply with something, otherwise folks will wonder if
+the bot has broken or missed their pull request.
 
+But if all commits were in in linux-next and posted to a list, then the
+only content is the "Days in linux-next" histogram, which is not that long
+and is useful information IMHO.
+
+It would be nice if you could trim the tail of the histogram below the
+last populated row, that would make it more concise.
+
+For fixes pulls it is sometimes legitimate for commits not to have been
+in linux-next. But I think it's still good for the bot to highlight
+those, ideally fixes that miss linux-next are either very urgent or
+minor.
+
+>>> Commits that weren't found on lore.kernel.org/all:
+>>> --------------------
+>>> e04ee8608914d bcachefs: Mark more errors as AUTOFIX
+>>> f0d3302073e60 bcachefs: Workaround for kvmalloc() not supporting > INT_MAX allocations
+>>> bc6d2d10418e1 bcachefs: fsck: Improve hash_check_key()
+>>> dc96656b20eb6 bcachefs: bch2_hash_set_or_get_in_snapshot()
+>>> 15a3836c8ed7b bcachefs: Repair mismatches in inode hash seed, type
+>>> d8e879377ffb3 bcachefs: Add hash seed, type to inode_to_text()
+>>> 78cf0ae636a55 bcachefs: INODE_STR_HASH() for bch_inode_unpacked
+>>> b96f8cd3870a1 bcachefs: Run in-kernel offline fsck without ratelimit errors
+>>> 4007bbb203a0c bcachefS: ec: fix data type on stripe deletion
+
+Are you searching by message id, or subject? I sometimes edit subjects
+when applying patches, so a subject search could miss some.
+
+cheers
