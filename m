@@ -1,43 +1,47 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91021A7270;
-	Wed, 23 Oct 2024 11:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576A3134BD;
+	Wed, 23 Oct 2024 11:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729683572; cv=none; b=f5IC1pCpwnns2TsUZvpjiXJ41PvW37ulPk83XREI5dGLuM0+mj+WPooq1LAfmzG+Yl0SJRI8Jx2Fp1c2AowBm0JmnSqn1+gwwAVgfKai7yTGatFwjXsEnnL3FhlwiLvPpe/KSJJUfpqAc7/8FywmzLJm4lpHfBRwkJCEeZbDaI0=
+	t=1729683695; cv=none; b=c8O2XVKN8M5MrYjBnWzx3YFuTkUsBkMS6wMEMvdenAftDmfF3RK30Nk6/wb7h4N4P5bMQFJlw779QRvYqJ9hG2SGQSjJqt9u6vR4xzEH3AMYaq+3HIGUDqICTJoZ0idZRTF/ST040+rrZc55mieAd/8fxJ/TM0/uf0Yv+tStE2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729683572; c=relaxed/simple;
-	bh=bDL6eDMtiWYBG/PDNAIbF9aHpR0tI4JPCN4Px8SOVdA=;
+	s=arc-20240116; t=1729683695; c=relaxed/simple;
+	bh=OKXQS4ygVGvLAMLaf78m5yuEb8FH+2TrRxZhgrF97N0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l2rAxMXvpPwntZ6ABczg4DanKZf+iLyj8Yv58NERzgPHMoPFieu+xTBsX6/THM6DAxcs1YLJ4BKz6l9AEJ3xQBQYq/NAgOYX4cZJzdfCPybYmunhISXeL4NNkJI+vFkhdZsnlPHu/E8NAxiFIAhy4I/OrPvJCcN5jonuFkCe8PQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wx08t3gY; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gmb4kB5Ek40n9/OPizoQ8SXeZtUp6Muq2tcbNTqMOqVS/P14Auud/8ut6yGfmukRwFmWF936918gWp7XhF/Gsl5CnkrX19w1DbPbBOXpTFeSWJEB7Pwf/hg5wLgVNPkwH4P8CL3MdzC9dL6ktW0xrW7k/ayBJd5u2utS0EhFYTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N5x+071z; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wx08t3gY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D446C4CEC6;
-	Wed, 23 Oct 2024 11:39:31 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N5x+071z"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0E98C4CECD;
+	Wed, 23 Oct 2024 11:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729683571;
-	bh=bDL6eDMtiWYBG/PDNAIbF9aHpR0tI4JPCN4Px8SOVdA=;
+	s=k20201202; t=1729683693;
+	bh=OKXQS4ygVGvLAMLaf78m5yuEb8FH+2TrRxZhgrF97N0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Wx08t3gYAckdmM5+lTYgtZMCNtrQye91E/DnFFuTPSPBi0IjttE/ZC7GvpXXLoLLU
-	 9ju9+XcjrVYS8wKEKi4efhKl6LYXfSyLX7oiW+9DhUUVLyb7CZW3rMZaO6SXiB6HKE
-	 okKWvIkYxg9NL75ivTNAkz15gwCu70KZyVe15caUTTdtTznx85yCwQnjSSbZIUvQkD
-	 SBWgtzzVmy6FTrDB0qjqGFkrMHSU4eLhaz9NRjuoPVH2ftwjeBU7WXSXRTltiIHixF
-	 XXzoPQXtNDt/GD64bHozkGv05Bk14htDuYW6A6n87ILRlldLbTZcLFZzxQ82cQfebe
-	 VW2E1LseQGJyg==
-Date: Wed, 23 Oct 2024 07:39:29 -0400
+	b=N5x+071zTbgZ87ZJfrp/30BhU6bb5X1XlWPOMy81sus4RTlOV/p1V9aC4t8jNOS/0
+	 SiThhFPhwDhhjtBiforR5cw6CjmjX3SX0EBebLwj4fD2C2qUP9j8Xpt1chOqYY/APg
+	 MzUuDiSwSCySfmTJWjxBiyQdGpBnzQoS+khc7xPb5MlkK0Q4BckoPv2BI8Vpmpcpz/
+	 wd2kTxFZ9+DqZTIIVkzlCQNNe8rF3yI/jzX2+gEoV7z7+jTj0mFZP9eHLU9v8GSjNy
+	 BwuhzayzsAyfVBuvhi6Ym8uNRDjvi+80EIn7D+9eBUuBNJ8FY5xmIhvOKdBVDYj1sV
+	 vP5+YwrukH15A==
+Date: Wed, 23 Oct 2024 07:41:32 -0400
 From: Sasha Levin <sashal@kernel.org>
-To: Kees Cook <kees@kernel.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+To: Michael Ellerman <mpe@ellerman.id.au>
+Cc: "Darrick J. Wong" <djwong@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, hch@infradead.org, broonie@kernel.org
+	linux-kernel@vger.kernel.org, kees@kernel.org, hch@infradead.org,
+	broonie@kernel.org
 Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc5
-Message-ID: <ZxjgcQPzpg1AnH6q@sashalap>
+Message-ID: <Zxjg7Cvw0qIzl0v6@sashalap>
 References: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
  <Zxf3vp82MfPTWNLx@sashalap>
- <202410221225.32958DF786@keescook>
+ <20241022204931.GL21836@frogsfrogsfrogs>
+ <ZxgXO_uhxhZYtuRZ@sashalap>
+ <87iktj2j7w.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -46,68 +50,65 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <202410221225.32958DF786@keescook>
+In-Reply-To: <87iktj2j7w.fsf@mail.lhotse>
 
-On Tue, Oct 22, 2024 at 12:30:38PM -0700, Kees Cook wrote:
->On Tue, Oct 22, 2024 at 03:06:38PM -0400, Sasha Levin wrote:
->> On Tue, Oct 22, 2024 at 01:39:10PM -0400, Kent Overstreet wrote:
->> >
->> > The following changes since commit 5e3b72324d32629fa013f86657308f3dbc1115e1:
->> >
->> >  bcachefs: Fix sysfs warning in fstests generic/730,731 (2024-10-14 05:43:01 -0400)
->> >
->> > are available in the Git repository at:
->> >
->> >  https://github.com/koverstreet/bcachefs tags/bcachefs-2024-10-22
->>
->> Hi Linus,
->>
->> There was a sub-thread on the linus-next discussion around improving
->> telemetry around -next/lore w.r.t soaking time and mailing list reviews
->> (https://lore.kernel.org/all/792F4759-EA33-48B8-9AD0-FA14FA69E86E@kernel.org/).
->>
->> I've prototyped a set of scripts based on suggestions in the thread, and
->> wanted to see if you'd find it useful. A great way to test it out is with
->> a random pull request you'd review anyway :)
+On Wed, Oct 23, 2024 at 09:42:59PM +1100, Michael Ellerman wrote:
+>Hi Sasha,
 >
->This looks really nice to me! Maybe add top-level grade ("B-") based on
->the stats available. You can call it the Nominal Acceptance Grade bot
->(NAGbot). Can so that everyone will pay attention, declare that it is an
->LLM (Large Linus Model).
-
-This is something we need to figure out. If we do do this, then we need
-to figure out how to score, and scoring should be different between
-merge window and -rc cycles (heck, it should probably be different
-between -rc cycles themselves).
-
->I'd include a count summary "(5 of 26: 19%)"
-
-Ack
-
->> --------------------
->> a069f014797fd bcachefs: Set bch_inode_unpacked.bi_snapshot in old inode path
->> e04ee8608914d bcachefs: Mark more errors as AUTOFIX
->> f0d3302073e60 bcachefs: Workaround for kvmalloc() not supporting > INT_MAX allocations
->> 3956ff8bc2f39 bcachefs: Don't use wait_event_interruptible() in recovery
->> eb5db64c45709 bcachefs: Fix __bch2_fsck_err() warning
+>This is awesome.
 >
->And then maybe limit this to 5 or 10 (imagine a huge PR like netdev or
->drm).
-
-They should never have a huge number of commits here. I think it's
-better to just let it explode.
-
+>Sasha Levin <sashal@kernel.org> writes:
+>> On Tue, Oct 22, 2024 at 01:49:31PM -0700, Darrick J. Wong wrote:
+>>>On Tue, Oct 22, 2024 at 03:06:38PM -0400, Sasha Levin wrote:
+>>>> other information that would be useful?
+>>>
+>>>As a maintainer I probably would've found this to be annoying, but with
+>>>all my other outside observer / participant hats on, I think it's very
+>>>good to have a bot to expose maintainers not following the process.
 >>
->>
->> Commits that weren't found on lore.kernel.org/all:
+>> This was my thinking too. Maybe it makes sense for the bot to shut up if
+>> things look good (i.e. >N days in stable, everything on the mailing
+>> list). Or maybe just a simple "LGTM" or a "Reviewed-by:..."?
 >
->"(9 of 26: 35%)"
+>I think it has to reply with something, otherwise folks will wonder if
+>the bot has broken or missed their pull request.
+>
+>But if all commits were in in linux-next and posted to a list, then the
+>only content is the "Days in linux-next" histogram, which is not that long
+>and is useful information IMHO.
+>
+>It would be nice if you could trim the tail of the histogram below the
+>last populated row, that would make it more concise.
 
-Ack.
+Makes sense, I'll do that.
 
->Nice work!
+>For fixes pulls it is sometimes legitimate for commits not to have been
+>in linux-next. But I think it's still good for the bot to highlight
+>those, ideally fixes that miss linux-next are either very urgent or
+>minor.
 
-Thanks!
+Right, and Linus said he's okay with those. This is not a "shame" list
+but rather "look a little closer" list.
+
+>>>> Commits that weren't found on lore.kernel.org/all:
+>>>> --------------------
+>>>> e04ee8608914d bcachefs: Mark more errors as AUTOFIX
+>>>> f0d3302073e60 bcachefs: Workaround for kvmalloc() not supporting > INT_MAX allocations
+>>>> bc6d2d10418e1 bcachefs: fsck: Improve hash_check_key()
+>>>> dc96656b20eb6 bcachefs: bch2_hash_set_or_get_in_snapshot()
+>>>> 15a3836c8ed7b bcachefs: Repair mismatches in inode hash seed, type
+>>>> d8e879377ffb3 bcachefs: Add hash seed, type to inode_to_text()
+>>>> 78cf0ae636a55 bcachefs: INODE_STR_HASH() for bch_inode_unpacked
+>>>> b96f8cd3870a1 bcachefs: Run in-kernel offline fsck without ratelimit errors
+>>>> 4007bbb203a0c bcachefS: ec: fix data type on stripe deletion
+>
+>Are you searching by message id, or subject? I sometimes edit subjects
+>when applying patches, so a subject search could miss some.
+
+Both, and also by patch id, so if you just change the subject it should
+still be okay.
+
+We'll see when you send your next PR :)
 
 -- 
 Thanks,
