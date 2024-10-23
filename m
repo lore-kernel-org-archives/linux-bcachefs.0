@@ -1,143 +1,154 @@
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+Received: from mail2.ecloud.global (mail2.ecloud.global [135.181.6.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A643614D430
-	for <linux-bcachefs@vger.kernel.org>; Wed, 23 Oct 2024 08:07:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729670831; cv=none; b=en6G6l/VyXDLItfJsRWwLlvIOK2vyriYwaWzKqFnGmKSZpSy1nzpcuszoKd8j8e2L/apFdU9A4gPe7ztLoVZ18Nuzh++KwV6HNn26fnp0iSy9EYig8zsaCcf2DNmuR/izXAJ7WwQgnN1pYnXqFa+a59fbJPjzC9m0rvrCf7rjvM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729670831; c=relaxed/simple;
-	bh=vPfSz3qHWAUn1+CfWqVe5BPCTuXiz66jLqw1PwW7gdw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rhsDFLEK7agxmPSTqtVtxgrnXB1JVNe525mKmyw/Mmz5l5COpfwieCgsf0vFRMDx9HQ11XsRNXLRG966tkUsvpuwW0du4LORJm2kpdD6faoAsJTlgkxAPVulBUZ0wkkWSiwqWGcLVlqSsYIjuKtnCp9aN9GQGm61gyiJ1uaCXjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=JSUyjfoz; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622B21487D6
+	for <linux-bcachefs@vger.kernel.org>; Wed, 23 Oct 2024 10:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=135.181.6.248
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729677653; cv=pass; b=Jk+XwF5NQlMxSSRGB7lfe18d60jxKdzSdzcLeI+LQW/UXdNaBSZdvD//MsflAon7Po85kHbqr2pZ2c7w10vA4WynJk6O3kX/JZ3I+6RVxXqEBXte73eEUtJdNw03rjb/mWv/gs16PZSz4WQEGHR52ZBqNITYm+qzzGRXJcZb7RE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729677653; c=relaxed/simple;
+	bh=Hzl1IpvuLnP1buw24z+kIcyvRQqZLOlzxcb9m/z0/C8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=umcGxM9JQsMh6zNUc8thkoLF3ZcS39qEqPMttrlgVi3MCf9cyaFIabifalL232QECy4d+iWeYC46lJGJe027he68lpH50+TKynB3v/UHjbFxPkyAxVZO2ON+OoxQ+uzbot3xcmHcTKke5pOthl0ACYj3WVB3QCJm/5ZdeMUqpa4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io; spf=pass smtp.mailfrom=murena.io; dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b=sWsYJY9+; arc=pass smtp.client-ip=135.181.6.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=murena.io
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="JSUyjfoz"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1729670821; x=1729930021;
-	bh=WiNZoFE52HUQsAh3tRwh1y3054lK2w2JIjigaJTNQhU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=JSUyjfozECz9DhuR67qyua5UNf9t9WWUSjqZLwtRm2pBknDEfm89211bmGksZzOeR
-	 0nmsR0jF30gy+LeYm5CvjcUcxuyZMSqBYqcqoS1Jv4lCFq673mlmxVcthb+gPhuGvK
-	 TCzP8NdF8/snymuRomRG2p93kRDHoGXNIXl/6lM+SnGskMsJ2+LlP3Ko7srxNW7zWz
-	 X3orIAlydBY2jHpZZOtt2/tCQj6aQ0+8jYFDNuGFE/vQBDtjfWbwdj7ZtJf8RhTsQ1
-	 YHE6NVA83j2WNjdCwsz36lAXLBxMemcBUkaacoVrpe0Rwa8zL9KU3AI1g563H8k41U
-	 dPfsaua5g1Yxg==
-Date: Wed, 23 Oct 2024 08:06:59 +0000
-To: Alan Huang <mmpgouride@gmail.com>
-From: Piotr Zalewski <pZ010001011111@proton.me>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, skhan@linuxfoundation.org, syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: Fix NULL ptr dereference in btree_node_iter_and_journal_peek
-Message-ID: <L78wBCQQaurE7tyQP_T2Fklx8afGKmTXxDh-gweSzakgUoCwjCYeMHINndXWj4LWdUFpOvynoYeKlE7N0rUMiXYEM_VLDye48iN5ysgM09A=@proton.me>
-In-Reply-To: <09A7740A-3113-4ABF-8587-8E0A4231DD61@gmail.com>
-References: <20241023072024.98915-3-pZ010001011111@proton.me> <09A7740A-3113-4ABF-8587-8E0A4231DD61@gmail.com>
-Feedback-ID: 53478694:user:proton
-X-Pm-Message-ID: ce19c318e8fae47aff127ee6e443c76350c685ef
+	dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b="sWsYJY9+"
+Received: from authenticated-user (mail2.ecloud.global [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ecloud.global (Postfix) with ESMTPSA id 179C77205FA;
+	Wed, 23 Oct 2024 10:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io; s=mail2;
+	t=1729677648;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xbV/81pJQUFeVNvITNOiBdJo9NzRtzSJOGcRWC2BCWU=;
+	b=sWsYJY9+pGsMNAGBsMT3wqAhLILJuIph6Frocjy/l2+4kUpIorYyvm6VXUKbrMPmBmRZ8b
+	dRhgWVfRha2Rg2u5uNYi7s4tHpVbXJYXNEDcAAy3eXHvvcWzbg3Q/dGUhfsneXZgUQtQ66
+	/TlAimLFXlcc2naJiSwsIM90KwrLJ2I=
+ARC-Seal: i=1; s=mail2; d=murena.io; t=1729677648; a=rsa-sha256; cv=none;
+	b=nb2OrmdWHz4WKzvwmmIXXagmyfqj4tg3C+NMTg3YLTjOsnZ4zIdw5IVy7hXDB41tnktLZ+
+	93twFzktF2+P3/ur9sMWApsTa/H7JDOkwe8QG+XA+acql84qRzG/JO5ozb9c2LXFmo40lK
+	0HY6C+ERpH+ZbI7SRjvjDg+3GiPGXiI=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io;
+	s=mail2; t=1729677648;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xbV/81pJQUFeVNvITNOiBdJo9NzRtzSJOGcRWC2BCWU=;
+	b=rDeXYyK1TQyE+ZFh/pB8xy5YBor3V9/UoYYSmdekG0Ok4JTHSP7pSRFUY25Co1JAUbjjxb
+	8cBmFMeq4ms9VSF7qfzfnFAjuZfTLRluWMJ/pKl4lr21fLv52QaYnBDg86TRFECJxzdM3y
+	BJlQLGyrKjv/dPSvzcg9gtG4yo8mzRw=
+ARC-Authentication-Results: i=1;
+	mail2.ecloud.global;
+	auth=pass smtp.mailfrom=integral@murena.io
+From: Integral <integral@murena.io>
+To: mmpgouride@gmail.com
+Cc: integral@murena.io,
+	kent.overstreet@gmail.com,
+	kent.overstreet@linux.dev,
+	lihongbo22@huawei.com,
+	linux-bcachefs@vger.kernel.org
+Subject: [PATCH v5] bcachefs: add support for true/false & yes/no in bool-type options
+Date: Wed, 23 Oct 2024 18:00:33 +0800
+Message-ID: <20241023100033.166289-1-integral@murena.io>
+In-Reply-To: <C427A74E-0AE3-48F6-A47C-633E54949379@gmail.com>
+References: <C427A74E-0AE3-48F6-A47C-633E54949379@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Alan,
+Here is the patch which uses existing constant table:
 
-On Wednesday, October 23rd, 2024 at 9:33 AM, Alan Huang <mmpgouride@gmail.c=
-om> wrote:
+Currently, when using bcachefs-tools to set options, bool-type options
+can only accept 1 or 0. Add support for accepting true/false and yes/no
+for these options.
 
-> On Oct 23, 2024, at 15:21, Piotr Zalewski pZ010001011111@proton.me wrote:
->=20
-> > Add NULL check for key returned from bch2_btree_and_journal_iter_peek i=
-n
-> > btree_node_iter_and_journal_peek to avoid NULL ptr dereference in
-> > bch2_bkey_buf_reassemble.
->=20
->=20
-> It would be helpful if the commit message explained why k.k is null in th=
-is case
-=20
-I will debug this more thoroughly and provide details. For now I see that
-during GC it sees journal replay hasn't finished but journal turns out to
-be empty? Which seems weird, so maybe underlying issue should be solved on
-a deeper level.
+Signed-off-by: Integral <integral@murena.io>
+---
+ fs/bcachefs/opts.c | 18 +++++++++++-------
+ fs/fs_parser.c     |  3 ++-
+ 2 files changed, 13 insertions(+), 8 deletions(-)
 
-Log from the reproducer is:
-```
-[   27.391332] bcachefs (loop0): accounting_read... done
-[   27.408141] bcachefs (loop0): alloc_read... done
-[   27.409118] bcachefs (loop0): stripes_read... done
-[   27.410059] bcachefs (loop0): snapshots_read... done
-[   27.411161] bcachefs (loop0): check_allocations...
-[   27.415003] bucket 0:26 data type btree ptr gen 0 missing in alloc btree
-[   27.415024] while marking u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0=
-: seq ac62141f8dc7e261 written 24 min_kg
-[   27.422560] bucket 0:38 data type btree ptr gen 0 missing in alloc btree
-[   27.422571] while marking u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0=
-: seq 7589ab5e0c11cc7a written 24 min_kg
-[   27.428033] bucket 0:41 data type btree ptr gen 0 missing in alloc btree
-[   27.428042] while marking u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0=
-: seq 9aa2895aefce4bdf written 24 min_kg
-[   27.432315] bcachefs (loop0): btree topology error: attempting to get bt=
-ree node with non-btree key u64s 0 type
-[   27.435343] bcachefs (loop0): inconsistency detected - emergency read on=
-ly at journal seq 10
-[   27.436947] bcachefs (loop0): bch2_gc_btree(): error btree_need_topology=
-_repair
-[   27.438756] btree node read error for xattrs, shutting down
-[   27.440081] bcachefs (loop0): bch2_gc_btrees(): error fsck_errors_not_fi=
-xed
-[   27.441915] bcachefs (loop0): bch2_check_allocations(): error fsck_error=
-s_not_fixed
-[   27.443349] bcachefs (loop0): bch2_fs_recovery(): error fsck_errors_not_=
-fixed
-[   27.444802] bcachefs (loop0): bch2_fs_start(): error starting filesystem=
- fsck_errors_not_fixed
-[   27.446270] bcachefs (loop0): shutting down
-[   27.456042] bcachefs (loop0): shutdown complete
-[   27.835683] bcachefs: bch2_fs_get_tree() error: fsck_errors_not_fixed
-```
+diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+index 68d240126522..b564c42d62f8 100644
+--- a/fs/bcachefs/opts.c
++++ b/fs/bcachefs/opts.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+ #include <linux/kernel.h>
++#include <linux/fs_parser.h>
+ 
+ #include "bcachefs.h"
+ #include "compress.h"
+@@ -322,6 +323,8 @@ int bch2_opt_validate(const struct bch_option *opt, u64 v, struct printbuf *err)
+ 	return 0;
+ }
+ 
++extern const struct constant_table bool_names[];
++
+ int bch2_opt_parse(struct bch_fs *c,
+ 		   const struct bch_option *opt,
+ 		   const char *val, u64 *res,
+@@ -332,17 +335,18 @@ int bch2_opt_parse(struct bch_fs *c,
+ 	switch (opt->type) {
+ 	case BCH_OPT_BOOL:
+ 		if (val) {
+-			ret = kstrtou64(val, 10, res);
++			ret = lookup_constant(bool_names, val, -BCH_ERR_option_not_bool);
++			if (ret != -BCH_ERR_option_not_bool) {
++				*res = ret;
++			} else {
++				if (err)
++					prt_printf(err, "%s: must be bool", opt->attr.name);
++				return ret;
++			}
+ 		} else {
+-			ret = 0;
+ 			*res = 1;
+ 		}
+ 
+-		if (ret < 0 || (*res != 0 && *res != 1)) {
+-			if (err)
+-				prt_printf(err, "%s: must be bool", opt->attr.name);
+-			return ret < 0 ? ret : -BCH_ERR_option_not_bool;
+-		}
+ 		break;
+ 	case BCH_OPT_UINT:
+ 		if (!val) {
+diff --git a/fs/fs_parser.c b/fs/fs_parser.c
+index 24727ec34e5a..6521e9a9d6ef 100644
+--- a/fs/fs_parser.c
++++ b/fs/fs_parser.c
+@@ -13,7 +13,7 @@
+ #include <linux/namei.h>
+ #include "internal.h"
+ 
+-static const struct constant_table bool_names[] = {
++const struct constant_table bool_names[] = {
+ 	{ "0",		false },
+ 	{ "1",		true },
+ 	{ "false",	false },
+@@ -22,6 +22,7 @@ static const struct constant_table bool_names[] = {
+ 	{ "yes",	true },
+ 	{ },
+ };
++EXPORT_SYMBOL(bool_names);
+ 
+ static const struct constant_table *
+ __lookup_constant(const struct constant_table *tbl, const char *name)
+-- 
+2.47.0
 
-
-> > Reported-by: syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
-> > Closes: https://syzkaller.appspot.com/bug?extid=3D005ef9aa519f30d97657
-> > Fixes: 5222a4607cd8 ("bcachefs: BTREE_ITER_WITH_JOURNAL")
-> > Signed-off-by: Piotr Zalewski pZ010001011111@proton.me
-> > ---
-> > fs/bcachefs/btree_iter.c | 3 +++
-> > 1 file changed, 3 insertions(+)
-> >=20
-> > diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
-> > index 0883cf6e1a3e..625167ce191f 100644
-> > --- a/fs/bcachefs/btree_iter.c
-> > +++ b/fs/bcachefs/btree_iter.c
-> > @@ -882,6 +882,8 @@ static noinline int btree_node_iter_and_journal_pee=
-k(struct btree_trans *trans,
-> > __bch2_btree_and_journal_iter_init_node_iter(trans, &jiter, l->b, l->it=
-er, path->pos);
-> >=20
-> > k =3D bch2_btree_and_journal_iter_peek(&jiter);
-> > + if (!k.k)
-> > + goto err;
-> >=20
-> > bch2_bkey_buf_reassemble(out, c, k);
-> >=20
-> > @@ -889,6 +891,7 @@ static noinline int btree_node_iter_and_journal_pee=
-k(struct btree_trans *trans,
-> > c->opts.btree_node_prefetch)
-> > ret =3D btree_path_prefetch_j(trans, path, &jiter);
-> >=20
-> > +err:
-> > bch2_btree_and_journal_iter_exit(&jiter);
-> > return ret;
-> > }
-> > --
-> > 2.47.0
-
-Best regards, Piotr Zalewski
