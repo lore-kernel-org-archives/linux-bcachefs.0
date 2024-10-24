@@ -1,43 +1,46 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F5B22B674
-	for <linux-bcachefs@vger.kernel.org>; Thu, 24 Oct 2024 21:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0648218D75
+	for <linux-bcachefs@vger.kernel.org>; Thu, 24 Oct 2024 22:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729805817; cv=none; b=eqXxl9oAAhZQFf1o+7E5hL8B3FltpGD117bA0OIaZYQrncYZtAyHTF3giqbhs5yqpgbI/LKiBvgwmEmjzQxrXrGih9+GC+pBjFWMGbfSMApJPH450aC+wU/68T5P0S1Zps9laRK7uLrbsJOgmC6e38P4LlW2rsNCpT0il5lF5MQ=
+	t=1729808366; cv=none; b=fRKuXIXpJmZYNfg3SBtJdmtcjiBlDxPzl3VVQIJG030yrHxPQmxL+0D9uUoTtDFfNXWbWwE9HcubdamQSK7QzmlKXCp7Zsjs/fkyjhsLk/tJ7XZBOYtl8qJNa3kabKQzFUsjeyHArIJGXfZ1zKf2ezWYzcJZfshG7wp7Edmmdn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729805817; c=relaxed/simple;
-	bh=IPAXAFDtWc24F7DwV/zE14Lt1WJ5nYZ7ST8lqpg/f/w=;
+	s=arc-20240116; t=1729808366; c=relaxed/simple;
+	bh=xiA+f1cnlU406zXgM71RLQpj8FPKXw9TNOVXfqwWjZo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mgp3KSqxBlqKCujZX8kGbSsfa5fOgG90buLVfeiU2uIdQwR8d1xtxdl7YtNZtmFk/RMoPqcM2sSDzOSWz53r9A/WdsRDcNTD5R4KO1Mo6/1vDTH3vr/1Tls4jbnFUmpxKaeotWxI215BIPOVJ6Rlu6YQf6sYj0ifYZVQhxGFs5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lLu5NAAD; arc=none smtp.client-ip=91.218.175.179
+	 Content-Type:Content-Disposition:In-Reply-To; b=YZLLP5cRg5qNbB4vAMxCj2azs1kKdn/A3iTUzbOsekeiMjwJced5jlDKdFjQKhi8NgiZHcUO4AUcg4JbjG5MNmAy3oFixcReuW9wgOGu9VRN0WlNZ8yarU6Vur6iZsHPB6Or7fnJa1KzGiRw2CYb2z8HwUXElBLFF8PTGCFXPr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NTQQuRnp; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lLu5NAAD"
-Date: Thu, 24 Oct 2024 17:36:47 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NTQQuRnp"
+Date: Thu, 24 Oct 2024 18:19:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729805812;
+	t=1729808354;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XBKRf6RODsyjRB06ptgr/RKZU0dd/jnCg0QdwxvyiVo=;
-	b=lLu5NAADLUYY7AXdUTmHjcg+gZkbCBLYlbMtHq+fYZx3mDR0WiOs6XBRXDFsAKIfZ/uP9Q
-	Ourt5Z5bskLTWLa8tMHWelVDCIUudNp5fl6IEr36Gfj0oq4b9d15mHU+LT7hFsc8Rs4ml9
-	35rrrwwfSRF3/tB5A9FaljqEKD5prOA=
+	bh=lRN2XvuPczg6eIRqeI5o08GA1KQ3w/NT/PiW4sNw5Eg=;
+	b=NTQQuRnpuKJqvwOOrhBQGIoqcO3lxe03hXBSkRWRk+cnHbRTHEotCqQ5yWlYonnZtd86ii
+	LQtQF/p9gQrXdkoU1XdwMDim+gpSUGB455qtgMFRPd+rD0kWIObGDa6djlOnSKBqfPqKX0
+	BLIjPfiWPbTLXdAnEiDc37YwTJU+iOU=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: John Stoffel <john@stoffel.org>
-Cc: manas18244@iiitd.ac.in, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Anup Sharma <anupnewsmail@gmail.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, syzbot+e8eff054face85d7ea41@syzkaller.appspotmail.com
-Subject: Re: [PATCH] Revert "bcachefs: Add asserts to
- bch2_dev_btree_bitmap_marked_sectors()"
-Message-ID: <bv4dfgmq4wmfcon2thkvhthqjlrpr5h4nmhfuusj4lh2wrj5ao@ckmvt63s67r6>
-References: <20241021-revert-assert-bch2-v1-1-e869c7c55bb6@iiitd.ac.in>
- <rd4maufxfunrcpzkoo2jszorzl256fiktw3p5yfpnjpu2ajh4l@5wvkfxwzajax>
- <26394.37450.21740.720541@quad.stoffel.home>
+To: Sasha Levin <sashal@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, 
+	"Darrick J. Wong" <djwong@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kees@kernel.org, hch@infradead.org, broonie@kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc5
+Message-ID: <n4lt6eghfunnzz4zx4hhy5asyw55mv4q6ew3fusd2lawufgsnl@2c2cai6esxl3>
+References: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
+ <Zxf3vp82MfPTWNLx@sashalap>
+ <20241022204931.GL21836@frogsfrogsfrogs>
+ <ZxgXO_uhxhZYtuRZ@sashalap>
+ <87iktj2j7w.fsf@mail.lhotse>
+ <Zxjg7Cvw0qIzl0v6@sashalap>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -46,44 +49,106 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <26394.37450.21740.720541@quad.stoffel.home>
+In-Reply-To: <Zxjg7Cvw0qIzl0v6@sashalap>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Oct 24, 2024 at 02:30:34PM -0400, John Stoffel wrote:
-> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+On Wed, Oct 23, 2024 at 07:41:32AM -0400, Sasha Levin wrote:
+> On Wed, Oct 23, 2024 at 09:42:59PM +1100, Michael Ellerman wrote:
+> > Hi Sasha,
+> > 
+> > This is awesome.
+> > 
+> > Sasha Levin <sashal@kernel.org> writes:
+> > > On Tue, Oct 22, 2024 at 01:49:31PM -0700, Darrick J. Wong wrote:
+> > > > On Tue, Oct 22, 2024 at 03:06:38PM -0400, Sasha Levin wrote:
+> > > > > other information that would be useful?
+> > > > 
+> > > > As a maintainer I probably would've found this to be annoying, but with
+> > > > all my other outside observer / participant hats on, I think it's very
+> > > > good to have a bot to expose maintainers not following the process.
+> > > 
+> > > This was my thinking too. Maybe it makes sense for the bot to shut up if
+> > > things look good (i.e. >N days in stable, everything on the mailing
+> > > list). Or maybe just a simple "LGTM" or a "Reviewed-by:..."?
+> > 
+> > I think it has to reply with something, otherwise folks will wonder if
+> > the bot has broken or missed their pull request.
+> > 
+> > But if all commits were in in linux-next and posted to a list, then the
+> > only content is the "Days in linux-next" histogram, which is not that long
+> > and is useful information IMHO.
+> > 
+> > It would be nice if you could trim the tail of the histogram below the
+> > last populated row, that would make it more concise.
 > 
-> > On Mon, Oct 21, 2024 at 10:18:57PM +0530, Manas via B4 Relay wrote:
-> >> From: Manas <manas18244@iiitd.ac.in>
-> >> 
-> >> This reverts commit 60f2b1bcf519416dbffee219132aa949d0c39d0e.
-> >> 
-> >> This syzbot bug[1] is triggered due to the BUG_ON assertions added in
-> >> __bch2_dev_btree_bitmap_mark. During runtime, m->btree_bitmap_shift is
-> >> 63 '?'. This triggers both the assertions.
+> Makes sense, I'll do that.
 > 
-> > The BUG_ON() doesn't need to be deleted; we just need to fix the
-> > validation so it doesn't fire (it doesn't particularly matter if it's
-> > removed or not, ubsan would catch it without the BUG_ON()).
+> > For fixes pulls it is sometimes legitimate for commits not to have been
+> > in linux-next. But I think it's still good for the bot to highlight
+> > those, ideally fixes that miss linux-next are either very urgent or
+> > minor.
 > 
-> Shouldn't the BUG_ON() be replaced with making the filesystem readonly
-> instead if you're going to keep it?  I'd rather have the filesystem
-> still be mounted and able to be read, but not writeable, instead of
-> having my system crash before I can do anything.  
+> Right, and Linus said he's okay with those. This is not a "shame" list
+> but rather "look a little closer" list.
 
-Not in this case. In general, if there's a chance of the BUG_ON()
-hitting in the wild after the code has passed testing then it shouldn't
-be a BUG_ON(), but this is low level validation that we're relying on.
+Ok, that makes me feel better about this. I've got stuff that I hold
+back for weeks (or months), and others that I'm fine with sending the
+next day, once it's passed my CI.
 
-In general higher level code absolutely requires that the low level
-validation is correct, because if it's not that will trigger all sorts
-of undefined behaviour in the upper layers.
+I'm going to try to be better about talking about which patches have
+risks (and why that risk is justified, else I wouldn't be sending it),
+or which patches look more involved but I've got reason to be confident
+about - that can get quite subtle. That's good for everyone down the
+line in terms of knowing what to expect.
 
-By "low level validation" I mean _only_ the validate functions that
-check simple invariants within a single data type that is read or
-written atomically to disk - "is data type garbage or not".
+I wonder if also some of this is motivated by people concerned about
+things in bcachefs moving too fast, and running the risk of regressions?
+That's a justifiable concern, and priorities might be worth talking
+about a bit.
 
-If it's an invariant that involves multiple objects - "does this extent
-refer to a valid device/snapshot ID" - that's not something we can check
-in validate, because then an extent or what have you would become
-invalid depending on what happens in the rest of the filesystem. Those
-sorts of checks do in fact need proper error paths.
+I'm not currently seeing anything that makes me too concerned about
+regressions: users in general aren't complaining about regressions
+(previous pull request a user chimed in that he had been seeing less
+stability past few kernel releases, and he tried switching back to btrfs
+and the issues were still there) and my test dashboard is steadily
+improving.
+
+I do still have fairly critical (i.e. downtime causing) user reported
+issues coming in that are taking most of my time, although they're
+getting off into the weeds - one I've been working on the past few days
+was reported by a user with a ~20 drive filesystem where we're
+overflowing the maximum number of pointers in an extent, due to keeping
+too many cached copies around, and his filesystem goes emergency
+read-only. And there still seems to be something not-quite-right with
+snapshots and unlinked inodes, possibly a repair issue.
+
+Test dashboard still has a long ways to go before it's anywhere near as
+clean as I want (and it needs to be, so that I can easily spot
+regressions), but number of test failures have been steadily dropping
+and the results are getting more consistent, and none of the test
+failures there are scary ones that need to be jumped on.
+
+https://evilpiepirate.org/~testdashboard/ci?user=kmo&branch=bcachefs-testing
+
+(We were at 150-160 failures per full run a few weeks ago, now 100-110.
+The full runs also run fstests in 8 different configurations, so lots of
+duplicates).
+
+There have been a lot of new syzbot reports recently, and some of those
+do look more concerning. I don't think this indicates regressions - this
+looks to be like syzbot getting better with its code-coverage-guided
+testing at finding interesting codepaths, and for the concerning ones I
+don't think the code changed in the right timeframe for it to be a
+regressions. I think several of the recent syzbot reports are all due to
+the same bug, where it looks like we're not going read-only correctly
+and interior btree updates are still happening - I suspect that's been
+there for ages and an assert I recently added is making it more visible.
+
+I am still heavily in triage mode, and filesystem repair/recovery bugs
+take top priority. In general, my priorities are
+- critical user reported bugs first
+- failures from my automated test suite second (unless they're
+  regressions)
+- syzbot last, because there's been basically zero overlap with syzbot
+  bugs and user-affecting bugs so far, and because that's been an easy
+  place for new people to jump in and help.
