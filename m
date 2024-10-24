@@ -1,157 +1,167 @@
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D6C170853;
-	Thu, 24 Oct 2024 11:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AF91DAC81;
+	Thu, 24 Oct 2024 13:06:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729770684; cv=none; b=IrURvhZsv9KWzmVxjCJ/Xuour5z1sRPTy+ZKn9rDwGBqIIuLmWA/OUtyKFgC5BgMl7lHA/g6ZPMntlBI6NxHwYhkM47mddijgPEAORVJIPOWzoUXlgV4rxGQ2cLEz4rj9asRW/eZxXtxsXLAMgL2OCMmPEV9tdaD0VlRrnob3kw=
+	t=1729775181; cv=none; b=hyUSP4FLmRYKBq1Atu52SVO6LUS/ywZaEWhOm+24W127mffqmA4QpjAe6VKV3z4AevAAoLA8bQ7YptrpXZ+uz0pHxUqAeek6RjEfIB8FgabfRjgcn2GRmoaYVvXxfP4vv4zp771yjOAbnXM+IOO14DMZGLK8/Yi4PI2/NhmA0kc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729770684; c=relaxed/simple;
-	bh=ObToXn1uN52Ji+FyF1i7vx015LgZ9B/m9BxmJO7giVw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hNdYXoOXJevDq4GH+BuOpxM79MTNrjn/qU7Prh0beme/6buIuEFhbIPJQuTMcsJkYniUUphHvG08JPu7c1uDktd749g9zNyGkkcA5k8fFekN3zrTlTevYVbvcNdj7NVw6KKMFBiLpKgTpBkj5XxO77LdIkt9qlduuj6MREfpVIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KJm2tSDI; arc=none smtp.client-ip=209.85.128.53
+	s=arc-20240116; t=1729775181; c=relaxed/simple;
+	bh=aIlKmQ9ihfSARIg+FYKEOZAZucVXvsiEVelFMuAtHng=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I452ma5fAzfdodjnmb7MogtLSxYsMOUsGUZn6tZBjp6qnpbxlt+aXyoGFU7t7haMDhu7F0PL8jkqytXI/EnJCxEUREQJSTYZiS7jiVS1MotmOCixj/iztZo7jIR4MiWnOlndCNEfrkGny1WZZtmDSVcgTbEhtLJku/jZ1DE6h58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IUwy91ey; arc=none smtp.client-ip=209.85.160.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KJm2tSDI"
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43155afca99so12942685e9.1;
-        Thu, 24 Oct 2024 04:51:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IUwy91ey"
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4609e784352so5615371cf.0;
+        Thu, 24 Oct 2024 06:06:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729770680; x=1730375480; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4f+ncTElWxuaHlRSc9sIvuc0sLwN6e+jbNOHYwrcO2s=;
-        b=KJm2tSDIh2MlW5E1dNBmWe84EXMSjYQY9I2Rc+VgIIL+KMkrw9vglS3tY+3E4iTd/W
-         dE35rX+4Alr5CWa8loEVdOyKqbYbLPGmfAUVeQniKqMTnCTbrtTgI9czpkBqL0xtrYyg
-         T7YhuvvLnfUpGC9sYdGLD0KdoVsdAvDdHR0jY9zymSvYFtWgnEIKJI2TujEjXnQ7LdOO
-         9bh8/mSflwJpathXJqko4FeYEWvJHhTgNQPAODeQ92qNw1tat4jijiQUezdpwTCmQvRk
-         9LGgvZEjb4ev3Esd08u+24OPzWLf0d2ZClROKPUyAjaKcGACmm2FEZXG/9EYTnSTTIXA
-         mD5A==
+        d=gmail.com; s=20230601; t=1729775179; x=1730379979; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EV440ACCLF9AlGZ+8I23qHeuAgKIxh1fOgjLQ6Jdp94=;
+        b=IUwy91eyZGO0Tj3CZCx3bmDNUYyrq0ij/X3t6JKvTz/Zxr+IO5XcOnWp/bZwXR9ghQ
+         U31TW+pTGiTUyZ5dHRBdNB1oLanpIE/sKZBn6exLRH8CtV6zv6Xm+h2gY1qb3BSP79qf
+         0N2N46S+pdb/s3hKYiftYLRoSoQNo+Of7LBi2dU1aEoJFWyk6kcbJdwbHOPiZyaIr73D
+         lgJgnMG66ms6trgkU+gRk5p6FEl1CuwlJsFizTMDtUo/vFULXouaiPdICXt+uQclnVAk
+         jTb2YVk455NKpS4ySAnr1RnHDwj5/MCHE1kYoLpVKjKM3xbFB5vfbe+6++Tqa3NvwLAl
+         TVSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729770680; x=1730375480;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4f+ncTElWxuaHlRSc9sIvuc0sLwN6e+jbNOHYwrcO2s=;
-        b=a7eESv0t2pOz/EjSl0yC/KcdAYxsAnzUkGLlfpqGNBxJf25CqlLnaKgSsuthjGBh5D
-         U8MYXwV0iiUxiVlHRcWRY+DF4lgPWCWDOsfbPgrUG+ol/EZJP2Cem5jRCicvNyXoyIjp
-         FXQ1tHGmBZA35fjTNPPtJ00ZZ49kZ2Yi0nD6nA+WqWQlgpclSulWKEQxchXJ3VTZdHvL
-         KbFhRglcHqRpEocvC7w4d9RwSAQVnozV6JM2YRNXxCqXyMB8NqRDUOBKi9klQcie9umU
-         hmBJk8WINZtssvf1zoJtx8RLRuN3MbH0gBFCiCmg9GhyeOiNEepUGt/pxLVVCjjhnioZ
-         Bspg==
-X-Forwarded-Encrypted: i=1; AJvYcCVUSDbXa0bOWUEukSaLE39YwUP0kGvLIL0VzI+GRel2ZvacOWsdy3UPp24qXuV10opoO8TTKEqLrq+aAFI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaMVci3qeJCRkk0we4HoHSIhYbCni7NbwH1xx1vd/UOlj4+6YY
-	UP7p5KbMM9utLGSFxQhIro7L897IX55YWCake0I55Gecv7zYzbsj
-X-Google-Smtp-Source: AGHT+IGUts/pqiOnQUDlq8+mpIjJ6pvrQA50D7aIMHxlYlsnD/0uHpYCwABMwVeSbjaLKSV7g7Hd8w==
-X-Received: by 2002:a05:600c:4689:b0:42c:b826:a26c with SMTP id 5b1f17b1804b1-4318b5a561cmr11835735e9.8.1729770679744;
-        Thu, 24 Oct 2024 04:51:19 -0700 (PDT)
-Received: from ?IPV6:2a01:e11:5400:7400:4be9:6ab9:1062:7d2a? ([2a01:e11:5400:7400:4be9:6ab9:1062:7d2a])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4317d03ee7asm58999885e9.0.2024.10.24.04.51.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Oct 2024 04:51:19 -0700 (PDT)
-Message-ID: <58e3d8a4-9e8b-41d5-a134-d41b38bd7216@gmail.com>
-Date: Thu, 24 Oct 2024 13:51:14 +0200
+        d=1e100.net; s=20230601; t=1729775179; x=1730379979;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EV440ACCLF9AlGZ+8I23qHeuAgKIxh1fOgjLQ6Jdp94=;
+        b=p1uhEjK6Qyv/Gf26bPrUC95khU15hLY6KcDfreUCpkid7Ib5+ip2d0CO7vpyax9qWn
+         OPmdSNQh5WxJSmqzK4XG4FIw+7qFdW16zcl3EWB1+I5M9YBsjUcKIh1UnErfAeaYT5L7
+         6YkkDkjsnhNf9jbmC0FU0xLI/LHH49lz6wDwJozBUDK0NTFJY3YN0o6snnHIUmw7m2bV
+         6VDKdeQkdAfy9K/P3aIBTfjZDlII6N62csjRh83iYt5KVHPLge99MViM8gmLYbhodCl1
+         G7H6qCIKzBafgP0LU5LZ9xZezjUcSGui7m4yb+NkTnMyFfyTloI6swKLFs9Phkkp5HWQ
+         N+aw==
+X-Forwarded-Encrypted: i=1; AJvYcCUawHG+xYB3s/m2spNLqv8q1bQObnn24V5uP5ieAEmPYiilYfVg7daFEbh5pIJnm+3t+IxCm6o8XCobmDI=@vger.kernel.org, AJvYcCVvUyJReoCIMrQ/xObR40vFDPNUZD9hU6ng6rRkmHb89IMnk+Og718q8qOp+yRzBG377A6oTCxqaleL@vger.kernel.org, AJvYcCWcptVhwct6vKbLJWHdd3bbT8BeNRP/5z7SBWXdknaY5UUVVV/4VKXiqlvpoOv1X70h4cTtpO8zeHX+WFxJQQ==@vger.kernel.org, AJvYcCXevy/KyyYGPVEOdYUIyrXzSzCosYMPaSNgjlKKB5YyFDQEHMm/uSEDiDdeOwzE9DoINRfj2vYR+LfheZBupw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwNv2yLwNzuEW+G/p4lukqsVElr5AgM6wDzOjPgD/9voM1cSkCF
+	RUFtPCT8Vk6HuV1SiQoAShj88zNt1QaelPczXQ5jqcKXtviLQZHjgfOU8IlODKFfiZg3EFBuC9c
+	B2gLk3ws+9YQxUA90lwt0pnXqrFQ=
+X-Google-Smtp-Source: AGHT+IEIz8fnfbns+VURqZ8Fl6RXgEBHOkqEMI4OdzbZoLgol68YL2Busr8J0hKYCSW/XqtN8XJgmuR8iMUv5K38FlE=
+X-Received: by 2002:ac8:5b8d:0:b0:460:39be:10a8 with SMTP id
+ d75a77b69052e-461146d6ef7mr65129111cf.32.1729775178536; Thu, 24 Oct 2024
+ 06:06:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: Fix invalid shift in validate_sb_layout()
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
- skhan@linuxfoundation.org,
- syzbot+089fad5a3a5e77825426@syzkaller.appspotmail.com
-References: <20241023213043.47846-2-gianf.trad@gmail.com>
- <be3e7378-7aec-4ebb-b6e6-e7b824452adb@gmail.com>
- <jaxnjw5ergn7zrnjuzzosgclpmv5st77gtfaj75my3hblufrn2@b4si2orrodw5>
-From: Gianfranco Trad <gianf.trad@gmail.com>
-Content-Language: en-US, it
-In-Reply-To: <jaxnjw5ergn7zrnjuzzosgclpmv5st77gtfaj75my3hblufrn2@b4si2orrodw5>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <cover.1725481503.git.josef@toxicpanda.com> <4b235bf62c99f1f1196edc9da4258167314dc3c3.1725481503.git.josef@toxicpanda.com>
+In-Reply-To: <4b235bf62c99f1f1196edc9da4258167314dc3c3.1725481503.git.josef@toxicpanda.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 24 Oct 2024 15:06:07 +0200
+Message-ID: <CAOQ4uxgxCHmKLhFHMiD39SWw7evZmfkG9dkyk2X=qQc+zXjn-w@mail.gmail.com>
+Subject: Re: [PATCH v5 03/18] fsnotify: generate pre-content permission event
+ on open
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
+	brauner@kernel.org, linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 24/10/24 13:24, Kent Overstreet wrote:
-> On Thu, Oct 24, 2024 at 12:48:30PM +0200, Gianfranco Trad wrote:
->> On 23/10/24 23:30, Gianfranco Trad wrote:
->>> Add check on layout->sb_max_size_bits against BCH_SB_LAYOUT_SIZE_BITS_MAX
->>> to prevent UBSAN shift-out-of-bounds in validate_sb_layout().
->>>
->>> Reported-by: syzbot+089fad5a3a5e77825426@syzkaller.appspotmail.com
->>> Closes: https://syzkaller.appspot.com/bug?extid=089fad5a3a5e77825426
->>> Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
->>> Tested-by: syzbot+089fad5a3a5e77825426@syzkaller.appspotmail.com
->>> Signed-off-by: Gianfranco Trad <gianf.trad@gmail.com>
->>> ---
->>>    fs/bcachefs/errcode.h  | 1 +
->>>    fs/bcachefs/super-io.c | 5 +++++
->>>    2 files changed, 6 insertions(+)
->>>
->>> diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
->>> index 649263516ab1..b6cbd716000b 100644
->>> --- a/fs/bcachefs/errcode.h
->>> +++ b/fs/bcachefs/errcode.h
->>> @@ -222,6 +222,7 @@
->>>    	x(BCH_ERR_invalid_sb_layout,	invalid_sb_layout_type)			\
->>>    	x(BCH_ERR_invalid_sb_layout,	invalid_sb_layout_nr_superblocks)	\
->>>    	x(BCH_ERR_invalid_sb_layout,	invalid_sb_layout_superblocks_overlap)	\
->>> +	x(BCH_ERR_invalid_sb_layout,    invalid_sb_layout_sb_max_size_bits)     \
->>>    	x(BCH_ERR_invalid_sb,		invalid_sb_members_missing)		\
->>>    	x(BCH_ERR_invalid_sb,		invalid_sb_members)			\
->>>    	x(BCH_ERR_invalid_sb,		invalid_sb_disk_groups)			\
->>> diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
->>> index ce7410d72089..44d0ac9b00dd 100644
->>> --- a/fs/bcachefs/super-io.c
->>> +++ b/fs/bcachefs/super-io.c
->>> @@ -287,6 +287,11 @@ static int validate_sb_layout(struct bch_sb_layout *layout, struct printbuf *out
->>>    		return -BCH_ERR_invalid_sb_layout_nr_superblocks;
->>>    	}
->>> +	if (layout->sb_max_size_bits > BCH_SB_LAYOUT_SIZE_BITS_MAX) {
->>> +		prt_printf(out, "Invalid superblock layout: max_size_bits too high");
->>> +		return -BCH_ERR_invalid_sb_layout_sb_max_size_bits;
->>> +	}
->>> +
->>>    	max_sectors = 1 << layout->sb_max_size_bits;
->>>    	prev_offset = le64_to_cpu(layout->sb_offset[0]);
->>
->> Wondering if this other patch might be considered more correct to prevent
->> shift oob, given also [0]:
-> 
-> Your first patch looks better, we want to know if we're feeding it
-> garbage
-> 
+On Wed, Sep 4, 2024 at 10:29=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
+wrote:
+>
+> From: Amir Goldstein <amir73il@gmail.com>
+>
+> FS_PRE_ACCESS or FS_PRE_MODIFY will be generated on open depending on
+> file open mode.  The pre-content event will be generated in addition to
+> FS_OPEN_PERM, but without sb_writers held and after file was truncated
+> in case file was opened with O_CREAT and/or O_TRUNC.
+>
+> The event will have a range info of (0..0) to provide an opportunity
+> to fill entire file content on open.
+>
+> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> Reviewed-by: Christian Brauner <brauner@kernel.org>
+> ---
+>  fs/namei.c               |  9 +++++++++
+>  include/linux/fsnotify.h | 10 +++++++++-
+>  2 files changed, 18 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 3a4c40e12f78..c16487e3742d 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -3735,6 +3735,15 @@ static int do_open(struct nameidata *nd,
+>         }
+>         if (do_truncate)
+>                 mnt_drop_write(nd->path.mnt);
+> +
+> +       /*
+> +        * This permission hook is different than fsnotify_open_perm() ho=
+ok.
+> +        * This is a pre-content hook that is called without sb_writers h=
+eld
+> +        * and after the file was truncated.
+> +        */
+> +       if (!error)
+> +               error =3D fsnotify_file_perm(file, MAY_OPEN);
+> +
 
-Understood. Thanks Kent.
-Have a nice day,
---Gian
->>
->> diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
->> index ce7410d72089..428172897501 100644
->> --- a/fs/bcachefs/super-io.c
->> +++ b/fs/bcachefs/super-io.c
->> @@ -287,7 +287,7 @@ static int validate_sb_layout(struct bch_sb_layout
->> *layout, struct printbuf *out
->>   		return -BCH_ERR_invalid_sb_layout_nr_superblocks;
->>   	}
->>
->> -	max_sectors = 1 << layout->sb_max_size_bits;
->> +	max_sectors = 1 << min(BCH_SB_LAYOUT_SIZE_BITS_MAX,
->> layout->sb_max_size_bits);
->>
->>   	prev_offset = le64_to_cpu(layout->sb_offset[0]);
->>
->> Also this patch was already tested by syzbot [1]
->>
->> [0] 71dac2482ad3c8d4a8b8998a96751f009bad895f ("bcachefs:
->> BCH_SB_LAYOUT_SIZE_BITS_MAX")
->> [1] https://syzkaller.appspot.com/x/log.txt?x=1640b640580000
->>
->> Thanks for your time,
->>
->> -- Gian
->>
+Josef,
 
+Please change that for v6 to:
+
+                   error =3D fsnotify_file_area_perm(file, MAY_OPEN,
+&file->f_pos, 0);
+
+...
+
+>         return error;
+>  }
+>
+> diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
+> index 7600a0c045ba..fb3837b8de4c 100644
+> --- a/include/linux/fsnotify.h
+> +++ b/include/linux/fsnotify.h
+> @@ -168,6 +168,10 @@ static inline int fsnotify_file_area_perm(struct fil=
+e *file, int perm_mask,
+>                 fsnotify_mask =3D FS_PRE_MODIFY;
+>         else if (perm_mask & (MAY_READ | MAY_ACCESS))
+>                 fsnotify_mask =3D FS_PRE_ACCESS;
+> +       else if (perm_mask & MAY_OPEN && file->f_mode & FMODE_WRITER)
+> +               fsnotify_mask =3D FS_PRE_MODIFY;
+> +       else if (perm_mask & MAY_OPEN)
+> +               fsnotify_mask =3D FS_PRE_ACCESS;
+>         else
+>                 return 0;
+>
+> @@ -176,10 +180,14 @@ static inline int fsnotify_file_area_perm(struct fi=
+le *file, int perm_mask,
+>
+>  /*
+>   * fsnotify_file_perm - permission hook before file access
+> + *
+> + * Called from read()/write() with perm_mask MAY_READ/MAY_WRITE.
+> + * Called from open() with MAY_OPEN without sb_writers held and after th=
+e file
+> + * was truncated. Note that this is a different event from fsnotify_open=
+_perm().
+>   */
+>  static inline int fsnotify_file_perm(struct file *file, int perm_mask)
+>  {
+> -       return fsnotify_file_area_perm(file, perm_mask, NULL, 0);
+> +       return fsnotify_file_area_perm(file, perm_mask, &file->f_pos, 0);
+>  }
+
+... and drop this change, because this change will make readdir()
+start reporting odd file ranges and HSM won't be able to tell the
+difference between an opendir() and a readdir().
+
+And I will send an extra patch for reporting an event with
+range [size..size] for truncate(size).
+
+Thanks,
+Amir.
