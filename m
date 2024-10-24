@@ -1,71 +1,63 @@
-Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA571D6DA8;
-	Thu, 24 Oct 2024 18:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F236F1AAE27;
+	Thu, 24 Oct 2024 20:33:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729795151; cv=none; b=tYsFgVixgfnKpB6Pje8qvt2DNKo5+Gg8lSJL8AWNR1TrgGGJ2ppzrcN8XcO1L4mF02NU/Khqb//9vl86r3+ECmIG/MlJT89l8aQNPQGDy8gIZvZB8GPY82g4hyFZsnrKAYf5q00MhryW22QO16A78TnivzrkY1yJvfk8v2BlN5U=
+	t=1729802012; cv=none; b=JDFmYs8fzomvIcjEmVd23uN4eDPLb80UeRxP92vZmDl8Fk7Td+WyHU7AGdzHFHjzE8/7S+VCj25SboTRTRiu8i1HJDI8kPfTcC8V+Gd87bAcxdR2XSe7/2U5ScPOmRjOuEdzav+RBkXlQbJ6kanDi51DhvXxNF5TkqCHC3k9eRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729795151; c=relaxed/simple;
-	bh=wB9I26UTxgzaakehGDeks85+UkmWYUMo2fEAo3il/QQ=;
-	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
-	 In-Reply-To:References; b=oZ0Rpsud6uD/5ws8VzSFct+4YmFCmA90gbPp2j2PHo9a5QajEjRry0Qh1HvMtQs1e2KJFGmf3wqsVYZuzlIjt7r6hlZBiCauHKLjRanB0RaPrt2LibKqVlW4a+sM3w1ec6Ab9liojue344EJWH2cX/t2lir4uXceM92i6xo+Qhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; arc=none smtp.client-ip=172.104.24.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
-Received: from quad.stoffel.org (syn-097-095-183-072.res.spectrum.com [97.95.183.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.stoffel.org (Postfix) with ESMTPSA id 768081E11A;
-	Thu, 24 Oct 2024 14:30:34 -0400 (EDT)
-Received: by quad.stoffel.org (Postfix, from userid 1000)
-	id 0BD79A0A8A; Thu, 24 Oct 2024 14:30:34 -0400 (EDT)
+	s=arc-20240116; t=1729802012; c=relaxed/simple;
+	bh=9rk5z6/zwvglHu8zFoaHYT653uV9biCfI8lUNpolo8I=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=NN8sLNKBY6LYP1G5BjlndP6DZLuiNmsl+8zBSI6Ee7fJRHXIis6kEuwmuuLN82exVHUQIS1O6j8YVkPix9ZmTAR87XrMp6nmhz4VmZCx+ojlpNiPup81J+i3Gpum6H7Agj39AdWfMEoRtGALU011aOSBF68/RaPvcxwRqZvUf4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gG+T4wzJ; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gG+T4wzJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C32A7C4CEC7;
+	Thu, 24 Oct 2024 20:33:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729802011;
+	bh=9rk5z6/zwvglHu8zFoaHYT653uV9biCfI8lUNpolo8I=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=gG+T4wzJoxc4IFwX6iQLg8PjTsMYCLwHqQQbOAzmediLGMky9yWggQEszN8Q5ebkc
+	 tiq/kRQT+0UePFvCdXlXbkGoR0Ha6ptCipL5kuUKhxDTpK1vJ0L2G6nshDj/WQ+/li
+	 /YIujSulSu+hQ2scA6PEFViBCX5T3hbw0VGwEdRlLbkhsfT9nFHaLMcZPVcQLypmUF
+	 mqmqIteIqzVx1vJlfrBZU1qt6/cckk57NtA9yWkV8ZXsFzWvanzKPS9GTRkRs+oEvW
+	 h8Zr3kcptgEmL6w6VEBm7HMTFqpXlRTeU0O0wVG2zaiPDT15ZpNF5M/dQJX1NrG3Ij
+	 e8/xQQ6IsfmEg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE12D380DBDC;
+	Thu, 24 Oct 2024 20:33:39 +0000 (UTC)
+Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc5
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
+References: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
+X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
+X-PR-Tracked-Remote: https://github.com/koverstreet/bcachefs tags/bcachefs-2024-10-22
+X-PR-Tracked-Commit-Id: a069f014797fdef8757f3adebc1c16416271a599
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c1e822754cc7f28b98c6897d62e8b47b4001e422
+Message-Id: <172980201841.2376768.13141234127886796981.pr-tracker-bot@kernel.org>
+Date: Thu, 24 Oct 2024 20:33:38 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <26394.37450.21740.720541@quad.stoffel.home>
-Date: Thu, 24 Oct 2024 14:30:34 -0400
-From: "John Stoffel" <john@stoffel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: manas18244@iiitd.ac.in,
-    linux-bcachefs@vger.kernel.org,
-    linux-kernel@vger.kernel.org,
-    Anup Sharma <anupnewsmail@gmail.com>,
-    Shuah Khan <skhan@linuxfoundation.org>,
-    syzbot+e8eff054face85d7ea41@syzkaller.appspotmail.com
-X-Clacks-Overhead: GNU Terry Pratchett
-Subject: Re: [PATCH] Revert "bcachefs: Add asserts to
- bch2_dev_btree_bitmap_marked_sectors()"
-In-Reply-To: <rd4maufxfunrcpzkoo2jszorzl256fiktw3p5yfpnjpu2ajh4l@5wvkfxwzajax>
-References: <20241021-revert-assert-bch2-v1-1-e869c7c55bb6@iiitd.ac.in>
-	<rd4maufxfunrcpzkoo2jszorzl256fiktw3p5yfpnjpu2ajh4l@5wvkfxwzajax>
-X-Mailer: VM 8.3.x under 28.2 (x86_64-pc-linux-gnu)
 
->>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+The pull request you sent on Tue, 22 Oct 2024 13:39:10 -0400:
 
-> On Mon, Oct 21, 2024 at 10:18:57PM +0530, Manas via B4 Relay wrote:
->> From: Manas <manas18244@iiitd.ac.in>
->> 
->> This reverts commit 60f2b1bcf519416dbffee219132aa949d0c39d0e.
->> 
->> This syzbot bug[1] is triggered due to the BUG_ON assertions added in
->> __bch2_dev_btree_bitmap_mark. During runtime, m->btree_bitmap_shift is
->> 63 '?'. This triggers both the assertions.
+> https://github.com/koverstreet/bcachefs tags/bcachefs-2024-10-22
 
-> The BUG_ON() doesn't need to be deleted; we just need to fix the
-> validation so it doesn't fire (it doesn't particularly matter if it's
-> removed or not, ubsan would catch it without the BUG_ON()).
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c1e822754cc7f28b98c6897d62e8b47b4001e422
 
-Shouldn't the BUG_ON() be replaced with making the filesystem readonly
-instead if you're going to keep it?  I'd rather have the filesystem
-still be mounted and able to be read, but not writeable, instead of
-having my system crash before I can do anything.  
+Thank you!
 
-John
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
