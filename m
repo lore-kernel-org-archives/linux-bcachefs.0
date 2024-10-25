@@ -1,154 +1,209 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0648218D75
-	for <linux-bcachefs@vger.kernel.org>; Thu, 24 Oct 2024 22:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F5D5221
+	for <linux-bcachefs@vger.kernel.org>; Fri, 25 Oct 2024 00:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729808366; cv=none; b=fRKuXIXpJmZYNfg3SBtJdmtcjiBlDxPzl3VVQIJG030yrHxPQmxL+0D9uUoTtDFfNXWbWwE9HcubdamQSK7QzmlKXCp7Zsjs/fkyjhsLk/tJ7XZBOYtl8qJNa3kabKQzFUsjeyHArIJGXfZ1zKf2ezWYzcJZfshG7wp7Edmmdn4=
+	t=1729817073; cv=none; b=qidvB7aBA2SJ3/49y2lgvAb4IhhK0X4BB8SDducm2ZagJ4O6NVhjGdueFYqHNIXeGOOPduEdYvMhh+sx1vnnD9cUFzHzNQMwNDQjhD6VIjplH1jXJIwfoeaPHU++ZGVfG5zGOnJMc1OOyWwlPVC2oPJ+aC2CrsuA3qISxaUGCvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729808366; c=relaxed/simple;
-	bh=xiA+f1cnlU406zXgM71RLQpj8FPKXw9TNOVXfqwWjZo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YZLLP5cRg5qNbB4vAMxCj2azs1kKdn/A3iTUzbOsekeiMjwJced5jlDKdFjQKhi8NgiZHcUO4AUcg4JbjG5MNmAy3oFixcReuW9wgOGu9VRN0WlNZ8yarU6Vur6iZsHPB6Or7fnJa1KzGiRw2CYb2z8HwUXElBLFF8PTGCFXPr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NTQQuRnp; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NTQQuRnp"
-Date: Thu, 24 Oct 2024 18:19:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729808354;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lRN2XvuPczg6eIRqeI5o08GA1KQ3w/NT/PiW4sNw5Eg=;
-	b=NTQQuRnpuKJqvwOOrhBQGIoqcO3lxe03hXBSkRWRk+cnHbRTHEotCqQ5yWlYonnZtd86ii
-	LQtQF/p9gQrXdkoU1XdwMDim+gpSUGB455qtgMFRPd+rD0kWIObGDa6djlOnSKBqfPqKX0
-	BLIjPfiWPbTLXdAnEiDc37YwTJU+iOU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Sasha Levin <sashal@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>, 
-	"Darrick J. Wong" <djwong@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kees@kernel.org, hch@infradead.org, broonie@kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.12-rc5
-Message-ID: <n4lt6eghfunnzz4zx4hhy5asyw55mv4q6ew3fusd2lawufgsnl@2c2cai6esxl3>
-References: <rdjwihb4vl62psonhbowazcd6tsv7jp6wbfkku76ze3m3uaxt3@nfe3ywdphf52>
- <Zxf3vp82MfPTWNLx@sashalap>
- <20241022204931.GL21836@frogsfrogsfrogs>
- <ZxgXO_uhxhZYtuRZ@sashalap>
- <87iktj2j7w.fsf@mail.lhotse>
- <Zxjg7Cvw0qIzl0v6@sashalap>
+	s=arc-20240116; t=1729817073; c=relaxed/simple;
+	bh=0sayygYXLALdUV2nGI3X+d2AoM+smoVLzB000vFmUaY=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Rs7S228bZuvbaCk0Urvc6Ixydupw6fhFX1Lt9XMS78d3ZUxNyNdXFCPbYrlQ6CUpKOFu8yru4BdKkjvAJ1849Gn4j/f8STy6BQI305FVI+s+xleSYQhzbQ9JC19skGDa13brlZ9mgqaj4Wogn9rYrSE8lLHaDanFOtrc1fB9Op8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a3c24f3111so15823685ab.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 24 Oct 2024 17:44:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729817069; x=1730421869;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LjXR22Qic3bXJLjdK21PpfbbxzcNVwprc2H4faFQyCo=;
+        b=MEfUsS1/WNilQvU7C7slC1U7780prRdAlQS8GtKfrleTlR180WSMn+59XDV0gT5DRV
+         Vo+LnESqa0RiFbLl2FuQeD6/QUtbYc8HoNI7tc6Jy/aI+1+IBQAF9mYirYDK9Mw+bNFN
+         2gpRqBXpRoSz5im2EZa/oPqQEzGq4i3uAFx1MkcWklaPJ6zqJs+L2uVs+938Dexng+SO
+         ddOKWxJA1qHjjEB6VF+XDZzsZAmYp32vi+qMdwxPVUGl//D+S/jnwGOWUFdOm9A4AS2c
+         H6nSPHSXPdGD0noqIbvdhAISf6JC96C8u1zWpa+eZkLmoe92lGipw8lhh2rWpKrX4opg
+         pI3g==
+X-Forwarded-Encrypted: i=1; AJvYcCXFT+oU+R9t95XNEA877rkxRs0XcbANlFz+RMKk7qoV4sJ5HmnrrovtXM35n1euJGbM6aQiwaGC4suv0MwtVA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyw8sS2pgjLfI3SIzodsH9f5lFv7vnI2HO9l5oKqALaheEnSBWg
+	leP1t6aHJNiFFa5zi740I0FofCXfv74/CcMk34m9FFYgc6wMYwkavhibf89VPDMZTx4OpS4p4Sb
+	1X9lWiv1bVRLb6nhatVKcTr+NCFrfYfrcNcERiw/WgA18iU5iCgQLprg=
+X-Google-Smtp-Source: AGHT+IER9Qwx6AdKdpojuAdGK9JBE3OeDM/TLOClIfwVFkiEpibkWlHca0hgagDyL7cKkkIbYH5cSlxH2AHq/azNzB+599uvSu3d
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zxjg7Cvw0qIzl0v6@sashalap>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:581:b0:3a4:e4d0:9051 with SMTP id
+ e9e14a558f8ab-3a4e4d094bcmr6753555ab.24.1729817069462; Thu, 24 Oct 2024
+ 17:44:29 -0700 (PDT)
+Date: Thu, 24 Oct 2024 17:44:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <671ae9ed.050a0220.2eb763.00cd.GAE@google.com>
+Subject: [syzbot] [bcachefs?] INFO: task hung in do_rmdir (6)
+From: syzbot <syzbot+4128a26fb0f85ec9e76c@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Oct 23, 2024 at 07:41:32AM -0400, Sasha Levin wrote:
-> On Wed, Oct 23, 2024 at 09:42:59PM +1100, Michael Ellerman wrote:
-> > Hi Sasha,
-> > 
-> > This is awesome.
-> > 
-> > Sasha Levin <sashal@kernel.org> writes:
-> > > On Tue, Oct 22, 2024 at 01:49:31PM -0700, Darrick J. Wong wrote:
-> > > > On Tue, Oct 22, 2024 at 03:06:38PM -0400, Sasha Levin wrote:
-> > > > > other information that would be useful?
-> > > > 
-> > > > As a maintainer I probably would've found this to be annoying, but with
-> > > > all my other outside observer / participant hats on, I think it's very
-> > > > good to have a bot to expose maintainers not following the process.
-> > > 
-> > > This was my thinking too. Maybe it makes sense for the bot to shut up if
-> > > things look good (i.e. >N days in stable, everything on the mailing
-> > > list). Or maybe just a simple "LGTM" or a "Reviewed-by:..."?
-> > 
-> > I think it has to reply with something, otherwise folks will wonder if
-> > the bot has broken or missed their pull request.
-> > 
-> > But if all commits were in in linux-next and posted to a list, then the
-> > only content is the "Days in linux-next" histogram, which is not that long
-> > and is useful information IMHO.
-> > 
-> > It would be nice if you could trim the tail of the histogram below the
-> > last populated row, that would make it more concise.
-> 
-> Makes sense, I'll do that.
-> 
-> > For fixes pulls it is sometimes legitimate for commits not to have been
-> > in linux-next. But I think it's still good for the bot to highlight
-> > those, ideally fixes that miss linux-next are either very urgent or
-> > minor.
-> 
-> Right, and Linus said he's okay with those. This is not a "shame" list
-> but rather "look a little closer" list.
+Hello,
 
-Ok, that makes me feel better about this. I've got stuff that I hold
-back for weeks (or months), and others that I'm fine with sending the
-next day, once it's passed my CI.
+syzbot found the following issue on:
 
-I'm going to try to be better about talking about which patches have
-risks (and why that risk is justified, else I wouldn't be sending it),
-or which patches look more involved but I've got reason to be confident
-about - that can get quite subtle. That's good for everyone down the
-line in terms of knowing what to expect.
+HEAD commit:    715ca9dd687f Merge tag 'io_uring-6.12-20241019' of git://g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=163e60a7980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=78db40d8379956d9
+dashboard link: https://syzkaller.appspot.com/bug?extid=4128a26fb0f85ec9e76c
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-I wonder if also some of this is motivated by people concerned about
-things in bcachefs moving too fast, and running the risk of regressions?
-That's a justifiable concern, and priorities might be worth talking
-about a bit.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-I'm not currently seeing anything that makes me too concerned about
-regressions: users in general aren't complaining about regressions
-(previous pull request a user chimed in that he had been seeing less
-stability past few kernel releases, and he tried switching back to btrfs
-and the issues were still there) and my test dashboard is steadily
-improving.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bf3787869b5a/disk-715ca9dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b938d885bc17/vmlinux-715ca9dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9c039de0dde2/bzImage-715ca9dd.xz
 
-I do still have fairly critical (i.e. downtime causing) user reported
-issues coming in that are taking most of my time, although they're
-getting off into the weeds - one I've been working on the past few days
-was reported by a user with a ~20 drive filesystem where we're
-overflowing the maximum number of pointers in an extent, due to keeping
-too many cached copies around, and his filesystem goes emergency
-read-only. And there still seems to be something not-quite-right with
-snapshots and unlinked inodes, possibly a repair issue.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4128a26fb0f85ec9e76c@syzkaller.appspotmail.com
 
-Test dashboard still has a long ways to go before it's anywhere near as
-clean as I want (and it needs to be, so that I can easily spot
-regressions), but number of test failures have been steadily dropping
-and the results are getting more consistent, and none of the test
-failures there are scary ones that need to be jumped on.
+INFO: task syz.4.77:6035 blocked for more than 143 seconds.
+      Not tainted 6.12.0-rc3-syzkaller-00420-g715ca9dd687f #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.4.77        state:D stack:25024 pid:6035  tgid:6021  ppid:5239   flags:0x00000004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5322 [inline]
+ __schedule+0x1843/0x4ae0 kernel/sched/core.c:6682
+ __schedule_loop kernel/sched/core.c:6759 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6774
+ schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6831
+ rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
+ __down_write_common kernel/locking/rwsem.c:1304 [inline]
+ __down_write kernel/locking/rwsem.c:1313 [inline]
+ down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
+ inode_lock_nested include/linux/fs.h:850 [inline]
+ do_rmdir+0x263/0x580 fs/namei.c:4387
+ __do_sys_rmdir fs/namei.c:4418 [inline]
+ __se_sys_rmdir fs/namei.c:4416 [inline]
+ __x64_sys_rmdir+0x47/0x50 fs/namei.c:4416
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f271637dff9
+RSP: 002b:00007f27171e6038 EFLAGS: 00000246 ORIG_RAX: 0000000000000054
+RAX: ffffffffffffffda RBX: 00007f2716536058 RCX: 00007f271637dff9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
+RBP: 00007f27163f0296 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f2716536058 R15: 00007ffc08a709a8
+ </TASK>
 
-https://evilpiepirate.org/~testdashboard/ci?user=kmo&branch=bcachefs-testing
+Showing all locks held in the system:
+1 lock held by khungtaskd/30:
+ #0: ffffffff8e937e20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
+ #0: ffffffff8e937e20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
+ #0: ffffffff8e937e20 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6720
+1 lock held by khugepaged/37:
+ #0: ffffffff8e9f9028 (lock#3){+.+.}-{3:3}, at: __lru_add_drain_all+0x66/0x560 mm/swap.c:843
+3 locks held by kworker/u8:12/3110:
+2 locks held by getty/4978:
+ #0: ffff88803374a0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6a6/0x1e00 drivers/tty/n_tty.c:2211
+6 locks held by syz.4.77/6025:
+2 locks held by syz.4.77/6035:
+ #0: ffff88802b2fe420 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
+ #1: ffff888061fdbf68 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:850 [inline]
+ #1: ffff888061fdbf68 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: do_rmdir+0x263/0x580 fs/namei.c:4387
+1 lock held by syz-executor/6680:
+ #0: ffffffff8e93d3b8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:297 [inline]
+ #0: ffffffff8e93d3b8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x381/0x830 kernel/rcu/tree_exp.h:976
+2 locks held by syz-executor/7146:
+2 locks held by syz.2.238/7877:
 
-(We were at 150-160 failures per full run a few weeks ago, now 100-110.
-The full runs also run fstests in 8 different configurations, so lots of
-duplicates).
+=============================================
 
-There have been a lot of new syzbot reports recently, and some of those
-do look more concerning. I don't think this indicates regressions - this
-looks to be like syzbot getting better with its code-coverage-guided
-testing at finding interesting codepaths, and for the concerning ones I
-don't think the code changed in the right timeframe for it to be a
-regressions. I think several of the recent syzbot reports are all due to
-the same bug, where it looks like we're not going read-only correctly
-and interior btree updates are still happening - I suspect that's been
-there for ages and an assert I recently added is making it more visible.
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.12.0-rc3-syzkaller-00420-g715ca9dd687f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
+ watchdog+0xff4/0x1040 kernel/hung_task.c:379
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 7146 Comm: syz-executor Not tainted 6.12.0-rc3-syzkaller-00420-g715ca9dd687f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+RIP: 0010:lock_acquire+0x1e8/0x550 kernel/locking/lockdep.c:5825
+Code: 02 00 00 41 0f 94 c1 48 8b 7c 24 20 44 89 f6 8b 54 24 1c 48 8b 4c 24 30 4c 8b 44 24 38 6a 00 6a 00 6a 00 ff 75 10 ff 74 24 48 <e8> c3 04 00 00 48 83 c4 28 48 c7 c7 40 dc 0a 8c e8 03 bf 4d 0a b8
+RSP: 0018:ffffc900038d7698 EFLAGS: 00000006
+RAX: 0000000000000001 RBX: ffffc900038d7720 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888012601bd8
+RBP: ffffc900038d7808 R08: 0000000000000001 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffffbfff2037a4e R12: 1ffff9200071aee0
+R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000246
+FS:  00005555639f4500(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe89d07e48 CR3: 000000007652c000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ __raw_read_lock include/linux/rwlock_api_smp.h:150 [inline]
+ _raw_read_lock+0x36/0x50 kernel/locking/spinlock.c:228
+ ext4_es_lookup_extent+0x169/0xa90 fs/ext4/extents_status.c:1015
+ ext4_map_blocks+0x1f9/0x1960 fs/ext4/inode.c:623
+ ext4_readdir+0xb25/0x3a60 fs/ext4/dir.c:182
+ iterate_dir+0x571/0x800 fs/readdir.c:108
+ __do_sys_getdents64 fs/readdir.c:407 [inline]
+ __se_sys_getdents64+0x1d3/0x4a0 fs/readdir.c:392
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f6d7fdb0193
+Code: c1 66 0f 1f 44 00 00 48 83 c4 08 48 89 ef 5b 5d e9 42 43 f8 ff 66 90 b8 ff ff ff 7f 48 39 c2 48 0f 47 d0 b8 d9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 c7 c2 a8 ff ff ff f7 d8
+RSP: 002b:00007fffae72a608 EFLAGS: 00000293 ORIG_RAX: 00000000000000d9
+RAX: ffffffffffffffda RBX: 0000555563a17640 RCX: 00007f6d7fdb0193
+RDX: 0000000000008000 RSI: 0000555563a17640 RDI: 0000000000000006
+RBP: 0000555563a17614 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000293 R12: ffffffffffffffa8
+R13: 0000000000000016 R14: 0000555563a17610 R15: 00007fffae72d9a0
+ </TASK>
 
-I am still heavily in triage mode, and filesystem repair/recovery bugs
-take top priority. In general, my priorities are
-- critical user reported bugs first
-- failures from my automated test suite second (unless they're
-  regressions)
-- syzbot last, because there's been basically zero overlap with syzbot
-  bugs and user-affecting bugs so far, and because that's been an easy
-  place for new people to jump in and help.
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
