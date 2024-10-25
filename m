@@ -1,209 +1,234 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F5D5221
-	for <linux-bcachefs@vger.kernel.org>; Fri, 25 Oct 2024 00:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF84DBA3D;
+	Fri, 25 Oct 2024 01:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729817073; cv=none; b=qidvB7aBA2SJ3/49y2lgvAb4IhhK0X4BB8SDducm2ZagJ4O6NVhjGdueFYqHNIXeGOOPduEdYvMhh+sx1vnnD9cUFzHzNQMwNDQjhD6VIjplH1jXJIwfoeaPHU++ZGVfG5zGOnJMc1OOyWwlPVC2oPJ+aC2CrsuA3qISxaUGCvc=
+	t=1729818930; cv=none; b=aeimM8m9G62jBVkVY3jCjmGNEHDo7CZ7bWknSgEUhAnaTwbl6g0gvOyZmh825Rn7T2q7jVhjZx0CofzYNxTIiWmCGKQ57oIoLfrSFMbTRObBmhoDM934T/XWFxRi6IxpVG0Ardsg0fXbnFGIGliHeOsUG7BrAOuuQDmcglc0stM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729817073; c=relaxed/simple;
-	bh=0sayygYXLALdUV2nGI3X+d2AoM+smoVLzB000vFmUaY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Rs7S228bZuvbaCk0Urvc6Ixydupw6fhFX1Lt9XMS78d3ZUxNyNdXFCPbYrlQ6CUpKOFu8yru4BdKkjvAJ1849Gn4j/f8STy6BQI305FVI+s+xleSYQhzbQ9JC19skGDa13brlZ9mgqaj4Wogn9rYrSE8lLHaDanFOtrc1fB9Op8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a3c24f3111so15823685ab.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 24 Oct 2024 17:44:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729817069; x=1730421869;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LjXR22Qic3bXJLjdK21PpfbbxzcNVwprc2H4faFQyCo=;
-        b=MEfUsS1/WNilQvU7C7slC1U7780prRdAlQS8GtKfrleTlR180WSMn+59XDV0gT5DRV
-         Vo+LnESqa0RiFbLl2FuQeD6/QUtbYc8HoNI7tc6Jy/aI+1+IBQAF9mYirYDK9Mw+bNFN
-         2gpRqBXpRoSz5im2EZa/oPqQEzGq4i3uAFx1MkcWklaPJ6zqJs+L2uVs+938Dexng+SO
-         ddOKWxJA1qHjjEB6VF+XDZzsZAmYp32vi+qMdwxPVUGl//D+S/jnwGOWUFdOm9A4AS2c
-         H6nSPHSXPdGD0noqIbvdhAISf6JC96C8u1zWpa+eZkLmoe92lGipw8lhh2rWpKrX4opg
-         pI3g==
-X-Forwarded-Encrypted: i=1; AJvYcCXFT+oU+R9t95XNEA877rkxRs0XcbANlFz+RMKk7qoV4sJ5HmnrrovtXM35n1euJGbM6aQiwaGC4suv0MwtVA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyw8sS2pgjLfI3SIzodsH9f5lFv7vnI2HO9l5oKqALaheEnSBWg
-	leP1t6aHJNiFFa5zi740I0FofCXfv74/CcMk34m9FFYgc6wMYwkavhibf89VPDMZTx4OpS4p4Sb
-	1X9lWiv1bVRLb6nhatVKcTr+NCFrfYfrcNcERiw/WgA18iU5iCgQLprg=
-X-Google-Smtp-Source: AGHT+IER9Qwx6AdKdpojuAdGK9JBE3OeDM/TLOClIfwVFkiEpibkWlHca0hgagDyL7cKkkIbYH5cSlxH2AHq/azNzB+599uvSu3d
+	s=arc-20240116; t=1729818930; c=relaxed/simple;
+	bh=vCt26z8Q/nN2hXXXf/3s0lEZ6H6OLpIZ1+pICKG3AHM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BTxcopAMNTBFXqa3QW+xXFfTqODuUQEGykoxr2Zkwp2YBF5T4Gb9qj8H/CstMj7VxstMllg+khvOHf7qV53TZ0KWlFjr0YJJbBBScbv7G7c/32xbtPFj2T/4tTpxIVaL91NamllRq4H0KoCP3R/rBxaFq6B6NpYEcqpz1/FwMeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PSn2yBtu; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PSn2yBtu"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94518C4CEC7;
+	Fri, 25 Oct 2024 01:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729818930;
+	bh=vCt26z8Q/nN2hXXXf/3s0lEZ6H6OLpIZ1+pICKG3AHM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PSn2yBtugOSxaX05toB/b8OAh5VrwUNycHLUvvEz4qHqRZSCVYPypEiGTCLbH7qG/
+	 SXV3F0mCS6nuSk8hu3sF83c8oY/ze7ni1Khxz2sUffeCpyQtKjUrY5JK/u43wisVPl
+	 V90aRtm3YOCtWsTdxqWxXdYUcL5lB3YLYCdS0zBtVafo2j8KH2WM5t7EHfg3HZqaTa
+	 KItDCGuIldaKDsQLEhJbsOE2c55ZO4cygP7H3izitHqEO7W2zG5g2rEVCmTRs8KK6q
+	 jwwx3qa3lofx5rV7fwehxwD5r9UFvfxElbg9xpdTjGiLMKEiGtGZkCmwKBoVjBO+ky
+	 njjjYOyCkKhpg==
+Date: Thu, 24 Oct 2024 18:15:27 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Jan Hendrik Farr <kernel@jfarr.cc>
+Cc: Bill Wendling <morbo@google.com>, Kees Cook <kees@kernel.org>,
+	Thorsten Blum <thorsten.blum@toblux.com>, kent.overstreet@linux.dev,
+	regressions@lists.linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ardb@kernel.org, ojeda@kernel.org
+Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
+ bch2_xattr_validate
+Message-ID: <20241025011527.GA740745@thelio-3990X>
+References: <Zv8RIs-htdc-PtXB@archlinux>
+ <202410040958.C19D3B9E48@keescook>
+ <ZwNb-_UPL9BPSg9N@archlinux>
+ <CAGG=3QUatjhoDHdkDtZ+ftz7JvMhvaQ9XkFyyZSt_95V_nSN8A@mail.gmail.com>
+ <CAGG=3QVcsuN0Sk79oZWjY_nNTo_XfGYsDT3gc7vEmLyS8OK3rA@mail.gmail.com>
+ <ZxB-uh1KzfD4ww2a@archlinux>
+ <20241017165522.GA370674@thelio-3990X>
+ <ZxWvcAPHPaRxp9UE@archlinux>
+ <20241021192557.GA2041610@thelio-3990X>
+ <ZxpIwkfg9_mHO3lq@archlinux>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:581:b0:3a4:e4d0:9051 with SMTP id
- e9e14a558f8ab-3a4e4d094bcmr6753555ab.24.1729817069462; Thu, 24 Oct 2024
- 17:44:29 -0700 (PDT)
-Date: Thu, 24 Oct 2024 17:44:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <671ae9ed.050a0220.2eb763.00cd.GAE@google.com>
-Subject: [syzbot] [bcachefs?] INFO: task hung in do_rmdir (6)
-From: syzbot <syzbot+4128a26fb0f85ec9e76c@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZxpIwkfg9_mHO3lq@archlinux>
 
-Hello,
+Hi Jan,
 
-syzbot found the following issue on:
+On Thu, Oct 24, 2024 at 03:16:50PM +0200, Jan Hendrik Farr wrote:
+> Do you want me to add a Co-Developed-by tag for you? I feel bad just
+> taking it.
 
-HEAD commit:    715ca9dd687f Merge tag 'io_uring-6.12-20241019' of git://g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=163e60a7980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=78db40d8379956d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=4128a26fb0f85ec9e76c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+I would not be opposed to a Co-developed-by tag since it reflects the
+collaborative nature of the change but I do not need it just for the
+sake of credit because you have done a good amount of work analyzing and
+driving getting this problem resolved. I would argue I just
+"Kconfig-ified" your proposed change :) So you have my permission to add
+one but I will not be offended with just the Suggested-by!
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> For reference here is the current state of the patch, still waiting on
+> the merge into clang 19.1.x:
+> 
+> It needs three prerequisite commits on top of 6.6.x, but unfortunately
+> still requires a small amount of manual conflict resolution, but it's
+> easy enough
+> 
+> 1. include/linux/compiler_types.h:
+> 	use the incoming change until before (but not including) the
+> 	"Apply __counted_by() when the Endianness matches to increase test coverage."
+> 	comment)
+> 
+> 2. lib/overflow_kunit.c: 
+> 	HEAD is correct
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bf3787869b5a/disk-715ca9dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b938d885bc17/vmlinux-715ca9dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9c039de0dde2/bzImage-715ca9dd.xz
+Good to know. If they cannot resolve the conflicts, we'll get notified
+that it has failed to apply so you (or one of us) can send a massaged
+backport as a reply.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4128a26fb0f85ec9e76c@syzkaller.appspotmail.com
+> From 6c667a43af0c57cd3f260fd75d5c4a198ba94220 Mon Sep 17 00:00:00 2001
+> From: Jan Hendrik Farr <kernel@jfarr.cc>
+> Date: Thu, 17 Oct 2024 04:39:40 +0200
+> Subject: [PATCH] Compiler Attributes: disable __counted_by for clang < 19.1.3
+> 
+> This patch disables __counted_by for clang versions < 19.1.3 because
+> of the two issues listed below. It does this by introducing
+> CONFIG_CC_HAS_COUNTED_BY.
+> 
+> 1. clang < 19.1.2 has a bug that can lead to __bdos returning 0:
+> https://github.com/llvm/llvm-project/pull/110497
+> 
+> 2. clang < 19.1.3 has a bug that can lead to __bdos being off by 4:
+> https://github.com/llvm/llvm-project/pull/112636
+> 
+> Fixes: c8248faf3ca2 ("Compiler Attributes: counted_by: Adjust name and identifier expansion")
+> Cc: stable@vger.kernel.org # 6.6.x: 16c31dd7fdf6: Compiler Attributes: counted_by: bump min gcc version
+> Cc: stable@vger.kernel.org # 6.6.x: 2993eb7a8d34: Compiler Attributes: counted_by: fixup clang URL
+> Cc: stable@vger.kernel.org # 6.6.x: 231dc3f0c936: lkdtm/bugs: Improve warning message for compilers without counted_by support
+> Cc: stable@vger.kernel.org # 6.6.x
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Closes: https://lore.kernel.org/all/20240913164630.GA4091534@thelio-3990X/
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202409260949.a1254989-oliver.sang@intel.com
+> Link: https://lore.kernel.org/all/Zw8iawAF5W2uzGuh@archlinux/T/#m204c09f63c076586a02d194b87dffc7e81b8de7b
+> Signed-off-by: Jan Hendrik Farr <kernel@jfarr.cc>
 
-INFO: task syz.4.77:6035 blocked for more than 143 seconds.
-      Not tainted 6.12.0-rc3-syzkaller-00420-g715ca9dd687f #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz.4.77        state:D stack:25024 pid:6035  tgid:6021  ppid:5239   flags:0x00000004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5322 [inline]
- __schedule+0x1843/0x4ae0 kernel/sched/core.c:6682
- __schedule_loop kernel/sched/core.c:6759 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6774
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6831
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:850 [inline]
- do_rmdir+0x263/0x580 fs/namei.c:4387
- __do_sys_rmdir fs/namei.c:4418 [inline]
- __se_sys_rmdir fs/namei.c:4416 [inline]
- __x64_sys_rmdir+0x47/0x50 fs/namei.c:4416
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f271637dff9
-RSP: 002b:00007f27171e6038 EFLAGS: 00000246 ORIG_RAX: 0000000000000054
-RAX: ffffffffffffffda RBX: 00007f2716536058 RCX: 00007f271637dff9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 00007f27163f0296 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f2716536058 R15: 00007ffc08a709a8
- </TASK>
+If you do not add the Co-developed-by, feel free to carry forward
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/30:
- #0: ffffffff8e937e20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #0: ffffffff8e937e20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #0: ffffffff8e937e20 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6720
-1 lock held by khugepaged/37:
- #0: ffffffff8e9f9028 (lock#3){+.+.}-{3:3}, at: __lru_add_drain_all+0x66/0x560 mm/swap.c:843
-3 locks held by kworker/u8:12/3110:
-2 locks held by getty/4978:
- #0: ffff88803374a0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6a6/0x1e00 drivers/tty/n_tty.c:2211
-6 locks held by syz.4.77/6025:
-2 locks held by syz.4.77/6035:
- #0: ffff88802b2fe420 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff888061fdbf68 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:850 [inline]
- #1: ffff888061fdbf68 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: do_rmdir+0x263/0x580 fs/namei.c:4387
-1 lock held by syz-executor/6680:
- #0: ffffffff8e93d3b8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:297 [inline]
- #0: ffffffff8e93d3b8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x381/0x830 kernel/rcu/tree_exp.h:976
-2 locks held by syz-executor/7146:
-2 locks held by syz.2.238/7877:
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-=============================================
+on the official submission.
 
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.12.0-rc3-syzkaller-00420-g715ca9dd687f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
- watchdog+0xff4/0x1040 kernel/hung_task.c:379
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 7146 Comm: syz-executor Not tainted 6.12.0-rc3-syzkaller-00420-g715ca9dd687f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:lock_acquire+0x1e8/0x550 kernel/locking/lockdep.c:5825
-Code: 02 00 00 41 0f 94 c1 48 8b 7c 24 20 44 89 f6 8b 54 24 1c 48 8b 4c 24 30 4c 8b 44 24 38 6a 00 6a 00 6a 00 ff 75 10 ff 74 24 48 <e8> c3 04 00 00 48 83 c4 28 48 c7 c7 40 dc 0a 8c e8 03 bf 4d 0a b8
-RSP: 0018:ffffc900038d7698 EFLAGS: 00000006
-RAX: 0000000000000001 RBX: ffffc900038d7720 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888012601bd8
-RBP: ffffc900038d7808 R08: 0000000000000001 R09: 0000000000000000
-R10: dffffc0000000000 R11: fffffbfff2037a4e R12: 1ffff9200071aee0
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000246
-FS:  00005555639f4500(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe89d07e48 CR3: 000000007652c000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- __raw_read_lock include/linux/rwlock_api_smp.h:150 [inline]
- _raw_read_lock+0x36/0x50 kernel/locking/spinlock.c:228
- ext4_es_lookup_extent+0x169/0xa90 fs/ext4/extents_status.c:1015
- ext4_map_blocks+0x1f9/0x1960 fs/ext4/inode.c:623
- ext4_readdir+0xb25/0x3a60 fs/ext4/dir.c:182
- iterate_dir+0x571/0x800 fs/readdir.c:108
- __do_sys_getdents64 fs/readdir.c:407 [inline]
- __se_sys_getdents64+0x1d3/0x4a0 fs/readdir.c:392
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f6d7fdb0193
-Code: c1 66 0f 1f 44 00 00 48 83 c4 08 48 89 ef 5b 5d e9 42 43 f8 ff 66 90 b8 ff ff ff 7f 48 39 c2 48 0f 47 d0 b8 d9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 c7 c2 a8 ff ff ff f7 d8
-RSP: 002b:00007fffae72a608 EFLAGS: 00000293 ORIG_RAX: 00000000000000d9
-RAX: ffffffffffffffda RBX: 0000555563a17640 RCX: 00007f6d7fdb0193
-RDX: 0000000000008000 RSI: 0000555563a17640 RDI: 0000000000000006
-RBP: 0000555563a17614 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000001000 R11: 0000000000000293 R12: ffffffffffffffa8
-R13: 0000000000000016 R14: 0000555563a17610 R15: 00007fffae72d9a0
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> ---
+>  drivers/misc/lkdtm/bugs.c           |  2 +-
+>  include/linux/compiler_attributes.h | 13 -------------
+>  include/linux/compiler_types.h      | 19 +++++++++++++++++++
+>  init/Kconfig                        |  8 ++++++++
+>  lib/overflow_kunit.c                |  2 +-
+>  5 files changed, 29 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
+> index 62ba01525479..376047beea3d 100644
+> --- a/drivers/misc/lkdtm/bugs.c
+> +++ b/drivers/misc/lkdtm/bugs.c
+> @@ -445,7 +445,7 @@ static void lkdtm_FAM_BOUNDS(void)
+>  
+>  	pr_err("FAIL: survived access of invalid flexible array member index!\n");
+>  
+> -	if (!__has_attribute(__counted_by__))
+> +	if (!IS_ENABLED(CONFIG_CC_HAS_COUNTED_BY))
+>  		pr_warn("This is expected since this %s was built with a compiler that does not support __counted_by\n",
+>  			lkdtm_kernel_info);
+>  	else if (IS_ENABLED(CONFIG_UBSAN_BOUNDS))
+> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> index 32284cd26d52..c16d4199bf92 100644
+> --- a/include/linux/compiler_attributes.h
+> +++ b/include/linux/compiler_attributes.h
+> @@ -94,19 +94,6 @@
+>  # define __copy(symbol)
+>  #endif
+>  
+> -/*
+> - * Optional: only supported since gcc >= 15
+> - * Optional: only supported since clang >= 18
+> - *
+> - *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
+> - * clang: https://github.com/llvm/llvm-project/pull/76348
+> - */
+> -#if __has_attribute(__counted_by__)
+> -# define __counted_by(member)		__attribute__((__counted_by__(member)))
+> -#else
+> -# define __counted_by(member)
+> -#endif
+> -
+>  /*
+>   * Optional: not supported by gcc
+>   * Optional: only supported since clang >= 14.0
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 1a957ea2f4fe..639be0f30b45 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -323,6 +323,25 @@ struct ftrace_likely_data {
+>  #define __no_sanitize_or_inline __always_inline
+>  #endif
+>  
+> +/*
+> + * Optional: only supported since gcc >= 15
+> + * Optional: only supported since clang >= 18
+> + *
+> + *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
+> + * clang: https://github.com/llvm/llvm-project/pull/76348
+> + *
+> + * __bdos on clang < 19.1.2 can erroneously return 0:
+> + * https://github.com/llvm/llvm-project/pull/110497
+> + *
+> + * __bdos on clang < 19.1.3 can be off by 4:
+> + * https://github.com/llvm/llvm-project/pull/112636
+> + */
+> +#ifdef CONFIG_CC_HAS_COUNTED_BY
+> +# define __counted_by(member)		__attribute__((__counted_by__(member)))
+> +#else
+> +# define __counted_by(member)
+> +#endif
+> +
+>  /*
+>   * Apply __counted_by() when the Endianness matches to increase test coverage.
+>   */
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 530a382ee0fe..5f1fe3583f20 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -116,6 +116,14 @@ config CC_HAS_ASM_INLINE
+>  config CC_HAS_NO_PROFILE_FN_ATTR
+>  	def_bool $(success,echo '__attribute__((no_profile_instrument_function)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
+>  
+> +# clang needs to be at least 19.1.3 to avoid __bdos miscalculations
+> +# https://github.com/llvm/llvm-project/pull/110497
+> +# https://github.com/llvm/llvm-project/pull/112636
+> +# TODO: when gcc 15 is released remove the build test and add gcc version check
+> +config CC_HAS_COUNTED_BY
+> +	def_bool $(success,echo 'struct flex { int count; int array[] __attribute__((__counted_by__(count))); };' | $(CC) $(CLANG_FLAGS) -x c - -c -o /dev/null -Werror)
+> +	depends on !(CC_IS_CLANG && CLANG_VERSION < 190103)
+> +
+>  config PAHOLE_VERSION
+>  	int
+>  	default $(shell,$(srctree)/scripts/pahole-version.sh $(PAHOLE))
+> diff --git a/lib/overflow_kunit.c b/lib/overflow_kunit.c
+> index 2abc78367dd1..5222c6393f11 100644
+> --- a/lib/overflow_kunit.c
+> +++ b/lib/overflow_kunit.c
+> @@ -1187,7 +1187,7 @@ static void DEFINE_FLEX_test(struct kunit *test)
+>  {
+>  	/* Using _RAW_ on a __counted_by struct will initialize "counter" to zero */
+>  	DEFINE_RAW_FLEX(struct foo, two_but_zero, array, 2);
+> -#if __has_attribute(__counted_by__)
+> +#ifdef CONFIG_CC_HAS_COUNTED_BY
+>  	int expected_raw_size = sizeof(struct foo);
+>  #else
+>  	int expected_raw_size = sizeof(struct foo) + 2 * sizeof(s16);
+> -- 
+> 2.47.0
