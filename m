@@ -1,99 +1,157 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1076217F3C
-	for <linux-bcachefs@vger.kernel.org>; Fri, 25 Oct 2024 23:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA201FCC66
+	for <linux-bcachefs@vger.kernel.org>; Fri, 25 Oct 2024 23:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729897354; cv=none; b=ba6wWuWRTTC7Ovpfb3KceuHqyQxw/RgXThgeiIXmN45QDxfPT5BF60SSLoOxDKYWI30Mp+U8z0dXCWpICsHbPA1qBI6j2ci8WsEw2t9ywBoOxP/EFErjcOrcrgLAgpJ7FLH42QP5CxP0GMsixfaQjoMHphR2sOIsG+7pAYyjyWU=
+	t=1729899587; cv=none; b=OD7HD/Wt+awGCIDAfX45PWgSOyBKsxU9E4sNigWwOnJEZ9SzMP2tOyu5msbAQlhwvRNaehMA/rDKZteIkPjtkFQ1JtjrXXfbTT+tSbTnweg0XTog8hIKEjHwqqUx++v27nxGDeLt1AlJmoCEAeGTJfhcL2YMXMt7oBY2Cv6h/oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729897354; c=relaxed/simple;
-	bh=J90Pj19ccmEPx/0yEfSYXuEQcFsXj7M+RYrcVA5Ty+M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bb7CHLgimr+uP3akIGY57zJNL/9gBFZGsNyANCbUJPW8nOfP9hwLXdUcfe1A9plmVs2tSZfPVMbuCmZ0Uea0BhrI7txjkG09X4QyT9i7bRFLcQI+Qxq6WbZA/1QP6brrPOkb86aMf8LnFuMD3V7vp9ByaM0bHyA94l4X6uXijkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Gif7aYCh; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1729899587; c=relaxed/simple;
+	bh=IW7vPXI7BVX8NzADDiT5aIc+IieWqSCcKo2tzaVRMfg=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ShcgdZt7qo7WIjnkKv4UPfqtO/HqObJhHRXVPE02tmIOcinEEpEbHluvHYUlL3AVM2G9M34G3PDzhftaYUj+plSwBr2PEBZPEKlvHNHBJxquzTsK0z/VTQX67egk6d5i5vPiF/Q5K1aWiIEjhhVrBkxrZiOJKpZ1gWCAL+MmifQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=Z2xyqHvq; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Gif7aYCh"
-Date: Fri, 25 Oct 2024 19:02:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729897349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VPzsJzIsAez3i0wMGgH+AnxCK9b1hApXiViSv0TBZ1s=;
-	b=Gif7aYChJYVH9yw9BpNkBpaw8VEZ9m0IlDUbwdt3Bq/CWwHg+M7ckEvqnqkCmZ4JYkg1VS
-	EavXD18x/bjOtIegQezb8eaQmpLOwk3GS5DhhHsJYwNYpXbe869tjF8di41o4tRtRAur5J
-	6L5AteU+4TgLthW8tdifU7kYMHAdSFQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: John Stoffel <john@stoffel.org>
-Cc: manas18244@iiitd.ac.in, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Anup Sharma <anupnewsmail@gmail.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, syzbot+e8eff054face85d7ea41@syzkaller.appspotmail.com
-Subject: Re: [PATCH] Revert "bcachefs: Add asserts to
- bch2_dev_btree_bitmap_marked_sectors()"
-Message-ID: <ecj7k7b7buss7f7vhfzzsvnq6hdka3wziytih42g76yt2zgh3j@lo5f2n2lujk3>
-References: <20241021-revert-assert-bch2-v1-1-e869c7c55bb6@iiitd.ac.in>
- <rd4maufxfunrcpzkoo2jszorzl256fiktw3p5yfpnjpu2ajh4l@5wvkfxwzajax>
- <26394.37450.21740.720541@quad.stoffel.home>
- <bv4dfgmq4wmfcon2thkvhthqjlrpr5h4nmhfuusj4lh2wrj5ao@ckmvt63s67r6>
- <26396.3323.858567.266417@quad.stoffel.home>
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="Z2xyqHvq"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1729899582; x=1730158782;
+	bh=l0pfVjigw5ZvqCB21r+SsSYkMhK0lEHs2lWzwtPAAUc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=Z2xyqHvqPl73wgY/2PJ+SqofoNcYRkexzO/IHM1Q3SM2gWZ6XFJ5l66oF6y041J69
+	 8GnWwTPx/0NjTpr353Kkb6fPqAln7005ZcGdyW4jsPBQnlusDSSutJLrP4wNe8DofE
+	 sy7FBidg+OK6LsR8Yz1RsFPEsSJUI548P4u2gewxr12QtOMUiPRAOtqmW6hz8TBrjT
+	 hl86xoOYlzR568RKrF9gjMos2/XnsNcmXWFaYBcBdXtf25TjTS9kcCbG9LlpT/bWo9
+	 tdnKkSi4kddi2ROh6ALCuyZK0lPHKtP8U2p7L4+oVj0wor4N7p8Q0Z8eL0ZhCLyCOR
+	 SCXIEF9tAhpQg==
+Date: Fri, 25 Oct 2024 23:39:38 +0000
+To: Piotr Zalewski <pZ010001011111@proton.me>
+From: Piotr Zalewski <pZ010001011111@proton.me>
+Cc: Alan Huang <mmpgouride@gmail.com>, Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, skhan@linuxfoundation.org, syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
+Subject: Re: [PATCH] bcachefs: Fix NULL ptr dereference in btree_node_iter_and_journal_peek
+Message-ID: <8aW4pK0ZSmglofzD-Ej0W2ClwAV-1qDS95_nUqwxsw_I4w6gERwlUN-uqb-n2fiMyh5r_1pzEj4vCIBLL5vSJAAnzqTgijxAHB2pRnIFNww=@proton.me>
+In-Reply-To: <L78wBCQQaurE7tyQP_T2Fklx8afGKmTXxDh-gweSzakgUoCwjCYeMHINndXWj4LWdUFpOvynoYeKlE7N0rUMiXYEM_VLDye48iN5ysgM09A=@proton.me>
+References: <20241023072024.98915-3-pZ010001011111@proton.me> <09A7740A-3113-4ABF-8587-8E0A4231DD61@gmail.com> <L78wBCQQaurE7tyQP_T2Fklx8afGKmTXxDh-gweSzakgUoCwjCYeMHINndXWj4LWdUFpOvynoYeKlE7N0rUMiXYEM_VLDye48iN5ysgM09A=@proton.me>
+Feedback-ID: 53478694:user:proton
+X-Pm-Message-ID: e30d18e7309e114e032e52e476fe9bf37bc10238
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26396.3323.858567.266417@quad.stoffel.home>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 25, 2024 at 05:26:19PM -0400, John Stoffel wrote:
-> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
-> 
-> > On Thu, Oct 24, 2024 at 02:30:34PM -0400, John Stoffel wrote:
-> >> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
-> >> 
-> >> > On Mon, Oct 21, 2024 at 10:18:57PM +0530, Manas via B4 Relay wrote:
-> >> >> From: Manas <manas18244@iiitd.ac.in>
-> >> >> 
-> >> >> This reverts commit 60f2b1bcf519416dbffee219132aa949d0c39d0e.
-> >> >> 
-> >> >> This syzbot bug[1] is triggered due to the BUG_ON assertions added in
-> >> >> __bch2_dev_btree_bitmap_mark. During runtime, m->btree_bitmap_shift is
-> >> >> 63 '?'. This triggers both the assertions.
-> >> 
-> >> > The BUG_ON() doesn't need to be deleted; we just need to fix the
-> >> > validation so it doesn't fire (it doesn't particularly matter if it's
-> >> > removed or not, ubsan would catch it without the BUG_ON()).
-> >> 
-> >> Shouldn't the BUG_ON() be replaced with making the filesystem readonly
-> >> instead if you're going to keep it?  I'd rather have the filesystem
-> >> still be mounted and able to be read, but not writeable, instead of
-> >> having my system crash before I can do anything.  
-> 
-> > Not in this case. In general, if there's a chance of the BUG_ON()
-> > hitting in the wild after the code has passed testing then it
-> > shouldn't be a BUG_ON(), but this is low level validation that we're
-> > relying on.
-> 
-> So I'm having a hard time parsing this reply.  And I don't think you
-> make a good case for leaving or even having a BUG_ON() here at all.
-> If there's a chance of it hitting in the wild, it should be removed.
-> But you don't want to remove it because it will never hit?  That's
-> just lazy... :-)   I just don't see why a filesystem should have the
-> opportunity to kill an entire system because that one filesystem has
-> problems.  
+Hi Alan and all,
 
-No, it's not lazy.
+On Wednesday, October 23rd, 2024 at 10:06 AM, Piotr Zalewski <pZ01000101111=
+1@proton.me> wrote:
 
-Code with assertions is much more robust and reliable, because bugs
-shake out faster. An assertion pop is _much, much_ easier to debug than
-wandering off into undefined behaviour land.
+> Hi Alan,
+>
+> On Wednesday, October 23rd, 2024 at 9:33 AM, Alan Huang mmpgouride@gmail.=
+com wrote:
+>
+> > On Oct 23, 2024, at 15:21, Piotr Zalewski pZ010001011111@proton.me wrot=
+e:
+> >
+> > > Add NULL check for key returned from bch2_btree_and_journal_iter_peek=
+ in
+> > > btree_node_iter_and_journal_peek to avoid NULL ptr dereference in
+> > > bch2_bkey_buf_reassemble.
+> >
+> > It would be helpful if the commit message explained why k.k is null in =
+this case
+>
+>
+> I will debug this more thoroughly and provide details. For now I see that
+> during GC it sees journal replay hasn't finished but journal turns out to
+> be empty? Which seems weird, so maybe underlying issue should be solved o=
+n
+> a deeper level.
+>
 
-Assertions are also documentation that can't go out of date.
+There is a clean shutdown detected during recovery. Journal has no entries=
+=20
+as it was confirmed by debugging bch2_fs_journal_start. seq and seq_ondisk=
+=20
+members are equal so journal is "quiesced". Also, journal_keys size is 0.
 
-They make later refactoring much safer and easier, as well.
+So in check_allocations when keys are being marked for GC journal replay is
+not done so it peeks into journal and there is nothing.
+
+Now, maybe in case journal is empty during start, replay done should be set=
+=20
+already in bch2_fs_journal_start? I tested it and it fixed the issue as wel=
+l.
+```
+diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
+index 2cf8f24d50cc..67b342d23346 100644
+--- a/fs/bcachefs/journal.c
++++ b/fs/bcachefs/journal.c
+@@ -1287,6 +1287,9 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_=
+seq)
+        spin_lock(&j->lock);
+
+        set_bit(JOURNAL_running, &j->flags);
++       if (!had_entries) {
++               set_bit(JOURNAL_replay_done, &j->flags);
++       }
+        j->last_flush_write =3D jiffies;
+
+        j->reservations.idx =3D j->reservations.unwritten_idx =3D journal_c=
+ur_seq(j);
+```
+
+
+(But at the same time there is a check for whether there were entries just=
+=20
+above the code which sets journal running so it seems unlikely that if it's=
+=20
+correct approach it's not yet there).
+
+(In need of some pointer/explanation)
+
+>
+> > > Reported-by: syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
+> > > Closes: https://syzkaller.appspot.com/bug?extid=3D005ef9aa519f30d9765=
+7
+> > > Fixes: 5222a4607cd8 ("bcachefs: BTREE_ITER_WITH_JOURNAL")
+> > > Signed-off-by: Piotr Zalewski pZ010001011111@proton.me
+> > > ---
+> > > fs/bcachefs/btree_iter.c | 3 +++
+> > > 1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
+> > > index 0883cf6e1a3e..625167ce191f 100644
+> > > --- a/fs/bcachefs/btree_iter.c
+> > > +++ b/fs/bcachefs/btree_iter.c
+> > > @@ -882,6 +882,8 @@ static noinline int btree_node_iter_and_journal_p=
+eek(struct btree_trans *trans,
+> > > __bch2_btree_and_journal_iter_init_node_iter(trans, &jiter, l->b, l->=
+iter, path->pos);
+> > >
+> > > k =3D bch2_btree_and_journal_iter_peek(&jiter);
+> > > + if (!k.k)
+> > > + goto err;
+> > >
+> > > bch2_bkey_buf_reassemble(out, c, k);
+> > >
+> > > @@ -889,6 +891,7 @@ static noinline int btree_node_iter_and_journal_p=
+eek(struct btree_trans *trans,
+> > > c->opts.btree_node_prefetch)
+> > > ret =3D btree_path_prefetch_j(trans, path, &jiter);
+> > >
+> > > +err:
+> > > bch2_btree_and_journal_iter_exit(&jiter);
+> > > return ret;
+> > > }
+> > > --
+> > > 2.47.0
+>
+Best regards, Piotr Zalewski
