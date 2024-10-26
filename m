@@ -1,36 +1,38 @@
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952FB1C3301
-	for <linux-bcachefs@vger.kernel.org>; Sat, 26 Oct 2024 10:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A8D1632C1;
+	Sat, 26 Oct 2024 10:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729938425; cv=none; b=RukLC4QxG7i4jquZwTx+m7oy6Q7jBUz3GxHr8NmjVwQe5ujpF+9mp6+VubX0FUQcbLMsQ3w1TvpRAVVX6QsJvLtjyHEJlCpuDsE9G+lOFQvqJ0wv2BJoQmkOMB/jRmxB2RFa6zEDATnElOmiE9FTy15Pwso37Zh7ZhTKTSt2rkg=
+	t=1729939680; cv=none; b=S+7bPaTSF9gqJyuB3o/zXxekSAdul4SeTf0Kr98XDPWEG285lNXL9FVOxZ8kleHBkQlOg8ZHn4P0FKqjybdwfEThMWmF7S0EKsIwiR9uTUtW/nAVX17XHrkyoNwp0oKez/AYxFj8+zHGOrPcHrCWj4MiRO7baiwvgHCMNI3uZ3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729938425; c=relaxed/simple;
-	bh=V+rwDCdH36r0nlyU5l3+NmpUjs3LKBdjT9RLLRzXjDc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O+vwE2VWq6GPR+Ris7r0Qi/LPg/Y6YJqbgiGofNiyHD5AVYWKZ4V3a+PdziMPhABrYiJ/ARQ7/r14Sb0+BpqoKXb1gCp8q41qw2AlV+ZHkXIdb7z2g7xZn2SZDH5txNW8zGRLMzt2H7RYRFLHgsaTc1BZg8boEqAD4RE31jEYCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4XbG461lxBz1T96L;
-	Sat, 26 Oct 2024 18:24:54 +0800 (CST)
-Received: from kwepemd200011.china.huawei.com (unknown [7.221.188.251])
-	by mail.maildlp.com (Postfix) with ESMTPS id C8B941400DC;
-	Sat, 26 Oct 2024 18:26:59 +0800 (CST)
-Received: from cgs.huawei.com (10.244.148.83) by
- kwepemd200011.china.huawei.com (7.221.188.251) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Sat, 26 Oct 2024 18:26:59 +0800
-From: Gaosheng Cui <cuigaosheng1@huawei.com>
-To: <kent.overstreet@linux.dev>, <cuigaosheng1@huawei.com>,
-	<wangweiyang2@huawei.com>
-CC: <linux-bcachefs@vger.kernel.org>
-Subject: [PATCH -next] bcachefs: fix possible null-ptr-deref in __bch2_ec_stripe_head_get()
-Date: Sat, 26 Oct 2024 18:26:58 +0800
-Message-ID: <20241026102658.1184351-1-cuigaosheng1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1729939680; c=relaxed/simple;
+	bh=1Bu5O4wbBSnxBGu1Uvr2iiI4h7/bwwNKK3bUAUklt/s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MFnj6KR/Xo0PU7UJd6o/RlAaHSnC47UZj4UkslCxpJ6K+0R0NSZucvag1CO5JVHwUVzcEdXNt50pOpRJTK9/UUqLjU5Y7wWQ+i7VtuA5q9z89knpPN0L48qpCU2QonI5CzRTgclijR1AEnflfJRiABHnzCnxqKEBOJ9b2CeCSIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Fv2/630o; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Fv2/630o"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729939675;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kfDq2ciDIudEXlpQN6LS8uZ5p5AHSvkIn8aMLnqbNOU=;
+	b=Fv2/630oBtfrKk/gFNG1YxyWTiu1RF9F/R+iTKoYfrXHVAwpcaiJyA/wwWP78QMtuT8W3j
+	r+bCv+yKJNpt0caSJW5cTHrVx59DnhloeE9vk19iLzGvKUxlIGXzQr9xbX9UbD3bGfCHy4
+	oxl7yio141NNia0FUK0TeGWE50RsqwY=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] bcachefs: Use str_write_read() helper in write_super_endio()
+Date: Sat, 26 Oct 2024 12:47:23 +0200
+Message-ID: <20241026104723.22416-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -38,35 +40,36 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd200011.china.huawei.com (7.221.188.251)
+X-Migadu-Flow: FLOW_OUT
 
-The function ec_new_stripe_head_alloc() returns nullptr if kzalloc()
-fails. It is crucial to verify its return value before dereferencing
-it to avoid a potential nullptr dereference.
+Remove hard-coded strings by using the str_write_read() helper function.
 
-Fixes: 035d72f72c91 ("bcachefs: bch2_ec_stripe_head_get() now checks for change in rw devices")
-Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
- fs/bcachefs/ec.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/bcachefs/super-io.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-index 25d20f73df60..b24089733467 100644
---- a/fs/bcachefs/ec.c
-+++ b/fs/bcachefs/ec.c
-@@ -1859,6 +1859,10 @@ __bch2_ec_stripe_head_get(struct btree_trans *trans,
- 		}
+diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+index ce7410d72089..557673ee2535 100644
+--- a/fs/bcachefs/super-io.c
++++ b/fs/bcachefs/super-io.c
+@@ -23,6 +23,7 @@
  
- 	h = ec_new_stripe_head_alloc(c, disk_label, algo, redundancy, watermark);
-+	if (!h) {
-+		h = ERR_PTR(-ENOMEM);
-+		goto err;
-+	}
- found:
- 	if (h->rw_devs_change_count != c->rw_devs_change_count)
- 		ec_stripe_head_devs_update(c, h);
+ #include <linux/backing-dev.h>
+ #include <linux/sort.h>
++#include <linux/string_choices.h>
+ 
+ static const struct blk_holder_ops bch2_sb_handle_bdev_ops = {
+ };
+@@ -873,7 +874,7 @@ static void write_super_endio(struct bio *bio)
+ 			       ? BCH_MEMBER_ERROR_write
+ 			       : BCH_MEMBER_ERROR_read,
+ 			       "superblock %s error: %s",
+-			       bio_data_dir(bio) ? "write" : "read",
++			       str_write_read(bio_data_dir(bio)),
+ 			       bch2_blk_status_to_str(bio->bi_status)))
+ 		ca->sb_write_error = 1;
+ 
 -- 
-2.25.1
+2.47.0
 
