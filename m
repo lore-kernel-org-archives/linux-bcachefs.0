@@ -1,43 +1,36 @@
-Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4001670839
-	for <linux-bcachefs@vger.kernel.org>; Sat, 26 Oct 2024 04:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA668CA5A
+	for <linux-bcachefs@vger.kernel.org>; Sat, 26 Oct 2024 05:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729916955; cv=none; b=ZohCcRQv7mrBT5ceTnaTIMcUQ7wCWUwnEuMk5jWfQB2WqemfO6G6/C6Kb4WFBpW70I0Fxj7p8NNKPy7wbry0CeGFHgzaI+7xyqSfLtRFY4WITERlQMD83iqLB+ocHBJb2sq7CNndhEGPqMdT6SZVoi/TzXjIS7GZe/DFQuXQhxM=
+	t=1729921608; cv=none; b=WLEJXHMB0KZogDifBosWpYrbbUduOuwAjBEi0oVUfQRp8j/xfiJ+q4chp5p1TVP0sX0MITi4mJ660ZXu6HGX45VWJeU28wuXFHB2BgLeKmI1A+lsIU1pgArUH73r9w2fO2CbnuRpDyVBaQUvbB/2iHYctSeM7RomixHr6niu3NY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729916955; c=relaxed/simple;
-	bh=Gbz1S1gL4TFwdAhJkhrlbvgnhBGD4ZfgCW77PfqpjK4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pUXeXDnyq6L5zVg+y0gkulFUHCMRLbeVamF82GwvWVeEqihsM3C28jAoyEmS+sX2flolGdhHcMvDYJBlp/BwIDUl2Mv1wAJlvKzzGFrbHbVJe1c57BTceVveBEkJ0P3SzS4fJBf3Etm3gB2Fenjcm5g11Ae99gZNVXG4Z2G8l3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=W9Ch3qxq; arc=none smtp.client-ip=104.245.9.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
+	s=arc-20240116; t=1729921608; c=relaxed/simple;
+	bh=jIdUeNdWTY25RCzlkRPkK+0PI1ucJGZGWT5tsnq4zQg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kTheeKAgxrGEmkhrmX+gs8xxhvm5uuUM+O21VkH3CFDFTsE3nomxWqJLJCKsYhjb4UsSDKbAwTGaNNna3dETi5Eptsd175PeYbl5+FvjBPOzz/X+YWKjdojQLx/U9UuwyOEIGPaIu0nlqiS1arNUWKHVyp1mYBNi3W/90PygyLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C3RgQMxT; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="W9Ch3qxq"
-DKIM-Signature: a=rsa-sha256; bh=OMIgrC7YNVCP8CFPFK3RoWlk+jesGqyN4klaqnsfAYM=;
- c=relaxed/relaxed; d=archlinuxcn.org;
- h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
- i=@archlinuxcn.org; s=default; t=1729916929; v=1; x=1730348929;
- b=W9Ch3qxqV4Pcnu4Fubrk4RCvdrmPAMiK1Pn6Gh0JTzk4mNAi391zENYtch/THFCYV3LvJ0sx
- xW7ot1scvxGWJuCuqUcR1DiRtipBk1x0kZr5CZO/6uEDmTOHACzeDAuafQ3pscHKU18rzMI7JhT
- SzwjQsvQp48joFl5zNxoy6mqBMhwzMCSP+IQmEwXEcJPzH9igknk5N3C2g0hv4MNjG+CqdJZoL6
- 2a5WiWrHv8AGCLl3uNs3kHihPIRmp55paV6iyF3bApc7eBsB1ktcspEWSAqkCrBZwxBDRvdbaxy
- BudheoWkDubRvVe7PJGARB/csXvJrHADzqjbww9lFASrg==
-Received: by wiki.archlinuxcn.org (envelope-sender
- <integral@archlinuxcn.org>) with ESMTPS id e17cfa9e; Sat, 26 Oct 2024
- 12:28:49 +0800
-From: Integral <integral@archlinuxcn.org>
-To: kent.overstreet@gmail.com,
-	kent.overstreet@linux.dev,
-	lihongbo22@huawei.com
-Cc: mmpgouride@gmail.com,
-	linux-bcachefs@vger.kernel.org,
-	integral@archlinuxcn.org
-Subject: [PATCH resend] bcachefs-tools: fix build failure when BCACHEFS_FUSE=1
-Date: Sat, 26 Oct 2024 12:28:09 +0800
-Message-ID: <20241026042807.483324-3-integral@archlinuxcn.org>
-X-Mailer: git-send-email 2.47.0
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C3RgQMxT"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729921603;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UA7LxYsexH7TaTLMb5Ze/CyWACqWVXpQcVXbi2oryIo=;
+	b=C3RgQMxTDzzJ3aM+gp4Il2/s9a0RcjKDDsuKa0SWmegN+nMRCHRmdQEHvvJafOrl88d1xR
+	idlL3E1PQ7+t8ZcW5KllRuiWfC0tQv2+l90dkVmOHvxu4wXCFzg4V79xz3o+qZLlfgB24H
+	3/obiCpm24rvhAhYDl2DUG8KOxMWFzs=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH] bcachefs: Improve trace_rebalance_extent
+Date: Sat, 26 Oct 2024 01:46:28 -0400
+Message-ID: <20241026054628.2238952-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -45,56 +38,171 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Currently, when BCACHEFS_FUSE=1 is set, bcachefs-tools failed to build.
-Replace "bch2_trans_do()" macro with "bch2_trans_commit_do()" in
-cmd_fusemount.c to fix build failure.
+We now say explicitly which pointers are being moved or compressed
 
-Signed-off-by: Integral <integral@archlinuxcn.org>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- c_src/cmd_fusemount.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/bcachefs/extents.c   | 35 +++--------------------------
+ fs/bcachefs/rebalance.c | 26 +++++++++++++++++-----
+ fs/bcachefs/rebalance.h | 49 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 73 insertions(+), 37 deletions(-)
 
-diff --git a/c_src/cmd_fusemount.c b/c_src/cmd_fusemount.c
-index 50d35832..babdb6fb 100644
---- a/c_src/cmd_fusemount.c
-+++ b/c_src/cmd_fusemount.c
-@@ -242,7 +242,7 @@ static int do_create(struct bch_fs *c, subvol_inum dir,
+diff --git a/fs/bcachefs/extents.c b/fs/bcachefs/extents.c
+index 8376d2a95c86..d4f6032deb8b 100644
+--- a/fs/bcachefs/extents.c
++++ b/fs/bcachefs/extents.c
+@@ -21,6 +21,7 @@
+ #include "extents.h"
+ #include "inode.h"
+ #include "journal.h"
++#include "rebalance.h"
+ #include "replicas.h"
+ #include "super.h"
+ #include "super-io.h"
+@@ -1406,39 +1407,9 @@ unsigned bch2_bkey_ptrs_need_rebalance(struct bch_fs *c,
+ 				       struct bkey_s_c k)
+ {
+ 	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
+-	unsigned rewrite_ptrs = 0;
  
- 	bch2_inode_init_early(c, new_inode);
+-	if (opts->background_compression) {
+-		unsigned compression_type = bch2_compression_opt_to_type(opts->background_compression);
+-		const union bch_extent_entry *entry;
+-		struct extent_ptr_decoded p;
+-		unsigned ptr_bit = 1;
+-
+-		bkey_for_each_ptr_decode(k.k, ptrs, p, entry) {
+-			if (p.crc.compression_type == BCH_COMPRESSION_TYPE_incompressible ||
+-			    p.ptr.unwritten) {
+-				rewrite_ptrs = 0;
+-				goto incompressible;
+-			}
+-
+-			if (!p.ptr.cached && p.crc.compression_type != compression_type)
+-				rewrite_ptrs |= ptr_bit;
+-			ptr_bit <<= 1;
+-		}
+-	}
+-incompressible:
+-	if (opts->background_target &&
+-	    bch2_target_accepts_data(c, BCH_DATA_user, opts->background_target)) {
+-		unsigned ptr_bit = 1;
+-
+-		bkey_for_each_ptr(ptrs, ptr) {
+-			if (!ptr->cached && !bch2_dev_in_target(c, ptr->dev, opts->background_target))
+-				rewrite_ptrs |= ptr_bit;
+-			ptr_bit <<= 1;
+-		}
+-	}
+-
+-	return rewrite_ptrs;
++	return bch2_bkey_ptrs_need_compress(c, opts, k, ptrs) |
++		bch2_bkey_ptrs_need_move(c, opts, ptrs);
+ }
  
--	return bch2_trans_do(c, NULL, NULL, 0,
-+	return bch2_trans_commit_do(c, NULL, NULL, 0,
- 			bch2_create_trans(trans,
- 				dir, &dir_u,
- 				new_inode, &qstr,
-@@ -295,7 +295,7 @@ static void bcachefs_fuse_unlink(fuse_req_t req, fuse_ino_t dir_ino,
+ u64 bch2_bkey_sectors_need_rebalance(struct bch_fs *c, struct bkey_s_c k)
+diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
+index 3be9c85dd55d..124da250cbe7 100644
+--- a/fs/bcachefs/rebalance.c
++++ b/fs/bcachefs/rebalance.c
+@@ -177,12 +177,28 @@ static struct bkey_s_c next_rebalance_extent(struct btree_trans *trans,
+ 	if (trace_rebalance_extent_enabled()) {
+ 		struct printbuf buf = PRINTBUF;
  
- 	fuse_log(FUSE_LOG_DEBUG, "bcachefs_fuse_unlink(%llu, %s)\n", dir.inum, name);
+-		prt_str(&buf, "target=");
+-		bch2_target_to_text(&buf, c, io_opts->background_target);
+-		prt_str(&buf, " compression=");
+-		bch2_compression_opt_to_text(&buf, io_opts->background_compression);
+-		prt_str(&buf, " ");
+ 		bch2_bkey_val_to_text(&buf, c, k);
++		prt_newline(&buf);
++
++		struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
++
++		unsigned p = bch2_bkey_ptrs_need_compress(c, io_opts, k, ptrs);
++		if (p) {
++			prt_str(&buf, "compression=");
++			bch2_compression_opt_to_text(&buf, io_opts->background_compression);
++			prt_str(&buf, " ");
++			bch2_prt_u64_base2(&buf, p);
++			prt_newline(&buf);
++		}
++
++		p = bch2_bkey_ptrs_need_move(c, io_opts, ptrs);
++		if (p) {
++			prt_str(&buf, "move=");
++			bch2_target_to_text(&buf, c, io_opts->background_target);
++			prt_str(&buf, " ");
++			bch2_prt_u64_base2(&buf, p);
++			prt_newline(&buf);
++		}
  
--	int ret = bch2_trans_do(c, NULL, NULL,
-+	int ret = bch2_trans_commit_do(c, NULL, NULL,
- 				BCH_TRANS_COMMIT_no_enospc,
- 			    bch2_unlink_trans(trans, dir, &dir_u,
- 					      &inode_u, &qstr, false));
-@@ -330,7 +330,7 @@ static void bcachefs_fuse_rename(fuse_req_t req,
- 		 src_dir.inum, srcname, dst_dir.inum, dstname, flags);
+ 		trace_rebalance_extent(c, buf.buf);
+ 		printbuf_exit(&buf);
+diff --git a/fs/bcachefs/rebalance.h b/fs/bcachefs/rebalance.h
+index 791649c04ff5..606c88f49f7f 100644
+--- a/fs/bcachefs/rebalance.h
++++ b/fs/bcachefs/rebalance.h
+@@ -2,8 +2,57 @@
+ #ifndef _BCACHEFS_REBALANCE_H
+ #define _BCACHEFS_REBALANCE_H
  
- 	/* XXX handle overwrites */
--	ret = bch2_trans_do(c, NULL, NULL, 0,
-+	ret = bch2_trans_commit_do(c, NULL, NULL, 0,
- 		bch2_rename_trans(trans,
- 				  src_dir, &src_dir_u,
- 				  dst_dir, &dst_dir_u,
-@@ -354,7 +354,7 @@ static void bcachefs_fuse_link(fuse_req_t req, fuse_ino_t ino,
- 	fuse_log(FUSE_LOG_DEBUG, "bcachefs_fuse_link(%llu, %llu, %s)\n",
- 		 inum.inum, newparent.inum, newname);
++#include "compress.h"
++#include "disk_groups.h"
+ #include "rebalance_types.h"
  
--	ret = bch2_trans_do(c, NULL, NULL, 0,
-+	ret = bch2_trans_commit_do(c, NULL, NULL, 0,
- 			    bch2_link_trans(trans, newparent, &dir_u,
- 					    inum, &inode_u, &qstr));
- 
++static inline unsigned bch2_bkey_ptrs_need_compress(struct bch_fs *c,
++					   struct bch_io_opts *opts,
++					   struct bkey_s_c k,
++					   struct bkey_ptrs_c ptrs)
++{
++	if (!opts->background_compression)
++		return 0;
++
++	unsigned compression_type = bch2_compression_opt_to_type(opts->background_compression);
++	const union bch_extent_entry *entry;
++	struct extent_ptr_decoded p;
++	unsigned ptr_bit = 1;
++	unsigned rewrite_ptrs = 0;
++
++	bkey_for_each_ptr_decode(k.k, ptrs, p, entry) {
++		if (p.crc.compression_type == BCH_COMPRESSION_TYPE_incompressible ||
++		    p.ptr.unwritten)
++			return 0;
++
++		if (!p.ptr.cached && p.crc.compression_type != compression_type)
++			rewrite_ptrs |= ptr_bit;
++		ptr_bit <<= 1;
++	}
++
++	return rewrite_ptrs;
++}
++
++static inline unsigned bch2_bkey_ptrs_need_move(struct bch_fs *c,
++				       struct bch_io_opts *opts,
++				       struct bkey_ptrs_c ptrs)
++{
++	if (!opts->background_target ||
++	    !bch2_target_accepts_data(c, BCH_DATA_user, opts->background_target))
++		return 0;
++
++	unsigned ptr_bit = 1;
++	unsigned rewrite_ptrs = 0;
++
++	bkey_for_each_ptr(ptrs, ptr) {
++		if (!ptr->cached && !bch2_dev_in_target(c, ptr->dev, opts->background_target))
++			rewrite_ptrs |= ptr_bit;
++		ptr_bit <<= 1;
++	}
++
++	return rewrite_ptrs;
++}
++
+ int bch2_set_rebalance_needs_scan_trans(struct btree_trans *, u64);
+ int bch2_set_rebalance_needs_scan(struct bch_fs *, u64 inum);
+ int bch2_set_fs_needs_rebalance(struct bch_fs *);
 -- 
-2.47.0
+2.45.2
 
