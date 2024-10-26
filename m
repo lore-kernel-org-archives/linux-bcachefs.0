@@ -1,43 +1,40 @@
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A457F101C8
-	for <linux-bcachefs@vger.kernel.org>; Sat, 26 Oct 2024 00:16:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC6510F1
+	for <linux-bcachefs@vger.kernel.org>; Sat, 26 Oct 2024 00:23:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729901793; cv=none; b=ko3N4LQh5MDu207kzX1Otw9KUlJhvP+HbORupMF8tpkKt7qZGlEYvl66eStgDYaoRLFp5pQHJuffLtiQMcDGv8DvTO8oa19yXW5dfM8ffdCpQqBvxF9BkA6k3qeJM82g/bLhAJ1+AEyFu1f/yOVv+nxpR2RYET1EkN6W6d1Wt8M=
+	t=1729902197; cv=none; b=t6DbAFzxJzcX9YOwcf3hcCTT3ZOKcJpiX/E+ZYdUucQcBD9LyDUzQmceqFjBzyEyqeDyG+BQCGuEUqgi8pu5P21IpUcuDLM+iuLiaRgbx3v0CIMMmeu5uiTwO2K6H8TOUoCxgXZOiaaYMASX+CSlqGVtmcePA15N/71Xe0YeBoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729901793; c=relaxed/simple;
-	bh=/q6mYPumxLMEvjS42sidS1mVtyYVrj6b1U7jbM+8hro=;
+	s=arc-20240116; t=1729902197; c=relaxed/simple;
+	bh=vjPDS2XLFzMchjTvdzKCjt7QlM0OyDWJ343ZEeiQT8s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JdFxfYQN9J2roTAiyj08XnawJTxuSvQmmZSkzt6NtPVfkUkbgPyZ70bAInNFp8kPvqOmibJEKlyhGVKi5k3+zuf/8J7FB2km4s3MEXE+vridY2p6NOZGo1kaRgxnBQZXu0fLQ0yNLH3rzCph7Qil5t9pn2o9fJLi3vNcAuhk6cI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xZ9H4L7F; arc=none smtp.client-ip=91.218.175.186
+	 Content-Type:Content-Disposition:In-Reply-To; b=h8J/Cb5Fim0rXy5j7SUrtSpGCHmW2wtqJKsZITjOwAmWclH+tJBHrwdN2Y4yDEHSEjkPetn5K1PJCtaZUKKyEggZ3wAfYgQEJAl7UQPRPpHb4LIs8F8Oeld8WGWldifpaZs+U1cvm8xxs7pmuwWPktViSEQQaWJrZt/vdoaClPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TxAqF15g; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xZ9H4L7F"
-Date: Fri, 25 Oct 2024 20:16:24 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TxAqF15g"
+Date: Fri, 25 Oct 2024 20:23:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729901789;
+	t=1729902192;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MQcQks05pR8c0e7hTYUF2oLSCrdVwTNMYWYjeMrrqtM=;
-	b=xZ9H4L7FxXxLObC+fAhAxngco/dpfzvxFZgaT3QAhr6CVs7ldrMQr4tAKni6GQDECbSja6
-	+IMiqRPYUlNuWb4Gq6zuYTUyjLIVQZd63FNDrGHfwX9pnxWrXsIAsOMv2PyVDk8ykHujSH
-	38sgcdQG9znVZDuTdbXRt03HAMriuyo=
+	bh=Zln656fLILe5+FldK6VGSbLarwFZ/Nz4YIO40Ssj2Tc=;
+	b=TxAqF15gB/aJI/WuEb+NLUjwRUX8g91GsnSTSHGix0WUEPW2gNSRu4sNmBcnehNcN7Zlhh
+	DvHf+sYZv8vZ3PHfFOe1gEfcwyqnUNpv05VUb7XJdel/eqmwRXS4wNRu3jfxfqdc7s+8Az
+	SOaNKevTvbdtZ6LBtUyny3uQyYWD1dU=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Alan Huang <mmpgouride@gmail.com>
-Cc: Piotr Zalewski <pZ010001011111@proton.me>, 
-	linux-bcachefs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, skhan@linuxfoundation.org, 
-	syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: Fix NULL ptr dereference in
- btree_node_iter_and_journal_peek
-Message-ID: <6uve5q7c6o4bvuifa2klcwpussxpy5cvcjf2pqdezfuvneqjaz@kdj67a2ehnrf>
-References: <20241023072024.98915-3-pZ010001011111@proton.me>
- <09A7740A-3113-4ABF-8587-8E0A4231DD61@gmail.com>
- <udcnrneobxa2nmwg47jrks6j67bsulaw7s43oldd5l3ge5wunp@r5rzrwwgzls6>
+To: Piotr Zalewski <pZ010001011111@proton.me>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	skhan@linuxfoundation.org, syzbot+2b6a17991a6af64f9489@syzkaller.appspotmail.com
+Subject: Re: [PATCH v3] bcachefs: init freespace inited bits to 0 in
+ bch2_fs_initialize
+Message-ID: <imdw6j26f4krg3ztq2lmftcli5qzls5b6u673tlyhwux7sk7cl@f54h5kwbclsu>
+References: <20241026001004.10470-2-pZ010001011111@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -46,30 +43,22 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <udcnrneobxa2nmwg47jrks6j67bsulaw7s43oldd5l3ge5wunp@r5rzrwwgzls6>
+In-Reply-To: <20241026001004.10470-2-pZ010001011111@proton.me>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Oct 25, 2024 at 08:11:50PM -0400, Kent Overstreet wrote:
-> On Wed, Oct 23, 2024 at 03:33:22PM +0800, Alan Huang wrote:
-> > On Oct 23, 2024, at 15:21, Piotr Zalewski <pZ010001011111@proton.me> wrote:
-> > > 
-> > > Add NULL check for key returned from bch2_btree_and_journal_iter_peek in
-> > > btree_node_iter_and_journal_peek to avoid NULL ptr dereference in
-> > > bch2_bkey_buf_reassemble.
-> > 
-> > It would be helpful if the commit message explained why k.k is null in this case
+On Sat, Oct 26, 2024 at 12:15:49AM +0000, Piotr Zalewski wrote:
+> Initialize freespace_initialized bits to 0 in member's flags and update
+> member's cached version for each device in bch2_fs_initialize.
 > 
-> This code is only for iterating over interior btree nodes - k.k is only
-> null when we have a bad btree topology (gaps).
+> It's possible for the bits to be set to 1 before fs is initialized and if
+> call to bch2_trans_mark_dev_sbs (just before bch2_fs_freespace_init) fails
+> bits remain to be 1 which can later indirectly trigger BUG condition in
+> bch2_bucket_alloc_freelist during shutdown.
 > 
-> Piotr, could you add a comment to that effect?
+> Reported-by: syzbot+2b6a17991a6af64f9489@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=2b6a17991a6af64f9489
+> Fixes: bbe682c76789 ("bcachefs: Ensure devices are always correctly initialized")
+> Suggested-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Piotr Zalewski <pZ010001011111@proton.me>
 
-Actually, not just that - when this happens we should flag the
-filesystem as having topology repairs, and possibly start topology
-repair.
-
-Calling bch2_topology_error() will do that.
-
-We definitely want to log an error message, too; it should reference the
-btree node we're iterating over and explain that it's missing child
-nodes.
+Thanks, applied
