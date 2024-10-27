@@ -1,121 +1,143 @@
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56163126C18
-	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 19:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683768460
+	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 19:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730058426; cv=none; b=MVcujsTiP7D6s8h9QbGOw3iQPZO/YBXLuc67FZTXXkLAX49S4tfjH7lPDA7AWQ0z3iPRKqs5aoIv+FTR5kwhMwBmx6KnPdUZKtm5qQxEKB2zz7sRlk7MpPTmMXAPnWiDmTLh5FkUuSJVQfq9l+LNiMve4q/RRmaLGZuL6C7BWdo=
+	t=1730059100; cv=none; b=sjO0hehaWwd2aY1ELJO5/KhHknsrRfpf3WBLcTJQtNyNMJZ9jiNj6UbDI0XMeV5IdbYl8sT++tYW1IMaRkZ1NnnnP1fb0YKocPP998hTPLsMKXdjUwNuxV+2kQWALJsDEgXwyfDY7SHQWE6QcSNTRgvuGdpDS9TLNbNEi/AEY6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730058426; c=relaxed/simple;
-	bh=yx7OKnMmxkaItU6s2bHO2Y8kAkumLtwqxfzQ1PKIJsk=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=V2NS6+5wkfK60G7LEVh0pP6laEYzxW4md19ky1gJ8sI5iicGMeVACyOa1WjAMfDjv59wJTwjh3z3BfvPga/lRNaykVpYBsqFelIKzMA21+JuklcIxdIpVt8BMdHwW+wzeL6sY1bFLTIbUEm2nLhMiM0qEo3Vqa6ruFh0eXzgMjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=hpQ68OKH; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+	s=arc-20240116; t=1730059100; c=relaxed/simple;
+	bh=8bE01uUBLzFJ4PrLpVxfeHVNDk2HpZahgtSel7W0b/M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OYx8z24w4ATJNFBhz3gpDqZbMIlKZ5ceVs0bnWdVdFMqI+TEi713AMcMsx2fIVjhUMnFwf3W9uUH9csoS2etwjTWW4+hNJTkrXyG2uDIqk0fG43K1pi/piO4VfoXPPYp2oPlXbNPq/YysKWmUCHX81sLpKunntkhw1BibwggSsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dR/OPLl4; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="hpQ68OKH"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1730058415; x=1730317615;
-	bh=rBYrbCgFaMolyV5f9SMDe1X9M83MQXaQsQ9KhjScgm8=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=hpQ68OKH1Gr44wXmFZstKys8hQ2dYMfEYJ1tF8ZrZ63IkixSPIzi+4RbDIgAhfJtu
-	 sbhR6xOuClADk8Cur6YrIGtms84MoO7gBxe4wbilaUCTVFstIOiX0Hz8QMC6NnubJ6
-	 JhMb4EWgn4Wf8TSyVvz6bM/VRw98gK+62inxSttHQdAEQWAkkzOcfIY1tPlYGvC9S0
-	 1A6zON80wj0HuC0BRoMYWgorP2cg/xq55CjAz6HCXJlZpUOGPyHoaLgjIIekD3K1zH
-	 XUNWmZbyE/u1FgoEuWiItTLsNFA+y5oxy50OG81UuZkCIR2Dam7R44ba83T7C/56q0
-	 jXiWR2859DK0Q==
-Date: Sun, 27 Oct 2024 19:46:52 +0000
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-From: Piotr Zalewski <pZ010001011111@proton.me>
-Cc: skhan@linuxfoundation.org, Piotr Zalewski <pZ010001011111@proton.me>, syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com, Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH v3] bcachefs: Fix NULL ptr dereference in btree_node_iter_and_journal_peek
-Message-ID: <20241027193842.154220-2-pZ010001011111@proton.me>
-Feedback-ID: 53478694:user:proton
-X-Pm-Message-ID: 1b0b1b9852f05303eac84019b51a819f66b46bad
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dR/OPLl4"
+Date: Sun, 27 Oct 2024 15:58:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730059095;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jl9RE+0N8YfJ1XW1XaPbXD0GLkglTkP7Mz1u51Q5s38=;
+	b=dR/OPLl47aKrncYYRCAx9bV0BcETFA8FZrlmxQdGTsYgqFEzVPEqyiB5XKMIDaMiXyiS9D
+	7byBKaC4s9E+jfLi4BPsGm+MPtuOFNbOOZKqM3sNx9M8w5DuFDuoAEnEt0mtDLaApSZjBB
+	BDyOVHUWpJz82smsUY0VTbL4gTF8JKA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
+	linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>, 
+	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] mm: Drop INT_MAX limit from kvmalloc()
+Message-ID: <la4btdzbgouyyyggx2h67keldt4ak5mhbn3huxygwpa5tooh5w@dutiusw5jz6n>
+References: <zfr4sh3wtzi4viladlgwyon6voqhcj5fe3fv2nc3hqyyxdw5wd@onyj3r2m3usz>
+ <CAHk-=wi=PrbZnwnvhKEF6UUQNCZdNsUbr+hk-jOWGr-q4Mmz=Q@mail.gmail.com>
+ <m46mlvv57oypstekojhkdwpts6mi4r63l4kugs4lpry3d2r7dq@kbmied6nzsc3>
+ <CAHk-=wg8iZWDbX_MAujGtqHJYQneKBwDJnVAY94siNr1gLmtaA@mail.gmail.com>
+ <CAHk-=wiW_QZ9VS3Ho2Ff8ZDp-T6SomDFrVPWG3abs45LMZpxZQ@mail.gmail.com>
+ <6eo3gekf6twbnzhpsi2emz2s6sgtof6iba2rvbor7himmejoq5@qbfwtpbpvqoe>
+ <CAHk-=wga3FXReWVhU2eid8+sXhBF1QgP1iMJu1jnSX6fapoyXQ@mail.gmail.com>
+ <ikaf72w2oap3crjrybbd5jp267slnb7dygz4m62dfw3edu2ppj@f7dv2qdx3yga>
+ <CAHk-=wggLED-UmxS0gXrtOXBVWexCkyudYCr5zXNh8p5PB9bng@mail.gmail.com>
+ <CAHk-=wjQDCtzBUiRPuKfyjGFiR9JZi82ENyzdvKei4W3pxt=tA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjQDCtzBUiRPuKfyjGFiR9JZi82ENyzdvKei4W3pxt=tA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Add NULL check for key returned from bch2_btree_and_journal_iter_peek in
-btree_node_iter_and_journal_peek to avoid NULL ptr dereference in
-bch2_bkey_buf_reassemble.
+On Sun, Oct 20, 2024 at 02:21:50PM -0700, Linus Torvalds wrote:
+> There's a very real reason many places don't use filesystems that do
+> fsck any more.
 
-When key returned from bch2_btree_and_journal_iter_peek is NULL it means
-that btree topology needs repair. Print topology error message with
-position at which node wasn't found, its parent node information and
-btree_id with level.
+So fsck has been on my mind a lot lately - seems like all I'm working on
+lately is fsck related things - incidentally, "filesystems that don't
+need fsck" is a myth.
 
-Return error code returned by bch2_topology_error to ensure that topology
-error is handled properly by recovery.
+The reason is that filesystems have mutable global state, and that state
+has to be consistent for the filesystem to work correctly: at a minumum,
+global usage counters that have to be correct for -ENOSPC to work, and
+allocation/free space maps that have to be correct to not double
+allocate.
 
-Reported-by: syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=3D005ef9aa519f30d97657
-Fixes: 5222a4607cd8 ("bcachefs: BTREE_ITER_WITH_JOURNAL")
-Suggested-by: Alan Huang <mmpgouride@gmail.com>
-Suggested-by: Kent Overstreet <kent.overstreet@linux.dev>
-Signed-off-by: Piotr Zalewski <pZ010001011111@proton.me>
----
+The only way out of this is to do a pure logging filesystem, i.e. nilfs,
+and there's a reason those never took off - compacting overhead is too
+high, they don't scale with real world usage (and you still have to give
+up on posix -ENOSPC, not that that's any real loss).
 
-Notes:
-    changes in v3:
-        - add btree_id and level info to the error message.
-        - use bch2_btree_pos_to_text.
+Even in distributed land, they may get away without a traditional
+precise fsck, but they get away with that by leaving the heavy lifting
+(precise allocation information) to something like a traditional local
+filesystem that does have that. And they still need, at a minumum, a
+global GC operation - but GC is just a toy version of fsck to the
+filesystem developer; it'll have the same algorithmic complexity as
+traditional fsck but without having to be precise.
 
-    changes in v2:
-        - make commit message more verbose.
-        - set topology error, print error message and return
-          appropriate error code.
+(Incidentally, the main check allocations fsck pass in bcachefs is
+directly descended from the runtime GC code in bcache, even if barely
+recognizable now).
 
-    link to v1: https://lore.kernel.org/linux-bcachefs/20241023072024.98915=
--3-pZ010001011111@proton.me/
-    link to v2: https://lore.kernel.org/linux-bcachefs/20241026174155.23343=
-0-3-pZ010001011111@proton.me/
+And a filesystem needs to be able to cope with extreme damage to be
+considered fit for purpose - we need to degrade gracefully if there's
+corruption, not tell the user "oops, your filesystem is inaccessible" if
+something got scribbled over. I consider it flatly inacceptable to not
+be able to recover a filesystem if there's data on it. If you blew away
+the superblock and all the backup superblocks by running mkfs, /that's/
+pretty much unrecoverable because there's too much in the superblock we
+really need, but literally anything else we should be able to recover
+from - and automatically is the goal.
 
- fs/bcachefs/btree_iter.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+So there's a lot of interesting challanges in fsck.
 
-diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
-index 15ac72b1af51..acf70aaf2fd2 100644
---- a/fs/bcachefs/btree_iter.c
-+++ b/fs/bcachefs/btree_iter.c
-@@ -880,6 +880,18 @@ static noinline int btree_node_iter_and_journal_peek(s=
-truct btree_trans *trans,
- =09__bch2_btree_and_journal_iter_init_node_iter(trans, &jiter, l->b, l->it=
-er, path->pos);
-=20
- =09k =3D bch2_btree_and_journal_iter_peek(&jiter);
-+=09if (!k.k) {
-+=09=09struct printbuf buf =3D PRINTBUF;
-+
-+=09=09prt_str(&buf, "node not found at pos ");
-+=09=09bch2_bpos_to_text(&buf, path->pos);
-+=09=09prt_str(&buf, " at btree ");
-+=09=09bch2_btree_pos_to_text(&buf, c, l->b);
-+
-+=09=09ret =3D bch2_fs_topology_error(c, "%s", buf.buf);
-+=09=09printbuf_exit(&buf);
-+=09=09goto err;
-+=09}
-=20
- =09bch2_bkey_buf_reassemble(out, c, k);
-=20
-@@ -887,6 +899,7 @@ static noinline int btree_node_iter_and_journal_peek(st=
-ruct btree_trans *trans,
- =09    c->opts.btree_node_prefetch)
- =09=09ret =3D btree_path_prefetch_j(trans, path, &jiter);
-=20
-+err:
- =09bch2_btree_and_journal_iter_exit(&jiter);
- =09return ret;
- }
---=20
-2.47.0
+- Scaling: fsck is pretty much the limiting factor on filesystem
+  scalability, If it wasn't for fsck bcachefs would probably scale up to
+  an exabyte fairly trivially. Making fsck scale to exabyte range
+  filesystems is going to take a _lot_ of clever sharding and clever
+  algorithms.
 
+- Continuing to run gracefully in the presence of damage wherever
+  possible, instead of forcing fsck to be run right away.
 
+  If allocation info is corrupt in the wrong ways such that we might
+  double allocate, that's a problem, or if interior btree nodes are
+  toast that requires expensive repair, but we should be able to
+  continue running with most other types of corruption. That hasn't been
+  the priority while in development - in development, we want to fail
+  fast and noisily so that bugs are reported and the filesystem is left
+  in a state where we can see what happened - but this is an area I'm
+  starting to work on now.
+
+- Making sure that fsck never makes things worse
+
+  You really don't want fsck to ever delete anything, this could be
+  absolutely tragic in the event of any sort of transient error (or
+  bug). We've still got a bit of work to do here with pointers to
+  indirect extents, and there's probably some other cases that need to
+  be looked at - I think XFS is ahead of bcachefs here, I know
+  Darrick has a notion of "tainted" metadata, the idea being that if a
+  pointer to an indirect extent points to a missing extent, we don't
+  delete it, we just flag it as tainted: don't log more fsck errors,
+  just return -EIO when reading from it; then if we're able to recover
+  the indirect extent later we can just clear the tainted flag.
+
+We've got some fun tricks for getting back online as quickly as possible
+even in the event of catastrophic damage. If alloc info is suspect, we
+can do very quick pass that walks all pointers and just marks a "bucket
+is currently allocated, don't use" bitmap and defer repairing or
+rebuilding the actual alloc info until we're online, in the background.
+And if interior btree nodes are toast and we need to scan (which
+shouldn't ever happen, but users are users and hardware is hardware, and
+I haven't done btrfs dup style replication because you can't trust SSDs
+to lay writes out on different erase units) there's a bitmap in the
+superblock of ranges that have btree nodes so the scan pass on a modern
+filesystem shouldn't take too long.
