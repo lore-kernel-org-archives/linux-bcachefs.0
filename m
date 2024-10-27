@@ -1,38 +1,38 @@
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A814C83
-	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 00:51:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518576FC3
+	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 00:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729990319; cv=none; b=dGE5z7/TjueqJubsh5PRwoOqYeuHlOfZgCQDD5E6aWGGCz69yW+SCCfzzPMJDz8PFnLNEzD8ccRn1xT/oEB1u/y+Bab8KEON5vF3pShdA9H11U98FQkcdDNzZE5c8AkmNH4QtP9d3QJuZEXHayijxmBlaWNB9ZV+sCVL00C9pTc=
+	t=1729990321; cv=none; b=l5g0eGMJZPhq4ZEQ0QjZQVzfChm2k1dguV1/a4Sjtqo2dawkRgxKL5vF3IgEz1dDBEwAleRBqJAODDE1MMZxyp9Js6CGJWaJ6Fm3m6ecQ6W10gffPzRgCZMgV15RiB9qRVvnY8OzU2cnMuPheBaKE91botlXDV94Q5MWdrm4wUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729990319; c=relaxed/simple;
-	bh=S6bJd+ily91zWlihmedii7PNQIOmnpbX/633yoOKTMk=;
+	s=arc-20240116; t=1729990321; c=relaxed/simple;
+	bh=PU8oSOarCgiQs2E9ReB8tZiSctvLno/8RGl580Wdokg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mL4aaSxXuYOvyYjOZd1IOzikluRwdopZk0OIZiNcx43U9eR7QC44D6zK6gkBXIsXUv4kEDhc5qWR9FCgZxa5I8Zv9RppVFjOOY1BmL4oiiffTpmhW3rvZXHnc9NGNvJ8HavRqqrkyPRYChquWyf2E3FYZLtiprQbmZ+OTbYHr0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oguG5flJ; arc=none smtp.client-ip=95.215.58.181
+	 MIME-Version; b=l3x7g5gez3Ok/EakrcuTwq/N1O4mpzfq4dq/HB+TJ2W81gzRKOSRAtDREaWN6QljK/HUv6XEvDhpp/X+1XWm2s4aLb1AIwvwaP3Q7oNgpA3H5LJp19XyI/OjUD2ldUn3x/gg7rc/NLqvqrs/eLsjZw1Joi7IWF4PIEcTYPEA2oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rumsvo8k; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oguG5flJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rumsvo8k"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729990315;
+	t=1729990317;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FqaXO9U9So1omYmuuqx0qzXi3e4dZLZe7bDpiac7EQg=;
-	b=oguG5flJknQ8RBKMVANtJ8PNsqNBBDVUJ8B/DIpPLZSrQAYBq2sWrg2Bnpy/Q7Gk16N5ET
-	K2cuEDD8gNAmC23r4nkResj6eWFfgBS7L/2t0vdLqe9b8ifSU0ptSjY5IVuQHe2cvyiY0o
-	c/sGPTfINFnfykwXwtP3NBAOVTL76Vs=
+	bh=MDSheTnl43SP5GlSQibgbCrbvrZzTnYxbJK4DiyJe/k=;
+	b=rumsvo8kUapqWrJPabWpd+tEvCItA4vY7WtLoeHu5yxLV/3rwu5PCXF+G6/DfbPQ+IXwda
+	MYmqjP6x34/A9e3CnZqXsQA7BEbGgeJmXnwG+CEQ7OjMuwiCDsoEJmV9u3+JOa6sCOF5dG
+	vBjsQvN6UaDk7W+yevc+Jk2ejzyOvG8=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 4/9] bcachefs: Assert that we're not violating key cache coherency rules
-Date: Sat, 26 Oct 2024 20:51:33 -0400
-Message-ID: <20241027005141.2337634-5-kent.overstreet@linux.dev>
+Subject: [PATCH 7/9] bcachefs: Kill unnecessary iter_rewind() in bkey_get_empty_slot()
+Date: Sat, 26 Oct 2024 20:51:36 -0400
+Message-ID: <20241027005141.2337634-8-kent.overstreet@linux.dev>
 In-Reply-To: <20241027005141.2337634-1-kent.overstreet@linux.dev>
 References: <20241027005141.2337634-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -46,40 +46,28 @@ X-Migadu-Flow: FLOW_OUT
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/btree_key_cache.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ fs/bcachefs/btree_update.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
-index 244610b1d0b5..3bd40ea0fa3d 100644
---- a/fs/bcachefs/btree_key_cache.c
-+++ b/fs/bcachefs/btree_key_cache.c
-@@ -424,8 +424,15 @@ static int btree_key_cache_flush_pos(struct btree_trans *trans,
- 	    !test_bit(JOURNAL_space_low, &c->journal.flags))
- 		commit_flags |= BCH_TRANS_COMMIT_no_journal_res;
- 
--	ret   = bch2_btree_iter_traverse(&b_iter) ?:
--		bch2_trans_update(trans, &b_iter, ck->k,
-+	struct bkey_s_c btree_k = bch2_btree_iter_peek_slot(&b_iter);
-+	ret = bkey_err(btree_k);
-+	if (ret)
-+		goto err;
-+
-+	/* * Check that we're not violating cache coherency rules: */
-+	BUG_ON(bkey_deleted(btree_k.k));
-+
-+	ret   = bch2_trans_update(trans, &b_iter, ck->k,
- 				  BTREE_UPDATE_key_cache_reclaim|
- 				  BTREE_UPDATE_internal_snapshot_node|
- 				  BTREE_TRIGGER_norun) ?:
-@@ -433,7 +440,7 @@ static int btree_key_cache_flush_pos(struct btree_trans *trans,
- 				  BCH_TRANS_COMMIT_no_check_rw|
- 				  BCH_TRANS_COMMIT_no_enospc|
- 				  commit_flags);
+diff --git a/fs/bcachefs/btree_update.c b/fs/bcachefs/btree_update.c
+index 4bc0b2d52133..402539bea67d 100644
+--- a/fs/bcachefs/btree_update.c
++++ b/fs/bcachefs/btree_update.c
+@@ -588,12 +588,9 @@ struct jset_entry *__bch2_trans_jset_entry_alloc(struct btree_trans *trans, unsi
+ int bch2_bkey_get_empty_slot(struct btree_trans *trans, struct btree_iter *iter,
+ 			     enum btree_id btree, struct bpos end)
+ {
+-	struct bkey_s_c k;
+-	int ret = 0;
 -
-+err:
- 	bch2_fs_fatal_err_on(ret &&
- 			     !bch2_err_matches(ret, BCH_ERR_transaction_restart) &&
- 			     !bch2_err_matches(ret, BCH_ERR_journal_reclaim_would_deadlock) &&
+ 	bch2_trans_iter_init(trans, iter, btree, POS_MAX, BTREE_ITER_intent);
+-	k = bch2_btree_iter_prev(iter);
+-	ret = bkey_err(k);
++	struct bkey_s_c k = bch2_btree_iter_peek_prev(iter);
++	int ret = bkey_err(k);
+ 	if (ret)
+ 		goto err;
+ 
 -- 
 2.45.2
 
