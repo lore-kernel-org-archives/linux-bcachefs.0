@@ -1,87 +1,107 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C23DECC
-	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 00:44:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A1A3370
+	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 00:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729989845; cv=none; b=VI4G2sVpp/z7Nk5BMg7N69rAXuZbzLf7zpzWk2T42x067bpQ2ZmcT1L2ZtRxPjXQMfsJ2r4bcIb3vJgWs04DwyM6pw2YzkNzSaC1baVjqa4kgr4ONVmUuhOmTI1BAcjqQubtuUh89pPw1R43qlvNFh3vFWe6w9r7YOq+nHu+bTg=
+	t=1729990317; cv=none; b=W/BdJuQuJ3zOz/7HviV1igXwULQicVIxFJzHDzGXhVeCAdd8ZLOWEiKgSauASdVYz1m1FG1QOVLs79Jz17yu52dI8gDPUMCqjHhmrHBZp40tMaHQ9XPr9UcpgHrVeP5HTz8vH/jXujfZwffPydfelWOtkapnq5mTot6sOwC8vEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729989845; c=relaxed/simple;
-	bh=Gb0isklgktSt418NQnetcWjoo5RnH/k55Z26VuZs1Gg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B+ytwWjmXRlnCM8Hu3a0BN2n+hJyKMkMvHPC4sD0kEVNQQS6Kt/96osF25wi6/tOVnnlusqXBlTgiKQ3baiiczRupJFOcEMZKO/0yHTvFl8T83w+R7vt5MSCl4RbSqYC3L6lc6NrFDWQtTe/0ZtITweiUDlqq3b4lRyHR22QjmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CifhH4x+; arc=none smtp.client-ip=91.218.175.172
+	s=arc-20240116; t=1729990317; c=relaxed/simple;
+	bh=0Nsgr59337XubzZj1WImiq4uMlvgFC9s07DZfCDOTz4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WBM3wqDPlLtibOE7ngGASij/y+PXnrGazrt0xGrIBz1QH1QRa7MZ5HxStR8B+odigMFAHQ3z0m4h7yM3U41/4FJ4uRytgSPbU5WNipi4pDLk3RShz/bw0WB/7cwikeMAlzhJgZU1LaQb+BgzQRvLInweo2T1nVa9N+GnM4DmYho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FjceqBLY; arc=none smtp.client-ip=95.215.58.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CifhH4x+"
-Date: Sat, 26 Oct 2024 20:43:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729989840;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xPGnidHmtGaFOd8voGZYdhIPFIgwIYB4nigEv0YNeKU=;
-	b=CifhH4x+ZonybeQ8FkeN64JWI/gs60QcHItTODUEIivdtCdxY0MDaZQG/r0vpNRSiilkDE
-	eFR+REySqQLTXCZbIP9PX74AoTtkFAE4MXGexf0tD3CK1iZUN+aMHP31GntJVJV6szMJ3p
-	1tmKFzXfH+y6K2HS6+4mnDiB13MrBb8=
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FjceqBLY"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729990313;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=8mIZq5rJ1WdZYsts8AEYssEqX+uL4JG8tacetP9vUFU=;
+	b=FjceqBLYLnGTBfTw5lUJsrhsShEz4sBViQnU5zJ9FfG8N808kG7kZhXx7mae67rXj8E06U
+	YUQ7EuGNJTaUd3+2zRPJHb7O/PZFX7KbYRpuMWKeovTBI1ABEBT4HeE9ksLAdGJpgCB7AF
+	HPFwaWN9Z2dUADZ3SKyyDG02AhAvIuA=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Gaosheng Cui <cuigaosheng1@huawei.com>
-Cc: wangweiyang2@huawei.com, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH -next] bcachefs: fix possible null-ptr-deref in
- __bch2_ec_stripe_head_get()
-Message-ID: <xitw2pcjdmzurmme5nlthklzsiq4ozs2owcie24zwoq6t73w3b@eehkb2xjmk4a>
-References: <20241026102658.1184351-1-cuigaosheng1@huawei.com>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 0/9] transaction restarts and other iterator work
+Date: Sat, 26 Oct 2024 20:51:29 -0400
+Message-ID: <20241027005141.2337634-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241026102658.1184351-1-cuigaosheng1@huawei.com>
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Sat, Oct 26, 2024 at 06:26:58PM +0800, Gaosheng Cui wrote:
-> The function ec_new_stripe_head_alloc() returns nullptr if kzalloc()
-> fails. It is crucial to verify its return value before dereferencing
-> it to avoid a potential nullptr dereference.
-> 
-> Fixes: 035d72f72c91 ("bcachefs: bch2_ec_stripe_head_get() now checks for change in rw devices")
-> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
-> ---
->  fs/bcachefs/ec.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-> index 25d20f73df60..b24089733467 100644
-> --- a/fs/bcachefs/ec.c
-> +++ b/fs/bcachefs/ec.c
-> @@ -1859,6 +1859,10 @@ __bch2_ec_stripe_head_get(struct btree_trans *trans,
->  		}
->  
->  	h = ec_new_stripe_head_alloc(c, disk_label, algo, redundancy, watermark);
-> +	if (!h) {
-> +		h = ERR_PTR(-ENOMEM);
+batch of various btree iterator patches
 
-fyi: I'm changing this to -BCH_ERR_ENOMEM_stripe_head_alloc (and adding
-that errcode to errcode.h).
+- transaction restart injection, asserts: there were some mishandled
+  transaction restarts, now all fixed, and this is the debug code I used
+  to find them.
 
-It's unimportant in this case, as this is a small GFP_KERNEL allocation
-and thus will never actually fail, but it's important in general as
-using a dedicated error code means a better error message (that can be
-traced to the exact line of code that generated it) - so we're slowly
-killing off all uses of standard error codes and replacing them with
-private ones.
+  The tests now run with transaction restart injection on, so any new
+  bugs will be quickly caught in the future.
 
-> +		goto err;
-> +	}
->  found:
->  	if (h->rw_devs_change_count != c->rw_devs_change_count)
->  		ec_stripe_head_devs_update(c, h);
-> -- 
-> 2.25.1
-> 
+- btree_iter_peek_prev() improvements: it now works with the journal
+  keys overlay, which means we now should have the option of doing
+  journal replay in the background should we ever need to,
+
+  More importantly it now supports an "end of iteration range" argument;
+  this is required for correctness in BTREE_ITER_filter_snapshots mode,
+  otherwise we could keep going into the next inode, which might belong
+  to a different snapshot tree, and we never find any keys that are
+  visible that we can return.
+
+  This fixes a bug in reconstruct_inode(), in fsck.
+
+Kent Overstreet (9):
+  bcachefs: Assert we're not in a restart in bch2_trans_put()
+  bcachefs: Better in_restart error
+  bcachefs: CONFIG_BCACHEFS_INJECT_TRANSACTION_RESTARTS
+  bcachefs: Assert that we're not violating key cache coherency rules
+  bcachefs: Rename btree_iter_peek_upto() -> btree_iter_peek_max()
+  bcachefs: Simplify btree_iter_peek() filter_snapshots
+  bcachefs: Kill unnecessary iter_rewind() in bkey_get_empty_slot()
+  bcachefs: Implement bch2_btree_iter_prev_min()
+  bcachefs: peek_prev_min(): Search forwards for extents, snapshots
+
+ fs/bcachefs/Kconfig              |   7 +
+ fs/bcachefs/alloc_background.c   |   6 +-
+ fs/bcachefs/btree_gc.c           |   2 +-
+ fs/bcachefs/btree_iter.c         | 459 ++++++++++++++++++++-----------
+ fs/bcachefs/btree_iter.h         |  60 ++--
+ fs/bcachefs/btree_journal_iter.c |  50 +++-
+ fs/bcachefs/btree_journal_iter.h |   4 +-
+ fs/bcachefs/btree_key_cache.c    |  13 +-
+ fs/bcachefs/btree_trans_commit.c |   4 +
+ fs/bcachefs/btree_types.h        |   6 +
+ fs/bcachefs/btree_update.c       |  13 +-
+ fs/bcachefs/dirent.c             |   4 +-
+ fs/bcachefs/ec.c                 |   2 +-
+ fs/bcachefs/errcode.h            |   1 -
+ fs/bcachefs/extent_update.c      |   2 +-
+ fs/bcachefs/fs-io-pagecache.c    |   2 +-
+ fs/bcachefs/fs-io.c              |   8 +-
+ fs/bcachefs/fs.c                 |   2 +-
+ fs/bcachefs/fsck.c               |  12 +-
+ fs/bcachefs/inode.c              |   6 +-
+ fs/bcachefs/io_misc.c            |   8 +-
+ fs/bcachefs/io_write.c           |   4 +-
+ fs/bcachefs/movinggc.c           |   2 +-
+ fs/bcachefs/reflink.c            |   2 +-
+ fs/bcachefs/str_hash.h           |   6 +-
+ fs/bcachefs/subvolume.h          |  12 +-
+ fs/bcachefs/tests.c              |  26 +-
+ fs/bcachefs/xattr.c              |   2 +-
+ 28 files changed, 482 insertions(+), 243 deletions(-)
+
+-- 
+2.45.2
+
