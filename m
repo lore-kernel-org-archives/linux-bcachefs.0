@@ -1,41 +1,42 @@
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE66ECC
-	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 00:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DB3910F2
+	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 00:31:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729989042; cv=none; b=C6dGEjhMu4YGl11MDUgql67aBOkLa1sZcf0cQ0c19WxME2kWk6l0XFnQQmTVjHd4cPa4JodX8nIQt3urlt17IylNaFCPrnTQCN7KHpRybTDTZqou2vUs9J352dt/SysAJueFLv87bqZSvnos5XlXh9JPgiWQjdNHC8w/hRgbeM8=
+	t=1729989092; cv=none; b=ifa2BlFcSX4WrRGjg0fy6X2BVmEokO77VhCquHfglDZmCSwDcjAiiYgCCjTlWy0AEcOmGfEsG7fCV8ZZM1WWCJAbDIODz1wVgVqkD1ZvgiiAoXhIY25z3+A1eOHFCXpo8911XZ4xPJJLqckzcEBJ1H0Tue8pwjhuLLiwPeGkNAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729989042; c=relaxed/simple;
-	bh=cFuIVbQy2B24Jp/ykmabzeKZiZBEkNzbXU/PvCrvMUA=;
+	s=arc-20240116; t=1729989092; c=relaxed/simple;
+	bh=AxQjNJMNtb5Ig+wEX+3dNxEwcjhsbhyazKjd1QodVoM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C1OVxsQ+HmYNDOU8KalDSe7DddzesUhIgWSNb4V8Tm22qS6zI0K+WZLpF4x5igrx1pQz6qJsRf8efTvFujXg4s7wtk2HrrL5U1XU0kfkllXvheFAtZ6o8JGkDzkje/b8XCRqMcwokp5rCUfmeADSe1QdHVoMpm0v4Kw1vWcLQn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oVXf50TQ; arc=none smtp.client-ip=91.218.175.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=A7UkdJdlNSJOUbb6kPiK+qCLq+vFScYQhMPkpyE/jSbLRX5lqNYOzEDfyTEtJA9ekgWlOYXUxBEoiEjooiotADixDWxZpYODUgsDWBzJ3rfh5KFPh+s4kY9gNvCB8mJXGFo7+9KdFBjs0X6M+dpA1IDEMtrolXTCh29u+bD1jvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xQbar68o; arc=none smtp.client-ip=91.218.175.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oVXf50TQ"
-Date: Sat, 26 Oct 2024 20:30:33 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xQbar68o"
+Date: Sat, 26 Oct 2024 20:31:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729989035;
+	t=1729989087;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oMtTkbAQEQRyJV9OAy1+Os+nlL7XX3CSHBY5FldPT/E=;
-	b=oVXf50TQsnDjAMApLzvVZsfu6a+WUgiThFgfrrLBnUjkuOLPoNuJHDU75iDvTj8CGlvl2o
-	OFhyJH/lcOn98cvLSIvZPuzcllXLbLZKbF2ca67eo/Tl5O2DhgeHwr3umAK2WLPT/TlSAh
-	u1AB/42zt7yxkYyiIwGkfROte1Pz30A=
+	bh=CC5tdvNSbMUta9lym/OW72/o/Ad2YSbYbg3qK9DBOw4=;
+	b=xQbar68odFUfkhyPrKdgYTXQ4cWCPlLYNHHHO2z2i8Fq5XlnhEBar86qjKyk27qcbaxFc0
+	7nNL/RghMTfcTvLkD5i/LWNuHLG01WmnV3QriOx+1YdcgIR2wmX9ETtPYLcXgOosbb1FRc
+	OvMib84KedR+qphTAadsDt/zEp8XcN4=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Kees Cook <kees@kernel.org>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org
-Subject: Re: [RESEND PATCH] bcachefs: Annotate struct bucket_gens with
- __counted_by()
-Message-ID: <ctariwoo6do3ergs4p7smzjbil7mwq744spzyzcphu2apwnkjn@hndqzlxejzvz>
-References: <20241026154704.159305-2-thorsten.blum@linux.dev>
+To: Piotr Zalewski <pZ010001011111@proton.me>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	skhan@linuxfoundation.org, syzbot+2b6a17991a6af64f9489@syzkaller.appspotmail.com
+Subject: Re: [PATCH v3] bcachefs: init freespace inited bits to 0 in
+ bch2_fs_initialize
+Message-ID: <xjjlqqfu6oulfdndotkwr57z7adt6gaq26g67iiy7qv2pk3wv3@y6hv3sr7smjz>
+References: <20241026001004.10470-2-pZ010001011111@proton.me>
+ <zks5hk34if64nu4t7tsnjc2om4cdyo7fs62fgyxjzetr6njo72@ajmllmpmex45>
+ <ZE-D4gWuaHm-NpPnk8yUxXY4ouYy492LCPmnEgWG3fiIleDRGZU9SjbSbYiVWPa2_OYirT-Jx_E7b5NsSh9s6Txvnkc0KRsGHNKHH1umkDE=@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -44,82 +45,74 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241026154704.159305-2-thorsten.blum@linux.dev>
+In-Reply-To: <ZE-D4gWuaHm-NpPnk8yUxXY4ouYy492LCPmnEgWG3fiIleDRGZU9SjbSbYiVWPa2_OYirT-Jx_E7b5NsSh9s6Txvnkc0KRsGHNKHH1umkDE=@proton.me>
 X-Migadu-Flow: FLOW_OUT
 
-On Sat, Oct 26, 2024 at 05:47:04PM +0200, Thorsten Blum wrote:
-> Add the __counted_by compiler attribute to the flexible array member b
-> to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-> CONFIG_FORTIFY_SOURCE.
+On Sat, Oct 26, 2024 at 01:40:47PM +0000, Piotr Zalewski wrote:
+> On Saturday, October 26th, 2024 at 2:30 AM, Kent Overstreet <kent.overstreet@linux.dev> wrote:
 > 
-> Use struct_size() to calculate the number of bytes to be allocated.
+> > On Sat, Oct 26, 2024 at 12:15:49AM +0000, Piotr Zalewski wrote:
+> > 
+> > > Initialize freespace_initialized bits to 0 in member's flags and update
+> > > member's cached version for each device in bch2_fs_initialize.
+> > > 
+> > > It's possible for the bits to be set to 1 before fs is initialized and if
+> > > call to bch2_trans_mark_dev_sbs (just before bch2_fs_freespace_init) fails
+> > > bits remain to be 1 which can later indirectly trigger BUG condition in
+> > > bch2_bucket_alloc_freelist during shutdown.
+> > > 
+> > > Reported-by: syzbot+2b6a17991a6af64f9489@syzkaller.appspotmail.com
+> > > Closes: https://syzkaller.appspot.com/bug?extid=2b6a17991a6af64f9489
+> > > Fixes: bbe682c76789 ("bcachefs: Ensure devices are always correctly initialized")
+> > > Suggested-by: Kent Overstreet kent.overstreet@linux.dev
+> > > Signed-off-by: Piotr Zalewski pZ010001011111@proton.me
+> > > ---
+> > > 
+> > > Notes:
+> > > changes in v3:
+> > > - v2 rebased
+> > > 
+> > > changes in v2:
+> > > - unconditionally set freespace initialized bits to false at
+> > > the top of bch2_fs_initialized instead of only if
+> > > bch2_trans_mark_dev_sbs fails
+> > > 
+> > > Link to v2: https://lore.kernel.org/linux-bcachefs/20241021174151.37692-2-pZ010001011111@proton.me/
+> > > Link to v1: https://lore.kernel.org/linux-bcachefs/20241020170708.67044-2-pZ010001011111@proton.me/
+> > > 
+> > > fs/bcachefs/recovery.c | 8 ++++++++
+> > > 1 file changed, 8 insertions(+)
+> > > 
+> > > diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+> > > index fdf2aa2ffc13..8d4c93a1f5aa 100644
+> > > --- a/fs/bcachefs/recovery.c
+> > > +++ b/fs/bcachefs/recovery.c
+> > > @@ -1029,6 +1029,7 @@ int bch2_fs_initialize(struct bch_fs *c)
+> > > struct bch_inode_unpacked root_inode, lostfound_inode;
+> > > struct bkey_inode_buf packed_inode;
+> > > struct qstr lostfound = QSTR("lost+found");
+> > > + struct bch_member *m;
+> > > int ret;
+> > > 
+> > > bch_notice(c, "initializing new filesystem");
+> > > @@ -1045,6 +1046,13 @@ int bch2_fs_initialize(struct bch_fs *c)
+> > > SET_BCH_SB_VERSION_UPGRADE_COMPLETE(c->disk_sb.sb, bcachefs_metadata_version_current);
+> > > bch2_write_super(c);
+> > > }
+> > > +
+> > > + for_each_member_device(c, ca) {
+> > > + m = bch2_members_v2_get_mut(c->disk_sb.sb, ca->dev_idx);
+> > > + SET_BCH_MEMBER_FREESPACE_INITIALIZED(m, false);
+> > > + ca->mi = bch2_mi_to_cpu(m);
+> > > + }
+> > > +
+> > 
+> > 
+> > I'm also adding a write_super() call here: that's what updates
+> > ca->mi.freespace_initialized which the freespace init path will later
+> > 
+> > check.
 > 
-> Update bucket_gens->nbuckets and bucket_gens->nbuckets_minus_first when
-> resizing.
-> 
-> Compile-tested only.
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> Do you want me to send v4? Or you will add it with separate patch?
 
-I can take this patch without it being tested, but please have a look at
-ktest:
-https://evilpiepirate.org/git/ktest.git/
-
-that's where all the bcachefs tests live, and it's a nice testing and
-debugging tool. The CI runs the same tests, and I can give you an
-account there as well.
-
-> ---
->  fs/bcachefs/buckets.c       | 13 ++++++++-----
->  fs/bcachefs/buckets_types.h |  2 +-
->  2 files changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
-> index ec7d9a59bea9..8bd17667e243 100644
-> --- a/fs/bcachefs/buckets.c
-> +++ b/fs/bcachefs/buckets.c
-> @@ -1266,8 +1266,9 @@ int bch2_dev_buckets_resize(struct bch_fs *c, struct bch_dev *ca, u64 nbuckets)
->  
->  	BUG_ON(resize && ca->buckets_nouse);
->  
-> -	if (!(bucket_gens	= kvmalloc(sizeof(struct bucket_gens) + nbuckets,
-> -					   GFP_KERNEL|__GFP_ZERO))) {
-> +	bucket_gens = kvmalloc(struct_size(bucket_gens, b, nbuckets),
-> +			       GFP_KERNEL|__GFP_ZERO);
-> +	if (!bucket_gens) {
->  		ret = -BCH_ERR_ENOMEM_bucket_gens;
->  		goto err;
->  	}
-> @@ -1285,11 +1286,13 @@ int bch2_dev_buckets_resize(struct bch_fs *c, struct bch_dev *ca, u64 nbuckets)
->  	old_bucket_gens = rcu_dereference_protected(ca->bucket_gens, 1);
->  
->  	if (resize) {
-> -		size_t n = min(bucket_gens->nbuckets, old_bucket_gens->nbuckets);
-> -
-> +		bucket_gens->nbuckets = min(bucket_gens->nbuckets,
-> +					    old_bucket_gens->nbuckets);
-> +		bucket_gens->nbuckets_minus_first =
-> +			bucket_gens->nbuckets - bucket_gens->first_bucket;
->  		memcpy(bucket_gens->b,
->  		       old_bucket_gens->b,
-> -		       n);
-> +		       bucket_gens->nbuckets);
->  	}
->  
->  	rcu_assign_pointer(ca->bucket_gens, bucket_gens);
-> diff --git a/fs/bcachefs/buckets_types.h b/fs/bcachefs/buckets_types.h
-> index 28bd09a253c8..7174047b8e92 100644
-> --- a/fs/bcachefs/buckets_types.h
-> +++ b/fs/bcachefs/buckets_types.h
-> @@ -24,7 +24,7 @@ struct bucket_gens {
->  	u16			first_bucket;
->  	size_t			nbuckets;
->  	size_t			nbuckets_minus_first;
-> -	u8			b[];
-> +	u8			b[] __counted_by(nbuckets);
->  };
->  
->  struct bch_dev_usage {
-> -- 
-> 2.47.0
-> 
+I did it as a fixup to your patch
