@@ -1,154 +1,121 @@
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593F6F9F8
-	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 19:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56163126C18
+	for <linux-bcachefs@vger.kernel.org>; Sun, 27 Oct 2024 19:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730056569; cv=none; b=gKqfeFP+B6MpoJ6yJJ0ujbWNrZUm+QyxCK6Xh0kTofxyRV2CDMsA4LiTww0fbZCITuq6abrntb2hejBwAHZtNvt7ktRPTJORaa8FT1iHmYwv2xPLURkpJWXBhOvaY9jcTUgcxv6vn3bgvGio5/V3cHGcz2ENNzEEDSYq6jFLxeU=
+	t=1730058426; cv=none; b=MVcujsTiP7D6s8h9QbGOw3iQPZO/YBXLuc67FZTXXkLAX49S4tfjH7lPDA7AWQ0z3iPRKqs5aoIv+FTR5kwhMwBmx6KnPdUZKtm5qQxEKB2zz7sRlk7MpPTmMXAPnWiDmTLh5FkUuSJVQfq9l+LNiMve4q/RRmaLGZuL6C7BWdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730056569; c=relaxed/simple;
-	bh=MgUv+Wl0CnMNphccEjRVVtcSIQr42qx3lkRhtJKjqh8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=csquvD5fipL9/bGThXoaR4KLrEr0rAeWbbUxGFCJBIUXME18ff3dy8IvKnyZQipzLcDlZfKAUn9z4p+hPhKU1Bz68D7wOySDTNCWeyGfsgyk1IWkX4joAbrJa86C8pTEPnvGoMm7pwmlzx3ynk5kS3ncAEjwNolxLppUP/CBVmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lojUDuN4; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1730058426; c=relaxed/simple;
+	bh=yx7OKnMmxkaItU6s2bHO2Y8kAkumLtwqxfzQ1PKIJsk=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=V2NS6+5wkfK60G7LEVh0pP6laEYzxW4md19ky1gJ8sI5iicGMeVACyOa1WjAMfDjv59wJTwjh3z3BfvPga/lRNaykVpYBsqFelIKzMA21+JuklcIxdIpVt8BMdHwW+wzeL6sY1bFLTIbUEm2nLhMiM0qEo3Vqa6ruFh0eXzgMjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=hpQ68OKH; arc=none smtp.client-ip=185.70.40.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lojUDuN4"
-Date: Sun, 27 Oct 2024 15:15:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730056562;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6xqRa+1y/EtfkL88HSjsBOpbOYlfkBNwGrPgHlajZHU=;
-	b=lojUDuN4Dg936vF2rFT2UrPoiu0qA46z3rKd+fs4YFdbyXMcbW5WWtRddr5f9rsASOcfsB
-	YHGAAXI7ZvYf1Lo83ZsGhqcoEkBR+sfKB/TISk0wD8LVMujoW78xurzouXF4RUC3Kfcj/i
-	3GHAcIAmv7XaKTxpgazAeerpcJxd770=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Piotr Zalewski <pZ010001011111@proton.me>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	skhan@linuxfoundation.org, syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com, 
-	Alan Huang <mmpgouride@gmail.com>
-Subject: Re: [PATCH v2] bcachefs: Fix NULL ptr dereference in
- btree_node_iter_and_journal_peek
-Message-ID: <2krm2aw3ndg2c4uw3peuhb6ldm32x5sri4p2lwou4tosfbzmpx@77kws7hnizdf>
-References: <20241026174155.233430-3-pZ010001011111@proton.me>
- <j3aypufmcezitilxlgkfyetnonkzlkst3hx4zxr4zspfonh5pm@mwngtgo4h4vb>
- <BdSD2g3SGfWQrsTULTjViyG_t0llBh4NeIVbIE_3pvf1bWxk52ErCdP5yOErBZO3NkhyOv9Mgq2xc6CsGFliqDQrTgTwoquYKJKEUY5OE9g=@proton.me>
- <vzmzlzbxlyapymoccpniahd6kajrtumz7zenn4fuess6kta3qc@kbtsbr3lnl73>
- <KoKsgyv6vBuqwCj7ZnzZNWLYuQ_2LAfUUp3Eq8m9RkIS8hQOCpszlKj1BbYO8Md844-U-h2bmQJZtlTptr2-lKzYVdFtWy_BMejp5uPpjz4=@proton.me>
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="hpQ68OKH"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1730058415; x=1730317615;
+	bh=rBYrbCgFaMolyV5f9SMDe1X9M83MQXaQsQ9KhjScgm8=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=hpQ68OKH1Gr44wXmFZstKys8hQ2dYMfEYJ1tF8ZrZ63IkixSPIzi+4RbDIgAhfJtu
+	 sbhR6xOuClADk8Cur6YrIGtms84MoO7gBxe4wbilaUCTVFstIOiX0Hz8QMC6NnubJ6
+	 JhMb4EWgn4Wf8TSyVvz6bM/VRw98gK+62inxSttHQdAEQWAkkzOcfIY1tPlYGvC9S0
+	 1A6zON80wj0HuC0BRoMYWgorP2cg/xq55CjAz6HCXJlZpUOGPyHoaLgjIIekD3K1zH
+	 XUNWmZbyE/u1FgoEuWiItTLsNFA+y5oxy50OG81UuZkCIR2Dam7R44ba83T7C/56q0
+	 jXiWR2859DK0Q==
+Date: Sun, 27 Oct 2024 19:46:52 +0000
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Piotr Zalewski <pZ010001011111@proton.me>
+Cc: skhan@linuxfoundation.org, Piotr Zalewski <pZ010001011111@proton.me>, syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com, Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH v3] bcachefs: Fix NULL ptr dereference in btree_node_iter_and_journal_peek
+Message-ID: <20241027193842.154220-2-pZ010001011111@proton.me>
+Feedback-ID: 53478694:user:proton
+X-Pm-Message-ID: 1b0b1b9852f05303eac84019b51a819f66b46bad
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <KoKsgyv6vBuqwCj7ZnzZNWLYuQ_2LAfUUp3Eq8m9RkIS8hQOCpszlKj1BbYO8Md844-U-h2bmQJZtlTptr2-lKzYVdFtWy_BMejp5uPpjz4=@proton.me>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 27, 2024 at 07:00:07PM +0000, Piotr Zalewski wrote:
-> 
-> 
-> 
-> 
-> 
-> Sent with Proton Mail secure email.
-> 
-> On Sunday, October 27th, 2024 at 6:53 PM, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> 
-> > On Sun, Oct 27, 2024 at 11:34:02AM +0000, Piotr Zalewski wrote:
-> > 
-> > > On Sunday, October 27th, 2024 at 2:28 AM, Kent Overstreet kent.overstreet@linux.dev wrote:
-> > > 
-> > > > On Sat, Oct 26, 2024 at 05:46:33PM +0000, Piotr Zalewski wrote:
-> > > > 
-> > > > > Add NULL check for key returned from bch2_btree_and_journal_iter_peek in
-> > > > > btree_node_iter_and_journal_peek to avoid NULL ptr dereference in
-> > > > > bch2_bkey_buf_reassemble.
-> > > > > 
-> > > > > When key returned from bch2_btree_and_journal_iter_peek is NULL it means
-> > > > > that btree topology needs repair. Print error message with position at
-> > > > > which node wasn't found and its parent node information. Call
-> > > > > bch2_topology_error and return error code returned by it to ensure that
-> > > > > topology error is handled properly.
-> > > > > 
-> > > > > Reported-by: syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
-> > > > > Closes: https://syzkaller.appspot.com/bug?extid=005ef9aa519f30d97657
-> > > > > Fixes: 5222a4607cd8 ("bcachefs: BTREE_ITER_WITH_JOURNAL")
-> > > > > Suggested-by: Alan Huang mmpgouride@gmail.com
-> > > > > Suggested-by: Kent Overstreet kent.overstreet@linux.dev
-> > > > > Signed-off-by: Piotr Zalewski pZ010001011111@proton.me
-> > > > > ---
-> > > > > 
-> > > > > Notes:
-> > > > > changes in v2:
-> > > > > - make commit message more verbose.
-> > > > > - set topology error, print error message and return
-> > > > > appropriate error code.
-> > > > > 
-> > > > > link to v1: https://lore.kernel.org/linux-bcachefs/20241023072024.98915-3-pZ010001011111@proton.me/
-> > > > > 
-> > > > > fs/bcachefs/btree_iter.c | 13 +++++++++++++
-> > > > > 1 file changed, 13 insertions(+)
-> > > > > 
-> > > > > diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
-> > > > > index 15ac72b1af51..40c824779b15 100644
-> > > > > --- a/fs/bcachefs/btree_iter.c
-> > > > > +++ b/fs/bcachefs/btree_iter.c
-> > > > > @@ -880,6 +880,18 @@ static noinline int btree_node_iter_and_journal_peek(struct btree_trans *trans,
-> > > > > __bch2_btree_and_journal_iter_init_node_iter(trans, &jiter, l->b, l->iter, path->pos);
-> > > > > 
-> > > > > k = bch2_btree_and_journal_iter_peek(&jiter);
-> > > > > + if (!k.k) {
-> > > > > + struct printbuf buf = PRINTBUF;
-> > > > > +
-> > > > > + prt_str(&buf, "node not found at pos ");
-> > > > > + bch2_bpos_to_text(&buf, path->pos);
-> > > > > + prt_str(&buf, " within parent node ");
-> > > > > + bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(&l->b->key));
-> > > > > +
-> > > > > + ret = bch2_fs_topology_error(c, "%s", buf.buf);
-> > > > > + printbuf_exit(&buf);
-> > > > > + goto err;
-> > > > > + }
-> > > > 
-> > > > We'll want to add at least the btree ID and level to that.
-> > > > 
-> > > > Could you also look over the other places we report topology errors and
-> > > > inconstencies for any commonality? btree_cache.c has some stuff, and I
-> > > > think there's a helper in there that might give you the error message
-> > > > you want (instead of just the btree node key), and I'd have a glance at
-> > > > the topology error reporting in btree_update_interior.c and btree_gc.c
-> > > > as well.
-> > > 
-> > > I scanned through mentioned files and some others. There are commonalities
-> > > but every error message seem to be different in some way so that there is
-> > > no truly common part.
-> > > 
-> > > Information contained is usually a mixture of:
-> > > - btree id and level.
-> > > - position at which node wasn't found or if it was found but something
-> > > else is wrong its key info.
-> > > - parent node key information.
-> > > - prev/next node key info.
-> > > - min/max key pos info.
-> > > 
-> > > Only appropriate helpers I found were (what I already used) -
-> > > bch2_fs_topology_error and, in btree_iter.c, bch2_btree_path_to_text_short
-> > > but there it doesn't print full parent key info just min_key pos and parent
-> > > key pos so I'm not sure.
-> > > 
-> > > To what you already said I could also add min pos info.
-> > 
-> > bch2_btree_pos_to_text()?
-> 
-> Ah yes, I missed it - not used in many places and ending similar to 
-> bpos_to_text. I will print path->pos + bch2_btree_pos_to_text() in the next
-> version then.
+Add NULL check for key returned from bch2_btree_and_journal_iter_peek in
+btree_node_iter_and_journal_peek to avoid NULL ptr dereference in
+bch2_bkey_buf_reassemble.
 
-yeah, keeping things organized is a never ending battle :)
+When key returned from bch2_btree_and_journal_iter_peek is NULL it means
+that btree topology needs repair. Print topology error message with
+position at which node wasn't found, its parent node information and
+btree_id with level.
+
+Return error code returned by bch2_topology_error to ensure that topology
+error is handled properly by recovery.
+
+Reported-by: syzbot+005ef9aa519f30d97657@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=3D005ef9aa519f30d97657
+Fixes: 5222a4607cd8 ("bcachefs: BTREE_ITER_WITH_JOURNAL")
+Suggested-by: Alan Huang <mmpgouride@gmail.com>
+Suggested-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Piotr Zalewski <pZ010001011111@proton.me>
+---
+
+Notes:
+    changes in v3:
+        - add btree_id and level info to the error message.
+        - use bch2_btree_pos_to_text.
+
+    changes in v2:
+        - make commit message more verbose.
+        - set topology error, print error message and return
+          appropriate error code.
+
+    link to v1: https://lore.kernel.org/linux-bcachefs/20241023072024.98915=
+-3-pZ010001011111@proton.me/
+    link to v2: https://lore.kernel.org/linux-bcachefs/20241026174155.23343=
+0-3-pZ010001011111@proton.me/
+
+ fs/bcachefs/btree_iter.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
+index 15ac72b1af51..acf70aaf2fd2 100644
+--- a/fs/bcachefs/btree_iter.c
++++ b/fs/bcachefs/btree_iter.c
+@@ -880,6 +880,18 @@ static noinline int btree_node_iter_and_journal_peek(s=
+truct btree_trans *trans,
+ =09__bch2_btree_and_journal_iter_init_node_iter(trans, &jiter, l->b, l->it=
+er, path->pos);
+=20
+ =09k =3D bch2_btree_and_journal_iter_peek(&jiter);
++=09if (!k.k) {
++=09=09struct printbuf buf =3D PRINTBUF;
++
++=09=09prt_str(&buf, "node not found at pos ");
++=09=09bch2_bpos_to_text(&buf, path->pos);
++=09=09prt_str(&buf, " at btree ");
++=09=09bch2_btree_pos_to_text(&buf, c, l->b);
++
++=09=09ret =3D bch2_fs_topology_error(c, "%s", buf.buf);
++=09=09printbuf_exit(&buf);
++=09=09goto err;
++=09}
+=20
+ =09bch2_bkey_buf_reassemble(out, c, k);
+=20
+@@ -887,6 +899,7 @@ static noinline int btree_node_iter_and_journal_peek(st=
+ruct btree_trans *trans,
+ =09    c->opts.btree_node_prefetch)
+ =09=09ret =3D btree_path_prefetch_j(trans, path, &jiter);
+=20
++err:
+ =09bch2_btree_and_journal_iter_exit(&jiter);
+ =09return ret;
+ }
+--=20
+2.47.0
+
+
