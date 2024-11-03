@@ -1,95 +1,76 @@
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A820EAC6;
-	Sat,  2 Nov 2024 13:07:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFBD8A50
+	for <linux-bcachefs@vger.kernel.org>; Sun,  3 Nov 2024 12:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730552850; cv=none; b=UED8nZjvDzBpU3mIKAvfryBFEg5R1/bGygpER7L7iv8PmKjr70+Q2HUSMakp3WOEMs6JmjJocuJBLjj6KQ+o15V+/DQ9Quyb9SmcL1jo2XhyrZd0rypqB8Wnr9gfO79uVsbqPD35NDxMVz2QYA1hgY2yMNbTobLIMWlQ7VB8k4o=
+	t=1730638265; cv=none; b=blVe+b7Hp4F3Ec/aS5FKoxzqbvvC2AqiPxUJKgclJEmjOUNHqePHt6+OnAsgncHNT3zVvy9zErcG3/PqW2reMq5bO5OgZL60qhRmIbnO163h5uqihxG5nPn/i7AriQXVGbh7pfkj9OTNrE8peYQjA6sVLabz62jBAujEh7dq5rU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730552850; c=relaxed/simple;
-	bh=tm5JTs+8rrJD6s7WDi8gLZfx1FcLQYY5V8dG7CsjcX8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SJot+QwgQaz6xBGCsiWkOEsmEIvOyymTHz0W59cAyYJ/BvXcO11N4a1+faTyMsl/k0TPtefvDfHrXsIqKt543SY4GUmNeeUA/n06+Wv8Ug8dlPgSFRxf9MKAs8d6wCinWE73/m5jf3RS5RFxPn1Pl3a6p2DnY4MfgCmBPrN8VY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P/4Nxcs+; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P/4Nxcs+"
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-431695fa98bso21312105e9.3;
-        Sat, 02 Nov 2024 06:07:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730552845; x=1731157645; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=S4iOsAcaLFjRe6ZZb9+QSgjIyDu6SShR56xzrQ22ljQ=;
-        b=P/4Nxcs+Z6uo0ZC6gRP3H4lbycgUWzOEwNDuJdYVTePW7YenDs98JOCq2vkSKB4Eq+
-         QIQNoBOIqdhGJ3YnlGUZ1tK+OMgwtJ0VdJil0qZB4yVjnlqP6JZmgJWtG1eY1gbMuhQn
-         KikcZetLA8z7m8kSu9D5bXk72Dqm81KoKHYcOyRheCTwTBeyVZmJKe2pKu5unvnfHM6e
-         gJuAZUThXCR/X3nguAqf/xflrB2I1LqObrm+lT95jR2+9NyKhteePOVDr0wcbnFuT5aM
-         BTzlvy/ClQUwL3Nx3+QtvXBPvEClnwnkVot+MH5/0PNR2peIbZ6sDjn12dTxLF2tYyla
-         4YgA==
+	s=arc-20240116; t=1730638265; c=relaxed/simple;
+	bh=piSZz+R1LDNqFSNj+rGYl92ubdi+Zin3YdppkW59UaE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=nW4nCc+0kIak4qlqMeA4bN0jcuDS6ftC4LALRjOaTOCz5twodXVomgfuXZnFjwJh8IJuyB2Q+XGpNOgh/008LH2NJMTRL4w5I/LWwESrOhU+OFYzxR2e9kEiArtPRNGIcqUIGOhbW666iYhYHfL2iQaN4B5bpdUG+Q59eYwNxns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a3da2d46b9so34967155ab.0
+        for <linux-bcachefs@vger.kernel.org>; Sun, 03 Nov 2024 04:51:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730552845; x=1731157645;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S4iOsAcaLFjRe6ZZb9+QSgjIyDu6SShR56xzrQ22ljQ=;
-        b=LUgqylLEGwcW/c6v2RLDN1zOCqqNaDYej+3mpqeUS99LH8q/9Ug716506/Gzv1t03J
-         qk6p9lSZfZp3QALfgXZsic1Txe7jeUj90UXirFF+ygpy/9bufNZ+v3dXNjF84EzxRw01
-         PY1uz79akDsIzv9D5rqsDM3SRdm5Sgp1MoJxhJnj7ApD9gxOFB56mqm2E2N5+gI1uirV
-         GBgCFkALIGKQhT0FdG9htpyUzFWlIM4jwOeIDQ2Tt2ZlLynOxMake7U4XosHONjujxXr
-         vt1yYrazyPVNHcvQesM8rI8ewLhlDsxalKztkvkBgkhynhPNz+oCySlVulnXdiK9+59k
-         geOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVH5NxUm2A6K0LFN9Ut0hd1nAfeW4OsfcDyagNCDON+Ps9OcbCaloheX4zctALb834f1efV1K17U03euUvz9IA=@vger.kernel.org, AJvYcCXO3ydaxpm4e6X2FbMz4fep00pn+KITF0VuS8cQqx3sY3bIo0N8vOQEsUI4Q39hsHTKSDZW4ut3gA3ZzRVW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz33IabWfDOK7EHxYGWQnPQtH12BC4TUBQg9oRwBthVSmQGeSwD
-	C/mVEiQ6kSyF3mFi7rdPHhXCPIsYgd4kXmEg0cRnrNEPlOioQtyy
-X-Google-Smtp-Source: AGHT+IENln2RkJNRAASU9Ya8UIFIYQzyX/oVv5uQaDwgkHA/iNIs5WUWvcFEFXYMqg4je2UAkEJReA==
-X-Received: by 2002:a05:600c:46d4:b0:427:ff3b:7a20 with SMTP id 5b1f17b1804b1-4319ad049a8mr215124795e9.27.1730552844525;
-        Sat, 02 Nov 2024 06:07:24 -0700 (PDT)
-Received: from void.void ([31.210.180.123])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4327d6852c3sm94227215e9.38.2024.11.02.06.07.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Nov 2024 06:07:24 -0700 (PDT)
-From: Andrew Kreimer <algonell@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Andrew Kreimer <algonell@gmail.com>
-Subject: [PATCH] bcachefs: Fix a typo
-Date: Sat,  2 Nov 2024 15:06:28 +0200
-Message-ID: <20241102130709.9259-1-algonell@gmail.com>
-X-Mailer: git-send-email 2.47.0.170.g23d289d273.dirty
+        d=1e100.net; s=20230601; t=1730638263; x=1731243063;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8sXV6nkrq6f/dVfYK9hV+cScjwRuISgxlc87bQs+qBg=;
+        b=UDYAmIz7p6Le1xKHjVeQG0EfAYcJFAGMW4Rw9j6z2xiR5lSKlv5/i5QSubOe7ZlDwd
+         4IbVHs1EJiRrnxr2nN/a+W3xh1J9GR1qTGlcAwtbDorQ81gFGo99Kx5eWmTuHng6YZVY
+         U1KvUvZw69cPW7MK8CaFDhBmIEM8+DtWQOpydyJ0/7O95cCWBVOo5hwvd6IaHSfbvg96
+         TqRGVMjAt4395djAatfEF6rw7+9116Bo67uS8lyMK5qhj8NwJi6oA1xWJPSaMTUlw9tD
+         numj+hzudbFpo2GEm4OAuWjGp7wZ0Z6YNf9BH98TKugO+5r3NYqpZNUIEuJO1DIXHygT
+         ycKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWUipiaWvLjCG37/MFjwpgLg5yVz/tmBWplQ7qrbbuCySSOmW/sR+kNgj67figRoPA/YdePaTsC3cdbDkPzBw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxrbQ/o9TDyN6YRZAfiM97KhEhCIwRncQQRRSiYfO2309TEWEhP
+	F7Ute3KKBHTMatevJB6z5mtYXDYZcs5FMnKXUnYK/b4jELb3obIKO2xdDMtWabPwFUNXceFGa3v
+	n48Utjl9uFqle/zNqy5z2meNzpnmUuGLEu5VuorbjxPXBi1Byeu1Tadg=
+X-Google-Smtp-Source: AGHT+IGkx2KgTzybM+bFBWKiD5r1fwAdvmhysNfVCoSTb8wnFdVW8TYs63cylzjJ62wGzV5+o+fKXu1/RMQlNA3GUbARMg3gtKAe
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1528:b0:3a3:b593:83a4 with SMTP id
+ e9e14a558f8ab-3a4ed295bb6mr270904355ab.14.1730638262900; Sun, 03 Nov 2024
+ 04:51:02 -0800 (PST)
+Date: Sun, 03 Nov 2024 04:51:02 -0800
+In-Reply-To: <6718dc39.050a0220.1e4b4d.0088.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <672771b6.050a0220.3c8d68.0a4f.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_btree_path_level_init (2)
+From: syzbot <syzbot+eff0acb9087ee995577a@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Fix a typo: nonexistant -> nonexistent.
+syzbot has bisected this issue to:
 
-Via codespell.
+commit bf4baaa087e2be0279991f1dbf9acaa7a4c9148c
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Sat Oct 5 21:37:02 2024 +0000
 
-Signed-off-by: Andrew Kreimer <algonell@gmail.com>
----
- fs/bcachefs/alloc_background.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+    bcachefs: Fix lockdep splat in bch2_accounting_read
 
-diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
-index c84a91572a1d..5f40b92fbf16 100644
---- a/fs/bcachefs/alloc_background.c
-+++ b/fs/bcachefs/alloc_background.c
-@@ -1395,7 +1395,7 @@ static noinline_for_stack int bch2_check_discard_freespace_key(struct btree_tran
- 
- 	if (fsck_err_on(!bch2_dev_bucket_exists(c, pos),
- 			trans, need_discard_freespace_key_to_invalid_dev_bucket,
--			"entry in %s btree for nonexistant dev:bucket %llu:%llu",
-+			"entry in %s btree for nonexistent dev:bucket %llu:%llu",
- 			bch2_btree_id_str(iter->btree_id), pos.inode, pos.offset))
- 		goto delete;
- 
--- 
-2.47.0.170.g23d289d273.dirty
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16cd6b40580000
+start commit:   3e5e6c9900c3 Merge tag 'nfsd-6.12-3' of git://git.kernel.o..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15cd6b40580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11cd6b40580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f527353e21e067e8
+dashboard link: https://syzkaller.appspot.com/bug?extid=eff0acb9087ee995577a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e5ab40580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1760e987980000
 
+Reported-by: syzbot+eff0acb9087ee995577a@syzkaller.appspotmail.com
+Fixes: bf4baaa087e2 ("bcachefs: Fix lockdep splat in bch2_accounting_read")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
