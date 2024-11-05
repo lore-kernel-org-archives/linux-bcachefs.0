@@ -1,79 +1,77 @@
-Received: from mail3.ecloud.global (mail3.ecloud.global [135.181.139.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FADB1CD02
-	for <linux-bcachefs@vger.kernel.org>; Mon,  4 Nov 2024 17:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=135.181.139.185
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730741456; cv=pass; b=Cly4MuX5xfq0O21cN52j+Zu6b2CxRwShIW+sZLiCabl2q3uxBG9dGTy7wYn5S4JlaUJL9GJCirS4pLHdvZ+75PLfQUW/ZUZvt3rHuEt2mxBJdI8/zruvYMdhN4moTx0QrYLRZYrGLLg8IR7/iy+LKMHpzXB9HK18/JozK7XPtoM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730741456; c=relaxed/simple;
-	bh=VG9+kXooZb5tKB7BKX7hXjyGq6C4B+u49pxgx3XnqkE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=retTsgKoKgkfduMCl2hJNhI8NVEtgjFUUG6+VoaIDd1+SmGpB/wcd/UeI329pHP6tvnmwMqJPoFl1c3JEXdYEGjWbznWV3voiEBlbMExXfI3cXdeTFSbK0XZsjxwzoJnTyDo1XdpjqZ9Pg7pao1w+TActNdd1kGFAUPtwPvTuPc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io; spf=pass smtp.mailfrom=murena.io; dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b=n2SvcUC/; arc=pass smtp.client-ip=135.181.139.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=murena.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=murena.io
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=murena.io header.i=@murena.io header.b="n2SvcUC/"
-Received: from authenticated-user (mail3.ecloud.global [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail3.ecloud.global (Postfix) with ESMTPSA id 99AA0884700;
-	Mon,  4 Nov 2024 17:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io; s=mail3;
-	t=1730741447;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VG9+kXooZb5tKB7BKX7hXjyGq6C4B+u49pxgx3XnqkE=;
-	b=n2SvcUC/ngKxU8dsrfK+mBdeaw4ZkXjHc3eonyXAB+AvaU7jhJgPX5jHTgd89SzyJ5Fg8X
-	w32Ji8QLizFTJq/l7JLRAWRC9o0brPNDFu3kc8BakyslK7VwrqPm9ZZGd62zhkQVx11ngm
-	J6OdzoSx+YSl190QDEuFqoEgDyKYaqU=
-ARC-Seal: i=1; s=mail3; d=murena.io; t=1730741447; a=rsa-sha256; cv=none;
-	b=gJpFwZvZzH9vzcShMP26x0zNsrnJvO09H7jqzQrsGaJEeU8TEbKGu16QBiMk2c+JDfOH2S
-	IszuILhyv4nCgJARQ5j9SjKWzU4YveH5S33XLBKvvuohQsgLz1npuazDEy4t5N55+jWuBZ
-	PkZT5EpjpPevaJ6mfS5ThiCtxNPvYnA=
-ARC-Authentication-Results: i=1;
-	mail3.ecloud.global;
-	auth=pass smtp.mailfrom=integral@murena.io
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=murena.io;
-	s=mail3; t=1730741447;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VG9+kXooZb5tKB7BKX7hXjyGq6C4B+u49pxgx3XnqkE=;
-	b=Ccxv7GVTZB4YvXno1NNdWACiXF1kMMd77ayDPr0kKdxhFXaS2lpNXmmX2qWXYpWOt9xGo0
-	ER1bKMjEBIOX1I5/4+GPwbyAaRikh4aQ244y4sgNddajnfdaDJ0NiLOqNF7OZVgwPjnCtw
-	77aX4MVFDSPiB8F6rvEa1XFI1KsIDAU=
-Message-ID: <31986846-1261-4e94-a452-0010c542f7b2@murena.io>
-Date: Tue, 5 Nov 2024 01:30:41 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67721210FB
+	for <linux-bcachefs@vger.kernel.org>; Tue,  5 Nov 2024 02:09:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730772545; cv=none; b=Tv7brQ1t1DWgBpUz7h6VpPWpHRePUafNze0kP60O3clLTwdsGhEmBt4jrxnGgKbSOePT7vjCB7Ow7ZgMJBHc9HVgn1iE2qygo/DjkWhtkGHCr1g5qxz2luo9B7jOtdCy7JopbORWiwjmysM+yBL/CwS5Mt7/kk07fs+l+CzuHUQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730772545; c=relaxed/simple;
+	bh=y7f4emwH4MxN9Dk0nJiJoZuVuQH0g82lOcV2DXxYyv4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Pu5+xYG3IXNOGEp14FsoEpczc8ZurFZ93tQOF3jj3raH6aPEr9brFcxfE13eCk3Pgf6Uz8lpz/HXnPPpgneCKDoqoMEXTrnKuDjnFJ5Egb/bKp+rQT1ZXUJyeqC4mWEEVE5ZcHwV5sVHbG24xK+F1yBYjLYh+8WUSObqasINJ18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-83aecd993faso421936239f.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 04 Nov 2024 18:09:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730772543; x=1731377343;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fHNDfZhIwCuUlXyaUbaOjkk68adelWGd6TWuMHqVT7g=;
+        b=TL/UBtTtMp0zltmKHTJWfSaGRMaQi3PCzBJkcZB3xbfSTdgLB3lAvyH7/4WVPodjs+
+         6LhIJldQMe5Ov1/td2obWzN67pOGteQt76J33KTnj0atiP8CNlk7eK7qRexPBcKjgB/L
+         dk625QheoNo2tKYosZ4fw0mLs4JgSxJ74UgO3AmnVfo6mEuu3MuEjHcfTHOU8FBipLVw
+         u82LzgWsg7QG1hU/BeLAHF8Y3EGdoiFDW+icHjQsKvRFEqAFkD9rD+lfaQSaru1eL3wT
+         VeqEYwxHwRuZQC033kKk8nRhzqNMHhkxyDKCWFSZRi/8b8QCOX1zhksRjUnQKZlze/sm
+         CCxA==
+X-Forwarded-Encrypted: i=1; AJvYcCVCCtvRiGCT5g0uVDgQjz7Qk+Em+6+kyWvh3mQ88Ldli4BYj4MRiGz6o8lSbwnNWlYbGmB+HysnzWvfYQe46g==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5tOpG2eojYsxI5a+J4PkLVDv438ITmf03R3AyvpDc4nnxkll0
+	5chFrDOKBostHpK8EMaw0b80fZ66Xnl9kI+5AvaWz/mfs/QcCKlbmuzKwvV/Rk+Lc2EHX2BkYxU
+	8xWrzQivHesI0OVjExM/yR+CV8erA1L1++GpEpZC9zUOHsjFHJd03zrA=
+X-Google-Smtp-Source: AGHT+IHUOaRGjr6Z7Rj30tI8k0Sxs+JeGMXdFOU1wywHgxh4+nFtHQTf3vwLwRalZBURSLTG839Ea6f146LAOJm2yw3nGVWYdQpy
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5] bcachefs: add support for true/false & yes/no in
- bool-type options
-To: mmpgouride@gmail.com
-Cc: kent.overstreet@gmail.com, kent.overstreet@linux.dev,
- lihongbo22@huawei.com, linux-bcachefs@vger.kernel.org, integral@murena.io
-References: <3384DDD6-51C6-46BD-8FB1-4569FAEEC6A7@gmail.com>
- <1b530df3-0f67-4bfa-8438-3f79eda5e7ba@murena.io>
-Content-Language: en-US
-From: Integral <integral@murena.io>
-In-Reply-To: <1b530df3-0f67-4bfa-8438-3f79eda5e7ba@murena.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:cd8d:0:b0:3a6:b26f:a5c4 with SMTP id
+ e9e14a558f8ab-3a6b26fa5efmr113399645ab.8.1730772543360; Mon, 04 Nov 2024
+ 18:09:03 -0800 (PST)
+Date: Mon, 04 Nov 2024 18:09:03 -0800
+In-Reply-To: <671a8834.050a0220.2eb763.00c5.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67297e3f.050a0220.2edce.14fd.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_run_recovery_pass
+From: syzbot <syzbot+a27c3aaa3640dd3e1dfb@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi, Alan Huang
+syzbot has bisected this issue to:
 
-Give you a friendly ping :)
+commit f7643bc9749f270d487c32dc35b578575bf1adb0
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Wed Apr 17 05:26:02 2024 +0000
 
+    bcachefs: make btree read errors silent during scan
 
-On 10/27/24 7:18 PM, Integral wrote:
-> If my latest patch is acceptable, could you please apply my patch? :)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11da0e30580000
+start commit:   59b723cd2adb Linux 6.12-rc6
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13da0e30580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15da0e30580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=921b01cbfd887a9b
+dashboard link: https://syzkaller.appspot.com/bug?extid=a27c3aaa3640dd3e1dfb
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e1a587980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10bc46a7980000
+
+Reported-by: syzbot+a27c3aaa3640dd3e1dfb@syzkaller.appspotmail.com
+Fixes: f7643bc9749f ("bcachefs: make btree read errors silent during scan")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
