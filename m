@@ -1,147 +1,276 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8804A1EE033
-	for <linux-bcachefs@vger.kernel.org>; Thu,  7 Nov 2024 10:39:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5CF31DB534
+	for <linux-bcachefs@vger.kernel.org>; Thu,  7 Nov 2024 12:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730975970; cv=none; b=FEhW9eZHlR7wrhOmDGsbgxHmf5JfwCoQaKoWSK6HScpmbP1UdGLufgitRZcXajzcly6QZ6+Mwm3jiL4RtgwmyGepdguPpsFKvMt/1b+q4G3Ay3QaEIyOujpP5dWew8OVKFtCNcz+tCPNrJAszqL/obA3c+awxw473zAN+y5nXVM=
+	t=1730982735; cv=none; b=MahHyCQuEemOtB2ML2eI5zjeaXXitsnWg/K5iTtrURjZJl66gCXMcPYVGnoVRMdZ1CWNQOvE8sjjRspCmmOtcOD+ZJY1BM5SBV3le7Wx4VS+AnSgjFHfxhM+pAqlY02SEpN0DUmzE5EjaBfeUdyn7Z6mxNtq+xsq7M8Tzm/BtEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730975970; c=relaxed/simple;
-	bh=MLzx+JeDnin4KjxS0XNHZkKWERWQzXA1Qplg6nmUjsA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=UAc0RKkoMJTYpvB1Kyywj9s6IYASUncYxlrNIrI89+H325NQcNxnMD7pZ1cNDrLzQHdi/Urze00WuehrAM+2EYaGoLMfqi94XbzYvDUn6d7P1ghFdUWdFo9RrThYWvWn2f/QyMgfJn2H3sX2AVRqhQ/Of7oOMBoHLAfeXZ5XMqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a6b7974696so10616755ab.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 07 Nov 2024 02:39:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730975967; x=1731580767;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GQN9lckoQb3NanDRzLgjFs/UoV1SQc1q4bFo9NwFNCY=;
-        b=JwvkbWwP8ejKcUqceOUgqC8XcxO4IAKI1kse8n0UVZ0P3bJ5B46g8Pk79M8kLWhDwi
-         2XLoqk6iSeximQWOOyHZU2wfz4+ZBWkG3n9oi+AdvmOsNgq9I0+pKd0ZoZiUaFon1rRg
-         DtAkkNeTCvmM+g+QbwMqmN4esNqrYbVu/ri6+eMn6jebl6evNFXVRK+lAT3Dme0pk3ZW
-         eV5AOthg9GI03JjAD+juHLAIIUZ24ppLFAyHpByIt3irwzSPPmr/0sygAElVNfh4XTL2
-         wUlLquIVKGyEHFQ3te0H7ZO9y1dTNv1LVF6WX8ojSCJVRk/NSzWbWcMb6RRY06SK7ORg
-         oJaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVvu+M3HlSBKBbIVJksbJZ8T8TsVL9j4ciw+3+v1gj4sP9x/eRWoA8FOV3mnCrxkhhAi/UC3OLXUO4uP5GuUg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEu9rLBbtqRigDwLSlPShCpbGNihOskKZ2KKryujjwKY4j06Su
-	TainHvfoNcFwiODBvJ54Uyi/9N8gJ2RFdnohAIqZ8+3fpNflJamJxuz7MKoGifBMecNW8q/+Z/1
-	VypKFjmx620aeRS8E26+VqjSExDXmZcF99t4YX9SFzz43EE1Qgwu7M+Y=
-X-Google-Smtp-Source: AGHT+IHXaOZQZEvJJxDXNWHD5YbuTtZWS+RP0YvgGZ6VJKm9wcb0bTO22O92QApZGdYv2RmOVvM0xtff5GF2h4Fc5oGxnfdKznEd
+	s=arc-20240116; t=1730982735; c=relaxed/simple;
+	bh=YpvSL6Sw0rMb7nwwsYitfGsqMjTWwX35UYHKNEvacjA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QWOf1lnBoxUelmqe4jmInt1QPtp9V22K3C1qimYeU7VTB47EZ/Yes+PCIisooIinAXTrcy7PIOHRcbdvW1aF556CgwadqcXxwqJsxIqaMekTkYXpZ1XL25JJFjDEWLljzRKe+Ex4LJK3FXnn1wvnZlLkm5/9g+KnPI4GUK+4n6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4XkhHP0c98z1SGCS;
+	Thu,  7 Nov 2024 20:30:25 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1FAC21A0188;
+	Thu,  7 Nov 2024 20:32:08 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
+ (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 7 Nov
+ 2024 20:32:07 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
+Subject: [PATCH v2] bcachefs: add unit for counters to support different case
+Date: Thu, 7 Nov 2024 20:31:45 +0800
+Message-ID: <20241107123145.1003801-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cd86:0:b0:3a3:a307:6851 with SMTP id
- e9e14a558f8ab-3a6b036d665mr261106185ab.22.1730975967624; Thu, 07 Nov 2024
- 02:39:27 -0800 (PST)
-Date: Thu, 07 Nov 2024 02:39:27 -0800
-In-Reply-To: <00000000000060ef65061f8cb3d4@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <672c98df.050a0220.2dcd8c.0026.GAE@google.com>
-Subject: Re: [syzbot] [net?] [s390?] Unable to handle kernel execute from
- non-executable memory at virtual address ADDR
-From: syzbot <syzbot+8798e95c2e5511646dac@syzkaller.appspotmail.com>
-To: agordeev@linux.ibm.com, alibuda@linux.alibaba.com, bfoster@redhat.com, 
-	davem@davemloft.net, edumazet@google.com, guwen@linux.alibaba.com, 
-	horms@kernel.org, jaka@linux.ibm.com, kent.overstreet@linux.dev, 
-	kuba@kernel.org, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com, tonylu@linux.alibaba.com, 
-	wenjia@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-syzbot has found a reproducer for the following issue on:
+In bcachefs, io_read and io_write counter record the amount
+of data which has been read and written. They increase in
+unit of sector, so to display correctly, they need to be
+shifted to the left by the size of a sector. Other counters
+like io_move, move_extent_{read, write, finish} also have
+this problem.
 
-HEAD commit:    8936d33c1f69 Merge remote-tracking branch 'tip/irq/core' i..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=16aaae30580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=163d7426d94ed7f
-dashboard link: https://syzkaller.appspot.com/bug?extid=8798e95c2e5511646dac
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11aaae30580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1289cd87980000
+In order to support different unit, we add extra column to
+record the unit of this counter in BCH_PERSISTENT_COUNTERS().
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c58cd818af34/disk-8936d33c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c0e687204404/vmlinux-8936d33c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/efc94fae8d41/Image-8936d33c.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8798e95c2e5511646dac@syzkaller.appspotmail.com
-
-netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-Unable to handle kernel execute from non-executable memory at virtual address ffff0000d1080b80
-KASAN: maybe wild-memory-access in range [0xfffc000688405c00-0xfffc000688405c07]
-Mem abort info:
-  ESR = 0x000000008600000f
-  EC = 0x21: IABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x0f: level 3 permission fault
-swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000001bd31d000
-[ffff0000d1080b80] pgd=0000000000000000, p4d=180000023ffff403, pud=180000023f41b403, pmd=180000023f392403, pte=0068000111080707
-Internal error: Oops: 000000008600000f [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 UID: 0 PID: 6416 Comm: syz-executor278 Not tainted 6.12.0-rc6-syzkaller-g8936d33c1f69 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-pstate: 00400005 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : 0xffff0000d1080b80
-lr : smc_fback_forward_wakeup+0x1dc/0x514 net/smc/af_smc.c:822
-sp : ffff8000a3b97140
-x29: ffff8000a3b97210 x28: 1fffe00019a901c8 x27: ffff8000a3b97160
-x26: dfff800000000000 x25: ffff700014772e2c x24: ffff8000a3b97190
-x23: ffff0000cd480e40 x22: ffff0000cd480cc0 x21: ffff0000d1080b80
-x20: ffff8000a3b97180 x19: ffff0000dde73040 x18: ffff8000a3b96da0
-x17: 000000000000fc8e x16: ffff8000802ae4a0 x15: 0000000000000001
-x14: 1fffe0001bbce608 x13: ffff8000a3b98000 x12: 0000000000000003
-x11: 0000000000000202 x10: 0000000000000000 x9 : 1fffe000185b0001
-x8 : 0000000100000201 x7 : 0000000000000000 x6 : 0000000000000000
-x5 : 0000000000000020 x4 : 0000000000000000 x3 : 0000000000000000
-x2 : 0000000000000003 x1 : ffff80008b626000 x0 : ffff0000cd480cc0
-Call trace:
- 0xffff0000d1080b80 (P)
- smc_fback_forward_wakeup+0x1dc/0x514 net/smc/af_smc.c:822 (L)
- smc_fback_data_ready+0x88/0xac net/smc/af_smc.c:850
- tcp_data_ready+0x22c/0x44c net/ipv4/tcp_input.c:5220
- tcp_data_queue+0x18a4/0x4eb8 net/ipv4/tcp_input.c:5310
- tcp_rcv_established+0xe10/0x2018 net/ipv4/tcp_input.c:6264
- tcp_v4_do_rcv+0x3b8/0xc44 net/ipv4/tcp_ipv4.c:1915
- sk_backlog_rcv include/net/sock.h:1115 [inline]
- __release_sock+0x1a8/0x3d8 net/core/sock.c:3072
- __sk_flush_backlog+0x38/0xa4 net/core/sock.c:3092
- sk_flush_backlog include/net/sock.h:1178 [inline]
- tcp_sendmsg_locked+0x3118/0x3eb8 net/ipv4/tcp.c:1163
- tcp_sendmsg+0x40/0x64 net/ipv4/tcp.c:1357
- inet_sendmsg+0x15c/0x290 net/ipv4/af_inet.c:853
- sock_sendmsg_nosec net/socket.c:729 [inline]
- __sock_sendmsg net/socket.c:744 [inline]
- __sys_sendto+0x374/0x4f4 net/socket.c:2214
- __do_sys_sendto net/socket.c:2226 [inline]
- __se_sys_sendto net/socket.c:2222 [inline]
- __arm64_sys_sendto+0xd8/0xf8 net/socket.c:2222
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:744
- el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:762
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-Code: 00000000 00000000 00000000 00000000 (00000000) 
----[ end trace 0000000000000000 ]---
-
-
+Fixes: 1c6fdbd8f246 ("bcachefs: Initial commit")
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+When I read one 15.7M file, the io_read sysfs interface shows:
+- Before this patch
+  - original:
+    since mount:                   0 B
+    since filesystem creation:     5.11 KiB
+
+  - after read:
+    since mount:                   31.4 KiB
+    since filesystem creation:     36.5 KiB
+
+- After this patch:
+  - original:
+    since mount:                   0 B
+    since filesystem creation:     18.3 MiB
+
+  - after read:
+    since mount:                   15.7 MiB
+    since filesystem creation:     34.0 MiB
+
+v2:
+  - Add extra column to represent the unit for counters.
+
+v1: https://lore.kernel.org/r/all/eef1d336-65e2-4650-92ac-8f6329f89a57@huawei.com/T/
+---
+ fs/bcachefs/sb-counters_format.h | 160 +++++++++++++++----------------
+ fs/bcachefs/sysfs.c              |   4 +-
+ 2 files changed, 83 insertions(+), 81 deletions(-)
+
+diff --git a/fs/bcachefs/sb-counters_format.h b/fs/bcachefs/sb-counters_format.h
+index 62ea478215d0..da1f462b9f9c 100644
+--- a/fs/bcachefs/sb-counters_format.h
++++ b/fs/bcachefs/sb-counters_format.h
+@@ -2,86 +2,86 @@
+ #ifndef _BCACHEFS_SB_COUNTERS_FORMAT_H
+ #define _BCACHEFS_SB_COUNTERS_FORMAT_H
+ 
+-#define BCH_PERSISTENT_COUNTERS()				\
+-	x(io_read,					0)	\
+-	x(io_write,					1)	\
+-	x(io_move,					2)	\
+-	x(bucket_invalidate,				3)	\
+-	x(bucket_discard,				4)	\
+-	x(bucket_alloc,					5)	\
+-	x(bucket_alloc_fail,				6)	\
+-	x(btree_cache_scan,				7)	\
+-	x(btree_cache_reap,				8)	\
+-	x(btree_cache_cannibalize,			9)	\
+-	x(btree_cache_cannibalize_lock,			10)	\
+-	x(btree_cache_cannibalize_lock_fail,		11)	\
+-	x(btree_cache_cannibalize_unlock,		12)	\
+-	x(btree_node_write,				13)	\
+-	x(btree_node_read,				14)	\
+-	x(btree_node_compact,				15)	\
+-	x(btree_node_merge,				16)	\
+-	x(btree_node_split,				17)	\
+-	x(btree_node_rewrite,				18)	\
+-	x(btree_node_alloc,				19)	\
+-	x(btree_node_free,				20)	\
+-	x(btree_node_set_root,				21)	\
+-	x(btree_path_relock_fail,			22)	\
+-	x(btree_path_upgrade_fail,			23)	\
+-	x(btree_reserve_get_fail,			24)	\
+-	x(journal_entry_full,				25)	\
+-	x(journal_full,					26)	\
+-	x(journal_reclaim_finish,			27)	\
+-	x(journal_reclaim_start,			28)	\
+-	x(journal_write,				29)	\
+-	x(read_promote,					30)	\
+-	x(read_bounce,					31)	\
+-	x(read_split,					33)	\
+-	x(read_retry,					32)	\
+-	x(read_reuse_race,				34)	\
+-	x(move_extent_read,				35)	\
+-	x(move_extent_write,				36)	\
+-	x(move_extent_finish,				37)	\
+-	x(move_extent_fail,				38)	\
+-	x(move_extent_start_fail,			39)	\
+-	x(copygc,					40)	\
+-	x(copygc_wait,					41)	\
+-	x(gc_gens_end,					42)	\
+-	x(gc_gens_start,				43)	\
+-	x(trans_blocked_journal_reclaim,		44)	\
+-	x(trans_restart_btree_node_reused,		45)	\
+-	x(trans_restart_btree_node_split,		46)	\
+-	x(trans_restart_fault_inject,			47)	\
+-	x(trans_restart_iter_upgrade,			48)	\
+-	x(trans_restart_journal_preres_get,		49)	\
+-	x(trans_restart_journal_reclaim,		50)	\
+-	x(trans_restart_journal_res_get,		51)	\
+-	x(trans_restart_key_cache_key_realloced,	52)	\
+-	x(trans_restart_key_cache_raced,		53)	\
+-	x(trans_restart_mark_replicas,			54)	\
+-	x(trans_restart_mem_realloced,			55)	\
+-	x(trans_restart_memory_allocation_failure,	56)	\
+-	x(trans_restart_relock,				57)	\
+-	x(trans_restart_relock_after_fill,		58)	\
+-	x(trans_restart_relock_key_cache_fill,		59)	\
+-	x(trans_restart_relock_next_node,		60)	\
+-	x(trans_restart_relock_parent_for_fill,		61)	\
+-	x(trans_restart_relock_path,			62)	\
+-	x(trans_restart_relock_path_intent,		63)	\
+-	x(trans_restart_too_many_iters,			64)	\
+-	x(trans_restart_traverse,			65)	\
+-	x(trans_restart_upgrade,			66)	\
+-	x(trans_restart_would_deadlock,			67)	\
+-	x(trans_restart_would_deadlock_write,		68)	\
+-	x(trans_restart_injected,			69)	\
+-	x(trans_restart_key_cache_upgrade,		70)	\
+-	x(trans_traverse_all,				71)	\
+-	x(transaction_commit,				72)	\
+-	x(write_super,					73)	\
+-	x(trans_restart_would_deadlock_recursion_limit,	74)	\
+-	x(trans_restart_write_buffer_flush,		75)	\
+-	x(trans_restart_split_race,			76)	\
+-	x(write_buffer_flush_slowpath,			77)	\
+-	x(write_buffer_flush_sync,			78)
++#define BCH_PERSISTENT_COUNTERS()					\
++	x(io_read,					0,	512)	\
++	x(io_write,					1,	512)	\
++	x(io_move,					2,	512)	\
++	x(bucket_invalidate,				3,	1)	\
++	x(bucket_discard,				4,	1)	\
++	x(bucket_alloc,					5,	1)	\
++	x(bucket_alloc_fail,				6,	1)	\
++	x(btree_cache_scan,				7,	1)	\
++	x(btree_cache_reap,				8,	1)	\
++	x(btree_cache_cannibalize,			9,	1)	\
++	x(btree_cache_cannibalize_lock,			10,	1)	\
++	x(btree_cache_cannibalize_lock_fail,		11,	1)	\
++	x(btree_cache_cannibalize_unlock,		12,	1)	\
++	x(btree_node_write,				13,	1)	\
++	x(btree_node_read,				14,	1)	\
++	x(btree_node_compact,				15,	1)	\
++	x(btree_node_merge,				16,	1)	\
++	x(btree_node_split,				17,	1)	\
++	x(btree_node_rewrite,				18,	1)	\
++	x(btree_node_alloc,				19,	1)	\
++	x(btree_node_free,				20,	1)	\
++	x(btree_node_set_root,				21,	1)	\
++	x(btree_path_relock_fail,			22,	1)	\
++	x(btree_path_upgrade_fail,			23,	1)	\
++	x(btree_reserve_get_fail,			24,	1)	\
++	x(journal_entry_full,				25,	1)	\
++	x(journal_full,					26,	1)	\
++	x(journal_reclaim_finish,			27,	1)	\
++	x(journal_reclaim_start,			28,	1)	\
++	x(journal_write,				29,	1)	\
++	x(read_promote,					30,	1)	\
++	x(read_bounce,					31,	1)	\
++	x(read_split,					33,	1)	\
++	x(read_retry,					32,	1)	\
++	x(read_reuse_race,				34,	1)	\
++	x(move_extent_read,				35,	512)	\
++	x(move_extent_write,				36,	512)	\
++	x(move_extent_finish,				37,	512)	\
++	x(move_extent_fail,				38,	1)	\
++	x(move_extent_start_fail,			39,	1)	\
++	x(copygc,					40,	1)	\
++	x(copygc_wait,					41,	1)	\
++	x(gc_gens_end,					42,	1)	\
++	x(gc_gens_start,				43,	1)	\
++	x(trans_blocked_journal_reclaim,		44,	1)	\
++	x(trans_restart_btree_node_reused,		45,	1)	\
++	x(trans_restart_btree_node_split,		46,	1)	\
++	x(trans_restart_fault_inject,			47,	1)	\
++	x(trans_restart_iter_upgrade,			48,	1)	\
++	x(trans_restart_journal_preres_get,		49,	1)	\
++	x(trans_restart_journal_reclaim,		50,	1)	\
++	x(trans_restart_journal_res_get,		51,	1)	\
++	x(trans_restart_key_cache_key_realloced,	52,	1)	\
++	x(trans_restart_key_cache_raced,		53,	1)	\
++	x(trans_restart_mark_replicas,			54,	1)	\
++	x(trans_restart_mem_realloced,			55,	1)	\
++	x(trans_restart_memory_allocation_failure,	56,	1)	\
++	x(trans_restart_relock,				57,	1)	\
++	x(trans_restart_relock_after_fill,		58,	1)	\
++	x(trans_restart_relock_key_cache_fill,		59,	1)	\
++	x(trans_restart_relock_next_node,		60,	1)	\
++	x(trans_restart_relock_parent_for_fill,		61,	1)	\
++	x(trans_restart_relock_path,			62,	1)	\
++	x(trans_restart_relock_path_intent,		63,	1)	\
++	x(trans_restart_too_many_iters,			64,	1)	\
++	x(trans_restart_traverse,			65,	1)	\
++	x(trans_restart_upgrade,			66,	1)	\
++	x(trans_restart_would_deadlock,			67,	1)	\
++	x(trans_restart_would_deadlock_write,		68,	1)	\
++	x(trans_restart_injected,			69,	1)	\
++	x(trans_restart_key_cache_upgrade,		70,	1)	\
++	x(trans_traverse_all,				71,	1)	\
++	x(transaction_commit,				72,	1)	\
++	x(write_super,					73,	1)	\
++	x(trans_restart_would_deadlock_recursion_limit,	74,	1)	\
++	x(trans_restart_write_buffer_flush,		75,	1)	\
++	x(trans_restart_split_race,			76,	1)	\
++	x(write_buffer_flush_slowpath,			77,	1)	\
++	x(write_buffer_flush_sync,			78,	1)
+ 
+ enum bch_persistent_counters {
+ #define x(t, n, ...) BCH_COUNTER_##t,
+diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
+index 97733c766948..8c52a7aed45d 100644
+--- a/fs/bcachefs/sysfs.c
++++ b/fs/bcachefs/sysfs.c
+@@ -509,10 +509,12 @@ SHOW(bch2_fs_counters)
+ 
+ 	printbuf_tabstop_push(out, 32);
+ 
+-	#define x(t, ...) \
++	#define x(t, n, u, ...) \
+ 		if (attr == &sysfs_##t) {					\
+ 			counter             = percpu_u64_get(&c->counters[BCH_COUNTER_##t]);\
+ 			counter_since_mount = counter - c->counters_on_mount[BCH_COUNTER_##t];\
++			counter *= u;						\
++			counter_since_mount *= u;				\
+ 			prt_printf(out, "since mount:\t");			\
+ 			prt_human_readable_u64(out, counter_since_mount);	\
+ 			prt_newline(out);					\
+-- 
+2.34.1
+
