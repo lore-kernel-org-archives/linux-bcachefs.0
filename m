@@ -1,37 +1,38 @@
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B9C20D500
-	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Nov 2024 21:43:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD97D51C;
+	Thu,  7 Nov 2024 01:10:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730929423; cv=none; b=jw/IgY4OpnjbIu+Dbar/hPL1GJEuDdaQZ0+9MP1zutKdCewizj4HrfNPOinYK9FhkN883vmhAFO965i3F0SDmWjfHkUcBBlwWmFmxp1rrntak/eOMJuF8vrc858PpnXLPtLYnRsln1iMrveUq2gAEvbpYZWV24OgOATOawuZvWk=
+	t=1730941840; cv=none; b=ems6r/eV/VWWKe2gCgXYM7ONMfX86OL+eXxS4W//p1B4GLOMh0TOKs8PSF7B0x9mrxjCpSXY+4Con9PAgJkojHs5RalasAHe6ffLaexn/ezOFMLPRuXb3/TbCpjoT7t84h4tEsr//CrBi27L0Cq9CZ7t55Oex6de/MG8WjJpsNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730929423; c=relaxed/simple;
-	bh=c0VWQe/4BJkaIjyZWh1fxa8jdhcSmrBQVBgvnefih0A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B5c6kx0enfhJGTvEeKCdYYJ3UypmZ6n8XzZn6ia9LbXBcG5owMbPDGNTqsLmg6yvs2rX9uPovd++GaASbqBS1Tuj/igIGrUw29xNYsKhKp6aIINdiAGYXw0cyxBrDFnX2xCjPwVivBDoep6L/3/ksEJN+AoG8TBBOAkCNywuPs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LQ8p4oUo; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1730941840; c=relaxed/simple;
+	bh=yYzRkTCC8+BZTwvmyQ31+uFBqyuZMzibFmimTlIPkgc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fnRjmHQdJ4oblrNB+2VliNbeEkTU2hRe0FTnHixbRHl4iq4emsMUvgEW+Geq/DNF3G0m02AyYHC/8JhwBbwp0pz78YmmFmkNhMQOoCrbdXrgTZvG0SUAVB3U/SHVSYPcandpIUn5pLIXxfHOwZ1f2kcAixlBnk+lFT9DbedWzXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=AjJGYyVt; arc=none smtp.client-ip=115.124.30.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LQ8p4oUo"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730929419;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=PkE8g7GvKLJ/zHX2V7/cnoXhO+j+A12njaiftXNy/+s=;
-	b=LQ8p4oUoh0ZAcklwioZPhsrU83TNstb1AYRnc/nIYWWwVJMPr7LX1gFE8ScPwFSrQZzVw+
-	iU/EW838DFBtdKZ1Z/j4GXm+UaEMemfigMh/CR5+YZAXX6xdvursNWPc+N73omagKxefgw
-	uOKnbIlGs4CdC3HhY++WbgQZ9HKeMcA=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Reed Riley <reed@riley.engineer>
-Subject: [PATCH] bcachefs: Fix UAF in __promote_alloc() error path
-Date: Wed,  6 Nov 2024 16:43:28 -0500
-Message-ID: <20241106214328.33454-1-kent.overstreet@linux.dev>
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="AjJGYyVt"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1730941830; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=H+X1MYoCvR+sYhxbevfm5tdtbXienJemgk+boeH6x6M=;
+	b=AjJGYyVtrps77FyGVS7VRHGyBPD4xMU24/IkqxyqoMJy7vNIPzT5xtjuG41kIDqePlrbvOSwtvqGIBozh6nwxLEAf6CzuzWGk7EF7rilEF55i74lxb7vXWN3opOFlgHH1Hnv/9OMVpS/d1sfIGAXBYoaREm9oPHYJt4gHrtJX6w=
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0WItX.O9_1730941828 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Thu, 07 Nov 2024 09:10:29 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] bcachefs: Remove unneeded semicolon
+Date: Thu,  7 Nov 2024 09:10:27 +0800
+Message-Id: <20241107011027.56783-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -39,31 +40,46 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-If we error in data_update_init() after adding to the rhashtable of
-outstanding promotes, kfree_rcu() is required.
+This patch removes an redundant semicolon.
 
-Reported-by: Reed Riley <reed@riley.engineer>
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+./fs/bcachefs/btree_iter.c:2702:41-42: Unneeded semicolon
+./fs/bcachefs/btree_cache.c:522:13-14: Unneeded semicolon
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=11751
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- fs/bcachefs/io_read.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/bcachefs/btree_cache.c | 2 +-
+ fs/bcachefs/btree_iter.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
-index ac6a6fcc2bb8..b3b934a87c6d 100644
---- a/fs/bcachefs/io_read.c
-+++ b/fs/bcachefs/io_read.c
-@@ -262,7 +262,8 @@ static struct promote_op *__promote_alloc(struct btree_trans *trans,
- 		bio_free_pages(&(*rbio)->bio);
- 	kfree(*rbio);
- 	*rbio = NULL;
--	kfree(op);
-+	/* We may have added to the rhashtable and thus need rcu freeing: */
-+	kfree_rcu(op, rcu);
- 	bch2_write_ref_put(c, BCH_WRITE_REF_promote);
- 	return ERR_PTR(ret);
- }
+diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+index a0a406b0c7bc..c313a5bce886 100644
+--- a/fs/bcachefs/btree_cache.c
++++ b/fs/bcachefs/btree_cache.c
+@@ -519,7 +519,7 @@ static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+ 		if (btree_node_accessed(b)) {
+ 			clear_btree_node_accessed(b);
+ 			bc->not_freed[BCH_BTREE_CACHE_NOT_FREED_access_bit]++;
+-			--touched;;
++			--touched;
+ 		} else if (!btree_node_reclaim(c, b, true)) {
+ 			__bch2_btree_node_hash_remove(bc, b);
+ 			__btree_node_data_free(bc, b);
+diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
+index b47bfcc438f3..cc13fe1d2be6 100644
+--- a/fs/bcachefs/btree_iter.c
++++ b/fs/bcachefs/btree_iter.c
+@@ -2699,7 +2699,7 @@ struct bkey_s_c bch2_btree_iter_peek_prev_min(struct btree_iter *iter, struct bp
+ 	}
+ 
+ 	/* Extents can straddle iter->pos: */
+-	iter->pos = bpos_min(iter->pos, k.k->p);;
++	iter->pos = bpos_min(iter->pos, k.k->p);
+ 
+ 	if (iter->flags & BTREE_ITER_filter_snapshots)
+ 		iter->pos.snapshot = iter->snapshot;
 -- 
-2.45.2
+2.32.0.3.g01195cf9f
 
