@@ -1,76 +1,125 @@
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035CD218D70
-	for <linux-bcachefs@vger.kernel.org>; Thu,  7 Nov 2024 22:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95921DC04A
+	for <linux-bcachefs@vger.kernel.org>; Thu,  7 Nov 2024 23:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731017705; cv=none; b=sKCEenyYLucMcxjOePEZ/L3LUNW8cmGlhnMf2s6PjJMGOi86sLX4kmSejAdxqkhsAMqrtAN7suqvg+QIqaeXYnTT8jir2kgAxmvMJLDySYJUyd9l3SeQrtqdEauKn6DslsGRXTwqlXjl6iYNzYVrb3ZNzefSSj2ogN907LBgMb8=
+	t=1731020540; cv=none; b=Rz5cwvE0fsjiVgY5dboQQ76XNJQEKR1LieeDTVSmiTwLUdT4DPStbBSrXKQDSZCJy8ajYB00g7CqfkDSK4T4pV+NbYNr9UdPf7ywYmtABhllh/2zUA783sHh06XSRdTebYdHVoTj8Qusu/I1ietoNONoQ8scaTRvWyc1Xt5Zq8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731017705; c=relaxed/simple;
-	bh=Ck8FtwaaahcHdlfqlCHDFbpCs6WlWl/68pm3qng1nKY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=cuVp2n1OUG47h6SQOcetnJpY1ysuwfouZrxctPJo4Hj/ipfWBtm3p9sDPNvfpERNBLddwJLAY/I4eQyyIGYWPDbsqmFZ42VEZKwT/O+Ozeu/b958XJb6Xhm+UyZNlmJjnVtWh/2YgfdI0y0n5XeowoZNl1bgLEOOWMXhPtPONhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-83abf9b6bfaso158135439f.2
-        for <linux-bcachefs@vger.kernel.org>; Thu, 07 Nov 2024 14:15:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731017703; x=1731622503;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=80lg74MIOgAgDmVT8cJ8GU2h+nNuXRom2bkxV8sK6uY=;
-        b=SFufBMEQXEOgOrjPat3VCBHaEoD0GzLx113/bVHIJsAOX1GOcLmzegT+H2AUrv84v2
-         YS2na8qlbyJMG93LZNtQrJs8vvtHaTH1seRqDh3hk8nqCmaRctQS1kdY3BzT1sROcubc
-         Iz0HctafIrRvHR5ynaCl7b+D8VQbhrxTLyb5WrjPbTt44FFG2VGE/tUIkH+jb+wMgf30
-         69xFURpJZdeq6iHFa6x2qkofh4X87KI42i9dypVJJ+wVb7SBMiFgahUBQG4n4L8SeXJX
-         NPXh7xVuhbMCXJQ8riaWRSfMMx1fQfNPbOBDrHwHN6dlun8ky2eMwDS5Je0P+sTNqHQs
-         8bOA==
-X-Forwarded-Encrypted: i=1; AJvYcCWNQjQYJCLqD8WAT9s48L/3FYNFpSZrQvMKXtizljP4mM/fmcGMOd0eH2J9O2cJjCc1FgKuMWruPZd3Wj/uxw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxucI7BuFxYwxip4B0JkzDt/zw4IwsT98toyHb87u0kO48n+dQ/
-	vp66hWICnY8UOUe5e9w2tS6GkP2peIH6S2Z9EHKaCQAJjau1HYm/3/sIkYj2F647lmcwbjvRPqm
-	csXk31K15RzIu0Ruh70iHQHN016277G3AJGAo0P5O+PU7Hia5EfonHug=
-X-Google-Smtp-Source: AGHT+IGHveAvyf9VQNMuaUeANYUoqVyEiqCBjuig3ttka+FXKr64NKcDsnzYcYyNFpL0+xAUIVSp18csP2T4NcfLfgptxT73HWsI
+	s=arc-20240116; t=1731020540; c=relaxed/simple;
+	bh=Pohx9jBQc9jNwE7jCX6Bx+4kiZPDybWn3sHfTlV4aXQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=M7qS8AqNCJecHYaI7Y2TTU5XpNwMvHEGpVhs0ddL/yE/yrapczRx4IJeBMKpemyDx/Jvxm7ZaxDiojVYlk4TgniWCaMrSRoa6eChsq4CgUphhKuoG4ylXyJVOl/7nO+Ffl6FlltYrl68kT/TpJLv9+jaRV6XS5+HI8xVWZ4K9aI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bG9VjSm4; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bG9VjSm4"
+Date: Thu, 7 Nov 2024 18:02:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731020534;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=b/WGjHgYDEQmVHKDXmJbaSo/SGnqQ2mhgtYoFMZdbNs=;
+	b=bG9VjSm47CkZd9VXTEUAaA2pAE2h2saw6DcgHmeOxf5/5+ZmFUG3lZrz3lcloBpbdNfjSN
+	2WxJ8sGu3j/A2/5Lx5ma+9Oj6jQmbVcziMMu4xYtIylxsRDbSzSUFF1VPC9RdxYnogeiBT
+	0Cth2d+EctD32mPYSkojBdKRP8xDNDc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.12-rc7
+Message-ID: <voykwwyfpnpe54naeo67mbbltxodfqe5vzx7gk3rkwcj45e6vg@ak2ecjquamyn>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1f03:b0:3a5:e532:799d with SMTP id
- e9e14a558f8ab-3a6f19e86dcmr9853475ab.3.1731017703225; Thu, 07 Nov 2024
- 14:15:03 -0800 (PST)
-Date: Thu, 07 Nov 2024 14:15:03 -0800
-In-Reply-To: <671b3f3e.050a0220.2eb763.00d4.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <672d3be7.050a0220.0db4.01af.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] general protection fault in bch2_btree_path_traverse_one
-From: syzbot <syzbot+e22007d6acb9c87c2362@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-syzbot has bisected this issue to:
+Hi Linus, about the usual batch of fixes...
 
-commit bf4baaa087e2be0279991f1dbf9acaa7a4c9148c
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Oct 5 21:37:02 2024 +0000
+- rebased to rc6 because upstream bugs were interfering with my CI
+  results; also, there's still a bug in memory allocation profiling that
+  Andrew hasn't sent you a fix for, which is keeping me from flipping on
+  leak detection in all my tests
 
-    bcachefs: Fix lockdep splat in bch2_accounting_read
+- bcachefs devs take note (and anyone dealing with syzbot): I now have a
+  ktest test for building a kernel and running a syzbot reproducer in a
+  single command, see
+  https://evilpiepirate.org/git/ktest.git/commit/?id=3c30e501fb0d1413849cfc4f5832f8f5cff48585
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1102fd5f980000
-start commit:   ff7afaeca1a1 Merge tag 'nfs-for-6.12-3' of git://git.linux..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1302fd5f980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1502fd5f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=921b01cbfd887a9b
-dashboard link: https://syzkaller.appspot.com/bug?extid=e22007d6acb9c87c2362
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d9ae30580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13003f40580000
+The following changes since commit 59b723cd2adbac2a34fc8e12c74ae26ae45bf230:
 
-Reported-by: syzbot+e22007d6acb9c87c2362@syzkaller.appspotmail.com
-Fixes: bf4baaa087e2 ("bcachefs: Fix lockdep splat in bch2_accounting_read")
+  Linux 6.12-rc6 (2024-11-03 14:05:52 -1000)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+are available in the Git repository at:
+
+  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2024-11-07
+
+for you to fetch changes up to 8440da933127fc5330c3d1090cdd612fddbc40eb:
+
+  bcachefs: Fix UAF in __promote_alloc() error path (2024-11-07 16:48:21 -0500)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.12-rc7
+
+Some trivial syzbot fixes, two more serious btree fixes found by looping
+single_devices.ktest small_nodes:
+
+- Topology error on split after merge, where we accidentaly picked the
+  node being deleted for the pivot, resulting in an assertion pop
+
+- New nodes being preallocated were left on the freedlist, unlocked,
+  resulting in them sometimes being accidentally freed: this dated from
+  pre-cycle detector, when we could leave them locked. This should have
+  resulted in more explosions and fireworks, but turned out to be
+  surprisingly hard to hit because the preallocated nodes were being
+  used right away.
+
+  the fix for this is bigger than we'd like - reworking btree list
+  handling was a bit invasive - but we've now got more assertions and
+  it's well tested.
+
+- Also another mishandled transaction restart fix (in
+  btree_node_prefetch) - we're almost done with those.
+
+----------------------------------------------------------------
+Hongbo Li (1):
+      bcachefs: check the invalid parameter for perf test
+
+Kent Overstreet (7):
+      bcachefs: Fix null ptr deref in bucket_gen_get()
+      bcachefs: Fix error handling in bch2_btree_node_prefetch()
+      bcachefs: Ancient versions with bad bkey_formats are no longer supported
+      bcachefs: Fix topology errors on split after merge
+      bcachefs: Ensure BCH_FS_may_go_rw is set before exiting recovery
+      bcachefs: btree_cache.freeable list fixes
+      bcachefs: Fix UAF in __promote_alloc() error path
+
+Pei Xiao (1):
+      bcachefs: add check NULL return of bio_kmalloc in journal_read_bucket
+
+Piotr Zalewski (1):
+      bcachefs: Change OPT_STR max to be 1 less than the size of choices array
+
+ fs/bcachefs/bkey.c                  |   7 +--
+ fs/bcachefs/btree_cache.c           | 107 ++++++++++++++++++++++--------------
+ fs/bcachefs/btree_cache.h           |   2 +
+ fs/bcachefs/btree_node_scan.c       |   2 +-
+ fs/bcachefs/btree_update_interior.c |  30 ++++++----
+ fs/bcachefs/buckets.h               |  19 ++++---
+ fs/bcachefs/errcode.h               |   1 +
+ fs/bcachefs/io_read.c               |  10 ++--
+ fs/bcachefs/io_write.c              |   7 +--
+ fs/bcachefs/journal_io.c            |   2 +
+ fs/bcachefs/opts.c                  |   4 +-
+ fs/bcachefs/recovery.c              |   7 +++
+ fs/bcachefs/recovery_passes.c       |   6 ++
+ fs/bcachefs/tests.c                 |   5 ++
+ 14 files changed, 131 insertions(+), 78 deletions(-)
