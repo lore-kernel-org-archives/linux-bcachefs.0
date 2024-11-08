@@ -1,154 +1,120 @@
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADC3D2E3EB
-	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Nov 2024 03:31:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E07547F69;
+	Fri,  8 Nov 2024 08:55:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731036692; cv=none; b=r4IC5pi16/l2UAMywJ/8+tYdNOYx3mMg5M4H/j4emzWhwsi1unQ8rAICHD58qV5BZbS22BF6pcD19TuO6CtHGlZLpqPEcngcTU8ZmVDfXlsEGVEAoq1N7OqXxB/5Gt0S0fMbHnyhS2sFTt4tec+eyFCcMzG3atOBb9nOkpnH+wA=
+	t=1731056145; cv=none; b=dLlY9YLDC4z4yyldfmF+7Zjo7sSTOKlGLsZsTZsVwmY2QvdIfJOCjqJ9+GiZj2gdiJn+EzAjhnl8g5NGxM5xcEW5AC/RWHyXhpcO0Cw8RJxw0hZozRnY/qmcyPRvfpmSgtn167LmhpFitVNKLU/OcLQdO99dS3432c+JkZ3JIUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731036692; c=relaxed/simple;
-	bh=hoA2Lxh8zEaY0TNfux/uEcJwOiM8iKnptM+XWkE9MtE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R3/Np68+PyIMIO4daA7lIGvR7sIfIHEIf3rSaaGQP+fVfsqXcMmK8MQNXbb+0U6QTqBk7Iw9QDAf59SbliM1OoVymIZkLSj5jh2nEZtDwt27BIxJD0lD1NIvvIDj1Zw0xNgBUidhM9GH8ho7tz+v90M0jUuH1WRvZFB+F9q3NYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r6MB2xrl; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1731056145; c=relaxed/simple;
+	bh=qCdYnwE3cN8KioY3mqOShKqKuq+xMII8nhVVemimPvU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=OPWc35poweeIVbF1i6GcNlzbqWJEl5ejxJ3nwr3i3gldF9m9NLJ8ccgOCNp9RDd1oAaKSKnnz49gW2Wp+7HZqShzWBvCAkye1uPH6yW6y+v38o1uYPoWIrsIYGXyYw0MXfVY0/UNjZuPRQ+62OwOwOrFJCev6YfKXozdR/vofPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XE30lCVo; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r6MB2xrl"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731036687;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=fHopErRg1LpOOrGzzoUrVkXKgeedHa/LDFFM7QwHr3E=;
-	b=r6MB2xrleIheH6CDlnhpqQrcoeAMrnzPW3Vt0M/RGXByyhl6MDhNXnYhKm2k0Sq7mDftjF
-	irzLUQ7ObQIvtpAlC6lAGjCQDhbZGgf9VvUyyd/zYOskSwWN0pHyNo0MokVB8D3lTtoaUz
-	WWcHjHBGGceGg8i9K8RK/nwORAIDF60=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] bcachefs: bch2_btree_write_buffer_flush_going_ro()
-Date: Thu,  7 Nov 2024 22:31:16 -0500
-Message-ID: <20241108033116.1852601-1-kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XE30lCVo"
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4315baec69eso17071735e9.2;
+        Fri, 08 Nov 2024 00:55:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731056142; x=1731660942; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g7ll/geJQMHA5kDfwuhq+ww/JLtvi2AN1VmrZmHWyaU=;
+        b=XE30lCVoFkV5SHYwryIOx8vvmF2pMcqCY5wismNuL17zBoDutr7hFTU8DztcaVfUnc
+         C9QtESTGuiPnqZesr4K2X2j3keIvcVc2Ak/QbtKUiV42Fup3w0SoBFcPpp++w1JTqYVw
+         4JTxIKidHHzqB485vmQ04PhFCmFZQLw2XJlVviSA0DTmvDrEZynoDFe5tgIvWgo8xClv
+         ueNczn2rtNXjsguCNCqkxidhVfyc01AXGCEHNBf2IXUQkbJQFAagEwP3d8z9vdPIkPAX
+         3Xszw28oCbjdDa8I2VRkZQtZ09/dw4uHCZAc1SZDhO0So9xXu6GMvJsNQCj5EHaPsmcQ
+         2GaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731056142; x=1731660942;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g7ll/geJQMHA5kDfwuhq+ww/JLtvi2AN1VmrZmHWyaU=;
+        b=LUxjUtUmmzDDUq0sntq9qnHw3E5oGcRMvjSq4m26yM5sKDHmY2lPLsBL0y/ndretn1
+         vFtzVx7wJxgefLuhqacRnChmCEoAnQuEhtB+AClosXSsuzrSrO8YdfmqhojEU8I8r2ZX
+         +bLpvy7gGNtFmbFTBBe0/ZkPbJWX2WkV35/nTlTH0BRK1IlC1pnXoayToJwvQBaPDrfU
+         tBozFUM8gv+mhwerSiRSp2YwIxJEZ2ACrxL8Mjq+MlOKL+8ZkfzgdFd5xdSANWR2KKKK
+         4OfKvOzaWRoj5KS2XvpeW3GXfKKFKB2Dz2Rpy9TbBHAURGyIIgftj4YqrfW3zP03xkpv
+         S5kg==
+X-Forwarded-Encrypted: i=1; AJvYcCXNK/cnyr+zUei0IbBEuPouUjapvN8MiHNURtsBxwZzgwi7OTivqGF8hl/gODL9MVi0O75LnHLv/n9zYO0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzmkrcGkjonTh7tMsXDqNqnprC1QdGj0CKAL7nyz9zjyXwao1eG
+	RkmRDO3rwdmz7YFiZFbsq3QgfSR4wSVic1zSK1ZU0g/bmb+xSEQhN2YWpQ==
+X-Google-Smtp-Source: AGHT+IFvNSd5+lsw2IQjc2x1Dfx1YVV08ve34jrI6PxB5s9dK6sMoMDv3QepmG4qr4+CLgcwHFq9DA==
+X-Received: by 2002:a05:600c:1c98:b0:426:6edf:6597 with SMTP id 5b1f17b1804b1-432b750a358mr15188485e9.19.1731056142333;
+        Fri, 08 Nov 2024 00:55:42 -0800 (PST)
+Received: from [192.168.1.161] ([2a01:e34:ec0c:62c0:43a8:cbf6:d53f:a443])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381ed97071esm3911206f8f.12.2024.11.08.00.55.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Nov 2024 00:55:41 -0800 (PST)
+From: Gabriel de Perthuis <g2p.code@gmail.com>
+Date: Fri, 08 Nov 2024 08:55:15 +0000
+Subject: [PATCH] bcachefs: Remove an unused label
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Message-Id: <20241108-build-fix-v1-1-ce159b306875@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAPPRLWcC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxNDQwML3aTSzJwU3bTMCt1kI0tjw2QjI2NTM3MloPqColSgMNis6NjaWgC
+ q0VAAWwAAAA==
+X-Change-ID: 20241108-build-fix-c2931c223567
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Gabriel de Perthuis <g2p.code@gmail.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1731056141; l=1174;
+ i=g2p.code@gmail.com; s=20240226; h=from:subject:message-id;
+ bh=qCdYnwE3cN8KioY3mqOShKqKuq+xMII8nhVVemimPvU=;
+ b=D0Jin2JwMfE5+HmtXDqcBS9DraxqyvKmo0K6a75A09jDmE8FUcyrp5HTxhBHVErCuuRlT305g
+ rC8ClH/L8GXB9fJ0mw3PmkheSSsrcLwdtyqPlYlHuUYn52QiM5n54AJ
+X-Developer-Key: i=g2p.code@gmail.com; a=ed25519;
+ pk=iNCUUSsYvx8i030j8RjSUXbvD9xNTnyXfNZ/i7Y+cQk=
 
-The write buffer needs to be specifically flushed when going RO: keys in
-the journal that haven't yet been moved to the write buffer don't have a
-journal pin yet.
+Trivial fix for an issue that triggered -Werror.
 
-This fixes numerous syzbot bugs, all with symptoms of still doing writes
-after we've got RO.
+fs/bcachefs/btree_io.c: In function ‘validate_bset’:
+fs/bcachefs/btree_io.c:828:1: error: label ‘out’ defined but not used [-Werror=unused-label]
+  828 | out:
+      | ^~~
+cc1: all warnings being treated as errors
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Fixes: a78c8274ea0c7ebccf2474a9c2e4a15cead79295 ("bcachefs: Fix validate_bset() repair path")
+
+Signed-off-by: Gabriel de Perthuis <g2p.code@gmail.com>
 ---
- fs/bcachefs/btree_write_buffer.c | 30 +++++++++++++++++++++++++++---
- fs/bcachefs/btree_write_buffer.h |  1 +
- fs/bcachefs/super.c              |  1 +
- 3 files changed, 29 insertions(+), 3 deletions(-)
+ fs/bcachefs/btree_io.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/bcachefs/btree_write_buffer.c b/fs/bcachefs/btree_write_buffer.c
-index 3f56b584f8ec..1639c60dffa0 100644
---- a/fs/bcachefs/btree_write_buffer.c
-+++ b/fs/bcachefs/btree_write_buffer.c
-@@ -277,6 +277,10 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
- 	bool accounting_replay_done = test_bit(BCH_FS_accounting_replay_done, &c->flags);
- 	int ret = 0;
+diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+index b8c723d61283891bc789dc39056a44c7dc8d0d67..839d68802e4268ff500af0ee6b0029dcf77d3313 100644
+--- a/fs/bcachefs/btree_io.c
++++ b/fs/bcachefs/btree_io.c
+@@ -824,11 +824,10 @@ static int validate_bset(struct bch_fs *c, struct bch_dev *ca,
  
-+	ret = bch2_journal_error(&c->journal);
-+	if (ret)
-+		return ret;
-+
- 	bch2_trans_unlock(trans);
- 	bch2_trans_begin(trans);
- 
-@@ -491,7 +495,8 @@ static int fetch_wb_keys_from_journal(struct bch_fs *c, u64 seq)
+ 		compat_bformat(b->c.level, b->c.btree_id, version,
+ 			       BSET_BIG_ENDIAN(i), write,
+ 			       &bn->format);
+ 	}
+-out:
+ fsck_err:
+ 	printbuf_exit(&buf2);
+ 	printbuf_exit(&buf1);
  	return ret;
  }
- 
--static int btree_write_buffer_flush_seq(struct btree_trans *trans, u64 seq)
-+static int btree_write_buffer_flush_seq(struct btree_trans *trans, u64 seq,
-+					bool *did_work)
- {
- 	struct bch_fs *c = trans->c;
- 	struct btree_write_buffer *wb = &c->btree_write_buffer;
-@@ -502,6 +507,8 @@ static int btree_write_buffer_flush_seq(struct btree_trans *trans, u64 seq)
- 
- 		fetch_from_journal_err = fetch_wb_keys_from_journal(c, seq);
- 
-+		*did_work |= wb->inc.keys.nr || wb->flushing.keys.nr;
-+
- 		/*
- 		 * On memory allocation failure, bch2_btree_write_buffer_flush_locked()
- 		 * is not guaranteed to empty wb->inc:
-@@ -521,17 +528,34 @@ static int bch2_btree_write_buffer_journal_flush(struct journal *j,
- 				struct journal_entry_pin *_pin, u64 seq)
- {
- 	struct bch_fs *c = container_of(j, struct bch_fs, journal);
-+	bool did_work = false;
- 
--	return bch2_trans_run(c, btree_write_buffer_flush_seq(trans, seq));
-+	return bch2_trans_run(c, btree_write_buffer_flush_seq(trans, seq, &did_work));
- }
- 
- int bch2_btree_write_buffer_flush_sync(struct btree_trans *trans)
- {
- 	struct bch_fs *c = trans->c;
-+	bool did_work = false;
- 
- 	trace_and_count(c, write_buffer_flush_sync, trans, _RET_IP_);
- 
--	return btree_write_buffer_flush_seq(trans, journal_cur_seq(&c->journal));
-+	return btree_write_buffer_flush_seq(trans, journal_cur_seq(&c->journal), &did_work);
-+}
-+
-+/*
-+ * The write buffer requires flushing when going RO: keys in the journal for the
-+ * write buffer don't have a journal pin yet
-+ */
-+bool bch2_btree_write_buffer_flush_going_ro(struct bch_fs *c)
-+{
-+	if (bch2_journal_error(&c->journal))
-+		return false;
-+
-+	bool did_work = false;
-+	bch2_trans_run(c, btree_write_buffer_flush_seq(trans,
-+				journal_cur_seq(&c->journal), &did_work));
-+	return did_work;
- }
- 
- int bch2_btree_write_buffer_flush_nocheck_rw(struct btree_trans *trans)
-diff --git a/fs/bcachefs/btree_write_buffer.h b/fs/bcachefs/btree_write_buffer.h
-index 725e79654216..d535cea28bde 100644
---- a/fs/bcachefs/btree_write_buffer.h
-+++ b/fs/bcachefs/btree_write_buffer.h
-@@ -21,6 +21,7 @@ static inline bool bch2_btree_write_buffer_must_wait(struct bch_fs *c)
- 
- struct btree_trans;
- int bch2_btree_write_buffer_flush_sync(struct btree_trans *);
-+bool bch2_btree_write_buffer_flush_going_ro(struct bch_fs *);
- int bch2_btree_write_buffer_flush_nocheck_rw(struct btree_trans *);
- int bch2_btree_write_buffer_tryflush(struct btree_trans *);
- 
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index 9b8a9e3781a4..37eee352fa21 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -272,6 +272,7 @@ static void __bch2_fs_read_only(struct bch_fs *c)
- 		clean_passes++;
- 
- 		if (bch2_btree_interior_updates_flush(c) ||
-+		    bch2_btree_write_buffer_flush_going_ro(c) ||
- 		    bch2_journal_flush_all_pins(&c->journal) ||
- 		    bch2_btree_flush_all_writes(c) ||
- 		    seq != atomic64_read(&c->journal.seq)) {
+
+---
+base-commit: a78c8274ea0c7ebccf2474a9c2e4a15cead79295
+change-id: 20241108-build-fix-c2931c223567
+
+Best regards,
 -- 
-2.45.2
+Gabriel de Perthuis
 
