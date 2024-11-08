@@ -1,76 +1,154 @@
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6927B1BC3F
-	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Nov 2024 02:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADC3D2E3EB
+	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Nov 2024 03:31:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731033364; cv=none; b=eFMmHFE6HPs+mYKtPLXvGBs9Dw8GRvE0OJgm7t44Ws6IylTaVBHrBmyVwbirgKftQCkMk1sjtqJqzFzJW6cb1szcrelXzJfsdrQI0BE/U2zzzOL/bxCTyzH81wgTjnrf6CH4CuAT65uIOa4hEQsmrKHzOfcK8o15Gu/Sx1Nmk1o=
+	t=1731036692; cv=none; b=r4IC5pi16/l2UAMywJ/8+tYdNOYx3mMg5M4H/j4emzWhwsi1unQ8rAICHD58qV5BZbS22BF6pcD19TuO6CtHGlZLpqPEcngcTU8ZmVDfXlsEGVEAoq1N7OqXxB/5Gt0S0fMbHnyhS2sFTt4tec+eyFCcMzG3atOBb9nOkpnH+wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731033364; c=relaxed/simple;
-	bh=ylao5bEk/CD05cKWA3bDeTSncBr7iaNyh+pD1alF4BE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Bs8LqopOEtoKNGiaIBHZDH4B0aMsTNsjWCrlykm1tzhtXhTbPVvRlJk3kWYhlNtyKUYRTdft0+rI2F5ipC1A4tkXblVzHFVxQ/cgXSrIddjRfrnw/r5R0u5vpr7fCecAjTp/7rozU6LKX6X8qOPXK+AXBVM813b4ZlfPCWZAbsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-83acaa1f819so189781539f.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 07 Nov 2024 18:36:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731033362; x=1731638162;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=88RupAuqMASawdtlRRshtw6JABpEerpNHWxBoUTT8Mg=;
-        b=Fjv/bT6ukSiRZMv3SKPh40HYV41cHKkfPJGcrbIspuzCMWG0GM3Vr8njI1GBFCrfcf
-         089id8GHXaYS4R1EI0DMyqQwm9jAVAKTJ1orocUy+mPbSM4QimDDwlNHq7aZ+MllLOVP
-         cq1SUBnFjIwDR0ZK9fLYtIMdFoBtZC4h69tWlB4Lj+FZ1Cl43Mrq7H136n2OC97e/zkR
-         6snormX01b5Y6fVjKNmfCDLquHuo0Y8C/ZL3/JvKj/CRO6abYqj3ZBqIqeYFlja9Rox5
-         BRUFqVD877T6o0Tt8FmExWC+4+EYZ8ZNUm+SikKY2V22MmJKdoxqYcA7ua0XSEhjFrJn
-         7F3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUw/1cqRfmodhDK34QPHEsHJwktlZdWk6XZ4S3ycZ/4N6Qh0Go8Ce1uK/wxgW/lUN3H9+RooYsaG2PSRviEkg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywj1Sn1veDOKnIAnr6f1rCKpGndtXktq/ihJH9UMOczQrxpQuQK
-	iPX52U+M28DKJ7EYB36mk+MaIpvIsBBx/MaFiLztMYaeEn+FypbHIH5qVAj3KmZhayANOqCXC34
-	ePzxVM3ySfpxeR9nC81FMKQ5B8mSKxXBqwvH0lR0BVrAPN2YVI4TMl2Q=
-X-Google-Smtp-Source: AGHT+IFSSWvfz5vQMH6XlEgHhK+BKrpmJIarnq77o5ZAE6cfC6hvhCNT6yYlCD/JOWeXDYTVB/1kTrjfXkUIsJ/iYhLIZgVt24ZX
+	s=arc-20240116; t=1731036692; c=relaxed/simple;
+	bh=hoA2Lxh8zEaY0TNfux/uEcJwOiM8iKnptM+XWkE9MtE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R3/Np68+PyIMIO4daA7lIGvR7sIfIHEIf3rSaaGQP+fVfsqXcMmK8MQNXbb+0U6QTqBk7Iw9QDAf59SbliM1OoVymIZkLSj5jh2nEZtDwt27BIxJD0lD1NIvvIDj1Zw0xNgBUidhM9GH8ho7tz+v90M0jUuH1WRvZFB+F9q3NYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r6MB2xrl; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r6MB2xrl"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731036687;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fHopErRg1LpOOrGzzoUrVkXKgeedHa/LDFFM7QwHr3E=;
+	b=r6MB2xrleIheH6CDlnhpqQrcoeAMrnzPW3Vt0M/RGXByyhl6MDhNXnYhKm2k0Sq7mDftjF
+	irzLUQ7ObQIvtpAlC6lAGjCQDhbZGgf9VvUyyd/zYOskSwWN0pHyNo0MokVB8D3lTtoaUz
+	WWcHjHBGGceGg8i9K8RK/nwORAIDF60=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH] bcachefs: bch2_btree_write_buffer_flush_going_ro()
+Date: Thu,  7 Nov 2024 22:31:16 -0500
+Message-ID: <20241108033116.1852601-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c87:b0:3a6:b0a3:5400 with SMTP id
- e9e14a558f8ab-3a6f1a21e21mr16301345ab.16.1731033362539; Thu, 07 Nov 2024
- 18:36:02 -0800 (PST)
-Date: Thu, 07 Nov 2024 18:36:02 -0800
-In-Reply-To: <671b3f75.050a0220.2eb763.00d8.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <672d7912.050a0220.0db4.01b8.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_trans_node_iter_init
-From: syzbot <syzbot+b17df21b4d370f2dc330@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-syzbot has bisected this issue to:
+The write buffer needs to be specifically flushed when going RO: keys in
+the journal that haven't yet been moved to the write buffer don't have a
+journal pin yet.
 
-commit bf4baaa087e2be0279991f1dbf9acaa7a4c9148c
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Oct 5 21:37:02 2024 +0000
+This fixes numerous syzbot bugs, all with symptoms of still doing writes
+after we've got RO.
 
-    bcachefs: Fix lockdep splat in bch2_accounting_read
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/btree_write_buffer.c | 30 +++++++++++++++++++++++++++---
+ fs/bcachefs/btree_write_buffer.h |  1 +
+ fs/bcachefs/super.c              |  1 +
+ 3 files changed, 29 insertions(+), 3 deletions(-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13d95d87980000
-start commit:   ff7afaeca1a1 Merge tag 'nfs-for-6.12-3' of git://git.linux..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10395d87980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17d95d87980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=921b01cbfd887a9b
-dashboard link: https://syzkaller.appspot.com/bug?extid=b17df21b4d370f2dc330
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16997d5f980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=119e3f40580000
+diff --git a/fs/bcachefs/btree_write_buffer.c b/fs/bcachefs/btree_write_buffer.c
+index 3f56b584f8ec..1639c60dffa0 100644
+--- a/fs/bcachefs/btree_write_buffer.c
++++ b/fs/bcachefs/btree_write_buffer.c
+@@ -277,6 +277,10 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+ 	bool accounting_replay_done = test_bit(BCH_FS_accounting_replay_done, &c->flags);
+ 	int ret = 0;
+ 
++	ret = bch2_journal_error(&c->journal);
++	if (ret)
++		return ret;
++
+ 	bch2_trans_unlock(trans);
+ 	bch2_trans_begin(trans);
+ 
+@@ -491,7 +495,8 @@ static int fetch_wb_keys_from_journal(struct bch_fs *c, u64 seq)
+ 	return ret;
+ }
+ 
+-static int btree_write_buffer_flush_seq(struct btree_trans *trans, u64 seq)
++static int btree_write_buffer_flush_seq(struct btree_trans *trans, u64 seq,
++					bool *did_work)
+ {
+ 	struct bch_fs *c = trans->c;
+ 	struct btree_write_buffer *wb = &c->btree_write_buffer;
+@@ -502,6 +507,8 @@ static int btree_write_buffer_flush_seq(struct btree_trans *trans, u64 seq)
+ 
+ 		fetch_from_journal_err = fetch_wb_keys_from_journal(c, seq);
+ 
++		*did_work |= wb->inc.keys.nr || wb->flushing.keys.nr;
++
+ 		/*
+ 		 * On memory allocation failure, bch2_btree_write_buffer_flush_locked()
+ 		 * is not guaranteed to empty wb->inc:
+@@ -521,17 +528,34 @@ static int bch2_btree_write_buffer_journal_flush(struct journal *j,
+ 				struct journal_entry_pin *_pin, u64 seq)
+ {
+ 	struct bch_fs *c = container_of(j, struct bch_fs, journal);
++	bool did_work = false;
+ 
+-	return bch2_trans_run(c, btree_write_buffer_flush_seq(trans, seq));
++	return bch2_trans_run(c, btree_write_buffer_flush_seq(trans, seq, &did_work));
+ }
+ 
+ int bch2_btree_write_buffer_flush_sync(struct btree_trans *trans)
+ {
+ 	struct bch_fs *c = trans->c;
++	bool did_work = false;
+ 
+ 	trace_and_count(c, write_buffer_flush_sync, trans, _RET_IP_);
+ 
+-	return btree_write_buffer_flush_seq(trans, journal_cur_seq(&c->journal));
++	return btree_write_buffer_flush_seq(trans, journal_cur_seq(&c->journal), &did_work);
++}
++
++/*
++ * The write buffer requires flushing when going RO: keys in the journal for the
++ * write buffer don't have a journal pin yet
++ */
++bool bch2_btree_write_buffer_flush_going_ro(struct bch_fs *c)
++{
++	if (bch2_journal_error(&c->journal))
++		return false;
++
++	bool did_work = false;
++	bch2_trans_run(c, btree_write_buffer_flush_seq(trans,
++				journal_cur_seq(&c->journal), &did_work));
++	return did_work;
+ }
+ 
+ int bch2_btree_write_buffer_flush_nocheck_rw(struct btree_trans *trans)
+diff --git a/fs/bcachefs/btree_write_buffer.h b/fs/bcachefs/btree_write_buffer.h
+index 725e79654216..d535cea28bde 100644
+--- a/fs/bcachefs/btree_write_buffer.h
++++ b/fs/bcachefs/btree_write_buffer.h
+@@ -21,6 +21,7 @@ static inline bool bch2_btree_write_buffer_must_wait(struct bch_fs *c)
+ 
+ struct btree_trans;
+ int bch2_btree_write_buffer_flush_sync(struct btree_trans *);
++bool bch2_btree_write_buffer_flush_going_ro(struct bch_fs *);
+ int bch2_btree_write_buffer_flush_nocheck_rw(struct btree_trans *);
+ int bch2_btree_write_buffer_tryflush(struct btree_trans *);
+ 
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index 9b8a9e3781a4..37eee352fa21 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -272,6 +272,7 @@ static void __bch2_fs_read_only(struct bch_fs *c)
+ 		clean_passes++;
+ 
+ 		if (bch2_btree_interior_updates_flush(c) ||
++		    bch2_btree_write_buffer_flush_going_ro(c) ||
+ 		    bch2_journal_flush_all_pins(&c->journal) ||
+ 		    bch2_btree_flush_all_writes(c) ||
+ 		    seq != atomic64_read(&c->journal.seq)) {
+-- 
+2.45.2
 
-Reported-by: syzbot+b17df21b4d370f2dc330@syzkaller.appspotmail.com
-Fixes: bf4baaa087e2 ("bcachefs: Fix lockdep splat in bch2_accounting_read")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
