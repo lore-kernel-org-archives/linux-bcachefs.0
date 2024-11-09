@@ -1,421 +1,417 @@
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB85C145A1C;
-	Sat,  9 Nov 2024 14:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F46F233D6B
+	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Nov 2024 15:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731162706; cv=none; b=WSGdAHxgQ74fbMe11JJ8S0tjZMv/ZkQWzFYG6D/8HyBJM+l4/tInRlEwNPDvt8Of+fVyhUvz7v7awsIQ0SHjWnBVDMA8/rDnN59TrpM+aFguZHNGsdHlH0eGYlbzPNU3bnKiLlwW5k0CS+vwUwRtwibllNvLGPuYdQKl/kMxpTA=
+	t=1731166685; cv=none; b=OfBjNiwL8ccw8K78OuJoXaAikXKAsv+6/nwxc8x/OWEbHRvA8J22pXNGJdFviMgin69EC6FeYlKOanTWmwMzxpg1fwTCaM3NY7j7u3ZQZhdm0Mjsy0t3CffXaDCIC8buq+5CWVomlkopqi6r201e/XChkh3V628jmsAN8i8e7Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731162706; c=relaxed/simple;
-	bh=EMCXZ8i+2EfDuxQtvErCOOJnNyWM0ieOoO9Utf5s8YY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HJI9/1CZb/T1BcSKeo9rF5PTo9ZyXB2LF6ca5u9aiGCUTHrqQMF/GAU1BMUO1wyjLEemFPvkaaAKFJtnmOBtoH2QfxJT4F048A4ZXyb/Qt1kn5b9OuYJjT71URrrDddgQNhxP2dqF7jN+z/sfjjbyBswbhkyox2al2mAJ/+y6BY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MY5OfJmJ; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MY5OfJmJ"
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a9ed49ec0f1so535859866b.1;
-        Sat, 09 Nov 2024 06:31:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731162703; x=1731767503; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VHJRqhjtU56C6YPkpK8Pezq1Mg8Cx4M2Uf/MJfP/48U=;
-        b=MY5OfJmJ7s8s1muivRW5MfJgsD91f6BA0yZZ+dsGEOgJsyT55MUv8B8FOjojOnzurs
-         Mwu8EHFqua58J6XKkeV3HRiuTIcDdjy4dIUisIN6tCvcoPunyENqTHKzQNKCOKO80bfV
-         nx0vHAF3+3e0oXqWx54SxwU7xDRm/chdnjYfKh9wDSzbAAwHMKjjPV9URhSMcTum9Vap
-         fSXCe1qXSQXIPl4L34YANRhDQw0TUX60yMGkszog9ZCn95bBnD5DgbE/l5tFB9AZtESn
-         XPjV4GPxPSJXCsriWrL13gTGa4mFaTTalzZ9Zf/O89k/DGuClKMVMvT2s/sM2t4hdYCs
-         2aGQ==
+	s=arc-20240116; t=1731166685; c=relaxed/simple;
+	bh=NUlG33GeGsq8W704Sy+P4Xlfjr9SRPlkmef62pjUBeA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=RhSyBTiyWlW0HpSaBcQ0lEPvhMbzbQeZj/dPCFL26nsek+O+DgocdTfK4n996PsdCeE2/dnrRGzz45EOfG9XBVTJfUCLrCyIWxXOqomoOOiKAIT4i6Hko4YcnlCApC8/dbRg4dI7J/SqOl1VD5wcbwZKBxGB4inAdpax53cWSG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-83abb164a4fso338592939f.2
+        for <linux-bcachefs@vger.kernel.org>; Sat, 09 Nov 2024 07:38:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731162703; x=1731767503;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VHJRqhjtU56C6YPkpK8Pezq1Mg8Cx4M2Uf/MJfP/48U=;
-        b=VKFNHHzmTIh0G5yky8JdvFdADB/FG7Cso6aMIZ8ayFX6wwUOrTLhl6u53Ly39bKOB5
-         Uy/hQhhODInNYvhHPGCdZ0wlVdAGH0onPLXNwiS5VzFaI6xI7RTc/YsWx223eJYpr68h
-         fNJl52NXtCgzZRfT2AgEDVnWsxpgMK5WuSgJUrAf3nD7+2AUYQ0lm3Wk/0MDTqU+POfm
-         wePFnXl5yQT9s3/cWaWIsAJ1IJ6bWpypUNEtgubTZ9WrbllEiEXtL4hfReKF5wky2Aaa
-         dHqAFQoRSzMROQ2meglJNq4JcFbyYlSBZ1kSpJo3p3D9p7KpnJftVr8Jo5iKvy8A2S72
-         WugQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU0NfW74CnKVX2+BIYP9u0+dVlEo0f9SBo7Ri56aI1Zio6evQfT9rrlxjP8BgznLujxmab/PyFlznLR0jUs@vger.kernel.org, AJvYcCXcP70G4EU2GHBvVeBZQys8C+yUGVqgN2AYlaYrD+4AfA4zRHCkoLamSISHIFjoEBNlBkVN9BEoNcoe9dVYzA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyOBjKntAtWTqLlM6adqoSKA4Nx+bGi+qAGV5puYF/9GMlgR5uP
-	F9/GLn+GvWbfFVEAAZgd28mz8UmBGpFLxXxwcrjPsuveYij30NriMQq9gSfp1o0s8q81+Ltorpa
-	MBVnyn1gchCyez9pr1XIWGcnAbn8=
-X-Google-Smtp-Source: AGHT+IHGAaeDKry6Lt3qCb+EXyMlkmwLODHTQowCGLkJezxTjjnyrHzIlUldtuVzaj7L99COQJ/dOffetAe2ivyJxMI=
-X-Received: by 2002:a17:907:3f97:b0:a9d:e1d1:bf95 with SMTP id
- a640c23a62f3a-a9eeff3f3b0mr638974566b.25.1731162702034; Sat, 09 Nov 2024
- 06:31:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731166682; x=1731771482;
+        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ifLbF7tba7dV9fo+j6bMpoi+nS3nzD2LspYJkXnoP4g=;
+        b=p0ztSPO2MdEtPd+Fg8TOA57gepksNOdvWeJUw0vkiUsGJ+3xWavxUVNmFEJn1WxCao
+         c2LNk0naIRFnngkhcfzqloKORQHgMTQGjrZx5kMI5hwJ/NagKsGFcH9371LEBZv++ZEO
+         VDbSLHGBLDb8XwdSSlyN/8rRMRxTuhpHDpjY34qzwFhlsEx0gam83mdxPWoC9RqT95q3
+         na8+KNExWOgsXjmKfS+TpvNGKVeHK1w80Xb9AaIopvT4AdOds6emQS6dJkIRHhlxD8oW
+         ExK8T8pRcUQ1K7D5X59Nt8D/mBSzj321X/p5PE9oaA0SqJNJdz3ViehFe/cXENYs8Lc5
+         NL2g==
+X-Forwarded-Encrypted: i=1; AJvYcCU+sutlHJpxbG1jfeIesz6KCuLGhtqIt+ifDwR1ECofOew4Yt9bQv24VIH2GFxa3Yor2rI0iXtCsMbuYiCPsA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzsJFZa2jHsPRUfmYq+H19ZxeWWFEOW5a/JyjMcXDIvNDidz0+L
+	k7D2CbKy86ztgMA1zhorJxuprKSlRjyE1RlEi5u0rclscD7KV/uC7jLYp3icBwxYjMyGWaZdvmM
+	UXg3xUIAxNMdXE6BtowBMsd9wyXnusCcTnClxPRWAGX2P9LFRQDf63MY=
+X-Google-Smtp-Source: AGHT+IHVpGJg8dwgI05qQUbeEvlSoSb3Afb7zGouadR/j39K13hCjjwNb3ONOUgP0ME32GwPjvG8hPDPNxr7jm2IvVGoxvGdP4Wx
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <672ecc13.050a0220.138bd5.0038.GAE@google.com>
-In-Reply-To: <672ecc13.050a0220.138bd5.0038.GAE@google.com>
-From: Suraj Sonawane <surajsonawane0215@gmail.com>
-Date: Sat, 9 Nov 2024 20:01:05 +0530
-Message-ID: <CAHiZj8hLZ3es4arB89eVfspki+Un9PXBedjo_vMix81F7OdMiw@mail.gmail.com>
+X-Received: by 2002:a05:6e02:1e0e:b0:3a5:e250:bba1 with SMTP id
+ e9e14a558f8ab-3a6f1a48f15mr68673585ab.18.1731166682623; Sat, 09 Nov 2024
+ 07:38:02 -0800 (PST)
+Date: Sat, 09 Nov 2024 07:38:02 -0800
+In-Reply-To: <CAHiZj8hLZ3es4arB89eVfspki+Un9PXBedjo_vMix81F7OdMiw@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <672f81da.050a0220.138bd5.0042.GAE@google.com>
 Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_copygc
-To: syzbot <syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com>
-Cc: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: multipart/mixed; boundary="000000000000e7867206267bb909"
-
---000000000000e7867206267bb909
-Content-Type: multipart/alternative; boundary="000000000000e7867106267bb907"
-
---000000000000e7867106267bb907
+From: syzbot <syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, surajsonawane0215@gmail.com, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-#syz test
+Hello,
 
-On Sat, Nov 9, 2024 at 8:12=E2=80=AFAM syzbot <
-syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com> wrote:
+syzbot tried to test the proposed patch but the build/boot failed:
 
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    2e1b3cc9d7f7 Merge tag 'arm-fixes-6.12-2' of
-> git://git.ker..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D11361d5f98000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6fdf74cce3772=
-23b
-> dashboard link:
-> https://syzkaller.appspot.com/bug?extid=3D8689d10f1894eedf774d
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for
-> Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12348f40580=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11e7b58798000=
-0
->
-> Downloadable assets:
-> disk image:
-> https://storage.googleapis.com/syzbot-assets/08456e37db58/disk-2e1b3cc9.r=
-aw.xz
-> vmlinux:
-> https://storage.googleapis.com/syzbot-assets/cc957f7ba80b/vmlinux-2e1b3cc=
-9.xz
-> kernel image:
-> https://storage.googleapis.com/syzbot-assets/7579fe72ed89/bzImage-2e1b3cc=
-9.xz
-> mounted in repro:
-> https://storage.googleapis.com/syzbot-assets/5903d7d7fe58/mount_4.gz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the
-> commit:
-> Reported-by: syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> BUG: KMSAN: uninit-value in rht_ptr_rcu include/linux/rhashtable.h:376
-> [inline]
-> BUG: KMSAN: uninit-value in __rhashtable_lookup
-> include/linux/rhashtable.h:607 [inline]
-> BUG: KMSAN: uninit-value in rhashtable_lookup
-> include/linux/rhashtable.h:646 [inline]
-> BUG: KMSAN: uninit-value in rhashtable_lookup_fast
-> include/linux/rhashtable.h:672 [inline]
-> BUG: KMSAN: uninit-value in bucket_in_flight fs/bcachefs/movinggc.c:144
-> [inline]
-> BUG: KMSAN: uninit-value in bch2_copygc_get_buckets
-> fs/bcachefs/movinggc.c:170 [inline]
-> BUG: KMSAN: uninit-value in bch2_copygc+0x1d3f/0x58f0
-> fs/bcachefs/movinggc.c:221
->  rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
->  __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
->  rhashtable_lookup include/linux/rhashtable.h:646 [inline]
->  rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
->  bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
->  bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
->  bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
->  bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
->  kthread+0x3e2/0x540 kernel/kthread.c:389
->  ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->
-> Local variable b205.i created at:
->  bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
->  bch2_copygc+0x15b3/0x58f0 fs/bcachefs/movinggc.c:221
->  bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
->
-> CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Not tainted
-> 6.12.0-rc6-syzkaller-00077-g2e1b3cc9d7f7 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 09/13/2024
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> Kernel panic - not syncing: kmsan.panic set ...
-> CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Tainted: G    B
-> 6.12.0-rc6-syzkaller-00077-g2e1b3cc9d7f7 #0
-> Tainted: [B]=3DBAD_PAGE
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 09/13/2024
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:94 [inline]
->  dump_stack_lvl+0x216/0x2d0 lib/dump_stack.c:120
->  dump_stack+0x1e/0x30 lib/dump_stack.c:129
->  panic+0x4e2/0xcf0 kernel/panic.c:354
->  kmsan_report+0x2c7/0x2d0 mm/kmsan/report.c:218
->  __msan_warning+0x95/0x120 mm/kmsan/instrumentation.c:318
->  rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
->  __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
->  rhashtable_lookup include/linux/rhashtable.h:646 [inline]
->  rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
->  bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
->  bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
->  bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
->  bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
->  kthread+0x3e2/0x540 kernel/kthread.c:389
->  ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->  </TASK>
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
->
-> --
-> You received this message because you are subscribed to the Google Groups
-> "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an
-> email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion visit
-> https://groups.google.com/d/msgid/syzkaller-bugs/672ecc13.050a0220.138bd5=
-.0038.GAE%40google.com
-> .
->
+ 50.774453][    T1] Bluetooth: HIDP (Human Interface Emulation) ver 1.2
+[   50.781444][    T1] Bluetooth: HIDP socket layer initialized
+[   50.797785][    T1] NET: Registered PF_RXRPC protocol family
+[   50.804021][    T1] Key type rxrpc registered
+[   50.819166][    T1] Key type rxrpc_s registered
+[   50.826057][    T1] NET: Registered PF_KCM protocol family
+[   50.846625][    T1] lec:lane_module_init: lec.c: initialized
+[   50.853444][    T1] mpoa:atm_mpoa_init: mpc.c: initialized
+[   50.859905][    T1] l2tp_core: L2TP core driver, V2.0
+[   50.865318][    T1] l2tp_ppp: PPPoL2TP kernel driver, V2.0
+[   50.871283][    T1] l2tp_ip: L2TP IP encapsulation support (L2TPv3)
+[   50.878166][    T1] l2tp_netlink: L2TP netlink interface
+[   50.885393][    T1] l2tp_eth: L2TP ethernet pseudowire support (L2TPv3)
+[   50.892494][    T1] l2tp_ip6: L2TP IP encapsulation support for IPv6 (L2=
+TPv3)
+[   50.900671][    T1] NET: Registered PF_PHONET protocol family
+[   50.907360][    T1] 8021q: 802.1Q VLAN Support v1.8
+[   51.102849][    T1] DCCP: Activated CCID 2 (TCP-like)
+[   51.108517][    T1] DCCP: Activated CCID 3 (TCP-Friendly Rate Control)
+[   51.116104][    T1] DCCP is deprecated and scheduled to be removed in 20=
+25, please contact the netdev mailing list
+[   51.128488][    T1] sctp: Hash tables configured (bind 256/256)
+[   51.138259][    T1] NET: Registered PF_RDS protocol family
+[   51.145646][    T1] Registered RDS/infiniband transport
+[   51.152112][    T1] Registered RDS/tcp transport
+[   51.157009][    T1] tipc: Activated (version 2.0.0)
+[   51.162932][    T1] NET: Registered PF_TIPC protocol family
+[   51.172284][    T1] tipc: Started in single node mode
+[   51.181079][    T1] NET: Registered PF_SMC protocol family
+[   51.188572][    T1] 9pnet: Installing 9P2000 support
+[   51.194814][    T1] NET: Registered PF_CAIF protocol family
+[   51.210492][    T1] NET: Registered PF_IEEE802154 protocol family
+[   51.217577][    T1] Key type dns_resolver registered
+[   51.223062][    T1] Key type ceph registered
+[   51.229158][    T1] libceph: loaded (mon/osd proto 15/24)
+[   51.239598][    T1] batman_adv: B.A.T.M.A.N. advanced 2024.2 (compatibil=
+ity version 15) loaded
+[   51.250892][    T1] openvswitch: Open vSwitch switching datapath
+[   51.264974][    T1] NET: Registered PF_VSOCK protocol family
+[   51.272186][    T1] mpls_gso: MPLS GSO support
+[   51.450427][    T1] IPI shorthand broadcast: enabled
+[   52.943974][    T1] sched_clock: Marking stable (52920073484, 17910237)-=
+>(52943420691, -5436970)
+[   53.846634][    T1] registered taskstats version 1
+[   54.206864][    T1] Loading compiled-in X.509 certificates
+[   54.419109][    T1] Loaded X.509 cert 'Build time autogenerated kernel k=
+ey: 3afbfeee723402980abb37b86a2db814127d2bc0'
+[   54.616601][    T1] zswap: loaded using pool 842/z3fold
+[   54.626356][    T1] Demotion targets for Node 0: null
+[   54.631798][    T1] Demotion targets for Node 1: null
+[   54.638926][    T1] Key type .fscrypt registered
+[   54.643798][    T1] Key type fscrypt-provisioning registered
+[   54.650935][    T1] kAFS: Red Hat AFS client v0.1 registering.
+[   54.681984][    T1] Btrfs loaded, assert=3Don, ref-verify=3Don, zoned=3D=
+yes, fsverity=3Dyes
+[   54.709423][    T1] Key type encrypted registered
+[   54.714433][    T1] AppArmor: AppArmor sha256 policy hashing enabled
+[   54.721401][    T1] ima: No TPM chip found, activating TPM-bypass!
+[   54.728680][    T1] Loading compiled-in module X.509 certificates
+[   54.941142][    T1] Loaded X.509 cert 'Build time autogenerated kernel k=
+ey: 3afbfeee723402980abb37b86a2db814127d2bc0'
+[   54.952371][    T1] ima: Allocated hash algorithm: sha256
+[   54.958585][    T1] ima: No architecture policies found
+[   54.964951][    T1] evm: Initialising EVM extended attributes:
+[   54.971215][    T1] evm: security.selinux (disabled)
+[   54.976617][    T1] evm: security.SMACK64 (disabled)
+[   54.981894][    T1] evm: security.SMACK64EXEC (disabled)
+[   54.987418][    T1] evm: security.SMACK64TRANSMUTE (disabled)
+[   54.993607][    T1] evm: security.SMACK64MMAP (disabled)
+[   54.999295][    T1] evm: security.apparmor
+[   55.003593][    T1] evm: security.ima
+[   55.007621][    T1] evm: security.capability
+[   55.012225][    T1] evm: HMAC attrs: 0x1
+[   55.021328][    T1] PM:   Magic number: 0:225:487
+[   55.029686][    T1] printk: legacy console [netcon0] enabled
+[   55.035666][    T1] netconsole: network logging started
+[   55.042737][    T1] gtp: GTP module loaded (pdp ctx size 128 bytes)
+[   55.058912][    T1] rdma_rxe: loaded
+[   55.064750][    T1] cfg80211: Loading compiled-in X.509 certificates for=
+ regulatory database
+[   55.085688][    T1] Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[   55.106043][    T1] Loaded X.509 cert 'wens: 61c038651aabdcf94bd0ac7ff06=
+c7248db18c600'
+[   55.114756][    T1] clk: Disabling unused clocks
+[   55.120039][    T1] ALSA device list:
+[   55.123967][    T1]   #0: Dummy 1
+[   55.127679][    T1]   #1: Loopback 1
+[   55.131629][    T1]   #2: Virtual MIDI Card 1
+[   55.142147][   T10] platform regulatory.0: Direct firmware load for regu=
+latory.db failed with error -2
+[   55.152179][   T10] platform regulatory.0: Falling back to sysfs fallbac=
+k for: regulatory.db
+[   55.162763][    T1] md: Waiting for all devices to be available before a=
+utodetect
+[   55.170980][    T1] md: If you don't use raid, use raid=3Dnoautodetect
+[   55.177606][    T1] md: Autodetecting RAID arrays.
+[   55.182740][    T1] md: autorun ...
+[   55.186465][    T1] md: ... autorun DONE.
+[   55.280324][    T1] EXT4-fs (sda1): mounted filesystem b4773fba-1738-4da=
+0-8a90-0fe043d0a496 ro with ordered data mode. Quota mode: none.
+[   55.293956][    T1] VFS: Mounted root (ext4 filesystem) readonly on devi=
+ce 8:1.
+[   55.306041][    T1] devtmpfs: mounted
+[   55.569063][    T1] Freeing unused kernel image (initmem) memory: 37960K
+[   55.582373][    T1] Write protecting the kernel read-only data: 268288k
+[   55.618434][    T1] Freeing unused kernel image (rodata/data gap) memory=
+: 880K
+[   57.283297][    T1] x86/mm: Checked W+X mappings: passed, no W+X pages f=
+ound.
+[   57.293937][    T1] x86/mm: Checking user space page tables
+[   58.776653][    T1] x86/mm: Checked W+X mappings: passed, no W+X pages f=
+ound.
+[   58.785687][    T1] Failed to set sysctl parameter 'kernel.hung_task_all=
+_cpu_backtrace=3D1': parameter not found
+[   58.806387][    T1] Failed to set sysctl parameter 'max_rcu_stall_to_pan=
+ic=3D1': parameter not found
+[   58.817807][    T1] Run /sbin/init as init process
+[   60.404661][ T5117] mount (5117) used greatest stack depth: 8200 bytes l=
+eft
+[   60.474634][ T5118] EXT4-fs (sda1): re-mounted b4773fba-1738-4da0-8a90-0=
+fe043d0a496 r/w. Quota mode: none.
+mount: mounting devtmpfs on /dev failed: Device or resource busy
+mount: mounting smackfs on /sys/fs/smackfs failed: No such file or director=
+y
+mount: mounting selinuxfs on /sys/fs/selinux failed: No such file or direct=
+ory
+[   60.878171][ T5122] mount (5122) used greatest stack depth: 5464 bytes l=
+eft
+Starting syslogd: OK
+Starting acpid: OK
+[   62.117568][ T5138] BUG: unable to handle page fault for address: ffffff=
+fffffffee8
+[   62.126177][ T5138] #PF: supervisor read access in kernel mode
+[   62.132457][ T5138] #PF: error_code(0x0000) - not-present page
+[   62.139539][ T5138] PGD 11676067 P4D 11676067 PUD 11678067 PMD 0=20
+[   62.147018][ T5138] Oops: Oops: 0000 [#1] PREEMPT SMP PTI
+[   62.155203][ T5138] CPU: 0 UID: 0 PID: 5138 Comm: acpid Not tainted 6.12=
+.0-rc6-syzkaller-00272-gda4373fbcf00-dirty #0
+[   62.168682][ T5138] Hardware name: Google Google Compute Engine/Google C=
+ompute Engine, BIOS Google 10/30/2024
+[   62.181817][ T5138] RIP: 0010:__netlink_lookup+0x45f/0x7f0
+[   62.189763][ T5138] Code: 45 7d 94 4c 89 6d c8 49 09 c5 4c 89 ad 78 ff f=
+f ff 0f 85 e9 00 00 00 44 89 7d 9c 4d 89 f4 48 8b 45 c0 49 8d bc 06 18 03 0=
+0 00 <8b> 1f e8 1a 0e 1d f5 44 8b 38 44 8b 32 48 8b 45 a8 44 89 38 44 89
+[   62.212248][ T5138] RSP: 0018:ffff8881177e3b68 EFLAGS: 00010246
+[   62.219552][ T5138] RAX: fffffffffffffbd0 RBX: 0000000000000000 RCX: 000=
+00001173e3bf0
+[   62.228167][ T5138] RDX: ffff8881173e3bf0 RSI: ffff88813ffface0 RDI: fff=
+ffffffffffee8
+[   62.237084][ T5138] RBP: ffff8881177e3c38 R08: ffffea000000000f R09: 000=
+0000000000000
+[   62.246984][ T5138] R10: ffff888116fe3bf0 R11: ffffffff8d30e8f8 R12: 000=
+0000000000000
+[   62.258393][ T5138] R13: 0000000000000000 R14: 0000000000000000 R15: 000=
+0000000000000
+[   62.267127][ T5138] FS:  00007f4626133740(0000) GS:ffff88813fc00000(0000=
+) knlGS:0000000000000000
+[   62.277002][ T5138] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   62.284814][ T5138] CR2: fffffffffffffee8 CR3: 000000011b32c000 CR4: 000=
+00000003526f0
+[   62.294468][ T5138] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000=
+0000000000000
+[   62.303762][ T5138] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000=
+0000000000400
+[   62.314028][ T5138] Call Trace:
+[   62.318350][ T5138]  <TASK>
+[   62.321703][ T5138]  ? show_trace_log_lvl+0x268/0x3d0
+[   62.327988][ T5138]  ? netlink_autobind+0x168/0x460
+[   62.333412][ T5138]  ? __die_body+0xce/0x1a0
+[   62.338610][ T5138]  ? __die+0x22a/0x290
+[   62.343875][ T5138]  ? page_fault_oops+0xe58/0xfb0
+[   62.350270][ T5138]  ? kernelmode_fixup_or_oops+0x1b5/0x1d0
+[   62.356542][ T5138]  ? __bad_area_nosemaphore+0x17b/0x960
+[   62.362639][ T5138]  ? kmsan_internal_poison_memory+0x7d/0x90
+[   62.368997][ T5138]  ? kmsan_get_metadata+0x13e/0x1c0
+[   62.375189][ T5138]  ? kmsan_internal_poison_memory+0x49/0x90
+[   62.381820][ T5138]  ? kmem_cache_alloc_lru_noprof+0x641/0xb30
+[   62.389135][ T5138]  ? __d_alloc+0x69/0x9c0
+[   62.394040][ T5138]  ? spurious_kernel_fault+0xef/0xbe0
+[   62.400816][ T5138]  ? bad_area_nosemaphore+0x32/0x40
+[   62.406710][ T5138]  ? do_kern_addr_fault+0xe0/0x110
+[   62.412293][ T5138]  ? exc_page_fault+0x549/0x700
+[   62.417483][ T5138]  ? _raw_spin_unlock_irqrestore+0x3f/0x60
+[   62.423634][ T5138]  ? asm_exc_page_fault+0x2b/0x30
+[   62.429062][ T5138]  ? netlink_autobind+0x168/0x460
+[   62.434374][ T5138]  ? __netlink_lookup+0x45f/0x7f0
+[   62.439692][ T5138]  ? __netlink_lookup+0x413/0x7f0
+[   62.445057][ T5138]  netlink_autobind+0x168/0x460
+[   62.450229][ T5138]  netlink_bind+0x1085/0x1a60
+[   62.455315][ T5138]  ? __pfx_netlink_bind+0x10/0x10
+[   62.460698][ T5138]  __sys_bind+0x4de/0x690
+[   62.465334][ T5138]  ? __sys_setsockopt+0x388/0x4c0
+[   62.470687][ T5138]  ? kmsan_get_metadata+0x13e/0x1c0
+[   62.476710][ T5138]  __x64_sys_bind+0x91/0xe0
+[   62.481631][ T5138]  x64_sys_call+0x252d/0x3ba0
+[   62.487065][ T5138]  do_syscall_64+0xcd/0x1e0
+[   62.492096][ T5138]  ? clear_bhb_loop+0x25/0x80
+[   62.497910][ T5138]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+[   62.506339][ T5138] RIP: 0033:0x7f462620b677
+[   62.511199][ T5138] Code: 48 89 44 24 08 e8 f8 59 f9 ff 48 8b 44 24 08 4=
+8 83 c4 28 c3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 b8 31 00 00 00 0=
+f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 81 c7 0c 00 f7 d8 64 89 01 48
+[   62.531331][ T5138] RSP: 002b:00007ffe1da730b8 EFLAGS: 00000246 ORIG_RAX=
+: 0000000000000031
+[   62.540116][ T5138] RAX: ffffffffffffffda RBX: 00007ffe1da7310c RCX: 000=
+07f462620b677
+[   62.548639][ T5138] RDX: 000000000000000c RSI: 00007ffe1da73110 RDI: 000=
+0000000000008
+[   62.557293][ T5138] RBP: 0000000000000000 R08: 0000000000000004 R09: 000=
+07ffe1da73990
+[   62.565706][ T5138] R10: 00007ffe1da730d4 R11: 0000000000000246 R12: 000=
+07ffe1da73110
+[   62.574240][ T5138] R13: 00007ffe1da74a58 R14: 0000000000000003 R15: 000=
+07f462631da80
+[   62.582590][ T5138]  </TASK>
+[   62.585834][ T5138] Modules linked in:
+[   62.590235][ T5138] CR2: fffffffffffffee8
+[   62.594613][ T5138] ---[ end trace 0000000000000000 ]---
+[   62.600280][ T5138] RIP: 0010:__netlink_lookup+0x45f/0x7f0
+[   62.606314][ T5138] Code: 45 7d 94 4c 89 6d c8 49 09 c5 4c 89 ad 78 ff f=
+f ff 0f 85 e9 00 00 00 44 89 7d 9c 4d 89 f4 48 8b 45 c0 49 8d bc 06 18 03 0=
+0 00 <8b> 1f e8 1a 0e 1d f5 44 8b 38 44 8b 32 48 8b 45 a8 44 89 38 44 89
+[   62.626677][ T5138] RSP: 0018:ffff8881177e3b68 EFLAGS: 00010246
+[   62.633183][ T5138] RAX: fffffffffffffbd0 RBX: 0000000000000000 RCX: 000=
+00001173e3bf0
+[   62.641683][ T5138] RDX: ffff8881173e3bf0 RSI: ffff88813ffface0 RDI: fff=
+ffffffffffee8
+[   62.649931][ T5138] RBP: ffff8881177e3c38 R08: ffffea000000000f R09: 000=
+0000000000000
+[   62.658181][ T5138] R10: ffff888116fe3bf0 R11: ffffffff8d30e8f8 R12: 000=
+0000000000000
+[   62.666416][ T5138] R13: 0000000000000000 R14: 0000000000000000 R15: 000=
+0000000000000
+[   62.674647][ T5138] FS:  00007f4626133740(0000) GS:ffff88813fc00000(0000=
+) knlGS:0000000000000000
+[   62.684043][ T5138] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   62.690922][ T5138] CR2: fffffffffffffee8 CR3: 000000011b32c000 CR4: 000=
+00000003526f0
+[   62.699183][ T5138] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000=
+0000000000000
+[   62.707402][ T5138] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000=
+0000000000400
+[   62.715718][ T5138] Kernel panic - not syncing: Fatal exception
+[   62.722556][ T5138] Kernel Offset: disabled
+[   62.727049][ T5138] Rebooting in 86400 seconds..
 
---000000000000e7867106267bb907
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-<div dir=3D"ltr">#syz test<br></div><br><div class=3D"gmail_quote"><div dir=
-=3D"ltr" class=3D"gmail_attr">On Sat, Nov 9, 2024 at 8:12=E2=80=AFAM syzbot=
- &lt;<a href=3D"mailto:syzbot%2B8689d10f1894eedf774d@syzkaller.appspotmail.=
-com">syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com</a>&gt; wrote:<b=
-r></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex=
-;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hello,<br>
-<br>
-syzbot found the following issue on:<br>
-<br>
-HEAD commit:=C2=A0 =C2=A0 2e1b3cc9d7f7 Merge tag &#39;arm-fixes-6.12-2&#39;=
- of git://git.ker..<br>
-git tree:=C2=A0 =C2=A0 =C2=A0 =C2=A0upstream<br>
-console+strace: <a href=3D"https://syzkaller.appspot.com/x/log.txt?x=3D1136=
-1d5f980000" rel=3D"noreferrer" target=3D"_blank">https://syzkaller.appspot.=
-com/x/log.txt?x=3D11361d5f980000</a><br>
-kernel config:=C2=A0 <a href=3D"https://syzkaller.appspot.com/x/.config?x=
-=3D6fdf74cce377223b" rel=3D"noreferrer" target=3D"_blank">https://syzkaller=
-.appspot.com/x/.config?x=3D6fdf74cce377223b</a><br>
-dashboard link: <a href=3D"https://syzkaller.appspot.com/bug?extid=3D8689d1=
-0f1894eedf774d" rel=3D"noreferrer" target=3D"_blank">https://syzkaller.apps=
-pot.com/bug?extid=3D8689d10f1894eedf774d</a><br>
-compiler:=C2=A0 =C2=A0 =C2=A0 =C2=A0Debian clang version 15.0.6, GNU ld (GN=
-U Binutils for Debian) 2.40<br>
-syz repro:=C2=A0 =C2=A0 =C2=A0 <a href=3D"https://syzkaller.appspot.com/x/r=
-epro.syz?x=3D12348f40580000" rel=3D"noreferrer" target=3D"_blank">https://s=
-yzkaller.appspot.com/x/repro.syz?x=3D12348f40580000</a><br>
-C reproducer:=C2=A0 =C2=A0<a href=3D"https://syzkaller.appspot.com/x/repro.=
-c?x=3D11e7b587980000" rel=3D"noreferrer" target=3D"_blank">https://syzkalle=
-r.appspot.com/x/repro.c?x=3D11e7b587980000</a><br>
-<br>
-Downloadable assets:<br>
-disk image: <a href=3D"https://storage.googleapis.com/syzbot-assets/08456e3=
-7db58/disk-2e1b3cc9.raw.xz" rel=3D"noreferrer" target=3D"_blank">https://st=
-orage.googleapis.com/syzbot-assets/08456e37db58/disk-2e1b3cc9.raw.xz</a><br=
->
-vmlinux: <a href=3D"https://storage.googleapis.com/syzbot-assets/cc957f7ba8=
-0b/vmlinux-2e1b3cc9.xz" rel=3D"noreferrer" target=3D"_blank">https://storag=
-e.googleapis.com/syzbot-assets/cc957f7ba80b/vmlinux-2e1b3cc9.xz</a><br>
-kernel image: <a href=3D"https://storage.googleapis.com/syzbot-assets/7579f=
-e72ed89/bzImage-2e1b3cc9.xz" rel=3D"noreferrer" target=3D"_blank">https://s=
-torage.googleapis.com/syzbot-assets/7579fe72ed89/bzImage-2e1b3cc9.xz</a><br=
->
-mounted in repro: <a href=3D"https://storage.googleapis.com/syzbot-assets/5=
-903d7d7fe58/mount_4.gz" rel=3D"noreferrer" target=3D"_blank">https://storag=
-e.googleapis.com/syzbot-assets/5903d7d7fe58/mount_4.gz</a><br>
-<br>
-IMPORTANT: if you fix the issue, please add the following tag to the commit=
-:<br>
-Reported-by: <a href=3D"mailto:syzbot%2B8689d10f1894eedf774d@syzkaller.apps=
-potmail.com" target=3D"_blank">syzbot+8689d10f1894eedf774d@syzkaller.appspo=
-tmail.com</a><br>
-<br>
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D<br>
-BUG: KMSAN: uninit-value in rht_ptr_rcu include/linux/rhashtable.h:376 [inl=
-ine]<br>
-BUG: KMSAN: uninit-value in __rhashtable_lookup include/linux/rhashtable.h:=
-607 [inline]<br>
-BUG: KMSAN: uninit-value in rhashtable_lookup include/linux/rhashtable.h:64=
-6 [inline]<br>
-BUG: KMSAN: uninit-value in rhashtable_lookup_fast include/linux/rhashtable=
-.h:672 [inline]<br>
-BUG: KMSAN: uninit-value in bucket_in_flight fs/bcachefs/movinggc.c:144 [in=
-line]<br>
-BUG: KMSAN: uninit-value in bch2_copygc_get_buckets fs/bcachefs/movinggc.c:=
-170 [inline]<br>
-BUG: KMSAN: uninit-value in bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.=
-c:221<br>
-=C2=A0rht_ptr_rcu include/linux/rhashtable.h:376 [inline]<br>
-=C2=A0__rhashtable_lookup include/linux/rhashtable.h:607 [inline]<br>
-=C2=A0rhashtable_lookup include/linux/rhashtable.h:646 [inline]<br>
-=C2=A0rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]<br>
-=C2=A0bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]<br>
-=C2=A0bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]<br>
-=C2=A0bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221<br>
-=C2=A0bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381<br>
-=C2=A0kthread+0x3e2/0x540 kernel/kthread.c:389<br>
-=C2=A0ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147<br>
-=C2=A0ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244<br>
-<br>
-Local variable b205.i created at:<br>
-=C2=A0bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]<br>
-=C2=A0bch2_copygc+0x15b3/0x58f0 fs/bcachefs/movinggc.c:221<br>
-=C2=A0bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381<br>
-<br>
-CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Not tainted 6.12.0-rc6-syzkal=
-ler-00077-g2e1b3cc9d7f7 #0<br>
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
-gle 09/13/2024<br>
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D<br>
-Kernel panic - not syncing: kmsan.panic set ...<br>
-CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Tainted: G=C2=A0 =C2=A0 B=C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 6.12.0-rc6-syzkaller-00077-g2=
-e1b3cc9d7f7 #0<br>
-Tainted: [B]=3DBAD_PAGE<br>
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
-gle 09/13/2024<br>
-Call Trace:<br>
-=C2=A0&lt;TASK&gt;<br>
-=C2=A0__dump_stack lib/dump_stack.c:94 [inline]<br>
-=C2=A0dump_stack_lvl+0x216/0x2d0 lib/dump_stack.c:120<br>
-=C2=A0dump_stack+0x1e/0x30 lib/dump_stack.c:129<br>
-=C2=A0panic+0x4e2/0xcf0 kernel/panic.c:354<br>
-=C2=A0kmsan_report+0x2c7/0x2d0 mm/kmsan/report.c:218<br>
-=C2=A0__msan_warning+0x95/0x120 mm/kmsan/instrumentation.c:318<br>
-=C2=A0rht_ptr_rcu include/linux/rhashtable.h:376 [inline]<br>
-=C2=A0__rhashtable_lookup include/linux/rhashtable.h:607 [inline]<br>
-=C2=A0rhashtable_lookup include/linux/rhashtable.h:646 [inline]<br>
-=C2=A0rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]<br>
-=C2=A0bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]<br>
-=C2=A0bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]<br>
-=C2=A0bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221<br>
-=C2=A0bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381<br>
-=C2=A0kthread+0x3e2/0x540 kernel/kthread.c:389<br>
-=C2=A0ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147<br>
-=C2=A0ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244<br>
-=C2=A0&lt;/TASK&gt;<br>
-Kernel Offset: disabled<br>
-Rebooting in 86400 seconds..<br>
-<br>
-<br>
----<br>
-This report is generated by a bot. It may contain errors.<br>
-See <a href=3D"https://goo.gl/tpsmEJ" rel=3D"noreferrer" target=3D"_blank">=
-https://goo.gl/tpsmEJ</a> for more information about syzbot.<br>
-syzbot engineers can be reached at <a href=3D"mailto:syzkaller@googlegroups=
-.com" target=3D"_blank">syzkaller@googlegroups.com</a>.<br>
-<br>
-syzbot will keep track of this issue. See:<br>
-<a href=3D"https://goo.gl/tpsmEJ#status" rel=3D"noreferrer" target=3D"_blan=
-k">https://goo.gl/tpsmEJ#status</a> for how to communicate with syzbot.<br>
-<br>
-If the report is already addressed, let syzbot know by replying with:<br>
-#syz fix: exact-commit-title<br>
-<br>
-If you want syzbot to run the reproducer, reply with:<br>
-#syz test: git://repo/address.git branch-or-commit-hash<br>
-If you attach or paste a git patch, syzbot will apply it before testing.<br=
->
-<br>
-If you want to overwrite report&#39;s subsystems, reply with:<br>
-#syz set subsystems: new-subsystem<br>
-(See the list of subsystem names on the web dashboard)<br>
-<br>
-If the report is a duplicate of another one, reply with:<br>
-#syz dup: exact-subject-of-another-report<br>
-<br>
-If you want to undo deduplication, reply with:<br>
-#syz undup<br>
-<br>
--- <br>
-You received this message because you are subscribed to the Google Groups &=
-quot;syzkaller-bugs&quot; group.<br>
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to <a href=3D"mailto:syzkaller-bugs%2Bunsubscribe@googlegroups.com" ta=
-rget=3D"_blank">syzkaller-bugs+unsubscribe@googlegroups.com</a>.<br>
-To view this discussion visit <a href=3D"https://groups.google.com/d/msgid/=
-syzkaller-bugs/672ecc13.050a0220.138bd5.0038.GAE%40google.com" rel=3D"noref=
-errer" target=3D"_blank">https://groups.google.com/d/msgid/syzkaller-bugs/6=
-72ecc13.050a0220.138bd5.0038.GAE%40google.com</a>.<br>
-</blockquote></div>
+syzkaller build log:
+go env (err=3D<nil>)
+GO111MODULE=3D'auto'
+GOARCH=3D'amd64'
+GOBIN=3D''
+GOCACHE=3D'/syzkaller/.cache/go-build'
+GOENV=3D'/syzkaller/.config/go/env'
+GOEXE=3D''
+GOEXPERIMENT=3D''
+GOFLAGS=3D''
+GOHOSTARCH=3D'amd64'
+GOHOSTOS=3D'linux'
+GOINSECURE=3D''
+GOMODCACHE=3D'/syzkaller/jobs-2/linux/gopath/pkg/mod'
+GONOPROXY=3D''
+GONOSUMDB=3D''
+GOOS=3D'linux'
+GOPATH=3D'/syzkaller/jobs-2/linux/gopath'
+GOPRIVATE=3D''
+GOPROXY=3D'https://proxy.golang.org,direct'
+GOROOT=3D'/usr/local/go'
+GOSUMDB=3D'sum.golang.org'
+GOTMPDIR=3D''
+GOTOOLCHAIN=3D'auto'
+GOTOOLDIR=3D'/usr/local/go/pkg/tool/linux_amd64'
+GOVCS=3D''
+GOVERSION=3D'go1.22.7'
+GCCGO=3D'gccgo'
+GOAMD64=3D'v1'
+AR=3D'ar'
+CC=3D'gcc'
+CXX=3D'g++'
+CGO_ENABLED=3D'1'
+GOMOD=3D'/syzkaller/jobs-2/linux/gopath/src/github.com/google/syzkaller/go.=
+mod'
+GOWORK=3D''
+CGO_CFLAGS=3D'-O2 -g'
+CGO_CPPFLAGS=3D''
+CGO_CXXFLAGS=3D'-O2 -g'
+CGO_FFLAGS=3D'-O2 -g'
+CGO_LDFLAGS=3D'-O2 -g'
+PKG_CONFIG=3D'pkg-config'
+GOGCCFLAGS=3D'-fPIC -m64 -pthread -Wl,--no-gc-sections -fmessage-length=3D0=
+ -ffile-prefix-map=3D/tmp/go-build3559642725=3D/tmp/go-build -gno-record-gc=
+c-switches'
 
---000000000000e7867106267bb907--
---000000000000e7867206267bb909
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-v3KMSAN-fix-uninit-value-in-bch2_copygc.patch"
-Content-Disposition: attachment; 
-	filename="0001-v3KMSAN-fix-uninit-value-in-bch2_copygc.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_m3a9jrzc0>
-X-Attachment-Id: f_m3a9jrzc0
+git status (err=3D<nil>)
+HEAD detached at 509da42949
+nothing to commit, working tree clean
 
-RnJvbSA4YzhiZTdlODBkYmE4ZGRiZTY5ZTllZWE2YzE5ZTliZTg1YjMyYTA2IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBTdXJhaiBTb25hd2FuZSA8c3VyYWpzb25hd2FuZTAyMTVAZ21h
-aWwuY29tPgpEYXRlOiBTYXQsIDkgTm92IDIwMjQgMTk6NTg6MjggKzA1MzAKU3ViamVjdDogW1BB
-VENIIHYyXSBLTVNBTjogZml4IHVuaW5pdC12YWx1ZSBpbiBiY2gyX2NvcHlnYwoKc3l6IHRlc3QK
-ClNpZ25lZC1vZmYtYnk6IFN1cmFqIFNvbmF3YW5lIDxzdXJhanNvbmF3YW5lMDIxNUBnbWFpbC5j
-b20+Ci0tLQogaW5jbHVkZS9saW51eC9yaGFzaHRhYmxlLmggfCA2ICsrKysrLQogMSBmaWxlIGNo
-YW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2luY2x1
-ZGUvbGludXgvcmhhc2h0YWJsZS5oIGIvaW5jbHVkZS9saW51eC9yaGFzaHRhYmxlLmgKaW5kZXgg
-OWNjMThkMzA0Li5jYjg1ZmZlN2IgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvcmhhc2h0YWJs
-ZS5oCisrKyBiL2luY2x1ZGUvbGludXgvcmhhc2h0YWJsZS5oCkBAIC0zNzMsNyArMzczLDExIEBA
-IHN0YXRpYyBpbmxpbmUgc3RydWN0IHJoYXNoX2hlYWQgKl9fcmh0X3B0cigKIHN0YXRpYyBpbmxp
-bmUgc3RydWN0IHJoYXNoX2hlYWQgKnJodF9wdHJfcmN1KAogCXN0cnVjdCByaGFzaF9sb2NrX2hl
-YWQgX19yY3UgKmNvbnN0ICpia3QpCiB7Ci0JcmV0dXJuIF9fcmh0X3B0cihyY3VfZGVyZWZlcmVu
-Y2UoKmJrdCksIGJrdCk7CisJc3RydWN0IHJoYXNoX2xvY2tfaGVhZCAqcHRyID0gcmN1X2RlcmVm
-ZXJlbmNlKCpia3QpOworCWlmICghcHRyKSB7CisJCXJldHVybiBOVUxMOworCX0KKwlyZXR1cm4g
-X19yaHRfcHRyKHB0ciwgYmt0KTsKIH0KIAogc3RhdGljIGlubGluZSBzdHJ1Y3Qgcmhhc2hfaGVh
-ZCAqcmh0X3B0cigKLS0gCjIuMzQuMQoK
---000000000000e7867206267bb909--
+
+tput: No value for $TERM and no -T specified
+tput: No value for $TERM and no -T specified
+Makefile:31: run command via tools/syz-env for best compatibility, see:
+Makefile:32: https://github.com/google/syzkaller/blob/master/docs/contribut=
+ing.md#using-syz-env
+go list -f '{{.Stale}}' ./sys/syz-sysgen | grep -q false || go install ./sy=
+s/syz-sysgen
+make .descriptions
+tput: No value for $TERM and no -T specified
+tput: No value for $TERM and no -T specified
+Makefile:31: run command via tools/syz-env for best compatibility, see:
+Makefile:32: https://github.com/google/syzkaller/blob/master/docs/contribut=
+ing.md#using-syz-env
+bin/syz-sysgen
+go fmt ./sys/... >/dev/null
+touch .descriptions
+GOOS=3Dlinux GOARCH=3Damd64 go build "-ldflags=3D-s -w -X github.com/google=
+/syzkaller/prog.GitRevision=3D509da42949c4013fb236ebf6e25d3562d110198c -X '=
+github.com/google/syzkaller/prog.gitRevisionDate=3D20241104-133744'" "-tags=
+=3Dsyz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-execpr=
+og github.com/google/syzkaller/tools/syz-execprog
+mkdir -p ./bin/linux_amd64
+g++ -o ./bin/linux_amd64/syz-executor executor/executor.cc \
+	-m64 -O2 -pthread -Wall -Werror -Wparentheses -Wunused-const-variable -Wfr=
+ame-larger-than=3D16384 -Wno-stringop-overflow -Wno-array-bounds -Wno-forma=
+t-overflow -Wno-unused-but-set-variable -Wno-unused-command-line-argument -=
+static-pie -std=3Dc++17 -I. -Iexecutor/_include -fpermissive -w -DGOOS_linu=
+x=3D1 -DGOARCH_amd64=3D1 \
+	-DHOSTGOOS_linux=3D1 -DGIT_REVISION=3D\"509da42949c4013fb236ebf6e25d3562d1=
+10198c\"
+/usr/bin/ld: /tmp/ccDyOSX3.o: in function `test_cover_filter()':
+executor.cc:(.text+0x1426b): warning: the use of `tempnam' is dangerous, be=
+tter use `mkstemp'
+/usr/bin/ld: /tmp/ccDyOSX3.o: in function `Connection::Connect(char const*,=
+ char const*)':
+executor.cc:(.text._ZN10Connection7ConnectEPKcS1_[_ZN10Connection7ConnectEP=
+KcS1_]+0x104): warning: Using 'gethostbyname' in statically linked applicat=
+ions requires at runtime the shared libraries from the glibc version used f=
+or linking
+
+
+Error text is too large and was truncated, full error text is at:
+https://syzkaller.appspot.com/x/error.txt?x=3D1342235f980000
+
+
+Tested on:
+
+commit:         da4373fb Merge tag 'thermal-6.12-rc7' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3De4580d62ee1893a=
+5
+dashboard link: https://syzkaller.appspot.com/bug?extid=3D8689d10f1894eedf7=
+74d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debia=
+n) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=3D1160fd879800=
+00
+
