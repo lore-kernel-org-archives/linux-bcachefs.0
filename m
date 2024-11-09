@@ -1,42 +1,42 @@
 Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4861233D7D
-	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Nov 2024 10:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB8317BED2
+	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Nov 2024 14:21:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731149929; cv=none; b=H/Y/GYntWe8a0945+k5uS4wB36A6kELhoNRgKiA4icU5InkPrtU/3h0IHusMZhY3kSISa9aroTRr33fuAnMfHnwBlnZLakXS6nPxY+oUbHc7mnc0brpw/Rhxwp7qTXEdDpbp0sCOvEpk7llq4qbg2PnEuSbEtpsMxiGw59mjics=
+	t=1731162069; cv=none; b=okL40URIaIKGbZSc4XAQwQ5mfvcA771pVVCwZ8J1I1ceCET9K7jcUTZMfuma/+7a5qQ86NwMaZNBVmcQhaZ6cUE4MebZjP3RIK+ZFo/l2jBkMP4R9yA7arRSb/cU1WQlEbuFcRTGACIxwwAITpnIbHmRF3kY85T2sTh6H99KC0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731149929; c=relaxed/simple;
-	bh=2JGKbWMJFzt6KbljlUxowmrD+U+zNZ+J9pcyXvhw2Pc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q7IKpgqlwmI1MAWzQn+DTzKY3HvGCsn67ixh91QRRVP8a38KHx2279dbunP0s4DQldZfI41ApRUZoSK8Em9/eUd+wdwk0be9RhvKkepOJ3jdbYGbl7IcpZXy007nOsBMQmLN62e7geKepiFRS6990CEwbYDizPuVG0Kw6KvOW3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=JmD0GGBF; arc=none smtp.client-ip=104.245.9.4
+	s=arc-20240116; t=1731162069; c=relaxed/simple;
+	bh=exuCil81JG8SjyeClCATIJw5jvdAPmIDHl0Su4n6GGo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NdmaSEaJLl2ORg26drZMmH+MepVZ/nKASY+90jb4krPHFtpLx68/ounyFiiHXxgwl8j8W/2vMMYv99+NofCoZYaA3vQCAawoN0JD4TotBWKrtquNE//JrU9CXsdYUTJ5eGS9JmZf9coZG7xM4jXm4N7GG9Y0H/SgwTC29YqYLMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=hiTScbVS; arc=none smtp.client-ip=104.245.9.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="JmD0GGBF"
-DKIM-Signature: a=rsa-sha256; bh=14R7TJklcTc5wE0PifP6cXAL8HWCtvQn3OriUxQfoik=;
+	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="hiTScbVS"
+DKIM-Signature: a=rsa-sha256; bh=PLVWNuNojJ2Twu4w/CT+wX6EhEIw+rIAmSrdYh6qYqU=;
  c=relaxed/relaxed; d=archlinuxcn.org;
  h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
- i=@archlinuxcn.org; s=default; t=1731149904; v=1; x=1731581904;
- b=JmD0GGBFKK60Zt2zYpLim/MAOL2sJ5d0YOJEc+bysb9yrby5mONRV77fseQx9c3IWGwVmuwN
- 0k2K1tghaSqb49uJ4BesCgxcAvrbqFWP1uOgWAEm2MOnKqceRAGQovPc3v7Litldd3TvcvuJ3SN
- HJ9je4CBPKy5fbJ5f28n5mt5/MvX4Kh2crAq9tlZBYyyKeBmYAMc+ZUYx3vj/3IQZ0UGj6DMvkD
- QA5JEGpQjVJIWp8uR9CS+4kvpTDJ1VVHKN2jNu6gMf/fhzujaOdjDv6mYJKUymGLgDgEP9ltJkN
- s84wQVNOQFI+SJbyw0XXxfU0x45CqWDdtuYxcOjraZtUw==
+ i=@archlinuxcn.org; s=default; t=1731162034; v=1; x=1731594034;
+ b=hiTScbVS3MkwtPYu0RVjrjiP9hiYwYcNiNuwd7dDM29Vz2XMqoqQZq37bci/XJOI6Va9cCA/
+ cxyz2wY6wLW4YmB3TCh+elbs0VeMJajdnSKgGzbOTtYFR3n2D+6wV6ktHMDzxIs1LsOs/ONi+ZU
+ n1BKiVZlTPgO950VyWCPzrVgVJ4qc/GYC87ovSdiScMpf7MQ7sWfEP39Yv2L1FND0WZ0XLZio6N
+ GBOYuq0EhnNyOBMlsGpug2w4HI75a7uXc+jMqOelDnukcPbfV148aoJ/2UILxAMUR/0kA0Q2EIA
+ gtxXJscZ8Al5wzS8UbClcFlKHDRlO8YSizTTusO5Ymw1g==
 Received: by wiki.archlinuxcn.org (envelope-sender
- <integral@archlinuxcn.org>) with ESMTPS id 1902c822; Sat, 09 Nov 2024
- 18:58:24 +0800
-From: Integral <integral@archlinuxcn.org>
+ <integral@archlinuxcn.org>) with ESMTPS id 103b7fd2; Sat, 09 Nov 2024
+ 22:20:34 +0800
+From: "integral@archlinuxcn.org" <integral@archlinuxcn.org>
 To: kent.overstreet@gmail.com,
 	kent.overstreet@linux.dev,
 	lihongbo22@huawei.com
 Cc: mmpgouride@gmail.com,
 	linux-bcachefs@vger.kernel.org,
 	integral@archlinuxcn.org
-Subject: [PATCH] bcachefs-tools: make targets of subvolume create/delete required
-Date: Sat,  9 Nov 2024 18:57:41 +0800
-Message-ID: <20241109105740.105652-2-integral@archlinuxcn.org>
+Subject: [PATCH] bcachefs: avoid using strlen() to determine whether label is empty
+Date: Sat,  9 Nov 2024 22:19:49 +0800
+Message-ID: <20241109141949.138036-1-integral@archlinuxcn.org>
 X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
@@ -46,36 +46,30 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, when no targets are provided for "bcachefs subvolume create" or
-"bcachefs subvolume delete", it will exit silently with code 0. Make targets
-(arguments) required to solve this problem.
+The "label" field in "struct bch_sb" is not guaranteed to be
+null-terminated. Therefore, juding the first character is safer than using
+strlen().
 
-This patch solves issue https://github.com/koverstreet/bcachefs/issues/766.
+This patch fixes issue koverstreet/bcachefs-tools#341.
 
-Signed-off-by: Integral <integral@archlinuxcn.org>
+Signed-off-by: integral@archlinuxcn.org <integral@archlinuxcn.org>
 ---
- src/commands/subvolume.rs | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/bcachefs/super-io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/commands/subvolume.rs b/src/commands/subvolume.rs
-index 7df20819..6f5f2f2b 100644
---- a/src/commands/subvolume.rs
-+++ b/src/commands/subvolume.rs
-@@ -18,12 +18,14 @@ enum Subcommands {
-     #[command(visible_aliases = ["new"])]
-     Create {
-         /// Paths
-+        #[arg(required = true)]
-         targets: Vec<PathBuf>,
-     },
-
-     #[command(visible_aliases = ["del"])]
-     Delete {
-         /// Path
-+        #[arg(required = true)]
-         targets: Vec<PathBuf>,
-     },
-
---
+diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+index c83bd3dedb1b..c612319ba901 100644
+--- a/fs/bcachefs/super-io.c
++++ b/fs/bcachefs/super-io.c
+@@ -1322,7 +1322,7 @@ void bch2_sb_to_text(struct printbuf *out, struct bch_sb *sb,
+ 	prt_printf(out, "Device index:\t%u\n", sb->dev_idx);
+ 
+ 	prt_printf(out, "Label:\t");
+-	if (!strlen(sb->label))
++	if (!sb->label[0])
+ 		prt_printf(out, "(none)");
+ 	else
+ 		prt_printf(out, "%.*s", (int) sizeof(sb->label), sb->label);
+-- 
 2.47.0
 
