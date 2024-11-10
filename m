@@ -1,219 +1,425 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA6F14D70E
-	for <linux-bcachefs@vger.kernel.org>; Sun, 10 Nov 2024 08:33:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2574214264A;
+	Sun, 10 Nov 2024 10:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731227613; cv=none; b=NmMVfUefHuiGlJmKTHEmzwmwU5OI9WPMO/ogxf0HLnTQCKrC+pLzJfFmSKeppTpE2F3n9t8clYt70oLOqgmo+WeLgALGpL1MTZTdsWYaKtPITAzipxNxCqDuRgpQMD9yXnnREkalDAi6Ikrsus25hnyP6HI35dLCSOa2C/YZ/Pw=
+	t=1731233243; cv=none; b=ZhX2WvvOSMySJRMXgTzqSyvDqG7cN0T3iCcoqW9OSIl1gESqgzWLG6jE5caQ5q9oCfHH1fgecG+hC5i3vgHGEZIxmf65lY7DPC6EdaoM2MeibP/d7tmZKZjL9Cj1nzHQg5IgYkTXC4mHGd54DmeOMaYt5TrmFXLcDwr5+nmoCF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731227613; c=relaxed/simple;
-	bh=EA8rRVaHhXclWEvb6Nhxfcw0iDTQZY0Qhmo0EsTLtZY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DX1yAIPDI49lFUNXoL391rdnDM9v7b9A8wzKEP5XIRb0qAmByiE0NCZOyo9BLNkfzxt/lDuR9AN/7tXHXtCZqfm+uxTCPxoPeKd8+7xOFaTXy+DExl+q5gJzKLgYYZazvVCxuviYC9405qNyBH0+yFr81p9TzCZ1E1fRF7hvvHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a4e41e2732so46431185ab.2
-        for <linux-bcachefs@vger.kernel.org>; Sun, 10 Nov 2024 00:33:31 -0800 (PST)
+	s=arc-20240116; t=1731233243; c=relaxed/simple;
+	bh=1SacNRMdDr/EqgVDCWUF6YVcKkLenMRirx2nTDu9zLQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VydUorB4Wh1N6MM9AejzHnktfh4SYNMvQ/C0HAx/JbLoTHBXADTUpcXRoQvPg6+d5xSIE/WF1U9vh9FaeoRFBN+g1nqftFXnZbayocVPAK6ItOAZJPzUps48H6L3DhP1vhr7TPa6566MeP/OsPMQjuFaA2VWoiWmuSvEV0H4ai8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QleJvHef; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QleJvHef"
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5c948c41edeso4895011a12.1;
+        Sun, 10 Nov 2024 02:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731233239; x=1731838039; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4r4OO57Zsh22Hd13lzopZyQET37F/AFDb8dl+RHd0Nw=;
+        b=QleJvHefOWKUvDN94tFk1X2LKKxMncnKlM62G6OZSu5GSm8Cxq+Kg+EmkQNgQxWRdF
+         iyb2w0d0lqWMaOXpKq5ZhzRS3uRupvcQ+HbsJ5B/VTniBf6MoA+TMB3tWBSokD0I7B3K
+         wMBWwMElMDpF/E0t8MYb4I3y/qfYXkbQQ8fqseZkfEv1gy7qd5pyyAcIpVAW/Wk2BTo4
+         ZHehu0G92rsfSBXeD3zJF/mJkvPgWo8ePbP8ya7US2mrLxzgFuG29hkTVooKkCsgjknJ
+         R/7rGTZriRTFPNhOPW9FEZ4zHmAgjqVe0ykExx980Ohe3dF07UYFJnkG0MWmDRkM72ht
+         ED/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731227611; x=1731832411;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uyJKeRIFU1WmL8qzWPTR5eRitL2d2mm93xapJSMYkOc=;
-        b=UpoHF7UfllrRzS6do1T4WwnxQRfl0HwXDloY96X0h2sAe58u3RBDizXHPrQAgI6yar
-         DO35p8e9Ugl+tcuv/OUCzIO3mhYnpMHpFAg3G333nkY6roz9CmWnSJg1kMIMnx11rQV5
-         wNIsPg5VKwiQ8UnkVIxPQ7MIGX3z2zSMxdncF/QkM8WwQC33e3WKUy3mXiEvALjpKwWw
-         Q/cobPAJs/XegCPAFvcezg4NlIYpvssjXtFNtpxYnB90sYqFEuHOemaYp8sJH4AAeJ1a
-         3esRxX6PH8cWGYc+YMyA/cp8+wPyaqBn8Hwmd4dwcotGl+lVzHWh1cwmakXHJ4la94+n
-         KnLg==
-X-Forwarded-Encrypted: i=1; AJvYcCVi84uF0LZDxVa9FAAVOzgGLVefaqn907nLQmcFtuMJZPQ9df43yqlslk7SWy7LeNhi/zhxYQFk+InZRQEJJg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwY8IlZ+LKnkAVt26v3fAsGi5n0pWT32QhvTXJeNZJzztzDvglS
-	6WDoEFXTsK2BW5H3xwDYBh9WU3spmsPaUur5avyKb5CeQrDLKocwS6XN09Aq17NGicq5CZ7X82Q
-	rH/7x7QFHHqLlgpxXoyYiRXWmD7IEvpwht0iekUzFRyLrSdqtIFC+UxM=
-X-Google-Smtp-Source: AGHT+IE0nU7kX1sQ1aXwDrc0Kmtce2lguUdrS6A8Ux6ko6dCapBwqWqK8b8VGFd8sl4wjDpMEhOiHzl4ETvOS2XBxHLX/99sK9Cm
+        d=1e100.net; s=20230601; t=1731233239; x=1731838039;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4r4OO57Zsh22Hd13lzopZyQET37F/AFDb8dl+RHd0Nw=;
+        b=DneQe8iVj6WBUYQGg7/wunbMDKv/NY/hAGlIBrMoVtwhvWmDN97SlP01BI+RHECghp
+         9wR5xeJnk2kefYLLIEPDLcPv4FlxhNtntie5WFKo36EEBUT6rmsHJtPSclhN1WXFzDuw
+         mn0claLV4vx/VLL/9HiBfK0L8AYuh0r++REyRdJ+h0dqbFEsZ22ck9Ob3BAqd6+FQzpj
+         9z9+NXwZT30FBco52DICiZry3wDY33It65T70xGHR3flCsJRw4bWNz3ue60JyJu0P+hJ
+         X4wiW8b9ZjyigguKanX7S9LopEofp+QTB/8bhECsy23iAE/He2AMIZ4fSwgbzsCDGmeO
+         K5Yg==
+X-Forwarded-Encrypted: i=1; AJvYcCUbRgM8jCOR6upiSQXvbPosKUH+2/z3dgFuK95Yg2w8mdZNTCx3XEV9aDGaBbv8boqBn76rhBIKvFAdI6Ri@vger.kernel.org, AJvYcCVMj299WuFTOEsyOIwPrvCoJyGYs1i69NRdw5dYRdWT+xKKfWrrt/afwza0LHYpt1O993Lt45uNRLF70txFTA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YymYAq1bFhoT87Zzw7o0YQTiT5miRYbc0adKp1zYhug/x+QRjUC
+	RksVoosFbs5ErSNT2SlfXBoqfpEQwJv0I8V8Vj2IKhJp5uZ2uRGskk3XQRuQrgudWG35egZZVQK
+	vF9mnk7K8ZMemQ+lYqzht/Gv1yjM=
+X-Google-Smtp-Source: AGHT+IEBLGYMxZnN23i4YhJqQ62CoZAiHyRmwfCPdF78odwjAno7ZN9fuHrw0ucazLFpxe35HLxygmNx3aowczF+VfI=
+X-Received: by 2002:a17:907:7243:b0:a9a:49a8:f1fa with SMTP id
+ a640c23a62f3a-a9eefeed031mr808648166b.23.1731233239053; Sun, 10 Nov 2024
+ 02:07:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa3:b0:3a6:ac17:13e4 with SMTP id
- e9e14a558f8ab-3a6f1a48bdemr91889025ab.18.1731227610933; Sun, 10 Nov 2024
- 00:33:30 -0800 (PST)
-Date: Sun, 10 Nov 2024 00:33:30 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67306fda.050a0220.138bd5.0049.GAE@google.com>
-Subject: [syzbot] [bcachefs?] INFO: task hung in btree_write_buffer_flush_seq
-From: syzbot <syzbot+cf3d1015b55ff73dcdc8@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+References: <672ecc13.050a0220.138bd5.0038.GAE@google.com>
+In-Reply-To: <672ecc13.050a0220.138bd5.0038.GAE@google.com>
+From: Suraj Sonawane <surajsonawane0215@gmail.com>
+Date: Sun, 10 Nov 2024 15:36:41 +0530
+Message-ID: <CAHiZj8jPNG+_4CHjud8qYxGkzXYsCXNxCw6ejQ0wCeFcKxBR3w@mail.gmail.com>
+Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_copygc
+To: syzbot <syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com>
+Cc: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: multipart/mixed; boundary="0000000000003cd89606268c2667"
+
+--0000000000003cd89606268c2667
+Content-Type: multipart/alternative; boundary="0000000000003cd89406268c2665"
+
+--0000000000003cd89406268c2665
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+#syz test
 
-syzbot found the following issue on:
+On Sat, Nov 9, 2024 at 8:12=E2=80=AFAM syzbot <
+syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com> wrote:
 
-HEAD commit:    2e1b3cc9d7f7 Merge tag 'arm-fixes-6.12-2' of git://git.ker..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=163f4e30580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=11254d3590b16717
-dashboard link: https://syzkaller.appspot.com/bug?extid=cf3d1015b55ff73dcdc8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a536a7980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1402cf40580000
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    2e1b3cc9d7f7 Merge tag 'arm-fixes-6.12-2' of
+> git://git.ker..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D11361d5f98000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6fdf74cce3772=
+23b
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=3D8689d10f1894eedf774d
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for
+> Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12348f40580=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11e7b58798000=
+0
+>
+> Downloadable assets:
+> disk image:
+> https://storage.googleapis.com/syzbot-assets/08456e37db58/disk-2e1b3cc9.r=
+aw.xz
+> vmlinux:
+> https://storage.googleapis.com/syzbot-assets/cc957f7ba80b/vmlinux-2e1b3cc=
+9.xz
+> kernel image:
+> https://storage.googleapis.com/syzbot-assets/7579fe72ed89/bzImage-2e1b3cc=
+9.xz
+> mounted in repro:
+> https://storage.googleapis.com/syzbot-assets/5903d7d7fe58/mount_4.gz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the
+> commit:
+> Reported-by: syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> BUG: KMSAN: uninit-value in rht_ptr_rcu include/linux/rhashtable.h:376
+> [inline]
+> BUG: KMSAN: uninit-value in __rhashtable_lookup
+> include/linux/rhashtable.h:607 [inline]
+> BUG: KMSAN: uninit-value in rhashtable_lookup
+> include/linux/rhashtable.h:646 [inline]
+> BUG: KMSAN: uninit-value in rhashtable_lookup_fast
+> include/linux/rhashtable.h:672 [inline]
+> BUG: KMSAN: uninit-value in bucket_in_flight fs/bcachefs/movinggc.c:144
+> [inline]
+> BUG: KMSAN: uninit-value in bch2_copygc_get_buckets
+> fs/bcachefs/movinggc.c:170 [inline]
+> BUG: KMSAN: uninit-value in bch2_copygc+0x1d3f/0x58f0
+> fs/bcachefs/movinggc.c:221
+>  rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
+>  __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
+>  rhashtable_lookup include/linux/rhashtable.h:646 [inline]
+>  rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
+>  bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
+>  bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
+>  bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
+>  bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
+>  kthread+0x3e2/0x540 kernel/kthread.c:389
+>  ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>
+> Local variable b205.i created at:
+>  bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
+>  bch2_copygc+0x15b3/0x58f0 fs/bcachefs/movinggc.c:221
+>  bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
+>
+> CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Not tainted
+> 6.12.0-rc6-syzkaller-00077-g2e1b3cc9d7f7 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 09/13/2024
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> Kernel panic - not syncing: kmsan.panic set ...
+> CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Tainted: G    B
+> 6.12.0-rc6-syzkaller-00077-g2e1b3cc9d7f7 #0
+> Tainted: [B]=3DBAD_PAGE
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 09/13/2024
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:94 [inline]
+>  dump_stack_lvl+0x216/0x2d0 lib/dump_stack.c:120
+>  dump_stack+0x1e/0x30 lib/dump_stack.c:129
+>  panic+0x4e2/0xcf0 kernel/panic.c:354
+>  kmsan_report+0x2c7/0x2d0 mm/kmsan/report.c:218
+>  __msan_warning+0x95/0x120 mm/kmsan/instrumentation.c:318
+>  rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
+>  __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
+>  rhashtable_lookup include/linux/rhashtable.h:646 [inline]
+>  rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
+>  bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
+>  bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
+>  bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
+>  bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
+>  kthread+0x3e2/0x540 kernel/kthread.c:389
+>  ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>  </TASK>
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
+>
+> --
+> You received this message because you are subscribed to the Google Groups
+> "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an
+> email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion visit
+> https://groups.google.com/d/msgid/syzkaller-bugs/672ecc13.050a0220.138bd5=
+.0038.GAE%40google.com
+> .
+>
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6a49054c25b2/disk-2e1b3cc9.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0d6873a86739/vmlinux-2e1b3cc9.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/630443e7db25/bzImage-2e1b3cc9.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/e7e7dcf3a227/mount_0.gz
+--0000000000003cd89406268c2665
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The issue was bisected to:
+<div dir=3D"ltr">#syz test<br></div><br><div class=3D"gmail_quote"><div dir=
+=3D"ltr" class=3D"gmail_attr">On Sat, Nov 9, 2024 at 8:12=E2=80=AFAM syzbot=
+ &lt;<a href=3D"mailto:syzbot%2B8689d10f1894eedf774d@syzkaller.appspotmail.=
+com">syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com</a>&gt; wrote:<b=
+r></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex=
+;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hello,<br>
+<br>
+syzbot found the following issue on:<br>
+<br>
+HEAD commit:=C2=A0 =C2=A0 2e1b3cc9d7f7 Merge tag &#39;arm-fixes-6.12-2&#39;=
+ of git://git.ker..<br>
+git tree:=C2=A0 =C2=A0 =C2=A0 =C2=A0upstream<br>
+console+strace: <a href=3D"https://syzkaller.appspot.com/x/log.txt?x=3D1136=
+1d5f980000" rel=3D"noreferrer" target=3D"_blank">https://syzkaller.appspot.=
+com/x/log.txt?x=3D11361d5f980000</a><br>
+kernel config:=C2=A0 <a href=3D"https://syzkaller.appspot.com/x/.config?x=
+=3D6fdf74cce377223b" rel=3D"noreferrer" target=3D"_blank">https://syzkaller=
+.appspot.com/x/.config?x=3D6fdf74cce377223b</a><br>
+dashboard link: <a href=3D"https://syzkaller.appspot.com/bug?extid=3D8689d1=
+0f1894eedf774d" rel=3D"noreferrer" target=3D"_blank">https://syzkaller.apps=
+pot.com/bug?extid=3D8689d10f1894eedf774d</a><br>
+compiler:=C2=A0 =C2=A0 =C2=A0 =C2=A0Debian clang version 15.0.6, GNU ld (GN=
+U Binutils for Debian) 2.40<br>
+syz repro:=C2=A0 =C2=A0 =C2=A0 <a href=3D"https://syzkaller.appspot.com/x/r=
+epro.syz?x=3D12348f40580000" rel=3D"noreferrer" target=3D"_blank">https://s=
+yzkaller.appspot.com/x/repro.syz?x=3D12348f40580000</a><br>
+C reproducer:=C2=A0 =C2=A0<a href=3D"https://syzkaller.appspot.com/x/repro.=
+c?x=3D11e7b587980000" rel=3D"noreferrer" target=3D"_blank">https://syzkalle=
+r.appspot.com/x/repro.c?x=3D11e7b587980000</a><br>
+<br>
+Downloadable assets:<br>
+disk image: <a href=3D"https://storage.googleapis.com/syzbot-assets/08456e3=
+7db58/disk-2e1b3cc9.raw.xz" rel=3D"noreferrer" target=3D"_blank">https://st=
+orage.googleapis.com/syzbot-assets/08456e37db58/disk-2e1b3cc9.raw.xz</a><br=
+>
+vmlinux: <a href=3D"https://storage.googleapis.com/syzbot-assets/cc957f7ba8=
+0b/vmlinux-2e1b3cc9.xz" rel=3D"noreferrer" target=3D"_blank">https://storag=
+e.googleapis.com/syzbot-assets/cc957f7ba80b/vmlinux-2e1b3cc9.xz</a><br>
+kernel image: <a href=3D"https://storage.googleapis.com/syzbot-assets/7579f=
+e72ed89/bzImage-2e1b3cc9.xz" rel=3D"noreferrer" target=3D"_blank">https://s=
+torage.googleapis.com/syzbot-assets/7579fe72ed89/bzImage-2e1b3cc9.xz</a><br=
+>
+mounted in repro: <a href=3D"https://storage.googleapis.com/syzbot-assets/5=
+903d7d7fe58/mount_4.gz" rel=3D"noreferrer" target=3D"_blank">https://storag=
+e.googleapis.com/syzbot-assets/5903d7d7fe58/mount_4.gz</a><br>
+<br>
+IMPORTANT: if you fix the issue, please add the following tag to the commit=
+:<br>
+Reported-by: <a href=3D"mailto:syzbot%2B8689d10f1894eedf774d@syzkaller.apps=
+potmail.com" target=3D"_blank">syzbot+8689d10f1894eedf774d@syzkaller.appspo=
+tmail.com</a><br>
+<br>
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D<br>
+BUG: KMSAN: uninit-value in rht_ptr_rcu include/linux/rhashtable.h:376 [inl=
+ine]<br>
+BUG: KMSAN: uninit-value in __rhashtable_lookup include/linux/rhashtable.h:=
+607 [inline]<br>
+BUG: KMSAN: uninit-value in rhashtable_lookup include/linux/rhashtable.h:64=
+6 [inline]<br>
+BUG: KMSAN: uninit-value in rhashtable_lookup_fast include/linux/rhashtable=
+.h:672 [inline]<br>
+BUG: KMSAN: uninit-value in bucket_in_flight fs/bcachefs/movinggc.c:144 [in=
+line]<br>
+BUG: KMSAN: uninit-value in bch2_copygc_get_buckets fs/bcachefs/movinggc.c:=
+170 [inline]<br>
+BUG: KMSAN: uninit-value in bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.=
+c:221<br>
+=C2=A0rht_ptr_rcu include/linux/rhashtable.h:376 [inline]<br>
+=C2=A0__rhashtable_lookup include/linux/rhashtable.h:607 [inline]<br>
+=C2=A0rhashtable_lookup include/linux/rhashtable.h:646 [inline]<br>
+=C2=A0rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]<br>
+=C2=A0bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]<br>
+=C2=A0bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]<br>
+=C2=A0bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221<br>
+=C2=A0bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381<br>
+=C2=A0kthread+0x3e2/0x540 kernel/kthread.c:389<br>
+=C2=A0ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147<br>
+=C2=A0ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244<br>
+<br>
+Local variable b205.i created at:<br>
+=C2=A0bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]<br>
+=C2=A0bch2_copygc+0x15b3/0x58f0 fs/bcachefs/movinggc.c:221<br>
+=C2=A0bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381<br>
+<br>
+CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Not tainted 6.12.0-rc6-syzkal=
+ler-00077-g2e1b3cc9d7f7 #0<br>
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
+gle 09/13/2024<br>
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D<br>
+Kernel panic - not syncing: kmsan.panic set ...<br>
+CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Tainted: G=C2=A0 =C2=A0 B=C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 6.12.0-rc6-syzkaller-00077-g2=
+e1b3cc9d7f7 #0<br>
+Tainted: [B]=3DBAD_PAGE<br>
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
+gle 09/13/2024<br>
+Call Trace:<br>
+=C2=A0&lt;TASK&gt;<br>
+=C2=A0__dump_stack lib/dump_stack.c:94 [inline]<br>
+=C2=A0dump_stack_lvl+0x216/0x2d0 lib/dump_stack.c:120<br>
+=C2=A0dump_stack+0x1e/0x30 lib/dump_stack.c:129<br>
+=C2=A0panic+0x4e2/0xcf0 kernel/panic.c:354<br>
+=C2=A0kmsan_report+0x2c7/0x2d0 mm/kmsan/report.c:218<br>
+=C2=A0__msan_warning+0x95/0x120 mm/kmsan/instrumentation.c:318<br>
+=C2=A0rht_ptr_rcu include/linux/rhashtable.h:376 [inline]<br>
+=C2=A0__rhashtable_lookup include/linux/rhashtable.h:607 [inline]<br>
+=C2=A0rhashtable_lookup include/linux/rhashtable.h:646 [inline]<br>
+=C2=A0rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]<br>
+=C2=A0bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]<br>
+=C2=A0bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]<br>
+=C2=A0bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221<br>
+=C2=A0bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381<br>
+=C2=A0kthread+0x3e2/0x540 kernel/kthread.c:389<br>
+=C2=A0ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147<br>
+=C2=A0ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244<br>
+=C2=A0&lt;/TASK&gt;<br>
+Kernel Offset: disabled<br>
+Rebooting in 86400 seconds..<br>
+<br>
+<br>
+---<br>
+This report is generated by a bot. It may contain errors.<br>
+See <a href=3D"https://goo.gl/tpsmEJ" rel=3D"noreferrer" target=3D"_blank">=
+https://goo.gl/tpsmEJ</a> for more information about syzbot.<br>
+syzbot engineers can be reached at <a href=3D"mailto:syzkaller@googlegroups=
+.com" target=3D"_blank">syzkaller@googlegroups.com</a>.<br>
+<br>
+syzbot will keep track of this issue. See:<br>
+<a href=3D"https://goo.gl/tpsmEJ#status" rel=3D"noreferrer" target=3D"_blan=
+k">https://goo.gl/tpsmEJ#status</a> for how to communicate with syzbot.<br>
+<br>
+If the report is already addressed, let syzbot know by replying with:<br>
+#syz fix: exact-commit-title<br>
+<br>
+If you want syzbot to run the reproducer, reply with:<br>
+#syz test: git://repo/address.git branch-or-commit-hash<br>
+If you attach or paste a git patch, syzbot will apply it before testing.<br=
+>
+<br>
+If you want to overwrite report&#39;s subsystems, reply with:<br>
+#syz set subsystems: new-subsystem<br>
+(See the list of subsystem names on the web dashboard)<br>
+<br>
+If the report is a duplicate of another one, reply with:<br>
+#syz dup: exact-subject-of-another-report<br>
+<br>
+If you want to undo deduplication, reply with:<br>
+#syz undup<br>
+<br>
+-- <br>
+You received this message because you are subscribed to the Google Groups &=
+quot;syzkaller-bugs&quot; group.<br>
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to <a href=3D"mailto:syzkaller-bugs%2Bunsubscribe@googlegroups.com" ta=
+rget=3D"_blank">syzkaller-bugs+unsubscribe@googlegroups.com</a>.<br>
+To view this discussion visit <a href=3D"https://groups.google.com/d/msgid/=
+syzkaller-bugs/672ecc13.050a0220.138bd5.0038.GAE%40google.com" rel=3D"noref=
+errer" target=3D"_blank">https://groups.google.com/d/msgid/syzkaller-bugs/6=
+72ecc13.050a0220.138bd5.0038.GAE%40google.com</a>.<br>
+</blockquote></div>
 
-commit 49fd90b2cc332b8607a616d99d4bb792f18208b9
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Wed Sep 25 22:17:31 2024 +0000
+--0000000000003cd89406268c2665--
+--0000000000003cd89606268c2667
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-v5KMSAN-fix-uninit-value-in-bch2_copygc.patch"
+Content-Disposition: attachment; 
+	filename="0001-v5KMSAN-fix-uninit-value-in-bch2_copygc.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_m3bfiwp50>
+X-Attachment-Id: f_m3bfiwp50
 
-    bcachefs: Fix unlocked access to c->disk_sb.sb in bch2_replicas_entry_validate()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=117e0ea7980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=137e0ea7980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=157e0ea7980000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cf3d1015b55ff73dcdc8@syzkaller.appspotmail.com
-Fixes: 49fd90b2cc33 ("bcachefs: Fix unlocked access to c->disk_sb.sb in bch2_replicas_entry_validate()")
-
-INFO: task bch-reclaim/loo:5865 blocked for more than 143 seconds.
-      Not tainted 6.12.0-rc6-syzkaller-00077-g2e1b3cc9d7f7 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:bch-reclaim/loo state:D stack:25848 pid:5865  tgid:5865  ppid:2      flags:0x00004000
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5328 [inline]
- __schedule+0x184f/0x4c30 kernel/sched/core.c:6690
- __schedule_loop kernel/sched/core.c:6767 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6782
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6839
- __mutex_lock_common kernel/locking/mutex.c:684 [inline]
- __mutex_lock+0x6a7/0xd70 kernel/locking/mutex.c:752
- btree_write_buffer_flush_seq+0x1a39/0x1bc0 fs/bcachefs/btree_write_buffer.c:509
- bch2_btree_write_buffer_journal_flush+0x4e/0x80 fs/bcachefs/btree_write_buffer.c:525
- journal_flush_pins+0x5f9/0xb20 fs/bcachefs/journal_reclaim.c:565
- __bch2_journal_reclaim+0x789/0xdc0 fs/bcachefs/journal_reclaim.c:698
- bch2_journal_reclaim_thread+0x174/0x560 fs/bcachefs/journal_reclaim.c:740
- kthread+0x2f2/0x390 kernel/kthread.c:389
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/30:
- #0: ffffffff8e937da0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #0: ffffffff8e937da0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #0: ffffffff8e937da0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6720
-2 locks held by getty/5591:
- #0: ffff8880349da0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6a6/0x1e00 drivers/tty/n_tty.c:2211
-3 locks held by syz-executor155/5854:
- #0: ffff88807c9ae420 (sb_writers#10){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff888070404398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:151 [inline]
- #1: ffff888070404398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:250 [inline]
- #1: ffff888070404398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bch2_trans_get+0x7de/0xd20 fs/bcachefs/btree_iter.c:3228
- #2: ffff8880704266d0 (&c->gc_lock){.+.+}-{3:3}, at: bch2_btree_update_start+0x682/0x14e0 fs/bcachefs/btree_update_interior.c:1202
-3 locks held by bch-reclaim/loo/5865:
- #0: ffff88807044b0a8 (&j->reclaim_lock){+.+.}-{3:3}, at: bch2_journal_reclaim_thread+0x167/0x560 fs/bcachefs/journal_reclaim.c:739
- #1: ffff888070404398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:151 [inline]
- #1: ffff888070404398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:250 [inline]
- #1: ffff888070404398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bch2_trans_get+0x7de/0xd20 fs/bcachefs/btree_iter.c:3228
- #2: ffff888070404740 (&wb->flushing.lock){+.+.}-{3:3}, at: btree_write_buffer_flush_seq+0x1a39/0x1bc0 fs/bcachefs/btree_write_buffer.c:509
-3 locks held by bch-copygc/loop/5866:
- #0: ffff888070404740 (&wb->flushing.lock){+.+.}-{3:3}, at: bch2_btree_write_buffer_flush_nocheck_rw fs/bcachefs/btree_write_buffer.c:543 [inline]
- #0: ffff888070404740 (&wb->flushing.lock){+.+.}-{3:3}, at: bch2_btree_write_buffer_tryflush+0x14b/0x1c0 fs/bcachefs/btree_write_buffer.c:558
- #1: ffff888070404398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:151 [inline]
- #1: ffff888070404398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:250 [inline]
- #1: ffff888070404398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: bch2_trans_srcu_lock+0x97/0x1a0 fs/bcachefs/btree_iter.c:3053
- #2: ffff8880704266d0 (&c->gc_lock){.+.+}-{3:3}, at: bch2_btree_update_start+0x682/0x14e0 fs/bcachefs/btree_update_interior.c:1202
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.12.0-rc6-syzkaller-00077-g2e1b3cc9d7f7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
- watchdog+0xff4/0x1040 kernel/hung_task.c:379
- kthread+0x2f2/0x390 kernel/kthread.c:389
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 67 Comm: kworker/u8:4 Not tainted 6.12.0-rc6-syzkaller-00077-g2e1b3cc9d7f7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Workqueue:  0x0 (events_unbound)
-RIP: 0010:srso_alias_safe_ret+0x0/0x7 arch/x86/lib/retpoline.S:171
-Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc <48> 8d 64 24 08 c3 cc e8 f4 ff ff ff 0f 0b cc cc cc cc cc cc cc cc
-RSP: 0018:ffffc900015f72b0 EFLAGS: 00000096
-RAX: 1ffffffff1cffcbc RBX: 0000000000000008 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffffff8e7fe6d0
-RBP: 0000000000000048 R08: ffffffff8e7fe6d7 R09: 1ffffffff1cffcda
-R10: dffffc0000000000 R11: fffffbfff1cffcdb R12: ffff888020af0000
-R13: ffff888020af0068 R14: 1ffff1100415e00d R15: ffff8880b873ea80
-FS:  0000000000000000(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000558081776600 CR3: 000000000e734000 CR4: 0000000000350ef0
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- srso_alias_return_thunk+0x5/0xfbef5 arch/x86/lib/retpoline.S:181
- activate_task+0x61/0xc0 kernel/sched/core.c:2067
- attach_task+0xee/0x190 kernel/sched/fair.c:9641
- attach_tasks kernel/sched/fair.c:9676 [inline]
- sched_balance_rq+0x664a/0x8620 kernel/sched/fair.c:11753
- sched_balance_newidle+0x6ba/0xfd0 kernel/sched/fair.c:12795
- pick_next_task_fair+0x40/0xc90 kernel/sched/fair.c:8943
- __pick_next_task+0xdd/0x400 kernel/sched/core.c:5968
- __schedule+0x776/0x4c30 kernel/sched/core.c:6644
- __schedule_loop kernel/sched/core.c:6767 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6782
- worker_thread+0xa30/0xd30 kernel/workqueue.c:3406
- kthread+0x2f2/0x390 kernel/kthread.c:389
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+RnJvbSAzN2IwOWNmMmFhY2M4ODRhODhlODZjODMzMzM0ZWIwZjkyOTgzZjdlIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBTdXJhaiBTb25hd2FuZSA8c3VyYWpzb25hd2FuZTAyMTVAZ21h
+aWwuY29tPgpEYXRlOiBTdW4sIDEwIE5vdiAyMDI0IDE1OjMyOjE5ICswNTMwClN1YmplY3Q6IFtQ
+QVRDSF0gdjVLTVNBTjogZml4IHVuaW5pdC12YWx1ZSBpbiBiY2gyX2NvcHlnYwoKZml4CgpTaWdu
+ZWQtb2ZmLWJ5OiBTdXJhaiBTb25hd2FuZSA8c3VyYWpzb25hd2FuZTAyMTVAZ21haWwuY29tPgot
+LS0KIGZzL2JjYWNoZWZzL21vdmluZ2djLmMgfCAxNCArKysrKysrKysrKysrKwogMSBmaWxlIGNo
+YW5nZWQsIDE0IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9mcy9iY2FjaGVmcy9tb3Zpbmdn
+Yy5jIGIvZnMvYmNhY2hlZnMvbW92aW5nZ2MuYwppbmRleCBkNjU4YmU5MGYuLjJmNDNkOWVjNyAx
+MDA2NDQKLS0tIGEvZnMvYmNhY2hlZnMvbW92aW5nZ2MuYworKysgYi9mcy9iY2FjaGVmcy9tb3Zp
+bmdnYy5jCkBAIC0xNTgsNiArMTU4LDIwIEBAIHN0YXRpYyBpbnQgYmNoMl9jb3B5Z2NfZ2V0X2J1
+Y2tldHMoc3RydWN0IG1vdmluZ19jb250ZXh0ICpjdHh0LAogCiAJbW92ZV9idWNrZXRzX3dhaXQo
+Y3R4dCwgYnVja2V0c19pbl9mbGlnaHQsIGZhbHNlKTsKIAorCWlmICghYnVja2V0c19pbl9mbGln
+aHQgfHwgIWJ1Y2tldHNfaW5fZmxpZ2h0LT5ucikgeworCQkvLyBJbml0aWFsaXplIHRoZSBzdHJ1
+Y3R1cmUKKwkJYnVja2V0c19pbl9mbGlnaHQtPm5yID0gMDsKKwkJYnVja2V0c19pbl9mbGlnaHQt
+PnNlY3RvcnMgPSAwOworCQlidWNrZXRzX2luX2ZsaWdodC0+Zmlyc3QgPSBOVUxMOworCQlidWNr
+ZXRzX2luX2ZsaWdodC0+bGFzdCA9IE5VTEw7CisKKwkJLy8gRXhwbGljaXRseSBpbml0aWFsaXpl
+IHRoZSBoYXNoIHRhYmxlIGluc3RlYWQgb2YgbWVtc2V0CisJCXJldCA9IHJoYXNodGFibGVfaW5p
+dCgmYnVja2V0c19pbl9mbGlnaHQtPnRhYmxlLCAmYmNoX21vdmVfYnVja2V0X3BhcmFtcyk7CisJ
+CWlmIChyZXQpIHsKKwkJCXJldHVybiByZXQ7CisJCX0KKwl9CisKIAlyZXQgPSBiY2gyX2J0cmVl
+X3dyaXRlX2J1ZmZlcl90cnlmbHVzaCh0cmFucyk7CiAJaWYgKGJjaDJfZXJyX21hdGNoZXMocmV0
+LCBFUk9GUykpCiAJCXJldHVybiByZXQ7Ci0tIAoyLjM0LjEKCg==
+--0000000000003cd89606268c2667--
