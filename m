@@ -1,126 +1,162 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEDD422615
-	for <linux-bcachefs@vger.kernel.org>; Sun, 10 Nov 2024 06:18:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E346A1482ED
+	for <linux-bcachefs@vger.kernel.org>; Sun, 10 Nov 2024 06:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731219485; cv=none; b=q/eXs55j0lObSEN30XcJYAfHjaM2qyUxdEPvtfKKR5qU71ufKJTIRCv1zkrou5JmB4B0JlfP7F5CWGtIyC1BUEcAHrAHcQXAm1r4OpSGQbUZmH7laITKfLFQMZskWR/vbeW7CfbIc+WpXGYKk4wen+w7iDlBBTfCN0phPNMfVT4=
+	t=1731220957; cv=none; b=tr04qmhYgNvaymmeOV+DOS1LIm5YxEMpjPNYkFZgRAA/UXOTGrb7QI/9miftrJ0XcUfco9reQcT2NoBNSkDHm2EIRrruye28c1W5Dz/40aZf5pAqMmgvtYehZYSABDH8TJbsXsqCRijps4XX5EJAwASQwszALTgQD6bS3sU+J+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731219485; c=relaxed/simple;
-	bh=KWOI66JQQP/ayOoVlGtWxSFXiH4FX1Q70Hu3L1EpNYI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=srAUg6aQaRIRnzAvOF2STuloXlRfgtDV+P/nBVhZbfcc9x3zEIOyWXypnUQ4mAKoWJB9UroaZnNjULMkyHsiHT9fWN4m5Dt29ZBVMb/jO+HtoNl6uqIx54ohgCB5ubKZ5+G6qEg4bGYCVMoz1XRGCL3xkIT4oDd8Bv8FlJ23C2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a6b37c6dd4so39260795ab.3
-        for <linux-bcachefs@vger.kernel.org>; Sat, 09 Nov 2024 22:18:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731219483; x=1731824283;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DmVSamYap7bWAl0AY12tAxA0maGZ1hHK0hufdhFGjLU=;
-        b=w487hP5eW/oT3qW3Z56Enbq8ZtTjENiNcxAQ3vLVoRUrRlHONeRGrARYqV4ILDRrVF
-         Al1q7pb/yTE9we4yMoElKPZOip+8K/iUmUVxTA9XeAzBK5ne5/PwsENhXMYQDwEn+0HW
-         iC8Z51ZWp4/L2+YZ5pEK3r/Fn8Q5XS0IsCwmpkC4c7zYdRpk+JS3vY3LbLJAfC1rO78X
-         aRuGzNLCh8Ihzh9WxqIBrZl+Puga/f8h/Dtnhzo4XIayxzDUxC2l3LXLuyq1UtIjxMjf
-         kZWKvQ72IbvtiyIfCwkMpHqV/PhNIANHYgIqxBPKMHrcTY2nllzgVyF7B0XfT/IAax/y
-         WeQg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwnUCNjXfXXkD4zhdhy/2ItnTSK3zeLo+wdx/QpAFnAQAq4a3cWdgVH4BVQWRITwxuI7BsYP4PZETSNmB8OA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTH3jS9vxOu7vzQrMgJPFsrn3GwhuGC5UH8eLfrXHGqLR3Z9eH
-	JDpMTTilJhWf4pVR5y5LZv8erY1znJU9ElSlmd5p6W904yuqq6JgJT+Z6BIZ8KiidHsah9AWvRi
-	3qY/+fVXDGtoSmXvr+Z1rQP1G68Dm82HhzWgzg7/DrTeZciWppoODc5A=
-X-Google-Smtp-Source: AGHT+IHjupTuEsTnX+tP2nwlOkt6mS/4MismK/7jA277Jm3b9F3KvqXc5bFBzGMkCjIQZo/IV5YFEiPZzXIrjEfB3zVYUJNEF621
+	s=arc-20240116; t=1731220957; c=relaxed/simple;
+	bh=2MuEoGwnTU7cuReOhLOd8QP7GGc15WmkMWUN4yNMvmM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oLOiX6OCpa7U8jMk13YRvELqxIeSSo+q28Mrpp4sHY5whccbhpIFOAfb5yQ+OisVe+/2FujEdoJWGBoowH0rm1/rzqic5elBlWMLrAeUU8TbmgcBRj84TmKQ+PT5mop4OQKr6sMs6ZnRknGiorITd2ZX9IKSx6dqDLhWbHs5Mbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=u9ocSlTP; arc=none smtp.client-ip=104.245.9.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="u9ocSlTP"
+DKIM-Signature: a=rsa-sha256; bh=759nW2Igh5rB77xFwznl1QiR3O+yjFNon7rj4lXNyn0=;
+ c=relaxed/relaxed; d=archlinuxcn.org;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
+ i=@archlinuxcn.org; s=default; t=1731220918; v=1; x=1731652918;
+ b=u9ocSlTPnaxQKosCnRDuQBVAC8BbwcMP0NMcWu9oNS/2aU3nejVfmvPx+SvX7FlAh2w1sOpt
+ RAwaX8sq7qIJbTLiCvnoZ/XIX3YiMWdX0RNX3/wzCIB6TlowyIqk0PxXU1ggGU+yNIVVEoaGUC8
+ 7fd5hdS3zYIs2+XlbM1lVozKZRykYfBzmQAFYkxkb3aoCMVTH6T+XRe9QUD8QcU0CCfNYm8i4fG
+ Pmv0SU5kwpCckrgzl2FKF+yLPFRmCZwUNMa6PCOXPC6HAGnUPWHs2kpu5E2VN39NMbVFR+HEDi6
+ SQbXlOVnwHgfFzvLhdVNgtO3ZM54Wnh69xsdrp/u/R3+g==
+Received: by wiki.archlinuxcn.org (envelope-sender
+ <integral@archlinuxcn.org>) with ESMTPS id 48679f89; Sun, 10 Nov 2024
+ 14:41:58 +0800
+From: "integral@archlinuxcn.org" <integral@archlinuxcn.org>
+To: kent.overstreet@gmail.com,
+	kent.overstreet@linux.dev,
+	lihongbo22@huawei.com
+Cc: mmpgouride@gmail.com,
+	linux-bcachefs@vger.kernel.org,
+	integral@archlinuxcn.org
+Subject: [PATCH] bcachefs: use strscpy & strscpy_pad to make string copying simpler & safer
+Date: Sun, 10 Nov 2024 14:41:38 +0800
+Message-ID: <20241110064138.79527-1-integral@archlinuxcn.org>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:190e:b0:39b:330b:bb25 with SMTP id
- e9e14a558f8ab-3a6f19e2863mr89407075ab.12.1731219482905; Sat, 09 Nov 2024
- 22:18:02 -0800 (PST)
-Date: Sat, 09 Nov 2024 22:18:02 -0800
-In-Reply-To: <CAHiZj8gWz_yvnv_euDoeBYOx7uPvG=F2S6F24oSSo3urFw8dKw@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6730501a.050a0220.320e73.031e.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_copygc
-From: syzbot <syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, surajsonawane0215@gmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Use safe string copying macros (strscpy & strscpy_pad) to make string
+copying simpler & safer.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KMSAN: uninit-value in bch2_copygc
+Signed-off-by: integral@archlinuxcn.org <integral@archlinuxcn.org>
+---
+ fs/bcachefs/dirent.c      | 10 +++-------
+ fs/bcachefs/disk_groups.c |  5 ++---
+ fs/bcachefs/fs-ioctl.c    | 17 ++++++++---------
+ fs/bcachefs/fs.c          |  6 +-----
+ 4 files changed, 14 insertions(+), 24 deletions(-)
 
-=====================================================
-BUG: KMSAN: uninit-value in rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
-BUG: KMSAN: uninit-value in __rhashtable_lookup include/linux/rhashtable.h:613 [inline]
-BUG: KMSAN: uninit-value in rhashtable_lookup include/linux/rhashtable.h:652 [inline]
-BUG: KMSAN: uninit-value in rhashtable_lookup_fast include/linux/rhashtable.h:678 [inline]
-BUG: KMSAN: uninit-value in bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
-BUG: KMSAN: uninit-value in bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
-BUG: KMSAN: uninit-value in bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
- rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
- __rhashtable_lookup include/linux/rhashtable.h:613 [inline]
- rhashtable_lookup include/linux/rhashtable.h:652 [inline]
- rhashtable_lookup_fast include/linux/rhashtable.h:678 [inline]
- bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
- bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
- bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
- bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Local variable b205.i created at:
- bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
- bch2_copygc+0x15b3/0x58f0 fs/bcachefs/movinggc.c:221
- bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
-
-CPU: 1 UID: 0 PID: 6677 Comm: bch-copygc/loop Not tainted 6.12.0-rc6-syzkaller-00279-gde2f378f2b77-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
-=====================================================
-Kernel panic - not syncing: kmsan.panic set ...
-CPU: 1 UID: 0 PID: 6677 Comm: bch-copygc/loop Tainted: G    B              6.12.0-rc6-syzkaller-00279-gde2f378f2b77-dirty #0
-Tainted: [B]=BAD_PAGE
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x216/0x2d0 lib/dump_stack.c:120
- dump_stack+0x1e/0x30 lib/dump_stack.c:129
- panic+0x4e2/0xcf0 kernel/panic.c:354
- kmsan_report+0x2c7/0x2d0 mm/kmsan/report.c:218
- __msan_warning+0x95/0x120 mm/kmsan/instrumentation.c:318
- rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
- __rhashtable_lookup include/linux/rhashtable.h:613 [inline]
- rhashtable_lookup include/linux/rhashtable.h:652 [inline]
- rhashtable_lookup_fast include/linux/rhashtable.h:678 [inline]
- bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
- bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
- bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
- bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
-Tested on:
-
-commit:         de2f378f Merge tag 'nfsd-6.12-4' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1302635f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e4580d62ee1893a5
-dashboard link: https://syzkaller.appspot.com/bug?extid=8689d10f1894eedf774d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14131ea7980000
+diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
+index 4c22f78b0484..466fe5765739 100644
+--- a/fs/bcachefs/dirent.c
++++ b/fs/bcachefs/dirent.c
+@@ -191,13 +191,9 @@ static struct bkey_i_dirent *dirent_create_key(struct btree_trans *trans,
+ 
+ 	dirent->v.d_type = type;
+ 
+-	memcpy(dirent->v.d_name, name->name, name->len);
+-	memset(dirent->v.d_name + name->len, 0,
+-	       bkey_val_bytes(&dirent->k) -
+-	       offsetof(struct bch_dirent, d_name) -
+-	       name->len);
+-
+-	EBUG_ON(bch2_dirent_name_bytes(dirent_i_to_s_c(dirent)) != name->len);
++	EBUG_ON(strscpy_pad(dirent->v.d_name, name->name,
++			    bkey_val_bytes(&dirent->k) - offsetof(struct bch_dirent, d_name))
++		!= name->len);
+ 
+ 	return dirent;
+ }
+diff --git a/fs/bcachefs/disk_groups.c b/fs/bcachefs/disk_groups.c
+index 5df8de0b8c02..c2fc575e38d1 100644
+--- a/fs/bcachefs/disk_groups.c
++++ b/fs/bcachefs/disk_groups.c
+@@ -319,9 +319,8 @@ static int __bch2_disk_group_add(struct bch_sb_handle *sb, unsigned parent,
+ 
+ 	g = &groups->entries[i];
+ 
+-	memcpy(g->label, name, namelen);
+-	if (namelen < sizeof(g->label))
+-		g->label[namelen] = '\0';
++	strscpy(g->label, name, namelen);
++
+ 	SET_BCH_GROUP_DELETED(g, 0);
+ 	SET_BCH_GROUP_PARENT(g, parent);
+ 	SET_BCH_GROUP_DATA_ALLOWED(g, ~0);
+diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
+index 15725b4ce393..4233707bec9d 100644
+--- a/fs/bcachefs/fs-ioctl.c
++++ b/fs/bcachefs/fs-ioctl.c
+@@ -279,26 +279,25 @@ static int bch2_ioc_getversion(struct bch_inode_info *inode, u32 __user *arg)
+ 
+ static int bch2_ioc_getlabel(struct bch_fs *c, char __user *user_label)
+ {
+-	int ret;
+-	size_t len;
+ 	char label[BCH_SB_LABEL_SIZE];
++	size_t len;
+ 
+ 	BUILD_BUG_ON(BCH_SB_LABEL_SIZE >= FSLABEL_MAX);
+ 
+ 	mutex_lock(&c->sb_lock);
+-	memcpy(label, c->disk_sb.sb->label, BCH_SB_LABEL_SIZE);
++	int ret = strscpy(label, c->disk_sb.sb->label, BCH_SB_LABEL_SIZE);
+ 	mutex_unlock(&c->sb_lock);
+ 
+-	len = strnlen(label, BCH_SB_LABEL_SIZE);
+-	if (len == BCH_SB_LABEL_SIZE) {
++	if (ret == -E2BIG) {
++		len = BCH_SB_LABEL_SIZE - 1;
+ 		bch_warn(c,
+ 			"label is too long, return the first %zu bytes",
+-			--len);
++			len);
++	} else {
++		len = ret;
+ 	}
+ 
+-	ret = copy_to_user(user_label, label, len);
+-
+-	return ret ? -EFAULT : 0;
++	return copy_to_user(user_label, label, len) ? -EFAULT : 0;
+ }
+ 
+ static int bch2_ioc_setlabel(struct bch_fs *c,
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 91fce04272a1..be86a36e8cfe 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -1641,7 +1641,6 @@ static int bch2_get_name(struct dentry *parent, char *name, struct dentry *child
+ 	subvol_inum target;
+ 	u32 snapshot;
+ 	struct qstr dirent_name;
+-	unsigned name_len = 0;
+ 	int ret;
+ 
+ 	if (!S_ISDIR(dir->v.i_mode))
+@@ -1717,10 +1716,7 @@ static int bch2_get_name(struct dentry *parent, char *name, struct dentry *child
+ 	goto err;
+ found:
+ 	dirent_name = bch2_dirent_get_name(d);
+-
+-	name_len = min_t(unsigned, dirent_name.len, NAME_MAX);
+-	memcpy(name, dirent_name.name, name_len);
+-	name[name_len] = '\0';
++	strscpy(name, dirent_name.name, NAME_MAX);
+ err:
+ 	if (bch2_err_matches(ret, BCH_ERR_transaction_restart))
+ 		goto retry;
+-- 
+2.47.0
 
