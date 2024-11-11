@@ -1,75 +1,69 @@
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5C41A2846
-	for <linux-bcachefs@vger.kernel.org>; Mon, 11 Nov 2024 20:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0211BCA0F
+	for <linux-bcachefs@vger.kernel.org>; Mon, 11 Nov 2024 21:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731355808; cv=none; b=X5IN1N081/7F7JJua8z7gjQsZPHAFtIcgLIzttNYDmcS9LNRxrURUy3alkiDULq1RXeIGlW789wc8xPA883MSu6NYVzfD7KcnwlZ+tUwlwz95XudhQshttJO1zO2yai6eJ1oTWPdsud7K/ytiKKGNFwewT3Zmm7weRVoMoXqFTM=
+	t=1731359124; cv=none; b=GKYaKuyL5FzwPwB2PbmgIGijCHlhoP8jImjn2zUvBu3Hi103i3ePLEQPyG4faeoWdCefA7qsh22f+sW94wROzfFGdyptOpr1EE8DAfTabXLoDZEbGqrmLeSfcJN4m8QzcfjEt7HL830OcMKwcBt+HWgHcwBoU1oTfSQBgn/3S3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731355808; c=relaxed/simple;
-	bh=lq7p7ypp4TN3d83VFQ8h2R1FXXi61Q7cmbLpx8zTkG8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BZrutELrBAhmkFqNXEwjk9UbO94bp2D2npxuPnnX8wnQaMcoZ5himKUqU/78vKVUqOIEQyPTSpXvKeg+W/8hJr9xr/O96qpUV3ETC7iAxERKYuZKsoeZz+2tOX8Y4LwPiIsAS7l+jhpPjKaiN4LklJRhUsVIO8ll9rtHDByPEoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eKMLKTsB; arc=none smtp.client-ip=91.218.175.176
+	s=arc-20240116; t=1731359124; c=relaxed/simple;
+	bh=oHuphlH42QaiFDwkgAbm5CEWHrJKMCMELWiNhAicNLg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rreMsXvvpuNDrepzRQqFcGdLTIclpcg3SFAO7KdAJU27S7V/PO+eZNCR7VkU6re1k9Bw0RnfFwwJpH8V+gzO5RPCBzizDJ1YO2YlB9yLwQgjayXZZiLh70Ccm3TtUnYQ0AlrXUL+hmY5cxfP5lBbS8SR6IrqYjpvckUoOk+GvzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qdgXEhCF; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eKMLKTsB"
-Date: Mon, 11 Nov 2024 15:09:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731355804;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dsNlIubHNBjceBMTLdroRRy7Slq6tAzbxUUj5TPWCd4=;
-	b=eKMLKTsB14gvDHJyMe9L+c4WaDWKaek8nl8GTYhAhKyShjB2NU6nA9Q/W28PNH1oAutKx/
-	jGIWckcDmZTgVgHuYeEAU4rb3BFjqUhu2wE4XIiDEUkmSDzT9W45bv3xSauvm19u/OYrcd
-	q2hHByO7jOZPhIsCKKL51i9qX5D7ly8=
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qdgXEhCF"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731359119;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MJZjK2IS/+Mh9HnPgkVJ6sZFNZviHKu2Xzjd0E8Klog=;
+	b=qdgXEhCFrrkb2wPnpSS8rm25rNEUC3cE4q95w7u+N5PvJg0h7BVIlsswl4/huE3Hb/Wjs3
+	4pvYiXGXcDkX9D9W7tUEyyMsAG7FnsjuWI9XzfxgrRSIiQCN3bChQ5waQKg4chCVyuQWts
+	W+3yx5IBfkfEKODPj4GkTjDZPLmBUfY=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Gianfranco Trad <gianf.trad@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	skhan@linuxfoundation.org, syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: zero-init move_bucket struct in
- bch2_copygc_get_buckets()
-Message-ID: <vtm2n2sjx4kpkx4slzpve6pv4lxhmotnvrhtqp2qobrmubvz35@s33ak2pst3h2>
-References: <20241111144242.757798-3-gianf.trad@gmail.com>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	syzbot+05d7520be047c9be86e0@syzkaller.appspotmail.com
+Subject: [PATCH] bcachefs: Fix journal_entry_dev_usage_to_text() overrun
+Date: Mon, 11 Nov 2024 16:05:09 -0500
+Message-ID: <20241111210509.1335970-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241111144242.757798-3-gianf.trad@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Nov 11, 2024 at 03:42:44PM +0100, Gianfranco Trad wrote:
-> zero-init move_bucket struct b fields in bch2_copygc_get_buckets() 
-> to mitigate later uninit-value-use KMSAN reported bug.
-> 
-> Reported-by: syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=8689d10f1894eedf774d
-> Tested-by: syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
-> Signed-off-by: Gianfranco Trad <gianf.trad@gmail.com>
-> ---
->  fs/bcachefs/movinggc.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/movinggc.c b/fs/bcachefs/movinggc.c
-> index d658be90f737..cdc456b03bec 100644
-> --- a/fs/bcachefs/movinggc.c
-> +++ b/fs/bcachefs/movinggc.c
-> @@ -171,7 +171,8 @@ static int bch2_copygc_get_buckets(struct moving_context *ctxt,
->  				  lru_pos(BCH_LRU_FRAGMENTATION_START, 0, 0),
->  				  lru_pos(BCH_LRU_FRAGMENTATION_START, U64_MAX, LRU_TIME_MAX),
->  				  0, k, ({
-> -		struct move_bucket b = { .k.bucket = u64_to_bucket(k.k->p.offset) };
-> +		struct move_bucket b = { 0 };
-> +		b.k.bucket = u64_to_bucket(k.k->p.offset);
->  		int ret2 = 0;
+If the jset_entry_dev_usage is malformed, and too small, our nr_entries
+calculation will be incorrect - just bail out.
 
-Providing any sort of initializer should cause the whole struct to be
-initialized, are you and syzbot sure this is the right fix?
+Reported-by: syzbot+05d7520be047c9be86e0@syzkaller.appspotmail.com
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/journal_io.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index 667a2bb9e20b..768a3b950997 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -711,6 +711,9 @@ static void journal_entry_dev_usage_to_text(struct printbuf *out, struct bch_fs
+ 		container_of(entry, struct jset_entry_dev_usage, entry);
+ 	unsigned i, nr_types = jset_entry_dev_usage_nr_types(u);
+ 
++	if (vstruct_bytes(entry) < sizeof(*u))
++		return;
++
+ 	prt_printf(out, "dev=%u", le32_to_cpu(u->dev));
+ 
+ 	printbuf_indent_add(out, 2);
+-- 
+2.45.2
+
