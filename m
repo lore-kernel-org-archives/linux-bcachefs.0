@@ -1,418 +1,99 @@
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712DE19FA92;
-	Mon, 11 Nov 2024 14:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB84C14EC55;
+	Mon, 11 Nov 2024 14:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731335171; cv=none; b=KPfH5MYkweopANQPdw4AsUp6Qu3TWcHWtg2NwXfQEd85efWPoTN8L1mKSMXS1G1r0lJSRrINa47u20NRkYLIgC6fZySD6LOp1mvH88a5m0hEmZrb4cjEquYZYB6YCvicrCgay5Xkctnlkuoi47MqSlbIsLyYCng89SvKhydm3ws=
+	t=1731336274; cv=none; b=M51vEe427oXTgDBUnMjQmDVzm8i3x8yhl5Xb9+w+FMGDGmnYHW/Oj+685fL6QZu/6gVOdmRZ1sVP2Dayp5OrgI3icSHftw3N1PnjAQiZSaFKYT0fM5pIFKmHDKdJrXh/HybzALddO26c1lvKfWTNBaIgAqtmFwwAOsCF6lAT+Ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731335171; c=relaxed/simple;
-	bh=hapXi8GFcfuNfCI3GbgrWfcIITIDhd32luEnxxJvL6I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jIlwv0pTES7oInZCasiyWfa9NGPGEmlJO/On1XHxIrsG6yt551j8G6hXF49ov3E5HhW8rgk2kG5mHAsmTAKIVzl6LNeK+hoiCmOrw7Qn0wQM+C5hP2o/cwK/RKwp5MAY7RM0zCZTkPTnWgEVGZ96o3mG/eaC3WeT7cHVc67IktU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J7lObpHW; arc=none smtp.client-ip=209.85.218.49
+	s=arc-20240116; t=1731336274; c=relaxed/simple;
+	bh=6sAXDPQRSWwacQoNdT90XODSqmSn/qQbRANJn47Mbw4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=irWSANDe/PXsFptIYUdMSWnftc0Tyho3T3p3/07kIWNUBkq+O2jTCsLE13dDfSP4g7XrkVPDC7AO7xy6wcJxuVWpkjFV8jH6wqdfgaQN2jEFwYA4YpayHWYX5cvbubDCZv04+uOIAruyRmR/0WJMBcBUQDlFPEuZjbFOygUSzBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hxT8ixkB; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J7lObpHW"
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a9f1c590ecdso214698166b.1;
-        Mon, 11 Nov 2024 06:26:09 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hxT8ixkB"
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a9aa8895facso869954166b.2;
+        Mon, 11 Nov 2024 06:44:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731335168; x=1731939968; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YarspSDft1pkwbqjUkTnnfdI6PdmguJoxF+IkD1JXG4=;
-        b=J7lObpHWwo4lAWYAMU9bPd1G5wkoZAaLyRmiUa80uRqxj0ucMVblJrIOgDADH05cAI
-         VPeFKFRLJX97q2EV6aIdwvm9PCJxG+byKLjy0VzBPcmALi7cc+x9crFOWSMxC22I5khr
-         Stp/2k7XS9FpRPPBWQVGRyhOewFVeKnAm1kOhFZKj/1RsV2ZS2efQ6EHohWSltSQgBQb
-         n4498W7anZ4XAu+rOdCizFVxwGLjzpyGJaPs0pVqO83ctXMb+vt9u4iP10wYgrm9VkEJ
-         b9npPJpwrzoyXGPH5qlseUTMa9gIvc7W0IQ6Gj9eXzfOJ0lwuTbNRMqr6eR5+4tj7m7e
-         Fsjw==
+        d=gmail.com; s=20230601; t=1731336271; x=1731941071; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0N/0KQp3+3ibidp+do6cjFRrLqVCbMyVj/s0qA5h/fQ=;
+        b=hxT8ixkB1IGzV3VdlHsdg8Fv94sT2Nt7pANPjmmZ6IO+z/U5FOqUgQaJjfjccfeNsP
+         ustUU1tXSOpp6kIvFYI/a5CDxBUTgxIdEbO3NB4Ht4zHa92nOAxXnOofm1SyNknjJr7f
+         8HdNCEUYktOHwlDsMEuWaIL4khJvXbuhGRM9L3VvvAnLnHVFAEXN+iQDW6u7N3p1FzIh
+         wsQFy0H+ONep2xy7SEwkdvY8f35nLmeFRiM8S8zceNm3CixbCsZaCK0eXuIvgsO6pqvP
+         lnYiRwmBjGcjEmLYPqsT1pSFu0/Mote+QKM/KyY0Aq4Lz/04vbf8nwXJBgVoEQK+jc/j
+         lmVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731335168; x=1731939968;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1731336271; x=1731941071;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YarspSDft1pkwbqjUkTnnfdI6PdmguJoxF+IkD1JXG4=;
-        b=JcydMBLH6Km/xT6Ug9qvY+X7D+5gZPvLh8Ql28/jhHWQf8EpR/kwkbcnlGOkOnVgAN
-         DbGPPnksG2IMk8UpJd5Fmr22SwTtcCwf2Vn53XLGS8XypucbTcdBB9sdzvDXJglXPYby
-         mAE6xC4goH0ndihhxIkXivGnShyUWMjixQtl0AV+hbCs0Ch12/zwbfpOvlb0EkW5QSFO
-         /w4Nr9v2yhxO2GJtK58Kc2ubfkt5U7trpUteWdDE9rm9qQD6WgrwXoPPltuWIPGfKuQL
-         KqS7kQEiy1/fgwIEH758yTWmU35lOrGv0m8wkaOpucxsbACoxn1bhA6pJlSO/7vmUTyI
-         H0FA==
-X-Forwarded-Encrypted: i=1; AJvYcCU1XianhnlbEO0s09XYbvHEnevcS2paz17ost7KKGKiFq6Amqnqk54zdX8qxs+VxpdSKWLfTg2HKpT9DSc6@vger.kernel.org, AJvYcCWQT1FqipV0ModjEQf5m/YQgU93eyy9dsIdc53CuAXvKV6SpaaiEVMZ/W3qSMToSv3VoEe8nnO4lGcjGFt1lw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpJUiMGC/H9PsbgNmy1+/BlRNrtoCe/coXDNpa4SragaEbJ3A5
-	PhzYR1aA0NbYzKc/KTURQBaFVqIYPgF/vcUFq5Tc2EtH1gKxyLwVCVvU0uDHWNXIxYk85RfuXJX
-	SOTcTANgEu+pWoAuvI3GTPzYOF3o=
-X-Google-Smtp-Source: AGHT+IGia4ssXtS9zEz3H0cyLf/YsQYO93OGud10PttfkhoGcFBs3hxTEAgwmf0Fb3QuY7CWsvchQn0ymTRY/mV5kxY=
-X-Received: by 2002:a17:907:608a:b0:a99:499f:4cb7 with SMTP id
- a640c23a62f3a-a9eeff0e34fmr1305857766b.23.1731335167314; Mon, 11 Nov 2024
- 06:26:07 -0800 (PST)
+        bh=0N/0KQp3+3ibidp+do6cjFRrLqVCbMyVj/s0qA5h/fQ=;
+        b=Vs3igj0PaB4t0eFAnloCikg1siwh2iiYm8wYS2/+nmFN3+WKd8xiGDMCeVO2taSDkg
+         3iPnkLV5XPW9K6gXTGkqaG6fED+Qlp1DrJb1sOUtTe2FoFtFxYmZckLBGgCNoJl9u8x3
+         BU+x0nnOprkEeKidDuPx1SXJHWdGuKaYwO+JEjQbI2yvvzMhk8EpdzVE677nKp8MItIv
+         BiPUyR7h2K+9WlD5eYRkvr+qasV1w2sQf6MY178qJoHMd9CW7GqqgUncvXingaa+tBLg
+         5D5DUN3O0EZL/kz2c6706BnedsM14kSXc/QL3IxyJhcxE1j6Cu5PeG+taU9qOJ2NUcZY
+         cl3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWMmG8/qW9te78GgYtSZymaXavxGAqtyphP3O3Zdp9VGy34ArAg7BjP0SW8RxzbI5kMuQWXdgs9+fQhsqU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrjwdRF+gCIcRsf9UkP8Skt2rxU9kD+bvlx8LSbeZ0GQnjF/yf
+	HRf4uQLItZqdkgzEti1EXcUupyh6lZ8Nw80LWY3kIpHm8q3R40XO
+X-Google-Smtp-Source: AGHT+IGlyRaYr0Nn1HPopNxyI1tt/fBE6zIRdApGKslpDc/b1WF+UP8l+PRffW6XhueuDpAEyzt8tQ==
+X-Received: by 2002:a17:907:97c7:b0:a99:ec3c:15cd with SMTP id a640c23a62f3a-a9ef0009412mr1266831766b.54.1731336270814;
+        Mon, 11 Nov 2024 06:44:30 -0800 (PST)
+Received: from gi4n-KLVL-WXX9.. ([2a01:e11:5400:7400:e7bf:a27b:6748:3bd1])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee1aa544asm594584366b.167.2024.11.11.06.44.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Nov 2024 06:44:30 -0800 (PST)
+From: Gianfranco Trad <gianf.trad@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	Gianfranco Trad <gianf.trad@gmail.com>,
+	syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
+Subject: [PATCH] bcachefs: zero-init move_bucket struct in bch2_copygc_get_buckets()
+Date: Mon, 11 Nov 2024 15:42:44 +0100
+Message-ID: <20241111144242.757798-3-gianf.trad@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <672ecc13.050a0220.138bd5.0038.GAE@google.com>
-In-Reply-To: <672ecc13.050a0220.138bd5.0038.GAE@google.com>
-From: Suraj Sonawane <surajsonawane0215@gmail.com>
-Date: Mon, 11 Nov 2024 19:55:29 +0530
-Message-ID: <CAHiZj8gcQgEXB4XZG09m+pOG2vk_xwEYxS93t6kttzNFED6PQA@mail.gmail.com>
-Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_copygc
-To: syzbot <syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com>
-Cc: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: multipart/mixed; boundary="000000000000a2c4530626a3e14b"
+Content-Transfer-Encoding: 8bit
 
---000000000000a2c4530626a3e14b
-Content-Type: multipart/alternative; boundary="000000000000a2c44a0626a3e149"
+zero-init move_bucket struct b fields in bch2_copygc_get_buckets() 
+to mitigate later uninit-value-use KMSAN reported bug.
 
---000000000000a2c44a0626a3e149
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Reported-by: syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=8689d10f1894eedf774d
+Tested-by: syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
+Signed-off-by: Gianfranco Trad <gianf.trad@gmail.com>
+---
+ fs/bcachefs/movinggc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-#syz test
+diff --git a/fs/bcachefs/movinggc.c b/fs/bcachefs/movinggc.c
+index d658be90f737..cdc456b03bec 100644
+--- a/fs/bcachefs/movinggc.c
++++ b/fs/bcachefs/movinggc.c
+@@ -171,7 +171,8 @@ static int bch2_copygc_get_buckets(struct moving_context *ctxt,
+ 				  lru_pos(BCH_LRU_FRAGMENTATION_START, 0, 0),
+ 				  lru_pos(BCH_LRU_FRAGMENTATION_START, U64_MAX, LRU_TIME_MAX),
+ 				  0, k, ({
+-		struct move_bucket b = { .k.bucket = u64_to_bucket(k.k->p.offset) };
++		struct move_bucket b = { 0 };
++		b.k.bucket = u64_to_bucket(k.k->p.offset);
+ 		int ret2 = 0;
+ 
+ 		saw++;
+-- 
+2.43.0
 
-On Sat, Nov 9, 2024 at 8:12=E2=80=AFAM syzbot <
-syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com> wrote:
-
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    2e1b3cc9d7f7 Merge tag 'arm-fixes-6.12-2' of
-> git://git.ker..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D11361d5f98000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6fdf74cce3772=
-23b
-> dashboard link:
-> https://syzkaller.appspot.com/bug?extid=3D8689d10f1894eedf774d
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for
-> Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12348f40580=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11e7b58798000=
-0
->
-> Downloadable assets:
-> disk image:
-> https://storage.googleapis.com/syzbot-assets/08456e37db58/disk-2e1b3cc9.r=
-aw.xz
-> vmlinux:
-> https://storage.googleapis.com/syzbot-assets/cc957f7ba80b/vmlinux-2e1b3cc=
-9.xz
-> kernel image:
-> https://storage.googleapis.com/syzbot-assets/7579fe72ed89/bzImage-2e1b3cc=
-9.xz
-> mounted in repro:
-> https://storage.googleapis.com/syzbot-assets/5903d7d7fe58/mount_4.gz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the
-> commit:
-> Reported-by: syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> BUG: KMSAN: uninit-value in rht_ptr_rcu include/linux/rhashtable.h:376
-> [inline]
-> BUG: KMSAN: uninit-value in __rhashtable_lookup
-> include/linux/rhashtable.h:607 [inline]
-> BUG: KMSAN: uninit-value in rhashtable_lookup
-> include/linux/rhashtable.h:646 [inline]
-> BUG: KMSAN: uninit-value in rhashtable_lookup_fast
-> include/linux/rhashtable.h:672 [inline]
-> BUG: KMSAN: uninit-value in bucket_in_flight fs/bcachefs/movinggc.c:144
-> [inline]
-> BUG: KMSAN: uninit-value in bch2_copygc_get_buckets
-> fs/bcachefs/movinggc.c:170 [inline]
-> BUG: KMSAN: uninit-value in bch2_copygc+0x1d3f/0x58f0
-> fs/bcachefs/movinggc.c:221
->  rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
->  __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
->  rhashtable_lookup include/linux/rhashtable.h:646 [inline]
->  rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
->  bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
->  bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
->  bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
->  bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
->  kthread+0x3e2/0x540 kernel/kthread.c:389
->  ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->
-> Local variable b205.i created at:
->  bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
->  bch2_copygc+0x15b3/0x58f0 fs/bcachefs/movinggc.c:221
->  bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
->
-> CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Not tainted
-> 6.12.0-rc6-syzkaller-00077-g2e1b3cc9d7f7 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 09/13/2024
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> Kernel panic - not syncing: kmsan.panic set ...
-> CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Tainted: G    B
-> 6.12.0-rc6-syzkaller-00077-g2e1b3cc9d7f7 #0
-> Tainted: [B]=3DBAD_PAGE
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 09/13/2024
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:94 [inline]
->  dump_stack_lvl+0x216/0x2d0 lib/dump_stack.c:120
->  dump_stack+0x1e/0x30 lib/dump_stack.c:129
->  panic+0x4e2/0xcf0 kernel/panic.c:354
->  kmsan_report+0x2c7/0x2d0 mm/kmsan/report.c:218
->  __msan_warning+0x95/0x120 mm/kmsan/instrumentation.c:318
->  rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
->  __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
->  rhashtable_lookup include/linux/rhashtable.h:646 [inline]
->  rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
->  bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
->  bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
->  bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
->  bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381
->  kthread+0x3e2/0x540 kernel/kthread.c:389
->  ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->  </TASK>
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
->
-> --
-> You received this message because you are subscribed to the Google Groups
-> "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an
-> email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion visit
-> https://groups.google.com/d/msgid/syzkaller-bugs/672ecc13.050a0220.138bd5=
-.0038.GAE%40google.com
-> .
->
-
---000000000000a2c44a0626a3e149
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">#syz test<br></div><br><div class=3D"gmail_quote"><div dir=
-=3D"ltr" class=3D"gmail_attr">On Sat, Nov 9, 2024 at 8:12=E2=80=AFAM syzbot=
- &lt;<a href=3D"mailto:syzbot%2B8689d10f1894eedf774d@syzkaller.appspotmail.=
-com">syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com</a>&gt; wrote:<b=
-r></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex=
-;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hello,<br>
-<br>
-syzbot found the following issue on:<br>
-<br>
-HEAD commit:=C2=A0 =C2=A0 2e1b3cc9d7f7 Merge tag &#39;arm-fixes-6.12-2&#39;=
- of git://git.ker..<br>
-git tree:=C2=A0 =C2=A0 =C2=A0 =C2=A0upstream<br>
-console+strace: <a href=3D"https://syzkaller.appspot.com/x/log.txt?x=3D1136=
-1d5f980000" rel=3D"noreferrer" target=3D"_blank">https://syzkaller.appspot.=
-com/x/log.txt?x=3D11361d5f980000</a><br>
-kernel config:=C2=A0 <a href=3D"https://syzkaller.appspot.com/x/.config?x=
-=3D6fdf74cce377223b" rel=3D"noreferrer" target=3D"_blank">https://syzkaller=
-.appspot.com/x/.config?x=3D6fdf74cce377223b</a><br>
-dashboard link: <a href=3D"https://syzkaller.appspot.com/bug?extid=3D8689d1=
-0f1894eedf774d" rel=3D"noreferrer" target=3D"_blank">https://syzkaller.apps=
-pot.com/bug?extid=3D8689d10f1894eedf774d</a><br>
-compiler:=C2=A0 =C2=A0 =C2=A0 =C2=A0Debian clang version 15.0.6, GNU ld (GN=
-U Binutils for Debian) 2.40<br>
-syz repro:=C2=A0 =C2=A0 =C2=A0 <a href=3D"https://syzkaller.appspot.com/x/r=
-epro.syz?x=3D12348f40580000" rel=3D"noreferrer" target=3D"_blank">https://s=
-yzkaller.appspot.com/x/repro.syz?x=3D12348f40580000</a><br>
-C reproducer:=C2=A0 =C2=A0<a href=3D"https://syzkaller.appspot.com/x/repro.=
-c?x=3D11e7b587980000" rel=3D"noreferrer" target=3D"_blank">https://syzkalle=
-r.appspot.com/x/repro.c?x=3D11e7b587980000</a><br>
-<br>
-Downloadable assets:<br>
-disk image: <a href=3D"https://storage.googleapis.com/syzbot-assets/08456e3=
-7db58/disk-2e1b3cc9.raw.xz" rel=3D"noreferrer" target=3D"_blank">https://st=
-orage.googleapis.com/syzbot-assets/08456e37db58/disk-2e1b3cc9.raw.xz</a><br=
->
-vmlinux: <a href=3D"https://storage.googleapis.com/syzbot-assets/cc957f7ba8=
-0b/vmlinux-2e1b3cc9.xz" rel=3D"noreferrer" target=3D"_blank">https://storag=
-e.googleapis.com/syzbot-assets/cc957f7ba80b/vmlinux-2e1b3cc9.xz</a><br>
-kernel image: <a href=3D"https://storage.googleapis.com/syzbot-assets/7579f=
-e72ed89/bzImage-2e1b3cc9.xz" rel=3D"noreferrer" target=3D"_blank">https://s=
-torage.googleapis.com/syzbot-assets/7579fe72ed89/bzImage-2e1b3cc9.xz</a><br=
->
-mounted in repro: <a href=3D"https://storage.googleapis.com/syzbot-assets/5=
-903d7d7fe58/mount_4.gz" rel=3D"noreferrer" target=3D"_blank">https://storag=
-e.googleapis.com/syzbot-assets/5903d7d7fe58/mount_4.gz</a><br>
-<br>
-IMPORTANT: if you fix the issue, please add the following tag to the commit=
-:<br>
-Reported-by: <a href=3D"mailto:syzbot%2B8689d10f1894eedf774d@syzkaller.apps=
-potmail.com" target=3D"_blank">syzbot+8689d10f1894eedf774d@syzkaller.appspo=
-tmail.com</a><br>
-<br>
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D<br>
-BUG: KMSAN: uninit-value in rht_ptr_rcu include/linux/rhashtable.h:376 [inl=
-ine]<br>
-BUG: KMSAN: uninit-value in __rhashtable_lookup include/linux/rhashtable.h:=
-607 [inline]<br>
-BUG: KMSAN: uninit-value in rhashtable_lookup include/linux/rhashtable.h:64=
-6 [inline]<br>
-BUG: KMSAN: uninit-value in rhashtable_lookup_fast include/linux/rhashtable=
-.h:672 [inline]<br>
-BUG: KMSAN: uninit-value in bucket_in_flight fs/bcachefs/movinggc.c:144 [in=
-line]<br>
-BUG: KMSAN: uninit-value in bch2_copygc_get_buckets fs/bcachefs/movinggc.c:=
-170 [inline]<br>
-BUG: KMSAN: uninit-value in bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.=
-c:221<br>
-=C2=A0rht_ptr_rcu include/linux/rhashtable.h:376 [inline]<br>
-=C2=A0__rhashtable_lookup include/linux/rhashtable.h:607 [inline]<br>
-=C2=A0rhashtable_lookup include/linux/rhashtable.h:646 [inline]<br>
-=C2=A0rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]<br>
-=C2=A0bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]<br>
-=C2=A0bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]<br>
-=C2=A0bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221<br>
-=C2=A0bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381<br>
-=C2=A0kthread+0x3e2/0x540 kernel/kthread.c:389<br>
-=C2=A0ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147<br>
-=C2=A0ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244<br>
-<br>
-Local variable b205.i created at:<br>
-=C2=A0bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]<br>
-=C2=A0bch2_copygc+0x15b3/0x58f0 fs/bcachefs/movinggc.c:221<br>
-=C2=A0bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381<br>
-<br>
-CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Not tainted 6.12.0-rc6-syzkal=
-ler-00077-g2e1b3cc9d7f7 #0<br>
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
-gle 09/13/2024<br>
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D<br>
-Kernel panic - not syncing: kmsan.panic set ...<br>
-CPU: 0 UID: 0 PID: 5796 Comm: bch-copygc/loop Tainted: G=C2=A0 =C2=A0 B=C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 6.12.0-rc6-syzkaller-00077-g2=
-e1b3cc9d7f7 #0<br>
-Tainted: [B]=3DBAD_PAGE<br>
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
-gle 09/13/2024<br>
-Call Trace:<br>
-=C2=A0&lt;TASK&gt;<br>
-=C2=A0__dump_stack lib/dump_stack.c:94 [inline]<br>
-=C2=A0dump_stack_lvl+0x216/0x2d0 lib/dump_stack.c:120<br>
-=C2=A0dump_stack+0x1e/0x30 lib/dump_stack.c:129<br>
-=C2=A0panic+0x4e2/0xcf0 kernel/panic.c:354<br>
-=C2=A0kmsan_report+0x2c7/0x2d0 mm/kmsan/report.c:218<br>
-=C2=A0__msan_warning+0x95/0x120 mm/kmsan/instrumentation.c:318<br>
-=C2=A0rht_ptr_rcu include/linux/rhashtable.h:376 [inline]<br>
-=C2=A0__rhashtable_lookup include/linux/rhashtable.h:607 [inline]<br>
-=C2=A0rhashtable_lookup include/linux/rhashtable.h:646 [inline]<br>
-=C2=A0rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]<br>
-=C2=A0bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]<br>
-=C2=A0bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]<br>
-=C2=A0bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221<br>
-=C2=A0bch2_copygc_thread+0x7f7/0xfa0 fs/bcachefs/movinggc.c:381<br>
-=C2=A0kthread+0x3e2/0x540 kernel/kthread.c:389<br>
-=C2=A0ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147<br>
-=C2=A0ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244<br>
-=C2=A0&lt;/TASK&gt;<br>
-Kernel Offset: disabled<br>
-Rebooting in 86400 seconds..<br>
-<br>
-<br>
----<br>
-This report is generated by a bot. It may contain errors.<br>
-See <a href=3D"https://goo.gl/tpsmEJ" rel=3D"noreferrer" target=3D"_blank">=
-https://goo.gl/tpsmEJ</a> for more information about syzbot.<br>
-syzbot engineers can be reached at <a href=3D"mailto:syzkaller@googlegroups=
-.com" target=3D"_blank">syzkaller@googlegroups.com</a>.<br>
-<br>
-syzbot will keep track of this issue. See:<br>
-<a href=3D"https://goo.gl/tpsmEJ#status" rel=3D"noreferrer" target=3D"_blan=
-k">https://goo.gl/tpsmEJ#status</a> for how to communicate with syzbot.<br>
-<br>
-If the report is already addressed, let syzbot know by replying with:<br>
-#syz fix: exact-commit-title<br>
-<br>
-If you want syzbot to run the reproducer, reply with:<br>
-#syz test: git://repo/address.git branch-or-commit-hash<br>
-If you attach or paste a git patch, syzbot will apply it before testing.<br=
->
-<br>
-If you want to overwrite report&#39;s subsystems, reply with:<br>
-#syz set subsystems: new-subsystem<br>
-(See the list of subsystem names on the web dashboard)<br>
-<br>
-If the report is a duplicate of another one, reply with:<br>
-#syz dup: exact-subject-of-another-report<br>
-<br>
-If you want to undo deduplication, reply with:<br>
-#syz undup<br>
-<br>
--- <br>
-You received this message because you are subscribed to the Google Groups &=
-quot;syzkaller-bugs&quot; group.<br>
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to <a href=3D"mailto:syzkaller-bugs%2Bunsubscribe@googlegroups.com" ta=
-rget=3D"_blank">syzkaller-bugs+unsubscribe@googlegroups.com</a>.<br>
-To view this discussion visit <a href=3D"https://groups.google.com/d/msgid/=
-syzkaller-bugs/672ecc13.050a0220.138bd5.0038.GAE%40google.com" rel=3D"noref=
-errer" target=3D"_blank">https://groups.google.com/d/msgid/syzkaller-bugs/6=
-72ecc13.050a0220.138bd5.0038.GAE%40google.com</a>.<br>
-</blockquote></div>
-
---000000000000a2c44a0626a3e149--
---000000000000a2c4530626a3e14b
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-v6KMSAN-fix-uninit-value-in-bch2_copygc.patch"
-Content-Disposition: attachment; 
-	filename="0001-v6KMSAN-fix-uninit-value-in-bch2_copygc.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_m3d48d7j0>
-X-Attachment-Id: f_m3d48d7j0
-
-RnJvbSA5NzBiYWMwMzVkMDgzMjllNDA2OTAxNDA1ZmU2MzVjN2I2NjZmMzg1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBTdXJhaiBTb25hd2FuZSA8c3VyYWpzb25hd2FuZTAyMTVAZ21h
-aWwuY29tPgpEYXRlOiBNb24sIDExIE5vdiAyMDI0IDE5OjQ5OjA1ICswNTMwClN1YmplY3Q6IFtQ
-QVRDSCB2Nl0gS01TQU46IGZpeCB1bmluaXQtdmFsdWUgaW4gYmNoMl9jb3B5Z2MKCnN5eiB0ZXN0
-CgpTaWduZWQtb2ZmLWJ5OiBTdXJhaiBTb25hd2FuZSA8c3VyYWpzb25hd2FuZTAyMTVAZ21haWwu
-Y29tPgotLS0KIGZzL2JjYWNoZWZzL21vdmluZ2djLmMgfCAyICsrCiAxIGZpbGUgY2hhbmdlZCwg
-MiBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvZnMvYmNhY2hlZnMvbW92aW5nZ2MuYyBiL2Zz
-L2JjYWNoZWZzL21vdmluZ2djLmMKaW5kZXggZDY1OGJlOTBmLi44YTY1NjhkYzUgMTAwNjQ0Ci0t
-LSBhL2ZzL2JjYWNoZWZzL21vdmluZ2djLmMKKysrIGIvZnMvYmNhY2hlZnMvbW92aW5nZ2MuYwpA
-QCAtMzI3LDYgKzMyNyw4IEBAIHN0YXRpYyBpbnQgYmNoMl9jb3B5Z2NfdGhyZWFkKHZvaWQgKmFy
-ZykKIAl1NjQgbGFzdCwgd2FpdDsKIAlpbnQgcmV0ID0gMDsKIAorCW1lbXNldCgmY3R4dCwgMCwg
-c2l6ZW9mKGN0eHQpKTsKKwogCWJ1Y2tldHMgPSBremFsbG9jKHNpemVvZihzdHJ1Y3QgYnVja2V0
-c19pbl9mbGlnaHQpLCBHRlBfS0VSTkVMKTsKIAlpZiAoIWJ1Y2tldHMpCiAJCXJldHVybiAtRU5P
-TUVNOwotLSAKMi4zNC4xCgo=
---000000000000a2c4530626a3e14b--
