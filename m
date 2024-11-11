@@ -1,140 +1,129 @@
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79DD17F7
-	for <linux-bcachefs@vger.kernel.org>; Mon, 11 Nov 2024 00:28:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191F517F7
+	for <linux-bcachefs@vger.kernel.org>; Mon, 11 Nov 2024 02:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731284907; cv=none; b=CrNVWRZchkO4kJZUpUV0dU1K9PPjcyN7WdbFLgk1mnI2GKcFjktfAYHHQ+ZKYUNxOha+qXUpjGe33zlUW+idt/YgANDC6eNOcJ+qB9HiEfKlqnu1/GrwS/FI50u3u7JPZe7vu/e+VkinCFEBKnZaoY4Tv5ItF9VBIiFmH0mc1cE=
+	t=1731291446; cv=none; b=cJ0icjDCVKUYqsp6Xs5lgz79OVIJ/jlsFi4KeUoJRPMzBTjLdSzFDncByz7u4TWY305PjE7WClJQr9Km1gDvXP6b9afRdHuel0qni0YqYtECKDc2WbSmsRM1ccxASrin47JqajkZa15Vf6Ws/hgetaAqQezKtal3QFUsrgncoH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731284907; c=relaxed/simple;
-	bh=AtNX+PT3C/pdFDLVft8iEMdcEog8EYRw1rhTOm7Qq8o=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OhM6dkbfLLtjibCA6rqWVFg7vByzLRCSRvbxe2ZFqG9Hm5CvbXgR/heMmjBT+lQ5Qlo7xMfkQ5ox+fYQdaRdRoiwAeXU51R3RxlAf/EVvU8u9BH0DyfmRkwaNztR+jamrwKJ0jyiFpLy+Nwb0yZCEixn/nDt0jwCbSqDfCF65pA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a6bf539ceaso44705055ab.1
-        for <linux-bcachefs@vger.kernel.org>; Sun, 10 Nov 2024 16:28:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731284905; x=1731889705;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n+sOcLHXW7oInXtyr92cpfXx3BsIK+2FEd/aTqcx/18=;
-        b=PmKyrrD4BehWveHP3ysfRgf/4AH5lviBk/LYvsRRm2fvA6OdIlw4gOZswBOkxtD5Ct
-         LtK8c8RNWTmq4Y5ctXT3VUZeW6aQE4I1/nwrw4mp5BUtcQ9raNMqmnmy9t6VuXhUfbqG
-         qQ3W4JO04t9gveq9mJo4g4u66WjMw2aOpAEsxHeA1SDalbG/cqy9l5BpyvLfjAq213yb
-         jMQUjYsoM2o3VCwnR9eNJ42YZc090UPSa9UPcNthDApe8HwNEnDMBEVHMQqdqE8IKe6F
-         9HWd45t+8a8kpF04SE5RRHKiN1jguvKUeuP4AOHeyF/KXwohpECOoNTxJ+asfZhHV05P
-         J9Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCWBLUp/kbSgisKcvvC2/ztVrYwRUiwl+jXz42Ei2ClQtBGptDnS66mXWDzQBVql/9JDk1MyjgjBvMmyrKPkRg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxXGELWWsqXJDQwoubD+RrxYF+9w4LY0RouoPnHq7wwRJrcnSqi
-	BXDHAKumeG5e74Rwv4dKxM8ItKBXtnegZnaQwlQJv3f87W/p1Eyw2HK8nC514CCkU+zJTB4Hnz8
-	SMmywtZIYAVjEV0xDTLPcBt0+MdB/1CxcufdvTK+kOFd97EQ4W+0drqs=
-X-Google-Smtp-Source: AGHT+IHWZauRWWUQFOfns0ik8UhM7aT+2BQMB+2Rhj1pynJ0FwdgNaPTbpR6vDAzf1nrN2P1CXixPGo7SMpms1jBUW2/8P7Gkd13
+	s=arc-20240116; t=1731291446; c=relaxed/simple;
+	bh=A4ufPjDRE3yUv6OhrcSg3jJYJM9C+P741jLrPkmqkUU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=fFAGZhSz1ahlxjGVx67dTR5ZqX8bGhjLrr1lTsnUXnNoUxFC9EDNa9MrJcsJiB+On6Gkh3IGAn5cpniJnR8fBIlvLHwQ0AhDLLPG62Sob3wxg8fzBXOsKExmGxhcRHlLXSsLL1ENzkPHjKUGD3gS2mQdEVLjxXKdio9oumfZGtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4XmtRF41Yyz1TB0f;
+	Mon, 11 Nov 2024 10:14:49 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 998901800F2;
+	Mon, 11 Nov 2024 10:17:15 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 11 Nov 2024 10:17:15 +0800
+Message-ID: <5484f8dd-da46-4d95-8a8a-e0d51778b414@huawei.com>
+Date: Mon, 11 Nov 2024 10:17:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:18cc:b0:3a6:be9a:2144 with SMTP id
- e9e14a558f8ab-3a6f254c63dmr101892155ab.11.1731284904834; Sun, 10 Nov 2024
- 16:28:24 -0800 (PST)
-Date: Sun, 10 Nov 2024 16:28:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67314fa8.050a0220.138bd5.0057.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_btree_node_check_topology
-From: syzbot <syzbot+494bcd3631a9f6759f91@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    7758b206117d Merge tag 'tracefs-v6.12-rc6' of git://git.ke..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13e72e30580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fdf74cce377223b
-dashboard link: https://syzkaller.appspot.com/bug?extid=494bcd3631a9f6759f91
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13a0df40580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15e1f6a7980000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cff7adedd889/disk-7758b206.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c3babec78429/vmlinux-7758b206.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9de747183951/bzImage-7758b206.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/c2654a9124db/mount_1.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+494bcd3631a9f6759f91@syzkaller.appspotmail.com
-
-BUG: KMSAN: uninit-value in bch2_btree_node_check_topology+0x12cc/0x2e40 fs/bcachefs/btree_update_interior.c:96
- bch2_btree_node_check_topology+0x12cc/0x2e40 fs/bcachefs/btree_update_interior.c:96
- btree_split_insert_keys+0x4fd/0x630 fs/bcachefs/btree_update_interior.c:1573
- btree_split+0xdc4/0x98e0 fs/bcachefs/btree_update_interior.c:1664
- bch2_btree_insert_node+0xaba/0x2810 fs/bcachefs/btree_update_interior.c:1837
- bch2_btree_node_rewrite+0x10f8/0x1930 fs/bcachefs/btree_update_interior.c:2164
- async_btree_node_rewrite_trans fs/bcachefs/btree_update_interior.c:2230 [inline]
- async_btree_node_rewrite_work+0x485/0x1710 fs/bcachefs/btree_update_interior.c:2243
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3310
- worker_thread+0xea7/0x14f0 kernel/workqueue.c:3391
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Uninit was created at:
- ___kmalloc_large_node+0x22c/0x370 mm/slub.c:4219
- __kmalloc_large_node_noprof+0x3f/0x1e0 mm/slub.c:4236
- __do_kmalloc_node mm/slub.c:4252 [inline]
- __kmalloc_node_noprof+0x9d6/0xf50 mm/slub.c:4270
- __kvmalloc_node_noprof+0xc0/0x2d0 mm/util.c:658
- btree_node_data_alloc fs/bcachefs/btree_cache.c:125 [inline]
- bch2_btree_node_mem_alloc+0xa68/0x2e30 fs/bcachefs/btree_cache.c:807
- __bch2_btree_node_alloc fs/bcachefs/btree_update_interior.c:325 [inline]
- bch2_btree_reserve_get+0x37f/0x2290 fs/bcachefs/btree_update_interior.c:554
- bch2_btree_update_start+0x1af9/0x2d60 fs/bcachefs/btree_update_interior.c:1252
- bch2_btree_node_rewrite+0x1da/0x1930 fs/bcachefs/btree_update_interior.c:2142
- async_btree_node_rewrite_trans fs/bcachefs/btree_update_interior.c:2230 [inline]
- async_btree_node_rewrite_work+0x485/0x1710 fs/bcachefs/btree_update_interior.c:2243
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3310
- worker_thread+0xea7/0x14f0 kernel/workqueue.c:3391
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-CPU: 0 UID: 0 PID: 3761 Comm: kworker/u8:13 Not tainted 6.12.0-rc6-syzkaller-00099-g7758b206117d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Workqueue: btree_node_rewrite async_btree_node_rewrite_work
-=====================================================
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs-tools: add usage function for fs subcommand
+Content-Language: en-US
+To: Integral <integral@archlinuxcn.org>, <kent.overstreet@gmail.com>,
+	<kent.overstreet@linux.dev>
+CC: <mmpgouride@gmail.com>, <linux-bcachefs@vger.kernel.org>
+References: <20241109185648.30536-2-integral@archlinuxcn.org>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20241109185648.30536-2-integral@archlinuxcn.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On 2024/11/10 2:56, Integral wrote:
+> Add the missing usage function for "fs" subcommand; when no matching
+> subcommand exists, print the usage and return -EINVAL.
+> 
+> Signed-off-by: Integral <integral@archlinuxcn.org>
+> ---
+>   c_src/bcachefs.c |  9 ++++-----
+>   c_src/cmd_fs.c   | 12 ++++++++++++
+>   c_src/cmds.h     |  1 +
+>   3 files changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/c_src/bcachefs.c b/c_src/bcachefs.c
+> index 77bf6215..e9e617e1 100644
+> --- a/c_src/bcachefs.c
+> +++ b/c_src/bcachefs.c
+> @@ -113,14 +113,13 @@ int fs_cmds(int argc, char *argv[])
+>   {
+>   	char *cmd = pop_cmd(&argc, argv);
+> 
+> -	if (argc < 1) {
+> -		bcachefs_usage();
+> -		exit(EXIT_FAILURE);
+> -	}
+> +	if (argc < 1)
+> +		return fs_usage();
+>   	if (!strcmp(cmd, "usage"))
+>   		return cmd_fs_usage(argc, argv);
+> 
+> -	return 0;
+> +	fs_usage();
+Your previous patch also made changes here. Perhaps you could pack them 
+into a patchset or one patch which would make it more independent.
+> +	return -EINVAL;
+>   }
+> 
+>   int device_cmds(int argc, char *argv[])
+> diff --git a/c_src/cmd_fs.c b/c_src/cmd_fs.c
+> index 82eeceff..eb8f7d2e 100644
+> --- a/c_src/cmd_fs.c
+> +++ b/c_src/cmd_fs.c
+> @@ -487,6 +487,18 @@ devs:
+>   	bcache_fs_close(fs);
+>   }
+> 
+> +int fs_usage(void)
+> +{
+> +       puts("bcachefs fs - manage a running filesystem\n"
+> +            "Usage: bcachefs fs <CMD> [OPTIONS]\n"
+May be the OPTIONS also should be displayed. ie like device_add_usage ...
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Thanks,
+Hongbo
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> +            "\n"
+> +            "Commands:\n"
+> +            "  usage                     Display detailed filesystem usage\n"
+> +            "\n"
+> +            "Report bugs to <linux-bcachefs@vger.kernel.org>");
+> +       return 0;
+> +}
+> +
+>   static void fs_usage_usage(void)
+>   {
+>   	puts("bcachefs fs usage - display detailed filesystem usage\n"
+> diff --git a/c_src/cmds.h b/c_src/cmds.h
+> index 64267dc4..99016d52 100644
+> --- a/c_src/cmds.h
+> +++ b/c_src/cmds.h
+> @@ -14,6 +14,7 @@ int cmd_show_super(int argc, char *argv[]);
+>   int cmd_reset_counters(int argc, char *argv[]);
+>   int cmd_set_option(int argc, char *argv[]);
+> 
+> +int fs_usage(void);
+>   int cmd_fs_usage(int argc, char *argv[]);
+> 
+>   int device_usage(void);
+> --
+> 2.47.0
+> 
