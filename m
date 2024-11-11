@@ -1,99 +1,125 @@
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB84C14EC55;
-	Mon, 11 Nov 2024 14:44:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0A44D8DA
+	for <linux-bcachefs@vger.kernel.org>; Mon, 11 Nov 2024 14:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731336274; cv=none; b=M51vEe427oXTgDBUnMjQmDVzm8i3x8yhl5Xb9+w+FMGDGmnYHW/Oj+685fL6QZu/6gVOdmRZ1sVP2Dayp5OrgI3icSHftw3N1PnjAQiZSaFKYT0fM5pIFKmHDKdJrXh/HybzALddO26c1lvKfWTNBaIgAqtmFwwAOsCF6lAT+Ig=
+	t=1731336905; cv=none; b=H+nyaYMtB+fVjjUc5lRBbFq/uYWm9ziiDvys5Tl7opD/NrdH2/1kUMf3XmjRUWQxPQh+8W7tE0RMLYm7+L48hjX1GiY8Ew5j1HBP+eVmjNoP1lDh9OVYRsbQqbLm6nAnw1kFNdQ92VKn5zNQP39YBoqu5aKmtGL6z+BavUQ8ir0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731336274; c=relaxed/simple;
-	bh=6sAXDPQRSWwacQoNdT90XODSqmSn/qQbRANJn47Mbw4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=irWSANDe/PXsFptIYUdMSWnftc0Tyho3T3p3/07kIWNUBkq+O2jTCsLE13dDfSP4g7XrkVPDC7AO7xy6wcJxuVWpkjFV8jH6wqdfgaQN2jEFwYA4YpayHWYX5cvbubDCZv04+uOIAruyRmR/0WJMBcBUQDlFPEuZjbFOygUSzBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hxT8ixkB; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hxT8ixkB"
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a9aa8895facso869954166b.2;
-        Mon, 11 Nov 2024 06:44:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731336271; x=1731941071; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0N/0KQp3+3ibidp+do6cjFRrLqVCbMyVj/s0qA5h/fQ=;
-        b=hxT8ixkB1IGzV3VdlHsdg8Fv94sT2Nt7pANPjmmZ6IO+z/U5FOqUgQaJjfjccfeNsP
-         ustUU1tXSOpp6kIvFYI/a5CDxBUTgxIdEbO3NB4Ht4zHa92nOAxXnOofm1SyNknjJr7f
-         8HdNCEUYktOHwlDsMEuWaIL4khJvXbuhGRM9L3VvvAnLnHVFAEXN+iQDW6u7N3p1FzIh
-         wsQFy0H+ONep2xy7SEwkdvY8f35nLmeFRiM8S8zceNm3CixbCsZaCK0eXuIvgsO6pqvP
-         lnYiRwmBjGcjEmLYPqsT1pSFu0/Mote+QKM/KyY0Aq4Lz/04vbf8nwXJBgVoEQK+jc/j
-         lmVQ==
+	s=arc-20240116; t=1731336905; c=relaxed/simple;
+	bh=7ttyoxP+6G16qz98MlJHAo2yRy0o/o/w9ER0fK/m+3c=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=BGXBgJlTZZ0et4k2u/UVpUpy/COBE/ifbmpbWbrIGvqpHiwD1CFTdzaSqNi4pB8A0aDN4rPlAGkaQwXGUUrt+Y/rrJjiQb66c8bidbwnVWI390w8xVTLsU+mtJlFGLavUTmD8cczK9z6LL61ji8T4+KrK2KIZelBcHhsz/w0ppU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a3b506c87cso56985125ab.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 11 Nov 2024 06:55:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731336271; x=1731941071;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0N/0KQp3+3ibidp+do6cjFRrLqVCbMyVj/s0qA5h/fQ=;
-        b=Vs3igj0PaB4t0eFAnloCikg1siwh2iiYm8wYS2/+nmFN3+WKd8xiGDMCeVO2taSDkg
-         3iPnkLV5XPW9K6gXTGkqaG6fED+Qlp1DrJb1sOUtTe2FoFtFxYmZckLBGgCNoJl9u8x3
-         BU+x0nnOprkEeKidDuPx1SXJHWdGuKaYwO+JEjQbI2yvvzMhk8EpdzVE677nKp8MItIv
-         BiPUyR7h2K+9WlD5eYRkvr+qasV1w2sQf6MY178qJoHMd9CW7GqqgUncvXingaa+tBLg
-         5D5DUN3O0EZL/kz2c6706BnedsM14kSXc/QL3IxyJhcxE1j6Cu5PeG+taU9qOJ2NUcZY
-         cl3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWMmG8/qW9te78GgYtSZymaXavxGAqtyphP3O3Zdp9VGy34ArAg7BjP0SW8RxzbI5kMuQWXdgs9+fQhsqU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrjwdRF+gCIcRsf9UkP8Skt2rxU9kD+bvlx8LSbeZ0GQnjF/yf
-	HRf4uQLItZqdkgzEti1EXcUupyh6lZ8Nw80LWY3kIpHm8q3R40XO
-X-Google-Smtp-Source: AGHT+IGlyRaYr0Nn1HPopNxyI1tt/fBE6zIRdApGKslpDc/b1WF+UP8l+PRffW6XhueuDpAEyzt8tQ==
-X-Received: by 2002:a17:907:97c7:b0:a99:ec3c:15cd with SMTP id a640c23a62f3a-a9ef0009412mr1266831766b.54.1731336270814;
-        Mon, 11 Nov 2024 06:44:30 -0800 (PST)
-Received: from gi4n-KLVL-WXX9.. ([2a01:e11:5400:7400:e7bf:a27b:6748:3bd1])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee1aa544asm594584366b.167.2024.11.11.06.44.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 06:44:30 -0800 (PST)
-From: Gianfranco Trad <gianf.trad@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	Gianfranco Trad <gianf.trad@gmail.com>,
-	syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
-Subject: [PATCH] bcachefs: zero-init move_bucket struct in bch2_copygc_get_buckets()
-Date: Mon, 11 Nov 2024 15:42:44 +0100
-Message-ID: <20241111144242.757798-3-gianf.trad@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1731336903; x=1731941703;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sfYn7BWZOcxuOga7Ej6itklBNxMCJS+Kz0QRYp4FzNk=;
+        b=DPHNguAr8Rmo9dPs0oYFLRK5W4W2HdFAKUNJJwH3OwhdsFSmIxGOf7KBjyCRSqlVGS
+         VRyQHwdOrXt2WtT/7TMIu6miAl6DmVI3mtvKxR4WVgztzaXX2Y6vQGkmzvD79klXIBqC
+         RQTJamjTNHVdij9ZuMX0m+FdoHaRDWcspbnVAjgikzxIgFwgUdQHDSudoqQ4iY6exlBk
+         RkPAE1YouHJ9vAxjYIsfQo6KrDCdsz+foR91H+//nM4SAXuATT8lQTEZzk3Ojx+58hif
+         Xh523xcP2auXfzdGe6V3fb1OFVbpJPD8OtKmVf1q+PoYo0SEPTYefafrpb2qIPcDU52G
+         b2Kg==
+X-Forwarded-Encrypted: i=1; AJvYcCXy+qEG7OTNHdpAHrAhR2+z7BP7nODcFqkcR3HSW1U9/B4LD5MqGv7qdTnl+iOG2IMUqoxUGpYbR71dA0Yuig==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzclH3IwrE3hc5TWGVMd1OOuk1bQke5TNEZww7adoXMxwD2pVQF
+	ntQiiaPKLJ57QeBU8rvnjGnm8m2a8tzmhvYvdDF68czn3FsSgbC6anAYBdaLHnkM6R4w6aUiHCg
+	6QpqgifVmav+iFFsq5f9tgNF/PVvi9bHHROEDWCpHYli/eS6kLi4XVdw=
+X-Google-Smtp-Source: AGHT+IGYSO7Y/2h2AJG+q3Wj04pLa0S3pgngnWHjNUUkztsd04WO92Kz9R+XFF4sWQwWcORBHD4MGhbiQOCuBGi0m0GIcDMyv1sS
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:2482:b0:3a6:ad61:800f with SMTP id
+ e9e14a558f8ab-3a6f198e699mr134716115ab.1.1731336903217; Mon, 11 Nov 2024
+ 06:55:03 -0800 (PST)
+Date: Mon, 11 Nov 2024 06:55:03 -0800
+In-Reply-To: <CAHiZj8gcQgEXB4XZG09m+pOG2vk_xwEYxS93t6kttzNFED6PQA@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67321ac7.050a0220.a83d0.0015.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_copygc
+From: syzbot <syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, surajsonawane0215@gmail.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-zero-init move_bucket struct b fields in bch2_copygc_get_buckets() 
-to mitigate later uninit-value-use KMSAN reported bug.
+Hello,
 
-Reported-by: syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=8689d10f1894eedf774d
-Tested-by: syzbot+8689d10f1894eedf774d@syzkaller.appspotmail.com
-Signed-off-by: Gianfranco Trad <gianf.trad@gmail.com>
----
- fs/bcachefs/movinggc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KMSAN: uninit-value in bch2_copygc
 
-diff --git a/fs/bcachefs/movinggc.c b/fs/bcachefs/movinggc.c
-index d658be90f737..cdc456b03bec 100644
---- a/fs/bcachefs/movinggc.c
-+++ b/fs/bcachefs/movinggc.c
-@@ -171,7 +171,8 @@ static int bch2_copygc_get_buckets(struct moving_context *ctxt,
- 				  lru_pos(BCH_LRU_FRAGMENTATION_START, 0, 0),
- 				  lru_pos(BCH_LRU_FRAGMENTATION_START, U64_MAX, LRU_TIME_MAX),
- 				  0, k, ({
--		struct move_bucket b = { .k.bucket = u64_to_bucket(k.k->p.offset) };
-+		struct move_bucket b = { 0 };
-+		b.k.bucket = u64_to_bucket(k.k->p.offset);
- 		int ret2 = 0;
- 
- 		saw++;
--- 
-2.43.0
+=====================================================
+BUG: KMSAN: uninit-value in rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
+BUG: KMSAN: uninit-value in __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
+BUG: KMSAN: uninit-value in rhashtable_lookup include/linux/rhashtable.h:646 [inline]
+BUG: KMSAN: uninit-value in rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
+BUG: KMSAN: uninit-value in bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
+BUG: KMSAN: uninit-value in bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
+BUG: KMSAN: uninit-value in bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
+ rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
+ __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
+ rhashtable_lookup include/linux/rhashtable.h:646 [inline]
+ rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
+ bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
+ bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
+ bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
+ bch2_copygc_thread+0x835/0xfe0 fs/bcachefs/movinggc.c:383
+ kthread+0x3e2/0x540 kernel/kthread.c:389
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Local variable b205.i created at:
+ bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
+ bch2_copygc+0x15b3/0x58f0 fs/bcachefs/movinggc.c:221
+ bch2_copygc_thread+0x835/0xfe0 fs/bcachefs/movinggc.c:383
+
+CPU: 0 UID: 0 PID: 6674 Comm: bch-copygc/loop Not tainted 6.12.0-rc7-syzkaller-g2d5404caa8c7-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
+=====================================================
+Kernel panic - not syncing: kmsan.panic set ...
+CPU: 0 UID: 0 PID: 6674 Comm: bch-copygc/loop Tainted: G    B              6.12.0-rc7-syzkaller-g2d5404caa8c7-dirty #0
+Tainted: [B]=BAD_PAGE
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x216/0x2d0 lib/dump_stack.c:120
+ dump_stack+0x1e/0x30 lib/dump_stack.c:129
+ panic+0x4e2/0xcf0 kernel/panic.c:354
+ kmsan_report+0x2c7/0x2d0 mm/kmsan/report.c:218
+ __msan_warning+0x95/0x120 mm/kmsan/instrumentation.c:318
+ rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
+ __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
+ rhashtable_lookup include/linux/rhashtable.h:646 [inline]
+ rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
+ bucket_in_flight fs/bcachefs/movinggc.c:144 [inline]
+ bch2_copygc_get_buckets fs/bcachefs/movinggc.c:170 [inline]
+ bch2_copygc+0x1d3f/0x58f0 fs/bcachefs/movinggc.c:221
+ bch2_copygc_thread+0x835/0xfe0 fs/bcachefs/movinggc.c:383
+ kthread+0x3e2/0x540 kernel/kthread.c:389
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Kernel Offset: disabled
+
+
+Tested on:
+
+commit:         2d5404ca Linux 6.12-rc7
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f8535f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dcca673786a14715
+dashboard link: https://syzkaller.appspot.com/bug?extid=8689d10f1894eedf774d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1008535f980000
 
