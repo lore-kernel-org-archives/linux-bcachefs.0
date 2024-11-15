@@ -1,91 +1,122 @@
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB63C17C22A
-	for <linux-bcachefs@vger.kernel.org>; Fri, 15 Nov 2024 05:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EF8189528;
+	Fri, 15 Nov 2024 08:27:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731649433; cv=none; b=qFVbPsUD1Y3WxHs3dy7a7BpojSE2VHbnSHhiCK0A8jEKQZBGZHDQ7SWPhPafeRXMgxyJ8YAcX/Afi6ajwZrVDNhApJUtwWCwSjPOuOOld4Gergnd3l/3dK60y4FZ7AgKnl+9iFpytxjBctQn0bui3VN8amXrnGQuVtYaqXY+gbc=
+	t=1731659237; cv=none; b=T/KHOsDFDB/BS30f8xSxtklRGzppuwV9+HBWRH4wAYI85iqBb8E8UXdMIqKak/uuAFA/kHGNoyy1lVn+SD0fY/ePPQSpmuvCDv/j8gWzxfQo1VTm5gq485g4riVQoKyP+Vx6AQ6TfHsBfPwljl8PiXtXHXcGAVff2pLlhn0rnRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731649433; c=relaxed/simple;
-	bh=o1EAXMFhZAFzNQ7ugbfiPsmzCAK4NmKTTAbtuEB9lng=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PNy+XJRp4U1nrWrhWkg7G7GaJWUohL1/qY9EWpZVi904NATbWo4AMKS5fmkvoaijmRTBw1QZLpVNeya86YUVun51CSnMYV8fRlDf0+QCh2BgR+n4RBIH2YkNuWmxzFDsPMolWdBiGB9dg6q2YNodEx6CSqKwkRqpcIeZeOZ3gBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e2hiBD97; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e2hiBD97"
-Date: Fri, 15 Nov 2024 00:43:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731649426;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lfn77qVXTLEiEsvEgL4FH5NA40V1Wz25aECHqcC9F9o=;
-	b=e2hiBD97eQMVLDykTO28AWrPxV615DI3suJNd74+J2WHL4k/mBW43RI9HIzztqd/PI2pXr
-	j7Cmv0zp40IqJSII8lT7uGH94DtMX1crxAozw51Xumx3PWwVx/UujiWUkFeEGw1d9plrXL
-	3Ez85ZuTOlK+IDlLnPyVoTreNMI218c=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Florian Schmaus <flo@geekplace.eu>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] bcachefs: Set rebalance thread to SCHED_BATCH and
- nice 19
-Message-ID: <kycrjg4nlgwxb6b6wph3uolmh45t7ivmoi5jpy4pakvh74wnoo@wp7hlbcbtwyw>
-References: <20241114210649.71377-1-flo@geekplace.eu>
- <20241114210649.71377-2-flo@geekplace.eu>
+	s=arc-20240116; t=1731659237; c=relaxed/simple;
+	bh=o8nIyJkuzItCALeJbV66s26MolutOjCijCbhPspD4Ws=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qa9OZ/0T7TYAJLfYlPNC1aBtZW1aUeo/6wEi1SxHNk2QuruaRKDRwyJh6tPMYM58A0RROLcOFfO8JwnDg9jM1PQB6QzyuFC0oBaudO3i+sKOA34o0GIDzZv3IpjAIWBi65aeP/g1l9zk/npX8kkwyVZbnxWo38L/7SgNwH5kkrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4315eeb2601so16506025e9.2;
+        Fri, 15 Nov 2024 00:27:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731659223; x=1732264023;
+        h=in-reply-to:from:content-language:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=o8nIyJkuzItCALeJbV66s26MolutOjCijCbhPspD4Ws=;
+        b=tp6nifwiLXkRdsH0L4LULiJdCtNPgeJHr8znl9/ytBN23uy/ObDrU+WNuyC1RY4JyB
+         0QMbHpkm/y+0Ja1oGDIdimfaiFdVDXpypiXQNGXmJz2T94RA+tSO4MhNZ3ROcHQ2Yaq4
+         uIMy53LfagDY7qjKfHt3HIyz8FMNFKAIKkEjAOz5i/VT4kyd/vHi9Jl6ChuB6dfg5Dlp
+         b1W4GolCbtiM0HZf/0a860huWYBxHExBXk4qFFn5ZwTNyPBAnYCBv7F8o4jM/WBGLAzF
+         Dnkt/qJTWqRlKvUYjWpZAJZM6n5/r4xTipKp82x1PNPytHjeSuquyCXHOK0fEhYeF1S8
+         /VIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXK74wrz2KFdcVFq/DJ3JHGF++Id4dhES1nqtEtTvnb10qK6EZq/laDLZG287YM91DL2eCRjaUS1dfA09s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YypGrlxF3lqwC8aCQHnymELYU76Xhk7L/1W6bE5RN563/0iQRr5
+	upyLgfWnPTrDTKQehGhg628fCiheS63SWExvWAqrOfUHxHjPvF4ynn1bw9k+
+X-Google-Smtp-Source: AGHT+IH/f12vAPRislm673eISgjINdIGmF89I7seSRP7QcD2GJSIitawye+dyoCh8yJa/pqkymQRVQ==
+X-Received: by 2002:a05:600c:19c6:b0:431:5533:8f0d with SMTP id 5b1f17b1804b1-432df793dd5mr17166385e9.30.1731659222644;
+        Fri, 15 Nov 2024 00:27:02 -0800 (PST)
+Received: from ?IPV6:2001:4090:a247:82fb:34fb:50ff:feac:591b? ([2001:4090:a247:82fb:34fb:50ff:feac:591b])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432dab80a28sm46404765e9.24.2024.11.15.00.27.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Nov 2024 00:27:01 -0800 (PST)
+Message-ID: <7a4a39f0-2694-42a0-b26d-b1e337eb3afc@geekplace.eu>
+Date: Fri, 15 Nov 2024 09:26:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241114210649.71377-2-flo@geekplace.eu>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] bcachefs: Set rebalance thread to SCHED_BATCH and
+ nice 19
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20241114210649.71377-1-flo@geekplace.eu>
+ <20241114210649.71377-2-flo@geekplace.eu>
+ <kycrjg4nlgwxb6b6wph3uolmh45t7ivmoi5jpy4pakvh74wnoo@wp7hlbcbtwyw>
+Content-Language: en-US
+From: Florian Schmaus <flo@geekplace.eu>
+In-Reply-To: <kycrjg4nlgwxb6b6wph3uolmh45t7ivmoi5jpy4pakvh74wnoo@wp7hlbcbtwyw>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------NQh0VyCdSM9kOJIS0Omdz4Og"
 
-On Thu, Nov 14, 2024 at 10:06:48PM +0100, Florian Schmaus wrote:
-> Set the rebalance thread's scheduling class to BATCH, which means it
-> could experience a higher scheduling latency. However, it reduces
-> preemption events of running threads.
-> 
-> And while the rebalance thread is ually not compute bound, it does
-> cause a considerable amount of I/O. By increasing its nice level from
-> 0 to 19 we also implicitly reduce the thread's best-effort I/O
-> scheduling class level from 4 to 7. Therefore, the rebalance thread's
-> I/O operations will be deprioritized over standard I/O operations.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------NQh0VyCdSM9kOJIS0Omdz4Og
+Content-Type: multipart/mixed; boundary="------------SSth0S6U9OM1ccsA5Ervezib";
+ protected-headers="v1"
+From: Florian Schmaus <flo@geekplace.eu>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <7a4a39f0-2694-42a0-b26d-b1e337eb3afc@geekplace.eu>
+Subject: Re: [PATCH 2/2] bcachefs: Set rebalance thread to SCHED_BATCH and
+ nice 19
+References: <20241114210649.71377-1-flo@geekplace.eu>
+ <20241114210649.71377-2-flo@geekplace.eu>
+ <kycrjg4nlgwxb6b6wph3uolmh45t7ivmoi5jpy4pakvh74wnoo@wp7hlbcbtwyw>
+In-Reply-To: <kycrjg4nlgwxb6b6wph3uolmh45t7ivmoi5jpy4pakvh74wnoo@wp7hlbcbtwyw>
 
-Is there a patch 1/2?
+--------------SSth0S6U9OM1ccsA5Ervezib
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> 
-> Signed-off-by: Florian Schmaus <flo@geekplace.eu>
-> ---
->  fs/bcachefs/rebalance.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
-> index 4adc74cd3f70..b26c68007c5a 100644
-> --- a/fs/bcachefs/rebalance.c
-> +++ b/fs/bcachefs/rebalance.c
-> @@ -22,6 +22,7 @@
->  
->  #include <linux/freezer.h>
->  #include <linux/kthread.h>
-> +#include <linux/sched.h>
->  #include <linux/sched/cputime.h>
->  
->  /* bch_extent_rebalance: */
-> @@ -662,6 +663,8 @@ int bch2_rebalance_start(struct bch_fs *c)
->  	if (ret)
->  		return ret;
->  
-> +	sched_set_batch(p, 19);
-> +
->  	get_task_struct(p);
->  	rcu_assign_pointer(c->rebalance.thread, p);
->  	wake_up_process(p);
-> -- 
-> 2.45.2
-> 
+T24gMTUvMTEvMjAyNCAwNi40MywgS2VudCBPdmVyc3RyZWV0IHdyb3RlOg0KPiBPbiBUaHUs
+IE5vdiAxNCwgMjAyNCBhdCAxMDowNjo0OFBNICswMTAwLCBGbG9yaWFuIFNjaG1hdXMgd3Jv
+dGU6DQo+PiBTZXQgdGhlIHJlYmFsYW5jZSB0aHJlYWQncyBzY2hlZHVsaW5nIGNsYXNzIHRv
+IEJBVENILCB3aGljaCBtZWFucyBpdA0KPj4gY291bGQgZXhwZXJpZW5jZSBhIGhpZ2hlciBz
+Y2hlZHVsaW5nIGxhdGVuY3kuIEhvd2V2ZXIsIGl0IHJlZHVjZXMNCj4+IHByZWVtcHRpb24g
+ZXZlbnRzIG9mIHJ1bm5pbmcgdGhyZWFkcy4NCj4+DQo+PiBBbmQgd2hpbGUgdGhlIHJlYmFs
+YW5jZSB0aHJlYWQgaXMgdWFsbHkgbm90IGNvbXB1dGUgYm91bmQsIGl0IGRvZXMNCj4+IGNh
+dXNlIGEgY29uc2lkZXJhYmxlIGFtb3VudCBvZiBJL08uIEJ5IGluY3JlYXNpbmcgaXRzIG5p
+Y2UgbGV2ZWwgZnJvbQ0KPj4gMCB0byAxOSB3ZSBhbHNvIGltcGxpY2l0bHkgcmVkdWNlIHRo
+ZSB0aHJlYWQncyBiZXN0LWVmZm9ydCBJL08NCj4+IHNjaGVkdWxpbmcgY2xhc3MgbGV2ZWwg
+ZnJvbSA0IHRvIDcuIFRoZXJlZm9yZSwgdGhlIHJlYmFsYW5jZSB0aHJlYWQncw0KPj4gSS9P
+IG9wZXJhdGlvbnMgd2lsbCBiZSBkZXByaW9yaXRpemVkIG92ZXIgc3RhbmRhcmQgSS9PIG9w
+ZXJhdGlvbnMuDQo+IA0KPiBJcyB0aGVyZSBhIHBhdGNoIDEvMj8NCg0KU29ycnksIHBhdGNo
+IDEvMiB3YXMgdW5mb3J0dW5hdGVseSBub3Qgc2VuZCB0byBsaW51eC1iY2FjaGVmc0AuIFlv
+dSBjYW4gDQpmaW5kIGl0IGF0DQoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAy
+NDExMTQyMTA2NDkuNzEzNzctMS1mbG9AZ2Vla3BsYWNlLmV1Lw0KDQotIEZsb3JpYW4NCg0K
+DQo=
+
+--------------SSth0S6U9OM1ccsA5Ervezib--
+
+--------------NQh0VyCdSM9kOJIS0Omdz4Og
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGTBAEBCgB9FiEEl3UFnzoh3OFr5PuuIjmn6PWFIFIFAmc3BdFfFIAAAAAALgAo
+aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldDk3
+NzUwNTlGM0EyMURDRTE2QkU0RkJBRTIyMzlBN0U4RjU4NTIwNTIACgkQIjmn6PWF
+IFLncwgAkg2maj40YKOztZ6JH6GIdjO/XS74BuwOxFSmv7hnVL7m5Usm/gWGa9Ui
+EScGLrLvVid9kfrPVDMPDWrXY94bgIm+Xd1q73Z0MVeWBUnrSAgctaS1JssJ1sGf
+ElrsOq/BPtwJcNe6qRnNhnVdqze0Xs8u4QP0AbsxKGQFy/k11oUcizpwFpO3jcmg
+TCLtSrSZIqwPX5NQwLQ5SCv4fg3xnxUYpy30CkGTp4PGu3rBVRUt7XzT4fWXPXdM
+TNkUpYkZoy7FmNJDtqpaVu5uvMIVCjtdAzNHT+g6wBT6ZjNtsz8ArxAXR1BJBYJa
+zhiu8jzKIOB4cgSqhBZoXebACdAlSA==
+=x1zA
+-----END PGP SIGNATURE-----
+
+--------------NQh0VyCdSM9kOJIS0Omdz4Og--
