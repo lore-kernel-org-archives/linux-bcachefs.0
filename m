@@ -1,51 +1,51 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4046018E047
-	for <linux-bcachefs@vger.kernel.org>; Fri, 15 Nov 2024 11:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D984B1A3035
+	for <linux-bcachefs@vger.kernel.org>; Fri, 15 Nov 2024 12:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731669086; cv=none; b=Y/i771qaBmh1DjN2+UtjsfxCog+3lrvvjGtVXWKyeoVgww/ibTYayDwRIYe37WNgCkZwqWrtdq3Qtf7Etr0cbzuG5L/qj66RKo3meXnxNHaWYX/T7GenXqBN+KhdVPQCSJylbT+Z18XO/Py/oadRhlM3cqfyhs3xftuJrJbbbuE=
+	t=1731673766; cv=none; b=OJvLtmsOr7WFBqKGUTfbwkrGTgXLfOfe6cfcqjNij2dYgtAYP9ntwpS7X9aE0AFkgnVC6lTfjeoLVv+/Mgn+TVr8eLPEsjHdfpiDwoQLpERA5S/qnXNPeY5bVIsJ5eus0lnSooXyV32HnUHScDr6Mcd+8UvOjZ8grhgq40Rn9uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731669086; c=relaxed/simple;
-	bh=r0LRs6BBLyFgffLGcLI2FizbPZ0oLeCKfALogOeD3b4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CyQz05SbHYhQ2sj4fXBBk2v6qof391XageAoX12pDtU7I4bM1D+VJQLLGTj/ugG0niv4SEnnMkUYmTQDvi6QCuGkdozBVylbgIHjm7nLL/g/247z2ZDyxdSfPbK1cXaEeV4y7gl44ewCKEX9L1NWIQ+G0M9puinYGFX8B+GwrU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+	s=arc-20240116; t=1731673766; c=relaxed/simple;
+	bh=NHWC6Ve82wlWY9YJNTS4xN8tJlqZPM855tSImF2HueU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Li/NyeCl0pORW5B6O2UsZHE/2HMTJld8qXrY/NhvLdS4zMFeiyllZrtNTgUkPdo1foJYngnGwuzwLCtTSs7TF4qoTPTkGymFDC4b06MiOCMPkGu/vWQqGYI+q1Q3uegTQ6Exow97hkKzRp+skCA2efhLYTpyxA7NxecsJHoVl5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a7162d1485so18735185ab.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Nov 2024 03:11:25 -0800 (PST)
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a3da2d46b9so21359585ab.0
+        for <linux-bcachefs@vger.kernel.org>; Fri, 15 Nov 2024 04:29:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731669084; x=1732273884;
+        d=1e100.net; s=20230601; t=1731673764; x=1732278564;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=A2D+iGtXtlP5BGY78Rq7ex2Vqvh3pR2KhBDu2cd56gg=;
-        b=Dte0uPXcns7FwRcXuFLApywhBzUvWKvTqR3pY/LQnCPXw6nwiqrSkvZWA4O+r6Zym7
-         tZN3lqGGpB882aOThYnHpI8290JWOjVXbbTJuiurA5d0ryDBh0VC366LWUzxkNf/UAOz
-         nn0s6y+Kym67oiv51yznL4Uoa+UutzL0BntNskLlt4WT0QS2s+2wJqTF9I4haPatrgCf
-         c918x0Bb+sa1mL6THy9jCX/5o8AE8HzqdpKq+VqylRqcd9rRSxhtE5vQDPthXqA0xR/Z
-         +mF02IBmim+rcwruSJ6dzXVz4C6krwxzcoauVX9QKU8mepUd0yF0RwzQLYk6L8APN2PE
-         jV+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWMy9/utByzs5ch3SaHQo2IBBF+oZ+VGPSNHUHcm1QzlSLVAQctOLf092VtTPTANwZOan0yx1umyJzHSEDz6g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2U5vsH5hbyb2cLPbUf8oE4nWpBPF+xbC7zQ2iG7tkTJm4fLZu
-	v5qhZABtGvtsy9IUtgci0cFIsa3FMxBh51ik4uyPvkdI9GR2rKiFB1dNQLnG13BLeQJzPaV9roa
-	mQjyWwjrLcdovWHzjPEtRwfDaBS/cUFZkpSQo6gd9oGR+nEhQlw8pFq4=
-X-Google-Smtp-Source: AGHT+IG3mi5FRMsAsGpRmoLMSOB46ihxMO365XyCO0tY4/OnnekeZ63KR1FiP+b6wl9sBCnZhGbzNHuAproE9dJw2D3py9wiKlkr
+        bh=A0dpNKRxwoLls+j4kum3KUu9yYY5rELajDHXG4WCsHU=;
+        b=I9kJ9dq6qvwwPIHAWRRVIeEDtAVGvsX1XJNSLhpslCdDhw10v3NbY12QR0JDU/u09a
+         rcWexRNtmxWquRPS+S2+Z4BZJrbShoI1EbdDjt2HbOB4DcMaXvmlO3mv5YDLtOLYG4xB
+         VcQLyA2dB4lX11iLCDMBsktzQWWfJWoK7WA42fTzbCRBqpswRfVF175R8LC+cor+tmrj
+         zmDUWLt/hCaajgB1n5AzEe+LaoyF0U9LeSCDtO8Q3qnuduR4n8ikrJ1W0ZeiRn5OgkOy
+         nC4nB3zr5CK5dXQL8rsW5JOY520EUC6DqkgfavSIub/okY2w4GDT6tZgHgag6RdB/qz8
+         sgZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX40J7CgkuMsq15kU1AiUcJZPZ7TF8lRBZ6rvVeNoqucVpXBcMXZHD+wr0KAfXeSlv2JlhUEEMAq+4BfY92sw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnaudjCiWWHCwQN/WMINGAbAW06qisGkP7isFg+Bhv+ytzfojg
+	/xjXLl/hAwkn51KYbcqHbxy0qQ8ziHUZhXA1bhoehny01oVYr5GgXRp1TKQVLuU3LhSlW0jf8NY
+	hHT8CuhXC2ZoFuMCGY0SJ/w8VDeHbTDIXROm+Pes763Kbt0/tG/3e3dE=
+X-Google-Smtp-Source: AGHT+IHMYT/WmM5CU8Z8NS4U0VLiygFqh7sbivZJ+S/zXXjQ9IQFYOpBnexIPeXK9nbJECM360/fusOGt0GO/YFWk6MUL+Iml/+f
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:388d:b0:3a6:bd97:96bf with SMTP id
- e9e14a558f8ab-3a7480c1d9fmr24418445ab.24.1731669084328; Fri, 15 Nov 2024
- 03:11:24 -0800 (PST)
-Date: Fri, 15 Nov 2024 03:11:24 -0800
+X-Received: by 2002:a05:6e02:1d1c:b0:3a7:2b12:78dd with SMTP id
+ e9e14a558f8ab-3a7480234f3mr22222805ab.11.1731673763964; Fri, 15 Nov 2024
+ 04:29:23 -0800 (PST)
+Date: Fri, 15 Nov 2024 04:29:23 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67372c5c.050a0220.1324f8.00aa.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KASAN: use-after-free Read in bch2_check_dirents
-From: syzbot <syzbot+fea0322882c0cba65f11@syzkaller.appspotmail.com>
+Message-ID: <67373ea3.050a0220.1324f8.00ad.GAE@google.com>
+Subject: [syzbot] [bcachefs?] WARNING: locking bug in rcu_pending_enqueue
+From: syzbot <syzbot+b63566ef71c0f462e815@syzkaller.appspotmail.com>
 To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -54,130 +54,80 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    cfaaa7d010d1 Merge tag 'net-6.12-rc8' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=168f02e8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1503500c6f615d24
-dashboard link: https://syzkaller.appspot.com/bug?extid=fea0322882c0cba65f11
+HEAD commit:    563047e691f2 Merge remote-tracking branch 'tip/irq/core' i..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=10513ea7980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1d1ed5ebe7f28fe9
+dashboard link: https://syzkaller.appspot.com/bug?extid=b63566ef71c0f462e815
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112b1130580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1256ab5f980000
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/54bc03ad6b5e/disk-cfaaa7d0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/310213a259a7/vmlinux-cfaaa7d0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ad864691b9a0/bzImage-cfaaa7d0.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/856c46853b28/mount_0.gz
+disk image: https://storage.googleapis.com/syzbot-assets/09130b543284/disk-563047e6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/76ce58c74487/vmlinux-563047e6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e39916627eee/Image-563047e6.gz.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fea0322882c0cba65f11@syzkaller.appspotmail.com
+Reported-by: syzbot+b63566ef71c0f462e815@syzkaller.appspotmail.com
 
-dirent points to missing inode:
-u64s 8 type dirent 4096:8130059955150870709:U32_MAX len 0 ver 0: lost+found -> 4097 type dir, fixing
-==================================================================
-BUG: KASAN: use-after-free in check_dirent fs/bcachefs/fsck.c:2528 [inline]
-BUG: KASAN: use-after-free in bch2_check_dirents+0x1fee/0x2570 fs/bcachefs/fsck.c:2552
-Read of size 1 at addr ffff88805da80160 by task syz-executor262/6243
-
-CPU: 0 UID: 0 PID: 6243 Comm: syz-executor262 Not tainted 6.12.0-rc7-syzkaller-00125-gcfaaa7d010d1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- check_dirent fs/bcachefs/fsck.c:2528 [inline]
- bch2_check_dirents+0x1fee/0x2570 fs/bcachefs/fsck.c:2552
- bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:191
- bch2_run_recovery_passes+0x3a7/0x880 fs/bcachefs/recovery_passes.c:244
- bch2_fs_recovery+0x25cc/0x39d0 fs/bcachefs/recovery.c:861
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1037
- bch2_fs_get_tree+0xd68/0x1710 fs/bcachefs/fs.c:2170
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
- do_new_mount+0x2be/0xb40 fs/namespace.c:3507
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4057 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f669fe0863a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 7e 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f669fdaefd8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f669fdaeff0 RCX: 00007f669fe0863a
-RDX: 00000000200058c0 RSI: 0000000020000000 RDI: 00007f669fdaeff0
-RBP: 0000000000000004 R08: 00007f669fdaf030 R09: 0000000000005917
-R10: 0000000000010000 R11: 0000000000000282 R12: 00007f669fdaf030
-R13: 0000000000010000 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x5da80
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: f0(buddy)
-raw: 00fff00000000000 ffff88813fffc788 ffffea00015da808 0000000000000000
-raw: 0000000000000000 0000000000000005 00000000f0000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 5, migratetype Unmovable, gfp_mask 0x52800(GFP_NOWAIT|__GFP_NORETRY|__GFP_COMP), pid 6243, tgid 6242 (syz-executor262), ts 88543202500, free_ts 96575602066
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1556
- prep_new_page mm/page_alloc.c:1564 [inline]
- get_page_from_freelist+0x363e/0x3790 mm/page_alloc.c:3474
- __alloc_pages_noprof+0x292/0x710 mm/page_alloc.c:4750
- __alloc_pages_node_noprof include/linux/gfp.h:269 [inline]
- alloc_pages_node_noprof include/linux/gfp.h:296 [inline]
- ___kmalloc_large_node+0x8b/0x1d0 mm/slub.c:4209
- __kmalloc_large_node_noprof+0x1a/0x80 mm/slub.c:4236
- __do_kmalloc_node mm/slub.c:4252 [inline]
- __kmalloc_node_noprof+0x2d2/0x440 mm/slub.c:4270
- __kvmalloc_node_noprof+0x72/0x190 mm/util.c:658
- btree_bounce_alloc fs/bcachefs/btree_io.c:124 [inline]
- bch2_btree_node_read_done+0x3808/0x5e90 fs/bcachefs/btree_io.c:1188
- btree_node_read_work+0x68b/0x1260 fs/bcachefs/btree_io.c:1323
- bch2_btree_node_read+0x2433/0x2a10
- __bch2_btree_root_read fs/bcachefs/btree_io.c:1749 [inline]
- bch2_btree_root_read+0x617/0x7a0 fs/bcachefs/btree_io.c:1771
- read_btree_roots+0x296/0x840 fs/bcachefs/recovery.c:523
- bch2_fs_recovery+0x2585/0x39d0 fs/bcachefs/recovery.c:853
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1037
- bch2_fs_get_tree+0xd68/0x1710 fs/bcachefs/fs.c:2170
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
-page last free pid 6243 tgid 6242 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1127 [inline]
- __free_pages_ok+0xc91/0xf90 mm/page_alloc.c:1269
- __folio_put+0x2c7/0x440 mm/swap.c:112
- folio_put include/linux/mm.h:1478 [inline]
- free_large_kmalloc+0x105/0x1c0 mm/slub.c:4698
- kfree+0x21c/0x440 mm/slub.c:4721
- btree_bounce_free fs/bcachefs/btree_io.c:112 [inline]
- btree_node_sort+0x1100/0x1830 fs/bcachefs/btree_io.c:380
- bch2_btree_post_write_cleanup+0x11a/0xa70 fs/bcachefs/btree_io.c:2248
- bch2_btree_node_prep_for_write+0x55b/0x8f0 fs/bcachefs/btree_trans_commit.c:93
- bch2_trans_lock_write+0x68e/0xc60 fs/bcachefs/btree_trans_commit.c:129
- do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:896 [inline]
- __bch2_trans_commit+0x26f2/0x93c0 fs/bcachefs/btree_trans_commit.c:1121
+------------[ cut here ]------------
+Looking for class "p->lock" with key rcu_pending_init.__key, but found a different class "&p->lock" with the same key
+WARNING: CPU: 0 PID: 44 at kernel/locking/lockdep.c:939 look_up_lock_class+0xec/0x160 kernel/locking/lockdep.c:936
+Modules linked in:
+CPU: 0 UID: 0 PID: 44 Comm: kworker/u8:3 Not tainted 6.12.0-rc6-syzkaller-g563047e691f2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Workqueue: btree_update btree_interior_update_work
+pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : look_up_lock_class+0xec/0x160 kernel/locking/lockdep.c:936
+lr : look_up_lock_class+0xec/0x160 kernel/locking/lockdep.c:936
+sp : ffff800097fe6fa0
+x29: ffff800097fe6fa0 x28: dfff800000000000 x27: 0000000000000000
+x26: ffff8000973358c0 x25: ffff800097335000 x24: 0000000000000001
+x23: 0000000000000000 x22: 1ffff00011f020ba x21: ffff8000974dc7a0
+x20: fffffdffbf6f0340 x19: ffff800092e82b80 x18: 0000000000000008
+x17: 747562202c79656b x16: ffff8000830cb670 x15: 0000000000000001
+x14: 1fffe000366c6ce2 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000000003 x10: 0000000000ff0100 x9 : 2e0fef016daf9f00
+x8 : 2e0fef016daf9f00 x7 : 0000000000000001 x6 : 0000000000000001
+x5 : ffff800097fe66d8 x4 : ffff80008f8fd0c0 x3 : ffff80008062728c
+x2 : 0000000000000001 x1 : 0000000100000001 x0 : 0000000000000000
+Call trace:
+ look_up_lock_class+0xec/0x160 kernel/locking/lockdep.c:936 (P)
+ look_up_lock_class+0xec/0x160 kernel/locking/lockdep.c:936 (L)
+ register_lock_class+0x8c/0x6b4 kernel/locking/lockdep.c:1290
+ __lock_acquire+0x18c/0x77c8 kernel/locking/lockdep.c:5077
+ lock_acquire+0x240/0x728 kernel/locking/lockdep.c:5825
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:351 [inline]
+ __rcu_pending_enqueue fs/bcachefs/rcu_pending.c:418 [inline]
+ rcu_pending_enqueue+0x164/0x898 fs/bcachefs/rcu_pending.c:515
+ bkey_cached_free+0xb8/0x214 fs/bcachefs/btree_key_cache.c:115
+ bch2_btree_key_cache_drop+0x104/0x210 fs/bcachefs/btree_key_cache.c:586
+ bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:824 [inline]
+ do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:900 [inline]
+ __bch2_trans_commit+0x4d64/0x6604 fs/bcachefs/btree_trans_commit.c:1121
  bch2_trans_commit fs/bcachefs/btree_update.h:184 [inline]
- check_dirent fs/bcachefs/fsck.c:2524 [inline]
- bch2_check_dirents+0x1431/0x2570 fs/bcachefs/fsck.c:2552
- bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:191
- bch2_run_recovery_passes+0x3a7/0x880 fs/bcachefs/recovery_passes.c:244
- bch2_fs_recovery+0x25cc/0x39d0 fs/bcachefs/recovery.c:861
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1037
- bch2_fs_get_tree+0xd68/0x1710 fs/bcachefs/fs.c:2170
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
-
-Memory state around the buggy address:
- ffff88805da80000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88805da80080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff88805da80100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                                       ^
- ffff88805da80180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88805da80200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+ btree_update_nodes_written fs/bcachefs/btree_update_interior.c:728 [inline]
+ btree_interior_update_work+0xd40/0x1e00 fs/bcachefs/btree_update_interior.c:866
+ process_one_work+0x7bc/0x1600 kernel/workqueue.c:3229
+ process_scheduled_works kernel/workqueue.c:3310 [inline]
+ worker_thread+0x97c/0xeec kernel/workqueue.c:3391
+ kthread+0x288/0x310 kernel/kthread.c:389
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:862
+irq event stamp: 938478
+hardirqs last  enabled at (938477): [<ffff800080ac7d3c>] kasan_quarantine_put+0x1a0/0x1c8 mm/kasan/quarantine.c:234
+hardirqs last disabled at (938478): [<ffff800082a539e8>] __rcu_pending_enqueue fs/bcachefs/rcu_pending.c:416 [inline]
+hardirqs last disabled at (938478): [<ffff800082a539e8>] rcu_pending_enqueue+0xe4/0x898 fs/bcachefs/rcu_pending.c:515
+softirqs last  enabled at (938018): [<ffff8000866510a8>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
+softirqs last  enabled at (938018): [<ffff8000866510a8>] nsim_dev_trap_report drivers/net/netdevsim/dev.c:820 [inline]
+softirqs last  enabled at (938018): [<ffff8000866510a8>] nsim_dev_trap_report_work+0x620/0x938 drivers/net/netdevsim/dev.c:851
+softirqs last disabled at (938016): [<ffff800086651024>] spin_lock_bh include/linux/spinlock.h:356 [inline]
+softirqs last disabled at (938016): [<ffff800086651024>] nsim_dev_trap_report drivers/net/netdevsim/dev.c:816 [inline]
+softirqs last disabled at (938016): [<ffff800086651024>] nsim_dev_trap_report_work+0x59c/0x938 drivers/net/netdevsim/dev.c:851
+---[ end trace 0000000000000000 ]---
 
 
 ---
@@ -190,10 +140,6 @@ https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite report's subsystems, reply with:
 #syz set subsystems: new-subsystem
