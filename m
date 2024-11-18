@@ -1,40 +1,41 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B00F1DFD1;
-	Mon, 18 Nov 2024 00:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3FCC4A35;
+	Mon, 18 Nov 2024 01:00:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731891276; cv=none; b=Emok2r48gJOmIgPt1K4GhcKORqJrlGclFVRaxEmIykfJyTNG2+SudkW55YUpHECYlUIfDbSZdlR1I+AvKyQlkIBkMgK6o9wuLPXrm9RIvABGRUTLQI3xCRyt/LVgGGu2yya98sP21SNcjp30QSiYmKvYT52IRxKLqpAmUFACpws=
+	t=1731891643; cv=none; b=ixF+woLHXKHTyZ94Bg7J8ZefVT5+E3ba9MUriJ4tVGkHYYyJFtsy+n0e4i4m9LZeCZJgyIKES221ILd8tRjKV5+eea6kMeZmlDGkFLG8qvS9gnOoAVJ3l3wSPVuEmoh1l+DxvqqIdBjYP/vdGEzTRgZkhmelcQHxd5ef6zzShUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731891276; c=relaxed/simple;
-	bh=+mfZEmfDpvilp55+DEhzjae1Q5MvdDNXhWMFri7nCfQ=;
+	s=arc-20240116; t=1731891643; c=relaxed/simple;
+	bh=Cd87xfvt+xDaiNXRe88pN17P05Pejn7OP7xc2z+Lb10=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LAjnxJ/8uSRoTuvQQYnAB2PpZ5pq7Y0vqc84VTCxaUQ/sEgHQW4waFPN9e6P7HcoIYKB+oLS2G1ec6DQFKlJq4WRvU35z2nN4EeyG3qAuPmAQ9nt2eI+EL2N8Xu0jwea5OVcK9SLIWUIGSlSCDhchlL4girQRkmBPN4ilpTwL5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ef20KjDD; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=PgdOOCCprEF3PFerpr7h7+A1aJSNYcYARAElLWM4MrD70hCiizdkWuZUr8nXJhopFUH3Rmma6ETAT1qstT+ySreo6fko6swXa3A/Y7D5zJLuMnB2byZ/YauBKNYGsuoGQmeSzbeyeuhpdqLpbfl16c76caqxe+3BLtY1HVp2pek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a/sbYKbB; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ef20KjDD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1228C4CED8;
-	Mon, 18 Nov 2024 00:54:35 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a/sbYKbB"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6DE9C4CECD;
+	Mon, 18 Nov 2024 01:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731891276;
-	bh=+mfZEmfDpvilp55+DEhzjae1Q5MvdDNXhWMFri7nCfQ=;
+	s=k20201202; t=1731891642;
+	bh=Cd87xfvt+xDaiNXRe88pN17P05Pejn7OP7xc2z+Lb10=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ef20KjDDzJmoSAWjpsrqZzRdA8n08YSRc2YvAVXGCyyyG/0seVPqe4HOInWRbtbhL
-	 MkxgD6XrPQxHFWA3kMQaSJOx86PfoUJYgnK15G3CuekybX7di7E5+X4ZelP57JdAbf
-	 gA6SIbc1p9f2Qz7K+Xu/IlCpsJzOXzpbiRPBnCnz/UYjW1wDhXWAT5aZIV9TE/i6Nx
-	 KOlv0SVg/5pCK27f3az6nhLzAVg720xy0qHhFl1A6sNZf7mFRUAbhf1EOdME0YdwOQ
-	 zfZJQYuI8lorofif1FyoCf6CJqtSZZ185diu+Qni86brDkneB8rQ5rFbsmOklM5Cuy
-	 kOGsUsRc9npZw==
-Date: Sun, 17 Nov 2024 17:54:34 -0700
+	b=a/sbYKbBhHo+HBD5o/qZn0iUltf2E+Bo4qRp4unvn0CiZvcrUjWUUwT+6l/iRdy0G
+	 3nt9ine8ancIP0x0T2+yYgwARrWfuJUpx1k1wYXBzABDkkGOc0g16L7RCZTfl5odov
+	 KgbnGMwhiiJjMN1LZ55WIVR1BqBc6pPFHiyo62cyaUe43mEFHzBHmgl795QPB5vQ/u
+	 D4tVAxELG1BCzmX3ytJplowRiSyOU/QnL2ORMFbhH25CwRi7tOfcj/Dqk5BRYdaC1N
+	 7FNtk7V5bjSrZEqT24WfN8fv/ULAdFEfYkc4khH9GJExvpkmwv1nmjiK6Ga2ZerqIz
+	 npQyqYd+jtYFw==
+Date: Sun, 17 Nov 2024 18:00:40 -0700
 From: Nathan Chancellor <nathan@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20241118005434.GA3588455@thelio-3990X>
-References: <e7xjq5qdnmh2rga5aymowasfe32harb3wqrpktisy3ynikaqyo@xtawzmqxidif>
+To: Piotr Zalewski <pZ010001011111@proton.me>, kent.overstreet@linux.dev
+Cc: ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, skhan@linuxfoundation.org
+Subject: Re: [PATCH] bcachefs: initialize local variables in
+ bch2_evacuate_bucket
+Message-ID: <20241118010040.GB3588455@thelio-3990X>
+References: <20241117234334.722730-4-pZ010001011111@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -43,46 +44,107 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e7xjq5qdnmh2rga5aymowasfe32harb3wqrpktisy3ynikaqyo@xtawzmqxidif>
+In-Reply-To: <20241117234334.722730-4-pZ010001011111@proton.me>
 
-Hi Kent,
+On Sun, Nov 17, 2024 at 11:48:23PM +0000, Piotr Zalewski wrote:
+> Compiling bcachefs sources with LLVM triggers uninitialized variables
+> warnings.
+> 
+> Signed-off-by: Piotr Zalewski <pZ010001011111@proton.me>
+> ---
+>  fs/bcachefs/move.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/move.c b/fs/bcachefs/move.c
+> index 8c032ef3a567..94cac498d372 100644
+> --- a/fs/bcachefs/move.c
+> +++ b/fs/bcachefs/move.c
+> @@ -674,8 +674,8 @@ int bch2_evacuate_bucket(struct moving_context *ctxt,
+>  	struct bkey_buf sk;
+>  	struct bkey_s_c k;
+>  	struct data_update_opts data_opts;
+> -	unsigned dirty_sectors, bucket_size;
+> -	u64 fragmentation;
+> +	unsigned dirty_sectors = 0, bucket_size = 0;
+> +	u64 fragmentation = 0;
 
-On Fri, Nov 15, 2024 at 03:35:16PM -0500, Kent Overstreet wrote:
->       bcachefs: Kill bch2_get_next_backpointer()
+Shouldn't these just be removed altogether...? They are only used in a
+trace event and now only zero.
 
-As pointed out by the kbuild test robot [1], this change introduces several
--Wuninitialized warnings:
+$ rg 'dirty_sectors|bucket_size|fragmentation' fs/bcachefs/move.c
+677:    unsigned dirty_sectors, bucket_size;
+678:    u64 fragmentation;
+814:    trace_evacuate_bucket(c, &bucket, dirty_sectors, bucket_size, fragmentation, ret);
 
-  fs/bcachefs/move.c:814:36: error: variable 'dirty_sectors' is uninitialized when used here [-Werror,-Wuninitialized]
-    814 |         trace_evacuate_bucket(c, &bucket, dirty_sectors, bucket_size, fragmentation, ret);
-        |                                           ^~~~~~~~~~~~~
-  fs/bcachefs/move.c:677:24: note: initialize the variable 'dirty_sectors' to silence this warning
-    677 |         unsigned dirty_sectors, bucket_size;
-        |                               ^
-        |                                = 0
-  fs/bcachefs/move.c:814:51: error: variable 'bucket_size' is uninitialized when used here [-Werror,-Wuninitialized]
-    814 |         trace_evacuate_bucket(c, &bucket, dirty_sectors, bucket_size, fragmentation, ret);
-        |                                                          ^~~~~~~~~~~
-  fs/bcachefs/move.c:677:37: note: initialize the variable 'bucket_size' to silence this warning
-    677 |         unsigned dirty_sectors, bucket_size;
-        |                                            ^
-        |                                             = 0
-  fs/bcachefs/move.c:814:64: error: variable 'fragmentation' is uninitialized when used here [-Werror,-Wuninitialized]
-    814 |         trace_evacuate_bucket(c, &bucket, dirty_sectors, bucket_size, fragmentation, ret);
-        |                                                                       ^~~~~~~~~~~~~
-  fs/bcachefs/move.c:678:19: note: initialize the variable 'fragmentation' to silence this warning
-    678 |         u64 fragmentation;
-        |                          ^
-        |                           = 0
-  3 errors generated.
-
-I see you were already sent a change [2] to fix this but the fix should
-go with the problematic change atomically. Build failures during the
-merge window suck because they potentially hide other issues. I have a
-further comment on that patch that I will send shortly.
-
-[1]: https://lore.kernel.org/202411171154.RatlgkMz-lkp@intel.com/
-[2]: https://lore.kernel.org/20241117234334.722730-4-pZ010001011111@proton.me/
+Something like below seems to compile.
 
 Cheers,
 Nathan
+
+diff --git a/fs/bcachefs/move.c b/fs/bcachefs/move.c
+index 88ab9d7e1a1b..412ef9897361 100644
+--- a/fs/bcachefs/move.c
++++ b/fs/bcachefs/move.c
+@@ -674,8 +674,6 @@ int bch2_evacuate_bucket(struct moving_context *ctxt,
+ 	struct bkey_buf sk;
+ 	struct bkey_s_c k;
+ 	struct data_update_opts data_opts;
+-	unsigned dirty_sectors, bucket_size;
+-	u64 fragmentation;
+ 	int ret = 0;
+ 
+ 	struct bch_dev *ca = bch2_dev_tryget(c, bucket.inode);
+@@ -811,7 +809,7 @@ int bch2_evacuate_bucket(struct moving_context *ctxt,
+ 		bch2_btree_iter_advance(&bp_iter);
+ 	}
+ 
+-	trace_evacuate_bucket(c, &bucket, dirty_sectors, bucket_size, fragmentation, ret);
++	trace_evacuate_bucket(c, &bucket, ret);
+ err:
+ 	bch2_trans_iter_exit(trans, &bp_iter);
+ 	bch2_dev_put(ca);
+diff --git a/fs/bcachefs/trace.h b/fs/bcachefs/trace.h
+index 5597b9d6297f..f67914367acf 100644
+--- a/fs/bcachefs/trace.h
++++ b/fs/bcachefs/trace.h
+@@ -846,18 +846,13 @@ TRACE_EVENT(move_data,
+ );
+ 
+ TRACE_EVENT(evacuate_bucket,
+-	TP_PROTO(struct bch_fs *c, struct bpos *bucket,
+-		 unsigned sectors, unsigned bucket_size,
+-		 u64 fragmentation, int ret),
+-	TP_ARGS(c, bucket, sectors, bucket_size, fragmentation, ret),
++	TP_PROTO(struct bch_fs *c, struct bpos *bucket, int ret),
++	TP_ARGS(c, bucket, ret),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(dev_t,		dev		)
+ 		__field(u64,		member		)
+ 		__field(u64,		bucket		)
+-		__field(u32,		sectors		)
+-		__field(u32,		bucket_size	)
+-		__field(u64,		fragmentation	)
+ 		__field(int,		ret		)
+ 	),
+ 
+@@ -865,17 +860,12 @@ TRACE_EVENT(evacuate_bucket,
+ 		__entry->dev			= c->dev;
+ 		__entry->member			= bucket->inode;
+ 		__entry->bucket			= bucket->offset;
+-		__entry->sectors		= sectors;
+-		__entry->bucket_size		= bucket_size;
+-		__entry->fragmentation		= fragmentation;
+ 		__entry->ret			= ret;
+ 	),
+ 
+-	TP_printk("%d,%d %llu:%llu sectors %u/%u fragmentation %llu ret %i",
++	TP_printk("%d,%d %llu:%llu ret %i",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+-		  __entry->member, __entry->bucket,
+-		  __entry->sectors, __entry->bucket_size,
+-		  __entry->fragmentation, __entry->ret)
++		  __entry->member, __entry->bucket, __entry->ret)
+ );
+ 
+ TRACE_EVENT(copygc,
