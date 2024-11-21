@@ -1,156 +1,170 @@
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62CC61C9ECE
-	for <linux-bcachefs@vger.kernel.org>; Thu, 21 Nov 2024 09:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7E5A1D3585
+	for <linux-bcachefs@vger.kernel.org>; Thu, 21 Nov 2024 12:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732179838; cv=none; b=AH5YWVhv/0HYMxbZaTTX3e7/CSbPssJk3+Kfaeq6UriFhK33NQ471INHZ3QM0gFs5dgg/C6ORDPO5yWiI4/Zg+vhh/Mvoe0o2aCZV6NLRacJCFXE8GLcv7xEKcF8ApsgfNOg45XoJZK55qyjMaLHJSfcXP+l9WFHRDktg1SG6co=
+	t=1732192824; cv=none; b=nleR/bCH4Ea7z370A97xY/Q+3kLu5uzl3CBLzJRVb42I9ABYoHCPd/ZNuM7rfN/P0Uy+xMxnDL8CpNRdmo8mhotZnm6REZi0nm4OSbMEgCUeDF+LdkFpqBPt/W3c/l9nvIq+T5qzeBcHu3Z/16oMjJlwF0yUVtx9zYFcQgG9hrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732179838; c=relaxed/simple;
-	bh=gB3nR5R4h8gsTpxvHF/nfyuNGADmt8PUmyGd/Q0jLrc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LKyEbtH6Kg8gIWa0oQ6gsSHC2CKaCILXg+WnY28gCwfppQN9ZpHz7ikz/AEs3i19pq0S0dSCkDzzTFiVxrtQvNzNnAB+pXaHoJJlg/d8gU29eWpbxxb4P9yAJnrzGsi+DlzUCv2vTQWFnFa0f5nQGfo6pZuxUkiK+xxIEpT93UE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HiOO3Ibu; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HiOO3Ibu"
-Date: Thu, 21 Nov 2024 04:03:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732179833;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FRLw+DGKdwBq59yleVzq1+0cEo5aRODfgmqZBbkpOO8=;
-	b=HiOO3Ibumb6pS42WpgNsTAOgm0t1JNKUQXlVy4TDWQpC6qMR5Mu2auqGAp/9UcRs4mpQqg
-	BTWLfzZkEJLvYUAnXH3M3QzIZgaLoNBtZfZU53hBdNRFeHRYX2v0Ve7bDDqF0uCtR1qI3I
-	NG98hydgjDXFeWfNtktWDltia42/XJ0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>, 
-	Dave Chinner <david@fromorbit.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Christoph Hellwig <hch@lst.de>, Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, 
-	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-bcachefs@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, "conduct@kernel.org" <conduct@kernel.org>
-Subject: Re: review process (was: underalated stuff)
-Message-ID: <nfui5woq5n4lc4xggsflvjqr3gmukfzo64ejxrg4o6iq6ud4ju@rctq63kb43wb>
-References: <ZtWH3SkiIEed4NDc@tiehlicka>
- <citv2v6f33hoidq75xd2spaqxf7nl5wbmmzma4wgmrwpoqidhj@k453tmq7vdrk>
- <22a3da3d-6bca-48c6-a36f-382feb999374@linuxfoundation.org>
- <vvulqfvftctokjzy3ookgmx2ja73uuekvby3xcc2quvptudw7e@7qj4gyaw2zfo>
- <71b51954-15ba-4e73-baea-584463d43a5c@linuxfoundation.org>
- <cl6nyxgqccx7xfmrohy56h3k5gnvtdin5azgscrsclkp6c3ko7@hg6wt2zdqkd3>
- <9efc2edf-c6d6-494d-b1bf-64883298150a@linuxfoundation.org>
- <be7f4c32-413e-4154-abe3-8b87047b5faa@linuxfoundation.org>
- <nu6cezr5ilc6vm65l33hrsz5tyjg5yu6n22tteqvx6fewjxqgq@biklf3aqlook>
- <Zz7yqeI0RatH4ao5@tiehlicka>
+	s=arc-20240116; t=1732192824; c=relaxed/simple;
+	bh=DoRbSKl/CCE+/F2Bwgvx6lCt3HjyNbRCA97O+CwuMAM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GfQmDr4RS8FdwMTtYXlrQCnOwWzinObego50Ks9lNSR5kDb0FEnfxpAUcojxX/W3FcZVpnlfRC82BhTURW42zFj3ZGtAQEcVxcDV/5ltBrzvwPJDqTr1gAFVsXejqPgYeZ6pfWgWOnw4gXjEFQfOQwE2RXXab55WjxHDFAYCw5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a77a808c27so8609435ab.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 21 Nov 2024 04:40:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732192822; x=1732797622;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bBkrMIxPaDGzWlux52IzE9TfNd2nfMYF1DdeZ2NDnBA=;
+        b=vNlDAkeOfQyRVGeY2mT3Vikxtm0/1PMVJmbp22Jh0RbbzhUWYGagtcxN6vzCqY5KdP
+         VbJXacVzjpU+q64Jz4oqvTJ9hF8GDVFgrbdfvkCdJTTic+BaDYhWNbRkYDTdATPduFyh
+         dKrHlmL7vFPxrQM2ADNeQFe54t6HkE6Mtkdk4/6vCol6zekQTggxtIpsr2lJY46JsdmF
+         uXxJoOk/nM0s4LtFbSrFP/Wy9Q4COBSuyWNtFsueek2n4C70wyXRiCKwBtrKpHFspuRV
+         0RRyvRgT+ae+xoAj3IJu21y563KlRlCylwaJ6XnwZA/HnGW6IZrKx3g9zHW24J4ve+bF
+         k4vg==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ4WF0F4vVNWsWqMlc99JdECZlIZxtaIf1sXRwKab2VwaUH7x0t9BE3uLZwTyb8UaVOo+8ch5TRRjVpaotJA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWr4cPS6TFeT+6MXoJqD3BBMtv/7YSqfLtuPkqQKLWYValXeS0
+	EwFryL+tJ7NbgMSg3xwTRjBR6/MbhbIMq9fWWymHvT8KBVKiv1CuQjBl9d/25APBiIqYSAv/WTg
+	l2X5XkkmrSwhQYitnKM2YRPnl9c9uuhAwQ1lui+FtLGAThDmB+C6oNm0=
+X-Google-Smtp-Source: AGHT+IEr/E7qdlIBbIEZcua30nGkuSlQYywVbAq5j6CATh9Lq7IwwZnubEO2jo5mSWZiuiboFK1PFthGkgmgQ62uJzunConG364N
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zz7yqeI0RatH4ao5@tiehlicka>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:160b:b0:3a7:466e:9ebd with SMTP id
+ e9e14a558f8ab-3a786473383mr70899905ab.11.1732192821995; Thu, 21 Nov 2024
+ 04:40:21 -0800 (PST)
+Date: Thu, 21 Nov 2024 04:40:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <673f2a35.050a0220.3c9d61.016f.GAE@google.com>
+Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_node_lock_write
+From: syzbot <syzbot+78d82470c16a49702682@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Nov 21, 2024 at 09:43:21AM +0100, Michal Hocko wrote:
-> On Wed 20-11-24 17:39:09, Kent Overstreet wrote:
-> > Michal's (as well as Steve's) behaviour in the memory allocation
-> > profiling review process was, in my view, unacceptable (this included
-> > such things as crashing our LSF presentation with ideas they'd come up
-> > with that morning, and persistent dismissive axegrinding on the list).
-> > The project was nearly killed because of his inability to listen to the
-> > reasons for a design and being stubbornly stuck on his right to be heard
-> > as the maintainer.
-> 
-> Couple of entry points that might be helful for that.
-> https://lore.kernel.org/all/YxBc1xuGbB36f8zC@dhcp22.suse.cz/
-> I have expressed my concerns and set expectations to move the
-> work forward. I've had couple of back and forth with Suren about
-> specifics of overhead assumptions from the stack unwinding IIRC. 
-> 
-> For the first non-RFC version my feedback was
-> https://lore.kernel.org/all/ZFIMaflxeHS3uR%2FA@dhcp22.suse.cz/#t
-> not really "maintenance burden only" but a request to show that alternative
-> approaches have been explored. It was not particularly helpful that you
-> had expected tracing people would implement the feature for you.
-> https://lore.kernel.org/all/20230503092128.1a120845@gandalf.local.home/
-> Other people have also expressed that this is not completely impossible
-> https://lore.kernel.org/all/ZFKNZZwC8EUbOLMv@slm.duckdns.org/
-> The rest of the email thread is mostly a combat zone that I have avoided
-> participating as much as possible.
-> 
-> I didn't have any reaction to v2 at all.
-> 
-> v3 was aiming to be merged and I've stepped up as there was no single
-> review at the time https://lore.kernel.org/all/Zctfa2DvmlTYSfe8@tiehlicka/
-> 
-> I admit that I was really open that I do not like the solution and I've
-> said reasons for that. Allocator APIs have always been a large mess of
-> macros, static inlines that makes it really far from free to maintain
-> and alternative ways should be considered before going that route.
-> 
-> I was also clear that support by MM people was necessary to get this
-> merged. I have explicitly _not_ NAKed the series and backed off for you
-> guys to gain that support. 
-> 
-> So essentially there was a clear outline for you and Sure how to achieve
-> that.
-> 
-> I would really like to hear from other maintainers. Is tnis really
-> unacceptable maintainer behavior? I am OK to apologize but the above is
-> in line of my understanding of how to ack properly.
+Hello,
 
-I wonder if I was reading too much into what you were saying in the
-off-list thread, when I said "argument to authority". Can you tell me if
-this might be closer to the mark?
+syzbot found the following issue on:
 
-If I read you correctly, when you said you were "voicing your concerns",
-I took it as you being pushy because that was the effects: I need you to
-take me at my word, because you didn't see everything behind the scenes,
-that this did derail and nearly kill the project.
+HEAD commit:    ac24e26aa08f Add linux-next specific files for 20241120
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1471bae8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=45719eec4c74e6ba
+dashboard link: https://syzkaller.appspot.com/bug?extid=78d82470c16a49702682
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e61930580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e126c0580000
 
-But I should've been taking you at your word, that you just really were
-that concerned.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/9c6bcf3605c7/disk-ac24e26a.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4ce96eb398a9/vmlinux-ac24e26a.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9a22aac22c90/bzImage-ac24e26a.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/6a6e3ddf526a/mount_0.gz
 
-I think the best way I can explain this issue is with an analogy to
-parenting: when we're parenting, our first and foremost job isn't really
-to make sure there's a roof, shelter, food - that part is easy in
-today's world. The main job really is to make sure that people feel
-safe, that they can go out and explore the world without being
-terrified.
+The issue was bisected to:
 
-In order to do that, we have to master our own fears, we can't be
-projecting them all the time.
+commit feb21a9b4c1a8527e0a61c85eec4c078c558aee9
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Sun Oct 27 04:40:43 2024 +0000
 
-Being a maintainer, or any kind of leader, is the exact same thing. My
-big lesson on this was watching Andrew, back during the process of
-merging MGLRU - I couldn't believe at the time how chill he was about
-it. But he understood the process, and he's a master at this.
+    bcachefs: try_alloc_bucket() now uses bch2_check_discard_freespace_key()
 
-Part of mastering our fears in a group setting like this is learning to
-trust other people.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b79930580000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14779930580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10779930580000
 
-It's not that your concerns didn't have any validity - but we were
-already doing as much as we could to address them, and you didn't show
-any trust that we, I especially, knew what we were doing. And that led
-to a _lot_ of wasted effort down blind alleys that I already knew
-weren't going to work.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+78d82470c16a49702682@syzkaller.appspotmail.com
+Fixes: feb21a9b4c1a ("bcachefs: try_alloc_bucket() now uses bch2_check_discard_freespace_key()")
 
-I think that may be what this is really about, sometimes you do have to
-trust that people know what they're doing; you share your knowledge if
-you have knowledge to share, otherwise you have to back off and let
-people do their work. Otherwise the whole thing breaks down and no one
-can get anything done.
+  stripe            0
+  stripe_redundancy 0
+  io_time[READ]     0
+  io_time[WRITE]    0
+  fragmentation     0
+  bp_start          8
+  incorrectly set at freespace:0:24:0 (free 0, genbits 0 should be 0), fixing
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/btree_locking.h:306!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 UID: 0 PID: 11 Comm: kworker/u8:0 Not tainted 6.12.0-next-20241120-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
+Workqueue: btree_node_rewrite async_btree_node_rewrite_work
+RIP: 0010:__btree_node_lock_write fs/bcachefs/btree_locking.h:306 [inline]
+RIP: 0010:bch2_btree_node_lock_write+0x400/0x430 fs/bcachefs/btree_locking.h:327
+Code: 06 be 03 00 00 00 48 c7 c7 80 97 f2 8e 48 89 da e8 a5 c3 d4 00 49 bf 00 00 00 00 00 fc ff df e9 f2 fd ff ff e8 b1 69 79 fd 90 <0f> 0b e8 a9 69 79 fd 90 0f 0b e8 a1 69 79 fd 90 0f 0b 48 8b 4c 24
+RSP: 0018:ffffc90000107778 EFLAGS: 00010293
+RAX: ffffffff8426110f RBX: ffff88803485c288 RCX: ffff88801befbc00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: ffff88803485c000 R08: ffffffff84260d65 R09: 1ffffffff2030b7e
+R10: dffffc0000000000 R11: fffffbfff2030b7f R12: ffff88803485c268
+R13: 1ffff110061a4b13 R14: ffff888030d25800 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055976c6126b8 CR3: 000000007b348000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bch2_btree_set_root+0x1d8/0xd10 fs/bcachefs/btree_update_interior.c:1323
+ bch2_btree_node_rewrite+0x69d/0x1280 fs/bcachefs/btree_update_interior.c:2172
+ async_btree_node_rewrite_trans fs/bcachefs/btree_update_interior.c:2236 [inline]
+ async_btree_node_rewrite_work+0x31e/0xdf0 fs/bcachefs/btree_update_interior.c:2249
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__btree_node_lock_write fs/bcachefs/btree_locking.h:306 [inline]
+RIP: 0010:bch2_btree_node_lock_write+0x400/0x430 fs/bcachefs/btree_locking.h:327
+Code: 06 be 03 00 00 00 48 c7 c7 80 97 f2 8e 48 89 da e8 a5 c3 d4 00 49 bf 00 00 00 00 00 fc ff df e9 f2 fd ff ff e8 b1 69 79 fd 90 <0f> 0b e8 a9 69 79 fd 90 0f 0b e8 a1 69 79 fd 90 0f 0b 48 8b 4c 24
+RSP: 0018:ffffc90000107778 EFLAGS: 00010293
+RAX: ffffffff8426110f RBX: ffff88803485c288 RCX: ffff88801befbc00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: ffff88803485c000 R08: ffffffff84260d65 R09: 1ffffffff2030b7e
+R10: dffffc0000000000 R11: fffffbfff2030b7f R12: ffff88803485c268
+R13: 1ffff110061a4b13 R14: ffff888030d25800 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055976c6126b8 CR3: 000000000e736000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-The main thing is I just want to ask yourself if you could have done
-anything better in the memory allocation profiling process. I don't need
-you to apologize for anything specific, if you can just try to work
-better together in the future that's all I need.
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
