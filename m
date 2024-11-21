@@ -1,16 +1,16 @@
 Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B75D1DA60B;
-	Thu, 21 Nov 2024 21:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B6D12FB1B;
+	Thu, 21 Nov 2024 21:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732224770; cv=none; b=WK3iFSilED86MgnYZQTfno5Xk1gcLUfZLNsVLCl4Y5a69e3yToTwy4VmCeSiIviseER0sxVWNTd4FzU/pXT6Q22t742DRU0qrJDjvT2ucDNDMMz4SIt5xa8Na2oWfCLHzhJBhuERuhJ3ZaMv+8LWKSoGbe3KciB9eoQDIprQ9hk=
+	t=1732224977; cv=none; b=nswTDvCPEDlPjAwt8IK7srYU7gGS6iXdhXVoSaWRDa2Sjav6rB1WNEGar+Gzo3iR5Qss+h+rF7q8UGGFIoDyHoAo6OylnyKsAbFiaMSFiwmlSbTWkIKqGwrWnPtFePgNreVhE67o8ApEBuQ5VdKeFlhMhXK30W/NY4kCFa/2r1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732224770; c=relaxed/simple;
-	bh=f2zjqGjXIS0zXz+SfweyuQuJmizq0SK3ammdZElZGAQ=;
+	s=arc-20240116; t=1732224977; c=relaxed/simple;
+	bh=qr8EncFIIAvG9tIgF5QxMs4376UrfnO8iYuvacIsgGw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eIFRKwS1zqLQzMmk1aiqF6+9Ks4W2KL9zp8f6WyANsurXKsSWa1qP/kyLLitaE/M33XamttcnC+Usx750sjQkvXTK6pt76Qc6jx4g03y9EYWPaoPN8h5fwLDwqixRPfpQWYc/1M1rspHonzsADmvVWFUb4JKfdnEy8bRvhBRBnk=
+	 MIME-Version:Content-Type; b=f7DHfjx9kvHf5V+9iTMBZKXuqwInxDVMEfIHIlSe5ITcw302J3qv4hTqOUYHeshInc5bNilpoi8zmjAHxpWsVMGpyEPj6OpiPgq0plCgzMVcdNcg/ZXVq1HN9JaPBn89Y/5iE+hWZGovtU/mQC0YI53XcEyzEy8FvwsGZtA1RIg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
@@ -18,14 +18,14 @@ Received: from 127.0.0.1 (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
 	(No client certificate requested)
-	by mail.lichtvoll.de (Postfix) with ESMTPSA id DFC898FC39;
-	Thu, 21 Nov 2024 21:32:44 +0000 (UTC)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id 975C08FC2D;
+	Thu, 21 Nov 2024 21:26:38 +0000 (UTC)
 Authentication-Results: mail.lichtvoll.de;
 	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
 From: Martin Steigerwald <martin@lichtvoll.de>
-To: Kent Overstreet <kent.overstreet@linux.dev>, Theodore Ts'o <tytso@mit.edu>
-Cc: Shuah Khan <skhan@linuxfoundation.org>, Michal Hocko <mhocko@suse.com>,
- Dave Chinner <david@fromorbit.com>,
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ Shuah Khan <skhan@linuxfoundation.org>
+Cc: Michal Hocko <mhocko@suse.com>, Dave Chinner <david@fromorbit.com>,
  Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>,
  Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz,
  Christian Brauner <brauner@kernel.org>,
@@ -33,57 +33,100 @@ Cc: Shuah Khan <skhan@linuxfoundation.org>, Michal Hocko <mhocko@suse.com>,
  James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
  linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
  linux-bcachefs@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-kernel@vger.kernel.org, "conduct@kernel.org" <conduct@kernel.org>
+ linux-kernel@vger.kernel.org, "conduct@kernel.org" <conduct@kernel.org>,
+ Shuah Khan <skhan@linuxfoundation.org>
 Subject: Re: [PATCH 1/2 v2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
-Date: Thu, 21 Nov 2024 22:32:44 +0100
-Message-ID: <7747240.EvYhyI6sBW@lichtvoll.de>
-In-Reply-To: <20241120234759.GA3707860@mit.edu>
+Date: Thu, 21 Nov 2024 22:26:38 +0100
+Message-ID: <10576437.nUPlyArG6x@lichtvoll.de>
+In-Reply-To: <be7f4c32-413e-4154-abe3-8b87047b5faa@linuxfoundation.org>
 References:
- <ZtWH3SkiIEed4NDc@tiehlicka>
- <v2ur4jcqvjc4cqdbllij5gh6inlsxp3vmyswyhhjiv6m6nerxq@mrekyulqghv2>
- <20241120234759.GA3707860@mit.edu>
+ <myb6fw5v2l2byxn4raxlaqozwfdpezdmn3mnacry3y2qxmdxtl@bxbsf4v4qbmg>
+ <9efc2edf-c6d6-494d-b1bf-64883298150a@linuxfoundation.org>
+ <be7f4c32-413e-4154-abe3-8b87047b5faa@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="utf-8"
 
-Hi Ted, hi everyone.
+Hi Shuah, hi everyone.
 
-Theodore Ts'o - 21.11.24, 00:47:59 MEZ:
-> If you look at the git history of the kernel sources, you will see
-> that a large number of your fellow maintainers assented to this
-> approach --- for example by providing their Acked-by in commit
-> 1279dbeed36f ("Code of Conduct Interpretation: Add document explaining
-> how the Code of Conduct is to be interpreted").
+Shuah, I appreciate your effort to resolve the Code of Conduct issue.
 
-A large number of people agreeing on a process like this does not 
-automatically make it an effective idea for resolving conflict. As I 
-outlined in my other mail, this kind of forced public apology approach in 
-my point of view is just serving to escalate matters. And actually it 
-seems that exactly that just happened right now. See my other mail for 
-suggestions on what I think might work better.
+Also I make no judgment about the technical matter at hand. Basically I do=
+=20
+not even have a clear idea on what it is about. So I am just commenting on=
+=20
+the Code of Conduct enforcement process:
 
-A large number of people agreeing on anything does not automatically make 
-it right.
+Shuah Khan - 20.11.24, 23:21:06 MEZ:
+> I didn't pick up on your desire to apologize after the discussion in
+> our conversation.
+>=20
+> Are you saying you will be happy to make amends with an apology after
+> the discussion and debate?
 
-I'd suggest to avoid any kind of power-play like "we are more than you" in 
-here. What would respectful communication would look like? What does 
-happen if *everyone* involved considers how it might feel in the shoes of 
-the other one?
+Do you really think that power-playing Kent into submission by doing a=20
+public apology is doing anything good to resolve the issue at hand?
 
-I have and claim no standing in kernel community. So take this for 
-whatever it is worth for you. I won't be offended in case you disregard it. 
-Also I do not need any reply.
+While it may not really compare to some of the wording Linus has used=20
+before having been convinced to change his behavior=E2=80=A6 I do not agree=
+ with=20
+the wording Kent has used. I certainly do not condone it.
 
-And again, just for clarity: I certainly do not condone of the tone Kent 
-has used.
+But this forced public apology approach in my point of view is very likely=
+=20
+just to cement the division instead of heal it. While I publicly disagreed=
+=20
+with Kent before, I also publicly disagree with this kind of Code of=20
+Conduct enforcement. I have seen similar patterns within the Debian=20
+community and in my point of view this lead to the loss of several Debian=20
+developers who contributed a lot to the project while leaving behind=20
+frustration and unresolved conflict.
+
+No amount of power play is going to resolve this. Just exercising=20
+authority is not doing any good in here. This needs mediation, not forced=20
+public humiliation.
+
+To me, honestly written, this whole interaction feels a bit like I'd=20
+imagine children may be fighting over a toy. With a majority of the=20
+children grouping together to single out someone who does not appear to fit=
+=20
+in at first glance. I mean no offense with that. This is just the impressio=
+n=20
+I got so far. The whole interaction just does not remind me of respectful=20
+communication between adult human beings. I have seen it with myself=E2=80=
+=A6 in=20
+situations where it was challenging for me to access what I learned, for=20
+whatever reason, I had been acting similarly to a child. So really no=20
+offense meant. This is just an impression I got and wanted to mirror back=20
+to you for your consideration.
+
+I'd make three changes to the current approach regarding Kent's behavior:
+
+1) Take it to private mediation.
+
+2) Move it from mail to actually talking with one another. Resolving=20
+conflicts by mail exchange is hard. Maybe voice / video chat. Or meeting in=
+=20
+person, in case it possible. In other words: *Talk to each other*! Mail is=
+=20
+really very bad for things like that.
+
+3) Assume good intentions!
+
+And the best first step for everyone involved may just be: Take a deep=20
+breath and let it sit for a while. Maybe there is something to learn from=20
+this for everyone involved, including myself.
+
+I have and claim no standing in kernel community. So take this for=20
+whatever it is worth for you.
 
 Best,
--- 
+=2D-=20
 Martin
 
 
