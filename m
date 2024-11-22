@@ -1,151 +1,219 @@
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662E71DF724
-	for <linux-bcachefs@vger.kernel.org>; Fri, 22 Nov 2024 18:44:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732301067; cv=none; b=Zyr1NDy0nIQ1vraEVuWZc6v7FhEZjIzgm8fv6msA44h/ILqfeCksbG3F3U7CJTEdU1vKAesjrQVXCBAibtVonIEpvUgCfoYk63C62OBPLF3EbOjjs2ChaIPxuhUyXTHPomDepKbPgK0Th2z2tNN1YohV3vsfPgpwmW5Iiuo3Njs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732301067; c=relaxed/simple;
-	bh=TT0WGwcgJa5PFxmOZWAmQHT63o9zD42O9nipFXhjmv4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hVfJa5Gbdifuy+5ghsuCERAiqIXH7cM8YaEc5GHNRkKm0+7rfeADSSVoIToQXNC7m3AdFLl7zk8iqYhal5PzJVO2kLm9SZWme7Io326IdwBEYNCqmKU9EPrGp2h1LKMMBueHkVbuEcptH/NqlsMMpkWeasKxyGvBxShZJ5tk4kI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a77d56e862so19601355ab.3
-        for <linux-bcachefs@vger.kernel.org>; Fri, 22 Nov 2024 10:44:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732301064; x=1732905864;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ovYHuJ2vlkVrLlI7ERokuEMkiHWXbw5n5FzW7/Nf3xA=;
-        b=dx++/AYunT5yX5s3BwuH7rAGDTeJFcxrc9cPET/Sa045etrh2VOn2WrjAuzaGKtEzb
-         z0z9/J6i73+xfURhscfgqsNr1dXd3MPRv77HXIouhBc13h5sCRjR28HEUWiaQ0vbT3D6
-         RxwEFZhghp2Nh9Vqo36Yxljc9/ellQ/53JXIT/03VHMBnOilvfBvTZT8/9G0HSPpT0WC
-         nULHH2h2X8E/WiLop4xne9aQRDC25EkvlPfNxeZAjaVMYEb9gaz9mw4poA8/MM8JrXYo
-         IikjfApkA9FDlpJLYny7KcRhd02RuqTIHflILyUbWoZUPvGlJm+K4QfBTwHPLhZBrC7/
-         JqSA==
-X-Forwarded-Encrypted: i=1; AJvYcCXspP5mpwGOCYL9lm/KcJPoZgaxTcW0YcT20idZO2ODNQrdd8ZfHQ7QGDQ2FuKMzQLlTpiao1WT4WHI0DSdoQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUSDcaI8VQI0ynO9wT+J7OWe0IQVSXwKUx1kSbI+PGkQaI+1JA
-	TR6DwK2yhvqmPtMarZ4JObti9JroIQstAcqVOMtnhA5GpNpr4PwyFAuUqmZufX7fj0wbZsDZ/Jf
-	LoPLSTtkW8UbuLze/wUH/4z/LD67pn9jiFNG1mfFIWoxB7Bxr131+jmw=
-X-Google-Smtp-Source: AGHT+IFsOCNgD1v7Y74keTuT+MAcwV6u9M+XWo4PibhArf6aGmdT44GsDfSebct5vRNnRDqBGZEZ++er90QIAgSqhSWXmaAVgfBT
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 758D81CA9C;
+	Fri, 22 Nov 2024 21:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1732312132; cv=fail; b=BqCbsuojULZ0ubWhDlDSg4kOU+BkStmoIwUafYso7jB8R/WkE70PyuNy6asWIvHKaqKB5hvEixHYKq1//zRTGwz1vlJP6/3fPTwrRm+FaDJ7rGrVqdeQIvIswHLb1+ohTVHMs1fzaMOVhkbfgNkvxySA5akHNo/pVgivEW1B0Fk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1732312132; c=relaxed/simple;
+	bh=PoKQd3M0dhTjpFk7RN+ukD8qcViK7Zx74sLf6sl6HXo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Zx7BBP4jJw9z1AHOWiHd+AkD3BUAusdJ6zO07TJtWPZCnBVm5qMvSGy7rYFedLmLXA9ZuH7S7ZhCwtWHt9LbFwYMo4MeayfGbZOf/r8atIpkLYT9QhP2xsTcJVOxvzerkDNSckw+Cs6V4Q0VqD1WuDxn3T2MqAxQlGKreE9PgPQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cql9YvyL; arc=fail smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cql9YvyL"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1732312131; x=1763848131;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=PoKQd3M0dhTjpFk7RN+ukD8qcViK7Zx74sLf6sl6HXo=;
+  b=Cql9YvyL8J70Mg7l/XdM5Paeazfdrve2IJMqJ5Yd44tXfULXngJwbMeN
+   HaJCnA50rUol5/O3Nn3BAq6+xixPvs7RljPCtBGNlOuOKDe0M7SXKkcPh
+   fatNsWtXab0dz4bMukU/Kdj1FjZV/qgtV2Stlk3G/CZpe0orkFxVNb9ad
+   R6F8RFyKIr4Fus69hTuziCLXx+KvpTCl5aYN2G8FiL/1o/REz2AiV8lnh
+   B0hLxmafl5S5geRK+K2EZGo9/cz9Jth8CDQ4L015ZKPRq1dmjI5GP7y9x
+   dKqZT1wJ50QNGTUcyl2MQ9IO9TzTrld1/cZn19kotyEUMllFKTsQSVG5x
+   Q==;
+X-CSE-ConnectionGUID: 4ZRqrOCaRICjdYfMjaLMrg==
+X-CSE-MsgGUID: yWiEKdLARAKpR98KgyHA1w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11264"; a="31840970"
+X-IronPort-AV: E=Sophos;i="6.12,176,1728975600"; 
+   d="scan'208";a="31840970"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2024 13:48:49 -0800
+X-CSE-ConnectionGUID: JmbcAtmuSGKu0ZcL4SjhZw==
+X-CSE-MsgGUID: 73h0PxSETXyCGem2ob96Tw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,176,1728975600"; 
+   d="scan'208";a="128190753"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Nov 2024 13:48:50 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Fri, 22 Nov 2024 13:48:48 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Fri, 22 Nov 2024 13:48:48 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.170)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 22 Nov 2024 13:48:48 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DZqU6jzi1B7/BpRsgdJHa2SI8MD39urLMV7yV9Zkl4TCxPF/ysraItNvNpivsVrLeWsiLrF6x4B4gvRv69FNW9i5SKmuP45x2N0JRfeMPkBgi3nXP/QjmAVS9eQqvHhotlRskDm8tVxBo1BG3u7dzLN/Fzo25Ta3ISysmj+Xm9Nb5hFJubbm/t5pdjjF231KYjcZfLgf0IRcxJV36Y0VepVIyE9/PCSMOGgxs3GC5/WE+GzisPoptDA2rD839VyAeWtvN8rgCTga7R1ClJa4SfkQBCbEvg3YTufIVcj180rZu9Q0l2U3rnn4TSYUUKR//iUf9zfr6jFmdwlzbFiFMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=amZw5f4l2r5tpOyL/8d2BbCTqfnnNP05dStK/tollj0=;
+ b=vWfKqH8HNk8EjRqHeImXB0sujViEvntRJ2qcV3mkIkZSdAKUO7oIInvflmfTg4rurGEy+/YkCb4FBk14frjh6L2uZlpn6iC8iM7vjmCrrjc909hbp8VfgIpRbWHbWGGgZLfIoV4p/KJSxInkOnk281pRMOxYUSSMqQM18ZFV759kbjvTg+gtpBQwiVhvpfeTYMAzyH4xorT4F6G2bn+80W/LZ8KM7L9241ibIQtKQ8mI9+24djbeLw3trp60DGFX/x6bRcZFPnUzaLwDyZMvjliYEr6vW2nwZixgg/PwPQVMLFV2DPIUuNrtnnZ67B2SChQxw9jSojjOSASTerXZZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by CY8PR11MB7338.namprd11.prod.outlook.com (2603:10b6:930:9e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8182.16; Fri, 22 Nov
+ 2024 21:48:45 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8%5]) with mapi id 15.20.8158.019; Fri, 22 Nov 2024
+ 21:48:45 +0000
+Date: Fri, 22 Nov 2024 13:48:42 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>, Michal Hocko
+	<mhocko@suse.com>
+CC: Dave Chinner <david@fromorbit.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, Yafang Shao
+	<laoar.shao@gmail.com>, <jack@suse.cz>, Christian Brauner
+	<brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Paul Moore
+	<paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn"
+	<serge@hallyn.com>, <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-bcachefs@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <maintainers@linux.kernel.org>
+Subject: Re: [PATCH 1/2 v2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
+Message-ID: <6740fc3aabec0_5eb129497@dwillia2-xfh.jf.intel.com.notmuch>
+References: <Zs6jFb953AR2Raec@dread.disaster.area>
+ <ylycajqc6yx633f4sh5g3mdbco7zrjdc5bg267sox2js6ok4qb@7j7zut5drbyy>
+ <ZtBzstXltxowPOhR@dread.disaster.area>
+ <myb6fw5v2l2byxn4raxlaqozwfdpezdmn3mnacry3y2qxmdxtl@bxbsf4v4qbmg>
+ <ZtUFaq3vD+zo0gfC@dread.disaster.area>
+ <nawltogcoffous3zv4kd2eerrrwhihbulz7pi2qyfjvslp6g3f@j3qkqftra2qm>
+ <ZtV6OwlFRu4ZEuSG@tiehlicka>
+ <v664cj6evwv7zu3b77gf2lx6dv5sp4qp2rm7jjysddi2wc2uzl@qvnj4kmc6xhq>
+ <ZtWH3SkiIEed4NDc@tiehlicka>
+ <citv2v6f33hoidq75xd2spaqxf7nl5wbmmzma4wgmrwpoqidhj@k453tmq7vdrk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <citv2v6f33hoidq75xd2spaqxf7nl5wbmmzma4wgmrwpoqidhj@k453tmq7vdrk>
+X-ClientProxiedBy: MW4PR04CA0379.namprd04.prod.outlook.com
+ (2603:10b6:303:81::24) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a82:b0:3a7:86ab:bebf with SMTP id
- e9e14a558f8ab-3a79af6d1b5mr45296015ab.19.1732301064474; Fri, 22 Nov 2024
- 10:44:24 -0800 (PST)
-Date: Fri, 22 Nov 2024 10:44:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6740d108.050a0220.3c9d61.0197.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in rw_aux_tree_set (2)
-From: syzbot <syzbot+ed52fb987e4b52cbfad9@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CY8PR11MB7338:EE_
+X-MS-Office365-Filtering-Correlation-Id: c75f5b1c-d487-4e85-8d11-08dd0b3f7070
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|7416014|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?T3XSSS3xDkBXfsUjvwMzQ6kjJMY9PyGzSdUTDDCK76w7m2ZZ023lLkON6sus?=
+ =?us-ascii?Q?lxYv2YKy6CLl45g4z10vNqKYvoDwv2GHpGWd1X6JeObgtZqDr/NMb8S9ibg3?=
+ =?us-ascii?Q?BKydLb0JeykB1xcsUD2XNJqNbncTkXImyjIG1Fnwvzp/kFLszAQ4o3WkuI85?=
+ =?us-ascii?Q?1OC/gV0UzjSANm3RbwOmaSAZ4jrDIZI02mnVaaC3FS/jVyMjMFmCfLJgQO1B?=
+ =?us-ascii?Q?MQ/ve+k87bwnvXdEjn2d8BwKGw5UW04nu8Y8HWsQQMfBNZFxK0O0zYtHDzO/?=
+ =?us-ascii?Q?v6vp5tBta8+nZWaO2PhL4WNLA+bbQpx96iVmcUEIcXhE9/6tItcWs7WxRqhB?=
+ =?us-ascii?Q?aAnvnguDOydb3oH1pQP3MIFndEG4LWAOhUulozhCMF8x1cdntec12WBbBwSv?=
+ =?us-ascii?Q?Pt4L9rGwyr1lU8jb+UjUWeJUD7r3lbvJt4jT2T3qcBfsa0hffP5mkDmUaZMz?=
+ =?us-ascii?Q?CU/vqoDUNnvU3fAJ9iwQPrzHUd/RNXmM7IcUehAgcuKe1wO673OJC8bmDZjV?=
+ =?us-ascii?Q?drxKSG5JDTFqQ4qjQCUnSs5UjbizpMa2C4bEB5vMMT9PyT1NAwjmorS8kqL/?=
+ =?us-ascii?Q?clgcF0m09xQyEA9OpWVzqvGTfUhGbqn0NaunZL+ddDttfriZkQEEGNO0hAe9?=
+ =?us-ascii?Q?AaKpVHS1Qd84disGCkouUJ2xTBQ760kq7B8eygxpVBtLAt0IR+DYXucb3QQW?=
+ =?us-ascii?Q?bCiHr0Wt+K9oVp3WaViQ69T7AJy2FLjqNKXJMFJ068RCpz/ITMCbQMNbJhsH?=
+ =?us-ascii?Q?fSu/kSKXc88xHg5I0XaZ9QWGmSTEDSXjcYVseZUqTC0j6Z/iFv4jvJ6iJpnT?=
+ =?us-ascii?Q?rrnNy3rMm0PE8TKWIf+xOAzD8KkoD8yHyYzPRu6J2BW7n7YG3bzB7Ao5NO7X?=
+ =?us-ascii?Q?QsnJ0DqI5Tw6xvHcqX13TcYepRek4DCJZPklzWx0KXrMzyumNsR8oakgpXZt?=
+ =?us-ascii?Q?79OuiFuVjmuQUpTV7LR/V0ugtqom4ldAaGSY/qxXq+F5LW1Jv0f3okyvseAA?=
+ =?us-ascii?Q?5zQcAmN+ybPJNUjv35KahlbAJGZSWBcUCfTawH1+d2m/IghohmFIr+xsmVW8?=
+ =?us-ascii?Q?xKNCWNw55Sc/xGOf0O+y9RQr4QgTDnmxvtO4FxddnIN3NiPNdd2L1BGDu6fw?=
+ =?us-ascii?Q?lxfXIORYWEjYOga+P2B/qNlCoB9walGcYoH52IWRs4rsKjOVKhJGNCl0Z4kP?=
+ =?us-ascii?Q?Ze24sMhVl9smsGKw80E5yhuZLgglLBTY6Yx79e0bG9nMamJdUkqb8VrWDpFz?=
+ =?us-ascii?Q?cv7I5LTzTD8uC5iogAB7J5pVeazyxTBZlKYCRCHSvg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?b5rTVaqSs9aj1IwR2iXLCBcBtdepN4eZzOi67e8WHss2JPgadCZXRVsmKi5z?=
+ =?us-ascii?Q?GiSwdnZgby64EwSEJCyNp/WNgkcpX/6eC9uqt3lXvyrxQuwA4/dADdvFKV6x?=
+ =?us-ascii?Q?WDpGyzRX8BBtVOc8CM9tnJOpjHCHzhrfQaoVISmz4ctlbjFlZJOYP3e8uWgQ?=
+ =?us-ascii?Q?9axHsn+T9BHykavxYMI4cknT15x5lRkyhmUPSzP+kCl5mRcw5guJO6wG6/XB?=
+ =?us-ascii?Q?Cn4DnufX8oHf5020OiTMFi0Wg0P5cWv1FKDWrHbCRMFIy54DCsi5hG838LOq?=
+ =?us-ascii?Q?5Wj5zgHbPR2xkgJYLH5B49wBcfw8JCBBCeystKJJLNC6cFPqtnVkELaXKYmx?=
+ =?us-ascii?Q?RjSvbhzkIQvjmBGUv/MHkzqRvUpErKnTaZVwmFwOEoEMjBmF9yW7AQzpQ4fh?=
+ =?us-ascii?Q?rdORwaxEqND2NQKRq9/W3Z2WjMvnFbgfqco9wcKQ1w5Jobz+T+WhK5GeaEqQ?=
+ =?us-ascii?Q?sxZihx0wk+RxzJAR88MALUBJEdKj1ubrqCP9tjerp8BzZ97VVuOzD0g/Ca9z?=
+ =?us-ascii?Q?1voSN+BIWpGj3Zi5CsGAxLqpxSztPrKPn0Xog26hVOe5Vml2Xns11YK8VKQK?=
+ =?us-ascii?Q?eTLEpr0yrD3s7YrU+mbHXqNaZMyt8Zz5q+p8m9KiLOZGYcezgLvupaLBptgD?=
+ =?us-ascii?Q?ju4c6orFuzr3z3bRFSULJEqs1i2Lglm3hhXMPz/6BajFj1rXXh9oZNrn2ZqN?=
+ =?us-ascii?Q?B/YWXNAeawTMDJffCLAoNMlLGlabo054BpeJCldbMbYgm4VqEhaTnDqPGrrs?=
+ =?us-ascii?Q?aK1VzsQfaRc5YPLPRSry56/Oz1+3vplbIW5VOseyjWd2q+uSAcoApecklAJ3?=
+ =?us-ascii?Q?G8zpajkfwW5GaP3LDu86/H3TLk/h+o5B8/edStUwiXFm2hZ6Zw3S4kntx9py?=
+ =?us-ascii?Q?aI8eC4cR6Zn9H2UvQNbhljG8XyfDmXcDQJcUkJpfqK1DL9Q5UsNZa4+JRp9D?=
+ =?us-ascii?Q?ZcUu07jqSXLQObWYtjaUglW2aWAFzASlSyMFRftSKk2iTSWgyyflhsRf+XCM?=
+ =?us-ascii?Q?jfX3eBGMPikJc2nxHLkrthX2piGjbLM8sx0vK+YFxt7wLs0+t1ODzjJLV0yJ?=
+ =?us-ascii?Q?WyQMAnd9KW23rJ1MKIVBN5Crq7Nda5OHquNTPuqvMpiVdov0T5Ot2idVpBP2?=
+ =?us-ascii?Q?C49qe+zWsuw196/jzE8vo2EwslEWCgb6AgnuxTKaL2oTOE17GIUgBPYSlYS3?=
+ =?us-ascii?Q?a51hRH+crtq2BqMvG8BczNR+lsojYPggA0bDJttB+ykHHCUtR55rmHGx3Iwu?=
+ =?us-ascii?Q?H6KSTHVvqlYEKe5wttBi4NuIOEkuNY4HQzMMpea7bLmBXIfTlhD3ywAD54YV?=
+ =?us-ascii?Q?17YlaUdkdAFKtwemqDoYk6IlAsXxYAqCNpK8Dx3LCvLew7lqocwWP98Fi6xo?=
+ =?us-ascii?Q?PInLidujo4VH1Zp725dJOdWN1qzSjGyv+gbqDjuoO50Xv94MjSM0l1Z30nC6?=
+ =?us-ascii?Q?W4Pz0yDZvlBfRqcWVHBOsk+ufcYsXmIGmdGi2WCCJwKEuS9ZZvceLLVlZdZp?=
+ =?us-ascii?Q?n6DfAYADwKhLwyS5tPBVNv+BhdvMViCPTjerSgm6lzR/fzEpw6jNpKDXeWZW?=
+ =?us-ascii?Q?DOVRvr7tb0SHmo8bfai6MoooancIyfY54Ju6XY2IfakFWSftRpznJ/XByYx2?=
+ =?us-ascii?Q?gA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c75f5b1c-d487-4e85-8d11-08dd0b3f7070
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2024 21:48:45.6628
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LOYSeA7x8huse/oEPGYk5zvcR61Nn8V3AEm28/Bt0xIusQhg5TjyNiQeYChi0Lc2xl9FntQPfU4IzVBoPS6SaXbpJTQBcs8RYSF44vWjVKo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7338
+X-OriginatorOrg: intel.com
 
-Hello,
+Kent Overstreet wrote:
+> On Mon, Sep 02, 2024 at 11:39:41AM GMT, Michal Hocko wrote:
+> > On Mon 02-09-24 04:52:49, Kent Overstreet wrote:
+> > > On Mon, Sep 02, 2024 at 10:41:31AM GMT, Michal Hocko wrote:
+> > > > On Sun 01-09-24 21:35:30, Kent Overstreet wrote:
+[..]
 
-syzbot found the following issue on:
+Kent,
 
-HEAD commit:    fc39fb56917b Merge tag 'jfs-6.13' of github.com:kleikamp/l..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1346bec0580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1a5c320d506b5745
-dashboard link: https://syzkaller.appspot.com/bug?extid=ed52fb987e4b52cbfad9
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16565b78580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1746bec0580000
+The Code of Conduct Committee received reports about your conduct in
+this email discussion.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c35bd17a0dc5/disk-fc39fb56.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/900f3f8ce653/vmlinux-fc39fb56.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/fae5edad1eaf/bzImage-fc39fb56.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/989b3cf7acff/mount_0.gz
+Link to email where the violation took place:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ed52fb987e4b52cbfad9@syzkaller.appspotmail.com
+https://lore.kernel.org/citv2v6f33hoidq75xd2spaqxf7nl5wbmmzma4wgmrwpoqidhj@k453tmq7vdrk
 
-=====================================================
-BUG: KMSAN: uninit-value in bkey_unpack_pos fs/bcachefs/bkey.h:463 [inline]
-BUG: KMSAN: uninit-value in rw_aux_tree_set+0x4d2/0x580 fs/bcachefs/bset.c:494
- bkey_unpack_pos fs/bcachefs/bkey.h:463 [inline]
- rw_aux_tree_set+0x4d2/0x580 fs/bcachefs/bset.c:494
- rw_aux_tree_insert_entry+0x6c3/0x970 fs/bcachefs/bset.c:913
- bch2_bset_fix_lookup_table+0xecc/0x13e0
- bch2_bset_insert+0x1621/0x19f0 fs/bcachefs/bset.c:1015
- bch2_btree_bset_insert_key+0xf4e/0x2b60 fs/bcachefs/btree_trans_commit.c:217
- bch2_btree_insert_key_leaf+0x276/0x1050 fs/bcachefs/btree_trans_commit.c:300
- bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:820 [inline]
- do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:900 [inline]
- __bch2_trans_commit+0xaf5e/0xd190 fs/bcachefs/btree_trans_commit.c:1121
- bch2_trans_commit fs/bcachefs/btree_update.h:184 [inline]
- btree_update_nodes_written fs/bcachefs/btree_update_interior.c:723 [inline]
- btree_interior_update_work+0x2080/0x4870 fs/bcachefs/btree_update_interior.c:861
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3310
- worker_thread+0xea7/0x14f0 kernel/workqueue.c:3391
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+Our community works on trust and respect and has agreed to abide by the
+Code of Conduct:
 
-Uninit was created at:
- ___kmalloc_large_node+0x22c/0x370 mm/slub.c:4219
- __kmalloc_large_node_noprof+0x3f/0x1e0 mm/slub.c:4236
- __do_kmalloc_node mm/slub.c:4252 [inline]
- __kmalloc_node_noprof+0x9d6/0xf50 mm/slub.c:4270
- __kvmalloc_node_noprof+0xc0/0x2d0 mm/util.c:658
- btree_node_data_alloc fs/bcachefs/btree_cache.c:153 [inline]
- __bch2_btree_node_mem_alloc+0x2be/0xa80 fs/bcachefs/btree_cache.c:198
- bch2_fs_btree_cache_init+0x4e4/0xb50 fs/bcachefs/btree_cache.c:653
- bch2_fs_alloc fs/bcachefs/super.c:917 [inline]
- bch2_fs_open+0x4d3a/0x5b40 fs/bcachefs/super.c:2065
- bch2_fs_get_tree+0x983/0x22d0 fs/bcachefs/fs.c:2157
- vfs_get_tree+0xb1/0x5a0 fs/super.c:1814
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3507
- path_mount+0x742/0x1f10 fs/namespace.c:3834
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4057 [inline]
- __se_sys_mount+0x722/0x810 fs/namespace.c:4034
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:4034
- x64_sys_call+0x39bf/0x3c30 arch/x86/include/generated/asm/syscalls_64.h:166
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+Reference: https://docs.kernel.org/process/code-of-conduct.html
 
-CPU: 0 UID: 0 PID: 13 Comm: kworker/u8:1 Not tainted 6.12.0-syzkaller-05676-gfc39fb56917b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
-Workqueue: btree_update btree_interior_update_work
-=====================================================
+The code of Conduct Committee has determined that your written abuse
+of another community member required action on your part to repair the
+damage to the individual and the community. You took insufficient action
+to restore the community's faith in having otherwise productive technical
+discussions without the fear of personal attacks.
 
+Following the Code of Conduct Interpretation process the TAB has approved
+has approved the following recommendation:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-- Restrict Kent Overstreet's participation in the kernel development
+   process during the Linux 6.13 kernel development cycle.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+       - Scope: Decline all pull requests from Kent Overstreet during
+         the Linux 6.13 kernel development cycle.
