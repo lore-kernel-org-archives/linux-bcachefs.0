@@ -1,91 +1,174 @@
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DA1176FD2
-	for <linux-bcachefs@vger.kernel.org>; Fri, 22 Nov 2024 06:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85BBC1632E8
+	for <linux-bcachefs@vger.kernel.org>; Fri, 22 Nov 2024 07:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732258309; cv=none; b=Uj0lSXXYVZlgMYmo94JHC0+eLoGNdOBOPVuGY9GpNvTFwDGa6Sa0MZEZl6yKnMuz8XERecn1ywufIuAnV/THN7ORLFC+Pmv6ivvbi3R6v8EX+lbyq5Ih3wEYv98RfwEvUxm846Xjt7qCJaN9t+NWePSd+tiYuqu2a8OEIlGGgj4=
+	t=1732260147; cv=none; b=PxEu+x4VOEx3rS1UTTV4eCi5aL6gV9s2iE7zKtsyYy+3QGduPEbkyrQxsrKMFH2hk1PuuV3t4IsXDmpS+iugDHDEc6/lXPsZye4dzgn1xfTFfq7nHqRhbwti0sAUMvj6VcBIdHzXb979yBdnf0T+BVbtg+mR5U0wH3qkPxNbJAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732258309; c=relaxed/simple;
-	bh=FksEp9kapCY4+YbOqxOtRfRJLC2TEUlIdnGiXK6I00c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JbuyMAkVheh5gBaqwlFatrjJij7VKZTyfT0e72g5ou03IVK8kebqxijPxmlKMuNeYgcuS5eDT7uPC6BoToESdvqwDHdI1fwgi4JCMbWdA0NgDlf3QPCF8uZCHORk55wjKbWpVdpu/SRR0xk5aKvC6tkbKIuSLOdNgIpLufKbiq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UdvEOMQ/; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UdvEOMQ/"
-Date: Fri, 22 Nov 2024 01:51:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732258305;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rjgj1cBWl/+Hfb4W6G3LBJubD6GGLHSB/5rnaF15CvM=;
-	b=UdvEOMQ/ljA52aWMaj+kjBRg6rsV/9XN0YFltdXsWPGJxpTRb2F4HQUsQ6IlSBuFwfYcC3
-	jGx3uzQPKE2eIHvlo1ySZkNWszETq6lZ5yw4X1MiSCVbF5ZLe50pmGkzrCXVHwVLzBs1xE
-	ypy3uUPd8Wh2Tk8EEv4jpxiVGBl24fI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Christoph Hellwig <hch@lst.de>, Theodore Ts'o <tytso@mit.edu>, 
-	Michal Hocko <mhocko@suse.com>, Dave Chinner <david@fromorbit.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Yafang Shao <laoar.shao@gmail.com>, jack@suse.cz, 
-	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-bcachefs@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, "conduct@kernel.org" <conduct@kernel.org>
-Subject: Re: [PATCH 1/2 v2] bcachefs: do not use PF_MEMALLOC_NORECLAIM
-Message-ID: <grcqflezvbht4mqyaalavqoneqgo2yfnmbdhbizrllv27dlgrl@jq3reem4va7i>
-References: <vvulqfvftctokjzy3ookgmx2ja73uuekvby3xcc2quvptudw7e@7qj4gyaw2zfo>
- <71b51954-15ba-4e73-baea-584463d43a5c@linuxfoundation.org>
- <cl6nyxgqccx7xfmrohy56h3k5gnvtdin5azgscrsclkp6c3ko7@hg6wt2zdqkd3>
- <9efc2edf-c6d6-494d-b1bf-64883298150a@linuxfoundation.org>
- <be7f4c32-413e-4154-abe3-8b87047b5faa@linuxfoundation.org>
- <nu6cezr5ilc6vm65l33hrsz5tyjg5yu6n22tteqvx6fewjxqgq@biklf3aqlook>
- <v2ur4jcqvjc4cqdbllij5gh6inlsxp3vmyswyhhjiv6m6nerxq@mrekyulqghv2>
- <20241120234759.GA3707860@mit.edu>
- <20241121042558.GA20176@lst.de>
- <39e8f416-d136-4307-989a-361bf729e688@linuxfoundation.org>
+	s=arc-20240116; t=1732260147; c=relaxed/simple;
+	bh=4dKua7LPma30IvOSBKXaZ7Ub2N1Od4NAMsomTlD2gY4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=tj3JhKXBMu0Z03qwL2kIkkUOfxiU6pY792IR9cNEBxNhdNXxCOaeAk2uVv77F/uRPrZoGdyPA15bcUQHIBoaBWHkr+S1GPvv8aBqqfYOAnVkFLMGRxcIcD0qTpkhZBVKPfVBafzrlCP4q15NeAf2XWtR5yGRGxonM9tgwBuHiWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a78e952858so20151105ab.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 21 Nov 2024 23:22:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732260144; x=1732864944;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g6ZGyE87cCNHS6XlBd2eJHvaAndp876wAxmNd8wvXQc=;
+        b=jmbtrSoq2M0IN+mLvsXrCZA1mcTlzIBkPhsdf9rGovhIQthTiyDEmh2ma0+/8qFa7f
+         1C0deTkqCbVMSTbqq9aF62Lk6hYuswg86kf2Lega4/oQpRnyzkFnWrWx7GiL1wiZdkvv
+         skia3IrRUS/Banf/nPDORqMEJrJ5hxhE1LeCqhTot4LYvOboCz8T99DwLluIDbnBNXil
+         3a2HqqRGLgkW9tnLDgYMfPIUfXrxx119OJv+PKCM9PZcfNBZkqC85fIJlDwzAKVzKOdg
+         uPu+Hda1YU/Ha9zDPnSKDD3zAzcBoo+pHBD1YchAI+wLCefIJGS6XANtzgvRvxx8uvGs
+         v6yw==
+X-Forwarded-Encrypted: i=1; AJvYcCWQBOrcNUFNYWvlX5vuDPSBu92me8iiV6nTxLuJUGQ+wtMYgBTOpeQg0r3W38r9oK40EA1nLsTJXTP2tfdOWQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywtz8eTiSFcI4Pn8aLmYTeViW23BownxtWSqn2/MvLGfqXSqWip
+	EhpSfU62209HiiOXMEYaV3Zb1jS2t5GPFY/ZZnauXj0GeXSJa0ZSgTmJQOsM3jUAzmntIy141J7
+	Lyn5kAoPCQWtgsSaXyWT1FFT6KvkHLeYI/xhOay2QnsjB2CSLoXvjLfQ=
+X-Google-Smtp-Source: AGHT+IETxpL5H1tyxccOBRQbfvw+DynHW5o6GowzulfcstykPExY3+C2uhIo+E53g87+xCBlKeK93CUUZHhWhxQ88puZUb3tQKNV
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <39e8f416-d136-4307-989a-361bf729e688@linuxfoundation.org>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a92:cda7:0:b0:3a7:6dde:c78b with SMTP id
+ e9e14a558f8ab-3a79ae24732mr26448975ab.8.1732260144759; Thu, 21 Nov 2024
+ 23:22:24 -0800 (PST)
+Date: Thu, 21 Nov 2024 23:22:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67403130.050a0220.3c9d61.018b.GAE@google.com>
+Subject: [syzbot] [bcachefs?] WARNING in bch2_fs_read_write_early (2)
+From: syzbot <syzbot+61a8a372d9269e5c9c6d@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Nov 21, 2024 at 04:53:48PM -0700, Shuah Khan wrote:
-> On 11/20/24 21:25, Christoph Hellwig wrote:
-> > On Wed, Nov 20, 2024 at 03:47:59PM -0800, Theodore Ts'o wrote:
-> > > On Wed, Nov 20, 2024 at 05:55:03PM -0500, Kent Overstreet wrote:
-> > > > Shuah, would you be willing to entertain the notion of modifying your...
-> > > 
-> > > Kent, I'd like to gently remind you that Shuah is not speaking in her
-> > > personal capacity, but as a representative of the Code of Conduct
-> > > Committee[1], as she has noted in her signature.  The Code of Conduct
-> > > Committee is appointed by, and reports to, the TAB[2], which is an
-> > > elected body composed of kernel developers and maintainers.
-> > 
-> > FYI, without taking any stance on the issue under debate here, I find the
-> > language used by Shuah on behalf of the Code of Conduct committee
-> > extremely patronising and passive aggressive.  This might be because I
-> > do not have an American academic class background, but I would suggest
-> > that the code of conduct committee should educate itself about
-> > communicating without projecting this implicit cultural and class bias
-> > so blatantly.
-> 
-> I tend to use formal style when I speak on behalf of the Code of Conduct
-> committee. I would label it as very formal bordering on pedantic.
-> Would you prefer less formal style in the CoC communication?
+Hello,
 
-Personally, it's always easier to take requests from a human, than a
-faceless process that I have no input into.
+syzbot found the following issue on:
 
-I'll always rebell against the latter, but I'll always work to help out
-or make things right with people in the community.
+HEAD commit:    f66d6acccbc0 Merge tag 'x86_urgent_for_v6.12' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=171d3378580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=95b7d4b29182ed62
+dashboard link: https://syzkaller.appspot.com/bug?extid=61a8a372d9269e5c9c6d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-f66d6acc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d4b910af2286/vmlinux-f66d6acc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a72e7698c7be/bzImage-f66d6acc.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+61a8a372d9269e5c9c6d@syzkaller.appspotmail.com
+
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 3812 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 3570 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 3328 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 3086 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 2844 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 2602 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 2360 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 2118 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 1876 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 1634 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 1392 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 1150 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 908 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 666 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 424 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0  
+  node offset 0/1032 bset u64s 182 bset byte offset 160: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): btree_node_read_work: rewriting btree node at btree=extents level=0 SPOS_MAX due to error
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 37 at fs/bcachefs/super.c:526 bch2_fs_read_write_early+0x7f/0xb0 fs/bcachefs/super.c:526
+Modules linked in:
+CPU: 0 UID: 0 PID: 37 Comm: kworker/0:1H Not tainted 6.12.0-rc7-syzkaller-00216-gf66d6acccbc0 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Workqueue: bcachefs_btree_read_complete btree_node_read_work
+RIP: 0010:bch2_fs_read_write_early+0x7f/0xb0 fs/bcachefs/super.c:526
+Code: e8 46 74 48 fd 85 ed 74 1b e8 fd 6f 48 fd eb 05 e8 f6 6f 48 fd 48 89 df be 01 00 00 00 5b 5d e9 07 fc ff ff e8 e2 6f 48 fd 90 <0f> 0b 90 eb e6 48 c7 c1 4c 40 1d 90 80 e1 07 80 c1 03 38 c1 7c 96
+RSP: 0018:ffffc9000057f8f8 EFLAGS: 00010293
+RAX: ffffffff844c7a2e RBX: ffff888050100000 RCX: ffff88801ddb0000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff844c7a0a R09: 1ffff1100a020035
+R10: dffffc0000000000 R11: ffffed100a020036 R12: ffff88803664b300
+R13: 1ffff1100a020035 R14: ffff8880501001a8 R15: ffff888050100000
+FS:  0000000000000000(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005555777f85f8 CR3: 0000000040778000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bch2_btree_node_rewrite_async+0x3df/0x6a0 fs/bcachefs/btree_update_interior.c:2287
+ btree_node_read_work+0xf59/0x1260 fs/bcachefs/btree_io.c:1350
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
