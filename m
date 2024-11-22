@@ -1,159 +1,125 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4A51DF250
-	for <linux-bcachefs@vger.kernel.org>; Fri, 22 Nov 2024 15:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E277A1DF258
+	for <linux-bcachefs@vger.kernel.org>; Fri, 22 Nov 2024 18:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732288531; cv=none; b=VyZ6JQetthRLVbyzF/rAuEtmbjVovD9tVbvRf/adwkFqG36S7u1uHMhZzO/JK2si1Znxg08l1pDSoGANNwPo7MMNOVq+iic4A6Y4BFXRtzYnyoBfMkJlEJvcwZqFoHNJwLZ3/sz+jJNtpLBeZr9dR9VhDzKAwWE5/jwoUYEq0xY=
+	t=1732301066; cv=none; b=Q4A/NkYNyc+C7nGO6qtJdSNlfr0rLXsZpB9mOkKvOnTWEm3kVR4DLcd0BFxyZqrQhhMxiMTRjolZH4cqukkoAOar+UrslgwaD3RwTBBacrQwer+led41p13+HDqe2ssnZKs9q8sOnl7I7RznDdbmcCtnlA3SC6pyPLGRfSeTDi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732288531; c=relaxed/simple;
-	bh=oN0L2IfFqn8dgguJt5GAXgrQutSDbbE1W0kt61DJyUE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=EqnoA5Vesk/S/ZpdTrJQHpOtcKmzp3r3X9PsJ1cbQaZTqr246x3hePWHvMQleooeDiip7wfLmA9v3Igp08QD2It/YnHseiDnPEK870UVkSv37hbBSGBjMjSm+VEtz4gVAb86JqC6XhyWBZUoXgDXl4XtnDZOkGtMYtXkmFuv+Y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+	s=arc-20240116; t=1732301066; c=relaxed/simple;
+	bh=EwkBTr/N3yhq9SFwac0I+lxk1xz3tctWv0sLN6oCTP8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=dDYy+znxJeXXA9aemvfOpoFglWcMSv5jD0NEvtHeBECfhxkW/tEHYtXRwvyIpQGiAdPcGRr5zBFSXLN1othLVhQj1fdDbeefp6vKuYq5CvXDXCzW8IwzreXDOLo71meXz1QDGM1JcEKP4qgPsZmB8Q1TLbfBPJWai5K6V3/hiXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a7a5031e75so4075515ab.3
-        for <linux-bcachefs@vger.kernel.org>; Fri, 22 Nov 2024 07:15:28 -0800 (PST)
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a78b04470cso27580815ab.0
+        for <linux-bcachefs@vger.kernel.org>; Fri, 22 Nov 2024 10:44:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732288528; x=1732893328;
-        h=content-transfer-encoding:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A4ApWgkuG2A4yHHfw0Btk1g0uYsFp0LrAS1btN9va/c=;
-        b=LHD13o8fQukiV+ETKJKuCRspUGm1U131q+frOpGaf/ub1gQftP5FkObdBQcvT2bg4Z
-         IBbZKKH24Jpia630DcIY3cg/ZCxibqYSLPWYMpVYrl7Qqfhiq5hlLwYkl7AY55ngXZlV
-         ZJb9G0FFHgvDvCqtmSDUBJK6aBoI6dbQNLLVgQtXO3XFpp6QPM00BAnfi15DruLUpWxT
-         LSNYpLVzNjmXzag4M7yK8DLD+gquWyF4JiSWq7Aa0asGsLgGw+MtlpNWIqXztzflch8y
-         H5SV9Mz3SCI5K1FQZ3hErAC4hIR0Yl2STFUKQYAV5ZlmKqza8WOdERrBZiFVd8xUwfGg
-         Jy5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW/v2vsLPpIn3AfLLr2Rizu8FZx/n/6jr4V3utonIEu54ZqOzvBf1VAnNbXKVn1hBN1RKDt0FIlgB5S9fhvrA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIthh6w5v2Xu7VwW01QqMDHiGotBoOFn0gnGNi6VPYckL08QAg
-	I0zoJ4igXhL5t6wbKEqGHOz13/fHx3dl0wfcKPKThi9nx6UM/BJux8PVYsY1pvce2Uhx8d77w7x
-	PjOVFhu9AQe3nuOYrSRLtTYf0pbC3iu/SNavEQ+gtQPWieTF2u6QZDtM=
-X-Google-Smtp-Source: AGHT+IEc9btm7pI63XggMYhAvLFULbcqsnxksoNQygWIsiHcx25bmfcIm3rZKuhGGsjn/Ocl80j/ICWPpQeDWie2TTPWDmJ09r/4
+        d=1e100.net; s=20230601; t=1732301064; x=1732905864;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MdimGuhinLllTQuj7Lr0mfJgpwO+4DOFH9jFfw9xekk=;
+        b=XejC83a6F/b3TWuCfjCDcqcbCrT+51QvxRc8GveDGMc+WgUKP6dM03qTCF1yUj9ejD
+         e3o26O+stpeafTEm/0sCEUizg5j8WW9gy/yMsTjLk0f5Euin20J3uq0AAQQ5sCvuHXKh
+         tP29tvVlLU2cSgAJaCXTOvNZMQYsxm0BXEE8CeeMcJeaC41zZJN79kDKv7ethgFJFq4R
+         /dljwFTB5Epo39YLcsLEwnoNqC0reBHC5Y6cR2AEFsHhKPxXvaHPHfMn3BqZthADUELk
+         7lKWOxj/1O0yGvwD/1ac71f2txqfJW4si6A3UIL/++kwExXbSqsOI8QPxs+a6aQSn6Be
+         4n2A==
+X-Forwarded-Encrypted: i=1; AJvYcCUie8zmU1NNe6dcqrjYcGjaYvx6eU0SGpNr5ImLe0gVoFudIxTqijge7ur462vPDMz54e/FRRnF7UcyIpjewg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzUSJADx5rCIfmBoCkgaVa87u5sMb7NRXTCtxk1UGQcfu/xcMEz
+	qXBDIVYuYpXM0z8HnI3ReeOXAYSGPqqmyyP4pSakqKn2h5L0+Xp5vdirfD2JfWn1lyoI4CC1d4v
+	G6HLClUWvpapryiBL/7NJNpEZPYvzBveczFyccxWDiFVoLfPw1B+hrNQ=
+X-Google-Smtp-Source: AGHT+IGXhplYSr+IciGa5CrDFj7QPgZXsW7/ePHDf1LJCJ6vNpZkqL+sj0TVvZiY9xYcvmYqMlT/AJ66c2uP0FLdfvvxCCb900hH
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b43:b0:3a7:1a65:2fbc with SMTP id
- e9e14a558f8ab-3a79afde78bmr39476025ab.23.1732288524974; Fri, 22 Nov 2024
- 07:15:24 -0800 (PST)
-Date: Fri, 22 Nov 2024 07:15:24 -0800
+X-Received: by 2002:a05:6e02:18c9:b0:3a7:8040:5962 with SMTP id
+ e9e14a558f8ab-3a79ab8148bmr54183145ab.0.1732301064231; Fri, 22 Nov 2024
+ 10:44:24 -0800 (PST)
+Date: Fri, 22 Nov 2024 10:44:24 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6740a00c.050a0220.363a1b.0145.GAE@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_root_read
-From: syzbot <syzbot+c4b76ec6c2d45b06ec1e@syzkaller.appspotmail.com>
+Message-ID: <6740d108.050a0220.3c9d61.0196.GAE@google.com>
+Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_pos_to_text (2)
+From: syzbot <syzbot+1f202d4da221ec6ebf8e@syzkaller.appspotmail.com>
 To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    43fb83c17ba2 Merge tag 'soc-arm-6.13' of git://git.kernel..=
-.
+HEAD commit:    158f238aa69d Merge tag 'for-linus-6.13-rc1-tag' of git://g..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=3D150afae8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3Daabf8d2f67b7072=
-a
-dashboard link: https://syzkaller.appspot.com/bug?extid=3Dc4b76ec6c2d45b06e=
-c1e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debia=
-n) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1692a75f98000=
-0
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D15965930580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13798b78580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6e547da255e4eefa
+dashboard link: https://syzkaller.appspot.com/bug?extid=1f202d4da221ec6ebf8e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e386c0580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1105875f980000
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7fe=
-b34a89c2a/non_bootable_disk-43fb83c1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8ce8ef813dfe/vmlinux-=
-43fb83c1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dbfeb37f6bfa/bzI=
-mage-43fb83c1.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/bc470092719b=
-/mount_0.gz
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-158f238a.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/0a823971fc99/vmlinux-158f238a.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e215e05844b2/bzImage-158f238a.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/b0994925a8f6/mount_0.gz
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit=
-:
-Reported-by: syzbot+c4b76ec6c2d45b06ec1e@syzkaller.appspotmail.com
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1f202d4da221ec6ebf8e@syzkaller.appspotmail.com
 
-bcachefs (loop0): will run btree node scan
-invalid bkey u64s 7 type xattr 536870912:3798421620223919902:U32_MAX len 0 =
-ver 0: user.=06:
-  xattr name has invalid characters: delete?, fixing
+invalid bkey u64s 5 type set 18446462598867058688:34:0 len 3072 ver 0
+  size != 0: delete?, fixing
 ------------[ cut here ]------------
-kernel BUG at fs/bcachefs/btree_io.c:1743!
+kernel BUG at fs/bcachefs/btree_cache.h:131!
 Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5326 Comm: syz-executor408 Not tainted 6.12.0-syzkaller-=
-03657-g43fb83c17ba2 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16=
-.3-2~bpo12+1 04/01/2014
-RIP: 0010:__bch2_btree_root_read fs/bcachefs/btree_io.c:1743 [inline]
-RIP: 0010:bch2_btree_root_read+0x78d/0x7a0 fs/bcachefs/btree_io.c:1771
-Code: ff 44 89 f1 80 e1 07 38 c1 0f 8c 98 fa ff ff 4c 89 f7 e8 b6 87 e6 fd =
-e9 8b fa ff ff e8 6c 73 7c fd 90 0f 0b e8 64 73 7c fd 90 <0f> 0b e8 ec ab b=
-2 07 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90
-RSP: 0018:ffffc9000ceaf3a0 EFLAGS: 00010293
-RAX: ffffffff8418856c RBX: 00000000ffffffef RCX: ffff888000728000
-RDX: 0000000000000000 RSI: 00000000ffffffef RDI: 0000000000000000
-RBP: ffffc9000ceaf4e0 R08: ffffffff841883b1 R09: 1ffff920019d5e5c
-R10: dffffc0000000000 R11: fffff520019d5e5d R12: ffff88804384f000
-R13: 0000000000023001 R14: ffff888044a01a80 R15: 0000000000000000
-FS:  000055558b9ee380(0000) GS:ffff88801fc00000(0000) knlGS:000000000000000=
-0
+CPU: 0 UID: 0 PID: 5321 Comm: read_btree_node Not tainted 6.12.0-syzkaller-00971-g158f238aa69d #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:bch2_btree_id_root fs/bcachefs/btree_cache.h:131 [inline]
+RIP: 0010:bch2_btree_pos_to_text+0x1ee/0x1f0 fs/bcachefs/btree_cache.c:1403
+Code: 00 00 fc ff df e9 70 ff ff ff 89 d9 80 e1 07 38 c1 0f 8c 7a ff ff ff 48 89 df e8 fd 89 e9 fd e9 6d ff ff ff e8 c3 a1 7f fd 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa
+RSP: 0018:ffffc9000d14f448 EFLAGS: 00010293
+RAX: ffffffff8415501d RBX: 000000000000001e RCX: ffff888000c04880
+RDX: 0000000000000000 RSI: 000000000000001e RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff84154f0a R09: 0000000000000000
+R10: ffffc9000d14f5e0 R11: fffff52001a29ec1 R12: ffff888040420800
+R13: ffff888044700000 R14: ffff888044700000 R15: ffffc9000d14f5e0
+FS:  0000000000000000(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff9e053fe8 CR3: 0000000042fb4000 CR4: 0000000000352ef0
+CR2: 0000562b097d2fd0 CR3: 0000000011e62000 CR4: 0000000000352ef0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- read_btree_roots+0x296/0x840 fs/bcachefs/recovery.c:523
- bch2_fs_recovery+0x2585/0x39d0 fs/bcachefs/recovery.c:853
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1037
- bch2_fs_get_tree+0xd68/0x1710 fs/bcachefs/fs.c:2170
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
- do_new_mount+0x2be/0xb40 fs/namespace.c:3507
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4057 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fd48bf0c9ba
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 =
-00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdbfdd4698 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffdbfdd46b0 RCX: 00007fd48bf0c9ba
-RDX: 00000000200058c0 RSI: 0000000020000000 RDI: 00007ffdbfdd46b0
-RBP: 0000000000000004 R08: 00007ffdbfdd46f0 R09: 000000000000596c
-R10: 0000000000210008 R11: 0000000000000282 R12: 0000000000210008
-R13: 00007ffdbfdd46f0 R14: 0000000000000003 R15: 0000000001000000
+ btree_node_read_work+0x486/0x1260 fs/bcachefs/btree_io.c:1308
+ bch2_btree_node_read+0x2433/0x2a10
+ bch2_btree_node_fill+0xc75/0x12f0 fs/bcachefs/btree_cache.c:991
+ bch2_btree_node_get_noiter+0x9d5/0xf70 fs/bcachefs/btree_cache.c:1260
+ found_btree_node_is_readable fs/bcachefs/btree_node_scan.c:85 [inline]
+ try_read_btree_node fs/bcachefs/btree_node_scan.c:193 [inline]
+ read_btree_nodes_worker+0x13c5/0x2220 fs/bcachefs/btree_node_scan.c:242
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
  </TASK>
 Modules linked in:
 ---[ end trace 0000000000000000 ]---
-RIP: 0010:__bch2_btree_root_read fs/bcachefs/btree_io.c:1743 [inline]
-RIP: 0010:bch2_btree_root_read+0x78d/0x7a0 fs/bcachefs/btree_io.c:1771
-Code: ff 44 89 f1 80 e1 07 38 c1 0f 8c 98 fa ff ff 4c 89 f7 e8 b6 87 e6 fd =
-e9 8b fa ff ff e8 6c 73 7c fd 90 0f 0b e8 64 73 7c fd 90 <0f> 0b e8 ec ab b=
-2 07 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90
-RSP: 0018:ffffc9000ceaf3a0 EFLAGS: 00010293
-RAX: ffffffff8418856c RBX: 00000000ffffffef RCX: ffff888000728000
-RDX: 0000000000000000 RSI: 00000000ffffffef RDI: 0000000000000000
-RBP: ffffc9000ceaf4e0 R08: ffffffff841883b1 R09: 1ffff920019d5e5c
-R10: dffffc0000000000 R11: fffff520019d5e5d R12: ffff88804384f000
-R13: 0000000000023001 R14: ffff888044a01a80 R15: 0000000000000000
-FS:  000055558b9ee380(0000) GS:ffff88801fc00000(0000) knlGS:000000000000000=
-0
+RIP: 0010:bch2_btree_id_root fs/bcachefs/btree_cache.h:131 [inline]
+RIP: 0010:bch2_btree_pos_to_text+0x1ee/0x1f0 fs/bcachefs/btree_cache.c:1403
+Code: 00 00 fc ff df e9 70 ff ff ff 89 d9 80 e1 07 38 c1 0f 8c 7a ff ff ff 48 89 df e8 fd 89 e9 fd e9 6d ff ff ff e8 c3 a1 7f fd 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa
+RSP: 0018:ffffc9000d14f448 EFLAGS: 00010293
+RAX: ffffffff8415501d RBX: 000000000000001e RCX: ffff888000c04880
+RDX: 0000000000000000 RSI: 000000000000001e RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff84154f0a R09: 0000000000000000
+R10: ffffc9000d14f5e0 R11: fffff52001a29ec1 R12: ffff888040420800
+R13: ffff888044700000 R14: ffff888044700000 R15: ffffc9000d14f5e0
+FS:  0000000000000000(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff9e053fe8 CR3: 0000000042fb4000 CR4: 0000000000352ef0
+CR2: 000055b6646f3018 CR3: 0000000011e62000 CR4: 0000000000352ef0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
