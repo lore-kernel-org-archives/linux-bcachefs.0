@@ -1,177 +1,176 @@
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A27366
-	for <linux-bcachefs@vger.kernel.org>; Tue, 26 Nov 2024 10:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBCA81D47D2;
+	Tue, 26 Nov 2024 13:27:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732618465; cv=none; b=Bj/5FmeeH27U7E+SfVyWn49VhaL8FmwTAlZ27BMfao4B/opKIp3pvjOjiSdtZvFZl5C0uVRNT5xcuam/2/9vN+BTPz2/Z4EiNEGFNfc3qhEKwXVovDaqss24ZXYN2koxyBIVFP3WGM3XixJ2ZW4/4bon7bYlkTclnKNUdyr4cMM=
+	t=1732627650; cv=none; b=QvPaKvcJAxEQl+IIYJX78Ze+jJcGMflqQVWtHHEGyMJUqIsNr33UBYqthp64jfPCKAJ/6f/fui8aATlGCt4TulsFs07U8cH+z+PaNLqVNdGBLQfa9YxTJsySkY8uHsa+5UECgfXuolSLeThAxeUGN1q97H9ExANBY3mQXwtirSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732618465; c=relaxed/simple;
-	bh=lWheZJ5ckvJbAK+q8CSnFxJJurVk57rLGEk1NalPSHo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WsW9JwDIlqtQxeQqpSCIqHenInYUOh4hjzY5m9+b7j6prt4l+iyxAELMDVd0PCwr+Hw9PHcsxtbQUQCAy6szn13BYGs9FgC6TBkeDckyy36UvjUPIW0evhWm4H0NDFbL+JyxKtuvPSS5R72k1PHhKIbYLvG+NHmC27TM6SbpnA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-843e5314c99so27463639f.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 26 Nov 2024 02:54:24 -0800 (PST)
+	s=arc-20240116; t=1732627650; c=relaxed/simple;
+	bh=kB14QwEsljC+Ih1ESFLNWeIU3yAv12TYYWftsJsDocU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TIALUs60UqUAKGMwjYegKJ2q+MRTg/PIsY/Z0yWT84vvtHuBfc9tILIcoLhsVRsQR6Aai4i7rLDLX76CPx5enWfDUpcSIeXxF2DJfwkZiys7L94mG30+SayIE2mAJtdsey2N94EUc+8lf4ISKVnj8MUAQTZ4KXvnn3vlqok140Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6eebae6f013so57425817b3.0;
+        Tue, 26 Nov 2024 05:27:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732618463; x=1733223263;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eBNs4wW+a6uYs+TPTnSN8zmVwcGDd2ICxR1KGusuoKI=;
-        b=hNvH53RXLgurc1Vh6L+iCtOr+bQtLBYm/VdqfeDhE9n/tipY3PbSdebacpu2ygJaqA
-         IAVo8wqmQgHzl13zdgAedws0mygCqXVVK8xOlmifjZrbQTovOkb0iuTVAVUL0qJfqRrz
-         sY05R02l3dzV0gBZuO9QCbEZtan6pNdBRWJAoo5Eg76kGBjV2umLTFEV5eC6GeJWO0JM
-         kZGBJLkdzsqbfc3A7t114N7Oe6RWtbHWrSlt13bbn2ohC/2OVjhXMyRX7PQqoJ+QXlxH
-         tBQqA5uktrN+GrdQPQtYl+NAoqtbVIM/hUomsONU7xX1H1/6TrCIfsjirNFcEkwvzwBC
-         Vc2w==
-X-Forwarded-Encrypted: i=1; AJvYcCUsxDgCw2fi3P2HFFLzIOnuSuWTo6tDu95Ijh3DPu+ZsEPiAjDNpRUeTTrZx2Wb+LO0n5oCKvoGDLHzJxH4jA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzhYf5bGFa3OQfClsVTD0e3a7ZfZaLdHbEnxihNaOgn+CBZc2hk
-	hTnXBD2qRoArCqy2YlgjwEsdf+DHREy8nUcc7uy7IyvaO67sb4UKeft3iiAmfQ52T8fSczt0eBE
-	O1AuGIPImV8/ZMjKJkMiNmb7LOjNDD3oDCjMR+gh4NvLAsVVWDwsyzjQ=
-X-Google-Smtp-Source: AGHT+IHwhDVAyMzpgR6W+z0HQLf5eg8Dl6ZNN0LEGZSwvdpZuoweddIywndwBLXRXQdYFPmOPFlJJ1IkYIYat1h7jxwIYosCeAD0
+        d=1e100.net; s=20230601; t=1732627647; x=1733232447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UdSJmr80vU+P2PQ4iahpq7fx/jHhWG8mOuWEpt3bZZI=;
+        b=j7/Lw2C1T0DD+h7tLbug1n2miFbzTRfbg50jUMRIPBkAq/Y8RMZb+Bw7+P6P9Cs0sn
+         80mjGvjD5v8olabMSAUuO9INRxW+Qw75+1CAYyuhl6DQ0e6Zx0/Q0zVRrA1ADSrf+Rr9
+         Ahmy2UOToVutM+yITwRVxXvbbnb2DgueMK/KMhtCjfPbc7olBQNqcd9jhS6CikEvnNWE
+         1WyaxznxvI7oS3jipGxMGOUGxdK5Qg7mCcc515YqNIzxQYhvqNj4d9CeXs51Hl1dbV6D
+         9iUs4CwJCjuo5Qlb0TdNRYWZIex3VSzrCO5+rk4t3VtWSgRSmB3I6VXYLloD+2RkpcK7
+         Uhbw==
+X-Forwarded-Encrypted: i=1; AJvYcCU4dFcK1FEf/YM6LqcAGSXAtdBNGPDB15AtDAutjwf1/qUOIdocWTgma3WGY37ZqAWATTeyXQGTVi85aaU8N90=@vger.kernel.org, AJvYcCUN44AT3lg0nEQ3/p0O4oT2aq2HFh4t2ll8NcAE1xKUiVoRw9CI/Ejf9hk4DXI5mLUG/DxaNQQtXMLx8vU=@vger.kernel.org, AJvYcCUnDUpNEv1+71VeDeBohmuJA4MDFB6z3t1ZOtL+9d8LqFc5QlYNzsUHI7Rp8oBVc9d7S6o/0/rg2CLuexakXbyakA==@vger.kernel.org, AJvYcCWLQc5DFEE/yke+akJpm1C5oz0pxK4a5Ta5kCX40hXBXabuJS8FAywyyaVVUz9lL4tDOrRi/369XJtr@vger.kernel.org, AJvYcCWfMjcNAqMrmp+MorxKOQZbQ0iskLDrmh+u4N9dyoTYcvPMIC9zQU6mwxzMqKAdviKu+YagoK5HwBlQpUdD@vger.kernel.org, AJvYcCWvC8WdQz1jzbCQUC8sSZmMSjBzS327pwxDb5uZAv2apDGdgJENsI0R0pbW4KFhnQwfrBVAeQqfY8Si+UCzX+2W@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2/CeNClzXI2IyPuau0fuo4mF71uoJn5eRneYTDd8C+etG1Ptx
+	aaxkEUdaHO9AsK6BxBidPeB+NaH+yPxUvVQPmsxPwoLnmAoym8dQ82qp0Y9t
+X-Gm-Gg: ASbGnctYGa63TPPUnOuQWTOfiVdUwXyxd4T9RfDNd6SFOs1077otuapvnzzpqtOXFG1
+	YDyR8bdk169mYHzy7FzYD+lRWd9HIN4CPR9lMO+HApnBkgPfL1H75CiuGDXeqQ9JWKvZiSVIetp
+	K1VPEuoRFNv6vQMOZkIKBYgm/ef2gE+z6wEr/4xivwUNvZxWnYgW4dmu8qKpOxY9uH5F0cMfSwA
+	6RsSvMMMmxYQm0R0mgJNf1t7hopFR3ujkCObejd9VfVa70PIZsWGmoUN6qtoVDimfKrxtVKLq3V
+	xLXYq/DOG0aa/axp
+X-Google-Smtp-Source: AGHT+IEU7w+iQBaxVEpuVxQiYxuZJz6AN66EtR8TI0rlVs459R3/WIFwJpdtGv3oJRYiwRN+nKXjXg==
+X-Received: by 2002:a05:690c:690e:b0:6ee:d9a3:c85a with SMTP id 00721157ae682-6eee0a26568mr137840547b3.27.1732627645299;
+        Tue, 26 Nov 2024 05:27:25 -0800 (PST)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6eee009cb80sm22674607b3.117.2024.11.26.05.27.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Nov 2024 05:27:23 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6eebae6f013so57424537b3.0;
+        Tue, 26 Nov 2024 05:27:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUHUZ5Z9nkes+JDwwL6K40DlxVaPP4qTnNNq+xt88ormFiKMcLZjUvK/PGbj6mmYNTMvVxzBQTrWWVPqCE2nPSadA==@vger.kernel.org, AJvYcCUaz+4uQFe4DU9QJdq+AhTMo4VpWq8IbaAAfTUTRddhRgJF/WNd+FVqLmPyRO0qgb7Mpr+LJKo6tOk+@vger.kernel.org, AJvYcCWaZGV9GHV6WJf4jBRhBHPMmyjb4hG4l0xJ4J0sS0892/7T3P951dWIWyvVddsRGOmZW7rpyDrlSsAXL0+C2UKn@vger.kernel.org, AJvYcCWpp7codf5NJZDrQPf0j9k0yHYfNic9JKnU3H7G0bmFlqJhyoJmIRG0ol+kroXp3hZV6o0Do364PnurywQY@vger.kernel.org, AJvYcCXm0bMAo4OuUokLXaUI1AG0BODTkdoOg/uOyBKJ8r304SHzBgjn9sDzgSKAc42KVvH5SH2sIuGCYNdg0pQ=@vger.kernel.org, AJvYcCXvYKfHEC+DDZcLEmvVF7I9dnTJ3T6YS7IOpO67hFUFV8NTCoEybyClVJPrca6cUv5jS1ANDOlf6IY8Aj7WdSs=@vger.kernel.org
+X-Received: by 2002:a0d:d303:0:b0:6ea:807c:bbaa with SMTP id
+ 00721157ae682-6eee08825d3mr111480937b3.5.1732627641261; Tue, 26 Nov 2024
+ 05:27:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d12:b0:3a7:70a4:6872 with SMTP id
- e9e14a558f8ab-3a79ad203ebmr151348505ab.9.1732618463549; Tue, 26 Nov 2024
- 02:54:23 -0800 (PST)
-Date: Tue, 26 Nov 2024 02:54:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6745a8df.050a0220.1286eb.0015.GAE@google.com>
-Subject: [syzbot] [kernfs?] [bcachefs?] general protection fault in kernfs_dop_revalidate
-From: syzbot <syzbot+e37a1730d63d207fe403@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org
+References: <20241020040200.939973-1-visitorckw@gmail.com> <20241020040200.939973-2-visitorckw@gmail.com>
+In-Reply-To: <20241020040200.939973-2-visitorckw@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 26 Nov 2024 14:27:09 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVO5DPuD9HYWBFqKDHphx7+0BEhreUxtVC40A=8p6VAhQ@mail.gmail.com>
+Message-ID: <CAMuHMdVO5DPuD9HYWBFqKDHphx7+0BEhreUxtVC40A=8p6VAhQ@mail.gmail.com>
+Subject: Re: [PATCH v2 01/10] lib/min_heap: Introduce non-inline versions of
+ min heap API functions
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
+	corbet@lwn.net, peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
+	namhyung@kernel.org, akpm@linux-foundation.org, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com, 
+	adrian.hunter@intel.com, kan.liang@linux.intel.com, willy@infradead.org, 
+	jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org, 
+	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-doc@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi Kuan-Wei,
 
-syzbot found the following issue on:
+On Sun, Oct 20, 2024 at 6:02=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.com=
+> wrote:
+> All current min heap API functions are marked with '__always_inline'.
+> However, as the number of users increases, inlining these functions
+> everywhere leads to a increase in kernel size.
+>
+> In performance-critical paths, such as when perf events are enabled and
+> min heap functions are called on every context switch, it is important
+> to retain the inline versions for optimal performance. To balance this,
+> the original inline functions are kept, and additional non-inline
+> versions of the functions have been added in lib/min_heap.c.
+>
+> Link: https://lore.kernel.org/20240522161048.8d8bbc7b153b4ecd92c50666@lin=
+ux-foundation.org
+> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-HEAD commit:    28eb75e178d3 Merge tag 'drm-next-2024-11-21' of https://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17955b78580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=402159daa216c89d
-dashboard link: https://syzkaller.appspot.com/bug?extid=e37a1730d63d207fe403
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163706e8580000
+Thanks for your patch, which is now commit 92a8b224b833e82d
+("lib/min_heap: introduce non-inline versions of min heap API
+functions") upstream.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e3c9c97af7d9/disk-28eb75e1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1e22f3d29103/vmlinux-28eb75e1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8ff56ec30fa6/bzImage-28eb75e1.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/92ddc9fa5ec9/mount_0.gz
+> --- a/include/linux/min_heap.h
+> +++ b/include/linux/min_heap.h
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e37a1730d63d207fe403@syzkaller.appspotmail.com
+> @@ -50,33 +50,33 @@ void __min_heap_init(min_heap_char *heap, void *data,=
+ int size)
+>                 heap->data =3D heap->preallocated;
+>  }
+>
+> -#define min_heap_init(_heap, _data, _size)     \
+> -       __min_heap_init((min_heap_char *)_heap, _data, _size)
+> +#define min_heap_init_inline(_heap, _data, _size)      \
+> +       __min_heap_init_inline((min_heap_char *)_heap, _data, _size)
 
-Oops: general protection fault, probably for non-canonical address 0xdffffc000000000a: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000050-0x0000000000000057]
-CPU: 0 UID: 0 PID: 5210 Comm: udevd Not tainted 6.12.0-syzkaller-07749-g28eb75e178d3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
-RIP: 0010:kernfs_root fs/kernfs/kernfs-internal.h:70 [inline]
-RIP: 0010:kernfs_dop_revalidate+0x8e/0x560 fs/kernfs/dir.c:1158
-Code: c5 80 04 00 00 48 89 e8 48 c1 e8 03 42 80 3c 30 00 74 08 48 89 ef e8 c1 9e c1 ff 4c 8b 7d 00 4d 8d 67 30 4c 89 e3 48 c1 eb 03 <42> 80 3c 33 00 74 08 4c 89 e7 e8 a3 9e c1 ff 49 8b 6f 30 48 85 ed
-RSP: 0018:ffffc900033efa90 EFLAGS: 00010206
-RAX: 1ffff1100c748639 RBX: 000000000000000a RCX: ffff88807deada00
-RDX: ffff88807deada00 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff888063a431c8 R08: ffffffff823b3da8 R09: 1ffffffff20391a6
-R10: dffffc0000000000 R11: ffffffff823b3d80 R12: 0000000000000051
-R13: ffff88807affb318 R14: dffffc0000000000 R15: 0000000000000021
-FS:  00007fa024cb5c80(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe48c1ff000 CR3: 000000007d586000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- lookup_fast+0x1f4/0x4a0
- walk_component+0x57/0x410 fs/namei.c:2108
- lookup_last fs/namei.c:2610 [inline]
- path_lookupat+0x16f/0x450 fs/namei.c:2634
- filename_lookup+0x2a3/0x670 fs/namei.c:2663
- do_readlinkat+0xf0/0x3a0 fs/stat.c:562
- __do_sys_readlink fs/stat.c:599 [inline]
- __se_sys_readlink fs/stat.c:596 [inline]
- __x64_sys_readlink+0x7f/0x90 fs/stat.c:596
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fa024917d47
-Code: 73 01 c3 48 8b 0d e1 90 0d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 59 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d b1 90 0d 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffdac68fa58 EFLAGS: 00000246 ORIG_RAX: 0000000000000059
-RAX: ffffffffffffffda RBX: 00007ffdac68fa68 RCX: 00007fa024917d47
-RDX: 0000000000000400 RSI: 00007ffdac68fa68 RDI: 00007ffdac68ff48
-RBP: 0000000000000400 R08: 000055b53fcce374 R09: 0000000000000000
-R10: 0000000000000812 R11: 0000000000000246 R12: 00007ffdac68ff48
-R13: 00007ffdac68feb8 R14: 000055b53fcc3910 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:kernfs_root fs/kernfs/kernfs-internal.h:70 [inline]
-RIP: 0010:kernfs_dop_revalidate+0x8e/0x560 fs/kernfs/dir.c:1158
-Code: c5 80 04 00 00 48 89 e8 48 c1 e8 03 42 80 3c 30 00 74 08 48 89 ef e8 c1 9e c1 ff 4c 8b 7d 00 4d 8d 67 30 4c 89 e3 48 c1 eb 03 <42> 80 3c 33 00 74 08 4c 89 e7 e8 a3 9e c1 ff 49 8b 6f 30 48 85 ed
-RSP: 0018:ffffc900033efa90 EFLAGS: 00010206
+Casting macro parameters without any further checks prevents the
+compiler from detecting silly mistakes.  Would it be possible to
+add safety-nets here and below, using e.g. container_of() or typeof()
+checks?
 
-RAX: 1ffff1100c748639 RBX: 000000000000000a RCX: ffff88807deada00
-RDX: ffff88807deada00 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff888063a431c8 R08: ffffffff823b3da8 R09: 1ffffffff20391a6
-R10: dffffc0000000000 R11: ffffffff823b3d80 R12: 0000000000000051
-R13: ffff88807affb318 R14: dffffc0000000000 R15: 0000000000000021
-FS:  00007fa024cb5c80(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2ee5ffff CR3: 000000007d586000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	80 04 00 00          	addb   $0x0,(%rax,%rax,1)
-   4:	48 89 e8             	mov    %rbp,%rax
-   7:	48 c1 e8 03          	shr    $0x3,%rax
-   b:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1)
-  10:	74 08                	je     0x1a
-  12:	48 89 ef             	mov    %rbp,%rdi
-  15:	e8 c1 9e c1 ff       	call   0xffc19edb
-  1a:	4c 8b 7d 00          	mov    0x0(%rbp),%r15
-  1e:	4d 8d 67 30          	lea    0x30(%r15),%r12
-  22:	4c 89 e3             	mov    %r12,%rbx
-  25:	48 c1 eb 03          	shr    $0x3,%rbx
-* 29:	42 80 3c 33 00       	cmpb   $0x0,(%rbx,%r14,1) <-- trapping instruction
-  2e:	74 08                	je     0x38
-  30:	4c 89 e7             	mov    %r12,%rdi
-  33:	e8 a3 9e c1 ff       	call   0xffc19edb
-  38:	49 8b 6f 30          	mov    0x30(%r15),%rbp
-  3c:	48 85 ed             	test   %rbp,%rbp
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -777,3 +777,6 @@ config POLYNOMIAL
+>
+>  config FIRMWARE_TABLE
+>         bool
+> +
+> +config MIN_HEAP
+> +       bool
 
+Perhaps tristate? See also below.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2279,6 +2279,7 @@ config TEST_LIST_SORT
+>  config TEST_MIN_HEAP
+>         tristate "Min heap test"
+>         depends on DEBUG_KERNEL || m
+> +       select MIN_HEAP
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Ideally, tests should not select functionality, to prevent increasing the
+attack vector by merely enabling (modular) tests.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+In this particular case, just using "depends on MIN_HEAP" is not an
+option, as MIN_HEAP is not user-visible, and thus cannot be enabled
+by the user on its own.  However, making MIN_HEAP tristate could be
+a first step for the modular case.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+The builtin case is harder to fix, as e.g.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+        depends on MIN_HEAP || COMPILE_TEST
+        select MIN_HEAP if COMPILE_TEST
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+would still trigger a recursive dependency error.
 
-If you want to undo deduplication, reply with:
-#syz undup
+Alternatively, the test could just keep on using the inline variants,
+unless CONFIG_MIN_HEAP=3Dy? Or event test both for the latter?
+
+>         help
+>           Enable this to turn on min heap function tests. This test is
+>           executed only once during system boot (so affects only boot tim=
+e),
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
