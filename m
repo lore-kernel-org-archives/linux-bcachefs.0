@@ -1,343 +1,140 @@
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF44C2C6
-	for <linux-bcachefs@vger.kernel.org>; Tue, 26 Nov 2024 01:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34449440C
+	for <linux-bcachefs@vger.kernel.org>; Tue, 26 Nov 2024 01:38:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732584386; cv=none; b=BfUIVUiCVXhqlV4AhCR1NvHE/MwtJNiGQfp39ybja8VsRl4Au5bVDYa579X87T3t+ov8GwLAelCx0uV5ymdfu4+mWqIC3RXCo/KcXSacADi1ajmemFr/qbrzeM5aOAAPXUyMk/tyQBw8ZxwpqvTMSm6kV13+9kk8+dp6pTpdgII=
+	t=1732585114; cv=none; b=O+vD/c24FR9lqrw5UzJI99K0UlelJQ/4xBEYeF6J5lBBzxjBMGA71MB2MC6Cbc16LuWJK8eZzSswnCJwv8shqdLh0CxMSuFrPFEFNOUrS1+Nf4MFnAW7NCfHGyOAw8xduFP7/WjN7gvpI0okGeyzjLkqHfdFlUWGF/rcGWQ3FJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732584386; c=relaxed/simple;
-	bh=kEFSAChAQCbIutdMW5aUh1ttj8PI29L9DCyiBMrO0EQ=;
+	s=arc-20240116; t=1732585114; c=relaxed/simple;
+	bh=gSsHLbX/xNRwyXFYmNEsWG1huu5G/yNkh92Z06JWT+s=;
 	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Qw7IoAEWh04IDZhjFl9KUl7YQqNDEpJEd/59reqn4vS+IpUrD5t/DgHUuwDD1o/uLoa0XOnF8J1tA92ApDXPXQcggqyZ2hE6wo7BjCKablMlZJVjxMUbqFzOI6xnH2kCqpl3UsBhGbuqiLV3d+DvpfYktj++pl4n5+jYVXs6XJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+	 Content-Type; b=gnQVl/3yMe4yZv/pnHn2kWG2qxlCaf/IwGNUcw7UogKxOaaRj9YuvgypTfIXqdUd49XgN4h/UKnH82nKe9SyZ435qjfEx6MTKB5LaDautMb5IEHJLl4LGOJ9K0dIDf1au5PfxaSpq/PXWNy8115XjHQLwbHQ0+EDXLMsRolwqyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-841896ec108so201854039f.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 25 Nov 2024 17:26:24 -0800 (PST)
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a768b62268so57036205ab.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 25 Nov 2024 17:38:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732584384; x=1733189184;
+        d=1e100.net; s=20230601; t=1732585112; x=1733189912;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vhV3qmcY6LKgpbt6QuqXrnAC3jZ0vw2YkX9rEy3Fb7U=;
-        b=FsLCSx7sZAvrFfSgGTWXY+X8M1bH3p8zz7Oy5ThxG9SHwVB28Cr6wZrjITGCUlPMHJ
-         I0QltDMDcvx1FSOR0dTkRKQy2dzVekqAw6AfEiX01qAtMLX8VQkaOrAf5QF0mqLfadAz
-         JWlAOOmPxt1QsdBsqtl6eQYNTf6IoW4KR1/usldvb23jtkf+tqQJqPvc/5d64pghXARc
-         F+zKGDE6vZX9Xc3ShmC/4QOzCuvMOI53rO2NIOsF2DS+cek31ej9H02JVLpMQa6rGwHB
-         spCqJ5RhoZUG/fQ8/90SIhKwvuCrKP0tD/331rGSC3PIv7zzd2lsMLgRiqKywAo6NSRB
-         4KGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1Lk8qXAEzIbedeYrDEjfPSGiiJ28gpgbTSfiiTy2X7racBMyvYkxdkeyBr1VNcVtYXrEvmMWdaWn/dXsvjQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YychUP9vX9lJC1duAgg5ncM6UGwoYKxcPp6P2i+VGjCZOo2f7h6
-	rX5ltll/c/iRMF+1baFNNrMdz+1soTYml7ro8e5hveXDnfWfbilKMVXv69iTJHjmNlYZAOx3iN+
-	GmxOo+SvT7SvZM3P2ClpcG8at+7HRBXCKW3d0kHWsWldTI96QxHe7JlE=
-X-Google-Smtp-Source: AGHT+IHnJ+33L+DOC1BWdlwpVtRpr3NfmR+TdrsKDI2KQ0zdahDEObJ010H7LXh6E7Fu4RQkoBmYMWZLwscAMw61qLEG7rZ3SeHK
+        bh=D5t5qc153aYIy6iHNGMQOJ4dtj5pzbfdZipNeNrxgWY=;
+        b=UQj+7r+MiJ9eiki2hOfKEpuG9aijSvFJSE51Cnahl3S6e2NK5V7hO8m5ifv72hBpv2
+         KDLSK8pSZ2QMDTXFSoGQc90c/IE3ZE/UPL8hs9Kf/fI4C4S4hwYYoANNMOgAns2os4kK
+         xa7WrNpsJz2/0joywBQgmG/jQZUWgbqGzM/sZxkViy3qgEZCXets7Zk3yoosnDGu2vtn
+         zjgNbM0hShBDmbL1BhAi2MseKhp2U+cPioEj4qnElvzHrl2PP3ptLLCb2nBNY/mpWwwp
+         +ZbC6bz6HWdaK9tnYqQ/RB/rZ+pg/ZCBK5X380CJyOfhdhun3a9g7Yn78MDAvT7UzMOE
+         M0uw==
+X-Forwarded-Encrypted: i=1; AJvYcCW0jlZ7ekQqvkRrg975AWIT71JkDLRhNeKK5HOsYU4mEE8QjpaAoJaZs8dHiai34XnMbqpiQPlqJAhrIrYgiQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLoQ2THNj7+zHN/1KOU/KNwP+RsZ7CllI/fagM1kXXRC6KdlQZ
+	uPJXO1HwLpLeyQ7sBnvEj4R7g5G5cfr/HXRpacrIP9wcUW+0oNsv2lzsShnbY1uTdNwPM1XRfWg
+	gRiKyhU+wrWJw+eP8Yi0aKXqrXy/f3DywyD1cH8o/rsC37KAV/RgVYrA=
+X-Google-Smtp-Source: AGHT+IFvgGw8pfgm5EuLsokR+3XWArr6hO3UYLIjaBnu2/35s3NrlYfIR6xjAxkPYoI/AJb6gKMh8D3Upw7mgeAen6Ms7Gi5FJp3
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:216a:b0:3a7:975d:4364 with SMTP id
- e9e14a558f8ab-3a79ab7f795mr160676665ab.0.1732584384000; Mon, 25 Nov 2024
- 17:26:24 -0800 (PST)
-Date: Mon, 25 Nov 2024 17:26:23 -0800
-In-Reply-To: <0000000000007aa62a0619e8c330@google.com>
+X-Received: by 2002:a05:6e02:2186:b0:3a6:cac0:1299 with SMTP id
+ e9e14a558f8ab-3a79ae65220mr156675425ab.14.1732585112285; Mon, 25 Nov 2024
+ 17:38:32 -0800 (PST)
+Date: Mon, 25 Nov 2024 17:38:32 -0800
+In-Reply-To: <672b7604.050a0220.350062.0255.GAE@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <674523bf.050a0220.21d33d.0006.GAE@google.com>
-Subject: Re: [syzbot] [jfs?] [bcachefs?] INFO: task hung in do_unlinkat (5)
-From: syzbot <syzbot+08b113332e19a9378dd5@syzkaller.appspotmail.com>
-To: brauner@kernel.org, gregkh@linuxfoundation.org, jack@suse.cz, 
-	jfs-discussion@lists.sourceforge.net, kent.overstreet@linux.dev, 
-	linkinjeon@kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	shaggy@kernel.org, sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com, 
-	tj@kernel.org, viro@zeniv.linux.org.uk
+Message-ID: <67452698.050a0220.1286eb.000c.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_bucket_alloc_early
+From: syzbot <syzbot+07d7911319bd613ba885@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 syzbot has found a reproducer for the following issue on:
 
 HEAD commit:    9f16d5e6f220 Merge tag 'for-linus' of git://git.kernel.org..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10a2e778580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=54f7b2f59e7640e5
-dashboard link: https://syzkaller.appspot.com/bug?extid=08b113332e19a9378dd5
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13600f5f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ce1e2eda2213557
+dashboard link: https://syzkaller.appspot.com/bug?extid=07d7911319bd613ba885
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=147d3ee8580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14dc15c0580000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148215c0580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17600f5f980000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7562d921dc97/disk-9f16d5e6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8fb84b5dec53/vmlinux-9f16d5e6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/cac8b3f180c1/bzImage-9f16d5e6.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/c1fa91bf8bb1/mount_0.gz
+disk image: https://storage.googleapis.com/syzbot-assets/2fcdec73c0f3/disk-9f16d5e6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d4dc8d1847e1/vmlinux-9f16d5e6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/db0e04822d2c/bzImage-9f16d5e6.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/e5d1dbb2ef68/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+08b113332e19a9378dd5@syzkaller.appspotmail.com
+Reported-by: syzbot+07d7911319bd613ba885@syzkaller.appspotmail.com
 
-INFO: task syz-executor130:5858 blocked for more than 143 seconds.
-      Not tainted 6.12.0-syzkaller-09073-g9f16d5e6f220 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor130 state:D stack:29072 pid:5858  tgid:5841  ppid:5837   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0x17fb/0x4be0 kernel/sched/core.c:6756
- __schedule_loop kernel/sched/core.c:6833 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6848
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6905
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:853 [inline]
- do_unlinkat+0x26a/0x830 fs/namei.c:4574
- __do_sys_unlink fs/namei.c:4635 [inline]
- __se_sys_unlink fs/namei.c:4633 [inline]
- __x64_sys_unlink+0x47/0x50 fs/namei.c:4633
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8ff0002b49
-RSP: 002b:00007f8feff98218 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 00007f8ff00946b8 RCX: 00007f8ff0002b49
-RDX: 00007f8feffdc0f6 RSI: 0000000000000000 RDI: 0000000020000580
-RBP: 00007f8ff00946b0 R08: 00007fffff5b63d7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0031656c69662f2e
-R13: 00007f8ff00570c0 R14: 0030656c69662f2e R15: 0032656c69662f2e
- </TASK>
-INFO: task syz-executor130:5854 blocked for more than 144 seconds.
-      Not tainted 6.12.0-syzkaller-09073-g9f16d5e6f220 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor130 state:D stack:28440 pid:5854  tgid:5842  ppid:5838   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0x17fb/0x4be0 kernel/sched/core.c:6756
- __schedule_loop kernel/sched/core.c:6833 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6848
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6905
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:853 [inline]
- do_unlinkat+0x26a/0x830 fs/namei.c:4574
- __do_sys_unlink fs/namei.c:4635 [inline]
- __se_sys_unlink fs/namei.c:4633 [inline]
- __x64_sys_unlink+0x47/0x50 fs/namei.c:4633
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8ff0002b49
-RSP: 002b:00007f8feff98218 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 00007f8ff00946b8 RCX: 00007f8ff0002b49
-RDX: 00007f8feffdc0f6 RSI: 0000000000000000 RDI: 0000000020000580
-RBP: 00007f8ff00946b0 R08: 00007fffff5b63d7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0031656c69662f2e
-R13: 00007f8ff00570c0 R14: 0030656c69662f2e R15: 0032656c69662f2e
- </TASK>
-INFO: task syz-executor130:5855 blocked for more than 145 seconds.
-      Not tainted 6.12.0-syzkaller-09073-g9f16d5e6f220 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor130 state:D stack:28912 pid:5855  tgid:5843  ppid:5836   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0x17fb/0x4be0 kernel/sched/core.c:6756
- __schedule_loop kernel/sched/core.c:6833 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6848
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6905
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:853 [inline]
- do_unlinkat+0x26a/0x830 fs/namei.c:4574
- __do_sys_unlink fs/namei.c:4635 [inline]
- __se_sys_unlink fs/namei.c:4633 [inline]
- __x64_sys_unlink+0x47/0x50 fs/namei.c:4633
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8ff0002b49
-RSP: 002b:00007f8feff98218 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 00007f8ff00946b8 RCX: 00007f8ff0002b49
-RDX: 00007f8feffdc0f6 RSI: 0000000000000000 RDI: 0000000020000580
-RBP: 00007f8ff00946b0 R08: 00007fffff5b63d7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0031656c69662f2e
-R13: 00007f8ff00570c0 R14: 0030656c69662f2e R15: 0032656c69662f2e
- </TASK>
-INFO: task syz-executor130:5856 blocked for more than 146 seconds.
-      Not tainted 6.12.0-syzkaller-09073-g9f16d5e6f220 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor130 state:D stack:29072 pid:5856  tgid:5844  ppid:5839   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0x17fb/0x4be0 kernel/sched/core.c:6756
- __schedule_loop kernel/sched/core.c:6833 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6848
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6905
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:853 [inline]
- do_unlinkat+0x26a/0x830 fs/namei.c:4574
- __do_sys_unlink fs/namei.c:4635 [inline]
- __se_sys_unlink fs/namei.c:4633 [inline]
- __x64_sys_unlink+0x47/0x50 fs/namei.c:4633
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8ff0002b49
-RSP: 002b:00007f8feff98218 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 00007f8ff00946b8 RCX: 00007f8ff0002b49
-RDX: 00007f8feffdc0f6 RSI: 0000000000000000 RDI: 0000000020000580
-RBP: 00007f8ff00946b0 R08: 00007fffff5b63d7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0031656c69662f2e
-R13: 00007f8ff00570c0 R14: 0030656c69662f2e R15: 0032656c69662f2e
- </TASK>
-INFO: task syz-executor130:5857 blocked for more than 147 seconds.
-      Not tainted 6.12.0-syzkaller-09073-g9f16d5e6f220 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor130 state:D stack:29072 pid:5857  tgid:5845  ppid:5840   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0x17fb/0x4be0 kernel/sched/core.c:6756
- __schedule_loop kernel/sched/core.c:6833 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6848
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6905
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:853 [inline]
- do_unlinkat+0x26a/0x830 fs/namei.c:4574
- __do_sys_unlink fs/namei.c:4635 [inline]
- __se_sys_unlink fs/namei.c:4633 [inline]
- __x64_sys_unlink+0x47/0x50 fs/namei.c:4633
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8ff0002b49
-RSP: 002b:00007f8feff98218 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 00007f8ff00946b8 RCX: 00007f8ff0002b49
-RDX: 00007f8feffdc0f6 RSI: 0000000000000000 RDI: 0000000020000580
-RBP: 00007f8ff00946b0 R08: 00007fffff5b63d7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0031656c69662f2e
-R13: 00007f8ff00570c0 R14: 0030656c69662f2e R15: 0032656c69662f2e
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/30:
- #0: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #0: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #0: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6744
-1 lock held by kswapd0/88:
-2 locks held by getty/5592:
- #0: ffff88814cf5a0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc9000332b2f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x6a6/0x1e00 drivers/tty/n_tty.c:2211
-2 locks held by syz-executor130/5848:
-2 locks held by syz-executor130/5858:
- #0: ffff88804b276420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff88807720c6c0 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:853 [inline]
- #1: ffff88807720c6c0 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: do_unlinkat+0x26a/0x830 fs/namei.c:4574
-3 locks held by syz-executor130/5851:
-2 locks held by syz-executor130/5854:
- #0: ffff88804bba2420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff88807720cc00 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:853 [inline]
- #1: ffff88807720cc00 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: do_unlinkat+0x26a/0x830 fs/namei.c:4574
-2 locks held by syz-executor130/5847:
-2 locks held by syz-executor130/5855:
- #0: ffff88807d41c420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff8880770886c0 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:853 [inline]
- #1: ffff8880770886c0 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: do_unlinkat+0x26a/0x830 fs/namei.c:4574
-3 locks held by syz-executor130/5850:
-2 locks held by syz-executor130/5856:
- #0: ffff88804b886420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff888077088180 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:853 [inline]
- #1: ffff888077088180 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: do_unlinkat+0x26a/0x830 fs/namei.c:4574
-2 locks held by syz-executor130/5849:
-2 locks held by syz-executor130/5857:
- #0: ffff88804b046420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff88807720c180 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:853 [inline]
- #1: ffff88807720c180 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: do_unlinkat+0x26a/0x830 fs/namei.c:4574
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.12.0-syzkaller-09073-g9f16d5e6f220 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
- watchdog+0xff4/0x1040 kernel/hung_task.c:379
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+=====================================================
+BUG: KMSAN: uninit-value in bch2_alloc_to_v4 fs/bcachefs/alloc_background.h:235 [inline]
+BUG: KMSAN: uninit-value in bch2_bucket_alloc_early+0x11c0/0x2520 fs/bcachefs/alloc_foreground.c:439
+ bch2_alloc_to_v4 fs/bcachefs/alloc_background.h:235 [inline]
+ bch2_bucket_alloc_early+0x11c0/0x2520 fs/bcachefs/alloc_foreground.c:439
+ bch2_bucket_alloc_trans+0x8e6/0x3fb0 fs/bcachefs/alloc_foreground.c:649
+ bch2_bucket_alloc_set_trans+0x959/0x1650 fs/bcachefs/alloc_foreground.c:808
+ __open_bucket_add_buckets+0x1dec/0x3070 fs/bcachefs/alloc_foreground.c:1057
+ open_bucket_add_buckets+0x328/0x530 fs/bcachefs/alloc_foreground.c:1101
+ bch2_alloc_sectors_start_trans+0x1833/0x32b0
+ __bch2_btree_node_alloc fs/bcachefs/btree_update_interior.c:339 [inline]
+ bch2_btree_reserve_get+0x9d6/0x2290 fs/bcachefs/btree_update_interior.c:549
+ bch2_btree_update_start+0x1af9/0x2d60 fs/bcachefs/btree_update_interior.c:1247
+ bch2_btree_split_leaf+0x120/0xc00 fs/bcachefs/btree_update_interior.c:1856
+ bch2_trans_commit_error+0x1c0/0x1d60 fs/bcachefs/btree_trans_commit.c:942
+ __bch2_trans_commit+0x210f/0xd190 fs/bcachefs/btree_trans_commit.c:1140
+ bch2_trans_commit fs/bcachefs/btree_update.h:184 [inline]
+ btree_update_nodes_written fs/bcachefs/btree_update_interior.c:723 [inline]
+ btree_interior_update_work+0x2080/0x4870 fs/bcachefs/btree_update_interior.c:861
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3310
+ worker_thread+0xea7/0x14f0 kernel/workqueue.c:3391
+ kthread+0x3e2/0x540 kernel/kthread.c:389
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 5847 Comm: syz-executor130 Not tainted 6.12.0-syzkaller-09073-g9f16d5e6f220 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:__find_get_block+0x831/0x1150 fs/buffer.c:1404
-Code: 75 74 73 ff e8 90 3c 7b ff fb 48 c7 44 24 40 0e 36 e0 45 48 b8 00 00 00 00 00 fc ff df 48 8b 4c 24 38 48 c7 04 08 00 00 00 00 <48> c7 44 08 09 00 00 00 00 66 c7 44 08 11 00 00 c6 44 08 13 00 65
-RSP: 0018:ffffc90003f6f340 EFLAGS: 00000246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 1ffff920007ede70
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc90003f6f478 R08: ffffffff8222697d R09: 1ffffd40002f172e
-R10: dffffc0000000000 R11: fffff940002f172f R12: 0000000000000000
-R13: ffffea000178b940 R14: ffffea000178b900 R15: 00000000003186d1
-FS:  00007f8feffb96c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000561c4fca3600 CR3: 00000000766a6000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- __getblk_slow fs/buffer.c:1127 [inline]
- bdev_getblk+0x18d/0x550 fs/buffer.c:1431
- __bread_gfp+0x86/0x400 fs/buffer.c:1485
- sb_bread include/linux/buffer_head.h:346 [inline]
- get_branch+0x2c3/0x6e0 fs/sysv/itree.c:102
- get_block+0x180/0x16d0 fs/sysv/itree.c:222
- block_read_full_folio+0x418/0xcd0 fs/buffer.c:2396
- filemap_read_folio+0x14b/0x630 mm/filemap.c:2366
- do_read_cache_folio+0x3f5/0x850 mm/filemap.c:3826
- read_mapping_folio include/linux/pagemap.h:1011 [inline]
- dir_get_folio fs/sysv/dir.c:64 [inline]
- sysv_find_entry+0x16a/0x4b0 fs/sysv/dir.c:154
- sysv_inode_by_name+0x98/0x2a0 fs/sysv/dir.c:370
- sysv_lookup+0x6b/0xe0 fs/sysv/namei.c:38
- lookup_one_qstr_excl+0x11f/0x260 fs/namei.c:1692
- do_renameat2+0x670/0x13f0 fs/namei.c:5165
- __do_sys_rename fs/namei.c:5271 [inline]
- __se_sys_rename fs/namei.c:5269 [inline]
- __x64_sys_rename+0x82/0x90 fs/namei.c:5269
+
+Uninit was created at:
+ ___kmalloc_large_node+0x22c/0x370 mm/slub.c:4219
+ __kmalloc_large_node_noprof+0x3f/0x1e0 mm/slub.c:4236
+ __do_kmalloc_node mm/slub.c:4252 [inline]
+ __kmalloc_node_noprof+0x9d6/0xf50 mm/slub.c:4270
+ __kvmalloc_node_noprof+0xc0/0x2d0 mm/util.c:658
+ btree_node_data_alloc fs/bcachefs/btree_cache.c:153 [inline]
+ bch2_btree_node_mem_alloc+0xa72/0x2ee0 fs/bcachefs/btree_cache.c:832
+ __bch2_btree_node_alloc fs/bcachefs/btree_update_interior.c:321 [inline]
+ bch2_btree_reserve_get+0x37f/0x2290 fs/bcachefs/btree_update_interior.c:549
+ bch2_btree_update_start+0x1af9/0x2d60 fs/bcachefs/btree_update_interior.c:1247
+ bch2_btree_split_leaf+0x120/0xc00 fs/bcachefs/btree_update_interior.c:1856
+ bch2_trans_commit_error+0x1c0/0x1d60 fs/bcachefs/btree_trans_commit.c:942
+ __bch2_trans_commit+0x210f/0xd190 fs/bcachefs/btree_trans_commit.c:1140
+ bch2_trans_commit fs/bcachefs/btree_update.h:184 [inline]
+ bch2_journal_replay+0x2e3d/0x4d30 fs/bcachefs/recovery.c:317
+ bch2_run_recovery_pass fs/bcachefs/recovery_passes.c:191 [inline]
+ bch2_run_recovery_passes+0xaf9/0xf80 fs/bcachefs/recovery_passes.c:244
+ bch2_fs_recovery+0x447b/0x5b00 fs/bcachefs/recovery.c:861
+ bch2_fs_start+0x7b2/0xbd0 fs/bcachefs/super.c:1037
+ bch2_fs_get_tree+0x13ea/0x22d0 fs/bcachefs/fs.c:2170
+ vfs_get_tree+0xb1/0x5a0 fs/super.c:1814
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3507
+ path_mount+0x742/0x1f10 fs/namespace.c:3834
+ do_mount fs/namespace.c:3847 [inline]
+ __do_sys_mount fs/namespace.c:4057 [inline]
+ __se_sys_mount+0x722/0x810 fs/namespace.c:4034
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:4034
+ x64_sys_call+0x39bf/0x3c30 arch/x86/include/generated/asm/syscalls_64.h:166
  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ do_syscall_64+0xcd/0x1e0 arch/x86/entry/common.c:83
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8ff0002b49
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8feffb9218 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
-RAX: ffffffffffffffda RBX: 00007f8ff00946a8 RCX: 00007f8ff0002b49
-RDX: 00007f8ff0002b49 RSI: 0000000020000080 RDI: 00000000200000c0
-RBP: 00007f8ff00946a0 R08: 0000000000000000 R09: 0000000000000000
-R10: 00ffffffffffffff R11: 0000000000000246 R12: 0031656c69662f2e
-R13: 00007f8ff00570c0 R14: 0030656c69662f2e R15: 0032656c69662f2e
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.677 msecs
+
+CPU: 1 UID: 0 PID: 3546 Comm: kworker/u8:9 Not tainted 6.12.0-syzkaller-09073-g9f16d5e6f220 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Workqueue: btree_update btree_interior_update_work
+=====================================================
 
 
 ---
