@@ -1,149 +1,247 @@
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8C21DE880;
-	Tue, 26 Nov 2024 17:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F26D48CFC;
+	Wed, 27 Nov 2024 02:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732641845; cv=none; b=q2vqdQHfypL1+vf3G/rPAmofHn1j3RZBF8y65UypKbEnZ57gkqmcWV66qYmBToo51NMqFyy7C0vPYC6UGJhRbe3+Ibb4AITRRyjyYkaBaB2BpA5UDoDP5GXV7I5rUDDj434BZWBTDsQBYEUPYZ634puZzV5prporOWYrKrG/D2U=
+	t=1732676383; cv=none; b=qKRJDXleVcWWpgxZ5cNv9hnCGUu50QoVZQ/RZwHudVbRTJz26jB6gVrAQ4uJCKLyFwXL8qPjZfBxVPNkJ6WiE3EdvcK8FVvk2ua0G/uK8VN0ETZLQWz6VBnQb5aipLonSgGEGUA3NhxYpAVnmQFyOQqkDcRClBCXoLbO2FOlF8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732641845; c=relaxed/simple;
-	bh=4OHFcqeT2AuYq8OOGzyp2EVumvns8aqChYzt49dh7GI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FM3Fhpcy2+FP0U4ojPkCepnm7Qi/I9mrbt/9SPV6PnOsYhPHj0lUcOvGohHh6z71ZISAbIHNzI4okZXQP396/yqpggs6sJFgq1j5qy1bOoaMP0917yNo5tyop4tEPZjIEtRMsZ4uM8NQEs0Va6cdvxXaxR3HMy4QCGKBi/6S9Go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DxJ5Kt3T; arc=none smtp.client-ip=209.85.218.51
+	s=arc-20240116; t=1732676383; c=relaxed/simple;
+	bh=UWmMiGZqLwobInZyxFH3bSZUtPpteFtRWw6WLfPhbAs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SdTKRpewiQyTOWUtUh3nbGhbVnmA1lWn+s10ccryQYwtNCQ/1wQdmMhYwSJEmfLaXaW6oR+suqa5lv3PCK3yWJeIU24XRwkaJajICLJjhLV5t9pe624niMyTL2tyLQESJJIF+yS8/8PJ2+c6NGFX8+TfWg3a6EUCGig+DIeAUi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DDt5o1uP; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DxJ5Kt3T"
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aa52edbcb63so607612466b.1;
-        Tue, 26 Nov 2024 09:24:03 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DDt5o1uP"
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7252fba4de1so422120b3a.0;
+        Tue, 26 Nov 2024 18:59:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732641841; x=1733246641; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vYQhfY8XS5QoJJ9ROocmWAxArKh2nECE5yY90QqkfaM=;
-        b=DxJ5Kt3TjyZCKe4FdtR+FlKe+nypTY20rap7N+7ElE9SJ2jwWDI/4OZls/pnafXGxw
-         A1VeeBx2+sPjNvSwftPac77KHG+nsWFnumIdIW1heQ4jWZpf1kc7YPmtgF3/TQuwXCgt
-         YZG5j38j5BFCS9o9ehoRkXAlQv7ie0QJJgIXQqAfOACdDOGzDLc3Zs618dl7uarR2yC1
-         flYQE69f887Ic9526A9xdpt3Jfd2jH5ZscWZtmmIHCXFB4lkAzyOOrx+yNAN+eI241ef
-         NiiaxEjpuH8AwlQlCO93SQB1uUbb1NlAPByCdMyGeEpHXOLTHLh6U3L4xpFetk7LwwMF
-         ydWg==
+        d=gmail.com; s=20230601; t=1732676381; x=1733281181; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vDren5ADtiyyuDojahly2+sSPvL0WRct0w89l8MBRc4=;
+        b=DDt5o1uPa0slHN7y90e0+yWLE5nGk2+X0GKpsY1VtlPA9iB2eXtfaCd/zJzC0wQkHp
+         8vwHm2lTGbFnTj5FS/mqdOtiBYM31GzVa3j/Yrt3h3LF59xrgxWEFYL+xjbRZc2nNapN
+         G/RunpAAUj3t8FhdpOqAmR5HAbE15Y2jcYmAw8T17HSpqT6Jyue0AXmWHo4MbsPDClCV
+         KRHXBlolFsMNMu1mfVG56E+inoQbKswLNcI3hgHbF/gOqIKzBAB4kGY4gXcjmsUU8Yes
+         vPmT/xLShMIhyzy/VIkv51Vj5GZjQe/Fe/XbaNdVb4bRI3F2ndiMfm/nnegtguc8Hiig
+         WHKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732641841; x=1733246641;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vYQhfY8XS5QoJJ9ROocmWAxArKh2nECE5yY90QqkfaM=;
-        b=FryF+cxf7oez3yrh+qpRJ3vq85HJbRaJYZWChtSvlGHAjHj+0QVbRdzAspyXnQ1h16
-         nPvfEqxN8quu+NqMHbN3HJTJHRlDqQZ4wcGh3uf7oEBoLXuyNvziiv061o4W+FKLqUGW
-         QUjBOJyScEbcrqoCOiEeIIWqGmyRj8/SIF0eWj3tGd6LjpBL9zszrAhqjBqc3Co/BxuD
-         hXF7cxuFYGHJBVXQR/D930GN1d4PpEJQ9dBaq/aVqZvyu6uUeOGISpuQ622OHfIRlEJC
-         crYCcWqDC/FEhPaTokcakkDjuFzXir1DyI/xvlH/jhLgw0pOjnb1u2kudBalCKyIdN8a
-         NmjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU5LzB9ZS06BLdO4lVxTsGzkGnPVHcGhgkhQKewGTgUO5BgG4Lho+X7Xi787WfGg0RLejSs937gpHMCdx67@vger.kernel.org, AJvYcCVBZ993GV2K8b0iycgDp+o4GG7BLV9WW2/vAnfNnPDcU6384eQiuSWrigBkl+VlLdlMNXe0t7we@vger.kernel.org, AJvYcCWL7P7J0di343GjVNVNnqT78XXhRbnoOVSA3yHJ0b69dmVswMIV/q7HQl2H6hStwS+4LbrvO2nIc9B4Zn2i@vger.kernel.org, AJvYcCXIRtOaQyuQwX+hOkpBt/tG0yfllpsvjABB+y61h5mTVwOpc34DAf4Tds1ngTwH+jVZqq0Va6Ggy8R81ee5wVI=@vger.kernel.org, AJvYcCXLguZcCsJroTTRzXoC63WRgmlrj63fdk724ejyxbYD7FhHSoLOnjhjZtmXBH3rtwMfLFBtjkNQ7Cw5@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZXwa6cxyqN9H7J+f03R5kag6CqdSicrqAVR7+6wBVhyrhHrs7
-	EZNYdHwovsA1SjcPVbi+WjQU2FVnn8EPaYS/eC7Z5UmucJCo4J9F
-X-Gm-Gg: ASbGnct5eNeAz39VYC6K+PS26/TScZtq7H7JqLVeVBD2nvsCL3E71tDOk3DA5d+z9Np
-	9P7HE57A0TfK8IPCbuJ5B3SF3o6hyagbkx3nz+s5h231VpenALxflhWkNTmvK2I0Kc4qh2CRTce
-	PCFp529JfphlVMFp5USdOdGs93uQOTUm1N2h9V0bBLBeHBO5fG+s8cTOIecb3W9I/p8UrXlWjRw
-	ew/mu3vY01NwLWbGO22R4rNqpzPTyDZDivUB2ccIihbJXHBS1NpEf8gsCg=
-X-Google-Smtp-Source: AGHT+IGyDslpGnIuA7EaGQJjOGzUF02XOkLJcH+fA/4c2TgsR6qaqxDya98ILXBrNs7h8xnzOadyXQ==
-X-Received: by 2002:a17:906:3d22:b0:aa5:26ac:18e2 with SMTP id a640c23a62f3a-aa57fbba709mr3970966b.23.1732641841517;
-        Tue, 26 Nov 2024 09:24:01 -0800 (PST)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa534232086sm473832866b.42.2024.11.26.09.24.00
+        d=1e100.net; s=20230601; t=1732676381; x=1733281181;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vDren5ADtiyyuDojahly2+sSPvL0WRct0w89l8MBRc4=;
+        b=dB4oRNU9Tdkq1oQL47E7vAUaAbLafOkHOyAJaQA7WO/xUbrEnPjZEphbVv2j1Zr+Wr
+         Xg0X0AQZjzURRnTn1Rn430/DM8gzaY5O5mXYhmxwjQbsn4HDOkJbrEyFWF+1YryxceWw
+         AsGQj4J1KSa37JNpX4Z82GaYCW8J5xMLW7r8HcVUwN9/HY06IpiD3RlTL+LrcyVG+XeC
+         MsIl3ERfKyPbeWJzgg99oFeyEoOQbIJt/9yj2yfyt25+fj5UeP3o9YUesr1ptZvD9S30
+         EEvfgUaNRACxYlGnZj5uevKcFuRrnEh6O2tZ3FT9sERJ4oRySmbOokit+b3k4vnbvMTA
+         NHCw==
+X-Forwarded-Encrypted: i=1; AJvYcCUjCtcTdUhwjPTKOUOJRXDtNSWBN14ZbgH1AH0hnAtqFM6LBKGD7TOSXyhxD1X8v99gmSd0sUnE5POS4Y9EQN1icg==@vger.kernel.org, AJvYcCVJKm/OQ+Ra7fxS9Y5iMuGvV1XIQfBzgXDG1OVKBO2MbopBRn0P7gW0UY8LRTckZ6JyDVpKoM/6vQjE@vger.kernel.org, AJvYcCVdT7LcwQ14N124yuJs4PHI/FIF88taSxDys7BbXqMYYuEJTcuw5GXXx9c2Jo4ywbsuUeRkunWeF3sTwSiz3oQ=@vger.kernel.org, AJvYcCVrZ+kwkfs27aqNvgm6G9hEUWHQmf8qzJR+TQv/cs18WUzCHMkvThxo1IM7j4K62p43VsosDuSqDyQ3PEYFhPxW@vger.kernel.org, AJvYcCW0ouRepxq3CcucvysfMlZ5DP4Mghdhl2xpd0xlOFrSOZnKoIJG8g1HAxJZDsiLuPf9DZ9xc/4mcQX1ZIM=@vger.kernel.org, AJvYcCX4f1gHc5XSANOmfWTM00Kl6NiipvgC00tag6TWsqv6c1c6nLgw5ErcKWnqM6zX+humNlIV38aNWxntXrYj@vger.kernel.org
+X-Gm-Message-State: AOJu0YyO0dR6TfWi2MBh0gLfRq1PZt9Pv/erHH1LgO7e1xw2AzKcPogi
+	2MjCrj8GGEmtDtXVKXZawwWsDhdI4D+SUxZKvAarBGhZV7dk5K8c
+X-Gm-Gg: ASbGncuSaQY2TwiMlFvnDLFoBEigNj/fQjZhqaI2cyyfJLHeQpK+y9m4bfyVEmDiNIk
+	9GluJ7V4fmv7WaTIWEAvZbGHwcwV7ETqHJ6sP2o+vs+D+zRHhH4E4tuVkfbthpC9Wm4e+RDL/0Y
+	NtpaKGglE/uW0ck1vYKkCKoc+Tw+U7b95LrT8/BeRCEtSgR4xAWeNVQ4AcR09ASibyzBLWxpcZO
+	HcRDRRf0Je8AWFnRk3FeFX/Q31N4q1eaMWrx+i4zDR7mQRIs4jbTtadHrqpWhtEaKPVz+B3fyJZ
+	aA==
+X-Google-Smtp-Source: AGHT+IFYiHisxMljvlFNcELzBIZNtvqA9E+SoH+TzdKr80+88ifldFSahzOnnXPVC3c2OejQpqXMZw==
+X-Received: by 2002:a05:6a00:1da1:b0:725:3305:1a7e with SMTP id d2e1a72fcca58-72533051bb8mr723576b3a.9.1732676380691;
+        Tue, 26 Nov 2024 18:59:40 -0800 (PST)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fbcc40143esm9471790a12.80.2024.11.26.18.59.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Nov 2024 09:24:01 -0800 (PST)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: x86@kernel.org,
-	linux-sparse@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Dennis Zhou <dennis@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@linux.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Brian Gerst <brgerst@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 6/6] percpu/x86: Enable strict percpu checks via named AS qualifiers
-Date: Tue, 26 Nov 2024 18:21:23 +0100
-Message-ID: <20241126172332.112212-7-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20241126172332.112212-1-ubizjak@gmail.com>
-References: <20241126172332.112212-1-ubizjak@gmail.com>
+        Tue, 26 Nov 2024 18:59:40 -0800 (PST)
+Date: Wed, 27 Nov 2024 10:59:34 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
+	corbet@lwn.net, peterz@infradead.org, mingo@redhat.com,
+	acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, willy@infradead.org,
+	jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org,
+	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v2 01/10] lib/min_heap: Introduce non-inline versions of
+ min heap API functions
+Message-ID: <Z0aLFidHu/msXbXq@visitorckw-System-Product-Name>
+References: <20241020040200.939973-1-visitorckw@gmail.com>
+ <20241020040200.939973-2-visitorckw@gmail.com>
+ <CAMuHMdVO5DPuD9HYWBFqKDHphx7+0BEhreUxtVC40A=8p6VAhQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdVO5DPuD9HYWBFqKDHphx7+0BEhreUxtVC40A=8p6VAhQ@mail.gmail.com>
 
-This patch declares percpu variables in __seg_gs/__seg_fs named AS
-and keeps them named AS qualified until they are dereferenced with
-percpu accessor. This approach enables various compiler check
-for cross-namespace variable assignments.
+Hi Geert,
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Dennis Zhou <dennis@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc: Nadav Amit <nadav.amit@gmail.com>
-Cc: Brian Gerst <brgerst@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
----
- arch/x86/include/asm/percpu.h | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+On Tue, Nov 26, 2024 at 02:27:09PM +0100, Geert Uytterhoeven wrote:
+> Hi Kuan-Wei,
+> 
+> On Sun, Oct 20, 2024 at 6:02 AM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> > All current min heap API functions are marked with '__always_inline'.
+> > However, as the number of users increases, inlining these functions
+> > everywhere leads to a increase in kernel size.
+> >
+> > In performance-critical paths, such as when perf events are enabled and
+> > min heap functions are called on every context switch, it is important
+> > to retain the inline versions for optimal performance. To balance this,
+> > the original inline functions are kept, and additional non-inline
+> > versions of the functions have been added in lib/min_heap.c.
+> >
+> > Link: https://lore.kernel.org/20240522161048.8d8bbc7b153b4ecd92c50666@linux-foundation.org
+> > Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> 
+> Thanks for your patch, which is now commit 92a8b224b833e82d
+> ("lib/min_heap: introduce non-inline versions of min heap API
+> functions") upstream.
+> 
+> > --- a/include/linux/min_heap.h
+> > +++ b/include/linux/min_heap.h
+> 
+> > @@ -50,33 +50,33 @@ void __min_heap_init(min_heap_char *heap, void *data, int size)
+> >                 heap->data = heap->preallocated;
+> >  }
+> >
+> > -#define min_heap_init(_heap, _data, _size)     \
+> > -       __min_heap_init((min_heap_char *)_heap, _data, _size)
+> > +#define min_heap_init_inline(_heap, _data, _size)      \
+> > +       __min_heap_init_inline((min_heap_char *)_heap, _data, _size)
+> 
+> Casting macro parameters without any further checks prevents the
+> compiler from detecting silly mistakes.  Would it be possible to
+> add safety-nets here and below, using e.g. container_of() or typeof()
+> checks?
 
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 27f668660abe..61b875243ea3 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -95,9 +95,19 @@
- 
- #endif /* CONFIG_SMP */
- 
--#define __my_cpu_type(var)	typeof(var) __percpu_seg_override
--#define __my_cpu_ptr(ptr)	(__my_cpu_type(*(ptr))*)(__force uintptr_t)(ptr)
--#define __my_cpu_var(var)	(*__my_cpu_ptr(&(var)))
-+#if defined(CONFIG_USE_X86_SEG_SUPPORT) && \
-+    defined(CONFIG_CC_HAS_TYPEOF_UNQUAL) && !defined(__CHECKER__)
-+# define __my_cpu_type(var)	typeof(var)
-+# define __my_cpu_ptr(ptr)	(ptr)
-+# define __my_cpu_var(var)	(var)
-+
-+# define __per_cpu_qual		__percpu_seg_override
-+#else
-+# define __my_cpu_type(var)	typeof(var) __percpu_seg_override
-+# define __my_cpu_ptr(ptr)	(__my_cpu_type(*(ptr))*)(__force uintptr_t)(ptr)
-+# define __my_cpu_var(var)	(*__my_cpu_ptr(&(var)))
-+#endif
-+
- #define __percpu_arg(x)		__percpu_prefix "%" #x
- #define __force_percpu_arg(x)	__force_percpu_prefix "%" #x
- 
--- 
-2.42.0
+IIUC, the concern is that passing a pointer that is not of type
+min_heap might lead to compiler errors being missed. To address this,
+one possible solution could be to expand the members of struct min_heap
+into individual parameters for the function.
 
+diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
+index e781727c8916..ebd577003f0b 100644
+--- a/include/linux/min_heap.h
++++ b/include/linux/min_heap.h
+@@ -207,18 +207,20 @@ static size_t parent(size_t i, unsigned int lsbit, size_t size)
+
+ /* Initialize a min-heap. */
+ static __always_inline
+-void __min_heap_init_inline(min_heap_char *heap, void *data, int size)
++void __min_heap_init_inline(int *heap_nr, int *heap_size, void **heap_data,
++			    void *heap_preallocated, void *data, int size)
+ {
+-	heap->nr = 0;
+-	heap->size = size;
++	*heap_nr = 0;
++	*heap_size = size;
+ 	if (data)
+-		heap->data = data;
++		*heap_data = data;
+ 	else
+-		heap->data = heap->preallocated;
++		*heap_data = heap_preallocated;
+ }
+
+ #define min_heap_init_inline(_heap, _data, _size)	\
+-	__min_heap_init_inline((min_heap_char *)_heap, _data, _size)
++	__min_heap_init_inline(&(_heap)->nr, &(_heap)->size, (void**)&(_heap)->data,	\
++			       &(_heap)->preallocated, _data, _size)
+
+ /* Get the minimum element from the heap. */
+ static __always_inline
+
+Alternatively, we could use container_of() for type safety.
+
+diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
+index e781727c8916..fb96b1b82fb0 100644
+--- a/include/linux/min_heap.h
++++ b/include/linux/min_heap.h
+@@ -218,7 +218,7 @@ void __min_heap_init_inline(min_heap_char *heap, void *data, int size)
+ }
+
+ #define min_heap_init_inline(_heap, _data, _size)	\
+-	__min_heap_init_inline((min_heap_char *)_heap, _data, _size)
++	__min_heap_init_inline(container_of(&(_heap)->nr, min_heap_char, nr), _data, _size)
+
+ /* Get the minimum element from the heap. */
+ static __always_inline
+
+The first approach has better readability, while the second minimizes
+the changes needed. Please let me know your thoughts.
+> 
+> > --- a/lib/Kconfig
+> > +++ b/lib/Kconfig
+> > @@ -777,3 +777,6 @@ config POLYNOMIAL
+> >
+> >  config FIRMWARE_TABLE
+> >         bool
+> > +
+> > +config MIN_HEAP
+> > +       bool
+> 
+> Perhaps tristate? See also below.
+> 
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -2279,6 +2279,7 @@ config TEST_LIST_SORT
+> >  config TEST_MIN_HEAP
+> >         tristate "Min heap test"
+> >         depends on DEBUG_KERNEL || m
+> > +       select MIN_HEAP
+> 
+> Ideally, tests should not select functionality, to prevent increasing the
+> attack vector by merely enabling (modular) tests.
+> 
+Makes sense. Thanks for catching this.
+
+> In this particular case, just using "depends on MIN_HEAP" is not an
+> option, as MIN_HEAP is not user-visible, and thus cannot be enabled
+> by the user on its own.  However, making MIN_HEAP tristate could be
+> a first step for the modular case.
+> 
+> The builtin case is harder to fix, as e.g.
+> 
+>         depends on MIN_HEAP || COMPILE_TEST
+>         select MIN_HEAP if COMPILE_TEST
+> 
+> would still trigger a recursive dependency error.
+> 
+> Alternatively, the test could just keep on using the inline variants,
+> unless CONFIG_MIN_HEAP=y? Or event test both for the latter?
+> 
+I think that having min_heap_test continue using the inline variants
+might be the simplest solution?
+
+Regards,
+Kuan-Wei
+
+> >         help
+> >           Enable this to turn on min heap function tests. This test is
+> >           executed only once during system boot (so affects only boot time),
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> -- 
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
