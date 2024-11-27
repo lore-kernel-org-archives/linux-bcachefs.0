@@ -1,99 +1,110 @@
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC421FF7DD
-	for <linux-bcachefs@vger.kernel.org>; Wed, 27 Nov 2024 21:47:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86EEF9DD
+	for <linux-bcachefs@vger.kernel.org>; Wed, 27 Nov 2024 21:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732744072; cv=none; b=jSnw6GuQcInvil0r/KmS4G132yRnUHYArwv1fs9PPXmQ3uRETFbjxPGX0JiNLyP3ewzU2Kan/eZEbF295mXu5RA6QmyotB8Ebiy1NmfqLjHmjIrQjrk+ZAWBHs90YIGMHUfZc3aGyMmGfJuDIIdMoCGta1KogzL2fyJOhh7J3Ek=
+	t=1732744123; cv=none; b=qOGKwm76jvBrRw2NtgHkclUv/jF9nHJpd5nXeKOZzc7yqJsEIM88Fgu6EjBiyy5R4WEqHnrNFYdHtm1XdnJBJ9uIHhWnc8SxLd81PJ9ZpDFamjQE2+tuB2adEkT9hx10Gg9A6k+GoiXrEyKcQBRetE08oq9D70JpnOvzrRzjcsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732744072; c=relaxed/simple;
-	bh=Yu9eV8aMSgJY3eRDSR877vu35VsTeSfTjqyRCx+cb7k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CntEoufV4woOpCnpM//SedXxDoBEzeQxRj+f6ofYTfjBjGqx1JUTUPTKGMxljNbUckcK7prCpOsHT1GYPIbbF6xgCT0k7jCKJTFsJPHuLQzJC9scCOJ0jWQ35mzBbl7LrZdb2E+MMIjcLWLnC3lv7TJXFWo8JjT4MppcYfgt/lM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=luB0RLCG; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+	s=arc-20240116; t=1732744123; c=relaxed/simple;
+	bh=tjfGbFPl2W8J2CzAwDCRYiA9Zq/G1AEgpjSEPPSI6Gk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rnbhh11jsS8Eo4RvUmOkjALdknrjoqbjVemIwCyheyCIC+jCqER7RdyRFAphqOTIpeTUoiUcdrucyt09orpH+oSyU0WvCc1kCxLYudWJCnrx+Ya63z3tt/ZDsLMOuHUZ+/XfpdavUlvec4ZJaYZBYkb3GqkyXAjDkUpYvogIZcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UzjGRjd6; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="luB0RLCG"
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2968322f5feso188529fac.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 27 Nov 2024 13:47:50 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UzjGRjd6"
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5d027dc53ccso1742a12.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 27 Nov 2024 13:48:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1732744069; x=1733348869; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hk+VLjTh/bjqFCtbLbQLYV8o243n8P6oyhK1ZeYQRkQ=;
-        b=luB0RLCGu0btJxSfmW+WbGvgLLHre0C9CmxWzFYK+SgRd68f/qkEZIKl5N+NcvImMw
-         5S/TJja04wV40wIu/pR0zaTg/hZQ82NhCpASfDt59rmT7Tkr4nhpe9uJITCkEFZnAG2K
-         dlArvRTykKCUOQ///DyWdYQPV47XNjcIdQAq1JXcAZNhAVeHuBYcncGqAAibSkvhc26k
-         vpXJqKOwn3MODoNEWEDVFzCsHjZHOKpfe1CU9GFadaIx+aYOSCHBTzqc0EA8kb73QJ7v
-         2Si1EsawpMT4zGxHk6sWw9/oRBvPoAMNz0CetIxln36GMgqsQS+oBQBJg0/3domjYm1k
-         uTTA==
+        d=google.com; s=20230601; t=1732744120; x=1733348920; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tjfGbFPl2W8J2CzAwDCRYiA9Zq/G1AEgpjSEPPSI6Gk=;
+        b=UzjGRjd6zh0tRL9C7dMpbq2emW2H8cWQ20JuF3eriuxDpL54HnCV8MvDvypi1V5dsW
+         YLJmS6nEksGZPzi8gJez6uK+guAWhw46ouTrITDtyFpRt2b6vjkPp7u5fVXUIlWtlMi/
+         yZyF5AkGW9IfEMn00/8/xMr47IT1pTJCoEGV5gHdh+fxNf13zCu6fqMuR1Mxnd9rc+Ij
+         vQzv25nxKiKqtUF5KpH58WxXgmoomcXBSNicHkdgqNIyi32f9uD1IxPX58mRyHC+jNN/
+         0UCKlP/847p8sgR4mXfC+EfOtb2HVIQNNYvV1AMr1BcjYnRAvWg8KwWuhlgc2QyKRzcE
+         lcOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732744069; x=1733348869;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hk+VLjTh/bjqFCtbLbQLYV8o243n8P6oyhK1ZeYQRkQ=;
-        b=pyhdy+S5QXB8dXlf3nEswZkrOketQC+azt1piqJc+uwwlAvPgp5ifMq9LKxVSAGfFs
-         iLpbL298gByetDN2qxTxRO4Hwn9x6ls3R1ZlLQqkybdc7HG9EY+JpN10SzA4jL7pELS6
-         7agRodJRAr5k5ExBrCRT65w/FvPHq0avQ0xLZvtvcJbESpU8VKhXwP8g7/UudFlzTYVf
-         Apb7+/HDJ6mHiEQs5UAnOWPfm4Oa9trROHar0BJmvyD/br0djx2qCjmnfp6BP+pY9ETE
-         SK5JLiGwGspHRjct1XQHKE9k9PBoR8JvrGQA+0LjsLE82FPfw22nOvT6QUNAtazhVBSU
-         ckkA==
-X-Forwarded-Encrypted: i=1; AJvYcCWwvv1ydWTMo1wfZb78B8+LTqvSHTu/yNukBI0R2/JuJBsqZ9I4CNVm50rziujX8a2AyojwlTS3goWAYteXTw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwtPZGKcCCprmYuBK9fARSE5aSpFLJIlrqdEg39yT9ICU7bM82O
-	j8ZVSJfVzl+jVjHoEy1uu+zsd6kWJCCP6AZ03xy0fbMOeRkxzG8kQ7EdVER8mmE=
-X-Gm-Gg: ASbGncuKo6KIOJOKMK5A54EDuvdPhCHs6qTgdePqPH7hFzn/pgPwTg55Fl2AgfGPff8
-	/MIzpzL3Bn0k4iOirPmWHD6hTfxRArjzAV2Zv7nyYx3X6XcYA0S2hQOVPZFma00LN9hTp8ARP2M
-	nEqjBjanTZEwUrjm9uWUj/7er4M0BR5DFikY2AC4lSovsVIEJ0RkXp+BR7aGvxJAKM4z3DXm5/o
-	svYvYwyCfPCNS6jrMYP87l7UzpjKAxFazzf5Xfpwobf0w==
-X-Google-Smtp-Source: AGHT+IH1Fy7Uvzc3tY0TGYqb1J7lf5ga2A84Hn18Mh9+sRQOeXgY9B6hXphfAFtE2Va3X63kWz4DRQ==
-X-Received: by 2002:a05:6870:9d8b:b0:296:9f83:9678 with SMTP id 586e51a60fabf-29dc432c857mr6038650fac.26.1732744069401;
-        Wed, 27 Nov 2024 13:47:49 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-71d7255f7bfsm29154a34.38.2024.11.27.13.47.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Nov 2024 13:47:48 -0800 (PST)
-Message-ID: <09129809-d3b0-43ad-88d5-aee2bc0d04ba@kernel.dk>
-Date: Wed, 27 Nov 2024 14:47:47 -0700
+        d=1e100.net; s=20230601; t=1732744120; x=1733348920;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tjfGbFPl2W8J2CzAwDCRYiA9Zq/G1AEgpjSEPPSI6Gk=;
+        b=RJYgZ/7DYX8gZTaPfcfnW2HakncY5l12mUIzy5RtoCx8k+WIY9lbT47y2FbZqhAJ06
+         Jf6+D7W2WEUZdxdovRLTb0WUsFjhIbtjHEMe9RHWOtdPnxM81l0/IWbTTrsxDKYosq61
+         dLt48vo6FUYG6YnMgyveDXFZEP+WwOFV55lJyiy9isPQoGaDU798zxmyzHVI1LlGjXtz
+         +q0GpeDemy0b+eNUHbe9UDq0U8fZj+7S84yoIp1fGuZmR15/yf6B5B0jjo4+0r7+hTta
+         p4QYQrzk0gGba5IZPKaaZjvunQn8bQZgKA207ZOfeCP7sD+EEJo0Gmz9U9yaFDlzKO3o
+         emEw==
+X-Gm-Message-State: AOJu0YzyJ4CO8JTY1gXeMDOt15ARopXrGb1eBBi9i9EpkLYDw5b6rMZe
+	SG/SRJt1shJdz93dIJzyW86LJ3+eVN+/W6X7V5JqTVavLQv+ctyP0kpVQEAXImqDv+hfN3g0Ma0
+	608dHl9OiFJciuSEqHkmAKjoX6bISmLkpTDB4
+X-Gm-Gg: ASbGnctXPEM4OTC051+dH1yFskgTe/qQWmqKmI8I3L2ZSlBj9qAis72V9p44AUOkzpz
+	WgTcqwyvIaraGzzq2K3/u/mrlbOGotIoNoq6gCQb/jEjOV9/Bb6mg5iDhzPk=
+X-Google-Smtp-Source: AGHT+IEswfpZIkUvqfzOeh4C8Gp8lVRv2wSMm2oZLZLP9VUaY5M0qEHVBmjV4qPXN76A/lhtWCRz2I7KJkCAGkr1vgI=
+X-Received: by 2002:a05:6402:759:b0:5cf:deaf:ac2 with SMTP id
+ 4fb4d7f45d1cf-5d095b58598mr14971a12.2.1732744119925; Wed, 27 Nov 2024
+ 13:48:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: dio write: Take ref on mm_struct when using
- asynchronously
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org
-Cc: Jann Horn <jannh@google.com>
 References: <20241127213649.1615078-1-kent.overstreet@linux.dev>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
 In-Reply-To: <20241127213649.1615078-1-kent.overstreet@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Jann Horn <jannh@google.com>
+Date: Wed, 27 Nov 2024 22:48:03 +0100
+Message-ID: <CAG48ez2CXiAieL5-htj86p0cwVOoD5S5Pq=-E+Sf03ifzfYqdQ@mail.gmail.com>
+Subject: Re: [PATCH] bcachefs: dio write: Take ref on mm_struct when using asynchronously
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/27/24 2:36 PM, Kent Overstreet wrote:
+On Wed, Nov 27, 2024 at 10:36=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
 > When invoked from aio, mm_struct is guaranteed to outlive the request
 > since its lifetime is tied to the io_context - but that's not the case
 > for io_uring, it's possible that a process could be killed and mm_struct
 > goes away while a request is in flight.
-> 
+>
 > So if we're submitting the rest of the io asynchronously, we may need a
 > ref on mm_struct.
-> 
+>
 > Per Jens, this is not actually a bug because we're not yet flipping on
 > FMODE_NOWAIT, meaning io_uring will do the submission from an io_worker
 > kthread - but this patch is necessary for safely flipping on
 > FMODE_NOWAIT for more efficient submissions in the future.
 
-This doesn't look right. The mmgrab looks fine, but that should be
-paired with mmdrop. And you still need an mmget_not_zero() before doing
-kthread_use_mm(), and then the mmput/mmdrop when after unuse done.
+Ah, one thing to look out for is that mm_struct has two types of
+refcounting, this patch mixes them up - I don't think my explanation
+of that was very clear:
 
--- 
-Jens Axboe
+ - mmgrab()/mmdrop() prevent the mm_struct itself being freed, but
+don't properly keep the mappings in it alive
+ - mmget()/mmput() fully keep the MM alive
+
+An mmget() reference automatically also holds an mmgrab() reference, basica=
+lly.
+
+For kthread_use_mm(), you need an mmget() reference; so the most
+straightforward option would be to mmget() when creating the
+asynchronous work and mmput() when you're done. But that has the
+disadvantage that the reference keeps the entire mm_struct with all
+the mappings inside it alive, and it even indirectly holds a reference
+to all the files mapped in the MM; though I don't know if that's
+really a problem here.
+
+If you want to avoid keeping the MM of an exiting process alive while
+the I/O is running, the neater pattern is to use mmgrab()/mmdrop() for
+your long-term reference, and then use mmget_not_zero()/mmput() around
+kthread_use_mm()/kthread_unuse_mm() (and bail if mmget_not_zero()
+fails). You can see this pattern in places like
+vfio_iommu_type1_dma_rw_chunk().
