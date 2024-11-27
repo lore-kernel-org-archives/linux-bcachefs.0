@@ -1,79 +1,126 @@
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C713F13D518
-	for <linux-bcachefs@vger.kernel.org>; Wed, 27 Nov 2024 21:27:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019E620010A
+	for <linux-bcachefs@vger.kernel.org>; Wed, 27 Nov 2024 21:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732742866; cv=none; b=WgOB+5dpQ7sLfoYo+znp0SfzTm6N8eDeAzVR4f/ot8DU71iWkwKWZh4Vg0aH1t+RyMsgSKS1WqtNw92thtvd3hmVragolpZ+ka4pVm3+kLzpGgxgYU2jLRMtfQQf7qsvxpQxazRCOtlbvNRdOzZgxS0SJ39qZTlx3PeEdoWI5uY=
+	t=1732743425; cv=none; b=DsPyfFwdYngVJJAjol/pIHYY4+Oj0WFSvB52tCk+LgDk1PrYk8OQEFhG0ZOem7ELV3AEy6x//0baVRkwA8EIJmZNvXEruI/hOp6p1LVgpOBneQRXqdFp60zn4hTm53MQvnP7axV7ZOzKGCRAL/B5p7ZExXCdxvaqEWPLaWVU72M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732742866; c=relaxed/simple;
-	bh=eAr5DwaRs1A6iemSImX/LB+mWHKKto8FEnqneUaD/5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jn7w010kAboesm7ZVTRRhYgigS8utTwUHBA9iiArU9NKqlu/S29YCokgcm4g92JF5AblW5cr2Pe6r+Je9RWCr6k2cKqGrZEGXVtCcxJ8K79z6ZJoZ8mXjnDq16g/XBsj9Ko/oOgwYhHQNDU5JQh0m2bGuGZbtyZH3v593/z88P0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pzocTGh5; arc=none smtp.client-ip=95.215.58.189
+	s=arc-20240116; t=1732743425; c=relaxed/simple;
+	bh=zhqSJQtimRMIBeM6nX6ewuByP2NEpAeIxm3h/LclZgo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qoFYCGJlQosIpxePFilQFso9mvyTMT0yukHDTSFB45uG+TdL2px8+XGL/5oYP50m/RSqerczJz30nhp/CODMONIU3rZRcw9I2nQzZIyez5BwswyeON6q85c70LirhLZw85Zx4HY8L7KSpKx1VU3Fr6KhpeoKNOCKvZtKGWtHqFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QZCNUTws; arc=none smtp.client-ip=95.215.58.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pzocTGh5"
-Date: Wed, 27 Nov 2024 16:27:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732742861;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ag3zPk4N4dkehte0V7KHq77H/cKzi7fj/TtxDUkxDls=;
-	b=pzocTGh5mnC4GJgerrWzAsj8E6g9JdEHWjhOdVFkGUeg1ObRY81b/keg+7CvhvWUGmlO9D
-	2B/dA+ugn546t5rP+WAMLOPW/4fnx4de68xRxfmVP/CMKANTkUZPgUw6M1lmFbDY8sP4Fh
-	wvSf0WbTV/TvAMtR9JXZ6BSiLVIS5mk=
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QZCNUTws"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1732743418;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OfDwKYAZ/6VNcx6QGfi+56GA8ZezCy+G2/+LfXLmkC4=;
+	b=QZCNUTwseJVjbog71jB93yQgRLZqJYAehR5Def4Ny3P/9/Ksw8Sn4zyR8GnpZttNSj2aUX
+	EKAOt/QQjZiNkZGfcyRiyEwOPl7gf6GLrk59Dv+H+X+FlEAlVqTVgqsyRSPyDdjEMTsCBJ
+	9atGp0RqVR0paKftSbJ2Hg1JWkfcwyM=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Jann Horn <jannh@google.com>, linux-bcachefs@vger.kernel.org, 
-	kernel list <linux-kernel@vger.kernel.org>, Pavel Begunkov <asml.silence@gmail.com>, 
-	io-uring <io-uring@vger.kernel.org>
-Subject: Re: bcachefs: suspicious mm pointer in struct dio_write
-Message-ID: <tt4mrwkwh74tc26nkkeaypci74pcmvupqcdljavlimefeitntc@6tit5kojq5ha>
-References: <CAG48ez21ZtMJ6gcUND6bLV6XD6b--CXmKSRjKq+D33jhRh1LPw@mail.gmail.com>
- <69510752-d6f9-4cf1-b93d-dcd249d911ef@kernel.dk>
- <3ajlmjyqz6aregccuysq3juhxrxy5zzgdrufrfwjfab55cv2aa@oneydwsnucnj>
- <CAG48ez2y+6dJq2ghiMesKjZ38Rm7aHc7hShWJDbBL0Baup-HyQ@mail.gmail.com>
- <k7nnmegjogf4h5ubos7a6c4cveszrvu25g5zunoownil3klpok@jnotdc7q6ic2>
- <4f7e45b6-c237-404a-a4c0-4929fa3f1c4b@kernel.dk>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Jann Horn <jannh@google.com>,
+	Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] bcachefs: dio write: Take ref on mm_struct when using asynchronously
+Date: Wed, 27 Nov 2024 16:36:49 -0500
+Message-ID: <20241127213649.1615078-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f7e45b6-c237-404a-a4c0-4929fa3f1c4b@kernel.dk>
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Nov 27, 2024 at 02:16:24PM -0700, Jens Axboe wrote:
-> I'd argue the fact that you are using an mm from a different process
-> without grabbing a reference is the wrinkle. I just don't think it's a
-> problem right now, but it could be... aio is tied to the mm because of
-> how it does completions, potentially, and hence needs this exit_aio()
-> hack because of that. aio also doesn't care, because it doesn't care
-> about blocking - it'll happily block during issue.
+When invoked from aio, mm_struct is guaranteed to outlive the request
+since its lifetime is tied to the io_context - but that's not the case
+for io_uring, it's possible that a process could be killed and mm_struct
+goes away while a request is in flight.
 
-I'm not trying to debate who's bug it is, I'm just checking if I need to
-backport a security fix.
+So if we're submitting the rest of the io asynchronously, we may need a
+ref on mm_struct.
 
-> > Jens, is it really FMODE_NOWAIT that controls whether we can hit this? A
-> > very cursory glance leads me to suspect "no", it seems like this is a
-> > bug if io_uring is allowed on bcachefs at all.
-> 
-> I just looked at bcachefs dio writes, which look to be the only case of
-> this. And yes, for writes, if FMODE_NOWAIT isn't set, then io-wq is
-> always involved for the IO.
+Per Jens, this is not actually a bug because we're not yet flipping on
+FMODE_NOWAIT, meaning io_uring will do the submission from an io_worker
+kthread - but this patch is necessary for safely flipping on
+FMODE_NOWAIT for more efficient submissions in the future.
 
-Ok, sounds like we're in the clear. I already started writing the patch,
-so it'll just be a "now we can turn on FMODE_NOWAIT" instead of a
-bugfix.
+Reported-by: Jann Horn <jannh@google.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/fs-io-direct.c | 27 +++++++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 4 deletions(-)
 
-By the way, did the lifetime issue that was causing umount/remount to
-fail ever get resolved? I've currently got no test coverage for
-io_uring, would be nice to flip that back on.
+diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
+index 2089c36b5866..cea4dd9a0745 100644
+--- a/fs/bcachefs/fs-io-direct.c
++++ b/fs/bcachefs/fs-io-direct.c
+@@ -226,6 +226,7 @@ struct dio_write {
+ 	struct mm_struct		*mm;
+ 	const struct iovec		*iov;
+ 	unsigned			loop:1,
++					have_mm_ref:1,
+ 					extending:1,
+ 					sync:1,
+ 					flush:1;
+@@ -390,6 +391,9 @@ static __always_inline long bch2_dio_write_done(struct dio_write *dio)
+ 
+ 	kfree(dio->iov);
+ 
++	if (dio->have_mm_ref)
++		mmput(dio->mm);
++
+ 	ret = dio->op.error ?: ((long) dio->written << 9);
+ 	bio_put(&dio->op.wbio.bio);
+ 
+@@ -529,9 +533,24 @@ static __always_inline long bch2_dio_write_loop(struct dio_write *dio)
+ 
+ 		if (unlikely(dio->iter.count) &&
+ 		    !dio->sync &&
+-		    !dio->loop &&
+-		    bch2_dio_write_copy_iov(dio))
+-			dio->sync = sync = true;
++		    !dio->loop) {
++			/*
++			 * Rest of write will be submitted asynchronously -
++			 * unless copying the iov fails:
++			 */
++			if (likely(!bch2_dio_write_copy_iov(dio))) {
++				/*
++				 * aio guarantees that mm_struct outlives the
++				 * request, but io_uring does not
++				 */
++				if (dio->mm) {
++					mmgrab(dio->mm);
++					dio->have_mm_ref = true;
++				}
++			} else {
++				dio->sync = sync = true;
++			}
++		}
+ 
+ 		dio->loop = true;
+ 		closure_call(&dio->op.cl, bch2_write, NULL, NULL);
+@@ -559,7 +578,7 @@ static __always_inline long bch2_dio_write_loop(struct dio_write *dio)
+ 
+ static noinline __cold void bch2_dio_write_continue(struct dio_write *dio)
+ {
+-	struct mm_struct *mm = dio->mm;
++	struct mm_struct *mm = dio->have_mm_ref ? dio->mm: NULL;
+ 
+ 	bio_reset(&dio->op.wbio.bio, NULL, REQ_OP_WRITE);
+ 
+-- 
+2.45.2
+
