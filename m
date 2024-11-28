@@ -1,237 +1,162 @@
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D1D5200132
-	for <linux-bcachefs@vger.kernel.org>; Wed, 27 Nov 2024 23:12:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA8B1459F7
+	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Nov 2024 09:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732749142; cv=none; b=APD/FIbQqCDbUJ3r8CWgb9iMHEDRihLyRUhQFT9iOo10t+RvBHTYLPENKwiwxjBBjbgLOASqW2XoEF65Jz86zTkN/KbzJJChErk9VKrmTwhRyGB0aHevZsFJYWFWvJQ+PL8qkGEbT9Y0YM4F8GobIFGNMeYZskF/QhOjJmvIEg8=
+	t=1732787366; cv=none; b=uzhp1Pvz8124AeOREuAJqsQ18WLKOV08f2IruMwwfwasc6a/PWZxWYWHhADYi9qmGgt68dPX2gHicECr9NrwKRaEk+gvzvKVm2uP25+FxqxoQ9yfHhHWWDyEz7lKC6zL0Uf1wur7H3DBFGTlgNX04S2WTXg7v30SKrz2t1USoPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732749142; c=relaxed/simple;
-	bh=cStj2fP0Vv8l6LKQMAkdHslkMvCc5UvMm4OZxfeuklY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jCFWcvFi/cTsKUOSAyWj4ScGGwzVBxF9vESbCYLVekV/j7sUwxrUr1vkIUeHorneGqklqvJypkaJTzlUnIupkwuOIF9relAyaJEs0j2Bw2VqiNvKn/bG1VPCMwgguXibQiILiwQszzs6XpIMnQ+Bp2niJ/579wdd0zMKUgftXiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OnycTi6R; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OnycTi6R"
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5d027dc53ccso404a12.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 27 Nov 2024 15:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1732749138; x=1733353938; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y6rGUma6jF63ostW+xDzQQPk4HM0eNqbzYZSGRYgAps=;
-        b=OnycTi6RicMmY5XTMJVlaDQ7aju60dlmYrNJy4kwd+JmXco/dA9NZv+Z/H4vKnIWAN
-         /hRQ4pxM7bosNvThkMsABmmzbgmehSN+yaLg2vi+nqanYbF6JnmNI068g5aJ+H0q01PB
-         EYhF6vwhZqZYK1xUk71hNx3h2QvpaXDK3wjRV8FDW1seCUlE4b2o18i4cG61b7PIQpLE
-         SmYvEaCXNPhmWZPo4hGsekHQ+wcGWbKlhSG8EioiEhi7owzmlz2FXRIbOWQniWsQ2kNL
-         yEP37FeawpHusWEWd9lUgwZdJNVcDThwFo8vOe5Y80vUKjF7PTfz0qK+UZLkHl7Ew02N
-         hI5g==
+	s=arc-20240116; t=1732787366; c=relaxed/simple;
+	bh=tQAvcycBwOfJdIRAmxrY9EsOuNMOEqfZttZzIIRQG5A=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=g/oIoehDWbVTfZEyZWZGXdJfXL1A+2W5pPijq1hWaJn/6WBJ+xL3BKdsiyDIHMhNYdN8jIVSfhJA9X3BZ/6IjvqIC3fmtbx8oQQUFHVRR7yExvEYlvPr0osIJXnHhClyEKctqnT4MrK6wNY8uXBroXoQJrEC/L37yILywwoX/FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a7a5031e75so7343045ab.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 28 Nov 2024 01:49:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732749138; x=1733353938;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y6rGUma6jF63ostW+xDzQQPk4HM0eNqbzYZSGRYgAps=;
-        b=wDNp84YoUZm1SBGouJOp6gXuQcrDdJQrjNr8Tqh69/n00dt2TWUM73L1m8RXOYncOg
-         ZF1lypBwbayMDz2cwnXEtZ2fdkHqqOtPVoEGg90KCRyViZJQE43lTLzPt9Xmze5ZrcR1
-         xyKopO10giGo93V+JA1FLT71SelJLT0VdUrj7ndTxNHUVpn0E+yH9B+579lWVv6Y4OY/
-         OFYy/dqevOBxEKYvnRlBcptPVVnwgXBl2KzWX3Gaz75tcQ29M8xA1eoNG22GQ7fUW7V6
-         hNqUJ++gHYqHwYlxHqYQTi5dDktFHfKyUsaOILd+QwJ2FDuWsUWMLvWdzawMSg+8fxfd
-         o0rg==
-X-Gm-Message-State: AOJu0YxeKUs8FLyO5G1vID3PbktpeJz0/jA7a362pxaJ/DgYr6SmmWKL
-	/WRydKACkhgbIp2y7/mBeOenmTGRxH9cNW0w0ef3M+Xh/C1jS53jdxA3RAV+LpA6HIMtrM/VXRe
-	G/O+swGAYK5WTBLF1Npcj0uSBJQsQp/3AT0aP
-X-Gm-Gg: ASbGnctZ8obNABD5YIYasGJ2QCVGsDfXUtSOtKPBYLP67rxTDQTesBex3/ruAGZkwNs
-	IcLPVt2ye6jx1gVwIWObFu4j25PFO6ixYN7Tz29pNyhlqNhQXdLs6SMucoNA=
-X-Google-Smtp-Source: AGHT+IEe/sI18LVtDivB32ygN4nFY2Idz9NI9hT2UV1+x8eMG1e474eFOR5ebcwICQyhczw5YZFeF+1woT/o6CtnrY0=
-X-Received: by 2002:a05:6402:1cb7:b0:5d0:84a6:f1a1 with SMTP id
- 4fb4d7f45d1cf-5d09625061amr21444a12.6.1732749137604; Wed, 27 Nov 2024
- 15:12:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1732787364; x=1733392164;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zK3P3DlewWoZ4unENJOCERkDx8cE+aWhywBL9zE4H90=;
+        b=vVxL3Xh8QsaHpWw6hbbr6xQGMeWDa2QWphoptRyFABFFzoRSBZGKQntjJM6z+hQtlB
+         OrfpqtI1aev0zajFWpSLwbe83k1ZoDkD6PmBOCRsjB3b/aFog6KRZVs7O6jINWIxWsla
+         3sFn5qmU4HyarOG7/XI9AzBrRSGhS1oVUZD29EIRKdCVsbaJPfho7TsMHTlAgpr4uoz3
+         fs1ffYK+b2pDGhsHiy3OMPiNZ96em3glBmtAeYEHiI8hFhLulP6Qi8kWu7i/x9s/Qe6X
+         v0sBk40pWBvzzQDQvsakOpkQm2XuiXbmx26YBci4MXP+i6wgUymDfNt6es6qAAEl/Xed
+         ffpA==
+X-Forwarded-Encrypted: i=1; AJvYcCV0ptykk4uzV3RV6opG5DmJzwvekwIImfiGVyrTdSuZbcODCDarD2TFTbMr4ut0+1gjqnhiOHwG1by/69gW/Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzR4MNx/x1NpGeRRaDVwyBosfmPhYniCdEDR/Pf0G1W/QLxFyLC
+	QxYW71LGTeZGX2NDI30lRWpBxfHBv8ndYpYLYLS38La2AQ9eVN1TUey8sJfaQGfRIxKzW1HGBIC
+	q8FK05RcIklQ0WklAFnasSwPqNjsPZCHZTYnMNRlwAh2EBQFBWANofK4=
+X-Google-Smtp-Source: AGHT+IFVu1X3bU7dZRV2tG6l1XARo75f7CoAruWQEkEFFvhLvaXmYZAAyLoOsell0piiFG5S8nkl9sRLQoebZX+DgjdfDUEwr2kh
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241127213649.1615078-1-kent.overstreet@linux.dev>
- <CAG48ez2CXiAieL5-htj86p0cwVOoD5S5Pq=-E+Sf03ifzfYqdQ@mail.gmail.com> <xrjd4otiojkszczc2u2buwbnb6sw2z7u2p66evivsgxrpkidxq@55yc6lbcnhh2>
-In-Reply-To: <xrjd4otiojkszczc2u2buwbnb6sw2z7u2p66evivsgxrpkidxq@55yc6lbcnhh2>
-From: Jann Horn <jannh@google.com>
-Date: Thu, 28 Nov 2024 00:11:41 +0100
-Message-ID: <CAG48ez00YBBb9fpNOknoWamuy5e9WSOTq84MxXSi2eGP3A8kfQ@mail.gmail.com>
-Subject: Re: [PATCH] bcachefs: dio write: Take ref on mm_struct when using asynchronously
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+X-Received: by 2002:a05:6e02:20e3:b0:3a7:c3aa:a82b with SMTP id
+ e9e14a558f8ab-3a7c5525305mr71488155ab.1.1732787364112; Thu, 28 Nov 2024
+ 01:49:24 -0800 (PST)
+Date: Thu, 28 Nov 2024 01:49:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67483ca4.050a0220.253251.007d.GAE@google.com>
+Subject: [syzbot] [bcachefs?] kernel BUG in bch2_get_scanned_nodes
+From: syzbot <syzbot+64e6509c7f777aec3a24@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 27, 2024 at 11:11=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
-> On Wed, Nov 27, 2024 at 10:48:03PM +0100, Jann Horn wrote:
-> > On Wed, Nov 27, 2024 at 10:36=E2=80=AFPM Kent Overstreet
-> > <kent.overstreet@linux.dev> wrote:
-> > > When invoked from aio, mm_struct is guaranteed to outlive the request
-> > > since its lifetime is tied to the io_context - but that's not the cas=
-e
-> > > for io_uring, it's possible that a process could be killed and mm_str=
-uct
-> > > goes away while a request is in flight.
-> > >
-> > > So if we're submitting the rest of the io asynchronously, we may need=
- a
-> > > ref on mm_struct.
-> > >
-> > > Per Jens, this is not actually a bug because we're not yet flipping o=
-n
-> > > FMODE_NOWAIT, meaning io_uring will do the submission from an io_work=
-er
-> > > kthread - but this patch is necessary for safely flipping on
-> > > FMODE_NOWAIT for more efficient submissions in the future.
-> >
-> > Ah, one thing to look out for is that mm_struct has two types of
-> > refcounting, this patch mixes them up - I don't think my explanation
-> > of that was very clear:
-> >
-> >  - mmgrab()/mmdrop() prevent the mm_struct itself being freed, but
-> > don't properly keep the mappings in it alive
-> >  - mmget()/mmput() fully keep the MM alive
-> >
-> > An mmget() reference automatically also holds an mmgrab() reference, ba=
-sically.
-> >
-> > For kthread_use_mm(), you need an mmget() reference; so the most
-> > straightforward option would be to mmget() when creating the
-> > asynchronous work and mmput() when you're done. But that has the
-> > disadvantage that the reference keeps the entire mm_struct with all
-> > the mappings inside it alive, and it even indirectly holds a reference
-> > to all the files mapped in the MM; though I don't know if that's
-> > really a problem here.
-> >
-> > If you want to avoid keeping the MM of an exiting process alive while
-> > the I/O is running, the neater pattern is to use mmgrab()/mmdrop() for
-> > your long-term reference, and then use mmget_not_zero()/mmput() around
-> > kthread_use_mm()/kthread_unuse_mm() (and bail if mmget_not_zero()
-> > fails). You can see this pattern in places like
-> > vfio_iommu_type1_dma_rw_chunk().
->
-> gotcha...
->
-> From 3ef3067690d838dfc9a12686caa015e85e217f01 Mon Sep 17 00:00:00 2001
-> From: Kent Overstreet <kent.overstreet@linux.dev>
-> Date: Wed, 27 Nov 2024 16:32:26 -0500
-> Subject: [PATCH] bcachefs: dio write: Take ref on mm_struct when using
->  asynchronously
->
-> When invoked from aio, mm_struct is guaranteed to outlive the request
-> since its lifetime is tied to the io_context - but that's not the case
-> for io_uring, it's possible that a process could be killed and mm_struct
-> goes away while a request is in flight.
->
-> So if we're submitting the rest of the io asynchronously, we may need a
-> ref on mm_struct.
->
-> Per Jens, this is not actually a bug because we're not yet flipping on
-> FMODE_NOWAIT, meaning io_uring will do the submission from an io_worker
-> kthread - but this patch is necessary for safely flipping on
-> FMODE_NOWAIT for more efficient submissions in the future.
->
-> Reported-by: Jann Horn <jannh@google.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
->
-> diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
-> index 2089c36b5866..8da0577411e8 100644
-> --- a/fs/bcachefs/fs-io-direct.c
-> +++ b/fs/bcachefs/fs-io-direct.c
-> @@ -226,6 +226,7 @@ struct dio_write {
->         struct mm_struct                *mm;
->         const struct iovec              *iov;
->         unsigned                        loop:1,
-> +                                       have_mm_ref:1,
->                                         extending:1,
->                                         sync:1,
->                                         flush:1;
-> @@ -390,6 +391,9 @@ static __always_inline long bch2_dio_write_done(struc=
-t dio_write *dio)
->
->         kfree(dio->iov);
->
-> +       if (dio->have_mm_ref)
-> +               mmdrop(dio->mm);
-> +
->         ret =3D dio->op.error ?: ((long) dio->written << 9);
->         bio_put(&dio->op.wbio.bio);
->
-> @@ -529,9 +533,24 @@ static __always_inline long bch2_dio_write_loop(stru=
-ct dio_write *dio)
->
->                 if (unlikely(dio->iter.count) &&
->                     !dio->sync &&
-> -                   !dio->loop &&
-> -                   bch2_dio_write_copy_iov(dio))
-> -                       dio->sync =3D sync =3D true;
-> +                   !dio->loop) {
-> +                       /*
-> +                        * Rest of write will be submitted asynchronously=
- -
-> +                        * unless copying the iov fails:
-> +                        */
-> +                       if (likely(!bch2_dio_write_copy_iov(dio))) {
-> +                               /*
-> +                                * aio guarantees that mm_struct outlives=
- the
-> +                                * request, but io_uring does not
-> +                                */
-> +                               if (dio->mm) {
-> +                                       mmgrab(dio->mm);
-> +                                       dio->have_mm_ref =3D true;
-> +                               }
-> +                       } else {
-> +                               dio->sync =3D sync =3D true;
-> +                       }
-> +               }
->
->                 dio->loop =3D true;
->                 closure_call(&dio->op.cl, bch2_write, NULL, NULL);
-> @@ -559,15 +578,25 @@ static __always_inline long bch2_dio_write_loop(str=
-uct dio_write *dio)
->
->  static noinline __cold void bch2_dio_write_continue(struct dio_write *di=
-o)
->  {
-> -       struct mm_struct *mm =3D dio->mm;
-> +       struct mm_struct *mm =3D dio->have_mm_ref ? dio->mm: NULL;
->
->         bio_reset(&dio->op.wbio.bio, NULL, REQ_OP_WRITE);
->
-> -       if (mm)
-> +       if (mm) {
-> +               if (unlikely(!mmget_not_zero(mm))) {
-> +                       /* process exited */
-> +                       dio->op.error =3D -ESRCH;
-> +                       bch2_dio_write_done(dio);
-> +                       return;
-> +               }
-> +
->                 kthread_use_mm(mm);
-> +       }
->         bch2_dio_write_loop(dio);
-> -       if (mm)
-> +       if (mm) {
-> +               mmput(mm);
->                 kthread_unuse_mm(mm);
-> +       }
+Hello,
 
-I think the mmput() should go after kthread_unuse_mm(), though I don't
-know if this ordering actually breaks anything.
+syzbot found the following issue on:
 
-Looks fine apart from that at a glance.
+HEAD commit:    f486c8aa16b8 Add linux-next specific files for 20241128
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1432a3c0580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e348a4873516af92
+dashboard link: https://syzkaller.appspot.com/bug?extid=64e6509c7f777aec3a24
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1389ef5f980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=164a8f78580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/beb58ebb63cf/disk-f486c8aa.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b241b5609e64/vmlinux-f486c8aa.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c9d817f665f2/bzImage-f486c8aa.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/ee49d5c23880/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+64e6509c7f777aec3a24@syzkaller.appspotmail.com
+
+bcachefs (loop0): bch2_get_scanned_nodes(): recovery btree=xattrs level=0 POS_MIN - SPOS_MAX
+bcachefs (loop0): bch2_get_scanned_nodes(): recovering u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 22000000ba0abe32 written 8 min_key POS_MIN durability: 1 ptr: 0:31:0 gen 0
+invalid bkey in btree_node btree=xattrs level=0: u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 22000000ba0abe32 written 8 min_key POS_MIN durability: 1 ptr: 0:31:0 gen 0
+  key at POS_MAX: delete?, fixing
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/btree_node_scan.c:546!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 UID: 0 PID: 5831 Comm: syz-executor341 Not tainted 6.12.0-next-20241128-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+RIP: 0010:bch2_get_scanned_nodes+0x1e23/0x1e30 fs/bcachefs/btree_node_scan.c:541
+Code: 24 18 48 8d b4 24 f0 03 00 00 48 8b 94 24 00 01 00 00 e9 17 e8 ff ff e8 4b de a7 07 e8 f6 74 73 fd 90 0f 0b e8 ee 74 73 fd 90 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc90003e36cc0 EFLAGS: 00010293
+RAX: ffffffff842c0012 RBX: ffff888074b80000 RCX: ffff888035983c00
+RDX: 0000000000000000 RSI: 00000000fffff75b RDI: 0000000000000000
+RBP: ffffc90003e37160 R08: ffffffff842bf611 R09: 1ffffffff285892b
+R10: dffffc0000000000 R11: fffffbfff285892c R12: 1ffff920007c6dcc
+R13: ffffc90003e37020 R14: 00000000fffff75b R15: dffffc0000000000
+FS:  0000555584e7a380(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005590e5ed3c28 CR3: 0000000074aca000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bch2_check_topology+0x597/0xbb0 fs/bcachefs/btree_gc.c:543
+ bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:222
+ bch2_run_recovery_passes+0x290/0x9f0 fs/bcachefs/recovery_passes.c:285
+ bch2_fs_recovery+0x2660/0x3ab0 fs/bcachefs/recovery.c:917
+ bch2_fs_start+0x37c/0x610 fs/bcachefs/super.c:1037
+ bch2_fs_get_tree+0xd8d/0x1740 fs/bcachefs/fs.c:2201
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3507
+ do_mount fs/namespace.c:3847 [inline]
+ __do_sys_mount fs/namespace.c:4057 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f8b2490497a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffe3bd4ff8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fffe3bd5010 RCX: 00007f8b2490497a
+RDX: 00000000200000c0 RSI: 0000000020000040 RDI: 00007fffe3bd5010
+RBP: 0000000000000004 R08: 00007fffe3bd5050 R09: 000000000000595a
+R10: 0000000000800000 R11: 0000000000000282 R12: 0000000000800000
+R13: 00007fffe3bd5050 R14: 0000000000000003 R15: 0000000001000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bch2_get_scanned_nodes+0x1e23/0x1e30 fs/bcachefs/btree_node_scan.c:541
+Code: 24 18 48 8d b4 24 f0 03 00 00 48 8b 94 24 00 01 00 00 e9 17 e8 ff ff e8 4b de a7 07 e8 f6 74 73 fd 90 0f 0b e8 ee 74 73 fd 90 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc90003e36cc0 EFLAGS: 00010293
+RAX: ffffffff842c0012 RBX: ffff888074b80000 RCX: ffff888035983c00
+RDX: 0000000000000000 RSI: 00000000fffff75b RDI: 0000000000000000
+RBP: ffffc90003e37160 R08: ffffffff842bf611 R09: 1ffffffff285892b
+R10: dffffc0000000000 R11: fffffbfff285892c R12: 1ffff920007c6dcc
+R13: ffffc90003e37020 R14: 00000000fffff75b R15: dffffc0000000000
+FS:  0000555584e7a380(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005590e5ed3c28 CR3: 0000000074aca000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
->  }
->
->  static void bch2_dio_write_loop_async(struct bch_write_op *op)
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
