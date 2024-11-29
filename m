@@ -1,26 +1,28 @@
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C9E14D428
-	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:28:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE2F1A3A8D
+	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732912084; cv=none; b=rbuYsnOKkaOZXWwQrVpkZBnO08ZrifV0aQ7Q4+gEUKbXjlPHWvZQPcz2jjf9/n2K2N9y11bUMpHoVmDY3mej+OA+vwZ+/PQvsuagHJVMRBQjkkrmFeJlX+5i4FAuWjfgrkzv7rLeGvKpxYd+juJXH2yO2UbFNoQBHuWB2/bZcgQ=
+	t=1732912087; cv=none; b=tj3NhyCE8eKpe/SJ7KURKpG6SWPU5u8Qb4OJd68gMB9Yz+hz9+wk3Nse+JvFN4qm4ApllkG5WBXyb0+aX7u1rYX9QMIWIBsAkgke7+tb0PvuWsWzxsa+VWGjc7t3JqcGlF/lQYW8jE/DR6QiDWtsjCgO3LSsjDuytHF7VvRlVlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732912084; c=relaxed/simple;
-	bh=ZiOioyMud0AlI0CGYsyCYSdKwOKdCMchf+JAWmahlfg=;
+	s=arc-20240116; t=1732912087; c=relaxed/simple;
+	bh=ik+8P9P4NE7GcFEZzHSV7mNNkrNiyld+P6TA2RCdZGs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HrZ+Ox9lAQgzJvSNR3AAReoaLf7mA8hws+1ju0eCcYfjW0UZLqJxTlbL/JwJ20y6xriwsTb+WoKDP6qNT4qQdX3f8avOVODu8GHkNokMsppIzUS9WoXNyIcfpBJpYkyeNLSVqGQkN+rhCam86iuGqi40KDLBP2WuTfaJq4dIT+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.171
+	 MIME-Version; b=VJmLz3zLDtPm01lGs4bzJ7qNmn1T/lSIp83B/mtR1mEHawbBMbjAHwnuNrPvcvPtNCv/YBlxraCY/pLF1VKLKtApfH+wa4XweUBy48WM+Tl1HhX/20UPmEzEoyRM2groi1vC8qa/LsNofJwEv5gTdGllAnqUMsEVm84YSnOGcAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 19/34] bcachefs: BCH_FS_recovery_running
-Date: Fri, 29 Nov 2024 15:27:18 -0500
-Message-ID: <20241129202736.2713679-20-kent.overstreet@linux.dev>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Jann Horn <jannh@google.com>,
+	Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 20/34] bcachefs: dio write: Take ref on mm_struct when using asynchronously
+Date: Fri, 29 Nov 2024 15:27:19 -0500
+Message-ID: <20241129202736.2713679-21-kent.overstreet@linux.dev>
 In-Reply-To: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 References: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -32,61 +34,113 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-If we're autofixing topology errors, we shouldn't shutdown if we're
-still in recovery.
+When invoked from aio, mm_struct is guaranteed to outlive the request
+since its lifetime is tied to the io_context - but that's not the case
+for io_uring, it's possible that a process could be killed and mm_struct
+goes away while a request is in flight.
 
+So if we're submitting the rest of the io asynchronously, we may need a
+ref on mm_struct.
+
+Per Jens, this is not actually a bug because we're not yet flipping on
+FMODE_NOWAIT, meaning io_uring will do the submission from an io_worker
+kthread - but this patch is necessary for safely flipping on
+FMODE_NOWAIT for more efficient submissions in the future.
+
+Reported-by: Jann Horn <jannh@google.com>
+Cc: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/bcachefs.h | 1 +
- fs/bcachefs/error.c    | 2 +-
- fs/bcachefs/recovery.c | 2 ++
- 3 files changed, 4 insertions(+), 1 deletion(-)
+ fs/bcachefs/fs-io-direct.c | 42 ++++++++++++++++++++++++++++++++------
+ 1 file changed, 36 insertions(+), 6 deletions(-)
 
-diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index a85b3bcc6383..d88129503bc5 100644
---- a/fs/bcachefs/bcachefs.h
-+++ b/fs/bcachefs/bcachefs.h
-@@ -614,6 +614,7 @@ struct bch_dev {
- 	x(going_ro)			\
- 	x(write_disable_complete)	\
- 	x(clean_shutdown)		\
-+	x(recovery_running)		\
- 	x(fsck_running)			\
- 	x(initial_gc_unfixed)		\
- 	x(need_delete_dead_snapshots)	\
-diff --git a/fs/bcachefs/error.c b/fs/bcachefs/error.c
-index 9a695322b33c..5b67361b0cf1 100644
---- a/fs/bcachefs/error.c
-+++ b/fs/bcachefs/error.c
-@@ -34,7 +34,7 @@ bool bch2_inconsistent_error(struct bch_fs *c)
- int bch2_topology_error(struct bch_fs *c)
+diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
+index 2089c36b5866..b0367b9d9e07 100644
+--- a/fs/bcachefs/fs-io-direct.c
++++ b/fs/bcachefs/fs-io-direct.c
+@@ -226,6 +226,7 @@ struct dio_write {
+ 	struct mm_struct		*mm;
+ 	const struct iovec		*iov;
+ 	unsigned			loop:1,
++					have_mm_ref:1,
+ 					extending:1,
+ 					sync:1,
+ 					flush:1;
+@@ -390,6 +391,9 @@ static __always_inline long bch2_dio_write_done(struct dio_write *dio)
+ 
+ 	kfree(dio->iov);
+ 
++	if (dio->have_mm_ref)
++		mmdrop(dio->mm);
++
+ 	ret = dio->op.error ?: ((long) dio->written << 9);
+ 	bio_put(&dio->op.wbio.bio);
+ 
+@@ -529,9 +533,24 @@ static __always_inline long bch2_dio_write_loop(struct dio_write *dio)
+ 
+ 		if (unlikely(dio->iter.count) &&
+ 		    !dio->sync &&
+-		    !dio->loop &&
+-		    bch2_dio_write_copy_iov(dio))
+-			dio->sync = sync = true;
++		    !dio->loop) {
++			/*
++			 * Rest of write will be submitted asynchronously -
++			 * unless copying the iov fails:
++			 */
++			if (likely(!bch2_dio_write_copy_iov(dio))) {
++				/*
++				 * aio guarantees that mm_struct outlives the
++				 * request, but io_uring does not
++				 */
++				if (dio->mm) {
++					mmgrab(dio->mm);
++					dio->have_mm_ref = true;
++				}
++			} else {
++				dio->sync = sync = true;
++			}
++		}
+ 
+ 		dio->loop = true;
+ 		closure_call(&dio->op.cl, bch2_write, NULL, NULL);
+@@ -559,15 +578,25 @@ static __always_inline long bch2_dio_write_loop(struct dio_write *dio)
+ 
+ static noinline __cold void bch2_dio_write_continue(struct dio_write *dio)
  {
- 	set_bit(BCH_FS_topology_error, &c->flags);
--	if (!test_bit(BCH_FS_fsck_running, &c->flags)) {
-+	if (!test_bit(BCH_FS_recovery_running, &c->flags)) {
- 		bch2_inconsistent_error(c);
- 		return -BCH_ERR_btree_need_topology_repair;
- 	} else {
-diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-index 64bb330eac86..c50dede64785 100644
---- a/fs/bcachefs/recovery.c
-+++ b/fs/bcachefs/recovery.c
-@@ -774,6 +774,7 @@ int bch2_fs_recovery(struct bch_fs *c)
- 		set_bit(BCH_FS_fsck_running, &c->flags);
- 	if (c->sb.clean)
- 		set_bit(BCH_FS_clean_recovery, &c->flags);
-+	set_bit(BCH_FS_recovery_running, &c->flags);
+-	struct mm_struct *mm = dio->mm;
++	struct mm_struct *mm = dio->have_mm_ref ? dio->mm: NULL;
  
- 	ret = bch2_blacklist_table_initialize(c);
- 	if (ret) {
-@@ -925,6 +926,7 @@ int bch2_fs_recovery(struct bch_fs *c)
- 	 */
- 	set_bit(BCH_FS_may_go_rw, &c->flags);
- 	clear_bit(BCH_FS_fsck_running, &c->flags);
-+	clear_bit(BCH_FS_recovery_running, &c->flags);
+ 	bio_reset(&dio->op.wbio.bio, NULL, REQ_OP_WRITE);
  
- 	/* in case we don't run journal replay, i.e. norecovery mode */
- 	set_bit(BCH_FS_accounting_replay_done, &c->flags);
+-	if (mm)
++	if (mm) {
++		if (unlikely(!mmget_not_zero(mm))) {
++			/* process exited */
++			dio->op.error = -ESRCH;
++			bch2_dio_write_done(dio);
++			return;
++		}
++
+ 		kthread_use_mm(mm);
++	}
+ 	bch2_dio_write_loop(dio);
+-	if (mm)
++	if (mm) {
+ 		kthread_unuse_mm(mm);
++		mmput(mm);
++	}
+ }
+ 
+ static void bch2_dio_write_loop_async(struct bch_write_op *op)
+@@ -641,6 +670,7 @@ ssize_t bch2_direct_write(struct kiocb *req, struct iov_iter *iter)
+ 	dio->mm			= current->mm;
+ 	dio->iov		= NULL;
+ 	dio->loop		= false;
++	dio->have_mm_ref	= false;
+ 	dio->extending		= extending;
+ 	dio->sync		= is_sync_kiocb(req) || extending;
+ 	dio->flush		= iocb_is_dsync(req) && !c->opts.journal_flush_disabled;
 -- 
 2.45.2
 
