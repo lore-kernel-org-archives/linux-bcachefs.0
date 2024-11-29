@@ -1,27 +1,26 @@
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B871A38EC
-	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D3E1A38E1
+	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732912100; cv=none; b=oOcbobG0zxh2QAlu4PT+OoBSSQc5Z/sHXItnTMx3qqOLoFXchwJwIs2BMAgTeb4dVG1KrNdgAtGUrebForyOV9Bsal1eV48RSZzWNTfhkfvO5XwWhzlFI9miGFIsQT4r6k4f8ae95k91icp57NynHjJ9NOZaaZtrzVE7Fow8ga0=
+	t=1732912101; cv=none; b=lCxlK9IsC3cCh0Y9NT6emuyMYMMt1mQCp9NJvY2D9BLrVbInG7XCLWLDRQyjPzeYGzAZGMlHXo2FCezQJouSsJ+Zxb4wxq/DwxUzQFRt2omF7MRtfifwOL0ofFSzX/j/BesbKbs18sEjtgVtnsgxi6de2N3NXL2tp3R+XDiwozA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732912100; c=relaxed/simple;
-	bh=hbMCM3KiQffWm8cNX4RuTDzCeSsb7Md79EyJfI5BTRc=;
+	s=arc-20240116; t=1732912101; c=relaxed/simple;
+	bh=mwTkr6+M1UuSEnIeI8wUH069Y1gZd7S3uLtVXRvxvE8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tJ7Cuj5WzL7BygG4zd4WrXaljhNMtJyk9U6q8axlwXdhSmrt9APUHoYYHG2a1hWBp8qZuCpd07VL/omRVifVgcAHV6Dd4roZQKzz+9zDtInsyKGW5/ZJO4esxSU0TxwzD0lfSEOZXW4StCRZ00lRQbesp6PJHX5vGxeoP6mtMTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.181
+	 MIME-Version; b=pNXZT/XGYvFFlvNDF1g6ygDm2uYYXZQXiDUlcZzsb5F4VenqaJ4PaSVGI7vVSl7s2iuyPFQ5CvLMHaB+BFTVkm6vqFcQW/fJxSv4BHwTMgSQ+yLUZns6djSJLK8zeORMrm3og0mmAsTZld+wp2z9lR8sOV197vu5ZiZ6piXgseE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	syzbot+50d3544c9b8db9c99fd2@syzkaller.appspotmail.com
-Subject: [PATCH 33/34] bcachefs: Check for extent crc uncompressed/compressed size mismatch
-Date: Fri, 29 Nov 2024 15:27:32 -0500
-Message-ID: <20241129202736.2713679-34-kent.overstreet@linux.dev>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 34/34] bcachefs: Don't recurse in check_discard_freespace_key
+Date: Fri, 29 Nov 2024 15:27:33 -0500
+Message-ID: <20241129202736.2713679-35-kent.overstreet@linux.dev>
 In-Reply-To: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 References: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -33,89 +32,157 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-When not compressed, these must be equal - this fixes an assertion pop
-in bch2_rechecksum_bio().
+When calling check_discard_freeespace_key from the allocator, we can't
+repair without recursing - run it asynchronously instead.
 
-Reported-by: syzbot+50d3544c9b8db9c99fd2@syzkaller.appspotmail.com
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/extents.c          | 22 +++++++++++++---------
- fs/bcachefs/sb-errors_format.h |  5 +++--
- 2 files changed, 16 insertions(+), 11 deletions(-)
+ fs/bcachefs/alloc_background.c | 72 ++++++++++++++++++++++++++++++----
+ fs/bcachefs/alloc_background.h |  2 +-
+ fs/bcachefs/alloc_foreground.c |  2 +-
+ fs/bcachefs/bcachefs.h         |  1 +
+ 4 files changed, 67 insertions(+), 10 deletions(-)
 
-diff --git a/fs/bcachefs/extents.c b/fs/bcachefs/extents.c
-index aa3b88291814..2fc9ace5533c 100644
---- a/fs/bcachefs/extents.c
-+++ b/fs/bcachefs/extents.c
-@@ -1323,9 +1323,6 @@ int bch2_bkey_ptrs_validate(struct bch_fs *c, struct bkey_s_c k,
- 		case BCH_EXTENT_ENTRY_crc128:
- 			crc = bch2_extent_crc_unpack(k.k, entry_to_crc(entry));
+diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
+index e8c246e5803c..b2d570453351 100644
+--- a/fs/bcachefs/alloc_background.c
++++ b/fs/bcachefs/alloc_background.c
+@@ -1338,7 +1338,40 @@ int bch2_check_alloc_hole_bucket_gens(struct btree_trans *trans,
+ 	return ret;
+ }
  
--			bkey_fsck_err_on(crc.offset + crc.live_size > crc.uncompressed_size,
--					 c, ptr_crc_uncompressed_size_too_small,
--					 "checksum offset + key size > uncompressed size");
- 			bkey_fsck_err_on(!bch2_checksum_type_valid(c, crc.csum_type),
- 					 c, ptr_crc_csum_type_unknown,
- 					 "invalid checksum type");
-@@ -1333,6 +1330,19 @@ int bch2_bkey_ptrs_validate(struct bch_fs *c, struct bkey_s_c k,
- 					 c, ptr_crc_compression_type_unknown,
- 					 "invalid compression type");
- 
-+			bkey_fsck_err_on(crc.offset + crc.live_size > crc.uncompressed_size,
-+					 c, ptr_crc_uncompressed_size_too_small,
-+					 "checksum offset + key size > uncompressed size");
-+			bkey_fsck_err_on(crc_is_encoded(crc) &&
-+					 (crc.uncompressed_size > c->opts.encoded_extent_max >> 9) &&
-+					 (from.flags & (BCH_VALIDATE_write|BCH_VALIDATE_commit)),
-+					 c, ptr_crc_uncompressed_size_too_big,
-+					 "too large encoded extent");
-+			bkey_fsck_err_on(!crc_is_compressed(crc) &&
-+					 crc.compressed_size != crc.uncompressed_size,
-+					 c, ptr_crc_uncompressed_size_mismatch,
-+					 "not compressed but compressed != uncompressed size");
+-int bch2_check_discard_freespace_key(struct btree_trans *trans, struct btree_iter *iter, u8 *gen)
++struct check_discard_freespace_key_async {
++	struct work_struct	work;
++	struct bch_fs		*c;
++	struct bbpos		pos;
++};
 +
- 			if (bch2_csum_type_is_encryption(crc.csum_type)) {
- 				if (nonce == UINT_MAX)
- 					nonce = crc.offset + crc.nonce;
-@@ -1346,12 +1356,6 @@ int bch2_bkey_ptrs_validate(struct bch_fs *c, struct bkey_s_c k,
- 					 "redundant crc entry");
- 			crc_since_last_ptr = true;
++static int bch2_recheck_discard_freespace_key(struct btree_trans *trans, struct bbpos pos)
++{
++	struct btree_iter iter;
++	struct bkey_s_c k = bch2_bkey_get_iter(trans, &iter, pos.btree, pos.pos, 0);
++	int ret = bkey_err(k);
++	if (ret)
++		return ret;
++
++	u8 gen;
++	ret = k.k->type != KEY_TYPE_set
++		? bch2_check_discard_freespace_key(trans, &iter, &gen, false)
++		: 0;
++	bch2_trans_iter_exit(trans, &iter);
++	return ret;
++}
++
++static void check_discard_freespace_key_work(struct work_struct *work)
++{
++	struct check_discard_freespace_key_async *w =
++		container_of(work, struct check_discard_freespace_key_async, work);
++
++	bch2_trans_do(w->c, bch2_recheck_discard_freespace_key(trans, w->pos));
++	bch2_write_ref_put(w->c, BCH_WRITE_REF_check_discard_freespace_key);
++	kfree(w);
++}
++
++int bch2_check_discard_freespace_key(struct btree_trans *trans, struct btree_iter *iter, u8 *gen,
++				     bool async_repair)
+ {
+ 	struct bch_fs *c = trans->c;
+ 	enum bch_data_type state = iter->btree_id == BTREE_ID_need_discard
+@@ -1351,7 +1384,8 @@ int bch2_check_discard_freespace_key(struct btree_trans *trans, struct btree_ite
+ 	u64 genbits = iter->pos.offset & (~0ULL << 56);
  
--			bkey_fsck_err_on(crc_is_encoded(crc) &&
--					 (crc.uncompressed_size > c->opts.encoded_extent_max >> 9) &&
--					 (from.flags & (BCH_VALIDATE_write|BCH_VALIDATE_commit)),
--					 c, ptr_crc_uncompressed_size_too_big,
--					 "too large encoded extent");
--
- 			size_ondisk = crc.compressed_size;
- 			break;
- 		case BCH_EXTENT_ENTRY_stripe_ptr:
-diff --git a/fs/bcachefs/sb-errors_format.h b/fs/bcachefs/sb-errors_format.h
-index 342eda8ab69f..3bbda181f314 100644
---- a/fs/bcachefs/sb-errors_format.h
-+++ b/fs/bcachefs/sb-errors_format.h
-@@ -172,10 +172,11 @@ enum bch_fsck_flags {
- 	x(ptr_bucket_data_type_mismatch,			155,	0)		\
- 	x(ptr_cached_and_erasure_coded,				156,	0)		\
- 	x(ptr_crc_uncompressed_size_too_small,			157,	0)		\
-+	x(ptr_crc_uncompressed_size_too_big,			161,	0)		\
-+	x(ptr_crc_uncompressed_size_mismatch,			300,	0)		\
- 	x(ptr_crc_csum_type_unknown,				158,	0)		\
- 	x(ptr_crc_compression_type_unknown,			159,	0)		\
- 	x(ptr_crc_redundant,					160,	0)		\
--	x(ptr_crc_uncompressed_size_too_big,			161,	0)		\
- 	x(ptr_crc_nonce_mismatch,				162,	0)		\
- 	x(ptr_stripe_redundant,					163,	0)		\
- 	x(reservation_key_nr_replicas_invalid,			164,	0)		\
-@@ -310,7 +311,7 @@ enum bch_fsck_flags {
- 	x(logged_op_but_clean,					283,	FSCK_AUTOFIX)	\
- 	x(compression_opt_not_marked_in_sb,			295,	FSCK_AUTOFIX)	\
- 	x(compression_type_not_marked_in_sb,			296,	FSCK_AUTOFIX)	\
--	x(MAX,							300,	0)
-+	x(MAX,							301,	0)
+ 	struct btree_iter alloc_iter;
+-	struct bkey_s_c alloc_k = bch2_bkey_get_iter(trans, &alloc_iter, BTREE_ID_alloc, bucket, BTREE_ITER_cached);
++	struct bkey_s_c alloc_k = bch2_bkey_get_iter(trans, &alloc_iter,
++						     BTREE_ID_alloc, bucket, BTREE_ITER_cached);
+ 	int ret = bkey_err(alloc_k);
+ 	if (ret)
+ 		return ret;
+@@ -1392,17 +1426,39 @@ int bch2_check_discard_freespace_key(struct btree_trans *trans, struct btree_ite
+ 	printbuf_exit(&buf);
+ 	return ret;
+ delete:
+-	ret =   bch2_btree_bit_mod_iter(trans, iter, false) ?:
+-		bch2_trans_commit(trans, NULL, NULL,
+-			BCH_TRANS_COMMIT_no_enospc) ?:
+-		-BCH_ERR_transaction_restart_commit;
+-	goto out;
++	if (!async_repair) {
++		ret =   bch2_btree_bit_mod_iter(trans, iter, false) ?:
++			bch2_trans_commit(trans, NULL, NULL,
++				BCH_TRANS_COMMIT_no_enospc) ?:
++			-BCH_ERR_transaction_restart_commit;
++		goto out;
++	} else {
++		/*
++		 * We can't repair here when called from the allocator path: the
++		 * commit will recurse back into the allocator
++		 */
++		struct check_discard_freespace_key_async *w =
++			kzalloc(sizeof(*w), GFP_KERNEL);
++		if (!w)
++			goto out;
++
++		if (!bch2_write_ref_tryget(c, BCH_WRITE_REF_check_discard_freespace_key)) {
++			kfree(w);
++			goto out;
++		}
++
++		INIT_WORK(&w->work, check_discard_freespace_key_work);
++		w->c = c;
++		w->pos = BBPOS(iter->btree_id, iter->pos);
++		queue_work(c->write_ref_wq, &w->work);
++		goto out;
++	}
+ }
  
- enum bch_sb_error_id {
- #define x(t, n, ...) BCH_FSCK_ERR_##t = n,
+ static int bch2_check_discard_freespace_key_fsck(struct btree_trans *trans, struct btree_iter *iter)
+ {
+ 	u8 gen;
+-	int ret = bch2_check_discard_freespace_key(trans, iter, &gen);
++	int ret = bch2_check_discard_freespace_key(trans, iter, &gen, false);
+ 	return ret < 0 ? ret : 0;
+ }
+ 
+diff --git a/fs/bcachefs/alloc_background.h b/fs/bcachefs/alloc_background.h
+index 8cacddd188f4..de25ba4ee94b 100644
+--- a/fs/bcachefs/alloc_background.h
++++ b/fs/bcachefs/alloc_background.h
+@@ -310,7 +310,7 @@ int bch2_trigger_alloc(struct btree_trans *, enum btree_id, unsigned,
+ 		       struct bkey_s_c, struct bkey_s,
+ 		       enum btree_iter_update_trigger_flags);
+ 
+-int bch2_check_discard_freespace_key(struct btree_trans *, struct btree_iter *, u8 *);
++int bch2_check_discard_freespace_key(struct btree_trans *, struct btree_iter *, u8 *, bool);
+ int bch2_check_alloc_info(struct bch_fs *);
+ int bch2_check_alloc_to_lru_refs(struct bch_fs *);
+ void bch2_dev_do_discards(struct bch_dev *);
+diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
+index 4d1ff7f1f302..c40a76df76b8 100644
+--- a/fs/bcachefs/alloc_foreground.c
++++ b/fs/bcachefs/alloc_foreground.c
+@@ -281,7 +281,7 @@ static struct open_bucket *try_alloc_bucket(struct btree_trans *trans, struct bc
+ 	u64 b = freespace_iter->pos.offset & ~(~0ULL << 56);
+ 	u8 gen;
+ 
+-	int ret = bch2_check_discard_freespace_key(trans, freespace_iter, &gen);
++	int ret = bch2_check_discard_freespace_key(trans, freespace_iter, &gen, true);
+ 	if (ret < 0)
+ 		return ERR_PTR(ret);
+ 	if (ret)
+diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
+index d88129503bc5..c16937e54734 100644
+--- a/fs/bcachefs/bcachefs.h
++++ b/fs/bcachefs/bcachefs.h
+@@ -680,6 +680,7 @@ struct btree_trans_buf {
+ 	x(dio_write)							\
+ 	x(discard)							\
+ 	x(discard_fast)							\
++	x(check_discard_freespace_key)					\
+ 	x(invalidate)							\
+ 	x(delete_dead_snapshots)					\
+ 	x(gc_gens)							\
 -- 
 2.45.2
 
