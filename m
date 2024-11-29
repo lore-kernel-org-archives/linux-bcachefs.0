@@ -1,76 +1,69 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C925317993
-	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Nov 2024 16:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCA1BA4B;
+	Fri, 29 Nov 2024 06:38:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732812424; cv=none; b=ab6BVwgjvEPvtznrDOFrIZcQWLSA1WHu8YkPuIQMQlam/ztPGP5Aj3ItjLp27TPkAaicyoSBCX0JBb2wq7iW070LNdXITJbotWSq2k3sXI3rmDLFPZpveMqgwhjmsP+3fn3XxW223Ird7a+UQKYlB9R0/08ep0QI1q7wr6/PmJA=
+	t=1732862319; cv=none; b=ut8bmtzIZCrfCMMOsk7Cl5RuiaWhvPdqlz7tAhn3ln7FbwLOS/tdSZiYbIT9/nE6n717D5qTOykRSjqnwsfr8bGBWsqVtAcCRPx0ChIxvFm1h0zyyXGJ/QMlEnH2fTDacQ74C7UitANaFOMSxwXmX4r9tLtOa36wlYr2b7QT3t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732812424; c=relaxed/simple;
-	bh=qN1BVZeLJUZjyfFPMYiLwnibmO0IeO2MVIckXI60Xak=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=R/kZ0ncVqw9C0TyJJBWDyxNGIyjHhbRwQZxw7JB2B7Y71feJ/N1TOiy+SaH0einLnltibNrqP/InoHCRBX/nSLBrlHKAnETsvOAHB6kBQZ9f8hcDOJjnLp/wgUh1l2Nz/xL3XdbjvbQt2NfS4vBFSsQOGsPkinJYt47+mfafvsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a777d47a8eso16457295ab.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 28 Nov 2024 08:47:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732812422; x=1733417222;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iB6QKltZBqgTuIMurRDLD1EU9kWoXkGKf5mAkXTzeZA=;
-        b=BTxNa+c6JtokhSzxwvbjRFuUR513hxcLhwkq1yT4qAlTiPdL8qWbVyG9JKo69Ex+7N
-         nagqzd1gOXvvGq60+mt8TbXZBrNNFXFhiYQeFQ2XrstB2kYJHd/SdBdwuUPsowDfr9yo
-         xt2NwtcL8Og8ZveUzIDX1onTZUoOGibstdRUuBgEM6Ito09dH1uq5jN2zVtr+0Dyq6M1
-         ZxGBJUrQ5DwsOSTRk8tC7IQWIuMNQEZgYxDerR80cdpj+tTJhSW8yDvlq58fTx14oB4K
-         FLYpxyJGgXFlaGFmtp1FtQ/EeWBSPUD1Lt2N56l+axTJXKzfuW8Zv4RTJqiwB5lJYPmg
-         oyjw==
-X-Forwarded-Encrypted: i=1; AJvYcCUOagFX2FXkQmeUfg6ILEbAhakSO/wJU81FxMim3GJjoFD8nQQDIEv7ahCCc4uDGxo7v1wrTsRaXpI1VDFWqg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxB2FizaEMEo88wgF7ETOXIWp2O4A3pYsdeO1+DAZLCSN8Hu87J
-	L8CdAN6TKE/DaOJ7fbREgF1JWfLN72oQ2gyxB+PVe3pirfKdZblYDx494R13KQzVagvAxVEPL2g
-	24/H39oNQVHMhoF2nbIWY6VUG/wusTTvU7AwNG57EViJNK0/a/V4CQF8=
-X-Google-Smtp-Source: AGHT+IGy73L+vWVZwSdwyqjH0wowFE8DqdHmgCJRRlhDtScRZ/8AHk/G68GnqvDB47rZRjSRuLeAnzjjBbs5SrYs+07ze2mvwjsD
+	s=arc-20240116; t=1732862319; c=relaxed/simple;
+	bh=MMy8zuYaHfqc6MSJxstPlEkrkcaYa6q0NFCR50Ep+ro=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iQ0fcZI3dcCeFUt+HsQ7CKmPBMPfMlyfu1gppWCwxeoYhUXxk9a8NOnUMdT1VPMexcc+HA55Lq6amG5gJ9ey/T+1L5BB+GFLBaB8FAKt4hWkDPWVW4DZ64P88zKq3A0+WsRc38v5dxn1N1+Mo8RU7IYDFPey9zQd1I1uRWVWyH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KQjEduJn; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KQjEduJn"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1732862309; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=Un6Fs6jJoOLtd8RJ9PjCJ5MWsMneFpC7aGCo9uBzt7o=;
+	b=KQjEduJnnLXNAT3n7GeekKanmsK9iLLc/MHrpLjgll8qSzHfjx3o8Sn4dnSQZqZPUsocSKfS7XYcy9rvNQFAOfDiFbhrMfjnOCv+stq2cbh/i46JXLGh3y6QTXY3wVaQpfyjJUyjZuUgkAVwe46RZvZSMrpzVCPaB2XFuDvu25I=
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0WKSwsSl_1732862308 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 29 Nov 2024 14:38:29 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] bcache: Add missing parameter description to bch2_bucket_alloc_trans()
+Date: Fri, 29 Nov 2024 14:38:27 +0800
+Message-Id: <20241129063827.90340-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:178c:b0:3a7:8149:6aa with SMTP id
- e9e14a558f8ab-3a7c55fc480mr76935615ab.24.1732812422060; Thu, 28 Nov 2024
- 08:47:02 -0800 (PST)
-Date: Thu, 28 Nov 2024 08:47:02 -0800
-In-Reply-To: <67483ca4.050a0220.253251.007d.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67489e86.050a0220.253251.008a.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_get_scanned_nodes
-From: syzbot <syzbot+64e6509c7f777aec3a24@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot has bisected this issue to:
+The function bch2_bucket_alloc_trans() lacked a description for the
+nowait parameter in its documentation comment block. This patch adds the
+missing description to ensure all parameters are properly documented.
 
-commit 50eecc37ec7c9caab87c938b912bb5c686316ea5
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Wed Nov 27 05:29:52 2024 +0000
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=12179
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/bcachefs/alloc_foreground.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-    bcachefs: struct bkey_validate_context
+diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
+index 4d1ff7f1f302..2f1ea718cc33 100644
+--- a/fs/bcachefs/alloc_foreground.c
++++ b/fs/bcachefs/alloc_foreground.c
+@@ -505,6 +505,7 @@ static noinline void trace_bucket_alloc2(struct bch_fs *c, struct bch_dev *ca,
+  * @watermark:	how important is this allocation?
+  * @data_type:	BCH_DATA_journal, btree, user...
+  * @cl:		if not NULL, closure to be used to wait if buckets not available
++ * @nowait:	if true, do not wait for buckets to become available
+  * @usage:	for secondarily also returning the current device usage
+  *
+  * Returns:	an open_bucket on success, or an ERR_PTR() on failure.
+-- 
+2.32.0.3.g01195cf9f
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10a64f78580000
-start commit:   f486c8aa16b8 Add linux-next specific files for 20241128
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12a64f78580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a64f78580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e348a4873516af92
-dashboard link: https://syzkaller.appspot.com/bug?extid=64e6509c7f777aec3a24
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1389ef5f980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=164a8f78580000
-
-Reported-by: syzbot+64e6509c7f777aec3a24@syzkaller.appspotmail.com
-Fixes: 50eecc37ec7c ("bcachefs: struct bkey_validate_context")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
