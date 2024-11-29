@@ -1,27 +1,27 @@
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E516E1A38EC
-	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9F41A0BE1
+	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:28:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732912094; cv=none; b=D1DDQTyNklawB97zExpBvpTOW53X8/S5kw0or7mgl2mmAnBlwXO9+dmJQzZED/H4lcmoV5BHvI5eeHQgn4qOmC61W2IXZMl+kaqFpUiqqkShL6kYhXbKdCu/Eu1elI/wkDGR+b730ZuSFvY/NHSJjsufspJzlnAs9Od2xI55tjM=
+	t=1732912095; cv=none; b=Y+04DAM1bmcf22piIDrZiNWEioKIVVz2kcg8GCBmalYQKaeK+ECXcIZJGgWpqEqCeVIrHgQXMfktFRqDrUhi2VP4LZLsiFVL0rzI+ZKQby7T6HaY4KwRtyu8ojT1/av41L99oHqJRtrQxwZVDDq51wJmHJIEgGFGWsz1lVsHU0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732912094; c=relaxed/simple;
-	bh=6AVWeyYW/31nFrVV2Fe4x/GjQupTtX1uNhGidf91cYE=;
+	s=arc-20240116; t=1732912095; c=relaxed/simple;
+	bh=7NOEcjxhjVHr7Oelh8AoIjYs44ND+ZFyFOzHuOepDlU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FRO2RCErPG5WB82hSjbimygLgYIKxu+LTd8LSBt0rKfyYgcqk6BiQtyhzGNeAMf8BGrgN0VUBE1tfjCUDQmKHpZC62I1vw+kSL3QM/Hoq7G+I+wJp0e3Asn+FRyui+PKRiheWoqAbCJAtm0Uv9gjhsMI2ujabm9McUmMguZIm7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.188
+	 MIME-Version; b=YzcjLZyHbTeMFhZJfqOLPClOS0iuIqVb+4yd4fkmuaukCqIYJAhGi249nc/OYZXfH98+If4GYwCSitLwt8MrF3deF+1+eqbuy/B7ZxhvqHlqPZqEqbtwn+/T2R0uRQGPFiQ9mu2zh65s7V5b5jOaSqjq6rZ8I4/8WH86XVZOgOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	syzbot+85700120f75fc10d4e18@syzkaller.appspotmail.com
-Subject: [PATCH 29/34] bcachefs: Check for bucket journal seq in the future
-Date: Fri, 29 Nov 2024 15:27:28 -0500
-Message-ID: <20241129202736.2713679-30-kent.overstreet@linux.dev>
+	syzbot+d119b445ec739e7f3068@syzkaller.appspotmail.com
+Subject: [PATCH 30/34] bcachefs: Check for inode journal seq in the future
+Date: Fri, 29 Nov 2024 15:27:29 -0500
+Message-ID: <20241129202736.2713679-31-kent.overstreet@linux.dev>
 In-Reply-To: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 References: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -33,118 +33,119 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This fixes an assertion pop in bch2_journal_noflush_seq() - log the
-error to the superblock and continue instead.
+More check and repair code: this fixes a warning in
+bch2_journal_flush_seq_async()
 
-Reported-by: syzbot+85700120f75fc10d4e18@syzkaller.appspotmail.com
+Reported-by: syzbot+d119b445ec739e7f3068@syzkaller.appspotmail.com
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/alloc_background.c | 63 +++++++++++++++++++---------------
- fs/bcachefs/sb-errors_format.h |  3 +-
- 2 files changed, 37 insertions(+), 29 deletions(-)
+ fs/bcachefs/fs-io.c            | 35 +++++++++++++++++++++++++++++++---
+ fs/bcachefs/fsck.c             | 13 ++++++++++++-
+ fs/bcachefs/sb-errors_format.h |  3 ++-
+ 3 files changed, 46 insertions(+), 5 deletions(-)
 
-diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
-index 6de0387ede99..e8c246e5803c 100644
---- a/fs/bcachefs/alloc_background.c
-+++ b/fs/bcachefs/alloc_background.c
-@@ -926,37 +926,43 @@ int bch2_trigger_alloc(struct btree_trans *trans,
- 	}
+diff --git a/fs/bcachefs/fs-io.c b/fs/bcachefs/fs-io.c
+index c6fdfec51082..33d0e7080bf6 100644
+--- a/fs/bcachefs/fs-io.c
++++ b/fs/bcachefs/fs-io.c
+@@ -167,6 +167,34 @@ void __bch2_i_sectors_acct(struct bch_fs *c, struct bch_inode_info *inode,
  
- 	if ((flags & BTREE_TRIGGER_atomic) && (flags & BTREE_TRIGGER_insert)) {
--		u64 journal_seq = trans->journal_res.seq;
--		u64 bucket_journal_seq = new_a->journal_seq;
-+		u64 transaction_seq = trans->journal_res.seq;
+ /* fsync: */
  
--		if ((flags & BTREE_TRIGGER_insert) &&
--		    data_type_is_empty(old_a->data_type) !=
--		    data_type_is_empty(new_a->data_type) &&
--		    new.k->type == KEY_TYPE_alloc_v4) {
--			struct bch_alloc_v4 *v = bkey_s_to_alloc_v4(new).v;
-+		if (log_fsck_err_on(transaction_seq && new_a->journal_seq > transaction_seq,
-+				    trans, alloc_key_journal_seq_in_future,
-+				    "bucket journal seq in future (currently at %llu)\n%s",
-+				    journal_cur_seq(&c->journal),
-+				    (bch2_bkey_val_to_text(&buf, c, new.s_c), buf.buf)))
-+			new_a->journal_seq = transaction_seq;
- 
--			/*
--			 * If the btree updates referring to a bucket weren't flushed
--			 * before the bucket became empty again, then the we don't have
--			 * to wait on a journal flush before we can reuse the bucket:
--			 */
--			v->journal_seq = bucket_journal_seq =
--				data_type_is_empty(new_a->data_type) &&
--				(journal_seq == v->journal_seq ||
--				 bch2_journal_noflush_seq(&c->journal, v->journal_seq))
--				? 0 : journal_seq;
--		}
-+		int is_empty_delta = (int) data_type_is_empty(new_a->data_type) -
-+				     (int) data_type_is_empty(old_a->data_type);
- 
--		if (!data_type_is_empty(old_a->data_type) &&
--		    data_type_is_empty(new_a->data_type) &&
--		    bucket_journal_seq) {
--			ret = bch2_set_bucket_needs_journal_commit(&c->buckets_waiting_for_journal,
--					c->journal.flushed_seq_ondisk,
--					new.k->p.inode, new.k->p.offset,
--					bucket_journal_seq);
--			if (bch2_fs_fatal_err_on(ret, c,
--					"setting bucket_needs_journal_commit: %s", bch2_err_str(ret)))
--				goto err;
-+		/* Record journal sequence number of empty -> nonempty transition: */
-+		if (is_empty_delta < 0)
-+			new_a->journal_seq = max(new_a->journal_seq, transaction_seq);
++static int bch2_get_inode_journal_seq_trans(struct btree_trans *trans, subvol_inum inum,
++					    u64 *seq)
++{
++	struct printbuf buf = PRINTBUF;
++	struct bch_inode_unpacked u;
++	struct btree_iter iter;
++	int ret = bch2_inode_peek(trans, &iter, &u, inum, 0);
++	if (ret)
++		return ret;
 +
-+		/*
-+		 * Bucket becomes empty: mark it as waiting for a journal flush,
-+		 * unless updates since empty -> nonempty transition were never
-+		 * flushed - we may need to ask the journal not to flush
-+		 * intermediate sequence numbers:
-+		 */
-+		if (is_empty_delta > 0) {
-+			if (new_a->journal_seq == transaction_seq ||
-+			    bch2_journal_noflush_seq(&c->journal, new_a->journal_seq))
-+				new_a->journal_seq = 0;
-+			else {
-+				new_a->journal_seq = transaction_seq;
++	u64 cur_seq = journal_cur_seq(&trans->c->journal);
++	*seq = min(cur_seq, u.bi_journal_seq);
 +
-+				ret = bch2_set_bucket_needs_journal_commit(&c->buckets_waiting_for_journal,
-+						c->journal.flushed_seq_ondisk,
-+						new.k->p.inode, new.k->p.offset,
-+						transaction_seq);
-+				if (bch2_fs_fatal_err_on(ret, c,
-+						"setting bucket_needs_journal_commit: %s", bch2_err_str(ret)))
-+					goto err;
-+			}
- 		}
- 
- 		if (new_a->gen != old_a->gen) {
-@@ -1004,6 +1010,7 @@ int bch2_trigger_alloc(struct btree_trans *trans,
- 		rcu_read_unlock();
- 	}
- err:
++	if (fsck_err_on(u.bi_journal_seq > cur_seq,
++			trans, inode_journal_seq_in_future,
++			"inode journal seq in future (currently at %llu)\n%s",
++			cur_seq,
++			(bch2_inode_unpacked_to_text(&buf, &u),
++			buf.buf))) {
++		u.bi_journal_seq = cur_seq;
++		ret = bch2_inode_write(trans, &iter, &u);
++	}
 +fsck_err:
- 	printbuf_exit(&buf);
- 	bch2_dev_put(ca);
++	bch2_trans_iter_exit(trans, &iter);
++	printbuf_exit(&buf);
++	return ret;
++}
++
+ /*
+  * inode->ei_inode.bi_journal_seq won't be up to date since it's set in an
+  * insert trigger: look up the btree inode instead
+@@ -180,9 +208,10 @@ static int bch2_flush_inode(struct bch_fs *c,
+ 	if (!bch2_write_ref_tryget(c, BCH_WRITE_REF_fsync))
+ 		return -EROFS;
+ 
+-	struct bch_inode_unpacked u;
+-	int ret = bch2_inode_find_by_inum(c, inode_inum(inode), &u) ?:
+-		  bch2_journal_flush_seq(&c->journal, u.bi_journal_seq, TASK_INTERRUPTIBLE) ?:
++	u64 seq;
++	int ret = bch2_trans_commit_do(c, NULL, NULL, 0,
++			bch2_get_inode_journal_seq_trans(trans, inode_inum(inode), &seq)) ?:
++		  bch2_journal_flush_seq(&c->journal, seq, TASK_INTERRUPTIBLE) ?:
+ 		  bch2_inode_flush_nocow_writes(c, inode);
+ 	bch2_write_ref_put(c, BCH_WRITE_REF_fsync);
  	return ret;
+diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
+index e10abd2e6c69..f2174528ee5f 100644
+--- a/fs/bcachefs/fsck.c
++++ b/fs/bcachefs/fsck.c
+@@ -1392,7 +1392,7 @@ static int check_inode(struct btree_trans *trans,
+ 
+ 			if (fsck_err_on(!ret,
+ 					trans, inode_unlinked_and_not_open,
+-				      "inode %llu%u unlinked and not open",
++				      "inode %llu:%u unlinked and not open",
+ 				      u.bi_inum, u.bi_snapshot)) {
+ 				ret = bch2_inode_rm_snapshot(trans, u.bi_inum, iter->pos.snapshot);
+ 				bch_err_msg(c, ret, "in fsck deleting inode");
+@@ -1441,6 +1441,17 @@ static int check_inode(struct btree_trans *trans,
+ 			do_update = true;
+ 		}
+ 	}
++
++	if (fsck_err_on(u.bi_journal_seq > journal_cur_seq(&c->journal),
++			trans, inode_journal_seq_in_future,
++			"inode journal seq in future (currently at %llu)\n%s",
++			journal_cur_seq(&c->journal),
++			(printbuf_reset(&buf),
++			 bch2_inode_unpacked_to_text(&buf, &u),
++			buf.buf))) {
++		u.bi_journal_seq = journal_cur_seq(&c->journal);
++		do_update = true;
++	}
+ do_update:
+ 	if (do_update) {
+ 		ret = __bch2_fsck_write_inode(trans, &u);
 diff --git a/fs/bcachefs/sb-errors_format.h b/fs/bcachefs/sb-errors_format.h
-index 382fcafa815a..8e3a6c5da10d 100644
+index 8e3a6c5da10d..342eda8ab69f 100644
 --- a/fs/bcachefs/sb-errors_format.h
 +++ b/fs/bcachefs/sb-errors_format.h
-@@ -122,6 +122,7 @@ enum bch_fsck_flags {
- 	x(alloc_key_cached_sectors_wrong,			109,	FSCK_AUTOFIX)	\
- 	x(alloc_key_stripe_wrong,				110,	FSCK_AUTOFIX)	\
- 	x(alloc_key_stripe_redundancy_wrong,			111,	FSCK_AUTOFIX)	\
-+	x(alloc_key_journal_seq_in_future,			298,	FSCK_AUTOFIX)	\
- 	x(bucket_sector_count_overflow,				112,	0)		\
- 	x(bucket_metadata_type_mismatch,			113,	0)		\
- 	x(need_discard_key_wrong,				114,	FSCK_AUTOFIX)	\
-@@ -308,7 +309,7 @@ enum bch_fsck_flags {
+@@ -233,6 +233,7 @@ enum bch_fsck_flags {
+ 	x(inode_wrong_nlink,					209,	FSCK_AUTOFIX)	\
+ 	x(inode_has_child_snapshots_wrong,			287,	0)		\
+ 	x(inode_unreachable,					210,	FSCK_AUTOFIX)	\
++	x(inode_journal_seq_in_future,				299,	FSCK_AUTOFIX)	\
+ 	x(deleted_inode_but_clean,				211,	FSCK_AUTOFIX)	\
+ 	x(deleted_inode_missing,				212,	FSCK_AUTOFIX)	\
+ 	x(deleted_inode_is_dir,					213,	FSCK_AUTOFIX)	\
+@@ -309,7 +310,7 @@ enum bch_fsck_flags {
  	x(logged_op_but_clean,					283,	FSCK_AUTOFIX)	\
  	x(compression_opt_not_marked_in_sb,			295,	FSCK_AUTOFIX)	\
  	x(compression_type_not_marked_in_sb,			296,	FSCK_AUTOFIX)	\
--	x(MAX,							298,	0)
-+	x(MAX,							299,	0)
+-	x(MAX,							299,	0)
++	x(MAX,							300,	0)
  
  enum bch_sb_error_id {
  #define x(t, n, ...) BCH_FSCK_ERR_##t = n,
