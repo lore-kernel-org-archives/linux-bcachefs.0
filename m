@@ -1,26 +1,26 @@
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5303E545
-	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A3D5156C5E
+	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732912069; cv=none; b=dqcgFQH+oj4ZMcWPKUoOQ25eyrpLe0JtkRbX1EcxZieiwdn9tWfJzWClvUYW/aQQgMHgfTJtQj4rsZSmfFciReC+wHnrhU4OiOZYhIwyiPGKXIGXpZG/ikN+pQLdED3nPRgXENGbbWk/STMZJLZYRcbebgP10xiE8fAzYxL2fJs=
+	t=1732912071; cv=none; b=sJmmSnKIqeIIJ50o7gfD9VZ+SaMMQXzqOjTDNVcGq6maWI0V1e5Lf4f1xnEsjlfTEZlMvTb9ZJjNoy8njQWcLS0Z+86Wm+QDUneMgDln2EyXL7xJAmDnojiVM63Cz4pu8y9IbqOL+VohXv58EBxuHTC7YqTqPSoobPL2Wpk0OL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732912069; c=relaxed/simple;
-	bh=p+vgThMO683pDY0D3pZ7KGocYWzUaZWFrBgtBw44dpk=;
+	s=arc-20240116; t=1732912071; c=relaxed/simple;
+	bh=X1dQ3xN1+FbcYM4eZeVaBypxrJMIBEltjTumSgI/ekE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oZT8XPnx6PocHH0pfmR1bXEE7DSjQlqHzMPUTOsylxdcs389mE7szdoOFmQHTVbh87phURRBS515SmaHkOAUk9QNxHbBdjiABVMi/Jz1hcnw9xIvVBDmCGCAJyMysCbd3XXkw68loFZvauXUWDz/t1+ggIUS+2ILCafMxHzlLeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.189
+	 MIME-Version; b=r30oe8qFmPyBCKlwZ79PhTTfcQikWMAvLKYb7qYIK9KEJdsaM1kRgLa7TyGGEvk4sRXJRvlmyzmmR9gaSc4EKZsrkcPsCjH/R0JE7586YPFV2eJevqqAWl5jdrtqtoFkVMhade6aK5DVYTJ/ph8wGLJNwQYzg0w3hZOz7VT+USs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 03/34] bcachefs: errcode cleanup: journal errors
-Date: Fri, 29 Nov 2024 15:27:02 -0500
-Message-ID: <20241129202736.2713679-4-kent.overstreet@linux.dev>
+Subject: [PATCH 04/34] bcachefs: disk_accounting: bch2_dev_rcu -> bch2_dev_rcu_noerror
+Date: Fri, 29 Nov 2024 15:27:03 -0500
+Message-ID: <20241129202736.2713679-5-kent.overstreet@linux.dev>
 In-Reply-To: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 References: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -32,64 +32,50 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Instead of throwing standard error codes, we should be throwing
-dedicated private error codes, this greatly improves debugability.
+Accounting keys that reference invalid devices are corrected by fsck,
+they shouldn't cause an emergency shutdown.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/errcode.h | 2 ++
- fs/bcachefs/journal.c | 4 ++--
- fs/bcachefs/journal.h | 2 +-
- 3 files changed, 5 insertions(+), 3 deletions(-)
+ fs/bcachefs/disk_accounting.c | 4 ++--
+ fs/bcachefs/disk_accounting.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
-index 131b9bef21a0..c989ce4f715f 100644
---- a/fs/bcachefs/errcode.h
-+++ b/fs/bcachefs/errcode.h
-@@ -241,6 +241,8 @@
- 	x(BCH_ERR_invalid_sb,		invalid_sb_downgrade)			\
- 	x(BCH_ERR_invalid,		invalid_bkey)				\
- 	x(BCH_ERR_operation_blocked,    nocow_lock_blocked)			\
-+	x(EIO,				journal_shutdown)			\
-+	x(EIO,				journal_flush_err)			\
- 	x(EIO,				btree_node_read_err)			\
- 	x(BCH_ERR_btree_node_read_err,	btree_node_read_err_cached)		\
- 	x(EIO,				sb_not_downgraded)			\
-diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
-index 699db0d0749a..bbdd0b17ae69 100644
---- a/fs/bcachefs/journal.c
-+++ b/fs/bcachefs/journal.c
-@@ -673,7 +673,7 @@ void bch2_journal_entry_res_resize(struct journal *j,
-  * @seq:	seq to flush
-  * @parent:	closure object to wait with
-  * Returns:	1 if @seq has already been flushed, 0 if @seq is being flushed,
-- *		-EIO if @seq will never be flushed
-+ *		-BCH_ERR_journal_flush_err if @seq will never be flushed
-  *
-  * Like bch2_journal_wait_on_seq, except that it triggers a write immediately if
-  * necessary
-@@ -696,7 +696,7 @@ int bch2_journal_flush_seq_async(struct journal *j, u64 seq,
- 
- 	/* Recheck under lock: */
- 	if (j->err_seq && seq >= j->err_seq) {
--		ret = -EIO;
-+		ret = -BCH_ERR_journal_flush_err;
- 		goto out;
- 	}
- 
-diff --git a/fs/bcachefs/journal.h b/fs/bcachefs/journal.h
-index 71a50846967f..a6a2e888c59b 100644
---- a/fs/bcachefs/journal.h
-+++ b/fs/bcachefs/journal.h
-@@ -412,7 +412,7 @@ void bch2_journal_halt(struct journal *);
- static inline int bch2_journal_error(struct journal *j)
- {
- 	return j->reservations.cur_entry_offset == JOURNAL_ENTRY_ERROR_VAL
--		? -EIO : 0;
-+		? -BCH_ERR_journal_shutdown : 0;
- }
- 
- struct bch_dev;
+diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+index 55a00018dc8b..fa821d278c45 100644
+--- a/fs/bcachefs/disk_accounting.c
++++ b/fs/bcachefs/disk_accounting.c
+@@ -805,7 +805,7 @@ int bch2_accounting_read(struct bch_fs *c)
+ 			break;
+ 		case BCH_DISK_ACCOUNTING_dev_data_type:
+ 			rcu_read_lock();
+-			struct bch_dev *ca = bch2_dev_rcu(c, k.dev_data_type.dev);
++			struct bch_dev *ca = bch2_dev_rcu_noerror(c, k.dev_data_type.dev);
+ 			if (ca) {
+ 				struct bch_dev_usage_type __percpu *d = &ca->usage->d[k.dev_data_type.data_type];
+ 				percpu_u64_set(&d->buckets,	v[0]);
+@@ -911,7 +911,7 @@ void bch2_verify_accounting_clean(struct bch_fs *c)
+ 				break;
+ 			case BCH_DISK_ACCOUNTING_dev_data_type: {
+ 				rcu_read_lock();
+-				struct bch_dev *ca = bch2_dev_rcu(c, acc_k.dev_data_type.dev);
++				struct bch_dev *ca = bch2_dev_rcu_noerror(c, acc_k.dev_data_type.dev);
+ 				if (!ca) {
+ 					rcu_read_unlock();
+ 					continue;
+diff --git a/fs/bcachefs/disk_accounting.h b/fs/bcachefs/disk_accounting.h
+index 6639535dc91c..8b2b2f83e6a4 100644
+--- a/fs/bcachefs/disk_accounting.h
++++ b/fs/bcachefs/disk_accounting.h
+@@ -142,7 +142,7 @@ static inline int bch2_accounting_mem_mod_locked(struct btree_trans *trans,
+ 			break;
+ 		case BCH_DISK_ACCOUNTING_dev_data_type:
+ 			rcu_read_lock();
+-			struct bch_dev *ca = bch2_dev_rcu(c, acc_k.dev_data_type.dev);
++			struct bch_dev *ca = bch2_dev_rcu_noerror(c, acc_k.dev_data_type.dev);
+ 			if (ca) {
+ 				this_cpu_add(ca->usage->d[acc_k.dev_data_type.data_type].buckets, a.v->d[0]);
+ 				this_cpu_add(ca->usage->d[acc_k.dev_data_type.data_type].sectors, a.v->d[1]);
 -- 
 2.45.2
 
