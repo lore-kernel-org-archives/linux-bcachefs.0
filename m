@@ -1,127 +1,122 @@
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC8928691;
-	Fri, 29 Nov 2024 15:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62BC414831E;
+	Fri, 29 Nov 2024 16:33:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732895129; cv=none; b=sAH5vdjphZiRFJef7IypXVf3FkJkuBrjLgJdR7PnX4JbXjKxi+5nMBww5CanRq7KilkoxBa2egxIGakLIv3jNurCNEhaOduj/NAX8bhqg9cTaKJOwV9/knxw9r6PRi1yEy6IAyggZjH89vSuLV/6maiML+b8topLWt4WAZmp0b0=
+	t=1732898029; cv=none; b=nE5rTlC2wM3N9Kf9gzy++8DvGAzB349XpN1yzdfQZbM6/kAa7A7sMZn+roVzmpOzpjKW21eNsS3ikmTWOMdoeS8upC4QZMXAtzQlcSp0V6mxrVRuC4oqJgX5wusyp/ouSLTMwiX8RcNfRdADutOiFVVgklRCIXcKUkIGmOvOJG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732895129; c=relaxed/simple;
-	bh=T+s3ECWtjs/j1FbkzpUGtX8xs/bOkRYQuQ4Qy6OR5/o=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=RNtM4ExKSJ+w0+lkCLRreV0SELc3iMvDj5m8QJjs8QogGiZg7bR8gNSZ0B0QVn9hT0I4iGwRZGh1P4qn806zYVcDh3IdxRdoWlyK7OGH3owG/mPwl+wTeKkk1SV0Ku/cjgiEbkeuMJr0ypykUoo5MiAUAXCA76CMyPaC42ct+nE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eEHGxX1l; arc=none smtp.client-ip=209.85.208.174
+	s=arc-20240116; t=1732898029; c=relaxed/simple;
+	bh=jV/HJJoyFisUlmpbEwO+vSgy0MZZ5vDW7dpKoJjtGRI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jU7+VqxfS7Ax1s4t69fO0KAjya6EXRTepHJsVlLiSK7gO+241ANDhJD8JfnIBdpeTxagHbdOcXM8DBrzy1/yUzFmeKUJyI9SJMV/XtBgDC+QNe/VxvhaDH6vl3tJvF8UON5Wh65xZzJqP8rFXYwbXhKXOyTlf1PmhIkS5HdA2iM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HxDOwPls; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eEHGxX1l"
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ffb0bbe9c8so24526421fa.0;
-        Fri, 29 Nov 2024 07:45:26 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HxDOwPls"
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2ffe2700e91so17496231fa.2;
+        Fri, 29 Nov 2024 08:33:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732895125; x=1733499925; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1732898025; x=1733502825; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i4Y/6YsRynhUQI3gi/feAQN5R86FvfIbQOixX2P5uMg=;
-        b=eEHGxX1l3ms3c51tGqbR4thZPG4MexSuC7cdnZN7iMZ1gHcdz7QwmG47B1Fxvv++fU
-         7SBjKHaD0hFV8DXzne54Nqrvdcyc/epE30ecUJreLNQDxI/gkCJVQIDoLOLSSNH+Wmx6
-         PY+l9ylJqbWwpxrTBmw1gU3ZP5hTs+QMHqo71Kp6YrIHUQ3j9EPAx8NvXK+7MjD3l+G8
-         wVk+eW7uVCN5G9AkvFajMlv+rfJrSaeyjZdrtKLCUNG5tcwqkwyQUt+lwWyEEjyx6gwB
-         SawGTm7aNrmgo6Yg1yqhNBYEKUWfHOgpIQDeHOYP0LT+prboMXZMjfmHngZ/Ma4lgEiv
-         r0bg==
+        bh=3o5c5OkJBnxuHx2X8U5fNa7RxI4N2MNNsd2C+SVC6H4=;
+        b=HxDOwPlsOuNayfgqQF/4HcFAN22Bb4SyTY+kvR1RfeDjOizxefu7IPvSnAt9vIfoLp
+         5LKADzcTCqv5llUj7u/0On9zPocv2BXGnsJyge2OYlxy3+y+2gzAKRekavk+AqXCCUjz
+         nteQzH2SBeqXii8rtsFggHya4pAyWAb4kJsXlmNmMAPVwfBMQUpUE0l5JfPmeruo5isR
+         U8KCcOGqCzPfLt478jEy7bSlU0aPQY+Y6GSm4UHKC8jPF9oNSOYyRuDPkTcNAiOXC4oM
+         1Ej4HYjq5NcAjDO/Fq5VnAwl71deLoDI0k/Sn1FMBINezkQXdD6ThhCT7cKKb7/TIrV4
+         xivw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732895125; x=1733499925;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1732898025; x=1733502825;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i4Y/6YsRynhUQI3gi/feAQN5R86FvfIbQOixX2P5uMg=;
-        b=a5NyqS6EnwD8LP+XG5ytoczp+SJ/1fWcdvSeQoMfyp7yaAYRfAUJw+7ew6Ip24wiEr
-         FXdzNEpM1eqpN9l11Uucy5hP5Gph8qPyalyul9i+vknhkHrvAflOjud2qOe1OaN3avUF
-         x7ZPR8L3l6kvtJ2GcjbG4UGuzTKkhuoUB+SeMQJjf+lG2hnPUR2r8QmnR3wpnN7tr0Tx
-         pTEet/VGVUJvMSPQgQjHu1Bow8OLqiHp72YTut1uwisjQlmVvmsmwecBxznJw+mJJ0Tx
-         u0pG+10pqNempNw4/ELwWXaGONSA+Xkdrlbn6DyoHUZhrCxllnqNiaFas0yIm8iQmBlb
-         55Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCVAAJgRyaVe5XODJorybIFfk6/9q1KHiLEE1EO7ybUnqVfIr1AoBA+IYxCDwVwcM9Bc6KA39okL956I@vger.kernel.org, AJvYcCViskq1YzqDoTp4DNvO3nz3gWnfz3P1GpznbguCtH8twbFveB1clTfLqVAl70S44dK1OI+o3cBr@vger.kernel.org, AJvYcCWIrDTO5woAKf9wLfiAY+Lu1QQWP0OPzxSae6OcjQVKcSaBVfvBsM1eCMIRah+rxpborRXyVwRKLaMDDCzU@vger.kernel.org, AJvYcCWLtMQRXiSt6xq7V06SLm9McEkMXwvJGFGLDvWUrfAB0HslUE//5FdXY7rJre6asyFaIpYMghb3GW6RTjGg2pk=@vger.kernel.org, AJvYcCXgf9zR9V13gdwoQhzCV0Ff5eV/CPkLtNR8yzBAAbvk7eqLodCws7HcMsAWAU/l1S4xV3oyk+/i8ua7te2s@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywu8IDZnPtgAVyXJd1o8L7rXeE+24W42rlW8FRKSoWd7nEcYA4a
-	AuaHeV2/+1OiLe/yZj4VXH3C3Kz2kwPaWPan8E8tmPLuIVbwz13z
-X-Gm-Gg: ASbGncvXoaQSDKq7SRxgr5ZgfJ3d8Xwh732NfQohK9R23QDiLOqIi6FT8dNol+StJNi
-	bbZDvhyVQthvYxB/HV51MG7F1MYi3j2O9ldzEJ/LuAVx2Z1nwh4NWkZDFk7qN4mTL5ZNaj318jn
-	a/HoECTqH6JQ/zmhf3Wns/firZKKTqIAP1QC2bePPfq5tKkuGhB/N+HfxuKZ+m/VjSbjTHqghyq
-	nHHjCSR56ur+qd1I5GeWNY0sY4nKsm8ERA2B9Q5Naj2YkeC6u5fC3S52vP4fWvl5Sw=
-X-Google-Smtp-Source: AGHT+IGdf09ewurCXHG4aOkkaYVMwJ5lfvxLKfHbX3YBVf0cJU8E7jTdYjT8obhGs9IkbVrmTkJl6A==
-X-Received: by 2002:a2e:be0d:0:b0:2ff:ce6d:8433 with SMTP id 38308e7fff4ca-2ffd604a03amr86985111fa.8.1732895124540;
-        Fri, 29 Nov 2024 07:45:24 -0800 (PST)
-Received: from smtpclient.apple ([132.69.243.50])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d0ae0cfc3asm992257a12.18.2024.11.29.07.45.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 29 Nov 2024 07:45:23 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+        bh=3o5c5OkJBnxuHx2X8U5fNa7RxI4N2MNNsd2C+SVC6H4=;
+        b=fqigoB+nc+VuB9GdJrQJyYgw4tlt/z0SkE/IAmGmtQqOHTqoegh/NJJW6QC6tckm2w
+         SmjNoI6Q1KJnCblJU1iKEaj82jq2Yo+mNre9YN8EAFXgbJlt0uTWCDIQNx9EhxQeSPrW
+         ct05cKckv/2TYJYWfB6RLEbUZKL/Qq6FRIPEO29zHG2GzS5AwmP7HbylUPcs/I76ZHt+
+         Nc9RmRHic5N20NjxctYL/mH7La8Bagnqn43wa4lxLPwe+XTD50xg0sVxd5/5tfAHGbpG
+         mi6H/f0BqmlMHEvNdJD6v/qQ1Ome5qQbKTkJH8ZJwuRamkgBzXT7ozu1WxWW2Cly5x2U
+         q6Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCUMDexXD9KRhQGuBqTw7W4HSR548SuYu2EtQSLgvTADKBXN1ofYBNRa5xTP7IW7wafOYU+A331t11oHkq7z@vger.kernel.org, AJvYcCUcVnSePwPCoHb4rqjbPNKOdCYl1t30nYf/NJFvcwOkE5DgcEpVa5o04ykVacZC6kWXxYxspga2o41Wx4Jg@vger.kernel.org, AJvYcCWvKXNAHV1zlmJUGYVlwA4uqDwZuC2/6QsGaeMB9rVWu5ukAWOvwDb8yWpVok9KHI5ahj7fSIVRd6RuuNnL+6E=@vger.kernel.org, AJvYcCXMwRRabvNq4mGVoR7JybdFEfrPe0BRFq15/2OGVPxwt7Vmf7CfeIlQif1p79sr14fyvS6LeG4XTRDV@vger.kernel.org, AJvYcCXrNR2O809X59JevlCfAaLXWQDZN4cSOMUtbyLVVhehJ49YrNUFwFVtJM5mrg6kZiOJelMPZCcA@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxw/qVdAjVlng84exwc0fxG80dyLhw5hvhQFuNJjx3aZTJ+KgzA
+	DkVGJlnIsHRbR1Q4msYRxl0vQ7DipmAolPWQrwx+HF2X7qiyTnonlAOfg7Mz/ve2GHStjKCJUro
+	vKElRcWcFtNV9cl7l1ZjG6wtY0bs=
+X-Gm-Gg: ASbGncsZhFeP1wnlVX03FwEuxAqG/QDd+Igz0CW+x5uY/T9vTgCoB+1yr6xH1wejpaH
+	xDmp6vpMkkZGHv7pSJvT1qwBMdnecYtQ=
+X-Google-Smtp-Source: AGHT+IFlFVlEhUxi6HFl3pGJQ6QkeeDU+I701r/q00tFH5KVLO7PE8iiSpjGYGZRstbj+0OGHuFgSmi6H+4E2uBgCeM=
+X-Received: by 2002:a2e:a916:0:b0:2fb:4982:daea with SMTP id
+ 38308e7fff4ca-2ffd60dbdb9mr82866831fa.32.1732898025269; Fri, 29 Nov 2024
+ 08:33:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.200.121\))
-Subject: Re: [PATCH 6/6] percpu/x86: Enable strict percpu checks via named AS
- qualifiers
-From: Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20241126172332.112212-7-ubizjak@gmail.com>
-Date: Fri, 29 Nov 2024 17:45:09 +0200
-Cc: the arch/x86 maintainers <x86@kernel.org>,
- linux-sparse@vger.kernel.org,
- "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-bcachefs@vger.kernel.org,
- linux-arch@vger.kernel.org,
- netdev@vger.kernel.org,
- Dennis Zhou <dennis@kernel.org>,
- Tejun Heo <tj@kernel.org>,
- Christoph Lameter <cl@linux.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@kernel.org>,
- Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andy Lutomirski <luto@kernel.org>,
- Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
- Brian Gerst <brgerst@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <9CECB9F7-E700-4A92-98B9-6FD027F9CE65@gmail.com>
-References: <20241126172332.112212-1-ubizjak@gmail.com>
- <20241126172332.112212-7-ubizjak@gmail.com>
-To: Uros Bizjak <ubizjak@gmail.com>
-X-Mailer: Apple Mail (2.3826.200.121)
+MIME-Version: 1.0
+References: <20241126172332.112212-1-ubizjak@gmail.com> <20241126172332.112212-7-ubizjak@gmail.com>
+ <9CECB9F7-E700-4A92-98B9-6FD027F9CE65@gmail.com>
+In-Reply-To: <9CECB9F7-E700-4A92-98B9-6FD027F9CE65@gmail.com>
+From: Uros Bizjak <ubizjak@gmail.com>
+Date: Fri, 29 Nov 2024 17:33:33 +0100
+Message-ID: <CAFULd4Zs32G+NToyGSHv8quQbSOfaEC2UjtQ3vwnn9jufK47rA@mail.gmail.com>
+Subject: Re: [PATCH 6/6] percpu/x86: Enable strict percpu checks via named AS qualifiers
+To: Nadav Amit <nadav.amit@gmail.com>
+Cc: "the arch/x86 maintainers" <x86@kernel.org>, linux-sparse@vger.kernel.org, 
+	"open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-bcachefs@vger.kernel.org, 
+	linux-arch@vger.kernel.org, netdev@vger.kernel.org, 
+	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, 
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Brian Gerst <brgerst@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Nov 29, 2024 at 4:45=E2=80=AFPM Nadav Amit <nadav.amit@gmail.com> w=
+rote:
+>
+>
+> > On 26 Nov 2024, at 19:21, Uros Bizjak <ubizjak@gmail.com> wrote:
+> >
+> > This patch declares percpu variables in __seg_gs/__seg_fs named AS
+> > and keeps them named AS qualified until they are dereferenced with
+> > percpu accessor. This approach enables various compiler check
+> > for cross-namespace variable assignments.
+>
+> [snip]
+>
+> > @@ -95,9 +95,19 @@
+> >
+> > #endif /* CONFIG_SMP */
+> >
+> > -#define __my_cpu_type(var) typeof(var) __percpu_seg_override
+> > -#define __my_cpu_ptr(ptr) (__my_cpu_type(*(ptr))*)(__force uintptr_t)(=
+ptr)
+> > -#define __my_cpu_var(var) (*__my_cpu_ptr(&(var)))
+> > +#if defined(CONFIG_USE_X86_SEG_SUPPORT) && \
+> > +    defined(CONFIG_CC_HAS_TYPEOF_UNQUAL) && !defined(__CHECKER__)
+>
+> Is the __CHECKER__ check because of sparse, as in patch 2/6 ?
+> If so, do you want to add a similar comment here?
 
-> On 26 Nov 2024, at 19:21, Uros Bizjak <ubizjak@gmail.com> wrote:
-> 
-> This patch declares percpu variables in __seg_gs/__seg_fs named AS
-> and keeps them named AS qualified until they are dereferenced with
-> percpu accessor. This approach enables various compiler check
-> for cross-namespace variable assignments.
+Yes, this is the same check. We can declare _percpu variables in
+__seg_gs named address space only when __typeof_unqual__ is used. I
+will add a comment in the next revision of the patchset.
 
-[snip]
+> Other than that, I went over the different patches and it looks good as
+> much as I can tell.
+>
+> If it means anything, you have for the series
+>
+> Acked-by: Nadav Amit <nadav.amit@gmail.com <mailto:nadav.amit@gmail.com>>
 
-> @@ -95,9 +95,19 @@
-> 
-> #endif /* CONFIG_SMP */
-> 
-> -#define __my_cpu_type(var) typeof(var) __percpu_seg_override
-> -#define __my_cpu_ptr(ptr) (__my_cpu_type(*(ptr))*)(__force uintptr_t)(ptr)
-> -#define __my_cpu_var(var) (*__my_cpu_ptr(&(var)))
-> +#if defined(CONFIG_USE_X86_SEG_SUPPORT) && \
-> +    defined(CONFIG_CC_HAS_TYPEOF_UNQUAL) && !defined(__CHECKER__)
+Thanks!
 
-Is the __CHECKER__ check because of sparse, as in patch 2/6 ?
-If so, do you want to add a similar comment here?
-
-Other than that, I went over the different patches and it looks good as
-much as I can tell.
-
-If it means anything, you have for the series
-
-Acked-by: Nadav Amit <nadav.amit@gmail.com <mailto:nadav.amit@gmail.com>>
+Uros.
