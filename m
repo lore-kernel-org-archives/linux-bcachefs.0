@@ -1,27 +1,26 @@
 Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A196C1A257A
-	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E051A38EC
+	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Nov 2024 20:27:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732912077; cv=none; b=iyYDIadCQ/m+/lzDKsLB5MqiVUfGRaoxcGjf5UMi/1tEAYTxwOzmpeu/Q7mLHLQq/Kob21+munHmvpXgquznssuldjwHVEZm1tN7q1vuT1ilC3qm4cgOglBmQh36V0Q78rOtHd6usxz/+i28nTmbHfMrODgCanpXLKOhKkqbZEQ=
+	t=1732912078; cv=none; b=hvdCuaBfFQCZSuX2zdrpThYXUvyEjxMhlqNftsXY8CO0cIofAdDCfTf//pQGY/zoeMIEiNx1p4LWbZw2zG5veGrE5xiwsWbK/f3VxlchhVXrwwtjdXvlcKmlO1Kh2i6UcKewX2p4DjKqjW3qN79gATjnH6fl0WvCMYssREIPDXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732912077; c=relaxed/simple;
-	bh=TrG8HLubkxSZK2m9B58sOcUXoOVe1FY6t3b1ATBJU58=;
+	s=arc-20240116; t=1732912078; c=relaxed/simple;
+	bh=dqutSfNWcvt+XpEy1R3ExCiY9aiz37Uhz4hgxEUwPqg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oNjQaR6ef9LmGHmYuDr0914Os4i2TSOSEoiIPdc3fBaIkOzZmjgLt+lVXKPV6L4mycKmKQwGMWqGcggMa95MPXn9FpMO18/SXpdJt3yS3z/XIq7VsQI3ir3Q6K3u68gX9Qlg2kNgLLQpaCIEQNhzkZdvql4+fjVL7HYM7QsN/VM=
+	 MIME-Version; b=uzr3BssQzZ8fXQ3On4jtJLhL9e6efSdd96zFBtgqUINuiTZhsme8t5OGj2y5BAA1N5hYEjpKXDf0kJipX3GHTwwR347zuTciOmMz3e/AqoCXtsdHZBM2sQEssieEUvFasDJiuRqqKpFSLsReyG5i/zlCbGxbp32aeyrDU/7qPh8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	syzbot+026f1857b12f5eb3f9e9@syzkaller.appspotmail.com
-Subject: [PATCH 11/34] bcachefs: Don't try to en/decrypt when encryption not available
-Date: Fri, 29 Nov 2024 15:27:10 -0500
-Message-ID: <20241129202736.2713679-12-kent.overstreet@linux.dev>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 12/34] bcachefs: Change "disk accounting version 0" check to commit only
+Date: Fri, 29 Nov 2024 15:27:11 -0500
+Message-ID: <20241129202736.2713679-13-kent.overstreet@linux.dev>
 In-Reply-To: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 References: <20241129202736.2713679-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -33,252 +32,29 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-If a btree node says it's encrypted, but the superblock never had an
-encryptino key - whoops, that needs to be handled.
+6.11 had a bug where we'd sometimes create disk accounting keys with
+version 0, which causes issues for journal replay - but we don't need to
+delete existing accounting keys with version 0.
 
-Reported-by: syzbot+026f1857b12f5eb3f9e9@syzkaller.appspotmail.com
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/btree_io.c        | 116 +++++++++++++++++-----------------
- fs/bcachefs/btree_node_scan.c |   3 +
- fs/bcachefs/checksum.c        |  10 ++-
- fs/bcachefs/errcode.h         |   1 +
- fs/bcachefs/io_read.c         |  14 +++-
- 5 files changed, 83 insertions(+), 61 deletions(-)
+ fs/bcachefs/disk_accounting.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
-index 2b5da566fbac..5407f1212b4f 100644
---- a/fs/bcachefs/btree_io.c
-+++ b/fs/bcachefs/btree_io.c
-@@ -1045,39 +1045,50 @@ int bch2_btree_node_read_done(struct bch_fs *c, struct bch_dev *ca,
- 
- 	while (b->written < (ptr_written ?: btree_sectors(c))) {
- 		unsigned sectors;
--		struct nonce nonce;
- 		bool first = !b->written;
--		bool csum_bad;
- 
--		if (!b->written) {
-+		if (first) {
- 			i = &b->data->keys;
-+		} else {
-+			bne = write_block(b);
-+			i = &bne->keys;
- 
--			btree_err_on(!bch2_checksum_type_valid(c, BSET_CSUM_TYPE(i)),
--				     -BCH_ERR_btree_node_read_err_want_retry,
--				     c, ca, b, i, NULL,
--				     bset_unknown_csum,
--				     "unknown checksum type %llu", BSET_CSUM_TYPE(i));
--
--			nonce = btree_nonce(i, b->written << 9);
-+			if (i->seq != b->data->keys.seq)
-+				break;
-+		}
- 
--			struct bch_csum csum = csum_vstruct(c, BSET_CSUM_TYPE(i), nonce, b->data);
--			csum_bad = bch2_crc_cmp(b->data->csum, csum);
--			if (csum_bad)
--				bch2_io_error(ca, BCH_MEMBER_ERROR_checksum);
-+		struct nonce nonce = btree_nonce(i, b->written << 9);
-+		bool good_csum_type = bch2_checksum_type_valid(c, BSET_CSUM_TYPE(i));
- 
--			btree_err_on(csum_bad,
--				     -BCH_ERR_btree_node_read_err_want_retry,
--				     c, ca, b, i, NULL,
--				     bset_bad_csum,
--				     "%s",
--				     (printbuf_reset(&buf),
--				      bch2_csum_err_msg(&buf, BSET_CSUM_TYPE(i), b->data->csum, csum),
--				      buf.buf));
--
--			ret = bset_encrypt(c, i, b->written << 9);
--			if (bch2_fs_fatal_err_on(ret, c,
--					"decrypting btree node: %s", bch2_err_str(ret)))
--				goto fsck_err;
-+		btree_err_on(!good_csum_type,
-+			     bch2_csum_type_is_encryption(BSET_CSUM_TYPE(i))
-+			     ? -BCH_ERR_btree_node_read_err_must_retry
-+			     : -BCH_ERR_btree_node_read_err_want_retry,
-+			     c, ca, b, i, NULL,
-+			     bset_unknown_csum,
-+			     "unknown checksum type %llu", BSET_CSUM_TYPE(i));
-+
-+		if (first) {
-+			if (good_csum_type) {
-+				struct bch_csum csum = csum_vstruct(c, BSET_CSUM_TYPE(i), nonce, b->data);
-+				bool csum_bad = bch2_crc_cmp(b->data->csum, csum);
-+				if (csum_bad)
-+					bch2_io_error(ca, BCH_MEMBER_ERROR_checksum);
-+
-+				btree_err_on(csum_bad,
-+					     -BCH_ERR_btree_node_read_err_want_retry,
-+					     c, ca, b, i, NULL,
-+					     bset_bad_csum,
-+					     "%s",
-+					     (printbuf_reset(&buf),
-+					      bch2_csum_err_msg(&buf, BSET_CSUM_TYPE(i), b->data->csum, csum),
-+					      buf.buf));
-+
-+				ret = bset_encrypt(c, i, b->written << 9);
-+				if (bch2_fs_fatal_err_on(ret, c,
-+							 "decrypting btree node: %s", bch2_err_str(ret)))
-+					goto fsck_err;
-+			}
- 
- 			btree_err_on(btree_node_type_is_extents(btree_node_type(b)) &&
- 				     !BTREE_NODE_NEW_EXTENT_OVERWRITE(b->data),
-@@ -1088,37 +1099,26 @@ int bch2_btree_node_read_done(struct bch_fs *c, struct bch_dev *ca,
- 
- 			sectors = vstruct_sectors(b->data, c->block_bits);
- 		} else {
--			bne = write_block(b);
--			i = &bne->keys;
--
--			if (i->seq != b->data->keys.seq)
--				break;
--
--			btree_err_on(!bch2_checksum_type_valid(c, BSET_CSUM_TYPE(i)),
--				     -BCH_ERR_btree_node_read_err_want_retry,
--				     c, ca, b, i, NULL,
--				     bset_unknown_csum,
--				     "unknown checksum type %llu", BSET_CSUM_TYPE(i));
--
--			nonce = btree_nonce(i, b->written << 9);
--			struct bch_csum csum = csum_vstruct(c, BSET_CSUM_TYPE(i), nonce, bne);
--			csum_bad = bch2_crc_cmp(bne->csum, csum);
--			if (ca && csum_bad)
--				bch2_io_error(ca, BCH_MEMBER_ERROR_checksum);
--
--			btree_err_on(csum_bad,
--				     -BCH_ERR_btree_node_read_err_want_retry,
--				     c, ca, b, i, NULL,
--				     bset_bad_csum,
--				     "%s",
--				     (printbuf_reset(&buf),
--				      bch2_csum_err_msg(&buf, BSET_CSUM_TYPE(i), bne->csum, csum),
--				      buf.buf));
--
--			ret = bset_encrypt(c, i, b->written << 9);
--			if (bch2_fs_fatal_err_on(ret, c,
--					"decrypting btree node: %s", bch2_err_str(ret)))
--				goto fsck_err;
-+			if (good_csum_type) {
-+				struct bch_csum csum = csum_vstruct(c, BSET_CSUM_TYPE(i), nonce, bne);
-+				bool csum_bad = bch2_crc_cmp(bne->csum, csum);
-+				if (ca && csum_bad)
-+					bch2_io_error(ca, BCH_MEMBER_ERROR_checksum);
-+
-+				btree_err_on(csum_bad,
-+					     -BCH_ERR_btree_node_read_err_want_retry,
-+					     c, ca, b, i, NULL,
-+					     bset_bad_csum,
-+					     "%s",
-+					     (printbuf_reset(&buf),
-+					      bch2_csum_err_msg(&buf, BSET_CSUM_TYPE(i), bne->csum, csum),
-+					      buf.buf));
-+
-+				ret = bset_encrypt(c, i, b->written << 9);
-+				if (bch2_fs_fatal_err_on(ret, c,
-+						"decrypting btree node: %s", bch2_err_str(ret)))
-+					goto fsck_err;
-+			}
- 
- 			sectors = vstruct_sectors(bne, c->block_bits);
- 		}
-diff --git a/fs/bcachefs/btree_node_scan.c b/fs/bcachefs/btree_node_scan.c
-index 4b4df31d4b95..327f1a1859b9 100644
---- a/fs/bcachefs/btree_node_scan.c
-+++ b/fs/bcachefs/btree_node_scan.c
-@@ -159,6 +159,9 @@ static void try_read_btree_node(struct find_btree_nodes *f, struct bch_dev *ca,
- 		return;
- 
- 	if (bch2_csum_type_is_encryption(BSET_CSUM_TYPE(&bn->keys))) {
-+		if (!c->chacha20)
-+			return;
-+
- 		struct nonce nonce = btree_nonce(&bn->keys, 0);
- 		unsigned bytes = (void *) &bn->keys - (void *) &bn->flags;
- 
-diff --git a/fs/bcachefs/checksum.c b/fs/bcachefs/checksum.c
-index ce8fc677bef9..23a383577d4c 100644
---- a/fs/bcachefs/checksum.c
-+++ b/fs/bcachefs/checksum.c
-@@ -2,6 +2,7 @@
- #include "bcachefs.h"
- #include "checksum.h"
- #include "errcode.h"
-+#include "error.h"
- #include "super.h"
- #include "super-io.h"
- 
-@@ -252,6 +253,10 @@ int bch2_encrypt(struct bch_fs *c, unsigned type,
- 	if (!bch2_csum_type_is_encryption(type))
- 		return 0;
- 
-+	if (bch2_fs_inconsistent_on(!c->chacha20,
-+				    c, "attempting to encrypt without encryption key"))
-+		return -BCH_ERR_no_encryption_key;
-+
- 	return do_encrypt(c->chacha20, nonce, data, len);
- }
- 
-@@ -337,8 +342,9 @@ int __bch2_encrypt_bio(struct bch_fs *c, unsigned type,
- 	size_t sgl_len = 0;
+diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+index bb5dbbf71d04..c5e61265b709 100644
+--- a/fs/bcachefs/disk_accounting.c
++++ b/fs/bcachefs/disk_accounting.c
+@@ -134,7 +134,8 @@ int bch2_accounting_validate(struct bch_fs *c, struct bkey_s_c k,
+ 	void *end = &acc_k + 1;
  	int ret = 0;
  
--	if (!bch2_csum_type_is_encryption(type))
--		return 0;
-+	if (bch2_fs_inconsistent_on(!c->chacha20,
-+				    c, "attempting to encrypt without encryption key"))
-+		return -BCH_ERR_no_encryption_key;
+-	bkey_fsck_err_on(bversion_zero(k.k->bversion),
++	bkey_fsck_err_on((flags & BCH_VALIDATE_commit) &&
++			 bversion_zero(k.k->bversion),
+ 			 c, accounting_key_version_0,
+ 			 "accounting key with version=0");
  
- 	darray_init(&sgl);
- 
-diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
-index c989ce4f715f..a12050e9c191 100644
---- a/fs/bcachefs/errcode.h
-+++ b/fs/bcachefs/errcode.h
-@@ -260,6 +260,7 @@
- 	x(EIO,				no_device_to_read_from)			\
- 	x(EIO,				missing_indirect_extent)		\
- 	x(EIO,				invalidate_stripe_to_dev)		\
-+	x(EIO,				no_encryption_key)			\
- 	x(BCH_ERR_btree_node_read_err,	btree_node_read_err_fixable)		\
- 	x(BCH_ERR_btree_node_read_err,	btree_node_read_err_want_retry)		\
- 	x(BCH_ERR_btree_node_read_err,	btree_node_read_err_must_retry)		\
-diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
-index eb8d12fd6398..4b6b6d25725b 100644
---- a/fs/bcachefs/io_read.c
-+++ b/fs/bcachefs/io_read.c
-@@ -830,7 +830,7 @@ int __bch2_read_extent(struct btree_trans *trans, struct bch_read_bio *orig,
- 	if (!pick_ret)
- 		goto hole;
- 
--	if (pick_ret < 0) {
-+	if (unlikely(pick_ret < 0)) {
- 		struct printbuf buf = PRINTBUF;
- 		bch2_bkey_val_to_text(&buf, c, k);
- 
-@@ -843,6 +843,18 @@ int __bch2_read_extent(struct btree_trans *trans, struct bch_read_bio *orig,
- 		goto err;
- 	}
- 
-+	if (unlikely(bch2_csum_type_is_encryption(pick.crc.csum_type)) && !c->chacha20) {
-+		struct printbuf buf = PRINTBUF;
-+		bch2_bkey_val_to_text(&buf, c, k);
-+
-+		bch_err_inum_offset_ratelimited(c,
-+				read_pos.inode, read_pos.offset << 9,
-+				"attempting to read encrypted data without encryption key\n  %s",
-+				buf.buf);
-+		printbuf_exit(&buf);
-+		goto err;
-+	}
-+
- 	struct bch_dev *ca = bch2_dev_get_ioref(c, pick.ptr.dev, READ);
- 
- 	/*
 -- 
 2.45.2
 
