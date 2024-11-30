@@ -1,38 +1,38 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89D0B4594D
-	for <linux-bcachefs@vger.kernel.org>; Sat, 30 Nov 2024 01:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636E0482EF
+	for <linux-bcachefs@vger.kernel.org>; Sat, 30 Nov 2024 01:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732930782; cv=none; b=mz3qbspkCkvRQ2rgYUxMJ6WfjO1zr67piMZNUiSITR01DWi9u/ssq9NhZUAUey+8cFoLW8WD3UiZGkG7A7jDxlgSf8vFIauK0j9p2zNqO9oMHMRf/28tSrvUKGuMkQWGwJ7SoUIwuiSf/wow3DASXOzhibn15311ng9mSv23+5g=
+	t=1732930783; cv=none; b=EQgAoWHn1lSqD4QLYrCUEhRXlhD5y0yIljdk4WKMjkn85UzwKzaFFvAo9lq/tF1VQn3L2OqHboGTrYxHHMtrjerocaRJ/dKyoyMOx21fCB9caTcV4ftKeJl6ZCTIaQafIOXvZFEsemjBKrYQyE58PzovfA4J1UBmTTkSrNQreMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732930782; c=relaxed/simple;
-	bh=mu+PRy0nc4xt5iziH6Xmvi5IQ1keVTolx6MZ3sISs04=;
+	s=arc-20240116; t=1732930783; c=relaxed/simple;
+	bh=PrdyMpUF6VxIcBD08M5Z2UZddy5hm4MuhQ3KOYnnRMo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Li9qK5zA2rnZfrSkjIOo+WIbLho/TMptVmDSaBDWohayISjeamIPvMxqJIX+R2QiUvsZHzhyvQhYI9j67qY7AfqJfSs005v0O2rGVkksftt9mlXyvbeAe8ysUVZXgJCqOHOyfgND/NsGHMhuW8i5FNeAinPeGbqABKAze8U7DO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hHepASsG; arc=none smtp.client-ip=91.218.175.172
+	 MIME-Version; b=GqcsQYkHaN3ReHVAr+CJ73jhaK64ILvCYdmRoaLHuYAGdHWVYcbVIzBhTplKREzrhOqAuTD5hL67x8/PnFbB/kiDIUVOhSRP6OTnnXhESEu/8Vm8NJU0E1Fwu9Z8/8S4eyB8DvSh4RgqBZQSuJ5K+JdYDdle3AFm41sLO9ggYNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ucRoFGwG; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hHepASsG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ucRoFGwG"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732930778;
+	t=1732930779;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GF767pKE1ajohTG3YCaxxllKOL43byiXD6UzYGUfe14=;
-	b=hHepASsGG1P+2Lf96qvUifFl18J5U/ggurp6a15kBGg/hAgDWbrYvxePWiy2qKxIO0tLCC
-	sUsrZHlyZuhqVyzfHvUkHp+UUdc6GErybwKZIxTdyk0b7SXgEUFU8JOGbTmCraZFQ64AHW
-	C1hnXcNQ0i1CB9a4YtfEVQgQsc17GQw=
+	bh=BBlegEcrZT7h08LtpxpwQUmVxswENPWsPjC4p6y5RqQ=;
+	b=ucRoFGwGfWuIR9CCbaWNV9lSQh6oTvGCVZOKeJru4ZJUco3GKdt+SWHgIUYbeH3fLn5/dN
+	jTAOd5Rq1TAWNlBozguK4X3DO7zzHSlq6KDe5VuYpfiS/pf0bAMPTdj6YqvalPuL+xAPaC
+	uGbObf/zE1K/2pGG62U0SQBRD4cuGMU=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 7/8] bcachefs: bch2_backpointer_get_key() now repairs dangling backpointers
-Date: Fri, 29 Nov 2024 20:39:19 -0500
-Message-ID: <20241130013922.3135792-8-kent.overstreet@linux.dev>
+Subject: [PATCH 8/8] bcachefs: Only run check_backpointers_to_extents in debug mode
+Date: Fri, 29 Nov 2024 20:39:20 -0500
+Message-ID: <20241130013922.3135792-9-kent.overstreet@linux.dev>
 In-Reply-To: <20241130013922.3135792-1-kent.overstreet@linux.dev>
 References: <20241130013922.3135792-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,160 +44,142 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Continuing on with the self healing theme, we should be running any
-check and repair code at runtime that we can - instead of declaring the
-filesystemt inconsistent.
+The backpointers passes, check_backpointers_to_extents() and
+check_extents_to_backpointers() are the most expensive fsck passes.
 
-This will also let us skip running the backpointers -> extents fsck pass
-except in debug mode.
+Now that we're running the same check and repair code when using a
+backpointer at runtime (via bch2_backpointer_get_key()) that fsck does,
+there's no reason fsck needs to - except to verify that the filesystem
+really has no errors in debug mode.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/backpointers.c | 66 +++++++++++++++-----------------------
- 1 file changed, 25 insertions(+), 41 deletions(-)
+ fs/bcachefs/recovery_passes_types.h | 92 +++++++++++++++--------------
+ fs/bcachefs/sb-errors_format.h      |  4 +-
+ 2 files changed, 51 insertions(+), 45 deletions(-)
 
-diff --git a/fs/bcachefs/backpointers.c b/fs/bcachefs/backpointers.c
-index 81dff1819cb8..72f3717131e9 100644
---- a/fs/bcachefs/backpointers.c
-+++ b/fs/bcachefs/backpointers.c
-@@ -171,9 +171,10 @@ int bch2_bucket_backpointer_mod_nowritebuffer(struct btree_trans *trans,
+diff --git a/fs/bcachefs/recovery_passes_types.h b/fs/bcachefs/recovery_passes_types.h
+index 94dc20ca2065..f967b23d50c8 100644
+--- a/fs/bcachefs/recovery_passes_types.h
++++ b/fs/bcachefs/recovery_passes_types.h
+@@ -8,53 +8,59 @@
+ #define PASS_ALWAYS		BIT(3)
+ #define PASS_ONLINE		BIT(4)
  
- static int bch2_backpointer_del(struct btree_trans *trans, struct bpos pos)
- {
--	return likely(!bch2_backpointers_no_use_write_buffer)
--	       ? bch2_btree_delete_at_buffered(trans, BTREE_ID_backpointers, pos)
--	       : bch2_btree_delete(trans, BTREE_ID_backpointers, pos, 0);
-+	return (likely(!bch2_backpointers_no_use_write_buffer)
-+		? bch2_btree_delete_at_buffered(trans, BTREE_ID_backpointers, pos)
-+		: bch2_btree_delete(trans, BTREE_ID_backpointers, pos, 0)) ?:
-+		 bch2_trans_commit(trans, NULL, NULL, BCH_TRANS_COMMIT_no_enospc);
- }
++#ifdef CONFIG_BCACHEFS_DEBUG
++#define PASS_FSCK_DEBUG		BIT(1)
++#else
++#define PASS_FSCK_DEBUG		0
++#endif
++
+ /*
+  * Passes may be reordered, but the second field is a persistent identifier and
+  * must never change:
+  */
+-#define BCH_RECOVERY_PASSES()							\
+-	x(recovery_pass_empty,			41, PASS_SILENT)		\
+-	x(scan_for_btree_nodes,			37, 0)				\
+-	x(check_topology,			 4, 0)				\
+-	x(accounting_read,			39, PASS_ALWAYS)		\
+-	x(alloc_read,				 0, PASS_ALWAYS)		\
+-	x(stripes_read,				 1, PASS_ALWAYS)		\
+-	x(initialize_subvolumes,		 2, 0)				\
+-	x(snapshots_read,			 3, PASS_ALWAYS)		\
+-	x(check_allocations,			 5, PASS_FSCK)			\
+-	x(trans_mark_dev_sbs,			 6, PASS_ALWAYS|PASS_SILENT)	\
+-	x(fs_journal_alloc,			 7, PASS_ALWAYS|PASS_SILENT)	\
+-	x(set_may_go_rw,			 8, PASS_ALWAYS|PASS_SILENT)	\
+-	x(journal_replay,			 9, PASS_ALWAYS)		\
+-	x(check_alloc_info,			10, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_lrus,				11, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_btree_backpointers,		12, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_backpointers_to_extents,	13, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_extents_to_backpointers,	14, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_alloc_to_lru_refs,		15, PASS_ONLINE|PASS_FSCK)	\
+-	x(fs_freespace_init,			16, PASS_ALWAYS|PASS_SILENT)	\
+-	x(bucket_gens_init,			17, 0)				\
+-	x(reconstruct_snapshots,		38, 0)				\
+-	x(check_snapshot_trees,			18, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_snapshots,			19, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_subvols,			20, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_subvol_children,		35, PASS_ONLINE|PASS_FSCK)	\
+-	x(delete_dead_snapshots,		21, PASS_ONLINE|PASS_FSCK)	\
+-	x(fs_upgrade_for_subvolumes,		22, 0)				\
+-	x(check_inodes,				24, PASS_FSCK)			\
+-	x(check_extents,			25, PASS_FSCK)			\
+-	x(check_indirect_extents,		26, PASS_FSCK)			\
+-	x(check_dirents,			27, PASS_FSCK)			\
+-	x(check_xattrs,				28, PASS_FSCK)			\
+-	x(check_root,				29, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_unreachable_inodes,		40, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_subvolume_structure,		36, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_directory_structure,		30, PASS_ONLINE|PASS_FSCK)	\
+-	x(check_nlinks,				31, PASS_FSCK)			\
+-	x(resume_logged_ops,			23, PASS_ALWAYS)		\
+-	x(delete_dead_inodes,			32, PASS_ALWAYS)		\
+-	x(fix_reflink_p,			33, 0)				\
+-	x(set_fs_needs_rebalance,		34, 0)				\
++#define BCH_RECOVERY_PASSES()								\
++	x(recovery_pass_empty,			41, PASS_SILENT)			\
++	x(scan_for_btree_nodes,			37, 0)					\
++	x(check_topology,			 4, 0)					\
++	x(accounting_read,			39, PASS_ALWAYS)			\
++	x(alloc_read,				 0, PASS_ALWAYS)			\
++	x(stripes_read,				 1, PASS_ALWAYS)			\
++	x(initialize_subvolumes,		 2, 0)					\
++	x(snapshots_read,			 3, PASS_ALWAYS)			\
++	x(check_allocations,			 5, PASS_FSCK)				\
++	x(trans_mark_dev_sbs,			 6, PASS_ALWAYS|PASS_SILENT)		\
++	x(fs_journal_alloc,			 7, PASS_ALWAYS|PASS_SILENT)		\
++	x(set_may_go_rw,			 8, PASS_ALWAYS|PASS_SILENT)		\
++	x(journal_replay,			 9, PASS_ALWAYS)			\
++	x(check_alloc_info,			10, PASS_ONLINE|PASS_FSCK)		\
++	x(check_lrus,				11, PASS_ONLINE|PASS_FSCK)		\
++	x(check_btree_backpointers,		12, PASS_ONLINE|PASS_FSCK)		\
++	x(check_backpointers_to_extents,	13, PASS_ONLINE|PASS_FSCK_DEBUG)	\
++	x(check_extents_to_backpointers,	14, PASS_ONLINE|PASS_FSCK)		\
++	x(check_alloc_to_lru_refs,		15, PASS_ONLINE|PASS_FSCK)		\
++	x(fs_freespace_init,			16, PASS_ALWAYS|PASS_SILENT)		\
++	x(bucket_gens_init,			17, 0)					\
++	x(reconstruct_snapshots,		38, 0)					\
++	x(check_snapshot_trees,			18, PASS_ONLINE|PASS_FSCK)		\
++	x(check_snapshots,			19, PASS_ONLINE|PASS_FSCK)		\
++	x(check_subvols,			20, PASS_ONLINE|PASS_FSCK)		\
++	x(check_subvol_children,		35, PASS_ONLINE|PASS_FSCK)		\
++	x(delete_dead_snapshots,		21, PASS_ONLINE|PASS_FSCK)		\
++	x(fs_upgrade_for_subvolumes,		22, 0)					\
++	x(check_inodes,				24, PASS_FSCK)				\
++	x(check_extents,			25, PASS_FSCK)				\
++	x(check_indirect_extents,		26, PASS_FSCK)				\
++	x(check_dirents,			27, PASS_FSCK)				\
++	x(check_xattrs,				28, PASS_FSCK)				\
++	x(check_root,				29, PASS_ONLINE|PASS_FSCK)		\
++	x(check_unreachable_inodes,		40, PASS_ONLINE|PASS_FSCK)		\
++	x(check_subvolume_structure,		36, PASS_ONLINE|PASS_FSCK)		\
++	x(check_directory_structure,		30, PASS_ONLINE|PASS_FSCK)		\
++	x(check_nlinks,				31, PASS_FSCK)				\
++	x(resume_logged_ops,			23, PASS_ALWAYS)			\
++	x(delete_dead_inodes,			32, PASS_ALWAYS)			\
++	x(fix_reflink_p,			33, 0)					\
++	x(set_fs_needs_rebalance,		34, 0)
  
- static int bch2_backpointers_maybe_flush(struct btree_trans *trans,
-@@ -185,20 +186,23 @@ static int bch2_backpointers_maybe_flush(struct btree_trans *trans,
- 		: 0;
- }
- 
--static void backpointer_target_not_found(struct btree_trans *trans,
--					 struct bkey_s_c_backpointer bp,
--					 struct bkey_s_c target_k)
-+static int backpointer_target_not_found(struct btree_trans *trans,
-+				  struct bkey_s_c_backpointer bp,
-+				  struct bkey_s_c target_k,
-+				  struct bkey_buf *last_flushed)
- {
- 	struct bch_fs *c = trans->c;
- 	struct printbuf buf = PRINTBUF;
-+	int ret = 0;
- 
- 	/*
- 	 * If we're using the btree write buffer, the backpointer we were
- 	 * looking at may have already been deleted - failure to find what it
- 	 * pointed to is not an error:
- 	 */
--	if (likely(!bch2_backpointers_no_use_write_buffer))
--		return;
-+	ret = bch2_backpointers_maybe_flush(trans, bp.s_c, last_flushed);
-+	if (ret)
-+		return ret;
- 
- 	prt_printf(&buf, "backpointer doesn't match %s it points to:\n  ",
- 		   bp.v->level ? "btree node" : "extent");
-@@ -206,12 +210,13 @@ static void backpointer_target_not_found(struct btree_trans *trans,
- 	prt_printf(&buf, "\n  ");
- 
- 	bch2_bkey_val_to_text(&buf, c, target_k);
--	if (c->curr_recovery_pass >= BCH_RECOVERY_PASS_check_extents_to_backpointers)
--		bch_err_ratelimited(c, "%s", buf.buf);
--	else
--		bch2_trans_inconsistent(trans, "%s", buf.buf);
- 
-+	if (fsck_err(trans, backpointer_to_missing_ptr,
-+		     "%s", buf.buf))
-+		ret = bch2_backpointer_del(trans, bp.k->p);
-+fsck_err:
- 	printbuf_exit(&buf);
-+	return ret;
- }
- 
- struct bkey_s_c bch2_backpointer_get_key(struct btree_trans *trans,
-@@ -242,15 +247,13 @@ struct bkey_s_c bch2_backpointer_get_key(struct btree_trans *trans,
- 			return k;
- 
- 		bch2_trans_iter_exit(trans, iter);
--		backpointer_target_not_found(trans, bp, k);
--		return bkey_s_c_null;
-+		int ret = backpointer_target_not_found(trans, bp, k, last_flushed);
-+		return ret ? bkey_s_c_err(ret) : bkey_s_c_null;
- 	} else {
- 		struct btree *b = bch2_backpointer_get_node(trans, bp, iter, last_flushed);
-+		if (IS_ERR_OR_NULL(b))
-+			return ((struct bkey_s_c) { .k = ERR_CAST(b) });
- 
--		if (IS_ERR_OR_NULL(b)) {
--			bch2_trans_iter_exit(trans, iter);
--			return IS_ERR(b) ? bkey_s_c_err(PTR_ERR(b)) : bkey_s_c_null;
--		}
- 		return bkey_i_to_s_c(&b->key);
- 	}
- }
-@@ -283,8 +286,8 @@ struct btree *bch2_backpointer_get_node(struct btree_trans *trans,
- 	if (btree_node_will_make_reachable(b)) {
- 		b = ERR_PTR(-BCH_ERR_backpointer_to_overwritten_btree_node);
- 	} else {
--		backpointer_target_not_found(trans, bp, bkey_i_to_s_c(&b->key));
--		b = NULL;
-+		int ret = backpointer_target_not_found(trans, bp, bkey_i_to_s_c(&b->key), last_flushed);
-+		b = ret ? ERR_PTR(ret) : NULL;
- 	}
- err:
- 	bch2_trans_iter_exit(trans, iter);
-@@ -1100,9 +1103,7 @@ static int check_one_backpointer(struct btree_trans *trans,
- 		return 0;
- 
- 	struct bkey_s_c_backpointer bp = bkey_s_c_to_backpointer(bp_k);
--	struct bch_fs *c = trans->c;
- 	struct bbpos pos = bp_to_bbpos(*bp.v);
--	struct printbuf buf = PRINTBUF;
- 
- 	if (bbpos_cmp(pos, start) < 0 ||
- 	    bbpos_cmp(pos, end) > 0)
-@@ -1116,23 +1117,7 @@ static int check_one_backpointer(struct btree_trans *trans,
- 	if (ret)
- 		return ret;
- 
--	if (!k.k) {
--		ret = bch2_backpointers_maybe_flush(trans, bp.s_c, last_flushed);
--		if (ret)
--			goto out;
--
--		if (fsck_err(trans, backpointer_to_missing_ptr,
--			     "backpointer for missing %s\n  %s",
--			     bp.v->level ? "btree node" : "extent",
--			     (bch2_bkey_val_to_text(&buf, c, bp.s_c), buf.buf))) {
--			ret = bch2_backpointer_del(trans, bp.k->p);
--			goto out;
--		}
--	}
--out:
--fsck_err:
- 	bch2_trans_iter_exit(trans, &iter);
--	printbuf_exit(&buf);
- 	return ret;
- }
- 
-@@ -1148,9 +1133,8 @@ static int bch2_check_backpointers_to_extents_pass(struct btree_trans *trans,
- 	bkey_init(&last_flushed.k->k);
- 	progress_init(&progress, trans->c, BIT_ULL(BTREE_ID_backpointers));
- 
--	int ret = for_each_btree_key_commit(trans, iter, BTREE_ID_backpointers,
--				  POS_MIN, BTREE_ITER_prefetch, k,
--				  NULL, NULL, BCH_TRANS_COMMIT_no_enospc, ({
-+	int ret = for_each_btree_key(trans, iter, BTREE_ID_backpointers,
-+				     POS_MIN, BTREE_ITER_prefetch, k, ({
- 			progress_update_iter(trans, &progress, &iter, "backpointers_to_extents");
- 			check_one_backpointer(trans, start, end, k, &last_flushed);
- 	}));
+ /* We normally enumerate recovery passes in the order we run them: */
+ enum bch_recovery_pass {
+diff --git a/fs/bcachefs/sb-errors_format.h b/fs/bcachefs/sb-errors_format.h
+index 3bbda181f314..4248ff3c894a 100644
+--- a/fs/bcachefs/sb-errors_format.h
++++ b/fs/bcachefs/sb-errors_format.h
+@@ -140,8 +140,8 @@ enum bch_fsck_flags {
+ 	x(backpointer_bucket_offset_wrong,			125,	0)		\
+ 	x(backpointer_level_bad,				294,	0)		\
+ 	x(backpointer_dev_bad,					297,	0)		\
+-	x(backpointer_to_missing_device,			126,	0)		\
+-	x(backpointer_to_missing_alloc,				127,	0)		\
++	x(backpointer_to_missing_device,			126,	FSCK_AUTOFIX)	\
++	x(backpointer_to_missing_alloc,				127,	FSCK_AUTOFIX)	\
+ 	x(backpointer_to_missing_ptr,				128,	FSCK_AUTOFIX)	\
+ 	x(lru_entry_at_time_0,					129,	FSCK_AUTOFIX)	\
+ 	x(lru_entry_to_invalid_bucket,				130,	FSCK_AUTOFIX)	\
 -- 
 2.45.2
 
