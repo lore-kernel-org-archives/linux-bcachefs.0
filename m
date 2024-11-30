@@ -1,51 +1,51 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A42617741
-	for <linux-bcachefs@vger.kernel.org>; Sat, 30 Nov 2024 13:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87BD3D3B3
+	for <linux-bcachefs@vger.kernel.org>; Sat, 30 Nov 2024 19:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732974810; cv=none; b=Pa7yxIFkfvroxx/dltpJteDlAAAlbU+Caf/b84/PnWWRqM5wYkVmYR4TEV5VH1kVH73c61cagQ2SHrygpYtmdpWR5dhINk1K+LLoVcXRFuykpJIVccr7bks/kcHS+f6Cjehvp3I4ERZ6WuOQI/EBkgh1YUXaLOYs8UIvWwLb9A0=
+	t=1732996529; cv=none; b=NH+GL2cRmvFRLnUkp1LKU3GtjwDoYbUfEFsWSYjPaNI/CoIUgujOr3/c98RgNvDv3w+xRt9qNNQPMPKMebDSmiTBYwu0J1XDW8sNlNt2/iBcM3oIDGytNsMx7Znu+mZ7AkDqBJg33ftpd/Du18VfkpyYs3+U5gHobTYyVsyp8mM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732974810; c=relaxed/simple;
-	bh=q1WZHKbutW7nRr1zsBZWJD8iIhggYfnItH8WMiBjyPo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rCalq4flLQSNha69ymuvw2Z8NJfCpkUUXM96cB0rT1JgviEU9yLweIemB4Xk1dWawtSrv7I/LT0K/5r611exzIigfFzvA8SUFGCFgutIbJ6E6Uf7+e6epHioVgrcWloS6zN7m0si9sb7Wng56mvJdBoNt4wdKr7h72LUofBdmGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+	s=arc-20240116; t=1732996529; c=relaxed/simple;
+	bh=8Xb8dc5W1OVfb4SyUJ2sRpNQaZyUdnqMowgn3Luzl1c=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=VbEWwgiDk91iG2zxwk1jgbaR8uzGCRqavGfK3oggVC7MyQueBQnPKU9YEDohVP2F4El/vFcULK+taEl4goUGP5LYG7W3O6Zek5WwSkLE09PSMdzEK5GGCFixyh23NAa0PogCHytlbkKorTI1gDyoo8gqgE8Y38VM6uaOCRWqIv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a7e4bfae54so4763785ab.0
-        for <linux-bcachefs@vger.kernel.org>; Sat, 30 Nov 2024 05:53:28 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-84193bb7ed1so256955239f.1
+        for <linux-bcachefs@vger.kernel.org>; Sat, 30 Nov 2024 11:55:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732974807; x=1733579607;
+        d=1e100.net; s=20230601; t=1732996527; x=1733601327;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=df20P3izm7SAs3dJHC0DnRTzRnt1LtogTQRaIdf1SPg=;
-        b=DFEa7s8PLl4d0XaQCU5nfurDw8J6ansB3ezOYcjquzNCRq+yT6IlWA174VrQaRxgtr
-         xEr5xyNKfdK5hew33hjKLBhClIyvE4aO77Si2MnMJvR2/J5t+Odb2CMbnnQngHqhprvu
-         vY3z34y1gTZ8BnxVIWUvUlqQ4NLWitNviodQkMpRILm7B/SRLp2kGlg1GRfk2HhQShw/
-         W5JiJkJit0d3khtsNLxQrZshDcHAtL3atqusDr3KSfS5JTw9QHonzGctigzfpEMWOrpD
-         6y285rLfDRkUkq68MeLxcm7ShiDZX3WJAS6FQHOeHAUaIDklanTSTGoj1pQmIDyD8Rhs
-         35ig==
-X-Forwarded-Encrypted: i=1; AJvYcCVlfeJJSQ09U4SYuXo2WEujlByUINK/4+WOmMq/dc95j5euIpvjYzUz/ab6nDLCh0uwgqhr2lqG0gVPXL4iXw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLeLmqCa3T3qCC0jG1cBP2cAjTTtm/CpqzApJINfSOAJ7GelXT
-	1OXz2zYfLb6XXgrH1W2uC6/BUW39MJqfNHrmcGexhvoarg+YR6OnQQ2AmDVu2L3nGqjEGpnaCBs
-	/TOzJS08PNs2mNJ6QqpU7KKpabanueNvUNUvJKLYVN9Eny0cc5SURU5Q=
-X-Google-Smtp-Source: AGHT+IFCEMNjsjl7ZXuwRDUqxBwqsVWLRkaXwmziJ2WBwn7ENmBKKYve2ojzNYjnG5h31gRUW5+iAe1SzNRp2IPTzpz4ZYZCj1jY
+        bh=R3MGNedngZW8LYXo//0pHRzhZsyCDjUrOn5DgJSX8jM=;
+        b=tHqimDfoX+fKSNAzlWkri5sQ22nClr2F4CVPw3GH7Wg52nWTUhGJlkeb4PFMoeBVns
+         v+7ukBPo5foOY/jgcIcwY6M3ZXHXUkvAN9VYKGq55XOxN9dDiERJeDxhUu/xTqiAt5EN
+         I7EySZTE8wqV/MzT64m36pn8pON54TVsdzy0d2wnHRnWMkaPEuR5yC1rT2IIuzgHnVQz
+         sFo7ERYqp4J46rtPInWF3ukAmgZYyJgSFRGdY5MUoCFD37n8mAOocU2EyAmpKHmXFC+g
+         Yd5AY6Kj8Q7zAb+FCbSBnJd356pVgJciolllO9Opb5EE1MtkNOnG12NqNHmbIVBek52h
+         R78g==
+X-Forwarded-Encrypted: i=1; AJvYcCX6X5dC0VtGwpfjxUuo0vYfLdRlEACVW/KjTzmPpGWDgD8eDJEJw5pYCRsH9yH1tTzg9wSRjbZbqKDlsdiXDA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyj7mue6vcnVgEIVlcfBIviD/JCT4yQVLBebFMdiNBsxdQ1vrUr
+	qbxyURkrb1/cwQMw4ShBZfvXZVJLPc3eF3j3BPkNLL80nPCFSNrLLEUWBVkJLV5I/LYZ0pyUhKL
+	Ys/enOmcEuLfCdq8/njBlQvtIIDecTFItEFZgsEpHyZyb0EPX73CmS4k=
+X-Google-Smtp-Source: AGHT+IGtS0xTjRJDW15NrnI0Fzbu8Q0S9T3o0mti+BpuGsWzTtdgiZSdrEG68YEB5Zsgw2tDwMnPYbWzuAZIcT4c7yJ4QQYOOoV/
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2401:b0:3a7:d5a6:1f9d with SMTP id
- e9e14a558f8ab-3a7d5a62424mr76820085ab.9.1732974807569; Sat, 30 Nov 2024
- 05:53:27 -0800 (PST)
-Date: Sat, 30 Nov 2024 05:53:27 -0800
+X-Received: by 2002:a05:6e02:1786:b0:3a7:1bfc:97c6 with SMTP id
+ e9e14a558f8ab-3a7c55d6862mr150481965ab.16.1732996526872; Sat, 30 Nov 2024
+ 11:55:26 -0800 (PST)
+Date: Sat, 30 Nov 2024 11:55:26 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <674b18d7.050a0220.253251.00dc.GAE@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in bch2_inode_update_after_write
-From: syzbot <syzbot+1142db83534a06f10d5b@syzkaller.appspotmail.com>
+Message-ID: <674b6dae.050a0220.253251.00e3.GAE@google.com>
+Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_dirent_validate
+From: syzbot <syzbot+652199d534e8c0a1c0ac@syzkaller.appspotmail.com>
 To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -54,126 +54,85 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    65ae975e97d5 Merge tag 'net-6.13-rc1' of git://git.kernel...
+HEAD commit:    7af08b57bcb9 Merge tag 'trace-v6.13-2' of git://git.kernel..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14512f78580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3891b550f14aea0f
-dashboard link: https://syzkaller.appspot.com/bug?extid=1142db83534a06f10d5b
+console output: https://syzkaller.appspot.com/x/log.txt?x=167b4d30580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d66c9f9a88c492bd
+dashboard link: https://syzkaller.appspot.com/bug?extid=652199d534e8c0a1c0ac
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-65ae975e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/53fd215a7a86/vmlinux-65ae975e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/589c729ff0b2/bzImage-65ae975e.xz
+disk image: https://storage.googleapis.com/syzbot-assets/9c3165413ea6/disk-7af08b57.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bdc591e3d285/vmlinux-7af08b57.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/bef82d827bd2/bzImage-7af08b57.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1142db83534a06f10d5b@syzkaller.appspotmail.com
+Reported-by: syzbot+652199d534e8c0a1c0ac@syzkaller.appspotmail.com
 
-  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq ebb8d5a9e3463bdb written 16 min_key POS_MIN durability: 1 ptr: 0:32:0 gen 0  
-  node offset 8/16: btree node data missing: expected 16 sectors, found 8, fixing
-bcachefs (loop0): btree_node_read_work: rewriting btree node at btree=snapshots level=0 SPOS_MAX due to error
-bcachefs (loop0): scan_for_btree_nodes...
-bch2_scan_for_btree_nodes: nodes found after overwrites:
-  extents l=0 seq=1 journal_seq=5 cookie=c6c25c03258c59c5 POS_MIN-SPOS_MAX ptr: 0:27:0 gen 0
-  inodes l=0 seq=1 journal_seq=5 cookie=7589ab5e0c11cc7a POS_MIN-18446462598732840960:14872293344460931071:U32_MAX ptr: 0:38:0 gen 0
-  dirents l=0 seq=1 journal_seq=3458764513820540929 cookie=9aa2895aefce4bdf POS_MIN-SPOS_MAX ptr: 0:41:0 gen 0
-  xattrs l=0 seq=1 journal_seq=4 cookie=2285c34bed0abe32 POS_MIN-SPOS_MAX ptr: 0:31:0 gen 0
-  subvolumes l=0 seq=1 journal_seq=1 cookie=c0bef60d07ceb940 POS_MIN-SPOS_MAX ptr: 0:35:0 gen 0
-  snapshots l=0 seq=1 journal_seq=0 cookie=ebb8d5a9e3463bdb POS_MIN-SPOS_MAX ptr: 0:32:0 gen 0
-  lru l=0 seq=1 journal_seq=5 cookie=28f61e078e70b95c POS_MIN-SPOS_MAX ptr: 0:28:0 gen 0
-  deleted_inodes l=0 seq=1 journal_seq=0 cookie=1db8f60c84bb244c POS_MIN-SPOS_MAX ptr: 0:42:0 gen 0
- done
-bcachefs (loop0): check_topology...
-bcachefs (loop0): btree root inodes unreadable, must recover from scan
-bcachefs (loop0): bch2_get_scanned_nodes(): recovering inodes l=0 POS_MIN - SPOS_MAX
-bcachefs (loop0): bch2_get_scanned_nodes(): recovering u64s 11 type btree_ptr_v2 18446462598732840960:14872293344460931071:U32_MAX len 0 ver 0: seq 7589ab5e0c11cc7a written 24 min_key POS_MIN durability: 1 ptr: 0:38:0 gen 0
-btree node with incorrect max_keyat btree inodes level 1:
-  parent: u64s 5 type btree_ptr SPOS_MAX len 0 ver 0
-  child: u64s 11 type btree_ptr_v2 18446462598732840960:14872293344460931071:U32_MAX len 0 ver 0: seq 7589ab5e0c11cc7a written 24 min_key POS_MIN durability: 1 ptr: 0:38:0 gen 0, fixing
-bcachefs (loop0): bch2_get_scanned_nodes(): recovering inodes l=0 18446462598732840960:14872293344460931072:0 - SPOS_MAX
-btree node with incorrect max_keyat btree inodes level 1:
-  parent: u64s 5 type btree_ptr SPOS_MAX len 0 ver 0
-  child: u64s 11 type btree_ptr_v2 18446462598732840960:14872293344460931071:U32_MAX len 0 ver 0: seq 7589ab5e0c11cc7a written 24 min_key POS_MIN durability: 1 ptr: 0:38:0 gen 0, fixing
-bcachefs (loop0): set_node_max(): u64s 11 type btree_ptr_v2 18446462598732840960:14872293344460931071:U32_MAX len 0 ver 0: seq 7589ab5e0c11cc7a written 24 min_key POS_MIN durability: 1 ptr: 0:38:0 gen 0 -> SPOS_MAX
- done
-bcachefs (loop0): accounting_read... done
-bcachefs (loop0): alloc_read... done
-bcachefs (loop0): stripes_read... done
-bcachefs (loop0): snapshots_read... done
-bcachefs (loop0): check_allocations... done
-bcachefs (loop0): going read-write
-bcachefs (loop0): done starting filesystem
-bcachefs (loop0): dirent to missing inode:
-  u64s 7 type dirent 4096:189491840996961599:U32_MAX len 0 ver 0: file0 -> 4098 type dir
-UDC core: USB Raw Gadget: couldn't find an available UDC or it's busy
-misc raw-gadget: fail, usb_gadget_register_driver returned -16
-netlink: 157436 bytes leftover after parsing attributes in process `syz.0.0'.
-netlink: zone id is out of range
-netlink: zone id is out of range
-netlink: zone id is out of range
-netlink: zone id is out of range
-netlink: zone id is out of range
-netlink: zone id is out of range
-netlink: zone id is out of range
-netlink: zone id is out of range
-netlink: zone id is out of range
-netlink: zone id is out of range
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/fs.c:59!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5336 Comm: syz.0.0 Not tainted 6.12.0-syzkaller-10681-g65ae975e97d5 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:bch2_inode_update_after_write+0xbd6/0xbe0 fs/bcachefs/fs.c:59
-Code: e1 07 80 c1 03 38 c1 0f 8c ea fb ff ff 48 89 f7 48 89 74 24 10 e8 4a a8 cd fd 48 8b 74 24 10 e9 d3 fb ff ff e8 5b c1 62 fd 90 <0f> 0b e8 33 f9 9f 07 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc9000d38f8c0 EFLAGS: 00010287
-RAX: ffffffff84332325 RBX: 0000000000001003 RCX: 0000000000100000
-RDX: ffffc9000e472000 RSI: 0000000000007a41 RDI: 0000000000007a42
-RBP: ffffc9000d38fa10 R08: ffffffff8433186e R09: 0000000000001000
-R10: 0000000000000d0c R11: 00000000ffffffff R12: ffff888051b2c000
-R13: ffff888044b1c000 R14: ffff888044b1de00 R15: 0000000000001002
-FS:  00007f10501736c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020034000 CR3: 0000000043e86000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __bch2_unlink+0x469/0x530 fs/bcachefs/fs.c:763
- bch2_unlink+0xac/0xf0 fs/bcachefs/fs.c:786
- vfs_unlink+0x365/0x650 fs/namei.c:4523
- do_unlinkat+0x4ae/0x830 fs/namei.c:4587
- __do_sys_unlink fs/namei.c:4635 [inline]
- __se_sys_unlink fs/namei.c:4633 [inline]
- __x64_sys_unlink+0x47/0x50 fs/namei.c:4633
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f104f380809
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f1050173058 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 00007f104f545fa0 RCX: 00007f104f380809
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000040
-RBP: 00007f104f3f393e R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f104f545fa0 R15: 00007ffe1724f5b8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bch2_inode_update_after_write+0xbd6/0xbe0 fs/bcachefs/fs.c:59
-Code: e1 07 80 c1 03 38 c1 0f 8c ea fb ff ff 48 89 f7 48 89 74 24 10 e8 4a a8 cd fd 48 8b 74 24 10 e9 d3 fb ff ff e8 5b c1 62 fd 90 <0f> 0b e8 33 f9 9f 07 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc9000d38f8c0 EFLAGS: 00010287
-RAX: ffffffff84332325 RBX: 0000000000001003 RCX: 0000000000100000
-RDX: ffffc9000e472000 RSI: 0000000000007a41 RDI: 0000000000007a42
-RBP: ffffc9000d38fa10 R08: ffffffff8433186e R09: 0000000000001000
-R10: 0000000000000d0c R11: 00000000ffffffff R12: ffff888051b2c000
-R13: ffff888044b1c000 R14: ffff888044b1de00 R15: 0000000000001002
-FS:  00007f10501736c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020034000 CR3: 0000000043e86000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+=====================================================
+BUG: KMSAN: uninit-value in bch2_dirent_name_bytes fs/bcachefs/dirent.c:27 [inline]
+BUG: KMSAN: uninit-value in bch2_dirent_get_name fs/bcachefs/dirent.c:37 [inline]
+BUG: KMSAN: uninit-value in bch2_dirent_validate+0x5ee/0xc30 fs/bcachefs/dirent.c:107
+ bch2_dirent_name_bytes fs/bcachefs/dirent.c:27 [inline]
+ bch2_dirent_get_name fs/bcachefs/dirent.c:37 [inline]
+ bch2_dirent_validate+0x5ee/0xc30 fs/bcachefs/dirent.c:107
+ bch2_bkey_val_validate+0x2b5/0x440 fs/bcachefs/bkey_methods.c:143
+ bset_key_validate fs/bcachefs/btree_io.c:841 [inline]
+ validate_bset_keys+0x1531/0x2080 fs/bcachefs/btree_io.c:910
+ validate_bset_for_write+0x142/0x290 fs/bcachefs/btree_io.c:1942
+ __bch2_btree_node_write+0x53df/0x6830 fs/bcachefs/btree_io.c:2152
+ bch2_btree_node_write+0xa5/0x2e0 fs/bcachefs/btree_io.c:2284
+ btree_node_write_if_need fs/bcachefs/btree_io.h:151 [inline]
+ __btree_node_flush+0x606/0x680 fs/bcachefs/btree_trans_commit.c:252
+ bch2_btree_node_flush1+0x38/0x60 fs/bcachefs/btree_trans_commit.c:266
+ journal_flush_pins+0xce6/0x1780 fs/bcachefs/journal_reclaim.c:565
+ __bch2_journal_reclaim+0xda8/0x1670 fs/bcachefs/journal_reclaim.c:698
+ bch2_journal_reclaim_thread+0x18e/0x760 fs/bcachefs/journal_reclaim.c:740
+ kthread+0x3e2/0x540 kernel/kthread.c:389
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Uninit was stored to memory at:
+ memcpy_u64s_small fs/bcachefs/util.h:393 [inline]
+ bkey_p_copy fs/bcachefs/bkey.h:47 [inline]
+ bch2_sort_keys_keep_unwritten_whiteouts+0x12d5/0x19d0 fs/bcachefs/bkey_sort.c:187
+ __bch2_btree_node_write+0x3ae8/0x6830 fs/bcachefs/btree_io.c:2095
+ bch2_btree_node_write+0xa5/0x2e0 fs/bcachefs/btree_io.c:2284
+ btree_node_write_if_need fs/bcachefs/btree_io.h:151 [inline]
+ __btree_node_flush+0x606/0x680 fs/bcachefs/btree_trans_commit.c:252
+ bch2_btree_node_flush1+0x38/0x60 fs/bcachefs/btree_trans_commit.c:266
+ journal_flush_pins+0xce6/0x1780 fs/bcachefs/journal_reclaim.c:565
+ __bch2_journal_reclaim+0xda8/0x1670 fs/bcachefs/journal_reclaim.c:698
+ bch2_journal_reclaim_thread+0x18e/0x760 fs/bcachefs/journal_reclaim.c:740
+ kthread+0x3e2/0x540 kernel/kthread.c:389
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Uninit was created at:
+ ___kmalloc_large_node+0x22c/0x370 mm/slub.c:4238
+ __kmalloc_large_node_noprof+0x3f/0x1e0 mm/slub.c:4255
+ __do_kmalloc_node mm/slub.c:4271 [inline]
+ __kmalloc_node_noprof+0xc96/0x1250 mm/slub.c:4289
+ __kvmalloc_node_noprof+0xc0/0x2d0 mm/util.c:650
+ btree_bounce_alloc fs/bcachefs/btree_io.c:124 [inline]
+ btree_node_sort+0x78a/0x1d30 fs/bcachefs/btree_io.c:323
+ bch2_btree_post_write_cleanup+0x1b0/0xf20 fs/bcachefs/btree_io.c:2248
+ bch2_btree_node_write+0x21c/0x2e0 fs/bcachefs/btree_io.c:2289
+ btree_node_write_if_need fs/bcachefs/btree_io.h:151 [inline]
+ __btree_node_flush+0x606/0x680 fs/bcachefs/btree_trans_commit.c:252
+ bch2_btree_node_flush0+0x35/0x60 fs/bcachefs/btree_trans_commit.c:261
+ journal_flush_pins+0xce6/0x1780 fs/bcachefs/journal_reclaim.c:565
+ __bch2_journal_reclaim+0xda8/0x1670 fs/bcachefs/journal_reclaim.c:698
+ bch2_journal_reclaim_thread+0x18e/0x760 fs/bcachefs/journal_reclaim.c:740
+ kthread+0x3e2/0x540 kernel/kthread.c:389
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+CPU: 0 UID: 0 PID: 6699 Comm: bch-reclaim/loo Not tainted 6.12.0-syzkaller-10689-g7af08b57bcb9 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+=====================================================
 
 
 ---
