@@ -1,38 +1,38 @@
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D02C2AF06
-	for <linux-bcachefs@vger.kernel.org>; Sat, 30 Nov 2024 01:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81033B796
+	for <linux-bcachefs@vger.kernel.org>; Sat, 30 Nov 2024 01:28:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732930110; cv=none; b=G63988n5i/i70T2jMkO83ILrlMRXkG2sjTm9WJVkTmUmUqDuhh6XBGKPBsqoJ4kxqXaYJ8wk+P9bFNuy5aqZd076pwJRbz4p03vD0WH8wvFZg4xcR8KkzUnGlaWMlJFpy3jVqSM7UUKpUrryYrkhFAf8nIXzqA/pF6OtsjXAk2A=
+	t=1732930112; cv=none; b=PuBqRxfjCZW+antqYepFvHyiG4wH/i0rxaSIWZpaDfcZvClbt+BgqEnVTAtIvAdiFfvnwbxg+3Px97zWFv00+3JwDExwzX2LTYvGEoLzpq67zvordHSObEs0Mlch7spxknR5PJJJyfo4IbwwKVF+XSsEcoqo4SMElwMgeJMy5jQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732930110; c=relaxed/simple;
-	bh=8EbxaY/nkFiFhpZR4CZcT6aQlTtalW99VviR9Fbw5CM=;
+	s=arc-20240116; t=1732930112; c=relaxed/simple;
+	bh=Tpbw1ce2O7nKs9/6fw8Iky68DriSImfi8g60OJQWGKo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DlJB8K+520xzyFZaY4O3Yx7yzbxSNJnmP7dYGIVfDyJ3V5sWr3JqiW6SUV/JmG3F1BSt0ThgwNaMcXgUkqsGrHO8kfWS3U0Eh0hw1md7o4eE3jfjapvZ9T5W7SjwSgETzRj6ilwJyXbxirKROw2ZzAIPXd94wEK8Owo6JdSVUdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s5RWbci1; arc=none smtp.client-ip=91.218.175.188
+	 MIME-Version; b=d/XphPVisAagxZP/XalsD2/dL5/myDOfml8xJ0coffHOmpkQx6GmRTpyg6bxvvZrXTN9guHQc0dyg64mlwyRiB7oo1xhtazdc7XtUgIVlomOWonq2yEce5ip7X6EIf6nuaaLXEgM1f+LoKJQgvuwC1kkq9B+6gZxWGyFgyqgHNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sBlncAdV; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s5RWbci1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sBlncAdV"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732930105;
+	t=1732930108;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4UOIPIXTJ3jRnEXjlXq8+5tvpwd38nAnC3/6Clw8Mzg=;
-	b=s5RWbci14+VtdMGoI0kBLC+Bj4/ptunSB55Oyu/UJpPVh9z++aHbjrjuxy7aIxulgcPyly
-	enRTonbbzASuvxTIbcRbxkLYGTU2Zdy/kPNVGW8QOxQ8egpoGKERnQqp9AFbk8kpIGdT1x
-	TcVOLIEkxos4EttrFDZPZ1/PrWCFalY=
+	bh=m6sNYQRcjCGpUXGsLq0CfhXPG6bKdcCMa4K+lZBpZ6o=;
+	b=sBlncAdVbMcne4duz51UVR1QIV6+Ngt7JBhFXlUjGV9o+qujBHjzILqFfh60D8xJuJEJMM
+	npbdI18meyhIfSWkMLp/Ua4Ig/O16iz59CM2Q/jgPV6240+y2AuyG90CfpzgQ9X3kIEi51
+	Ef47sWrgMuhWjlPnwaBUHkRb/HUgw8U=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 1/4] bcachefs: list_pop_entry()
-Date: Fri, 29 Nov 2024 20:28:07 -0500
-Message-ID: <20241130012812.3135521-2-kent.overstreet@linux.dev>
+Subject: [PATCH 2/4] bcachefs: bkey_fsck_err now respects errors_silent
+Date: Fri, 29 Nov 2024 20:28:08 -0500
+Message-ID: <20241130012812.3135521-3-kent.overstreet@linux.dev>
 In-Reply-To: <20241130012812.3135521-1-kent.overstreet@linux.dev>
 References: <20241130012812.3135521-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -46,68 +46,45 @@ X-Migadu-Flow: FLOW_OUT
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/ec.c       |  6 ++----
- fs/bcachefs/io_write.c |  4 +---
- fs/bcachefs/util.h     | 13 +++++++++++++
- 3 files changed, 16 insertions(+), 7 deletions(-)
+ fs/bcachefs/error.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-index 7d6c33f04092..250e73897d95 100644
---- a/fs/bcachefs/ec.c
-+++ b/fs/bcachefs/ec.c
-@@ -2465,11 +2465,9 @@ void bch2_fs_ec_exit(struct bch_fs *c)
+diff --git a/fs/bcachefs/error.c b/fs/bcachefs/error.c
+index abaa9570cd62..9e34374960f3 100644
+--- a/fs/bcachefs/error.c
++++ b/fs/bcachefs/error.c
+@@ -476,11 +476,16 @@ int __bch2_bkey_fsck_err(struct bch_fs *c,
+ 		return -BCH_ERR_fsck_delete_bkey;
  
- 	while (1) {
- 		mutex_lock(&c->ec_stripe_head_lock);
--		h = list_first_entry_or_null(&c->ec_stripe_head_list,
--					     struct ec_stripe_head, list);
--		if (h)
--			list_del(&h->list);
-+		h = list_pop_entry(&c->ec_stripe_head_list, struct ec_stripe_head, list);
- 		mutex_unlock(&c->ec_stripe_head_lock);
+ 	unsigned fsck_flags = 0;
+-	if (!(from.flags & (BCH_VALIDATE_write|BCH_VALIDATE_commit)))
++	if (!(from.flags & (BCH_VALIDATE_write|BCH_VALIDATE_commit))) {
++		if (test_bit(err, c->sb.errors_silent))
++			return -BCH_ERR_fsck_delete_bkey;
 +
- 		if (!h)
- 			break;
+ 		fsck_flags |= FSCK_AUTOFIX|FSCK_CAN_FIX;
++	}
++	if (!WARN_ON(err >= ARRAY_SIZE(fsck_flags_extra)))
++		fsck_flags |= fsck_flags_extra[err];
  
-diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
-index 91be9e9abb71..20da357e389a 100644
---- a/fs/bcachefs/io_write.c
-+++ b/fs/bcachefs/io_write.c
-@@ -637,9 +637,7 @@ void bch2_write_point_do_index_updates(struct work_struct *work)
+ 	struct printbuf buf = PRINTBUF;
+-	va_list args;
  
- 	while (1) {
- 		spin_lock_irq(&wp->writes_lock);
--		op = list_first_entry_or_null(&wp->writes, struct bch_write_op, wp_list);
--		if (op)
--			list_del(&op->wp_list);
-+		op = list_pop_entry(&wp->writes, struct bch_write_op, wp_list);
- 		wp_update_state(wp, op != NULL);
- 		spin_unlock_irq(&wp->writes_lock);
+ 	prt_printf(&buf, "invalid bkey in %s btree=",
+ 		   bch2_bkey_validate_contexts[from.from]);
+@@ -489,9 +494,12 @@ int __bch2_bkey_fsck_err(struct bch_fs *c,
  
-diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
-index fb02c1c36004..5e4820c8fa44 100644
---- a/fs/bcachefs/util.h
-+++ b/fs/bcachefs/util.h
-@@ -317,6 +317,19 @@ do {									\
- 	_ptr ? container_of(_ptr, type, member) : NULL;			\
- })
- 
-+static inline struct list_head *list_pop(struct list_head *head)
-+{
-+	if (list_empty(head))
-+		return NULL;
+ 	bch2_bkey_val_to_text(&buf, c, k);
+ 	prt_str(&buf, "\n  ");
 +
-+	struct list_head *ret = head->next;
-+	list_del_init(ret);
-+	return ret;
-+}
++	va_list args;
+ 	va_start(args, fmt);
+ 	prt_vprintf(&buf, fmt, args);
+ 	va_end(args);
 +
-+#define list_pop_entry(head, type, member)		\
-+	container_of_or_null(list_pop(head), type, member)
-+
- /* Does linear interpolation between powers of two */
- static inline unsigned fract_exp_two(unsigned x, unsigned fract_bits)
- {
+ 	prt_str(&buf, ": delete?");
+ 
+ 	int ret = __bch2_fsck_err(c, NULL, fsck_flags, err, "%s", buf.buf);
 -- 
 2.45.2
 
