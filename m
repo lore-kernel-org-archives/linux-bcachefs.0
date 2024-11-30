@@ -1,21 +1,21 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0653B796
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A82433D9
 	for <linux-bcachefs@vger.kernel.org>; Sat, 30 Nov 2024 01:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732930777; cv=none; b=l+4qNcPZ8cfzfR4yE2ta4sv6PQ1z5qzW/bcrJUmvczXrp6LIPk6ZoLgwPkn8NCSWyYsgH0yYlpcg2PHSBEoN2IaDgWFAFk3p1+NQN/4HnWaq4eb5hIm2EO8Y7cDhHbRZild6EmiKu5NT8cOjn6CbJRAv5Yv1Q+mOtIcHIpyL3cU=
+	t=1732930778; cv=none; b=i3UwDsxGq2wk2E3E1gnqcfcp+tzGC/twdXqDRJqQzQEyyVjEklfSscGajFesmHRGgGt/OWfbzxYLyh1NRGiCkneFtpTggw+ZSGvistWBwRHw9hkv5NJlcLOIjZFx75+kJqtfPS+cGW/SZxbubj17eE4OVR7nu7fOHdHNHewKJC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732930777; c=relaxed/simple;
-	bh=f5bwUzWiFNSiCKl/YwId582DMtVpqEfhZlbYu1s8mAk=;
+	s=arc-20240116; t=1732930778; c=relaxed/simple;
+	bh=srSlcw1sDL5lOkj0iOWIxp3n1DEIYQQ7jI3hmgp053g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LOXMBFG+uDCHtzXhQkAl0rvb7RFrU0wMXOPftrf9dQBmOn/ul63AEQQlhGfnGgRh4W19kscuObNpL1VDcNovvznp+uxc0J5UmzdTPALfceeVPaQK24XwttdZEoy5YVVzmencgNLay+QFZPTlzwDhRW1YDrua9yx2LJ0fK2wqT8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I/SGNEHF; arc=none smtp.client-ip=91.218.175.172
+	 MIME-Version; b=jmMP/rle36kFVnJXCy3GDKnPdVYsBKdg1D5F6Bwu0thk+9QkSVXXg+jJuEkgEgX6B3iG4fiLfEIHyHFB4cj71CEge0//Az88U+1vQtMVECS2WgCE/xAnDIQPgg9rXTvRIj67VrlG+b+SG+Op46HyOEptvo4MgXmNfcXON0DZxgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Hsu6Hq4o; arc=none smtp.client-ip=91.218.175.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I/SGNEHF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Hsu6Hq4o"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	t=1732930773;
@@ -23,16 +23,16 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PwOeENLSVv/pzpgyoiIPCw8eTAMjbfvwUhqEPT0dqvc=;
-	b=I/SGNEHFz2uzopfTGBKGQitPAQ5yBfbButG9mAX3VSV68VCIZyjaxETbkQW8G8dhOejSkQ
-	zkaZ0LfWPluAJ+tqZgsyBpnKPWNv0WmkpwRsZgX8mn57xHwVVejFQEwUOCQuP73eKPXHhW
-	PpTrF4iDEi9In3KYN/kWK10gS2GenIM=
+	bh=KcyKtPNIr6i9d1sXTrBQNpoPI9znIWvtSEtjbHLKDdI=;
+	b=Hsu6Hq4oICA2XRcjNHrnI6TWYN3lWhQNHS3W5tTupYtlb/SuLI2/mSZCtwTQK8G7O61Vnt
+	D3c482+fN2A1TX7jaHfO0pmCo1DLNqSnwvBxVlG/2vsprlsTaTO4H/EvKP/sEe+1YvIWiR
+	iuYrZYiXucd8QrZ+aH+2dCCYnCMMqfM=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 1/8] bcachefs: bcachefs_metadata_version_backpointer_bucket_gen
-Date: Fri, 29 Nov 2024 20:39:13 -0500
-Message-ID: <20241130013922.3135792-2-kent.overstreet@linux.dev>
+Subject: [PATCH 2/8] bcachefs: bcachefs_metadata_version_disk_accounting_big_endian
+Date: Fri, 29 Nov 2024 20:39:14 -0500
+Message-ID: <20241130013922.3135792-3-kent.overstreet@linux.dev>
 In-Reply-To: <20241130013922.3135792-1-kent.overstreet@linux.dev>
 References: <20241130013922.3135792-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,139 +44,189 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-New on disk format version: backpointers new include the generation
-number of the bucket they refer to, and the obsolete bucket_offset field
-(no longer needed because we no longer store backpointers in alloc keys)
-is gone.
+Fix sort order for disk accounting keys.
 
-This is an expensive forced upgrade - hopefully the last; we have to run
-the extents_to_backpointers recovery pass to regenerate backpointers.
+The typetag is now the most significant byte of the key, meaning disk
+accounting keys of the same type now sort together.
 
-It's a forced incompatible upgrade because the alternative would've been
-permamently making backpointers bigger, and as one of the biggest btrees
-(along with the extents btree) that's not an ideal option.
-
-It's worth it though, because this allows us to make the
-check_extents_to_backpointers pass drastically cheaper: an upcoming
-patch changes it to sum up backpointers in a bucket and check the sum
-against the sector counts for that bucket, only looking for missing
-backpointers if they don't match (and then only for specific buckets).
+This lets us skip over disk accounting keys that aren't mirrored in
+memory when reading accounting at startup, instead of having them
+interleaved with other counter types.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/backpointers.c    | 18 ------------------
- fs/bcachefs/backpointers.h    |  2 +-
- fs/bcachefs/bcachefs_format.h |  6 ++++--
- fs/bcachefs/sb-downgrade.c    | 16 ++++++++++++++--
- 4 files changed, 19 insertions(+), 23 deletions(-)
+ fs/bcachefs/bcachefs_format.h |  3 ++-
+ fs/bcachefs/disk_accounting.c | 25 +++++++++++++++++++++----
+ fs/bcachefs/disk_accounting.h | 25 +++++++++++++++++--------
+ fs/bcachefs/sb-downgrade.c    | 14 ++++++++++++--
+ fs/bcachefs/util.h            |  9 +++++++++
+ 5 files changed, 61 insertions(+), 15 deletions(-)
 
-diff --git a/fs/bcachefs/backpointers.c b/fs/bcachefs/backpointers.c
-index 702bf62d7fa7..b53d98c762ed 100644
---- a/fs/bcachefs/backpointers.c
-+++ b/fs/bcachefs/backpointers.c
-@@ -28,23 +28,6 @@ int bch2_backpointer_validate(struct bch_fs *c, struct bkey_s_c k,
- 	bkey_fsck_err_on(bp.k->p.inode == BCH_SB_MEMBER_INVALID,
- 			 c, backpointer_dev_bad,
- 			 "backpointer for BCH_SB_MEMBER_INVALID");
--
--	rcu_read_lock();
--	struct bch_dev *ca = bch2_dev_rcu_noerror(c, bp.k->p.inode);
--	if (!ca) {
--		/* these will be caught by fsck */
--		rcu_read_unlock();
--		return 0;
--	}
--
--	struct bpos bucket = bp_pos_to_bucket(ca, bp.k->p);
--	struct bpos bp_pos = bucket_pos_to_bp_noerror(ca, bucket, bp.v->bucket_offset);
--	rcu_read_unlock();
--
--	bkey_fsck_err_on((bp.v->bucket_offset >> MAX_EXTENT_COMPRESS_RATIO_SHIFT) >= ca->mi.bucket_size ||
--			 !bpos_eq(bp.k->p, bp_pos),
--			 c, backpointer_bucket_offset_wrong,
--			 "backpointer bucket_offset wrong (%llu)", (u64) bp.v->bucket_offset);
- fsck_err:
- 	return ret;
- }
-@@ -76,7 +59,6 @@ void bch2_backpointer_swab(struct bkey_s k)
- {
- 	struct bkey_s_backpointer bp = bkey_s_to_backpointer(k);
- 
--	bp.v->bucket_offset	= swab40(bp.v->bucket_offset);
- 	bp.v->bucket_len	= swab32(bp.v->bucket_len);
- 	bch2_bpos_swab(&bp.v->pos);
- }
-diff --git a/fs/bcachefs/backpointers.h b/fs/bcachefs/backpointers.h
-index 95caeabb8978..caffc68407ab 100644
---- a/fs/bcachefs/backpointers.h
-+++ b/fs/bcachefs/backpointers.h
-@@ -158,7 +158,7 @@ static inline void __bch2_extent_ptr_to_bp(struct bch_fs *c, struct bch_dev *ca,
- 		.btree_id	= btree_id,
- 		.level		= level,
- 		.data_type	= bch2_bkey_ptr_data_type(k, p, entry),
--		.bucket_offset	= bp_bucket_offset,
-+		.bucket_gen	= p.ptr.gen,
- 		.bucket_len	= sectors,
- 		.pos		= k.k->p,
- 	};
 diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index dc14bfe37e3b..e4bb74d6f439 100644
+index e4bb74d6f439..cef22c15c256 100644
 --- a/fs/bcachefs/bcachefs_format.h
 +++ b/fs/bcachefs/bcachefs_format.h
-@@ -463,7 +463,8 @@ struct bch_backpointer {
- 	__u8			btree_id;
- 	__u8			level;
- 	__u8			data_type;
--	__u64			bucket_offset:40;
-+	__u8			bucket_gen;
-+	__u32			pad;
- 	__u32			bucket_len;
- 	struct bpos		pos;
- } __packed __aligned(8);
-@@ -677,7 +678,8 @@ struct bch_sb_field_ext {
- 	x(disk_accounting_v3,		BCH_VERSION(1, 10))		\
+@@ -679,7 +679,8 @@ struct bch_sb_field_ext {
  	x(disk_accounting_inum,		BCH_VERSION(1, 11))		\
  	x(rebalance_work_acct_fix,	BCH_VERSION(1, 12))		\
--	x(inode_has_child_snapshots,	BCH_VERSION(1, 13))
-+	x(inode_has_child_snapshots,	BCH_VERSION(1, 13))		\
-+	x(backpointer_bucket_gen,	BCH_VERSION(1, 14))
+ 	x(inode_has_child_snapshots,	BCH_VERSION(1, 13))		\
+-	x(backpointer_bucket_gen,	BCH_VERSION(1, 14))
++	x(backpointer_bucket_gen,	BCH_VERSION(1, 14))		\
++	x(disk_accounting_big_endian,	BCH_VERSION(1, 15))
  
  enum bcachefs_metadata_version {
  	bcachefs_metadata_version_min = 9,
+diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+index 71c49a7ee2fe..77534838497f 100644
+--- a/fs/bcachefs/disk_accounting.c
++++ b/fs/bcachefs/disk_accounting.c
+@@ -716,11 +716,23 @@ int bch2_accounting_read(struct bch_fs *c)
+ 	percpu_memset(c->usage, 0, sizeof(*c->usage));
+ 	percpu_up_write(&c->mark_lock);
+ 
+-	int ret = for_each_btree_key(trans, iter,
+-				BTREE_ID_accounting, POS_MIN,
++	struct btree_iter iter;
++	bch2_trans_iter_init(trans, &iter, BTREE_ID_accounting, POS_MIN,
++			     BTREE_ITER_prefetch|BTREE_ITER_all_snapshots);
++	iter.flags &= ~BTREE_ITER_with_journal;
++	int ret = for_each_btree_key_continue(trans, iter,
+ 				BTREE_ITER_prefetch|BTREE_ITER_all_snapshots, k, ({
+-			struct bkey u;
+-			struct bkey_s_c k = bch2_btree_path_peek_slot_exact(btree_iter_path(trans, &iter), &u);
++			if (k.k->type != KEY_TYPE_accounting)
++				continue;
++
++			struct disk_accounting_pos acc_k;
++			bpos_to_disk_accounting_pos(&acc_k, k.k->p);
++			if (!bch2_accounting_is_mem(acc_k)) {
++				struct disk_accounting_pos next = { .type = acc_k.type + 1 };
++				bch2_btree_iter_set_pos(&iter, disk_accounting_pos_to_bpos(&next));
++				continue;
++			}
++
+ 			accounting_read_key(trans, k);
+ 		}));
+ 	if (ret)
+@@ -732,6 +744,11 @@ int bch2_accounting_read(struct bch_fs *c)
+ 
+ 	darray_for_each(*keys, i) {
+ 		if (i->k->k.type == KEY_TYPE_accounting) {
++			struct disk_accounting_pos acc_k;
++			bpos_to_disk_accounting_pos(&acc_k, i->k->k.p);
++			if (!bch2_accounting_is_mem(acc_k))
++				continue;
++
+ 			struct bkey_s_c k = bkey_i_to_s_c(i->k);
+ 			unsigned idx = eytzinger0_find(acc->k.data, acc->k.nr,
+ 						sizeof(acc->k.data[0]),
+diff --git a/fs/bcachefs/disk_accounting.h b/fs/bcachefs/disk_accounting.h
+index 566aa2a8539d..cb20f723b410 100644
+--- a/fs/bcachefs/disk_accounting.h
++++ b/fs/bcachefs/disk_accounting.h
+@@ -63,20 +63,24 @@ static inline void fs_usage_data_type_to_base(struct bch_fs_usage_base *fs_usage
+ 
+ static inline void bpos_to_disk_accounting_pos(struct disk_accounting_pos *acc, struct bpos p)
+ {
+-	acc->_pad = p;
++	BUILD_BUG_ON(sizeof(*acc) != sizeof(p));
++
+ #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+-	bch2_bpos_swab(&acc->_pad);
++	acc->_pad = p;
++#else
++	memcpy_swab(acc, &p, sizeof(p));
+ #endif
+ }
+ 
+-static inline struct bpos disk_accounting_pos_to_bpos(struct disk_accounting_pos *k)
++static inline struct bpos disk_accounting_pos_to_bpos(struct disk_accounting_pos *acc)
+ {
+-	struct bpos ret = k->_pad;
+-
++	struct bpos p;
+ #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+-	bch2_bpos_swab(&ret);
++	p = acc->_pad;
++#else
++	memcpy_swab(&p, acc, sizeof(p));
+ #endif
+-	return ret;
++	return p;
+ }
+ 
+ int bch2_disk_accounting_mod(struct btree_trans *, struct disk_accounting_pos *,
+@@ -114,6 +118,11 @@ enum bch_accounting_mode {
+ int bch2_accounting_mem_insert(struct bch_fs *, struct bkey_s_c_accounting, enum bch_accounting_mode);
+ void bch2_accounting_mem_gc(struct bch_fs *);
+ 
++static inline bool bch2_accounting_is_mem(struct disk_accounting_pos acc)
++{
++	return acc.type != BCH_DISK_ACCOUNTING_inum;
++}
++
+ /*
+  * Update in memory counters so they match the btree update we're doing; called
+  * from transaction commit path
+@@ -130,7 +139,7 @@ static inline int bch2_accounting_mem_mod_locked(struct btree_trans *trans,
+ 
+ 	EBUG_ON(gc && !acc->gc_running);
+ 
+-	if (acc_k.type == BCH_DISK_ACCOUNTING_inum)
++	if (!bch2_accounting_is_mem(acc_k))
+ 		return 0;
+ 
+ 	if (mode == BCH_ACCOUNTING_normal) {
 diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
-index 8767c33c2b51..a2ae0bee99bb 100644
+index a2ae0bee99bb..fe453e178ea8 100644
 --- a/fs/bcachefs/sb-downgrade.c
 +++ b/fs/bcachefs/sb-downgrade.c
-@@ -81,7 +81,12 @@
- 	  BCH_FSCK_ERR_accounting_mismatch)			\
- 	x(inode_has_child_snapshots,				\
- 	  BIT_ULL(BCH_RECOVERY_PASS_check_inodes),		\
--	  BCH_FSCK_ERR_inode_has_child_snapshots_wrong)
-+	  BCH_FSCK_ERR_inode_has_child_snapshots_wrong)		\
-+	x(backpointer_bucket_gen,				\
-+	  BIT_ULL(BCH_RECOVERY_PASS_check_backpointers_to_extents)|\
-+	  BIT_ULL(BCH_RECOVERY_PASS_check_extents_to_backpointers),\
-+	  BCH_FSCK_ERR_backpointer_to_missing_ptr,		\
-+	  BCH_FSCK_ERR_ptr_to_missing_backpointer)
+@@ -86,7 +86,12 @@
+ 	  BIT_ULL(BCH_RECOVERY_PASS_check_backpointers_to_extents)|\
+ 	  BIT_ULL(BCH_RECOVERY_PASS_check_extents_to_backpointers),\
+ 	  BCH_FSCK_ERR_backpointer_to_missing_ptr,		\
+-	  BCH_FSCK_ERR_ptr_to_missing_backpointer)
++	  BCH_FSCK_ERR_ptr_to_missing_backpointer)		\
++	x(disk_accounting_big_endian,				\
++	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
++	  BCH_FSCK_ERR_accounting_mismatch,			\
++	  BCH_FSCK_ERR_accounting_key_replicas_nr_devs_0,	\
++	  BCH_FSCK_ERR_accounting_key_junk_at_end)
  
  #define DOWNGRADE_TABLE()					\
  	x(bucket_stripe_sectors,				\
-@@ -117,7 +122,14 @@
- 	  BCH_FSCK_ERR_bkey_version_in_future)			\
- 	x(rebalance_work_acct_fix,				\
- 	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
--	  BCH_FSCK_ERR_accounting_mismatch)
+@@ -129,7 +134,12 @@
+ 	  BIT_ULL(BCH_RECOVERY_PASS_check_extents_to_backpointers),\
+ 	  BCH_FSCK_ERR_backpointer_bucket_offset_wrong,		\
+ 	  BCH_FSCK_ERR_backpointer_to_missing_ptr,		\
+-	  BCH_FSCK_ERR_ptr_to_missing_backpointer)
++	  BCH_FSCK_ERR_ptr_to_missing_backpointer)		\
++	x(disk_accounting_big_endian,				\
++	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
 +	  BCH_FSCK_ERR_accounting_mismatch,			\
 +	  BCH_FSCK_ERR_accounting_key_replicas_nr_devs_0,	\
-+	  BCH_FSCK_ERR_accounting_key_junk_at_end)		\
-+	x(backpointer_bucket_gen,				\
-+	  BIT_ULL(BCH_RECOVERY_PASS_check_extents_to_backpointers),\
-+	  BCH_FSCK_ERR_backpointer_bucket_offset_wrong,		\
-+	  BCH_FSCK_ERR_backpointer_to_missing_ptr,		\
-+	  BCH_FSCK_ERR_ptr_to_missing_backpointer)
++	  BCH_FSCK_ERR_accounting_key_junk_at_end)
  
  struct upgrade_downgrade_entry {
  	u64		recovery_passes;
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index 5e4820c8fa44..c292b9ce8240 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -709,4 +709,13 @@ static inline bool test_bit_le64(size_t bit, __le64 *addr)
+ 	return (addr[bit / 64] & cpu_to_le64(BIT_ULL(bit % 64))) != 0;
+ }
+ 
++static inline void memcpy_swab(void *_dst, void *_src, size_t len)
++{
++	u8 *dst = _dst + len;
++	u8 *src = _src;
++
++	while (len--)
++		*--dst = *src++;
++}
++
+ #endif /* _BCACHEFS_UTIL_H */
 -- 
 2.45.2
 
