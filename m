@@ -1,509 +1,226 @@
 Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A497199920
-	for <linux-bcachefs@vger.kernel.org>; Mon,  2 Dec 2024 13:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A811FF7C9
+	for <linux-bcachefs@vger.kernel.org>; Mon,  2 Dec 2024 13:43:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733145034; cv=none; b=NZ8N/TNPUaAdHlXxeismHh19RjNVSTXZXoumF2t3Skg+z2NKF7eqhuJ4K1VFF9k2cbFkBJtIYbggQ0E5Y8SBJ5kkyqZGkXwpq/dL+KDk66mIS7Pd7YuuviJa+oNqJVLvwbf83OT05/BoGZQwoRhXERrE29UvafVnSEs5T43u+5E=
+	t=1733147012; cv=none; b=P7WltMQAFYcMTrFw7oPaDEFiczZr1BUpzxHE5maNZnLT7OLWbAJD3w/Rs217kRfLV8TeCDSvBobF3MQq4a3M2pgkY4yHIcI6G5qolc1CzwYei+RTYK8FbuSMEQUFWGbuSzpEvxIF5MIND6o7pagD7osiWXIfnNXBnHXS39VP++Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733145034; c=relaxed/simple;
-	bh=o9LSHzaiKGOEmotj5ZEVaMpfozhxboRlUJsatuCzoGs=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WfgdA6ucd4/EJ/SCUTi9ZuTTjuufjVhyvLY7nfZ54Oqbp+VfByamKC5jakSFv+mrva4zVgNTCv2OrlRiiiyWTkDGRisIY0C7OU7ir0pbmeokiWKzKJoPIbe36CJEUsba0/907HdGA0e6V8YCahL+00F+RA6NMquKG56VzkQl3hI=
+	s=arc-20240116; t=1733147012; c=relaxed/simple;
+	bh=7JrQRCwu0TfXe2NU9Tm3ibc6+iH+3XKuFgZVRE80KEs=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=p6VmEuc5xL1/nB6/ibRQX8Gqjyi0xm0HKtNeYFieTOsncf0YQvCanMGsv/RNRQXSI0ed0u9j/GDJSHEjKZVBlk+UPfDqzufja8WVx6HunBPhCwlVTfNQpG+b/UxNvx/r2sqFuer5SuCkYCOJshgjy/LtGS8yywA/618OAuO+O1E=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3a7ace5dd02so52090855ab.2
-        for <linux-bcachefs@vger.kernel.org>; Mon, 02 Dec 2024 05:10:32 -0800 (PST)
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3a7e0d7b804so25513495ab.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 02 Dec 2024 05:43:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733145031; x=1733749831;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f+JgE0/nm7p4/nolG3NNGcdhhhlyAWVj0P6zgw0E6yk=;
-        b=VXEJXlg1twy0+EqQfGZ00pdkUIDSGAxbZ+Pc9g8R1r0W96/Re7ZN0yNUXC+Aiym1D1
-         CkVoLq3hIXu1Mmvd/3BGN9ZQXKurZcIHtVXb3qiaLeBBlM2Hnajn3RTmjAYK33eubm6z
-         Aj65ARCQ3CmNifOvFDLC9W5Q2OSPhEXVdNRY16/iluOy6sLSR/RU4fCPkRQN2YB0fGG8
-         xD8Irx0fWxnAEzI59KSE/Hixi577gvUx1P8TFXmPPyiUICpOL+Qb6cmUjP8KSoxlDdUi
-         aUehwushBGo+GM9NhpG/mNTKLSOdMLYuITp7FRoE8HY8JnZJlZUDpigrzKsg8wgygVXX
-         TNPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUQtr9yT/p67YyOCcukqoXpjh7soSD575FJq7FIwiW4PmtM6SOQZ2XfaUEfKOlOy+9lr3ZD39GiZCppJ7DU9g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwjPFp8DQ1vycAVkuTZVPgJBLrVa/S9X+pzadzR0+QkZcThvXZC
-	yKXUCIslD3CGT67QhhOtlmM75rtksdGaNuLzYmGcD43HNdmwLR+3I9leFB1QFpj+TvPo3da08Hs
-	0dATfLJ/WHQCBNvrl9E3vyhsfF5aQgbcK8wNP9krvXIYNQYKcWCNPUog=
-X-Google-Smtp-Source: AGHT+IG4nqW0pcE1NvhOdlULAAYxMIWA7N50kddx+FYd4JTvtfeywQt+7yN8z/78kWrcTwQ4em6uxfo9OOq3BIsjOEiinyhPWw8L
+        d=1e100.net; s=20230601; t=1733147010; x=1733751810;
+        h=content-transfer-encoding:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tRYzxUngfBUrmKR51U+FrTtZyKLbXqN+47VzUVT+Msk=;
+        b=fpwZu9cEUTDKLsJ64Yiw8bC+AW1k8Fl3uklgh5n74ncN8t22DtkJBaX7gPCPDMRurD
+         faqjRrv67+XrXbQ/oGPEnGwyhlH37r9do9Te2ifMysEzPUrWEdDuE/h69L71gWsG4Ro0
+         1L+LNJt1FM55yjRfLJhqr9vypVXf6F6mvow7dnV+l21b4q191tJTqEiBeBNA9hx4HYAc
+         Z2S4CJxyyRPVstN94gkG/UE0RtQyzuKsgbfKlnYFBTtCMod3dR/Z+fYbde5kovABUohI
+         xwNeG0NLDNNnh7ioS8yUEHqp/TU0iV4XBglQ5dazisu+yoReWXbLxJEnAgemrlaAYe6o
+         3dMg==
+X-Forwarded-Encrypted: i=1; AJvYcCWdQEgzvfihJTs6wm+pUzeJwkqPGHFPvjJzic04EB+puG6IHohYCV9WY4lLWJcco+Cv/aQjxpVE1137qSwldg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4GuqTOAuTvydGW5YIkHmKprDlz5kelbUkRx6oA7UmS9gbOAS8
+	IkfYrERliLSwHvERgDRW3E3+8rW0EXBRFustJQupQ91rOLuRSMZn968euQAzVfzbn76cYGaGtgW
+	j7mD7pVDvHppkUsxppJ//doyfWmkWyIVFX9LtCOG+OkrDLnFclyAEtGU=
+X-Google-Smtp-Source: AGHT+IEVr0WyBDt4asdo1+oOdociiGtfM/z0mxH3IqYnP6ckedBuZFLETyXdYzb3dmiI9804a4NbnKTquAHa9zUHN1b1NMdG8s2x
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b2d:b0:3a7:c2ea:1095 with SMTP id
- e9e14a558f8ab-3a7c55241b7mr273052445ab.1.1733145031384; Mon, 02 Dec 2024
- 05:10:31 -0800 (PST)
-Date: Mon, 02 Dec 2024 05:10:31 -0800
+X-Received: by 2002:a05:6e02:b27:b0:3a7:e732:4713 with SMTP id
+ e9e14a558f8ab-3a7e7324a67mr81296485ab.15.1733147008923; Mon, 02 Dec 2024
+ 05:43:28 -0800 (PST)
+Date: Mon, 02 Dec 2024 05:43:28 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <674db1c7.050a0220.ad585.0051.GAE@google.com>
-Subject: [syzbot] [bcachefs?] INFO: task hung in vfs_unlink (5)
-From: syzbot <syzbot+6983c03a6a28616e362f@syzkaller.appspotmail.com>
-To: brauner@kernel.org, jack@suse.cz, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
+Message-ID: <674db980.050a0220.ad585.0053.GAE@google.com>
+Subject: [syzbot] [bcachefs?] kernel BUG in bch2_rename2
+From: syzbot <syzbot+71d64eb53ffbb023de3b@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    40384c840ea1 Linux 6.13-rc1
+HEAD commit:    f788b5ef1ca9 Merge tag 'timers_urgent_for_v6.13_rc1' of gi.=
+.
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14faff78580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=50c7a61469ce77e7
-dashboard link: https://syzkaller.appspot.com/bug?extid=6983c03a6a28616e362f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+console output: https://syzkaller.appspot.com/x/log.txt?x=3D110d55e8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3D2b3a18edb5017fc=
+8
+dashboard link: https://syzkaller.appspot.com/bug?extid=3D71d64eb53ffbb023d=
+e3b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debia=
+n) 2.40
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/92994d383dd8/disk-40384c84.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5296b519dbbf/vmlinux-40384c84.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/284141b3f7b6/bzImage-40384c84.xz
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7fe=
+b34a89c2a/non_bootable_disk-f788b5ef.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/40a792cdbfb9/vmlinux-=
+f788b5ef.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8b3ae7a81a9a/bzI=
+mage-f788b5ef.xz
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6983c03a6a28616e362f@syzkaller.appspotmail.com
+IMPORTANT: if you fix the issue, please add the following tag to the commit=
+:
+Reported-by: syzbot+71d64eb53ffbb023de3b@syzkaller.appspotmail.com
 
-INFO: task syz-executor:6013 blocked for more than 143 seconds.
-      Not tainted 6.13.0-rc1-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor    state:D stack:20304 pid:6013  tgid:6013  ppid:1      flags:0x00000004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0x1850/0x4c30 kernel/sched/core.c:6756
- __schedule_loop kernel/sched/core.c:6833 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6848
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6905
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write+0x1d7/0x220 kernel/locking/rwsem.c:1578
- inode_lock include/linux/fs.h:818 [inline]
- vfs_unlink+0xe4/0x650 fs/namei.c:4512
- do_unlinkat+0x4ae/0x830 fs/namei.c:4587
- __do_sys_unlink fs/namei.c:4635 [inline]
- __se_sys_unlink fs/namei.c:4633 [inline]
- __x64_sys_unlink+0x47/0x50 fs/namei.c:4633
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f2f27b7fdf7
-RSP: 002b:00007ffe4ad49ab8 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f2f27b7fdf7
-RDX: 00007ffe4ad49ae0 RSI: 00007ffe4ad49b70 RDI: 00007ffe4ad49b70
-RBP: 00007ffe4ad49b70 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000100 R11: 0000000000000206 R12: 00007ffe4ad4abf0
-R13: 00007f2f27bf3824 R14: 000000000006431a R15: 00007ffe4ad4ac30
- </TASK>
-INFO: task syz-executor:9080 blocked for more than 144 seconds.
-      Not tainted 6.13.0-rc1-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor    state:D stack:21280 pid:9080  tgid:9080  ppid:1      flags:0x00000004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0x1850/0x4c30 kernel/sched/core.c:6756
- __schedule_loop kernel/sched/core.c:6833 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6848
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6905
- __mutex_lock_common kernel/locking/mutex.c:665 [inline]
- __mutex_lock+0x7e7/0xee0 kernel/locking/mutex.c:735
- rtnl_lock net/core/rtnetlink.c:79 [inline]
- rtnl_nets_lock net/core/rtnetlink.c:326 [inline]
- rtnl_newlink+0xd04/0x24f0 net/core/rtnetlink.c:4006
- rtnetlink_rcv_msg+0x793/0xcf0 net/core/rtnetlink.c:6917
- netlink_rcv_skb+0x1e5/0x430 net/netlink/af_netlink.c:2542
- netlink_unicast_kernel net/netlink/af_netlink.c:1321 [inline]
- netlink_unicast+0x7f8/0x990 net/netlink/af_netlink.c:1347
- netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1891
- sock_sendmsg_nosec net/socket.c:711 [inline]
- __sock_sendmsg+0x223/0x270 net/socket.c:726
- __sys_sendto+0x363/0x4c0 net/socket.c:2197
- __do_sys_sendto net/socket.c:2204 [inline]
- __se_sys_sendto net/socket.c:2200 [inline]
- __x64_sys_sendto+0xde/0x100 net/socket.c:2200
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f4ccb9826dc
-RSP: 002b:00007fff40009f90 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 00007f4ccc674620 RCX: 00007f4ccb9826dc
-RDX: 000000000000003c RSI: 00007f4ccc674670 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00007fff40009fe4 R09: 000000000000000c
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
-R13: 0000000000000000 R14: 00007f4ccc674670 R15: 0000000000000000
- </TASK>
-INFO: task syz-executor:9086 blocked for more than 145 seconds.
-      Not tainted 6.13.0-rc1-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor    state:D stack:22912 pid:9086  tgid:9086  ppid:1      flags:0x00000004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0x1850/0x4c30 kernel/sched/core.c:6756
- __schedule_loop kernel/sched/core.c:6833 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6848
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6905
- __mutex_lock_common kernel/locking/mutex.c:665 [inline]
- __mutex_lock+0x7e7/0xee0 kernel/locking/mutex.c:735
- rtnl_lock net/core/rtnetlink.c:79 [inline]
- rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6923
- netlink_rcv_skb+0x1e5/0x430 net/netlink/af_netlink.c:2542
- netlink_unicast_kernel net/netlink/af_netlink.c:1321 [inline]
- netlink_unicast+0x7f8/0x990 net/netlink/af_netlink.c:1347
- netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1891
- sock_sendmsg_nosec net/socket.c:711 [inline]
- __sock_sendmsg+0x223/0x270 net/socket.c:726
- __sys_sendto+0x363/0x4c0 net/socket.c:2197
- __do_sys_sendto net/socket.c:2204 [inline]
- __se_sys_sendto net/socket.c:2200 [inline]
- __x64_sys_sendto+0xde/0x100 net/socket.c:2200
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fca51b826dc
-RSP: 002b:00007ffd8c302d30 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 00007fca52874620 RCX: 00007fca51b826dc
-RDX: 0000000000000040 RSI: 00007fca52874670 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00007ffd8c302d84 R09: 000000000000000c
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
-R13: 0000000000000000 R14: 00007fca52874670 R15: 0000000000000000
- </TASK>
-INFO: task syz.0.881:9104 blocked for more than 146 seconds.
-      Not tainted 6.13.0-rc1-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz.0.881       state:D stack:25312 pid:9104  tgid:9103  ppid:5842   flags:0x00004004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0x1850/0x4c30 kernel/sched/core.c:6756
- __schedule_loop kernel/sched/core.c:6833 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6848
- exp_funnel_lock kernel/rcu/tree_exp.h:320 [inline]
- synchronize_rcu_expedited+0x70a/0x830 kernel/rcu/tree_exp.h:976
- dev_deactivate_many+0x4a7/0xb10 net/sched/sch_generic.c:1377
- dev_deactivate+0x184/0x280 net/sched/sch_generic.c:1403
- qdisc_graft+0x8ad/0x1660 net/sched/sch_api.c:1136
- tc_modify_qdisc+0xf47/0x1e40 net/sched/sch_api.c:1793
- rtnetlink_rcv_msg+0x741/0xcf0 net/core/rtnetlink.c:6926
- netlink_rcv_skb+0x1e5/0x430 net/netlink/af_netlink.c:2542
- netlink_unicast_kernel net/netlink/af_netlink.c:1321 [inline]
- netlink_unicast+0x7f8/0x990 net/netlink/af_netlink.c:1347
- netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1891
- sock_sendmsg_nosec net/socket.c:711 [inline]
- __sock_sendmsg+0x223/0x270 net/socket.c:726
- ____sys_sendmsg+0x52a/0x7e0 net/socket.c:2583
- ___sys_sendmsg net/socket.c:2637 [inline]
- __sys_sendmmsg+0x36a/0x720 net/socket.c:2726
- __do_sys_sendmmsg net/socket.c:2753 [inline]
- __se_sys_sendmmsg net/socket.c:2750 [inline]
- __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2750
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f25f2180849
-RSP: 002b:00007f25efff6058 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00007f25f2345fa0 RCX: 00007f25f2180849
-RDX: 040000000000009f RSI: 00000000200002c0 RDI: 0000000000000004
-RBP: 00007f25f21f3986 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f25f2345fa0 R15: 00007fff43e6fd08
- </TASK>
-
-Showing all locks held in the system:
-3 locks held by kworker/0:1/9:
-3 locks held by kworker/u8:1/12:
- #0: ffff88814cbfc148 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88814cbfc148 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc90000117d00 ((work_completion)(&(&net->ipv6.addr_chk_work)->work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc90000117d00 ((work_completion)(&(&net->ipv6.addr_chk_work)->work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: addrconf_verify_work+0x19/0x30 net/ipv6/addrconf.c:4755
-1 lock held by khungtaskd/30:
- #0: ffffffff8e937aa0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #0: ffffffff8e937aa0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #0: ffffffff8e937aa0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6744
-4 locks held by kworker/u9:0/55:
- #0: ffff88806ecea948 ((wq_completion)hci19#2){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88806ecea948 ((wq_completion)hci19#2){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc90000bf7d00 ((work_completion)(&hdev->rx_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc90000bf7d00 ((work_completion)(&hdev->rx_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff88809d84c078 (&hdev->lock){+.+.}-{4:4}, at: hci_remote_features_evt+0x97/0xaa0 net/bluetooth/hci_event.c:3692
- #3: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #3: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_remote_features_evt+0x473/0xaa0 net/bluetooth/hci_event.c:3726
-2 locks held by getty/5586:
- #0: ffff88814ccac0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002fde2f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x6a6/0x1e00 drivers/tty/n_tty.c:2211
-1 lock held by syz-executor/5828:
- #0: ffffffff8e93cfb8 (rcu_state.exp_mutex){+.+.}-{4:4}, at: exp_funnel_lock kernel/rcu/tree_exp.h:329 [inline]
- #0: ffffffff8e93cfb8 (rcu_state.exp_mutex){+.+.}-{4:4}, at: synchronize_rcu_expedited+0x451/0x830 kernel/rcu/tree_exp.h:976
-5 locks held by kworker/u9:4/5839:
- #0: ffff8880702da948 ((wq_completion)hci2){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff8880702da948 ((wq_completion)hci2){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc90003c8fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc90003c8fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff88802b214d80 (&hdev->req_lock){+.+.}-{4:4}, at: hci_cmd_sync_work+0x1ec/0x400 net/bluetooth/hci_sync.c:331
- #3: ffff88802b214078 (&hdev->lock){+.+.}-{4:4}, at: hci_abort_conn_sync+0x1ea/0xe00 net/bluetooth/hci_sync.c:5584
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_conn_failed+0x15d/0x300 net/bluetooth/hci_conn.c:1266
-5 locks held by kworker/u9:5/5840:
- #0: ffff88807b4f1948 ((wq_completion)hci6){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88807b4f1948 ((wq_completion)hci6){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc90003c6fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc90003c6fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff888021bf8d80 (&hdev->req_lock){+.+.}-{4:4}, at: hci_cmd_sync_work+0x1ec/0x400 net/bluetooth/hci_sync.c:331
- #3: ffff888021bf8078 (&hdev->lock){+.+.}-{4:4}, at: hci_abort_conn_sync+0x1ea/0xe00 net/bluetooth/hci_sync.c:5584
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_conn_failed+0x15d/0x300 net/bluetooth/hci_conn.c:1266
-4 locks held by kworker/0:4/5894:
-2 locks held by kworker/0:5/5933:
-3 locks held by syz-executor/6013:
- #0: ffff888031b08420 (sb_writers#5){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff888057bbd128 (&type->i_mutex_dir_key#5/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:853 [inline]
- #1: ffff888057bbd128 (&type->i_mutex_dir_key#5/1){+.+.}-{4:4}, at: do_unlinkat+0x26a/0x830 fs/namei.c:4574
- #2: ffff88805b8a3708 (&sb->s_type->i_mutex_key#12){+.+.}-{4:4}, at: inode_lock include/linux/fs.h:818 [inline]
- #2: ffff88805b8a3708 (&sb->s_type->i_mutex_key#12){+.+.}-{4:4}, at: vfs_unlink+0xe4/0x650 fs/namei.c:4512
-2 locks held by syz-executor/9080:
- #0: ffffffff901980e0 (&ops->srcu#2){.+.+}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #0: ffffffff901980e0 (&ops->srcu#2){.+.+}-{0:0}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #0: ffffffff901980e0 (&ops->srcu#2){.+.+}-{0:0}, at: rtnl_link_ops_get+0x22/0x250 net/core/rtnetlink.c:555
- #1: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #1: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_nets_lock net/core/rtnetlink.c:326 [inline]
- #1: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_newlink+0xd04/0x24f0 net/core/rtnetlink.c:4006
-1 lock held by syz-executor/9086:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6923
-3 locks held by syz.6.876/9095:
-2 locks held by syz.4.879/9096:
- #0: ffff88805a9b2c08 (&sb->s_type->i_mutex_key#10){+.+.}-{4:4}, at: inode_lock include/linux/fs.h:818 [inline]
- #0: ffff88805a9b2c08 (&sb->s_type->i_mutex_key#10){+.+.}-{4:4}, at: __sock_release net/socket.c:639 [inline]
- #0: ffff88805a9b2c08 (&sb->s_type->i_mutex_key#10){+.+.}-{4:4}, at: sock_close+0x90/0x240 net/socket.c:1408
- #1: ffffffff8e93cfb8 (rcu_state.exp_mutex){+.+.}-{4:4}, at: exp_funnel_lock kernel/rcu/tree_exp.h:329 [inline]
- #1: ffffffff8e93cfb8 (rcu_state.exp_mutex){+.+.}-{4:4}, at: synchronize_rcu_expedited+0x451/0x830 kernel/rcu/tree_exp.h:976
-1 lock held by syz.0.881/9104:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6923
-1 lock held by syz-executor/9110:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9113:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9117:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9120:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9124:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9128:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by dhcpcd/9130:
- #0: ffff888096c4a258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff888096c4a258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by dhcpcd/9131:
- #0: ffff888070ec6258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff888070ec6258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by dhcpcd/9133:
- #0: ffff888012018258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff888012018258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by syz-executor/9137:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9142:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9144:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9146:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by dhcpcd/9148:
- #0: ffff888096f82258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff888096f82258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by dhcpcd/9149:
- #0: ffff88803ea52258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff88803ea52258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by dhcpcd/9150:
- #0: ffff88803ea50258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff88803ea50258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by dhcpcd/9151:
- #0: ffff88803ea4e258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff88803ea4e258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by dhcpcd/9152:
- #0: ffff88803fa8e258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff88803fa8e258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by dhcpcd/9153:
- #0: ffff88803defe258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff88803defe258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by dhcpcd/9154:
- #0: ffff88805ca12258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1617 [inline]
- #0: ffff88805ca12258 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xcb0 net/packet/af_packet.c:3267
-1 lock held by syz-executor/9157:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9161:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-5 locks held by kworker/u9:1/9163:
- #0: ffff888059088148 ((wq_completion)hci9){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff888059088148 ((wq_completion)hci9){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc9000443fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc9000443fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff8880346f8d80 (&hdev->req_lock){+.+.}-{4:4}, at: hci_cmd_sync_work+0x1ec/0x400 net/bluetooth/hci_sync.c:331
- #3: ffff8880346f8078 (&hdev->lock){+.+.}-{4:4}, at: hci_abort_conn_sync+0x1ea/0xe00 net/bluetooth/hci_sync.c:5584
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_conn_failed+0x15d/0x300 net/bluetooth/hci_conn.c:1266
-1 lock held by syz-executor/9168:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-1 lock held by syz-executor/9169:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-4 locks held by kworker/u9:2/9171:
- #0: ffff88806ecef948 ((wq_completion)hci20#2){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88806ecef948 ((wq_completion)hci20#2){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc900043efd00 ((work_completion)(&hdev->rx_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc900043efd00 ((work_completion)(&hdev->rx_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff88803af30078 (&hdev->lock){+.+.}-{4:4}, at: hci_remote_features_evt+0x97/0xaa0 net/bluetooth/hci_event.c:3692
- #3: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #3: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_remote_features_evt+0x473/0xaa0 net/bluetooth/hci_event.c:3726
-5 locks held by kworker/u9:3/9173:
- #0: ffff888059b72148 ((wq_completion)hci10){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff888059b72148 ((wq_completion)hci10){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc900043afd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc900043afd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff888057cd4d80 (&hdev->req_lock){+.+.}-{4:4}, at: hci_cmd_sync_work+0x1ec/0x400 net/bluetooth/hci_sync.c:331
- #3: ffff888057cd4078 (&hdev->lock){+.+.}-{4:4}, at: hci_abort_conn_sync+0x1ea/0xe00 net/bluetooth/hci_sync.c:5584
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_conn_failed+0x15d/0x300 net/bluetooth/hci_conn.c:1266
-1 lock held by syz-executor/9175:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-4 locks held by kworker/u9:6/9176:
- #0: ffff88807b7d2948 ((wq_completion)hci21#2){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88807b7d2948 ((wq_completion)hci21#2){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc9000438fd00 ((work_completion)(&hdev->rx_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc9000438fd00 ((work_completion)(&hdev->rx_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff8880a34f8078 (&hdev->lock){+.+.}-{4:4}, at: hci_remote_features_evt+0x97/0xaa0 net/bluetooth/hci_event.c:3692
- #3: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #3: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_remote_features_evt+0x473/0xaa0 net/bluetooth/hci_event.c:3726
-1 lock held by syz-executor/9180:
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_net_lock include/linux/rtnetlink.h:128 [inline]
- #0: ffffffff8fcaf448 (rtnl_mutex){+.+.}-{4:4}, at: inet_rtm_newaddr+0x47e/0x1bd0 net/ipv4/devinet.c:987
-4 locks held by kworker/u9:7/9181:
- #0: ffff888052ebc148 ((wq_completion)hci22#2){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff888052ebc148 ((wq_completion)hci22#2){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc9000436fd00 ((work_completion)(&hdev->rx_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc9000436fd00 ((work_completion)(&hdev->rx_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff88809b184078 (&hdev->lock){+.+.}-{4:4}, at: hci_remote_features_evt+0x97/0xaa0 net/bluetooth/hci_event.c:3692
- #3: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #3: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_remote_features_evt+0x473/0xaa0 net/bluetooth/hci_event.c:3726
-5 locks held by kworker/u9:9/9184:
- #0: ffff88805b4fb948 ((wq_completion)hci8){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88805b4fb948 ((wq_completion)hci8){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc9000433fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc9000433fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff88805ddf0d80 (&hdev->req_lock){+.+.}-{4:4}, at: hci_cmd_sync_work+0x1ec/0x400 net/bluetooth/hci_sync.c:331
- #3: ffff88805ddf0078 (&hdev->lock){+.+.}-{4:4}, at: hci_abort_conn_sync+0x1ea/0xe00 net/bluetooth/hci_sync.c:5584
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_conn_failed+0x15d/0x300 net/bluetooth/hci_conn.c:1266
-5 locks held by kworker/u9:10/9185:
- #0: ffff8880593dc948 ((wq_completion)hci7){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff8880593dc948 ((wq_completion)hci7){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc9000432fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc9000432fd00 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff88805d85cd80 (&hdev->req_lock){+.+.}-{4:4}, at: hci_cmd_sync_work+0x1ec/0x400 net/bluetooth/hci_sync.c:331
- #3: ffff88805d85c078 (&hdev->lock){+.+.}-{4:4}, at: hci_abort_conn_sync+0x1ea/0xe00 net/bluetooth/hci_sync.c:5584
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_connect_cfm include/net/bluetooth/hci_core.h:2032 [inline]
- #4: ffffffff8fe0fda8 (hci_cb_list_lock){+.+.}-{4:4}, at: hci_conn_failed+0x15d/0x300 net/bluetooth/hci_conn.c:1266
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.13.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:234 [inline]
- watchdog+0xff6/0x1040 kernel/hung_task.c:397
- kthread+0x2f2/0x390 kernel/kthread.c:389
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 9 Comm: kworker/0:1 Not tainted 6.13.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Workqueue: events_power_efficient wg_ratelimiter_gc_entries
-RIP: 0010:validate_chain+0x5e9/0x5920 kernel/locking/lockdep.c:3916
-Code: 04 0c 00 00 00 00 49 c7 44 0c 09 00 00 00 00 49 c7 44 0c 11 00 00 00 00 49 c7 44 0c 1f 00 00 00 00 49 c7 44 0c 2b 00 00 00 00 <41> c6 44 0c 33 00 65 48 8b 0c 25 28 00 00 00 48 3b 8c 24 a0 02 00
-RSP: 0018:ffffc900000073a0 EFLAGS: 00000002
-RAX: 0000000000000001 RBX: ffffffff9440ed60 RCX: 1ffff92000000e94
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffffff942b88f8
-RBP: ffffc900000076a0 R08: ffffffff942b88ff R09: 1ffffffff285711f
-R10: dffffc0000000000 R11: fffffbfff2857120 R12: dffffc0000000000
-R13: ffff88801c2b0b78 R14: ec45c658ccca9fd1 R15: ffffffff9440ed78
-FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 7589ab5e0c11cc7a writ=
+ten 24 min_key POS_MIN durability: 1 ptr: 0:38:0 gen 0 =20
+  node offset 0/24 bset u64s 0: incorrect max key 18446462598732840960:1487=
+2293344460931071:U32_MAX
+bcachefs (loop0): flagging btree inodes lost data
+error reading btree root inodes l=3D0: btree_node_read_error, fixing
+bcachefs (loop0): will run btree node scan
+invalid bkey u64s 7 type xattr 536870912:3798421620223919902:U32_MAX len 0 =
+ver 0: user.=06:
+  xattr name has invalid characters: delete?, fixing
+bcachefs (loop0): error validating btree node on loop0 at btree snapshots l=
+evel 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq ebb8d5a9e3463bdb writ=
+ten 16 min_key POS_MIN durability: 1 ptr: 0:32:0 gen 0 =20
+  node offset 0/16 bset u64s 0: unknown checksum type 9, fixing
+bcachefs (loop0): error validating btree node on loop0 at btree snapshots l=
+evel 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq ebb8d5a9e3463bdb writ=
+ten 16 min_key POS_MIN durability: 1 ptr: 0:32:0 gen 0 =20
+  node offset 8/16: btree node data missing: expected 16 sectors, found 8, =
+fixing
+bcachefs (loop0): btree_node_read_work: rewriting btree node at btree=3Dsna=
+pshots level=3D0 SPOS_MAX due to error
+bcachefs (loop0): scan_for_btree_nodes...
+bch2_scan_for_btree_nodes: nodes found after overwrites:
+  extents l=3D0 seq=3D1 journal_seq=3D5 cookie=3Dc6c25c03258c59c5 POS_MIN-S=
+POS_MAX ptr: 0:27:0 gen 0
+  inodes l=3D0 seq=3D1 journal_seq=3D5 cookie=3D7589ab5e0c11cc7a POS_MIN-18=
+446462598732840960:14872293344460931071:U32_MAX ptr: 0:38:0 gen 0
+  dirents l=3D0 seq=3D1 journal_seq=3D3458764513820540929 cookie=3D9aa2895a=
+efce4bdf POS_MIN-SPOS_MAX ptr: 0:41:0 gen 0
+  xattrs l=3D0 seq=3D1 journal_seq=3D4 cookie=3D2285c34bed0abe32 POS_MIN-SP=
+OS_MAX ptr: 0:31:0 gen 0
+  subvolumes l=3D0 seq=3D1 journal_seq=3D1 cookie=3Dc0bef60d07ceb940 POS_MI=
+N-SPOS_MAX ptr: 0:35:0 gen 0
+  snapshots l=3D0 seq=3D1 journal_seq=3D0 cookie=3Debb8d5a9e3463bdb POS_MIN=
+-SPOS_MAX ptr: 0:32:0 gen 0
+  lru l=3D0 seq=3D1 journal_seq=3D5 cookie=3D28f61e078e70b95c POS_MIN-SPOS_=
+MAX ptr: 0:28:0 gen 0
+  deleted_inodes l=3D0 seq=3D1 journal_seq=3D0 cookie=3D1db8f60c84bb244c PO=
+S_MIN-SPOS_MAX ptr: 0:42:0 gen 0
+ done
+bcachefs (loop0): check_topology...
+bcachefs (loop0): btree root inodes unreadable, must recover from scan
+bcachefs (loop0): bch2_get_scanned_nodes(): recovering inodes l=3D0 POS_MIN=
+ - SPOS_MAX
+bcachefs (loop0): bch2_get_scanned_nodes(): recovering u64s 11 type btree_p=
+tr_v2 18446462598732840960:14872293344460931071:U32_MAX len 0 ver 0: seq 75=
+89ab5e0c11cc7a written 24 min_key POS_MIN durability: 1 ptr: 0:38:0 gen 0
+btree node with incorrect max_keyat btree inodes level 1:
+  parent: u64s 5 type btree_ptr SPOS_MAX len 0 ver 0
+  child: u64s 11 type btree_ptr_v2 18446462598732840960:1487229334446093107=
+1:U32_MAX len 0 ver 0: seq 7589ab5e0c11cc7a written 24 min_key POS_MIN dura=
+bility: 1 ptr: 0:38:0 gen 0, fixing
+bcachefs (loop0): bch2_get_scanned_nodes(): recovering inodes l=3D0 1844646=
+2598732840960:14872293344460931072:0 - SPOS_MAX
+btree node with incorrect max_keyat btree inodes level 1:
+  parent: u64s 5 type btree_ptr SPOS_MAX len 0 ver 0
+  child: u64s 11 type btree_ptr_v2 18446462598732840960:1487229334446093107=
+1:U32_MAX len 0 ver 0: seq 7589ab5e0c11cc7a written 24 min_key POS_MIN dura=
+bility: 1 ptr: 0:38:0 gen 0, fixing
+bcachefs (loop0): set_node_max(): u64s 11 type btree_ptr_v2 184464625987328=
+40960:14872293344460931071:U32_MAX len 0 ver 0: seq 7589ab5e0c11cc7a writte=
+n 24 min_key POS_MIN durability: 1 ptr: 0:38:0 gen 0 -> SPOS_MAX
+ done
+bcachefs (loop0): accounting_read... done
+bcachefs (loop0): alloc_read... done
+bcachefs (loop0): stripes_read... done
+bcachefs (loop0): snapshots_read... done
+bcachefs (loop0): check_allocations... done
+bcachefs (loop0): going read-write
+bcachefs (loop0): done starting filesystem
+bcachefs (loop0): dirent to missing inode:
+  u64s 7 type dirent 4096:189491840996961599:U32_MAX len 0 ver 0: file0 -> =
+4098 type dir
+bcachefs (loop0): dirent to missing inode:
+  u64s 7 type dirent 4096:4330382808765833931:U32_MAX len 0 ver 0: file1 ->=
+ 536870912 type reg
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/fs.c:935!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5320 Comm: syz.0.0 Not tainted 6.12.0-syzkaller-12128-gf=
+788b5ef1ca9 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16=
+.3-2~bpo12+1 04/01/2014
+RIP: 0010:bch2_rename2+0x2117/0x2130 fs/bcachefs/fs.c:935
+Code: ff 44 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 0f f2 ff ff 4c 89 ff e8 f9 =
+ca cc fd e9 02 f2 ff ff e8 2f bf 92 07 e8 4a e3 61 fd 90 <0f> 0b e8 42 e3 6=
+1 fd 90 0f 0b 66 2e 0f 1f 84 00 00 00 00 00 0f 1f
+RSP: 0018:ffffc9000d2cf4e0 EFLAGS: 00010287
+RAX: ffffffff843d8ed6 RBX: 0000000000001002 RCX: 0000000000100000
+RDX: ffffc9000e772000 RSI: 0000000000002734 RDI: 0000000000002735
+RBP: ffffc9000d2cfa90 R08: ffffffff843d81bd R09: 1ffff110088ba037
+R10: dffffc0000000000 R11: ffffed10088ba038 R12: dffffc0000000000
+R13: ffff8880545a0000 R14: 0000000000001003 R15: 0000000000000000
+FS:  00007ff4ba7cf6c0(0000) GS:ffff88801fc00000(0000) knlGS:000000000000000=
+0
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b3040eff8 CR3: 000000000e736000 CR4: 0000000000350ef0
+CR2: 00000000200002c0 CR3: 0000000040446000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- <NMI>
- </NMI>
- <IRQ>
- __lock_acquire+0x1397/0x2100 kernel/locking/lockdep.c:5226
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:351 [inline]
- usb_hcd_unlink_urb_from_ep+0x2c/0x110 drivers/usb/core/hcd.c:1224
- dummy_timer+0x83a/0x4620 drivers/usb/gadget/udc/dummy_hcd.c:1991
- __run_hrtimer kernel/time/hrtimer.c:1739 [inline]
- __hrtimer_run_queues+0x59d/0xd30 kernel/time/hrtimer.c:1803
- hrtimer_run_softirq+0x19a/0x2c0 kernel/time/hrtimer.c:1820
- handle_softirqs+0x2d6/0x9b0 kernel/softirq.c:554
- __do_softirq kernel/softirq.c:588 [inline]
- invoke_softirq kernel/softirq.c:428 [inline]
- __irq_exit_rcu+0xf7/0x220 kernel/softirq.c:655
- irq_exit_rcu+0x9/0x30 kernel/softirq.c:671
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
- sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1049
- </IRQ>
  <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-RIP: 0010:wg_ratelimiter_gc_entries+0x3ae/0x470 drivers/net/wireguard/ratelimiter.c:76
-Code: 00 75 9c eb a2 e8 b2 7d 1e fb e9 19 ff ff ff e8 a8 7d 1e fb eb 05 e8 a1 7d 1e fb 48 c7 c7 20 48 43 8f e8 15 1a 52 05 4d 85 ff <48> 8b 5c 24 18 74 35 e8 86 7d 1e fb 48 c7 c7 40 aa 96 8c be 4e 00
-RSP: 0018:ffffc900000e7b68 EFLAGS: 00000282
-RAX: 0000000000000000 RBX: ffff88805d45f758 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
-RBP: ffffc900000e7dc0 R08: ffffffff8f434823 R09: 1ffffffff1e86904
-R10: dffffc0000000000 R11: fffffbfff1e86905 R12: 0000000000000000
-R13: dffffc0000000000 R14: 00000084c44054c5 R15: ffffffff8f434940
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xa68/0x1840 kernel/workqueue.c:3310
- worker_thread+0x870/0xd30 kernel/workqueue.c:3391
- kthread+0x2f2/0x390 kernel/kthread.c:389
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ vfs_rename+0xbdb/0xf00 fs/namei.c:5067
+ do_renameat2+0xd94/0x13f0 fs/namei.c:5224
+ __do_sys_renameat2 fs/namei.c:5258 [inline]
+ __se_sys_renameat2 fs/namei.c:5255 [inline]
+ __x64_sys_renameat2+0xce/0xe0 fs/namei.c:5255
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7ff4b9980849
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 =
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff f=
+f 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff4ba7cf058 EFLAGS: 00000246 ORIG_RAX: 000000000000013c
+RAX: ffffffffffffffda RBX: 00007ff4b9b45fa0 RCX: 00007ff4b9980849
+RDX: ffffffffffffff9c RSI: 0000000020000440 RDI: ffffffffffffff9c
+RBP: 00007ff4b99f3986 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000020000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ff4b9b45fa0 R15: 00007fff1bc1c7f8
  </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bch2_rename2+0x2117/0x2130 fs/bcachefs/fs.c:935
+Code: ff 44 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 0f f2 ff ff 4c 89 ff e8 f9 =
+ca cc fd e9 02 f2 ff ff e8 2f bf 92 07 e8 4a e3 61 fd 90 <0f> 0b e8 42 e3 6=
+1 fd 90 0f 0b 66 2e 0f 1f 84 00 00 00 00 00 0f 1f
+RSP: 0018:ffffc9000d2cf4e0 EFLAGS: 00010287
+RAX: ffffffff843d8ed6 RBX: 0000000000001002 RCX: 0000000000100000
+RDX: ffffc9000e772000 RSI: 0000000000002734 RDI: 0000000000002735
+RBP: ffffc9000d2cfa90 R08: ffffffff843d81bd R09: 1ffff110088ba037
+R10: dffffc0000000000 R11: ffffed10088ba038 R12: dffffc0000000000
+R13: ffff8880545a0000 R14: 0000000000001003 R15: 0000000000000000
+FS:  00007ff4ba7cf6c0(0000) GS:ffff88801fc00000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff4ba7adfe0 CR3: 0000000040446000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
