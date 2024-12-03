@@ -1,107 +1,169 @@
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E469E1F76B1
-	for <linux-bcachefs@vger.kernel.org>; Tue,  3 Dec 2024 13:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108751F6696
+	for <linux-bcachefs@vger.kernel.org>; Tue,  3 Dec 2024 14:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733233336; cv=none; b=d0BYvCQDjZ/KWUQJvjEU2NWP07fbyJ5/Bn671Pt/XvgDOVlckppdUiehRgHZ7aNG5rS3keSZhy1/ieUUMDDGO6eYgvV70HJx6pvcswPWXnGsvNDVfcB4Ws3WSPIC0OvwN5kxQ20N7b0+dhI+hdTBLS5kWy07Iy6CClxWco+LKqk=
+	t=1733236830; cv=none; b=mqF7gzLhFLFO5QVaw+Yda6NPYC4wg03vLwKKrfSDJxT/Sm41Qw5BL/CiI8KprOnMf5RvHBEy7t7FWgqEpVW5dogxSTem7Ihkpf/QbTDuAw4y6kPI3UHY7AhUOQqyXqyk5ruGl2O4NNCkPbnZsSc+/GzJLAclTVBZVO9GBXtckFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733233336; c=relaxed/simple;
-	bh=BPqo/+vJ9OA99wMkdAF6vWPVOkXo/UQOziFQPIlW/1E=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=P9NsK3qzrJ/I6iqvSdjcmc0NXHRWouELVBq3vCfgWEzYGnBi7pIWl63QvfIxXDlFxfVdanWDSlXr/Y2ooE+vAJg7OUG6n90ZtoH22es0CD6td2jtPrEtbbzT3rpQR7V03rLuZLOZ1tDMNe/m3UO71yF9Hf/tZqtNjqz/O3wm4ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=LjxLmdEk; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="LjxLmdEk"
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5f1d1fdb328so2090701eaf.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 03 Dec 2024 05:42:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1733233333; x=1733838133; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TPziSiz6FIPz1llFZL4/mtv70ocOZmo18hfdyDsh/VQ=;
-        b=LjxLmdEkeOzRdv2LOy8MDnd9IqaiNPf9AwmUCLMdGor82amWTMEVsYs886T7eymnrB
-         zy8yYZDY14DZBsGdWmoreADl7hEbgNxly+iMObL2qjPO96HYxRFEMFESudSPrIrCorcR
-         pN+ddZMBHAZGjOilYlZu3wGLqsmLvLhmRK6B6WTWkWx+Gwg3aJwrbmEcJtGqStUMLWo4
-         5rFsmQDKA5/pJyD9px7Z8bfH1jM8OQvEJy2YnJ5LT9/9tPEaVmlge6SEKDrJKq/Kp095
-         LUHrm3vRacst7YQRSd4WbhxJxCrvuRECNqC0Mq45G8cYccbtqc/wCGNoMVpKdDrOAZVm
-         Qs0g==
+	s=arc-20240116; t=1733236830; c=relaxed/simple;
+	bh=xnZIPtFgulb7ZmC7MRw/l7zrErAuPTxpjo7bVnr+NIE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pD9usMgD6+vg4v2M4R+cSaPcWNp0a/pZD1cmslWUBMPXj/SopNCwgqORjRzWcIWlYSJ0JWgdFuYGKwMBFqag9xCVOO6Uu+173535NCEni2trMy8wpja4rf3ehy2MYWMDECZ27Swweu5GwbIWZycZ/XPkQCx3/kuPTp3q8MuIET4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-841a3f2aebfso473164839f.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 03 Dec 2024 06:40:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733233333; x=1733838133;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TPziSiz6FIPz1llFZL4/mtv70ocOZmo18hfdyDsh/VQ=;
-        b=pm1kTatIrwDTzArKOkDxSGeHKfa59IhAtzBllguft5u17/5Yp5ochLWm8deUUWjV3Z
-         /TY6O8GMi1JUjfwKgThvnwPgaH7Uc8q4GAOVFbb48BgD5+fTVFK36gV0X3v70wAHMV80
-         rCs0GGMu8NRv97LpsXOB6btp0IeOu/D+BVnrnmq70dE/5WYqshUclRipxJ0tLs9KfVkI
-         My9OZDITvg8+8YZ5CrwLwkjIFPLRdljpjH3hdk3e+m5AaW58Fc+OtOeKExVIe1oRKidk
-         iE6KtmPx0Qa2pb/rpfSjrkt/ptbGd8W1DmxZyDPRlx6/hwuMYU+OJM9nh96iv/JXUdS7
-         C9HA==
-X-Forwarded-Encrypted: i=1; AJvYcCWI2TmsxI/U0bc2chzIRCjxS1VQr7TBoE/jaNjo4AZsvDAdBg0vasjwAnIBiqBrzozAPRurjRjTXkuH8Sm4OA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyo7xJy2xC7DqVY2glxAjxZW5owRHixlnp/cwdMLYBHDfEOY3tU
-	rUywa0T3x0I5Py7U2fhPJwiSZxmX+Gz7FTeqMsNTAmGcxrSZjSRGLqVM8FNBxW8=
-X-Gm-Gg: ASbGnctppOeviQz4q4A4mMHQHGxIhklb/E87QtlHDltm6TWmfmzbQpmluFLQABmdWtj
-	w7nCOPZ1VDyMfAM+8bsD9IXF/HccpoKGynDQp8Jqa2t4k5G710HslH2IfchKGS/xBdoFXV1U2O+
-	xYY8QhBjZnAv7uQMftXrtC3wzAdAa50BWF2IDQJbkw2AGjeN8qDchc0QcxyEI6gZhz6XYW3TqET
-	s6ixbKleSiQoOAKy6g8hsgZMmldB1rsnA6tlYKxBFG5Lg==
-X-Google-Smtp-Source: AGHT+IF3JxViCcZr46UetkoBs9MyylLeqwOA8mylprKsogFh27HKGMF5642pWucfOY8iKk1uqQ4f1w==
-X-Received: by 2002:a05:6820:50c:b0:5ee:d89f:1d2c with SMTP id 006d021491bc7-5f25ad40e71mr1942008eaf.1.1733233333038;
-        Tue, 03 Dec 2024 05:42:13 -0800 (PST)
-Received: from [127.0.0.1] ([130.250.255.163])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5f21a4cd86bsm2782124eaf.29.2024.12.03.05.42.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2024 05:42:12 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: John Garry <john.g.garry@oracle.com>
-Cc: haris.iqbal@ionos.com, jinpu.wang@ionos.com, colyli@suse.de, 
- kent.overstreet@linux.dev, agk@redhat.com, snitzer@kernel.org, 
- mpatocka@redhat.com, linux-block@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org, 
- dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, hch@lst.de
-In-Reply-To: <20241202111957.2311683-1-john.g.garry@oracle.com>
-References: <20241202111957.2311683-1-john.g.garry@oracle.com>
-Subject: Re: [PATCH 0/2] block: Delete bio_set_prio() and bio_prio()
-Message-Id: <173323333147.59116.15700360793401292347.b4-ty@kernel.dk>
-Date: Tue, 03 Dec 2024 06:42:11 -0700
+        d=1e100.net; s=20230601; t=1733236828; x=1733841628;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B+UJUOlZeSFS4ejT0gYOMuHI+JYM5aJ8as82cOBhLZU=;
+        b=n3uyvAwnWAw3+SQhw+MM4PQMpIsKWwdjjdfSfk4NpTkZUCeq81ledTlFnIBa1CFCY3
+         s/kws/bkEBWEjXBWNzIEaEt8ix9c9HvcGHHeACbJ22u3zFqzR/KNrrDdpJkWYMxDmvtx
+         Wa9bedtV+0+n7AKJKRc7ApR+FWplV5qRYZs1+BtDZ92IyGVse+1xkbzhLLgOIKtgFCqu
+         p0ieqA24uOONAvdAAau0C7hR6Rp1QV0hg8Gb7zfInJ9dvMIL0LR8jMaqWN3y4j3tP9MB
+         tQHDk7GqJLPZALgomB7klBuekuzi6ifD17C1jqQ/OQ9uy60sS6BfnlJNJajIhh2nbXWJ
+         JTPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUrroL11j7rXdf/Wzfv8TLbBlLUXJ0jeu3bklekP6pRPNO6OIrn8GGv5lloR/GEQTLImHDHKcHxh9tkCgNbSw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyy3n3fVcRkrEZlXUQBkT1SkSH+uy0ZgUJIxV+gWTl3MrD1ldzB
+	dt8yIE0X6xEXrBGFV+r2OoUJ9cEQEAWPYUf33dGAC8nSxu48N/t6A4d2l1d36wf7Pfj0sEr3cYs
+	GVJVSJ2zbgPX/NwtwCiT5jnxqPArmFVz4NW57iTQWaeH/Gf1WeqfWFp4=
+X-Google-Smtp-Source: AGHT+IGHriJz0yQmo8UxkNOK8Bqz1kYnubFeO4Y2UzLjzRLRPoLoMVIHX+vHkOi6PTYXcazovDy0TONbi+mVQD/Z0TIPPH9D31Nl
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.3-dev-86319
+X-Received: by 2002:a05:6e02:18c6:b0:3a7:e103:3c43 with SMTP id
+ e9e14a558f8ab-3a7f9a9fce0mr34758215ab.19.1733236828101; Tue, 03 Dec 2024
+ 06:40:28 -0800 (PST)
+Date: Tue, 03 Dec 2024 06:40:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <674f185c.050a0220.48a03.003a.GAE@google.com>
+Subject: [syzbot] [bcachefs?] general protection fault in closure_put_after_sub
+ (2)
+From: syzbot <syzbot+92b863cc48ee12775386@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    cdd30ebb1b9f module: Convert symbol namespace to string li..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=121770df980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=91c852e3d1d7c1a6
+dashboard link: https://syzkaller.appspot.com/bug?extid=92b863cc48ee12775386
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e7e1e116ea6e/disk-cdd30ebb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/76410fd02a13/vmlinux-cdd30ebb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/60bcdb55dd9c/bzImage-cdd30ebb.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+92b863cc48ee12775386@syzkaller.appspotmail.com
+
+Oops: general protection fault, probably for non-canonical address 0xf26afc1ffff11006: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: maybe wild-memory-access in range [0x935800ffff888030-0x935800ffff888037]
+CPU: 0 UID: 0 PID: 40 Comm: kworker/0:1H Not tainted 6.13.0-rc1-syzkaller-00002-gcdd30ebb1b9f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Workqueue: bcachefs_btree_io btree_node_write_work
+RIP: 0010:__lock_acquire+0x6a/0x2100 kernel/locking/lockdep.c:5089
+Code: b6 04 30 84 c0 0f 85 f8 16 00 00 45 31 f6 83 3d fb 9b 9d 0e 00 0f 84 c8 13 00 00 89 54 24 60 89 5c 24 38 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ff e8 a8 7b 8c 00 48 be 00 00 00 00 00 fc
+RSP: 0018:ffffc90000b07510 EFLAGS: 00010806
+RAX: 126b001ffff11006 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 935800ffff888032
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
+R10: dffffc0000000000 R11: fffffbfff203036f R12: ffff888020ad5a00
+R13: 0000000000000000 R14: 0000000000000000 R15: 935800ffff888032
+FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000110c24a819 CR3: 0000000032630000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ __queue_work+0x759/0xf50
+ queue_work_on+0x1c2/0x380 kernel/workqueue.c:2390
+ queue_work include/linux/workqueue.h:662 [inline]
+ closure_queue include/linux/closure.h:268 [inline]
+ closure_put_after_sub+0x2b1/0x330 lib/closure.c:42
+ bch2_btree_complete_write fs/bcachefs/btree_io.c:1789 [inline]
+ __btree_node_write_done+0x268/0x440 fs/bcachefs/btree_io.c:1800
+ btree_node_write_done fs/bcachefs/btree_io.c:1840 [inline]
+ btree_node_write_work+0x9d3/0xba0 fs/bcachefs/btree_io.c:1882
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__lock_acquire+0x6a/0x2100 kernel/locking/lockdep.c:5089
+Code: b6 04 30 84 c0 0f 85 f8 16 00 00 45 31 f6 83 3d fb 9b 9d 0e 00 0f 84 c8 13 00 00 89 54 24 60 89 5c 24 38 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ff e8 a8 7b 8c 00 48 be 00 00 00 00 00 fc
+RSP: 0018:ffffc90000b07510 EFLAGS: 00010806
+RAX: 126b001ffff11006 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 935800ffff888032
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
+R10: dffffc0000000000 R11: fffffbfff203036f R12: ffff888020ad5a00
+R13: 0000000000000000 R14: 0000000000000000 R15: 935800ffff888032
+FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000110c24a819 CR3: 0000000032630000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	b6 04                	mov    $0x4,%dh
+   2:	30 84 c0 0f 85 f8 16 	xor    %al,0x16f8850f(%rax,%rax,8)
+   9:	00 00                	add    %al,(%rax)
+   b:	45 31 f6             	xor    %r14d,%r14d
+   e:	83 3d fb 9b 9d 0e 00 	cmpl   $0x0,0xe9d9bfb(%rip)        # 0xe9d9c10
+  15:	0f 84 c8 13 00 00    	je     0x13e3
+  1b:	89 54 24 60          	mov    %edx,0x60(%rsp)
+  1f:	89 5c 24 38          	mov    %ebx,0x38(%rsp)
+  23:	4c 89 f8             	mov    %r15,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	80 3c 30 00          	cmpb   $0x0,(%rax,%rsi,1) <-- trapping instruction
+  2e:	74 12                	je     0x42
+  30:	4c 89 ff             	mov    %r15,%rdi
+  33:	e8 a8 7b 8c 00       	call   0x8c7be0
+  38:	48                   	rex.W
+  39:	be 00 00 00 00       	mov    $0x0,%esi
+  3e:	00 fc                	add    %bh,%ah
 
 
-On Mon, 02 Dec 2024 11:19:55 +0000, John Garry wrote:
-> Macros bio_set_prio() and bio_prio() do nothing special in terms of
-> setting and getting the bio io prio member, so just delete them.
-> 
-> Prior to commit 43b62ce3ff0a, they would actually encode and decode the
-> prio in the now-deleted bi_rw member.
-> 
-> John Garry (2):
->   block: Delete bio_prio()
->   block: Delete bio_set_prio()
-> 
-> [...]
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Applied, thanks!
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-[1/2] block: Delete bio_prio()
-      commit: 099d214fc7abc3fec0f38d10bec31ac7acce8d13
-[2/2] block: Delete bio_set_prio()
-      commit: 77cfdf838d8467d3ca44058caff7c1727080efb2
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Best regards,
--- 
-Jens Axboe
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-
+If you want to undo deduplication, reply with:
+#syz undup
