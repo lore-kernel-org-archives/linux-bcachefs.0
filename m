@@ -1,35 +1,38 @@
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A714224B0F
-	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Dec 2024 18:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0759B227B9D;
+	Thu,  5 Dec 2024 18:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733421799; cv=none; b=P7i9ycAWzs4c+WJCUnO9+uT64WwiQrC2qYcozcBR4r/oCHxIA/cuXdJCRH5NEguvn2AgRpuMlxvmipSWPOMjOmsfaPiap8v+Xc8/UvOWzf2ex+boluH0lsf1zBNcMtPE+0xq1VZr7MGWzl2kptp7UNI8uHjr31/pEs8s1bZY4K4=
+	t=1733421910; cv=none; b=Vk47BhuffsGtLs8oBiXVxdo9kkrUVmvt2ryY1B6iyLJ5FkDgdcEAmwlwoPy4YNNoyF4hLSYKRLok0pbnUtVhhQhKZPxzEtE1biJpnu5Bj1fnFr0iYJ81EzJ5PixRSenQ718ZLiI+T+uvw3H/jqlkpDVJEJi+XQJXmpLiydCN5+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733421799; c=relaxed/simple;
-	bh=8Jl4E05nKhZu4hdd9P9KGXhJwPjaMuQObNdJVuCykkI=;
-	h=Date:From:To:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=fZGRD84ouVH7NqoD5ZIYx60v4CzifJQw1STPeN+bIn/M12fCufi+do5C74dnsqdyuq0BZ2hZ3Ir6VvEgJTazUEGH1fRZ4SRHPuCrD20G8kX2KPnTaDc39rh7XGAQ542Kqb8gIFZF5UJB1Li1ygmqBOqZjeYWDASA59LtevUsT7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QYeojBXR; arc=none smtp.client-ip=95.215.58.189
+	s=arc-20240116; t=1733421910; c=relaxed/simple;
+	bh=VmGgdagh43bQ9diy6vHcEw7GrkKLzDdF9+rbK43HAkg=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G8aYGKVTH8pXbbpxzbFKHYhG77nemWh9WU57C/v/3NsleNXKXdqm/R1LzbKtqKbn89ggC+H7oWUa93O3ajykKtC7tJky0ACKEkdh9/AMpYCZopIA8z/XuF/R8zIPiMdZKU4SkSwaa1vMijLpAD9A8dNkUMe06yysbjfSgsAxcrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DTncR6Y5; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QYeojBXR"
-Date: Thu, 5 Dec 2024 13:03:11 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DTncR6Y5"
+Date: Thu, 5 Dec 2024 13:04:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733421794;
-	h=from:from:reply-to:subject:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=uUQRGG6F5iHI1AHQ+KI818TFAhHliFY5xuCUnq35RCY=;
-	b=QYeojBXREqjn+wWh4epVhI5wOj0+RJ9hEbc5Ta2HF0Ax6iq4PVksKg97bDgHuRpQVZ+zEh
-	AJcAgBaIfU/4u9hLG5ImnVwoqzM7GzfOhxD6iutr/Kei6eSAGO+Pl+K0nPr2T1w+YN1FXq
-	B94fIgwdZS5p8tfmTQDPwiBZuqNYbew=
+	t=1733421903;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C/0wAm6mwf+xx0gp44Kb3h1fQJN2+oekj+V8ngaLLkk=;
+	b=DTncR6Y5mA5Y7j8JEDZCiuaVLQqxXdm6EI5UZvAiaW6dRKVGrQgzRI55HKE5UDTl/I/80w
+	anM2v6U54fYUgOn9SDwik2PN/YKiTOQHOsPzHp/5gx9c3fB3sTEpm1AgfRWwegc/cOY8Ps
+	fq2GrnvkH/uFuQUsJuv8IyHLYe4sIfI=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-arm-kernel@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, linux-bcachefs@vger.kernel.org
-Message-ID: <36kx57aw46vwykgckr5cm4fafhw54tjuj4cqljrdnpfwvjl7if@a7znuhpfu54o>
+	Mark Rutland <mark.rutland@arm.com>, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: arm64: stacktrace: unwind exception boundaries
+Message-ID: <zbwbgkuvvciezpmigcp6gaahfxwm7cwhpzus7gtbfnbzsjb2n3@kfbdppbd74o4>
+References: <36kx57aw46vwykgckr5cm4fafhw54tjuj4cqljrdnpfwvjl7if@a7znuhpfu54o>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -38,14 +41,8 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <36kx57aw46vwykgckr5cm4fafhw54tjuj4cqljrdnpfwvjl7if@a7znuhpfu54o>
 X-Migadu-Flow: FLOW_OUT
-
-linux-kernel@vger.kernel.org
-Cc:
-Bcc:
-Subject: Re: arm64: stacktrace: unwind exception boundaries
-Message-ID: <cqmiqyusbdua2x4kh6eefndnneg6ever6doztccko4taky3b6k@ezqikwh2ooe7>
-Reply-To:
 
 On 6.13-rc1, I'm now seeing a ton of test failures due to this warning -
 what gives?
