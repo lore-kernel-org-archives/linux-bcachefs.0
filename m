@@ -1,139 +1,78 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0759B227B9D;
-	Thu,  5 Dec 2024 18:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A5A179A3
+	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Dec 2024 20:34:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733421910; cv=none; b=Vk47BhuffsGtLs8oBiXVxdo9kkrUVmvt2ryY1B6iyLJ5FkDgdcEAmwlwoPy4YNNoyF4hLSYKRLok0pbnUtVhhQhKZPxzEtE1biJpnu5Bj1fnFr0iYJ81EzJ5PixRSenQ718ZLiI+T+uvw3H/jqlkpDVJEJi+XQJXmpLiydCN5+w=
+	t=1733430845; cv=none; b=t+t3Yn5anx1t2oWrRWSrZFQhfo/cxNwviD5gCai6Mvb1NRGrCl4GVYoum0hVud0EO3V1PtQueDbST9pZTGzXwPcsPaTMd76dbmPcUV/bD8qfnyKHwyUwKheVJOop0dLVskQtuJRL6ugoEijtLilP/RYclfkNeL0Sog2K1BNRBwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733421910; c=relaxed/simple;
-	bh=VmGgdagh43bQ9diy6vHcEw7GrkKLzDdF9+rbK43HAkg=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G8aYGKVTH8pXbbpxzbFKHYhG77nemWh9WU57C/v/3NsleNXKXdqm/R1LzbKtqKbn89ggC+H7oWUa93O3ajykKtC7tJky0ACKEkdh9/AMpYCZopIA8z/XuF/R8zIPiMdZKU4SkSwaa1vMijLpAD9A8dNkUMe06yysbjfSgsAxcrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DTncR6Y5; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DTncR6Y5"
-Date: Thu, 5 Dec 2024 13:04:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733421903;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C/0wAm6mwf+xx0gp44Kb3h1fQJN2+oekj+V8ngaLLkk=;
-	b=DTncR6Y5mA5Y7j8JEDZCiuaVLQqxXdm6EI5UZvAiaW6dRKVGrQgzRI55HKE5UDTl/I/80w
-	anM2v6U54fYUgOn9SDwik2PN/YKiTOQHOsPzHp/5gx9c3fB3sTEpm1AgfRWwegc/cOY8Ps
-	fq2GrnvkH/uFuQUsJuv8IyHLYe4sIfI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-arm-kernel@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: arm64: stacktrace: unwind exception boundaries
-Message-ID: <zbwbgkuvvciezpmigcp6gaahfxwm7cwhpzus7gtbfnbzsjb2n3@kfbdppbd74o4>
-References: <36kx57aw46vwykgckr5cm4fafhw54tjuj4cqljrdnpfwvjl7if@a7znuhpfu54o>
+	s=arc-20240116; t=1733430845; c=relaxed/simple;
+	bh=wPZ6h1zzkZIYT0COhyDx8uGGQnXmxoEjeu+H34L5ssY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=LLDt18pd3TAzZHG4KSK5mKRwObL1YORjkjvPJIJls93n9+j/2c5OO3XnseE1wJFA5EC/40lBFyekfRThFdmE7hNUqjiD5QuEo1XCoOGYVcslDnkRSV1Gcxs9WqLWFBs9mD6wCANbGh8oeEoJ7wm0HbfFNifmQYs60HYFZgw2YUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a7d87dfd9bso16847365ab.0
+        for <linux-bcachefs@vger.kernel.org>; Thu, 05 Dec 2024 12:34:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733430843; x=1734035643;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MluN6+HqbQdo3ZFrbzEMTv0gA+HotOipTOtjXn1gAx0=;
+        b=vqpJguX8fYXhHaJRQTHkCXAekQ0ulvAyPh6DfOnvIQm58wEzwIcJmzxyLGS88ppLyL
+         MeMrsnacZHt/Cmy2l7bo1Ja9ELbCyHuind5Iv3WLQbjbW/j/8kkqaQelpsmmjcMC8SZX
+         DqoAt1upOb8PEYCPTTv9oHRulUsKG3YMn7LdL/9HOV/HsnECizOgGiSyHWLRSMtff6iF
+         xHzG6+xANI74b4MRI8H0CuBA7U4ntomoLwThvLtuBUkPIm3CKDQR1Qf0xQI/lM4/x7Ty
+         uKIJpeR7eELyQpGUHFL8arXN4F4IJ7Qmm0SMVnG+LMLkK/SEFp8E6nPydfBLxIZ/csgF
+         UTZg==
+X-Forwarded-Encrypted: i=1; AJvYcCX+M74NWo9DtAjQYKgO7eOs5ryyMUST0tAu+JjjEHjMZ3mqUe1Vy/0pTch9UaZRlxe2xtz5kjDZx7/kzfeh1w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOYK5cpTYp825Ztgtn69AqBAm0JIeKY2x10fA0e7QmD9E9qKTP
+	obhycmsVmAZnSr8cLxFPFqxo/ByvGZ1sA/wN2SjoCMoYCXdl8F+qkilrNUEV15hCg10+ALi5sq+
+	XSdfbuPucrmYIvJJnYO4uqYQetFIoSiQuYiGhnBcBjnyEAvhL/miTMqE=
+X-Google-Smtp-Source: AGHT+IH/TYc3uoyEtAeNUTNgFFu9sxhUR8Vtq6aOSXipwFIsPMiILBXStDoohsQLd+uY3SGbIhfqqLOvb4et53ZqibPhmvZ27xA0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <36kx57aw46vwykgckr5cm4fafhw54tjuj4cqljrdnpfwvjl7if@a7znuhpfu54o>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:19ca:b0:3a7:6c6a:e2a2 with SMTP id
+ e9e14a558f8ab-3a811d7812cmr9580205ab.9.1733430843089; Thu, 05 Dec 2024
+ 12:34:03 -0800 (PST)
+Date: Thu, 05 Dec 2024 12:34:03 -0800
+In-Reply-To: <67372c5c.050a0220.1324f8.00aa.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67520e3b.050a0220.b4160.01e6.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] KASAN: use-after-free Read in bch2_check_dirents
+From: syzbot <syzbot+fea0322882c0cba65f11@syzkaller.appspotmail.com>
+To: brauner@kernel.org, jack@suse.cz, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 
-On 6.13-rc1, I'm now seeing a ton of test failures due to this warning -
-what gives?
+syzbot has bisected this issue to:
 
-00104 ========= TEST   generic/017
-00104        run fstests generic/017 at 2024-12-05 11:47:43
-00104 spectre-v4 mitigation disabled by command-line option
-00106 bcachefs (vdc): starting version 1.13: inode_has_child_snapshots
-00106 bcachefs (vdc): initializing new filesystem
-00106 bcachefs (vdc): going read-write
-00106 bcachefs (vdc): marking superblocks
-00106 bcachefs (vdc): initializing freespace
-00106 bcachefs (vdc): done initializing freespace
-00106 bcachefs (vdc): reading snapshots table
-00106 bcachefs (vdc): reading snapshots done
-00106 bcachefs (vdc): done starting filesystem
-00200 ------------[ cut here ]------------
-00200 WARNING: CPU: 8 PID: 12571 at arch/arm64/kernel/stacktrace.c:223 arch_stack_walk+0x2c0/0x388
-00200 Modules linked in:
-00200 CPU: 8 UID: 0 PID: 12571 Comm: cat Not tainted 6.13.0-rc1-ktest-gdf1fce23d033 #10877
-00200 Hardware name: linux,dummy-virt (DT)
-00200 pstate: 80001005 (Nzcv daif -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-00200 pc : arch_stack_walk+0x2c0/0x388
-00200 lr : arch_stack_walk+0x1f4/0x388
-00200 sp : ffffff80ca757b00
-00200 x29: ffffff80ca757b00 x28: ffffff80d6783758 x27: 000000000000036f
-00200 x26: ffffff80d6783780 x25: ffffff80c19de180 x24: ffffff80c273ee40
-00200 x23: ffffffc080022708 x22: ffffffc080025828 x21: ffffff80ca757be8
-00200 x20: ffffffc0800c98c8 x19: ffffff80d8533d10 x18: ffffffffffffffff
-00200 x17: 0000000000000000 x16: 0000000000000000 x15: ffffffffffffffff
-00200 x14: 0000000000000000 x13: ffffff80d6c92000 x12: 0000000000000000
-00200 x11: 0000000000000000 x10: 000000000000000a x9 : ffffffc08086beec
-00200 x8 : ffffff80ca757bc0 x7 : 0000000000000000 x6 : ffffff80d8533d28
-00200 x5 : ffffff80ca757b60 x4 : ffffff80d8534000 x3 : ffffff80ca757b40
-00200 x2 : 0000000000000018 x1 : ffffff80d8533d10 x0 : 0000000000000000
-00200 Call trace:
-00200  arch_stack_walk+0x2c0/0x388 (P)
-00200  arch_stack_walk+0x1f4/0x388 (L)
-00200  stack_trace_save_tsk+0x90/0xd8
-00200  bch2_save_backtrace+0x68/0x160
-00200  bch2_prt_task_backtrace+0x30/0xb8
-00200  bch2_btree_transactions_read+0xe0/0x1f0
-00200  full_proxy_read+0x60/0xd0
-00200  vfs_read+0x80/0x2d8
-00200  ksys_read+0x5c/0xf0
-00200  __arm64_sys_read+0x20/0x30
-00200  invoke_syscall.constprop.0+0x54/0xe8
-00200  do_el0_svc+0x44/0xc8
-00200  el0_svc+0x18/0x58
-00200  el0t_64_sync_handler+0x104/0x130
-00200  el0t_64_sync+0x154/0x158
-00200 ---[ end trace 0000000000000000 ]---
-00233 hrtimer: interrupt took 49506640 ns
-00493 bcachefs (vdb): shutting down
-00493 bcachefs (vdb): going read-only
-00493 bcachefs (vdb): finished waiting for writes to stop
-00493 bcachefs (vdb): flushing journal and stopping allocators, journal seq 18
-00493 bcachefs (vdb): flushing journal and stopping allocators complete, journal seq 18
-00493 bcachefs (vdb): clean shutdown complete, journal seq 19
-00493 bcachefs (vdb): marking filesystem clean
-00493 bcachefs (vdb): shutdown complete
-00493 bcachefs (vdc): shutting down
-00493 bcachefs (vdc): going read-only
-00493 bcachefs (vdc): finished waiting for writes to stop
-00493 bcachefs (vdc): flushing journal and stopping allocators, journal seq 41457
-00493 bcachefs (vdc): flushing journal and stopping allocators complete, journal seq 41459
-00493 bcachefs (vdc): clean shutdown complete, journal seq 41460
-00493 bcachefs (vdc): marking filesystem clean
-00493 bcachefs (vdc): shutdown complete
-00495 bcachefs (vdc): starting version 1.13: inode_has_child_snapshots
-00495 bcachefs (vdc): recovering from clean shutdown, journal seq 41460
-00495 bcachefs (vdc): accounting_read... done
-00495 bcachefs (vdc): alloc_read... done
-00495 bcachefs (vdc): stripes_read... done
-00495 bcachefs (vdc): snapshots_read... done
-00495 bcachefs (vdc): going read-write
-00495 bcachefs (vdc): journal_replay... done
-00495 bcachefs (vdc): resume_logged_ops... done
-00495 bcachefs (vdc): delete_dead_inodes... done
-00495 bcachefs (vdc): done starting filesystem
-00495 bcachefs (vdc): shutting down
-00495 bcachefs (vdc): going read-only
-00495 bcachefs (vdc): finished waiting for writes to stop
-00495 bcachefs (vdc): flushing journal and stopping allocators, journal seq 41460
-00495 bcachefs (vdc): flushing journal and stopping allocators complete, journal seq 41460
-00495 bcachefs (vdc): clean shutdown complete, journal seq 41461
-00495 bcachefs (vdc): marking filesystem clean
-00495 bcachefs (vdc): shutdown complete
-00495 _check_dmesg: something found in dmesg (see /ktest-out/xfstests/generic/017.dmesg)
-00496 
-00496 /ktest-out/xfstests/generic/017.full:
-00496 cat: /ktest-out/xfstests/generic/017.full: No such file or directory
-00496 ========= FAILED generic/017 in 391s, exit status 0
+commit d97de0d017cde0d442c3d144b4f969f43064cc0f
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Tue Aug 13 01:31:25 2024 +0000
 
+    bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11a09330580000
+start commit:   cfaaa7d010d1 Merge tag 'net-6.12-rc8' of git://git.kernel...
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13a09330580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15a09330580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1503500c6f615d24
+dashboard link: https://syzkaller.appspot.com/bug?extid=fea0322882c0cba65f11
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112b1130580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1256ab5f980000
+
+Reported-by: syzbot+fea0322882c0cba65f11@syzkaller.appspotmail.com
+Fixes: d97de0d017cd ("bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
