@@ -1,162 +1,140 @@
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55BF82F56
-	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Dec 2024 01:55:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DEAC218E99;
+	Thu,  5 Dec 2024 15:42:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733363729; cv=none; b=nTjPNpkgce7b7Jpyuq97cBmZmYWRVUWjc/QgWxJd/NuxXzd+QLT1dBvvgERupvKdo+XaXSS7mspR1iVkEQRa5Ng+MVfzsCBb3Z2YBxTjl82WDiKxOhtIX8wf+mMm2ot8I1lTGrv6FkA/ZGsilDVAZ+41JyLEwiIXF68iVNV2Ulo=
+	t=1733413380; cv=none; b=H8lZzhu2urGuxrVlsQXX9eq2GqfchgdMq/jUv3TnNqVs5Mkomz9jIalt9GMyDO6pCtKMmysgHyye1OK0oYiYBUXcfYdFRBTpkosIYYp2/nsOwuxgFKZ04ixso6UrrGVKHT8RRXNtXw5TfWFmDh7gfejzYN0J4BgZUJY9slthfng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733363729; c=relaxed/simple;
-	bh=OxLANGodBnrPUrKA00yMyFwzyPQQrzIak325/hr/bio=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rs+Vc974mN2y32jfrlrQjEdCkjboZ+ZksT8etcPdmwX5L/LhZ8w0yT89F4xPT2UQSCBU3BtJYCLQc3fSctHdg7YnW26pPfBH7p1PScFPdk8Cp5JvtOvPpYYqpcs4OOQd8Fk4jyNjGEFU4UsuMP6YuiHN8M3tLrfQR+6JZHeKwCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=b4AmCARS; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1733413380; c=relaxed/simple;
+	bh=5fJNr+uuGbzSucThB4KRt2W6mdssk1rnyKaKs1lG5TA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ETYncBAzq8EPO/BdkcK+fNJ1kFGuVHkLiDWKKvISfSblIsynYQwcOpploGAvOYeavrDXYds7eCuMPOrUbyvQGlcuXy0dSxHeMgkfWBRK8dcXXAqG+rF6dsmf2pkTBlcpcJEVyxFkbJi482/FPzcgWfiEWSuweL6Khv/G3C2PCC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gjdi2VHY; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b4AmCARS"
-Date: Wed, 4 Dec 2024 20:55:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733363723;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=krFDp3IO0s/Yqmjk2xsc464Bq6KUzGYe66aQVaRyM4I=;
-	b=b4AmCARSzgpuv7+lYIddSrHmSF7wyelQYxuUvOn0GPuoCZxHZQGIhoQdmZtB1t0FG1TX1E
-	XxSCO/up3/KdmTO7JTj8a85MJkbQXkWKFte/Vl2E1lMoEYcJdzLo9gXVo0zJz5ONtRho/x
-	OIRFdHJH2WlvnHdFsnzK9Xh43P6Xsyw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 20/34] bcachefs: dio write: Take ref on mm_struct when
- using asynchronously
-Message-ID: <aju7xoha5k54uf2hwlrgpor4jf72yw4dt7tddyz5p3he72yr42@q5ezmbbeeesn>
-References: <20241129202736.2713679-1-kent.overstreet@linux.dev>
- <20241129202736.2713679-21-kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gjdi2VHY"
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-385dece873cso599283f8f.0;
+        Thu, 05 Dec 2024 07:42:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733413377; x=1734018177; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qm0xTA7w0trmMS63onZN9A8A0KVvItfxjJ4yazAcGOA=;
+        b=Gjdi2VHYuhpwgxmzcuYW4h0DJyeUFFOGuqSwPdORwp8yuaP1VxV+GTHpm6b1PDZxfJ
+         o4QF7M+hEjIgH4o4+YfeP9Uo9CSQq1XTACp4Z984l4uA8c3IHuEzUSmPVN5SXmam95cB
+         42GpZJLL9m+Leo786binPMjJv6LQjauGmhdV+QIIbeLc8muRAmE3UzdNXBEyVj/s7RiL
+         iGbJX5XXSk5eVjkxfT/5bRJHWdXS8/O9jtjVaZ/VDuJwlBVaQ4URkzpRkHwBTVdv2NsG
+         IbwzhT23AMAqBEbvIiHer5bgKWQqyuHgt7lXwL2Bchs1KQjOZ+ih3hocFygdPZN9ePhD
+         H0fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733413377; x=1734018177;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Qm0xTA7w0trmMS63onZN9A8A0KVvItfxjJ4yazAcGOA=;
+        b=D3uNlChxeCL5CdBeFbHQ+bdN517Q76Ml5EXsCZxxqyTljC5H582ug6iwTEBjTOryHp
+         eu6A5vi9C/+dNkwSlctnbauaiwQ9djzXN18BeOT2jfLdFfcm6K1UrzwRpfH1thQy74Dz
+         Dh8VYAya1XGK80d8Cqjp0HAOLg0nKLm0kOMUcAFNqsQePa8wUt01+GwAniuNJNEfqpAo
+         0CqJ6QPz5reaemSb6fSf90Mlck+KXFg50r0Ihpr8Js3HJh6dS1TwXMRGv//5FExFIHIL
+         bq8/UOhwyM//8OSOm0eNsnRwprQn8qFTwlGAf5f2H+ePiiY3okJ0w8anGjHA26y/LWxC
+         SPBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUBXIOXX+ebFQGFZh3veSBaav7BHJ3dkrwRCiib3c/ish6Y7sNlLV6STtdKh9kLwdaTYcxDHS1n1nqP3jQX@vger.kernel.org, AJvYcCV19bkoKQmbb0Mhm52MenhAuvTN9ol/JWu0jhzevaGy+SsCmuaK3Yk0Z+eyYpuW9V4jMzsIz3oz@vger.kernel.org, AJvYcCVzFPT1RG4EPPBfK7G+85wr8QpFUjeHGvbEpZHBdFCAADnlDa12izAXx7Z6gxiVbO1g/8+fecGV1mC4cj/EbcM=@vger.kernel.org, AJvYcCXm5y+t6LYSSbm8dEVq6BDjmZXEYb+DeZonNoE9vUhj0KdWG4LOVSe5EcieG9mWCuik1spDCMGidHri@vger.kernel.org
+X-Gm-Message-State: AOJu0YzR864xyUtIb8U2poxxPcCaNcZPQXuD8Wy/AcOscWd7KnrWh8Ur
+	8IMucr5FNiqiWKdOsmNGXbG3WGlCrJv7xQoWPKfJX0C2x4HnGjdZ
+X-Gm-Gg: ASbGncvLCjGgS6rlVJM6TC5UqeQjujL81yKDeR4DYUbupxKPAPS7UHRLtsi22YGOBup
+	iVs67fiw2Er7OpfNSjLDBGBVbzL7akIPIVWYXcYWLUQLEQ2sOUj6urnfetDTY86SWvId+bt+gpT
+	UNmPLRi1+21mFvMi2z7lVVm0iYURY3qIJTO7K6rTBZmXqPuMkBThjod+2nTIWGpEcgjB8DWlmjS
+	Utm9U9wIRGJQrx3FooMVvDI8DEoA8MZBu0sjxwAhglxhGtWmzmdOIABD+4=
+X-Google-Smtp-Source: AGHT+IE1FZ5JkMJKChb9COrcHR93yKEZdHzkg3M98KstBiKvfHSE5uSF5BeN4exQl35vdPQhMGDNYw==
+X-Received: by 2002:a5d:588b:0:b0:385:f114:15d6 with SMTP id ffacd0b85a97d-38607ac1ad6mr7179392f8f.13.1733413376413;
+        Thu, 05 Dec 2024 07:42:56 -0800 (PST)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434da11387dsm27020185e9.30.2024.12.05.07.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Dec 2024 07:42:56 -0800 (PST)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Dennis Zhou <dennis@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	Christoph Lameter <cl@linux.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Brian Gerst <brgerst@gmail.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v2 0/6] Enable strict percpu address space checks
+Date: Thu,  5 Dec 2024 16:40:50 +0100
+Message-ID: <20241205154247.43444-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241129202736.2713679-21-kent.overstreet@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 29, 2024 at 03:27:19PM -0500, Kent Overstreet wrote:
-> When invoked from aio, mm_struct is guaranteed to outlive the request
-> since its lifetime is tied to the io_context - but that's not the case
-> for io_uring, it's possible that a process could be killed and mm_struct
-> goes away while a request is in flight.
-> 
-> So if we're submitting the rest of the io asynchronously, we may need a
-> ref on mm_struct.
-> 
-> Per Jens, this is not actually a bug because we're not yet flipping on
-> FMODE_NOWAIT, meaning io_uring will do the submission from an io_worker
-> kthread - but this patch is necessary for safely flipping on
-> FMODE_NOWAIT for more efficient submissions in the future.
-> 
-> Reported-by: Jann Horn <jannh@google.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+This patchset enables strict percpu address space checks via x86 named 
+address space qualifiers. Percpu variables are declared in
+__seg_gs/__seg_fs named AS and kept named AS qualified until they
+are dereferenced via percpu accessor. This approach enables various
+compiler checks for cross-namespace variable assignments.
 
-turns out this introduces a rare deadlock in exit_aio() 
+Please note that current version of sparse doesn't know anything about
+__typeof_unqual__() operator. Avoid the usage of __typeof_unqual__()
+when sparse checking is active to prevent sparse errors with unknowing
+keyword.
 
-> ---
->  fs/bcachefs/fs-io-direct.c | 42 ++++++++++++++++++++++++++++++++------
->  1 file changed, 36 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
-> index 2089c36b5866..b0367b9d9e07 100644
-> --- a/fs/bcachefs/fs-io-direct.c
-> +++ b/fs/bcachefs/fs-io-direct.c
-> @@ -226,6 +226,7 @@ struct dio_write {
->  	struct mm_struct		*mm;
->  	const struct iovec		*iov;
->  	unsigned			loop:1,
-> +					have_mm_ref:1,
->  					extending:1,
->  					sync:1,
->  					flush:1;
-> @@ -390,6 +391,9 @@ static __always_inline long bch2_dio_write_done(struct dio_write *dio)
->  
->  	kfree(dio->iov);
->  
-> +	if (dio->have_mm_ref)
-> +		mmdrop(dio->mm);
-> +
->  	ret = dio->op.error ?: ((long) dio->written << 9);
->  	bio_put(&dio->op.wbio.bio);
->  
-> @@ -529,9 +533,24 @@ static __always_inline long bch2_dio_write_loop(struct dio_write *dio)
->  
->  		if (unlikely(dio->iter.count) &&
->  		    !dio->sync &&
-> -		    !dio->loop &&
-> -		    bch2_dio_write_copy_iov(dio))
-> -			dio->sync = sync = true;
-> +		    !dio->loop) {
-> +			/*
-> +			 * Rest of write will be submitted asynchronously -
-> +			 * unless copying the iov fails:
-> +			 */
-> +			if (likely(!bch2_dio_write_copy_iov(dio))) {
-> +				/*
-> +				 * aio guarantees that mm_struct outlives the
-> +				 * request, but io_uring does not
-> +				 */
-> +				if (dio->mm) {
-> +					mmgrab(dio->mm);
-> +					dio->have_mm_ref = true;
-> +				}
-> +			} else {
-> +				dio->sync = sync = true;
-> +			}
-> +		}
->  
->  		dio->loop = true;
->  		closure_call(&dio->op.cl, bch2_write, NULL, NULL);
-> @@ -559,15 +578,25 @@ static __always_inline long bch2_dio_write_loop(struct dio_write *dio)
->  
->  static noinline __cold void bch2_dio_write_continue(struct dio_write *dio)
->  {
-> -	struct mm_struct *mm = dio->mm;
-> +	struct mm_struct *mm = dio->have_mm_ref ? dio->mm: NULL;
->  
->  	bio_reset(&dio->op.wbio.bio, NULL, REQ_OP_WRITE);
->  
-> -	if (mm)
-> +	if (mm) {
-> +		if (unlikely(!mmget_not_zero(mm))) {
-> +			/* process exited */
-> +			dio->op.error = -ESRCH;
-> +			bch2_dio_write_done(dio);
-> +			return;
-> +		}
-> +
->  		kthread_use_mm(mm);
-> +	}
->  	bch2_dio_write_loop(dio);
-> -	if (mm)
-> +	if (mm) {
->  		kthread_unuse_mm(mm);
-> +		mmput(mm);
-> +	}
->  }
->  
->  static void bch2_dio_write_loop_async(struct bch_write_op *op)
-> @@ -641,6 +670,7 @@ ssize_t bch2_direct_write(struct kiocb *req, struct iov_iter *iter)
->  	dio->mm			= current->mm;
->  	dio->iov		= NULL;
->  	dio->loop		= false;
-> +	dio->have_mm_ref	= false;
->  	dio->extending		= extending;
->  	dio->sync		= is_sync_kiocb(req) || extending;
->  	dio->flush		= iocb_is_dsync(req) && !c->opts.journal_flush_disabled;
-> -- 
-> 2.45.2
-> 
+v2: - Add comment to remove test for __CHECKER__ once sparse learns
+      about __typeof_unqual__.
+    - Add Acked-by: tags.
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+
+Uros Bizjak (6):
+  x86/kgdb: Use IS_ERR_PCPU() macro
+  compiler.h: Introduce TYPEOF_UNQUAL() macro
+  percpu: Use TYPEOF_UNQUAL() in variable declarations
+  percpu: Use TYPEOF_UNQUAL() in *_cpu_ptr() accessors
+  percpu: Repurpose __percpu tag as a named address space qualifier
+  percpu/x86: Enable strict percpu checks via named AS qualifiers
+
+ arch/x86/include/asm/percpu.h  | 38 ++++++++++++++++++++++---------
+ arch/x86/kernel/kgdb.c         |  2 +-
+ fs/bcachefs/util.h             |  2 +-
+ include/asm-generic/percpu.h   | 41 +++++++++++++++++++++++-----------
+ include/linux/compiler.h       | 13 +++++++++++
+ include/linux/compiler_types.h |  2 +-
+ include/linux/part_stat.h      |  2 +-
+ include/linux/percpu-defs.h    |  6 ++---
+ include/net/snmp.h             |  5 ++---
+ init/Kconfig                   |  3 +++
+ kernel/locking/percpu-rwsem.c  |  2 +-
+ net/mpls/internal.h            |  4 ++--
+ 12 files changed, 84 insertions(+), 36 deletions(-)
+
+-- 
+2.42.0
+
