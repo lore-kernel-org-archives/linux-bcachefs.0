@@ -1,183 +1,147 @@
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1469F1482E7
-	for <linux-bcachefs@vger.kernel.org>; Sun,  8 Dec 2024 14:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C54837160;
+	Sun,  8 Dec 2024 20:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733669966; cv=none; b=quf51ti2wOWyT6TOS44awYYSTorY3+5KX2MOqgtz5f7n4rk4WpmCWQuZB2E15OrQNil0gLCx1INtgFVKgkJRTumtX/9GpgK8KVlx5czudaLDBDBnW/dX8I3PiBQLEWBAMuMituyRg9Cl+kmncqp6dInRh4bAM2HU0XZ5u/6zwy8=
+	t=1733690846; cv=none; b=AsxZVqz//0cD2Y/MHBLBzzUSWGLTy/SzuZA4+Pe0zLEbLVuZXDMRN9PztSpgeMjYg6m0+EjVW+vw0A3B7bBR4fRGeKkZ+xN6BWqQmH9QJRxoe9AYaY643VwyQUAoxECM5xLWletYn2i7EiVwYkXLuEeLI+UWFJvtFOBe6wlZ4KM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733669966; c=relaxed/simple;
-	bh=3eEtEjidtXgDTzg0B5z3UjOOpWcT5V8O8V9112HM0DE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=la04kfA/oV+Guz3MeApsUmCoRC/ydIt6vYHLmLcSFPk4ydSuFlUso/vyuddSuII9CKsmdbc6C0tAYrvBX7cFDOMvKcTvcJmofN+GCQYS7JJqwQFKDJe0rgWGoZ3yWN1IeVvfSess23uU0BgkTbsWgf6AP35OKppZDQWpsoAY1lM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3a817e4aa67so18244265ab.2
-        for <linux-bcachefs@vger.kernel.org>; Sun, 08 Dec 2024 06:59:24 -0800 (PST)
+	s=arc-20240116; t=1733690846; c=relaxed/simple;
+	bh=wvTHlBoz9C30davazZ3R7eA+Vj3AKi08qx/aTOFW1pQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FWZLfOWX/PnPezyEQThuRXUE4/yVEcMjc9S0F798rXZ2c7X8aieESoNDxR+odFlXxx4s8NK0bciigEwoMCpre45qB2qa0plMmcIb0UF9xm05dwVcvM3omEMdSM59rej/BCpcjfJC2iQjF4yxy1nHdYuXfINyzHqYqps4ET6Ex5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G16evrTg; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G16evrTg"
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-434a2f3bae4so40524545e9.3;
+        Sun, 08 Dec 2024 12:47:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733690842; x=1734295642; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uydVfRix40VtM5XGFg4FP+2BbqHhhGYzjwg/+qRitoA=;
+        b=G16evrTgMZYHQgJq2t4ucbMLgPw7IjpTn/Owk6E/fsU/aDeOWQcvu4M8VEBWUYs2Yr
+         4GbhKU2gzFgHjEdsyPatPUQ4RoCujcO+oZ4fRpWBh7zMI9OXF9WJIS3yrwmDZOtVKRJU
+         NpjLu5kr0spJYAw37zYytOd9wK/qrNgNV8pHxyhL5ehdAyV5dyax7kGeicloFaxGo2kN
+         jH5ZSBzx1ImJKSsZMkSIZK9w7jplJ7avVGkoJrt/mBlThv0Ey4qHq/tflWw6WgPIcn2B
+         CvGyPhi2aiG9+ZDYr/PyLNWbM8e8huuTr9acfwaKsCPIzjdKJEcLO+h//tu/bo7l5SIC
+         VgLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733669964; x=1734274764;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D+dH42NuaY+7+1vYTGlakEtjQichGEMtShMQvwnmre8=;
-        b=tKtf38XwO+TERLD1tF/z0wuJoTzwgUm3oCM15F/x5MWE1FJ0McIdnGL6/fF9jU0x8S
-         f263hZ3l+7rPENN89sHg8m41oewg8IonzPQnZjBqq/fWX4uxatiE8O4AyUGmRmviZsFX
-         4kBdm38HPz4VnBT766XcL1PxMPqe9XN7g9RMYjXMAT0q1hQOfJje4YpSvgN+qd4Gl9b1
-         xSXkIa37ylzLxtj/30RY0Bb14WEbow3pMSHdXlw1HsovRtlfLFRzm2cR++Tv8S4HGiOp
-         gXPGOhTD17lHAWOhjkWtmIBCxhinUJdVYvjHfEv7ogcYta6TWTzfC72F+K/HAzIqGntH
-         80Lg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQxCLqRisvhBlkCm0q+s8cnoltPoRURJVnJxTJsO9hQnJv8UJ9dn5rMxCgD7RgRjgxAQPCkCi0kOktQHlLkw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywh1e/3NPVLaJ7uv6miMBNkdHFUEywuRVuv/ZZpzYv6AyMORy87
-	z8SJEm71MrulVBDwQd6pij/OHCdYRNglZd9uC3Ch3P+pAeFParTfmlAm4yoAZCsy9JwXeld/Q7l
-	R2skAiBQ4v8fRpcToBugF7Sm1cBmksnYl/xh6iBIIuGanLZDaxy+qBP0=
-X-Google-Smtp-Source: AGHT+IEKH+adj4zmgBG5crQuoOfI/LMIdrwhC63fRiECEEgCikDhNZGyN91QBH+hHlEAMRLEYPsb5z1d1f0xN2y/A1DpqHyrcPlv
+        d=1e100.net; s=20230601; t=1733690842; x=1734295642;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uydVfRix40VtM5XGFg4FP+2BbqHhhGYzjwg/+qRitoA=;
+        b=RbDLK20QizKayeodtxJpIeSWS560s8/0vOtwb8YJZ1JmiXExQeASRXRXz6P5aS2EET
+         VAeuSGUCtt9fE/zSx7V4866zUEmjxdyI/YH1vki2++dmydnEtE1FMe70vaUspzHTuve8
+         ZC27uMnUAgYL2S6atVDkRHar/NFrVO3iaKIofc+GUznh4OpRMSBI0BaJhotOg9sX8Rle
+         tzHvUkQbp4uiAlVIZJOScJAc0hvd+XaM/WXGwj5eNdsEjIKmRIqsGZrq5DFbO2jmf0Dm
+         rjSuReUqhkzhmPRjeP2bXNeIypQgcEwHmHYrXw5NpYikEuKrugjfsb5JVzyM16fkCjU9
+         YTNg==
+X-Forwarded-Encrypted: i=1; AJvYcCUWAHQXjrTuwMyxBLx6n4KqByMfJowH4d0krB3/gWJi86WRQzfRJZoOAwhcPpxB1CJmc4F8wlL1Z+P1VbF4@vger.kernel.org, AJvYcCVTBnyRN11hzX1ustFB75e8M5bqK9zebYL/j2UIJDtcfVQbBjsEP5Kf2cpUq3i3wocJ1JsPrNtL@vger.kernel.org, AJvYcCWg2Aqxod2JvF9jV7tgHDg2llutBXGBLa06Ny+GLKcAEV7NSD+efsfrdBgqlZtyubTgf6kzG+XyNgyu@vger.kernel.org, AJvYcCXeDA6gDiLdN+Sfk67wwlz84kpv2zHJRZCZNBUr2gRiTtdVCO1oGQ96o6qBbnF0FUoSs+IxLk0Hw4coWZ/nfiU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywc3iO2Jvr97RtqwH4SNXgTz7w33uaxxE+3MEDKwI4ZbEG1v9ps
+	OwBbLqUk6O3MOOJLhedji66OfR59GgggdV7MUAPq+eAe7LDFF2dv
+X-Gm-Gg: ASbGnctv37QQk0Fukx0T42wZbmdDO5v5C+c25NioBUej+g9SJPjUSnemphmz6GFN3Iz
+	qDEaDIbZ3GXm0xhbrTyNMoiI4yU5jxWS5SXMFiUVWNTvTRq65garKQWKDCWkoS7MtnujyC4BxNv
+	RYki37d0xlgVE0OYIs9DOoXm8k4MwyjSRXYY72JbwVXGY91XHxR39Q4Quq3vyV2tIn9lTqLUZnE
+	rj2ijv2D9D4q+kEWgxUyulFoJsktw0WjcjJ0PUVrOK6/6D0uK+kdrZtccw=
+X-Google-Smtp-Source: AGHT+IHFzU3im506LwOrHouMZuWAgeUYsws5o5LtVKTrGik4PmUi+r8oEAGSFnNWQi82Ax6AF2zxOw==
+X-Received: by 2002:a05:600c:1909:b0:434:f586:753c with SMTP id 5b1f17b1804b1-434f5867ecemr15873445e9.7.1733690842202;
+        Sun, 08 Dec 2024 12:47:22 -0800 (PST)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3861f59cc6fsm10874975f8f.34.2024.12.08.12.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Dec 2024 12:47:21 -0800 (PST)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Dennis Zhou <dennis@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	Christoph Lameter <cl@linux.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Brian Gerst <brgerst@gmail.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v3 0/6] Enable strict percpu address space checks
+Date: Sun,  8 Dec 2024 21:45:15 +0100
+Message-ID: <20241208204708.3742696-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:168a:b0:3a7:8d8e:e760 with SMTP id
- e9e14a558f8ab-3a811dab4dfmr93560865ab.4.1733669964149; Sun, 08 Dec 2024
- 06:59:24 -0800 (PST)
-Date: Sun, 08 Dec 2024 06:59:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6755b44c.050a0220.2477f.002a.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_bucket_alloc_trans
-From: syzbot <syzbot+c761143a86b1640bc485@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Enable strict percpu address space checks via x86 named address space
+qualifiers. Percpu variables are declared in __seg_gs/__seg_fs named
+AS and kept named AS qualified until they are dereferenced via percpu
+accessor. This approach enables various compiler checks for
+cross-namespace variable assignments.
 
-syzbot found the following issue on:
+Please note that current version of sparse doesn't know anything about
+__typeof_unqual__() operator. Avoid the usage of __typeof_unqual__()
+when sparse checking is active to prevent sparse errors with unknowing
+keyword. The proposed patch by Dan Carpenter to implement
+__typeof_unqual__() handling in sparse is located at:
 
-HEAD commit:    ceb8bf2ceaa7 module: Convert default symbol namespace to s..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f560f8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=96ee18b6611821ab
-dashboard link: https://syzkaller.appspot.com/bug?extid=c761143a86b1640bc485
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+https://lore.kernel.org/lkml/5b8d0dee-8fb6-45af-ba6c-7f74aff9a4b8@stanley.mountain/
 
-Unfortunately, I don't have any reproducer for this issue yet.
+v2: - Add comment to remove test for __CHECKER__ once sparse learns
+      about __typeof_unqual__.
+    - Add Acked-by: tags.
+v3: - Rename __per_cpu_qual to __percpu_qual.
+    - Add more Acked-by: tags.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2cdefe23324a/disk-ceb8bf2c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/db82aad0847e/vmlinux-ceb8bf2c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/616c479edfca/bzImage-ceb8bf2c.xz
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c761143a86b1640bc485@syzkaller.appspotmail.com
+Uros Bizjak (6):
+  x86/kgdb: Use IS_ERR_PCPU() macro
+  compiler.h: Introduce TYPEOF_UNQUAL() macro
+  percpu: Use TYPEOF_UNQUAL() in variable declarations
+  percpu: Use TYPEOF_UNQUAL() in *_cpu_ptr() accessors
+  percpu: Repurpose __percpu tag as a named address space qualifier
+  percpu/x86: Enable strict percpu checks via named AS qualifiers
 
-=====================================================
-BUG: KMSAN: uninit-value in bch2_alloc_to_v4 fs/bcachefs/alloc_background.h:235 [inline]
-BUG: KMSAN: uninit-value in try_alloc_bucket fs/bcachefs/alloc_foreground.c:314 [inline]
-BUG: KMSAN: uninit-value in bch2_bucket_alloc_freelist fs/bcachefs/alloc_foreground.c:525 [inline]
-BUG: KMSAN: uninit-value in bch2_bucket_alloc_trans+0x2533/0x3fb0 fs/bcachefs/alloc_foreground.c:648
- bch2_alloc_to_v4 fs/bcachefs/alloc_background.h:235 [inline]
- try_alloc_bucket fs/bcachefs/alloc_foreground.c:314 [inline]
- bch2_bucket_alloc_freelist fs/bcachefs/alloc_foreground.c:525 [inline]
- bch2_bucket_alloc_trans+0x2533/0x3fb0 fs/bcachefs/alloc_foreground.c:648
- bch2_bucket_alloc_set_trans+0x959/0x1650 fs/bcachefs/alloc_foreground.c:808
- __open_bucket_add_buckets+0x1dec/0x3070 fs/bcachefs/alloc_foreground.c:1057
- open_bucket_add_buckets+0x328/0x530 fs/bcachefs/alloc_foreground.c:1101
- bch2_alloc_sectors_start_trans+0x1833/0x32b0
- __bch2_btree_node_alloc fs/bcachefs/btree_update_interior.c:339 [inline]
- bch2_btree_reserve_get+0x9d6/0x2290 fs/bcachefs/btree_update_interior.c:549
- bch2_btree_update_start+0x1af9/0x2d60 fs/bcachefs/btree_update_interior.c:1247
- bch2_btree_node_rewrite+0x1da/0x1930 fs/bcachefs/btree_update_interior.c:2148
- async_btree_node_rewrite_trans fs/bcachefs/btree_update_interior.c:2236 [inline]
- async_btree_node_rewrite_work+0x485/0x1710 fs/bcachefs/btree_update_interior.c:2249
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3310
- worker_thread+0xea7/0x14f0 kernel/workqueue.c:3391
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ arch/x86/include/asm/percpu.h  | 38 ++++++++++++++++++++++++---------
+ arch/x86/kernel/kgdb.c         |  2 +-
+ fs/bcachefs/util.h             |  2 +-
+ include/asm-generic/percpu.h   | 39 ++++++++++++++++++++++------------
+ include/linux/compiler.h       | 13 ++++++++++++
+ include/linux/compiler_types.h |  2 +-
+ include/linux/part_stat.h      |  2 +-
+ include/linux/percpu-defs.h    |  6 +++---
+ include/net/snmp.h             |  5 ++---
+ init/Kconfig                   |  3 +++
+ kernel/locking/percpu-rwsem.c  |  2 +-
+ net/mpls/internal.h            |  4 ++--
+ 12 files changed, 82 insertions(+), 36 deletions(-)
 
-Uninit was stored to memory at:
- memcpy_u64s_small fs/bcachefs/util.h:393 [inline]
- bkey_reassemble fs/bcachefs/bkey.h:513 [inline]
- btree_key_cache_create fs/bcachefs/btree_key_cache.c:259 [inline]
- btree_key_cache_fill+0x13da/0x3d60 fs/bcachefs/btree_key_cache.c:309
- bch2_btree_path_traverse_cached+0x988/0xe20 fs/bcachefs/btree_key_cache.c:361
- bch2_btree_path_traverse_one+0x749/0x47b0 fs/bcachefs/btree_iter.c:1159
- bch2_btree_path_traverse fs/bcachefs/btree_iter.h:247 [inline]
- bch2_btree_iter_peek_slot+0x10b7/0x3950 fs/bcachefs/btree_iter.c:2629
- __bch2_bkey_get_iter fs/bcachefs/btree_iter.h:575 [inline]
- bch2_bkey_get_iter fs/bcachefs/btree_iter.h:589 [inline]
- try_alloc_bucket fs/bcachefs/alloc_foreground.c:305 [inline]
- bch2_bucket_alloc_freelist fs/bcachefs/alloc_foreground.c:525 [inline]
- bch2_bucket_alloc_trans+0x1bd5/0x3fb0 fs/bcachefs/alloc_foreground.c:648
- bch2_bucket_alloc_set_trans+0x959/0x1650 fs/bcachefs/alloc_foreground.c:808
- __open_bucket_add_buckets+0x1dec/0x3070 fs/bcachefs/alloc_foreground.c:1057
- open_bucket_add_buckets+0x328/0x530 fs/bcachefs/alloc_foreground.c:1101
- bch2_alloc_sectors_start_trans+0x1833/0x32b0
- __bch2_btree_node_alloc fs/bcachefs/btree_update_interior.c:339 [inline]
- bch2_btree_reserve_get+0x9d6/0x2290 fs/bcachefs/btree_update_interior.c:549
- bch2_btree_update_start+0x1af9/0x2d60 fs/bcachefs/btree_update_interior.c:1247
- bch2_btree_node_rewrite+0x1da/0x1930 fs/bcachefs/btree_update_interior.c:2148
- async_btree_node_rewrite_trans fs/bcachefs/btree_update_interior.c:2236 [inline]
- async_btree_node_rewrite_work+0x485/0x1710 fs/bcachefs/btree_update_interior.c:2249
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3310
- worker_thread+0xea7/0x14f0 kernel/workqueue.c:3391
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+-- 
+2.42.0
 
-Uninit was created at:
- ___kmalloc_large_node+0x22c/0x370 mm/slub.c:4238
- __kmalloc_large_node_noprof+0x3f/0x1e0 mm/slub.c:4255
- __do_kmalloc_node mm/slub.c:4271 [inline]
- __kmalloc_node_noprof+0xc96/0x1250 mm/slub.c:4289
- __kvmalloc_node_noprof+0xc0/0x2d0 mm/util.c:650
- btree_node_data_alloc fs/bcachefs/btree_cache.c:153 [inline]
- __bch2_btree_node_mem_alloc+0x2be/0xa80 fs/bcachefs/btree_cache.c:198
- bch2_fs_btree_cache_init+0x4e4/0xb50 fs/bcachefs/btree_cache.c:653
- bch2_fs_alloc fs/bcachefs/super.c:917 [inline]
- bch2_fs_open+0x4d3a/0x5b40 fs/bcachefs/super.c:2065
- bch2_fs_get_tree+0x983/0x22d0 fs/bcachefs/fs.c:2157
- vfs_get_tree+0xb1/0x5a0 fs/super.c:1814
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3507
- path_mount+0x742/0x1f10 fs/namespace.c:3834
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4057 [inline]
- __se_sys_mount+0x722/0x810 fs/namespace.c:4034
- __ia32_sys_mount+0xe3/0x150 fs/namespace.c:4034
- ia32_sys_call+0x260e/0x4180 arch/x86/include/generated/asm/syscalls_32.h:22
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0xb0/0x110 arch/x86/entry/common.c:386
- do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:411
- do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:449
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-
-CPU: 1 UID: 0 PID: 4195 Comm: kworker/u8:25 Not tainted 6.13.0-rc1-syzkaller-00005-gceb8bf2ceaa7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Workqueue: btree_node_rewrite async_btree_node_rewrite_work
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
