@@ -1,186 +1,98 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298C1216E3F;
-	Mon,  9 Dec 2024 11:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64BD1ACEA5;
+	Mon,  9 Dec 2024 12:54:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733744244; cv=none; b=EeLV5cBIyfxmSRFdue2F3+AJQyMd5vG3mlEjIhHMsfngP5TOyX1zOKZ9mneT2oId4XfGtJk4EPYo+y9ng2JZeyR6obhEupWOPPuCfttDDi/342ouqC+zSnT03Nl2+bTgfNcGc+9YelNnN+ajSWrgOOi82UswtqtHs7rfrGJkjP8=
+	t=1733748889; cv=none; b=JIRB20jK/vnasXrHUL3uwxc9I+MEMqaAyte1D23HvYpFxIV4FyatiyvLV4GXV5PjIabX1zPuYeDRN95+hHb5ynFYiYK8snWCivpv/p7xsaJjsvBo06LbnLdHzCUh9mhi/W8qgJoGU/oOnoWW0sx7VnpzgvfI5qdRblO3y9Dabtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733744244; c=relaxed/simple;
-	bh=KrHWSykGjJr/BJfQge3OT8J9egtNuBFPynnPSWHx7/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Eg9wdCX4pTKOdaWXcXoCzwcTV9COCwWZOnJ6ilhU8SpGHPiKLnX2WYOp+RRGaL9POj2k17VD7X/VUA4kamfU8UeEAj1i8RJu2IR0WWCsSFJOUuh0BAptTg9Izr1KdnWLVEY4BEv7jTcFzusGHif3vX9vJ7D2xUBbj3c3mP0v+os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 553171007;
-	Mon,  9 Dec 2024 03:37:48 -0800 (PST)
-Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4941A3F5A1;
-	Mon,  9 Dec 2024 03:37:19 -0800 (PST)
-Date: Mon, 9 Dec 2024 11:37:12 +0000
-From: Mark Rutland <mark.rutland@arm.com>
+	s=arc-20240116; t=1733748889; c=relaxed/simple;
+	bh=4GfmLQRORREWsphDbK7jfP5V8JjOElJ8PJxq0x+tTIE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fn+/QdJmos1RU0UWX6av2zVTxdvySvt3i1GZbvg0bcQ40cTISFYIZ2JnrXF4ZtVeV5Mm68Gdxeth2po3aWrR9mgjmVnIUxidr2CSJuIV8ZzEJBwKzm7qzpxOfxe0DKn3+IP+p5c2XhB1r2lTssVNqPmt78D6HlU1i6DDAgaGr0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kiKXbHG6; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kiKXbHG6"
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5d3ecae02beso1796169a12.0;
+        Mon, 09 Dec 2024 04:54:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733748886; x=1734353686; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U5GM2+34DCCYHBW+8OHVhcRHziu0swk9g0Fwnp0z8gc=;
+        b=kiKXbHG6RvLDz5h7vO3ikBgUM93ebhokVV0JJPpwaGJjrgZ41ckBB55oyNkVO1k+Fg
+         I/Ywc48pCgjb5K2N9cVmiWgtvNGIJdY3HY/ZMfctbStPiQ+H1UJfMmSnHpUhnueK5r4W
+         o7fqE8/7fDkfNzzbabTCWwtjsmGbGq+yEDmx9/h4XEeUjCHrLUSMzSPM5WefeCvBL0ar
+         Bo4GGR8ZbIppFziibAOApKCEvxB42cBo+qa8UemaYTZ0tqOoN5pUUNfz5Rvt9T83JLsb
+         SBsVUDJCik2lZwT77xS8oVjD5KgrJtBwVWtpuiyYhb9OFiZhGzXirLfh9hYJ6wafDa9H
+         gtIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733748886; x=1734353686;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U5GM2+34DCCYHBW+8OHVhcRHziu0swk9g0Fwnp0z8gc=;
+        b=vWcd29ycZx9JyU4DH8oTlqBMn1yPSE6ng1R2+HCNVY0tW1np2fLY2vblJTsuA6GII3
+         mWLesM7Llq5LVI2MdBr31zkUylk4LWqY49povDs1hmDun1sTh/7MWSLeoQ0PIU9maRXi
+         yP5bkSC5G0u71I+fIKEHrMR6jlrIdZPDWA8D3p+hQuyE5iXKLKsdkAHsRwKVyWnCZa9h
+         aveWnDAvlnk7kO1tPijVy7BOYLgWD3MJdz4nISlBgakB3m0Fln1+PFYiDMXlf8jzY/hy
+         9adSPl1tWknOap35inI5ZChPyL3U9KyAAW59D2411E7YkbFjxVyU7qm8zne3Y+jcoQb/
+         LDXA==
+X-Forwarded-Encrypted: i=1; AJvYcCVgGJJvFaKHexSoXdgdlkf9GABgBkeOfaDkLDaraSOAqN7K73abHFnSn+78jG9oHkQKkefbPs3ndrHCaMwbVjE=@vger.kernel.org, AJvYcCXAwPTvuNINL5ECByBWqcAfCmDywaescoMf0v2ceAzsK9xu8+nB1+OzneagVENatZQuK5lzRuxsDNRiB4wR@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyaSrcUiiUQ765kXfDMw7IB50+SXSTMNd+wCbBaNzwFfIZ3i2H
+	0JAtlW5A826RPJA7x9tlLBBc0XciBboXkaRKFR/5ugeZKANSlX0DqK7KRzW4
+X-Gm-Gg: ASbGncsGXClnSEgBShfssG8UCo2Trb7J5LMuCKS0/ag4cIt9d4Z3wviEuVpXj5E1kPi
+	GaaTnt/iFQxAOZJJoXKJaVDzk8hWxYu7RVbfhNVDt5newc5dzLMOnV+vGtImw4yRRRudROix857
+	frpM4XVFe6kAb2P8yhlqxXk6RH1HDkeMMSBF54wICujtWmG80BDnXE7D4a1BZ32LrMfltd7waAg
+	eb4ZFYAZnMmQf+B0vwcgvZuCNOKsEJ8wbjcU8K7wswP
+X-Google-Smtp-Source: AGHT+IELlhBR7Z1TDXEb6J4IdJfU4PcZH3VcLVrzIjvnvx6oJ2/36KLlR7mHoz8KCkwiaHcdR+LpLw==
+X-Received: by 2002:a05:6402:4007:b0:5d2:729f:995f with SMTP id 4fb4d7f45d1cf-5d3be816a47mr10413658a12.29.1733748885830;
+        Mon, 09 Dec 2024 04:54:45 -0800 (PST)
+Received: from void.void ([141.226.13.92])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d3d76f3892sm3899186a12.28.2024.12.09.04.54.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Dec 2024 04:54:45 -0800 (PST)
+From: Andrew Kreimer <algonell@gmail.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: arm64: stacktrace: unwind exception boundaries
-Message-ID: <Z1bWaGCvUrwrj2fZ@J2N7QTR9R3>
-References: <36kx57aw46vwykgckr5cm4fafhw54tjuj4cqljrdnpfwvjl7if@a7znuhpfu54o>
- <zbwbgkuvvciezpmigcp6gaahfxwm7cwhpzus7gtbfnbzsjb2n3@kfbdppbd74o4>
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Andrew Kreimer <algonell@gmail.com>
+Subject: [PATCH] bcachefs: Fix typo in bch_err message
+Date: Mon,  9 Dec 2024 14:54:20 +0200
+Message-ID: <20241209125440.10327-1-algonell@gmail.com>
+X-Mailer: git-send-email 2.47.1.404.ge66fd72e97
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <zbwbgkuvvciezpmigcp6gaahfxwm7cwhpzus7gtbfnbzsjb2n3@kfbdppbd74o4>
+Content-Transfer-Encoding: 8bit
 
-Hi Kent,
+There is a typo in bch_err message: Hava -> Have.
+Fix it via codespell.
 
-On Thu, Dec 05, 2024 at 01:04:59PM -0500, Kent Overstreet wrote:
-> On 6.13-rc1, I'm now seeing a ton of test failures due to this warning -
-> what gives?
+Signed-off-by: Andrew Kreimer <algonell@gmail.com>
+---
+ fs/bcachefs/journal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sorry about this; I just sent what I *thought* was a fix for this:
-
-  https://lore.kernel.org/linux-arm-kernel/20241209110351.1876804-1-mark.rutland@arm.com/
-
-... but re-reading the below I see you're actually hitting a different
-issue.
-
-> 00104 ========= TEST   generic/017
-> 00104        run fstests generic/017 at 2024-12-05 11:47:43
-> 00104 spectre-v4 mitigation disabled by command-line option
-> 00106 bcachefs (vdc): starting version 1.13: inode_has_child_snapshots
-> 00106 bcachefs (vdc): initializing new filesystem
-> 00106 bcachefs (vdc): going read-write
-> 00106 bcachefs (vdc): marking superblocks
-> 00106 bcachefs (vdc): initializing freespace
-> 00106 bcachefs (vdc): done initializing freespace
-> 00106 bcachefs (vdc): reading snapshots table
-> 00106 bcachefs (vdc): reading snapshots done
-> 00106 bcachefs (vdc): done starting filesystem
-> 00200 ------------[ cut here ]------------
-> 00200 WARNING: CPU: 8 PID: 12571 at arch/arm64/kernel/stacktrace.c:223 arch_stack_walk+0x2c0/0x388
-
-Looking at v6.13-rc1, that's the warning in
-kunwind_next_frame_record_meta() for when the frame_record_meta::type is
-not a valid value, which likely implies one of the following:
-
-(a) The logic to identify a frame_record_meta is wrong.
-
-(b) The entry logic has failed to initilialize pt_regs::stackframe::meta
-    on an entry path somehow.
-
-(c) The stack has been corrupted, and some frame record has been
-    clobbered to look like a frame_record_meta.
-
-The unwind will terminate at this point even if the warning is
-supressed, so the backtrace from the warning itself should indicate
-where the frame record was:
-
-> 00200 Modules linked in:
-> 00200 CPU: 8 UID: 0 PID: 12571 Comm: cat Not tainted 6.13.0-rc1-ktest-gdf1fce23d033 #10877
-> 00200 Hardware name: linux,dummy-virt (DT)
-> 00200 pstate: 80001005 (Nzcv daif -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-> 00200 pc : arch_stack_walk+0x2c0/0x388
-> 00200 lr : arch_stack_walk+0x1f4/0x388
-> 00200 sp : ffffff80ca757b00
-> 00200 x29: ffffff80ca757b00 x28: ffffff80d6783758 x27: 000000000000036f
-> 00200 x26: ffffff80d6783780 x25: ffffff80c19de180 x24: ffffff80c273ee40
-> 00200 x23: ffffffc080022708 x22: ffffffc080025828 x21: ffffff80ca757be8
-> 00200 x20: ffffffc0800c98c8 x19: ffffff80d8533d10 x18: ffffffffffffffff
-> 00200 x17: 0000000000000000 x16: 0000000000000000 x15: ffffffffffffffff
-> 00200 x14: 0000000000000000 x13: ffffff80d6c92000 x12: 0000000000000000
-> 00200 x11: 0000000000000000 x10: 000000000000000a x9 : ffffffc08086beec
-> 00200 x8 : ffffff80ca757bc0 x7 : 0000000000000000 x6 : ffffff80d8533d28
-> 00200 x5 : ffffff80ca757b60 x4 : ffffff80d8534000 x3 : ffffff80ca757b40
-> 00200 x2 : 0000000000000018 x1 : ffffff80d8533d10 x0 : 0000000000000000
-> 00200 Call trace:
-> 00200  arch_stack_walk+0x2c0/0x388 (P)
-> 00200  arch_stack_walk+0x1f4/0x388 (L)
-> 00200  stack_trace_save_tsk+0x90/0xd8
-> 00200  bch2_save_backtrace+0x68/0x160
-> 00200  bch2_prt_task_backtrace+0x30/0xb8
-> 00200  bch2_btree_transactions_read+0xe0/0x1f0
-> 00200  full_proxy_read+0x60/0xd0
-> 00200  vfs_read+0x80/0x2d8
-> 00200  ksys_read+0x5c/0xf0
-> 00200  __arm64_sys_read+0x20/0x30
-> 00200  invoke_syscall.constprop.0+0x54/0xe8
-> 00200  do_el0_svc+0x44/0xc8
-> 00200  el0_svc+0x18/0x58
-> 00200  el0t_64_sync_handler+0x104/0x130
-> 00200  el0t_64_sync+0x154/0x158
-
-This suggests that the bad frame_record_meta is in the entry code, in
-the pt_regs. There *should* be a frame_record_meta there with type
-FRAME_META_TYPE_FINAL, which suggests the probkem isn't case (a) above,
-and either the entry code is failing to initialise
-pt_regs::stackframe::type somehow, or that is getting corrupted later.
-
-AFAICT, the entry code correctly initializes the frame_record_meta in
-the kernel_entry assembly macro:
-
-        /*
-         * Create a metadata frame record. The unwinder will use this to
-         * identify and unwind exception boundaries.
-         */
-        stp     xzr, xzr, [sp, #S_STACKFRAME]
-        .if \el == 0
-        mov     x0, #FRAME_META_TYPE_FINAL
-        .else
-        mov     x0, #FRAME_META_TYPE_PT_REGS
-        .endif
-        str     x0, [sp, #S_STACKFRAME_TYPE]
-        add     x29, sp, #S_STACKFRAME
-
-... and that's shared by *all* exceptions, so if it were wrong I'd
-expect it to trigger an explosion on the very first backtrace taken
-under an exception (from userspace or kernel).
-
-Given the above, I'd suspect that maybe you're encountering stack
-corruption here.
-
-How are you reproducing this, and how consistently do you see the
-failure? Is it always triggered by the same test?
-
-The below diff will log the bad frame_record_meta::type value; if you're
-able to run with that it might give an indication as to what's going on.
-
-Mark.
-
----->8----
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index caef85462acb6..d1d9436c49101 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -205,13 +205,15 @@ kunwind_next_frame_record_meta(struct kunwind_state *state)
-        unsigned long fp = state->common.fp;
-        struct frame_record_meta *meta;
-        struct stack_info *info;
-+       u64 type;
+diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
+index 2cd20114b74b..471c6a3ffcd2 100644
+--- a/fs/bcachefs/journal.c
++++ b/fs/bcachefs/journal.c
+@@ -167,7 +167,7 @@ journal_error_check_stuck(struct journal *j, int error, unsigned flags)
+ 	j->err_seq = journal_cur_seq(j);
+ 	spin_unlock(&j->lock);
  
-        info = unwind_find_stack(&state->common, fp, sizeof(*meta));
-        if (!info)
-                return -EINVAL;
- 
-        meta = (struct frame_record_meta *)fp;
--       switch (READ_ONCE(meta->type)) {
-+       type = READ_ONCE(meta->type);
-+       switch (type) {
-        case FRAME_META_TYPE_FINAL:
-                if (meta == &task_pt_regs(tsk)->stackframe)
-                        return -ENOENT;
-@@ -220,7 +222,7 @@ kunwind_next_frame_record_meta(struct kunwind_state *state)
-        case FRAME_META_TYPE_PT_REGS:
-                return kunwind_next_regs_pc(state);
-        default:
--               WARN_ON_ONCE(1);
-+               WARN_ONCE(1, "Bad frame_record_meta::type: 0x%016llx\n", type);
-                return -EINVAL;
-        }
- }
- 
+-	bch_err(c, "Journal stuck! Hava a pre-reservation but journal full (error %s)",
++	bch_err(c, "Journal stuck! Have a pre-reservation but journal full (error %s)",
+ 		bch2_journal_errors[error]);
+ 	bch2_journal_debug_to_text(&buf, j);
+ 	bch_err(c, "%s", buf.buf);
+-- 
+2.47.1.404.ge66fd72e97
+
