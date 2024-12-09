@@ -1,98 +1,132 @@
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64BD1ACEA5;
-	Mon,  9 Dec 2024 12:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B8427447;
+	Mon,  9 Dec 2024 13:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733748889; cv=none; b=JIRB20jK/vnasXrHUL3uwxc9I+MEMqaAyte1D23HvYpFxIV4FyatiyvLV4GXV5PjIabX1zPuYeDRN95+hHb5ynFYiYK8snWCivpv/p7xsaJjsvBo06LbnLdHzCUh9mhi/W8qgJoGU/oOnoWW0sx7VnpzgvfI5qdRblO3y9Dabtc=
+	t=1733749285; cv=none; b=GsF9mAGW/o9tleHOeEFCzOoyq4PMmvpTVKMxrCMfIRDXs0uL8qO9FjjQkSQ5t94UHWiCSx85YcLIKpDxjpinn7214Pcinkiw+YtkwRYqy5e3Fg+H2yZ6QzSsQLNO5RHrtZtD4Kyixgia8dH1MMRedPkwsJUjk6dtVoZvZqjwNQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733748889; c=relaxed/simple;
-	bh=4GfmLQRORREWsphDbK7jfP5V8JjOElJ8PJxq0x+tTIE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fn+/QdJmos1RU0UWX6av2zVTxdvySvt3i1GZbvg0bcQ40cTISFYIZ2JnrXF4ZtVeV5Mm68Gdxeth2po3aWrR9mgjmVnIUxidr2CSJuIV8ZzEJBwKzm7qzpxOfxe0DKn3+IP+p5c2XhB1r2lTssVNqPmt78D6HlU1i6DDAgaGr0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kiKXbHG6; arc=none smtp.client-ip=209.85.208.46
+	s=arc-20240116; t=1733749285; c=relaxed/simple;
+	bh=q4xNiD+1h6n/gmqa9KIJktFHTf/n6lA09xO7+iOB9PY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dPEq2lCmSTaUBHMvgiQX+GnsAqnVswr9lpg6PccOkcyfXUQ7aZwRQ3eTdgdhH0YKaYAt+x8e0/bLl//0hDzgegYljfSD0PNUMR/ZFubXxFF4kRhRw+tcLx2QBiCS/OjJIHe0R8PUlgcjGX+8GPiAihm5I1nQlJOcM9gxTIYJZXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NGWQniFT; arc=none smtp.client-ip=209.85.208.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kiKXbHG6"
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5d3ecae02beso1796169a12.0;
-        Mon, 09 Dec 2024 04:54:47 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGWQniFT"
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-30229d5b1caso5114281fa.2;
+        Mon, 09 Dec 2024 05:01:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733748886; x=1734353686; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U5GM2+34DCCYHBW+8OHVhcRHziu0swk9g0Fwnp0z8gc=;
-        b=kiKXbHG6RvLDz5h7vO3ikBgUM93ebhokVV0JJPpwaGJjrgZ41ckBB55oyNkVO1k+Fg
-         I/Ywc48pCgjb5K2N9cVmiWgtvNGIJdY3HY/ZMfctbStPiQ+H1UJfMmSnHpUhnueK5r4W
-         o7fqE8/7fDkfNzzbabTCWwtjsmGbGq+yEDmx9/h4XEeUjCHrLUSMzSPM5WefeCvBL0ar
-         Bo4GGR8ZbIppFziibAOApKCEvxB42cBo+qa8UemaYTZ0tqOoN5pUUNfz5Rvt9T83JLsb
-         SBsVUDJCik2lZwT77xS8oVjD5KgrJtBwVWtpuiyYhb9OFiZhGzXirLfh9hYJ6wafDa9H
-         gtIQ==
+        d=gmail.com; s=20230601; t=1733749282; x=1734354082; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q4xNiD+1h6n/gmqa9KIJktFHTf/n6lA09xO7+iOB9PY=;
+        b=NGWQniFTDneahKVPWaKS09sj+98L/fOLtk4su397Z59FVyc0lTaOtAqUVyJuRBQieB
+         o0i7axOKnTRr8XmSzwP+ylJqJZA2hQOQRyWndig5z2kecuwcVXKnC7XUR0FdIj3EA/MW
+         dqbC6m89bhnm9RZpqsVcRTmIDjdeTvAm1DtsF5jpJwEjziaVCbWNBcU/eckG4We8xHQ3
+         i7R1fPVOW0ZNXuWtTB7W5oZtoQDghnVZRpyPR1v4XRx/ufpP7qUdKejjzloXdy9ZJfiY
+         ScXCXHxhEPME70lhRtHfBYQw5Y8xQkMbDGJ8AMyVhvtk7XxUWPDRW1rMk8FbL42WFiqx
+         qFtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733748886; x=1734353686;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1733749282; x=1734354082;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=U5GM2+34DCCYHBW+8OHVhcRHziu0swk9g0Fwnp0z8gc=;
-        b=vWcd29ycZx9JyU4DH8oTlqBMn1yPSE6ng1R2+HCNVY0tW1np2fLY2vblJTsuA6GII3
-         mWLesM7Llq5LVI2MdBr31zkUylk4LWqY49povDs1hmDun1sTh/7MWSLeoQ0PIU9maRXi
-         yP5bkSC5G0u71I+fIKEHrMR6jlrIdZPDWA8D3p+hQuyE5iXKLKsdkAHsRwKVyWnCZa9h
-         aveWnDAvlnk7kO1tPijVy7BOYLgWD3MJdz4nISlBgakB3m0Fln1+PFYiDMXlf8jzY/hy
-         9adSPl1tWknOap35inI5ZChPyL3U9KyAAW59D2411E7YkbFjxVyU7qm8zne3Y+jcoQb/
-         LDXA==
-X-Forwarded-Encrypted: i=1; AJvYcCVgGJJvFaKHexSoXdgdlkf9GABgBkeOfaDkLDaraSOAqN7K73abHFnSn+78jG9oHkQKkefbPs3ndrHCaMwbVjE=@vger.kernel.org, AJvYcCXAwPTvuNINL5ECByBWqcAfCmDywaescoMf0v2ceAzsK9xu8+nB1+OzneagVENatZQuK5lzRuxsDNRiB4wR@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyaSrcUiiUQ765kXfDMw7IB50+SXSTMNd+wCbBaNzwFfIZ3i2H
-	0JAtlW5A826RPJA7x9tlLBBc0XciBboXkaRKFR/5ugeZKANSlX0DqK7KRzW4
-X-Gm-Gg: ASbGncsGXClnSEgBShfssG8UCo2Trb7J5LMuCKS0/ag4cIt9d4Z3wviEuVpXj5E1kPi
-	GaaTnt/iFQxAOZJJoXKJaVDzk8hWxYu7RVbfhNVDt5newc5dzLMOnV+vGtImw4yRRRudROix857
-	frpM4XVFe6kAb2P8yhlqxXk6RH1HDkeMMSBF54wICujtWmG80BDnXE7D4a1BZ32LrMfltd7waAg
-	eb4ZFYAZnMmQf+B0vwcgvZuCNOKsEJ8wbjcU8K7wswP
-X-Google-Smtp-Source: AGHT+IELlhBR7Z1TDXEb6J4IdJfU4PcZH3VcLVrzIjvnvx6oJ2/36KLlR7mHoz8KCkwiaHcdR+LpLw==
-X-Received: by 2002:a05:6402:4007:b0:5d2:729f:995f with SMTP id 4fb4d7f45d1cf-5d3be816a47mr10413658a12.29.1733748885830;
-        Mon, 09 Dec 2024 04:54:45 -0800 (PST)
-Received: from void.void ([141.226.13.92])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d3d76f3892sm3899186a12.28.2024.12.09.04.54.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2024 04:54:45 -0800 (PST)
-From: Andrew Kreimer <algonell@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Andrew Kreimer <algonell@gmail.com>
-Subject: [PATCH] bcachefs: Fix typo in bch_err message
-Date: Mon,  9 Dec 2024 14:54:20 +0200
-Message-ID: <20241209125440.10327-1-algonell@gmail.com>
-X-Mailer: git-send-email 2.47.1.404.ge66fd72e97
+        bh=q4xNiD+1h6n/gmqa9KIJktFHTf/n6lA09xO7+iOB9PY=;
+        b=L5dQ7fy6Syl5EuKgj2/EghNwd3sJhW6H8XxB1uEtQkTbp9+1/U0cu26e7rSsyK1/sd
+         c88WzVAq6G1iDnSMLdRmN+BI/vmZwqesY6IzjASyoG4k1AEkLA7gpEyUtENCycuvC+8C
+         Jv6Pf+W9b3jVc+7EMe5DMRXJOXmqY5SqnwXsM9Ik0+MJEWpzA20AjGBIB/2DwFVm/nGi
+         e9g+Z8bj8MyrgZKl368wT4KSljPXnnNAhR8Q8HDdliOZvTATUeT5teZrTZC7B4KXm9Ru
+         +vOY0NiO6CO+MdTxzQ9cOi9uUZ3ORngMIr/AV+545c/1uv0eWQwk0qR1MytWxa87Es1t
+         WH1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU/6mYdtJxEqsv5WpVPSGwlVRWIfm6WowchS5ZYJBhC5bawBXfqqhu6b0oZErc2B3atg1PObr+BTEGZIvkK@vger.kernel.org, AJvYcCWBT7u1lC+mapOTw680aYu278xEItglVZSyfqCuImcAXkLwHmg2iB90alXfRroFa+U3KgDdRnD6KjO355D8fZw=@vger.kernel.org, AJvYcCWYYybbzt0sYGSF7X0mfC6ydrUotOnqLbpqj4iCNUZWYHmxY48J0ZP49mGUiwP6KUbX8iW1l30Jjr/s@vger.kernel.org, AJvYcCXvbxF0wp+lHkFYPLkYh6oMhl1MFgOmpiJ/UvGhB0mo6SuCN8+35v2Y5b4cGaPFQ8Zn2s/vceTo@vger.kernel.org
+X-Gm-Message-State: AOJu0YySSirB2UCjNWo0wNsAlI3Cp2+QvwRX2wJuJaQxJLASX47UM4OA
+	9HYbFP23XaaZ1e3sMDrQgZnBwR5O4Ov52h9jpuPSlnyaQPs76TBCKUZSIYOLysTUSWe61gpr18L
+	Cj1H2Dwhbcg1YxQuklaZ+jURpGBaVlb/y0aU=
+X-Gm-Gg: ASbGncvo8voOGJuelyy9zKv/RC5h1NwS/cuHjTILxdMW98iSyb7CPdKEeOb8RJiaXdW
+	6uFY1PGEW11FudUj77l9AVVfEmTmboeE=
+X-Google-Smtp-Source: AGHT+IGe1WstGRWqGSFuoCPDZFOtP3fDmU5Xj4kLOejwoz6WX1eM9hdJD2mx6/c+7+IVgAVWdxA8ME0SNhuOKo7Zq34=
+X-Received: by 2002:a2e:bc05:0:b0:302:2bd8:2687 with SMTP id
+ 38308e7fff4ca-3022bd82cffmr6815311fa.12.1733749281481; Mon, 09 Dec 2024
+ 05:01:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241208204708.3742696-1-ubizjak@gmail.com> <20241208204708.3742696-3-ubizjak@gmail.com>
+ <20241209113039.GN21636@noisy.programming.kicks-ass.net>
+In-Reply-To: <20241209113039.GN21636@noisy.programming.kicks-ass.net>
+From: Uros Bizjak <ubizjak@gmail.com>
+Date: Mon, 9 Dec 2024 14:01:09 +0100
+Message-ID: <CAFULd4YHuiyzuzAwuZxsp_kRca-hnR+NqHU8cfk8JDqATMNSMQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] compiler.h: Introduce TYPEOF_UNQUAL() macro
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-arch@vger.kernel.org, 
+	netdev@vger.kernel.org, Nadav Amit <nadav.amit@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	Christoph Lameter <cl@linux.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>, Brian Gerst <brgerst@gmail.com>, 
+	Denys Vlasenko <dvlasenk@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: multipart/mixed; boundary="0000000000000dce5f0628d5f635"
 
-There is a typo in bch_err message: Hava -> Have.
-Fix it via codespell.
+--0000000000000dce5f0628d5f635
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Andrew Kreimer <algonell@gmail.com>
----
- fs/bcachefs/journal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Dec 9, 2024 at 12:30=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Sun, Dec 08, 2024 at 09:45:17PM +0100, Uros Bizjak wrote:
+> > Define TYPEOF_UNQUAL() to use __typeof_unqual__() as typeof operator
+> > when available, to return unqualified type of the expression.
+> >
+> > Current version of sparse doesn't know anything about __typeof_unqual__=
+()
+> > operator. Avoid the usage of __typeof_unqual__() when sparse checking
+> > is active to prevent sparse errors with unknowing keyword.
+>
+> Ooooh, new toys.
+>
+> I suppose __unqual_scalar_typeof() wants to be using this when
+> available?
 
-diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
-index 2cd20114b74b..471c6a3ffcd2 100644
---- a/fs/bcachefs/journal.c
-+++ b/fs/bcachefs/journal.c
-@@ -167,7 +167,7 @@ journal_error_check_stuck(struct journal *j, int error, unsigned flags)
- 	j->err_seq = journal_cur_seq(j);
- 	spin_unlock(&j->lock);
- 
--	bch_err(c, "Journal stuck! Hava a pre-reservation but journal full (error %s)",
-+	bch_err(c, "Journal stuck! Have a pre-reservation but journal full (error %s)",
- 		bch2_journal_errors[error]);
- 	bch2_journal_debug_to_text(&buf, j);
- 	bch_err(c, "%s", buf.buf);
--- 
-2.47.1.404.ge66fd72e97
+Yes, the attached patch compiles and boots OK.
 
+Uros.
+
+--0000000000000dce5f0628d5f635
+Content-Type: text/plain; charset="US-ASCII"; name="unqual_scalar_typeof.diff.txt"
+Content-Disposition: attachment; filename="unqual_scalar_typeof.diff.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_m4h1jn2x0>
+X-Attachment-Id: f_m4h1jn2x0
+
+ZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvY29tcGlsZXJfdHlwZXMuaCBiL2luY2x1ZGUvbGlu
+dXgvY29tcGlsZXJfdHlwZXMuaAppbmRleCA1ZDY1NDQ1NDU2NTguLjg3YTljZTNlYmQxMyAxMDA2
+NDQKLS0tIGEvaW5jbHVkZS9saW51eC9jb21waWxlcl90eXBlcy5oCisrKyBiL2luY2x1ZGUvbGlu
+dXgvY29tcGlsZXJfdHlwZXMuaApAQCAtNDg2LDE1ICs0ODYsMTkgQEAgc3RydWN0IGZ0cmFjZV9s
+aWtlbHlfZGF0YSB7CiAgKiBfX3VucXVhbF9zY2FsYXJfdHlwZW9mKHgpIC0gRGVjbGFyZSBhbiB1
+bnF1YWxpZmllZCBzY2FsYXIgdHlwZSwgbGVhdmluZwogICoJCQkgICAgICAgbm9uLXNjYWxhciB0
+eXBlcyB1bmNoYW5nZWQuCiAgKi8KKworI2lmIGRlZmluZWQoQ09ORklHX0NDX0hBU19UWVBFT0Zf
+VU5RVUFMKSAmJiAhZGVmaW5lZChfX0NIRUNLRVJfXykKKyMgZGVmaW5lIF9fdW5xdWFsX3NjYWxh
+cl90eXBlb2YoeCkgX190eXBlb2ZfdW5xdWFsX18oeCkKKyNlbHNlCiAvKgogICogUHJlZmVyIEMx
+MSBfR2VuZXJpYyBmb3IgYmV0dGVyIGNvbXBpbGUtdGltZXMgYW5kIHNpbXBsZXIgY29kZS4gTm90
+ZTogJ2NoYXInCiAgKiBpcyBub3QgdHlwZS1jb21wYXRpYmxlIHdpdGggJ3NpZ25lZCBjaGFyJywg
+YW5kIHdlIGRlZmluZSBhIHNlcGFyYXRlIGNhc2UuCiAgKi8KLSNkZWZpbmUgX19zY2FsYXJfdHlw
+ZV90b19leHByX2Nhc2VzKHR5cGUpCQkJCVwKKyAjZGVmaW5lIF9fc2NhbGFyX3R5cGVfdG9fZXhw
+cl9jYXNlcyh0eXBlKQkJCQlcCiAJCXVuc2lnbmVkIHR5cGU6CSh1bnNpZ25lZCB0eXBlKTAsCQkJ
+XAogCQlzaWduZWQgdHlwZToJKHNpZ25lZCB0eXBlKTAKIAotI2RlZmluZSBfX3VucXVhbF9zY2Fs
+YXJfdHlwZW9mKHgpIHR5cGVvZigJCQkJXAorICNkZWZpbmUgX191bnF1YWxfc2NhbGFyX3R5cGVv
+Zih4KSB0eXBlb2YoCQkJCVwKIAkJX0dlbmVyaWMoKHgpLAkJCQkJCVwKIAkJCSBjaGFyOgkoY2hh
+cikwLAkJCQlcCiAJCQkgX19zY2FsYXJfdHlwZV90b19leHByX2Nhc2VzKGNoYXIpLAkJXApAQCAt
+NTAzLDYgKzUwNyw3IEBAIHN0cnVjdCBmdHJhY2VfbGlrZWx5X2RhdGEgewogCQkJIF9fc2NhbGFy
+X3R5cGVfdG9fZXhwcl9jYXNlcyhsb25nKSwJCVwKIAkJCSBfX3NjYWxhcl90eXBlX3RvX2V4cHJf
+Y2FzZXMobG9uZyBsb25nKSwJXAogCQkJIGRlZmF1bHQ6ICh4KSkpCisjZW5kaWYKIAogLyogSXMg
+dGhpcyB0eXBlIGEgbmF0aXZlIHdvcmQgc2l6ZSAtLSB1c2VmdWwgZm9yIGF0b21pYyBvcGVyYXRp
+b25zICovCiAjZGVmaW5lIF9fbmF0aXZlX3dvcmQodCkgXAo=
+--0000000000000dce5f0628d5f635--
