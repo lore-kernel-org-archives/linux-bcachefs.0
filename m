@@ -1,33 +1,33 @@
 Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C09614A4DF
-	for <linux-bcachefs@vger.kernel.org>; Mon,  9 Dec 2024 18:16:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3A014D283
+	for <linux-bcachefs@vger.kernel.org>; Mon,  9 Dec 2024 18:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733768197; cv=none; b=HoJwqC1TyqBJvTSTF9XGZTiVrao7NdOuYWUw6Pjtde9HSJApPwbQctReFeTzf51y9/ZndChyBu4RtYACMFIdDs/WzNQFsWEOYosimwnwmIVnq8Y/Z8I+sivrRLll2tMeiwyXrW9cPHhKvkHXy9uUm/hx80mGmndsG8ewsi6G04I=
+	t=1733768349; cv=none; b=eleSUhyx7W4GjXM77BkcKzm3sm/rSnt3OV+G0TuWTpYcgOO9LSydEpyEQ0EZsCPgfmcuMfWyaiEAqd5Gw9lDf09kplYyKcP6TDrMgrrvfu9X3zESjEAE/kHgQZKEaFTHo4yTH7QeSgki6jHCiuYR5+u296CuotcOdeJgMhjWg/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733768197; c=relaxed/simple;
-	bh=fNhhyY+2OW8APMFgEmeoyzm8JwtdNRzuJnF9CcpPENI=;
+	s=arc-20240116; t=1733768349; c=relaxed/simple;
+	bh=xJIx3V6/p9jIvYYbUDPrAJ/2+biDe63/7TfADP0lfMI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZgQpeezEXdu80UkOjrjY8oPIgehJp7otYXEh7KobOV8Ug/hNdnfIF4sVeC0O2nv3ngQ5hluAK7kc7OQ98XRx5LXCEKWbMu3J0CvaJhVNixTPQqmWQbJDZr5h4WKK7tDf3pUTvEbiLf6dDUxmML13x8y3045MMQwHwiP7qrOp7s0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=hU85b8Or; arc=none smtp.client-ip=104.245.9.4
+	 MIME-Version; b=dEc64VmaML8hseM1NJw4byyap3rdrvNBkgFYDFpmE5U+SZELP/smy9dMh3uP4VxySTMA/K9LfZVrSjTlWLd9dqN4FpTBih2LYi3DXEwPuPzlEZwG++s1BA00ok7dWsFX4Zkql7vd7qFvu8dVefe9rZT/nOWVcP9ZItYd7Bmo25M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=SJu9s18r; arc=none smtp.client-ip=104.245.9.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="hU85b8Or"
-DKIM-Signature: a=rsa-sha256; bh=DGfmGZhzfTbzaZ0K/ZCwX3zJi7Zul3Kzx3FuqdA60VA=;
+	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="SJu9s18r"
+DKIM-Signature: a=rsa-sha256; bh=j2Gn6pG1Y8WgrNGDbusZPrKxQ/9gYp5cCMYiyCtk6TY=;
  c=relaxed/relaxed; d=archlinuxcn.org;
  h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
- i=@archlinuxcn.org; s=default; t=1733768172; v=1; x=1734200172;
- b=hU85b8Orzba3XlGU9hJYvkifVpz+yTapDXg22EwSiLkPqHxezqnpsrN9YkXAdRwDNA3xo7dF
- C2QxKGhe1yX/qfqy1Nq3mfabHgMY9BgBR10IUk6l9EgRW5AFXUeOkPl868Klhv4LTHaAIr5prSW
- QJMT8mI+tO/z7LheRNRRKTirXj4l/XpR9XTwBUy4w7MR1LmGivliSHz3SCqZNBhpaMjGIyfiP1J
- 8nh0Jk0uP6Dc3FNOHcLZwxfnJ305aNuo7kt1FuuLgJJBga19pqEIa7RrKFw2dS59VfEUVyPmTpa
- eg0R5Jt2MjzimzyxxgxzDvrVx6VQqN2XTGvXuDbzJeh6g==
+ i=@archlinuxcn.org; s=default; t=1733768322; v=1; x=1734200322;
+ b=SJu9s18rM+vnYGG29aaNppTxRg+Y2JpHuhQ2xoEVtVXbHviqaeCr81Yhbtfzwjva7KG7bIyg
+ l9Ln6PkrDgfZ3oKLZ0AP3J4/Ci8G0rDjEvIuQHiptickVvzocapdurAYODUSEmp1D5CoB1VHISn
+ MUOJu0SpKMxU+mmDfzvJlJ13vmYKMnxFKXkpTNygW92Yx2L17R3f8P38P7bEekWWBHOmaP/iP9l
+ XGIsqZHzgyTPJ7t1HTkYz6/nZzN210wOyNQbKBjT2EshMugT2GDUYh8gY59BrDgT7O6JHM86xIu
+ dGpWlqa38FqKQofZgJKeh1wG/UjUtHOmJJwUG9FthGG3g==
 Received: by wiki.archlinuxcn.org (envelope-sender
- <integral@archlinuxcn.org>) with ESMTPS id 80fe1d99; Tue, 10 Dec 2024
- 02:16:12 +0800
+ <integral@archlinuxcn.org>) with ESMTPS id 400c0955; Tue, 10 Dec 2024
+ 02:18:42 +0800
 From: Integral <integral@archlinuxcn.org>
 To: integral@archlinuxcn.org
 Cc: kent.overstreet@gmail.com,
@@ -35,9 +35,9 @@ Cc: kent.overstreet@gmail.com,
 	lihongbo22@huawei.com,
 	linux-bcachefs@vger.kernel.org,
 	mmpgouride@gmail.com
-Subject: [PATCH resend] bcachefs: use strscpy & strscpy_pad to make string copying simpler & safer
-Date: Tue, 10 Dec 2024 02:15:51 +0800
-Message-ID: <20241209181551.817659-1-integral@archlinuxcn.org>
+Subject: [PATCH resend v2] bcachefs: use strscpy & strscpy_pad to make string copying simpler & safer
+Date: Tue, 10 Dec 2024 02:18:29 +0800
+Message-ID: <20241209181828.818910-2-integral@archlinuxcn.org>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241110064138.79527-1-integral@archlinuxcn.org>
 References: <20241110064138.79527-1-integral@archlinuxcn.org>
@@ -51,6 +51,8 @@ Content-Transfer-Encoding: 8bit
 
 Use safe string copying macros (strscpy & strscpy_pad) to make string
 copying simpler & safer.
+
+Signed-off-by: Integral <integral@archlinuxcn.org>
 ---
  fs/bcachefs/dirent.c      | 10 +++-------
  fs/bcachefs/disk_groups.c |  5 ++---
