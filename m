@@ -1,132 +1,55 @@
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B8427447;
-	Mon,  9 Dec 2024 13:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2541F5F6
+	for <linux-bcachefs@vger.kernel.org>; Mon,  9 Dec 2024 18:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733749285; cv=none; b=GsF9mAGW/o9tleHOeEFCzOoyq4PMmvpTVKMxrCMfIRDXs0uL8qO9FjjQkSQ5t94UHWiCSx85YcLIKpDxjpinn7214Pcinkiw+YtkwRYqy5e3Fg+H2yZ6QzSsQLNO5RHrtZtD4Kyixgia8dH1MMRedPkwsJUjk6dtVoZvZqjwNQs=
+	t=1733767945; cv=none; b=ix9j3+YjVtghW/G7G9/r7wY550QZA56nf4Bx3DBmwLdB77HAgHfuzBzzzgcMPLLHtvJy5lc1KRqY+5xZawZXENAkbLwJS+P3NHEWA5SGLca5TGszzImnl4mhgoxkSfKQJwbmXcB82wbuzLZEoCinTcW8bB4ij685E1rNipZaaVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733749285; c=relaxed/simple;
-	bh=q4xNiD+1h6n/gmqa9KIJktFHTf/n6lA09xO7+iOB9PY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dPEq2lCmSTaUBHMvgiQX+GnsAqnVswr9lpg6PccOkcyfXUQ7aZwRQ3eTdgdhH0YKaYAt+x8e0/bLl//0hDzgegYljfSD0PNUMR/ZFubXxFF4kRhRw+tcLx2QBiCS/OjJIHe0R8PUlgcjGX+8GPiAihm5I1nQlJOcM9gxTIYJZXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NGWQniFT; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1733767945; c=relaxed/simple;
+	bh=yoUrgK4WIHlzQWl3kA0Av2Vsc2BP10Kej3LtqCJ91lc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=dHVyqUVUNtfHtkWZlkiV+1zjCqsTmWnYxgkMPtw0ttrur3zWupGQ/RHMiYF5Ml55KK+dSvqmmezK4Pe6Pe7v8IcKm1j0G9ybQhKBobEkZn3jzdS8KxG2Noxdq28BbsE3sekzoO3ccucZzIhEulhRmFibg4/xF0YogxiwP/ORqkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=4QEJqCJw; arc=none smtp.client-ip=104.245.9.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGWQniFT"
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-30229d5b1caso5114281fa.2;
-        Mon, 09 Dec 2024 05:01:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733749282; x=1734354082; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=q4xNiD+1h6n/gmqa9KIJktFHTf/n6lA09xO7+iOB9PY=;
-        b=NGWQniFTDneahKVPWaKS09sj+98L/fOLtk4su397Z59FVyc0lTaOtAqUVyJuRBQieB
-         o0i7axOKnTRr8XmSzwP+ylJqJZA2hQOQRyWndig5z2kecuwcVXKnC7XUR0FdIj3EA/MW
-         dqbC6m89bhnm9RZpqsVcRTmIDjdeTvAm1DtsF5jpJwEjziaVCbWNBcU/eckG4We8xHQ3
-         i7R1fPVOW0ZNXuWtTB7W5oZtoQDghnVZRpyPR1v4XRx/ufpP7qUdKejjzloXdy9ZJfiY
-         ScXCXHxhEPME70lhRtHfBYQw5Y8xQkMbDGJ8AMyVhvtk7XxUWPDRW1rMk8FbL42WFiqx
-         qFtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733749282; x=1734354082;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q4xNiD+1h6n/gmqa9KIJktFHTf/n6lA09xO7+iOB9PY=;
-        b=L5dQ7fy6Syl5EuKgj2/EghNwd3sJhW6H8XxB1uEtQkTbp9+1/U0cu26e7rSsyK1/sd
-         c88WzVAq6G1iDnSMLdRmN+BI/vmZwqesY6IzjASyoG4k1AEkLA7gpEyUtENCycuvC+8C
-         Jv6Pf+W9b3jVc+7EMe5DMRXJOXmqY5SqnwXsM9Ik0+MJEWpzA20AjGBIB/2DwFVm/nGi
-         e9g+Z8bj8MyrgZKl368wT4KSljPXnnNAhR8Q8HDdliOZvTATUeT5teZrTZC7B4KXm9Ru
-         +vOY0NiO6CO+MdTxzQ9cOi9uUZ3ORngMIr/AV+545c/1uv0eWQwk0qR1MytWxa87Es1t
-         WH1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU/6mYdtJxEqsv5WpVPSGwlVRWIfm6WowchS5ZYJBhC5bawBXfqqhu6b0oZErc2B3atg1PObr+BTEGZIvkK@vger.kernel.org, AJvYcCWBT7u1lC+mapOTw680aYu278xEItglVZSyfqCuImcAXkLwHmg2iB90alXfRroFa+U3KgDdRnD6KjO355D8fZw=@vger.kernel.org, AJvYcCWYYybbzt0sYGSF7X0mfC6ydrUotOnqLbpqj4iCNUZWYHmxY48J0ZP49mGUiwP6KUbX8iW1l30Jjr/s@vger.kernel.org, AJvYcCXvbxF0wp+lHkFYPLkYh6oMhl1MFgOmpiJ/UvGhB0mo6SuCN8+35v2Y5b4cGaPFQ8Zn2s/vceTo@vger.kernel.org
-X-Gm-Message-State: AOJu0YySSirB2UCjNWo0wNsAlI3Cp2+QvwRX2wJuJaQxJLASX47UM4OA
-	9HYbFP23XaaZ1e3sMDrQgZnBwR5O4Ov52h9jpuPSlnyaQPs76TBCKUZSIYOLysTUSWe61gpr18L
-	Cj1H2Dwhbcg1YxQuklaZ+jURpGBaVlb/y0aU=
-X-Gm-Gg: ASbGncvo8voOGJuelyy9zKv/RC5h1NwS/cuHjTILxdMW98iSyb7CPdKEeOb8RJiaXdW
-	6uFY1PGEW11FudUj77l9AVVfEmTmboeE=
-X-Google-Smtp-Source: AGHT+IGe1WstGRWqGSFuoCPDZFOtP3fDmU5Xj4kLOejwoz6WX1eM9hdJD2mx6/c+7+IVgAVWdxA8ME0SNhuOKo7Zq34=
-X-Received: by 2002:a2e:bc05:0:b0:302:2bd8:2687 with SMTP id
- 38308e7fff4ca-3022bd82cffmr6815311fa.12.1733749281481; Mon, 09 Dec 2024
- 05:01:21 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="4QEJqCJw"
+DKIM-Signature: a=rsa-sha256; bh=yoUrgK4WIHlzQWl3kA0Av2Vsc2BP10Kej3LtqCJ91lc=;
+ c=relaxed/relaxed; d=archlinuxcn.org;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
+ i=@archlinuxcn.org; s=default; t=1733767003; v=1; x=1734199003;
+ b=4QEJqCJwhZ8KpZ+qaEdK+4E0pNmIxJLjAh97k8loHJriKwJeb5xcn3mDzSGCoYXm/si182E8
+ 56yWaFjp3UKxB9AIdnhK2jE5cdogiKGZuRJMZA2hUstLSbCe+KX7WtHqNG5yTIJVB/IVakxfjJ3
+ 3SXTrjKo1rF11F7aUF3FkRvKtkqcEufy59XbYB5DOM4Hm73ySNNwSCuELNP2Gycfl+k9AJzYiOw
+ fI3RxFMXX8swnbREiiUWSaN6xvQAyWcWb318wiwXewLL+JB+dkL+N5DqWm6neq8RVkMyRVKdmNK
+ NGm593uu3S8keBlZl0FLUOmafAg4B1VL4hD15CMXIE0FA==
+Received: by wiki.archlinuxcn.org (envelope-sender
+ <integral@archlinuxcn.org>) with ESMTPS id a39b5a3b; Tue, 10 Dec 2024
+ 01:56:43 +0800
+Message-ID: <072d6776-5dea-4e70-af16-1cffb2e7f16b@archlinuxcn.org>
+Date: Tue, 10 Dec 2024 01:56:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241208204708.3742696-1-ubizjak@gmail.com> <20241208204708.3742696-3-ubizjak@gmail.com>
- <20241209113039.GN21636@noisy.programming.kicks-ass.net>
-In-Reply-To: <20241209113039.GN21636@noisy.programming.kicks-ass.net>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Mon, 9 Dec 2024 14:01:09 +0100
-Message-ID: <CAFULd4YHuiyzuzAwuZxsp_kRca-hnR+NqHU8cfk8JDqATMNSMQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/6] compiler.h: Introduce TYPEOF_UNQUAL() macro
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-arch@vger.kernel.org, 
-	netdev@vger.kernel.org, Nadav Amit <nadav.amit@gmail.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Christoph Lameter <cl@linux.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>, Brian Gerst <brgerst@gmail.com>, 
-	Denys Vlasenko <dvlasenk@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: multipart/mixed; boundary="0000000000000dce5f0628d5f635"
+User-Agent: Mozilla Thunderbird
+To: integral@archlinuxcn.org
+Cc: kent.overstreet@gmail.com, kent.overstreet@linux.dev,
+ lihongbo22@huawei.com, linux-bcachefs@vger.kernel.org, mmpgouride@gmail.com
+References: <20241109105740.105652-2-integral@archlinuxcn.org>
+Subject: Re: [PATCH] bcachefs-tools: make targets of subvolume create/delete
+ required
+Content-Language: en-US
+From: Integral <integral@archlinuxcn.org>
+In-Reply-To: <20241109105740.105652-2-integral@archlinuxcn.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---0000000000000dce5f0628d5f635
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi, Kent
 
-On Mon, Dec 9, 2024 at 12:30=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Sun, Dec 08, 2024 at 09:45:17PM +0100, Uros Bizjak wrote:
-> > Define TYPEOF_UNQUAL() to use __typeof_unqual__() as typeof operator
-> > when available, to return unqualified type of the expression.
-> >
-> > Current version of sparse doesn't know anything about __typeof_unqual__=
-()
-> > operator. Avoid the usage of __typeof_unqual__() when sparse checking
-> > is active to prevent sparse errors with unknowing keyword.
->
-> Ooooh, new toys.
->
-> I suppose __unqual_scalar_typeof() wants to be using this when
-> available?
+Give you a gentle ping :)
 
-Yes, the attached patch compiles and boots OK.
-
-Uros.
-
---0000000000000dce5f0628d5f635
-Content-Type: text/plain; charset="US-ASCII"; name="unqual_scalar_typeof.diff.txt"
-Content-Disposition: attachment; filename="unqual_scalar_typeof.diff.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_m4h1jn2x0>
-X-Attachment-Id: f_m4h1jn2x0
-
-ZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvY29tcGlsZXJfdHlwZXMuaCBiL2luY2x1ZGUvbGlu
-dXgvY29tcGlsZXJfdHlwZXMuaAppbmRleCA1ZDY1NDQ1NDU2NTguLjg3YTljZTNlYmQxMyAxMDA2
-NDQKLS0tIGEvaW5jbHVkZS9saW51eC9jb21waWxlcl90eXBlcy5oCisrKyBiL2luY2x1ZGUvbGlu
-dXgvY29tcGlsZXJfdHlwZXMuaApAQCAtNDg2LDE1ICs0ODYsMTkgQEAgc3RydWN0IGZ0cmFjZV9s
-aWtlbHlfZGF0YSB7CiAgKiBfX3VucXVhbF9zY2FsYXJfdHlwZW9mKHgpIC0gRGVjbGFyZSBhbiB1
-bnF1YWxpZmllZCBzY2FsYXIgdHlwZSwgbGVhdmluZwogICoJCQkgICAgICAgbm9uLXNjYWxhciB0
-eXBlcyB1bmNoYW5nZWQuCiAgKi8KKworI2lmIGRlZmluZWQoQ09ORklHX0NDX0hBU19UWVBFT0Zf
-VU5RVUFMKSAmJiAhZGVmaW5lZChfX0NIRUNLRVJfXykKKyMgZGVmaW5lIF9fdW5xdWFsX3NjYWxh
-cl90eXBlb2YoeCkgX190eXBlb2ZfdW5xdWFsX18oeCkKKyNlbHNlCiAvKgogICogUHJlZmVyIEMx
-MSBfR2VuZXJpYyBmb3IgYmV0dGVyIGNvbXBpbGUtdGltZXMgYW5kIHNpbXBsZXIgY29kZS4gTm90
-ZTogJ2NoYXInCiAgKiBpcyBub3QgdHlwZS1jb21wYXRpYmxlIHdpdGggJ3NpZ25lZCBjaGFyJywg
-YW5kIHdlIGRlZmluZSBhIHNlcGFyYXRlIGNhc2UuCiAgKi8KLSNkZWZpbmUgX19zY2FsYXJfdHlw
-ZV90b19leHByX2Nhc2VzKHR5cGUpCQkJCVwKKyAjZGVmaW5lIF9fc2NhbGFyX3R5cGVfdG9fZXhw
-cl9jYXNlcyh0eXBlKQkJCQlcCiAJCXVuc2lnbmVkIHR5cGU6CSh1bnNpZ25lZCB0eXBlKTAsCQkJ
-XAogCQlzaWduZWQgdHlwZToJKHNpZ25lZCB0eXBlKTAKIAotI2RlZmluZSBfX3VucXVhbF9zY2Fs
-YXJfdHlwZW9mKHgpIHR5cGVvZigJCQkJXAorICNkZWZpbmUgX191bnF1YWxfc2NhbGFyX3R5cGVv
-Zih4KSB0eXBlb2YoCQkJCVwKIAkJX0dlbmVyaWMoKHgpLAkJCQkJCVwKIAkJCSBjaGFyOgkoY2hh
-cikwLAkJCQlcCiAJCQkgX19zY2FsYXJfdHlwZV90b19leHByX2Nhc2VzKGNoYXIpLAkJXApAQCAt
-NTAzLDYgKzUwNyw3IEBAIHN0cnVjdCBmdHJhY2VfbGlrZWx5X2RhdGEgewogCQkJIF9fc2NhbGFy
-X3R5cGVfdG9fZXhwcl9jYXNlcyhsb25nKSwJCVwKIAkJCSBfX3NjYWxhcl90eXBlX3RvX2V4cHJf
-Y2FzZXMobG9uZyBsb25nKSwJXAogCQkJIGRlZmF1bHQ6ICh4KSkpCisjZW5kaWYKIAogLyogSXMg
-dGhpcyB0eXBlIGEgbmF0aXZlIHdvcmQgc2l6ZSAtLSB1c2VmdWwgZm9yIGF0b21pYyBvcGVyYXRp
-b25zICovCiAjZGVmaW5lIF9fbmF0aXZlX3dvcmQodCkgXAo=
---0000000000000dce5f0628d5f635--
