@@ -1,62 +1,103 @@
-Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6418168BE
-	for <linux-bcachefs@vger.kernel.org>; Tue, 10 Dec 2024 05:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9BE523DE95;
+	Tue, 10 Dec 2024 11:27:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733807307; cv=none; b=hwkO4vxhrO4/LY7XaT9h0iaVla1FPUG5+or8aVREW6CN8FI8Es1/s9K9gJkFI8LXWq4Zsc1HXqkF99p8MLd4xMM8z4DC204ddWGkwO/UQs8pIkweN1WirZ2Eu5k6odKNZn9EBf1R3VB8Tx2OsHBZ2Rr5ZMrqFpXRJoWMKyU6VfE=
+	t=1733830051; cv=none; b=EYrjZICt2kNl9ymcKYnAQDj4gLnp26TwAT60FIrXmNu4YHs2tTTk6Up+aic2znZZbFdZbI7PRxM9pbWolSi3ZpRG1yPa2mZIhtA9Q+FQQDfgcfzBNwXFir0p6BVeJuAIdFjRM4QaByjQ/gG1QtCqqjBBZAtsiHb9TyuooU53o9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733807307; c=relaxed/simple;
-	bh=hr+W7ZjYzpVSOMG9+vqWBqZV0gDO+J0HoyhBtMCePsk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iLSR6oIlk+ecqtoA8IlXULtUPe9nVpGR5dRT/kOHM6XgzWLi1nMrFmoGJWhytp7fiaXIWdhuXEebxMSNqSwCV6WZVkFs3EMvmOU3ZzQRRxC8R8GtO+5QdvzYEiQM9SizwFL9pbEYDvD/OG7J5WuRCzyhN2ny+JKakeEHsHnboog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=vIkJU5V/; arc=none smtp.client-ip=104.245.9.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="vIkJU5V/"
-DKIM-Signature: a=rsa-sha256; bh=hr+W7ZjYzpVSOMG9+vqWBqZV0gDO+J0HoyhBtMCePsk=;
- c=relaxed/relaxed; d=archlinuxcn.org;
- h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
- i=@archlinuxcn.org; s=default; t=1733807283; v=1; x=1734239283;
- b=vIkJU5V/da0aWRmAd0CKE7HCUvDOrMv+cS+rxEn+kVrsTdCzQLjkoPZ2T9bk9l4UI/wyrI08
- xm0P8ro9rxuhUDxvbeFiBGBVsBjqeClXd+0nrKgVd5TP1pQUzchlwBFDVns2+rT+Nd+QT9ayy2E
- sOS2xod2aV6wFtn+JylFrKT86A2Lz50r03fRsaJa1KhnAEklopQKCigj3EByDrfPnvtI6Ytf1Yt
- oV3ohfhKtXhC1G3AwREI6TOh9fWVAimPQqp8BQ5Y4ZqRKzDY1Sfpf4nPkZXSLfBtsihtbw/3g4t
- DQWAZoEOFU5M5toWsXMQqGlbEGMigJSbkVcF69Q92XItw==
-Received: by wiki.archlinuxcn.org (envelope-sender
- <integral@archlinuxcn.org>) with ESMTPS id 5e6eed52; Tue, 10 Dec 2024
- 13:08:03 +0800
-Message-ID: <8cd43424-fab5-4f0b-90b7-d077dbae14b6@archlinuxcn.org>
-Date: Tue, 10 Dec 2024 13:07:59 +0800
+	s=arc-20240116; t=1733830051; c=relaxed/simple;
+	bh=9G0siJyNxPJJfTZWz18ibOXVTW/s4Amh7tT5c9+w8fE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bU48TKKYMOERosQim8Je2gK0XzxwJj/3hPi4/+2UCLVJPp4h8rIRB59FhfajGmHVNAw7DqtQWVQ+YFyAlB961joPX1VmWjiQX9r3IN9oFbpAkmNXg5nnbkTwS3sGuOpM9L2jE4lwUCAYy1ubmOdlr7jSZ+WoChGhnZuUUxJsSyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1667113E;
+	Tue, 10 Dec 2024 03:27:55 -0800 (PST)
+Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFC0F3F5A1;
+	Tue, 10 Dec 2024 03:27:26 -0800 (PST)
+Date: Tue, 10 Dec 2024 11:27:19 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-arm-kernel@lists.infradead.org, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: arm64: stacktrace: unwind exception boundaries
+Message-ID: <Z1gll87-TkAqFwUz@J2N7QTR9R3>
+References: <36kx57aw46vwykgckr5cm4fafhw54tjuj4cqljrdnpfwvjl7if@a7znuhpfu54o>
+ <zbwbgkuvvciezpmigcp6gaahfxwm7cwhpzus7gtbfnbzsjb2n3@kfbdppbd74o4>
+ <Z1bWaGCvUrwrj2fZ@J2N7QTR9R3>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: use strscpy & strscpy_pad to make string
- copying simpler & safer
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: kent.overstreet@gmail.com, lihongbo22@huawei.com, mmpgouride@gmail.com,
- linux-bcachefs@vger.kernel.org
-References: <20241110064138.79527-1-integral@archlinuxcn.org>
- <okjlnanwuectw4fem6o3x7mheur7ob6nvkxm26rvhw7xxawx5v@n6qix4k2w5kp>
-Content-Language: en-US
-From: Integral <integral@archlinuxcn.org>
-In-Reply-To: <okjlnanwuectw4fem6o3x7mheur7ob6nvkxm26rvhw7xxawx5v@n6qix4k2w5kp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z1bWaGCvUrwrj2fZ@J2N7QTR9R3>
 
-I apologize for my repeated patch sending :(
+On Mon, Dec 09, 2024 at 11:37:12AM +0000, Mark Rutland wrote:
+> Hi Kent,
+> 
+> On Thu, Dec 05, 2024 at 01:04:59PM -0500, Kent Overstreet wrote:
+> > On 6.13-rc1, I'm now seeing a ton of test failures due to this warning -
+> > what gives?
+> 
+> Sorry about this; I just sent what I *thought* was a fix for this:
+> 
+>   https://lore.kernel.org/linux-arm-kernel/20241209110351.1876804-1-mark.rutland@arm.com/
+> 
+> ... but re-reading the below I see you're actually hitting a different
+> issue.
+> 
+> > 00104 ========= TEST   generic/017
+> > 00104        run fstests generic/017 at 2024-12-05 11:47:43
+> > 00104 spectre-v4 mitigation disabled by command-line option
+> > 00106 bcachefs (vdc): starting version 1.13: inode_has_child_snapshots
+> > 00106 bcachefs (vdc): initializing new filesystem
+> > 00106 bcachefs (vdc): going read-write
+> > 00106 bcachefs (vdc): marking superblocks
+> > 00106 bcachefs (vdc): initializing freespace
+> > 00106 bcachefs (vdc): done initializing freespace
+> > 00106 bcachefs (vdc): reading snapshots table
+> > 00106 bcachefs (vdc): reading snapshots done
+> > 00106 bcachefs (vdc): done starting filesystem
+> > 00200 ------------[ cut here ]------------
+> > 00200 WARNING: CPU: 8 PID: 12571 at arch/arm64/kernel/stacktrace.c:223 arch_stack_walk+0x2c0/0x388
+> 
+> Looking at v6.13-rc1, that's the warning in
+> kunwind_next_frame_record_meta() for when the frame_record_meta::type is
+> not a valid value, which likely implies one of the following:
+> 
+> (a) The logic to identify a frame_record_meta is wrong.
+> 
+> (b) The entry logic has failed to initilialize pt_regs::stackframe::meta
+>     on an entry path somehow.
+> 
+> (c) The stack has been corrupted, and some frame record has been
+>     clobbered to look like a frame_record_meta.
 
+Looking some more, I see that bch2_btree_transactions_read() is trying
+to unwind other tasks, and I believe what's happening here is that the
+unwindee isn't actually blocked for the duration of the unwind, leading
+to the unwinder encountering junk and consequently producing the
+warning.
 
-However, you have just said
+As a test case, it's possible to trigger similar with a few parallel
+instances of:
 
-> I already told you this didn't need to be done; please stop.
+	while true; do cat /proc/*/stack > /dev/null
 
+The only thing we can do on the arm64 side is remove the WARN_ON_ONCE(),
+which'll get rid of the splat. It seems we've never been unlucky enough
+to hit a stale fgraph entry, or that would've blown up also.
 
-Actually, this is the first time you have told me to stop doing this.
+Regardless of the way arm64 behaves here, the unwind performed by
+bch2_btree_transactions_read() is going to contain garbage unless the
+task is pinned in a blocked state. AFAICT the way
+btree_trans::locking_wait::task is used is here is racy, and there's no
+guarantee that the unwindee is actually blocked.
 
+Mark.
