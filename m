@@ -1,40 +1,35 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC95204692
-	for <linux-bcachefs@vger.kernel.org>; Tue, 10 Dec 2024 18:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5281BC9E2;
+	Tue, 10 Dec 2024 19:17:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733856307; cv=none; b=eHn0A81342/aMIEC456KORYBrYgKDNTj0AbpzNv7p5/5BWDbTT8KcquqbRKGXCCVoGmDJD7g9Op2z7mp/VKQR1qI3Aqt4ZlQ861d+F2xjGGWgOqDiLXU2Wx3hh/I3y6uJFCtnipvnABv2cw6P34Up0y/1GTsSeVAOw3UDkKxNdY=
+	t=1733858268; cv=none; b=TrtW3YMN2l3p3279Nrf5dgEMmDpQ3VHbREGGOOjahYJjYqUCuN1P5tau2vb02dku+IpDnuvclRDFY4N/87AZY2FXlR9ZJfuYFXmc89QoU+hZBqugj7cevgBY3an0xPtWcaluJGa3uaqmKc9nySp/kBl4kpTlyL6OkWqt6EE8iEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733856307; c=relaxed/simple;
-	bh=j+Z1qvM5ugs6/4cGw47Qw9wyUTYQHQGjrgLVpwHAnWM=;
+	s=arc-20240116; t=1733858268; c=relaxed/simple;
+	bh=DtSI4q9agKjvQP+kvF0OA0ulQMNOErz0r1oRKwcrUwg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cwRnlUwmeooBm4aIHEI76SB1qHk5piq/uLpCT5K6f33lCuVz0okxsIS89EkLQhPYJ2yz5EMKEGGk7sGN+oCa0/iRU6tYg+JZ9a+itjOrqclm2vhKonOhwRGJ7wLi7U37/R+an2a+4tRXjfLHGdYIQJdlcDPK7D0mF5tkj7bbTxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I6FRQRAU; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I6FRQRAU"
-Date: Tue, 10 Dec 2024 13:44:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733856301;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ilz04oS/JfHaPRfW+yjAezYUtWHIZRjfnXEUvByXN4I=;
-	b=I6FRQRAUef0SbSJ2zYdP1i5mfSM0/LuBOLJKnrpkdd/iNdHF8ffacVHW8ZsCMbt7w6Vq+5
-	8Vl6A1oCZrdP0HR/54vGSkzE4/UZK6bLKpV5L7nmSNloh7aO5XBp6Dd7PjKyeKPg+vNIf9
-	WomVJYTYpyXH+VALEXQt3P50TgJT8fM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: linux-bcachefs@vger.kernel.org, llvm@lists.linux.dev, 
-	patches@lists.linux.dev, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] bcachefs: Add empty statement between label and
- declaration in check_inode_hash_info_matches_root()
-Message-ID: <qnfn3xzh6ve5cukeugxucloynbstf2itos3ddlmzu2w4sp7md7@7bkk2byif2ja>
-References: <20241210-bcachefs-fix-declaration-after-label-err-v1-1-22c705fc47e8@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kF6np+sWxJxx+o8uYYe/V7EyjwO4GNlqNT1lABeZGrFVPfCPFkA4s0Qv9rQWpxcj/2xkPZa3BcE2/+/LBhg3lb/IkTOpSsWm59zk40QQZMSz2JMsaT5p+Ym0OagEZC1nfjGe8pjn308Hv1D+I+328p7CFzxIHS9utUH46o6ykRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A86BA1063;
+	Tue, 10 Dec 2024 11:18:12 -0800 (PST)
+Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AEF653F5A1;
+	Tue, 10 Dec 2024 11:17:43 -0800 (PST)
+Date: Tue, 10 Dec 2024 19:17:36 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-arm-kernel@lists.infradead.org, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: arm64: stacktrace: unwind exception boundaries
+Message-ID: <Z1iT0AQqu5dqdCSg@J2N7QTR9R3>
+References: <36kx57aw46vwykgckr5cm4fafhw54tjuj4cqljrdnpfwvjl7if@a7znuhpfu54o>
+ <zbwbgkuvvciezpmigcp6gaahfxwm7cwhpzus7gtbfnbzsjb2n3@kfbdppbd74o4>
+ <Z1bWaGCvUrwrj2fZ@J2N7QTR9R3>
+ <Z1gll87-TkAqFwUz@J2N7QTR9R3>
+ <rxc57eg65sg4iayhj7gc7yl24w524lviedxnydl2mggqnatglq@iairj2ci7ioj>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -43,67 +38,49 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241210-bcachefs-fix-declaration-after-label-err-v1-1-22c705fc47e8@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <rxc57eg65sg4iayhj7gc7yl24w524lviedxnydl2mggqnatglq@iairj2ci7ioj>
 
-On Tue, Dec 10, 2024 at 11:12:07AM -0700, Nathan Chancellor wrote:
-> Clang 18 and newer warns (or errors with CONFIG_WERROR=y):
-> 
->   fs/bcachefs/str_hash.c:164:2: error: label followed by a declaration is a C23 extension [-Werror,-Wc23-extensions]
->     164 |         struct bch_inode_unpacked inode;
->         |         ^
-> 
-> In Clang 17 and prior, this is an unconditional hard error:
-> 
->   fs/bcachefs/str_hash.c:164:2: error: expected expression
->     164 |         struct bch_inode_unpacked inode;
->         |         ^
->   fs/bcachefs/str_hash.c:165:30: error: use of undeclared identifier 'inode'
->     165 |         ret = bch2_inode_unpack(k, &inode);
->         |                                     ^
->   fs/bcachefs/str_hash.c:169:55: error: use of undeclared identifier 'inode'
->     169 |         struct bch_hash_info hash2 = bch2_hash_info_init(c, &inode);
->         |                                                              ^
->   fs/bcachefs/str_hash.c:171:40: error: use of undeclared identifier 'inode'
->     171 |                 ret = repair_inode_hash_info(trans, &inode);
->         |                                                      ^
-> 
-> Add an empty statement between the label and the declaration to fix the
-> warning/error without disturbing the code too much.
+On Tue, Dec 10, 2024 at 07:40:04AM -0500, Kent Overstreet wrote:
+> On Tue, Dec 10, 2024 at 11:27:19AM +0000, Mark Rutland wrote:
+> > On Mon, Dec 09, 2024 at 11:37:12AM +0000, Mark Rutland wrote:
+> > > On Thu, Dec 05, 2024 at 01:04:59PM -0500, Kent Overstreet wrote:
 
-This is different than what I would have done, and I like it :)
+> > Looking some more, I see that bch2_btree_transactions_read() is trying
+> > to unwind other tasks, and I believe what's happening here is that the
+> > unwindee isn't actually blocked for the duration of the unwind, leading
+> > to the unwinder encountering junk and consequently producing the
+> > warning.
+> > 
+> > As a test case, it's possible to trigger similar with a few parallel
+> > instances of:
+> > 
+> > 	while true; do cat /proc/*/stack > /dev/null
+> > 
+> > The only thing we can do on the arm64 side is remove the WARN_ON_ONCE(),
+> > which'll get rid of the splat. It seems we've never been unlucky enough
+> > to hit a stale fgraph entry, or that would've blown up also.
+> > 
+> > Regardless of the way arm64 behaves here, the unwind performed by
+> > bch2_btree_transactions_read() is going to contain garbage unless the
+> > task is pinned in a blocked state. AFAICT the way
+> > btree_trans::locking_wait::task is used is here is racy, and there's no
+> > guarantee that the unwindee is actually blocked.
+> 
+> Occasionally returning garbage is completely fine, as long as the
+> interface is otherwise safe. This is debug info; it's important that it
+> be available and we can't impose additional synchronization for it.
 
-> 
-> Fixes: 2519d3b0d656 ("bcachefs: bch2_str_hash_check_key() now checks inode hash info")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202412092339.QB7hffGC-lkp@intel.com/
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
-> If you would prefer to fix this in a different way, just consider this
-> an additional report.
-> ---
->  fs/bcachefs/str_hash.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/str_hash.c b/fs/bcachefs/str_hash.c
-> index ed3c852fc0befa69fabe90ab83d439986be36b42..f5977c5c67430688c8a2a31fa39115f231d5a167 100644
-> --- a/fs/bcachefs/str_hash.c
-> +++ b/fs/bcachefs/str_hash.c
-> @@ -160,7 +160,7 @@ static int check_inode_hash_info_matches_root(struct btree_trans *trans, u64 inu
->  	bch_err(c, "%s(): inum %llu not found", __func__, inum);
->  	ret = -BCH_ERR_fsck_repair_unimplemented;
->  	goto err;
-> -found:
-> +found:;
->  	struct bch_inode_unpacked inode;
->  	ret = bch2_inode_unpack(k, &inode);
->  	if (ret)
-> 
-> ---
-> base-commit: dd7d7f29a7c77d02264097e7b42073a902765c49
-> change-id: 20241210-bcachefs-fix-declaration-after-label-err-b16b57d634fb
-> 
-> Best regards,
-> -- 
-> Nathan Chancellor <nathan@kernel.org>
-> 
+Sure thing; just note that there's no guarantee that this is only
+"occasionally" garbage -- this could be wrong 1% of the time or 99% of
+the time depending on the specific scenario, HW it's running on, etc. As
+long as you're happy to hold the pieces when that happens, that's fine.
+
+I've pushed out fixes to the arm64/stacktrace/fixes branch on my
+kernel.org git repo:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/stacktrace/fixes
+  git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64/stacktrace/fixes
+
+... and I'll get that out as a series on the list tomorrow.
+
+Mark.
