@@ -1,116 +1,172 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B347D1A0BE3
-	for <linux-bcachefs@vger.kernel.org>; Tue, 10 Dec 2024 12:40:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD7F1A3BA1;
+	Tue, 10 Dec 2024 16:37:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733834420; cv=none; b=cGSktu4Ocs67lr+q/yBQvcslHVtNky9jKDTFw/zA5QFgEc6D/KyzM5niplyT6H9HOGqUcfLnZLlxI+yzURg0eMStUqVCnUhe2LDU0adfvp9Ps/PWHPbUJZdVoBn5zFyLoKRQhUMkaYQhT4kWnXh5PwQE3jXY0yVc/juw4xhiS6w=
+	t=1733848646; cv=none; b=YjO+JnVuzfLdsGfyoe4aa1QQXLkXXB72c1+vumaYu90L9UbIaSkfiEVUPwM5S5J9XRv8fp2cYrW5T4hehj9RgdtRQssUFoOraULfaJCxcaq1Ewiezl3jGG+j1BtRpMk24pL5r+RcBSPSqvvAiwlrqA1TQ7wGJLnhc4pxwBPMZ0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733834420; c=relaxed/simple;
-	bh=aPEiK4h81moaoq8fm/waZ+gSyU1MKBjxVk9bA20FZDE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tTOXlpHXVeKgSAQsoTSnJTLkbCeCU+B0tCL40TNjy/n7Q0FemN+zM44ohlerOctRkUBheqGfWf3AsFv76zyCYqSmaH4kI3QtCXQ/yYUm1nLrU8du2dgE0IE930cmq3K0ULkq0D5K+1LfsOq0xcSHBO6hac2LYAUrJ7vnI0L5hCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tnMhpc6a; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1733848646; c=relaxed/simple;
+	bh=bMaWMUz5V3ffO6Fby9ugSZR/xOrKRSiA3Zeu/M2/xfM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PfiBnaSSekB7NcoKDR9WAMPOlNDcdANLdzEYfMtw47zOxOQc6fZ0nNZj951p9QwKCJhCRN3gN6U/LvAuJ8H+TjHO+8SB/CZEwpDSm2a0n7ZCZNxbW3EMhGqrD/1zitpUwm0T1Jyrd91W92YRNbfkWNF3UX6Z99g+9Kgz4tQiTnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lPXQkT5e; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tnMhpc6a"
-Date: Tue, 10 Dec 2024 07:40:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733834412;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZcKuJfhX/Ve5UPNSYYBlcC61G/qM8OOE7m7h/NqoP64=;
-	b=tnMhpc6aviml/dMEm+3MILIlN8t8FtLRPRqyubeTu9IR05BO2GS/UrzKhjTreAYbpN9aKo
-	Zg4QB9SiE9nr/lY3pthbYeF18JZAxW8TEZm5QIgxxacR59exy4RktwiF1O/TfBwceuz7GQ
-	pwn59T8kkWD4LNAVEH4BA7IIzURY8vA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: arm64: stacktrace: unwind exception boundaries
-Message-ID: <rxc57eg65sg4iayhj7gc7yl24w524lviedxnydl2mggqnatglq@iairj2ci7ioj>
-References: <36kx57aw46vwykgckr5cm4fafhw54tjuj4cqljrdnpfwvjl7if@a7znuhpfu54o>
- <zbwbgkuvvciezpmigcp6gaahfxwm7cwhpzus7gtbfnbzsjb2n3@kfbdppbd74o4>
- <Z1bWaGCvUrwrj2fZ@J2N7QTR9R3>
- <Z1gll87-TkAqFwUz@J2N7QTR9R3>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lPXQkT5e"
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-30227ccf803so18584321fa.2;
+        Tue, 10 Dec 2024 08:37:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733848642; x=1734453442; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mMr2qVhA4J2Ksp2znQVcePx2ayh49sbpV9PFu6+5bZw=;
+        b=lPXQkT5eLbSJihPkq8nL0G8RkVzHzRoxK5mOatJadWIYXOxVDxpn+B/NjAsr3sNkyW
+         1cOGWBUM5DRxAknBLIIa5/A6cn7p9apbJyoJY2cMcfyqNdMJmMpKTp3JSDPexsdvavMs
+         5A+p1IsBU7sMkhEMTAjkU9wVpTHamZClnZMpUD+ekJn57j2QdyqlhkalHW1p+PH98SlX
+         NVO4E10KbKrtbbotRq0efHbzE6alEW2Dxj24B3MKZedyTM0yBpAAVZr5zdXKimdq2u7+
+         Zr8TjDW/hNkxGRvO/JDpak679tjOrtPnPQ6QhFNRe+jiirI/iLSsZE5ER/mC8JIZcB4p
+         nEig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733848642; x=1734453442;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mMr2qVhA4J2Ksp2znQVcePx2ayh49sbpV9PFu6+5bZw=;
+        b=t3VqFKAyh/iCq8qnFGWP+G27/0aq73Zt7kpOaAlPc5AtRJmLAruSeGmx1BO7twHDTi
+         tiiwQUrDPTrSHNMhn86hK2i9HGubV7CN0dRLJT/mIpqj5mcNwjNDsLjXpq4hS+4ffOwZ
+         tiszA4Die3jB2y7RkgUPHIhWMDdhB7sPytKysJz3ZAVHnBuyIdnsEJDPaedDsIbNjtQz
+         g1aExzpVYkbROFnqsKwokSe2AGfz8FOavv2bao+MtAv3CxWtJErBuhG/32p9C2VrRYKN
+         7hgyZ9Pm+LXsmYcunJ5b2bKX8BJ7mJHzGNP9HtNZzrPWp1n12jnkJLMIpVM2o6shTEZU
+         nnCw==
+X-Forwarded-Encrypted: i=1; AJvYcCUIA1APIB+1IXaJSTYld/QCmEc+YQtiTxQU+0hiXS1IJ7dl3+SbEoivIoGLL3Rt+dyv1Jvqf5ol@vger.kernel.org, AJvYcCVAtMZwqvBaghoKPvWhxRe+dogpLB5F85HKRwxWfq9wGoSwj2OrY6kSANwIYysufOyMdQ13Op8MIXPA@vger.kernel.org, AJvYcCVS1daRC6bzX4QHacuXx/Axq+TYWzUsmvsvavZ1spW2QHxesWHYfTT/OqrsDUj1guESVbxvG4pzPN+tS23toYk=@vger.kernel.org, AJvYcCWsAMbak7iBv9MOlSQ3bdWPsrNby2V/vIyRjiEZ0fmnrWcAG6PKoxEImYU5NSUfjPgXf6MB+1wcUzlKZM1v@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw80Bl/eCnReMrBbhcMMYZPNkDJoWLNFA3qinKBehRBL/ZpLhU8
+	1ZWrEEvIWJM5/QBsLYrK5aFKqp4HYkloFMc2eWMz6TPz/0ZfiFDLNOIL79b00FI5tPmx/C1Q2i8
+	ZU194xuOhgBdPeZb0trwY2S6tRHQ=
+X-Gm-Gg: ASbGnct6exCBj4xdRBsNdU2qWnitw9JO2TT5yDWfxOvxcBTQYE5uwg4bj8L3Yto0dY/
+	8gAATxVLCoIkAz3+xTa3QA4+lfW3U9aSeoSU=
+X-Google-Smtp-Source: AGHT+IHiGI51RueWOS5PEJQEG+4Gh2nJXRo4OsJkgCK1jqR6c9JsfhkuPRwhfJ6Gu9P1fz4wuUEMdL6zMVunaz4Mo1A=
+X-Received: by 2002:a05:651c:150c:b0:300:41a8:125b with SMTP id
+ 38308e7fff4ca-30041a813f7mr47506931fa.37.1733848642191; Tue, 10 Dec 2024
+ 08:37:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z1gll87-TkAqFwUz@J2N7QTR9R3>
-X-Migadu-Flow: FLOW_OUT
+References: <20241208204708.3742696-1-ubizjak@gmail.com> <20241208204708.3742696-3-ubizjak@gmail.com>
+ <20241209113039.GN21636@noisy.programming.kicks-ass.net>
+In-Reply-To: <20241209113039.GN21636@noisy.programming.kicks-ass.net>
+From: Uros Bizjak <ubizjak@gmail.com>
+Date: Tue, 10 Dec 2024 17:37:10 +0100
+Message-ID: <CAFULd4Y7-_Zax3S-m3H6ok9SvsBgS7DmJjSu=3VZ1hyzT71jjg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] compiler.h: Introduce TYPEOF_UNQUAL() macro
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-arch@vger.kernel.org, 
+	netdev@vger.kernel.org, Nadav Amit <nadav.amit@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	Christoph Lameter <cl@linux.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>, Brian Gerst <brgerst@gmail.com>, 
+	Denys Vlasenko <dvlasenk@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Nathan Chancellor <nathan@kernel.org>
+Content-Type: multipart/mixed; boundary="00000000000069a3ca0628ed186b"
 
-On Tue, Dec 10, 2024 at 11:27:19AM +0000, Mark Rutland wrote:
-> On Mon, Dec 09, 2024 at 11:37:12AM +0000, Mark Rutland wrote:
-> > Hi Kent,
-> > 
-> > On Thu, Dec 05, 2024 at 01:04:59PM -0500, Kent Overstreet wrote:
-> > > On 6.13-rc1, I'm now seeing a ton of test failures due to this warning -
-> > > what gives?
-> > 
-> > Sorry about this; I just sent what I *thought* was a fix for this:
-> > 
-> >   https://lore.kernel.org/linux-arm-kernel/20241209110351.1876804-1-mark.rutland@arm.com/
-> > 
-> > ... but re-reading the below I see you're actually hitting a different
-> > issue.
-> > 
-> > > 00104 ========= TEST   generic/017
-> > > 00104        run fstests generic/017 at 2024-12-05 11:47:43
-> > > 00104 spectre-v4 mitigation disabled by command-line option
-> > > 00106 bcachefs (vdc): starting version 1.13: inode_has_child_snapshots
-> > > 00106 bcachefs (vdc): initializing new filesystem
-> > > 00106 bcachefs (vdc): going read-write
-> > > 00106 bcachefs (vdc): marking superblocks
-> > > 00106 bcachefs (vdc): initializing freespace
-> > > 00106 bcachefs (vdc): done initializing freespace
-> > > 00106 bcachefs (vdc): reading snapshots table
-> > > 00106 bcachefs (vdc): reading snapshots done
-> > > 00106 bcachefs (vdc): done starting filesystem
-> > > 00200 ------------[ cut here ]------------
-> > > 00200 WARNING: CPU: 8 PID: 12571 at arch/arm64/kernel/stacktrace.c:223 arch_stack_walk+0x2c0/0x388
-> > 
-> > Looking at v6.13-rc1, that's the warning in
-> > kunwind_next_frame_record_meta() for when the frame_record_meta::type is
-> > not a valid value, which likely implies one of the following:
-> > 
-> > (a) The logic to identify a frame_record_meta is wrong.
-> > 
-> > (b) The entry logic has failed to initilialize pt_regs::stackframe::meta
-> >     on an entry path somehow.
-> > 
-> > (c) The stack has been corrupted, and some frame record has been
-> >     clobbered to look like a frame_record_meta.
-> 
-> Looking some more, I see that bch2_btree_transactions_read() is trying
-> to unwind other tasks, and I believe what's happening here is that the
-> unwindee isn't actually blocked for the duration of the unwind, leading
-> to the unwinder encountering junk and consequently producing the
-> warning.
-> 
-> As a test case, it's possible to trigger similar with a few parallel
-> instances of:
-> 
-> 	while true; do cat /proc/*/stack > /dev/null
-> 
-> The only thing we can do on the arm64 side is remove the WARN_ON_ONCE(),
-> which'll get rid of the splat. It seems we've never been unlucky enough
-> to hit a stale fgraph entry, or that would've blown up also.
-> 
-> Regardless of the way arm64 behaves here, the unwind performed by
-> bch2_btree_transactions_read() is going to contain garbage unless the
-> task is pinned in a blocked state. AFAICT the way
-> btree_trans::locking_wait::task is used is here is racy, and there's no
-> guarantee that the unwindee is actually blocked.
+--00000000000069a3ca0628ed186b
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Occasionally returning garbage is completely fine, as long as the
-interface is otherwise safe. This is debug info; it's important that it
-be available and we can't impose additional synchronization for it.
+On Mon, Dec 9, 2024 at 12:30=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Sun, Dec 08, 2024 at 09:45:17PM +0100, Uros Bizjak wrote:
+> > Define TYPEOF_UNQUAL() to use __typeof_unqual__() as typeof operator
+> > when available, to return unqualified type of the expression.
+> >
+> > Current version of sparse doesn't know anything about __typeof_unqual__=
+()
+> > operator. Avoid the usage of __typeof_unqual__() when sparse checking
+> > is active to prevent sparse errors with unknowing keyword.
+>
+> Ooooh, new toys.
+>
+> I suppose __unqual_scalar_typeof() wants to be using this when
+> available?
+
+Not only that, the new toy enables clang to check kernel's address
+spaces in a generic way using address_space attribute.
+
+Please find attached a follow-up patch that enables __percpu checks
+for all targets, supported by clang. Clang is a little bit pickier
+than gcc about named address space declarations (it warns for use of
+duplicated address space attribute), so the patch in addition to the
+obvious
+
++#  define __percpu_qual        __attribute__((address_space(3)))
+
+also fixes a couple of macros that could result in a duplicated
+address space attribute.
+
+The patch, applied as a follow-up to the series, survives allyesconfig
+compilation with clang-19 and produces a bootable kernel. The patch
+was tested only for x86_64 target, for other targets a couple of
+trivial fixes would be necessary (a cast or a substitution of typeof()
+with TYPEOF_UNQUAL()).
+
+AFAICS, the same approach using clang's address_space attribute can be
+implemented to also check other address spaces: __user, __iommu  and
+__rcu.
+
+Uros.
+
+--00000000000069a3ca0628ed186b
+Content-Type: text/plain; charset="US-ASCII"; name="percpu-clang.diff.txt"
+Content-Disposition: attachment; filename="percpu-clang.diff.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_m4iomhgl0>
+X-Attachment-Id: f_m4iomhgl0
+
+ZGlmZiAtLWdpdCBhL2luY2x1ZGUvYXNtLWdlbmVyaWMvcGVyY3B1LmggYi9pbmNsdWRlL2FzbS1n
+ZW5lcmljL3BlcmNwdS5oCmluZGV4IDAyYWVjYTIxNDc5YS4uNDEwOWQ4MjhhNTY0IDEwMDY0NAot
+LS0gYS9pbmNsdWRlL2FzbS1nZW5lcmljL3BlcmNwdS5oCisrKyBiL2luY2x1ZGUvYXNtLWdlbmVy
+aWMvcGVyY3B1LmgKQEAgLTE2LDcgKzE2LDEyIEBACiAgKiBzcGFjZSBxdWFsaWZpZXIpLgogICov
+CiAjaWZuZGVmIF9fcGVyY3B1X3F1YWwKLSMgZGVmaW5lIF9fcGVyY3B1X3F1YWwKKyMgaWYgX19o
+YXNfYXR0cmlidXRlKGFkZHJlc3Nfc3BhY2UpICYmIFwKKyAgICAgZGVmaW5lZChDT05GSUdfQ0Nf
+SEFTX1RZUEVPRl9VTlFVQUwpICYmICFkZWZpbmVkKF9fQ0hFQ0tFUl9fKQorIyAgZGVmaW5lIF9f
+cGVyY3B1X3F1YWwJCV9fYXR0cmlidXRlX18oKGFkZHJlc3Nfc3BhY2UoMykpKQorIyBlbHNlCisj
+ICBkZWZpbmUgX19wZXJjcHVfcXVhbAorIyBlbmRpZgogI2VuZGlmCiAKICNpZmRlZiBDT05GSUdf
+U01QCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2RldmljZS5oIGIvaW5jbHVkZS9saW51eC9k
+ZXZpY2UuaAppbmRleCA2NjdjYjZkYjkwMTkuLjFkNmE1NWQ1MjUwYSAxMDA2NDQKLS0tIGEvaW5j
+bHVkZS9saW51eC9kZXZpY2UuaAorKysgYi9pbmNsdWRlL2xpbnV4L2RldmljZS5oCkBAIC00MzEs
+OSArNDMxLDkgQEAgc3RhdGljIGlubGluZSBpbnQgX19kZXZtX2FkZF9hY3Rpb25fb3JfcmVzZXQo
+c3RydWN0IGRldmljZSAqZGV2LCB2b2lkICgqYWN0aW9uKSgKICAqIFJFVFVSTlM6CiAgKiBQb2lu
+dGVyIHRvIGFsbG9jYXRlZCBtZW1vcnkgb24gc3VjY2VzcywgTlVMTCBvbiBmYWlsdXJlLgogICov
+Ci0jZGVmaW5lIGRldm1fYWxsb2NfcGVyY3B1KGRldiwgdHlwZSkgICAgICBcCi0JKCh0eXBlb2Yo
+dHlwZSkgX19wZXJjcHUgKilfX2Rldm1fYWxsb2NfcGVyY3B1KChkZXYpLCBzaXplb2YodHlwZSks
+IFwKLQkJCQkJCSAgICAgIF9fYWxpZ25vZl9fKHR5cGUpKSkKKyNkZWZpbmUgZGV2bV9hbGxvY19w
+ZXJjcHUoZGV2LCB0eXBlKQkJCQkgICAgXAorCSgoVFlQRU9GX1VOUVVBTCh0eXBlKSBfX3BlcmNw
+dSAqKV9fZGV2bV9hbGxvY19wZXJjcHUoKGRldiksIFwKKwkJCQlzaXplb2YodHlwZSksIF9fYWxp
+Z25vZl9fKHR5cGUpKSkKIAogdm9pZCBfX3BlcmNwdSAqX19kZXZtX2FsbG9jX3BlcmNwdShzdHJ1
+Y3QgZGV2aWNlICpkZXYsIHNpemVfdCBzaXplLAogCQkJCSAgIHNpemVfdCBhbGlnbik7CmRpZmYg
+LS1naXQgYS9pbmNsdWRlL2xpbnV4L3BlcmNwdS5oIGIvaW5jbHVkZS9saW51eC9wZXJjcHUuaApp
+bmRleCA1MmI1ZWE2NjNiOWYuLmMzYmYwNDBhYmE2NiAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51
+eC9wZXJjcHUuaAorKysgYi9pbmNsdWRlL2xpbnV4L3BlcmNwdS5oCkBAIC0xNDgsMTMgKzE0OCwx
+MyBAQCBleHRlcm4gdm9pZCBfX3BlcmNwdSAqcGNwdV9hbGxvY19ub3Byb2Yoc2l6ZV90IHNpemUs
+IHNpemVfdCBhbGlnbiwgYm9vbCByZXNlcnZlZAogCWFsbG9jX2hvb2tzKHBjcHVfYWxsb2Nfbm9w
+cm9mKF9zaXplLCBfYWxpZ24sIHRydWUsIEdGUF9LRVJORUwpKQogCiAjZGVmaW5lIGFsbG9jX3Bl
+cmNwdV9nZnAodHlwZSwgZ2ZwKQkJCQkJXAotCSh0eXBlb2YodHlwZSkgX19wZXJjcHUgKilfX2Fs
+bG9jX3BlcmNwdV9nZnAoc2l6ZW9mKHR5cGUpLAlcCisJKFRZUEVPRl9VTlFVQUwodHlwZSkgX19w
+ZXJjcHUgKilfX2FsbG9jX3BlcmNwdV9nZnAoc2l6ZW9mKHR5cGUpLCBcCiAJCQkJCQlfX2FsaWdu
+b2ZfXyh0eXBlKSwgZ2ZwKQogI2RlZmluZSBhbGxvY19wZXJjcHUodHlwZSkJCQkJCQlcCi0JKHR5
+cGVvZih0eXBlKSBfX3BlcmNwdSAqKV9fYWxsb2NfcGVyY3B1KHNpemVvZih0eXBlKSwJCVwKKwko
+VFlQRU9GX1VOUVVBTCh0eXBlKSBfX3BlcmNwdSAqKV9fYWxsb2NfcGVyY3B1KHNpemVvZih0eXBl
+KSwJXAogCQkJCQkJX19hbGlnbm9mX18odHlwZSkpCiAjZGVmaW5lIGFsbG9jX3BlcmNwdV9ub3By
+b2YodHlwZSkJCQkJCVwKLQkoKHR5cGVvZih0eXBlKSBfX3BlcmNwdSAqKXBjcHVfYWxsb2Nfbm9w
+cm9mKHNpemVvZih0eXBlKSwJXAorCSgoVFlQRU9GX1VOUVVBTCh0eXBlKSBfX3BlcmNwdSAqKXBj
+cHVfYWxsb2Nfbm9wcm9mKHNpemVvZih0eXBlKSwgXAogCQkJCQlfX2FsaWdub2ZfXyh0eXBlKSwg
+ZmFsc2UsIEdGUF9LRVJORUwpKQogCiBleHRlcm4gdm9pZCBmcmVlX3BlcmNwdSh2b2lkIF9fcGVy
+Y3B1ICpfX3BkYXRhKTsK
+--00000000000069a3ca0628ed186b--
