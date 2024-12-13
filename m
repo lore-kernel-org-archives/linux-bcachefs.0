@@ -1,90 +1,72 @@
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EACA15442D;
-	Fri, 13 Dec 2024 03:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982A92A1BB;
+	Fri, 13 Dec 2024 03:35:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734060461; cv=none; b=SX3wj598JyMaH1AQtNzgRE71J4dPs1XzitxLRTFLS+iIPMdM6Fwl/NGAwnCKh0FMqqPa5aSQFOgQVph6zANsxZQW6C7HRpc6ohtr7WIo6O4rLcRxHBgijDJtR0Ev/g/PXdtiT3i/KLnice/cHvhGnSMYnrHcd0AfHBRs2Rq+aL8=
+	t=1734060943; cv=none; b=JL+EqmkYtTrcRSmUtayFDdKFghn17pq7YF/AnLsq+JqfoHA84SrL0mcKI87UCDDxGC3QrX2G2pAnRfSGaXsK0L9xLXTR6Cm3vfEqmqevDZOKCI6SWjmEy/oNdtA9Tn196pJhBOqwcRbEOdbJPlzR5a4IRmLPk6v9i3I9kV+zvfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734060461; c=relaxed/simple;
-	bh=4/jjuC43vN8x2oeyOx4d7hEt+VL5EwzaZxHOlSTloCM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Lrz4elE0l10bSh9MoJhK1H3p9enUCATi2n6aT/m9p8n/HGHxD48cdwicNQ0FLO2QVMlBg9j+uXuuJGAdlXAKNHWmrMMCm/XARYNVLeVOuAo7K8Uw2NhheQkJyU8kBfkGVO4/ljO/Jwbm4g4BNL/Ms9ghqdHrENwFqG9XtBw7GRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Y8ZX04m5mz1JF7P;
-	Fri, 13 Dec 2024 11:27:12 +0800 (CST)
-Received: from kwepemo500009.china.huawei.com (unknown [7.202.194.199])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9B72D140123;
-	Fri, 13 Dec 2024 11:27:29 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- kwepemo500009.china.huawei.com (7.202.194.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 13 Dec 2024 11:27:29 +0800
-Message-ID: <bf18e0fb-d436-46ea-9c8f-408e948965db@huawei.com>
-Date: Fri, 13 Dec 2024 11:27:28 +0800
+	s=arc-20240116; t=1734060943; c=relaxed/simple;
+	bh=G5QCpdwYGh2Mz5KQh/GEBZ3avnRe8+3shrENbKK+BqM=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=pxHQpcEWVExbRwerZTsygfMOMBbiD/XOKls8JHXCzmrMH3aR7023J99nlwpM+1GiN3P9ia3OYJHTdzqmuSxd6S6iB/h4G0S1cSFfdZo/br2/M5y7KO+Fa7zbPL5D79VwCAPXx9qbxxXLx/kMMn+FIa/u95YEov3pBsyKu7WbkCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=QyWoHagh; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="QyWoHagh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E6AC4CED2;
+	Fri, 13 Dec 2024 03:35:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1734060943;
+	bh=G5QCpdwYGh2Mz5KQh/GEBZ3avnRe8+3shrENbKK+BqM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QyWoHaghKaBJMZSboGpGE58nH3S5ZEEujrVnb0wgtQyw9BC/gKWq/FyMhivsws231
+	 pRIQSxxAhdiFl9C2S1VAz05O7+gIE0NNcL0j3ZwugWY5M+NLG07wd8xGiLenH84Tps
+	 nbaUNN1CO5MZ6Pv3RKUltq3pxdiWsueMyTWUoKjc=
+Date: Thu, 12 Dec 2024 19:35:41 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-arch@vger.kernel.org,
+ netdev@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Dennis Zhou
+ <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter
+ <cl@linux.com>, Linus Torvalds <torvalds@linux-foundation.org>, Andy
+ Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>, Nadav Amit
+ <nadav.amit@gmail.com>, Brian Gerst <brgerst@gmail.com>, Dan Carpenter
+ <dan.carpenter@linaro.org>, "H . Peter Anvin" <hpa@zytor.com>, Peter
+ Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v3 0/6] Enable strict percpu address space checks
+Message-Id: <20241212193541.fa3dcac867421a971c38135c@linux-foundation.org>
+In-Reply-To: <20241208204708.3742696-1-ubizjak@gmail.com>
+References: <20241208204708.3742696-1-ubizjak@gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: fix invalid declaration after label in
- str_hash.c
-To: Zhou Ding <zhouding@cmss.chinamobile.com>, <kent.overstreet@linux.dev>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20241212104912.122899-1-zhouding@cmss.chinamobile.com>
-Content-Language: en-US
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20241212104912.122899-1-zhouding@cmss.chinamobile.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemo500009.china.huawei.com (7.202.194.199)
 
+On Sun,  8 Dec 2024 21:45:15 +0100 Uros Bizjak <ubizjak@gmail.com> wrote:
 
-
-On 2024/12/12 18:49, Zhou Ding wrote:
-> We get 1 error when building kernel withW=1:
-> fs/bcachefs/str_hash.c:164:2: error: a label can only be part of a statement and a declaration is not a statement
+> Enable strict percpu address space checks via x86 named address space
+> qualifiers. Percpu variables are declared in __seg_gs/__seg_fs named
+> AS and kept named AS qualified until they are dereferenced via percpu
+> accessor. This approach enables various compiler checks for
+> cross-namespace variable assignments.
 > 
-> To resolve this, the code after the found: label was enclosed in a block
-> to comply with C89 rules, without affecting the logic of the code.
-> 
-> Signed-off-by: Zhou Ding <zhouding@cmss.chinamobile.com>
-> ---
->   fs/bcachefs/str_hash.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/str_hash.c b/fs/bcachefs/str_hash.c
-> index ed3c852fc0be..08625947ed99 100644
-> --- a/fs/bcachefs/str_hash.c
-> +++ b/fs/bcachefs/str_hash.c
-> @@ -160,7 +160,7 @@ static int check_inode_hash_info_matches_root(struct btree_trans *trans, u64 inu
->   	bch_err(c, "%s(): inum %llu not found", __func__, inum);
->   	ret = -BCH_ERR_fsck_repair_unimplemented;
->   	goto err;
-> -found:
-It has been fixed in [1].:)
+> Please note that current version of sparse doesn't know anything about
+> __typeof_unqual__() operator. Avoid the usage of __typeof_unqual__()
+> when sparse checking is active to prevent sparse errors with unknowing
+> keyword. The proposed patch by Dan Carpenter to implement
+> __typeof_unqual__() handling in sparse is located at:
 
-Thanks,
-Hongbo
+google("what the hell is typeof_unequal") failed me.
 
-[1] 
-https://lore.kernel.org/linux-bcachefs/qnfn3xzh6ve5cukeugxucloynbstf2itos3ddlmzu2w4sp7md7@7bkk2byif2ja/T/#t
-> +found:{
->   	struct bch_inode_unpacked inode;
->   	ret = bch2_inode_unpack(k, &inode);
->   	if (ret)
-> @@ -174,6 +174,7 @@ static int check_inode_hash_info_matches_root(struct btree_trans *trans, u64 inu
->   			ret = -BCH_ERR_fsck_repair_unimplemented;
->   		}
->   	}
-> +}
->   err:
->   	bch2_trans_iter_exit(trans, &iter);
->   	return ret;
+I think it would be nice to include within the changelog (and code
+comments!) an explanation-for-others of what this thing is and why
+anyone would want to use it.  Rather than assuming that all kernel
+developers are typeof() experts!
+
