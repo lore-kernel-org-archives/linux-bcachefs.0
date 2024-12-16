@@ -1,97 +1,72 @@
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.lony.xyz (unknown [172.105.251.223])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B3E1FF7DC
-	for <linux-bcachefs@vger.kernel.org>; Mon, 16 Dec 2024 09:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F1B207DE0;
+	Mon, 16 Dec 2024 19:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.251.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734342326; cv=none; b=ZkiInDGdbyNjJKwla3o3kf5/VKoViNY8m33rbbwH+S+tZETv3TbQT1yY82tsS56Oo0jdvIkGWeI+TxeAcmowmUlVr4kTISfyxzzMb4I4p9K73QqO95+j4TBGhlmTYOi98/SaQqCRSQ7HPNpDB0Y6siWiCDCc0u9zrfg/qQ1UCrI=
+	t=1734378185; cv=none; b=sX/fgxOJKwoWhMpnnFw4T5iuXrijaoeYzJJOFvq1z+D6v9axjgmgqhoNyhBTd9g3RieFetuTuk6SgEgLL/PjQJ8CBXp4ojttqAW15hk8ii98xUPZ7DXBDlxMe+YLgG8iw/omWtrfeivd+KqDY9I5it5r9JFcifEI4D7avzlej4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734342326; c=relaxed/simple;
-	bh=8mtxzrWV4gewRcK71MhxjCFiKSHPwB7UxiiQc1sf8Ko=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WmvD/DMNxRovyC1SgfwRoZ9eEnINZV/zLPiH8j69/QbZP3GW9ZpLcAwtQX8KrAXOrAiXd6Z0WE1HIwvuSu+VL4TB6RD6JhjtPAQ7GgOQriJ4pExHd34n6Bfuam2VZRHVoM/iXPJHkZhZdkWb2xnDSXojHvgpV2I/ljiJAvAIvWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a817be161bso36435635ab.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 16 Dec 2024 01:45:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734342323; x=1734947123;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EMzVsBAaxz4G1X0acZCRaYr/sYpeNPkFz7MQrq+3vj4=;
-        b=oCdRYjIrAvmdqDK9tDqHgpQobSYi/hACBFom/sG9EDWb9YMd8pLbuhaVH9BT16kZrH
-         iFfD1ll/Lr6lXsqJO38YxS+q7Ro/tkwNrMfcqzgCe6iqI1TQbeDy3ULP4hgyDmooAC0J
-         Mk4qGzMPB7vHQu/v7p82/VydAFqWsco7mzygC5iGSiymVOnpMiUNsrviZqk2+W41TroI
-         cS/ac+ZER+9t5THDy36a8uHjzthPk+jacGyrGswOmviXDTyGCfeAL6GBVYTol8z3yI9z
-         CbpCz71+smuQuS3eYr8vb/OXhzg8VqUaDn/Fl1SmUeH9tAqg+Ye0hEkSuzKvFcyyt0LK
-         UpXA==
-X-Forwarded-Encrypted: i=1; AJvYcCV3l4hfCD9P1VULi+goSY9YMqAthZ9feVKKNKOST5RbpIvvbfgjFMM2jjZuh3REZTiHdEKBpPWnL/Ws1qrzuQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwHGwk1eEwjVxS+eQnSp+hlFm5O805tVQXfVZ5zkjB0AqdslleP
-	hAhEKGNZmRf3I0K3m/tdQYtecpNLG5XiRb2Qh8RlFMWlYoNrnGu1wVu3DaNFdERsW7eq9h/Gkob
-	cHWVgKt4mN5mUv5c0TcOYQLXiNnVpFUgtGipya1JRLWAqn5fgmMfcUAY=
-X-Google-Smtp-Source: AGHT+IEp6IecTjPnXdiY0kfC4wTydw2PyX4iC0kaDv2/zdYsJx/UpbptRIFAprzDKEY2ZSf5bK5Ma2LWOdyjz/TXxT9mL9z08fSx
+	s=arc-20240116; t=1734378185; c=relaxed/simple;
+	bh=Jpw8fC0tv7WQKVMIxm+fYFx/JGkmz8LtbfJpAw4FyoQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=n4p3HP+YuPySHY8Qb5nL0NEAgTTSFN9WR3rqC2DraWaTsp140K3WIwu297Ux3xhKeONOC0CenqwpIu6+KlLf0iETiTTYnSz9MKT4qhs7vIvKARbtMQ/oCUM4CBaXedoi5gHwCmW9DobLYt0FW4KHrQ2NTcsRWnhKt3jFLpl+jbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=lony.xyz; spf=pass smtp.mailfrom=lony.xyz; dkim=fail (2048-bit key) header.d=lony.xyz header.i=@lony.xyz header.b=Q0qCKCTR reason="signature verification failed"; arc=none smtp.client-ip=172.105.251.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=lony.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lony.xyz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lony.xyz header.i=@lony.xyz header.b="Q0qCKCTR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lony.xyz; s=mail;
+	t=1734377602; bh=Jpw8fC0tv7WQKVMIxm+fYFx/JGkmz8LtbfJpAw4FyoQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Q0qCKCTR2d77fXwaBUqo9CaGrE7Di8RCw5vMMDcbRunh9jiIQdUq8+1GUK7+6zvFm
+	 yHXmFFwac2ShvSeUVOeeAltoVz4uZvrEhAWZw1fJXiwyitTTId9CrreQyIJJSIjNhy
+	 GvUYk3gsZwgP/rM75x3wQ8rJxgd6wGpOe/Q6Hw9ZFlIkz3LCrUls1V8Ek7sG2LejNW
+	 1wMBXdq1ZyMOLTY2JLma8Oss6E5jzh3ufqIHjuk4SdRgwQ4j5WN2ktFrQpi8SnyJzE
+	 GmrhWMSXxNFBkmy71jhpiOIi+a2kBuOz1KgiAgcpfS3HD/GoYusPzGuK8AzmaSh3mj
+	 0IBhxMHJcec9A==
+From: =?UTF-8?q?Sergio=20Migu=C3=A9ns=20Iglesias?= <sergio@lony.xyz>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Sergio=20Migu=C3=A9ns=20Iglesias?= <sergio@lony.xyz>
+Subject: [PATCH] bcachefs: Reverse first btree write conditional
+Date: Mon, 16 Dec 2024 20:32:53 +0100
+Message-ID: <20241216193259.114315-1-sergio@lony.xyz>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:db48:0:b0:3a9:cde3:2ecc with SMTP id
- e9e14a558f8ab-3ae62c90bd4mr104509675ab.6.1734342323627; Mon, 16 Dec 2024
- 01:45:23 -0800 (PST)
-Date: Mon, 16 Dec 2024 01:45:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <675ff6b3.050a0220.37aaf.0126.GAE@google.com>
-Subject: [syzbot] Monthly bcachefs report (Dec 2024)
-From: syzbot <syzbot+list6f489e4466839f688ee5@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello bcachefs maintainers/developers,
+The conditional led nowhere so it was inverted to clean the code.
 
-This is a 31-day syzbot report for the bcachefs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bcachefs
-
-During the period, 37 new issues were detected and 0 were fixed.
-In total, 108 issues are still open and 110 have already been fixed.
-
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  24764   Yes   INFO: task hung in bch2_copygc_stop
-                   https://syzkaller.appspot.com/bug?extid=c6fd966ebbdea1e8ff08
-<2>  6585    Yes   INFO: task hung in __closure_sync
-                   https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
-<3>  3362    Yes   WARNING in bch2_trans_srcu_unlock
-                   https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
-<4>  1635    Yes   KMSAN: uninit-value in bch2_inode_v3_validate
-                   https://syzkaller.appspot.com/bug?extid=3cd97352d16f0e6066d9
-<5>  1283    Yes   INFO: task hung in __bch2_fs_stop
-                   https://syzkaller.appspot.com/bug?extid=6d3e28b33490b3085412
-<6>  924     Yes   KASAN: slab-use-after-free Read in percpu_ref_put (2)
-                   https://syzkaller.appspot.com/bug?extid=905d719acdbd213bf67e
-<7>  904     Yes   BUG: Bad rss-counter state (5)
-                   https://syzkaller.appspot.com/bug?extid=f2bbbb592debc978d46d
-<8>  547     Yes   INFO: task hung in bch2_journal_reclaim_thread (2)
-                   https://syzkaller.appspot.com/bug?extid=820dc3b465c69f766a57
-<9>  487     No    possible deadlock in bch2_symlink
-                   https://syzkaller.appspot.com/bug?extid=7836a68852a10ec3d790
-<10> 427     Yes   KMSAN: uninit-value in rw_aux_tree_set (2)
-                   https://syzkaller.appspot.com/bug?extid=ed52fb987e4b52cbfad9
+Signed-off-by: Sergio Miguéns Iglesias <sergio@lony.xyz>
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/bcachefs/btree_io.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+index 839d68802e42..7dbb1d908d94 100644
+--- a/fs/bcachefs/btree_io.c
++++ b/fs/bcachefs/btree_io.c
+@@ -1862,11 +1862,7 @@ static void btree_node_write_work(struct work_struct *work)
+ 		goto err;
+ 	}
+ 
+-	if (wbio->wbio.first_btree_write) {
+-		if (wbio->wbio.failed.nr) {
+-
+-		}
+-	} else {
++	if (!wbio->wbio.first_btree_write) {
+ 		ret = bch2_trans_do(c,
+ 			bch2_btree_node_update_key_get_iter(trans, b, &wbio->key,
+ 					BCH_WATERMARK_interior_updates|
+-- 
+2.47.0
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
