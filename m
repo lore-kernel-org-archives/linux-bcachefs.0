@@ -1,127 +1,79 @@
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5982D224AED
-	for <linux-bcachefs@vger.kernel.org>; Thu, 19 Dec 2024 13:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3021482F2
+	for <linux-bcachefs@vger.kernel.org>; Thu, 19 Dec 2024 16:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734615026; cv=none; b=hJ13NAjUd0EY7m5y72n31cLHPUbU+T6nOcMFjJpg+0qRCNvOqVYN8XqVdlIdhd5i3gq7KuVcx5Kntl2Rb6Kjy2CWfdpFWvTa+5876XQEg3drzyeXXohOon48e+9tS4EtcGLDS0oHq8UmjTyICGckETuRR315pemdHls8zlEmvEo=
+	t=1734627005; cv=none; b=OGKqXauluFTY4ygYtd7Zgp82YAb+nJIZC+XgIKIfiVTUCSc7PMpAbWsNu30zpGC8yOmk1RVcNWH4LkBZXtPmOJD7Ck8oHvcgGFxI8L+94eD99ac9jp7QiDSSv+P8E4ld896HLJjP9vwGbYHwNkQU3rLx/oQYa3zeMA1jGiaLEyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734615026; c=relaxed/simple;
-	bh=ScMxMJ+guD/AlXNqo0SWrVtaRrRG3SND+X0aNE6n1+A=;
+	s=arc-20240116; t=1734627005; c=relaxed/simple;
+	bh=gS+npKdZGQZAbsWwUEudkXa3CKGCK66fIhIEVF8JjKY=;
 	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=R6rHNaahK+rh901fsyQoYUUQTVUjOC8ltDd8Bb0pMgx/BEgeY/udv+VtoVN6Qo7fnsDmAb2goBwnQWlu9FVx44GwBUB4WN280DUPCjKNHZkD8774IvkVc62JAvgw77tQd7zE/YDEnpixd5qeFaQn3IK1IPlELbyKujry/jXldiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+	 Content-Type; b=c8HESJrAhYeGoo+Rr5nItxvpJFxGLjgD15GYz7qSe57lw7NVAfvs1xMU+yoTmkV7wSQvLOLV2a6+LMXS1Oo6OH0CeX6a5BJQvYt5v8UGK2hvAxQMnOBhxHuqYvE9Ly77j8hSUAFCHHQzq9H2ZlLuzWcHciF3/j4mXgpcFXt+OPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3a81570ea43so6392575ab.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Dec 2024 05:30:24 -0800 (PST)
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-844e7f9d37dso172963139f.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Dec 2024 08:50:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734615023; x=1735219823;
+        d=1e100.net; s=20230601; t=1734627003; x=1735231803;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vo1cocR0B0oWJ6jBsl9zcws/oI8GgwxFYRDuU0YUrks=;
-        b=Kj8Yalpp1j7pWSOmscWp94kHWhxbwnvvU5DeVMx0ohJgr45ny7M57t+MvTixe0/AFP
-         KL1Ghw2dqAgYFQFD4vmudwTzrOsylj+/Ur1M9gJJ7896iN/h2cp/AQIj9hdLd+Wet+y1
-         aXugslCDDeUa/ZWApU8KJjDkdlVo8U+ZC88hm9dH1auEVB9NjmZRQIIwacJgY/oAOy4S
-         pgDvMC1p8KHbTtGvZmoq6yCSLUkRkNMNkKb2wfM9hLDbmmEHCTWiEqZ5eGwDfxejYL+y
-         4zIIcI2pDIdwSPRbgP9tXrVd2DFY3fbkyHJ1WPETCSNywYRGGuO6cttyOZyr13Co8WdE
-         WdIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUldfcA+SoPQJIgVJVx95m4D+PQylzo0KE+E9mbYnOX4sQbMca5eO41N9C6PtOoMpspugEwqP4zk/N5bifx0w==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywz2AtzhVP5FWALTt+Yb4GaVVa1N2903Eid4M9q5HemhB6RhBqw
-	9VKhf2ND2kGFcqNxg+Fqu871+0Fbj7QeFOY+eE0Mz+uoYGZz/0bpZI+4ZLeM02Dn4w1M1ySfqIz
-	ntaOa6owMlBvkWZz/6JBwQc4ZFI7Kj68V0WYFIjPw44HCOXJG3vz3j9w=
-X-Google-Smtp-Source: AGHT+IGdGE1tFCwJrZ6o6UeQa2EGKbGCwQCP3KgVCGUHlkn5uhdtJ2XJHLLvy5F1Hj6TF0iWaSo71zsRTZcG5JsqLIVGojwMPPjL
+        bh=4m5ECO5ZQYjU363K3tYMrrXZVX5Ak+kvSrvy0oU41eQ=;
+        b=lD+RIfzDkD8Y9Mgd6GsWC7VXqACR8MmhqnGk3z5EhsdoikfpSO75Si7ye8zQBSKoWx
+         NGH8Kxyk97GEKRIy9CzFZoxzhiKUHTePCXAvUfwtVOOggnK3n1H0UIhYcNv3OVEz4fYd
+         aQzDHEB4lEdsU8Tg6oouCE8xphYiRwTzZwRxMKxGrZ6DISX/sEwazOn5huWqR2/2SxzL
+         l3b6j6FZkwA2hz78POThbuXauXsd6fcpUJ38X5nydX0MYHPb8RcnPSDe8IxyIaKJiLGQ
+         JFqfVXN6mUASp8zgyniZcs0m8KhQrQqzm9dxvDBfwGf0kXhqKadN1WL4D6TDjodOHHup
+         +m5A==
+X-Forwarded-Encrypted: i=1; AJvYcCX1tXpx5LtS5jTYHaRBjECFYRw5LzgW84nbJEa1dxAAjEbMCY/GbpQ87HXU992Jj9DQO24xy6PH5q7maxbKYw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwboUipOziTqf8EdmH2UfneQuvnNvvIP99/rPvtDKltNubwF2l0
+	Xe5T+W8IJo/eZBolRv8AfJ0X1ZHcxvpnCRovl4Uy7NxoLPoyYD43EzGcu9Onk1f55YNHoiBappG
+	2bF4N07jy1lLkNLWaQOgkw2kZsDKSNaSgeAtrtd0yM5tS8nc6AAUdUGI=
+X-Google-Smtp-Source: AGHT+IGq9d8xZKFDmkARN3f/WM6Eh2iRfI+5dIlGJY6myaXwmpftKqfsBzOeYPZR0+Elp5/JMzLFhbx/Ilstz/LNysJK6bxIfXw5
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a8e:b0:3a7:c2ea:1095 with SMTP id
- e9e14a558f8ab-3bdc031d9d0mr56998945ab.1.1734615023371; Thu, 19 Dec 2024
- 05:30:23 -0800 (PST)
-Date: Thu, 19 Dec 2024 05:30:23 -0800
-In-Reply-To: <6759ca87.050a0220.1ac542.000e.GAE@google.com>
+X-Received: by 2002:a05:6602:168c:b0:83a:9488:154c with SMTP id
+ ca18e2360f4ac-847584f267fmr893413439f.3.1734627002755; Thu, 19 Dec 2024
+ 08:50:02 -0800 (PST)
+Date: Thu, 19 Dec 2024 08:50:02 -0800
+In-Reply-To: <6714a705.050a0220.1e4b4d.0035.GAE@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67641fef.050a0220.3157ee.0019.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] WARNING in __srcu_check_read_flavor
-From: syzbot <syzbot+4a606091891fbc6811cf@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, kvm@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
+Message-ID: <67644eba.050a0220.1e8afc.0001.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] general protection fault in put_pwq_unlocked (2)
+From: syzbot <syzbot+aa930d41d2f32904c5da@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, cem@kernel.org, clm@fb.com, djwong@kernel.org, 
+	dsterba@suse.com, josef@toxicpanda.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot has found a reproducer for the following issue on:
+syzbot has bisected this issue to:
 
-HEAD commit:    eabcdba3ad40 Merge tag 'for-6.13-rc3-tag' of git://git.ker..
+commit 62719cf33c3ad62986130a19496cd864a0ed06c3
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Sat Dec 23 22:50:29 2023 +0000
+
+    bcachefs: Fix nochanges/read_only interaction
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17a4f7e8580000
+start commit:   eabcdba3ad40 Merge tag 'for-6.13-rc3-tag' of git://git.ker..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12552e0f980000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1464f7e8580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1064f7e8580000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=1234f097ee657d8b
-dashboard link: https://syzkaller.appspot.com/bug?extid=4a606091891fbc6811cf
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bd77e8580000
+dashboard link: https://syzkaller.appspot.com/bug?extid=aa930d41d2f32904c5da
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16dc4cf8580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12faef44580000
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7a4dff87674a/disk-eabcdba3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/266bc2b7ced3/vmlinux-eabcdba3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ee4bcd9be832/bzImage-eabcdba3.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/5d8d9c438eb4/mount_0.gz
+Reported-by: syzbot+aa930d41d2f32904c5da@syzkaller.appspotmail.com
+Fixes: 62719cf33c3a ("bcachefs: Fix nochanges/read_only interaction")
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4a606091891fbc6811cf@syzkaller.appspotmail.com
-
-bcachefs (loop0): dropping and reconstructing all alloc info
-------------[ cut here ]------------
-CPU 0 old state 7 new state 1
-WARNING: CPU: 0 PID: 11600 at kernel/rcu/srcutree.c:734 __srcu_check_read_flavor+0x107/0x150 kernel/rcu/srcutree.c:734
-Modules linked in:
-CPU: 0 UID: 0 PID: 11600 Comm: syz.0.588 Not tainted 6.13.0-rc3-syzkaller-00073-geabcdba3ad40 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/25/2024
-RIP: 0010:__srcu_check_read_flavor+0x107/0x150 kernel/rcu/srcutree.c:734
-Code: c6 c8 01 00 00 4c 89 f0 48 c1 e8 03 42 0f b6 04 20 84 c0 75 38 41 8b 36 48 c7 c7 80 d1 0b 8c 89 ea 44 89 f9 e8 9a 7f db ff 90 <0f> 0b 90 90 eb a2 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 64 ff ff ff
-RSP: 0018:ffffc90003c37310 EFLAGS: 00010246
-RAX: ccec42c23dd3cf00 RBX: ffffe8ffffc330a0 RCX: ffff88802fceda00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 0000000000000007 R08: ffffffff81601962 R09: 1ffffffff2030a26
-R10: dffffc0000000000 R11: fffffbfff2030a27 R12: dffffc0000000000
-R13: 0000607f47633080 R14: ffffe8ffffc33248 R15: 0000000000000001
-FS:  00007f51f1dfe6c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f9d34769160 CR3: 000000005dcee000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- srcu_check_read_flavor include/linux/srcutree.h:269 [inline]
- srcu_read_lock include/linux/srcu.h:247 [inline]
- __bch2_trans_get+0x7c9/0xd30 fs/bcachefs/btree_iter.c:3228
- bch2_btree_root_read+0xb9/0x7a0 fs/bcachefs/btree_io.c:1771
- read_btree_roots+0x296/0x840 fs/bcachefs/recovery.c:523
- bch2_fs_recovery+0x2585/0x39d0 fs/bcachefs/recovery.c:853
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1037
- bch2_fs_get_tree+0xd68/0x1710 fs/bcachefs/fs.c:2170
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
- do_new_mount+0x2be/0xb40 fs/namespace.c:3507
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4057 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f51f2b874ca
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f51f1dfde68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f51f1dfdef0 RCX: 00007f51f2b874ca
-RDX: 00000000200000c0 RSI: 0000000020000000 RDI: 00007f51f1dfdeb0
-RBP: 00000000200000c0 R08: 00007f51f1dfdef0 R09: 0000000000808040
-R10: 0000000000808040 R11: 0000000000000246 R12: 0000000020000000
-R13: 00007f51f1dfdeb0 R14: 0000000000005911 R15: 0000000020000200
- </TASK>
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
