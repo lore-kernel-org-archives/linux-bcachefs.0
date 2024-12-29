@@ -1,77 +1,78 @@
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B94A2AE84
-	for <linux-bcachefs@vger.kernel.org>; Sat, 28 Dec 2024 17:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D86AC139
+	for <linux-bcachefs@vger.kernel.org>; Sun, 29 Dec 2024 04:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735405744; cv=none; b=YzmcMhU3MQPfRjzWRDpyo0Pkm1/4vBNcgvnU0nUqEqLLq20iZXpi3NJNK1oDRAktoZv44E16gpiLLy8ATZmsWpQQED9YLOmN5pPEeQAyYrKMXG+EJa7HE81ahVSCAyQS3HoXCpB2uY6EFu7RR1Kc/2NxCarS9PPTrQO0aBmOEQA=
+	t=1735445277; cv=none; b=a4Gsn1eF0y1D0FXPYvGgX6eLtb/kLNn5q3w1aJn2RoV4uP9c8ERF+df5mLn6FbiLsnGwr4CDM9pTj89zpn7+/sbXYYeTWTo4568xqmIo2YzldbhvSfCp0mrzgVBEWHWIEXHDNz8Y3dwnJnJDjdL0ENFR5tybFkdf+nNh33RExkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735405744; c=relaxed/simple;
-	bh=QXv+LMEkSCdie+M1tUbv5blliD2bMKd4qfBZAIT78nY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=l8c+rnRBRREcGnHR1BI8259B8bPTN+B32QDwWIrO0Y3YwrgC13Sx8+VZi7FIVv876wBvhyDAevToAJcZLvc9vhyn9Yvt4d8CcBr/ppf625x0JlPosJCSTPDoOFgY52hzEqXt+DqJi0LQxm9G7Lh0aXEpnjVQ4t5Rg8oJIeIUx4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a78c40fa96so61951555ab.3
-        for <linux-bcachefs@vger.kernel.org>; Sat, 28 Dec 2024 09:09:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735405742; x=1736010542;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ZcTt5wNODzV4ymWgimvaflJ/wBP8nYeSyTJTtEV9sY=;
-        b=kiU8lvqM4aOpTfawln4OS2sGaQbkEjmtxde6G/LrXgvX6LkYSZTfSfSp6g7jl/HFP6
-         KQ9R5pRgcJ0EpXvK8k0SpvwExScJOMT/vgqyKXr56TV99GSPAonzALate7xVTMwMBKOm
-         QkiezOBxEasqF2BdP1+Jgjfl5tUPdBYO41pJqKXe20gjAoTDNw8Qluewt5vTJgK6+QXy
-         XWrU0Hh1BBnaG2WaRERnAb3wmdEX/+t8pqzE0IubHsPg3I4VO4p37S8wGoOJr0lJoFpo
-         vfbuiqvKU83+H47dd8w7r8IBkN4jE87S+MiUtaFuN9O4j2FXfQUbX6+rGIzDq7m6zayO
-         WMlg==
-X-Forwarded-Encrypted: i=1; AJvYcCUc/HTU3fivsgzmTuQ9OzMSDrQdBJklQIDuTuzDOSChSUIwfj/I2IkhhQ7rufmLxuBp23n6tM+Z0uVnnQMEcQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeOQs4WxnPVCCAdPnk2V9UWfaLuCXZDNmp/dTkjhy2xRzBSVcv
-	wvGICUT29Hzwou0qGoXpEAjF3BSyNY16T3DAa/zcQXljQj1nNHmCRTxGhWIpy2PaRGym9UL+812
-	tm0EBZ5t+zYbYclqIbs0NBjXFx9nNwO3AcSIUzAP+SBQcmjPT/gFJtcY=
-X-Google-Smtp-Source: AGHT+IHa8AMsCduRf9JDHOTy8Djorvmuz34ixSapIcc8DCKkGF4sJWU/UHMwHD8diZ9eSKdenpyXFE8Q1z6xiQeMC6SR7YmWqxFx
+	s=arc-20240116; t=1735445277; c=relaxed/simple;
+	bh=rnaQcgxp8acWqoIPlm71xOOuFXy6OSmI1BE6s6F4VVI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=br62z4KV8fe/QBDCLMBEL46HJnpxUQJJ6lmvv4wiUQXdlZYj54BetEi7S/2CAEfsQkiUF7CbFmz27+vFAnr3woBaS4gm5M/VG4EgqyCkAhKRNVLf03ZERuTuSQvYJ88gtsu0OJNirLuCQ7PM+6sOCpbagnGcmiXmKQu17lxxVwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=675GXKOC; arc=none smtp.client-ip=104.245.9.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="675GXKOC"
+DKIM-Signature: a=rsa-sha256; bh=HCkrl4q0Kewe+ZXMj5YENh8S3PMoaXmMoKbnUR2poys=;
+ c=relaxed/relaxed; d=archlinuxcn.org;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
+ i=@archlinuxcn.org; s=default; t=1735445271; v=1; x=1735877271;
+ b=675GXKOCrfiGcEI+sSLfkGLVmJr9mvZekvExTCay3bNsVrgIuaNnOJ3y+02X0IT9ed3GLx1z
+ XJEzj3+CIkHC/bjOFgr1UUhyDH+jAeT/vTJrEzlchHABv99x4U6pRDbOdpUl6va1Z9n6Eiwh+LP
+ WTdHzI6QAviNKT7v9Y9dLFB0lWmCtMLSlOf2RIe2JTxgddJL2Ge3ET4/beQHKzwa4qfG6bAMHi9
+ Z9NhXun7G35/pnhmItXwPSxFfXl/R7+inFYg1dD7VZp6uBrb/r+gZbiPcrumImbMfGVQUTT8Y+1
+ m0q1VkdGe4pVjByz7eqeD+NZ1aHB9E48sJ3YORR65ZlxQ==
+Received: by wiki.archlinuxcn.org (envelope-sender
+ <integral@archlinuxcn.org>) with ESMTPS id 08bd86c2; Sun, 29 Dec 2024
+ 12:07:51 +0800
+From: Integral <integral@archlinuxcn.org>
+To: kent.overstreet@gmail.com,
+	kent.overstreet@linux.dev,
+	lihongbo22@huawei.com
+Cc: mmpgouride@gmail.com,
+	linux-bcachefs@vger.kernel.org,
+	integral@archlinuxcn.org
+Subject: [PATCH resend] bcachefs-tools: fix build failure on liburcu v0.15.0
+Date: Sun, 29 Dec 2024 12:07:40 +0800
+Message-ID: <20241229040739.160204-2-integral@archlinuxcn.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aaa:b0:3a7:e103:3c43 with SMTP id
- e9e14a558f8ab-3c2d514fb31mr268602885ab.19.1735405741808; Sat, 28 Dec 2024
- 09:09:01 -0800 (PST)
-Date: Sat, 28 Dec 2024 09:09:01 -0800
-In-Reply-To: <000000000000545c120618dd6c63@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <677030ad.050a0220.226966.00b0.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] INFO: task hung in bch2_readahead
-From: syzbot <syzbot+a6060114362257e9798a@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot has bisected this issue to:
+After upgrading liburcu to v0.15.0, bcachefs-tools failed to build. This patch
+fixes build errors on liburcu v0.15.0.
 
-commit 1d16c605cc55ef26f0c65b362665a6c99080ccbc
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Thu Nov 9 19:22:46 2023 +0000
+Signed-off-by: Integral <integral@archlinuxcn.org>
+---
+ include/linux/atomic.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-    bcachefs: Disk space accounting rewrite
+diff --git a/include/linux/atomic.h b/include/linux/atomic.h
+index f7b2619a..128f21f6 100644
+--- a/include/linux/atomic.h
++++ b/include/linux/atomic.h
+@@ -188,12 +188,12 @@ static inline i_type a_type##_read_acquire(const a_type##_t *v)		\
+ 									\
+ static inline void a_type##_set(a_type##_t *v, i_type i)		\
+ {									\
+-	return __ATOMIC_SET(&v->counter, i);				\
++	__ATOMIC_SET(&v->counter, i);					\
+ }									\
+ 									\
+ static inline void a_type##_set_release(a_type##_t *v, i_type i)	\
+ {									\
+-	return __ATOMIC_SET_RELEASE(&v->counter, i);			\
++	__ATOMIC_SET_RELEASE(&v->counter, i);				\
+ }									\
+ 									\
+ static inline i_type a_type##_add_return(i_type i, a_type##_t *v)	\
+--
+2.47.1
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=123350b0580000
-start commit:   eabcdba3ad40 Merge tag 'for-6.13-rc3-tag' of git://git.ker..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=113350b0580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=163350b0580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1234f097ee657d8b
-dashboard link: https://syzkaller.appspot.com/bug?extid=a6060114362257e9798a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b47730580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d75f44580000
-
-Reported-by: syzbot+a6060114362257e9798a@syzkaller.appspotmail.com
-Fixes: 1d16c605cc55 ("bcachefs: Disk space accounting rewrite")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
