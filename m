@@ -1,21 +1,21 @@
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E20F61991CA
-	for <linux-bcachefs@vger.kernel.org>; Mon, 30 Dec 2024 21:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73ED19A298
+	for <linux-bcachefs@vger.kernel.org>; Mon, 30 Dec 2024 21:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735594981; cv=none; b=ncMgSKJyi9dhQJUi1g2ocW/tIdewEMpkV1G/DbneBKISR1aLSgOM+0dmm2Ou7Jzwp+4jxpp2t1CUF1VBJZXgDV4T0NsrryrwqSGxu7AuyVtlypuX2V+PErK8p1ArzM2tnoKiwPnGrdQHB08Rl3yGaXPQNgfoH5LBi3Lc5pIrzT8=
+	t=1735594982; cv=none; b=b9TDPorZjImcWXn866Z6F5hiSQBOe6r8SykDD8FEZZaLqqH7KD+McfxtPs3B2dZBrVqiTwLQRtJ1OHVCafBV3yU/acm+T7qhANhKNzA2gCVp5WAtNUdbp9J6yLpS/iKg92j7amDdniA74s2/RQg5G8UIgZKqStDQsNOCviWyaRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735594981; c=relaxed/simple;
-	bh=sQhIlXsSqqL28K64U1nCmyGAcmrSp3ArrVkV2NygV1U=;
+	s=arc-20240116; t=1735594982; c=relaxed/simple;
+	bh=cL6c/MSJ6jLz6ZPudHs5NHGbi41haY6zffG8A4U9UwY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PrhgwKSm+msYsnotxJ5DgaTjp0Fla8TG6fW+inOrlx5lfyXWEKLlo53FSPq+FeuxuQ0uIpYOaPodmNHKyV5VqjZe3p80hmgzmrBMgzsPe0T1K9PJyi0jAzzd1QTqiLgqvjBj8CJKNhJAEZfDFZdlfu7bgDeu9WkNz8DtQBssck4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UQi2JNEB; arc=none smtp.client-ip=91.218.175.187
+	 MIME-Version; b=N9fadvtA9jTu6RPF1DTn+eenYfkFgnS8sScX4DO/rhPAdk8L1/1D49gMpQCueAaa6Gw9EaKOOKlEgolrDTNb9QJ11gbiPVu40tgM+hPgfmr5uGS/mCv7W9pNcDDbM9FFOO3lP78LomU/Bxb4dSgtjLWukDoMalDVWRhP3PLVqMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NYCBdj7D; arc=none smtp.client-ip=91.218.175.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UQi2JNEB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NYCBdj7D"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	t=1735594978;
@@ -23,16 +23,16 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GNTwx2xesbCR/BqZyTJRrn58I3VCXSSo64Z6GcO64/I=;
-	b=UQi2JNEBtRr8yq/+RBElzTCw2z+dyjguvJDknKeEwTR/dnAWIXE3XgBwVN+AIApTbagMBG
-	3UPp/gqPafBrvjdA6dk12L0Zik0DPfmGjO14cYFL4PTb2PJlmw9vnwA+ekjjNu1wmZcc4y
-	YqQHUx+elQpXOhqggz3D8oaQGmm3AJA=
+	bh=znN7eL7OYvl6N5b1BtmrYzF726SCLBWAt0W/orfct6w=;
+	b=NYCBdj7DZx9XBNy5SXeaoqfYLelrUiibzg2r0VGD8QdaOHQChs1vKLd30n8onwaCcoYOWH
+	F62/W5pUIKybegHXKxQEOB+J3x9uvEIb/ZADJhw2vAkyo2cxcC9eKHTxxUCcYh26zL7dOd
+	xZ1S9g9c9ZxjaTVXKUEnj/2aRXBaYC0=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 02/11] bcachefs: backpointer_get_key() doesn't pull in btree node
-Date: Mon, 30 Dec 2024 16:42:40 -0500
-Message-ID: <20241230214249.242966-2-kent.overstreet@linux.dev>
+Subject: [PATCH 03/11] bcachefs: bch2_btree_node_rewrite_key()
+Date: Mon, 30 Dec 2024 16:42:41 -0500
+Message-ID: <20241230214249.242966-3-kent.overstreet@linux.dev>
 In-Reply-To: <20241230214249.242966-1-kent.overstreet@linux.dev>
 References: <20241230214249.242966-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,70 +44,62 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-We may not need to pull in a btree node when walking backpointers -
-don't do so unnecessarily when using backpointer_get_key().
-
-It'll still fall back to backpointer_get_node() in a few situations,
-including btree roots (where an iterator can't point at just the key),
-and races due to the interior update path not having deleted a
-backpointer to an old node yet.
+Add a new helper for rewriting a btree node given a just the key, not a
+pointer to the node itself.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/backpointers.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ fs/bcachefs/btree_update_interior.c | 20 ++++++++++++++++++++
+ fs/bcachefs/btree_update_interior.h |  4 ++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/fs/bcachefs/backpointers.c b/fs/bcachefs/backpointers.c
-index ebeb6a5ff9d2..655be2332742 100644
---- a/fs/bcachefs/backpointers.c
-+++ b/fs/bcachefs/backpointers.c
-@@ -244,27 +244,31 @@ struct bkey_s_c bch2_backpointer_get_key(struct btree_trans *trans,
- 	if (unlikely(bp.v->btree_id >= btree_id_nr_alive(c)))
- 		return bkey_s_c_null;
+diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+index f4aeadbe53c1..ab111fec1701 100644
+--- a/fs/bcachefs/btree_update_interior.c
++++ b/fs/bcachefs/btree_update_interior.c
+@@ -2189,6 +2189,26 @@ int bch2_btree_node_rewrite(struct btree_trans *trans,
+ 	goto out;
+ }
  
--	if (likely(!bp.v->level)) {
--		bch2_trans_node_iter_init(trans, iter,
--					  bp.v->btree_id,
--					  bp.v->pos,
--					  0, 0,
--					  iter_flags);
--		struct bkey_s_c k = bch2_btree_iter_peek_slot(iter);
--		if (bkey_err(k)) {
--			bch2_trans_iter_exit(trans, iter);
--			return k;
--		}
-+	bch2_trans_node_iter_init(trans, iter,
-+				  bp.v->btree_id,
-+				  bp.v->pos,
-+				  0,
-+				  bp.v->level,
-+				  iter_flags);
-+	struct bkey_s_c k = bch2_btree_iter_peek_slot(iter);
-+	if (bkey_err(k)) {
-+		bch2_trans_iter_exit(trans, iter);
-+		return k;
-+	}
- 
--		if (k.k &&
--		    extent_matches_bp(c, bp.v->btree_id, bp.v->level, k, bp))
--			return k;
-+	if (k.k &&
-+	    extent_matches_bp(c, bp.v->btree_id, bp.v->level, k, bp))
-+		return k;
- 
--		bch2_trans_iter_exit(trans, iter);
-+	bch2_trans_iter_exit(trans, iter);
++int bch2_btree_node_rewrite_key(struct btree_trans *trans,
++				enum btree_id btree, unsigned level,
++				struct bpos pos, unsigned flags)
++{
++	BUG_ON(!level);
 +
-+	if (!bp.v->level) {
- 		int ret = backpointer_target_not_found(trans, bp, k, last_flushed);
- 		return ret ? bkey_s_c_err(ret) : bkey_s_c_null;
- 	} else {
- 		struct btree *b = bch2_backpointer_get_node(trans, bp, iter, last_flushed);
-+		if (b == ERR_PTR(-BCH_ERR_backpointer_to_overwritten_btree_node))
-+			return bkey_s_c_null;
- 		if (IS_ERR_OR_NULL(b))
- 			return ((struct bkey_s_c) { .k = ERR_CAST(b) });
++	/* Traverse one depth lower to get a pointer to the node itself: */
++	struct btree_iter iter;
++	bch2_trans_node_iter_init(trans, &iter, btree, pos, 0, level - 1, 0);
++	struct btree *b = bch2_btree_iter_peek_node(&iter);
++	int ret = PTR_ERR_OR_ZERO(b);
++	if (ret)
++		goto err;
++
++	ret = bch2_btree_node_rewrite(trans, &iter, b, flags);
++err:
++	bch2_trans_iter_exit(trans, &iter);
++	return ret;
++}
++
+ struct async_btree_rewrite {
+ 	struct bch_fs		*c;
+ 	struct work_struct	work;
+diff --git a/fs/bcachefs/btree_update_interior.h b/fs/bcachefs/btree_update_interior.h
+index 7930ffea3075..fa5a88f95d89 100644
+--- a/fs/bcachefs/btree_update_interior.h
++++ b/fs/bcachefs/btree_update_interior.h
+@@ -169,7 +169,11 @@ static inline int bch2_foreground_maybe_merge(struct btree_trans *trans,
  
+ int bch2_btree_node_rewrite(struct btree_trans *, struct btree_iter *,
+ 			    struct btree *, unsigned);
++int bch2_btree_node_rewrite_key(struct btree_trans *,
++				enum btree_id, unsigned,
++				struct bpos, unsigned);
+ void bch2_btree_node_rewrite_async(struct bch_fs *, struct btree *);
++
+ int bch2_btree_node_update_key(struct btree_trans *, struct btree_iter *,
+ 			       struct btree *, struct bkey_i *,
+ 			       unsigned, bool);
 -- 
 2.45.2
 
