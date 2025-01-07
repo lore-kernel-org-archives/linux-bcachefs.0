@@ -1,75 +1,85 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2200C3597E
-	for <linux-bcachefs@vger.kernel.org>; Mon,  6 Jan 2025 18:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46401DF749
+	for <linux-bcachefs@vger.kernel.org>; Tue,  7 Jan 2025 13:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736188027; cv=none; b=Arhbg8TSncHMZECCyMQyeNCPFD7Pa2dJbBaHRAr+EPrh6r2l7KhCJ+UFIDvjer+fFFwV9+LR46oLiRSNvElXmDDAD0Ro/LJDPhpYzI0T81EamvzCmODa4VYf4CkoAjowm0Clqei8uR7RlV8UQqvUXC2MLsDEPBzKilCnLlYT6Lo=
+	t=1736256457; cv=none; b=YsPdqnCtTLx8z0pKFIWQccwL7/5fUsucxe+5DriI0RRNSQbJ+rZS/ZktMMEvm6OgBLCGD2xEFHUO1oPms5MRtaHCair6WfdOlByi6+VsjtcEiH3b2ngpn68vQeNrNe2farq35T9DlV+xZ0UH/NuafsOYUKymOT4iea7t2VD+VMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736188027; c=relaxed/simple;
-	bh=gGOLAwP1EZ0ZTRlAE43nGbdk3D6Bn52OdYPT9LGpmX0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=gNzIKT+On53hmylSsyeiXUfI1ZJeqli3bOMQulUcBP84WCVhM91S4rFPLjw1zLVVPe9g4h8FIALLfQdpGGM6UlcXmwePf2E2Y/x76kEJ5irqaVYBqeFgFIEhuwuRtZvXkvylZl/w6ft2Il601NSnXYcokkQnxvLH4l9mm8eYZ5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a81754abb7so265211835ab.2
-        for <linux-bcachefs@vger.kernel.org>; Mon, 06 Jan 2025 10:27:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736188025; x=1736792825;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kir2/JWrpSNpLip4e6OfbuVl3hBRWtvlG0BNX/+ljgA=;
-        b=sbkr+ddeyE6l4B/n2FEQvmyetL1FZOnPBYa9jLNiLg7LKqcgrCAWc85tyX5pEwMZpp
-         e6WJnlptnWHl/TvM0P0OU++tP7cyhlxZ80dvGGkUwt7VY2GZttQaL74QJ6exgeqnMmt5
-         Hh+AOVTxK4Gi4ndVcV9GnhJLSKRD9p9rw29SJFJlCWeii3CdtCPqklBv1TfbFafnt9Y6
-         8/JM5t/hiCi4Bmwc3Yfx85vO0IMzsfPdLezKe46EszLTHPJBX9wBrUwRJm4BWL8l/B/1
-         1q2agp5pfLdZWBgVSN7LOCutO5DHTXiLQNkz+kKr+4OT7FNIRcB1GOXZ7/On/ai3ktEg
-         ZkUg==
-X-Forwarded-Encrypted: i=1; AJvYcCUprM0rCd6G/BRZrrdwnI5QKqojAS9WMnaKdtrWUGKFP7+6MkmarSRzF95gzTcErgkbHVPHgjWc4MLnnESDVQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRePzEs5DyLffJuCNQA/Vx+SiEjwRfrh2EkgsL9ok3El9lyQPv
-	/fuyxngnWKeB83TkrxeBahgz2qxs6Enlc4Qg9ACq06DvdDjc/WJ+JJ2GfT5safNmmvnX906Dsl+
-	G8Nqo2qWv/f6CUbaDp0oRhF2QhthXnSsgXKBqXf3Bb5yc7l74TnDYL9I=
-X-Google-Smtp-Source: AGHT+IHopIVVaA93y2kP4vMQY0/8Wg41WrZbGIkG1bKaRIk3gWynhz6d+V9nMdThtxayZsNdKlyzsJJBRE2ep0zvNnCPkZMoMuYa
+	s=arc-20240116; t=1736256457; c=relaxed/simple;
+	bh=rys4wRX8SCcMIUyK28n51emZUACkG6EOFDDO7GB182k=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MEKInmFuixHYWTE52iI1sd73vlBOXI88lmJsKeVFyoA4od17b7VsTT1fwtH46dGC36/W2Oh/CrBRVPhtIO3sPOPoj+qa9y5LaEg4NsHBavaG8NKkJp6jJGdubD2UK9nJ0JrlqlEqWO6qWHofXsJwWWOTy/m4wpj1SXO5e058wF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YSBZt74JNzxWtG;
+	Tue,  7 Jan 2025 21:23:50 +0800 (CST)
+Received: from kwepemo500009.china.huawei.com (unknown [7.202.194.199])
+	by mail.maildlp.com (Postfix) with ESMTPS id E4EAF1800CB;
+	Tue,  7 Jan 2025 21:27:31 +0800 (CST)
+Received: from huawei.com (10.67.174.162) by kwepemo500009.china.huawei.com
+ (7.202.194.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 7 Jan
+ 2025 21:27:31 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
+Subject: [PATCH v3 0/2] bcachefs: make directory i_size meaningful
+Date: Tue, 7 Jan 2025 13:18:39 +0000
+Message-ID: <20250107131841.91603-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20e4:b0:3a7:1f72:ad3c with SMTP id
- e9e14a558f8ab-3c2d514ff8cmr434222755ab.19.1736188025328; Mon, 06 Jan 2025
- 10:27:05 -0800 (PST)
-Date: Mon, 06 Jan 2025 10:27:05 -0800
-In-Reply-To: <6717a66e.050a0220.10f4f4.0127.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <677c2079.050a0220.a40f5.0012.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] INFO: task hung in __closure_sync_timeout
-From: syzbot <syzbot+43d0c6eb00a26a41ec60@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemo500009.china.huawei.com (7.202.194.199)
 
-syzbot suspects this issue was fixed by commit:
+The isize of directory is 0 in bcachefs if the directory is empty.
+With more child dirents created, its size ought to change. Many
+other filesystems changed as that (ie. xfs and btrfs). And many of
+them changed as the size of child dirent name. Although the directory
+size may not seem to convey much, we can still give it some meaning.
 
-commit bcf77a05fb3d6210026483703bcacb22ed961c99
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Fri Nov 8 05:25:18 2024 +0000
+The formula of dentry size as follow:
+    occupied_size = 40 + ALIGN(9 + namelen, 8)  // not include the '\0'
 
-    bcachefs: Fix hidden btree errors when reading roots
+To ensure compatibility with the old file system, we have implemented
+the check_directory_size in fsck which checks whether the size of
+directories matches the expected values during each fsck operation.
+To achieve this, we have introduced a new metadata version called
+'directory_size' to support this feature. We have conducted the
+following tests:
+  1. Creating and deleting subitems under the new file system;
+  2. Upgrading from the old file system to the new one;
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b69edf980000
-start commit:   2d5404caa8c7 Linux 6.12-rc7
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1503500c6f615d24
-dashboard link: https://syzkaller.appspot.com/bug?extid=43d0c6eb00a26a41ec60
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153bd8c0580000
+And the directory size feature works well.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Changes since v2: https://lore.kernel.org/linux-bcachefs/20240911011142.741429-2-lihongbo22@huawei.com/
+  - Rebase the code on testing branch.
 
-#syz fix: bcachefs: Fix hidden btree errors when reading roots
+Changes since v1: https://lore.kernel.org/all/2sjq2njetbhhqo2zuufrjuarzvo4jl2pid52idwdz45h7li4bm@throc6jwnckk/T/#m3fcb3fbdc17719523285030b9998722df0472ae3
+  - Add check_directory_size in fsck period.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Hongbo Li (2):
+  bcachefs: make directory i_size meaningful
+  bcachefs: bcachefs_metadata_version_directory_size
+
+ fs/bcachefs/bcachefs_format.h  |  3 ++-
+ fs/bcachefs/dirent.h           |  5 +++++
+ fs/bcachefs/fs-common.c        | 11 +++++++++
+ fs/bcachefs/fs.c               | 13 ++++++-----
+ fs/bcachefs/fsck.c             | 41 ++++++++++++++++++++++++++++++++++
+ fs/bcachefs/sb-downgrade.c     |  5 ++++-
+ fs/bcachefs/sb-errors_format.h |  3 ++-
+ 7 files changed, 73 insertions(+), 8 deletions(-)
+
+-- 
+2.34.1
+
