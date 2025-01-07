@@ -1,167 +1,146 @@
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6181DF749
-	for <linux-bcachefs@vger.kernel.org>; Tue,  7 Jan 2025 13:27:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41401F37C5
+	for <linux-bcachefs@vger.kernel.org>; Tue,  7 Jan 2025 15:02:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736256468; cv=none; b=uvM/CKxm1UxPR96+Ncv6Zx5FRXF/F1s8tvq++qZ05Hu4we859r0Xeev6qo4L2W5irvuaLHVTr97Y47R1htWLfYerRKdSigQxaCOlUKSRT7vaYbEyle/IeXXJXlet+HFGz5vcCyL5bUpn59h4TKkMSHD7sFZ7XXMngQ21tW3K46Q=
+	t=1736262136; cv=none; b=Op835rGgt0qpPzjNjWGm02v1q1KCnK15OhwIzJR1JdM9m0qy4iWfVwDONPsoW/2CvYUDIZ+ZFcMPAyvdbrj7Dcn06DOudOpYeUr5gPRRTnVzVw2hKd32FKoj6IMdIIM6v9nLDz+LigXsQa2LwYVv/p3AoRSU+nr1igjK0FrQ2hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736256468; c=relaxed/simple;
-	bh=vq97cAzOw5srpch3AaE/6oKKq3v+wf078ejSBNFl8yI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fEwzbu7iNVNpDo4tRfXzLU9EYajFR2RvlyIcOhnJPneXlvzEXW/AAclHgtROLQLYJttWEBfIipObZv5gKiq0WrTT7JF3Yhf71hP2TG1aSPGRe3Z/gNoOU45DfMAZGXBNKr1u8KKqfbSh1hO/Z4GIfNqWJ86ROfvV/d3kFW7saoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4YSBbl1Cw5z1kxfL;
-	Tue,  7 Jan 2025 21:24:35 +0800 (CST)
-Received: from kwepemo500009.china.huawei.com (unknown [7.202.194.199])
-	by mail.maildlp.com (Postfix) with ESMTPS id 41CE81A016C;
-	Tue,  7 Jan 2025 21:27:35 +0800 (CST)
-Received: from huawei.com (10.67.174.162) by kwepemo500009.china.huawei.com
- (7.202.194.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 7 Jan
- 2025 21:27:34 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <kent.overstreet@linux.dev>
-CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
-Subject: [PATCH v3 2/2] bcachefs: bcachefs_metadata_version_directory_size
-Date: Tue, 7 Jan 2025 13:18:41 +0000
-Message-ID: <20250107131841.91603-3-lihongbo22@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250107131841.91603-1-lihongbo22@huawei.com>
-References: <20250107131841.91603-1-lihongbo22@huawei.com>
+	s=arc-20240116; t=1736262136; c=relaxed/simple;
+	bh=qn54r7b/FPvqG+wIWbKHM+U2+Iy6nU1wZqTzHTYLfX8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZDoOVII74qDjFEf5JvSWIxDMPsFMG+TNEXcvN296Fbgv/5X9aSJOmcZ4l/kYmR8YxmnmAf90eYAAv4YrDJ720A9I6OJYR314gJt1tJ5nBIuk8Q+h3PN+7HLVdVV4+VYcn1EHBGqISwwMlp7JJm8MhxjST/fod0nFjd/kaNff9ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=r3OwLkH3; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="r3OwLkH3"
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-3003c0c43c0so175482261fa.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 07 Jan 2025 07:02:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1736262131; x=1736866931; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=B4NFkD0rEkCSEXl+KvjNag5xKUayGF3vAjhwLPDSB24=;
+        b=r3OwLkH3b7wB1KWIw0z+JXmz2PPWqEAVZiovTHbUqZY6n6bZVzOcA6Fvarxgd0oU+K
+         26BCJHLLuQnNhXnFxU82p45NV01G5UIEkOQ3ku9K2Jwh0roHPiDtM3IxqMbmC/7eLLFD
+         DrW/eAfepQ51/U6kwamz+pHX+iikBaZzCz6yobm3/Dl3WDAzo7u8XHsrpH6mGdLgAFpX
+         uM+pf0Gi7hVpuNVZnCpICOQUagCUDpIyWhkttqoNOD1No2GOizgXAm3seR2zZXBQMIjC
+         jx8CMYRyoz1s25ipnZS40XX8H66S0x9qu5WPH9tObDMqHq0AkaK0qm5jvDakxMqrHPm3
+         FHXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736262131; x=1736866931;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B4NFkD0rEkCSEXl+KvjNag5xKUayGF3vAjhwLPDSB24=;
+        b=nQbt0cr4YpJ+FEMWENZ0Ob1O/9djxi6MrnO3YniC6o9xB40IMAMk4RE63E2h/IV8mR
+         eIQAd9zT/Vh9gyQ8OBtqQStlfUVOOLGvyNnzUizi6VDXcLWPb6r65dHBdcyDNI4+eUXI
+         fQjyRSRezC+InIARsDshLXkNETtP3WE4SIjJoZIYz+Xw5tlT7rrhTzIDLfLQVmkQDK6X
+         6nOjfj3IrF5naN6uxrGqPMJdtrZ5JowB508tKM6BKnmlLQV90REukQLpQrGyQrOP+Y7w
+         feEs+phWVB/mkmbzsk494Rn/lEuzfsGa1o4N6sKNPRWoiGBekj91vSffZfSyVaf81acq
+         y0qw==
+X-Forwarded-Encrypted: i=1; AJvYcCXmHCiF8+JN6eW/nzjdQE2DTq5ClfqaMYnsPqOaHRMsneubnomL4/KFOiAeIzvFbISjSgrIMdOY8OPKuZi52g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXdvYMEIlyrgSNlZwwjo/jkg4OqWLx2WNXapsjkv7rnUPmDMoh
+	8sSqr+B/+9zBI6v0Kq/iPHRnEbV6kHqd+d1Ny1dJ2AEyKp91GVaKmSCWccDgNc5+fnAIspd25B3
+	UUhUhmQU8/JSpCGZ0Z9A7pbf2YG5YF0yPmsmuXTIb8+puReqBgQ==
+X-Gm-Gg: ASbGnct6HA3vu7sNSRcJb9+547pHRp4mQWb5nguPQM56lHYlClaZSSi2OhkILC+vamx
+	dyAPznM4QiXutTKRHA9oIBuOozJ/fzZEX1R87ECjJqPqCLtEbyswL8dDkkHOHQhrswQyo
+X-Google-Smtp-Source: AGHT+IH77BZtNxs56HxjJevmIWr110IXTMZWvZwh3ineB+d6k9t8VaK9SeeHC/nFvCt6ylQ/U3p48bJi/cpm2SmP53s=
+X-Received: by 2002:a05:651c:546:b0:300:3fef:a9e8 with SMTP id
+ 38308e7fff4ca-30468608a62mr224707231fa.28.1736262130601; Tue, 07 Jan 2025
+ 07:02:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemo500009.china.huawei.com (7.202.194.199)
+References: <AOAA*AACIqMsH7SiGMkHgaoE.1.1734695024950.Hmail.3014218099@tju.edu.cn>
+ <Z2V21UH_3FuNDoa1@casper.infradead.org> <3gs6aqeby2ymbuhdw3lytsdcl5qigg6ekzox6uejosfodr4xau@dtks66rjrnxa>
+In-Reply-To: <3gs6aqeby2ymbuhdw3lytsdcl5qigg6ekzox6uejosfodr4xau@dtks66rjrnxa>
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Tue, 7 Jan 2025 16:01:59 +0100
+X-Gm-Features: AbW1kvYGtu-nxsDjN_tT475qykNBzxAuFhFNxMVVDDEWF4en7ds5ZIp0f7s23VM
+Message-ID: <CACT4Y+bE4j4xtua2egPNhzSomO5k=MVT-xN8NNmWUy_vGM=T+A@mail.gmail.com>
+Subject: Re: Kernel bug: "general protection fault in bch2_btree_path_traverse_one"
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Matthew Wilcox <willy@infradead.org>, Haichi Wang <wanghaichi@tju.edu.cn>, 
+	dave.hansen@linux.intel.com, brauner@kernel.org, hpa@zytor.com, 
+	viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org, tglx@linutronix.de, 
+	bp@alien8.de, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	luto@kernel.org, x86@kernel.org, mingo@redhat.com, jack@suse.cz, 
+	syzkaller@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-This adds another metadata version for accounting directory size.
-For the new version of the filesystem, when new subdirectory items
-are created or deleted, the parent directory's size will change
-accordingly. For the old version of the existed file system, running
-fsck will automatically upgrade the metadata version, and it will
-do the check and recalculationg of the directory size.
+On Fri, 20 Dec 2024 at 16:01, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> On Fri, Dec 20, 2024 at 01:53:25PM +0000, Matthew Wilcox wrote:
+> > On Fri, Dec 20, 2024 at 07:43:44PM +0800, Haichi Wang wrote:
+> > > Dear Linux maintainers and reviewers:
+> > > We are reporting a Linux kernel bug titled **general protection fault in bch2_btree_path_traverse_one**, discovered using a modified version of Syzkaller.
+> >
+> > No, you aren't.  This is a terrible bug report, and you seem to have
+> > sent several with the same defects.  First, read:
+> >
+> > https://blog.regehr.org/archives/2037
+> >
+> > Then, specifically to reporting a kernel bug *LOOK AT HOW OTHER PEOPLE
+> > DO IT*.  Your email includes lots of stuff that is of no help and
+> > doesn't include the most important thing -- the kernel logs from around
+> > the time of the failure.
+> >
+> > > ### Affected Files
+> > > The affected files, as obtained from the VM log, are listed below. The corresponding maintainers were identified using `./scripts/get_maintainer.pl`:
+> > > fs/bcachefs/btree_update_interior.c
+> > > fs/bcachefs/alloc_foreground.c
+> > > fs/bcachefs/btree_iter.c
+> > > fs/bcachefs/btree_trans_commit.c
+> > > fs/namespace.c
+> > > arch/x86/entry/common.c
+> > > fs/bcachefs/recovery.c
+> > > fs/bcachefs/recovery_passes.c
+> > > fs/bcachefs/super.c
+> > > fs/bcachefs/fs.c
+> > > fs/super.c
+> >
+> > This is useless.
+> >
+> > > ### Kernel Versions
+> > > - **Kernel Version Tested:** v6.12-rc6:59b723cd2adbac2a34fc8e12c74ae26ae45bf230
+> > > - **Latest Kernel Version Reproduced On:** f44d154d6e3d633d4c49a5d6a8aed0e4684ae25e
+> >
+> > Useful
+> >
+> > > ### Environment Details
+> > > - **QEMU Version:** QEMU emulator version 4.2.1 (Debian 1:4.2-3ubuntu6.29)
+> > > - **GCC Version:** gcc (Ubuntu 11.4.0-2ubuntu1~20.04) 11.4.0
+> > > - **Syzkaller Version:** 2b3ef1577cde5da4fd1f7ece079731e140351177
+> >
+> > Useful
+> >
+> > > ### Attached Files
+> > > We have attached the following files to assist in reproducing and diagnosing the bug:
+> > > - **Bug Title:** `bugtitle`
+> > > - **Bug Report:** `report`
+> > > - **Machine Information:** `machineInfo`
+> > > - **Kernel Config:** `config`
+> > > - **Compiled Kernel Image:** `vmlinux`
+> >
+> > You didn't attach these things, but please don't.
+> >
+> > We want the stacktrace.  Preferably passed through
+> > scripts/decode_stacktrace.sh so we get nice symbols.
+>
+> I'm not at all clear on why we need a syzbot copycat project - why not
+> just work with those guys and contribute whatever improvements you have
+> there?
+>
+> I've been doing some work with the syzbot folks on ktest integration so
+> I can reproduce syzbot bugs in a single command - I'm not going to redo
+> that work for a second backend.
 
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
----
- fs/bcachefs/bcachefs_format.h  |  3 ++-
- fs/bcachefs/fsck.c             | 41 ++++++++++++++++++++++++++++++++++
- fs/bcachefs/sb-downgrade.c     |  5 ++++-
- fs/bcachefs/sb-errors_format.h |  3 ++-
- 4 files changed, 49 insertions(+), 3 deletions(-)
+Can't +1 this more :)
 
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index 0680930508a3..f70f0108401f 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -685,7 +685,8 @@ struct bch_sb_field_ext {
- 	x(reflink_p_may_update_opts,	BCH_VERSION(1, 16))		\
- 	x(inode_depth,			BCH_VERSION(1, 17))		\
- 	x(persistent_inode_cursors,	BCH_VERSION(1, 18))		\
--	x(autofix_errors,		BCH_VERSION(1, 19))
-+	x(autofix_errors,		BCH_VERSION(1, 19))		\
-+	x(directory_size,		BCH_VERSION(1, 20))
- 
- enum bcachefs_metadata_version {
- 	bcachefs_metadata_version_min = 9,
-diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index 3917d75f3c98..8fcf7c8e5ede 100644
---- a/fs/bcachefs/fsck.c
-+++ b/fs/bcachefs/fsck.c
-@@ -1116,6 +1116,37 @@ static int get_snapshot_root_inode(struct btree_trans *trans,
- 	return ret;
- }
- 
-+static int check_directory_size(struct btree_trans *trans,
-+				struct bch_inode_unpacked *inode_u,
-+				struct bkey_s_c inode_k, bool *write_inode)
-+{
-+	struct btree_iter iter;
-+	struct bkey_s_c k;
-+	u64 new_size = 0;
-+	int ret;
-+
-+	for_each_btree_key_max_norestart(trans, iter, BTREE_ID_dirents,
-+			SPOS(inode_k.k->p.offset, 0, inode_k.k->p.snapshot),
-+			POS(inode_k.k->p.offset, U64_MAX),
-+			0, k, ret) {
-+		if (k.k->type != KEY_TYPE_dirent)
-+			continue;
-+
-+		struct bkey_s_c_dirent dirent = bkey_s_c_to_dirent(k);
-+		struct qstr name = bch2_dirent_get_name(dirent);
-+
-+		new_size += dirent_occupied_size(&name);
-+	}
-+	bch2_trans_iter_exit(trans, &iter);
-+
-+	if (!ret && inode_u->bi_size != new_size) {
-+		inode_u->bi_size = new_size;
-+		*write_inode = true;
-+	}
-+
-+	return ret;
-+}
-+
- static int check_inode(struct btree_trans *trans,
- 		       struct btree_iter *iter,
- 		       struct bkey_s_c k,
-@@ -1304,6 +1335,16 @@ static int check_inode(struct btree_trans *trans,
- 		u.bi_journal_seq = journal_cur_seq(&c->journal);
- 		do_update = true;
- 	}
-+
-+	if (S_ISDIR(u.bi_mode)) {
-+		ret = check_directory_size(trans, &u, k, &do_update);
-+
-+		fsck_err_on(ret,
-+			    trans, directory_size_mismatch,
-+			    "directory inode %llu:%u with the mismatch directory size",
-+			    u.bi_inum, k.k->p.snapshot);
-+		ret = 0;
-+	}
- do_update:
- 	if (do_update) {
- 		ret = __bch2_fsck_write_inode(trans, &u);
-diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
-index 051214fdc735..14f6b6a5fb38 100644
---- a/fs/bcachefs/sb-downgrade.c
-+++ b/fs/bcachefs/sb-downgrade.c
-@@ -90,7 +90,10 @@
- 	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
- 	  BCH_FSCK_ERR_accounting_mismatch,			\
- 	  BCH_FSCK_ERR_accounting_key_replicas_nr_devs_0,	\
--	  BCH_FSCK_ERR_accounting_key_junk_at_end)
-+	  BCH_FSCK_ERR_accounting_key_junk_at_end)		\
-+	x(directory_size,					\
-+	  BIT_ULL(BCH_RECOVERY_PASS_check_inodes),		\
-+	  BCH_FSCK_ERR_directory_size_mismatch)			\
- 
- #define DOWNGRADE_TABLE()					\
- 	x(bucket_stripe_sectors,				\
-diff --git a/fs/bcachefs/sb-errors_format.h b/fs/bcachefs/sb-errors_format.h
-index 80b6d589808b..0b4fe899209b 100644
---- a/fs/bcachefs/sb-errors_format.h
-+++ b/fs/bcachefs/sb-errors_format.h
-@@ -313,7 +313,8 @@ enum bch_fsck_flags {
- 	x(logged_op_but_clean,					283,	FSCK_AUTOFIX)	\
- 	x(compression_opt_not_marked_in_sb,			295,	FSCK_AUTOFIX)	\
- 	x(compression_type_not_marked_in_sb,			296,	FSCK_AUTOFIX)	\
--	x(MAX,							303,	0)
-+	x(directory_size_mismatch,				303,	FSCK_AUTOFIX)	\
-+	x(MAX,							304,	0)
- 
- enum bch_sb_error_id {
- #define x(t, n, ...) BCH_FSCK_ERR_##t = n,
--- 
-2.34.1
-
+Forking projects is not that useful.
