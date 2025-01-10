@@ -1,76 +1,87 @@
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A0921CA1E
-	for <linux-bcachefs@vger.kernel.org>; Thu,  9 Jan 2025 15:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF6321C174
+	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Jan 2025 22:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736437204; cv=none; b=kiNM2AHIGbIHx98lpAMUgpJMm1tXc7MlHnTK+3dYxtOajuSRg9ugH+EEBA9563vgL3/nkAz2uo2GRUcKq8Ua3OaV9GAbBSLfE3xu3YUATTDC+SHCtDkwfcVxs6sEs85129iCPWVCabmQfZOPp7Dta1P4I4Y4mIJHq2ScqrWx1U4=
+	t=1736549389; cv=none; b=ukPPT3kjCu13Fb7xTqvoNVJJdBPgZs1qeCTtKChM5x7eJEZEDBgcZ7VUIszpwFoupulx7m2Z4i10Ik654Rbsv4GBKJf0mSlrJ/KPej1Cp2SRdlLYWblD5BXupPtIt8c/oc9Y1P7nxpjj2NRYlsukEh7bVc4DxMAdj/GburtEWmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736437204; c=relaxed/simple;
-	bh=a3Yv/+L324km3ROgztJ+Im9LrTyJXPDs5B9fwXcLQnc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=dHSnb9Uedwd83eewhMhnGBHbl9vRIF+I4RSHKWFrpp6G7lrSMrhG6JfEQHu9vHtujz9FMBvQcnBBSuXQp9KNlgs1v0wD4Mu0WhsNd0mhmi58R0SQTAh9gYIdMZQM+mWRa4k5ajXv3tbhWs0q4LBjYMwlq2ipFv3FKBQ0qoTe5us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a78c40fa96so7982285ab.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 09 Jan 2025 07:40:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736437202; x=1737042002;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0/OJqdhdo/8iDaYC0wOKw78bN9cKs6+28OowyPcTsv4=;
-        b=XVvcLkZBZgb+eI+Xw4Ylh6ZpvvZHGJ1MVGOFgsoUu8I2cy1PbvCmhDdvkohqKkgY26
-         GSRaYsp8ynpLQrQKstWLZu0vc6xRmPRytmLwM+OZqSHS6sxqE4NMFXx/oEHL1Hcro4+3
-         uE2h30PlEP5FOnhBd9CfE5UgFHdxuE8XzAJSqIhgCgA5VCkkof2+ga4xWp01ItFKlem5
-         D4DV0nlchElGoSZgln+aBefqjY3R3lJZKeg9CzrwKpzS8Rhkn5ozwRrwa1my9z048Tr5
-         2GUMVZWpIQEO4wy1ycJs27cJvRFwJCLz/8AFfP2m5eSpOdMefyUqDSRvn8wSM3V8pK6k
-         4hnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWia/iZxiUKAiYZ+Qz+ZJzekZjnbkBDkt9pDfR9hj7aGMAITd32u3wkENv8bsk+8Sja3IjDIcwkb2YTlNLJEQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLeSc9bvnw1Bn3YU3WHLjwz4hLsZV94n+WN7Z+4wMErpFjlv5w
-	JImKNvP5wknhIOgbBrlYdRnW2Aoxi/DTmtlqGvbSZRURwEi+yR7UobGRUR7eAELkoa1C+n0rLsm
-	+Zh12AGKKAA3YVSzyH67q17oA6w3nYLjPZiIJNYYJU+1C7t+19XDIaqk=
-X-Google-Smtp-Source: AGHT+IFXJfl1AFFROHLuG9O6YHloPXXAGBYCCUPw8FOnbaWMbo+a47Xg09NaJ7BqL2QhEHRvNrEqPXUr1imRM86kRU0o4OYOlxMP
+	s=arc-20240116; t=1736549389; c=relaxed/simple;
+	bh=tAjlvMkMUkApfQwxTarhKAW+NLYFyYFPwtUrN7j/bwQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Y3DgytLVTMgURPmGeEAbgT4x9/0pIuSB0xeSaohGLAqpzdSgCiYC/EKXQnbxPgLJ5U3kknbhUHTqsni522hCvkvaRZCzpHSqE0po81alVWDSE0ylL4LCx5bkPk7aRkZLb6OfZN0Cgz9PBi2jrLa0fdOnPrvIhtZ2JYFbS+oMuV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=SdPU7xVU; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="SdPU7xVU"
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id 02E99240027
+	for <linux-bcachefs@vger.kernel.org>; Fri, 10 Jan 2025 23:49:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1736549385; bh=tAjlvMkMUkApfQwxTarhKAW+NLYFyYFPwtUrN7j/bwQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:From;
+	b=SdPU7xVUe3Rtos2SdqX2l5viHT7+BfdlUZnZWfF7OR4QSdQvMiO4DlxGERuYl+NNl
+	 xfx8LTEmBNiYN3gXoicdVhhjzYndmANbszbeOGWSgiiPHEUKgBNjd9aANBan6pWsTv
+	 QOinSoNW6nArVRGiWTzyisf36dqZjM5x4q8FR+dfv+f0ir0H4CsSaY5I2MeEeq+9FB
+	 mADcE8JQfH5GBbsXQ5kYkwz1tz7EcfwE9HJICkdDZ9MnaaOqoil4+j32RVi7S+ELMH
+	 8Afyp5fqmU+wDfApWIEZFPOsxZ1SeadwWjdno6TTyk5v36a3pLq0MqjDcGFtcy+baH
+	 YQTQn2rn2Y/9g==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4YVH0S2tYBz6tvd;
+	Fri, 10 Jan 2025 23:49:44 +0100 (CET)
+From: =?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
+To: linux-bcachefs@vger.kernel.org
+Cc: kent.overstreet@gmail.com,
+	=?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
+Subject: [PATCH 0/9] bcachefs-tools: Nix updates and maintenance
+Date: Fri, 10 Jan 2025 22:49:03 +0000
+Message-ID: <20250110224912.445491-1-tmuehlbacher@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cdab:0:b0:3a7:c5b1:a55c with SMTP id
- e9e14a558f8ab-3ce3a8936efmr55126545ab.0.1736437202506; Thu, 09 Jan 2025
- 07:40:02 -0800 (PST)
-Date: Thu, 09 Jan 2025 07:40:02 -0800
-In-Reply-To: <6744873b.050a0220.1286eb.0000.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <677fedd2.050a0220.25a300.01c4.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] KASAN: global-out-of-bounds Read in rcu_pending_exit
-From: syzbot <syzbot+e733ab672a1b6724c27f@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-syzbot has bisected this issue to:
+Hi Kent,
 
-commit d97de0d017cde0d442c3d144b4f969f43064cc0f
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Tue Aug 13 01:31:25 2024 +0000
+I have some minor patches for bcachefs-tools, mostly to the nix build
+system.
 
-    bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()
+- Cross compilation for all Linux architectures that are available for
+  nix flakes.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13432ef8580000
-start commit:   8155b4ef3466 Add linux-next specific files for 20241220
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10c32ef8580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17432ef8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c90bb7161a56c88
-dashboard link: https://syzkaller.appspot.com/bug?extid=e733ab672a1b6724c27f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f5b418580000
+- MSRV and 32-bit builds for `nix flake check`.
 
-Reported-by: syzbot+e733ab672a1b6724c27f@syzkaller.appspotmail.com
-Fixes: d97de0d017cd ("bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()")
+- Update to using Rust 1.84 for nix builds using rust-overlay.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+- Clippy fix by using `c""` literals now.
+
+Another update to flake.lock should be done once util-linux 2.40 lands
+in nixpkgs. That should happen soonish, it's already in staging afaict.
+
+Thomas Mühlbacher (9):
+  flake.lock: Update
+  fix(nix): rm input from crane that no longer exists
+  feat(nix): open up support to more architectures
+  feat(nix): replace fenix with rust-overlay
+  fix(key): replace c_str macro with `c""` literal
+  fix(makefile): locate built bin with CARGO_BUILD_TARGET set
+  feat(nix): enable cross compilation
+  feat(nix): add an MSRV build to CI
+  feat(nix): add a CI check that builds on 32-bit
+
+ Cargo.toml          |   2 +-
+ Makefile            |   9 +-
+ flake.lock          |  89 +++++--------
+ flake.nix           | 309 +++++++++++++++++++++++++++++---------------
+ src/commands/mod.rs |  25 ----
+ src/key.rs          |  15 ++-
+ 6 files changed, 258 insertions(+), 191 deletions(-)
+
+-- 
+2.47.0
