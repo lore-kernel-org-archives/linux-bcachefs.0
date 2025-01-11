@@ -1,148 +1,132 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-1908.mail.infomaniak.ch (smtp-1908.mail.infomaniak.ch [185.125.25.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71EBC18CBFE
-	for <linux-bcachefs@vger.kernel.org>; Sat, 11 Jan 2025 13:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE0B1AF4E9
+	for <linux-bcachefs@vger.kernel.org>; Sat, 11 Jan 2025 15:39:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736602649; cv=none; b=UiR3+Ust1ZKPawoCITeMVJua2i9MoTZpBZ/k7Nl4MKW2zt5HKN/JP2pPtzLBaqNjaMYCLAEhsDZ+mb4XwXeYG1rg/L6WxmgVgrj1T9atvaQMMnWh7NLUwIW7thXPoEZch0Z9Nwo8LFgeKyc7XNomke1RFRMXs4XB3etmZQ/e6F0=
+	t=1736609952; cv=none; b=Q7r18CHdTiC6d/5fjXi0sYV2er0dBkTRuh2ibYmKFRdfNgvpMeKJlhK7vDGYzS3m2qR7R4d5Yw72FWwn9Xi2lT28SKppyRtt7UTTl9LCx2s+4FbXXKUDe345IfQYTFuZ49q9uDpLEPZgLfgxVdCHl8ahiLrOGyWZ+sRgbWMYeKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736602649; c=relaxed/simple;
-	bh=KBsS/iBKicCVO72r9pDHtNMFaoLi0MNZab7kWaeabPM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=U+IT0qG+9Ylu3hO2x9siIH3fwwl36qYO+PlaJL1iITHUG0cs5d/WZGZd3DUncleJw9/r2ThmyqR9eLjg2+v/9cHmWsIoWscPjfLaag2+rBtl7RV7vZRNN3h711RWzb7ZzCe0pnJ5G8No06ylEX4AYFy2EFik5tKr3GReLxGls5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ce6817ccd8so2139075ab.3
-        for <linux-bcachefs@vger.kernel.org>; Sat, 11 Jan 2025 05:37:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736602646; x=1737207446;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fuyObhNJkilb1hXrzNwP6Vi4du6OQOdpxz1m1hwIllI=;
-        b=NepSaLNDXnLDUmpyeW5xd7t1D/T+TQM2v+wXIIzYEfGLkkN7sau3ROelyNqKqiwiNE
-         vi322mom761jjYikGsXIi6j18SRPHQntGrTn81xqNH5nF4vFU5jm93Mmm1Rd9D5Y/Jh6
-         xrQTq3Bd4KmnRMp9jrvXUcB3AYubXEquT4bN+RmZNydzzqt7p1yEDc13h0QTa/xneWQT
-         V5SCAtnjlIQRKgtnsWFNuyUMwY7tAKdUmeqgNJkMrU59VI3F7lgIynD9dTtFpePPAo2C
-         H1Rx15Qc5PZl1xu+10NAwFC5IEt5iHMMCyE6P2o7x6kOCJx6ti6ie1jXvQ0gO/hivVW8
-         7xHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVjin/CmaJHI0IdUGp2wWogBpLuDjk8K0NdX0/qq0Zch/ZAJ7kdapxLQVjUDTdNfRVbyApo/155AB2qDLJU3A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLxGV+2ghpchIwV4jYxK9NQoFsqjD0kaDX8O47mWSU2H76mciO
-	RDxM8cPzYqROVyS9yBRc/C8QwhbK9fVdNCBSIDM0OoRlHEjHiRbKmGojNxBhVqVeMlseA1b4zUD
-	ncyLhWLbUUXxduN5DFs6S0KRN7oi6dyov2jVHZtK2sH+t/njafWluUtE=
-X-Google-Smtp-Source: AGHT+IHjiih4refK4THP+qamKiiUSq5Cq++/BMeZNO0xl9YxcaYqCCVFcUMgIoQBmMU7qrFQaGm05SbQhyuG/9/ucsW9nWZw5KuB
+	s=arc-20240116; t=1736609952; c=relaxed/simple;
+	bh=9IFdTwZ+yBnPyfmpwB38q8dAqIrG6OSXEQlgm+4Ayf4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ObXcq7M5k6nsS1hhZkhujxGtXU+rpHxKjSlfPjiUmfnm/NV5erq2TYHWzZnc+jN0QS0FcIy+sESvg0Vr016BC/Vrzys+INcGOhRImnwVzQbagFgWR9PjWnnanZpAFIpoi5USltFPY2SB4qaqy3ISMvEEkhoVWRR3b4n9t0RddSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=BcvQ0Epe; arc=none smtp.client-ip=185.125.25.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="BcvQ0Epe"
+Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4YVjNy6bFGzpMH;
+	Sat, 11 Jan 2025 16:38:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1736609938;
+	bh=8qOYE5fhMwTZl6ab4L7AoSR/uklgpbBSnLF+bBJGY2Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BcvQ0EpesgImbVFCn2idhlce4+SO6Le0b2rccONi48PiCAurGGDPzpWjq85mnJufh
+	 E6dscsTOU3nPfUymrXhhzSxdoo/17T8CCCo9uWfruGKmr1OaSMK6yC8Tm8F01RDsdO
+	 mq74bFHnr9eje3CopmyO+IGLt/ty4fQhHekrb98Q=
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4YVjNx6TnczTjj;
+	Sat, 11 Jan 2025 16:38:57 +0100 (CET)
+Date: Sat, 11 Jan 2025 16:38:56 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: =?utf-8?Q?G=C3=BCnther?= Noack <gnoack3000@gmail.com>
+Cc: =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, Paul Moore <paul@paul-moore.com>, 
+	Dave Chinner <david@fromorbit.com>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	syzbot+34b68f850391452207df@syzkaller.appspotmail.com, syzbot+360866a59e3c80510a62@syzkaller.appspotmail.com, 
+	Ubisectech Sirius <bugreport@ubisectech.com>, Brian Foster <bfoster@redhat.com>, 
+	linux-bcachefs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] landlock: Handle weird files
+Message-ID: <20250111.PhoHophoh1zi@digikod.net>
+References: <20250110153918.241810-1-mic@digikod.net>
+ <20250110.3421eeaaf069@gnoack.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c8e:b0:3ce:3016:fbc3 with SMTP id
- e9e14a558f8ab-3ce3a8882c6mr101975035ab.14.1736602646535; Sat, 11 Jan 2025
- 05:37:26 -0800 (PST)
-Date: Sat, 11 Jan 2025 05:37:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67827416.050a0220.216c54.0020.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_readdir (2)
-From: syzbot <syzbot+a7b475122da841580575@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250110.3421eeaaf069@gnoack.org>
+X-Infomaniak-Routing: alpha
 
-Hello,
+On Fri, Jan 10, 2025 at 05:37:26PM +0100, Günther Noack wrote:
+> On Fri, Jan 10, 2025 at 04:39:13PM +0100, Mickaël Salaün wrote:
+> > A corrupted filesystem (e.g. bcachefs) might return weird files.
+> > Instead of throwing a warning and allowing access to such file, treat
+> > them as regular files.
+> > 
+> > Cc: Dave Chinner <david@fromorbit.com>
+> > Cc: Günther Noack <gnoack@google.com>
+> > Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> > Cc: Paul Moore <paul@paul-moore.com>
+> > Reported-by: syzbot+34b68f850391452207df@syzkaller.appspotmail.com
+> > Closes: https://lore.kernel.org/r/000000000000a65b35061cffca61@google.com
+> > Reported-by: syzbot+360866a59e3c80510a62@syzkaller.appspotmail.com
+> > Closes: https://lore.kernel.org/r/67379b3f.050a0220.85a0.0001.GAE@google.com
+> > Reported-by: Ubisectech Sirius <bugreport@ubisectech.com>
+> > Closes: https://lore.kernel.org/r/c426821d-8380-46c4-a494-7008bbd7dd13.bugreport@ubisectech.com
+> > Fixes: cb2c7d1a1776 ("landlock: Support filesystem access-control")
+> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> > ---
+> >  security/landlock/fs.c | 11 +++++------
+> >  1 file changed, 5 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/security/landlock/fs.c b/security/landlock/fs.c
+> > index e31b97a9f175..7adb25150488 100644
+> > --- a/security/landlock/fs.c
+> > +++ b/security/landlock/fs.c
+> > @@ -937,10 +937,6 @@ static access_mask_t get_mode_access(const umode_t mode)
+> >  	switch (mode & S_IFMT) {
+> >  	case S_IFLNK:
+> >  		return LANDLOCK_ACCESS_FS_MAKE_SYM;
+> > -	case 0:
+> > -		/* A zero mode translates to S_IFREG. */
+> > -	case S_IFREG:
+> > -		return LANDLOCK_ACCESS_FS_MAKE_REG;
+> >  	case S_IFDIR:
+> >  		return LANDLOCK_ACCESS_FS_MAKE_DIR;
+> >  	case S_IFCHR:
+> > @@ -951,9 +947,12 @@ static access_mask_t get_mode_access(const umode_t mode)
+> >  		return LANDLOCK_ACCESS_FS_MAKE_FIFO;
+> >  	case S_IFSOCK:
+> >  		return LANDLOCK_ACCESS_FS_MAKE_SOCK;
+> > +	case S_IFREG:
+> > +	case 0:
+> > +		/* A zero mode translates to S_IFREG. */
+> >  	default:
+> > -		WARN_ON_ONCE(1);
+> > -		return 0;
+> > +		/* Treats weird files as regular files. */
+> > +		return LANDLOCK_ACCESS_FS_MAKE_REG;
+> >  	}
+> >  }
+> >  
+> > -- 
+> > 2.47.1
+> > 
+> 
+> Reviewed-by: Günther Noack <gnoack3000@gmail.com>
+> 
+> Makes sense to me, since this is enforcing a stronger check than before
+> and can only happen in the case of corruption.
+> 
+> I do not have a good intuition about what happens afterwards when the
+> file system is in such a state.  I imagine that this will usually give
+> an error shortly afterwards, as the opening of the file continues?  Is
+> that right?
 
-syzbot found the following issue on:
+I guess it depends on the filesystem implementation.  For instance, XFS
+returns an error if a weird file is detected [1], whereas bcachefs
+ignores it (which is considered a bug, but not fixed yet) [2].
 
-HEAD commit:    fbfd64d25c7a Merge tag 'vfs-6.13-rc7.fixes' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=125755c4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=93fafdd434f3247d
-dashboard link: https://syzkaller.appspot.com/bug?extid=a7b475122da841580575
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+[1] https://lore.kernel.org/all/Zpc46HEacI%2Fwd7Rg@dread.disaster.area/
+[2] https://lore.kernel.org/all/4hohnthh54adx35lnxzedop3oxpntpmtygxso4iraiexfdlt4d@6m7ssepvjyar/
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/be5f7d21fc6d/disk-fbfd64d2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/18656986c542/vmlinux-fbfd64d2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/23240d42568c/bzImage-fbfd64d2.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a7b475122da841580575@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in bch2_dirent_read_target fs/bcachefs/dirent.c:259 [inline]
-BUG: KMSAN: uninit-value in bch2_readdir+0x1a45/0x2470 fs/bcachefs/dirent.c:551
- bch2_dirent_read_target fs/bcachefs/dirent.c:259 [inline]
- bch2_readdir+0x1a45/0x2470 fs/bcachefs/dirent.c:551
- bch2_vfs_readdir+0x347/0x7c0 fs/bcachefs/fs.c:1377
- iterate_dir+0x5b3/0x9e0 fs/readdir.c:108
- __do_sys_getdents fs/readdir.c:322 [inline]
- __se_sys_getdents+0x170/0x550 fs/readdir.c:308
- __x64_sys_getdents+0x96/0xe0 fs/readdir.c:308
- x64_sys_call+0x38d8/0x3c30 arch/x86/include/generated/asm/syscalls_64.h:79
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Uninit was stored to memory at:
- memcpy_u64s_small fs/bcachefs/util.h:393 [inline]
- bkey_reassemble fs/bcachefs/bkey.h:513 [inline]
- bch2_bkey_buf_reassemble fs/bcachefs/bkey_buf.h:28 [inline]
- bch2_readdir+0x14f7/0x2470 fs/bcachefs/dirent.c:551
- bch2_vfs_readdir+0x347/0x7c0 fs/bcachefs/fs.c:1377
- iterate_dir+0x5b3/0x9e0 fs/readdir.c:108
- __do_sys_getdents fs/readdir.c:322 [inline]
- __se_sys_getdents+0x170/0x550 fs/readdir.c:308
- __x64_sys_getdents+0x96/0xe0 fs/readdir.c:308
- x64_sys_call+0x38d8/0x3c30 arch/x86/include/generated/asm/syscalls_64.h:79
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Uninit was created at:
- ___kmalloc_large_node+0x22c/0x370 mm/slub.c:4253
- __kmalloc_large_node_noprof+0x3f/0x1e0 mm/slub.c:4270
- __do_kmalloc_node mm/slub.c:4286 [inline]
- __kmalloc_node_noprof+0xc96/0x1250 mm/slub.c:4304
- __kvmalloc_node_noprof+0xc0/0x2d0 mm/util.c:645
- btree_bounce_alloc fs/bcachefs/btree_io.c:124 [inline]
- btree_node_sort+0x78a/0x1d30 fs/bcachefs/btree_io.c:323
- bch2_btree_post_write_cleanup+0x1b0/0xf20 fs/bcachefs/btree_io.c:2248
- bch2_btree_node_write+0x21c/0x2e0 fs/bcachefs/btree_io.c:2289
- btree_node_write_if_need fs/bcachefs/btree_io.h:151 [inline]
- __btree_node_flush+0x606/0x680 fs/bcachefs/btree_trans_commit.c:252
- bch2_btree_node_flush0+0x35/0x60 fs/bcachefs/btree_trans_commit.c:261
- journal_flush_pins+0xce6/0x1780 fs/bcachefs/journal_reclaim.c:565
- __bch2_journal_reclaim+0xda8/0x1670 fs/bcachefs/journal_reclaim.c:698
- bch2_journal_reclaim_thread+0x18e/0x760 fs/bcachefs/journal_reclaim.c:740
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-CPU: 0 UID: 0 PID: 9169 Comm: syz.7.774 Not tainted 6.13.0-rc6-syzkaller-00036-gfbfd64d25c7a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> 
+> –Günther
+> 
