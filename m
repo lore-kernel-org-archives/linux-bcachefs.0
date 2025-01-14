@@ -1,22 +1,22 @@
 Received: from zulu.geekplace.eu (zulu.geekplace.eu [5.45.100.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F20234CEA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E4F236A91;
 	Tue, 14 Jan 2025 13:11:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.45.100.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736860306; cv=none; b=ohfwiloCKGtwqs6xMhxv1dzSH211LXC1C6l7VIE8Zqmg3PbAo165ev8MnsoKhpcZzX6vdSwQkfpb/4YUOtU/FXSTyhW2rlqGSl01X2M+PFHKfDmNwi4HfOtoJfRFolnhTB1eaTZJRnT/2ZAxcOuFC7b8TH+pNSxqh4OJD6SoC88=
+	t=1736860308; cv=none; b=TMLAO94R99s/dbxRjowOt5OaaUUjFDZfwJpLGdgvJWe5ZaaCcUje3e95crGUdvErLBnw5CrIHWkQMej2CNh024HYFop7iNjevxcAoFOBhi0ujyiSnMxu5aQTnNzHukUJJEfkqpekcBF6oR1icYkdj/i68+prvhWt9iFCDH5zaLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736860306; c=relaxed/simple;
-	bh=Bj5FnEmUDANu3IKnq6qsbq0Z/psIRt+l809kE2S4YPA=;
+	s=arc-20240116; t=1736860308; c=relaxed/simple;
+	bh=er4aJjgFNTkQb4sR+8CKCroPY2b+ZjQRSWYxSFTffQc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tIxHtnTDk4emfz11mB1bWL4qohXm+BDF0kdZD2X5FPgjMFv3lW3LC/S08Hxup0WibVfTQjTyk3bp2hMrlzlm34X8mHVaYw2SZfyrhrv8o2efiYxQHPf9R5JbGlX4qalAqQ92yJWIZHVpgsPKgzUa0Jv1jXIP411jOoWH6cvFsHE=
+	 MIME-Version; b=Zi9goaMvqS/1NQhIbMEbQVonwV5C6CAWuXrxs65OeNAPUM1obFAOWLQVQEo/S8V/e2Hb/e7dYgKLet3d3CqPLF5y73ZaJhXBqpABqxCbepPN4qWpq8F3XaZuBghEfcpMKkkpf2PoNJI1bm06Z6Ry5ie1Rip87AsIpVcOSWOjiW4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu; spf=pass smtp.mailfrom=geekplace.eu; arc=none smtp.client-ip=5.45.100.158
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geekplace.eu
 Received: from neo-pc.sch (unknown [IPv6:2001:4091:a244:80ab:34fb:50ff:feac:591b])
-	by zulu.geekplace.eu (Postfix) with ESMTPA id B986A4A008D;
-	Tue, 14 Jan 2025 14:05:46 +0100 (CET)
+	by zulu.geekplace.eu (Postfix) with ESMTPA id 3253E4A018D;
+	Tue, 14 Jan 2025 14:05:47 +0100 (CET)
 From: Florian Schmaus <flo@geekplace.eu>
 To: Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -31,9 +31,9 @@ To: Ingo Molnar <mingo@redhat.com>,
 Cc: linux-bcachefs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Florian Schmaus <flo@geekplace.eu>
-Subject: [PATCH 1/2] sched: provide sched_set_batch()
-Date: Tue, 14 Jan 2025 13:47:27 +0100
-Message-ID: <20250114130513.498482-3-flo@geekplace.eu>
+Subject: [PATCH 2/2] bcachefs: set rebalance thread to SCHED_BATCH and nice 19
+Date: Tue, 14 Jan 2025 13:47:28 +0100
+Message-ID: <20250114130513.498482-4-flo@geekplace.eu>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250114130513.498482-2-flo@geekplace.eu>
 References: <20250114130513.498482-2-flo@geekplace.eu>
@@ -45,50 +45,43 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This allows kernel threads created by modules to run under
-SCHED_BATCH. Typically this may be a good option if the task of the
-kernel thread is not sensitive to scheduling latency, for example
-rebalancing or gc tasks.
+While the rebalance thread is isually not compute bound, it does cause
+a considerable amount of I/O. Since "reducing" the nice level from 0
+to 19, also implicitly reduces the threads best-effort I/O scheduling
+class level from 4 to 7, the reblance thread's I/O will be depriotized
+over normal I/O.
+
+Furthermore, we set the rebalance thread's scheduling class to BATCH,
+which means that it will potentially receive a higher scheduling
+latency. Making room for threads that need a low
+schedulinglatency (e.g., interactive onces).
 
 Signed-off-by: Florian Schmaus <flo@geekplace.eu>
 ---
- include/linux/sched.h   |  1 +
- kernel/sched/syscalls.c | 10 ++++++++++
- 2 files changed, 11 insertions(+)
+ fs/bcachefs/rebalance.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 64934e0830af..80d46ed1dfa8 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1874,6 +1874,7 @@ extern int sched_setscheduler_nocheck(struct task_struct *, int, const struct sc
- extern void sched_set_fifo(struct task_struct *p);
- extern void sched_set_fifo_low(struct task_struct *p);
- extern void sched_set_normal(struct task_struct *p, int nice);
-+extern void sched_set_batch(struct task_struct *p, int nice);
- extern int sched_setattr(struct task_struct *, const struct sched_attr *);
- extern int sched_setattr_nocheck(struct task_struct *, const struct sched_attr *);
- extern struct task_struct *idle_task(int cpu);
-diff --git a/kernel/sched/syscalls.c b/kernel/sched/syscalls.c
-index ff0e5ab4e37c..e0e0be4223df 100644
---- a/kernel/sched/syscalls.c
-+++ b/kernel/sched/syscalls.c
-@@ -880,6 +880,16 @@ void sched_set_normal(struct task_struct *p, int nice)
- }
- EXPORT_SYMBOL_GPL(sched_set_normal);
+diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
+index cd6647374353..87e4f507af80 100644
+--- a/fs/bcachefs/rebalance.c
++++ b/fs/bcachefs/rebalance.c
+@@ -22,6 +22,7 @@
  
-+void sched_set_batch(struct task_struct *p, int nice)
-+{
-+	struct sched_attr attr = {
-+		.sched_policy = SCHED_BATCH,
-+		.sched_nice = nice,
-+	};
-+	WARN_ON_ONCE(sched_setattr_nocheck(p, &attr) != 0);
-+}
-+EXPORT_SYMBOL_GPL(sched_set_batch);
+ #include <linux/freezer.h>
+ #include <linux/kthread.h>
++#include <linux/sched.h>
+ #include <linux/sched/cputime.h>
+ 
+ #define REBALANCE_WORK_SCAN_OFFSET	(U64_MAX - 1)
+@@ -478,6 +479,8 @@ int bch2_rebalance_start(struct bch_fs *c)
+ 	if (ret)
+ 		return ret;
+ 
++	sched_set_batch(p, 19);
 +
- static int
- do_sched_setscheduler(pid_t pid, int policy, struct sched_param __user *param)
- {
+ 	get_task_struct(p);
+ 	rcu_assign_pointer(c->rebalance.thread, p);
+ 	wake_up_process(p);
 -- 
 2.45.2
 
