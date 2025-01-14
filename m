@@ -1,62 +1,122 @@
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF941CB31D
-	for <linux-bcachefs@vger.kernel.org>; Mon, 13 Jan 2025 20:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230622595;
+	Tue, 14 Jan 2025 02:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736799247; cv=none; b=uIaTxu0Sn0JD3/iblkg6JGsSeaG/AicD4zXzpGicaB90Lm9JWlPfcOnUPyYubTniyjTLKWVs4vgMxKxKsKpUis7Gw3BfP/KYEDneKGBLPur2FBTmWTEUVsRMp/OTq/QFFOJtcrl1pU4zQ7/nvd/iXeLmWTJt8GR9g+FiC2aAssg=
+	t=1736823310; cv=none; b=N8ZHaZPjq91gPhqN+zbmDIjqHmcBnPyAzDxC8Ckeu5CgrH1YCZ9tC9jN/d3R/7Xmre4sCP3Y/hVTHDwKYl6pQWyeoc20CbDHdW8ohzbg//qDJVPoJzR1eI5y/9Zd93yt2nOpwAEK4+NVUqkBCVER3lYjziPFY7rpxgkctKrOIT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736799247; c=relaxed/simple;
-	bh=I6BCdVkSKePpfte9K21b1uFT87AKFhrtoAfKpNJTca4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tSJCLGhbPh2uL6O8o+w1YAD7qaNHRWuW/DArxZMdVHhO4KKClejdHkCuj9D/aSnvyBDwfju1bZ0WyxS1D5lUfJersJPmYX8vxnc/wKjRewfXzxIyMNI+D/idl+VsscpZCnMoTzfE2nbeGF1YTDpZPZuHPMLWzcZ+7WvZLm3fSNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Vd7vk3Ei; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1736823310; c=relaxed/simple;
+	bh=PaKr7Wwc2GwN4w9Jy+tJQI5lOx/4SZaHH9XFSlg5jmU=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=lsoSJxHAnn1EPPaoSODlwkIaod51vtFYnoYjhj4LHIOyLJH+5Jtw1EHQjEGJma061nwpoXdv9GqrOOmLHH84Ke1Eg/U3AnDYDoM+XPjZUzrOgCnonI/6e4lQcxeupnCwWdU5P7hPjiQj9VwNrEDEzenw3oxM1QvrPibFnUrM1NI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn; spf=pass smtp.mailfrom=m.fudan.edu.cn; dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b=r2Hgzmzk; arc=none smtp.client-ip=54.254.200.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.fudan.edu.cn
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Vd7vk3Ei"
-Date: Mon, 13 Jan 2025 15:13:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1736799240;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ialQt463ewFQMo3Ab6x5LyB3bXupAhkBUQpBSP8uz9o=;
-	b=Vd7vk3EiurVBvvbPSHrv0rmbNkZwvap3oJ+hOn2Y8ICY2cQRAjvA6WgFegajcg0Ch586u3
-	HVYJvzIBuf0YwuU1wEx/wHMtDZYHmskePP1K9ai53pqOLF8ROEOv5gZhuIx6Qr4hkYOu7Z
-	whXoeEY4l6yDxrWSdd/P3yyK+6IOWdg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Alan Huang <mmpgouride@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: The missing patches
-Message-ID: <ysrspb3ucac54cemtmlwmxuskgypm655cqkfwni5v7bsbcenvp@xs5l6f7bnm4n>
-References: <99F79FA0-61D0-4E27-85E5-3D8ADC676D63@gmail.com>
+	dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b="r2Hgzmzk"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=m.fudan.edu.cn;
+	s=sorc2401; t=1736823290;
+	bh=PaKr7Wwc2GwN4w9Jy+tJQI5lOx/4SZaHH9XFSlg5jmU=;
+	h=Mime-Version:Subject:From:Date:Message-Id:To;
+	b=r2HgzmzkXFyeJ7evzwVSl4qMbO1WID83qp2Ybr7GbqpCRNJxMpQhEgKTdPZk6fFne
+	 SeWMhjQvBLYBo73CFqmHdJ4D46zIJucAGhzY+aDIjUy0laQiFESCtjM3GxbC69wISt
+	 hrFrVPp8j4etiDN/FVBDxAmGCw6uPdwb+1AKhWkY=
+X-QQ-mid: bizesmtpip2t1736823289t735png
+X-QQ-Originating-IP: ZoHuCDREEWZlGPbrFJszZTyNCx7XvTGfBtua0YZ3rZw=
+Received: from smtpclient.apple ( [localhost])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 14 Jan 2025 10:54:46 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 12455661124939741486
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <99F79FA0-61D0-4E27-85E5-3D8ADC676D63@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
+Subject: Re: Bug: INFO_ task hung in lock_two_nondirectories
+From: Kun Hu <huk23@m.fudan.edu.cn>
+In-Reply-To: <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa>
+Date: Tue, 14 Jan 2025 10:54:36 +0800
+Cc: jlayton@redhat.com,
+ tytso@mit.edu,
+ adilger.kernel@dilger.ca,
+ david@fromorbit.com,
+ bfields@redhat.com,
+ viro@zeniv.linux.org.uk,
+ christian.brauner@ubuntu.com,
+ hch@lst.de,
+ linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ brauner@kernel.org,
+ linux-bcachefs@vger.kernel.org,
+ Kent Overstreet <kent.overstreet@linux.dev>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D732181A-26A9-4D11-9B2F-FE0CEC18A6D1@m.fudan.edu.cn>
+References: <42BD15B5-3C6C-437E-BF52-E22E6F200513@m.fudan.edu.cn>
+ <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa>
+To: Jan Kara <jack@suse.cz>
+X-Mailer: Apple Mail (2.3818.100.11.1.3)
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpip:m.fudan.edu.cn:qybglogicsvrgz:qybglogicsvrgz8a-1
+X-QQ-XMAILINFO: MQ+wLuVvI2LQExZhOW1NPqOq+eRcfyCG0v8nPm7383SJeL+zsqr7VYZ5
+	2vr1L2ViWNOUEj7gnbLCtZDnY5y8bmUxg4DJ+1RhmuvtjGl1/vw6BHBeKW7l0+3d5+z96Y2
+	sIAih55/2buRcTNgmt045R0Se9WB0RbWY4fpqx/+6ZrnWX16fMjHWi6hf+BKNKVzKBrXbwH
+	U2w+F2OaoAsMJpLIHs2Io68Jjelrs9e/aqd7adX0I+rbpplEA0sz3xHMF4kJjfy1Pl2F3po
+	X0N4f9Ul1eKZQPEZiY+tzMRuILMUKfc/MrmffUlygUgYuG8xjVC0lHdOfLxCryO98m+vSaZ
+	PRQg4MR60dRKBDUin+rD4+v38HHwIQTHnavyg/mrQUOgzfNzDThjft5yIBTDLujZka2I6BH
+	rJkadSEuSs9rfxOa2h5GB4oTGXjMRHrObD/+gNustn2OjycfDt2bb2V2UjRoEAKjsMOvRME
+	gKbk9zE3WVe67jw/OKMupP31Vy1tFx5reNO4D9EXAApTg0g1pVdDXgfn1B5l5NXIU2VLoYA
+	JcrOYVHJs68xgvkg2OP81Ftk2irINGsDDOnBaaZg9pKMtz1qe4njJDRWEuangmkDDPqdOp6
+	fnmhNOX9BA5mWzSbN5gFqFJCIwK3VicV5zG750rG+ENH6ZP7w/oxOx7b4ARJyp1orxaz0Qz
+	JLLr+zkLh4skN4tGEWOicasll8eP4AY5E/gYloCChvXLE0gG64p/xj1P0n4jMd1/mqvmSEo
+	V4QinlojxrFV0tVBtdD7nlwtW0gEDc2CQL3TRr0JEJ6FEM9dafDW+RTFB9zC7XLOZbnvuKq
+	LXv6w7Z2wJxv0fGQXIXf7nt2nQMgrzwjTuIXKMWN2A0xPKLVD+ltzWytmZD5cZj9qbAlDqs
+	pi7r+wRIgBwCJKWmG8GbqjpXL0XTr2ClbLm7ajKeTrHMb9O5nON313Zycln6e4Kf9LwaMUb
+	jP3I4z15jKzVOIWz0sLv7HwsLMVwgoNN3NGZAVgjvqdNzZE2vEYmyK2fL9GU0DOMhrjY=
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+X-QQ-RECHKSPAM: 0
 
-On Thu, Jan 09, 2025 at 03:17:34PM +0800, Alan Huang wrote:
-> Hello Kent,
-> 
-> Here are the links to the missed patches, I’d like to know if these patches are still needed :)
-> 
-> [1] https://lore.kernel.org/all/20240925164500.1178107-1-mmpgouride@gmail.com/T/
-> 
-> [2] https://lore.kernel.org/all/20240925164602.1179117-1-mmpgouride@gmail.com/T/
-> 
-> [3] https://www.mail-archive.com/linux-bcachefs@vger.kernel.org/msg02925.html
-> 
-> [4] https://lore.kernel.org/all/B0F9A8E3-F19D-4660-881F-14C40D740910@gmail.com/T/
+>=20
+>=20
+> Hello!
+>=20
+> First I'd note that the list of recipients of this report seems =
+somewhat
+> arbitrary. linux-kernel & linux-fsdevel makes sense but I'm not sure =
+how
+> you have arrived at the list of other persons you have CCed :). I have =
+to
+> say syzbot folks have done a pretty good job at implementing =
+mechanisms how
+> to determine recipients of the reports (as well as managing existing
+> reports over the web / email). Maybe you could take some inspiration =
+there
+> or just contribute your syzkaller modifications to syzbot folks so =
+that
+> your reports can benefit from all the other infrastructure they have?
+>=20
+> Anyway, in this particular case, based on locks reported by lockdep, =
+the
+> problem seems to be most likely somewhere in bcachefs. Added relevant =
+CCs.
 
-Applied
+
+Hi Jan,
+
+Thank you very much for your feedback. The current method of determining =
+recipients is indeed less structured than syzbot`s mechanism, and we =
+have only improved the method of generating the seed, and have not yet =
+entered very much into understanding his infrastructure. We will =
+definitely consider taking our approach from `syzbot` and not have this =
+problem next time.
+
+Thanks for pointing out that it may have originated from `bcachefs`.
+
+=E2=80=94=E2=80=94=E2=80=94=E2=80=94
+Kun Hu=
