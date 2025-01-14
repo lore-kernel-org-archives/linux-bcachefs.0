@@ -1,147 +1,162 @@
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07CE155301;
-	Tue, 14 Jan 2025 16:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01522080DF
+	for <linux-bcachefs@vger.kernel.org>; Tue, 14 Jan 2025 21:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736873138; cv=none; b=USe5VdCPPY0EoDLnKUsoQkFLBW8sGeH/TQpFBW6rrXXCULVcV6KmrnnvILIm2YdDFcbPHA+yil4Q5BsgrYDNm98RzN5FgmegTL9KzKmplQJSiRYCuTH3NOZEtQ3dWH7ICu8M1JAEq11fC9cUblcVjN1vWwLzKivu+UcFU/HdthI=
+	t=1736889670; cv=none; b=p0XOEjAqlOjexFZyeMBOc7+zuXzp3iSVet9IdPMTX0Zgu65Lx8MBAaW695lwqK/+7jkDyeUvjKC4ItN2eywkkfHigC95n6gCTo9LULp7EYwfHG/E7in4FjGyhKvv6qsQxQTJ3ffeYysZE3izwDWU03UEnOkLlt+3mAPuwFkFxoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736873138; c=relaxed/simple;
-	bh=ytoZVFRO4GUCMbloccLP7PwzRgx4K5XmFUZDdMJRjoE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nnrHmJkTr11GrhF8+H5FtrXep1+xbvK8GohXFUVGHNSxC8XuvatWSLUKZYZZup5DMSatUa5q0uIG7Ms0mUvYdvEj3pexfrXHAPctWJ62cPyk7256PPu5yA1rAYzQpFS/ov4eC7CXrldlWpAXKVtmCwdPY7TU1GBNQtI6PAEuLx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5d88c355e0dso10058650a12.0;
-        Tue, 14 Jan 2025 08:45:35 -0800 (PST)
+	s=arc-20240116; t=1736889670; c=relaxed/simple;
+	bh=geZMPf3EMsskdd3cyUHPcdZvsBGPpn/1HacLb6le9Xg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CLp4VqaivUMv+nSJEjwI2hTn7isedL6MeQvg+IiW+9l4ccdc4uduYloRbXODtcuAMa7YZvq3QO7RidaVaaK3gYb4i97wxsxap+PzM4QGijGHouqCSiWHuLv2tnUtn172eiwdNUSVukkt1hsaJjLee0cWPO+pxp7qMOflp9sVOpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=N3akVTZZ; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="N3akVTZZ"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21675fd60feso132727915ad.2
+        for <linux-bcachefs@vger.kernel.org>; Tue, 14 Jan 2025 13:21:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1736889668; x=1737494468; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=w1pyBhR9znuGzFO9Qovl/xhPcK2onHnq0DJMNO0ivAM=;
+        b=N3akVTZZRb9Bni2TZVM63ySfGit0UHg1BJ0tBa63m9c8gkU1k8ZCTH7NFI5eLbgp3n
+         iDuK2WG5DCQ94Zrbpf78CyyjqcWYygORWQ7e2La50Y0CyNSbA5pf+2lWWxGNcY7Frl+H
+         mEr8cCpP+ewfK/upXhZvPgLfP3AMwTH3lXmZXcPX8AeWFMwv9PYdbGrm21hvGgspi/g7
+         D6SNOD+kIPFMj9DaqpR7kB9+8pUjW3KWAUz4Rsqazf/GkR9K/uFbAVoOouhlQNV0xnHq
+         dYhNTZYz+LtAIU6cIjzQZMLrNl0Lt3LvY8VTo415+DAbr6bJ6blFN3XVW2t2KK7tQj4F
+         GTNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736873134; x=1737477934;
-        h=in-reply-to:from:content-language:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ytoZVFRO4GUCMbloccLP7PwzRgx4K5XmFUZDdMJRjoE=;
-        b=pwU7fXIjpcVhRNiFLjkoj6b4SuD2ysmJgSvtlSy010NfbWSuKOLq1b4VdMTNDGdlsh
-         4FGa2/cr8KguL0Lht9sO2V75SbvUN708qJFZ2E2/OEqm04EPMZ8aOp5lpl3/rHDwzvkM
-         zpzAehMcKnWVktTYV7GDg3jn8dub2ZEinEMV+1KRWsfNzJ52geLn7xtkECEn5h0GNIzG
-         sWTB9CtFAetEzQ1Ft823NMxeluqnc0T+Ab2cXt/2zZvo8Sj3bWTzdLK5f2HZMl+HwqG9
-         lw3WI9Tl/wuNP4yyuQzY5Mi45d6nySlIzcsvtU8X+tQJc3Fo70wXm0ep8ZTUTShz9F/l
-         jGqg==
-X-Forwarded-Encrypted: i=1; AJvYcCWf5yfBSbFGBt10GYj0q/ZZkIQ0Vh2fMoTnytF6YKdBdRkD3tfO84/HdI45et46U5IAFj3yIMQpeDnV4F8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRBisOr7yGpzB0uyMGozAh11kiKpRp4bSZpo4PlUk28EOrJz9H
-	TfBvpIZq0pgCa1JyEiBCMTw/ErVWQVHl3Z/SxHusbgg1RP4w6Xfw
-X-Gm-Gg: ASbGncvWxgohVG17jjP0pzeDNxEHDfTbexl4Ota0k7HU+IYr/JLWu3RCsFLQvfKFFHG
-	EwrtCAk1mUuru7MvdGsWbPZXdds0EjjIsXKKbmompg3XWCv4ZSrgO0oTBLLgfa0d4udue1Y5ipa
-	+lcyHHvAM59amLFyMqDiv8+0oMaO5aYNoOIHpbM20Y1SOpe4E5+PcwhJkaRiiZMvdbrI5OnkCLC
-	Kx+KJcYpbQ1zrUywmzIVrxN12+k+iVQkkc5YZ2MZELZr6a9vhrWVpOncPn02SnMx14BH2r5MPfG
-	1UuxDzFWiJ8h7StC58HtuOavxKE=
-X-Google-Smtp-Source: AGHT+IENNXdhbcX3Vq8hST0+qqqKnWfZGBwrVZ36LorkyWO59v353IeJjUczvKVRLaPjkmrbd8l1AA==
-X-Received: by 2002:a05:6402:350b:b0:5d2:7181:4a41 with SMTP id 4fb4d7f45d1cf-5d972e72512mr23902424a12.31.1736873133865;
-        Tue, 14 Jan 2025 08:45:33 -0800 (PST)
-Received: from ?IPV6:2001:4091:a244:80ab:34fb:50ff:feac:591b? ([2001:4091:a244:80ab:34fb:50ff:feac:591b])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d9900c40e8sm6362283a12.25.2025.01.14.08.45.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jan 2025 08:45:32 -0800 (PST)
-Message-ID: <31baf43d-8d10-41f7-87ad-87e6d2150592@geekplace.eu>
-Date: Tue, 14 Jan 2025 17:45:29 +0100
+        d=1e100.net; s=20230601; t=1736889668; x=1737494468;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w1pyBhR9znuGzFO9Qovl/xhPcK2onHnq0DJMNO0ivAM=;
+        b=ROkjOG6H3Ls8UcOI7XttacdmZkqyYsQcnzgoNV8oCcP0X1xVEPeYES3HaGJIqZ+NXu
+         zQnbfWbAokXgX6VpWev2GXPRhUnth27SDlMvLat8hAP6morY0a+ukEe/LjMBbrE1SWf1
+         ioU8VYJwK+Vl+TRSDB7m2zg//jrZDLqAIbSYArMvR3WF7AIXj8KlJ6Ln0b2UpbCR9XL5
+         RhK87pJCNkGw6F39D+DKm/XRq2K4RQJVNXMyYr+3ygxt6aWFE+9AvP6qRWhARGLzs6cw
+         vK4hh0lz9pFs2SrU0foDQ1MfBstYlnpw+zpp9LTcdEMLuy4LRse8/GX/B9OqOruC3muw
+         011g==
+X-Forwarded-Encrypted: i=1; AJvYcCXlfsav7bYmuAUH+Y3iWEGkT1r4Z68jXJ9FbYiaTPa0WRGnxJoT4dZ97IY6PKHVojkf1IgMkHu2GcmJiwmRSQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzlxiqQOqFWB19DU3jrLMiOKeO9jYhjBmPgljsh+NJD9HHjCsWt
+	mKk+jNYY4Myyq8mp1vaNgeT8VXe8xf/lUIFHBpBLh1hF6fjO2g2F/IL/2Lug4l0=
+X-Gm-Gg: ASbGncue/lSxOzbEXvGYIYqnjJIyqaiMMkkI5MlPV2uNpd0+avFGzT07jtUFngiQ5WX
+	MVtq4igIpQXUTA0/oTVA+qszOVhnU2aa4Ybonz7yiU70aUSD75u7tZfgHk72qi2PpbXox6cgyiH
+	wifPIIJ9Gbt+i92JF2l3usyzBbGHXeB4tpD5+dZC69nMlf5tD0PCH3vuKXk2+2tVG9zWWl/kSe2
+	IG44mR/UiKnuHWmRk6CYUwGSjiqPLFIWVxfgiGbr8n5MuuR0OLrJUT4J7zKphruM02t427M0v6b
+	OSZHtc7FMLlNkJnpMKGDVB7mmH7v3rjz
+X-Google-Smtp-Source: AGHT+IFAEIY+uGPmg9CHflAkEgVw5JE7m1dvKQ7GkwQsD7Ae1ubXIu6SNCZEm0IafLNQtTSFVDtyxQ==
+X-Received: by 2002:a05:6a20:6a24:b0:1e0:cadd:f670 with SMTP id adf61e73a8af0-1e88d13b51emr37995328637.5.1736889668086;
+        Tue, 14 Jan 2025 13:21:08 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-a31ddf6ee7csm8703329a12.71.2025.01.14.13.21.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jan 2025 13:21:07 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.98)
+	(envelope-from <david@fromorbit.com>)
+	id 1tXoLQ-00000005uTP-32bG;
+	Wed, 15 Jan 2025 08:21:04 +1100
+Date: Wed, 15 Jan 2025 08:21:04 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Dmitry Vyukov <dvyukov@google.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Jan Kara <jack@suse.cz>, Kun Hu <huk23@m.fudan.edu.cn>,
+	jlayton@redhat.com, adilger.kernel@dilger.ca, bfields@redhat.com,
+	viro@zeniv.linux.org.uk, christian.brauner@ubuntu.com, hch@lst.de,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	brauner@kernel.org, linux-bcachefs@vger.kernel.org,
+	syzkaller@googlegroups.com
+Subject: Re: Bug: INFO_ task hung in lock_two_nondirectories
+Message-ID: <Z4bVQEKdj4ouAGI4@dread.disaster.area>
+References: <42BD15B5-3C6C-437E-BF52-E22E6F200513@m.fudan.edu.cn>
+ <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa>
+ <ftg6ukiq5secljpfloximhor2mjvda7qssydeqky4zcv4dpxxw@jadua4pcalva>
+ <CACT4Y+ZtHUhXpETW+x8FpNbvN=xtKGZ1sBUQDr3TtKM+=7-xcg@mail.gmail.com>
+ <20250114135751.GB1997324@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] bcachefs: set rebalance thread to SCHED_BATCH and
- nice 19
-To: Christian Loehle <christian.loehle@arm.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- Valentin Schneider <vschneid@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Ben Segall
- <bsegall@google.com>, Steven Rostedt <rostedt@goodmis.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>
-References: <20250114130513.498482-2-flo@geekplace.eu>
- <20250114130513.498482-4-flo@geekplace.eu>
- <28688fa8-718b-4ee6-8417-822efac8b603@arm.com>
-Content-Language: en-US
-From: Florian Schmaus <flo@geekplace.eu>
-In-Reply-To: <28688fa8-718b-4ee6-8417-822efac8b603@arm.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------Lj00gQIsm3W2aqPmnp7weXr5"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250114135751.GB1997324@mit.edu>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------Lj00gQIsm3W2aqPmnp7weXr5
-Content-Type: multipart/mixed; boundary="------------9983BtMz53JeNjpA6EeswNv0";
- protected-headers="v1"
-From: Florian Schmaus <flo@geekplace.eu>
-To: Christian Loehle <christian.loehle@arm.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- Valentin Schneider <vschneid@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Ben Segall
- <bsegall@google.com>, Steven Rostedt <rostedt@goodmis.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <31baf43d-8d10-41f7-87ad-87e6d2150592@geekplace.eu>
-Subject: Re: [PATCH 2/2] bcachefs: set rebalance thread to SCHED_BATCH and
- nice 19
-References: <20250114130513.498482-2-flo@geekplace.eu>
- <20250114130513.498482-4-flo@geekplace.eu>
- <28688fa8-718b-4ee6-8417-822efac8b603@arm.com>
-In-Reply-To: <28688fa8-718b-4ee6-8417-822efac8b603@arm.com>
+On Tue, Jan 14, 2025 at 08:57:51AM -0500, Theodore Ts'o wrote:
+> P.S.  If you want to push back on this nonsense, Usenix program
+> committee chairs are very much looking for open source professionals
+> to participate on the program committees for Usenix ATC (Annual
+> Technical Conference) and FAST (File System and Storage Technologies)
+> conference.
 
---------------9983BtMz53JeNjpA6EeswNv0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+The problem is that the Usenix/FAST paper committees will not reach
+out to OSS subject matter experts to review papers that they have
+been asked to review for the conference.
 
-T24gMTQvMDEvMjAyNSAxNC4yOSwgQ2hyaXN0aWFuIExvZWhsZSB3cm90ZToNCj4gT24gMS8x
-NC8yNSAxMjo0NywgRmxvcmlhbiBTY2htYXVzIHdyb3RlOg0KPj4gV2hpbGUgdGhlIHJlYmFs
-YW5jZSB0aHJlYWQgaXMgaXN1YWxseSBub3QgY29tcHV0ZSBib3VuZCwgaXQgZG9lcyBjYXVz
-ZQ0KPiANCj4gcy9pc3VhbGx5L3VzdWFsbHkNCj4gDQo+PiBhIGNvbnNpZGVyYWJsZSBhbW91
-bnQgb2YgSS9PLiBTaW5jZSAicmVkdWNpbmciIHRoZSBuaWNlIGxldmVsIGZyb20gMA0KPj4g
-dG8gMTksIGFsc28gaW1wbGljaXRseSByZWR1Y2VzIHRoZSB0aHJlYWRzIGJlc3QtZWZmb3J0
-IEkvTyBzY2hlZHVsaW5nDQo+PiBjbGFzcyBsZXZlbCBmcm9tIDQgdG8gNywgdGhlIHJlYmxh
-bmNlIHRocmVhZCdzIEkvTyB3aWxsIGJlIGRlcHJpb3RpemVkDQo+IA0KPiBzL2RlcHJpb3Rp
-emVkL2RlcHJpb3JpdGl6ZWQvDQo+IA0KPj4gb3ZlciBub3JtYWwgSS9PLg0KPj4NCj4+IEZ1
-cnRoZXJtb3JlLCB3ZSBzZXQgdGhlIHJlYmFsYW5jZSB0aHJlYWQncyBzY2hlZHVsaW5nIGNs
-YXNzIHRvIEJBVENILA0KPj4gd2hpY2ggbWVhbnMgdGhhdCBpdCB3aWxsIHBvdGVudGlhbGx5
-IHJlY2VpdmUgYSBoaWdoZXIgc2NoZWR1bGluZw0KPj4gbGF0ZW5jeS4gTWFraW5nIHJvb20g
-Zm9yIHRocmVhZHMgdGhhdCBuZWVkIGEgbG93DQo+PiBzY2hlZHVsaW5nbGF0ZW5jeSAoZS5n
-LiwgaW50ZXJhY3RpdmUgb25jZXMpLg0KPiANCj4gcy9zY2hlZHVsaW5nbGF0ZW5jeS8NCj4g
-SSBrbm93IG5vdGhpbmcgYWJvdXQgYmNhY2hlZnMgaW50ZXJuYWxzLCBidXQgY291bGQgdGhp
-cyBhbHNvIGJlIGEgcHJvYmxlbT8NCj4gVGhlIHJlYmFsYW5jZSB0aHJlYWQgbWlnaHQgbm90
-IHJ1biBmb3IgTyhzZWNvbmQpIG9yIHNvPw0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXcsIG11
-Y2ggYXBwcmVjaWF0ZWQuIEkgaGF2ZSBhZGp1c3RlZCB0aGUgY29tbWl0IA0KbWVzc2FnZSBp
-biBteSBicmFuY2ggWzFdLg0KDQpCY2FjaGVmcyByZWJhbGFuY2UgdGFzayBpcyBub3QgcmVh
-bGx5IHNjaGVkdWxpbmcgbGF0ZW5jeSBzZW5zaXRpdmUsIA0KdW5saWtlIGJjYWNoZWZzJyBj
-b3B5Z2MgdGFzaywgc28gaXQgaXMgZmluZSB0byBydW4gaXQgdW5kZXIgQkFUQ0guDQoNCi0g
-Rmxvcmlhbg0KDQoxOiANCmh0dHBzOi8vZ2l0aHViLmNvbS9GbG93ZGFsaWMvbGludXgvdHJl
-ZS9iY2FjaGVmcy1yZWJhbGFuY2Utc2V0LXNjaGVkLWJhdGNoDQoNCg==
+Let me give you a recent example of a clear failure of the FAST
+paper committee w.r.t. plagarism.
 
---------------9983BtMz53JeNjpA6EeswNv0--
+The core of this paper from FAST 2022:
 
---------------Lj00gQIsm3W2aqPmnp7weXr5
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+https://www.usenix.org/conference/fast22/presentation/kim-dohyun
 
------BEGIN PGP SIGNATURE-----
+"ScaleXFS: Getting scalability of XFS back on the ring"
 
-iQGTBAEBCgB9FiEEl3UFnzoh3OFr5PuuIjmn6PWFIFIFAmeGlKlfFIAAAAAALgAo
-aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldDk3
-NzUwNTlGM0EyMURDRTE2QkU0RkJBRTIyMzlBN0U4RjU4NTIwNTIACgkQIjmn6PWF
-IFI7YAf/e+Fc1/7q+dfx2uHEVWuwPknfkNdXN8dbLVw/V9dlcvQx5KsckQRwfaqY
-ghLcso+jTuv3UxKgxHfkxFL/uSVhA07yULzb3afogu+N7NUuLopGaEcWjeY1jHdj
-zzb83feACrXzZlLhPkMEOQ0nsE3cRIrCRuHAVIlPkVfx0Kqh3iOyAR0YSiLZPIgl
-DBA1GVnrwk+xAEs//P3x5+uhSMEO5G/acat+zp27vc8KTIPlRinClPgVMTIBUVD/
-fjAXRMTPVa1oROX66k0Mi2a3mijTlTtDhHihzdGd+klmNWRvsqumn9USq9n8VSz5
-wnSlsb6v0Q8ZRWFsiXwVULbemw+9LA==
-=q9Z6
------END PGP SIGNATURE-----
+is based on the per-CPU CIL logging work I prototyped and posted an
+RFC for early in 2021:
 
---------------Lj00gQIsm3W2aqPmnp7weXr5--
+https://lore.kernel.org/linux-xfs/20200512092811.1846252-1-david@fromorbit.com/
+
+The main core of the improvements described in the ScaleXFS paper
+are the exact per-cpu CIL algorithm in that was contained in the
+above RFC patchset.
+
+That algorithm had serious problems that meant it was unworkable in
+practice - these didn't show up until journal recovery was tested
+and it resulted in random filesystem corruptions. I didn't
+understand the root cause of the problem until months later.
+
+These problems were all based on failures to correctly order the
+per-CPU log items in the journal due to the per-CPU CIL being
+inherently racy.  The algorithm I proposed 6 months later (and
+eventually got merged in July 2022) had significant changes to the
+way the per-CPU CIL ordered operations to address these problems.
+
+IOWs, object ordering on the CIL is the single most important
+critical correctness citeria for the entire journalling algorithm
+and hence a fundamental algorithmic constraint for the per-CPU CIL
+implementation.
+
+However, the ScaleXFS paper does not make any mention of this
+fundamental algorithmic constraint - I did not publish anything
+about this constraint until the November 2022 patch set....
+
+There were more clear tell-tales in the paper that indicate
+that the "research" was based on that early per-CPU CIL RFC I
+posted, but I won't go into details.
+
+I brought this to the FAST committee almost immediately after I was
+able to review the paper (a couple of days after the FAST conference
+itself). I provided them with all the links to public postings of
+the algorithm, detailed analysis of the paper and publicly posted
+code, etc. In response, they basically did nothing and brushed my
+concerns off. It would take weeks to get any response from the paper
+committee, and the overall response really felt like the Usenix
+people simply didn't care at all about what was obviously plagarised
+work.
+
+IOWs, the Usenix/FAST peer review process for OSS related papers is
+broken, and they don't seem to care when experts from the OSS
+community actually bring clear cases of academic malpractice to
+them...
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
