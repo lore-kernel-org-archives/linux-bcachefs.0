@@ -1,122 +1,289 @@
-Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230622595;
-	Tue, 14 Jan 2025 02:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11AF45733A
+	for <linux-bcachefs@vger.kernel.org>; Tue, 14 Jan 2025 09:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736823310; cv=none; b=N8ZHaZPjq91gPhqN+zbmDIjqHmcBnPyAzDxC8Ckeu5CgrH1YCZ9tC9jN/d3R/7Xmre4sCP3Y/hVTHDwKYl6pQWyeoc20CbDHdW8ohzbg//qDJVPoJzR1eI5y/9Zd93yt2nOpwAEK4+NVUqkBCVER3lYjziPFY7rpxgkctKrOIT8=
+	t=1736845639; cv=none; b=e+R6FwhkePUSlm8slkYzpGWVwyElt6qSXfhf6oaWtk01f8O+MD+GYRU7i2+GpFNCcazTL/+7PDVHt4Xr+ddJALqVUDxvvqHRnJOALasjP41wE4A3HzkWWmdG2wu/1aIvCJznPEznHEcpNovWOnSQYl53CPIcQSAhyAmdVPjBtXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736823310; c=relaxed/simple;
-	bh=PaKr7Wwc2GwN4w9Jy+tJQI5lOx/4SZaHH9XFSlg5jmU=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=lsoSJxHAnn1EPPaoSODlwkIaod51vtFYnoYjhj4LHIOyLJH+5Jtw1EHQjEGJma061nwpoXdv9GqrOOmLHH84Ke1Eg/U3AnDYDoM+XPjZUzrOgCnonI/6e4lQcxeupnCwWdU5P7hPjiQj9VwNrEDEzenw3oxM1QvrPibFnUrM1NI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn; spf=pass smtp.mailfrom=m.fudan.edu.cn; dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b=r2Hgzmzk; arc=none smtp.client-ip=54.254.200.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.fudan.edu.cn
+	s=arc-20240116; t=1736845639; c=relaxed/simple;
+	bh=A4c/WA0nMlP0wDYXCCXe/ToJdrM+IN2oRntlPJbAiL4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vF3RSCvwb/iNIp/ZCeUeYIxzKmpoWFROFSbaXhvxqcn+B2SV/xep+VhLbgaBrFtjvHn/M/rG/jXfbXAcCmDvPqR3OxwZ5HLwK3M4qCMbLKJnVmpOcSbRS/TU7HsPxSjp18p0LxnJciGjihBpAeqDw84KMVGLyAKXXNagdzsF8q8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SV2VtwAJ; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b="r2Hgzmzk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=m.fudan.edu.cn;
-	s=sorc2401; t=1736823290;
-	bh=PaKr7Wwc2GwN4w9Jy+tJQI5lOx/4SZaHH9XFSlg5jmU=;
-	h=Mime-Version:Subject:From:Date:Message-Id:To;
-	b=r2HgzmzkXFyeJ7evzwVSl4qMbO1WID83qp2Ybr7GbqpCRNJxMpQhEgKTdPZk6fFne
-	 SeWMhjQvBLYBo73CFqmHdJ4D46zIJucAGhzY+aDIjUy0laQiFESCtjM3GxbC69wISt
-	 hrFrVPp8j4etiDN/FVBDxAmGCw6uPdwb+1AKhWkY=
-X-QQ-mid: bizesmtpip2t1736823289t735png
-X-QQ-Originating-IP: ZoHuCDREEWZlGPbrFJszZTyNCx7XvTGfBtua0YZ3rZw=
-Received: from smtpclient.apple ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 14 Jan 2025 10:54:46 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 12455661124939741486
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SV2VtwAJ"
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-30613802a59so28373931fa.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 14 Jan 2025 01:07:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1736845635; x=1737450435; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FtqSMgf8m35rnWv7dwro4dU155LWff8NLmtzn7afVH8=;
+        b=SV2VtwAJVdmgc/Gj1jUHlKtTb+3RzKwnvSK+DuP2LSMPyXbziAiHCmr4PVBFzCDRAZ
+         fn2DzdY3B+sYIVJXRn06zjb9iJ1uGOw993XDhBNW8XGcigUVeTvXf8h1bh7JgOLOaaHL
+         csu0ZOHuJ1xCw0w6wgJgQc19HroGgBu8GzSXb5PSUKVrAxjrM5BaOK56zFieI2E9q97H
+         i9kq3qs5iUMZrtIfoGIcD+xpXW6k9oY2oomtcU4hHsHPS52GQawhh6cR/ZSR7ZLIJbVc
+         o07jqrhLXx/FnM0XmmjnvTKerLcKBi9wm9KAwQQK27CTN4J11Ps6aWOvmi7+cvc2Sl5I
+         Busg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736845635; x=1737450435;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FtqSMgf8m35rnWv7dwro4dU155LWff8NLmtzn7afVH8=;
+        b=btuHz0bg4hAYpKHm/VXEeRsnCMLqNOTKBcfUsPd63skiJXYn/5QUB1cQH1/YLq5QHs
+         kYFCgsEcciszcjBGwUdjnoY+ywK3pn0qWjYIdE9CryNAfLTpHvwwZWyrp4i28niNbyes
+         LbCZVHJoGAV4fOpWD2mCBL8KuBB5HzTjOoxOcsiWrHun0wKCkmOQKsG4CWaQ7qZOHCjq
+         Q6zbSt0Fb6DZHATvC9LYpgGF6Gb+UXFCMf/z5oKMlbr1c95NDDG+kIS93xZjH81YyUK6
+         6yYTElDYel2eIh7V2SF7qKgVLxJ011FLqBzSOgKKR01kqlHXGPWEZcINH+pQOzMyeq8z
+         2lqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXvReUsEWyytwYdX7NLj0iyV+eKBJiwI+GuaKcuX0NR3VHoq0HqYQo0NxonBkBA/txA/g1AnnnQhyBVg5oZLg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxxf9cKoR0q1Bjnuz5sjqsXuQE/UVvhNblk4YStpNy4alkl6wzA
+	5+9Czc1CaRtvN9SeNyEEfbNzW/m5LSGuBzdfJBVeU3a3aMZ9GmFnkgDTZmHacLLQvVznJx5WdnL
+	HlvoOE+uBIPdMvKyAI12wH7l/smcLvgApqCPr
+X-Gm-Gg: ASbGncu4VqCWYzCIW5oGjUecnfE/ZwHWZgjRyswDH2j+qxpIfuIjQ8mKx/BgwqE0A0V
+	w5kJUyefwS5iPAMCPvDcqGws7Jp031wg2wGqFu4ftEnTx3DmqBnFhh76gnFXBsRpNdHosRg==
+X-Google-Smtp-Source: AGHT+IEpO+wrq2vCVhxgF/UsobbyNc8ZPzfFSOanTfotbUVliLZfG1YG+uq848tzdk9BuaXBQEcvYP8EoHVE+aB37qc=
+X-Received: by 2002:a2e:be09:0:b0:300:3a15:8f19 with SMTP id
+ 38308e7fff4ca-305f45dc70dmr82814961fa.32.1736845634924; Tue, 14 Jan 2025
+ 01:07:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
-Subject: Re: Bug: INFO_ task hung in lock_two_nondirectories
-From: Kun Hu <huk23@m.fudan.edu.cn>
-In-Reply-To: <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa>
-Date: Tue, 14 Jan 2025 10:54:36 +0800
-Cc: jlayton@redhat.com,
- tytso@mit.edu,
- adilger.kernel@dilger.ca,
- david@fromorbit.com,
- bfields@redhat.com,
- viro@zeniv.linux.org.uk,
- christian.brauner@ubuntu.com,
- hch@lst.de,
- linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- brauner@kernel.org,
- linux-bcachefs@vger.kernel.org,
- Kent Overstreet <kent.overstreet@linux.dev>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D732181A-26A9-4D11-9B2F-FE0CEC18A6D1@m.fudan.edu.cn>
+MIME-Version: 1.0
 References: <42BD15B5-3C6C-437E-BF52-E22E6F200513@m.fudan.edu.cn>
- <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa>
-To: Jan Kara <jack@suse.cz>
-X-Mailer: Apple Mail (2.3818.100.11.1.3)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpip:m.fudan.edu.cn:qybglogicsvrgz:qybglogicsvrgz8a-1
-X-QQ-XMAILINFO: MQ+wLuVvI2LQExZhOW1NPqOq+eRcfyCG0v8nPm7383SJeL+zsqr7VYZ5
-	2vr1L2ViWNOUEj7gnbLCtZDnY5y8bmUxg4DJ+1RhmuvtjGl1/vw6BHBeKW7l0+3d5+z96Y2
-	sIAih55/2buRcTNgmt045R0Se9WB0RbWY4fpqx/+6ZrnWX16fMjHWi6hf+BKNKVzKBrXbwH
-	U2w+F2OaoAsMJpLIHs2Io68Jjelrs9e/aqd7adX0I+rbpplEA0sz3xHMF4kJjfy1Pl2F3po
-	X0N4f9Ul1eKZQPEZiY+tzMRuILMUKfc/MrmffUlygUgYuG8xjVC0lHdOfLxCryO98m+vSaZ
-	PRQg4MR60dRKBDUin+rD4+v38HHwIQTHnavyg/mrQUOgzfNzDThjft5yIBTDLujZka2I6BH
-	rJkadSEuSs9rfxOa2h5GB4oTGXjMRHrObD/+gNustn2OjycfDt2bb2V2UjRoEAKjsMOvRME
-	gKbk9zE3WVe67jw/OKMupP31Vy1tFx5reNO4D9EXAApTg0g1pVdDXgfn1B5l5NXIU2VLoYA
-	JcrOYVHJs68xgvkg2OP81Ftk2irINGsDDOnBaaZg9pKMtz1qe4njJDRWEuangmkDDPqdOp6
-	fnmhNOX9BA5mWzSbN5gFqFJCIwK3VicV5zG750rG+ENH6ZP7w/oxOx7b4ARJyp1orxaz0Qz
-	JLLr+zkLh4skN4tGEWOicasll8eP4AY5E/gYloCChvXLE0gG64p/xj1P0n4jMd1/mqvmSEo
-	V4QinlojxrFV0tVBtdD7nlwtW0gEDc2CQL3TRr0JEJ6FEM9dafDW+RTFB9zC7XLOZbnvuKq
-	LXv6w7Z2wJxv0fGQXIXf7nt2nQMgrzwjTuIXKMWN2A0xPKLVD+ltzWytmZD5cZj9qbAlDqs
-	pi7r+wRIgBwCJKWmG8GbqjpXL0XTr2ClbLm7ajKeTrHMb9O5nON313Zycln6e4Kf9LwaMUb
-	jP3I4z15jKzVOIWz0sLv7HwsLMVwgoNN3NGZAVgjvqdNzZE2vEYmyK2fL9GU0DOMhrjY=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-X-QQ-RECHKSPAM: 0
+ <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa> <ftg6ukiq5secljpfloximhor2mjvda7qssydeqky4zcv4dpxxw@jadua4pcalva>
+In-Reply-To: <ftg6ukiq5secljpfloximhor2mjvda7qssydeqky4zcv4dpxxw@jadua4pcalva>
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Tue, 14 Jan 2025 10:07:03 +0100
+X-Gm-Features: AbW1kvbd061HI9e3Udt3xzChloMi2Kn4WgYpG7R_WoAKMDfjCTL6YmGptH3NGIQ
+Message-ID: <CACT4Y+ZtHUhXpETW+x8FpNbvN=xtKGZ1sBUQDr3TtKM+=7-xcg@mail.gmail.com>
+Subject: Re: Bug: INFO_ task hung in lock_two_nondirectories
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Jan Kara <jack@suse.cz>, Kun Hu <huk23@m.fudan.edu.cn>, jlayton@redhat.com, 
+	tytso@mit.edu, adilger.kernel@dilger.ca, david@fromorbit.com, 
+	bfields@redhat.com, viro@zeniv.linux.org.uk, christian.brauner@ubuntu.com, 
+	hch@lst.de, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	brauner@kernel.org, linux-bcachefs@vger.kernel.org, 
+	syzkaller@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->=20
->=20
-> Hello!
->=20
-> First I'd note that the list of recipients of this report seems =
-somewhat
-> arbitrary. linux-kernel & linux-fsdevel makes sense but I'm not sure =
-how
-> you have arrived at the list of other persons you have CCed :). I have =
+On Mon, 13 Jan 2025 at 21:00, Kent Overstreet <kent.overstreet@linux.dev> w=
+rote:
+>
+> On Mon, Jan 13, 2025 at 11:28:43AM +0100, Jan Kara wrote:
+> > Hello!
+> >
+> > First I'd note that the list of recipients of this report seems somewha=
+t
+> > arbitrary. linux-kernel & linux-fsdevel makes sense but I'm not sure ho=
+w
+> > you have arrived at the list of other persons you have CCed :). I have =
 to
-> say syzbot folks have done a pretty good job at implementing =
-mechanisms how
-> to determine recipients of the reports (as well as managing existing
-> reports over the web / email). Maybe you could take some inspiration =
-there
-> or just contribute your syzkaller modifications to syzbot folks so =
-that
-> your reports can benefit from all the other infrastructure they have?
->=20
-> Anyway, in this particular case, based on locks reported by lockdep, =
-the
-> problem seems to be most likely somewhere in bcachefs. Added relevant =
-CCs.
+> > say syzbot folks have done a pretty good job at implementing mechanisms=
+ how
+> > to determine recipients of the reports (as well as managing existing
+> > reports over the web / email). Maybe you could take some inspiration th=
+ere
+> > or just contribute your syzkaller modifications to syzbot folks so that
+> > your reports can benefit from all the other infrastructure they have?
+>
+> Is there some political reason that collaboration isn't happening? I've
+> found the syzbot people to be great to work with.
+>
+> I'll give some analysis on this bug, but in general I won't in the
+> future until you guys start collaborating (or at least tell us what the
+> blocker is) - I don't want to be duplicating work I've already done for
+> syzbot.
+
+I suspect the bulk of the reports are coming from academia
+researchers. In lots of academia papers based on syzkaller I see "we
+also reported X bugs to the upstream kernel". Somehow there seems to
+be a preference to keep things secret before publication, so upstream
+syzbot integration is problematic. Though it is well possible to
+publish papers based on OSS work, these usually tend to be higher
+quality and have better evaluation.
+
+I also don't fully understand the value of "we also reported X bugs to
+the upstream kernel" for research papers. There is little correlation
+with the quality/novelty of research.
 
 
-Hi Jan,
-
-Thank you very much for your feedback. The current method of determining =
-recipients is indeed less structured than syzbot`s mechanism, and we =
-have only improved the method of generating the seed, and have not yet =
-entered very much into understanding his infrastructure. We will =
-definitely consider taking our approach from `syzbot` and not have this =
-problem next time.
-
-Thanks for pointing out that it may have originated from `bcachefs`.
-
-=E2=80=94=E2=80=94=E2=80=94=E2=80=94
-Kun Hu=
+> > Anyway, in this particular case, based on locks reported by lockdep, th=
+e
+> > problem seems to be most likely somewhere in bcachefs. Added relevant C=
+Cs.
+> >
+> >                                                               Honza
+> >
+> > On Sun 12-01-25 18:00:24, Kun Hu wrote:
+> > > When using our customized fuzzer tool to fuzz the latest Linux kernel=
+, the following crash (43s)
+> > > was triggered.
+> > >
+> > > HEAD commit: 9d89551994a430b50c4fffcb1e617a057fa76e20
+> > > git tree: upstream
+> > > Console output: https://github.com/pghk13/Kernel-Bug/blob/main/0110_6=
+.13rc6/43-INFO_%20task%20hung%20in%20lock_two_nondirectories/log0
+> > > Kernel config: https://github.com/pghk13/Kernel-Bug/blob/main/0110_6.=
+13rc6/config.txt
+> > > C reproducer: https://github.com/pghk13/Kernel-Bug/blob/main/0110_6.1=
+3rc6/43-INFO_%20task%20hung%20in%20lock_two_nondirectories/12generated_prog=
+ram.c
+> > > Syzlang reproducer: https://github.com/pghk13/Kernel-Bug/blob/main/01=
+10_6.13rc6/43-INFO_%20task%20hung%20in%20lock_two_nondirectories/12_repro.t=
+xt
+> > >
+> > > We first found the issue without a stable C and Syzlang reproducers, =
+but later I tried multiple rounds of replication and got the C and Syzlang =
+reproducers.
+> > >
+> > > I suspect the issue may stem from resource contention or synchronizat=
+ion delays, as indicated by functions like lock_two_nondirectories and vfs_=
+rename. There could also be potential deadlocks or inconsistencies in file =
+system state management (e.g., sb_writers or inode locks) within the bcache=
+fs subsystem. Additionally, interactions between lock_rename and concurrent=
+ rename operations might be contributing factors.
+> > >
+> > > Could you kindly help review these areas to narrow down the root caus=
+e? Your expertise would be greatly appreciated.
+>
+> We need to know what the other threads are doing. Since lockdep didn't
+> detect an actual deadlock, it seems most likely that the blocked thread
+> is blocked because the thread holding the inode lock is spinning and
+> livelocked.
+>
+> That's not in the dump, so to debug this we'd need to reproduce this in
+> a local VM and poke around with e.g. top/perf and see what's going on.
+>
+> I've a tool to reproduce syzbot bugs locally in a single command [1], so
+> that would be my starting point - except it doesn't work with your
+> forked version. Doh.
+>
+> Another thing we could do is write some additional code for the hung
+> task detector that, when lockdep is enabled, uses it to figure out which
+> task it's blocked on and additionally print a backtrace for that.
+>
+> [1]: https://evilpiepirate.org/git/ktest.git/tree/tests/syzbot-repro.ktes=
+t
+>
+> > >
+> > > If you fix this issue, please add the following tag to the commit:
+> > > Reported-by: Kun Hu <huk23@m.fudan.edu.cn>, Jiaji Qin <jjtan24@m.fuda=
+n.edu.cn>
+> > >
+> > > INFO: task syz.0.12:1823 blocked for more than 143 seconds.
+> > >       Tainted: G        W          6.13.0-rc6 #1
+> > > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this mess=
+age.
+> > > task:syz.0.12        state:D stack:25728 pid:1823  tgid:1714  ppid:44=
+2    flags:0x00000004
+> > > Call Trace:
+> > >  <TASK>
+> > >  context_switch kernel/sched/core.c:5369 [inline]
+> > >  __schedule+0xe60/0x4120 kernel/sched/core.c:6756
+> > >  __schedule_loop kernel/sched/core.c:6833 [inline]
+> > >  schedule+0xd4/0x210 kernel/sched/core.c:6848
+> > >  schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6905
+> > >  rwsem_down_write_slowpath+0x551/0x1660 kernel/locking/rwsem.c:1176
+> > >  __down_write_common kernel/locking/rwsem.c:1304 [inline]
+> > >  __down_write kernel/locking/rwsem.c:1313 [inline]
+> > >  down_write_nested+0x1db/0x210 kernel/locking/rwsem.c:1694
+> > >  inode_lock_nested include/linux/fs.h:853 [inline]
+> > >  lock_two_nondirectories+0x107/0x210 fs/inode.c:1283
+> > >  vfs_rename+0x14c7/0x2a20 fs/namei.c:5038
+> > >  do_renameat2+0xb81/0xc90 fs/namei.c:5224
+> > >  __do_sys_renameat2 fs/namei.c:5258 [inline]
+> > >  __se_sys_renameat2 fs/namei.c:5255 [inline]
+> > >  __x64_sys_renameat2+0xe4/0x120 fs/namei.c:5255
+> > >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> > >  do_syscall_64+0xc3/0x1d0 arch/x86/entry/common.c:83
+> > >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> > > RIP: 0033:0x7fca967c071d
+> > > RSP: 002b:00007fca953f2ba8 EFLAGS: 00000246 ORIG_RAX: 000000000000013=
+c
+> > > RAX: ffffffffffffffda RBX: 00007fca96983058 RCX: 00007fca967c071d
+> > > RDX: ffffffffffffff9c RSI: 0000000020000580 RDI: ffffffffffffff9c
+> > > RBP: 00007fca96835425 R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 00000000200005c0 R11: 0000000000000246 R12: 0000000000000000
+> > > R13: 00007fca96983064 R14: 00007fca969830f0 R15: 00007fca953f2d40
+> > >  </TASK>
+> > >
+> > > Showing all locks held in the system:
+> > > 1 lock held by khungtaskd/45:
+> > >  #0: ffffffff9fb1aea0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acqui=
+re include/linux/rcupdate.h:337 [inline]
+> > >  #0: ffffffff9fb1aea0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock =
+include/linux/rcupdate.h:849 [inline]
+> > >  #0: ffffffff9fb1aea0 (rcu_read_lock){....}-{1:3}, at: debug_show_all=
+_locks+0x75/0x340 kernel/locking/lockdep.c:6744
+> > > 1 lock held by in:imklog/329:
+> > > 5 locks held by syz.0.12/1715:
+> > >  #0: ff1100003ff8c420 (sb_writers#20){.+.+}-{0:0}, at: do_open fs/nam=
+ei.c:3821 [inline]
+> > >  #0: ff1100003ff8c420 (sb_writers#20){.+.+}-{0:0}, at: path_openat+0x=
+1577/0x2970 fs/namei.c:3987
+> > >  #1: ff110000415c1780 (&sb->s_type->i_mutex_key#21){++++}-{4:4}, at: =
+inode_lock include/linux/fs.h:818 [inline]
+> > >  #1: ff110000415c1780 (&sb->s_type->i_mutex_key#21){++++}-{4:4}, at: =
+do_truncate+0x131/0x200 fs/open.c:63
+> > >  #2: ff11000047780a38 (&c->snapshot_create_lock){.+.+}-{4:4}, at: bch=
+2_truncate+0x145/0x260 fs/bcachefs/io_misc.c:292
+> > >  #3: ff11000047784398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu=
+_lock_acquire include/linux/srcu.h:158 [inline]
+> > >  #3: ff11000047784398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu=
+_read_lock include/linux/srcu.h:249 [inline]
+> > >  #3: ff11000047784398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bc=
+h2_trans_get+0x625/0xf60 fs/bcachefs/btree_iter.c:3228
+> > >  #4: ff110000477a66d0 (&c->gc_lock){.+.+}-{4:4}, at: bch2_btree_updat=
+e_start+0xb18/0x2010 fs/bcachefs/btree_update_interior.c:1197
+> > > 3 locks held by syz.0.12/1823:
+> > >  #0: ff1100003ff8c420 (sb_writers#20){.+.+}-{0:0}, at: do_renameat2+0=
+x3ea/0xc90 fs/namei.c:5154
+> > >  #1: ff110000415c0148 (&sb->s_type->i_mutex_key#21/1){+.+.}-{4:4}, at=
+: inode_lock_nested include/linux/fs.h:853 [inline]
+> > >  #1: ff110000415c0148 (&sb->s_type->i_mutex_key#21/1){+.+.}-{4:4}, at=
+: lock_rename fs/namei.c:3215 [inline]
+> > >  #1: ff110000415c0148 (&sb->s_type->i_mutex_key#21/1){+.+.}-{4:4}, at=
+: lock_rename+0xa5/0xc0 fs/namei.c:3212
+> > >  #2: ff110000415c1780 (&sb->s_type->i_mutex_key#21/4){+.+.}-{4:4}, at=
+: inode_lock_nested include/linux/fs.h:853 [inline]
+> > >  #2: ff110000415c1780 (&sb->s_type->i_mutex_key#21/4){+.+.}-{4:4}, at=
+: lock_two_nondirectories+0x107/0x210 fs/inode.c:1283
+> > > 4 locks held by bch-reclaim/loo/1811:
+> > >  #0: ff110000477cb0a8 (&j->reclaim_lock){+.+.}-{4:4}, at: bch2_journa=
+l_reclaim_thread+0x101/0x560 fs/bcachefs/journal_reclaim.c:739
+> > >  #1: ff11000047784398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu=
+_lock_acquire include/linux/srcu.h:158 [inline]
+> > >  #1: ff11000047784398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu=
+_read_lock include/linux/srcu.h:249 [inline]
+> > >  #1: ff11000047784398 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bc=
+h2_trans_get+0x625/0xf60 fs/bcachefs/btree_iter.c:3228
+> > >  #2: ff11000047784740 (&wb->flushing.lock){+.+.}-{4:4}, at: btree_wri=
+te_buffer_flush_seq+0x69f/0xa40 fs/bcachefs/btree_write_buffer.c:516
+> > >  #3: ff110000477a66d0 (&c->gc_lock){.+.+}-{4:4}, at: bch2_btree_updat=
+e_start+0xb18/0x2010 fs/bcachefs/btree_update_interior.c:1197
+> > > 1 lock held by syz-executor/5484:
+> > > 2 locks held by syz.1.1333/8755:
+> > > 1 lock held by syz.7.1104/8876:
+> > >  #0: ffffffff9fb27ef8 (rcu_state.exp_mutex){+.+.}-{4:4}, at: exp_funn=
+el_lock+0x29f/0x3d0 kernel/rcu/tree_exp.h:297
+> > > 2 locks held by syz.8.1367/8889:
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > >
+> > > ---------------
+> > > thanks,
+> > > Kun Hu
+> > --
+> > Jan Kara <jack@suse.com>
+> > SUSE Labs, CR
