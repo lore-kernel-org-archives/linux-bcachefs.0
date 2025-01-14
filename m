@@ -1,92 +1,53 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DFD130A73;
-	Tue, 14 Jan 2025 13:58:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5877A130A73;
+	Tue, 14 Jan 2025 14:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736863122; cv=none; b=CXvO9KfF0JYkKwJurVwYGl0Jf416BeSFjnW79suMFg4OpbfsHswgvJ0S0JCA1NExywaK5PF6lLl8sYsejEUvarqocMupHl0rMZLLjkktwLQZK3h0gU7+BqLCwiZ3PJgtwsLWTGkmAqCcKeUMFCTZrRZYRQOaYIQQeHlVlgAvS2k=
+	t=1736865145; cv=none; b=pHXqYe13ntpoluShazKR8CsghyyRsA2yKzexdMKi9epyFi8KC/CEx9ASQ6eE3pho5yraJwd0rSQqoI9Zsb6Ry0TMUgOFveFVs/1E5wzvCGFGw2sb+fHU8I4LGLBUFaUYSwk7BXdgR7gj8AZjvD18nTiDK0fLg26v2M8+lb3d0rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736863122; c=relaxed/simple;
-	bh=IGqkx4X7wa7i3kT6/5gv42mXQHNtanOIbEAM/Y0DgCQ=;
+	s=arc-20240116; t=1736865145; c=relaxed/simple;
+	bh=IgFCTByyKQexXjchZ0aBGothaScxaomTZLAp06F1fDI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AYLOPmRYQZ6h+F1H8MERKhKUi262aeZsUGKeNvreMyOuOMAj0RxF36liTAhh6C4tz2l6mlmg1O42yNrn0QGu+eyn6+TmjVvekieKoA9jnkGvUT4O4QpZ/mb0tsUr3rJWClHOrB6pwmAM7ATjYV8yxM0HlTOQPq5zBxO55mKztP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ecWS653C; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ln5OSU9T; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ecWS653C; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ln5OSU9T; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	 Content-Type:Content-Disposition:In-Reply-To; b=Od1a3WoEHXk2fYg6OHIAHuaTnS18lJRUPJQYQCqR7EwWD6qu9Ej9SOLgHFffaPi0iB/311Ai6FS8lymX00XmBB/fiHGWvXKki3N2V5gViQzElINv0hh+xTTqn5YgJM8FWRbOmi61F3jgVrnFGG+TUxveDigBQSHPR0sW3MVGcEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=heS5bWZ5; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ecWS653C";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ln5OSU9T";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ecWS653C";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ln5OSU9T"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3E4B42117B;
-	Tue, 14 Jan 2025 13:58:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736863118; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wYrrC1Ay1frUFzvKXOzH8OW8eOdadzQMCqSZhD6SX44=;
-	b=ecWS653CiFEb2Rq3v9zlzFbpKhV6CSzEIQ+kl2PikhdhaDu7JT3xtTOMFRdkXwI6MBDm6o
-	DTFM7bKj7uedvd7DCw2z5BPYe1oWljGS9zQZPQI41zcmj07Bt9m1BUxvEJEMb2k4XbGIyf
-	Ct29Y9sMWJhRlUmNjwYqxhjfaSMXVhY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736863118;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wYrrC1Ay1frUFzvKXOzH8OW8eOdadzQMCqSZhD6SX44=;
-	b=ln5OSU9T7DlL2t4sqI98YnV6Y7Q2Ic7tU6wHZQfQDzBwVOxaNeKKT3e93M6erKmgo7dPAZ
-	1zhKH0kFFp2K2nCQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ecWS653C;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ln5OSU9T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736863118; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wYrrC1Ay1frUFzvKXOzH8OW8eOdadzQMCqSZhD6SX44=;
-	b=ecWS653CiFEb2Rq3v9zlzFbpKhV6CSzEIQ+kl2PikhdhaDu7JT3xtTOMFRdkXwI6MBDm6o
-	DTFM7bKj7uedvd7DCw2z5BPYe1oWljGS9zQZPQI41zcmj07Bt9m1BUxvEJEMb2k4XbGIyf
-	Ct29Y9sMWJhRlUmNjwYqxhjfaSMXVhY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736863118;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wYrrC1Ay1frUFzvKXOzH8OW8eOdadzQMCqSZhD6SX44=;
-	b=ln5OSU9T7DlL2t4sqI98YnV6Y7Q2Ic7tU6wHZQfQDzBwVOxaNeKKT3e93M6erKmgo7dPAZ
-	1zhKH0kFFp2K2nCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2BBD2139CB;
-	Tue, 14 Jan 2025 13:58:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rSItCo5thme7VAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 14 Jan 2025 13:58:38 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id BF308A08CD; Tue, 14 Jan 2025 14:58:37 +0100 (CET)
-Date: Tue, 14 Jan 2025 14:58:37 +0100
-From: Jan Kara <jack@suse.cz>
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Jan Kara <jack@suse.cz>, 
-	Kun Hu <huk23@m.fudan.edu.cn>, jlayton@redhat.com, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	david@fromorbit.com, bfields@redhat.com, viro@zeniv.linux.org.uk, 
-	christian.brauner@ubuntu.com, hch@lst.de, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, brauner@kernel.org, linux-bcachefs@vger.kernel.org, 
-	syzkaller@googlegroups.com
-Subject: Re: Bug: INFO_ task hung in lock_two_nondirectories
-Message-ID: <435wi7dfddjqhn5yxuw34tww2gyr4x2oeh3s25htuwl7cwggza@zuyzyrha7qk6>
-References: <42BD15B5-3C6C-437E-BF52-E22E6F200513@m.fudan.edu.cn>
- <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa>
- <ftg6ukiq5secljpfloximhor2mjvda7qssydeqky4zcv4dpxxw@jadua4pcalva>
- <CACT4Y+ZtHUhXpETW+x8FpNbvN=xtKGZ1sBUQDr3TtKM+=7-xcg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="heS5bWZ5"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=E6oDlEaqP7wE6MngFKHNSZP+hFRtppxVDJA+dfNXscY=; b=heS5bWZ5oUzDrz1ph4ABNtFl/V
+	sZF3EFmh27iPGGvacRCtrAY3Au01MAcCGZOhBz2SalrLdodKEgVGrYN5y8tnL4MwQ4+1SclRSWtNd
+	LWy/Y5tnxXU66jezqVQ1IxM9UdrSJ/oVxBtAXNmF0c91776JNcPViXGgR0i7Z7scU/N/fwdxgDdQ0
+	Jh/dh1zc60jfFgoj6kktLxOvgqHgtcJ098/K+KduIJbE1lWeQ+aXTiV+1hB/1EaH3XFnPqGqxu2RM
+	0L7K10Lxt7MrZjtnGCFQ/7c9o6XfF9hH5v0Qg2LokaMlXEn34d2gjYXtr6m9oYGTblqEKvjZkC+Zh
+	f/e3bLVw==;
+Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tXhxm-0000000H32T-2mIe;
+	Tue, 14 Jan 2025 14:32:15 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 4046230063F; Tue, 14 Jan 2025 15:32:14 +0100 (CET)
+Date: Tue, 14 Jan 2025 15:32:14 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Florian Schmaus <flo@geekplace.eu>
+Cc: Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] bcachefs: set rebalance thread to SCHED_BATCH and
+ nice 19
+Message-ID: <20250114143214.GT5388@noisy.programming.kicks-ass.net>
+References: <20250114130513.498482-2-flo@geekplace.eu>
+ <20250114130513.498482-4-flo@geekplace.eu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -95,50 +56,22 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+ZtHUhXpETW+x8FpNbvN=xtKGZ1sBUQDr3TtKM+=7-xcg@mail.gmail.com>
-X-Rspamd-Queue-Id: 3E4B42117B
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
-X-Spam-Flag: NO
+In-Reply-To: <20250114130513.498482-4-flo@geekplace.eu>
 
-On Tue 14-01-25 10:07:03, Dmitry Vyukov wrote:
-> I also don't fully understand the value of "we also reported X bugs to
-> the upstream kernel" for research papers. There is little correlation
-> with the quality/novelty of research.
+On Tue, Jan 14, 2025 at 01:47:28PM +0100, Florian Schmaus wrote:
+> While the rebalance thread is isually not compute bound, it does cause
+> a considerable amount of I/O. Since "reducing" the nice level from 0
+> to 19, also implicitly reduces the threads best-effort I/O scheduling
+> class level from 4 to 7, the reblance thread's I/O will be depriotized
+> over normal I/O.
+> 
+> Furthermore, we set the rebalance thread's scheduling class to BATCH,
+> which means that it will potentially receive a higher scheduling
+> latency. Making room for threads that need a low
+> schedulinglatency (e.g., interactive onces).
 
-Since I was working in academia in the (distant) pass, let me share my
-(slightly educated) guess: In the paper you're supposed to show practical
-applicability and relevance of the improvement you propose. It doesn't have
-to be really useful but it has to sound useful enough to convince paper
-reviewer. I suppose in the fuzzer area this "practical applicability" part
-boils down how many bugs were reported...
+sorta.. what worries me most about these patches are the claims without
+backing numbers.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Supposedly there is a problem, and this here fixes it, but it doesn't
+really get quantified much here.
