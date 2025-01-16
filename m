@@ -1,143 +1,97 @@
-Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE7E1D9A50;
-	Thu, 16 Jan 2025 09:38:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.22.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139E11E86E
+	for <linux-bcachefs@vger.kernel.org>; Thu, 16 Jan 2025 10:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737020314; cv=none; b=rQ2l7zojQHfvp6npHC+JRCpKw8Rc5gNwYQMaqogmnx3Jds5883GOODeZwyCeoE+2vB9kGxgNR17fRAcL/XjTqDGoL9aXr72FH9FkaicjGPkz9FG+6/zuY1gEQ4Q6GXEWA65FFYzt4XUaiuf9iEUj8X+I6B2SRs6WaPY1lidersI=
+	t=1737022283; cv=none; b=Bu9GlD0Wa7fXjYNmkDMmaqnuv09Ow0dlz/t1ifJnyGQRaGurlOrermhNuApSHk+LmY8yOIeYYE/nTEDgHoxMIjNd6YDMwewHf7XwHPIQwZlkqC2w0DOjSZ02MtajecaxcwcHSgVQaAK6VqflO7ngUKVwZyQaOEnXwTueFwS6QLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737020314; c=relaxed/simple;
-	bh=rQg18MnOpi0iRL1xsBPEEr2agWJPlJAJAhkSX+nBeHc=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=BUldxtPX0uwry+Dbiiu04U/nOeyGDcsHYLJq4Bvy2+25gOW/XQxzururdI+LOALU9/De46Jk+8ulqRDG8XZ4WLS2xUDgOZ3/f7Yr6sJZacJGfg4mtnEH0kjBiqtleDkISvD/L9bIn0av54KgZ1ILkxxM/lNuzRotV13/+drL6TY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn; spf=pass smtp.mailfrom=m.fudan.edu.cn; dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b=fuSneDYS; arc=none smtp.client-ip=54.207.22.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.fudan.edu.cn
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b="fuSneDYS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=m.fudan.edu.cn;
-	s=sorc2401; t=1737020263;
-	bh=rQg18MnOpi0iRL1xsBPEEr2agWJPlJAJAhkSX+nBeHc=;
-	h=Mime-Version:Subject:From:Date:Message-Id:To;
-	b=fuSneDYSyV/ozY96K4KiD4/MRfX8RUn4pECH5JaBAwYrLd7sZHB8qkQDKIJvAAO7X
-	 IeaSr9PGsWeTpMgYxOjMZd74ReiInc6Apv6gg7kfJiry/Nghs7Y+nx2ey7XMti5s3U
-	 jgjYGCd4fMn2I83t+AGRXOS/uIZ07kspFTlz7lF8=
-X-QQ-mid: bizesmtpip4t1737020256td9b9rh
-X-QQ-Originating-IP: t5Ya/sP/koFKq0GD8TMRYajOAfezgqAiPbiwx1UABic=
-Received: from smtpclient.apple ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 16 Jan 2025 17:37:34 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 16457540514336954107
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1737022283; c=relaxed/simple;
+	bh=8v4bD0ZipOabKoEc39uM0vD6DcLh5kLuNPFsmeTbIpc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=jrBkqUYpZLwAjfO2RczaSiimE0IBh5TDPAuicHqHNETocbeE2PKm0DNQWiPIhzTbKauyGzKzqQFCC9gU8KgMek0e+aT0FbZTy8cqDINIiv8VrI6/Fy26bQj+jaZT0LB6x2vnqevuFW/BzhgGgFIvGLqQ+zg52cq7V7ARUawQBDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3ce8868a7a5so5716105ab.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 16 Jan 2025 02:11:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737022281; x=1737627081;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TV+4g/wDgMuEv47gQ+m4ZPL+ynhSnSdL/xdnAAmdqLA=;
+        b=w+iBE96L5iP7tUzOTXZ6rxheCgg/4YX2cvKzAIe1UH+OMiCOUA57p2J1TV6P+kbDiK
+         U/rkuy19DqjfE+Yi1mkRkIEwHDWfoyOQ/VGytA9QHuUTz98kZ6a3Jzn0jMz3ky2HNY7l
+         UJjaZNbo2Yg7oCrJ/6D9c6/r/VLlLrmRjJzXZVmxeqpqsGUbC9l2H4pnZrt0u6ZHbzyl
+         /HcBMehxk5lWQaqkpdDq0R8Aw3iOysASpCbTW+KQn8dJH3xHeFdlTcXBIP5cq9d9kfhT
+         poUuoPpcLobGvILSW47Xj0cZ6CPxk6frIPDhUVlfp5HMEPobsQr4H/F5WCgSP4NZzzdS
+         SVZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXS2jKmisatrUzmzBIfqlPcn1ZBaSccik9JDtM3Oic+WlCAsc6AF91CM1Y6RVxibjKFYMTub9D0UnhAPIykzg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzczuWcRD5YnTemHmX4P1mBTtfkxvPnlywJ+UxzjWBXRzFOk/EM
+	WhuG/S+WJo2Jn2A4x8NVCr8IyIY/bOcCrY0OLFYdLFVWwzipUTCvqaPR5FQ2FQZwyu259oWe2VC
+	3xXs9QUAqFMZxyyn3ICzLzeSILP45j8KEx+oe77jtJ38xs2+bDvd/bV8=
+X-Google-Smtp-Source: AGHT+IEEWIuhzRH1uXote7rkcsdXILrUQjOy2R5iZ7IY9or9kxPuTBVEHfBdzjwNLr9llLKF5XqUkYMI0v+mDrSkexBQ5VfO2pdy
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
-Subject: Re: Bug: INFO_ task hung in lock_two_nondirectories
-From: Kun Hu <huk23@m.fudan.edu.cn>
-In-Reply-To: <xxpizgm5l66ru5n23ejgiyw5xbq4mf4sxwfgj63b4xgr5ot2sh@iqzwriqmwjg3>
-Date: Thu, 16 Jan 2025 17:37:24 +0800
-Cc: Dmitry Vyukov <dvyukov@google.com>,
- Jan Kara <jack@suse.cz>,
- linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-bcachefs@vger.kernel.org,
- syzkaller@googlegroups.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5BCDEDB6-7A92-4401-A0A8-A12EF2F27ED0@m.fudan.edu.cn>
-References: <42BD15B5-3C6C-437E-BF52-E22E6F200513@m.fudan.edu.cn>
- <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa>
- <ftg6ukiq5secljpfloximhor2mjvda7qssydeqky4zcv4dpxxw@jadua4pcalva>
- <CACT4Y+ZtHUhXpETW+x8FpNbvN=xtKGZ1sBUQDr3TtKM+=7-xcg@mail.gmail.com>
- <D067012D-7E8D-4AD9-A0CA-66B397110989@m.fudan.edu.cn>
- <xxpizgm5l66ru5n23ejgiyw5xbq4mf4sxwfgj63b4xgr5ot2sh@iqzwriqmwjg3>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3818.100.11.1.3)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpip:m.fudan.edu.cn:qybglogicsvrgz:qybglogicsvrgz8a-1
-X-QQ-XMAILINFO: MmPNY57tR1XnO8H0pthGhVLod8vXAp1LSKq+MbFPaCLkTpZDqRV8l+za
-	P7SjsQdB9Y2JIZgaDfnJ3zHWd6StJh1gOFPPopLNN5+CSzWy2NiDXBg2vTrWCYvH6IIecQa
-	72DGD72T4jKSgaXCPnaWwdUnAB0/6+zA92NvNiA5NqyQr9yTKE8ouIqWo837MVwlBQFz40T
-	54gmdPJF1YaW0ARCDg16GBcwtnZqJuCkK+3tNXs7f6Zj7Iub1O2jKbQqzELkR0HHDjue+nh
-	C6EtCcy48Vebmx9DzINaCwvO/SCpqU+qvkB5REU6M3L0zT37RZzKsxX0WmVFj5jAJAlObDo
-	rlt5+Vltw0ZtXD/URqoFgp/OxkVx4TzxheLE7mUHRI/OdMzeULtT/uBl7YrLmqeG1+XRNOn
-	+SFSeTj41FfXgkFnvEtkLgJ/Ji5dZINWqon9AUNdfAkNUIkziiCxJjqxdwYQR0fwZtEWtI/
-	bpIsqwgd0pTZ6nRJFC467zWibxxEILjwFQnS51ysUUWZ4h0xUb90luj9C2Xn6QqlC2Su9VR
-	oEDtS241McGGC13wIlhRrPj3h7vIg/bntQ/6PUopj1v+N9s0moTeyiqpBcLY5p1gRAB7tRC
-	qBWsJQGZ4/WF4hBffyHWmDwoxlBv9gX1NoQHjfxEUzqEUt5eKDvU1GC41IKQnSQxE6h0KU4
-	a1NdSLPkhQrBzsb1LOY9fTYCkkpKBV91gGzY4p/R8u0B3/MQ8jBLYt8eg0INAf+C4MIoF5x
-	nvuV28CjANxWFx2sPe1F5uvuYxBnLXUe8eOLNg60ICK5bVLFSbPDg3vhc7VxWq+JaSaqRWV
-	b3XWRgqOV/05TMI0ruLw65yMxKh2glmiG0ohlGEdzkDcsL+ReEwbFtI5bxB2u9asZD4NCcD
-	K2BBEcGH31M21uRXL+ccoxY4z2tFSC3wL8lUW8bAKC72WWp4KuSDeFnwXHLJy6FO6XWyCrF
-	viammO29WMsequzFlJht+6kITxJY5aDgKV8q6v/ZkcreViI9HcdlyTDITi8XWST31p9r7EP
-	6RcHYqew==
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-X-QQ-RECHKSPAM: 0
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:154d:b0:3ce:793e:2766 with SMTP id
+ e9e14a558f8ab-3ce84a1810emr46389485ab.8.1737022281381; Thu, 16 Jan 2025
+ 02:11:21 -0800 (PST)
+Date: Thu, 16 Jan 2025 02:11:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6788db49.050a0220.20d369.0029.GAE@google.com>
+Subject: [syzbot] Monthly bcachefs report (Jan 2025)
+From: syzbot <syzbot+list3513ad8218cc4be5cfe8@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello bcachefs maintainers/developers,
 
->=20
-> Makes sense. Sorry if I came off a bit strong, there's been a couple
-> syzbot copycats and I find I keep repeating myself :)
->=20
-> So, it sounds like you're getting nudged to work upstream, i.e. people
-> funding you want you to be a bit better engineers so the work you're
-> doing is taken up (academics tend to be lousy engineers, and vice
-> versa, heh).
->=20
-> But if you're working on fuzzing, upstream is syzbot, not the kernel -
-> if there's a community you should be working with, that's the one.
->=20
-> An individual bug report like this is pretty low value to me. I see a
-> ton of dups, and dups coming from yet another system is downright
-> painful.
->=20
-> The real value is all the infrastructure /around/ running tests and
-> finding bugs: ingesting all that data into dashboards so I can look =
-for
-> patterns, and additional tooling (like the ktest/syzbot integration, =
-as
-> well as other things) for getting the most out of every bug report
-> possible.
->=20
-> If you're working on fuzzing, you don't want to be taking all that on
-> solo. That's the power of working with a community :) And more than
-> that, we do _very_ much need more community minded people getting
-> involved with testing in general, not just fuzzing.
->=20
+This is a 31-day syzbot report for the bcachefs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/bcachefs
 
+During the period, 16 new issues were detected and 0 were fixed.
+In total, 122 issues are still open and 110 have already been fixed.
 
-Hi Kent,
+Some of the still happening issues:
 
-Thank you for your insights.
+Ref  Crashes Repro Title
+<1>  28728   Yes   INFO: task hung in bch2_copygc_stop
+                   https://syzkaller.appspot.com/bug?extid=c6fd966ebbdea1e8ff08
+<2>  7014    Yes   INFO: task hung in __closure_sync
+                   https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
+<3>  5318    Yes   KMSAN: uninit-value in bch2_inode_v3_validate
+                   https://syzkaller.appspot.com/bug?extid=3cd97352d16f0e6066d9
+<4>  3400    Yes   WARNING in bch2_trans_srcu_unlock
+                   https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
+<5>  1840    Yes   KMSAN: uninit-value in rw_aux_tree_set (2)
+                   https://syzkaller.appspot.com/bug?extid=ed52fb987e4b52cbfad9
+<6>  1779    Yes   KASAN: slab-use-after-free Read in percpu_ref_put (2)
+                   https://syzkaller.appspot.com/bug?extid=905d719acdbd213bf67e
+<7>  1287    Yes   INFO: task hung in __bch2_fs_stop
+                   https://syzkaller.appspot.com/bug?extid=6d3e28b33490b3085412
+<8>  849     No    possible deadlock in bch2_symlink
+                   https://syzkaller.appspot.com/bug?extid=7836a68852a10ec3d790
+<9>  570     Yes   INFO: task hung in bch2_journal_reclaim_thread (2)
+                   https://syzkaller.appspot.com/bug?extid=820dc3b465c69f766a57
+<10> 402     Yes   KMSAN: uninit-value in bch2_alloc_v4_validate (2)
+                   https://syzkaller.appspot.com/bug?extid=8dd95f470e7cd0ff4b66
 
-I have a couple of questions I would like to ask for your advice on:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-=46rom a testing perspective, we have modified syzkaller and discovered =
-some issues. It=E2=80=99s true that researchers working on fuzzing often =
-lack a deep understanding of the kernel, making it difficult to =
-precisely determine the scope of reported problems. Meanwhile, syzbot =
-provides a description of the reporting process (please refer to the =
-link below) and encourages researchers to report bugs to maintainers. =
-However, there seems to be a significant gap here=E2=80=94researchers =
-may end up reporting bugs to the wrong maintainers or submitting reports =
-that lack value. This seems like a serious issue. Could the kernel =
-community consider establishing a standardized process to reduce wasted =
-time on all sides and prevent researchers from inflating bug counts just =
-to validate their papers?
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-Link: =
-https://github.com/google/syzkaller/blob/master/docs/linux/reporting_kerne=
-l_bugs.md
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-It is often suggested that researchers collaborate with syzbot. What =
-should such collaboration look like in terms of form and content? =46rom =
-a maintainer's perspective, how would you prefer to see researchers who =
-report bugs work with syzbot? Since I=E2=80=99m new to this field, I=E2=80=
-=99m not very familiar with the process and would greatly appreciate =
-your guidance.=
+You may send multiple commands in a single email message.
