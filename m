@@ -1,253 +1,142 @@
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B097215E97
-	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Jan 2025 02:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6340F158870
+	for <linux-bcachefs@vger.kernel.org>; Sat, 18 Jan 2025 06:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737165963; cv=none; b=okK7moepnZRJDyORAmk2j04kmCn+Hco2maum6A9wbOt6DeYBS7n1EZ64efcYA6pRWVRTgyF2C5zYhaKJa4+gu2vO2kgCq+Q1PzgLMezq2X1x29rjjNPHh65JluVRAMD5/CUnO+1VtkSiL0jYDo/Pqnpk7JtzxWsgzDMVAIVeL8Y=
+	t=1737180148; cv=none; b=U97ghk7aGtbe7Dk6c/I4jdRC221P9u0VtKiHBXqlYA+AFz3dcZskIaLBsdG4SQZ2GnyB49+3Uq8vn6xX6h785a57tocev3kxAvDfcwhHE1HvmfWUZwmj3J2yOAfymPit1ateOsL3NXkvab7iK+VUJT1bDr29iUQtK6wFDuFn3gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737165963; c=relaxed/simple;
-	bh=WduCwZ/YbUjFGMLhwABrwEb53vqfDg06rUjrCKtdkaY=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=AkruUbRZF3wQ8N+4sKQEtCcSoZs9cq9nGhL8YMaTX9h2g1N6C0Gx4AxtghharlzEkA24QfiRQ7OK1MpymW3xSJhBteRiA3QvI/6t1Efdnfzky40cd9ouFbjJMf+4UsCSsZGKt4H/xFa0W+V9oY1NALdcRAv1WFGm3EHY9UxCJbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=L2wQRO+p; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="L2wQRO+p"
-Date: Fri, 17 Jan 2025 21:05:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737165948;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=ontvz6SeaYGWwW02H4LE3AqoXc2tWOH62+q3svCfotU=;
-	b=L2wQRO+pN7y6JZ18wEwlpUrHfhgAFLB60Q79T/Gu0qCY7GpTNWER+otFgaU1Nflpl72boF
-	RzKLcO6K2/WtUQyK73/SB2RC4L6HQXDTmNR76bOiX00G8w4uX55Of4+RkJttYqGKgqlx/R
-	gtZecuUT8pR1OkzQRw4jG99N07m/Pk0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, lsf-pc@lists.linux-foundation.org
-Subject: [LSF/MM/BPF TOPIC] bcachefs - how do we get to the next gen
- filesystem we all want - development process
-Message-ID: <k4fzyl76mx3nu2em5rhzacdt4wjjvrkbn3hucermeoh7tserwf@zniyzz73lrb2>
+	s=arc-20240116; t=1737180148; c=relaxed/simple;
+	bh=hAIMo/7rQAP1sB2VOQzMM0vy6BO5LpmfB/+qJrKud3A=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Tb29mhr8lDacc7mXZaKbxf7HbRT+ZkF0qiLrR94ygJJ6Kb4+NF/JC9n3oG/7MAX4Kxtw1xJhFZk12/K1r54btV9yoo4RY/DNZB9lY4DofKI4BpxcNcR5Mou9YQ2XVAA1i0/dVklpWa3qlr8ubNwiqonZIu5GKhrNYklEY9oE5js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3ce8cdf1898so16038165ab.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 17 Jan 2025 22:02:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737180145; x=1737784945;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8DGj8t7zZaBZAyMgTvK2ezQbPr1//3Z5VyPLbRW0VAg=;
+        b=j4FVytmU/9Wd1Flr4QXOUtkUpDu5bq831EgbPBK53O261CHQvX2kggI65te0KiCG71
+         EKU9GKfaHQEIDy196zh4W5swLgIjgZLPWiPjER4dPPgETmEo66x1P2Kwf8SrSbkhu/Wn
+         lUEFBTAGqE9W8eOlrqvpTzYIhB32S1DK8+HAM20yLWrEE+Q2ISv+sAUc5Qt4jOBJQ6/j
+         ddB5sBQLZqHdHoP31CZo1RyxKejjqWaW9h3uhAq++ia9byOEijwaUobuMn/atlOQWb4X
+         ipE1fN5H+/PPFDb38B0tvMPuNSNP5MvBLmwaPWoaMHhDaCUg128FEeZXq0Kui9S/V9cC
+         CYMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWByxLQeSJ5SSwxl9ZaKZ+rGdL5mzxO4us9RT+zLHRw3JCQr9bkOknE2W6sUgzukS94RF9r7J7Y+3YtN3ZR/g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxuyNapbv68ncBbLMOC5Kc+ZfK8veAqZgOpB0y5FVZGpW+HheUw
+	fgab/UttC09DmBYAX0Z3fMxvuZ01G7ObzQuJmTEk8Oz5z9t/AzL0daBntsEwlKrwzMUD9F0JfSc
+	CZaS444uMENyZefL1UxDfidyBUNOiWygZHkb3Edk6+2WSoYhiCQe02Hc=
+X-Google-Smtp-Source: AGHT+IErnCEVZ1leX9sQ76mWabhPmClBMsc0l6v/w4iNr3ct4OGYq8/0LuZ5NPdfh/x4sQIfI+qwGED28U+qCKCheOK8Vb+vl2BX
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:219e:b0:3cf:6463:41fc with SMTP id
+ e9e14a558f8ab-3cf74487c3bmr43063965ab.17.1737180145424; Fri, 17 Jan 2025
+ 22:02:25 -0800 (PST)
+Date: Fri, 17 Jan 2025 22:02:25 -0800
+In-Reply-To: <67823638.050a0220.d0267.0040.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <678b43f1.050a0220.303755.001d.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_journal_replay (2)
+From: syzbot <syzbot+a3885f6d294f83923567@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-First, a short update on develpment:
+syzbot has found a reproducer for the following issue on:
 
-- Experimental should be coming off in ~6 months. This will mean
-  stronger backwards compatibility guarantees (no more forced on disk
-  format upgrades) and more backports. The main criteria for taking the
-  experimental label off will be going a cycle without any critical bug
-  reports, and making sure we have all the critical on disk format
-  changes we want (i.e. things that'll be a hassle to fix later).
+HEAD commit:    ad26fc09dabf Merge tag 'mm-hotfixes-stable-2025-01-16-21-1..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=104fe1f8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aadf89e2f6db86cc
+dashboard link: https://syzkaller.appspot.com/bug?extid=a3885f6d294f83923567
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ceba18580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137ee9df980000
 
-- Major developments:
-  - Next merge window pull request pushes practical scalability limits
-    to ~50 PB. With the recent changes to address backpointers fsck, we
-    fsck'd a filesystem with 10 PB of data in an hour and a half.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-ad26fc09.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e8c59e9a573f/vmlinux-ad26fc09.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8bfa2df81410/bzImage-ad26fc09.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/8485647a2ac3/mount_1.gz
 
-  - Online self healing is now the default, and more and more codepaths
-    are being converted so that we can fix errors at runtime that would
-    otherwise require fsck to correct.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a3885f6d294f83923567@syzkaller.appspotmail.com
 
-    The goal is that users should never have to explicitly run fsck -
-    even in extreme disaster scenarios - and we're pretty far along.
+    new u64s 5 type deleted 14293651161087:U64_MAX:U32_MAX len 0 ver 0
+bcachefs (loop0): bch2_btree_update_start(): error EIO
+bcachefs (loop0): bch2_btree_update_start(): error EIO
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/recovery.c:130!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5306 Comm: syz-executor276 Not tainted 6.13.0-rc7-syzkaller-00160-gad26fc09dabf #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:replay_now_at fs/bcachefs/recovery.c:130 [inline]
+RIP: 0010:bch2_journal_replay+0x2a09/0x2a40 fs/bcachefs/recovery.c:346
+Code: cd 35 7e 07 e8 68 9e 54 fd 90 0f 0b e8 60 9e 54 fd 90 0f 0b e8 58 9e 54 fd 90 0f 0b e8 50 9e 54 fd 90 0f 0b e8 48 9e 54 fd 90 <0f> 0b e8 40 9e 54 fd 90 0f 0b e8 38 9e 54 fd 90 0f 0b e8 30 9e 54
+RSP: 0018:ffffc9000d297180 EFLAGS: 00010293
+RAX: ffffffff844ae428 RBX: ff0000000000000b RCX: ffff88801f6b0000
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: ff0000000000000b
+RBP: ffffc9000d297478 R08: ffffffff844ad999 R09: ffffffff84beba5f
+R10: 0000000000000004 R11: ffff88801f6b0000 R12: ffff888044a4abb8
+R13: dffffc0000000000 R14: 00000000ffffffff R15: ffff888044a4abc0
+FS:  000055555a053380(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055fd59292098 CR3: 0000000043c6e000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:191
+ bch2_run_recovery_passes+0x3a7/0x880 fs/bcachefs/recovery_passes.c:244
+ bch2_fs_recovery+0x25cc/0x39d0 fs/bcachefs/recovery.c:861
+ bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1037
+ bch2_fs_get_tree+0xd68/0x1710 fs/bcachefs/fs.c:2170
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3511
+ do_mount fs/namespace.c:3851 [inline]
+ __do_sys_mount fs/namespace.c:4061 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4038
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f1e71c47dfa
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffde82bfb88 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffde82bfba0 RCX: 00007f1e71c47dfa
+RDX: 00000000200058c0 RSI: 0000000020000140 RDI: 00007ffde82bfba0
+RBP: 0000000000004800 R08: 00007ffde82bfbe0 R09: 0000000000005a2b
+R10: 0000000000004800 R11: 0000000000000282 R12: 0000000000000005
+R13: 00007ffde82bfbe0 R14: 0000000000000004 R15: 0000000001000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:replay_now_at fs/bcachefs/recovery.c:130 [inline]
+RIP: 0010:bch2_journal_replay+0x2a09/0x2a40 fs/bcachefs/recovery.c:346
+Code: cd 35 7e 07 e8 68 9e 54 fd 90 0f 0b e8 60 9e 54 fd 90 0f 0b e8 58 9e 54 fd 90 0f 0b e8 50 9e 54 fd 90 0f 0b e8 48 9e 54 fd 90 <0f> 0b e8 40 9e 54 fd 90 0f 0b e8 38 9e 54 fd 90 0f 0b e8 30 9e 54
+RSP: 0018:ffffc9000d297180 EFLAGS: 00010293
+RAX: ffffffff844ae428 RBX: ff0000000000000b RCX: ffff88801f6b0000
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: ff0000000000000b
+RBP: ffffc9000d297478 R08: ffffffff844ad999 R09: ffffffff84beba5f
+R10: 0000000000000004 R11: ffff88801f6b0000 R12: ffff888044a4abb8
+R13: dffffc0000000000 R14: 00000000ffffffff R15: ffff888044a4abc0
+FS:  000055555a053380(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055fd59292098 CR3: 0000000043c6e000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-  - Online fsck still has a ways to go, but the locking issues for the
-    main check_allocations pass are nearly sorted so we're past the hard
-    technical hurdles. This is a high priority item.
 
-  - Scrub will be landing in the next few weeks, or sooner.
-
-  - Stabilization: "user is not able to access filesystem" bugs reports
-    have essentially stopped; fsck is looking quite robust. Overall
-    stability going by bug reports and user feedback is shaping up
-    quickly.
-
-    We do have reports of outstanding data corruption (nix package
-    builders are providing excellent torture testing), and some severe
-    performance bugs to address; these are the highest priority
-    outstanding items.
-
-    There are good things to report on the performance front: one tidbit
-    is that users are reporting that in situations where btrfs falls
-    over without nocow mode (databases, bittorrent) bcachefs does fine,
-    and "bcachefs doesn't need" nocow is now the common advice to new
-    users.
-
-Now that that's out of the way - my plan this year isn't to be talking
-about code, but rather development process - and the need to get
-organized.
-
-First, we need to talk about the historical track record with filesystem
-devolpment. Historically, most filesystem efforts have failed - and we
-ought to see what lessons we can learn.
-
-By my count, in the past few decades there have been 3 "next generation"
-filesystems that advanced the state of the art and actually delivered on
-their goals:
- - XFS
- - ZFS
- - and most recently, APFS
-
-Pointedly, none of these came from the open source community. While I
-would give ext3 half credit - it was a pragmatic approach that did
-deliver on its goals - the ext4 codebase also showcases some of the
-disadvantages of our "community based" approach.
-
-This isn't an open vs. closed source thing, Microsoft also failed with
-ntfs replacement; filesystems are hard. If there's a single overarching
-diagnosis to be made, I would say the issue is organizational: doing a
-filesystem right requires funding a team consistently for many years
-with the right kind of long term focus.
-
-The most successful efforts came from the big Unix vendors, when that
-was still a thing, and now from Apple, who is known for being able to
-organize and support engineering teams.
-
-All this is to say that I'd like for us to be able to set some long term
-priorities in the filesystem space, decide what we need to push for, and
-figure out how to get it done. The Linux kernel world is not poorly
-funded, but efforts don't get funded without a plan, and historically
-our filesysystem devolpment has suffered from a short term "project
-manager" type focus - a lot of effort being spent on individual highly
-niche features for customers with deep pockets, while bread and butter
-stuff gets neglected.
-
------------------
-
-Here's my list of things we actually do need:
-
-Process, tooling:
------------------
-
-- Firstly, a filesystem is not just the code itself. It's the tooling,
-  the test infrastructure, the time spent working with users who are
-  digging in and finding out what works and what doesn't: it is
-  _whatever it takes to get the job done_.
-
-  I've often heard talk from engineers who think of tooling as something
-  "other people work on", or corporate types who don't want to work with
-  users because "that's unpaid user support": but we don't get this done
-  without a community, and that includes the _user_ community, and
-  developers who aren't kernel developers.
-
-  We need to be leveraging all the resources we have, and we need to be
-  bringing the right attitude if we want to deliver the best work we
-  can.
-
-  Some specific things that I see still lacking, within the bcachefs
-  world and the filesystem world as a whole:
-
-  - Our testing automation still needs to be better. I've built
-    developer focused testing automation, but it still needs work and I
-    could use help.
-
-    - We badly need automated performance testing. I still see people at
-      the bigcorps doing performance testing manually, and what
-      automated performance testing their is lives in the basements of
-      certain engineers. This needs to be a standard thing we're all
-      using.
-
-    - Code coverage analysis needs to be a standard thing we're all
-      looking at - it should be something we can trivially glance at
-      when we're doing code review.
-
-      (If anyone wants to help with this one, there's some trivial
-      makefile work that needs to happen and my test infrastructure has
-      the rest implemented).
-
-    - bcachefs still needs real methodical automated error injection
-      testing (I know XFS has this, props to them); we won't be able to
-      consider fsck rock solid until this is done.
-
-Technical milestones:
----------------------
-
-bcachefs has achieved nearly all of the critical technical milestones
-I've laid out - or they're far enough along that we're past the "how
-well will this work" uncertainty. But here's my criteria for any major
-next gen filesystem:
-
-- Check/repair:
-
-  Contrary to what certain people have voiced about "filesystems that
-  don't need fsck", fsck will _always_ be a critical component of any
-  filesystem - shit happens, and we need to be able to recover, and
-  check if the system is in a consistent state (else many bugs will go
-  undiscovered).
-
-  Data loss is flatly unacceptable in any filesystem suitable for real
-  usage: I do not care what happened or how a filesystem was corrupted,
-  if there is data still present it is our job to recover it and get the
-  system back to a working state.
-
-  Additionally, fsck is _the_ scalability limitation as systems continue
-  to grow. Inherently so, as there are many global invariants/references
-  to be checked.
-
-  As mentioned, bcachefs is now well into the petabyte range, which
-  should be good for a bit - for most users. Long term, we're going to
-  need allocation groups so that we can efficiently shard the main fsck
-  passes; allocation groups will get bcachefs into the exabyte range.
-
-- Self healing, online fsck:
-
-  Having the filesystem be offline for check/repair is also becoming a
-  non-option, so anything that can be repaired at runtime must be - and
-  we need to have mechanisms for getting the system up and running in RW
-  mode and doing fsck online even when the filesystem is corrupt.
-
-  (bcachefs has this covered, naturally).
-
-- Scalability
-
-  Besides just the size of the dataset itself, large systems with large
-  numbers of drives and complex topologies need to be supported. These
-  systems exist, and today the methods of managing those large number of
-  drives are lacking; we can do better.
-
-- Versioning, upgrade and downgrade flexibility and compatibility w.r.t.
-  on disk format.
-
-  A common complaint from users is being stuck on an old on disk format
-  version, without even being aware, and being subject to bugs/issues
-  which have been long since fixed.
-
-  We need a better story for on disk format changes. bcachefs also has
-  this one covered; while in the experimental phase we've been making
-  extensive use of our ability to roll out new on disk format versions
-  automatically and seamlessly _and still support downgrades_.
-
-- Real database fundamentals.
-
-  Filesystems are databases, and if we steal as much as possible of the
-  programming model from the database world it becomes drastically
-  easier to roll out features and improvements; our code becomes more
-  flexible and compatibility becomes much easier.
-
-What do people want, and how do we get organized?
--------------------------------------------------
-
-This part will be dependent on participation, naturally. It's all up to
-us, the engineers :)
-
-I'm hoping to get more community involvement from developers this year.
-I want to see this thing be as big a success as it deserves to be, and I
-want users to have something they can depend on - peace of mind.
-
-And I want this filesystem to be a place where people can bring their
-best ideas and see them to fruition. There's still interesting research
-to be done and interesting problems to be solved.
-
-Let's see what we can make happen...
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
