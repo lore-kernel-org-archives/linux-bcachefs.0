@@ -1,77 +1,142 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from vps01.wiesinger.com (vps01.wiesinger.com [46.36.37.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A2C17DE36
-	for <linux-bcachefs@vger.kernel.org>; Wed, 22 Jan 2025 04:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEEFE7462
+	for <linux-bcachefs@vger.kernel.org>; Wed, 22 Jan 2025 06:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.36.37.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737520805; cv=none; b=IlOwgFqKW7vwFXjfeXqdMS9cf5oIN6t90ifWl/UT/dHvoVaMXP2GMJY0VDDD7LdErnt0lsH1evJnx7Tz9zXPt2/IcbABCLpHaAhD6EiGSvkh7/fzNFgPDsagGu6d2wtB+XCbeFGCdd/pO74vvZnDbaxyT82qAaT/AUhZNw6SHWs=
+	t=1737528671; cv=none; b=UWZhxbYkQ7cekMmbNE4noUtxk55tG1lfN3srUHSbkNv8uvTS+oN9O+BZ+/py5LD7D8bfxjUkdzX1+QS0dQRLe+pPZMki53Yacvx09+lPkM8568oSglsqGmWR0lDVeQmWVfFazS0GNmohNHPznfaUiPTOcnKf65FDe79yzb/wqqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737520805; c=relaxed/simple;
-	bh=dg9VamvAbwHHKNgWr8MaQdwDRlbk8Hv4dDqWvseGQtc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=OdPpQxlmYvRT5FhtNvE7PsfpmVW88u1/QrVLXbUFlN2O5tBhJs2vmZ/zrgy72MUTvBAi2TmwrEW9SBI2gVRWNSQS521m5IvLj5IqptxbtRdtEjHMJ5Wo2k6q+V/FVPK2p+KW7yVovEfDicTgX+dO6OlYiIkjt6LXQhM8WxXg1sU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a7e0d7b804so44716845ab.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 21 Jan 2025 20:40:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737520802; x=1738125602;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xaO6Cz+oF6AjPCOe8eXNGAraGaqpP80svKFDFKKVtR0=;
-        b=njBq86IY38EHeH8gv3YYyG0JDpTNM6DqhbQSvZqTOKroI/vz+hqwI1vL078J/Qqi+R
-         4ulmIdmqXrz0AB1L6wGvAFOHJIPGu+5FbVWpuOw1/Rim4g5IQLuVtVmnQ+ZG84cvyLJB
-         Xz9Uun9MBB7I1jL9pQjQ6xojrkxQZwxcE1o65epxO4P3LSaDoPxAjj+2/wXMhb9mBiI4
-         DGZN63xJ0C4TfG1vNExNhRMgW21+pYZjBG1taS68a/t5yoh+WH7F9hn+yMvDKz29caJB
-         UngrCvbwDdkhe9xLI34etLCJWicyML06Eha9Yege+1e8r7x3eU0FIiRaHB8ec0R2f2De
-         q0bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbQhFOSNjiT/lp9nxztpRQnf+mejWwAog+lbpnXyNcdfCKesvKH/8JmBWExwstZK6vmHnn0L9Is1F4dfkwRg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzhd8YwsklcCKk7nQzV3/5lNDf1HAlLzGcMIDVpRt8Qf/baUs7a
-	rEn/PasdumhqhV/hbu0YNtCAKnWSNI//lyOZnMxtdXSR5U7pWBd+SzifNzHinIorBQa0ACK+BWH
-	/zcMglZK6LsY3HeFTGHvdmgSkx6yCvuUq4up41dzMkRBRrWuqlD4gneQ=
-X-Google-Smtp-Source: AGHT+IHuSxpEXCzT78/8A2dXvtK8mXYcPddmTs37KsN8p0DwPdvvC4Kv18veazWQqG82uu3/kJQtNNgSc4tdt+5qBQZLEa5KFLSr
+	s=arc-20240116; t=1737528671; c=relaxed/simple;
+	bh=M4aU1EP4ZglF9mlxIt+biABpnipjscs5N23uECkQ4Ik=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Kh2anaXK7jidqrEe5U6L/6S5LKhGDJRtlRH62poZuuoVBk03dk6YZqCds9INl7P7MILn4PdxdsJ5nKMTXe0yYud/MiMZi5YFY0iCI8pLJ2zBBxns7eDeyGXvgGSDFZiqA33jfjuqvVZLfLF38oMGSpjgCMkhHx5TwAK0Cx6IVQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com; spf=pass smtp.mailfrom=wiesinger.com; dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b=zVPvX6MI; arc=none smtp.client-ip=46.36.37.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiesinger.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b="zVPvX6MI"
+Received: from wiesinger.com (wiesinger.com [84.112.177.114])
+	by vps01.wiesinger.com (Postfix) with ESMTPS id D9B669F29F;
+	Wed, 22 Jan 2025 07:51:05 +0100 (CET)
+Received: from [192.168.0.63] ([192.168.0.63])
+	(authenticated bits=0)
+	by wiesinger.com (8.18.1/8.18.1) with ESMTPSA id 50M6p4bk201424
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Wed, 22 Jan 2025 07:51:05 +0100
+DKIM-Filter: OpenDKIM Filter v2.11.0 wiesinger.com 50M6p4bk201424
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiesinger.com;
+	s=default; t=1737528665;
+	bh=rQeGZ2MX2aO4Yzt05IP3WTNV5dZ7TJGRnjHGYLRJ3DM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=zVPvX6MIV9PUK99g3ZrAEdxKXqCS+4UXfNFtFM/2OAercFgWlpAN7HWkG+C0BiTEI
+	 CVfsYA44PKVliNUMwtbRcVb3SnDjkPQbHRpL4eLiWwwz6vIvrYIcioUhpYKr2cpVcO
+	 /id5VWl9rGqYMiGsg7F0UItClOr1GoKKWvp3sNZs5ePa7zMH78BOHbTegNEKMi5rwR
+	 QlcYhobRFDUFuIyCfwEwBjj8ZNCMmqojwECpQviuXh25sLMDE4uZfnRKW4kCdJAWU3
+	 22+tAlV8mmmuWoqkWn/kt5YgJc4VoFCkYfTOx1PQGBzvpRSqsHRcTCMikpw6nXKyIZ
+	 CFtl6hQXIH1QPfQ2D1cTH0l2TdnvOcI3lv0KyMgiu4n0LbEfKaqYj1+qHQoTPO7PAV
+	 8cceaq+hhS2EBx0ySnfAYppV8YykUXhDb8SBocfd+sUkgRGD+WEKqGS5G7iDanS/eH
+	 JSuvsHUxJFbPnzPwom+DbSMKIKdSl8kIvFN9UwwgQfMLn/zl85KhZ12XMwnG24e8fC
+	 bmJoPOxsakzToNcDQItOtu2hTSfehBYGg3LIxnt4fzkzoil1XmsLNTaJLzCGh7JRqM
+	 tjp9v1+tpZsU5Kx/hcekAXFpA0GmDJ+uAjB3i+fvTQ5LO3IHv0gjJpvwZqLG90qCo2
+	 uWpVnbcOZZbAjXu60tVcPrdM=
+Message-ID: <a9f73879-cc08-45d9-9a3c-fb1f853739b9@wiesinger.com>
+Date: Wed, 22 Jan 2025 07:51:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a4b:b0:3ce:8d8b:204e with SMTP id
- e9e14a558f8ab-3cf7440a292mr149544035ab.7.1737520802578; Tue, 21 Jan 2025
- 20:40:02 -0800 (PST)
-Date: Tue, 21 Jan 2025 20:40:02 -0800
-In-Reply-To: <66f09be2.050a0220.a27de.0008.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <679076a2.050a0220.15cac.0178.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_btree_iter_verify_entry_exit
- (2)
-From: syzbot <syzbot+dc1f3e7147b8fc81e0ac@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Betterbird (Windows)
+Subject: Re: Corrupt bcachefs can't be transferred into a consistent state
+Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org
+References: <aa613c37-153c-43e4-b68e-9d50744be7de@wiesinger.com>
+ <ppqn3gvkjjsbg4sprijlqbldkuetnaco5orl4wxapsydee65g5@3nwlodfwjwcx>
+From: Gerhard Wiesinger <lists@wiesinger.com>
+In-Reply-To: <ppqn3gvkjjsbg4sprijlqbldkuetnaco5orl4wxapsydee65g5@3nwlodfwjwcx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-syzbot has bisected this issue to:
+On 05.09.2024 06:29, Kent Overstreet wrote:
+> On Sun, Sep 01, 2024 at 02:01:25PM GMT, Gerhard Wiesinger wrote:
+>> Hello,
+>>
+>> I'm having some Fedora Linux VMs (actual versions, latest updates) in a
+>> virtual test infrastructure on Virtualbox. There I run different VMs with
+>> different filesystems (ext4, xfs, zfs, bcachefs and btrfs).
+>>
+>> I had a hardware problem on the underlying hardware where around 1000 4k
+>> blocks could not be read anymore. I migrated with ddrescure the whole disk
+>> which worked well.
+>>
+>> Of course I was expecting some data loss in the VMs but wanted to get them
+>> in a consistent state.
+>>
+>> The following file systems got very easy in a consistent state with the
+>> corresponding repair/scrub tools of the filesystems:
+>> - ext4
+>> - xfs
+>> - zfs
+>>
+>> Unfortunately 2 filesystem can't get into a state, where the filesystem
+>> repair tools report "everything fine" (of course with some loss data, but
+>> that's fine):
+>> - btrfs
+>> - bcachefs
+>>
+>> commands run with bcachefs (git version):
+>> git log -n1 | head -n1
+>> commit 1e058db4b603f8992b781b4654b48221dd04407a
+>> ./bcachefs version
+>> 1.12.0
+>>
+>> But bcachefs never got into a consistent state, also with newer versions.
+>> Also check with older versions (1.7.0) run for a long time.
+>>
+>> To reproduce the problem I created a new filesystem and copied some files
+>> there:
+>> mkfs.bcachefs -f /dev/sdb
+>> time cp -Rap /usr /mnt
+>>
+>> Afterwards I created a (quick&dirty) script "corrupt_device.sh" to corrupt
+>> the device in the same manner as the original failure (1000 4k blocks will
+>> be randomly overwritten).
+>> Script: see below
+>>
+>> ~/corrupt_device.sh
+>> ./bcachefs fsck -pf /dev/sdb
+>> ./bcachefs fsck -pfR /dev/sdb
+>>
+>> Result: It can be reproduced, that bcachefs can't be brought into a
+>> consistent state even after several runs of the repair.
+>>
+>> You can also try to reproduce it and create a testcase out of it.
+>>
+>> Any ideas how to repair and what can be done to get it into a consistent
+>> state?
+> If you've got a filesystem you want data off of - send me a metadata
+> dump (join the IRC channel, send it via magic wormhole) and I'll debug.
+>
+> We still haven't comprehensively torture tested all the repair paths
+> (which is probably the biggest reason it's still marked as
+> experimental); all the repair paths are there, but there's still bugs to
+> shake out.
+>
+> Thanks for the test - I'll try to make use of it when I'm working in
+> that area again.
 
-commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Sep 23 22:41:51 2023 +0000
+Did you find the time for using the test and fix the issues?
 
-    bcachefs: Ignore unknown mount options
+As bcachefs gets more stable I think we should focus on such 
+"destroy&repair" test cases to get consistent again and get trust.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11ef8ab0580000
-start commit:   b9d8a295ed6b Merge tag 'x86_misc_for_v6.14_rc1' of git://g..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13ef8ab0580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ef8ab0580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b34d979b03d5656f
-dashboard link: https://syzkaller.appspot.com/bug?extid=dc1f3e7147b8fc81e0ac
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1062e824580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16fb89f8580000
+Thnx.
 
-Reported-by: syzbot+dc1f3e7147b8fc81e0ac@syzkaller.appspotmail.com
-Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
+Ciao,
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Gerhard
+
+
