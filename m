@@ -1,101 +1,77 @@
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7F6192B84
-	for <linux-bcachefs@vger.kernel.org>; Tue, 21 Jan 2025 19:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A2C17DE36
+	for <linux-bcachefs@vger.kernel.org>; Wed, 22 Jan 2025 04:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737487027; cv=none; b=rHcTawJgyYpA+fhBMo0zHkY1tsSU3aSi4mIr2ynwUgNkaPy3wVuCsDdg/xmybfIxoRGJizhzB11hTEA9OoY95H0dyrg2zJWpqcdjvdnkEY+5id4OZHhEQ+nej39t+H12wBKaExQNzRzazkYOzRm6RuBaLdFe3PlqxsnyEoCwqA8=
+	t=1737520805; cv=none; b=IlOwgFqKW7vwFXjfeXqdMS9cf5oIN6t90ifWl/UT/dHvoVaMXP2GMJY0VDDD7LdErnt0lsH1evJnx7Tz9zXPt2/IcbABCLpHaAhD6EiGSvkh7/fzNFgPDsagGu6d2wtB+XCbeFGCdd/pO74vvZnDbaxyT82qAaT/AUhZNw6SHWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737487027; c=relaxed/simple;
-	bh=mR7l/a+1cTBvITTTNwsqZQvnsFbi9is+o0xLLJoPSq0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X17FUPACBlmRPG35plww/Y1DN5cTu+x01KQaPOUwdr4NxxnqkzY5fv2unxi0ggBV6NoVYcMDZf9lFTkHJXffP86jKeR8IgypGgtcvPr8jxcH5aUfUSaPoAw0mKcwD+V7vzsT0QJWZNrNjVt5WPY5syh22Quftd/1xJsqaTo9I7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TUzgA59w; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TUzgA59w"
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5d9f0ab2313so1377a12.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 21 Jan 2025 11:17:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737487024; x=1738091824; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wWZ21AesQg/I498ppJJkHkVAdVP9uJ8q5XJOQ8AZMK0=;
-        b=TUzgA59wEi9TlfbR1gGegIw34AWM3sg4u9XeZKpos/cgkmuUPEIfxh73wkm1K/GpxK
-         lt46+pu9UyJqAAj5yK2mB9D9DW78xzlxZvdj78hP4lOMs33jyG1CtDfLKPmSl6aDt+8a
-         AWkqmUfz/um9WOsb15bQugHB0370FMKsp7fin+fm91fHC7dgaTvYVDWB74OKkGvdBpZW
-         VaKmOHKq0KcfC1Ek5IBL+9ryOEzRIfXjCQVPaf9chOfksohtwD1sFx4aDK2/lP8ldLc3
-         wzm5k/Lc8GHz2Sv7c8h3Rc2XMpZYnk+h01s6CMoln6YZKmXtA7GUDcj7KExewTNdkZvU
-         TAwQ==
+	s=arc-20240116; t=1737520805; c=relaxed/simple;
+	bh=dg9VamvAbwHHKNgWr8MaQdwDRlbk8Hv4dDqWvseGQtc=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=OdPpQxlmYvRT5FhtNvE7PsfpmVW88u1/QrVLXbUFlN2O5tBhJs2vmZ/zrgy72MUTvBAi2TmwrEW9SBI2gVRWNSQS521m5IvLj5IqptxbtRdtEjHMJ5Wo2k6q+V/FVPK2p+KW7yVovEfDicTgX+dO6OlYiIkjt6LXQhM8WxXg1sU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a7e0d7b804so44716845ab.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 21 Jan 2025 20:40:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737487024; x=1738091824;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wWZ21AesQg/I498ppJJkHkVAdVP9uJ8q5XJOQ8AZMK0=;
-        b=WAxksjfdQSfyYolj1EnETlRss5pvT2841vdRSM0mvizeyvrScQhjh327K3y1muNOAY
-         2lQyzH7X04sBuiFyTL/I8JwXieL/8b5cDujQgl/iNb6sAU2pnWFgk1L6ZGwHCcpR4gja
-         xaV8foeKM4khS5gJV1bWUo0fjZupRYU1+RH3OowiLzmurSQ1PLkzaaLnwqJOBYhqfECi
-         8HaevoE52L8vN5ianvNIlbITpx6oEKOIbsrTkoV4YHyGRv9IaFuxcJVubJwiItKGT9G6
-         lz/k7/HbPKoAr8rUXPaij5O7rnJcNw6k/yDbbQ3iWQ8xVp4ha0TNwtBxlnH2AEu6okQ2
-         TWEA==
-X-Gm-Message-State: AOJu0YxDiNHZJ4iaSxgYWEHBR0lJTs8ZVLy1fp8GbXEXtZ9kcANXcIBI
-	4JQc0pyCPjvzQ8CR95OTmVHUTRMZbXthbOkeFaKR93h0i/qpVE7m9hyrYh1m0I0t9Be8N5lUpjh
-	oRITpcxqlKQxC7sydoGB8WhvaQwfhcxDthjUE
-X-Gm-Gg: ASbGnctucYUyhCqIOK5zJvqghb533jwtZtNk528pND5m+6CrsDkQmke+HhT30SQTNor
-	QYJklB2Io3pcn5k6QWv4rYgZAT2tINeY+kqM74N8pWWguAD5q1lNNPA3xay1pUVsIYxAmh3sm7z
-	iSz7w=
-X-Google-Smtp-Source: AGHT+IErqyWzmemXVd1nAV0ZZ28xFQBN0gYTCHzluFhRcPh4XKI3Mq2GsI9pWQRTisPIErg2ogP0lorkHbusKOhg7f4=
-X-Received: by 2002:a05:6402:175a:b0:5d0:eb21:264d with SMTP id
- 4fb4d7f45d1cf-5dbf31ba89cmr3476a12.1.1737487023836; Tue, 21 Jan 2025 11:17:03
- -0800 (PST)
+        d=1e100.net; s=20230601; t=1737520802; x=1738125602;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xaO6Cz+oF6AjPCOe8eXNGAraGaqpP80svKFDFKKVtR0=;
+        b=njBq86IY38EHeH8gv3YYyG0JDpTNM6DqhbQSvZqTOKroI/vz+hqwI1vL078J/Qqi+R
+         4ulmIdmqXrz0AB1L6wGvAFOHJIPGu+5FbVWpuOw1/Rim4g5IQLuVtVmnQ+ZG84cvyLJB
+         Xz9Uun9MBB7I1jL9pQjQ6xojrkxQZwxcE1o65epxO4P3LSaDoPxAjj+2/wXMhb9mBiI4
+         DGZN63xJ0C4TfG1vNExNhRMgW21+pYZjBG1taS68a/t5yoh+WH7F9hn+yMvDKz29caJB
+         UngrCvbwDdkhe9xLI34etLCJWicyML06Eha9Yege+1e8r7x3eU0FIiRaHB8ec0R2f2De
+         q0bQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUbQhFOSNjiT/lp9nxztpRQnf+mejWwAog+lbpnXyNcdfCKesvKH/8JmBWExwstZK6vmHnn0L9Is1F4dfkwRg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzhd8YwsklcCKk7nQzV3/5lNDf1HAlLzGcMIDVpRt8Qf/baUs7a
+	rEn/PasdumhqhV/hbu0YNtCAKnWSNI//lyOZnMxtdXSR5U7pWBd+SzifNzHinIorBQa0ACK+BWH
+	/zcMglZK6LsY3HeFTGHvdmgSkx6yCvuUq4up41dzMkRBRrWuqlD4gneQ=
+X-Google-Smtp-Source: AGHT+IHuSxpEXCzT78/8A2dXvtK8mXYcPddmTs37KsN8p0DwPdvvC4Kv18veazWQqG82uu3/kJQtNNgSc4tdt+5qBQZLEa5KFLSr
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAG48ez3_ROkVPgh2CDqL26RdVgfMJvgtmDHB5FMSdrQ7-POeHg@mail.gmail.com>
- <cj26hlynh6wiluvn5cg5qdzlcpxxyjirzgr3oho5244k7xzy4v@3p433x77w7nf>
-In-Reply-To: <cj26hlynh6wiluvn5cg5qdzlcpxxyjirzgr3oho5244k7xzy4v@3p433x77w7nf>
-From: Jann Horn <jannh@google.com>
-Date: Tue, 21 Jan 2025 20:16:27 +0100
-X-Gm-Features: AbW1kvact_5QdpY82oieGVMKhJw0_nU7WgrphGqtnH4InqfjL3R4Z8FKgLaob38
-Message-ID: <CAG48ez0NOpCp1HkD55v8QCmjmhrd0b+G-u8XtyVt=K2pTJRuFg@mail.gmail.com>
-Subject: Re: kernel build error due to large stack frame in __bch2_str_hash_check_key
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6e02:1a4b:b0:3ce:8d8b:204e with SMTP id
+ e9e14a558f8ab-3cf7440a292mr149544035ab.7.1737520802578; Tue, 21 Jan 2025
+ 20:40:02 -0800 (PST)
+Date: Tue, 21 Jan 2025 20:40:02 -0800
+In-Reply-To: <66f09be2.050a0220.a27de.0008.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <679076a2.050a0220.15cac.0178.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_btree_iter_verify_entry_exit
+ (2)
+From: syzbot <syzbot+dc1f3e7147b8fc81e0ac@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 21, 2025 at 7:01=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
-> On Tue, Jan 21, 2025 at 05:01:26PM +0100, Jann Horn wrote:
-> > Hi!
-> >
-> > I'm trying to build the mainline kernel at commit
-> > 95ec54a420b8f445e04a7ca0ea8deb72c51fe1d3 (upstream git master), but
-> > the build fails with the following error:
-> >
-> > ```
-> > [...]/fs/bcachefs/str_hash.c: In function =E2=80=98__bch2_str_hash_chec=
-k_key=E2=80=99:
-> > [...]/fs/bcachefs/str_hash.c:295:1: error: the frame size of 2400
-> > bytes is larger than 2048 bytes [-Werror=3Dframe-larger-than=3D]
-> >   295 | }
-> >       | ^
-> > cc1: all warnings being treated as errors
-> > ```
-> >
-> > I am building with "gcc (Debian 14.2.0-3+build3) 14.2.0", using the
-> > attached kernel config. I think this used to work with the mainline
-> > kernel before the 6.14 merge window opened.
->
-> Well, your kernel config has something that doubles stack frame size,
-> it's 1200 bytes here.
+syzbot has bisected this issue to:
 
-It does have things like KASAN and lockdep enabled, it seems plausible
-that that could bloat up the stack frames quite a bit.
+commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Sat Sep 23 22:41:51 2023 +0000
+
+    bcachefs: Ignore unknown mount options
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11ef8ab0580000
+start commit:   b9d8a295ed6b Merge tag 'x86_misc_for_v6.14_rc1' of git://g..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13ef8ab0580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ef8ab0580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b34d979b03d5656f
+dashboard link: https://syzkaller.appspot.com/bug?extid=dc1f3e7147b8fc81e0ac
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1062e824580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16fb89f8580000
+
+Reported-by: syzbot+dc1f3e7147b8fc81e0ac@syzkaller.appspotmail.com
+Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
