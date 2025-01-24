@@ -1,40 +1,47 @@
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8CF11CBA
-	for <linux-bcachefs@vger.kernel.org>; Fri, 24 Jan 2025 14:15:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9632619A288
+	for <linux-bcachefs@vger.kernel.org>; Fri, 24 Jan 2025 18:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737728141; cv=none; b=Hkwld0azjvXGBwZM16KaxXaIhSMeber9m8f7owphT3qnruU5yKBue0VjNbedZxw9EmcFg+kEuhVwP146ggz7ml2EOg9ey+5Vij6yXV/WXrZOS9V0Zq3F1FohHHOX69LzXdyxjBtMpXdVNX9aoIjYSD2ZgDjS/N0GpXtp9SljjSY=
+	t=1737743328; cv=none; b=uQ89T1k7+oFVxWo0gE9xwW9i2tEmHnjB9RPPlCCZSjHjTzE4p7IpM/FU7wfhP3Ro+cj8E7bNMDpY+Uw2W17Vuf2F4XJ54WRk220kA7m3CymDSav69AfMm9/OHjmrv4AEwGIwTwgxTNA+PXbxn+fytdF11aLKauEGZxwo9xw68KA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737728141; c=relaxed/simple;
-	bh=97MJ8WWFxVaC9jMfNKxXdHuK3OSkHDNx8EhDQX7AUi4=;
+	s=arc-20240116; t=1737743328; c=relaxed/simple;
+	bh=NegJ/1TfbX7aVBPZSTyEMEIXIZQTbhOsVpc6eRBlXFo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LfVi+9tj1dgfSOH0c6r0HNDIlTbltJ+2/fg8VGOjHzdFf3uoLPHRqEp7uCEJ3FihFVbSJS/TWJTEP0k0psEiczLQNEfZaqJHKn225y7B5fzHJH9CvUGAMigsEE6NsTixC6Gpge+dInvX5Cthh6pApcX2OjoesRIi0hhNzSMBa84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hsW++UxL; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=u5m4FmirFfP+aSSPNrhbbyGO3/AY9GDGtWSViuUD4fX82PSZy6cIcQ2LZs4jHh+0egmfqoyuXZurfHOvjkIoDyWAcmemvoYH6FNvskk9aZA6No6l8PPUyAIfA5yOQbpIWzP9z0mSU9ba2veKhd0bOGmvx4etYp9cBxsEYCTzUa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Zymyuc7l; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hsW++UxL"
-Date: Fri, 24 Jan 2025 09:15:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737728121;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5lq+QTPSqU8loPhhXwi6+gC/RNqRQ4ydTXYqFQWqu6Y=;
-	b=hsW++UxLxW0TE+E5Izw29VEuVJU5JI3G0mIR+u3GsCeQyK93KZM/5ZxEGT0NxQ2vgQ8NJi
-	lRMQzn1vJJYPcjNXJtxK8dVFS6cg9n8nfOAgKJ02fb0GcF7WXtLAOrzAEpns/pupd+Vo8x
-	WxEuyhi/MdUKIcq+rN+Y0TD3NZL9yLg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Zymyuc7l"
+Received: from cwcc.thunk.org (pool-173-48-111-161.bstnma.fios.verizon.net [173.48.111.161])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 50OISITs003428
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 24 Jan 2025 13:28:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1737743301; bh=PsSWnbdwaUY7PiWMxWMnA/Fu4dFrB4Pm66ETkG4yzns=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=Zymyuc7lVrdA4ETQ4f9rlS/KsX8V81+Zxo2Hle0IA54csUVqzLeYQDZKmcN3ag3WG
+	 SLOl895ehBWl8EWOHNlBygalhZrZMlBVHDQuK2rFiGi0yvDIPvpOmPWtS4SVYT+9Vm
+	 LYft1AOCUJ4rVTsiFq+53wkWvzP992Zm3gfM0WEEcdGRLxGI0e197JisETLuH+kJea
+	 yTC9QTIDuk4kLCYkcIsrCATxxqMnjQ3F0ZPcB2Dm18baedBrVPOkBhw/Rxjfg0TQ+n
+	 b/0Qlr5+hyNSTuXEnWzjIaF45eM1dpHiQojIgkK0x5nXtHGEJf0WOkbHS9TvcVcC+O
+	 RScCgMsD0caTw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id DF4C815C0109; Fri, 24 Jan 2025 13:28:17 -0500 (EST)
+Date: Fri, 24 Jan 2025 13:28:17 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
 To: Kun Hu <huk23@m.fudan.edu.cn>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Jan Kara <jack@suse.cz>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	syzkaller@googlegroups.com
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+        Dmitry Vyukov <dvyukov@google.com>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, syzkaller@googlegroups.com
 Subject: Re: Bug: INFO_ task hung in lock_two_nondirectories
-Message-ID: <iiebhi7ijlyo54zq4mtqnbw6253ysnhia5qpdek2hyyby3ls7e@pko7dnzi77fk>
+Message-ID: <20250124182817.GB3847740@mit.edu>
 References: <42BD15B5-3C6C-437E-BF52-E22E6F200513@m.fudan.edu.cn>
  <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa>
  <ftg6ukiq5secljpfloximhor2mjvda7qssydeqky4zcv4dpxxw@jadua4pcalva>
@@ -50,64 +57,43 @@ List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <900A37C1-9A21-46DF-8416-B8ABF1D0667C@m.fudan.edu.cn>
-X-Migadu-Flow: FLOW_OUT
 
 On Fri, Jan 24, 2025 at 08:22:57PM +0800, Kun Hu wrote:
-> 
-> > 
-> > Again: the standard mantra is "work wth upstream". If you forked syzbot
-> > and you're working on fuzzing, syzbot is your upstream, not the kernel.
-> > 
-> > If you work with the syzbot people on getting your fuzz testing
-> > improvements merged, the process of reporting the bugs fuzzing finds to
-> > us kernel folks won't be on your plate anymore, and you get to focus on
-> > the stuff you actually want to be doing. :)
-> > 
-> >> Link: https://github.com/google/syzkaller/blob/master/docs/linux/reporting_kernel_bugs.md
-> >> 
-> >> It is often suggested that researchers collaborate with syzbot. What
-> >> should such collaboration look like in terms of form and content? From
-> >> a maintainer's perspective, how would you prefer to see researchers
-> >> who report bugs work with syzbot? Since I’m new to this field, I’m not
-> >> very familiar with the process and would greatly appreciate your
-> >> guidance.
-> > 
-> > Talk to the syzbot folks, they're a friendly bunch :)
-> > 
-> > The main thing to keep in mind is that it's never _just_ about getting
-> > your code merged, you need to spend some time learning the lay of the
-> > land so you can understand where your work fits in, and what people need
-> > and are interested in - you want to make sure that you're not
-> > duplicating work, and you want your code to be as maintainable and
-> > broadly useful to everone else as it can be.
-> > 
-> > Have you shared with them what your research interests are?
-> 
-> 
-> Sorry for late. Thank you very much for your advice, we’ll try to work with the syzbot community. 
 > 
 > But an interesting interaction relationship is that for researchers
 > from academia to prove the advanced technology of their fuzzer, they
 > seem to need to use their personal finding of real-world bugs as an
-> important experimental metric. I think that's why you get reports that
-> are modeled after syzbot (the official description of syzkaller
-> describes the process for independent reports). If the quality of the
-> individual reports is low, it does affect the judgment of the
+> important experimental metric. I think that's why you get reports
+> that are modeled after syzbot (the official description of syzkaller
+> describes the process for independent reports). If the quality of
+> the individual reports is low, it does affect the judgment of the
 > maintainer, but also it is also a waste of everyone's time.
 
-Ah, metrics and TPS reports. Symptoms of MBA culture, "we just want to
-manage by watching the numbers and making sure they go up - deep
-expertise in the thing we're managing? what's that?"
+If you're going to do this, I would suggest that you make sure that
+you're actually finding new bugs.  More often than not, after wasting
+a huge amount of time of upstream developers because the researchers
+don't set up the syzbot dashboard and e-mail service to test to see if
+a patch fixes a bug (often which we can't reproduce on our own because
+it's highly environment sensitive), we discover that it's already been
+reported on the upstream syzbot.
 
-Push back on that mindset wherever you can and your life will be less
-nonsensical and frustrating :)
+Which makes the academic syzbot a *double* waste of time, and this
+trains upstream developers to simply ignore reports from these
+research forks of syzbot unless it comes with a reproducer, or maybe
+(this hasn't happened yet) if the researchers actually set up the web
+dashboard and e-mail responder.
 
-Maybe see if you can find some other way of showing the value of your
-work? Things like patches accepted into upstream syzbot, public
-feedback from the syzbot maintainers, or just describing your work
-yourself to your higher ups instead of relying on metrics - or see if
-you can help them come up with some better metrics.
+I also blame the peer reviewers for the journals, for not asking the
+question, "why haven't you shown that the 'real world' bugs that your
+forked syzbot has found are ones that the original syzcaller hasn't
+found yet?"  And for not demanding of the academics, "if you want
+*real* impact, get your changes merged upstream with the upstream
+syzcaller, so that it will continue to find and fix vulnerabilities
+instead of ceasing the moment we accept your paper."
+
+Cheers,
+
+						- Ted
