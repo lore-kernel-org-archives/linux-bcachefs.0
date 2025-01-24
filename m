@@ -1,56 +1,40 @@
-Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F67A2B9BC;
-	Fri, 24 Jan 2025 12:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.19.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8CF11CBA
+	for <linux-bcachefs@vger.kernel.org>; Fri, 24 Jan 2025 14:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737721446; cv=none; b=l333nKnO+AOVETk9N0ADlF2OS+aDh9wSfQZArhd7NdM+vfNtRK4DSMC69LooewPpJ/KiSXQe7lfp73SwP4nCQSe4YTDvNqhjV2yhG93XZWR6C/7hUU+x1sgb4WC7mE2yKQFdetINqDe6hpPCyzdfkGgxhkWgKzkDr3qOU+c0Udw=
+	t=1737728141; cv=none; b=Hkwld0azjvXGBwZM16KaxXaIhSMeber9m8f7owphT3qnruU5yKBue0VjNbedZxw9EmcFg+kEuhVwP146ggz7ml2EOg9ey+5Vij6yXV/WXrZOS9V0Zq3F1FohHHOX69LzXdyxjBtMpXdVNX9aoIjYSD2ZgDjS/N0GpXtp9SljjSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737721446; c=relaxed/simple;
-	bh=G9KlpOkTJYKRq3NmnkF+XWUCbAXiWokOM6sXLcc2Kzg=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=SzVhiXuSJcifVWpQ6dm4G/3ZTI01/L0+DCCSmk4kvjK5ey/63BY4NCAqD1Jkk4/rBJBRfWyfMMqqIwPj6ivcX2xSI0GsTnhNo8grCVcALLONp4pwp5DL3i/fvi3h69YtUo0s8/M9Q5+WETIrBpPKBiErDsXcccy4m8xluzeqBcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn; spf=pass smtp.mailfrom=m.fudan.edu.cn; dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b=Gy0W5YvU; arc=none smtp.client-ip=54.207.19.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.fudan.edu.cn
+	s=arc-20240116; t=1737728141; c=relaxed/simple;
+	bh=97MJ8WWFxVaC9jMfNKxXdHuK3OSkHDNx8EhDQX7AUi4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LfVi+9tj1dgfSOH0c6r0HNDIlTbltJ+2/fg8VGOjHzdFf3uoLPHRqEp7uCEJ3FihFVbSJS/TWJTEP0k0psEiczLQNEfZaqJHKn225y7B5fzHJH9CvUGAMigsEE6NsTixC6Gpge+dInvX5Cthh6pApcX2OjoesRIi0hhNzSMBa84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hsW++UxL; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b="Gy0W5YvU"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=m.fudan.edu.cn;
-	s=sorc2401; t=1737721396;
-	bh=G9KlpOkTJYKRq3NmnkF+XWUCbAXiWokOM6sXLcc2Kzg=;
-	h=Mime-Version:Subject:From:Date:Message-Id:To;
-	b=Gy0W5YvUVyZLDgtu/jOcXH+B5DTMQC1q4dqvVPfZfOcZE1PYKA982QhyQPR2z4L/e
-	 rrm0v68PlAyfF7M5TdVuFVNM1kjYyvogoPPX4/HAAVCQM8RRgod3UebbIMp03lZFt2
-	 bOLPBj2oQS3S1+EgPKcr1ySF9DWeTnvw8glDozcE=
-X-QQ-mid: bizesmtpsz10t1737721390tjw765
-X-QQ-Originating-IP: aIS1e1PxxtLg6N4SobOB8mrP2TAea8u6IuZiLZX3ZAE=
-Received: from smtpclient.apple ( [117.188.120.194])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 24 Jan 2025 20:23:08 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 10477524699845402753
-Content-Type: text/plain;
-	charset=utf-8
-Precedence: bulk
-X-Mailing-List: linux-bcachefs@vger.kernel.org
-List-Id: <linux-bcachefs.vger.kernel.org>
-List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hsW++UxL"
+Date: Fri, 24 Jan 2025 09:15:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1737728121;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5lq+QTPSqU8loPhhXwi6+gC/RNqRQ4ydTXYqFQWqu6Y=;
+	b=hsW++UxLxW0TE+E5Izw29VEuVJU5JI3G0mIR+u3GsCeQyK93KZM/5ZxEGT0NxQ2vgQ8NJi
+	lRMQzn1vJJYPcjNXJtxK8dVFS6cg9n8nfOAgKJ02fb0GcF7WXtLAOrzAEpns/pupd+Vo8x
+	WxEuyhi/MdUKIcq+rN+Y0TD3NZL9yLg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kun Hu <huk23@m.fudan.edu.cn>
+Cc: Dmitry Vyukov <dvyukov@google.com>, Jan Kara <jack@suse.cz>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	syzkaller@googlegroups.com
 Subject: Re: Bug: INFO_ task hung in lock_two_nondirectories
-From: Kun Hu <huk23@m.fudan.edu.cn>
-In-Reply-To: <tkfjnls4rms7r7ajdwj3n4yxyexufrdunhgvzalegz6j35zbxm@fexthq26w7lr>
-Date: Fri, 24 Jan 2025 20:22:57 +0800
-Cc: Dmitry Vyukov <dvyukov@google.com>,
- Jan Kara <jack@suse.cz>,
- linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-bcachefs@vger.kernel.org,
- syzkaller@googlegroups.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <900A37C1-9A21-46DF-8416-B8ABF1D0667C@m.fudan.edu.cn>
+Message-ID: <iiebhi7ijlyo54zq4mtqnbw6253ysnhia5qpdek2hyyby3ls7e@pko7dnzi77fk>
 References: <42BD15B5-3C6C-437E-BF52-E22E6F200513@m.fudan.edu.cn>
  <gwgec4tknjmjel4e37myyichugheuba3sy7cxkdqqj2raaglf5@n7uttxolimpa>
  <ftg6ukiq5secljpfloximhor2mjvda7qssydeqky4zcv4dpxxw@jadua4pcalva>
@@ -59,86 +43,71 @@ References: <42BD15B5-3C6C-437E-BF52-E22E6F200513@m.fudan.edu.cn>
  <xxpizgm5l66ru5n23ejgiyw5xbq4mf4sxwfgj63b4xgr5ot2sh@iqzwriqmwjg3>
  <5BCDEDB6-7A92-4401-A0A8-A12EF2F27ED0@m.fudan.edu.cn>
  <tkfjnls4rms7r7ajdwj3n4yxyexufrdunhgvzalegz6j35zbxm@fexthq26w7lr>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3818.100.11.1.3)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpsz:m.fudan.edu.cn:qybglogicsvrgz:qybglogicsvrgz8a-1
-X-QQ-XMAILINFO: OHmFukASalOrJoP/yRIOxdn3fSIMbnVbqOITfOhcAgeVwKyWJSD95uXG
-	VN0HcDY0i4duP7a7wzamf95CZk21l3JjQ4qaSHvKBUxS6x1UpqYaYLJd+C3eS7yubhwiMOZ
-	9btoYBeIWTDhMRmbwcQpWshYtQ8X2TNT++T8nnyeH8HN2U2FxWIgmmbpCl1fsiMwb32Bqqc
-	5OPMfYgDrVXRq/t+kxYyA4i3oTTntS+fU2lRDfBow27KlqQprl0pfo0XmqCULkL6D+Dqb4E
-	Fj3APnvOsKNLAP4XTkl7lZMrtAaLjlCLY7Datl2TU+1osvNwvdR+nq0uJeOoDQUAKxq6AfE
-	RTpWUsFTxa5ioHdi6/QNJ7XY4HRRQtSgEq9HJ1tnvbNseC/Fa4dXVPCzaEiDLZqz59t7Ws3
-	RuAiEhad8E6+rzeOhUUvteqVREgg0JVQcE5YvZI5P6Fxf+N0K3/ruEkyoNRf+R/AmnhY0xi
-	1l0xtIj1s1tHP7DpJsj7yiCyvcL10ZYhbaVRLayKSa9OoDd3sD6GHOaVg0V5YgpeGQX0goP
-	HHYb3oGcpMHL3rT9sb50uS2giG6REdrEuwU/WIOfw92aWqOkAzTRe3qzIQxmqO9QDHjR9bE
-	5VUmnHMyzj5N6pwPlHaHzZVN3U/DsIBh0fc611cjnhmHr1/hYF419S7BaIAgUnZxWjnTcqQ
-	8BxHqqyYTHJEYh0ILa7+OhM0LEHZQnU++HgCZln9vh3jqnz6ma6R544h44JnBvXFtPgfmtB
-	/MUI31N6obyVzOeX+5ytFVFGf0NcL+wZDZvhX7E8F/XP8Fp8g/l7nJUTFt6dxfYuXh/yUZh
-	OcfoYqSmsEwLgYPHZLAwyvGyLN8xTA+WZEg06kSojVkRCxG37QFY7BYS/nP1D5oufnR9HUl
-	OfkYX5kQvCeEg8r5EE4DMT/KbGjnh7Itrdkc0sNeDQ/rqIP6AKeX8q5bceyae1ytcPlIFlo
-	4GO0r5kTMTl4moa2jRgYVfOKQ/HTuPeBorakpqihKodkgxJVoeXolAg3xKvS9Uojd5AESpr
-	eyZW8AoBd403pHPRuP
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-X-QQ-RECHKSPAM: 0
+ <900A37C1-9A21-46DF-8416-B8ABF1D0667C@m.fudan.edu.cn>
+Precedence: bulk
+X-Mailing-List: linux-bcachefs@vger.kernel.org
+List-Id: <linux-bcachefs.vger.kernel.org>
+List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <900A37C1-9A21-46DF-8416-B8ABF1D0667C@m.fudan.edu.cn>
+X-Migadu-Flow: FLOW_OUT
 
+On Fri, Jan 24, 2025 at 08:22:57PM +0800, Kun Hu wrote:
+> 
+> > 
+> > Again: the standard mantra is "work wth upstream". If you forked syzbot
+> > and you're working on fuzzing, syzbot is your upstream, not the kernel.
+> > 
+> > If you work with the syzbot people on getting your fuzz testing
+> > improvements merged, the process of reporting the bugs fuzzing finds to
+> > us kernel folks won't be on your plate anymore, and you get to focus on
+> > the stuff you actually want to be doing. :)
+> > 
+> >> Link: https://github.com/google/syzkaller/blob/master/docs/linux/reporting_kernel_bugs.md
+> >> 
+> >> It is often suggested that researchers collaborate with syzbot. What
+> >> should such collaboration look like in terms of form and content? From
+> >> a maintainer's perspective, how would you prefer to see researchers
+> >> who report bugs work with syzbot? Since I’m new to this field, I’m not
+> >> very familiar with the process and would greatly appreciate your
+> >> guidance.
+> > 
+> > Talk to the syzbot folks, they're a friendly bunch :)
+> > 
+> > The main thing to keep in mind is that it's never _just_ about getting
+> > your code merged, you need to spend some time learning the lay of the
+> > land so you can understand where your work fits in, and what people need
+> > and are interested in - you want to make sure that you're not
+> > duplicating work, and you want your code to be as maintainable and
+> > broadly useful to everone else as it can be.
+> > 
+> > Have you shared with them what your research interests are?
+> 
+> 
+> Sorry for late. Thank you very much for your advice, we’ll try to work with the syzbot community. 
+> 
+> But an interesting interaction relationship is that for researchers
+> from academia to prove the advanced technology of their fuzzer, they
+> seem to need to use their personal finding of real-world bugs as an
+> important experimental metric. I think that's why you get reports that
+> are modeled after syzbot (the official description of syzkaller
+> describes the process for independent reports). If the quality of the
+> individual reports is low, it does affect the judgment of the
+> maintainer, but also it is also a waste of everyone's time.
 
->=20
-> Again: the standard mantra is "work wth upstream". If you forked =
-syzbot
-> and you're working on fuzzing, syzbot is your upstream, not the =
-kernel.
->=20
-> If you work with the syzbot people on getting your fuzz testing
-> improvements merged, the process of reporting the bugs fuzzing finds =
-to
-> us kernel folks won't be on your plate anymore, and you get to focus =
-on
-> the stuff you actually want to be doing. :)
->=20
->> Link: =
-https://github.com/google/syzkaller/blob/master/docs/linux/reporting_kerne=
-l_bugs.md
->>=20
->> It is often suggested that researchers collaborate with syzbot. What
->> should such collaboration look like in terms of form and content? =
-From
->> a maintainer's perspective, how would you prefer to see researchers
->> who report bugs work with syzbot? Since I=E2=80=99m new to this =
-field, I=E2=80=99m not
->> very familiar with the process and would greatly appreciate your
->> guidance.
->=20
-> Talk to the syzbot folks, they're a friendly bunch :)
->=20
-> The main thing to keep in mind is that it's never _just_ about getting
-> your code merged, you need to spend some time learning the lay of the
-> land so you can understand where your work fits in, and what people =
-need
-> and are interested in - you want to make sure that you're not
-> duplicating work, and you want your code to be as maintainable and
-> broadly useful to everone else as it can be.
->=20
-> Have you shared with them what your research interests are?
+Ah, metrics and TPS reports. Symptoms of MBA culture, "we just want to
+manage by watching the numbers and making sure they go up - deep
+expertise in the thing we're managing? what's that?"
 
+Push back on that mindset wherever you can and your life will be less
+nonsensical and frustrating :)
 
-Sorry for late. Thank you very much for your advice, we=E2=80=99ll try =
-to work with the syzbot community.=20
-
-But an interesting interaction relationship is that for researchers from =
-academia to prove the advanced technology of their fuzzer, they seem to =
-need to use their personal finding of real-world bugs as an important =
-experimental metric. I think that's why you get reports that are modeled =
-after syzbot (the official description of syzkaller describes the =
-process for independent reports). If the quality of the individual =
-reports is low, it does affect the judgment of the maintainer, but also =
-it is also a waste of everyone's time.
-
-This seems to be a problem that exists in the linux, syzbot community =
-and academia=E2=80=A6.
-
-=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=
-=80=94=E2=80=94=E2=80=94
-Best,
-Kun
-
+Maybe see if you can find some other way of showing the value of your
+work? Things like patches accepted into upstream syzbot, public
+feedback from the syzbot maintainers, or just describing your work
+yourself to your higher ups instead of relying on metrics - or see if
+you can help them come up with some better metrics.
