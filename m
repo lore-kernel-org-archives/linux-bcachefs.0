@@ -1,51 +1,51 @@
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79501DD0F2
-	for <linux-bcachefs@vger.kernel.org>; Sat, 25 Jan 2025 12:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA932B9A6
+	for <linux-bcachefs@vger.kernel.org>; Sun, 26 Jan 2025 13:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737807333; cv=none; b=iJ3/ZYDIPDGzVMXK4g2YJ58gwAjOWM14mhbN7yWoa12DfLmXBuCuZJGNq0MSgFYj4WvAQaHwy++q41/rrtQ5ubCGX7gfIOT19cO6TU6jkfTShwfkQI1vFuXxhKjvP+sOJjuCcWF/bFgoTIzwuyZZgnsVziI7+GVafK8wsMfCiRk=
+	t=1737898656; cv=none; b=obZVE3YO4KHGtBFmhhRUb8ogf1yz57tfgBBGgVbqD5vw5b9tj7ww4MCnx/Rz0TlJ4k2KnToLeOoSbFv7f+prj+IZcr2qvQcR+ZNcXIPiWNOCwAgLLq3cBhq2kjyYOP6lBdsoEYLkSz//C0ln4I6hcYr1zXmEA/dcE4wHH+vxY4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737807333; c=relaxed/simple;
-	bh=jB1tPj89iKQOnw3t4SptyiOJniwStM4E4Y+s6Qnh2PQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YP1cnRROpQ1T5fCQ3aP+FufWZpPcNW9/0WKLBwFHasqRMA7LFRUhbBzHe7GW547xlROmxniYDdXEUfAnuLL9L5jfTjiCfSSqHlQoPqKt7FINHlLzGYOXAT8Q2LpcxcghcVFj1G08ArO4Wt2Fb4RWYG46eQjvMNP7QNpynkfajus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+	s=arc-20240116; t=1737898656; c=relaxed/simple;
+	bh=uO/o2zBJKYL7hCVJckidjOlmJPiP2i81fY6cImHmo3U=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pDvjq3HWAPG0UqWP3K8+sd1IpoQoE2HwmQVBThoZq+NkTPd4tmp3ZE00X7LZ1g7vDl5ZpInQDYuRAVL6gLvRBAR4ZpmSCPgWz5xQWXtbrWnNhEPePuvGxjfYSKoAVkc2N6oM+3UmQ1sZAPEZHRzTBtDO/1w5P3NIion+/+1wTQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3a9d57cff85so54239255ab.2
-        for <linux-bcachefs@vger.kernel.org>; Sat, 25 Jan 2025 04:15:31 -0800 (PST)
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3cfb20d74b5so25563915ab.3
+        for <linux-bcachefs@vger.kernel.org>; Sun, 26 Jan 2025 05:37:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737807331; x=1738412131;
+        d=1e100.net; s=20230601; t=1737898653; x=1738503453;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=EdYt/Nvrs9f3rWydeKFJujYsT11XhlqTHHMi1WiYHu4=;
-        b=VzxpjkAFX9tvyI5o8hkccyBM5KQp3x4zaEqMMRIxDyrwBlfvH4gz01BWTzFVzj89sa
-         zIRjxVViy7y1Uy7RFkDPuaX9Y87Ah40i1Aego2PJWnW1PVWor0oKYLUlWsN2LFjqTSCt
-         TMfAmfQqnckQwj9PjJcP1wmEbIunFcESyJ4t4Im41tAcLPPA2CWdEaZf03wCaE910w3p
-         pKn/oa6mz0zpkXE9Xrig3rnVEpc4TZC6PcuoBl+afPB6vvl7pFivF+n5e8aeUDD1K4mr
-         e5Vl3ASmAcgP5BVTFXqri39Es/5ydFHxwSNxGwbQC1As2gYF6pd9ZqCnSo40BU/9hsM5
-         GOEw==
-X-Forwarded-Encrypted: i=1; AJvYcCVfPyl2P1ySehY7wqTCyxyK2tsvbRZkPdoAkjxoLcJBp/AwwMV7j8Vx6AD2aKoj0/lfpJGmOfSh+bwu0GS09Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8luWLKHzFm0My7TMdwoyHdsMtfTRsFMiL2eUwrIUDtvKwP5yR
-	cmIO0lBVU2rhahPFu63HWUDUDGasU2ywikPwBekylm43H1ZcOLNGqjT7FxkoOg8MsL7xyXPJEnX
-	8kIRDH842iQD39EHjQsKor/XABsituwddEBwOQ+aT2OYpf0HL765mUyI=
-X-Google-Smtp-Source: AGHT+IEgcLLuaapAk7Nkumjmob+PyynCxQMjRM20Y4SqNpDNo9XjoqSJLXa+jRoGN2jVKsDnF4aUWS2YIAWoEhSkmSMPL6x6utLE
+        bh=tjdmOkHqAzyx18iUrY3VVxG+K49t7AT5DN8lWKuOJwc=;
+        b=hnT6xOAWYaNeJWxX6wlBGhc2a6bRQ8FYOGHJ6Jo78T3C0psfhwdGyuCmivh513Chqe
+         Mx8MMFxpH7VrRaZe45/XyF/ZhKFdmuXyipcdxDxCdHfJ+W/COp8+qd476cPgdr7dYVb2
+         mDfZ3hINEcVgeTXe3Gt8VoBsG+gAPOJBlbMfrxdZWjYTDIJxD2akLZs//xJMIM9bVhmw
+         hX0bSpKRWcuri+0BhZhBMbbMCInvuGh4utsMpuuKH1F+Je2UytECZgfbUshCwGh5gb6B
+         DBnzBVRA1FgaRSm7Zxm0ZSYTYF6YhG8Yy8FW6SAvmAn223poDJSeP4k7/jom4n6St0ds
+         S2VQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVAJqiXD4qUSuZGnEADTQvfKMFhtQmCVTxyXT23yrsooriKQqyuFbEkwtXAc6bV1sLI7BBfck+YqhENd9RPiw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzd8N7PQSl9HOQi0Fq91/HTXgAjc0kNeAxK94cqwEfibpkcPi9J
+	telq0bB+B60kBfZV+HgipfOfyAE7qaNolZRCW8L7g4Gy2z0CqWNLuKGHH9JFB0LJwsipxTS64pz
+	iwOokE/O8KjsLbdNkrPgbTKSblS6Hfav5ZNg3FmQDZwZ9B43Pq3Geink=
+X-Google-Smtp-Source: AGHT+IG7mvbKvVyYNANZq9QIHAW9Zi4q28Lg2aIo7g3pSbdtaOL7rHazkY0ka+B55K8bCFjnPXNAjcVDC0sdw0puu7jD2DdyHSUT
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:450f:b0:3cf:c17d:5cc0 with SMTP id
- e9e14a558f8ab-3cfc17d5ef8mr65079135ab.13.1737807331091; Sat, 25 Jan 2025
- 04:15:31 -0800 (PST)
-Date: Sat, 25 Jan 2025 04:15:31 -0800
+X-Received: by 2002:a05:6e02:1a45:b0:3cf:bc71:94f5 with SMTP id
+ e9e14a558f8ab-3cfbc719567mr128253695ab.22.1737898653363; Sun, 26 Jan 2025
+ 05:37:33 -0800 (PST)
+Date: Sun, 26 Jan 2025 05:37:33 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6794d5e3.050a0220.2eae65.0028.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_write_inode
-From: syzbot <syzbot+c17ad4b4367b72a853cb@syzkaller.appspotmail.com>
+Message-ID: <67963a9d.050a0220.2eae65.0038.GAE@google.com>
+Subject: [syzbot] [bcachefs?] possible deadlock in bch2_journal_halt
+From: syzbot <syzbot+4a65c3228a624fc51bbd@syzkaller.appspotmail.com>
 To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -54,52 +54,99 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    95ec54a420b8 Merge tag 'powerpc-6.14-1' of git://git.kerne..
+HEAD commit:    c4b9570cfb63 Merge tag 'audit-pr-20250121' of git://git.ke..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=106f2ab0580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=94988d5f349cacd5
-dashboard link: https://syzkaller.appspot.com/bug?extid=c17ad4b4367b72a853cb
+console output: https://syzkaller.appspot.com/x/log.txt?x=17bac9f8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5d46425e33fe266e
+dashboard link: https://syzkaller.appspot.com/bug?extid=4a65c3228a624fc51bbd
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13688ab0580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=140d89f8580000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159225df980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13671824580000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/df0d06cacc21/disk-95ec54a4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/37dde637fea7/vmlinux-95ec54a4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f2689e46ad3d/bzImage-95ec54a4.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/75c69a8942c4/mount_2.gz
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-c4b9570c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/731d6adef14e/vmlinux-c4b9570c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/fba145e47ede/bzImage-c4b9570c.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/67a3a74f7d49/mount_1.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c17ad4b4367b72a853cb@syzkaller.appspotmail.com
+Reported-by: syzbot+4a65c3228a624fc51bbd@syzkaller.appspotmail.com
 
-=====================================================
-BUG: KMSAN: uninit-value in bch2_write_inode+0x9fa/0xf80 fs/bcachefs/fs.c:109
- bch2_write_inode+0x9fa/0xf80 fs/bcachefs/fs.c:109
- bch2_vfs_write_inode+0x8a/0x150 fs/bcachefs/fs.c:1835
- write_inode fs/fs-writeback.c:1525 [inline]
- __writeback_single_inode+0x8da/0x1290 fs/fs-writeback.c:1745
- writeback_sb_inodes+0xa34/0x1c20 fs/fs-writeback.c:1976
- __writeback_inodes_wb+0x14c/0x440 fs/fs-writeback.c:2047
- wb_writeback+0x50b/0xcb0 fs/fs-writeback.c:2158
- wb_check_old_data_flush fs/fs-writeback.c:2262 [inline]
- wb_do_writeback fs/fs-writeback.c:2315 [inline]
- wb_workfn+0x110c/0x1940 fs/fs-writeback.c:2343
+bcachefs (loop0): journal_entry_open(): fatal error cannot start: journal seq overflow
+============================================
+WARNING: possible recursive locking detected
+6.13.0-syzkaller-02526-gc4b9570cfb63 #0 Not tainted
+--------------------------------------------
+kworker/u4:7/1036 is trying to acquire lock:
+ffff888044cca980 (&j->lock){+.+.}-{3:3}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ffff888044cca980 (&j->lock){+.+.}-{3:3}, at: bch2_journal_halt+0x2f/0x110 fs/bcachefs/journal.c:315
+
+but task is already holding lock:
+ffff888044cca980 (&j->lock){+.+.}-{3:3}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ffff888044cca980 (&j->lock){+.+.}-{3:3}, at: __journal_res_get+0x497/0x26b0 fs/bcachefs/journal.c:533
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&j->lock);
+  lock(&j->lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+5 locks held by kworker/u4:7/1036:
+ #0: ffff888043693948 ((wq_completion)btree_update){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3211 [inline]
+ #0: ffff888043693948 ((wq_completion)btree_update){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3317
+ #1: ffffc9000269fc60 ((work_completion)(&c->btree_interior_update_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3212 [inline]
+ #1: ffffc9000269fc60 ((work_completion)(&c->btree_interior_update_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3317
+ #2: ffff888044c84378 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:164 [inline]
+ #2: ffff888044c84378 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:256 [inline]
+ #2: ffff888044c84378 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bch2_trans_get+0x7e4/0xd30 fs/bcachefs/btree_iter.c:3378
+ #3: ffff88804430c140 (bcachefs_btree){+.+.}-{0:0}, at: trans_set_locked fs/bcachefs/btree_locking.h:198 [inline]
+ #3: ffff88804430c140 (bcachefs_btree){+.+.}-{0:0}, at: bch2_trans_begin+0x9ca/0x1d90 fs/bcachefs/btree_iter.c:3275
+ #4: ffff888044cca980 (&j->lock){+.+.}-{3:3}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #4: ffff888044cca980 (&j->lock){+.+.}-{3:3}, at: __journal_res_get+0x497/0x26b0 fs/bcachefs/journal.c:533
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 1036 Comm: kworker/u4:7 Not tainted 6.13.0-syzkaller-02526-gc4b9570cfb63 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Workqueue: btree_update btree_interior_update_work
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_deadlock_bug+0x483/0x620 kernel/locking/lockdep.c:3039
+ check_deadlock kernel/locking/lockdep.c:3091 [inline]
+ validate_chain+0x15e2/0x5920 kernel/locking/lockdep.c:3893
+ __lock_acquire+0x1397/0x2100 kernel/locking/lockdep.c:5228
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5851
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:351 [inline]
+ bch2_journal_halt+0x2f/0x110 fs/bcachefs/journal.c:315
+ bch2_fs_emergency_read_only+0x50/0xc0 fs/bcachefs/super.c:407
+ bch2_fatal_error+0x15/0x40 fs/bcachefs/error.c:49
+ journal_entry_open fs/bcachefs/journal.c:385 [inline]
+ __journal_res_get+0xbef/0x26b0 fs/bcachefs/journal.c:557
+ bch2_journal_res_get_slowpath+0xe6/0x710 fs/bcachefs/journal.c:619
+ bch2_journal_res_get fs/bcachefs/journal.h:383 [inline]
+ bch2_trans_journal_res_get fs/bcachefs/btree_trans_commit.c:350 [inline]
+ bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:652 [inline]
+ do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:866 [inline]
+ __bch2_trans_commit+0x353c/0x97a0 fs/bcachefs/btree_trans_commit.c:1066
+ bch2_trans_commit fs/bcachefs/btree_update.h:183 [inline]
+ btree_update_nodes_written fs/bcachefs/btree_update_interior.c:706 [inline]
+ btree_interior_update_work+0x1449/0x2a70 fs/bcachefs/btree_update_interior.c:844
  process_one_work kernel/workqueue.c:3236 [inline]
- process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3317
- worker_thread+0xea7/0x14f0 kernel/workqueue.c:3398
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3317
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3398
+ kthread+0x7a9/0x920 kernel/kthread.c:464
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Local variable io_opts.i117 created at:
- bch2_inode_rebalance_opts_get fs/bcachefs/inode.h:291 [inline]
- bch2_write_inode+0x696/0xf80 fs/bcachefs/fs.c:107
- bch2_vfs_write_inode+0x8a/0x150 fs/bcachefs/fs.c:1835
-
-CPU: 0 UID: 0 PID: 3918 Comm: kworker/u8:17 Not tainted 6.13.0-syzkaller-00918-g95ec54a420b8 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
-Workqueue: writeback wb_workfn (flush-bcachefs-1)
-=====================================================
+ </TASK>
 
 
 ---
