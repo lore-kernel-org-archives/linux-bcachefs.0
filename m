@@ -1,40 +1,66 @@
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94F815ADB4
-	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Jan 2025 04:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513C61FCD13
+	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Jan 2025 09:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737951182; cv=none; b=N6uGu9lrBW5sraesBNoY3pcvSs92aOAQyyGhKjxovDpeezYLmV1RH4rL7Zmg8jHw518yePAia2dwTMFD4+zChHMBEYYBSlVNuqHctF1625JTY3x6tQcLGvmqg2BGFDK1yhP0ItIm6cQgyhgyInYA/FxHS0Md6UIp2G68ILM6a/I=
+	t=1737969170; cv=none; b=eO3W8XRUe/Es/BVtjAmd35+UodzfL35iqx3Wd15qoJzVEkyzpKCH6c41wE7kEgTQBTbagv+6fbzyz/lkD/nJ4bav//zAn1NE+V5FLN486b7HFAtKtjg3LTxcFmSNd3GHx22H0M19NvMQ0WwHatMCPJSP/lJihIIbI0cvyqyepps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737951182; c=relaxed/simple;
-	bh=nd3Zunp6iT8b418va2AuUlh5qyAWTDWBHox6LvndQFA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lFPzUucLQW9a4JbyaQqjIF8ts/5gXTaCQImL/3GmhaU+Bjn9MOMQaK9jZGLPiWy8PDVzt4bkixaGZkKs+CO+UtImgO3gLUaC2+tqog69yfLUi6hcTu1pQ2bldDsfVpUsNhnNCt8khvbWntzZc2ylR9jCyOKT3Y58DVwa7+IPKRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e+aYWJdG; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1737969170; c=relaxed/simple;
+	bh=2sxYjLdoKh8Z/wWzyX2cCUQjaTeeF7MuRVHqqujaqkg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Iw0biG3vw7lSCPZHB1gleaJlB91tj0uciI2LWOiXhs6aeHulZiK/Nf22Zfty6o9vQKoD04J2oidfshiRX7XvzgAViR2kVNthFsoS3r+Lc6FlLC/C3lKYIz5oU/e4ZAp/Fr5uriu7weeGCDc/ZJhafutbjiCus9QcGemWp4Emc7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lDdlLLd2; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e+aYWJdG"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737951178;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uRJGZ3zsb3sE/jeRvKXqeRri2pFBFoJUcyWduo00I1E=;
-	b=e+aYWJdGRBLCay0QOVIPsvocEMqTRZMqXQGrScVuXepY4QfKDO5zBJNwtXOefCj7Volkm8
-	HWZJA5UXeVRJ0BcyKLzaJMn1VYfHpwrKQgC8JUud5hB4Xsf9EjEct0Eccu/87lT4NSO8ZX
-	F4bg/H6CaoZnYJa9TkGIbGucn/X6E94=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 11/11] bcachefs: Improve trace_move_extent_finish
-Date: Sun, 26 Jan 2025 23:12:37 -0500
-Message-ID: <20250127041239.2693707-12-kent.overstreet@linux.dev>
-In-Reply-To: <20250127041239.2693707-1-kent.overstreet@linux.dev>
-References: <20250127041239.2693707-1-kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lDdlLLd2"
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2f44353649aso5462134a91.0
+        for <linux-bcachefs@vger.kernel.org>; Mon, 27 Jan 2025 01:12:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737969168; x=1738573968; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=blJzl+SYqydu/EPL4zE3c0PbNWIXsERXIXUdLUWUeP0=;
+        b=lDdlLLd2EBficCAP24+W74K6pMuxvo770bGR1JxRDy/8r4Hx+3aEc8XKO227Eh/SnF
+         KP5zrKFtkk8hYi46IQu2+0XzlFm+22/e4mOUVvEuN1EmPfe1QRXfUZ58NeUMpILqjwXC
+         ZVcM5by9f9jceelDk4Ktxwr6h0W7ZUvWpvjkcnqXiVcb7macTeQV/91ze1rjS6iIEqkW
+         4WhcnBvuJKPcw34QiAZwZc88q8QTHuirpXl+2WrA3+bMHfA1m8g/OU9NbsucQmtcH7Oj
+         dHTFfQnOvIisxjzzYWjj5Qn4FKVwHTrktkfB/UZh9YkkORNiEuVC1JgtUHh223ntUGf4
+         UQpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737969168; x=1738573968;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=blJzl+SYqydu/EPL4zE3c0PbNWIXsERXIXUdLUWUeP0=;
+        b=WPDG/gfXYdAu2g/70eKfVCmmiM/BzPthmZcY69mBJ9AMszeCHZ0gD7lShStxLCYdna
+         TcNIioPanAjlt4IAtP/xCkLXJugkCP5nO1MJcYw4OX8JaggWtHkG434Hp81GGjWaSOBt
+         dqMCR+q/d2pD+KcimR+Z/YImVNio3CEKXfxlSys8hQWVcEicfupUfg4y26lvgKFZAcOT
+         cTYE21cHKGSMSSQsfB6d3CLFkEK9guzmhffWwqHser3JlifeoZIRGpmitTBCMjVR7oLm
+         oe0bieDjZ5tJlyAzvCqd7ThlJrMWVQnQiZVb6364LCGWlddCB3rwLNukKqXUljDoPK+M
+         GriQ==
+X-Gm-Message-State: AOJu0YyPPMYkTnaEBi3z3GA8zHZFnvKUTdfHjHT5bwGxsRwnfA2IMtN4
+	A+nn2GmytJ1a3hC28aSC0l8dpctivek0c0SG0lvTcS/YcIAxRXIQ
+X-Gm-Gg: ASbGnctCMuDm5ZzvxtB80tWVKQWAy2MXupPwgLHqdC/6GvJN488QjPVrbX4BphJIleh
+	o5WaZqXoy4krpiU7P61lbSdsX5iB6VmbFPxxJqNUV5pAtv/oVz/ApSiSRPoQJsc9tdOtK/Ql5Vo
+	Dfb0dz5VKqdTLMQRlNNQ6+QEOSJWNbwVSfCGr+f0btD8EDPNiENEFi4bGpEwonJFe9hmRs1bpjj
+	KKop4689b+cXpfDMnX8dsMt6/9HwxrRxREDWC8xnpunAiaTteH/x/w=
+X-Google-Smtp-Source: AGHT+IFxYxRsUZEd8QmcjZvOGcETa9n5gao4rSa/0hbZh3rikVgrN+f8MlLJD8wNeDrxR6YYU4fo+g==
+X-Received: by 2002:a17:90a:c883:b0:2ee:d824:b559 with SMTP id 98e67ed59e1d1-2f782d35addmr58395539a91.28.1737969168454;
+        Mon, 27 Jan 2025 01:12:48 -0800 (PST)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffb1c2b3sm6593403a91.48.2025.01.27.01.12.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2025 01:12:47 -0800 (PST)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] bcachefs: Fix subtraction underflow
+Date: Mon, 27 Jan 2025 17:12:41 +0800
+Message-ID: <20250127091241.470892-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -42,116 +68,31 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-We're currently debugging issues with rebalance, where it's not making
-progress as quickly as it should be (or sometimes not at all).
+When ancestor is less than IS_ANCESTOR_BITMAP, we would get an incorrect
+result.
 
-Add the full data_update to the move_extent_finish tracepoint, so we can
-check that the replicas we wrote match what we were supposed to do.
-
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 ---
- fs/bcachefs/data_update.c | 50 ++++++++++++++++++++++++++-------------
- 1 file changed, 34 insertions(+), 16 deletions(-)
+ fs/bcachefs/snapshot.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/bcachefs/data_update.c b/fs/bcachefs/data_update.c
-index 585214931e05..337494facac6 100644
---- a/fs/bcachefs/data_update.c
-+++ b/fs/bcachefs/data_update.c
-@@ -91,15 +91,28 @@ static bool bkey_nocow_lock(struct bch_fs *c, struct moving_context *ctxt, struc
- 	return true;
- }
+diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
+index c54091a28909..ede0b480e7d4 100644
+--- a/fs/bcachefs/snapshot.c
++++ b/fs/bcachefs/snapshot.c
+@@ -146,8 +146,9 @@ bool __bch2_snapshot_is_ancestor(struct bch_fs *c, u32 id, u32 ancestor)
+ 		goto out;
+ 	}
  
--static void trace_move_extent_finish2(struct bch_fs *c, struct bkey_s_c k)
-+static noinline void trace_move_extent_finish2(struct data_update *u,
-+					       struct bkey_i *new,
-+					       struct bkey_i *insert)
- {
--	if (trace_move_extent_finish_enabled()) {
--		struct printbuf buf = PRINTBUF;
-+	struct bch_fs *c = u->op.c;
-+	struct printbuf buf = PRINTBUF;
+-	while (id && id < ancestor - IS_ANCESTOR_BITMAP)
+-		id = get_ancestor_below(t, id, ancestor);
++	if (likely(ancestor >= IS_ANCESTOR_BITMAP))
++		while (id && id < ancestor - IS_ANCESTOR_BITMAP)
++			id = get_ancestor_below(t, id, ancestor);
  
--		bch2_bkey_val_to_text(&buf, c, k);
--		trace_move_extent_finish(c, buf.buf);
--		printbuf_exit(&buf);
--	}
-+	prt_newline(&buf);
-+
-+	bch2_data_update_to_text(&buf, u);
-+	prt_newline(&buf);
-+
-+	prt_str_indented(&buf, "new replicas:\t");
-+	bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(new));
-+	prt_newline(&buf);
-+
-+	prt_str_indented(&buf, "insert:\t");
-+	bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(insert));
-+	prt_newline(&buf);
-+
-+	trace_move_extent_finish(c, buf.buf);
-+	printbuf_exit(&buf);
- }
- 
- static void trace_move_extent_fail2(struct data_update *m,
-@@ -372,7 +385,8 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- 			bch2_btree_iter_set_pos(&iter, next_pos);
- 
- 			this_cpu_add(c->counters[BCH_COUNTER_move_extent_finish], new->k.size);
--			trace_move_extent_finish2(c, bkey_i_to_s_c(&new->k_i));
-+			if (trace_move_extent_finish_enabled())
-+				trace_move_extent_finish2(m, &new->k_i, insert);
- 		}
- err:
- 		if (bch2_err_matches(ret, BCH_ERR_transaction_restart))
-@@ -525,34 +539,38 @@ void bch2_data_update_opts_to_text(struct printbuf *out, struct bch_fs *c,
- 				   struct data_update_opts *data_opts)
- {
- 	printbuf_tabstop_push(out, 20);
--	prt_str(out, "rewrite ptrs:\t");
-+
-+	prt_str_indented(out, "rewrite ptrs:\t");
- 	bch2_prt_u64_base2(out, data_opts->rewrite_ptrs);
- 	prt_newline(out);
- 
--	prt_str(out, "kill ptrs:\t");
-+	prt_str_indented(out, "kill ptrs:\t");
- 	bch2_prt_u64_base2(out, data_opts->kill_ptrs);
- 	prt_newline(out);
- 
--	prt_str(out, "target:\t");
-+	prt_str_indented(out, "target:\t");
- 	bch2_target_to_text(out, c, data_opts->target);
- 	prt_newline(out);
- 
--	prt_str(out, "compression:\t");
-+	prt_str_indented(out, "compression:\t");
- 	bch2_compression_opt_to_text(out, io_opts->background_compression);
- 	prt_newline(out);
- 
--	prt_str(out, "opts.replicas:\t");
-+	prt_str_indented(out, "opts.replicas:\t");
- 	prt_u64(out, io_opts->data_replicas);
-+	prt_newline(out);
- 
--	prt_str(out, "extra replicas:\t");
-+	prt_str_indented(out, "extra replicas:\t");
- 	prt_u64(out, data_opts->extra_replicas);
- }
- 
- void bch2_data_update_to_text(struct printbuf *out, struct data_update *m)
- {
--	bch2_bkey_val_to_text(out, m->op.c, bkey_i_to_s_c(m->k.k));
--	prt_newline(out);
- 	bch2_data_update_opts_to_text(out, m->op.c, &m->op.opts, &m->data_opts);
-+	prt_newline(out);
-+
-+	prt_str_indented(out, "old key:\t");
-+	bch2_bkey_val_to_text(out, m->op.c, bkey_i_to_s_c(m->k.k));
- }
- 
- int bch2_extent_drop_ptrs(struct btree_trans *trans,
+ 	ret = id && id < ancestor
+ 		? test_ancestor_bitmap(t, id, ancestor)
 -- 
-2.45.2
+2.47.0
 
