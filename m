@@ -1,38 +1,38 @@
 Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F3315ADB4
-	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Jan 2025 04:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7AF152E02
+	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Jan 2025 04:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737951180; cv=none; b=QURTrmuvmt4WuBzyahHsEo342RYZBNksp1NYQPm1+muEG3pS+hOaizixY+i6exfKD6s9VSBLiLgrBZI6gci50NFtYhSqYpUROan4pKTSmWSlXOY0k+xg1JTypt2pwurYW75j6UNvbSCWHjv/hrSNGiu1RCudGHeiuK4FroSLm40=
+	t=1737951181; cv=none; b=n6/A471G//ghb6hjNhxmZp/RVmpJJP3S5trFftipQ+Lt6LYKbfv1f/0O2VlAPR9sr8/A58EStCW46G5ohmkFHmxRuhAGwXobZKcoXNOCRL5FSmagjh6TRKM1HKGjOE11NMi1Xos/gebvIAL8HhZvA/Albud/Jj990Mr1vBY9u30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737951180; c=relaxed/simple;
-	bh=TLdBdpCX/Ix+uZy2N8Z2lN1B8G9GuOjvdfz0la4NLIs=;
+	s=arc-20240116; t=1737951181; c=relaxed/simple;
+	bh=oe0gAgJXos+D10p2Og1rLlT8fpQeRp6vJLhQovT4Irg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GrqoPDsH45c4V71P00eY9lv1V4AY/10EF68kw41iZgsbiCxwzRHf0nzyoIkDhii+oSJ8bggVRJnfpOC2bFEguON+x6sZNGDe5gYCzrmc3Ax4elTkW8ytMa0EncxZVVSZ0xlw427Uj9cfkwvvd8T9/zlPSBZUIVwLmXOs6TPPjjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F51FtR1G; arc=none smtp.client-ip=91.218.175.181
+	 MIME-Version; b=l+Q0pl0cTG4boTNZP9gKoERz4A2lbevPBFFAFQOnqi6ry0/EetYXIEhOMBFPYj86dAx7ZYj7MyA1dAiFaiKjD8R92/V0EwTWbFJURNLI8ZkpxqRqJzrKQ1/M1UIy3/PmU0gGryxGc/RFrpfEP+osTmYIhzeGIv9617i/gHVca/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bEJyRDBH; arc=none smtp.client-ip=91.218.175.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F51FtR1G"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bEJyRDBH"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737951174;
+	t=1737951177;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nO0uj1+nPRRE6WadeUotFYTKGJindwm+3GJXrSwTfuY=;
-	b=F51FtR1G4EmKuHDu2ohoN2bz4DLAp8XusgfzhwfvyRyvCl8o+HzavKv0W+CzA590btFE3T
-	B1ruI43zemUeJ7s0YLwaB5IZG811Y42zQdE5m0baS7KQeAJtvIErDXAwXZUbviRbXfaIvr
-	YdrqJ4gL46/My5Ad9TpcrVm971nMIhQ=
+	bh=btzZtmDm0O5mlcyK0I//lNct9NMpLCAqZgoQ8O4RYQ4=;
+	b=bEJyRDBHTb/2gvjfWqDrc6Pt++193GG98LHY4hSqkAn5xUFbL4XcZEUCPiiKQYcUJbwsjn
+	sQs8aOKss6fonBcWlBnieTyzrZRec8B1FdKgi2Pw/YaZNfGvU00zqJrfVDupXflCwDWD+t
+	bDnn5JqBAjAsrWetP6Rauuoc30pvo7g=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 05/11] bcachefs: Improve decompression error messages
-Date: Sun, 26 Jan 2025 23:12:31 -0500
-Message-ID: <20250127041239.2693707-6-kent.overstreet@linux.dev>
+Subject: [PATCH 09/11] bcachefs: Journal writes are now IOPRIO_CLASS_RT
+Date: Sun, 26 Jan 2025 23:12:35 -0500
+Message-ID: <20250127041239.2693707-10-kent.overstreet@linux.dev>
 In-Reply-To: <20250127041239.2693707-1-kent.overstreet@linux.dev>
 References: <20250127041239.2693707-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,141 +44,35 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Ratelimit them, and use the new bch2_write_op_error() helper that prints
-path and file offset.
+System performance is particularly sensitive to journal write latency,
+the number of outstanding journal writes is bounded and we can't issue
+journal flushes until other journal writes have completed.
 
-Reported-by: https://github.com/koverstreet/bcachefs/issues/819
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/compress.c | 31 ++++++++++++++++++++++---------
- fs/bcachefs/compress.h |  4 ++--
- fs/bcachefs/io_write.c |  4 ++--
- fs/bcachefs/io_write.h |  2 ++
- 4 files changed, 28 insertions(+), 13 deletions(-)
+ fs/bcachefs/journal_io.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/bcachefs/compress.c b/fs/bcachefs/compress.c
-index f99ff1819597..114bf2f3879f 100644
---- a/fs/bcachefs/compress.c
-+++ b/fs/bcachefs/compress.c
-@@ -4,6 +4,7 @@
- #include "compress.h"
- #include "error.h"
- #include "extents.h"
-+#include "io_write.h"
- #include "opts.h"
- #include "super-io.h"
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index 7f2efe85a805..11c39e0c34f4 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -17,6 +17,7 @@
+ #include "sb-clean.h"
+ #include "trace.h"
  
-@@ -254,11 +255,14 @@ static int __bio_uncompress(struct bch_fs *c, struct bio *src,
- 	goto out;
- }
++#include <linux/ioprio.h>
+ #include <linux/string_choices.h>
  
--int bch2_bio_uncompress_inplace(struct bch_fs *c, struct bio *bio,
--				struct bch_extent_crc_unpacked *crc)
-+int bch2_bio_uncompress_inplace(struct bch_write_op *op,
-+				struct bio *bio)
- {
-+	struct bch_fs *c = op->c;
-+	struct bch_extent_crc_unpacked *crc = &op->crc;
- 	struct bbuf data = { NULL };
- 	size_t dst_len = crc->uncompressed_size << 9;
-+	int ret = 0;
+ void bch2_journal_pos_from_member_info_set(struct bch_fs *c)
+@@ -1763,6 +1764,7 @@ static CLOSURE_CALLBACK(journal_write_submit)
+ 		bio->bi_iter.bi_sector	= ptr->offset;
+ 		bio->bi_end_io		= journal_write_endio;
+ 		bio->bi_private		= ca;
++		bio->bi_ioprio		= IOPRIO_PRIO_VALUE(IOPRIO_CLASS_RT, 0);
  
- 	/* bio must own its pages: */
- 	BUG_ON(!bio->bi_vcnt);
-@@ -266,17 +270,26 @@ int bch2_bio_uncompress_inplace(struct bch_fs *c, struct bio *bio,
- 
- 	if (crc->uncompressed_size << 9	> c->opts.encoded_extent_max ||
- 	    crc->compressed_size << 9	> c->opts.encoded_extent_max) {
--		bch_err(c, "error rewriting existing data: extent too big");
-+		struct printbuf buf = PRINTBUF;
-+		bch2_write_op_error(&buf, op);
-+		prt_printf(&buf, "error rewriting existing data: extent too big");
-+		bch_err_ratelimited(c, "%s", buf.buf);
-+		printbuf_exit(&buf);
- 		return -EIO;
- 	}
- 
- 	data = __bounce_alloc(c, dst_len, WRITE);
- 
- 	if (__bio_uncompress(c, bio, data.b, *crc)) {
--		if (!c->opts.no_data_io)
--			bch_err(c, "error rewriting existing data: decompression error");
--		bio_unmap_or_unbounce(c, data);
--		return -EIO;
-+		if (!c->opts.no_data_io) {
-+			struct printbuf buf = PRINTBUF;
-+			bch2_write_op_error(&buf, op);
-+			prt_printf(&buf, "error rewriting existing data: decompression error");
-+			bch_err_ratelimited(c, "%s", buf.buf);
-+			printbuf_exit(&buf);
-+		}
-+		ret = -EIO;
-+		goto err;
- 	}
- 
- 	/*
-@@ -293,9 +306,9 @@ int bch2_bio_uncompress_inplace(struct bch_fs *c, struct bio *bio,
- 	crc->uncompressed_size	= crc->live_size;
- 	crc->offset		= 0;
- 	crc->csum		= (struct bch_csum) { 0, 0 };
--
-+err:
- 	bio_unmap_or_unbounce(c, data);
--	return 0;
-+	return ret;
- }
- 
- int bch2_bio_uncompress(struct bch_fs *c, struct bio *src,
-diff --git a/fs/bcachefs/compress.h b/fs/bcachefs/compress.h
-index 607fd5e232c9..bec2f05bfd52 100644
---- a/fs/bcachefs/compress.h
-+++ b/fs/bcachefs/compress.h
-@@ -47,8 +47,8 @@ static inline enum bch_compression_type bch2_compression_opt_to_type(unsigned v)
- 	return __bch2_compression_opt_to_type[bch2_compression_decode(v).type];
- }
- 
--int bch2_bio_uncompress_inplace(struct bch_fs *, struct bio *,
--				struct bch_extent_crc_unpacked *);
-+struct bch_write_op;
-+int bch2_bio_uncompress_inplace(struct bch_write_op *, struct bio *);
- int bch2_bio_uncompress(struct bch_fs *, struct bio *, struct bio *,
- 		       struct bvec_iter, struct bch_extent_crc_unpacked);
- unsigned bch2_bio_compress(struct bch_fs *, struct bio *, size_t *,
-diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
-index 3e71860f66b9..dd508d93e9fc 100644
---- a/fs/bcachefs/io_write.c
-+++ b/fs/bcachefs/io_write.c
-@@ -406,7 +406,7 @@ static void __bch2_write_op_error(struct printbuf *out, struct bch_write_op *op,
- 		   op->flags & BCH_WRITE_MOVE ? "(internal move)" : "");
- }
- 
--static void bch2_write_op_error(struct printbuf *out, struct bch_write_op *op)
-+void bch2_write_op_error(struct printbuf *out, struct bch_write_op *op)
- {
- 	__bch2_write_op_error(out, op, op->pos.offset);
- }
-@@ -873,7 +873,7 @@ static enum prep_encoded_ret {
- 		if (bch2_crc_cmp(op->crc.csum, csum) && !c->opts.no_data_io)
- 			return PREP_ENCODED_CHECKSUM_ERR;
- 
--		if (bch2_bio_uncompress_inplace(c, bio, &op->crc))
-+		if (bch2_bio_uncompress_inplace(op, bio))
- 			return PREP_ENCODED_ERR;
- 	}
- 
-diff --git a/fs/bcachefs/io_write.h b/fs/bcachefs/io_write.h
-index 5400ce94ee57..b4626013abc8 100644
---- a/fs/bcachefs/io_write.h
-+++ b/fs/bcachefs/io_write.h
-@@ -20,6 +20,8 @@ static inline void bch2_latency_acct(struct bch_dev *ca, u64 submit_time, int rw
- void bch2_submit_wbio_replicas(struct bch_write_bio *, struct bch_fs *,
- 			       enum bch_data_type, const struct bkey_i *, bool);
- 
-+void bch2_write_op_error(struct printbuf *out, struct bch_write_op *op);
-+
- #define BCH_WRITE_FLAGS()		\
- 	x(ALLOC_NOWAIT)			\
- 	x(CACHED)			\
+ 		BUG_ON(bio->bi_iter.bi_sector == ca->prev_journal_sector);
+ 		ca->prev_journal_sector = bio->bi_iter.bi_sector;
 -- 
 2.45.2
 
