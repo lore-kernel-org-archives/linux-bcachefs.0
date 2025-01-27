@@ -1,38 +1,38 @@
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2392C152E02
-	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Jan 2025 04:12:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E702907
+	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Jan 2025 04:12:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737951178; cv=none; b=RfSM19YYk81N+4QblYYtgg19L1VuCF2+1gnQhoCbJ1JIlf3hO7hHQQHm3egNPqYpVuB8ETXOFv3BIfNqfczWNqoUIiekUKlwnlY9oQFh0QRbEfL0AvNuZPyM2pd8Q/VPV7eBX0NqInnPXTKBrdhrb+wZze40iEVTrEXNUIzL8dc=
+	t=1737951179; cv=none; b=d6V6EUCbp/xikGIbbFI78r6/kUhv9zAfH4oXagAIEyOYwBaSmDrtpF8JOgtC3cHiObmbGJKXDqwl3ZyvJiQcydOA39IdLobkVMDn92Q+LCRRNqmEwFxbskiMcZntVByVSUL2S9fnjF6FxVC+s1utxMLB3ZMoemmqC4YcIaxVym0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737951178; c=relaxed/simple;
-	bh=wFj54uGOZCx/EkrgRuAPquBjwCSD0pF75g2gplsaM5s=;
+	s=arc-20240116; t=1737951179; c=relaxed/simple;
+	bh=Oh1wdgG+QdN6yzb+hP2e8N0TOAgKkW3Oi6GMBDv+JHE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N3U6Xa50S/q1P8t1Wp+9Bq/KWWQpS5NzJ6XTonwJTVmS5jthIhfALGDeBRD1C3b3pgHHqMj22/eO/+XijQlU32WUKnnDJH0VAVK2j1CksRiDhiihJ+K3/0OXpeftPlkkQjUDHLR2kipHICJIo6bV+gvtvCdsH/bEO9mhh/3X4No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X24A9BbM; arc=none smtp.client-ip=91.218.175.181
+	 MIME-Version; b=p/+PjFXSdzp/9SheLQbqissexRrMo7TJZzNymiZu3qxaYkbm/YBmqwK22CGQsuJdWW8CJPzvTcgGu9SPj9jhh9/H0nMuAN5FAKpPCamhYPldvuW3nArAfor1FxnAR5bFWrc2dQRInXUJXgpjFm6IYBxklRD8E8LdoMk47BAEexw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XW+wmZWG; arc=none smtp.client-ip=91.218.175.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X24A9BbM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XW+wmZWG"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737951175;
+	t=1737951176;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mAXIhYdPqgbj5W+RM2jTa/OBpiwQ7gpPIch81R9CbQw=;
-	b=X24A9BbMfvHzqmkGE5kQqCrEmVYc9PCzspBto7GVgyTfXNN66hcm8AsGTltyKG1nu6F4dT
-	YQ4Ex582T41tkWdw3zBQOWvH5E+73/mCMBo+YIeXvo+2BjkUzu0Hw9iLGdZj8yLDATwfmY
-	N9geUHxAXlvJJkHV107Ezd5ZbMiGqtc=
+	bh=UYOR955A+Z4PseNK0oiQ8wXZBVWSuUTb6GfRUe76hdU=;
+	b=XW+wmZWG2K2Y1L6NBIOYPHPbVOyzel0spw0sJ15nLNfzeeYxm0o1vWhFqD+EeXnTZOwD12
+	jxymGziyBb6Yi+H7vrkeT8SJxQsqaMr2+8/d2oYR+qBYOKwyZlELQ3938nDYhKqkzSstAB
+	sump7DHsbMO1lpJzs/4xCkJlkxZgID8=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 06/11] bcachefs: rebalance, copygc enabled are runtime opts
-Date: Sun, 26 Jan 2025 23:12:32 -0500
-Message-ID: <20250127041239.2693707-7-kent.overstreet@linux.dev>
+Subject: [PATCH 07/11] bcachefs: fix bch2_btree_node_flags
+Date: Sun, 26 Jan 2025 23:12:33 -0500
+Message-ID: <20250127041239.2693707-8-kent.overstreet@linux.dev>
 In-Reply-To: <20250127041239.2693707-1-kent.overstreet@linux.dev>
 References: <20250127041239.2693707-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,33 +44,27 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Fix a regression from when these were switched to normal opts.h options.
-
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/opts.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/bcachefs/btree_cache.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
-index e763d52e0f38..a182b5d454ba 100644
---- a/fs/bcachefs/opts.h
-+++ b/fs/bcachefs/opts.h
-@@ -476,13 +476,13 @@ enum fsck_err_opts {
- 	  NULL,		"Enable nocow mode: enables runtime locking in\n"\
- 			"data move path needed if nocow will ever be in use\n")\
- 	x(copygc_enabled,		u8,				\
--	  OPT_FS|OPT_MOUNT,						\
-+	  OPT_FS|OPT_MOUNT|OPT_RUNTIME,					\
- 	  OPT_BOOL(),							\
- 	  BCH2_NO_SB_OPT,			true,			\
- 	  NULL,		"Enable copygc: disable for debugging, or to\n"\
- 			"quiet the system when doing performance testing\n")\
- 	x(rebalance_enabled,		u8,				\
--	  OPT_FS|OPT_MOUNT,						\
-+	  OPT_FS|OPT_MOUNT|OPT_RUNTIME,					\
- 	  OPT_BOOL(),							\
- 	  BCH2_NO_SB_OPT,			true,			\
- 	  NULL,		"Enable rebalance: disable for debugging, or to\n"\
+diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+index 672ca2c1d37d..ca755e8d1a37 100644
+--- a/fs/bcachefs/btree_cache.c
++++ b/fs/bcachefs/btree_cache.c
+@@ -24,7 +24,10 @@ do {						 \
+ } while (0)
+ 
+ const char * const bch2_btree_node_flags[] = {
+-#define x(f)	#f,
++	"typebit",
++	"typebit",
++	"typebit",
++#define x(f)	[BTREE_NODE_##f] = #f,
+ 	BTREE_FLAGS()
+ #undef x
+ 	NULL
 -- 
 2.45.2
 
