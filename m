@@ -1,98 +1,152 @@
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513C61FCD13
-	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Jan 2025 09:12:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FE18155747;
+	Mon, 27 Jan 2025 16:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737969170; cv=none; b=eO3W8XRUe/Es/BVtjAmd35+UodzfL35iqx3Wd15qoJzVEkyzpKCH6c41wE7kEgTQBTbagv+6fbzyz/lkD/nJ4bav//zAn1NE+V5FLN486b7HFAtKtjg3LTxcFmSNd3GHx22H0M19NvMQ0WwHatMCPJSP/lJihIIbI0cvyqyepps=
+	t=1737994044; cv=none; b=MUYFabCUczi/2yYweWEofRW304V5zCSvTZko9TFxC2Cy7G0CK94BFDfQT0wBh/88IXP9VLrXgnSt9OaZc2osa0wCFYV+b5oUaFVlU1JC4XGbCN0oE7TBF0Ad9hqXl27cJ0lxYzCuBgRxtFNiTrEMp8ZVN50dGHnxOmnJP4iXnv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737969170; c=relaxed/simple;
-	bh=2sxYjLdoKh8Z/wWzyX2cCUQjaTeeF7MuRVHqqujaqkg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Iw0biG3vw7lSCPZHB1gleaJlB91tj0uciI2LWOiXhs6aeHulZiK/Nf22Zfty6o9vQKoD04J2oidfshiRX7XvzgAViR2kVNthFsoS3r+Lc6FlLC/C3lKYIz5oU/e4ZAp/Fr5uriu7weeGCDc/ZJhafutbjiCus9QcGemWp4Emc7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lDdlLLd2; arc=none smtp.client-ip=209.85.216.52
+	s=arc-20240116; t=1737994044; c=relaxed/simple;
+	bh=+QwPUp3qsE13Mkc3DWfjMlz0Em0OicoIS5FT71+NDyY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DkvT1tRJdZr3+erNjZ1Nq+3C6okhiHlZD8BbadyQDx4ccxqczoYNwsuvA3R/6Yuih+mUrA+TKDeZzwSCEywOkX00QCDSQc8wa/hJbU8+AhYEcx/r9gQSKR1PK9SRhbZ/huUBHWacLsBKyhIbTwTeJUrl6UfEMHLt6+jJRjc+kzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BeaP5XGD; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lDdlLLd2"
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2f44353649aso5462134a91.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 27 Jan 2025 01:12:49 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BeaP5XGD"
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-aab925654d9so909936366b.2;
+        Mon, 27 Jan 2025 08:07:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737969168; x=1738573968; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737994040; x=1738598840; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=blJzl+SYqydu/EPL4zE3c0PbNWIXsERXIXUdLUWUeP0=;
-        b=lDdlLLd2EBficCAP24+W74K6pMuxvo770bGR1JxRDy/8r4Hx+3aEc8XKO227Eh/SnF
-         KP5zrKFtkk8hYi46IQu2+0XzlFm+22/e4mOUVvEuN1EmPfe1QRXfUZ58NeUMpILqjwXC
-         ZVcM5by9f9jceelDk4Ktxwr6h0W7ZUvWpvjkcnqXiVcb7macTeQV/91ze1rjS6iIEqkW
-         4WhcnBvuJKPcw34QiAZwZc88q8QTHuirpXl+2WrA3+bMHfA1m8g/OU9NbsucQmtcH7Oj
-         dHTFfQnOvIisxjzzYWjj5Qn4FKVwHTrktkfB/UZh9YkkORNiEuVC1JgtUHh223ntUGf4
-         UQpQ==
+        bh=WT5eWH6rZrIJLgUZzxnI1r9howrcT7ENhSKc9wgIf9U=;
+        b=BeaP5XGDltUN8ywCC3iGfh5oy5oab5XGxEnEOseh/f0Y6H3vzd1LwRIHKGjj5pD2Le
+         xe36+pTRGutyKoZkL6UYFmvOV/g/nWon4wJQ1crrGMrmB1BYYAXEYN6yE8PT7F9WvyIx
+         0f7kXEHeNg8txQKDPCPAiYT3cXQ2ugBiOiQ/YeGSuBSmoEbjNfOVZ85TG6eXCqb7Gubq
+         v/i29s0XHiHVSW7LyhfPSBKM3DSuucFyxCWs3hPLK70ajgXDiA7o9vzsF8fwo17T9RcS
+         HDTOgeSsZUC2dCovEfJ/kk77mHSjh58S123VmQhMva5PGmBRA/HfJxAW113RrHyPUrg0
+         1Jcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737969168; x=1738573968;
+        d=1e100.net; s=20230601; t=1737994040; x=1738598840;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=blJzl+SYqydu/EPL4zE3c0PbNWIXsERXIXUdLUWUeP0=;
-        b=WPDG/gfXYdAu2g/70eKfVCmmiM/BzPthmZcY69mBJ9AMszeCHZ0gD7lShStxLCYdna
-         TcNIioPanAjlt4IAtP/xCkLXJugkCP5nO1MJcYw4OX8JaggWtHkG434Hp81GGjWaSOBt
-         dqMCR+q/d2pD+KcimR+Z/YImVNio3CEKXfxlSys8hQWVcEicfupUfg4y26lvgKFZAcOT
-         cTYE21cHKGSMSSQsfB6d3CLFkEK9guzmhffWwqHser3JlifeoZIRGpmitTBCMjVR7oLm
-         oe0bieDjZ5tJlyAzvCqd7ThlJrMWVQnQiZVb6364LCGWlddCB3rwLNukKqXUljDoPK+M
-         GriQ==
-X-Gm-Message-State: AOJu0YyPPMYkTnaEBi3z3GA8zHZFnvKUTdfHjHT5bwGxsRwnfA2IMtN4
-	A+nn2GmytJ1a3hC28aSC0l8dpctivek0c0SG0lvTcS/YcIAxRXIQ
-X-Gm-Gg: ASbGnctCMuDm5ZzvxtB80tWVKQWAy2MXupPwgLHqdC/6GvJN488QjPVrbX4BphJIleh
-	o5WaZqXoy4krpiU7P61lbSdsX5iB6VmbFPxxJqNUV5pAtv/oVz/ApSiSRPoQJsc9tdOtK/Ql5Vo
-	Dfb0dz5VKqdTLMQRlNNQ6+QEOSJWNbwVSfCGr+f0btD8EDPNiENEFi4bGpEwonJFe9hmRs1bpjj
-	KKop4689b+cXpfDMnX8dsMt6/9HwxrRxREDWC8xnpunAiaTteH/x/w=
-X-Google-Smtp-Source: AGHT+IFxYxRsUZEd8QmcjZvOGcETa9n5gao4rSa/0hbZh3rikVgrN+f8MlLJD8wNeDrxR6YYU4fo+g==
-X-Received: by 2002:a17:90a:c883:b0:2ee:d824:b559 with SMTP id 98e67ed59e1d1-2f782d35addmr58395539a91.28.1737969168454;
-        Mon, 27 Jan 2025 01:12:48 -0800 (PST)
-Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffb1c2b3sm6593403a91.48.2025.01.27.01.12.47
+        bh=WT5eWH6rZrIJLgUZzxnI1r9howrcT7ENhSKc9wgIf9U=;
+        b=F9C/5qY5Gf2G8xSr4036OFdJEdVp4NRfUpxOY0/XmB1ecE9Oc8ixFH9nFIqI+TUWrn
+         OQp/KX0rhjIJyh1NB3iIOXp9HWvGWtE9kkHB/p6wYPAefsMM8ACZnXMMfSeB96zLlbah
+         tn5Fvzp6JzekbuWOgmIxtKbzHkYKAQXfRIu8Nt+lXd13mKLSH3CZXETpkSEYqa+ctpt0
+         DLY2R8BTih3sPBHEwpQmZWpX38h8M7B9jGyas7rrW4uSqH9g7pDU4pwU5n33xs9iI2KS
+         lCdlRhbMumm3dE/EDXsxSPzC8TZVMZL1h+aroyfM15oMSVfoUW7DTS5Hh8g8AclgLyfY
+         VLwg==
+X-Forwarded-Encrypted: i=1; AJvYcCU0fJQh3Xg4ZaR/UuJkNjV/Qb2Y1ONNN+KzRQpWoWWiLwEc2HWN32xj2vUsKysL/9me3zxNM3zCJx3h@vger.kernel.org, AJvYcCVQALGYN9tOYoqLugUs7e/taj6dUmIvho7/rWSg5dyEL3sdSKvyjcrafYBESvvdpZSIRVHccgE56ZaR+zH/@vger.kernel.org, AJvYcCVQPRlMSyj8u2huhe1h2txuAkF1+OuIv3W6kR896pB4JNAtpxpLvERpr7vUaQVhWb1uh9UQ2JBZVbrYlEcxMTE=@vger.kernel.org, AJvYcCWu07v1byz5T7l1gf/RWZpvKWXqszoYvimcHoK2XBUIfR4xIQoW4TafbsNjjRPoPWcSXckf1BHB@vger.kernel.org
+X-Gm-Message-State: AOJu0YxNJxZw3kYb+2RC3PhomeADLRrXC7hgGiMo5pR4+42oqSZ/yOF1
+	+BKJBbwa9V2DOAAwHvtH2cbX3+ulDabWXEo7LyboFEzGXvEqogNd
+X-Gm-Gg: ASbGncu+UBS3ygA2dXPyDdq8UwwhbSXLvGWqcsyBFJbPc9a7O242LfbgWUx8er14PFz
+	SObwcvVj8l5cRFnLPuT3nuyR41i9sOHx8HXGVcvH0Ahl9A++bj7Q76hvdaREXh/UyZ5aDKrUU3F
+	ywIxVbcJ/cjJ2z5jyZhMkgxKIJA3WS5PXNIXHUmY+1sFyRkOaSQkDt+TS9nZ0e1YqL0hwnHVUn+
+	+nvqhkiD+k8+N7tvXONpHQkcIUskNTfE2htlqi6MQDHtkhlfxBu+k9BptLE/0K57Z1j2O+a7R6f
+	WO7Oi3in0HcyRA==
+X-Google-Smtp-Source: AGHT+IFuULEp0GQymnkX/TKA35qIg1LycjVhC3Ts9VWHQc6Q18z1cFu8eW/Z/NP2jJeLUu8LFdZJ8A==
+X-Received: by 2002:a17:907:940b:b0:aac:619:7ed8 with SMTP id a640c23a62f3a-ab38b1e651bmr3499843866b.7.1737994040271;
+        Mon, 27 Jan 2025 08:07:20 -0800 (PST)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab675e8b01asm592643866b.84.2025.01.27.08.07.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2025 01:12:47 -0800 (PST)
-From: Alan Huang <mmpgouride@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH] bcachefs: Fix subtraction underflow
-Date: Mon, 27 Jan 2025 17:12:41 +0800
-Message-ID: <20250127091241.470892-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.47.0
+        Mon, 27 Jan 2025 08:07:19 -0800 (PST)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Dennis Zhou <dennis@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	Christoph Lameter <cl@linux.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Brian Gerst <brgerst@gmail.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v4 0/6] Enable strict percpu address space checks
+Date: Mon, 27 Jan 2025 17:05:04 +0100
+Message-ID: <20250127160709.80604-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-When ancestor is less than IS_ANCESTOR_BITMAP, we would get an incorrect
-result.
+Enable strict percpu address space checks via x86 named address space
+qualifiers. Percpu variables are declared in __seg_gs/__seg_fs named
+AS and kept named AS qualified until they are dereferenced via percpu
+accessor. This approach enables various compiler checks for
+cross-namespace variable assignments.
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
----
- fs/bcachefs/snapshot.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Please note that current version of sparse doesn't know anything about
+__typeof_unqual__() operator. Avoid the usage of __typeof_unqual__()
+when sparse checking is active to prevent sparse errors with unknowing
+keyword. The proposed patch by Dan Carpenter to implement
+__typeof_unqual__() handling in sparse is located at:
 
-diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
-index c54091a28909..ede0b480e7d4 100644
---- a/fs/bcachefs/snapshot.c
-+++ b/fs/bcachefs/snapshot.c
-@@ -146,8 +146,9 @@ bool __bch2_snapshot_is_ancestor(struct bch_fs *c, u32 id, u32 ancestor)
- 		goto out;
- 	}
- 
--	while (id && id < ancestor - IS_ANCESTOR_BITMAP)
--		id = get_ancestor_below(t, id, ancestor);
-+	if (likely(ancestor >= IS_ANCESTOR_BITMAP))
-+		while (id && id < ancestor - IS_ANCESTOR_BITMAP)
-+			id = get_ancestor_below(t, id, ancestor);
- 
- 	ret = id && id < ancestor
- 		? test_ancestor_bitmap(t, id, ancestor)
+https://lore.kernel.org/lkml/5b8d0dee-8fb6-45af-ba6c-7f74aff9a4b8@stanley.mountain/
+
+v2: - Add comment to remove test for __CHECKER__ once sparse learns
+      about __typeof_unqual__.
+    - Add Acked-by: tags.
+v3: - Rename __per_cpu_qual to __percpu_qual.
+    - Add more Acked-by: tags.
+v4: - Do not auto-detect compiler support for __typeof_unqual__()
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+
+Uros Bizjak (6):
+  x86/kgdb: Use IS_ERR_PCPU() macro
+  compiler.h: Introduce TYPEOF_UNQUAL() macro
+  percpu: Use TYPEOF_UNQUAL() in variable declarations
+  percpu: Use TYPEOF_UNQUAL() in *_cpu_ptr() accessors
+  percpu: Repurpose __percpu tag as a named address space qualifier
+  percpu/x86: Enable strict percpu checks via named AS qualifiers
+
+ arch/x86/include/asm/percpu.h  | 33 +++++++++++++++++++---------
+ arch/x86/kernel/kgdb.c         |  2 +-
+ fs/bcachefs/util.h             |  2 +-
+ include/asm-generic/percpu.h   | 39 ++++++++++++++++++++++------------
+ include/linux/compiler-clang.h |  8 +++++++
+ include/linux/compiler-gcc.h   |  8 +++++++
+ include/linux/compiler.h       | 20 +++++++++++++++++
+ include/linux/compiler_types.h |  2 +-
+ include/linux/part_stat.h      |  2 +-
+ include/linux/percpu-defs.h    |  6 +++---
+ include/net/snmp.h             |  5 ++---
+ kernel/locking/percpu-rwsem.c  |  2 +-
+ net/mpls/internal.h            |  4 ++--
+ 13 files changed, 97 insertions(+), 36 deletions(-)
+
 -- 
-2.47.0
+2.42.0
 
