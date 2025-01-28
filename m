@@ -1,56 +1,57 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7FD1DE3C7
-	for <linux-bcachefs@vger.kernel.org>; Tue, 28 Jan 2025 16:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDCA1DE3AC
+	for <linux-bcachefs@vger.kernel.org>; Tue, 28 Jan 2025 16:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738082397; cv=none; b=KY/S6KNB12MYdLswZpLekWRaaySmrhkWUfzq7MU2wvldDH8WhBMuilcBAoowwSkWNd8mCAIsWrvHF/tMsMmycHLAYGOqmOSQoyUCKZTbENxB54KyUiv6VmCa3lvlRBcPwY7mNvUxMzOGc4IuzLKEu6njE+r9/537IxHWY+p3Q1I=
+	t=1738082402; cv=none; b=V1tCA0lPg/8QCIJ4l0uFkMmvUFk0XS3ZJFXX4MvQxd77e2VpkozYmlouJ2niOQLXJU1uN3FioUk9Zdm6TtVA0a//hTKDFLNaU5GpBSpI8puVTSIfd3E/2jhsXgHF2vE2NLUJPAF2mMk43vWPXPq+50qMfj+0PypxXQrBjBMPSAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738082397; c=relaxed/simple;
-	bh=8tQ6XBEMYbx9V0iHjreFT9NgZ5mT2GIi/oiDgPetvHw=;
+	s=arc-20240116; t=1738082402; c=relaxed/simple;
+	bh=YNzhwcYPDLV67byFZgoIbQn00IWONldLlQseNt6ENKU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AJw9mqhA58mxi11QWZvZAXFFzyp2+I0HaYlatksiDl3XoRtmQPLbfwF0GC20uUgzdChtdUtcpbzbHt5mdF4ePyvZz7+HQhzSrtHZZQdSGBLuXRTL0sKQxCIWVBn7dFotW3Jdokmtmt+qpFwIYJq9SgTho/PERJ1SSqKjanN3Nk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BT2xbWR5; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=V7nKhjVY7BQtQh0+Uq7q9+RB+ayx3E6WtVxIihrj7pdvssyv4wqR4pUljRfx5Lg3qtz/l0CH+l7nLbGhKuFrQdRfUN1euSi6u2wY4RZ3THRSJp3/jWGf419Yvy9PVqzXiZrlHqVGfTPBIdt2HlNa+S2Oq7mSU0MPDS8d7Jrsav4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MOasmcHD; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BT2xbWR5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MOasmcHD"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1738082395;
+	s=mimecast20190719; t=1738082399;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sNmPQEOvHYWrUX4j7maHpPPS+nivyRuwSBqiMy5hzYE=;
-	b=BT2xbWR58XAIPEIuKz7BwU9vE8WogeHkytH1aBqKCirXVo0h4aSCkC0LTi0cKogVqrRMjJ
-	Cq3dlWEw+GTUCmfA0TPZFofw/5Eu/Nx4ofZKDs2rW299mVW1r2RRyrB7rE/6DqE9U2bukr
-	fJwpGr6mjfKXexj8ipOSOq8ZlV5jBXE=
+	bh=k/H6mEbuvMQmYWFYf4QRWAbACluB3EmA21tCT2XkWd8=;
+	b=MOasmcHDK5lberepAaFsuPN2SRxt5jGDjdbjbopOsHZdoOL/DNYRuy/nHtiJ3mry4/Syvf
+	i1+uzAp2+MVSNt7XgB0QlXkGAKJy/cmt2e9XUzY8stOeQukPITAxZJdWuaguij4mboejTw
+	jKfV+G8CJaTWZ6d+MM2S+oGFIxecX6Q=
 Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-610-jGpuxaPmPfGE9fbCFRERiA-1; Tue,
- 28 Jan 2025 11:39:52 -0500
-X-MC-Unique: jGpuxaPmPfGE9fbCFRERiA-1
-X-Mimecast-MFC-AGG-ID: jGpuxaPmPfGE9fbCFRERiA
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-237-dYBTKi9lNyaakQnTa0g_mg-1; Tue,
+ 28 Jan 2025 11:39:54 -0500
+X-MC-Unique: dYBTKi9lNyaakQnTa0g_mg-1
+X-Mimecast-MFC-AGG-ID: dYBTKi9lNyaakQnTa0g_mg
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1BCB819560B4;
-	Tue, 28 Jan 2025 16:39:51 +0000 (UTC)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AB4571955DCC;
+	Tue, 28 Jan 2025 16:39:53 +0000 (UTC)
 Received: from pasta.fast.eng.rdu2.dc.redhat.com (unknown [10.45.225.106])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 455DF180035E;
-	Tue, 28 Jan 2025 16:39:49 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 961D518008C0;
+	Tue, 28 Jan 2025 16:39:51 +0000 (UTC)
 From: Andreas Gruenbacher <agruenba@redhat.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>,
 	Shuah Khan <shuah@kernel.org>
-Cc: Andreas Gruenbacher <agruenba@redhat.com>,
+Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>,
 	linux-bcachefs@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH 20/21] bcachefs: convert eytzinger sort to be 1-based (2)
-Date: Tue, 28 Jan 2025 17:38:57 +0100
-Message-ID: <20250128163859.1883260-21-agruenba@redhat.com>
+	linux-kselftest@vger.kernel.org,
+	Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 21/21] bcachefs: eytzinger1_{next,prev} cleanup
+Date: Tue, 28 Jan 2025 17:38:58 +0100
+Message-ID: <20250128163859.1883260-22-agruenba@redhat.com>
 In-Reply-To: <20250128163859.1883260-1-agruenba@redhat.com>
 References: <20250128163859.1883260-1-agruenba@redhat.com>
 Precedence: bulk
@@ -62,95 +63,118 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-In this second step, transform the eytzinger indexes i, j, and k in
-eytzinger1_sort_r() from 0-based to 1-based.  This step looks a bit
-messy, but the resulting code is slightly better.
+From: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+
+The eytzinger code was previously relying on the following wrap-around
+properties and their "eytzinger0" equivalents:
+
+  eytzinger1_prev(0, size) == eytzinger1_last(size)
+  eytzinger1_next(0, size) == eytzinger1_first(size)
+
+However, these properties are no longer relied upon and no longer
+necessary, so remove the corresponding asserts and forbid the use of
+eytzinger1_prev(0, size) and eytzinger1_next(0, size).
+
+This allows to further simplify the code in eytzinger1_next() and
+eytzinger1_prev(): where the left shifting happens, eytzinger1_next() is
+trying to move i to the lowest child on the left, which is equivalent to
+doubling i until the next doubling would cause it to be greater than
+size.  This is implemented by shifting i to the left so that the most
+significant bits align and then shifting i to the right by one if the
+result is greater than size.
+
+Likewise, eytzinger1_prev() is trying to move to the lowest child on the
+right; the same applies here.
+
+The 1-offset in (size - 1) in eytzinger1_next() isn't needed at all, but
+the equivalent offset in eytzinger1_prev() is surprisingly needed to
+preserve the 'eytzinger1_prev(0, size) == eytzinger1_last(size)'
+property.  However, since we no longer support that property, we can get
+rid of these offsets as well.  This saves one addition in each function
+and makes the code less confusing.
 
 Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 ---
- fs/bcachefs/eytzinger.c | 42 ++++++++++++++++++++---------------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+ fs/bcachefs/eytzinger.h | 18 ++++--------------
+ fs/bcachefs/util.c      | 12 ------------
+ 2 files changed, 4 insertions(+), 26 deletions(-)
 
-diff --git a/fs/bcachefs/eytzinger.c b/fs/bcachefs/eytzinger.c
-index 93a5819a6878..00cc5f0826e3 100644
---- a/fs/bcachefs/eytzinger.c
-+++ b/fs/bcachefs/eytzinger.c
-@@ -170,7 +170,7 @@ static void eytzinger1_sort_r(void *base1, size_t n, size_t size,
- 			      swap_r_func_t swap_func,
- 			      const void *priv)
- {
--	int i, j, k;
-+	unsigned i, j, k;
- 
- 	/* called from 'sort' without swap function, let's pick the default */
- 	if (swap_func == SWAP_WRAPPER && !((struct wrapper *)priv)->swap_func)
-@@ -186,46 +186,46 @@ static void eytzinger1_sort_r(void *base1, size_t n, size_t size,
- 	}
- 
- 	/* heapify */
--	for (i = n / 2 - 1; i >= 0; --i) {
-+	for (i = n / 2; i >= 1; --i) {
- 		/* Find the sift-down path all the way to the leaves. */
--		for (j = i; k = j * 2 + 1, k + 1 < n;)
--			j = eytzinger1_do_cmp(base1, n, size, cmp_func, priv, k + 1, k + 2) > 0 ? k : k + 1;
-+		for (j = i; k = j * 2, k < n;)
-+			j = eytzinger1_do_cmp(base1, n, size, cmp_func, priv, k, k + 1) > 0 ? k : k + 1;
- 
- 		/* Special case for the last leaf with no sibling. */
--		if (j * 2 + 2 == n)
--			j = j * 2 + 1;
-+		if (j * 2 == n)
-+			j *= 2;
- 
- 		/* Backtrack to the correct location. */
--		while (j != i && eytzinger1_do_cmp(base1, n, size, cmp_func, priv, i + 1, j + 1) >= 0)
--			j = (j - 1) / 2;
-+		while (j != i && eytzinger1_do_cmp(base1, n, size, cmp_func, priv, i, j) >= 0)
-+			j /= 2;
- 
- 		/* Shift the element into its correct place. */
- 		for (k = j; j != i;) {
--			j = (j - 1) / 2;
--			eytzinger1_do_swap(base1, n, size, swap_func, priv, j + 1, k + 1);
-+			j /= 2;
-+			eytzinger1_do_swap(base1, n, size, swap_func, priv, j, k);
- 		}
- 	}
- 
- 	/* sort */
--	for (i = n - 1; i > 0; --i) {
--		eytzinger1_do_swap(base1, n, size, swap_func, priv, 1, i + 1);
-+	for (i = n; i > 1; --i) {
-+		eytzinger1_do_swap(base1, n, size, swap_func, priv, 1, i);
- 
- 		/* Find the sift-down path all the way to the leaves. */
--		for (j = 0; k = j * 2 + 1, k + 1 < i;)
--			j = eytzinger1_do_cmp(base1, n, size, cmp_func, priv, k + 1, k + 2) > 0 ? k : k + 1;
-+		for (j = 1; k = j * 2, k + 1 < i;)
-+			j = eytzinger1_do_cmp(base1, n, size, cmp_func, priv, k, k + 1) > 0 ? k : k + 1;
- 
- 		/* Special case for the last leaf with no sibling. */
--		if (j * 2 + 2 == i)
--			j = j * 2 + 1;
-+		if (j * 2 + 1 == i)
-+			j *= 2;
- 
- 		/* Backtrack to the correct location. */
--		while (j && eytzinger1_do_cmp(base1, n, size, cmp_func, priv, 1, j + 1) >= 0)
--			j = (j - 1) / 2;
-+		while (j >= 1 && eytzinger1_do_cmp(base1, n, size, cmp_func, priv, 1, j) >= 0)
-+			j /= 2;
- 
- 		/* Shift the element into its correct place. */
--		for (k = j; j;) {
--			j = (j - 1) / 2;
--			eytzinger1_do_swap(base1, n, size, swap_func, priv, j + 1, k + 1);
-+		for (k = j; j > 1;) {
-+			j /= 2;
-+			eytzinger1_do_swap(base1, n, size, swap_func, priv, j, k);
- 		}
- 	}
+diff --git a/fs/bcachefs/eytzinger.h b/fs/bcachefs/eytzinger.h
+index 6a363b12bd21..e600a7d52001 100644
+--- a/fs/bcachefs/eytzinger.h
++++ b/fs/bcachefs/eytzinger.h
+@@ -59,24 +59,14 @@ static inline unsigned eytzinger1_last(unsigned size)
+ 	return rounddown_pow_of_two(size + 1) - 1;
  }
+ 
+-/*
+- * eytzinger1_next() and eytzinger1_prev() have the nice properties that
+- *
+- * eytzinger1_next(0) == eytzinger1_first())
+- * eytzinger1_prev(0) == eytzinger1_last())
+- *
+- * eytzinger1_prev(eytzinger1_first()) == 0
+- * eytzinger1_next(eytzinger1_last()) == 0
+- */
+-
+ static inline unsigned eytzinger1_next(unsigned i, unsigned size)
+ {
+-	EYTZINGER_BUG_ON(i > size);
++	EYTZINGER_BUG_ON(i == 0 || i > size);
+ 
+ 	if (eytzinger1_right_child(i) <= size) {
+ 		i = eytzinger1_right_child(i);
+ 
+-		i <<= __fls(size + 1) - __fls(i);
++		i <<= __fls(size) - __fls(i);
+ 		i >>= i > size;
+ 	} else {
+ 		i >>= ffz(i) + 1;
+@@ -87,12 +77,12 @@ static inline unsigned eytzinger1_next(unsigned i, unsigned size)
+ 
+ static inline unsigned eytzinger1_prev(unsigned i, unsigned size)
+ {
+-	EYTZINGER_BUG_ON(i > size);
++	EYTZINGER_BUG_ON(i == 0 || i > size);
+ 
+ 	if (eytzinger1_left_child(i) <= size) {
+ 		i = eytzinger1_left_child(i) + 1;
+ 
+-		i <<= __fls(size + 1) - __fls(i);
++		i <<= __fls(size) - __fls(i);
+ 		i -= 1;
+ 		i >>= i > size;
+ 	} else {
+diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
+index e75329399c6e..0257a4c3bb4e 100644
+--- a/fs/bcachefs/util.c
++++ b/fs/bcachefs/util.c
+@@ -713,12 +713,6 @@ void eytzinger1_test(void)
+ 		if (!(size % 4096))
+ 			pr_info("tree size %u\n", size);
+ 
+-		BUG_ON(eytzinger1_prev(0, size) != eytzinger1_last(size));
+-		BUG_ON(eytzinger1_next(0, size) != eytzinger1_first(size));
+-
+-		BUG_ON(eytzinger1_prev(eytzinger1_first(size), size)	!= 0);
+-		BUG_ON(eytzinger1_next(eytzinger1_last(size), size)	!= 0);
+-
+ 		inorder = 1;
+ 		eytzinger1_for_each(eytz, size) {
+ 			BUG_ON(__inorder_to_eytzinger1(inorder, size, extra) != eytz);
+@@ -747,12 +741,6 @@ void eytzinger0_test(void)
+ 		if (!(size % 4096))
+ 			pr_info("tree size %u\n", size);
+ 
+-		BUG_ON(eytzinger0_prev(-1, size) != eytzinger0_last(size));
+-		BUG_ON(eytzinger0_next(-1, size) != eytzinger0_first(size));
+-
+-		BUG_ON(eytzinger0_prev(eytzinger0_first(size), size)	!= -1);
+-		BUG_ON(eytzinger0_next(eytzinger0_last(size), size)	!= -1);
+-
+ 		inorder = 0;
+ 		eytzinger0_for_each(eytz, size) {
+ 			BUG_ON(__inorder_to_eytzinger0(inorder, size, extra) != eytz);
 -- 
 2.48.1
 
