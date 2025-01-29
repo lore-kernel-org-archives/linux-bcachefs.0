@@ -1,129 +1,187 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA171E8855;
-	Wed, 29 Jan 2025 18:17:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133571E1C36
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Jan 2025 18:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738174681; cv=none; b=DGWaAETRcapvrAelzq92afPQj+9a6BuLJuEj6zY8IbSlCFhLlENxBUGNH8kYCAzyO81UIq/tnUocPS2s55GHnm/6AYFUT4bIVeSfKbyol7zWkk3UQUcZ2FIYXtzoY1Qgsns5T0Q2DjHvphP7wZ9wN8Ij/H5TlKXhTO4PnytcTGA=
+	t=1738174926; cv=none; b=k2MdNVTej56f5Wr4ash+S+kjPBn5Nhn2VLsVVzp7i/WeJMEGWFOYU+vpkwHcrsP2+W8i8Dd0UPuVl55Ywh9xrP31gJAWxBJNGiLXGGh32NRcf+EihEaDKv2ArL8pnPd3b/fviM+T/yo5mP1sdk+SRKDZUeT17C8o2d88WW5iCm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738174681; c=relaxed/simple;
-	bh=nLgUtcYlqdDJ5L2EieCeuBPNfu+z4xGNGz6lMKw+vhI=;
-	h=Subject:To:Cc:From:Date:References:In-Reply-To:Message-Id; b=HPOhkZp/qxhzFuZdwN0RFeIX7aVTp6VL2HpxGum0S8rP9IVmnP2ZWDA4uSdaTbXyKVnDSoQWOzCgAbIIQ00UvWG67tjDGco6RhIifoEMX66TGA7iwDxdaAv+ORNgpey0ysNSUt1ktmTniBYlmjogMlkEO3IBiULDEluq8M9T9Cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jUhLux2X; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1738174926; c=relaxed/simple;
+	bh=lsaUG6o3qihqxjqzbj4fHVtLhJfu4dvDi15dE28PoFI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jgFA/SwJM4wELk/woythu6hqrUpWrK7gjmLVLfIAPaXy/HYVKEes5ISDUEG7Eg7ttZMx/aT4rl5HDk3DNs2lA2aS6qZ3U1AtTKroc/8TNmawcFqHryrThd7JIjraNi/O1NTE8IpwEtzbMZcBxGRmvAgU4z4wg6wBhgbeV9pH2QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Vwg/LGl6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jUhLux2X"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738174680; x=1769710680;
-  h=subject:to:cc:from:date:references:in-reply-to:
-   message-id;
-  bh=nLgUtcYlqdDJ5L2EieCeuBPNfu+z4xGNGz6lMKw+vhI=;
-  b=jUhLux2XfWhfo90mEciO9N4dggPL8lpinS7Zt0jl2zBZVkdtvLM8QzXH
-   v7F/6fxuQGUJoSSDxdloyF+mc6wOe8Px9pEWeZ++idKBh94cKjiTUFxfI
-   a4smpDovqZdrp05lEP7Y851QsflY1W6WLVpyrBXfLAZSIQj1XxtoJIfCb
-   4BL+3iuMXy6PzyITloDvKJs+ZMvmEmDc5doBSGoRnQylan/4rHY75fTSe
-   NQeQ7mAXjXPn3NpISRkm5LnSBpwLpuEdSWtnVtnvC8vsFZJOunX8RYhbZ
-   TBNiCUXmD5eevrYrvlgksRsY/OIBUXmtGN+/CSISJhwl3z6qOAgnaBfjg
-   w==;
-X-CSE-ConnectionGUID: RmREMfmEQFyzjvg7REueAA==
-X-CSE-MsgGUID: 2l0b5Ba6SQmVsbqznEP+RQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11330"; a="38963290"
-X-IronPort-AV: E=Sophos;i="6.13,244,1732608000"; 
-   d="scan'208";a="38963290"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2025 10:17:59 -0800
-X-CSE-ConnectionGUID: ww5Xh3pdR/irjie2ZpJdIw==
-X-CSE-MsgGUID: PdOV2w8hTjaNsIKdStEJNg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,244,1732608000"; 
-   d="scan'208";a="109660700"
-Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.164.11])
-  by fmviesa010.fm.intel.com with ESMTP; 29 Jan 2025 10:17:58 -0800
-Subject: [PATCH 5/7] bcachefs: Move prefaulting out of hot write path
-To: linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,Ted Ts'o <tytso@mit.edu>,Christian Brauner <brauner@kernel.org>,Darrick J. Wong <djwong@kernel.org>,Matthew Wilcox (Oracle) <willy@infradead.org>,Al Viro <viro@zeniv.linux.org.uk>,linux-fsdevel@vger.kernel.org,Dave Hansen <dave.hansen@linux.intel.com>,kent.overstreet@linux.dev,linux-bcachefs@vger.kernel.org
-From: Dave Hansen <dave.hansen@linux.intel.com>
-Date: Wed, 29 Jan 2025 10:17:58 -0800
-References: <20250129181749.C229F6F3@davehans-spike.ostc.intel.com>
-In-Reply-To: <20250129181749.C229F6F3@davehans-spike.ostc.intel.com>
-Message-Id: <20250129181758.ACB89DF8@davehans-spike.ostc.intel.com>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Vwg/LGl6"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738174923;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Vwvdh5o59AfjX+xyiOuePStNuB1CoftM4eJYE4dSFr0=;
+	b=Vwg/LGl6yVbSCzD/TKQbjuRIEV2vBvPNizpELUxLZMGSNcrix6KhTMtg3GGLMp1N6bnw6m
+	MrpzvmmA2zhC6F9ttwgkzOYPAjtDI8zvfj4N0WeZgykIVSQyDVY0fh2ftGzXW3gMgBH4F2
+	oqp61Yx6FJlTDJbHqR/h6lNSSyYtPIU=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-418-PumtaeSmPlmOwpaJ_3AhJw-1; Wed, 29 Jan 2025 13:22:02 -0500
+X-MC-Unique: PumtaeSmPlmOwpaJ_3AhJw-1
+X-Mimecast-MFC-AGG-ID: PumtaeSmPlmOwpaJ_3AhJw
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2166464e236so211549625ad.1
+        for <linux-bcachefs@vger.kernel.org>; Wed, 29 Jan 2025 10:22:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738174921; x=1738779721;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vwvdh5o59AfjX+xyiOuePStNuB1CoftM4eJYE4dSFr0=;
+        b=l8FdhBESE82OVISt35nCUFBRc+pjSFJjQdpj5smGyLSScJDHuU33KcRumsPndOm0nr
+         W54BS89Auh9h/RCUuOvoxoRxtiodHYUqbE/PIx1lw0tqnfuWjJ96t0g4FQicRD81xA33
+         TIsSMRh0fOJWkES6bxt04xNgURq4hBuY5K08sXyAWS+QLK0W1zmNM6KrOcpfUM4qgi1V
+         UfbBID4zEMuc5X6YpPz/YNPCLtXMrzFyuEB4x/sQaQCMrkXdBDRCqTYfQxpFv/u/WVjw
+         ysenm7ac7nv8ineup824gBi6RX6Wh4MeCk3hYHH94R17cfzuFJzn5EKWRTj43zt+kmX5
+         ytHg==
+X-Forwarded-Encrypted: i=1; AJvYcCVIJa2AY58lKKmsFC98jw/pMzFoV6P/x02dHMvP553xfg/97UXRJ7q+8yZOcFwmSvttndjd1963IXN1U02nLw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzuDxn7MCJ5a8wA8dxWhK4+waWtF0/5FhZv0FtuVaJPmHsyeFoj
+	SdFRc/7M56AXczecDaE6RndNAy4wX32K+OyUi+rb4NGnLVN/thTLFDk0eN08XBVdi9hBHqQenaF
+	IqXUKVQvFnamMf+9c3pnYtAhChnZ0YuozY3m0TtDwh0t10RQabNHDsG8WjDVl7fMN6v3VJAexum
+	9bZIjw3WopC1JkS5IvSFzXQOqtF8Exgeml7Xfmn4M=
+X-Gm-Gg: ASbGncvy+RRV1qzf3I9M6WoM9LEbAw0br+NJcbik0gaM8Lz0GnarzrXGbzcUE9vgdUF
+	RVLXK/RuxVT+PvkLLXaAbUhKivD3a2FUeWLSThMcTY+ROjkINBQe7oo0sLMW4
+X-Received: by 2002:a17:903:191:b0:215:a3fb:b4d6 with SMTP id d9443c01a7336-21dd7c46c2bmr52962925ad.8.1738174921339;
+        Wed, 29 Jan 2025 10:22:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFptm1UwGo2W05+wxJUDKK2S8w38oe09PVLSommj0ey+wlSbU7v2JPCWDRl68vDt0awHZUBWs4SYgdxF0NnzuM=
+X-Received: by 2002:a17:903:191:b0:215:a3fb:b4d6 with SMTP id
+ d9443c01a7336-21dd7c46c2bmr52962655ad.8.1738174921020; Wed, 29 Jan 2025
+ 10:22:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20250128163859.1883260-1-agruenba@redhat.com> <20250128163859.1883260-12-agruenba@redhat.com>
+ <ajfehauvtid4d7pqy7o3uhe6p7buohwe542wqddkwpdq62lr4g@6cgcfpzcyag3>
+In-Reply-To: <ajfehauvtid4d7pqy7o3uhe6p7buohwe542wqddkwpdq62lr4g@6cgcfpzcyag3>
+From: Andreas Gruenbacher <agruenba@redhat.com>
+Date: Wed, 29 Jan 2025 19:21:49 +0100
+X-Gm-Features: AWEUYZkSBdaXjPPHE2wqhh6qQSkUStuBuJVEdnsHM8It449daZy7EWOkh9lv5f0
+Message-ID: <CAHc6FU6Yzk1Si37nRji-5uDZF9uaYo=G5tbtuS_5FiW6BDVTAg@mail.gmail.com>
+Subject: Re: [PATCH 11/21] bcachefs: improve the eytzinger0_find_le tests
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Shuah Khan <shuah@kernel.org>, linux-bcachefs@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jan 29, 2025 at 7:04=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+> On Tue, Jan 28, 2025 at 05:38:48PM +0100, Andreas Gruenbacher wrote:
+> > Rename eytzinger0_find_test_val() to eytzinger0_find_test_le() and add =
+a
+> > new eytzinger0_find_test_val() wrapper that calls it.
+> >
+> > We have already established that the array is sorted in eytzinger order=
+,
+> > so we can use the eytzinger iterator functions and check the boundary
+> > conditions to verify the result of eytzinger0_find_le().
+> >
+> > Only scan the entire array if we get an incorrect result.  When we need
+> > to scan, use eytzinger0_for_each_prev() so that we'll stop at the
+> > highest matching element in the array in case there are duplicates;
+> > going through the array linearly wouldn't give us that.
+>
+> For test code, wouldn't it be simpler to iterate over the test array,
+> testing with every element as a search value? There's enough corner
+> cases in lookup that I think it'd be worthwhile (and probably add some
+> extra test values, e.g. first/last elements +1/-1).
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+If you expect to get the same index back, that won't work when there
+are duplicates.
 
-Prefaulting the write source buffer incurs an extra userspace access
-in the common fast path. Make bch2_buffered_write() consistent with
-generic_perform_write(): only touch userspace an extra time when
-copy_page_from_iter_atomic() has failed to make progress.
+Andreas
 
-This also zaps a comment. It referred to a possible deadlock and to
-userspace address checks. Neither of those things are a concern when
-using copy_folio_from_iter_atomic() for atomic usercopies. It
-prevents deadlocks by disabling page faults and it leverages user
-copy functions that have their own access_ok() checks.
+> >
+> > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> > ---
+> >  fs/bcachefs/util.c | 41 ++++++++++++++++++++++++++++++-----------
+> >  1 file changed, 30 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
+> > index 3fe9a3b8c696..c772629783f3 100644
+> > --- a/fs/bcachefs/util.c
+> > +++ b/fs/bcachefs/util.c
+> > @@ -782,29 +782,48 @@ static inline int cmp_u16(const void *_l, const v=
+oid *_r)
+> >       return (*l > *r) - (*r > *l);
+> >  }
+> >
+> > -static void eytzinger0_find_test_val(u16 *test_array, unsigned nr, u16=
+ search)
+> > +static void eytzinger0_find_test_le(u16 *test_array, unsigned nr, u16 =
+search)
+> >  {
+> > -     int i, c1 =3D -1, c2 =3D -1;
+> > -     ssize_t r;
+> > +     int r, s;
+> > +     bool bad;
+> >
+> >       r =3D eytzinger0_find_le(test_array, nr,
+> >                              sizeof(test_array[0]),
+> >                              cmp_u16, &search);
+> > -     if (r >=3D 0)
+> > -             c1 =3D test_array[r];
+> > +     if (r >=3D 0) {
+> > +             if (test_array[r] > search) {
+> > +                     bad =3D true;
+> > +             } else {
+> > +                     s =3D eytzinger0_next(r, nr);
+> > +                     bad =3D s >=3D 0 && test_array[s] <=3D search;
+> > +             }
+> > +     } else {
+> > +             s =3D eytzinger0_last(nr);
+> > +             bad =3D s >=3D 0 && test_array[s] <=3D search;
+> > +     }
+> >
+> > -     for (i =3D 0; i < nr; i++)
+> > -             if (test_array[i] <=3D search && test_array[i] > c2)
+> > -                     c2 =3D test_array[i];
+> > +     if (bad) {
+> > +             s =3D -1;
+> > +             eytzinger0_for_each_prev(j, nr) {
+> > +                     if (test_array[j] <=3D search) {
+> > +                             s =3D j;
+> > +                             break;
+> > +                     }
+> > +             }
+> >
+> > -     if (c1 !=3D c2) {
+> >               eytzinger0_for_each(j, nr)
+> >                       pr_info("[%3u] =3D %12u\n", j, test_array[j]);
+> > -             pr_info("find_le(%2u) -> [%2zi] =3D %2i should be %2i\n",
+> > -                     i, r, c1, c2);
+> > +             pr_info("find_le(%12u) =3D %3i should be %3i\n",
+> > +                     search, r, s);
+> > +             BUG();
+> >       }
+> >  }
+> >
+> > +static void eytzinger0_find_test_val(u16 *test_array, unsigned nr, u16=
+ search)
+> > +{
+> > +     eytzinger0_find_test_le(test_array, nr, search);
+> > +}
+> > +
+> >  void eytzinger0_find_test(void)
+> >  {
+> >       unsigned i, nr, allocated =3D 1 << 12;
+> > --
+> > 2.48.1
+> >
+>
 
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org
-
----
-
- b/fs/bcachefs/fs-io-buffered.c |   30 ++++++++++--------------------
- 1 file changed, 10 insertions(+), 20 deletions(-)
-
-diff -puN fs/bcachefs/fs-io-buffered.c~bcachefs-postfault fs/bcachefs/fs-io-buffered.c
---- a/fs/bcachefs/fs-io-buffered.c~bcachefs-postfault	2025-01-29 09:03:35.727656612 -0800
-+++ b/fs/bcachefs/fs-io-buffered.c	2025-01-29 09:03:35.731656945 -0800
-@@ -970,26 +970,6 @@ static ssize_t bch2_buffered_write(struc
- 		unsigned offset = pos & (PAGE_SIZE - 1);
- 		unsigned bytes = iov_iter_count(iter);
- again:
--		/*
--		 * Bring in the user page that we will copy from _first_.
--		 * Otherwise there's a nasty deadlock on copying from the
--		 * same page as we're writing to, without it being marked
--		 * up-to-date.
--		 *
--		 * Not only is this an optimisation, but it is also required
--		 * to check that the address is actually valid, when atomic
--		 * usercopies are used, below.
--		 */
--		if (unlikely(fault_in_iov_iter_readable(iter, bytes))) {
--			bytes = min_t(unsigned long, iov_iter_count(iter),
--				      PAGE_SIZE - offset);
--
--			if (unlikely(fault_in_iov_iter_readable(iter, bytes))) {
--				ret = -EFAULT;
--				break;
--			}
--		}
--
- 		if (unlikely(fatal_signal_pending(current))) {
- 			ret = -EINTR;
- 			break;
-@@ -1012,6 +992,16 @@ again:
- 			 */
- 			bytes = min_t(unsigned long, PAGE_SIZE - offset,
- 				      iov_iter_single_seg_count(iter));
-+
-+			/*
-+			 * Faulting in 'iter' may be required for forward
-+			 * progress. Do it here, out outside the fast path
-+			 * and when not holding any folio locks.
-+			 */
-+			if (fault_in_iov_iter_readable(iter, bytes) == bytes) {
-+				ret = -EFAULT;
-+				break;
-+			}
- 			goto again;
- 		}
- 		pos += ret;
-_
