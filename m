@@ -1,113 +1,85 @@
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79E414C83
-	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Jan 2025 20:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD0D199EBB
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Jan 2025 20:28:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738181871; cv=none; b=S0UQ8A+g1PIgFoawp//6cruNFHpy1JLi34brxXAgLMDe8il+NC4c1JgOW5kOdOKGZNN6eYkUrv1yLhywHftmbuLkQsuIp1OFRCC21Uw0V12Xvfu5ULv0mg1QV2P5PDvAcVXHYn5hM9kz7tILSSevmt+qnWKsfDH3qvn8rMgEh6c=
+	t=1738182523; cv=none; b=YwXKZAZjOturjg4mWAJbjWCZ3g0XACYhKLg5VDX2QoBwV6QX2GSSnsEo9S9UaJ+inqVfrso63A+f/ps6r9UyvG246+EeUCOr/dj+uJaZVQ/XyQNg9mb8EeUZxmabljLnl5KBfpx7eTlrBEb+RIBvU6XD9j1zGczrZ1pWuM9bWHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738181871; c=relaxed/simple;
-	bh=sAwAWdqGNxs88O3PkdoXrdr3ThCAcll0McarPw6UcoA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=tnO9oHeY/C4tpxmY+Vgm8n0MucqMpeWge950Zhn2W+YRGc5OCD53u+WXtKH+BR3K6baxgUg+83j4mAxiiR0ElSoi6ch7cFU5NwpQ+vPok9bQzYBfLiFKVXQTHZLS3hfgGmYL4UTrFPe8fUh/GpoXT7q1O41EUafUdbUfqpQVKDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mXz+s1aA; arc=none smtp.client-ip=91.218.175.184
+	s=arc-20240116; t=1738182523; c=relaxed/simple;
+	bh=PFH0MDhc/6+z95tGzAmT5X0DEUy3PgdQThFjjKfQABM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qRAEe40evuznlz2ezPYlcdT842QP0Mkhds0VAnxLvhz3Gq+1GsMXPF+AX7HijrAc0TJIG35wwjLGMuOPD8y6vct7LbuAQ0CJSRh8aMQ5wL9TME+/5uXunmzOwCgDcw4OZfJcFmsIT2irZQY6/xwTFeedpeWdcsS2Fy0FNndz8Ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bPtPn6cG; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mXz+s1aA"
-Date: Wed, 29 Jan 2025 15:17:38 -0500
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bPtPn6cG"
+Date: Wed, 29 Jan 2025 15:28:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738181862;
+	t=1738182514;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=2/GG4KjjxZAkPe+5N7kxlF2QFWmnJiuPbGo4VtAF/No=;
-	b=mXz+s1aAxE41fShKi6Hsb+kuMfQoJapC1m9g5fycAuvJqqB2EXY5X3wf9oz10iGL9LIQso
-	W1ADzdCkzgu7xoWKa7QQnB/gb6WU1g/Cw0BQvRZ5yDDFjs++l3sIqrlYTULlBQGVHE9ion
-	QgSG8XdLxCTAmCYFOFhKSQ8cOuZxaHc=
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nzjgquglzwXUzEPcqk4sNGaEUyO0xQ2neoaOKkJCij8=;
+	b=bPtPn6cGI79Z8Z7oOrhzRNpPm+UKNRKDmtAS+k9WtEatE6Gp//qp30CN9J9rtF4VHHN49U
+	zfy898VdQWdwTqpNyhQWlUyHpGe5MMnHjhYJfhJ2POcIpsTW1sttvFt/W0ODJ/DmKIgDJG
+	jyCgXesCK9HxB+NtUS1Vq4E4+F46/7g=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for 6.14-rc1
-Message-ID: <uez7twvxdrdam2uoatpvtaeph2vkfru57r5oh33j2zjov2vqwq@2gtoztjt2p3d>
+To: Andreas Gruenbacher <agruenba@redhat.com>
+Cc: Shuah Khan <shuah@kernel.org>, linux-bcachefs@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 11/21] bcachefs: improve the eytzinger0_find_le tests
+Message-ID: <rddasfmbw3ul2iezec7rgit2vxnv4p53uvoydck4b5jxuo44kq@7qlk5cru6w7r>
+References: <20250128163859.1883260-1-agruenba@redhat.com>
+ <20250128163859.1883260-12-agruenba@redhat.com>
+ <ajfehauvtid4d7pqy7o3uhe6p7buohwe542wqddkwpdq62lr4g@6cgcfpzcyag3>
+ <CAHc6FU6Yzk1Si37nRji-5uDZF9uaYo=G5tbtuS_5FiW6BDVTAg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHc6FU6Yzk1Si37nRji-5uDZF9uaYo=G5tbtuS_5FiW6BDVTAg@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-Hi Linus, just some small stuff.
+On Wed, Jan 29, 2025 at 07:21:49PM +0100, Andreas Gruenbacher wrote:
+> On Wed, Jan 29, 2025 at 7:04 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> > On Tue, Jan 28, 2025 at 05:38:48PM +0100, Andreas Gruenbacher wrote:
+> > > Rename eytzinger0_find_test_val() to eytzinger0_find_test_le() and add a
+> > > new eytzinger0_find_test_val() wrapper that calls it.
+> > >
+> > > We have already established that the array is sorted in eytzinger order,
+> > > so we can use the eytzinger iterator functions and check the boundary
+> > > conditions to verify the result of eytzinger0_find_le().
+> > >
+> > > Only scan the entire array if we get an incorrect result.  When we need
+> > > to scan, use eytzinger0_for_each_prev() so that we'll stop at the
+> > > highest matching element in the array in case there are duplicates;
+> > > going through the array linearly wouldn't give us that.
+> >
+> > For test code, wouldn't it be simpler to iterate over the test array,
+> > testing with every element as a search value? There's enough corner
+> > cases in lookup that I think it'd be worthwhile (and probably add some
+> > extra test values, e.g. first/last elements +1/-1).
+> 
+> If you expect to get the same index back, that won't work when there
+> are duplicates.
 
-users seeing specific (reproducable) performance issues should ping me,
-I have some new tools for tracking those down
+No, but we wouldn't expect to get the same index back if we're testing
+every combination of elements (+0, -1, +1) x (le, ge, gt) - and it
+sounds like perhaps we should, if you've been finding bugs. Thoughts?
 
-The following changes since commit ff0b7ed607e779f0e109f7f24388e0ce07af2ebe:
+I think the test code would have to do short linear searches from the
+test element, and then verify the search functions against that.
 
-  bcachefs: Fix check_inode_hash_info_matches_root() (2025-01-15 15:28:23 -0500)
-
-are available in the Git repository at:
-
-  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-01-29
-
-for you to fetch changes up to 5d9ccda9ba7e80893cd67905882315a4a7ab6ec1:
-
-  bcachefs: Improve trace_move_extent_finish (2025-01-26 23:02:28 -0500)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.14-rc1
-
-- second half of a fix for a bug that'd been causing oopses on
-  filesystems using snapshots with memory pressure (key cache fills for
-  snaphots btrees are tricky)
-- build fix for strange compiler configurations that double stack frame
-  size
-- "journal stuck timeout" now takes into account device latency: this
-  fixes some spurious warnings, and the main remaining source of SRCU
-  lock hold time warnings (I'm no longer seeing this in my CI, so any
-  users still seeing this should definitely ping me)
-- fix for slow/hanging unmounts (" Improve journal pin flushing")
-- some more tracepoint fixes/improvements, to chase down the "rebalance
-  isn't making progress" issues
-
-----------------------------------------------------------------
-Kent Overstreet (11):
-      bcachefs: Fix btree_trans_peek_key_cache()
-      bcachefs: Reduce stack frame size of __bch2_str_hash_check_key()
-      bcachefs: "Journal stuck" timeout now takes into account device latency
-      bcachefs: bset_blacklisted_journal_seq is now AUTOFIX
-      bcachefs: Improve decompression error messages
-      bcachefs: rebalance, copygc enabled are runtime opts
-      bcachefs: fix bch2_btree_node_flags
-      bcachefs: Improve journal pin flushing
-      bcachefs: Journal writes are now IOPRIO_CLASS_RT
-      bcachefs: Fix trace_copygc
-      bcachefs: Improve trace_move_extent_finish
-
- fs/bcachefs/btree_cache.c        |   5 +-
- fs/bcachefs/btree_iter.c         |   3 +-
- fs/bcachefs/btree_key_cache.c    |   4 +-
- fs/bcachefs/btree_trans_commit.c |   2 +-
- fs/bcachefs/compress.c           |  31 ++++++---
- fs/bcachefs/compress.h           |   4 +-
- fs/bcachefs/data_update.c        |  50 +++++++++-----
- fs/bcachefs/debug.c              |   1 +
- fs/bcachefs/io_write.c           |   4 +-
- fs/bcachefs/io_write.h           |   2 +
- fs/bcachefs/journal.c            |  92 +++++++++----------------
- fs/bcachefs/journal.h            |   9 ++-
- fs/bcachefs/journal_io.c         |   2 +
- fs/bcachefs/journal_reclaim.c    | 142 +++++++++++++++++++++++++++++++++------
- fs/bcachefs/journal_reclaim.h    |   3 +
- fs/bcachefs/journal_types.h      |  13 ++--
- fs/bcachefs/movinggc.c           |  11 +--
- fs/bcachefs/opts.h               |   4 +-
- fs/bcachefs/sb-errors_format.h   |   2 +-
- fs/bcachefs/str_hash.c           |  24 +++----
- fs/bcachefs/trace.h              |  26 ++++---
- 21 files changed, 275 insertions(+), 159 deletions(-)
+Have you spotted any issues with searching over arrays with duplicate
+elements? 
