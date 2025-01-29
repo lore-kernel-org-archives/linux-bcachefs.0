@@ -1,36 +1,36 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBDE187325
-	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Jan 2025 20:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A49187325
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Jan 2025 20:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738183786; cv=none; b=JM/IwEAgKaXb6S2xYLwWL0s3yWRUu9Pah1WO4UCkjoPHGNljVZ2zqXQLBKvCSYXl0mQhXeJ+6q6TUGnAl37DXE86Uk1gn8F3cPc7jkHtnPJNxzknQwjfnxLXvnXcsmxCKQc94FMFjRSQirepMfaD0UvqcrGHS0SkBFJ3IcU1gt8=
+	t=1738183808; cv=none; b=cfGIsyV+yYSzIIdvzpN44Ww9I5RuxNTICGepq5YS9H15bMgyC4j5dA9zcrbkHsOZL6UkuOyRVGwSkvGcHiv9gTcLb3dRNTtr/gnet83+BGg8RzvzF7LhL026GI1ljhH0YbU4o/JLIdb20zAAoaJxwAf6UMiJLygEIFItW+IA36k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738183786; c=relaxed/simple;
-	bh=AIZSoeUu9BUwl1tVdlvUvUMyhYKXmR1/5TLzsCORNzU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oeQgTLJHvTTigWcqT7biRaX5bA0vjY9WrunUhXAUAPvdMtGPGtrC5TsAqFCdKf2LbdL1WDfUtISDkUqmkkEvHQJdcKbq6OI5xdculgu0tYpqt0ZQP+gRyfHKjb+MyW8Jla0myI8ZoDBPMgpqb865HZ+ATYvBF1SuTSF0r7U3r3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y0XTUyxP; arc=none smtp.client-ip=95.215.58.173
+	s=arc-20240116; t=1738183808; c=relaxed/simple;
+	bh=kqC4izlj26FpbCLnKimxz5eVH9oMnDnnVzlCdQUqFBY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=vEFC3xocLB/nUamnITqtpIaUy5hjvpGkXyd7LuJu8q+SN0qacILShTx99Q8hnlb5nlIgJtz4hMxWjoTmugnT6wN3c5zvDwokh3csR3QWSdcFZWIN1pf6GKc4lQM9dS0oRNGMjlKbJhkq/5u/tpwVIQYz+p42Q3t4vFtTi0N20Oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RJulemrB; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y0XTUyxP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RJulemrB"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738183781;
+	t=1738183798;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=b9fXDl5H9wNFRwD7u8jZ11Ag4A7dYm+0JF9FIF7iK9U=;
-	b=Y0XTUyxPKYPp1BGgsbrTujmbt480ondWpRGerPwaQiXsjqE1qrjUhWyALdcPD1fRWJF0sg
-	e6BpfRZtclgW9s8UayT5/ZcQyBaB/OEfKVusLbn5z9cDhbGfmef4VkTSzvP04z2eKozt21
-	Y3VwNrEnvEGpmE5eESE5PfphC054SVA=
+	bh=LgqFwji85YwnYCP4LsWDflMB704w9RDgxjoKumv8aOY=;
+	b=RJulemrBXWFGzGO74h2jdJmTo1doeZcCgb+DNENjE4a/3wmC2Mf5LjvDUzTSfQOCyfZqx5
+	KvWYFDwNJgNb5+KF2VXCQfb0yfgSLMZgzGJoR/+wJvceRU8pICero3yeQIcgMWmSq//iKS
+	WnaNxqyDNyCXklz5vOceiCz2kwzodfQ=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] bcachefs: bch2_bkey_sectors_need_rebalance() now only depends on bch_extent_rebalance
-Date: Wed, 29 Jan 2025 15:49:33 -0500
-Message-ID: <20250129204933.222442-1-kent.overstreet@linux.dev>
+Subject: [PATCH] bcachefs: BCH_IOCTL_QUERY_COUNTERS
+Date: Wed, 29 Jan 2025 15:49:50 -0500
+Message-ID: <20250129204950.222472-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,139 +40,119 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Previously, bch2_bkey_sectors_need_rebalance() called
-bch2_target_accepts_data(), checking whether the target is writable.
-
-However, this means that adding or removing devices from a target would
-change the value of bch2_bkey_sectors_need_rebalance() for an existing
-extent; this needs to be invariant so that the extent trigger can
-correctly maintain rebalance_work accounting.
-
-Instead, check target_accepts_data() in io_opts_to_rebalance_opts(),
-before creating the bch_extent_rebalance entry.
-
-This fixes (one?) cause of rebalance_work accounting being off.
+Add an ioctl for querying counters, the same ones provided in
+/sys/fs/bcachefs/<uuid>/counters/, but more suitable for a 'bcachefs
+top' command.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/inode.h     |  4 +++-
- fs/bcachefs/opts.h      | 14 --------------
- fs/bcachefs/rebalance.c |  8 +++-----
- fs/bcachefs/rebalance.h | 20 ++++++++++++++++++++
- 4 files changed, 26 insertions(+), 20 deletions(-)
+ fs/bcachefs/bcachefs_ioctl.h | 10 ++++++++++
+ fs/bcachefs/chardev.c        | 32 ++++++++++++++++++++++++++++++++
+ fs/bcachefs/sb-counters.c    |  2 +-
+ fs/bcachefs/sb-counters.h    |  1 +
+ 4 files changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/inode.h b/fs/bcachefs/inode.h
-index d2e134528f0e..428b9be6af34 100644
---- a/fs/bcachefs/inode.h
-+++ b/fs/bcachefs/inode.h
-@@ -285,12 +285,14 @@ void bch2_inode_opts_get(struct bch_io_opts *, struct bch_fs *,
- 			 struct bch_inode_unpacked *);
- int bch2_inum_opts_get(struct btree_trans*, subvol_inum, struct bch_io_opts *);
+diff --git a/fs/bcachefs/bcachefs_ioctl.h b/fs/bcachefs/bcachefs_ioctl.h
+index 3c23bdf788ce..f1b746fac007 100644
+--- a/fs/bcachefs/bcachefs_ioctl.h
++++ b/fs/bcachefs/bcachefs_ioctl.h
+@@ -87,6 +87,7 @@ struct bch_ioctl_incremental {
+ #define BCH_IOCTL_FSCK_OFFLINE	_IOW(0xbc,	19,  struct bch_ioctl_fsck_offline)
+ #define BCH_IOCTL_FSCK_ONLINE	_IOW(0xbc,	20,  struct bch_ioctl_fsck_online)
+ #define BCH_IOCTL_QUERY_ACCOUNTING _IOW(0xbc,	21,  struct bch_ioctl_query_accounting)
++#define BCH_IOCTL_QUERY_COUNTERS _IOW(0xbc,	21,  struct bch_ioctl_query_counters)
  
-+#include "rebalance.h"
+ /* ioctl below act on a particular file, not the filesystem as a whole: */
+ 
+@@ -443,4 +444,13 @@ struct bch_ioctl_query_accounting {
+ 	struct bkey_i_accounting accounting[];
+ };
+ 
++#define BCH_IOCTL_QUERY_COUNTERS_MOUNT	(1 << 0)
 +
- static inline struct bch_extent_rebalance
- bch2_inode_rebalance_opts_get(struct bch_fs *c, struct bch_inode_unpacked *inode)
- {
- 	struct bch_io_opts io_opts;
- 	bch2_inode_opts_get(&io_opts, c, inode);
--	return io_opts_to_rebalance_opts(&io_opts);
-+	return io_opts_to_rebalance_opts(c, &io_opts);
- }
- 
- int bch2_inode_rm_snapshot(struct btree_trans *, u64, u32);
-diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
-index a182b5d454ba..9d397fc2a1f0 100644
---- a/fs/bcachefs/opts.h
-+++ b/fs/bcachefs/opts.h
-@@ -659,18 +659,4 @@ static inline void bch2_io_opts_fixups(struct bch_io_opts *opts)
- struct bch_io_opts bch2_opts_to_inode_opts(struct bch_opts);
- bool bch2_opt_is_inode_opt(enum bch_opt_id);
- 
--/* rebalance opts: */
--
--static inline struct bch_extent_rebalance io_opts_to_rebalance_opts(struct bch_io_opts *opts)
--{
--	return (struct bch_extent_rebalance) {
--		.type = BIT(BCH_EXTENT_ENTRY_rebalance),
--#define x(_name)							\
--		._name = opts->_name,					\
--		._name##_from_inode = opts->_name##_from_inode,
--		BCH_REBALANCE_OPTS()
--#undef x
--	};
--};
--
- #endif /* _BCACHEFS_OPTS_H */
-diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
-index 90dbf04c07a1..58f6d97e506c 100644
---- a/fs/bcachefs/rebalance.c
-+++ b/fs/bcachefs/rebalance.c
-@@ -121,12 +121,10 @@ u64 bch2_bkey_sectors_need_rebalance(struct bch_fs *c, struct bkey_s_c k)
- 		}
- 	}
- incompressible:
--	if (opts->background_target &&
--	    bch2_target_accepts_data(c, BCH_DATA_user, opts->background_target)) {
-+	if (opts->background_target)
- 		bkey_for_each_ptr_decode(k.k, ptrs, p, entry)
- 			if (!p.ptr.cached && !bch2_dev_in_target(c, p.ptr.dev, opts->background_target))
- 				sectors += p.crc.compressed_size;
--	}
- 
- 	return sectors;
- }
-@@ -140,7 +138,7 @@ static bool bch2_bkey_rebalance_needs_update(struct bch_fs *c, struct bch_io_opt
- 	const struct bch_extent_rebalance *old = bch2_bkey_rebalance_opts(k);
- 
- 	if (k.k->type == KEY_TYPE_reflink_v || bch2_bkey_ptrs_need_rebalance(c, opts, k)) {
--		struct bch_extent_rebalance new = io_opts_to_rebalance_opts(opts);
-+		struct bch_extent_rebalance new = io_opts_to_rebalance_opts(c, opts);
- 		return old == NULL || memcmp(old, &new, sizeof(new));
- 	} else {
- 		return old != NULL;
-@@ -163,7 +161,7 @@ int bch2_bkey_set_needs_rebalance(struct bch_fs *c, struct bch_io_opts *opts,
- 			k.k->u64s += sizeof(*old) / sizeof(u64);
- 		}
- 
--		*old = io_opts_to_rebalance_opts(opts);
-+		*old = io_opts_to_rebalance_opts(c, opts);
- 	} else {
- 		if (old)
- 			extent_entry_drop(k, (union bch_extent_entry *) old);
-diff --git a/fs/bcachefs/rebalance.h b/fs/bcachefs/rebalance.h
-index 0a0821ab895d..62a3859d3823 100644
---- a/fs/bcachefs/rebalance.h
-+++ b/fs/bcachefs/rebalance.h
-@@ -4,8 +4,28 @@
- 
- #include "compress.h"
- #include "disk_groups.h"
-+#include "opts.h"
- #include "rebalance_types.h"
- 
-+static inline struct bch_extent_rebalance io_opts_to_rebalance_opts(struct bch_fs *c,
-+								    struct bch_io_opts *opts)
-+{
-+	struct bch_extent_rebalance r = {
-+		.type = BIT(BCH_EXTENT_ENTRY_rebalance),
-+#define x(_name)							\
-+		._name = opts->_name,					\
-+		._name##_from_inode = opts->_name##_from_inode,
-+		BCH_REBALANCE_OPTS()
-+#undef x
-+	};
-+
-+	if (r.background_target &&
-+	    !bch2_target_accepts_data(c, BCH_DATA_user, r.background_target))
-+		r.background_target = 0;
-+
-+	return r;
++struct bch_ioctl_query_counters {
++	__u16			nr;
++	__u16			flags;
++	__u32			pad;
++	__u64			d[];
 +};
 +
- u64 bch2_bkey_sectors_need_rebalance(struct bch_fs *, struct bkey_s_c);
- int bch2_bkey_set_needs_rebalance(struct bch_fs *, struct bch_io_opts *, struct bkey_i *);
- int bch2_get_update_rebalance_opts(struct btree_trans *,
+ #endif /* _BCACHEFS_IOCTL_H */
+diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
+index 46e9e32105a9..c2d9efe8db53 100644
+--- a/fs/bcachefs/chardev.c
++++ b/fs/bcachefs/chardev.c
+@@ -448,6 +448,36 @@ static long bch2_ioctl_query_accounting(struct bch_fs *c,
+ 	return ret;
+ }
+ 
++static long bch2_ioctl_query_counters(struct bch_fs *c,
++			struct bch_ioctl_query_counters __user *user_arg)
++{
++	struct bch_ioctl_query_counters arg;
++	int ret = copy_from_user_errcode(&arg, user_arg, sizeof(arg));
++	if (ret)
++		return ret;
++
++	if ((arg.flags & !BCH_IOCTL_QUERY_COUNTERS_MOUNT) ||
++	    arg.pad)
++		return -EINVAL;
++
++	arg.nr = min(arg.nr, BCH_COUNTER_NR);
++	ret = put_user(arg.nr, &user_arg->nr);
++	if (ret)
++		return ret;
++
++	for (unsigned i = 0; i < arg.nr; i++) {
++		u64 v = !(arg.flags & BCH_IOCTL_QUERY_COUNTERS_MOUNT)
++			? percpu_u64_get(&c->counters[i])
++			: c->counters_on_mount[i];
++
++		ret = put_user(v, &user_arg->d[i]);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
+ /* obsolete, didn't allow for new data types: */
+ static long bch2_ioctl_dev_usage(struct bch_fs *c,
+ 				 struct bch_ioctl_dev_usage __user *user_arg)
+@@ -710,6 +740,8 @@ long bch2_fs_ioctl(struct bch_fs *c, unsigned cmd, void __user *arg)
+ 		BCH_IOCTL(fsck_online, struct bch_ioctl_fsck_online);
+ 	case BCH_IOCTL_QUERY_ACCOUNTING:
+ 		return bch2_ioctl_query_accounting(c, arg);
++	case BCH_IOCTL_QUERY_COUNTERS:
++		return bch2_ioctl_query_counters(c, arg);
+ 	default:
+ 		return -ENOTTY;
+ 	}
+diff --git a/fs/bcachefs/sb-counters.c b/fs/bcachefs/sb-counters.c
+index 6992e7469112..67f4e7a5aa5a 100644
+--- a/fs/bcachefs/sb-counters.c
++++ b/fs/bcachefs/sb-counters.c
+@@ -5,7 +5,7 @@
+ 
+ /* BCH_SB_FIELD_counters */
+ 
+-static const char * const bch2_counter_names[] = {
++const char * const bch2_counter_names[] = {
+ #define x(t, n, ...) (#t),
+ 	BCH_PERSISTENT_COUNTERS()
+ #undef x
+diff --git a/fs/bcachefs/sb-counters.h b/fs/bcachefs/sb-counters.h
+index 81f8aec9fcb1..eef7211edf42 100644
+--- a/fs/bcachefs/sb-counters.h
++++ b/fs/bcachefs/sb-counters.h
+@@ -11,6 +11,7 @@ int bch2_sb_counters_from_cpu(struct bch_fs *);
+ void bch2_fs_counters_exit(struct bch_fs *);
+ int bch2_fs_counters_init(struct bch_fs *);
+ 
++extern const char * const bch2_counter_names[];
+ extern const struct bch_sb_field_ops bch_sb_field_ops_counters;
+ 
+ #endif // _BCACHEFS_SB_COUNTERS_H
 -- 
 2.45.2
 
