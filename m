@@ -1,180 +1,135 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDCA1DE3AC
-	for <linux-bcachefs@vger.kernel.org>; Tue, 28 Jan 2025 16:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610D419CC1C
+	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Jan 2025 09:17:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738082402; cv=none; b=V1tCA0lPg/8QCIJ4l0uFkMmvUFk0XS3ZJFXX4MvQxd77e2VpkozYmlouJ2niOQLXJU1uN3FioUk9Zdm6TtVA0a//hTKDFLNaU5GpBSpI8puVTSIfd3E/2jhsXgHF2vE2NLUJPAF2mMk43vWPXPq+50qMfj+0PypxXQrBjBMPSAE=
+	t=1738142247; cv=none; b=bKI394xrBDhM0LqY9vAm5bT4HGI81PRYw4rnY5rMWH58xSDBPUfBhaHmVglXVSR9+DWvu6QSRoAmrwHKgY5RNfC3Xu1Kfp1kAIch2CWHAFfp6VPMZppJgGWWbQWM707h06pJx2p4lrzk+KkeYqsMDiyypn9xj1X36qd72nsV6sY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738082402; c=relaxed/simple;
-	bh=YNzhwcYPDLV67byFZgoIbQn00IWONldLlQseNt6ENKU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=V7nKhjVY7BQtQh0+Uq7q9+RB+ayx3E6WtVxIihrj7pdvssyv4wqR4pUljRfx5Lg3qtz/l0CH+l7nLbGhKuFrQdRfUN1euSi6u2wY4RZ3THRSJp3/jWGf419Yvy9PVqzXiZrlHqVGfTPBIdt2HlNa+S2Oq7mSU0MPDS8d7Jrsav4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MOasmcHD; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MOasmcHD"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1738082399;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k/H6mEbuvMQmYWFYf4QRWAbACluB3EmA21tCT2XkWd8=;
-	b=MOasmcHDK5lberepAaFsuPN2SRxt5jGDjdbjbopOsHZdoOL/DNYRuy/nHtiJ3mry4/Syvf
-	i1+uzAp2+MVSNt7XgB0QlXkGAKJy/cmt2e9XUzY8stOeQukPITAxZJdWuaguij4mboejTw
-	jKfV+G8CJaTWZ6d+MM2S+oGFIxecX6Q=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-237-dYBTKi9lNyaakQnTa0g_mg-1; Tue,
- 28 Jan 2025 11:39:54 -0500
-X-MC-Unique: dYBTKi9lNyaakQnTa0g_mg-1
-X-Mimecast-MFC-AGG-ID: dYBTKi9lNyaakQnTa0g_mg
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AB4571955DCC;
-	Tue, 28 Jan 2025 16:39:53 +0000 (UTC)
-Received: from pasta.fast.eng.rdu2.dc.redhat.com (unknown [10.45.225.106])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 961D518008C0;
-	Tue, 28 Jan 2025 16:39:51 +0000 (UTC)
-From: Andreas Gruenbacher <agruenba@redhat.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>,
-	linux-bcachefs@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 21/21] bcachefs: eytzinger1_{next,prev} cleanup
-Date: Tue, 28 Jan 2025 17:38:58 +0100
-Message-ID: <20250128163859.1883260-22-agruenba@redhat.com>
-In-Reply-To: <20250128163859.1883260-1-agruenba@redhat.com>
-References: <20250128163859.1883260-1-agruenba@redhat.com>
+	s=arc-20240116; t=1738142247; c=relaxed/simple;
+	bh=uhz29pFGTLO1WSLXdswVO891A/SMOx1JpDShtxF5VTA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rmSlAEawK+SXJCOWuFpET3QysQ8joeYXQpW+D6/qmLZ80Czx3JrKMKCA7Mu15CrhkrOmFC5YWj4PMztxKvwwF7PQaOnq0iVz3gCyDYAHuflcRe40hKXX93W04E2L9UNhpTsiy5nHKW/nrWpbUowm/IUyow16DhS+dB4uyoU/QhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3a7e4bfae54so63245665ab.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 29 Jan 2025 01:17:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738142244; x=1738747044;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=P5iJ4mjMOYRgwEANmAd+8NVU2Qq6x7d5zh/kFQq1hbo=;
+        b=BoctkRYZzGdBVXv8lsR6KYYMgtmexEto9cM4INzWJ3sOgUY/90BfUUN3uiUbkIEpGd
+         hGPrGvpFqBtmCnfXSq1ejRT32sML0nBiLRff6CMWwWrVPSJFN7Qqpmol00i6CKUhIAm1
+         ToVNTpqljYymr47nNAKDiiMRX2kCIapy3kkTHKZFbrNso4Dcr7ZTOWLpNgFqc+de/D/+
+         XdZ+jOZ9mRkbl1YA2UpqQZRVlobp+rv2I1IzZjJwI9XWKPurDT480w8tgQSVP2Ztz/AN
+         iy/2/dzjNVz1QSz67I/okT0T+nKpY7ftz4d1/axIFoQ5ytH0uceZhi8BosAq1l1JRJSn
+         vlXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQN+UI5u3XKG6ZILs1HRhe5AHjh9JoAnFPx+zpBYU+EGUhRfdbMckJic9iXA4VOs+EIgLwE77i99b9RREtXQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsX/Osady01D3+v3smurl/Ros5FXKkAodq6JJmgAI3kAfqW7Xn
+	sZdNyCx3o7XDWeTBhRn7XQco6KC+axEU5OcdlzXX04j3GGeq5FwJvgWDzyUg5oi9aLCLLMxdVcM
+	oT2LP1I+K7ksWnTmj4/UIHTtZ/5JlRbzATj6KW59gAuwSzVLx5oC+lT0=
+X-Google-Smtp-Source: AGHT+IFjPpM+n2RQZuRIXXgPmcjriFwZxjmkZ0i7auBINykh840hbWmYXhfj04akAU217sbj2/+qHa6kLZUxf2xgpOCJawCoqE1Q
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Received: by 2002:a05:6e02:2608:b0:3ce:856b:e451 with SMTP id
+ e9e14a558f8ab-3cffe396c69mr21949775ab.5.1738142244378; Wed, 29 Jan 2025
+ 01:17:24 -0800 (PST)
+Date: Wed, 29 Jan 2025 01:17:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6799f224.050a0220.ac840.02cb.GAE@google.com>
+Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in btree_interior_update_work
+From: syzbot <syzbot+de02219c78c082fe2f21@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Hello,
 
-The eytzinger code was previously relying on the following wrap-around
-properties and their "eytzinger0" equivalents:
+syzbot found the following issue on:
 
-  eytzinger1_prev(0, size) == eytzinger1_last(size)
-  eytzinger1_next(0, size) == eytzinger1_first(size)
+HEAD commit:    ab18b8fff124 Merge tag 'auxdisplay-v6.14-1' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13a47564580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ac8df499d47c7efd
+dashboard link: https://syzkaller.appspot.com/bug?extid=de02219c78c082fe2f21
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-However, these properties are no longer relied upon and no longer
-necessary, so remove the corresponding asserts and forbid the use of
-eytzinger1_prev(0, size) and eytzinger1_next(0, size).
+Unfortunately, I don't have any reproducer for this issue yet.
 
-This allows to further simplify the code in eytzinger1_next() and
-eytzinger1_prev(): where the left shifting happens, eytzinger1_next() is
-trying to move i to the lowest child on the left, which is equivalent to
-doubling i until the next doubling would cause it to be greater than
-size.  This is implemented by shifting i to the left so that the most
-significant bits align and then shifting i to the right by one if the
-result is greater than size.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/366f413714ce/disk-ab18b8ff.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5270d59ecedc/vmlinux-ab18b8ff.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/43d7aec7a24c/bzImage-ab18b8ff.xz
 
-Likewise, eytzinger1_prev() is trying to move to the lowest child on the
-right; the same applies here.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+de02219c78c082fe2f21@syzkaller.appspotmail.com
 
-The 1-offset in (size - 1) in eytzinger1_next() isn't needed at all, but
-the equivalent offset in eytzinger1_prev() is surprisingly needed to
-preserve the 'eytzinger1_prev(0, size) == eytzinger1_last(size)'
-property.  However, since we no longer support that property, we can get
-rid of these offsets as well.  This saves one addition in each function
-and makes the code less confusing.
+=====================================================
+BUG: KMSAN: uninit-value in btree_update_nodes_written fs/bcachefs/btree_update_interior.c:688 [inline]
+BUG: KMSAN: uninit-value in btree_interior_update_work+0xcef/0x4820 fs/bcachefs/btree_update_interior.c:844
+ btree_update_nodes_written fs/bcachefs/btree_update_interior.c:688 [inline]
+ btree_interior_update_work+0xcef/0x4820 fs/bcachefs/btree_update_interior.c:844
+ process_one_work kernel/workqueue.c:3236 [inline]
+ process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3317
+ worker_thread+0xea7/0x14f0 kernel/workqueue.c:3398
+ kthread+0x6b9/0xef0 kernel/kthread.c:464
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Uninit was created at:
+ ___kmalloc_large_node+0x22c/0x370 mm/slub.c:4253
+ __kmalloc_large_node_noprof+0x3f/0x1e0 mm/slub.c:4270
+ __do_kmalloc_node mm/slub.c:4286 [inline]
+ __kmalloc_node_noprof+0xc96/0x1250 mm/slub.c:4304
+ __kvmalloc_node_noprof+0xc0/0x2d0 mm/util.c:645
+ btree_node_data_alloc fs/bcachefs/btree_cache.c:153 [inline]
+ __bch2_btree_node_mem_alloc+0x2be/0xa80 fs/bcachefs/btree_cache.c:198
+ bch2_fs_btree_cache_init+0x4f0/0xb60 fs/bcachefs/btree_cache.c:652
+ bch2_fs_alloc fs/bcachefs/super.c:908 [inline]
+ bch2_fs_open+0x4b24/0x59c0 fs/bcachefs/super.c:2053
+ bch2_fs_get_tree+0x986/0x2330 fs/bcachefs/fs.c:2190
+ vfs_get_tree+0xb1/0x5a0 fs/super.c:1814
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3560
+ path_mount+0x742/0x1f10 fs/namespace.c:3887
+ do_mount fs/namespace.c:3900 [inline]
+ __do_sys_mount fs/namespace.c:4111 [inline]
+ __se_sys_mount+0x71f/0x800 fs/namespace.c:4088
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:4088
+ x64_sys_call+0x39bf/0x3c30 arch/x86/include/generated/asm/syscalls_64.h:166
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcd/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 0 UID: 0 PID: 5856 Comm: kworker/u8:4 Not tainted 6.13.0-syzkaller-06077-gab18b8fff124 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
+Workqueue: btree_update btree_interior_update_work
+=====================================================
+
+
 ---
- fs/bcachefs/eytzinger.h | 18 ++++--------------
- fs/bcachefs/util.c      | 12 ------------
- 2 files changed, 4 insertions(+), 26 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/bcachefs/eytzinger.h b/fs/bcachefs/eytzinger.h
-index 6a363b12bd21..e600a7d52001 100644
---- a/fs/bcachefs/eytzinger.h
-+++ b/fs/bcachefs/eytzinger.h
-@@ -59,24 +59,14 @@ static inline unsigned eytzinger1_last(unsigned size)
- 	return rounddown_pow_of_two(size + 1) - 1;
- }
- 
--/*
-- * eytzinger1_next() and eytzinger1_prev() have the nice properties that
-- *
-- * eytzinger1_next(0) == eytzinger1_first())
-- * eytzinger1_prev(0) == eytzinger1_last())
-- *
-- * eytzinger1_prev(eytzinger1_first()) == 0
-- * eytzinger1_next(eytzinger1_last()) == 0
-- */
--
- static inline unsigned eytzinger1_next(unsigned i, unsigned size)
- {
--	EYTZINGER_BUG_ON(i > size);
-+	EYTZINGER_BUG_ON(i == 0 || i > size);
- 
- 	if (eytzinger1_right_child(i) <= size) {
- 		i = eytzinger1_right_child(i);
- 
--		i <<= __fls(size + 1) - __fls(i);
-+		i <<= __fls(size) - __fls(i);
- 		i >>= i > size;
- 	} else {
- 		i >>= ffz(i) + 1;
-@@ -87,12 +77,12 @@ static inline unsigned eytzinger1_next(unsigned i, unsigned size)
- 
- static inline unsigned eytzinger1_prev(unsigned i, unsigned size)
- {
--	EYTZINGER_BUG_ON(i > size);
-+	EYTZINGER_BUG_ON(i == 0 || i > size);
- 
- 	if (eytzinger1_left_child(i) <= size) {
- 		i = eytzinger1_left_child(i) + 1;
- 
--		i <<= __fls(size + 1) - __fls(i);
-+		i <<= __fls(size) - __fls(i);
- 		i -= 1;
- 		i >>= i > size;
- 	} else {
-diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-index e75329399c6e..0257a4c3bb4e 100644
---- a/fs/bcachefs/util.c
-+++ b/fs/bcachefs/util.c
-@@ -713,12 +713,6 @@ void eytzinger1_test(void)
- 		if (!(size % 4096))
- 			pr_info("tree size %u\n", size);
- 
--		BUG_ON(eytzinger1_prev(0, size) != eytzinger1_last(size));
--		BUG_ON(eytzinger1_next(0, size) != eytzinger1_first(size));
--
--		BUG_ON(eytzinger1_prev(eytzinger1_first(size), size)	!= 0);
--		BUG_ON(eytzinger1_next(eytzinger1_last(size), size)	!= 0);
--
- 		inorder = 1;
- 		eytzinger1_for_each(eytz, size) {
- 			BUG_ON(__inorder_to_eytzinger1(inorder, size, extra) != eytz);
-@@ -747,12 +741,6 @@ void eytzinger0_test(void)
- 		if (!(size % 4096))
- 			pr_info("tree size %u\n", size);
- 
--		BUG_ON(eytzinger0_prev(-1, size) != eytzinger0_last(size));
--		BUG_ON(eytzinger0_next(-1, size) != eytzinger0_first(size));
--
--		BUG_ON(eytzinger0_prev(eytzinger0_first(size), size)	!= -1);
--		BUG_ON(eytzinger0_next(eytzinger0_last(size), size)	!= -1);
--
- 		inorder = 0;
- 		eytzinger0_for_each(eytz, size) {
- 			BUG_ON(__inorder_to_eytzinger0(inorder, size, extra) != eytz);
--- 
-2.48.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
