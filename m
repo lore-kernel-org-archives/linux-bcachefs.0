@@ -1,139 +1,173 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110F98F4A
-	for <linux-bcachefs@vger.kernel.org>; Wed, 29 Jan 2025 18:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91881917D9;
+	Wed, 29 Jan 2025 18:17:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738173885; cv=none; b=BCCP0AKzWZKKPOm68mB73IfHbEh8dqNQXXjkBKh7Jqo91Ec+VlE7sDwk7Z81ha42iGM/9zkp/rxtY9eBk1utGm7z8LA2esuM6g7bvooxIKPZUnWtcTJ08y0+Z56uHVw5A0aLah5hqgjTr2laTKepheJtXg4caXUsuF/LdQ30dAM=
+	t=1738174673; cv=none; b=FW5MCg4tginJnKAcYuaM3V9LjTJMtHLDljDjK5E8uWoDt4QEDjsDlfp+WWQT8dUrNQOC2OvZso5FumJnu5dUZ9bx6yL765EpqmijKdURyBqOwrrZefonDf76bIJiRoHi6VYLMVIOnoXaQKCYegq/Wi9LSOk/sjWfeCdsXB8gOy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738173885; c=relaxed/simple;
-	bh=vGUZkzsYJzlfiCbfaQdJIp8peKxgyVJOrV+s+LvLFao=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TMWt8xKw0o4WT5cwNnspl3qVoVWVQm8InQ34/f2jKdWGHkmSTqWoMNW1IvxtSHbG32kFgZEzlfxVUBPSj15504YxUuVq/1NcVk7n/CozyhOM8OvhbOmi60Ohn9sQggRZsHzh+2Q0lWj/cLvM8uDZjicLrqZ2hWMgy/Kvne6tZ+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HYYbS+Q7; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1738174673; c=relaxed/simple;
+	bh=/XvFYnnOViFH3OGSlL8qyvNFJbMFSdz5+hQNIUYyXgc=;
+	h=Subject:To:Cc:From:Date:Message-Id; b=siwKy5lGUTi156Zt1vb5GQ2+oaZWFFku45u1v48C9xSLqaNuG1AUdr4X3UcYvTuqMZr6OBeE9c6Nr2zHvoZsia6HCrJvQusu9e11xlpPiQ6OdzctwVxetU1x7MFT1XKUXYmQyZy9OP6u9rbSGQu7qXLeDF9Kd1ET70DcfACe0ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XhgSWf2R; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HYYbS+Q7"
-Date: Wed, 29 Jan 2025 13:04:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738173880;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9VBTQ1irDiGRVITmSXE+fKQ0+oae2DHults3vu8twLI=;
-	b=HYYbS+Q7GOR+CavazC7KLnOa4Bd/kCOu/sV11RSNag2GojNxBtB5LZIhlzVbYA3G3OQEF7
-	nTVLV6cdPrt7tcmFwHdVvTtB6t0g4r/5y1QODa2J+n3Yp04sz2u5okZc6k7BjxJebvagE4
-	my97jWYC/ROSfNJ5PtDvo2dBYUSZ5xE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andreas Gruenbacher <agruenba@redhat.com>
-Cc: Shuah Khan <shuah@kernel.org>, linux-bcachefs@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 11/21] bcachefs: improve the eytzinger0_find_le tests
-Message-ID: <ajfehauvtid4d7pqy7o3uhe6p7buohwe542wqddkwpdq62lr4g@6cgcfpzcyag3>
-References: <20250128163859.1883260-1-agruenba@redhat.com>
- <20250128163859.1883260-12-agruenba@redhat.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XhgSWf2R"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738174672; x=1769710672;
+  h=subject:to:cc:from:date:message-id;
+  bh=/XvFYnnOViFH3OGSlL8qyvNFJbMFSdz5+hQNIUYyXgc=;
+  b=XhgSWf2RYjmkTBt8lnhf67z9Qy62jlQeXCNursWCPy0M77gvUkLToaec
+   SyzhIC50aCCkvLdmW74B0eqMGRDsxjkN431Kx+AF3XWOuxQiASlsD0bPk
+   vfe88NqK0ULAR6LI9i7huQE+oAppINxduEd/PLiNEWzKdjQjsaYoCIeUK
+   jQkUy7T8hG21KN+zok7p3cfHkulID1bD5cSoAhuf/rwmIR4DEez8Ptlah
+   aTTGlDYsufIu82jwFseuw/H6zOSayjfalkqmPX+9Tf+3pfryumLztPy1N
+   aQndpeLCfeMZR9D0Xw17OFEUzd77ORXsoiLwlszHerjY+odoAsP+RiA6G
+   A==;
+X-CSE-ConnectionGUID: 8ORp0KlhRqGL+qgMDURCOQ==
+X-CSE-MsgGUID: 3o3vEdc2TwevYOutv9R0oA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11330"; a="38963239"
+X-IronPort-AV: E=Sophos;i="6.13,244,1732608000"; 
+   d="scan'208";a="38963239"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2025 10:17:50 -0800
+X-CSE-ConnectionGUID: w4WrpUeqRruo5DQNnArK+g==
+X-CSE-MsgGUID: WzaeOTwdRtquOnIPieU5dQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,244,1732608000"; 
+   d="scan'208";a="109660676"
+Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.164.11])
+  by fmviesa010.fm.intel.com with ESMTP; 29 Jan 2025 10:17:49 -0800
+Subject: [PATCH 0/7] Move prefaulting into write slow paths
+To: linux-kernel@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,Ted Ts'o <tytso@mit.edu>,Christian Brauner <brauner@kernel.org>,Darrick J. Wong <djwong@kernel.org>,Matthew Wilcox (Oracle) <willy@infradead.org>,Al Viro <viro@zeniv.linux.org.uk>,linux-fsdevel@vger.kernel.org,Dave Hansen <dave.hansen@linux.intel.com>,almaz.alexandrovich@paragon-software.com,ntfs3@lists.linux.dev,miklos@szeredi.hu,kent.overstreet@linux.dev,linux-bcachefs@vger.kernel.org,clm@fb.com,josef@toxicpanda.com,dsterba@suse.com,linux-btrfs@vger.kernel.org,dhowells@redhat.com,jlayton@kernel.org,netfs@lists.linux.dev
+From: Dave Hansen <dave.hansen@linux.intel.com>
+Date: Wed, 29 Jan 2025 10:17:49 -0800
+Message-Id: <20250129181749.C229F6F3@davehans-spike.ostc.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250128163859.1883260-12-agruenba@redhat.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jan 28, 2025 at 05:38:48PM +0100, Andreas Gruenbacher wrote:
-> Rename eytzinger0_find_test_val() to eytzinger0_find_test_le() and add a
-> new eytzinger0_find_test_val() wrapper that calls it.
-> 
-> We have already established that the array is sorted in eytzinger order,
-> so we can use the eytzinger iterator functions and check the boundary
-> conditions to verify the result of eytzinger0_find_le().
-> 
-> Only scan the entire array if we get an incorrect result.  When we need
-> to scan, use eytzinger0_for_each_prev() so that we'll stop at the
-> highest matching element in the array in case there are duplicates;
-> going through the array linearly wouldn't give us that.
+tl;dr: The VFS and several filesystems have some suspect prefaulting
+code. It is unnecessarily slow for the common case where a write's
+source buffer is resident and does not need to be faulted in.
 
-For test code, wouldn't it be simpler to iterate over the test array,
-testing with every element as a search value? There's enough corner
-cases in lookup that I think it'd be worthwhile (and probably add some
-extra test values, e.g. first/last emelements +1/-1).
+Move these "prefaulting" operations to slow paths where they ensure
+forward progress but they do not slow down the fast paths. This
+optimizes the fast path to touch userspace once instead of twice.
 
-> 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> ---
->  fs/bcachefs/util.c | 41 ++++++++++++++++++++++++++++++-----------
->  1 file changed, 30 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-> index 3fe9a3b8c696..c772629783f3 100644
-> --- a/fs/bcachefs/util.c
-> +++ b/fs/bcachefs/util.c
-> @@ -782,29 +782,48 @@ static inline int cmp_u16(const void *_l, const void *_r)
->  	return (*l > *r) - (*r > *l);
->  }
->  
-> -static void eytzinger0_find_test_val(u16 *test_array, unsigned nr, u16 search)
-> +static void eytzinger0_find_test_le(u16 *test_array, unsigned nr, u16 search)
->  {
-> -	int i, c1 = -1, c2 = -1;
-> -	ssize_t r;
-> +	int r, s;
-> +	bool bad;
->  
->  	r = eytzinger0_find_le(test_array, nr,
->  			       sizeof(test_array[0]),
->  			       cmp_u16, &search);
-> -	if (r >= 0)
-> -		c1 = test_array[r];
-> +	if (r >= 0) {
-> +		if (test_array[r] > search) {
-> +			bad = true;
-> +		} else {
-> +			s = eytzinger0_next(r, nr);
-> +			bad = s >= 0 && test_array[s] <= search;
-> +		}
-> +	} else {
-> +		s = eytzinger0_last(nr);
-> +		bad = s >= 0 && test_array[s] <= search;
-> +	}
->  
-> -	for (i = 0; i < nr; i++)
-> -		if (test_array[i] <= search && test_array[i] > c2)
-> -			c2 = test_array[i];
-> +	if (bad) {
-> +		s = -1;
-> +		eytzinger0_for_each_prev(j, nr) {
-> +			if (test_array[j] <= search) {
-> +				s = j;
-> +				break;
-> +			}
-> +		}
->  
-> -	if (c1 != c2) {
->  		eytzinger0_for_each(j, nr)
->  			pr_info("[%3u] = %12u\n", j, test_array[j]);
-> -		pr_info("find_le(%2u) -> [%2zi] = %2i should be %2i\n",
-> -			i, r, c1, c2);
-> +		pr_info("find_le(%12u) = %3i should be %3i\n",
-> +			search, r, s);
-> +		BUG();
->  	}
->  }
->  
-> +static void eytzinger0_find_test_val(u16 *test_array, unsigned nr, u16 search)
-> +{
-> +	eytzinger0_find_test_le(test_array, nr, search);
-> +}
-> +
->  void eytzinger0_find_test(void)
->  {
->  	unsigned i, nr, allocated = 1 << 12;
-> -- 
-> 2.48.1
-> 
+Also update somewhat dubious comments about the need for prefaulting.
+
+This has been very lightly tested. I have not tested any of the fs/
+code explicitly.
+
+I started by just trying to deal with generic_perform_write() and
+looked at a few more cases after Dave Chinner mentioned there was
+some apparent proliferation of its pattern across the tree.
+
+I think the first patch is probably OK for 6.14. If folks are OK
+with other ones, perhaps they can just them up individually for
+their trees.
+
+--
+
+More detailed cover letter below.
+
+There are logically two pieces of data involved in a write operation:
+a source that is read from and a target which is written to, like:
+
+	sys_write(target_fd, &source, len);
+
+This is implemented in generic VFS code and several filesystems
+with loops that look something like this:
+
+	do {
+		fault_in_iov_iter_readable(source)
+		// lock target folios
+		copy_folio_from_iter_atomic()
+		// unlock target folios
+	} while(iov_iter_count(iter))
+
+They fault in the source first and then proceed to do the write.  This
+fault is ostensibly done for a few reasons:
+
+ 1. Deadlock avoidance if the source and target are the same
+    folios.
+ 2. To check the user address that copy_folio_from_iter_atomic()
+    will touch because atomic user copies do not check the address.
+ 3. "Optimization"
+
+I'm not sure any of these are actually valid reasons.
+
+The "atomic" user copy functions disable page fault handling because
+page faults are not very atomic. This makes them naturally resistant
+to deadlocking in page fault handling. They take the page fault
+itself but short-circuit any handling.
+
+copy_folio_from_iter_atomic() also *does* have user address checking.
+I get a little lost in the iov_iter code, but it does know when it's
+dealing with userspace versus kernel addresses and does seem to know
+when to do things like copy_from_user_iter() (which does access_ok())
+versus memcpy_from_iter().[1]
+
+The "optimization" is for the case where 'source' is not faulted in.
+It can avoid the cost of a "failed" page fault (it will fail to be
+handled because of the atomic copy) and then needing to drop locks and
+repeat the fault.
+
+But the common case is surely one where 'source' *is* faulted in.
+Usually, a program will put some data in a buffer and then write it to
+a file in very short order. Think of something as simple as:
+
+	sprintf(buf, "Hello world");
+	write(fd, buf, len);
+
+In this common case, the fault_in_iov_iter_readable() incurs the cost
+of touching 'buf' in userspace twice.  On x86, that means at least an
+extra STAC/CLAC pair.
+
+Optimize for the case where the source buffer has already been faulted
+in. Ensure forward progress by doing the fault in slow paths when the
+atomic copies are not making progress.
+
+That logically changes the above loop to something more akin to:
+
+	do {
+		// lock target folios
+		copied = copy_folio_from_iter_atomic()
+		// unlock target folios
+
+		if (unlikely(!copied))
+			fault_in_iov_iter_readable(source)
+	} while(iov_iter_count(iter))
+
+1. The comment about atomic user copies not checking addresses seems
+   to have originated in 08291429cfa6 ("mm: fix pagecache write
+   deadlocks") circa 2007. It was true then, but is no longer true.
+
+ fs/bcachefs/fs-io-buffered.c |   30 ++++++++++--------------------
+ fs/btrfs/file.c              |   20 +++++++++++---------
+ fs/fuse/file.c               |   14 ++++++++++----
+ fs/iomap/buffered-io.c       |   24 +++++++++---------------
+ fs/netfs/buffered_write.c    |   13 +++----------
+ fs/ntfs3/file.c              |   17 ++++++++++++-----
+ mm/filemap.c                 |   26 +++++++++++++++-----------
+ 7 files changed, 70 insertions(+), 74 deletions(-)
+
+Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc: ntfs3@lists.linux.dev
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org
+Cc: Chris Mason <clm@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Cc: David Howells <dhowells@redhat.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: netfs@lists.linux.dev
