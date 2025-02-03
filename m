@@ -1,187 +1,92 @@
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D831CF7AF
-	for <linux-bcachefs@vger.kernel.org>; Sun,  2 Feb 2025 22:30:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40F370809
+	for <linux-bcachefs@vger.kernel.org>; Mon,  3 Feb 2025 04:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738535427; cv=none; b=Lawt15uBFUWsJb3u9MU8iRxXmuZVonUe/UX+1IZtsUaAngpYI31YQZ70RdEXbkMULikkSc+kKORrC/DFbxWYRxWq/JLlB2j8Rb3rWlFVlQreG+c/FEHgdJR2m9i28z5xAjW/pGsZmR0uFqu7+Y9dhqJpFxQ9y8aJ48sH5X8452s=
+	t=1738557016; cv=none; b=TUBh+1XeDaSV1T67iphSf8SvKLSuBh+TGq1+DJCZum+yPzGvuQujvujCG5vIeIH69pkCXAOPCQa5IObgcG9sZS0fPNmgcyzDbW/t/+5fogmsby8D2NlQIqAOf4x9u5EyMw/jbNf7LCgTJ+o+cskFm9/To+Xb65K+OUg4uYeNC7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738535427; c=relaxed/simple;
-	bh=DVRlqbU2IQX73qyTyNH6LqlKqr3dbhV9iEuo4zXR4IU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=O3YXSkqinl2vqwxPDCK+CrvwGWj+svEAr29fQ9Zd6CvZCeaKER2r/OV+gT6caNCZt4J5igAdeggkrQiK2C/ponKwQWd7w16WOizl3NQrrehgLPECaPD7vd4jKNrFK1xF5isw0gSBjPt1416GbjydGwCdbDkf2HK/NQADjYUKAAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3a7e0d5899bso71983345ab.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 02 Feb 2025 14:30:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738535424; x=1739140224;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GHMYTq/8IL/q0F4irK3c2pP2MZ87J7Ws8aDpEAJmlBE=;
-        b=pz2VsnH+GZ2ltDTnWvut9yS+ptxdGoQVZfY65zGt8ba8zJvbtcVTP4GrcqLKnoxBdF
-         tQKRsPOycHvYeU16pOZmbA1xPj/HZJVDIOd6khqYN/lNKSbbz2ueLOyonfdDoIbwjDg8
-         H2tzjobaNHpFF/3sKlxUR6wmAll7XzHyHCFNxRRbhSlXaS6xAB1/nyeQrxTANmyg28ty
-         PiGu0IQYNxEjPPJW2qGDNnzN+bm0G2LXJgc9Upijw97pSbdZlnsCgAKGuBZH76sj6pgB
-         RdX2zSD1bnCix6mB1CuDhac+d/twsrQQmDf9FIUs5EOnGiurMbc/xb2ZXDBDfKynzlDA
-         hh7g==
-X-Forwarded-Encrypted: i=1; AJvYcCUenfyvAXZz8TXggXMmb1FljvWu+aQDA7i/N+okCQEgp6nLywt9dMTqimqcT55gGo1UD6tnxuHYG3mk+9Rbqg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwtGzMGttZH3sqJbDj89yEJBggo2SLWVXYHPa0lkkPeg5ZixM5d
-	4WQgNf6F3K175lklas3p6V6tf4+m/zru25ivLqSdcqFcofTgoIzBRTFX2s0diJDJalvzv/tiXjN
-	py4Xa6I262PvqerbHqQMRe8FwH4NFzfY/ro0Uc76fF4IwjJaDJxwVdgU=
-X-Google-Smtp-Source: AGHT+IHy2AyX18AFGjyFnYftiSXnE7XygoUX/X7N2jK5MxPxFwZgGcCytFkaEObRiZT4fjz3QtQpf7VK/pJ/diMUfdlCHSD+WKfI
+	s=arc-20240116; t=1738557016; c=relaxed/simple;
+	bh=ZkX2monZcAC75aVKIyTMj6Kv0Bf5wghcrOCsnwIJVA4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Edb6jnVkYMH2yRJRD2+bKzQAiWAKlSdKDwSdQ1kmr5pewafB34M7o4ub+ssYJvJ5DuSzjMur7kNQg8q8gtKnsEXcXq+iMK2wac/xSc4Hitac0p0yaVNxrwt0d9eHGTyrKvW8ox34gRo7++v0c4Q+0BhYQ3nKEP+L3bSe51QmJ5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QwPWyA8A; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QwPWyA8A"
+Date: Sun, 2 Feb 2025 23:29:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738557005;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LSek/aw1RhbQazdMucH99fMhafUeVbuXI/DmPJuxos8=;
+	b=QwPWyA8Aa3ZDAulTtrwivT2Ijv0b1E6Yo44peGm6CwTZtLO+roBh/zYf4Tt4vdQ57MfD9U
+	j0MIjvrO2vAzLsS3jstUq6KLCHKeIqfpTpsyLT5gxkWLGg7WvHWK7U5akr9BpkIy4iBEoE
+	Tr7Gqb5qCXv1kpT1YeTfIgstgy+psj0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: syzbot <syzbot+a0ae55e3dde11d2d790c@syzkaller.appspotmail.com>, 
+	akpm@linux-foundation.org, hughd@google.com, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm?] [bcachefs?] UBSAN: shift-out-of-bounds in
+ filemap_get_entry
+Message-ID: <x7nvluwr6yz3liezjpgry3db6jehus4inkcoesmrltya2eq7gy@gcr5ekmthdwd>
+References: <679fb148.050a0220.d7c5a.0074.GAE@google.com>
+ <Z5_tlJZcIfANfmnV@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:98:b0:3cf:b2b0:5d35 with SMTP id
- e9e14a558f8ab-3cffe3e5d8emr183226615ab.7.1738535424521; Sun, 02 Feb 2025
- 14:30:24 -0800 (PST)
-Date: Sun, 02 Feb 2025 14:30:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <679ff200.050a0220.163cdc.0032.GAE@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_node_iter_init
-From: syzbot <syzbot+7b8a2c442d5a4859b680@syzkaller.appspotmail.com>
-To: brauner@kernel.org, jack@suse.cz, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z5_tlJZcIfANfmnV@casper.infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+On Sun, Feb 02, 2025 at 10:11:32PM +0000, Matthew Wilcox wrote:
+> On Sun, Feb 02, 2025 at 09:54:16AM -0800, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    69e858e0b8b2 Merge tag 'uml-for-linus-6.14-rc1' of git://g..
+> > 
+> > ------------[ cut here ]------------
+> > UBSAN: shift-out-of-bounds in lib/xarray.c:147:16
+> > shift exponent 192 is too large for 64-bit type 'unsigned long'
+> > CPU: 0 UID: 0 PID: 2666 Comm: kworker/u4:9 Not tainted 6.13.0-syzkaller-09760-g69e858e0b8b2 #0
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+> > Workqueue: loop0 loop_rootcg_workfn
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:94 [inline]
+> >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+> >  ubsan_epilogue lib/ubsan.c:231 [inline]
+> >  __ubsan_handle_shift_out_of_bounds+0x3c8/0x420 lib/ubsan.c:468
+> >  get_offset lib/xarray.c:147 [inline]
+> >  xas_descend lib/xarray.c:207 [inline]
+> >  xas_load+0x583/0x5c0 lib/xarray.c:246
+> >  filemap_get_entry+0x1f0/0x3b0 mm/filemap.c:1860
+> 
+> This is an xarray issue.  I suspect it's a race condition, although it
+> could be somebody doing a misplaced DMA or something.  How easy is it to
+> reproduce?
+> 
+> (nb: I am on holiday for the next week, so I'm not going to be focused
+> on this, I just don't want other people wasting their time looking for a
+> bug somewhere that it isn't)
 
-syzbot found the following issue on:
+It's got a C reproducer, and you already use ktest, so
 
-HEAD commit:    69e858e0b8b2 Merge tag 'uml-for-linus-6.14-rc1' of git://g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1148c518580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d033b14aeef39158
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b8a2c442d5a4859b680
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=150715f8580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=102e8b24580000
+build-test-kernel run -IP ~/ktest/tests/syzbot-repro.ktest a0ae55e3dde11d2d790c
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-69e858e0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a53b888c1f3f/vmlinux-69e858e0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6b5e17edafc0/bzImage-69e858e0.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/6d9bc71b6ead/mount_5.gz
+(it's the extid from the dashboard link)
 
-The issue was bisected to:
-
-commit 14152654805256d760315ec24e414363bfa19a06
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Mon Nov 25 05:21:27 2024 +0000
-
-    bcachefs: Bad btree roots are now autofix
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16492d18580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15492d18580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11492d18580000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7b8a2c442d5a4859b680@syzkaller.appspotmail.com
-Fixes: 141526548052 ("bcachefs: Bad btree roots are now autofix")
-
-bcachefs (loop0): alloc_read... done
-bcachefs (loop0): stripes_read... done
-bcachefs (loop0): snapshots_read... done
-bcachefs (loop0): check_allocations...
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/bset.c:1308!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5524 Comm: syz-executor285 Not tainted 6.13.0-syzkaller-09760-g69e858e0b8b2 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:bch2_btree_node_iter_init+0x4272/0x4280 fs/bcachefs/bset.c:1308
-Code: fd 90 0f 0b e8 bf 9e 84 fd 90 0f 0b e8 b7 9e 84 fd 90 0f 0b e8 af 9e 84 fd 90 0f 0b e8 a7 9e 84 fd 90 0f 0b e8 9f 9e 84 fd 90 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90
-RSP: 0000:ffffc9000d7b5de0 EFLAGS: 00010293
-RAX: ffffffff843ace21 RBX: 0000000000000001 RCX: ffff88803ebb8000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc9000d7b6050 R08: ffffffff843a8fc6 R09: 0000000000000000
-R10: ffffc9000d7b5f70 R11: fffff52001af6bf1 R12: ffff888056900040
-R13: dffffc0000000000 R14: dffffc0000000000 R15: 0000000000000000
-FS:  00007f13e240b6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f13dadff000 CR3: 00000000441be000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __btree_path_level_init fs/bcachefs/btree_iter.c:617 [inline]
- bch2_btree_path_level_init+0x4d2/0x9f0 fs/bcachefs/btree_iter.c:637
- btree_path_lock_root fs/bcachefs/btree_iter.c:787 [inline]
- bch2_btree_path_traverse_one+0x108b/0x2930 fs/bcachefs/btree_iter.c:1203
- bch2_btree_path_traverse fs/bcachefs/btree_iter.h:249 [inline]
- __bch2_btree_iter_peek fs/bcachefs/btree_iter.c:2270 [inline]
- bch2_btree_iter_peek_max+0xc06/0x6320 fs/bcachefs/btree_iter.c:2367
- bch2_btree_iter_peek_max_type fs/bcachefs/btree_iter.h:681 [inline]
- bch2_gc_reflink_start+0x461/0xa50 fs/bcachefs/reflink.c:828
- bch2_check_allocations+0x680/0x6aa0 fs/bcachefs/btree_gc.c:1027
- bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:226
- bch2_run_recovery_passes+0x2ad/0xa90 fs/bcachefs/recovery_passes.c:291
- bch2_fs_recovery+0x265a/0x3de0 fs/bcachefs/recovery.c:937
- bch2_fs_start+0x37c/0x610 fs/bcachefs/super.c:1030
- bch2_fs_get_tree+0xd8d/0x1740 fs/bcachefs/fs.c:2203
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
- do_new_mount+0x2be/0xb40 fs/namespace.c:3560
- do_mount fs/namespace.c:3900 [inline]
- __do_sys_mount fs/namespace.c:4111 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4088
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f13e2460cba
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 4e 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f13e240afa8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f13e240afc0 RCX: 00007f13e2460cba
-RDX: 0000000020000000 RSI: 0000000020000040 RDI: 00007f13e240afc0
-RBP: 0000000000000006 R08: 00007f13e240b000 R09: 0000000000005939
-R10: 0000000000000000 R11: 0000000000000282 R12: 00007f13e240b000
-R13: 0000000000000000 R14: 0000000000000004 R15: 0000000001000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bch2_btree_node_iter_init+0x4272/0x4280 fs/bcachefs/bset.c:1308
-Code: fd 90 0f 0b e8 bf 9e 84 fd 90 0f 0b e8 b7 9e 84 fd 90 0f 0b e8 af 9e 84 fd 90 0f 0b e8 a7 9e 84 fd 90 0f 0b e8 9f 9e 84 fd 90 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90
-RSP: 0000:ffffc9000d7b5de0 EFLAGS: 00010293
-RAX: ffffffff843ace21 RBX: 0000000000000001 RCX: ffff88803ebb8000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc9000d7b6050 R08: ffffffff843a8fc6 R09: 0000000000000000
-R10: ffffc9000d7b5f70 R11: fffff52001af6bf1 R12: ffff888056900040
-R13: dffffc0000000000 R14: dffffc0000000000 R15: 0000000000000000
-FS:  00007f13e240b6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f13dadff000 CR3: 00000000441be000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+If that doesn't work ping me and the syzbot folks, there are some
+improvements that could be made and I'm going to need them anyways since
+I have a ton of syzbot bugs to start cranking through soon.
