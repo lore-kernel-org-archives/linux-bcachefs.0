@@ -1,156 +1,135 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85684214207
-	for <linux-bcachefs@vger.kernel.org>; Tue,  4 Feb 2025 15:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE8D42147EB
+	for <linux-bcachefs@vger.kernel.org>; Tue,  4 Feb 2025 15:34:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738683205; cv=none; b=l1KvIeysPdcLD5ByEIUBS/897HwwTmjA4fC+0Ab4tBP4Kmym8RJnJihZU3NfxMEXmLzbv9vzxX5dgPurUIwohC1vQa84LC3dzVN6+dqcjVI9O51dysW2Lvf41urabDRtTg3A9elghiI+bYapj/Yv5phrDV9scczT2OP3GJ+6RwY=
+	t=1738683268; cv=none; b=uOOrinZJ/wkWYG7srkqmlqFNSE4OH7xz1tIvHMDIhr3r5y0K4MgE0R0pUbXaLAwLpxwvy0NTuoZGoiQj70QJa3+hoqvkd4u+tKQP5gzg0XyOnt52i4+Ve1z785d7zNcrNo6JaY+8cdKkbdRStqdZZq2dr32CtC7ZsGQbc4YSjic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738683205; c=relaxed/simple;
-	bh=WRA/WKB/1cX5TzaHrN/TTlXTa6s9rZhFqhteluIY7+E=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ArjfN5rKgQ3NOgwyJYBDCn7hAUv2fInctuppV2bFx1ek6gtBXxLE+0ycHEfQLPlIYv4OYHsKT/xglHgJLC1GvdYXDr6QA4FPlipcCD8+SVpOsCxfUiTJ/+oAsSUqDmolfwTKKVCkZflrzYhhQE97C5/CbYvxebrNwzD5LketWmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+	s=arc-20240116; t=1738683268; c=relaxed/simple;
+	bh=rUNmJfFjrvjH0k8NaLQl/mzIysHOcbVxpQtX9E26t70=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=G5EuZ4nsgD1FUpf4tUMk1vpi0o6wTjFtunH4UIzFIoJweM0rYllECfVSJ3Mmdiieo+iFrnu69GFZCCS8e4VseR627UEdJ21Ayy8AXLk9LqPVRjCoHhE1J1ucrMq1x0NL8Qxzls4ALlzupvs0KC71eozgsEmztocUJyvLeKD9mK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d04b390e9cso1877285ab.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 04 Feb 2025 07:33:22 -0800 (PST)
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-849d26dd331so406330439f.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 04 Feb 2025 07:34:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738683202; x=1739288002;
+        d=1e100.net; s=20230601; t=1738683266; x=1739288066;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=M9hgVt0Dd3cwy31/EVS6hXGly9CDwHG3tCjvJcgmtDk=;
-        b=XxCA3iHhSHI8QRm0rQV5IehWXcas6NVGxzC+y4oWr2wLcLUlTibjdx8u2lYHWW/tp0
-         xkUXYxUPnUFUBy3Adlvw2eWNmNrEEqKcCr4yaWc1ufJYD/nV0gYS/NWLzlYHeI80RQKb
-         3rjsGk3V5L97NgR09bv51pjUrp1vqNQbG8COXm8qn+oZZkvbEAcgJkEck3irOo6My8KW
-         vvkqFnRJPhEKNTNxRYjlKYH7rX7z6d0COUjPHSJI7Du+uAWCSV9s2Km1d58YrP7isUxz
-         /ZbBXZJIK+lmRENIKgspiVHe+SZtos47kiQZeYWzg1WnQhV93vKvB3Md9dojXsd4Eezb
-         /P2g==
-X-Forwarded-Encrypted: i=1; AJvYcCV6x2H30yrwP/YiPJviMKuNRQY8YoVTmRYMeKfEK/6LhDqr4eOC+fT8yzmsHm5mgT9Do28CL7PT3JKJ0cUWjA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFCDmG5wHLJvhKLWIAKyyBbhAEsKjsjf0Rz8GF1zU4jVx+wOlm
-	4DnBQkdRZ67e2Q6rt/fzZDwjMBiXcm9WCRGSjjyHfSdfUwLcD1eg72IysipfTzjuxY6C/WMtFCS
-	UDPj4us1rMHjMR1zkd24V7hFw9bBb1uUNyp+/RU5dLwOAl9UWmruPJxg=
-X-Google-Smtp-Source: AGHT+IFo0UwLrMpFRAOVkM7R/lQuwAlbFXvVQVfQo3o/ge/i6wfW/Vyy97mNiF1LYm7jpjCZkbgQcw9/TVVKRoHpvUAd+LibQOUX
+        bh=K+9elCslkuUd43cJRucxkW8XJc/qzTw0sB9huIEM9CA=;
+        b=sEwj3TcB8xZpNUN1py6iB2DCMSbLsLLKC6cFpep3imY0ZTiH0O3ZgZvykkBMSIdXfY
+         tnNX4Zzs1vL/muezCFJ1KQYdx/6i1KZajCup/KtRTqmFhS5ymXTTvpGnmwRPnf9uiTlf
+         edThL9vhx+xIstGgoI2sZSvrt8G4PkTshBPmV4xVpQ3tRHldau+xdk6ZHJ0oZzyqKxae
+         +l+xvsN5oVObg7WkiWxFFT0tY6+YK2WB+8UN1cqonafDQAq7aqQL0DPVTLkE8ZxFJc8f
+         FZiDSsFbR/2/ElrWxmNLz4bOv2BRwiF201we63dm7oG8/1TdXDCWAS44HyOy+2hR+hx0
+         +GkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1RGjzQirlht+zk6vmt1hKklglBov5oP/WSq8qbBcYenVpbDq0oBuwYLwl+u2BBFp0wRgo7VouFIVhsgcIUQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTIzrdXw9hqzbKwgyTnnv8d/epEfu09lcwVH7V0t7Id+DFS6M7
+	Ov2PKD+x1Pk++OrO5FSqHqOuf1u/KjHgAXC2/rQDcrcffR8LJZ3OMG0zgo6+KrNToUW6WxKEX1a
+	3v0OLqb7A93iTvNmjgW6I4UIm8G2TVTgqsLyCbUoZl4iUV3eeWW4mLB0=
+X-Google-Smtp-Source: AGHT+IEY7EbFaoqgFMrAA3vftkEMeUpyS4C2dT07tOVvAFLSzcLdkmO+Y4df5yNNiK321yhOCXJ3bpXwBMwtBI5hm+Hd9wS+GI7m
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2195:b0:3d0:23f6:2eed with SMTP id
- e9e14a558f8ab-3d023f63111mr93122455ab.11.1738683202135; Tue, 04 Feb 2025
- 07:33:22 -0800 (PST)
-Date: Tue, 04 Feb 2025 07:33:22 -0800
+X-Received: by 2002:a92:d782:0:b0:3d0:ba6:1b4b with SMTP id
+ e9e14a558f8ab-3d03f508636mr29042795ab.7.1738683265949; Tue, 04 Feb 2025
+ 07:34:25 -0800 (PST)
+Date: Tue, 04 Feb 2025 07:34:25 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67a23342.050a0220.163cdc.006b.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_btree_ptr_v2_validate
-From: syzbot <syzbot+655143dc5f99972b52e6@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <67a23381.050a0220.d7c5a.00bb.GAE@google.com>
+Subject: [syzbot] [net?] [bcachefs?] general protection fault in __alloc_skb
+From: syzbot <syzbot+095590432e94610ef0e5@syzkaller.appspotmail.com>
+To: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, 
+	kent.overstreet@linux.dev, kuba@kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    0de63bb7d919 Merge tag 'pull-fix' of git://git.kernel.org/..
+HEAD commit:    69e858e0b8b2 Merge tag 'uml-for-linus-6.14-rc1' of git://g..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=110078a4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f20bce78db15972a
-dashboard link: https://syzkaller.appspot.com/bug?extid=655143dc5f99972b52e6
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f4dddf980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d033b14aeef39158
+dashboard link: https://syzkaller.appspot.com/bug?extid=095590432e94610ef0e5
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11c74f64580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c74f64580000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17974518580000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b06dbcd0bfdc/disk-0de63bb7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bc7060cef2b6/vmlinux-0de63bb7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3578d0574f33/bzImage-0de63bb7.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/eec1bd50a821/mount_2.gz
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-69e858e0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a53b888c1f3f/vmlinux-69e858e0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6b5e17edafc0/bzImage-69e858e0.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/f903aea5a6cc/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+655143dc5f99972b52e6@syzkaller.appspotmail.com
+Reported-by: syzbot+095590432e94610ef0e5@syzkaller.appspotmail.com
 
-bucket incorrectly unset in freespace btree
-  u64s 5 type deleted 0:29:0 len 0 ver 0, , continuing
-=====================================================
-BUG: KMSAN: uninit-value in bpos_le fs/bcachefs/bkey.h:113 [inline]
-BUG: KMSAN: uninit-value in bpos_ge fs/bcachefs/bkey.h:125 [inline]
-BUG: KMSAN: uninit-value in bch2_btree_ptr_v2_validate+0x51c/0xb20 fs/bcachefs/extents.c:211
- bpos_le fs/bcachefs/bkey.h:113 [inline]
- bpos_ge fs/bcachefs/bkey.h:125 [inline]
- bch2_btree_ptr_v2_validate+0x51c/0xb20 fs/bcachefs/extents.c:211
- bch2_bkey_val_validate+0x357/0x530 fs/bcachefs/bkey_methods.c:143
- btree_node_bkey_val_validate fs/bcachefs/btree_io.c:838 [inline]
- bset_key_validate fs/bcachefs/btree_io.c:859 [inline]
- validate_bset_keys+0x20e3/0x2350 fs/bcachefs/btree_io.c:942
- validate_bset_for_write+0x2b3/0x410 fs/bcachefs/btree_io.c:1987
- __bch2_btree_node_write+0x53df/0x6830 fs/bcachefs/btree_io.c:2197
- bch2_btree_node_write_trans+0xd7/0x890 fs/bcachefs/btree_io.c:2357
- btree_node_write_if_need fs/bcachefs/btree_io.h:153 [inline]
- btree_update_nodes_written fs/bcachefs/btree_update_interior.c:816 [inline]
- btree_interior_update_work+0x3e3f/0x4820 fs/bcachefs/btree_update_interior.c:844
+Oops: general protection fault, probably for non-canonical address 0x76a030f00000485: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 1077 Comm: kworker/u4:10 Not tainted 6.13.0-syzkaller-09760-g69e858e0b8b2 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Workqueue: events_unbound nsim_dev_trap_report_work
+RIP: 0010:get_freepointer mm/slub.c:504 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:532 [inline]
+RIP: 0010:__slab_alloc_node mm/slub.c:3993 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:4152 [inline]
+RIP: 0010:kmem_cache_alloc_node_noprof+0xec/0x380 mm/slub.c:4216
+Code: 0f 84 8a 01 00 00 41 83 f8 ff 74 1a 48 8b 03 48 83 f8 ff 0f 84 8f 02 00 00 48 c1 e8 3a 41 39 c0 0f 85 6a 01 00 00 41 8b 46 28 <4a> 8b 1c 28 49 8d 4c 24 08 49 8b 36 4c 89 e8 4c 89 e2 65 48 0f c7
+RSP: 0018:ffffc900026ef908 EFLAGS: 00010246
+RAX: 0000000000000078 RBX: ffffea0000f49540 RCX: 0000000000046a30
+RDX: 0000000000000000 RSI: 00000000000000f0 RDI: ffffffff8ea52d00
+RBP: 00000000ffffffff R08: 00000000ffffffff R09: fffff520004ddf38
+R10: dffffc0000000000 R11: fffff520004ddf38 R12: 00000000000d7b48
+R13: 076a030f0000040d R14: ffff88801b7a18c0 R15: 0000000000000820
+FS:  0000000000000000(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4588978ab8 CR3: 0000000059eac000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __alloc_skb+0x1c3/0x440 net/core/skbuff.c:668
+ alloc_skb include/linux/skbuff.h:1331 [inline]
+ nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:748 [inline]
+ nsim_dev_trap_report drivers/net/netdevsim/dev.c:805 [inline]
+ nsim_dev_trap_report_work+0x261/0xb50 drivers/net/netdevsim/dev.c:851
  process_one_work kernel/workqueue.c:3236 [inline]
- process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3317
- worker_thread+0xea7/0x14f0 kernel/workqueue.c:3398
- kthread+0x6b9/0xef0 kernel/kthread.c:464
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:148
+ process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3317
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3398
+ kthread+0x7a9/0x920 kernel/kthread.c:464
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Uninit was stored to memory at:
- memcpy_u64s_small fs/bcachefs/util.h:416 [inline]
- bkey_p_copy fs/bcachefs/bkey.h:40 [inline]
- bch2_sort_keys_keep_unwritten_whiteouts+0x17d1/0x19d0 fs/bcachefs/bkey_sort.c:187
- __bch2_btree_node_write+0x3ae8/0x6830 fs/bcachefs/btree_io.c:2140
- bch2_btree_node_write_trans+0xd7/0x890 fs/bcachefs/btree_io.c:2357
- btree_node_write_if_need fs/bcachefs/btree_io.h:153 [inline]
- btree_update_nodes_written fs/bcachefs/btree_update_interior.c:816 [inline]
- btree_interior_update_work+0x3e3f/0x4820 fs/bcachefs/btree_update_interior.c:844
- process_one_work kernel/workqueue.c:3236 [inline]
- process_scheduled_works+0xae0/0x1c40 kernel/workqueue.c:3317
- worker_thread+0xea7/0x14f0 kernel/workqueue.c:3398
- kthread+0x6b9/0xef0 kernel/kthread.c:464
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:148
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Uninit was created at:
- ___kmalloc_large_node+0x22c/0x370 mm/slub.c:4249
- __kmalloc_large_node_noprof+0x3f/0x1e0 mm/slub.c:4266
- __do_kmalloc_node mm/slub.c:4282 [inline]
- __kmalloc_node_noprof+0xc96/0x1250 mm/slub.c:4300
- __kvmalloc_node_noprof+0xc0/0x2d0 mm/util.c:662
- btree_node_data_alloc fs/bcachefs/btree_cache.c:156 [inline]
- bch2_btree_node_mem_alloc+0xa72/0x2ee0 fs/bcachefs/btree_cache.c:834
- __bch2_btree_node_alloc fs/bcachefs/btree_update_interior.c:304 [inline]
- bch2_btree_reserve_get+0x37f/0x2290 fs/bcachefs/btree_update_interior.c:532
- bch2_btree_update_start+0x1af9/0x2d60 fs/bcachefs/btree_update_interior.c:1230
- bch2_btree_split_leaf+0x120/0xc90 fs/bcachefs/btree_update_interior.c:1851
- bch2_trans_commit_error+0x1c0/0x1d60 fs/bcachefs/btree_trans_commit.c:908
- __bch2_trans_commit+0x1d60/0xd310 fs/bcachefs/btree_trans_commit.c:1085
- bch2_trans_commit fs/bcachefs/btree_update.h:183 [inline]
- bch2_journal_replay+0x3082/0x4d30 fs/bcachefs/recovery.c:373
- bch2_run_recovery_pass fs/bcachefs/recovery_passes.c:226 [inline]
- bch2_run_recovery_passes+0x5a2/0x1160 fs/bcachefs/recovery_passes.c:291
- bch2_fs_recovery+0x489c/0x6230 fs/bcachefs/recovery.c:936
- bch2_fs_start+0x7ca/0xc20 fs/bcachefs/super.c:1030
- bch2_fs_get_tree+0x143a/0x2330 fs/bcachefs/fs.c:2203
- vfs_get_tree+0xb1/0x5a0 fs/super.c:1814
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3560
- path_mount+0x742/0x1f10 fs/namespace.c:3887
- do_mount fs/namespace.c:3900 [inline]
- __do_sys_mount fs/namespace.c:4111 [inline]
- __se_sys_mount+0x71f/0x800 fs/namespace.c:4088
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:4088
- x64_sys_call+0x39bf/0x3c30 arch/x86/include/generated/asm/syscalls_64.h:166
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-CPU: 1 UID: 0 PID: 1092 Comm: kworker/u8:7 Not tainted 6.14.0-rc1-syzkaller-00020-g0de63bb7d919 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
-Workqueue: btree_update btree_interior_update_work
-=====================================================
+ </TASK>
+Modules linked in:
+----------------
+Code disassembly (best guess):
+   0:	0f 84 8a 01 00 00    	je     0x190
+   6:	41 83 f8 ff          	cmp    $0xffffffff,%r8d
+   a:	74 1a                	je     0x26
+   c:	48 8b 03             	mov    (%rbx),%rax
+   f:	48 83 f8 ff          	cmp    $0xffffffffffffffff,%rax
+  13:	0f 84 8f 02 00 00    	je     0x2a8
+  19:	48 c1 e8 3a          	shr    $0x3a,%rax
+  1d:	41 39 c0             	cmp    %eax,%r8d
+  20:	0f 85 6a 01 00 00    	jne    0x190
+  26:	41 8b 46 28          	mov    0x28(%r14),%eax
+* 2a:	4a 8b 1c 28          	mov    (%rax,%r13,1),%rbx <-- trapping instruction
+  2e:	49 8d 4c 24 08       	lea    0x8(%r12),%rcx
+  33:	49 8b 36             	mov    (%r14),%rsi
+  36:	4c 89 e8             	mov    %r13,%rax
+  39:	4c 89 e2             	mov    %r12,%rdx
+  3c:	65                   	gs
+  3d:	48                   	rex.W
+  3e:	0f                   	.byte 0xf
+  3f:	c7                   	.byte 0xc7
 
 
 ---
