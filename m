@@ -1,77 +1,226 @@
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AEDF25765
-	for <linux-bcachefs@vger.kernel.org>; Wed,  5 Feb 2025 08:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861061662EF;
+	Wed,  5 Feb 2025 14:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738745526; cv=none; b=YDDM1QHmAWIP3ng2BjISeGEmBa9PSWGND93zbN8dHq5z3r5hNTLYQ8w98AIO/uxCuMFCtcfmFBdKjOYmVHjsen4u7tTjiXVT1U1+dilb66P2g0ohnKlMzSX8c9l9rhzUfLu9LIta0R79a8QwxAwpr9ludCUXpI39n4wEO1A84t0=
+	t=1738767380; cv=none; b=VlQvDZRvmLDUGWsxo35bSTfYD80wj2/xy6UPRtDSe8JVW4IhKCH+qsmVmI0+KKdcaAVqIaZrbmnymDAO93Eid1OxpE2GeyrboV/LnLK3+FInh90X2OX+AfFs2Gkn6aXy65ZYUdcDoMfqHInJrajfPNL++4z5d3NyNEmHKVbhljc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738745526; c=relaxed/simple;
-	bh=3rMbtXXkl6VX1pWFu09B/1FrKHNKlZlWEwEUq1fneko=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=sUleAmbwC1j3noM9HHbgkIhvW5YYaDZyfT+aanz1kGYRTUpv12xa3FfOXLz3X0zSxXda3OZuOWjDcFRC1pfrUbPc47rJO27cACcWLupKjVcMtAhHA0xZwPGBECIu+VaKK2Yzsuv7PXCR8+VGRDpFx6LjS0ksAKbg0NOsyLw1gok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3d052db03a6so2251425ab.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 05 Feb 2025 00:52:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738745524; x=1739350324;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6fWMi8f8UFZiTnjFB+mEtuSmquoY1j2DyxbT1jBkdz0=;
-        b=azk5JxcqVjDF8czITeIVMC835JKjoSZJv6LESv6m24IJ+VArZGr+I1v3CGEuaI167m
-         kjF7ONkaZRLMSzF2mHn4K4tMpidTMWV5ozqXGeQbBteXHVlfrhLXn+Kd5nDe1+1mciS3
-         aNnl/X5rV9hws6KPi5M+KWm5xTqkySxYsjp4O+nhuFfBEZ4S3zrjjYYCUPaGBKT6ZMwC
-         k9Max3hZfp56bGsRyBo/SUERc1XZ94T/OiYRhmEdryivM7wZK62m+5i0GSndWN8K8nDV
-         i1U5bV+oSrj7jE7GVNvzaMTw27RXbbdZTNd95rRqjl/OrefxQApaoHOdJNUAuctQHTIK
-         qWLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUjqtNDJnH+RiCPeprWuKUpU/4OTOIxXRqy46sh0PgOizs37JTV7CBMNPT7GbaHy7nEvlnxCHCr/rgL26zukA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8qXQAv+q8rUbaXvDAR71/6Tv963CqARjdqTO0HTQB5usZYoQx
-	IIOsXNgVmrK7xQrh187ojZSjNAHZOi3RBCibcUEp0i7kfzoz02msfn4/fDSEkIx37vi/Rda+Ez9
-	+Ap8Hp5ndpm4X3VoC1wtuwv5Vvkt8YYA4RSntCeD13mW0Ktg8eBLASlM=
-X-Google-Smtp-Source: AGHT+IFXwvIR8Y5vDZJu1HcEo1sYAmhe4IxQ2/lHtkREqhjv+6JvENalhRxL3qxuNwTig7EwWKnTRvQ8Ovznu/iirQZC5OEkbQe4
+	s=arc-20240116; t=1738767380; c=relaxed/simple;
+	bh=suedBXgOqsaza0cIwFzD3Owz5wVb4B1ExCnNEwxoNQA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TtXIdHJarWgIUtI9QSdybNg+wqKAOL3tZwgTcTKKubelAtJoZ8OOgzSx3nGBH6boCWxTu7eKtQNrNUF/oBr/79SPQlUP2Bx/AeVKO5Ni1HIJMJJ+d1Rxurz+wq0yosq4EYe6rbNNc5z1OTVsOAHayEBB2B6b+9y1+BLdivKL8m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JRe9tQzk; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JRe9tQzk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 460F9C4CED6;
+	Wed,  5 Feb 2025 14:56:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738767380;
+	bh=suedBXgOqsaza0cIwFzD3Owz5wVb4B1ExCnNEwxoNQA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=JRe9tQzkmvWDHjDL2iuLBDftpLwZZCIl2tHZe2Ysp9W66/tQvzPyh/qj6NljELKmx
+	 POiX8/eCF1gDJ3uWkFfQGn0XqpILtxmCw8x9vdVvht8mpeudaOkQJ889Lfbr8wt6Tq
+	 aFGKVoLegxEV/5GDLOtQeSg1yPuuPAnCVlFv5xxUAMFqHTUhuKZxLO+lMaPbrOgu+T
+	 dCI6Nq4t0uQDSAFqKdu4x5RQUJacZkNFovbiCN79xSRwBc0CzCauapzmgVHs9XK0/K
+	 wCl69QoPgRib9ymyGBZNvdu6guxv7wV4WJW/p9Fa0k3MkVTDGdHsnZpxfa71a16hn2
+	 kBKbtxEe/nRkA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E405CCE0749; Wed,  5 Feb 2025 06:56:19 -0800 (PST)
+Date: Wed, 5 Feb 2025 06:56:19 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>
+Cc: akpm@linux-foundation.org, josh@joshtriplett.org,
+	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	rcu@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [rcu?] [bcachefs?] BUG: unable to handle kernel NULL
+ pointer dereference in rcu_core (3)
+Message-ID: <9694d40a-072e-47c2-a950-3b258bbe04f5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <67a2b20a.050a0220.50516.0003.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2688:b0:3d0:2b88:116c with SMTP id
- e9e14a558f8ab-3d04f45aff3mr16373135ab.10.1738745524471; Wed, 05 Feb 2025
- 00:52:04 -0800 (PST)
-Date: Wed, 05 Feb 2025 00:52:04 -0800
-In-Reply-To: <677b4e8d.050a0220.380ff0.0022.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67a326b4.050a0220.50516.0013.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] INFO: task hung in bch2_btree_node_update_key
- (2)
-From: syzbot <syzbot+5ef4c078ccd6970db1b6@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	peterz@infradead.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67a2b20a.050a0220.50516.0003.GAE@google.com>
 
-syzbot suspects this issue was fixed by commit:
+On Tue, Feb 04, 2025 at 04:34:18PM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    0de63bb7d919 Merge tag 'pull-fix' of git://git.kernel.org/..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10faf5f8580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1909f2f0d8e641ce
+> dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b69d18580000
+> 
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-0de63bb7.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/1142009a30a7/vmlinux-0de63bb7.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/5d9e46a8998d/bzImage-0de63bb7.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/526692501242/mount_0.gz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
+> 
+>  slab radix_tree_node start ffff88803bf382c0 pointer offset 24 size 576
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> #PF: supervisor instruction fetch in kernel mode
+> #PF: error_code(0x0010) - not-present page
+> PGD 0 P4D 0 
+> Oops: Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
+> CPU: 0 UID: 0 PID: 5705 Comm: syz-executor Not tainted 6.14.0-rc1-syzkaller-00020-g0de63bb7d919 #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+> RIP: 0010:0x0
+> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+> RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
+> RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
+> RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
+> RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
+> R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
+> R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
+> FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <IRQ>
+>  rcu_do_batch kernel/rcu/tree.c:2546 [inline]
 
-commit 66951e4860d3c688bfa550ea4a19635b57e00eca
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Mon Jan 13 12:50:11 2025 +0000
+The usual way that this happens is that someone clobbers the rcu_head
+structure of something that has been passed to call_rcu().  The most
+popular way of clobbering this structure is to pass the same something to
+call_rcu() twice in a row, but other creative arrangements are possible.
 
-    sched/fair: Fix update_cfs_group() vs DELAY_DEQUEUE
+Building your kernel with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y can usually
+spot invoking call_rcu() twice in a row.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11336318580000
-start commit:   56e6a3499e14 Merge tag 'trace-v6.13-rc5' of git://git.kern..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ba7cde9482d6bb6
-dashboard link: https://syzkaller.appspot.com/bug?extid=5ef4c078ccd6970db1b6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=144666c4580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1244e8b0580000
+							Thanx, Paul
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: sched/fair: Fix update_cfs_group() vs DELAY_DEQUEUE
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>  rcu_core+0xaaa/0x17a0 kernel/rcu/tree.c:2802
+>  handle_softirqs+0x2d4/0x9b0 kernel/softirq.c:561
+>  __do_softirq kernel/softirq.c:595 [inline]
+>  invoke_softirq kernel/softirq.c:435 [inline]
+>  __irq_exit_rcu+0xf7/0x220 kernel/softirq.c:662
+>  irq_exit_rcu+0x9/0x30 kernel/softirq.c:678
+>  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
+>  sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1049
+>  </IRQ>
+>  <TASK>
+>  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+> RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+> RIP: 0010:_raw_spin_unlock_irqrestore+0xd8/0x140 kernel/locking/spinlock.c:194
+> Code: 9c 8f 44 24 20 42 80 3c 23 00 74 08 4c 89 f7 e8 fe 78 2d f6 f6 44 24 21 02 75 52 41 f7 c7 00 02 00 00 74 01 fb bf 01 00 00 00 <e8> c3 0f 95 f5 65 8b 05 d4 58 0b 74 85 c0 74 43 48 c7 04 24 0e 36
+> RSP: 0018:ffffc900030fef60 EFLAGS: 00000206
+> RAX: 23438dd059a4b100 RBX: 1ffff9200061fdf0 RCX: ffffffff819b316a
+> RDX: dffffc0000000000 RSI: ffffffff8c0aa680 RDI: 0000000000000001
+> RBP: ffffc900030feff8 R08: ffffffff942f9847 R09: 1ffffffff285f308
+> R10: dffffc0000000000 R11: fffffbfff285f309 R12: dffffc0000000000
+> R13: 1ffff9200061fdec R14: ffffc900030fef80 R15: 0000000000000246
+>  spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
+>  rmqueue_bulk mm/page_alloc.c:2329 [inline]
+>  __rmqueue_pcplist+0x21fd/0x2a90 mm/page_alloc.c:3004
+>  rmqueue_pcplist mm/page_alloc.c:3046 [inline]
+>  rmqueue mm/page_alloc.c:3077 [inline]
+>  get_page_from_freelist+0x886/0x37a0 mm/page_alloc.c:3474
+>  __alloc_frozen_pages_noprof+0x292/0x710 mm/page_alloc.c:4739
+>  alloc_pages_mpol+0x311/0x660 mm/mempolicy.c:2270
+>  folio_alloc_mpol_noprof mm/mempolicy.c:2289 [inline]
+>  vma_alloc_folio_noprof+0x12b/0x260 mm/mempolicy.c:2324
+>  folio_prealloc+0x2e/0x170
+>  wp_page_copy mm/memory.c:3435 [inline]
+>  do_wp_page+0x1253/0x49b0 mm/memory.c:3827
+>  handle_pte_fault mm/memory.c:5905 [inline]
+>  __handle_mm_fault+0x24d5/0x70f0 mm/memory.c:6032
+>  handle_mm_fault+0x3e5/0x8d0 mm/memory.c:6201
+>  do_user_addr_fault arch/x86/mm/fault.c:1388 [inline]
+>  handle_page_fault arch/x86/mm/fault.c:1480 [inline]
+>  exc_page_fault+0x2b9/0x8b0 arch/x86/mm/fault.c:1538
+>  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+> RIP: 0010:__put_user_4+0x11/0x20 arch/x86/lib/putuser.S:88
+> Code: 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 48 89 cb 48 c1 fb 3f 48 09 d9 0f 01 cb <89> 01 31 c9 0f 01 ca c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90 90
+> RSP: 0018:ffffc900030fff00 EFLAGS: 00050202
+> RAX: 0000000000000005 RBX: 0000000000000000 RCX: 00005555679927d0
+> RDX: 0000000000000000 RSI: ffffffff8c0ab8e0 RDI: ffffffff8c608a00
+> RBP: ffff888000dfcf20 R08: ffffffff901b5177 R09: 1ffffffff2036a2e
+> R10: dffffc0000000000 R11: fffffbfff2036a2f R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000005 R15: dffffc0000000000
+>  schedule_tail+0x96/0xb0 kernel/sched/core.c:5312
+>  ret_from_fork+0x24/0x80 arch/x86/kernel/process.c:144
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>  </TASK>
+> Modules linked in:
+> CR2: 0000000000000000
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:0x0
+> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+> RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
+> RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
+> RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
+> RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
+> R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
+> R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
+> FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess):
+>    0:	9c                   	pushf
+>    1:	8f 44 24 20          	pop    0x20(%rsp)
+>    5:	42 80 3c 23 00       	cmpb   $0x0,(%rbx,%r12,1)
+>    a:	74 08                	je     0x14
+>    c:	4c 89 f7             	mov    %r14,%rdi
+>    f:	e8 fe 78 2d f6       	call   0xf62d7912
+>   14:	f6 44 24 21 02       	testb  $0x2,0x21(%rsp)
+>   19:	75 52                	jne    0x6d
+>   1b:	41 f7 c7 00 02 00 00 	test   $0x200,%r15d
+>   22:	74 01                	je     0x25
+>   24:	fb                   	sti
+>   25:	bf 01 00 00 00       	mov    $0x1,%edi
+> * 2a:	e8 c3 0f 95 f5       	call   0xf5950ff2 <-- trapping instruction
+>   2f:	65 8b 05 d4 58 0b 74 	mov    %gs:0x740b58d4(%rip),%eax        # 0x740b590a
+>   36:	85 c0                	test   %eax,%eax
+>   38:	74 43                	je     0x7d
+>   3a:	48                   	rex.W
+>   3b:	c7                   	.byte 0xc7
+>   3c:	04 24                	add    $0x24,%al
+>   3e:	0e                   	(bad)
+>   3f:	36                   	ss
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
