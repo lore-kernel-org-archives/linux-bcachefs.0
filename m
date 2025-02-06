@@ -1,39 +1,39 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4512383A5
-	for <linux-bcachefs@vger.kernel.org>; Thu,  6 Feb 2025 01:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF6A2AC17
+	for <linux-bcachefs@vger.kernel.org>; Thu,  6 Feb 2025 01:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738805359; cv=none; b=rjDKudktqJdEiEJCHOt1WomU0RsGC/Oky0dcLjA9imriJq/QiPP90LgoppODurPcRuriC0G5qCpdZNS+fAZ9kI+XgJFthxp6lJemrAG4+V9MslmK4UOlXGxNkTq1sKhWMza0DENSCywfheMyxJNYbE4pznVxb5nHMFVPvQMoxOk=
+	t=1738805359; cv=none; b=ua6OocP+xHVYxl88iaRP5579O4viwQp/aOKVLaDPk8YpOlFxu1CfU5YQLkVjebg9Ojvh8FQ7gt6LMhsTQWjajVwnKoSU4euHLjR+mLhbDo4puyflWbzdX1p+jGvNREaMUNNmKPQJKkgSf+SWIyhEtEZZahiU4saNv33wrEyc5js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1738805359; c=relaxed/simple;
-	bh=m4rMq7wJxLDeaBihV874/Gzwbd8liqXLuQg0kHzihwY=;
+	bh=p9EU3hKQgpQtG/fnF/W7aq5R2f7ecTkyZgu8WgFMoGY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EClKO4U1AZmyUYqyXpL+isfc9hCVm/ei1ucptkZTZ/P4VikjE9CgE+A8Sk+AYbebDAqFPEuI5GaP1ERZxgf/OLmMwSOiK/NnoH7prEfMrbEVF6vKMKBzPUgFiFjHsDqBGSAUwAME+U/2q9+B3uoVrTSXDmZXPQplODDE5cSKNRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UdvMbaNn; arc=none smtp.client-ip=91.218.175.179
+	 MIME-Version; b=DnMeVQyG9aii7uKeBIEoPidmM/n0vJ24XfvJwXHPMpIzTeUi6tjVReH+IpvnJAIgi6dNEQjPhxtsv5DHj1pGatdqK7zqqKJoxUe04S37lGjOjXzewUkKvaYo8cuXwmRWi0foM1QSSLl444NwBsSAbT8DLjTcIFLeVcojiGbPWH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=A3/P2rhb; arc=none smtp.client-ip=91.218.175.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UdvMbaNn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A3/P2rhb"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738805354;
+	t=1738805356;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9Kdw/zsnfEBuwVw8h0YnYWRpQtouWFk5oLfIUZpUsdk=;
-	b=UdvMbaNnDZuG07zJPdft0NW8rzu1vBN9oxMz2kyVLiUOyAixctIehu28Pu4V1unGCupCpY
-	uFO0Y6RrTzWbIYsLz+GiO3wjsGX6liAczClypXiocoKgH4mFevFWqQ79WRxc/zm+3EsFE6
-	5k9kXKqsuUvkYrN/nzYtua1hIgP6sYw=
+	bh=pydqTVGCm9v6Ipr2v/C2B0HSzOSw1NWBjyDyaBd/RbI=;
+	b=A3/P2rhbjfMD16HKNdsfvP8o/ibV2io8BkchU87/il3gFnnE+kZ1FN3eGxADzocHDkTqho
+	FwBE1XIGRy2EiWjapbBfDuoyqhymVmkfpX/b2/rOIGO0CFa0wf+wnIbQn9gaAiQ2zip5GE
+	9bsAMtRW7ZzdoznEDWZoOc3mUtnl708=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org,
 	linux-kerenl@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/5] bcachefs: Kill journal_res.idx
-Date: Wed,  5 Feb 2025 20:28:47 -0500
-Message-ID: <20250206012852.1658754-3-kent.overstreet@linux.dev>
+Subject: [PATCH 4/5] bcachefs: Free journal bufs when not in use
+Date: Wed,  5 Feb 2025 20:28:49 -0500
+Message-ID: <20250206012852.1658754-5-kent.overstreet@linux.dev>
 In-Reply-To: <20250206012852.1658754-1-kent.overstreet@linux.dev>
 References: <20250206012852.1658754-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -45,92 +45,201 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-More dead code.
+Since we're increasing the number of 'struct journal_bufs', we don't
+want them all permanently holding onto buffers for the journal data -
+that'd be 16 * 2MB = 32MB, or potentially more.
+
+Add a single-element mempool (open coded, since buffer size varies),
+this also means we won't be hitting the memory allocator every time we
+open and close a journal entry/buffer.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/journal.c       |  2 +-
- fs/bcachefs/journal.h       | 11 ++++++-----
- fs/bcachefs/journal_types.h |  1 -
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ fs/bcachefs/journal.c       | 63 +++++++++++++++++++++++++++++++------
+ fs/bcachefs/journal_io.c    | 15 ++++++++-
+ fs/bcachefs/journal_types.h |  3 ++
+ 3 files changed, 70 insertions(+), 11 deletions(-)
 
 diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
-index da64a73704ff..20b748f61b21 100644
+index 20b748f61b21..8fbdb0bbb536 100644
 --- a/fs/bcachefs/journal.c
 +++ b/fs/bcachefs/journal.c
-@@ -306,7 +306,7 @@ static void __journal_entry_close(struct journal *j, unsigned closed_val, bool t
+@@ -58,9 +58,12 @@ static void bch2_journal_buf_to_text(struct printbuf *out, struct journal *j, u6
  
- 	bch2_journal_space_available(j);
+ 	prt_printf(out, "refcount:\t%u\n", journal_state_count(s, i));
  
--	__bch2_journal_buf_put(j, old.idx, le64_to_cpu(buf->data->seq));
-+	__bch2_journal_buf_put(j, le64_to_cpu(buf->data->seq));
+-	prt_printf(out, "size:\t");
+-	prt_human_readable_u64(out, vstruct_bytes(buf->data));
+-	prt_newline(out);
++	struct jset *data = READ_ONCE(buf->data);
++	if (data) {
++		prt_printf(out, "size:\t");
++		prt_human_readable_u64(out, vstruct_bytes(data));
++		prt_newline(out);
++	}
+ 
+ 	prt_printf(out, "expires:\t");
+ 	prt_printf(out, "%li jiffies\n", buf->expires - jiffies);
+@@ -398,8 +401,16 @@ static int journal_entry_open(struct journal *j)
+ 		return JOURNAL_ERR_insufficient_devices; /* -EROFS */
+ 	}
+ 
++	if (!j->free_buf && !buf->data)
++		return JOURNAL_ERR_enomem; /* will retry after write completion frees up a buf */
++
+ 	BUG_ON(!j->cur_entry_sectors);
+ 
++	if (!buf->data) {
++		swap(buf->data,		j->free_buf);
++		swap(buf->buf_size,	j->free_buf_size);
++	}
++
+ 	buf->expires		=
+ 		(journal_cur_seq(j) == j->flushed_seq_ondisk
+ 		 ? jiffies
+@@ -514,6 +525,33 @@ static void journal_write_work(struct work_struct *work)
+ 	spin_unlock(&j->lock);
  }
  
- void bch2_journal_halt(struct journal *j)
-diff --git a/fs/bcachefs/journal.h b/fs/bcachefs/journal.h
-index 107f7f901cd9..1e5fcfe3624a 100644
---- a/fs/bcachefs/journal.h
-+++ b/fs/bcachefs/journal.h
-@@ -193,7 +193,7 @@ bch2_journal_add_entry_noreservation(struct journal_buf *buf, size_t u64s)
- static inline struct jset_entry *
- journal_res_entry(struct journal *j, struct journal_res *res)
++static void journal_buf_prealloc(struct journal *j)
++{
++	if (j->free_buf &&
++	    j->free_buf_size >= j->buf_size_want)
++		return;
++
++	unsigned buf_size = j->buf_size_want;
++
++	spin_unlock(&j->lock);
++	void *buf = kvmalloc(buf_size, GFP_NOFS);
++	spin_lock(&j->lock);
++
++	if (buf &&
++	    (!j->free_buf ||
++	     buf_size > j->free_buf_size)) {
++		swap(buf,	j->free_buf);
++		swap(buf_size,	j->free_buf_size);
++	}
++
++	if (unlikely(buf)) {
++		spin_unlock(&j->lock);
++		/* kvfree can sleep */
++		kvfree(buf);
++		spin_lock(&j->lock);
++	}
++}
++
+ static int __journal_res_get(struct journal *j, struct journal_res *res,
+ 			     unsigned flags)
  {
--	return vstruct_idx(j->buf[res->idx].data, res->offset);
-+	return vstruct_idx(j->buf[res->seq & JOURNAL_BUF_MASK].data, res->offset);
+@@ -544,6 +582,8 @@ static int __journal_res_get(struct journal *j, struct journal_res *res,
+ 
+ 	spin_lock(&j->lock);
+ 
++	journal_buf_prealloc(j);
++
+ 	/*
+ 	 * Recheck after taking the lock, so we don't race with another thread
+ 	 * that just did journal_entry_open() and call bch2_journal_entry_close()
+@@ -951,7 +991,8 @@ static void __bch2_journal_block(struct journal *j)
+ 			new.cur_entry_offset = JOURNAL_ENTRY_BLOCKED_VAL;
+ 		} while (!atomic64_try_cmpxchg(&j->reservations.counter, &old.v, new.v));
+ 
+-		journal_cur_buf(j)->data->u64s = cpu_to_le32(old.cur_entry_offset);
++		if (old.cur_entry_offset < JOURNAL_ENTRY_BLOCKED_VAL)
++			journal_cur_buf(j)->data->u64s = cpu_to_le32(old.cur_entry_offset);
+ 	}
  }
  
- static inline unsigned journal_entry_init(struct jset_entry *entry, unsigned type,
-@@ -267,8 +267,9 @@ bool bch2_journal_entry_close(struct journal *);
- void bch2_journal_do_writes(struct journal *);
- void bch2_journal_buf_put_final(struct journal *, u64);
+@@ -1474,6 +1515,7 @@ void bch2_fs_journal_exit(struct journal *j)
  
--static inline void __bch2_journal_buf_put(struct journal *j, unsigned idx, u64 seq)
-+static inline void __bch2_journal_buf_put(struct journal *j, u64 seq)
- {
-+	unsigned idx = seq & JOURNAL_BUF_MASK;
- 	union journal_res_state s;
- 
- 	s = journal_state_buf_put(j, idx);
-@@ -276,8 +277,9 @@ static inline void __bch2_journal_buf_put(struct journal *j, unsigned idx, u64 s
- 		bch2_journal_buf_put_final(j, seq);
+ 	for (unsigned i = 0; i < ARRAY_SIZE(j->buf); i++)
+ 		kvfree(j->buf[i].data);
++	kvfree(j->free_buf);
+ 	free_fifo(&j->pin);
  }
  
--static inline void bch2_journal_buf_put(struct journal *j, unsigned idx, u64 seq)
-+static inline void bch2_journal_buf_put(struct journal *j, u64 seq)
- {
-+	unsigned idx = seq & JOURNAL_BUF_MASK;
- 	union journal_res_state s;
+@@ -1500,13 +1542,13 @@ int bch2_fs_journal_init(struct journal *j)
+ 	if (!(init_fifo(&j->pin, JOURNAL_PIN, GFP_KERNEL)))
+ 		return -BCH_ERR_ENOMEM_journal_pin_fifo;
  
- 	s = journal_state_buf_put(j, idx);
-@@ -306,7 +308,7 @@ static inline void bch2_journal_res_put(struct journal *j,
- 				       BCH_JSET_ENTRY_btree_keys,
- 				       0, 0, 0);
+-	for (unsigned i = 0; i < ARRAY_SIZE(j->buf); i++) {
+-		j->buf[i].buf_size = JOURNAL_ENTRY_SIZE_MIN;
+-		j->buf[i].data = kvmalloc(j->buf[i].buf_size, GFP_KERNEL);
+-		if (!j->buf[i].data)
+-			return -BCH_ERR_ENOMEM_journal_buf;
++	j->free_buf_size = j->buf_size_want = JOURNAL_ENTRY_SIZE_MIN;
++	j->free_buf = kvmalloc(j->free_buf_size, GFP_KERNEL);
++	if (!j->free_buf)
++		return -BCH_ERR_ENOMEM_journal_buf;
++
++	for (unsigned i = 0; i < ARRAY_SIZE(j->buf); i++)
+ 		j->buf[i].idx = i;
+-	}
  
--	bch2_journal_buf_put(j, res->idx, res->seq);
-+	bch2_journal_buf_put(j, res->seq);
+ 	j->pin.front = j->pin.back = 1;
  
- 	res->ref = 0;
- }
-@@ -361,7 +363,6 @@ static inline int journal_res_get_fast(struct journal *j,
- 				       &old.v, new.v));
+@@ -1556,6 +1598,7 @@ void __bch2_journal_debug_to_text(struct printbuf *out, struct journal *j)
+ 	prt_printf(out, "average write size:\t");
+ 	prt_human_readable_u64(out, nr_writes ? div64_u64(j->entry_bytes_written, nr_writes) : 0);
+ 	prt_newline(out);
++	prt_printf(out, "free buf:\t%u\n",			j->free_buf ? j->free_buf_size : 0);
+ 	prt_printf(out, "nr direct reclaim:\t%llu\n",		j->nr_direct_reclaim);
+ 	prt_printf(out, "nr background reclaim:\t%llu\n",	j->nr_background_reclaim);
+ 	prt_printf(out, "reclaim kicked:\t%u\n",		j->reclaim_kicked);
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index f2ff28e6697c..3ff6563b7dd2 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -1640,6 +1640,19 @@ static CLOSURE_CALLBACK(journal_write_done)
+ 		j->err_seq	= seq;
+ 	w->write_done = true;
  
- 	res->ref	= true;
--	res->idx	= old.idx;
- 	res->offset	= old.cur_entry_offset;
- 	res->seq	= le64_to_cpu(j->buf[old.idx].data->seq);
- 	return 1;
++	if (!j->free_buf || j->free_buf_size < w->buf_size) {
++		swap(j->free_buf,	w->data);
++		swap(j->free_buf_size,	w->buf_size);
++	}
++
++	if (w->data) {
++		spin_unlock(&j->lock);
++		kvfree(w->data);
++		w->data = NULL;
++		w->buf_size = 0;
++		spin_lock(&j->lock);
++	}
++
+ 	bool completed = false;
+ 
+ 	for (seq = journal_last_unwritten_seq(j);
+@@ -1649,7 +1662,7 @@ static CLOSURE_CALLBACK(journal_write_done)
+ 		if (!w->write_done)
+ 			break;
+ 
+-		if (!j->err_seq && !JSET_NO_FLUSH(w->data)) {
++		if (!j->err_seq && !w->noflush) {
+ 			j->flushed_seq_ondisk = seq;
+ 			j->last_seq_ondisk = w->last_seq;
+ 
 diff --git a/fs/bcachefs/journal_types.h b/fs/bcachefs/journal_types.h
-index e38a3d93b17d..6a098c7e3f2e 100644
+index 6a098c7e3f2e..cd8440868d38 100644
 --- a/fs/bcachefs/journal_types.h
 +++ b/fs/bcachefs/journal_types.h
-@@ -79,7 +79,6 @@ struct journal_entry_pin {
+@@ -153,6 +153,7 @@ enum journal_flags {
+ 	x(journal_full)			\
+ 	x(journal_pin_full)		\
+ 	x(journal_stuck)		\
++	x(enomem)			\
+ 	x(insufficient_devices)
  
- struct journal_res {
- 	bool			ref;
--	u8			idx;
- 	u16			u64s;
- 	u32			offset;
- 	u64			seq;
+ enum journal_errors {
+@@ -215,6 +216,8 @@ struct journal {
+ 	 * other is possibly being written out.
+ 	 */
+ 	struct journal_buf	buf[JOURNAL_BUF_NR];
++	void			*free_buf;
++	unsigned		free_buf_size;
+ 
+ 	spinlock_t		lock;
+ 
 -- 
 2.45.2
 
