@@ -1,68 +1,75 @@
-Received: from njjs-sys-mailin01.njjs.baidu.com (mx310.baidu.com [180.101.52.44])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D746115FD13
-	for <linux-bcachefs@vger.kernel.org>; Fri,  7 Feb 2025 06:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.101.52.44
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0285318BC1D
+	for <linux-bcachefs@vger.kernel.org>; Fri,  7 Feb 2025 06:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738911063; cv=none; b=R2xmdEipQeN1zPsyT1CvTTTGYwzGMnS/nKkNVIFaAq1pVOO9ifm8X4s9g5K/OY2DnOMQlfqu/cLgxu6uETZsXEv5Al901G7OaT8Jead0Sv2caZk3BzfwFo/qLiwudnZ0yZ1X2uPKjR/QxuLxe0WKb5U707EF8fLifbINH+Ub33Q=
+	t=1738911106; cv=none; b=JrEtdaBDtkk3tiGM0JmHGwRzdqgKKIV7ccSgjk7zbx3XvgCvlIJkZinsiiE40ne+NucwPAHbMXpluObeJCyiLZ7whQ5BcU0FHi2C3rOYvXfqS7Fa4wS00X6rK4TriuLDYSoWCo19TWNxT1yOTp2T6VvrkIKw5EgQz/euhe0jlyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738911063; c=relaxed/simple;
-	bh=QUI8aa9QsS4j+0agCBR0eTA8d80PqJO2MNf/Q2uyWmo=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=ZIxCcP9+D+dlWhFN9K7njrgHGuqumOWi343mbxarH64QG+QYUs1fq5kQ/UL8WCtyQR8uV1yYcFg606Ub7FjReXVyhztiXI3qEwnFHvJqMLeBsZcDuGiv8gXvC9EyU7hs2GGAvj7r70iV7mHs9R2wr1OkXYECBUMLhoov9LlDByg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; arc=none smtp.client-ip=180.101.52.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
-Received: from localhost (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
-	by njjs-sys-mailin01.njjs.baidu.com (Postfix) with ESMTP id 580C77F00049;
-	Fri,  7 Feb 2025 14:41:04 +0800 (CST)
-From: Li RongQing <lirongqing@baidu.com>
-To: linux-bcachefs@vger.kernel.org
-Cc: Li RongQing <lirongqing@baidu.com>
-Subject: [PATCH] bcachefs: use kvfree_rcu to simplify the code
-Date: Fri,  7 Feb 2025 14:41:02 +0800
-Message-Id: <20250207064102.45568-1-lirongqing@baidu.com>
-X-Mailer: git-send-email 2.9.4
+	s=arc-20240116; t=1738911106; c=relaxed/simple;
+	bh=xh8ZM3QFkkSk+FOMf+3c0vTZV18zOe9kyuRrvfP61IA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I1r2zTQOA1IidEeRd38GCAA9DppixeJvXmfKp6MngAEMPxFpsZmrE6T5zmX3ZL6dFUKn0oKop1mwThWT3Ugy5FG7B9VkkkhyEASv2tTvA7SZsKPN1mAmTqHHimtyLoe18B7Rb+lc03RrejGf2FvATHK/uJUGjmFyYwJyZhDvvBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jbR3vVtS; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jbR3vVtS"
+Date: Fri, 7 Feb 2025 01:51:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738911088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tqkw7E8iW/wES+Hraomqy4dQ/FgA7hv7hZ59Xs56vO4=;
+	b=jbR3vVtSYanJASGOtIvu3UUK2uJsV3dp7GUOhAsHPo2EaYUkES3FhKIz1dns29fbGShb/i
+	jR7B5bNsZFibJK0oA5hlpBUqbasgozVKfew9gpTIizSaq9H9A8iV1CiSXvwMmbjmqjo0M1
+	2etK59nIiUX8Q6CISpdX6yGKhBs1UZY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: NeilBrown <neilb@suse.de>
+Cc: Christian Brauner <brauner@kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Danilo Krummrich <dakr@kernel.org>, Trond Myklebust <trondmy@kernel.org>, 
+	Anna Schumaker <anna@kernel.org>, Namjae Jeon <linkinjeon@kernel.org>, 
+	Steve French <sfrench@samba.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	Tom Talpey <tom@talpey.com>, Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, 
+	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, audit@vger.kernel.org
+Subject: Re: [PATCH 1/2] VFS: change kern_path_locked() and
+ user_path_locked_at() to never return negative dentry
+Message-ID: <lfzaikkzt46fatqzqjeanxx2m2cwll46mqdcbizph22cck6stw@rhdne3332qdx>
+References: <>
+ <7mxksfnkamzqromejfknfsat6cah4taggprj3wxdoputvvwc7f@qnjsm36bsrex>
+ <173891006340.22054.12479197204884946914@noble.neil.brown.name>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <173891006340.22054.12479197204884946914@noble.neil.brown.name>
+X-Migadu-Flow: FLOW_OUT
 
-The callback function of call_rcu() just calls kvfree(). So, use
-kvfree_rcu() instead of call_rcu() + callback function.
+On Fri, Feb 07, 2025 at 05:34:23PM +1100, NeilBrown wrote:
+> On Fri, 07 Feb 2025, Kent Overstreet wrote:
+> > On Fri, Feb 07, 2025 at 03:53:52PM +1100, NeilBrown wrote:
+> > > Do you think there could be a problem with changing the error returned
+> > > in this circumstance? i.e. if you try to destroy a subvolume with a
+> > > non-existant name on a different filesystem could getting -ENOENT
+> > > instead of -EXDEV be noticed?
+> > 
+> > -EXDEV is the standard error code for "we're crossing a filesystem
+> > boundary and we can't or aren't supposed to be", so no, let's not change
+> > that.
+> > 
+> 
+> OK.  As bcachefs is the only user of user_path_locked_at() it shouldn't
+> be too hard.
 
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
----
- fs/bcachefs/buckets.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
-index 345b117a4..6d236fa 100644
---- a/fs/bcachefs/buckets.c
-+++ b/fs/bcachefs/buckets.c
-@@ -1270,14 +1270,6 @@ int bch2_buckets_nouse_alloc(struct bch_fs *c)
- 	return 0;
- }
- 
--static void bucket_gens_free_rcu(struct rcu_head *rcu)
--{
--	struct bucket_gens *buckets =
--		container_of(rcu, struct bucket_gens, rcu);
--
--	kvfree(buckets);
--}
--
- int bch2_dev_buckets_resize(struct bch_fs *c, struct bch_dev *ca, u64 nbuckets)
- {
- 	struct bucket_gens *bucket_gens = NULL, *old_bucket_gens = NULL;
-@@ -1322,7 +1314,7 @@ int bch2_dev_buckets_resize(struct bch_fs *c, struct bch_dev *ca, u64 nbuckets)
- 	ret = 0;
- err:
- 	if (bucket_gens)
--		call_rcu(&bucket_gens->rcu, bucket_gens_free_rcu);
-+		kvfree_rcu(bucket_gens, rcu);
- 
- 	return ret;
- }
--- 
-2.9.4
-
+Hang on, why does that require keeping user_path_locked_at()? Just
+compare i_sb...
