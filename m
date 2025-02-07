@@ -1,114 +1,64 @@
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F8342069
-	for <linux-bcachefs@vger.kernel.org>; Fri,  7 Feb 2025 22:07:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F2E8479;
+	Fri,  7 Feb 2025 22:25:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738966032; cv=none; b=GXNSY3KF2DqZeeXBmyfM9C21Fngea4HMhDlHgppTLqZ+y75LMQ4G5VN0YqJvARNMC0C58cqkZcDIbw2d/OJdsQkkzJcMTOQr0hFYQ9Cn490nf8LCTLm81KhC0oeQ6XNpxIXTTjfPy0vteFMkMpUYw/iOr3kwkcng2NHhPRbcJ6c=
+	t=1738967126; cv=none; b=pZIUiemfeRSmjBowUyr6y0HQ1exo9wF+RQ2baa0w9BBFUvp6hLNowE0YPaEQJF161ScNf3klplencr2hF8wZu0b4WZi8ESmI6GkQ9OjvZQHDULKn//YU612IX4Iyi27BqZ4OUSEObI3Z74Jks86ppQyWSnKN73mynJh5ArGiS50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738966032; c=relaxed/simple;
-	bh=zVjyVpEwahYgt3SEF0BgSMZY7oAQhqvSjkG1s2m/zvk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LIH7tg+LoncYMhxTl/hz+AOxAtuGUNM4cyj37ZSWf8AQLvjKDcexhmtCvldv3xsnSjrNqKXV93/otfEoFL1sSqqsYRuXFVMlFM5trGH98Boh70Lm7IKoxHjrsQvUHK6F+fvbEo5AQCkNIy+7+A7eSVhGkWGZE8bM1OUjeYidReo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NeB1uvDI; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1738967126; c=relaxed/simple;
+	bh=EmXGiKJEIoO+qHojiG3dKSYpWbKio0puEzSvAHBKCMA=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=IxlnevSQQjpHlaiIuyhmncpm8Vzpmom/ReInKGtqZNXvjp/I2O5L0As3yWKLeRy010T/0lhosieodH3u3iyvYptudQv9kf31Y+/Nnb14Lp7ObcoA0HxydPisV4Mq79UQt67FzJo0h9W6MfaduvJWgKV+iE4Gmn45+4K3zjVbM2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F2GijfG8; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NeB1uvDI"
-Date: Fri, 7 Feb 2025 17:06:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738966018;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kCM+5H3mX9pSirMl0feWfw9v8RFmV75dHq/4txr4p0c=;
-	b=NeB1uvDIy3b0lXnzR/i3FaYO4aB6DZ1oyp/Fsgc9ANUai+2Lke4i6JaoxSUQPQbyqaM+FS
-	4zbr2m/pCMwhjDqTCj79PQN8h+3HbWILbhzA6eExjRfCktX4P7z+NRmlKsdW1pse9IktBk
-	I5YFLcSMm+n0MH5H1RmT064JhCcMeDY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andreas Gruenbacher <agruenba@redhat.com>
-Cc: Shuah Khan <shuah@kernel.org>, linux-bcachefs@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 00/21] bcachefs: eytzinger code
-Message-ID: <obey3ik72ztzv27ghxr3xg63v76rlzibfzdp2yad3mmm7hyirh@n7xjjk3pyt7h>
-References: <20250128163859.1883260-1-agruenba@redhat.com>
- <yoxmbxirfwr6tpl4lp3jnnb26ef3omhjna5b7p4d6522xvmnco@3eajr5hkfmhp>
- <CAHc6FU5DDKga1ma72Dnvsj23DLJ3GyMd-CM0qx83EKhvo5p2ow@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F2GijfG8"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2CF7C4CED1;
+	Fri,  7 Feb 2025 22:25:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738967126;
+	bh=EmXGiKJEIoO+qHojiG3dKSYpWbKio0puEzSvAHBKCMA=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=F2GijfG8XATGwdf9Hx/k9DnJjWC8jFM1W03GOKvKiBtSBUic6TXIIEw1uDBBSrCQ2
+	 Ex8nx5eVWcd6GebdVA8oMhR/fD6Bz+DxT7NS5ulHV/Y72REUnkhgJx8c6ZInNuSOLc
+	 KPTqM/YeWhjVX6raKZkK/ffegDuWaajE13utJS3n6qRr1UIwJeABViPnqoWFziM78F
+	 7RCou/ppH5dgpXwmTgPM3kEqyc/Obd5vhgBTqO8GopBiCfezx9cUmhM18kpDN0MfKi
+	 nVw+az8UONlwHRLVfRFIa71pA3aeKbMhtA2xywS7mSgOk3SvidPP6WKeyhvEchw9K4
+	 GMRBfEWj4/rQA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33DC0380AAEB;
+	Fri,  7 Feb 2025 22:25:55 +0000 (UTC)
+Subject: Re: Re: [GIT PULL] bcachefs fixes for 6.14-rc2
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <usxj7gse2c53ow2a3fxpoi3ygsvu6shpo3huvecih577iaq3a7@os7sfywxj2vw>
+References: <z2eszznjel6knkkvckjxvkp5feo5jhnwvls3rtk7mbt47znvcr@kvo6dhimlghe>
+ <6491ceb6-e48b-442b-ac61-7b2b65252d7a@gmail.com> <usxj7gse2c53ow2a3fxpoi3ygsvu6shpo3huvecih577iaq3a7@os7sfywxj2vw>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <usxj7gse2c53ow2a3fxpoi3ygsvu6shpo3huvecih577iaq3a7@os7sfywxj2vw>
+X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-02-06.2
+X-PR-Tracked-Commit-Id: 4be214c26936813b636eed2fac906f585ddbf0f9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 94b481f7671f412b571e4ee5e3b24f33a889812d
+Message-Id: <173896715389.2405435.11154971440726329932.pr-tracker-bot@kernel.org>
+Date: Fri, 07 Feb 2025 22:25:53 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Akira Yokosawa <akiyks@gmail.com>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHc6FU5DDKga1ma72Dnvsj23DLJ3GyMd-CM0qx83EKhvo5p2ow@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Fri, Feb 07, 2025 at 10:50:05PM +0100, Andreas Gruenbacher wrote:
-> On Fri, Feb 7, 2025 at 7:56 PM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> > On Tue, Jan 28, 2025 at 05:38:37PM +0100, Andreas Gruenbacher wrote:
-> > > Kent, to continue our discussion from last November, I've gone through
-> > > more parts of the eytzinger code and as a result, here are some patches
-> > > for you to consider.
-> > >
-> > > What I've not looked at are the eytzinger_to_inorder and
-> > > inorder_to_eytzinger functions, as well as the implementation of sort.
-> > > Those functions could use a bit more documentation, but the code iself
-> > > looks reasonable.
-> > >
-> > >
-> > > Shuah, I've also had a quick look at converting the tests into kernel
-> > > selftests, but that hasn't gone very far because of the lack of support
-> > > for basic functions like __fls(), __ffs(), ffz(), and
-> > > rounddown_pow_of_two() in selftests.  Are there any plans for making
-> > > those kinds of primitives generally available to selftests?
-> >
-> > Ping on this patchset - can you throw up a git repo that's ready to be
-> > applied directly, and have you run the test that failed yourself to
-> > confirm the fix?
-> 
-> Did you miss this message?
-> 
->   https://lore.kernel.org/linux-bcachefs/20250130103400.1899121-1-agruenba@redhat.com/
+The pull request you sent on Thu, 6 Feb 2025 22:41:47 -0500:
 
-No, I saw it.
+> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-02-06.2
 
-I'm looking for a branch that is ready to be applied as is - fixups in
-the correct place, no debug patches.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/94b481f7671f412b571e4ee5e3b24f33a889812d
 
-That way there's no confusion over exactly what is going in, and we
-elimanate a lot of the back and forth.
+Thank you!
 
-> 
-> The test results at:
-> 
->   https://evilpiepirate.org/~testdashboard/ci?user=kmo&branch=eytzinger
-> 
-> are still for the initial version, but I've applied the fix right away:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/agruen/linux.git/log/?h=bcachefs
-
-I shall point my CI at that...
-
-> On top of that, I've got a small patch that adds eytzinger0_find self
-> tests. That patch still needs testing before I can post it, though.
-> 
-> Oh, and let me warn you about "bcachefs: Run the eytzinger tests on
-> modprobe" again: this really is FOR DEBUGGING ONLY, so please do not
-> merge.
-
-Why is that in the branch? You ran the eytzinger tests, and that's for
-code that's self contained that I'm not concerned about running it
-myself (and if I did, then we'd be following up on getting it working
-with kunit now...)
-
-If you want to leave it in the branch as an informational thing ("yes
-these tests were run and here's how"), it should be at the top, not the
-bottom, so that when I take it out I still have a subset that's an exact
-match (to the sha1) of something you've been working with and testing.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
