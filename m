@@ -1,75 +1,155 @@
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49D310E5
-	for <linux-bcachefs@vger.kernel.org>; Fri,  7 Feb 2025 18:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7F423C8B4
+	for <linux-bcachefs@vger.kernel.org>; Fri,  7 Feb 2025 19:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738954601; cv=none; b=gXrUWpVbfdk40PjHVez+NsPWtGDgfBv0VPE2iG1chzyxtSVGE6y6z5LWfDXlEtAkXZ3LJg4r+oBAZ+K9yoxcTiCsQETIiEgeXuhsiiIahwrrz2+xF03xWppPZxKGQUqAV+Fmnd9ayjzSbdYezQZfdBTvnumHN67o/uZHQu9EAjw=
+	t=1738955409; cv=none; b=fNOVzWaDgQMJrax5oXh6EKesnnD9SkN8uYCZAuBa/P/ZZzfA/jXJknFYe53ZF8wiwdlFSxabWTyzW30Q2EeV/Y+97hdsgAgR49vk2ACTLn7OCk3tJSc9GG2FKuUNBLhw1LFlDRsGhbJQEXmV29k+jn4DE8eqtUkDHoKwrYxvSYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738954601; c=relaxed/simple;
-	bh=diQDvFQSa5BnXCI9tgexajlSRSDIGloEhyAl60SeKRI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l4bLmJAxEhwReYWVfcHemG3OCWFxCLtmoTYdrAqdkBB+oJWM8rYHiERiqwgWAzNQAsDg2ml/VuXjZGNMEeOX+X5mY1I+sRSkYuKRPzNspWFzwmQRNYxw9ql1irTM72tqnBunepqDEAkOM+cSKOoWmP3YQMxAY5IJFdpQYLT7L8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oKrXbU/R; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1738955409; c=relaxed/simple;
+	bh=L3hBF+iQrBKTRIa3wKiXJJ/OQyIh4KsyTMz0Xy+5S4A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sTe7Z7cuK+4KUHt3OESg7v/3lEGFHTRIdif3iEXtyZRZmceZL7kQzLT1KxhHz98NWQvXDniTbxjytoGUotSLHPlxWxC4s5eRLmrD9J7Me1Ow3nfFmGE+3kDpmPZQ9CYHZttWEF/0vyII8FP/hHhH7Emb+mBXSrzAqPA2AYs+SzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=GKim8lt4; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oKrXbU/R"
-Date: Fri, 7 Feb 2025 13:56:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738954597;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0rfBfBAKcaBSLSzO0nBsO8xfuNf2sHer376XnOxUvrE=;
-	b=oKrXbU/RNJB7degHWZXR6m0T3c9ZwA07nmLfWjl2hjsfnBO37kr8FVMqSxCc3GIwn3FmOG
-	GK8QsLlcu04CunTDUbhuwZb5VvmyxkJK9dq0mYYhRXmbTPQeQWpMHXAkrVaA+kxglt12Mi
-	lSr4hx9PY6mT05tj3Jv+qoMmWezxrvc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andreas Gruenbacher <agruenba@redhat.com>
-Cc: Shuah Khan <shuah@kernel.org>, linux-bcachefs@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 00/21] bcachefs: eytzinger code
-Message-ID: <yoxmbxirfwr6tpl4lp3jnnb26ef3omhjna5b7p4d6522xvmnco@3eajr5hkfmhp>
-References: <20250128163859.1883260-1-agruenba@redhat.com>
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="GKim8lt4"
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6f9625c0fccso23789557b3.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 07 Feb 2025 11:10:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1738955406; x=1739560206; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Om2VSE738EF+Gy11pRhlx9VqvfBmWOXzuPiTJvCwuz4=;
+        b=GKim8lt4SXP5kCoh/4cTxGCOS0NFKc37s/H8tESJs+gNOMv7ToQFj9aCC6gXDOyZFW
+         HLxSttUGftYuYAnyZLRg40Zjxvlf+AWJp8XZhkFbbWk1U2XHw2B6BMJCaOy4FE3fPdpW
+         Unfpfmv2KhLrQ0n6jpymXy/CUq2x15XKxIBQ0mhxWAURjkNVKfJwfsEDRlZ88+bThbLy
+         S7h6oS6qz2gkxd30lZv9rMUCNFRCH6fquC2+bZCWmiLNNARvDStxMgbCi1NfsA9chIbC
+         +jyROlyUVDutZjFEJL45IVc2NMcmVq07hYptArEUCcGxbrzeWHvGJD2J5f1lTQrXqPxp
+         7fhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738955406; x=1739560206;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Om2VSE738EF+Gy11pRhlx9VqvfBmWOXzuPiTJvCwuz4=;
+        b=D3Sww7Ptn27OKDhGejxIKRQaIXE6f6isGElghg4Os3apa1TOfH7YnFRP3VECVfD/yy
+         T6FCGqY5IMI65qNOBo7tl6vBDZFoI81AG+Z8i8gWnvdc4EhSbLYW5Fvy+EkTn7zgX1mU
+         ebnbqMoQ79ESkcsDlmNVZezZTIMoOrtSLv/KxNwkIcleL9yin4IYRgRAqU3DciLTUYc7
+         eTwUr4TGYG3SNi0oy4IXwk03TmN7y3Qn2TnkBZVxCG6Yo8ToGQiTdtPxA9JhRPooCfgE
+         PGr8wiPdWSmozTfQqKnNLDdyU8nyVdp3Dc9PlfaE1e3uidDLLXGrKHL5VOhiiz47xBNm
+         8StQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUp/vJIyy/yrrN6ghCJenmTTV5BaaUt/bF9AhJobOAVnUKeBIVxdBhYbbq6MudzauXroyiIeVtk/4U4Ed/vfA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVy0trYtaC8fl46ar7Q25e8pYyJLm9R4A6U7Hcee8WwTDNquCd
+	/Bh0D9+0ViPH+skqY6xcWAkrUBx7C/tQb4M0rpB1eOrd1BmtuHAo9WQJjCxvQvFYCWi8H7Gn0Zn
+	VU/AQdoCcHJBTZG9EbhWn58sb/DDdhXYxJHdA
+X-Gm-Gg: ASbGncvcE1YcCCOJPpp01hliKWv2hL5kSQPUF7feHR/8xlf12pyfVNfL8ZmXSm6UKDa
+	Y6RvYstoUML+a3Tw195gspB0JoUCTe6qCDaIiUnhRalbe5ZPCW9mVYQrXzybUDaX/Jkr9wmU=
+X-Google-Smtp-Source: AGHT+IGK+1YaMF/yB5tZ88LHxwIuQM3/Gj8AOscWWTmOeYR+q9GoKPuGwr2TcabPJS4LqujSyvfXsbiPIUAyuUzPzSo=
+X-Received: by 2002:a05:690c:3804:b0:6f9:97bd:5a63 with SMTP id
+ 00721157ae682-6f9b2844e3cmr39923927b3.4.1738955406214; Fri, 07 Feb 2025
+ 11:10:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250128163859.1883260-1-agruenba@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20250207034040.3402438-1-neilb@suse.de> <20250207034040.3402438-2-neilb@suse.de>
+In-Reply-To: <20250207034040.3402438-2-neilb@suse.de>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 7 Feb 2025 14:09:55 -0500
+X-Gm-Features: AWEUYZl_WdQaatK919wx4Q8t6Nn6ccb6OCvCp4tV_BELcL0JYxwXteOCsEvAF2g
+Message-ID: <CAHC9VhTnVg-5C75qY8NkfKs4tjbVz62Vk=SVXS2mwH0f3ftLhQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] VFS: change kern_path_locked() and
+ user_path_locked_at() to never return negative dentry
+To: NeilBrown <neilb@suse.de>
+Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Danilo Krummrich <dakr@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
+	Namjae Jeon <linkinjeon@kernel.org>, Steve French <sfrench@samba.org>, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>, Tom Talpey <tom@talpey.com>, 
+	Eric Paris <eparis@redhat.com>, linux-kernel@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, audit@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 28, 2025 at 05:38:37PM +0100, Andreas Gruenbacher wrote:
-> Kent, to continue our discussion from last November, I've gone through
-> more parts of the eytzinger code and as a result, here are some patches
-> for you to consider.
-> 
-> What I've not looked at are the eytzinger_to_inorder and
-> inorder_to_eytzinger functions, as well as the implementation of sort.
-> Those functions could use a bit more documentation, but the code iself
-> looks reasonable.
-> 
-> 
-> Shuah, I've also had a quick look at converting the tests into kernel
-> selftests, but that hasn't gone very far because of the lack of support
-> for basic functions like __fls(), __ffs(), ffz(), and
-> rounddown_pow_of_two() in selftests.  Are there any plans for making
-> those kinds of primitives generally available to selftests?
+On Thu, Feb 6, 2025 at 10:41=E2=80=AFPM NeilBrown <neilb@suse.de> wrote:
+>
+> No callers of kern_path_locked() or user_path_locked_at() want a
+> negative dentry.  So change them to return -ENOENT instead.  This
+> simplifies callers.
+>
+> This results in a subtle change to bcachefs in that an ioctl will now
+> return -ENOENT in preference to -EXDEV.  I believe this restores the
+> behaviour to what it was prior to
+>  Commit bbe6a7c899e7 ("bch2_ioctl_subvolume_destroy(): fix locking")
+>
+> Signed-off-by: NeilBrown <neilb@suse.de>
+> ---
+>  drivers/base/devtmpfs.c | 65 +++++++++++++++++++----------------------
+>  fs/bcachefs/fs-ioctl.c  |  4 ---
+>  fs/namei.c              |  4 +++
+>  kernel/audit_watch.c    | 12 ++++----
+>  4 files changed, 40 insertions(+), 45 deletions(-)
 
-Ping on this patchset - can you throw up a git repo that's ready to be
-applied directly, and have you run the test that failed yourself to
-confirm the fix?
+...
 
-Also, I'll make an exception for this patchset if need be, but fyi:
-in the future I'm getting out of the game of running tests for people.
+> diff --git a/kernel/audit_watch.c b/kernel/audit_watch.c
+> index 7f358740e958..e3130675ee6b 100644
+> --- a/kernel/audit_watch.c
+> +++ b/kernel/audit_watch.c
+> @@ -350,11 +350,10 @@ static int audit_get_nd(struct audit_watch *watch, =
+struct path *parent)
+>         struct dentry *d =3D kern_path_locked(watch->path, parent);
+>         if (IS_ERR(d))
+>                 return PTR_ERR(d);
+> -       if (d_is_positive(d)) {
+> -               /* update watch filter fields */
+> -               watch->dev =3D d->d_sb->s_dev;
+> -               watch->ino =3D d_backing_inode(d)->i_ino;
+> -       }
+> +       /* update watch filter fields */
+> +       watch->dev =3D d->d_sb->s_dev;
+> +       watch->ino =3D d_backing_inode(d)->i_ino;
+> +
+>         inode_unlock(d_backing_inode(parent->dentry));
+>         dput(d);
+>         return 0;
+> @@ -419,7 +418,7 @@ int audit_add_watch(struct audit_krule *krule, struct=
+ list_head **list)
+>         /* caller expects mutex locked */
+>         mutex_lock(&audit_filter_mutex);
+>
+> -       if (ret) {
+> +       if (ret && ret !=3D -ENOENT) {
+>                 audit_put_watch(watch);
+>                 return ret;
+>         }
+> @@ -438,6 +437,7 @@ int audit_add_watch(struct audit_krule *krule, struct=
+ list_head **list)
+>
+>         h =3D audit_hash_ino((u32)watch->ino);
+>         *list =3D &audit_inode_hash[h];
+> +       ret =3D 0;
 
-Either run ktest locally, or get redhat to chip in on the cluster and
-I'll give you CI access (and I highly reccomend that option, it'll get
-you quick feedback with a nice dashboard and you can use it for non
-bcachefs work as well).
+If you have to respin this patch for any reason I'd prefer to move the
+'ret =3D 0' up to just after the if block you're modifying in the chunk
+above, but that's a trivial nitpick so please don't respin only for
+that.  Otherwise it looks fine to me from an audit perspective.
+
+Acked-by: Paul Moore <paul@paul-moore.com> (Audit)
+
+>  error:
+>         path_put(&parent_path);
+>         audit_put_watch(watch);
+> --
+> 2.47.1
+
+--=20
+paul-moore.com
