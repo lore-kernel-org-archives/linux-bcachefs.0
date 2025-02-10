@@ -1,286 +1,103 @@
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE0E20B22
-	for <linux-bcachefs@vger.kernel.org>; Mon, 10 Feb 2025 03:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A270B1B85D6;
+	Mon, 10 Feb 2025 08:26:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739156678; cv=none; b=u9TUAQS8YoVGykvwtggA7PEzebutLGcNDaEHGIzmoo7eIrKXeX6bh0GAB8NC7WpXw98EEppBdRdoU0wpKt5pX2xVCvXEliMs0wO4hIDSB49piVz72H8bAKwfTuhspieIgLmBFSKOB8pczj5NZrzagBIkUn5OQubFuaTj7M6NO9g=
+	t=1739175981; cv=none; b=It3ywH37lYbJu2+5TaVRStxoLiqWRQ8bBe+NNkgh9JfYzQQX/woYyi61kOQyAI/LZljv+DF5d0bI/c0mwlj6Psvbrjz4++59cXOuiMqc5yA2pCkTBCP7L3t3riYgodzxBCYQ75/9YC0m1yRR7DxAnTEuO82Bwhteb/7SZbea8+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739156678; c=relaxed/simple;
-	bh=I1/qr7C49GPADXyFZxMKHUKR1npjYarD/xGIAcG16N8=;
+	s=arc-20240116; t=1739175981; c=relaxed/simple;
+	bh=5urbR4rIwHqeAiOUkrF6k1054cNQnB2RdKLoeznPyLE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YN0JGuPk62+gQKMY4zsWIPjSblFy0BdVVRmfsJmmWKluueSLvI51I1d0YbBquz6mAN1KbW3Wd/yLZAgS6hZrCWep9WN+0gQ1xXdsaH5UiRKRTvhZhDylWoJZRZ/stYqpHR4b6Fx8az7J9LAlxCNQw4QuY7GyqRUnVEg/KGORUmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kZfn6qiC; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 MIME-Version:Content-Type; b=cpdrXng0Bx9vIcqXKIcFbqB1o4l/UyYW30vL9mGNsHyQEaJ/pirbsuiSxA2Uh+L01mzvttl8IB9We1V5zAfkp0k+9x9rlwY7xwSCqrxLLmBv7JARzLixRj1AUnXQPvpb8nKft7cYTT8371bhbtfDLKykJqhKj2/doZzYBAJI4R4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YxErLAi/; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kZfn6qiC"
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6e440e64249so42938206d6.3
-        for <linux-bcachefs@vger.kernel.org>; Sun, 09 Feb 2025 19:04:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739156676; x=1739761476; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=90RCRydLC0a1+0vMw8nI6BuiFCfgke1zI1lNzY0QJE4=;
-        b=kZfn6qiCTHyYbTD21E95sBAeYSu+Yd10FdKqqsRdEhoxmbYyDzJPMFmY3AgqsD5aEx
-         7mA00MDKCVAkdj+SKKReY8yGR+h3a3KExk8dLC+e58pGmUEuf1XvYr08g3JSB92TJa6w
-         I4u56M2Yl2dtrDmfsr51Se74yLx6iG1OosRuF7nMLzYmu8Lz3tDdkrO+T8p5KQWAviG5
-         QxJo+j7/cixW11/7x9J7+E2y58I5H+ZPm2X/8j2c1wQWL4gPtGCQ3R7P/Qfxt513m9jG
-         VTq2/rVxS5teJYKi8a1djH7kqrDlXUdtgAnEYSFOzlawJVN/bsjGphnng9GRjotAvihD
-         8KlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739156676; x=1739761476;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=90RCRydLC0a1+0vMw8nI6BuiFCfgke1zI1lNzY0QJE4=;
-        b=T/lv4l6AbLP71RkLl3H9zwcP9rSX0KIKuhJvFvdDu8X3w9ncYZu1OSojZd/Jxi8Dgi
-         RnF15zSjrKSZXAkvO4rAB8nNoUUo3O5L4gbdH8HwGCZqpB9RN2N2mqu9utKcbXn9EEuO
-         eTZAaTn0fy6OLuWBFg5hYsYgzBWzTjVewq1/BBIfWRDak+eMIqVQPdMyxDsZ4GxkFyXF
-         KTF1t1NapZEOpA26EtJB3EX8a4uRYJaoyDSQkKxvN/mB4MolLXEjQ6ZtbUwWyKyxlmRw
-         8Chlp2ZmcLm9xe+qOYBEJ+re+/mJ+Yi8cm4ZwBwgQGau+OESguGhtwtkM/hRrWs11RlZ
-         YyJA==
-X-Gm-Message-State: AOJu0Ywacz8Nqr+IcfA0XbAJ+KSAEz13XCGE5cAny+UK/dYssLj7y9yO
-	06oakOTp+POoW19GGwdEskadXEZ5URCnopxOZ0gzumxrDxcEiGbS
-X-Gm-Gg: ASbGnct7AR8yFmRAo/T0zp+IF1RgeWYnVJqdGVg5wYJK4tvsVAhxzYOlBtbZq6uzXqU
-	hyNi6DYqypEs+FhejdN/Od4h7GvgrcjYtc36iaF63ybHmZrNgVPZrXtPTvyg6QEQT6XBeSBDx6E
-	qdULwIEbb4ug4LXLDvJq6HG//bnk8LrNNAek47thqrBNexfcGlIGm5Y6EO2R4w7thza2oPAXE2N
-	KAVLutEVUjMPg+9GkuPESF8YEEzA4dxzyIjaKmJkbbY0OlvZC8GxPx4B9rMGxYFgQ==
-X-Google-Smtp-Source: AGHT+IGHBPEG481+adzQAFBNw2lzGhXs0u+x98bDjaJgHJdbCy4Wx7RDv9m37R3VSK/jdR6old3aFQ==
-X-Received: by 2002:a05:6214:76f:b0:6d8:9e16:d07e with SMTP id 6a1803df08f44-6e4455bafabmr178044856d6.4.1739156675652;
-        Sun, 09 Feb 2025 19:04:35 -0800 (PST)
-Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e4544e42cfsm19522826d6.43.2025.02.09.19.04.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Feb 2025 19:04:34 -0800 (PST)
-From: Alan Huang <mmpgouride@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH] bcachefs: Fix use after free
-Date: Mon, 10 Feb 2025 11:04:22 +0800
-Message-ID: <20250210030422.711912-2-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20250210030422.711912-1-mmpgouride@gmail.com>
-References: <20250210030422.711912-1-mmpgouride@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YxErLAi/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2CA8C4CEE4;
+	Mon, 10 Feb 2025 08:26:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739175981;
+	bh=5urbR4rIwHqeAiOUkrF6k1054cNQnB2RdKLoeznPyLE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YxErLAi/Oyz8lGrKaeA+EkAtWjfBdKb0UG4u60ZNg1PLu6GNe9O9+BvTbVwX0Vgxu
+	 cJs6FBxt+9UvPbr5n8USCm10DQanNA8dq9ixHkYX77Vc/BwcWtIJwMy7FJKxMcne7t
+	 MK9oVKi/2rABCiBFm9L3o37uAxON0El0xrMsjGlW5E2eYYoUmzm8Eukx7AuPtz77Kg
+	 VRndGw3RCp/x3yg5vmQsHvSPKmfcjoTl7rrDWkXFY8n1nYRpdWPDUE8+SiMzH/Z9bs
+	 Y2Ut/w6TF7ChbJJ3qzoloNNKoXs4Z18JG2dWMOscGiZD8lQn5YVlw+gKuorq9Nn2me
+	 LWgBxqSDe5cKA==
+From: Christian Brauner <brauner@kernel.org>
+To: NeilBrown <neilb@suse.de>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Danilo Krummrich <dakr@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Steve French <sfrench@samba.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Tom Talpey <tom@talpey.com>,
+	Paul Moore <paul@paul-moore.com>,
+	Eric Paris <eparis@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	linux-cifs@vger.kernel.org,
+	audit@vger.kernel.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 0/2] VFS: minor improvements to a couple of interfaces
+Date: Mon, 10 Feb 2025 09:25:26 +0100
+Message-ID: <20250210-enten-aufkochen-ffecc8b4d829@brauner>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250207034040.3402438-1-neilb@suse.de>
+References: <20250207034040.3402438-1-neilb@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1428; i=brauner@kernel.org; h=from:subject:message-id; bh=5urbR4rIwHqeAiOUkrF6k1054cNQnB2RdKLoeznPyLE=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSv3KEQEC01YfKub6Y5H/erlyVXHp+wRHOb7dFXgb+u6 MQfu2y7u6OUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAij54w/K8+INgr8++dbeqq TIaJbE9EDcw8l6jXCuUkKvUu4L9edZSR4e2jaD+PG9VXbLLfez3csq/jTsahVULObdKre59mX0+ MZwEA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-acc->k.data should be used with the lock hold:
+On Fri, 07 Feb 2025 14:36:46 +1100, NeilBrown wrote:
+>  I found these opportunities for simplification as part of my work to
+>  enhance filesystem directory operations to not require an exclusive
+>  lock on the directory.
+>  There are quite a collection of users of these interfaces incluing NFS,
+>  smb/server, bcachefs, devtmpfs, and audit.  Hence the long Cc line.
+> 
+> NeilBrown
+> 
+> [...]
 
-00221 ========= TEST   generic/187
-00221        run fstests generic/187 at 2025-02-09 21:08:10
-00221 spectre-v4 mitigation disabled by command-line option
-00222 bcachefs (vdc): starting version 1.20: directory_size opts=errors=ro
-00222 bcachefs (vdc): initializing new filesystem
-00222 bcachefs (vdc): going read-write
-00222 bcachefs (vdc): marking superblocks
-00222 bcachefs (vdc): initializing freespace
-00222 bcachefs (vdc): done initializing freespace
-00222 bcachefs (vdc): reading snapshots table
-00222 bcachefs (vdc): reading snapshots done
-00222 bcachefs (vdc): done starting filesystem
-00222 bcachefs (vdc): shutting down
-00222 bcachefs (vdc): going read-only
-00222 bcachefs (vdc): finished waiting for writes to stop
-00223 bcachefs (vdc): flushing journal and stopping allocators, journal seq 6
-00223 bcachefs (vdc): flushing journal and stopping allocators complete, journal seq 8
-00223 bcachefs (vdc): clean shutdown complete, journal seq 9
-00223 bcachefs (vdc): marking filesystem clean
-00223 bcachefs (vdc): shutdown complete
-00223 bcachefs (vdc): starting version 1.20: directory_size opts=errors=ro
-00223 bcachefs (vdc): initializing new filesystem
-00223 bcachefs (vdc): going read-write
-00223 bcachefs (vdc): marking superblocks
-00223 bcachefs (vdc): initializing freespace
-00223 bcachefs (vdc): done initializing freespace
-00223 bcachefs (vdc): reading snapshots table
-00223 bcachefs (vdc): reading snapshots done
-00223 bcachefs (vdc): done starting filesystem
-00244 hrtimer: interrupt took 123350440 ns
-00264 bcachefs (vdc): shutting down
-00264 bcachefs (vdc): going read-only
-00264 bcachefs (vdc): finished waiting for writes to stop
-00264 bcachefs (vdc): flushing journal and stopping allocators, journal seq 97
-00265 bcachefs (vdc): flushing journal and stopping allocators complete, journal seq 101
-00265 bcachefs (vdc): clean shutdown complete, journal seq 102
-00265 bcachefs (vdc): marking filesystem clean
-00265 bcachefs (vdc): shutdown complete
-00265 bcachefs (vdc): starting version 1.20: directory_size opts=errors=ro
-00265 bcachefs (vdc): recovering from clean shutdown, journal seq 102
-00265 bcachefs (vdc): accounting_read...
-00265 ==================================================================
-00265  done
-00265 BUG: KASAN: slab-use-after-free in bch2_fs_to_text+0x12b4/0x1728
-00265 bcachefs (vdc): alloc_read... done
-00265 bcachefs (vdc): stripes_read... done
-00265 Read of size 4 at addr ffffff80c57eac00 by task cat/7531
-00265 bcachefs (vdc): snapshots_read... done
-00265
-00265 CPU: 6 UID: 0 PID: 7531 Comm: cat Not tainted 6.13.0-rc3-ktest-g16fc6fa3819d #14103
-00265 Hardware name: linux,dummy-virt (DT)
-00265 Call trace:
-00265  show_stack+0x1c/0x30 (C)
-00265  dump_stack_lvl+0x6c/0x80
-00265  print_report+0xf8/0x5d8
-00265  kasan_report+0x90/0xd0
-00265  __asan_report_load4_noabort+0x1c/0x28
-00265  bch2_fs_to_text+0x12b4/0x1728
-00265  bch2_fs_show+0x94/0x188
-00265  sysfs_kf_seq_show+0x1a4/0x348
-00265  kernfs_seq_show+0x12c/0x198
-00265  seq_read_iter+0x27c/0xfd0
-00265  kernfs_fop_read_iter+0x390/0x4f8
-00265  vfs_read+0x480/0x7f0
-00265  ksys_read+0xe0/0x1e8
-00265  __arm64_sys_read+0x70/0xa8
-00265  invoke_syscall.constprop.0+0x74/0x1e8
-00265  do_el0_svc+0xc8/0x1c8
-00265  el0_svc+0x20/0x60
-00265  el0t_64_sync_handler+0x104/0x130
-00265  el0t_64_sync+0x154/0x158
-00265
-00265 Allocated by task 7510:
-00265  kasan_save_stack+0x28/0x50
-00265  kasan_save_track+0x1c/0x38
-00265  kasan_save_alloc_info+0x3c/0x50
-00265  __kasan_kmalloc+0xac/0xb0
-00265  __kmalloc_node_noprof+0x168/0x348
-00265  __kvmalloc_node_noprof+0x20/0x140
-00265  __bch2_darray_resize_noprof+0x90/0x1b0
-00265  __bch2_accounting_mem_insert+0x76c/0xb08
-00265  bch2_accounting_mem_insert+0x224/0x3b8
-00265  bch2_accounting_mem_mod_locked+0x480/0xc58
-00265  bch2_accounting_read+0xa94/0x3eb8
-00265  bch2_run_recovery_pass+0x80/0x178
-00265  bch2_run_recovery_passes+0x340/0x698
-00265  bch2_fs_recovery+0x1c98/0x2bd8
-00265  bch2_fs_start+0x240/0x490
-00265  bch2_fs_get_tree+0xe1c/0x1458
-00265  vfs_get_tree+0x7c/0x250
-00265  path_mount+0xe24/0x1648
-00265  __arm64_sys_mount+0x240/0x438
-00265  invoke_syscall.constprop.0+0x74/0x1e8
-00265  do_el0_svc+0xc8/0x1c8
-00265  el0_svc+0x20/0x60
-00265  el0t_64_sync_handler+0x104/0x130
-00265  el0t_64_sync+0x154/0x158
-00265
-00265 Freed by task 7510:
-00265  kasan_save_stack+0x28/0x50
-00265  kasan_save_track+0x1c/0x38
-00265  kasan_save_free_info+0x48/0x88
-00265  __kasan_slab_free+0x48/0x60
-00265  kfree+0x188/0x408
-00265  kvfree+0x3c/0x50
-00265  __bch2_darray_resize_noprof+0xe0/0x1b0
-00265  __bch2_accounting_mem_insert+0x76c/0xb08
-00265  bch2_accounting_mem_insert+0x224/0x3b8
-00265  bch2_accounting_mem_mod_locked+0x480/0xc58
-00265  bch2_accounting_read+0xa94/0x3eb8
-00265  bch2_run_recovery_pass+0x80/0x178
-00265  bch2_run_recovery_passes+0x340/0x698
-00265  bch2_fs_recovery+0x1c98/0x2bd8
-00265  bch2_fs_start+0x240/0x490
-00265  bch2_fs_get_tree+0xe1c/0x1458
-00265  vfs_get_tree+0x7c/0x250
-00265  path_mount+0xe24/0x1648
-00265 bcachefs (vdc): going read-write
-00265  __arm64_sys_mount+0x240/0x438
-00265  invoke_syscall.constprop.0+0x74/0x1e8
-00265  do_el0_svc+0xc8/0x1c8
-00265  el0_svc+0x20/0x60
-00265  el0t_64_sync_handler+0x104/0x130
-00265  el0t_64_sync+0x154/0x158
-00265
-00265 The buggy address belongs to the object at ffffff80c57eac00
-00265  which belongs to the cache kmalloc-128 of size 128
-00265 The buggy address is located 0 bytes inside of
-00265  freed 128-byte region [ffffff80c57eac00, ffffff80c57eac80)
-00265
-00265 The buggy address belongs to the physical page:
-00265 page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1057ea
-00265 head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-00265 flags: 0x8000000000000040(head|zone=2)
-00265 page_type: f5(slab)
-00265 raw: 8000000000000040 ffffff80c0002800 dead000000000100 dead000000000122
-00265 raw: 0000000000000000 0000000000200020 00000001f5000000 ffffff80c57a6400
-00265 head: 8000000000000040 ffffff80c0002800 dead000000000100 dead000000000122
-00265 head: 0000000000000000 0000000000200020 00000001f5000000 ffffff80c57a6400
-00265 head: 8000000000000001 fffffffec315fa81 ffffffffffffffff 0000000000000000
-00265 head: 0000000000000002 0000000000000000 00000000ffffffff 0000000000000000
-00265 page dumped because: kasan: bad access detected
-00265
-00265 Memory state around the buggy address:
-00265  ffffff80c57eab00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00265  ffffff80c57eab80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-00265 >ffffff80c57eac00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-00265                    ^
-00265  ffffff80c57eac80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-00265  ffffff80c57ead00: 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc
-00265 ==================================================================
-00265 Kernel panic - not syncing: kasan.fault=panic set ...
-00265 CPU: 6 UID: 0 PID: 7531 Comm: cat Not tainted 6.13.0-rc3-ktest-g16fc6fa3819d #14103
-00265 Hardware name: linux,dummy-virt (DT)
-00265 Call trace:
-00265  show_stack+0x1c/0x30 (C)
-00265  dump_stack_lvl+0x30/0x80
-00265  dump_stack+0x18/0x20
-00265  panic+0x4d4/0x518
-00265  start_report.constprop.0+0x0/0x90
-00265  kasan_report+0xa0/0xd0
-00265  __asan_report_load4_noabort+0x1c/0x28
-00265  bch2_fs_to_text+0x12b4/0x1728
-00265  bch2_fs_show+0x94/0x188
-00265  sysfs_kf_seq_show+0x1a4/0x348
-00265  kernfs_seq_show+0x12c/0x198
-00265  seq_read_iter+0x27c/0xfd0
-00265  kernfs_fop_read_iter+0x390/0x4f8
-00265  vfs_read+0x480/0x7f0
-00265  ksys_read+0xe0/0x1e8
-00265  __arm64_sys_read+0x70/0xa8
-00265  invoke_syscall.constprop.0+0x74/0x1e8
-00265  do_el0_svc+0xc8/0x1c8
-00265  el0_svc+0x20/0x60
-00265  el0t_64_sync_handler+0x104/0x130
-00265  el0t_64_sync+0x154/0x158
-00265 SMP: stopping secondary CPUs
-00265 Kernel Offset: disabled
-00265 CPU features: 0x000,00000070,00000010,8240500b
-00265 Memory Limit: none
-00265 ---[ end Kernel panic - not syncing: kasan.fault=panic set ... ]---
-00270 ========= FAILED TIMEOUT generic.187 in 1200s
+I've taken your first cleanup. Thanks for splitting those out of the
+other series.
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 ---
- fs/bcachefs/disk_accounting.h | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/fs/bcachefs/disk_accounting.h b/fs/bcachefs/disk_accounting.h
-index 5360cbb3ec29..f4372cafea2e 100644
---- a/fs/bcachefs/disk_accounting.h
-+++ b/fs/bcachefs/disk_accounting.h
-@@ -210,11 +210,13 @@ static inline void bch2_accounting_mem_read_counters(struct bch_accounting_mem *
- static inline void bch2_accounting_mem_read(struct bch_fs *c, struct bpos p,
- 					    u64 *v, unsigned nr)
- {
-+	percpu_down_read(&c->mark_lock);
- 	struct bch_accounting_mem *acc = &c->accounting;
- 	unsigned idx = eytzinger0_find(acc->k.data, acc->k.nr, sizeof(acc->k.data[0]),
- 				       accounting_pos_cmp, &p);
- 
- 	bch2_accounting_mem_read_counters(acc, idx, v, nr, false);
-+	percpu_up_read(&c->mark_lock);
- }
- 
- static inline struct bversion journal_pos_to_bversion(struct journal_res *res, unsigned offset)
--- 
-2.47.0
+Applied to the vfs-6.15.misc branch of the vfs/vfs.git tree.
+Patches in the vfs-6.15.misc branch should appear in linux-next soon.
 
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-6.15.misc
+
+[1/2] VFS: change kern_path_locked() and user_path_locked_at() to never return negative dentry
+      https://git.kernel.org/vfs/vfs/c/2ebf0c6b48d8
+[2/2] VFS: add common error checks to lookup_one_qstr_excl()
+      https://git.kernel.org/vfs/vfs/c/4b3c043c69bc
