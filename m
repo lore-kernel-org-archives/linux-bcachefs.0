@@ -1,204 +1,95 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA2CC125;
-	Mon, 10 Feb 2025 01:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B760146B8
+	for <linux-bcachefs@vger.kernel.org>; Mon, 10 Feb 2025 03:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739150428; cv=none; b=VLzZMzsfkdP+PAV7fLf88jx91oPhXaD9B9awUi8do18ctYrzCcjm2VZLSr20xbDgaLjOtGqLcZ+YECJHNMdgXvUJqftgpJ6WURDcRDMPSBkgK9hzFU4Y9ckc5fKoEuqf1xScEms0i4bSmBWKSezJJTViePCv91USBjLdqpHB+54=
+	t=1739156670; cv=none; b=ps8VQmcMXB5OarGPa2MYDi9M1fBuCVH82oJGgN8HzRp2sokj92pyD4dubIDRwHCKVfB6EThkDV844YnM1K6B9ChWkPMcdAccE7k7gTxrAkJnrVXLrC9kOXLV4Tg2oHfl58vz9F5SccZvP4aC25ElsPJEou7uuw1HH3I1IA74m8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739150428; c=relaxed/simple;
-	bh=6vm4jw6wg9RdZqCVO4c/MR5vasxo/EaDKybb5J4L5A0=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=ErxwaYqR5tt2wVL0MTQnCrGEIgt7P7S9LFbYz3+/RxZioKigOCTnn1Uq/Tofa3QYkFFal0CiQBbKCXq3JRlyDG1XcBJS94kZ3n7yiZ8TARzeMm7Zfx49J9Mskk4RyJXS1AtF8wnfLGI3fsPumEkslyRWRoNnVUCwberXIR8J3Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GVvg4m6O; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=RbVKTVRS; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GVvg4m6O; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=RbVKTVRS; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	s=arc-20240116; t=1739156670; c=relaxed/simple;
+	bh=e5Meyq07pkzgZcnHEvFEeneW7paFhLs5JjE9dDl/BmA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tyGxuMTu5V0AnlfklJmcVqIdq6LO2GmsqoFtTgezUapF3nDBAdbkXpW2sYo8yaioyK3J9bQUA8NmDWK7hlmx7w2LZ9Qd9yToPbIp4NQsPVreJo+N8chwr6M6kIbEifMXozWyl1SN9bjp1rGmPik89yuStUAha9XZ5PT93fjoNno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d0OnULpt; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GVvg4m6O";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="RbVKTVRS";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GVvg4m6O";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="RbVKTVRS"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2B82921102;
-	Mon, 10 Feb 2025 01:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1739150425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kNHkLWb8LhlVxwfN71tab7fM7Ihwg66qglqKNi6jmFg=;
-	b=GVvg4m6Oi+5Nf73A3l4nea6uMla+aAQMPpYPlG8SWuZ7oRQepMR8R9VmmtKyM73xUIh4X8
-	470qmg9kUKy1tnAru1Wrl9o4Tv+dVCprIlazwc2A4YvAKbYdNOP86tNqxDPENlx58ONqeW
-	oPeqOtzaGLovzCA95Uyfv78PZECyg7k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1739150425;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kNHkLWb8LhlVxwfN71tab7fM7Ihwg66qglqKNi6jmFg=;
-	b=RbVKTVRSav7aiYPr8v8nupZZlw+Bdw+DsmKbdWDU8HAdGceAvEXvrFVD8+hjZxcIymRl2T
-	CXfKlMNq8eRzBqDQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1739150425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kNHkLWb8LhlVxwfN71tab7fM7Ihwg66qglqKNi6jmFg=;
-	b=GVvg4m6Oi+5Nf73A3l4nea6uMla+aAQMPpYPlG8SWuZ7oRQepMR8R9VmmtKyM73xUIh4X8
-	470qmg9kUKy1tnAru1Wrl9o4Tv+dVCprIlazwc2A4YvAKbYdNOP86tNqxDPENlx58ONqeW
-	oPeqOtzaGLovzCA95Uyfv78PZECyg7k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1739150425;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kNHkLWb8LhlVxwfN71tab7fM7Ihwg66qglqKNi6jmFg=;
-	b=RbVKTVRSav7aiYPr8v8nupZZlw+Bdw+DsmKbdWDU8HAdGceAvEXvrFVD8+hjZxcIymRl2T
-	CXfKlMNq8eRzBqDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7B2BF13AA4;
-	Mon, 10 Feb 2025 01:20:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gKKtC1JUqWcyNgAAD6G6ig
-	(envelope-from <neilb@suse.de>); Mon, 10 Feb 2025 01:20:18 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d0OnULpt"
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7c05a0a4872so132458585a.3
+        for <linux-bcachefs@vger.kernel.org>; Sun, 09 Feb 2025 19:04:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739156667; x=1739761467; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QkxIqF/W6ETQmqSwJ7EPm0X0wVvyhtQ5D6vTHKTKqYo=;
+        b=d0OnULpteophmg08FTdpR5emtIGsXfTrwaF3ERH00c/4XMC1EFJpJwhfSmOrVqW4wv
+         PpFF8WoOe7QiaKap/jem6LtfKC/r2dH7QgEfGCnqdIbKjf9rAbCFvZcnp3dwYwsYsfuN
+         jxTGsW5lMxSnh15g/Ss4PcpSPrlLT8gxsqkqS3528vb9SkaUPvFrznRJ8w3jZiewibg9
+         GaCDdhDrINdenq33HdA982biOAWX3jPsN0I5LnqGkjck+9HIKffUSEEkK8mZt0ONESpE
+         mI+0ZCmc1DHDyBt4RJ+G02rLNCwvfx2us6lcfpv8+DjdjsSUa3BZkrKHlgZ7CMuMVeLn
+         zKMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739156667; x=1739761467;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QkxIqF/W6ETQmqSwJ7EPm0X0wVvyhtQ5D6vTHKTKqYo=;
+        b=uGMn4ImRnbdtuwbDj4CDNSzLHkWf6ejh/T3uxWz1HxQxnX6SRN5H9L2ErqtFpwAn/P
+         mzuvlsIn4tJcyN8pOkTMfKUfzgYKH1RTWmN3WKG0hp429Diy74qNGq4PnwhecogOgeGm
+         OV263hmH9puSn/EXoa09VA9DYb4B01Ai5533fZKFWljGnoe1QWvzqQycrA70FvNxrcUa
+         mpgm1B/d8LWACUKps0fylxhfVyQibf7OBy19Wer4fjMNUvPXmv7pMfasFijNtFf6g85V
+         bA8CYugixJDvKi1SQ8aaif0h68ziDppMUy0yRxxpl0x+mJoPBBhL2vZn+CcfiAv809sv
+         MTow==
+X-Gm-Message-State: AOJu0Yzf5Qfy+2kWnMJA8jG3RQ73Y9CIvzDoCyc8dREUWlaZEhxFG37w
+	HIwNxkU2fm6sTdDLpsoMkZMMvcl7kmc8Oi9TsjDd+Mg81v45KVT3
+X-Gm-Gg: ASbGncshaldNwFUsoU0Ppyna/MVIo3k2FOKaOyi4/LM+0Bfn55eJM3zl/ecZEJQmPgR
+	KxzXTg1fuxJMjKqE08qekfbtjwOyMtSfM16h05UVRSleag71o0oCsXqXg/5L6HLko9qOqAh2eJo
+	qFW5Vw0Kqd7vBGrbFwHJ4dSxEpkJVgU9vrDn17fXXJKxbkfDrLTCv9PkOCbnumohJQqwPh4P1lw
+	lhmmN4tExUgTGN9u5Tc+2HfJtpINHGdYmzUDEMc2/dNJ9oBoCUufNvcEpuJF0xekQ==
+X-Google-Smtp-Source: AGHT+IF5J0eCfDxu/KNryalAa2d0CG8PKx35oGhpCf810KJOFQijZX2NpMJiH5AmgW0hKC1aoA+7Vg==
+X-Received: by 2002:a05:620a:404e:b0:7b6:cfab:9882 with SMTP id af79cd13be357-7c047c4e8b2mr2029554585a.58.1739156667556;
+        Sun, 09 Feb 2025 19:04:27 -0800 (PST)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c041dec31dsm480562685a.1.2025.02.09.19.04.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Feb 2025 19:04:26 -0800 (PST)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] bcachefs: Use uncompressed_size as the operand
+Date: Mon, 10 Feb 2025 11:04:21 +0800
+Message-ID: <20250210030422.711912-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Kent Overstreet" <kent.overstreet@linux.dev>
-Cc: "Christian Brauner" <brauner@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>, "Jan Kara" <jack@suse.cz>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, "Danilo Krummrich" <dakr@kernel.org>,
- "Trond Myklebust" <trondmy@kernel.org>, "Anna Schumaker" <anna@kernel.org>,
- "Namjae Jeon" <linkinjeon@kernel.org>, "Steve French" <sfrench@samba.org>,
- "Sergey Senozhatsky" <senozhatsky@chromium.org>,
- "Tom Talpey" <tom@talpey.com>, "Paul Moore" <paul@paul-moore.com>,
- "Eric Paris" <eparis@redhat.com>, linux-kernel@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, audit@vger.kernel.org
-Subject: Re: [PATCH 1/2] VFS: change kern_path_locked() and
- user_path_locked_at() to never return negative dentry
-In-reply-to: <4bxqnnpfau5sq2h7oexvrvazqqpn55e7vsjlj44epdcas2clzf@424354eeo6dl>
-References:
- <>, <4bxqnnpfau5sq2h7oexvrvazqqpn55e7vsjlj44epdcas2clzf@424354eeo6dl>
-Date: Mon, 10 Feb 2025 12:20:15 +1100
-Message-id: <173915041509.22054.12649815796390080222@noble.neil.brown.name>
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn)]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 
-On Sat, 08 Feb 2025, Kent Overstreet wrote:
-> On Fri, Feb 07, 2025 at 06:30:00PM +1100, NeilBrown wrote:
-> > On Fri, 07 Feb 2025, Kent Overstreet wrote:
-> > > On Fri, Feb 07, 2025 at 05:34:23PM +1100, NeilBrown wrote:
-> > > > On Fri, 07 Feb 2025, Kent Overstreet wrote:
-> > > > > On Fri, Feb 07, 2025 at 03:53:52PM +1100, NeilBrown wrote:
-> > > > > > Do you think there could be a problem with changing the error ret=
-urned
-> > > > > > in this circumstance? i.e. if you try to destroy a subvolume with=
- a
-> > > > > > non-existant name on a different filesystem could getting -ENOENT
-> > > > > > instead of -EXDEV be noticed?
-> > > > >=20
-> > > > > -EXDEV is the standard error code for "we're crossing a filesystem
-> > > > > boundary and we can't or aren't supposed to be", so no, let's not c=
-hange
-> > > > > that.
-> > > > >=20
-> > > >=20
-> > > > OK.  As bcachefs is the only user of user_path_locked_at() it shouldn=
-'t
-> > > > be too hard.
-> > >=20
-> > > Hang on, why does that require keeping user_path_locked_at()? Just
-> > > compare i_sb...
-> > >=20
-> >=20
-> > I changed user_path_locked_at() to not return a dentry at all when the
-> > full path couldn't be found.  If there is no dentry, then there is no
-> > ->d_sb.
-> > (if there was an ->i_sb, there would be an inode and this all wouldn't
-> > be an issue).
-> >=20
-> > To recap: the difference happens if the path DOESN'T exist but the
-> > parent DOES exist on a DIFFERENT filesystem.  It is very much a corner
-> > case and the error code shouldn't matter.  But I had to ask...
->=20
-> Ahh...
->=20
-> Well, if I've scanned the series correctly (sorry, we're on different
-> timezones and I haven't had much caffeine yet) I hope you don't have to
-> keep that function just for bcachefs - but I do think the error code is
-> important.
->=20
-> Userspace getting -ENOENT and reporting -ENOENT to the user will
-> inevitably lead to head banging frustration by someone, somewhere, when
-> they're trying to delete something and the system is tell them it
-> doesn't exist when they can see it very much does exist, right there :)
-> the more precise error code is a very helpful cue...
->=20
+Since we don't merge compressed extents, uncompressed_size should be
+equal to compressed_size, use uncompressed_size to clarify the intention.
 
-???
-You will only get -ENOENT if there is no ent.  There is no question of a
-confusing error message.
-If you ask for a non-exist name on the correct filesystem, you get -ENOENT
-If you ask for an existing name of the wrong filesystem, you get -EXDEV
-That all works as expected and always has.
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ fs/bcachefs/extents.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But what if you ask for a non-existing name in a directory on the
-wrong filesystem? =20
-The code you originally wrote in 42d237320e9817a9 would return
--ENOENT because that it what user_path_at() would return.
-But using user_path_at() is "wrong" because it doesn't lock the directory
-so ->d_parent is not guaranteed to be stable.
-Al fixed that in bbe6a7c899e7f265c using user_path_locked_at(), but
-that doesn't check for a negative dentry so Al added a check to return
--ENOENT, but that was added *after* the test that returns -EXDEV.
-
-So now if you call subvolume_destroy on a non-existing name in a
-directory on the wrong filesystem, you get -EXDEV.  I think that is
-a bit weird but not a lot weird.
-My patch will change it back to -ENOENT - the way you originally wrote
-it.
-
-I hope you are ok with that.
-
-NeilBrown
+diff --git a/fs/bcachefs/extents.c b/fs/bcachefs/extents.c
+index 05d5f71a7ca9..eeea23d09b9a 100644
+--- a/fs/bcachefs/extents.c
++++ b/fs/bcachefs/extents.c
+@@ -326,7 +326,7 @@ bool bch2_extent_merge(struct bch_fs *c, struct bkey_s l, struct bkey_s_c r)
+ 			    !bch2_checksum_mergeable(lp.crc.csum_type))
+ 				return false;
+ 
+-			if (lp.crc.offset + lp.crc.live_size != lp.crc.compressed_size ||
++			if (lp.crc.offset + lp.crc.live_size != lp.crc.uncompressed_size ||
+ 			    rp.crc.offset)
+ 				return false;
+ 
+-- 
+2.47.0
 
