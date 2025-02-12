@@ -1,168 +1,95 @@
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C9F20E310
-	for <linux-bcachefs@vger.kernel.org>; Wed, 12 Feb 2025 17:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3B14209663
+	for <linux-bcachefs@vger.kernel.org>; Wed, 12 Feb 2025 18:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739382109; cv=none; b=ksOQeVTMsgFsYli7I3eowPe5WoHcnjwMLs+3q5fXD1wDOEE3Am4n02B2WP8zPXTYDNi8eZO3Cdc8j2vfK5XlkKJWcoTrVmFDZisPvcU6Or3IFSlbCZUzlvE6gIZHAcV3A9LswUf2e0/r60HDEleLFvBsAveIemSyCONZrK37Zt4=
+	t=1739383869; cv=none; b=eCsvTP01plyjyDnKNLC7m/EHYPoahQbihwLUylGZopb2LLVDbEOIv36ygDdTva4o8HPoBD8kSRcVK8q88Ra9F4ePY5RvNtJIomJLJrLSzQldrIgHgie8DzzgFo4h/ZNdYIWj/RC5yAJOfWX663E4SFEM85wZ8NesBIcysR1ztCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739382109; c=relaxed/simple;
-	bh=ADAfuXGzDoUrazL10f/J+NYMQlnKEVAdzWlMJtylq+g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cB4HtIlCCoy7l5j63nQLqxKTIXfd3AurSzEbHjr8KeVQxnro/7Ar/sflYSrbMrDWE4xUtsmnnRaGkFkXJ0yjnhDn9d2+c4+JyC7FzKbyXUlvFsQcNwxGrtcKplNEh7zWmhKGikmjLLx8mOk9NifW0HJAEpxb0fhTWGjjXK4pgXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gyu/8Q+q; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1739383869; c=relaxed/simple;
+	bh=dpQGZ/m6BI6kTxeBKA8Jo+tXH/ZDpD5O1KXd+9Jwbcc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fQmHZulhCUbQPK25Q/hXNurtlaXXX9Sr7f2K+H3zFC2fHFIiWzeWS+xRK07sKlK0ny3jepzWg84jwh1NzCN5JElPHK3gq5+GekceAHF39aHU4/4XHbPYkE9xVuK+9xr6W1SuYObb/5X5zKLyUefBeJGgCxqwpzLfP/LVf7tnKqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EUQ+oIr6; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gyu/8Q+q"
-Date: Wed, 12 Feb 2025 12:41:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739382101;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qEJjrw91ROJtMwFAuiXGhmAm8t6hmiNDk/AnLr+pJBA=;
-	b=gyu/8Q+qu+ORcK+1q3VQEQVNCKXqgkbmJDwJ4/+9dkCO3IA/gfzs80Rj+tqDIYeM/sh7gQ
-	WdNxs2/ernlUZ+eB8DWTXgPf0DJggPICThmtITlE8cOqA8S5KqvLZWDsfNRkxxMoZnA9qk
-	H81QZwDeHusc0aprElwVB9NrC3hVX4U=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Alan Huang <mmpgouride@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2] bcachefs: Reuse transaction
-Message-ID: <wgrudqrambpk4uyqg6wd3ziu3dkufv3jmh77vpkrfbkjwdxumq@o3vc7xdku5xt>
-References: <20250212172916.137891-1-mmpgouride@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EUQ+oIr6"
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-47191bcb2afso27393801cf.2
+        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Feb 2025 10:11:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739383866; x=1739988666; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pVUX40s0Vv3EPme6Y/lkWOeBsuWZ0rz7wMp5Qzxp6N8=;
+        b=EUQ+oIr6y7HetdB2CVtr3T1D0NmdeAFwIx5keOfCi+2Vp/2BoL09A155fJY2ItWn9l
+         5qZANq52FvRX/PXFzhV7OLcW4VWFFIpoDmeWfaJxCfyaOx6Z+wXPFOlYG09pUSDGe5MP
+         83Vhuk0bAyIwhil+/171GjmduAWfayTinF0pGgrNyoPZGi8o4zANJmB7lIEr4OI3olhW
+         irI9UWP9PEZUPiSiy/eE6jFPvXDleIC0ldrDKhgXzlfzl4AS0eI38esEdt3QpJZuS6gC
+         lK4Umnpwi003BzPGmpVsMjxWZHTqyQAJKfA6oVxvqmNR2xmu00aHsHhtlWks6s2kvv59
+         XTFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739383866; x=1739988666;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pVUX40s0Vv3EPme6Y/lkWOeBsuWZ0rz7wMp5Qzxp6N8=;
+        b=j4tSe9Bl8qu4BdzRIpS6En9NzYr+6ATNg64NF4ZjfsnVQcX6UYDhyaYbb0JNiAVfRL
+         ULgZF9BEH7MKD1sIxDhSwDuDkcckx0wRxa418pNILfoB9CFNFwO7qgiVF+jh64tDJ5vQ
+         YSpEzqr3Ze+8urPNgpBpUYu6wNn1SBPk5azWrNldBbSDp6uu55Hc8sBox+tCSZfcncmj
+         7/ln4Zpov6fwCKiolz/rT9eJWlaMY1ikqwb+h4cv7Iuvj8FoaFegLgJLWat+7jHKBR/K
+         Lb309g90+wbRk4OKTX587zEIP3hzUWfvfGwL7UXNZQVbx6teZ6trzvph6s2Yq1jUyO1j
+         Kt8g==
+X-Gm-Message-State: AOJu0YyVC/pKOeX3jR+2+h/0jWpfiqfLKJ/kilZMNNXkA+fP8CYacQoD
+	b1oF/QbWDzlk6GSrXpnBWQNTpYhNs+5+PS1u/T0PiG5gJtrbxOzf/50hzisJK+c=
+X-Gm-Gg: ASbGncsI3ms88PUbanRJjk4cFdLQJDrI/dn48zxtgfPxZ4yxQpuyg08U9KZXUGC/6+h
+	g072xiNGwhMea2Oitc0aOerYji8VurgmazEpE3zMTmO+HanHkjGD0x9m4GnE1k6ciFaKdkvOOom
+	Rr+nkoC2al4eoQnkbty7ebiItABTv+9Xww6CdK/r5UF0ZJl/9GLLhR0o6gZ/8FY0a3nfa0uk9r6
+	OfNqhv1JqF/0gFd7xEV8UW2teWqDE6/nJ460eWvaaZ9IJ1ifmp8vxOxFzWyuWL2Xg==
+X-Google-Smtp-Source: AGHT+IGyniwBEOYXEPmYH6y/5smwJ72MtejCVhSCUR2hcd2HafBKExg7XgoZFCaiErt9VKipXyy02Q==
+X-Received: by 2002:ac8:5915:0:b0:471:bf71:cbc6 with SMTP id d75a77b69052e-471bf71d4cdmr1489171cf.51.1739383866391;
+        Wed, 12 Feb 2025 10:11:06 -0800 (PST)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4718cb6d2b0sm48080121cf.16.2025.02.12.10.11.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Feb 2025 10:11:06 -0800 (PST)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] bcachefs: Pass _orig_restart_count to trans_was_restarted
+Date: Thu, 13 Feb 2025 02:11:01 +0800
+Message-ID: <20250212181101.142433-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250212172916.137891-1-mmpgouride@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 13, 2025 at 01:29:16AM +0800, Alan Huang wrote:
-> bch2_nocow_write_convert_unwritten is already in transaction context:
-> 
-> 00191 ========= TEST   generic/648
-> 00242 kernel BUG at fs/bcachefs/btree_iter.c:3332!
-> 00242 Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
-> 00242 Modules linked in:
-> 00242 CPU: 4 UID: 0 PID: 2593 Comm: fsstress Not tainted 6.13.0-rc3-ktest-g345af8f855b7 #14403
-> 00242 Hardware name: linux,dummy-virt (DT)
-> 00242 pstate: 60001005 (nZCv daif -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-> 00242 pc : __bch2_trans_get+0x120/0x410
-> 00242 lr : __bch2_trans_get+0xcc/0x410
-> 00242 sp : ffffff80d89af600
-> 00242 x29: ffffff80d89af600 x28: ffffff80ddb23000 x27: 00000000fffff705
-> 00242 x26: ffffff80ddb23028 x25: ffffff80d8903fe0 x24: ffffff80ebb30168
-> 00242 x23: ffffff80c8aeb500 x22: 000000000000005d x21: ffffff80d8904078
-> 00242 x20: ffffff80d8900000 x19: ffffff80da9e8000 x18: 0000000000000000
-> 00242 x17: 64747568735f6c61 x16: 6e72756f6a20726f x15: 0000000000000028
-> 00242 x14: 0000000000000004 x13: 000000000000f787 x12: ffffffc081bbcdc8
-> 00242 x11: 0000000000000000 x10: 0000000000000003 x9 : ffffffc08094efbc
-> 00242 x8 : 000000001092c111 x7 : 000000000000000c x6 : ffffffc083c31fc4
-> 00242 x5 : ffffffc083c31f28 x4 : ffffff80c8aeb500 x3 : ffffff80ebb30000
-> 00242 x2 : 0000000000000001 x1 : 0000000000000a21 x0 : 000000000000028e
-> 00242 Call trace:
-> 00242  __bch2_trans_get+0x120/0x410 (P)
-> 00242  bch2_inum_offset_err_msg+0x48/0xb0
-> 00242  bch2_nocow_write_convert_unwritten+0x3d0/0x530
-> 00242  bch2_nocow_write+0xeb0/0x1000
-> 00242  __bch2_write+0x330/0x4e8
-> 00242  bch2_write+0x1f0/0x530
-> 00242  bch2_direct_write+0x530/0xc00
-> 00242  bch2_write_iter+0x160/0xbe0
-> 00242  vfs_write+0x1cc/0x360
-> 00242  ksys_write+0x5c/0xf0
-> 00242  __arm64_sys_write+0x20/0x30
-> 00242  invoke_syscall.constprop.0+0x54/0xe8
-> 00242  do_el0_svc+0x44/0xc0
-> 00242  el0_svc+0x34/0xa0
-> 00242  el0t_64_sync_handler+0x104/0x130
-> 00242  el0t_64_sync+0x154/0x158
-> 00242 Code: 6b01001f 54ffff01 79408460 3617fec0 (d4210000)
-> 00242 ---[ end trace 0000000000000000 ]---
-> 00242 Kernel panic - not syncing: Oops - BUG: Fatal exception
-> 
-> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+_orig_restart_count is unused now, according to the logic, trans_was_restarted
+should be using _orig_restart_count.
 
-Applied
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ fs/bcachefs/btree_iter.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  fs/bcachefs/io_write.c | 33 +++++++++++++++++++++++++++++++--
->  fs/bcachefs/io_write.h |  4 ++++
->  2 files changed, 35 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
-> index 0d4a7e58251a..738bdbfbdb14 100644
-> --- a/fs/bcachefs/io_write.c
-> +++ b/fs/bcachefs/io_write.c
-> @@ -396,6 +396,35 @@ static int bch2_write_index_default(struct bch_write_op *op)
->  
->  /* Writes */
->  
-> +void bch2_write_op_error_trans(struct btree_trans *trans, struct printbuf *out,
-> +			       struct bch_write_op *op, u64 offset, const char *fmt, ...)
-> +{
-> +	if (op->subvol)
-> +		lockrestart_do(trans,
-> +			bch2_inum_offset_err_msg_trans(trans, out,
-> +						       (subvol_inum) { op->subvol, op->pos.inode, },
-> +						       offset << 9));
-> +	else {
-> +		struct bpos pos = op->pos;
-> +		pos.offset = offset;
-> +		lockrestart_do(trans, bch2_inum_snap_offset_err_msg_trans(trans, out, pos));
-> +	}
-> +
-> +	prt_str(out, "write error: ");
-> +
-> +	va_list args;
-> +	va_start(args, fmt);
-> +	prt_vprintf(out, fmt, args);
-> +	va_end(args);
-> +
-> +	if (op->flags & BCH_WRITE_move) {
-> +		struct data_update *u = container_of(op, struct data_update, op);
-> +
-> +		prt_printf(out, "\n  from internal move ");
-> +		bch2_bkey_val_to_text(out, op->c, bkey_i_to_s_c(u->k.k));
-> +	}
-> +}
-> +
->  void bch2_write_op_error(struct printbuf *out, struct bch_write_op *op, u64 offset,
->  			 const char *fmt, ...)
->  {
-> @@ -1214,8 +1243,8 @@ static void bch2_nocow_write_convert_unwritten(struct bch_write_op *op)
->  			struct bkey_i *insert = bch2_keylist_front(&op->insert_keys);
->  
->  			struct printbuf buf = PRINTBUF;
-> -			bch2_write_op_error(&buf, op, bkey_start_offset(&insert->k),
-> -					    "btree update error: %s", bch2_err_str(ret));
-> +			bch2_write_op_error_trans(trans, &buf, op, bkey_start_offset(&insert->k),
-> +						  "btree update error: %s", bch2_err_str(ret));
->  			bch_err_ratelimited(c, "%s", buf.buf);
->  			printbuf_exit(&buf);
->  		}
-> diff --git a/fs/bcachefs/io_write.h b/fs/bcachefs/io_write.h
-> index 2d12ffb94736..bf942566a8eb 100644
-> --- a/fs/bcachefs/io_write.h
-> +++ b/fs/bcachefs/io_write.h
-> @@ -20,6 +20,10 @@ static inline void bch2_latency_acct(struct bch_dev *ca, u64 submit_time, int rw
->  void bch2_submit_wbio_replicas(struct bch_write_bio *, struct bch_fs *,
->  			       enum bch_data_type, const struct bkey_i *, bool);
->  
-> +__printf(5, 6)
-> +void bch2_write_op_error_trans(struct btree_trans *trans, struct printbuf *out,
-> +			       struct bch_write_op *op, u64, const char *, ...);
-> +
->  __printf(4, 5)
->  void bch2_write_op_error(struct printbuf *out, struct bch_write_op *op, u64,
->  			 const char *, ...);
-> -- 
-> 2.47.0
-> 
+diff --git a/fs/bcachefs/btree_iter.h b/fs/bcachefs/btree_iter.h
+index b9538e6e6d65..0045cb7f4c0d 100644
+--- a/fs/bcachefs/btree_iter.h
++++ b/fs/bcachefs/btree_iter.h
+@@ -739,7 +739,7 @@ transaction_restart:							\
+ 	if (!_ret2)							\
+ 		bch2_trans_verify_not_restarted(_trans, _restart_count);\
+ 									\
+-	_ret2 ?: trans_was_restarted(_trans, _restart_count);		\
++	_ret2 ?: trans_was_restarted(_trans, _orig_restart_count);		\
+ })
+ 
+ #define for_each_btree_key_max_continue(_trans, _iter,			\
+-- 
+2.47.0
+
