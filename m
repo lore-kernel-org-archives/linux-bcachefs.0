@@ -1,102 +1,132 @@
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8697245034
-	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D5628A2D5
+	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739471548; cv=none; b=kgeZdqcM2aEHBnOrEXlYX4SIStC9r8GRedBzG8dBC4dnpcUx0n/7O6aT3qIwJGk7skPJjJi7Yc++zuCqTroJhB6Ye/xezhYpO5mBULU27m0DO2Orao0j1POXinrMSO1yZZV5zWXlnwwdNCGxIX0UdEhW9c72QHQ6N10q4lGHgfQ=
+	t=1739472380; cv=none; b=FexvB/UJhIRGwHwqTMOF8CVdC7w0ma7IPZ1w3XY27mqJaD/wCuZuRsQSBBO/whc+3gQKYbbNy4C2s/v7ihQ6/BmUb9MYebQ/XEVhxUZKCsOpDIcc9O7yIva3C6Djfhpp5bnvNs325jnDAMrl4dlirwhY7B0b80KWhqm+xxcjh1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739471548; c=relaxed/simple;
-	bh=1Guw0mIYsriyCkIJv5cUVdIdT/LfBp2e760wpd5KxtI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=gHP6ik0D0MClfzwYuRqIQHuMRSVfRxpiyU8yKojHrHqwPGdbWXFTgdKDfGdwxVfYc9vfb3XuBASX7ck2olmvnsuavKcoC7Qrn4Ze0XxP4H77Dd3kT21cqk4vCN3Od2YXIiX0kGLmFr/ceiJFliNE30m3uZSKTXW5uAMxcZPtOqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mC8JUfDZ; arc=none smtp.client-ip=95.215.58.176
+	s=arc-20240116; t=1739472380; c=relaxed/simple;
+	bh=EYuRV79A6yHh97HgZ3vOYSgXOng0WeParG/OCTyts1c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=R9fCDHC4XVANObR08FqnwpS8uXAtSMCBiYoAUtDOo7cq0Apq1KuRlZp/9qCZ4ooVYNB9EeiI6tACGVW3vzOAketdwBAx65oiT9AwzR4v3jiZL57xVd+OA5RlhkVUlO0KEocCPZZqAIMHbxoQEFw1Vw6me63GqUm6zVgYq20q760=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Bn/YKI06; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mC8JUfDZ"
-Date: Thu, 13 Feb 2025 13:32:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739471533;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=o6tkCX033U5d2xKqyWKzKdrt36SevUnWjaFNpp4AzCk=;
-	b=mC8JUfDZ8kavgRx3NUqUiyeSyB/1ovXGBEDtJGawLED156GAQGn2kjU+IklQZvho7OaQVP
-	waK/h6HmBCrFRX/VxZjInTzfFjXgK3wi5Db64OPbZRGk4oBUvgzhMLxUXHjG8YqfAXM5Uf
-	Wtz2a7z4lq+EPBzR9dcwoaLLYl0MvhA=
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Bn/YKI06"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739472375;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=0CIXAhN/B92y8bRF6z2zOWUios10f3Qd44Zj03QJK0c=;
+	b=Bn/YKI06RM+gZL7Z3qBPxVe2nq5amHl2VI0xPWqj8Lu1lUTM4Oy4DGO4D0hiP4uHurcwoG
+	3Kpon1DMGeo4x3dGaJFGiAHZsg4OlD2RShV9LvtHVFi+DGCI0moWbp/UFjWL9PRqUrn3Ne
+	TKWBPvljxF4CA8b0JUMJxzVUF6CuUTc=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for 6.14-rc3
-Message-ID: <hodakekojuga62jmvqimb63dyyavx6jqdy7t67cltmha55fl5n@jl2guh3xzh4s>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Joshua Ashton <joshua@froggi.es>,
+	Hongbo Li <lihongbo22@huawei.com>
+Subject: [PATCH 00/18] last on disk format changes before freeze
+Date: Thu, 13 Feb 2025 13:45:45 -0500
+Message-ID: <20250213184607.18237-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Just small stuff.
+These are the last of the on disk format changes that will be required
+upgrades. Future on disk format changes will be optional - meaning
+they'll require more compat code.
 
-As a general announcement, on disk format is now frozen in my master
-branch - future on disk format changes will be optional, not required.
+- metadata_version_cached_backpointers: scrub can now check cached data,
+  and (more importantly) the gc_gens pass for recalculating
+  bucket.oldest_gen is no longer required - necessary scalability item.
 
-The following changes since commit 4be214c26936813b636eed2fac906f585ddbf0f9:
+- metadata_version_stripe_backpointers: needed for scrub to properly
+  support erasure coding, and for future stripe repair code
 
-  bcachefs: bch2_bkey_sectors_need_rebalance() now only depends on bch_extent_rebalance (2025-02-06 22:35:11 -0500)
+- metadata_version_stripe_lru: we no longer have to read stripes into
+  memory at startup for the stripes heap, for reusing partially empty
+  stripes
 
-are available in the Git repository at:
+- metadata_version_casefolding: I think this one will make some people
+  happy :)
 
-  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-02-12
+Joshua, the casefolding patches needed some work to rebase, could you
+look them over? Hongbo, I had to tweak your directory i_size code as
+well.
 
-for you to fetch changes up to 406e445b3c6be65ab0ee961145e74bfd7ef6c9e1:
+Joshua Ashton (2):
+  bcachefs: Split out dirent alloc and name initialization
+  bcachefs: bcachefs_metadata_version_casefolding
 
-  bcachefs: Reuse transaction (2025-02-12 18:44:50 -0500)
+Kent Overstreet (16):
+  bcachefs: bch2_lru_change() checks for no-op
+  bcachefs: s/BCH_LRU_FRAGMENTATION_START/BCH_LRU_BUCKET_FRAGMENTATION/
+  bcachefs: decouple bch2_lru_check_set() from alloc btree
+  bcachefs: Rework bch2_check_lru_key()
+  bcachefs: bch2_trigger_stripe_ptr() no longer uses
+    ec_stripes_heap_lock
+  bcachefs: Better trigger ordering
+  bcachefs: rework bch2_trans_commit_run_triggers()
+  bcachefs: bcachefs_metadata_version_cached_backpointers
+  bcachefs: Invalidate cached data by backpointers
+  bcachefs: Advance bch_alloc.oldest_gen if no stale pointers
+  bcachefs: bcachefs_metadata_version_stripe_backpointers
+  bcachefs: bcachefs_metadata_version_stripe_lru
+  bcachefs: ec_stripe_delete() uses new stripe lru
+  bcachefs: get_existing_stripe() uses new stripe lru
+  bcachefs: We no longer read stripes into memory at startup
+  bcachefs: Kill dirent_occupied_size()
 
-----------------------------------------------------------------
-bcachefs fixes for 6.14-rc3
+ .../filesystems/bcachefs/casefolding.rst      |  87 ++++
+ fs/bcachefs/alloc_background.c                | 147 ++++--
+ fs/bcachefs/backpointers.c                    |  14 +-
+ fs/bcachefs/backpointers.h                    |  15 +-
+ fs/bcachefs/bcachefs.h                        |  10 +-
+ fs/bcachefs/bcachefs_format.h                 |   9 +-
+ fs/bcachefs/btree_trans_commit.c              |  89 ++--
+ fs/bcachefs/btree_types.h                     |  13 +
+ fs/bcachefs/btree_update.c                    |   3 +-
+ fs/bcachefs/buckets.c                         |  14 +-
+ fs/bcachefs/buckets.h                         |  27 --
+ fs/bcachefs/buckets_types.h                   |  27 ++
+ fs/bcachefs/dirent.c                          | 223 +++++++--
+ fs/bcachefs/dirent.h                          |  18 +-
+ fs/bcachefs/dirent_format.h                   |  20 +-
+ fs/bcachefs/ec.c                              | 429 ++++++------------
+ fs/bcachefs/ec.h                              |  46 +-
+ fs/bcachefs/ec_types.h                        |  12 +-
+ fs/bcachefs/fs-common.c                       |  42 +-
+ fs/bcachefs/fs-ioctl.c                        |  25 +
+ fs/bcachefs/fs-ioctl.h                        |  20 +-
+ fs/bcachefs/fs.c                              |  17 +
+ fs/bcachefs/fsck.c                            |   5 +-
+ fs/bcachefs/inode_format.h                    |   3 +-
+ fs/bcachefs/lru.c                             | 100 ++--
+ fs/bcachefs/lru.h                             |  22 +-
+ fs/bcachefs/lru_format.h                      |   6 +-
+ fs/bcachefs/move.c                            |   3 +
+ fs/bcachefs/movinggc.c                        |   4 +-
+ fs/bcachefs/recovery_passes_types.h           |   2 +-
+ fs/bcachefs/sb-downgrade.c                    |   6 +
+ fs/bcachefs/sb-errors_format.h                |   4 +-
+ fs/bcachefs/str_hash.c                        |   2 +-
+ fs/bcachefs/str_hash.h                        |   4 +
+ fs/bcachefs/super.c                           |  19 +
+ fs/bcachefs/sysfs.c                           |   5 -
+ 36 files changed, 904 insertions(+), 588 deletions(-)
+ create mode 100644 Documentation/filesystems/bcachefs/casefolding.rst
 
-- More fixes for going read-only: the previous fix was insufficient, but
-  with more work on ordering journal reclaim flushing (and a btree node
-  accounting fix so we don't split until we have to) the
-  tiering_replication test now consistently goes read-only in less than
-  a second.
+-- 
+2.45.2
 
-- fix for fsck when we have reflink pointers to missing indirect
-  extents
-
-- some transaction restart handling fixes from Alan; the "Pass
-  _orig_restart_count to trans_was_restarted" likely fixes some rare
-  undefined behaviour heisenbugs.
-
-----------------------------------------------------------------
-Alan Huang (3):
-      bcachefs: Fix use after free
-      bcachefs: Pass _orig_restart_count to trans_was_restarted
-      bcachefs: Reuse transaction
-
-Kent Overstreet (4):
-      bcachefs: Fix marking reflink pointers to missing indirect extents
-      bcachefs: Split out journal pins by btree level
-      bcachefs: Fix want_new_bset() so we write until the end of the btree node
-      bcachefs: CONFIG_BCACHEFS_INJECT_TRANSACTION_RESTARTS
-
- fs/bcachefs/Kconfig                 |  7 +++++++
- fs/bcachefs/btree_iter.c            | 33 ++++++++++++++++++++++++++++++++-
- fs/bcachefs/btree_iter.h            | 14 +++++++++++++-
- fs/bcachefs/btree_trans_commit.c    |  4 ++++
- fs/bcachefs/btree_types.h           |  3 +++
- fs/bcachefs/btree_update_interior.h |  4 ++--
- fs/bcachefs/disk_accounting.h       |  2 ++
- fs/bcachefs/io_write.c              | 12 +++++++++++-
- fs/bcachefs/journal_reclaim.c       | 37 ++++++++++++++++++-------------------
- fs/bcachefs/journal_types.h         |  5 ++++-
- fs/bcachefs/reflink.c               |  2 ++
- fs/bcachefs/sb-errors_format.h      |  4 ++--
- 12 files changed, 100 insertions(+), 27 deletions(-)
