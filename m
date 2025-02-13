@@ -1,38 +1,38 @@
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E37242913
-	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65AEC28A2D5
+	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739472384; cv=none; b=kZphUQrhBfNg5meA7Im6hn4rD2wF5QUGQiLXkZs8lAa+5psyKp84yvMF3wdeGiGo48w4kgAptMbOBaDvIPfnTCgUlaS9hzLOrlbKd1tZVOT+zsnl6bP1pN5PLmVEhnnELmTZpPF9qEs6laAW02Ix1EukpiF3SAwytFBg0nA1jnY=
+	t=1739472385; cv=none; b=g627158IybMKIxg4a5+GQGnFpEBtn/k1cko61e2SxjZrl8ybhgpr3a7/Odyrqlph3RgPIQ1k4F0lhzNyuBKpFfA4KbZgl33o9HCh+0X7kZ4XH59rBEc2SjzRS9maEddZJ488xBRzcJkii21fjQF4DqbGgV/PUlnmCgMA6mHERi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739472384; c=relaxed/simple;
-	bh=N0yoAsJ3/iQKXdGxvv1mEeqNCcTGh3OgpRgpo2Vb854=;
+	s=arc-20240116; t=1739472385; c=relaxed/simple;
+	bh=/yQielVPTZ+miUruVEOSEMoMh53MFajeVeuzNR57gb8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j13unmAqs0Yx5pESZ3eaHWdTyieK0pviqSz91gZqEhEa6OybJHCaLalZxwDYs+EKgY+5yGlVxkOo+9qRb6j4lWC1LiWNLvcFvAWXDWVR/ZRyMv8PfMVaJqetB+uc1Ru9n3S//I7EMz21YsXFArrX0leDaojCxN5+AyeD79NJyWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nd93lRxp; arc=none smtp.client-ip=95.215.58.178
+	 MIME-Version; b=eAW3fT0LqldwfLhWvr/n2RkNk97jNA+aZwyqaNRRzVMVTrm1pZgt44e2THvHI+s3eKRkFhYrqPQIpovhGLofhwyK25ByukHk8crGn8S3qLOaVFs0ETV0SU9nU03uvuHW0XOoxr73sUAuabQ0gJEtdjNuWbRWqPzHGZlWknYXa2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oRfyg+p3; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nd93lRxp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oRfyg+p3"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739472380;
+	t=1739472381;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EkKRgVfibZEaeUjt+03bfTsXho3Uw+VBIwvQCzjY8uM=;
-	b=nd93lRxpofbn4msRICtHuJu3SZh/hG8q5wmPnx7RO8mvA5wMiv5j0Zx6ZVRzq2gPf9MAw0
-	kJ6g/GMS2F86AFh35xP3YHdC6njm4W1CmlU2mTtCHizF3VLnVTnK1m8Q8uWQD9iE+bDcc4
-	F1io9J0QJDsMMLoJq3jC13H51mDBYF4=
+	bh=5EqA4qa/uMM3zJjtlSaMEH40cZPzVUa3J7/U0QVEzOo=;
+	b=oRfyg+p3yZI6aTgMg45llWGW4Lq+Hya8JUX9GM7I/RJhinkNTpyKNts9Ii7y0HEJXkG22O
+	toF2Eqb/Ls8a6kBgNNE43S5e+3dM5Sf1v5zNz1RtoZHfUliir7WH4oYHtFoDwp1RKHJHIA
+	vzdgMdWZpZk7cychphkS//3uAVw6l7Q=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 06/18] bcachefs: Better trigger ordering
-Date: Thu, 13 Feb 2025 13:45:51 -0500
-Message-ID: <20250213184607.18237-7-kent.overstreet@linux.dev>
+Subject: [PATCH 07/18] bcachefs: rework bch2_trans_commit_run_triggers()
+Date: Thu, 13 Feb 2025 13:45:52 -0500
+Message-ID: <20250213184607.18237-8-kent.overstreet@linux.dev>
 In-Reply-To: <20250213184607.18237-1-kent.overstreet@linux.dev>
 References: <20250213184607.18237-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,65 +44,139 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Transactional triggers need to run in a defined ordering, which is not
-quite the same as btree ID integer comparison.
-
-Previously this was handled in a hacky way in
-bch2_trans_commit_run_triggers(), since it was only the alloc btree that
-needed special handling, but upcoming stripe btree changes are going to
-require more ordering changes - so, define that ordering.
-
-Next patch will change the transaction commit path to use it.
-
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/btree_types.h  | 13 +++++++++++++
- fs/bcachefs/btree_update.c |  1 +
- 2 files changed, 14 insertions(+)
+ fs/bcachefs/btree_trans_commit.c | 89 ++++++++++++--------------------
+ fs/bcachefs/btree_update.c       |  2 +-
+ 2 files changed, 34 insertions(+), 57 deletions(-)
 
-diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
-index a09cbe9cd94f..77578da2d23f 100644
---- a/fs/bcachefs/btree_types.h
-+++ b/fs/bcachefs/btree_types.h
-@@ -423,6 +423,7 @@ static inline struct bpos btree_node_pos(struct btree_bkey_cached_common *b)
- 
- struct btree_insert_entry {
- 	unsigned		flags;
-+	u8			sort_order;
- 	u8			bkey_type;
- 	enum btree_id		btree_id:8;
- 	u8			level:4;
-@@ -853,6 +854,18 @@ static inline bool btree_type_uses_write_buffer(enum btree_id btree)
- 	return BIT_ULL(btree) & mask;
+diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
+index c4f524b2ca9a..892d20a50a52 100644
+--- a/fs/bcachefs/btree_trans_commit.c
++++ b/fs/bcachefs/btree_trans_commit.c
+@@ -336,6 +336,7 @@ static inline void btree_insert_entry_checks(struct btree_trans *trans,
+ 	BUG_ON(i->cached	!= path->cached);
+ 	BUG_ON(i->level		!= path->level);
+ 	BUG_ON(i->btree_id	!= path->btree_id);
++	BUG_ON(i->bkey_type	!= __btree_node_type(path->level, path->btree_id));
+ 	EBUG_ON(!i->level &&
+ 		btree_type_has_snapshots(i->btree_id) &&
+ 		!(i->flags & BTREE_UPDATE_internal_snapshot_node) &&
+@@ -517,69 +518,45 @@ static int run_one_trans_trigger(struct btree_trans *trans, struct btree_insert_
+ 	}
  }
  
-+static inline u8 btree_trigger_order(enum btree_id btree)
-+{
-+	switch (btree) {
-+	case BTREE_ID_alloc:
-+		return U8_MAX;
-+	case BTREE_ID_stripes:
-+		return U8_MAX - 1;
-+	default:
-+		return btree;
-+	}
-+}
-+
- struct btree_root {
- 	struct btree		*b;
+-static int run_btree_triggers(struct btree_trans *trans, enum btree_id btree_id,
+-			      unsigned *btree_id_updates_start)
++static int bch2_trans_commit_run_triggers(struct btree_trans *trans)
+ {
+-	bool trans_trigger_run;
++	unsigned sort_id_start = 0;
  
+-	/*
+-	 * Running triggers will append more updates to the list of updates as
+-	 * we're walking it:
+-	 */
+-	do {
+-		trans_trigger_run = false;
++	while (sort_id_start < trans->nr_updates) {
++		unsigned i, sort_id = trans->updates[sort_id_start].sort_order;
++		bool trans_trigger_run;
+ 
+-		for (unsigned i = *btree_id_updates_start;
+-		     i < trans->nr_updates && trans->updates[i].btree_id <= btree_id;
+-		     i++) {
+-			if (trans->updates[i].btree_id < btree_id) {
+-				*btree_id_updates_start = i;
+-				continue;
++		/*
++		 * For a given btree, this algorithm runs insert triggers before
++		 * overwrite triggers: this is so that when extents are being
++		 * moved (e.g. by FALLOCATE_FL_INSERT_RANGE), we don't drop
++		 * references before they are re-added.
++		 *
++		 * Running triggers will append more updates to the list of
++		 * updates as we're walking it:
++		 */
++		do {
++			trans_trigger_run = false;
++
++			for (i = sort_id_start;
++			     i < trans->nr_updates && trans->updates[i].sort_order <= sort_id;
++			     i++) {
++				if (trans->updates[i].sort_order < sort_id) {
++					sort_id_start = i;
++					continue;
++				}
++
++				int ret = run_one_trans_trigger(trans, trans->updates + i);
++				if (ret < 0)
++					return ret;
++				if (ret)
++					trans_trigger_run = true;
+ 			}
++		} while (trans_trigger_run);
+ 
+-			int ret = run_one_trans_trigger(trans, trans->updates + i);
+-			if (ret < 0)
+-				return ret;
+-			if (ret)
+-				trans_trigger_run = true;
+-		}
+-	} while (trans_trigger_run);
+-
+-	trans_for_each_update(trans, i)
+-		BUG_ON(!(i->flags & BTREE_TRIGGER_norun) &&
+-		       i->btree_id == btree_id &&
+-		       btree_node_type_has_trans_triggers(i->bkey_type) &&
+-		       (!i->insert_trigger_run || !i->overwrite_trigger_run));
+-
+-	return 0;
+-}
+-
+-static int bch2_trans_commit_run_triggers(struct btree_trans *trans)
+-{
+-	unsigned btree_id = 0, btree_id_updates_start = 0;
+-	int ret = 0;
+-
+-	/*
+-	 *
+-	 * For a given btree, this algorithm runs insert triggers before
+-	 * overwrite triggers: this is so that when extents are being moved
+-	 * (e.g. by FALLOCATE_FL_INSERT_RANGE), we don't drop references before
+-	 * they are re-added.
+-	 */
+-	for (btree_id = 0; btree_id < BTREE_ID_NR; btree_id++) {
+-		if (btree_id == BTREE_ID_alloc)
+-			continue;
+-
+-		ret = run_btree_triggers(trans, btree_id, &btree_id_updates_start);
+-		if (ret)
+-			return ret;
++		sort_id_start = i;
+ 	}
+ 
+-	btree_id_updates_start = 0;
+-	ret = run_btree_triggers(trans, BTREE_ID_alloc, &btree_id_updates_start);
+-	if (ret)
+-		return ret;
+-
+ #ifdef CONFIG_BCACHEFS_DEBUG
+ 	trans_for_each_update(trans, i)
+ 		BUG_ON(!(i->flags & BTREE_TRIGGER_norun) &&
 diff --git a/fs/bcachefs/btree_update.c b/fs/bcachefs/btree_update.c
-index 13d794f201a5..47e54eedd0bc 100644
+index 47e54eedd0bc..b3e346b5f8d7 100644
 --- a/fs/bcachefs/btree_update.c
 +++ b/fs/bcachefs/btree_update.c
-@@ -397,6 +397,7 @@ bch2_trans_update_by_path(struct btree_trans *trans, btree_path_idx_t path_idx,
- 
- 	n = (struct btree_insert_entry) {
- 		.flags		= flags,
-+		.sort_order	= btree_trigger_order(path->btree_id),
- 		.bkey_type	= __btree_node_type(path->level, path->btree_id),
- 		.btree_id	= path->btree_id,
- 		.level		= path->level,
+@@ -17,7 +17,7 @@
+ static inline int btree_insert_entry_cmp(const struct btree_insert_entry *l,
+ 					 const struct btree_insert_entry *r)
+ {
+-	return   cmp_int(l->btree_id,	r->btree_id) ?:
++	return   cmp_int(l->sort_order,	r->sort_order) ?:
+ 		 cmp_int(l->cached,	r->cached) ?:
+ 		 -cmp_int(l->level,	r->level) ?:
+ 		 bpos_cmp(l->k->k.p,	r->k->k.p);
 -- 
 2.45.2
 
