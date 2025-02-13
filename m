@@ -1,38 +1,38 @@
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35A524A041
-	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34C5245AF3
+	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739472389; cv=none; b=bcCg0uLB87aBKj1ry72mYKccmEGtMSa883VvaC9RjfLfb6pJ2WUq4dzforboAjAk5ehH/xxalzjhV2DOyPPyzCLyUr4oIrUU3KKzlnwb8beIxFeFjpkWjc3KS5+lgbePcm6kms5ZbEhdUAeiozWyfypkD32iBOmUDiyZJG0/04A=
+	t=1739472390; cv=none; b=TWVKFvHXvnUB99Q2DCl5HBvcBGdoSdO8HoALYfTdr2qYWO7NxpG+05g+IWy1wduwSM8h7xVoDCu5M8sAVNNWHmhiVtCLVPQ4L/mELsqNVc0a3w4G6RcUAfZkf/MUDWdAWVaIr8TXGF0ZygCf6IwA2b9+Q613hZQXzwvwLhGI99k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739472389; c=relaxed/simple;
-	bh=BD7Rc6K+QawUehC4No6C0+L+U30lLbXtskUg28zBdD4=;
+	s=arc-20240116; t=1739472390; c=relaxed/simple;
+	bh=umGTtUO1RSXF82+sY511cAeJQEwmnnnjka22sWf+0BE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tZlLnNkg1djGUaJVL30YaFwREA9nZgeSnVsXxqkAN2SslxM3TJtBU9IBRB+JjSs5i8tyFGzpd+QDGwk5yOXUfoyMx1uPp7NGoEMhsNfvtBl071clELl5sEhogbxu5uMgCA9ueH0jK+2Sn/Z9kTX5zD8BjrZgwHFYrX/Wyxs6+fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Zj4gEBJP; arc=none smtp.client-ip=95.215.58.178
+	 MIME-Version; b=KRL3rwY9xLTrJmGRLp5MLBwqnJ9DLbLlbPTwfGeafe3Mn7W45Prfw8iU5WHmFE4Tn7l+ZdnkbN6OqvKHJKnjELn6O8Z9XVLkKwhaTyt30eQkQb9o3d6HiLmZ3TWhYUxFicpDRAy8jrQPewGQ3Y2KQWQMEKzYdWICnFkGeyi7m/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fMdVoXyJ; arc=none smtp.client-ip=95.215.58.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Zj4gEBJP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fMdVoXyJ"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739472386;
+	t=1739472384;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5GsUia0TBbgARPCyvyy3dFoSlrvUD71KM9IiQXLgOSY=;
-	b=Zj4gEBJPVHPF1nhWZYCbtWh4ap3YtT3M6GOX6i6yyhnnWVr7B85Dr3s8iQO1EQltIZelIO
-	TfNGaIOBo7jRdR8d2Yn3h9WeAg7acgbVkHvmVKfg4hhlbrsNXxNo6qP/T++z/Y71+1wZ9a
-	et5XZyl24uBkZWFq1VJQuE70+/nWK+8=
+	bh=O1tpetgLRcyVaUHw4+8tHs1osvPeT3zXowoLZbu+Gus=;
+	b=fMdVoXyJ1cRuyaX6pO5eToNlVADrr5wydmAPf0xUjzA/hIeLOor9Pkgrl/uEgfO/jEEXnJ
+	OfrNdVqcPYKtRJ9mYncgeFzIXppFxQw7+NX3qhAv9GyukXNH9gVc3chSCtlY55xk2HOxVr
+	fLkhV+3PeLdpFIiffFLV2pRBF0J96uk=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 14/18] bcachefs: get_existing_stripe() uses new stripe lru
-Date: Thu, 13 Feb 2025 13:45:59 -0500
-Message-ID: <20250213184607.18237-15-kent.overstreet@linux.dev>
+Subject: [PATCH 12/18] bcachefs: bcachefs_metadata_version_stripe_lru
+Date: Thu, 13 Feb 2025 13:45:57 -0500
+Message-ID: <20250213184607.18237-13-kent.overstreet@linux.dev>
 In-Reply-To: <20250213184607.18237-1-kent.overstreet@linux.dev>
 References: <20250213184607.18237-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,133 +44,249 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Convert to the new persistent stripe LRU.
+Add a persistent LRU for stripes, ordered by "number of empty blocks",
+i.e. order in which we wish to reuse them.
+
+This will replace the in-memory stripes heap, so we can kill off reading
+stripes into memory at startup.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/ec.c | 88 ++++++++++++++++++++++++++++--------------------
- 1 file changed, 51 insertions(+), 37 deletions(-)
+ fs/bcachefs/alloc_background.c |  3 +-
+ fs/bcachefs/bcachefs_format.h  |  3 +-
+ fs/bcachefs/ec.c               | 51 ++++++++++++++++++++++++++++++++++
+ fs/bcachefs/ec.h               | 27 ++++++++++++++++++
+ fs/bcachefs/lru.c              |  7 +++++
+ fs/bcachefs/lru.h              |  9 ++++--
+ fs/bcachefs/lru_format.h       |  4 ++-
+ 7 files changed, 99 insertions(+), 5 deletions(-)
 
+diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
+index c5c8497a6339..ecad4a78c3f7 100644
+--- a/fs/bcachefs/alloc_background.c
++++ b/fs/bcachefs/alloc_background.c
+@@ -1757,7 +1757,8 @@ int bch2_check_alloc_to_lru_refs(struct bch_fs *c)
+ 		for_each_btree_key_commit(trans, iter, BTREE_ID_alloc,
+ 				POS_MIN, BTREE_ITER_prefetch, k,
+ 				NULL, NULL, BCH_TRANS_COMMIT_no_enospc,
+-			bch2_check_alloc_to_lru_ref(trans, &iter, &last_flushed)));
++			bch2_check_alloc_to_lru_ref(trans, &iter, &last_flushed))) ?:
++		bch2_check_stripe_to_lru_refs(c);
+ 
+ 	bch2_bkey_buf_exit(&last_flushed, c);
+ 	bch_err_fn(c, ret);
+diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+index bf3723a2bca4..b4ac311f21a1 100644
+--- a/fs/bcachefs/bcachefs_format.h
++++ b/fs/bcachefs/bcachefs_format.h
+@@ -688,7 +688,8 @@ struct bch_sb_field_ext {
+ 	x(autofix_errors,		BCH_VERSION(1, 19))		\
+ 	x(directory_size,		BCH_VERSION(1, 20))		\
+ 	x(cached_backpointers,		BCH_VERSION(1, 21))		\
+-	x(stripe_backpointers,		BCH_VERSION(1, 22))
++	x(stripe_backpointers,		BCH_VERSION(1, 22))		\
++	x(stripe_lru,			BCH_VERSION(1, 23))
+ 
+ enum bcachefs_metadata_version {
+ 	bcachefs_metadata_version_min = 9,
 diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-index f9bb835c1d57..bd47b8f0f705 100644
+index 36590c0ce09f..1090cdb7d5cc 100644
 --- a/fs/bcachefs/ec.c
 +++ b/fs/bcachefs/ec.c
-@@ -1978,39 +1978,44 @@ static int new_stripe_alloc_buckets(struct btree_trans *trans,
- 	return 0;
- }
+@@ -20,6 +20,7 @@
+ #include "io_read.h"
+ #include "io_write.h"
+ #include "keylist.h"
++#include "lru.h"
+ #include "recovery.h"
+ #include "replicas.h"
+ #include "super-io.h"
+@@ -411,6 +412,15 @@ int bch2_trigger_stripe(struct btree_trans *trans,
+ 	       (new_s->nr_blocks	!= old_s->nr_blocks ||
+ 		new_s->nr_redundant	!= old_s->nr_redundant));
  
--static s64 get_existing_stripe(struct bch_fs *c,
--			       struct ec_stripe_head *head)
-+static int __get_existing_stripe(struct btree_trans *trans,
-+				 struct ec_stripe_head *head,
-+				 struct ec_stripe_buf *stripe,
-+				 u64 idx)
- {
--	ec_stripes_heap *h = &c->ec_stripes_heap;
--	struct stripe *m;
--	size_t heap_idx;
--	u64 stripe_idx;
--	s64 ret = -1;
-+	struct bch_fs *c = trans->c;
++	if (flags & BTREE_TRIGGER_transactional) {
++		int ret = bch2_lru_change(trans,
++					  BCH_LRU_STRIPE_FRAGMENTATION,
++					  idx,
++					  stripe_lru_pos(old_s),
++					  stripe_lru_pos(new_s));
++		if (ret)
++			return ret;
++	}
  
--	if (may_create_new_stripe(c))
--		return -1;
-+	struct btree_iter iter;
-+	struct bkey_s_c k = bch2_bkey_get_iter(trans, &iter,
-+					  BTREE_ID_stripes, POS(0, idx), 0);
-+	int ret = bkey_err(k);
-+	if (ret)
-+		goto err;
- 
--	mutex_lock(&c->ec_stripes_heap_lock);
--	for (heap_idx = 0; heap_idx < h->nr; heap_idx++) {
--		/* No blocks worth reusing, stripe will just be deleted: */
--		if (!h->data[heap_idx].blocks_nonempty)
--			continue;
-+	/* We expect write buffer races here */
-+	if (k.k->type != KEY_TYPE_stripe)
-+		goto out;
- 
--		stripe_idx = h->data[heap_idx].idx;
-+	struct bkey_s_c_stripe s = bkey_s_c_to_stripe(k);
-+	if (stripe_lru_pos(s.v) == 1)
-+		goto out;
- 
--		m = genradix_ptr(&c->stripes, stripe_idx);
-+	unsigned blocks_nonempty = 0;
-+	for (unsigned i = 0; i < s.v->nr_blocks; i++)
-+		blocks_nonempty	+= !!stripe_blockcount_get(s.v, i);
- 
--		if (m->disk_label	== head->disk_label &&
--		    m->algorithm	== head->algo &&
--		    m->nr_redundant	== head->redundancy &&
--		    m->sectors		== head->blocksize &&
--		    m->blocks_nonempty	< m->nr_blocks - m->nr_redundant &&
--		    bch2_try_open_stripe(c, head->s, stripe_idx)) {
--			ret = stripe_idx;
--			break;
--		}
-+	if (s.v->disk_label	== head->disk_label &&
-+	    s.v->algorithm	== head->algo &&
-+	    s.v->nr_redundant	== head->redundancy &&
-+	    s.v->sectors	== head->blocksize &&
-+	    bch2_try_open_stripe(c, head->s, idx)) {
-+		bkey_reassemble(&stripe->key, k);
-+		ret = 1;
- 	}
--	mutex_unlock(&c->ec_stripes_heap_lock);
-+out:
-+	bch2_set_btree_iter_dontneed(&iter);
-+err:
-+	bch2_trans_iter_exit(trans, &iter);
+ 	if (flags & (BTREE_TRIGGER_transactional|BTREE_TRIGGER_gc)) {
+ 		/*
+@@ -1175,6 +1185,10 @@ static int ec_stripe_delete(struct btree_trans *trans, u64 idx)
  	return ret;
  }
  
-@@ -2062,24 +2067,33 @@ static int __bch2_ec_stripe_head_reuse(struct btree_trans *trans, struct ec_stri
- 				       struct ec_stripe_new *s)
++/*
++ * XXX
++ * can we kill this and delete stripes from the trigger?
++ */
+ static void ec_stripe_delete_work(struct work_struct *work)
  {
- 	struct bch_fs *c = trans->c;
--	s64 idx;
--	int ret;
- 
- 	/*
- 	 * If we can't allocate a new stripe, and there's no stripes with empty
- 	 * blocks for us to reuse, that means we have to wait on copygc:
- 	 */
--	idx = get_existing_stripe(c, h);
--	if (idx < 0)
--		return -BCH_ERR_stripe_alloc_blocked;
-+	if (may_create_new_stripe(c))
-+		return -1;
- 
--	ret = get_stripe_key_trans(trans, idx, &s->existing_stripe);
--	bch2_fs_fatal_err_on(ret && !bch2_err_matches(ret, BCH_ERR_transaction_restart), c,
--			     "reading stripe key: %s", bch2_err_str(ret));
--	if (ret) {
--		bch2_stripe_close(c, s);
--		return ret;
-+	struct btree_iter lru_iter;
-+	struct bkey_s_c lru_k;
-+	int ret = 0;
-+
-+	for_each_btree_key_max_norestart(trans, lru_iter, BTREE_ID_lru,
-+			lru_pos(BCH_LRU_STRIPE_FRAGMENTATION, 2, 0),
-+			lru_pos(BCH_LRU_STRIPE_FRAGMENTATION, 2, LRU_TIME_MAX),
-+			0, lru_k, ret) {
-+		ret = __get_existing_stripe(trans, h, &s->existing_stripe, lru_k.k->p.offset);
-+		if (ret)
-+			break;
- 	}
-+	bch2_trans_iter_exit(trans, &lru_iter);
-+	if (!ret)
-+		ret = -BCH_ERR_stripe_alloc_blocked;
-+	if (ret == 1)
-+		ret = 0;
-+	if (ret)
-+		return ret;
- 
- 	return init_new_stripe_from_existing(c, s);
+ 	struct bch_fs *c =
+@@ -2519,3 +2533,40 @@ int bch2_fs_ec_init(struct bch_fs *c)
+ 	return bioset_init(&c->ec_bioset, 1, offsetof(struct ec_bio, bio),
+ 			   BIOSET_NEED_BVECS);
  }
++
++static int bch2_check_stripe_to_lru_ref(struct btree_trans *trans,
++					struct bkey_s_c k,
++					struct bkey_buf *last_flushed)
++{
++	if (k.k->type != KEY_TYPE_stripe)
++		return 0;
++
++	struct bkey_s_c_stripe s = bkey_s_c_to_stripe(k);
++
++	u64 lru_idx = stripe_lru_pos(s.v);
++	if (lru_idx) {
++		int ret = bch2_lru_check_set(trans, BCH_LRU_STRIPE_FRAGMENTATION,
++					     k.k->p.offset, lru_idx, k, last_flushed);
++		if (ret)
++			return ret;
++	}
++	return 0;
++}
++
++int bch2_check_stripe_to_lru_refs(struct bch_fs *c)
++{
++	struct bkey_buf last_flushed;
++
++	bch2_bkey_buf_init(&last_flushed);
++	bkey_init(&last_flushed.k->k);
++
++	int ret = bch2_trans_run(c,
++		for_each_btree_key_commit(trans, iter, BTREE_ID_stripes,
++				POS_MIN, BTREE_ITER_prefetch, k,
++				NULL, NULL, BCH_TRANS_COMMIT_no_enospc,
++			bch2_check_stripe_to_lru_ref(trans, k, &last_flushed)));
++
++	bch2_bkey_buf_exit(&last_flushed, c);
++	bch_err_fn(c, ret);
++	return ret;
++}
+diff --git a/fs/bcachefs/ec.h b/fs/bcachefs/ec.h
+index 4c9511887655..cd1c837e4933 100644
+--- a/fs/bcachefs/ec.h
++++ b/fs/bcachefs/ec.h
+@@ -92,6 +92,31 @@ static inline void stripe_csum_set(struct bch_stripe *s,
+ 	memcpy(stripe_csum(s, block, csum_idx), &csum, bch_crc_bytes[s->csum_type]);
+ }
+ 
++#define STRIPE_LRU_POS_EMPTY	1
++
++static inline u64 stripe_lru_pos(const struct bch_stripe *s)
++{
++	if (!s)
++		return 0;
++
++	unsigned blocks_empty = 0, blocks_nonempty = 0;
++
++	for (unsigned i = 0; i < s->nr_blocks; i++) {
++		blocks_empty	+=  !stripe_blockcount_get(s, i);
++		blocks_nonempty	+= !!stripe_blockcount_get(s, i);
++	}
++
++	/* Will be picked up by the stripe_delete worker */
++	if (!blocks_nonempty)
++		return STRIPE_LRU_POS_EMPTY;
++
++	if (!blocks_empty)
++		return 0;
++
++	/* invert: more blocks empty = reuse first */
++	return LRU_TIME_MAX - blocks_empty;
++}
++
+ static inline bool __bch2_ptr_matches_stripe(const struct bch_extent_ptr *stripe_ptr,
+ 					     const struct bch_extent_ptr *data_ptr,
+ 					     unsigned sectors)
+@@ -282,4 +307,6 @@ void bch2_fs_ec_exit(struct bch_fs *);
+ void bch2_fs_ec_init_early(struct bch_fs *);
+ int bch2_fs_ec_init(struct bch_fs *);
+ 
++int bch2_check_stripe_to_lru_refs(struct bch_fs *);
++
+ #endif /* _BCACHEFS_EC_H */
+diff --git a/fs/bcachefs/lru.c b/fs/bcachefs/lru.c
+index 98ab8496f29d..a299d9ec8ee4 100644
+--- a/fs/bcachefs/lru.c
++++ b/fs/bcachefs/lru.c
+@@ -6,6 +6,7 @@
+ #include "btree_iter.h"
+ #include "btree_update.h"
+ #include "btree_write_buffer.h"
++#include "ec.h"
+ #include "error.h"
+ #include "lru.h"
+ #include "recovery.h"
+@@ -124,6 +125,8 @@ static struct bbpos lru_pos_to_bp(struct bkey_s_c lru_k)
+ 	case BCH_LRU_read:
+ 	case BCH_LRU_fragmentation:
+ 		return BBPOS(BTREE_ID_alloc, u64_to_bucket(lru_k.k->p.offset));
++	case BCH_LRU_stripes:
++		return BBPOS(BTREE_ID_stripes, POS(0, lru_k.k->p.offset));
+ 	default:
+ 		BUG();
+ 	}
+@@ -151,6 +154,10 @@ static u64 bkey_lru_type_idx(struct bch_fs *c,
+ 		rcu_read_unlock();
+ 		return idx;
+ 	}
++	case BCH_LRU_stripes:
++		return k.k->type == KEY_TYPE_stripe
++			? stripe_lru_pos(bkey_s_c_to_stripe(k).v)
++			: 0;
+ 	default:
+ 		BUG();
+ 	}
+diff --git a/fs/bcachefs/lru.h b/fs/bcachefs/lru.h
+index dea1d75cc9c1..8abd0aa2083a 100644
+--- a/fs/bcachefs/lru.h
++++ b/fs/bcachefs/lru.h
+@@ -28,9 +28,14 @@ static inline enum bch_lru_type lru_type(struct bkey_s_c l)
+ {
+ 	u16 lru_id = l.k->p.inode >> 48;
+ 
+-	if (lru_id == BCH_LRU_BUCKET_FRAGMENTATION)
++	switch (lru_id) {
++	case BCH_LRU_BUCKET_FRAGMENTATION:
+ 		return BCH_LRU_fragmentation;
+-	return BCH_LRU_read;
++	case BCH_LRU_STRIPE_FRAGMENTATION:
++		return BCH_LRU_stripes;
++	default:
++		return BCH_LRU_read;
++	}
+ }
+ 
+ int bch2_lru_validate(struct bch_fs *, struct bkey_s_c, struct bkey_validate_context);
+diff --git a/fs/bcachefs/lru_format.h b/fs/bcachefs/lru_format.h
+index 353a352d3fb9..b7392ad8e41f 100644
+--- a/fs/bcachefs/lru_format.h
++++ b/fs/bcachefs/lru_format.h
+@@ -9,7 +9,8 @@ struct bch_lru {
+ 
+ #define BCH_LRU_TYPES()		\
+ 	x(read)			\
+-	x(fragmentation)
++	x(fragmentation)	\
++	x(stripes)
+ 
+ enum bch_lru_type {
+ #define x(n) BCH_LRU_##n,
+@@ -18,6 +19,7 @@ enum bch_lru_type {
+ };
+ 
+ #define BCH_LRU_BUCKET_FRAGMENTATION	((1U << 16) - 1)
++#define BCH_LRU_STRIPE_FRAGMENTATION	((1U << 16) - 2)
+ 
+ #define LRU_TIME_BITS			48
+ #define LRU_TIME_MAX			((1ULL << LRU_TIME_BITS) - 1)
 -- 
 2.45.2
 
