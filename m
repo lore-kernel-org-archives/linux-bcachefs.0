@@ -1,38 +1,38 @@
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED1024292F
-	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD8C245AEC
+	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739472388; cv=none; b=Wb4K/zD8tTOZpeGIJ5m1HapyJXKh3quf52I6h5KE3sp31CTlvGdrjlS487K9TSxcmy6KaIrdRPE3uSxAgY6jWUaxSOFkKY1Y5H7xnO6ttIRmmMso4JdzMywBKIazx6oUfSzjPeX7QgLlTEG7J/QiCRiF9a3HIzbqxf77pzkmJDc=
+	t=1739472389; cv=none; b=aAjaQS3/soJXfj2Lfgzgv3YlpxViX668gaZ/UA5iIhN2z3GsSI6YO88OqGZFG/FRr6RLmy9oh8tfv81w2t8YLbNEOEpGKUaBgSpROfnU7H0Fd+yXok9h1B9oJfXDcGYIN1HNjIsPRLDR7eywVryiui/VI4utRmNmRrOIJX4d0ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739472388; c=relaxed/simple;
-	bh=iGi4N5k0StGJqpz5HkCh8z52L1cJ+CF8Ig3FRQRyB+g=;
+	s=arc-20240116; t=1739472389; c=relaxed/simple;
+	bh=ciSFDXcZAP03OM0WBPr2YW01zg9OSEY+ScinjIj+Wm0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D0u+E9FSj7/93rnB8pJvqKzR8WveAYhd7Wlxu922bnYHwi6qm00b7RUualfyVZnllFQExKaF1WVUza3/DvS1GnSs0Ql8Gv2eEMR24LfjHaGqD21vWNTthf0mP0/ulFE72vqGhlmg1OyTWJhL0xYWz7eJdYLGvGBsolWZ1UaY+5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=h94VbgMX; arc=none smtp.client-ip=95.215.58.183
+	 MIME-Version; b=Tn3iGHPOn1aZpIuXuUTZ4DsNk6IkLeVQhF36FgO5vx1ezbPHppvYFbX+NWHSlnoVxfcKEV8PrAQF8mgeQ77JmL2wdCX2UNYf7H0W7MfXfGtX5WgxQa87WOEJ9YCC5Zk7nYum/gT/Nv1FexWea9uovgYOM/hFPPB29w69aZg12Kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GxMFG+o+; arc=none smtp.client-ip=95.215.58.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="h94VbgMX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GxMFG+o+"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739472384;
+	t=1739472385;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Q6T9bggrAv3uFsjx84P4yQFPlHfOeVCpAk4/opTbug8=;
-	b=h94VbgMXDqW9PqdXoLaXe4jAHzqyaPklwoV4ZyREkDKjoaptXwNwYsCSwqz/rHMQg7o06w
-	7TwlrgFYXn22IdkvrF8xctzGtZ72bBwIlZ5q3/cEPhzrzsqT3o4A8U6djM3/YUEEozi+Rm
-	bCd7pg0u1nK9ShmgB5srZjkMNjaICYk=
+	bh=Ee27cCihh9/228MA7YuER6YsWO1EAVxljm8oBxM4uTs=;
+	b=GxMFG+o+XQb4k4Rw1h2JoYLvDKCXGgDH5GFyfEl4lf95qDvHuVyxu+PM3QT4DyAhXYPx1U
+	HAwHdxdZ8a8sXseVs0WDBJWg/+aJvNutrojM4Lgya8JYuRmM6UyH8BO4rVlXOTewHO05ii
+	ozLCTkvfnpoguNQ4T+7v2KVlAnUwjmo=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 11/18] bcachefs: bcachefs_metadata_version_stripe_backpointers
-Date: Thu, 13 Feb 2025 13:45:56 -0500
-Message-ID: <20250213184607.18237-12-kent.overstreet@linux.dev>
+Subject: [PATCH 13/18] bcachefs: ec_stripe_delete() uses new stripe lru
+Date: Thu, 13 Feb 2025 13:45:58 -0500
+Message-ID: <20250213184607.18237-14-kent.overstreet@linux.dev>
 In-Reply-To: <20250213184607.18237-1-kent.overstreet@linux.dev>
 References: <20250213184607.18237-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,119 +44,98 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Stripes now have backpointers.
-
-This is needed for proper scrub - stripe checksums need to be verified,
-separately from extents within the stripe, since a block may not be full
-of live extents but it's still needed for reconstruct.
-
-And this will be needed for (efficient) evacuate/repair paths.
+Convert to the new persistent stripe LRU.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/backpointers.h    | 15 ++++++++++++++-
- fs/bcachefs/bcachefs_format.h |  3 ++-
- fs/bcachefs/ec.c              | 16 ++++++++++++++--
- fs/bcachefs/move.c            |  3 +++
- fs/bcachefs/sb-downgrade.c    |  3 +++
- 5 files changed, 36 insertions(+), 4 deletions(-)
+ fs/bcachefs/ec.c | 64 +++++++++++++++++-------------------------------
+ 1 file changed, 22 insertions(+), 42 deletions(-)
 
-diff --git a/fs/bcachefs/backpointers.h b/fs/bcachefs/backpointers.h
-index 7786731d4ada..16575dbc5736 100644
---- a/fs/bcachefs/backpointers.h
-+++ b/fs/bcachefs/backpointers.h
-@@ -152,7 +152,20 @@ static inline void bch2_extent_ptr_to_bp(struct bch_fs *c,
- 			   struct bkey_i_backpointer *bp)
- {
- 	bkey_backpointer_init(&bp->k_i);
--	bp->k.p = POS(p.ptr.dev, ((u64) p.ptr.offset << MAX_EXTENT_COMPRESS_RATIO_SHIFT) + p.crc.offset);
-+	bp->k.p.inode = p.ptr.dev;
-+
-+	if (k.k->type != KEY_TYPE_stripe)
-+		bp->k.p.offset = ((u64) p.ptr.offset << MAX_EXTENT_COMPRESS_RATIO_SHIFT) + p.crc.offset;
-+	else {
-+		/*
-+		 * Put stripe backpointers where they won't collide with the
-+		 * extent backpointers within the stripe:
-+		 */
-+		struct bkey_s_c_stripe s = bkey_s_c_to_stripe(k);
-+		bp->k.p.offset = ((u64) (p.ptr.offset + le16_to_cpu(s.v->sectors)) <<
-+				  MAX_EXTENT_COMPRESS_RATIO_SHIFT) - 1;
-+	}
-+
- 	bp->v	= (struct bch_backpointer) {
- 		.btree_id	= btree_id,
- 		.level		= level,
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index ef5009b18dd5..bf3723a2bca4 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -687,7 +687,8 @@ struct bch_sb_field_ext {
- 	x(persistent_inode_cursors,	BCH_VERSION(1, 18))		\
- 	x(autofix_errors,		BCH_VERSION(1, 19))		\
- 	x(directory_size,		BCH_VERSION(1, 20))		\
--	x(cached_backpointers,		BCH_VERSION(1, 21))
-+	x(cached_backpointers,		BCH_VERSION(1, 21))		\
-+	x(stripe_backpointers,		BCH_VERSION(1, 22))
- 
- enum bcachefs_metadata_version {
- 	bcachefs_metadata_version_min = 9,
 diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-index 1aa56d28de33..36590c0ce09f 100644
+index 1090cdb7d5cc..f9bb835c1d57 100644
 --- a/fs/bcachefs/ec.c
 +++ b/fs/bcachefs/ec.c
-@@ -298,10 +298,22 @@ static int mark_stripe_bucket(struct btree_trans *trans,
- 	struct bpos bucket = PTR_BUCKET_POS(ca, ptr);
+@@ -1149,37 +1149,22 @@ void bch2_stripes_heap_update(struct bch_fs *c,
  
- 	if (flags & BTREE_TRIGGER_transactional) {
-+		struct extent_ptr_decoded p = {
-+			.ptr = *ptr,
-+			.crc = bch2_extent_crc_unpack(s.k, NULL),
-+		};
-+		struct bkey_i_backpointer bp;
-+		bch2_extent_ptr_to_bp(c, BTREE_ID_stripes, 0, s.s_c, p,
-+				      (const union bch_extent_entry *) ptr, &bp);
-+
- 		struct bkey_i_alloc_v4 *a =
- 			bch2_trans_start_alloc_update(trans, bucket, 0);
--		ret = PTR_ERR_OR_ZERO(a) ?:
--			__mark_stripe_bucket(trans, ca, s, ptr_idx, deleting, bucket, &a->v, flags);
-+		ret   = PTR_ERR_OR_ZERO(a) ?:
-+			__mark_stripe_bucket(trans, ca, s, ptr_idx, deleting, bucket, &a->v, flags) ?:
-+			bch2_bucket_backpointer_mod(trans, s.s_c, &bp,
-+						    !(flags & BTREE_TRIGGER_overwrite));
-+		if (ret)
-+			goto err;
- 	}
+ static int ec_stripe_delete(struct btree_trans *trans, u64 idx)
+ {
+-	struct bch_fs *c = trans->c;
+ 	struct btree_iter iter;
+-	struct bkey_s_c k;
+-	struct bkey_s_c_stripe s;
+-	int ret;
+-
+-	k = bch2_bkey_get_iter(trans, &iter, BTREE_ID_stripes, POS(0, idx),
+-			       BTREE_ITER_intent);
+-	ret = bkey_err(k);
++	struct bkey_s_c k = bch2_bkey_get_iter(trans, &iter,
++					       BTREE_ID_stripes, POS(0, idx),
++					       BTREE_ITER_intent);
++	int ret = bkey_err(k);
+ 	if (ret)
+ 		goto err;
  
- 	if (flags & BTREE_TRIGGER_gc) {
-diff --git a/fs/bcachefs/move.c b/fs/bcachefs/move.c
-index e0e10deaea73..e944f2791546 100644
---- a/fs/bcachefs/move.c
-+++ b/fs/bcachefs/move.c
-@@ -774,6 +774,9 @@ static int __bch2_move_data_phys(struct moving_context *ctxt,
- 		if (!(data_types & BIT(bp.v->data_type)))
- 			goto next;
+-	if (k.k->type != KEY_TYPE_stripe) {
+-		bch2_fs_inconsistent(c, "attempting to delete nonexistent stripe %llu", idx);
+-		ret = -EINVAL;
+-		goto err;
+-	}
+-
+-	s = bkey_s_c_to_stripe(k);
+-	for (unsigned i = 0; i < s.v->nr_blocks; i++)
+-		if (stripe_blockcount_get(s.v, i)) {
+-			struct printbuf buf = PRINTBUF;
+-
+-			bch2_bkey_val_to_text(&buf, c, k);
+-			bch2_fs_inconsistent(c, "attempting to delete nonempty stripe %s", buf.buf);
+-			printbuf_exit(&buf);
+-			ret = -EINVAL;
+-			goto err;
+-		}
+-
+-	ret = bch2_btree_delete_at(trans, &iter, 0);
++	/*
++	 * We expect write buffer races here
++	 * Important: check stripe_is_open with stripe key locked:
++	 */
++	if (k.k->type == KEY_TYPE_stripe &&
++	    !bch2_stripe_is_open(trans->c, idx) &&
++	    stripe_lru_pos(bkey_s_c_to_stripe(k).v) == 1)
++		ret = bch2_btree_delete_at(trans, &iter, 0);
+ err:
+ 	bch2_trans_iter_exit(trans, &iter);
+ 	return ret;
+@@ -1194,21 +1179,16 @@ static void ec_stripe_delete_work(struct work_struct *work)
+ 	struct bch_fs *c =
+ 		container_of(work, struct bch_fs, ec_stripe_delete_work);
  
-+		if (!bp.v->level && bp.v->btree_id == BTREE_ID_stripes)
-+			goto next;
-+
- 		k = bch2_backpointer_get_key(trans, bp, &iter, 0, &last_flushed);
- 		ret = bkey_err(k);
- 		if (bch2_err_matches(ret, BCH_ERR_transaction_restart))
-diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
-index 34fd897680b3..c587334ffb55 100644
---- a/fs/bcachefs/sb-downgrade.c
-+++ b/fs/bcachefs/sb-downgrade.c
-@@ -95,6 +95,9 @@
- 	  BIT_ULL(BCH_RECOVERY_PASS_check_inodes),		\
- 	  BCH_FSCK_ERR_directory_size_mismatch)			\
- 	x(cached_backpointers,					\
-+	  BIT_ULL(BCH_RECOVERY_PASS_check_extents_to_backpointers),\
-+	  BCH_FSCK_ERR_ptr_to_missing_backpointer)		\
-+	x(stripe_backpointers,					\
- 	  BIT_ULL(BCH_RECOVERY_PASS_check_extents_to_backpointers),\
- 	  BCH_FSCK_ERR_ptr_to_missing_backpointer)
+-	while (1) {
+-		mutex_lock(&c->ec_stripes_heap_lock);
+-		u64 idx = stripe_idx_to_delete(c);
+-		mutex_unlock(&c->ec_stripes_heap_lock);
+-
+-		if (!idx)
+-			break;
+-
+-		int ret = bch2_trans_commit_do(c, NULL, NULL, BCH_TRANS_COMMIT_no_enospc,
+-					ec_stripe_delete(trans, idx));
+-		bch_err_fn(c, ret);
+-		if (ret)
+-			break;
+-	}
+-
++	bch2_trans_run(c,
++		bch2_btree_write_buffer_tryflush(trans) ?:
++		for_each_btree_key_max_commit(trans, lru_iter, BTREE_ID_lru,
++				lru_pos(BCH_LRU_STRIPE_FRAGMENTATION, 1, 0),
++				lru_pos(BCH_LRU_STRIPE_FRAGMENTATION, 1, LRU_TIME_MAX),
++				0, lru_k,
++				NULL, NULL,
++				BCH_TRANS_COMMIT_no_enospc, ({
++			ec_stripe_delete(trans, lru_k.k->p.offset);
++		})));
+ 	bch2_write_ref_put(c, BCH_WRITE_REF_stripe_delete);
+ }
  
 -- 
 2.45.2
