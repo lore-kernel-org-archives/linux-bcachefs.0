@@ -1,21 +1,21 @@
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0510B245AF8
-	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7886B242927
+	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739472392; cv=none; b=O/a5gunfFu4JJDfGIA2zp5ZwtJZUEMyZ5pGoEtt3rpHogyu49Zce1i8JON2dF1Is8lkHboQ5tcdv1AnGJ/ECcBQcsNp3yHq/PJaXi6hr7H3N9MhSzfmxUdswFgBScynFbzDHfIxqejVhBYduExLajF50GZCvEEFBAV3OClltEqk=
+	t=1739472392; cv=none; b=sgyb/SONY4aSq6nn/g4q0UFqOnD7JPe7a/huLQQH6K27i+mcsK0HOOkCPk8LKCPL+gg/jJ5L/utVvHSUSyhiMD2vEvuifffxkbJA0FeZV4S59blytNxmEfTDAb6zfToA5DD+cRbFTLviVlWzh9M90cSexz0exrdUOzZ/qTKOpvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1739472392; c=relaxed/simple;
-	bh=pxj94mYFktmvPJZR8YKqW8wb9fE2siCTR1C+QTFzRgg=;
+	bh=vFgTbu1/RdfEsXE6Y1KhqSDJwZVpivvBPzlw0T1MeS4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ilrhnpiwEQOkARIFneVpwwEyASpyQ5PCds/l8WJCMtpHDyzD6L4Gdmf58qJvOXdmEgiQo5reJSV0WQ+6yd2Znf9ZXASQ1n6QbDN1uPmqNKcX2xfi5yZvbYivKsPJ34aHVwpdOjsn3MAmv73eNoSD17TugdsFZmAXgQIHutZG6TA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kW3umkFF; arc=none smtp.client-ip=95.215.58.189
+	 MIME-Version; b=goWNV7fpilW1SDK6IJHND+nbWzGCZbtYDFC++wnkPIN8VZmjaL62mbWgJ+r4k2lc6gBmLtfBI53JU7pnYOJiR4VvS2+OHIABczIxrRWZSd5okOaeN/wIg9tGdO4O7jnHAurvcI/QgeS5DrMaBAC72fMkL0N86UzeTF3Y6FFsExI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GOxt92ju; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kW3umkFF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GOxt92ju"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	t=1739472387;
@@ -23,16 +23,17 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7nt85WNOe2c+Gvdj8ZtIlzEn4q+f4UgfnYXj01gpiv0=;
-	b=kW3umkFFrmvcVJPG6yFuaHlxtIwupfDYxsKhgnAx/R0SNF/7j1BDW4rmGHGh+EnYEilDGv
-	z1VnDmZ6i+SBOgpaCcjY2MDKTpjourvZZ8J9rt5WP2EbnTC3WgIxId0CgZHHZYQJ7jGPzA
-	k5zO70RNR33TMy3jsCiUpT5fFdmwgog=
+	bh=i16d4UO1301Ok8/dxfGYryUbbC8Ff7J/EYTvzyP5WeM=;
+	b=GOxt92juKl3F+2wnunwy1X0v+00r9ISRWMOrC5O5kCNUm0apYt6Sx7GIFuCbSbEiQMsZ0n
+	DtDA1//zTMrNNqK+3D5dKV9BbyXFRb7b7SfE26BVZ1eDRrpjFVsvH88MCCAgbyjc8Ntq0m
+	K166j/JWiKFPoinvzvUi4aEzelhboNU=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 15/18] bcachefs: We no longer read stripes into memory at startup
-Date: Thu, 13 Feb 2025 13:46:00 -0500
-Message-ID: <20250213184607.18237-16-kent.overstreet@linux.dev>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Hongbo Li <lihongbo22@huawei.com>
+Subject: [PATCH 16/18] bcachefs: Kill dirent_occupied_size()
+Date: Thu, 13 Feb 2025 13:46:01 -0500
+Message-ID: <20250213184607.18237-17-kent.overstreet@linux.dev>
 In-Reply-To: <20250213184607.18237-1-kent.overstreet@linux.dev>
 References: <20250213184607.18237-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,375 +45,232 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-And the stripes heap gets deleted.
+With the upcoming patches for casefolding, we really need to use the
+size of the dirent key itself - which is cleaner, anyways.
 
+The size of the dirent is no longer just a function of the length of the
+name, it'll be different depending on whether the directory has
+casefolding enabled - which means the accounting in rename() has to
+change a bit.
+
+Cc: Hongbo Li <lihongbo22@huawei.com>
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/bcachefs.h              |   4 -
- fs/bcachefs/ec.c                    | 210 +---------------------------
- fs/bcachefs/ec.h                    |   5 -
- fs/bcachefs/ec_types.h              |   7 -
- fs/bcachefs/recovery_passes_types.h |   2 +-
- fs/bcachefs/sysfs.c                 |   5 -
- 6 files changed, 2 insertions(+), 231 deletions(-)
+ fs/bcachefs/dirent.c    | 15 +++++++++++++--
+ fs/bcachefs/dirent.h    | 11 +++--------
+ fs/bcachefs/fs-common.c | 42 ++++++++++++++++++++++-------------------
+ fs/bcachefs/fsck.c      |  5 +----
+ 4 files changed, 40 insertions(+), 33 deletions(-)
 
-diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index e8f4999806b6..28216297edbb 100644
---- a/fs/bcachefs/bcachefs.h
-+++ b/fs/bcachefs/bcachefs.h
-@@ -996,15 +996,11 @@ struct bch_fs {
- 	wait_queue_head_t	copygc_running_wq;
- 
- 	/* STRIPES: */
--	GENRADIX(struct stripe) stripes;
- 	GENRADIX(struct gc_stripe) gc_stripes;
- 
- 	struct hlist_head	ec_stripes_new[32];
- 	spinlock_t		ec_stripes_new_lock;
- 
--	ec_stripes_heap		ec_stripes_heap;
--	struct mutex		ec_stripes_heap_lock;
--
- 	/* ERASURE CODING */
- 	struct list_head	ec_stripe_head_list;
- 	struct mutex		ec_stripe_head_lock;
-diff --git a/fs/bcachefs/ec.c b/fs/bcachefs/ec.c
-index bd47b8f0f705..689a0c32d07f 100644
---- a/fs/bcachefs/ec.c
-+++ b/fs/bcachefs/ec.c
-@@ -494,38 +494,6 @@ int bch2_trigger_stripe(struct btree_trans *trans,
- 			return ret;
- 	}
- 
--	if (flags & BTREE_TRIGGER_atomic) {
--		struct stripe *m = genradix_ptr(&c->stripes, idx);
--
--		if (!m) {
--			struct printbuf buf1 = PRINTBUF;
--			struct printbuf buf2 = PRINTBUF;
--
--			bch2_bkey_val_to_text(&buf1, c, old);
--			bch2_bkey_val_to_text(&buf2, c, new);
--			bch_err_ratelimited(c, "error marking nonexistent stripe %llu while marking\n"
--					    "old %s\n"
--					    "new %s", idx, buf1.buf, buf2.buf);
--			printbuf_exit(&buf2);
--			printbuf_exit(&buf1);
--			bch2_inconsistent_error(c);
--			return -1;
--		}
--
--		if (!new_s) {
--			bch2_stripes_heap_del(c, m, idx);
--
--			memset(m, 0, sizeof(*m));
--		} else {
--			stripe_to_mem(m, new_s);
--
--			if (!old_s)
--				bch2_stripes_heap_insert(c, m, idx);
--			else
--				bch2_stripes_heap_update(c, m, idx);
--		}
--	}
--
- 	return 0;
- }
- 
-@@ -939,26 +907,6 @@ int bch2_ec_read_extent(struct btree_trans *trans, struct bch_read_bio *rbio,
- 
- static int __ec_stripe_mem_alloc(struct bch_fs *c, size_t idx, gfp_t gfp)
+diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
+index 600eee936f13..27737aaa03a6 100644
+--- a/fs/bcachefs/dirent.c
++++ b/fs/bcachefs/dirent.c
+@@ -233,6 +233,7 @@ int bch2_dirent_create(struct btree_trans *trans, subvol_inum dir,
+ 		       const struct bch_hash_info *hash_info,
+ 		       u8 type, const struct qstr *name, u64 dst_inum,
+ 		       u64 *dir_offset,
++		       u64 *i_size,
+ 		       enum btree_iter_update_trigger_flags flags)
  {
--	ec_stripes_heap n, *h = &c->ec_stripes_heap;
--
--	if (idx >= h->size) {
--		if (!init_heap(&n, max(1024UL, roundup_pow_of_two(idx + 1)), gfp))
--			return -BCH_ERR_ENOMEM_ec_stripe_mem_alloc;
--
--		mutex_lock(&c->ec_stripes_heap_lock);
--		if (n.size > h->size) {
--			memcpy(n.data, h->data, h->nr * sizeof(h->data[0]));
--			n.nr = h->nr;
--			swap(*h, n);
--		}
--		mutex_unlock(&c->ec_stripes_heap_lock);
--
--		free_heap(&n);
--	}
--
--	if (!genradix_ptr_alloc(&c->stripes, idx, gfp))
--		return -BCH_ERR_ENOMEM_ec_stripe_mem_alloc;
--
- 	if (c->gc_pos.phase != GC_PHASE_not_running &&
- 	    !genradix_ptr_alloc(&c->gc_stripes, idx, gfp))
- 		return -BCH_ERR_ENOMEM_ec_stripe_mem_alloc;
-@@ -1031,120 +979,6 @@ static void bch2_stripe_close(struct bch_fs *c, struct ec_stripe_new *s)
- 	s->idx = 0;
+ 	struct bkey_i_dirent *dirent;
+@@ -243,6 +244,8 @@ int bch2_dirent_create(struct btree_trans *trans, subvol_inum dir,
+ 	if (ret)
+ 		return ret;
+ 
++	*i_size += bkey_bytes(&dirent->k);
++
+ 	ret = bch2_hash_set(trans, bch2_dirent_hash_desc, hash_info,
+ 			    dir, &dirent->k_i, flags);
+ 	*dir_offset = dirent->k.p.offset;
+@@ -275,8 +278,8 @@ int bch2_dirent_read_target(struct btree_trans *trans, subvol_inum dir,
  }
  
--/* Heap of all existing stripes, ordered by blocks_nonempty */
--
--static u64 stripe_idx_to_delete(struct bch_fs *c)
--{
--	ec_stripes_heap *h = &c->ec_stripes_heap;
--
--	lockdep_assert_held(&c->ec_stripes_heap_lock);
--
--	if (h->nr &&
--	    h->data[0].blocks_nonempty == 0 &&
--	    !bch2_stripe_is_open(c, h->data[0].idx))
--		return h->data[0].idx;
--
--	return 0;
--}
--
--static inline void ec_stripes_heap_set_backpointer(ec_stripes_heap *h,
--						   size_t i)
--{
--	struct bch_fs *c = container_of(h, struct bch_fs, ec_stripes_heap);
--
--	genradix_ptr(&c->stripes, h->data[i].idx)->heap_idx = i;
--}
--
--static inline bool ec_stripes_heap_cmp(const void *l, const void *r, void __always_unused *args)
--{
--	struct ec_stripe_heap_entry *_l = (struct ec_stripe_heap_entry *)l;
--	struct ec_stripe_heap_entry *_r = (struct ec_stripe_heap_entry *)r;
--
--	return ((_l->blocks_nonempty > _r->blocks_nonempty) <
--		(_l->blocks_nonempty < _r->blocks_nonempty));
--}
--
--static inline void ec_stripes_heap_swap(void *l, void *r, void *h)
--{
--	struct ec_stripe_heap_entry *_l = (struct ec_stripe_heap_entry *)l;
--	struct ec_stripe_heap_entry *_r = (struct ec_stripe_heap_entry *)r;
--	ec_stripes_heap *_h = (ec_stripes_heap *)h;
--	size_t i = _l - _h->data;
--	size_t j = _r - _h->data;
--
--	swap(*_l, *_r);
--
--	ec_stripes_heap_set_backpointer(_h, i);
--	ec_stripes_heap_set_backpointer(_h, j);
--}
--
--static const struct min_heap_callbacks callbacks = {
--	.less = ec_stripes_heap_cmp,
--	.swp = ec_stripes_heap_swap,
--};
--
--static void heap_verify_backpointer(struct bch_fs *c, size_t idx)
--{
--	ec_stripes_heap *h = &c->ec_stripes_heap;
--	struct stripe *m = genradix_ptr(&c->stripes, idx);
--
--	BUG_ON(m->heap_idx >= h->nr);
--	BUG_ON(h->data[m->heap_idx].idx != idx);
--}
--
--void bch2_stripes_heap_del(struct bch_fs *c,
--			   struct stripe *m, size_t idx)
--{
--	mutex_lock(&c->ec_stripes_heap_lock);
--	heap_verify_backpointer(c, idx);
--
--	min_heap_del(&c->ec_stripes_heap, m->heap_idx, &callbacks, &c->ec_stripes_heap);
--	mutex_unlock(&c->ec_stripes_heap_lock);
--}
--
--void bch2_stripes_heap_insert(struct bch_fs *c,
--			      struct stripe *m, size_t idx)
--{
--	mutex_lock(&c->ec_stripes_heap_lock);
--	BUG_ON(min_heap_full(&c->ec_stripes_heap));
--
--	genradix_ptr(&c->stripes, idx)->heap_idx = c->ec_stripes_heap.nr;
--	min_heap_push(&c->ec_stripes_heap, &((struct ec_stripe_heap_entry) {
--			.idx = idx,
--			.blocks_nonempty = m->blocks_nonempty,
--		}),
--		&callbacks,
--		&c->ec_stripes_heap);
--
--	heap_verify_backpointer(c, idx);
--	mutex_unlock(&c->ec_stripes_heap_lock);
--}
--
--void bch2_stripes_heap_update(struct bch_fs *c,
--			      struct stripe *m, size_t idx)
--{
--	ec_stripes_heap *h = &c->ec_stripes_heap;
--	bool do_deletes;
--	size_t i;
--
--	mutex_lock(&c->ec_stripes_heap_lock);
--	heap_verify_backpointer(c, idx);
--
--	h->data[m->heap_idx].blocks_nonempty = m->blocks_nonempty;
--
--	i = m->heap_idx;
--	min_heap_sift_up(h,	i, &callbacks, &c->ec_stripes_heap);
--	min_heap_sift_down(h, i, &callbacks, &c->ec_stripes_heap);
--
--	heap_verify_backpointer(c, idx);
--
--	do_deletes = stripe_idx_to_delete(c) != 0;
--	mutex_unlock(&c->ec_stripes_heap_lock);
--
--	if (do_deletes)
--		bch2_do_stripe_deletes(c);
--}
--
- /* stripe deletion */
+ int bch2_dirent_rename(struct btree_trans *trans,
+-		subvol_inum src_dir, struct bch_hash_info *src_hash,
+-		subvol_inum dst_dir, struct bch_hash_info *dst_hash,
++		subvol_inum src_dir, struct bch_hash_info *src_hash, u64 *src_dir_i_size,
++		subvol_inum dst_dir, struct bch_hash_info *dst_hash, u64 *dst_dir_i_size,
+ 		const struct qstr *src_name, subvol_inum *src_inum, u64 *src_offset,
+ 		const struct qstr *dst_name, subvol_inum *dst_inum, u64 *dst_offset,
+ 		enum bch_rename_mode mode)
+@@ -406,6 +409,14 @@ int bch2_dirent_rename(struct btree_trans *trans,
+ 	    new_src->v.d_type == DT_SUBVOL)
+ 		new_src->v.d_parent_subvol = cpu_to_le32(src_dir.subvol);
  
- static int ec_stripe_delete(struct btree_trans *trans, u64 idx)
-@@ -2391,46 +2225,7 @@ void bch2_fs_ec_flush(struct bch_fs *c)
- 
- int bch2_stripes_read(struct bch_fs *c)
- {
--	int ret = bch2_trans_run(c,
--		for_each_btree_key(trans, iter, BTREE_ID_stripes, POS_MIN,
--				   BTREE_ITER_prefetch, k, ({
--			if (k.k->type != KEY_TYPE_stripe)
--				continue;
--
--			ret = __ec_stripe_mem_alloc(c, k.k->p.offset, GFP_KERNEL);
--			if (ret)
--				break;
--
--			struct stripe *m = genradix_ptr(&c->stripes, k.k->p.offset);
--
--			stripe_to_mem(m, bkey_s_c_to_stripe(k).v);
--
--			bch2_stripes_heap_insert(c, m, k.k->p.offset);
--			0;
--		})));
--	bch_err_fn(c, ret);
--	return ret;
--}
--
--void bch2_stripes_heap_to_text(struct printbuf *out, struct bch_fs *c)
--{
--	ec_stripes_heap *h = &c->ec_stripes_heap;
--	struct stripe *m;
--	size_t i;
--
--	mutex_lock(&c->ec_stripes_heap_lock);
--	for (i = 0; i < min_t(size_t, h->nr, 50); i++) {
--		m = genradix_ptr(&c->stripes, h->data[i].idx);
--
--		prt_printf(out, "%zu %u/%u+%u", h->data[i].idx,
--		       h->data[i].blocks_nonempty,
--		       m->nr_blocks - m->nr_redundant,
--		       m->nr_redundant);
--		if (bch2_stripe_is_open(c, h->data[i].idx))
--			prt_str(out, " open");
--		prt_newline(out);
--	}
--	mutex_unlock(&c->ec_stripes_heap_lock);
-+	return 0;
++	if (old_dst.k)
++		*dst_dir_i_size -= bkey_bytes(old_dst.k);
++	*src_dir_i_size -= bkey_bytes(old_src.k);
++
++	if (mode == BCH_RENAME_EXCHANGE)
++		*src_dir_i_size += bkey_bytes(&new_src->k);
++	*dst_dir_i_size += bkey_bytes(&new_dst->k);
++
+ 	ret = bch2_trans_update(trans, &dst_iter, &new_dst->k_i, 0);
+ 	if (ret)
+ 		goto out;
+diff --git a/fs/bcachefs/dirent.h b/fs/bcachefs/dirent.h
+index a633f83c1ac7..37f01c1a3f7f 100644
+--- a/fs/bcachefs/dirent.h
++++ b/fs/bcachefs/dirent.h
+@@ -31,11 +31,6 @@ static inline unsigned dirent_val_u64s(unsigned len)
+ 			    sizeof(u64));
  }
  
- static void bch2_new_stripe_to_text(struct printbuf *out, struct bch_fs *c,
-@@ -2501,15 +2296,12 @@ void bch2_fs_ec_exit(struct bch_fs *c)
- 
- 	BUG_ON(!list_empty(&c->ec_stripe_new_list));
- 
--	free_heap(&c->ec_stripes_heap);
--	genradix_free(&c->stripes);
- 	bioset_exit(&c->ec_bioset);
- }
- 
- void bch2_fs_ec_init_early(struct bch_fs *c)
- {
- 	spin_lock_init(&c->ec_stripes_new_lock);
--	mutex_init(&c->ec_stripes_heap_lock);
- 
- 	INIT_LIST_HEAD(&c->ec_stripe_head_list);
- 	mutex_init(&c->ec_stripe_head_lock);
-diff --git a/fs/bcachefs/ec.h b/fs/bcachefs/ec.h
-index cd1c837e4933..a1c662ada343 100644
---- a/fs/bcachefs/ec.h
-+++ b/fs/bcachefs/ec.h
-@@ -260,10 +260,6 @@ struct ec_stripe_head *bch2_ec_stripe_head_get(struct btree_trans *,
- 			unsigned, unsigned, unsigned,
- 			enum bch_watermark, struct closure *);
- 
--void bch2_stripes_heap_update(struct bch_fs *, struct stripe *, size_t);
--void bch2_stripes_heap_del(struct bch_fs *, struct stripe *, size_t);
--void bch2_stripes_heap_insert(struct bch_fs *, struct stripe *, size_t);
+-static inline unsigned int dirent_occupied_size(const struct qstr *name)
+-{
+-	return (BKEY_U64s + dirent_val_u64s(name->len)) * sizeof(u64);
+-}
 -
- void bch2_do_stripe_deletes(struct bch_fs *);
- void bch2_ec_do_stripe_creates(struct bch_fs *);
- void bch2_ec_stripe_new_free(struct bch_fs *, struct ec_stripe_new *);
-@@ -300,7 +296,6 @@ void bch2_fs_ec_flush(struct bch_fs *);
+ int bch2_dirent_read_target(struct btree_trans *, subvol_inum,
+ 			    struct bkey_s_c_dirent, subvol_inum *);
  
- int bch2_stripes_read(struct bch_fs *);
+@@ -52,7 +47,7 @@ int bch2_dirent_create_snapshot(struct btree_trans *, u32, u64, u32,
+ 			enum btree_iter_update_trigger_flags);
+ int bch2_dirent_create(struct btree_trans *, subvol_inum,
+ 		       const struct bch_hash_info *, u8,
+-		       const struct qstr *, u64, u64 *,
++		       const struct qstr *, u64, u64 *, u64 *,
+ 		       enum btree_iter_update_trigger_flags);
  
--void bch2_stripes_heap_to_text(struct printbuf *, struct bch_fs *);
- void bch2_new_stripes_to_text(struct printbuf *, struct bch_fs *);
- 
- void bch2_fs_ec_exit(struct bch_fs *);
-diff --git a/fs/bcachefs/ec_types.h b/fs/bcachefs/ec_types.h
-index 37558cc2d89f..06144bfd9c19 100644
---- a/fs/bcachefs/ec_types.h
-+++ b/fs/bcachefs/ec_types.h
-@@ -31,11 +31,4 @@ struct gc_stripe {
- 	struct bch_replicas_padded r;
+ static inline unsigned vfs_d_type(unsigned type)
+@@ -67,8 +62,8 @@ enum bch_rename_mode {
  };
  
--struct ec_stripe_heap_entry {
--	size_t			idx;
--	unsigned		blocks_nonempty;
--};
--
--typedef DEFINE_MIN_HEAP(struct ec_stripe_heap_entry, ec_stripes_heap) ec_stripes_heap;
--
- #endif /* _BCACHEFS_EC_TYPES_H */
-diff --git a/fs/bcachefs/recovery_passes_types.h b/fs/bcachefs/recovery_passes_types.h
-index 418557960ed6..e89b9c783285 100644
---- a/fs/bcachefs/recovery_passes_types.h
-+++ b/fs/bcachefs/recovery_passes_types.h
-@@ -24,7 +24,7 @@
- 	x(check_topology,			 4, 0)					\
- 	x(accounting_read,			39, PASS_ALWAYS)			\
- 	x(alloc_read,				 0, PASS_ALWAYS)			\
--	x(stripes_read,				 1, PASS_ALWAYS)			\
-+	x(stripes_read,				 1, 0)					\
- 	x(initialize_subvolumes,		 2, 0)					\
- 	x(snapshots_read,			 3, PASS_ALWAYS)			\
- 	x(check_allocations,			 5, PASS_FSCK)				\
-diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
-index b3f2c651c1f8..4551b1d86907 100644
---- a/fs/bcachefs/sysfs.c
-+++ b/fs/bcachefs/sysfs.c
-@@ -173,7 +173,6 @@ read_attribute(journal_debug);
- read_attribute(btree_cache);
- read_attribute(btree_key_cache);
- read_attribute(btree_reserve_cache);
--read_attribute(stripes_heap);
- read_attribute(open_buckets);
- read_attribute(open_buckets_partial);
- read_attribute(nocow_lock_table);
-@@ -354,9 +353,6 @@ SHOW(bch2_fs)
- 	if (attr == &sysfs_btree_reserve_cache)
- 		bch2_btree_reserve_cache_to_text(out, c);
+ int bch2_dirent_rename(struct btree_trans *,
+-		       subvol_inum, struct bch_hash_info *,
+-		       subvol_inum, struct bch_hash_info *,
++		       subvol_inum, struct bch_hash_info *, u64 *,
++		       subvol_inum, struct bch_hash_info *, u64 *,
+ 		       const struct qstr *, subvol_inum *, u64 *,
+ 		       const struct qstr *, subvol_inum *, u64 *,
+ 		       enum bch_rename_mode);
+diff --git a/fs/bcachefs/fs-common.c b/fs/bcachefs/fs-common.c
+index d70d9f634cea..c8afd312e601 100644
+--- a/fs/bcachefs/fs-common.c
++++ b/fs/bcachefs/fs-common.c
+@@ -42,11 +42,14 @@ int bch2_create_trans(struct btree_trans *trans,
+ 	if (ret)
+ 		goto err;
  
--	if (attr == &sysfs_stripes_heap)
--		bch2_stripes_heap_to_text(out, c);
--
- 	if (attr == &sysfs_open_buckets)
- 		bch2_open_buckets_to_text(out, c, NULL);
+-	ret = bch2_inode_peek(trans, &dir_iter, dir_u, dir,
+-			      BTREE_ITER_intent|BTREE_ITER_with_updates);
++	ret = bch2_inode_peek(trans, &dir_iter, dir_u, dir, BTREE_ITER_intent);
+ 	if (ret)
+ 		goto err;
  
-@@ -562,7 +558,6 @@ struct attribute *bch2_fs_internal_files[] = {
- 	&sysfs_btree_key_cache,
- 	&sysfs_btree_reserve_cache,
- 	&sysfs_new_stripes,
--	&sysfs_stripes_heap,
- 	&sysfs_open_buckets,
- 	&sysfs_open_buckets_partial,
- #ifdef BCH_WRITE_REF_DEBUG
++	/* Inherit casefold state from parent. */
++	if (S_ISDIR(mode))
++		new_inode->bi_flags |= dir_u->bi_flags & BCH_INODE_casefolded;
++
+ 	if (!(flags & BCH_CREATE_SNAPSHOT)) {
+ 		/* Normal create path - allocate a new inode: */
+ 		bch2_inode_init_late(new_inode, now, uid, gid, mode, rdev, dir_u);
+@@ -152,7 +155,6 @@ int bch2_create_trans(struct btree_trans *trans,
+ 		if (is_subdir_for_nlink(new_inode))
+ 			dir_u->bi_nlink++;
+ 		dir_u->bi_mtime = dir_u->bi_ctime = now;
+-		dir_u->bi_size += dirent_occupied_size(name);
+ 
+ 		ret = bch2_inode_write(trans, &dir_iter, dir_u);
+ 		if (ret)
+@@ -163,7 +165,8 @@ int bch2_create_trans(struct btree_trans *trans,
+ 					 name,
+ 					 dir_target,
+ 					 &dir_offset,
+-					 STR_HASH_must_create|BTREE_ITER_with_updates);
++					 &dir_u->bi_size,
++					 STR_HASH_must_create);
+ 		if (ret)
+ 			goto err;
+ 
+@@ -221,13 +224,14 @@ int bch2_link_trans(struct btree_trans *trans,
+ 	}
+ 
+ 	dir_u->bi_mtime = dir_u->bi_ctime = now;
+-	dir_u->bi_size += dirent_occupied_size(name);
+ 
+ 	dir_hash = bch2_hash_info_init(c, dir_u);
+ 
+ 	ret = bch2_dirent_create(trans, dir, &dir_hash,
+ 				 mode_to_type(inode_u->bi_mode),
+-				 name, inum.inum, &dir_offset,
++				 name, inum.inum,
++				 &dir_offset,
++				 &dir_u->bi_size,
+ 				 STR_HASH_must_create);
+ 	if (ret)
+ 		goto err;
+@@ -266,8 +270,16 @@ int bch2_unlink_trans(struct btree_trans *trans,
+ 
+ 	dir_hash = bch2_hash_info_init(c, dir_u);
+ 
+-	ret = bch2_dirent_lookup_trans(trans, &dirent_iter, dir, &dir_hash,
+-				       name, &inum, BTREE_ITER_intent);
++	struct bkey_s_c dirent_k =
++		bch2_hash_lookup(trans, &dirent_iter, bch2_dirent_hash_desc,
++				 &dir_hash, dir, name, BTREE_ITER_intent);
++	ret = bkey_err(dirent_k);
++	if (ret)
++		goto err;
++
++	ret = bch2_dirent_read_target(trans, dir, bkey_s_c_to_dirent(dirent_k), &inum);
++	if (ret > 0)
++		ret = -ENOENT;
+ 	if (ret)
+ 		goto err;
+ 
+@@ -324,7 +336,7 @@ int bch2_unlink_trans(struct btree_trans *trans,
+ 
+ 	dir_u->bi_mtime = dir_u->bi_ctime = inode_u->bi_ctime = now;
+ 	dir_u->bi_nlink -= is_subdir_for_nlink(inode_u);
+-	dir_u->bi_size	-= dirent_occupied_size(name);
++	dir_u->bi_size	-= bkey_bytes(dirent_k.k);
+ 
+ 	ret =   bch2_hash_delete_at(trans, bch2_dirent_hash_desc,
+ 				    &dir_hash, &dirent_iter,
+@@ -420,8 +432,8 @@ int bch2_rename_trans(struct btree_trans *trans,
+ 	}
+ 
+ 	ret = bch2_dirent_rename(trans,
+-				 src_dir, &src_hash,
+-				 dst_dir, &dst_hash,
++				 src_dir, &src_hash, &src_dir_u->bi_size,
++				 dst_dir, &dst_hash, &dst_dir_u->bi_size,
+ 				 src_name, &src_inum, &src_offset,
+ 				 dst_name, &dst_inum, &dst_offset,
+ 				 mode);
+@@ -463,14 +475,6 @@ int bch2_rename_trans(struct btree_trans *trans,
+ 		goto err;
+ 	}
+ 
+-	if (mode == BCH_RENAME) {
+-		src_dir_u->bi_size -= dirent_occupied_size(src_name);
+-		dst_dir_u->bi_size += dirent_occupied_size(dst_name);
+-	}
+-
+-	if (mode == BCH_RENAME_OVERWRITE)
+-		src_dir_u->bi_size -= dirent_occupied_size(src_name);
+-
+ 	if (src_inode_u->bi_parent_subvol)
+ 		src_inode_u->bi_parent_subvol = dst_dir.subvol;
+ 
+diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
+index 53a421ff136d..24ad1a42d169 100644
+--- a/fs/bcachefs/fsck.c
++++ b/fs/bcachefs/fsck.c
+@@ -1132,10 +1132,7 @@ static int check_directory_size(struct btree_trans *trans,
+ 		if (k.k->type != KEY_TYPE_dirent)
+ 			continue;
+ 
+-		struct bkey_s_c_dirent dirent = bkey_s_c_to_dirent(k);
+-		struct qstr name = bch2_dirent_get_name(dirent);
+-
+-		new_size += dirent_occupied_size(&name);
++		new_size += bkey_bytes(k.k);
+ 	}
+ 	bch2_trans_iter_exit(trans, &iter);
+ 
 -- 
 2.45.2
 
