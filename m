@@ -1,38 +1,38 @@
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02522242913
-	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCADF24503A
+	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:46:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739472382; cv=none; b=lJjSHiQ/vcc9ARMx8/Osnrcqr/97+6k7qtdiugHNG0svCf1yY7XhC1yjBmU9GYo6YZx+einqhI5N8khGheP4QGOzKGOOCbnEfezDbUmVRlV1YUlhTdx9VlZ98GSXzZiuJl0h+XlEqi0eXKnXSNMbWEE/U/aAmWrnoys+4zRgWLE=
+	t=1739472382; cv=none; b=J7RIffElVDB7+rWDM4/iQdKn0LrlhnM6oHDYIhdKXjryoap8Z3I3jtBq+m3P4EMrGFVQqGBjjhhbHn/ObEYAyLkPzYruz81eYeeLlFC2R/j+GU2fg5o05rr/IBOdJnnkNWoUn2brr94zdVYs4r7St3svHgy8rVRFW0ojcvmuo6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1739472382; c=relaxed/simple;
-	bh=7MFTJu08u5gtoexuANltB/ShscFMKAYVF5fGGMgpSvM=;
+	bh=TmuEZfe00w8V9W8kVfKiZ8Ovo7r14aKR1oq5lnpqv6w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TCL+8FpqOGTUYs8gUi3nFEHdit5xauV/gcx/i+OtvQgDaxhfMWlpJSPtTyARAZN25/1TjADWgrXjQE1pEDIcpGtq7LKDezG+SfXZyrIw3rHCgvXTWiXtC9nANWJcubh2jRNxchBJHLgUkYOdQ9a9Jz854svNFt4lHO26dYE2sFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cG9JefjE; arc=none smtp.client-ip=95.215.58.178
+	 MIME-Version; b=e+CfA1I6a65WrzWG05qO/TbnLZjjMTIKsVZRPJ2JQnFLHvKLV5Mi7YfkdEi+TnXxy0vnV04SC6fshcCc64k7U8siiOJpMBWfylnWt3FT+p2mUXeke8dq3ImElvRq6UDx4yyp4lCGLE6TB5vFb7RhUm2Ktasx5zNnB4ouNi8If3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uGleRds1; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cG9JefjE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uGleRds1"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739472377;
+	t=1739472378;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UzuML/G0QvKixoboOHYK3sIS/6NpSy9A3n6i8FCrFes=;
-	b=cG9JefjE/IZv3IK5VG0GgbxGGiNQtU8J005lIPM8fhY2Hqxh4XENnHYhLkgxfgxr+O4p1p
-	hqrYexzabyCa1HTRWy7Gio1+y8oVoO/5sGCtZ6u0uaLZ8aMQ2O5DFubNgZ/0KwQv0YKHdP
-	TS3dnqXyqnc+fx6aly8zTKJaoHUNNdc=
+	bh=O4UEVyYS/mWqDtuavAd/zojgUcND5iQQWzxZ6k/gtMc=;
+	b=uGleRds1D+vyoZ2yKRUpodYK0GOc7/W+d9G7AOtAIWngMLcb9uTy6cv1rXzAasrW7HfjZq
+	irAI89AnnXy4tnYSiWeQ0y+nr8IsDXcDL9310Q+o/fdU8Bwb4lbIgagNFdhJfM8iNwRKAY
+	2De91EeMBnDSMdh1jSahhXsBEg/tsCQ=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 01/18] bcachefs: bch2_lru_change() checks for no-op
-Date: Thu, 13 Feb 2025 13:45:46 -0500
-Message-ID: <20250213184607.18237-2-kent.overstreet@linux.dev>
+Subject: [PATCH 03/18] bcachefs: decouple bch2_lru_check_set() from alloc btree
+Date: Thu, 13 Feb 2025 13:45:48 -0500
+Message-ID: <20250213184607.18237-4-kent.overstreet@linux.dev>
 In-Reply-To: <20250213184607.18237-1-kent.overstreet@linux.dev>
 References: <20250213184607.18237-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,98 +44,87 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Minor cleanup, no reason for the caller to have to this.
+Pass in the backpointer explicitly, instead of assuming 'referring_k' is
+an alloc key and calculating it.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/alloc_background.c | 32 +++++++++++++-------------------
- fs/bcachefs/lru.c              |  6 +++---
- fs/bcachefs/lru.h              | 11 ++++++++++-
- 3 files changed, 26 insertions(+), 23 deletions(-)
+ fs/bcachefs/alloc_background.c |  5 ++++-
+ fs/bcachefs/lru.c              | 10 +++++-----
+ fs/bcachefs/lru.h              |  2 +-
+ 3 files changed, 10 insertions(+), 7 deletions(-)
 
 diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
-index a35455802280..e1061524bdf5 100644
+index 87ff50a3cd81..58cdb6a0acf9 100644
 --- a/fs/bcachefs/alloc_background.c
 +++ b/fs/bcachefs/alloc_background.c
-@@ -889,26 +889,20 @@ int bch2_trigger_alloc(struct btree_trans *trans,
- 		    !new_a->io_time[READ])
- 			new_a->io_time[READ] = bch2_current_io_time(c, READ);
+@@ -1700,6 +1700,7 @@ static int bch2_check_alloc_to_lru_ref(struct btree_trans *trans,
+ 	u64 lru_idx = alloc_lru_idx_fragmentation(*a, ca);
+ 	if (lru_idx) {
+ 		ret = bch2_lru_check_set(trans, BCH_LRU_BUCKET_FRAGMENTATION,
++					 bucket_to_u64(alloc_k.k->p),
+ 					 lru_idx, alloc_k, last_flushed);
+ 		if (ret)
+ 			goto err;
+@@ -1729,7 +1730,9 @@ static int bch2_check_alloc_to_lru_ref(struct btree_trans *trans,
+ 		a = &a_mut->v;
+ 	}
  
--		u64 old_lru = alloc_lru_idx_read(*old_a);
--		u64 new_lru = alloc_lru_idx_read(*new_a);
--		if (old_lru != new_lru) {
--			ret = bch2_lru_change(trans, new.k->p.inode,
--					      bucket_to_u64(new.k->p),
--					      old_lru, new_lru);
--			if (ret)
--				goto err;
--		}
-+		ret = bch2_lru_change(trans, new.k->p.inode,
-+				      bucket_to_u64(new.k->p),
-+				      alloc_lru_idx_read(*old_a),
-+				      alloc_lru_idx_read(*new_a));
-+		if (ret)
-+			goto err;
- 
--		old_lru = alloc_lru_idx_fragmentation(*old_a, ca);
--		new_lru = alloc_lru_idx_fragmentation(*new_a, ca);
--		if (old_lru != new_lru) {
--			ret = bch2_lru_change(trans,
--					BCH_LRU_FRAGMENTATION_START,
--					bucket_to_u64(new.k->p),
--					old_lru, new_lru);
--			if (ret)
--				goto err;
--		}
-+		ret = bch2_lru_change(trans,
-+				      BCH_LRU_FRAGMENTATION_START,
-+				      bucket_to_u64(new.k->p),
-+				      alloc_lru_idx_fragmentation(*old_a, ca),
-+				      alloc_lru_idx_fragmentation(*new_a, ca));
-+		if (ret)
-+			goto err;
- 
- 		if (old_a->gen != new_a->gen) {
- 			ret = bch2_bucket_gen_update(trans, new.k->p, new_a->gen);
+-	ret = bch2_lru_check_set(trans, alloc_k.k->p.inode, a->io_time[READ],
++	ret = bch2_lru_check_set(trans, alloc_k.k->p.inode,
++				 bucket_to_u64(alloc_k.k->p),
++				 a->io_time[READ],
+ 				 alloc_k, last_flushed);
+ 	if (ret)
+ 		goto err;
 diff --git a/fs/bcachefs/lru.c b/fs/bcachefs/lru.c
-index ce794d55818f..8ec16ae8daa6 100644
+index 8ec16ae8daa6..dc6b9a80a8b5 100644
 --- a/fs/bcachefs/lru.c
 +++ b/fs/bcachefs/lru.c
-@@ -59,9 +59,9 @@ int bch2_lru_set(struct btree_trans *trans, u16 lru_id, u64 dev_bucket, u64 time
- 	return __bch2_lru_set(trans, lru_id, dev_bucket, time, KEY_TYPE_set);
- }
+@@ -78,7 +78,9 @@ static const char * const bch2_lru_types[] = {
+ };
  
--int bch2_lru_change(struct btree_trans *trans,
--		    u16 lru_id, u64 dev_bucket,
--		    u64 old_time, u64 new_time)
-+int __bch2_lru_change(struct btree_trans *trans,
-+		      u16 lru_id, u64 dev_bucket,
-+		      u64 old_time, u64 new_time)
+ int bch2_lru_check_set(struct btree_trans *trans,
+-		       u16 lru_id, u64 time,
++		       u16 lru_id,
++		       u64 dev_bucket,
++		       u64 time,
+ 		       struct bkey_s_c referring_k,
+ 		       struct bkey_buf *last_flushed)
  {
- 	if (old_time == new_time)
- 		return 0;
+@@ -87,9 +89,7 @@ int bch2_lru_check_set(struct btree_trans *trans,
+ 	struct btree_iter lru_iter;
+ 	struct bkey_s_c lru_k =
+ 		bch2_bkey_get_iter(trans, &lru_iter, BTREE_ID_lru,
+-				   lru_pos(lru_id,
+-					   bucket_to_u64(referring_k.k->p),
+-					   time), 0);
++				   lru_pos(lru_id, dev_bucket, time), 0);
+ 	int ret = bkey_err(lru_k);
+ 	if (ret)
+ 		return ret;
+@@ -104,7 +104,7 @@ int bch2_lru_check_set(struct btree_trans *trans,
+ 			     "  %s",
+ 			     bch2_lru_types[lru_type(lru_k)],
+ 			     (bch2_bkey_val_to_text(&buf, c, referring_k), buf.buf))) {
+-			ret = bch2_lru_set(trans, lru_id, bucket_to_u64(referring_k.k->p), time);
++			ret = bch2_lru_set(trans, lru_id, dev_bucket, time);
+ 			if (ret)
+ 				goto err;
+ 		}
 diff --git a/fs/bcachefs/lru.h b/fs/bcachefs/lru.h
-index f31a6cf1514c..2facc0758cb3 100644
+index 398cc25db459..dea1d75cc9c1 100644
 --- a/fs/bcachefs/lru.h
 +++ b/fs/bcachefs/lru.h
-@@ -46,7 +46,16 @@ void bch2_lru_pos_to_text(struct printbuf *, struct bpos);
- 
- int bch2_lru_del(struct btree_trans *, u16, u64, u64);
- int bch2_lru_set(struct btree_trans *, u16, u64, u64);
--int bch2_lru_change(struct btree_trans *, u16, u64, u64, u64);
-+int __bch2_lru_change(struct btree_trans *, u16, u64, u64, u64);
-+
-+static inline int bch2_lru_change(struct btree_trans *trans,
-+		      u16 lru_id, u64 dev_bucket,
-+		      u64 old_time, u64 new_time)
-+{
-+	return old_time != new_time
-+		? __bch2_lru_change(trans, lru_id, dev_bucket, old_time, new_time)
-+		: 0;
-+}
+@@ -58,7 +58,7 @@ static inline int bch2_lru_change(struct btree_trans *trans,
+ }
  
  struct bkey_buf;
- int bch2_lru_check_set(struct btree_trans *, u16, u64, struct bkey_s_c, struct bkey_buf *);
+-int bch2_lru_check_set(struct btree_trans *, u16, u64, struct bkey_s_c, struct bkey_buf *);
++int bch2_lru_check_set(struct btree_trans *, u16, u64, u64, struct bkey_s_c, struct bkey_buf *);
+ 
+ int bch2_check_lrus(struct bch_fs *);
+ 
 -- 
 2.45.2
 
