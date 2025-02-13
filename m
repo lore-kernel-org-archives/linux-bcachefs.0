@@ -1,77 +1,102 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A5035951
-	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 12:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8697245034
+	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 18:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739450705; cv=none; b=nzzHVS5/YuZtb8EKIUWrqyHr0ELixIxzdvk0FEZWvF4tmLJfPnuew8YoMZL0xIU63Bu/x40FNAErAM63XrHq6+9nmXQ/OLe4JJEV5MitBKkate8wltLag4L2SzcPS2Y4QdEBhTV+CnmRtstliUnu7ntEF18810eezneleoYR0LY=
+	t=1739471548; cv=none; b=kgeZdqcM2aEHBnOrEXlYX4SIStC9r8GRedBzG8dBC4dnpcUx0n/7O6aT3qIwJGk7skPJjJi7Yc++zuCqTroJhB6Ye/xezhYpO5mBULU27m0DO2Orao0j1POXinrMSO1yZZV5zWXlnwwdNCGxIX0UdEhW9c72QHQ6N10q4lGHgfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739450705; c=relaxed/simple;
-	bh=aiadqV5OXz7ZPf8k4d2xDgotBdLfSupe/8euZgfx4ew=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=k111ppjwKc9PrHVzjq8mO5s6G56S8nbOpN6e6zujfuqxHdinvuCCAOIZdUFNGvrZnLYlWx8t7XnkKPlnUntOIdnufN+x6NsfNm4bnuBunGMX0XaAzzrySJmncmKdliRKOO42j7BTyeVEJLVpQdTad57VlI+a+wuZERlvB4m6bV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3ce7b6225aeso14915445ab.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 13 Feb 2025 04:45:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739450703; x=1740055503;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LI/x3ZGBPy0s4byJ94RDIT6h2pDqBH26o+IuPkflehQ=;
-        b=bAXSgzMlyT/EaGkSgAKDy4XU1FTuBISh2Zx5bQb1Wkp1qYLfFKnjYQhAzFNZOy0Ukf
-         BJ9innROSH9PgyDMUzW+PGLVp+R6FbKz4cpLlVUdIch1q7eguZdgalYNA2qHgF2Et1MB
-         9QKT9qKwpI8AkuPWyw1C3gc0vczHy8KZKSQzGdbKeMV5t+smL3f1PScoguYG35XQpv6N
-         ZoYtgHwm4SODujHHhTZwY1dEKLH2wedg2fkWyWTbRbDZMFuQ0jLRm0hWjXnOTiibDNnR
-         dHrveYIZ2bw7v1BpKyIC1MkLQpTxo2AHZflh64NCjKtya4Xv37HLa7SlsjizajPr0xdZ
-         hDyw==
-X-Forwarded-Encrypted: i=1; AJvYcCWtJIbMvYny9ilmTEhJWDelxirqY7ag21ZG4SWbd0Em8+6VIrCUAy9Ea6jeCvrp+RzBfLxqysfgozQxiNCwlw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjU+kF66nGah65WX9aQbe+p8YujbxteTHVoz2uc0dpIBiefN5A
-	CeMo7HqP66V1mIOKhpgTi3bdi+W0HoeKJiV6ogiKQqVd6Gb6YcLnZyj2NxzqadhYmBDK24O4LXR
-	ro1dn6lwWPr2TGCjkdhPo9S0aePIOLFB6Dl/YkIfcrMOfz3GyMTthz4k=
-X-Google-Smtp-Source: AGHT+IGjC4kAlffaX4GfaHYA96tZu2Kx/fqUuTl2QaXnE0hxbiorpmGhy/oRJqNO7vltj5kUWoUYYfc6lRX0EY29b1fsT9D/YYWu
+	s=arc-20240116; t=1739471548; c=relaxed/simple;
+	bh=1Guw0mIYsriyCkIJv5cUVdIdT/LfBp2e760wpd5KxtI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=gHP6ik0D0MClfzwYuRqIQHuMRSVfRxpiyU8yKojHrHqwPGdbWXFTgdKDfGdwxVfYc9vfb3XuBASX7ck2olmvnsuavKcoC7Qrn4Ze0XxP4H77Dd3kT21cqk4vCN3Od2YXIiX0kGLmFr/ceiJFliNE30m3uZSKTXW5uAMxcZPtOqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mC8JUfDZ; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mC8JUfDZ"
+Date: Thu, 13 Feb 2025 13:32:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739471533;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=o6tkCX033U5d2xKqyWKzKdrt36SevUnWjaFNpp4AzCk=;
+	b=mC8JUfDZ8kavgRx3NUqUiyeSyB/1ovXGBEDtJGawLED156GAQGn2kjU+IklQZvho7OaQVP
+	waK/h6HmBCrFRX/VxZjInTzfFjXgK3wi5Db64OPbZRGk4oBUvgzhMLxUXHjG8YqfAXM5Uf
+	Wtz2a7z4lq+EPBzR9dcwoaLLYl0MvhA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.14-rc3
+Message-ID: <hodakekojuga62jmvqimb63dyyavx6jqdy7t67cltmha55fl5n@jl2guh3xzh4s>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:17cc:b0:3ce:78ab:dcd1 with SMTP id
- e9e14a558f8ab-3d17bff6a07mr69682595ab.19.1739450703005; Thu, 13 Feb 2025
- 04:45:03 -0800 (PST)
-Date: Thu, 13 Feb 2025 04:45:02 -0800
-In-Reply-To: <66f02282.050a0220.1b7b75.0003.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67ade94e.050a0220.110943.005d.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_quota_check_limit
-From: syzbot <syzbot+8364d1e040a88ed5657d@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-syzbot has bisected this issue to:
+Just small stuff.
 
-commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Sep 23 22:41:51 2023 +0000
+As a general announcement, on disk format is now frozen in my master
+branch - future on disk format changes will be optional, not required.
 
-    bcachefs: Ignore unknown mount options
+The following changes since commit 4be214c26936813b636eed2fac906f585ddbf0f9:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=104621a4580000
-start commit:   4dc1d1bec898 Merge tag 'mfd-fixes-6.14' of git://git.kerne..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=124621a4580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=144621a4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c516b1c112a81e77
-dashboard link: https://syzkaller.appspot.com/bug?extid=8364d1e040a88ed5657d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16f34aa4580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134bbbdf980000
+  bcachefs: bch2_bkey_sectors_need_rebalance() now only depends on bch_extent_rebalance (2025-02-06 22:35:11 -0500)
 
-Reported-by: syzbot+8364d1e040a88ed5657d@syzkaller.appspotmail.com
-Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
+are available in the Git repository at:
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-02-12
+
+for you to fetch changes up to 406e445b3c6be65ab0ee961145e74bfd7ef6c9e1:
+
+  bcachefs: Reuse transaction (2025-02-12 18:44:50 -0500)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.14-rc3
+
+- More fixes for going read-only: the previous fix was insufficient, but
+  with more work on ordering journal reclaim flushing (and a btree node
+  accounting fix so we don't split until we have to) the
+  tiering_replication test now consistently goes read-only in less than
+  a second.
+
+- fix for fsck when we have reflink pointers to missing indirect
+  extents
+
+- some transaction restart handling fixes from Alan; the "Pass
+  _orig_restart_count to trans_was_restarted" likely fixes some rare
+  undefined behaviour heisenbugs.
+
+----------------------------------------------------------------
+Alan Huang (3):
+      bcachefs: Fix use after free
+      bcachefs: Pass _orig_restart_count to trans_was_restarted
+      bcachefs: Reuse transaction
+
+Kent Overstreet (4):
+      bcachefs: Fix marking reflink pointers to missing indirect extents
+      bcachefs: Split out journal pins by btree level
+      bcachefs: Fix want_new_bset() so we write until the end of the btree node
+      bcachefs: CONFIG_BCACHEFS_INJECT_TRANSACTION_RESTARTS
+
+ fs/bcachefs/Kconfig                 |  7 +++++++
+ fs/bcachefs/btree_iter.c            | 33 ++++++++++++++++++++++++++++++++-
+ fs/bcachefs/btree_iter.h            | 14 +++++++++++++-
+ fs/bcachefs/btree_trans_commit.c    |  4 ++++
+ fs/bcachefs/btree_types.h           |  3 +++
+ fs/bcachefs/btree_update_interior.h |  4 ++--
+ fs/bcachefs/disk_accounting.h       |  2 ++
+ fs/bcachefs/io_write.c              | 12 +++++++++++-
+ fs/bcachefs/journal_reclaim.c       | 37 ++++++++++++++++++-------------------
+ fs/bcachefs/journal_types.h         |  5 ++++-
+ fs/bcachefs/reflink.c               |  2 ++
+ fs/bcachefs/sb-errors_format.h      |  4 ++--
+ 12 files changed, 100 insertions(+), 27 deletions(-)
