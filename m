@@ -1,141 +1,131 @@
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FBF41C84D6
-	for <linux-bcachefs@vger.kernel.org>; Fri, 14 Feb 2025 19:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49DF193086;
+	Fri, 14 Feb 2025 20:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739563170; cv=none; b=dJCE1Z3lhOEoYI921al4FkEIPinPYS9+0VHYNH4XRMnHZYYAxldGfyXrds1gsDe0CDSqisrNTP1EIAZV8fgEpBLOe4NIDQomHvYcULKSlKIE1V8wF8AK03d05xO99mMIzAALQFUIBxEfIGp30doorqCvPdevvjqsJUMsC0DH26A=
+	t=1739565290; cv=none; b=WvK7uiEMQoJvrdAMFwaock+KZDVwbIWyC9r+nYbzAHbHtMvyKf64cqrQxpa7Ma8SZDKJC0bJX3A3TdaSMGcip+bTTgtT9FDD0nQ0XvZm9lk11gkwj/OuddGDm+lBeO11MtuM/QS67bTQl0hsfQg/dg7Qwb4DDPo1yq5JN9hpdeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739563170; c=relaxed/simple;
-	bh=HoneSYfjwCkyxow6qUqJHiU1p+vYZNaUKdcEgAjc16w=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uyC5vbaT+Ahh3rhlYZqnKVbsf7QzkHnaVfzTimoUEGxlelOtxU0H+7b3yEqtToAP1Izc5pVKHiYGson/CkatP0N54f97bqeLiFMtXJaxBiskYvEmoWuFtTe5kEUCTTqIpA9TCpWV6dlFF3DgKocwUpy6ffNsZKIf6ibdTdbs9xA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d060cfe752so14741225ab.2
-        for <linux-bcachefs@vger.kernel.org>; Fri, 14 Feb 2025 11:59:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739563167; x=1740167967;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s07l8WUdCDWeg84onPgx9DdCyplfGFjkRssez/Y+2Q0=;
-        b=RPQnI1ry1xBMe0vHCSebmgBDAC7dmTop6QOiDy2lB2+d6WUjSnB7+qdSqiv+fd6l1t
-         Ir9Ow36D0MQdOW7+6G6FkZ4IYxALDq8nbPfwU5PPsSBJV1MuOMYitZnzN/ceQ86lInFj
-         snDPxuQ3gVYK2aXUzqfXQBLlBIAUzIRq/3VI6WUEtQj4CPpAa0bOBsNVDJjLLAu7vBwU
-         pG6Kqh/514aKE4EOmwMnJhUgOcFQ2JtFFKcwM61006IroLWTI6I5KoT2fjnYrPZaGV+p
-         LQf+tiDsqhUdp3rxB45pdWkkvC2D61CDFhe4YfOHWNOL66yAAjnY1j+wqDfOPjGI9V4t
-         9LQA==
-X-Forwarded-Encrypted: i=1; AJvYcCV6Rjp9ws/Jea85P0WGgfxrfclGCFjiQCOUrlKxZPsTOFC0s/zVD7ZRKB0d+IA3w6IfkRgLFhdciYV2AOYHwQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxXkMOHE3ad/2c1wIYZ4KhEMs8IX8SJA1F/Q1HwPJNPbAMkeQXR
-	qAwPXQDibX3mVfzsvv+s2nc0htqdip8fa5E+/QfbSTnNPWegsna37qdP/t4YgdXV8/ndNUutQZ4
-	cIWWXy6WW0KzvqSUui2fYr6lI1B3NZcLJd348w9Ic5wOAafMOhQc9qXM=
-X-Google-Smtp-Source: AGHT+IFkN/W3gTpyyK01vHXOqHLRzhc2iFiGs3oj7eJXqkptUA0tXVE41WoMma3TkNsH7oXX8/Aty0a/vxWl4NscjCXSooYkgQ22
+	s=arc-20240116; t=1739565290; c=relaxed/simple;
+	bh=u/t8g1NoWnmHSSICBYNjJuB6CkcEz3PNfsqxDMlVi0g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DaUc/7vQ34hfR7Kb0POeghy7ic3lu8DPH9T7Jq+hgm71JfA/mMVkxiLpj9fxA4NssRfzj9TVrswNPXbq6iJWjrvQT3Y1n+0d1pcmYjGN3aHG0lPSEhrWJsL8Mt2/AtV7PyC/uyrQdUGJdg7H7MAsC7wRswas5WLf366s30C0hqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=n2exppF8; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n2exppF8"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=4Gk+Gl41zV4/ds48dGjzz+nvq0u8MT2WvURHCtpUanw=; b=n2exppF8s2burixSMpwn3wasvK
+	+TXXN6vr9sgEwCGjwMEUaL+IOv+5e7iRBk/2Zk/Re27Kzf5mwBiR/FqH0vmSv3vME9pNO3jC7S2iO
+	5iTbWyGVoTsQk4FvNP0erjFirJFmjkXr7ysIhs6++si6ay0f+ShJ9yoqiLfNLpx+TO11UneqGKcxB
+	aaEien3nMOyhR757w/PQgEe+7hXcEQ5NAqifBlcOcmfRqg4SIBLerUD6zBdxztn/eEKdbQuEKSwG6
+	qH0SlP+3sdBbjg/OETbRv05l69sgXBjxAp4Tv9eQvUy+VbvlaDr4qgXsZ6RVyCzyYQX8ncclugWc8
+	6dA7NArw==;
+Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tj2Ob-0000000C1V6-0TlA;
+	Fri, 14 Feb 2025 20:34:45 +0000
+Date: Fri, 14 Feb 2025 20:34:44 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: syzbot <syzbot+2110ef46097c323451eb@syzkaller.appspotmail.com>
+Cc: akpm@linux-foundation.org, hughd@google.com, kent.overstreet@linux.dev,
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm?] [bcachefs?] KASAN: slab-out-of-bounds Read in
+ folio_try_get
+Message-ID: <Z6-o5A4Y-rf7Hq8j@casper.infradead.org>
+References: <67afa09f.050a0220.21dd3.0053.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3c05:b0:3d0:443d:a5c3 with SMTP id
- e9e14a558f8ab-3d2807642aamr6015945ab.3.1739563167662; Fri, 14 Feb 2025
- 11:59:27 -0800 (PST)
-Date: Fri, 14 Feb 2025 11:59:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67afa09f.050a0220.21dd3.0054.GAE@google.com>
-Subject: [syzbot] [kernfs?] [bcachefs?] UBSAN: shift-out-of-bounds in radix_tree_delete_item
-From: syzbot <syzbot+b581c7106aa616bb522c@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67afa09f.050a0220.21dd3.0053.GAE@google.com>
 
-Hello,
+On Fri, Feb 14, 2025 at 11:59:27AM -0800, syzbot wrote:
+> BUG: KASAN: slab-out-of-bounds in instrument_atomic_read include/linux/instrumented.h:68 [inline]
+> BUG: KASAN: slab-out-of-bounds in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+> BUG: KASAN: slab-out-of-bounds in page_ref_count include/linux/page_ref.h:67 [inline]
+> BUG: KASAN: slab-out-of-bounds in page_ref_add_unless include/linux/page_ref.h:237 [inline]
+> BUG: KASAN: slab-out-of-bounds in folio_ref_add_unless include/linux/page_ref.h:248 [inline]
+> BUG: KASAN: slab-out-of-bounds in folio_try_get+0xde/0x350 include/linux/page_ref.h:264
+> Read of size 4 at addr ffff88804f904b34 by task syz-executor127/5388
+> 
+> CPU: 0 UID: 0 PID: 5388 Comm: syz-executor127 Not tainted 6.14.0-rc2-syzkaller-00056-gab68d7eb7b1a #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:94 [inline]
+>  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+>  print_address_description mm/kasan/report.c:378 [inline]
+>  print_report+0x169/0x550 mm/kasan/report.c:489
+>  kasan_report+0x143/0x180 mm/kasan/report.c:602
+>  kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
+>  instrument_atomic_read include/linux/instrumented.h:68 [inline]
+>  atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+>  page_ref_count include/linux/page_ref.h:67 [inline]
+>  page_ref_add_unless include/linux/page_ref.h:237 [inline]
+>  folio_ref_add_unless include/linux/page_ref.h:248 [inline]
+>  folio_try_get+0xde/0x350 include/linux/page_ref.h:264
+>  filemap_get_entry+0x240/0x3b0 mm/filemap.c:1870
+>  shmem_get_folio_gfp+0x285/0x1840 mm/shmem.c:2446
+>  shmem_get_folio mm/shmem.c:2628 [inline]
+>  shmem_write_begin+0x165/0x350 mm/shmem.c:3278
+>  generic_perform_write+0x346/0x990 mm/filemap.c:4189
+>  shmem_file_write_iter+0xf9/0x120 mm/shmem.c:3454
+>  new_sync_write fs/read_write.c:586 [inline]
+>  vfs_write+0xacf/0xd10 fs/read_write.c:679
+>  ksys_write+0x18f/0x2b0 fs/read_write.c:731
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7fb60d00ef1f
+> Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 19 81 02 00 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 6c 81 02 00 48
+> RSP: 002b:00007fb60c7b9fb0 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 00007fb60c7b9ff0 RCX: 00007fb60d00ef1f
+> RDX: 0000000001000000 RSI: 00007fb604200000 RDI: 0000000000000003
+> RBP: 00007fb60d0976e0 R08: 0000000000000000 R09: 000000000000590c
+> R10: 0000000000000002 R11: 0000000000000293 R12: 00007fb60d0976ec
+> R13: 00007fb60c7ba030 R14: 0000000000000003 R15: 00007ffe9f1d73d8
+>  </TASK>
+> 
+> The buggy address belongs to the object at ffff88804f904b00
+>  which belongs to the cache radix_tree_node of size 576
+> The buggy address is located 52 bytes inside of
+>  allocated 576-byte region [ffff88804f904b00, ffff88804f904d40)
 
-syzbot found the following issue on:
+Wait, what?  We're calling folio_try_get() on a pointer which isn't a
+pointer to a folio, but a pointer to somewhere in a radix_tree_node?
 
-HEAD commit:    09fbf3d50205 Merge tag 'tomoyo-pr-20250211' of git://git.c..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12cd63f8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c516b1c112a81e77
-dashboard link: https://syzkaller.appspot.com/bug?extid=b581c7106aa616bb522c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e449b0580000
+This fits a pattern we're seeing a lot of recently.
+Bugs:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f952dd0d3577/disk-09fbf3d5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/15b571b9069e/vmlinux-09fbf3d5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/299fb2913d4e/bzImage-09fbf3d5.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/40dabaf4539b/mount_0.gz
+https://syzkaller.appspot.com/bug?extid=b581c7106aa616bb522c
+https://syzkaller.appspot.com/bug?extid=8ae0902c29b15a27a4ee
+https://syzkaller.appspot.com/bug?extid=07392c132f11b1758ac3
+https://syzkaller.appspot.com/bug?extid=fe375f77ba1a6ab944b6
+https://syzkaller.appspot.com/bug?extid=a0ae55e3dde11d2d790c
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b581c7106aa616bb522c@syzkaller.appspotmail.com
+They all fit the form of syzbot mounts a (potentially fuzzed?) bcachefs
+file system and later we have a corruption in the radix tree.
 
-bcachefs (loop2): missing subvolume 1
-bcachefs (loop2): inconsistency detected - emergency read only at journal seq 10
-bcachefs (loop2): bch2_fs_get_tree(): error mounting: error getting root inode ENOENT_bkey_type_mismatch
-bcachefs (loop2): shutting down
-------------[ cut here ]------------
-UBSAN: shift-out-of-bounds in lib/radix-tree.c:88:31
-shift exponent 112 is too large for 64-bit type 'unsigned long'
-CPU: 1 UID: 0 PID: 6088 Comm: syz.2.18 Not tainted 6.14.0-rc2-syzkaller-00039-g09fbf3d50205 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- ubsan_epilogue lib/ubsan.c:231 [inline]
- __ubsan_handle_shift_out_of_bounds+0x3c8/0x420 lib/ubsan.c:468
- radix_tree_descend lib/radix-tree.c:88 [inline]
- __radix_tree_lookup lib/radix-tree.c:766 [inline]
- radix_tree_delete_item+0x1df/0x3f0 lib/radix-tree.c:1420
- kernfs_put+0x1ba/0x370 fs/kernfs/dir.c:575
- kernfs_remove_by_name_ns+0xe4/0x160 fs/kernfs/dir.c:1696
- bch2_dev_unlink fs/bcachefs/super.c:1270 [inline]
- __bch2_fs_stop+0x1d8/0x5c0 fs/bcachefs/super.c:638
- bch2_fs_get_tree+0xd10/0x1740 fs/bcachefs/fs.c:2303
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
- do_new_mount+0x2be/0xb40 fs/namespace.c:3560
- do_mount fs/namespace.c:3900 [inline]
- __do_sys_mount fs/namespace.c:4111 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4088
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f89e278e58a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f89e3673e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f89e3673ef0 RCX: 00007f89e278e58a
-RDX: 00004000000058c0 RSI: 0000400000005900 RDI: 00007f89e3673eb0
-RBP: 00004000000058c0 R08: 00007f89e3673ef0 R09: 0000000000010000
-R10: 0000000000010000 R11: 0000000000000246 R12: 0000400000005900
-R13: 00007f89e3673eb0 R14: 0000000000005912 R15: 00004000000001c0
- </TASK>
----[ end trace ]---
+I have two suspicions (feel free to assign your own probabilities to which
+is correct).  The first is that a bunch of tweaky little cleanups went
+into the xarray code in the last merge window.  I really wish we could
+stop doing that kind of bullshit.  Can we just agree that the xarray
+code is good enough and not keep pissing with it?  Obviously if there's
+a bug, then we should fix it (and that should come with test cases!),
+but otherwise just leave it alone.  Please.  It would make finding this
+kind of problem much easier.
 
+The second is that bcachefs has a random memory stomper.  That would
+suck.  Kent, you said you had some automated tooling to feed syzbot
+reproducers into?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
