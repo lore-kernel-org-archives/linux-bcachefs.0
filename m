@@ -1,134 +1,167 @@
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6A8268C7E
-	for <linux-bcachefs@vger.kernel.org>; Fri, 14 Feb 2025 18:11:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5074B192B95
+	for <linux-bcachefs@vger.kernel.org>; Fri, 14 Feb 2025 19:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739556682; cv=none; b=OhMeXGAKzgz+AoQjYVvfop6ovvJkPcmoihzZURfZXcU8n0HD4PA4EDNb8wY+vXFvjbj3d5DIRbbiXdGdjcIvJ7HNYkRGAF2mxDyDg6cvZXJBCuqcyC/tV1EUgVNai2myI0apSThHygLFDAIymzR+ANNBGt7qitpUlxkdx2kRRHs=
+	t=1739559802; cv=none; b=VekrYPngKWUUPmuRS8GCoIlYrpI40m8WR3f61AFPQEqbSP0wG1BUYBf1n9bE2mDAdJOo1c4Z2if8OnEwi3sl8T4lilUTyycvnReGDwcupxxvJA4yLbDDNLGS14rLK64XLS/zyARc+RLeq7U9lBNWQl1wHwwPqecRjCmGL02auIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739556682; c=relaxed/simple;
-	bh=wMTSRR3nLw+E5ph/idKPu0M3zjjn9ZloRQmQltBey8c=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=P4XkVHoAz1RCPbkOXFusv0WjJD+FQcIHcAaD91jbTQcY83vQd6UDwnogmZl9yNaVnoaCtA/VD1txGf5EgaE18B2VYOP1w8cPzOCLkFzRuQwEx4mG2BI748lQXc7W4l4CY8r3hpL178Oc+MoHOlMf/lah87FdKNqO9yiRwS7C/5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+	s=arc-20240116; t=1739559802; c=relaxed/simple;
+	bh=LzPHQhDzpvp48VwnmU/0YO7/c2pZASju1ajipcpGA/E=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ssz+ywodjCEibYo5oEclgWIvmEz+URl29SGz2gSuNlaRwEo8iaJ9Xo6+cTa0E2RRvvXEi6rJ/JZwpz8djgof5g5pnYNrop/6mHv8ZpyW/unOCkm8WXfEb3tamNiqox+cOqGWT7gMWHQC4yICE21A2EvMmu9q8bpPvOVvIWTIfyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-8556ab53713so297423939f.2
-        for <linux-bcachefs@vger.kernel.org>; Fri, 14 Feb 2025 10:11:20 -0800 (PST)
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d18a1a0f0eso46553205ab.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 14 Feb 2025 11:03:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739556680; x=1740161480;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OUNDXA5tzQyM8ahjKOdY1vF1qJ/6CjWQSKnc3bXlmWo=;
-        b=qIAEDyP96CUGG4cRohjd0YKr+UenkQsVgViKi6AW1K4gZWHEl5I89gRrtVI+7dCmzX
-         afWMuc0Cl3xvDY9blC/gIOmlPu6mH1U+PkcjaaXJQhFX+RpcxXGHbjmJeXc804CbAKie
-         74dNwVhNqyDwxBmZJQMEkGkjk3aH2sAXjqOYqJOmqteiKZgPrkcM2zzgognD+v4uw2tf
-         d4huHU9JFXAXkKw5MWCYMk2kQFtz9+0zm7WGHJoR9bla5g20f1ULW2VV1iNJ42OE1rT1
-         8nimrYBJnzAL9scPqbdAHfN1RkCm86rGQ1QYdNh/jjQMf5hYyuyX6g96WQFskg7BN0y9
-         vhAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2+u5IxpX/HAd11aWIiYhO/9ZsOVQTjRFi9HXVrVarPXEIWrKcYfl6u6K+8BoL8+uQpydL4+jT/W/96z0ngg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLsaKjsZoQ/FzIBr5mJld/YaFjO6oBnUSsz10476pCo5Uw8r/J
-	cqLh0TKrfZpltuZqrAicTW4nhoG7v21awxQSDx8UF3cm/AgdmOPSUtGJDtp1Up40m/dhocLY/i2
-	AaL3G5zWVZmu0oLO5c0ECf5rAzNH8/p6asxam017mVjUsmcxvOQj+ujY=
-X-Google-Smtp-Source: AGHT+IEGXMmhpIMcPBMXR3pV3ntpTw614J0LLbrDiT1df4YTP3Ugn9wIaZyPVGAZlQMx3KRo/pf0FS0DLEP2GzYAgFuG0Wrcc/ki
+        d=1e100.net; s=20230601; t=1739559799; x=1740164599;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ozsTo1EMbkvLjAprOo6XEaeUGMGcNs59zEx3LNPFyeI=;
+        b=jfxQmhIaCST1xnLgO3CQX1WTVKZuOOqXa3acJL3wRLbP/r4ACLHCgLidVUlEhdrp6I
+         JZ4Yv2ygJM+nJAOpHjIuI8tIFxcy0CKf8+b+1EWeJ+g1ca1lnkGcyI4zVtSZRL6hXT9h
+         OfzYAuEqwPVsGl7OZ1EX2eVjG5M0DHbWUsbIOoMMqug4yriUu+LwayuwVpdHf9K64liZ
+         1jEBnWPSAzeCmbQRKE4rJqsVO9mYJ2Dy4lEbBPPyd+465MZPXru9zeBmrh7w/oTSMfYw
+         ppIFh2+57B3fX/aqUJViKMKzvtX5aaSSZIqFfS81dN0pZQzRK/hFIRcxLFHnRRfAGbGv
+         /SzA==
+X-Forwarded-Encrypted: i=1; AJvYcCW71nzg1JfLa9nrk/ANsDDnNxiVVyK5fmEe0J5oGKF/dFRmGoX4mpv4cNrHSevakJhXuWM+sSTjNxe8CwsUNQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyw2huPRkrT3AMP+1QfEKd0hsJmXDBx97+3cl4zX+F//udHNyAx
+	+OYYRTZg28GXRazL+iiPOc337ltDACbxnDtqtxrVM9qE4e3vAI0oEeSQYo77XY7A/j5TEJtBTA4
+	79yPJHBp0J90W5VN1AYk6Q1cwbLV1O0yPUZsj95ISkezaVVRjz7Lz92g=
+X-Google-Smtp-Source: AGHT+IEFzCBbA/CTRaoj68hjY8/AOfMM8idDhjdvbl1mZo6uamjfvugUlqnTB0xzPuuwxqJa0NuNyBXklCGOHb/J6biX4rnmlJTW
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1689:b0:3d0:21f0:98f3 with SMTP id
- e9e14a558f8ab-3d2809a9d26mr2839135ab.21.1739556679952; Fri, 14 Feb 2025
- 10:11:19 -0800 (PST)
-Date: Fri, 14 Feb 2025 10:11:19 -0800
-In-Reply-To: <675d01e9.050a0220.37aaf.00be.GAE@google.com>
+X-Received: by 2002:a05:6e02:148d:b0:3d1:a75e:65f6 with SMTP id
+ e9e14a558f8ab-3d280949290mr4406545ab.18.1739559799439; Fri, 14 Feb 2025
+ 11:03:19 -0800 (PST)
+Date: Fri, 14 Feb 2025 11:03:19 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67af8747.050a0220.21dd3.004c.GAE@google.com>
-Subject: Re: [syzbot] [mm?] [bcachefs?] WARNING in lock_list_lru_of_memcg
-From: syzbot <syzbot+38a0cbd267eff2d286ff@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, chengming.zhou@linux.dev, hannes@cmpxchg.org, 
-	kasong@tencent.com, kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com, 
-	muchun.song@linux.dev, roman.gushchin@linux.dev, ryncsn@gmail.com, 
-	sashal@kernel.org, shakeel.butt@linux.dev, syzkaller-bugs@googlegroups.com, 
-	willy@infradead.org, yuzhao@google.com, zhengqi.arch@bytedance.com
+Message-ID: <67af9377.050a0220.21dd3.004e.GAE@google.com>
+Subject: [syzbot] [bcachefs?] BUG: unable to handle kernel paging request in
+ bch2_btree_cache_scan (3)
+From: syzbot <syzbot+fadf17c17d4661618afc@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot has found a reproducer for the following issue on:
+Hello,
+
+syzbot found the following issue on:
 
 HEAD commit:    128c8f96eb86 Merge tag 'drm-fixes-2025-02-14' of https://g..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=148019a4580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12038f18580000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=c776e555cfbdb82d
-dashboard link: https://syzkaller.appspot.com/bug?extid=38a0cbd267eff2d286ff
+dashboard link: https://syzkaller.appspot.com/bug?extid=fadf17c17d4661618afc
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12328bf8580000
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
 disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-128c8f96.raw.xz
 vmlinux: https://storage.googleapis.com/syzbot-assets/a97f78ac821e/vmlinux-128c8f96.xz
 kernel image: https://storage.googleapis.com/syzbot-assets/f451cf16fc9f/bzImage-128c8f96.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/a7da783f97cf/mount_3.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+38a0cbd267eff2d286ff@syzkaller.appspotmail.com
+Reported-by: syzbot+fadf17c17d4661618afc@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5459 at mm/list_lru.c:96 lock_list_lru_of_memcg+0x39e/0x4d0 mm/list_lru.c:96
-Modules linked in:
-CPU: 0 UID: 0 PID: 5459 Comm: syz-executor Not tainted 6.14.0-rc2-syzkaller-00185-g128c8f96eb86 #0
+BUG: unable to handle page fault for address: ffffe8fffebdf038
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 1b03f067 P4D 1b03f067 PUD 1ed1a067 PMD 1ac49067 PTE 0
+Oops: Oops: 0002 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 80 Comm: kswapd1 Not tainted 6.14.0-rc2-syzkaller-00185-g128c8f96eb86 #0
 Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:lock_list_lru_of_memcg+0x39e/0x4d0 mm/list_lru.c:96
-Code: e9 19 fe ff ff e8 72 f2 b5 ff 4c 8b 7c 24 08 45 84 f6 0f 84 40 ff ff ff e9 22 01 00 00 e8 5a f2 b5 ff eb 05 e8 53 f2 b5 ff 90 <0f> 0b 90 eb 97 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c 71 fd ff ff 48
-RSP: 0018:ffffc9000d70f3a0 EFLAGS: 00010293
-RAX: ffffffff820bc50d RBX: 0000000000000000 RCX: ffff8880382d4880
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff8880351ac054 R08: ffffffff820bc49f R09: 1ffffffff2079b8e
-R10: dffffc0000000000 R11: fffffbfff2079b8f R12: ffffffff820bc19e
-R13: ffff88801ee9a798 R14: 0000000000000000 R15: ffff8880351ac000
-FS:  000055557d70b500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+RIP: 0010:bch2_btree_cache_scan+0xb57/0xec0 fs/bcachefs/btree_cache.c:563
+Code: 24 38 0f 85 12 02 00 00 44 21 2a 48 81 c3 48 b6 04 00 48 89 d8 48 c1 e8 03 80 3c 28 00 74 08 48 89 df e8 bc 08 e2 fd 48 8b 03 <65> 48 ff 40 38 41 80 3c 2e 00 74 08 4c 89 ff e8 a5 08 e2 fd 49 8b
+RSP: 0018:ffffc9000125f2c0 EFLAGS: 00010246
+RAX: 0000607fdefdf000 RBX: ffff88805804b648 RCX: ffffffff8c0998c7
+RDX: ffff8880334a802c RSI: 0000000000000008 RDI: ffffc9000125f240
+RBP: dffffc0000000000 R08: ffffc9000125f247 R09: 1ffff9200024be48
+R10: dffffc0000000000 R11: fffff5200024be49 R12: 0000000000000003
+R13: 00000000fffbffff R14: 1ffff9200024beb5 R15: ffffc9000125f5a8
+FS:  0000000000000000(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff6826de40 CR3: 000000005680c000 CR4: 0000000000352ef0
+CR2: ffffe8fffebdf038 CR3: 000000000e938000 CR4: 0000000000352ef0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- list_lru_del+0x58/0x1f0 mm/list_lru.c:202
- list_lru_del_obj+0x17b/0x250 mm/list_lru.c:223
- d_lru_del fs/dcache.c:481 [inline]
- to_shrink_list+0x136/0x340 fs/dcache.c:904
- select_collect+0xce/0x1b0 fs/dcache.c:1472
- d_walk+0x1f5/0x750 fs/dcache.c:1295
- shrink_dcache_parent+0x144/0x3b0 fs/dcache.c:1527
- d_invalidate+0x11c/0x2d0 fs/dcache.c:1632
- proc_invalidate_siblings_dcache+0x3fb/0x6e0 fs/proc/inode.c:142
- release_task+0x168e/0x1830 kernel/exit.c:279
- wait_task_zombie kernel/exit.c:1249 [inline]
- wait_consider_task+0x1a14/0x2e60 kernel/exit.c:1476
- do_wait_thread kernel/exit.c:1539 [inline]
- __do_wait+0x1b0/0x850 kernel/exit.c:1657
- do_wait+0x1e9/0x550 kernel/exit.c:1691
- kernel_wait4+0x2a7/0x3e0 kernel/exit.c:1850
- __do_sys_wait4 kernel/exit.c:1878 [inline]
- __se_sys_wait4 kernel/exit.c:1874 [inline]
- __x64_sys_wait4+0x134/0x1e0 kernel/exit.c:1874
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f93f3983057
-Code: 89 7c 24 10 48 89 4c 24 18 e8 45 1b 03 00 4c 8b 54 24 18 8b 54 24 14 41 89 c0 48 8b 74 24 08 8b 7c 24 10 b8 3d 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 89 44 24 10 e8 95 1b 03 00 8b 44
-RSP: 002b:00007fff6826e9b0 EFLAGS: 00000293 ORIG_RAX: 000000000000003d
-RAX: ffffffffffffffda RBX: 0000000000000019 RCX: 00007f93f3983057
-RDX: 0000000040000001 RSI: 00007fff6826ea1c RDI: 00000000ffffffff
-RBP: 00007fff6826ea1c R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000001388
-R13: 00000000000927c0 R14: 000000000002f011 R15: 00007fff6826ea70
+ do_shrink_slab+0x72d/0x1160 mm/shrinker.c:437
+ shrink_slab+0x1093/0x14d0 mm/shrinker.c:664
+ shrink_one+0x43b/0x850 mm/vmscan.c:4868
+ shrink_many mm/vmscan.c:4929 [inline]
+ lru_gen_shrink_node mm/vmscan.c:5007 [inline]
+ shrink_node+0x379b/0x3e20 mm/vmscan.c:5978
+ kswapd_shrink_node mm/vmscan.c:6807 [inline]
+ balance_pgdat mm/vmscan.c:6999 [inline]
+ kswapd+0x20f3/0x3b10 mm/vmscan.c:7264
+ kthread+0x7a9/0x920 kernel/kthread.c:464
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
  </TASK>
+Modules linked in:
+CR2: ffffe8fffebdf038
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bch2_btree_cache_scan+0xb57/0xec0 fs/bcachefs/btree_cache.c:563
+Code: 24 38 0f 85 12 02 00 00 44 21 2a 48 81 c3 48 b6 04 00 48 89 d8 48 c1 e8 03 80 3c 28 00 74 08 48 89 df e8 bc 08 e2 fd 48 8b 03 <65> 48 ff 40 38 41 80 3c 2e 00 74 08 4c 89 ff e8 a5 08 e2 fd 49 8b
+RSP: 0018:ffffc9000125f2c0 EFLAGS: 00010246
+RAX: 0000607fdefdf000 RBX: ffff88805804b648 RCX: ffffffff8c0998c7
+RDX: ffff8880334a802c RSI: 0000000000000008 RDI: ffffc9000125f240
+RBP: dffffc0000000000 R08: ffffc9000125f247 R09: 1ffff9200024be48
+R10: dffffc0000000000 R11: fffff5200024be49 R12: 0000000000000003
+R13: 00000000fffbffff R14: 1ffff9200024beb5 R15: ffffc9000125f5a8
+FS:  0000000000000000(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffe8fffebdf038 CR3: 000000000e938000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	24 38                	and    $0x38,%al
+   2:	0f 85 12 02 00 00    	jne    0x21a
+   8:	44 21 2a             	and    %r13d,(%rdx)
+   b:	48 81 c3 48 b6 04 00 	add    $0x4b648,%rbx
+  12:	48 89 d8             	mov    %rbx,%rax
+  15:	48 c1 e8 03          	shr    $0x3,%rax
+  19:	80 3c 28 00          	cmpb   $0x0,(%rax,%rbp,1)
+  1d:	74 08                	je     0x27
+  1f:	48 89 df             	mov    %rbx,%rdi
+  22:	e8 bc 08 e2 fd       	call   0xfde208e3
+  27:	48 8b 03             	mov    (%rbx),%rax
+* 2a:	65 48 ff 40 38       	incq   %gs:0x38(%rax) <-- trapping instruction
+  2f:	41 80 3c 2e 00       	cmpb   $0x0,(%r14,%rbp,1)
+  34:	74 08                	je     0x3e
+  36:	4c 89 ff             	mov    %r15,%rdi
+  39:	e8 a5 08 e2 fd       	call   0xfde208e3
+  3e:	49                   	rex.WB
+  3f:	8b                   	.byte 0x8b
 
 
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
